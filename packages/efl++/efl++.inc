@@ -7,10 +7,12 @@ HOMEPAGE = "http://www.Vanille.de/projects/efl++.html"
 DEPENDS = "virtual/evas virtual/ecore edje libsigc++-2.0"
 PROVIDES = "virtual/efl++"
 
-SRC_URI = "http://www.Vanille.de/download/efl/efl++_${PV}.tar.bz2"
+SRC_URI = "http://www.Vanille.de/download/efl/efl++_${PV}.tar.bz2 \
+           file://fix-src.pro.patch;patch=1 \
+           file://disable-smart.patch;patch=1"
 S = "${WORKDIR}/efl++-${PV}"
 
-inherit qmake
+inherit qmake qt4x11
 
 PARALLEL_MAKE = ""
 QMAKE_PROFILES = "efl++.pro"

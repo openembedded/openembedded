@@ -1,0 +1,21 @@
+
+#
+# Patch managed by http://www.holgerschurig.de/patcher.html
+#
+
+--- efl++-0.1.0/src/evas/evas.cpp~disable-smart
++++ efl++-0.1.0/src/evas/evas.cpp
+@@ -7,9 +7,13 @@
+ /* EFL */
+ extern "C" {
+ #include <Edje.h>
++#ifdef EFL_SUPPORT_ESMART
+ #include <Esmart/Esmart_Container.h>
+ #include <Esmart/Esmart_Text_Entry.h>
++#endif
++#ifdef EFL_SUPPORT_EMOTION
+ #include <Emotion.h>
++#endif
+ }
+ 
+ /* STD */

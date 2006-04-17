@@ -1,0 +1,15 @@
+
+#
+# Patch managed by http://www.holgerschurig.de/patcher.html
+#
+
+--- efl++-0.1.0/src/src.pro~fix-src.pro
++++ efl++-0.1.0/src/src.pro
+@@ -30,6 +30,7 @@
+     include ( emotion/emotion.pro )
+     LIBS += -lemotion
+ 	DEFINES += EFL_SUPPORT_EMOTION
++}
+ 
+ eflesmart {
+     include ( esmart/esmart.pro )
