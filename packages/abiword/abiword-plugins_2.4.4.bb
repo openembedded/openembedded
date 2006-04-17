@@ -21,6 +21,6 @@ PACKAGES_DYNAMIC = "abiword-plugin-*"
 python populate_packages_prepend () {
 	abiword_libdir = bb.data.expand('${libdir}/AbiWord-2.4/plugins', d)
 
-	do_split_packages(d, abiword_libdir, '^libAbi(.*)\.so$', 'abiword-plugin-%s', 'Abiword plugin for %s')
+	do_split_packages(d, abiword_libdir, '^libAbi(.*)\.so$', 'abiword-plugin-%s', 'Abiword plugin for %s', extra_depends='')
 }
 
