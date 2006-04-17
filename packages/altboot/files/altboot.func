@@ -181,6 +181,30 @@ pivot_image() {
 
 #$1=mountpoint of the soon-to-be rootfs, $2=Runlevel
 do_pivot(){
+
+	echo "[$USE_KEXEC_ON_NEXT_BOOT]"
+
+	if test "$USE_KEXEC_ON_NEXT_BOOT" = yes
+	then
+		if test -e "$KEXEC_SELECTED_KERNEL.kexec.cfg"
+		then
+			CMDLINE="--append=\"`cat $KEXEC_SELECTED_KERNEL.kexec.cfg`\""
+		else
+			CMDLINE=""
+			echo "WARNING: This kernel has not been configured!"
+			echo "Trying to boot anyway..."
+		fi
+		
+		echo "$KEXEC_BIN -l $KEXEC_SELECTED_KERNEL $CMDLINE"
+		$KEXEC_BIN -l $KEXEC_SELECTED_KERNEL $CMDLINE
+		sync
+		
+		read junk
+		$KEXEC_BIN -e
+		exit 0
+	fi	
+
+
 	echo -n "Pivoting root..."
 	if (/sbin/pivot_root "$1" "$1/media/ROM") 
 	then
@@ -526,6 +550,70 @@ mount_home(){
 	fi
 }
 
+show_menu() {	
+	
+	echo -e "\nPress <ENTER> to return to the menu"
+	read junk
+	
+	test "$junk" = x && exec /bin/sh || exec /sbin/init.altboot -force</dev/tty0 >/dev/tty0 2>&1
+}
+
+mdie() {
+	echo "ERROR: $1" >/dev/tty0
+	
+	echo -e "\nPress <ENTER> to return to the menu"
+	read junk
+	
+	test "$junk" = x && exec /bin/sh || exec /sbin/init.altboot -force</dev/tty0 >/dev/tty0 2>&1
+}
+
+# $1: uniq name, $2 identifier, $3 value
+set_pref() {
+	data_name="$1"
+	data_id="$2"
+	data_value="$3"
+	
+	#echo "[$1] [$2] [$3]"
+	#export "${data_name}"="`eval echo -e \\$${data_name} | sed "s/\#\#\#/\#\#\#\\n/g"|sed s/^\ // | sed s/^$data_id.*//`"
+
+	export "${data_name}"="`eval echo -e \\$${data_name} `
+$data_id##$data_value###"
+	
+}
+
+# $1: uniq name
+reset_pref() {
+	data_name="$1"
+	export "${data_name}"=""	
+}
+
+echo_pref() {
+	data_name="$1"
+	echo "****** $1 ******"
+	echo "`eval echo -e \\$${data_name} | sed "s/\#\#\#/\#\#\#\\n/g"|sed s/^\ // `"
+	echo "******"
+}
+
+dump_pref() {
+	data_name="$1"	
+	echo "`eval echo -e \\$${data_name} | sed "s/\#\#\#/\#\#\#\\n/g"|sed s/^\ // `"
+}
+
+# $1: uniq name, $2 identifier, $3 out var
+get_pref() {
+	data_name="$1"
+	data_id="$2"
+	data_out="$3"
+	data_list="`eval echo -e \\$${data_name}`"
+	
+	data_value="`echo "$data_list"| sed "s/\#\#\#/\\n/g"|sed s/^\ // | grep "^$data_id##" | sed -n "s/.*\#\(.*\)$/\1/p"`"
+	
+	# echo "WERT: [$data_value]"
+	
+	export "${data_out}"="$data_value"
+	test -n "$data_value" && return 0
+}
+
 start_networking() {
 
 	if test "$USB_NETWORKING_AVAILABLE" = "yes"
@@ -586,7 +674,7 @@ start_networking() {
 			/etc/init.d/pcmcia start >/dev/null 2>&1 || die "/etc/init.d/pcmcia start failed!"
 		else	
 			# With kernel 2.6.16+ udev is used 
-			/etc/init.d/udev start >/dev/null 2>&1 || die "/etc/init.d/udev start failed!"
+			ps ax| grep -v grep | grep -q udevd || /etc/init.d/udev start >/dev/null 2>&1 || die "/etc/init.d/udev start failed!"
 
 			/etc/init.d/udev stop
 		fi

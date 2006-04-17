@@ -31,14 +31,6 @@ C_BLUE="\033[34m"
 C_WHITE="\033[37m"
 C_RESET="\033[0m"
 
-mdie() {
-	echo "ERROR: $1" >/dev/tty0
-	
-	echo -e "\nPress <ENTER> to return to the menu"
-	read junk
-	
-	test "$junk" = x && exec /bin/sh || exec /sbin/init.altboot -force</dev/tty0 >/dev/tty0 2>&1
-}
 
 die() {
 	echo -e "ERROR: $1" >/dev/tty0
@@ -50,77 +42,82 @@ die() {
 # $1: Directory containing the scripts for the menu-items
 show_menu() {
 	test -z "$1" && die "DEBUG: Parameter 1 is empty in show_menu"
+	! test -d "$1" && die "show_menu: [$1] not found or no directory."
+
 	echo "" 
 	echo -e "altboot v$VERSION\n" 
 
-	cnt=0
+	
 	m_entry=""
-	if test -d $1
-	then
-		# Build "m_entry" for scripts in /etc/altboot-menu
-		cd $1
-		for file in `ls -1`
-		do	
-			if ! test -d "$1/$file"
-			then			
-				M_TITLE="`$1/$file title`"
-				if ! test -z "$M_TITLE"
-				then
-					let cnt=$cnt+1
-					# Keep a list of existing "modules" together with an index number
-					# This sure is ugly, but Busybox sh doesn't do arrays....
-					m_entry="`echo -e "$m_entry\n$cnt:$file\n"`"
-					echo -e "\t\t[$cnt] $M_TITLE"					
-				fi
-				M_TITLE=""
-			fi
-		done
+	# Build "m_entry" for scripts in /etc/altboot-menu
+	cd $1
 
-		# Display directories below /etc/altboot-menu as menu-item
-		# and add all scripts inside the directory to m_entry
-		for dir in `ls -1`
-		do	
-			if test -d "$1/$dir"
-			then			
-				M_TITLE="`basename "$1/$dir"`"
-				if ! test -z "$M_TITLE"
-				then
-					let cnt=$cnt+1
-					# Keep a list of existing "modules" together with an index number
-					# This sure is ugly, but Busybox sh doesn't do arrays....
-					m_entry="`echo -e "$m_entry\n$cnt:$dir:DIR\n"`"
-					echo -e "\t\t[$cnt] $M_TITLE"					
-					
-					OLD_PWD="$PWD"
-					cd "$1/$dir"
-					for file in `ls -1`
-					do	
-						if ! test -d "$1/$dir/$file"
-						then			
-							M_TITLE="`$1/$dir/$file title`"
-							if ! test -z "$M_TITLE"
-							then
-								let cnt=$cnt+1
-								# Keep a list of existing "modules" together with an index number
-								# This sure is ugly, but Busybox sh doesn't do arrays....
-								m_entry="`echo -e "$m_entry\n$cnt:$dir/$file\n"`"
-								#echo -e "\t\t[$cnt] $M_TITLE"					
-							fi
-							M_TITLE=""
+	cnt=0 ; reset_pref "menu_filelist"
+	for file in `ls -1`
+	do	
+		if ! test -d "$1/$file"
+		then			
+			M_TITLE="`$1/$file title`"
+			if ! test -z "$M_TITLE"
+			then
+				let cnt=$cnt+1
+				# Keep a list of existing "modules" together with an index number
+				# This sure is ugly, but Busybox sh doesn't do arrays....
+				#m_entry="`echo -e "$m_entry\n$cnt:$file\n"`"
+				
+				set_pref "menu_filelist" "$cnt" "$file"
+				echo -e "\t\t[$cnt] $M_TITLE"					
+			fi
+			M_TITLE=""
+		fi
+	done
+
+	# Display directories below /etc/altboot-menu as menu-item
+	# and add all scripts inside the directory to m_entry
+	for dir in `ls -1`
+	do	
+		if test -d "$1/$dir"
+		then			
+			M_TITLE="`basename "$1/$dir"`"
+			if ! test -z "$M_TITLE"
+			then
+				let cnt=$cnt+1
+				# Keep a list of existing "modules" together with an index number
+				# This sure is ugly, but Busybox sh doesn't do arrays....
+				#m_entry="`echo -e "$m_entry\n$cnt:$dir:DIR\n"`"
+				
+				set_pref "menu_filelist" "$cnt" "$dir:DIR"
+				echo -e "\t\t[$cnt] $M_TITLE"					
+
+				OLD_PWD="$PWD"
+				cd "$1/$dir"
+				for file in `ls -1`
+				do	
+					if ! test -d "$1/$dir/$file"
+					then			
+						M_TITLE="`$1/$dir/$file title`"
+						if ! test -z "$M_TITLE"
+						then
+							let cnt=$cnt+1
+							# Keep a list of existing "modules" together with an index number
+							# This sure is ugly, but Busybox sh doesn't do arrays....
+							#m_entry="`echo -e "$m_entry\n$cnt:$dir/$file\n"`"
+							
+							set_pref "menu_filelist" "$cnt" "$dir/$file"
+							#echo -e "\t\t[$cnt] $M_TITLE"					
 						fi
-					done
-					cd "$OLD_PWD"
+						M_TITLE=""
+					fi
+				done
+				cd "$OLD_PWD"
 
-				fi
-				M_TITLE=""
 			fi
-		done
-		
-		
-		echo ""
-	else
-		echo "WARNING: $1 not found"
-	fi
+			M_TITLE=""
+		fi
+	done
+
+	#echo_pref "menu_filelist"
+	echo ""
 	
 }
 
@@ -129,17 +126,17 @@ show_menu() {
 show_sub_menu() {
 	dirname="`basename "$1"`"
 		
-	d_entries="`echo "$m_entry"|grep "$dirname/"`"
+	d_entries="`dump_pref "menu_filelist" | grep "$dirname/"`"
 	
-#	echo "[$d_entries]"
+	#echo "[$d_entries]"
 	
 	echo -e "\naltboot v$VERSION: $dirname menu\n" 
 	
 	
 	for d_entry in $d_entries
 	do
-		d_entry_number="`echo "$d_entry"| sed -n "s/\(.*\)\:\(.*\)/\1/p"`"
-		d_entry_file="`echo "$d_entry"| sed -n "s/\(.*\)\:\(.*\)/\2/p"`"
+		d_entry_number="`echo "$d_entry"| sed -n "s/\(.*\)\#\#\(.*\)\#\#\#/\1/p"`"
+		d_entry_file="`echo "$d_entry"| sed -n "s/\(.*\)\#\#\(.*\)\#\#\#/\2/p"`"
 		d_entry_title="`$d_entry_file title`"
 		
 #		echo "number: [$d_entry_number]"
@@ -197,6 +194,7 @@ run_timer() {
 		else
 			rm -f /etc/.altboot*.last
 		fi
+				
 	else
 		launch_altboot=yes
 	fi
@@ -208,25 +206,31 @@ launch_selection() {
 	test -z "$1" && die "Parameter 1 of launch_selection is empty!"
 	
 	case "$junk" in
-	*)	file="`echo "$m_entry"| sed -n "/$junk\:/s/^.*\:\(.*\)/\1/p"`"
+	*)	#file="`echo "$m_entry"| sed -n "/$junk\:/s/^.*\:\(.*\)/\1/p"`"
+		
+		get_pref "menu_filelist" "$junk" file_
+		type="`echo "$file_" | sed -n "s/\(.*\)\:\(.*\)/\2/p"`"
+		file="`echo "$file_" | sed -n "s/\(.*\)\:\(.*\)/\1/p"`"
+		test -z "$file" && file="$file_"
+		
+		#echo "[$file_]: [$type] / [$file] ($junk)"
 		
 		# The selected menu-item points to a directory
-		if test "$file" = DIR
+		if test "$type" = DIR
 		then
-			dir="`echo "$m_entry"| sed -n "/$junk\:/s/^.*\:\(.*\)\:\(.*\)/\1/p"`"
-			show_sub_menu /etc/altboot-menu/$dir >/dev/tty0
+			show_sub_menu /etc/altboot-menu/$file >/dev/tty0
 			wait_for_input >/dev/tty0			
 			launch_selection /etc/altboot-menu >/dev/tty0						
 		fi
 		
-		if test "$file" = MAIN
+		if test "$type" = MAIN
 		then
 			show_sub_menu /etc/altboot-menu >/dev/tty0
 			wait_for_input >/dev/tty0			
 			launch_selection /etc/altboot-menu >/dev/tty0						
 		fi	
 		
-		#echo "[$file]"
+		
 				
 		. $1/$file run "$file" >/dev/tty0	
 		die "WARNING: Using failsafe shell" >/dev/tty0			
@@ -257,15 +261,17 @@ wait_for_input() {
 			( while :; do read x< /dev/tty0 2>&1; done; ) > /dev/null 2>&1 &
 			sleep 1; kill $! >/dev/null 2>&1
 		fi
-				
-		
-
+								
 		echo -n "Please choose one of the above [$last_selection]: " </dev/tty0 > /dev/tty0 2>&1
+		stty echo </dev/tty0 >/dev/tty0 2>&1
 		read junk< /dev/tty0 2>&1
 		
 		# This filters other chars the user may have used
-		junk="`echo "$junk" |  sed -n "s/.*\([0-9]\)/\1/p"`"
 		
+		#echo "junk: [$junk]"
+		junk="`echo "$junk" | sed "s/[a-zA-Z]//g"`"
+		#echo "junk: [$junk]"
+				
 		if test "$junk" -lt "$cnt" -o "$junk" -eq "$cnt" 
 		then
 			if test ! -z "$junk"
@@ -346,9 +352,11 @@ else
 		launch_selection /etc/altboot-menu >/dev/tty0
 
 	fi
+
 	# Anything after this point will never be reached if $launch_altboot != yes	
 	
 	# Show the altboot menu
+	stty -echo </dev/tty0 >/dev/tty0 2>&1
 	show_menu /etc/altboot-menu >/dev/tty0
 
 	# Load last selection for use as default if <ENTER> is pressed at the prompt
