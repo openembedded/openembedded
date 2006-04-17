@@ -11,7 +11,7 @@ run_module() {
 	test -e /etc/altboot.func && . /etc/altboot.func || die "ERROR: /etc/altboot.func not found. Check your installation!"
 	
 	test -z "$KEXEC_KERNEL_DIR" && KEXEC_KERNEL_DIR="/boot"	
-	test -x "$KEXEC_BIN" || die "kexec-tools not found [$KEXEC_BIN]"
+	test -x "$KEXEC_BIN" || mdie "kexec-tools not found [$KEXEC_BIN]"
 	
 	# Mount /proc, etc
 	# init_rootfs
