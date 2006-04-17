@@ -8,8 +8,6 @@ SRC_URI = "http://de3.php.net/distributions/php-${PV}.tar.bz2 \
            file://endianness.patch;patch=1"
 S = "${WORKDIR}/php-${PV}"
 
-# NOTE: You MUST remove --without-schemas from the libxml2 bb file (and recompile and reinstall it) to compile and use php5
-
 inherit autotools
 
 CFLAGS += " -DPTYS_ARE_GETPT -DPTYS_ARE_SEARCHED"
