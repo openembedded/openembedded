@@ -4,7 +4,7 @@ down to using normal X11 primitives such as pixmaps, lines and rectangles if \
 your CPU or graphics hardware are too slow."
 LICENSE = "MIT"
 # can also depend on valgrind (?)
-DEPENDS = "freetype libpng jpeg eet edb"
+DEPENDS = "freetype libpng jpeg eet"
 PROVIDES += "virtual/evas"
 
 inherit efl
