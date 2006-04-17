@@ -32,9 +32,6 @@ do_compile_prepend() {
 	find ${S} -name Makefile | xargs sed -i 's:/usr/X11R6/include:${STAGING_INCDIR}:'
 }
 
-E_CVS = "cvs://anonymous@anoncvs.enlightenment.org:/var/cvs/e"
-E_URI = "http://enlightenment.freedesktop.org/files"
-
 PACKAGES = "${PN} ${PN}-themes"
 FILES_${PN} = "${libdir}/lib*.so*"
 FILES_${PN}-themes = "${datadir}/${PN}/themes ${datadir}/${PN}/data ${datadir}/${PN}/fonts ${datadir}/${PN}/pointers ${datadir}/${PN}/images ${datadir}/${PN}/users ${datadir}/${PN}/images ${datadir}/${PN}/styles"
