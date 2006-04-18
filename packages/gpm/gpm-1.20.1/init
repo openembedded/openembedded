@@ -1,0 +1,30 @@
+#! /bin/sh i-e 
+
+# Grab the common functions
+. /etc/init.d/functions
+
+# FIXME: 
+# Add a configuration file for GPM here
+
+test -x /bin/gpm || exit 0
+
+case "$1" in
+  start)
+    if [ ! -p /dev/gpmdata ]; then
+    	mkfifo /dev/gpmdata
+    fi
+
+    action "Starting GPM:" start-stop-daemon -S -x /bin/gpm -- -R -m /dev/mouse -t imps2
+    ;;
+  stop)
+    action "Stopping GPM:" start-stop-daemon -K -x /bin/gpm
+    ;;
+  restart|force-reload) 
+    $0 stop
+    $0 start
+    ;;
+  *)
+    usage /etc/init.d/gpm
+esac
+
+exit 0
