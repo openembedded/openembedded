@@ -1,3 +1,5 @@
+DEFAULT_PREFERENCE = "-1"
+
 SECTION = "base"
 DESCRIPTION = "System Utilities Based on Sysfs"
 HOMEPAGE = "http://linux-diag.sourceforge.net/Sysfsutils.html"
