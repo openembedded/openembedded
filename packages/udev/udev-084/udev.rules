@@ -15,6 +15,7 @@
 
 # SCSI devices
 BUS=="scsi", KERNEL=="sr[0-9]*",	NAME="scd%n", SYMLINK+="sr%n"
+SUBSYSTEM=="scsi_device", SYSFS{type}=="0|7|14", RUN+="/sbin/modprobe sd_mod"
 
 # USB devices
 BUS=="usb", KERNEL=="auer[0-9]*",	NAME="usb/%k"
