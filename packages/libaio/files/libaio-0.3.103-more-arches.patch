@@ -1,0 +1,173 @@
+diff -urN libaio-0.3.103/src/io_cancel.c libaio-0.3.103.new/src/io_cancel.c
+--- libaio-0.3.103/src/io_cancel.c	2003-05-20 09:54:50.000000000 -0600
++++ libaio-0.3.103.new/src/io_cancel.c	2005-10-13 17:32:27.000000000 -0600
+@@ -17,6 +17,7 @@
+    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
+  */
+ #include <libaio.h>
++#include <errno.h>
+ #include "syscall.h"
+ 
+ io_syscall3(int, io_cancel_0_4, io_cancel, io_context_t, ctx, struct iocb *, iocb, struct io_event *, event)
+diff -urN libaio-0.3.103/src/libaio.h libaio-0.3.103.new/src/libaio.h
+--- libaio-0.3.103/src/libaio.h	2004-09-14 13:40:27.000000000 -0600
++++ libaio-0.3.103.new/src/libaio.h	2005-10-13 17:32:27.000000000 -0600
+@@ -48,7 +48,7 @@
+ 	IO_CMD_NOOP = 6,
+ } io_iocb_cmd_t;
+ 
+-#if defined(__i386__) /* little endian, 32 bits */
++#if defined(__i386__) || defined(__mips__) /* little endian, 32 bits */
+ #define PADDED(x, y)	x; unsigned y
+ #define PADDEDptr(x, y)	x; unsigned y
+ #define PADDEDul(x, y)	unsigned long x; unsigned y
+diff -urN libaio-0.3.103/src/syscall-mips.h libaio-0.3.103.new/src/syscall-mips.h
+--- libaio-0.3.103/src/syscall-mips.h	1969-12-31 17:00:00.000000000 -0700
++++ libaio-0.3.103.new/src/syscall-mips.h	2005-10-13 17:41:50.000000000 -0600
+@@ -0,0 +1,134 @@
++#define __NR_io_setup            4000+241
++#define __NR_io_destroy          4000+242
++#define __NR_io_getevents        4000+243
++#define __NR_io_submit           4000+244
++#define __NR_io_cancel           4000+245
++
++#define io_syscall1(type,fname,sname,atype,a) \
++type fname(atype a) \
++{ \
++	register unsigned long __a0 asm("$4") = (unsigned long) a; \
++	register unsigned long __a3 asm("$7"); \
++	unsigned long __v0; \
++	\
++	__asm__ volatile ( \
++	".set\tnoreorder\n\t" \
++	"li\t$2, %3\t\t\t# " #sname "\n\t" \
++	"syscall\n\t" \
++	"move\t%0, $2\n\t" \
++	".set\treorder" \
++	: "=&r" (__v0), "=r" (__a3) \
++	: "r" (__a0), "i" (__NR_##sname) \
++	: "$2", "$8", "$9", "$10", "$11", "$12", "$13", "$14", "$15", "$24", \
++	  "memory"); \
++	\
++	if (__a3 == 0) \
++		return (type) __v0; \
++	errno = __v0; \
++	return (type) -1; \
++}
++
++#define io_syscall2(type,fname,sname,atype,a,btype,b) \
++type fname(atype a, btype b) \
++{ \
++	register unsigned long __a0 asm("$4") = (unsigned long) a; \
++	register unsigned long __a1 asm("$5") = (unsigned long) b; \
++	register unsigned long __a3 asm("$7"); \
++	unsigned long __v0; \
++	\
++	__asm__ volatile ( \
++	".set\tnoreorder\n\t" \
++	"li\t$2, %4\t\t\t# " #sname "\n\t" \
++	"syscall\n\t" \
++	"move\t%0, $2\n\t" \
++	".set\treorder" \
++	: "=&r" (__v0), "=r" (__a3) \
++	: "r" (__a0), "r" (__a1), "i" (__NR_##sname) \
++	: "$2", "$8", "$9", "$10", "$11", "$12", "$13", "$14", "$15", "$24", \
++	  "memory"); \
++	\
++	if (__a3 == 0) \
++		return (type) __v0; \
++	errno = __v0; \
++	return (type) -1; \
++}
++
++#define io_syscall3(type,fname,sname,atype,a,btype,b,ctype,c) \
++type fname(atype a, btype b, ctype c) \
++{ \
++	register unsigned long __a0 asm("$4") = (unsigned long) a; \
++	register unsigned long __a1 asm("$5") = (unsigned long) b; \
++	register unsigned long __a2 asm("$6") = (unsigned long) c; \
++	register unsigned long __a3 asm("$7"); \
++	unsigned long __v0; \
++	\
++	__asm__ volatile ( \
++	".set\tnoreorder\n\t" \
++	"li\t$2, %5\t\t\t# " #sname "\n\t" \
++	"syscall\n\t" \
++	"move\t%0, $2\n\t" \
++	".set\treorder" \
++	: "=&r" (__v0), "=r" (__a3) \
++	: "r" (__a0), "r" (__a1), "r" (__a2), "i" (__NR_##sname) \
++	: "$2", "$8", "$9", "$10", "$11", "$12", "$13", "$14", "$15", "$24", \
++	  "memory"); \
++	\
++	if (__a3 == 0) \
++		return (type) __v0; \
++	errno = __v0; \
++	return (type) -1; \
++}
++
++#define io_syscall4(type,fname,sname,atype,a,btype,b,ctype,c,dtype,d) \
++type fname(atype a, btype b, ctype c, dtype d) \
++{ \
++	register unsigned long __a0 asm("$4") = (unsigned long) a; \
++	register unsigned long __a1 asm("$5") = (unsigned long) b; \
++	register unsigned long __a2 asm("$6") = (unsigned long) c; \
++	register unsigned long __a3 asm("$7") = (unsigned long) d; \
++	unsigned long __v0; \
++	\
++	__asm__ volatile ( \
++	".set\tnoreorder\n\t" \
++	"li\t$2, %5\t\t\t# " #sname "\n\t" \
++	"syscall\n\t" \
++	"move\t%0, $2\n\t" \
++	".set\treorder" \
++	: "=&r" (__v0), "+r" (__a3) \
++	: "r" (__a0), "r" (__a1), "r" (__a2), "i" (__NR_##sname) \
++	: "$2", "$8", "$9", "$10", "$11", "$12", "$13", "$14", "$15", "$24", \
++	  "memory"); \
++	\
++	if (__a3 == 0) \
++		return (type) __v0; \
++	errno = __v0; \
++	return (type) -1; \
++}
++
++#define io_syscall5(type,fname,sname,atype,a,btype,b,ctype,c,dtype,d,etype,e) \
++type fname (atype a,btype b,ctype c,dtype d,etype e) \
++{ \
++	register unsigned long __a0 asm("$4") = (unsigned long) a; \
++	register unsigned long __a1 asm("$5") = (unsigned long) b; \
++	register unsigned long __a2 asm("$6") = (unsigned long) c; \
++	register unsigned long __a3 asm("$7") = (unsigned long) d; \
++	register unsigned long __a4 asm("$8") = (unsigned long) e; \
++	unsigned long __v0; \
++	\
++	__asm__ volatile ( \
++	".set\tnoreorder\n\t" \
++	"li\t$2, %6\t\t\t# " #sname "\n\t" \
++	"syscall\n\t" \
++	"move\t%0, $2\n\t" \
++	".set\treorder" \
++	: "=&r" (__v0), "+r" (__a3) \
++	: "r" (__a0), "r" (__a1), "r" (__a2), "r" (__a4), "i" (__NR_##sname) \
++	: "$2", "$9", "$10", "$11", "$12", "$13", "$14", "$15", "$24", \
++	  "memory"); \
++	\
++	if (__a3 == 0) \
++		return (type) __v0; \
++	errno = __v0; \
++	return (type) -1; \
++}
++
+diff -urN libaio-0.3.103/src/syscall.h libaio-0.3.103.new/src/syscall.h
+--- libaio-0.3.103/src/syscall.h	2005-01-21 07:11:20.000000000 -0700
++++ libaio-0.3.103.new/src/syscall.h	2005-10-13 17:33:06.000000000 -0600
+@@ -20,6 +20,8 @@
+ #include "syscall-ppc.h"
+ #elif defined(__s390__)
+ #include "syscall-s390.h"
++#elif defined(__mips__)
++#include "syscall-mips.h"
+ #else
+ #error "add syscall-arch.h"
+ #endif
