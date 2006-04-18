@@ -6,7 +6,10 @@ SRC_URI = "ftp://ftp.kernel.org/pub/linux/daemons/autofs/v4/autofs-${PV}.tar.bz2
            ftp://ftp.kernel.org/pub/linux/daemons/autofs/v4/autofs-4.1.4-misc-fixes.patch;patch=1 \
            ftp://ftp.kernel.org/pub/linux/daemons/autofs/v4/autofs-4.1.4-multi-parse-fix.patch;patch=1 \
            ftp://ftp.kernel.org/pub/linux/daemons/autofs/v4/autofs-4.1.4-non-replicated-ping.patch;patch=1 \
-           file://cross.patch;patch=1"
+           file://cross.patch;patch=1 \
+           file://Makefile.rules-cross.patch;patch=1"
+
+EXTRA_OEMAKE="TARGET_PREFIX=${TARGET_PREFIX}"
 
 inherit autotools
 
