@@ -1,0 +1,77 @@
+Only in detect-stylus-0.13: .pc
+diff -ur detect-stylus-0.13.orig/Makefile detect-stylus-0.13/Makefile
+--- detect-stylus-0.13.orig/Makefile	2004-09-08 17:57:37.000000000 +0200
++++ detect-stylus-0.13/Makefile	2006-04-18 21:00:57.000000000 +0200
+@@ -15,7 +15,11 @@
+ PACKAGE_CFLAGS += -Os -fomit-frame-pointer
+ endif
+ PACKAGE_CPPFLAGS += -DPACKAGE=\"$(PACKAGE)\" -DPREFIX=\"$(PREFIX)\" -DPACKAGE_LOCALE_DIR=\"$(PREFIX)/share/locale\"
++ifeq ($(NOX),yes)
++PACKAGE_CPPFLAGS += -DNOX
++else
+ PACKAGE_LDFLAGS += `pkg-config --libs x11`
++endif
+ 
+ OBJS = $(patsubst %,%.o,$(MEMBERS))
+ 
+@@ -36,8 +40,7 @@
+ 	mkdir -p $(DESTDIR)$(PREFIX)/bin/
+ 	$(STRIP) $(PACKAGE)
+ 	install $(PACKAGE) $(DESTDIR)$(PREFIX)/bin/$(PACKAGE)
+-	mkdir -p $(DESTDIR)/etc/X11/Xinit.d
+-	install 70detect-stylus $(DESTDIR)/etc/X11/Xinit.d
++	if [ -z $(NOX) ]; then mkdir -p $(DESTDIR)/etc/X11/Xinit.d && install -m 0755 70detect-stylus $(DESTDIR)/etc/X11/Xinit.d; fi
+ 
+ clean:
+ 	rm -f $(PACKAGE) $(OBJS)
+Only in detect-stylus-0.13: detect-stylus
+diff -ur detect-stylus-0.13.orig/detect-stylus.c detect-stylus-0.13/detect-stylus.c
+--- detect-stylus-0.13.orig/detect-stylus.c	2006-04-18 20:22:13.000000000 +0200
++++ detect-stylus-0.13/detect-stylus.c	2006-04-18 20:57:01.000000000 +0200
+@@ -14,8 +14,10 @@
+ #include <dirent.h>
+ #include <string.h>
+ 
++#ifndef NOX
+ #include <X11/Xlib.h>
+ #include <X11/Xatom.h>
++#endif /* NOX */
+ 
+ #include <linux/input.h>
+ 
+@@ -42,11 +44,14 @@
+ int
+ main (int argc, char *argv[])
+ {
++#ifndef NOX
+   char b = 1;
+-  char *tsdev;
+   Atom atom;
+   Display *dpy;
+   Window root;
++#endif /* NOX */
++
++  char *tsdev;
+   int fd;
+   int i;
+ 
+@@ -119,6 +124,10 @@
+   if (flag_device)
+     exit (1);		/* Nothing found */
+ 
++#ifdef NOX
++  fprintf (stderr, "This version of detect-stylus was compiled without X support.");
++  exit (1);
++#else
+   if (fd >= 0)
+     {
+       close (fd);
+@@ -141,4 +150,5 @@
+     }
+       
+   exit (0);
++#endif /* NOX */
+ }
+Only in detect-stylus-0.13.orig/: detect-stylus.c.orig
+Only in detect-stylus-0.13: detect-stylus.o
+Only in detect-stylus-0.13: patches
