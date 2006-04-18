@@ -1,0 +1,13 @@
+--- linux-2.4.22/drivers/net/ppp_mppe.c~	2006-04-15 12:23:04.000000000 -0500
++++ linux-2.4.22/drivers/net/ppp_mppe.c	2006-04-17 20:24:39.000000000 -0500
+@@ -507,7 +507,10 @@
+     (state->stats).bytes_out = (state->stats).comp_bytes;
+ 
+     /* this _SHOULD_ always be 1 */
++#if 0
++    /* the kernel may not do floating point calculations, so don't do this. */
+     (state->stats).ratio = (state->stats).in_count/(state->stats).bytes_out;
++#endif
+ 
+     *stats = state->stats;
+    
