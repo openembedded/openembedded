@@ -33,7 +33,7 @@ SRC_URI = "cvs://anoncvs@sources.redhat.com/cvs/glibc;module=libc;date=${@bb.dat
 	   file://eabi-patch-1;patch=1 \
 	   file://eabi-patch-2;patch=1 \
 	   file://eabi-patch-3;patch=1 \
-	   \
+	   file://5090_all_stubs-rule-fix.patch;patch=1 \
            file://etc/ld.so.conf \
 	   file://generate-supported.mk"
 
