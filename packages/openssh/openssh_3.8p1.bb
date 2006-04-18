@@ -11,11 +11,12 @@ used to provide applications with a secure communication channel."
 HOMEPAGE = "http://www.openssh.org/"
 LICENSE = "BSD"
 MAINTAINER = "Bruno Randolf <bruno.randolf@4g-systems.biz>"
-PR = "r2"
+PR="r3"
 
 SRC_URI = "ftp://ftp.openbsd.org/pub/OpenBSD/OpenSSH/portable/openssh-${PV}.tar.gz \
            file://configure.patch;patch=1 \
            file://scp-nossl.patch;patch=1 \
+	   file://ssh_config \
            file://sshd_config \
            file://init"
 
@@ -42,6 +43,7 @@ do_configure_prepend () {
 
 do_compile_append () {
 	install -m 0644 ${WORKDIR}/sshd_config ${S}/
+	install -m 0644 ${WORKDIR}/ssh_config ${S}/
 }
 
 do_install_append() {
