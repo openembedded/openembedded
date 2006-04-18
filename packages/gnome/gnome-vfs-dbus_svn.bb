@@ -4,7 +4,7 @@ PR = "r0"
 PROVIDES = "gnome-vfs"
 RPROVIDES = "gnome-vfs"
 
-DEFAULT_PREFERENCE = "-1"
+PV = "2.8.4.4+svn${SRCDATE}"
 
 inherit gnome pkgconfig
 
