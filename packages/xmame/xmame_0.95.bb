@@ -4,7 +4,7 @@ SECTION = "games"
 PRIORITY = "optional"
 DEPENDS = "expat virtual/libsdl libsdl-mixer"
 
-SRC_URI = "http://x.mame.net/download/${P}.tar.bz2"
+SRC_URI = "http://x.mame.net/download/historic/${P}.tar.bz2"
 
 inherit flow-lossage
 

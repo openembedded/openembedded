@@ -1,10 +1,10 @@
 DESCRIPTION = "Multiple Arcade Machine Emulator based on SDL"
 LICENSE = "xmame"
-SECTION = "opie/games"
+SECTION = "games"
 PRIORITY = "optional"
-DEPENDS = "expat libsdl-qpe libsdl-mixer"
+DEPENDS = "expat virtual/libsdl libsdl-mixer"
 
-SRC_URI = "http://x.mame.net/download/${P}.tar.bz2 \
+SRC_URI = "http://x.mame.net/download/historic/${P}.tar.bz2 \
           file://${FILESDIR}/crosscompile.patch;patch=1"
 
 inherit flow-lossage
