@@ -1,0 +1,19 @@
+--- cpuburn-1.4/Makefile.orig	2006-03-09 16:11:53.368477664 -0700
++++ cpuburn-1.4/Makefile	2006-03-09 16:13:27.053235416 -0700
+@@ -1,3 +1,15 @@
++prefix=/usr/local
++
+ all : burnP5 burnP6 burnK6 burnK7 burnBX burnMMX
+ .S:
+-	gcc -s -nostdlib -o $@ $<
++	${CC} ${CFLAGS} -s -nostdlib -o $@ $<
++
++install:
++	install -d ${DESTDIR}${prefix}/bin
++	install -m 0755 burnP5 ${DESTDIR}${prefix}/bin
++	install -m 0755 burnP6 ${DESTDIR}${prefix}/bin
++	install -m 0755 burnK6 ${DESTDIR}${prefix}/bin
++	install -m 0755 burnK7 ${DESTDIR}${prefix}/bin
++	install -m 0755 burnBX ${DESTDIR}${prefix}/bin
++	install -m 0755 burnMMX ${DESTDIR}${prefix}/bin
++
