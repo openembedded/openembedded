@@ -1,0 +1,11 @@
+--- gnome-vfs-dbus-2.8.4.4/configure.in.old	2006-01-26 11:56:09.000000000 +0100
++++ gnome-vfs-dbus-2.8.4.4/configure.in	2006-01-26 11:45:02.000000000 +0100
+@@ -279,7 +279,7 @@
+ 
+ if test "$GCC" = "yes" -a "$set_more_warnings" != "no"; then
+ 	echo "enable compile warnings = $set_more_warnings"
+-	VFS_CFLAGS="-Wall -Werror \
++	VFS_CFLAGS="-Wall \
+ 	-Wchar-subscripts -Wmissing-declarations -Wmissing-prototypes \
+ 	-Wnested-externs -Wpointer-arith"
+ 
