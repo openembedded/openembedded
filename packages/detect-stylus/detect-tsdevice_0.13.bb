@@ -1,11 +1,9 @@
 inherit gpe
 
-DESCRIPTION = "Touchscreen detection utility - without X support"
+DESCRIPTION = "Touchscreen device detection utility"
 LICENSE = "GPL"
 MAINTAINER = "Rene Wagner <rw@handhelds.org>"
 SECTION = "base"
-
-RCONFLICTS = "detect-stylus"
 
 SRC_URI = "${GPE_MIRROR}/detect-stylus-${PV}.tar.gz \
            file://access.patch;patch=1;pnum=0 \
@@ -16,3 +14,7 @@ S = "${WORKDIR}/detect-stylus-${PV}"
 
 export CVSBUILD = "no"
 export NOX = "yes"
+
+do_install_append () {
+	mv ${D}${bindir}/detect-stylus ${D}${bindir}/detect-tsdevice
+}
