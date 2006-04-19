@@ -6,7 +6,7 @@ case `uname -r` in
 	TSLIB_CONFFILE=/usr/share/tslib/ts.conf-h3600-2.4
 	;;
 *)
-	TSLIB_TSDEVICE=`detect-stylus --device`
+	TSLIB_TSDEVICE=`detect-tsdevice`
 	TSLIB_CONFFILE=/usr/share/tslib/ts.conf-h3600
 	;;
 esac

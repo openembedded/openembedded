@@ -1,11 +1,25 @@
 SECTION = "base"
 DESCRIPTION = "tslib is a touchscreen access library."
 PV = "0.0cvs${CVSDATE}"
-PR = "r32"
+PR = "r33"
 
 SRC_URI_OVERRIDES_PACKAGE_ARCH = "0"
 PACKAGE_ARCH_tslib-conf = "${MACHINE}"
 PACKAGE_ARCH_mnci = "${MACHINE}"
+
+DEPENDS_h1940_append = " detect-tsdevice"
+DEPENDS_h2200_append = " detect-tsdevice"
+DEPENDS_h3600_append = " detect-tsdevice"
+DEPENDS_h3900_append = " detect-tsdevice"
+DEPENDS_h6300_append = " detect-tsdevice"
+DEPENDS_ipaq-pxa270_append = " detect-tsdevice"
+
+RDEPENDS_tslib-conf_h1940_append = " detect-tsdevice"
+RDEPENDS_tslib-conf_h2200_append = " detect-tsdevice"
+RDEPENDS_tslib-conf_h3600_append = " detect-tsdevice"
+RDEPENDS_tslib-conf_h3900_append = " detect-tsdevice"
+RDEPENDS_tslib-conf_h6300_append = " detect-tsdevice"
+RDEPENDS_tslib-conf_ipaq-pxa270_append = " detect-tsdevice"
 
 SRC_URI = "cvs://cvs:@pubcvs.arm.linux.org.uk/mnt/src/cvsroot;module=tslib \
 	   file://ts.conf \
