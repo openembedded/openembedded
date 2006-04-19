@@ -512,3 +512,8 @@ sambacodepages bb files must be kept in sync regarding the samba code pages
 that are left in the image and the ones that are added to the package (and it
 is also a good idea if the kernel defconfig reflects the inclusion of NLS
 support for the code pages that are left in the image, of course).
+
+Fixed ppp-mppe.c to remove unresolved symbols when loading module.
+
+Disable the ourtelnetrescueuser account in the passwd file entirely since
+Unslung doesn't need it anymore.
