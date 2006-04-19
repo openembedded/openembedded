@@ -12,7 +12,14 @@ HOMEPAGE = "http://www.hentges.net/misc/openzaurus/index.shtml"
 
 ######################################################################################
 
-PR = "r0"
+RRECOMMENDS = "e2fsprogs-e2fsck dosfstools"
+RRECOMMENDS_append_akita = " kexec-tools"
+RRECOMMENDS_append_spitz = " kexec-tools"
+RRECOMMENDS_append_c7x0 = " kexec-tools"
+
+######################################################################################
+
+PR = "r1"
 
 ######################################################################################
 

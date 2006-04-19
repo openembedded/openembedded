@@ -6,7 +6,12 @@ MAINTAINER = "Matthias 'CoreDump' Hentges  <oe@hentges.net>"
 LICENSE = "GPL"
 IGNORE_STRIP_ERRORS = "1"
 
-PR = "r40"
+RRECOMMENDS = "e2fsprogs-e2fsck dosfstools"
+RRECOMMENDS_append_akita = " kexec-tools"
+RRECOMMENDS_append_spitz = " kexec-tools"
+RRECOMMENDS_append_c7x0 = " kexec-tools"
+
+PR = "r41"
 
 
 SRC_URI = "file://altboot-menu \

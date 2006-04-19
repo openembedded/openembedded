@@ -180,9 +180,7 @@ pivot_image() {
 }
 
 #$1=mountpoint of the soon-to-be rootfs, $2=Runlevel
-do_pivot(){
-
-	echo "[$USE_KEXEC_ON_NEXT_BOOT]"
+do_pivot(){	
 
 	if test "$USE_KEXEC_ON_NEXT_BOOT" = yes
 	then
