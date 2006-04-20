@@ -1,0 +1,10 @@
+#!/bin/sh
+
+set -e
+
+export QTDIR=/opt/QtPalmtop
+export OPIEDIR=/opt/QtPalmtop
+export QPEDIR=/opt/QtPalmtop
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$OPIEDIR/lib
+
+/opt/QtPalmtop/bin/bluepin "$@"
