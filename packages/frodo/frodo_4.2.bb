@@ -6,7 +6,7 @@ LICENSE = "GPL"
 SRCDATE = "20040801"
 PR = "r1"
 
-SRC_URI = "cvs://anoncvs:anoncvs@down.physik.uni-mainz.de/cvs;module=Frodo4 \
+SRC_URI = "cvs://anoncvs:anoncvs@cvs.cebix.net/home/cvs/cebix;module=Frodo4 \
            file://m4.patch;patch=1 \
            file://configure.patch;patch=1 \
            file://frodorc \
