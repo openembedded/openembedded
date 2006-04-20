@@ -44,6 +44,7 @@ SRC_URI = "http://nslu.sf.net/downloads/nslu2-linksys-ramdisk-2.3r63-2.tar.bz2 \
 	   file://security-fixes.patch;patch=1 \
 	   file://rc.sysinit-clean_var.patch;patch=1 \
 	   file://rc.modules-nls.patch;patch=1 \
+	   file://telnet-passwd.patch;patch=1 \
 	   file://upgrade.htm \
 	   file://telnet.htm \
 	   file://rc.bootbin \

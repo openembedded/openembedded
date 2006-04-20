@@ -4,7 +4,7 @@ PR = "r0"
 PROVIDES = "gnome-vfs"
 RPROVIDES = "gnome-vfs"
 
-DEFAULT_PREFERENCE = "-1"
+PV = "2.8.4.4+svn${SRCDATE}"
 
 inherit gnome pkgconfig
 
@@ -82,6 +82,10 @@ do_configure_prepend() {
 	mkdir -p m4
 	install ${WORKDIR}/gtk-doc.m4 ./m4/
 	install ${WORKDIR}/gtk-doc.make ./
+}
+
+do_compile_prepend() {
+    find ${S} -name Makefile | xargs sed -i 's:-Werror::'
 }
 
 do_stage() {

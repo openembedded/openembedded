@@ -1,0 +1,2353 @@
+
+#
+# Patch managed by http://www.holgerschurig.de/patcher.html
+#
+
+--- juce/src/juce_core/basics/juce_Atomic.h~remove-x86isms.patch
++++ juce/src/juce_core/basics/juce_Atomic.h
+@@ -1,188 +1,200 @@
+-/*
+-  ==============================================================================
+-
+-   This file is part of the JUCE library - "Jules' Utility Class Extensions"
+-   Copyright 2004-6 by Raw Material Software ltd.
+-
+-  ------------------------------------------------------------------------------
+-
+-   JUCE can be redistributed and/or modified under the terms of the
+-   GNU General Public License, as published by the Free Software Foundation;
+-   either version 2 of the License, or (at your option) any later version.
+-
+-   JUCE is distributed in the hope that it will be useful,
+-   but WITHOUT ANY WARRANTY; without even the implied warranty of
+-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+-   GNU General Public License for more details.
+-
+-   You should have received a copy of the GNU General Public License
+-   along with JUCE; if not, visit www.gnu.org/licenses or write to the
+-   Free Software Foundation, Inc., 59 Temple Place, Suite 330, 
+-   Boston, MA 02111-1307 USA
+-
+-  ------------------------------------------------------------------------------
+-
+-   If you'd like to release a closed-source product which uses JUCE, commercial
+-   licenses are also available: visit www.rawmaterialsoftware.com/juce for
+-   more information.
+-
+-  ==============================================================================
+-*/
+-
+-#ifndef __JUCE_ATOMIC_JUCEHEADER__
+-#define __JUCE_ATOMIC_JUCEHEADER__
+-
+-// Atomic increment/decrement operations..
+-
+-//==============================================================================
+-#if JUCE_MAC && ! DOXYGEN
+-  #if (MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_4)
+-    #include <libkern/OSAtomic.h>
+-
+-    forcedinline void atomicIncrement (int& variable) throw()
+-    {
+-        OSAtomicIncrement32 ((int32_t*) &variable);
+-    }
+-
+-    forcedinline int atomicIncrementAndReturn (int& variable) throw()
+-    {
+-        return OSAtomicIncrement32 ((int32_t*) &variable);
+-    }
+-
+-    forcedinline void atomicDecrement (int& variable) throw()
+-    {
+-        OSAtomicDecrement32 ((int32_t*) &variable);
+-    }
+-
+-    forcedinline int atomicDecrementAndReturn (int& variable) throw()
+-    {
+-       return OSAtomicDecrement32 ((int32_t*) &variable);
+-    }
+-
+-  #else
+-    forcedinline void atomicIncrement (int& variable) throw()
+-    {
+-       OTAtomicAdd32 (1, (SInt32*) &variable);
+-    }
+-
+-    forcedinline int atomicIncrementAndReturn (int& variable) throw()
+-    {
+-       return OTAtomicAdd32 (1, (SInt32*) &variable);
+-    }
+-
+-    forcedinline void atomicDecrement (int& variable) throw()
+-    {
+-       OTAtomicAdd32 (-1, (SInt32*) &variable);
+-    }
+-
+-    forcedinline int atomicDecrementAndReturn (int& variable) throw()
+-    {
+-       return OTAtomicAdd32 (-1, (SInt32*) &variable);
+-    }
+-  #endif
+-#else
+-#ifdef __GNUC__
+-
+-    /** Increments an integer in a thread-safe way. */
+-    forcedinline void atomicIncrement (int& variable) throw()
+-    {
+-        __asm__ __volatile (
+-            "lock incl (%%ecx)"
+-            :
+-            : "c" (&variable));
+-    }
+-
+-    /** Increments an integer in a thread-safe way and returns the incremented value. */
+-    forcedinline int atomicIncrementAndReturn (int& variable) throw()
+-    {
+-        int result;
+-
+-        __asm__ __volatile (
+-            "lock xaddl %%eax, (%%ebx)  \n\
+-             incl %%eax"
+-            : "=a" (result)
+-            : "b" (&variable), "a" (1)
+-            : "cc", "memory");
+-
+-        return result;
+-    }
+-
+-    /** Decrememts an integer in a thread-safe way. */
+-    forcedinline void atomicDecrement (int& variable) throw()
+-    {
+-        __asm__ __volatile (
+-            "lock decl (%%ecx)"
+-            :
+-            : "c" (&variable));
+-    }
+-
+-    /** Decrememts an integer in a thread-safe way and returns the incremented value. */
+-    forcedinline int atomicDecrementAndReturn (int& variable) throw()
+-    {
+-        int result;
+-
+-        __asm__ __volatile (
+-            "lock xaddl %%eax, (%%ebx)  \n\
+-             decl %%eax"
+-            : "=a" (result)
+-            : "b" (&variable), "a" (-1)
+-            : "cc", "memory");
+-
+-        return result;
+-    }
+-
+-#else
+-
+-    /** Increments an integer in a thread-safe way. */
+-    inline_assembly void __fastcall atomicIncrement (int& variable) throw()
+-    {
+-        __asm {
+-            mov ecx, dword ptr [variable]
+-            lock inc dword ptr [ecx]
+-        }
+-    }
+-
+-    /** Increments an integer in a thread-safe way and returns the incremented value. */
+-    inline_assembly int __fastcall atomicIncrementAndReturn (int& variable) throw()
+-    {
+-        int result;
+-
+-        __asm {
+-            mov ecx, dword ptr [variable]
+-            mov eax, 1
+-            lock xadd dword ptr [ecx], eax
+-            inc eax
+-            mov result, eax
+-        }
+-
+-        return result;
+-    }
+-
+-    /** Decrememts an integer in a thread-safe way. */
+-    inline_assembly void __fastcall atomicDecrement (int& variable) throw()
+-    {
+-        __asm {
+-            mov ecx, dword ptr [variable]
+-            lock dec dword ptr [ecx]
+-        }
+-    }
+-
+-    /** Decrememts an integer in a thread-safe way and returns the incremented value. */
+-    inline_assembly int __fastcall atomicDecrementAndReturn (int& variable) throw()
+-    {
+-        int result;
+-
+-        __asm {
+-            mov ecx, dword ptr [variable]
+-            mov eax, -1
+-            lock xadd dword ptr [ecx], eax
+-            dec eax
+-            mov result, eax
+-        }
+-
+-        return result;
+-    }
+-#endif
+-#endif
+-
+-#endif   // __JUCE_ATOMIC_JUCEHEADER__
++/*
++  ==============================================================================
++
++   This file is part of the JUCE library - "Jules' Utility Class Extensions"
++   Copyright 2004-6 by Raw Material Software ltd.
++
++  ------------------------------------------------------------------------------
++
++   JUCE can be redistributed and/or modified under the terms of the
++   GNU General Public License, as published by the Free Software Foundation;
++   either version 2 of the License, or (at your option) any later version.
++
++   JUCE is distributed in the hope that it will be useful,
++   but WITHOUT ANY WARRANTY; without even the implied warranty of
++   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++   GNU General Public License for more details.
++
++   You should have received a copy of the GNU General Public License
++   along with JUCE; if not, visit www.gnu.org/licenses or write to the
++   Free Software Foundation, Inc., 59 Temple Place, Suite 330, 
++   Boston, MA 02111-1307 USA
++
++  ------------------------------------------------------------------------------
++
++   If you'd like to release a closed-source product which uses JUCE, commercial
++   licenses are also available: visit www.rawmaterialsoftware.com/juce for
++   more information.
++
++  ==============================================================================
++*/
++
++#ifndef __JUCE_ATOMIC_JUCEHEADER__
++#define __JUCE_ATOMIC_JUCEHEADER__
++
++// Atomic increment/decrement operations..
++
++//==============================================================================
++#if JUCE_MAC && ! DOXYGEN
++  #if (MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_4)
++    #include <libkern/OSAtomic.h>
++
++    forcedinline void atomicIncrement (int& variable) throw()
++    {
++        OSAtomicIncrement32 ((int32_t*) &variable);
++    }
++
++    forcedinline int atomicIncrementAndReturn (int& variable) throw()
++    {
++        return OSAtomicIncrement32 ((int32_t*) &variable);
++    }
++
++    forcedinline void atomicDecrement (int& variable) throw()
++    {
++        OSAtomicDecrement32 ((int32_t*) &variable);
++    }
++
++    forcedinline int atomicDecrementAndReturn (int& variable) throw()
++    {
++       return OSAtomicDecrement32 ((int32_t*) &variable);
++    }
++
++  #else
++    forcedinline void atomicIncrement (int& variable) throw()
++    {
++       OTAtomicAdd32 (1, (SInt32*) &variable);
++    }
++
++    forcedinline int atomicIncrementAndReturn (int& variable) throw()
++    {
++       return OTAtomicAdd32 (1, (SInt32*) &variable);
++    }
++
++    forcedinline void atomicDecrement (int& variable) throw()
++    {
++       OTAtomicAdd32 (-1, (SInt32*) &variable);
++    }
++
++    forcedinline int atomicDecrementAndReturn (int& variable) throw()
++    {
++       return OTAtomicAdd32 (-1, (SInt32*) &variable);
++    }
++  #endif
++#else
++#ifdef __GNUC__
++
++    /** Increments an integer in a thread-safe way. */
++    forcedinline void atomicIncrement (int& variable) throw()
++    {
++#ifndef __x86__
++        variable++;
++#else
++        __asm__ __volatile (
++            "lock incl (%%ecx)"
++            :
++            : "c" (&variable));
++#endif
++    }
++
++    /** Increments an integer in a thread-safe way and returns the incremented value. */
++    forcedinline int atomicIncrementAndReturn (int& variable) throw()
++    {
++        int result;
++#ifndef __x86__
++        result = ++variable;
++#else
++        __asm__ __volatile (
++            "lock xaddl %%eax, (%%ebx)  \n\
++             incl %%eax"
++            : "=a" (result)
++            : "b" (&variable), "a" (1)
++            : "cc", "memory");
++#endif
++        return result;
++    }
++
++    /** Decrememts an integer in a thread-safe way. */
++    forcedinline void atomicDecrement (int& variable) throw()
++    {
++#ifndef __x86__
++        variable--;
++#else
++        __asm__ __volatile (
++            "lock decl (%%ecx)"
++            :
++            : "c" (&variable));
++#endif
++    }
++
++    /** Decrememts an integer in a thread-safe way and returns the incremented value. */
++    forcedinline int atomicDecrementAndReturn (int& variable) throw()
++    {
++        int result;
++#ifndef __x86__
++        result = --variable;
++#else
++        __asm__ __volatile (
++            "lock xaddl %%eax, (%%ebx)  \n\
++             decl %%eax"
++            : "=a" (result)
++            : "b" (&variable), "a" (-1)
++            : "cc", "memory");
++#endif
++        return result;
++    }
++
++#else
++
++    /** Increments an integer in a thread-safe way. */
++    inline_assembly void __fastcall atomicIncrement (int& variable) throw()
++    {
++        __asm {
++            mov ecx, dword ptr [variable]
++            lock inc dword ptr [ecx]
++        }
++    }
++
++    /** Increments an integer in a thread-safe way and returns the incremented value. */
++    inline_assembly int __fastcall atomicIncrementAndReturn (int& variable) throw()
++    {
++        int result;
++
++        __asm {
++            mov ecx, dword ptr [variable]
++            mov eax, 1
++            lock xadd dword ptr [ecx], eax
++            inc eax
++            mov result, eax
++        }
++
++        return result;
++    }
++
++    /** Decrememts an integer in a thread-safe way. */
++    inline_assembly void __fastcall atomicDecrement (int& variable) throw()
++    {
++        __asm {
++            mov ecx, dword ptr [variable]
++            lock dec dword ptr [ecx]
++        }
++    }
++
++    /** Decrememts an integer in a thread-safe way and returns the incremented value. */
++    inline_assembly int __fastcall atomicDecrementAndReturn (int& variable) throw()
++    {
++        int result;
++
++        __asm {
++            mov ecx, dword ptr [variable]
++            mov eax, -1
++            lock xadd dword ptr [ecx], eax
++            dec eax
++            mov result, eax
++        }
++
++        return result;
++    }
++#endif
++#endif
++
++#endif   // __JUCE_ATOMIC_JUCEHEADER__
+--- juce/src/juce_core/basics/juce_PlatformDefs.h~remove-x86isms.patch
++++ juce/src/juce_core/basics/juce_PlatformDefs.h
+@@ -1,326 +1,330 @@
+-/*
+-  ==============================================================================
+-
+-   This file is part of the JUCE library - "Jules' Utility Class Extensions"
+-   Copyright 2004-6 by Raw Material Software ltd.
+-
+-  ------------------------------------------------------------------------------
+-
+-   JUCE can be redistributed and/or modified under the terms of the
+-   GNU General Public License, as published by the Free Software Foundation;
+-   either version 2 of the License, or (at your option) any later version.
+-
+-   JUCE is distributed in the hope that it will be useful,
+-   but WITHOUT ANY WARRANTY; without even the implied warranty of
+-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+-   GNU General Public License for more details.
+-
+-   You should have received a copy of the GNU General Public License
+-   along with JUCE; if not, visit www.gnu.org/licenses or write to the
+-   Free Software Foundation, Inc., 59 Temple Place, Suite 330, 
+-   Boston, MA 02111-1307 USA
+-
+-  ------------------------------------------------------------------------------
+-
+-   If you'd like to release a closed-source product which uses JUCE, commercial
+-   licenses are also available: visit www.rawmaterialsoftware.com/juce for
+-   more information.
+-
+-  ==============================================================================
+-*/
+-
+-#ifndef __JUCE_PLATFORMDEFS_JUCEHEADER__
+-#define __JUCE_PLATFORMDEFS_JUCEHEADER__
+-
+-
+-//==============================================================================
+-// set up platform definitions..
+-#ifdef _WIN32
+-  #define       JUCE_WIN32 1
+-  #define       JUCE_WINDOWS 1
+-#else
+-  #ifdef LINUX
+-    #define     JUCE_LINUX 1
+-  #else
+-    #define     JUCE_MAC 1
+-  #endif
+-#endif
+-
+-//==============================================================================
+-#ifdef JUCE_WINDOWS
+-  #ifdef _MSC_VER
+-    #ifdef _WIN64
+-      #define JUCE_64BIT 1
+-    #else
+-      #define JUCE_32BIT 1
+-    #endif
+-  #endif
+-
+-  #ifdef _DEBUG
+-    #define JUCE_DEBUG 1
+-  #endif
+-
+-  /** If defined, this indicates that the processor is little-endian. */
+-  #define JUCE_LITTLE_ENDIAN 1
+-
+-  #define JUCE_INTEL 1
+-#endif
+-
+-//==============================================================================
+-#ifdef JUCE_MAC
+-
+-  #include <CoreServices/CoreServices.h>
+-  #include <wchar.h>
+-
+-  #ifndef NDEBUG
+-    #define JUCE_DEBUG 1
+-  #endif
+-
+-  #ifdef __LITTLE_ENDIAN__
+-    #define JUCE_LITTLE_ENDIAN 1
+-  #else
+-    #define JUCE_BIG_ENDIAN 1
+-  #endif
+-
+-  #if defined (__ppc__) || defined (__ppc64__)
+-    #define JUCE_PPC 1
+-  #else
+-    #define JUCE_INTEL 1
+-  #endif
+-
+-  #ifdef __LP64__
+-    #define JUCE_64BIT 1
+-  #else
+-    #define JUCE_32BIT 1
+-  #endif
+-#endif
+-
+-//==============================================================================
+-#ifdef JUCE_LINUX
+-
+-  #ifdef _DEBUG
+-    #define JUCE_DEBUG 1
+-  #endif
+-
+-  #include <wchar.h>
+-
+-  // Allow override for big-endian Linux platforms
+-  #ifndef JUCE_BIG_ENDIAN
+-    #define JUCE_LITTLE_ENDIAN 1
+-  #endif
+-
+-  #if defined (__LP64__) || defined (_LP64)
+-    #define JUCE_64BIT 1
+-  #else
+-    #define JUCE_32BIT 1
+-  #endif
+-
+-  #define JUCE_INTEL 1
+-#endif
+-
+-//==============================================================================
+-#if defined (__GNUC__) || defined (__MWERKS__)
+-    /** A platform-independent 64-bit integer type. */
+-    typedef long long           int64;
+-    /** A platform-independent 64-bit unsigned integer type. */
+-    typedef unsigned long long  uint64;
+-    /** A platform-independent unicode character type. */
+-    typedef wchar_t             juce_wchar;
+-
+-    /** A platform-independent way of forcing an inline function.
+-
+-      Use the syntax: @code
+-        forcedinline void myfunction (int x)
+-      @endcode
+-    */
+-    #ifndef JUCE_DEBUG
+-      #define forcedinline  inline __attribute__((always_inline))
+-    #else
+-      #define forcedinline  inline
+-    #endif
+-
+-    /** A platform-independent way of stopping the compiler inlining a function.
+-
+-      Use the syntax: @code
+-        juce_noinline void myfunction (int x)
+-      @endcode
+-    */
+-    #define juce_noinline __attribute__((noinline))
+-
+-#else
+-    //==============================================================================
+-    /** A platform-independent 64-bit integer type. */
+-    typedef __int64             int64;
+-    /** A platform-independent 64-bit unsigned integer type. */
+-    typedef unsigned __int64    uint64;
+-
+-    /** A platform-independent unicode character type. */
+-    typedef wchar_t             juce_wchar;
+-
+-    /** A platform-independent way of forcing an inline function.
+-
+-      Use the syntax: @code
+-        forcedinline void myfunction (int x)
+-      @endcode
+-    */
+-    #ifdef _MSC_VER
+-      #define forcedinline  __forceinline
+-    #else
+-      #define forcedinline  inline
+-    #endif
+-
+-    /** A platform-independent way of stopping the compiler inlining a function.
+-
+-      Use the syntax: @code
+-        juce_noinline void myfunction (int x)
+-      @endcode
+-    */
+-    #define juce_noinline
+-
+-#endif
+-
+-#if JUCE_64BIT
+-   typedef int64                   pointer_sized_int;
+-   typedef uint64                  pointer_sized_uint;
+-#else
+-  #if _MSC_VER >= 1300
+-     typedef _W64 int              pointer_sized_int;
+-     typedef _W64 unsigned int     pointer_sized_uint;
+-  #else
+-     typedef int                   pointer_sized_int;
+-     typedef unsigned int          pointer_sized_uint;
+-  #endif
+-#endif
+-
+-
+-// borland can't handle inline functions containing asm code, so define a
+-// special type of inline modifier for this kind of function. Sigh..
+-#ifdef __BORLANDC__
+-  #define inline_assembly
+-#else
+-  #define inline_assembly forcedinline
+-#endif
+-
+-//==============================================================================
+-typedef signed char     int8;
+-typedef unsigned char   uint8;
+-typedef signed short    int16;
+-typedef unsigned short  uint16;
+-typedef signed int      int32;
+-typedef unsigned int    uint32;
+-
+-
+-//==============================================================================
+-// Debugging macros
+-//
+-
+-#ifdef JUCE_DEBUG
+-  //==============================================================================
+-  // If debugging is enabled..
+-
+-  /** Writes a string to the standard error stream.
+-
+-    This is only compiled in a debug build.
+-
+-    @see Logger::outputDebugString
+-  */
+-  #define DBG(dbgtext)              Logger::outputDebugString (dbgtext);
+-
+-  /** Printf's a string to the standard error stream.
+-
+-    This is only compiled in a debug build.
+-
+-    @see Logger::outputDebugString
+-  */
+-  #define DBG_PRINTF(dbgprintf)     Logger::outputDebugPrintf dbgprintf;
+-
+-  // Assertions..
+-  #if defined (_MSC_VER) || DOXYGEN
+-    /** This will always cause an assertion failure.
+-
+-        This is only compiled in a debug build.
+-
+-        @see jassert()
+-    */
+-    #ifdef __BORLANDC__
+-      extern void juce_StopInDebugger();
+-      #define jassertfalse          { juce_StopInDebugger(); }
+-    #else
+-      #define jassertfalse          { __asm int 3 }
+-    #endif
+-  #elif defined (JUCE_MAC)
+-    #define jassertfalse            { Debugger(); }
+-  #elif defined (__GNUC__) || defined (JUCE_LINUX)
+-    #define jassertfalse            { asm("int $3"); }
+-  #endif
+-
+-  //==============================================================================
+-  /** Platform-independent assertion macro.
+-
+-    This gets optimised out when not being built with debugging turned on.
+-
+-    Be careful not to call any functions within its arguments that are vital to
+-    the behaviour of the program, because these won't get called in the release
+-    build.
+-
+-    @see jassertfalse
+-  */
+-  #define jassert(a)                { if (! (a)) jassertfalse }
+-
+-#else
+-  //==============================================================================
+-  // If debugging is disabled, disable all the assertions and debugging stuff..
+-
+-  #define DBG(dbgtext)
+-  #define DBG_PRINTF(dbgprintf)
+-
+-  #define jassert(a)        {}
+-  #define jassertfalse      {}
+-
+-#endif
+-
+-//==============================================================================
+-#ifndef DOXYGEN
+- template <bool b> struct JuceStaticAssert;
+- template <> struct JuceStaticAssert <true> { static void dummy() {} };
+-#endif
+-
+-/** A compile-time assertion macro.
+-
+-    If the expression parameter is false, the macro will cause a compile error.
+-*/
+-#define static_jassert(expression)      JuceStaticAssert<expression>::dummy();
+-
+-
+-//==============================================================================
+-#if JUCE_CATCH_UNHANDLED_EXCEPTIONS
+-
+-  #define JUCE_TRY try
+-
+-  /** Used in try-catch blocks, this macro will send exceptions to the JUCEApplication
+-      object so they can be logged by the application if it wants to.
+-  */
+-  #define JUCE_CATCH_EXCEPTION \
+-    catch (const std::exception& e)  \
+-    { \
+-        JUCEApplication::sendUnhandledException (&e, __FILE__, __LINE__); \
+-    } \
+-    catch (...) \
+-    { \
+-        JUCEApplication::sendUnhandledException (0, __FILE__, __LINE__); \
+-    }
+-
+-  #define JUCE_CATCH_ALL            catch (...) {}
+-  #define JUCE_CATCH_ALL_ASSERT     catch (...) { jassertfalse }
+-
+-#else
+-
+-  #define JUCE_TRY
+-  #define JUCE_CATCH_EXCEPTION
+-  #define JUCE_CATCH_ALL
+-  #define JUCE_CATCH_ALL_ASSERT
+-
+-#endif
+-
+-
+-#endif   // __JUCE_PLATFORMDEFS_JUCEHEADER__
++/*
++  ==============================================================================
++
++   This file is part of the JUCE library - "Jules' Utility Class Extensions"
++   Copyright 2004-6 by Raw Material Software ltd.
++
++  ------------------------------------------------------------------------------
++
++   JUCE can be redistributed and/or modified under the terms of the
++   GNU General Public License, as published by the Free Software Foundation;
++   either version 2 of the License, or (at your option) any later version.
++
++   JUCE is distributed in the hope that it will be useful,
++   but WITHOUT ANY WARRANTY; without even the implied warranty of
++   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++   GNU General Public License for more details.
++
++   You should have received a copy of the GNU General Public License
++   along with JUCE; if not, visit www.gnu.org/licenses or write to the
++   Free Software Foundation, Inc., 59 Temple Place, Suite 330, 
++   Boston, MA 02111-1307 USA
++
++  ------------------------------------------------------------------------------
++
++   If you'd like to release a closed-source product which uses JUCE, commercial
++   licenses are also available: visit www.rawmaterialsoftware.com/juce for
++   more information.
++
++  ==============================================================================
++*/
++
++#ifndef __JUCE_PLATFORMDEFS_JUCEHEADER__
++#define __JUCE_PLATFORMDEFS_JUCEHEADER__
++
++
++//==============================================================================
++// set up platform definitions..
++#ifdef _WIN32
++  #define       JUCE_WIN32 1
++  #define       JUCE_WINDOWS 1
++#else
++  #ifdef LINUX
++    #define     JUCE_LINUX 1
++  #else
++    #define     JUCE_MAC 1
++  #endif
++#endif
++
++//==============================================================================
++#ifdef JUCE_WINDOWS
++  #ifdef _MSC_VER
++    #ifdef _WIN64
++      #define JUCE_64BIT 1
++    #else
++      #define JUCE_32BIT 1
++    #endif
++  #endif
++
++  #ifdef _DEBUG
++    #define JUCE_DEBUG 1
++  #endif
++
++  /** If defined, this indicates that the processor is little-endian. */
++  #define JUCE_LITTLE_ENDIAN 1
++
++  #define JUCE_INTEL 1
++#endif
++
++//==============================================================================
++#ifdef JUCE_MAC
++
++  #include <CoreServices/CoreServices.h>
++  #include <wchar.h>
++
++  #ifndef NDEBUG
++    #define JUCE_DEBUG 1
++  #endif
++
++  #ifdef __LITTLE_ENDIAN__
++    #define JUCE_LITTLE_ENDIAN 1
++  #else
++    #define JUCE_BIG_ENDIAN 1
++  #endif
++
++  #if defined (__ppc__) || defined (__ppc64__)
++    #define JUCE_PPC 1
++  #else
++    #define JUCE_INTEL 1
++  #endif
++
++  #ifdef __LP64__
++    #define JUCE_64BIT 1
++  #else
++    #define JUCE_32BIT 1
++  #endif
++#endif
++
++//==============================================================================
++#ifdef JUCE_LINUX
++
++  #ifdef _DEBUG
++    #define JUCE_DEBUG 1
++  #endif
++
++  #include <wchar.h>
++
++  // Allow override for big-endian Linux platforms
++  #ifndef JUCE_BIG_ENDIAN
++    #define JUCE_LITTLE_ENDIAN 1
++  #endif
++
++  #if defined (__LP64__) || defined (_LP64)
++    #define JUCE_64BIT 1
++  #else
++    #define JUCE_32BIT 1
++  #endif
++
++  #define JUCE_INTEL 1
++#endif
++
++//==============================================================================
++#if defined (__GNUC__) || defined (__MWERKS__)
++    /** A platform-independent 64-bit integer type. */
++    typedef long long           int64;
++    /** A platform-independent 64-bit unsigned integer type. */
++    typedef unsigned long long  uint64;
++    /** A platform-independent unicode character type. */
++    typedef wchar_t             juce_wchar;
++
++    /** A platform-independent way of forcing an inline function.
++
++      Use the syntax: @code
++        forcedinline void myfunction (int x)
++      @endcode
++    */
++    #ifndef JUCE_DEBUG
++      #define forcedinline  inline __attribute__((always_inline))
++    #else
++      #define forcedinline  inline
++    #endif
++
++    /** A platform-independent way of stopping the compiler inlining a function.
++
++      Use the syntax: @code
++        juce_noinline void myfunction (int x)
++      @endcode
++    */
++    #define juce_noinline __attribute__((noinline))
++
++#else
++    //==============================================================================
++    /** A platform-independent 64-bit integer type. */
++    typedef __int64             int64;
++    /** A platform-independent 64-bit unsigned integer type. */
++    typedef unsigned __int64    uint64;
++
++    /** A platform-independent unicode character type. */
++    typedef wchar_t             juce_wchar;
++
++    /** A platform-independent way of forcing an inline function.
++
++      Use the syntax: @code
++        forcedinline void myfunction (int x)
++      @endcode
++    */
++    #ifdef _MSC_VER
++      #define forcedinline  __forceinline
++    #else
++      #define forcedinline  inline
++    #endif
++
++    /** A platform-independent way of stopping the compiler inlining a function.
++
++      Use the syntax: @code
++        juce_noinline void myfunction (int x)
++      @endcode
++    */
++    #define juce_noinline
++
++#endif
++
++#if JUCE_64BIT
++   typedef int64                   pointer_sized_int;
++   typedef uint64                  pointer_sized_uint;
++#else
++  #if _MSC_VER >= 1300
++     typedef _W64 int              pointer_sized_int;
++     typedef _W64 unsigned int     pointer_sized_uint;
++  #else
++     typedef int                   pointer_sized_int;
++     typedef unsigned int          pointer_sized_uint;
++  #endif
++#endif
++
++
++// borland can't handle inline functions containing asm code, so define a
++// special type of inline modifier for this kind of function. Sigh..
++#ifdef __BORLANDC__
++  #define inline_assembly
++#else
++  #define inline_assembly forcedinline
++#endif
++
++//==============================================================================
++typedef signed char     int8;
++typedef unsigned char   uint8;
++typedef signed short    int16;
++typedef unsigned short  uint16;
++typedef signed int      int32;
++typedef unsigned int    uint32;
++
++
++//==============================================================================
++// Debugging macros
++//
++
++#ifdef JUCE_DEBUG
++  //==============================================================================
++  // If debugging is enabled..
++
++  /** Writes a string to the standard error stream.
++
++    This is only compiled in a debug build.
++
++    @see Logger::outputDebugString
++  */
++  #define DBG(dbgtext)              Logger::outputDebugString (dbgtext);
++
++  /** Printf's a string to the standard error stream.
++
++    This is only compiled in a debug build.
++
++    @see Logger::outputDebugString
++  */
++  #define DBG_PRINTF(dbgprintf)     Logger::outputDebugPrintf dbgprintf;
++
++  // Assertions..
++  #if defined (_MSC_VER) || DOXYGEN
++    /** This will always cause an assertion failure.
++
++        This is only compiled in a debug build.
++
++        @see jassert()
++    */
++    #ifdef __BORLANDC__
++      extern void juce_StopInDebugger();
++      #define jassertfalse          { juce_StopInDebugger(); }
++    #else
++      #define jassertfalse          { __asm int 3 }
++    #endif
++  #elif defined (JUCE_MAC)
++    #define jassertfalse            { Debugger(); }
++  #elif defined (__GNUC__) || defined (JUCE_LINUX)
++    #ifndef __x86__
++      #define jassertfalse          { 1/0; }
++    #else
++      #define jassertfalse            { asm("int $3"); }
++    #endif
++  #endif
++
++  //==============================================================================
++  /** Platform-independent assertion macro.
++
++    This gets optimised out when not being built with debugging turned on.
++
++    Be careful not to call any functions within its arguments that are vital to
++    the behaviour of the program, because these won't get called in the release
++    build.
++
++    @see jassertfalse
++  */
++  #define jassert(a)                { if (! (a)) jassertfalse }
++
++#else
++  //==============================================================================
++  // If debugging is disabled, disable all the assertions and debugging stuff..
++
++  #define DBG(dbgtext)
++  #define DBG_PRINTF(dbgprintf)
++
++  #define jassert(a)        {}
++  #define jassertfalse      {}
++
++#endif
++
++//==============================================================================
++#ifndef DOXYGEN
++ template <bool b> struct JuceStaticAssert;
++ template <> struct JuceStaticAssert <true> { static void dummy() {} };
++#endif
++
++/** A compile-time assertion macro.
++
++    If the expression parameter is false, the macro will cause a compile error.
++*/
++#define static_jassert(expression)      JuceStaticAssert<expression>::dummy();
++
++
++//==============================================================================
++#if JUCE_CATCH_UNHANDLED_EXCEPTIONS
++
++  #define JUCE_TRY try
++
++  /** Used in try-catch blocks, this macro will send exceptions to the JUCEApplication
++      object so they can be logged by the application if it wants to.
++  */
++  #define JUCE_CATCH_EXCEPTION \
++    catch (const std::exception& e)  \
++    { \
++        JUCEApplication::sendUnhandledException (&e, __FILE__, __LINE__); \
++    } \
++    catch (...) \
++    { \
++        JUCEApplication::sendUnhandledException (0, __FILE__, __LINE__); \
++    }
++
++  #define JUCE_CATCH_ALL            catch (...) {}
++  #define JUCE_CATCH_ALL_ASSERT     catch (...) { jassertfalse }
++
++#else
++
++  #define JUCE_TRY
++  #define JUCE_CATCH_EXCEPTION
++  #define JUCE_CATCH_ALL
++  #define JUCE_CATCH_ALL_ASSERT
++
++#endif
++
++
++#endif   // __JUCE_PLATFORMDEFS_JUCEHEADER__
+--- juce/src/juce_core/basics/juce_DataConversions.h~remove-x86isms.patch
++++ juce/src/juce_core/basics/juce_DataConversions.h
+@@ -1,172 +1,176 @@
+-/*
+-  ==============================================================================
+-
+-   This file is part of the JUCE library - "Jules' Utility Class Extensions"
+-   Copyright 2004-6 by Raw Material Software ltd.
+-
+-  ------------------------------------------------------------------------------
+-
+-   JUCE can be redistributed and/or modified under the terms of the
+-   GNU General Public License, as published by the Free Software Foundation;
+-   either version 2 of the License, or (at your option) any later version.
+-
+-   JUCE is distributed in the hope that it will be useful,
+-   but WITHOUT ANY WARRANTY; without even the implied warranty of
+-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+-   GNU General Public License for more details.
+-
+-   You should have received a copy of the GNU General Public License
+-   along with JUCE; if not, visit www.gnu.org/licenses or write to the
+-   Free Software Foundation, Inc., 59 Temple Place, Suite 330, 
+-   Boston, MA 02111-1307 USA
+-
+-  ------------------------------------------------------------------------------
+-
+-   If you'd like to release a closed-source product which uses JUCE, commercial
+-   licenses are also available: visit www.rawmaterialsoftware.com/juce for
+-   more information.
+-
+-  ==============================================================================
+-*/
+-
+-#ifndef __JUCE_DATACONVERSIONS_JUCEHEADER__
+-#define __JUCE_DATACONVERSIONS_JUCEHEADER__
+-
+-#include "juce_PlatformDefs.h"
+-
+-//==============================================================================
+-// Endianness conversions..
+-
+-/** Swaps the byte-order in an integer from little to big-endianness or vice-versa. */
+-inline_assembly uint32 swapByteOrder (uint32 n) throw()
+-{
+-#ifdef JUCE_MAC
+-    return CFSwapInt32 (n);
+-#else
+-  #ifdef __GNUC__
+-    // Inpenetrable GCC version..
+-    asm("bswap %%eax" : "=a"(n) : "a"(n));
+-    return n;
+-  #else
+-    // Win32 version..
+-    __asm {
+-        mov eax, n
+-        bswap eax
+-        mov n, eax
+-    }
+-    return n;
+-  #endif
+-#endif
+-}
+-
+-/** Swaps the byte-order of a 16-bit short. */
+-inline uint16 swapByteOrder (const uint16 n) throw()
+-{
+-    return (uint16) ((n << 8) | (n >> 8));
+-}
+-
+-inline uint64 swapByteOrder (const uint64 value) throw()
+-{
+-#ifdef JUCE_MAC
+-    return CFSwapInt64 (value);
+-#else
+-    return (((int64) swapByteOrder ((uint32) value)) << 32)
+-            | swapByteOrder ((uint32) (value >> 32));
+-#endif
+-}
+-
+-#ifdef JUCE_LITTLE_ENDIAN
+-  /** Swaps the byte order of a 16-bit int if the CPU is big-endian */
+-  inline uint16     swapIfBigEndian (const uint16 v) throw()             { return v; }
+-  /** Swaps the byte order of a 32-bit int if the CPU is big-endian */
+-  inline uint32     swapIfBigEndian (const uint32 v) throw()             { return v; }
+-  /** Swaps the byte order of a 16-bit int if the CPU is little-endian */
+-  inline uint16     swapIfLittleEndian (const uint16 v) throw()          { return swapByteOrder (v); }
+-  /** Swaps the byte order of a 32-bit int if the CPU is little-endian */
+-  inline uint32     swapIfLittleEndian (const uint32 v) throw()          { return swapByteOrder (v); }
+-
+-  /** Turns 4 bytes into a little-endian integer. */
+-  inline uint32     littleEndianInt (const char* const bytes) throw()    { return *(uint32*) bytes; }
+-
+-  /** Turns 2 bytes into a little-endian integer. */
+-  inline uint16     littleEndianShort (const char* const bytes) throw()  { return *(uint16*) bytes; }
+-
+-  /** Turns 4 bytes into a big-endian integer. */
+-  inline uint32     bigEndianInt (const char* const bytes) throw()       { return swapByteOrder (*(uint32*) bytes); }
+-
+-  /** Turns 2 bytes into a big-endian integer. */
+-  inline uint16     bigEndianShort (const char* const bytes) throw()     { return swapByteOrder (*(uint16*) bytes); }
+-
+-#else
+-  /** Swaps the byte order of a 16-bit int if the CPU is big-endian */
+-  inline uint16     swapIfBigEndian (const uint16 v) throw()             { return swapByteOrder (v); }
+-  /** Swaps the byte order of a 32-bit int if the CPU is big-endian */
+-  inline uint32     swapIfBigEndian (const uint32 v) throw()             { return swapByteOrder (v); }
+-  /** Swaps the byte order of a 16-bit int if the CPU is little-endian */
+-  inline uint16     swapIfLittleEndian (const uint16 v) throw()          { return v; }
+-  /** Swaps the byte order of a 32-bit int if the CPU is little-endian */
+-  inline uint32     swapIfLittleEndian (const uint32 v) throw()          { return v; }
+-
+-  /** Turns 4 bytes into a little-endian integer. */
+-  inline uint32     littleEndianInt (const char* const bytes) throw()    { return swapByteOrder (*(uint32*) bytes); }
+-
+-  /** Turns 2 bytes into a little-endian integer. */
+-  inline uint16     littleEndianShort (const char* const bytes) throw()  { return swapByteOrder (*(uint16*) bytes); }
+-
+-  /** Turns 4 bytes into a big-endian integer. */
+-  inline uint32     bigEndianInt (const char* const bytes) throw()       { return *(uint32*) bytes; }
+-
+-  /** Turns 2 bytes into a big-endian integer. */
+-  inline uint16     bigEndianShort (const char* const bytes) throw()     { return *(uint16*) bytes; }
+-#endif
+-
+-/** Converts 3 little-endian bytes into a signed 24-bit value (which is sign-extended to 32 bits). */
+-inline int littleEndian24Bit (const char* const bytes) throw()                          { return (((int) bytes[2]) << 16) | (((uint32) (uint8) bytes[1]) << 8) | ((uint32) (uint8) bytes[0]); }
+-/** Converts 3 big-endian bytes into a signed 24-bit value (which is sign-extended to 32 bits). */
+-inline int bigEndian24Bit (const char* const bytes) throw()                             { return (((int) bytes[0]) << 16) | (((uint32) (uint8) bytes[1]) << 8) | ((uint32) (uint8) bytes[2]); }
+-
+-/** Copies a 24-bit number to 3 little-endian bytes. */
+-inline void littleEndian24BitToChars (const int value, char* const destBytes) throw()   { destBytes[0] = (char)(value & 0xff); destBytes[1] = (char)((value >> 8) & 0xff); destBytes[2] = (char)((value >> 16) & 0xff); }
+-/** Copies a 24-bit number to 3 big-endian bytes. */
+-inline void bigEndian24BitToChars (const int value, char* const destBytes) throw()      { destBytes[0] = (char)((value >> 16) & 0xff); destBytes[1] = (char)((value >> 8) & 0xff); destBytes[2] = (char)(value & 0xff); }
+-
+-
+-//==============================================================================
+-/** Fast floating-point-to-integer conversion.
+-
+-    This is faster than using the normal c++ cast to convert a double to an int, and
+-    it will round the value to the nearest integer, rather than rounding it down
+-    like the normal cast does.
+-*/
+-inline int roundDoubleToInt (const double value) throw()
+-{
+-    union { int asInt[2]; double asDouble; } n;
+-    n.asDouble = value + 6755399441055744.0;
+-
+-#if JUCE_BIG_ENDIAN
+-    return n.asInt [1];
+-#else
+-    return n.asInt [0];
+-#endif
+-}
+-
+-/** Fast floating-point-to-integer conversion.
+-
+-    This is faster than using the normal c++ cast to convert a float to an int, and
+-    it will round the value to the nearest integer, rather than rounding it down
+-    like the normal cast does.
+-*/
+-inline int roundFloatToInt (const float value) throw()
+-{
+-    union { int asInt[2]; double asDouble; } n;
+-    n.asDouble = value + 6755399441055744.0;
+-
+-#if JUCE_BIG_ENDIAN
+-    return n.asInt [1];
+-#else
+-    return n.asInt [0];
+-#endif
+-}
+-
+-
+-#endif   // __JUCE_DATACONVERSIONS_JUCEHEADER__
++/*
++  ==============================================================================
++
++   This file is part of the JUCE library - "Jules' Utility Class Extensions"
++   Copyright 2004-6 by Raw Material Software ltd.
++
++  ------------------------------------------------------------------------------
++
++   JUCE can be redistributed and/or modified under the terms of the
++   GNU General Public License, as published by the Free Software Foundation;
++   either version 2 of the License, or (at your option) any later version.
++
++   JUCE is distributed in the hope that it will be useful,
++   but WITHOUT ANY WARRANTY; without even the implied warranty of
++   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++   GNU General Public License for more details.
++
++   You should have received a copy of the GNU General Public License
++   along with JUCE; if not, visit www.gnu.org/licenses or write to the
++   Free Software Foundation, Inc., 59 Temple Place, Suite 330, 
++   Boston, MA 02111-1307 USA
++
++  ------------------------------------------------------------------------------
++
++   If you'd like to release a closed-source product which uses JUCE, commercial
++   licenses are also available: visit www.rawmaterialsoftware.com/juce for
++   more information.
++
++  ==============================================================================
++*/
++
++#ifndef __JUCE_DATACONVERSIONS_JUCEHEADER__
++#define __JUCE_DATACONVERSIONS_JUCEHEADER__
++
++#include "juce_PlatformDefs.h"
++
++//==============================================================================
++// Endianness conversions..
++
++/** Swaps the byte-order in an integer from little to big-endianness or vice-versa. */
++inline_assembly uint32 swapByteOrder (uint32 n) throw()
++{
++#ifdef JUCE_MAC
++    return CFSwapInt32 (n);
++#else
++  #ifdef __GNUC__
++    #ifndef __x86__
++    return ( ((n)&0xff)<<24) | (((n)&0xff00)<<8) | (((n)>>8)&0xff00) | (((n)>>24)&0xff);
++    #else
++      // Inpenetrable GCC version..
++      asm("bswap %%eax" : "=a"(n) : "a"(n));
++      return n;
++    #endif
++  #else
++    // Win32 version..
++    __asm {
++        mov eax, n
++        bswap eax
++        mov n, eax
++    }
++    return n;
++  #endif
++#endif
++}
++
++/** Swaps the byte-order of a 16-bit short. */
++inline uint16 swapByteOrder (const uint16 n) throw()
++{
++    return (uint16) ((n << 8) | (n >> 8));
++}
++
++inline uint64 swapByteOrder (const uint64 value) throw()
++{
++#ifdef JUCE_MAC
++    return CFSwapInt64 (value);
++#else
++    return (((int64) swapByteOrder ((uint32) value)) << 32)
++            | swapByteOrder ((uint32) (value >> 32));
++#endif
++}
++
++#ifdef JUCE_LITTLE_ENDIAN
++  /** Swaps the byte order of a 16-bit int if the CPU is big-endian */
++  inline uint16     swapIfBigEndian (const uint16 v) throw()             { return v; }
++  /** Swaps the byte order of a 32-bit int if the CPU is big-endian */
++  inline uint32     swapIfBigEndian (const uint32 v) throw()             { return v; }
++  /** Swaps the byte order of a 16-bit int if the CPU is little-endian */
++  inline uint16     swapIfLittleEndian (const uint16 v) throw()          { return swapByteOrder (v); }
++  /** Swaps the byte order of a 32-bit int if the CPU is little-endian */
++  inline uint32     swapIfLittleEndian (const uint32 v) throw()          { return swapByteOrder (v); }
++
++  /** Turns 4 bytes into a little-endian integer. */
++  inline uint32     littleEndianInt (const char* const bytes) throw()    { return *(uint32*) bytes; }
++
++  /** Turns 2 bytes into a little-endian integer. */
++  inline uint16     littleEndianShort (const char* const bytes) throw()  { return *(uint16*) bytes; }
++
++  /** Turns 4 bytes into a big-endian integer. */
++  inline uint32     bigEndianInt (const char* const bytes) throw()       { return swapByteOrder (*(uint32*) bytes); }
++
++  /** Turns 2 bytes into a big-endian integer. */
++  inline uint16     bigEndianShort (const char* const bytes) throw()     { return swapByteOrder (*(uint16*) bytes); }
++
++#else
++  /** Swaps the byte order of a 16-bit int if the CPU is big-endian */
++  inline uint16     swapIfBigEndian (const uint16 v) throw()             { return swapByteOrder (v); }
++  /** Swaps the byte order of a 32-bit int if the CPU is big-endian */
++  inline uint32     swapIfBigEndian (const uint32 v) throw()             { return swapByteOrder (v); }
++  /** Swaps the byte order of a 16-bit int if the CPU is little-endian */
++  inline uint16     swapIfLittleEndian (const uint16 v) throw()          { return v; }
++  /** Swaps the byte order of a 32-bit int if the CPU is little-endian */
++  inline uint32     swapIfLittleEndian (const uint32 v) throw()          { return v; }
++
++  /** Turns 4 bytes into a little-endian integer. */
++  inline uint32     littleEndianInt (const char* const bytes) throw()    { return swapByteOrder (*(uint32*) bytes); }
++
++  /** Turns 2 bytes into a little-endian integer. */
++  inline uint16     littleEndianShort (const char* const bytes) throw()  { return swapByteOrder (*(uint16*) bytes); }
++
++  /** Turns 4 bytes into a big-endian integer. */
++  inline uint32     bigEndianInt (const char* const bytes) throw()       { return *(uint32*) bytes; }
++
++  /** Turns 2 bytes into a big-endian integer. */
++  inline uint16     bigEndianShort (const char* const bytes) throw()     { return *(uint16*) bytes; }
++#endif
++
++/** Converts 3 little-endian bytes into a signed 24-bit value (which is sign-extended to 32 bits). */
++inline int littleEndian24Bit (const char* const bytes) throw()                          { return (((int) bytes[2]) << 16) | (((uint32) (uint8) bytes[1]) << 8) | ((uint32) (uint8) bytes[0]); }
++/** Converts 3 big-endian bytes into a signed 24-bit value (which is sign-extended to 32 bits). */
++inline int bigEndian24Bit (const char* const bytes) throw()                             { return (((int) bytes[0]) << 16) | (((uint32) (uint8) bytes[1]) << 8) | ((uint32) (uint8) bytes[2]); }
++
++/** Copies a 24-bit number to 3 little-endian bytes. */
++inline void littleEndian24BitToChars (const int value, char* const destBytes) throw()   { destBytes[0] = (char)(value & 0xff); destBytes[1] = (char)((value >> 8) & 0xff); destBytes[2] = (char)((value >> 16) & 0xff); }
++/** Copies a 24-bit number to 3 big-endian bytes. */
++inline void bigEndian24BitToChars (const int value, char* const destBytes) throw()      { destBytes[0] = (char)((value >> 16) & 0xff); destBytes[1] = (char)((value >> 8) & 0xff); destBytes[2] = (char)(value & 0xff); }
++
++
++//==============================================================================
++/** Fast floating-point-to-integer conversion.
++
++    This is faster than using the normal c++ cast to convert a double to an int, and
++    it will round the value to the nearest integer, rather than rounding it down
++    like the normal cast does.
++*/
++inline int roundDoubleToInt (const double value) throw()
++{
++    union { int asInt[2]; double asDouble; } n;
++    n.asDouble = value + 6755399441055744.0;
++
++#if JUCE_BIG_ENDIAN
++    return n.asInt [1];
++#else
++    return n.asInt [0];
++#endif
++}
++
++/** Fast floating-point-to-integer conversion.
++
++    This is faster than using the normal c++ cast to convert a float to an int, and
++    it will round the value to the nearest integer, rather than rounding it down
++    like the normal cast does.
++*/
++inline int roundFloatToInt (const float value) throw()
++{
++    union { int asInt[2]; double asDouble; } n;
++    n.asDouble = value + 6755399441055744.0;
++
++#if JUCE_BIG_ENDIAN
++    return n.asInt [1];
++#else
++    return n.asInt [0];
++#endif
++}
++
++
++#endif   // __JUCE_DATACONVERSIONS_JUCEHEADER__
+--- juce/build/linux/platform_specific_code/juce_linux_SystemStats.cpp~remove-x86isms.patch
++++ juce/build/linux/platform_specific_code/juce_linux_SystemStats.cpp
+@@ -1,472 +1,472 @@
+-/*
+-  ==============================================================================
+-
+-   This file is part of the JUCE library - "Jules' Utility Class Extensions"
+-   Copyright 2004-6 by Raw Material Software ltd.
+-
+-  ------------------------------------------------------------------------------
+-
+-   JUCE can be redistributed and/or modified under the terms of the
+-   GNU General Public License, as published by the Free Software Foundation;
+-   either version 2 of the License, or (at your option) any later version.
+-
+-   JUCE is distributed in the hope that it will be useful,
+-   but WITHOUT ANY WARRANTY; without even the implied warranty of
+-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+-   GNU General Public License for more details.
+-
+-   You should have received a copy of the GNU General Public License
+-   along with JUCE; if not, visit www.gnu.org/licenses or write to the
+-   Free Software Foundation, Inc., 59 Temple Place, Suite 330, 
+-   Boston, MA 02111-1307 USA
+-
+-  ------------------------------------------------------------------------------
+-
+-   If you'd like to release a closed-source product which uses JUCE, commercial
+-   licenses are also available: visit www.rawmaterialsoftware.com/juce for
+-   more information.
+-
+-  ==============================================================================
+-*/
+-
+-#include "linuxincludes.h"
+-#include "../../../src/juce_core/basics/juce_StandardHeader.h"
+-
+-#ifdef __CYGWIN__
+-  #include <apr_uuid.h>
+-  #include <malloc.h>
+-#else
+-  #include <sys/sysinfo.h>
+-  #include <dlfcn.h>
+-#endif
+-
+-#ifdef JUCE_UUID
+-  #include <uuid/uuid.h>
+-#endif
+-
+-#ifndef CPU_ISSET
+-  #undef SUPPORT_AFFINITIES
+-#endif
+-
+-BEGIN_JUCE_NAMESPACE
+-
+-#include "../../../src/juce_core/io/files/juce_File.h"
+-#include "../../../src/juce_core/basics/juce_SystemStats.h"
+-#include "../../../src/juce_core/basics/juce_Logger.h"
+-#include "../../../src/juce_core/misc/juce_Uuid.h"
+-#include "../../../src/juce_core/threads/juce_Process.h"
+-#include "../../../src/juce_appframework/events/juce_Timer.h"
+-#include "../../../src/juce_core/misc/juce_PlatformUtilities.h"
+-
+-static struct _LogicalCpuInfo
+-{
+-    bool htSupported;
+-    bool htAvailable;
+-    int numPackages;
+-    int numLogicalPerPackage;
+-    uint32 physicalAffinityMask;
+-} logicalCpuInfo;
+-
+-//==============================================================================
+-static unsigned int getCPUIDWord (int* familyModel = 0, int* extFeatures = 0) __attribute__ ((noinline));
+-
+-static unsigned int getCPUIDWord (int* familyModel, int* extFeatures)
+-{
+-    unsigned int cpu = 0;
+-    unsigned int ext = 0;
+-    unsigned int family = 0;
+-
+-    __asm__ __volatile__ (
+-"        pushf                            \n"
+-#if JUCE_64BIT
+-"        pop    %%rax                     \n"
+-#else
+-"        pop    %%eax                     \n"
+-#endif
+-"        movl   %%eax, %%ecx              \n"
+-"        xorl   $0x200000, %%eax          \n"
+-#if JUCE_64BIT
+-"        push   %%rax                     \n"
+-#else
+-"        push   %%eax                     \n"
+-#endif
+-"        popf                             \n"
+-"        pushf                            \n"
+-#if JUCE_64BIT
+-"        pop    %%rax                     \n"
+-#else
+-"        pop    %%eax                     \n"
+-#endif
+-"        andl   $0x200000, %%eax          \n"
+-"        andl   $0x200000, %%ecx          \n"
+-"        cmpl   %%eax, %%ecx              \n"
+-"        movl   $0, %%edx                 \n"
+-"        je     noCpuId                   \n"
+-"        movl   $1, %%eax                 \n"
+-"        cpuid                            \n"
+-"noCpuId:                                 \n"
+-       : "=a"(family),                                 /* Output in eax */
+-         "=d"(cpu),                                    /* Output in ebx */
+-         "=b"(ext)                                     /* Output in edx */
+-       :                                               /* No inputs */
+-       : "cc", "ecx"                                   /* Clobber list */
+-    );
+-
+-    if (familyModel)
+-        *familyModel = family;
+-    if (extFeatures)
+-        *extFeatures = ext;
+-
+-    return cpu;
+-}
+-
+-void juce_initLogicalCpuInfo()
+-{
+-    int familyModelWord, extFeaturesWord;
+-    int featuresWord = getCPUIDWord (&familyModelWord, &extFeaturesWord);
+-
+-    logicalCpuInfo.htSupported = false;
+-    logicalCpuInfo.htAvailable = false;
+-    logicalCpuInfo.numLogicalPerPackage = 1;
+-    logicalCpuInfo.numPackages = 0;
+-    logicalCpuInfo.physicalAffinityMask = 0;
+-
+-#if SUPPORT_AFFINITIES
+-    cpu_set_t processAffinity;
+-
+-    /*
+-       N.B. If this line causes a compile error, then you've probably not got the latest
+-       version of glibc installed.
+-
+-       If you don't want to update your copy of glibc and don't care about cpu affinities,
+-       then you can just disable all this stuff by removing the SUPPORT_AFFINITIES macro
+-       from the linuxincludes.h file.
+-    */
+-    if (sched_getaffinity (getpid(),
+-                           sizeof (cpu_set_t),
+-                           &processAffinity) != sizeof (cpu_set_t))
+-    {
+-        return;
+-    }
+-
+-    // Checks: CPUID supported, model >= Pentium 4, Hyperthreading bit set, logical CPUs per package > 1
+-    if (featuresWord == 0
+-        || ((familyModelWord >> 8) & 0xf) < 15
+-        || (featuresWord & (1 << 28)) == 0
+-        || ((extFeaturesWord >> 16) & 0xff) < 2)
+-    {
+-        for (int i = 0; i < 64; ++i)
+-            if (CPU_ISSET (i, &processAffinity))
+-                logicalCpuInfo.physicalAffinityMask |= (1 << i);
+-
+-        return;
+-    }
+-
+-    logicalCpuInfo.htSupported = true;
+-    logicalCpuInfo.numLogicalPerPackage = (extFeaturesWord >> 16) & 0xff;
+-
+-    cpu_set_t affinityMask;
+-    cpu_set_t physAff;
+-    CPU_ZERO (&physAff);
+-
+-    unsigned char i = 1;
+-    unsigned char physIdMask = 0xFF;
+-    unsigned char physIdShift = 0;
+-
+-    //unsigned char apicId, logId, physId;
+-
+-    while (i < logicalCpuInfo.numLogicalPerPackage)
+-    {
+-        i *= 2;
+-        physIdMask <<= 1;
+-        physIdShift++;
+-    }
+-
+-    CPU_SET (0, &affinityMask);
+-    logicalCpuInfo.numPackages = 0;
+-
+-//xxx revisit this at some point..
+-/*    while ((affinityMask != 0) && (affinityMask <= processAffinity))
+-    {
+-        int ret;
+-        if (! sched_setaffinity (getpid(), sizeof (cpu_set_t), &affinityMask))
+-        {
+-            sched_yield(); // schedule onto correct CPU
+-
+-            featuresWord = getCPUIDWord(&familyModelWord, &extFeaturesWord);
+-            apicId = (unsigned char)(extFeaturesWord >> 24);
+-            logId = (unsigned char)(apicId & ~physIdMask);
+-            physId = (unsigned char)(apicId >> physIdShift);
+-
+-            if (logId != 0)
+-                logicalCpuInfo.htAvailable = true;
+-
+-            if ((((int)logId) % logicalCpuInfo.numLogicalPerPackage) == 0)
+-            {
+-                // This is a physical CPU
+-                physAff |= affinityMask;
+-                logicalCpuInfo.numPackages++;
+-            }
+-        }
+-
+-        affinityMask = affinityMask << 1;
+-    }
+-
+-    sched_setaffinity (getpid(), sizeof(unsigned long), &processAffinity);
+-*/
+-
+-    logicalCpuInfo.physicalAffinityMask = 0;
+-
+-    for (int i = 0; i < 64; ++i)
+-        if (CPU_ISSET (i, &physAff))
+-            logicalCpuInfo.physicalAffinityMask |= (1 << i);
+-
+-#endif
+-}
+-
+-//==============================================================================
+-void Logger::outputDebugString (const String& text)
+-{
+-    fprintf (stdout, (const char*) (text + T("\n")));
+-}
+-
+-void Logger::outputDebugPrintf (const tchar* format, ...)
+-{
+-    String text;
+-    va_list args;
+-    va_start (args, format);
+-    text.vprintf(format, args);
+-    outputDebugString(text);
+-}
+-
+-const String SystemStats::getOSType()
+-{
+-    return SystemStats::Linux;
+-}
+-
+-static const String getCpuInfo (const char* key, bool lastOne = false)
+-{
+-    String info;
+-    char buf [256];
+-
+-    FILE* f = fopen ("/proc/cpuinfo", "r");
+-
+-    while (f != 0 && fgets (buf, sizeof(buf), f))
+-    {
+-        if (strncmp (buf, key, strlen (key)) == 0)
+-        {
+-            char* p = buf;
+-
+-            while (*p && *p != '\n')
+-                ++p;
+-
+-            if (*p != 0)
+-                *p = 0;
+-
+-            p = buf;
+-
+-            while (*p != 0 && *p != ':')
+-                ++p;
+-
+-            if (*p != 0 && *(p + 1) != 0)
+-                info = p + 2;
+-
+-            if (! lastOne)
+-                break;
+-        }
+-    }
+-
+-    fclose (f);
+-    return info;
+-}
+-
+-bool SystemStats::hasMMX()
+-{
+-    return getCpuInfo ("flags").contains (T("mmx"));
+-}
+-
+-bool SystemStats::hasSSE()
+-{
+-    return getCpuInfo ("flags").contains (T("sse"));
+-}
+-
+-bool SystemStats::hasSSE2()
+-{
+-    return getCpuInfo ("flags").contains (T("sse2"));
+-}
+-
+-bool SystemStats::has3DNow()
+-{
+-    return getCpuInfo ("flags").contains (T("3dnow"));
+-}
+-
+-const String SystemStats::getCpuVendor()
+-{
+-    return getCpuInfo ("vendor_id");
+-}
+-
+-int SystemStats::getCpuSpeedInMegaherz()
+-{
+-    const String speed (getCpuInfo ("cpu MHz"));
+-
+-    return (int) (speed.getFloatValue() + 0.5f);
+-}
+-
+-bool SystemStats::hasHyperThreading()
+-{
+-    return logicalCpuInfo.htAvailable;
+-}
+-
+-int SystemStats::getMemorySizeInMegabytes()
+-{
+-#ifndef __CYGWIN__
+-    struct sysinfo sysi;
+-
+-    if (sysinfo (&sysi) == 0)
+-        return (sysi.totalram * sysi.mem_unit / (1024 * 1024));
+-
+-    return 0;
+-
+-#else
+-    jassertfalse
+-    return 256;
+-#endif
+-}
+-
+-unsigned int juce_millisecondsSinceStartup()
+-{
+-    static unsigned int calibrate = 0;
+-    static bool calibrated = false;
+-    timeval t;
+-    unsigned int ret = 0;
+-
+-    if (! gettimeofday (&t, 0))
+-    {
+-        if (! calibrated)
+-        {
+-#ifndef __CYGWIN__
+-            struct sysinfo sysi;
+-
+-            if (sysinfo (&sysi) == 0)
+-                // Safe to assume system was not brought up earlier than 1970!
+-                calibrate = t.tv_sec - sysi.uptime;
+-#else
+-            // bit of a hack, but things should all still work, as we're not often
+-            // really interested in how long the machine's been turned on, and just
+-            // use this call for relative times..
+-            calibrate = t.tv_sec;
+-#endif
+-
+-            calibrated = true;
+-        }
+-
+-        ret = 1000 * (t.tv_sec - calibrate) + (t.tv_usec / 1000);
+-    }
+-
+-    return ret;
+-}
+-
+-double juce_millisecondsSinceStartupHiRes()
+-{
+-    return Time::getHighResolutionTicks() * (1.0 / 1000000.0);
+-}
+-
+-int64 Time::getHighResolutionTicks()
+-{
+-    timeval t;
+-    if (gettimeofday(&t,NULL))
+-        return 0;
+-
+-    return ((int64) t.tv_sec * (int64) 1000000) + (int64) t.tv_usec;
+-}
+-
+-int64 Time::getHighResolutionTicksPerSecond()
+-{
+-    // Microseconds
+-    return 1000000;
+-}
+-
+-bool Time::setSystemTimeToThisTime() const
+-{
+-    timeval t;
+-    t.tv_sec = millisSinceEpoch % 1000000;
+-    t.tv_usec = millisSinceEpoch - t.tv_sec;
+-
+-    return settimeofday (&t, NULL) ? false : true;
+-}
+-
+-const String Uuid::generateUuid()
+-{
+-#ifdef JUCE_UUID
+-    uuid_t uuid;
+-    char *s = new char[37];
+-    String uuidStr;
+-
+-    uuid_generate (uuid);
+-    uuid_unparse (uuid, s);
+-
+-    uuidStr = s;
+-    delete[] s;
+-
+-    return uuidStr;
+-#else
+-    jassertfalse
+-    return String::empty;
+-#endif
+-}
+-
+-int SystemStats::getPageSize()
+-{
+-    static int systemPageSize = 0;
+-
+-    if (systemPageSize == 0)
+-        systemPageSize = sysconf (_SC_PAGESIZE);
+-
+-    return systemPageSize;
+-}
+-
+-int SystemStats::getNumPhysicalCpus()
+-{
+-    if (logicalCpuInfo.numPackages)
+-        return logicalCpuInfo.numPackages;
+-
+-    return getNumLogicalCpus();
+-}
+-
+-int SystemStats::getNumLogicalCpus()
+-{
+-    const int lastCpu = getCpuInfo ("processor", true).getIntValue();
+-
+-    return lastCpu + 1;
+-}
+-
+-uint32 SystemStats::getPhysicalAffinityMask()
+-{
+-#if SUPPORT_AFFINITIES
+-    return logicalCpuInfo.physicalAffinityMask;
+-#else
+-    /* affinities aren't supported because either the appropriate header files weren't found,
+-       or the SUPPORT_AFFINITIES macro was turned off in linuxheaders.h
+-    */
+-    jassertfalse
+-    return 0;
+-#endif
+-
+-}
+-
+-//==============================================================================
+-void SystemStats::initialiseStats()
+-{
+-    // Process starts off as root when running suid
+-    Process::lowerPrivilege();
+-
+-    String s (SystemStats::getJUCEVersion());
+-
+-    juce_initLogicalCpuInfo();
+-}
+-
+-void PlatformUtilities::fpuReset()
+-{
+-}
+-
+-END_JUCE_NAMESPACE
++/*
++  ==============================================================================
++
++   This file is part of the JUCE library - "Jules' Utility Class Extensions"
++   Copyright 2004-6 by Raw Material Software ltd.
++
++  ------------------------------------------------------------------------------
++
++   JUCE can be redistributed and/or modified under the terms of the
++   GNU General Public License, as published by the Free Software Foundation;
++   either version 2 of the License, or (at your option) any later version.
++
++   JUCE is distributed in the hope that it will be useful,
++   but WITHOUT ANY WARRANTY; without even the implied warranty of
++   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++   GNU General Public License for more details.
++
++   You should have received a copy of the GNU General Public License
++   along with JUCE; if not, visit www.gnu.org/licenses or write to the
++   Free Software Foundation, Inc., 59 Temple Place, Suite 330, 
++   Boston, MA 02111-1307 USA
++
++  ------------------------------------------------------------------------------
++
++   If you'd like to release a closed-source product which uses JUCE, commercial
++   licenses are also available: visit www.rawmaterialsoftware.com/juce for
++   more information.
++
++  ==============================================================================
++*/
++
++#include "linuxincludes.h"
++#include "../../../src/juce_core/basics/juce_StandardHeader.h"
++
++#ifdef __CYGWIN__
++  #include <apr_uuid.h>
++  #include <malloc.h>
++#else
++  #include <sys/sysinfo.h>
++  #include <dlfcn.h>
++#endif
++
++#ifdef JUCE_UUID
++  #include <uuid/uuid.h>
++#endif
++
++#ifndef CPU_ISSET
++  #undef SUPPORT_AFFINITIES
++#endif
++
++BEGIN_JUCE_NAMESPACE
++
++#include "../../../src/juce_core/io/files/juce_File.h"
++#include "../../../src/juce_core/basics/juce_SystemStats.h"
++#include "../../../src/juce_core/basics/juce_Logger.h"
++#include "../../../src/juce_core/misc/juce_Uuid.h"
++#include "../../../src/juce_core/threads/juce_Process.h"
++#include "../../../src/juce_appframework/events/juce_Timer.h"
++#include "../../../src/juce_core/misc/juce_PlatformUtilities.h"
++
++static struct _LogicalCpuInfo
++{
++    bool htSupported;
++    bool htAvailable;
++    int numPackages;
++    int numLogicalPerPackage;
++    uint32 physicalAffinityMask;
++} logicalCpuInfo;
++
++//==============================================================================
++static unsigned int getCPUIDWord (int* familyModel = 0, int* extFeatures = 0) __attribute__ ((noinline));
++
++static unsigned int getCPUIDWord (int* familyModel, int* extFeatures)
++{
++    unsigned int cpu = 0;
++    unsigned int ext = 0;
++    unsigned int family = 0;
++#ifdef __x86__
++    __asm__ __volatile__ (
++"        pushf                            \n"
++#if JUCE_64BIT
++"        pop    %%rax                     \n"
++#else
++"        pop    %%eax                     \n"
++#endif
++"        movl   %%eax, %%ecx              \n"
++"        xorl   $0x200000, %%eax          \n"
++#if JUCE_64BIT
++"        push   %%rax                     \n"
++#else
++"        push   %%eax                     \n"
++#endif
++"        popf                             \n"
++"        pushf                            \n"
++#if JUCE_64BIT
++"        pop    %%rax                     \n"
++#else
++"        pop    %%eax                     \n"
++#endif
++"        andl   $0x200000, %%eax          \n"
++"        andl   $0x200000, %%ecx          \n"
++"        cmpl   %%eax, %%ecx              \n"
++"        movl   $0, %%edx                 \n"
++"        je     noCpuId                   \n"
++"        movl   $1, %%eax                 \n"
++"        cpuid                            \n"
++"noCpuId:                                 \n"
++       : "=a"(family),                                 /* Output in eax */
++         "=d"(cpu),                                    /* Output in ebx */
++         "=b"(ext)                                     /* Output in edx */
++       :                                               /* No inputs */
++       : "cc", "ecx"                                   /* Clobber list */
++    );
++#endif
++    if (familyModel)
++        *familyModel = family;
++    if (extFeatures)
++        *extFeatures = ext;
++
++    return cpu;
++}
++
++void juce_initLogicalCpuInfo()
++{
++    int familyModelWord, extFeaturesWord;
++    int featuresWord = getCPUIDWord (&familyModelWord, &extFeaturesWord);
++
++    logicalCpuInfo.htSupported = false;
++    logicalCpuInfo.htAvailable = false;
++    logicalCpuInfo.numLogicalPerPackage = 1;
++    logicalCpuInfo.numPackages = 0;
++    logicalCpuInfo.physicalAffinityMask = 0;
++
++#if SUPPORT_AFFINITIES
++    cpu_set_t processAffinity;
++
++    /*
++       N.B. If this line causes a compile error, then you've probably not got the latest
++       version of glibc installed.
++
++       If you don't want to update your copy of glibc and don't care about cpu affinities,
++       then you can just disable all this stuff by removing the SUPPORT_AFFINITIES macro
++       from the linuxincludes.h file.
++    */
++    if (sched_getaffinity (getpid(),
++                           sizeof (cpu_set_t),
++                           &processAffinity) != sizeof (cpu_set_t))
++    {
++        return;
++    }
++
++    // Checks: CPUID supported, model >= Pentium 4, Hyperthreading bit set, logical CPUs per package > 1
++    if (featuresWord == 0
++        || ((familyModelWord >> 8) & 0xf) < 15
++        || (featuresWord & (1 << 28)) == 0
++        || ((extFeaturesWord >> 16) & 0xff) < 2)
++    {
++        for (int i = 0; i < 64; ++i)
++            if (CPU_ISSET (i, &processAffinity))
++                logicalCpuInfo.physicalAffinityMask |= (1 << i);
++
++        return;
++    }
++
++    logicalCpuInfo.htSupported = true;
++    logicalCpuInfo.numLogicalPerPackage = (extFeaturesWord >> 16) & 0xff;
++
++    cpu_set_t affinityMask;
++    cpu_set_t physAff;
++    CPU_ZERO (&physAff);
++
++    unsigned char i = 1;
++    unsigned char physIdMask = 0xFF;
++    unsigned char physIdShift = 0;
++
++    //unsigned char apicId, logId, physId;
++
++    while (i < logicalCpuInfo.numLogicalPerPackage)
++    {
++        i *= 2;
++        physIdMask <<= 1;
++        physIdShift++;
++    }
++
++    CPU_SET (0, &affinityMask);
++    logicalCpuInfo.numPackages = 0;
++
++//xxx revisit this at some point..
++/*    while ((affinityMask != 0) && (affinityMask <= processAffinity))
++    {
++        int ret;
++        if (! sched_setaffinity (getpid(), sizeof (cpu_set_t), &affinityMask))
++        {
++            sched_yield(); // schedule onto correct CPU
++
++            featuresWord = getCPUIDWord(&familyModelWord, &extFeaturesWord);
++            apicId = (unsigned char)(extFeaturesWord >> 24);
++            logId = (unsigned char)(apicId & ~physIdMask);
++            physId = (unsigned char)(apicId >> physIdShift);
++
++            if (logId != 0)
++                logicalCpuInfo.htAvailable = true;
++
++            if ((((int)logId) % logicalCpuInfo.numLogicalPerPackage) == 0)
++            {
++                // This is a physical CPU
++                physAff |= affinityMask;
++                logicalCpuInfo.numPackages++;
++            }
++        }
++
++        affinityMask = affinityMask << 1;
++    }
++
++    sched_setaffinity (getpid(), sizeof(unsigned long), &processAffinity);
++*/
++
++    logicalCpuInfo.physicalAffinityMask = 0;
++
++    for (int i = 0; i < 64; ++i)
++        if (CPU_ISSET (i, &physAff))
++            logicalCpuInfo.physicalAffinityMask |= (1 << i);
++
++#endif
++}
++
++//==============================================================================
++void Logger::outputDebugString (const String& text)
++{
++    fprintf (stdout, (const char*) (text + T("\n")));
++}
++
++void Logger::outputDebugPrintf (const tchar* format, ...)
++{
++    String text;
++    va_list args;
++    va_start (args, format);
++    text.vprintf(format, args);
++    outputDebugString(text);
++}
++
++const String SystemStats::getOSType()
++{
++    return SystemStats::Linux;
++}
++
++static const String getCpuInfo (const char* key, bool lastOne = false)
++{
++    String info;
++    char buf [256];
++
++    FILE* f = fopen ("/proc/cpuinfo", "r");
++
++    while (f != 0 && fgets (buf, sizeof(buf), f))
++    {
++        if (strncmp (buf, key, strlen (key)) == 0)
++        {
++            char* p = buf;
++
++            while (*p && *p != '\n')
++                ++p;
++
++            if (*p != 0)
++                *p = 0;
++
++            p = buf;
++
++            while (*p != 0 && *p != ':')
++                ++p;
++
++            if (*p != 0 && *(p + 1) != 0)
++                info = p + 2;
++
++            if (! lastOne)
++                break;
++        }
++    }
++
++    fclose (f);
++    return info;
++}
++
++bool SystemStats::hasMMX()
++{
++    return getCpuInfo ("flags").contains (T("mmx"));
++}
++
++bool SystemStats::hasSSE()
++{
++    return getCpuInfo ("flags").contains (T("sse"));
++}
++
++bool SystemStats::hasSSE2()
++{
++    return getCpuInfo ("flags").contains (T("sse2"));
++}
++
++bool SystemStats::has3DNow()
++{
++    return getCpuInfo ("flags").contains (T("3dnow"));
++}
++
++const String SystemStats::getCpuVendor()
++{
++    return getCpuInfo ("vendor_id");
++}
++
++int SystemStats::getCpuSpeedInMegaherz()
++{
++    const String speed (getCpuInfo ("cpu MHz"));
++
++    return (int) (speed.getFloatValue() + 0.5f);
++}
++
++bool SystemStats::hasHyperThreading()
++{
++    return logicalCpuInfo.htAvailable;
++}
++
++int SystemStats::getMemorySizeInMegabytes()
++{
++#ifndef __CYGWIN__
++    struct sysinfo sysi;
++
++    if (sysinfo (&sysi) == 0)
++        return (sysi.totalram * sysi.mem_unit / (1024 * 1024));
++
++    return 0;
++
++#else
++    jassertfalse
++    return 256;
++#endif
++}
++
++unsigned int juce_millisecondsSinceStartup()
++{
++    static unsigned int calibrate = 0;
++    static bool calibrated = false;
++    timeval t;
++    unsigned int ret = 0;
++
++    if (! gettimeofday (&t, 0))
++    {
++        if (! calibrated)
++        {
++#ifndef __CYGWIN__
++            struct sysinfo sysi;
++
++            if (sysinfo (&sysi) == 0)
++                // Safe to assume system was not brought up earlier than 1970!
++                calibrate = t.tv_sec - sysi.uptime;
++#else
++            // bit of a hack, but things should all still work, as we're not often
++            // really interested in how long the machine's been turned on, and just
++            // use this call for relative times..
++            calibrate = t.tv_sec;
++#endif
++
++            calibrated = true;
++        }
++
++        ret = 1000 * (t.tv_sec - calibrate) + (t.tv_usec / 1000);
++    }
++
++    return ret;
++}
++
++double juce_millisecondsSinceStartupHiRes()
++{
++    return Time::getHighResolutionTicks() * (1.0 / 1000000.0);
++}
++
++int64 Time::getHighResolutionTicks()
++{
++    timeval t;
++    if (gettimeofday(&t,NULL))
++        return 0;
++
++    return ((int64) t.tv_sec * (int64) 1000000) + (int64) t.tv_usec;
++}
++
++int64 Time::getHighResolutionTicksPerSecond()
++{
++    // Microseconds
++    return 1000000;
++}
++
++bool Time::setSystemTimeToThisTime() const
++{
++    timeval t;
++    t.tv_sec = millisSinceEpoch % 1000000;
++    t.tv_usec = millisSinceEpoch - t.tv_sec;
++
++    return settimeofday (&t, NULL) ? false : true;
++}
++
++const String Uuid::generateUuid()
++{
++#ifdef JUCE_UUID
++    uuid_t uuid;
++    char *s = new char[37];
++    String uuidStr;
++
++    uuid_generate (uuid);
++    uuid_unparse (uuid, s);
++
++    uuidStr = s;
++    delete[] s;
++
++    return uuidStr;
++#else
++    jassertfalse
++    return String::empty;
++#endif
++}
++
++int SystemStats::getPageSize()
++{
++    static int systemPageSize = 0;
++
++    if (systemPageSize == 0)
++        systemPageSize = sysconf (_SC_PAGESIZE);
++
++    return systemPageSize;
++}
++
++int SystemStats::getNumPhysicalCpus()
++{
++    if (logicalCpuInfo.numPackages)
++        return logicalCpuInfo.numPackages;
++
++    return getNumLogicalCpus();
++}
++
++int SystemStats::getNumLogicalCpus()
++{
++    const int lastCpu = getCpuInfo ("processor", true).getIntValue();
++
++    return lastCpu + 1;
++}
++
++uint32 SystemStats::getPhysicalAffinityMask()
++{
++#if SUPPORT_AFFINITIES
++    return logicalCpuInfo.physicalAffinityMask;
++#else
++    /* affinities aren't supported because either the appropriate header files weren't found,
++       or the SUPPORT_AFFINITIES macro was turned off in linuxheaders.h
++    */
++    jassertfalse
++    return 0;
++#endif
++
++}
++
++//==============================================================================
++void SystemStats::initialiseStats()
++{
++    // Process starts off as root when running suid
++    Process::lowerPrivilege();
++
++    String s (SystemStats::getJUCEVersion());
++
++    juce_initLogicalCpuInfo();
++}
++
++void PlatformUtilities::fpuReset()
++{
++}
++
++END_JUCE_NAMESPACE
