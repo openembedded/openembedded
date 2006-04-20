@@ -5,7 +5,7 @@ DEPENDS = "libsdl-qpe"
 LICENSE = "GPL"
 PR = "r1"
 
-SRC_URI = "http://rcdrummond.net/uae/e-uae-${PV}/e-uae-${PV}.tar.bz2 \
+SRC_URI = "http://rcdrummond.net/uae/old/e-uae-${PV}/e-uae-${PV}.tar.bz2 \
            file://configure.patch;patch=1"
 #           file://m4.patch;patch=1"
 

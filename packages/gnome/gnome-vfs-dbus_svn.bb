@@ -83,6 +83,10 @@ do_configure_prepend() {
 	install ${WORKDIR}/gtk-doc.make ./
 }
 
+do_compile_prepend() {
+    find ${S} -name Makefile | xargs sed -i 's:-Werror::'
+}
+
 do_stage() {
 	oe_libinstall -so -C libgnomevfs libgnomevfs-2 ${STAGING_LIBDIR}
 	install -d ${STAGING_INCDIR}/gnome-vfs-2.0/libgnomevfs
