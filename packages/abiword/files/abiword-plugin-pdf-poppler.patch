@@ -1,0 +1,11 @@
+--- abiword-2.4.4/abiword-plugins/wp/impexp/pdf/xp/ie_imp_PDF.cpp.orig	2006-04-17 11:36:05.000000000 +0100
++++ abiword-2.4.4/abiword-plugins/wp/impexp/pdf/xp/ie_imp_PDF.cpp	2006-04-17 11:37:00.000000000 +0100
+@@ -75,7 +75,7 @@
+       UT_tmpnam(temporary_file);
+ 
+       TextOutputDev *textOut = new TextOutputDev(temporary_file, gFalse, gFalse, gFalse);
+-      doc->displayPages(textOut, 1, doc->getNumPages(), 72, 72, 0, gTrue, gFalse);
++      doc->displayPages(textOut, 1, doc->getNumPages(), 72, 72, 0, gFalse, gTrue, gFalse);
+       delete textOut;
+ 
+       IE_Imp_Text txt_imp(getDoc(), "UTF-8");      
