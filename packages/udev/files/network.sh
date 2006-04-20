@@ -15,7 +15,7 @@ echo "$INTERFACE" | grep -q wifi && exit 0
 if grep -q "iface \+$INTERFACE" /etc/network/interfaces; then
   case $ACTION in
     add)
-    	ifup $INTERFACE
+    	ifconfig | grep -q "^$INTERFACE" || ifup $INTERFACE
     	;;
     remove)
     	ifdown $INTERFACE
