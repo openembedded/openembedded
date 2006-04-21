@@ -31,15 +31,5 @@ This patch made them bound into hostap like it was before.
 
 Signed-off-by: Marcin Juszkiewicz <openembedded@hrw.one.pl>
 
---- linux/drivers/net/wireless/hostap/hostap_cs.c.orig	2006-04-09 12:42:34.944903728 +0200
-+++ linux/drivers/net/wireless/hostap/hostap_cs.c	2006-04-09 12:42:37.474519168 +0200
-@@ -912,6 +912,9 @@
- 	PCMCIA_DEVICE_PROD_ID123(
- 		"SMC", "SMC2632W", "Version 01.02",
- 		0xc4f8b18b, 0x474a1f2a, 0x4b74baa0),
-+	PCMCIA_DEVICE_PROD_ID123(
-+		"Pretec", "CompactWLAN Card 802.11b", "2.5",
-+		0x1cadd3e5, 0xe697636c, 0x7a5bfcf1),
- 	PCMCIA_DEVICE_PROD_ID12("BUFFALO", "WLI-CF-S11G", 
- 				0x2decece3, 0x82067c18),
- 	PCMCIA_DEVICE_PROD_ID12("Compaq", "WL200_11Mbps_Wireless_PCI_Card",
+// will add some here
+
