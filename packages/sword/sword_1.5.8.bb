@@ -5,10 +5,11 @@ Bible software with a constantly growing list of front-ends \
 SECTION = "libs"
 PRIORITY = "optional"
 LICENSE = "GPL"
+PR = "r1"
 
 SRC_URI = "http://www.crosswire.org/ftpmirror/pub/sword/source/v1.5/sword-${PV}.tar.gz"
 
-inherit autotools 
+inherit autotools pkgconfig
 
 EXTRA_OECONF = "--without-clucene --without-curl"
 
