@@ -1,0 +1,18 @@
+--- gpe-bluetooth/Makefile.am	2006/01/15 14:24:00	1.15
++++ gpe-bluetooth/Makefile.am	2006/04/20 11:19:17	1.16
+@@ -46,7 +46,7 @@ pixmaps_extradir = $(datadir)/pixmaps
+ btscriptdir = $(sysconfdir)/bluetooth
+ btscript_SCRIPTS = hciattach.sh
+ 
+-btresumedir = $(sysconfdir)/apm/resume.d
++btresumedir = $(sysconfdir)/apm/scripts.d
+ btresume_SCRIPTS = gpe-bluetooth-resume.sh
+ 
+ pingladedir = $(datadir)/bluez-pin
+@@ -83,3 +83,6 @@ install-data-hook:
+ 	cd $(DESTDIR)$(sysconfdir)/bluetooth && mv hciattach.sh hciattach
+ 	chmod u+s $(DESTDIR)$(gpebluetoothlibdir)/bnep-helper
+ 	chmod u+s $(DESTDIR)$(gpebluetoothlibdir)/rfcomm-helper
++	mkdir -p $(DESTDIR)$(sysconfdir)/apm/resume.d
++	cd $(DESTDIR)$(sysconfdir)/apm/resume.d/ && ln -sf ../scripts.d/gpe-bluetooth-resume.sh 50-gpe-bluetooth-resume
++
