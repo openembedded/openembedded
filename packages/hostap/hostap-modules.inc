@@ -32,6 +32,11 @@ do_install() {
 	install -m 0644 driver/modules/hostap_cs${KERNEL_OBJECT_SUFFIX} ${D}${base_libdir}/modules/${KERNEL_VERSION}/pcmcia/
 }
 
+do_stage() {
+	install -d ${STAGING_INCDIR}
+	install -m 0644 ${S}/driver/modules/hostap_common.h ${STAGING_INCDIR}
+}
+
 PACKAGES = "hostap-modules-cs hostap-modules-pci hostap-modules"
 FILES_hostap-modules-cs = "/lib/modules/${KERNEL_VERSION}/pcmcia/ /${sysconfdir}/pcmcia/"
 FILES_hostap-modules-pci = "/lib/modules/${KERNEL_VERSION}/net/hostap_pci${KERNEL_OBJECT_SUFFIX}"
