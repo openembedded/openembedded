@@ -1,0 +1,115 @@
+
+#
+# Patch managed by http://www.holgerschurig.de/patcher.html
+#
+
+Index: qt-2.3.10-snapshot-20060120/src/kernel/qapplication_qws.cpp
+===================================================================
+--- qt-2.3.10-snapshot-20060120.orig/src/kernel/qapplication_qws.cpp	2006-01-20 20:46:52.639263632 +0100
++++ qt-2.3.10-snapshot-20060120/src/kernel/qapplication_qws.cpp	2006-01-20 20:48:07.131939024 +0100
+@@ -105,6 +105,7 @@
+ 
+ #include <sys/time.h>
+ #include <sys/times.h>
++#include <syslog.h>
+ 
+ #if defined(_OS_AIX_) && defined(_CC_GNU_)
+ #include <sys/select.h>
+@@ -164,6 +165,7 @@
+ //these used to be environment variables, they are initialized from
+ //environment variables in
+ 
++bool qws_daemon = TRUE;
+ bool qws_savefonts = FALSE;
+ bool qws_screen_is_interlaced=FALSE; //### should be detected
+ bool qws_shared_memory = FALSE;
+@@ -1688,6 +1690,10 @@
+ 		mwGeometry = argv[i];
+ 	} else if ( arg == "-shared" ) {
+ 	    qws_shared_memory = TRUE;
++	} else if ( arg == "-daemon" ) {
++	    qws_daemon = TRUE;
++	} else if ( arg == "-nodaemon" ) {
++	    qws_daemon = FALSE;	
+ 	} else if ( arg == "-noshared" ) {
+ 	    qws_shared_memory = FALSE;
+ 	} else if ( arg == "-savefonts" ) {
+@@ -1745,6 +1751,78 @@
+ 	qt_appType = type;
+ 	qws_single_process = TRUE;
+ 
++    /* Daemonize the server process -- (C) Michael 'Mickey' Lauer <mickey@tm.informatik.uni-frankfurt.de>
++     * Added a new command line option which only is relevant if the application is created as a GuiServer.
++     * The option is -daemon respectively -nodaemon. If in daemon mode (which is the default now), the
++     * server will detach from the controlling terminal and continue as a daemon. This is done via the standard
++     * UNIX double fork magic.
++     */
++    if ( qws_daemon )
++    {
++        qWarning( "qt_init() - starting in daemon mode..." );
++
++        int pid1 = fork();
++        if ( pid1 == -1 )
++        {
++            qWarning( "qt_init() - can't perform initial fork: %s", strerror( errno ) );
++            exit( -1 );
++        }
++        if ( pid1 ) _exit( 0 ); // ok, first fork performed
++
++        chdir( "/" );
++        setsid();
++        umask(0);
++        close(0);
++        close(1);
++        close(2);
++
++        int fdnull = ::open( "/dev/null", O_RDWR );
++        if ( fdnull == -1 )
++        {
++            syslog( 3, "qt_init() - can't open /dev/null to redirect std{in|out|err}: %s", strerror( errno ) );
++            exit( -1 );
++        }
++        dup2( fdnull, 0 ); // stdin
++        dup2( fdnull, 1 ); // stdout
++        dup2( fdnull, 2 ); // stderr
++
++        int pid2 = fork();
++        if ( pid2 == -1 )
++        {
++            syslog( 3, "qt_init() - can't perform initial fork: %s", strerror( errno ) );
++            exit( -1 );
++        }
++        if ( pid2 )
++        {
++             syslog( 4, "qt_init() [%d] - successfully entered daemon mode", pid2 );
++            _exit( 0 ); // ok, second fork performed
++        }
++    }
++
++  /*
++   *               ,        ,
++   *              /(        )`
++   *              \ \___   / |              B E W A R E !
++   *              /- _  `-/  '           We are a DAEMON now!
++   *             (/\/ \ \   /\
++   *             / /   | `    \
++   *             O O   ) /    |
++   *             `-^--'`<     '
++   *            (_.)  _  )   /
++   *             `.___/`    /
++   *               `-----' /
++   *  <----.     __ / __   \
++   *  <----|====O)))==) \) /====
++   *  <----'    `--' `.__,' \
++   *               |        |
++   *                \       /
++   *           ______( (_  / \______
++   *  (FL)   ,'  ,-----'   |        \
++   *         `--{__________)        \/
++   *
++   */
++
++
+     /* Allocate a dedicated virtual terminal -- (C) Michael 'Mickey' Lauer <mickey@tm.informatik.uni-frankfurt.de>
+      * Added a new command line option which only is relevant if the application is created as a GuiServer.
+      * The option is -terminal <num>, where <num> specifies the virtual terminal to be occupied by the server.

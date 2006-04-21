@@ -1,0 +1,39 @@
+
+#
+# Patch managed by http://www.holgerschurig.de/patcher.html
+#
+
+Index: qt-2.3.10-snapshot-20060120/Makefile
+===================================================================
+--- qt-2.3.10-snapshot-20060120.orig/Makefile	2006-01-20 01:09:29.000000000 +0100
++++ qt-2.3.10-snapshot-20060120/Makefile	2006-01-20 20:49:03.232410456 +0100
+@@ -8,7 +8,7 @@
+ init: FORCE
+ 	@$(MAKE) QTDIR=`pwd` all
+ 
+-all: symlinks  src-moc src-mt sub-src sub-tools sub-tutorial sub-examples
++all: symlinks src-mt sub-src sub-tools sub-tutorial sub-examples
+ 	@echo
+ 	@echo "The Qt library is now built in ./lib"
+ 	@echo "The Qt examples are built in the directories in ./examples"
+@@ -31,10 +31,10 @@
+ symlinks: .buildopts
+ 	@cd include; rm -f q*.h;  for i in ../src/*/q*.h ../src/3rdparty/*/q*.h ../extensions/*/src/q*.h; do ln -s $$i .; done; rm -f q*_p.h
+ 
+-sub-src: src-moc src-mt .buildopts FORCE
++sub-src: src-mt .buildopts FORCE
+ 	cd src; $(MAKE)
+ 
+-src-mt: src-moc .buildopts FORCE
++src-mt: .buildopts FORCE
+ 	$(MAKE) -f src-mt.mk
+ 
+ sub-tutorial: sub-src FORCE
+@@ -44,7 +44,6 @@
+ 	cd examples; $(MAKE)
+ 
+ clean:
+-	cd src/moc; $(MAKE) clean
+ 	cd src; $(MAKE) clean
+ 	-rm src/tmp/*.o src/tmp/*.a src/allmoc.cpp
+ 	-find src/3rdparty -name '*.o' | xargs rm

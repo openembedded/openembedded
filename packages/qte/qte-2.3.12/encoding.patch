@@ -1,0 +1,36 @@
+
+#
+# Patch managed by http://www.holgerschurig.de/patcher.html
+#
+
+Index: qt-2.3.10-snapshot-20060120/src/tools/qstring.cpp
+===================================================================
+--- qt-2.3.10-snapshot-20060120.orig/src/tools/qstring.cpp	2006-01-20 01:08:03.000000000 +0100
++++ qt-2.3.10-snapshot-20060120/src/tools/qstring.cpp	2006-01-20 20:49:57.610143784 +0100
+@@ -14468,7 +14468,11 @@
+     return qt_winQString2MB( *this );
+ #endif
+ #ifdef _WS_QWS_
+-    return utf8(); // ##### if there is ANY 8 bit format supported?
++    QTextCodec* codec = QTextCodec::codecForLocale();
++    return codec
++	    ? codec->fromUnicode(*this)
++	    : utf8();
++    //return latin1(); // ##### if there is ANY 8 bit format supported?
+ #endif
+ #endif
+ }
+@@ -14514,7 +14518,12 @@
+     return qt_winMB2QString( local8Bit );
+ #endif
+ #ifdef _WS_QWS_
+-    return fromUtf8(local8Bit,len);
++    QTextCodec* codec = QTextCodec::codecForLocale();
++    if( len < 0) len = qstrlen(local8Bit);
++    return codec
++	    ? codec->toUnicode(local8Bit, len)
++	    : QString::fromUtf8(local8Bit,len);
++//    return fromLatin1(local8Bit,len);
+ #endif
+ #endif // QT_NO_TEXTCODEC
+ }

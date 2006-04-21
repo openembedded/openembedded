@@ -1,0 +1,36 @@
+Set lstep properly on a mode change
+Manuel Teira <manuel.teira@telefonica.net>
+
+#
+# Patch managed by http://www.holgerschurig.de/patcher.html
+#
+
+Index: qt-2.3.10-snapshot-20060120/src/kernel/qgfxlinuxfb_qws.cpp
+===================================================================
+--- qt-2.3.10-snapshot-20060120.orig/src/kernel/qgfxlinuxfb_qws.cpp	2006-01-20 20:46:52.641263328 +0100
++++ qt-2.3.10-snapshot-20060120/src/kernel/qgfxlinuxfb_qws.cpp	2006-01-20 21:07:51.803841520 +0100
+@@ -119,13 +119,6 @@
+     memset( &finfo, 0, sizeof(fb_fix_screeninfo) ); // keep valgrind happy
+     memset( &vinfo, 0, sizeof(fb_var_screeninfo) ); // keep valgrind happy
+ 
+-    /* Get fixed screen information */
+-    if (ioctl(fd, FBIOGET_FSCREENINFO, &finfo)) {
+-	perror("reading /dev/fb0");
+-	qWarning("Error reading fixed information");
+-	return FALSE;
+-    }
+-
+     /* Get variable screen information */
+     if (ioctl(fd, FBIOGET_VSCREENINFO, &vinfo)) {
+ 	perror("reading /dev/fb0");
+@@ -826,6 +819,10 @@
+ 	qFatal("Error reading fixed information");
+     }
+ 
++    if (ioctl(fd, FBIOGET_FSCREENINFO, &finfo)) {
++	qFatal("Error reading changed fixed information in mode change");
++    }
++
+     w=vinfo.xres;
+     h=vinfo.yres;
+     d=vinfo.bits_per_pixel;

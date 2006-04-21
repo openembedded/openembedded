@@ -1,0 +1,90 @@
+
+#
+# Patch managed by http://www.mn-logistik.de/unsupported/pxa250/patcher
+#
+
+Index: qt-2.3.10-snapshot-20060120/src/kernel/qkeyboard_qws.cpp
+===================================================================
+--- qt-2.3.10-snapshot-20060120.orig/src/kernel/qkeyboard_qws.cpp	2006-01-20 20:57:47.547702416 +0100
++++ qt-2.3.10-snapshot-20060120/src/kernel/qkeyboard_qws.cpp	2006-01-20 21:09:23.001977296 +0100
+@@ -848,6 +848,9 @@
+     bool release = false;
+     int keypad = 0;
+ 
++#if defined(QT_QWS_IPAQ) || defined(QT_QWS_SL5XXX) // need autorepeat implemented here?
++        bool repeatable = TRUE;
++
+ #ifndef QT_QWS_USE_KEYCODES
+ #if defined(QT_QWS_IPAQ)
+     // map ipaq 'action' key (0x60, 0xe0)
+@@ -984,9 +987,6 @@
+ 	if ( currentKey )
+ 	    keyCode = currentKey->key_code;
+ 
+-#if defined(QT_QWS_IPAQ) || defined(QT_QWS_SL5XXX) // need autorepeat implemented here?
+-	bool repeatable = TRUE;
+-
+ #if defined(QT_QWS_IPAQ)
+ 	switch (code) {
+ #if defined(QT_QWS_SL5XXX)
+@@ -1061,25 +1061,23 @@
+ 	    repeatable = FALSE;
+ #endif
+ 
++#if defined(QT_QWS_IPAQ) || defined(QT_QWS_SL5XXX)
+ 	if ( qt_screen->isTransformed()
+ 	     && keyCode >= Qt::Key_Left && keyCode <= Qt::Key_Down )
+ 	    {
+ 		keyCode = xform_dirkey(keyCode);
+ 	    }
+-
+-#ifdef QT_QWS_AUTOREPEAT_MANUALLY
+-	if ( repeatable && !release )
+-	    rep->start(prevuni,prevkey,modifiers);
+-	else
+-	    rep->stop();
+ #endif
++	
+ #endif
+ 	/*
+ 	  Translate shift+Key_Tab to Key_Backtab
+ 	*/
+ 	if (( keyCode == Key_Tab ) && shift )
+ 	    keyCode = Key_Backtab;
++#if defined(QT_QWS_IPAQ) || defined(QT_QWS_SL5XXX)
+     }
++#endif
+ 
+ #ifndef QT_QWS_USE_KEYCODES
+     /*
+@@ -1234,6 +1232,14 @@
+ 	} else {
+ 	    prevkey = prevuni = 0;
+ 	}
++
++#ifdef QT_QWS_AUTOREPEAT_MANUALLY
++        if ( repeatable && !release )
++            rep->start(prevuni,prevkey,modifiers);
++        else
++            rep->stop();
++#endif
++
+     }
+ #ifndef QT_QWS_USE_KEYCODES
+     extended = 0;
+@@ -2059,6 +2065,7 @@
+             press ? "press" : "release",
+             repeatable ? "true":"false" );
+ 
++#if defined(QT_QWS_IPAQ) || defined(QT_QWS_SL5XXX)
+     if ( qt_screen->isTransformed() && k >= Qt::Key_Left && k <= Qt::Key_Down )
+     {
+         qDebug( "SimpadButtonsHandler() - We are transformed! Correcting..." );
+@@ -2066,6 +2073,7 @@
+         k = xform_dirkey( k );
+         qDebug( "SimpadButtonsHandler() - Old Key: %d - New Key %d", oldK, k );
+     }
++#endif
+ 
+     if ( repeatable && press )
+         repeater->start( repeatdelay, true );

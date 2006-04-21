@@ -1,0 +1,66 @@
+
+#
+# Patch managed by http://www.holgerschurig.de/patcher.html
+#
+
+Index: qt-2.3.10-snapshot-20060120/src/widgets/qcommonstyle.cpp
+===================================================================
+--- qt-2.3.10-snapshot-20060120.orig/src/widgets/qcommonstyle.cpp	2006-01-20 01:08:03.000000000 +0100
++++ qt-2.3.10-snapshot-20060120/src/widgets/qcommonstyle.cpp	2006-01-20 21:03:08.477913608 +0100
+@@ -572,7 +572,7 @@
+ 				    bool enabled, bool active )
+ {
+ #ifndef QT_NO_MENUBAR
+-#ifndef QT_NO_STYLE_SGI
++#if 1 // #ifndef QT_NO_STYLE_SGI
+     if (draw_menu_bar_impl != 0) {
+ 	QDrawMenuBarItemImpl impl = draw_menu_bar_impl;
+ 	(this->*impl)(p, x, y, w, h, mi, g, enabled, active);
+Index: qt-2.3.10-snapshot-20060120/src/widgets/qlistview.cpp
+===================================================================
+--- qt-2.3.10-snapshot-20060120.orig/src/widgets/qlistview.cpp	2006-01-20 01:08:03.000000000 +0100
++++ qt-2.3.10-snapshot-20060120/src/widgets/qlistview.cpp	2006-01-20 21:03:08.480913152 +0100
+@@ -5053,9 +5053,9 @@
+ 	l = l->childItem ? l->childItem : l->siblingItem;
+ 
+     if ( l && l->height() )
+-	s.setHeight( s.height() + 10 * l->height() );
+-    else
+-	s.setHeight( s.height() + 140 );
++	s.setHeight( s.height() + 4 /*10*/ * l->height() );
++    else                      // ^v much too big for handhelds
++	s.setHeight( s.height() + 30 /*140*/ );
+ 
+     if ( s.width() > s.height() * 3 )
+ 	s.setHeight( s.width() / 3 );
+Index: qt-2.3.10-snapshot-20060120/src/kernel/qwindowsystem_qws.cpp
+===================================================================
+--- qt-2.3.10-snapshot-20060120.orig/src/kernel/qwindowsystem_qws.cpp	2006-01-20 20:57:33.113896688 +0100
++++ qt-2.3.10-snapshot-20060120/src/kernel/qwindowsystem_qws.cpp	2006-01-20 21:03:08.482912848 +0100
+@@ -918,6 +918,18 @@
+ {
+ }
+ 
++static void catchSegvSignal( int )
++{
++#ifndef QT_NO_QWS_KEYBOARD
++    if ( qwsServer )
++	qwsServer->closeKeyboard();
++#endif
++    QWSServer::closedown();
++    fprintf(stderr, "Segmentation fault.\n");
++    exit(1);
++}
++
++
+ /*!
+   \class QWSServer qwindowsystem_qws.h
+   \brief Server-specific functionality in Qt/Embedded
+@@ -1043,6 +1055,7 @@
+     }
+ 
+     signal(SIGPIPE, ignoreSignal); //we get it when we read
++    signal(SIGSEGV, catchSegvSignal); //recover the keyboard on crash
+ #endif
+     focusw = 0;
+     mouseGrabber = 0;

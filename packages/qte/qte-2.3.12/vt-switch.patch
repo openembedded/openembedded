@@ -1,0 +1,184 @@
+
+#
+# Patch managed by http://www.holgerschurig.de/patcher.html
+#
+
+Index: qt-2.3.10-snapshot-20060120/src/kernel/qapplication_qws.cpp
+===================================================================
+--- qt-2.3.10-snapshot-20060120.orig/src/kernel/qapplication_qws.cpp	2006-01-20 20:44:13.910394088 +0100
++++ qt-2.3.10-snapshot-20060120/src/kernel/qapplication_qws.cpp	2006-01-20 20:46:52.639263632 +0100
+@@ -125,6 +125,12 @@
+ static int qt_thread_pipe[2];
+ #endif
+ 
++#if defined(_OS_LINUX_)
++#include <sys/ioctl.h>
++#include <linux/vt.h>
++#include <linux/kd.h>
++#endif
++
+ const int qwsSharedRamSize = 32 * 1024;	//Small amount to fit on small devices.
+ 
+ // These are in qapplication.cpp in qt/main
+@@ -165,6 +171,8 @@
+ bool qws_accel = TRUE;	    // ### never set
+ const char *qws_display_spec = ":0";
+ int qws_display_id = 0;
++int qws_terminal_id = 0;
++int qws_terminal_old = 0;
+ int qws_client_id = 0;
+ QWidget *qt_pressGrab = 0;
+ QWidget *qt_mouseGrb = 0;
+@@ -1702,6 +1710,15 @@
+ 	    type = QApplication::GuiServer;
+ 	} else if ( arg == "-interlaced" ) {
+ 	    qws_screen_is_interlaced = TRUE;
++    } else if ( arg == "-terminal" ) {
++    if ( ++i < argc )
++        {
++            if ( ( qws_terminal_id = atoi( argv[i] ) ) < 1 )
++            {
++                qWarning( "Ignoring Invalid Terminal Specification." );
++                qws_terminal_id = 0;
++            }
++        }
+ 	} else if ( arg == "-display" ) {
+ 	    if ( ++i < argc )
+ 		qws_display_spec = argv[i];
+@@ -1727,6 +1744,53 @@
+     if ( type == QApplication::GuiServer ) {
+ 	qt_appType = type;
+ 	qws_single_process = TRUE;
++
++    /* Allocate a dedicated virtual terminal -- (C) Michael 'Mickey' Lauer <mickey@tm.informatik.uni-frankfurt.de>
++     * Added a new command line option which only is relevant if the application is created as a GuiServer.
++     * The option is -terminal <num>, where <num> specifies the virtual terminal to be occupied by the server.
++     * As default in Linux, 0 means the current virtual terminal.
++     */
++    #if defined(_OS_LINUX_)
++    if ( qws_terminal_id )
++    {
++        qDebug( "qt_init() - terminal specification is '%d'.", qws_terminal_id );
++        struct vt_stat console_stat;
++        int console_fd = ::open( QString().sprintf( "/dev/tty%d", qws_terminal_id ).latin1(), O_RDWR );
++        if ( console_fd == -1)
++        {
++            qWarning( "qt_init() - can't open tty: %s", strerror( errno ) );
++            exit( -1 );
++        }
++        if ( ioctl( console_fd, VT_GETSTATE, &console_stat ) == -1 )
++        {
++            qWarning( "qt_init() - can't ioctl(VT_GETSTATE): %s", strerror( errno ) );
++            exit( -1 );
++        }
++        qws_terminal_old = console_stat.v_active;
++        qDebug( "qt_init() - active vt is #%d, switching to #%d as requested...", qws_terminal_old, qws_terminal_id );
++
++        if ( ioctl( console_fd, VT_ACTIVATE, qws_terminal_id ) == -1 )
++        {
++            qWarning( "qt_init() - can't ioctl(VT_ACTIVATE): %s", strerror( errno ) );
++            exit( -1 );
++        }
++        if ( ioctl( console_fd, VT_WAITACTIVE, qws_terminal_id ) == -1 )
++        {
++            qWarning( "qt_init() - can't ioctl(VT_WAITACTIVE): %s", strerror( errno ) );
++            exit( -1 );
++        }
++        if ( ioctl( console_fd, KDSETMODE, KD_GRAPHICS ) == -1 )
++        {
++            qWarning( "qt_init() - can't ioctl(KDSETMODE:KD_GRAPHICS): %s", strerror( errno ) );
++            exit( -1 );
++        }
++        ::close( console_fd );
++    }
++    else
++    {
++        qDebug( "QWSApplication::qt_init() - current terminal specified." );
++    }
++    #endif
+ 	QWSServer::startup(flags);
+ 	setenv("QWS_DISPLAY", qws_display_spec, 0);
+     }
+@@ -1777,7 +1841,36 @@
+     QFontManager::cleanup();
+ 
+     if ( qws_single_process ) {
+-	QWSServer::closedown();
++        qDebug( "qt_cleanup() - shutting down QWSServer..." );
++#ifndef QT_NO_QWS_KEYBOARD
++        if ( qwsServer )
++            qwsServer->closeKeyboard();
++#endif
++        QWSServer::closedown();
++#if defined(_OS_LINUX_)
++        if ( qws_terminal_old > 0 )
++        {
++            qDebug( "qt_cleanup() - switching back to virtual terminal #%d", qws_terminal_old );
++
++            int console_fd = ::open( "/dev/tty0", O_RDWR );
++            if ( console_fd == -1)
++            {
++                qWarning( "qt_init() - can't open tty: %s", strerror( errno ) );
++            }
++            else
++            {
++                if ( ioctl( console_fd, KDSETMODE, KD_TEXT ) == -1 )
++                {
++                    qWarning( "qt_init() - can't ioctl(KDSETMODE:KD_TEXT): %s", strerror( errno ) );
++                }
++                if ( ioctl( console_fd, VT_ACTIVATE, qws_terminal_old ) == -1 )
++                {
++                    qWarning( "qt_init() - can't ioctl(VT_ACTIVATE): %s", strerror( errno ) );
++                }
++                ::close( console_fd );
++            }
++        }
++#endif
+     }
+     if ( qt_is_gui_used ) {
+ 	delete qt_fbdpy;
+Index: qt-2.3.10-snapshot-20060120/src/kernel/qkeyboard_qws.cpp
+===================================================================
+--- qt-2.3.10-snapshot-20060120.orig/src/kernel/qkeyboard_qws.cpp	2006-01-20 20:44:13.911393936 +0100
++++ qt-2.3.10-snapshot-20060120/src/kernel/qkeyboard_qws.cpp	2006-01-20 20:46:52.640263480 +0100
+@@ -1247,6 +1247,24 @@
+ {
+     if (kbdFD >= 0)
+     {
++
++#if !defined(_OS_FREEBSD_) && !defined(_OS_SOLARIS_)
++        struct vt_mode vtMode;
++        ioctl(kbdFD, VT_GETMODE, &vtMode);
++
++        /* Mickey says: "Better give up control of VT switching.
++         *               Hey, I really hate that OS-will-reacquire-resources on process-death
++         *               kind of thinking!
++         */
++        vtMode.mode = VT_AUTO;
++        vtMode.relsig = 0;
++        vtMode.acqsig = 0;
++        ioctl(kbdFD, VT_SETMODE, &vtMode);
++
++        signal(VTSWITCHSIG, 0);
++        qDebug( "~QWSTtyKeyboardHandler() - released VT." );
++#endif
++
+ #if !defined(_OS_FREEBSD_) && !defined(_OS_SOLARIS_)
+ 	ioctl(kbdFD, KDSKBMODE, K_XLATE);
+ #endif
+Index: qt-2.3.10-snapshot-20060120/src/kernel/qgfxlinuxfb_qws.cpp
+===================================================================
+--- qt-2.3.10-snapshot-20060120.orig/src/kernel/qgfxlinuxfb_qws.cpp	2006-01-20 20:44:13.911393936 +0100
++++ qt-2.3.10-snapshot-20060120/src/kernel/qgfxlinuxfb_qws.cpp	2006-01-20 20:46:52.641263328 +0100
+@@ -255,9 +255,9 @@
+ 
+ bool QLinuxFbScreen::initDevice()
+ {
+-    // No blankin' screen, no blinkin' cursor!, no cursor!
++    /* Setting up the VT parameters is done in qapplication_qws.cpp
+     const char termctl[]="\033[9;0]\033[?33l\033[?25l";
+-    writeTerm(termctl,sizeof(termctl));
++    writeTerm(termctl,sizeof(termctl)); */
+ 
+     // Grab current mode so we can reset it
+     fb_var_screeninfo vinfo;

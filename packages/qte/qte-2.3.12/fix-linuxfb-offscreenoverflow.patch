@@ -1,0 +1,24 @@
+Fix an overflow when the amount of requested cache memory
+is greater than the *lowest value
+Manuel Teira <manuel.teira@telefonica.net>
+
+#
+# Patch managed by http://www.holgerschurig.de/patcher.html
+#
+
+Index: qt-2.3.10-snapshot-20060120/src/kernel/qgfxlinuxfb_qws.cpp
+===================================================================
+--- qt-2.3.10-snapshot-20060120.orig/src/kernel/qgfxlinuxfb_qws.cpp	2006-01-20 21:07:51.803841520 +0100
++++ qt-2.3.10-snapshot-20060120/src/kernel/qgfxlinuxfb_qws.cpp	2006-01-20 21:08:13.655519560 +0100
+@@ -616,6 +616,11 @@
+ 
+     // No free blocks in already-taken memory; get some more
+     // if we can
++    if ( amount >= (*lowest ) ) {
++	//Avoid this overflow
++	qt_fbdpy->ungrab();
++	return 0;
++    }
+     unsigned int newlowest = (*lowest)-amount;
+     if (newlowest % align) {
+        	newlowest -= align;

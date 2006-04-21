@@ -1,0 +1,3414 @@
+ATI IMAGEON (W100) Accelerated support
+Manuel Teira <manuel.teira@telefonica.net>
+
+#
+# Patch managed by http://www.holgerschurig.de/patcher.html
+#
+
+Index: qt-2.3.10-snapshot-20060120/configure
+===================================================================
+--- qt-2.3.10-snapshot-20060120.orig/configure	2006-01-20 21:15:58.395868288 +0100
++++ qt-2.3.10-snapshot-20060120/configure	2006-01-20 21:17:39.451505496 +0100
+@@ -366,6 +366,9 @@
+    -accel-matrox)
+ 	QWS_ACCEL_MATROX=y
+ 	;;
++   -accel-w100)
++	QWS_ACCEL_W100=y
++	;;
+    -qvfb)
+ 	QWS_QVFB=y
+ 	;;
+@@ -767,6 +770,10 @@
+ then
+     QT_CXX="$QT_CXX -DQT_NO_QWS_MATROX"
+ fi
++if [ -z "$QWS_ACCEL_W100" -a -n "$EMB" ]
++then
++    QT_CXX="$QT_CXX -DQT_NO_QWS_W100"
++fi
+ if [ -z "$QWS_VNC" -a -n "$EMB" ]
+ then
+     QT_CXX="$QT_CXX -DQT_NO_QWS_VNC"
+@@ -1398,6 +1405,7 @@
+     -accel-voodoo3 ..... Enable Voodoo3 acceleration.
+     -accel-mach64 ...... Enable Mach64 acceleration.
+     -accel-matrox ...... Enable Matrox MGA acceleration.
++    -accel-w100 ........ Enable ATI Imageon w100 acceleration (experimental).
+     -qvfb .............. Enable X11-based Qt Virtual Frame Buffer.
+     -vnc ............... Enable VNC server (requires network module).
+ 
+@@ -1522,6 +1530,7 @@
+ [ "x$JPEG" = "xyes" ] && QT_LIBS="${QT_LIBS} -ljpeg"
+ [ "x$MNG" = "xyes" ] && QT_LIBS="${QT_LIBS} -lmng -ljpeg" # assume JNG support
+ [ "x$NAS_SOUND" = "xyes" ] && QT_LIBS="${QT_LIBS} -laudio -lXt" # Xt junk in audio library
++[ "x$QWS_ACCEL_W100" = "xy" ] && QT_LIBS="${QT_LIBS} -laticore" # Aticore W100 support
+ QT_LIBS="$L_FLAGS $R_FLAGS $QT_LIBS $l_FLAGS"
+ 
+ 
+Index: qt-2.3.10-snapshot-20060120/src/kernel/qgfxraster_qws.cpp
+===================================================================
+--- qt-2.3.10-snapshot-20060120.orig/src/kernel/qgfxraster_qws.cpp	2006-01-20 21:09:56.399900040 +0100
++++ qt-2.3.10-snapshot-20060120/src/kernel/qgfxraster_qws.cpp	2006-01-20 21:17:39.454505040 +0100
+@@ -2699,7 +2699,6 @@
+     }
+ #endif
+     // Bresenham algorithm from Graphics Gems
+-
+     int ax=QABS(dx)*2;
+     int ay=QABS(dy)*2;
+     int sy=dy>0 ? 1 : -1;
+@@ -5984,6 +5983,10 @@
+ # include "qgfxmatrox_qws.cpp"
+ #endif
+ 
++#if !defined(QT_NO_QWS_W100)
++# include "qgfxw100_qws.cpp"
++#endif
++
+ #if !defined(QT_NO_QWS_VFB)
+ # include "qgfxvfb_qws.cpp"
+ #endif
+@@ -6038,6 +6041,9 @@
+ #if !defined(QT_NO_QWS_MATROX)
+     { "Matrox", qt_get_screen_matrox, 1 },
+ #endif
++#if !defined(QT_NO_QWS_W100)
++    { "W100", qt_get_screen_w100, 1 },
++#endif
+ #if !defined(QT_NO_QWS_TRANSFORMED)
+     { "Transformed", qt_get_screen_transformed, 0 },
+ #endif
+@@ -6078,6 +6084,8 @@
+ 	    qt_screen = driverTable[i].qt_get_screen( display_id );
+ 	    if ( qt_screen ) {
+ 		if ( qt_screen->connect( spec ) ) {
++		  printf( "[%d]:Connected to screen '%s'\n", 
++			  getpid(), driverTable[i].name );
+ 		    return qt_screen;
+ 		} else {
+ 		    delete qt_screen;
+Index: qt-2.3.10-snapshot-20060120/src/3rdparty/kernel/aticore/aticore.h
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ qt-2.3.10-snapshot-20060120/src/3rdparty/kernel/aticore/aticore.h	2006-01-20 21:17:39.455504888 +0100
+@@ -0,0 +1,574 @@
++/*
++ * AtiCore 2D acceleration API
++ *
++ */
++
++#include <inttypes.h>
++#include <sys/types.h>
++
++#ifndef __W100API_H__
++#define __W100API_H__
++
++#ifdef __cplusplus
++extern "C" {
++#endif
++
++#define SolidRop_GXclear	0x00	/* 0 */
++#define SolidRop_GXand		0xa0	/* src AND dst */
++#define	SolidRop_GXandReverse	0x50	/* src AND NOT dst */
++#define	SolidRop_GXcopy		0xf0	/* src */
++#define SolidRop_GXandInverted	0x0a	/* NOT src AND dst */
++#define	SolidRop_GXnoop		0xaa	/* dst */
++#define	SolidRop_GXxor		0x5a	/* src XOR dst */
++#define	SolidRop_GXor		0xfa	/* src OR dst */
++#define	SolidRop_GXnor		0x05	/* NOT src AND NOT dst */
++#define	SolidRop_GXequiv	0xa5	/* NOT src XOR dst */
++#define	SolidRop_GXinvert	0x55	/* NOT dst */
++#define	SolidRop_GXorReverse	0xf5	/* src OR NOT dst */
++#define	SolidRop_GXcopyInverted	0x0f	/* NOT src */
++#define	SolidRop_GXorInverted	0xaf	/* NOT src OR dst */
++#define	SolidRop_GXnand		0x5f	/* NOT src OR NOT dst */
++#define	SolidRop_GXset		0xff	/* 1 */
++
++#define	BltRop_GXclear		0x00	/* 0 */
++#define	BltRop_GXand		0x88	/* src AND dst */
++#define	BltRop_GXandReverse	0x44	/* src AND NOT dst */
++#define	BltRop_GXcopy		0xcc	/* src */
++#define	BltRop_GXandInverted	0x22	/* NOT src AND dst */
++#define	BltRop_GXnoop		0xaa	/* dst */
++#define	BltRop_GXxor		0x66	/* src XOR dst */
++#define	BltRop_GXor		0xee	/* src OR dst */
++#define	BltRop_GXnor		0x11	/* NOT src AND NOT dst */
++#define	BltRop_GXequiv		0x99	/* NOT src XOR dst */
++#define	BltRop_GXinvert		0x55	/* NOT dst */
++#define	BltRop_GXorReverse	0xdd	/* src OR NOT dst */
++#define	BltRop_GXcopyInverted	0x33	/* NOT src */
++#define	BltRop_GXorInverted	0xbb	/* NOT src OR dst */
++#define	BltRop_GXnand		0x77	/* NOT src OR NOT dst */
++#define	BltRop_GXset		0xff	/* 1 */
++
++#define DSTTYPE_8BPP            2   //8bpp
++#define DSTTYPE_16BPP_1555	3   //16 bpp aRGB 1555
++#define DSTTYPE_16BPP_444	5   //16 bpp aRGB 4444
++
++#define SRCTYPE_1BPP_OPA        0       //mono (expanded to frgd, bkgd)
++#define SRCTYPE_1BPP_TRA        1       //mono (expanded to frgd, leave_alone)
++#define SRCTYPE_EQU_DST         3       //color (same as DST)
++#define SRCTYPE_SOLID_COLOR_BLT 4       //solid color for Blt (use frgd)
++#define SRCTYPE_4BPP            5       //4 bpp
++#define SRCTYPE_12BPP_PACKED    6       //12 bpp packed
++  
++#define ROP3_SRCCOPY		0xcc
++#define ROP3_PATCOPY		0xf0
++  
++#define OVLTYPE_YUV420          7
++#define OVLTYPE_RGB565          8
++
++#define DP_BRUSH_8x8MONOOPA     0 //8x8 mono pattern (expanded to frgd, bkgd )
++#define DP_BRUSH_8x8MONOTRA     1 //8x8 mono pattern (expanded to frgd, leave alone )
++#define DP_PEN_32x1MONOOPA      6 //32x1 mono pattern (expanded to frgd, bkgd)
++#define DP_PEN_32x1MONOTRA      7 //32x1 mono pattern (expanded to frgd, leave alone)
++#define DP_BRUSH_8x8COLOR       10 //8x8 color pattern
++#define DP_BRUSH_SOLIDCOLOR     13 //solid color pattern (frgd)
++#define DB_BRUSH_NONE           15 //No brush used
++
++  typedef struct {
++    int16_t XCoord;
++    int16_t YCoord;
++  } ATI_POINT;
++  
++  typedef struct {
++    int16_t XCoord;
++    int16_t YCoord;
++    int16_t Width;
++    int16_t Height;
++  } ATI_RECT;
++  
++  typedef struct {
++    int16_t X_Top_Left;                  // x coordinate of top left corner
++    int16_t Y_Top_Left;                  // y coordinate of top left corner
++    int16_t X_Bottom_Right;              // x coordinate of bottom right corner
++    int16_t Y_Bottom_Right;              // y coordinate of bottom right corner
++  } ATI_CLIPRECT;
++  
++  typedef struct {
++    uint32_t Count; 
++    uint8_t ScaleXFactor;
++    uint8_t ScaleYFactor;
++    uint8_t BlendOn;
++    uint8_t dummy1;
++  } ATI_STRETCH;
++  
++  typedef struct {
++    uint32_t *lpSrcBitmap;                /* サーフェスのオフセット */
++    uint16_t XCoord;                      /* +4  確定:サーフェス内のx座標 */
++    uint16_t YCoord;                      /* +6  確定:サーフェス内のy座標 */
++    uint16_t SrcPitch;                    /* +8  確定: */
++    uint16_t SrcHeight;                   /* +10 確定: */
++    uint16_t OverlayWidth;                /* オーバレイの幅(Srcと違う値にしても、動的に拡大縮小されたりはしない、意味あんの？) */
++    uint16_t OverlayHeight;
++    uint32_t lpOverlayKey;                /* +16 確定:謎(カラーキー？) */
++    uint8_t OverlayFormat;               /* +20 確定 */
++    uint8_t dummy1;
++    uint16_t dummy2;
++  } ATI_OVERLAYPROP;                      /* 24bytes? */
++  
++  typedef struct {
++    int HInvert;
++    int VInvert;
++  } ATI_EXTVIDEOPROP;
++  
++  typedef struct {
++    ATI_EXTVIDEOPROP ExtVideoProp;
++  } ATI_UNKNOWN1;
++  
++  typedef struct {
++    unsigned long clr_cmp_fcn_src   :3;
++    unsigned long                   :5;
++    unsigned long clr_cmp_fcn_dst   :3;
++    unsigned long                   :13;
++    unsigned long clr_cmp_src       :2;
++    unsigned long                   :6;
++  } clr_cmp_cntl_t;
++
++  typedef struct {
++    uint16_t x;
++    uint16_t y;
++    uint16_t w;
++    uint16_t h;
++    clr_cmp_cntl_t cmp_cntl;
++    unsigned long tcolour;
++  } transbitblt_t;
++
++  typedef struct {
++    uint32_t dummy1;
++    uint32_t dummy2;
++    uint8_t HExpansion;                   /* +8  確定 */
++    uint8_t VExpansion;                   /* +9  確定 */
++    uint8_t dummy3;
++    uint8_t dummy4;
++    uint8_t RConversion;                  /* +12 確定 */
++    uint8_t dummy5;
++    uint8_t dummy6;
++    uint8_t dummy7;
++    ATI_UNKNOWN1 x;
++  } ATI_EXTENDEDOVERLAYPROP;              /* 16byte? */
++  
++  /**
++   * AtiCore initialization.
++   * Sets up the shared memory area
++   * @return 1:success, 0:fail
++   */
++  int AtiCore_ProcessAttach( void );
++  
++  /**
++   * AtiCore finish.
++   *
++   * @return 1:success, 0:fail
++   */
++  int AtiCore_ProcessDetach( void );
++
++  
++  /**
++   * Allocates a surface on the internal RAM.
++   * Perhaps there's a way to indicate to allocate on the 
++   * internal RAM?
++   * @arg handle Reference to the returned surface handle
++   * @arg offset Returned offset of this surface on the video memory
++   * @arg size   Size (bytes) to be reserved (16 multiple)
++   * @arg direction 
++   * @return 1:success, 0:fail
++   */
++  int AtiCore_AllocateSurface( uint16_t *handle, uint32_t *offset,
++			       uint32_t size, uint32_t direction );
++  
++  /**
++   * Deallocates a given surface.
++   * @arg handle Handle to the allocated surface 
++   * (As returned by AllocateSurface)
++   * @return 1:success, 0:fail
++   */
++  int AtiCore_DestroySurface( uint16_t handle );
++
++  /**
++   * Sets the kind of Raster Operation.
++   * @param rop Raster operation to be performed
++   * @return 1:success, 0:fail
++   */
++  int AtiCore_SetRopOperation( uint32_t rop );
++  
++  /**
++   * Sets the destination type for raster operation.
++   * @param dsttype
++   * @return 1:success, 0:fail
++   */
++  int AtiCore_SetDstType( uint32_t dsttype );
++  
++  /**
++   * Sets the source type for raster operation.
++   * @param srctype
++   * @return 1:success, 0:fail
++   */
++  int AtiCore_SetSrcType( uint32_t srctype );
++  
++  /**
++   * Sets Source clipping rectangle.
++   * @param cliprect Rectangle to perform clipping.
++   * @return 1:success, 0:fail
++   */ 
++  int AtiCore_SetSrcClippingRect( ATI_CLIPRECT *cliprect );
++  
++  /**
++   * Sets Destination clipping rectangle.
++   * @param cliprect Rectangle to perform clipping.
++   * @return 1:success, 0:fail
++   */ 
++  int AtiCore_SetDstClippingRect(ATI_CLIPRECT *cliprect);
++  
++  /**
++   * Sets pitch and offset for source in a raster operation.
++   * @param pitch Pitch (line width) of source
++   * @param offset Offset of source
++   * @return 1:success, 0:fail
++   */
++  int AtiCore_SetSrcPitchOffset( int pitch, int offset );
++  
++  /**
++   * Sets pitch and offset destination source in a raster operation.
++   * @param pitch Pitch (line width) of destination
++   * @param offset Offset of destination (memory offset)
++   * @return 1:success, 0:fail
++   */
++  int AtiCore_SetDstPitchOffset( int pitch, int offset );
++  
++  /**
++   * Performs a BitBlt with source rotation.
++   * @param flags Rotation degree
++   * @param dstRect Rectangle for destination Bitblitting
++   * @param srcRect Rectangle for origin bitblitting
++   * @test Tested with specified flags parameter
++   */
++  int AtiCore_BitBltFilpRotate( int flags,
++				ATI_RECT *dstRect, 
++				ATI_RECT *srcRect);
++  
++  /**
++   * Performs a BitBlt with source stretching.
++   * @param option Unknown
++   * @param point Unknown
++   * @param srcRect Source blitting surface
++   * @test Untested
++   */
++  int AtiCore_StretchBlt( ATI_STRETCH *option,
++			  ATI_POINT *point, 
++			  ATI_RECT *srcRect);
++  
++  /**
++   * Waits for the FIFO to be idle at least msecs.
++   * @param msecs Maximum time to wait for FIFO to idle
++   * @return 1:success, 0:fail
++   * @test Untested
++   */
++  int AtiCore_WaitComplete( int msec );
++
++  /**
++   * Allocates a new overlay handle.
++   * @param   handle overlay
++   * @return  1:success, 0:fail
++   * @test Yes
++   */
++  int AtiCore_AllocOverlay( uint16_t *handle );
++
++  /**
++   * Deallocates a overlay handle.
++   * @param  handle overlay
++   * @return 1:success, 0:fail
++   * @test Yes
++   */
++  int AtiCore_ReleaseOverlay( uint16_t handle );
++
++  /**
++   * Sets up an overlay given a handle an a set of properties.
++   * @param handle Allocated handle to setup the overlay.
++   * @param props Overlay properties struct
++   * @return 1:success, 0:fail
++   */
++  int AtiCore_SetupOverlay( uint16_t handle, ATI_OVERLAYPROP *props );
++
++  /**
++   * Sets up extended overlay features.
++   * @param handle Allocated handle to an overlay
++   * @param props Extended overlay properties
++   * @return 1:success, 0:fail
++   */
++  int AtiCore_SetupOverlayExtended( uint16_t handle, 
++				    ATI_EXTENDEDOVERLAYPROP *props );
++
++  /**
++   * Enable/Disable an overlayed surface.
++   * @param   handle Overlay to be enabled/disabled
++   * @param   enable 1: Enable, 0: Disable
++   * @return  1:success, 0:fail
++   * @test Tested
++   */
++  int AtiCore_SetOverlayOnOff( uint16_t handle, int enable );
++
++  /**
++   * Sets up the overlay position for a given handle.
++   * @param handle Overlay Handle
++   * @param x X Coordinate (Seems to be a bug with x < 4 )
++   * @param y Y Coordinate
++   * @return 1:success, 0:fail
++   */
++  int AtiCore_SetOverlayPos( uint16_t handle, 
++			     uint16_t x, 
++			     uint16_t y );
++
++  /**
++   * Translates between physical/virtual addresses.
++   * @param offset VRAM offset to be translated
++   * @param viraddr Virtual address for VRAM
++   * @return 1:success,0:fail
++   */
++  int AtiCore_SetupMemoryTransfer( uint32_t offset, 
++				   uint32_t *viraddr );
++
++  /**
++   * Related with the previous one. It seems to be necesary to be called
++   * but I'm not sure of its function.
++   * @return 1:success, 0:fail
++   */
++  int AtiCore_TerminateMemoryTransfer( void );
++
++  /**
++   * Returns the frontbuffer pitch and offset.
++   * @param pitch Return value for the frontbuffer pitch (width)
++   * @param offset Return value for the frontbuffer offset
++   * @return 1:success, 0:fail
++   */
++  int AtiCore_GetFrontBufferPitchOffset( uint32_t *pitch, 
++					 uint32_t *offset );
++
++  /**
++   * Changes display brighness ?
++   * @param  brightness  -64...63
++   * @return 1:success, 0:fail
++   */
++  int AtiCore_SetDisplayBrightness( int brightness );
++
++  /**
++   * Returns the amount of available internal/external memory.
++   * @param  internal Pointer to return internal memory size
++   * @param  external Pointer to return external memory size
++   * @return 1:success, 0:fail
++   */
++  int GetAvailableVideoMem( uint32_t *internal, 
++			    uint32_t *external );
++
++/**
++ *
++ * 
++ *
++ 
++ {
++    (uint32_t) 0
++    (uint32_t) 0
++    (uint16_t) 480
++    (uint16_t) 640
++    (uint16_t) 480
++    (uint16_t) 640
++    (uint32_t) 5
++ */
++
++  typedef struct {
++    uint32_t	dummy1;
++    ATI_RECT	Size;
++    uint16_t	Width;
++    uint16_t	Height;
++    uint32_t	Flag;
++  } ATI_GRAPHICWINDOW;
++ 
++ int AtiCore_SetupGraphicWindow(void* );
++
++  /**
++   * It seems to be necessary after AtiCore_ProcessAttach
++   * @param mode: 0xaaab for portrait, 0xaaaa for landscape
++   * @return 1:success, 0:fail
++   */
++  int AtiCore_ProcessAttachSpecialMode( int mode );
++
++  /**
++   * Detach from the special mode. Whatever it means.
++   * @return 1:success, 0:fail
++   */
++  int AtiCore_ProcessDetachSpecialMode( void );
++
++  /**
++   * Sets up the position of the Graphic viewport ?
++   * @param x X coordinate
++   * @param y Y coordinate
++   * @return 1:success, 0:fail
++   */
++  int AtiCore_SetGraphicWindowPos( int x, int y );
++
++  /**
++   * Get the graphic viewport position.
++   * @param x Pointer to xcoord placeholder
++   * @param y Pointer to ycoord placeholder
++   * @return 1:success, 0:fail
++   */
++  int AtiCore_GetGraphicWindowPos( int *x, int *y );
++
++  /**
++   * Sets up the frontbuffer position.
++   * @param offset VRAM offset to be used.
++   * @param x X Coordinate?
++   * @param y Y Coordinate?
++   * @return 1:success, 0:fail
++   */
++  int AtiCore_SetFrontBuffer( int offset, int x, int y );
++
++  /**
++   * Enable/Disable the frontbuffer?
++   * @param enable 1 enables/ 0 disables
++   * @return 1:success, 0:fail
++   */
++  int AtiCore_SetGraphicWindowOnOff( int enable );
++
++  /*
++   * Sets the foreground color.
++   * @param colour Color in 565 format (perhaps depends on the source format)
++   * @return 1:success, 0:fail
++   */
++  int AtiCore_SetFrgColour( int colour );
++
++  /*
++   * Sets the background colour.
++   * @param colour Colour in 565 format (perhaps depends on the source format)
++   * @return 1:success, 0:fail
++   */
++  int AtiCore_SetBkgColour( int colour );
++  
++  /**
++   * Changes the painting brush
++   * @param btype Type of brush to use
++   *        4: Uses the pattern
++   *        6: SolidLine
++   * @param pattern Pointer to a 32 bit pattern
++   * @return 1:success, 0:fail
++   * @test Some values for btype produces a kind of antialiasing line
++   */
++  int AtiCore_BrushType( int btype, unsigned int *pattern );
++
++  /**
++   * Performs a rectangle paint.
++   * @param nrects Number of rectangles to be painted
++   * @param rects Array of rectangles to be painted
++   * @return 1:success, 0:fail
++   * @test Tested with nrects==1
++   */
++  int AtiCore_PaintRect( int nrects , 
++			 ATI_RECT rects[] );
++
++  /**
++   * Draws a set of lines.
++   * @param npoints Number of points in the polyline set
++   * @param points  Pointer to an array of ATI_POINT
++   * @return 1:success, 0:fail
++   */
++  int AtiCore_Polyline( int npoints, ATI_POINT points[] );
++
++  int AtiCore_GetPitchOffsetProperty( void *, void *);
++
++  int AtiCore_CursorOnOff( int, int );
++
++  /**
++   * Performs a BitBlt ROP operation.
++   * @param unk Unknown (Always set to 1)
++   * @param dstrect Bounding destination rect
++   * @param srcrect Bounding source rect
++   * @return 1:success, 0:fail
++   */
++  int AtiCore_BitBlt( int unk, 
++		      ATI_RECT *dstrect, 
++		      ATI_RECT *srcrect );
++
++  /**
++   * Performs a Transparent BitBlt ROP operation.
++   * @param dstrect Transparent DstRect bitblt argument
++   * @param srcrect Transparent SrcRect bitblt argument
++   * @return 1:success, 0:fail
++   * @test Doesn't work. It sets to zero CLR_CMP_CNTL and CLR_CMP_MSK
++   */
++  int AtiCore_TransBitBlt( transbitblt_t *dstrect,
++			   transbitblt_t *srcrect );
++
++  int AtiCore_WakeUpCall( void );
++
++  /**
++   * Draws a set of pixels
++   * @param npoints Number of points to draw
++   * @param points Pointer to an array of ATI_POINT
++   * @return 1:success, 0:fail
++   */
++  int AtiCore_DrawPixel( int npoints, ATI_POINT *points );
++
++  int AtiCore_SetSysClk( unsigned short in0 );
++  int AtiCore_SetFastSysClk( unsigned short in0 );
++  int AtiCore_SetSlowSysClk( unsigned short in0 );
++
++  int AtiCore_GetCursorPos( unsigned long in0,
++			    unsigned short *x,
++			    unsigned short *y );
++  
++
++
++/* ================================================================ */
++/* from libqte.so.2.3.2 */
++/*
++AtiCore_AlphaBlend
++
++AtiCore_Flush
++AtiCore_GammaCorrection
++AtiCore_GetCRC
++AtiCore_GetCursorPos
++AtiCore_GetDeviceInfo
++AtiCore_GetGPIO_Data
++AtiCore_GetGraphicExtended
++AtiCore_GetGraphicWindowPos
++AtiCore_GetLargestVideoMemBlock
++AtiCore_GetLastError
++AtiCore_GetMultiCRC
++AtiCore_GetOverlayPos
++AtiCore_Host
++AtiCore_LoadCursorBitMap
++AtiCore_PolyScanline
++AtiCore_ProcessAttachMinimal(void)?
++AtiCore_ProcessDetachMinimal(void)?
++AtiCore_ProcessDetachSpecialMode
++AtiCore_ReadCfgReg
++AtiCore_ReadMem(int, int)?
++AtiCore_ReadReg(int, int)?
++AtiCore_ScanlineShading
++AtiCore_SetApertures
++AtiCore_SetBytePixelOrder
++AtiCore_SetCursorPos
++AtiCore_SetDisplayParameters
++AtiCore_SetDriverBehaviour
++AtiCore_SetGPIO_Data
++AtiCore_SetOverlayPosUsingGraphicWindowXY
++AtiCore_SetPartialCursor
++AtiCore_SetupGraphicExtended
++AtiCore_SetupPM4
++AtiCore_SmallText
++AtiCore_SubmitPM4Packet
++AtiCore_WriteCfgReg
++AtiCore_WriteMem
++AtiCore_WriteReg
++ */
++
++#ifdef __cplusplus
++}
++#endif
++
++#endif
+Index: qt-2.3.10-snapshot-20060120/src/kernel/qgfxw100_qws.cpp
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ qt-2.3.10-snapshot-20060120/src/kernel/qgfxw100_qws.cpp	2006-01-20 21:17:39.459504280 +0100
+@@ -0,0 +1,2709 @@
++ /* -*- Mode: C++; tab-width: 4; indent-tabs-mode: nil -*- */
++/***************************************************************************
++
++** Imageon driver for qte using libAticore
++** Manuel Teira( 2005 )
++** BUGS
++*  - Enable again internal memory surfaces.
++****************************************************************************/
++#include <unistd.h>
++#include <stdio.h>
++#include <stdlib.h>
++#include <errno.h>
++#include <string.h>
++#include <dirent.h>
++#include <fcntl.h>
++#include <sys/types.h>
++#include <sys/mman.h>
++#include <sys/time.h>
++#include <time.h>
++
++#include <sys/ipc.h>
++#include <sys/shm.h>
++
++#include <qapplication.h>
++
++#ifndef __sparc__
++#include <sys/io.h>
++#endif
++
++#include "qgfxraster_qws.h"
++#include "qgfxlinuxfb_qws.h"
++#include <aticore/aticore.h>
++
++#include <stdarg.h>
++
++class W100Driver {
++public:
++
++    typedef enum Loglevel {
++        ERROR = 0,
++        WARNING,
++        INFO
++    };
++
++    typedef enum Opcodes {
++        DRAWLINE = 0,
++        DRAWPOINT,
++        DRAWPOINTS,
++        FILLRECT,
++        SCROLL,
++        BITBLT,
++        POLYLINE,
++        EOO
++    };
++
++    typedef enum Retcodes {
++        codOK,
++        codError
++    };
++        
++
++    typedef struct Opcode {
++        QString str;
++        int index;
++        bool accelerated;
++        int hits;
++        int misses;
++    };
++
++    static Opcode lOpcodes[];
++
++    static QString level2str( int level )
++    {
++        switch( level ) {
++        case ERROR:
++            return QString( "ERROR" );
++            break;
++        case WARNING:
++            return QString( "WARNING" );
++            break;
++        case INFO:
++            return QString( "INFO" );
++            break;
++        default:
++            return QString( "UNKNOWN" );
++            break;
++        }
++    }
++
++    W100Driver():
++        m_loglevel( 0 ),
++        m_logenabled( 0 ),
++        m_logcount( 0 ),
++        m_attached( false )
++    {
++        m_pid = getpid();
++        m_loglevel = 0;
++        char *var;
++        if ( var = getenv( "W100_DEBUG" ) ) {
++            if ( strtol( var, 0, 0 ) == 1 ) {
++                m_logenabled = 1;
++            }
++        }
++
++        if ( m_logenabled ) {
++            if ( var = getenv( "W100_DEBUGLEVEL" ) ) {
++                if ( ( m_loglevel = strtol( var, 0, 0 ) ) < 0 ) {
++                    m_loglevel = 0;
++                }
++            }
++
++            QString path( "/mnt/card/w100/w100debug.log" );
++            if ( var = getenv( "W100_DEBUGPATH" ) ) {
++                path = QString( var ) + "/w100debug.log";
++            } 
++            m_logfile = fopen( path.latin1(), "a" );
++            if ( m_logfile == NULL ) m_logenabled = 0;
++        }
++
++        Opcode *opcodePtr = lOpcodes;
++        while ( opcodePtr->index != EOO ) {
++            QString varName = "W100_ACCEL_" + opcodePtr->str;
++            char *varPtr;
++            if ( ( varPtr = getenv( varName.latin1() ) )  ) {
++                if ( ( strtol( varPtr, NULL, 0 ) == 0 ) ||
++                     ( strcmp( varPtr, "false" ) == 0 ) )  {
++                    opcodePtr->accelerated = false;
++                }
++            }
++            opcodePtr++;
++        }
++    }
++
++    ~W100Driver()
++    {
++        //Dump statistics about any opcode
++        Opcode *opcodePtr = lOpcodes;
++        while ( opcodePtr->index != EOO ) {
++            log( WARNING, "Opcode %s. Accelerated=%s. Hits=%d. Misses=%d",
++                 opcodePtr->str.latin1(),
++                 opcodePtr->accelerated ? "true" : "false",
++                 opcodePtr->hits,
++                 opcodePtr->misses );
++            opcodePtr++;
++        }
++        if ( m_logenabled && m_logfile ) {
++            fclose( m_logfile );
++        }
++    }
++
++    bool accelerated( int opcode )
++    {
++        if ( !m_attached ) {
++            log( WARNING, "Asking for accelerated '%s' when not attached",
++                 lOpcodes[opcode].str.latin1() );
++            return false;
++        }
++        if ( opcode < EOO ) {
++            if ( lOpcodes[opcode].accelerated ) {
++                return true;
++            } else {
++                log( WARNING, "Not accelerated '%s'",
++                     lOpcodes[opcode].str.latin1() );
++                return false;
++            }
++        }
++        return false;
++    }
++
++    void addHit( int opcode )
++    {
++        lOpcodes[opcode].hits++;
++    }
++
++    void addMiss( int opcode )
++    {
++        lOpcodes[opcode].misses++;
++    }
++
++    void log( int level, const char *fmt, ... )
++    {
++        if ( m_logenabled && ( level <= m_loglevel ) ) {
++            timeval tv;
++            char buffer[1024];
++            va_list ap;
++            va_start( ap, fmt );
++            vsnprintf( buffer, 1023, fmt, ap );
++            va_end( ap );
++            gettimeofday( &tv, NULL );
++            fprintf( m_logfile, "(%010u.%06u)%d:%d:%s:%s\n", 
++                     tv.tv_sec, tv.tv_usec,
++                     m_logcount++, 
++                     m_pid,
++                     level2str( level ).latin1(), 
++                     buffer );
++            fflush( m_logfile );
++        }
++    }
++
++    bool attached( void ) const
++    {
++        return m_attached;
++    }
++
++    int processAttach( void )
++    {
++        if ( !m_attached ) {
++            if ( AtiCore_ProcessAttach() ) {
++                log( WARNING, "Process attached succesfully" );
++                m_attached = true;
++                return codOK;
++            } else {
++                log( WARNING, "Error attaching process" );
++            }
++        } else {
++            log( WARNING, "Process already attached" );
++        }
++        return codError;
++    }
++
++    int processDetach( void )
++    {
++        if ( m_attached ) {
++            if ( AtiCore_ProcessDetach() ) {
++                log( WARNING, "Process detached succesfully" );
++                m_attached = false;
++                return codOK;
++            } else {
++                log( WARNING, "Error detaching process" );
++            }
++        } else {
++            log( WARNING, "Trying to detach while not attached" );
++        }
++        return codError;
++    }
++
++    int allocateSurface( uint16_t *handle, uint32_t *offset,
++                              uint32_t size, uint32_t direction )
++    {
++        if ( m_attached ) {
++            if ( AtiCore_AllocateSurface( handle, offset, 
++                                          size, direction ) ) {
++                return codOK;
++            } else {
++                log( ERROR, "Error in allocateSurface" );
++            }
++        } else {
++            log( WARNING, "Trying to allocateSurface while not attached" );
++        }
++        return codError;
++    }
++
++    int destroySurface( uint16_t handle )
++    {
++        if ( m_attached ) {
++            if ( AtiCore_DestroySurface( handle ) ) {
++                return codOK;
++            } else {
++                log( ERROR, "Error in destroySurface" );
++            }
++        } else {
++            log( WARNING, "Trying to destroySurface while not attached" );
++        }
++        return codError;
++    }
++
++    int drawPixel( int npoints, ATI_POINT *points )
++    {
++        if ( m_attached ) {
++            if ( AtiCore_DrawPixel( npoints, points ) ) {
++                return codOK;
++            } else {
++                log( ERROR, "Error in drawPixel" );
++            }
++        } else {
++            log( WARNING, "Trying to drawPixel while not attached" );
++        }
++        return codError;
++    }
++
++    int setRopOperation( uint32_t rop )
++    {
++        if ( m_attached ) {
++            if ( AtiCore_SetRopOperation( rop ) ) {
++                return codOK;
++            } else {
++                log( ERROR, "Error in setRopOperation" );
++            }
++        } else {
++            log( WARNING, "Trying to setRopOperation while not attached" );
++        }
++        return codError;
++    }
++
++    int setDstType( uint32_t dtype )
++    {
++        if ( m_attached ) {
++            if ( AtiCore_SetDstType( dtype ) ) {
++                return codOK;
++            } else {
++                log( ERROR, "Error in setDstType" );
++            }
++        } else {
++            log( WARNING, "Trying to setDstType while not attached" );
++        }
++        return codError;
++    }
++
++    int setSrcType( uint32_t stype )
++    {
++        if ( m_attached ) {
++            if ( AtiCore_SetSrcType( stype ) ) {
++                return codOK;
++            } else {
++                log( ERROR, "Error in setSrcType" );
++            }
++        } else {
++            log( WARNING, "Trying to setSrcType while not attached" );
++        }
++        return codError;
++    }
++
++    int setSrcClippingRect( ATI_CLIPRECT *cliprect )
++    {
++        if ( m_attached ) {
++            if ( AtiCore_SetSrcClippingRect( cliprect ) ) {
++                return codOK;
++            } else {
++                log( ERROR, "Error in setSrcClippingRect" );
++            }
++        } else {
++            log( WARNING, "Trying to setSrcClippingRect while not attached" );
++        }
++        return codError;
++    }
++
++    int setDstClippingRect( ATI_CLIPRECT *cliprect )
++    {
++        if ( m_attached ) {
++            if ( AtiCore_SetDstClippingRect( cliprect ) ) {
++                return codOK;
++            } else {
++                log( ERROR, "Error in setDstClippingRect" );
++            }
++        } else {
++            log( WARNING, "Trying to setDstClippingRect while not attached" );
++        }
++        return codError;
++    }
++
++    int setSrcPitchOffset( int pitch, int offset )
++    {
++        if ( m_attached ) {
++            if ( AtiCore_SetSrcPitchOffset( pitch, offset ) ) {
++                return codOK;
++            } else {
++                log( ERROR, "Error in setSrcPitchOffset" );
++            }
++        } else {
++            log( WARNING, "Trying to setSrcPitchOffset while not attached" );
++        }
++        return codError;
++    }
++
++    int setDstPitchOffset( int pitch, int offset )
++    {
++        if ( m_attached ) {
++            if ( AtiCore_SetDstPitchOffset( pitch, offset ) ) {
++                return codOK;
++            } else {
++                log( ERROR, "Error in setDstPitchOffset" );
++            }
++        } else {
++            log( WARNING, "Trying to setDstPitchOffset while not attached" );
++        }
++        return codError;
++    }
++
++    int bitBltFlipRotate( int rot, 
++                          ATI_RECT *dstRect,
++                          ATI_RECT *srcRect )
++    {
++        if ( m_attached ) {
++            if ( AtiCore_BitBltFilpRotate( rot, dstRect, srcRect ) ) {
++                return codOK;
++            } else {
++                log( ERROR, "Error in bitBltFlipRotate" );
++            }
++        } else {
++            log( WARNING, "Trying to bitBltFlipRotate while not attached" );
++        }
++        return codError;
++    }
++
++    int stretchBlt( ATI_STRETCH *option,
++                    ATI_POINT *point,
++                    ATI_RECT *srcRect )
++    {
++        if ( m_attached ) {
++            if ( AtiCore_StretchBlt( option, point, srcRect ) ) {
++                return codOK;
++            } else {
++                log( ERROR, "Error in stretchBlt" );
++            }
++        } else {
++            log( WARNING, "Trying to stretchBlt while not attached" );
++        }
++        return codError;
++    }
++
++    int waitComplete( int msec )
++    {
++        if ( m_attached ) {
++            if ( AtiCore_WaitComplete( msec ) ) {
++                return codOK;
++            } else {
++                log( ERROR, "Error in waitComplete" );
++            }
++        } else {
++            log( WARNING, "Trying to waitComplete while not attached" );
++        }
++        return codError;
++    }
++
++    int allocOverlay( uint16_t *handle ) 
++    {
++        if ( m_attached ) {
++            if ( AtiCore_AllocOverlay( handle ) ) {
++                return codOK;
++            } else {
++                log( ERROR, "Error in allocOverlay" );
++            }
++        } else {
++            log( WARNING, "Trying to allocOverlay while not attached" );
++        }
++        return codError;
++    }
++
++    int releaseOverlay( uint16_t handle )
++    {
++        if ( m_attached ) {
++            if ( AtiCore_ReleaseOverlay( handle ) ) {
++                return codOK;
++            } else {
++                log( ERROR, "Error in releaseOverlay" );
++            }
++        } else {
++            log( WARNING, "Trying to releaseOverlay while not attached" );
++        }
++        return codError;
++    }
++
++    int setupOverlay( uint16_t handle, ATI_OVERLAYPROP *prop )
++    {
++        if ( m_attached ) {
++            if ( AtiCore_SetupOverlay( handle, prop ) ) {
++                return codOK;
++            } else {
++                log( ERROR, "Error in setupOverlay" );
++            }
++        } else {
++            log( WARNING, "Trying to setupOverlay while not attached" );
++        }
++        return codError;
++    }
++
++    int setupOverlayExtended( uint16_t handle, 
++                                   ATI_EXTENDEDOVERLAYPROP *prop )
++    {
++        if ( m_attached ) {
++            if ( AtiCore_SetupOverlayExtended( handle, prop ) ) {
++                return codOK;
++            } else {
++                log( ERROR, "Error in setupOverlayExtended" );
++            }
++        } else {
++            log( WARNING, "Trying to setupOverlayExtended while not attached" );
++        }
++        return codError;
++    }
++
++    int setOverlayOnOff( uint16_t handle, int isShow )
++    {
++        if ( m_attached ) {
++            if ( AtiCore_SetOverlayOnOff( handle, isShow ) ) {
++                return codOK;
++            } else {
++                log( ERROR, "Error in setOverlayOnOff" );
++            }
++        } else {
++            log( WARNING, "Trying to setOverlayOnOff while not attached" );
++        }
++        return codError;
++    }
++
++    int setOverlayPos( uint16_t handle, uint16_t x, uint16_t y )
++    {
++        if ( m_attached ) {
++            if ( AtiCore_SetOverlayPos( handle, x, y ) ) {
++                return codOK;
++            } else {
++                log( ERROR, "Error in setOverlayPos" );
++            }
++        } else {
++            log( WARNING, "Trying to setOverlayPos while not attached" );
++        }
++        return codError;
++    }
++
++    int setupMemoryTransfer( uint32_t offset, uint32_t *regdata )
++    {
++        if ( m_attached ) {
++            if ( AtiCore_SetupMemoryTransfer( offset, regdata ) ) {
++                return codOK;
++            } else {
++                log( ERROR, "Error in setupMemoryTransfer" );
++            }
++        } else {
++            log( WARNING, "Trying to setupMemoryTransfer while not attached" );
++        }
++        return codError;
++    }
++
++    int terminateMemoryTransfer( void )
++    {
++        if ( m_attached ) {
++            if ( AtiCore_TerminateMemoryTransfer() ) {
++                return codOK;
++            } else {
++                log( ERROR, "Error in terminateMemoryTransfer" );
++            }
++        } else {
++            log( WARNING, "Trying to terminateMemoryTransfer while not attached" );
++        }
++        return codError;
++    }
++
++    int getFrontBufferPitchOffset( uint32_t *pitch, uint32_t *offset )
++    {
++        if ( m_attached ) {
++            if ( AtiCore_GetFrontBufferPitchOffset( pitch, offset ) ) {
++                return codOK;
++            } else {
++                log( ERROR, "Error in getFrontBufferPitchOffset" );
++            }
++        } else {
++            log( WARNING, "Trying to getFrontBufferPitchOffset while not attached" );
++        }
++        return codError;
++    }
++
++    int setDisplayBrightness( int bri )
++    {
++        if ( m_attached ) {
++            if ( AtiCore_SetDisplayBrightness( bri ) ) {
++                return codOK;
++            } else {
++                log( ERROR, "Error in setDisplayBrightness" );
++            }
++        } else {
++            log( WARNING, "Trying to setDisplayBrighness while not attached" );
++        }
++        return codError;
++    }
++
++    int getAvailableVideoMem( uint32_t *internal, uint32_t *external )
++    {
++        if ( m_attached ) {
++            if ( GetAvailableVideoMem( internal, external ) ) {
++                return codOK;
++            } else {
++                log( ERROR, "Error in getAvailableVideoMem" );
++            }
++        } else {
++            log( WARNING, "Trying to getAvailableVideoMem while not attached" );
++        }
++        return codError;
++    }
++
++    int setupGraphicWindow( ATI_GRAPHICWINDOW *win )
++    {
++        if ( m_attached ) {
++            if ( AtiCore_SetupGraphicWindow( ( void * ) win ) ) {
++                return codOK;
++            } else {
++                log( ERROR, "Error in setupGraphicWindow" );
++            }
++        } else {
++            log( WARNING, "Trying to setupGraphicWindow while not attached" );
++        }
++        return codError;
++    }
++
++    int processAttachSpecialMode( int mode )
++    {
++        if ( m_attached ) {
++            if ( AtiCore_ProcessAttachSpecialMode( mode ) ) {
++                return codOK;
++            } else {
++                log( ERROR, "Error in processAttachSpecialMode" );
++            }
++        } else {
++            log( WARNING, "Trying to processAttachSpecialMode while not attached" );
++        }
++        return codError;
++    }
++
++    int processDetachSpecialMode( void )
++    {
++        if ( m_attached ) {
++            if ( AtiCore_ProcessDetachSpecialMode() ) {
++                return codOK;
++            } else {
++                log( ERROR, "Error in processDetachSpecialMode" );
++            }
++        } else {
++            log( WARNING, "Trying to processDetachSpecialMode while not attached" );
++        }
++        return codError;
++    }
++
++    int setGraphicWindowPos( int x, int y )
++    {
++        if ( m_attached ) {
++            if ( AtiCore_SetGraphicWindowPos( x, y ) ) {
++                return codOK;
++            } else {
++                log( ERROR, "Error in setGraphicWindowPos" );
++            }
++        } else {
++            log( WARNING, "Trying to setGraphicWindow while not attached" );
++        }
++        return codError;
++    }
++
++    int setFrontBuffer( int offset, int a, int b )
++    {
++        if ( m_attached ) {
++            if ( AtiCore_SetFrontBuffer( offset, a, b ) ) {
++                return codOK;
++            } else {
++                log( ERROR, "Error in setFrontBuffer" );
++            }
++        } else {
++            log( WARNING, "Trying to setFrontBuffer while not attached" );
++        }
++        return codError;
++    }
++
++    int setGraphicWindowOnOff( int val )
++    {
++        if ( m_attached ) {
++            if ( AtiCore_SetGraphicWindowOnOff( val ) ) {
++                return codOK;
++            } else {
++                log( ERROR, "Error in setGraphicWindowOnOff" );
++            }
++        } else {
++            log( WARNING, "Trying to setGraphicWindowOnOff while not attached" );
++        }
++    }
++
++    static unsigned long ccolor( unsigned int rgb )
++    {
++        unsigned char r = ( rgb & 0xff0000 ) >> 19;
++        unsigned char g = ( rgb & 0xff00 ) >> 10;
++        unsigned char b = ( rgb & 0xff ) >> 3;
++        return ( ( ( ( unsigned short )0x1f & r ) << 11 ) |
++                 ( ( ( unsigned short )0x3f & g ) << 5 ) |
++                 ( ( ( unsigned short )0x1f & b ) )  ); 
++    }
++
++    int setFrgColour( int val )
++    {
++        if ( m_attached ) {
++            if ( AtiCore_SetFrgColour( ccolor( val ) ) ) {
++                return codOK;
++            } else {
++                log( ERROR, "Error in setFrgColour" );
++            }
++        } else {
++            log( WARNING, "Trying to setFrgColour while not attached" );
++        }
++        return codError;
++    }
++
++    int brushType( int type, unsigned int pattern )
++    {
++        if ( m_attached ) {
++            if ( AtiCore_BrushType( type, &pattern ) ) {
++                return codOK;
++            } else {
++                log( ERROR, "Error in brushType" );
++            }
++        } else {
++            log( WARNING, "Trying to brushType while not attached" );
++        }
++        return codError;
++    }
++
++    int paintRect( int flags, ATI_RECT *rect )
++    {
++        if ( m_attached ) {
++            if ( AtiCore_PaintRect( flags, rect ) ) {
++                return codOK;
++            } else {
++                log( ERROR, "Error in paintRect" );
++            }
++        } else {
++            log( WARNING, "Trying to paintRect while not attached" );
++        }
++        return codError;
++    }
++
++    int polyline( int npoints, ATI_POINT *points )
++    {
++        if ( m_attached ) {
++            if ( AtiCore_Polyline( npoints, points ) ) {
++                return codOK;
++            } else {
++                log( ERROR, "Error in polyline" );
++            }
++        } else {
++            log( WARNING, "Trying to polyline while not attached" );
++        }
++        return codError;
++    }
++
++    int getPitchOffsetProperty( void *pitch, void *offset )
++    {
++        if ( m_attached ) {
++            if ( AtiCore_GetPitchOffsetProperty( pitch, offset ) ) {
++                return codOK;
++            } else {
++                log( ERROR, "Error in getPitchOffsetProperty" );
++            }
++        } else {
++            log( WARNING, "Trying to getPitchOffsetProperty while not attached" );
++        }
++        return codError;
++    }
++
++    int cursorOnOff( int a, int b )
++    {
++        if ( m_attached ) {
++            if ( AtiCore_CursorOnOff( a, b ) ) {
++                return codOK;
++            } else {
++                log( ERROR, "Error in cursorOnOff" );
++            }
++        } else {
++            log( WARNING, "Trying to cursorOnOff while not attached" );
++        }
++        return codError;
++    }
++
++    int bitBlt( int flags, ATI_RECT *dst, ATI_RECT *src )
++    {
++        if ( m_attached ) {
++            if ( AtiCore_BitBlt( flags, dst, src ) ) {
++                return codOK;
++            } else {
++                log( ERROR, "Error in bitBlt" );
++            }
++        } else {
++            log( WARNING, "Trying to bitBlt while not attached" );
++        }
++        return codError;
++    }
++
++    int wakeUpCall( void )
++    {
++        if ( m_attached ) {
++            if ( AtiCore_WakeUpCall() ) {
++                return codOK;
++            } else {
++                log( ERROR, "Error in wakeUpCall" );
++            }
++        } else {
++            log( WARNING, "Trying to wakeupCall while not attached" );
++        }
++        return codError;
++    }
++
++private:
++    FILE *m_logfile;
++    int m_loglevel;
++    bool m_logenabled;
++    bool m_attached;
++    int m_pid;
++    int m_logcount;
++};
++
++W100Driver::Opcode W100Driver::lOpcodes[] = {
++    { "DRAWLINE",   W100Driver::DRAWLINE,   true, 0, 0 },
++    { "DRAWPOINT",  W100Driver::DRAWPOINT,  true, 0, 0 },
++    { "DRAWPOINTS", W100Driver::DRAWPOINTS, true, 0, 0 },
++    { "FILLRECT",   W100Driver::FILLRECT,   true, 0, 0 },
++    { "SCROLL",     W100Driver::SCROLL,     true, 0, 0 },
++    { "BITBLT",     W100Driver::BITBLT,     true, 0, 0 },
++    { "POLYLINE",   W100Driver::POLYLINE,   true, 0, 0 },
++    { ""      ,     W100Driver::EOO,        false, 0, 0 }
++};
++
++W100Driver driver;
++
++class QW100Screen;
++static QW100Screen *qt_w100_screen = 0;
++
++class QW100Screen : public QLinuxFbScreen {
++public:
++    class HWSurface {
++    public:
++        HWSurface( void ):
++            m_handle( 0 ),
++            m_offset( 0 ),
++            m_addr( 0 ),
++            m_size( 0 ),
++            m_internal( false ),
++            m_clientid( -1 ) {};
++        HWSurface( unsigned short handle,
++                   uint32_t sOffset,
++                   unsigned char *localAddr, 
++                   int amount,
++                   bool internal,
++                   int clientid ):
++            m_handle( handle ),
++            m_offset( sOffset ),
++            m_addr( localAddr ),
++            m_size( amount ),
++            m_internal( internal ),
++            m_clientid( clientid ) {};
++        HWSurface( uint32_t sOffset, 
++                   unsigned char *localAddr,
++                   bool internal,
++                   int amount ):
++            m_handle( 0 ),
++            m_offset( sOffset ),
++            m_addr( localAddr ),
++            m_size( amount ),
++            m_internal( internal ),
++            m_clientid( -1 ) {};
++        bool operator!=( HWSurface &other ) {
++            return( m_offset == other.getSOffset() );
++        };
++        HWSurface &operator=( const HWSurface &c ) {
++            m_handle = c.getHandle();
++            m_offset = c.getSOffset();
++            m_addr = c.getAddr();
++            m_size = c.getSize();
++            m_clientid= c.getCId();
++            m_internal = c.internal();
++            return( *this );
++        };
++        unsigned short getHandle( void ) const { return m_handle; };
++        uint32_t getSOffset( void ) const { return m_offset; };
++        unsigned char *getAddr( void ) const { return m_addr; };
++        unsigned int getSize( void ) const { return m_size; };
++        int getCId( void ) const { return m_clientid; };
++        bool internal( void ) const { return m_internal; };
++
++    private:
++        unsigned short m_handle;
++        uint32_t m_offset;
++        unsigned char *m_addr;
++        int m_size;
++        bool m_internal;
++        int m_clientid;
++    };
++    
++    QW100Screen( int display_id );
++    virtual ~QW100Screen();
++    virtual bool connect( const QString &spec );
++    virtual void disconnect( void );
++    virtual bool initDevice();
++    virtual void shutdownDevice();
++    virtual void restore();
++    virtual bool useOffscreen() { return true; }
++    virtual QGfx * createGfx( unsigned char *, int, int, int, int);
++    virtual uchar *cache( int amount, int optim );
++    virtual void uncache( uchar *c );
++    virtual bool onCard( unsigned char *p ) const;
++    virtual bool onCard( unsigned char *p, ulong& offset ) const;
++    QMap< uchar*, HWSurface > *getPSurfaceMap( void ) const;
++    void clearCache( int clientId );
++
++    // Suspend/resume hooks
++    virtual void prepareToSuspend();
++    virtual void prepareToResume();
++    // Rotation stuff
++    enum Transformation { None, Rot90, Rot180, Rot270 };
++    void setTransformation( Transformation t );
++    Transformation transformation() const;
++    virtual bool isTransformed() const { return trans != None; };
++    virtual QSize mapToDevice( const QSize & ) const;
++    virtual QSize mapFromDevice( const QSize & ) const;
++    virtual QPoint mapToDevice( const QPoint &, const QSize & ) const;
++    virtual QPoint mapFromDevice( const QPoint &, const QSize & ) const;
++    virtual QRect mapToDevice( const QRect &, const QSize & ) const;
++    virtual QRect mapFromDevice( const QRect &, const QSize & ) const;
++    virtual QImage mapToDevice( const QImage & ) const;
++    virtual QImage mapFromDevice( const QImage & ) const;
++    virtual QRegion mapToDevice( const QRegion &, const QSize & ) const;
++    virtual QRegion mapFromDevice( const QRegion &, const QSize & ) const;
++    virtual int transformOrientation() const;
++
++protected:
++    bool w100init();
++    void w100shutdown();
++    Transformation trans;
++    static Transformation getTransSpec( const QString &dspec );
++    static void clearCache( QScreen *instance, int clientId );
++    QMap< uchar*, HWSurface > surfaceMap;
++    int vramoffset;
++    bool m_isServer;
++    virtual int pixmapLinestepAlignment() { return 128; }
++};
++
++template <const int depth, const int type>
++class QGfxW100 : public QGfxRaster<depth,type> {
++
++public:
++    QGfxW100( unsigned char *b, int w, int h );
++    virtual void drawLine( int, int, int, int);
++    virtual void fillRect( int, int, int, int);
++    virtual void blt( int, int, int, int, int, int );
++    virtual void sync();
++    virtual void setOffset( int x, int y );
++    virtual void setPen( const QPen & p );
++  
++    virtual void drawPolyline( const QPointArray &, int, int );
++    virtual void drawPolygon( const QPointArray &, bool, int, int );
++    virtual void drawPoint( int, int );
++    virtual void drawPoints( const QPointArray &, int, int );
++    virtual void scroll( int, int, int, int, int, int );
++    virtual void tiledBlt( int rx, int ry, int w, int h );
++
++    inline int tx( int x, int y ) {
++        switch ( qt_w100_screen->transformation() ) {
++        case QW100Screen::Rot90:
++            return y - this->xoffs + this->yoffs;
++        case QW100Screen::Rot180:
++            return ( this->width - x - 1) - this->xoffs - this->xoffs;
++        case QW100Screen::Rot270:
++            return ( this->height - y - 1) - this->xoffs - this->yoffs;
++        default:
++            return x;
++        }
++    }
++    inline int ty( int x, int y ) {
++        switch ( qt_w100_screen->transformation() ) {
++        case QW100Screen::Rot90:
++            return (this->width - x - 1) - this->yoffs - this->xoffs;
++        case QW100Screen::Rot180:
++            return (this->height - y - 1) - this->yoffs - this->yoffs;
++        case QW100Screen::Rot270:
++            return x - this->yoffs + this->xoffs;
++        default:
++            return y;
++        }
++    }
++
++protected:
++    bool checkDest( bool setsrc = false );
++    bool checkSourceDest();
++    virtual void setSourceWidgetOffset( int x, int y );
++    void processSpans( int n, QPoint* point, int* width );
++    bool inDraw;
++
++    virtual void dDrawLine( int, int, int, int);
++    virtual void dFillRect( int, int, int, int);
++    virtual void dBlt( int, int, int, int, int, int );
++    void dDrawPolyline( const QPointArray &, int, int );
++    void dDrawPolygon( const QPointArray &, bool, int, int );
++    void dDrawPoint( int, int );
++    void dDrawPoints( const QPointArray &, int, int );
++    void dScroll( int, int, int, int, int, int );
++    void dTiledBlt( int rx, int ry, int w, int h );
++};
++
++template<const int depth,const int type>
++QGfxW100<depth,type>::QGfxW100( unsigned char * b, int w, int h )
++    : QGfxRaster<depth,type>(b, w, h),
++      inDraw( false )
++{
++}
++
++template<const int depth,const int type>
++inline void QGfxW100<depth,type>::setOffset( int x, int y )
++{
++    QGfxRaster<depth,type>::setOffset( x, y );
++}
++
++namespace {
++    QString penStyleStr( const QPen &pen ) 
++    {
++        QString res;
++        switch( pen.style() ) {
++        case Qt::NoPen:
++            res = "NoPen";
++            break;
++        case Qt::SolidLine:
++            res = "SolidLine";
++            break;
++        case Qt::DashLine:
++            res = "DashLine";
++            break;
++        case Qt::DotLine:
++            res = "DotLine";
++            break;
++        case Qt::DashDotLine:
++            res = "DashDotLine";
++            break;
++        case Qt::DashDotDotLine:
++            res = "DashDotDotLine";
++            break;
++        default:
++            res = "Unknown";
++        }
++        return res;
++    }
++}
++
++template<const int depth, const int type>
++inline void QGfxW100<depth,type>::setPen( const QPen &p )
++{
++    QGfxRaster<depth,type>::setPen( p );
++}
++
++template<const int depth,const int type>
++inline bool QGfxW100<depth,type>::checkSourceDest()
++{
++    if ( !checkDest() ) {
++        return FALSE;
++    }
++
++    int sourcepixelpitch;
++    ulong src_buffer_offset;
++    if ( this->srctype == this->SourcePen ) {
++        src_buffer_offset = -1;
++        return FALSE;
++    } else {
++        if ( !qt_screen->onCard( this->srcbits, src_buffer_offset ) ) {
++            return FALSE;
++        }
++        sourcepixelpitch = ( this->srclinestep * 8 ) / this->srcdepth;
++        driver.setSrcPitchOffset( sourcepixelpitch,
++                                       src_buffer_offset );
++    }
++    return TRUE;
++}
++
++template< const int depth, const int type>
++inline bool QGfxW100<depth, type>::checkDest( bool setsrc )
++{
++    //Main framebuffer should be registered as a hardware surface
++    ulong buffer_offset;
++    if ( !qt_screen->onCard( this->buffer, buffer_offset ) ) {
++        return FALSE;
++    }
++    int pixelstep = ( this->linestep() * 8 ) / depth;
++    driver.setDstPitchOffset( pixelstep, buffer_offset );
++    if ( setsrc ) {
++        driver.setSrcPitchOffset( pixelstep, buffer_offset );
++    }
++    return TRUE;
++}
++
++template<const int depth,const int type>
++void QGfxW100<depth,type>::drawLine( int x1, int y1, int x2, int y2 )
++{
++    if ( inDraw ) {
++        dDrawLine( x1, y1, x2, y2 );
++    } else {
++        inDraw = true;
++        dDrawLine( tx(x1,y1), ty(x1,y1),
++                   tx(x2,y2), ty(x2,y2) );
++        inDraw = false;
++    }
++}
++
++template<const int depth,const int type>
++void QGfxW100<depth,type>::dDrawLine( int x1, int y1, int x2, int y2 )
++{
++    if ( ( this->ncliprect < 1) || 
++         ( this->cpen.style() == this->NoPen ) ) {
++        return;
++    }
++
++    if ( depth != 16 || 
++         !driver.accelerated( W100Driver::DRAWLINE ) ) {
++        driver.addMiss( W100Driver::DRAWLINE );
++        QGfxRaster<depth,type>::drawLine( x1, y1, x2, y2 );
++        return;
++    }
++
++    // Only handle 'normal' lines
++    if ( ( this->cpen.style() != this->SolidLine ) || 
++         ( this->myrop != this->CopyROP ) ||
++         ( this->cpen.width() > 1 ) ||
++         ( this->dashedLines ) ) {
++        driver.addMiss( W100Driver::DRAWLINE );
++        QGfxRaster<depth,type>::drawLine( x1, y1, x2, y2);
++        return;
++    }
++
++    // Stop anyone else trying to access optype/lastop/the graphics engine
++    // to avoid synchronization problems with other processes
++    QWSDisplay::grab( true );
++    if ( !checkDest() ) {
++        QWSDisplay::ungrab();
++        driver.addMiss( W100Driver::DRAWLINE );
++        QGfxRaster<depth,type>::drawLine( x1, y1, x2, y2 );
++        return;
++    }
++
++
++    // Note that the last operation used the 2d engine
++    ( *optype ) = 1;
++
++    // Add the offset of the gfx - used to make the origin the right
++    // place for windows
++    x1 += this->xoffs;
++    y1 += this->yoffs;
++    x2 += this->xoffs;
++    y2 += this->yoffs;
++
++    QRect boundRect( x1 < x2 ? x1: x2,
++                     y1 < y2 ? y1 : y2, 
++                     QABS( x2 - x1 ) + 1,
++                     QABS( y2 - y1 ) + 1 );
++
++    GFX_START( boundRect );
++
++    // The clip region is defined as a series of rectangles
++    // We repeatedly set up the hardware clip rectangle to one of
++    // these rectangles and re-draw the line - an alternative approach
++    // would be to clip to the rectangle in software
++    
++    driver.setDstType( DSTTYPE_16BPP_1555 );
++    driver.setSrcType( SRCTYPE_EQU_DST );
++    driver.setRopOperation( ROP3_PATCOPY );
++    driver.brushType( 6, 0 );
++    driver.setFrgColour( this->cpen.color().rgb() );
++    driver.addHit( W100Driver::DRAWLINE );
++
++    //The imageon seems not to write on the edge of the clip
++    //for the polyline op. 
++    //We are using a three points array repeating the last point
++    //to get the last single point painted.
++    ATI_POINT points[3];
++    points[0].XCoord = x1;
++    points[0].YCoord = y1;
++    points[1].XCoord = x2;
++    points[1].YCoord = y2;
++    points[2].XCoord = x2;
++    points[2].YCoord = y2;
++    for ( int loopc = 0; loopc < this->ncliprect; loopc++ ) {
++        if ( boundRect.intersects( this->cliprect[loopc] ) ) {
++            ATI_CLIPRECT clip;
++            clip.X_Top_Left = this->cliprect[loopc].x();
++            clip.Y_Top_Left = this->cliprect[loopc].y();
++            clip.X_Bottom_Right = this->cliprect[loopc].right() + 1;
++            clip.Y_Bottom_Right = this->cliprect[loopc].bottom() + 1;
++            driver.setDstClippingRect( &clip );
++            driver.polyline( 3, points );
++        }
++    }
++
++    // Software mouse cursor stuff
++    GFX_END;
++
++    // Release display again - not doing so will cause Qt/Embedded applications
++    // to deadlock
++    QWSDisplay::ungrab();
++}
++
++template< const int depth, const int type >
++void QGfxW100< depth, type>::drawPolyline( const QPointArray &a, 
++                                           int index, 
++                                           int npoints )
++{
++    if ( inDraw ) {
++        dDrawPolyline( a, index, npoints );
++    } else {
++        inDraw = true;
++        QPointArray na( npoints );
++    
++        for ( int i = 0; i < npoints; i++ ) {
++            int x, y;
++            a.point( i+index, &x, &y );
++            na.setPoint( i, tx(x,y), ty(x,y) );
++        }
++    
++        dDrawPolyline( na, 0, npoints );
++        inDraw = false;
++    }
++}
++
++template< const int depth, const int type >
++void QGfxW100< depth, type>::dDrawPolyline( const QPointArray &a, 
++                                            int index, 
++                                            int npoints )
++{
++    if ( ( this->ncliprect < 1 ) || 
++         ( npoints < 1 ) ||
++         ( this->cpen.style() == this->NoPen ) ) {
++        return;
++    }
++
++    if ( depth != 16 ||
++         !driver.accelerated( W100Driver::POLYLINE ) ) {
++        driver.addMiss( W100Driver::POLYLINE );
++        QGfxRaster<depth,type>::drawPolyline( a, index, npoints );
++        return;
++    }
++
++    if ( this->cpen.style() != this->SolidLine ||
++         this->myrop != this->CopyROP ) {
++        driver.addMiss( W100Driver::POLYLINE );
++        QGfxRaster<depth,type>::drawPolyline( a, index, npoints );
++        return;
++    }
++
++    QWSDisplay::grab( TRUE );
++    if ( !checkDest() ) {
++        QWSDisplay::ungrab();
++        driver.addMiss( W100Driver::POLYLINE );
++        QGfxRaster<depth,type>::drawPolyline( a, index, npoints );
++        return;
++    }
++
++    ( *optype ) = 1;
++
++    driver.setDstType( DSTTYPE_16BPP_1555 );
++    driver.setSrcType( SRCTYPE_EQU_DST );
++    driver.setRopOperation( ROP3_PATCOPY );
++    driver.brushType( 6, 0 );
++    driver.setFrgColour( this->cpen.color().rgb() );
++
++    driver.addHit( W100Driver::POLYLINE );
++
++    ATI_POINT *points = new ATI_POINT[ npoints + 1 ];
++
++    for ( int i = 0; i < npoints; i++ ) {
++        points[i].XCoord = a[i+index].x() + this->xoffs;
++        points[i].YCoord = a[i+index].y() + this->yoffs;
++    }
++    //Hack to get the last point of the last line painted
++    points[ npoints ] = points[ npoints - 1 ];
++
++
++    GFX_START( clipbounds );
++    driver.setFrgColour( this->cpen.color().rgb() );
++    driver.setRopOperation( ROP3_PATCOPY );
++    for ( int loopc = 0; loopc < this->ncliprect; loopc++ ) {
++        ATI_CLIPRECT clip;
++        clip.X_Top_Left = this->cliprect[loopc].x();
++        clip.Y_Top_Left = this->cliprect[loopc].y();
++        clip.X_Bottom_Right = this->cliprect[loopc].right() + 1;
++        clip.Y_Bottom_Right = this->cliprect[loopc].bottom() + 1;
++        driver.setDstClippingRect( &clip );
++        driver.polyline( npoints + 1, points );
++    }
++    GFX_END;
++
++    delete [] points;
++    
++    QWSDisplay::ungrab();
++}
++
++
++template< const int depth, const int type >
++void QGfxW100< depth, type>::drawPolygon( const QPointArray &a, 
++                                          bool w, int index, 
++                                          int npoints )
++{
++    if ( inDraw  || this->cpen.style()==this->NoPen || this->patternedbrush ) {
++        //slowpath
++        dDrawPolygon( a, w, index, npoints );
++    } else {
++        inDraw = TRUE;
++        QPointArray na( npoints );
++
++        for ( int i = 0; i < npoints; i++ ) {
++            int x,y;
++            a.point( i+index, &x, &y );
++            na.setPoint( i, tx(x,y), ty(x,y) );
++        }
++        dDrawPolygon( na, w, 0, npoints );
++        inDraw = FALSE;
++    }
++}
++
++template< const int depth, const int type >
++void QGfxW100< depth, type>::dDrawPolygon( const QPointArray &a, bool w, int index, int npoints )
++{
++    QGfxRaster<depth,type>::drawPolygon( a, w, index, npoints );
++}
++
++template< const int depth, const int type >
++void QGfxW100< depth, type>::drawPoint( int x, int y )
++{
++    dDrawPoint( tx( x, y ), ty( x, y ) );
++}
++
++template< const int depth, const int type >
++void QGfxW100< depth, type>::dDrawPoint( int x, int y )
++{
++
++    if ( this->ncliprect < 1 ) {
++        return;
++    }
++
++    if ( depth != 16 ||
++         !driver.accelerated( W100Driver::DRAWPOINT) ) {
++        driver.addMiss( W100Driver::DRAWPOINT );
++        QGfxRaster<depth,type>::drawPoint( x, y );
++        return;
++    }
++
++    if ( this->cpen.style() != this->SolidLine ||
++         this->myrop != this->CopyROP ) {
++        driver.addMiss( W100Driver::DRAWPOINT );
++        QGfxRaster<depth,type>::drawPoint( x, y );
++        return;
++    }
++
++    QWSDisplay::grab( TRUE );
++    if ( !checkDest() ) {
++        QWSDisplay::ungrab();
++        driver.addMiss( W100Driver::DRAWPOINT );
++        QGfxRaster<depth,type>::drawPoint( x, y );
++        return;
++    }
++
++    driver.addHit( W100Driver::DRAWPOINT );
++    ( *optype ) = 1;
++  
++    ATI_POINT point;
++    point.XCoord = x + this->xoffs;
++    point.YCoord = y + this->yoffs;
++
++    GFX_START( clipbounds );
++    driver.setFrgColour( this->cpen.color().rgb() );
++    driver.setRopOperation( ROP3_PATCOPY );
++    for ( int loopc = 0; loopc < this->ncliprect; loopc++ ) {
++        ATI_CLIPRECT clip;
++        clip.X_Top_Left = this->cliprect[loopc].x();
++        clip.Y_Top_Left = this->cliprect[loopc].y();
++        clip.X_Bottom_Right = this->cliprect[loopc].right() + 1;
++        clip.Y_Bottom_Right = this->cliprect[loopc].bottom() + 1;
++        driver.setDstClippingRect( &clip );
++        driver.drawPixel( 1, &point );
++    }
++    GFX_END;
++    QWSDisplay::ungrab();
++}
++
++template< const int depth, const int type >
++void QGfxW100< depth, type>::drawPoints( const QPointArray &a, 
++                                         int index, 
++                                         int npoints )
++{
++    QPointArray na( npoints );
++
++    for ( int i = 0; i < npoints; i++ ) {
++        int x, y;
++        a.point( i+index, &x, &y );
++        na.setPoint( i, tx( x, y ), ty( x, y ) );
++    }
++
++    dDrawPoints( na, 0, npoints );
++}
++
++template< const int depth, const int type >
++void QGfxW100< depth, type>::dDrawPoints( const QPointArray &a, 
++                                          int index, 
++                                          int npoints )
++{
++    if ( ( this->ncliprect < 1 ) || ( npoints < 1 ) ) {
++        return;
++    }
++
++    if ( depth != 16 ||
++         !driver.accelerated( W100Driver::DRAWPOINTS ) ) {
++        driver.addMiss( W100Driver::DRAWPOINTS );
++        QGfxRaster<depth,type>::drawPoints( a, index, npoints );
++        return;
++    }
++
++    if ( this->cpen.style() != this->SolidLine ||
++         this->myrop != this->CopyROP ) {
++        driver.addMiss( W100Driver::DRAWPOINTS );
++        QGfxRaster<depth,type>::drawPoints( a, index, npoints );
++        return;
++    }
++
++    QWSDisplay::grab( TRUE );
++    if ( !checkDest() ) {
++        QWSDisplay::ungrab();
++        driver.addMiss( W100Driver::DRAWPOINTS );
++        QGfxRaster<depth,type>::drawPoints( a, index, npoints );
++        return;
++    }
++
++    driver.addHit( W100Driver::DRAWPOINTS );
++    ( *optype ) = 1;
++  
++    ATI_POINT *points = new ATI_POINT[ npoints ];
++    for ( int i = 0; i < npoints; i++ ) {
++        points[i].XCoord = a[i+index].x() + this->xoffs;
++        points[i].YCoord = a[i+index].y() + this->yoffs;
++    }
++
++    GFX_START( clipbounds );
++    driver.setFrgColour( this->cpen.color().rgb() );
++    driver.setRopOperation( ROP3_PATCOPY );
++    for ( int loopc = 0; loopc < this->ncliprect; loopc++ ) {
++        ATI_CLIPRECT clip;
++        clip.X_Top_Left = this->cliprect[loopc].x();
++        clip.Y_Top_Left = this->cliprect[loopc].y();
++        clip.X_Bottom_Right = this->cliprect[loopc].right() + 1;
++        clip.Y_Bottom_Right = this->cliprect[loopc].bottom() + 1;
++        driver.setDstClippingRect( &clip );
++        driver.drawPixel( npoints, points );
++    }
++    GFX_END;
++
++    delete [] points;
++    QWSDisplay::ungrab();
++}
++
++template <const int depth, const int type>
++void QGfxW100<depth,type>::scroll( int x, int y, int w, int h, int sx, int sy )
++{
++    if ( w == 0 || h == 0 )
++        return;
++    QRect r;
++    QRect s;
++    if ( inDraw ) {
++        r = QRect( x, y, w, h );
++        s = QRect( sx, sy, w, h );
++    } else {
++        r.setCoords( tx(x,y), ty(x,y), tx(x+w-1,y+h-1), ty(x+w-1,y+h-1) );
++        s.setCoords( tx(sx,sy), ty(sx,sy), tx(sx+w-1,sy+h-1), ty(sx+w-1,sy+h-1) );
++        r = r.normalize();
++        s = s.normalize();
++    }
++    dScroll( r.x(), r.y(), r.width(), r.height(), s.x(), s.y() );
++}
++
++
++template< const int depth, const int type >
++void QGfxW100< depth, type>::dScroll( int rx, int ry,
++                                      int w, int h, 
++                                      int sx, int sy )
++{
++    if ( depth != 16 ||
++         !driver.accelerated( W100Driver::SCROLL ) ) {
++        driver.addMiss( W100Driver::SCROLL );
++        QGfxRaster<depth,type>::scroll( rx, ry, w, h, sx, sy );
++        return;
++    }
++
++    if ( this->ncliprect < 1 ) return;
++
++    if ( ( w < 1 )  || ( h < 1 ) ) return;
++
++    int dy = sy - ry;
++    int dx = sx - rx;
++
++    if ( dx == 0 && dy == 0 ) return;
++
++
++    QWSDisplay::grab( TRUE );
++
++    if ( checkDest( true ) ) {
++
++        rx += this->xoffs;
++        sx += this->xoffs;
++        ry += this->yoffs;
++        sy += this->yoffs;
++
++        QRect boundRect(  QMIN( rx , sx  ),
++                          QMIN( ry , sy  ),
++                          w + QABS( dx ) + 1,
++                          h + QABS( dy ) + 1 );
++        GFX_START( boundRect );
++        ( *optype ) = 1;
++
++
++        //if ( driver.lastOp() != W100Driver::SCROLL ) {
++        driver.setRopOperation( ROP3_SRCCOPY );
++        driver.setDstType( DSTTYPE_16BPP_1555 );
++        driver.setSrcType( SRCTYPE_EQU_DST );
++        //}
++
++        driver.addHit( W100Driver::SCROLL );
++
++        ATI_RECT srcrect, dstrect;
++
++        srcrect.XCoord = sx;
++        srcrect.YCoord = sy;
++        srcrect.Width = w;
++        srcrect.Height = h;
++        dstrect.XCoord = rx;
++        dstrect.YCoord = ry;
++        dstrect.Width = w;
++        dstrect.Height = h;
++        for ( int loopc = 0; loopc < this->ncliprect; loopc++ ) {
++            if ( boundRect.intersects( this->cliprect[loopc] ) ) {
++                ATI_CLIPRECT clip;
++                clip.X_Top_Left     = this->cliprect[ loopc ].x();
++                clip.Y_Top_Left     = this->cliprect[ loopc ].y();
++                clip.X_Bottom_Right = this->cliprect[ loopc ].right() + 1;
++                clip.Y_Bottom_Right = this->cliprect[ loopc ].bottom() + 1;
++                driver.setDstClippingRect( &clip );
++                driver.bitBlt( 1, &dstrect, &srcrect );
++            }
++        }
++        GFX_END;
++        QWSDisplay::ungrab();
++
++    } else {
++        QWSDisplay::ungrab();
++        // software fallback
++        driver.addMiss( W100Driver::SCROLL );
++        QGfxRaster<depth,type>::scroll( rx, ry, w, h, sx, sy );
++    }
++}
++
++template< const int depth, const int type >
++void QGfxW100< depth, type>::fillRect( int x, int y, int w, int h )
++{
++    if ( w == 0 || h == 0 )
++        return;
++    QRect r( x, y, w, h );
++    r.setCoords( tx( x, y ), ty( x, y ), 
++                 tx( x + w - 1, y + h - 1 ), ty( x + w - 1, y + h - 1 ) );
++    r = r.normalize();
++    inDraw = TRUE;
++    dFillRect( r.x(), r.y(), r.width(), r.height() );
++    inDraw = FALSE;
++}
++  
++template< const int depth, const int type >
++void QGfxW100< depth, type>::dFillRect( int rx, int ry, int w, int h )
++{
++    if ( w <= 0 || h <= 0 || this->ncliprect < 1 ) return;
++
++    if ( depth != 16 ||
++         !driver.accelerated( W100Driver::FILLRECT ) ) {
++        driver.addMiss( W100Driver::FILLRECT );
++        QGfxRaster<depth,type>::fillRect( rx, ry, w, h );
++        return;
++    }
++
++    if ( ( this->cbrush.style() != this->NoBrush ) && 
++         ( this->cbrush.style() != this->SolidPattern ) ) {
++        driver.addMiss( W100Driver::FILLRECT );
++        QGfxRaster<depth,type>::fillRect( rx, ry, w, h );
++        return;
++    }
++
++    if ( !checkDest() || ( this->myrop != this->CopyROP ) ) {
++        driver.addMiss( W100Driver::FILLRECT );
++        QGfxRaster<depth,type>::fillRect( rx, ry, w, h );
++        return;
++    }
++
++    QWSDisplay::grab( TRUE );
++    rx += this->xoffs;
++    ry += this->yoffs;
++
++    QRect boundRect( rx, ry, w + 1, h + 1 );
++    GFX_START( boundRect );
++
++    ( *optype ) = 1;
++
++    driver.setDstType( DSTTYPE_16BPP_1555 );
++    driver.setSrcType( SRCTYPE_EQU_DST );
++    driver.setRopOperation( ROP3_PATCOPY );
++    driver.brushType( 6, 0 );
++    driver.setFrgColour( this->cbrush.color().rgb() );
++
++    driver.addHit( W100Driver::FILLRECT );
++
++    if ( this->cbrush.style() != this->NoBrush ) {
++        //Using all the cliprects
++        for ( int loopc = 0; loopc < this->ncliprect; loopc++ ) {
++            if ( boundRect.intersects( this->cliprect[loopc] ) ) {
++                ATI_CLIPRECT clip;
++                ATI_RECT rect;
++
++                clip.X_Top_Left     = this->cliprect[ loopc ].x();
++                clip.Y_Top_Left     = this->cliprect[ loopc ].y();
++                clip.X_Bottom_Right = this->cliprect[ loopc ].right() + 1;
++                clip.Y_Bottom_Right = this->cliprect[ loopc ].bottom() + 1;
++
++                driver.setDstClippingRect( &clip );
++                rect.XCoord = rx;
++                rect.YCoord = ry;
++                rect.Width  = w;
++                rect.Height = h;
++                driver.paintRect( 1, &rect );
++            }
++        }
++    }
++    GFX_END;
++      
++    QWSDisplay::ungrab();
++}
++
++template <const int depth, const int type>
++void QGfxW100<depth,type>::blt( int x, int y, int w, int h, int sx, int sy )
++{
++    if ( w == 0 || h == 0 )
++        return;
++    QRect r;
++    int rsx;
++    int rsy;
++    if ( inDraw ) {
++        r = QRect( x, y, w, h );
++        rsx = sx;
++        rsy = sy;
++    } else {
++        r.setCoords( tx(x,y), ty(x,y), tx(x+w-1,y+h-1), ty(x+w-1,y+h-1) );
++        r = r.normalize();
++        switch ( qt_w100_screen->transformation() ) {
++        case QW100Screen::Rot90:
++            rsx = sy;
++            rsy = this->srcwidth - sx - w;
++            break;
++        case QW100Screen::Rot180:
++            rsx = this->srcwidth - sx - w;
++            rsy = this->srcheight - sy - h;
++            break;
++        case QW100Screen::Rot270:
++            rsx = this->srcheight - sy - h;
++            rsy = sx;
++            break;
++        default:
++            rsx = sx;
++            rsy = sy;
++            break;
++        }
++    }
++    dBlt( r.x(), r.y(), r.width(), r.height(), rsx, rsy );
++}
++
++template< const int depth, const int type >
++inline void QGfxW100< depth, type>::dBlt( int rx, int ry, 
++                                          int w, int h,
++                                          int sx, int sy )
++{
++    if ( !w || !h || this->ncliprect < 1 ) {
++        return;
++    }
++
++    if ( depth != 16 ||
++         !driver.accelerated( W100Driver::BITBLT ) ) {
++        driver.addMiss( W100Driver::BITBLT );
++        QGfxRaster<depth,type>::blt( rx, ry, w, h, sx, sy );
++        return;
++    }
++
++    if ( this->alphatype == this->BigEndianMask ||
++         this->alphatype == this->LittleEndianMask ||
++         this->alphatype == this->SeparateAlpha ||
++         this->srctype == this->SourcePen ||
++         ( this->myrop != this->CopyROP ) ) {
++        driver.addMiss( W100Driver::BITBLT );
++        QGfxRaster<depth,type>::blt( rx, ry, w, h, sx, sy );
++        return;
++    }
++
++    if ( ( this->srcdepth != 16 ) || this->alphatype != this->IgnoreAlpha ) {
++        driver.addMiss( W100Driver::BITBLT );
++        QGfxRaster<depth,type>::blt( rx, ry, w, h, sx, sy );
++        return;
++    }
++
++    QWSDisplay::grab( TRUE );
++
++    if ( checkSourceDest() ) {
++        QRect boundRect( rx + this->xoffs, ry + this->yoffs,
++                         w + 1, h + 1 );
++        GFX_START( boundRect );
++        ( *optype ) = 1;
++
++        driver.setRopOperation( ROP3_SRCCOPY );
++        driver.setDstType( DSTTYPE_16BPP_1555 );
++        driver.setSrcType( SRCTYPE_EQU_DST );
++
++        driver.addHit( W100Driver::BITBLT );
++
++        ATI_RECT rect1;
++        ATI_RECT rect2;
++	
++        rx += this->xoffs;
++        ry += this->yoffs;
++
++        rect1.XCoord = this->srcwidgetoffs.x() + sx;
++        rect1.YCoord = this->srcwidgetoffs.y() + sy;
++        rect1.Width  = w;
++        rect1.Height = h;
++        rect2.XCoord = rx;
++        rect2.YCoord = ry;
++        rect2.Width = w;
++        rect2.Height = h;
++        for(int loopc = 0; loopc < this->ncliprect; loopc++ ) {
++            if ( boundRect.intersects( this->cliprect[loopc] ) ) {
++                ATI_CLIPRECT clip;
++                clip.X_Top_Left     = this->cliprect[ loopc ].x();
++                clip.Y_Top_Left     = this->cliprect[ loopc ].y();
++                clip.X_Bottom_Right = this->cliprect[ loopc ].right() + 1;
++                clip.Y_Bottom_Right = this->cliprect[ loopc ].bottom() + 1;
++                driver.setDstClippingRect( &clip );
++                driver.bitBlt( 1, &rect2, &rect1 );
++            }
++        }
++        GFX_END;
++      
++        QWSDisplay::ungrab();
++        return;
++    } else {
++        QWSDisplay::ungrab();
++        driver.addMiss( W100Driver::BITBLT );
++        QGfxRaster<depth,type>::blt( rx, ry, 
++                                     w, h, sx, sy );
++    }
++}
++
++
++template <const int depth, const int type>
++void QGfxW100<depth,type>::tiledBlt( int rx,int ry,int w,int h )
++{
++    if ( w <= 0 || h <= 0 )
++        return;
++    QRect r;
++    if ( inDraw ) {
++        r = QRect(rx,ry,w,h);
++    } else {
++        r.setCoords( tx(rx,ry), ty(rx,ry), tx(rx+w-1,ry+h-1), ty(rx+w-1,ry+h-1) );
++        r = r.normalize();
++    }
++
++    inDraw = TRUE;
++
++    QPoint oldBrushOffs = this->brushoffs;
++    int brx, bry;
++    switch ( qt_w100_screen->transformation() ) {
++    case QW100Screen::Rot90:
++        brx = this->brushoffs.y();
++        bry = this->srcwidth - this->brushoffs.x() - w;
++        break;
++    case QW100Screen::Rot180:
++        brx = this->srcwidth - this->brushoffs.x() - w;
++        bry = this->srcheight - this->brushoffs.y() - h;
++        break;
++    case QW100Screen::Rot270:
++        brx = this->srcheight - this->brushoffs.y() - h;
++        bry = this->brushoffs.x();
++        break;
++    default:
++        brx = this->brushoffs.x();
++        bry = this->brushoffs.y();
++        break;
++    }
++    this->brushoffs = QPoint( brx, bry );
++
++    int oldsw = this->srcwidth;
++    int oldsh = this->srcheight;
++    QSize s = qt_screen->mapToDevice( QSize(this->srcwidth,this->srcheight) );
++    this->srcwidth = s.width();
++    this->srcheight = s.height();
++
++    dTiledBlt( r.x(), r.y(), r.width(), r.height() );
++
++    this->srcwidth = oldsw;
++    this->srcheight = oldsh;
++    this->brushoffs = oldBrushOffs;
++    inDraw = FALSE;
++}
++
++
++template <const int depth, const int type>
++void QGfxW100<depth,type>::dTiledBlt( int rx,int ry, int w,int h )
++{
++    if ( this->srcwidth == 0 || this->srcheight == 0 )
++        return;
++    QGfxRaster<depth,type>::tiledBlt( rx, ry, w, h );
++}
++
++template<const int depth,const int type>
++void QGfxW100<depth,type>::sync()
++{
++    driver.waitComplete( -1 );
++}
++
++template <const int depth, const int type>
++void QGfxW100<depth,type>::setSourceWidgetOffset(int x, int y)
++{
++    if ( this->srcbits == this->buffer ) {
++        switch ( qt_w100_screen->transformation() ) {
++        case QW100Screen::Rot90:
++            this->srcwidgetoffs = QPoint( y, this->width - x - this->srcwidth );
++            break;
++        case QW100Screen::Rot180:
++            this->srcwidgetoffs = QPoint( this->width - x - this->srcwidth, this->height - y - this->srcheight );
++            break;
++        case QW100Screen::Rot270:
++            this->srcwidgetoffs = QPoint( this->height - y - this->srcheight, x );
++            break;
++        default:
++            this->srcwidgetoffs = QPoint( x, y );
++            break;
++        }
++    } else {
++        this->srcwidgetoffs = QPoint( x, y );
++    }
++}
++
++template <const int depth, const int type>
++void QGfxW100<depth,type>::processSpans( int n, QPoint* point, int* width )
++{
++    if ( inDraw || 
++         this->patternedbrush && 
++         this->srcwidth != 0 && 
++         this->srcheight != 0 ) {
++        //in the patternedbrush case, we let blt do the transformation
++        // so we leave inDraw false.
++        QGfxRaster<depth,type>::processSpans( n, point, width );
++    } else {
++        inDraw = true;
++        while (n--) {
++            if ( *width > 0 ) {
++                int x=tx(point->x(),point->y())+this->xoffs;
++                int y=ty(point->x(),point->y())+this->yoffs;
++
++                switch( qt_w100_screen->transformation() ) {
++                case QW100Screen::Rot90:
++                    this->vline( x, y-(*width-1), y );
++                    break;
++                case QW100Screen::Rot180:
++                    this->hline( x - (*width-1), x, y );
++                    break;
++                case QW100Screen::Rot270:
++                    this->vline( x, y, y+*width-1 );
++                    break;
++                default:
++                    this->hline( x, x+*width-1, y );
++                    break;
++                }
++            }
++            point++;
++            width++;
++        }
++        inDraw = false;
++    }
++}
++
++QW100Screen::QW100Screen( int display_id )
++    :QLinuxFbScreen( display_id ),
++     vramoffset( 0 ),
++     m_isServer( false )
++{
++    qt_w100_screen = this;
++    vramoffset = 0;
++    clearCacheFunc = &clearCache;
++    trans = None;
++}
++
++static const char *trans2str( QW100Screen::Transformation t )
++{
++    switch( t ) {
++    case QW100Screen::None:
++        return "None";
++        break;
++    case QW100Screen::Rot90:
++        return "Rot90";
++        break;
++    case QW100Screen::Rot180:
++        return "Rot180";
++        break;
++    case QW100Screen::Rot270:
++        return "Rot270";
++        break;
++    default:
++        return "Unknown";
++        break;
++    }
++}
++
++QW100Screen::Transformation QW100Screen::getTransSpec( const QString &dspec )
++{
++    Transformation mytrans = None;
++    if ( dspec.find( ":Rot270" ) >= 0 ) {
++        mytrans = Rot270;
++    } else if ( dspec.find( ":Rot180" ) >= 0 ) {
++        mytrans = Rot180;
++    } else if ( dspec.find( ":Rot90" ) >= 0 ) {
++        mytrans = Rot90;
++    }
++    return mytrans;
++}
++
++bool QW100Screen::connect( const QString &displaySpec )
++{
++    driver.log( W100Driver::WARNING, "QW100Screen::connect('%s')",
++                 displaySpec.latin1() );
++    trans = getTransSpec( displaySpec );
++
++    if ( QLinuxFbScreen::connect( displaySpec ) ) {
++        vramoffset = ( w == 320 ) ? 0 : 0x0f000000;
++        if ( driver.processAttach() == W100Driver::codOK ) {
++            driver.processAttachSpecialMode( ( w == 480 ) ? 0xaaab : 0xaaaa );
++            surfaceMap.clear();
++            surfaceMap.insert( 0, HWSurface( vramoffset, 
++                                             data , false, 
++                                             w*h*d/8 ) );
++            canaccel = true;
++            QSize s = mapFromDevice( QSize( w, h ) );
++            w = s.width();
++            h = s.height();
++            return true;
++        }
++    }
++    return false;
++}
++
++void QW100Screen::disconnect( void )
++{
++    driver.log( W100Driver::WARNING, "QW100Screen::disconnect()" );
++    driver.processDetachSpecialMode();
++    driver.processDetach();
++    QLinuxFbScreen::disconnect();
++    printf( "[%d]QW100Screen disconnected with %d surfaces\n", 
++            getpid(), surfaceMap.count() );
++    surfaceMap.clear();
++}
++
++void QW100Screen::prepareToSuspend( void )
++{
++
++    driver.log( W100Driver::WARNING,
++                 "QW100Screen::prepareToSuspend. Server = %s",
++                 m_isServer ? "true" : "false" );
++
++    QWSDisplay::grab( true );
++    driver.waitComplete( -1 );
++
++    if ( !driver.attached() ) {
++        driver.log( W100Driver::ERROR, "Driver was not attached. " );
++    } else {
++        driver.processDetachSpecialMode();
++        driver.processDetach();
++    }
++    QWSDisplay::ungrab();
++
++    driver.log( W100Driver::WARNING, "prepareToSuspend done" );
++
++}
++
++void QW100Screen::prepareToResume( void )
++{
++
++    driver.log( W100Driver::WARNING,
++                 "QW100Screen::prepareToResume. Server = %s",
++                 m_isServer ? "true": "false" );
++
++    driver.processAttach();
++    driver.processAttachSpecialMode( ( w == 480 ) ? 0xaaab : 0xaaaa );
++    if ( m_isServer ) {
++        QWSDisplay::grab( true );
++        w100init();
++        QWSDisplay::ungrab();
++        driver.log( W100Driver::WARNING, "W100 restarted" );
++    }
++    driver.log( W100Driver::WARNING, "prepareToResume done" );
++
++}
++
++QW100Screen::~QW100Screen()
++{
++}
++
++bool QW100Screen::w100init()
++{
++    driver.log( W100Driver::WARNING,
++                 "QW100Screen::w100init(%dx%d)", dw, dh );
++    ATI_GRAPHICWINDOW win;
++    ATI_CLIPRECT      clip;
++    uint16_t          overlay;
++
++    win.dummy1 = 0;
++    win.Size.XCoord = 0;
++    win.Size.YCoord = 0;
++    win.Size.Width = dw;
++    win.Size.Height = dh;
++    win.Width = dw > dh ? dh : dw;
++    win.Height = dw > dh ? dw : dh;
++    win.Flag = DSTTYPE_16BPP_444;
++
++    driver.waitComplete( -1 );
++    driver.setGraphicWindowOnOff( 0 );    
++
++    driver.setupGraphicWindow( &win );
++    driver.setGraphicWindowPos( 0, 0 );
++
++    driver.setFrontBuffer( vramoffset, 0, 0 );
++    driver.setDstPitchOffset( dw, vramoffset );
++    driver.setDstType( DSTTYPE_16BPP_444 );
++    driver.setSrcPitchOffset( dw, vramoffset );
++    driver.setSrcType( SRCTYPE_SOLID_COLOR_BLT );
++    clip.X_Top_Left = 0;
++    clip.Y_Top_Left = 0;
++    clip.X_Bottom_Right = dw;
++    clip.Y_Bottom_Right = dh;
++    driver.setDstClippingRect( &clip );
++    
++    clip.X_Top_Left = 0xE000;
++    clip.Y_Top_Left = 0xE000;
++    clip.X_Bottom_Right = 0x1FFF;
++    clip.Y_Bottom_Right = 0x1FFF;
++    
++    driver.setSrcClippingRect( &clip );
++
++    driver.setRopOperation( ROP3_SRCCOPY );
++    driver.setGraphicWindowOnOff( 1 );
++    driver.allocOverlay( &overlay );
++    driver.setOverlayOnOff( overlay, 0 );
++    driver.releaseOverlay( overlay );
++    driver.setDstPitchOffset( dw, vramoffset );
++    driver.setDstClippingRect( NULL );
++    for ( int i = 0; i < dw * dh ; i++ ) {
++        *( data + i ) = 0;
++    }
++    driver.waitComplete( -1 );
++    return true;
++}
++
++void QW100Screen::w100shutdown()
++{
++}
++
++bool QW100Screen::initDevice()
++{
++    QWSDisplay::grab( true );
++    driver.log( W100Driver::WARNING, "initDevice( dw=%d, dh=%d )",
++                 dw, dh );
++    m_isServer = true;
++
++    if ( !w100init() ) {
++        QWSDisplay::ungrab();
++        return false;
++    }
++
++    if ( QLinuxFbScreen::initDevice() ) {
++        //HACK
++        //Some sprite corruption seems to be avoided
++        //reserving some upper memory on the offscreen framebuffer memory
++        QLinuxFbScreen::cache( 65535 * 2, 0 );
++        QWSDisplay::ungrab();
++        return true;
++    }
++    QWSDisplay::ungrab();
++    return false;
++}
++
++void QW100Screen::shutdownDevice()
++{
++    driver.log( W100Driver::WARNING, "Shutting down device" );
++    QLinuxFbScreen::shutdownDevice();
++}
++
++void QW100Screen::restore()
++{
++    driver.log( W100Driver::WARNING, "Restoring W100..." );
++    QLinuxFbScreen::restore();
++    driver.log( W100Driver::WARNING, "Restoring done" );
++}
++
++
++QGfx *QW100Screen::createGfx( unsigned char *b,
++                              int w, int h, int d, int linestep )
++{
++    //We need ALL the gfx created to be QGfxW100 to allow software
++    //drawing syncing after hardware operations
++    QGfx * ret=0;
++    if ( false ) {
++#ifndef QT_NO_QWS_DEPTH_1
++    } else if ( d == 1 ) {
++        ret = new QGfxW100<1,0>( b, w, h );
++#endif
++#ifndef QT_NO_QWS_DEPTH_4
++    } else if ( d == 4 ) {
++        ret = new QGfxW100<4,0>( b, w, h );
++#endif
++#ifndef QT_NO_QWS_DEPTH_8
++    } else if ( d == 8 ) {
++        ret = new QGfxW100<8,0>( b, w, h );
++#endif
++#ifndef QT_NO_QWS_DEPTH_16    
++    } else if  ( d == 16 ) {
++        ret = new QGfxW100<16,0>( b, w, h );
++#endif
++#ifndef QT_NO_QWS_DEPTH_24
++    } else if ( d == 24 ) {
++        ret = new QGfxW100<24,0>( b, w, h );
++#endif
++#ifndef QT_NO_QWS_DEPTH_32
++    } else if ( d == 32 ) {
++        ret = new QGfxW100<32,0>( b, w, h );
++#endif
++    } else {
++        qFatal( "Unsupported depth %d\n", d );
++        ret = 0;
++    }
++
++    ret->setLineStep( linestep );
++    return ret;
++}
++
++
++uchar *QW100Screen::cache( int amount, int optim )
++{
++    unsigned short hSurface = 0;
++    uint32_t surfaceOffset = 0;
++    uchar* localAddr = 0;
++    bool internal = false;
++
++    /* The size must have 0xF bit zeroed (16 multiple)*/
++    /* Perhaps this is not needed anymore, after setting
++     * QW100Screen::pixmapLinestepAlignment to 128
++     */
++    amount = ( amount & 0x0F ) ? ( amount | 0x10 ) & ~0x0F : amount;
++
++    /* Experimenting memory corruption with the
++     * internal AtiCore memory allocation routines
++     * disabled for now
++     */
++#if 1
++    if ( !( localAddr = QLinuxFbScreen::cache( amount, optim ) ) ) {
++        return( 0 );
++    }
++    surfaceOffset = vramoffset + ( uint32_t ) localAddr - ( uint32_t )data;
++
++#else
++    int retcode = 0;
++    qt_fbdpy->grab( true );
++    retcode = driver.allocateSurface( &hSurface,
++                                           &surfaceOffset,
++                                           amount, 1 );
++    qt_fbdpy->ungrab();
++    if ( retcode ) {
++        internal = true;
++        driver.setupMemoryTransfer( surfaceOffset, 
++                                         (uint32_t*) &localAddr );
++        driver.terminateMemoryTransfer();
++    } else {
++        // Try to use the offscreen framebuffer memory
++        // to allocate the surface. Use the qgfxlinuxfb routines
++        if ( !( localAddr = QLinuxFbScreen::cache( amount, optim ) ) ) {
++            return( 0 );
++        }
++        //Distance between physical vram start and surface should be
++        //the same than distance between logical addresses
++        surfaceOffset = vramoffset + ( uint32_t ) localAddr - ( uint32_t ) data;
++    }
++#endif
++    
++    HWSurface surface( hSurface, surfaceOffset,
++                       localAddr, amount, 
++                       internal,
++                       qws_client_id );
++    surfaceMap.insert( surface.getAddr(), surface );
++    return( ( uchar* ) localAddr );
++}
++
++void QW100Screen::uncache( uchar *c )
++{
++    QMap< uchar*, HWSurface >::Iterator itr;
++    if ( ( itr = surfaceMap.find( c ) ) != surfaceMap.end() ) {
++        driver.waitComplete( -1 );
++        if ( itr.data().internal() ) {
++            qt_fbdpy->grab( true );
++            driver.destroySurface( itr.data().getHandle() );
++            qt_fbdpy->ungrab();
++        } else {
++            QLinuxFbScreen::uncache( c );
++        }
++        surfaceMap.remove( itr );
++    }
++}
++
++bool QW100Screen::onCard( uchar *p ) const
++{
++    QMap< uchar*, HWSurface >::ConstIterator itr = surfaceMap.begin();
++    for ( ; itr != surfaceMap.end(); itr++ ) {
++        uchar *begin;
++        if ( ( begin = itr.data().getAddr() ) <= p ) {
++            if ( ( itr.data().getSize() + begin ) >= p ) {
++                return TRUE;
++            }
++        }
++    }
++    return FALSE;
++}
++
++bool QW100Screen::onCard( unsigned char *p, ulong& offset ) const
++{
++    QMap< uchar*, HWSurface >::ConstIterator itr;
++    for ( itr = surfaceMap.begin(); itr != surfaceMap.end(); itr++ ) {
++        uchar *begin;
++        if ( ( begin = itr.data().getAddr() ) <= p ) {
++            if ( ( itr.data().getSize() + begin ) >= p ) {
++                offset = itr.data().getSOffset() + ( p - begin );
++                return TRUE;
++            }
++        }
++    }
++    return FALSE;
++}
++
++QMap< uchar*, QW100Screen::HWSurface > 
++*QW100Screen::getPSurfaceMap( void ) const
++{
++    return ( QMap<uchar*,HWSurface> *) &surfaceMap;
++}
++
++void QW100Screen::clearCache( int clientId )
++{
++    printf( "[%d] CLEARING CACHE FOR %d\n", getpid(), clientId );
++    driver.log( W100Driver::WARNING, "Cleaning cache for '%d'", clientId );
++    QMap< uchar*, HWSurface >::Iterator itr = surfaceMap.begin();
++    while ( itr != surfaceMap.end() ) {
++        if ( itr.data().getCId() == clientId ) {
++            if ( itr.data().internal() ) {
++                qt_fbdpy->grab();
++                driver.destroySurface( itr.data().getHandle() );
++                qt_fbdpy->ungrab();
++            }
++            surfaceMap.remove( itr );
++        }
++        itr++;
++    }
++    QLinuxFbScreen::clearCache( this, clientId );
++}
++
++void QW100Screen::clearCache( QScreen *instance, int clientId )
++{
++    QW100Screen *screen = reinterpret_cast<QW100Screen *> ( instance );
++    screen->clearCache( clientId );
++}
++
++void QW100Screen::setTransformation( Transformation t )
++{
++    qt_fbdpy->grab( true );
++    trans = t;
++  
++    QSize s = mapFromDevice( QSize( dw,dh ) );
++    w = s.width();
++    h = s.height();
++    qt_fbdpy->ungrab();
++}
++
++QW100Screen::Transformation QW100Screen::transformation( void ) const
++{
++    return trans;
++}
++
++QSize QW100Screen::mapToDevice( const QSize &s ) const
++{
++    if ( trans == Rot90 || trans == Rot270 ) {
++        return QSize( s.height(), s.width() );
++    }
++
++    return s;
++}
++
++QSize QW100Screen::mapFromDevice( const QSize &s ) const
++{
++    if ( trans == Rot90 || trans == Rot270 ) {
++        return QSize( s.height(), s.width() );
++    }
++
++    return s;
++}
++
++QPoint QW100Screen::mapToDevice( const QPoint &p, const QSize &s ) const
++{
++    QPoint rp( p );
++
++    switch ( trans ) {
++	case Rot90:
++	    rp.setX( p.y() );
++	    rp.setY( s.width() - p.x() - 1 );
++	    break;
++	case Rot180:
++	    rp.setX( s.width() - p.x() - 1 );
++	    rp.setY( s.height() - p.y() - 1 );
++	    break;
++	case Rot270:
++	    rp.setX( s.height() - p.y() - 1 );
++	    rp.setY( p.x() );
++	    break;
++	default:
++	    break;
++    }
++
++    return rp;
++}
++
++QPoint QW100Screen::mapFromDevice( const QPoint &p, const QSize &s ) const
++{
++    QPoint rp( p );
++
++    switch ( trans ) {
++	case Rot90:
++	    rp.setX( s.height() - p.y() - 1 );
++	    rp.setY( p.x() );
++	    break;
++	case Rot180:
++	    rp.setX( s.width() - p.x() - 1 );
++	    rp.setY( s.height() - p.y() - 1 );
++	    break;
++	case Rot270:
++	    rp.setX( p.y() );
++	    rp.setY( s.width() - p.x() - 1 );
++	    break;
++	default:
++	    break;
++    }
++
++    return rp;
++}
++
++QRect QW100Screen::mapToDevice( const QRect &r, const QSize &s ) const
++{
++    QRect tr;
++    switch ( trans ) {
++	case Rot90:
++	    tr.setCoords( r.y(), s.width() - r.x() - 1,
++                      r.bottom(), s.width() - r.right() - 1 );
++	    break;
++	case Rot180:
++	    tr.setCoords( s.width() - r.x() - 1, s.height() - r.y() - 1,
++                      s.width() - r.right() - 1, s.height() - r.bottom() - 1 );
++	    break;
++	case Rot270:
++	    tr.setCoords( s.height() - r.y() - 1, r.x(),
++                      s.height() - r.bottom() - 1, r.right() );
++	    break;
++	default:
++	    tr = r;
++	    break;
++    }
++
++    return tr.normalize();
++}
++
++QRect QW100Screen::mapFromDevice( const QRect &r, const QSize &s ) const
++{
++    QRect tr;
++    switch ( trans ) {
++	case Rot90:
++	    tr.setCoords( s.height() - r.y() - 1, r.x(),
++                      s.height() - r.bottom() - 1, r.right() );
++	    break;
++	case Rot180:
++	    tr.setCoords( s.width() - r.x() - 1, s.height() - r.y() - 1,
++                      s.width() - r.right() - 1, s.height() - r.bottom() - 1 );
++	    break;
++	case Rot270:
++	    tr.setCoords( r.y(), s.width() - r.x() - 1,
++                      r.bottom(), s.width() - r.right() - 1 );
++	    break;
++	default:
++	    tr = r;
++	    break;
++    }
++
++    return tr.normalize();
++}
++
++template<class T>
++static inline void rotateLoopTemplate( uchar *src, int srcBytesPerLine,
++                                       uchar *dst, int dstBytesPerLine, 
++                                       int width, int height,
++                                       QW100Screen::Transformation trans, 
++                                       bool mapToDevice )
++{
++    int dstXAdd = 0;
++    int dstYAdd = 0;
++    int dstXOfs = 0;
++    int dstYOfs = 0;
++    int srcYAdd = srcBytesPerLine - width * sizeof(T);
++
++    if ( !mapToDevice ) {
++        if ( trans == QW100Screen::Rot90 )
++            trans = QW100Screen::Rot270;
++        else if ( trans == QW100Screen::Rot270 )
++            trans = QW100Screen::Rot90;
++    }
++
++    switch ( trans ) {
++	case QW100Screen::Rot90:
++	    dstXOfs = 0;
++	    dstYOfs = width - 1;
++	    dstXAdd = -dstBytesPerLine;
++	    dstYAdd = 1 * sizeof(T) + width * dstBytesPerLine;
++	    break;
++	case QW100Screen::Rot270:
++	    dstXOfs = height - 1;
++	    dstYOfs = 0;
++	    dstXAdd = dstBytesPerLine;
++	    dstYAdd = -1 * sizeof(T) - width * dstBytesPerLine;
++	    break;
++	default:
++	    dstXOfs = width - 1;
++	    dstYOfs = height - 1;
++	    dstXAdd = -1 * sizeof(T);
++	    dstYAdd = -dstBytesPerLine + width * sizeof(T);
++	    break;
++    };
++
++    T *dstPtr = (T *)(dst + dstYOfs * dstBytesPerLine) + dstXOfs;
++    T *srcPtr = (T *)src;
++    for ( int y = 0; y < height; y++ ) {
++        for ( int x = 0; x < width; x++ ) {
++            *dstPtr = *srcPtr++;
++            dstPtr = (T *)((uchar*)dstPtr + dstXAdd); // add dstXAdd number of bytes
++        }
++        srcPtr = (T *)((uchar*)srcPtr + srcYAdd); // add srcYAdd number of bytes
++        dstPtr = (T *)((uchar*)dstPtr + dstYAdd); // add dstYAdd number of bytes
++    }
++}
++
++QImage QW100Screen::mapToDevice( const QImage &img ) const
++{
++    if ( img.isNull() || trans == None )
++        return img;
++
++    int iw = img.width();
++    int ih = img.height();
++    int w = iw;
++    int h = ih;
++    if ( trans == Rot90 || trans == Rot270 ) {
++        w = ih;
++        h = iw;
++    }
++
++    QImage rimg( w, h, img.depth(), img.numColors(), img.bitOrder() );
++
++    for ( int i = 0; i < img.numColors(); i++ ) {
++        rimg.colorTable()[i] = img.colorTable()[i];
++    }
++
++    // Optimized image rotation code for nice bit depths
++    int d = img.depth();
++    if ( d == 8 || d == 16 || d == 32 ) {
++        int srcBytesPerLine = img.bytesPerLine();
++        int dstBytesPerLine = rimg.bytesPerLine();
++        uchar *srcBits = img.bits();
++        uchar *dstBits = rimg.bits();
++        switch ( d ) {
++	    case 8:
++            rotateLoopTemplate<uchar>( srcBits, srcBytesPerLine, dstBits, dstBytesPerLine, iw, ih, trans, TRUE );
++            break;
++	    case 16:
++            rotateLoopTemplate<ushort>( srcBits, srcBytesPerLine, dstBits, dstBytesPerLine, iw, ih, trans, TRUE );
++            break;
++	    case 32:
++            rotateLoopTemplate<uint>( srcBits, srcBytesPerLine, dstBits, dstBytesPerLine, iw, ih, trans, TRUE );
++            break;
++        }
++        rimg.setAlphaBuffer( img.hasAlphaBuffer() );
++        rimg.setOffset( img.offset() );
++        return rimg;
++    }
++
++    // Slower fall back code for image rotation for 1-bit and other depths
++#define ROTATE_LOOP( X, Y, VAL ) \
++		    for ( int y = 0; y < ih; y++ ) { \
++			for ( int x = 0; x < iw; x++ ) { \
++			    rimg.setPixel( X, Y, VAL ); \
++			} \
++		    } \
++		    break;
++
++    if ( img.depth() > 8 ) {
++        switch ( trans ) {
++	    case Rot90:
++            ROTATE_LOOP( y, iw - x - 1, img.pixel(x, y) )
++                case Rot270:
++                ROTATE_LOOP( ih - y - 1, x, img.pixel(x, y) );
++	    default:
++            ROTATE_LOOP( iw - x - 1, ih - y - 1, img.pixel(x, y) );
++        }
++    } else {
++        switch ( trans ) {
++	    case Rot90:
++            ROTATE_LOOP( y, iw - x - 1, img.pixelIndex(x, y) );
++	    case Rot270:
++            ROTATE_LOOP( ih - y - 1, x, img.pixelIndex(x, y) );
++	    default:
++            ROTATE_LOOP( iw - x - 1, ih - y - 1, img.pixelIndex(x, y) );
++        }
++    }
++
++#undef ROTATE_LOOP
++
++    rimg.setAlphaBuffer( img.hasAlphaBuffer() );
++    rimg.setOffset( img.offset() );
++
++    return rimg;
++}
++
++QImage QW100Screen::mapFromDevice( const QImage &img ) const
++{
++    if ( img.isNull() || trans == None )
++        return img;
++
++    int iw = img.width();
++    int ih = img.height();
++    int w = iw;
++    int h = ih;
++    if ( trans == Rot90 || trans == Rot270 ) {
++        w = ih;
++        h = iw;
++    }
++
++    QImage rimg( w, h, img.depth(), img.numColors(), img.bitOrder() );
++
++    for ( int i = 0; i < img.numColors(); i++ ) {
++        rimg.colorTable()[i] = img.colorTable()[i];
++    }
++
++    // Optimized image rotation code for nice bit depths
++    int d = img.depth();
++    if ( d == 8 || d == 16 || d == 32 ) {
++        int srcBytesPerLine = img.bytesPerLine();
++        int dstBytesPerLine = rimg.bytesPerLine();
++        uchar *srcBits = img.bits();
++        uchar *dstBits = rimg.bits();
++        switch ( d ) {
++	    case 8:
++            rotateLoopTemplate<uchar>( srcBits, srcBytesPerLine, dstBits, dstBytesPerLine, iw, ih, trans, FALSE );
++            break;
++	    case 16:
++            rotateLoopTemplate<ushort>( srcBits, srcBytesPerLine, dstBits, dstBytesPerLine, iw, ih, trans, FALSE );
++            break;
++	    case 32:
++            rotateLoopTemplate<uint>( srcBits, srcBytesPerLine, dstBits, dstBytesPerLine, iw, ih, trans, FALSE );
++            break;
++        }
++        rimg.setAlphaBuffer( img.hasAlphaBuffer() );
++        rimg.setOffset( img.offset() );
++        return rimg;
++    }
++
++    // Slower fall back code for image rotation for 1-bit and other depths
++#define ROTATE_LOOP( X, Y, VAL ) \
++		    for ( int y = 0; y < ih; y++ ) { \
++			for ( int x = 0; x < iw; x++ ) { \
++			    rimg.setPixel( X, Y, VAL ); \
++			} \
++		    } \
++		    break;
++
++    if ( img.depth() > 8 ) {
++        switch ( trans ) {
++	    case Rot90:
++            ROTATE_LOOP( ih - y - 1, x, img.pixel(x, y) );
++	    case Rot270:
++            ROTATE_LOOP( y, iw - x - 1, img.pixel(x, y) )
++                default:
++            ROTATE_LOOP( iw - x - 1, ih - y - 1, img.pixel(x, y) );
++        }
++    } else {
++        switch ( trans ) {
++	    case Rot90:
++            ROTATE_LOOP( ih - y - 1, x, img.pixelIndex(x, y) );
++	    case Rot270:
++            ROTATE_LOOP( y, iw - x - 1, img.pixelIndex(x, y) );
++	    default:
++            ROTATE_LOOP( iw - x - 1, ih - y - 1, img.pixelIndex(x, y) );
++        }
++    }
++
++#undef ROTATE_LOOP
++
++    rimg.setAlphaBuffer( img.hasAlphaBuffer() );
++    rimg.setOffset( img.offset() );
++
++    return rimg;
++}
++
++QRegion QW100Screen::mapToDevice( const QRegion &rgn, const QSize &s ) const
++{
++    if ( trans == None )
++        return rgn;
++
++    QRegion trgn;
++    QArray<QRect> a = rgn.rects();
++    QRect tr;
++    const QRect *r = a.data();
++
++    int w = s.width();
++    int h = s.height();
++    int size = a.size();
++
++    switch ( trans ) {
++	case Rot270:
++	    for ( int i = 0; i < size; i++, r++ ) {
++            tr.setCoords( h - r->y() - 1, r->x(),
++                          h - r->bottom() - 1, r->right() );
++            trgn |= tr.normalize();
++	    }
++	    break;
++	case Rot90:
++	    for ( int i = 0; i < size; i++, r++ ) {
++            tr.setCoords( r->y(), w - r->x() - 1,
++                          r->bottom(), w - r->right() - 1 );
++            trgn |= tr.normalize();
++	    }
++	    break;
++	case Rot180:
++	    for ( int i = 0; i < size; i++, r++ ) {
++            tr.setCoords( w - r->x() - 1, h - r->y() - 1,
++                          w - r->right() - 1, h - r->bottom() - 1 );
++            trgn |= tr.normalize();
++	    }
++	    break;
++	default:
++	    break;
++    }
++    return trgn;
++}
++
++QRegion QW100Screen::mapFromDevice( const QRegion &rgn, const QSize &s ) const
++{
++    if ( trans == None )
++        return rgn;
++
++    QRegion trgn;
++    QArray<QRect> a = rgn.rects();
++    const QRect *r = a.data();
++    QRect tr;
++
++    int w = s.width();
++    int h = s.height();
++    int size = a.size();
++
++    switch ( trans ) {
++	case Rot270:
++	    for ( int i = 0; i < size; i++, r++ ) {
++            tr.setCoords( r->y(), w - r->x() - 1,
++                          r->bottom(), w - r->right() - 1 );
++            trgn |= tr.normalize();
++	    }
++	    break;
++	case Rot90:
++	    for ( int i = 0; i < size; i++, r++ ) {
++            tr.setCoords( h - r->y() - 1, r->x(),
++                          h - r->bottom() - 1, r->right() );
++            trgn |= tr.normalize();
++	    }
++	    break;
++	case Rot180:
++	    for ( int i = 0; i < size; i++, r++ ) {
++            tr.setCoords( w - r->x() - 1, h - r->y() - 1,
++                          w - r->right() - 1, h - r->bottom() - 1 );
++            trgn |= tr.normalize();
++	    }
++	    break;
++	default:
++	    break;
++    }
++
++    return trgn;
++}
++
++/*!
++  0 = none
++  1..3 = rotates 90..270
++  4..7 = mirrored 0..3
++*/
++int QW100Screen::transformOrientation() const
++{
++    return (int)trans;
++}
++
++
++void qws_w100Transformation( int t )
++{
++    if ( qt_w100_screen ) {
++        qt_w100_screen->setTransformation( static_cast<QW100Screen::Transformation>( t ) );
++    }
++}
++
++extern bool qws_accel;
++
++extern "C" QScreen * qt_get_screen_w100( int display_id )
++{
++    return( new QW100Screen( display_id ) );
++}
+Index: qt-2.3.10-snapshot-20060120/src/kernel/qapplication_qws.cpp
+===================================================================
+--- qt-2.3.10-snapshot-20060120.orig/src/kernel/qapplication_qws.cpp	2006-01-20 20:48:07.131939024 +0100
++++ qt-2.3.10-snapshot-20060120/src/kernel/qapplication_qws.cpp	2006-01-20 21:17:39.461503976 +0100
+@@ -1450,16 +1450,25 @@
+ extern void qws_clearLoadedFonts();
+ #endif
+ 
++#ifndef QT_NO_QWS_W100
++extern void qws_w100Transformation( int t );
++#endif
++
+ void QWSDisplay::setTransformation( int t )
+ {
+-#ifndef QT_NO_QWS_TRANSFORMED
++#if !defined(QT_NO_QWS_TRANSFORMED) || !defined(QT_NO_QWS_W100)
+     QRect mwr = qt_screen->mapToDevice(qt_maxWindowRect,
+ 	QSize(qt_screen->width(), qt_screen->height()) );
+ 
+     QPixmapCache::clear();
+     qws_clearLoadedFonts();
+     qws_mapPixmaps( TRUE );
++#ifndef QT_NO_QWS_TRANSFORMED
+     qws_setScreenTransformation( t );
++#endif
++#ifndef QT_NO_QWS_W100
++    qws_w100Transformation( t );
++#endif
+     qws_mapPixmaps( FALSE );
+ 
+     if ( qt_fbdpy->d->directServerConnection() ) {

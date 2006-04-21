@@ -1,0 +1,159 @@
+Index: qt-2.3.10-snapshot-20060120/src/kernel/qwsmouse_qws.cpp
+===================================================================
+--- qt-2.3.10-snapshot-20060120.orig/src/kernel/qwsmouse_qws.cpp	2006-01-20 21:02:45.087469496 +0100
++++ qt-2.3.10-snapshot-20060120/src/kernel/qwsmouse_qws.cpp	2006-01-20 21:08:58.697672112 +0100
+@@ -14,10 +14,6 @@
+ ** Foundation and appearing in the file LICENSE.GPL included in the
+ ** packaging of this file.
+ **
+-** Licensees holding valid Qt Enterprise Edition or Qt Professional Edition
+-** licenses for Qt/Embedded may use this file in accordance with the
+-** Qt Embedded Commercial License Agreement provided with the Software.
+-**
+ ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
+ ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+ **
+@@ -30,6 +26,12 @@
+ **
+ **********************************************************************/
+ 
++/* 
++ *  The 5 point algorithim in QTSLibHandlerPrivate::calibrate() is
++ *  GPL only code and Copyright (C) 2001 Russel King.
++ *
++ *  Taken from ts_calibrate.c from tslib
++ */
+ #include "qwindowsystem_qws.h"
+ #include "qsocketnotifier.h"
+ #include "qwsevent_qws.h"
+@@ -1810,6 +1812,7 @@
+ 
+ void QTSLibHandlerPrivate::calibrate( QWSPointerCalibrationData * cd)
+ {
++#ifdef ORIG_CALIBRATE
+     QPoint dev_tl = cd->devPoints[ QWSPointerCalibrationData::TopLeft ];
+     QPoint dev_br = cd->devPoints[ QWSPointerCalibrationData::BottomRight ];
+     QPoint screen_tl = cd->screenPoints[ QWSPointerCalibrationData::TopLeft ];
+@@ -1840,6 +1843,122 @@
+     {
+         qDebug( "Could not save calibration: %s", calFile.latin1() );
+     }
++
++#else
++    int j;
++    float n, x, y, x2, y2, xy, z, zx, zy;
++    float det, cal_a, cal_b, cal_c, cal_d, cal_e, cal_f, cal_i;
++    float scaling = 65536.0;
++    int cal_x[5], cal_xfb[5], cal_y[5], cal_yfb[5], cal_o[7];
++
++    cal_x[0]=cd->devPoints[ QWSPointerCalibrationData::TopLeft ].x();
++    cal_y[0]=cd->devPoints[ QWSPointerCalibrationData::TopLeft ].y();
++    cal_x[1]=cd->devPoints[ QWSPointerCalibrationData::TopRight ].x();
++    cal_y[1]=cd->devPoints[ QWSPointerCalibrationData::TopRight ].y();
++    cal_x[2]=cd->devPoints[ QWSPointerCalibrationData::BottomLeft ].x();
++    cal_y[2]=cd->devPoints[ QWSPointerCalibrationData::BottomLeft ].y();
++    cal_x[3]=cd->devPoints[ QWSPointerCalibrationData::BottomRight ].x();
++    cal_y[3]=cd->devPoints[ QWSPointerCalibrationData::BottomRight ].y();
++    cal_x[4]=cd->devPoints[ QWSPointerCalibrationData::Center ].x();
++    cal_y[4]=cd->devPoints[ QWSPointerCalibrationData::Center ].y();
++
++    cal_xfb[0]=cd->screenPoints[ QWSPointerCalibrationData::TopLeft ].x();
++    cal_yfb[0]=cd->screenPoints[ QWSPointerCalibrationData::TopLeft ].y();
++    cal_xfb[1]=cd->screenPoints[ QWSPointerCalibrationData::TopRight ].x();
++    cal_yfb[1]=cd->screenPoints[ QWSPointerCalibrationData::TopRight ].y();
++    cal_xfb[2]=cd->screenPoints[ QWSPointerCalibrationData::BottomLeft ].x();
++    cal_yfb[2]=cd->screenPoints[ QWSPointerCalibrationData::BottomLeft ].y();
++    cal_xfb[3]=cd->screenPoints[ QWSPointerCalibrationData::BottomRight ].x();
++    cal_yfb[3]=cd->screenPoints[ QWSPointerCalibrationData::BottomRight ].y();
++    cal_xfb[4]=cd->screenPoints[ QWSPointerCalibrationData::Center ].x();
++    cal_yfb[4]=cd->screenPoints[ QWSPointerCalibrationData::Center ].y();
++
++    //qDebug("Top left : X = %4d Y = %4d", cal_x[0], cal_y[0]);
++    //qDebug("Top right: X = %4d Y = %4d", cal_x[1], cal_y[1]);
++    //qDebug("Bot left : X = %4d Y = %4d", cal_x[2], cal_y[2]);
++    //qDebug("Bot right: X = %4d Y = %4d", cal_x[3], cal_y[3]);
++    //qDebug("Middle: X = %4d Y = %4d", cal_x[4], cal_y[4]);
++
++    // Get sums for matrix
++    n = x = y = x2 = y2 = xy = 0;
++    for(j=0;j<5;j++) {
++        n += 1.0;
++        x += (float)cal_x[j];
++        y += (float)cal_y[j];
++        x2 += (float)(cal_x[j]*cal_x[j]);
++        y2 += (float)(cal_y[j]*cal_y[j]);
++        xy += (float)(cal_x[j]*cal_y[j]);
++    }
++
++    // Get determinant of matrix -- check if determinant is too small
++    det = n*(x2*y2 - xy*xy) + x*(xy*y - x*y2) + y*(x*xy - y*x2);
++    if(det < 0.1 && det > -0.1) {
++        qDebug("determinant is too small -- %f",det);
++        return;// false;
++    }
++
++    // Get elements of inverse matrix
++    cal_a = (x2*y2 - xy*xy)/det;
++    cal_b = (xy*y - x*y2)/det;
++    cal_c = (x*xy - y*x2)/det;
++    cal_e = (n*y2 - y*y)/det;
++    cal_f = (x*y - n*xy)/det;
++    cal_i = (n*x2 - x*x)/det;
++
++    // Get sums for x calibration
++    z = zx = zy = 0;
++    for(j=0;j<5;j++) {
++        z += (float)cal_xfb[j];
++        zx += (float)(cal_xfb[j]*cal_x[j]);
++        zy += (float)(cal_xfb[j]*cal_y[j]);
++    }
++
++    // Now multiply out to get the calibration for framebuffer x coord
++    cal_o[0] = (int)((cal_a*z + cal_b*zx + cal_c*zy)*(scaling));
++    cal_o[1] = (int)((cal_b*z + cal_e*zx + cal_f*zy)*(scaling));
++    cal_o[2] = (int)((cal_c*z + cal_f*zx + cal_i*zy)*(scaling));
++
++    qDebug("%f %f %f",(cal_a*z + cal_b*zx + cal_c*zy), (cal_b*z + cal_e*zx + cal_f*zy), (cal_c*z + cal_f*zx + cal_i*zy));
++
++    // Get sums for y calibration
++    z = zx = zy = 0;
++    for (j=0;j<5;j++) {
++        z += (float)cal_yfb[j];
++        zx += (float)(cal_yfb[j]*cal_x[j]);
++        zy += (float)(cal_yfb[j]*cal_y[j]);
++    }
++
++    // Now multiply out to get the calibration for framebuffer y coord
++    cal_o[3] = (int)((cal_a*z + cal_b*zx + cal_c*zy)*(scaling));
++    cal_o[4] = (int)((cal_b*z + cal_e*zx + cal_f*zy)*(scaling));
++    cal_o[5] = (int)((cal_c*z + cal_f*zx + cal_i*zy)*(scaling));
++
++    qDebug("%f %f %f",(cal_a*z + cal_b*zx + cal_c*zy), (cal_b*z + cal_e*zx + cal_f*zy), (cal_c*z + cal_f*zx + cal_i*zy));
++
++
++    // If we got here, we're OK, so assign scaling to a[6] and return
++    cal_o[6] = (int) scaling;
++
++    qDebug("Calibration constants: %d %d %d %d %d %d %d",
++        cal_o[0], cal_o[1], cal_o[2],
++        cal_o[3], cal_o[4], cal_o[5],
++        cal_o[6]);
++
++    QString calFile = "/etc/pointercal";
++#ifndef QT_NO_TEXTSTREAM
++    QFile file( calFile );
++    if ( file.open( IO_WriteOnly ) ) {
++        QTextStream t( &file );
++        t << cal_o[1] << " " << cal_o[2] << " " << cal_o[0] << " ";
++        t << cal_o[4] << " " << cal_o[5] << " " << cal_o[3] << " " << cal_o[6];
++       file.flush(); closeTs();
++       openTs();
++    } else
++#endif
++    {
++        qDebug( "Could not save calibration: %s", calFile.latin1() );
++    }
++#endif
+ }
+ 
+ void QTSLibHandlerPrivate::readMouseData()

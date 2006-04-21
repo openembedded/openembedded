@@ -1,0 +1,13 @@
+Index: qt-2.3.10-snapshot-20060120/src/kernel/qwindowsystem_qws.cpp
+===================================================================
+--- qt-2.3.10-snapshot-20060120.orig/src/kernel/qwindowsystem_qws.cpp	2006-01-20 21:03:08.482912848 +0100
++++ qt-2.3.10-snapshot-20060120/src/kernel/qwindowsystem_qws.cpp	2006-01-20 21:11:59.410199632 +0100
+@@ -2922,7 +2922,7 @@
+ {
+     QString keyboards = getenv("QWS_KEYBOARD");
+     if ( keyboards.isEmpty() ) {
+-#if defined( QT_QWS_CASSIOPEIA )
++#if defined( QT_QWS_CASSIOPEIA ) || defined( QT_QWS_SIMPAD )
+ 	keyboards = "Buttons";
+ #elif !defined(QT_NO_QWS_VFB)
+ 	extern bool qvfbEnabled;

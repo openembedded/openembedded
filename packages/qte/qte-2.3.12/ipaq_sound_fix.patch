@@ -1,0 +1,60 @@
+Attention HACK ahead:
+    The OpenSoundSystem is just scary this is a special hack
+    for supporting iPAQ(s) at least h3870.
+    
+    Features:
+	-It does not crash when playing a 'null' file
+	-Change sound fragment size to 12
+	-Force stereo on!!! (hardcoded at least uda1341 needs it)
+
+
+
+Index: qt-2.3.10-snapshot-20060120/src/kernel/qsoundqss_qws.cpp
+===================================================================
+--- qt-2.3.10-snapshot-20060120.orig/src/kernel/qsoundqss_qws.cpp	2006-01-20 21:15:58.396868136 +0100
++++ qt-2.3.10-snapshot-20060120/src/kernel/qsoundqss_qws.cpp	2006-01-20 21:22:27.674688912 +0100
+@@ -73,7 +73,7 @@
+ };
+ 
+ #if defined(QT_QWS_IPAQ)
+-static const int sound_fragment_size = 12;
++static const int sound_fragment_size = 14;
+ #else
+ static const int sound_fragment_size = 12;
+ #endif
+@@ -520,8 +520,14 @@
+ 
+     int devSamples()
+     {
+-	int possible = (((max1+max2-out) / ((chunkdata.wBitsPerSample>>3)*chunkdata.channels))
+-		*sound_speed)/chunkdata.samplesPerSec;
++        if ( !(chunkdata.wBitsPerSample>>3) ||
++             !chunkdata.channels            ||
++             !sound_speed                   ||
++             !chunkdata.samplesPerSec )
++            return 0;
++
++        int possible = (((max1+max2-out) / ((chunkdata.wBitsPerSample>>3 )*chunkdata.channels))
++                        *sound_speed)/chunkdata.samplesPerSec;
+ 
+ 	return possible;
+     }
+@@ -1510,12 +1516,14 @@
+ 	    if ( AFMT_U8 != v )
+ 		qDebug("Want format %d got %d", AFMT_U8, v);
+ #endif
+-	    v=sound_stereo; if ( ioctl(fd, SNDCTL_DSP_STEREO, &v) )
++	    v=1; if ( ioctl(fd, SNDCTL_DSP_STEREO, &v) )
+ 		qWarning("Could not set stereo %d",v);
+ 	    if ( sound_stereo != v )
+-		qDebug("Want stereo %d got %d", sound_stereo, v);
+-#ifdef QT_QWS_SOUND_STEREO
+-	    sound_stereo=v;
++                qDebug("Want stereo %d got %d", sound_stereo, v);
++#if defined(QT_QWS_IPAQ)
++            sound_stereo=1;
++#elif QT_QWS_SOUND_STEREO
++            sound_stereo=v;
+ #endif
+ 	    v=sound_speed; if ( ioctl(fd, SNDCTL_DSP_SPEED, &sound_speed) )
+ 		qWarning("Could not set speed %d",v);

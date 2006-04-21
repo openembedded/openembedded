@@ -1,0 +1,17 @@
+
+#
+# Patch managed by http://www.holgerschurig.de/patcher.html
+#
+
+--- qt-2.3.10/src/xml/qxml.cpp~xml
++++ qt-2.3.10/src/xml/qxml.cpp
+@@ -809,6 +809,9 @@
+ // ### The input source should not do the encoding detection!
+ void QXmlInputSource::readInput( QByteArray& rawData )
+ {
++    // avoid crash if the array has less than 5 characters (skyhusker@handhelds.org)
++    if ( rawData.size() < 6 )
++        return;
+     QBuffer buf( rawData );
+     buf.open( IO_ReadOnly );
+     QTextStream *stream = new QTextStream( &buf );

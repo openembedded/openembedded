@@ -1,0 +1,105 @@
+
+#
+# Patch managed by http://www.holgerschurig.de/patcher.html
+#
+
+Index: qt-2.3.10-snapshot-20060120/src/widgets/qpopupmenu.cpp
+===================================================================
+--- qt-2.3.10-snapshot-20060120.orig/src/widgets/qpopupmenu.cpp	2006-01-20 01:08:04.000000000 +0100
++++ qt-2.3.10-snapshot-20060120/src/widgets/qpopupmenu.cpp	2006-01-20 21:06:03.060373040 +0100
+@@ -820,7 +820,7 @@
+ 	    mi->custom()->setFont( font() );
+ 	if ( mi->iconSet() != 0)
+ 	    maxPMWidth = QMAX( maxPMWidth,
+-			       mi->iconSet()->pixmap( QIconSet::Small, QIconSet::Normal ).width() + 4 );
++			       mi->iconSet()->pixmap().width() + 4 );
+     }
+ 
+     int dh = QApplication::desktop()->height();
+Index: qt-2.3.10-snapshot-20060120/src/widgets/qtabbar.cpp
+===================================================================
+--- qt-2.3.10-snapshot-20060120.orig/src/widgets/qtabbar.cpp	2006-01-20 21:03:47.293012816 +0100
++++ qt-2.3.10-snapshot-20060120/src/widgets/qtabbar.cpp	2006-01-20 21:06:03.061372888 +0100
+@@ -412,8 +412,8 @@
+     int iw = 0;
+     int ih = 0;
+     if ( t->iconset != 0 ) {
+-	iw = t->iconset->pixmap( QIconSet::Small, QIconSet::Normal ).width();
+-	ih = t->iconset->pixmap( QIconSet::Small, QIconSet::Normal ).height();
++	iw = t->iconset->pixmap().width();
++	ih = t->iconset->pixmap().height();
+ 	if (!t->label.isEmpty())
+ 	   iw +=2; 
+     }
+@@ -440,7 +440,11 @@
+ 	    ? QIconSet::Normal : QIconSet::Disabled;
+ 	if ( mode == QIconSet::Normal && has_focus )
+ 	    mode = QIconSet::Active;
+-	QPixmap pixmap = t->iconset->pixmap( QIconSet::Small, mode );
++	QPixmap pixmap;
++	if ( mode == QIconSet::Disabled )
++		pixmap = t->iconset->pixmap( QIconSet::Automatic, QIconSet::Disabled );
++	else
++		pixmap = t->iconset->pixmap();
+ 	int pixw = pixmap.width();
+ 	int pixh = pixmap.height();
+ 	r.setLeft( r.left() + pixw + 2 );
+@@ -869,8 +873,8 @@
+ 	int iw = 0;
+ 	int ih = 0;
+ 	if ( t->iconset != 0 ) {
+-	    iw = t->iconset->pixmap( QIconSet::Small, QIconSet::Normal ).width();
+-	    ih = t->iconset->pixmap( QIconSet::Small, QIconSet::Normal ).height();
++	    iw = t->iconset->pixmap().width();
++	    ih = t->iconset->pixmap().height();
+ 	    if (!t->label.isNull())
+ 		iw +=2;
+ 	}
+@@ -914,8 +918,8 @@
+ 	    int iw = 0;
+ 	    int ih = 0;
+ 	    if ( t->iconset != 0 ) {
+-		iw = t->iconset->pixmap( QIconSet::Small, QIconSet::Normal ).width();
+-		ih = t->iconset->pixmap( QIconSet::Small, QIconSet::Normal ).height();
++		iw = t->iconset->pixmap().width();
++		ih = t->iconset->pixmap().height();
+ 		if (!t->label.isEmpty())
+ 		    iw +=2; 
+ 	    }
+@@ -947,8 +951,8 @@
+ 	    int iw = 0;
+ 	    int ih = 0;
+ 	    if ( t->iconset != 0 ) {
+-		iw = t->iconset->pixmap( QIconSet::Small, QIconSet::Normal ).width();
+-		ih = t->iconset->pixmap( QIconSet::Small, QIconSet::Normal ).height();
++		iw = t->iconset->pixmap().width();
++		ih = t->iconset->pixmap().height();
+ 		if (!t->label.isEmpty())
+ 		    iw +=2; 
+ 	    }
+Index: qt-2.3.10-snapshot-20060120/src/widgets/qwindowsstyle.cpp
+===================================================================
+--- qt-2.3.10-snapshot-20060120.orig/src/widgets/qwindowsstyle.cpp	2006-01-20 01:08:04.000000000 +0100
++++ qt-2.3.10-snapshot-20060120/src/widgets/qwindowsstyle.cpp	2006-01-20 21:06:03.062372736 +0100
+@@ -1182,7 +1182,7 @@
+ 	h = fm.height() + 2*motifItemVMargin + 2*motifItemFrame;
+ 
+     if ( !mi->isSeparator() && mi->iconSet() != 0 ) {
+-	h = QMAX( h, mi->iconSet()->pixmap( QIconSet::Small, QIconSet::Normal ).height() + 2*motifItemFrame );
++	h = QMAX( h, mi->iconSet()->pixmap().height() + 2*motifItemFrame );
+     }
+     if ( mi->custom() )
+ 	h = QMAX( h, mi->custom()->sizeHint().height() + 2*motifItemVMargin + 2*motifItemFrame );
+@@ -1246,7 +1246,11 @@
+ 	QIconSet::Mode mode = dis ? QIconSet::Disabled : QIconSet::Normal;
+ 	if (act && !dis )
+ 	    mode = QIconSet::Active;
+-	QPixmap pixmap = mi->iconSet()->pixmap( QIconSet::Small, mode );
++	QPixmap pixmap;
++	if ( mode == QIconSet::Disabled )
++		pixmap = mi->iconSet()->pixmap( QIconSet::Automatic, QIconSet::Disabled );
++	else
++		pixmap = mi->iconSet()->pixmap();
+ 	int pixw = pixmap.width();
+ 	int pixh = pixmap.height();
+ 	if ( act && !dis ) {
