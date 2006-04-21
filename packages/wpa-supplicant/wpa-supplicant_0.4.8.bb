@@ -3,9 +3,11 @@ SECTION = "network"
 LICENSE = "GPL"
 MAINTAINER = "Holger Schurig"
 HOMEPAGE = "http://hostap.epitest.fi/wpa_supplicant/"
-DEPENDS = "openssl"
+DEPENDS = "openssl hostap-modules"
 DEPENDS_mtx-1_append = "madwifi-modules"
-PR = "r1"
+RCONFLICTS = "wpa-supplicant-nossl"
+RREPLACES = "wpa-supplicant-nossl"
+PR = "r2"
 
 SRC_URI = "http://hostap.epitest.fi/releases/wpa_supplicant-${PV}.tar.gz \
 	file://madwifi-bsd-fix.diff;patch=1;pnum=0 \

@@ -42,10 +42,10 @@ LIBS_p = $(TARGET_LDFLAGS)
 
 
 # Driver interface for Host AP driver
-#CONFIG_DRIVER_HOSTAP=y
+CONFIG_DRIVER_HOSTAP=y
 
 # Driver interface for Agere driver
-#CONFIG_DRIVER_HERMES=y
+CONFIG_DRIVER_HERMES=y
 
 # Driver interface for madwifi driver
 #CONFIG_DRIVER_MADWIFI=y
