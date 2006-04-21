@@ -1,0 +1,107 @@
+--- apmd/apmd.c~	2006-04-10 20:10:42.787178752 +0100
++++ apmd/apmd.c	2006-04-17 20:16:25.984067744 +0100
+@@ -345,6 +345,7 @@
+ 		int status, retval;
+ 		ssize_t len;
+ 		time_t countdown;
++		struct timeval timeout;
+ 
+ 		if (pid < 0) {
+ 			/* Couldn't fork */
+@@ -357,56 +358,50 @@
+ 		/* Capture the child's output, if any, but only until it terminates */
+ 		close(fds[1]);
+ 		fcntl(fds[0], F_SETFL, O_RDONLY|O_NONBLOCK);
+-		countdown = proxy_timeout;
+-		do {
+-			countdown -= 1;
+-			while ((len = read(fds[0], line, sizeof(line)-1)) > 0) {
+-				line[len] = 0;
+-				APMD_SYSLOG(LOG_INFO, "+ %s", line);
+-			}
+-				
+-			retval = waitpid(pid, &status, WNOHANG);
+-			if (retval == pid)
+-				goto proxy_done;
+-			if (retval < 0) {
+-				APMD_TRACE1(LOG_ERR, "waitpid() failed: %s", strerror(errno));
+-				status = __W_EXITCODE(0, SIGTERM) | __WCOREFLAG;
+-				goto proxy_done;
+-			}
+-				
+-			while (sleep(1) > 0) ;
+-		} while (
+-			(countdown >= 0)
+-			|| (proxy_timeout < 0)
+-		);
+-
+-		APMD_SYSLOG(LOG_NOTICE, "Proxy has been running more than %d seconds; killing it", proxy_timeout);
+-
+-		kill(pid, SIGTERM);
+-		countdown = 5;
+-		do {
+-			retval = waitpid(pid, &status, WNOHANG);
+-			if (retval == pid)
+-				goto proxy_done;
+-			if (retval < 0) {
+-				APMD_TRACE1(LOG_ERR, "waitpid() failed: %s", strerror(errno));
+-				status = __W_EXITCODE(0, SIGTERM) | __WCOREFLAG;
+-				goto proxy_done;
++		timeout.tv_sec = proxy_timeout;
++		timeout.tv_usec = 0;
++		for (;;) {
++			int r;
++			fd_set rfds;
++			FD_ZERO (&rfds);
++			FD_SET (fds[0], &rfds);
++			r = select (fds[0] + 1, &rfds, NULL, NULL, &timeout);
++			if (r == 0) {
++				APMD_SYSLOG(LOG_NOTICE, "Proxy has been running more than %d seconds; killing it", proxy_timeout);
++
++				kill(pid, SIGTERM);
++				countdown = 5;
++				do {
++					retval = waitpid(pid, &status, WNOHANG);
++					if (retval == pid)
++						goto proxy_done;
++					if (retval < 0) {
++						APMD_TRACE1(LOG_ERR, "waitpid() failed: %s", strerror(errno));
++						status = __W_EXITCODE(0, SIGTERM) | __WCOREFLAG;
++						goto proxy_done;
++					}
++					while (sleep(1) > 0) ;
++				} while (countdown-- >= 0);
++
++				kill(pid, SIGKILL);
++
++				break;
++			} else if (r < 0) {
++				perror ("select");
++				break;
++			} else {
++				len = read(fds[0], line, sizeof(line)-1);
++				if (len > 0) {
++					line[len] = 0;
++					APMD_SYSLOG(LOG_INFO, "+ %s", line);
++				} else
++					break;
+ 			}
++		}
+ 
+-			while (sleep(1) > 0) ;
+-
+-		} while (countdown >= 0);
+-
+-		kill(pid, SIGKILL);
+-		status = __W_EXITCODE(0, SIGKILL);
++		retval = waitpid(pid, &status, 0);
+ 
+ proxy_done:
+-		/* Flush any remaining data */
+-		while ((len = read(fds[0], line, sizeof(line)-1)) > 0) {
+-			line[len] = 0;
+-			APMD_SYSLOG(LOG_INFO, "+ %s", line);
+-		}
+ 		close(fds[0]);
+ 				
+ 		/* Collect the exit code */
