@@ -1,6 +1,6 @@
 include linux-openzaurus.inc
 
-PR = "r6"
+PR = "r7"
 
 # Handy URLs
 # git://rsync.kernel.org/pub/scm/linux/kernel/git/torvalds/linux-2.6.git \
@@ -43,6 +43,11 @@ SRC_URI = "http://www.kernel.org/pub/linux/kernel/v2.6/linux-2.6.16.tar.bz2 \
            ${RPSRC}/integrator_rtc-r0.patch;patch=1 \
            ${RPSRC}/zaurus_keyboard_tweak-r3.patch;patch=1 \
            ${RPSRC}/pxafb_tweaks-r0.patch;patch=1 \
+           ${RPSRC}/spitz_kbd_fix-r0.patch;patch=1 \
+           ${RPSRC}/mmcsd_large_cards-r0.patch;patch=1 \
+           ${RPSRC}/fbmem_fix-r1.patch;patch=1 \
+           ${RPSRC}/scoop_linkage-r0.patch;patch=1 \
+           ${RPSRC}/ssp_cleanup-r0.patch;patch=1 \
            ${RPSRC}/alsa/asoc-v0.10rc4.patch;patch=1 \
            ${RPSRC}/hx2750_base-r24.patch;patch=1 \
            ${RPSRC}/hx2750_bl-r5.patch;patch=1 \
@@ -52,7 +57,7 @@ SRC_URI = "http://www.kernel.org/pub/linux/kernel/v2.6/linux-2.6.16.tar.bz2 \
            ${RPSRC}/hx2750_test1-r3.patch;patch=1 \
            ${RPSRC}/pxa_timerfix-r0.patch;patch=1 \
            ${RPSRC}/input_power-r4.patch;patch=1 \
-           ${RPSRC}/jffs2_longfilename-r0.patch;patch=1 \
+           ${RPSRC}/jffs2_longfilename-r1.patch;patch=1 \
            ${RPSRC}/pxa25x_cpufreq-r0.patch;patch=1 \
            ${RPSRC}/misc_fix1-r0.patch;patch=1 \
            ${RPSRC}/corgi_bl_cleanup-r3.patch;patch=1 \
@@ -62,6 +67,9 @@ SRC_URI = "http://www.kernel.org/pub/linux/kernel/v2.6/linux-2.6.16.tar.bz2 \
            ${RPSRC}/poodle_memsize-r0.patch;patch=1 \
            ${RPSRC}/collie_frontlight-r1.patch;patch=1 \
            ${RPSRC}/zlib_inflate-r3.patch;patch=1 \
+           ${RPSRC}/zaurus_reboot-r0.patch;patch=1 \
+           ${RPSRC}/sharpsl_pm_fixes1-r0.patch;patch=1 \
+           ${RPSRC}/asoc_fixups-r0.patch;patch=1 \
            ${RPSRC}/pm_changes-r1.patch;patch=1 \
            ${RPSRC}/sharpsl_pm-do-r2.patch;patch=1 \
            ${RPSRC}/usb_pxa27x_udc-r0.patch;patch=1 \
@@ -80,7 +88,8 @@ SRC_URI = "http://www.kernel.org/pub/linux/kernel/v2.6/linux-2.6.16.tar.bz2 \
            file://defconfig-ipaq-pxa270 \
            file://defconfig-collie \
            file://defconfig-poodle \
-           file://defconfig-cxx00 \
+           file://defconfig-akita \
+           file://defconfig-spitz \
            file://defconfig-qemuarm \
            file://defconfig-tosa "
 
