@@ -1,4 +1,6 @@
 DESCRIPTION = "Base library for the Qt/Embedded based palmtop environments"
+HOMEPAGE = "http://www.trolltech.com"
+AUTHOR = "The Trolls"
 SECTION = "opie/libs"
 PRIORITY = "optional"
 MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
@@ -11,7 +13,8 @@ S = "${WORKDIR}/library"
 inherit qmake
 
 QMAKE_PROFILES = "library.pro"
-EXTRA_QMAKEVARS_PRE  = "CONFIG+=LIBQPE_WITHROHFEEDBACK CONFIG+=thread"
+EXTRA_QMAKEVARS_PRE = "CONFIG+=LIBQPE_WITHROHFEEDBACK"
+EXTRA_QMAKEVARS_PRE += '${@base_conditional("PALMTOP_USE_MULTITHREADED_QT", "yes", "CONFIG+=thread", "",d)}'
 EXTRA_QMAKEVARS_POST = "DESTDIR= DEFINES+=LIBQPE_NO_INLINE_IMAGES"
 
 CXXFLAGS_append = " -DQWS -DOPIE_NO_ERASE_RECT_HACKFIX -DOPIE_NEW_MALLOC"
