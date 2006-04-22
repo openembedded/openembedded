@@ -2,21 +2,18 @@ DESCRIPTION = "KDE Web Browser Konqueror, QtE based Palmtop Environments Edition
 SECTION = "opie/applications"
 PRIORITY = "optional"
 HOMEPAGE = "http://www.konqueror.org/"
-DEPENDS = "openssl pcre qte-mt-static dcopidl-native"
+DEPENDS = "openssl pcre virtual/libqte2 dcopidl-native"
 LICENSE = "LGPL/GPL"
-DEFAULT_PREFERENCE = "-1"
-FILES_${PN} = "${palmtopdir} /usr/share"
-PR = "r1"
-PV = "3.5.1+svn${SRCDATE}"
+PR = "r2"
 
 # this Konqueror needs the KDEDIR set and the font helvetica installed on the target
 
 inherit autotools
 
-SRC_URI = "svn://anonsvn.kde.org/home/kde/tags/KDE/3.5.1;module=kdelibs \
-	   svn://anonsvn.kde.org/home/kde/trunk;module=kdenox \
-	   file://inject-extraflags.patch;patch=1"
-
+SRC_URI = "svn://anonsvn.kde.org/home/kde/tags/KDE/3.5.1;module=kdelibs;date=${PV} \
+           svn://anonsvn.kde.org/home/kde/trunk;module=kdenox;date=${PV}"
+# uncomment this for a static build
+#          file://inject-extraflags.patch;patch=1"
 S = "${WORKDIR}/kdenox"
 
 export QMAKE = "${STAGING_BINDIR}/qmake"
@@ -25,12 +22,13 @@ export UIC = "${STAGING_BINDIR}/uic"
 export exec_prefix = "${palmtopdir}"
 export CXXFLAGS = "-fexceptions -frtti -DKJS_VERBOSE=1 -DQT_THREAD_SUPPORT -DQ_OS_UNIX -DQT_NO_DOM -DENABLE_BOOKMARKS"
 export PCRE_CONFIG = "invalid"
-EXTRAFLAGS = "-lts"
-EXTRAFLAGS_c7x0 = "-lts -laticore"
+# uncomment this for a static build
+# EXTRAFLAGS = "-lts"
+# EXTRAFLAGS_c7x0 = "-lts -laticore"
 export EXTRA_OEMAKE = "EXTRA_LDFLAGS='${EXTRAFLAGS}'"
 
 EXTRA_OECONF = '--prefix=${palmtopdir} \
-    	--exec-prefix=${palmtopdir} \
+	--exec-prefix=${palmtopdir} \
 	--includedir=${STAGING_INCDIR} \
 	--with-extra-includes=${STAGING_INCDIR} \
 	--with-extra-libs=${STAGING_LIBDIR} \
@@ -40,11 +38,11 @@ EXTRA_OECONF = '--prefix=${palmtopdir} \
 	--with-qt-libraries=${STAGING_DIR}/${HOST_SYS}/qt2/lib \
 	--enable-fontsubs \
 	--with-konq-tmp-prefix=/tmp/kde-cache \
-	--enable-static \
-#	--disable-static \
-#	--enable-shared \
+#	--enable-static \
+	--disable-static \
+	--enable-shared \
 	--disable-debug \
-        --with-gui=road \
+	--with-gui=road \
 	--with-ipv6-lookup=no \
 	--without-xinerama \
 	--disable-scrollbars \
@@ -77,3 +75,6 @@ do_configure_prepend() {
 do_compile_prepend() {
 	perl admin/am_edit
 }
+
+FILES_${PN} = "${palmtopdir} ${datadir}"
+
