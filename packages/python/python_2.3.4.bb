@@ -5,7 +5,7 @@ SECTION = "devel/python"
 PRIORITY = "optional"
 MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 DEPENDS = "python-native zlib gdbm"
-PR = "ml4"
+PR = "ml5"
 
 SRC_URI = "http://www.python.org/ftp/python/${PV}/Python-${PV}.tar.bz2 \
 	   file://bindir-libdir.patch;patch=1 \
@@ -55,3 +55,4 @@ do_install() {
 }
 
 include python-${PV}-manifest.inc
+RPROVIDES_python-core = "python"
