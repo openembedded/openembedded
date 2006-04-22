@@ -23,7 +23,7 @@ OPIE_CVS_PV = "1.2.1+cvs-${SRCDATE}"
 DEPENDS_prepend = "${@["libopie2 ", ""][(bb.data.getVar('PN', d, 1) == 'libopie2')]}"
 
 # to be consistent, put all targets into workdir
-EXTRA_QMAKEVARS_POST_append = " DESTDIR=${S}"
+EXTRA_QMAKEVARS_POST += "DESTDIR=${S}"
 
 # Opie standard TAG value
 TAG = "${@'v' + bb.data.getVar('PV',d,1).replace('.', '_')}"

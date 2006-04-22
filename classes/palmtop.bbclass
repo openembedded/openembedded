@@ -9,8 +9,8 @@
 inherit qmake
 
 EXTRA_QMAKEVARS_POST += "DEFINES+=QWS LIBS+=-lqpe CONFIG+=qt LIBS-=-lstdc++ LIBS+=-lsupc++"
-EXTRA_QMAKEVARS_POST += '${@base_conditional("PALMTOP_USE_MULTITHREADED_QT", "yes", "CONFIG+=thread", "",d)}'
+EXTRA_QMAKEVARS_POST += '${@base_conditional("PALMTOP_USE_MULTITHREADED_QT", "yes", "CONFIG+=thread", " ",d)}'
 
-DEPENDS_prepend = "virtual/libqpe1 uicmoc-native "
+DEPENDS_prepend = "${@["virtual/libqpe1 uicmoc-native ", ""][(bb.data.getVar('PN', d, 1) == 'libqpe-opie')]}"
 
 FILES_${PN} = "${palmtopdir}"
