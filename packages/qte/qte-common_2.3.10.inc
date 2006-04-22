@@ -7,7 +7,7 @@ LICENSE = "GPL"
 DEPENDS = "zlib libpng jpeg tslib uicmoc-native"
 DEPENDS_mnci = "zlib libpng jpeg uicmoc-native"
 DEPENDS_append_c7x0 = " sharp-aticore-oss"
-PROVIDES = "virtual/qte virtual/libqte2"
+PROVIDES = "virtual/libqte2"
 
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/qte-${PV}"
 

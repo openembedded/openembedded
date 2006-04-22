@@ -2,20 +2,22 @@ DESCRIPTION = "Qt/Embedded Version ${PV}"
 SECTION = "libs"
 PRIORITY = "optional"
 MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
+HOMEPAGE = "http://www.trolltech.com"
 LICENSE = "GPL"
 DEPENDS = "zlib libpng jpeg tslib uicmoc-native"
 DEPENDS_mnci = "zlib libpng jpeg uicmoc-native"
 DEPENDS_append_c7x0 = " sharp-aticore-oss"
-PROVIDES = "virtual/qte virtual/libqte2"
+PROVIDES = "virtual/libqte2"
 
-DEFAULT_PREFERENCE = "-1"
+FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/qte-${PV}"
 
-SRC_URI = "http://sunsite.rediris.es/mirror/Qt/snapshots/qt-embedded-2.3.10-snapshot-20060120.tar.gz \
+SRC_URI = "http://ewi546.ewi.utwente.nl/mirror/hrw-oe-sources/qt-embedded-2.3.10-snapshot-20060120.tar.gz \ 
    	   file://qpe.patch;patch=1 \
 	   file://vt-switch.patch;patch=1 \
 	   file://daemonize.patch;patch=1 \
 	   file://no-moc.patch;patch=1 \
 	   file://gcc3.patch;patch=1 \
+	   file://gcc4.patch;patch=1 \
 	   file://c700-hardware.patch;patch=1 \
 	   file://encoding.patch;patch=1 \
 	   file://fix-qgfxraster.patch;patch=1 \
@@ -28,22 +30,22 @@ SRC_URI = "http://sunsite.rediris.es/mirror/Qt/snapshots/qt-embedded-2.3.10-snap
 	   file://fix-linuxfb-setmode.patch;patch=1 \
 	   file://fix-linuxfb-offscreenoverflow.patch;patch=1 \
 	   file://fix-qscreen-sync.patch;patch=1 \
-       file://improve-calibration-r0.patch;patch=1 \
+	   file://improve-calibration-r0.patch;patch=1 \
 	   file://key.patch;patch=1 \
-       file://bidimetrics.patch;patch=5 \
+	   file://bidimetrics.patch;patch=5 \
 	   file://simpad-defaultkbd.patch;patch=1 \
+	   file://fix-errno-exception-spec.patch;patch=1 \
 	   file://sharp_char.h \
 	   file://switches.h "
 
 SRC_URI_append_simpad       = "file://devfs.patch;patch=1 "
-SRC_URI_append_c7x0         = "file://kernel-keymap.patch;patch=1 file://kernel-keymap-corgi.patch;patch=1 \
+SRC_URI_append_c7x0         = "file://kernel-keymap-corgi.patch;patch=1 \
                                file://c7x0-w100-accel.patch;patch=1 file://suspend-resume-hooks.patch;patch=1 "
-SRC_URI_append_spitz        = "file://kernel-keymap.patch;patch=1 file://kernel-keymap-corgi.patch;patch=1 file://kernel-keymap-CXK.patch;patch=1 "
-SRC_URI_append_akita        = "file://kernel-keymap.patch;patch=1 file://kernel-keymap-corgi.patch;patch=1 file://kernel-keymap-CXK.patch;patch=1 "
-SRC_URI_append_borzoi       = "file://kernel-keymap.patch;patch=1 file://kernel-keymap-corgi.patch;patch=1 file://kernel-keymap-CXK.patch;patch=1 "
-SRC_URI_append_tosa         = "file://kernel-keymap.patch;patch=1 file://kernel-keymap-tosa.patch;patch=1 "
-SRC_URI_append_jornada7xx   = "file://kernel-keymap.patch;patch=1 file://ipaq_sound_fix.patch;patch=1 "
-SRC_URI_append_jornada56x   = "file://kernel-keymap.patch;patch=1 file://ipaq_sound_fix.patch;patch=1 "
+SRC_URI_append_spitz        = "file://kernel-keymap-corgi.patch;patch=1 file://kernel-keymap-CXK.patch;patch=1 "
+SRC_URI_append_akita        = "file://kernel-keymap-corgi.patch;patch=1 file://kernel-keymap-CXK.patch;patch=1 "
+SRC_URI_append_tosa         = "file://kernel-keymap-tosa.patch;patch=1 "
+SRC_URI_append_jornada7xx   = "file://ipaq_sound_fix.patch;patch=1 "
+SRC_URI_append_jornada56x   = "file://ipaq_sound_fix.patch;patch=1 "
 SRC_URI_append_mnci         = "file://devfs.patch;patch=1 \
                                file://mnci.patch;patch=1 \
                                file://mnci-touchscreen.patch;patch=1 \
@@ -53,9 +55,7 @@ SRC_URI_append_h3600        = "file://ipaq-keyboard.patch;patch=1 file://ipaq_so
 SRC_URI_append_h3900        = "file://ipaq-keyboard.patch;patch=1 file://ipaq_sound_fix.patch;patch=1 "
 SRC_URI_append_h1910        = "file://ipaq-keyboard.patch;patch=1 file://ipaq_sound_fix.patch;patch=1 "
 
-
 S = "${WORKDIR}/qt-2.3.10-snapshot-20060120"
-
 export QTDIR = "${S}"
 
 def qte_arch(d):
@@ -96,7 +96,6 @@ EXTRA_DEFINES_simpad		= "-DQT_QWS_TSLIB -DQT_QWS_CUSTOM -DQT_QWS_IPAQ   -DQT_QWS
 EXTRA_DEFINES_c7x0		= "-DQT_QWS_TSLIB -DQT_QWS_CUSTOM -DQT_QWS_SLC700 -DQT_QWS_SL5XXX"
 EXTRA_DEFINES_spitz		= "-DQT_QWS_TSLIB -DQT_QWS_CUSTOM -DQT_QWS_SLC700 -DQT_QWS_SL5XXX -DQT_QWS_SLCXK"
 EXTRA_DEFINES_akita             = "-DQT_QWS_TSLIB -DQT_QWS_CUSTOM -DQT_QWS_SLC700 -DQT_QWS_SL5XXX -DQT_QWS_SLCXK"
-EXTRA_DEFINES_borzoi            = "-DQT_QWS_TSLIB -DQT_QWS_CUSTOM -DQT_QWS_SLC700 -DQT_QWS_SL5XXX -DQT_QWS_SLCXK"
 EXTRA_DEFINES_mnci 		= "                               -DQT_QWS_RAMSES                 -DQT_QWS_DEVFS"
 
 export SYSCONF_CC = "${CC}"
@@ -121,10 +120,13 @@ do_configure_prepend_mnci() {
 	ln -sf ${STAGING_BINDIR}/uic bin/uic
 }
 
+# generate uclibc and eabi configurations
 do_configure() {
 	for f in ${S}/configs/linux-*-g++-shared; do
 		sed -e 's,-linux-,-linux-uclibc-,g' < $f \
 			> `dirname $f`/`basename $f | sed -e 's,linux-,linux-uclibc-,'`
+		sed -e 's,-linux-,-linux-gnueabi-,g' < $f \
+			> `dirname $f`/`basename $f | sed -e 's,linux-,linux-gnueabi-,'`
 	done
 	echo yes | ./configure ${EXTRA_OECONF} || die "Configuring qt failed. EXTRA_OECONF was ${EXTRA_OECONF}"
 }
@@ -144,15 +146,16 @@ do_compile() {
 do_stage() {
 	rm -rf ${STAGING_DIR}/${HOST_SYS}/qt2
 	install -d ${STAGING_DIR}/${HOST_SYS}/qt2/lib
-	oe_libinstall -so -C lib libqte ${STAGING_DIR}/${HOST_SYS}/qt2/lib
+	oe_libinstall -so -C lib lib${PN} ${STAGING_DIR}/${HOST_SYS}/qt2/lib
 	rm -f include/qxt.h
 	install -d ${STAGING_DIR}/${HOST_SYS}/qt2/include
 	cp -pfLR include/* ${STAGING_DIR}/${HOST_SYS}/qt2/include
 	cp -pPR lib/fonts ${STAGING_DIR}/${HOST_SYS}/qt2/lib/
+	install -m 0644 src/kernel/qsnoopdata_qws_p.h ${STAGING_DIR}/${HOST_SYS}/qt2/include/
 }
 
 do_install() {
-	oe_libinstall -so -C lib libqte ${D}${palmqtdir}/lib/
+	oe_libinstall -so -C lib lib${PN} ${D}${palmqtdir}/lib/
 }
 
 PACKAGE_ARCH = "${MACHINE_ARCH}"

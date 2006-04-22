@@ -1,21 +1,20 @@
-DESCRIPTION = "Base library for the Qt Palmtop Environment"
+DESCRIPTION = "Base library for the Qt/Embedded based palmtop environments"
 SECTION = "opie/libs"
 PRIORITY = "optional"
 MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 LICENSE = "GPL"
-DEPENDS = "uicmoc-native qte"
-PROVIDES = "virtual/libqpe"
+DEPENDS = "uicmoc-native virtual/libqte2"
+PROVIDES = "virtual/libqpe1"
 
 S = "${WORKDIR}/library"
 
 inherit qmake
 
 QMAKE_PROFILES = "library.pro"
-EXTRA_QMAKEVARS_PRE  = "CONFIG+=LIBQPE_WITHROHFEEDBACK"
+EXTRA_QMAKEVARS_PRE  = "CONFIG+=LIBQPE_WITHROHFEEDBACK CONFIG+=thread"
 EXTRA_QMAKEVARS_POST = "DESTDIR= DEFINES+=LIBQPE_NO_INLINE_IMAGES"
-# EXTRA_QMAKEVARS_POST = "DESTDIR="
 
-CXXFLAGS_append = " -DQWS -DOPIE_NO_ERASE_RECT_HACKFIX -DOPIE_NEW_MALLOC  -fno-rtti -fno-exceptions"
+CXXFLAGS_append = " -DQWS -DOPIE_NO_ERASE_RECT_HACKFIX -DOPIE_NEW_MALLOC"
 CXXFLAGS_append_c7x0 =  " -DOPIE_NO_WINDOWED "
 CXXFLAGS_append_tosa =  " -DOPIE_NO_WINDOWED "
 CXXFLAGS_append_spitz = " -DOPIE_NO_WINDOWED "

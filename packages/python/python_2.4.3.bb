@@ -5,7 +5,7 @@ SECTION = "devel/python"
 PRIORITY = "optional"
 MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 DEPENDS = "python-native readline zlib gdbm openssl tcl tk"
-PR = "ml0"
+PR = "ml1"
 
 PYTHON_MAJMIN = "2.4"
 
@@ -62,6 +62,6 @@ do_install() {
 
 include python-${PV}-manifest.inc
 
+RPROVIDES_python-core = "python"
 PACKAGES =+ "libpython2"
 FILES_libpython2 = "${libdir}/libpython*"
-
