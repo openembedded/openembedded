@@ -3,7 +3,8 @@
 #
 PREFERRED_PROVIDER_virtual/libqte2 = '${@base_conditional("PALMTOP_USE_MULTITHREADED_QT", "yes", "qte-mt", "qte", d)}'
 PREFERRED_PROVIDER_virtual/libqpe1 = "libqpe-opie"
-PREFERRED_VERSION_qte-mt = "2.3.10"
+PREFERRED_VERSION_qte-mt = "${QTE_VERSION}"
+PREFERRED_VERSION_qte = "${QTE_VERSION}"
 PREFERRED_VERSION_libopie2 = "${OPIE_VERSION}"
 PREFERRED_VERSION_libopieobex0 = "${OPIE_VERSION}"
 PREFERRED_VERSION_libopietooth1 = "${OPIE_VERSION}"
