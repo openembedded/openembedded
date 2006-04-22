@@ -4,7 +4,7 @@ PRIORITY = "optional"
 MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 DEPENDS = "virtual/libsdl"
 LICENSE = "LGPL"
-PR = "r2"
+PR = "r1"
 
 SRC_URI = "http://www.libsdl.org/projects/SDL_mixer/release/SDL_mixer-${PV}.tar.gz"
 S = "${WORKDIR}/SDL_mixer-${PV}"
@@ -13,7 +13,7 @@ export SDL_CONFIG = "${STAGING_BINDIR}/sdl-config"
 
 inherit autotools
 
-EXTRA_OECONF = "--disable-music-mp3 --disable-music-libmikmod --disable-music-ogg"
+EXTRA_OECONF = "--disable-music-mp3 --disable-music-libmikmod"
 # although we build smpeg... need to find out how
 # to deal with optional dependencies
 

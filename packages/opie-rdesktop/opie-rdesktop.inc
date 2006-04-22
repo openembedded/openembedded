@@ -1,11 +1,9 @@
-# doesn't build without openssl enabled
-BROKEN = "1"
-
 DESCRIPTION = "Remote Desktop Protocol (RDP) Client"
 SECTION = "opie/applications"
 PRIORITY = "optional"
 MAINTAINER = "Team Opie <opie@handhelds.org>"
 LICENSE = "GPL"
+DEPENDS = "openssl"
 I18N_FILES = "ordesktop.ts"
 APPNAME = "ordesktop"
 APPTYPE = "binary"
