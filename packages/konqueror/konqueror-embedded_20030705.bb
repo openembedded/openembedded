@@ -1,7 +1,7 @@
 DESCRIPTION = "KDE Web Browser Konqueror, QtE based Palmtop Environments Edition"
 SECTION = "opie/applications"
 PRIORITY = "optional"
-DEPENDS = "libqpe-opie openssl pcre"
+DEPENDS = "libqpe-opie pcre"
 LICENSE = "LGPL/GPL"
 PR = "r3"
 
@@ -30,7 +30,7 @@ EXTRA_OECONF = '--prefix=${palmtopdir} --exec-prefix=${palmtopdir}              
                 --enable-static --disable-shared --disable-debug                                \
                 --with-javascript=static --enable-qpe --enable-qt-embedded                      \
                 --with-extra-includes=${STAGING_INCDIR} --with-extra-libs=${STAGING_LIBDIR}     \
-                --with-ssl-version=0.9.7c --with-ssl-dir=${STAGING_LIBDIR}/..                   \
+                --without-ssl                                                                   \
                 --with-qt-dir=${QTDIR} --with-qtopia-dir=${OPIEDIR}                             \
 		--enable-libsuffix=""							        '
 

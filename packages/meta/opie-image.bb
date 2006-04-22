@@ -3,7 +3,15 @@ export IMAGE_LINGUAS = ""
 
 FEED_URIS_append_openzaurus = " opie##http://ewi546.ewi.utwente.nl/mirror/www.openzaurus.org/official/unstable/${DISTRO_VERSION}/feed/opie"
 FEED_URIS_append_opensimpad = " opie##http://ewi546.ewi.utwente.nl/mirror/www.openzaurus.org/official/unstable/${DISTRO_VERSION}/feed/opie"
-FEED_URIS_append_familiar   = " opie##http://familiar.handhelds.org/releases/${DISTRO_VERSION}/feed/opie"
+
+DISTRO_FEEDS_append_familiar () {
+
+# opie - additional packages specific to the opie graphical environment
+src/gz opie ${DISTRO_FEED_PREFIX}/opie
+src/gz opie-${MACHINE} ${DISTRO_FEED_PREFIX}/opie/machine/${MACHINE}
+}
+
+DISTRO_LOCALE_FEEDS_PREFIXES_append_familiar = " ${DISTRO_FEED_PREFIX}/opie"
 
 LICENSE = "MIT"
 PR = "r19"
@@ -66,6 +74,6 @@ merge_feeds() {
 }
 
 # merge feed-sources into ipkg.conf and create /etc/timestamp from build date
-IMAGE_PREPROCESS_COMMAND = "merge_feeds; create_etc_timestamp"
+IMAGE_PREPROCESS_COMMAND = "merge_feeds; "
 
 inherit image_ipk
