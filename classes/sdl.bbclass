@@ -4,9 +4,9 @@
 
 DEPENDS += "virtual/libsdl libsdl-mixer libsdl-image"
 
-APPDESKTOP = "${PN}.desktop"
-APPNAME = "${PN}"
-APPIMAGE = "${PN}.png"
+APPDESKTOP ?= "${PN}.desktop"
+APPNAME ?= "${PN}"
+APPIMAGE ?= "${PN}.png"
 
 sdl_do_sdl_install() {
 	install -d ${D}${palmtopdir}/bin
