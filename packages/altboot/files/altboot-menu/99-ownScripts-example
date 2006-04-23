@@ -20,14 +20,6 @@ exit 0
 # The "title" parameter is implemented at the end of this script so it will never be reached
 # and the script will simply be ignored by altboot.
 
-
-# The die() function aborts the boot if something goes wrong and sets STDIN / STDERR / STDOUT
-# correctly.
-die() {
-	echo "ERROR: $1" >/dev/tty0
-	exec $SH_SHELL </dev/tty0 >/dev/tty0 2>&1
-}
-
 # This function is activated by init.altboot by calling this script with the "run" option
 run_module() {
 

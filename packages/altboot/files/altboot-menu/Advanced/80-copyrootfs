@@ -4,11 +4,6 @@ M_TITLE="Copy rootfs to SD/CF"
 # Unfinished script.
 exit 0
 
-die() {
-	echo "ERROR: $1" >/dev/tty0
-	exec $SH_SHELL </dev/tty0 >/dev/tty0 2>&1
-}
-
 ask_target() {
 	available_disks="`mount | grep "/media" | grep -v ram | awk '{print $3}'`"
 	
