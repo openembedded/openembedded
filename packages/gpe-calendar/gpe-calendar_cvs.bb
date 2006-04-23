@@ -2,8 +2,8 @@ LICENSE = "GPL"
 DEFAULT_PREFERENCE = "-1"
 
 S = "${WORKDIR}/${PN}"
-PV = "0.67+cvs${SRCDATE}"
-PR = "r0"
+PV = "0.72+cvs${SRCDATE}"
+PR = "r1"
 
 inherit autotools gpe
 
