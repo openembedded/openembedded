@@ -5,9 +5,9 @@ MAINTAINER = "Holger Schurig"
 HOMEPAGE = "http://hostap.epitest.fi/wpa_supplicant/"
 DEPENDS = "openssl hostap-modules"
 DEPENDS_mtx-1_append = "madwifi-modules"
-RCONFLICTS = "wpa-supplicant-nossl"
-RREPLACES = "wpa-supplicant-nossl"
-PR = "r2"
+RCONFLICTS_${PN} = "wpa-supplicant-nossl"
+RREPLACES_${PN} = "wpa-supplicant-nossl"
+PR = "r4"
 
 SRC_URI = "http://hostap.epitest.fi/releases/wpa_supplicant-${PV}.tar.gz \
 	file://madwifi-bsd-fix.diff;patch=1;pnum=0 \
