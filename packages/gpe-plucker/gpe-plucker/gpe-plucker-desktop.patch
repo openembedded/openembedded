@@ -1,0 +1,17 @@
+--- gpe-plucker-0.2/gpe-plucker.desktop.in.orig	2006-02-14 20:59:49.000000000 +0200
++++ gpe-plucker-0.2/gpe-plucker.desktop.in	2006-02-14 20:37:22.000000000 +0200
+@@ -1,9 +1,10 @@
+ [Desktop Entry]
+-_Name=Plucker
+-_Comment=Plucker Reader
++Encoding=UTF-8
++_Name=E-book Reader
++_Comment=Plucker E-book Reader
+ Exec=gpe-plucker
+-Terminal=0
++Terminal=false
+ Type=Application
+ Icon=gpe-plucker.png
+-Categories=Application;GPE
++Categories=Application;GPE;
+ SingleInstance=true
