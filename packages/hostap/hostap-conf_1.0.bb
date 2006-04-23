@@ -3,7 +3,7 @@ SECTION = "kernel/modules"
 PRIORITY = "optional"
 LICENSE = "GPL"
 PACKAGE_ARCH = "all"
-PR = "r0"
+PR = "r2"
 
 SRC_URI = "file://hostap_cs.conf \
            file://hostap_cs.conf-upstream"
