@@ -6,17 +6,17 @@ Signed-off-by: John Bowler <jbowler@acm.org>
  arch/arm/mach-ixp4xx/nas100d-setup.c |   43 ++++++++++++++++++++++++++++++++++-
  1 file changed, 42 insertions(+), 1 deletion(-)
 
---- linux-ixp4xx.orig/arch/arm/mach-ixp4xx/nas100d-setup.c	2006-02-21 01:40:40.000000000 +0100
-+++ linux-ixp4xx/arch/arm/mach-ixp4xx/nas100d-setup.c	2006-02-21 01:53:48.000000000 +0100
-@@ -16,6 +16,7 @@
- #include <linux/serial.h>
- #include <linux/serial_8250.h>
+--- linux-ixp4xx.orig/arch/arm/mach-ixp4xx/nas100d-setup.c	2006-03-27 13:45:22.000000000 +0200
++++ linux-ixp4xx/arch/arm/mach-ixp4xx/nas100d-setup.c	2006-03-27 13:46:00.000000000 +0200
+@@ -18,6 +18,7 @@
  #include <linux/mtd/mtd.h>
+ #include <linux/netdevice.h>
+ #include <linux/etherdevice.h>
 +#include <linux/leds.h>
  
- #include <asm/setup.h>
- #include <asm/memory.h>
-@@ -42,6 +43,36 @@ static struct platform_device nas100d_fl
+ #include <asm/mach-types.h>
+ #include <asm/mach/arch.h>
+@@ -41,6 +42,36 @@ static struct platform_device nas100d_fl
  	.resource		= &nas100d_flash_resource,
  };
  
@@ -35,7 +35,7 @@ Signed-off-by: John Bowler <jbowler@acm.org>
 +		.flags		= IXP4XX_GPIO_LOW,
 +	},
 +	{
-+		.name		= "disk-1", /* yellow led */
++		.name		= "disk",   /* yellow led */
 +		.start		= 3,
 +		.end		= 3,
 +		.flags		= IXP4XX_GPIO_LOW,
@@ -53,7 +53,7 @@ Signed-off-by: John Bowler <jbowler@acm.org>
  static struct ixp4xx_i2c_pins nas100d_i2c_gpio_pins = {
  	.sda_pin		= NAS100D_SDA_PIN,
  	.scl_pin		= NAS100D_SCL_PIN,
-@@ -100,7 +131,6 @@ static struct platform_device nas100d_ua
+@@ -99,7 +130,6 @@ static struct platform_device nas100d_ua
  static struct platform_device *nas100d_devices[] __initdata = {
  	&nas100d_i2c_controller,
  	&nas100d_flash,
@@ -61,7 +61,7 @@ Signed-off-by: John Bowler <jbowler@acm.org>
  };
  
  static void nas100d_power_off(void)
-@@ -160,7 +190,18 @@ static void __init nas100d_init(void)
+@@ -187,7 +217,18 @@ static void __init nas100d_init(void)
  
  	pm_power_off = nas100d_power_off;
  

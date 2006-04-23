@@ -1,4 +1,12 @@
 #! /bin/sh
+
+C_RED="\033[31m"
+C_YELLOW="\033[35m"
+C_BLUE="\033[34m"
+C_WHITE="\033[38m"
+C_RESET="\033[0m"
+
+
 # This function checks for the presence of a real filesystem and loop-images on the target
 # $1 = folder of rootfs, $2 = runlevel (defaults to 5)
 # $2 = name of calling module
@@ -231,7 +239,8 @@ do_pivot(){
 		boot_new_rootfs_splash		
 		echo "Calling INIT"
 			
-		exec /usr/sbin/chroot . /sbin/init $2 >/dev/tty0 2>&1
+		exec /usr/sbin/chroot . $REAL_INIT $2 >/dev/tty0 2>&1
+		#exec /usr/sbin/chroot . /sbin/init $2 >/dev/tty0 2>&1
 	else
 		echo "FAILED"
 		die "* * * pivot_root failed! * * *" 
@@ -281,7 +290,7 @@ image_conf(){
 		while true
 		do
 			echo -e "Wasting RAM is never a good idea.\nOnly say Y if your rootfs is very small in size"
-			echo -n "Do you want to store ipkg package data in RAM? [N|y] "
+			echo -en "Do you want to store ipkg package data\nin RAM? [N|y] "
 			read junk
 			
 			if test "$junk" = "" -o "$junk" = n -o "$junk" = N
@@ -301,7 +310,7 @@ image_conf(){
 	then						
 		while true
 		do
-			echo -n "Do you want to keep the SD, CF and /home ipkg install targets? [N|y] "
+			echo -en "Do you want to keep the SD, CF and /home\nipkg install targets? [N|y] "
 			read junk
 			
 			if test "$junk" = "" -o "$junk" = n -o "$junk" = N
@@ -557,7 +566,7 @@ show_menu() {
 }
 
 mdie() {
-	echo "ERROR: $1" >/dev/tty0
+	echo -e "${C_RED}ERROR:${C_RESET}${C_WHITE} $1${C_RESET}" >/dev/tty0
 	
 	echo -e "\nPress <ENTER> to return to the menu"
 	read junk
@@ -612,8 +621,14 @@ get_pref() {
 	test -n "$data_value" && return 0
 }
 
+debug_echo() {
+	test "$ENABLE_DEBUG" = "yes" && echo -e "${C_YELLOW}DEBUG:${C_RESET}${C_WHITE} $1 ${C_RESET}" >/dev/tty0 2>&1
+}
+
 start_networking() {
 
+	test -z "$1" && mdie "No remote host configured, check /etc/fstab for NFS hosts"
+	
 	if test "$USB_NETWORKING_AVAILABLE" = "yes"
 	then
 		echo ""
@@ -636,7 +651,7 @@ start_networking() {
 			junk="`cat /etc/.altboot-lanselect.last`"
 			test -z "$junk" && junk=1
 			
-			echo -n "Connection Type: $junk (autoboot)"
+			echo "Connection Type: $junk (autoboot)"
 		fi
 			
 		case "$junk" in
@@ -669,12 +684,16 @@ start_networking() {
 
 		if test -x /etc/init.d/pcmcia
 		then
+			echo -e "\nRunning cardctl to setup networking..."
 			/etc/init.d/pcmcia start >/dev/null 2>&1 || die "/etc/init.d/pcmcia start failed!"
+			sleep 1
 		else	
 			# With kernel 2.6.16+ udev is used 
-			ps ax| grep -v grep | grep -q udevd || /etc/init.d/udev start >/dev/null 2>&1 || die "/etc/init.d/udev start failed!"
+			echo -e "\nRunning udevd to setup networking..."
+			ps ax | grep -v grep | grep -q udevd || /etc/init.d/udev start >/dev/null 2>&1 || die "/etc/init.d/udev start failed!"
 
-			/etc/init.d/udev stop
+			# Stop udev to work around some very ugly (yet harmless) error messages on boot
+			/etc/init.d/udev stop >/dev/null 2>&1
 		fi
 	fi
 	
@@ -695,9 +714,19 @@ start_networking() {
 			
 		ifup "$USB_NW_DEVICE"
 	fi
+
+	WLAN_NIC="`iwconfig 2>/dev/null | grep ESSID | grep -v wifi | awk '{print $1}'`"
+
+	if test -z "$WLAN_NIC"
+	then
+		debug_echo "WARNING: WLAN_NIC is empty!\n" 
+		debug_echo "Filter result: [$WLAN_NIC]"
+		debug_echo "iwconfig: [`iwconfig`]"
+		mdie "No network interface found"
+	fi
 	
 	# WLAN with DHCP needs some time to get a lease, set up the routing, etc.	
-	echo -n "Waiting for Network."
+	echo -n "Waiting for host [$1] on [$WLAN_NIC]."
 	cnt=0
 	while true
 	do

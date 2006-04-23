@@ -40,10 +40,12 @@ run_module() {
 			
 			get_pref "kexec_klist" "$junk" KEXEC_SELECTED_KERNEL && break
 
-		done
-		
-		echo "Using [$KEXEC_SELECTED_KERNEL]"
+		done		
+	else
+		KEXEC_SELECTED_KERNEL="`ls -1 $KEXEC_KERNEL_DIR/zImage* | grep -v "kexec.cfg" `"
 	fi
+	
+	echo -e "\nUsing [$KEXEC_SELECTED_KERNEL]"
 	
 	if ! test -e "$KEXEC_SELECTED_KERNEL.kexec.cfg" 
 	then

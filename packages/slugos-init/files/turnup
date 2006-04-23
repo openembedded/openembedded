@@ -84,7 +84,10 @@ get_flash() {
 		return 1
 	}
 
-	ffsdev="$(mtblockdev Flashdisk)"
+	case "$(machine)" in
+	nas100d)	ffsdev="$(mtblockdev filesystem)";;
+	*)		ffsdev="$(mtblockdev Flashdisk)";;
+	esac
 	umountflash "$ffsdev" &&
 	mountflash "$ffsdev" "$ffsdir" "$@"
 }

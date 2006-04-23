@@ -30,7 +30,6 @@ SLUGOS_PACKAGES = "\
 	binutils \
 	bison \
 	bluez-utils-nodbus \
-	bogofilter \
 	boost \
 	bridge-utils \
 	bwmon \
@@ -114,7 +113,7 @@ SLUGOS_PACKAGES = "\
 	netpbm \
 	nmap \
 	ntp \
-	obexftp openobex-apps ircp \
+	openobex-apps ircp \
 	openldap \
 	openntpd \
 	openssh \
@@ -165,7 +164,7 @@ SLUGOS_PACKAGES = "\
 SLUGOS_BROKEN_PACKAGES = "\
 	icecast \
 	irssi \
-	openobex \
+	obexftp openobex \
 	pvrusb2-mci \
 	setpwc \
 	watchdog \
@@ -187,6 +186,7 @@ UCLIBC_UNSUPPORTABLE_PACKAGES = "\
 # These packages work with glibc, but break on uclibc.
 UCLIBC_BROKEN_PACKAGES = "\
 	alsa-utils \
+	bogofilter \
 	"
 
 # Packages which build only with glibc (some of these use internal
