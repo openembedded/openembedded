@@ -2,11 +2,6 @@
 
 M_TITLE="Install RootFS from tar.gz"
 
-# die() {
-# 	echo "ERROR: $1" >/dev/tty0
-# 	exec $SH_SHELL </dev/tty0 >/dev/tty0 2>&1
-# }
-
 run_module(){
 	test -e /etc/altboot.func && . /etc/altboot.func || die "ERROR: /etc/altboot.func not found. Check your installation!"	
 	

@@ -8,12 +8,7 @@
 M_TITLE="Boot USB Storage"
 
 test "$USB_HOST_AVAILABLE" = "yes" || exit 0
-
-die() {
-	echo "ERROR: $1" >/dev/tty0
-	exec $SH_SHELL </dev/tty0 >/dev/tty0 2>&1
-}
-
+       
 # This function is activated by init.altboot by calling this script with the "run" option
 run_module() {
 	
