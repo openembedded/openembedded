@@ -4,7 +4,7 @@ LICENSE = "PSF"
 SECTION = "devel/python"
 PRIORITY = "optional"
 MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
-DEPENDS = "python-native readline zlib gdbm openssl tcl tk"
+DEPENDS = "python-native readline zlib gdbm tcl tk"
 PR = "ml4"
 
 PYTHON_MAJMIN = "2.4"
@@ -62,6 +62,8 @@ do_install() {
 
 include python-${PV}-manifest.inc
 
-PACKAGES =+ "libpython2"
+PACKAGES =+ "libpython2 ${PN}"
 FILES_libpython2 = "${libdir}/libpython*"
-
+FILES_${PN} = ""
+ALLOW_EMPTY_${PN} = "1"
+RDEPENDS_${PN} = "python-core"
