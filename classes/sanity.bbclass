@@ -78,7 +78,7 @@ def check_sanity(e):
 		raise_sanity_error('Please install the patch utility, preferable GNU patch.')
 
 	if not check_app_exists('diffstat', e.data):
-		raise_sanity_error('Please install the diffstat utilits')
+		raise_sanity_error('Please install the diffstat utility')
 
 	if not check_app_exists('texi2html', e.data):
 		raise_sanity_error('Please install the texi2html binary')
