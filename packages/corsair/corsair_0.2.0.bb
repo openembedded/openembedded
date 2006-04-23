@@ -15,7 +15,7 @@ SRCDATE = "20050911"
 
 inherit palmtop
 
-SRC_URI = "cvs://anonymous@cvs.sourceforge.net/cvsroot/corsair;module=corsair \
+SRC_URI = "http://ewi546.ewi.utwente.nl/mirror/hrw-oe-sources/corsair_cvs.sourceforge.net__20050911.tar.gz \
            file://corsair-024.patch;patch=1 \
            file://corsair-opie.patch;patch=1"
 
