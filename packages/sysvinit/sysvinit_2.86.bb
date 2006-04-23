@@ -3,7 +3,7 @@ SECTION = "base"
 LICENSE = "GPL"
 MAINTAINER = "Chris Larson <kergoth@handhelds.org>"
 HOMEPAGE = "http://freshmeat.net/projects/sysvinit/"
-PR = "r20"
+PR = "r21"
 
 # USE_VT and SERIAL_CONSOLE are generally defined by the MACHINE .conf.
 # Set PACKAGE_ARCH appropriately.
@@ -17,6 +17,7 @@ FILES_${PN}-inittab = "${sysconfdir}/inittab"
 CONFFILES_${PN}-inittab = "${sysconfdir}/inittab"
 
 USE_VT ?= "1"
+SYSVINIT_ENABLED_GETTYS ?= "1"
 
 SRC_URI = "ftp://ftp.cistron.nl/pub/people/miquels/sysvinit/sysvinit-2.85.tar.gz \
 	   file://sysvinit-2.86.patch;patch=1 \
@@ -72,11 +73,15 @@ do_install () {
 # Format:
 #  <id>:<runlevels>:<action>:<process>
 #
-1:2345:respawn:${base_sbindir}/getty 38400 tty1
-# 2:23:respawn:${base_sbindir}/getty 38400 tty2
-# 3:23:respawn:${base_sbindir}/getty 38400 tty3
-# 4:23:respawn:${base_sbindir}/getty 38400 tty4
+
 EOF
+
+		for n in ${SYSVINIT_ENABLED_GETTYS}
+		do
+			echo "$n:2345:respawn:${base_sbindir}/getty 38400 tty$n" >> ${D}${sysconfdir}/inittab
+		done
+		echo "" >> ${D}${sysconfdir}/inittab
+
 	fi
 	install -m 0644    ${WORKDIR}/rcS-default	${D}${sysconfdir}/default/rcS
 	install -m 0755    ${WORKDIR}/rc		${D}${sysconfdir}/init.d
