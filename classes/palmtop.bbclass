@@ -5,12 +5,13 @@
 #   * use threads, if requested via PALMTOP_USE_MULTITHREADED_QT = "yes"
 # inherit this class to build programs against libqpe
 # inherit opie if you want to build programs against libopie2
+# don't override EXTRA_QMAKEVARS_POST, if you use inherit this class
 
 inherit qmake
 
-EXTRA_QMAKEVARS_POST += "DEFINES+=QWS LIBS+=-lqpe CONFIG+=qt LIBS-=-lstdc++ LIBS+=-lsupc++"
-EXTRA_QMAKEVARS_POST += '${@base_conditional("PALMTOP_USE_MULTITHREADED_QT", "yes", "CONFIG+=thread", " ",d)}'
-
+EXTRA_QMAKEVARS_POST += "DEFINES+=QWS CONFIG+=qt LIBS-=-lstdc++ LIBS+=-lsupc++"
+EXTRA_QMAKEVARS_POST += '${@base_conditional("PALMTOP_USE_MULTITHREADED_QT", "yes", "CONFIG+=thread", "CONFIG-=thread",d)}'
+EXTRA_QMAKEVARS_POST += "${@["LIBS+=-lqpe ", ""][(bb.data.getVar('PN', d, 1) == 'libqpe-opie')]}"
 DEPENDS_prepend = "${@["virtual/libqpe1 uicmoc-native ", ""][(bb.data.getVar('PN', d, 1) == 'libqpe-opie')]}"
 
 FILES_${PN} = "${palmtopdir}"
