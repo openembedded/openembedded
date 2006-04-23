@@ -9,11 +9,6 @@
 
 M_TITLE="Boot from NFS"
 
-die() {
-	echo -e "ERROR: $1" >/dev/tty0
-	exec $SH_SHELL </dev/tty0 >/dev/tty0 2>&1
-}
-
 # This function is activated by init.altboot by calling this script with the "run" option
 run_module() {
 
@@ -24,9 +19,7 @@ run_module() {
 			
 	nfs_host="`cat /etc/fstab | grep -v ^# | grep nfs | awk '{print $1}'|sed -n "s/\(.*\)\:\(.*\)/\1/p" `"
 	nfs_mounts="`cat /etc/fstab | grep -v ^# | grep nfs | awk '{print $1}'`"
-	nfs_mountpoints="`cat /etc/fstab | grep -v ^# | grep nfs | awk '{print $2}'`"	
-	
-	WLAN_NIC="`iwconfig 2>/dev/null | grep ESSID | awk '{print $1}'`"
+	nfs_mountpoints="`cat /etc/fstab | grep -v ^# | grep nfs | awk '{print $2}'`"			
 		
 	start_networking "$nfs_host"	
 	

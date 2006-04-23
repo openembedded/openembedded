@@ -27,16 +27,31 @@ esac
 test -e "$ALTBOOT_CFG_FILE" && . "$ALTBOOT_CFG_FILE" || echo "WARNING: No $ALTBOOT_CFG_FILE found! Check your installation of Altboot!" > /dev/tty1
 
 C_RED="\033[31m"
+C_YELLOW="\033[33m"
 C_BLUE="\033[34m"
 C_WHITE="\033[37m"
 C_RESET="\033[0m"
 
 
 die() {
-	echo -e "ERROR: $1" >/dev/tty0
+	echo -e "${C_RED}ERROR: $1${C_RESET}" >/dev/tty0
 	exec $SH_SHELL </dev/tty0 >/dev/tty0 2>&1
 }
 
+debug_shell() {		
+	# VT 2 = Opie, VT 3 = GPE
+	test -z "$1" && VT=4 || VT=$1
+	
+	echo -e "\033c" > /dev/tty$VT
+
+	echo -en "\nPress <ENTER> to activate the debug shell." > /dev/tty$VT
+	read junk </dev/tty$VT
+		
+	echo "" > /dev/tty$VT	
+	/bin/sh  </dev/tty$VT >/dev/tty$VT 2>&1
+	
+	#openvt -lf -c$VT -- /bin/sh </dev/tty$VT >/dev/tty$VT 2>&1
+}
 
 # This function prints the boot-menu
 # $1: Directory containing the scripts for the menu-items
@@ -299,6 +314,13 @@ wait_for_input() {
 # Note: this is positively ugly. If someone knows a better way to detect wheter
 # we are already booted into a runlevel _without_ reading /var and / or using `runlevel`
 # PLEASE let me know.
+
+if ( echo "$VERSION" |  egrep -iq "(snapshot|-rc)" )
+then
+	ENABLE_DEBUG="yes"
+	debug_shell 4 >/dev/null 2>&1 &
+fi
+
 if test -f /proc/cmdline -a "`ps ax|wc -l|tr -d " "`" -gt 30 -a "$1" != "-force"
 then
 	echo "altboot: Using real init [$REAL_INIT] [$*] [`ps ax|wc -l|tr -d " "`] *" >/dev/tty1

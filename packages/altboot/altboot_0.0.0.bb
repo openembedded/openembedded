@@ -13,7 +13,6 @@ RRECOMMENDS_append_c7x0 = " kexec-tools"
 
 PR = "r41"
 
-
 SRC_URI = "file://altboot-menu \
 	   file://altboot.rc \
 	   file://altboot.func \	 
