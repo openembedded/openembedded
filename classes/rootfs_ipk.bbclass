@@ -48,6 +48,9 @@ real_do_rootfs () {
 		echo "arch $arch $priority" >> ${T}/ipkg.conf
 		priority=$(expr $priority + 5)
 	done
+
+	echo "lists_dir ext /tmp/lists/" >>${T}/ipkg.conf
+	
 	ipkg-cl ${IPKG_ARGS} update
 	if [ ! -z "${LINGUAS_INSTALL}" ]; then
 		ipkg-cl ${IPKG_ARGS} install glibc-localedata-i18n
@@ -78,6 +81,7 @@ real_do_rootfs () {
 	install -d ${IMAGE_ROOTFS}/${sysconfdir}
 	echo ${BUILDNAME} > ${IMAGE_ROOTFS}/${sysconfdir}/version
 
+	rm -rf ${IMAGE_ROOTFS}/tmp/lists
 	${ROOTFS_POSTPROCESS_COMMAND}
 	
 	log_check rootfs 	
