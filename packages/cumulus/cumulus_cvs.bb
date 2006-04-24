@@ -17,7 +17,7 @@ inherit opie
 DEFAULT_PREFERENCE = "-1"
 
 export OE_QMAKE_LINK="${CXX}"
-EXTRA_QMAKEVARS_POST = "INCLUDEPATH+=-I."
+EXTRA_QMAKEVARS_POST += "INCLUDEPATH+=-I."
 
 #
 # nasty hack since cumulus doesn't obey the qmake standard which requires just one .pro file per directory

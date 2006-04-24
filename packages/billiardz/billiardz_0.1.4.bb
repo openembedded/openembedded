@@ -12,7 +12,7 @@ SRC_URI = "http://www.chipx86.com/packages/ipkg/billiardz-${PV}.tar.gz"
 inherit palmtop
 
 QMAKE_PROFILES = "billiardz.arm.pro"
-EXTRA_QMAKEVARS_POST = "DEFINES-=FPM_INTEL" 
+EXTRA_QMAKEVARS_POST += "DEFINES-=FPM_INTEL" 
 
 do_install() {
         install -d ${D}${palmtopdir}/bin \

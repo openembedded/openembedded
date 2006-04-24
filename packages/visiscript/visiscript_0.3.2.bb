@@ -17,7 +17,7 @@ inherit opie
 
 QMAKE_PROFILES = "zvisiscript.pro"
 
-EXTRA_QMAKEVARS_POST = "CONFIG-=thread LIBS-=../qscintilla-1.60-gpl-1.3/qt/lib/libqscintilla_arm.a LIBS+=-lqscintilla"
+EXTRA_QMAKEVARS_POST += "CONFIG-=thread LIBS-=../qscintilla-1.60-gpl-1.3/qt/lib/libqscintilla_arm.a LIBS+=-lqscintilla"
 export OE_QMAKE_LINK="${CXX}"
 
 do_compile_prepend() {

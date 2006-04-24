@@ -14,7 +14,7 @@ S = "${WORKDIR}/IaiMaster"
 
 inherit opie
 
-EXTRA_QMAKEVARS_POST = "TARGET=${PN}"
+EXTRA_QMAKEVARS_POST += "TARGET=${PN}"
 
 do_configure_prepend() {
 	qmake -project

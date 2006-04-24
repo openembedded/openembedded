@@ -23,7 +23,7 @@ FILES_zshopi-i18n-de = "/opt/QtPalmtop/i18n/*"
 
 inherit opie
 
-EXTRA_QMAKEVARS_POST = "DEFINES+=QTOPIA LIBS+=-lm LIBS+=-lsqlite LIBS+=-lqpe"
+EXTRA_QMAKEVARS_POST += "DEFINES+=QTOPIA LIBS+=-lm LIBS+=-lsqlite LIBS+=-lqpe"
 OE_QMAKE_CXXFLAGS = "-fno-rtti ${CXXFLAGS}"
 
 do_configure_prepend() {

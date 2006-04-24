@@ -17,7 +17,7 @@ inherit opie
 
 QMAKE_PROFILES = "zvisiscript.pro"
 
-EXTRA_QMAKEVARS_POST = "CONFIG-=thread LIBS-=../qscintilla-1.60-gpl-1.3/qt/libqscintilla.a LIBS+=-lqscintilla"
+EXTRA_QMAKEVARS_POST += "CONFIG-=thread LIBS-=../qscintilla-1.60-gpl-1.3/qt/libqscintilla.a LIBS+=-lqscintilla"
 
 do_install() {
 	install -d ${D}${palmtopdir}/pics/

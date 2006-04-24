@@ -19,7 +19,7 @@ S = "${WORKDIR}/ubahnnav-${PV}"
 inherit opie
 
 export OE_QMAKE_LINK="${CXX}"
-EXTRA_QMAKEVARS_POST = "INCLUDEPATH+=${S}/src/libsubwaymap LIBS+=-L${S} LIBS-=-lqtopia"
+EXTRA_QMAKEVARS_POST += "INCLUDEPATH+=${S}/src/libsubwaymap LIBS+=-L${S} LIBS-=-lqtopia"
 
 do_configure_prepend() {
 	find . -name "Makefile"|xargs rm -f

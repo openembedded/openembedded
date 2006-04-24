@@ -19,7 +19,7 @@ S = "${WORKDIR}/qpdf2_${PV}"
 inherit opie
 
 QMAKE_PROFILES = "qpdf_render-freetype.pro"
-EXTRA_QMAKEVARS_POST = "TARGET=qpdf"
+EXTRA_QMAKEVARS_POST += "TARGET=qpdf"
 export OE_QMAKE_LINK="${CXX}"
 
 do_configure_prepend() {

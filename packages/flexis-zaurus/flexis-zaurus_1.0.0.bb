@@ -10,7 +10,7 @@ S = "${WORKDIR}/flexis-zaurus"
 
 inherit palmtop
 
-EXTRA_QMAKEVARS_POST = "CONFIG-=qtopia"
+EXTRA_QMAKEVARS_POST += "CONFIG-=qtopia"
 
 do_install() {
 	oe_libinstall libqflexis ${D}${palmtopdir}/plugins/inputmethods/

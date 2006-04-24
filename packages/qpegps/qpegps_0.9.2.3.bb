@@ -15,7 +15,7 @@ S = "${WORKDIR}/root/qpegps_src_my/qpegps_my"
 inherit palmtop
 
 QMAKE_PROFILES = "qpegps.pro"
-EXTRA_QMAKEVARS_POST = "LIBS=-lqpe"
+EXTRA_QMAKEVARS_POST += "LIBS=-lqpe"
 
 do_install() {
         install -d ${D}${palmtopdir}/bin \

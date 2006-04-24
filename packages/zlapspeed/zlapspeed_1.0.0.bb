@@ -10,7 +10,7 @@ S = "${WORKDIR}/zlaps-src"
 
 inherit palmtop
 
-EXTRA_QMAKEVARS_POST = 'TMAKE_LIBS-="-luuid" TMAKE_LIBS+="-lqpe" CONFIG+=qt CONFIG-=qtopia'
+EXTRA_QMAKEVARS_POST += 'TMAKE_LIBS-="-luuid" TMAKE_LIBS+="-lqpe" CONFIG+=qt CONFIG-=qtopia'
 
 do_install() {
 	install -d ${D}${palmtopdir}/{bin,pics,apps/Applications}

@@ -15,7 +15,7 @@ SRC_URI = "http://www.staikos.net/~staikos/pocketcellar/pocketcellar-${PV}.tar.g
 
 inherit palmtop
 
-EXTRA_QMAKEVARS_POST = " DESTDIR=pkg-cellar/home/QtPalmtop/bin/"
+EXTRA_QMAKEVARS_POST += " DESTDIR=pkg-cellar/home/QtPalmtop/bin/"
 
 do_install() {
         install -d ${D}${palmtopdir}/bin \

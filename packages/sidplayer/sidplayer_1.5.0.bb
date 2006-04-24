@@ -13,7 +13,7 @@ SRC_URI = "http://sidplayer.sourceforge.net/sidplayer.tar.gz \
 	   file://gcc34.patch;patch=1"
 S = "${WORKDIR}/sidplayer"
 
-EXTRA_QMAKEVARS_PRE = "QMAKE_INCDIR=${STAGING_INCDIR}/sidplay"
+EXTRA_QMAKEVARS_POST += "INCLUDEPATH+=${STAGING_INCDIR}/sidplay"
 
 inherit palmtop
 

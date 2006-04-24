@@ -13,7 +13,7 @@ S = "${WORKDIR}/TextReader2"
 
 inherit palmtop
 
-EXTRA_QMAKEVARS_POST = 'INCLUDEPATH+="${STAGING_INCDIR}/qpe" LIBS+=-lqpe'
+EXTRA_QMAKEVARS_POST += 'INCLUDEPATH+="${STAGING_INCDIR}/qpe" LIBS+=-lqpe'
 export OE_QMAKE_LINK="${CXX}"
 
 do_configure_prepend() {
