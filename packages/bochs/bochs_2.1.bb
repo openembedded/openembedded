@@ -1,13 +1,17 @@
-DESCRIPTION = "x86 Emulator based on SDL"
-SECTION = "base"
-PRIORITY = "optional"
-DEPENDS = "libsdl-qpe"
+DESCRIPTION = "An x86 Emulator based on SDL."
+HOMEPAGE = "http://bochs.sf.net"
 LICENSE = "GPL"
+PR = "r1"
+
+# needs a patch for recent g++
+BROKEN = "1"
+
+APPIMAGE = "doc/docbook/images/dlxlinux-in-linux.png"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/bochs/bochs-${PV}.tar.gz \
            file://compile.patch;patch=1"
 
-inherit autotools 
+inherit autotools sdl
 
 EXTRA_OECONF = "--without-x                 \
                 --without-x11               \
