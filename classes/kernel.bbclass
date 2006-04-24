@@ -20,6 +20,9 @@ KERNEL_LD = "${LD}${KERNEL_LDSUFFIX}"
 KERNEL_OUTPUT = "arch/${ARCH}/boot/${KERNEL_IMAGETYPE}"
 KERNEL_IMAGEDEST = "boot"
 
+# workaround to get WEP working
+RRECOMMENDS_kernel-module-ieee80211-crypt += "kernel-module-arc4"
+
 #
 # configuration
 #
