@@ -517,3 +517,8 @@ Fixed ppp-mppe.c to remove unresolved symbols when loading module.
 
 Disable the ourtelnetrescueuser account in the passwd file entirely since
 Unslung doesn't need it anymore.
+
+Include losetup with slingbox (so we have losetup in the firmware).
+
+Fix extraneous boot messages from jffs2 filesystem driver (change options
+used when building the flash jffs image).
