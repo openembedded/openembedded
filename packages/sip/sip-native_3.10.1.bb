@@ -10,4 +10,4 @@ S = "${WORKDIR}/sip-${PV}/sipgen"
 inherit qmake native
 
 QMAKE_PROFILES = "sipgen.pro.in"
-EXTRA_QMAKEVARS_POST = "DESTDIR=${STAGING_BINDIR}"
+EXTRA_QMAKEVARS_POST += "DESTDIR=${STAGING_BINDIR}"

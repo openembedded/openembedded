@@ -11,7 +11,7 @@ S = "${WORKDIR}/sip-${PV}/sipgen"
 
 inherit qmake native
 
-EXTRA_QMAKEVARS_POST = "DESTDIR=${S} CONFIG=console"
+EXTRA_QMAKEVARS_POST += "DESTDIR=${S} CONFIG=console"
 
 do_configure_prepend() {
 	cat sipgen.sbf | sed s,target,TARGET, | sed s,sources,SOURCES, | sed s,headers,HEADERS, > sipgen.pro
