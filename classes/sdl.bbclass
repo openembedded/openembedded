@@ -13,11 +13,12 @@ sdl_do_sdl_install() {
 	install -d ${D}${palmtopdir}/pics
 	install -d ${D}${palmtopdir}/apps/Games
 	ln -sf ${bindir}/${APPNAME} ${D}${palmtopdir}/bin/${APPNAME}
-	install -m 0644 ${APPIMAGE} ${D}${palmtopdir}/pics/${APPIMAGE}
+	install -m 0644 ${APPIMAGE} ${D}${palmtopdir}/pics/${PN}.png
 
 	if [ -e "${APPDESKTOP}" ]
 	then
-		install -m 0644 ${APPDESKTOP} ${D}${palmtopdir}/Games/${APPDESKTOP}
+		echo ${APPDESKTOP} present, installing to palmtopdir...
+		install -m 0644 ${APPDESKTOP} ${D}${palmtopdir}/apps/Games/${PN}.desktop
 	else
 		echo ${APPDESKTOP} not present, creating one on-the-fly...
 		cat >${D}${palmtopdir}/apps/Games/${PN}.desktop <<EOF
