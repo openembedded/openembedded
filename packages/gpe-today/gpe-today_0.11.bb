@@ -8,3 +8,5 @@ LICENSE = "GPL"
 inherit gpe pkgconfig
 
 
+SRC_URI = "http://www.kernelconcepts.de/~fuchs/files/${P}.tar.gz"
+
