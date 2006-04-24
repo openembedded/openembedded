@@ -9,7 +9,7 @@ APPTYPE = "binary"
 
 S = "${WORKDIR}/camera"
 
-EXTRA_QMAKEVARS_POST=" LIBS+=-L.. "
+EXTRA_QMAKEVARS_POST += "LIBS+=-L.."
 PARALLEL_MAKE = ""
 
 inherit opie

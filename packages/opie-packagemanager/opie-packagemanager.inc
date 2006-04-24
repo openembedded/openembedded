@@ -3,14 +3,14 @@ SECTION = "opie/settings"
 PRIORITY = "optional"
 MAINTAINER = "Team Opie <opie@handhelds.org>"
 LICENSE = "GPL"
-DEPENDS = "libipkg "
+DEPENDS = "libipkg"
 APPNAME = "packagemanager"
 
 S = "${WORKDIR}/${APPNAME}"
 
 inherit opie
 
-EXTRA_QMAKEVARS_PRE = 'LIBIPK_INC_DIR=${STAGING_INCDIR}/libipkg'
+EXTRA_QMAKEVARS_PRE += "LIBIPK_INC_DIR=${STAGING_INCDIR}/libipkg"
 
 do_install() {
     install -d ${D}${palmtopdir}/pics/${APPNAME}
