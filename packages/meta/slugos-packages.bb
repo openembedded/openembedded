@@ -68,6 +68,9 @@ SLUGOS_PACKAGES = "\
 	grep \
 	gtk-doc \
 	gzip \
+	hostap-daemon \
+	hostap-modules \
+	hostap-utils \
 	ifupdown \
 	ipkg-utils \
 	iptables \
@@ -127,9 +130,7 @@ SLUGOS_PACKAGES = "\
 	ppp \
 	procps \
 	puppy \
-	pwc \
 	python \
-	qc-usb-messenger \
 	quilt \
 	reiserfsprogs reiser4progs \
 	rsync \
@@ -167,6 +168,8 @@ SLUGOS_BROKEN_PACKAGES = "\
 	irssi \
 	obexftp openobex \
 	pvrusb2-mci \
+	pwc \
+	qc-usb-messenger \
 	setpwc \
 	watchdog \
 	memtester \
