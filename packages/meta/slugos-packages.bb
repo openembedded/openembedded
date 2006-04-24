@@ -127,7 +127,6 @@ SLUGOS_PACKAGES = "\
 	ppp \
 	procps \
 	puppy \
-	pwc \
 	python \
 	qc-usb-messenger \
 	quilt \
@@ -167,6 +166,7 @@ SLUGOS_BROKEN_PACKAGES = "\
 	irssi \
 	obexftp openobex \
 	pvrusb2-mci \
+	pwc \
 	setpwc \
 	watchdog \
 	memtester \

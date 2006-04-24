@@ -5,6 +5,7 @@ PRIORITY = "optional"
 MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 LICENSE = "GPL"
 RDEPENDS = "hostap-modules hostap-utils (${PV})"
+DEPENDS = "openssl"
 DEPENDS_mtx-1_append = "madwifi-modules"
 
 SRC_URI = "http://hostap.epitest.fi/releases/hostapd-${PV}.tar.gz \
