@@ -1,0 +1,39 @@
+
+#
+# Patch managed by http://www.holgerschurig.de/patcher.html
+#
+
+--- rott-1.0/rott/rt_actor.c~gcc4
++++ rott-1.0/rott/rt_actor.c
+@@ -430,11 +430,11 @@
+ void AvoidPlayerMissile(objtype*ob);
+ int EnvironmentDamage(objtype *ob);
+ 
+-static int     STOPSPEED         =    0x200;
+-static int     PLAYERFRICTION    =    0xe000;
+-static int     ACTORFRICTION     =    0xf000;
+-static int     DIAGADJUST        =    0xb504;
+-static boolean MissileSound      =    true;
++int     STOPSPEED         =    0x200;
++int     PLAYERFRICTION    =    0xe000;
++int     ACTORFRICTION     =    0xf000;
++int     DIAGADJUST        =    0xb504;
++boolean MissileSound      =    true;
+ 
+ 
+ 
+--- rott-1.0/rott/rt_in.c~gcc4
++++ rott-1.0/rott/rt_in.c
+@@ -155,9 +155,9 @@
+ //
+ //****************************************************************************]
+ 
+-static KeyboardDef KbdDefs = {0x1d,0x38,0x47,0x48,0x49,0x4b,0x4d,0x4f,0x50,0x51};
+-static JoystickDef JoyDefs[MaxJoys];
+-static ControlType Controls[MAXPLAYERS];
++KeyboardDef KbdDefs = {0x1d,0x38,0x47,0x48,0x49,0x4b,0x4d,0x4f,0x50,0x51};
++JoystickDef JoyDefs[MaxJoys];
++ControlType Controls[MAXPLAYERS];
+ 
+ 
+ static boolean  IN_Started;
