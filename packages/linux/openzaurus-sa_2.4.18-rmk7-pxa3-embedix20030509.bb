@@ -57,6 +57,7 @@ ALLOW_EMPTY = 1
 KERNEL_CCSUFFIX = "-2.95"
 KERNEL_LDSUFFIX = "-2.11.2"
 COMPATIBLE_HOST = "arm.*-linux"
+COMPATIBLE_MACHINE = "collie"
 EXTRA_OEMAKE = " EMBEDIXRELEASE=-${DISTRO_VERSION}"
 
 module_conf_usbdmonitor = "alias usbd0 usbdmonitor"

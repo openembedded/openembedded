@@ -7,6 +7,8 @@ RDEPENDS = "kernel (${PV})"
 PR = "r23"
 PACKAGE_ARCH = "${MACHINE}"
 
+COMPATIBLE_MACHINE = '(collie|poodle|tosa)'
+
 KERNEL2418 = "2.4.18-rmk7-pxa3-embedix"
 KERNEL2420 = "2.4.20"
 

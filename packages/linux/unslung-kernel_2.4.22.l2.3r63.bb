@@ -28,9 +28,4 @@ SRC_URI += "file://linux-kernel-R25_to_R29.patch;patch=1 \
 
 FILESPATH = "${@base_set_filespath([ '${FILE_DIRNAME}/unslung-kernel', '${FILE_DIRNAME}/nslu2-linksys-kernel-2.4.22', '${FILE_DIRNAME}/files', '${FILE_DIRNAME}' ], d)}"
 
-python () {
-	# Don't build unslung kernel unless we're targeting an nslu2
-	mach = bb.data.getVar("MACHINE", d, 1)
-	if mach != 'nslu2':
-		raise bb.parse.SkipPackage("Unslung only builds for the Linksys NSLU2")
-}
+COMPATIBLE_MACHINE = "nslu2"

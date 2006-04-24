@@ -257,9 +257,4 @@ do_deploy() {
 
 addtask deploy before do_build after do_compile
 
-python () {
-	# Don't build the kernel unless we're targeting an nslu2
-	mach = bb.data.getVar("MACHINE", d, 1)
-	if mach != 'nslu2':
-		raise bb.parse.SkipPackage("nslu2-kernel only builds for the Linksys NSLU2")
-}
+COMPATIBLE_MACHINE = "nslu2"
