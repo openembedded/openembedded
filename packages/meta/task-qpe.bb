@@ -1,9 +1,9 @@
-DESCRIPTION = "Tasks for QPE stuff"
+DESCRIPTION = "Tasks for programs running on Qt/Embedded based Palmtop Environents like Opie and Qtopia."
 SECTION = "opie/base"
 ALLOW_EMPTY = 1
 PACKAGE_ARCH = "all"
 LICENSE = "MIT"
-PR = "r2"
+PR = "r3"
 
 PACKAGES = "task-qpe-applets task-qpe-games task-qpe-inputmethods \
 	task-qpe-multimedia task-qpe-emulators task-qpe-applications \
@@ -39,6 +39,7 @@ RDEPENDS_task-qpe-applications = "\
     qplot \
     resistorui \
     shopper \
+    sliderulez \
     timesleuth \
     txdrug \
     tximage \
