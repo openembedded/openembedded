@@ -1,20 +1,29 @@
 
 ---
- arch/arm/mach-ixp4xx/ixdp425-setup.c |  145 +++++++++++++++++++++++++++++++++--
- 1 file changed, 140 insertions(+), 5 deletions(-)
+ arch/arm/mach-ixp4xx/ixdp425-setup.c |  173 ++++++++++++++++++++++++++++++++---
+ 1 file changed, 163 insertions(+), 10 deletions(-)
 
---- linux-ixp4xx.orig/arch/arm/mach-ixp4xx/ixdp425-setup.c	2006-02-22 18:53:29.000000000 +0100
-+++ linux-ixp4xx/arch/arm/mach-ixp4xx/ixdp425-setup.c	2006-02-22 18:57:00.000000000 +0100
-@@ -15,7 +15,7 @@
- #include <linux/tty.h>
+--- linux-ixp4xx.orig/arch/arm/mach-ixp4xx/ixdp425-setup.c	2006-03-27 03:08:59.000000000 +0200
++++ linux-ixp4xx/arch/arm/mach-ixp4xx/ixdp425-setup.c	2006-03-27 03:40:03.000000000 +0200
+@@ -11,20 +11,26 @@
+ #include <linux/kernel.h>
+ #include <linux/init.h>
+ #include <linux/device.h>
+-#include <linux/serial.h>
+-#include <linux/tty.h>
  #include <linux/serial_8250.h>
- #include <linux/slab.h>
+-#include <linux/slab.h>
 -
+-#include <asm/types.h>
++#include <linux/i2c.h>
 +#include <linux/eeprom.h>
- #include <asm/types.h>
++#include <linux/netdevice.h>
++#include <linux/etherdevice.h>
  #include <asm/setup.h>
  #include <asm/memory.h>
-@@ -25,6 +25,14 @@
+ #include <asm/hardware.h>
+ #include <asm/mach-types.h>
+-#include <asm/irq.h>
  #include <asm/mach/arch.h>
  #include <asm/mach/flash.h>
  
@@ -29,7 +38,7 @@
  static struct flash_platform_data ixdp425_flash_data = {
  	.map_name	= "cfi_probe",
  	.width		= 2,
-@@ -176,22 +184,149 @@ MACHINE_START(AVILA, "Gateworks Avila Ne
+@@ -176,22 +182,169 @@ MACHINE_START(AVILA, "Gateworks Avila Ne
  MACHINE_END
  #endif
  
@@ -68,37 +77,56 @@
   */
 -#ifdef CONFIG_MACH_LOFT
 +
-+#if defined(CONFIG_SENSORS_EEPROM) && defined(CONFIG_MACLIST)
-+static void loft_eeprom_add(int address, int kind, struct kobject *kobj,
-+				struct bin_attribute *eeprom_attr) {
-+	/* The MACs are the first 12 bytes in the eeprom at address 0x51 */
-+	if (address == 0x51) {
-+		ssize_t retlen;
-+		char data[12];
++#if defined(CONFIG_SENSORS_EEPROM)
++static unsigned char loft_macs[12];
 +
-+		/* Two Macs, one at 0, the other at 6, maclist_add will
-+		 * complain if the ID is not a valid MAC.
-+		 */
-+		retlen = eeprom_attr->read(kobj, data, 0, sizeof data);
-+		if (retlen >= 6) {
-+			u8 mac[6];
-+			memcpy(mac, data+0, sizeof mac);
-+			printk(KERN_INFO "LOFT MAC[0]: %.2x:%.2x:%.2x:%.2x:%.2x:%.2x\n",
-+				mac[0], mac[1], mac[2], mac[3], mac[4], mac[5]);
-+			maclist_add(mac);
-+		}
-+		if (retlen >= 12) {
-+			u8 mac[6];
-+			memcpy(mac, data+6, sizeof mac);
-+			printk(KERN_INFO "LOFT MAC[1]: %.2x:%.2x:%.2x:%.2x:%.2x:%.2x\n",
-+				mac[0], mac[1], mac[2], mac[3], mac[4], mac[5]);
-+			maclist_add(mac);
-+		}
-+	}
++static int loft_eeprom_event(struct notifier_block *this,
++				unsigned long event, void *ptr)
++{
++	struct eeprom_data *data = ptr;
++
++	/* The MACs are the first 12 bytes in the eeprom at address 0x51 */
++	if (event == EEPROM_REGISTER && data->client.addr == 0x51)
++		 data->attr->read(&data->client.dev.kobj, loft_macs, 0, 12);
++
++	return NOTIFY_DONE;
 +}
 +
-+static struct eeprom_notifier loft_eeprom_notifier = {
-+	.add = loft_eeprom_add
++static struct notifier_block loft_eeprom_notifier = {
++	.notifier_call = loft_eeprom_event,
++};
++
++static int loft_netdev_event(struct notifier_block *this,
++				unsigned long event, void *ptr)
++{
++	struct net_device *dev = ptr;
++	unsigned char *hwaddr = NULL;
++
++	/* identify the ixp4xx eth */
++	if (dev->dev_addr[1] != 0x02 || dev->dev_addr[2] != 0xB3)
++		return NOTIFY_DONE;
++
++	if (event != NETDEV_REGISTER)
++		return NOTIFY_DONE;
++
++	/* identify the port */
++	if (dev->dev_addr[5] == 0x01)
++		hwaddr = &loft_macs[0];
++	else if (dev->dev_addr[5] == 0x02)
++		hwaddr = &loft_macs[6];
++
++	if (hwaddr && is_valid_ether_addr(hwaddr)) {
++		struct sockaddr addr;
++		addr.sa_family = dev->type;
++		memcpy(addr.sa_data, hwaddr, ETH_ALEN);
++		dev_set_mac_address(dev, &addr);
++	}
++
++	return NOTIFY_DONE;
++}
++
++static struct notifier_block loft_netdev_notifier = {
++	.notifier_call = loft_netdev_event,
 +};
 +#endif
 +
@@ -114,7 +142,8 @@
 +	 * that is all this notifier does.
 +	 */
 +#ifdef CONFIG_SENSORS_EEPROM
-+	register_eeprom_user(&loft_eeprom_notifier);
++	register_eeprom_notifier(&loft_eeprom_notifier);
++	register_netdevice_notifier(&loft_netdev_notifier);
 +#endif
 +}
 +

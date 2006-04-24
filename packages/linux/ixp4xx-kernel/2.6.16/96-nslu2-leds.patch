@@ -8,9 +8,9 @@ Signed-off-by: John Bowler <jbowler@acm.org>
 --- linux-ixp4xx.orig/arch/arm/mach-ixp4xx/nslu2-setup.c	2006-02-21 02:54:05.000000000 +0100
 +++ linux-ixp4xx/arch/arm/mach-ixp4xx/nslu2-setup.c	2006-02-21 02:54:05.000000000 +0100
 @@ -17,6 +17,9 @@
- #include <linux/serial.h>
- #include <linux/serial_8250.h>
  #include <linux/mtd/mtd.h>
+ #include <linux/netdevice.h>
+ #include <linux/etherdevice.h>
 +#ifdef CONFIG_LEDS_CLASS
 +#include <linux/leds.h>
 +#endif
