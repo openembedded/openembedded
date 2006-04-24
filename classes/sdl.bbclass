@@ -36,6 +36,9 @@ EOF
 EXPORT_FUNCTIONS do_sdl_install
 addtask sdl_install after do_compile before do_populate_staging
 
+SECTION = "x11/games"
+SECTION_${PN}-opie = "opie/games"
+
 PACKAGES += "${PN}-opie"
 RDEPENDS_${PN}-opie += "${PN}"
 FILES_${PN}-opie = "${palmtopdir}"
