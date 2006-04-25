@@ -13,7 +13,7 @@ S = "${WORKDIR}/sip-${PV}/siplib"
 
 inherit qmake distutils-base
 
-EXTRA_QMAKEVARS_POST += " TEMPLATE=lib \
+EXTRA_QMAKEVARS_POST = " TEMPLATE=lib \
                          CONFIG=console \
                          DESTDIR= \
                          VERSION=1.0.0 \
