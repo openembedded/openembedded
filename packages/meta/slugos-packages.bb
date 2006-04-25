@@ -68,9 +68,6 @@ SLUGOS_PACKAGES = "\
 	grep \
 	gtk-doc \
 	gzip \
-	hostap-daemon \
-	hostap-modules \
-	hostap-utils \
 	ifupdown \
 	ipkg-utils \
 	iptables \
