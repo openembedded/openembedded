@@ -5,7 +5,7 @@ MAINTAINER = "Holger Schurig"
 MAINTAINER = "Eric Shattow <lucent@gmail.com>"
 HOMEPAGE = "http://hostap.epitest.fi/wpa_supplicant/"
 DEPENDS = "gnutls"
-PR = "r1"
+PR = "r2"
 DEFAULT_PREFERENCE = "-1"
 
 SRC_URI = "http://hostap.epitest.fi/releases/wpa_supplicant-${PV}.tar.gz \
@@ -17,7 +17,7 @@ SRC_URI = "http://hostap.epitest.fi/releases/wpa_supplicant-${PV}.tar.gz \
 
 S = "${WORKDIR}/wpa_supplicant-${PV}"
 
-PACKAGES_prepend = "wpa-supplicant-passphrase wpa-supplicant-cli"
+PACKAGES_prepend = "wpa-supplicant-passphrase wpa-supplicant-cli "
 FILES_wpa-supplicant-passphrase = "/usr/sbin/wpa_passphrase"
 FILES_wpa-supplicant-cli = "/usr/sbin/wpa_cli"
 
