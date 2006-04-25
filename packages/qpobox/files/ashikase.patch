@@ -1,0 +1,595 @@
+diff -Naur qpobox.orig/candlist.cpp qpobox/candlist.cpp
+--- qpobox.orig/candlist.cpp	2005-01-09 14:53:44.000000000 +0900
++++ qpobox/candlist.cpp	2006-04-12 23:28:06.000000000 +0900
+@@ -24,7 +24,7 @@
+ 
+ #include <qpainter.h>
+ 
+-CandList::CandList(QWidget *parent, WFlags f = 0) 
++CandList::CandList(QWidget *parent, WFlags f) 
+   : QLabel(parent, "CandList", f)
+ {
+   clear();
+diff -Naur qpobox.orig/icon/qpobox.xpm qpobox/icon/qpobox.xpm
+--- qpobox.orig/icon/qpobox.xpm	2003-06-15 04:58:27.000000000 +0900
++++ qpobox/icon/qpobox.xpm	2006-04-13 16:50:57.000000000 +0900
+@@ -1,97 +1,246 @@
+ /* XPM */
+-static char *magick[] = {
+-/* columns rows colors chars-per-pixel */
+-"56 26 65 1",
+-"  c gray0",
+-". c gray5",
+-"X c #0c0d13",
+-"o c #161616",
+-"O c #191714",
+-"+ c gray11",
+-"@ c #131929",
+-"# c gray14",
+-"$ c #322a33",
+-"% c #303529",
+-"& c #3d3131",
+-"* c #3c3c3c",
+-"= c #1f2842",
+-"- c #3f4535",
+-"; c #2c4071",
+-": c #364472",
+-"> c #543d3d",
+-", c #544848",
+-"< c #5c4a4a",
+-"1 c #505050",
+-"2 c #545850",
+-"3 c #5f6951",
+-"4 c #6a4f4f",
+-"5 c gray42",
+-"6 c #747474",
+-"7 c gray49",
+-"8 c #102cba",
+-"9 c #4a5a81",
+-"0 c #5572b9",
+-"q c #4e71c7",
+-"w c #5d85ea",
+-"e c #6b8cde",
+-"r c #6087e9",
+-"t c #658ae7",
+-"y c #618bf4",
+-"u c #638efa",
+-"i c #6591ff",
+-"p c #6994fc",
+-"a c #a30463",
+-"s c #b12170",
+-"d c #bd387c",
+-"f c #8f6969",
+-"g c #c24281",
+-"h c #cc568a",
+-"j c #96a57f",
+-"k c gray54",
+-"l c #9b9b9b",
+-"z c #869fbb",
+-"x c #8997bc",
+-"c c #ba8b8b",
+-"v c #a3b18d",
+-"b c #bbbbbb",
+-"n c #88a9ef",
+-"m c #a3bbe3",
+-"M c #bbce9f",
+-"N c #e98fa5",
+-"B c #eb92a7",
+-"V c #e8abab",
+-"C c #ffbaba",
+-"Z c #cce0ad",
+-"A c #cee1b1",
+-"S c #d1e6b1",
+-"D c #d9eeb8",
+-"F c #def4bc",
+-"G c #fcf7bd",
+-/* pixels */
+-"                                                        ",
+-"                           +#l                          ",
+-"                        o   .  o7                       ",
+-"                     .  oCCCCCVX  .*                    ",
+-"                 +.  oCCCCCCCCCCCCo  .+b                ",
+-"              o  .+CCCCCNaaaaaaaNCCCC+.  ok             ",
+-"          ,X  .cCCCCCCCaaaBCCCBaaaCCCCCCC.  o1          ",
+-"        o  oCCCCCCCCCCaaNCCCdsshNadCCCCCCCCCo   #       ",
+-"       o     ,CCCCCCCCCaaaBCCCgaaadsBCCCCC< .$          ",
+-"       ooFS-    >CCCCCCCNaaaaaaaBCCCCC<     qip         ",
+-"       ooFFFFFv      cCCCCCCCCCCCCf   X=;yiiiip         ",
+-"       ooFFFFFFFFFM%     4CCCC&    @wiiiiiiiiip         ",
+-"       ooFFFFFF888zFFFZ3 O+    :wiiiGGGGiiiiiii         ",
+-"       ooFFFFFF88z88zFFFFFF  iiiiiiGGimGGiiiiii         ",
+-"       ooFFFFFF88FFz8zFFFFF  iiiiiGGniiGGiiiiip         ",
+-"       ooFFFFFF88FFF88FFFFF  iiiiiGGiiiGGiiiiii         ",
+-"       ooFFFFFF888zF88FFFFF  pppiiGGiiiGGiiiiii         ",
+-"       ooFFFFFF88z888FFFFFF  piiiiGGnimGiiiiiii         ",
+-"       o.FFFFFF88FFFFFFFFFF  iiiiipGGGGiipiio   9       ",
+-"       6.  oFFFFFFFFFFFFFFF  iiiiiiiiiiir.  .op         ",
+-"          2.  ovFFFFFFFFFFF  ppiiiipi+o  otp            ",
+-"             5o  .+FFFFFFFF  piiipo  .#x                ",
+-"                b+.  oFFFFF  p0.  X*i                   ",
+-"                    F.  oFF    ot                       ",
+-"                       Ao.   p                          ",
+-"                                                        "
+-};
++static char * qpobox_xpm[] = {
++"37 17 226 2",
++"  	c None",
++". 	c #191515",
++"+ 	c #271D1D",
++"@ 	c #151414",
++"# 	c #291F1F",
++"$ 	c #433232",
++"% 	c #221B1B",
++"& 	c #553F3F",
++"* 	c #B28383",
++"= 	c #FFBABA",
++"- 	c #FCB8B8",
++"; 	c #AB7F7F",
++"> 	c #231C1C",
++", 	c #372C2C",
++"' 	c #211D1D",
++") 	c #241B1B",
++"! 	c #5E4848",
++"~ 	c #B78686",
++"{ 	c #DDA2A2",
++"] 	c #F7ABB2",
++"^ 	c #D36491",
++"/ 	c #C03F7F",
++"( 	c #C34381",
++"_ 	c #C24281",
++": 	c #BE3A7D",
++"< 	c #E688A2",
++"[ 	c #DA9C9F",
++"} 	c #241E1E",
++"| 	c #261C1C",
++"1 	c #201C1C",
++"2 	c #3D2D2D",
++"3 	c #211C1C",
++"4 	c #563F3F",
++"5 	c #775959",
++"6 	c #E7AAAA",
++"7 	c #EC96A8",
++"8 	c #B22171",
++"9 	c #C54783",
++"0 	c #ED97A9",
++"a 	c #F19EAD",
++"b 	c #DD7699",
++"c 	c #B93078",
++"d 	c #C54883",
++"e 	c #FBB2B6",
++"f 	c #7B5B5B",
++"g 	c #413030",
++"h 	c #0D0D0C",
++"i 	c #161311",
++"j 	c #110E0E",
++"k 	c #4D3B3B",
++"l 	c #C49090",
++"m 	c #E5A7A7",
++"n 	c #FAB6B6",
++"o 	c #F5A6B0",
++"p 	c #BB347A",
++"q 	c #BA3178",
++"r 	c #E07D9D",
++"s 	c #DC7498",
++"t 	c #B32573",
++"u 	c #B62B75",
++"v 	c #BA3279",
++"w 	c #D36390",
++"x 	c #F9AEB4",
++"y 	c #EBACAC",
++"z 	c #E1A4A4",
++"A 	c #C59191",
++"B 	c #503C3C",
++"C 	c #251C1D",
++"D 	c #19151A",
++"E 	c #030303",
++"F 	c #1B1B1A",
++"G 	c #DBF1B9",
++"H 	c #9AA982",
++"I 	c #666B54",
++"J 	c #2E2723",
++"K 	c #0C0909",
++"L 	c #5F4645",
++"M 	c #815E5E",
++"N 	c #936B6B",
++"O 	c #EEAEAE",
++"P 	c #FDB6B8",
++"Q 	c #E17E9D",
++"R 	c #CD588B",
++"S 	c #F09CAC",
++"T 	c #E3A6A6",
++"U 	c #906969",
++"V 	c #2F2526",
++"W 	c #1B1619",
++"X 	c #3A3547",
++"Y 	c #334069",
++"Z 	c #597FDF",
++"` 	c #6490FE",
++" .	c #07090F",
++"..	c #25355D",
++"+.	c #DEF4BC",
++"@.	c #CCE0AF",
++"#.	c #94A593",
++"$.	c #929F90",
++"%.	c #696C5A",
++"&.	c #211F1A",
++"*.	c #372B29",
++"=.	c #372928",
++"-.	c #4E3A3A",
++";.	c #C69191",
++">.	c #D89D9D",
++",.	c #BE8B8B",
++"'.	c #473536",
++").	c #433131",
++"!.	c #2E2223",
++"~.	c #28242B",
++"{.	c #737CA3",
++"].	c #6E85C0",
++"^.	c #6284DA",
++"/.	c #638EFB",
++"(.	c #6591FF",
++"_.	c #CBE1BB",
++":.	c #102CBA",
++"<.	c #3D57BA",
++"[.	c #5F78BA",
++"}.	c #ABC2BB",
++"|.	c #DAEFB8",
++"1.	c #A2B289",
++"2.	c #747A60",
++"3.	c #5C564C",
++"4.	c #020202",
++"5.	c #424050",
++"6.	c #47588F",
++"7.	c #5C81E2",
++"8.	c #B8C9DA",
++"9.	c #D1DACF",
++"0.	c #D6DDCD",
++"a.	c #D0D9CF",
++"b.	c #6B95FC",
++"c.	c #A2B9BB",
++"d.	c #A4BCBB",
++"e.	c #425DBA",
++"f.	c #AAC1BB",
++"g.	c #ABC0A5",
++"h.	c #557AD6",
++"i.	c #A9BFE0",
++"j.	c #E2E5C8",
++"k.	c #799FF5",
++"l.	c #8EADEC",
++"m.	c #FCF7BD",
++"n.	c #729AF9",
++"o.	c #5F79BA",
++"p.	c #C4DABB",
++"q.	c #3C57BA",
++"r.	c #6F88BA",
++"s.	c #AAC0A5",
++"t.	c #B6C7DB",
++"u.	c #DBE1CB",
++"v.	c #87A8EF",
++"w.	c #181817",
++"x.	c #6983BA",
++"y.	c #516BBA",
++"z.	c #556FBA",
++"A.	c #D1E7BB",
++"B.	c #A3BBE3",
++"C.	c #E3E6C7",
++"D.	c #92AFEB",
++"E.	c #A0B9E4",
++"F.	c #6692FE",
++"G.	c #5375CB",
++"H.	c #4D6FC4",
++"I.	c #0A0E17",
++"J.	c #2E406F",
++"K.	c #1B1D19",
++"L.	c #5D664E",
++"M.	c #6F795F",
++"N.	c #D5ECBB",
++"O.	c #869FBB",
++"P.	c #C9E0BB",
++"Q.	c #6691FE",
++"R.	c #9DB7E6",
++"S.	c #A4BCE3",
++"T.	c #96B2E9",
++"U.	c #638DF7",
++"V.	c #354A7D",
++"W.	c #2B3E6D",
++"X.	c #111316",
++"Y.	c #27365C",
++"Z.	c #3F599B",
++"`.	c #BDCFA0",
++" +	c #5C6550",
++".+	c #4C5340",
++"++	c #34382E",
++"@+	c #8C9A78",
++"#+	c #A3B38B",
++"$+	c #C1D4A4",
++"%+	c #597FDD",
++"&+	c #4B6BBB",
++"*+	c #32426B",
++"=+	c #1C2231",
++"-+	c #243358",
++";+	c #344775",
++">+	c #5B82E4",
++",+	c #5A81E3",
++"'+	c #849172",
++")+	c #838F6F",
++"!+	c #2F322A",
++"~+	c #30342A",
++"{+	c #565F49",
++"]+	c #9CAA85",
++"^+	c #5376CE",
++"/+	c #445E9D",
++"(+	c #293A64",
++"_+	c #1B2337",
++":+	c #374D83",
++"<+	c #405B9E",
++"[+	c #4D6AB3",
++"}+	c #CEE3AF",
++"|+	c #BACD9E",
++"1+	c #484E3E",
++"2+	c #454C3B",
++"3+	c #575E4B",
++"4+	c #758473",
++"5+	c #010101",
++"6+	c #1D2A49",
++"7+	c #29375A",
++"8+	c #577BD6",
++"9+	c #5F89F0",
++"0+	c #828F6F",
++"a+	c #87977D",
++"b+	c #5C7499",
++"c+	c #8CACD3",
++"                                                                          ",
++"                                . + @ # .                                 ",
++"                          $ % & * = = - ; & > ,                           ",
++"                  ' ) > ! ~ { ] ^ / ( _ : < [ ~ ! } | 1                   ",
++"            2 3 4 5 6 = = = 7 8 9 0 a b _ c d e = = = f 4 } g             ",
++"          h i j k l m n = = o p q r 7 s t u v w x y z A B C D E           ",
++"          F G H I J K L M N O P Q R R R R S T U M V W X Y Z `  ...        ",
++"          F +.+.+.@.#.$.%.&.*.=.-.;.>.,.'.).!.~.{.].^./.(.(.(. ...        ",
++"          F +.+.+._.:.<.[.}.|.1.2.3.4.5.6.7.(.8.9.0.a.b.(.(.(. ...        ",
++"          F +.+.+._.:.c.d.e.f.+.+.g.4.h.(.(.i.j.k.l.m.n.(.(.(. ...        ",
++"          F +.+.+._.:.o.p.q.r.+.+.s.4.h.(.(.t.u.(.v.m.n.(.(.(. ...        ",
++"          w.+.+.+._.:.x.y.z.A.+.+.s.4.h.(.(.B.C.D.t.E.F.(.G.H.I.J.        ",
++"          K.L.M.+.N.O.P.+.+.+.+.+.s.4.h.(.(.Q.R.S.T.U.V.W.X.Y.Z.          ",
++"            `. +.+++@+#+$++.+.+.+.s.4.h.(.(.%+&+*+=+-+;+>+,+              ",
++"                  '+)+!+~+{+]++.+.s.4.^+/+(+_+:+<+[+                      ",
++"                        }+|+1+2+3+4+5+6+7+8+9+                            ",
++"                                0+a+b+c+                                  "};
+diff -Naur qpobox.orig/poboximpl.cpp qpobox/poboximpl.cpp
+--- qpobox.orig/poboximpl.cpp	2003-06-15 04:58:25.000000000 +0900
++++ qpobox/poboximpl.cpp	2006-04-13 16:52:54.000000000 +0900
+@@ -27,106 +27,7 @@
+ #include "poboximpl.h"
+ #include "poboxpanel.h"
+ 
+-/* XPM */
+-/* XPM */
+-static char * logo1_xpm[] = {
+-"52 28 66 1",
+-"  c None",
+-". c gray5",
+-"X c #0c0d13",
+-"o c #161616",
+-"O c #191714",
+-"+ c gray11",
+-"@ c #131929",
+-"# c gray14",
+-"$ c #322a33",
+-"% c #303529",
+-"& c #3d3131",
+-"* c #3c3c3c",
+-"= c #1f2842",
+-"- c #3f4535",
+-"; c #2c4071",
+-": c #364472",
+-"> c #543d3d",
+-", c #544848",
+-"< c #5c4a4a",
+-"1 c #505050",
+-"2 c #545850",
+-"3 c #5f6951",
+-"4 c #6a4f4f",
+-"5 c gray42",
+-"6 c #747474",
+-"7 c gray49",
+-"8 c #102cba",
+-"9 c #4a5a81",
+-"0 c #5572b9",
+-"q c #4e71c7",
+-"w c #5d85ea",
+-"e c #6b8cde",
+-"r c #6087e9",
+-"t c #658ae7",
+-"y c #618bf4",
+-"u c #638efa",
+-"i c #6591ff",
+-"p c #6994fc",
+-"a c #a30463",
+-"s c #b12170",
+-"d c #bd387c",
+-"f c #8f6969",
+-"g c #c24281",
+-"h c #cc568a",
+-"j c #96a57f",
+-"k c gray54",
+-"l c #9b9b9b",
+-"z c #869fbb",
+-"x c #8997bc",
+-"c c #ba8b8b",
+-"v c #a3b18d",
+-"b c #bbbbbb",
+-"n c #88a9ef",
+-"m c #a3bbe3",
+-"M c #bbce9f",
+-"N c #e98fa5",
+-"B c #eb92a7",
+-"V c #e8abab",
+-"C c #ffbaba",
+-"Z c #cce0ad",
+-"A c #cee1b1",
+-"S c #d1e6b1",
+-"D c #d9eeb8",
+-"F c #def4bc",
+-"G c #fcf7bd",
+-"H c #070707",
+-/* pixels */
+-"                                                    ",
+-"                                                    ",
+-"                         +#l                        ",
+-"                      oHHH.HHo7                     ",
+-"                   .HHoCCCCCVXHH.*                  ",
+-"               +.HHoCCCCCCCCCCCCoHH.+b              ",
+-"            oHH.+CCCCCNaaaaaaaNCCCC+.HHok           ",
+-"        ,XHH.cCCCCCCCaaaBCCCBaaaCCCCCCC.HHo1        ",
+-"      oHHoCCCCCCCCCCaaNCCCdsshNadCCCCCCCCCoHHH#     ",
+-"     oHHHHH,CCCCCCCCCaaaBCCCgaaadsBCCCCC<H.$HHH     ",
+-"     ooFS-HHHH>CCCCCCCNaaaaaaaBCCCCC<HHHHHqipHH     ",
+-"     ooFFFFFvHHHHHHcCCCCCCCCCCCCfHHHX=;yiiiipHH     ",
+-"     ooFFFFFFFFFM%HHHHH4CCCC&HHHH@wiiiiiiiiipHH     ",
+-"     ooFFFFFF888zFFFZ3HO+HHHH:wiiiGGGGiiiiiiiHH     ",
+-"     ooFFFFFF88z88zFFFFFFHHiiiiiiGGimGGiiiiiiHH     ",
+-"     ooFFFFFF88FFz8zFFFFFHHiiiiiGGniiGGiiiiipHH     ",
+-"     ooFFFFFF88FFF88FFFFFHHiiiiiGGiiiGGiiiiiiHH     ",
+-"     ooFFFFFF888zF88FFFFFHHpppiiGGiiiGGiiiiiiHH     ",
+-"     ooFFFFFF88z888FFFFFFHHpiiiiGGnimGiiiiiiiHH     ",
+-"     o.FFFFFF88FFFFFFFFFFHHiiiiipGGGGiipiioHHH9     ",
+-"     6.HHoFFFFFFFFFFFFFFFHHiiiiiiiiiiir.HH.op       ",
+-"        2.HHovFFFFFFFFFFFHHppiiiipi+oHHotp          ",
+-"           5oHH.+FFFFFFFFHHpiiipoHH.#x              ",
+-"              b+.HHoFFFFFHHp0.HHX*i                 ",
+-"                  F.HHoFFHHHHot                     ",
+-"                     Ao.HHHp                        ",
+-"                                                    ",
+-"                                                    ",
+-};
++#include "icon/qpobox.xpm"
+ 
+ POBoxImpl::POBoxImpl()
+     : input(0), icn(0), ref(0)
+@@ -156,7 +57,7 @@
+ QPixmap *POBoxImpl::icon()
+ {
+   if (!icn)
+-    icn = new QPixmap((const char **)logo1_xpm);
++    icn = new QPixmap((const char **)qpobox_xpm);
+   return icn;
+ }
+ 
+diff -Naur qpobox.orig/poboxpanel.cpp qpobox/poboxpanel.cpp
+--- qpobox.orig/poboxpanel.cpp	2006-04-07 23:51:22.000000000 +0900
++++ qpobox/poboxpanel.cpp	2006-04-13 22:33:07.000000000 +0900
+@@ -24,7 +24,7 @@
+ #include "qpoboxconfig.h"
+ #include "pbclient.h"
+ #include "candlist.h"
+-#include "lib/fepmonitor.h"
++//#include "lib/fepmonitor.h"
+ 
+ #include <qpe/global.h>
+ #include <qapplication.h>
+@@ -32,7 +32,8 @@
+ #include <qclipboard.h>
+ #include <qtimer.h>
+ #include <qfile.h>
+-#include <sl/jpnfeputil.h>
++//#include <sl/jpnfeputil.h>
++#include <opie2/okeyfilter.h>
+ 
+ #include <stdlib.h>
+ 
+@@ -88,7 +89,7 @@
+   connect(m_channel, SIGNAL(received(const QCString&, const QByteArray&)),
+ 	  this, SLOT(appMessage(const QCString&, const QByteArray&)));
+ 
+-  m_fep_monitor = new FepMonitor(this);
++//  m_fep_monitor = new FepMonitor(this);
+ }
+ 
+ POBoxPanel::~POBoxPanel()
+@@ -123,12 +124,14 @@
+     m_pobox->deleteWord(word, input);
+   }
+ 
++#if 0
+   if (is_hide && isVisible()) {
+     JpnFep::hideInputMethod();
+   }
+   if (is_show) {
+     JpnFep::changeInputMethod(im);
+   }
++#endif
+ }
+ 
+ void POBoxPanel::candidateClicked()
+@@ -222,9 +225,11 @@
+     m_processed_keycode = keycode;
+ 
+     if (m_im_mode) {
++#if 0
+       if (m_fep_monitor->isActive()) {
+ 	thru = true;
+       }
++#endif
+       if (func == F_IM_MODE) {
+ 	keycode = Key_F25;
+ 	m_im_mode = false;
+@@ -381,10 +386,10 @@
+       case F_IM_MODE:
+ 	fixCandidate();
+ 	m_im_mode = true;
+-	if (!m_fep_monitor->isActive()) {
++//	if (!m_fep_monitor->isActive()) {
+ 	  keycode = Key_F25;
+ 	  thru = true;
+-	}
++//	}
+ 	m_cand->setText(tr("IM mode"));
+ 	break;
+       case F_THRU_MODE:
+@@ -625,7 +630,8 @@
+ void POBoxPanel::showEvent(QShowEvent *e) 
+ {
+   if (!e->spontaneous()) {
+-    QWSServer::setKeyboardFilter(m_keyFilter);
++//    QWSServer::setKeyboardFilter(m_keyFilter);
++     Opie::Core::OKeyFilter::inst()->addHandler(m_keyFilter);
+   }
+ 
+   QFontMetrics fm(m_inputline->font());
+@@ -639,16 +645,19 @@
+   m_cand->setMaxDispCand(m_cfg->m_maxDispCand);
+   requestCandidate(true);
+ 
++#if 0
+   if (m_fep_monitor->isActive()) {
+     emit keyPress(-1, Qt::Key_F25, 0, 1, 0);
+   }
++#endif
+ }
+ 
+ // disable KeyboardFilter
+ void POBoxPanel::hideEvent(QHideEvent *e) 
+ {
+   if (!e->spontaneous()) {
+-    QWSServer::setKeyboardFilter(NULL);
++//    QWSServer::setKeyboardFilter(NULL);
++    Opie::Core::OKeyFilter::inst()->remHandler(m_keyFilter);
+   }
+   
+   m_pobox->saveDictionary();
+diff -Naur qpobox.orig/qpobox.pro qpobox/qpobox.pro
+--- qpobox.orig/qpobox.pro	2003-07-26 01:12:27.000000000 +0900
++++ qpobox/qpobox.pro	2006-04-13 22:07:25.000000000 +0900
+@@ -1,9 +1,9 @@
+ TEMPLATE	= lib
+ CONFIG		+= qt warn_on release
+-HEADERS	=   poboximpl.h poboxpanel.h pbclient.h qpoboxconfig.h candlist.h lib/fepmonitor.h lib/KeyNames.h
++HEADERS	=   poboximpl.h poboxpanel.h pbclient.h qpoboxconfig.h candlist.h lib/KeyNames.h
+ SOURCES	=   poboximpl.cpp poboxpanel.cpp pbclient.cpp qpoboxconfig.cpp candlist.cpp lib/KeyNames.cpp
+ TARGET		= qpobox
+ INCLUDEPATH += $(QPEDIR)/include
+-LIBS            += -lqpe -lsl
++LIBS            += -lqpe -lopiecore2
+ VERSION		= 1.0.0
+ 

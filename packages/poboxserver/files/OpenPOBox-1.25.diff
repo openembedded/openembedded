@@ -1,0 +1,175 @@
+diff -ur OpenPOBox.orig/asearch/Makefile OpenPOBox/asearch/Makefile
+--- OpenPOBox.orig/asearch/Makefile	2001-07-23 16:18:15.000000000 +0900
++++ OpenPOBox/asearch/Makefile	2003-06-14 17:52:12.668859200 +0900
+@@ -2,7 +2,7 @@
+ #	$Date: 2004/09/28 03:42:40 $
+ #	$Revision: 1.6 $
+ #
+-CC = gcc
++CC = arm-linux-gcc
+ CFLAGS = -Xcpluscomm
+ WTANGLE = perl ../wtangle/wtangle
+ 
+diff -ur OpenPOBox.orig/romakana/rklist OpenPOBox/romakana/rklist
+--- OpenPOBox.orig/romakana/rklist	2001-07-23 23:29:06.000000000 +0900
++++ OpenPOBox/romakana/rklist	2003-06-18 10:05:47.358003200 +0900
+@@ -127,7 +127,7 @@
+ na	¥Ê
+ ne	¥Í
+ ni	¥Ë
+-#nn	¥ó
++nn	¥ó
+ no	¥Î
+ nu	¥Ì
+ nya	¥Ë¥ã
+diff -ur OpenPOBox.orig/server/Makefile.in OpenPOBox/server/Makefile.in
+--- OpenPOBox.orig/server/Makefile.in	2002-02-19 09:37:10.000000000 +0900
++++ OpenPOBox/server/Makefile.in	2003-06-14 17:52:12.678873600 +0900
+@@ -10,7 +10,7 @@
+ # CFLAGS = -DUNIX @CFLAGS@ -Xcpluscomm \
+ #	-I../asearch -I../romakana -I../include -g
+ 
+-CC = gcc
++CC = arm-linux-gcc
+ CFLAGS = -DUNIX @CFLAGS@ \
+ 	-I/usr/local/include -I/usr/local/lib/glib/include \
+ 	-I@prefix@/include \
+diff -ur OpenPOBox.orig/server/pbserver.html OpenPOBox/server/pbserver.html
+--- OpenPOBox.orig/server/pbserver.html	2002-02-19 09:37:10.000000000 +0900
++++ OpenPOBox/server/pbserver.html	2003-06-18 10:20:24.779673600 +0900
+@@ -60,8 +60,8 @@
+ 
+ #define POBOXSERVERPORT 1178
+ 
+-#define MAXCANDS 100
+-#define MAXWORDLEN 100
++#define MAXCANDS 300
++#define MAXWORDLEN 50
+ unsigned char *cands[MAXCANDS],*candspat[MAXCANDS];
+ 
+ int process(int);
+@@ -115,7 +115,7 @@
+ 
+ process(int sock)
+ {	
+-	unsigned char buf[1000],combuf[BUFSIZE];
++	unsigned char buf[8000],combuf[BUFSIZE];
+ 
+ 	unsigned char w[100],p[100];
+ 	int i,n;
+@@ -135,9 +135,11 @@
+ 		pobox_usedict(NULL); // save all existing changes
+ 		return -1; // this makes the server's main routine disconnect 
+ 	case '1':
++#if 0 // delete tolower
+ 		for(pat=combuf+1;*pat;pat++){
+ 			if(isupper(*pat)) *pat = tolower(*pat);
+ 		}
++#endif
+ 		pat = combuf+1;
+ 		patlen = strlen(pat);
+ 		pobox_context(context[sock],strlen(context[sock]));
+diff -ur OpenPOBox.orig/server/poboxlib.html OpenPOBox/server/poboxlib.html
+--- OpenPOBox.orig/server/poboxlib.html	2002-02-19 09:37:10.000000000 +0900
++++ OpenPOBox/server/poboxlib.html	2004-09-28 10:37:22.818192000 +0900
+@@ -557,7 +557,7 @@
+ //
+ /////////////////////////////////////////////////////////////////
+ 
+-#define MAXCANDS 40
++#define MAXCANDS 300
+ static UCHAR *cands[MAXCANDS];
+ static UCHAR *candspat[MAXCANDS];
+ static int ncands = 0;
+@@ -603,7 +603,7 @@
+ //
+ // $BC18l8!:w(B
+ //
+-POBOX_INT pobox_search(UCHAR *pat)
++POBOX_INT pobox_search(UCHAR *orig_pat)
+ {
+ 	int i,j;
+ 	int m;
+@@ -615,12 +615,18 @@
+ 	UCHAR searchpat[1000];
+ 	UCHAR kana[MAXWORDLEN];
+ 
++	UCHAR pat[100];
++
+ 	Dict *dict;
+ 	DicEntry de;
+ 
+ 	if(pat == NULL || strlen(pat) > 100)
+ 		return 0;
+ 
++	for (p = orig_pat, s = pat; *p; p++, s++) {
++	        *s = tolower(*p);
++	}
++	*s = '\0';
+ #ifndef USEGC
+ 	for(i=0;i<ncands;i++){
+ 		if(cands[i]) free(cands[i]);
+@@ -642,6 +648,8 @@
+ 			if(*s == 0xa4) *s = 0xa5;
+ 		}
+ 		addcand(&de);
++		de.word = orig_pat;
++		addcand(&de);
+ 		de.word = pat;
+ 		addcand(&de);
+ 	}
+@@ -769,7 +777,54 @@
+ 					}
+ 				}
+ 			}
++		} 
++#ifdef USELOOKUP
++                else if(dict->poboxdict->type == POBOXDICT_LOOKUP){
++		// $B$"$$$^$$8!:w$O$H$j$"$($:J]N1(B
++		// $BAw$j2>L>8!:w(B
++printf("okurigana == pat=[%s]\n",pat);
++			strcpy(searchpat, pat);
++			while (ncands == 0 && !exact && *searchpat != '\0') {
++				int i, l;
++
++printf("okurigana searchpat=[%s]\n",searchpat);
++				if(lookup_search(dict->lookup,searchpat)){
++					char *line, *s;
++					UCHAR wordbuf[100];
++					for(;(line = lookup_get_next_line(dict->lookup)) && ncands < MAXCANDS;){
++						de.pat = line;
++						for(s = line;*s && *s != '\t';s++);
++						*s++ = '\0';
++						if (strncmp(de.pat, searchpat, strlen(de.pat)) != 0) {
++							/* $BF~NO$,FI$_$G;O$^$C$F$$$J$$>l9g$O8uJd$+$i30$9(B */
++							free(line);
++							continue;
++						}
++
++						de.word = s;
++						for(;*s && *s != '\t' && *s != '\n' && *s != '\r';s++);
++						*s = '\0';
++						strcpy(wordbuf, de.word);
++						Roma2Kana(pat+strlen(de.pat)-1,kana,rktable);
++						strcat(wordbuf,kana);
++						de.word = wordbuf;
++
++						de.context = NULL;
++						addcand(&de);
++						free(line);
++printf("okurigana cand=[%s]\n",s);
++					}
++				}
++				// delete vowels
++				l = strlen(searchpat);
++				searchpat[l - 1] = '\0';
++				for (i = l - 2; i >= 0 && !consonant(searchpat[i]); i--) {
++					searchpat[i] = '\0';
++				}
++			}
+ 		}
++#endif
++
+ 	}
+ 
+ 	if(ncands+3 < MAXCANDS){
