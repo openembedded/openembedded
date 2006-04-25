@@ -1,0 +1,19 @@
+--- /tmp/Makefile.am	2006-04-25 15:46:09.236249864 +0200
++++ fontconfig-2.3.94/fc-glyphname/Makefile.am	2006-04-25 15:46:39.175698376 +0200
+@@ -31,6 +31,7 @@
+ TMPL=fcglyphname.tmpl.h
+ STMPL=${top_srcdir}/fc-glyphname/${TMPL}
+ TARG=fcglyphname.h
++FC_GLYPHNAME=./fc-glyphname
+ 
+ noinst_PROGRAMS=fc-glyphname
+ 
+@@ -45,7 +46,7 @@
+ 
+ $(TARG): $(STMPL) fc-glyphname$(EXEEXT) $(SGLYPHNAME)
+ 	rm -f $(TARG)
+-	./fc-glyphname$(EXEEXT) $(SGLYPHNAME) < $(STMPL) > $(TARG)
++	$(FC_GLYPHNAME)$(EXEEXT) $(SGLYPHNAME) < $(STMPL) > $(TARG)
+ 
+ CLEANFILES=$(TARG)
+ 
