@@ -1,11 +1,12 @@
 DESCRIPTION = "Python Qt/Embedded + Qt/Palmtop Bindings"
 HOMEPAGE = "http://www.vanille.de/projects/python.spy"
+AUTHOR = "Phil Thomson @ riverbank.co.uk"
 SECTION = "devel/python"
 PRIORITY = "optional"
 MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 LICENSE = "GPL"
 RDEPENDS = "python-core python-sip"
-DEPENDS = "virtual/libqte2 virtual/libqpe"
+DEPENDS = "virtual/libqte2 virtual/libqpe1"
 SRCNAME = "pyqt"
 PR = "ml3"
 
@@ -22,7 +23,7 @@ SIP_MODULES = "qt qtcanvas qttable qtpe"
 SIP_FEATURES = "${WORKDIR}/features"
 EXTRA_OEMAKE = " MAKEFLAGS= "
 
-EXTRA_QMAKEVARS_POST = " QMAKE_UIC=${STAGING_BINDIR}/uic QMAKE_MOC=${STAGING_BINDIR}/moc QMAKE_RPATH=-Wl,-rpath-link, \
+EXTRA_QMAKEVARS_POST += " QMAKE_UIC=${STAGING_BINDIR}/uic QMAKE_MOC=${STAGING_BINDIR}/moc QMAKE_RPATH=-Wl,-rpath-link, \
                          CONFIG=qt CONFIG+=warn_on CONFIG+=release \
                          DESTDIR= VERSION=1.0.0 \
                          DEFINES=SIP_MAKE_DLL DEFINES+=SIP_QT_SUPPORT DEFINES+=QWS \
