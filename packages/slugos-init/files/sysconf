@@ -8,35 +8,46 @@
 # to load these functions!)
 test "$1" != sysconf && . /etc/default/functions
 
+# NSLU2 flash layout is non-standard.
+case "$(machine)" in
+nslu2)
+	kpart="Kernel"
+	syspart="SysConf"
+	ffspart="Flashdisk";;
+*)
+	kpart="kernel"
+	syspart="sysconfig"
+	ffspart="filesystem";;
+esac
 #
 # sysconf_valid
 #  return true if the SysConf partition exists and seems to be
 #  potentially valid (it starts with a reasonable length).
 sysconf_valid(){
 	local sysdev
-	sysdev="$(mtblockdev SysConf)"
+	sysdev="$(mtblockdev $syspart)"
 	test -n "$sysdev" -a -b "$sysdev" &&
 		devio "<<$sysdev" '!! b.10>s32768<&!'
 }
 
 #
 # sysconf_read [prefix]
-#  read the SysConf partition (if present) writing the result into
+#  read the $syspart partition (if present) writing the result into
 #  /etc/default/sysconf, if the result is empty it will be removed.
 sysconf_read(){
 	local sysdev sedcmd mac config_root
 	config_root="$1"
 	rm -f /tmp/sysconf.new
-	sysdev="$(mtblockdev SysConf)"
+	sysdev="$(mtblockdev $syspart)"
 	if sysconf_valid
 	then
-		# Read the defined part of SysConf into /etc/default/sysconf.
-		# SysConf has lines of two forms:
+		# Read the defined part of $syspart into /etc/default/sysconf.
+		# $syspart has lines of two forms:
 		#
 		#  [section]
 		#  name=value
 		#
-		# In practice SysConf also contains other stuff, use the command:
+		# In practice $syspart also contains other stuff, use the command:
 		#
 		#  devio '<</dev/mtd1;cpb'
 		#
@@ -81,7 +92,7 @@ sysconf_read(){
 
 #
 # sysconf_default [prefix]
-#  Provde a default /etc/default/sysconf when there is no SysConf partition,
+#  Provde a default /etc/default/sysconf when there is no $syspart partition,
 #  or when it is invalid, this function will read from an existing sysconf,
 #  copying the values into the new one.
 # sysconf_line tag config-tag
@@ -477,13 +488,12 @@ sysconf_test_restore(){
 
 #
 # sysconf_save
-#  save the system configuration to SysConf - SysConf must exist and
+#  save the system configuration to $syspart - $syspart must exist and
 #  there must be a writeable device for it.
 sysconf_save(){
-	local sysdev ffspart ffsdev ffsdir saved list size status
-	ffspart=Flashdisk
+	local sysdev ffsdev ffsdir saved list size status
 	ffsdev="$(mtblockdev $ffspart)"
-	sysdev="$(mtblockdev SysConf)"
+	sysdev="$(mtblockdev $syspart)"
 	status=1
 	if test -n "$sysdev" -a -b "$sysdev" -a -n "$ffsdev" -a -b "$ffsdev"
 	then
@@ -535,7 +545,7 @@ sysconf_save(){
 		size="$(devio "<</tmp/sysconf.$$" 'pr$')"
 		gzip -9 <"$saved" >>/tmp/sysconf.$$
 		#
-		# more cleanup, then try to write the new sysconf to SysConf
+		# more cleanup, then try to write the new sysconf to $syspart
 		# the format is a 4 byte big-endian length then the text data
 		# if the data won't fit exit with error code 7
 		rm "$saved" "$list"
@@ -549,26 +559,26 @@ sysconf_save(){
 		0)	echo " done" >&2
 			status=0;;
 		1)	echo " failed" >&2
-			echo " SysConf could not be written (no changes made)" >&2;;
+			echo " $syspart could not be written (no changes made)" >&2;;
 		3)	echo " failed" >&2
-			echo " SysConf partially written, you may want to reset it" >&2;;
+			echo " $syspart partially written, you may want to reset it" >&2;;
 		7)	echo " failed" >&2
-			echo " SysConf is too small: $size bytes required" >&2
+			echo " $syspart is too small: $size bytes required" >&2
 			echo " No change made" >&2;;
 		*)	echo " failed" >&2
-			echo " Internal error writing SysConf" >&2;;
+			echo " Internal error writing $syspart" >&2;;
 		esac
 		#
 		rm -f /tmp/sysconf.$$
 	else
-		echo "sysconf save: SysConf or $ffspart partition not found" >&2
-		echo " A RedBoot partition named 'SysConf' must exist in the system" >&2
+		echo "sysconf save: $syspart or $ffspart partition not found" >&2
+		echo " A RedBoot partition named '$syspart' must exist in the system" >&2
 		echo " flash memory for this command to work, and there must be a" >&2
 		echo " block device to access this partition (udev will normally" >&2
 		echo " create this automatically.  The flash partition contents must" >&2
 		echo " also be accessible in a partition called '$ffspart'" >&2
 		echo
-		echo " To create the SysConf partition use the 'fis create' command" >&2
+		echo " To create the $syspart partition use the 'fis create' command" >&2
 		echo " in the RedBoot boot loader, it is sufficient to make the" >&2
 		echo " partition one erase block in size unless you have substantially" >&2
 		echo " increased the size of the files listed in /etc/default/conffiles" >&2
@@ -579,7 +589,7 @@ sysconf_save(){
 
 #
 # sysconf_restore [auto]
-#  restore previously saved configuration information from SysConf
+#  restore previously saved configuration information from $syspart
 sysconf_restore_error(){
 	local root
 	root="$1"
@@ -589,7 +599,7 @@ sysconf_restore_error(){
 		test -n "$1" && echo "$*"
 		echo
 		echo "The configuration of this machine has been reinitialised using the values"
-		echo "from /etc/default/sysconf, however configuration files saved in the SysConf"
+		echo "from /etc/default/sysconf, however configuration files saved in the $syspart"
 		echo "partition have not been restored."
 		echo
 		echo "You can restore these files by correcting any reported errors then running"
@@ -597,13 +607,13 @@ sysconf_restore_error(){
 		echo "  sysconf restore"
 		echo
 		echo "from the command line.  This will completely reinitialise the configuration"
-		echo "using the information in the SysConf partition."
+		echo "using the information in the $syspart partition."
 	} >"$root/etc/motd"
 	cat "$root/etc/motd" >&2
 }
 #
 sysconf_restore(){
-	local sysdev ffspart ffsdev ffsdir saved restore size status sysconf_noninteractive config_root
+	local sysdev ffsdev ffsdir saved restore size status sysconf_noninteractive config_root
 
 	# if set this means 'do no diff' - this avoids the code above which
 	# would open /dev/tty and therefore allows this stuff to be done from
@@ -611,9 +621,8 @@ sysconf_restore(){
 	sysconf_noninteractive=
 	test "$1" = auto && sysconf_noninteractive=1
 
-	ffspart=Flashdisk
 	ffsdev="$(mtblockdev $ffspart)"
-	sysdev="$(mtblockdev SysConf)"
+	sysdev="$(mtblockdev $syspart)"
 	status=1
 	if test -n "$sysdev" -a -b "$sysdev" -a -n "$ffsdev" -a -b "$ffsdev" &&
 		sysconf_valid
@@ -634,7 +643,7 @@ sysconf_restore(){
 			exit 1
 		}
 		#
-		# first restore the SysConf section
+		# first restore the $syspart section
 		sysconf_read "$ffsdir" || sysconf_default "$ffsdir"
 		#
 		# now use this to regenerate the system files
@@ -735,9 +744,9 @@ examined before restoration"
 			echo "$0: $ffsdir: temporary directory cleanup failed" >&2
 		status=0
 	else
-		echo "sysconf restore: SysConf or $ffspart partition not found" >&2
+		echo "sysconf restore: $syspart or $ffspart partition not found" >&2
 		echo " You must have used 'sysconf save' to save configuration data" >&2
-		echo " into the SysConf partition before using this command.  The command" >&2
+		echo " into the $syspart partition before using this command.  The command" >&2
 		echo " will restore the configuration data to the flash root partition" >&2
 		echo " named '$ffspart' - this must also be accessible." >&2
 	fi
@@ -751,12 +760,12 @@ examined before restoration"
 sysconf_help(){
 	#     -------------------------------------------------------------------------------
 	echo "sysconf: usage: sysconf read|default|reload|save|restore" >&2
-	echo " read:    the current SysConf partition is read into /etc/default/sysconf" >&2
+	echo " read:    the current $syspart partition is read into /etc/default/sysconf" >&2
 	echo " default: a default /etc/default/sysconf is created" >&2
 	echo " reload:  system configuration files are recreated from /etc/default/sysconf" >&2
 	echo " save:    /etc/default/sysconf and the files listed in /etc/default/conffiles" >&2
-	echo "          are written to the SysConf partition" >&2
-	echo " restore: the configuration information in the SysConf partition saved by" >&2
+	echo "          are written to the $syspart partition" >&2
+	echo " restore: the configuration information in the $syspart partition saved by" >&2
 	echo "          'sysconf save' is restored" >&2
 }
 
