@@ -1,0 +1,52 @@
+Add some names for PCMCIA cards
+
+Signed-off-by: Marcin Juszkiewicz <openembedded@hrw.one.pl>
+---
+
+ drivers/net/wireless/hostap/hostap_cs.c |   24 ++++++++++++------------
+ 1 file changed, 12 insertions(+), 12 deletions(-)
+
+Index: linux/drivers/net/wireless/hostap/hostap_cs.c
+===================================================================
+--- linux.orig/drivers/net/wireless/hostap/hostap_cs.c	2006-04-21 13:37:18.000000000 +0200
++++ linux/drivers/net/wireless/hostap/hostap_cs.c	2006-04-21 13:54:23.000000000 +0200
+@@ -874,27 +874,27 @@
+ static struct pcmcia_device_id hostap_cs_ids[] = {
+ 	PCMCIA_DEVICE_MANF_CARD(0x000b, 0x7100),
+ 	PCMCIA_DEVICE_MANF_CARD(0x000b, 0x7300),
+-	PCMCIA_DEVICE_MANF_CARD(0x0089, 0x0002),
++	PCMCIA_DEVICE_MANF_CARD(0x0089, 0x0002), /* Intel PRO/Wireless 2011 */
+ 	PCMCIA_DEVICE_MANF_CARD(0x0101, 0x0777),
+-	PCMCIA_DEVICE_MANF_CARD(0x0126, 0x8000),
+-	PCMCIA_DEVICE_MANF_CARD(0x0138, 0x0002),
++	PCMCIA_DEVICE_MANF_CARD(0x0126, 0x8000), /* PROXIM RangeLAN-DS/LAN PC CARD */
++	PCMCIA_DEVICE_MANF_CARD(0x0138, 0x0002), /* Compaq WL100 11 Mbps Wireless Adapter */
+ 	PCMCIA_DEVICE_MANF_CARD(0x01ff, 0x0008),
+ 	PCMCIA_DEVICE_MANF_CARD(0x0250, 0x0002),
+ 	PCMCIA_DEVICE_MANF_CARD(0x026f, 0x030b),
+-	PCMCIA_DEVICE_MANF_CARD(0x0274, 0x1612),
+-	PCMCIA_DEVICE_MANF_CARD(0x0274, 0x1613),
+-	PCMCIA_DEVICE_MANF_CARD(0x028a, 0x0002),
+-	PCMCIA_DEVICE_MANF_CARD(0x02aa, 0x0002),
++	PCMCIA_DEVICE_MANF_CARD(0x0274, 0x1612), /* Linksys WPC11 Version 2.5 */
++	PCMCIA_DEVICE_MANF_CARD(0x0274, 0x1613), /* Linksys WPC11 Version 3 */
++	PCMCIA_DEVICE_MANF_CARD(0x028a, 0x0002), /* Compaq HNW-100 */
++ 	PCMCIA_DEVICE_MANF_CARD(0x02aa, 0x0002), /* ASUS SpaceLink WL-100 */
+ 	PCMCIA_DEVICE_MANF_CARD(0x02d2, 0x0001),
+ 	PCMCIA_DEVICE_MANF_CARD(0x50c2, 0x0001),
+-	PCMCIA_DEVICE_MANF_CARD(0x50c2, 0x7300),
++	PCMCIA_DEVICE_MANF_CARD(0x50c2, 0x7300), /* Airvast WN-100 */
+ 	PCMCIA_DEVICE_MANF_CARD(0x9005, 0x0021),
+ 	PCMCIA_DEVICE_MANF_CARD(0xc001, 0x0008),
+ 	PCMCIA_DEVICE_MANF_CARD(0xc00f, 0x0000),
+-	PCMCIA_DEVICE_MANF_CARD(0xc250, 0x0002),
+-	PCMCIA_DEVICE_MANF_CARD(0xd601, 0x0002),
+-	PCMCIA_DEVICE_MANF_CARD(0xd601, 0x0005),
+-	PCMCIA_DEVICE_MANF_CARD(0xd601, 0x0010),
++	PCMCIA_DEVICE_MANF_CARD(0xc250, 0x0002), /* EMTAC A2424i 11Mbps WLAN Card */
++ 	PCMCIA_DEVICE_MANF_CARD(0xd601, 0x0002), /* NETGEAR MA701" */
++ 	PCMCIA_DEVICE_MANF_CARD(0xd601, 0x0005), /* D-Link DCF660, Sandisk Connect SDWCFB-000, SMC2642W */
++	PCMCIA_DEVICE_MANF_CARD(0xd601, 0x0010), /* SanDisk ConnectPlus OEM (0MB) */
+ 	PCMCIA_DEVICE_MANF_CARD_PROD_ID1(0x0156, 0x0002, "INTERSIL",
+ 					 0x74c5e40d),
+ 	PCMCIA_DEVICE_MANF_CARD_PROD_ID1(0x0156, 0x0002, "Intersil",
