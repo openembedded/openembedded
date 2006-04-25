@@ -2,10 +2,10 @@ DESCRIPTION = "2.6 Linux Development Kernel for Zaurus devices and iPAQ hx2750."
 SECTION = "kernel"
 MAINTAINER = "Richard Purdie <rpurdie@rpsys.net>, Michael 'Mickey' Lauer <mickey@vanille.de>"
 LICENSE = "GPL"
-PROVIDES = "virtual/kernel-hostap"
-RPROVIDES_kernel-module-hostap-cs = "virtual/kernel-hostap"
 
 inherit kernel
+
+RPROVIDES_kernel-image += "hostap-modules"
 
 DOSRC = "http://www.do13.de/openzaurus/patches"
 RPSRC = "http://www.rpsys.net/openzaurus/patches/archive"
@@ -21,6 +21,7 @@ ALLOW_EMPTY = 1
 
 EXTRA_OEMAKE = "OPENZAURUS_RELEASE=-${DISTRO_VERSION}"
 COMPATIBLE_HOST = "arm.*-linux"
+COMPATIBLE_MACHINE = '(collie|poodle|c7x0|akita|spitz|tosa|ipaq-pxa270|qemuarm)'
 
 CMDLINE_CON = "console=ttyS0,115200n8 console=tty1 noinitrd"
 CMDLINE_ROOT = "root=/dev/mtdblock2 rootfstype=jffs2"
