@@ -1,6 +1,6 @@
 include linux-openzaurus.inc
 
-PR = "r10"
+PR = "r11"
 
 # Handy URLs
 # git://rsync.kernel.org/pub/scm/linux/kernel/git/torvalds/linux-2.6.git \
@@ -116,7 +116,7 @@ SRC_URI_append_tosa = "\
 	   ${CHSRC}/tmio-fb-r6.patch;patch=1 \
 	   ${DOSRC}/tosa-keyboard-r13.patch;patch=1 \
 	   ${DOSRC}/tosa-pxaac97-r6.patch;patch=1 \
-	   ${DOSRC}/tosa-tmio-r4.patch;patch=1 \
+	   ${RPSRC}/temp/tosa-tmio-r4-rp1.patch;patch=1 \
 	   ${DOSRC}/tosa-power-r14.patch;patch=1 \
 	   ${DOSRC}/tosa-tmio-lcd-r5.patch;patch=1 \
 	   ${DOSRC}/tosa-bluetooth-r5.patch;patch=1 \
