@@ -1,0 +1,19 @@
+*** x/Makefile.orig	2006-03-06 08:10:37.000000000 +0100
+--- x/Makefile	2006-04-29 11:57:11.000000000 +0200
+***************
+*** 48,54 ****
+  
+  
+  all default:
+! 	$(MAKE) -C $(KSRC) SUBDIRS=$(PWD) modules
+  
+  install: default
+  	install -d $(KMISC)
+--- 48,54 ----
+  
+  
+  all default:
+! 	$(MAKE) -C $(KERNEL_SOURCE) M=$(PWD) modules
+  
+  install: default
+  	install -d $(KMISC)

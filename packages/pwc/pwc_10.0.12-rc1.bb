@@ -1,21 +1,19 @@
-DESCRIPTION = "Driver for the Hauppauge WinTV PVR USB2"
-HOMEPAGE = "http://www.isely.net/pvrusb2.html"
+DESCRIPTION = "Philips USB Webcam driver for Linux that supports VGA resolution"
+HOMEPAGE = "http://www.saillard.org/linux/pwc"
 PRIORITY = "optional"
 SECTION = "kernel/modules"
 MAINTAINER = "eFfeM <fransmeulenbroeks at yahoo dot com>"
 LICENSE = "GPL"
 PR = "r0"
-RRECOMMENDS = "kernel-module-tveeprom kernel-module-tuner kernel-module-msp3400 kernel-module-saa7115 kernel-module-tda9887"
- 
-SRC_URI = "http://www.isely.net/downloads/pvrusb2-mci-${PV}.tar.bz2 \
+
+SRC_URI = "http://www.saillard.org/linux/pwc/files/pwc-${PV}.tar.bz2 \
            file://Makefile.patch;patch=1" 
 
-S = "${WORKDIR}/pvrusb2-mci-${PV}/driver"
+S = "${WORKDIR}/pwc-${PV}"
 
 inherit module
 
-CFLAGS = "'-I${KERNEL_SOURCE}/include' \
-	  '-I${KERNEL_SOURCE}/drivers/media/video' "
+CFLAGS = "'-I${KERNEL_SOURCE}/include' "
 
 CFLAGS_append_arm = " '-D__LINUX_ARM_ARCH__=5' "
 
