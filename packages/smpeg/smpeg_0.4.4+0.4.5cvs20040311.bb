@@ -1,12 +1,10 @@
+DESCRIPTION = "SMPEG is a general purpose MPEG video/audio \
+player for Linux based on the mpeg_play and SPLAY MPEG decoders."
 LICENSE = "LGPL"
-SECTION = "console/multimedia"
-PRIORITY = "optional"
+SECTION = "libs/multimedia"
 MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 DEPENDS = "virtual/libsdl"
 PROVIDES = "smpeg"
-DESCRIPTION = "SMPEG is a general purpose MPEG video/audio \
-player for Linux based on the mpeg_play and SPLAY \
-MPEG decoders."
 
 SRC_URI = "cvs://anonymous:anonymous@cvs.icculus.org/cvs/cvsroot;module=smpeg;date=20040311 \
 	   file://m4.patch;patch=1 \
@@ -27,7 +25,7 @@ do_configure_prepend () {
 }
 
 do_stage() {
-	oe_libinstall libsmpeg-0.4 ${STAGING_LIBDIR}
+	oe_libinstall -so -C .libs libsmpeg-0.4 ${STAGING_LIBDIR}
 	ln -sf libsmpeg-0.4.so ${STAGING_LIBDIR}/libsmpeg.so
 
 	for f in "*.h"
@@ -41,4 +39,10 @@ do_stage() {
                          | sed -e "s,-lSDL ,-lSDL-1.2 , "> ${STAGING_BINDIR}/smpeg-config
         chmod a+rx ${STAGING_BINDIR}/smpeg-config
 }
+
+PACKAGES =+ "plaympeg "
+SECTION_plaympeg = "console/multimedia"
+FILES_${PN} = "${libdir}"
+FILES_plaympeg = "${bindir}/plaympeg"
+FILES_${PN}-dev += "${bindir}"
 

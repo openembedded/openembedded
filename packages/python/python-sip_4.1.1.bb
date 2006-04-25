@@ -5,15 +5,14 @@ MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 LICENSE = "GPL"
 DEPENDS = "virtual/libqte2 python"
 RDEPENDS = "python-core"
-PR = "ml3"
+PR = "ml4"
 
 SRC_URI = "http://www.vanille.de/mirror/sip-${PV}.tar.gz"
 S = "${WORKDIR}/sip-${PV}/siplib"
 
-inherit qmake distutils-base
+inherit palmtop distutils-base
 
-EXTRA_QMAKEVARS_POST = " TEMPLATE=lib \
-                         CONFIG=qt \
+EXTRA_QMAKEVARS_POST += "TEMPLATE=lib \
                          DESTDIR= \
                          VERSION=1.0.0 \
                          TARGET=sip \
@@ -21,7 +20,6 @@ EXTRA_QMAKEVARS_POST = " TEMPLATE=lib \
                          INCLUDEPATH+=. \
                          INCLUDEPATH+=${STAGING_INCDIR}/${PYTHON_DIR} \
                          INCLUDEPATH+=${STAGING_INCDIR}"
-
 
 do_configure_prepend() {
 	cat siplib.sbf | sed s,target,TARGET, | sed s,sources,SOURCES, | sed s,headers,HEADERS, > siplib.pro
