@@ -146,7 +146,6 @@ SLUGOS_PACKAGES = "\
 	tar \
 	thttpd \
 	tiff \
-	unionfs-modules unionfs-utils \
 	unzip \
 	usbutils \
 	util-linux \
@@ -171,6 +170,7 @@ SLUGOS_BROKEN_PACKAGES = "\
 	pwc \
 	qc-usb-messenger \
 	setpwc \
+	unionfs-modules unionfs-utils \
 	watchdog \
 	memtester \
 	"
