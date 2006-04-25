@@ -13,7 +13,7 @@ FILES_${PN} += "${libdir}/orbit-2.0/*.so"
 S = "${WORKDIR}/ORBit2-${PV}"
 
 inherit autotools pkgconfig
-
+PARALLEL_MAKE = ""
 EXTRA_OECONF = "--disable-gtk-doc"
 EXTRA_OEMAKE = "IDL_COMPILER='${STAGING_BINDIR}/orbit-idl-2'"
 
