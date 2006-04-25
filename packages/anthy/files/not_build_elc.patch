@@ -1,0 +1,13 @@
+diff -urNad /home/omote/debian/debian-official/japanese/anthy/anthy-4k/anthy-4809/src-util/Makefile.am anthy-4809/src-util/Makefile.am
+--- /home/omote/debian/debian-official/japanese/anthy/anthy-4k/anthy-4809/src-util/Makefile.am	2003-11-24 20:59:35.000000000 +0900
++++ anthy-4809/src-util/Makefile.am	2003-12-11 19:22:56.000000000 +0900
+@@ -5,7 +5,8 @@
+ ELISP_FILES = anthy.el anthy-isearch.el anthy-dic.el anthy-conf.el leim-list.el
+ EXTRA_DIST = $(ELISP_FILES) typetab dic-tool-usage.txt rcsize.rb
+ bin_PROGRAMS = anthy-dic-tool anthy-agent
+-ELCFILES = anthy.elc anthy-dic.elc
++#ELCFILES = anthy.elc anthy-dic.elc
++ELCFILES =
+ if ELISP
+ lisp_LISP = $(ELISP_FILES)
+ endif

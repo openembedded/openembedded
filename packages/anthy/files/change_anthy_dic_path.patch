@@ -1,0 +1,11 @@
+diff -urNad anthy/anthy-conf.in /tmp/dpep.kiMfmZ/anthy/anthy-conf.in
+--- anthy/anthy-conf.in	2004-05-02 20:31:25.000000000 +0900
++++ /tmp/dpep.kiMfmZ/anthy/anthy-conf.in	2004-10-24 08:40:37.000000000 +0900
+@@ -1,6 +1,6 @@
+ # not /usr but should be ${prefix}/share.
+ ANTHYDIR @prefix@/share/anthy/
+-DIC_FILE @prefix@/share/anthy/anthy.dic
++DIC_FILE /var/lib/anthy/anthy.dic
+ INDEPWORD indepword.txt
+ DEPWORD master.depword
+ #ZIPDICT_EUC /var/lib/canna/dic/canna/zipcode.ctd
