@@ -93,7 +93,7 @@ SLUGOS_PACKAGES = "\
 	lsof \
 	lvm2 \
 	m4 \
-	madwifi-ng-modules \
+	madwifi-ng \
 	mailx \
 	make \
 	masqmail \
