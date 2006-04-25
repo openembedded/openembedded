@@ -1,22 +1,23 @@
-DESCRIPTION= "Everything Python for SharpROM"
+DESCRIPTION = "Everything Python for SharpROM"
 MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 HOMEPAGE = "http://www.vanille.de/projects/python.spy"
 LICENSE = "MIT"
-PR = "ml3"
+PR = "ml0"
 
 NONWORKING = "\
 		python-codes		\
 		python-crypto		\
 		python-gmpy		\
+		python-pybluez		\
 		python-pysqlite		\
 		python-pygtk		\
 		python-pyqwt		\
 		python-sgmlop		\
+		python-sword            \
 		python-vorbis"
 
 RDEPENDS = "\
 		python-ao 		\
-		python-pybluez		\
 		python-constraint	\
 		python-dialog		\
 		python-egenix-mx-base   \
@@ -53,7 +54,6 @@ RDEPENDS = "\
 		python-sip		\
 		python-snmplib		\
 		python-soappy		\
-		python-sword		\
 		python-tlslite		\
 		python-urwid		\
 		python-vmaps		\
