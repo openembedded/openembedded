@@ -1,0 +1,22 @@
+--- anthy-6801/mkanthydic/Makefile.am.orig	2005-08-06 12:08:56 +0200
++++ anthy-6801/mkanthydic/Makefile.am	2005-08-06 12:11:18 +0200
+@@ -15,7 +15,7 @@
+  udict dict.args.in
+ 
+ # Generate the dictionary
+-noinst_PROGRAMS = mkanthydic
++bin_PROGRAMS = mkanthydic
+ mkanthydic_SOURCES = mkdic.c writewords.c mkudic.c mkdic.h
+ mkanthydic_LDADD = ../src-diclib/libanthydic.la
+ 
+--- anthy-6801/depgraph/Makefile.am.orig	2005-08-06 12:08:33 +0200
++++ anthy-6801/depgraph/Makefile.am	2005-08-06 12:11:28 +0200
+@@ -9,7 +9,7 @@
+ EXTRA_DIST = indepword.txt $(DEPWORDS)
+ 
+ # Generate the dictionary
+-noinst_PROGRAMS = mkdepgraph
++bin_PROGRAMS = mkdepgraph
+ mkdepgraph_SOURCES = mkdepgraph.c
+ mkdepgraph_LDADD = ../src-diclib/libanthydic.la ../src-main/libanthy.la
+ 

@@ -1,0 +1,40 @@
+--- anthy-6801/mkanthydic/Makefile.am.orig	2005-08-06 12:14:58 +0200
++++ anthy-6801/mkanthydic/Makefile.am	2005-08-06 12:15:13 +0200
+@@ -15,12 +15,12 @@
+  udict dict.args.in
+ 
+ # Generate the dictionary
+-noinst_PROGRAMS = mkanthydic
+-mkanthydic_SOURCES = mkdic.c writewords.c mkudic.c mkdic.h
+-mkanthydic_LDADD = ../src-diclib/libanthydic.la
++#noinst_PROGRAMS = mkanthydic
++#mkanthydic_SOURCES = mkdic.c writewords.c mkudic.c mkdic.h
++#mkanthydic_LDADD = ../src-diclib/libanthydic.la
+ 
+-anthy.dic : mkanthydic
+-	  ./mkanthydic -f ./dict.args
++anthy.dic :
++	  mkanthydic -f ./dict.args
+ 
+ 
+ # To install
+--- anthy-6801/depgraph/Makefile.am.orig	2005-08-06 12:14:03 +0200
++++ anthy-6801/depgraph/Makefile.am	2005-08-06 12:15:43 +0200
+@@ -9,12 +9,12 @@
+ EXTRA_DIST = indepword.txt $(DEPWORDS)
+ 
+ # Generate the dictionary
+-noinst_PROGRAMS = mkdepgraph
+-mkdepgraph_SOURCES = mkdepgraph.c
+-mkdepgraph_LDADD = ../src-diclib/libanthydic.la ../src-main/libanthy.la
++#noinst_PROGRAMS = mkdepgraph
++#mkdepgraph_SOURCES = mkdepgraph.c
++#mkdepgraph_LDADD = ../src-diclib/libanthydic.la ../src-main/libanthy.la
+ 
+-anthy.dep : mkdepgraph
+-	./mkdepgraph
++anthy.dep :
++	mkdepgraph
+ 
+ # To install
+ pkgdata_DATA = anthy.dep
