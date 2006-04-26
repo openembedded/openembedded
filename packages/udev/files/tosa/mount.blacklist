@@ -2,3 +2,4 @@
 # Any matched pattern will _not_ be mounted / removed by udevd
 
 /dev/mtdblock
+/dev/loop
