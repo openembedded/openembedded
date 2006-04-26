@@ -6,6 +6,7 @@ HOMEPAGE = "http://www.intel.com/design/network/products/npfamily/ixp420.htm"
 LICENSE = "GPL"
 PR = "r11"
 
+DEPENDS = "ixp-osal"
 DEPENDS = "ixp4xx-csr"
 RDEPENDS = "ixp4xx-csr"
 
