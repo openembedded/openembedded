@@ -3,7 +3,7 @@ PR = "r0"
 DEFAULT_PREFERENCE = "-100000"
 PV = "1.9+2.0beta3cvs-${SRCDATE}"
 
-SRC_URI = "cvs://anonymous@cvs.sourceforge.net/cvsroot/gaim;module=gaim \
+SRC_URI = "svn://svn.sourceforge.net/svnroot/gaim;module=trunk;proto=https \
 	file://no-superimposed-version-on-logo.patch;patch=1 \
 	file://gtk-deprecated-2.0.0.patch;patch=1 \
 	file://gevolution-eds-dbus.patch;patch=1 \
@@ -11,7 +11,7 @@ SRC_URI = "cvs://anonymous@cvs.sourceforge.net/cvsroot/gaim;module=gaim \
 
 include gaim.inc
 
-S = "${WORKDIR}/gaim"
+S = "${WORKDIR}/trunk"
 
 CFLAGS += "-D_GNU_SOURCE"
 
