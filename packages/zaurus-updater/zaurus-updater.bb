@@ -1,7 +1,7 @@
 DESCRIPTION = "Encrypted shellscript for the Zaurus ROM update"
 DEPENDS = "encdec-updater-native"
 LICENSE = "zaurus-updater"
-PR = "r4"
+PR = "r5"
 
 PACKAGES = ""
 PACKAGE_ARCH = "${MACHINE_ARCH}"
@@ -16,7 +16,7 @@ do_compile() {
 }
 
 do_deploy() {
-	install -d ${DEPLOY_DIR}/images/
+	install -d ${DEPLOY_DIR_IMAGE}
 	install -m 0755 updater.sh ${DEPLOY_DIR_IMAGE}/updater.sh.${MACHINE}
 
 	case ${MACHINE} in
