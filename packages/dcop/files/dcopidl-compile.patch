@@ -1,0 +1,12 @@
+Index: dcopidl/yacc.cc
+===================================================================
+--- dcopidl.orig/yacc.cc	2006-04-26 21:59:13.000000000 +0200
++++ dcopidl/yacc.cc	2006-04-26 22:28:28.859672808 +0200
+@@ -213,7 +213,6 @@
+ 
+ ******************************************************************/
+ 
+-#include <config.h>
+ 
+ // Workaround for a bison issue:
+ // bison.simple concludes from _GNU_SOURCE that stpcpy is available,
