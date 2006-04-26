@@ -21,6 +21,7 @@ if [ ! -f /etc/sysconfig/irda ]; then
 	    ;;
     esac
 
+    mkdir -p /etc/sysconfig
     echo "IRDA=$IRDA" > /etc/sysconfig/irda
     if [ $IRDA = "yes" ]; then
 	echo "DEVICE=$DEVICE" >> /etc/sysconfig/irda
