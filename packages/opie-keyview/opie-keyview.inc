@@ -2,7 +2,6 @@ DESCRIPTION = "Keyview Development Inputmethod"
 SECTION = "opie/inputmethods"
 PRIORITY = "optional"
 LICENSE = "GPL"
-DEPENDS = "virtual/libqpe"
 APPNAME = "keyview"
 
 
