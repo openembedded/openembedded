@@ -6,7 +6,7 @@
 -keycode 40 = XF86Start
 -keycode 90 = XF86Mail
 -
-+# Keymapping for the LCD softkeys managed by zaurusd + keylaunch
++
 +keycode 90 = F20
 +keycode 87 = F21
 +keycode 88 = F22
