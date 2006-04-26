@@ -4,13 +4,15 @@ HOMEPAGE = "http://www.vanille.de/projects/python.spy"
 LICENSE = "MIT"
 PR = "ml3"
 
+BROKEN_BECAUSE_GCC4 = "\
+		python-egenix-mx-base"
+
 RDEPENDS = "\
 		python-ao 		\
 		python-pybluez		\
 		python-constraint	\
 		python-crypto		\
 		python-dialog		\
-		python-egenix-mx-base   \
 		python-pycurl		\
 		python-fnorb		\
 		python-fpconst		\
