@@ -6,8 +6,10 @@ PRIORITY = "optional"
 MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 LICENSE = "EGENIX"
 SRCNAME = "egenix-mx-base"
+PR = "r1"
 
-SRC_URI = "http://www.egenix.com/files/python/egenix-mx-base-${PV}.tar.gz"
+SRC_URI = "http://www.egenix.com/files/python/egenix-mx-base-${PV}.tar.gz \
+           file://gcc4.patch;patch=1"
 S = "${WORKDIR}/${SRCNAME}-${PV}"
 
 inherit distutils

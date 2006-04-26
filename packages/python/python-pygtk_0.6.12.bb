@@ -1,15 +1,12 @@
-LICENSE = "LGPL"
 DESCRIPTION = "Python GTK+ 1.2 Bindings"
+HOMEPAGE = "http://www.gtk.org"
 SECTION = "devel/python"
-PRIORITY = "optional"
+LICENSE = "LGPL"
 MAINTAINER = "Rob Taylor <robtaylor@fastmail.fm>"
-DEPENDS = "gtk+-1.2 python"
-RDEPENDS = "python-core python-shell python-re"
+DEPENDS = "gtk+-1.2"
+RDEPENDS = "python-shell python-re"
 SRCNAME = "pygtk"
-PR = "r4"
-
-FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/python-pygtk-${PV}"
-
+PR = "r0"
 
 SRC_URI = "ftp://ftp.gtk.org/pub/gtk/python/v1.2/${SRCNAME}-${PV}.tar.gz \
            file://remove-imlib-et-al;patch=1"
@@ -27,4 +24,3 @@ do_configure_prepend() {
 do_stage() {
 	autotools_stage_includes
 }
-
