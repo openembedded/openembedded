@@ -11,7 +11,10 @@ SRC_URI = "${SOURCEFORGE_MIRROR}/nfs/nfs-utils-${PV}.tar.gz \
 	file://stat-include.patch;patch=1 \
 	file://nfsserver \
 	file://forgotten-defines"
+
 S = ${WORKDIR}/nfs-utils-${PV}/
+
+PARALLEL_MAKE = ""
 
 # Only kernel-module-nfsd is required here - the nfsd module will
 # pull in the remainder of the dependencies.
