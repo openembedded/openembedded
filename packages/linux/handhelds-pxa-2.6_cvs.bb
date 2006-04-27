@@ -3,12 +3,14 @@ DESCRIPTION = "handhelds.org Linux kernel for PXA based devices."
 MAINTAINER = "Greg Gilbert <greg@treke.net>"
 LICENSE = "GPL"
 PV = "${K_MAJOR}.${K_MINOR}.${K_MICRO}-hh${HHV}+cvs${SRCDATE}"
+PR = "r1"
 #
 COMPATIBLE_HOST = "arm.*-linux"
 
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/handhelds-pxa-${PV}"
 
 SRC_URI = "${HANDHELDS_CVS};module=linux/kernel26  \
+	   file://eabi-enums.patch;patch=1 \
            file://defconfig"
 
 S = "${WORKDIR}/kernel26"
