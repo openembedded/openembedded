@@ -1,7 +1,7 @@
 DESCRIPTION = "Linux Bluetooth Stack Userland Utilities."
 SECTION = "console"
 PRIORITY = "optional"
-DEPENDS = "bluez-libs-${PV} pcmcia-cs"
+DEPENDS = "bluez-libs-${PV} pcmcia-cs libusb"
 RPROVIDES_${PN} = "bluez-pan bluez-sdp bluez-utils"
 LICENSE = "GPL"
 
@@ -21,7 +21,7 @@ SRC_URI_append_openzaurus = " file://default-manfid-0x0-to-bcps.patch;patch=1"
 S = "${WORKDIR}/bluez-utils-${PV}"
 
 EXTRA_OECONF = "--with-bluez-libs=${STAGING_LIBDIR} --with-bluez-includes=${STAGING_INCDIR} \
-                --enable-pcmcia --enable-initscripts --enable-bcm203x"
+                --enable-pcmcia --enable-initscripts --enable-bcm203x --enable-hid2hci"
 
 inherit autotools update-rc.d
 

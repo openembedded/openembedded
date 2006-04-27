@@ -1,6 +1,6 @@
 include bluez-utils.inc
 
-PR = "r6"
+PR = "r7"
 
 DEPENDS += "dbus"
 SRC_URI += "file://dbus.patch;patch=1 \ 
