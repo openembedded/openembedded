@@ -4,8 +4,8 @@ PRIORITY = "optional"
 MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 LICENSE = "GPL"
 HOMEPAGE = "http://www.newbreedsoftware.com/gemdropx/"
-DEPENDS = "virtual/libqpe libsdl-qpe"
-PR = "r3"
+DEPENDS = "virtual/libqpe libsdl-qpe libsdl-image"
+PR = "r4"
 
 SRC_URI = "ftp://ftp.billsgames.com/unix/x/gemdropx/src/gemdropx-${PV}.tar.gz \
            file://directories.patch;patch=1 \
