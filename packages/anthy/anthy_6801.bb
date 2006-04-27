@@ -10,7 +10,7 @@ SRC_URI = "http://osdn.dl.sourceforge.jp/anthy/15893/anthy-6801.tar.gz \
 	   file://not_build_elc.patch;patch=1 \
 	   file://2ch_t.patch;patch=1 \
 	   file://change_anthy_dic_path.patch;patch=1 \
-	   file://anthy-use-native-mkanthydic-mkdepgraph.patch;patch=1"
+	   file://native-mkanthydic-mkdepgraph.patch;patch=1"
 S = "${WORKDIR}/anthy-${PV}"
 
 inherit autotools pkgconfig
