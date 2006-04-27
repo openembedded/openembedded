@@ -8,7 +8,7 @@ inherit native
 S="${WORKDIR}/bootsplash-${PV}"
 
 do_compile() {
-	oe_runmake -C Utilities splash
+	oe_runmake splash
 }
 
 do_stage() {

@@ -6,12 +6,18 @@ DESCRIPTION="Bootsplash shows pretty pictures during boot"
 HOMEPAGE="http://www.bootsplash.org"
 SECTION = "media-gfx"
 LICENSE = "GPL"
-SRC_URI="ftp://ftp.openbios.org/pub/bootsplash/rpm-sources/bootsplash/bootsplash-${PV}.tar.bz2"
+SRC_URI="ftp://ftp.openbios.org/pub/bootsplash/rpm-sources/bootsplash/bootsplash-${PV}.tar.bz2 \
+         file://freetype2.patch;patch=1"
 
-DEPENDS="freetype"
+DEPENDS="freetype libmng"
+PR = "r1"
+
+EXTRA_OEMAKE += "-C Utilities \
+		CFLAGS='${CFLAGS} -I${STAGING_INCDIR}/freetype2/ -I${STAGING_INCDIR}' \
+		LDFLAGS='${LDFLAGS} -L${STAGING_LIBDIR} -ljpeg'"
 
 do_compile() {
-	oe_runmake -C Utilities 
+	oe_runmake
 }
 
 do_install() {
