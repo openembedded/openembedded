@@ -1,0 +1,16 @@
+Index: linux-2.6.16/arch/arm/Makefile
+===================================================================
+--- linux-2.6.16.orig/arch/arm/Makefile	2006-03-20 05:53:29.000000000 +0000
++++ linux-2.6.16/arch/arm/Makefile	2006-04-24 20:10:27.000000000 +0100
+@@ -57,7 +57,7 @@
+ tune-$(CONFIG_CPU_V6)		:=$(call cc-option,-mtune=arm1136j-s,-mtune=strongarm)
+ 
+ ifeq ($(CONFIG_AEABI),y)
+-CFLAGS_ABI	:=-mabi=aapcs -mno-thumb-interwork
++CFLAGS_ABI	:=-mabi=aapcs-linux -mno-thumb-interwork
+ else
+ CFLAGS_ABI	:=$(call cc-option,-mapcs-32,-mabi=apcs-gnu) $(call cc-option,-mno-thumb-interwork,)
+ endif
+
+
+
