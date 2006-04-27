@@ -1,0 +1,104 @@
+--- ./gammu/emb/gammu/depend/siemens/dsiemens.c	2006/04/14 23:30:53	1.1
++++ ./gammu/emb/gammu/depend/siemens/dsiemens.c	2006/04/14 23:31:08
+@@ -351,7 +351,7 @@
+ 	GSM_Terminate();
+ }
+ 
+-static GSM_Reply_Function UserReplyFunctionsAtS[] = {
++GSM_Reply_Function UserReplyFunctionsAtS[] = {
+ 	{ATSIEMENS_Reply_GetSAT,	"AT^SSTK",	0x00,0x00,ID_User1	},
+ 	{ATSIEMENS_Reply_GetNetmon,	"AT^S^MI",	0x00,0x00,ID_User2	},
+ 	{NULL,				"\x00",		0x00,0x00,ID_None	}
+--- ./gammu/emb/gammu/depend/nokia/dct4.c	2006/04/14 23:28:56	1.1
++++ ./gammu/emb/gammu/depend/nokia/dct4.c	2006/04/14 23:29:17
+@@ -1288,7 +1288,7 @@
+ 	GSM_Terminate();
+ }
+ 
+-static GSM_Reply_Function UserReplyFunctions4[] = {
++GSM_Reply_Function UserReplyFunctions4[] = {
+ 
+ #ifdef DEBUG
+ 	{DCT4_ReplyResetSecurityCode,	"\x08",0x03,0x05,ID_User2	},
+--- ./gammu/emb/gammu/depend/nokia/dct3trac/wmx.c	2006/04/14 23:31:48	1.1
++++ ./gammu/emb/gammu/depend/nokia/dct3trac/wmx.c	2006/04/14 23:31:55
+@@ -462,7 +462,7 @@
+ 	GSMDecoder_free(gsmdec);
+ }
+ 
+-static GSM_Reply_Function UserReplyFunctionsX[] = {
++GSM_Reply_Function UserReplyFunctionsX[] = {
+ 	{DCT3_ReplySwitchDebug,		"\x40",0x02,0x70,ID_DebugSwitch		},
+ 	{DCT3_ReplySwitchDebug,		"\x40",0x02,0x71,ID_DebugSwitch		},
+ 	{DCT3_ReplyDebugTrace,		"\x00",0x00,0x00,ID_IncomingFrame	},
+--- ./gammu/emb/gammu/depend/nokia/dct3.c	2006/04/14 23:25:59	1.1
++++ ./gammu/emb/gammu/depend/nokia/dct3.c	2006/04/14 23:27:52
+@@ -770,7 +770,7 @@
+ }
+ #endif
+ 
+-static GSM_Reply_Function UserReplyFunctions3[] = {
++GSM_Reply_Function UserReplyFunctions3[] = {
+ #ifdef GSM_ENABLE_NOKIA6110
+ 	{DCT3_ReplyDisplayOutput,	"\x0D",0x03,0x50,ID_IncomingFrame	},
+ 	{DCT3_ReplyDisplayOutput,	"\x0D",0x03,0x54,ID_User7	 	},
+--- ./gammu/emb/common/phone/alcatel/alcatel.c	2006/04/14 23:23:19	1.1
++++ ./gammu/emb/common/phone/alcatel/alcatel.c	2006/04/14 23:24:16
+@@ -3833,7 +3833,7 @@
+ 	return ATGEN_SetFastSMSSending(s, enable);
+ }
+ 
+-static GSM_Reply_Function ALCATELReplyFunctions[] = {
++GSM_Reply_Function ALCATELReplyFunctions[] = {
+ {ALCATEL_ReplyGeneric,		"\x02",0x00,0x00, ID_AlcatelAttach		},
+ {ALCATEL_ReplyGeneric,		"\x02",0x00,0x00, ID_AlcatelDetach		},
+ {ALCATEL_ReplyGeneric,		"\x02",0x00,0x00, ID_AlcatelCommit		},
+--- ./kaddressbook/addresseeeditorwidget.h	2006/04/14 23:14:39	1.1
++++ ./kaddressbook/addresseeeditorwidget.h	2006/04/14 23:14:51
+@@ -43,6 +43,8 @@
+ class QMultiLineEdit;
+ #endif //KAB_EMBEDDED    
+ 
++class QComboBox;
++
+ class KComboBox;
+ class KDateEdit;
+ class KLineEdit;
+--- ./korganizer/koeditordetails.cpp	2006/04/14 22:51:27	1.1
++++ ./korganizer/koeditordetails.cpp	2006/04/14 23:04:05
+@@ -54,13 +54,13 @@
+ #include "koeditordetails.h"
+ 
+ template <>
+-CustomListViewItem<class Attendee *>::~CustomListViewItem()
++CustomListViewItem<KCal::Attendee *>::~CustomListViewItem()
+ {
+   delete mData;
+ }
+ 
+ template <>
+-void CustomListViewItem<class Attendee *>::updateItem()
++void CustomListViewItem<KCal::Attendee *>::updateItem()
+ {
+   setText(0,mData->name());
+   setText(1,mData->email());
+--- ./pwmanager/libcrypt/cipher/serpent.c	2006/04/15 00:30:57	1.1
++++ ./pwmanager/libcrypt/cipher/serpent.c	2006/04/15 00:33:06
+@@ -687,7 +687,7 @@
+   if (! serpent_init_done)
+     {
+       /* Execute a self-test the first time, Serpent is used.  */
+-      static const char *serpent_test (void);
++      const char *serpent_test (void);
+       
+       serpent_test_ret = serpent_test ();
+       if (serpent_test_ret)
+@@ -864,7 +864,7 @@
+ 
+ /* Serpent test.  */
+ 
+-static const char *
++const char *
+ serpent_test (void)
+ {
+   serpent_context_t context;
