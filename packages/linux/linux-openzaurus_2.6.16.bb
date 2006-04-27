@@ -1,6 +1,6 @@
 include linux-openzaurus.inc
 
-PR = "r12"
+PR = "r14"
 
 # Handy URLs
 # git://rsync.kernel.org/pub/scm/linux/kernel/git/torvalds/linux-2.6.git \
@@ -42,6 +42,7 @@ SRC_URI = "http://www.kernel.org/pub/linux/kernel/v2.6/linux-2.6.16.tar.bz2 \
            ${RPSRC}/rmk_pxa_mmc_timeout-r0.patch;patch=1 \
            ${RPSRC}/integrator_rtc-r0.patch;patch=1 \
            ${RPSRC}/zaurus_keyboard_tweak-r3.patch;patch=1 \
+           ${RPSRC}/arm_eabi_enum_fix-r0.patch;patch=1 \
            ${RPSRC}/pxafb_tweaks-r0.patch;patch=1 \
            ${RPSRC}/spitz_kbd_fix-r0.patch;patch=1 \
            ${RPSRC}/mmcsd_large_cards-r0.patch;patch=1 \
