@@ -3,6 +3,7 @@ HOMEPAGE = "http://www.linux-wlan.org"
 SECTION = "kernel/modules"
 DEPENDS = "virtual/kernel"
 RRECOMMENDS = "wlan-ng-utils"
+RPROVIDES += "wlan-ng-modules-usb"
 LICENSE = "GPL"
 
 SRC_URI = "file://no-compat.patch;patch=1 \
@@ -12,7 +13,6 @@ SRC_URI = "file://no-compat.patch;patch=1 \
 #	file://module_param_array.patch;patch=1 \
 	file://scripts-makefile-hostcc.patch;patch=1 \
 	file://pcmciasrc.patch;patch=1 \
-	file://usb-owner.patch;patch=1 \
 	file://pcmcia-driver.patch;patch=1 \
 	file://config.in"
 
