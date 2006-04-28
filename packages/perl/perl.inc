@@ -39,6 +39,7 @@ do_configure() {
 }
 
 do_compile() {
+	sed -i -e 's|/usr/include|${STAGING_INCDIR}|g' ext/Errno/Errno_pm.PL
 	cd Cross
 	oe_runmake perl
 }

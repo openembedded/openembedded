@@ -9,7 +9,8 @@ inherit native
 
 DEPENDS = "virtual/db-native gdbm-native"
 
-SRC_URI = "http://ftp.funet.fi/pub/CPAN/src/perl-${PV}.tar.gz"
+SRC_URI = "http://ftp.funet.fi/pub/CPAN/src/perl-${PV}.tar.gz \
+           file://Configure-multilib.patch;patch=1"
 S = "${WORKDIR}/perl-${PV}"
 
 #perl is not parallel_make safe
