@@ -1,7 +1,5 @@
 include quilt.inc
 
-include quilt_${PV}.bb
-
 INHIBIT_AUTOTOOLS_DEPS = "1"
 
 inherit autotools native
