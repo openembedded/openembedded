@@ -1,0 +1,118 @@
+Remove the checks for the OS.
+They require running the compiled program which is not possible when
+cross complining.
+At this stage I believe all OE targets are linux, so it should be ok
+for now.
+
+--- tcptraceroute-1.5beta6/configure.ac	2005/11/15 04:41:51	1.1
++++ tcptraceroute-1.5beta6/configure.ac	2005/11/15 04:41:58
+@@ -146,94 +146,6 @@
+ AC_FUNC_VPRINTF
+ AC_CHECK_FUNCS([gettimeofday memset select socket strchr])
+ 
+-# Is this Solaris?
+-AC_MSG_CHECKING(for Solaris)
+-AC_RUN_IFELSE([AC_LANG_PROGRAM( [], [
+-#if defined (__SVR4) && defined (__sun)
+-	exit(0);
+-#else
+-	exit(-1);
+-#endif
+-		])
+-	],[
+-		AC_MSG_RESULT(yes)
+-		AC_DEFINE([HAVE_SOLARIS], 1, [Is this a Solaris system?])
+-		HAVE_SOLARIS=yes
+-	],[
+-		AC_MSG_RESULT(no)
+-	])
+-
+-# Is this BSDI?
+-AC_MSG_CHECKING(for BSDI)
+-AC_RUN_IFELSE([AC_LANG_PROGRAM( [], [
+-#if defined (__bsdi__)
+-	exit(0);
+-#else
+-	exit(-1);
+-#endif
+-		])
+-	],[
+-		AC_MSG_RESULT(yes)
+-		AC_DEFINE([HAVE_BSDI], 1, [Is this a BSDI system?])
+-		HAVE_BSDI=yes
+-	],[
+-		AC_MSG_RESULT(no)
+-	])
+-
+-# Is this NetBSD?
+-AC_MSG_CHECKING(for NetBSD)
+-AC_RUN_IFELSE([AC_LANG_PROGRAM( [], [
+-#if defined (__NetBSD__)
+-	exit(0);
+-#else
+-	exit(-1);
+-#endif
+-		])
+-	],[
+-		AC_MSG_RESULT(yes)
+-		AC_DEFINE([HAVE_NETBSD], 1, [Is this a NetBSD system?])
+-		HAVE_NETBSD=yes
+-	],[
+-		AC_MSG_RESULT(no)
+-	])
+-
+-# Is this MacOS X?
+-AC_MSG_CHECKING(for MacOS X)
+-AC_RUN_IFELSE([AC_LANG_PROGRAM( [], [
+-#if defined (__APPLE__) && defined (__MACH__)
+-	exit(0);
+-#else
+-	exit(-1);
+-#endif
+-		])
+-	],[
+-		AC_MSG_RESULT(yes)
+-		AC_DEFINE([HAVE_MACOSX], 1, [Is this a MacOS X system?])
+-		HAVE_MACOSX=yes
+-	],[
+-		AC_MSG_RESULT(no)
+-	])
+-
+-# Handle --enable-noselect-default
+-AC_ARG_ENABLE(noselect-default,
+-	AC_HELP_STRING([--enable-noselect-default], [default to not using select(2)]),
+-	[
+-		NOSELECT_DEFAULT=$enable_noselect_default
+-	], [
+-		if test "$HAVE_MACOSX" = "yes"; then
+-			NOSELECT_DEFAULT=yes
+-		elif test "$HAVE_BSDI" = "yes"; then
+-			NOSELECT_DEFAULT=yes
+-		elif test "$HAVE_NETBSD" = "yes"; then
+-			NOSELECT_DEFAULT=yes
+-		else
+-			NOSELECT_DEFAULT=no
+-		fi
+-	])
+-if test "$NOSELECT_DEFAULT" = "yes"; then
+-	AC_DEFINE(NOSELECT_DEFAULT, 1, [Use select(2) by default?])
+-fi
+-
+ # Handle --enable-track-default=IP|PORT
+ AC_ARG_ENABLE(track-default,
+ 	AC_HELP_STRING([--enable-track-default=PORT|ID], [default to tracking probes by PORT or ID]),
+@@ -245,13 +157,7 @@
+ 		else
+ 			AC_MSG_ERROR([valid arguments for --enable-track-default are PORT or ID])
+ 		fi
+-	], [
+-		if test "$HAVE_SOLARIS" = "yes"; then
+-			TRACK_DEFAULT=port
+-		else
+-			TRACK_DEFAULT=id
+-		fi
+-	])
++	], [])
+ if test "$TRACK_DEFAULT" = "port"; then
+ 	AC_DEFINE(TRACK_PORT_DEFAULT, 1, [Track ports by default])
+ fi
