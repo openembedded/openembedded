@@ -2,7 +2,7 @@ DESCRIPTION="The Astersisk open source software PBX"
 HOMEPAGE="www.asterisk.org"
 LICENSE="GPL"
 DEPENDS="ncurses zlib openssl"
-PR = "r1"
+PR = "r2"
 
 SRC_URI="http://ftp.digium.com/pub/asterisk/releases/asterisk-${PV}.tar.gz \
 	 file://gsm.patch;patch=1 \
@@ -24,3 +24,10 @@ do_compile() {
 do_install() {
         oe_runmake DESTDIR=${D} install
 }
+
+do_stage () {
+        install -d ${STAGING_INCDIR}/asterisk
+        install -m 0644 ${S}/include/asterisk/*.h ${STAGING_INCDIR}/asterisk/
+}
+
+
