@@ -3,13 +3,13 @@ SECTION = "base"
 LICENSE = "LGPL"
 DEPENDS = "zlib libxml2 expat time gnutls"
 
-PR = "r0"
+PR = "r1"
 
 DEFAULT_PREFERENCE = "-1"
 
 SRC_URI = "http://www.webdav.org/${PN}/${P}.tar.gz"
 
-inherit autotools binconfig lib_package
+inherit autotools binconfig lib_package pkgconfig
 
 EXTRA_OECONF = "--with-ssl=gnutls --with-libxml2 --with-expat --enable-shared"
 
