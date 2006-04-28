@@ -12,6 +12,8 @@ SRC_URI = "http://www.zsh.org/pub/old/zsh-${PV}.tar.bz2 \
 inherit autotools
 
 EXTRA_OECONF = "--with-curses-terminfo"
+PARALLEL_MAKE = ""
+
 do_configure_prepend () {
 	if [ ! -e acinclude.m4 ]; then
 		cat aczsh.m4 > acinclude.m4
