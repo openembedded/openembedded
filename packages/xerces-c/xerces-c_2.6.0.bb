@@ -24,13 +24,13 @@ do_compile () {
 }
 
 do_stage () {
-	oe_libinstall lib/libxerces-c ${STAGING_LIBDIR}
-	oe_libinstall lib/libxerces-depdom ${STAGING_LIBDIR}
+	oe_libinstall -C lib libxerces-c ${STAGING_LIBDIR}
+	oe_libinstall -C lib libxerces-depdom ${STAGING_LIBDIR}
 
 	cp -pPR include/xercesc ${STAGING_INCDIR}
 }
 
 do_install () {
-	oe_libinstall lib/libxerces-c ${D}${libdir}
-	oe_libinstall lib/libxerces-depdom ${D}${libdir}
+	oe_libinstall -C lib libxerces-c ${D}${libdir}
+	oe_libinstall -C lib libxerces-depdom ${D}${libdir}
 }
