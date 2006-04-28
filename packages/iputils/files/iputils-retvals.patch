@@ -1,0 +1,49 @@
+From the fedora core SRPM. Outputs error message and exists if the
+command is not suid root or run as user root. 
+
+--- iputils/traceroute6.c.old	2004-12-07 11:08:57.000000000 +0100
++++ iputils/traceroute6.c	2004-12-07 11:14:09.397575536 +0100
+@@ -352,8 +352,11 @@
+ 	icmp_sock = socket(AF_INET6, SOCK_RAW, IPPROTO_ICMPV6);
+ 	socket_errno = errno;
+ 
+-	setuid(getuid());
+-
++	if(setuid(getuid()) != 0)
++	{
++		perror("traceroute: setuid()");
++		exit(-1);
++	}
+ 	on = 1;
+ 	seq = tos = 0;
+ 	to = (struct sockaddr_in6 *)&whereto;
+--- iputils/ping6.c.old	2004-12-07 11:08:57.000000000 +0100
++++ iputils/ping6.c	2004-12-07 11:13:40.707937024 +0100
+@@ -223,7 +223,11 @@
+ 	socket_errno = errno;
+ 
+ 	uid = getuid();
+-	setuid(uid);
++	if(setuid(uid) != 0)
++	{
++		perror("ping: setuid()");
++		exit(-1);
++	}
+ 
+ 	source.sin6_family = AF_INET6;
+ 	memset(&firsthop, 0, sizeof(firsthop));
+--- iputils/ping.c.old	2004-12-07 11:08:57.000000000 +0100
++++ iputils/ping.c	2004-12-07 11:13:27.523941296 +0100
+@@ -119,7 +119,11 @@
+ 	socket_errno = errno;
+ 
+ 	uid = getuid();
+-	setuid(uid);
++	if(setuid(uid) != 0)
++	{
++		perror("ping: setuid()");
++		exit(-1);
++	}
+ 
+ 	source.sin_family = AF_INET;
+ 

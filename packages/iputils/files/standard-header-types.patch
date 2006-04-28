@@ -1,0 +1,1072 @@
+Move away from using the linux specific headers and types and use the
+common glibc provided headers and types. Probably need to test this
+on uclibc / klibc at some stage as well.
+
+diff -durN orig/arping.c new/arping.c
+--- orig/arping.c	2005-11-14 22:38:27.000000000 +1100
++++ new/arping.c	2005-11-14 22:52:15.000000000 +1100
+@@ -12,13 +12,13 @@
+ #include <stdlib.h>
+ #include <sys/param.h>
+ #include <sys/socket.h>
+-#include <linux/sockios.h>
+ #include <sys/file.h>
+ #include <sys/time.h>
+ #include <sys/signal.h>
+ #include <sys/ioctl.h>
+-#include <linux/if.h>
+-#include <linux/if_arp.h>
++#include <net/if.h>
++#include <net/if_arp.h>
++#include <net/ethernet.h>
+ #include <sys/uio.h>
+ 
+ #include <netdb.h>
+@@ -29,6 +29,7 @@
+ #include <string.h>
+ #include <netinet/in.h>
+ #include <arpa/inet.h>
++#include <netpacket/packet.h>
+ 
+ #include "SNAPSHOT.h"
+ 
+@@ -101,7 +102,7 @@
+ 	ah->ar_hrd = htons(ME->sll_hatype);
+ 	if (ah->ar_hrd == htons(ARPHRD_FDDI))
+ 		ah->ar_hrd = htons(ARPHRD_ETHER);
+-	ah->ar_pro = htons(ETH_P_IP);
++	ah->ar_pro = htons(ETHERTYPE_IP);
+ 	ah->ar_hln = ME->sll_halen;
+ 	ah->ar_pln = 4;
+ 	ah->ar_op  = advert ? htons(ARPOP_REPLY) : htons(ARPOP_REQUEST);
+@@ -213,7 +214,7 @@
+ 		return 0;
+ 
+ 	/* Protocol must be IP. */
+-	if (ah->ar_pro != htons(ETH_P_IP))
++	if (ah->ar_pro != htons(ETHERTYPE_IP))
+ 		return 0;
+ 	if (ah->ar_pln != 4)
+ 		return 0;
+@@ -434,7 +435,7 @@
+ 			}
+ 		} else if (!dad) {
+ 			int on = 1;
+-			int alen = sizeof(saddr);
++			unsigned int alen = sizeof(saddr);
+ 
+ 			saddr.sin_port = htons(1025);
+ 			saddr.sin_addr = dst;
+@@ -456,14 +457,14 @@
+ 
+ 	me.sll_family = AF_PACKET;
+ 	me.sll_ifindex = ifindex;
+-	me.sll_protocol = htons(ETH_P_ARP);
++	me.sll_protocol = htons(ETHERTYPE_ARP);
+ 	if (bind(s, (struct sockaddr*)&me, sizeof(me)) == -1) {
+ 		perror("bind");
+ 		exit(2);
+ 	}
+ 
+ 	if (1) {
+-		int alen = sizeof(me);
++		unsigned int alen = sizeof(me);
+ 		if (getsockname(s, (struct sockaddr*)&me, &alen) == -1) {
+ 			perror("getsockname");
+ 			exit(2);
+@@ -495,9 +496,9 @@
+ 
+ 	while(1) {
+ 		sigset_t sset, osset;
+-		char packet[4096];
++		unsigned char packet[4096];
+ 		struct sockaddr_ll from;
+-		int alen = sizeof(from);
++		unsigned int alen = sizeof(from);
+ 		int cc;
+ 
+ 		if ((cc = recvfrom(s, packet, sizeof(packet), 0,
+diff -durN orig/linux-errqueue.h new/linux-errqueue.h
+--- orig/linux-errqueue.h	1970-01-01 10:00:00.000000000 +1000
++++ new/linux-errqueue.h	2005-11-14 22:39:06.000000000 +1100
+@@ -0,0 +1,22 @@
++#ifndef LINUX_ERRQUEUE_H
++#define LINUX_ERRQUEUE_H 1
++
++struct sock_extended_err
++{
++	uint32_t	ee_errno;	
++	uint8_t		ee_origin;
++	uint8_t		ee_type;
++	uint8_t		ee_code;
++	uint8_t		ee_pad;
++	uint32_t   	ee_info;
++	uint32_t   	ee_data;
++};
++
++#define SO_EE_ORIGIN_NONE	0
++#define SO_EE_ORIGIN_LOCAL	1
++#define SO_EE_ORIGIN_ICMP	2
++#define SO_EE_ORIGIN_ICMP6	3
++
++#define SO_EE_OFFENDER(ee)	((struct sockaddr*)((ee)+1))
++
++#endif
+diff -durN orig/ping6.c new/ping6.c
+--- orig/ping6.c	2005-11-14 22:38:28.000000000 +1100
++++ new/ping6.c	2005-11-14 22:39:06.000000000 +1100
+@@ -66,34 +66,19 @@
+  *	More statistics could always be gathered.
+  *	This program has to run SUID to ROOT to access the ICMP socket.
+  */
+-#include "ping_common.h"
+-
+-#include <linux/in6.h>
+-#include <linux/ipv6.h>
+-#include <linux/icmpv6.h>
+-
+-#define BIT_CLEAR(nr, addr) do { ((__u32 *)(addr))[(nr) >> 5] &= ~(1U << ((nr) & 31)); } while(0)
+-#define BIT_SET(nr, addr) do { ((__u32 *)(addr))[(nr) >> 5] |= (1U << ((nr) & 31)); } while(0)
+-#define BIT_TEST(nr, addr) do { (__u32 *)(addr))[(nr) >> 5] & (1U << ((nr) & 31)); } while(0)
+-
+-#define ICMPV6_FILTER_WILLPASS(type, filterp) \
+-	(BIT_TEST((type), filterp) == 0)
+-
+-#define ICMPV6_FILTER_WILLBLOCK(type, filterp) \
+-	BIT_TEST((type), filterp)
+ 
+-#define ICMPV6_FILTER_SETPASS(type, filterp) \
+-	BIT_CLEAR((type), filterp)
+-
+-#define ICMPV6_FILTER_SETBLOCK(type, filterp) \
+-	BIT_SET((type), filterp)
+-
+-#define ICMPV6_FILTER_SETPASSALL(filterp) \
+-	memset(filterp, 0, sizeof(struct icmp6_filter));
++#include "ping_common.h"
++#include <netinet/in.h>
++#include <netinet/ip6.h>
++#include <netinet/icmp6.h>
+ 
+-#define ICMPV6_FILTER_SETBLOCKALL(filterp) \
+-	memset(filterp, 0xFF, sizeof(struct icmp6_filter));
++/* define to specify we want type0 routing headers */
++#define IPV6_SRCRT_TYPE_0	0
+ 
++/* without this it won't link, seems like a hack to me ;( */
++#ifndef __constant_htons
++#define __constant_htons(x)  htons(x)
++#endif
+ 
+ #define	MAXPACKET	128000		/* max packet size */
+ 
+@@ -102,8 +87,8 @@
+ #endif
+ 
+ 
+-__u32 flowlabel;
+-__u32 tclass;
++uint32_t flowlabel;
++uint32_t tclass;
+ struct cmsghdr *srcrt;
+ 
+ struct sockaddr_in6 whereto;	/* who to ping */
+@@ -115,7 +100,7 @@
+ 
+ static char * pr_addr(struct in6_addr *addr);
+ static char * pr_addr_n(struct in6_addr *addr);
+-static int pr_icmph(__u8 type, __u8 code, __u32 info);
++static int pr_icmph(uint8_t type, uint8_t code, uint32_t info);
+ static void usage(void) __attribute((noreturn));
+ 
+ struct sockaddr_in6 source;
+@@ -137,7 +122,7 @@
+ 	if (type != 0 || segments > 24)
+ 		return 0;
+ 
+-	return (sizeof(struct cmsghdr) + sizeof(struct rt0_hdr) +
++	return (sizeof(struct cmsghdr) + sizeof(struct ip6_rthdr0) +
+ 		segments * sizeof(struct in6_addr));
+ }
+ 
+@@ -148,10 +133,10 @@
+ 	if (type)
+ 		return NULL;
+ 
+-	memset(bp, 0, sizeof(struct cmsghdr) + sizeof(struct rt0_hdr));
++	memset(bp, 0, sizeof(struct cmsghdr) + sizeof(struct ip6_rthdr0));
+ 	cmsg = (struct cmsghdr *) bp;
+ 
+-	cmsg->cmsg_len = sizeof(struct cmsghdr) + sizeof(struct rt0_hdr);
++	cmsg->cmsg_len = sizeof(struct cmsghdr) + sizeof(struct ip6_rthdr0);
+ 	cmsg->cmsg_level = SOL_IPV6;
+ 	cmsg->cmsg_type = IPV6_RTHDR;
+ 
+@@ -160,14 +145,14 @@
+ 
+ int inet6_srcrt_add(struct cmsghdr *cmsg, const struct in6_addr *addr)
+ {
+-	struct rt0_hdr *hdr;
++	struct ip6_rthdr0 *hdr;
+ 	
+-	hdr = (struct rt0_hdr *) CMSG_DATA(cmsg);
++	hdr = (struct ip6_rthdr0 *) CMSG_DATA(cmsg);
+ 
+ 	cmsg->cmsg_len += sizeof(struct in6_addr);
+-	hdr->rt_hdr.hdrlen += sizeof(struct in6_addr) / 8;
++	hdr->ip6r0_len += sizeof(struct in6_addr) / 8;
+ 
+-	memcpy(&hdr->addr[hdr->rt_hdr.segments_left++], addr,
++	memcpy(&hdr->ip6r0_addr[hdr->ip6r0_segleft++], addr,
+ 	       sizeof(struct in6_addr));
+ 		
+ 	return 0;
+@@ -313,7 +298,7 @@
+ 	hostname = target;
+ 
+ 	if (ipv6_addr_any(&source.sin6_addr)) {
+-		int alen;
++		unsigned int alen;
+ 		int probe_fd = socket(AF_INET6, SOCK_DGRAM, 0);
+ 
+ 		if (probe_fd < 0) {
+@@ -440,22 +425,22 @@
+ 	/*
+ 	 *	select icmp echo reply as icmp type to receive
+ 	 */
+-	ICMPV6_FILTER_SETBLOCKALL(&filter);
++	ICMP6_FILTER_SETBLOCKALL(&filter);
+ 
+ 	if (!working_recverr) {
+-		ICMPV6_FILTER_SETPASS(ICMPV6_DEST_UNREACH, &filter);
+-		ICMPV6_FILTER_SETPASS(ICMPV6_PKT_TOOBIG, &filter);
+-		ICMPV6_FILTER_SETPASS(ICMPV6_TIME_EXCEED, &filter);
+-		ICMPV6_FILTER_SETPASS(ICMPV6_PARAMPROB, &filter);
++		ICMP6_FILTER_SETPASS(ICMP6_DST_UNREACH, &filter);
++		ICMP6_FILTER_SETPASS(ICMP6_PACKET_TOO_BIG, &filter);
++		ICMP6_FILTER_SETPASS(ICMP6_TIME_EXCEEDED, &filter);
++		ICMP6_FILTER_SETPASS(ICMP6_PARAM_PROB, &filter);
+ 	}
+ 
+-	ICMPV6_FILTER_SETPASS(ICMPV6_ECHO_REPLY, &filter);
++	ICMP6_FILTER_SETPASS(ICMP6_ECHO_REPLY, &filter);
+ 
+-	err = setsockopt(icmp_sock, SOL_ICMPV6, ICMPV6_FILTER, &filter,
++	err = setsockopt(icmp_sock, SOL_ICMPV6, ICMP6_FILTER, &filter,
+ 			 sizeof(struct icmp6_filter));
+ 
+ 	if (err < 0) {
+-		perror("setsockopt(ICMPV6_FILTER)");
++		perror("setsockopt(ICMP6_FILTER)");
+ 		exit(2);
+ 	}
+ 
+@@ -556,7 +541,7 @@
+ 	struct msghdr msg;
+ 	struct cmsghdr *cmsg;
+ 	struct sock_extended_err *e;
+-	struct icmp6hdr icmph;
++	struct icmp6_hdr icmph;
+ 	struct sockaddr_in6 target;
+ 	int net_errors = 0;
+ 	int local_errors = 0;
+@@ -602,8 +587,8 @@
+ 
+ 		if (res < sizeof(icmph) ||
+ 		    memcmp(&target.sin6_addr, &whereto.sin6_addr, 16) ||
+-		    icmph.icmp6_type != ICMPV6_ECHO_REQUEST ||
+-		    icmph.icmp6_identifier != ident) {
++		    icmph.icmp6_type != ICMP6_ECHO_REQUEST ||
++		    icmph.icmp6_id != ident) {
+ 			/* Not our error, not an error at all. Clear. */
+ 			saved_errno = 0;
+ 			goto out;
+@@ -616,7 +601,7 @@
+ 		if (options & F_FLOOD) {
+ 			write(STDOUT_FILENO, "\bE", 2);
+ 		} else {
+-			printf("From %s icmp_seq=%u ", pr_addr(&sin6->sin6_addr), ntohs(icmph.icmp6_sequence));
++			printf("From %s icmp_seq=%u ", pr_addr(&sin6->sin6_addr), ntohs(icmph.icmp6_seq));
+ 			pr_icmph(e->ee_type, e->ee_code, e->ee_info);
+ 			putchar('\n');
+ 			fflush(stdout);
+@@ -638,16 +623,16 @@
+  */
+ int send_probe(void)
+ {
+-	struct icmp6hdr *icmph;
++	struct icmp6_hdr *icmph;
+ 	int cc;
+ 	int i;
+ 
+-	icmph = (struct icmp6hdr *)outpack;
+-	icmph->icmp6_type = ICMPV6_ECHO_REQUEST;
++	icmph = (struct icmp6_hdr *)outpack;
++	icmph->icmp6_type = ICMP6_ECHO_REQUEST;
+ 	icmph->icmp6_code = 0;
+ 	icmph->icmp6_cksum = 0;
+-	icmph->icmp6_sequence = htons(ntransmitted+1);
+-	icmph->icmp6_identifier = ident;
++	icmph->icmp6_seq = htons(ntransmitted+1);
++	icmph->icmp6_id = ident;
+ 
+ 	CLR((ntransmitted+1) % mx_dup_ck);
+ 
+@@ -693,9 +678,9 @@
+ parse_reply(struct msghdr *msg, int cc, void *addr, struct timeval *tv)
+ {
+ 	struct sockaddr_in6 *from = addr;
+-	__u8 *buf = msg->msg_iov->iov_base;
++	uint8_t *buf = msg->msg_iov->iov_base;
+ 	struct cmsghdr *c;
+-	struct icmp6hdr *icmph;
++	struct icmp6_hdr *icmph;
+ 	int hops = -1;
+ 
+ 	for (c = CMSG_FIRSTHDR(msg); c; c = CMSG_NXTHDR(msg, c)) {
+@@ -710,24 +695,24 @@
+ 
+ 	/* Now the ICMP part */
+ 
+-	icmph = (struct icmp6hdr *) buf;
++	icmph = (struct icmp6_hdr *) buf;
+ 	if (cc < 8) {
+ 		if (options & F_VERBOSE)
+ 			fprintf(stderr, "ping: packet too short (%d bytes)\n", cc);
+ 		return 1;
+ 	}
+ 
+-	if (icmph->icmp6_type == ICMPV6_ECHO_REPLY) {
+-		if (icmph->icmp6_identifier != ident)
++	if (icmph->icmp6_type == ICMP6_ECHO_REPLY) {
++		if (icmph->icmp6_id != ident)
+ 			return 1;
+-		if (gather_statistics((__u8*)(icmph+1), cc,
+-				      ntohs(icmph->icmp6_sequence),
++		if (gather_statistics((uint8_t*)(icmph+1), cc,
++				      ntohs(icmph->icmp6_seq),
+ 				      hops, 0, tv, pr_addr(&from->sin6_addr)))
+ 			return 0;
+ 	} else {
+ 		int nexthdr;
+-		struct ipv6hdr *iph1 = (struct ipv6hdr*)(icmph+1);
+-		struct icmp6hdr *icmph1 = (struct icmp6hdr *)(iph1+1);
++		struct ip6_hdr *iph1 = (struct ip6_hdr*)(icmph+1);
++		struct icmp6_hdr *icmph1 = (struct icmp6_hdr *)(iph1+1);
+ 
+ 		/* We must not ever fall here. All the messages but
+ 		 * echo reply are blocked by filter and error are
+@@ -736,23 +721,23 @@
+ 		 * using RECVRERR. :-)
+ 		 */
+ 
+-		if (cc < 8+sizeof(struct ipv6hdr)+8)
++		if (cc < 8+sizeof(struct ip6_hdr)+8)
+ 			return 1;
+ 
+-		if (memcmp(&iph1->daddr, &whereto.sin6_addr, 16))
++		if (memcmp(&iph1->ip6_dst, &whereto.sin6_addr, 16))
+ 			return 1;
+ 
+-		nexthdr = iph1->nexthdr;
++		nexthdr = iph1->ip6_nxt;
+ 
+ 		if (nexthdr == 44) {
+-			nexthdr = *(__u8*)icmph1;
++			nexthdr = *(uint8_t*)icmph1;
+ 			icmph1++;
+ 		}
+ 		if (nexthdr == IPPROTO_ICMPV6) {
+-			if (icmph1->icmp6_type != ICMPV6_ECHO_REQUEST ||
+-			    icmph1->icmp6_identifier != ident)
++			if (icmph1->icmp6_type != ICMP6_ECHO_REQUEST ||
++			    icmph1->icmp6_id != ident)
+ 				return 1;
+-			acknowledge(ntohs(icmph1->icmp6_sequence));
++			acknowledge(ntohs(icmph1->icmp6_seq));
+ 			if (working_recverr)
+ 				return 0;
+ 			nerrors++;
+@@ -760,7 +745,7 @@
+ 				write(STDOUT_FILENO, "\bE", 2);
+ 				return 0;
+ 			}
+-			printf("From %s: icmp_seq=%u ", pr_addr(&from->sin6_addr), ntohs(icmph1->icmp6_sequence));
++			printf("From %s: icmp_seq=%u ", pr_addr(&from->sin6_addr), ntohs(icmph1->icmp6_seq));
+ 		} else {
+ 			/* We've got something other than an ECHOREPLY */
+ 			if (!(options & F_VERBOSE) || uid)
+@@ -780,25 +765,25 @@
+ }
+ 
+ 
+-int pr_icmph(__u8 type, __u8 code, __u32 info)
++int pr_icmph(uint8_t type, uint8_t code, uint32_t info)
+ {
+ 	switch(type) {
+-	case ICMPV6_DEST_UNREACH:
++	case ICMP6_DST_UNREACH:
+ 		printf("Destination unreachable: ");
+ 		switch (code) {
+-		case ICMPV6_NOROUTE:
++		case ICMP6_DST_UNREACH_NOROUTE:
+ 			printf("No route");
+ 			break;
+-		case ICMPV6_ADM_PROHIBITED:
++		case ICMP6_DST_UNREACH_ADMIN:
+ 			printf("Administratively prohibited");
+ 			break;
+-		case ICMPV6_NOT_NEIGHBOUR:
++		case ICMP6_DST_UNREACH_NOTNEIGHBOR:
+ 			printf("Not neighbour");
+ 			break;
+-		case ICMPV6_ADDR_UNREACH:
++		case ICMP6_DST_UNREACH_ADDR:
+ 			printf("Address unreachable");
+ 			break;
+-		case ICMPV6_PORT_UNREACH:
++		case ICMP6_DST_UNREACH_NOPORT:
+ 			printf("Port unreachable");
+ 			break;
+ 		default:	
+@@ -806,45 +791,45 @@
+ 			break;
+ 		}
+ 		break;
+-	case ICMPV6_PKT_TOOBIG:
++	case ICMP6_PACKET_TOO_BIG:
+ 		printf("Packet too big: mtu=%u", info);
+ 		if (code)
+ 			printf(", code=%d", code);
+ 		break;
+-	case ICMPV6_TIME_EXCEED:
++	case ICMP6_TIME_EXCEEDED:
+ 		printf("Time exceeded: ");
+-		if (code == ICMPV6_EXC_HOPLIMIT)
++		if (code == ICMP6_TIME_EXCEED_TRANSIT)
+ 			printf("Hop limit");
+-		else if (code == ICMPV6_EXC_FRAGTIME)
++		else if (code == ICMP6_TIME_EXCEED_REASSEMBLY)
+ 			printf("Defragmentation failure");
+ 		else
+ 			printf("code %d", code);
+ 		break;
+-	case ICMPV6_PARAMPROB:
++	case ICMP6_PARAM_PROB:
+ 		printf("Parameter problem: ");
+-		if (code == ICMPV6_HDR_FIELD)
++		if (code == ICMP6_PARAMPROB_HEADER)
+ 			printf("Wrong header field ");
+-		else if (code == ICMPV6_UNK_NEXTHDR)
++		else if (code == ICMP6_PARAMPROB_NEXTHEADER)
+ 			printf("Unknown header ");
+-		else if (code == ICMPV6_UNK_OPTION)
++		else if (code == ICMP6_PARAMPROB_OPTION)
+ 			printf("Unknown option ");
+ 		else
+ 			printf("code %d ", code);
+ 		printf ("at %u", info);
+ 		break;
+-	case ICMPV6_ECHO_REQUEST:
++	case ICMP6_ECHO_REQUEST:
+ 		printf("Echo request");
+ 		break;
+-	case ICMPV6_ECHO_REPLY:
++	case ICMP6_ECHO_REPLY:
+ 		printf("Echo reply");
+ 		break;
+-	case ICMPV6_MGM_QUERY:
++	case ICMP6_MEMBERSHIP_QUERY:
+ 		printf("MLD Query");
+ 		break;
+-	case ICMPV6_MGM_REPORT:
++	case ICMP6_MEMBERSHIP_REPORT:
+ 		printf("MLD Report");
+ 		break;
+-	case ICMPV6_MGM_REDUCTION:
++	case ICMP6_MEMBERSHIP_REDUCTION:
+ 		printf("MLD Reduction");
+ 		break;
+ 	default:
+@@ -856,6 +841,7 @@
+ 
+ #include <linux/filter.h>
+ 
++
+ void install_filter(void)
+ {
+ 	static int once;
+@@ -864,7 +850,7 @@
+ 		BPF_JUMP(BPF_JMP|BPF_JEQ|BPF_K, 0xAAAA, 0, 1),  /* Ours? */
+ 		BPF_STMT(BPF_RET|BPF_K, ~0U),  /* Yes, it passes. */
+ 		BPF_STMT(BPF_LD|BPF_B|BPF_ABS, 0),  /* Load icmp type */
+-		BPF_JUMP(BPF_JMP|BPF_JEQ|BPF_K, ICMPV6_ECHO_REPLY, 1, 0), /* Echo? */
++		BPF_JUMP(BPF_JMP|BPF_JEQ|BPF_K, ICMP6_ECHO_REPLY, 1, 0), /* Echo? */
+ 		BPF_STMT(BPF_RET|BPF_K, ~0U), /* No. It passes. This must not happen. */
+ 		BPF_STMT(BPF_RET|BPF_K, 0), /* Echo with wrong ident. Reject. */
+ 	};
+@@ -895,7 +881,7 @@
+ 	struct hostent *hp = NULL;
+ 
+ 	if (!(options&F_NUMERIC))
+-		hp = gethostbyaddr((__u8*)addr, sizeof(struct in6_addr), AF_INET6);
++		hp = gethostbyaddr((uint8_t*)addr, sizeof(struct in6_addr), AF_INET6);
+ 
+ 	return hp ? hp->h_name : pr_addr_n(addr);
+ }
+diff -durN orig/ping.c new/ping.c
+--- orig/ping.c	2005-11-14 22:38:28.000000000 +1100
++++ new/ping.c	2005-11-14 22:39:06.000000000 +1100
+@@ -57,12 +57,21 @@
+  *	More statistics could always be gathered.
+  *	This program has to run SUID to ROOT to access the ICMP socket.
+  */
+-
+ #include "ping_common.h"
+ 
+ #include <netinet/ip.h>
+ #include <netinet/ip_icmp.h>
+ 
++/* from linux/icmp.h */
++#define ICMP_FILTER                     1
++struct icmp_filter {
++	uint32_t data;
++};
++
++/* without this it won't link, seems like a hack to me ;( */
++#ifndef __constant_htons
++#define __constant_htons(x)  htons(x)
++#endif
+ 
+ #define	MAXIPLEN	60
+ #define	MAXICMPLEN	76
+@@ -72,7 +81,7 @@
+ 
+ static int ts_type;
+ static int nroute = 0;
+-static __u32 route[10];
++static uint32_t route[10];
+ 
+ 
+ 
+@@ -85,12 +94,12 @@
+ 
+ static int broadcast_pings = 0;
+ 
+-static char *pr_addr(__u32);
++static char *pr_addr(uint32_t);
+ static void pr_options(unsigned char * cp, int hlen);
+ static void pr_iph(struct iphdr *ip);
+ static void usage(void) __attribute__((noreturn));
+ static u_short in_cksum(const u_short *addr, int len, u_short salt);
+-static void pr_icmph(__u8 type, __u8 code, __u32 info, struct icmphdr *icp);
++static void pr_icmph(uint8_t type, uint8_t code, uint32_t info, struct icmphdr *icp);
+ static int parsetos(char *str);
+ 
+ static struct {
+@@ -169,8 +178,8 @@
+ 
+ 			if (sscanf(optarg, "%u.%u.%u.%u%c",
+ 				   &i1, &i2, &i3, &i4, &dummy) == 4) {
+-				__u8 *ptr;
+-				ptr = (__u8*)&source.sin_addr;
++				uint8_t *ptr;
++				ptr = (uint8_t*)&source.sin_addr;
+ 				ptr[0] = i1;
+ 				ptr[1] = i2;
+ 				ptr[2] = i3;
+@@ -249,7 +258,7 @@
+ 	}
+ 
+ 	if (source.sin_addr.s_addr == 0) {
+-		int alen;
++		unsigned int alen;
+ 		struct sockaddr_in dst = whereto;
+ 		int probe_fd = socket(AF_INET, SOCK_DGRAM, 0);
+ 
+@@ -409,7 +418,7 @@
+ 			int i;
+ 			rspace[1] = 4+nroute*8;
+ 			for (i=0; i<nroute; i++)
+-				*(__u32*)&rspace[4+i*8] = route[i];
++				*(uint32_t*)&rspace[4+i*8] = route[i];
+ 		}
+ 		if (setsockopt(icmp_sock, IPPROTO_IP, IP_OPTIONS, rspace, rspace[1]) < 0) {
+ 			rspace[3] = 2;
+@@ -429,7 +438,7 @@
+ 		rspace[1+IPOPT_OLEN] = 3 + nroute*4;
+ 		rspace[1+IPOPT_OFFSET] = IPOPT_MINOFF;
+ 		for (i=0; i<nroute; i++)
+-			*(__u32*)&rspace[4+i*4] = route[i];
++			*(uint32_t*)&rspace[4+i*4] = route[i];
+ 		
+ 		if (setsockopt(icmp_sock, IPPROTO_IP, IP_OPTIONS, rspace, 4 + nroute*4) < 0) {
+ 			perror("ping: record route");
+@@ -670,7 +679,7 @@
+ parse_reply(struct msghdr *msg, int cc, void *addr, struct timeval *tv)
+ {
+ 	struct sockaddr_in *from = addr;
+-	__u8 *buf = msg->msg_iov->iov_base;
++	uint8_t *buf = msg->msg_iov->iov_base;
+ 	struct icmphdr *icp;
+ 	struct iphdr *ip;
+ 	int hlen;
+@@ -694,7 +703,7 @@
+ 	if (icp->type == ICMP_ECHOREPLY) {
+ 		if (icp->un.echo.id != ident)
+ 			return 1;			/* 'Twas not our ECHO */
+-		if (gather_statistics((__u8*)(icp+1), cc,
++		if (gather_statistics((uint8_t*)(icp+1), cc,
+ 				      ntohs(icp->un.echo.sequence),
+ 				      ip->ttl, 0, tv, pr_addr(from->sin_addr.s_addr)))
+ 			return 0;
+@@ -826,7 +835,7 @@
+  * pr_icmph --
+  *	Print a descriptive string about an ICMP header.
+  */
+-void pr_icmph(__u8 type, __u8 code, __u32 info, struct icmphdr *icp)
++void pr_icmph(uint8_t type, uint8_t code, uint32_t info, struct icmphdr *icp)
+ {
+ 	switch(type) {
+ 	case ICMP_ECHOREPLY:
+@@ -1008,7 +1017,7 @@
+ 			cp++;
+ 			if (j > IPOPT_MINOFF) {
+ 				for (;;) {
+-					__u32 address;
++					uint32_t address;
+ 					memcpy(&address, cp, 4);
+ 					cp += 4;
+ 					if (address == 0)
+@@ -1043,7 +1052,7 @@
+ 			printf("\nRR: ");
+ 			cp++;
+ 			for (;;) {
+-				__u32 address;
++				uint32_t address;
+ 				memcpy(&address, cp, 4);
+ 				cp += 4;
+ 				if (address == 0)
+@@ -1059,7 +1068,7 @@
+ 		case IPOPT_TS:
+ 		{
+ 			int stdtime = 0, nonstdtime = 0;
+-			__u8 flags;
++			uint8_t flags;
+ 			j = *++cp;		/* get length */
+ 			i = *++cp;		/* and pointer */
+ 			if (i > j)
+@@ -1074,7 +1083,7 @@
+ 				long l;
+ 
+ 				if ((flags&0xF) != IPOPT_TS_TSONLY) {
+-					__u32 address;
++					uint32_t address;
+ 					memcpy(&address, cp, 4);
+ 					cp += 4;
+ 					if (address == 0)
+@@ -1152,7 +1161,7 @@
+  * a hostname.
+  */
+ char *
+-pr_addr(__u32 addr)
++pr_addr(uint32_t addr)
+ {
+ 	struct hostent *hp;
+ 	static char buf[4096];
+diff -durN orig/ping_common.c new/ping_common.c
+--- orig/ping_common.c	2005-11-14 22:38:28.000000000 +1100
++++ new/ping_common.c	2005-11-14 22:39:06.000000000 +1100
+@@ -8,7 +8,7 @@
+ int ttl;
+ int rtt;
+ int rtt_addend;
+-__u16 acked;
++uint16_t acked;
+ 
+ int mx_dup_ck = MAX_DUP_CHK;
+ char rcvd_tbl[MAX_DUP_CHK / 8];
+@@ -62,12 +62,12 @@
+ /* Fills all the outpack, excluding ICMP header, but _including_
+  * timestamp area with supplied pattern.
+  */
+-static void fill(char *patp)
++static void fill(unsigned char *patp)
+ {
+ 	int ii, jj, kk;
+ 	int pat[16];
+-	char *cp;
+-	char *bp = outpack+8;
++	unsigned char *cp;
++	unsigned char *bp = outpack+8;
+ 
+ 	for (cp = patp; *cp; cp++) {
+ 		if (!isxdigit(*cp)) {
+@@ -76,7 +76,7 @@
+ 			exit(2);
+ 		}
+ 	}
+-	ii = sscanf(patp,
++	ii = sscanf((char*)patp,
+ 	    "%2x%2x%2x%2x%2x%2x%2x%2x%2x%2x%2x%2x%2x%2x%2x%2x",
+ 	    &pat[0], &pat[1], &pat[2], &pat[3], &pat[4], &pat[5], &pat[6],
+ 	    &pat[7], &pat[8], &pat[9], &pat[10], &pat[11], &pat[12],
+@@ -173,7 +173,7 @@
+ 		break;
+ 	case 'p':		/* fill buffer with user pattern */
+ 		options |= F_PINGFILLED;
+-		fill(optarg);
++		fill((unsigned char*)optarg);
+ 		break;
+ 	case 'q':
+ 		options |= F_QUIET;
+@@ -393,7 +393,7 @@
+ void sock_setbufs(int icmp_sock, int alloc)
+ {
+ 	int rcvbuf, hold;
+-	int tmplen = sizeof(hold);
++	unsigned int tmplen = sizeof(hold);
+ 
+ 	if (!sndbuf)
+ 		sndbuf = alloc;
+@@ -466,7 +466,7 @@
+ 
+ 	if (!(options & F_PINGFILLED)) {
+ 		int i;
+-		char *p = outpack+8;
++		unsigned char *p = outpack+8;
+ 
+ 		/* Do not forget about case of small datalen,
+ 		 * fill timestamp area too!
+@@ -503,7 +503,7 @@
+ 	}
+ }
+ 
+-void main_loop(int icmp_sock, __u8 *packet, int packlen)
++void main_loop(int icmp_sock, uint8_t *packet, int packlen)
+ {
+ 	char addrbuf[128];
+ 	char ans_data[4096];
+@@ -646,7 +646,7 @@
+ 	finish();
+ }
+ 
+-int gather_statistics(__u8 *ptr, int cc, __u16 seq, int hops,
++int gather_statistics(uint8_t *ptr, int cc, uint16_t seq, int hops,
+ 		      int csfailed, struct timeval *tv, char *from)
+ {
+ 	int dupflag = 0;
+@@ -711,7 +711,7 @@
+ 			write(STDOUT_FILENO, "\bC", 1);
+ 	} else {
+ 		int i;
+-		__u8 *cp, *dp;
++		uint8_t *cp, *dp;
+ 		printf("%d bytes from %s: icmp_seq=%u", cc, from, seq);
+ 
+ 		if (hops >= 0)
+diff -durN orig/ping_common.h new/ping_common.h
+--- orig/ping_common.h	2005-11-14 22:38:28.000000000 +1100
++++ new/ping_common.h	2005-11-14 22:39:06.000000000 +1100
+@@ -4,7 +4,6 @@
+ #include <time.h>
+ #include <sys/param.h>
+ #include <sys/socket.h>
+-#include <linux/sockios.h>
+ #include <sys/file.h>
+ #include <sys/time.h>
+ #include <sys/signal.h>
+@@ -16,9 +15,9 @@
+ #include <errno.h>
+ #include <string.h>
+ #include <netdb.h>
+-
+ #include <netinet/in.h>
+ #include <arpa/inet.h>
++#include <linux/types.h>
+ #include <linux/errqueue.h>
+ 
+ #include "SNAPSHOT.h"
+@@ -109,7 +108,7 @@
+ extern long long tsum;			/* sum of all times, for doing average */
+ extern long long tsum2;
+ extern int rtt;
+-extern __u16 acked;
++extern uint16_t acked;
+ extern int pipesize;
+ 
+ #define COMMON_OPTIONS \
+@@ -160,18 +159,18 @@
+ 
+ static inline int in_flight(void)
+ {
+-	__u16 diff = (__u16)ntransmitted - acked;
++	uint16_t diff = (uint16_t)ntransmitted - acked;
+ 	return (diff<=0x7FFF) ? diff : ntransmitted-nreceived-nerrors;
+ }
+ 
+-static inline void acknowledge(__u16 seq)
++static inline void acknowledge(uint16_t seq)
+ { 
+-	__u16 diff = (__u16)ntransmitted - seq;
++	uint16_t diff = (uint16_t)ntransmitted - seq;
+ 	if (diff <= 0x7FFF) {
+ 		if ((int)diff+1 > pipesize)
+ 			pipesize = (int)diff+1;
+-		if ((__s16)(seq - acked) > 0 ||
+-		    (__u16)ntransmitted - acked > 0x7FFF)
++		if ((int16_t)(seq - acked) > 0 ||
++		    (uint16_t)ntransmitted - acked > 0x7FFF)
+ 			acked = seq;
+ 	}
+ }
+@@ -180,8 +179,8 @@
+ {
+ 	ntransmitted++;
+ 	/* Invalidate acked, if 16 bit seq overflows. */
+-	if ((__u16)ntransmitted - acked > 0x7FFF)
+-		acked = (__u16)ntransmitted + 1;
++	if ((uint16_t)ntransmitted - acked > 0x7FFF)
++		acked = (uint16_t)ntransmitted + 1;
+ }
+ 
+ 
+@@ -193,9 +192,9 @@
+ extern int pinger(void);
+ extern void sock_setbufs(int icmp_sock, int alloc);
+ extern void setup(int icmp_sock);
+-extern void main_loop(int icmp_sock, __u8 *buf, int buflen) __attribute__((noreturn));
++extern void main_loop(int icmp_sock, uint8_t *buf, int buflen) __attribute__((noreturn));
+ extern void finish(void) __attribute__((noreturn));
+ extern void status(void);
+ extern void common_options(int ch);
+-extern int gather_statistics(__u8 *ptr, int cc, __u16 seq, int hops,
++extern int gather_statistics(uint8_t *ptr, int cc, uint16_t seq, int hops,
+ 			     int csfailed, struct timeval *tv, char *from);
+diff -durN orig/tracepath6.c new/tracepath6.c
+--- orig/tracepath6.c	2005-11-14 22:38:28.000000000 +1100
++++ new/tracepath6.c	2005-11-14 22:39:54.000000000 +1100
+@@ -14,16 +14,14 @@
+ #include <unistd.h>
+ #include <sys/socket.h>
+ #include <netinet/in.h>
+-
+-#include <linux/in6.h>
+-#include <linux/errqueue.h>
+ #include <errno.h>
+ #include <string.h>
+ #include <netdb.h>
+ #include <resolv.h>
+ #include <sys/time.h>
+-#include <sys/uio.h>
++#include <sys/types.h>
+ #include <arpa/inet.h>
++#include "linux-errqueue.h"
+ 
+ int overhead = 48;
+ int mtu = 128000;
+@@ -35,7 +33,7 @@
+ 
+ struct probehdr
+ {
+-	__u32 ttl;
++	uint32_t ttl;
+ 	struct timeval tv;
+ };
+ 
+@@ -116,7 +114,7 @@
+ 			}
+ 		} else if (cmsg->cmsg_level == SOL_IP) {
+ 			if (cmsg->cmsg_type == IP_TTL) {
+-				rethops = *(__u8*)CMSG_DATA(cmsg);
++				rethops = *(uint8_t*)CMSG_DATA(cmsg);
+ 			}
+ 		}
+ 	}
+diff -durN orig/tracepath.c new/tracepath.c
+--- orig/tracepath.c	2005-11-14 22:38:28.000000000 +1100
++++ new/tracepath.c	2005-11-14 22:39:06.000000000 +1100
+@@ -13,7 +13,6 @@
+ #include <stdlib.h>
+ #include <unistd.h>
+ #include <sys/socket.h>
+-#include <linux/errqueue.h>
+ #include <errno.h>
+ #include <string.h>
+ #include <netdb.h>
+@@ -22,6 +21,7 @@
+ #include <sys/time.h>
+ #include <sys/uio.h>
+ #include <arpa/inet.h>
++#include "linux-errqueue.h"
+ 
+ struct hhistory
+ {
+@@ -33,7 +33,7 @@
+ int hisptr;
+ 
+ struct sockaddr_in target;
+-__u16 base_port;
++uint16_t base_port;
+ 
+ const int overhead = 28;
+ int mtu = 65535;
+@@ -43,7 +43,7 @@
+ 
+ struct probehdr
+ {
+-	__u32 ttl;
++	uint32_t ttl;
+ 	struct timeval tv;
+ };
+ 
+@@ -80,7 +80,7 @@
+ 	memset(&rcvbuf, -1, sizeof(rcvbuf));
+ 	iov.iov_base = &rcvbuf;
+ 	iov.iov_len = sizeof(rcvbuf);
+-	msg.msg_name = (__u8*)&addr;
++	msg.msg_name = (uint8_t*)&addr;
+ 	msg.msg_namelen = sizeof(addr);
+ 	msg.msg_iov = &iov;
+ 	msg.msg_iovlen = 1;
+diff -durN orig/traceroute6.c new/traceroute6.c
+--- orig/traceroute6.c	2005-11-14 22:38:28.000000000 +1100
++++ new/traceroute6.c	2005-11-14 22:40:56.000000000 +1100
+@@ -245,11 +245,8 @@
+ #include <netinet/ip.h>
+ #include <netinet/ip_icmp.h>
+ #include <netinet/udp.h>
+-
+-#include <linux/ipv6.h>
+-#include <linux/in6.h>
+-
+-#include <linux/icmpv6.h>
++#include <netinet/icmp6.h>
++#include <netinet/ip6.h>
+ 
+ #include <arpa/inet.h>
+ 
+@@ -314,8 +311,8 @@
+ 
+ struct pkt_format
+ {
+-	__u32 ident;
+-	__u32 seq;
++	uint32_t ident;
++	uint32_t seq;
+ 	struct timeval tv;
+ };
+ 
+@@ -497,7 +494,7 @@
+ 				  (char *)&on, sizeof(on));
+ 
+ 	if (source == NULL) {
+-		int alen;
++		unsigned int alen;
+ 		int probe_fd = socket(AF_INET6, SOCK_DGRAM, 0);
+ 
+ 		if (probe_fd < 0) {
+@@ -574,20 +571,20 @@
+ 					}
+ 					Printf("  %g ms", deltaT(&t1, &t2));
+ 					switch(i - 1) {
+-					case ICMPV6_PORT_UNREACH:
++					case ICMP6_DST_UNREACH_NOPORT:
+ 						++got_there;
+ 						break;
+ 
+-					case ICMPV6_NOROUTE:
++					case ICMP6_DST_UNREACH_NOROUTE:
+ 						++unreachable;
+ 						Printf(" !N");
+ 						break;
+-					case ICMPV6_ADDR_UNREACH:
++					case ICMP6_DST_UNREACH_ADDR:
+ 						++unreachable;
+ 						Printf(" !H");
+ 						break;
+ 
+-					case ICMPV6_ADM_PROHIBITED:
++					case ICMP6_DST_UNREACH_ADMIN:
+ 						++unreachable;
+ 						Printf(" !S");
+ 						break;
+@@ -618,7 +615,7 @@
+ 	fd_set fds;
+ 	static struct timeval wait;
+ 	int cc = 0;
+-	int fromlen = sizeof (*from);
++	unsigned int fromlen = sizeof (*from);
+ 
+ 	FD_ZERO(&fds);
+ 	FD_SET(sock, &fds);
+@@ -727,24 +724,24 @@
+ int packet_ok(u_char *buf, int cc, struct sockaddr_in6 *from, int seq,
+ 	      struct timeval *tv)
+ {
+-	struct icmp6hdr *icp;
++	struct icmp6_hdr *icp;
+ 	u_char type, code;
+ 
+-	icp = (struct icmp6hdr *) buf;
++	icp = (struct icmp6_hdr *) buf;
+ 
+ 	type = icp->icmp6_type;
+ 	code = icp->icmp6_code;
+ 
+-	if ((type == ICMPV6_TIME_EXCEED && code == ICMPV6_EXC_HOPLIMIT) ||
+-	    type == ICMPV6_DEST_UNREACH)
++	if ((type == ICMP6_TIME_EXCEEDED && code == ICMP6_TIME_EXCEED_TRANSIT) ||
++	    type == ICMP6_DST_UNREACH)
+ 	{
+-		struct ipv6hdr *hip;
++		struct ip6_hdr *hip;
+ 		struct udphdr *up;
+ 		int nexthdr;
+ 
+-		hip = (struct ipv6hdr *) (icp + 1);
++		hip = (struct ip6_hdr *) (icp + 1);
+ 		up = (struct udphdr *)(hip+1);
+-		nexthdr = hip->nexthdr;
++		nexthdr = hip->ip6_nxt;
+ 
+ 		if (nexthdr == 44) {
+ 			nexthdr = *(unsigned char*)up;
+@@ -760,29 +757,29 @@
+ 			    ntohl(pkt->seq) == seq)
+ 			{
+ 				*tv = pkt->tv;
+-				return (type == ICMPV6_TIME_EXCEED? -1 : code+1);
++				return (type == ICMP6_TIME_EXCEEDED? -1 : code+1);
+ 			}
+ 		}
+ 
+ 	}
+ 
+ 	if (verbose) {
+-		struct ipv6hdr *hip;
+-		__u32 *lp;
++		struct ip6_hdr *hip;
++		uint32_t *lp;
+ 		char pa1[MAXHOSTNAMELEN];
+ 		char pa2[MAXHOSTNAMELEN];
+ 		int i;
+-		hip = (struct ipv6hdr *) (icp + 1);
+-		lp = (__u32 *) (icp + 1);
++		hip = (struct ip6_hdr *) (icp + 1);
++		lp = (uint32_t *) (icp + 1);
+ 
+ 		Printf("\n%d bytes from %s to %s", cc,
+-		       inet_ntop(AF_INET6, &hip->saddr, pa1, sizeof(pa1)),
+-		       inet_ntop(AF_INET6, &hip->daddr, pa2, sizeof(pa2)));
++		       inet_ntop(AF_INET6, &hip->ip6_src, pa1, sizeof(pa1)),
++		       inet_ntop(AF_INET6, &hip->ip6_dst, pa2, sizeof(pa2)));
+ 		
+ 		Printf(": icmp type %d (%s) code %d\n", type, pr_type(type),
+ 		       icp->icmp6_code);
+ 
+-		for (i = sizeof(struct ipv6hdr); i < cc ; i += 4)
++		for (i = sizeof(struct ip6_hdr); i < cc ; i += 4)
+ 			Printf("%2d: x%8.8x\n", i, *lp++);
+ 	}
+ 

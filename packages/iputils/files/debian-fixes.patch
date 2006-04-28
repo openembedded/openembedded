@@ -1,0 +1,133 @@
+Fixes taken from the lastest debian .deb pacakge (20020927-3).
+
+--- iputils-20020927.orig/ping.c
++++ iputils-20020927/ping.c
+@@ -232,7 +232,7 @@
+ 			if (argc == 1)
+ 				options |= F_NUMERIC;
+ 		} else {
+-			hp = gethostbyname(target);
++			hp = gethostbyname2(target, AF_INET);
+ 			if (!hp) {
+ 				fprintf(stderr, "ping: unknown host %s\n", target);
+ 				exit(2);
+@@ -373,8 +373,13 @@
+ 			      (1<<ICMP_PARAMETERPROB)|
+ 			      (1<<ICMP_REDIRECT)|
+ 			      (1<<ICMP_ECHOREPLY));
+-		if (setsockopt(icmp_sock, SOL_RAW, ICMP_FILTER, (char*)&filt, sizeof(filt)) == -1)
++		if (setsockopt(icmp_sock, SOL_RAW, ICMP_FILTER, 
++				(char*)&filt, sizeof(filt)) == -1)
++		{
+ 			perror("WARNING: setsockopt(ICMP_FILTER)");
++			fprintf(stderr, 
++				"Do you have CONFIG_SOCKET in your kernel?");
++		}
+ 	}
+ 
+ 	hold = 1;
+@@ -848,9 +853,36 @@
+ 		case ICMP_SR_FAILED:
+ 			printf("Source Route Failed\n");
+ 			break;
++		case ICMP_NET_UNKNOWN:
++			printf("Destination Net Unknown\n");
++			break;
++		case ICMP_HOST_UNKNOWN:
++			printf("Destination Host Unknown\n");
++			break;
++		case ICMP_HOST_ISOLATED:
++			printf("Source Host Isolated\n");
++			break;
++		case ICMP_NET_ANO:
++			printf("Destination Net Prohibited\n");
++			break;
++		case ICMP_HOST_ANO:
++			printf("Destination Host Prohibited\n");
++			break;
++		case ICMP_NET_UNR_TOS:
++			printf("Destination Net Unreachable for Type of Service\n");
++			break;
++		case ICMP_HOST_UNR_TOS:
++			printf("Destination Host Unreachable for Type of Service\n");
++			break;
+ 		case ICMP_PKT_FILTERED:
+ 			printf("Packet filtered\n");
+ 			break;
++		case ICMP_PREC_VIOLATION:
++			printf("Precedence Violation\n");
++			break;
++		case ICMP_PREC_CUTOFF:
++			printf("Precedence Cutoff\n");
++			break;
+ 		default:
+ 			printf("Dest Unreachable, Bad Code: %d\n", code);
+ 			break;
+--- iputils-20020927.orig/ping6.c
++++ iputils-20020927/ping6.c
+@@ -440,7 +440,6 @@
+ 	/*
+ 	 *	select icmp echo reply as icmp type to receive
+ 	 */
+-
+ 	ICMPV6_FILTER_SETBLOCKALL(&filter);
+ 
+ 	if (!working_recverr) {
+--- iputils-20020927.orig/tracepath.c
++++ iputils-20020927/tracepath.c
+@@ -307,9 +307,9 @@
+ 		base_port = atoi(p+1);
+ 	} else
+ 		base_port = 44444;
+-	he = gethostbyname(argv[0]);
++	he = gethostbyname2(argv[0], AF_INET);
+ 	if (he == NULL) {
+-		herror("gethostbyname");
++		herror("gethostbyname2");
+ 		exit(1);
+ 	}
+ 	memcpy(&target.sin_addr, he->h_addr, 4);
+--- iputils-20020927.orig/traceroute6.c
++++ iputils-20020927/traceroute6.c
+@@ -441,7 +441,7 @@
+ 		 * to fix something send the patch to me for sanity checking.
+ 		 * "datalen" patch is a shit. */
+ 		if ((unsigned int)datalen == 0)
+-			datalen == sizeof(struct pkt_format);
++			datalen = sizeof(struct pkt_format);
+ 	}
+ 
+ 	if (datalen < (int)sizeof(struct pkt_format) || datalen >= MAXPACKET) {
+--- iputils-20020927.orig/ping_common.c
++++ iputils-20020927/ping_common.c
+@@ -435,6 +435,7 @@
+ 	if (options & F_SO_DONTROUTE)
+ 		setsockopt(icmp_sock, SOL_SOCKET, SO_DONTROUTE, (char *)&hold, sizeof(hold));
+ 
++#ifndef __sparc__ /* XXX SO_TIMESTAMP seems broken on sparc */
+ #ifdef SO_TIMESTAMP
+ 	if (!(options&F_LATENCY)) {
+ 		int on = 1;
+@@ -442,6 +443,7 @@
+ 			fprintf(stderr, "Warning: no SO_TIMESTAMP support, falling back to SIOCGSTAMP\n");
+ 	}
+ #endif
++#endif /* __sparc__ */
+ 
+ 	/* Set some SNDTIMEO to prevent blocking forever
+ 	 * on sends, when device is too slow or stalls. Just put limit
+@@ -817,7 +819,8 @@
+ 	}
+ 	if (pipesize > 1)
+ 		printf(", pipe %d", pipesize);
+-	if (ntransmitted > 1 && (!interval || (options&(F_FLOOD|F_ADAPTIVE)))) {
++	if (ntransmitted > 1 && nreceived && 
++			(!interval || (options&(F_FLOOD|F_ADAPTIVE)))) {
+ 		int ipg = (1000000*(long long)tv.tv_sec+tv.tv_usec)/(ntransmitted-1);
+ 		printf(", ipg/ewma %d.%03d/%d.%03d ms",
+ 		       ipg/1000, ipg%1000, rtt/8000, (rtt/8)%1000);
+@@ -851,4 +854,3 @@
+ 	}
+ 	fprintf(stderr, "\n");
+ }
+-
