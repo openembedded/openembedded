@@ -1,12 +1,12 @@
 include quilt.inc
 
+include quilt_${PV}.bb
+
 INHIBIT_AUTOTOOLS_DEPS = "1"
 
-SRC_URI = "cvs://anonymous@cvs.savannah.nongnu.org/cvsroot/quilt;method=pserver;module=quilt;tag=VER_${@(bb.data.getVar('PV', d, 1) or '').replace('.', '_')} \
-	   file://install.patch;patch=1 \
-	   file://nostrip.patch;patch=1 \
-	   file://autoreconf.patch;patch=1"
-S = "${WORKDIR}/quilt"
+#SRC_URI += "file://autoreconf.patch;patch=1"
+
+S = "${WORKDIR}/quilt-${PV}"
 
 inherit autotools native
 
