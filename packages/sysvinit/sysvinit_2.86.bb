@@ -19,8 +19,7 @@ CONFFILES_${PN}-inittab = "${sysconfdir}/inittab"
 USE_VT ?= "1"
 SYSVINIT_ENABLED_GETTYS ?= "1"
 
-SRC_URI = "ftp://ftp.cistron.nl/pub/people/miquels/sysvinit/sysvinit-2.85.tar.gz \
-	   file://sysvinit-2.86.patch;patch=1 \
+SRC_URI = "ftp://ftp.cistron.nl/pub/people/miquels/sysvinit/sysvinit-${PV}.tar.gz \
 	   file://install.patch;patch=1 \
            file://need \
            file://provide \
@@ -29,7 +28,8 @@ SRC_URI = "ftp://ftp.cistron.nl/pub/people/miquels/sysvinit/sysvinit-2.85.tar.gz
            file://rc \
            file://rcS \
 	   file://bootlogd.init"
-S = "${WORKDIR}/sysvinit-2.85"
+
+S = "${WORKDIR}/sysvinit-${PV}"
 B = "${S}/src"
 
 inherit update-alternatives
