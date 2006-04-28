@@ -36,6 +36,7 @@ DEPENDS += "startup-notification"
 EXTRA_AUTORECONF = ""
 
 #disable "X Session Management"... It is EVIL
-EXTRA_OECONF += "--disable-sm --enable-startup-notification"
+EXTRA_OECONF += "--disable-sm --enable-startup-notification \
+                 --with-gnutls-includes=${STAGING_INCDIR}"
 
 
