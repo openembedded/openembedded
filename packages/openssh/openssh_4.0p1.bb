@@ -17,7 +17,7 @@ used to provide applications with a secure communication channel."
 HOMEPAGE = "http://www.openssh.org/"
 LICENSE = "BSD"
 MAINTAINER = "Bruno Randolf <bruno.randolf@4g-systems.biz>"
-PR = "r8"
+PR = "r9"
 
 SRC_URI = "ftp://ftp.openbsd.org/pub/OpenBSD/OpenSSH/portable/openssh-${PV}.tar.gz \
            file://configure.patch;patch=1 \
@@ -107,5 +107,5 @@ else
 fi
 }
 
-CONFFILES_openssh-sshd_nylon = "${sysconfdir}/ssh/sshd_config"
-CONFFILES_openssh-ssh_nylon = "${sysconfdir}/ssh/ssh_config"
+CONFFILES_openssh-sshd = "${sysconfdir}/ssh/sshd_config"
+CONFFILES_openssh-ssh = "${sysconfdir}/ssh/ssh_config"
