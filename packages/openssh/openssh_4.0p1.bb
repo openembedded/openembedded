@@ -1,8 +1,6 @@
 DEPENDS = "zlib openssl"
 
-RREPLACES_openssh = "dropbear"
 RCONFLICTS_openssh = "dropbear"
-RREPLACES_openssh-sshd = "dropbear"
 RCONFLICTS_openssh-sshd = "dropbear"
 
 SECTION = "console/network"
@@ -17,7 +15,7 @@ used to provide applications with a secure communication channel."
 HOMEPAGE = "http://www.openssh.org/"
 LICENSE = "BSD"
 MAINTAINER = "Bruno Randolf <bruno.randolf@4g-systems.biz>"
-PR = "r9"
+PR = "r10"
 
 SRC_URI = "ftp://ftp.openbsd.org/pub/OpenBSD/OpenSSH/portable/openssh-${PV}.tar.gz \
            file://configure.patch;patch=1 \
