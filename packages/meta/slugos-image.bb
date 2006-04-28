@@ -7,7 +7,7 @@ DESCRIPTION = "Generic SlugOS image"
 MAINTAINER = "NSLU2 Linux <nslu2-linux@yahoogroups.com>"
 HOMEPAGE = "http://www.nslu2-linux.org"
 LICENSE = "MIT"
-PR = "r26"
+PR = "r27"
 
 # SLUGOS_IMAGENAME defines the name of the image to be build, if it
 # is not set this package will be skipped!
@@ -31,6 +31,9 @@ SLUGOS_DEVICE_TABLE = "${@bb.which(bb.data.getVar('BBPATH', d, 1), 'files/device
 # root file system), if this is not the case the following must not be done!
 IMAGE_PREPROCESS_COMMAND += "rm ${IMAGE_ROOTFS}/boot/zImage*;"
 IMAGE_PREPROCESS_COMMAND += "install -c -m 644 ${SLUGOS_DEVICE_TABLE} ${IMAGE_ROOTFS}/etc/device_table;"
+
+# This hack does what the hack in busybox.bb is supposed to do but doesn't for some reason.
+IMAGE_PREPROCESS_COMMAND += "rm ${IMAGE_ROOTFS}/etc/rc?.d/?20syslog;"
 
 # Building a full image.  If required do a post-process command which builds
 # the full flash image using slugimage.  At present this only works for NSLU2 images.
