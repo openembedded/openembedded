@@ -3,13 +3,14 @@ HOMEPAGE = "http://www.linux-wlan.org"
 SECTION = "kernel/userland"
 DEPENDS = "virtual/kernel"
 LICENSE = "GPL"
-PR = "r0"
+PR = "r1"
 PV = "0.2.3+svn${SRCDATE}"
 
 SRC_URI = "svn://svn.shaftnet.org/linux-wlan-ng;module=trunk \
 	file://only-the-utils.patch;patch=1 \
 	file://scripts-makefile-hostcc.patch;patch=1 \
 	file://pcmciasrc.patch;patch=1 \
+	file://hostldflags.patch;patch=1 \
 	file://wlan-ng.modutils \
 	file://wlan.agent \
 	file://usbctl \
