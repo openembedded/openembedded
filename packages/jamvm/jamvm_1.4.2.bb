@@ -6,7 +6,7 @@ MAINTAINER = "Rene Wagner <rw@handhelds.org>"
 SECTION = "interpreters"
 
 DEPENDS = "zlib classpath"
-RDEPENDS = "classpath (>= 0.14) classpath-common (>= 0.14)"
+RDEPENDS = "classpath (>= 0.18) classpath-common (>= 0.18)"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/${PN}/${P}.tar.gz \
            file://jamvm-1.3.1-size-defaults.patch;patch=1"
