@@ -2,11 +2,10 @@ LICENSE = "GPL"
 SECTION = "x11/gnome/libs"
 PR = "r2"
 
-DEPENDS = "libxml2 glib-2.0 pango libart-lgpl fontconfig popt gnome-common"
+DEPENDS = "libxml2 libgnomecups glib-2.0 pango libart-lgpl fontconfig popt gnome-common"
 
 inherit flow-lossage pkgconfig gnome
 
-EXTRA_OECONF = "--with-cups=no"
 
 do_stage() {
 	install -d ${STAGING_LIBDIR}
