@@ -91,3 +91,50 @@
  
  #include "socket.h"
  
+--- sylpheed-2.2.4/libsylph/ssl.c.orig	2006-04-28 20:38:46.000000000 +0100
++++ sylpheed-2.2.4/libsylph/ssl.c	2006-04-28 20:40:22.000000000 +0100
+@@ -54,9 +54,11 @@
+ 		debug_print(_("SSLv23 not available\n"));
+ 	} else {
+ 		debug_print(_("SSLv23 available\n"));
++#if USE_OPENSSL
+ 		if (certs_dir &&
+ 		    !SSL_CTX_load_verify_locations(ssl_ctx_SSLv23, NULL,
+ 						   certs_dir))
++#endif
+ 			g_warning("SSLv23 SSL_CTX_load_verify_locations failed.\n");
+ 	}
+ 
+@@ -65,9 +67,11 @@
+ 		debug_print(_("TLSv1 not available\n"));
+ 	} else {
+ 		debug_print(_("TLSv1 available\n"));
++#if USE_OPENSSL
+ 		if (certs_dir &&
+ 		    !SSL_CTX_load_verify_locations(ssl_ctx_TLSv1, NULL,
+ 						   certs_dir))
++#endif
+ 			g_warning("TLSv1 SSL_CTX_load_verify_locations failed.\n");
+ 	}
+ 
+@@ -151,14 +155,19 @@
+ 			g_free(str);
+ 		}
+ 
++#if USE_OPENSSL
+ 		verify_result = SSL_get_verify_result(sockinfo->ssl);
+ 		if (verify_result == X509_V_OK)
+ 			debug_print("SSL verify OK\n");
+ 		else
++#endif
+ 			g_warning("%s: SSL certificate verify failed (%ld: %s)\n",
+ 				  sockinfo->hostname, verify_result,
++#if USE_OPENSSL
+ 				  X509_verify_cert_error_string(verify_result));
+-
++#else
++		                  "Unsupport GnuTLS features");
++#endif
+ 		X509_free(server_cert);
+ 	}
+ 

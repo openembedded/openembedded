@@ -3,9 +3,10 @@ DEPENDS = "zlib libgcrypt lzo"
 MAINTAINER = "Eric Shattow <lucent@gmail.com>"
 
 LICENSE = "LGPL"
-PR = "r1"
+PR = "r2"
 
-SRC_URI = "ftp://ftp.gnutls.org/pub/gnutls/devel/gnutls-${PV}.tar.bz2"
+SRC_URI = "ftp://ftp.gnutls.org/pub/gnutls/devel/gnutls-${PV}.tar.bz2 \
+           file://gnutls-openssl.patch;patch=1"
 
 inherit autotools
 inherit binconfig
