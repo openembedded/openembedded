@@ -1,0 +1,20 @@
+Index: linux-wlan-ng-0.2.3/src/mkmeta/Makefile
+===================================================================
+--- linux-wlan-ng-0.2.3.orig/src/mkmeta/Makefile	2005-01-26 23:01:07.000000000 +0100
++++ linux-wlan-ng-0.2.3/src/mkmeta/Makefile	2006-04-18 22:07:58.937819216 +0200
+@@ -90,13 +90,13 @@
+ 
+ 
+ mkmetadef:	$(MKMETADEF_OBJ) mkmetadefhead.txt
+-	$(HOST_CC) $(LDFLAGS) -o $@ $(MKMETADEF_OBJ)
++	$(HOST_CC) $(HOST_LDFLAGS) -o $@ $(MKMETADEF_OBJ)
+ 	cat mkmetadefhead.txt > ../include/wlan/p80211metadef.h
+ 	./mkmetadef >> ../include/wlan/p80211metadef.h
+ 	echo "#endif" >> ../include/wlan/p80211metadef.h
+ 
+ mkmetastruct:	$(MKMETASTRUCT_OBJ) mkmetastructhead.txt
+-	$(HOST_CC) $(LDFLAGS) -o $@ $(MKMETASTRUCT_OBJ)
++	$(HOST_CC) $(HOST_LDFLAGS) -o $@ $(MKMETASTRUCT_OBJ)
+ 	cat mkmetastructhead.txt > ../include/wlan/p80211metastruct.h
+ 	./mkmetastruct >> ../include/wlan/p80211metastruct.h
+ 	echo "#endif" >> ../include/wlan/p80211metastruct.h
