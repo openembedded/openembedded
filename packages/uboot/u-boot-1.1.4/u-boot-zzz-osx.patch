@@ -1,0 +1,41 @@
+--- u-boot-1.1.1/tools/Makefile	Mon Sep 27 03:34:12 2004
++++ u-boot-1.1.1/tools/Makefile	Mon Sep 27 03:34:52 2004
+@@ -70,26 +70,26 @@
+ # multiple symbol definitions are treated as errors, hence the
+ # -multiply_defined suppress option to turn off this error.
+ #
+-ifeq ($(HOSTOS)-$(HOSTARCH),darwin-ppc)
+-HOST_CFLAGS = -traditional-cpp -Wall
+-HOST_LDFLAGS =-multiply_defined suppress
+-HOST_ENVIRO_CFLAGS = -traditional-cpp
++#ifeq ($(HOSTOS)-$(HOSTARCH),darwin-ppc)
++#HOST_CFLAGS = -traditional-cpp -Wall
++#HOST_LDFLAGS =-multiply_defined suppress
++#HOST_ENVIRO_CFLAGS = -traditional-cpp
+ 
+-else
+-ifeq ($(HOSTOS)-$(HOSTARCH),netbsd-ppc)
+-HOST_CFLAGS = -Wall -pedantic
+-HOST_LDFLAGS =
+-HOST_ENVIRO_CFLAGS =
++#else
++#ifeq ($(HOSTOS)-$(HOSTARCH),netbsd-ppc)
++#HOST_CFLAGS = -Wall -pedantic
++#HOST_LDFLAGS =
++#HOST_ENVIRO_CFLAGS =
+ 
+ #
+ # Everyone else
+ #
+-else
++#else
+ HOST_CFLAGS = -Wall -pedantic
+ HOST_LDFLAGS =
+ HOST_ENVIRO_CFLAGS =
+-endif
+-endif
++#endif
++#endif
+ 
+ #
+ # Cygwin needs .exe files :-(

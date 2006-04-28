@@ -1,0 +1,24 @@
+--- a/cpu/pxa/mmc.c
++++ a/cpu/pxa/mmc.c
+@@ -401,16 +401,17 @@
+ 
+ 	/* reset */
+ 	retries = 10;
+-	resp = mmc_cmd(0, 0, 0, 0);
+-	resp = mmc_cmd(1, 0x00ff, 0xc000, MMC_CMDAT_INIT|MMC_CMDAT_BUSY|MMC_CMDAT_R3);
++	resp = mmc_cmd(0, 0, 0, MMC_CMDAT_INIT|MMC_CMDAT_BUSY|MMC_CMDAT_R1);
++	udelay(200000);
++	resp = mmc_cmd(1, 0x00ff, 0x8000, MMC_CMDAT_BUSY|MMC_CMDAT_R3);
+ 	while (retries-- && resp && !(resp[4] & 0x80)) {
+ 		debug("resp %x %x\n", resp[0], resp[1]);
+ #ifdef CONFIG_PXA27X
+ 		udelay(10000);
+ #else
+-		udelay(50);
++		udelay(200000);
+ #endif
+-		resp = mmc_cmd(1, 0x00ff, 0xff00, MMC_CMDAT_BUSY|MMC_CMDAT_R3);
++		resp = mmc_cmd(1, 0x00ff, 0x8000, MMC_CMDAT_BUSY|MMC_CMDAT_R3);
+ 	}
+ 
+ 	/* try to get card id */

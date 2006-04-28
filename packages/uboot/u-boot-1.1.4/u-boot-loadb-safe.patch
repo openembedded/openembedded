@@ -1,0 +1,16 @@
+diff -bBdurNP u-boot-1.1.1/common/cmd_load.c u-boot/common/cmd_load.c
+--- u-boot-1.1.1/common/cmd_load.c	2004-03-11 16:14:10.000000000 -0800
++++ u-boot/common/cmd_load.c	2004-09-30 00:19:43.656640004 -0700
+@@ -454,6 +454,12 @@
+ 	if (argc >= 2) {
+ 		offset = simple_strtoul(argv[1], NULL, 16);
+ 	}
++
++	if(offset < CFG_DRAM_BASE || offset > (CFG_DRAM_BASE+CFG_DRAM_SIZE)) {
++		printf("Cannot load to 0x%08lX -- address not in RAM\n",offset);
++		return 1;
++	}
++
+ 	if (argc == 3) {
+ 		load_baudrate = (int)simple_strtoul(argv[2], NULL, 10);
+ 

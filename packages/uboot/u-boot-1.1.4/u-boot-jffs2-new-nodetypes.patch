@@ -1,0 +1,25 @@
+--- u-boot-1.1.4/fs/jffs2/jffs2_1pass.c-orig	2006-03-17 07:46:53.000000000 -0800
++++ u-boot-1.1.4/fs/jffs2/jffs2_1pass.c	2006-03-17 07:59:37.000000000 -0800
+@@ -1194,6 +1194,10 @@
+ 					printf("OOPS Padding has bad size "
+ 						"%d < %d\n", node->totlen,
+ 						sizeof(struct jffs2_unknown_node));
++			} else if (node->nodetype == JFFS2_NODETYPE_ERASEBLOCK_HEADER) {
++				// Could check offset here to ensure we're at start of erase block
++			} else if (node->nodetype == JFFS2_NODETYPE_SUMMARY) {
++				// Ignore summary blocks for now
+ 			} else {
+ 				printf("Unknown node type: %x len %d "
+ 					"offset 0x%x\n", node->nodetype,
+--- u-boot-1.1.4/include/jffs2/jffs2.h-orig	2006-03-17 08:20:01.000000000 -0800
++++ u-boot-1.1.4/include/jffs2/jffs2.h	2006-03-17 08:20:20.000000000 -0800
+@@ -90,6 +90,9 @@
+ #define JFFS2_NODETYPE_CLEANMARKER (JFFS2_FEATURE_RWCOMPAT_DELETE | JFFS2_NODE_ACCURATE | 3)
+ #define JFFS2_NODETYPE_PADDING (JFFS2_FEATURE_RWCOMPAT_DELETE | JFFS2_NODE_ACCURATE | 4)
+ 
++#define JFFS2_NODETYPE_ERASEBLOCK_HEADER (JFFS2_FEATURE_RWCOMPAT_DELETE | JFFS2_NODE_ACCURATE | 5)
++#define JFFS2_NODETYPE_SUMMARY (JFFS2_FEATURE_RWCOMPAT_DELETE | JFFS2_NODE_ACCURATE | 6)
++
+ /* Maybe later... */
+ /*#define JFFS2_NODETYPE_CHECKPOINT (JFFS2_FEATURE_RWCOMPAT_DELETE | JFFS2_NODE_ACCURATE | 3) */
+ /*#define JFFS2_NODETYPE_OPTIONS (JFFS2_FEATURE_RWCOMPAT_COPY | JFFS2_NODE_ACCURATE | 4) */

@@ -1,0 +1,11 @@
+--- u-boot-1.1.2/common/env_common.c	2005-06-15 12:38:53.632219409 -0700
++++ u-boot-1.1.2/common/env_common.c	2005-06-15 12:39:41.469052324 -0700
+@@ -237,7 +237,7 @@
+ #if defined(CONFIG_GTH)	|| defined(CFG_ENV_IS_NOWHERE)	/* Environment not changable */
+ 		puts ("Using default environment\n\n");
+ #else
++		puts ("Using default environment\n\n");
+-		puts ("*** Warning - bad CRC, using default environment\n\n");
+ 		SHOW_BOOT_PROGRESS (-1);
+ #endif
+ 

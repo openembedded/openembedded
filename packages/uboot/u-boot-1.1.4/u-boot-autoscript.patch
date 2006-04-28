@@ -1,0 +1,12 @@
+--- u-boot-1.1.2/common/cmd_autoscript.c
++++ u-boot-1.1.2/common/cmd_autoscript.c
+@@ -110,8 +110,8 @@
+ 		return 1;
+ 	}
+ 
+-	while (*len_ptr++);
++	do { len_ptr++; } while (!(*len_ptr));
+ 
+ 	/* make sure cmd is null terminated */
+ 	memmove (cmd, (char *)len_ptr, len);
+ 	*(cmd + len) = 0;

@@ -1,0 +1,913 @@
+--- a/MAKEALL
++++ a/MAKEALL
+@@ -146,8 +146,8 @@
+ 
+ LIST_pxa="	\
+ 	adsvix		cerf250		cradle		csb226		\
+-	innokom		lubbock		pxa255_idp	wepep250	\
+-	xaeniax		xm250		xsengine			\
++	gumstix		innokom		lubbock		pxa255_idp	\
++	wepep250	xaeniax		xm250		xsengine	\
+ "
+ 
+ LIST_ixp="ixdp425"
+--- a/Makefile
++++ a/Makefile
+@@ -121,7 +121,6 @@
+ # The "tools" are needed early, so put this first
+ # Don't include stuff already done in $(LIBS)
+ SUBDIRS	= tools \
+-	  examples \
+ 	  post \
+ 	  post/cpu
+ .PHONY : $(SUBDIRS)
+@@ -1078,6 +1077,9 @@
+ csb226_config	:	unconfig
+ 	@./mkconfig $(@:_config=) arm pxa csb226
+ 
++gumstix_config	:	unconfig
++	@./mkconfig $(@:_config=) arm pxa gumstix
++
+ innokom_config	:	unconfig
+ 	@./mkconfig $(@:_config=) arm pxa innokom
+ 
+--- a/board/gumstix/Makefile
++++ a/board/gumstix/Makefile
+@@ -0,0 +1,47 @@
++#
++# (C) Copyright 2004
++# Craig Hughes, Gumstix Inc, <craig@gumstix.com>
++#
++# See file CREDITS for list of people who contributed to this
++# project.
++#
++# This program is free software; you can redistribute it and/or
++# modify it under the terms of the GNU General Public License as
++# published by the Free Software Foundation; either version 2 of
++# the License, or (at your option) any later version.
++#
++# This program is distributed in the hope that it will be useful,
++# but WITHOUT ANY WARRANTY; without even the implied warranty of
++# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++# GNU General Public License for more details.
++#
++# You should have received a copy of the GNU General Public License
++# along with this program; if not, write to the Free Software
++# Foundation, Inc., 59 Temple Place, Suite 330, Boston,
++# MA 02111-1307 USA
++#
++
++include $(TOPDIR)/config.mk
++
++LIB	= lib$(BOARD).a
++
++OBJS	:= gumstix.o
++SOBJS	:= memsetup.o
++
++$(LIB):	$(OBJS) $(SOBJS)
++	$(AR) crv $@ $^
++
++clean:
++	rm -f $(SOBJS) $(OBJS)
++
++distclean:	clean
++	rm -f $(LIB) core *.bak .depend
++
++#########################################################################
++
++.depend:	Makefile $(SOBJS:.o=.S) $(OBJS:.o=.c)
++		$(CC) -M $(CPPFLAGS) $(SOBJS:.o=.S) $(OBJS:.o=.c) > $@
++
++-include .depend
++
++#########################################################################
+--- a/board/gumstix/config.mk
++++ a/board/gumstix/config.mk
+@@ -0,0 +1,13 @@
++#
++# This is config used for compilation of Gumstix sources
++#
++# You might change location of U-Boot in memory by setting right TEXT_BASE.
++# This allows for example having one copy located at the end of ram and stored
++# in flash device and later on while developing use other location to test
++# the code in RAM device only.
++#
++
++TEXT_BASE  = 0xA3F00000
++ifeq ($(GUMSTIX_400MHZ),y)
++	PLATFORM_CPPFLAGS += -DCONFIG_GUMSTIX_CPUSPEED_400
++endif
+--- a/board/gumstix/early_refresh.S
++++ a/board/gumstix/early_refresh.S
+@@ -0,0 +1,50 @@
++#define COTULLA_CP15_B1_VAL	0x69052903
++             /*  Workaround for early termination of SDRAM autorefresh on exit from 
++                 processor's sleep state in B1 stepping of XPA250/210. (sighting 27004) 
++	             Need first forced refresh within 8 usec.
++             
++                 - Code snippet received from validation team, slightly modified
++             
++               Notes: - MMU assumed to be inactive at this time, so use physical addresses
++                      -  Eboot didn't boot on A1 stepping without the leading exclusion,
++                         so the core code must be restricted to B1 only.
++             */
++             
++             	mrc	p15, 0, r9, c0, c0, 0		@ Grab CPU ID
++             	ldr	r3, =COTULLA_CP15_B1_VAL	@ Load the B1 CPU ID value
++             	cmp	r9, r3
++             	bne	EARLY_REFRESH_DONE
++             
++             	@ Eboot loads BIN image into RAM,
++             	@ turns off the MMU and then jumps here.
++             	@ If we're already executing from RAM, don't mess with it
++             
++		mov	r0, #0x400000		@ Just at the end of boot device addressing space
++		cmp	r0, pc			@ Are we executing from boot flash space?
++		bls	EARLY_REFRESH_DONE	@ if outside that space, skip this.
++
++
++		/*
++			Need to set MDREFR:DRI field to 0 for this to work.  Side effect is
++			picking the MEMCLK:SDCLK ratio.  The specified value (0x038FF000)
++       	    sets that ratio as 2:1.
++			This corresponds to the defaults after reset, including sleep reset.
++	 		0x038ff000  ==	MDREFR_K2FREE | MDREFR_K1FREE | MDREFR_K0FREE |
++        	     			MDREFR_K2DB2 | MDREFR_K2RUN |
++							MDREFR_K1DB2 | MDREFR_K1RUN | MDREFR_E1PIN |
++							MDREFR_K0DB2 | MDREFR_K0RUN | MDREFR_E0PIN
++		*/
++
++				ldr	r0, =0X48000004 			@ Memory controller base physical addr+ REFR Offset.
++				mov	r1, #0x03800000
++ 				orr	r1, r1, #0x000FF000
++             	str	r1, [r0]
++             
++             	mov	r0, #CFG_DRAM_BASE
++             	ldr	r1, [r0]				@ CAUSES the 1st row refresh to all partitions
++             	mov	r2, #0x2000				@ 8k loo
++1:	
++             	ldr	r1, [r0]				@ CAUSES a row refresh to all partitions
++             	subs	r2, r2, #0x1
++             	bpl	1b						@ while >= 0
++EARLY_REFRESH_DONE:
+--- a/board/gumstix/gumstix.c
++++ a/board/gumstix/gumstix.c
+@@ -0,0 +1,134 @@
++/*
++ * Copyright (C) 2004 Gumstix, Inc.
++ *
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU General Public License as
++ * published by the Free Software Foundation; either version 2 of
++ * the License, or (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write to the Free Software
++ * Foundation, Inc., 59 Temple Place, Suite 330, Boston,
++ * MA 02111-1307 USA
++ *
++ * Written by Craig Hughes <craig@gumstix.com>
++ *
++ */
++
++#include <common.h>
++#include <asm/arch/pxa-regs.h>
++
++int board_init( void ){
++  DECLARE_GLOBAL_DATA_PTR;
++
++  gd->bd->bi_arch_number = 373;	
++  gd->bd->bi_boot_params = 0xa0000100;
++
++  PSSR    = 0x20;
++
++  GPDR1 = CFG_GPDR1_VAL;
++  GAFR1_L = CFG_GAFR1_L_VAL;
++
++  return 0;
++}
++
++int dram_init( void ){
++  DECLARE_GLOBAL_DATA_PTR;
++
++#if ( CONFIG_NR_DRAM_BANKS > 0 )
++  gd->bd->bi_dram[0].start = PHYS_SDRAM_1;
++  gd->bd->bi_dram[0].size  = PHYS_SDRAM_1_SIZE;
++#endif
++#if ( CONFIG_NR_DRAM_BANKS > 1 )  
++  gd->bd->bi_dram[1].start = PHYS_SDRAM_2;
++  gd->bd->bi_dram[1].size  = PHYS_SDRAM_2_SIZE;
++#endif
++#if ( CONFIG_NR_DRAM_BANKS > 2 )  
++  gd->bd->bi_dram[2].start = PHYS_SDRAM_3;
++  gd->bd->bi_dram[2].size  = PHYS_SDRAM_3_SIZE;
++#endif
++#if ( CONFIG_NR_DRAM_BANKS > 3 )
++  gd->bd->bi_dram[3].start = PHYS_SDRAM_4;
++  gd->bd->bi_dram[3].size  = PHYS_SDRAM_4_SIZE;
++#endif
++	
++  return 0;
++}
++
++extern flash_info_t flash_info[];       /* info for FLASH chips */
++
++static u8 system_serial[8];
++
++void get_board_serial(struct tag_serialnr *serialnr)
++{
++	serialnr->high = (system_serial[0]<<24) + (system_serial[1]<<16) + (system_serial[2]<<8) + system_serial[3];
++	serialnr->low  = (system_serial[4]<<24) + (system_serial[5]<<16) + (system_serial[6]<<8) + system_serial[7];
++}
++
++/*
++ * This hash function converts a structured 64-bit number to an unstructured, more bit-random 64-bit number.
++ * The purpose is to provide more randomness for each bit of the system serial number, since we're going to
++ * be using some of its bits (by extraction) as the varying part of an ethernet MAC.  So more random bits =
++ * less chance of collision
++ *
++ * The has algorithm is basically going to work by looping through each bit in the incoming number.  If that bit
++ * is set, then we'll XOR our result with a bitmask; if not, then we leave the result and continue the loop.
++ * Each time through the loop, we rotate the bitmask by one bit position, so that each bit of the incoming number
++ * will affect half of the bits of the result, but which bits it modifies are unique to that incoming bit position
++ */
++void gumstix_serial_hash(u8 *buf)
++{
++	unsigned int bit_number,byte;
++	// Starting bitmask is 0b0101001100001111000000001111111100000000000000001111111111111111
++	u8 xor_mask[] = { 0x53, 0x0F, 0x00, 0xFF, 0x00, 0x00, 0xFF, 0xFF };
++
++	u8 result[8];
++
++	// Loop through all 64 bits
++	for(bit_number=0; bit_number<64; bit_number++)
++	{
++		// If the given bit is set in the incoming buffer
++		if(buf[bit_number/8] & (1 << (bit_number % 8)))
++		{
++			// XOR the masked bits of the result
++			for(byte=0;byte<8;byte++) result[byte] ^= xor_mask[byte];
++		}
++
++		// Now rotate the bitmask
++		for(byte=0;byte<8;byte++)
++		{
++			// Shift the byte up by one bit
++			xor_mask[byte] = xor_mask[byte]<<1;
++			// Take the most significant bit of the previous byte and tack that on the bottom
++			// Special case for byte==0 when we take the MSB of the top byte instead
++			xor_mask[byte] |= xor_mask[(byte == 0 ? 7 : byte-1)]>>7;
++		}
++	}
++
++	// Copy result out
++	for(byte=0;byte<8;byte++) buf[byte]=result[byte];
++}
++
++int misc_init_r(void)
++{
++	unsigned char serial[17];
++
++	flash_read_user_serial(flash_info, (void *)system_serial, 0, 8);
++	if(0xff == (system_serial[0] & system_serial[1] & system_serial[2] & system_serial[3] &
++		system_serial[4] & system_serial[5] & system_serial[6] & system_serial[7]))
++	{
++		// User serial number is all ones, so use the factory serial number
++		flash_read_factory_serial(flash_info, (void *)system_serial, 0, 8);
++		gumstix_serial_hash(system_serial);
++	}
++
++	sprintf(serial,"%02lX%02lX%02lX%02lX%02lX%02lX%02lX%02lX",system_serial[0],system_serial[1],system_serial[2],system_serial[3],
++								system_serial[4],system_serial[5],system_serial[6],system_serial[7]);
++
++	setenv("serial#",serial);
++}
+--- a/board/gumstix/memsetup.S
++++ a/board/gumstix/memsetup.S
+@@ -0,0 +1,229 @@
++#include <config.h>
++#include <version.h>
++#include <asm/arch/pxa-regs.h>
++
++
++.macro CPWAIT
++	mrc	 p15,0,r0,c2,c0,0
++	mov	 r0,r0
++	sub	 pc,pc,#4
++.endm
++
++
++.globl lowlevel_init
++lowlevel_init:
++
++
++	cmp	pc, #0xa0000000			/** test if we're in SDRAM		**/
++	bhi	end_of_memsetup			/** if we are, then jump		**/
++
++	/* First, setup GPIOs */
++
++	ldr		r0,	=GPSR0
++	ldr		r1,	=CFG_GPSR0_VAL
++	str		r1,   [r0]
++
++	ldr		r0,	=GPSR1
++	ldr		r1,	=CFG_GPSR1_VAL
++	str		r1,   [r0]
++
++	ldr		r0,	=GPSR2
++	ldr		r1,	=CFG_GPSR2_VAL
++	str		r1,   [r0]
++
++	ldr		r0,	=GPCR0
++	ldr		r1,	=CFG_GPCR0_VAL
++	str		r1,   [r0]
++
++	ldr		r0,	=GPCR1
++	ldr		r1,	=CFG_GPCR1_VAL
++	str		r1,   [r0]
++
++	ldr		r0,	=GPCR2
++	ldr		r1,	=CFG_GPCR2_VAL
++	str		r1,   [r0]
++
++	ldr		r0,	=GPDR0
++	ldr		r1,	=CFG_GPDR0_VAL
++	str		r1,   [r0]
++
++	ldr		r0,	=GPDR1
++	ldr		r1,	=CFG_GPDR1_VAL
++	str		r1,   [r0]
++
++	ldr		r0,	=GPDR2
++	ldr		r1,	=CFG_GPDR2_VAL
++	str		r1,   [r0]
++
++	ldr		r0,	=GAFR0_L
++	ldr		r1,	=CFG_GAFR0_L_VAL
++	str		r1,   [r0]
++
++	ldr		r0,	=GAFR0_U
++	ldr		r1,	=CFG_GAFR0_U_VAL
++	str		r1,   [r0]
++
++	ldr		r0,	=GAFR1_L
++	ldr		r1,	=CFG_GAFR1_L_VAL
++	str		r1,   [r0]
++
++	ldr		r0,	=GAFR1_U
++	ldr		r1,	=CFG_GAFR1_U_VAL
++	str		r1,   [r0]
++
++	ldr		r0,	=GAFR2_L
++	ldr		r1,	=CFG_GAFR2_L_VAL
++	str		r1,   [r0]
++
++	ldr		r0,	=GAFR2_U
++	ldr		r1,	=CFG_GAFR2_U_VAL
++	str		r1,   [r0]
++
++	ldr		r0,	=PSSR
++	ldr		r1,	=CFG_PSSR_VAL
++	str		r1,	[r0]
++		
++	
++	/* The procedure below uses sample code generated by the Intel PXA250 Memory
++	 * Configuration Tool [http://appzone.intel.com/pcg/pxa250/memory/] which has
++	 * then been modified manually while following the documentation in
++	 * "Intel PXA255 Process Developer's Manual" [order #278693-002] 
++	 * Chapter 6.11 - Hardware, Watchdog, or Sleep Reset Operation */
++
++	/* Step 1: After hardware reset, complete a power-on wait of 200us to allow clocks to stabilize */
++
++	ldr	r3, =OSCR		/* reset the OS Timer Count to zero */
++	mov	r2, #0
++	str	r2, [r3]
++	ldr	r4, =0x300		/* really 0x2E1 is about 200usec, so 0x300 should be plenty */
++10:
++	ldr	r2, [r3]
++	cmp	r4, r2
++	bgt	10b
++
++	/* Step 1a: Write MSC0, MSC1, MSC2 */
++	ldr	r3, =MSC0		/* Configures /CS0 and /CS1 */
++	ldr	r2, =0x128C26AB		/* Generated value */
++	str	r2, [r3]
++	ldr	r2, [r3]		/* the MSC register should be read after it is written with */
++					/* a new value before an access to the memory is attempted. */
++					/* (see MSC section of manual) */
++	ldr	r3, =MSC1		/* /CS2 and /CS3 */
++	ldr	r2, =0x0000128C		/* Generated value */
++	str	r2, [r3]
++	ldr	r2, [r3]
++
++	/* Step 1b: Write MECR, MCMEM0, MCMEM1, MCATT0, MCATT1, MCIO0, MCIO1 (Skip on gumstix) */
++	/* Step 1c: Write MDREFR:K0RUN and MDREFR:E0PIN. Configure MDREFR:K0DB2. Retain
++	 *          the current values of MDREFR:APD and MDREFR:SLFRSH. MDREFR:DRI must
++	 *          contain a valid value. Deassert MDREFR:KxFREE. (Skip on gumstix) */
++
++	ldr	r3, =MDREFR
++	ldr	r2, [r3]		/* read MDREFR value */
++
++	ldr	r1, =0xfff
++	bic	r2, r2, r1		/* Clear DRI -- INTEL TOOL LEAVES THIS STEP OUT!! */
++	orr	r2, r2, #0x018		/* configure a valid SDRAM Refresh Interval (DRI) */
++	str	r2, [r3]
++
++	/* Step 2: Configure Synchronous Static memory (Skip on gumstix) */
++
++	/* Step 4: In systems that contain SDRAM, transition the SDRAM controller through the following state sequence:
++	 *         a. self-refresh
++	 *         b. power-down
++	 *         c. PWRDNX
++	 *         d. NOP */
++
++	orr	r2, r2, #0x00010000	/* assert K1RUN for SDCLK1 */
++	bic	r2, r2, #0x000A4000	/* clear K0DB2, K1DB2 and K2DB2 */
++	str	r2, [r3]		/* change from "self-refresh and clock-stop" to "self-refresh" state */
++
++	bic	r2, r2, #0x00400000	/* clear SLFRSH bit field */
++	str	r2, [r3]		/* change from "self-refresh" to "Power-down" state */
++
++	orr	r2, r2, #0x00008000	/* set the E1PIN bit field */
++	str	r2, [r3]		/* change from "Power-down" to "PWRDNX" state */
++
++	nop	/* no action is required to change from "PWRDNX" to "NOP" state */
++
++	/* Step 4f: Write MDCNFG (with enable bits deasserted), MDCNFG:DE3:2,1:0 set to 0. */
++
++	ldr	r3, =MDCNFG		/* Load the SDRAM Configuration register. Must not be enabled yet. */
++	ldr	r2, =0x000019C8		/* Value from Intel tool */
++	str	r2, [r3]		/* Write to MDCNFG register */
++
++	/* Step 5: For systems that contain SDRAM, wait a specified NOP power-up waiting period required by
++	 * the SDRAMs to ensure the SDRAMs receive a stable clock with a NOP condition */
++
++	ldr	r3, =OSCR		/* reset the OS Timer Count to zero */
++	mov	r2, #0 
++	str	r2, [r3] 
++	ldr	r4, =0x300		/* really 0x2E1 is about 200usec, so 0x300 should be plenty */
++20:
++	ldr	r2, [r3] 
++	cmp	r4, r2
++	bgt	20b 
++
++	/* Step 6: Ensure the data cache is disabled -- should not be needed out of reset, but best to be safe*/
++
++	mov	r0, #0x78		/* turn everything off */
++	mcr	p15, 0, r0, c1, c0, 0	/* caches off, MMU off, etc. */
++
++	CPWAIT				/* wait for co-processor */
++
++	/* Step 7: On a hardware reset in systems that contain SDRAM, trigger the specified number (typically
++		eight) of refresh cycles by attempting non-burst read or write accesses to any disabled
++		SDRAM bank. Each such access causes a simultaneous CBR refresh cycles for all four banks,
++		which causes a pass through the CBR state and back to NOP. On the first pass, the PALL state
++		occurs before the CBR state. */
++
++	ldr	r3, =PHYS_SDRAM_1
++	mov	r2, #9	/* now must do 9 (!) refresh or CBR commands before the first access */
++CBR_refresh1:
++	str	r2, [r3]
++	subs	r2, r2, #1 
++	bne	CBR_refresh1 
++
++	/* Step 8: Can re-enable DCACHE if it was disabled above (Skip on gumstix) */
++
++	/* Step 9: Enable SDRAM partitions */
++
++	ldr	r3, =MDCNFG		/* sdram config -- sdram enable */
++	ldr	r2, [r3] 
++	orr	r2, r2, #0x00000001	/* enable partition 0 only */
++	str	r2, [r3]		/* write to MDCNFG */
++
++	/* Step 10: In systems containing SDRAM, write the MDMRS register to trigger an MRS command to all
++	 * enabled banks of SDRAM. For each SDRAM partition pair that has one or both partitions
++	 * enabled, this forces a pass through the MRS state and back to NOP. The CAS latency must be
++	 * the only variable option and is derived from the value programmed in the
++	 * MDCNFG:MDTC0,2 fields. The burst type is programmed to sequential and the length is set
++	 * to four. */
++
++	ldr	r3, =MDMRS		/* write the MDMRS */
++	ldr	r2, =0x00020022		/* the writable bits will be written as a 0 */
++	str	r2, [r3]
++
++	/* Step 11: (optional) Enable auto-power-down */
++
++	ldr	r3, =MDREFR		/* enable auto-power-down */
++	ldr	r2, [r3] 
++	orr	r2, r2, #0x00100000	/* set the APD bit */
++	str	r2, [r3]		/* write to MDREFR */
++
++	/* enable the 32Khz oscillator for RTC and PowerManager             */
++
++	ldr     r1,  =OSCC
++	mov     r2,  #OSCC_OON
++	str     r2,  [r1]
++
++	/* NOTE:  spin here until OSCC.OOK get set, meaning the PLL         */
++	/* has settled.                                                     */
++/*60:
++	ldr     r2, [r1]
++	ands    r2, r2, #1
++	beq     60b							*/
++
++end_of_memsetup:
++	mov	pc, lr
++
+--- a/board/gumstix/u-boot.lds
++++ a/board/gumstix/u-boot.lds
+@@ -0,0 +1,55 @@
++/*
++ * (C) Copyright 2004
++ * Craig Hughes, Gumstix Inc, <craig@gumstix.com>
++ *
++ * See file CREDITS for list of people who contributed to this
++ * project.
++ *
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU General Public License as
++ * published by the Free Software Foundation; either version 2 of
++ * the License, or (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write to the Free Software
++ * Foundation, Inc., 59 Temple Place, Suite 330, Boston,
++ * MA 02111-1307 USA
++ */
++
++OUTPUT_FORMAT("elf32-littlearm", "elf32-littlearm", "elf32-littlearm")
++OUTPUT_ARCH(arm)
++ENTRY(_start)
++SECTIONS
++{
++        . = 0x00000000;
++
++        . = ALIGN(4);
++	.text      :
++	{
++	  cpu/pxa/start.o	(.text)
++	  board/gumstix/memsetup.o	(.text)
++	  *(.text)
++	}
++        . = ALIGN(4);
++        .rodata : { *(.rodata) }
++
++        . = ALIGN(4);
++        .data : { *(.data) }
++
++        . = ALIGN(4);
++        .got : { *(.got) }
++
++	__u_boot_cmd_start = .;
++	.u_boot_cmd : { *(.u_boot_cmd) }
++	__u_boot_cmd_end = .;
++
++        . = ALIGN(4);
++	__bss_start = .;
++        .bss : { *(.bss) }
++	_end = .;
++}
+--- a/cpu/pxa/start.S
++++ a/cpu/pxa/start.S
+@@ -91,6 +91,7 @@
+ 	.word 0x0badc0de
+ #endif
+ 
++.space 0x800		/* JTAG install interrupt vectors over low memory in instruction cache */
+ 
+ /****************************************************************************/
+ /*									    */
+@@ -104,6 +105,37 @@
+ 	orr	r0,r0,#0x13
+ 	msr	cpsr,r0
+ 
++/* This special code just unprotects all of flash, then erases it */
++//	mov	r0, #0x1f		/* Loop over all blocks 0x1f-0x00*/
++//flash_wipe_main_loop:
++//	mov	r1, r0, LSL #0x11	/* Convert bank number to start address */
++//	mov	r2, #0x60		/* Clear lock bit setup */
++//	strh	r2, [r1]
++//	nop
++//	mov	r2, #0xd0		/* Clear lock bits confirm */
++//	strh	r2, [r1]
++//	nop
++//flash_clear_wait_loop:
++//	ldrh	r2, [r1]
++//	tst	r2, #0x80		/* Check SR.7 */
++//	bne	flash_clear_wait_loop
++//
++//	mov	r2, #0x20		/* Block erase command */
++//	strh	r2, [r1]
++//	nop
++//	mov	r2, #0xd0		/* Block erase confirm */
++//	strh	r2, [r1]
++//	nop
++//flash_erase_wait_loop:
++//	ldrh	r2, [r1]
++//	tst	r2, #0x80
++//	bne	flash_clear_wait_loop
++//
++//	teq	r0, #0
++//	subne	r0, r0, #1
++//	bne	flash_wipe_main_loop
++/* End of flash-nuking code */
++
+ 	/*
+ 	 * we do sys-critical inits only at reboot,
+ 	 * not when booting from ram!
+@@ -113,7 +145,7 @@
+ #endif
+ 
+ relocate:				/* relocate U-Boot to RAM	    */
+-	adr	r0, _start		/* r0 <- current position of code   */
++	adrl	r0, _start		/* r0 <- current position of code   */
+ 	ldr	r1, _TEXT_BASE		/* test if we run from flash or RAM */
+ 	cmp     r0, r1                  /* don't reloc during debug         */
+ 	beq     stack_setup
+--- a/include/configs/gumstix.h
++++ a/include/configs/gumstix.h
+@@ -0,0 +1,259 @@
++/* 
++ * Copyright (C) 2004 Gumstix, Inc.
++**
++**   Gumstix u-boot 1.1.1
++ *
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU General Public License as
++ * published by the Free Software Foundation; either version 2 of
++ * the License, or (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write to the Free Software
++ * Foundation, Inc., 59 Temple Place, Suite 330, Boston,
++ * MA 02111-1307 USA
++ *
++ * Written by Craig Hughes <craig@gumstix.com> 2004
++ *
++ */
++
++#ifndef __CONFIG_H
++#define __CONFIG_H
++
++#define CONFIG_PXA250		/* this is an PXA250 CPU	*/
++#define CONFIG_GUMSTIX		/* config for gumstix board	*/
++#undef  CONFIG_USE_IRQ		/* don't need use IRQ/FIQ	*/
++#ifndef __LITTLE_ENDIAN
++#define __LITTLE_ENDIAN 1234	/* For some reason this is not defined */
++#endif
++
++/*
++ * Select serial console configuration FFUART is default on G dev board
++ */
++
++#define CONFIG_FFUART
++#define CONFIG_BAUDRATE		115200
++#define CONFIG_SILENT_CONSOLE
++
++/*
++ * Definition of u-boot build in commands. Check out CONFIG_CMD_DFL if
++ * neccessary in include/cmd_confdefs.h file. (Un)comment for getting
++ * functionality or size of u-boot code.
++ */
++
++#define CONFIG_COMMANDS	(  CONFIG_CMD_DFL	\
++			& ~CFG_CMD_CDP		\
++			& ~CFG_CMD_IDE		\
++				& ~CFG_CMD_IMLS		\
++			& ~CFG_CMD_IRQ		\
++			& ~CFG_CMD_PCMCIA	\
++			& ~CFG_CMD_SETGETDCR	\
++			| CFG_CMD_AUTOSCRIPT	\
++			| CFG_CMD_BDI		\
++			| CFG_CMD_BOOTD 	\
++			| CFG_CMD_CACHE 	\
++			| CFG_CMD_CONSOLE	\
++				| CFG_CMD_DHCP		\
++			| CFG_CMD_DIAG		\
++			| CFG_CMD_ECHO		\
++			| CFG_CMD_ELF		\
++			| CFG_CMD_ENV		\
++				| CFG_CMD_FAT		\
++			| CFG_CMD_FLASH		\
++			| CFG_CMD_IMI		\
++			| CFG_CMD_ITEST 	\
++				| CFG_CMD_JFFS2 	\
++			| CFG_CMD_LOADB		\
++			| CFG_CMD_LOADS 	\
++			| CFG_CMD_MEMORY	\
++			| CFG_CMD_MISC		\
++			| CFG_CMD_MMC		\
++			| CFG_CMD_NET 		\
++			| CFG_CMD_NFS		\
++			| CFG_CMD_PING		\
++			| CFG_CMD_REGINFO	\
++			| CFG_CMD_RUN		\
++			| CFG_CMD_SAVES		\
++			| CFG_CMD_SDRAM		\
++				)
++
++
++#define CONFIG_NETCONSOLE
++#define CONFIG_NET_MULTI
++
++#define CFG_DEVICE_NULLDEV
++
++#include <cmd_confdefs.h>
++
++/*
++ * Boot options. Setting delay to -1 stops autostart count down.
++ * NOTE: Sending parameters to kernel depends on kernel version and
++ * 2.4.19-rmk6-pxa1 patch used while my u-boot coding didn't accept 
++ * parameters at all! Do not get confused by them so.
++*/
++
++#define CONFIG_IDENT_STRING	"\n\n*** Welcome to Gumstix ***"
++#define CONFIG_MISC_INIT_R	/* misc_init_r function in gumstix sets board serial number */
++
++#define CONFIG_BOOTFILE		boot/uImage
++#define CONFIG_BOOTARGS		"console=ttyS0,115200n8 root=1f01 rootfstype=jffs2 reboot=cold,hard"
++#define CONFIG_BOOTCOMMAND	"icache on;setenv stderr nulldev; setenv stdout nulldev; if mmcinit && fatload mmc 0 a2000000 gumstix-factory.script; then setenv stdout serial; setenv stderr serial; echo Found gumstix-factory script...; autoscr; else setenv stdout serial;setenv stderr serial;fsload && bootm; fi"
++#define CONFIG_BOOTDELAY	2		/* in seconds */
++#define CONFIG_EXTRA_ENV_SETTINGS	"verify=no"
++#define CFG_HUSH_PARSER
++#define CFG_AUTO_COMPLETE
++#define CFG_PROMPT_HUSH_PS2	"> "
++
++/*
++ * General options for u-boot. Modify to save memory foot print
++ */
++
++#define CFG_LONGHELP				/* undef saves memory		*/
++#define CFG_PROMPT		"GUM> "		/* prompt string		*/
++#define CFG_CBSIZE		512		/* console I/O buffer		*/
++#define CFG_PBSIZE (CFG_CBSIZE+sizeof(CFG_PROMPT)+16)	/* print buffer size	*/
++#define CFG_MAXARGS		16		/* max command args		*/
++#define CFG_BARGSIZE		CFG_CBSIZE	/* boot args buf size		*/
++
++#define CONFIG_CRC32_VERIFY
++#define CONFIG_LOOPW
++#define CONFIG_MX_CYCLIC
++
++/*
++ *  * SMSC91C111 Network Card
++ *   */
++#define CONFIG_DRIVER_SMC91111          1
++#define CONFIG_SMC91111_BASE            0x04000300 /* chip select 1         */
++#undef  CONFIG_SMC_USE_32_BIT                      /* 16 bit bus access     */
++#undef  CONFIG_SMC_91111_EXT_PHY                   /* we use internal phy   */
++#undef  CONFIG_SHOW_ACTIVITY
++#define CONFIG_NET_RETRY_COUNT          10         /* # of retries          */
++#define CONFIG_ETHPRIME		"SMC91C1111-0"
++#define CONFIG_ETHADDR          00:0A:95:A5:47:3A
++
++
++#define CFG_MEMTEST_START	0xa1000000	/* memtest test area		*/
++#define CFG_MEMTEST_END		0xa2000000
++
++
++#undef  CFG_CLKS_IN_HZ				/* use HZ for freq. display	*/
++#define CFG_HZ			3686400		/* incrementer freq: 3.6864 MHz	*/
++#ifdef CONFIG_GUMSTIX_CPUSPEED_400
++#define CFG_CPUSPEED		0x161		/* 0x161 == 400MHz, 0x141 ==200MHz */
++#else
++#define CFG_CPUSPEED		0x141
++#endif
++#define CFG_BAUDRATE_TABLE	{ 9600, 19200, 38400, 57600, 115200, 230400 }
++
++#define CFG_CONSOLE_INFO_QUIET
++
++/*
++ * Definitions related to passing arguments to kernel.
++ */
++#define CONFIG_CMDLINE_TAG		/* send commandline to Kernel		*/
++#define CONFIG_SETUP_MEMORY_TAGS	/* send memory definition to kernel	*/
++#define CONFIG_INITRD_TAG		/* send initrd params			*/
++#define CONFIG_SERIAL_TAG		/* send serialnr from flash 		*/
++#undef  CONFIG_VFD			/* do not send framebuffer setup	*/
++
++/*
++ * SDRAM Memory Map
++ */
++#define CONFIG_NR_DRAM_BANKS	1		/* we have 1 bank of SDRAM	*/
++#define PHYS_SDRAM_1		0xa0000000	/* SDRAM bank #1		*/
++#define PHYS_SDRAM_1_SIZE	0x04000000	/* 64 MB ( 2 chip )		*/
++
++#define CFG_DRAM_BASE		PHYS_SDRAM_1
++#define CFG_DRAM_SIZE		PHYS_SDRAM_1_SIZE
++
++/*
++ * Configuration for FLASH memory
++ */
++#define PHYS_FLASH_1		0x00000000	/* Flash Bank #1 */
++#define PHYS_FLASH_SECT_SIZE	0x00020000	/* 128 KB sectors */
++
++#define CFG_FLASH_BASE		PHYS_FLASH_1
++#define CFG_FLASH_CFI				/* flash is CFI conformant	*/
++#define CFG_FLASH_CFI_DRIVER			/* use common cfi driver	*/
++#define CFG_FLASH_USE_BUFFER_WRITE 1		/* use buffered writes (20x faster) */
++#define CFG_MAX_FLASH_BANKS	1		/* max # of memory banks	*/
++#define CFG_MAX_FLASH_SECT	256		/* max # of sectors on one chip	*/
++#define CFG_FLASH_PROTECTION			/* use hardware flash protection */
++
++#define CFG_ENV_IS_IN_FLASH
++#define CFG_ENV_SIZE		0x1000		/* 4kB */
++#define CFG_ENV_SECT_SIZE	PHYS_FLASH_SECT_SIZE
++#define CFG_ENV_ADDR		((CFG_FLASH_BASE + CFG_ENV_SECT_SIZE*2) - CFG_ENV_SIZE)
++
++/*
++ * Malloc pool need to host env + 128 Kb reserve for other allocations.
++ */
++#define CFG_MALLOC_LEN		(CFG_ENV_SIZE + (128<<10) )
++#define CONFIG_STACKSIZE	(120<<10)	/* stack size */
++#define CFG_GBL_DATA_SIZE	512		/* num bytes initial data       */
++
++/*
++ * This is setting for JFFS2 support in u-boot.
++ * Right now there is no gain for user, but later on booting kernel might be
++ * possible. Consider using XIP kernel running from flash to save RAM
++ * footprint.
++ * NOTE: Enable CFG_CMD_JFFS2 for JFFS2 support.
++ */
++
++#define CFG_JFFS2_FIRST_BANK	0
++#define CFG_JFFS2_FIRST_SECTOR	2
++#define CFG_JFFS2_NUM_BANKS	1
++
++#define CONFIG_MMC		1
++#define CFG_MMC_BASE		0xF0000000
++#define CONFIG_DOS_PARTITION
++
++/*
++ * Environment setup. Definitions of monitor location and size with
++ * definition of environment setup ends up in 2 possibilities.
++ * 1. Embedded environment - in u-boot code is space for environment
++ * 2. Environment is read from predefined sector of flash
++ * Right now we support 2. possiblity, but expecting no env placed
++ * on mentioned address right now. This also needs to provide whole
++ * sector for it - for us 256Kb is really waste of memory. U-boot uses
++ * default env. and until kernel parameters could be sent to kernel
++ * env. has no sense to us.
++ */
++
++#define CFG_MONITOR_BASE	CFG_FLASH_BASE
++#define CFG_MONITOR_LEN		(PHYS_FLASH_SECT_SIZE*2 - CFG_ENV_SIZE)
++
++#define CFG_GPSR0_VAL		0xFFFFFFFF
++#define CFG_GPSR1_VAL		0xFFEFFFFF
++#define CFG_GPSR2_VAL		0xFFFEFFFF
++
++#define CFG_GPCR0_VAL		0x08022080
++#define CFG_GPCR1_VAL		0x00100000
++#define CFG_GPCR2_VAL		0x00010000
++
++#define CFG_GPDR0_VAL		0xC182B9F8
++#define CFG_GPDR1_VAL		0x0012AA80
++#define CFG_GPDR2_VAL		0x0001FFFF
++
++#define CFG_GAFR0_L_VAL		0x81011000
++#define CFG_GAFR0_U_VAL		0xA5254010
++#define CFG_GAFR1_L_VAL		0x69908010
++#define CFG_GAFR1_U_VAL		0xAAA5A8AA
++#define CFG_GAFR2_L_VAL		0xAAAAAAAA
++#define CFG_GAFR2_U_VAL		0x00000000
++
++#define CFG_PSSR_VAL		0x20
++
++/*
++ * Well this has to be defined, but on the other hand it is used differently
++ * one may expect. For instance loadb command do not cares :-)
++ * So advice is - do not rely on this...
++ */
++
++#define CFG_LOAD_ADDR		0xA2000000
++#endif  /* __CONFIG_H */
+--- a/lib_arm/board.c
++++ a/lib_arm/board.c
+@@ -200,10 +200,10 @@
+ 	NULL,
+ };
+ 
++DECLARE_GLOBAL_DATA_PTR;
++
+ void start_armboot (void)
+ {
+-	DECLARE_GLOBAL_DATA_PTR;
+-
+ 	ulong size;
+ 	init_fnc_t **init_fnc_ptr;
+ 	char *s;

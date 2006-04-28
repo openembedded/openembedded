@@ -1,0 +1,11 @@
+--- a/drivers/cfi_flash.c
++++ a/drivers/cfi_flash.c
+@@ -345,7 +345,7 @@
+ #endif
+ 
+ 	/* Environment protection ON by default */
+-#ifdef CFG_ENV_IS_IN_FLASH
++#if defined(CFG_ENV_IS_IN_FLASH) && (CFG_MONITOR_BASE + CFG_MONITOR_LEN < CFG_ENV_ADDR)
+ 	flash_protect (FLAG_PROTECT_SET,
+ 		       CFG_ENV_ADDR,
+ 		       CFG_ENV_ADDR + CFG_ENV_SECT_SIZE - 1,

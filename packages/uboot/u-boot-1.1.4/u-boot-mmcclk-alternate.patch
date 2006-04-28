@@ -1,0 +1,14 @@
+--- a/cpu/pxa/mmc.c	2005-05-31 14:58:43.090949787 -0700
++++ a/cpu/pxa/mmc.c	2005-04-14 16:02:22.000000000 -0700
+@@ -546,9 +546,10 @@
+  	int retries, rc = -ENODEV;
+ 	uchar *resp;
+ 
+-#ifdef CONFIG_LUBBOCK
++#if defined(CONFIG_LUBBOCK) || defined(CONFIG_GUMSTIX)
+ 	set_GPIO_mode( GPIO6_MMCCLK_MD );
+ 	set_GPIO_mode( GPIO8_MMCCS0_MD );
++	set_GPIO_mode( GPIO53_MMCCLK_MD );
+ #endif
+ 	CKEN |= CKEN12_MMC; /* enable MMC unit clock */
+ #if defined(CONFIG_ADSVIX)

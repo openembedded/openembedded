@@ -1,0 +1,102 @@
+--- u-boot-1.1.2/common/Makefile	2004-12-16 09:35:57.000000000 -0800
++++ u-boot-install/common/Makefile	2005-04-12 07:00:25.000000000 -0700
+@@ -34,7 +34,7 @@
+ 	  cmd_date.o cmd_dcr.o cmd_diag.o cmd_doc.o cmd_dtt.o \
+ 	  cmd_eeprom.o cmd_elf.o cmd_ext2.o \
+ 	  cmd_fat.o cmd_fdc.o cmd_fdos.o cmd_flash.o cmd_fpga.o \
+-	  cmd_i2c.o cmd_ide.o cmd_immap.o cmd_itest.o cmd_jffs2.o \
++	  cmd_i2c.o cmd_ide.o cmd_immap.o cmd_install.o cmd_itest.o cmd_jffs2.o \
+ 	  cmd_load.o cmd_log.o \
+ 	  cmd_mem.o cmd_mii.o cmd_misc.o cmd_mmc.o \
+ 	  cmd_nand.o cmd_net.o cmd_nvedit.o \
+--- u-boot-1.1.2/common/cmd_install.c	1969-12-31 16:00:00.000000000 -0800
++++ u-boot-install/common/cmd_install.c	2005-04-12 07:43:10.000000000 -0700
+@@ -0,0 +1,70 @@
++/*
++ * (C) Copyright 2005
++ * Craig Hughes, Gumstix Inc. <craig@gumstix.com>
++ *
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU General Public License as
++ * published by the Free Software Foundation; either version 2 of
++ * the License, or (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write to the Free Software
++ * Foundation, Inc., 59 Temple Place, Suite 330, Boston,
++ * MA 02111-1307 USA
++ */
++
++/*
++ * Install command to copy compiled-in binary to flash
++ *
++ */
++
++#include <common.h>
++#include <command.h>
++#if (CONFIG_COMMANDS & CFG_CMD_INSTALL)
++
++#ifdef CONFIG_GUMSTIX_CPUSPEED_400
++#include <u-boot-400.h>
++#else
++#include <u-boot-200.h>
++#endif
++
++int do_install ( cmd_tbl_t *cmdtp, int flag, int argc, char *argv[])
++{
++	int rc;
++	size_t sect_top;
++
++	if (argc != 1) {
++		printf ("Usage:\n%s\n", cmdtp->usage);
++		return 1;
++	}
++
++	for(sect_top=0; sect_top<sizeof(u_boot_bin_data); sect_top+=PHYS_FLASH_SECT_SIZE) continue;
++	sect_top--;
++	flash_sect_protect(0, CFG_FLASH_BASE, sect_top);
++	flash_sect_erase(CFG_FLASH_BASE, sect_top);
++
++	puts ("Copying to Flash... ");
++
++	rc = flash_write ((uchar *)u_boot_bin_data, CFG_FLASH_BASE, sizeof(u_boot_bin_data));
++	if (rc != 0) {
++		flash_perror (rc);
++		return (1);
++	}
++	puts ("done\n");
++	return 0;
++}
++
++
++/**************************************************/
++U_BOOT_CMD(
++	install,    1,    1,    do_install,
++	"install  - install u-boot to flash\n",
++	"copies a u-boot image to begining of flash\n"
++);
++
++#endif	/* CFG_CMD_INSTALL */
+--- u-boot-1.1.2/include/cmd_confdefs.h	2004-12-16 09:59:53.000000000 -0800
++++ u-boot-install/include/cmd_confdefs.h	2005-04-12 07:02:59.000000000 -0700
+@@ -94,6 +94,7 @@
+ #define CFG_CMD_EXT2    0x1000000000000000ULL	/* EXT2 Support                 */
+ #define CFG_CMD_SNTP	0x2000000000000000ULL	/* SNTP support			*/
+ #define CFG_CMD_DISPLAY	0x4000000000000000ULL	/* Display support		*/
++#define CFG_CMD_INSTALL 0x2000000000000000ULL	/* Install u-boot binary	*/
+ 
+ #define CFG_CMD_ALL	0xFFFFFFFFFFFFFFFFULL	/* ALL commands			*/
+ 
+@@ -121,6 +121,7 @@
+ 			CFG_CMD_I2C	| \
+ 			CFG_CMD_IDE	| \
+ 			CFG_CMD_IMMAP	| \
++			CFG_CMD_INSTALL	| \
+ 			CFG_CMD_IRQ	| \
+ 			CFG_CMD_JFFS2	| \
+ 			CFG_CMD_KGDB	| \

@@ -1,0 +1,139 @@
+--- u-boot/tools/env/fw_env.c	2006-03-17 17:21:00.000000000 -0800
++++ u-boot/tools/env/fw_env.c	2006-03-17 17:53:41.000000000 -0800
+@@ -31,8 +31,9 @@
+ #include <sys/ioctl.h>
+ #include <sys/stat.h>
+ #include <unistd.h>
+-#include <linux/mtd/mtd.h>
++#include <mtd/mtd-user.h>
+ #include "fw_env.h"
++#include "config.h"
+ 
+ typedef unsigned char uchar;
+ 
+@@ -54,8 +55,6 @@
+ #define ENVSIZE(i)    envdevices[(i)].env_size
+ #define DEVESIZE(i)   envdevices[(i)].erase_size
+ 
+-#define CFG_ENV_SIZE ENVSIZE(curdev)
+-
+ #define ENV_SIZE      getenvsize()
+ 
+ typedef struct environment_s {
+@@ -418,8 +417,8 @@
+ 			fdr = fd;
+ 		}
+ 		printf ("Unlocking flash...\n");
+-		erase.length = DEVESIZE (otherdev);
+-		erase.start = DEVOFFSET (otherdev);
++		erase.length = DEVESIZE (otherdev)*2;
++		erase.start = 0;
+ 		ioctl (fdr, MEMUNLOCK, &erase);
+ 
+ 		if (HaveRedundEnv) {
+@@ -439,7 +438,7 @@
+ 					strerror (errno));
+ 				return (-1);
+ 			}
+-			if (lseek (fdr, DEVOFFSET (otherdev) + CFG_ENV_SIZE, SEEK_SET)
++			if (lseek (fdr, DEVESIZE(otherdev), SEEK_SET)
+ 				== -1) {
+ 				fprintf (stderr, "seek error on %s: %s\n",
+ 					DEVNAME (otherdev),
+@@ -458,7 +457,7 @@
+ 		printf ("Erasing old environment...\n");
+ 
+ 		erase.length = DEVESIZE (otherdev);
+-		erase.start = DEVOFFSET (otherdev);
++		erase.start = DEVESIZE (otherdev);
+ 		if (ioctl (fdr, MEMERASE, &erase) != 0) {
+ 			fprintf (stderr, "MTD erase error on %s: %s\n",
+ 				DEVNAME (otherdev),
+@@ -469,6 +468,22 @@
+ 		printf ("Done\n");
+ 
+ 		printf ("Writing environment to %s...\n", DEVNAME (otherdev));
++		if (resid) {
++			if (lseek(fdr, DEVESIZE(otherdev), SEEK_SET)
++					== -1) {
++				fprintf(stderr, "seek error on %s: %s\n",
++						DEVNAME(otherdev),
++						strerror(errno));
++				return -1;
++			}
++			if (write (fdr, data, resid) != resid) {
++				fprintf (stderr,
++					"write error on %s: %s\n",
++					DEVNAME (curdev), strerror (errno));
++				return (-1);
++			}
++			free (data);
++		}
+ 		if (lseek (fdr, DEVOFFSET (otherdev), SEEK_SET) == -1) {
+ 			fprintf (stderr,
+ 				"seek error on %s: %s\n",
+@@ -487,15 +502,6 @@
+ 				DEVNAME (otherdev), strerror (errno));
+ 			return (-1);
+ 		}
+-		if (resid) {
+-			if (write (fdr, data, resid) != resid) {
+-				fprintf (stderr,
+-					"write error on %s: %s\n",
+-					DEVNAME (curdev), strerror (errno));
+-				return (-1);
+-			}
+-			free (data);
+-		}
+ 		if (HaveRedundEnv) {
+ 			/* change flag on current active env partition */
+ 			if (lseek (fd, DEVOFFSET (curdev) + sizeof (ulong), SEEK_SET)
+@@ -514,8 +520,8 @@
+ 		}
+ 		printf ("Done\n");
+ 		printf ("Locking ...\n");
+-		erase.length = DEVESIZE (otherdev);
+-		erase.start = DEVOFFSET (otherdev);
++		erase.length = DEVESIZE (otherdev)*2;
++		erase.start = 0;
+ 		ioctl (fdr, MEMLOCK, &erase);
+ 		if (HaveRedundEnv) {
+ 			erase.length = DEVESIZE (curdev);
+--- u-boot/tools/env/fw_env.h	2006-03-17 17:16:37.000000000 -0800
++++ u-boot/tools/env/fw_env.h	2006-03-17 17:53:41.000000000 -0800
+@@ -27,25 +27,17 @@
+  * See included "fw_env.config" sample file (TRAB board)
+  * for notes on configuration.
+  */
+-#define CONFIG_FILE     "/etc/fw_env.config"
++//#define CONFIG_FILE     "/etc/fw_env.config"
+ 
+-#define HAVE_REDUND /* For systems with 2 env sectors */
+-#define DEVICE1_NAME      "/dev/mtd1"
+-#define DEVICE2_NAME      "/dev/mtd2"
+-#define DEVICE1_OFFSET    0x0000
+-#define ENV1_SIZE         0x4000
+-#define DEVICE1_ESIZE     0x4000
+-#define DEVICE2_OFFSET    0x0000
+-#define ENV2_SIZE         0x4000
+-#define DEVICE2_ESIZE     0x4000
+-
+-#define CONFIG_BAUDRATE		115200
+-#define CONFIG_BOOTDELAY	5	/* autoboot after 5 seconds	*/
+-#define CONFIG_BOOTCOMMAND							\
+-	"bootp; " 								\
+-	"setenv bootargs root=/dev/nfs nfsroot=${serverip}:${rootpath} " 	\
+-	"ip=${ipaddr}:${serverip}:${gatewayip}:${netmask}:${hostname}::off; " 	\
+-	"bootm"
++//#define HAVE_REDUND /* For systems with 2 env sectors */
++#define DEVICE1_NAME      "/dev/mtd0"
++//#define DEVICE2_NAME      "/dev/mtd2"
++#define DEVICE1_OFFSET    CFG_ENV_ADDR
++#define ENV1_SIZE         CFG_ENV_SIZE
++#define DEVICE1_ESIZE     CFG_ENV_SECT_SIZE
++//#define DEVICE2_OFFSET    0x0000
++//#define ENV2_SIZE         0x4000
++//#define DEVICE2_ESIZE     0x4000
+ 
+ extern		void  fw_printenv(int argc, char *argv[]);
+ extern unsigned char *fw_getenv  (unsigned char *name);
