@@ -3,11 +3,12 @@ DESCRIPTION = "Mail user agent"
 DEPENDS = "gtk+ gpgme gnutls"
 MAINTAINER = "Graeme Gregory <dp@xora.org.uk>"
 LICENSE = "GPL"
-PR = "r3"
+PR = "r4"
 
 SRC_URI = "http://sylpheed.good-day.net/sylpheed/v2.2/sylpheed-${PV}.tar.bz2 \
 	file://sylpheed-2.2.2-libsylph-Makefile-am.patch;patch=1 \
-	file://sylpheed-2.2.2-src-Makefile-am.patch;patch=1"
+	file://sylpheed-2.2.2-src-Makefile-am.patch;patch=1 \
+	file://sylpheed-gnutls_2.2.4.patch;patch=1"
 
 
 FILES_${PN} = "${bindir} ${datadir}/pixmaps ${datadir}/applications"
