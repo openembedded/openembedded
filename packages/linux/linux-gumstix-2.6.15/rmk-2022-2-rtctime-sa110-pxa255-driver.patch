@@ -1,0 +1,329 @@
+Index: linux-2.6.15gum/drivers/char/sa1100-rtc.c
+===================================================================
+--- /dev/null
++++ linux-2.6.15gum/drivers/char/sa1100-rtc.c
+@@ -0,0 +1,297 @@
++/*
++ *	Real Time Clock interface for Linux on StrongARM SA1100
++ *
++ *	Copyright (c) 2000 Nils Faerber
++ *
++ *	Based on rtc.c by Paul Gortmaker
++ *	Date/time conversion routines taken from arch/arm/kernel/time.c
++ *			by Linus Torvalds and Russel King
++ *		and the GNU C Library
++ *	( ... I love the GPL ... just take what you need! ;)
++ *
++ *	This program is free software; you can redistribute it and/or
++ *	modify it under the terms of the GNU General Public License
++ *	as published by the Free Software Foundation; either version
++ *	2 of the License, or (at your option) any later version.
++ *
++ *	1.00	2001-06-08	Nicolas Pitre <nico@cam.org>
++ *	- added periodic timer capability using OSMR1
++ *	- flag compatibility with other RTC chips
++ *	- permission checks for ioctls
++ *	- major cleanup, partial rewrite
++ *
++ *	0.03	2001-03-07	CIH <cih@coventive.com>
++ *	- Modify the bug setups RTC clock.
++ *
++ *	0.02	2001-02-27	Nils Faerber <nils@@kernelconcepts.de>
++ *	- removed mktime(), added alarm irq clear
++ *
++ *	0.01	2000-10-01	Nils Faerber <nils@@kernelconcepts.de>
++ *	- initial release
++ */
++
++#include <linux/module.h>
++#include <linux/fs.h>
++#include <linux/miscdevice.h>
++#include <linux/string.h>
++#include <linux/init.h>
++#include <linux/poll.h>
++#include <linux/proc_fs.h>
++#include <linux/interrupt.h>
++#include <linux/rtc.h>
++
++#ifdef CONFIG_ARCH_PXA
++#include <asm/arch/pxa-regs.h>
++#endif
++
++#include <asm/bitops.h>
++#include <asm/hardware.h>
++#include <asm/irq.h>
++#include <asm/rtc.h>
++
++#define TIMER_FREQ		3686400
++
++#define RTC_DEF_DIVIDER		32768 - 1
++#define RTC_DEF_TRIM		0
++
++/* Those are the bits from a classic RTC we want to mimic */
++#define RTC_IRQF		0x80	/* any of the following 3 is active */
++#define RTC_PF			0x40
++#define RTC_AF			0x20
++#define RTC_UF			0x10
++
++static unsigned long rtc_freq = 1024;
++static struct rtc_time rtc_alarm = {
++	.tm_year	= 0,
++	.tm_mon		= 0,
++	.tm_mday	= 0,
++	.tm_hour	= 0,
++	.tm_mon		= 0,
++	.tm_sec		= 0,
++};
++
++extern spinlock_t rtc_lock;
++
++static int rtc_update_alarm(struct rtc_time *alrm)
++{
++	struct rtc_time alarm_tm, now_tm;
++	unsigned long now, time;
++	int ret;
++
++	printk("Updating alarm\n");
++	do {
++		now = RCNR;
++		rtc_time_to_tm(now, &now_tm);
++		rtc_next_alarm_time(&alarm_tm, &now_tm, alrm);
++		ret = rtc_tm_to_time(&alarm_tm, &time);
++		if (ret != 0)
++			break;
++
++		RTSR = RTSR & (RTSR_HZE|RTSR_ALE|RTSR_AL);
++		RTAR = time;
++	} while (now != RCNR);
++	printk("set RTAR to %lx, now is %lx\n", time, now);
++
++	return ret;
++}
++
++static irqreturn_t rtc_interrupt(int irq, void *dev_id, struct pt_regs *regs)
++{
++	unsigned int rtsr;
++	unsigned long events = 0;
++
++	spin_lock(&rtc_lock);
++
++	rtsr = RTSR;
++	/* clear interrupt sources */
++	RTSR = 0;
++	RTSR = (RTSR_AL|RTSR_HZ) & (rtsr >> 2);
++
++	printk(KERN_CRIT "rtc_interrupt: rtsr = %x\n", rtsr);
++
++	/* clear alarm interrupt if it has occurred */
++	if (rtsr & RTSR_AL) {
++		printk(KERN_CRIT "ALARM INTRRUPT\n");
++		rtsr &= ~RTSR_ALE;
++	}
++	RTSR = rtsr & (RTSR_ALE|RTSR_HZE);
++
++	/* update irq data & counter */
++	if (rtsr & RTSR_AL)
++		events |= (RTC_AF|RTC_IRQF);
++	if (rtsr & RTSR_HZ)
++		events |= (RTC_UF|RTC_IRQF);
++
++	rtc_update(1, events);
++
++	if (rtsr & RTSR_AL && rtc_periodic_alarm(&rtc_alarm))
++		rtc_update_alarm(&rtc_alarm);
++
++	spin_unlock(&rtc_lock);
++
++	return IRQ_HANDLED;
++}
++
++
++static int sa1100_rtc_open(void)
++{
++	int ret;
++
++	ret = request_irq(IRQ_RTC1Hz, rtc_interrupt, SA_INTERRUPT, "rtc 1Hz", NULL);
++	if (ret) {
++		printk(KERN_ERR "rtc: IRQ%d already in use.\n", IRQ_RTC1Hz);
++		goto fail_ui;
++	}
++	ret = request_irq(IRQ_RTCAlrm, rtc_interrupt, SA_INTERRUPT, "rtc Alrm", NULL);
++	if (ret) {
++		printk(KERN_ERR "rtc: IRQ%d already in use.\n", IRQ_RTCAlrm);
++		goto fail_ai;
++	}
++	return 0;
++
++ fail_ai:
++	free_irq(IRQ_RTC1Hz, NULL);
++ fail_ui:
++	return ret;
++}
++
++static void sa1100_rtc_release(void)
++{
++	spin_lock_irq (&rtc_lock);
++	RTSR = 0;
++	OIER &= ~OIER_E1;
++	OSSR = OSSR_M1;
++	spin_unlock_irq (&rtc_lock);
++
++	free_irq(IRQ_RTCAlrm, NULL);
++	free_irq(IRQ_RTC1Hz, NULL);
++}
++
++static int sa1100_rtc_ioctl(unsigned int cmd, unsigned long arg)
++{
++	switch (cmd) {
++	case RTC_AIE_OFF:
++		spin_lock_irq(&rtc_lock);
++		RTSR &= ~RTSR_ALE;
++		spin_unlock_irq(&rtc_lock);
++		return 0;
++	case RTC_AIE_ON:
++		spin_lock_irq(&rtc_lock);
++		RTSR |= RTSR_ALE;
++		spin_unlock_irq(&rtc_lock);
++		return 0;
++	case RTC_UIE_OFF:
++		spin_lock_irq(&rtc_lock);
++		RTSR &= ~RTSR_HZE;
++		spin_unlock_irq(&rtc_lock);
++		return 0;
++	case RTC_UIE_ON:
++		spin_lock_irq(&rtc_lock);
++		RTSR |= RTSR_HZE;
++		spin_unlock_irq(&rtc_lock);
++		return 0;
++	}
++	return -EINVAL;
++}
++
++static void sa1100_rtc_read_time(struct rtc_time *tm)
++{
++	rtc_time_to_tm(RCNR, tm);
++}
++
++static int sa1100_rtc_set_time(struct rtc_time *tm)
++{
++	unsigned long time;
++	int ret;
++
++	ret = rtc_tm_to_time(tm, &time);
++	if (ret == 0)
++		RCNR = time;
++	return ret;
++}
++
++static void sa1100_rtc_read_alarm(struct rtc_wkalrm *alrm)
++{
++	memcpy(&alrm->time, &rtc_alarm, sizeof(struct rtc_time));
++	alrm->pending = RTSR & RTSR_AL ? 1 : 0;
++}
++
++static int sa1100_rtc_set_alarm(struct rtc_wkalrm *alrm)
++{
++	int ret;
++
++	printk("sa1100_rtc_set_alarm\n");
++
++	spin_lock_irq(&rtc_lock);
++	ret = rtc_update_alarm(&alrm->time);
++	if (ret == 0) {
++		memcpy(&rtc_alarm, &alrm->time, sizeof(struct rtc_time));
++
++		if (alrm->enabled)
++			enable_irq_wake(IRQ_RTCAlrm);
++		else
++			disable_irq_wake(IRQ_RTCAlrm);
++	}
++	spin_unlock_irq(&rtc_lock);
++
++	return ret;
++}
++
++static int sa1100_rtc_proc(char *buf)
++{
++	char *p = buf;
++
++	p += sprintf(p, "trim/divider\t: 0x%08x\n", RTTR);
++	p += sprintf(p, "alarm_IRQ\t: %s\n", (RTSR & RTSR_ALE) ? "yes" : "no" );
++	p += sprintf(p, "update_IRQ\t: %s\n", (RTSR & RTSR_HZE) ? "yes" : "no");
++	p += sprintf(p, "periodic_IRQ\t: %s\n", (OIER & OIER_E1) ? "yes" : "no");
++	p += sprintf(p, "periodic_freq\t: %ld\n", rtc_freq);
++
++	return p - buf;
++}
++
++static struct rtc_ops sa1100_rtc_ops = {
++	.owner		= THIS_MODULE,
++	.open		= sa1100_rtc_open,
++	.release	= sa1100_rtc_release,
++	.ioctl		= sa1100_rtc_ioctl,
++
++	.read_time	= sa1100_rtc_read_time,
++	.set_time	= sa1100_rtc_set_time,
++	.read_alarm	= sa1100_rtc_read_alarm,
++	.set_alarm	= sa1100_rtc_set_alarm,
++	.proc		= sa1100_rtc_proc,
++};
++
++static int __init rtc_init(void)
++{
++	/*
++	 * According to the manual we should be able to let RTTR be zero
++	 * and then a default diviser for a 32.768KHz clock is used.
++	 * Apparently this doesn't work, at least for my SA1110 rev 5.
++	 * If the clock divider is uninitialized then reset it to the
++	 * default value to get the 1Hz clock.
++	 */
++	if (RTTR == 0) {
++		RTTR = RTC_DEF_DIVIDER + (RTC_DEF_TRIM << 16);
++		printk(KERN_WARNING "rtc: warning: initializing default clock divider/trim value\n");
++		/*  The current RTC value probably doesn't make sense either */
++		RCNR = 0;
++	}
++
++	register_rtc(&sa1100_rtc_ops);
++
++	return 0;
++}
++
++static void __exit rtc_exit(void)
++{
++	unregister_rtc(&sa1100_rtc_ops);
++}
++
++module_init(rtc_init);
++module_exit(rtc_exit);
++
++MODULE_AUTHOR("Nils Faerber <nils@@kernelconcepts.de>");
++MODULE_DESCRIPTION("SA1100 Realtime Clock Driver (RTC)");
++MODULE_LICENSE("GPL");		/* so says the header */
+Index: linux-2.6.15gum/drivers/char/Makefile
+===================================================================
+--- linux-2.6.15gum.orig/drivers/char/Makefile
++++ linux-2.6.15gum/drivers/char/Makefile
+@@ -60,6 +60,7 @@ obj-$(CONFIG_RTC) += rtc.o
+ obj-$(CONFIG_HPET) += hpet.o
+ obj-$(CONFIG_GEN_RTC) += genrtc.o
+ obj-$(CONFIG_EFI_RTC) += efirtc.o
++obj-$(CONFIG_SA1100_RTC) += sa1100-rtc.o
+ obj-$(CONFIG_SGI_DS1286) += ds1286.o
+ obj-$(CONFIG_SGI_IP27_RTC) += ip27-rtc.o
+ obj-$(CONFIG_DS1302) += ds1302.o
+Index: linux-2.6.15gum/drivers/char/Kconfig
+===================================================================
+--- linux-2.6.15gum.orig/drivers/char/Kconfig
++++ linux-2.6.15gum/drivers/char/Kconfig
+@@ -790,6 +790,10 @@ config COBALT_LCD
+ 	  This option enables support for the LCD display and buttons found
+ 	  on Cobalt systems through a misc device.
+ 
++config SA1100_RTC
++	tristate "SA1100/PXA2xx Real Time Clock"
++	depends on ARCH_SA1100 || ARCH_PXA
++
+ config DTLK
+ 	tristate "Double Talk PC internal speech card support"
+ 	help

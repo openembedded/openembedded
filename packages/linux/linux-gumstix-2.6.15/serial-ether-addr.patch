@@ -1,0 +1,46 @@
+Index: linux-2.6.15gum/drivers/usb/gadget/ether.c
+===================================================================
+--- linux-2.6.15gum.orig/drivers/usb/gadget/ether.c
++++ linux-2.6.15gum/drivers/usb/gadget/ether.c
+@@ -2153,6 +2153,29 @@ static u8 __init nibble (unsigned char c
+ 	return 0;
+ }
+ 
++/**
++ * gen_serial_ether_addr - Generate software assigned Ethernet address
++ * based on the system_serial number
++ * @addr: Pointer to a six-byte array containing the Ethernet address
++ *
++ * Generate an Ethernet address (MAC) that is not multicast
++ * and has the local assigned bit set, keyed on the system_serial
++ */
++static inline void gen_serial_ether_addr(u8 *addr)
++{
++	static u8 ether_serial_digit = 1;
++	addr [0] = system_serial_high >> 8;
++	addr [1] = system_serial_high;
++	addr [2] = system_serial_low >> 24;
++	addr [3] = system_serial_low >> 16;
++	addr [4] = system_serial_low >> 8;
++	addr [5] = (system_serial_low & 0xc0) |	/* top bits are from system serial */
++		(2 << 4) |			/* 2 bits identify interface type 1=ether, 2=usb, 3&4 undef */
++		((ether_serial_digit++) & 0x0f);	/* 15 possible interfaces of each type */
++	addr [0] &= 0xfe;		/* clear multicast bit */
++	addr [0] |= 0x02;		/* set local assignment bit (IEEE802) */
++}
++
+ static void __init get_ether_addr (const char *str, u8 *dev_addr)
+ {
+ 	if (str) {
+@@ -2170,7 +2193,10 @@ static void __init get_ether_addr (const
+ 		if (is_valid_ether_addr (dev_addr))
+ 			return;
+ 	}
+-	random_ether_addr(dev_addr);
++	if(system_serial_high | system_serial_low)
++		gen_serial_ether_addr(dev_addr);
++	else
++		random_ether_addr(dev_addr);
+ }
+ 
+ static int __init

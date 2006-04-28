@@ -1,0 +1,55 @@
+Index: linux-2.6.15gum/arch/arm/mach-pxa/Kconfig
+===================================================================
+--- linux-2.6.15gum.orig/arch/arm/mach-pxa/Kconfig
++++ linux-2.6.15gum/arch/arm/mach-pxa/Kconfig
+@@ -5,6 +5,10 @@ menu "Intel PXA2xx Implementations"
+ choice
+ 	prompt "Select target board"
+ 
++config ARCH_GUMSTIX
++        bool "Gumstix Platform"
++        depends on ARCH_PXA
++
+ config ARCH_LUBBOCK
+ 	bool "Intel DBPXA250 Development Platform"
+ 	select PXA25x
+@@ -94,6 +98,27 @@ config MACH_TOSA
+ 	bool "Enable Sharp SL-6000x (Tosa) Support"
+ 	depends PXA_SHARPSL_25x
+ 
++choice
++	depends on ARCH_GUMSTIX
++	prompt "Gumstix Platform Version"
++	default ARCH_GUMSTIX_F
++
++config ARCH_GUMSTIX_ORIG
++	bool "Original Gumstix"
++	select PXA25x
++	help
++		The original gumstix platform, including the gs-200x and gs-400x and the waysmall
++		systems using these boards.
++
++config ARCH_GUMSTIX_F
++	bool "Gumstix-F"
++	select PXA25x
++	help
++		The updated Gumstix boards with 60-pin connector, including gs-200f, gs-400f and the
++		waysmall systems using these boards, including ws-200ax and ws-400ax.
++
++endchoice
++
+ config PXA25x
+ 	bool
+ 	help
+Index: linux-2.6.15gum/arch/arm/mach-pxa/Makefile
+===================================================================
+--- linux-2.6.15gum.orig/arch/arm/mach-pxa/Makefile
++++ linux-2.6.15gum/arch/arm/mach-pxa/Makefile
+@@ -8,6 +8,7 @@ obj-$(CONFIG_PXA25x) += pxa25x.o
+ obj-$(CONFIG_PXA27x) += pxa27x.o
+ 
+ # Specific board support
++obj-$(CONFIG_ARCH_GUMSTIX) += gumstix.o
+ obj-$(CONFIG_ARCH_LUBBOCK) += lubbock.o
+ obj-$(CONFIG_MACH_MAINSTONE) += mainstone.o
+ obj-$(CONFIG_ARCH_PXA_IDP) += idp.o

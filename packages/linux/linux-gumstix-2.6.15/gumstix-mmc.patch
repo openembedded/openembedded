@@ -1,0 +1,91 @@
+diff -udrp linux-2.6.15/arch/arm/mach-pxa/gumstix.c linux-2.6.15.mine/arch/arm/mach-pxa/gumstix.c
+--- linux-2.6.15/arch/arm/mach-pxa/gumstix.c	2006-04-11 00:29:42.000000000 -0400
++++ linux-2.6.15.mine/arch/arm/mach-pxa/gumstix.c	2006-04-11 00:11:38.000000000 -0400
+@@ -28,19 +28,60 @@
+ 
+ #include "generic.h"
+ 
+-static int gumstix_mci_init(struct device *dev, irqreturn_t (*lubbock_detect_int)(int, void *, struct pt_regs *), void *data)
++static struct pxamci_platform_data gumstix_mci_platform_data;
++
++static int gumstix_mci_init(struct device *dev, irqreturn_t (*gumstix_detect_int)(int, void *, struct pt_regs *), void *data)
+ {
+-	// Set up MMC controller
++	int err;
++
++	//printk("entering gumstix_mci_init\n");
++
+ 	pxa_gpio_mode(GPIO6_MMCCLK_MD);
+ 	pxa_gpio_mode(GPIO53_MMCCLK_MD);
+ 	pxa_gpio_mode(GPIO8_MMCCS0_MD);
+ 
++	//printk("  setting gpio sd detect\n");
++	pxa_gpio_mode(GUMSTIX_GPIO_nSD_DETECT | GPIO_IN);
++	pxa_gpio_mode(GUMSTIX_GPIO_nSD_WP | GPIO_IN);
++
++	//printk("  setting delay to ");
++	gumstix_mci_platform_data.detect_delay = msecs_to_jiffies(200);
++	//printk("%d\n", gumstix_mci_platform_data.detect_delay);
++
++	err = request_irq(GUMSTIX_IRQ_GPIO_nSD_DETECT, gumstix_detect_int, SA_INTERRUPT,
++			     "MMC card detect", data);
++	if (err) {
++		printk(KERN_ERR "gumstix_mci_init: MMC/SD: can't request MMC card detect IRQ\n");
++		return -1;
++	}
++
++	//printk("  set_irq_type returned a ");
++	err = set_irq_type(GUMSTIX_IRQ_GPIO_nSD_DETECT, IRQT_BOTHEDGE);
++	//printk("%d\n", err);
++
+ 	return 0;
+ }
+ 
++static int gumstix_mci_get_ro(struct device *dev)
++{
++	int ro;
++	//printk("entering gumstix_mci_get_ro\n");
++	ro = GPLR(GUMSTIX_GPIO_nSD_WP) & GPIO_bit(GUMSTIX_GPIO_nSD_WP);
++	//printk("  ro is %d\n", ro);
++	return ro;
++}
++
++static void gumstix_mci_exit(struct device *dev, void *data)
++{
++	//printk("entering gumstix_mci_exit\n");
++	free_irq(GUMSTIX_IRQ_GPIO_nSD_DETECT, data);
++}
++
+ static struct pxamci_platform_data gumstix_mci_platform_data = {
+ 	.ocr_mask	= MMC_VDD_32_33|MMC_VDD_33_34,
+-	.init		= &gumstix_mci_init,
++	.init		= gumstix_mci_init,
++	.get_ro		= gumstix_mci_get_ro,
++	.exit		= gumstix_mci_exit,
+ };
+ 
+ static int gumstix_udc_is_connected(void)
+@@ -76,6 +117,7 @@ static struct platform_device *devices[]
+ 
+ static void __init gumstix_init(void)
+ {
++	//printk("entering gumstix_init\n");
+ 	pxa_set_mci_info(&gumstix_mci_platform_data);
+ 	pxa_set_udc_info(&gumstix_udc_info);
+ 	(void) platform_add_devices(devices, ARRAY_SIZE(devices));
+diff -udrp linux-2.6.15/include/asm-arm/arch-pxa/gumstix.h linux-2.6.15.mine/include/asm-arm/arch-pxa/gumstix.h
+--- linux-2.6.15/include/asm-arm/arch-pxa/gumstix.h	2006-04-11 00:29:43.000000000 -0400
++++ linux-2.6.15.mine/include/asm-arm/arch-pxa/gumstix.h	2006-04-10 22:26:20.000000000 -0400
+@@ -36,6 +36,12 @@
+ #define GPIO_GUMSTIX_USB_GPIOx_CON_MD	(GPIO_GUMSTIX_USB_GPIOx | GPIO_OUT)
+ #define GPIO_GUMSTIX_USB_GPIOx_DIS_MD	(GPIO_GUMSTIX_USB_GPIOx | GPIO_IN)
+ 
++/*
++ * SD/MMC definitions
++ */
++#define GUMSTIX_GPIO_nSD_WP			(22) /* SD Write Protect? */
++#define GUMSTIX_GPIO_nSD_DETECT		(11) /* MMC/SD Card Detect */
++#define GUMSTIX_IRQ_GPIO_nSD_DETECT	IRQ_GPIO(11)
+ 
+ /*
+  * SMC Ethernet definitions

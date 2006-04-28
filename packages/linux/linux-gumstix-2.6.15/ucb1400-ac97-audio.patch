@@ -1,0 +1,84 @@
+Index: linux-2.6.15gum/sound/pci/ac97/ac97_codec.c
+===================================================================
+--- linux-2.6.15gum.orig/sound/pci/ac97/ac97_codec.c
++++ linux-2.6.15gum/sound/pci/ac97/ac97_codec.c
+@@ -150,7 +150,7 @@ static const ac97_codec_id_t snd_ac97_co
+ { 0x4e534300, 0xffffffff, "LM4540,43,45,46,48",	NULL,		NULL }, // only guess --jk
+ { 0x4e534331, 0xffffffff, "LM4549",		NULL,		NULL },
+ { 0x4e534350, 0xffffffff, "LM4550",		NULL,		NULL },
+-{ 0x50534304, 0xffffffff, "UCB1400",		NULL,		NULL },
++{ 0x50534304, 0xffffffff, "UCB1400",		patch_ucb1400,		NULL, AC97_HAS_NO_STD_PCM },
+ { 0x53494c20, 0xffffffe0, "Si3036,8",		mpatch_si3036,	mpatch_si3036, AC97_MODEM_PATCH },
+ { 0x54524102, 0xffffffff, "TR28022",		NULL,		NULL },
+ { 0x54524106, 0xffffffff, "TR28026",		NULL,		NULL },
+Index: linux-2.6.15gum/sound/pci/ac97/ac97_patch.c
+===================================================================
+--- linux-2.6.15gum.orig/sound/pci/ac97/ac97_patch.c
++++ linux-2.6.15gum/sound/pci/ac97/ac97_patch.c
+@@ -375,6 +375,56 @@ int patch_yamaha_ymf753(ac97_t * ac97)
+ }
+ 
+ /*
++ * UCB1400 codec
++ */
++
++#define AC97_UCB1400_FCSR1	0x6a
++#define AC97_UCB1400_FCSR2	0x6c
++
++static const snd_kcontrol_new_t ucb1400_snd_ac97_controls[] = {
++	AC97_SINGLE("Tone Control - Bass", AC97_UCB1400_FCSR1, 11, 4, 0),
++	AC97_SINGLE("Tone Control - Treble", AC97_UCB1400_FCSR1, 9, 2, 0),
++	AC97_SINGLE("Headphone Playback Switch", AC97_UCB1400_FCSR1, 6, 1, 0),
++	AC97_SINGLE("De-emphasis", AC97_UCB1400_FCSR1, 5, 1, 0),
++	AC97_SINGLE("DC Filter", AC97_UCB1400_FCSR1, 4, 1, 0),
++	AC97_SINGLE("Hi-pass Filter", AC97_UCB1400_FCSR1, 3, 1, 0),
++	AC97_SINGLE("ADC Filter", AC97_UCB1400_FCSR2, 12, 1, 0),
++};
++
++int patch_ucb1400(ac97_t * ac97)
++{
++	int err, i;
++
++	for(i = 0; i < ARRAY_SIZE(ucb1400_snd_ac97_controls); i++) {
++		if((err = snd_ctl_add(ac97->bus->card, snd_ac97_cnew(&ucb1400_snd_ac97_controls[i], ac97))) < 0)
++			return err;
++	}
++
++	snd_ac97_write_cache(ac97,  AC97_UCB1400_FCSR1,
++			(0 << 11) |     // 0 base boost
++			(0 << 9)  |     // 0 treble boost
++			(0 << 7)  |     // Mode = flat
++			(1 << 6)  |     // Headphones enable
++			(0 << 5)  |     // De-emphasis disabled
++			(1 << 4)  |     // DC filter enabled
++			(1 << 3)  |     // Hi-pass filter enabled
++			(0 << 2)  |     // disable interrupt signalling via GPIO_INT
++			(1 << 0)        // clear ADC overflow status if set
++		);
++
++	snd_ac97_write_cache(ac97, AC97_UCB1400_FCSR2,
++			(0 << 15) |     // must be 0
++			(0 << 13) |     // must be 0
++			(1 << 12) |     // ADC filter enabled
++			(0 << 10) |     // must be 0
++			(0 << 4)  |     // Smart low power mode on neither Codec nor PLL
++			(0 << 0)        // must be 0
++		);
++
++	return 0;
++}
++
++/*
+  * May 2, 2003 Liam Girdwood <liam.girdwood@wolfsonmicro.com>
+  *  removed broken wolfson00 patch.
+  *  added support for WM9705,WM9708,WM9709,WM9710,WM9711,WM9712 and WM9717.
+Index: linux-2.6.15gum/sound/pci/ac97/ac97_patch.h
+===================================================================
+--- linux-2.6.15gum.orig/sound/pci/ac97/ac97_patch.h
++++ linux-2.6.15gum/sound/pci/ac97/ac97_patch.h
+@@ -58,4 +58,5 @@ int patch_cm9780(ac97_t * ac97);
+ int patch_vt1616(ac97_t * ac97);
+ int patch_vt1617a(ac97_t * ac97);
+ int patch_it2646(ac97_t * ac97);
++int patch_ucb1400(ac97_t * ac97);
+ int mpatch_si3036(ac97_t * ac97);

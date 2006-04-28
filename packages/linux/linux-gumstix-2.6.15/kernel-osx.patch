@@ -1,0 +1,50 @@
+Index: linux-2.6.15gum/scripts/Makefile.host
+===================================================================
+--- linux-2.6.15gum.orig/scripts/Makefile.host
++++ linux-2.6.15gum/scripts/Makefile.host
+@@ -137,15 +137,17 @@ $(host-cxxobjs): %.o: %.cc FORCE
+ 
+ # Compile .c file, create position independent .o file
+ # host-cshobjs -> .o
+-quiet_cmd_host-cshobjs	= HOSTCC  -fPIC $@
+-      cmd_host-cshobjs	= $(HOSTCC) $(hostc_flags) -fPIC -c -o $@ $<
++quiet_cmd_host-cshobjs	= HOSTCC  -fPIC -fno-common $@
++      cmd_host-cshobjs	= $(HOSTCC) $(hostc_flags) -fPIC -fno-common -c -o $@ $<
+ $(host-cshobjs): %.o: %.c FORCE
+ 	$(call if_changed_dep,host-cshobjs)
+ 
+ # Link a shared library, based on position independent .o files
+ # *.o -> .so shared library (host-cshlib)
+-quiet_cmd_host-cshlib	= HOSTLLD -shared $@
+-      cmd_host-cshlib	= $(HOSTCC) $(HOSTLDFLAGS) -shared -o $@ \
++SHARED_SWITCH = `if $(HOSTCC) -dM -E - < /dev/null | grep -q APPLE; \
++	then echo "-dynamiclib"; else echo "-shared"; fi`
++quiet_cmd_host-cshlib	= HOSTLLD $(SHARED_SWITCH) $@
++      cmd_host-cshlib	= $(HOSTCC) $(HOSTLDFLAGS) $(SHARED_SWITCH) -o $@ \
+ 			  $(addprefix $(obj)/,$($(@F:.so=-objs))) \
+ 			  $(HOST_LOADLIBES) $(HOSTLOADLIBES_$(@F))
+ $(host-cshlib): %: $(host-cshobjs) FORCE
+Index: linux-2.6.15gum/Makefile
+===================================================================
+--- linux-2.6.15gum.orig/Makefile
++++ linux-2.6.15gum/Makefile
+@@ -203,7 +203,8 @@ CONFIG_SHELL := $(shell if [ -x "$$BASH"
+ 
+ HOSTCC  	= gcc
+ HOSTCXX  	= g++
+-HOSTCFLAGS	= -Wall -Wstrict-prototypes -O2 -fomit-frame-pointer
++HOSTCFLAGS	= -Wall -Wstrict-prototypes -O2 -fomit-frame-pointer -idirafter "`$(CC) -print-file-name=include`/../../../../../include/"
++
+ HOSTCXXFLAGS	= -O2
+ 
+ # 	Decide whether to build built-in, modular, or both.
+Index: linux-2.6.15gum/scripts/mod/sumversion.c
+===================================================================
+--- linux-2.6.15gum.orig/scripts/mod/sumversion.c
++++ linux-2.6.15gum/scripts/mod/sumversion.c
+@@ -1,4 +1,4 @@
+-#include <netinet/in.h>
++#include <arpa/inet.h>
+ #ifdef __sun__
+ #include <inttypes.h>
+ #else

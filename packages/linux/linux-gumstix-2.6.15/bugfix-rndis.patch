@@ -1,0 +1,14 @@
+Index: linux-2.6.15gum/drivers/usb/gadget/ether.c
+===================================================================
+--- linux-2.6.15gum.orig/drivers/usb/gadget/ether.c
++++ linux-2.6.15gum/drivers/usb/gadget/ether.c
+@@ -2328,7 +2328,9 @@ autoconf_fail:
+ #ifdef DEV_CONFIG_CDC
+ 		/* pxa25x only does CDC subset; often used with RNDIS */
+ 		} else if (cdc) {
++#ifdef DEV_CONFIG_CDC
+ 			control_intf.bNumEndpoints = 0;
++#endif
+ 			/* FIXME remove endpoint from descriptor list */
+ #endif
+ 		}

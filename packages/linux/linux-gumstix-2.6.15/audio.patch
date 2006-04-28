@@ -1,0 +1,454 @@
+Index: linux-2.6.15gum/sound/oss/ac97_codec.c
+===================================================================
+--- linux-2.6.15gum.orig/sound/oss/ac97_codec.c
++++ linux-2.6.15gum/sound/oss/ac97_codec.c
+@@ -59,6 +59,9 @@
+ 
+ #define CODEC_ID_BUFSZ 14
+ 
++static int ucb1400_read_mixer(struct ac97_codec *codec, int oss_channel);
++static void ucb1400_write_mixer(struct ac97_codec *codec, int oss_channel, 
++			     unsigned int left, unsigned int right);
+ static int ac97_read_mixer(struct ac97_codec *codec, int oss_channel);
+ static void ac97_write_mixer(struct ac97_codec *codec, int oss_channel, 
+ 			     unsigned int left, unsigned int right);
+@@ -85,6 +88,7 @@ static int cmedia_init(struct ac97_codec
+ static int cmedia_digital_control(struct ac97_codec *codec, int slots, int rate, int mode);
+ static int generic_digital_control(struct ac97_codec *codec, int slots, int rate, int mode);
+ static int ucb1400_init(struct ac97_codec *codec);
++static int ucb1400_control(struct ac97_codec *codec, int on);
+ 
+ 
+ /*
+@@ -120,7 +124,7 @@ static struct ac97_ops crystal_digital_o
+ static struct ac97_ops ad1886_ops = { ad1886_init, eapd_control, NULL };
+ static struct ac97_ops cmedia_ops = { NULL, eapd_control, NULL};
+ static struct ac97_ops cmedia_digital_ops = { cmedia_init, eapd_control, cmedia_digital_control};
+-static struct ac97_ops ucb1400_ops = { ucb1400_init, eapd_control, NULL };
++static struct ac97_ops ucb1400_ops = { ucb1400_init, ucb1400_control, NULL };
+ 
+ /* sorted by vendor/device id */
+ static const struct {
+@@ -309,6 +313,143 @@ static LIST_HEAD(codecs);
+ static LIST_HEAD(codec_drivers);
+ static DECLARE_MUTEX(codec_sem);
+ 
++// Values of UCB1400 register addresses
++#define AC97_UCB1400_FCR1		(0x6a)
++#define AC97_UCB1400_FCR2		(0x6c)
++// Masks for bits of interest in those registers
++#define AC97_UCB1400_BASS_BOOST_MASK	(0xf << 11)
++#define AC97_UCB1400_TREB_BOOST_MASK	(0x3 << 9)
++#define AC97_UCB1400_BOOST_MODE_MASK	(0x3 << 7)
++// Calculate the boost mode from the register by extracting the bits, then shifting it down
++// Mode 0 == flat, 1 == minimum, 2 == minimum, 3 == maximum
++#define AC97_UCB1400_BOOST_MODE(x)		(((x) & AC97_UCB1400_BOOST_MODE_MASK) >> 7)
++// Caculate the treble boost
++#define AC97_UCB1400_TREB_BOOST(x)	(((x) & AC97_UCB1400_TREB_BOOST_MASK) >> 9)
++// Calculate the bass boost
++#define AC97_UCB1400_BASS_BOOST(x)	(((x) & AC97_UCB1400_BASS_BOOST_MASK) >> 11)
++
++// Use a conversion table to translate from the register values to dB values
++#define AC97_UCB1400_BASS_LOOKUP(x,l)	((l)[AC97_UCB1400_BASS_BOOST(x) | (AC97_UCB1400_BOOST_MODE(x) << 4)])
++#define AC97_UCB1400_TREB_LOOKUP(x,l)	((l)[AC97_UCB1400_TREB_BOOST(x) | (AC97_UCB1400_BOOST_MODE(x) << 4)])
++
++// This lookup table is indexed by a 6 bit number:
++// Two high bits are the boost mode from teh register
++// Four low bits are from the BASS or TREB boost value in the register
++// The lookup value is the dB boost calculated from the UCB1400 spec sheet
++// The lookup values will be calculated and populated during ucb1400_init()
++static const u8 ac97_ucb1400_boost_lookup[] = {
++	 [0] = 0,   [1] =  0,  [2] =  0,  [3] =  0,
++	 [4] = 0,   [5] =  0,  [6] =  0,  [7] =  0, // flat 00
++	 [8] = 0,   [9] =  0, [10] =  0, [11] =  0,
++	[12] = 0,  [13] =  0, [14] =  0, [15] =  0,
++
++	[16] = 0,  [17] =  2, [18] =  4, [19] =  6,
++	[20] = 8,  [21] = 10, [22] = 12, [23] = 14, // min 01
++	[24] = 16, [25] = 18, [26] = 18, [27] = 18,
++	[28] = 18, [29] = 18, [30] = 18, [31] = 18,
++
++	[32] = 0,  [33] =  2, [34] =  4, [35] =  6,
++	[36] = 8,  [37] = 10, [38] = 12, [39] = 14, // min 10
++	[40] = 16, [41] = 18, [42] = 18, [43] = 18,
++	[44] = 18, [45] = 18, [46] = 18, [47] = 18,
++
++	[48] = 0,  [49] =  2, [50] =  4, [51] =  6,
++	[52] = 8,  [53] = 10, [54] = 12, [55] = 14, // max 11
++	[56] = 16, [57] = 18, [58] = 20, [59] = 22,
++	[60] = 24, [61] = 24, [62] = 24, [63] = 24
++};
++
++static int ucb1400_read_mixer(struct ac97_codec *codec, int oss_channel) 
++{
++	u16 val;
++
++	switch(oss_channel)
++	{
++
++	case SOUND_MIXER_BASS:
++		// Convert from the 24-dB max BASS boost level to a %age
++	val = codec->codec_read(codec, AC97_UCB1400_FCR1);	// Read the register
++			return (AC97_UCB1400_BASS_LOOKUP(val, ac97_ucb1400_boost_lookup)*100)/24;
++
++	case SOUND_MIXER_TREBLE:
++		// Convert from the 6-dB max TREB boost level to a %age
++		val = codec->codec_read(codec, AC97_UCB1400_FCR1);	// Read the register	
++			return (AC97_UCB1400_TREB_LOOKUP(val, ac97_ucb1400_boost_lookup)*100)/6;
++
++	case SOUND_MIXER_MIC:
++		val = codec->codec_read(codec, AC97_MIC_VOL);
++		return (val & AC97_MICBOOST ? 100 : 0);
++
++	default:
++		return ac97_read_mixer(codec, oss_channel);
++	}
++}
++
++#ifndef MAX
++#define MAX(a,b)	(((a)>(b)) ? (a) : (b))
++#endif
++
++static void ucb1400_write_mixer(struct ac97_codec *codec, int oss_channel,
++		      unsigned int left, unsigned int right)
++{
++	u16 old_val,new_val;
++	u8 treb,bass;
++
++	switch(oss_channel)
++	{
++	case SOUND_MIXER_BASS:
++	case SOUND_MIXER_TREBLE:
++	old_val = codec->codec_read(codec, AC97_UCB1400_FCR1);	// Read the register
++
++	// Determine which one changed, set old one to old value (or 0 if old mode was flat)
++		bass = (oss_channel==SOUND_MIXER_BASS) ?
++			(left*24)/100 : // Convert from %age to 0-24dB scale for bass
++			AC97_UCB1400_BASS_LOOKUP(old_val, ac97_ucb1400_boost_lookup);
++		treb = (oss_channel==SOUND_MIXER_TREBLE) ?
++			(left*6)/100 : // convert from %age to 0-6dB scale for bass
++			AC97_UCB1400_TREB_LOOKUP(old_val, ac97_ucb1400_boost_lookup);
++
++		// Now convert both treble and bass to values for the register.
++	// If both are 0, then use mode flat
++	// If either is non-zero, then use mode min if bass <=18
++	// Otherwise, use mode max
++	new_val = old_val & ~(AC97_UCB1400_BASS_BOOST_MASK |	// First clear the bits
++						AC97_UCB1400_TREB_BOOST_MASK |		// which is same as flat mode
++						AC97_UCB1400_BOOST_MODE_MASK);		// with both boosts at 0
++	if(bass > 18)
++	{
++			new_val |= (3 << 7);	// Set boost mode to 0b11 which is "max"
++	}
++	else if(bass > 0 || treb > 0)
++	{
++			new_val |= (1 << 7);	// Set boost mode to 0b01 which is "min"
++		}
++		else
++		{
++			// Set boost mode to 0b00 which is "flat"
++	}
++
++	if(bass || treb)
++	{
++			// The value to stick in the register the boost in dB divided by 2
++			// Dividing by 2 is the same as shifting right by 1
++			// We fix overflows by anding with the mask
++			new_val |= ((bass >> 1) << 11) & AC97_UCB1400_BASS_BOOST_MASK;
++			new_val |= ((treb >> 1) << 9)  & AC97_UCB1400_TREB_BOOST_MASK;
++	}
++
++	// Ok, now poke the value back to the codec
++	codec->codec_write(codec, AC97_UCB1400_FCR1, new_val);
++		break;
++
++	case SOUND_MIXER_MIC:
++		codec->codec_write(codec, AC97_MIC_VOL, (left >= 50 ? AC97_MICBOOST : 0));
++		break;
++
++	default: ac97_write_mixer(codec, oss_channel, left, right);
++	}
++}
++
+ /* reads the given OSS mixer from the ac97 the caller must have insured that the ac97 knows
+    about that given mixer, and should be holding a spinlock for the card */
+ static int ac97_read_mixer(struct ac97_codec *codec, int oss_channel) 
+@@ -526,6 +667,7 @@ static int ac97_recmask_io(struct ac97_c
+ #endif
+ 
+ 	codec->codec_write(codec, AC97_RECORD_SELECT, val);
++	val = codec->codec_read(codec, AC97_RECORD_SELECT);
+ 
+ 	return 0;
+ };
+@@ -634,6 +776,8 @@ int ac97_read_proc (char *page, char **s
+ {
+ 	int len = 0, cap, extid, val, id1, id2;
+ 	struct ac97_codec *codec;
++	u8 ac97_register_query_list[] = {0x02,0x0e,0x1a,0x1c,0x26,0x2a,0x2c,0x32,0x6a,0x6c,0x00};
++	size_t i=0;
+ 	int is_ac97_20 = 0;
+ 
+ 	if ((codec = data) == NULL)
+@@ -702,6 +846,13 @@ int ac97_read_proc (char *page, char **s
+ 				codec->codec_read(codec, AC97_PCM_FRONT_DAC_RATE));
+ 	}
+ 
++	do
++	{
++		len += sprintf(page+len, "Reg. 0x%02x : 0x%04x\n",
++				ac97_register_query_list[i],
++				codec->codec_read(codec, ac97_register_query_list[i]));
++		i++;
++	} while(ac97_register_query_list[i]);
+ 	return len;
+ }
+ 
+@@ -1180,7 +1331,25 @@ static int ad1886_init(struct ac97_codec
+ }
+ 
+ 
++static int ucb1400_control(struct ac97_codec *codec, int on)
++{
++	if(on)
++	{
++		codec->codec_write(codec, AC97_POWER_CONTROL, 0x0000);	// turn everything on
+ 
++		// Now we wait for everything to settle
++		udelay(100);
++	}
++	else
++	{
++		codec->codec_write(codec, AC97_POWER_CONTROL,
++								(1 << 11) |	// PR3: Audio Vref power-down
++								(1 << 9)  |	// PR1: Audio DAC and output path power-down
++								(1 << 8)	// PR0: Audio ADC and input path power-down
++				);
++	}
++	return 0;
++}
+ 
+ /*
+  *	This is basically standard AC97. It should work as a default for
+@@ -1336,10 +1505,55 @@ static int pt101_init(struct ac97_codec 
+ 	
+ static int ucb1400_init(struct ac97_codec *codec)
+ {
+-	codec->codec_write(codec,AC97_EXTENDED_STATUS,1);
+-	//codec->codec_write(codec, 0x6a, 0x1ff7);
+-	codec->codec_write(codec, 0x6a, 0x0050);
+-	codec->codec_write(codec, 0x6c, 0x0030);
++	codec->supported_mixers = SOUND_MASK_VOLUME |		// Specify what UCB1400 supports
++								SOUND_MASK_BASS |
++								SOUND_MASK_TREBLE |
++				SOUND_MASK_MIC |
++								SOUND_MASK_IGAIN;
++
++	codec->stereo_mixers = SOUND_MASK_VOLUME |			// Specify what UCB1400 supports
++							SOUND_MASK_LINE |
++							SOUND_MASK_IGAIN;
++
++	codec->record_sources = SOUND_MASK_MIC |			// Specify what UCB1400 supports
++							SOUND_MASK_LINE;
++
++	codec->read_mixer = ucb1400_read_mixer;				// The UCB1400 bass and treble implementations
++	codec->write_mixer = ucb1400_write_mixer;			// need special code
++
++	codec->codec_write(codec,AC97_EXTENDED_STATUS, 1);	// Ensure that VRA is on
++	
++	ucb1400_control(codec, 1);				// Turn on DAC/ADC paths first to prevent click
++	
++	codec->codec_write(codec, AC97_UCB1400_FCR1,
++					(0 << 11) |	// 0 base boost
++					(0 << 9)  |	// 0 treble boost
++					(0 << 7)  |	// Mode = flat
++					(1 << 6)  |	// Headphones enable
++					(0 << 5)  |	// De-emphasis disabled
++					(1 << 4)  |	// DC filter enabled
++					(1 << 3)  |	// Hi-pass filter enabled
++					(0 << 2)  |	// disable interrupt signalling via GPIO_INT
++					(1 << 0)	// clear ADC overflow status if set
++			);
++
++	codec->codec_write(codec, AC97_UCB1400_FCR2,
++					(0 << 15) |	// must be 0
++					(0 << 13) | 	// must be 0
++					(1 << 12) |	// ADC filter enabled
++					(0 << 10) |	// must be 0
++					(0 << 4)  |	// Smart low power mode on neither Codec nor PLL
++					(0 << 0)	// must be 0
++			);
++
++	codec->codec_write(codec, AC97_RECORD_SELECT, 0);	// default source is MIC
++
++	codec->codec_write(codec, AC97_MIC_VOL, (1 << 6));	// 20dB MIC boost
++
++	codec->codec_write(codec, AC97_RECORD_GAIN, 0);		// no master record gain
++
++	codec->codec_write(codec, AC97_GENERAL_PURPOSE, 0);	// no ADC to DAC loopback
++
+ 	return 0;
+ }
+ 
+@@ -1368,30 +1582,9 @@ unsigned int ac97_set_dac_rate(struct ac
+ 
+ 	if(rate != codec->codec_read(codec, AC97_PCM_FRONT_DAC_RATE))
+ 	{
+-		/* Mute several registers */
+-		mast_vol = codec->codec_read(codec, AC97_MASTER_VOL_STEREO);
+-		mono_vol = codec->codec_read(codec, AC97_MASTER_VOL_MONO);
+-		phone_vol = codec->codec_read(codec, AC97_HEADPHONE_VOL);
+-		pcm_vol = codec->codec_read(codec, AC97_PCMOUT_VOL);
+-		codec->codec_write(codec, AC97_MASTER_VOL_STEREO, mute_vol);
+-		codec->codec_write(codec, AC97_MASTER_VOL_MONO, mute_vol);
+-		codec->codec_write(codec, AC97_HEADPHONE_VOL, mute_vol);
+-		codec->codec_write(codec, AC97_PCMOUT_VOL, mute_vol);
+-		
+-		/* Power down the DAC */
+-		dacp=codec->codec_read(codec, AC97_POWER_CONTROL);
+-		codec->codec_write(codec, AC97_POWER_CONTROL, dacp|0x0200);
+ 		/* Load the rate and read the effective rate */
+ 		codec->codec_write(codec, AC97_PCM_FRONT_DAC_RATE, rate);
+ 		new_rate=codec->codec_read(codec, AC97_PCM_FRONT_DAC_RATE);
+-		/* Power it back up */
+-		codec->codec_write(codec, AC97_POWER_CONTROL, dacp);
+-
+-		/* Restore volumes */
+-		codec->codec_write(codec, AC97_MASTER_VOL_STEREO, mast_vol);
+-		codec->codec_write(codec, AC97_MASTER_VOL_MONO, mono_vol);
+-		codec->codec_write(codec, AC97_HEADPHONE_VOL, phone_vol);
+-		codec->codec_write(codec, AC97_PCMOUT_VOL, pcm_vol);
+ 	}
+ 	return new_rate;
+ }
+@@ -1414,14 +1607,9 @@ unsigned int ac97_set_adc_rate(struct ac
+ 
+ 	if(rate != codec->codec_read(codec, AC97_PCM_LR_ADC_RATE))
+ 	{
+-		/* Power down the ADC */
+-		dacp=codec->codec_read(codec, AC97_POWER_CONTROL);
+-		codec->codec_write(codec, AC97_POWER_CONTROL, dacp|0x0100);
+ 		/* Load the rate and read the effective rate */
+ 		codec->codec_write(codec, AC97_PCM_LR_ADC_RATE, rate);
+ 		new_rate=codec->codec_read(codec, AC97_PCM_LR_ADC_RATE);
+-		/* Power it back up */
+-		codec->codec_write(codec, AC97_POWER_CONTROL, dacp);
+ 	}
+ 	return new_rate;
+ }
+Index: linux-2.6.15gum/sound/oss/pxa-ac97.c
+===================================================================
+--- linux-2.6.15gum.orig/sound/oss/pxa-ac97.c
++++ linux-2.6.15gum/sound/oss/pxa-ac97.c
+@@ -21,6 +21,7 @@
+ #include <linux/completion.h>
+ #include <linux/delay.h>
+ #include <linux/poll.h>
++#include <linux/proc_fs.h>
+ #include <linux/sound.h>
+ #include <linux/soundcard.h>
+ #include <linux/ac97_codec.h>
+@@ -55,10 +56,10 @@ static u16 pxa_ac97_read(struct ac97_cod
+ 		if (GSR & GSR_RDCS) {
+ 			GSR = GSR_RDCS;			//write a 1 to clear
+ 			printk(KERN_CRIT "%s: read codec register timeout.\n", __FUNCTION__);
+-		}
++	}
+ 
+ 		init_completion(&CAR_completion);
+-		val = *reg_addr;			//valid data now but we've just started another cycle...
++	val = *reg_addr;			//valid data now but we've just started another cycle...
+ 		wait_for_completion(&CAR_completion);
+ 
+ 	} else {
+@@ -116,7 +117,7 @@ int pxa_ac97_get(struct ac97_codec **cod
+ 		if (ret)
+ 			return ret;
+ 
+-		CKEN |= CKEN2_AC97;
++		pxa_set_cken(CKEN2_AC97,1);
+ 
+ 		pxa_gpio_mode(GPIO31_SYNC_AC97_MD);
+ 		pxa_gpio_mode(GPIO30_SDATA_OUT_AC97_MD);
+@@ -134,7 +135,7 @@ int pxa_ac97_get(struct ac97_codec **cod
+ 		if (ret != 1) {
+ 			free_irq(IRQ_AC97, NULL);
+ 			GCR = GCR_ACLINK_OFF;
+-			CKEN &= ~CKEN2_AC97;
++			pxa_set_cken(CKEN2_AC97,0);
+ 			return ret;
+ 		}
+ 	}
+@@ -151,7 +152,7 @@ void pxa_ac97_put(void)
+ 	pxa_ac97_refcount--;
+ 	if (!pxa_ac97_refcount) {
+ 		GCR = GCR_ACLINK_OFF;
+-		CKEN &= ~CKEN2_AC97;
++		pxa_set_cken(CKEN2_AC97,0);
+ 		free_irq(IRQ_AC97, NULL);
+ 	}
+ 	up(&pxa_ac97_mutex);
+@@ -179,7 +180,7 @@ static audio_stream_t ac97_audio_in;
+  */
+ static void update_audio_in (void)
+ {
+-#if 1
++#if 0
+ 	long val;
+ 
+ 	/* Use the value stuffed by ac97_recmask_io()
+@@ -335,6 +336,13 @@ static int __init pxa_ac97_init(void)
+ 
+ 	update_audio_in ();
+ 
++	if(!proc_mkdir("driver/ucb1400",NULL)) return -EIO;
++	if(!create_proc_read_entry("driver/ucb1400/ac97",0,NULL,ac97_read_proc,&pxa_ac97_codec))
++	{
++		remove_proc_entry("driver/ucb1400",NULL);
++		return -EIO;
++	}
++	
+ 	ac97_audio_state.dev_dsp = register_sound_dsp(&ac97_audio_fops, -1);
+ 	pxa_ac97_codec.dev_mixer = register_sound_mixer(&mixer_fops, -1);
+ 
+@@ -345,6 +353,8 @@ static void __exit pxa_ac97_exit(void)
+ {
+ 	unregister_sound_dsp(ac97_audio_state.dev_dsp);
+ 	unregister_sound_mixer(pxa_ac97_codec.dev_mixer);
++	remove_proc_entry("driver/ucb1400/ac97",NULL);
++	remove_proc_entry("driver/ucb1400",NULL);
+ 	pxa_ac97_put();
+ }
+ 
+Index: linux-2.6.15gum/sound/oss/pxa-audio.c
+===================================================================
+--- linux-2.6.15gum.orig/sound/oss/pxa-audio.c
++++ linux-2.6.15gum/sound/oss/pxa-audio.c
+@@ -293,8 +293,6 @@ static int audio_write(struct file *file
+ 	audio_stream_t *s = state->output_stream;
+ 	int chunksize, ret = 0;
+ 
+-	if (ppos != &file->f_pos)
+-		return -ESPIPE;
+ 	if (s->mapped)
+ 		return -ENXIO;
+ 	if (!s->buffers && audio_setup_buf(s))
+@@ -365,8 +363,6 @@ static int audio_read(struct file *file,
+ 	audio_stream_t *s = state->input_stream;
+ 	int chunksize, ret = 0;
+ 
+-	if (ppos != &file->f_pos)
+-		return -ESPIPE;
+ 	if (s->mapped)
+ 		return -ENXIO;
+ 	if (!s->buffers && audio_setup_buf(s))
+@@ -684,6 +680,9 @@ static int audio_ioctl( struct inode *in
+ 		file->f_flags |= O_NONBLOCK;
+ 		return 0;
+ 
++	case SNDCTL_DSP_GETODELAY:
++		printk("%s: GETODELAY not implemented!\n",__FILE__);
++
+ 	case SNDCTL_DSP_RESET:
+ 		if (file->f_mode & FMODE_WRITE) 
+ 			audio_clear_buf(os);

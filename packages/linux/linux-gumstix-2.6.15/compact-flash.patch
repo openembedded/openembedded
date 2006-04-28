@@ -1,0 +1,171 @@
+Index: linux-2.6.15gum/drivers/pcmcia/Makefile
+===================================================================
+--- linux-2.6.15gum.orig/drivers/pcmcia/Makefile
++++ linux-2.6.15gum/drivers/pcmcia/Makefile
+@@ -68,4 +68,4 @@
+ pxa2xx_cs-$(CONFIG_ARCH_LUBBOCK)		+= pxa2xx_lubbock.o sa1111_generic.o
+ pxa2xx_cs-$(CONFIG_MACH_MAINSTONE)		+= pxa2xx_mainstone.o
+ pxa2xx_cs-$(CONFIG_PXA_SHARPSL)			+= pxa2xx_sharpsl.o
+-
++pxa2xx_cs-$(CONFIG_ARCH_GUMSTIX)		+= pxa2xx_gumstix.o
+Index: linux-2.6.15gum/drivers/pcmcia/pxa2xx_gumstix.c
+--- /dev/null
++++ linux-2.6.15gum/drivers/pcmcia/pxa2xx_gumstix.c
+@@ -0,0 +1,157 @@
++/*
++ * linux/drivers/pcmcia/pxa2xx_gumstix.c
++ *
++ * Gumstix PCMCIA specific routines. Based on Mainstone
++ *
++ * Copyright 2004, Craig Hughes <craig@gumstix.com>
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ */
++
++#include <linux/module.h>
++#include <linux/init.h>
++#include <linux/kernel.h>
++#include <linux/errno.h>
++#include <linux/interrupt.h>
++#include <linux/device.h>
++#include <linux/platform_device.h>
++
++#include <pcmcia/ss.h>
++
++#include <asm/hardware.h>
++#include <asm/delay.h>
++#include <asm/arch/pxa-regs.h>
++#include <asm/irq.h>
++
++#include <asm/arch/gumstix.h>
++
++#include "soc_common.h"
++
++static struct pcmcia_irqs irqs[] = {
++	{ 0, GUMSTIX_nPCD1_IRQ,		"CF nCD"     },
++	{ 0, GUMSTIX_nSTSCHG_IRQ,	"CF nSTSCHG" },
++};
++
++static int gumstix_pcmcia_hw_init(struct soc_pcmcia_socket *skt)
++{
++	pxa_gpio_mode(GPIO8_RESET_MD);
++	GPSR(GPIO8_RESET) = GPIO_bit(GPIO8_RESET);
++	udelay(50);
++	GPCR(GPIO8_RESET) = GPIO_bit(GPIO8_RESET);
++
++	pxa_gpio_mode(GPIO4_nBVD1_MD);
++	pxa_gpio_mode(GPIO36_nBVD2_MD);
++	pxa_gpio_mode(GPIO11_nPCD1_MD);
++	pxa_gpio_mode(GPIO26_PRDY_nBSY0_MD);
++
++	/*
++	 * Setup default state of GPIO outputs
++	 * before we enable them as outputs.
++	 */
++	GPSR(GPIO48_nPOE) =
++		GPIO_bit(GPIO48_nPOE) |
++		GPIO_bit(GPIO49_nPWE) |
++		GPIO_bit(GPIO50_nPIOR) |
++		GPIO_bit(GPIO51_nPIOW) |
++		GPIO_bit(GPIO52_nPCE_1) |
++		GPIO_bit(GPIO53_nPCE_2);
++
++	pxa_gpio_mode(GPIO48_nPOE_MD);
++	pxa_gpio_mode(GPIO49_nPWE_MD);
++	pxa_gpio_mode(GPIO50_nPIOR_MD);
++	pxa_gpio_mode(GPIO51_nPIOW_MD);
++	pxa_gpio_mode(GPIO52_nPCE_1_MD);
++	pxa_gpio_mode(GPIO53_nPCE_2_MD);
++	pxa_gpio_mode(GPIO54_pSKTSEL_MD);
++	pxa_gpio_mode(GPIO55_nPREG_MD);
++	pxa_gpio_mode(GPIO56_nPWAIT_MD);
++	pxa_gpio_mode(GPIO57_nIOIS16_MD);                                                                                                                                                              
++
++	skt->irq = GUMSTIX_PRDY_nBSY0_IRQ;
++
++	return soc_pcmcia_request_irqs(skt, irqs, ARRAY_SIZE(irqs));
++}
++
++static void gumstix_pcmcia_hw_shutdown(struct soc_pcmcia_socket *skt)
++{
++	soc_pcmcia_free_irqs(skt, irqs, ARRAY_SIZE(irqs));
++}
++
++static unsigned long gum_pcmcia_status;
++
++static void gumstix_pcmcia_socket_state(struct soc_pcmcia_socket *skt,
++				    struct pcmcia_state *state)
++{
++	state->detect = !(GPLR(GPIO11_nPCD1) & GPIO_bit(GPIO11_nPCD1));
++	state->ready  = !!(GPLR(GPIO26_PRDY_nBSY0) & GPIO_bit(GPIO26_PRDY_nBSY0));
++	state->bvd1   = !!(GPLR(GPIO4_nBVD1) & GPIO_bit(GPIO4_nBVD1));
++	state->bvd2   = 1;
++	state->vs_3v  = 0;
++	state->vs_Xv  = 0;
++	state->wrprot = 0;
++}
++
++static int gumstix_pcmcia_configure_socket(struct soc_pcmcia_socket *skt,
++				       const socket_state_t *state)
++{
++	return 0;
++}
++
++static void gumstix_pcmcia_socket_init(struct soc_pcmcia_socket *skt)
++{
++	soc_pcmcia_enable_irqs(skt, irqs, ARRAY_SIZE(irqs));
++}
++
++static void gumstix_pcmcia_socket_suspend(struct soc_pcmcia_socket *skt)
++{
++	soc_pcmcia_disable_irqs(skt, irqs, ARRAY_SIZE(irqs));
++}
++
++static struct pcmcia_low_level gumstix_pcmcia_ops = {
++	.owner			= THIS_MODULE,
++	.hw_init		= gumstix_pcmcia_hw_init,
++	.hw_shutdown		= gumstix_pcmcia_hw_shutdown,
++	.socket_state		= gumstix_pcmcia_socket_state,
++	.configure_socket	= gumstix_pcmcia_configure_socket,
++	.socket_init		= gumstix_pcmcia_socket_init,
++	.socket_suspend		= gumstix_pcmcia_socket_suspend,
++	.nr			= 1,
++};
++
++static struct platform_device *gumstix_pcmcia_device;
++
++static int __init gumstix_pcmcia_init(void)
++{
++	int ret;
++
++	gumstix_pcmcia_device = kmalloc(sizeof(*gumstix_pcmcia_device), GFP_KERNEL);
++	if (!gumstix_pcmcia_device)
++		return -ENOMEM;
++	memset(gumstix_pcmcia_device, 0, sizeof(*gumstix_pcmcia_device));
++	gumstix_pcmcia_device->name = "pxa2xx-pcmcia";
++	gumstix_pcmcia_device->dev.platform_data = &gumstix_pcmcia_ops;
++
++	ret = platform_device_register(gumstix_pcmcia_device);
++	if (ret)
++		kfree(gumstix_pcmcia_device);
++
++	return ret;
++}
++
++static void __exit gumstix_pcmcia_exit(void)
++{
++	/*
++	 * This call is supposed to free our gumstix_pcmcia_device.
++	 * Unfortunately platform_device don't have a free method, and
++	 * we can't assume it's free of any reference at this point so we
++	 * can't free it either.
++	 */
++	platform_device_unregister(gumstix_pcmcia_device);
++}
++
++fs_initcall(gumstix_pcmcia_init);
++module_exit(gumstix_pcmcia_exit);
++
++MODULE_LICENSE("GPL");

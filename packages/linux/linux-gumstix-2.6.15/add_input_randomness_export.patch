@@ -1,0 +1,13 @@
+Oddly, drivers/input/input.c seems to reference a symbol which is apparently in another module but not exported.
+Index: linux-2.6.15gum/drivers/char/random.c
+===================================================================
+--- linux-2.6.15gum.orig/drivers/char/random.c
++++ linux-2.6.15gum/drivers/char/random.c
+@@ -646,6 +646,7 @@ extern void add_input_randomness(unsigne
+ 	add_timer_randomness(&input_timer_state,
+ 			     (type << 4) ^ code ^ (code >> 4) ^ value);
+ }
++EXPORT_SYMBOL(add_input_randomness);
+ 
+ void add_interrupt_randomness(int irq)
+ {

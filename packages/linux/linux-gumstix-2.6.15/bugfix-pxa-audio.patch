@@ -1,0 +1,25 @@
+Index: linux-2.6.15gum/sound/oss/pxa-audio.c
+===================================================================
+--- linux-2.6.15gum.orig/sound/oss/pxa-audio.c
++++ linux-2.6.15gum/sound/oss/pxa-audio.c
+@@ -731,7 +731,7 @@ static int audio_mmap(struct file *file,
+ 		audio_buf_t *buf = &s->buffers[i];
+ 		if (!buf->master)
+ 			continue;
+-		ret = remap_page_range(vma, vma->vm_start, buf->dma_desc->dsadr,
++		ret = io_remap_page_range(vma, vma_addr, buf->dma_desc->dsadr,
+ 				       buf->master, vma->vm_page_prot);
+ 		if (ret)
+ 			return ret;
+Index: linux-2.6.15gum/sound/oss/pxa-audio.h
+===================================================================
+--- linux-2.6.15gum.orig/sound/oss/pxa-audio.h
++++ linux-2.6.15gum/sound/oss/pxa-audio.h
+@@ -52,3 +52,7 @@ typedef struct {
+ extern int pxa_audio_attach(struct inode *inode, struct file *file,
+ 				audio_state_t *state);
+ extern void pxa_audio_clear_buf(audio_stream_t *s);
++
++#define DCMD_TXPCDR (DCMD_INCSRCADDR|DCMD_FLOWSRC|DCMD_BURST32|DCMD_WIDTH4)
++#define DCMD_RXMCDR (DCMD_INCTRGADDR|DCMD_FLOWSRC|DCMD_BURST32|DCMD_WIDTH4)
++#define DCMD_RXPCDR (DCMD_INCTRGADDR|DCMD_FLOWSRC|DCMD_BURST32|DCMD_WIDTH4)

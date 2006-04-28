@@ -1,0 +1,22 @@
+Index: linux-2.6.15gum/drivers/mtd/Kconfig
+===================================================================
+--- linux-2.6.15gum.orig/drivers/mtd/Kconfig
++++ linux-2.6.15gum/drivers/mtd/Kconfig
+@@ -271,7 +271,5 @@ source "drivers/mtd/devices/Kconfig"
+ 
+ source "drivers/mtd/nand/Kconfig"
+ 
+-source "drivers/mtd/onenand/Kconfig"
+-
+ endmenu
+ 
+Index: linux-2.6.15gum/drivers/mtd/Makefile
+===================================================================
+--- linux-2.6.15gum.orig/drivers/mtd/Makefile
++++ linux-2.6.15gum/drivers/mtd/Makefile
+@@ -25,4 +25,4 @@ obj-$(CONFIG_RFD_FTL)		+= rfd_ftl.o mtd_
+ nftl-objs		:= nftlcore.o nftlmount.o
+ inftl-objs		:= inftlcore.o inftlmount.o
+ 
+-obj-y		+= chips/ maps/ devices/ nand/ onenand/
++obj-y		+= chips/ maps/ devices/ nand/

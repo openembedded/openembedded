@@ -1,0 +1,171 @@
+Index: linux-2.6.15gum/drivers/net/Kconfig
+===================================================================
+--- linux-2.6.15gum.orig/drivers/net/Kconfig
++++ linux-2.6.15gum/drivers/net/Kconfig
+@@ -826,6 +826,12 @@ config SMC91X
+ 	  module, say M here and read <file:Documentation/modules.txt> as well
+ 	  as <file:Documentation/networking/net-modules.txt>.
+ 
++config SMC91X_GUMSTIX
++	tristate
++	default m if SMC91X=m
++	default y if SMC91X=y
++	depends on SMC91X && ARCH_GUMSTIX
++
+ config SMC9194
+ 	tristate "SMC 9194 support"
+ 	depends on NET_VENDOR_SMC && (ISA || MAC && BROKEN)
+Index: linux-2.6.15gum/drivers/net/Makefile
+===================================================================
+--- linux-2.6.15gum.orig/drivers/net/Makefile
++++ linux-2.6.15gum/drivers/net/Makefile
+@@ -191,6 +191,7 @@ obj-$(CONFIG_SMC91X) += smc91x.o
+ obj-$(CONFIG_DM9000) += dm9000.o
+ obj-$(CONFIG_FEC_8XX) += fec_8xx/
+ 
++obj-$(CONFIG_SMC91X_GUMSTIX) += gumstix-smc91x.o
+ obj-$(CONFIG_ARM) += arm/
+ obj-$(CONFIG_DEV_APPLETALK) += appletalk/
+ obj-$(CONFIG_TR) += tokenring/
+Index: linux-2.6.15gum/drivers/net/smc91x.c
+===================================================================
+--- linux-2.6.15gum.orig/drivers/net/smc91x.c
++++ linux-2.6.15gum/drivers/net/smc91x.c
+@@ -2366,6 +2366,10 @@ static struct platform_driver smc_driver
+ 	},
+ };
+ 
++#ifdef CONFIG_ARCH_GUMSTIX
++extern void gumstix_smc91x_load(void);
++#endif
++
+ static int __init smc_init(void)
+ {
+ #ifdef MODULE
+@@ -2377,6 +2381,10 @@ static int __init smc_init(void)
+ #endif
+ #endif
+ 
++#ifdef CONFIG_ARCH_GUMSTIX
++	gumstix_smc91x_load();
++#endif
++ 
+ 	return platform_driver_register(&smc_driver);
+ }
+ 
+Index: linux-2.6.15gum/drivers/net/gumstix-smc91x.c
+===================================================================
+--- /dev/null
++++ linux-2.6.15gum/drivers/net/gumstix-smc91x.c
+@@ -0,0 +1,111 @@
++/*
++ *  Gumstix SMC91C111 chip intialization driver
++ *
++ *  Author:     Craig Hughes
++ *  Created:    December 9, 2004
++ *  Copyright:  (C) 2004 Craig Hughes
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 2 of the License, or
++ * (at your option) any later version.
++ *
++ */
++
++#include <linux/module.h>
++#include <linux/ioport.h>
++#include <linux/device.h>
++#include <linux/platform_device.h>
++#include <linux/delay.h>
++
++#include <asm/hardware.h>
++#include <asm/arch/pxa-regs.h>
++#include <asm/delay.h>
++
++#include <asm/arch/gumstix.h>
++
++static struct resource gumstix_smc91x0_resources[] = {
++	[0] = {
++		.name	= "smc91x-regs",
++		.start  = PXA_CS1_PHYS + 0x00000300,
++		.end    = PXA_CS1_PHYS + 0x000fffff,
++		.flags  = IORESOURCE_MEM,
++	},
++	[1] = {
++		.start  = GUMSTIX_ETH0_IRQ,
++		.end    = GUMSTIX_ETH0_IRQ,
++		.flags  = IORESOURCE_IRQ,
++	},
++};
++
++static struct resource gumstix_smc91x1_resources[] = {
++	[0] = {
++		.name	= "smc91x-regs",
++		.start	= PXA_CS2_PHYS + 0x00000300,
++		.end	= PXA_CS2_PHYS + 0x000fffff,
++		.flags	= IORESOURCE_MEM,
++	},
++	[1] = {
++		.start	= GUMSTIX_ETH1_IRQ,
++		.end	= GUMSTIX_ETH1_IRQ,
++		.flags	= IORESOURCE_IRQ,
++	},
++};
++
++static struct platform_device gumstix_smc91x0_device = {
++	.name           = "smc91x",
++	.id             = 0,
++	.num_resources  = ARRAY_SIZE(gumstix_smc91x0_resources),
++	.resource       = gumstix_smc91x0_resources,
++};
++
++static struct platform_device gumstix_smc91x1_device = {
++	.name           = "smc91x",
++	.id             = 1,
++	.num_resources  = ARRAY_SIZE(gumstix_smc91x1_resources),
++	.resource       = gumstix_smc91x1_resources,
++};
++
++static struct platform_device *smc91x_devices[] __initdata = {
++	&gumstix_smc91x0_device,
++	&gumstix_smc91x1_device,
++};
++
++int __init gumstix_smc91x_init(void)
++{
++	/* Set up nPWE */
++	pxa_gpio_mode(GPIO49_nPWE_MD);
++
++	/* Set up the chip selects */
++	pxa_gpio_mode(GPIO15_nCS_1_MD);
++	pxa_gpio_mode(GPIO78_nCS_2_MD);
++
++	/* Reset the SMC91c111(s) */
++	pxa_gpio_mode(GPIO_GUMSTIX_ETH0_RST_MD);
++	pxa_gpio_mode(GPIO_GUMSTIX_ETH1_RST_MD);
++	GPSR(GPIO_GUMSTIX_ETH0_RST) = GPIO_bit(GPIO_GUMSTIX_ETH0_RST);
++	GPSR(GPIO_GUMSTIX_ETH1_RST) = GPIO_bit(GPIO_GUMSTIX_ETH1_RST);
++	udelay(1); // Hold RESET pin high for at least 100ns
++	GPCR(GPIO_GUMSTIX_ETH0_RST) = GPIO_bit(GPIO_GUMSTIX_ETH0_RST);
++	GPCR(GPIO_GUMSTIX_ETH1_RST) = GPIO_bit(GPIO_GUMSTIX_ETH1_RST);
++	msleep(50);
++
++	return platform_add_devices(smc91x_devices, ARRAY_SIZE(smc91x_devices));
++}
++
++void __exit gumstix_smc91x_exit(void)
++{
++	platform_device_unregister(&gumstix_smc91x1_device);
++	platform_device_unregister(&gumstix_smc91x0_device);
++}
++
++void gumstix_smc91x_load(void) {}
++EXPORT_SYMBOL(gumstix_smc91x_load);
++
++module_init(gumstix_smc91x_init);
++module_exit(gumstix_smc91x_exit);
++
++MODULE_LICENSE("GPL");
++MODULE_AUTHOR("Craig Hughes <craig@gumstix.com>");
++MODULE_DESCRIPTION("Gumstix board SMC91C111 chip initialization driver");
++MODULE_VERSION("1:0.1");

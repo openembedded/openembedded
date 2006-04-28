@@ -1,0 +1,12 @@
+Index: linux-2.6.15gum/drivers/serial/pxa.c
+===================================================================
+--- linux-2.6.15gum.orig/drivers/serial/pxa.c
++++ linux-2.6.15gum/drivers/serial/pxa.c
+@@ -277,7 +277,6 @@ static unsigned int serial_pxa_get_mctrl
+ 	unsigned char status;
+ 	unsigned int ret;
+ 
+-return TIOCM_CTS | TIOCM_DSR | TIOCM_CAR;
+ 	status = serial_in(up, UART_MSR);
+ 
+ 	ret = 0;

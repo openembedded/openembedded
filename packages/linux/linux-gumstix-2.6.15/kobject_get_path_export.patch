@@ -1,0 +1,13 @@
+Oddly, devices/input/input.c seems to reference a symbol which is in another module but is not exported.
+Index: linux-2.6.15gum/lib/kobject.c
+===================================================================
+--- linux-2.6.15gum.orig/lib/kobject.c
++++ linux-2.6.15gum/lib/kobject.c
+@@ -115,6 +115,7 @@ char *kobject_get_path(struct kobject *k
+ 
+ 	return path;
+ }
++EXPORT_SYMBOL(kobject_get_path);
+ 
+ /**
+  *	kobject_init - initialize object.

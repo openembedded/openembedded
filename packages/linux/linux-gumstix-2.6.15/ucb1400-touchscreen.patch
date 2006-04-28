@@ -1,0 +1,704 @@
+This patch is slightly adjusted from
+
+http://www.arm.linux.org.uk/developer/patches/viewpatch.php?id=3073/1
+http://www.arm.linux.org.uk/developer/patches/viewpatch.php?id=3074/2
+http://www.arm.linux.org.uk/developer/patches/viewpatch.php?id=3075/2
+
+in order to get it to apply cleanly to the released 2.6.15 codebase
+and to put the Kconfig stuff in a more reasonable place in the tree.
+Actually, I think Kconfig should probably separate the notion of the
+touchscreen driver and the AC97-MCP layer thing; but that problem is
+basically in the underlying mcp-based ucb1x00 driver layout in the
+first place.
+Index: linux-2.6.15gum/drivers/mfd/Makefile
+===================================================================
+--- linux-2.6.15gum.orig/drivers/mfd/Makefile
++++ linux-2.6.15gum/drivers/mfd/Makefile
+@@ -10,3 +10,6 @@ obj-$(CONFIG_MCP_UCB1200_TS)	+= ucb1x00-
+ ifeq ($(CONFIG_SA1100_ASSABET),y)
+ obj-$(CONFIG_MCP_UCB1200)	+= ucb1x00-assabet.o
+ endif
++
++obj-$(CONFIG_TOUCHSCREEN_UCB1400)	+= mcp-ac97.o ucb1x00-core.o ucb1x00-ts.o
++
+Index: linux-2.6.15gum/drivers/mfd/mcp-core.c
+===================================================================
+--- linux-2.6.15gum.orig/drivers/mfd/mcp-core.c
++++ linux-2.6.15gum/drivers/mfd/mcp-core.c
+@@ -18,7 +18,6 @@
+ #include <linux/slab.h>
+ #include <linux/string.h>
+ 
+-#include <asm/dma.h>
+ #include <asm/system.h>
+ 
+ #include "mcp.h"
+@@ -206,6 +205,7 @@ struct mcp *mcp_host_alloc(struct device
+ 		mcp->attached_device.bus = &mcp_bus_type;
+ 		mcp->attached_device.dma_mask = parent->dma_mask;
+ 		mcp->attached_device.release = mcp_release;
++		mcp->dev = &mcp->attached_device;
+ 	}
+ 	return mcp;
+ }
+Index: linux-2.6.15gum/drivers/mfd/mcp-sa11x0.c
+===================================================================
+--- linux-2.6.15gum.orig/drivers/mfd/mcp-sa11x0.c
++++ linux-2.6.15gum/drivers/mfd/mcp-sa11x0.c
+@@ -31,8 +31,12 @@
+ #include "mcp.h"
+ 
+ struct mcp_sa11x0 {
+-	u32	mccr0;
+-	u32	mccr1;
++	u32		mccr0;
++	u32		mccr1;
++	dma_device_t	dma_audio_rd;
++	dma_device_t	dma_audio_wr;
++	dma_device_t	dma_telco_rd;
++	dma_device_t	dma_telco_wr;
+ };
+ 
+ #define priv(mcp)	((struct mcp_sa11x0 *)mcp_priv(mcp))
+@@ -159,10 +163,10 @@ static int mcp_sa11x0_probe(struct platf
+ 	mcp->owner		= THIS_MODULE;
+ 	mcp->ops		= &mcp_sa11x0;
+ 	mcp->sclk_rate		= data->sclk_rate;
+-	mcp->dma_audio_rd	= DMA_Ser4MCP0Rd;
+-	mcp->dma_audio_wr	= DMA_Ser4MCP0Wr;
+-	mcp->dma_telco_rd	= DMA_Ser4MCP1Rd;
+-	mcp->dma_telco_wr	= DMA_Ser4MCP1Wr;
++	priv(mcp)->dma_audio_rd	= DMA_Ser4MCP0Rd;
++	priv(mcp)->dma_audio_wr	= DMA_Ser4MCP0Wr;
++	priv(mcp)->dma_telco_rd	= DMA_Ser4MCP1Rd;
++	priv(mcp)->dma_telco_wr	= DMA_Ser4MCP1Wr;
+ 
+ 	platform_set_drvdata(pdev, mcp);
+ 
+Index: linux-2.6.15gum/drivers/mfd/mcp.h
+===================================================================
+--- linux-2.6.15gum.orig/drivers/mfd/mcp.h
++++ linux-2.6.15gum/drivers/mfd/mcp.h
+@@ -19,11 +19,8 @@ struct mcp {
+ 	int		use_count;
+ 	unsigned int	sclk_rate;
+ 	unsigned int	rw_timeout;
+-	dma_device_t	dma_audio_rd;
+-	dma_device_t	dma_audio_wr;
+-	dma_device_t	dma_telco_rd;
+-	dma_device_t	dma_telco_wr;
+ 	struct device	attached_device;
++	struct device	*dev;
+ };
+ 
+ struct mcp_ops {
+Index: linux-2.6.15gum/drivers/mfd/ucb1x00-assabet.c
+===================================================================
+--- linux-2.6.15gum.orig/drivers/mfd/ucb1x00-assabet.c
++++ linux-2.6.15gum/drivers/mfd/ucb1x00-assabet.c
+@@ -15,8 +15,6 @@
+ #include <linux/proc_fs.h>
+ #include <linux/device.h>
+ 
+-#include <asm/dma.h>
+-
+ #include "ucb1x00.h"
+ 
+ #define UCB1X00_ATTR(name,input)\
+Index: linux-2.6.15gum/drivers/mfd/ucb1x00-core.c
+===================================================================
+--- linux-2.6.15gum.orig/drivers/mfd/ucb1x00-core.c
++++ linux-2.6.15gum/drivers/mfd/ucb1x00-core.c
+@@ -23,14 +23,17 @@
+ #include <linux/init.h>
+ #include <linux/errno.h>
+ #include <linux/interrupt.h>
++#include <linux/kthread.h>
+ #include <linux/device.h>
+ 
+-#include <asm/dma.h>
+-#include <asm/hardware.h>
+-#include <asm/irq.h>
+-
+ #include "ucb1x00.h"
+ 
++#ifdef CONFIG_UCB1400
++#define UCB_IS_1400(id)  ((id) == UCB_ID_1400)
++#else
++#define UCB_IS_1400(id)  (0)
++#endif
++
+ static DECLARE_MUTEX(ucb1x00_sem);
+ static LIST_HEAD(ucb1x00_drivers);
+ static LIST_HEAD(ucb1x00_devices);
+@@ -58,9 +61,9 @@ void ucb1x00_io_set_dir(struct ucb1x00 *
+ 	spin_lock_irqsave(&ucb->io_lock, flags);
+ 	ucb->io_dir |= out;
+ 	ucb->io_dir &= ~in;
++	spin_unlock_irqrestore(&ucb->io_lock, flags);
+ 
+ 	ucb1x00_reg_write(ucb, UCB_IO_DIR, ucb->io_dir);
+-	spin_unlock_irqrestore(&ucb->io_lock, flags);
+ }
+ 
+ /**
+@@ -86,9 +89,9 @@ void ucb1x00_io_write(struct ucb1x00 *uc
+ 	spin_lock_irqsave(&ucb->io_lock, flags);
+ 	ucb->io_out |= set;
+ 	ucb->io_out &= ~clear;
++	spin_unlock_irqrestore(&ucb->io_lock, flags);
+ 
+ 	ucb1x00_reg_write(ucb, UCB_IO_DATA, ucb->io_out);
+-	spin_unlock_irqrestore(&ucb->io_lock, flags);
+ }
+ 
+ /**
+@@ -178,7 +181,7 @@ unsigned int ucb1x00_adc_read(struct ucb
+ 		schedule_timeout(1);
+ 	}
+ 
+-	return UCB_ADC_DAT(val);
++	return UCB_IS_1400(ucb->id) ? (val & 0x3ff) : ((val & 0x7fe0) >> 5);
+ }
+ 
+ /**
+@@ -223,6 +226,47 @@ static irqreturn_t ucb1x00_irq(int irqnr
+ 	return IRQ_HANDLED;
+ }
+ 
++/*
++ * A restriction with interrupts exists when using the ucb1400, as
++ * the codec read/write routines may sleep while waiting for codec
++ * access completion and uses semaphores for access control to the
++ * AC97 bus.  A complete codec read cycle could take  anywhere from
++ * 60 to 100uSec so we *definitely* don't want to spin inside the
++ * interrupt handler waiting for codec access.  So, we handle the
++ * interrupt by scheduling a RT kernel thread to run in process
++ * context instead of interrupt context.
++ */
++static int ucb1x00_thread(void *_ucb)
++{
++	struct task_struct *tsk = current;
++	struct ucb1x00 *ucb = _ucb;
++
++	tsk->policy = SCHED_FIFO;
++	tsk->rt_priority = 1;
++
++	while (!kthread_should_stop()) {
++		wait_for_completion_interruptible(&ucb->irq_wait);
++		if (try_to_freeze())
++			continue;
++		ucb1x00_irq(ucb->irq, ucb, NULL);
++		enable_irq(ucb->irq);
++	}
++
++	ucb->irq_task = NULL;
++	return 0;
++}
++
++static irqreturn_t ucb1x00_threaded_irq(int irqnr, void *devid, struct pt_regs *regs)
++{
++	struct ucb1x00 *ucb = devid;
++	if (irqnr == ucb->irq) {
++		disable_irq(ucb->irq);
++		complete(&ucb->irq_wait);
++		return IRQ_HANDLED;
++	}
++	return IRQ_NONE;
++}
++
+ /**
+  *	ucb1x00_hook_irq - hook a UCB1x00 interrupt
+  *	@ucb:   UCB1x00 structure describing chip
+@@ -276,18 +320,22 @@ void ucb1x00_enable_irq(struct ucb1x00 *
+ 
+ 	if (idx < 16) {
+ 		spin_lock_irqsave(&ucb->lock, flags);
+-
+-		ucb1x00_enable(ucb);
+-		if (edges & UCB_RISING) {
++		if (edges & UCB_RISING)
+ 			ucb->irq_ris_enbl |= 1 << idx;
+-			ucb1x00_reg_write(ucb, UCB_IE_RIS, ucb->irq_ris_enbl);
+-		}
+-		if (edges & UCB_FALLING) {
++		if (edges & UCB_FALLING)
+ 			ucb->irq_fal_enbl |= 1 << idx;
+-			ucb1x00_reg_write(ucb, UCB_IE_FAL, ucb->irq_fal_enbl);
+-		}
+-		ucb1x00_disable(ucb);
+ 		spin_unlock_irqrestore(&ucb->lock, flags);
++
++		ucb1x00_enable(ucb);
++
++		/* This prevents spurious interrupts on the UCB1400 */
++		ucb1x00_reg_write(ucb, UCB_IE_CLEAR, 1 << idx);
++		ucb1x00_reg_write(ucb, UCB_IE_CLEAR, 0);
++
++		ucb1x00_reg_write(ucb, UCB_IE_RIS, ucb->irq_ris_enbl);
++		ucb1x00_reg_write(ucb, UCB_IE_FAL, ucb->irq_fal_enbl);
++
++		ucb1x00_disable(ucb);
+ 	}
+ }
+ 
+@@ -305,18 +353,16 @@ void ucb1x00_disable_irq(struct ucb1x00 
+ 
+ 	if (idx < 16) {
+ 		spin_lock_irqsave(&ucb->lock, flags);
+-
+-		ucb1x00_enable(ucb);
+-		if (edges & UCB_RISING) {
++		if (edges & UCB_RISING)
+ 			ucb->irq_ris_enbl &= ~(1 << idx);
+-			ucb1x00_reg_write(ucb, UCB_IE_RIS, ucb->irq_ris_enbl);
+-		}
+-		if (edges & UCB_FALLING) {
++		if (edges & UCB_FALLING)
+ 			ucb->irq_fal_enbl &= ~(1 << idx);
+-			ucb1x00_reg_write(ucb, UCB_IE_FAL, ucb->irq_fal_enbl);
+-		}
+-		ucb1x00_disable(ucb);
+ 		spin_unlock_irqrestore(&ucb->lock, flags);
++
++		ucb1x00_enable(ucb);
++		ucb1x00_reg_write(ucb, UCB_IE_RIS, ucb->irq_ris_enbl);
++		ucb1x00_reg_write(ucb, UCB_IE_FAL, ucb->irq_fal_enbl);
++		ucb1x00_disable(ucb);
+ 	}
+ }
+ 
+@@ -349,16 +395,17 @@ int ucb1x00_free_irq(struct ucb1x00 *ucb
+ 		ucb->irq_ris_enbl &= ~(1 << idx);
+ 		ucb->irq_fal_enbl &= ~(1 << idx);
+ 
+-		ucb1x00_enable(ucb);
+-		ucb1x00_reg_write(ucb, UCB_IE_RIS, ucb->irq_ris_enbl);
+-		ucb1x00_reg_write(ucb, UCB_IE_FAL, ucb->irq_fal_enbl);
+-		ucb1x00_disable(ucb);
+-
+ 		irq->fn = NULL;
+ 		irq->devid = NULL;
+ 		ret = 0;
+ 	}
+ 	spin_unlock_irq(&ucb->lock);
++
++	ucb1x00_enable(ucb);
++	ucb1x00_reg_write(ucb, UCB_IE_RIS, ucb->irq_ris_enbl);
++	ucb1x00_reg_write(ucb, UCB_IE_FAL, ucb->irq_fal_enbl);
++	ucb1x00_disable(ucb);
++
+ 	return ret;
+ 
+ bad:
+@@ -478,7 +525,7 @@ static int ucb1x00_probe(struct mcp *mcp
+ 	mcp_enable(mcp);
+ 	id = mcp_reg_read(mcp, UCB_ID);
+ 
+-	if (id != UCB_ID_1200 && id != UCB_ID_1300) {
++	if (id != UCB_ID_1200 && id != UCB_ID_1300 && !UCB_IS_1400(id)) {
+ 		printk(KERN_WARNING "UCB1x00 ID not found: %04x\n", id);
+ 		goto err_disable;
+ 	}
+@@ -491,12 +538,13 @@ static int ucb1x00_probe(struct mcp *mcp
+ 	memset(ucb, 0, sizeof(struct ucb1x00));
+ 
+ 	ucb->cdev.class = &ucb1x00_class;
+-	ucb->cdev.dev = &mcp->attached_device;
++	ucb->cdev.dev = mcp->dev;
+ 	strlcpy(ucb->cdev.class_id, "ucb1x00", sizeof(ucb->cdev.class_id));
+ 
+ 	spin_lock_init(&ucb->lock);
+ 	spin_lock_init(&ucb->io_lock);
+ 	sema_init(&ucb->adc_sem, 1);
++	 init_completion(&ucb->irq_wait);
+ 
+ 	ucb->id  = id;
+ 	ucb->mcp = mcp;
+@@ -507,12 +555,22 @@ static int ucb1x00_probe(struct mcp *mcp
+ 		goto err_free;
+ 	}
+ 
+-	ret = request_irq(ucb->irq, ucb1x00_irq, 0, "UCB1x00", ucb);
++	ret = request_irq(ucb->irq,
++			  UCB_IS_1400(id) ? ucb1x00_threaded_irq : ucb1x00_irq,
++			  0, "UCB1x00", ucb);
+ 	if (ret) {
+ 		printk(KERN_ERR "ucb1x00: unable to grab irq%d: %d\n",
+ 			ucb->irq, ret);
+ 		goto err_free;
+ 	}
++	if (UCB_IS_1400(id)) {
++		ucb->irq_task = kthread_run(ucb1x00_thread, ucb, "kUCB1x00d");
++		if (IS_ERR(ucb->irq_task)) {
++			ret = PTR_ERR(ucb->irq_task);
++			ucb->irq_task = NULL;
++			goto err_irq;
++		}
++	}
+ 
+ 	set_irq_type(ucb->irq, IRQT_RISING);
+ 	mcp_set_drvdata(mcp, ucb);
+@@ -531,6 +589,8 @@ static int ucb1x00_probe(struct mcp *mcp
+ 	goto out;
+ 
+  err_irq:
++	if (UCB_IS_1400(id) && ucb->irq_task)
++		kthread_stop(ucb->irq_task);
+ 	free_irq(ucb->irq, ucb);
+  err_free:
+ 	kfree(ucb);
+@@ -553,6 +613,8 @@ static void ucb1x00_remove(struct mcp *m
+ 	}
+ 	up(&ucb1x00_sem);
+ 
++	if (UCB_IS_1400(ucb->id) && ucb->irq_task)
++		kthread_stop(ucb->irq_task);
+ 	free_irq(ucb->irq, ucb);
+ 	class_device_unregister(&ucb->cdev);
+ }
+Index: linux-2.6.15gum/drivers/mfd/ucb1x00-ts.c
+===================================================================
+--- linux-2.6.15gum.orig/drivers/mfd/ucb1x00-ts.c
++++ linux-2.6.15gum/drivers/mfd/ucb1x00-ts.c
+@@ -34,10 +34,8 @@
+ #include <linux/kthread.h>
+ #include <linux/delay.h>
+ 
+-#include <asm/dma.h>
+-#include <asm/semaphore.h>
+-#include <asm/arch/collie.h>
+ #include <asm/mach-types.h>
++#include <asm/arch-sa1100/collie.h>
+ 
+ #include "ucb1x00.h"
+ 
+@@ -46,7 +44,7 @@ struct ucb1x00_ts {
+ 	struct input_dev	*idev;
+ 	struct ucb1x00		*ucb;
+ 
+-	wait_queue_head_t	irq_wait;
++	struct completion	irq_wait;
+ 	struct task_struct	*rtask;
+ 	u16			x_res;
+ 	u16			y_res;
+@@ -206,7 +204,6 @@ static int ucb1x00_thread(void *_ts)
+ {
+ 	struct ucb1x00_ts *ts = _ts;
+ 	struct task_struct *tsk = current;
+-	DECLARE_WAITQUEUE(wait, tsk);
+ 	int valid;
+ 
+ 	/*
+@@ -218,10 +215,8 @@ static int ucb1x00_thread(void *_ts)
+ 
+ 	valid = 0;
+ 
+-	add_wait_queue(&ts->irq_wait, &wait);
+ 	while (!kthread_should_stop()) {
+ 		unsigned int x, y, p;
+-		signed long timeout;
+ 
+ 		ts->restart = 0;
+ 
+@@ -243,8 +238,6 @@ static int ucb1x00_thread(void *_ts)
+ 
+ 
+ 		if (ucb1x00_ts_pen_down(ts)) {
+-			set_task_state(tsk, TASK_INTERRUPTIBLE);
+-
+ 			ucb1x00_enable_irq(ts->ucb, UCB_IRQ_TSPX, machine_is_collie() ? UCB_RISING : UCB_FALLING);
+ 			ucb1x00_disable(ts->ucb);
+ 
+@@ -257,7 +250,15 @@ static int ucb1x00_thread(void *_ts)
+ 				valid = 0;
+ 			}
+ 
+-			timeout = MAX_SCHEDULE_TIMEOUT;
++			/*
++			 * Since ucb1x00_enable_irq() might sleep due
++			 * to the way the UCB1400 regs are accessed, we
++			 * can't use set_task_state() before that call,
++			 * and not changing state before enabling the
++			 * interrupt is racy. A completion handler avoids
++			 * the issue.
++			 */
++			wait_for_completion_interruptible(&ts->irq_wait);
+ 		} else {
+ 			ucb1x00_disable(ts->ucb);
+ 
+@@ -272,16 +273,12 @@ static int ucb1x00_thread(void *_ts)
+ 			}
+ 
+ 			set_task_state(tsk, TASK_INTERRUPTIBLE);
+-			timeout = HZ / 100;
++			schedule_timeout(HZ/100);
+ 		}
+ 
+ 		try_to_freeze();
+-
+-		schedule_timeout(timeout);
+ 	}
+ 
+-	remove_wait_queue(&ts->irq_wait, &wait);
+-
+ 	ts->rtask = NULL;
+ 	return 0;
+ }
+@@ -294,7 +291,7 @@ static void ucb1x00_ts_irq(int idx, void
+ {
+ 	struct ucb1x00_ts *ts = id;
+ 	ucb1x00_disable_irq(ts->ucb, UCB_IRQ_TSPX, UCB_FALLING);
+-	wake_up(&ts->irq_wait);
++	complete(&ts->irq_wait);
+ }
+ 
+ static int ucb1x00_ts_open(struct input_dev *idev)
+@@ -304,7 +301,7 @@ static int ucb1x00_ts_open(struct input_
+ 
+ 	BUG_ON(ts->rtask);
+ 
+-	init_waitqueue_head(&ts->irq_wait);
++	init_completion(&ts->irq_wait);
+ 	ret = ucb1x00_hook_irq(ts->ucb, UCB_IRQ_TSPX, ucb1x00_ts_irq, ts);
+ 	if (ret < 0)
+ 		goto out;
+@@ -359,7 +356,7 @@ static int ucb1x00_ts_resume(struct ucb1
+ 		 * after sleep.
+ 		 */
+ 		ts->restart = 1;
+-		wake_up(&ts->irq_wait);
++		complete(&ts->irq_wait);
+ 	}
+ 	return 0;
+ }
+Index: linux-2.6.15gum/drivers/mfd/ucb1x00.h
+===================================================================
+--- linux-2.6.15gum.orig/drivers/mfd/ucb1x00.h
++++ linux-2.6.15gum/drivers/mfd/ucb1x00.h
+@@ -94,6 +94,7 @@
+ #define UCB_ID		0x0c
+ #define UCB_ID_1200		0x1004
+ #define UCB_ID_1300		0x1005
++#define UCB_ID_1400		0x4304
+ 
+ #define UCB_MODE	0x0d
+ #define UCB_MODE_DYN_VFLAG_ENA	(1 << 12)
+@@ -110,6 +111,8 @@ struct ucb1x00 {
+ 	spinlock_t		lock;
+ 	struct mcp		*mcp;
+ 	unsigned int		irq;
++	struct task_struct	*irq_task;
++	struct completion	irq_wait;
+ 	struct semaphore	adc_sem;
+ 	spinlock_t		io_lock;
+ 	u16			id;
+@@ -122,6 +125,7 @@ struct ucb1x00 {
+ 	struct class_device	cdev;
+ 	struct list_head	node;
+ 	struct list_head	devs;
++
+ };
+ 
+ struct ucb1x00_driver;
+Index: linux-2.6.15gum/drivers/mfd/mcp-ac97.c
+===================================================================
+--- /dev/null
++++ linux-2.6.15gum/drivers/mfd/mcp-ac97.c
+@@ -0,0 +1,153 @@
++/*
++ * linux/drivers/misc/mcp-ac97.c
++ *
++ * Author:	Nicolas Pitre
++ * Created:	Jan 14, 2005
++ * Copyright:	(C) MontaVista Software Inc.
++ *
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU General Public License
++ * version 2 as published by the Free Software Foundation.
++ *
++ * This module provides the minimum replacement for mcp-core.c allowing for
++ * the UCB1400 chip to be driven by the ucb1x00 driver over an AC97 link.
++ */
++
++#include <linux/module.h>
++#include <linux/init.h>
++#include <linux/errno.h>
++#include <linux/device.h>
++
++#include <sound/driver.h>
++#include <sound/core.h>
++#include <sound/ac97_codec.h>
++
++#include "mcp.h"
++
++/* ucb1x00 SIB register to ucb1400 AC-link register mapping */
++
++static const unsigned char regmap[] = {
++	0x5a,	/* UCB_IO_DATA */
++	0X5C,	/* UCB_IO_DIR */
++	0X5E,	/* UCB_IE_RIS */
++	0x60,	/* UCB_IE_FAL */
++	0x62,	/* UCB_IE_STATUS */
++	0,	/* UCB_TC_A */
++	0,	/* UCB_TC_B */
++	0,	/* UCB_AC_A */
++	0,	/* UCB_AC_B */
++	0x64,	/* UCB_TS_CR */
++	0x66,	/* UCB_ADC_CR */
++	0x68,	/* UCB_ADC_DATA */
++	0x7e,	/* UCB_ID */
++	0,	/* UCB_MODE */
++};
++
++unsigned int mcp_reg_read(struct mcp *mcp, unsigned int reg)
++{
++	ac97_t *ac97 = to_ac97_t(mcp->dev);
++	if (reg < ARRAY_SIZE(regmap)) {
++		reg = regmap[reg];
++		if (reg)
++			return ac97->bus->ops->read(ac97, reg);
++	}
++	return -1;
++}
++EXPORT_SYMBOL(mcp_reg_read);
++
++void mcp_reg_write(struct mcp *mcp, unsigned int reg, unsigned int val)
++{
++	ac97_t *ac97 = to_ac97_t(mcp->dev);
++	if (reg < ARRAY_SIZE(regmap)) {
++		reg = regmap[reg];
++		if (reg)
++			ac97->bus->ops->write(ac97, reg, val);
++	}
++}
++EXPORT_SYMBOL(mcp_reg_write);
++
++void mcp_enable(struct mcp *mcp)
++{
++}
++EXPORT_SYMBOL(mcp_enable);
++
++void mcp_disable(struct mcp *mcp)
++{
++}
++EXPORT_SYMBOL(mcp_disable);
++
++#define to_mcp_driver(d)	container_of(d, struct mcp_driver, drv)
++
++static int mcp_probe(struct device *dev)
++{
++	struct mcp_driver *drv = to_mcp_driver(dev->driver);
++	struct mcp *mcp;
++	int ret;
++
++	ret = -ENOMEM;
++	mcp = kmalloc(sizeof(*mcp), GFP_KERNEL);
++	if (mcp) {
++		memset(mcp, 0, sizeof(*mcp));
++		mcp->owner = THIS_MODULE;
++		mcp->dev = dev;
++		ret = drv->probe(mcp);
++		if (ret)
++			kfree(mcp);
++	}
++	if (!ret)
++		dev_set_drvdata(dev, mcp);
++	return ret;
++}
++
++static int mcp_remove(struct device *dev)
++{
++	struct mcp_driver *drv = to_mcp_driver(dev->driver);
++	struct mcp *mcp = dev_get_drvdata(dev);
++
++	drv->remove(mcp);
++	dev_set_drvdata(dev, NULL);
++	kfree(mcp);
++	return 0;
++}
++
++static int mcp_suspend(struct device *dev, pm_message_t state)
++{
++	struct mcp_driver *drv = to_mcp_driver(dev->driver);
++	struct mcp *mcp = dev_get_drvdata(dev);
++	int ret = 0;
++
++	if (drv->suspend)
++		ret = drv->suspend(mcp, state);
++	return ret;
++}
++
++static int mcp_resume(struct device *dev)
++{
++	struct mcp_driver *drv = to_mcp_driver(dev->driver);
++	struct mcp *mcp = dev_get_drvdata(dev);
++	int ret = 0;
++
++	if (drv->resume)
++		ret = drv->resume(mcp);
++	return ret;
++}
++
++int mcp_driver_register(struct mcp_driver *mcpdrv)
++{
++	mcpdrv->drv.owner = THIS_MODULE;
++	mcpdrv->drv.bus = &ac97_bus_type;
++	mcpdrv->drv.probe = mcp_probe;
++	mcpdrv->drv.remove = mcp_remove;
++	mcpdrv->drv.suspend = mcp_suspend;
++	mcpdrv->drv.resume = mcp_resume;
++	return driver_register(&mcpdrv->drv);
++}
++EXPORT_SYMBOL(mcp_driver_register);
++
++void mcp_driver_unregister(struct mcp_driver *mcpdrv)
++{
++	driver_unregister(&mcpdrv->drv);
++}
++EXPORT_SYMBOL(mcp_driver_unregister);
++
++MODULE_LICENSE("GPL");
+Index: linux-2.6.15gum/drivers/input/touchscreen/Kconfig
+===================================================================
+--- linux-2.6.15gum.orig/drivers/input/touchscreen/Kconfig
++++ linux-2.6.15gum/drivers/input/touchscreen/Kconfig
+@@ -11,6 +11,25 @@ menuconfig INPUT_TOUCHSCREEN
+ 
+ if INPUT_TOUCHSCREEN
+ 
++config UCB1400
++	bool
++
++config TOUCHSCREEN_UCB1400
++	tristate "UCB1400 Touchscreen support"
++	depends on ARCH_LUBBOCK || MACH_MAINSTONE || ARCH_GUMSTIX
++	select SND_AC97_BUS
++	select UCB1400
++	help
++	  Say Y here if you have a touchscreen connected to a UCB1400 ADC chip
++	  on the AC97 bus of a PXA255/PXA270 host.
++
++	  If unsure, say N.
++
++	  To compile this driver as a module, choose M here: the
++	  module will be called ucb1x00-ts.  It will also build the modules
++	  ucb1x00-core and mcp-ac97 which provide the compatibility layers
++	  down to the AC97 bus.
++
+ config TOUCHSCREEN_BITSY
+ 	tristate "Compaq iPAQ H3600 (Bitsy) touchscreen"
+ 	depends on SA1100_BITSY
+Index: linux-2.6.15gum/drivers/input/Kconfig
+===================================================================
+--- linux-2.6.15gum.orig/drivers/input/Kconfig
++++ linux-2.6.15gum/drivers/input/Kconfig
+@@ -87,7 +87,7 @@ config INPUT_JOYDEV
+ 	  module will be called joydev.
+ 
+ config INPUT_TSDEV
+-	tristate "Touchscreen interface"
++	tristate "Compaq touchscreen interface"
+ 	---help---
+ 	  Say Y here if you have an application that only can understand the
+ 	  Compaq touchscreen protocol for absolute pointer data. This is

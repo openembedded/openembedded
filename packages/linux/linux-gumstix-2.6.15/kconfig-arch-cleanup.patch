@@ -1,0 +1,72 @@
+Index: linux-2.6.15gum/arch/arm/mach-clps711x/Kconfig
+===================================================================
+--- linux-2.6.15gum.orig/arch/arm/mach-clps711x/Kconfig
++++ linux-2.6.15gum/arch/arm/mach-clps711x/Kconfig
+@@ -1,6 +1,7 @@
+ if ARCH_CLPS711X
+ 
+ menu "CLPS711X/EP721X Implementations"
++	depends on ARCH_CLPS711X
+ 
+ config ARCH_AUTCPU12
+ 	bool "AUTCPU12"
+Index: linux-2.6.15gum/arch/arm/mach-epxa10db/Kconfig
+===================================================================
+--- linux-2.6.15gum.orig/arch/arm/mach-epxa10db/Kconfig
++++ linux-2.6.15gum/arch/arm/mach-epxa10db/Kconfig
+@@ -1,6 +1,7 @@
+ if ARCH_CAMELOT
+ 
+ menu "Epxa10db"
++	depends on ARCH_CAMELOT
+ 
+ comment "PLD hotswap support"
+ 
+Index: linux-2.6.15gum/arch/arm/mach-footbridge/Kconfig
+===================================================================
+--- linux-2.6.15gum.orig/arch/arm/mach-footbridge/Kconfig
++++ linux-2.6.15gum/arch/arm/mach-footbridge/Kconfig
+@@ -1,6 +1,7 @@
+ if ARCH_FOOTBRIDGE
+ 
+ menu "Footbridge Implementations"
++	depends on ARCH_FOOTBRIDGE
+ 
+ config ARCH_CATS
+ 	bool "CATS"
+Index: linux-2.6.15gum/arch/arm/mach-iop3xx/Kconfig
+===================================================================
+--- linux-2.6.15gum.orig/arch/arm/mach-iop3xx/Kconfig
++++ linux-2.6.15gum/arch/arm/mach-iop3xx/Kconfig
+@@ -1,6 +1,7 @@
+ if ARCH_IOP3XX
+ 
+ menu "IOP3xx Implementation Options"
++	depends on ARCH_IOP3XX
+ 
+ comment "IOP3xx Platform Types"
+ 
+Index: linux-2.6.15gum/arch/arm/mach-lh7a40x/Kconfig
+===================================================================
+--- linux-2.6.15gum.orig/arch/arm/mach-lh7a40x/Kconfig
++++ linux-2.6.15gum/arch/arm/mach-lh7a40x/Kconfig
+@@ -1,6 +1,7 @@
+ if ARCH_LH7A40X
+ 
+ menu "LH7A40X Implementations"
++	depends on ARCH_LH7A40X
+ 
+ config MACH_KEV7A400
+ 	bool "KEV7A400"
+Index: linux-2.6.15gum/arch/arm/mach-sa1100/Kconfig
+===================================================================
+--- linux-2.6.15gum.orig/arch/arm/mach-sa1100/Kconfig
++++ linux-2.6.15gum/arch/arm/mach-sa1100/Kconfig
+@@ -1,6 +1,7 @@
+ if ARCH_SA1100
+ 
+ menu "SA11x0 Implementations"
++	depends on ARCH_SA1100
+ 
+ config SA1100_ASSABET
+ 	bool "Assabet"

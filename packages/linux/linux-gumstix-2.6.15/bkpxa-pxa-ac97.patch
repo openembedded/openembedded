@@ -1,0 +1,1415 @@
+Index: linux-2.6.15gum/include/linux/ac97_codec.h
+===================================================================
+--- linux-2.6.15gum.orig/include/linux/ac97_codec.h
++++ linux-2.6.15gum/include/linux/ac97_codec.h
+@@ -259,7 +259,8 @@ struct ac97_codec {
+ 	int type;
+ 	u32 model;
+ 
+-	int modem:1;
++	unsigned modem:1;
++	unsigned power:1;
+ 
+ 	struct ac97_ops *codec_ops;
+ 
+Index: linux-2.6.15gum/sound/oss/Kconfig
+===================================================================
+--- linux-2.6.15gum.orig/sound/oss/Kconfig
++++ linux-2.6.15gum/sound/oss/Kconfig
+@@ -178,6 +178,14 @@ config SOUND_MAESTRO3
+ 	  Say Y or M if you have a sound system driven by ESS's Maestro 3
+ 	  PCI sound chip.
+ 
++config SOUND_PXA_AC97
++	tristate "PXA AC97 support"
++	depends on SOUND_PRIME!=n && ARCH_PXA && SOUND
++
++config SOUND_PXA_AUDIO
++	tristate "PXA audio support"
++	depends on SOUND_PXA_AC97
++
+ config SOUND_ICH
+ 	tristate "Intel ICH (i8xx) audio support"
+ 	depends on SOUND_PRIME && PCI
+@@ -1125,6 +1133,9 @@ config SOUND_AD1980
+ 	tristate "AD1980 front/back switch plugin"
+ 	depends on SOUND_PRIME && OBSOLETE_OSS_DRIVER
+ 
++config SOUND_WM97XX
++	tristate "WM97XX sound/touchscreen codec"
++
+ config SOUND_SH_DAC_AUDIO
+ 	tristate "SuperH DAC audio support"
+ 	depends on SOUND_PRIME && CPU_SH3
+Index: linux-2.6.15gum/sound/oss/Makefile
+===================================================================
+--- linux-2.6.15gum.orig/sound/oss/Makefile
++++ linux-2.6.15gum/sound/oss/Makefile
+@@ -44,6 +44,8 @@ obj-$(CONFIG_SOUND_VIA82CXXX)	+= via82cx
+ ifeq ($(CONFIG_MIDI_VIA82CXXX),y)
+   obj-$(CONFIG_SOUND_VIA82CXXX) += sound.o uart401.o
+ endif
++obj-$(CONFIG_SOUND_PXA_AC97)	+= pxa-ac97.o ac97_codec.o
++obj-$(CONFIG_SOUND_PXA_AUDIO)	+= pxa-audio.o
+ obj-$(CONFIG_SOUND_YMFPCI)	+= ymfpci.o ac97_codec.o
+ ifeq ($(CONFIG_SOUND_YMFPCI_LEGACY),y)
+   obj-$(CONFIG_SOUND_YMFPCI)    += opl3.o uart401.o
+Index: linux-2.6.15gum/sound/oss/ac97_codec.c
+===================================================================
+--- linux-2.6.15gum.orig/sound/oss/ac97_codec.c
++++ linux-2.6.15gum/sound/oss/ac97_codec.c
+@@ -84,6 +84,7 @@ static int crystal_digital_control(struc
+ static int cmedia_init(struct ac97_codec * codec);
+ static int cmedia_digital_control(struct ac97_codec *codec, int slots, int rate, int mode);
+ static int generic_digital_control(struct ac97_codec *codec, int slots, int rate, int mode);
++static int ucb1400_init(struct ac97_codec *codec);
+ 
+ 
+ /*
+@@ -119,6 +120,7 @@ static struct ac97_ops crystal_digital_o
+ static struct ac97_ops ad1886_ops = { ad1886_init, eapd_control, NULL };
+ static struct ac97_ops cmedia_ops = { NULL, eapd_control, NULL};
+ static struct ac97_ops cmedia_digital_ops = { cmedia_init, eapd_control, cmedia_digital_control};
++static struct ac97_ops ucb1400_ops = { ucb1400_init, eapd_control, NULL };
+ 
+ /* sorted by vendor/device id */
+ static const struct {
+@@ -164,6 +166,7 @@ static const struct {
+ 	{0x4e534331, "National Semiconductor LM4549", &null_ops},
+ 	{0x53494c22, "Silicon Laboratory Si3036", &null_ops},
+ 	{0x53494c23, "Silicon Laboratory Si3038", &null_ops},
++	{0x50534304, "Philips UCB1400",         &ucb1400_ops},
+ 	{0x545200FF, "TriTech TR?????",		&tritech_m_ops},
+ 	{0x54524102, "TriTech TR28022",		&null_ops},
+ 	{0x54524103, "TriTech TR28023",		&null_ops},
+@@ -461,6 +464,17 @@ static void ac97_write_mixer(struct ac97
+ 	val = codec->codec_read(codec, mh->offset);
+ 	printk(" -> 0x%04x\n", val);
+ #endif
++
++	if (val & AC97_MUTE)
++		val = 0;
++	else
++		val = 1;
++	if ((oss_channel == SOUND_MIXER_VOLUME) &&
++	    (codec->codec_ops->amplifier) &&
++	    (codec->power != val)) {
++		codec->power = val;
++		codec->codec_ops->amplifier (codec, codec->power);
++	}
+ }
+ 
+ /* a thin wrapper for write_mixer */
+@@ -1092,6 +1106,13 @@ static int wolfson_init05(struct ac97_co
+ {
+ 	/* set front mixer volume */
+ 	codec->codec_write(codec, AC97_WM97XX_FMIXER_VOL, 0x0808);
++	/*codec->codec_write(codec, 0x78, 0xc004);
++	while(1){
++		codec->codec_write(codec, 0x76, 0xa020);
++		printk("%08x ", codec->codec_read(codec, 0x76));
++		printk("%08x ", codec->codec_read(codec, 0x78));
++		printk("%08x\n", codec->codec_read(codec, 0x7A));
++	}*/
+ 	return 0;
+ }
+ 
+@@ -1313,6 +1334,14 @@ static int pt101_init(struct ac97_codec 
+ }
+ #endif
+ 	
++static int ucb1400_init(struct ac97_codec *codec)
++{
++	codec->codec_write(codec,AC97_EXTENDED_STATUS,1);
++	//codec->codec_write(codec, 0x6a, 0x1ff7);
++	codec->codec_write(codec, 0x6a, 0x0050);
++	codec->codec_write(codec, 0x6c, 0x0030);
++	return 0;
++}
+ 
+ EXPORT_SYMBOL(ac97_read_proc);
+ EXPORT_SYMBOL(ac97_probe_codec);
+Index: linux-2.6.15gum/sound/oss/pxa-ac97.c
+===================================================================
+--- /dev/null
++++ linux-2.6.15gum/sound/oss/pxa-ac97.c
+@@ -0,0 +1,357 @@
++/*
++ *  linux/drivers/sound/pxa-ac97.c -- AC97 interface for the Cotula chip
++ *
++ *  Author:	Nicolas Pitre
++ *  Created:	Aug 15, 2001
++ *  Copyright:	MontaVista Software Inc.
++ *
++ *  Forward ported to 2.6 by Ian Molton 15/09/2003
++ *
++ *  This program is free software; you can redistribute it and/or modify
++ *  it under the terms of the GNU General Public License version 2 as
++ *  published by the Free Software Foundation.
++ */
++
++#include <linux/init.h>
++#include <linux/module.h>
++#include <linux/kernel.h>
++#include <linux/slab.h>
++#include <linux/pci.h>
++#include <linux/interrupt.h>
++#include <linux/completion.h>
++#include <linux/delay.h>
++#include <linux/poll.h>
++#include <linux/sound.h>
++#include <linux/soundcard.h>
++#include <linux/ac97_codec.h>
++
++#include <asm/hardware.h>
++#include <asm/arch/pxa-regs.h>
++#include <asm/irq.h>
++#include <asm/uaccess.h>
++#include <asm/semaphore.h>
++#include <asm/dma.h>
++
++#include "pxa-audio.h"
++
++static struct completion CAR_completion;
++static int waitingForMask;
++static DECLARE_MUTEX(CAR_mutex);
++
++static u16 pxa_ac97_read(struct ac97_codec *codec, u8 reg)
++{
++	u16 val = -1;
++
++	down(&CAR_mutex);
++	if (!(CAR & CAR_CAIP)) {
++		volatile u32 *reg_addr = (u32 *)&PAC_REG_BASE + (reg >> 1);
++
++		waitingForMask=GSR_SDONE;
++
++		init_completion(&CAR_completion);
++		(void)*reg_addr;			//start read access across the ac97 link
++		wait_for_completion(&CAR_completion);
++
++		if (GSR & GSR_RDCS) {
++			GSR = GSR_RDCS;			//write a 1 to clear
++			printk(KERN_CRIT "%s: read codec register timeout.\n", __FUNCTION__);
++		}
++
++		init_completion(&CAR_completion);
++		val = *reg_addr;			//valid data now but we've just started another cycle...
++		wait_for_completion(&CAR_completion);
++
++	} else {
++		printk(KERN_CRIT"%s: CAR_CAIP already set\n", __FUNCTION__);
++	}
++	up(&CAR_mutex);
++	//printk("%s(0x%02x) = 0x%04x\n", __FUNCTION__, reg, val);
++	return val;
++}
++
++static void pxa_ac97_write(struct ac97_codec *codec, u8 reg, u16 val)
++{
++	down(&CAR_mutex);
++	if (!(CAR & CAR_CAIP)) {
++		volatile u32 *reg_addr = (u32 *)&PAC_REG_BASE + (reg >> 1);
++
++		waitingForMask=GSR_CDONE;
++		init_completion(&CAR_completion);
++		*reg_addr = val;
++		wait_for_completion(&CAR_completion);
++	} else {
++		printk(KERN_CRIT "%s: CAR_CAIP already set\n", __FUNCTION__);
++	}
++	up(&CAR_mutex);
++	//printk("%s(0x%02x, 0x%04x)\n", __FUNCTION__, reg, val);
++}
++
++static irqreturn_t pxa_ac97_irq(int irq, void *dev_id, struct pt_regs *regs)
++{
++	int gsr = GSR;
++	GSR = gsr & (GSR_SDONE|GSR_CDONE);		//write a 1 to clear
++	if (gsr & waitingForMask)
++                complete(&CAR_completion);
++
++	return IRQ_HANDLED;
++}
++
++static struct ac97_codec pxa_ac97_codec = {
++	codec_read:	pxa_ac97_read,
++	codec_write:	pxa_ac97_write,
++};
++
++static DECLARE_MUTEX(pxa_ac97_mutex);
++static int pxa_ac97_refcount;
++
++int pxa_ac97_get(struct ac97_codec **codec)
++{
++	int ret;
++
++	*codec = NULL;
++	down(&pxa_ac97_mutex);
++
++	if (!pxa_ac97_refcount) {
++		ret = request_irq(IRQ_AC97, pxa_ac97_irq, 0, "AC97", NULL);
++		if (ret)
++			return ret;
++
++		CKEN |= CKEN2_AC97;
++
++		pxa_gpio_mode(GPIO31_SYNC_AC97_MD);
++		pxa_gpio_mode(GPIO30_SDATA_OUT_AC97_MD);
++		pxa_gpio_mode(GPIO28_BITCLK_AC97_MD);
++		pxa_gpio_mode(GPIO29_SDATA_IN_AC97_MD);
++
++		GCR = 0;
++		udelay(10);
++		GCR = GCR_COLD_RST|GCR_CDONE_IE|GCR_SDONE_IE;
++		while (!(GSR & GSR_PCR)) {
++			schedule();
++		}
++
++		ret = ac97_probe_codec(&pxa_ac97_codec);
++		if (ret != 1) {
++			free_irq(IRQ_AC97, NULL);
++			GCR = GCR_ACLINK_OFF;
++			CKEN &= ~CKEN2_AC97;
++			return ret;
++		}
++	}
++
++	pxa_ac97_refcount++;
++	up(&pxa_ac97_mutex);
++	*codec = &pxa_ac97_codec;
++	return 0;
++}
++
++void pxa_ac97_put(void)
++{
++	down(&pxa_ac97_mutex);
++	pxa_ac97_refcount--;
++	if (!pxa_ac97_refcount) {
++		GCR = GCR_ACLINK_OFF;
++		CKEN &= ~CKEN2_AC97;
++		free_irq(IRQ_AC97, NULL);
++	}
++	up(&pxa_ac97_mutex);
++}
++
++EXPORT_SYMBOL(pxa_ac97_get);
++EXPORT_SYMBOL(pxa_ac97_put);
++
++
++/*
++ * Audio Mixer stuff
++ */
++
++static audio_state_t ac97_audio_state;
++static audio_stream_t ac97_audio_in;
++
++/*
++ * According to the PXA250 spec, mic-in should use different
++ * DRCMR and different AC97 FIFO.
++ * Unfortunately current UCB1400 versions (up to ver 2A) don't
++ * produce slot 6 for the audio input frame, therefore the PXA
++ * AC97 mic-in FIFO is always starved.
++ * But since UCB1400 is not the only audio CODEC out there,
++ * this is still enabled by default.
++ */
++static void update_audio_in (void)
++{
++#if 1
++	long val;
++
++	/* Use the value stuffed by ac97_recmask_io()
++	 * into recording select register
++	 */
++	val = pxa_ac97_codec.codec_read(&pxa_ac97_codec, AC97_RECORD_SELECT);
++	pxa_audio_clear_buf(&ac97_audio_in);
++	*ac97_audio_in.drcmr = 0;
++	if (val == 0) {
++		ac97_audio_in.dcmd = DCMD_RXMCDR;
++		ac97_audio_in.drcmr = &DRCMRRXMCDR;
++		ac97_audio_in.dev_addr = __PREG(MCDR);
++	} else {
++		ac97_audio_in.dcmd = DCMD_RXPCDR;
++		ac97_audio_in.drcmr = &DRCMRRXPCDR;
++		ac97_audio_in.dev_addr = __PREG(PCDR);
++	}
++	if (ac97_audio_state.rd_ref)
++		*ac97_audio_in.drcmr =
++			ac97_audio_in.dma_ch | DRCMR_MAPVLD;
++#endif
++}
++
++static int mixer_ioctl( struct inode *inode, struct file *file,
++			unsigned int cmd, unsigned long arg)
++{
++	int ret;
++
++	ret = pxa_ac97_codec.mixer_ioctl(&pxa_ac97_codec, cmd, arg);
++	if (ret)
++		return ret;
++
++	/* We must snoop for some commands to provide our own extra processing */
++	switch (cmd) {
++	case SOUND_MIXER_WRITE_RECSRC:
++		update_audio_in ();
++		break;
++	}
++	return 0;
++}
++
++static struct file_operations mixer_fops = {
++	ioctl:		mixer_ioctl,
++	llseek:		no_llseek,
++	owner:		THIS_MODULE
++};
++
++/*
++ * AC97 codec ioctls
++ */
++
++static int codec_adc_rate = 48000;
++static int codec_dac_rate = 48000;
++
++static int ac97_ioctl(struct inode *inode, struct file *file,
++		      unsigned int cmd, unsigned long arg)
++{
++	int ret;
++	long val = 0;
++
++	switch(cmd) {
++	case SNDCTL_DSP_STEREO:
++		ret = get_user(val, (int *) arg);
++		if (ret)
++			return ret;
++		/* FIXME: do we support mono? */
++		ret = (val == 0) ? -EINVAL : 1;
++		return put_user(ret, (int *) arg);
++
++	case SNDCTL_DSP_CHANNELS:
++	case SOUND_PCM_READ_CHANNELS:
++		/* FIXME: do we support mono? */
++		return put_user(2, (long *) arg);
++
++	case SNDCTL_DSP_SPEED:
++		ret = get_user(val, (long *) arg);
++		if (ret)
++			return ret;
++		if (file->f_mode & FMODE_READ)
++			codec_adc_rate = ac97_set_adc_rate(&pxa_ac97_codec, val);
++		if (file->f_mode & FMODE_WRITE)
++			codec_dac_rate = ac97_set_dac_rate(&pxa_ac97_codec, val);
++		/* fall through */
++	case SOUND_PCM_READ_RATE:
++		if (file->f_mode & FMODE_READ)
++			val = codec_adc_rate;
++		if (file->f_mode & FMODE_WRITE)
++			val = codec_dac_rate;
++		return put_user(val, (long *) arg);
++
++	case SNDCTL_DSP_SETFMT:
++	case SNDCTL_DSP_GETFMTS:
++		/* FIXME: can we do other fmts? */
++		return put_user(AFMT_S16_LE, (long *) arg);
++
++	default:
++		/* Maybe this is meant for the mixer (As per OSS Docs) */
++		return mixer_ioctl(inode, file, cmd, arg);
++	}
++	return 0;
++}
++
++
++/*
++ * Audio stuff
++ */
++
++static audio_stream_t ac97_audio_out = {
++	name:			"AC97 audio out",
++	dcmd:			DCMD_TXPCDR,
++	drcmr:			&DRCMRTXPCDR,
++	dev_addr:		__PREG(PCDR),
++};
++
++static audio_stream_t ac97_audio_in = {
++	name:			"AC97 audio in",
++	dcmd:			DCMD_RXPCDR,
++	drcmr:			&DRCMRRXPCDR,
++	dev_addr:		__PREG(PCDR),
++};
++
++static audio_state_t ac97_audio_state = {
++	output_stream:		&ac97_audio_out,
++	input_stream:		&ac97_audio_in,
++	client_ioctl:		ac97_ioctl,
++	sem:			__MUTEX_INITIALIZER(ac97_audio_state.sem),
++};
++
++static int ac97_audio_open(struct inode *inode, struct file *file)
++{
++	return pxa_audio_attach(inode, file, &ac97_audio_state);
++}
++
++/*
++ * Missing fields of this structure will be patched with the call
++ * to pxa_audio_attach().
++ */
++
++static struct file_operations ac97_audio_fops = {
++	open:		ac97_audio_open,
++	owner:		THIS_MODULE
++};
++
++
++static int __init pxa_ac97_init(void)
++{
++	int ret;
++	struct ac97_codec *dummy;
++
++	ret = pxa_ac97_get(&dummy);
++	if (ret)
++		return ret;
++
++	update_audio_in ();
++
++	ac97_audio_state.dev_dsp = register_sound_dsp(&ac97_audio_fops, -1);
++	pxa_ac97_codec.dev_mixer = register_sound_mixer(&mixer_fops, -1);
++
++	return 0;
++}
++
++static void __exit pxa_ac97_exit(void)
++{
++	unregister_sound_dsp(ac97_audio_state.dev_dsp);
++	unregister_sound_mixer(pxa_ac97_codec.dev_mixer);
++	pxa_ac97_put();
++}
++
++
++module_init(pxa_ac97_init);
++module_exit(pxa_ac97_exit);
++
++MODULE_AUTHOR("Nicolas Pitre");
++MODULE_DESCRIPTION("AC97 interface for the Cotula chip");
++MODULE_LICENSE("GPL");
+Index: linux-2.6.15gum/sound/oss/pxa-audio.c
+===================================================================
+--- /dev/null
++++ linux-2.6.15gum/sound/oss/pxa-audio.c
+@@ -0,0 +1,858 @@
++/*
++ *  linux/drivers/sound/pxa-audio.c -- audio interface for the Cotula chip
++ *
++ *  Author:	Nicolas Pitre
++ *  Created:	Aug 15, 2001
++ *  Copyright:	MontaVista Software Inc.
++ *
++ *  This program is free software; you can redistribute it and/or modify
++ *  it under the terms of the GNU General Public License version 2 as
++ *  published by the Free Software Foundation.
++ */
++
++#include <linux/init.h>
++#include <linux/module.h>
++#include <linux/kernel.h>
++#include <linux/slab.h>
++#include <linux/pci.h>
++#include <linux/poll.h>
++#include <linux/sound.h>
++#include <linux/soundcard.h>
++
++#include <asm/hardware.h>
++#include <asm/arch/pxa-regs.h>
++#include <asm/irq.h>
++#include <asm/uaccess.h>
++#include <asm/semaphore.h>
++#include <asm/dma.h>
++
++#include "pxa-audio.h"
++
++
++#define AUDIO_NBFRAGS_DEFAULT	8
++#define AUDIO_FRAGSIZE_DEFAULT	8192
++
++#define MAX_DMA_SIZE		4096
++#define DMA_DESC_SIZE		sizeof(pxa_dma_desc)
++
++
++/*
++ * This function frees all buffers
++ */
++#define audio_clear_buf pxa_audio_clear_buf
++
++void pxa_audio_clear_buf(audio_stream_t * s)
++{
++	DECLARE_WAITQUEUE(wait, current);
++	int frag;
++
++	if (!s->buffers)
++		return;
++
++	/* Ensure DMA isn't running */
++	set_current_state(TASK_UNINTERRUPTIBLE);
++	add_wait_queue(&s->stop_wq, &wait);
++	DCSR(s->dma_ch) = DCSR_STOPIRQEN;
++	schedule();
++	remove_wait_queue(&s->stop_wq, &wait);
++
++	/* free DMA buffers */
++	for (frag = 0; frag < s->nbfrags; frag++) {
++		audio_buf_t *b = &s->buffers[frag];
++		if (!b->master)
++			continue;
++		dma_free_writecombine(NULL, b->master, b->data, b->dma_desc->dsadr);
++	}
++
++	/* free descriptor ring */
++	if (s->buffers->dma_desc)
++		dma_free_writecombine(NULL, s->nbfrags * s->descs_per_frag * DMA_DESC_SIZE,
++				  s->buffers->dma_desc, s->dma_desc_phys);
++
++	/* free buffer structure array */
++	kfree(s->buffers);
++	s->buffers = NULL;
++}
++
++/*
++ * This function allocates the DMA descriptor array and buffer data space
++ * according to the current number of fragments and fragment size.
++ */
++static int audio_setup_buf(audio_stream_t * s)
++{
++	pxa_dma_desc *dma_desc;
++	dma_addr_t dma_desc_phys;
++	int nb_desc, frag, i, buf_size = 0;
++	char *dma_buf = NULL;
++	dma_addr_t dma_buf_phys = 0;
++
++	if (s->buffers)
++		return -EBUSY;
++
++	/* Our buffer structure array */
++	s->buffers = kmalloc(sizeof(audio_buf_t) * s->nbfrags, GFP_KERNEL);
++	if (!s->buffers)
++		goto err;
++	memzero(s->buffers, sizeof(audio_buf_t) * s->nbfrags);
++
++	/* 
++	 * Our DMA descriptor array:
++	 * for Each fragment we have one checkpoint descriptor plus one 
++	 * descriptor per MAX_DMA_SIZE byte data blocks.
++	 */
++	nb_desc = (1 + (s->fragsize + MAX_DMA_SIZE - 1)/MAX_DMA_SIZE) * s->nbfrags;
++	dma_desc = dma_alloc_writecombine(NULL, nb_desc * DMA_DESC_SIZE,
++					  &dma_desc_phys, GFP_KERNEL);
++	
++	if (!dma_desc)
++		goto err;
++	s->descs_per_frag = nb_desc / s->nbfrags;
++	s->buffers->dma_desc = dma_desc;
++	s->dma_desc_phys = dma_desc_phys;
++	for (i = 0; i < nb_desc - 1; i++)
++		dma_desc[i].ddadr = dma_desc_phys + (i + 1) * DMA_DESC_SIZE;
++	dma_desc[i].ddadr = dma_desc_phys;
++
++	/* Our actual DMA buffers */
++	for (frag = 0; frag < s->nbfrags; frag++) {
++		audio_buf_t *b = &s->buffers[frag];
++
++		/*
++		 * Let's allocate non-cached memory for DMA buffers.
++		 * We try to allocate all memory at once.
++		 * If this fails (a common reason is memory fragmentation),
++		 * then we'll try allocating smaller buffers.
++		 */
++		if (!buf_size) {
++			buf_size = (s->nbfrags - frag) * s->fragsize;
++			do {
++				dma_buf = dma_alloc_writecombine(NULL, buf_size,
++								 &dma_buf_phys,
++								 GFP_KERNEL);
++				if (!dma_buf)
++					buf_size -= s->fragsize;
++			} while (!dma_buf && buf_size);
++			if (!dma_buf)
++				goto err;
++			b->master = buf_size;
++			memzero(dma_buf, buf_size);
++		}
++
++		/* 
++		 * Set up our checkpoint descriptor.  Since the count 
++		 * is always zero, we'll abuse the dsadr and dtadr fields
++		 * just in case this one is picked up by the hardware
++		 * while processing SOUND_DSP_GETPTR.
++		 */
++		dma_desc->dsadr = dma_buf_phys;
++		dma_desc->dtadr = dma_buf_phys;
++		dma_desc->dcmd = DCMD_ENDIRQEN;
++		if (s->output && !s->mapped)
++			dma_desc->ddadr |= DDADR_STOP;
++		b->dma_desc = dma_desc++;
++
++		/* set up the actual data descriptors */
++		for (i = 0; (i * MAX_DMA_SIZE) < s->fragsize; i++) {
++			dma_desc[i].dsadr = (s->output) ?
++				(dma_buf_phys + i*MAX_DMA_SIZE) : s->dev_addr;
++			dma_desc[i].dtadr = (s->output) ?
++				s->dev_addr : (dma_buf_phys + i*MAX_DMA_SIZE);
++			dma_desc[i].dcmd = s->dcmd |
++				((s->fragsize < MAX_DMA_SIZE) ?
++					s->fragsize : MAX_DMA_SIZE);
++		}
++		dma_desc += i;
++
++		/* handle buffer pointers */
++		b->data = dma_buf;
++		dma_buf += s->fragsize;
++		dma_buf_phys += s->fragsize;
++		buf_size -= s->fragsize;
++	}
++
++	s->usr_frag = s->dma_frag = 0;
++	s->bytecount = 0;
++	s->fragcount = 0;
++	sema_init(&s->sem, (s->output) ? s->nbfrags : 0);
++	return 0;
++
++err:
++	printk("pxa-audio: unable to allocate audio memory\n ");
++	audio_clear_buf(s);
++	return -ENOMEM;
++}
++
++/*
++ * Our DMA interrupt handler
++ */
++static void audio_dma_irq(int ch, void *dev_id, struct pt_regs *regs)
++{
++	audio_stream_t *s = dev_id;
++	u_int dcsr;
++
++	dcsr = DCSR(ch);
++	DCSR(ch) = dcsr & ~DCSR_STOPIRQEN;
++
++	if (!s->buffers) {
++		printk("AC97 DMA: wow... received IRQ for channel %d but no buffer exists\n", ch);
++		return;
++	}
++
++	if (dcsr & DCSR_BUSERR)
++		printk("AC97 DMA: bus error interrupt on channel %d\n", ch);
++
++	if (dcsr & DCSR_ENDINTR) {
++		u_long cur_dma_desc;
++		u_int cur_dma_frag;
++
++		/* 
++		 * Find out which DMA desc is current.  Note that DDADR
++		 * points to the next desc, not the current one.
++		 */
++		cur_dma_desc = DDADR(ch) - s->dma_desc_phys - DMA_DESC_SIZE;
++
++		/*
++		 * Let the compiler nicely optimize constant divisors into
++		 * multiplications for the common cases which is much faster.
++		 * Common cases: x = 1 + (1 << y) for y = [0..3]
++		 */
++		switch (s->descs_per_frag) {
++		case 2:  cur_dma_frag = cur_dma_desc / (2*DMA_DESC_SIZE); break;
++		case 3:  cur_dma_frag = cur_dma_desc / (3*DMA_DESC_SIZE); break;
++		case 5:  cur_dma_frag = cur_dma_desc / (5*DMA_DESC_SIZE); break;
++		case 9:  cur_dma_frag = cur_dma_desc / (9*DMA_DESC_SIZE); break;
++		default: cur_dma_frag =
++			    cur_dma_desc / (s->descs_per_frag * DMA_DESC_SIZE);
++		}
++
++		/* Account for possible wrap back of cur_dma_desc above */
++		if (cur_dma_frag >= s->nbfrags)
++			cur_dma_frag = s->nbfrags - 1;
++
++		while (s->dma_frag != cur_dma_frag) {
++			if (!s->mapped) {
++				/* 
++				 * This fragment is done - set the checkpoint
++				 * descriptor to STOP until it is gets
++				 * processed by the read or write function.
++				 */
++				s->buffers[s->dma_frag].dma_desc->ddadr |= DDADR_STOP;
++				up(&s->sem);
++			}
++			if (++s->dma_frag >= s->nbfrags)
++				s->dma_frag = 0;
++
++			/* Accounting */
++			s->bytecount += s->fragsize;
++			s->fragcount++;
++		}
++
++		/* ... and for polling processes */
++		wake_up(&s->frag_wq);
++	}
++
++	if ((dcsr & DCSR_STOPIRQEN) && (dcsr & DCSR_STOPSTATE))
++		wake_up(&s->stop_wq);
++}
++
++/*
++ * Validate and sets up buffer fragments, etc.
++ */
++static int audio_set_fragments(audio_stream_t *s, int val)
++{
++	if (s->mapped || DCSR(s->dma_ch) & DCSR_RUN)
++		return -EBUSY;
++	if (s->buffers)
++		audio_clear_buf(s);
++	s->nbfrags = (val >> 16) & 0x7FFF;
++	val &= 0xffff;
++	if (val < 5)
++		val = 5;
++	if (val > 15)
++		val = 15;
++	s->fragsize = 1 << val;
++	if (s->nbfrags < 2)
++		s->nbfrags = 2;
++	if (s->nbfrags * s->fragsize > 256 * 1024)
++		s->nbfrags = 256 * 1024 / s->fragsize;
++	if (audio_setup_buf(s))
++		return -ENOMEM;
++	return val|(s->nbfrags << 16);
++}
++
++
++/*
++ * The fops functions
++ */
++
++static int audio_write(struct file *file, const char *buffer,
++		       size_t count, loff_t * ppos)
++{
++	const char *buffer0 = buffer;
++	audio_state_t *state = (audio_state_t *)file->private_data;
++	audio_stream_t *s = state->output_stream;
++	int chunksize, ret = 0;
++
++	if (ppos != &file->f_pos)
++		return -ESPIPE;
++	if (s->mapped)
++		return -ENXIO;
++	if (!s->buffers && audio_setup_buf(s))
++		return -ENOMEM;
++
++	while (count > 0) {
++		audio_buf_t *b = &s->buffers[s->usr_frag];
++
++		/* Grab a fragment */
++		if (file->f_flags & O_NONBLOCK) {
++			ret = -EAGAIN;
++			if (down_trylock(&s->sem))
++				break;
++		} else {
++			ret = -ERESTARTSYS;
++			if (down_interruptible(&s->sem))
++				break;
++		}
++
++		/* Feed the current buffer */
++		chunksize = s->fragsize - b->offset;
++		if (chunksize > count)
++			chunksize = count;
++		if (copy_from_user(b->data + b->offset, buffer, chunksize)) {
++			up(&s->sem);
++			return -EFAULT;
++		}
++
++		b->offset += chunksize;
++		buffer += chunksize;
++		count -= chunksize;
++		if (b->offset < s->fragsize) {
++			ret = 0;
++			up(&s->sem);
++			break;
++		}
++
++		/* 
++		 * Activate DMA on current buffer.
++		 * We unlock this fragment's checkpoint descriptor and
++		 * kick DMA if it is idle.  Using checkpoint descriptors
++		 * allows for control operations without the need for 
++		 * stopping the DMA channel if it is already running.
++		 */
++		b->offset = 0;
++		b->dma_desc->ddadr &= ~DDADR_STOP;
++		if (DCSR(s->dma_ch) & DCSR_STOPSTATE) {
++			DDADR(s->dma_ch) = b->dma_desc->ddadr;
++			DCSR(s->dma_ch) = DCSR_RUN;
++		}
++
++		/* move the index to the next fragment */
++		if (++s->usr_frag >= s->nbfrags)
++			s->usr_frag = 0;
++	}
++
++	if ((buffer - buffer0))
++		ret = buffer - buffer0;
++	return ret;
++}
++
++
++static int audio_read(struct file *file, char *buffer,
++		      size_t count, loff_t * ppos)
++{
++	char *buffer0 = buffer;
++	audio_state_t *state = file->private_data;
++	audio_stream_t *s = state->input_stream;
++	int chunksize, ret = 0;
++
++	if (ppos != &file->f_pos)
++		return -ESPIPE;
++	if (s->mapped)
++		return -ENXIO;
++	if (!s->buffers && audio_setup_buf(s))
++		return -ENOMEM;
++
++	while (count > 0) {
++		audio_buf_t *b = &s->buffers[s->usr_frag];
++
++		/* prime DMA */
++		if (DCSR(s->dma_ch) & DCSR_STOPSTATE) {
++			DDADR(s->dma_ch) = 
++				s->buffers[s->dma_frag].dma_desc->ddadr;
++			DCSR(s->dma_ch) = DCSR_RUN;
++		}
++
++		/* Wait for a buffer to become full */
++		if (file->f_flags & O_NONBLOCK) {
++			ret = -EAGAIN;
++			if (down_trylock(&s->sem))
++				break;
++		} else {
++			ret = -ERESTARTSYS;
++			if (down_interruptible(&s->sem))
++				break;
++		}
++
++		/* Grab data from current buffer */
++		chunksize = s->fragsize - b->offset;
++		if (chunksize > count)
++			chunksize = count;
++		if (copy_to_user(buffer, b->data + b->offset, chunksize)) {
++			up(&s->sem);
++			return -EFAULT;
++		}
++		b->offset += chunksize;
++		buffer += chunksize;
++		count -= chunksize;
++		if (b->offset < s->fragsize) {
++			ret = 0;
++			up(&s->sem);
++			break;
++		}
++
++		/* 
++		 * Make this buffer available for DMA again.
++		 * We unlock this fragment's checkpoint descriptor and
++		 * kick DMA if it is idle.  Using checkpoint descriptors
++		 * allows for control operations without the need for 
++		 * stopping the DMA channel if it is already running.
++		 */
++		b->offset = 0;
++		b->dma_desc->ddadr &= ~DDADR_STOP;
++
++		/* move the index to the next fragment */
++		if (++s->usr_frag >= s->nbfrags)
++			s->usr_frag = 0;
++	}
++
++	if ((buffer - buffer0))
++		ret = buffer - buffer0;
++	return ret;
++}
++
++
++static int audio_sync(struct file *file)
++{
++	audio_state_t *state = file->private_data;
++	audio_stream_t *s = state->output_stream;
++	audio_buf_t *b;
++	pxa_dma_desc *final_desc;
++	u_long dcmd_save = 0;
++	DECLARE_WAITQUEUE(wait, current);
++
++	if (!(file->f_mode & FMODE_WRITE) || !s->buffers || s->mapped)
++		return 0;
++
++	/*
++	 * Send current buffer if it contains data.  Be sure to send
++	 * a full sample count.
++	 */
++	final_desc = NULL;
++	b = &s->buffers[s->usr_frag];
++	if (b->offset &= ~3) {
++		final_desc = &b->dma_desc[1 + b->offset/MAX_DMA_SIZE];
++		b->offset &= (MAX_DMA_SIZE-1);
++		dcmd_save = final_desc->dcmd;
++		final_desc->dcmd = b->offset | s->dcmd | DCMD_ENDIRQEN; 
++		final_desc->ddadr |= DDADR_STOP;
++		b->offset = 0;
++		b->dma_desc->ddadr &= ~DDADR_STOP;
++		if (DCSR(s->dma_ch) & DCSR_STOPSTATE) {
++			DDADR(s->dma_ch) = b->dma_desc->ddadr;
++			DCSR(s->dma_ch) = DCSR_RUN;
++		}
++	}
++
++	/* Wait for DMA to complete. */
++	set_current_state(TASK_INTERRUPTIBLE);
++#if 0
++	/* 
++	 * The STOPSTATE IRQ never seem to occur if DCSR_STOPIRQEN is set
++	 * along wotj DCSR_RUN.  Silicon bug?
++	 */
++	add_wait_queue(&s->stop_wq, &wait);
++	DCSR(s->dma_ch) |= DCSR_STOPIRQEN;
++	schedule();
++#else 
++	add_wait_queue(&s->frag_wq, &wait);
++	while ((DCSR(s->dma_ch) & DCSR_RUN) && !signal_pending(current)) {
++		schedule();
++		set_current_state(TASK_INTERRUPTIBLE);
++	}
++#endif
++	set_current_state(TASK_RUNNING);
++	remove_wait_queue(&s->frag_wq, &wait);
++
++	/* Restore the descriptor chain. */
++	if (final_desc) {
++		final_desc->dcmd = dcmd_save;
++		final_desc->ddadr &= ~DDADR_STOP;
++		b->dma_desc->ddadr |= DDADR_STOP;
++	}
++	return 0;
++}
++
++
++static unsigned int audio_poll(struct file *file,
++			       struct poll_table_struct *wait)
++{
++	audio_state_t *state = file->private_data;
++	audio_stream_t *is = state->input_stream;
++	audio_stream_t *os = state->output_stream;
++	unsigned int mask = 0;
++
++	if (file->f_mode & FMODE_READ) {
++		/* Start audio input if not already active */
++		if (!is->buffers && audio_setup_buf(is))
++			return -ENOMEM;
++		if (DCSR(is->dma_ch) & DCSR_STOPSTATE) {
++			DDADR(is->dma_ch) = 
++				is->buffers[is->dma_frag].dma_desc->ddadr;
++			DCSR(is->dma_ch) = DCSR_RUN;
++		}
++		poll_wait(file, &is->frag_wq, wait);
++	}
++
++	if (file->f_mode & FMODE_WRITE) {
++		if (!os->buffers && audio_setup_buf(os))
++			return -ENOMEM;
++		poll_wait(file, &os->frag_wq, wait);
++	}
++
++	if (file->f_mode & FMODE_READ)
++		if (( is->mapped && is->bytecount > 0) ||
++		    (!is->mapped && atomic_read(&is->sem.count) > 0))
++			mask |= POLLIN | POLLRDNORM;
++
++	if (file->f_mode & FMODE_WRITE)
++		if (( os->mapped && os->bytecount > 0) ||
++		    (!os->mapped && atomic_read(&os->sem.count) > 0))
++			mask |= POLLOUT | POLLWRNORM;
++
++	return mask;
++}
++
++
++static int audio_ioctl( struct inode *inode, struct file *file,
++			uint cmd, ulong arg)
++{
++	audio_state_t *state = file->private_data;
++	audio_stream_t *os = state->output_stream;
++	audio_stream_t *is = state->input_stream;
++	long val;
++
++	switch (cmd) {
++	case OSS_GETVERSION:
++		return put_user(SOUND_VERSION, (int *)arg);
++
++	case SNDCTL_DSP_GETBLKSIZE:
++		if (file->f_mode & FMODE_WRITE)
++			return put_user(os->fragsize, (int *)arg);
++		else
++			return put_user(is->fragsize, (int *)arg);
++
++	case SNDCTL_DSP_GETCAPS:
++		val = DSP_CAP_REALTIME|DSP_CAP_TRIGGER|DSP_CAP_MMAP;
++		if (is && os)
++			val |= DSP_CAP_DUPLEX;
++		return put_user(val, (int *)arg);
++
++	case SNDCTL_DSP_SETFRAGMENT:
++		if (get_user(val, (long *) arg))
++			return -EFAULT;
++		if (file->f_mode & FMODE_READ) {
++			int ret = audio_set_fragments(is, val);
++			if (ret < 0)
++				return ret;
++			ret = put_user(ret, (int *)arg);
++			if (ret)
++				return ret;
++		}
++		if (file->f_mode & FMODE_WRITE) {
++			int ret = audio_set_fragments(os, val);
++			if (ret < 0)
++				return ret;
++			ret = put_user(ret, (int *)arg);
++			if (ret)
++				return ret;
++		}
++		return 0;
++
++	case SNDCTL_DSP_SYNC:
++		return audio_sync(file);
++
++	case SNDCTL_DSP_SETDUPLEX:
++		return 0;
++
++	case SNDCTL_DSP_POST:
++		return 0;
++
++	case SNDCTL_DSP_GETTRIGGER:
++		val = 0;
++		if (file->f_mode & FMODE_READ && DCSR(is->dma_ch) & DCSR_RUN)
++			val |= PCM_ENABLE_INPUT;
++		if (file->f_mode & FMODE_WRITE && DCSR(os->dma_ch) & DCSR_RUN)
++			val |= PCM_ENABLE_OUTPUT;
++		return put_user(val, (int *)arg);
++
++	case SNDCTL_DSP_SETTRIGGER:
++		if (get_user(val, (int *)arg))
++			return -EFAULT;
++		if (file->f_mode & FMODE_READ) {
++			if (val & PCM_ENABLE_INPUT) {
++				if (!is->buffers && audio_setup_buf(is))
++					return -ENOMEM;
++				if (!(DCSR(is->dma_ch) & DCSR_RUN)) {
++					audio_buf_t *b = &is->buffers[is->dma_frag];
++					DDADR(is->dma_ch) = b->dma_desc->ddadr;
++					DCSR(is->dma_ch) = DCSR_RUN;
++				}
++			} else {
++				DCSR(is->dma_ch) = 0;
++			}
++		}
++		if (file->f_mode & FMODE_WRITE) {
++			if (val & PCM_ENABLE_OUTPUT) {
++				if (!os->buffers && audio_setup_buf(os))
++					return -ENOMEM;
++				if (!(DCSR(os->dma_ch) & DCSR_RUN)) {
++					audio_buf_t *b = &os->buffers[os->dma_frag];
++					DDADR(os->dma_ch) = b->dma_desc->ddadr;
++					DCSR(os->dma_ch) = DCSR_RUN;
++				}
++			} else {
++				DCSR(os->dma_ch) = 0;
++			}
++		}
++		return 0;
++
++	case SNDCTL_DSP_GETOSPACE:
++	case SNDCTL_DSP_GETISPACE:
++	    {
++		audio_buf_info inf = { 0, };
++		audio_stream_t *s = (cmd == SNDCTL_DSP_GETOSPACE) ? os : is;
++
++		if ((s == is && !(file->f_mode & FMODE_READ)) ||
++		    (s == os && !(file->f_mode & FMODE_WRITE)))
++			return -EINVAL;
++		if (!s->buffers && audio_setup_buf(s))
++			return -ENOMEM;
++		inf.bytes = atomic_read(&s->sem.count) * s->fragsize;
++		inf.bytes -= s->buffers[s->usr_frag].offset;
++		inf.fragments = inf.bytes / s->fragsize;
++		inf.fragsize = s->fragsize;
++		inf.fragstotal = s->nbfrags;
++		return copy_to_user((void *)arg, &inf, sizeof(inf));
++	    }
++
++	case SNDCTL_DSP_GETOPTR:
++	case SNDCTL_DSP_GETIPTR:
++	    {
++		count_info inf = { 0, };
++		audio_stream_t *s = (cmd == SNDCTL_DSP_GETOPTR) ? os : is;
++		dma_addr_t ptr;
++		int bytecount, offset;
++		unsigned long flags;
++
++		if ((s == is && !(file->f_mode & FMODE_READ)) ||
++		    (s == os && !(file->f_mode & FMODE_WRITE)))
++			return -EINVAL;
++		local_irq_save(flags);
++		if (DCSR(s->dma_ch) & DCSR_RUN) {
++			audio_buf_t *b;
++			ptr = (s->output) ? DSADR(s->dma_ch) : DTADR(s->dma_ch);
++			b = &s->buffers[s->dma_frag];
++			offset = ptr - b->dma_desc->dsadr;
++			if (offset >= s->fragsize)
++				offset = s->fragsize - 4;
++		} else {
++			offset = 0;
++		}
++		inf.ptr = s->dma_frag * s->fragsize + offset;
++		bytecount = s->bytecount + offset;
++		s->bytecount = -offset;
++		inf.blocks = s->fragcount;
++		s->fragcount = 0;
++		local_irq_restore(flags);
++		if (bytecount < 0)
++			bytecount = 0;
++		inf.bytes = bytecount;
++		return copy_to_user((void *)arg, &inf, sizeof(inf));
++	    }
++
++	case SNDCTL_DSP_NONBLOCK:
++		file->f_flags |= O_NONBLOCK;
++		return 0;
++
++	case SNDCTL_DSP_RESET:
++		if (file->f_mode & FMODE_WRITE) 
++			audio_clear_buf(os);
++		if (file->f_mode & FMODE_READ)
++			audio_clear_buf(is);
++		return 0;
++
++	default:
++		return state->client_ioctl ?
++			state->client_ioctl(inode, file, cmd, arg) : -EINVAL;
++	}
++
++	return 0;
++}
++
++
++static int audio_mmap(struct file *file, struct vm_area_struct *vma)
++{
++	audio_state_t *state = file->private_data;
++	audio_stream_t *s;
++	unsigned long size, vma_addr;
++	int i, ret;
++
++	if (vma->vm_pgoff != 0)
++		return -EINVAL;
++
++	if (vma->vm_flags & VM_WRITE) {
++		if (!state->wr_ref)
++			return -EINVAL;;
++		s = state->output_stream;
++	} else if (vma->vm_flags & VM_READ) {
++		if (!state->rd_ref)
++			return -EINVAL;
++		s = state->input_stream;
++	} else return -EINVAL;
++
++	if (s->mapped)
++		return -EINVAL;
++	size = vma->vm_end - vma->vm_start;
++	if (size != s->fragsize * s->nbfrags)
++		return -EINVAL;
++	if (!s->buffers && audio_setup_buf(s))
++		return -ENOMEM;
++	vma_addr = vma->vm_start;
++	for (i = 0; i < s->nbfrags; i++) {
++		audio_buf_t *buf = &s->buffers[i];
++		if (!buf->master)
++			continue;
++		ret = remap_page_range(vma, vma->vm_start, buf->dma_desc->dsadr,
++				       buf->master, vma->vm_page_prot);
++		if (ret)
++			return ret;
++		vma_addr += buf->master;
++	}
++	for (i = 0; i < s->nbfrags; i++)
++		s->buffers[i].dma_desc->ddadr &= ~DDADR_STOP;
++	s->mapped = 1;
++	return 0;
++}
++
++
++static int audio_release(struct inode *inode, struct file *file)
++{
++	audio_state_t *state = file->private_data;
++
++	down(&state->sem);
++
++	if (file->f_mode & FMODE_READ) {
++		audio_clear_buf(state->input_stream);
++		*state->input_stream->drcmr = 0;
++		pxa_free_dma(state->input_stream->dma_ch);
++		state->rd_ref = 0;
++	}
++
++	if (file->f_mode & FMODE_WRITE) {
++		audio_sync(file);
++		audio_clear_buf(state->output_stream);
++		*state->output_stream->drcmr = 0;
++		pxa_free_dma(state->output_stream->dma_ch);
++		state->wr_ref = 0;
++	}
++
++	up(&state->sem);
++	return 0;
++}
++
++
++int pxa_audio_attach(struct inode *inode, struct file *file,
++			 audio_state_t *state)
++{
++	audio_stream_t *is = state->input_stream;
++	audio_stream_t *os = state->output_stream;
++	int err;
++
++	down(&state->sem);
++
++	/* access control */
++	err = -ENODEV;
++	if ((file->f_mode & FMODE_WRITE) && !os)
++		goto out;
++	if ((file->f_mode & FMODE_READ) && !is)
++		goto out;
++	err = -EBUSY;
++	if ((file->f_mode & FMODE_WRITE) && state->wr_ref)
++		goto out;
++	if ((file->f_mode & FMODE_READ) && state->rd_ref)
++		goto out;
++
++	/* request DMA channels */
++	if (file->f_mode & FMODE_WRITE) {
++		err = pxa_request_dma(os->name, DMA_PRIO_LOW, 
++					  audio_dma_irq, os);
++		if (err < 0)
++			goto out;
++		os->dma_ch = err;
++	}
++	if (file->f_mode & FMODE_READ) {
++		err = pxa_request_dma(is->name, DMA_PRIO_LOW,
++					  audio_dma_irq, is);
++		if (err < 0) {
++			if (file->f_mode & FMODE_WRITE) {
++				*os->drcmr = 0;
++				pxa_free_dma(os->dma_ch);
++			}
++			goto out;
++		}
++		is->dma_ch = err;
++	}
++
++	file->private_data	= state;
++	file->f_op->release	= audio_release;
++	file->f_op->write	= audio_write;
++	file->f_op->read	= audio_read;
++	file->f_op->mmap	= audio_mmap;
++	file->f_op->poll	= audio_poll;
++	file->f_op->ioctl	= audio_ioctl;
++	file->f_op->llseek	= no_llseek;
++
++	if ((file->f_mode & FMODE_WRITE)) {
++		state->wr_ref = 1;
++		os->fragsize = AUDIO_FRAGSIZE_DEFAULT;
++		os->nbfrags = AUDIO_NBFRAGS_DEFAULT;
++		os->output = 1;
++		os->mapped = 0;
++		init_waitqueue_head(&os->frag_wq);
++		init_waitqueue_head(&os->stop_wq);
++		*os->drcmr = os->dma_ch | DRCMR_MAPVLD;
++	}
++	if (file->f_mode & FMODE_READ) {
++		state->rd_ref = 1;
++		is->fragsize = AUDIO_FRAGSIZE_DEFAULT;
++		is->nbfrags = AUDIO_NBFRAGS_DEFAULT;
++		is->output = 0;
++		is->mapped = 0;
++		init_waitqueue_head(&is->frag_wq);
++		init_waitqueue_head(&is->stop_wq);
++		*is->drcmr = is->dma_ch | DRCMR_MAPVLD;
++	}
++
++	err = 0;
++
++out:
++	up(&state->sem);
++	return err;
++}
++
++EXPORT_SYMBOL(pxa_audio_attach);
++EXPORT_SYMBOL(pxa_audio_clear_buf);
++
++MODULE_AUTHOR("Nicolas Pitre, MontaVista Software Inc.");
++MODULE_DESCRIPTION("audio interface for the Cotula chip");
++MODULE_LICENSE("GPL");
+Index: linux-2.6.15gum/sound/oss/pxa-audio.h
+===================================================================
+--- /dev/null
++++ linux-2.6.15gum/sound/oss/pxa-audio.h
+@@ -0,0 +1,54 @@
++/*
++ *  linux/drivers/sound/pxa-audio.h -- audio interface for the Cotula chip
++ *
++ *  Author:	Nicolas Pitre
++ *  Created:	Aug 15, 2001
++ *  Copyright:	MontaVista Software Inc.
++ *
++ *  This program is free software; you can redistribute it and/or modify
++ *  it under the terms of the GNU General Public License version 2 as
++ *  published by the Free Software Foundation.
++ */
++
++typedef struct {
++	int offset;			/* current buffer position */
++	char *data; 	           	/* actual buffer */
++	pxa_dma_desc *dma_desc;	/* pointer to the starting desc */
++	int master;             	/* owner for buffer allocation, contain size whn true */
++} audio_buf_t;
++
++typedef struct {
++	char *name;			/* stream identifier */
++	audio_buf_t *buffers;   	/* pointer to audio buffer array */
++	u_int usr_frag;			/* user fragment index */
++	u_int dma_frag;			/* DMA fragment index */
++	u_int fragsize;			/* fragment size */
++	u_int nbfrags;			/* number of fragments */
++	u_int dma_ch;			/* DMA channel number */
++	dma_addr_t dma_desc_phys;	/* phys addr of descriptor ring */
++	u_int descs_per_frag;		/* nbr descriptors per fragment */
++	int bytecount;			/* nbr of processed bytes */
++	int fragcount;			/* nbr of fragment transitions */
++	struct semaphore sem;		/* account for fragment usage */
++	wait_queue_head_t frag_wq;	/* for poll(), etc. */
++	wait_queue_head_t stop_wq;	/* for users of DCSR_STOPIRQEN */
++	u_long dcmd;			/* DMA descriptor dcmd field */
++	volatile u32 *drcmr;		/* the DMA request channel to use */
++	u_long dev_addr;		/* device physical address for DMA */
++	int mapped:1;			/* mmap()'ed buffers */
++	int output:1;			/* 0 for input, 1 for output */
++} audio_stream_t;
++	
++typedef struct {
++	audio_stream_t *output_stream;
++	audio_stream_t *input_stream;
++	int dev_dsp;			/* audio device handle */
++	int rd_ref:1;           /* open reference for recording */
++	int wr_ref:1;           /* open reference for playback */
++	int (*client_ioctl)(struct inode *, struct file *, uint, ulong);
++	struct semaphore sem;		/* prevent races in attach/release */
++} audio_state_t;
++
++extern int pxa_audio_attach(struct inode *inode, struct file *file,
++				audio_state_t *state);
++extern void pxa_audio_clear_buf(audio_stream_t *s);
