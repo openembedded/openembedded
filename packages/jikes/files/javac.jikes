@@ -1,0 +1,2 @@
+#!/bin/sh
+jikes -bootclasspath /usr/share/classpath/glibj.zip $@
