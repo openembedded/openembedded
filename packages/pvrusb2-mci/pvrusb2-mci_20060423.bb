@@ -1,4 +1,5 @@
 DESCRIPTION = "Driver for the Hauppauge WinTV PVR USB2"
+HOMEPAGE = "http://www.isely.net/pvrusb2.html"
 PRIORITY = "optional"
 SECTION = "kernel/modules"
 MAINTAINER = "eFfeM <fransmeulenbroeks at yahoo dot com>"
