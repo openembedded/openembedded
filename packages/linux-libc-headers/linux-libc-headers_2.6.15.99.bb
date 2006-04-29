@@ -19,6 +19,7 @@ PR = "r3"
 SRC_URI = "http://ewi546.ewi.utwente.nl/OE/eabi/linux-libc-headers-${PV}.tar.bz2 \
 	file://keyboard.patch;patch=1 \
 	file://asm-arch-irqs.patch;patch=1 \
+	file://linux-netdevice.patch;patch=1 \
 	file://linux-netfilter_ipv4.patch;patch=1 \
 	file://linux-rtc.patch;patch=1 \
 	file://linux-videodev2.patch;patch=1"

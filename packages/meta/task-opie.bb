@@ -130,7 +130,7 @@ RDEPENDS_task-opie-multimedia = "opie-mediaplayer1 \
                         opie-powerchord opie-recorder opie-tonleiter"
 
 RDEPENDS_task-opie-settings = "opie-appearance opie-aqpkg opie-backup opie-button-settings \
-                      opie-calibrate opie-citytime opie-confeditor opie-doctab \
+                      opie-citytime opie-confeditor opie-doctab \
                       opie-formatter opie-language opie-launcher-settings \
                       opie-light-and-power opie-mediummount opie-networksettings \
                       opie-packagemanager opie-security opie-sshkeys opie-sysinfo \

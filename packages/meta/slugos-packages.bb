@@ -68,9 +68,6 @@ SLUGOS_PACKAGES = "\
 	grep \
 	gtk-doc \
 	gzip \
-	hostap-daemon \
-	hostap-modules \
-	hostap-utils \
 	ifupdown \
 	ipkg-utils \
 	iptables \
@@ -96,7 +93,7 @@ SLUGOS_PACKAGES = "\
 	lsof \
 	lvm2 \
 	m4 \
-	madwifi-ng-modules \
+	madwifi-ng \
 	mailx \
 	make \
 	masqmail \

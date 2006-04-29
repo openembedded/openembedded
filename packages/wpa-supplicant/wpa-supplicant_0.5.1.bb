@@ -4,8 +4,9 @@ LICENSE = "GPL"
 MAINTAINER = "Holger Schurig"
 MAINTAINER = "Eric Shattow <lucent@gmail.com>"
 HOMEPAGE = "http://hostap.epitest.fi/wpa_supplicant/"
-DEPENDS = "gnutls"
-PR = "r1"
+DEPENDS = "gnutls madwifi-ng"
+
+PR = "r4"
 DEFAULT_PREFERENCE = "-1"
 
 SRC_URI = "http://hostap.epitest.fi/releases/wpa_supplicant-${PV}.tar.gz \
@@ -17,7 +18,7 @@ SRC_URI = "http://hostap.epitest.fi/releases/wpa_supplicant-${PV}.tar.gz \
 
 S = "${WORKDIR}/wpa_supplicant-${PV}"
 
-PACKAGES_prepend = "wpa-supplicant-passphrase wpa-supplicant-cli"
+PACKAGES_prepend = "wpa-supplicant-passphrase wpa-supplicant-cli "
 FILES_wpa-supplicant-passphrase = "/usr/sbin/wpa_passphrase"
 FILES_wpa-supplicant-cli = "/usr/sbin/wpa_cli"
 
@@ -29,6 +30,8 @@ inherit update-rc.d
 
 do_configure () {
 	install -m 0755 ${WORKDIR}/defconfig-gnutls  .config
+	echo "CONFIG_DRIVER_MADWIFI=y" >> .config
+	echo "CFLAGS += -I${STAGING_INCDIR}/madwifi-ng" >> .config
 }
 
 do_compile () {

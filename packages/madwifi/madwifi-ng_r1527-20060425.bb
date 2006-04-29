@@ -5,13 +5,13 @@ MAINTAINER = "NSLU2 Linux <nslu2-linux@yahoogroups.com>"
 LICENSE = "GPL"
 RDEPENDS = "kernel (${KERNEL_VERSION})"
 DEPENDS = "virtual/kernel"
-PV = "r1527-20060425"
+PR="r0"
 
-SRC_URI = "http://snapshots.madwifi.org/madwifi-ng/madwifi-ng-${PV}.tar.gz \
+SRC_URI = "http://snapshots.madwifi.org/${PN}/${PN}-${PV}.tar.gz \
 	   file://10-xscale-be-elf-copts.patch;patch=1 \
 	   file://10-xscale-le-elf-copts.patch;patch=1"
 
-S = "${WORKDIR}/madwifi-ng-${PV}"
+S = "${WORKDIR}/${PN}-${PV}"
 
 inherit module-base
 
@@ -21,6 +21,13 @@ EXTRA_OEMAKE_prepend_slugos = "TARGET=xscale-${ARCH_BYTE_SEX}-elf "
 
 do_compile() {
 	oe_runmake all
+}
+
+do_stage() {
+	install -d ${STAGING_INCDIR}/${PN}/include
+	install -d ${STAGING_INCDIR}/${PN}/net80211
+	cp --dereference include/compat.h ${STAGING_INCDIR}/${PN}/include/
+	cp --dereference net80211/*.h ${STAGING_INCDIR}/${PN}/net80211/
 }
 
 do_install() {
@@ -36,6 +43,6 @@ else
 fi
 }
 
-PACKAGES = "madwifi-ng-tools ${PN}"
-FILES_${PN} = "/lib/modules/"
-FILES_madwifi-ng-tools = "/usr/"
+PACKAGES = "${PN}-modules ${PN}-tools"
+FILES_${PN}-modules = "/lib/modules/"
+FILES_${PN}-tools = "/usr/"
