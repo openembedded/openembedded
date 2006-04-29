@@ -1,0 +1,19 @@
+*** ark3116/Makefile.orig	2006-04-29 15:42:08.000000000 +0200
+--- ark3116/Makefile	2006-04-29 15:43:26.000000000 +0200
+***************
+*** 7,13 ****
+  EXTRA_CFLAGS += -I/usr/src/linux/drivers/usb/serial
+  
+  modules:
+! 	$(MAKE) -C $(KDIR) SUBDIRS=$(PWD) -I/usr/src/linux/drivers/usb/serial modules
+  
+  install: modules
+  	install -d $(KMISC)
+--- 7,13 ----
+  EXTRA_CFLAGS += -I/usr/src/linux/drivers/usb/serial
+  
+  modules:
+! 	$(MAKE) -C $(KERNEL_SOURCE) M=$(PWD) -I/usr/src/linux/drivers/usb/serial modules
+  
+  install: modules
+  	install -d $(KMISC)
