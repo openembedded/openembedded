@@ -1,0 +1,17 @@
+*** ark3116/ark3116.c.orig	2006-04-29 16:00:34.000000000 +0200
+--- ark3116/ark3116.c	2006-04-29 16:00:27.000000000 +0200
+***************
+*** 443,452 ****
+--- 443,454 ----
+          tty = port->tty;
+          if (tty && urb->actual_length) {
+                  for (i = 0; i < urb->actual_length ; ++i) {
++ #if 0
+                          /* if we insert more than TTY_FLIPBUF_SIZE characters, we drop them. */
+                          if(tty->flip.count >= TTY_FLIPBUF_SIZE) {
+                                  tty_flip_buffer_push(tty);
+                          }
++ #endif
+                          /* this doesn't actually push the data through unless tty->low_latency is set */
+                          tty_insert_flip_char(tty, data[i], 0);
+                  }
