@@ -23,10 +23,10 @@
 DEPENDS_prepend = " pax-utilities-native "
 
 # We play a special package function
-inherit packages
-
-
-PACKAGEFUNCS += "do_package_qa"
+inherit package
+PACKAGEFUNCS += " do_package_qa "
 
 python do_package_qa () {
 }
+
+
