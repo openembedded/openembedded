@@ -1,7 +1,7 @@
 DESCRIPTION = "Meta-package for Opie"
 SECTION = "opie/base"
 ALLOW_EMPTY = 1
-PR = "r33"
+PR = "r34"
 PACKAGE_ARCH = "all"
 LICENSE = "MIT"
 
@@ -152,7 +152,7 @@ task-opie-multimedia = "opie-mediaplayer1 \
                         opie-powerchord opie-recorder opie-tonleiter"
 
 task-opie-settings = "opie-appearance opie-aqpkg opie-backup opie-button-settings \
-                      opie-calibrate opie-citytime opie-confeditor opie-doctab \
+                      opie-citytime opie-confeditor opie-doctab \
                       opie-formatter opie-language opie-launcher-settings \
                       opie-light-and-power opie-mediummount opie-networksettings \
                       opie-packagemanager opie-security opie-sshkeys opie-sysinfo \
