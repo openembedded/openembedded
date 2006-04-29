@@ -2,6 +2,7 @@ DESCRIPTION = "GNU Classpath standard Java libraries"
 HOMEPAGE = "http://www.gnu.org/software/classpath/"
 LICENSE = "Classpath"
 PRIORITY = "optional"
+MAINTAINER = "Rene Wagner <rw@handhelds.org>"
 SECTION = "libs"
 
 PBN = "classpath"
