@@ -20,7 +20,8 @@ SRC_URI_append = " file://100-uclibc-conf.patch;patch=1   \
                    file://301-missing-execinfo_h.patch;patch=1 \
                    file://302-c99-snprintf.patch;patch=1  \
                    file://303-c99-complex-ugly-hack.patch;patch=1 \
-                   file://800-arm-bigendian.patch;patch=1 "
+                   file://800-arm-bigendian.patch;patch=1 \
+                   file://zecke-host-cpp-ac-hack.patch;patch=1 "
 
 
 include gcc4-build.inc
