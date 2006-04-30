@@ -1,15 +1,16 @@
 SECTION = "base"
 DESCRIPTION = "tslib is a touchscreen access library."
 PV = "0.0+cvs${SRCDATE}"
-PR = "r33"
+PR = "r34"
 
 SRC_URI_OVERRIDES_PACKAGE_ARCH = "0"
 PACKAGE_ARCH_tslib-conf = "${MACHINE_ARCH}"
 PACKAGE_ARCH_mnci = "${MACHINE_ARCH}"
 
 SRC_URI = "cvs://cvs:@pubcvs.arm.linux.org.uk/mnt/src/cvsroot;module=tslib \
-	   file://ts.conf file://ts-2.6.conf \
-	   file://ts.conf-h3600-2.4 file://ts.conf-simpad-2.4 \
+           file://usec_fix.patch;patch=1 \
+           file://ts.conf file://ts-2.6.conf \
+           file://ts.conf-h3600-2.4 file://ts.conf-simpad-2.4 \
            file://ts.conf-corgi-2.4 file://ts.conf-collie-2.4 \
 	   file://tslib.sh"
 SRC_URI_append_mnci += " file://devfs.patch;patch=1"

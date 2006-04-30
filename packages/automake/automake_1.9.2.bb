@@ -12,7 +12,8 @@ FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/automake-${PV}"
 inherit autotools
 
 FILES_${PN} += "${datadir}/automake* ${datadir}/aclocal*"
-RDEPENDS_${PN} += "autoconf perl"
+
+include automake.inc
 
 do_install () {
 	oe_runmake 'DESTDIR=${D}' install
