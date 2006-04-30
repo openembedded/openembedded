@@ -1,0 +1,8 @@
+rootfs       	/		auto	defaults	1  1
+proc            /proc		proc    defaults        0  0
+sys             /sys		sysfs	defaults        0  0
+tmpfs		/var		tmpfs	defaults	0  0
+#The devpts file system provides an interface to pseudo terminal (pty) devices. 
+devpts		/dev/pts	devpts	mode=0620,gid=5	0  0
+#Mount first partition from the mmc card.
+/dev/mmcblk0p1	/media/card	auto	defaults,sync,noauto,noatime,exec,suid	0  0
