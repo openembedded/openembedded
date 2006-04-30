@@ -58,7 +58,7 @@ pkg_postinst_kernel () {
 
 pkg_postinst_modules () {
 if [ -n "$D" ]; then
-	${HOST_PREFIX}depmod -A -b $D -F $D/boot/System.map-${PV} ${KERNEL_VERSION}
+	${HOST_PREFIX}depmod-${KERNEL_MAJOR_VERSION} -A -b $D -F $D/boot/System.map-${PV} ${KERNEL_VERSION}
 else
 	depmod -A
 fi
