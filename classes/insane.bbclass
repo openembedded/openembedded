@@ -20,13 +20,13 @@
 # We need to have the scanelf utility as soon as
 # possible.
 #
-DEPENDS_prepend = " pax-utilities-native "
 
 # We play a special package function
-inherit packages
-
-
-PACKAGEFUNCS += "do_package_qa"
+inherit package
+PACKAGE_DEPENDS += "pax-utils-native"
+PACKAGEFUNCS += " do_package_qa "
 
 python do_package_qa () {
 }
+
+
