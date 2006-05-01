@@ -3,7 +3,8 @@ SECTION = "kernel/modules"
 PRIORITY = "optional"
 MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de> Marcin Juszkiewicz <openembedded@hrw.one.pl>"
 LICENSE = "GPL"
-PR = "r1"
+PACKAGE_ARCH = "all"
+PR = "r2"
 
 SRC_URI = "file://spectrum.conf \
            file://hermes.conf \
