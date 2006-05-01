@@ -4,7 +4,7 @@ MAINTAINER = "Richard Purdie <rpurdie@openedhand.com>"
 LICENSE = "GPL"
 DEPENDS = "tslib"
 PV = "0.0+svn${CVSDATE}"
-PR = "r3"
+PR = "r4"
 
 SRC_URI = "svn://svn.o-hand.com/repos/misc/trunk;module=zaurusd;proto=http \
            file://fix-c7x0-sound.patch;patch=1 \
