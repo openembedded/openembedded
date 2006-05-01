@@ -1,0 +1,11 @@
+--- zd1211-driver-r67/src/zd1211.c~	2006-02-16 15:33:51.000000000 -0600
++++ zd1211-driver-r67/src/zd1211.c	2006-04-30 22:47:13.000000000 -0500
+@@ -2228,7 +2228,7 @@
+ 
+                         if (CurFrmLen & 0x03)
+                                 tmpLen += 4;
+-                        rfd->ActualCount += macp->rxOffset;
++                        rfd->ActualCount = cpu_to_le32(CurFrmLen + macp->rxOffset);
+                 }
+         } else {
+                 // last_pkt_len = 509, 510, 511
