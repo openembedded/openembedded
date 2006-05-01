@@ -1,0 +1,13 @@
+Index: gpe-clock-0.24/clock.c
+===================================================================
+--- gpe-clock-0.24.orig/clock.c	2006-05-01 18:48:20.693839328 +0200
++++ gpe-clock-0.24/clock.c	2006-05-01 18:48:43.390388928 +0200
+@@ -892,7 +892,7 @@
+ 
+   panel_window = gtk_plug_new (0);
+   gtk_widget_realize (panel_window);
+-  gtk_window_set_title (GTK_WINDOW (panel_window), _("Clock"));
++  gtk_window_set_title (GTK_WINDOW (panel_window), _("Alarm clock"));
+   gtk_widget_set_name (panel_window, "gpe-clock");
+   gtk_window_set_icon_from_file (GTK_WINDOW (panel_window), PREFIX "/share/pixmaps/gpe-clock.png", NULL);
+ 
