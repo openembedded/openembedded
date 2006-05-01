@@ -1,0 +1,33 @@
+
+#
+# Patch managed by http://www.holgerschurig.de/patcher.html
+#
+
+--- PyQt4-gpl-4.0beta1/configure.py~cross-compile.patch
++++ PyQt4-gpl-4.0beta1/configure.py
+@@ -471,7 +471,7 @@
+         sipconfig.error("Unable to create the %s directory." % mname)
+ 
+     # Build the SIP command line.
+-    argv = ['"' + sipcfg.sip_bin + '"']
++    argv = ['"' + sipcfg.sip_bin + '4"']
+ 
+     argv.extend(qt_sip_flags)
+ 
+@@ -846,7 +846,15 @@
+     """Set the qt_dir, qt_incdir, qt_libdir, qt_bindir and qt_datadir globals
+     for the Qt installation.
+     """
+-    sipconfig.inform("Determining the layout of your Qt installation...")
++    sipconfig.inform("Determining the layout of your Qt installation... - patched for OpenEmbedded by :M:")
++
++    global qt_dir, qt_incdir, qt_libdir, qt_bindir, qt_datadir
++    qt_dir = os.getenv( "QTDIR" )
++    qt_incdir = "%s/include" % qt_dir
++    qt_libdir = "%s/lib" % qt_dir
++    qt_bindir = "%s/bin" % qt_dir
++    qt_datadir = "%s/share" % qt_dir
++    return
+ 
+     if not opt_qmake:
+         sipconfig.error("Make sure you have a working Qt v4 qmake on your PATH or use the -q argument to explicitly specify a working Qt v4 qmake.")
