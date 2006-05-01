@@ -1,9 +1,9 @@
 DESCRIPTION = "PCMCIA-cs configuration files for Hermes (Orinoco) wireless LAN cards"
 SECTION = "kernel/modules"
 PRIORITY = "optional"
-MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
+MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de> Marcin Juszkiewicz <openembedded@hrw.one.pl>"
 LICENSE = "GPL"
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "file://spectrum.conf \
            file://hermes.conf \
