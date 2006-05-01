@@ -10,9 +10,11 @@ MAINTAINER = "Philip Blundell <pb@handhelds.org>"
 DEPENDS += "glib-2.0-native gtk-doc"
 DEPENDS += "virtual/libiconv virtual/libintl"
 PACKAGES =+ "glib-2.0-utils "
-PR = "r0"
+PR = "r1"
 
 LEAD_SONAME = "libglib-2.0.*"
+FILES_${PN} = "${libdir}/lib*.so.*"
+FILES_${PN}-dev += "${libdir}/glib-2.0/include ${datadir}/glib-2.0/gettext"
 FILES_glib-2.0-utils = "${bindir}/*"
 
 EXTRA_OECONF = "--disable-debug"
