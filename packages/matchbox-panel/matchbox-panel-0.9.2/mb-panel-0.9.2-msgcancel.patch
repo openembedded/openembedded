@@ -1,0 +1,67 @@
+diff -ur clean/matchbox-panel-0.9.2/src/msg.c matchbox-panel-0.9.2/src/msg.c
+--- clean/matchbox-panel-0.9.2/src/msg.c	2006-01-19 19:38:48.293865576 +0000
++++ matchbox-panel-0.9.2/src/msg.c	2006-01-19 19:42:02.139396576 +0000
+@@ -547,6 +547,20 @@
+   XFreePixmap(panel->dpy, mask);
+ }
+ 
++void
++msg_cancel (MBPanel *panel, XClientMessageEvent *e)
++{
++   MBPanelApp *sender;
++
++   if ((sender = panel_app_get_from_window(panel, e->window )) == NULL)
++     return;
++   
++   if (panel->msg_win && panel->msg_win_sender == sender && panel->msg_sender_id == e->data.l[2])
++     {
++       XDestroyWindow(panel->dpy, panel->msg_win);
++       panel->msg_win = None;
++     }
++}
+ 
+ void
+ msg_handle_events(MBPanel *panel, XEvent *e)
+@@ -566,6 +580,7 @@
+ 	 panel->msg_starttime  = msg->starttime;
+ 	 panel->msg_timeout    = msg->timeout; 
+ 	 panel->msg_win_sender = msg->sender;
++	 panel->msg_sender_id  = msg->id;
+ 
+ 	 panel->msg_has_context = False;
+ 
+diff -ur clean/matchbox-panel-0.9.2/src/msg.h matchbox-panel-0.9.2/src/msg.h
+--- clean/matchbox-panel-0.9.2/src/msg.h	2006-01-19 19:38:48.313862536 +0000
++++ matchbox-panel-0.9.2/src/msg.h	2006-01-19 19:39:29.706569888 +0000
+@@ -16,5 +16,6 @@
+ void msg_add_data(MBPanel *d, XClientMessageEvent *e);
+ void msg_handle_events(MBPanel *d, XEvent *e);
+ Bool msg_set_timeout(MBPanel *d, struct timeval *tv, struct timeval **tvp);
++void msg_cancel(MBPanel *d, XClientMessageEvent *e);
+ 
+ #endif
+Only in matchbox-panel-0.9.2/src/: msg.h~
+Only in matchbox-panel-0.9.2/src/: msg.o
+Only in matchbox-panel-0.9.2/src/: panel_app.o
+diff -ur clean/matchbox-panel-0.9.2/src/panel.c matchbox-panel-0.9.2/src/panel.c
+--- clean/matchbox-panel-0.9.2/src/panel.c	2006-01-19 19:38:48.349857064 +0000
++++ matchbox-panel-0.9.2/src/panel.c	2006-01-19 19:37:54.912980704 +0000
+@@ -886,6 +886,7 @@
+ 	  break;
+ 	case SYSTEM_TRAY_CANCEL_MESSAGE:
+ 	  DBG("%s() is SYSTEM_TRAY_CANCEL_MESSAGE\n", __func__ );
++	  msg_cancel(panel, e);
+ 	  break;
+ 	}
+       return;
+diff -ur clean/matchbox-panel-0.9.2/src/panel.h matchbox-panel-0.9.2/src/panel.h
+--- clean/matchbox-panel-0.9.2/src/panel.h	2005-03-20 17:43:33.000000000 +0000
++++ matchbox-panel-0.9.2/src/panel.h	2006-01-19 19:40:43.701320976 +0000
+@@ -212,6 +212,7 @@
+   int                     msg_timeout; 
+   MBPanelApp             *msg_win_sender;
+   Bool                    msg_has_context;
++  unsigned long		  msg_sender_id;
+   int                     msg_context_y1, msg_context_y2;
+ 
+   GC                      msg_gc;

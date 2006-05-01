@@ -1,0 +1,33 @@
+--- matchbox-panel-0.9.2.multi/applets/mb-applet-menu-launcher.c	2006-02-16 00:43:28.000000000 +0100
++++ matchbox-panel-0.9.2/applets/mb-applet-menu-launcher.c	2006-02-17 20:25:14.000000000 +0100
+@@ -392,7 +392,8 @@
+   FILE *fp;
+   char *buf;
+   int len;
+-  MBMenuMenu *menu_panel;
++  MBMenuMenu *menu_panel = NULL;
++  char *menu_panel_disabled = getenv ("MB_MENU_PANEL_DISABLED");
+   char *tmp_path = NULL, *tmp_path2 = NULL ;
+ 
+   char vfolder_path_root[512];
+@@ -453,8 +454,8 @@
+ 
+     }
+ 
+-  menu_panel = mb_menu_add_path(app_data->mbmenu, "Utilities/Panel" , NULL, MBMENU_NO_SORT );
+-
++  if (!menu_panel_disabled)
++    menu_panel = mb_menu_add_path(app_data->mbmenu, "Utilities/Panel" , NULL, MBMENU_NO_SORT );
+ 
+   tmp_path = mb_dot_desktop_icon_get_full_path (app_data->theme_name, 
+ 						16, 
+@@ -620,6 +621,9 @@
+ 			  && !strcmp(mb_dotdesktop_get(dd, "Type"), 
+ 				     "PanelApp"))
+ 			{
++			  if (menu_panel_disabled)
++			    continue;
++
+ 			  m = menu_panel;
+ 			}
+ 		      

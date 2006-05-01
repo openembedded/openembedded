@@ -1,0 +1,87 @@
+Index: src/panel.c
+===================================================================
+--- src/panel.c	(revision 1161)
++++ src/panel.c	(revision 1162)
+@@ -1009,10 +1009,6 @@
+   int xfd;
+   Bool had_rotation = False;
+ 
+-  XSelectInput (panel->dpy, panel->win, StructureNotifyMask|ExposureMask|
+-		SubstructureRedirectMask|SubstructureNotifyMask|
+-		ButtonPressMask|ButtonReleaseMask|PointerMotionMask|
+-		PropertyChangeMask);
+ 
+   XSelectInput (panel->dpy, panel->win_root, 
+ 		PropertyChangeMask|StructureNotifyMask);
+@@ -1090,6 +1086,7 @@
+ 						 &an_event.xconfigurerequest);
+ 	      break;
+ 	    case ConfigureNotify:
++	      DBG("%s(): configureNotify\n", __func__);
+ 	      if (an_event.xconfigure.window == panel->win_root)
+ 		{
+ 		  had_rotation = True;
+@@ -1110,6 +1107,8 @@
+ 		      int diff = 0;
+ 		      MBPanelApp *papp = NULL;
+ 
++		      DBG("mark %i\n", __LINE__);
++
+ 		      if (panel->ignore_next_config)
+ 			{
+ 			  panel->ignore_next_config = False;
+@@ -1133,6 +1132,8 @@
+ 			  
+ 			  had_rotation = False;
+ 
++			  DBG("mark %i\n", __LINE__);
++
+ 			  if ((PANEL_IS_VERTICAL(panel)
+ 			       && (an_event.xconfigure.width == panel->w)
+ 			       )
+@@ -1142,7 +1143,7 @@
+ 			       /* && (an_event.xconfigure.width  == dpy_w) 
+ 				  && dpy_w != panel->w */ )
+ 			      )
+-			    {
++			    { 
+ 
+ 			      DBG("%s() flipping ....\n", __func__);
+ 
+@@ -1178,7 +1179,8 @@
+ 			    papp = panel->apps_start_head;
+ 			  else
+ 			    papp = panel->apps_end_head;
+-			} else {			      
++			} else {	
++			  DBG("mark %i\n", __LINE__);
+ 			  diff = an_event.xconfigure.width - panel->w;
+ 			  if (an_event.xconfigure.x > panel->x)
+ 			    papp = panel->apps_start_head;
+@@ -1903,6 +1905,11 @@
+ 			 dattr_flags,
+ 			 &dattr);
+ 
++  XSelectInput (panel->dpy, panel->win, StructureNotifyMask|ExposureMask|
++		SubstructureRedirectMask|SubstructureNotifyMask|
++		ButtonPressMask|ButtonReleaseMask|PointerMotionMask|
++		PropertyChangeMask);
++
+   size_hints.flags      = PPosition | PSize | PMinSize;
+   size_hints.x          = panel->x;
+   size_hints.y          = panel->y;
+Index: ChangeLog
+===================================================================
+--- ChangeLog	(revision 1161)
++++ ChangeLog	(revision 1162)
+@@ -1,3 +1,10 @@
++2005-05-23  mallum,,,  <mallum@openedhand.com>
++
++	* src/panel.c: (panel_main), (panel_init):
++	Select for panel win events much earlier so we dont
++	miss initial configure notifys. Much improved panel
++	in titlebar.
++
+ 2005-04-11  mallum,,,  <mallum@openedhand.com>
+ 
+ 	* configure.ac:
