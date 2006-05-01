@@ -83,6 +83,10 @@ def check_sanity(e):
 	if not check_app_exists('texi2html', e.data):
 		raise_sanity_error('Please install the texi2html binary')
 
+	oes_bb_conf = data.getVar( 'OES_BITBAKE_CONF', e.data, True )
+	if not oes_bb_conf:
+		raise_sanity_error('You do not include OpenEmbeddeds version of conf/bitbake.conf')
+
 addhandler check_sanity_eventhandler
 python check_sanity_eventhandler() {
     from bb import note, error, data, __version__

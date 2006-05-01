@@ -14,7 +14,7 @@ DESCRIPTION = "Sanitized set of 2.6 kernel headers for the C library's use."
 LICENSE = "GPL"
 DEFAULT_PREFERENCE = "-1"
 INHIBIT_DEFAULT_DEPS = "1"
-PR = "r3"
+PR = "r4"
 
 SRC_URI = "http://ewi546.ewi.utwente.nl/OE/eabi/linux-libc-headers-${PV}.tar.bz2 \
 	file://keyboard.patch;patch=1 \
@@ -22,7 +22,8 @@ SRC_URI = "http://ewi546.ewi.utwente.nl/OE/eabi/linux-libc-headers-${PV}.tar.bz2
 	file://linux-netdevice.patch;patch=1 \
 	file://linux-netfilter_ipv4.patch;patch=1 \
 	file://linux-rtc.patch;patch=1 \
-	file://linux-videodev2.patch;patch=1"
+	file://linux-videodev2.patch;patch=1 \
+	file://3477-1.patch;patch=1"
 
 S = "${WORKDIR}/linux-libc-headers-${PV}"
 
