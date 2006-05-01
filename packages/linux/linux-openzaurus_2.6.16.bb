@@ -1,6 +1,6 @@
 include linux-openzaurus.inc
 
-PR = "r16"
+PR = "r18"
 
 # Handy URLs
 # git://rsync.kernel.org/pub/scm/linux/kernel/git/torvalds/linux-2.6.git \
@@ -86,9 +86,8 @@ SRC_URI = "http://www.kernel.org/pub/linux/kernel/v2.6/linux-2.6.16.tar.bz2 \
            file://connectplus-remove-ide-HACK.patch;patch=1 \
            file://24-hostap_cs_id.diff;patch=1 \
            file://hrw-pcmcia-ids-r2.patch;patch=1 \
-           file://hostap-names.patch;patch=1 \
-           file://hostap-newcards.patch;patch=1 \
-           file://hostap-orinoco.patch;patch=1 \
+           file://hrw-hack-hostap-newcards.patch;patch=1 \
+           file://hrw-hack-hostap-orinoco.patch;patch=1 \
            file://defconfig-c7x0 \
            file://defconfig-ipaq-pxa270 \
            file://defconfig-collie \

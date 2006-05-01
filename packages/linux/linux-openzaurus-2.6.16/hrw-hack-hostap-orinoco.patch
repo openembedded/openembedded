@@ -1,4 +1,5 @@
-Move IDs for PCMCIA cards from Orinoco to HostAP
+Remove some IDs for PCMCIA cards from Orinoco.
+They were added to HostAP in previous patch.
 
 Signed-off-by: Marcin Juszkiewicz <openembedded@hrw.one.pl>
 ---
@@ -7,34 +8,10 @@ Signed-off-by: Marcin Juszkiewicz <openembedded@hrw.one.pl>
  drivers/net/wireless/orinoco_cs.c              |   10 ----------
  2 files changed, 5 insertions(+), 10 deletions(-)
 
-Index: linux-2.6.16/drivers/net/wireless/hostap/hostap_cs.c
-===================================================================
---- linux-2.6.16.orig/drivers/net/wireless/hostap/hostap_cs.c	2006-04-24 12:48:23.487486624 +0200
-+++ linux-2.6.16/drivers/net/wireless/hostap/hostap_cs.c	2006-04-24 12:50:15.627438760 +0200
-@@ -879,14 +879,18 @@
-   	PCMCIA_DEVICE_MANF_CARD(0x0104, 0x0001), /* "Socket", "CF+ LP WLAN Card Rev A", "1.00" */
- 	PCMCIA_DEVICE_MANF_CARD(0x0126, 0x8000), /* PROXIM RangeLAN-DS/LAN PC CARD */
- 	PCMCIA_DEVICE_MANF_CARD(0x0138, 0x0002), /* Compaq WL100 11 Mbps Wireless Adapter */
-+  	PCMCIA_DEVICE_MANF_CARD(0x01eb, 0x080a), /* Nortel Networks eMobility 802.11 Wireless Adapter */
- 	PCMCIA_DEVICE_MANF_CARD(0x01ff, 0x0008),
- 	PCMCIA_DEVICE_MANF_CARD(0x0250, 0x0002),
-+  	PCMCIA_DEVICE_MANF_CARD(0x0261, 0x0002), /* AirWay 802.11 Adapter (PCMCIA) */
- 	PCMCIA_DEVICE_MANF_CARD(0x026f, 0x030b),
- 	PCMCIA_DEVICE_MANF_CARD(0x0274, 0x1612), /* Linksys WPC11 Version 2.5 */
- 	PCMCIA_DEVICE_MANF_CARD(0x0274, 0x1613), /* Linksys WPC11 Version 3 */
-   	PCMCIA_DEVICE_MANF_CARD(0x0274, 0x3301), /* Linksys WCF11 11Mbps 802.11b WLAN Card */
- 	PCMCIA_DEVICE_MANF_CARD(0x028a, 0x0002), /* Compaq HNW-100 */
-- 	PCMCIA_DEVICE_MANF_CARD(0x02aa, 0x0002), /* ASUS SpaceLink WL-100 */
-+   	PCMCIA_DEVICE_MANF_CARD(0x028a, 0x0673), /* Linksys WCF12 Wireless CompactFlash Card */
-+   	PCMCIA_DEVICE_MANF_CARD(0x02aa, 0x0002), /* ASUS SpaceLink WL-100 */
-+  	PCMCIA_DEVICE_MANF_CARD(0x02ac, 0x0002), /* SpeedStream SS1021 Wireless Adapter */
- 	PCMCIA_DEVICE_MANF_CARD(0x02d2, 0x0001),
-   	PCMCIA_DEVICE_MANF_CARD(0x1668, 0x0101), /* Actiontec 802CI2 */
- 	PCMCIA_DEVICE_MANF_CARD(0x50c2, 0x0001),
 Index: linux-2.6.16/drivers/net/wireless/orinoco_cs.c
 ===================================================================
 --- linux-2.6.16.orig/drivers/net/wireless/orinoco_cs.c	2006-03-20 06:53:29.000000000 +0100
-+++ linux-2.6.16/drivers/net/wireless/orinoco_cs.c	2006-04-24 12:48:36.632488280 +0200
++++ linux-2.6.16/drivers/net/wireless/orinoco_cs.c	2006-04-30 19:10:36.160614008 +0200
 @@ -519,29 +519,19 @@
  	PCMCIA_DEVICE_MANF_CARD(0x000b, 0x7300), /* Sohoware NCP110, Philips 802.11b */
  	PCMCIA_DEVICE_MANF_CARD(0x0089, 0x0002), /* AnyPoint(TM) Wireless II PC Card */
