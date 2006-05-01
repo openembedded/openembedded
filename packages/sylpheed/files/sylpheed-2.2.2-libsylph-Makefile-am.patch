@@ -1,0 +1,11 @@
+--- sylpheed-2.2.2/libsylph/Makefile.am.orig	2006-03-03 14:45:37.000000000 -0800
++++ sylpheed-2.2.2/libsylph/Makefile.am	2006-03-03 14:45:50.000000000 -0800
+@@ -3,7 +3,7 @@
+ 	-DG_LOG_DOMAIN=\"LibSylph\" \
+ 	-DSYSCONFDIR=\""$(sysconfdir)"\"
+ 
+-INCLUDES = $(GLIB_CFLAGS) -I$(top_srcdir) -I$(includedir)
++INCLUDES = $(GLIB_CFLAGS) -I$(top_srcdir)
+ 
+ #lib_LTLIBRARIES = libsylph.la
+ noinst_LTLIBRARIES = libsylph.la

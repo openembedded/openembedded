@@ -1,6 +1,6 @@
---- sylpheed-2.0.0beta6/config.h.in.old	2005-07-18 11:57:23.000000000 +0200
-+++ sylpheed-2.0.0beta6/config.h.in	2005-07-18 11:59:57.000000000 +0200
-@@ -263,6 +263,9 @@
+--- sylpheed-2.2.4/config.h.in.orig	2005-11-16 10:12:37.000000000 +0000
++++ sylpheed-2.2.4/config.h.in	2006-04-28 11:36:36.000000000 +0100
+@@ -251,6 +251,9 @@
  /* Define to 1 if your <sys/time.h> declares `struct tm'. */
  #undef TM_IN_SYS_TIME
  
@@ -10,7 +10,7 @@
  /* Define if you use GPGME to support OpenPGP. */
  #undef USE_GPGME
  
-@@ -273,6 +276,9 @@
+@@ -264,6 +267,9 @@
  #undef USE_LDAP
  
  /* Define if you use OpenSSL to support SSL. */
@@ -20,9 +20,9 @@
  #undef USE_SSL
  
  /* Whether to use multithread or not */
---- sylpheed-2.0.0beta6/configure.in.old	2005-07-18 12:00:24.000000000 +0200
-+++ sylpheed-2.0.0beta6/configure.in	2005-07-18 12:04:33.000000000 +0200
-@@ -202,7 +202,8 @@
+--- sylpheed-2.2.4/configure.in.orig	2006-03-24 04:22:10.000000000 +0000
++++ sylpheed-2.2.4/configure.in	2006-04-28 11:36:36.000000000 +0100
+@@ -231,7 +231,8 @@
  #include <openssl/opensslv.h>
  ],		[ return OPENSSL_VERSION_NUMBER; ],
  		[ AC_MSG_RESULT(yes)
@@ -32,7 +32,7 @@
  		[ AC_MSG_RESULT(no)
  		  LIBS="$ac_save_LIBS"
  		  ac_cv_enable_ssl=no ])
-@@ -211,6 +212,27 @@
+@@ -240,6 +241,27 @@
  	AC_MSG_RESULT(no)
  fi
  
@@ -60,7 +60,7 @@
  dnl Check for X-Face support
  AC_ARG_ENABLE(compface,
  	[  --disable-compface      Do not use compface (X-Face)],
-@@ -350,6 +372,7 @@
+@@ -400,6 +422,7 @@
  echo "JPilot        : $ac_cv_enable_jpilot"
  echo "LDAP          : $ac_cv_enable_ldap"
  echo "OpenSSL       : $ac_cv_enable_ssl"
@@ -68,9 +68,9 @@
  echo "iconv         : $am_cv_func_iconv"
  echo "compface      : $ac_cv_enable_compface"
  echo "IPv6          : $ac_cv_enable_ipv6"
---- sylpheed-2.0.0beta6/src/ssl.h.old	2005-07-18 12:09:35.000000000 +0200
-+++ sylpheed-2.0.0beta6/src/ssl.h	2005-07-18 12:11:15.000000000 +0200
-@@ -27,11 +27,19 @@
+--- sylpheed-2.2.4/libsylph/ssl.h.old	2006-04-28 11:36:10.000000000 +0100
++++ sylpheed-2.2.4/libsylph/ssl.h	2006-04-28 11:37:03.000000000 +0100
+@@ -27,11 +27,20 @@
  #if USE_SSL
  
  #include <glib.h>
@@ -83,10 +83,58 @@
 +#else
 +#if USE_GNUTLS
 +#include <gnutls/openssl.h>
++#define X509_V_OK 0
 +#else
 +#error Must select either GnuTLS or OpenSSL
 +#endif
 +#endif
  
  #include "socket.h"
+ 
+--- sylpheed-2.2.4/libsylph/ssl.c.orig	2006-04-28 20:38:46.000000000 +0100
++++ sylpheed-2.2.4/libsylph/ssl.c	2006-04-28 20:40:22.000000000 +0100
+@@ -54,9 +54,11 @@
+ 		debug_print(_("SSLv23 not available\n"));
+ 	} else {
+ 		debug_print(_("SSLv23 available\n"));
++#if USE_OPENSSL
+ 		if (certs_dir &&
+ 		    !SSL_CTX_load_verify_locations(ssl_ctx_SSLv23, NULL,
+ 						   certs_dir))
++#endif
+ 			g_warning("SSLv23 SSL_CTX_load_verify_locations failed.\n");
+ 	}
+ 
+@@ -65,9 +67,11 @@
+ 		debug_print(_("TLSv1 not available\n"));
+ 	} else {
+ 		debug_print(_("TLSv1 available\n"));
++#if USE_OPENSSL
+ 		if (certs_dir &&
+ 		    !SSL_CTX_load_verify_locations(ssl_ctx_TLSv1, NULL,
+ 						   certs_dir))
++#endif
+ 			g_warning("TLSv1 SSL_CTX_load_verify_locations failed.\n");
+ 	}
+ 
+@@ -151,14 +155,19 @@
+ 			g_free(str);
+ 		}
+ 
++#if USE_OPENSSL
+ 		verify_result = SSL_get_verify_result(sockinfo->ssl);
+ 		if (verify_result == X509_V_OK)
+ 			debug_print("SSL verify OK\n");
+ 		else
++#endif
+ 			g_warning("%s: SSL certificate verify failed (%ld: %s)\n",
+ 				  sockinfo->hostname, verify_result,
++#if USE_OPENSSL
+ 				  X509_verify_cert_error_string(verify_result));
+-
++#else
++		                  "Unsupport GnuTLS features");
++#endif
+ 		X509_free(server_cert);
+ 	}
  
