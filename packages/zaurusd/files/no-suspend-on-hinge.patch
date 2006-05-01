@@ -1,0 +1,20 @@
+Index: zaurusd/scripts/zaurus-hinge.in
+===================================================================
+--- zaurusd.orig/scripts/zaurus-hinge.in	2006-05-01 14:32:16.964481208 +0200
++++ zaurusd/scripts/zaurus-hinge.in	2006-05-01 14:39:22.335814936 +0200
+@@ -26,9 +26,12 @@
+ 
+ if [ $STATE = "3" ]; then
+   #echo "sleeping"
+-  if [ -x @bindir@/apm ]; then
+-    apm -s
+-  fi
++#
++# uncomment 'if' block below to have zaurus suspend on hinge close
++#
++#  if [ -x @bindir@/apm ]; then
++#    apm -s
++#  fi
+   exit 0
+ fi
+ 

@@ -1,0 +1,13 @@
+Index: zaurusd/config/alsa/c7x0-default.state
+===================================================================
+--- zaurusd.orig/config/alsa/c7x0-default.state	2006-05-01 14:26:53.886596512 +0200
++++ zaurusd/config/alsa/c7x0-default.state	2006-05-01 14:27:04.353005376 +0200
+@@ -106,7 +106,7 @@
+ 		comment.count 1
+ 		iface MIXER
+ 		name 'Output Mixer Line Bypass Switch'
+-		value false
++		value true
+ 	}
+ 	control.13 {
+ 		comment.access 'read write'
