@@ -1,5 +1,5 @@
 LICENSE = "GPL"
-PR = "r6"
+PR = "r7"
 
 inherit gpe
 
@@ -12,8 +12,9 @@ RDEPENDS_${PN} = "matchbox gpe-session-starter gpe-bluetooth xstroke xtscal gpe-
 DEPENDS = "matchbox-wm matchbox-panel gpe-bluetooth xstroke xtscal gpe-question matchbox-applet-inputmanager gpe-clock xrandr xmodmap xdpyinfo xserver-common"
 
 SRC_URI += "file://matchbox-session \
+	file://0.66-reinstate-volume-applet-and-fix-order.patch;patch=1 \
 	file://disable-composite.xsettings"
-	
+
 do_install_append() {
 	install -d ${D}${sysconfdir}/gpe/xsettings-default.d
 	if [ "${GUI_MACHINE_CLASS}" != "bigscreen" ]; then
