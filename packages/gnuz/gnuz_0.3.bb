@@ -5,14 +5,14 @@ MAINTAINER = "Marcin Juszkiewicz <openembedded@hrw.one.pl>"
 LICENSE = "GPL"
 AUTHOR = "Lukas Fraser"
 HOMEPAGE = "http://gnuz.4cows.net/eraser/gnuz/"
-PR = "r1"
+PR = "r2"
 
 APPTYPE = "binary"
 APPNAME = "gnuz"
 APPDESKTOP = "${S}/data/"
 
 SRC_URI = "http://gnuz.4cows.net/eraser/gnuz/gnuz_0.3.tar.gz \
-	   http://ewi546.ewi.utwente.nl/mirror/hrw-oe-sources/gnuz-levels-0.3.tar.bz2"
+           http://ewi546.ewi.utwente.nl/mirror/hrw-oe-sources/gnuz-levels-0.3-1.tar.bz2"
 
 S = "${WORKDIR}/gnuz"
 
