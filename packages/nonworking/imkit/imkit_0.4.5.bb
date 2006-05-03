@@ -7,7 +7,7 @@ SECTION = "opie/inputmethods"
 LICENSE = "GPL"
 RDEPENDS = "anthy"
 
-SRC_URI = "http://downloads.sourceforge.jp/zaurus-ja/2195/imkit-${PV}.tar.gz"
+SRC_URI = "http://downloads.sourceforge.jp/zaurus-ja/9316/imkit-0.4.5.tar.gz"
 S = "${WORKDIR}/imkit-${PV}"
 
 inherit palmtop
