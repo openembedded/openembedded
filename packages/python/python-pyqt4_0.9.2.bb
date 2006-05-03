@@ -8,7 +8,7 @@ LICENSE = "GPL"
 DEPENDS = "qt4x11"
 RDEPENDS = "python-core"
 SRCNAME = "pyqt"
-PR = "ml1"
+PR = "ml2"
 
 SRC_URI = "http://www.riverbankcomputing.com/Downloads/PyQt4/GPL/PyQt4-gpl-4.0beta1.tar.gz \
            file://cross-compile.patch;patch=1 \
@@ -20,7 +20,7 @@ inherit qmake qt4x11 sip4 distutils-base
 PARALLEL_MAKE = ""
 
 QMAKE_PROFILES = "pyqt.pro"
-EXTRA_SIPTAGS = "-tWS_X11 -tQt_4_1_1 -xVendorID -xSessionManager -xAccessibility"
+EXTRA_SIPTAGS = "-tWS_X11 -tQt_4_1_2 -xVendorID -xSessionManager -xAccessibility"
 EXTRA_OEMAKE = " MAKEFLAGS= "
 
 SIP_MODULES = "QtCore QtGui QtNetwork QtSql QtSvg QtXml"
