@@ -18,5 +18,4 @@ do_rm_work () {
     done
 }
 
-addtask rm_work before do_build
-addtask rm_work after do_package
+addtask rm_work before do_build after do_package

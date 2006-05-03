@@ -3,6 +3,7 @@ SECTION = "libs"
 DEPENDS = "zlib jpeg lcms"
 LICENSE = "libmng"
 SRC_URI = "${SOURCEFORGE_MIRROR}/libmng/libmng-${PV}.tar.gz"
+PR = "r1"
 
 inherit pkgconfig
 
@@ -15,6 +16,10 @@ do_compile() {
 }
 
 do_stage() {
+	install -d ${STAGING_INCDIR}
+	install -m 0644 ${S}/libmng.h ${STAGING_INCDIR}
+	install -m 0644 ${S}/libmng_conf.h ${STAGING_INCDIR}
+	install -m 0644 ${S}/libmng_types.h ${STAGING_INCDIR}
 	oe_libinstall -so libmng ${STAGING_LIBDIR}
 }
 

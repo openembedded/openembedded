@@ -1,8 +1,8 @@
 Index: src/kernel/kernelkeyboard.cpp
 ===================================================================
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ src/kernel/kernelkeyboard.cpp	2006-04-01 23:42:35.154645456 +0200
-@@ -0,0 +1,701 @@
++++ src/kernel/kernelkeyboard.cpp	2006-04-29 16:44:35.691001760 +0200
+@@ -0,0 +1,684 @@
 +/*
 +
 + Copyright (C) 2003             Chris Larson
@@ -146,23 +146,6 @@ Index: src/kernel/kernelkeyboard.cpp
 +    restoreLeds();
 +    if (kbdFD >= 0)
 +    {
-+#if !defined(_OS_FREEBSD_) && !defined(_OS_SOLARIS_)
-+        struct vt_mode vtMode;
-+        ioctl(kbdFD, VT_GETMODE, &vtMode);
-+
-+        /* Mickey says: "Better give up control of VT switching.
-+         *               Hey, I really hate that OS-will-reacquire-resources on process-death
-+         *               kind of thinking!
-+         */
-+        vtMode.mode = VT_AUTO;
-+        vtMode.relsig = 0;
-+        vtMode.acqsig = 0;
-+        ioctl(kbdFD, VT_SETMODE, &vtMode);
-+
-+        signal(VTSWITCHSIG, 0);
-+        qDebug( "~QWSTtyKeyboardHandler() - released VT." );
-+#endif
-+
 +#if !defined(_OS_FREEBSD_) && !defined(_OS_SOLARIS_)
 +	ioctl(kbdFD, KDSKBMODE, K_XLATE);
 +#endif
@@ -525,8 +508,8 @@ Index: src/kernel/kernelkeyboard.cpp
 +    unsigned short unicode = acm[key_map.code] & 0xff;
 +    unsigned int   qtKeyCode = key_map.key;
 +
-+//    if ( !release )
-+//        qWarning( "KeyCode: %d KVAL: %d", qtKeyCode, key_map.code );
++    if ( !release )
++        qWarning( "KeyCode: %d KVAL: %d", qtKeyCode, key_map.code );
 +//        qWarning( "Alt:%d Ctrl:%d Shift:%d Key = %d", modifier & (1<<KG_ALT),
 +//                  modifier & (1<<KG_CTRL),
 +//                  modifier & (1<<KG_SHIFT), key_map.key );
@@ -704,263 +687,10 @@ Index: src/kernel/kernelkeyboard.cpp
 +        last_unicode = last_keycode = -1;
 +    }
 +}
-Index: src/kernel/qkeyboard_qws.cpp
-===================================================================
---- src/kernel/qkeyboard_qws.cpp.orig	2006-04-01 23:36:22.499297680 +0200
-+++ src/kernel/qkeyboard_qws.cpp	2006-04-01 23:38:19.913448016 +0200
-@@ -45,15 +45,18 @@
- #include <ctype.h>
- 
- #include <unistd.h>
--#ifdef _OS_LINUX_
--#include <linux/kd.h>
--#endif
-+#include <sys/wait.h>
- #include <sys/ioctl.h>
- #include <sys/types.h>
- #include <sys/stat.h>
- #include <fcntl.h>
- #include <errno.h>
- #include <signal.h>
-+#include <termios.h>
-+#ifdef _OS_LINUX_
-+#include <linux/kd.h>
-+#include <linux/keyboard.h>
-+#endif
- 
- #ifdef QT_QWS_TIP2
- #include <qcopchannel_qws.h>
-@@ -135,17 +138,6 @@
- };
- 
- 
--#ifdef QT_QWS_SL5XXX
--#include <asm/sharp_char.h>
--#endif
--
--#if defined(QT_QWS_IPAQ) || defined(QT_QWS_SL5XXX)
--#define QT_QWS_AUTOREPEAT_MANUALLY
--#endif
--
--
--
--#if defined(QT_QWS_IPAQ) || defined(QT_QWS_SL5XXX)
- static int dir_keyrot = -1;
- 
- static int xform_dirkey(int key)
-@@ -169,7 +161,6 @@
-     int xf = qt_screen->transformOrientation() + dir_keyrot;
-     return (key-Qt::Key_Left+xf)%4+Qt::Key_Left;
- }
--#endif
- 
- #define VTSWITCHSIG SIGUSR2
- 
-@@ -643,18 +634,81 @@
-     ioctl(0, KDSETLED, leds);
- }
- 
-+/*
-+ * This class was extended by:
-+ * 
-+ * Copyright 2002 Chris Larson
-+ * Copyright 2004, 2005 Holger Hans Peter Freyther
-+ */
- class QWSTtyKeyboardHandler : public QWSPC101KeyboardHandler
- {
-     Q_OBJECT
- public:
-     QWSTtyKeyboardHandler(const QString&);
-     virtual ~QWSTtyKeyboardHandler();
-+    void readKeyboardMap();
-+    void readUnicodeMap();
-+    void handleKey(unsigned int key, bool release);
- 
- private slots:
-     void readKeyboardData();
- 
- private:
-+    void modifyModifier( int map, int modify, bool release );
-+    void modifyLock( unsigned int lock, bool release );
-+    void handleExtra( unsigned int key, bool release );
-+    static void restoreLeds();
-+    static void toggleLed(unsigned int);
-+    int  map_to_modif ();
-+
-+private:
-     struct termios origTermData;
-+    unsigned short acm[E_TABSZ];
-+    struct KeyMap {
-+        enum ExtraKey{
-+            Key_AltGr    = 0x01ffff,
-+            Key_Console1  = 0x02ffff,
-+            Key_Console2  = 0x03ffff,
-+            Key_Console3  = 0x04ffff,
-+            Key_Console4  = 0x05ffff,
-+            Key_Console5  = 0x06ffff,
-+            Key_Console6  = 0x07ffff,
-+            Key_Console7  = 0x08ffff,
-+            Key_Console8  = 0x09ffff,
-+            Key_Console9  = 0x0affff,
-+            Key_Console10 = 0x0bffff,
-+            Key_Console11 = 0x0cffff,
-+            Key_Console12 = 0x0dffff,
-+            Key_NumLock   = 0x0effff,
-+            Key_ShiftLock = 0x0fffff,
-+            Key_CtrlLock  = 0x10ffff,
-+            Key_AltLock   = 0x11ffff,
-+            Key_AltGrLock = 0x12ffff,
-+	    Key_ShiftL    = 0x130000,
-+	    Key_ShiftR    = 0x130001,
-+	    Key_IncConsole= 0x130002,
-+	    Key_DecConsole= 0x130003,
-+	    Key_NotMapped = 0x130004,
-+        };
-+
-+        KeyMap( Qt::Key _key = Qt::Key_unknown, unsigned short _code = 0 )
-+            : key( _key ), code( _code )
-+            {}
-+        KeyMap( ExtraKey _key,  unsigned short _code )
-+            : key( _key ), code( _code )
-+            {}
-+        unsigned int    key; // 16 Bit
-+        unsigned short code;
-+    };
-+
-+    KeyMap kernel_map[(1<<KG_CAPSSHIFT)][NR_KEYS];
-+    int current_map;
-+    int modifier;
-+    bool numlock  : 1;
-+    bool capslock : 1;
-+
-+protected:
-+    void processKeyEvent(int unicode, int keycode, int modifiers, bool isPress, bool autoRepeat );
- };
- 
- 
-@@ -814,6 +868,7 @@
-     fn = FALSE;
- 
-     numLock = FALSE;
-+#if 0
-     sharp_kbdctl_modifstat  st;
-     int dev = ::open("/dev/sharp_kbdctl", O_RDWR);
-     if( dev >= 0 ) {
-@@ -825,6 +880,7 @@
- 	::close(dev);
-     }
- #endif
-+#endif
- #if defined(QT_QWS_IPAQ)
-     // iPAQ Action Key has ScanCode 0x60: 0x60|0x80 = 0xe0 == extended mode 1 !
-     ipaq_return_pressed = FALSE;
-@@ -1250,98 +1306,10 @@
- //
- // Tty keyboard
- //
--
--QWSTtyKeyboardHandler::QWSTtyKeyboardHandler(const QString& device)
--{
--    kbdFD=open(device.isEmpty() ? "/dev/tty0" : device.latin1(), O_RDWR | O_NDELAY, 0);
--
--    if ( kbdFD >= 0 ) {
--	QSocketNotifier *notifier;
--	notifier = new QSocketNotifier( kbdFD, QSocketNotifier::Read, this );
--	connect( notifier, SIGNAL(activated(int)),this,
--		 SLOT(readKeyboardData()) );
--
--	// save for restore.
--	tcgetattr( kbdFD, &origTermData );
--
--	struct termios termdata;
--	tcgetattr( kbdFD, &termdata );
--
--#if !defined(_OS_FREEBSD_) && !defined(_OS_SOLARIS_)
--# ifdef QT_QWS_USE_KEYCODES
--	ioctl(kbdFD, KDSKBMODE, K_MEDIUMRAW);
--# else
--	ioctl(kbdFD, KDSKBMODE, K_RAW);
--# endif
--#endif
--
--	termdata.c_iflag = (IGNPAR | IGNBRK) & (~PARMRK) & (~ISTRIP);
--	termdata.c_oflag = 0;
--	termdata.c_cflag = CREAD | CS8;
--	termdata.c_lflag = 0;
--	termdata.c_cc[VTIME]=0;
--	termdata.c_cc[VMIN]=1;
--	cfsetispeed(&termdata, 9600);
--	cfsetospeed(&termdata, 9600);
--	tcsetattr(kbdFD, TCSANOW, &termdata);
--
--	signal(VTSWITCHSIG, vtSwitchHandler);
--
--#if !defined(_OS_FREEBSD_) && !defined(_OS_SOLARIS_)
--	struct vt_mode vtMode;
--	ioctl(kbdFD, VT_GETMODE, &vtMode);
--
--	// let us control VT switching
--	vtMode.mode = VT_PROCESS;
--	vtMode.relsig = VTSWITCHSIG;
--	vtMode.acqsig = VTSWITCHSIG;
--	ioctl(kbdFD, VT_SETMODE, &vtMode);
--
--	struct vt_stat vtStat;
--	ioctl(kbdFD, VT_GETSTATE, &vtStat);
--	vtQws = vtStat.v_active;
--#endif
--    }
--}
--
--QWSTtyKeyboardHandler::~QWSTtyKeyboardHandler()
--{
--    if (kbdFD >= 0)
--    {
--
--#if !defined(_OS_FREEBSD_) && !defined(_OS_SOLARIS_)
--        struct vt_mode vtMode;
--        ioctl(kbdFD, VT_GETMODE, &vtMode);
--
--        /* Mickey says: "Better give up control of VT switching.
--         *               Hey, I really hate that OS-will-reacquire-resources on process-death
--         *               kind of thinking!
--         */
--        vtMode.mode = VT_AUTO;
--        vtMode.relsig = 0;
--        vtMode.acqsig = 0;
--        ioctl(kbdFD, VT_SETMODE, &vtMode);
--
--        signal(VTSWITCHSIG, 0);
--        qDebug( "~QWSTtyKeyboardHandler() - released VT." );
--#endif
--
--#if !defined(_OS_FREEBSD_) && !defined(_OS_SOLARIS_)
--	ioctl(kbdFD, KDSKBMODE, K_XLATE);
--#endif
--	tcsetattr(kbdFD, TCSANOW, &origTermData);
--	::close(kbdFD);
--	kbdFD = -1;
--    }
--}
--
--void QWSTtyKeyboardHandler::readKeyboardData()
--{
--    unsigned char buf[81];
--    int n = ::read(kbdFD, buf, 80 );
--    for ( int loop = 0; loop < n; loop++ )
--	doKey(buf[loop]);
--}
-+/*
-+ * Include the alternative implementation
-+ */
-+#include "kernelkeyboard.cpp"
- 
- typedef struct {
-     unsigned short key;
 Index: src/kernel/keyboard_linux_to_qt.h
 ===================================================================
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ src/kernel/keyboard_linux_to_qt.h	2006-04-01 23:37:03.928999408 +0200
++++ src/kernel/keyboard_linux_to_qt.h	2006-04-29 16:44:35.758991424 +0200
 @@ -0,0 +1,263 @@
 +/*
 + * Generated with a small python utility found at
@@ -1225,3 +955,259 @@ Index: src/kernel/keyboard_linux_to_qt.h
 +Qt::Key_thorn,
 +Qt::Key_ydiaeresis
 +}; 
+Index: src/kernel/qkeyboard_qws.cpp
+===================================================================
+--- src/kernel/qkeyboard_qws.cpp.orig	2006-04-29 16:43:46.410493536 +0200
++++ src/kernel/qkeyboard_qws.cpp	2006-04-29 16:46:20.290100280 +0200
+@@ -45,15 +45,18 @@
+ #include <ctype.h>
+ 
+ #include <unistd.h>
+-#ifdef _OS_LINUX_
+-#include <linux/kd.h>
+-#endif
++#include <sys/wait.h>
+ #include <sys/ioctl.h>
+ #include <sys/types.h>
+ #include <sys/stat.h>
+ #include <fcntl.h>
+ #include <errno.h>
+ #include <signal.h>
++#include <termios.h>
++#ifdef _OS_LINUX_
++#include <linux/kd.h>
++#include <linux/keyboard.h>
++#endif
+ 
+ #ifdef QT_QWS_TIP2
+ #include <qcopchannel_qws.h>
+@@ -135,17 +138,6 @@
+ };
+ 
+ 
+-#ifdef QT_QWS_SL5XXX
+-#include <asm/sharp_char.h>
+-#endif
+-
+-#if defined(QT_QWS_IPAQ) || defined(QT_QWS_SL5XXX)
+-#define QT_QWS_AUTOREPEAT_MANUALLY
+-#endif
+-
+-
+-
+-#if defined(QT_QWS_IPAQ) || defined(QT_QWS_SL5XXX)
+ static int dir_keyrot = -1;
+ 
+ static int xform_dirkey(int key)
+@@ -169,7 +161,6 @@
+     int xf = qt_screen->transformOrientation() + dir_keyrot;
+     return (key-Qt::Key_Left+xf)%4+Qt::Key_Left;
+ }
+-#endif
+ 
+ #define VTSWITCHSIG SIGUSR2
+ 
+@@ -643,18 +634,81 @@
+     ioctl(0, KDSETLED, leds);
+ }
+ 
++/*
++ * This class was extended by:
++ * 
++ * Copyright 2002 Chris Larson
++ * Copyright 2004, 2005 Holger Hans Peter Freyther
++ */
+ class QWSTtyKeyboardHandler : public QWSPC101KeyboardHandler
+ {
+     Q_OBJECT
+ public:
+     QWSTtyKeyboardHandler(const QString&);
+     virtual ~QWSTtyKeyboardHandler();
++    void readKeyboardMap();
++    void readUnicodeMap();
++    void handleKey(unsigned int key, bool release);
+ 
+ private slots:
+     void readKeyboardData();
+ 
+ private:
++    void modifyModifier( int map, int modify, bool release );
++    void modifyLock( unsigned int lock, bool release );
++    void handleExtra( unsigned int key, bool release );
++    static void restoreLeds();
++    static void toggleLed(unsigned int);
++    int  map_to_modif ();
++
++private:
+     struct termios origTermData;
++    unsigned short acm[E_TABSZ];
++    struct KeyMap {
++        enum ExtraKey{
++            Key_AltGr    = 0x01ffff,
++            Key_Console1  = 0x02ffff,
++            Key_Console2  = 0x03ffff,
++            Key_Console3  = 0x04ffff,
++            Key_Console4  = 0x05ffff,
++            Key_Console5  = 0x06ffff,
++            Key_Console6  = 0x07ffff,
++            Key_Console7  = 0x08ffff,
++            Key_Console8  = 0x09ffff,
++            Key_Console9  = 0x0affff,
++            Key_Console10 = 0x0bffff,
++            Key_Console11 = 0x0cffff,
++            Key_Console12 = 0x0dffff,
++            Key_NumLock   = 0x0effff,
++            Key_ShiftLock = 0x0fffff,
++            Key_CtrlLock  = 0x10ffff,
++            Key_AltLock   = 0x11ffff,
++            Key_AltGrLock = 0x12ffff,
++	    Key_ShiftL    = 0x130000,
++	    Key_ShiftR    = 0x130001,
++	    Key_IncConsole= 0x130002,
++	    Key_DecConsole= 0x130003,
++	    Key_NotMapped = 0x130004,
++        };
++
++        KeyMap( Qt::Key _key = Qt::Key_unknown, unsigned short _code = 0 )
++            : key( _key ), code( _code )
++            {}
++        KeyMap( ExtraKey _key,  unsigned short _code )
++            : key( _key ), code( _code )
++            {}
++        unsigned int    key; // 16 Bit
++        unsigned short code;
++    };
++
++    KeyMap kernel_map[(1<<KG_CAPSSHIFT)][NR_KEYS];
++    int current_map;
++    int modifier;
++    bool numlock  : 1;
++    bool capslock : 1;
++
++protected:
++    void processKeyEvent(int unicode, int keycode, int modifiers, bool isPress, bool autoRepeat );
+ };
+ 
+ 
+@@ -814,6 +868,7 @@
+     fn = FALSE;
+ 
+     numLock = FALSE;
++#if 0
+     sharp_kbdctl_modifstat  st;
+     int dev = ::open("/dev/sharp_kbdctl", O_RDWR);
+     if( dev >= 0 ) {
+@@ -825,6 +880,7 @@
+ 	::close(dev);
+     }
+ #endif
++#endif
+ #if defined(QT_QWS_IPAQ)
+     // iPAQ Action Key has ScanCode 0x60: 0x60|0x80 = 0xe0 == extended mode 1 !
+     ipaq_return_pressed = FALSE;
+@@ -1247,101 +1303,11 @@
+ }
+ 
+ 
+-//
+-// Tty keyboard
+-//
+-
+-QWSTtyKeyboardHandler::QWSTtyKeyboardHandler(const QString& device)
+-{
+-    kbdFD=open(device.isEmpty() ? "/dev/tty0" : device.latin1(), O_RDWR | O_NDELAY, 0);
+-
+-    if ( kbdFD >= 0 ) {
+-	QSocketNotifier *notifier;
+-	notifier = new QSocketNotifier( kbdFD, QSocketNotifier::Read, this );
+-	connect( notifier, SIGNAL(activated(int)),this,
+-		 SLOT(readKeyboardData()) );
+-
+-	// save for restore.
+-	tcgetattr( kbdFD, &origTermData );
+-
+-	struct termios termdata;
+-	tcgetattr( kbdFD, &termdata );
+-
+-#if !defined(_OS_FREEBSD_) && !defined(_OS_SOLARIS_)
+-# ifdef QT_QWS_USE_KEYCODES
+-	ioctl(kbdFD, KDSKBMODE, K_MEDIUMRAW);
+-# else
+-	ioctl(kbdFD, KDSKBMODE, K_RAW);
+-# endif
+-#endif
+-
+-	termdata.c_iflag = (IGNPAR | IGNBRK) & (~PARMRK) & (~ISTRIP);
+-	termdata.c_oflag = 0;
+-	termdata.c_cflag = CREAD | CS8;
+-	termdata.c_lflag = 0;
+-	termdata.c_cc[VTIME]=0;
+-	termdata.c_cc[VMIN]=1;
+-	cfsetispeed(&termdata, 9600);
+-	cfsetospeed(&termdata, 9600);
+-	tcsetattr(kbdFD, TCSANOW, &termdata);
+-
+-	signal(VTSWITCHSIG, vtSwitchHandler);
+-
+-#if !defined(_OS_FREEBSD_) && !defined(_OS_SOLARIS_)
+-	struct vt_mode vtMode;
+-	ioctl(kbdFD, VT_GETMODE, &vtMode);
+-
+-	// let us control VT switching
+-	vtMode.mode = VT_PROCESS;
+-	vtMode.relsig = VTSWITCHSIG;
+-	vtMode.acqsig = VTSWITCHSIG;
+-	ioctl(kbdFD, VT_SETMODE, &vtMode);
+-
+-	struct vt_stat vtStat;
+-	ioctl(kbdFD, VT_GETSTATE, &vtStat);
+-	vtQws = vtStat.v_active;
+-#endif
+-    }
+-}
+-
+-QWSTtyKeyboardHandler::~QWSTtyKeyboardHandler()
+-{
+-    if (kbdFD >= 0)
+-    {
+-
+-#if !defined(_OS_FREEBSD_) && !defined(_OS_SOLARIS_)
+-        struct vt_mode vtMode;
+-        ioctl(kbdFD, VT_GETMODE, &vtMode);
+-
+-        /* Mickey says: "Better give up control of VT switching.
+-         *               Hey, I really hate that OS-will-reacquire-resources on process-death
+-         *               kind of thinking!
+-         */
+-        vtMode.mode = VT_AUTO;
+-        vtMode.relsig = 0;
+-        vtMode.acqsig = 0;
+-        ioctl(kbdFD, VT_SETMODE, &vtMode);
+-
+-        signal(VTSWITCHSIG, 0);
+-        qDebug( "~QWSTtyKeyboardHandler() - released VT." );
+-#endif
+-
+-#if !defined(_OS_FREEBSD_) && !defined(_OS_SOLARIS_)
+-	ioctl(kbdFD, KDSKBMODE, K_XLATE);
+-#endif
+-	tcsetattr(kbdFD, TCSANOW, &origTermData);
+-	::close(kbdFD);
+-	kbdFD = -1;
+-    }
+-}
++/*
++ * Include the alternative implementation
++ */
++#include "kernelkeyboard.cpp"
+ 
+-void QWSTtyKeyboardHandler::readKeyboardData()
+-{
+-    unsigned char buf[81];
+-    int n = ::read(kbdFD, buf, 80 );
+-    for ( int loop = 0; loop < n; loop++ )
+-	doKey(buf[loop]);
+-}
+ 
+ typedef struct {
+     unsigned short key;
