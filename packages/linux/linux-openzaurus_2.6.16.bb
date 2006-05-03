@@ -1,6 +1,6 @@
 include linux-openzaurus.inc
 
-PR = "r15"
+PR = "r19"
 
 # Handy URLs
 # git://rsync.kernel.org/pub/scm/linux/kernel/git/torvalds/linux-2.6.git \
@@ -13,6 +13,8 @@ PR = "r15"
 # Patches submitted upstream are towards top of this list 
 # Hacks should clearly named and at the bottom
 SRC_URI = "http://www.kernel.org/pub/linux/kernel/v2.6/linux-2.6.16.tar.bz2 \
+           file://rmk-mmc1.patch;patch=1 \
+           file://rmk-mmc2.patch;patch=1 \
            ${RPSRC}/led_core-r15.patch;patch=1 \
            ${RPSRC}/led_triggers-r14.patch;patch=1 \
            ${RPSRC}/led_trig_timer-r8.patch;patch=1 \
