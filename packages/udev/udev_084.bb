@@ -8,13 +8,14 @@ SRC_URI = "http://kernel.org/pub/linux/utils/kernel/hotplug/udev-${PV}.tar.gz \
 	   file://flags.patch;patch=1 \
 	   file://udevsynthesize.patch;patch=1 \
 	   file://udevsynthesize.sh \
-	   file://mount.blacklist"
+	   file://mount.blacklist \
+	   file://udev_network_queue.sh"
 
 include udev.inc
 
 INITSCRIPT_PARAMS = "start 03 S . start 55 0 6 ."
 
-PR = "r9"
+PR = "r10"
 
 FILES_${PN} += "${base_libdir}"
 UDEV_EXTRAS = "extras/firmware/ extras/scsi_id/ extras/volume_id/ extras/run_directory/"
@@ -26,6 +27,7 @@ do_install () {
 	oe_runmake 'DESTDIR=${D}' INSTALL=install install
 	install -d ${D}${sysconfdir}/init.d
 	install -m 0755 ${WORKDIR}/init ${D}${sysconfdir}/init.d/udev
+	install -m 0755 ${WORKDIR}/udev_network_queue.sh ${D}${sysconfdir}/init.d/
 
 	install -d ${D}${sysconfdir}/udev/rules.d/
 
@@ -46,4 +48,14 @@ do_install () {
 	install -d ${D}${base_libdir}/udev/
 	install -m 0755 ${S}/udevsynthesize ${D}${base_libdir}/udev/udevsynthesize
 	install -m 0755 ${WORKDIR}/udevsynthesize.sh ${D}${sbindir}/udevsynthesize
+}
+
+
+pkg_postinst_append() {
+	update-rc.d -s udev_network_queue.sh start 41 S . start 55 0 6 .
+}
+
+
+pkg_postrm_append() {
+	update-rc.d -f udev_network_queue.sh remove
 }
