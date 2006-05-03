@@ -9,11 +9,58 @@
 
 
 def check_dir(name, error):
+    """
+    Check if the given directory exists, if not error
+    is printed and the application is left.
+    """
     import os, sys
     import stat
     if not os.path.isdir(name):
         print error
         sys.exit(-1)
+
+
+def find_packages(dir):
+    import os
+    contents = os.listdir(dir)
+    ipks = []
+    for f in contents:
+        (root,ext) = os.path.splitext(f)
+        if ext == ".ipk":
+            ipks.append( f )
+    return ipks
+
+def diff_dirs( old_ipks, new_ipks ):
+    """
+    We will return three lists. The first one will
+    contain the files that are only in a, the second
+    the files in both directories and the third one
+    will
+    """
+    only_old = [ i for i in old_ipks if i not in new_ipks]
+    both     = [ i for i in old_ipks if i in new_ipks ]
+    only_new = [ i for i in new_ipks if i not in old_ipks]
+
+    return only_old, both, only_new
+
+def print_result_start( old, both, new ):
+    """
+    Print the findings of ipkg-diff
+    """
+    print "ipkg-diff diff report"
+    print "%d packages found" % (len(old)+len(both)+len(new))
+    print "# of old/removed packages: %d" % len(old)
+    print "# of new packages: %d" % len(new)
+    print "# of possible changed packages: %d" % len(both)
+    print ""
+
+    if len(old) > 0:
+        for i in old:
+            print "Vanished ipk: %s" % i
+
+    if len(new) > 0:
+        for i in new:
+            print "New ipk: %s" % i
 
 if __name__ == "__main__":
     import os,sys
@@ -23,3 +70,10 @@ if __name__ == "__main__":
 
     check_dir(sys.argv[1], "Source Directory does not exist")
     check_dir(sys.argv[2], "Dest Directory does not exists")
+
+    old_ipks = find_packages(sys.argv[1])
+    new_ipks = find_packages(sys.argv[2])
+
+    only_old, both, only_new = diff_dirs( old_ipks, new_ipks )
+
+    print_result_start( only_old, both, only_new )
