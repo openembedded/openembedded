@@ -1,0 +1,25 @@
+#!/usr/bin/env python
+# License of this file:
+#  Copy, Modify, Change, Sell it at your will.
+#
+# There is absolutely no warranty with this file
+#
+# (C) Copyright 2006 Holger Hans Peter Freyther
+
+
+
+def check_dir(name, error):
+    import os, sys
+    import stat
+    if not os.path.isdir(name):
+        print error
+        sys.exit(-1)
+
+if __name__ == "__main__":
+    import os,sys
+    if len(sys.argv) != 3:
+        print "ipkg-diff OLD NEW"
+        sys.exit(-2)
+
+    check_dir(sys.argv[1], "Source Directory does not exist")
+    check_dir(sys.argv[2], "Dest Directory does not exists")
