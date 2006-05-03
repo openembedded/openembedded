@@ -1,0 +1,34 @@
+
+#
+# Patch managed by http://www.holgerschurig.de/patcher.html
+#
+
+--- qt-x11-opensource-src-4.1.1/configure~configurable-cpu-extensions
++++ qt-x11-opensource-src-4.1.1/configure
+@@ -564,6 +564,12 @@
+             VAL=$1
+         fi
+         ;;
++    -nosse)
++        CFG_SSE="no"
++        ;;
++    -sse)
++        CFG_SSE="yes"
++        ;;
+     -iwmmxt)
+ 	CFG_IWMMXT="yes"
+ 	;;
+@@ -1759,13 +1765,6 @@
+     fi
+ fi
+ 
+-# detect sse support
+-if $unixtests/sse.test $XQMAKESPEC $OPT_VERBOSE; then
+-    CFG_HAVE_SSE=no
+-else
+-    CFG_HAVE_SSE=yes
+-fi
+-
+ # check iwmmxt support
+ if [ "$CFG_IWMMXT" = "yes" ]; then
+     if ! $unixtests/iwmmxt.test $XQMAKESPEC $OPT_VERBOSE; then
