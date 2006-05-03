@@ -43,6 +43,33 @@ def diff_dirs( old_ipks, new_ipks ):
 
     return only_old, both, only_new
 
+def diff_packages( old, new ):
+    def compare( name, version, method, txt ):
+        """
+        Compare package with name and version with method
+        and print error message
+        """
+        try:
+            if not method( old[package_name][version], new[package_name][version] ):
+                print txt
+        except:
+            print "Error with %s %s and '%s'" % (package_name,version, txt)
+
+    for package_name in old.keys():
+        for version in old[package_name].keys():
+            print "Comparing %s %s" % (package_name, version)
+            compare( package_name, version, lambda x,y: x.get_maintainer() == y.get_maintainer(), "Maintainer is different" )
+            compare( package_name, version, lambda x,y: x.get_architecture() == y.get_architecture(), "Architecture is different" )
+            compare( package_name, version, lambda x,y: x.get_description() == y.get_description(), "Description is different" )
+            compare( package_name, version, lambda x,y: x.get_depends() == y.get_depends(), "Depends are different" )
+            compare( package_name, version, lambda x,y: x.get_provides() == y.get_provides(), "Provides are different" )
+            compare( package_name, version, lambda x,y: x.get_conflicts() == y.get_conflicts(), "Provides are different" )
+            compare( package_name, version, lambda x,y: x.get_suggests() == y.get_suggests(), "Suggests are different" )
+            compare( package_name, version, lambda x,y: x.get_source() == y.get_source(), "Source is different" )
+            compare( package_name, version, lambda x,y: x.get_section() == y.get_section(), "Section is different" )
+            compare( package_name, version, lambda x,y: x.get_file_list() == y.get_file_list(), "Filelist is different" )
+            compare( package_name, version, lambda x,y: x.md5 == y.md5, "MD5 is different" )
+
 def print_result_start( old, both, new ):
     """
     Print the findings of ipkg-diff
@@ -62,18 +89,46 @@ def print_result_start( old, both, new ):
         for i in new:
             print "New ipk: %s" % i
 
+
+def parse_packages(dir, package_names):
+    import ipkg, os
+    packages = {}
+
+    for package in package_names:
+        p = ipkg.Package(os.path.join(dir, package))
+
+        if not p.get_package() in packages:
+            packages[p.get_package()] = {}
+        packages[p.get_package()][p.get_version()] = p
+
+    return packages
+
+
 if __name__ == "__main__":
     import os,sys
+
+    # sanity
     if len(sys.argv) != 3:
         print "ipkg-diff OLD NEW"
         sys.exit(-2)
 
+    # check dirs
     check_dir(sys.argv[1], "Source Directory does not exist")
     check_dir(sys.argv[2], "Dest Directory does not exists")
 
+    # find packages
     old_ipks = find_packages(sys.argv[1])
     new_ipks = find_packages(sys.argv[2])
 
+    # find removed and new files
     only_old, both, only_new = diff_dirs( old_ipks, new_ipks )
 
+    # print a summary header
     print_result_start( only_old, both, only_new )
+
+    # start diffing the content by parsing the packages
+    print "Loading Content into memory"
+    old_packages = parse_packages(sys.argv[1], both )
+    new_packages = parse_packages(sys.argv[2], both )
+
+    diff_packages( old_packages, new_packages )
