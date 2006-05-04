@@ -21,7 +21,7 @@ inherit opie
 QMAKE_PROFILES = "zvisiscript.pro"
 PARALLEL_MAKE = ""
 
-EXTRA_QMAKEVARS_POST = "CONFIG-=thread LIBS-=../qscintilla-1.65-gpl-1.6/qt/libqscintilla.a LIBS+=-lqscintilla LIBS+=-ldl"
+EXTRA_QMAKEVARS_POST += "LIBS-=../qscintilla-1.65-gpl-1.6/qt/libqscintilla.a LIBS+=-lqscintilla LIBS+=-ldl"
 export OE_QMAKE_LINK="${CXX}"
 
 do_compile_prepend() {
