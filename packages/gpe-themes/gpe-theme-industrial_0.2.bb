@@ -1,5 +1,7 @@
 DESCRIPTION =	"GTK+ industrial theme adjusted for GPE"
-MAINTAINER =	"Koen Kooi <koen@handhelds.org>"
+MAINTAINER =	"Koen Kooi <koen@dominion.kabel.utwente.nl>"
+LICENSE =       "GPL"
+
 PR=		"r0"
 
 #it doesn't really depends on it, but it's nice to make OE build it

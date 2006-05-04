@@ -4,11 +4,11 @@ PRIORITY = "optional"
 #MAINTAINER = ""
 LICENSE =  "X-MIT"
 
-DEPENDS = "libx11 libsm util-macros"
+DEPENDS = "libx11 libsm util-macros kbproto"
 PROVIDES = "xt"
 
-SRC_URI = "${XORG_MIRROR}/X11R7.0/src/lib/libXt-${PV}.tar.bz2"
-S = "${WORKDIR}/libXt-${PV}"
+SRC_URI = "${XORG_MIRROR}/X11R7.0/src/lib/libXt-X11R7.0-${PV}.tar.bz2"
+S = "${WORKDIR}/libXt-X11R7.0-${PV}"
 
 inherit autotools pkgconfig 
 

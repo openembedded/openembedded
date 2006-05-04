@@ -6,14 +6,15 @@ PRIORITY = "optional"
 MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 DEPENDS = "python-native readline zlib gdbm openssl tcl tk"
 DEPENDS_sharprom = "python-native readline zlib gdbm openssl"
-PR = "ml2"
+PR = "ml3"
 
 PYTHON_MAJMIN = "2.4"
 
 SRC_URI = "http://www.python.org/ftp/python/${PV}/Python-${PV}.tar.bz2 \
            file://bindir-libdir.patch;patch=1 \
            file://crosscompile.patch;patch=1 \
-           file://fix-tkinter-detection.patch;patch=1"
+           file://fix-tkinter-detection.patch;patch=1 \
+           file://sitebranding.patch;patch=1"
 S = "${WORKDIR}/Python-${PV}"
 
 inherit autotools
