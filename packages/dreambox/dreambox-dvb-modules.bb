@@ -13,7 +13,7 @@ def get_modules_extension(bb, d):
 	return ""
 
 KV_dm7025 = "2.6.12.6"
-PV_dm7025 = "${KV}-20060411${@get_modules_extension(bb, d)}"
+PV_dm7025 = "${KV}-20060424${@get_modules_extension(bb, d)}"
 
 RDEPENDS = "kernel (${KV})"
 PR = "r0"
@@ -42,7 +42,7 @@ do_install_dm7025() {
 	install -d ${D}/lib/modules/${KV}/extra
 	install -m 0755 ${WORKDIR}/dream ${D}/etc/init.d/
 	for f in alps_bsbe1.ko avs.ko dreambox_rc2.ko fp.ko lcd.ko \
-		mb86a15.ko nec_ir.ko rfmod.ko stb-proc.ko cu1216mk3.ko \
+		rfmod.ko stb-proc.ko cu1216mk3.ko \
 		tu1216.ko xilleon.ko LICENSE; do
 		install -m 0644 ${WORKDIR}/$f ${D}/lib/modules/${KV}/extra/$f;
 	done
