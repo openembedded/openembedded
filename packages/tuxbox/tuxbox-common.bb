@@ -2,10 +2,11 @@ DESCRIPTION = "Tuxbox common files"
 LICENSE = "GPL"
 MAINTAINER = "Felix Domke <tmbinc@elitdvb.net>"
 
-SRC_URI = "http://dreamboxupdate.com/download/opendreambox/tuxbox-common-${PR}.tar.gz"
-
 PN = "tuxbox-common"
-PR = "r6"
+PR = "r7"
+
+SRC_URI = "http://dreamboxupdate.com/download/opendreambox/tuxbox-common-${PR}.tar.gz \
+	cvs://anoncvs@cvs.tuxbox.org/cvs/tuxbox/;module=cdk/root/share/tuxbox;method=ext;tag=dreambox"
 
 FILES_${PN} = "/"
 
@@ -17,9 +18,9 @@ do_install() {
 	install -d ${D}/etc/rcS.d
 	install -d ${D}/etc/tuxbox/
 	install -m 0644 ${S}/scart.conf ${D}/etc/tuxbox/scart.conf
-	install -m 0644 ${S}/satellites.xml ${D}/etc/tuxbox/satellites.xml
-	install -m 0644 ${S}/cables.xml ${D}/etc/tuxbox/cables.xml
-	install -m 0644 ${S}/terrestrial.xml ${D}/etc/tuxbox/terrestrial.xml
+	install -m 0644 ${WORKDIR}/tuxbox/satellites.xml ${D}/etc/tuxbox/satellites.xml
+	install -m 0644 ${WORKDIR}/tuxbox/cables.xml ${D}/etc/tuxbox/cables.xml
+	install -m 0644 ${WORKDIR}/tuxbox/terrestrial.xml ${D}/etc/tuxbox/terrestrial.xml
 	install -m 0644 ${S}/timezone.xml ${D}/etc/tuxbox/timezone.xml
 
 	echo "ln -s /etc/tuxbox /var/" > ${D}/etc/init.d/tuxbox-links.sh
