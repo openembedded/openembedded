@@ -27,7 +27,7 @@ def base_read_file(filename):
 	try:
 		f = file( filename, "r" )
 	except IOError, reason:
-		raise bb.build.FuncFailed("can't read from file '%s' (%s)", (filename,reason))
+		return "" # WARNING: can't raise an error now because of the new RDEPENDS handling. This is a bit ugly. :M:
 	else:
 		return f.read().strip()
 	return None
