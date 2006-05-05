@@ -1,0 +1,24 @@
+
+#
+# Patch managed by http://www.holgerschurig.de/patcher.html
+#
+
+--- ../src/ExternalLexer.cpp~no-external-lexers
++++ ../src/ExternalLexer.cpp
+@@ -110,7 +110,7 @@
+ 	// Initialise some members...
+ 	first = NULL;
+ 	last = NULL;
+-
++#ifndef ZPATCH
+ 	// Load the DLL
+ 	lib = DynamicLibrary::Load(ModuleName);
+ 	if (lib->IsValid()) {
+@@ -155,6 +155,7 @@
+ 			}
+ 		}
+ 	}
++#endif
+ 	next = NULL;
+ }
+ 
