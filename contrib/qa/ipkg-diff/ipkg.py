@@ -120,6 +120,7 @@ class Package:
 	self.section = None
         self.filename_header = None
 	self.file_list = []
+        self.file_all_list = []
         self.md5 = None
         self.size = None
         self.installed_size = None
@@ -187,6 +188,19 @@ class Package:
                 if not line: break
                 self.file_list.append(string.rstrip(line))
             data.close()
+
+            # bigger listing with all permissions
+            if self.isdeb:
+                data = os.popen("ar p "+fn+" data.tar.gz | tar tvfz -","r")
+            else:
+                data = os.popen("tar xfzO "+fn+" '*data.tar.gz' | tar tvfz -","r")
+            while 1:
+                line = data.readline()
+                if not line: break
+                self.file_all_list.append(string.rstrip(line))
+            data.close()
+
+
 
 	self.scratch_dir = None
 	self.file_dir = None
@@ -269,41 +283,47 @@ class Package:
     def set_depends(self, depends):
 	self.depends = depends
 
-    def get_depends(self, depends):
+    def get_depends(self):
 	return self.depends
 
     def set_provides(self, provides):
 	self.provides = provides
 
-    def get_provides(self, provides):
+    def get_provides(self):
 	return self.provides
 
     def set_replaces(self, replaces):
 	self.replaces = replaces
 
-    def get_replaces(self, replaces):
+    def get_replaces(self):
 	return self.replaces
 
     def set_conflicts(self, conflicts):
 	self.conflicts = conflicts
 
-    def get_conflicts(self, conflicts):
+    def get_conflicts(self):
 	return self.conflicts
 
     def set_suggests(self, suggests):
 	self.suggests = suggests
 
-    def get_suggests(self, suggests):
+    def get_suggests(self):
 	return self.suggests
 
     def set_section(self, section):
 	self.section = section
 
-    def get_section(self, section):
+    def get_section(self):
 	return self.section
 
     def get_file_list(self):
 	return self.file_list
+
+    def get_file_all_list(self):
+        return self.file_all_list
+
+    def get_md5(self):
+        return self.md5
 
     def write_package(self, dirname):
         buf = self.render_control()
