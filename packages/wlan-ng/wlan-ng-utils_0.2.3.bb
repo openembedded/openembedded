@@ -9,6 +9,7 @@ SRC_URI = "ftp://ftp.linux-wlan.org/pub/linux-wlan-ng/linux-wlan-ng-${PV}.tar.bz
 	file://only-the-utils.patch;patch=1 \
 	file://scripts-makefile-hostcc.patch;patch=1 \
 	file://pcmciasrc.patch;patch=1 \
+	file://hostldflags.patch;patch=1 \
 	file://wlan-ng.modutils \
 	file://wlan.agent \
 	file://usbctl \
@@ -16,7 +17,6 @@ SRC_URI = "ftp://ftp.linux-wlan.org/pub/linux-wlan-ng/linux-wlan-ng-${PV}.tar.bz
 	file://pre-up \
 	file://post-down \
 	file://config.in"
-
 S = "${WORKDIR}/linux-wlan-ng-${PV}"
 
 # yeah, it's kind of backwards, but otherwise the config step will fail
@@ -24,7 +24,7 @@ inherit module
 
 do_configure() {
 	install -m 0655 ${WORKDIR}/config.in ${S}/config.in
-	oe_runmake LINUX_SRC=${STAGING_KERNEL_DIR} auto_config
+	oe_runmake LINUX_SRC=${KERNEL_SOURCE} auto_config
 
         if grep CONFIG_PCMCIA=[ym] ${STAGING_KERNEL_DIR}/kernel-config; then
                 echo "PRISM2_PCMCIA=y"          >> config.mk

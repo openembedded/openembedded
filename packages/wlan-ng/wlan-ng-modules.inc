@@ -3,19 +3,18 @@ HOMEPAGE = "http://www.linux-wlan.org"
 SECTION = "kernel/modules"
 DEPENDS = "virtual/kernel"
 RRECOMMENDS = "wlan-ng-utils"
+RPROVIDES += "wlan-ng-modules-usb"
 LICENSE = "GPL"
-PR = "r1"
 
-SRC_URI = "ftp://ftp.linux-wlan.org/pub/linux-wlan-ng/linux-wlan-ng-${PV}.tar.bz2 \
-	file://no-compat.patch;patch=1 \
+SRC_URI = "file://no-compat.patch;patch=1 \
 	file://msleep-vs-mdelay.patch;patch=1 \
 	file://might-sleep.patch;patch=1 \
 	file://only-the-modules.patch;patch=1 \
-	file://module_param_array.patch;patch=1 \
+#	file://module_param_array.patch;patch=1 \
 	file://scripts-makefile-hostcc.patch;patch=1 \
 	file://pcmciasrc.patch;patch=1 \
+	file://pcmcia-driver.patch;patch=1 \
 	file://config.in"
-S = "${WORKDIR}/linux-wlan-ng-${PV}"
 
 inherit module
 
@@ -26,10 +25,10 @@ do_configure() {
 	install -m 0655 ${WORKDIR}/config.in ${S}/config.in
 	oe_runmake LINUX_SRC=${KERNEL_SOURCE} auto_config
 
-        if grep CONFIG_PCMCIA=[ym] ${STAGING_KERNEL_DIR}/kernel-config; then
-                echo "PRISM2_PCMCIA=y"          >> config.mk
-                echo "WLAN_KERN_PCMCIA=y"       >> config.mk
-        fi
+#        if grep CONFIG_PCMCIA=[ym] ${STAGING_KERNEL_DIR}/kernel-config; then
+#                echo "PRISM2_PCMCIA=y"          >> config.mk
+#                echo "WLAN_KERN_PCMCIA=y"       >> config.mk
+#        fi
         echo "TARGET_ROOT_ON_HOST=${D}/"         >> config.mk
         echo "TARGET_MODDIR=${D}/lib/modules/${KERNEL_VERSION}/wlan-ng" >> config.mk
 	echo "CC=${KERNEL_CC}"			>> config.mk
@@ -59,4 +58,12 @@ do_install() {
         rm -f ${KERNEL_SOURCE}/../../config.mk	
 }
 
-FILES_${PN} = "/lib"
+PACKAGES = "wlan-ng-modules-usb wlan-ng-modules-cs wlan-ng-modules-pci wlan-ng-modules-p80211"
+FILES_wlan-ng-modules-p80211 = "/lib/modules/${KERNEL_VERSION}/wlan-ng/p80211${KERNEL_OBJECT_SUFFIX}"
+FILES_wlan-ng-modules-usb = "/lib/modules/${KERNEL_VERSION}/wlan-ng/prism2_usb${KERNEL_OBJECT_SUFFIX}"
+FILES_wlan-ng-modules-cs  = "/lib/modules/${KERNEL_VERSION}/wlan-ng/prism2_cs${KERNEL_OBJECT_SUFFIX}"
+FILES_wlan-ng-modules-pci = "/lib/modules/${KERNEL_VERSION}/wlan-ng/prism2_pci${KERNEL_OBJECT_SUFFIX} \
+			     /lib/modules/${KERNEL_VERSION}/wlan-ng/prism2_plx${KERNEL_OBJECT_SUFFIX}"
+RDEPENDS_wlan-ng-modules-usb = "wlan-ng-modules-p80211"
+RDEPENDS_wlan-ng-modules-cs  = "wlan-ng-modules-p80211"
+RDEPENDS_wlan-ng-modules-pci = "wlan-ng-modules-p80211"

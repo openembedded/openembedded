@@ -1,0 +1,31 @@
+Index: linux-wlan-ng-devel/src/Makefile
+===================================================================
+--- linux-wlan-ng-devel.orig/src/Makefile	2006-02-21 11:41:23.000000000 +0100
++++ linux-wlan-ng-devel/src/Makefile	2006-02-21 12:58:05.796955176 +0100
+@@ -44,10 +44,9 @@
+ 
+ -include ../config.mk
+ 
+-DIRS=p80211 prism2 shared wlanctl nwepgen \
+-	mkmeta wlancfg
+-ALL_DIRS=mkmeta p80211 prism2 shared wlanctl \
+-	nwepgen wlancfg
++
++DIRS=p80211 prism2 shared mkmeta
++ALL_DIRS=mkmeta p80211 prism2 shared
+ 
+ ifneq ($(wildcard *.addon),) 
+ DIRS+=`cat *.addon`
+Index: linux-wlan-ng-devel/src/prism2/Makefile
+===================================================================
+--- linux-wlan-ng-devel.orig/src/prism2/Makefile	2006-02-21 11:41:23.000000000 +0100
++++ linux-wlan-ng-devel/src/prism2/Makefile	2006-02-21 12:57:28.660600760 +0100
+@@ -44,7 +44,7 @@
+ 
+ -include ../../config.mk
+ 
+-DIRS=driver ridlist download
++DIRS=driver ridlist
+ 
+ ifneq ($(wildcard *.addon),) 
+ DIRS+=`cat *.addon`
