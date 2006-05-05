@@ -8,6 +8,9 @@ MAINTAINER = "Philipp Zabel <philipp.zabel@gmail.com>"
 PV = "0.9+git"
 PR = "r0"
 
+PARALLEL_MAKE = ""
+
+
 DEPENDS = "xcb-proto xproto libxau"
 # DEPENDS += "xsltproc-native gperf-native"
 

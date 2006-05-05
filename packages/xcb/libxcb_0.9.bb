@@ -5,6 +5,7 @@ HOMEPAGE = "http://xcb.freedesktop.org"
 MAINTAINER = "Philipp Zabel <philipp.zabel@gmail.com>"
 PR = "r0"
 
+PARALLEL_MAKE = ""
 DEPENDS = "xcb-proto xproto libxau"
 # DEPENDS += "xsltproc-native gperf-native"
 
