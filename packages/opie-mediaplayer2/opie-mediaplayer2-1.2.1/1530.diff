@@ -1,0 +1,16 @@
+Index: playlistwidgetgui.cpp
+===================================================================
+RCS file: /cvs/opie/noncore/multimedia/opieplayer2/playlistwidgetgui.cpp,v
+retrieving revision 1.26
+diff -u -u -r1.26 playlistwidgetgui.cpp
+--- opieplayer2/playlistwidgetgui.cpp	25 May 2005 18:59:20 -0000	1.26
++++ opieplayer2/playlistwidgetgui.cpp	14 Apr 2006 11:14:44 -0000
+@@ -135,7 +135,7 @@
+     Alayout->setSpacing( 2 );
+     Alayout->setMargin( 2 );
+     // no m3u's here please
+-    audioView = new PlayListFileView( "audio/mpeg;audio/x-wav;application/ogg", "opieplayer2/musicfile", aTab, "Audioview" );
++    audioView = new PlayListFileView( "audio/mpeg;audio/x-wav;audio/x-ogg;application/ogg", "opieplayer2/musicfile", aTab, "Audioview" );
+     Alayout->addMultiCellWidget( audioView, 0, 0, 0, 1 );
+     tabWidget->insertTab( aTab, tr( "Audio" ) );
+ 
