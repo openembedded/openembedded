@@ -8,6 +8,8 @@ PR = "r0"
 DEPENDS = "libxcb"
 # DEPENDS += "gperf-native"
 
+PARALLEL_MAKE = ""
+
 SRC_URI = "http://xcb.freedesktop.org/dist/xcb-util-0.1.tar.bz2"
 
 PACKAGES = "libxcbatom libxcbatom-dev libxcbaux libxcbaux-dev libxcbevent libxcbevent-dev libxcbicccm libxcbicccm-dev \

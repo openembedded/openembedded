@@ -11,6 +11,8 @@ PR = "r0"
 DEPENDS = "libxcb"
 # DEPENDS += "gperf-native"
 
+PARALLEL_MAKE = ""
+
 SRC_URI = "git://anongit.freedesktop.org/git/xcb;protocol=git"
 S = "${WORKDIR}/git/xcb-util"
 
