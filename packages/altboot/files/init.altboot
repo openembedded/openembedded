@@ -17,6 +17,8 @@ REAL_INIT="/sbin/init.sysvinit"
 INIT_RUNLEVEL="`cat /etc/inittab | sed -n "/^id\:/s/id\:\([0-9]\)\:.*$/\1/p"`"
 test -z "$INIT_RUNLEVEL" && INIT_RUNLEVEL=5
 
+OUT_TTY="/dev/tty1"
+
 case "`uname -r`" in
 2.6*)	ALTBOOT_CFG_FILE="/etc/altboot-2.6.cfg";;
 2.4*)	ALTBOOT_CFG_FILE="/etc/altboot-2.4.cfg";;
@@ -34,8 +36,8 @@ C_RESET="\033[0m"
 
 
 die() {
-	echo -e "${C_RED}ERROR: $1${C_RESET}" >/dev/tty0
-	exec $SH_SHELL </dev/tty0 >/dev/tty0 2>&1
+	echo -e "${C_RED}ERROR: $1${C_RESET}" >"$OUT_TTY"
+	exec $SH_SHELL <"$OUT_TTY" >"$OUT_TTY" 2>&1
 }
 
 debug_shell() {		
@@ -178,7 +180,7 @@ run_timer() {
 			test -z "$key_ints" && key_ints="`cat /proc/interrupts | grep -i corgikbd`";;	
 		esac		
 	
-		stty -echo  </dev/tty0 >/dev/tty0 2>&1
+		stty -echo  <"$OUT_TTY" >"$OUT_TTY" 2>&1
 		echo -en "\n\nPlease press any key to launch altboot." > /dev/tty1
 		
 		test -z "$TIMEOUT" && TIMEOUT="3"
@@ -196,7 +198,7 @@ run_timer() {
 			if test "$key_ints_now" != "$key_ints" -o -z "$key_ints_now"
 			then				
 				launch_altboot=yes				
-				stty echo </dev/tty0 >/dev/tty0 2>&1
+				stty echo <"$OUT_TTY" >"$OUT_TTY" 2>&1
 				break
 			fi
 			echo -n "." >/dev/tty1
@@ -233,22 +235,22 @@ launch_selection() {
 		# The selected menu-item points to a directory
 		if test "$type" = DIR
 		then
-			show_sub_menu /etc/altboot-menu/$file >/dev/tty0
-			wait_for_input >/dev/tty0			
-			launch_selection /etc/altboot-menu >/dev/tty0						
+			show_sub_menu /etc/altboot-menu/$file >"$OUT_TTY"
+			wait_for_input >"$OUT_TTY"			
+			launch_selection /etc/altboot-menu >"$OUT_TTY"						
 		fi
 		
 		if test "$type" = MAIN
 		then
-			show_sub_menu /etc/altboot-menu >/dev/tty0
-			wait_for_input >/dev/tty0			
-			launch_selection /etc/altboot-menu >/dev/tty0						
+			show_sub_menu /etc/altboot-menu >"$OUT_TTY"
+			wait_for_input >"$OUT_TTY"			
+			launch_selection /etc/altboot-menu >"$OUT_TTY"						
 		fi	
 		
 		
 				
-		. $1/$file run "$file" >/dev/tty0	
-		die "WARNING: Using failsafe shell" >/dev/tty0			
+		. $1/$file run "$file" >"$OUT_TTY"	
+		die "WARNING: Using failsafe shell" >"$OUT_TTY"			
 		
 		;;	
 	esac
@@ -273,13 +275,13 @@ wait_for_input() {
 		if ! (readlink /bin/sh | grep -q bash)
 		then
 			# This filters an "<ENTER>" from the user as "any key"
-			( while :; do read x< /dev/tty0 2>&1; done; ) > /dev/null 2>&1 &
+			( while :; do read x< "$OUT_TTY" 2>&1; done; ) > /dev/null 2>&1 &
 			sleep 1; kill $! >/dev/null 2>&1
 		fi
 								
-		echo -n "Please choose one of the above [$last_selection]: " </dev/tty0 > /dev/tty0 2>&1
-		stty echo </dev/tty0 >/dev/tty0 2>&1
-		read junk< /dev/tty0 2>&1
+		echo -n "Please choose one of the above [$last_selection]: " <"$OUT_TTY" > "$OUT_TTY" 2>&1
+		stty echo <"$OUT_TTY" >"$OUT_TTY" 2>&1
+		read junk< "$OUT_TTY" 2>&1
 		
 		# This filters other chars the user may have used
 		
@@ -346,9 +348,9 @@ else
 	done
 			
 	# Make sure altboots master password is set
-	set_password >/dev/tty0 
+	set_password >"$OUT_TTY" 
 	
-	test "$ASK_PW_ON_BOOT" = "yes" && verify_master_pw >/dev/tty0 
+	test "$ASK_PW_ON_BOOT" = "yes" && verify_master_pw >"$OUT_TTY" 
 
 	# When started with -force, always print the menu
 	echo "$*" | grep -q -- "-force" && TIMEOUT=0
@@ -357,7 +359,7 @@ else
 	# increases while the timer is running. A TIMEOUT of 0 will always launch altboot.	
 	run_timer >/dev/tty1 
 		
-	echo "" >/dev/tty0
+	echo "" >"$OUT_TTY"
 	
 	
 	if test "$launch_altboot" != yes
@@ -366,40 +368,40 @@ else
 		last_selection="`cat /etc/altboot.conf`" >/dev/null 2>&1
 		test -z "$last_selection" && last_selection="1"	
 		
-		echo "Booting last selection: [$last_selection]" >/dev/tty0
+		echo "Booting last selection: [$last_selection]" >"$OUT_TTY"
 		
 		# Set up the wanna-be array of available menu entries and their numbers
 		show_menu /etc/altboot-menu >/dev/null
 		junk="$last_selection"
-		launch_selection /etc/altboot-menu >/dev/tty0
+		launch_selection /etc/altboot-menu >"$OUT_TTY"
 
 	fi
 
 	# Anything after this point will never be reached if $launch_altboot != yes	
 	
 	# Show the altboot menu
-	stty -echo </dev/tty0 >/dev/tty0 2>&1
-	show_menu /etc/altboot-menu >/dev/tty0
+	stty -echo <"$OUT_TTY" >"$OUT_TTY" 2>&1
+	show_menu /etc/altboot-menu >"$OUT_TTY"
 
 	# Load last selection for use as default if <ENTER> is pressed at the prompt
 	last_selection="`cat /etc/altboot.conf`" >/dev/null 2>&1
 	test -z "$last_selection" && last_selection="1"	
 
 	# Ask the user which menu-item to use
-	wait_for_input >/dev/tty0 
+	wait_for_input >"$OUT_TTY" 
 	
 	# This should _never_ happen.
 	if test -z "$junk"
 	then
-		echo "WARNING: Trying failsafe mode" >/dev/tty0
-		mount -o remount,rw / >/dev/tty0 2>&1
+		echo "WARNING: Trying failsafe mode" >"$OUT_TTY"
+		mount -o remount,rw / >"$OUT_TTY" 2>&1
 		echo "Dumping environment to /altboot.env"
 		echo "$CURRENT_ENV" > /altboot.env
-		mount -o remount,ro / >/dev/tty0 2>&1
+		mount -o remount,ro / >"$OUT_TTY" 2>&1
 		junk=1
 	fi
 
-	launch_selection /etc/altboot-menu >/dev/tty0	
+	launch_selection /etc/altboot-menu >"$OUT_TTY"	
 	
 	# Uhoh, something went terribly wrong if we reach this point!
 	die "WARNING: Failsafe fall-through activated. Spawning emergency shell"	
