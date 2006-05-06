@@ -1,0 +1,91 @@
+#!/bin/sh
+#
+# Quick handler for chkhinge26 and X. 
+#
+
+killproc() {            # kill the named process(es)
+        pid=`/bin/ps -e x |
+             /bin/grep $1 |
+             /bin/grep -v grep |
+             /bin/sed -e 's/^  *//' -e 's/ .*//'`
+        [ "$pid" != "" ] && kill $pid
+}
+
+export DISPLAY=:0
+
+if [ -z "$1" ]; then
+   echo "Usage: hinge-handler <state> ( 3 = closed, 0 = landscape, 2 = portrait )"
+   exit 1
+fi
+
+panel_user="`ps aux|grep matchbox-panel|grep -v grep | awk '{print $2}'`"
+
+
+
+STATE=$1
+
+if [ $STATE = "3" ]; then
+  #echo "sleeping"
+#
+# uncomment 'if' block below to have zaurus suspend on hinge close
+#
+#  if [ -x @bindir@/apm ]; then
+#    apm -s
+#  fi
+  exit 0
+fi
+
+if [ $STATE = "0" ]; then
+  #echo "landscape"
+
+  # As matchbox-panel updates its written configuration right after an applet dies / is killed, we can not be sure
+  # whether the user had gpe-panel in his preferences after rotating to portrait. And since there is a slim chance
+  # that a user changes his preferences from time to time, we renew that dumped configuration every now and then ;)
+
+  if ! test -e "/tmp/gpe-panel.session-$panel_user"
+  then
+    test -e /home/$panel_user/.matchbox/mbdock.session && cp /home/$panel_user/.matchbox/mbdock.session "/tmp/gpe-panel.session-$panel_user"
+    test -e "/tmp/gpe-panel.session-$panel_user" && cat "/tmp/gpe-panel.session-$panel_user" | grep -q panel || killproc @bindir@/mbinputmgr
+  else
+    cat "/tmp/gpe-panel.session-$panel_user" | grep -q panel || killproc @bindir@/mbinputmgr
+    rm "/tmp/gpe-panel.session-$panel_user"
+  fi
+   
+  # urg mbinputmgr should kill below
+  killproc @bindir@/matchbox-keyboard
+  killproc @bindir@/matchbox-stroke
+  if [ -x @bindir@/xrandr ]; then
+    xrandr -o normal
+  fi
+  exit 0
+fi
+
+if [ $STATE = "2" ]; then
+  #echo "portrait"
+  if [ -x @bindir@/xrandr ]; then
+    @bindir@/xrandr -o left 
+  fi
+  # just to be extra safe
+  sleep 1
+      
+  echo "panel_user = [$panel_user]"
+
+  if ! test -e "/tmp/gpe-panel.session-$panel_user"
+  then
+    cp /home/$panel_user/.matchbox/mbdock.session "/tmp/gpe-panel.session-$panel_user"
+  else
+    rm "/tmp/gpe-panel.session-$panel_user"
+  fi
+  
+  if test -n "$panel_user"
+  then
+    echo "Running panel as user [$panel_user]"
+    ps aux | grep "$panel_user" | grep -q "mbinputmgr " || su $panel_user -c @bindir@/mbinputmgr &
+  else
+     # A failsafe can't hurt
+     echo "Warning: Running mbinputmgr as root!"
+     ps aux | grep -q "mbinputmgr " || @bindir@/mbinputmgr &
+  fi
+
+  exit 0
+fi
