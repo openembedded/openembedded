@@ -44,31 +44,35 @@ def diff_dirs( old_ipks, new_ipks ):
     return only_old, both, only_new
 
 def diff_packages( old, new ):
-    def compare( name, version, method, txt ):
+    def compare( name, version, attribute, txt ):
         """
         Compare package with name and version with method
         and print error message
         """
         try:
-            if not method( old[package_name][version], new[package_name][version] ):
+            left  = getattr( old[package_name][version], 'get_' + attribute )
+            right = getattr( new[package_name][version], 'get_' + attribute )
+            if not left() == right():
                 print txt
-        except:
+        except Exception, e:
+            raise e
             print "Error with %s %s and '%s'" % (package_name,version, txt)
 
     for package_name in old.keys():
         for version in old[package_name].keys():
             print "Comparing %s %s" % (package_name, version)
-            compare( package_name, version, lambda x,y: x.get_maintainer() == y.get_maintainer(), "Maintainer is different" )
-            compare( package_name, version, lambda x,y: x.get_architecture() == y.get_architecture(), "Architecture is different" )
-            compare( package_name, version, lambda x,y: x.get_description() == y.get_description(), "Description is different" )
-            compare( package_name, version, lambda x,y: x.get_depends() == y.get_depends(), "Depends are different" )
-            compare( package_name, version, lambda x,y: x.get_provides() == y.get_provides(), "Provides are different" )
-            compare( package_name, version, lambda x,y: x.get_conflicts() == y.get_conflicts(), "Provides are different" )
-            compare( package_name, version, lambda x,y: x.get_suggests() == y.get_suggests(), "Suggests are different" )
-            compare( package_name, version, lambda x,y: x.get_source() == y.get_source(), "Source is different" )
-            compare( package_name, version, lambda x,y: x.get_section() == y.get_section(), "Section is different" )
-            compare( package_name, version, lambda x,y: x.get_file_list() == y.get_file_list(), "Filelist is different" )
-            compare( package_name, version, lambda x,y: x.md5 == y.md5, "MD5 is different" )
+            compare( package_name, version, 'maintainer', "Maintainer is different" )
+            compare( package_name, version, 'architecture', "Architecture is different" )
+            compare( package_name, version, 'description', "Description is different" )
+            compare( package_name, version, 'depends', "Depends are different" )
+            compare( package_name, version, 'provides', "Provides are different" )
+            compare( package_name, version, 'conflicts', "Provides are different" )
+            compare( package_name, version, 'suggests', "Suggests are different" )
+            compare( package_name, version, 'source', "Source is different" )
+            compare( package_name, version, 'section', "Section is different" )
+            compare( package_name, version, 'file_list', "Filelist is different" )
+            compare( package_name, version, 'file_all_list', "Filelist is different" )
+            compare( package_name, version, 'md5', "MD5 is different" )
 
 def print_result_start( old, both, new ):
     """
