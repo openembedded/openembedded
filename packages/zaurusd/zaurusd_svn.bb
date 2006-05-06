@@ -7,13 +7,15 @@ PV = "0.0+svn${CVSDATE}"
 PR = "r4"
 
 SRC_URI = "svn://svn.o-hand.com/repos/misc/trunk;module=zaurusd;proto=http \
-           file://fix-c7x0-sound.patch;patch=1 \
-           file://no-suspend-on-hinge.patch;patch=1 \
-	   file://mbinputmgr-honor-user-prefs.patch;patch=1"
+           file://zaurus-hinge.in" \
 
 S = "${WORKDIR}/${PN}"
 
 PACKAGE_ARCH = "${MACHINE_ARCH}"
+
+do_configure_prepend () {
+	cp ${WORKDIR}/zaurus-hinge.in ${S}/scripts
+}
 
 inherit autotools pkgconfig update-rc.d
 
