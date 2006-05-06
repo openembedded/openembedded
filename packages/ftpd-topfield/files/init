@@ -2,7 +2,7 @@
 DAEMON=/usr/sbin/ftpd-topfield
 NAME=ftpd-topfield
 DESC="FTP daemon for the Topfield PVR"
-ARGS="-D -P 21 -e"
+ARGS="-D -P 21"
 
 test -f $DAEMON || exit 0
 

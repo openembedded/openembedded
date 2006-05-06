@@ -31,6 +31,10 @@ diff		etc/default/usbd
 preserve	etc/defaultdomain
 preserve	etc/dropbear/dropbear_dss_host_key
 preserve	etc/dropbear/dropbear_rsa_host_key
+preserve	etc/ssh/ssh_host_dsa_key
+preserve	etc/ssh/ssh_host_dsa_key.pub
+preserve	etc/ssh/ssh_host_rsa_key
+preserve	etc/ssh/ssh_host_rsa_key.pub
 preserve	etc/fstab
 preserve	etc/group
 preserve	etc/gshadow
@@ -48,3 +52,4 @@ preserve	etc/resolv.conf
 preserve	etc/shadow
 preserve	etc/syslog.conf
 preserve	etc/timezone
+preserve	root/.ssh/authorized_keys

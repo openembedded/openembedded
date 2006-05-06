@@ -1,5 +1,10 @@
-DEPENDS_prepend = "sip4-native "
-RDEPENDS_append = "python-sip4"
+# Build Class for Sip based Python Bindings
+# (C) Michael 'Mickey' Lauer <mickey@Vanille.de>
+#
+DEPENDS  =+ "sip4-native"
+RDEPENDS += "python-sip4"
+
+# default stuff, do not uncomment
 # EXTRA_SIPTAGS = "-tWS_X11 -tQt_4_1_1"
 
 sip4_do_generate() {

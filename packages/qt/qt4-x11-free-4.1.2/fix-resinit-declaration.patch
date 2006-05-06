@@ -1,0 +1,16 @@
+
+#
+# Patch managed by http://www.holgerschurig.de/patcher.html
+#
+
+--- qt-x11-opensource-src-4.1.1/src/qt3support/network/q3dns.cpp~fix-resinit-declaration
++++ qt-x11-opensource-src-4.1.1/src/qt3support/network/q3dns.cpp
+@@ -30,7 +30,7 @@
+ # include <netinet/in.h>
+ # include <arpa/nameser.h>
+ # include <resolv.h>
+-extern "C" int res_init();
++extern "C" int res_init() throw();
+ #endif
+ 
+ // POSIX Large File Support redefines open -> open64

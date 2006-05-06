@@ -1,0 +1,50 @@
+
+#
+# Patch managed by http://www.holgerschurig.de/patcher.html
+#
+
+--- qt-x11-opensource-src-4.1.1/src/corelib/tools/qchar.h~gcc4_1.patch
++++ qt-x11-opensource-src-4.1.1/src/corelib/tools/qchar.h
+@@ -219,7 +219,7 @@
+     inline const char toLatin1() const;
+     inline const ushort unicode() const { return ucs; }
+ #ifdef Q_NO_PACKED_REFERENCE
+-    inline ushort &unicode() { return *(&ucs); }
++    inline ushort &unicode() { return *((ushort*)&ucs); }
+ #else
+     inline ushort &unicode() { return ucs; }
+ #endif
+--- qt-x11-opensource-src-4.1.1/src/gui/kernel/qapplication_x11.cpp~gcc4_1.patch
++++ qt-x11-opensource-src-4.1.1/src/gui/kernel/qapplication_x11.cpp
+@@ -1193,6 +1193,18 @@
+     }
+ }
+ 
++static void getXDefault(const char *group, const char *key, float *val)
++{
++    char *str = XGetDefault(X11->display, group, key);
++    if (str) {
++        char *end = 0;
++        float v = strtod(str, &end);
++        if (str != end)
++            *val = v;
++    }
++}
++
++
+ static void getXDefault(const char *group, const char *key, bool *val)
+ {
+     char *str = XGetDefault(X11->display, group, key);
+--- qt-x11-opensource-src-4.1.1/src/corelib/global/qglobal.h~gcc4_1.patch
++++ qt-x11-opensource-src-4.1.1/src/corelib/global/qglobal.h
+@@ -720,8 +720,8 @@
+ 
+ #if defined(QT_COORD_TYPE)
+ typedef QT_COORD_TYPE qreal;
+-#elif defined(__arm__)
+-typedef float qreal;
++//#elif defined(__arm__)
++//typedef float qreal;
+ #else
+ typedef double qreal;
+ #endif

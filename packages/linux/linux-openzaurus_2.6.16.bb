@@ -1,6 +1,6 @@
 include linux-openzaurus.inc
 
-PR = "r15"
+PR = "r20"
 
 # Handy URLs
 # git://rsync.kernel.org/pub/scm/linux/kernel/git/torvalds/linux-2.6.git \
@@ -13,6 +13,8 @@ PR = "r15"
 # Patches submitted upstream are towards top of this list 
 # Hacks should clearly named and at the bottom
 SRC_URI = "http://www.kernel.org/pub/linux/kernel/v2.6/linux-2.6.16.tar.bz2 \
+           file://rmk-mmc1.patch;patch=1 \
+           file://rmk-mmc2.patch;patch=1 \
            ${RPSRC}/led_core-r15.patch;patch=1 \
            ${RPSRC}/led_triggers-r14.patch;patch=1 \
            ${RPSRC}/led_trig_timer-r8.patch;patch=1 \
@@ -115,14 +117,19 @@ SRC_URI_append_tosa = "\
 	   ${CHSRC}/tmio-nand-r5.patch;patch=1 \
 	   ${CHSRC}/tmio-ohci-r3.patch;patch=1 \
 	   ${CHSRC}/tmio-fb-r6.patch;patch=1 \
-	   ${DOSRC}/tosa-keyboard-r13.patch;patch=1 \
+	   ${DOSRC}/tosa-keyboard-r14.patch;patch=1 \
 	   ${DOSRC}/tosa-pxaac97-r6.patch;patch=1 \
-	   ${RPSRC}/temp/tosa-tmio-r4-rp1.patch;patch=1 \
-	   ${DOSRC}/tosa-power-r14.patch;patch=1 \
-	   ${RPSRC}/tosa-tmio-lcd-r5-rp1.patch;patch=1 \
-	   ${DOSRC}/tosa-bluetooth-r5.patch;patch=1 \
+	   ${DOSRC}/tosa-tmio-r6.patch;patch=1 \
+	   ${DOSRC}/tosa-power-r15.patch;patch=1 \
+	   ${DOSRC}/tosa-tmio-lcd-r7.patch;patch=1 \
+	   ${DOSRC}/tosa-bluetooth-r6.patch;patch=1 \
 	   ${DOSRC}/wm97xx-lg7-r0.patch;patch=1 \
-	   ${DOSRC}/tosa-asoc-r0.patch;patch=1 "
+	   ${DOSRC}/wm9712-suspend-cold-res-r0.patch;patch=1 \
+	   ${DOSRC}/sharpsl-pm-postresume-r0.patch;patch=1 \
+	   ${DOSRC}/wm97xx-dig-restore-r0.patch;patch=1 \
+	   ${DOSRC}/wm97xx-miscdevs-resume-r0.patch;patch=1 \
+	   ${DOSRC}/wm9712-reset-loop-r0.patch;patch=1 \
+	   ${DOSRC}/tosa-asoc-r1.patch;patch=1 "
 
 SRC_URI_append_poodle = "\
 	   ${RPSRC}/rp_poodle_hacks-r0.patch;patch=1"

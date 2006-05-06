@@ -1,0 +1,12 @@
+A Small utility to diff two directories of Itsy Packages.
+
+This utility will take two directories hopefully containing
+Itsy Packages (ipk) and compare the ipks. It will find deleted
+and new packages but will also compare packages with the same
+name. And check file types, sizes, control files. And one time
+it will be able to find upgrades and scan them as well.
+
+(this script is meant to be hacky, hacky, hacky and to do the
+ job)
+
+The only pattern applied is a Anti-Pattern: Time pressure

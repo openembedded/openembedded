@@ -5,17 +5,16 @@
 
 --- PyQt4-gpl-4.0beta1/sip/QtGui/qsessionmanager.sip~optional-features.patch
 +++ PyQt4-gpl-4.0beta1/sip/QtGui/qsessionmanager.sip
-@@ -21,7 +21,8 @@
+@@ -21,7 +21,7 @@
  // PyQt; see the file LICENSE.  If not, write to the Free Software Foundation,
  // Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  
 -
-+//%Feature SessionManager
 +%If (SessionManager)
  class QSessionManager : QObject
  {
  %TypeHeaderCode
-@@ -58,3 +59,4 @@
+@@ -58,3 +58,4 @@
      bool isPhase2() const;
      void requestPhase2();
  };

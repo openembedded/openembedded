@@ -6,7 +6,7 @@ LICENSE = "GPL QPL"
 MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 DEPENDS = "uicmoc4-native qmake2-native freetype jpeg libx11 xft libxext libxrender libxrandr libxcursor"
 PROVIDES = "qt4x11"
-PR = "r4"
+PR = "r5"
 
 SRC_URI = "ftp://ftp.trolltech.com/qt/source/qt-x11-opensource-src-${PV}.tar.gz \
            file://cross-compile.patch;patch=1 \
@@ -30,7 +30,6 @@ EXTRA_OEMAKE = "-e"
 
 # FIXME:
 # * add missing options
-# * auto stl detection is broken, so we disable it
 QT_CONFIG_FLAGS = "-release -shared -qt-zlib -system-libjpeg -no-nas-sound -no-sm -no-libmng -qt-libpng -no-gif -no-xinerama \
                    -no-tablet -no-xkb -no-nis -no-cups -no-opengl \
                    -nosse \
@@ -76,6 +75,7 @@ do_stage() {
 }
 
 # FIXME: Might want to call oe_runmake install INSTALL_ROOT=${D}/${prefix} as well...
+# FIXME: Might want to install everything into ${libdir}/qt4/* to match the usual packing...
 do_install() {
 	install -d ${D}${libdir}
 	install -d ${D}${bindir}
@@ -101,9 +101,13 @@ do_install() {
 }
 
 PACKAGES =+ "libqtcore4 libqtgui4 libqtnetwork4 libqtsql4 libqtsvg4 libqttest4 libqtxml4 \
-             libqtdesigner4 libqtdesignercomponents4 \
+             libqtdesigner4 libqtdesignercomponents4 libqt3support4 \
              qt4-assistant qt4-common qt4-designer qt4-demos qt4-examples qt4-linguist \
              qt4-plugins-accessible qt4-plugins-codecs qt4-plugins-designer qt4-plugins-imageformats qt4-plugins-sqldrivers"
+
+ALLOW_EMPTY = "1"
+FILES_${PN} = ""
+RDEPENDS_${PN} = "${PACKAGES}"
 
 FILES_libqtcore4               = "${libdir}/libQtCore.so*"
 FILES_libqtgui4                = "${libdir}/libQtGui.so*"
@@ -114,6 +118,7 @@ FILES_libqttest4               = "${libdir}/libQtTest.so*"
 FILES_libqtxml4                = "${libdir}/libQtXml.so*"
 FILES_libqtdesigner4           = "${libdir}/libQtDesigner.so*"
 FILES_libqtdesignercomponents4 = "${libdir}/libQtDesignerComponents.so*"
+FILES_libqt3support4           = "${libdir}/libQt3Support.so*"
 
 FILES_qt4-plugins-accessible   = "${libdir}/plugins/accessible/*.so"
 FILES_qt4-plugins-codecs       = "${libdir}/plugins/codecs/*.so"
@@ -128,3 +133,6 @@ FILES_qt4-linguist             = "${bindir}/*linguist* ${bindir}/lrelease ${bind
 FILES_qt4-common               = "${bindir}/qtconfig"
 FILES_qt4-examples             = "${bindir}/qt4-examples/*"
 FILES_qt4-demos                = "${bindir}/qtdemo ${bindir}/qt4-demos/*"
+
+FILES_${PN}-dev               += "${bindir}/rcc ${bindir}/uic* ${bindir}/moc ${bindir}/qmake ${bindir}/syncqt \
+                                  ${bindir}/qt3to4 ${bindir}/findtr"
