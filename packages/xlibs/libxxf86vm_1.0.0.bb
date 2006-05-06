@@ -4,13 +4,9 @@ LICENSE = "MIT"
 
 DEPENDS = "libx11 libxext xf86vidmodeproto"
 
-SRC_URI = "${XORG_MIRROR}/X11R7.0/src/lib/libXxf86vm-${PV}.tar.bz2"
-S = "${WORKDIR}/libXxf86vm-${PV}"
+XORG_PN = "libXxf86vm"
 
-inherit autotools pkgconfig
+include xorg-xlibs.inc
 
 EXTRA_OECONF="--enable-malloc0returnsnull"
 
-do_stage() {
-	autotools_stage_all
-}
