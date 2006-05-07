@@ -27,7 +27,7 @@
 +	# as themes always update both of them
 +	echo "$ARGS" | grep -q -- "--force-landscape" && source_link="splash-l.svg" || source_link="splash-p.svg" 
 +
-+	# echo "[`cat /etc/bootsplash.name`] = [`readlink /usr/share/gpe/$source_link`]"
++	touch /etc/bootsplash.name
 +
 +	# bootsplash takes quite some time to load external images into an svg file.
 +	# We speed things up by dumping the content of fb0, and catting it back (which works instantly)
