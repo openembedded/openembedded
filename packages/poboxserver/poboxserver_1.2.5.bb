@@ -1,9 +1,8 @@
 DESCRIPTION = "OpenPOBox is an open source implementation of a 'Predictive Operation Based On eXample'"
 SECTION = "libs/inputmethods"
 LICENSE = "GPL"
-DEPENDS = "perl-native ruby-native"
-# DEPENDS += "nkf-native"
-PR = "r1"
+DEPENDS = "perl-native ruby-native nkf-native"
+PR = "r2"
 
 BROKEN = "1"
 
