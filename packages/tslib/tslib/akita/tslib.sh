@@ -17,7 +17,7 @@ case `uname -r` in
 		# Currently, just unsetting this VAR will make kdrive use /dev/psaux
 		# which works nicely for whatever reason ;)
 		
-		TSLIB_TSDEVICE=""
+		TSLIB_TSDEVICE=" "
 		
 		# Required on SL-Cxx00 due to fb rotation, might be needed elsewhere,
 		# too.
