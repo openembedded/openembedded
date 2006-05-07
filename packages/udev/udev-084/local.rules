@@ -17,6 +17,10 @@
 SUBSYSTEM=="block", ACTION=="add"    RUN+="/etc/udev/scripts/mount.sh"
 SUBSYSTEM=="block", ACTION=="remove" RUN+="/etc/udev/scripts/mount.sh"
 
+# Input device handling (ie: USB mice)
+SUBSYSTEM=="input", ACTION=="add"    RUN+="/etc/udev/scripts/input.sh"
+SUBSYSTEM=="input", ACTION=="remove" RUN+="/etc/udev/scripts/input.sh"
+
 # Handle network interface setup
 SUBSYSTEM=="net", ACTION=="add" RUN+="/etc/udev/scripts/network.sh"
 SUBSYSTEM=="net", ACTION=="remove" RUN+="/etc/udev/scripts/network.sh"

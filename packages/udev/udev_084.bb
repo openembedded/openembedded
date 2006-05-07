@@ -9,13 +9,14 @@ SRC_URI = "http://kernel.org/pub/linux/utils/kernel/hotplug/udev-${PV}.tar.gz \
 	   file://udevsynthesize.patch;patch=1 \
 	   file://udevsynthesize.sh \
 	   file://mount.blacklist \
+	   file://input.sh \
 	   file://udev_network_queue.sh"
 
 include udev.inc
 
 INITSCRIPT_PARAMS = "start 03 S . start 55 0 6 ."
 
-PR = "r10"
+PR = "r11"
 
 FILES_${PN} += "${base_libdir}"
 UDEV_EXTRAS = "extras/firmware/ extras/scsi_id/ extras/volume_id/ extras/run_directory/"
@@ -44,6 +45,7 @@ do_install () {
 
 	install -m 0755 ${WORKDIR}/mount.sh ${D}${sysconfdir}/udev/scripts/mount.sh
 	install -m 0755 ${WORKDIR}/network.sh ${D}${sysconfdir}/udev/scripts
+	install -m 0755 ${WORKDIR}/input.sh ${D}${sysconfdir}/udev/scripts
 
 	install -d ${D}${base_libdir}/udev/
 	install -m 0755 ${S}/udevsynthesize ${D}${base_libdir}/udev/udevsynthesize
