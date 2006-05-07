@@ -1,6 +1,8 @@
 include linux-openzaurus.inc
 
-PR = "r21"
+PR = "r15"
+
+DEFAULT_PREFERENCE = "-1"
 
 # Handy URLs
 # git://rsync.kernel.org/pub/scm/linux/kernel/git/torvalds/linux-2.6.git \
@@ -12,46 +14,12 @@ PR = "r21"
 
 # Patches submitted upstream are towards top of this list 
 # Hacks should clearly named and at the bottom
-SRC_URI = "http://www.kernel.org/pub/linux/kernel/v2.6/linux-2.6.16.tar.bz2 \
+#           ftp://ftp.kernel.org/pub/linux/kernel/people/akpm/patches/2.6/2.6.14-rc2/2.6.14-rc2-mm1/2.6.14-rc2-mm1.bz2;patch=1 \	   
+SRC_URI = "git://rsync.kernel.org/pub/scm/linux/kernel/git/torvalds/linux-2.6.git;tag=cbdf811c77cf2906a099b8da92e9f6f335b68a73 \
            file://rmk-mmc1.patch;patch=1 \
            file://rmk-mmc2.patch;patch=1 \
-           ${RPSRC}/led_core-r15.patch;patch=1 \
-           ${RPSRC}/led_triggers-r14.patch;patch=1 \
-           ${RPSRC}/led_trig_timer-r8.patch;patch=1 \
-           ${RPSRC}/led_trig_sharpsl_pm-r5.patch;patch=1 \
-           ${RPSRC}/led_zaurus-r10.patch;patch=1 \
-           ${RPSRC}/led_locomo-r7.patch;patch=1 \
-           ${RPSRC}/led_ixp4xx-r2.patch;patch=1 \
-           ${RPSRC}/led_tosa-r5.patch;patch=1 \
-           ${RPSRC}/led_ide-r6.patch;patch=1 \
-           ${RPSRC}/led_nand-r3.patch;patch=1 \
-           ${RPSRC}/ide_end_request-r1.patch;patch=1 \
-           ${RPSRC}/rtc-subsystem-library-functions.patch;patch=1 \
-           ${RPSRC}/rtc-subsystem-arm-cleanup-r1.patch;patch=1 \
-           ${RPSRC}/rtc-subsystem-class.patch;patch=1 \
-           ${RPSRC}/rtc-subsystem-class-fix.patch;patch=1 \
-           ${RPSRC}/rtc-subsystem-class-fix-2.patch;patch=1 \
-           ${RPSRC}/rtc-subsystem-i2c-cleanup-r1.patch;patch=1 \
-           ${RPSRC}/rtc-subsystem-sysfs-interface.patch;patch=1 \
-           ${RPSRC}/rtc-subsystem-proc-interface.patch;patch=1 \
-           ${RPSRC}/rtc-subsystem-dev-interface.patch;patch=1 \
-           ${RPSRC}/rtc-subsystem-x1205-driver.patch;patch=1 \
-           ${RPSRC}/rtc-subsystem-test-device-driver.patch;patch=1 \
-           ${RPSRC}/rtc-subsystem-ds1672-driver.patch;patch=1 \
-           ${RPSRC}/rtc-subsystem-pcf8563-driver.patch;patch=1 \
-           ${RPSRC}/rtc-subsystem-rs5c372-driver.patch;patch=1 \
-           ${RPSRC}/rtc_class_pxa-r2.patch;patch=1 \
-           ${RPSRC}/rmk_pxa_mmc_timeout-r0.patch;patch=1 \
-           ${RPSRC}/integrator_rtc-r0.patch;patch=1 \
-           ${RPSRC}/zaurus_keyboard_tweak-r3.patch;patch=1 \
-           ${RPSRC}/arm_eabi_enum_fix-r0.patch;patch=1 \
-           ${RPSRC}/pxafb_tweaks-r0.patch;patch=1 \
-           ${RPSRC}/spitz_kbd_fix-r0.patch;patch=1 \
-           ${RPSRC}/mmcsd_large_cards-r0.patch;patch=1 \
-           ${RPSRC}/fbmem_fix-r1.patch;patch=1 \
            ${RPSRC}/mmc_oops_fix-r0.patch;patch=1 \
-           ${RPSRC}/scoop_linkage-r0.patch;patch=1 \
-           ${RPSRC}/ssp_cleanup-r0.patch;patch=1 \
+           ${RPSRC}/mmcsd_large_cards-r0.patch;patch=1 \
            ${RPSRC}/alsa/asoc-v0.10rc4.patch;patch=1 \
            ${RPSRC}/hx2750_base-r24.patch;patch=1 \
            ${RPSRC}/hx2750_bl-r5.patch;patch=1 \
@@ -60,21 +28,17 @@ SRC_URI = "http://www.kernel.org/pub/linux/kernel/v2.6/linux-2.6.16.tar.bz2 \
            ${RPSRC}/tsc2101-r12.patch;patch=1 \
            ${RPSRC}/hx2750_test1-r3.patch;patch=1 \
            ${RPSRC}/pxa_timerfix-r0.patch;patch=1 \
-           ${RPSRC}/input_power-r4.patch;patch=1 \
+           ${RPSRC}/input_power-r5.patch;patch=1 \
            ${RPSRC}/jffs2_longfilename-r1.patch;patch=1 \
            ${RPSRC}/pxa25x_cpufreq-r0.patch;patch=1 \
-           ${RPSRC}/misc_fix1-r0.patch;patch=1 \
-           ${RPSRC}/corgi_bl_cleanup-r3.patch;patch=1 \
-           ${RPSRC}/corgi_bl_generic-r3.patch;patch=1 \
-           ${RPSRC}/w100_accel1-r0.patch;patch=1 \
            ${RPSRC}/poodle_partsize-r0.patch;patch=1 \
-           ${RPSRC}/poodle_memsize-r0.patch;patch=1 \
-           ${RPSRC}/collie_frontlight-r1.patch;patch=1 \
+           ${RPSRC}/collie_frontlight-r4.patch;patch=1 \
            ${RPSRC}/zlib_inflate-r3.patch;patch=1 \
-           ${RPSRC}/zaurus_reboot-r0.patch;patch=1 \
+           ${RPSRC}/zaurus_reboot-r1.patch;patch=1 \
            ${RPSRC}/sharpsl_pm_fixes1-r0.patch;patch=1 \
-           ${RPSRC}/asoc_fixups-r0.patch;patch=1 \
+           ${RPSRC}/asoc_fixups-r2.patch;patch=1 \
            ${RPSRC}/pm_changes-r1.patch;patch=1 \
+           ${RPSRC}/input_switch_rename-r0.patch;patch=1 \
            ${RPSRC}/led_class_kconfig-r0.patch;patch=1 \
            ${RPSRC}/led_maintainer-r0.patch;patch=1 \
            ${RPSRC}/led_sysfs_fix-r0.patch;patch=1 \
@@ -101,9 +65,9 @@ SRC_URI = "http://www.kernel.org/pub/linux/kernel/v2.6/linux-2.6.16.tar.bz2 \
            file://defconfig-spitz \
            file://defconfig-qemuarm \
            file://defconfig-tosa "
-
-# Disabled until I find the reason this gives issues with cdc_subset
-#            ${RPSRC}/usb_rndis_tweaks-r0.patch;patch=1 \
+	   
+#           http://tglx.de/projects/armirq/2.6.17-rc3/patch-2.6.17-rc3-armirq4.patch;patch=1 \
+#           ${RPSRC}/../pxa27x_overlay-r0.patch;patch=1 \
 
 # These patches would really help collie/poodle but we 
 # need someone to maintain them
@@ -139,7 +103,7 @@ SRC_URI_append_tosa = "\
 SRC_URI_append_poodle = "\
 	   ${RPSRC}/rp_poodle_hacks-r0.patch;patch=1"
 
-S = "${WORKDIR}/linux-2.6.16"
+S = "${WORKDIR}/git"
 
 # to get module dependencies working
-KERNEL_RELEASE = "2.6.16"
+KERNEL_RELEASE = "2.6.17-rc3"
