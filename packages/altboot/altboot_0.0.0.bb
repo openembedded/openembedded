@@ -18,7 +18,6 @@ RRECOMMENDS_${PN}_append_spitz = " kexec-tools"
 RRECOMMENDS_${PN}_append_c7x0 = " kexec-tools"
 
 RDEPENDS_${PN} = "${PN}-conf"
-RDEPENDS_${PN}-conf = "${PN}"
 
 ######################################################################################
 

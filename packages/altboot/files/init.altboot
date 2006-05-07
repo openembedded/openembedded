@@ -17,7 +17,7 @@ REAL_INIT="/sbin/init.sysvinit"
 INIT_RUNLEVEL="`cat /etc/inittab | sed -n "/^id\:/s/id\:\([0-9]\)\:.*$/\1/p"`"
 test -z "$INIT_RUNLEVEL" && INIT_RUNLEVEL=5
 
-OUT_TTY="/dev/tty1"
+OUT_TTY="`tty`" ; test -z "$OUT_TTY" && OUT_TTY="/dev/tty1"
 
 case "`uname -r`" in
 2.6*)	ALTBOOT_CFG_FILE="/etc/altboot-2.6.cfg";;
@@ -26,7 +26,7 @@ case "`uname -r`" in
 	ALTBOOT_CFG_FILE="/etc/altboot-2.6.cfg";;
 esac
 
-test -e "$ALTBOOT_CFG_FILE" && . "$ALTBOOT_CFG_FILE" || echo "WARNING: No $ALTBOOT_CFG_FILE found! Check your installation of Altboot!" > /dev/tty1
+test -e "$ALTBOOT_CFG_FILE" && . "$ALTBOOT_CFG_FILE" || echo "WARNING: No $ALTBOOT_CFG_FILE found! Check your installation of Altboot!" > "$OUT_TTY"
 
 C_RED="\033[31m"
 C_YELLOW="\033[33m"
@@ -181,7 +181,7 @@ run_timer() {
 		esac		
 	
 		stty -echo  <"$OUT_TTY" >"$OUT_TTY" 2>&1
-		echo -en "\n\nPlease press any key to launch altboot." > /dev/tty1
+		echo -en "\n\nPlease press any key to launch altboot." > "$OUT_TTY"
 		
 		test -z "$TIMEOUT" && TIMEOUT="3"
 
@@ -201,7 +201,7 @@ run_timer() {
 				stty echo <"$OUT_TTY" >"$OUT_TTY" 2>&1
 				break
 			fi
-			echo -n "." >/dev/tty1
+			echo -n "." >"$OUT_TTY"
 			let cnt=$cnt+1
 		done
 		
@@ -325,7 +325,7 @@ fi
 
 if test -f /proc/cmdline -a "`ps ax|wc -l|tr -d " "`" -gt 30 -a "$1" != "-force"
 then
-	echo "altboot: Using real init [$REAL_INIT] [$*] [`ps ax|wc -l|tr -d " "`] *" >/dev/tty1
+	echo "altboot: Using real init [$REAL_INIT] [$*] [`ps ax|wc -l|tr -d " "`] *" >"$OUT_TTY"
 	exec $REAL_INIT $*
 #	exec $SH_SHELL </dev/tty0 >/dev/tty0 2>&1
 	exit 0
@@ -333,7 +333,7 @@ else
 	# Boot original init if altboot is turned off
 	if test "$ENABLE_ALTBOOT" != "yes" 
 	then	
-		echo "altboot: Using real init [$REAL_INIT] **" >/dev/tty1
+		echo "altboot: Using real init [$REAL_INIT] **" >"$OUT_TTY"
 		exec $REAL_INIT $INIT_RUNLEVEL
 		exit 0
 	fi
@@ -344,7 +344,7 @@ else
 
 	for file in $RC_FILES
 	do
-		 . /etc/altboot.rc/$file >/dev/tty1 2>&1 || echo "/etc/altboot.rc/$file failed!"
+		 . /etc/altboot.rc/$file >"$OUT_TTY" 2>&1 || echo "/etc/altboot.rc/$file failed!"
 	done
 			
 	# Make sure altboots master password is set
@@ -357,7 +357,7 @@ else
 	
 	# This timeout works by reading /proc/interrupts to see if the keyboard interrupt
 	# increases while the timer is running. A TIMEOUT of 0 will always launch altboot.	
-	run_timer >/dev/tty1 
+	run_timer >"$OUT_TTY" 
 		
 	echo "" >"$OUT_TTY"
 	

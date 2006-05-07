@@ -43,14 +43,14 @@ check_target() {
 			
 			if test "$AUTOBOOT" != "yes"
 			then
-				read junk < /dev/tty1
+				read junk < "$OUT_TTY"
 			else
 				if test -e /etc/.altboot-real-or-loop.last
 				then
 					junk="`cat /etc/.altboot-real-or-loop.last`"
-					test -z "$junk" && read junk < /dev/tty1 || echo "$junk (autoboot)"
+					test -z "$junk" && read junk < "$OUT_TTY" || echo "$junk (autoboot)"
 				else
-					read junk < /dev/tty1
+					read junk < "$OUT_TTY"
 				fi
 			fi	
 			
@@ -133,14 +133,14 @@ pivot_image() {
 			echo -en "Please choose one of the above: "
 			if test "$AUTOBOOT" != "yes"
 			then
-				read junk < /dev/tty1
+				read junk < "$OUT_TTY"
 			else
 				if test -e /etc/.altboot-loopimage.last
 				then
 					junk="`cat /etc/.altboot-loopimage.last`"
-					test -z "$junk" && read junk < /dev/tty1 || echo "$junk (autoboot)"
+					test -z "$junk" && read junk < "$OUT_TTY" || echo "$junk (autoboot)"
 				else
-					read junk < /dev/tty1
+					read junk < "$OUT_TTY"
 				fi
 			fi	
 
@@ -331,7 +331,7 @@ image_conf(){
 # This functions configures the master password for altboot if none is set
 set_password() {
 	mount -o remount,rw /
-	if test -z "$MASTER_PASSWORD"
+	if test -z "$MASTER_PASSWORD" -a "$ENABLE_DEBUG" != yes
 	then
 		echo -e "\nAltboot is a boot-manager which allows to boot from SD,\nCF, USB-Storage and NFS"
 		echo -e "\nFor security reasons altboot requires a password\nto boot into init=/bin/sh."
@@ -612,8 +612,9 @@ get_pref() {
 	data_out="$3"
 	data_list="`eval echo -e \\$${data_name}`"
 	
-	data_value="`echo "$data_list"| sed "s/\#\#\#/\\n/g"|sed s/^\ // | grep "^$data_id##" | sed -n "s/.*\#\(.*\)$/\1/p"`"
-	
+	#data_value="`echo "$data_list"| sed "s/\#\#\#/\\n/g"|sed s/^\ // | grep "^$data_id##" | sed -n "s/.*\#\(.*\)$/\1/p"`"
+	#data_value="`echo "$data_list"| sed "s/\#\#\#/\\n/g"|sed s/^\ // |  sed -n "/^$data_id/s/.*\#\(.*\)$/\1/p"`"
+	data_value="`echo "$data_list"| sed "s/\#\#\#/\\n/g" | sed -n "s/^\ //;/^$data_id\#/s/.*\#\(.*\)$/\1/p"`"
 	# echo "WERT: [$data_value]"
 	
 	export "${data_out}"="$data_value"
@@ -748,7 +749,7 @@ start_networking() {
 						echo "Restarting udhcpc for [$WLAN_NIC]"
 						killall udhcpc
 					
-						udhcpc -i "$WLAN_NIC" -H `cat /etc/hostname` >/dev/tty1 2>&1
+						udhcpc -i "$WLAN_NIC" -H `cat /etc/hostname` >"$OUT_TTY" 2>&1
 					fi
 					
 					if test "$NW_TYPE" = "USB"
