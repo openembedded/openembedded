@@ -20,7 +20,7 @@ DESCRIPTION_xserver-kdrive-epson = "X server from freedesktop.org, supporting Ep
 DESCRIPTION_xserver-kdrive-fake = "Fake X server"
 DESCRIPTION_xserver-kdrive-xephyr = "X server in an X window"
 
-PR = "r10"
+PR = "r11"
 
 FILES_xserver-kdrive-fbdev = "${bindir}/Xfbdev"
 FILES_xserver-kdrive-ati = "${bindir}/Xati"
@@ -54,6 +54,7 @@ SRC_URI_append_spitz =          " file://disable-apm.patch;patch=1 \
 SRC_URI_append_akita =          " file://disable-apm.patch;patch=1 \
                                   file://faster-rotated.patch;patch=1"
 SRC_URI_append_simpad =         " file://disable-apm.patch;patch=1"
+SRC_URI_append_tosa = 		" file://disable-apm.patch;patch=1"
 
 PACKAGE_ARCH_simpad = "simpad" 
 PACKAGE_ARCH_collie = "collie"
@@ -65,6 +66,7 @@ PACKAGE_ARCH_h3900 = "h3900"
 PACKAGE_ARCH_h2200 = "h2200"
 PACKAGE_ARCH_spitz = "spitz"
 PACKAGE_ARCH_akita = "akita"
+PACKAGE_ARCH_tosa = "tosa"
 
 S = "${WORKDIR}/xserver"
 
