@@ -9,6 +9,9 @@
 TMP_DIR="/var/lib/udev-input-helper"
 
 mkdir -p "$TMP_DIR"
+set > "$TMP_DIR/input.sh.env"
+
+echo "ACTION: $ACTION, DEVNAME: $DEVNAME, PHYSDEVBUS: $PHYSDEVBUS" >> "$TMP_DIR/input.sh.log"
 
 get_type() {
 	case "$DEVNAME" in
@@ -17,11 +20,13 @@ get_type() {
 	
 	case "$PHYSDEVBUS" in
 	*usb*)		DEVBUS=usb;;
+	*platform*)	DEVBUS=touchscreen;;
+	*)		DEVBUS=unknown;;
 	esac
 }
 
 add_input() {		
-	if test -n "$DEVTYPE" -a -n "$DEVBUS"
+	if test -n "$DEVTYPE" -a -n "$DEVBUS" 
 	then
 		echo "DEVNAME=\"$DEVNAME\"" > "$TMP_DIR/$DEVBUS.$DEVTYPE"
 	fi
