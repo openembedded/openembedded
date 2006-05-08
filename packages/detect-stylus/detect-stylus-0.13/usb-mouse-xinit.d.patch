@@ -1,13 +1,8 @@
 --- detect-stylus-0.13/70detect-stylus_	2006-05-07 18:14:33.506920520 +0200
-+++ detect-stylus-0.13/70detect-stylus	2006-05-07 18:15:52.984838040 +0200
-@@ -1,3 +1,9 @@
++++ detect-stylus-0.13/70detect-stylus	2006-05-08 05:38:51.903095544 +0200
+@@ -1,3 +1,4 @@
  #!/bin/sh
 -/usr/bin/detect-stylus
 +
-+for f in usb.mouse
-+do
-+	test -e "/var/lib/udev-input-helper/$f" && HIDE_CURSOR=false
-+done
-+
-+test -z "$HIDE_CURSOR" && /usr/bin/detect-stylus
++test -e /var/lib/udev-input-helper/show-cursor.tslib || /usr/bin/detect-stylus
  
