@@ -4,10 +4,14 @@ SECTION = "multimedia"
 PRIORITY = "optional"
 LICENSE = "LGPL"
 HOMEPAGE = "http://www.gstreamer.net/"
-MAINTAINER = "Felix Domke <tmbinc@openembedded.org>"
+MAINTAINER = "Felix Domke <tmbinc@elitedvb.net>"
 DEPENDS = "glib-2.0 gettext-native popt"
 
 PR = "r0"
+# until we have decided a final naming scheme, 
+# don't use this package as a replacement for
+# version 0.8
+DEFAULT_PREFERENCE = "-1"
 
 inherit autotools pkgconfig
 

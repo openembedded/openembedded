@@ -1,9 +1,13 @@
 DESCRIPTION = "Plugins for GStreamer"
 SECTION = "multimedia"
 PRIORITY = "optional"
-MAINTAINER = "Felix Domke <tmbinc@openembedded.org>"
+MAINTAINER = "Felix Domke <tmbinc@elitedvb.net>"
 DEPENDS = "gstreamer libmikmod libmad liboil libogg tremor libvorbis libid3tag"
 PR = "r0"
+
+# until we have decided for a final naming scheme,
+# keep using version 0.8
+DEFAULT_PREFERENCE = "-1"
 
 inherit autotools pkgconfig gconf
 
