@@ -8,8 +8,9 @@ CFLAGS += "-D_GNU_SOURCE"
 
 SECTION = "x11/base"
 
-SRC_URI = "${XORG_MIRROR}/X11R7.0/src/app/${PN}-${PV}.tar.bz2 \
+SRC_URI = "${XORG_MIRROR}/X11R7.0/src/app/${PN}-X11R7.0-${PV}.tar.bz2 \
 	   file://disable-xkb.patch;patch=1"
+S = "${WORKDIR}/${PN}-X11R7.0-${PV}"
 
 EXTRA_OECONF = "--disable-xkb"
 

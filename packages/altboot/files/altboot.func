@@ -43,14 +43,14 @@ check_target() {
 			
 			if test "$AUTOBOOT" != "yes"
 			then
-				read junk < /dev/tty1
+				read junk < "$OUT_TTY"
 			else
 				if test -e /etc/.altboot-real-or-loop.last
 				then
 					junk="`cat /etc/.altboot-real-or-loop.last`"
-					test -z "$junk" && read junk < /dev/tty1 || echo "$junk (autoboot)"
+					test -z "$junk" && read junk < "$OUT_TTY" || echo "$junk (autoboot)"
 				else
-					read junk < /dev/tty1
+					read junk < "$OUT_TTY"
 				fi
 			fi	
 			
@@ -62,18 +62,18 @@ check_target() {
 		done
 		
 		case "$ans" in
-		1)	pivot_realfs "$1" "$2">/dev/tty0;;
-		2)	pivot_image "$1" "$2">/dev/tty0;;
+		1)	pivot_realfs "$1" "$2">"$OUT_TTY";;
+		2)	pivot_image "$1" "$2">"$OUT_TTY";;
 		esac
 				
 		exit 0
 	fi
 
 	# Boot a real filesystem	
-	test "$real_fs_found" = 1 && pivot_realfs "$1" >/dev/tty0
+	test "$real_fs_found" = 1 && pivot_realfs "$1" >"$OUT_TTY"
 	
 	# Boot a loop-image
-	test "$image_found" = 1 && pivot_image "$1" >/dev/tty0
+	test "$image_found" = 1 && pivot_image "$1" >"$OUT_TTY"
 		
 	if test "$real_fs_found" != 1 -a "$image_found" != 1
 	then
@@ -133,14 +133,14 @@ pivot_image() {
 			echo -en "Please choose one of the above: "
 			if test "$AUTOBOOT" != "yes"
 			then
-				read junk < /dev/tty1
+				read junk < "$OUT_TTY"
 			else
 				if test -e /etc/.altboot-loopimage.last
 				then
 					junk="`cat /etc/.altboot-loopimage.last`"
-					test -z "$junk" && read junk < /dev/tty1 || echo "$junk (autoboot)"
+					test -z "$junk" && read junk < "$OUT_TTY" || echo "$junk (autoboot)"
 				else
-					read junk < /dev/tty1
+					read junk < "$OUT_TTY"
 				fi
 			fi	
 
@@ -229,7 +229,7 @@ do_pivot(){
 		do
 			new_mpt="`echo "$mpt" | sed -n "s/\/media\/ROM//p"`"
 			
-			echo "Moving mountpoint [$mpt] -> [$new_mpt]" >/dev/tty0 2>&1
+			echo "Moving mountpoint [$mpt] -> [$new_mpt]" >"$OUT_TTY" 2>&1
 			
 			! test -d "$new_mpt" && mkdir -p "$new_mpt" 
 			/bin/busybox mount -o move "$mpt" "$new_mpt"
@@ -239,7 +239,7 @@ do_pivot(){
 		boot_new_rootfs_splash		
 		echo "Calling INIT"
 			
-		exec /usr/sbin/chroot . $REAL_INIT $2 >/dev/tty0 2>&1
+		exec /usr/sbin/chroot . $REAL_INIT $2 >"$OUT_TTY" 2>&1
 		#exec /usr/sbin/chroot . /sbin/init $2 >/dev/tty0 2>&1
 	else
 		echo "FAILED"
@@ -331,7 +331,7 @@ image_conf(){
 # This functions configures the master password for altboot if none is set
 set_password() {
 	mount -o remount,rw /
-	if test -z "$MASTER_PASSWORD"
+	if test -z "$MASTER_PASSWORD" -a "$ENABLE_DEBUG" != yes
 	then
 		echo -e "\nAltboot is a boot-manager which allows to boot from SD,\nCF, USB-Storage and NFS"
 		echo -e "\nFor security reasons altboot requires a password\nto boot into init=/bin/sh."
@@ -341,17 +341,17 @@ set_password() {
 		do
 			echo -en "\nNew password: "
 
-			stty -echo </dev/tty0 >/dev/tty0 2>&1
-			read junk1 < /dev/tty0
-			stty echo </dev/tty0 >/dev/tty0 2>&1
+			stty -echo <"$OUT_TTY" >"$OUT_TTY" 2>&1
+			read junk1 < "$OUT_TTY"
+			stty echo <"$OUT_TTY" >"$OUT_TTY" 2>&1
 
 			if ! test -z "$junk1"
 			then
 				echo -en "\nRepeat: "
 				
-				stty -echo </dev/tty0 >/dev/tty0 2>&1
-				read junk2  < /dev/tty0
-				stty echo </dev/tty0 >/dev/tty0 2>&1
+				stty -echo <"$OUT_TTY" >"$OUT_TTY" 2>&1
+				read junk2  < "$OUT_TTY"
+				stty echo <"$OUT_TTY" >"$OUT_TTY" 2>&1
 				echo ""
 				
 				if test "$junk1" = "$junk2"
@@ -391,9 +391,9 @@ verify_master_pw() {
 		do
 			let cnt=$cnt+$auth_timeout
 			echo -n "Password: "
-			stty -echo  </dev/tty0 >/dev/tty0 2>&1
-			read junk < /dev/tty0
-			stty echo  </dev/tty0 >/dev/tty0 2>&1
+			stty -echo  <"$OUT_TTY" >"$OUT_TTY" 2>&1
+			read junk < "$OUT_TTY"
+			stty echo  <"$OUT_TTY" >"$OUT_TTY" 2>&1
 
 			if test "`echo "$junk" | md5sum | awk '{print $1}'`" = "$MASTER_PASSWORD"
 			then
@@ -458,11 +458,11 @@ init_rootfs(){
 #	echo -n "Mounting rootfs rw..." 
 	mount -o remount,rw / || die "mount -o remount,rw / failed"
 
-	mount | grep -q "/proc " >/dev/null 2>&1 || mount proc -t proc /proc >/dev/tty0 2>&1
+	mount | grep -q "/proc " >/dev/null 2>&1 || mount proc -t proc /proc >"$OUT_TTY" 2>&1
 	
 	if ( uname -r | grep -q "2.6." )
 	then
-		mount | grep -q "/sys " >/dev/null 2>&1 || mount sys -t sysfs /sys >/dev/tty0 2>&1
+		mount | grep -q "/sys " >/dev/null 2>&1 || mount sys -t sysfs /sys >"$OUT_TTY" 2>&1
 	fi
 		
 	/etc/init.d/devices start || die "FAILED"
@@ -493,13 +493,13 @@ mount_sd(){
 		
 		check_fs "$SD_DEVICE"
 
-		echo -n "Mounting $SD_MOUNTPOINT..."  >/dev/tty0
+		echo -n "Mounting $SD_MOUNTPOINT..."  >"$OUT_TTY"
 		
 		if test "$1" = ingore_errors
 		then
-			/bin/mount -t auto -o defaults,noatime $SD_DEVICE $SD_MOUNTPOINT >/dev/null 2>&1 && echo ok  >/dev/tty0 || echo "Could not mount SD card"
+			/bin/mount -t auto -o defaults,noatime $SD_DEVICE $SD_MOUNTPOINT >/dev/null 2>&1 && echo ok  >"$OUT_TTY" || echo "Could not mount SD card"
 		else
-			/bin/mount -t auto -o defaults,noatime $SD_DEVICE $SD_MOUNTPOINT >/dev/null 2>&1 && echo ok  >/dev/tty0|| die "/bin/mount -t auto -o defaults,noatime $SD_DEVICE $SD_MOUNTPOINT failed"
+			/bin/mount -t auto -o defaults,noatime $SD_DEVICE $SD_MOUNTPOINT >/dev/null 2>&1 && echo ok  >"$OUT_TTY"|| die "/bin/mount -t auto -o defaults,noatime $SD_DEVICE $SD_MOUNTPOINT failed"
 		fi		
 	fi
 	echo ""	
@@ -562,16 +562,16 @@ show_menu() {
 	echo -e "\nPress <ENTER> to return to the menu"
 	read junk
 	
-	test "$junk" = x && exec /bin/sh || exec /sbin/init.altboot -force</dev/tty0 >/dev/tty0 2>&1
+	test "$junk" = x && exec /bin/sh || exec /sbin/init.altboot -force<"$OUT_TTY" >"$OUT_TTY" 2>&1
 }
 
 mdie() {
-	echo -e "${C_RED}ERROR:${C_RESET}${C_WHITE} $1${C_RESET}" >/dev/tty0
+	echo -e "${C_RED}ERROR:${C_RESET}${C_WHITE} $1${C_RESET}" >"$OUT_TTY"
 	
 	echo -e "\nPress <ENTER> to return to the menu"
 	read junk
 	
-	test "$junk" = x && exec /bin/sh || exec /sbin/init.altboot -force</dev/tty0 >/dev/tty0 2>&1
+	test "$junk" = x && exec /bin/sh || exec /sbin/init.altboot -force<"$OUT_TTY" >"$OUT_TTY" 2>&1
 }
 
 # $1: uniq name, $2 identifier, $3 value
@@ -583,8 +583,7 @@ set_pref() {
 	#echo "[$1] [$2] [$3]"
 	#export "${data_name}"="`eval echo -e \\$${data_name} | sed "s/\#\#\#/\#\#\#\\n/g"|sed s/^\ // | sed s/^$data_id.*//`"
 
-	export "${data_name}"="`eval echo -e \\$${data_name} `
-$data_id##$data_value###"
+	export "${data_name}"="`eval echo -e \\$${data_name} `$data_id##$data_value###"
 	
 }
 
@@ -613,8 +612,9 @@ get_pref() {
 	data_out="$3"
 	data_list="`eval echo -e \\$${data_name}`"
 	
-	data_value="`echo "$data_list"| sed "s/\#\#\#/\\n/g"|sed s/^\ // | grep "^$data_id##" | sed -n "s/.*\#\(.*\)$/\1/p"`"
-	
+	#data_value="`echo "$data_list"| sed "s/\#\#\#/\\n/g"|sed s/^\ // | grep "^$data_id##" | sed -n "s/.*\#\(.*\)$/\1/p"`"
+	#data_value="`echo "$data_list"| sed "s/\#\#\#/\\n/g"|sed s/^\ // |  sed -n "/^$data_id/s/.*\#\(.*\)$/\1/p"`"
+	data_value="`echo "$data_list"| sed "s/\#\#\#/\\n/g" | sed -n "s/^\ //;/^$data_id\#/s/.*\#\(.*\)$/\1/p"`"
 	# echo "WERT: [$data_value]"
 	
 	export "${data_out}"="$data_value"
@@ -622,7 +622,7 @@ get_pref() {
 }
 
 debug_echo() {
-	test "$ENABLE_DEBUG" = "yes" && echo -e "${C_YELLOW}DEBUG:${C_RESET}${C_WHITE} $1 ${C_RESET}" >/dev/tty0 2>&1
+	test "$ENABLE_DEBUG" = "yes" && echo -e "${C_YELLOW}DEBUG:${C_RESET}${C_WHITE} $1 ${C_RESET}" >"$OUT_TTY" 2>&1
 }
 
 start_networking() {
@@ -749,7 +749,7 @@ start_networking() {
 						echo "Restarting udhcpc for [$WLAN_NIC]"
 						killall udhcpc
 					
-						udhcpc -i "$WLAN_NIC" -H `cat /etc/hostname` >/dev/tty1 2>&1
+						udhcpc -i "$WLAN_NIC" -H `cat /etc/hostname` >"$OUT_TTY" 2>&1
 					fi
 					
 					if test "$NW_TYPE" = "USB"
