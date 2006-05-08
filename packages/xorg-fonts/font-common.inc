@@ -2,7 +2,8 @@ DESCRIPTION = "X font files"
 SECTION = "x11/fonts"
 LICENSE= "MIT-X"
 
-SRC_URI = "${XORG_MIRROR}/X11R7.0/src/font/${PN}-${PV}.tar.bz2"
+SRC_URI = "${XORG_MIRROR}/X11R7.0/src/font/${PN}-X11R7.0-${PV}.tar.bz2"
+S = "${WORKDIR}/${PN}-X11R7.0-${PV}"
 FONT_DIR = "${datadir}/share/fonts"
 DEPENDS = "encodings mkfontscale mkfontdir"
 

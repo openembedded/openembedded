@@ -4,10 +4,9 @@ LICENSE = "XFree86"
 
 DEPENDS = "libx11 libxext xf86dgaproto"
 
-SRC_URI = "${XORG_MIRROR}/X11R7.0/src/lib/libXxf86dga-${PV}.tar.bz2"
-S = "${WORKDIR}/libXxf86dga-${PV}"
+XORG_PN = "libXxf86dga"
 
-inherit autotools pkgconfig
+include xorg-xlibs.inc
 
 EXTRA_OECONF="--enable-malloc0returnsnull"
 

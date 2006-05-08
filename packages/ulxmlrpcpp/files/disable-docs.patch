@@ -1,0 +1,15 @@
+
+#
+# Patch managed by http://www.holgerschurig.de/patcher.html
+#
+
+--- ulxmlrpcpp-1.5.2/ulxmlrpcpp/Makefile.am~disable-docs
++++ ulxmlrpcpp-1.5.2/ulxmlrpcpp/Makefile.am
+@@ -1,6 +1,6 @@
+ INCLUDES = -I. -I $(top_srcdir)  $(all_includes) $(EA_EXTRA_INC)
+ 
+-SUBDIRS = . contrib docs tests po apps httpd
++SUBDIRS = . contrib tests po apps httpd
+ 
+ AM_CXXFLAGS = -DULXR_DATADIR=\"$(datadir)\" -DULXR_HAVE_CONFIG_H
+ 

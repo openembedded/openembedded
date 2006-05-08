@@ -1,6 +1,6 @@
 include linux-openzaurus.inc
 
-PR = "r20"
+PR = "r21"
 
 # Handy URLs
 # git://rsync.kernel.org/pub/scm/linux/kernel/git/torvalds/linux-2.6.git \
@@ -49,6 +49,7 @@ SRC_URI = "http://www.kernel.org/pub/linux/kernel/v2.6/linux-2.6.16.tar.bz2 \
            ${RPSRC}/spitz_kbd_fix-r0.patch;patch=1 \
            ${RPSRC}/mmcsd_large_cards-r0.patch;patch=1 \
            ${RPSRC}/fbmem_fix-r1.patch;patch=1 \
+           ${RPSRC}/mmc_oops_fix-r0.patch;patch=1 \
            ${RPSRC}/scoop_linkage-r0.patch;patch=1 \
            ${RPSRC}/ssp_cleanup-r0.patch;patch=1 \
            ${RPSRC}/alsa/asoc-v0.10rc4.patch;patch=1 \
@@ -74,6 +75,10 @@ SRC_URI = "http://www.kernel.org/pub/linux/kernel/v2.6/linux-2.6.16.tar.bz2 \
            ${RPSRC}/sharpsl_pm_fixes1-r0.patch;patch=1 \
            ${RPSRC}/asoc_fixups-r0.patch;patch=1 \
            ${RPSRC}/pm_changes-r1.patch;patch=1 \
+           ${RPSRC}/led_class_kconfig-r0.patch;patch=1 \
+           ${RPSRC}/led_maintainer-r0.patch;patch=1 \
+           ${RPSRC}/led_sysfs_fix-r0.patch;patch=1 \
+           ${RPSRC}/backlight_sysfs_fix-r0.patch;patch=1 \
            ${RPSRC}/sharpsl_pm-do-r2.patch;patch=1 \
            ${RPSRC}/usb_pxa27x_udc-r0.patch;patch=1 \
            ${RPSRC}/usb_add_epalloc-r1.patch;patch=1 \

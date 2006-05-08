@@ -5,13 +5,8 @@ LICENSE = "GPL"
 
 DEPENDS = "libx11 libxext xextproto videoproto"
 
-SRC_URI = "${XORG_MIRROR}/X11R7.0/src/lib/libXv-${PV}.tar.bz2"
-S = "${WORKDIR}/libXv-${PV}"
+XORG_PN = "libXv"
 
-inherit autotools pkgconfig
+include xorg-xlibs.inc
 
 EXTRA_OECONF="--enable-malloc0returnsnull"
-
-do_stage() {
-	autotools_stage_all
-}

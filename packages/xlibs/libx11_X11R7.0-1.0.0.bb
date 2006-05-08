@@ -9,10 +9,9 @@ PROVIDES = "x11"
 FILES_${PN} += "${datadir}/X11/XKeysymDB ${datadir}/X11/XErrorDB"
 FILES_${PN}-locale += "${datadir}/X11/locale"
 
-SRC_URI = "${XORG_MIRROR}/X11R7.0/src/lib/libX11-${PV}.tar.bz2"
-S = "${WORKDIR}/libX11-${PV}"
+XORG_PN = "libX11"
 
-inherit autotools pkgconfig
+include xorg-xlibs.inc
 
 EXTRA_OECONF="--enable-malloc0returnsnull"
 
@@ -23,8 +22,4 @@ do_compile() {
 	)
 	rm -f ${STAGING_INCDIR}/X11/Xlib.h
 	oe_runmake
-}
-
-do_stage() {
-	autotools_stage_all
 }

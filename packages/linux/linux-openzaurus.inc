@@ -59,6 +59,13 @@ module_autoload_snd-soc-spitz_spitz = "snd-soc-spitz"
 do_configure() {
 	rm -f ${S}/.config
 
+	if [ "${MACHINE}" == "tosa" ]; then
+		gcc_version=`${KERNEL_CC} -dumpversion`		
+		if [ "${gcc_version}" == "4.0.1" ] || [ "${gcc_version}" == "4.0.2" ]; then
+			die "tosa kernel wont work with gcc 4.0.x"
+		fi
+	fi
+
 	if [ ! -e ${WORKDIR}/defconfig-${MACHINE} ]; then
 		die "No default configuration for ${MACHINE} available."
 	fi

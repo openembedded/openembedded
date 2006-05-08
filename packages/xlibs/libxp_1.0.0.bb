@@ -5,14 +5,9 @@ LICENSE = "MIT"
 
 DEPENDS = "libx11 libxext xextproto libxau printproto"
 
-SRC_URI = "${XORG_MIRROR}/X11R7.0/src/lib/libXp-${PV}.tar.bz2"
-S = "${WORKDIR}/libXp-${PV}"
+XORG_PN = "libXp"
 
-inherit autotools pkgconfig
+include xorg-xlibs.inc
 
 CFLAGS_append += " -I ${S}/include/X11/XprintUtil -I ${S}/include/X11/extensions"
 EXTRA_OECONF="--enable-malloc0returnsnull"
-
-do_stage() {
-	autotools_stage_all
-}
