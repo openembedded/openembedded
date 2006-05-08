@@ -7,10 +7,15 @@ case `uname -r` in
 	TSLIB_CONFFILE=/usr/share/tslib/ts.conf-corgi-2.4
 	;;
 *)
-	if test -e "/var/lib/udev-input-helper/usb.mouse"
-	then
-		. "/var/lib/udev-input-helper/usb.mouse"
-		TSLIB_TSDEVICE="$DEVNAME"
+	for mouse in  usb.mouse unknown.mouse
+	do
+		test -e "/var/lib/udev-input-helper/$mouse" || continue
+		. "/var/lib/udev-input-helper/$mouse"
+		
+		TSLIB_TSDEVICE="$DEVNAME"				
+		
+		# Used by /etc/X11/Xinit.d/70detect-stylus
+		touch /var/lib/udev-input-helper/show-cursor.tslib
 		
 		# Note: Due to a bug in kdrive, setting TSLIB_TSDEVICE will
 		# result in a non-working mouse, even if the device _is_ correct.
@@ -22,9 +27,14 @@ case `uname -r` in
 		# Required on SL-Cxx00 due to fb rotation, might be needed elsewhere,
 		# too.
 		INPUT_EXTRA_ARGS="-rawcoord"
-	else	
+	done
+
+	if test -z "$TSLIB_TSDEVICE"
+	then
 		TSLIB_TSDEVICE=/dev/input/event1
+		rm -f /var/lib/udev-input-helper/show-cursor.tslib
 	fi
+	
 	
 	TSLIB_TSEVENTTYPE=INPUT
 	TSLIB_CONFFILE=/usr/share/tslib/ts.conf-corgi
