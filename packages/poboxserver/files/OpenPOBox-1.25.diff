@@ -1,12 +1,11 @@
 diff -ur OpenPOBox.orig/asearch/Makefile OpenPOBox/asearch/Makefile
 --- OpenPOBox.orig/asearch/Makefile	2001-07-23 16:18:15.000000000 +0900
 +++ OpenPOBox/asearch/Makefile	2003-06-14 17:52:12.668859200 +0900
-@@ -2,7 +2,7 @@
+@@ -2,7 +2,6 @@
  #	$Date: 2004/09/28 03:42:40 $
  #	$Revision: 1.6 $
  #
 -CC = gcc
-+CC = arm-linux-gcc
  CFLAGS = -Xcpluscomm
  WTANGLE = perl ../wtangle/wtangle
  
@@ -25,12 +24,11 @@ diff -ur OpenPOBox.orig/romakana/rklist OpenPOBox/romakana/rklist
 diff -ur OpenPOBox.orig/server/Makefile.in OpenPOBox/server/Makefile.in
 --- OpenPOBox.orig/server/Makefile.in	2002-02-19 09:37:10.000000000 +0900
 +++ OpenPOBox/server/Makefile.in	2003-06-14 17:52:12.678873600 +0900
-@@ -10,7 +10,7 @@
+@@ -10,7 +10,6 @@
  # CFLAGS = -DUNIX @CFLAGS@ -Xcpluscomm \
  #	-I../asearch -I../romakana -I../include -g
  
 -CC = gcc
-+CC = arm-linux-gcc
  CFLAGS = -DUNIX @CFLAGS@ \
  	-I/usr/local/include -I/usr/local/lib/glib/include \
  	-I@prefix@/include \

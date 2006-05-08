@@ -7,11 +7,6 @@ LICENSE = "BSD-X"
 DEPENDS = "xproto xtrans zlib fontcacheproto fontsproto libfontenc freetype"
 PROVIDES = "xfont"
 
-SRC_URI = "${XORG_MIRROR}/X11R7.0/src/lib/libXfont-${PV}.tar.bz2"
-S = "${WORKDIR}/libXfont-${PV}"
+XORG_PN = "libXfont"
 
-inherit autotools pkgconfig
-
-do_stage() {
-	autotools_stage_all
-}
+include xorg-xlibs.inc
