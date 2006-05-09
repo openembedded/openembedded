@@ -14,6 +14,7 @@ SRC_URI = "${SOURCEFORGE_MIRROR}/libetpan/libetpan-${PV}.tar.gz \
 inherit autotools pkgconfig gettext
 
 EXTRA_OECONF = "--without-openssl --with-gnutls --disable-db"
+PARALLEL_MAKE = ""
 
 do_stage() {
 	oe_runmake install includedir=${STAGING_INCDIR} libdir=${STAGING_LIBDIR} bindir=${STAGING_BINDIR}
