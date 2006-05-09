@@ -10,3 +10,5 @@ SRC_URI = "${SOURCEFORGE_MIRROR}/sylpheed-claws/sylpheed-claws-extra-plugins-${P
 
 inherit autotools pkgconfig
 
+FILES_${PN} = "${libdir}/sylpheed-claws/plugins/*.so"
+
