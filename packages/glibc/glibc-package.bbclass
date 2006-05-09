@@ -95,6 +95,7 @@ if [ -f ${libdir}/locale/locale-archive ]; then
         cp ${libdir}/locale/locale-archive ${TMP_LOCALE}/
 fi
 localedef --inputfile=${datadir}/i18n/locales/%s --charmap=%s --prefix=/tmp/locale %s
+mkdir -p ${libdir}/locale/
 mv ${TMP_LOCALE}/locale-archive ${libdir}/locale/
 rm -rf ${TMP_LOCALE}
 }
