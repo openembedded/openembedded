@@ -5,7 +5,7 @@ MAINTAINER = "Graeme Gregory <dp@xora.org.uk>"
 LICENSE = "GPL"
 PR = "r0"
 
-SRC_URI = "${SOURCEFORGE_MIRROR}/sylpheed-claws/sylpheed-claws-2.2.0.tar.bz2"
+SRC_URI = "${SOURCEFORGE_MIRROR}/sylpheed-claws/sylpheed-claws-${PV}.tar.bz2"
 
 
 FILES_${PN} = "${bindir} ${datadir}/pixmaps ${datadir}/applications"
@@ -20,12 +20,16 @@ do_configure_prepend() {
 	mkdir -p m4
 }
 
-inherit autotools 
+inherit autotools pkgconfig
 
 do_install_append() {
 	install -d ${D}${datadir}/applications
 	install -m 0644 sylpheed-claws.desktop ${D}${datadir}/applications/
 	install -d ${D}${datadir}/pixmaps
 	install -m 0644 sylpheed-claws.png ${D}${datadir}/pixmaps/
+}
+
+do_stage () {
+	autotools_stage_all
 }
 
