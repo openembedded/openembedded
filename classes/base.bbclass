@@ -513,7 +513,8 @@ python base_eventhandler() {
 	if name.startswith("BuildStarted"):
 		bb.data.setVar( 'BB_VERSION', bb.__version__, e.data )
 		path_to_bbfiles = bb.data.getVar( 'BBFILES', e.data, 1 )
-		path_to_packages = path_to_bbfiles[:path_to_bbfiles.index( "packages" )]
+		print "path_to_bbfiles = ", path_to_bbfiles
+		path_to_packages = path_to_bbfiles[:path_to_bbfiles.rindex( "packages" )]
 		monotone_revision = "<unknown>"
 		try:
 			monotone_revision = file( "%s/MT/revision" % path_to_packages ).read().strip()
