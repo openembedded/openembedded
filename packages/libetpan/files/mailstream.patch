@@ -1,0 +1,21 @@
+diff -urNad libetpan-0.45~/src/data-types/mailstream_ssl.c libetpan-0.45/src/data-types/mailstream_ssl.c
+--- libetpan-0.45~/src/data-types/mailstream_ssl.c	2006-02-17 23:45:14.000000000 +0300
++++ libetpan-0.45/src/data-types/mailstream_ssl.c	2006-04-17 19:11:48.609551256 +0400
+@@ -448,7 +448,7 @@
+       break;
+       
+     default:
+-      return r;
++      return -1;
+     }
+   }
+ }
+@@ -486,7 +486,7 @@
+       break;
+       
+     default:
+-      return r;
++      return -1;
+     }
+   }
+ }
