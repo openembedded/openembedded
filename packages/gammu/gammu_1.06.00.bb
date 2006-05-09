@@ -5,12 +5,13 @@ LICENSE = "GPL"
 HOMEPAGE = "http://mwiacek.com/gsm/soft/gammu.html"
 AUTHOR = "Marcin Wiacek <marcin@mwiacek.com>"
 MAINTAINER = "Marcin Juszkiewicz <openembedded@hrw.one.pl>"
+PR = "r1"
 
 SRC_URI = "http://www.mwiacek.com/zips/gsm/gammu/stable/1_0x/gammu-${PV}.tar.gz "
 
 EXTRA_OECONF = "--disable-mysql"
 
-inherit autotools
+inherit autotools pkgconfig
 
 do_compile () {
         oe_runmake shared
