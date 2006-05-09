@@ -4,7 +4,6 @@ DEPENDS = "apr expat gdbm"
 MAINTAINER = "Mustafa Yuecel <yuecelm@ee.ethz.ch>"
 LICENSE = "Apache"
 HOMEPAGE = "http://apr.apache.org"
-
 PR = "r0"
 
 SRC_URI = "${APACHE_MIRROR}/apr/${P}.tar.gz \
@@ -16,10 +15,10 @@ EXTRA_OECONF = "--with-apr=${STAGING_BINDIR} --with-dbm=gdbm --with-gdbm=${STAGI
 inherit autotools lib_package binconfig
 
 do_configure() {
-  cp ${S}/../uri_delims.h ${S}/uri/. 
-  oe_runconf
+	cp ${S}/../uri_delims.h ${S}/uri/. 
+	oe_runconf
 }
 
 do_stage() {
-  oe_libinstall -a -so -C .libs libaprutil-0 ${STAGING_LIBDIR}
+	autotools_stage_all
 }

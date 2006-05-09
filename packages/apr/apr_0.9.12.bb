@@ -3,17 +3,16 @@ SECTION = "libs"
 MAINTAINER = "Mustafa Yuecel <yuecelm@ee.ethz.ch>"
 LICENSE = "Apache"
 HOMEPAGE = "http://apr.apache.org"
-
 PR = "r0"
 
-SRC_URI = "${APACHE_MIRROR}/apr/${P}.tar.bz2"
+SRC_URI = "${APACHE_MIRROR}/apr/apr-${PV}.tar.bz2"
 
 inherit autotools lib_package binconfig
 
 do_configure() {
-  oe_runconf
+	oe_runconf
 }
 
 do_stage() {
-  oe_libinstall -a -so -C .libs libapr-0 ${STAGING_LIBDIR}
+	autotools_stage_all
 }
