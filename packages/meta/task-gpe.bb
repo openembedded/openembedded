@@ -1,5 +1,5 @@
 DESCRIPTION = "Task packages for GPE Palmtop Environment"
-PR = "r1"
+PR = "r2"
 LICENSE = MIT
 ALLOW_EMPTY = "1"
 
@@ -89,7 +89,8 @@ RDEPENDS_gpe-task-apps := "\
     gpe-aerial \
     gpe-soundbite \
     rosetta \
-    gpe-screenshot"
+    gpe-screenshot \
+    gpe-windowlist"
 
 RDEPENDS_gpe-task-games := "\
     gpe-go \
