@@ -10,7 +10,6 @@ SRC_URI = "cvs://anonymous@anoncvs.gnome.org/cvs/gnome;module=gtkhtml2 \
 	http://svn.o-hand.com/repos/web/trunk/patches/at-import_box-pos.patch;patch=1;pnum=0 \
 	http://svn.o-hand.com/repos/web/trunk/patches/css-stylesheet-user.patch;patch=1;pnum=0 \
 	http://svn.o-hand.com/repos/web/trunk/patches/css-media.patch;patch=1;pnum=0 \
-	http://svn.o-hand.com/repos/web/trunk/patches/fix-margin-inherit.patch;patch=1;pnum=0 \
 	http://svn.o-hand.com/repos/web/trunk/patches/add-end-element-signal.patch;patch=1;pnum=0"
 
 S = "${WORKDIR}/${PN}"
