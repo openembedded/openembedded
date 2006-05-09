@@ -1,6 +1,6 @@
 SECTION = "x11/network"
 DESCRIPTION = "Mail user agent"
-DEPENDS = "gtk+ gpgme gnutls libetpan"
+DEPENDS = "gtk+ gpgme libetpan libgnomeprint aspell"
 MAINTAINER = "Graeme Gregory <dp@xora.org.uk>"
 LICENSE = "GPL"
 PR = "r0"
@@ -10,7 +10,9 @@ SRC_URI = "${SOURCEFORGE_MIRROR}/sylpheed-claws/sylpheed-claws-2.2.0.tar.bz2"
 
 FILES_${PN} = "${bindir} ${datadir}/pixmaps ${datadir}/applications"
 
-EXTRA_OECONF = "--disable-aspell"
+EXTRA_OECONF = "--disable-aspell --disable-openssl --disable-aspell-test \
+ --disable-dillo-viewer-plugin --with-aspell-prefix=${STAGING_DIR}/${HOST_SYS} \
+ --enable-aspell"
 
 CFLAGS += "-D_GNU_SOURCE"
 
