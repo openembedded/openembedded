@@ -1,0 +1,10 @@
+--- main.c.orig	2006-05-10 21:37:32.000000000 +0200
++++ main.c	2006-05-10 21:37:43.000000000 +0200
+@@ -33,7 +33,6 @@
+ #include <gpe/init.h>
+ #include <gpe/pixmaps.h>
+ #include <gpe/errorbox.h>
+-#include <gpe/gpe-iconlist.h>
+ #include <gpe/tray.h>
+ #include <gpe/popup.h>
+ #include <gpe/spacing.h>
