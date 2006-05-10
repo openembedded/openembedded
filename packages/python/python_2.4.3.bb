@@ -6,7 +6,7 @@ PRIORITY = "optional"
 MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 DEPENDS = "python-native readline zlib gdbm openssl tcl tk"
 DEPENDS_sharprom = "python-native readline zlib gdbm openssl"
-PR = "ml3"
+PR = "ml4"
 
 PYTHON_MAJMIN = "2.4"
 
