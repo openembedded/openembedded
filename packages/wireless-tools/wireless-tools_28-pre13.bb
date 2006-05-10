@@ -4,11 +4,12 @@ SECTION = "base"
 PRIORITY = "optional"
 MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 LICENSE = "GPL"
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "http://www.hpl.hp.com/personal/Jean_Tourrilhes/Linux/wireless_tools.28.pre13.tar.gz \
            file://man.patch;patch=1 \
-	   file://wireless-tools.if-pre-up"
+	   file://wireless-tools.if-pre-up \
+	   file://zzz-wireless.if-pre-up"
 S = "${WORKDIR}/wireless_tools.28"
 
 CFLAGS =+ "-I${S}"
@@ -32,6 +33,7 @@ do_install() {
 	oe_runmake PREFIX=${D} install-iwmulticall install-dynamic
 	install -d ${D}${sysconfdir}/network/if-pre-up.d
 	install ${WORKDIR}/wireless-tools.if-pre-up ${D}${sysconfdir}/network/if-pre-up.d/wireless-tools
+	install ${WORKDIR}/zzz-wireless.if-pre-up ${D}${sysconfdir}/network/if-pre-up.d/zzz-wireless
 }
 
 PACKAGES = "libiw libiw-dev libiw-doc ${PN} ${PN}-doc"
