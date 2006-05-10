@@ -3,11 +3,12 @@ SECTION = "libs"
 PRIORITY = "optional"
 LICENSE = "LGPL"
 DEPENDS = "intltool-native"
-PR = "r1"
+PR = "r2"
 
 DEFAULT_PREFERENCE = 1
 
-SRC_URI = "http://www.rittau.org/mimedir/${P}.tar.gz"
+SRC_URI = "http://www.rittau.org/mimedir/${P}.tar.gz \
+	   file://mimedir-duration.diff;patch=1"
 
 inherit autotools pkgconfig
 
