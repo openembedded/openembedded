@@ -3,6 +3,10 @@ DESCRIPTION = "Linux kernel for Hitachi SH3 based Jornada 6xx"
 LICENSE = "GPL"
 PR = "r0"
 
+
+COMPATIBLE_HOST = "sh.*-linux"
+COMPATIBLE_MACHINE = 'jornada6xx'
+
 SRC_URI = "http://www.jlime.com/downloads/releases/shrek/kernels/6xx/sources/linuxsh-snapshot-050320-jlimepatched-3.tar.bz2 \
            file://defconfig_jlime"
 
