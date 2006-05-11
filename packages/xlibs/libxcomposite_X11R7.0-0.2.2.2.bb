@@ -10,5 +10,5 @@ XORG_PN = "libXcomposite"
 
 include xorg-xlibs.inc
 
-SRC_URI = "${XORG_MIRROR}/X11R7.0/src/lib/libXcomposite-X11R7.0-${PV}.tar.bz2 \
+SRC_URI = "${XORG_MIRROR}/X11R7.0/src/lib/libXcomposite-${PV}.tar.bz2 \
 	   file://change-include-order.patch;patch=1"
