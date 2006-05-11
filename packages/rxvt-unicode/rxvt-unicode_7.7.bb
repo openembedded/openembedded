@@ -1,5 +1,5 @@
 SECTION = "x11/utils"
-DEPENDS = "libx11 libxt libxft"
+DEPENDS = "libx11 libxt libxft libxpm"
 DESCRIPTION = "rxvt-unicode is a clone of the well known \
 terminal emulator rxvt, modified to store text in Unicode \
 (either UCS-2 or UCS-4) and to use locale-correct input and \
@@ -36,7 +36,9 @@ EXTRA_OECONF = "--enable-menubar --enable-xim \
 		--enable-xgetdefault \
 		--with-x=${STAGING_LIBDIR}/.. \
 		--enable-xpm-background \
-		--disable-perl"
+		--disable-perl \
+		--with-xpm-includes=${STAGING_INCDIR} \
+		--with-xpm-libs=${STAGING_LIBDIR}"
 
 do_configure_prepend () {
 	cp aclocal.m4 acinclude.m4
