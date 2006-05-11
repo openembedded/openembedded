@@ -12,7 +12,7 @@ PACKAGES = "edb-utils"
 FILES_${PN} = "${bindir}/edb_ed ${bindir}/edb_vt_ed ${bindir}/edb_gtk_ed"
 RDEPENDS_${PN} += "ncurses"
 
-SRC_URI = "http://enlightenment.freedesktop.org/files/edb-${PV}.tar.gz"
+SRC_URI = "${E_URI}/edb-${PV}.tar.gz"
 S = "${WORKDIR}/edb-${PV}"
 
 libraries = ""

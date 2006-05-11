@@ -8,7 +8,7 @@ PR = "r4"
 
 inherit efl
 
-SRC_URI = "http://enlightenment.freedesktop.org/files/embryo-${PV}.tar.gz"
+SRC_URI = "${E_URI}/embryo-${PV}.tar.gz"
 S = "${WORKDIR}/embryo-${PV}"
 
 PACKAGES = "embryo-utils"
@@ -16,9 +16,3 @@ FILES_${PN} = "${bindir}/embryo ${bindir}/embryo_* ${datadir}/embryo/include"
 
 libraries = ""
 headers = ""
-
-#do_install () {
-#	for f in $FILES_${PN}; do
-#		echo $f
-#	done
-#}

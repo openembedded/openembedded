@@ -5,10 +5,10 @@ PR = "r2"
 
 inherit efl
 
-SRC_URI = "http://enlightenment.freedesktop.org/files/enlightenment-${PV}.tar.gz"
+SRC_URI = "${E_URI}/enlightenment-${PV}.tar.gz"
 S = "${WORKDIR}/enlightenment-${PV}"
 
-PROFILE = "LORES_PDA"
+PROFILE = "LOWRES_PDA"
 PROFILE_c7x0 = "HIRES_PDA"
 PROFILE_tosa = "HIRES_PDA"
 PROFILE_spitz = "HIRES_PDA"

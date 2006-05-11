@@ -10,6 +10,7 @@ EXTRA_OECONF = "--enable-ecore-fb \
 		--enable-ecore-dbus \
 		--enable-ecore-evas-fb \
 		--enable-ecore-evas-x \
+        --enable-ecore-evas-buffer \
 		--disable-ecore-evas-gl \
 		--enable-ecore-con \
 		--enable-ecore-ipc \

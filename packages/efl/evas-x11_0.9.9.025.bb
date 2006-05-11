@@ -1,15 +1,12 @@
 include evas.inc
-DEPENDS += "x11 xext freetype"
-PR = "r4"
-
-SRC_URI = "cvs://anonymous@thinktux.net/root;module=e17/libs/evas;date=${PV}"
-S = "${WORKDIR}/evas"
+DEPENDS += "edb libx11 libxext freetype"
+PR = "r7"
 
 EXTRA_OECONF = "--x-includes=${STAGING_INCDIR}/X11  \
 		--x-libraries=${STAGING_LIBDIR} \
 		--enable-fb			\
 		--disable-directfb		\
-		--enable-buffer		\
+		--enable-buffer			\
 		--disable-software-qtopia	\
 		--enable-software-x11		\
 		--disable-gl-x11		\
@@ -47,9 +44,9 @@ EXTRA_OECONF = "--x-includes=${STAGING_INCDIR}/X11  \
 		--disable-convert-32-rgb-rot-90	\
 		--disable-convert-32-rgb-rot-270"
 
-headers = "Evas_Engine_Software_X11.h \
-           Evas_Engine_XRender_X11.h \
-           Evas_Engine_Buffer.h \
-           Evas_Engine_FB.h \
+headers = "../modules/engines/software_x11/Evas_Engine_Software_X11.h \
+           ../modules/engines/xrender_x11/Evas_Engine_XRender_X11.h \
+           ../modules/engines/buffer/Evas_Engine_Buffer.h \
+           ../modules/engines/fb/Evas_Engine_FB.h \
            Evas.h"
 
