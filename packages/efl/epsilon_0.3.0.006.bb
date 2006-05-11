@@ -6,7 +6,7 @@ DEPENDS = "virtual/imlib2 epeg libpng virtual/evas virtual/ecore perl-native edj
 inherit efl
 
 SRC_URI += "file://compile-fix.patch;patch=1 \
-            cvs://anonymous@thinktux.net/root;module=e17/libs/epsilon/m4;date=20060101"
+            ${E_CVS};module=e17/libs/epsilon/m4;date=20060101"
 
 do_configure_prepend() {
 	install -d "${S}/m4"

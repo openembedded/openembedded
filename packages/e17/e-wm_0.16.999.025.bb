@@ -1,15 +1,15 @@
 DESCRIPTION = "E17 - the Enlightenment Window Mananger"
 DEPENDS = "evas-x11 ecore-x11 edje eet embryo e"
 LICENSE = "MIT"
-SECTION = "e/apps"
-MAINTAINER = "Justin Patrin <papercrane@reversefold.com>"
 PR = "r3"
 
-SRC_URI = "http://enlightenment.freedesktop.org/files/enlightenment-${PV}.tar.gz \
+inherit e
+
+SRC_URI = "${E_URI}/enlightenment-${PV}.tar.gz \
            file://fix-configure.patch;patch=1 \
            file://remove-large-fonts.patch;patch=1 \
            file://Xsession.d/98enlightenment"
-	   
+
 #           cvs://anonymous@thinktux.net/root;module=e17/apps/e/data/themes;date=20050926"
 #           file://disable-splash.patch;patch=1 \
 #           http://cvs.sourceforge.net/viewcvs.py/*checkout*/enlightenment/e17/apps/e/data/themes/default_entry.edc?rev=1.1 \
@@ -20,9 +20,7 @@ SRC_URI = "http://enlightenment.freedesktop.org/files/enlightenment-${PV}.tar.gz
 
 S = "${WORKDIR}/enlightenment-${PV}"
 
-inherit autotools
-
-PROFILE = "LORES_PDA"
+PROFILE = "LOWRES_PDA"
 PROFILE_c7x0 = "HIRES_PDA"
 PROFILE_tosa = "HIRES_PDA"
 PROFILE_spitz = "HIRES_PDA"
@@ -48,3 +46,8 @@ do_install_append() {
 	install -d ${D}/${sysconfdir}/X11/Xsession.d
 	install -m 755 ${WORKDIR}/Xsession.d/98enlightenment ${D}/${sysconfdir}/X11/Xsession.d
 }
+
+#pkg_postinst() {
+#    enlightenment_remote -menu-autoscroll-margin-set 5
+#    enlightenment_remote -menu-autoscroll-cursor-margin-set 5
+#}

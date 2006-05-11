@@ -9,8 +9,8 @@ PACKAGES = "edje-utils"
 FILES_${PN} = "${bindir}/edje ${bindir}/edje_* ${datadir}/edje/data/template ${datadir}/edje/include"
 RDEPENDS_${PN} += "embryo-utils cpp cpp-symlinks gcc gcc-symlinks"
 
-SRC_URI = "http://enlightenment.freedesktop.org/files/edje-${PV}.tar.gz \
-           cvs://anonymous@thinktux.net/root;module=e17/libs/edje/m4;date=20060101"
+SRC_URI = "${E_URI}/edje-${PV}.tar.gz \
+           ${E_CVS};module=e17/libs/edje/m4;date=20060101"
 S = "${WORKDIR}/edje-${PV}"
 
 libraries = ""
