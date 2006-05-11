@@ -1,0 +1,63 @@
+Index: linux-2.6.16.5-a/arch/arm/mach-pxa/ezx.c
+===================================================================
+--- linux-2.6.16.5-a.orig/arch/arm/mach-pxa/ezx.c	2006-05-04 15:38:52.000000000 +0200
++++ linux-2.6.16.5-a/arch/arm/mach-pxa/ezx.c	2006-05-04 15:40:59.000000000 +0200
+@@ -257,13 +257,41 @@
+ };
+ 
+ 
+-/* backlight */
++/* backlight for lcd */
++
++static struct resource ezx_backlight_resources[] = {
++};
++
++static struct platform_device ezx_backlight_device = {
++	.name		= "ezx-lcd-backlight",
++	.id		= -1,
++	.resource	= &ezx_backlight_resources,
++	.num_resources	= ARRAY_SIZE(ezx_backlight_resources),
++};
++
+ /* keyboard */
++
++static struct resource ezx_kbd_resources[] = {
++	{
++		.start	= IRQ_KEYPAD,
++		.end	= IRQ_KEYPAD,
++		.flags	= IORESOURCE_IRQ,
++	},
++};
++
++static struct platform_device ezx_kbd_device = {
++	.name		= "ezx-keyboard",
++	.id		= -1,
++	.resource	= &ezx_kbd_resources,
++	.num_resources	= ARRAY_SIZE(ezx_kbd_resources),
++};
++
+ /* touch screen */
+ 
++
+ /* SSP device */
+ 
+-struct platform_device ezx_ssp_pcap_device = {
++static struct platform_device ezx_ssp_pcap_device = {
+ 	.name		= "ezx-ssp-pcap",
+ 	.dev		= {
+ 		//.parent	= ,
+@@ -549,8 +577,12 @@
+ 
+ 	ssp_pcap_init();
+ 
+-	/* try to configure USB connector as FFUART */
+-	emu_switch_to(EMU_SWITCH_TO_UART);
++	emu_switch_to(EMU_SWITCH_TO_USB);
++
++	/* enable this line when you want to run FFUART on the USB plug */
++	//emu_switch_to(EMU_SWITCH_TO_UART);
++	/* enable this line when you want to output power on the USB plug */
++	//SSP_PCAP_bit_set(SSP_PCAP_ADJ_BIT_BUSCTRL_VUSB_MSTR_EN);
+ 
+ 	platform_add_devices(devices, ARRAY_SIZE(devices));
+ }
