@@ -33,10 +33,6 @@ ac_cv_c_littleendian=${ac_cv_c_littleendian=yes}
 ac_cv_c_bigendian=${ac_cv_c_bigendian=no}
 ac_cv_time_r_type=${ac_cv_time_r_type=POSIX}
 
-
-# strace
-ac_cv_host=${ac_cv_host=sh-pc-linux-gnu}
-
 # apache
 ac_cv_func_pthread_key_delete=${ac_cv_func_pthread_key_delete=yes}
 apr_cv_process_shared_works=${apr_cv_process_shared_works=no}
