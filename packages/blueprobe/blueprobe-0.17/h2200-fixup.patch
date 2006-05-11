@@ -1,0 +1,11 @@
+--- /tmp/blueprobe.init	2006-05-10 18:38:42.581557352 +0200
++++ blueprobe-0.17/blueprobe.init	2006-05-10 18:38:54.001821208 +0200
+@@ -28,7 +28,7 @@
+   case `module_id` in
+     "HP iPAQ H2200")
+ 	BLUETOOTH=yes
+-	PORT=/dev/tts/3
++	PORT=/dev/ttyS3
+ 	SPEED=921600
+ 	PROBE=no
+ 	RADIO_VER=`h2200_radio_version`

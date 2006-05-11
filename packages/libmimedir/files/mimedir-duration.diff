@@ -1,0 +1,77 @@
+2006-05-10  Neal H. Walfield  <neal@gnu.org>
+
+	* mimedir/mimedir-vcomponent.c
+	(mimedir_vcomponent_get_value_duration): Be more accepting when
+	parsing the DURATION field.
+
+
+--- libmimedir-gnome-0.3.1/mimedir/mimedir-vcomponent.c.orig	2005-11-03 18:04:21.000000000 +0100
++++ libmimedir-gnome-0.3.1/mimedir/mimedir-vcomponent.c	2006-05-10 14:17:24.000000000 +0200
+@@ -951,52 +951,33 @@ mimedir_vcomponent_get_value_duration (M
+ 
+ 		s++;
+ 
+-		num = mimedir_vcomponent_parse_number (name, "DURATION", &s, &err);
+-		if (err) {
+-			g_propagate_error (error, err);
+-			return 0;
+-		}
+-		if (s[0] != 'H') {
+-			g_set_error (error, MIMEDIR_ATTRIBUTE_ERROR, MIMEDIR_ATTRIBUTE_ERROR_INVALID_FORMAT, MIMEDIR_ATTRIBUTE_ERROR_INVALID_FORMAT_STR, "DURATION", name);
+-			return 0;
+-		}
+-		s++;
+-		duration += num * SECS_PER_HOUR;
+-
+-		if (s[0]) {
++		while (s[0] != '\0') {
+ 			num = mimedir_vcomponent_parse_number (name, "DURATION", &s, &err);
+ 			if (err) {
+ 				g_propagate_error (error, err);
+ 				return 0;
+ 			}
+-			if (s[0] != 'M') {
+-				g_set_error (error, MIMEDIR_ATTRIBUTE_ERROR, MIMEDIR_ATTRIBUTE_ERROR_INVALID_FORMAT, MIMEDIR_ATTRIBUTE_ERROR_INVALID_FORMAT_STR, "DURATION", name);
+-				return 0;
+-			}
+-			s++;
+-			duration += num * SECS_PER_MINUTE;
+-		}
+ 
+-		if (s[0]) {
+-			num = mimedir_vcomponent_parse_number (name, "DURATION", &s, &err);
+-			if (err) {
+-				g_propagate_error (error, err);
+-				return 0;
+-			}
+-			if (s[0] != 'S') {
++			switch (s[0]) {
++			case 'H':
++				s++;
++				duration += num * SECS_PER_HOUR;
++				break;
++			case 'M':
++				s++;
++				duration += num * SECS_PER_MINUTE;
++				break;
++			case 'S':
++				s++;
++				duration += num;
++				break;
++			default:
+ 				g_set_error (error, MIMEDIR_ATTRIBUTE_ERROR, MIMEDIR_ATTRIBUTE_ERROR_INVALID_FORMAT, MIMEDIR_ATTRIBUTE_ERROR_INVALID_FORMAT_STR, "DURATION", name);
+ 				return 0;
+ 			}
+-			s++;
+-			duration += num;
+ 		}
+ 	}
+ 
+-	if (s[0] != '\0') {
+-		g_set_error (error, MIMEDIR_ATTRIBUTE_ERROR, MIMEDIR_ATTRIBUTE_ERROR_INVALID_FORMAT, MIMEDIR_ATTRIBUTE_ERROR_INVALID_FORMAT_STR, "DURATION", name);
+-		return 0;
+-	}
+-
+ 	return neg ? -duration : duration;
+ }
+ 
