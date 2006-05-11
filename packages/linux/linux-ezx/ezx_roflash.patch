@@ -1,0 +1,895 @@
+Roflash driver (don't think it will be needed for 2.6.x)
+
+diff -Nru --exclude-from=/sunbeam/home/laforge/scripts/dontdiff linux-2.6.16.5/drivers/block/Kconfig linux-2.6.16.5-exz/drivers/block/Kconfig
+--- linux-2.6.16.5/drivers/block/Kconfig	2006-04-12 22:27:57.000000000 +0200
++++ linux-2.6.16.5-exz/drivers/block/Kconfig	2006-04-16 18:49:29.000000000 +0200
+@@ -453,4 +453,6 @@
+ 	This driver provides Support for ATA over Ethernet block
+ 	devices like the Coraid EtherDrive (R) Storage Blade.
+ 
++source "drivers/block/roflash/Kconfig"
++
+ endmenu
+diff -Nru --exclude-from=/sunbeam/home/laforge/scripts/dontdiff linux-2.6.16.5/drivers/block/Makefile linux-2.6.16.5-exz/drivers/block/Makefile
+--- linux-2.6.16.5/drivers/block/Makefile	2006-04-12 22:27:57.000000000 +0200
++++ linux-2.6.16.5-exz/drivers/block/Makefile	2006-04-16 18:49:29.000000000 +0200
+@@ -31,3 +31,4 @@
+ obj-$(CONFIG_BLK_DEV_SX8)	+= sx8.o
+ obj-$(CONFIG_BLK_DEV_UB)	+= ub.o
+ 
++obj-$(CONFIG_ARCH_EZX_ROFLASH)	+= roflash/
+diff -Nru --exclude-from=/sunbeam/home/laforge/scripts/dontdiff linux-2.6.16.5/drivers/block/roflash/Kconfig linux-2.6.16.5-exz/drivers/block/roflash/Kconfig
+--- linux-2.6.16.5/drivers/block/roflash/Kconfig	1970-01-01 01:00:00.000000000 +0100
++++ linux-2.6.16.5-exz/drivers/block/roflash/Kconfig	2006-04-16 18:49:29.000000000 +0200
+@@ -0,0 +1,7 @@
++#
++# Emualting Flash Chip driver configuration
++#
++config ARCH_EZX_ROFLASH
++	tristate 'ROFLASH Device'
++
++#tristate 'Debug for ROFLASH device?'  ROFLASH_DEBUG_ERR
+diff -Nru --exclude-from=/sunbeam/home/laforge/scripts/dontdiff linux-2.6.16.5/drivers/block/roflash/Makefile linux-2.6.16.5-exz/drivers/block/roflash/Makefile
+--- linux-2.6.16.5/drivers/block/roflash/Makefile	1970-01-01 01:00:00.000000000 +0100
++++ linux-2.6.16.5-exz/drivers/block/roflash/Makefile	2006-04-16 18:49:29.000000000 +0200
+@@ -0,0 +1,15 @@
++#
++# Makefile for VFM
++#
++# Note! Dependencies are done automagically by 'make dep', which also
++# removes any old dependencies. DON'T put your own dependencies here
++# unless it's something special (ie not a .c file).
++#
++# Note 2! The CFLAGS definitions are now inherited from the
++# parent makes..
++
++#
++# Makefile for the kernel VSB driver.
++#
++
++obj-$(CONFIG_ARCH_EZX_ROFLASH) += roflash.o ezx_parts.o
+diff -Nru --exclude-from=/sunbeam/home/laforge/scripts/dontdiff linux-2.6.16.5/drivers/block/roflash/ezx_parts.c linux-2.6.16.5-exz/drivers/block/roflash/ezx_parts.c
+--- linux-2.6.16.5/drivers/block/roflash/ezx_parts.c	1970-01-01 01:00:00.000000000 +0100
++++ linux-2.6.16.5-exz/drivers/block/roflash/ezx_parts.c	2006-04-16 18:49:29.000000000 +0200
+@@ -0,0 +1,198 @@
++/*
++ * drivers/mtd/maps/ezx_parts.c
++ *
++ * Parse multiple flash partitions in Ezx project into mtd_table or into act_roflash_table
++ *
++ * Created by Susan Gu  Oct, 22  2002
++ * 
++ */
++
++#include <linux/module.h>
++#include <linux/types.h>
++#include <linux/kernel.h>
++#include <asm/io.h>
++#include <linux/mtd/mtd.h>
++#include <linux/mtd/map.h>
++#include <linux/mtd/partitions.h>
++#include <linux/ezx_roflash.h>
++
++extern int roflash_init(void);
++
++extern int cfi_intelext_read_roflash(void *priv_map, unsigned long from, size_t len, size_t *retlen, u_char *buf);
++extern int cfi_intelext_read_roflash_c(void *priv_map, unsigned long from, size_t len, size_t *retlen, u_char *buf);
++roflash_area **roflash_table_pptr = NULL;
++
++static DECLARE_MUTEX(roflash_table_mutex);
++
++/* I know what I am doing, so setup l_x_b flag */
++#ifdef CONFIG_ARCH_EZX_A780
++static roflash_area  fix_roflash_table[]= 
++{
++	{
++		name:		"rootfs",
++		size:		0x018E0000,  /* rootfs size is 24.875MB */
++		offset:		0x00120000,
++		roflash_read:   NULL,  /* force read-only in cacheable mapping*/
++		l_x_b:		ROFLASH_LINEAR,
++		phys_addr:	0x00000000,
++	},{
++		name:		"NO-USE",  /* language package is moved to MDOC */
++		size:		0x00000000,
++		offset:		0x01A00000,  //Susan -- correspond to the beginning of the second flash chip //
++		roflash_read:  cfi_intelext_read_roflash,
++		l_x_b:		ROFLASH_BLOCK,
++		phys_addr:  0xffffffff, // not use for block cramfs mount
++	},{
++		name:		"setup",
++		size:		0x00020000,
++		offset:         0x01FA0000,
++		roflash_read:  cfi_intelext_read_roflash,
++		l_x_b:		ROFLASH_BLOCK,
++		phys_addr:  0xffffffff, // not use for block cramfs mount
++	}
++};
++#if (0)
++static roflash_area  fix_roflash_table[]= 
++{
++	{
++		name:		"rootfs",
++		size:		0x00f00000,  /* rootfs size is 15MB */
++		offset:		0x00100000,
++		roflash_read:  NULL,  /* force read-only in cacheable mapping*/
++		l_x_b:		ROFLASH_LINEAR_XIP,
++		phys_addr:	0x00000000,
++	},{
++		name:		"nxipapp",  /* old language area is 0xAA0000 */
++		size:		0x00AA0000,
++		offset:		0x00500000,
++		roflash_read:  cfi_intelext_read_roflash,
++		l_x_b:		ROFLASH_BLOCK,
++		phys_addr:  0xffffffff, // not use for block cramfs mount
++	},{
++		name:		"setup",     /* setup stuff is 1MB */
++		size:		0x00020000,
++		offset:         0x00FA0000,
++		roflash_read:  cfi_intelext_read_roflash,
++		l_x_b:		ROFLASH_BLOCK,
++		phys_addr:  0xffffffff, //phys_addr is not useful for block cramfs mount
++	}
++};
++#endif
++
++#endif
++
++#ifdef CONFIG_ARCH_EZX_E680
++static roflash_area  fix_roflash_table[]= 
++{
++	{
++		name:		"rootfs",
++		size:		0x018E0000,  /* rootfs size is 15MB */
++		offset:		0x00120000,
++		roflash_read:   NULL,  /* force read-only in cacheable mapping*/
++		l_x_b:		ROFLASH_LINEAR,
++		phys_addr:	0x00000000,
++	},{
++		name:		"NO-USE",  /* language package is 2MB */
++		size:		0x00000000,
++		offset:		0x01A00000,  //Susan -- correspond to the beginning of the second flash chip //
++		roflash_read:  cfi_intelext_read_roflash,
++		l_x_b:		ROFLASH_BLOCK,
++		phys_addr:  0xffffffff, // not use for block cramfs mount
++	},{
++		name:		"setup",     /* setup stuff is 1MB */
++		size:		0x00020000,
++		offset:         0x01FA0000,  //Susan -- correspond to the beginning of the second flash chip //
++		roflash_read:  cfi_intelext_read_roflash,
++		l_x_b:		ROFLASH_BLOCK,
++		phys_addr:  0xffffffff, // not use for block cramfs mount
++	}
++};
++#endif
++
++roflash_area *act_roflash_table[MAX_ROFLASH] = {0};
++unsigned short roflash_partitions = 0;
++
++/* If we decide to use flash partition parse table, this function will parse the fpt - flash partition table,
++*  the beginning address of fpt is defined in CONFIG_FPT_OFFSET.  This function will parser out all roflash areas
++*  and animation area( or re-fresh code area).   
++*  For roflash areas, registered them into act_roflash_table, for animation region, register it into mtd_table[6].
++*  Note 
++*  6 is fixed for animation region -- /dev/mtd6 c 90 12
++*  /dev/roflash b 62 0  -- root file system
++*  /dev/roflash1 b 62 1 -- language package
++*  /dev/roflash2 b 62 2 -- setup stuff
++*/  
++int ezx_parse(struct map_info *chip_map)
++{
++	return 0;  // depends on discussion about DC tool
++}
++
++int ezx_parts_parser(void)
++{
++	int ret = 0;
++	int nrparts = 0;
++	int i = 0;
++
++//#ifdef CONFIG_EZX_PARSER_TABLE
++//	ret = ezx_parse(chip_map);
++//#else
++	down(&roflash_table_mutex);
++
++	nrparts = sizeof(fix_roflash_table) / sizeof(roflash_area);
++
++#ifdef ROFLASH_DEBUG_ERR
++	printk("ezx_parts_parser:  nrparts is %d\n", nrparts);
++#endif
++	for ( i = 0; i < nrparts; i ++ )
++	{
++		if (act_roflash_table[i])
++			return -1;
++		act_roflash_table[i] = (roflash_area *)(&(fix_roflash_table[i]));
++#ifdef ROFLASH_DEBUG_ERR
++		printk(KERN_ERR "ezx_parts_parser: act_roflash_table[%d] = %d\n",i,(unsigned long)(act_roflash_table[i]));
++#endif
++	}
++	roflash_partitions = i;
++
++#ifdef ROFLASH_DEBUG_ERR
++	printk("ezx_parts_parser:  roflash_partitions is %d\n", roflash_partitions);
++#endif
++	
++	up(&roflash_table_mutex);
++	
++	return ret;
++}
++			
++int ezx_partition_init(void)
++{
++	int ret = 0;
++
++	
++#ifdef ROFLASH_DEBUG_ERR
++	printk(KERN_ERR "ezx_partition_init: roflash_table_pptr = %d\n",(unsigned long)(act_roflash_table));
++#endif
++	roflash_table_pptr = (roflash_area **)(act_roflash_table);
++
++	if ( ret = ezx_parts_parser() )
++	{
++		printk(KERN_NOTICE "invoke ezx_parts_parser, return %d\n", ret);
++		return -EIO;
++	}
++
++#ifdef ROFLASH_DEBUG_ERR
++	printk("ezx_partition_init:  ret of ezx_parts_parser is %d\n", ret);
++#endif
++
++	if ( ret = roflash_init() )
++	{
++		printk(KERN_NOTICE "invoke roflash_init, return %d\n", ret);
++		return -EIO;
++	}
++	return 0 ;
++}
++
++
++
++
++
++
+diff -Nru --exclude-from=/sunbeam/home/laforge/scripts/dontdiff linux-2.6.16.5/drivers/block/roflash/roflash.c linux-2.6.16.5-exz/drivers/block/roflash/roflash.c
+--- linux-2.6.16.5/drivers/block/roflash/roflash.c	1970-01-01 01:00:00.000000000 +0100
++++ linux-2.6.16.5-exz/drivers/block/roflash/roflash.c	2006-04-16 18:49:29.000000000 +0200
+@@ -0,0 +1,593 @@
++/*
++ * Linux Flash read-only block device driver For Cramfs file system, support simultaneous linear + block device mounting.  -- Susan Gu  Mar, 15 2002
++ * In order to resolve logo area in cachable flash mapping, add roflash_c_fops methods, that is stolen from mtdchar.c (dwmw2)
++ */
++
++#include <linux/kernel.h>
++#include <linux/module.h>
++#include <linux/version.h>
++#include <linux/config.h>
++#include <linux/kmod.h>
++#include <linux/types.h>
++#include <linux/init.h>
++#include <linux/vmalloc.h>
++
++#include <asm/uaccess.h>
++#include <linux/mtd/map.h>
++#include <linux/ezx_roflash.h>
++
++#ifdef	CONFIG_PROC_FS
++#include <linux/proc_fs.h>	/* For /proc/roflash_info */
++#endif	/* CONFIG_PROC_FS */
++
++#define MAJOR_NR	ROFLASH_MAJOR
++#define DEVICE_NAME "roflash"
++#define DEVICE_REQUEST roflash_request
++#define DEVICE_NR(device) (MINOR(device))
++#define DEVICE_ON(device)
++#define DEVICE_OFF(device)
++#define DEVICE_NO_RANDOM
++
++#define MAJOR_NR_C 101
++#define DEVICE_NAME_C "roflash_c"
++#include <linux/blkdev.h>
++
++
++/* K3 flash lowlevel */
++#define FLASH_WORD_ALIGN_MASK 0xFFFFFFFE
++#define WIDTH_ADJUST	0x0001L		/* I.E. Converts 0x90 to 0x90 */
++#define FlashCommandRead        (unsigned short)(0xFF * WIDTH_ADJUST)
++#define FlashCommandStatus       (unsigned short)(0x70 * WIDTH_ADJUST)
++#define FlashStatusReady          (unsigned short)(0x80 * WIDTH_ADJUST)
++
++/* Variables used to track operational state of ROFLASH */
++#define ROFLASH_STATUS_READY			0
++#define ROFLASH_STATUS_NOT_READY    -1
++#define ROFLASH_BLOCK_SIZE (4096)
++static unsigned long flash_blocksizes[MAX_ROFLASH];
++static unsigned long flash_sizes[MAX_ROFLASH];
++
++#ifdef	CONFIG_PROC_FS
++static struct proc_dir_entry *roflash_proc_entry;
++static int roflash_read_procmem(char *, char **, off_t, int, int *, void *);
++#endif	/* CONFIG_PROC_FS */
++
++
++extern unsigned short roflash_partitions;
++extern struct map_info bulverde_map;
++extern unsigned long bulverde_map_cacheable;
++
++static DEFINE_SPINLOCK(roflash_lock);
++static struct request_queue *xd_queue;
++
++#define __KERNEL_SYSCALLS__
++#include <linux/unistd.h>
++#include <asm/unaligned.h>
++
++
++void fmemoryCopy (void * dest, void * src, unsigned long bytes)
++{
++	unsigned char *new_dest;
++	unsigned char *new_src;
++	new_dest = (unsigned char *)dest;
++	new_src = (unsigned char *)src;
++	/* while bytes to modify is not complete */
++	while (bytes-- != 0)
++	{
++		/* update destination byte to equal src byte */
++		*new_dest = *new_src;
++		new_dest++;
++		new_src++;
++	}
++}
++void memorySet (void * buff, unsigned long bytes, unsigned char value)
++{
++	unsigned char * new_buff;
++	new_buff = (unsigned char *)buff;
++	/* while not at end of modification */
++	while (bytes-- != 0)
++	{
++		/* set contents of buffer to value specified */
++		*new_buff = value;
++
++		/* increment to next byte */
++		new_buff++;
++	}
++}
++
++#if (0)
++unsigned short IntelSCSRead(unsigned long CardAddress, unsigned long Length, unsigned char * Buffer)
++{
++	unsigned long volatile pointer;
++	unsigned short * volatile pointer0ed;
++
++#ifdef VFM_DEBUG2
++	if ( roflash_status == ROFLASH_STATUS_READY )
++	{
++		printk("IntelSCSRead:  PositionPtr(pointer, CardAddress);\n");
++		printk("IntelSCSRead: pointer=%d, CardAddress=%d\n", (DWORD)pointer, (DWORD)CardAddress);
++	}
++#endif
++	pointer = (unsigned long)(DALHART_K3_BASE_ADDR + CardAddress);
++
++	pointer0ed = (unsigned short *)((unsigned long)pointer & FLASH_WORD_ALIGN_MASK);
++#ifdef CONFIG_K3_DEBUG
++	printk("IntelSCSRead(): Reading %d bytes at 0x%lx\n",Length, pointer);
++#endif
++
++	*pointer0ed = FlashCommandRead;  /* Ensure it is in read mode */
++
++	/* This is assumimg that farmemory copy performs at a byte at a time */
++	fmemoryCopy(Buffer, pointer, Length);
++
++	return(0);
++}
++#endif
++
++void roflash_request(request_queue_t *q)
++{
++    unsigned short minor;
++    unsigned long offset, len, retlen;
++	unsigned short err = 0;
++	unsigned char *tmpBufPtr;
++	unsigned short nrSectors;
++	struct request *req;
++	
++#ifdef ROFLASH_DEBUG_ERR
++	    printk(KERN_ERR "Roflash_request(): Entered\n");
++#endif
++
++	while ((req = elv_next_request(q)) != NULL) {
++		unsigned block = req->sector;
++		unsigned count = req->nr_sectors;
++		struct gendisk *disk = req->rq_disk;
++		int rw = rq_data_dir(req);
++
++		if (!(req->flags & REQ_CMD)) {
++			end_request(req, 0);
++			continue;
++		}
++
++		if (rw != READ) {
++			printk(KERN_ERR "roflash_request(): WARNING! Unknown Request\n");
++			end_request(req, 0);
++		}
++
++		/* Verify minor number is in range */
++		minor = MINOR(req->rq_dev);
++		if (minor >= roflash_partitions) 
++		{
++#ifdef ROFLASH_DEBUG_ERR
++		    printk(KERN_ERR "roflash_request(): ERROR! Out of partition range (minor = %d)\n", minor );
++#endif
++			end_request(req, 0);
++		    continue;
++		}
++
++		/* Check if writting-request is demanded */
++		if ( req->cmd == WRITE )
++		{
++			printk(KERN_ERR "roflash_request: write-accessing is not allowed!\n");
++			end_request(req, 0);
++			break;
++		}
++
++		/* Verify sector is in range */
++		offset = req->sector << 9;	// 512 bytes per sector
++		len = req->nr_sectors << 9;	// 512 bytes per sector
++		if ((offset + len) > (flash_sizes[minor] << BLOCK_SIZE_BITS)) 
++		{
++#ifdef ROFLASH_DEBUG_ERR
++		    printk(KERN_ERR "roflash_request(): ERROR! Access beyond end of partition\n" );
++#endif
++		    end_request(req, 0);
++		    continue;
++		}
++
++#ifdef ROFLASH_DEBUG_ERR
++		printk(KERN_ERR "roflash_request(): minor=%d, %d sectors at sector %ld\n", minor, req->nr_sectors, req->sector);
++#endif
++
++		/* Prepare to move data to/from the Linux buffer */	
++		nrSectors = req->nr_sectors;
++		tmpBufPtr = req->buffer;
++//		blockTempBufPtr = roflashTempBuffer; -- this may cause race-condition in multiple cramfs
++
++		roflash_area *this_area = NULL;
++#ifdef ROFLASH_DEBUG_ERR
++	    	printk(KERN_ERR "roflash_request: READ\n");
++#endif
++//		memorySet(roflashTempBuffer, len, 0x00); -- don't use the internal buffer, may exist race-conditions.
++				
++		this_area = (roflash_area *)(roflash_table_pptr[minor]);
++		err = (*this_area->roflash_read)((void *)(this_area->priv_map),(offset + this_area->offset), len, &retlen, tmpBufPtr);
++		if (err == 0) {
++#ifdef ROFLASH_DEBUG_ERR
++			printk(KERN_ERR " < %x %x %x %x ...>\n",req->buffer[0],req->buffer[1],req->buffer[2],req->buffer[3]);
++#endif
++			end_request(req, 1);
++		} else {
++#ifdef ROFLASH_DEBUG_ERR
++			printk(KERN_ERR "roflash_request(): ERROR READ %d sectors at sector %d\n", req->nr_sectors, req->sector);
++#endif
++			end_request(req, 0);
++		}
++	}
++} 
++
++static int roflash_ioctl(struct inode *inode, struct file *file, unsigned int cmd, unsigned long arg)
++{
++// What is the requirements? -- todo list
++    return 0;
++}
++
++
++static int roflash_open(struct inode * inode, struct file * filp)
++{
++#ifdef ROFLASH_DEBUG_ERR
++    printk(KERN_ERR "roflash_open() called, minor = %d\n", DEVICE_NR(inode->i_rdev));
++#endif
++    if (DEVICE_NR(inode->i_rdev) >= roflash_partitions)
++	{
++#ifdef ROFLASH_DEBUG_ERR
++    printk(KERN_ERR "vfm_open() Failed!\n");
++#endif
++		return -ENXIO;
++	}
++    return 0;
++}
++
++static int roflash_release(struct inode * inode, struct file * filp)
++{
++#ifdef ROFLASH_DEBUG_ERR
++    printk(KERN_ERR "roflash_release() called\n");
++#endif
++    return 0;
++}
++
++
++/*Susan 2.4.6 */
++static struct block_device_operations roflash_fops = {
++    open:	roflash_open,
++    release:	roflash_release,
++    ioctl:	roflash_ioctl,
++};
++
++static loff_t roflash_c_lseek (struct file *file, loff_t offset, int orig)
++{
++	roflash_area *dev_def = (roflash_area *)(file->private_data);
++	
++	switch (orig) {
++	case 0:
++		/* SEEK_SET */
++		file->f_pos = offset;
++		break;
++	case 1:
++		/* SEEK_CUR */
++		file->f_pos += offset;
++		break;
++	case 2:
++		/* SEEK_END */
++		file->f_pos = (unsigned long)(dev_def->size + offset);
++		break;
++	default:
++		return -EINVAL;
++	}
++
++	if (file->f_pos < 0)
++		file->f_pos = 0;
++	else if (file->f_pos >= dev_def->size)
++		file->f_pos = dev_def->size - 1;
++
++	return file->f_pos;
++}
++
++static int roflash_c_open(struct inode *inode, struct file *file)
++{
++	int minor = MINOR(inode->i_rdev);
++	roflash_area *dev_def;
++
++	if (minor >= MAX_ROFLASH)
++		return -EACCES;
++
++	dev_def = (roflash_area *)(roflash_table_pptr[minor]);
++
++	/* Sanity check */
++	if (dev_def->l_x_b != ROFLASH_CHAR)
++		return -EACCES;
++
++	/* You can't open the RO devices RW */
++	if (file->f_mode & 2)
++		return -EACCES;
++	
++	file->private_data = dev_def;
++		
++	return 0;
++} /* mtd_open */
++
++static int roflash_c_close(struct inode *inode, struct file *file)
++{
++	return 0;
++} /* mtd_close */
++
++/* FIXME: This _really_ needs to die. In 2.5, we should lock the
++   userspace buffer down and use it directly with readv/writev.
++*/
++#define MAX_KMALLOC_SIZE 0x20000
++
++static int roflash_c_read(struct file *file, char *buf, size_t count,loff_t *ppos)
++{
++	roflash_area *dev_def = (roflash_area *)file->private_data;
++	size_t retlen=0;
++	size_t total_retlen=0;
++	int ret=0;
++	int len;
++	char *kbuf;
++	unsigned long virt_dev_start = 0;
++	
++	if (*ppos + count > dev_def->size)
++		count = dev_def->size - *ppos;
++
++	if (!count)
++		return 0;
++	
++	/* FIXME: Use kiovec in 2.5 to lock down the user's buffers
++	   and pass them directly to the MTD functions */
++	while (count) 
++	{
++		if (count > MAX_KMALLOC_SIZE) 
++			len = MAX_KMALLOC_SIZE;
++		else
++			len = count;
++
++		kbuf=kmalloc(len,GFP_KERNEL);
++		if (!kbuf)
++			return -ENOMEM;
++		
++		//ret = (dev_def->roflash_read)( (void *)(dev_def->priv_map),(*ppos + dev_def->offset), len, &retlen, kbuf);
++		virt_dev_start = (unsigned long)(dev_def->priv_map) + dev_def->offset;
++		memcpy(kbuf,virt_dev_start + *ppos,len);
++
++		*ppos += len;
++		if (copy_to_user(buf, kbuf, len)) 
++		{
++			kfree(kbuf);
++			return -EFAULT;
++		}
++		else
++			total_retlen += len;
++
++		count -= len;
++		buf += len;
++
++		
++		kfree(kbuf);
++	}
++	
++	return total_retlen;
++} /* mtd_read */
++
++
++static struct file_operations roflash_c_fops = {
++	owner:		THIS_MODULE,
++	llseek:		roflash_c_lseek,     	/* lseek */
++	read:		roflash_c_read,	/* read */
++	open:		roflash_c_open,	/* open */
++	release:	roflash_c_close,	/* release */
++};
++
++roflash_area *roflash_get_dev(unsigned char minor)
++{
++	roflash_area *ret = NULL;
++	
++	if (minor < MAX_ROFLASH)
++		ret = (roflash_area *)(roflash_table_pptr[minor]);
++
++	return ret;
++}
++	
++int __init roflash_init(void)
++{
++        int i, size = 0;
++
++#ifdef ROFLASH_DEBUG_ERR
++	printk(KERN_ERR "roflash_init(): Enter into this API.\n");
++#endif
++	
++/* We should do initialization for flash chips, however, we don't need to do it
++ * twice after __init_lubbock has initialized K3 flash device */
++	
++#ifdef ROFLASH_DEBUG_ERR
++	printk(KERN_ERR "roflash_init: Registering device major %d [%s]\n",ROFLASH_MAJOR,DEVICE_NAME);
++#endif
++
++	if (register_blkdev(ROFLASH_MAJOR, DEVICE_NAME)) {
++#ifdef ROFLASH_DEBUG_ERR
++		printk(KERN_ERR "roflash_init(): Could not get major %d", ROFLASH_MAJOR);
++#endif
++		return -EIO;
++	}
++#ifdef ROFLASH_DEBUG_ERR
++	printk(KERN_ERR "roflash_init(): register_blkdev success\n");
++#endif
++
++	roflash_queue = blk_init_queue(&roflash_request, &roflash_lock);
++	if (!roflash_queue)
++		return -ENOMEM;
++
++	struct gendisk *disk = alloc_disk(64);
++	if (!disk)
++		return -ENOMEM;
++
++	disk->major = ROFLASH_MAJOR;
++	disk->first_minor = 0;
++	sprintf(disk->disk_name, "roflash0");
++	sprintf(disk->devfs_name, "roflash/target0");
++	disk->fops = &roflash_fops;
++	disk->queue = roflash_queue;
++	// set_capacity(disk, );
++	
++	add_disk(disk);
++
++
++	/* We know this is invoked only once during kernel booting up, so there
++	 * is not race-conditions */
++	for (i = 0; i < roflash_partitions; i++) {
++		unsigned short lxb_flag = ((roflash_area *)(roflash_table_pptr[i]))->l_x_b;
++
++		switch (lxb_flag) {
++		case ROFLASH_LINEAR:
++		case ROFLASH_LINEAR_XIP:
++			flash_blocksizes[i] = ROFLASH_BLOCK_SIZE;
++			size = ((roflash_area *)(roflash_table_pptr[i]))->size;
++			flash_sizes[i] = size >> BLOCK_SIZE_BITS ;
++  			// The virtual address of the cacheable mapping //
++			((roflash_area *)(roflash_table_pptr[i]))->priv_map = 
++							(void *)(bulverde_map_cacheable);
++#ifdef ROFLASH_DEBUG_ERR
++			printk(KERN_ERR "roflash_init(): not-char "
++				"roflash_table_pptr[%d]->size = %d\n",i,size);
++#endif
++			break;
++		case ROFLASH_BLOCK:
++			if (bulverde_map.size == 0) {
++				unregister_blkdev(ROFLASH_MAJOR, DEVICE_NAME);
++				return -EACCES;
++			}
++
++			flash_blocksizes[i] = ROFLASH_BLOCK_SIZE;
++			size = ((roflash_area *)(roflash_table_pptr[i]))->size;
++			flash_sizes[i] = size >> BLOCK_SIZE_BITS ;
++			//The pointer to struct map_info of the noncacheable mapping //
++			((roflash_area *)(roflash_table_pptr[i]))->priv_map = 
++								(void *)(&bulverde_map);  
++#ifdef ROFLASH_DEBUG_ERR
++			printk(KERN_ERR "roflash_init(): not-char roflash_table_pptr[%d]->size = %d\n",i,size);
++#endif
++			break;
++		case ROFLASH_CHAR:
++			if (register_chrdev(MAJOR_NR_C, DEVICE_NAME_C, &roflash_c_fops)) {
++				printk(KERN_NOTICE "Can't allocate major number %d for "
++				       "Memory Technology Devices.\n", MAJOR_NR_C);
++
++				unregister_blkdev(ROFLASH_MAJOR, DEVICE_NAME);
++				return -EAGAIN;
++			}
++			//The virtual address of the cacheable mapping //
++			((roflash_area *)(roflash_table_pptr[i]))->priv_map = 
++							(void *)(bulverde_map_cacheable);  
++#ifdef ROFLASH_DEBUG_ERR
++			printk(KERN_ERR "roflash_init(): char roflash_table_pptr[%d]->size "
++				"= %d\n",i,size);
++#endif
++			break;
++		}
++	}
++		
++	blksize_size[ROFLASH_MAJOR] = flash_blocksizes;
++	blk_size[ROFLASH_MAJOR] = flash_sizes;
++#ifdef ROFLASH_DEBUG_ERR
++	printk(KERN_ERR "roflash_init(): fill in blksize_size[] and blk_size[] "
++		"success\n");
++#endif
++	//blk_init_queue(BLK_DEFAULT_QUEUE(ROFLASH_MAJOR),&roflash_request);
++	roflash_queue = blk_init_queue(&roflash_request, &roflash_lock);
++	if (!roflash_queue)
++		return -ENOMEM;
++
++#ifdef ROFLASH_DEBUG_ERR
++	printk(KERN_ERR "roflash_init(): ROFLASH Block device: blksize_size = %d"
++		", blk_size = %d\n",flash_blocksizes[0],flash_sizes[0]);
++#endif
++
++#ifdef	CONFIG_PROC_FS
++	/* register procfs device */
++	if (roflash_proc_entry = create_proc_entry("roflash_info", 0, 0)) {
++			roflash_proc_entry->read_proc = roflash_read_procmem;
++	}
++
++#endif	/* CONFIG_PROC_FS */
++	
++	for ( i = 0; i < roflash_partitions; i ++ ) {
++		printk(KERN_NOTICE "ROFLASH Driver initialized and ready for use."
++		       "Size: %d Offset: %d\n", 
++		       ((roflash_area*)(roflash_table_pptr[i]))->size, 
++		       ((roflash_area*)(roflash_table_pptr[i]))->offset);
++	}
++
++	return (0);	
++}
++
++
++#ifdef CONFIG_PROC_FS
++static int roflash_read_procmem(char *buf, char **start, off_t offset, int len,
++				int *eof, void *data)
++{
++	#define LIMIT (PAGE_SIZE-80)	/* don't print anymore after this size */
++
++	int i;
++	
++	len=0;
++	
++#if (0)
++	switch (roflash_status)
++	{
++		case ROFLASH_STATUS_NOT_READY:
++			strcpy(roflash_status_str,"Not-ready");
++			break;
++		case ROFLASH_STATUS_READY:
++			strcpy(roflash_status_str,"Ready");
++			break;
++		default:
++			strcpy(roflash_status_str,"Unknown!");
++			break;
++	}
++#endif
++
++	len += sprintf(buf+len, "ROFLASH Driver status: %s\n\n","Ready");
++	for ( i = 0; i < roflash_partitions; i ++ )
++	{
++		len += sprintf(buf+len, "ROFLASH area name is %s\n",((roflash_area*)(roflash_table_pptr[i]))->name);
++		len += sprintf(buf+len, "ROFLASH area size = %d bytes\n",((roflash_area*)(roflash_table_pptr[i]))->size);
++		len += sprintf(buf+len, "ROFLASH area offset = %ld bytes\n",((roflash_area*)(roflash_table_pptr[i]))->offset);
++		len += sprintf(buf+len, "ROFLASH area l_x_b(%x)\n",((roflash_area*)(roflash_table_pptr[i]))->l_x_b);
++	}
++	return len;
++}
++#endif	/* CONFIG_PROC_FS */
++
++#ifdef MODULE
++static void __exit roflash_cleanup(void)  //Susan//
++{
++    int i;
++    int err_info = 0;
++
++    /* For read-only flash device, we don't need to invoke fsync_dev */
++ 
++    unregister_blkdev(ROFLASH_MAJOR, DEVICE_NAME);
++	blk_cleanup_queue(BLK_DEFAULT_QUEUE(ROFLASH_MAJOR));
++    blk_size[ROFLASH_MAJOR] = NULL;
++    blksize_size[ROFLASH_MAJOR] = NULL;
++
++    /* For roflash char device  -- sometimes, we don't have char roflash devices */
++	for (i = 0; i < roflash_partitions; i++) 
++	{
++		unsigned short lxb_flag = ((roflash_area *)(roflash_table_pptr[i]))->l_x_b;
++
++		if (lxb_flag == ROFLASH_CHAR)
++		{
++			unregister_chrdev(MAJOR_NR_C, DEVICE_NAME_C);
++			break;
++		}
++	}
++
++    remove_proc_entry("roflash_info",NULL);
++
++    printk(KERN_ERR "remove roflash_info\n");
++
++}
++
++module_init(roflash_init);
++module_exit(roflash_cleanup);
++
++#endif
+diff -Nru --exclude-from=/sunbeam/home/laforge/scripts/dontdiff linux-2.6.16.5/include/linux/ezx_roflash.h linux-2.6.16.5-exz/include/linux/ezx_roflash.h
+--- linux-2.6.16.5/include/linux/ezx_roflash.h	1970-01-01 01:00:00.000000000 +0100
++++ linux-2.6.16.5-exz/include/linux/ezx_roflash.h	2006-04-16 18:49:29.000000000 +0200
+@@ -0,0 +1,41 @@
++/*
++ *  linux/include/linux/ezx_roflash.h 
++ *
++ *  Created by Susan Gu    0ct, 22 2002
++ *  
++ *  For multiple cramfs partitions in ezx project
++ *  At repsent, there are three cramfs partitions in ezx project, they are: 
++ *  1.  root file system
++ *  2.  Language package
++ *  3.  setup package 
++*/
++
++#ifndef EZX_ROFLASH_FS_H
++#define EZX_ROFLASH_FS_H
++
++#include <asm/ioctl.h>
++
++#define ROFLASH_MAJOR  62
++
++#define ROFLASH_LINEAR  0x0010
++#define ROFLASH_LINEAR_XIP     0x0011
++#define ROFLASH_BLOCK   0x1000
++#define ROFLASH_CHAR    0x1100
++#define MAX_ROFLASH  4
++
++typedef struct
++{
++	char name[16];  /* This length should be enough for DC stuff */
++	unsigned long offset;
++	unsigned long size;
++	int (*roflash_read)(void *, unsigned long, size_t, size_t *, u_char *);
++	/* Added by Susan for multiple Linear or block cramfs */
++	void *priv_map;
++	unsigned long phys_addr;
++	unsigned short l_x_b;
++}roflash_area;
++
++extern roflash_area *roflash_get_dev(unsigned char minor);
++extern roflash_area **roflash_table_pptr;
++
++#endif
+

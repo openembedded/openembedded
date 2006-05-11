@@ -1,0 +1,48 @@
+Add support for the somewhat strange PXA27x UDC 
+
+diff -Nru --exclude-from=/sunbeam/home/laforge/scripts/dontdiff linux-2.6.16.5/drivers/usb/gadget/serial.c linux-2.6.16.5-exz/drivers/usb/gadget/serial.c
+--- linux-2.6.16.5/drivers/usb/gadget/serial.c	2006-04-12 22:27:57.000000000 +0200
++++ linux-2.6.16.5-exz/drivers/usb/gadget/serial.c	2006-04-17 00:11:23.000000000 +0200
+@@ -1439,22 +1439,40 @@
+ 			__constant_cpu_to_le16(GS_VERSION_NUM|0x0099);
+ 	}
+ 
+-	usb_ep_autoconfig_reset(gadget);
+ 
++	usb_ep_autoconfig_reset(gadget);
++#ifdef CONFIG_USB_GADGET_PXA27X
++	ep = pxa27x_ep_config(gadget, &gs_fullspeed_in_desc,
++				1, gs_bulk_interface_desc.bInterfaceNumber,
++				gs_bulk_interface_desc.bAlternateSetting);
++#else
+ 	ep = usb_ep_autoconfig(gadget, &gs_fullspeed_in_desc);
++#endif
+ 	if (!ep)
+ 		goto autoconf_fail;
+ 	EP_IN_NAME = ep->name;
+ 	ep->driver_data = ep;	/* claim the endpoint */
+ 
++#ifdef CONFIG_USB_GADGET_PXA27X
++	ep = pxa27x_ep_config(gadget, &gs_fullspeed_out_desc,
++				1, gs_bulk_interface_desc.bInterfaceNumber,
++				gs_bulk_interface_desc.bAlternateSetting);
++#else
+ 	ep = usb_ep_autoconfig(gadget, &gs_fullspeed_out_desc);
++#endif
+ 	if (!ep)
+ 		goto autoconf_fail;
+ 	EP_OUT_NAME = ep->name;
+ 	ep->driver_data = ep;	/* claim the endpoint */
+ 
+ 	if (use_acm) {
++#ifdef CONFIG_USB_GADGET_PXA27X
++		ep = pxa27x_ep_config(gadget, &gs_fullspeed_notify_desc,
++					1, gs_control_interface_desc.bInterfaceNumber,
++					gs_control_interface_desc.bAlternateSetting);
++#else
+ 		ep = usb_ep_autoconfig(gadget, &gs_fullspeed_notify_desc);
++#endif
+ 		if (!ep) {
+ 			printk(KERN_ERR "gs_bind: cannot run ACM on %s\n", gadget->name);
+ 			goto autoconf_fail;
+

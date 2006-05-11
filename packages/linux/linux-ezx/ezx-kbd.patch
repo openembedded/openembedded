@@ -1,0 +1,768 @@
+Index: linux-2.6.16.5-ezx/drivers/input/keyboard/Kconfig
+===================================================================
+--- linux-2.6.16.5-ezx.orig/drivers/input/keyboard/Kconfig	2006-05-02 23:11:43.000000000 +0200
++++ linux-2.6.16.5-ezx/drivers/input/keyboard/Kconfig	2006-05-02 23:12:15.000000000 +0200
+@@ -183,4 +183,11 @@
+ 	  This driver implements support for HIL-keyboards attached
+ 	  to your machine, so normally you should say Y here.
+ 
++config KEYBOARD_PXA
++	tristate "Intel PXA keyboard support"
++	depends on ARCH_PXA
++	help
++	  This add support for a driver of the Intel PXA2xx keyboard
++	  controller.
++
+ endif
+Index: linux-2.6.16.5-ezx/drivers/input/keyboard/Makefile
+===================================================================
+--- linux-2.6.16.5-ezx.orig/drivers/input/keyboard/Makefile	2006-05-02 23:11:43.000000000 +0200
++++ linux-2.6.16.5-ezx/drivers/input/keyboard/Makefile	2006-05-02 23:12:15.000000000 +0200
+@@ -15,4 +15,5 @@
+ obj-$(CONFIG_KEYBOARD_SPITZ)		+= spitzkbd.o
+ obj-$(CONFIG_KEYBOARD_HIL)		+= hil_kbd.o
+ obj-$(CONFIG_KEYBOARD_HIL_OLD)		+= hilkbd.o
++obj-$(CONFIG_KEYBOARD_PXA)		+= pxakbd.o
+ 
+Index: linux-2.6.16.5-ezx/arch/arm/mach-pxa/ezx.c
+===================================================================
+--- linux-2.6.16.5-ezx.orig/arch/arm/mach-pxa/ezx.c	2006-05-02 23:12:12.000000000 +0200
++++ linux-2.6.16.5-ezx/arch/arm/mach-pxa/ezx.c	2006-05-03 14:40:15.000000000 +0200
+@@ -23,6 +23,7 @@
+ #include <linux/apm_bios.h>
+ #include <linux/delay.h>
+ #include <linux/platform_device.h>
++#include <linux/input.h>
+ 
+ #include <asm/types.h>
+ #include <asm/setup.h>
+@@ -39,6 +40,7 @@
+ #include <asm/arch/mmc.h>
+ #include <asm/arch/udc.h>
+ #include <asm/arch/ohci.h>
++#include <asm/arch/kbd.h>
+ #include <asm/arch/pxafb.h>
+ #include <asm/arch/pxa-regs.h>
+ #include <asm/arch/ezx.h>
+@@ -326,25 +328,166 @@
+ static struct platform_device ezx_backlight_device = {
+ 	.name		= "ezx-lcd-backlight",
+ 	.id		= -1,
+-	.resource	= &ezx_backlight_resources,
++	.resource	= ezx_backlight_resources,
+ 	.num_resources	= ARRAY_SIZE(ezx_backlight_resources),
+ };
+ 
+ /* keyboard */
+ 
+-static struct resource ezx_kbd_resources[] = {
+-	{
+-		.start	= IRQ_KEYPAD,
+-		.end	= IRQ_KEYPAD,
+-		.flags	= IORESOURCE_IRQ,
+-	},
++#if defined(CONFIG_PXA_EZX_V700)
++#error "kbd matrix still needs to be converted to new row/col layout"
++static unsigned char ezx_keycode[] = {
++	/* col 0 */
++	KEY_UP, KEY_DOWN, KEY_LEFT, KEY_RIGHT,
++	KEYPAD_POUND, KEY_0, KEY_9, 0,
++	/* col 1 */
++	KEY_2, KEY_4, KEY_6, KEY_8,
++	KEY_7, KEYPAD_SLEFT, KEYPAD_SRIGHT, 0,
++	/* col 2 */
++	KEY_MENU, KEY_1, KEY_3, KEY_5,
++	KEY_KPASTERISK, KEY_VOLUMEUP, KEY_VOLUMEDOWN, 0,
++	/* col 3 */
++	KEY_CAMERA, KEYPAD_CLEAR, KEYPAD_CARRIER, KEYPAD_ACTIVATE,
++	KEYPAD_SEND, KEYPAD_SMART, KEYPAD_VAVR, 0,
++};
++static unsigned char ezx_direct_keycode[] = {
++	KEYPAD_NONE,
++	KEYPAD_NONE,
++	KEYPAD_NONE,
++	KEYPAD_NONE,
++	KEYPAD_NONE,
++	KEYPAD_NONE,
++};
++#elif defined(CONFIG_PXA_EZX_E680_P4A)
++#error "kbd matrix still needs to be converted to new row/col layout"
++static unsigned char ezx_keycode[] = {
++	/* col 0 */
++	KEY_UP, KEY_DOWN, KEY_LEFT, 0, 0, 0, 0, 0,
++	/* col 1 */
++	KEY_RIGHT, KEY_CENTER, KEY_HOME, 0, 0, 0, 0, 0,
++	/* col 2 */
++	KEYPAD_GAME_R, 0, KEYPAD_GAME_L, 0, 0, 0, 0, 0,
++	/* col 3 */
++	KEY_A, KEY_B, 0, 0, 0, 0, 0, 0,
++};
++static unsigned char ezx_direct_keycode[] = {
++	KEY_CAMERA,
++	KEYPAD_NONE,
++	KEYPAD_NONE,
++	KEYPAD_NONE,
++	KEY_POWER,
++	KEYPAD_NONE,
++};
++#elif defined(CONFIG_PXA_EZX_E680)
++#error "kbd matrix still needs to be converted to new row/col layout"
++static unsigned char ezx_keycode[] = {
++	/* col 0 */
++	KEY_UP, KEY_DOWN, 0, 0, 0, 0, 0, 0,
++	/* col 1 */
++	KEY_RIGHT, KEY_LEFT, 0, 0, 0, 0, 0, 0,
++	/* col 2 */
++	0, KEYPAD_GAME_R, 0, 0, 0, 0, 0, 0,
++	/* col 3 */
++	KEYPAD_HOME, KEYPAD_GAME_L, KEYPAD_CENTER, 0, 0, 0, 0, 0,
++};
++static unsigned char ezx_direct_keycode[] = {
++	KEY_CAMERA,
++	KEYPAD_NONE,
++	KEYPAD_NONE,
++	KEYPAD_A,
++	KEY_POWER,
++	KEYPAD_B,
+ };
++#elif defined(CONFIG_PXA_EZX_A780)
++static unsigned char ezx_keycode[] = {
++	/* row 0 */
++	KEY_KPENTER, KEY_MENU, KEY_CANCEL, KEY_PAGEUP, KEY_UP,
++	/* row 1 */
++	KEY_KP1, KEY_KP2, KEY_KP3, KEY_ENTER, KEY_KPENTER, /*center joypad */
++	/* row 2 */
++	KEY_KP4, KEY_KP5, KEY_KP6, KEY_PAGEDOWN, KEY_PHONE,
++	/* row 3 */
++	KEY_KP7, KEY_KP8, KEY_KP9, KEY_PHONE, KEY_LEFT,
++	/* row 4 */
++	KEY_KPASTERISK, KEY_KP0, KEY_KPDOT, KEY_PAGEDOWN, KEY_DOWN,
++};
++static unsigned char ezx_direct_keycode[] = {
++	KEY_CAMERA,
++};
++#else
++#error "no EZX subarchitecture defined !?!"
++#endif
++
++static int ezx_kbd_init(void)
++{
++#if defined(CONFIG_PXA_EZX_E680_P4A)
++	pxa_gpio_mode(93 | GPIO_ALT_FN_1_IN);  /* KP_DKIN<0>, VR Key */
++	pxa_gpio_mode(97 | GPIO_ALT_FN_1_IN);  /* KP_DKIN<4>, power key */
++	pxa_gpio_mode(100 | GPIO_ALT_FN_1_IN);  /* KP_MKIN<0> */
++	pxa_gpio_mode(101 | GPIO_ALT_FN_1_IN);  /* KP_MKIN<1> */
++	pxa_gpio_mode(102 | GPIO_ALT_FN_1_IN);  /* KP_MKIN<2> */
++	pxa_gpio_mode(103 | GPIO_ALT_FN_2_OUT); /* KP_MKOUT<0> */
++	pxa_gpio_mode(104 | GPIO_ALT_FN_2_OUT); /* KP_MKOUT<1> */
++	pxa_gpio_mode(105 | GPIO_ALT_FN_2_OUT); /* KP_MKOUT<2> */
++	pxa_gpio_mode(106 | GPIO_ALT_FN_2_OUT); /* KP_MKOUT<3> */
++#elif defined(CONFIG_PXA_EZX_E680)
++	pxa_gpio_mode(93 | GPIO_ALT_FN_1_IN);  /* KP_DKIN<0>, VR Key */
++	pxa_gpio_mode(96 | GPIO_ALT_FN_1_IN);  /* KP_DKIN<3>, GAME_A */
++	pxa_gpio_mode(97 | GPIO_ALT_FN_1_IN);  /* KP_DKIN<4>, power key */
++	pxa_gpio_mode(98 | GPIO_ALT_FN_1_IN);  /* KP_DKIN<5>, GAME_B */
++	pxa_gpio_mode(100 | GPIO_ALT_FN_1_IN);  /* KP_MKIN<0> */
++	pxa_gpio_mode(101 | GPIO_ALT_FN_1_IN);  /* KP_MKIN<1> */
++	pxa_gpio_mode(102 | GPIO_ALT_FN_1_IN);  /* KP_MKIN<2> */
++	pxa_gpio_mode(103 | GPIO_ALT_FN_2_OUT); /* KP_MKOUT<0> */
++	pxa_gpio_mode(104 | GPIO_ALT_FN_2_OUT); /* KP_MKOUT<1> */
++	pxa_gpio_mode(105 | GPIO_ALT_FN_2_OUT); /* KP_MKOUT<2> */
++	pxa_gpio_mode(106 | GPIO_ALT_FN_2_OUT); /* KP_MKOUT<3> */
++	pxa_gpio_mode(GPIO_TC_MM_EN);
++	GPDR(GPIO_TC_MM_EN)   |= GPIO_bit(GPIO_TC_MM_EN);
++	GPSR(GPIO_TC_MM_EN)   = GPIO_bit(GPIO_TC_MM_EN);
++	PGSR3 |= GPIO_bit(GPIO_TC_MM_EN);
++#elif defined (CONFIG_PXA_EZX_A780)
++	pxa_gpio_mode(93 | GPIO_ALT_FN_1_IN);   /* KP_DKIN<0>, voice_rec */
++	pxa_gpio_mode(97 | GPIO_ALT_FN_3_IN);   /* KP_MKIN<3> */
++	pxa_gpio_mode(98 | GPIO_ALT_FN_3_IN);   /* KP_MKIN<4> */
++	pxa_gpio_mode(100 | GPIO_ALT_FN_1_IN);  /* KP_MKIN<0> */
++	pxa_gpio_mode(101 | GPIO_ALT_FN_1_IN);  /* KP_MKIN<1> */
++	pxa_gpio_mode(102 | GPIO_ALT_FN_1_IN);  /* KP_MKIN<2> */
++	pxa_gpio_mode(103 | GPIO_ALT_FN_2_OUT); /* KP_MKOUT<0> */
++	pxa_gpio_mode(104 | GPIO_ALT_FN_2_OUT); /* KP_MKOUT<1> */
++	pxa_gpio_mode(105 | GPIO_ALT_FN_2_OUT); /* KP_MKOUT<2> */
++	pxa_gpio_mode(106 | GPIO_ALT_FN_2_OUT); /* KP_MKOUT<3> */
++	pxa_gpio_mode(107 | GPIO_ALT_FN_2_OUT); /* KP_MKOUT<4> */
++#endif
++}
+ 
+-static struct platform_device ezx_kbd_device = {
+-	.name		= "ezx-keyboard",
+-	.id		= -1,
+-	.resource	= &ezx_kbd_resources,
+-	.num_resources	= ARRAY_SIZE(ezx_kbd_resources),
++
++static struct pxakbd_platform_data ezx_kbd_platform_data = {
++	.init		= &ezx_kbd_init,
++	.scan_interval	= HZ/40,
++	.matrix		= {
++		.keycode = &ezx_keycode,
++#if defined(CONFIG_ARCH_EXZ_E680_P4A)
++		.cols	= 4,
++		.rows	= 3,
++#elif defined(CONFIG_PXA_EZX_E680)
++		.cols	= 4,
++		.rows 	= 3,
++#elif defined(CONFIG_PXA_EZX_A780)
++		.cols	= 5,
++		.rows	= 5,
++#endif
++	},
++	.direct		= {
++		.keycode = &ezx_direct_keycode,
++#if defined(CONFIG_PXA_EZX_E680_P4A)
++		.num	= 4,
++#elif defined(CONFIG_PXA_EZX_E680)
++		.num	= 5,
++#elif defined(CONFIG_PXA_EZX_A780)
++		.num	= 1,
++#endif
++	},
+ };
+ 
+ /* touch screen */
+@@ -596,7 +739,7 @@
+ 	pxa_gpio_mode(GPIO_EMU_MUX2|GPIO_OUT);
+         clr_GPIO(GPIO_EMU_MUX2);
+ 
+-#if defined(CONFIG_ARCH_EZX_E680)
++#if defined(CONFIG_PXA_EZX_E680)
+ 	pxa_gpio_mode(GPIO46_STRXD_MD);
+ 	pxa_gpio_mode(GPIO47_STTXD_MD);
+ 
+@@ -612,7 +755,7 @@
+ 	PCFR  = PCFR_DC_EN | PCFR_FS | PCFR_FP | PCFR_OPDE;
+ 	PSLR  = 0x05800f00;
+ 
+-#elif defined(CONFIG_ARCH_EZX_A780)
++#elif defined(CONFIG_PXA_EZX_A780)
+ 
+ 	/* Standard UART */
+ 	pxa_gpio_mode(GPIO46_STRXD_MD);
+@@ -635,6 +778,7 @@
+ 	pxa_set_udc_info(&ezx_udc_info);
+ 	pxa_set_mci_info(&ezx_mci_platform_data);
+ 	pxa_set_ohci_info(&ezx_ohci_platform_data);
++	pxa_set_kbd_info(&ezx_kbd_platform_data);
+ 
+ 	ssp_pcap_init();
+ 
+Index: linux-2.6.16.5-ezx/arch/arm/mach-pxa/generic.c
+===================================================================
+--- linux-2.6.16.5-ezx.orig/arch/arm/mach-pxa/generic.c	2006-05-02 23:11:43.000000000 +0200
++++ linux-2.6.16.5-ezx/arch/arm/mach-pxa/generic.c	2006-05-02 23:12:15.000000000 +0200
+@@ -37,6 +37,7 @@
+ #include <asm/arch/mmc.h>
+ #include <asm/arch/irda.h>
+ #include <asm/arch/i2c.h>
++#include <asm/arch/kbd.h>
+ 
+ #include "generic.h"
+ 
+@@ -319,6 +320,31 @@
+ 	pxaficp_device.dev.platform_data = info;
+ }
+ 
++static struct resource pxa_kbd_resources[] = {
++	{
++		.start	= IRQ_KEYPAD,
++		.end	= IRQ_KEYPAD,
++		.flags	= IORESOURCE_IRQ,
++	},
++	{
++		.start	= 0x41500000,
++		.end	= 0x4150004c,
++		.flags	= IORESOURCE_MEM,
++	},
++};
++
++static struct platform_device kbd_device = {
++	.name		= "pxa-keyboard",
++	.id		= -1,
++	.resource	= pxa_kbd_resources,
++	.num_resources	= ARRAY_SIZE(pxa_kbd_resources),
++};
++
++void __init pxa_set_kbd_info(struct pxakbd_platform_data *info)
++{
++	kbd_device.dev.platform_data = info;
++}
++
+ static struct platform_device *devices[] __initdata = {
+ 	&pxamci_device,
+ 	&udc_device,
+@@ -329,6 +355,7 @@
+ 	&pxaficp_device,
+ 	&i2c_device,
+ 	&i2s_device,
++	&kbd_device,
+ };
+ 
+ static int __init pxa_init(void)
+Index: linux-2.6.16.5-ezx/include/asm-arm/arch-pxa/kbd.h
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ linux-2.6.16.5-ezx/include/asm-arm/arch-pxa/kbd.h	2006-05-02 23:37:33.000000000 +0200
+@@ -0,0 +1,28 @@
++/*
++ *  kbd_pxa.h
++ *
++ *  Copyright (C) 2006 Harald Welte <laforge@openezx.org>
++ *
++ *  This program is free software; you can redistribute it and/or modify
++ *  it under the terms of the GNU General Public License version 2 as
++ *  published by the Free Software Foundation.
++ *
++ */
++#ifndef _KBD_PXA_H_
++#define _KBD_PXA_H_
++
++struct pxakbd_platform_data {
++	int (*init)(void);			/* init gpio, etc. */
++	unsigned int scan_interval;
++	struct {
++		unsigned int rows;
++		unsigned int cols;
++		unsigned char *keycode;
++	} matrix;
++	struct {
++		unsigned int num;
++		unsigned char *keycode;
++	} direct;
++};
++
++#endif
+Index: linux-2.6.16.5-ezx/drivers/input/keyboard/pxakbd.c
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ linux-2.6.16.5-ezx/drivers/input/keyboard/pxakbd.c	2006-05-03 14:39:09.000000000 +0200
+@@ -0,0 +1,411 @@
++/*
++ * Driver for Motorola EZX phone "keyboard"
++ *
++ * (C) 2006 by Harald Welte <laforge@openezx.org>
++ */
++
++#include <linux/kernel.h>
++#include <linux/config.h>
++#include <linux/module.h>
++#include <linux/interrupt.h>
++#include <linux/input.h>
++#include <linux/spinlock.h>
++#include <linux/platform_device.h>
++
++#include <asm/hardware.h>
++#include <asm/io.h>
++#include <asm/irq.h>
++
++#include <asm/arch/kbd.h>
++#include <asm/arch/irqs.h>
++#include <asm/arch/pxa-regs.h>
++
++#if 0
++#define DEBUGP(x, args ...) printk(x, ## args)
++#else
++#define DEBUGP(x, args ...)
++#endif
++
++/* per-keyboard private data structure */
++struct pxakbd {
++	struct input_dev *input;
++	struct timer_list timer;
++	spinlock_t lock;
++
++	struct resource *res;
++	unsigned int irq;
++
++	struct pxakbd_platform_data *pd;
++};
++
++static int pxakbd_scan_direct(struct pxakbd *pxakbd)
++{
++	u_int32_t kpdk;
++	unsigned int i;
++	int num_pressed = 0;
++
++	kpdk = KPDK & 0x0000000f;
++
++	for (i = 0; i < pxakbd->pd->direct.num; i++) {
++		int pressed = 0;
++
++		if (kpdk & (1 << i)) {
++			pressed = 1;
++			num_pressed++;
++			DEBUGP("pxakbd: pressed: direct %u\n", i);
++		}
++
++		input_report_key(pxakbd->input, pxakbd->pd->direct.keycode[i],
++				 pressed);
++	}
++
++	return num_pressed;
++}
++
++/* read the full 8x8 matrix from the PXA27x keypad controller */
++static void __read_matrix(u_int8_t *matrix)
++{
++	u_int32_t tmp;
++
++	tmp = KPASMKP0;
++	matrix[0] = tmp & 0x000000ff;
++	matrix[1] = (tmp & 0x00ff0000) >> 16;
++
++	tmp = KPASMKP1;
++	matrix[2] = tmp & 0x000000ff;
++	matrix[3] = (tmp & 0x00ff0000) >> 16;
++
++	tmp = KPASMKP2;
++	matrix[4] = tmp & 0x000000ff;
++	matrix[5] = (tmp & 0x00ff0000) >> 16;
++
++	tmp = KPASMKP3;
++	matrix[6] = tmp & 0x000000ff;
++	matrix[7] = (tmp & 0x00ff0000) >> 16;
++}
++
++/* compare current matrix with last, generate 'diff' events */
++static int __cmp_matrix_gen_events(struct pxakbd *pxakbd, u_int8_t *matrix)
++{
++	unsigned int i;
++	int num_pressed = 0;
++
++	/* iterate over the matrix */
++	for (i = 0; i < pxakbd->pd->matrix.rows; i++) {
++		unsigned int j;
++		for (j = 0; j < pxakbd->pd->matrix.cols; j++) {
++			u_int32_t scancode =
++				(i * pxakbd->pd->matrix.cols) + j;
++			int pressed = matrix[i] & (1 << j);
++
++			if (pressed) {
++				DEBUGP("pxakbd: pressed: %u/%u\n", i, j);
++				num_pressed++;
++			}
++
++			input_report_key(pxakbd->input,
++					 pxakbd->pd->matrix.keycode[scancode], pressed);
++		}
++	}
++
++	return num_pressed;
++}
++
++/* scan the matrix keypad */
++static int pxakbd_scan_matrix(struct pxakbd *pxakbd)
++{
++	int num_pressed;
++	u_int32_t kpas;
++	u_int8_t matrix[8];
++
++	kpas = KPAS;
++
++	if ((kpas & KPAS_MUKP) == KPAS_MUKP_NONE) {
++		/* no keys pressed */
++		memset(matrix, 0, sizeof(matrix));
++	} else if ((kpas & KPAS_MUKP) == KPAS_MUKP_ONE) {
++		/* one key pressed */
++		u_int8_t row = (kpas & KPAS_RP) >> 4;
++		u_int8_t col = kpas & KPAS_CP;
++
++		if (row == 0x0f || col == 0x0f) {
++			printk(KERN_WARNING "pxakbd: col or row invalid!\n");
++			return -1;
++		}
++
++		/* clear the matrix and set the single pressed key */
++		memset(matrix, 0, sizeof(matrix));
++		matrix[row] |= (1 << col);
++	} else {
++		/* multiple keys pressed */
++		__read_matrix(matrix);
++	}
++
++	num_pressed = __cmp_matrix_gen_events(pxakbd, matrix);
++
++	return num_pressed;
++}
++
++static void pxakbd_timer_callback(unsigned long data)
++{
++	unsigned long flags;
++	struct pxakbd *pxakbd = (struct pxakbd *) data;
++	unsigned int num_pressed;
++
++	spin_lock_irqsave(&pxakbd->lock, flags);
++
++	num_pressed = pxakbd_scan_direct(pxakbd);
++	num_pressed += pxakbd_scan_matrix(pxakbd);
++
++	spin_unlock_irqrestore(&pxakbd->lock, flags);
++
++	/* propagate events up the input stack */
++	input_sync(pxakbd->input);
++}
++
++static irqreturn_t pxakbd_interrupt(int irq, void *dummy, struct pt_regs *regs)
++{
++	struct pxakbd *pxakbd = dummy;
++	u_int32_t kpc;
++	int handled = 0;
++	int num_pressed = 0;
++
++	/* read and clear interrupt */
++	kpc = KPC;
++
++	if (kpc & KPC_DI) {
++		num_pressed += pxakbd_scan_direct(pxakbd);
++		handled = 1;
++	}
++
++	if (kpc & KPC_MI) {
++		while (KPAS & KPAS_SO) {
++			/* wait for scan to complete beforereading scan regs */
++			cpu_relax();
++		}
++		num_pressed += pxakbd_scan_matrix(pxakbd);
++		handled = 1;
++	}
++
++	/* If any keys are currently pressed, we need to start the timer to detect
++	 * key release. */
++	if (num_pressed)
++		mod_timer(&pxakbd->timer, jiffies + pxakbd->pd->scan_interval);
++
++	/* propagate events up the input stack */
++	input_sync(pxakbd->input);
++
++	return IRQ_RETVAL(handled);
++}
++
++static int __init pxakbd_probe(struct platform_device *pdev)
++{
++	struct pxakbd *pxakbd;
++	struct input_dev *input_dev;
++	struct resource *r;
++	int i;
++	int ret = -ENOMEM;
++
++	pxakbd = kzalloc(sizeof(*pxakbd), GFP_KERNEL);
++	if (!pxakbd)
++		goto out;
++
++	input_dev = input_allocate_device();
++	if (!input_dev)
++		goto out_pxa;
++
++	pxakbd->irq = platform_get_irq(pdev, 0);
++	r = platform_get_resource(pdev, IORESOURCE_MEM, 0);
++	if (!r || pxakbd->irq == NO_IRQ) {
++		printk(KERN_ERR "pxakbd: invalid resources\n");
++		ret = -EBUSY;
++		goto out_idev;
++	}
++
++	pxakbd->input = input_dev;
++	init_timer(&pxakbd->timer);
++	pxakbd->timer.function = pxakbd_timer_callback;
++	pxakbd->timer.data = (unsigned long) pxakbd;
++	pxakbd->pd = pdev->dev.platform_data;
++	pxakbd->res = r;
++
++	input_dev->name = "PXA Keyboard";
++	input_dev->phys = "pxakbd/input0";
++	input_dev->id.bustype = BUS_HOST;
++	input_dev->id.vendor = 0x0001;
++	input_dev->id.product = 0x0001;
++	input_dev->id.version = 0x0001;
++	input_dev->cdev.dev = &pdev->dev;
++	input_dev->private = pxakbd;
++
++	input_dev->evbit[0] = BIT(EV_KEY)|BIT(EV_REP);
++	input_dev->keycode = pxakbd->pd->matrix.keycode;
++	input_dev->keycodesize = sizeof(unsigned char);
++	input_dev->keycodemax = pxakbd->pd->matrix.rows
++				*pxakbd->pd->matrix.cols;
++
++	for (i = 0; i < input_dev->keycodemax; i++)
++		set_bit(pxakbd->pd->matrix.keycode[i], input_dev->keybit);
++	clear_bit(0, input_dev->keybit);
++
++#if 0
++	input_dev2->evbit[0] = ;
++	input_dev2->keycode = pxakbd->pd->direct.keycode;
++	input_dev2->keycodesize = sizeof(unsigned char);
++	input_dev2->keycodemax = pxakbd->pd->direct.num;
++
++	for (i = 0; i < input_dev2->keycodemax; i++)
++		set_bit(ezxkbd->keycode[i], input_dev2->keybit);
++#endif
++
++	if (request_irq(pxakbd->irq, pxakbd_interrupt, 0, "pxakbd", pxakbd)) {
++		printk(KERN_ERR "pxakbd: can't request irq %d\n", pxakbd->irq);
++		ret = -EBUSY;
++		goto out_idev;
++	}
++
++	r = request_mem_region(r->start, 0x4c, "pxakbd");
++	if (!r) {
++		printk(KERN_ERR "pxakbd: can't request memregion\n");
++		ret = -EBUSY;
++		goto out_irq;
++	}
++
++	/* set up gpio */
++	pxakbd->pd->init();
++
++	/* set keypad control register */
++	KPC = (KPC_ASACT |         /* automatic scan on activity */
++		KPC_ME | KPC_DE |   /* matrix and direct keypad enabled */
++		((pxakbd->pd->matrix.cols-1)<<23) | /* columns */
++		((pxakbd->pd->matrix.rows-1)<<26) | /* rows */
++		KPC_MS_ALL); /* scan all columns */
++
++	pxa_set_cken(CKEN19_KEYPAD, 1);
++
++#if 0
++    /* * we want the phone to be able to tell the status of the screen
++     * lock switch at power-up time */
++    kpdk = KPDK;         /* read direct key register */
++
++    /* * reading the register turns off the "key pressed since last read" bit
++     * if it was on, so we turn it off */
++    kpdk &= ~KPDK_DKP;
++
++#if defined(CONFIG_E680_P4A)
++    if (kpdk & KPDK_DK0) /* VR key is pressed (switch on) */ {
++        turn_on_bit (keybitmap, KEYPAD_CAMERA_VOICE);
++    }
++    if (kpdk & KPDK_DK4) /* Power key is pressed (switch on) */ {
++        turn_on_bit (keybitmap, KEYPAD_POWER);
++    }
++#elif defined(CONFIG_KEYPAD_E680) || defined(CONFIG_KEYPAD_E680_MODULE)
++    if (kpdk & KPDK_DK0) /* VR key is pressed (switch on) */ {
++        turn_on_bit (keybitmap, KEYPAD_CAMERA_VOICE);
++    }
++    if (kpdk & KPDK_DK4) /* Power key is pressed (switch on) */ {
++        turn_on_bit (keybitmap, KEYPAD_POWER);
++    }
++    if (kpdk & KPDK_DK3) /* GAME_A key is pressed (switch on) */ {
++        turn_on_bit (keybitmap, KEYPAD_A);
++    }
++    if (kpdk & KPDK_DK5) /* GAME_B key is pressed (switch on) */ {
++        turn_on_bit (keybitmap, KEYPAD_B);
++    }
++#elif defined(CONFIG_KEYPAD_A780) || defined(CONFIG_KEYPAD_A780_MODULE)
++    if (kpdk & KPDK_DK0) /* voice/camera key is pressed */ {
++        turn_on_bit (keybitmap, KEYPAD_CAMERA_VOICE);
++    }
++#endif
++
++
++#ifdef CONFIG_PM
++    pm_dev = pm_register(PM_SYS_DEV, 0, button_pm_callback);
++#if defined(CONFIG_E680_P4A)
++/*93,97,100,101,102*/
++    PKWR = 0xe4400;
++/*103 104 105 106*/
++    PGSR3 |= 0x780;
++#endif
++#if defined(CONFIG_KEYPAD_E680) || defined(CONFIG_KEYPAD_E680_MODULE)
++/*93,96,97,98,100,101,102*/
++    PKWR = 0xee400;
++/*103 104 105 106*/
++    PGSR3 |= 0x780;
++#endif
++#if defined(CONFIG_KEYPAD_A780) || defined(CONFIG_KEYPAD_A780_MODULE)
++/*93,97,98,100,101,102*/
++    PKWR = 0xec400;
++/*103 104 105 106 107*/
++    PGSR3 |= 0xf80;
++#endif
++#endif
++
++#if defined(CONFIG_KEYPAD_E680) || defined(CONFIG_KEYPAD_E680_MODULE)
++#ifdef CONFIG_PM
++	keypadI_pm_dev = pm_register(PM_SYS_DEV, 0, keypadI_pm_callback);
++        PGSR3 |= 0x8;
++#endif
++#endif
++
++#endif
++
++	KPC |= (KPC_DIE | KPC_MIE); /* enable matrix and direct keyboard */
++
++	KPKDI = 0x40;	/* matrix key debounce interval: 0x40 */
++
++	platform_set_drvdata(pdev, pxakbd);
++
++	return input_register_device(pxakbd->input);
++
++out_drvdata:
++	platform_set_drvdata(pdev, NULL);
++out_mem:
++	release_resource(r);
++out_irq:
++	free_irq(pxakbd->irq, pxakbd);
++out_idev:
++	input_free_device(input_dev);
++out_pxa:
++	kfree(pxakbd);
++out:
++	return ret;
++}
++
++static int pxakbd_remove(struct platform_device *pdev)
++{
++	struct pxakbd *pxakbd = platform_get_drvdata(pdev);
++
++	platform_set_drvdata(pdev, NULL);
++	release_resource(pxakbd->res);
++	free_irq(pxakbd->irq, pxakbd);
++	input_unregister_device(pxakbd->input);
++	kfree(pxakbd);
++
++	return 0;
++}
++
++static struct platform_driver pxakbd_driver = {
++	.probe		= &pxakbd_probe,
++	.remove		= &pxakbd_remove,
++	.driver		= {
++		.name	= "pxa-keyboard",
++	},
++};
++
++static int __devinit pxakbd_init(void)
++{
++	return platform_driver_register(&pxakbd_driver);
++}
++
++static void __exit pxakbd_exit(void)
++{
++	platform_driver_unregister(&pxakbd_driver);
++}
++
++module_init(pxakbd_init);
++module_exit(pxakbd_exit);
++
++MODULE_AUTHOR("Harald Welte <laforge@openezx.org>");
++MODULE_DESCRIPTION("Driver for Intel PXA27x keypad controller");
++MODULE_LICENSE("GPL");
+Index: linux-2.6.16.5-ezx/include/asm-arm/arch-pxa/pxa-regs.h
+===================================================================
+--- linux-2.6.16.5-ezx.orig/include/asm-arm/arch-pxa/pxa-regs.h	2006-05-02 23:11:43.000000000 +0200
++++ linux-2.6.16.5-ezx/include/asm-arm/arch-pxa/pxa-regs.h	2006-05-02 23:12:15.000000000 +0200
+@@ -2141,6 +2141,11 @@
+ #define KPMK_MKP        (0x1 << 31)
+ #define KPAS_SO         (0x1 << 31)
+ #define KPASMKPx_SO     (0x1 << 31)
++#define KPAS_RP		(0x000000f0)
++#define KPAS_CP		(0x0000000f)
++#define KPAS_MUKP	(0x7c000000)
++#define KPAS_MUKP_ONE	(0x04000000)
++#define KPAS_MUKP_NONE	(0x00000000)
+ 
+ /*
+  * UHC: USB Host Controller (OHCI-like) register definitions
