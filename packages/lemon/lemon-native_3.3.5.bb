@@ -1,7 +1,7 @@
-include lemon.inc
+require lemon.inc
 inherit native
 
-do_stage () {
+do_stage() {
 	install -d ${STAGING_BINDIR}
 	install -m 0755 lemon ${STAGING_BINDIR}/
 	install -d ${STAGING_DATADIR}/lemon
