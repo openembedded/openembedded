@@ -1,6 +1,8 @@
 SECTION = "libs"
 include glibc_${PV}.bb
 
+DEFAULT_PREFERENCE_sh3 = "-99"
+
 do_install () {
 	:
 }

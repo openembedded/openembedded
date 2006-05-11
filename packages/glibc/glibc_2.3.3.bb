@@ -5,6 +5,8 @@ LICENSE = "LGPL"
 SECTION = "libs"
 PRIORITY = "required"
 
+DEFAULT_PREFERENCE_sh3 = "-99"
+
 DEFAULT_PREFERENCE = "-1"
 DEFAULT_PREFERENCE_mipsel = "0"
 

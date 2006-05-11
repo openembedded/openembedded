@@ -1,5 +1,6 @@
 SECTION = "libs"
 include glibc_${PV}.bb
+DEFAULT_PREFERENCE_sh3 = "-99"
 
 DEPENDS = "linux-libc-headers"
 PROVIDES = "virtual/${TARGET_PREFIX}libc-initial"

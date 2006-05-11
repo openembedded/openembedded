@@ -5,6 +5,8 @@ SECTION = "libs"
 PRIORITY = "required"
 PR = "r6"
 
+DEFAULT_PREFERENCE_sh3 = "-99"
+
 GLIBC_ADDONS ?= "linuxthreads"
 GLIBC_EXTRA_OECONF ?= ""
 
