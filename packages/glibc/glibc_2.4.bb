@@ -4,7 +4,7 @@ LICENSE = "LGPL"
 SECTION = "libs"
 PRIORITY = "required"
 DEFAULT_PREFERENCE = "-1"
-PR = "r4"
+PR = "r5"
 
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/glibc-2.4"
 
