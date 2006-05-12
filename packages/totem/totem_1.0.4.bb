@@ -6,6 +6,7 @@ SECTION = "x11/multimedia"
 DESCRIPTION="A GTK2 based media player"
 HOMEPAGE="http://www.gnome.org/projects/totem/"
 LICENSE="GPL"
+PR = "r1"
 
 SRC_URI="http://ftp.gnome.org/pub/GNOME/sources/totem/1.0/totem-${PV}.tar.gz \
 	file://include.patch;patch=1 \
@@ -19,7 +20,7 @@ DEPENDS="gtk+ libglade gnome-vfs gconf libxine-x11 libxml2"
 
 inherit autotools
 
-EXTRA_OECONF="--disable-schemas-install --disable-nvtv --enable-gtk --disable-debug --disable-gstreamer --disable-mozilla"
+EXTRA_OECONF="--disable-schemas-install --disable-nvtv --enable-gtk --disable-debug --disable-gstreamer --disable-mozilla --disable-lirc"
 
 #SELECTED_OPTIMIZATION="-O0 -g"
 LDFLAGS_append = " -Wl,--export-dynamic"
