@@ -1,12 +1,15 @@
 DESCRIPTION = "Entrance is the Enlightenment login manager"
 LICENSE = "MIT"
 # can also use pam and crypt
-DEPENDS = "edb edb-native evas-x11 ecore-x11 edje esmart-x11 bash keylaunch detect-stylus xserver-common login-manager"
-RDEPENDS += "bash keylaunch detect-stylus xserver-common glibc-gconv-iso8859-1 login-manager entrance-themes"
+DEPENDS = "edb edb-native evas-x11 ecore-x11 edje esmart-x11 bash keylaunch detect-stylus xserver-common"
+RDEPENDS += "bash keylaunch detect-stylus xserver-common glibc-gconv-iso8859-1 entrance-themes"
 HOMEPAGE = "http://www.enlightenment.org"
 PR = "r13"
 
-inherit e
+inherit e update-rc.d
+
+INITSCRIPT_NAME = "entrance"
+INITSCRIPT_PARAMS = "start 99 5 2 . stop 20 0 1 6 ."
 
 SRC_URI = "${E_URI}/entrance-${PV}.tar.gz \
            file://config-db.patch;patch=1 \
@@ -31,7 +34,4 @@ do_install_append() {
 	install -d ${D}/etc/X11/Sessions
 	
 	install -m 755 ${WORKDIR}/Sessions/* ${D}/etc/X11/Sessions
-
-	install -d ${D}/etc/X11/login-managers/
-	mv ${D}/etc/init.d/entrance ${D}/etc/X11/login-managers/entrance	
 }
