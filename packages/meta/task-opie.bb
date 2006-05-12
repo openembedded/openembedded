@@ -166,7 +166,8 @@ RDEPENDS_task-opie-irda = "irda-utils libopieobex0 obexftp obexpush"
 RDEPENDS_task-opie-extra-apps = "opie-calculator opie-checkbook opie-mail opie-eye \
                         opie-rdesktop opie-wellenreiter opie-irc \
                         opie-mediaplayer2 \
-                        konqueror-embedded qpdf2"
+                        qpdf2"
+# konqueror-embedded 
 
 RDEPENDS_task-opie-extra-games = "opie-parashoot opie-mindbreaker opie-fifteen opie-tictac \
                          opie-tetrix"
