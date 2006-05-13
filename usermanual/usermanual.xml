@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<!--
+  ex:ts=4:sw=4:sts=4:et
+  -*- tab-width: 4; c-basic-offset: 4; indent-tabs-mode: nil -*-
+-->
+<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.2//EN"
+                      "http://www.oasis-open.org/docbook/xml/4.2/docbookx.dtd">
+<book>
+    <bookinfo>
+        <title>OpenEmbedded User Manual</title>
+        <authorgroup>
+            <corpauthor>OpenEmbedded Team</corpauthor>
+        </authorgroup>
+        <copyright>
+            <year>2006</year>
+            <holder>Holger Hans Peter Freyther</holder>
+        </copyright>
+        <legalnotice>
+            <para>This work is licensed under the Creative Commons Attribution License. To view a copy of this license, visit <ulink url="http://creativecommons.org/licenses/by/2.0/">http://creativecommons.org/licenses/by/2.0/</ulink> or send a letter to Creative Commons, 559 Nathan Abbott Way, Stanford, California 94305, USA.</para>
+        </legalnotice>
+    </bookinfo>
+
+
+    <chapter>
+        <title>Introduction</title>
+        <section>
+            <title>Overview</title>
+            <para><ulink url="http://www.openembedded.org">OpenEmbedded</ulink> is a set of metadata used to crosscompile, package and install software packages. OpenEmbedded is being used to build and maintain a number of embedded Linux distributions, including OpenZaurus, Familiar and SlugOS.</para>
+        </section>
+    </chapter>
+</book>
