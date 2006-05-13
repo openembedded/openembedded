@@ -76,6 +76,63 @@ described in the <ulink url="http://bitbake.berlios.de/manual">BitBake manual</u
 
 
     <chapter>
+        <title>Getting OpenEmbedded</title>
+        <section>
+            <title>Getting BitBake</title>
+            <para></para>
+        </section>
+
+        <section>
+            <title>Getting OpenEmbedded</title>
+            <para></para>
+        </section>
+
+        <section>
+            <title>Configuring OpenEmbedded</title>
+            <para></para>
+        </section>
+
+        <section>
+            <title>Building Software</title>
+            <para></para>
+        </section>
+    </chapter>
+
+    <chapter>
+        <title>Common Usecases/tasks</title>
+
+        <section>
+            <title>Creating a new Distribution</title>
+            <para></para>
+        </section>
+
+        <section>
+            <title>Adding a new Machine</title>
+            <para></para>
+        </section>
+
+        <section>
+            <title>Adding a new Package</title>
+            <para></para>
+        </section>
+
+        <section>
+            <title>Creating your own image</title>
+            <para></para>
+        </section>
+
+        <section>
+            <title>Using a prebuilt toolchain to create your packages</title>
+            <para></para>
+        </section>
+
+        <section>
+            <title>Using a new package format</title>
+            <para></para>
+        </section>
+    </chapter>
+
+    <chapter>
         <title>Comparsion</title>
 
         <section>
