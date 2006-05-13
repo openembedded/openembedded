@@ -1,16 +1,17 @@
 DESCRIPTION = "A C++ Wrapper for the directfb framebuffer library."
+HOMEPAGE = "http://directfb.org"
 SECTION = "libs"
 PRIORITY = "optional"
 DEPENDS = "directfb"
-
 LICENSE = "LGPL"
 
-SRC_URI = "http://www.directfb.org/downloads/Old/DFB++-${PV}.tar.gz"
+# needs a g++4 patch
+BROKEN = "1"
+
+SRC_URI = "http://www.directfb.org/downloads/Extras/DFB++-${PV}.tar.gz"
 S = "${WORKDIR}/DFB++-${PV}"
 
 inherit autotools pkgconfig
-
-EXTRA_OECONF = ""
 
 do_stage() {
         oe_runmake -C include 'libdir=/lib' 'includedir=/include/dfb++' \
