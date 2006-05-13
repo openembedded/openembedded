@@ -1,0 +1,24 @@
+This patch fixes the mmc/sd read-only detection, which is obviously only
+available on E680 phones, and not on A780, since TransFlash doesn't have any
+hardware write protection.
+
+Index: linux-2.6.16.13-ezx3/arch/arm/mach-pxa/ezx.c
+===================================================================
+--- linux-2.6.16.13-ezx3.orig/arch/arm/mach-pxa/ezx.c	2006-05-12 19:32:03.000000000 +0200
++++ linux-2.6.16.13-ezx3/arch/arm/mach-pxa/ezx.c	2006-05-13 15:22:51.000000000 +0200
+@@ -151,9 +153,13 @@
+ static int ezx_mci_get_ro(struct device *dev)
+ {
+ 	printk("%s entered\n", __FUNCTION__);
+-	return (GPLR3 & 0x800);
+-	// return GPIO_is_high(96+4);
++#if defined(CONFIG_PXA_EZX_E680)
+ 	/* this is only e680, i guess */
++	// return GPIO_is_high(96+4);
++	return (GPLR3 & 0x800);
++#else
++	return 0;
++#endif
+ }
+ 
+ #if defined(CONFIG_PXA_EZX_A780)

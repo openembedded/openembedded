@@ -1,8 +1,8 @@
-DESCRIPTION = "2.6 Linux Development Kernel for the Motorola A780."
+DESCRIPTION = "2.6 Linux Development Kernel for the Motorola GSM phones A780 and E680"
 SECTION = "kernel"
 MAINTAINER = "Michael 'Mickey' Lauer <mickey@vanille.de>"
 LICENSE = "GPL"
-PR = "ezx3"
+PR = "ezx3-r2"
 
 inherit kernel
 
@@ -35,8 +35,10 @@ file://ssp_pcap_nobitbang.patch;patch=1 \
 file://pxamci-4bit.patch;patch=1 \
 file://a780-transflash_power.patch;patch=1 \
 file://ezx-kbd.patch;patch=1 \
-file://laforge_config.patch;patch=1 \
-file://defconfig-a780"
+file://ezx-mmc-ro.patch;patch=1 \
+\
+file://defconfig-a780 \
+file://defconfig-e680"
 S = "${WORKDIR}/linux-2.6.16"
 
 ##############################################################
@@ -46,20 +48,14 @@ FILES_kernel-image = ""
 ALLOW_EMPTY = 1
 
 COMPATIBLE_HOST = "arm.*-linux"
-COMPATIBLE_MACHINE = '(a780)'
+COMPATIBLE_MACHINE = '(a780|e680)'
 
-CMDLINE_CON = "console=ttyS0,115200n8 console=tty1 noinitrd"
-CMDLINE_ROOT = "root=/dev/mtdblock2 rootfstype=jffs2"
-CMDLINE_ROOT_spitz = "root=/dev/hda1 rootfstype=ext3 rw"
-CMDLINE_OTHER = "dyntick=enable"
+CMDLINE_CON = "console=ttyS2,115200n8 console=tty1 noinitrd"
+CMDLINE_ROOT = "root=/dev/mmcblk0p1 rootfstype=ext3 rootdelay=5"
+# CMDLINE_OTHER = "dyntick=enable"
 CMDLINE_DEBUG = '${@base_conditional("DISTRO_TYPE", "release", "quiet", "debug",d)}'
-
-CMDLINE_MEM_collie = "mem=${mem}M"
-CMDLINE_ROTATE_spitz = "fbcon=rotate:1"
-CMDLINE_ROTATE_akita = "fbcon=rotate:1"
-CMDLINE_ROTATE_collie = "fbcon=rotate:1"
-CMDLINE_ROTATE_poodle = "fbcon=rotate:1"
-CMDLINE = "${CMDLINE_CON} ${CMDLINE_ROOT} ${CMDLINE_MEM} ${CMDLINE_ROTATE} ${CMDLINE_OTHER} ${CMDLINE_DEBUG}"
+CMDLINE_IP = "ip=192.168.1.2:192.168.1.10:192.168.1.10:255.255.255.0:ezx:usb0:off"
+CMDLINE = "${CMDLINE_CON} ${CMDLINE_ROOT} ${CMDLINE_IP} ${CMDLINE_ROTATE} ${CMDLINE_OTHER} ${CMDLINE_DEBUG}"
 
 ###############################################################
 # module configs specific to this kernel
