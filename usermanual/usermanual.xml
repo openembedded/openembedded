@@ -210,7 +210,7 @@ OpenEmbedded to build packages. One of many approaches is shown and discussed he
             <section>
                 <title>The toolchain</title>
                 <para>We assume the toolchain provides a C and C++ compiler, an assembler and other tools to build packages.
-The list below shows a gcc 3.4.4 toolchain using glibc. We assume that the toolchain is in your <command>PATH</command>.</para>
+The list below shows a gcc 3.4.4 toolchain for ARM architectures using glibc. We assume that the toolchain is in your <command>PATH</command>.</para>
 <screen>
 ls pre-built/cross/bin
 
