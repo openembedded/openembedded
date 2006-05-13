@@ -52,7 +52,7 @@ At this time the project had pushed <emphasis>buildroot</emphasis> to its limits
 <emphasis>ipk</emphasis> packages, feeds and images and had support for more than one machine. But it was impossible
 to use different patches, files for different architectures, machines or distributions. To overcome this shortcoming
 OpenEmbedded was created.</para>
-            <para>After a few months of usage multiple projects started using OpenEmbedded and contributing patches and new metadata to it. On 7 December 2004 Chris Larson split the project in to two parts: Bitbake, a generic task executor and OpenEmbedded, the metadata for bitbake.</para>   
+            <para>After a few months of usage multiple projects started using OpenEmbedded and contributing patches and new metadata to it. On 7 December 2004 Chris Larson split the project into two parts: Bitbake, a generic task executor and OpenEmbedded, the metadata for bitbake.</para>   
        </section>
     </chapter>
 
