@@ -2,13 +2,14 @@ DESCRIPTION = "Tool Command Language ToolKit Extension"
 LICENSE = "tcl"
 SECTION = "devel/tcltk"
 HOMEPAGE = "http://tcl.sourceforge.net"
-DEPENDS = "tcl x11"
+DEPENDS = "tcl libx11 libxt"
 RDEPENDS = "tcl"
-PR = "r2"
+PR = "r4"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/tcl/tk${PV}-src.tar.gz \
            file://disable-xim.patch;patch=1;pnum=0 \
-           file://tk-add-soname.patch;patch=1"
+           file://tk-add-soname.patch;patch=1 \
+           file://fix-configure.patch;patch=1;pnum=2"
 S = "${WORKDIR}/tk${PV}/unix"
 
 inherit autotools
