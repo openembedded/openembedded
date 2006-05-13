@@ -220,7 +220,42 @@ It's important to use <emphasis>+=</emphasis> so it will get appended to the sta
 
         <section>
             <title>Using a prebuilt toolchain to create your packages</title>
-            <para></para>
+            <para>It might be necessary to integrate a prebuilt toolchain and other libraries but still be use
+OpenEmbedded to build packages. One of many approaches is shown and discussed here.</para>
+
+            <section>
+                <title>The toolchain</title>
+                <para>We assume the toolchain provides a C and C++ compiler, an assembler and other tools to build packages.
+The list below shows a gcc 3.4.4 toolchain using glibc. We assume that the toolchain is in your <command>PATH</command>.</para>
+<screen>
+ls pre-built/cross/bin
+
+arm-linux-g++
+arm-linux-ld
+arm-linux-ranlib
+arm-linux-ar
+arm-linux-g77
+arm-linux-readelf
+arm-linux-as
+arm-linux-gcc
+arm-linux-c++
+arm-linux-size
+arm-linux-c++filt
+arm-linux-nm
+arm-linux-strings
+arm-linux-cpp
+arm-linux-objcopy
+arm-linux-strip
+arm-linux-objdump
+</screen>
+            </section>
+            <section>
+                <title>The libraries</title>
+                <para>The additional libraries</para>
+                <screen>
+</screen>
+            </section>
+
         </section>
 
         <section>
