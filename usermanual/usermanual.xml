@@ -30,7 +30,7 @@
             <itemizedlist>
                 <listitem><para>Handle crosscompilation.</para></listitem>
                 <listitem><para>Handle interpackage dependencies</para></listitem>
-                <listitem><para>Must be able to emit packages (tar,deb,rpm,ipk)</para></listitem>
+                <listitem><para>Must be able to emit packages (tar,rpm,ipk)</para></listitem>
                 <listitem><para>Must be able to create images and feeds from packages</para></listitem>
                 <listitem><para>Must be highly configurable to support many machines, distribution and architectures.</para></listitem>
                 <listitem><para>Writing of metadata must be easy and reusable</para></listitem>
