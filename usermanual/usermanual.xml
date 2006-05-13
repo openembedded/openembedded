@@ -38,5 +38,63 @@
         </para>
         <para>Together with <ulink url="http://bitbake.berlios.de/manual">BitBake</ulink> OpenEmbedded satisfies all these and many more. Flexibilitiy and power have always been the priorities.</para>
         </section>
+
+
+       <section>
+            <title>History</title>
+            <para>OpenEmbedded was invented by the creators of the OpenZaurus project. 
+At this time the project had pushed <emphasis>buildroot</emphasis> to the limits. It supported the creation of
+<emphasis>ipk</emphasis>, feeds and images and had support for more than one machine. But it was impossible
+to use different patches, files for different architectures, machines or distributions. To overcome this shortcoming
+BitBake and OpenEmbedded were created.</para>
+       </section>
+    </chapter>
+
+
+    <chapter>
+        <title>Metadata</title>
+        <section>
+            <title>File Layout</title>
+            <para>OpenEmbedded has three directories holding BitBake metadata <emphasis>conf</emphasis>,
+<emphasis>classes</emphasis> and <emphasis>packaes</emphasis>. FIXME</para>
+        </section>
+        <section>
+            <title>Syntax</title>
+            <para>OpenEmbedded has files ending with <emphasis>.conf</emphasis>, <emphasis>.inc</emphasis>,
+<emphasis>.bb</emphasis> and<emphasis>.bbclass</emphasis>. The syntax and semantic of these files are best
+described in the <ulink url="http://bitbake.berlios.de/manual">BitBake manual</ulink>. </para>
+        </section>
+        <section>
+            <title>Classes</title>
+            <para>OpenEmbedded provides special BitBake classes to ease compiling, packaging and other things. FIXME.</para>
+        </section>
+        <section>
+            <title>Writing Meta Data (Adding packages)</title>
+            <para>FIXME, ask koen to fill in things here</para>
+        </section>
+    </chapter>
+
+
+    <chapter>
+        <title>Comparsion</title>
+
+        <section>
+            <title>buildroot</title>
+            <para>We are better, they are on crack?</para>
+        </section>
+
+        <section>
+            <title>crosstool</title>
+            <para>We are better, they are on crack?</para>
+        </section>
+
+        <section>
+            <title>handmade</title>
+            <para>Crosscompilation is a tough business. It is not that crosscompiling is hard itself but many people misuse
+the buildsystem they use to build their software. This will lead to a variety of issues you can run into. This can be failing
+tests on configuration because of executing cross compiled binaries or crashes at runtime due wrong sizes of basic types. 
+When utilizing OpenEmbedded you avoid searching for patches at many different places and will be able to get things done more quickly.
+OpenEmbedded allows you to chooose from a pool of ready to use software packages, allow creation of images and many more.</para>
+        </section>
     </chapter>
 </book>
