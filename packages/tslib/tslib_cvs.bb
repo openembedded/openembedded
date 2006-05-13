@@ -1,7 +1,7 @@
 SECTION = "base"
 DESCRIPTION = "tslib is a touchscreen access library."
 PV = "0.0cvs${CVSDATE}"
-PR = "r36"
+PR = "r37"
 
 SRC_URI_OVERRIDES_PACKAGE_ARCH = "0"
 PACKAGE_ARCH_tslib-conf = "${MACHINE}"
@@ -48,7 +48,7 @@ do_install_append() {
 		done
 		rm -f ${D}${sysconfdir}/ts.conf
 		;;
-	c7x0 | spitz | akita | tosa  )
+	c7x0 | spitz | akita | tosa )
 		install -d ${D}${datadir}/tslib
 		for f in ts.conf-corgi ts.conf-corgi-2.4; do
 			install -m 0644 ${WORKDIR}/$f ${D}${datadir}/tslib/
