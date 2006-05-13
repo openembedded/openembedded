@@ -1,0 +1,1 @@
+use 'docbook2pdf usermanual.xml' to generate a pdf version, because doing it via the Makefile doesn't work
