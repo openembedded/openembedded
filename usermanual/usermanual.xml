@@ -30,8 +30,8 @@
         <title>Introduction</title>
         <section>
             <title>Overview</title>
-            <para><ulink url="http://www.openembedded.org">OpenEmbedded</ulink> is a set of metadata used to crosscompile, package and install software packages. OpenEmbedded is being used to build and maintain a number of embedded Linux distributions, including OpenZaurus, Familiar and SlugOS.</para>
-        <para>The primary usecase of OpenEmbedded are:
+            <para><ulink url="http://www.openembedded.org"><application>OpenEmbedded</application></ulink> is a set of metadata used to crosscompile, package and install software packages. <application>OpenEmbedded</application> is being used to build and maintain a number of embedded Linux distributions, including OpenZaurus, Familiar and SlugOS.</para>
+        <para>The primary usecase of <application>OpenEmbedded</application> are:
             <itemizedlist>
                 <listitem><para>Handle crosscompilation.</para></listitem>
                 <listitem><para>Handle interpackage dependencies</para></listitem>
@@ -41,7 +41,7 @@
                 <listitem><para>Writing of metadata must be easy and reusable</para></listitem>
             </itemizedlist>
         </para>
-        <para>Together with <ulink url="http://bitbake.berlios.de/manual">BitBake</ulink>, OpenEmbedded satisfies all these and many more. Flexibility and power have always been the priorities.</para>
+        <para>Together with <ulink url="http://bitbake.berlios.de/manual"><application>BitBake</application></ulink>, OpenEmbedded satisfies all these and many more. Flexibility and power have always been the priorities.</para>
         </section>
 
 
@@ -52,7 +52,7 @@ At this time the project had pushed <emphasis>buildroot</emphasis> to its limits
 <emphasis>ipk</emphasis> packages, feeds and images and had support for more than one machine. But it was impossible
 to use different patches, files for different architectures, machines or distributions. To overcome this shortcoming
 OpenEmbedded was created.</para>
-            <para>After a few months other projects started using OpenEmbedded and contributing back. On 7 December 2004 Chris Larson split the project into two parts: Bitbake, a generic task executor and OpenEmbedded, the metadata for bitbake.</para>   
+            <para>After a few months other projects started using OpenEmbedded and contributing back. On 7 December 2004 Chris Larson split the project into two parts: BitBake, a generic task executor and OpenEmbedded, the metadata for BitBake.</para>   
        </section>
     </chapter>
 
@@ -61,23 +61,23 @@ OpenEmbedded was created.</para>
         <title>Metadata</title>
         <section>
             <title>File Layout</title>
-            <para>OpenEmbedded has three directories holding BitBake metadata <emphasis>conf</emphasis>,
+            <para>OpenEmbedded has three directories holding <application>BitBake</application> metadata <emphasis>conf</emphasis>,
 <emphasis>classes</emphasis> and <emphasis>packaes</emphasis>. FIXME</para>
         </section>
         <section>
             <title>Syntax</title>
             <para>OpenEmbedded has files ending with <emphasis>.conf</emphasis>, <emphasis>.inc</emphasis>,
 <emphasis>.bb</emphasis> and<emphasis>.bbclass</emphasis>. The syntax and semantic of these files are best
-described in the <ulink url="http://bitbake.berlios.de/manual">BitBake manual</ulink>. </para>
+described in the <ulink url="http://bitbake.berlios.de/manual"><application>BitBake</application> manual</ulink>. </para>
         </section>
         <section>
             <title>Classes</title>
-            <para>OpenEmbedded provides special BitBake classes to ease compiling, packaging and other things. FIXME.</para>
+            <para>OpenEmbedded provides special <application>BitBake</application> classes to ease compiling, packaging and other things. FIXME.</para>
         </section>
         <section>
             <title>Writing Meta Data (Adding packages)</title>
             <para>
-This page will guide you trough the effort of writing a .bb file or <emphasis>recipe</emphasis> in bitbake speak.
+This page will guide you trough the effort of writing a .bb file or <emphasis>recipe</emphasis> in BitBake speak.
 
 Let's start with the easy stuff, like the package description, license, etc:
 
@@ -105,7 +105,7 @@ After entering all this OE will know what to build before trying to build your a
 SRC_URI = "http://www.host.com/foo/files/${P}.tar.bz2;md5sum=yoursum"
 </screen>
 
-This will tell the fetcher to where to download the sources from and it will check the integrity using md5sum if you provided the appropriate <emphasis>yoursum</emphasis>. You can make one by doing <screen>md5sum foo-3.2.2.tar.gz</screen> and replacing <emphasis>yoursum</emphasis> with the md5sum on your screen. A typical md5sum will look like this: <screen>a6434b0fc8a54c3dec3d6875bf3be8db </screen>Notice the <emphasis>${P}</emphasis> variable, that one holds the package name, <emphasis>${PN}</emphasis> in bitbake speak and the package version, <emphasis>${PV}</emphasis> in bitbake speak. It's a short way of writing <emphasis>${PN}-${PV}</emphasis>. Using this notation means you can copy the recipe when a new version is released without having to alter the contents. You do need to check if everything is still correct, because new versions mean new bugs.
+This will tell the fetcher to where to download the sources from and it will check the integrity using md5sum if you provided the appropriate <emphasis>yoursum</emphasis>. You can make one by doing <screen>md5sum foo-3.2.2.tar.gz</screen> and replacing <emphasis>yoursum</emphasis> with the md5sum on your screen. A typical md5sum will look like this: <screen>a6434b0fc8a54c3dec3d6875bf3be8db </screen>Notice the <emphasis>${P}</emphasis> variable, that one holds the package name, <emphasis>${PN}</emphasis> in BitBake speak and the package version, <emphasis>${PV}</emphasis> in BitBake speak. It's a short way of writing <emphasis>${PN}-${PV}</emphasis>. Using this notation means you can copy the recipe when a new version is released without having to alter the contents. You do need to check if everything is still correct, because new versions mean new bugs.
 
 
 Before we can move to the actual building we need to find out which build system the package is using. If we're lucky, we see a <emphasis>configure</emphasis> file in the build tree this is an indicator that we can <emphasis>inherit autotools</emphasis> if we see a <emphasis>.pro</emphasis> file, it might be qmake, which needs <emphasis>inherit qmake</emphasis>. Virtually all gtk apps use autotools:
@@ -118,7 +118,7 @@ We are in luck! The package is a well-behaved application using autotools and pk
 Lets start the build:
 
 <screen>
-bitbake foo
+<command>bitbake</command> foo
 </screen>
 
 Depending on what you have built before and the speed of your computer this can take a few seconds to a few hours, so be prepared.
@@ -159,7 +159,7 @@ It's important to use <emphasis>+=</emphasis> so it will get appended to the sta
     <chapter>
         <title>Getting OpenEmbedded</title>
         <section>
-            <title>Getting BitBake</title>
+            <title>Getting <application>BitBake</application></title>
             <para></para>
         </section>
 
@@ -204,7 +204,42 @@ It's important to use <emphasis>+=</emphasis> so it will get appended to the sta
 
         <section>
             <title>Using a prebuilt toolchain to create your packages</title>
-            <para></para>
+            <para>It might be necessary to integrate a prebuilt toolchain and other libraries but still be use
+OpenEmbedded to build packages. One of many approaches is shown and discussed here.</para>
+
+            <section>
+                <title>The toolchain</title>
+                <para>We assume the toolchain provides a C and C++ compiler, an assembler and other tools to build packages.
+The list below shows a gcc 3.4.4 toolchain using glibc. We assume that the toolchain is in your <command>PATH</command>.</para>
+<screen>
+ls pre-built/cross/bin
+
+arm-linux-g++
+arm-linux-ld
+arm-linux-ranlib
+arm-linux-ar
+arm-linux-g77
+arm-linux-readelf
+arm-linux-as
+arm-linux-gcc
+arm-linux-c++
+arm-linux-size
+arm-linux-c++filt
+arm-linux-nm
+arm-linux-strings
+arm-linux-cpp
+arm-linux-objcopy
+arm-linux-strip
+arm-linux-objdump
+</screen>
+            </section>
+            <section>
+                <title>The libraries</title>
+                <para>The additional libraries</para>
+                <screen>
+</screen>
+            </section>
+
         </section>
 
         <section>
@@ -232,7 +267,7 @@ It's important to use <emphasis>+=</emphasis> so it will get appended to the sta
 the buildsystem they use to build their software. This will lead to a variety of issues you can run into. This can be failing
 tests on configuration because of executing cross compiled binaries or crashes at runtime due wrong sizes of basic types. 
 When utilizing OpenEmbedded you avoid searching for patches at many different places and will be able to get things done more quickly.
-OpenEmbedded allows you to chooose from a pool of ready to use software packages, allow creation of images and many more.</para>
+<application>OpenEmbedded</application> allows you to chooose from a pool of ready to use software packages, allow creation of images and many more.</para>
         </section>
     </chapter>
 </book>
