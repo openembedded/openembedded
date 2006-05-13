@@ -1,0 +1,59 @@
+--- linux-2.4.22/drivers/usb/serial/pl2303.c	2006-05-12 16:05:17.000000000 -0400
++++ linux-2.4.22-fred/drivers/usb/serial/pl2303.c	2006-05-12 18:00:39.000000000 -0400
+@@ -642,14 +642,56 @@ static int wait_modem_info(struct usb_se
+ 	return 0;
+ }
+ 
++
+ static int pl2303_ioctl (struct usb_serial_port *port, struct file *file, unsigned int cmd, unsigned long arg)
+ {
++	struct pl2303_private *priv = port->private;
++	unsigned int value;
++
+ 	dbg("%s (%d) cmd = 0x%04x", __FUNCTION__, port->number, cmd);
+ 
+ 	switch (cmd) {
+ 		case TIOCMIWAIT:
+ 			dbg("%s (%d) TIOCMIWAIT", __FUNCTION__,  port->number);
+ 			return wait_modem_info(port, arg);
++	
++		case TIOCMGET:
++			value = ((priv->line_control & CONTROL_DTR)		? TIOCM_DTR : 0)
++			  | ((priv->line_control & CONTROL_RTS)	? TIOCM_RTS : 0)
++			  | ((priv->line_status & UART_CTS)	? TIOCM_CTS : 0)
++			  | ((priv->line_status & UART_DSR)	? TIOCM_DSR : 0)
++			  | ((priv->line_status & UART_RING)	? TIOCM_RI  : 0)
++			  | ((priv->line_status & UART_DCD)	? TIOCM_CD  : 0); 
++
++			if (put_user(value, (unsigned int *) arg))
++				return -EFAULT;
++			return 0;
++	
++		case TIOCMSET:
++			if (get_user(value, (unsigned int *) arg))
++				return -EFAULT;
++			priv->line_control &= ~(CONTROL_RTS | CONTROL_DTR);
++			priv->line_control |= ((arg & TIOCM_RTS) ? CONTROL_RTS : 0);
++			priv->line_control |= ((arg & TIOCM_DTR) ? CONTROL_DTR : 0);
++			return set_control_lines (port->serial->dev, priv->line_control);
++    
++		case TIOCMBIS:
++			if (get_user(value, (unsigned int *) arg))
++				return -EFAULT;
++			if (value & TIOCM_RTS)
++				priv->line_control |= CONTROL_RTS;
++			if (value & TIOCM_DTR)
++				priv->line_control |= CONTROL_DTR;
++			return set_control_lines (port->serial->dev, priv->line_control);
++        
++		case TIOCMBIC:
++			if (get_user(value, (unsigned int *) arg))
++				return -EFAULT;
++			if (value & TIOCM_RTS)
++				priv->line_control &= ~CONTROL_RTS;
++			if (value & TIOCM_DTR)
++				priv->line_control &= ~CONTROL_DTR;
++			return set_control_lines (port->serial->dev, priv->line_control);
+ 
+ 		default:
+ 			dbg("%s not supported = 0x%04x", __FUNCTION__, cmd);
