@@ -1,0 +1,106 @@
+Index: linux-2.6.16.5-ezx/drivers/usb/gadget/ether.c
+===================================================================
+--- linux-2.6.16.5-ezx.orig/drivers/usb/gadget/ether.c	2006-04-12 17:27:57.000000000 -0300
++++ linux-2.6.16.5-ezx/drivers/usb/gadget/ether.c	2006-04-23 10:47:06.000000000 -0300
+@@ -246,7 +246,9 @@
+ #endif
+ 
+ #ifdef CONFIG_USB_GADGET_PXA27X
+-#define DEV_CONFIG_CDC
++#define DEV_CONFIG_SUBSET
++extern struct usb_ep* pxa27x_ep_config(struct usb_gadget *gadget,
++        struct usb_endpoint_descriptor *desc,int config,int interface,int alt);
+ #endif
+ 
+ #ifdef CONFIG_USB_GADGET_AT91
+@@ -2271,7 +2273,27 @@
+ 
+ 	/* all we really need is bulk IN/OUT */
+ 	usb_ep_autoconfig_reset (gadget);
++#ifdef CONFIG_USB_GADGET_PXA27X	
++#ifdef	CONFIG_USB_ETH_RNDIS
++	in_ep = pxa27x_ep_config (gadget, &fs_source_desc,
++			DEV_RNDIS_CONFIG_VALUE,	
++			(int)rndis_data_intf.bInterfaceNumber, 
++			(int)rndis_data_intf.bAlternateSetting);
++#elif	defined(DEV_CONFIG_CDC) 
++	in_ep = pxa27x_ep_config (gadget, &fs_source_desc, 
++			DEV_CONFIG_VALUE,
++			(int)data_intf.bInterfaceNumber,
++			(int)data_intf.bAlternateSetting);
++#elif	defined(DEV_CONFIG_SUBSET)			
++	in_ep = pxa27x_ep_config (gadget, &fs_source_desc, 
++			DEV_CONFIG_VALUE,
++			(int)subset_data_intf.bInterfaceNumber,
++			(int)subset_data_intf.bAlternateSetting);
++ 
++#endif //CONFIG_USB_ETH_RNDIS
++#else
+ 	in_ep = usb_ep_autoconfig (gadget, &fs_source_desc);
++#endif //CONFIG_USB_GADGET_PXA27X
+ 	if (!in_ep) {
+ autoconf_fail:
+ 		dev_err (&gadget->dev,
+@@ -2281,7 +2303,26 @@
+ 	}
+ 	in_ep->driver_data = in_ep;	/* claim */
+ 	
++#ifdef	CONFIG_USB_GADGET_PXA27X	
++#ifdef	CONFIG_USB_ETH_RNDIS
++	out_ep = pxa27x_ep_config (gadget, &fs_sink_desc,
++			DEV_RNDIS_CONFIG_VALUE,	
++			(int)rndis_data_intf.bInterfaceNumber, 
++			(int)rndis_data_intf.bAlternateSetting);
++#elif	defined(DEV_CONFIG_CDC)
++	out_ep = pxa27x_ep_config (gadget, &fs_sink_desc, 
++			DEV_CONFIG_VALUE,
++			(int)data_intf.bInterfaceNumber,
++			(int)data_intf.bAlternateSetting);
++#elif	defined(DEV_CONFIG_SUBSET)			
++	out_ep = pxa27x_ep_config (gadget, &fs_sink_desc, 
++			DEV_CONFIG_VALUE,
++			(int)subset_data_intf.bInterfaceNumber,
++			(int)subset_data_intf.bAlternateSetting);
++#endif //CONFIG_USB_ETH_RNDIS
++#else	
+ 	out_ep = usb_ep_autoconfig (gadget, &fs_sink_desc);
++#endif //CONFIG_USB_GADGET_PXA27X
+ 	if (!out_ep)
+ 		goto autoconf_fail;
+ 	out_ep->driver_data = out_ep;	/* claim */
+@@ -2291,7 +2332,22 @@
+ 	 * Since some hosts expect one, try to allocate one anyway.
+ 	 */
+ 	if (cdc || rndis) {
++#ifdef	CONFIG_USB_GADGET_PXA27X	
++#ifdef	CONFIG_USB_ETH_RNDIS
++		status_ep = pxa27x_ep_config (gadget, &fs_status_desc,
++				DEV_RNDIS_CONFIG_VALUE,	
++				(int)rndis_control_intf.bInterfaceNumber, 
++				(int)rndis_control_intf.bAlternateSetting);
++#elif	defined(DEV_CONFIG_CDC)
++		status_ep = pxa27x_ep_config (gadget, &fs_status_desc, 
++				DEV_CONFIG_VALUE,
++				(int)control_intf.bInterfaceNumber,
++				(int)control_intf.bAlternateSetting);
++			
++#endif //CONFIG_USB_ETH_RNDIS
++#else	
+ 		status_ep = usb_ep_autoconfig (gadget, &fs_status_desc);
++#endif //CONFIG_USB_GADGET_PXA27X	
+ 		if (status_ep) {
+ 			status_ep->driver_data = status_ep;	/* claim */
+ 		} else if (rndis) {
+@@ -2300,10 +2356,12 @@
+ 				gadget->name);
+ 			return -ENODEV;
+ #ifdef DEV_CONFIG_CDC
++#ifndef CONFIG_USB_GADGET_PXA27X		
+ 		/* pxa25x only does CDC subset; often used with RNDIS */
+ 		} else if (cdc) {
+ 			control_intf.bNumEndpoints = 0;
+ 			/* FIXME remove endpoint from descriptor list */
++#endif //CONFIG_USB_GADGET_PXA27X
+ #endif
+ 		}
+ 	}

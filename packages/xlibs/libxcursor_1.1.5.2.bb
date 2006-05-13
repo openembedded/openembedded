@@ -6,13 +6,8 @@ LICENSE= "BSD-X"
 
 DEPENDS = "libxfixes"
 
-SRC_URI = "${XORG_MIRROR}/X11R7.0/src/lib/libXcursor-${PV}.tar.bz2"
-S = "${WORKDIR}/libXcursor-${PV}"
+XORG_PN = "libXcursor"
+
+include xorg-xlibs.inc
 
 FILES_${PN} += "${libdir}/libXcursor.so"
-
-inherit autotools pkgconfig 
-
-do_stage() {
-	autotools_stage_all
-}

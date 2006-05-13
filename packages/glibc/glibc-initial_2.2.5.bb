@@ -1,6 +1,8 @@
 SECTION = "libs"
 include glibc_${PV}.bb
 
+DEFAULT_PREFERENCE_sh3 = "-99"
+
 DEPENDS = "linux-libc-headers"
 PROVIDES = "virtual/${TARGET_PREFIX}libc-initial"
 FILESPATH = "${@base_set_filespath([ '${FILE_DIRNAME}/glibc-${PV}', '${FILE_DIRNAME}/glibc', '${FILE_DIRNAME}/files', '${FILE_DIRNAME}' ], d)}"

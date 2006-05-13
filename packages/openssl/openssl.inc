@@ -51,6 +51,12 @@ do_compile () {
 	linux-armeb)
 		target=linux-elf-armeb
 		;;
+	linux-sh3)
+		target=debian-sh3
+		;;
+	linux-sh4)
+		target=debian-sh4
+		;;
 	linux-i586)
 		target=linux-pentium
 		;;

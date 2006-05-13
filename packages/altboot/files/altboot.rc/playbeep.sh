@@ -6,7 +6,7 @@
 # Filename: playbeep.sh
 # Date: 12-Apr-06
 
-if test -x /usr/sbin/alsactl -a -e /etc/modules
+if test -x /usr/sbin/alsactl -a -e /etc/modules -a "$ENABLE_SOUND" = yes
 then
 	for module in `cat /etc/modules | grep snd | grep -v ^#` 
 	do

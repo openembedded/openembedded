@@ -7,7 +7,7 @@ MAINTAINER = "Phil Blundell <pb@handhelds.org>"
 
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/glibc-cvs-2.3.5"
 SRCDATE = "20050627"
-PR = "r3"
+PR = "r4"
 
 GLIBC_ADDONS ?= "ports,linuxthreads"
 GLIBC_EXTRA_OECONF ?= ""
@@ -60,6 +60,9 @@ SRC_URI = "http://familiar.handhelds.org/source/v0.8.3/stash_libc_sources.redhat
 # seems to fail on tls platforms
 SRC_URI_append_arm = " file://dyn-ldconfig-20041128.patch;patch=1"
 
+# Build fails on sh4 unless no-z-defs is defined
+SRC_URI_append_sh4 = " file://no-z-defs.patch;patch=1"
+
 S = "${WORKDIR}/libc"
 B = "${WORKDIR}/build-${TARGET_SYS}"
 
@@ -83,6 +86,11 @@ def get_glibc_fpu_setting(bb, d):
 do_munge() {
 	# Integrate ports into tree
 	mv ${WORKDIR}/ports ${S}
+
+        # Need to copy some extra folder content for sh arch. - OE bug #954
+	case ${TARGET_ARCH} in
+		sh*) cp ${WORKDIR}/libc/sysdeps/sh/${TARGET_ARCH}/*.S ${WORKDIR}/libc/sysdeps/sh;;
+	esac
 
 	# http://www.handhelds.org/hypermail/oe/51/5135.html
 	# Some files were moved around between directories on

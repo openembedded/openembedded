@@ -7,11 +7,6 @@ LICENSE = "GPL"
 DEPENDS = "libx11 libxext recordproto xextproto inputproto"
 PROVIDES = "xtst"
 
-SRC_URI = "${XORG_MIRROR}/X11R7.0/src/lib/libXtst-${PV}.tar.bz2"
-S = "${WORKDIR}/libXtst-${PV}"
+XORG_PN = "libXtst"
 
-inherit autotools pkgconfig
-
-do_stage() {
-	autotools_stage_all
-}
+include xorg-xlibs.inc

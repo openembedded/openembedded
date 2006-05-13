@@ -513,15 +513,15 @@ python base_eventhandler() {
 	if name.startswith("BuildStarted"):
 		bb.data.setVar( 'BB_VERSION', bb.__version__, e.data )
 		path_to_bbfiles = bb.data.getVar( 'BBFILES', e.data, 1 )
-		path_to_packages = path_to_bbfiles[:path_to_bbfiles.index( "packages" )]
+		path_to_packages = path_to_bbfiles[:path_to_bbfiles.rindex( "packages" )]
 		monotone_revision = "<unknown>"
 		try:
 			monotone_revision = file( "%s/MT/revision" % path_to_packages ).read().strip()
 		except IOError:
 			pass
 		bb.data.setVar( 'OE_REVISION', monotone_revision, e.data )
-		statusvars = ['BB_VERSION', 'OE_REVISION', 'TARGET_ARCH', 'TARGET_OS', 'MACHINE', 'DISTRO', 'TARGET_FPU']
-		statuslines = ["%-13s = \"%s\"" % (i, bb.data.getVar(i, e.data, 1) or '') for i in statusvars]
+		statusvars = ['BB_VERSION', 'OE_REVISION', 'TARGET_ARCH', 'TARGET_OS', 'MACHINE', 'DISTRO', 'DISTRO_VERSION','TARGET_FPU']
+		statuslines = ["%-14s = \"%s\"" % (i, bb.data.getVar(i, e.data, 1) or '') for i in statusvars]
 		statusmsg = "\nOE Build Configuration:\n%s\n" % '\n'.join(statuslines)
 		print statusmsg
 

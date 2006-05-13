@@ -1,0 +1,64 @@
+Index: linux-2.6.16.5-a/drivers/mmc/pxamci.c
+===================================================================
+--- linux-2.6.16.5-a.orig/drivers/mmc/pxamci.c	2006-05-04 17:10:57.000000000 +0200
++++ linux-2.6.16.5-a/drivers/mmc/pxamci.c	2006-05-04 17:10:57.000000000 +0200
+@@ -60,6 +60,8 @@
+ 	unsigned int		power_mode;
+ 	struct pxamci_platform_data *pdata;
+ 
++	unsigned int 		bus_width;
++
+ 	struct mmc_request	*mrq;
+ 	struct mmc_command	*cmd;
+ 	struct mmc_data		*data;
+@@ -178,6 +180,9 @@
+ 	if (cmd->flags & MMC_RSP_BUSY)
+ 		cmdat |= CMDAT_BUSY;
+ 
++	if (host->bus_width == MMC_BUS_WIDTH_4)
++		cmdat |= CMDAT_SD_4DAT;
++
+ #define RSP_TYPE(x)	((x) & ~(MMC_RSP_BUSY|MMC_RSP_OPCODE))
+ 	switch (RSP_TYPE(mmc_resp_type(cmd))) {
+ 	case RSP_TYPE(MMC_RSP_R1): /* r1, r1b, r6 */
+@@ -409,8 +414,12 @@
+ 			host->cmdat |= CMDAT_INIT;
+ 	}
+ 
+-	DBG("pxamci_set_ios: clkrt = %x cmdat = %x\n",
+-	    host->clkrt, host->cmdat);
++	/* Store bus width for later */
++	if (host->mmc->caps & MMC_CAP_4_BIT_DATA)
++		host->bus_width = ios->bus_width;
++
++	DBG("pxamci_set_ios: clkrt = %x cmdat = %x width = %x\n",
++	    host->clkrt, host->cmdat, host->bus_width);
+ }
+ 
+ static struct mmc_host_ops pxamci_ops = {
+@@ -458,6 +467,9 @@
+ 	mmc->ops = &pxamci_ops;
+ 	mmc->f_min = CLOCKRATE_MIN;
+ 	mmc->f_max = CLOCKRATE_MAX;
++#ifdef CONFIG_PXA27x
++	//mmc->caps = MMC_CAP_4_BIT_DATA;
++#endif
+ 
+ 	/*
+ 	 * We can do SG-DMA, but we don't because we never know how much
+Index: linux-2.6.16.5-a/drivers/mmc/pxamci.h
+===================================================================
+--- linux-2.6.16.5-a.orig/drivers/mmc/pxamci.h	2006-05-04 17:11:43.000000000 +0200
++++ linux-2.6.16.5-a/drivers/mmc/pxamci.h	2006-05-04 17:12:08.000000000 +0200
+@@ -47,6 +47,11 @@
+ #define SPI_EN			(1 << 0)
+ 
+ #define MMC_CMDAT	0x0010
++#define CMDAT_SDIO_RESUME	(1 << 13)	/* PXA27x */
++#define CMDAT_SDIO_SUSPEND	(1 << 12)	/* PXA27x */
++#define CMDAT_SDIO_INT_EN	(1 << 11)	/* PXA27x */
++#define CMDAT_STOP_TRAN		(1 << 10)	/* PXA27x */
++#define CMDAT_SD_4DAT		(1 << 8)	/* PXA27x */
+ #define CMDAT_DMAEN		(1 << 7)
+ #define CMDAT_INIT		(1 << 6)
+ #define CMDAT_BUSY		(1 << 5)

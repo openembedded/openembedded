@@ -2,7 +2,7 @@ DESCRIPTION= "Everything Python"
 MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 HOMEPAGE = "http://www.vanille.de/projects/python.spy"
 LICENSE = "MIT"
-PR = "ml3"
+PR = "ml4"
 
 BROKEN_BECAUSE_GCC4 = "\
 		python-egenix-mx-base"
@@ -16,6 +16,7 @@ RDEPENDS = "\
 		python-pycurl		\
 		python-fnorb		\
 		python-fpconst		\
+		python-gammu		\
 		python-gmpy		\
 		python-gnosis		\
 		python-hmm		\

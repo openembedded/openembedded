@@ -7,13 +7,8 @@ LICENSE = "MIT"
 DEPENDS = "xineramaproto xproto libx11 libxext"
 PROVIDES = "xinerama"
 
-SRC_URI = "${XORG_MIRROR}/X11R7.0/src/lib/libXinerama-${PV}.tar.bz2"
-S = "${WORKDIR}/libXinerama-${PV}"
+XORG_PN = "libXinerama"
 
-inherit autotools pkgconfig
+include xorg-xlibs.inc
 
 EXTRA_OECONF="--enable-malloc0returnsnull"
-
-do_stage() {
-	autotools_stage_all
-}

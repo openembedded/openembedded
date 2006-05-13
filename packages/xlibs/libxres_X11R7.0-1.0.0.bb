@@ -6,13 +6,8 @@ LICENSE = "X-MIT"
 DEPENDS = "libx11 xextproto libxext resourceproto"
 PROVIDES = "xres"
 
-SRC_URI = "${XORG_MIRROR}/X11R7.0/src/lib/libXres-${PV}.tar.bz2"
-S = "${WORKDIR}/libXres-${PV}"
+XORG_PN = "libXres"
 
-inherit autotools pkgconfig
+include xorg-xlibs.inc
 
 EXTRA_OECONF="--enable-malloc0returnsnull"
-
-do_stage() {
-	autotools_stage_all
-}

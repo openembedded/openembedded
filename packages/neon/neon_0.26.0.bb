@@ -1,8 +1,7 @@
 DESCRIPTION = "neon is an HTTP and WebDAV client library, with a C interface."
-SECTION = "base"
+SECTION = "libs"
 LICENSE = "LGPL"
 DEPENDS = "zlib libxml2 expat time gnutls"
-
 PR = "r1"
 
 DEFAULT_PREFERENCE = "-1"
@@ -14,6 +13,5 @@ inherit autotools binconfig lib_package pkgconfig
 EXTRA_OECONF = "--with-ssl=gnutls --with-libxml2 --with-expat --enable-shared"
 
 do_stage () {
-	autotools_stage_includes
-	oe_libinstall -C src -so -a libneon ${STAGING_LIBDIR}/
+	autotools_stage_all
 }

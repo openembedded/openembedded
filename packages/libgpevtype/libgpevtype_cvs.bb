@@ -8,7 +8,7 @@ DEPENDS = 	"libmimedir"
 DEFAULT_PREFERENCE = "-1"
 
 S = "${WORKDIR}/${PN}"
-PV = "0.14+cvs${SRCDATE}"
+PV = "0.16+cvs${SRCDATE}"
 PR = "r0"
 
 inherit pkgconfig gpe autotools
