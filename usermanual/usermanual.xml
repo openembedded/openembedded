@@ -129,7 +129,14 @@ described in the <ulink url="http://bitbake.berlios.de/manual">BitBake manual</u
 
         <section>
             <title>Using a prebuilt toolchain to create your packages</title>
-            <para></para>
+            <para>It might be necessary to integrate a pre-built toolchain and other libraries but still be able
+to build packages using OpenEmbedded. One of many approaches is shown and discussed here.</para>
+
+            <section>
+                <title>The toolchain</title>
+                <para>We assume the toolchain provides a C and C++ compiler, an assembler and other tools</para>
+            </section>
+
         </section>
 
         <section>
