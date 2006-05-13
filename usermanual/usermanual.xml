@@ -180,6 +180,27 @@ It's important to use <emphasis>+=</emphasis> so it will get appended to the sta
     </chapter>
 
     <chapter>
+        <title>Special features</title>
+        <section>
+            <title>Debian package naming <anchor id="debian" /></title>
+            <screen>INHERIT += "debian"</screen>
+            <para>Placing the above line into your <emphasis>${DISTRO}.conf</emphasis> or <emphasis>local.conf</emphasis> will
+trigger renaming of packages if they only ship one library. Imagine a package where the package name (<command>PN</command>) is foo and
+this packages ships a file named <command>libfoo.so.1.2.3</command>. Now this package will be renamed to <command>libfoo1</command> to
+follow the Debian package naming policy.</para>
+        </section>
+
+        <section>
+            <title>Shared Libray handling (shlibs) <anchor id="shlibs" /></title>
+            <para>Runtime Dependencies (<command>RDEPNDS</command>) will be added when packaging the software. They should only contain
+the minimal dependencies to run the program. OpenEmbedded will analyze each packaged binary and search for <command>SO_NEEDED</command> libraries. The libraries are absolutely required by the program then OpenEmbedded is searching for packages that installs these libraries. these
+packages are automatically added to the <command>RDEPENDS</command>. As a packager you don't need to worry about shared libraries anymore
+they will be added automatically.</para>
+            <remark>NOTE: This does not apply to plugins used by the program.</remark>
+        </section>
+    </chapter>
+
+    <chapter>
         <title>Common Usecases/tasks</title>
 
         <section>
@@ -212,7 +233,7 @@ OpenEmbedded to build packages. One of many approaches is shown and discussed he
                 <para>We assume the toolchain provides a C and C++ compiler, an assembler and other tools to build packages.
 The list below shows a gcc 3.4.4 toolchain using glibc. We assume that the toolchain is in your <command>PATH</command>.</para>
 <screen>
-ls pre-built/cross/bin
+<command>ls</command> pre-built/cross/bin
 
 arm-linux-g++
 arm-linux-ld
@@ -234,10 +255,42 @@ arm-linux-objdump
 </screen>
             </section>
             <section>
-                <title>The libraries</title>
-                <para>The additional libraries</para>
+                <title>The prebuilt libraries</title>
+                <para>We need the header files and the libraries itself. The following directory layout is assume.
+<command>PRE_BUILT</command> has two subdirectories one is called <emphasis>include</emphasis> and holds the header files and
+the other directory is called <emphasis>lib</emphasis> and holds the shared and static libraries.</para>
                 <screen>
+<command>ls</command> $PRE_BUILT
+include
+lib
 </screen>
+            </section>
+
+            <section>
+                <title>Setting up OpenEmbedded</title>
+                <para>Setting up OpenEmbedded
+                </para>
+            </section>
+
+            <section>
+                <title>Issues with this approach</title>
+<screen>
+NOTE: Couldn't find shared library provider for libqtopia.so.1
+NOTE: Couldn't find shared library provider for libqtopia2.so.2
+NOTE: Couldn't find shared library provider for libqpe.so.1
+NOTE: Couldn't find shared library provider for libpthread.so.0
+NOTE: Couldn't find shared library provider for libstdc++.so.6
+NOTE: Couldn't find shared library provider for libqte.so.2
+NOTE: Couldn't find shared library provider for libgcc_s.so.1
+NOTE: Couldn't find shared library provider for libc.so.6
+NOTE: Couldn't find shared library provider for libm.so.6
+</screen>
+                <para>OpenEmbedded tries to automatically add runtime dependencies (RDEPENDS) to the package. It uses the
+<emphasis><link linkend="shlibs">shlibs</link></emphasis> system to do add them, in this case it was not able 
+to find packages providing these libraries as they are prebuilt. This means they will not be added to the RDEPENDS of the just
+created package. The result can be fatal. If you use OpenEmbedded to create images you will end up with a image without a libc being
+installed. This will lead to a fatal failure. To workaround this issue you could create a package for the metadata to install every
+needed library and use ${BOOTSTRAP_EXTRA_RDEPENDS} to make sure this package is installed.</para>
             </section>
 
         </section>
