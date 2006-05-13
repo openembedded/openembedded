@@ -5,7 +5,8 @@ LICENSE = "LGPL"
 PR = "r5"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/libusb/libusb-${PV}.tar.gz \
-	file://debian-changes.patch;patch=1" 
+           file://debian-changes.patch;patch=1" 
+S = "${WORKDIR}/libusb-${PV}"
 
 inherit autotools pkgconfig
 
