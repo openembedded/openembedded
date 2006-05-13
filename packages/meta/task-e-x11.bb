@@ -22,5 +22,7 @@ RDEPENDS_task-e-x11-core = "rxvt-unicode xstroke xtscal xrandr xmodmap xdpyinfo 
 RDEPENDS_task-e-x11-core += "entrance e-wm"
 
 
-#RDEPENDS_task-e-x11  = "task-e-x11-core entice eclair examine evidence e-modules e-utils elitaire"
-#DEPENDS_task-e-x11 = "task-e-x11-core entice eclair examine evidence e-modules e-utils elitaire"
+RDEPENDS_task-e-x11  = "task-e-x11-core"
+# entice eclair examine evidence e-modules e-utils elitaire"
+DEPENDS_task-e-x11 = "task-e-x11-core"
+# entice eclair examine evidence e-modules e-utils elitaire"
