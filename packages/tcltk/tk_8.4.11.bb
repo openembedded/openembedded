@@ -2,9 +2,9 @@ DESCRIPTION = "Tool Command Language ToolKit Extension"
 LICENSE = "tcl"
 SECTION = "devel/tcltk"
 HOMEPAGE = "http://tcl.sourceforge.net"
-DEPENDS = "tcl libx11"
+DEPENDS = "tcl libx11 libxt"
 RDEPENDS = "tcl"
-PR = "r3"
+PR = "r4"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/tcl/tk${PV}-src.tar.gz \
            file://disable-xim.patch;patch=1;pnum=0 \

@@ -354,3 +354,7 @@ ac_cv_va_copy=${ac_cv_va_copy=no}
 ac_cv_va_val_copy=${ac_cv_va_val_copy=yes}
 ac_cv___va_copy=${ac_cv___va_copy=yes}
 racoon_cv_bug_getaddrinfo=${racoon_cv_bug_getaddrinfo=no}
+
+# libxfce4util
+with_broken_putenv=${with_broken_putenv=no}
+

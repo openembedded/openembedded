@@ -522,3 +522,5 @@ Include losetup with slingbox (so we have losetup in the firmware).
 
 Fix extraneous boot messages from jffs2 filesystem driver (change options
 used when building the flash jffs image).
+
+Added pl2303.c patch for TIOCMGET/MSET/MBIS/MBIC.

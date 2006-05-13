@@ -1,12 +1,13 @@
 DESCRIPTION = "ltrace shows runtime library call information for dynamically linked executables."
+HOMEPAGE = "http://packages.debian.org/unstable/utils/ltrace.html"
 SECTION = "devel"
 DEPENDS = "libelf"
 LICENSE = "GPL"
+PR = "r1"
 
 SRC_URI = "ftp://ftp.debian.org/debian/pool/main/l/ltrace/ltrace_0.3.36.orig.tar.gz\
            ftp://ftp.debian.org/debian/pool/main/l/ltrace/ltrace_0.3.36-2.diff.gz;patch=1\
 	   file://mvc-toolchain.patch;patch=1"
-#	   file://diska-ltrace-conf.patch;patch=1"
 
 inherit autotools
 
@@ -22,5 +23,3 @@ export TARGET_CFLAGS = "${SELECTED_OPTIMIZATION} -isystem ${STAGING_DIR}/${TARGE
 do_compile() {
 	oe_runmake LDFLAGS=${TARGET_LDFLAGS} LIBS="-lsupc++ -liberty -Wl,-Bstatic -lelf -Wl,-Bdynamic" ${EXTRA_OEMAKE}
 }
-
-do_install() {
