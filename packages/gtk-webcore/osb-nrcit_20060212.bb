@@ -11,7 +11,7 @@ PR = "r0"
 
 DEPENDS = "curl librsvg osb-nrcore"
 
-SRC_URI = "cvs://anonymous@cvs.sourceforge.net/cvsroot/gtk-webcore;module=NRCit;date=${FIXEDSRCDATE} \
+SRC_URI = "cvs://anonymous@gtk-webcore.cvs.sourceforge.net/cvsroot/gtk-webcore;module=NRCit;date=${FIXEDSRCDATE} \
            file://stop-load.image-loading.patch;patch=1 \
            file://gcc4-fno-threadsafe-statics-NRCit.patch;patch=1"
 S = "${WORKDIR}/NRCit"
