@@ -3,7 +3,7 @@ SECTION = "opie/base"
 ALLOW_EMPTY = 1
 PACKAGE_ARCH = "all"
 LICENSE = "MIT"
-PR = "r3"
+PR = "r4"
 
 PACKAGES = "task-qpe-applets task-qpe-games task-qpe-inputmethods \
 	task-qpe-multimedia task-qpe-emulators task-qpe-applications \
@@ -37,6 +37,7 @@ RDEPENDS_task-qpe-applications = "\
     qpegps \
     qpenmapfe \
     qplot \
+    qpphoto \
     resistorui \
     shopper \
     sliderulez \
@@ -45,6 +46,7 @@ RDEPENDS_task-qpe-applications = "\
     tximage \
     ubahnnav \
     visiscript \
+    xqt2 \
     zeecookbook \
     zbedic \
     zbench \
