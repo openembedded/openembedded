@@ -1,0 +1,15 @@
+
+#
+# Patch managed by http://www.holgerschurig.de/patcher.html
+#
+
+--- libevnet-0.3.1/src/lookup.c~stdargs
++++ libevnet-0.3.1/src/lookup.c
+@@ -45,6 +45,7 @@
+  */
+ #include <stdio.h>		/* FILE fopen(3) fread(3) fclose(3) fileno(3) */
+ #include <stdlib.h>		/* NULL free(3) */
++#include <stdarg.h>             /* va_list etc. */
+ #include <time.h>		/* time_t time(2) */
+ 
+ #include <string.h>		/* memmove(3) strsep(3) strlen(3)
