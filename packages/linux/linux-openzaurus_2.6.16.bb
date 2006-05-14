@@ -1,6 +1,6 @@
 include linux-openzaurus.inc
 
-PR = "r23"
+PR = "r24"
 
 # Handy URLs
 # git://rsync.kernel.org/pub/scm/linux/kernel/git/torvalds/linux-2.6.git \
@@ -95,6 +95,7 @@ SRC_URI = "http://www.kernel.org/pub/linux/kernel/v2.6/linux-2.6.16.tar.bz2 \
            file://hrw-pcmcia-ids-r2.patch;patch=1 \
 	   file://locomo-kbd-hotkeys.patch;patch=1 \
 	   file://locomo-sysrq+keyrepeat.patch;patch=1 \
+	   file://locomo-lcd-def-bightness.patch;patch=1 \
            file://defconfig-c7x0 \
            file://defconfig-ipaq-pxa270 \
            file://defconfig-collie \
