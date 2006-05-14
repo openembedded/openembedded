@@ -288,7 +288,7 @@ of OpenEmbedded and they will be created ad-hoc in the <emphasis>local.conf</emp
 
                 <section>
                     <title>Sourcable script</title>
-                    <para>To ease the usage of OpenEmbedded we start by creating a sourcable script. This is actually a small
+                    <para>To ease the usage of OpenEmbedded we start by creating a source-able script. This is actually a small
 variation from the already seen script. We will name it <emphasis>build_source</emphasis> and you will need to source it.</para>
                     <screen>
 BITBAKE_PATH=/where/is/bitbake/bin
