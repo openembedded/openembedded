@@ -1,10 +1,11 @@
 DESCRIPTION = "The Subversion (svn) client"
 SECTION = "console/network"
-DEPENDS = "apr-util-0.9.12 neon"
+DEPENDS = "apr-util neon"
 MAINTAINER = "Mustafa Yuecel <yuecelm@ee.ethz.ch>"
 LICENSE = "Apache/BSD"
 HOMEPAGE = "http://subversion.tigris.org"
-PR = "r1"
+
+PR = "r0"
 
 SRC_URI = "http://subversion.tigris.org/downloads/${P}.tar.bz2 \
            file://disable-revision-install.patch;patch=1 \
