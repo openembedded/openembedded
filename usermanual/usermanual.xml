@@ -296,7 +296,7 @@ TOOLCHAIN=/where/is/toolchain/bin
 HOST_TOOLS=/where/is/hosttools/bin
 export PRE_BUILT=/where/is/pre-built
 
-export PATH=$BITBAKE_PATH:$TOOLCHAIN:$HOST_TOOLS$PATH
+export PATH=$BITBAKE_PATH:$TOOLCHAIN:$HOST_TOOLS:$PATH
 export OEDIR=$PWD
 export LOCALDIR=$PWD/secret-isv
                     </screen>
