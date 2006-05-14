@@ -8,5 +8,7 @@ SRC_URI = "http://www.25thandclement.com/~william/projects/releases/libarena-${P
 
 do_stage() {
 	oe_libinstall -C src -a libarena ${STAGING_LIBDIR}
+	install -d ${STAGING_INCDIR}/arena
+	install src/*.h ${STAGING_INCDIR}/arena
 }
 
