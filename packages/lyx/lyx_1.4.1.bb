@@ -5,11 +5,11 @@ HOMEPAGE = "http://www.lyx.org"
 MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 DEPENDS = "boost"
 RRECOMMENDS = "tetex"
-PR = "r0"
+PR = "r1"
 
 # we're checking out from svn because the tarball doesn't contain the necessary stuff to run autoreconf
-SRC_URI = "svn://svn.lyx.org/lyx/lyx-devel/tags/lyx-1_4_1;module=BRANCH_1_4_X;rev=13640"
-S = "${WORKDIR}/BRANCH_1_4_X"
+SRC_URI = "svn://svn.lyx.org/lyx/lyx-devel/tags;module=lyx-1_4_1;rev=13847"
+S = "${WORKDIR}/lyx-1_4_1"
 
 inherit autotools qt3x11
 
