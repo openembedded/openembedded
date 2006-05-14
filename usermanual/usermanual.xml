@@ -78,79 +78,84 @@ described in the <ulink url="http://bitbake.berlios.de/manual"><application>BitB
             <title>Writing Meta Data (Adding packages)</title>
            <para>This page will guide you trough the effort of writing a .bb file or <emphasis>recipe</emphasis> in BitBake speak.</para>
 
-<para>Let's start with the easy stuff, like the package description, license, etc:
+            <para>Let's start with the easy stuff, like the package description, license, etc:
 
-<screen>
+                <screen>
 DESCRIPTION = "My first application, a really cool app containing lots of foo and bar"
 LICENSE = "GPLv2"
 HOMEPAGE = "http://www.host.com/foo/"
 MAINTAINER = "Joe N. User &lt;joe@user.net&gt;"
-</screen>
+                </screen>
 
-The maintainer field needs to have a real name and a working email-address to be usefull, the description and license fields are mandatory, so better check them twice.</para>
+The maintainer field needs to have a real name and a working email-address to be usefull, the description and license fields are mandatory, so better check them twice.
+            </para>
 
-<para>The next step is to specify what the package needs to build and run, the so called <emphasis>dependencies</emphasis>:
+            <para>The next step is to specify what the package needs to build and run, the so called <emphasis>dependencies</emphasis>:
 
-<screen>
+                <screen>
 DEPENDS = "gtk+"
 RDEPENDS = "cool-ttf-fonts"
-</screen>
+                </screen>
 
-The package needs gtk+ to build ('DEPENDS') and requires the 'cool-ttf-fonts' package to run ('RDEPENDS'). OE will add runtime dependencies on libraries on its own via the so called <emphasis>shlibs</emphasis>-code, but you need to specify everything by yourself, which in this case is the 'cool-ttf-fonts' package.</para>
+The package needs gtk+ to build ('DEPENDS') and requires the 'cool-ttf-fonts' package to run ('RDEPENDS'). OE will add runtime dependencies on libraries on its own via the so called <emphasis>shlibs</emphasis>-code, but you need to specify everything by yourself, which in this case is the 'cool-ttf-fonts' package.
+            </para>
 
-<para>After entering all this OE will know what to build before trying to build your application, but it doesn't know where to get it yet. So let's add the source location:
+            <para>After entering all this OE will know what to build before trying to build your application, but it doesn't know where to get it yet. So let's add the source location:
 
-<screen>
+                <screen>
 SRC_URI = "http://www.host.com/foo/files/${P}.tar.bz2;md5sum=yoursum"
-</screen>
+                </screen>
 
-This will tell the fetcher to where to download the sources from and it will check the integrity using md5sum if you provided the appropriate <emphasis>yoursum</emphasis>. You can make one by doing <screen>md5sum foo-1.9.tar.bz2</screen> and replacing <emphasis>yoursum</emphasis> with the md5sum on your screen. A typical md5sum will look like this: <screen>a6434b0fc8a54c3dec3d6875bf3be8db </screen>Notice the <emphasis>${P}</emphasis> variable, that one holds the package name, <emphasis>${PN}</emphasis> in BitBake speak and the package version, <emphasis>${PV}</emphasis> in BitBake speak. It's a short way of writing <emphasis>${PN}-${PV}</emphasis>. Using this notation means you can copy the recipe when a new version is released without having to alter the contents. You do need to check if everything is still correct, because new versions mean new bugs.<para>
+This will tell the fetcher to where to download the sources from and it will check the integrity using md5sum if you provided the appropriate <emphasis>yoursum</emphasis>. You can make one by doing <screen>md5sum foo-1.9.tar.bz2</screen> and replacing <emphasis>yoursum</emphasis> with the md5sum on your screen. A typical md5sum will look like this: <screen>a6434b0fc8a54c3dec3d6875bf3be8db </screen>Notice the <emphasis>${P}</emphasis> variable, that one holds the package name, <emphasis>${PN}</emphasis> in BitBake speak and the package version, <emphasis>${PV}</emphasis> in BitBake speak. It's a short way of writing <emphasis>${PN}-${PV}</emphasis>. Using this notation means you can copy the recipe when a new version is released without having to alter the contents. You do need to check if everything is still correct, because new versions mean new bugs.
+            </para>
 
-<para>Before we can move to the actual building we need to find out which build system the package is using. If we're lucky, we see a <emphasis>configure</emphasis> file in the build tree this is an indicator that we can <emphasis>inherit autotools</emphasis> if we see a <emphasis>.pro</emphasis> file, it might be qmake, which needs <emphasis>inherit qmake</emphasis>. Virtually all gtk apps use autotools:
+            <para>Before we can move to the actual building we need to find out which build system the package is using. If we're lucky, we see a <emphasis>configure</emphasis> file in the build tree this is an indicator that we can <emphasis>inherit autotools</emphasis> if we see a <emphasis>.pro</emphasis> file, it might be qmake, which needs <emphasis>inherit qmake</emphasis>. Virtually all gtk apps use autotools:
 
-<screen>
+                <screen>
 inherit autotools pkgconfig
-</screen>
+                </screen>
 
-We are in luck! The package is a well-behaved application using autotools and pkgconfig to configure and build it self.</para>
+We are in luck! The package is a well-behaved application using autotools and pkgconfig to configure and build it self.
+            </para>
 
-<para>Lets start the build:
+            <para>Lets start the build:
 
-<screen>
+                <screen>
 <command>bitbake</command> foo
-</screen>
+                </screen>
 
-Depending on what you have built before and the speed of your computer this can take a few seconds to a few hours, so be prepared.</para>
+Depending on what you have built before and the speed of your computer this can take a few seconds to a few hours, so be prepared.
+            </para>
 
-<para>
+            <para>
 .... some time goes by .....
-</para>
+            </para>
 
-<para>Your screen should now have something like this on it:
+            <para>Your screen should now have something like this on it:
 
-<screen>
+                <screen>
 NOTE: package foo-1.9-r0: task do_build: completed
 NOTE: package foo-1.9: completed
 NOTE: build 200605052219: completed
-</screen>
-</para>
+                </screen>
+            </para>
 
-<para>All looks well, but wait, let's scroll up:
+            <para>All looks well, but wait, let's scroll up:
 
 
-<screen>
+                <screen>
 NOTE: the following files where installed but not shipped:
     /usr/weirdpath/importantfile.foo
-</screen>
+                </screen>
 
 OE has a standard list of paths which need to be included, but it can't know everything, so we have to tell OE to include that file as well:
 
-<screen>
+                <screen>
 FILES_${PN} += "/usr/weirdpath/importantfile.foo"
-</screen>
+                </screen>
 
 It's important to use <emphasis>+=</emphasis> so it will get appended to the standard filelist, not replace the standard one.
-</para>
+            </para>
         </section>
     </chapter>
 
