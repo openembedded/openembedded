@@ -3,7 +3,7 @@ SECTION = "opie/base"
 ALLOW_EMPTY = 1
 PACKAGE_ARCH = "all"
 LICENSE = "MIT"
-PR = "r4"
+PR = "r5"
 
 PACKAGES = "task-qpe-applets task-qpe-games task-qpe-inputmethods \
 	task-qpe-multimedia task-qpe-emulators task-qpe-applications \
@@ -85,6 +85,7 @@ RDEPENDS_task-qpe-games = "\
     pairs \
     pdamaze \
     pipeman \
+    pipepanic \
     powermanga \
     puzz-le \
     qfish2 \
