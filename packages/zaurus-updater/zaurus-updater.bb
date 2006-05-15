@@ -1,7 +1,7 @@
 DESCRIPTION = "Encrypted shellscript for the Zaurus ROM update"
 DEPENDS = "encdec-updater-native"
 LICENSE = "zaurus-updater"
-PR = "r6"
+PR = "r7"
 
 SRC_URI = "file://updater.sh \
            file://gnu-tar.gz"
@@ -12,12 +12,12 @@ do_compile() {
 }
 
 do_deploy() {
-	install -d ${DEPLOY_DIR}/images/
-	install -m 0755 updater.sh ${DEPLOY_DIR}/images/updater.sh.${MACHINE}
+        install -d ${DEPLOY_DIR_IMAGE}
+	install -m 0755 updater.sh ${DEPLOY_DIR_IMAGE}/updater.sh
 
 	case ${MACHINE} in
 		spitz )
-			install -m 0755 gnu-tar ${DEPLOY_DIR}/images/gnu-tar
+			install -m 0755 gnu-tar ${DEPLOY_DIR_IMAGE}/gnu-tar
 			;;
         	*)
 			;;
