@@ -1,0 +1,47 @@
+--- qt-2.3.10/src/kernel/kernelkeyboard.cpp.orig	2006-05-16 01:43:34.432905320 +0200
++++ qt-2.3.10/src/kernel/kernelkeyboard.cpp	2006-05-16 01:44:21.891690488 +0200
+@@ -411,15 +411,41 @@
+                     break;
+                 }
+                 break;
++		
++            case KT_SLOCK:
++	    	switch( kbe.kb_value ) {	    			
++                case K_SHIFT_SLOCK:	/* Sticky keys: FIXME */
++                    kernel_map[map][key] = KeyMap( Qt::Key_Shift, kval );
++                    break;
++                case K_ALT_SLOCK:
++                    kernel_map[map][key] = KeyMap( Qt::Key_Alt, kval );
++                    break;
++                case K_CTRL_SLOCK:
++                    kernel_map[map][key] = KeyMap( Qt::Key_Control, kval );
++                    break;
++                case K_ALTGR_SLOCK:
++                    kernel_map[map][key] = KeyMap( KeyMap::Key_AltGr, kval );
++                    break;
++                case K_SHIFTL_SLOCK:
++		    kernel_map[map][key] = KeyMap( KeyMap::Key_ShiftL, kval );
++		    break;
++                case K_SHIFTR_SLOCK:
++                    kernel_map[map][key] = KeyMap( KeyMap::Key_ShiftR, kval );
++                    break;
++                default:
++			qWarning("KT_SLOCK / * * * UNKNOWN KEY * * * for keycode %d, map %d, type %d, val %d, acm %c\n", key, map, KTYP(kbe.kb_value), kval, acm[kval]);
++                    kernel_map[map][key] = KeyMap( Qt::Key_unknown, kval );
++                    break;
++                }		    
++		break;
+             /*
+              * What is this for?
+              */
+             case KT_ASCII:
+-            case KT_LOCK:
+-            case KT_SLOCK:
++            case KT_LOCK:		    
+             default:
+                 kernel_map[map][key] = KeyMap( Qt::Key_unknown, kval );
+-                //qWarning("keycode %d, map %d, type %d, val %d, acm %c\n", key, map, KTYP(kbe.kb_value), kval, acm[kval]);
++                qWarning("* * * UNKNOWN KEY * * * keycode %d, map %d, type %d, val %d, acm %c\n", key, map, KTYP(kbe.kb_value), kval, acm[kval]);
+                 break;
+             }
+         }
