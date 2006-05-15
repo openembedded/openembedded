@@ -7,7 +7,7 @@ PROVIDES = "virtual/libsdl"
 LICENSE = "LGPL"
 
 # NOTE: make sure to keep PR in sync with libsdl-qpe
-PR = "r7"
+PR = "r8"
 
 SRC_URI = "http://www.libsdl.org/release/SDL-${PV}.tar.gz \
 	   file://extra-keys.patch;patch=1 \
