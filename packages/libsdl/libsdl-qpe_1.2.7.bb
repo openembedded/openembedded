@@ -7,7 +7,7 @@ PROVIDES = "virtual/libsdl"
 LICENSE = "LGPL"
 
 # NOTE: make sure to keep PR in sync with libsdl-x11
-PR = "r7"
+PR = "r8"
 
 SRC_URI = "http://www.libsdl.org/release/SDL-${PV}.tar.gz \
            file://agawa-piro-mickey.patch;patch=1 \
@@ -33,6 +33,13 @@ EXTRA_OECONF = "--disable-static --disable-debug --enable-cdrom --enable-threads
 
 FILES_${PN} = "${libdir}/lib*.so.*"
 FILES_${PN}-dev += "${bindir}/*config"
+
+do_compile_prepend() {
+	if [ "${PALMTOP_USE_MULTITHREADED_QT}" == "yes" ]
+	then
+		sed -i s,-lqte,-lqte-mt, src/Makefile
+	fi
+}
 
 do_stage() {
 	oe_libinstall -so -C src libSDL ${STAGING_LIBDIR}
