@@ -1,0 +1,16 @@
+--- libopie2/opiecore/device/odevice_zaurus.cpp.orig	2006-05-16 13:53:40.190417936 +0200
++++ libopie2/opiecore/device/odevice_zaurus.cpp	2006-05-16 13:53:56.606922248 +0200
+@@ -61,11 +61,11 @@
+ using namespace Opie::Core::Internal;
+ 
+ struct z_button z_buttons [] = {
+-    { Qt::Key_F9, QT_TRANSLATE_NOOP("Button", "Calendar Button"),
++    { Qt::Key_Control, QT_TRANSLATE_NOOP("Button", "Calendar Button"),
+     "devicebuttons/z_calendar",
+     "datebook", "nextView()",
+     "today", "raise()" },
+-    { Qt::Key_F10, QT_TRANSLATE_NOOP("Button", "Contacts Button"),
++    { Qt::Key_Alt, QT_TRANSLATE_NOOP("Button", "Contacts Button"),
+     "devicebuttons/z_contact",
+     "addressbook", "raise()",
+     "addressbook", "beamBusinessCard()" },
