@@ -23,7 +23,7 @@ Index: netdev-2.6/drivers/net/wireless/hostap/hostap_cs.c
 +			"Pretec", "CompactWLAN Card 802.11b", "2.5",
 +			0x1cadd3e5, 0xe697636c, 0x7a5bfcf1),
 +	PCMCIA_DEVICE_PROD_ID1234(
-+		"U.S. Robotics", "IEEE 802.11b PC-CARD", "Version 01.02", ""
++		"U.S. Robotics", "IEEE 802.11b PC-CARD", "Version 01.02", "",
 +		0xc7b8df9d, 0x1700d087, 0x4b74baa0, 0x00000000),
  	PCMCIA_DEVICE_NULL
  };
