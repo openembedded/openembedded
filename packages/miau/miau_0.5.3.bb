@@ -6,7 +6,7 @@ HOMEPAGE = "http://sf.net/project/miau/"
 LICENSE = "GPL"
 PR = "r2"
 
-SRC_URI = "http://aleron.dl.sourceforge.net/sourceforge/miau/miau-${PV}.tar.gz \
+SRC_URI = "${SOURCEFORGE_MIRROR}/miau/miau-${PV}.tar.gz \
            file://paths.patch;patch=1 \
 	   file://miau.init"
 S = "${WORKDIR}/miau-${PV}"
