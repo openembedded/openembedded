@@ -1,6 +1,6 @@
 include linux-openzaurus.inc
 
-PR = "r28"
+PR = "r29"
 
 # Handy URLs
 # git://rsync.kernel.org/pub/scm/linux/kernel/git/torvalds/linux-2.6.git \
@@ -100,6 +100,13 @@ SRC_URI = "http://www.kernel.org/pub/linux/kernel/v2.6/linux-2.6.16.tar.bz2 \
            file://defconfig-spitz \
            file://defconfig-qemuarm \
            file://defconfig-tosa "
+
+SRC_URI_append_c7x0   = "file://oz-logo-640.patch.bz2;patch=1"
+SRC_URI_append_akita  = "file://oz-logo-640.patch.bz2;patch=1"
+SRC_URI_append_spitz  = "file://oz-logo-640.patch.bz2;patch=1"
+SRC_URI_append_collie = "file://oz-logo-240.patch.bz2;patch=1"
+SRC_URI_append_poodle = "file://oz-logo-240.patch.bz2;patch=1"
+SRC_URI_append_tosa   = "file://oz-logo-480.patch.bz2;patch=1"
 
 # Disabled until I find the reason this gives issues with cdc_subset
 #            ${RPSRC}/usb_rndis_tweaks-r0.patch;patch=1 \
