@@ -27,11 +27,11 @@
         <title>Introduction</title>
         <section>
             <title>Overview</title>
-            <para><ulink url="http://www.openembedded.org"><application>OpenEmbedded</application></ulink> is a set of metadata used to crosscompile, package and install software packages. <application>OpenEmbedded</application> is being used to build and maintain a number of embedded Linux distributions, including OpenZaurus, Ångström, Familiar and SlugOS.</para>
-        <para>The primary usecase of <application>OpenEmbedded</application> are:
+            <para><ulink url="http://www.openembedded.org"><application>OpenEmbedded</application></ulink> is a set of metadata used to cross-compile, package and install software packages. <application>OpenEmbedded</application> is being used to build and maintain a number of embedded Linux distributions, including OpenZaurus, Ångström, Familiar and SlugOS.</para>
+        <para>The primary use-case of <application>OpenEmbedded</application> are:
             <itemizedlist>
-                <listitem><para>Handle crosscompilation.</para></listitem>
-                <listitem><para>Handle interpackage dependencies</para></listitem>
+                <listitem><para>Handle cross-compilation.</para></listitem>
+                <listitem><para>Handle inter-package dependencies</para></listitem>
                 <listitem><para>Must be able to emit packages (tar, rpm, ipk)</para></listitem>
                 <listitem><para>Must be able to create images and feeds from packages</para></listitem>
                 <listitem><para>Must be highly configurable to support many machines, distribution and architectures.</para></listitem>
@@ -62,7 +62,7 @@ OpenEmbedded was created.</para>
 
             <para>The <emphasis>conf</emphasis> directory is holding the bitbake.conf, machine and distribution configuration. bitbake.conf is read when <application>BitBake</application> is started and this will include among others a local.conf the machine and distribution configuration files. These files will be searched in the <command>BBPATH</command> environment variable.</para>
 
-            <para><emphasis>classes</emphasis> is the directoriy holding <application>BitBake</application> bbclass. These classes can be inherited by the <application>BitBake</application> files. BitBake automatically inherits the base.bbclass on every parsed file. <command>BBPATH</command> is used to  find the class.</para>
+            <para><emphasis>classes</emphasis> is the directory holding <application>BitBake</application> bbclass. These classes can be inherited by the <application>BitBake</application> files. BitBake automatically inherits the base.bbclass on every parsed file. <command>BBPATH</command> is used to  find the class.</para>
 
             <para>In <emphasis>packages</emphasis> the <application>BitBake</application> files are stored. For each task or application we have a directory. These directories store the real <application>BitBake</application> files. They are the ones ending with <emphasis>.bb</emphasis>. And for each application and version we have one.</para>
 
@@ -90,7 +90,7 @@ HOMEPAGE = "http://www.host.com/foo/"
 MAINTAINER = "Joe N. User &lt;joe@user.net&gt;"
                 </screen>
 
-The maintainer field needs to have a real name and a working email-address to be usefull, the description and license fields are mandatory, so better check them twice.
+The maintainer field needs to have a real name and a working email-address to be useful, the description and license fields are mandatory, so better check them twice.
             </para>
 
             <para>The next step is to specify what the package needs to build and run, the so called <emphasis>dependencies</emphasis>:
@@ -100,7 +100,7 @@ DEPENDS = "gtk+"
 RDEPENDS = "cool-ttf-fonts"
                 </screen>
 
-The package needs gtk+ to build ('DEPENDS') and requires the 'cool-ttf-fonts' package to run ('RDEPENDS'). OE will add runtime dependencies on libraries on its own via the so called <emphasis>shlibs</emphasis>-code, but you need to specify everything by yourself, which in this case is the 'cool-ttf-fonts' package.
+The package needs gtk+ to build ('DEPENDS') and requires the 'cool-ttf-fonts' package to run ('RDEPENDS'). OE will add run-time dependencies on libraries on its own via the so called <emphasis>shlibs</emphasis>-code, but you need to specify everything by yourself, which in this case is the 'cool-ttf-fonts' package.
             </para>
 
             <para>After entering all this OE will know what to build before trying to build your application, but it doesn't know where to get it yet. So let's add the source location:
@@ -157,7 +157,7 @@ OE has a standard list of paths which need to be included, but it can't know eve
 FILES_${PN} += "/usr/weirdpath/importantfile.foo"
                 </screen>
 
-It's important to use <emphasis>+=</emphasis> so it will get appended to the standard filelist, not replace the standard one.
+It's important to use <emphasis>+=</emphasis> so it will get appended to the standard file-list, not replace the standard one.
             </para>
         </section>
     </chapter>
@@ -167,7 +167,7 @@ It's important to use <emphasis>+=</emphasis> so it will get appended to the sta
         <title>Getting OpenEmbedded</title>
         <section>
             <title>Getting <application>BitBake</application></title>
-            <para>The requirement of the minimal version of <application>BitBake</application> required by OpenEmbedded is changing rapdily. At the time of writing (16th of May 2006) <application>BitBake</application> 1.4.2 was required.</para>
+            <para>The requirement of the minimal version of <application>BitBake</application> required by OpenEmbedded is changing rapidly. At the time of writing (16th of May 2006) <application>BitBake</application> 1.4.2 was required.</para>
             <para>The most safe method is to <application>BitBake</application> from the stable Subversion branch of <application>BitBake</application>.
             <screen>
 <command>svn</command> co http://svn.berlios.de/svnroot/repos/bitbake/branches/bitbake-1.4
@@ -176,7 +176,7 @@ A   bitbake-1.4/classes/base.bbclass
 U   bitbake-1.4
 Ausgecheckt, Revision 516.
             </screen>
-            We have now checked out <application>BitBake</application>; this completes the first and most criticial dependency of OpenEmbedded. Issuing <command>svn</command> <command>up</command> in the <emphasis>bitbake-1.4</emphasis> directory will update <application>BitBake</application> to the latest stable version, but generally it is a good idea to stick with a specific known working version of <application>BitBake</application>. OpenEmbedded will warn you if your BitBake is getting too old.
+            We have now checked out <application>BitBake</application>; this completes the first and most critical dependency of OpenEmbedded. Issuing <command>svn</command> <command>up</command> in the <emphasis>bitbake-1.4</emphasis> directory will update <application>BitBake</application> to the latest stable version, but generally it is a good idea to stick with a specific known working version of <application>BitBake</application>. OpenEmbedded will warn you if your BitBake is getting too old.
             </para>
         </section>
 
@@ -208,12 +208,12 @@ follow the Debian package naming policy.</para>
         </section>
 
         <section>
-            <title>Shared Libray handling (shlibs) <anchor id="shlibs" /></title>
-            <para>Runtime Dependencies (<command>RDEPNDS</command>) will be added when packaging the software. They should only contain
+            <title>Shared Library handling (shlibs) <anchor id="shlibs" /></title>
+            <para>Run-time Dependencies (<command>RDEPNDS</command>) will be added when packaging the software. They should only contain
 the minimal dependencies to run the program. OpenEmbedded will analyze each packaged binary and search for <command>SO_NEEDED</command> libraries. The libraries are absolutely required by the program then OpenEmbedded is searching for packages that installs these libraries. these
 packages are automatically added to the <command>RDEPENDS</command>. As a packager you don't need to worry about shared libraries anymore
 they will be added automatically.</para>
-            <remark>NOTE: This does not apply to plugins used by the program.</remark>
+            <remark>NOTE: This does not apply to plug-ins used by the program.</remark>
         </section>
 
         <section>
@@ -228,7 +228,7 @@ they will be added automatically.</para>
     </chapter>
 
     <chapter>
-        <title>Common Usecases/tasks</title>
+        <title>Common Use-cases/tasks</title>
 
         <section>
             <title>Creating a new Distribution</title>
@@ -287,7 +287,7 @@ arm-linux-objdump
                 <para>We need the header files and the libraries itself. The following directory layout is assume.
 <command>PRE_BUILT</command> has two subdirectories one is called <emphasis>include</emphasis> and holds the header files and
 the other directory is called <emphasis>lib</emphasis> and holds the shared and static libraries. Additionally a Qt2 directory
-is present having a <emphasis>include</emphasis> and <emphasis>lib</emphasis> subdirectory.</para>
+is present having a <emphasis>include</emphasis> and <emphasis>lib</emphasis> sub-directory.</para>
                 <screen>
 <command>ls</command> $PRE_BUILT
 include
@@ -323,7 +323,7 @@ that the variable where exported.</para>
 
                 <section>
                     <title>Creating the local.conf</title>
-                    <para>We will configure OpenEmbedded now, it is very similiar to what we have done above.</para>
+                    <para>We will configure OpenEmbedded now, it is very similar to what we have done above.</para>
 
                     <screen>
 DL_DIR = "${OEDIR}/sources"
@@ -431,7 +431,7 @@ NOTE: Couldn't find shared library provider for libgcc_s.so.1
 NOTE: Couldn't find shared library provider for libc.so.6
 NOTE: Couldn't find shared library provider for libm.so.6
 </screen>
-                <para>OpenEmbedded tries to automatically add runtime dependencies (RDEPENDS) to the package. It uses the
+                <para>OpenEmbedded tries to automatically add run-time dependencies (RDEPENDS) to the package. It uses the
 <emphasis><link linkend="shlibs">shlibs</link></emphasis> system to do add them, in this case it was not able 
 to find packages providing these libraries as they are prebuilt. This means they will not be added to the RDEPENDS of the just
 created package. The result can be fatal. If you use OpenEmbedded to create images you will end up with a image without a libc being
@@ -448,7 +448,7 @@ needed library and use ${BOOTSTRAP_EXTRA_RDEPENDS} to make sure this package is 
     </chapter>
 
     <chapter>
-        <title>Comparsion</title>
+        <title>Comparing</title>
 
         <section>
             <title>buildroot</title>
@@ -462,11 +462,11 @@ needed library and use ${BOOTSTRAP_EXTRA_RDEPENDS} to make sure this package is 
 
         <section>
             <title>handmade</title>
-            <para>Crosscompilation is a tough business. It is not that crosscompiling is hard itself but many people misuse
+            <para>Cross-compilation is a tough business. It is not that cross-compiling is hard itself but many people misuse
 the buildsystem they use to build their software. This will lead to a variety of issues you can run into. This can be failing
-tests on configuration because of executing cross compiled binaries or crashes at runtime due wrong sizes of basic types. 
+tests on configuration because of executing cross compiled binaries or crashes at run-time due wrong sizes of basic types. 
 When utilizing OpenEmbedded you avoid searching for patches at many different places and will be able to get things done more quickly.
-<application>OpenEmbedded</application> allows you to chooose from a pool of ready to use software packages, allow creation of images and many more.</para>
+<application>OpenEmbedded</application> allows you to choose from a pool of ready to use software packages, allow creation of images and many more.</para>
         </section>
     </chapter>
 </book>
