@@ -1,6 +1,6 @@
 include lua.inc
 
-PR = "r1"
+PR = "r2"
 DEPENDS += "readline-native"
 SRC_URI = "http://www.lua.org/ftp/lua-${PV}.tar.gz \
 	   file://debian.patch;patch=1 \
@@ -10,5 +10,6 @@ SRC_URI = "http://www.lua.org/ftp/lua-${PV}.tar.gz \
 S = "${WORKDIR}/lua-${PV}"
 FILESPATH = "${FILE_DIRNAME}/lua-${PV}:${FILE_DIRNAME}/lua:${FILE_DIRNAME}/files"
 
-include lua-build.inc
 inherit native
+include lua-build.inc
+
