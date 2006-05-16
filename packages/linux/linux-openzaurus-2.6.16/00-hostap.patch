@@ -1,0 +1,30 @@
+Sent to netdev ML
+
+Signed-off-by: Marcin Juszkiewicz <openembedded@hrw.one.pl>
+
+Index: netdev-2.6/drivers/net/wireless/hostap/hostap_cs.c
+===================================================================
+--- netdev-2.6.orig/drivers/net/wireless/hostap/hostap_cs.c	2006-05-16 16:47:27.469628352 +0200
++++ netdev-2.6/drivers/net/wireless/hostap/hostap_cs.c	2006-05-16 16:47:48.882373120 +0200
+@@ -881,6 +881,21 @@
+ 	PCMCIA_DEVICE_PROD_ID12(
+ 		"ZoomAir 11Mbps High", "Rate wireless Networking",
+ 		0x273fe3db, 0x32a1eaee),
++	PCMCIA_DEVICE_PROD_ID1234("ASUS", "802_11B_CF_CARD_25", "Version 01.00", "",
++		0x78fc06ee, 0x45a50c1e, 0xa57adb8c, 0x00000000),
++	PCMCIA_DEVICE_PROD_ID12("D-Link", "DCF-660W",
++		0x1a424a1c, 0xe78b6dcc),
++	PCMCIA_DEVICE_PROD_ID12("NETGEAR", "MA701 Wireless CF Card",
++		0x9aa79dc3, 0xd9ec98e),
++	PCMCIA_DEVICE_PROD_ID12("PLANEX COMMUNICATION INC", 
++			"PLANEX GW-CF11X Wireless CF Card",
++			0x4703cf68, 0xfad7318d),
++	PCMCIA_DEVICE_PROD_ID123(
++			"Pretec", "CompactWLAN Card 802.11b", "2.5",
++			0x1cadd3e5, 0xe697636c, 0x7a5bfcf1),
++	PCMCIA_DEVICE_PROD_ID1234(
++		"U.S. Robotics", "IEEE 802.11b PC-CARD", "Version 01.02", ""
++		0xc7b8df9d, 0x1700d087, 0x4b74baa0, 0x00000000),
+ 	PCMCIA_DEVICE_NULL
+ };
+ MODULE_DEVICE_TABLE(pcmcia, hostap_cs_ids);
