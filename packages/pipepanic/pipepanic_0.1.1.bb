@@ -3,8 +3,10 @@ Connect as many different shaped pipes together as possible within the time give
 HOMEPAGE = "http://www.users.waitrose.com/~thunor/pipepanic/"
 LICENSE = "GPL"
 MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
+PR = "r1"
 
-SRC_URI = "http://www.users.waitrose.com/~thunor/pipepanic/dload/pipepanic-${PV}-source.tar.gz"
+SRC_URI = "http://www.users.waitrose.com/~thunor/pipepanic/dload/pipepanic-${PV}-source.tar.gz \
+           file://fix-datadir.patch;patch=1"
 S = "${WORKDIR}/pipepanic-0.1.1-source"
 
 APPIMAGE = "zaurus/pipepanic.png"
@@ -19,5 +21,8 @@ do_compile() {
 do_install() {
 	install -d ${D}${bindir}
 	install -m 0755 pipepanic ${D}${bindir}
+
+	install -d ${D}${datadir}/pipepanic
+	install -m 0644 *.bmp ${D}${datadir}/pipepanic/
 }
 
