@@ -58,8 +58,14 @@ OpenEmbedded was created.</para>
         <title>Metadata</title>
         <section>
             <title>File Layout</title>
-            <para>OpenEmbedded has three directories holding <application>BitBake</application> metadata <emphasis>conf</emphasis>,
-<emphasis>classes</emphasis> and <emphasis>packaes</emphasis>. FIXME</para>
+            <para>OpenEmbedded has six directories three of them hold <application>BitBake</application> metadata.</para>
+
+            <para>The <emphasis>conf</emphasis> directory is holding the bitbake.conf, machine and distribution configuration. bitbake.conf is read when <application>BitBake</application> is started and this will include among others a local.conf the machine and distribution configuration files. These files will be searched in the <command>BBPATH</command> environment variable.</para>
+
+            <para><emphasis>classes</emphasis> is the directoriy holding <application>BitBake</application> bbclass. These classes can be inherited by the <application>BitBake</application> files. BitBake automatically inherits the base.bbclass on every parsed file. <command>BBPATH</command> is used to  find the class.</para>
+
+            <para>In <emphasis>packages</emphasis> the <application>BitBake</application> files are stored. For each task or application we have a directory. These directories store the real <application>BitBake</application> files. They are the ones ending with <emphasis>.bb</emphasis>. And for each application and version we have one.</para>
+
         </section>
         <section>
             <title>Syntax</title>
