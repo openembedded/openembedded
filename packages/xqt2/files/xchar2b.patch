@@ -1,0 +1,25 @@
+* XChar2b patch
+
+This is *EXTREMELY* important patch to handle strings contains 2-byte character 
+correctly on ARM architecture hardware.
+
+On ARM architecture, size of the XChar2b structure will be 4, because gcc
+adds 2 byte padding at the last of the structure. This will breaks the
+XChar2b stream!
+
+This patch makes the size of the structure to 2 byte, with 
+__attribute__ ((packed)) declaration.
+
+
+diff -ur xc.org/lib/X11/Xlib.h xc/lib/X11/Xlib.h
+--- xc.org/lib/X11/Xlib.h	2002-06-01 03:45:42.000000000 +0900
++++ xc/lib/X11/Xlib.h	2004-09-16 19:19:46.000000000 +0900
+@@ -1059,7 +1059,7 @@
+ typedef struct {		/* normal 16 bit characters are two bytes */
+     unsigned char byte1;
+     unsigned char byte2;
+-} XChar2b;
++} __attribute__ ((packed)) XChar2b;
+ 
+ typedef struct {
+     XChar2b *chars;		/* two byte characters */
