@@ -1,13 +1,12 @@
 DESCRIPTION = "Simple DirectMedia Layer - X11 Edition"
 SECTION = "libs"
 PRIORITY = "optional"
-MAINTAINER = "Phil Blundell <pb@handhelds.org>"
-DEPENDS = "libx11 libxext"
+DEPENDS = "alsa-lib libx11 libxext"
 PROVIDES = "virtual/libsdl"
 LICENSE = "LGPL"
 
 # NOTE: make sure to keep PR in sync with libsdl-qpe
-PR = "r8"
+PR = "r0"
 
 SRC_URI = "http://www.libsdl.org/release/SDL-${PV}.tar.gz \
 	   file://extra-keys.patch;patch=1 \
