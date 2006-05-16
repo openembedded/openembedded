@@ -12,7 +12,7 @@ inherit efl
 SRC_URI = "http://enlightenment.freedesktop.org/files/ecore-${PV}.tar.gz \
            file://configure.patch;patch=1 \
            file://fix-tslib-configure.patch;patch=1 \
-           cvs://anonymous@thinktux.net/root;module=e17/libs/ecore/m4;date=20060101"
+           ${E_CVS};module=e17/libs/ecore/m4;date=20060101"
 
 S = "${WORKDIR}/ecore-${PV}"
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/ecore"
