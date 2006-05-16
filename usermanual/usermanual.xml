@@ -14,9 +14,6 @@
         <copyright>
             <year>2006</year>
             <holder>Holger Hans Peter Freyther</holder>
-        </copyright>
-        <copyright>
-            <year>2006</year>
             <holder>Koen Kooi</holder>
         </copyright>
 
@@ -61,8 +58,14 @@ OpenEmbedded was created.</para>
         <title>Metadata</title>
         <section>
             <title>File Layout</title>
-            <para>OpenEmbedded has three directories holding <application>BitBake</application> metadata <emphasis>conf</emphasis>,
-<emphasis>classes</emphasis> and <emphasis>packaes</emphasis>. FIXME</para>
+            <para>OpenEmbedded has six directories three of them hold <application>BitBake</application> metadata.</para>
+
+            <para>The <emphasis>conf</emphasis> directory is holding the bitbake.conf, machine and distribution configuration. bitbake.conf is read when <application>BitBake</application> is started and this will include among others a local.conf the machine and distribution configuration files. These files will be searched in the <command>BBPATH</command> environment variable.</para>
+
+            <para><emphasis>classes</emphasis> is the directoriy holding <application>BitBake</application> bbclass. These classes can be inherited by the <application>BitBake</application> files. BitBake automatically inherits the base.bbclass on every parsed file. <command>BBPATH</command> is used to  find the class.</para>
+
+            <para>In <emphasis>packages</emphasis> the <application>BitBake</application> files are stored. For each task or application we have a directory. These directories store the real <application>BitBake</application> files. They are the ones ending with <emphasis>.bb</emphasis>. And for each application and version we have one.</para>
+
         </section>
         <section>
             <title>Syntax</title>
@@ -106,7 +109,7 @@ The package needs gtk+ to build ('DEPENDS') and requires the 'cool-ttf-fonts' pa
 SRC_URI = "http://www.host.com/foo/files/${P}.tar.bz2;md5sum=yoursum"
                 </screen>
 
-This will tell the fetcher to where to download the sources from and it will check the integrity using md5sum if you provided the appropriate <emphasis>yoursum</emphasis>. You can make one by doing <screen>md5sum foo-1.9.tar.bz2</screen> and replacing <emphasis>yoursum</emphasis> with the md5sum on your screen. A typical md5sum will look like this: <screen>a6434b0fc8a54c3dec3d6875bf3be8db </screen>Notice the <emphasis>${P}</emphasis> variable, that one holds the package name, <emphasis>${PN}</emphasis> in BitBake speak and the package version, <emphasis>${PV}</emphasis> in BitBake speak. It's a short way of writing <emphasis>${PN}-${PV}</emphasis>. Using this notation means you can copy the recipe when a new version is released without having to alter the contents. You do need to check if everything is still correct, because new versions mean new bugs.
+This will tell the fetcher to where to download the sources from and it will check the integrity using md5sum if you provided the appropriate <emphasis>yoursum</emphasis>. You can make one by doing <screen>md5sum foo-1.9.tar.bz2</screen> and replacing <emphasis>yoursum</emphasis> with the md5sum on your screen. A typical md5sum will look like this: <screen>a6434b0fc8a54c3dec3d6875bf3be8db </screen>Notice the <emphasis>${P}</emphasis> variable, that one holds the package name, <emphasis>${PN}</emphasis> in BitBake speak and the package version, <emphasis>${PV}</emphasis> in BitBake speak. It's a short way of writing <emphasis>${PN}-${PV}</emphasis>. Using this notation means you can copy the recipe when a new version is released without having to alter the contents. You do need to check if everything is still correct, because new versions mean new bugs.</para>
             </para>
 
             <para>Before we can move to the actual building we need to find out which build system the package is using. If we're lucky, we see a <emphasis>configure</emphasis> file in the build tree this is an indicator that we can <emphasis>inherit autotools</emphasis> if we see a <emphasis>.pro</emphasis> file, it might be qmake, which needs <emphasis>inherit qmake</emphasis>. Virtually all gtk apps use autotools:
@@ -164,7 +167,17 @@ It's important to use <emphasis>+=</emphasis> so it will get appended to the sta
         <title>Getting OpenEmbedded</title>
         <section>
             <title>Getting <application>BitBake</application></title>
-            <para></para>
+            <para>The requirement of the minimal version of <application>BitBake</application> required by OpenEmbedded is changing rapdily. At the time of writing (16th of May 2006) <application>BitBake</application> 1.4.2 was required.</para>
+            <para>The most safe method is to <application>BitBake</application> from the stable Subversion branch of <application>BitBake</application>.
+            <screen>
+<command>svn</command> co http://svn.berlios.de/svnroot/repos/bitbake/branches/bitbake-1.4
+...
+A   bitbake-1.4/classes/base.bbclass
+U   bitbake-1.4
+Ausgecheckt, Revision 516.
+            </screen>
+            We have now checked out <application>BitBake</application>; this completes the first and most criticial dependency of OpenEmbedded. Issuing <command>svn</command> <command>up</command> in the <emphasis>bitbake-1.4</emphasis> directory will update <application>BitBake</application> to the latest stable version, but generally it is a good idea to stick with a specific known working version of <application>BitBake</application>. OpenEmbedded will warn you if your BitBake is getting too old.
+            </para>
         </section>
 
         <section>
