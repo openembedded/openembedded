@@ -8,7 +8,7 @@ DEPENDS = "zlib libpng jpeg tslib uicmoc-native"
 DEPENDS_mnci = "zlib libpng jpeg uicmoc-native"
 DEPENDS_append_c7x0 = " sharp-aticore-oss"
 PROVIDES = "virtual/qte virtual/libqte2"
-PR = "r33"
+PR = "r35"
 
 SRC_URI = "ftp://ftp.trolltech.com/pub/qt/source/qt-embedded-${PV}-free.tar.gz;md5sum=af7ad30113afc500cab7f5b2f4dec0d7 \
    	   file://qpe.patch;patch=1 \
@@ -45,7 +45,9 @@ SRC_URI_append_c7x0         = "file://kernel-keymap.patch;patch=1;pnum=0 file://
 SRC_URI_append_spitz        = "file://kernel-keymap.patch;patch=1;pnum=0 file://kernel-keymap-corgi.patch;patch=1 file://kernel-keymap-CXK.patch;patch=1 "
 SRC_URI_append_akita        = "file://kernel-keymap.patch;patch=1;pnum=0 file://kernel-keymap-corgi.patch;patch=1 file://kernel-keymap-CXK.patch;patch=1 "
 
+SRC_URI_append_poodle       = "file://kernel-keymap.patch;patch=1;pnum=0 file://kernel-keymap-sticky-keys.patch;patch=1"
 SRC_URI_append_tosa         = "file://kernel-keymap.patch;patch=1;pnum=0 file://kernel-keymap-tosa.patch;patch=1 "
+
 SRC_URI_append_jornada7xx   = "file://kernel-keymap.patch;patch=1;pnum=0 file://ipaq_sound_fix.patch;patch=1 "
 SRC_URI_append_jornada56x   = "file://kernel-keymap.patch;patch=1;pnum=0 file://ipaq_sound_fix.patch;patch=1 "
 SRC_URI_append_mnci         = "file://devfs.patch;patch=1 \
