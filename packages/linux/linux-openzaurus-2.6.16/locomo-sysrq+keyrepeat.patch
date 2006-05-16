@@ -11,13 +11,13 @@
 -#define LOCOMO_KEY_MAIL		KEY_F10
 -#define LOCOMO_KEY_OK		KEY_F11
 +#define LOCOMO_KEY_CALENDER	KEY_LEFTCTRL
-+#define LOCOMO_KEY_ADDRESS	KEY_LEFTALT	/* Needed SysRQ */
-+#define LOCOMO_KEY_HOME		KEY_SYSRQ	/* Need that for SysRQ */
++#define LOCOMO_KEY_ADDRESS	KEY_LEFTALT	/* Needed for SysRQ */
++#define LOCOMO_KEY_HOME		KEY_SYSRQ	/* Needed for SysRQ */
  #define LOCOMO_KEY_MENU		KEY_F12
 +#define LOCOMO_KEY_MAIL		KEY_F10
-+#define LOCOMO_KEY_OK		KEY_F11		/* Don't hardwire to KP_RETURN */
++#define LOCOMO_KEY_OK		KEY_F11		/* Don't hardwire to KEY_RETURN */
 +#define LOCOMO_KEY_CANCEL	KEY_POWER
-+#define LOCOMO_KEY_CENTER	KEY_F5		/* Don't hardwire to KP_RETURN */
++#define LOCOMO_KEY_CENTER	KEY_F5		/* Don't hardwire to KEY_RETURN */
 +
 +#define LOCOMO_KEY_FN		KEY_F9
  
@@ -60,7 +60,7 @@
  			scancode = SCANCODE(col, row);
  			if (rowd & KB_ROWMASK(row)) {
 -				/* printk(KERN_ERR "locomokbd: COL [%i] ROW [%i] scancode [%i] keycode [%i]\n",col,row,scancode,locomokbd->keycode[scancode]); */
-+				printk(KERN_ERR "locomokbd: ROW [%i] COL [%i] scancode [%i] keycode [%i]\n",row,col,scancode,locomokbd->keycode[scancode]);
++				/* printk(KERN_ERR "locomokbd: ROW [%i] COL [%i] scancode [%i] keycode [%i]\n",row,col,scancode,locomokbd->keycode[scancode]); */
  				num_pressed += 1;
  				input_report_key(locomokbd->input, locomokbd->keycode[scancode], 1);
  			} else {
