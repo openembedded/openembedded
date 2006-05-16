@@ -1,0 +1,17 @@
+Index: odevice_zaurus.cpp
+===================================================================
+RCS file: /cvs/opie/libopie2/opiecore/device/odevice_zaurus.cpp,v
+retrieving revision 1.49
+diff -u -r1.49 odevice_zaurus.cpp
+--- libopie2/opiecore/device/odevice_zaurus.cpp  6 Feb 2006 13:40:28 -0000       1.49
++++ libopie2/opiecore/device/odevice_zaurus.cpp  16 May 2006 09:47:48 -0000
+@@ -240,7 +240,7 @@
+     {
+         case Model_Zaurus_SLB600: // fallthrough
+         case Model_Zaurus_SL5500:
+-            m_backlightdev = "/sys/class/backlight/locomo-backlight/";
++            m_backlightdev = "/sys/class/backlight/locomo-bl/";
+             break;
+         default:
+             m_backlightdev = "/sys/class/backlight/corgi-bl/";
+
