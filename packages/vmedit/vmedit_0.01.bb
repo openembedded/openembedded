@@ -1,0 +1,13 @@
+LICENSE = "GPL"
+inherit gpe
+
+DEPENDS = "gtk+ libgpewidget"
+MAINTAINER = "Florian Boor <florian.boor@kernelconcepts.de>"
+SECTION = "gpe"
+DESCRIPTION = "This is a small GTK based multi-tab text editor."
+
+SRC_URI="http://194.213.43.198/${PN}/${P}.tar.gz"
+
+do_install () {
+	oe_runmake install-program DESTDIR=${D} PREFIX=${prefix}
+}
