@@ -13,5 +13,7 @@ python __anonymous() {
         data.setVar('EXTRA_OECONF', " --cc=gcc-3.4", d)
     elif len(which(path, 'gcc-3.3')) != 0:
         data.setVar('EXTRA_OECONF', " --cc=gcc-3.3", d)
+    elif len(which(path, 'gcc32')) != 0:
+        data.setVar('EXTRA_OECONF', " --cc=gcc32", d)
 
 }
