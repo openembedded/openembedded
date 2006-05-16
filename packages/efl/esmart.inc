@@ -6,7 +6,7 @@ PROVIDES += "virtual/esmart"
 inherit efl
 
 SRC_URI = "http://enlightenment.freedesktop.org/files/esmart-${PV}.tar.gz \
-           cvs://anonymous@thinktux.net/root;module=e17/libs/esmart/m4;date=20060101"
+           ${E_CVS};module=e17/libs/esmart/m4;date=20060101"
 
 do_configure_prepend() {
 	install -d "${S}/m4"

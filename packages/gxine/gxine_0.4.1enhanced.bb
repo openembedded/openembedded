@@ -3,7 +3,7 @@ SECTION = "x11/multimedia"
 LICENSE = "GPL"
 MAINTAINER = "Chris Lord <cwiiis@handhelds.org>"
 DEPENDS = "gtk+ libxine-x11"
-PR = "r1"
+PR = "r2"
 
 # Long list of RDEPENDS required to playback mp3/ogg audio and mpeg/mpeg4 video
 RDEPENDS = "libxine-plugin-vo-out-xshm \
@@ -40,6 +40,7 @@ SRC_URI = "${SOURCEFORGE_MIRROR}/xine/${PN}-0.4.1.tar.gz \
 EXTRA_OECONF = " --includedir=${STAGING_INCDIR} \
 		--libdir=${STAGING_LIBDIR} \
 		--disable-xinetest \
+		--disable-lirc \
 		--with-xine-prefix=${STAGING_DIR}/${HOST_SYS}"
 
 LDFLAGS += "-lxine"

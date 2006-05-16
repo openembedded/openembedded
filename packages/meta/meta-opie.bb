@@ -1,7 +1,7 @@
 DESCRIPTION = "Meta-package for Opie"
 SECTION = "opie/base"
 ALLOW_EMPTY = 1
-PR = "r34"
+PR = "r35"
 PACKAGE_ARCH = "all"
 LICENSE = "MIT"
 
@@ -46,19 +46,8 @@ task-opie-base = "bluez-utils-nodbus wireless-tools opie-alarm \
 task-opie-base-applets = "opie-aboutapplet opie-clockapplet opie-suspendapplet \
                           opie-homeapplet opie-rotateapplet \
                           opie-irdaapplet opie-brightnessapplet opie-batteryapplet \
-                          opie-volumeapplet opie-screenshotapplet "
+                          opie-pcmciaapplet opie-volumeapplet opie-screenshotapplet "
 
-task-opie-base-applets_append_collie = " opie-pcmciaapplet"
-task-opie-base-applets_append_poodle = " opie-pcmciaapplet"
-task-opie-base-applets_append_tosa   = " opie-pcmciaapplet"
-
-#			  ${@base_conditional("PCMCIA_MANAGER", "pcmcia-cs", "opie-pcmciaapplet", "",d)}"
-
-#
-# keyboard models can benefit from the vt and logout applets
-#
-task-opie-base-applets_append_openzaurus = " opie-vtapplet opie-logoutapplet"
-task-opie-base-applets_append_mnci       = " opie-vtapplet opie-logoutapplet"
 
 #
 # clamshell models can benefit from the autorotate applet
