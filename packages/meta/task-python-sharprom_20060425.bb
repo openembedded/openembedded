@@ -2,7 +2,7 @@ DESCRIPTION = "Everything Python for SharpROM"
 MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 HOMEPAGE = "http://www.vanille.de/projects/python.spy"
 LICENSE = "MIT"
-PR = "ml1"
+PR = "ml2"
 
 NONWORKING = "\
 		python-codes		\
@@ -55,6 +55,8 @@ RDEPENDS = "\
 		python-sip		\
 		python-snmplib		\
 		python-soappy		\
+		python-spydi		\
+		python-spyro		\
 		python-tlslite		\
 		python-urwid		\
 		python-vmaps		\
