@@ -1,0 +1,19 @@
+--- xc/../xqt2/xfree86/xqt-driver/KeyMap.h	2004-10-16 08:06:07.000000000 +0200
++++ xc/../xqt2/xfree86/xqt-driver/KeyMap~.h	2006-05-10 19:41:16.000000000 +0200
+@@ -75,6 +75,7 @@
+ /* [          */	K(BracketLeft,	XK_bracketleft, XK_braceleft)	// Fn+T
+ /* {          */	K(BraceLeft,	XK_braceleft,	NoSymbol)	// ???
+ /* cent       */	K(cent,		XK_cent,	NoSymbol)	// Fn+U
++/* Enter      */	K(Enter,	XK_Return,	NoSymbol)
+ /* Return     */	K(Return,	XK_Return,	NoSymbol)
+ /* OK         */	K(F33,		XK_Return,	NoSymbol)
+ /* Control    */	K(Control,	XK_Control_L,	NoSymbol)
+@@ -162,7 +163,7 @@
+ /* F30        */	K(F30,		XK_F30,		NoSymbol)
+ /* F31        */	K(F31,		XK_F31,		NoSymbol)
+ /* F32        */	K(F32,		XK_F32,		NoSymbol)
+-/* F33        */	K(F33,		XK_F33,		NoSymbol)
++/* F33        */	/* K(F33,		XK_F33,		NoSymbol) */ // Key already defined as 'ok'
+ /* F34        */	K(F34,		XK_F34,		NoSymbol)
+ /* F35        */	K(F35,		XK_F35,		NoSymbol)
+ 

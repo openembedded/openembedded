@@ -1,6 +1,6 @@
 include linux-openzaurus.inc
 
-PR = "r27"
+PR = "r30"
 
 # Handy URLs
 # git://rsync.kernel.org/pub/scm/linux/kernel/git/torvalds/linux-2.6.git \
@@ -87,13 +87,11 @@ SRC_URI = "http://www.kernel.org/pub/linux/kernel/v2.6/linux-2.6.16.tar.bz2 \
            ${RPSRC}/pxa-linking-bug.patch;patch=1 \
            file://serial-add-support-for-non-standard-xtals-to-16c950-driver.patch;patch=1 \
            file://connectplus-remove-ide-HACK.patch;patch=1 \
-           file://24-hostap_cs_id.diff;patch=1 \
            file://hrw-pcmcia-ids-r2.patch;patch=1 \
-           file://hrw-hack-hostap-newcards.patch;patch=1 \
-           file://hrw-hack-hostap-orinoco.patch;patch=1 \
-	   file://locomo-kbd-hotkeys.patch;patch=1 \
-   	   file://locomo-sysrq+keyrepeat.patch;patch=1 \
-	   file://locomo-lcd-def-bightness.patch;patch=1 \
+           file://00-hostap.patch;patch=1 \
+           file://locomo-kbd-hotkeys.patch;patch=1 \
+           file://locomo-sysrq+keyrepeat.patch;patch=1 \
+           file://locomo-lcd-def-bightness.patch;patch=1 \
            file://defconfig-c7x0 \
            file://defconfig-ipaq-pxa270 \
            file://defconfig-collie \
@@ -102,6 +100,13 @@ SRC_URI = "http://www.kernel.org/pub/linux/kernel/v2.6/linux-2.6.16.tar.bz2 \
            file://defconfig-spitz \
            file://defconfig-qemuarm \
            file://defconfig-tosa "
+
+SRC_URI_append_c7x0   = "file://oz-logo-640.patch.bz2;patch=1"
+SRC_URI_append_akita  = "file://oz-logo-640.patch.bz2;patch=1"
+SRC_URI_append_spitz  = "file://oz-logo-640.patch.bz2;patch=1"
+SRC_URI_append_collie = "file://oz-logo-240.patch.bz2;patch=1"
+SRC_URI_append_poodle = "file://oz-logo-240.patch.bz2;patch=1"
+SRC_URI_append_tosa   = "file://oz-logo-480.patch.bz2;patch=1"
 
 # Disabled until I find the reason this gives issues with cdc_subset
 #            ${RPSRC}/usb_rndis_tweaks-r0.patch;patch=1 \

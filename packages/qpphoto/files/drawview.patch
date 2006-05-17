@@ -1,0 +1,11 @@
+--- qpPhoto_1.0.2/drawview.cpp	2002-11-23 03:34:46.000000000 +0100
++++ qpPhoto_1.0.2/drawview.cpp.new	2006-05-11 22:33:44.000000000 +0200
+@@ -32,7 +32,7 @@
+ static const int zoomfactors[nzoomfactors] = {1,2,3,4,8,16,32}; // 25% 50% 75% 100% 200% 400% 800%
+ #define ZOOMINDEXNORMAL 3
+ 
+-DrawView::DrawView(QWidget* parent = 0, const char* name = 0, WFlags fl = 0)
++DrawView::DrawView(QWidget* parent, const char* name, WFlags fl)
+     :QScrollView(parent, name, fl)
+ {
+     viewX = 0;

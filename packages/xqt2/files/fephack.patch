@@ -1,0 +1,32 @@
+diff -ur xc.org/lib/X11/KeyBind.c xc/lib/X11/KeyBind.c
+--- xc.org/lib/X11/KeyBind.c	2001-12-15 04:54:02.000000000 +0900
++++ xc/lib/X11/KeyBind.c	2004-09-16 19:19:46.000000000 +0900
+@@ -545,6 +545,13 @@
+     unsigned int modifiers;
+     KeySym symbol;
+ 
++    /* X/Qt hack start */
++    if (event->keycode & 0x100) {
++	    *buffer = event->keycode & 0xff;
++	    return 1;
++    }
++    /* X/Qt hack end */
++
+     if (! _XTranslateKey(event->display, event->keycode, event->state,
+ 		  &modifiers, &symbol))
+ 	return 0;
+diff -ur xc.org/lib/X11/XlibInt.c xc/lib/X11/XlibInt.c
+--- xc.org/lib/X11/XlibInt.c	2003-02-18 14:15:27.000000000 +0900
++++ xc/lib/X11/XlibInt.c	2004-09-16 19:19:46.000000000 +0900
+@@ -2358,6 +2358,11 @@
+ 			ev->state	= event->u.keyButtonPointer.state;
+ 			ev->same_screen	= event->u.keyButtonPointer.sameScreen;
+ 			ev->keycode 	= event->u.u.detail;
++			/* X/Qt hack start */
++			if (event->u.keyButtonPointer.pad1 == 0xff) {
++				ev->keycode |= 0x100;
++			}
++			/* X/Qt hack end */
+ 		}
+ 	      	break;
+ 	      case ButtonPress:
