@@ -8,10 +8,10 @@ LICENSE = "GPL"
 APPNAME = "visiscript"
 APPTYPE = "binary"
 APPDESKTOP = "${S}"
-
-BROKEN = "1"
+PR = "r1"
 
 SRC_URI = "http://www.mneuroth.de/privat/zaurus/visiscript_src_${PV}.tar.gz \
+           file://qt2310.patch;patch=1 \
            file://qptrlist.h file://qcleanuphandler.h"
 
 S = "${WORKDIR}/visiscript-${PV}"
