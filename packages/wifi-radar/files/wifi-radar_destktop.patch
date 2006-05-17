@@ -1,0 +1,13 @@
+--- wifi-radar-1.9.6/wifi-radar.desktop	2006-02-08 23:27:46.000000000 +0100
++++ wifi-radar-1.9.6/wifi-radar.desktop.new	2006-05-14 22:06:29.000000000 +0200
+@@ -5,8 +5,8 @@
+ Name=Wifi-radar
+ GenericName=Wireless tool
+ Comment=Tool for connecting to wireless networks
+-Icon=wifi-radar.svg
++Icon=wifi-radar.png
+ FilePattern=wifi-radar
+ TryExec=wifi-radar
+-Exec=gksudo -S wifi-radar
++Exec=wifi-radar
+ Categories=Application;Network;

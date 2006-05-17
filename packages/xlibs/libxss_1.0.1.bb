@@ -7,7 +7,7 @@ DEPENDS = "libx11 libxext xextproto scrnsaverproto"
 PROVIDES = "libxss"
 RREPLACES = "libxss"
 
-XORG_PN = "libXscrnSaver"
+XORG_PN = "libXScrnSaver"
 
 include xorg-xlibs.inc
 

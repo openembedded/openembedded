@@ -1,0 +1,37 @@
+--- wifi-radar-1.9.6/wifi-radar	2006-03-28 00:41:40.000000000 +0200
++++ wifi-radar-1.9.6/wifi-radar.new	2006-05-14 22:50:25.000000000 +0200
+@@ -73,7 +73,7 @@
+ #
+ # List of supported DHCP clients in order of preference
+ #
+-POSSIBLE_DHCP_CLIENTS = "dhcpcd dhclient pump"
++POSSIBLE_DHCP_CLIENTS = "udhcpc dhcpcd dhclient pump"
+ DHCP_TIMEOUT	= 30
+ HOSTNAME = socket.gethostname()
+ 
+@@ -81,7 +81,13 @@
+ 	DHCP_COMMAND = which( i )
+ 	if DHCP_COMMAND:
+ 	
+-		if i == "dhcpcd":
++		if i == "udhcpc":
++		    DHCP_PIDFILE        = "/var/run/udhcpc.%s.pid" % INTERFACE
++		    DHCP_ARGS = "-p " + DHCP_PIDFILE + " -i"
++		    DHCP_KILL_COMMAND = "" # no kill command available
++		    break
++
++		elif i == "dhcpcd":
+ 		    DHCP_PIDFILE        = "/var/run/dhcpcd-%s.pid" % INTERFACE
+ 			#
+ 		    # See "man dhcpcd-bin" or "man dhcpcd" for additional options.
+@@ -138,8 +144,8 @@
+ # WPA_SUPPLICANT
+ WPA_SUPPLICANT_COMMAND	= "/usr/sbin/wpa_supplicant"
+ WPA_SUPPLICANT_KILL_COMMAND=""
+-WPA_SUPPLICANT_CONF="/etc/wpa_supplicant/wpa_supplicant.conf"
+-WPA_DRIVER="ipw"
++WPA_SUPPLICANT_CONF="/etc/wpa_supplicant.conf"
++WPA_DRIVER="hostap"
+ WPA_SUPPLICANT_PIDFILE	= "/var/run/wpa_supplicant.pid" 
+ WPA_SUPPLICANT_ARGS	= "-B -i " + INTERFACE + " -c " + WPA_SUPPLICANT_CONF + " -D " + WPA_DRIVER + " -p " + WPA_SUPPLICANT_PIDFILE
+ 

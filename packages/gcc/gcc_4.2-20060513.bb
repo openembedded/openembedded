@@ -14,6 +14,8 @@ SRC_URI = "http://ftp.nluug.nl/languages/gcc/snapshots/${PV}/gcc-${PV}.tar.bz2 \
 	file://arm-softfloat.patch;patch=1 \
 	file://ldflags.patch;patch=1"
 
+SRC_URI_append_fail-fast = " file://zecke-no-host-includes.patch;patch=1 "
+
 include gcc4-build.inc
 EXTRA_OECONF += "--disable-libssp"
 
