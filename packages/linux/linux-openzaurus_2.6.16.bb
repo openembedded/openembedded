@@ -1,6 +1,6 @@
 include linux-openzaurus.inc
 
-PR = "r30"
+PR = "r31"
 
 # Handy URLs
 # git://rsync.kernel.org/pub/scm/linux/kernel/git/torvalds/linux-2.6.git \
@@ -75,6 +75,10 @@ SRC_URI = "http://www.kernel.org/pub/linux/kernel/v2.6/linux-2.6.16.tar.bz2 \
            ${RPSRC}/sharpsl_pm_fixes1-r0.patch;patch=1 \
            ${RPSRC}/asoc_fixups-r0.patch;patch=1 \
            ${RPSRC}/pm_changes-r1.patch;patch=1 \
+           ${RPSRC}/led_class_kconfig-r0.patch;patch=1 \
+           ${RPSRC}/led_maintainer-r0.patch;patch=1 \
+           ${RPSRC}/led_sysfs_fix-r0.patch;patch=1 \
+           ${RPSRC}/backlight_sysfs_fix-r0.patch;patch=1 \
            ${RPSRC}/sharpsl_pm-do-r2.patch;patch=1 \
            ${RPSRC}/usb_pxa27x_udc-r0.patch;patch=1 \
            ${RPSRC}/usb_add_epalloc-r1.patch;patch=1 \
