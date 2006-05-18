@@ -10,12 +10,12 @@ HOMEPAGE = "http://www.busybox.net"
 LICENSE = "GPL"
 SECTION = "base"
 PRIORITY = "required"
-PR = "r11"
+PR = "r12"
 
 SRC_URI = "http://www.busybox.net/downloads/busybox-${PV}.tar.gz \
 	   file://udhcppidfile.patch;patch=1 \
 	   file://udhcppidfile-breakage.patch;patch=1 \
-           file://add-getkey-applet.patch;patch=1 \
+	   file://add-getkey-applet.patch;patch=1 \
 	   file://below.patch;patch=1 \
 	   file://dhcp-hostname.patch;patch=1 \
 	   file://dhcpretrytime.patch;patch=1 \
@@ -28,14 +28,15 @@ SRC_URI = "http://www.busybox.net/downloads/busybox-${PV}.tar.gz \
 	   file://rmmod.patch;patch=1 \
 	   file://udhcpscript.patch;patch=1 \
 	   file://thumb-bsdlabel.patch;patch=1 \
-           file://uclibc_posix.patch;patch=1 \
-           file://glibc2.4-icmp6.patch;patch=1 \
-           file://defconfig \
-           file://busybox-cron \
+	   file://glibc2.4-icmp6.patch;patch=1 \
+	   file://uclibc_posix.patch;patch=1 \
+	   \
+	   file://defconfig \
+	   file://busybox-cron \
 	   file://busybox-httpd \
 	   file://busybox-udhcpd \
 	   file://syslog \
-           file://hwclock.sh \
+	   file://hwclock.sh \
 	   file://default.script \
 	   file://syslog.conf \
 	   file://mount.busybox \
