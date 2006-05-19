@@ -10,6 +10,7 @@ PR="r0"
 GPE_TARBALL_SUFFIX = "bz2"
 inherit autotools pkgconfig gpe
 
+SRC_URI += "file://no-host-includes.patch;patch=1 "
 
 headers = "xsettings-client.h xsettings-common.h"
 do_stage () {
