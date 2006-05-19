@@ -3,13 +3,15 @@ SECTION = "opie/libs"
 PRIORITY = "optional"
 MAINTAINER = "Team Opie <opie@handhelds.org>"
 LICENSE = "LGPL"
-DEPENDS = "opie-taskbar openobex-apps"
+DEPENDS = "libopietooth1 opie-taskbar openobex-apps"
 RDEPENDS = "openobex-apps"
 APPNAME = "obex"
 
 S = "${WORKDIR}/obex"
 
 inherit opie
+
+EXTRA_QMAKEVARS_POST += "INCLUDEPATH+=${STAGING_INCDIR}/opietooth"
 
 do_install() {
 	install -d ${D}${palmtopdir}/pics/${APPNAME}/ ${D}${palmtopdir}/plugins/obex/
