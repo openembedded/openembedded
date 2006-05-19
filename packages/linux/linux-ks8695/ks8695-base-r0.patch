@@ -1,0 +1,715 @@
+This patch adds KS8695 CPU machine support.
+It is pretty much a standard ARM922T core.
+
+This patch inludes the cpu/machine configuration and Makefile changes,
+the architecture, timer, interrupt and PCI support.
+
+
+diff -Naur linux-2.6.16/arch/arm/Kconfig linux-2.6.16.ks8695/arch/arm/Kconfig
+--- linux-2.6.16/arch/arm/Kconfig	2006-03-20 15:53:29.000000000 +1000
++++ linux-2.6.16.ks8695/arch/arm/Kconfig	2006-03-22 09:57:18.000000000 +1000
+@@ -141,6 +141,13 @@
+ 	help
+ 	  Support for Intel's IXP2400/2800 (XScale) family of processors.
+ 
++config ARCH_KS8695
++	bool "Kendin-Micrel KS8695"
++	help
++	  The Kendin-Micrel KS8695 "Centaur" family is an ARM920 based
++	  System-On-Chip device. It is commonly used on small routers and
++	  other small scale embedded devices.
++
+ config ARCH_L7200
+ 	bool "LinkUp-L7200"
+ 	select FIQ
+@@ -260,6 +267,8 @@
+ 
+ source "arch/arm/mach-ixp2000/Kconfig"
+ 
++source "arch/arm/mach-ks8695/Kconfig"
++
+ source "arch/arm/mach-pxa/Kconfig"
+ 
+ source "arch/arm/mach-sa1100/Kconfig"
+@@ -331,7 +340,7 @@
+ 	bool
+ 
+ config PCI
+-	bool "PCI support" if ARCH_INTEGRATOR_AP || ARCH_VERSATILE_PB
++	bool "PCI support" if ARCH_INTEGRATOR_AP || ARCH_VERSATILE_PB || ARCH_KS8695
+ 	help
+ 	  Find out whether you have a PCI motherboard. PCI is the name of a
+ 	  bus system, i.e. the way the CPU talks to the other stuff inside
+diff -Naur linux-2.6.16/arch/arm/mach-ks8695/arch.c linux-2.6.16.ks8695/arch/arm/mach-ks8695/arch.c
+--- linux-2.6.16/arch/arm/mach-ks8695/arch.c	1970-01-01 10:00:00.000000000 +1000
++++ linux-2.6.16.ks8695/arch/arm/mach-ks8695/arch.c	2006-03-15 22:42:43.000000000 +1000
+@@ -0,0 +1,124 @@
++/*
++ *  linux/arch/arm/mach-ks8695/arch.c
++ *
++ *  Copyright (C) 2002 Micrel Inc.
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 2 of the License, or
++ * (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write to the Free Software
++ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
++ */
++
++#include <linux/config.h>
++#include <linux/types.h>
++#include <linux/init.h>
++#include <asm/memory.h>
++#include <asm/hardware.h>
++#include <asm/setup.h>
++#include <asm/mach-types.h>
++#include <asm/mach/arch.h>
++#include <asm/arch/ks8695-regs.h>
++
++extern void ks8695_map_io(void);
++extern void ks8695_init_irq(void);
++extern struct sys_timer ks8695_timer;
++
++#ifdef CONFIG_MACH_KS8695
++MACHINE_START(KS8695, "Micrel-KS8695")
++	/* Micrel Inc. */
++	.phys_ram	= PHYS_OFFSET,
++	.phys_io	= KS8695_IO_BASE,
++	.io_pg_offst	= ((KS8695_IO_VIRT >> 18) & 0xfffc),
++	.map_io		= ks8695_map_io,
++	.init_irq	= ks8695_init_irq,
++	.timer		= &ks8695_timer,
++	.boot_params	= 0x100,
++MACHINE_END
++#endif
++
++#ifdef CONFIG_MACH_DSM320
++MACHINE_START(DSM320, "DLink-DSM320")
++	/* Maintainer: Ben Dooks <ben@simtec.co.uk> */
++	.phys_io	= KS8695_IO_BASE,
++	.io_pg_offst	= ((KS8695_IO_VIRT) >> 18) & 0xfffc,
++	.map_io		= ks8695_map_io,
++	.init_irq	= ks8695_init_irq,
++	.timer		= &ks8695_timer,
++	.boot_params	= 0x100,
++MACHINE_END
++#endif
++
++#ifdef CONFIG_MACH_LITE300
++MACHINE_START(LITE300, "Secure Computing SG300")
++	/* Secure Computing Inc. */
++	.phys_ram	= PHYS_OFFSET,
++	.phys_io	= KS8695_IO_BASE,
++	.io_pg_offst	= ((KS8695_IO_VIRT >> 18) & 0xfffc),
++	.map_io		= ks8695_map_io,
++	.init_irq	= ks8695_init_irq,
++	.timer		= &ks8695_timer,
++	.boot_params	= 0x100,
++MACHINE_END
++#endif
++
++#ifdef CONFIG_MACH_SE4200
++MACHINE_START(SE4200, "Secure Computing SE4200")
++	/* Secure Computing Inc. */
++	.phys_ram	= PHYS_OFFSET,
++	.phys_io	= KS8695_IO_BASE,
++	.io_pg_offst	= ((KS8695_IO_VIRT >> 18) & 0xfffc),
++	.map_io		= ks8695_map_io,
++	.init_irq	= ks8695_init_irq,
++	.timer		= &ks8695_timer,
++	.boot_params	= 0x100,
++MACHINE_END
++#endif
++
++#ifdef CONFIG_MACH_CM4002
++MACHINE_START(CM4002, "OpenGear/CM4002")
++	/* OpenGear Inc. */
++	.phys_ram	= PHYS_OFFSET,
++	.phys_io	= KS8695_IO_BASE,
++	.io_pg_offst	= ((KS8695_IO_VIRT >> 18) & 0xfffc),
++	.map_io		= ks8695_map_io,
++	.init_irq	= ks8695_init_irq,
++	.timer		= &ks8695_timer,
++	.boot_params	= 0x100,
++MACHINE_END
++#endif
++
++#ifdef CONFIG_MACH_CM4008
++MACHINE_START(CM4008, "OpenGear/CM4008")
++	/* OpenGear Inc. */
++	.phys_ram	= PHYS_OFFSET,
++	.phys_io	= KS8695_IO_BASE,
++	.io_pg_offst	= ((KS8695_IO_VIRT >> 18) & 0xfffc),
++	.map_io		= ks8695_map_io,
++	.init_irq	= ks8695_init_irq,
++	.timer		= &ks8695_timer,
++	.boot_params	= 0x100,
++MACHINE_END
++#endif
++
++#ifdef CONFIG_MACH_CM41xx
++MACHINE_START(CM41xx, "OpenGear/CM41xx")
++	/* OpenGear Inc. */
++	.phys_ram	= PHYS_OFFSET,
++	.phys_io	= KS8695_IO_BASE,
++	.io_pg_offst	= ((KS8695_IO_VIRT >> 18) & 0xfffc),
++	.map_io		= ks8695_map_io,
++	.init_irq	= ks8695_init_irq,
++	.timer		= &ks8695_timer,
++	.boot_params	= 0x100,
++MACHINE_END
++#endif
++
+diff -Naur linux-2.6.16/arch/arm/mach-ks8695/irq.c linux-2.6.16.ks8695/arch/arm/mach-ks8695/irq.c
+--- linux-2.6.16/arch/arm/mach-ks8695/irq.c	1970-01-01 10:00:00.000000000 +1000
++++ linux-2.6.16.ks8695/arch/arm/mach-ks8695/irq.c	2006-03-11 00:01:51.000000000 +1000
+@@ -0,0 +1,71 @@
++/*
++ *  linux/arch/arm/mach-ks8695/irq.c
++ *
++ *  Copyright (C) 2002 Micrel Inc.
++ *  Copyright (C) 2006 Greg Ungerer <gerg@snapgear.com>
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 2 of the License, or
++ * (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write to the Free Software
++ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
++ */
++
++#include <linux/init.h>
++#include <linux/interrupt.h>
++#include <asm/hardware.h>
++#include <asm/irq.h>
++#include <asm/io.h>
++#include <asm/mach/irq.h>
++
++static void ks8695_irq_mask(unsigned int irq)
++{
++	unsigned long msk;
++	msk = __raw_readl(KS8695_REG(KS8695_INT_ENABLE));
++	msk &= ~(1 << irq);
++	__raw_writel(msk, KS8695_REG(KS8695_INT_ENABLE));
++}
++
++static void ks8695_irq_unmask(unsigned int irq)
++{
++	unsigned long msk;
++	msk = __raw_readl(KS8695_REG(KS8695_INT_ENABLE));
++	msk |= (1 << irq);
++	__raw_writel(msk, KS8695_REG(KS8695_INT_ENABLE));
++}
++
++static int ks8695_irq_set_type(unsigned int irq, unsigned int type)
++{
++	return 0;
++}
++
++struct irqchip ks8695_irq_chip = {
++	.ack		= ks8695_irq_mask,
++	.mask		= ks8695_irq_mask,
++	.unmask		= ks8695_irq_unmask,
++	.set_type	= ks8695_irq_set_type,
++};
++
++void __init ks8695_init_irq(void)
++{
++	unsigned int i;
++
++	/* Disable all interrupts initially. */
++	__raw_writel(0, KS8695_REG(KS8695_INT_CONTL));
++	__raw_writel(0, KS8695_REG(KS8695_INT_ENABLE));
++
++	for (i = 0; (i < NR_IRQS); i++) {
++		set_irq_chip(i, &ks8695_irq_chip);
++		set_irq_handler(i, do_level_IRQ);
++		set_irq_flags(i, IRQF_VALID);
++	}
++}
++
+diff -Naur linux-2.6.16/arch/arm/mach-ks8695/Kconfig linux-2.6.16.ks8695/arch/arm/mach-ks8695/Kconfig
+--- linux-2.6.16/arch/arm/mach-ks8695/Kconfig	1970-01-01 10:00:00.000000000 +1000
++++ linux-2.6.16.ks8695/arch/arm/mach-ks8695/Kconfig	2006-03-15 22:42:43.000000000 +1000
+@@ -0,0 +1,59 @@
++
++menu "Kendin-Micrel KS8695 Implementation Options"
++
++comment "KS8695 Platforms"
++
++config MACH_KS8695
++	bool "KS8695 development board"
++	help
++	  Say 'Y' here if you want your kernel to run on the original
++	  Kendin-Micrel KS8695 development board.
++
++config MACH_DSM320
++	bool "DLink DSM320 Media Player"
++	help
++	  Say 'Y' here if you want your kernel to run on the DLink DSM320
++	  Media Player.
++
++config MACH_CM4002
++	bool "OpenGear CM4002"
++	depends on ARCH_KS8695
++	help
++	  Say 'Y' here if you want your kernel to support the OpenGear
++	  CM4002 Secure Access Server. See http://www.opengear.com for
++	  more details.
++
++config MACH_CM4008
++	bool "OpenGear CM4008"
++	depends on ARCH_KS8695
++	help
++	  Say 'Y' here if you want your kernel to support the OpenGear
++	  CM4008 Console Server. See http://www.opengear.com for more
++	  details.
++
++config MACH_CM40xx
++	bool "OpenGear CM40xx"
++	help
++	depends on ARCH_KS8695
++	  Say 'Y' here if you want your kernel to support the OpenGear
++	  CM4016 or CM4048 Console Servers. See http://www.opengear.com for
++	  more details.
++
++config MACH_LITE300
++	bool "Secure Computing / CyberGuard SG300"
++	depends on ARCH_KS8695
++	help
++	  Say 'Y' here if you want your kernel to support the Secure
++	  Computing / CyberGuard / SnapGear SG300 VPN Internet Router.
++	  See http://www.securecomputing.com for more details.
++
++config MACH_SE4200
++	bool "Secure Computing / CyberGuard SE4200"
++	depends on ARCH_KS8695
++	help
++	  Say 'Y' here if you want your kernel to support the Secure
++	  Computing / CyberGuard / SnapGear SE4200 Secure Wireless VPN
++	  Internet Router. See http://www.securecomputing.com for more
++	  details.
++
++endmenu
+diff -Naur linux-2.6.16/arch/arm/mach-ks8695/Makefile linux-2.6.16.ks8695/arch/arm/mach-ks8695/Makefile
+--- linux-2.6.16/arch/arm/mach-ks8695/Makefile	1970-01-01 10:00:00.000000000 +1000
++++ linux-2.6.16.ks8695/arch/arm/mach-ks8695/Makefile	2006-03-15 22:42:43.000000000 +1000
+@@ -0,0 +1,7 @@
++#
++# Makefile for the KS8695 machines..
++#
++
++obj-y			:= arch.o irq.o mm.o time.o
++obj-$(CONFIG_PCI)       += pci.o
++
+diff -Naur linux-2.6.16/arch/arm/mach-ks8695/Makefile.boot linux-2.6.16.ks8695/arch/arm/mach-ks8695/Makefile.boot
+--- linux-2.6.16/arch/arm/mach-ks8695/Makefile.boot	1970-01-01 10:00:00.000000000 +1000
++++ linux-2.6.16.ks8695/arch/arm/mach-ks8695/Makefile.boot	2006-02-17 11:57:24.000000000 +1000
+@@ -0,0 +1,3 @@
++   zreladdr-y	:= 0x00008000
++params_phys-y	:= 0x00000100
++
+diff -Naur linux-2.6.16/arch/arm/mach-ks8695/mm.c linux-2.6.16.ks8695/arch/arm/mach-ks8695/mm.c
+--- linux-2.6.16/arch/arm/mach-ks8695/mm.c	1970-01-01 10:00:00.000000000 +1000
++++ linux-2.6.16.ks8695/arch/arm/mach-ks8695/mm.c	2006-03-11 00:01:51.000000000 +1000
+@@ -0,0 +1,50 @@
++/*
++ *  linux/arch/arm/mach-ks8695/mm.c
++ *
++ *  Copyright (C) 1999,2000 Arm Limited
++ *  Copyright (C) 2000 Deep Blue Solutions Ltd
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 2 of the License, or
++ * (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write to the Free Software
++ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
++ */
++
++#include <linux/mm.h>
++#include <linux/init.h>
++#include <asm/io.h>
++#include <asm/page.h>
++#include <asm/sizes.h>
++#include <asm/mach/map.h>
++
++/*
++ * The only fixed mapping we setup is for the internal register block.
++ * This contains the all the device peripheral registers.
++ *
++ * Logical      Physical        Comment
++ * -----------------------------------------
++ * FF000000	03FF0000	IO registers
++ */
++static struct map_desc ks8695_io_desc[] __initdata = {
++	{
++		.virtual	= KS8695_IO_VIRT,
++		.pfn		= __phys_to_pfn(KS8695_IO_BASE),
++		.length		= SZ_64K,
++		.type		= MT_DEVICE
++	},
++};
++
++void __init ks8695_map_io(void)
++{
++	iotable_init(ks8695_io_desc, ARRAY_SIZE(ks8695_io_desc));
++}
++
+diff -Naur linux-2.6.16/arch/arm/mach-ks8695/pci.c linux-2.6.16.ks8695/arch/arm/mach-ks8695/pci.c
+--- linux-2.6.16/arch/arm/mach-ks8695/pci.c	1970-01-01 10:00:00.000000000 +1000
++++ linux-2.6.16.ks8695/arch/arm/mach-ks8695/pci.c	2006-03-15 22:42:43.000000000 +1000
+@@ -0,0 +1,218 @@
++/*
++ *  Copyright (c) 2003, Micrel Semiconductors
++ *  Copyright (C) 2006, Greg Ungerer <gerg@snapgear.com>
++ *
++ *  Written 2003 by LIQUN RUAN
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 2 of the License, or
++ * (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write to the Free Software
++ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
++ */
++
++#include <linux/config.h>
++#include <linux/kernel.h>
++#include <linux/pci.h>
++#include <linux/mm.h>
++#include <linux/init.h>
++#include <linux/delay.h>
++#include <asm/io.h>
++#include <asm/mach/pci.h>
++#include <asm/hardware.h>
++#include <asm/arch/ks8695-regs.h>
++
++
++static u32 pcicmd(unsigned int bus, unsigned int devfn, int where)
++{
++	where &= 0xfffffffc;
++	return (0x80000000 | (bus << 16) | (devfn << 8) | where);
++}
++
++static void local_write_config(unsigned int bus, unsigned int devfn, int where, u32 value)
++{
++	__raw_writel(pcicmd(bus, devfn, where), KS8695_REG(KS8695_PBCA));
++	__raw_writel(value, KS8695_REG(KS8695_PBCD));
++}
++
++
++static int ks8695_pci_read_config(struct pci_bus *bus, unsigned int devfn, int where, int size, u32 *value)
++{
++	u32 v;
++
++
++	__raw_writel(pcicmd(bus->number, devfn, where), KS8695_REG(KS8695_PBCA));
++	v = __raw_readl(KS8695_REG(KS8695_PBCD));
++
++	if (size == 1)
++		*value = (u8) (v >> ((where & 0x3) * 8));
++	else if (size == 2)
++		*value = (u16) (v >> ((where & 0x2) * 8));
++	else
++		*value = v;
++
++	return PCIBIOS_SUCCESSFUL;
++}
++
++static u32 bytemasks[] = {
++	0xffffff00, 0xffff00ff, 0xff0ffff, 0x00ffffff,
++};
++static u32 wordmasks[] = {
++	0xffff0000, 0x00000000, 0x0000ffff,
++};
++
++static int ks8695_pci_write_config(struct pci_bus *bus, unsigned int devfn, int where, int size, u32 value)
++{
++	u32 cmd, v;
++	int nr;
++
++	v = value;
++	cmd = pcicmd(bus->number, devfn, where);
++	__raw_writel(cmd, KS8695_REG(KS8695_PBCA));
++
++	if (size == 1) {
++		nr = where & 0x3;
++		v = __raw_readl(KS8695_REG(KS8695_PBCD));
++		v = (v & bytemasks[nr]) | ((value & 0xff) << (nr * 8));
++	} else if (size == 2) {
++		nr = where & 0x2;
++		v = __raw_readl(KS8695_REG(KS8695_PBCD));
++		v = (v & wordmasks[nr]) | ((value & 0xffff) << (nr * 8));
++	}
++
++	__raw_writel(v, KS8695_REG(KS8695_PBCD));
++
++	return PCIBIOS_SUCCESSFUL;
++}
++
++struct pci_ops ks8695_pci_ops = {
++	.read	= ks8695_pci_read_config,
++	.write	= ks8695_pci_write_config,
++};
++
++static struct pci_bus *ks8695_pci_scan_bus(int nr, struct pci_sys_data *sys)
++{
++	return pci_scan_bus(sys->busnr, &ks8695_pci_ops, sys);
++}
++
++static struct resource pci_mem = {
++	.name	= "PCI memory space",
++	.start	= KS8695P_PCI_MEM_BASE + 0x04000000,
++	.end	= KS8695P_PCI_MEM_BASE + KS8695P_PCI_MEM_SIZE - 1,
++	.flags	= IORESOURCE_MEM,
++};
++
++static struct resource pci_io = {
++	.name	= "PCI IO space",
++	.start	= KS8695P_PCI_IO_BASE,
++	.end	= KS8695P_PCI_IO_BASE + KS8695P_PCI_IO_SIZE - 1,
++	.flags	= IORESOURCE_IO,
++};
++
++static int __init ks8695_pci_setup(int nr, struct pci_sys_data *sys)
++{
++	if (nr > 0)
++		return 0;
++
++	/* Assign and enable processor bridge */
++	local_write_config(0, 0, PCI_BASE_ADDRESS_0, KS8695P_PCI_MEM_BASE);
++	local_write_config(0, 0, PCI_COMMAND,
++		PCI_COMMAND_MASTER | PCI_COMMAND_MEMORY);
++
++	request_resource(&iomem_resource, &pci_mem);
++	request_resource(&ioport_resource, &pci_io);
++
++	sys->resource[0] = &pci_io;
++	sys->resource[1] = &pci_mem;
++	sys->resource[2] = NULL;
++
++	return 1;
++}
++
++/*
++ * EXT0 is used as PCI bus interrupt source.
++ * level detection (active low)
++ */
++static void __init ks8695_pci_configure_interrupt(void)
++{
++	u32 v;
++
++	v = __raw_readl(KS8695_REG(KS8695_GPIO_MODE));
++	v |= 0x00000001;
++	__raw_writel(v, KS8695_REG(KS8695_GPIO_MODE));
++
++	v = __raw_readl(KS8695_REG(KS8695_GPIO_CTRL));
++	v &= 0xfffffff8;
++	v |= 0x8;
++	__raw_writel(v, KS8695_REG(KS8695_GPIO_CTRL));
++
++	v = __raw_readl(KS8695_REG(KS8695_GPIO_MODE));
++	v &= ~0x00000001;
++	__raw_writel(v, KS8695_REG(KS8695_GPIO_MODE));
++}
++
++static void __init ks8695_pci_preinit(void)
++{
++#if defined(CONFIG_MACH_CM4008) || defined(CONFIG_MACH_CM41xx)
++	/* Reset the PCI bus - (GPIO line is hooked up to bus reset) */
++	u32 msk;
++	msk = __raw_readl(KS8695_REG(KS8695_GPIO_MODE));
++	__raw_writel(msk | 0x2, KS8695_REG(KS8695_GPIO_MODE));
++
++	msk = __raw_readl(KS8695_REG(KS8695_GPIO_DATA));
++	__raw_writel(msk & ~0x2, KS8695_REG(KS8695_GPIO_DATA));
++	udelay(1000);
++	__raw_writel(msk | 0x2, KS8695_REG(KS8695_GPIO_DATA));
++	udelay(1000);
++#endif
++
++	/* stage 1 initialization, subid, subdevice = 0x0001 */
++	__raw_writel(0x00010001, KS8695_REG(KS8695_CRCSID));
++
++	/* stage 2 initialization */
++	/* prefetch limits with 16 words, retru enable */
++	__raw_writel(0x40000000, KS8695_REG(KS8695_PBCS));
++
++	/* configure memory mapping */
++	__raw_writel(KS8695P_PCIBG_MEM_BASE, KS8695_REG(KS8695_PMBA));
++	__raw_writel(KS8695P_PCI_MEM_MASK, KS8695_REG(KS8695_PMBAM));
++	__raw_writel(KS8695P_PCI_MEM_BASE, KS8695_REG(KS8695_PMBAT));
++
++	/* configure IO mapping */
++	__raw_writel(KS8695P_PCIBG_IO_BASE, KS8695_REG(KS8695_PIOBA));
++	__raw_writel(KS8695P_PCI_IO_MASK, KS8695_REG(KS8695_PIOBAM));
++	__raw_writel(KS8695P_PCI_IO_BASE, KS8695_REG(KS8695_PIOBAT));
++
++	ks8695_pci_configure_interrupt();
++}
++
++static int __init ks8695_pci_map_irq(struct pci_dev *dev, u8 slot, u8 pin)
++{
++	return 2;
++}
++
++struct hw_pci ks8695_pci __initdata = {
++	.nr_controllers	= 1,
++	.preinit	= ks8695_pci_preinit,
++	.swizzle	= pci_std_swizzle,
++	.setup		= ks8695_pci_setup,
++	.scan		= ks8695_pci_scan_bus,
++	.map_irq	= ks8695_pci_map_irq,
++};
++
++static int __init ks8695_pci_init(void)
++{
++	pci_common_init(&ks8695_pci);
++	return 0;
++}
++
++subsys_initcall(ks8695_pci_init);
++
+diff -Naur linux-2.6.16/arch/arm/mach-ks8695/time.c linux-2.6.16.ks8695/arch/arm/mach-ks8695/time.c
+--- linux-2.6.16/arch/arm/mach-ks8695/time.c	1970-01-01 10:00:00.000000000 +1000
++++ linux-2.6.16.ks8695/arch/arm/mach-ks8695/time.c	2006-03-15 22:42:43.000000000 +1000
+@@ -0,0 +1,79 @@
++/*
++ *  linux/arch/arm/mach-ks8695/time.c
++ *
++ *  Copyright (C) 2002 Micrel Inc.
++ *  Copyright (C) 2006 Greg Ungerer <gerg@snapgear.com>
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 2 of the License, or
++ * (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write to the Free Software
++ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
++ */
++
++#include <linux/config.h>
++#include <linux/kernel.h>
++#include <linux/interrupt.h>
++#include <linux/init.h>
++#include <linux/time.h>
++#include <asm/system.h>
++#include <asm/hardware.h>
++#include <asm/irq.h>
++#include <asm/io.h>
++#include <asm/mach/time.h>
++
++
++/*
++ * Cannout read back time on KS8695.
++ */
++static unsigned long ks8695_gettimeoffset(void)
++{
++	return 0;
++}
++
++static irqreturn_t ks8695_timer_interrupt(int irq, void *dev_id, struct pt_regs *regs)
++{
++	write_seqlock(&xtime_lock);
++        __raw_writel(KS8695_INTMASK_TIMERINT1, KS8695_REG(KS8695_INT_STATUS));
++	timer_tick(regs);
++	write_sequnlock(&xtime_lock);
++	return IRQ_HANDLED;
++}
++
++static struct irqaction ks8695_timer_irq = {
++	.name	 = "KS8695 Timer Tick",
++	.flags	 = SA_INTERRUPT | SA_TIMER,
++	.handler = ks8695_timer_interrupt,
++};
++
++/*
++ * Set up timer interrupt, and return the current time in seconds.
++ */
++static void __init ks8695_timer_init(void)
++{
++	unsigned long tmout = CLOCK_TICK_RATE / HZ;
++
++	/* Initialise to a known state (all timers off) */
++        __raw_writel(0, KS8695_REG(KS8695_TIMER_CTRL));
++
++	/* enable timer 1 as HZ clock */
++        __raw_writel(tmout, KS8695_REG(KS8695_TIMER1));
++        __raw_writel(tmout / 2, KS8695_REG(KS8695_TIMER1_PCOUNT));
++        __raw_writel(0x02, KS8695_REG(KS8695_TIMER_CTRL));
++
++	setup_irq(KS8695_INT_TIMERINT1, &ks8695_timer_irq);
++}
++
++struct sys_timer ks8695_timer = {
++	.init	= ks8695_timer_init,
++	.offset	= ks8695_gettimeoffset,
++};
++
+diff -Naur linux-2.6.16/arch/arm/Makefile linux-2.6.16.ks8695/arch/arm/Makefile
+--- linux-2.6.16/arch/arm/Makefile	2006-03-20 15:53:29.000000000 +1000
++++ linux-2.6.16.ks8695/arch/arm/Makefile	2006-03-21 17:07:44.000000000 +1000
+@@ -94,6 +94,7 @@
+  machine-$(CONFIG_ARCH_IOP3XX)	   := iop3xx
+  machine-$(CONFIG_ARCH_IXP4XX)	   := ixp4xx
+  machine-$(CONFIG_ARCH_IXP2000)    := ixp2000
++ machine-$(CONFIG_ARCH_KS8695)     := ks8695
+  machine-$(CONFIG_ARCH_OMAP1)	   := omap1
+  machine-$(CONFIG_ARCH_OMAP2)	   := omap2
+   incdir-$(CONFIG_ARCH_OMAP)	   := omap
+diff -Naur linux-2.6.16/arch/arm/mm/Kconfig linux-2.6.16.ks8695/arch/arm/mm/Kconfig
+--- linux-2.6.16/arch/arm/mm/Kconfig	2006-03-20 15:53:29.000000000 +1000
++++ linux-2.6.16.ks8695/arch/arm/mm/Kconfig	2006-03-21 17:07:46.000000000 +1000
+@@ -83,8 +83,8 @@
+ # ARM922T
+ config CPU_ARM922T
+ 	bool "Support ARM922T processor" if ARCH_INTEGRATOR
+-	depends on ARCH_LH7A40X || ARCH_INTEGRATOR
+-	default y if ARCH_LH7A40X
++	depends on ARCH_LH7A40X || ARCH_INTEGRATOR || ARCH_KS8695
++	default y if ARCH_LH7A40X || ARCH_KS8695
+ 	select CPU_32v4
+ 	select CPU_ABRT_EV4T
+ 	select CPU_CACHE_V4WT
+
+-------------------------------------------------------------------
+List admin: http://lists.arm.linux.org.uk/mailman/listinfo/linux-arm-kernel
+FAQ:        http://www.arm.linux.org.uk/mailinglists/faq.php
+Etiquette:  http://www.arm.linux.org.uk/mailinglists/etiquette.php
