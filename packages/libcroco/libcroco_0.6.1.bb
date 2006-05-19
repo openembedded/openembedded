@@ -7,6 +7,8 @@ PR = "r1"
 
 inherit autotools pkgconfig gnome
 
+SRC_URI_append = " file://croco.patch;patch=1 "
+
 do_stage() {
         install -d ${STAGING_LIBDIR}
         install -d ${STAGING_INCDIR}/libcroco

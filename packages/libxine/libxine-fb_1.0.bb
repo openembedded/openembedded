@@ -34,7 +34,7 @@ EXTRA_OECONF="-with-zlib-path=${STAGING_DIR}/${HOST_SYS} \
 	--enable-shared --disable-static \
 	--disable-fb --disable-alsa --disable-vcd \
 	--disable-asf --disable-faad --disable-iconv \
-	--disable-aalib                            \
+	--disable-aalib  --disable-aalibtest        \
 	--without-v4l --without-arts --without-sdl \
 	--disable-dxr3 --without-xv --without-xvmc \
 	--without-xxmc --without-Xshm --without-x "

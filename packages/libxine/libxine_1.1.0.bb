@@ -39,6 +39,7 @@ EXTRA_OECONF="-with-zlib-path=${STAGING_DIR}/${HOST_SYS} \
 	--disable-asf --disable-faad --disable-iconv \
 	--without-v4l --without-arts --without-sdl \
 	--without-xv  --without-xxmc --without-xvmc \
+	--disable-aalibtest \
 	--with-x --x-includes=${STAGING_INCDIR}/X11 --x-libraries=${STAGING_LIBDIR}"
 
 export WAND_CONFIG="${STAGING_BINDIR}/Wand-config"

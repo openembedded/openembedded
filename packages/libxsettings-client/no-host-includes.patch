@@ -1,0 +1,13 @@
+Index: libxsettings-client-0.17/Makefile.am
+===================================================================
+--- libxsettings-client-0.17.orig/Makefile.am	2006-05-19 23:14:46.557360552 +0200
++++ libxsettings-client-0.17/Makefile.am	2006-05-19 23:14:56.010923392 +0200
+@@ -3,7 +3,7 @@
+ source_h = xsettings-client.h  xsettings-common.h
+ source_c = xsettings-client.c  xsettings-common.c
+ 
+-INCLUDES = -I $(includedir) $(X_CFLAGS)
++INCLUDES = $(X_CFLAGS)
+ 
+ libxsincludedir = $(includedir)
+ 

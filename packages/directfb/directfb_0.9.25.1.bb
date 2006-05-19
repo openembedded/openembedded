@@ -9,7 +9,7 @@ PRIORITY = "optional"
 HOMEPAGE = "http://directfb.org"
 MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 DEPENDS = "jpeg libpng freetype zlib"
-PR = "r0"
+PR = "r1"
 RV = "0.9.25"
 
 SRC_URI = "http://directfb.org/downloads/Core/DirectFB-${PV}.tar.gz"
@@ -21,7 +21,7 @@ EXTRA_OECONF = "--with-gfxdrivers=none --enable-libmpeg3=no --enable-freetype=ye
 PARALLEL_MAKE = ""
 
 do_stage() {
-	oe_runmake 'DESTDIR=${STAGING_LIBDIR}/' install
+	autotools_stage_all
 }
 
 do_install() {

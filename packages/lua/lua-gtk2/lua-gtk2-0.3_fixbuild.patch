@@ -1,0 +1,352 @@
+diff -NbBur lua-gtk2-0.3_orig/configure lua-gtk2-0.3/configure
+--- lua-gtk2-0.3_orig/configure	2005-08-16 19:32:07.000000000 +0200
++++ lua-gtk2-0.3/configure	2006-05-14 02:52:39.000000000 +0200
+@@ -2,25 +2,19 @@
+ 
+ # examine system
+ 
+-CFLAGS="$(pkg-config gtk+-2.0 --cflags) $(pkg-config lua50 --cflags) -I build-linux -I src"
++CFLAGS="-g -Wall -DLINUX -Os -fomit-frame-pointer -Wall $(pkg-config gtk+-2.0 --cflags) $(pkg-config lua50 --cflags) -I build-linux -I src"
+ VERSION="0.3"
+-
+-if which gcc-4.0 > /dev/null; then
+-	GCC=gcc-4.0
+-elif which gcc > /dev/null; then
+-	GCC=gcc
+-else
+-	@echo "No GCC found."
+-	exit 1
+-fi
+-
+-if true; then
+-	CFLAGS2="-DLINUX"
+-	LIBS="" # -lgtk-x11-2.0"
+-else
+-	CFLAGS2="-DWIN32"
+-	LIBS=""
+-fi
++PREFIX="/usr/local"
++GCC=arm-linux-gcc
++HGCC=gcc
++
++#if true; then
++#	CFLAGS2="-DLINUX"
++#	LIBS="" # -lgtk-x11-2.0"
++#else
++#	CFLAGS2="-DWIN32"
++#	LIBS=""
++#fi
+ 
+ 
+ # build makefile
+@@ -28,13 +22,14 @@
+ cat > Makefile <<EOF
+ # automatically generated makefile
+ 
+-# CFLAGS	:=-DLINUX -Os -fomit-frame-pointer -Wall $CFLAGS
++#CFLAGS	:= \-DLINUX -Os -fomit-frame-pointer -Wall $CFLAGS
+ # CFLAGS	:=-DLINUX -O2 -fomit-frame-pointer -Wall $CFLAGS
+-CFLAGS	:=$CFLAGS2 -g -Wall $CFLAGS
++CFLAGS	=$CFLAGS 
+ HASH	:=hash2
+ ODIR	:=build-linux/
+ VERSION	:=$VERSION
+ CC	:=$GCC
++HGCC	:=$HGCC
+ 
+ all: \${ODIR}libluagtk2.so \${ODIR}main
+ 
+@@ -46,6 +41,8 @@
+ 	@\${CC} -shared -o \$@ $^ /usr/lib/libffi.a $LIBS
+ 
+ \${ODIR}generate: \${ODIR}generate.o \${ODIR}\${HASH}.o
++	@echo \$@
++	@\${HGCC} -Wall -c -g -o \$@ $^
+ 
+ \${ODIR}main.o: src/main.c
+ 	@echo \$@
+@@ -99,9 +96,9 @@
+ 	rm -f \${ODIR}file2c \${ODIR}override.luac \${ODIR}main
+ 
+ install: all
+-	mkdir -p ~/.lua50
+-	cp gtk2.lua ~/.lua50
+-	ln -sf \$(PWD)/build-linux/libluagtk2.so ~/.lua50
++	install -d \$(DESTDIR)/\$(PREFIX)/lib/lua50
++	install gtk2.lua \$(DESTDIR)/\$(PREFIX)/lib/lua50
++	install \$(PWD)/build-linux/libluagtk2.so \$(DESTDIR)/\$(PREFIX)/lib/lua50
+ 
+ tar:
+ 	(cd ..; ln -s lua-gtk2 lua-gtk2-\${VERSION}; tar czvhf lua-gtk2-\${VERSION}.tar.gz \\
+diff -NbBur lua-gtk2-0.3_orig/configure_orig lua-gtk2-0.3/configure_orig
+--- lua-gtk2-0.3_orig/configure_orig	1970-01-01 01:00:00.000000000 +0100
++++ lua-gtk2-0.3/configure_orig	2006-05-13 18:22:03.000000000 +0200
+@@ -0,0 +1,114 @@
++#! /bin/sh
++
++# examine system
++
++CFLAGS="$(pkg-config gtk+-2.0 --cflags) $(pkg-config lua50 --cflags) -I build-linux -I src"
++VERSION="0.3"
++
++if which gcc-4.0 > /dev/null; then
++	GCC=gcc-4.0
++elif which gcc > /dev/null; then
++	GCC=gcc
++else
++	@echo "No GCC found."
++	exit 1
++fi
++
++if true; then
++	CFLAGS2="-DLINUX"
++	LIBS="" # -lgtk-x11-2.0"
++else
++	CFLAGS2="-DWIN32"
++	LIBS=""
++fi
++
++
++# build makefile
++
++cat > Makefile <<EOF
++# automatically generated makefile
++
++# CFLAGS	:=-DLINUX -Os -fomit-frame-pointer -Wall $CFLAGS
++# CFLAGS	:=-DLINUX -O2 -fomit-frame-pointer -Wall $CFLAGS
++CFLAGS	:=$CFLAGS2 -g -Wall $CFLAGS
++HASH	:=hash2
++ODIR	:=build-linux/
++VERSION	:=$VERSION
++CC	:=$GCC
++
++all: \${ODIR}libluagtk2.so \${ODIR}main
++
++Makefile: configure
++	./configure
++
++\${ODIR}libluagtk2.so: \${ODIR}libluagtk2.o \${ODIR}\${HASH}.o \${ODIR}hash.o \${ODIR}_funclist.o \${ODIR}_structlist.o \${ODIR}_enumlist.o \${ODIR}_override.o
++	@echo \$@
++	@\${CC} -shared -o \$@ $^ /usr/lib/libffi.a $LIBS
++
++\${ODIR}generate: \${ODIR}generate.o \${ODIR}\${HASH}.o
++
++\${ODIR}main.o: src/main.c
++	@echo \$@
++	@\${CC} -Wall -c -g -o \$@ $^ -I /usr/include/lua50
++
++\${ODIR}main: \${ODIR}main.o
++	@echo \$@
++	@\${CC} -o \$@ $^ -llua50 -llualib50
++
++\${ODIR}libluagtk2.o: src/libluagtk2.c \${ODIR}_typelist.c src/structinfo.h src/hash.h
++
++\${ODIR}_funclist.c: data/gtkdata.funcs \${ODIR}generate
++	@echo \$@
++	@\${ODIR}generate -s 4096 -o \$@ -p funclist_ -d $<
++
++\${ODIR}_structlist.c: data/gtkdata.structs.c
++	cp -f \$< \$@
++
++\${ODIR}_typelist.c: data/gtkdata.types.c
++	cp -f \$< \$@
++
++\${ODIR}_enumlist.c: data/gtkdata.enums src/extra_enum
++	@echo \$@
++	@cat $^ | \${ODIR}generate -s 1201 -o \$@ -p enumlist_ -d -f -
++
++\${ODIR}_override.c: \${ODIR}override.luac \${ODIR}file2c
++	@echo \$@
++	@\${ODIR}file2c < \$^ > \$@
++	
++data/gtkdata.structs.c:
++	(cd data; ../script/gen-list.pl)
++
++build-linux/%.o: build-linux/%.c
++	@echo \$@
++	@\${CC} \${CFLAGS} -c -o \$@ \$<
++
++build-linux/%.o: src/%.c
++	@echo \$@
++	@\${CC} \${CFLAGS} -c -o \$@ \$<
++
++build-linux/%.s: src/%.c
++	@echo \$@
++	@\${CC} \${CFLAGS} -S -o \$@ \$<
++
++build-linux/%.luac: src/%.lua
++	@echo \$@
++	@luac -s -o \$@ \$<
++
++clean:
++	rm -f \${ODIR}libluagtk2.so \${ODIR}generate \${ODIR}_*.c \${ODIR}*.o
++	rm -f \${ODIR}file2c \${ODIR}override.luac \${ODIR}main
++
++install: all
++	mkdir -p ~/.lua50
++	cp gtk2.lua ~/.lua50
++	ln -sf \$(PWD)/build-linux/libluagtk2.so ~/.lua50
++
++tar:
++	(cd ..; ln -s lua-gtk2 lua-gtk2-\${VERSION}; tar czvhf lua-gtk2-\${VERSION}.tar.gz \\
++	lua-gtk2-\${VERSION} --exclude old --exclude "build-*" --exclude foreign --exclude lua50 \\
++	--exclude test-dll; rm lua-gtk2-\${VERSION})
++
++EOF
++
++mkdir -p build-linux build-win32
++
+diff -NbBur lua-gtk2-0.3_orig/gtk2.lua lua-gtk2-0.3/gtk2.lua
+--- lua-gtk2-0.3_orig/gtk2.lua	2005-08-16 19:26:14.000000000 +0200
++++ lua-gtk2-0.3/gtk2.lua	1970-01-01 01:00:00.000000000 +0100
+@@ -1,16 +0,0 @@
+-
+--- if compiled in, _gtk is set.
+-if _gtk == nil then
+-
+-	local init, err = loadlib(os.getenv("HOME") .. "/.lua50/libluagtk2.so",
+-		"luaopen_gtk2")
+-	if err then
+-	    print(err)
+-	    return
+-	end
+-	gtk = init()
+-
+-else
+-	gtk = _gtk
+-end
+-
+diff -NbBur lua-gtk2-0.3_orig/gtk2.lua.in lua-gtk2-0.3/gtk2.lua.in
+--- lua-gtk2-0.3_orig/gtk2.lua.in	1970-01-01 01:00:00.000000000 +0100
++++ lua-gtk2-0.3/gtk2.lua.in	2006-05-15 01:20:24.000000000 +0200
+@@ -0,0 +1,16 @@
++
++-- if compiled in, _gtk is set.
++if _gtk == nil then
++
++	local init, err = loadlib("PREFIX/lib/lua50/libluagtk2.so",
++		"luaopen_gtk2")
++	if err then
++	    print(err)
++	    return
++	end
++	gtk = init()
++
++else
++	gtk = _gtk
++end
++
+diff -NbBur lua-gtk2-0.3_orig/Makefile lua-gtk2-0.3/Makefile
+--- lua-gtk2-0.3_orig/Makefile	2005-08-16 19:32:08.000000000 +0200
++++ lua-gtk2-0.3/Makefile	2006-05-16 03:09:41.000000000 +0200
+@@ -1,31 +1,46 @@
+ # automatically generated makefile
+ 
+-# CFLAGS	:=-DLINUX -Os -fomit-frame-pointer -Wall -DXTHREADS -I/usr/include/gtk-2.0 -I/usr/lib/gtk-2.0/include -I/usr/X11R6/include -I/usr/include/atk-1.0 -I/usr/include/pango-1.0 -I/usr/include/freetype2 -I/usr/include/glib-2.0 -I/usr/lib/glib-2.0/include   -I/usr/include//lua50   -I build-linux -I src
+-# CFLAGS	:=-DLINUX -O2 -fomit-frame-pointer -Wall -DXTHREADS -I/usr/include/gtk-2.0 -I/usr/lib/gtk-2.0/include -I/usr/X11R6/include -I/usr/include/atk-1.0 -I/usr/include/pango-1.0 -I/usr/include/freetype2 -I/usr/include/glib-2.0 -I/usr/lib/glib-2.0/include   -I/usr/include//lua50   -I build-linux -I src
+-CFLAGS	:=-DLINUX -g -Wall -DXTHREADS -I/usr/include/gtk-2.0 -I/usr/lib/gtk-2.0/include -I/usr/X11R6/include -I/usr/include/atk-1.0 -I/usr/include/pango-1.0 -I/usr/include/freetype2 -I/usr/include/glib-2.0 -I/usr/lib/glib-2.0/include   -I/usr/include//lua50   -I build-linux -I src
++PACKAGE_CFLAGS	=-g -Wall -DLINUX -Os -fomit-frame-pointer -Wall -DXTHREADS -DXUSE_MTSAFE_API `pkg-config --cflags gtk+-2.0`
+ HASH	:=hash2
+ ODIR	:=build-linux/
+ VERSION	:=0.3
+-CC	:=gcc-4.0
++CC	:=arm-linux-gcc
++HGCC	:=gcc
++PREFIX  := /usr/local
++LIBDIR  := $(PREFIX)/lib/
+ 
+-all: ${ODIR}libluagtk2.so ${ODIR}main
++all: ${ODIR}libluagtk2.so ${ODIR}main gtk2.lua
+ 
+-Makefile: configure
+-	./configure
++%.lua %.lua.in:
++	sed 's:PREFIX:$(PREFIX):' < '$@.in' > $@
+ 
+ ${ODIR}libluagtk2.so: ${ODIR}libluagtk2.o ${ODIR}${HASH}.o ${ODIR}hash.o ${ODIR}_funclist.o ${ODIR}_structlist.o ${ODIR}_enumlist.o ${ODIR}_override.o
+ 	@echo $@
+-	@${CC} -shared -o $@ $^ /usr/lib/libffi.a 
++	@${CC} -shared -o $@ $^ ${LIBDIR}/libffi.a 
+ 
+-${ODIR}generate: ${ODIR}generate.o ${ODIR}${HASH}.o
++${ODIR}file2c:
++	@echo $@
++	@${HGCC} -o $@ src/file2c.c
++	
++${ODIR}generate.o:
++	@echo $@
++	@${HGCC} -c -o $@ src/generate.c
++
++${ODIR}${HASH}_host.o:
++	@echo $@
++	@${HGCC} -c -o $@ src/${HASH}.c
++
++${ODIR}generate: ${ODIR}generate.o ${ODIR}${HASH}_host.o
++	@echo $@
++	@${HGCC} -Wall -g -o $@ $^
+ 
+ ${ODIR}main.o: src/main.c
+ 	@echo $@
+-	@${CC} -Wall -c -g -o $@ $^ -I /usr/include/lua50
++	@${HGCC} $(CFLAGS) -Wall -c -g -o $@ $^ -I /usr/include/lua50
+ 
+ ${ODIR}main: ${ODIR}main.o
+ 	@echo $@
+-	@${CC} -o $@ $^ -llua50 -llualib50
++	@${HGCC} $(CFLAGS) $(PACKAGE_CFLAGS) -o $@ $^ -llua -llualib
+ 
+ ${ODIR}libluagtk2.o: src/libluagtk2.c ${ODIR}_typelist.c src/structinfo.h src/hash.h
+ 
+@@ -52,15 +67,15 @@
+ 
+ build-linux/%.o: build-linux/%.c
+ 	@echo $@
+-	@${CC} ${CFLAGS} -c -o $@ $<
++	@${CC} $(PACKAGE_CFLAGS) $(CFLAGS) -c -o $@ $<
+ 
+ build-linux/%.o: src/%.c
+ 	@echo $@
+-	@${CC} ${CFLAGS} -c -o $@ $<
++	@${CC} $(PACKAGE_CFLAGS) $(CFLAGS) -c -o $@ $<
+ 
+ build-linux/%.s: src/%.c
+ 	@echo $@
+-	@${CC} ${CFLAGS} -S -o $@ $<
++	@${CC} $(PACKAGE_CFLAGS) $(CFLAGS) -S -o $@ $<
+ 
+ build-linux/%.luac: src/%.lua
+ 	@echo $@
+@@ -68,12 +83,13 @@
+ 
+ clean:
+ 	rm -f ${ODIR}libluagtk2.so ${ODIR}generate ${ODIR}_*.c ${ODIR}*.o
+-	rm -f ${ODIR}file2c ${ODIR}override.luac ${ODIR}main
++	rm -f ${ODIR}file2c ${ODIR}override.luac ${ODIR}main gtk2.lua
+ 
+ install: all
+-	mkdir -p ~/.lua50
+-	cp gtk2.lua ~/.lua50
+-	ln -sf $(PWD)/build-linux/libluagtk2.so ~/.lua50
++	install -d $(DESTDIR)/$(PREFIX)/share/lua
++	install gtk2.lua $(DESTDIR)/$(PREFIX)/share/lua
++	install -d $(DESTDIR)/$(PREFIX)/lib/lua50
++	install $(PWD)/build-linux/libluagtk2.so $(DESTDIR)/$(PREFIX)/lib/lua50
+ 
+ tar:
+ 	(cd ..; ln -s lua-gtk2 lua-gtk2-${VERSION}; tar czvhf lua-gtk2-${VERSION}.tar.gz \
+diff -NbBur lua-gtk2-0.3_orig/src/libluagtk2.c lua-gtk2-0.3/src/libluagtk2.c
+--- lua-gtk2-0.3_orig/src/libluagtk2.c	2005-08-16 18:22:00.000000000 +0200
++++ lua-gtk2-0.3/src/libluagtk2.c	2006-05-15 01:31:09.000000000 +0200
+@@ -27,9 +27,9 @@
+ 
+ static const char *dll_list[] = {
+ #ifdef LINUX
+-    "/usr/lib/libgtk-x11-2.0.so",
+-    "/usr/lib/libgdk-x11-2.0.so",
+-    "/usr/lib/libpango-1.0.so",
++    "/usr/lib/libgtk-x11-2.0.so.0",
++    "/usr/lib/libgdk-x11-2.0.so.0",
++    "/usr/lib/libpango-1.0.so.0",
+ #endif
+ #ifdef WIN32
+     "C:/GTK/bin/libgtk-win32-2.0-0.dll",

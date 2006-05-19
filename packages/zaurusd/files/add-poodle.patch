@@ -1,0 +1,34 @@
+diff -Nur zaurusd.orig/config/mach-config/mach-poodle-functions zaurusd/config/mach-config/mach-poodle-functions
+--- zaurusd.orig/config/mach-config/mach-poodle-functions	1970-01-01 01:00:00.000000000 +0100
++++ zaurusd/config/mach-config/mach-poodle-functions	2006-05-14 12:43:01.000000000 +0200
+@@ -0,0 +1,3 @@
++#HAVE_INPUT_SWITCHES=1
++#HAVE_ALSA_MIXER=1
++
+diff -Nur zaurusd.orig/config/mach-config/mach-poodle-vars zaurusd/config/mach-config/mach-poodle-vars
+--- zaurusd.orig/config/mach-config/mach-poodle-vars 1970-01-01 01:00:00.000000000 +0100
++++ zaurusd/config/mach-config/mach-poodle-vars	2006-05-14 12:42:42.000000000 +0200
+@@ -0,0 +1,9 @@
++MACHINE=poodle
++
++export SWITCH_EVENT_ZMIXER=1
++SWITCH_EVENT_DEVICE=/dev/input/event0
++
++#TSKEYS_CONF=@appconfdir@/tskeys/zaurus-clamshell.conf
++#TSKEYS_DEVICE=/dev/input/event1
++
++ALSA_MIXER_INIT=@appconfdir@/alsa/poodle-default.state
+\ Kein Zeilenumbruch am Dateiende.
+diff -Nur zaurusd.orig/scripts/detect-machine zaurusd/scripts/detect-machine
+--- zaurusd.orig/scripts/detect-machine	2006-05-07 13:39:11.000000000 +0200
++++ zaurusd/scripts/detect-machine	2006-05-14 12:40:38.000000000 +0200
+@@ -27,6 +27,9 @@
+         "SHARP Tosa")
+ 		MACHINE=tosa
+         	;;	
++	"SHARP Poodle")
++		MACHINE=poodle
++		;;
+ 	"Simpad")
+ 		;;
+ 	"HP iPAQ H2200")

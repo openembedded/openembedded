@@ -4,8 +4,9 @@ SECTION = "opie/base"
 ALLOW_EMPTY = 1
 PACKAGE_ARCH = "all"
 LICENSE = "MIT"
+PROVIDES = "task-opie-everything"
 
-PR = "r2"
+PR = "r3"
 
 PACKAGES = "task-opie-applets task-opie-apps task-opie-base \
             task-opie-base-applets task-opie-base-apps \
@@ -19,6 +20,10 @@ PACKAGES = "task-opie-applets task-opie-apps task-opie-base \
             task-opie-games task-opie-inputmethods task-opie-irda \
             task-opie-multimedia task-opie-pim task-opie-settings \
             task-opie-styles task-opie-todayplugins task-opie-wlan"
+
+RDEPENDS_task-opie-everything := "${PACKAGES}"
+
+PACKAGES += "task-opie-everything"
 
 #
 # Dependencies to get the launcher up and running
