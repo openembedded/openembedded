@@ -3,7 +3,7 @@ SECTION = "opie/libs"
 PRIORITY = "optional"
 MAINTAINER = "Team Opie <opie@handhelds.org>"
 LICENSE = "LGPL"
-DEPENDS = "libopietooth opie-taskbar openobex-apps"
+DEPENDS = "libopietooth1 opie-taskbar openobex-apps"
 RDEPENDS = "openobex-apps"
 APPNAME = "obex"
 
