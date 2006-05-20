@@ -475,6 +475,34 @@ python base_do_patch() {
 		else:
 			pname = os.path.basename(unpacked)
 
+		if "mindate" in parm:
+			mindate = parm["mindate"]
+		else:
+			mindate = 0
+
+		if "maxdate" in parm:
+			maxdate = parm["maxdate"]
+		else:
+			maxdate = bb.data.getVar('DATE', d, 1)
+
+		pn = bb.data.getVar('PN', d, 1)
+		srcdate = bb.data.getVar('SRCDATE_%s' % pn, d, 1)
+
+		if not srcdate:
+			srcdate = bb.data.getVar('SRCDATE', d, 1)
+
+		if srcdate == "now": 
+			srcdate = bb.data.getVar('DATE', d, 1)
+
+		if (maxdate < srcdate) or (mindate > srcdate):
+			if (maxdate < srcdate):
+				bb.note("Patch '%s' is outdated" % pname)
+
+			if (mindate > srcdate):
+				bb.note("Patch '%s' is predated" % pname)
+
+			continue
+
 		bb.note("Applying patch '%s'" % pname)
 		bb.data.setVar("do_patchcmd", bb.data.getVar("PATCHCMD", d, 1) % (pnum, pname, unpacked), d)
 		bb.data.setVarFlag("do_patchcmd", "func", 1, d)
