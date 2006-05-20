@@ -1,0 +1,13 @@
+
+#
+# Patch managed by http://www.mn-logistik.de/unsupported/pxa250/patcher
+#
+
+--- DirectFB-0.9.25.1/directfb.pc.in~fix-pkgconfig-specs	2005-10-19 01:14:04.000000000 +0200
++++ DirectFB-0.9.25.1/directfb.pc.in	2006-05-20 01:02:37.000000000 +0200
+@@ -8,4 +8,4 @@
+ Version: @VERSION@
+ Requires: fusion direct
+ Libs: -L${libdir} -ldirectfb @THREADLIB@ @DYNLIB@ @ZLIB_LIBS@ @OSX_LIBS@
+-Cflags: @THREADFLAGS@ -I@INCLUDEDIR@
++Cflags: @THREADFLAGS@ -I${includedir}/directfb

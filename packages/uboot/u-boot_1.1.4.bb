@@ -22,6 +22,8 @@ SRC_URI_append_gumstix = "\
 						  file://u-boot-mmcclk-alternate.patch;patch=1 \
 						  file://u-boot-smc91x-multi.patch;patch=1 \
 						  file://u-boot-zzz-osx.patch;patch=1"
+SRC_URI_append_amsdelta = "\
+	http://the.earth.li/pub/e3/u-boot-amsdelta-20060519.diff;patch=1"
 
 EXTRA_OEMAKE = "CROSS_COMPILE=${TARGET_PREFIX}"
 EXTRA_OEMAKE_gumstix = "CROSS_COMPILE=${TARGET_PREFIX} GUMSTIX_400MHZ=${GUMSTIX_400MHZ}"
