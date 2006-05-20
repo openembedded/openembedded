@@ -1,48 +1,26 @@
 DESCRIPTION = "2.6 Linux Development Kernel for the Motorola GSM phones A780 and E680"
 SECTION = "kernel"
+AUTHOR = "Harald Welte and the OpenEZX Team <openezx-devel@lists.openezx.org>"
+HOMEPAGE = "http://www.openezx.org"
 MAINTAINER = "Michael 'Mickey' Lauer <mickey@vanille.de>"
 LICENSE = "GPL"
-PR = "ezx3-r2"
+DEPENDS += "quilt-native"
+EZX = "ezx6"
+PR = "${EZX}-r0"
 
 inherit kernel
 
 ##############################################################
-# Source
+# source
 
 SRC_URI = "http://www.kernel.org/pub/linux/kernel/v2.6/linux-2.6.16.tar.bz2 \
-file://patch-2.6.16.13;patch=1 \
-file://dpm-core-2.6.16.patch;patch=1 \
-file://dpm-pxa27x-2.6.16.patch;patch=1 \
-file://pxa7xx_udc.patch;patch=1 \
-file://ezx_usb_gadged_serial_pxa27x.patch;patch=1 \
-file://pxa27x_udc-more.patch;patch=1 \
-file://ezx_defconfig.patch;patch=1 \
-file://ezx_core.patch;patch=1 \
-file://ezx_mtd.patch;patch=1 \
-file://ezx_roflash.patch;patch=1 \
-file://ezx_camera.patch;patch=1 \
-file://sa1100_rtc.patch;patch=1 \
-file://pxa_serial_bug_workaround.patch;patch=1 \
-file://ezx_sound.patch;patch=1 \
-file://pxa_serial_dpm.patch;patch=1 \
-file://ezxfb-fix-screensave.patch;patch=1 \
-file://keypad-module.patch;patch=1 \
-file://exz-platformdevices.patch;patch=1 \
-file://pxa_mtd_fix.patch;patch=1 \
-file://ezx_pxa_ssp.patch;patch=1 \
-file://pxamci_debug.patch;patch=1 \
-file://ssp_pcap_nobitbang.patch;patch=1 \
-file://pxamci-4bit.patch;patch=1 \
-file://a780-transflash_power.patch;patch=1 \
-file://ezx-kbd.patch;patch=1 \
-file://ezx-mmc-ro.patch;patch=1 \
-\
-file://defconfig-a780 \
-file://defconfig-e680"
+           http://people.openezx.org/laforge/kernel/patches-2.6.16-2.6.16.13-exz6.tar.bz2 \
+           file://defconfig-a780 \
+           file://defconfig-e680"
 S = "${WORKDIR}/linux-2.6.16"
 
 ##############################################################
-# Compensate for sucky bootloader on all Sharp Zaurus models
+# kernel image resides on a seperate flash partition (for now)
 #
 FILES_kernel-image = ""
 ALLOW_EMPTY = 1
@@ -62,6 +40,10 @@ CMDLINE = "${CMDLINE_CON} ${CMDLINE_ROOT} ${CMDLINE_IP} ${CMDLINE_ROTATE} ${CMDL
 #
 module_autoload_pxaficp_ir = "pxaficp_ir"
 module_autoload_snd-pcm-oss = "snd-pcm-oss"
+
+do_patch() {
+	mv ${WORKDIR}/patches ${S} && cd ${S} && quilt push -av
+}
 
 do_configure() {
 	rm -f ${S}/.config
