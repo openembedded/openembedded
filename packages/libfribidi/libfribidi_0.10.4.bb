@@ -8,7 +8,7 @@ PR = "r0"
 
 S = "${WORKDIR}/fribidi-${PV}"
 
-SRC_URI = "http://download.sourceforge.net/fribidi/fribidi-${PV}.tar.bz2 \
+SRC_URI = "${SOURCEFORGE_MIRROR}/fribidi/fribidi-${PV}.tar.bz2 \
            file://libtool-update.patch;patch=1"
 
 #PACKAGES += " ${PN}-bin"
