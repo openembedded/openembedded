@@ -209,7 +209,7 @@ follow the Debian package naming policy.</para>
 
         <section>
             <title>Shared Library handling (shlibs) <anchor id="shlibs" /></title>
-            <para>Run-time Dependencies (<command>RDEPNDS</command>) will be added when packaging the software. They should only contain
+            <para>Run-time Dependencies (<command>RDEPENDS</command>) will be added when packaging the software. They should only contain
 the minimal dependencies to run the program. OpenEmbedded will analyze each packaged binary and search for <command>SO_NEEDED</command> libraries. The libraries are absolutely required by the program then OpenEmbedded is searching for packages that installs these libraries. these
 packages are automatically added to the <command>RDEPENDS</command>. As a packager you don't need to worry about shared libraries anymore
 they will be added automatically.</para>
