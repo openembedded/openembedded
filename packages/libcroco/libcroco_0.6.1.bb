@@ -3,7 +3,7 @@ SECTION = "x11/utils"
 MAINTAINER = "Koen Kooi <koen@dominion.kabel.utwente.nl>"
 DEPENDS = "glib-2.0 libxml2"
 LICENSE = "LGPL"
-PR = "r1"
+PR = "r2"
 
 inherit autotools pkgconfig gnome
 

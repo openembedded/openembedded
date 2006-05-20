@@ -5,7 +5,7 @@ DEPENDS = "libxsettings libx11 libxt"
 # libxt is required to stop configure breaking builds by 
 # including system paths to find it if it isn't present.
 MAINTAINER = "Florian Boor <florian@kernelconcepts.de>"
-PR="r0"
+PR="r1"
 
 GPE_TARBALL_SUFFIX = "bz2"
 inherit autotools pkgconfig gpe
