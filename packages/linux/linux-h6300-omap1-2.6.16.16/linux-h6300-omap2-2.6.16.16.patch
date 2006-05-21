@@ -1,0 +1,3736 @@
+diff -Naur linux-2.6.16.16/arch/arm/Kconfig h6300_dev/arch/arm/Kconfig
+--- linux-2.6.16.16/arch/arm/Kconfig	2006-05-17 21:41:27.000000000 +0300
++++ h6300_dev/arch/arm/Kconfig	2006-04-02 00:23:01.000000000 +0300
+@@ -811,6 +811,8 @@
+ 
+ source "drivers/video/Kconfig"
+ 
++source "drivers/telephony/Kconfig"
++
+ source "sound/Kconfig"
+ 
+ source "drivers/usb/Kconfig"
+diff -Naur linux-2.6.16.16/arch/arm/mach-omap1/board-h6300.c h6300_dev/arch/arm/mach-omap1/board-h6300.c
+--- linux-2.6.16.16/arch/arm/mach-omap1/board-h6300.c	1970-01-01 02:00:00.000000000 +0200
++++ h6300_dev/arch/arm/mach-omap1/board-h6300.c	2006-04-24 20:53:29.000000000 +0300
+@@ -0,0 +1,424 @@
++/*
++ * Modified from board-h6300.c
++ *
++ * Code for generic OMAP board. Should work on many OMAP systems where
++ * the device drivers take care of all the necessary hardware initialization.
++ * Do not put any board specific code to this file; create a new machine
++ * type if you need custom low-level initializations.
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ */
++
++#include <linux/kernel.h>
++#include <linux/init.h>
++#include <linux/platform_device.h>
++#include <linux/delay.h>
++#include <linux/mtd/mtd.h>
++#include <linux/mtd/partitions.h>
++#include <linux/input.h>
++
++#include <asm/hardware.h>
++#include <asm/mach-types.h>
++#include <asm/mach/arch.h>
++#include <asm/mach/flash.h>
++#include <asm/mach/map.h>
++
++#include <asm/arch/gpio.h>
++
++#include <asm/arch/tc.h>
++#include <asm/arch/usb.h>
++#include <asm/arch/keypad.h>
++#include <asm/arch/common.h>
++#include <asm/arch/mcbsp.h>
++#include <asm/arch/omap-alsa.h>
++#include <asm/arch/h6300_uart_info.h>
++
++#define _h6300_KEY_CALENDAR	67 	// xmodmap 75 aka F9
++#define _H6300_KEY_TELEPHONE	68 	// xmodmap 76 aka F10
++#define _H6300_KEY_HOMEPAGE	87 	// xmodmap 87 aka Num_Lock
++#define _H6300_KEY_MAIL		88 	// xmodmap 88 aka Scroll_Lock
++
++/*
++ * Following 5 keypad events are not really sent to userspace. 
++ * Instead if the good combination of them is sent, then that is send.
++ * (up, right, down, left, enter)
++ */
++#define	_H6300_JOYPAD_UP_RIGHT		1	// 00001
++#define _H6300_JOYPAD_DOWN_RIGHT	2	// 00010
++#define _h6300_JOYPAD_DOWN_LEFT		4	// 00100
++#define _h6300_JOYPAD_UP_LEFT		8	// 01000
++#define _H6300_JOYPAD_KEY_OK		16	// 10000
++
++static int h6300_keymap[] = {
++	KEY(2, 0, _h6300_KEY_CALENDAR),		// address button in the bottom left	
++	KEY(2, 3, _H6300_KEY_TELEPHONE),	// start call button in the bottom
++	KEY(3, 1, _H6300_KEY_HOMEPAGE),		// stop call button in the bottom
++	KEY(3, 4, _H6300_KEY_MAIL),		// messaging button in the bottom right
++
++	KEY(0, 0, KEY_VOLUMEUP),	// volume up button in the right side
++	KEY(0, 1, KEY_VOLUMEDOWN),	// volume down button in the right side
++	KEY(3, 2, KEY_RECORD),		// record button in the left side
++	
++	KEY(1, 0, _h6300_JOYPAD_UP_LEFT),	
++	KEY(1, 1, _h6300_JOYPAD_DOWN_LEFT),	
++	KEY(1, 2, _H6300_JOYPAD_KEY_OK),		
++	KEY(1, 3, _H6300_JOYPAD_DOWN_RIGHT),
++	KEY(1, 4, _H6300_JOYPAD_UP_RIGHT),	
++	
++	KEY(4, 0, KEY_RIGHT),
++	KEY(4, 1, KEY_DOWN),
++	KEY(4, 2, KEY_LEFT),		
++	KEY(4, 3, KEY_UP),
++	KEY(4, 4, KEY_ENTER),
++
++	0
++};
++
++/*
++ * Bluetooth - Relies on h6300_bt module,
++ * so make the calls indirectly through pointers. Requires that the
++ * h6300_bt bluetooth module be loaded before any attempt to use
++ * bluetooth (obviously).
++ */
++
++static struct h6300_uart_funcs bt_funcs;
++static struct h6300_uart_funcs gsm_funcs;
++
++static void h6300_bt_configure(struct uart_omap_port *up, int enable)
++{
++	printk(KERN_NOTICE "board-h6300.c, h6300_bt_configure() started\n");
++	if (bt_funcs.configure != NULL)
++		bt_funcs.configure(up, enable);
++	printk(KERN_NOTICE "board-h6300.c, h6300_bt_configure() done\n");
++}
++
++static void h6300_bt_set_txrx(struct uart_omap_port *up, int txrx)
++{
++	printk(KERN_NOTICE "board-h6300.c, h6300_bt_set_txrx() started\n");
++	if (bt_funcs.set_txrx != NULL)
++	{
++		printk(KERN_NOTICE "board-h6300.c, h6300_bt_set_txrx(), bt_funcs.set_txrx != NULL\n");
++		bt_funcs.set_txrx(up, txrx);
++	}
++	printk(KERN_NOTICE "board-h6300.c, h6300_bt_set_txrx() done\n");
++}
++
++static int h6300_bt_get_txrx(struct uart_omap_port *up)
++{
++	int	retVal;
++	
++	printk(KERN_NOTICE "board-h6300.c, h6300_bt_get_txrx() started\n");
++	if (bt_funcs.get_txrx != NULL)
++	{
++		retVal	= bt_funcs.get_txrx(up);
++		printk(KERN_NOTICE "board-h6300.c, h6300_bt_get_txrx(), bt_funcs.get_trx != null, done, retVal %d\n", retVal);
++		return retVal;
++	}
++	else
++	{
++		printk(KERN_NOTICE "board-h6300.c, h6300_bt_get_txrx() done, returning 0\n");
++		return 0;
++	}
++}
++
++static struct platform_omap_serial_funcs h6300_omap_bt_funcs = {
++	.configure	= h6300_bt_configure,
++	.set_txrx	= h6300_bt_set_txrx,
++	.get_txrx	= h6300_bt_get_txrx,
++};
++
++struct platform_device btuart_device = {
++	.name	= "h6300_bt",
++	.id	= 1,
++};
++EXPORT_SYMBOL(btuart_device);
++
++static void h6300_gsm_configure(struct uart_omap_port *up, int enable)
++{
++	printk(KERN_NOTICE "board-h6300.c, h6300_gsm_configure() started\n");
++	if (gsm_funcs.configure != NULL)
++		gsm_funcs.configure(up, enable);
++	printk(KERN_NOTICE "board-h6300.c, h6300_gsm_configure() done\n");
++}
++
++static void h6300_gsm_set_txrx(struct uart_omap_port *up, int txrx)
++{
++	printk(KERN_NOTICE "board-h6300.c, h6300_gsm_set_txrx() started\n");
++	if (bt_funcs.set_txrx != NULL)
++	{
++		printk(KERN_NOTICE "board-h6300.c, h6300_gsm_set_txrx(), bt_funcs.set_txrx != NULL\n");
++		gsm_funcs.set_txrx(up, txrx);
++	}
++	printk(KERN_NOTICE "board-h6300.c, h6300_gsm_set_txrx() done\n");
++}
++
++static int h6300_gsm_get_txrx(struct uart_omap_port *up)
++{
++	int	retVal;
++	
++	printk(KERN_NOTICE "board-h6300.c, h6300_gsm_get_txrx() started\n");
++	if (bt_funcs.get_txrx != NULL)
++	{
++		retVal	= gsm_funcs.get_txrx(up);
++		printk(KERN_NOTICE "board-h6300.c, h6300_gsm_get_txrx(), bt_funcs.get_trx != null, done, retVal %d\n", retVal);
++		return retVal;
++	}
++	else
++	{
++		printk(KERN_NOTICE "board-h6300.c, h6300_gsm_get_txrx() done, returning 0\n");
++		return 0;
++	}
++}
++
++static struct platform_omap_serial_funcs h6300_omap_gsm_funcs = {
++	.configure	= h6300_gsm_configure,
++	.set_txrx	= h6300_gsm_set_txrx,
++	.get_txrx	= h6300_gsm_get_txrx,
++};
++
++struct platform_device gsmuart_device = {
++	.name	= "h6300_gsm",
++	.id	= 1,
++};
++EXPORT_SYMBOL(gsmuart_device);
++
++#if 0
++static struct mtd_partition h6300_partitions[] = {
++	/* bootloader (U-Boot, etc) in first sector */
++	{
++	      .name		= "bootloader",
++	      .offset		= 0,
++	      .size		= SZ_128K,
++	      .mask_flags	= MTD_WRITEABLE, /* force read-only */
++	},
++	/* bootloader params in the next sector */
++	{
++	      .name		= "params",
++	      .offset		= MTDPART_OFS_APPEND,
++	      .size		= SZ_128K,
++	      .mask_flags	= 0,
++	},
++	/* kernel */
++	{
++	      .name		= "kernel",
++	      .offset		= MTDPART_OFS_APPEND,
++	      .size		= SZ_2M,
++	      .mask_flags	= 0
++	},
++	/* rest of flash1 is a file system */
++	{
++	      .name		= "rootfs",
++	      .offset		= MTDPART_OFS_APPEND,
++	      .size		= SZ_16M - SZ_2M - 2 * SZ_128K,
++	      .mask_flags	= 0
++	},
++	/* file system */
++	{
++	      .name		= "filesystem",
++	      .offset		= MTDPART_OFS_APPEND,
++	      .size		= MTDPART_SIZ_FULL,
++	      .mask_flags	= 0
++	}
++};
++
++static struct flash_platform_data h6300_flash_data = {
++	.map_name	= "cfi_probe",
++	.width		= 2,
++	.parts		= h6300_partitions,
++	.nr_parts	= ARRAY_SIZE(h6300_partitions),
++};
++
++static struct resource h6300_flash_resource = {
++	.start		= OMAP_CS0_PHYS,
++	.end		= OMAP_CS0_PHYS + SZ_32M - 1,
++	.flags		= IORESOURCE_MEM,
++};
++
++static struct platform_device h6300_flash_device = {
++	.name	= "omapflash",
++	.id		= 0,
++	.dev	= {
++		.platform_data	= &h6300_flash_data,
++	},
++static struct platform_device h6300_flash_device = {
++	.name	= "omapflash",
++	.id		= 0,
++	.dev	= {
++		.platform_data	= &h6300_flash_data,
++	},
++	.num_resources	= 1,
++	.resource	= &h6300_flash_resource,
++};
++#endif
++
++static struct resource h6300_kp_resources[] = {
++	[0] = {
++		.start	= INT_KEYBOARD,
++		.end	= INT_KEYBOARD,
++		.flags	= IORESOURCE_IRQ,
++	},
++};
++
++static struct omap_kp_platform_data h6300_kp_data = {
++	.rows	= 8,
++	.cols	= 8,
++	.keymap = h6300_keymap,
++	.rep	= 1,	// turns repeat bit on
++};
++
++static struct platform_device h6300_kp_device = {
++	.name		= "omap-keypad",
++	.id		= -1,
++	.dev		= {
++		.platform_data = &h6300_kp_data,
++	},
++	.num_resources	= ARRAY_SIZE(h6300_kp_resources),
++	.resource	= h6300_kp_resources,
++};
++
++static struct resource h6300_wlan_resource[] = {
++        [0] = {
++                .start          = OMAP_CS1_PHYS,
++                .end            = OMAP_CS1_PHYS + SZ_32M -1,
++                .flags          = IORESOURCE_MEM,
++        },
++
++        [1] = {
++                .start  = OMAP_GPIO_IRQ(11),
++                .end    = OMAP_GPIO_IRQ(11),
++                .flags  = IORESOURCE_IRQ,
++        },
++};
++
++static struct platform_device h6300_wlan_device = {
++        .name           = "tnetw1100b",
++        .id             = 0,
++        .num_resources  = 2,
++        .resource       = h6300_wlan_resource,
++};
++
++static struct omap_mcbsp_reg_cfg mcbsp_regs = { 
++	.spcr2	= 0x0000,
++	.spcr1	= 0x0000,
++	.rcr2	= 0x8041,
++	.rcr1	= 0x0040,
++	.xcr2	= 0x00a1,
++	.xcr1	= 0x00a0,
++	.srgr2	= 0xb000,
++	.srgr1	= 0x0000,
++	.pcr0	= 0x0081,
++};
++
++static struct omap_alsa_codec_config alsa_config = {
++	.name                   = "iPAQ h6300 TSC2101",
++	.mcbsp_regs_alsa        = &mcbsp_regs,
++	.codec_configure_dev    = NULL, //tsc2101_configure,
++	.codec_set_samplerate   = NULL, //tsc2101_set_samplerate,
++	.codec_clock_setup      = NULL, //tsc2101_clock_setup,
++	.codec_clock_on         = NULL, //tsc2101_clock_on,
++	.codec_clock_off        = NULL, //tsc2101_clock_off,
++	.get_default_samplerate = NULL, //tsc2101_get_default_samplerate,
++};
++
++static struct platform_device h6300_mcbsp1_device = {
++	.name	= "omap_alsa_mcbsp",
++	.id	= 1,
++	.dev = {
++		.platform_data	= &alsa_config,
++	},
++};
++
++static struct platform_device h6300_lcd_device = {
++	.name	= "lcd_h6300",
++	.id	= -1,
++};
++
++static struct platform_device *h6300_devices[] __initdata = {
++	&h6300_lcd_device,
++	&btuart_device,
++	&gsmuart_device,
++	&h6300_kp_device,
++	&h6300_mcbsp1_device,
++	&h6300_wlan_device,
++	//&h6300_flash_device,
++};
++
++static void __init h6300_init_irq(void)
++{
++	omap1_init_common_hw();
++	omap_init_irq();
++	omap_gpio_init();
++
++	/* this is now done in the drivers/input/touschreen/omap/ts_hx.c*/
++	//omap_request_gpio(2);
++	//omap_set_gpio_direction(2, 0);
++	//omap_set_gpio_dataout(2, 1);
++}
++
++/* assume no Mini-AB port */
++
++static struct omap_usb_config h6300_usb_config __initdata = {
++	.hmc_mode	= 0,
++	.register_dev	= 1,
++	.pins[0]	= 0,
++};
++
++static struct omap_lcd_config h6300_lcd_config __initdata = {
++	.ctrl_name	= "internal",
++};
++
++static struct omap_mmc_config h6300_mmc_config __initdata = {
++	.mmc [0] = {
++		.enabled 	= 1,
++		.wire4		= 1,
++		.wp_pin		= OMAP_GPIO_IRQ(13),
++		.power_pin	= -1, // tps65010 ?
++		.switch_pin	= -1, // OMAP_MPUIO(1),	// = -1, // ARMIO2?
++	},
++};
++
++static struct omap_uart_config h6300_uart_config __initdata = {
++	.enabled_uarts = ((1 << 0) | (1 << 1) | (1 << 2)),
++};
++
++static struct omap_board_config_kernel h6300_config[] = {
++	{ OMAP_TAG_USB, 	&h6300_usb_config },
++	{ OMAP_TAG_MMC,		&h6300_mmc_config },
++	{ OMAP_TAG_UART,	&h6300_uart_config },
++	{ OMAP_TAG_LCD,		&h6300_lcd_config },
++};
++
++static void __init h6300_init(void)
++{
++	int ret;
++	
++	ret = platform_add_devices(h6300_devices, ARRAY_SIZE(h6300_devices));
++	if (ret) 
++	{
++		printk(KERN_WARNING "Unable to add h6300 platform devices like bluetooth");
++	}
++	omap_board_config	= h6300_config;
++	omap_board_config_size	= ARRAY_SIZE(h6300_config);
++	omap_serial_init();
++}
++
++static void __init h6300_map_io(void)
++{
++	omap1_map_common_io();
++	
++	btuart_device.dev.platform_data		= &h6300_omap_bt_funcs;
++	gsmuart_device.dev.platform_data	= &h6300_omap_gsm_funcs;
++}
++
++MACHINE_START(OMAP_H6300, "HP iPAQ h6300")
++	/* MAINTAINER("Everett Coleman II <gcc80x86@fuzzyneural.net>") */
++	.phys_io		= 0xfff00000,
++	.io_pg_offst	= ((0xfef00000) >> 18) & 0xfffc,
++	.boot_params	= 0x10000100,
++	.map_io			= h6300_map_io,
++	.init_irq		= h6300_init_irq,
++	.init_machine	= h6300_init,
++	.timer			= &omap_timer,
++MACHINE_END
+diff -Naur linux-2.6.16.16/arch/arm/mach-omap1/Kconfig h6300_dev/arch/arm/mach-omap1/Kconfig
+--- linux-2.6.16.16/arch/arm/mach-omap1/Kconfig	2006-05-17 21:41:27.000000000 +0300
++++ h6300_dev/arch/arm/mach-omap1/Kconfig	2006-04-02 20:47:24.000000000 +0300
+@@ -26,6 +26,15 @@
+           TI OMAP 1510 or 1610 Innovator board support. Say Y here if you
+           have such a board.
+ 
++config MACH_OMAP_H6300
++	bool "HP iPAQ h6300 series"
++	depends on ARCH_OMAP1 && ARCH_OMAP15XX
++	select I2C
++	select PCA9535
++	help
++          HP iPAQ h6315, h6340 and h6365 devices that are based 
++          on the OMAP 1510. Say Y here if you have such a device.
++
+ config MACH_OMAP_H2
+ 	bool "TI H2 Support"
+ 	depends on ARCH_OMAP1 && ARCH_OMAP16XX
+diff -Naur linux-2.6.16.16/arch/arm/mach-omap1/Makefile h6300_dev/arch/arm/mach-omap1/Makefile
+--- linux-2.6.16.16/arch/arm/mach-omap1/Makefile	2006-05-17 21:41:28.000000000 +0300
++++ h6300_dev/arch/arm/mach-omap1/Makefile	2006-04-02 00:23:01.000000000 +0300
+@@ -23,6 +23,7 @@
+ obj-$(CONFIG_MACH_OMAP_PALMTE)		+= board-palmte.o
+ obj-$(CONFIG_MACH_NOKIA770)		+= board-nokia770.o
+ obj-$(CONFIG_MACH_AMS_DELTA)		+= board-ams-delta.o
++obj-$(CONFIG_MACH_OMAP_H6300)		+= board-h6300.o
+ 
+ ifeq ($(CONFIG_ARCH_OMAP15XX),y)
+ # Innovator-1510 FPGA
+@@ -36,4 +37,3 @@
+ led-$(CONFIG_MACH_OMAP_PERSEUS2)	+= leds-h2p2-debug.o
+ led-$(CONFIG_MACH_OMAP_OSK)		+= leds-osk.o
+ obj-$(CONFIG_LEDS)			+= $(led-y)
+-
+diff -Naur linux-2.6.16.16/arch/arm/mach-omap1/mux.c h6300_dev/arch/arm/mach-omap1/mux.c
+--- linux-2.6.16.16/arch/arm/mach-omap1/mux.c	2006-05-17 21:41:28.000000000 +0300
++++ h6300_dev/arch/arm/mach-omap1/mux.c	2006-02-21 23:54:33.000000000 +0200
+@@ -200,6 +200,13 @@
+ MUX_CFG("P15_1610_UWIRE_CS3",	 8,   12,    1,	  1,  22,   0,	  1,	 1,  1)
+ MUX_CFG("N15_1610_UWIRE_CS1",	 7,   18,    2,	  1,  14,   0,	 NA,	 0,  1)
+ 
++/* OMAP-1510 uWire */
++MUX_CFG("P15_1510_UWIRE_CS3",  8,   12,    1,	 NA,   0,   0,  NA,  0,  1)
++MUX_CFG("N14_1510_UWIRE_CS0",  8,    9,    1,	 NA,   0,   0,  NA,  0,  1)
++MUX_CFG("V19_1510_UWIRE_SCLK", 8,    6,    0,	 NA,   0,   0,  NA,  0,  1)
++MUX_CFG("W21_1510_UWIRE_SDO",  8,    3,    0,	 NA,   0,   0,  NA,  0,  1)
++MUX_CFG("U18_1510_UWIRE_SDI",  8,    0,    0,	  1,  18,   0,  NA,  0,  1)
++
+ /* OMAP-1610 Flash */
+ MUX_CFG("L3_1610_FLASH_CS2B_OE",10,    6,    1,	 NA,   0,   0,	 NA,	 0,  1)
+ MUX_CFG("M8_1610_FLASH_CS2B_WE",10,    3,    1,	 NA,   0,   0,	 NA,	 0,  1)
+@@ -262,6 +269,7 @@
+ MUX_CFG("T20_1610_LOW_PWR",	 7,   12,    1,	  NA,   0,   0,   NA,	 0,  0)
+ 
+ /* MCLK Settings */
++MUX_CFG("R10_1510_MCLK_ON",	 B,   18,    0,	  2,   22,   1,   NA,	 1,  1)
+ MUX_CFG("V5_1710_MCLK_ON",	 B,   15,    0,	  NA,   0,   0,   NA,	 0,  0)
+ MUX_CFG("V5_1710_MCLK_OFF",	 B,   15,    6,	  NA,   0,   0,   NA,	 0,  0)
+ MUX_CFG("R10_1610_MCLK_ON",	 B,   18,    0,	  NA,  22,   0,	  NA,	 1,  0)
+diff -Naur linux-2.6.16.16/arch/arm/plat-omap/devices.c h6300_dev/arch/arm/plat-omap/devices.c
+--- linux-2.6.16.16/arch/arm/plat-omap/devices.c	2006-05-17 21:41:28.000000000 +0300
++++ h6300_dev/arch/arm/plat-omap/devices.c	2006-05-18 00:59:02.000000000 +0300
+@@ -92,7 +92,7 @@
+ 
+ static void omap_init_kp(void)
+ {
+-	if (machine_is_omap_h2() || machine_is_omap_h3()) {
++	if (machine_is_omap_h2() || machine_is_omap_h3() || machine_is_omap_h6300()) {
+ 		omap_cfg_reg(F18_1610_KBC0);
+ 		omap_cfg_reg(D20_1610_KBC1);
+ 		omap_cfg_reg(D19_1610_KBC2);
+diff -Naur linux-2.6.16.16/arch/arm/plat-omap/dma.c h6300_dev/arch/arm/plat-omap/dma.c
+--- linux-2.6.16.16/arch/arm/plat-omap/dma.c	2006-05-17 21:41:28.000000000 +0300
++++ h6300_dev/arch/arm/plat-omap/dma.c	2006-02-06 15:36:21.000000000 +0200
+@@ -30,6 +30,7 @@
+ #include <asm/hardware.h>
+ #include <asm/dma.h>
+ #include <asm/io.h>
++#include <asm/mach-types.h>
+ 
+ #include <asm/arch/tc.h>
+ 
+@@ -1086,6 +1087,10 @@
+ 	}
+ 
+ 	if (omap_dma_in_1510_mode()) {
++		u16 l = omap_readw(OMAP1510_DMA_LCD_CTRL);
++		l &= ~(1 << 6);
++		omap_writew (l, OMAP1510_DMA_LCD_CTRL);
++
+ 		omap_writew(top >> 16, OMAP1510_DMA_LCD_TOP_F1_U);
+ 		omap_writew(top, OMAP1510_DMA_LCD_TOP_F1_L);
+ 		omap_writew(bottom >> 16, OMAP1510_DMA_LCD_BOT_F1_U);
+diff -Naur linux-2.6.16.16/arch/arm/tools/mach-types h6300_dev/arch/arm/tools/mach-types
+--- linux-2.6.16.16/arch/arm/tools/mach-types	2006-05-11 04:56:24.000000000 +0300
++++ h6300_dev/arch/arm/tools/mach-types	2006-04-24 20:53:29.000000000 +0300
+@@ -576,7 +576,7 @@
+ s3c2460			MACH_S3C2460		S3C2460			560
+ pdm			MACH_PDM		PDM			561
+ h4700			MACH_H4700		H4700			562
+-h6300			MACH_H6300		H6300			563
++omap_h6300		MACH_OMAP_H6300		OMAP_H6300		563
+ rz1700			MACH_RZ1700		RZ1700			564
+ a716			MACH_A716		A716			565
+ estk2440a		MACH_ESTK2440A		ESTK2440A		566
+diff -Naur linux-2.6.16.16/drivers/bluetooth/Kconfig h6300_dev/drivers/bluetooth/Kconfig
+--- linux-2.6.16.16/drivers/bluetooth/Kconfig	2006-05-17 21:41:29.000000000 +0300
++++ h6300_dev/drivers/bluetooth/Kconfig	2006-02-21 23:54:33.000000000 +0200
+@@ -166,6 +166,16 @@
+ 
+ 	  Say Y here to compile support for virtual HCI devices into the
+ 	  kernel or say M to compile it as module (hci_vhci).
++	  
++config BT_H6300
++	tristate "H6300 BRF6100 BT DRIVER"
++	help
++	  Bluetooth H6300 BRF6100 driver.
++	  This driver provides the firmware loading mechanism for the BRF6100
++	  bt hardware in iPAQ h6300.
++
++	  Say Y here to compile support for BRF6100 BT devices into the
++	  kernel or say M to compile it as module (h6300_BT).	  
+ 
+ endmenu
+ 
+diff -Naur linux-2.6.16.16/drivers/bluetooth/Makefile h6300_dev/drivers/bluetooth/Makefile
+--- linux-2.6.16.16/drivers/bluetooth/Makefile	2006-05-17 21:41:29.000000000 +0300
++++ h6300_dev/drivers/bluetooth/Makefile	2006-02-21 23:54:33.000000000 +0200
+@@ -13,6 +13,7 @@
+ obj-$(CONFIG_BT_HCIBLUECARD)	+= bluecard_cs.o
+ obj-$(CONFIG_BT_HCIBTUART)	+= btuart_cs.o
+ obj-$(CONFIG_BT_HCIBRF6150)	+= brf6150.o
++obj-$(CONFIG_BT_H6300)		+= omap/
+ 
+ hci_uart-y				:= hci_ldisc.o
+ hci_uart-$(CONFIG_BT_HCIUART_H4)	+= hci_h4.o
+diff -Naur linux-2.6.16.16/drivers/bluetooth/omap/h6300_bt_brf6100.c h6300_dev/drivers/bluetooth/omap/h6300_bt_brf6100.c
+--- linux-2.6.16.16/drivers/bluetooth/omap/h6300_bt_brf6100.c	1970-01-01 02:00:00.000000000 +0200
++++ h6300_dev/drivers/bluetooth/omap/h6300_bt_brf6100.c	2006-01-23 00:09:23.000000000 +0200
+@@ -0,0 +1,154 @@
++/* 
++ * Bluetooth interface driver for TI BRF6100 on h6300
++ * 
++ * Copyright (C) 2005 Mika Laitio <lamikr@cc.jyu.fi>
++ * Ideas taken from the brf6150 bt driver made by Todd Blumer for the pxa hx4700.
++ * 
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ */
++
++#include <linux/module.h>
++#include <linux/kernel.h>
++#include <linux/delay.h>
++#include <linux/platform_device.h>
++
++#include <asm/hardware.h>
++#include <asm/arch/gpio.h>
++
++#include <asm/arch/h6300_uart_info.h>
++#include "h6300_bt_led.h"
++
++static void
++h6300_bt_configure(struct uart_omap_port *up, int enable)
++{
++	printk(KERN_NOTICE "h6300_bt_brf6100.c h6300_bt_configure() started, enable = %d\n", enable);
++	
++	// printk( KERN_NOTICE "h6300 configure bluetooth: %d\n", enable );
++	if (enable == 0) {
++		omap_set_gpio_dataout(GPIO_N_BT_RST, 1);	// turn off gpio, note 1 == off for negative gpios
++		mdelay(5);
++		h6300_clear_led(INDEX_BT_LED);
++	}
++	else if (enable == 1) {
++		omap_set_gpio_dataout(GPIO_N_BT_RST, 1);	// turn on gpio, note 0 == on for negative gpios
++		mdelay(5);				
++	}
++	else if (enable == 2) {
++		/*
++		 * BRF6150's RTS goes low when firmware is ready
++		 * so check for CTS=1 (nCTS=0 -> CTS=1). Typical 150ms
++		 */
++/*		
++		int tries = 0; 
++		do 
++		{
++			mdelay(10);
++		} 
++		while ((BTMSR & MSR_CTS) == 0 && tries++ < 50);
++*/				
++		h6300_set_led(INDEX_BT_LED, 16, 16);
++	}
++	printk(KERN_NOTICE "h6300_bt_brf6100.c h6300_bt_configure() done\n");
++}
++
++static void
++h6300_bt_set_txrx(struct uart_omap_port *up, int txrx)
++{
++	printk(KERN_NOTICE "h6300_bt_brf6100.c h6300_bt_set_txrx(), txrx = %d done\n", txrx);
++	/* do nothing */
++}
++
++static int
++h6300_bt_get_txrx(struct uart_omap_port *up)
++{
++	printk(KERN_NOTICE "h6300_bt_brf6100.c h6300_bt_get_txrx() done\n");
++	/* do nothing */
++	return 0;
++}
++
++static int
++h6300_bt_probe(struct platform_device *pdev)
++{
++	struct h6300_uart_funcs *funcs = (struct h6300_uart_funcs *)pdev->dev.platform_data;
++
++	omap_request_gpio(GPIO_BT_PWR_EN);		// ask bt_power_en gpio, remember to release in remove_function
++	omap_set_gpio_direction(GPIO_BT_PWR_EN, 1);	// set gpio direction to be output
++	omap_set_gpio_dataout(GPIO_BT_PWR_EN, 1);	// turn on gpio
++
++	mdelay(200);
++
++	omap_request_gpio(GPIO_N_BT_RST);		// ask bt_reset gpio, remember to release in remove_function
++	omap_set_gpio_direction(GPIO_N_BT_RST, 1);	// set gpio direction to be output
++	omap_set_gpio_dataout(GPIO_N_BT_RST, 0);	// turn on gpio, note 0 == on for negative gpios
++	
++	/* configure bluetooth UART */
++	//h6300_gpio_mode(GPIO_NR_H6300_BT_RXD_MD);
++	//h6300_gpio_mode(GPIO_NR_H6300_BT_TXD_MD);
++	//h6300_gpio_mode(GPIO_NR_H6300_BT_UART_CTS_MD);
++	//h6300_gpio_mode(GPIO_NR_H6300_BT_UART_RTS_MD);
++
++	funcs->configure	= h6300_bt_configure;
++	funcs->set_txrx		= h6300_bt_set_txrx;
++	funcs->get_txrx		= h6300_bt_get_txrx;
++
++	/* Make sure the LED is off */
++	h6300_clear_led(INDEX_BT_LED);
++	
++	printk(KERN_NOTICE "h6300_bt_brf6100.c h6300_bt_probe() done\n");	
++
++	return 0;
++}
++
++static int
++h6300_bt_remove(struct platform_device *pdev)
++{
++	struct h6300_uart_funcs *funcs = (struct h6300_uart_funcs *)pdev->dev.platform_data;
++	
++	printk(KERN_NOTICE "h6300_bt_brf6100.c h6300_bt_remove() started\n");	
++	
++	omap_free_gpio(GPIO_BT_PWR_EN);
++	omap_free_gpio(GPIO_N_BT_RST);
++
++	funcs->configure	= NULL;
++	funcs->set_txrx		= NULL;
++	funcs->get_txrx		= NULL;
++
++	/* Make sure the LED is off */
++	h6300_clear_led(INDEX_BT_LED);
++	
++	printk(KERN_NOTICE "h6300_bt_brf6100.c, h6300_bt_remove() done\n");
++
++	return 0;
++}
++
++static struct platform_driver bt_driver = {
++	.probe    = h6300_bt_probe,
++	.remove   = h6300_bt_remove,
++	.driver = {
++		.name =	"h6300_bt",
++	},
++};
++
++static int __init
++h6300_bt_init(void)
++{
++	printk(KERN_NOTICE "h6300 Bluetooth Driver init()\n");
++	return platform_driver_register(&bt_driver);
++}
++
++static void __exit
++h6300_bt_exit(void)
++{
++	printk(KERN_NOTICE "h6300 Bluetooth Driver exit()\n");
++	platform_driver_unregister(&bt_driver);
++}
++
++module_init(h6300_bt_init);
++module_exit(h6300_bt_exit);
++
++MODULE_AUTHOR("Mika Laitio, <lamikr@cc.jyu.fi>");
++MODULE_DESCRIPTION("iPAQ h6300 BRF6100 Bluetooth driver.");
++MODULE_LICENSE("GPL");
++
+diff -Naur linux-2.6.16.16/drivers/bluetooth/omap/h6300_bt_led.c h6300_dev/drivers/bluetooth/omap/h6300_bt_led.c
+--- linux-2.6.16.16/drivers/bluetooth/omap/h6300_bt_led.c	1970-01-01 02:00:00.000000000 +0200
++++ h6300_dev/drivers/bluetooth/omap/h6300_bt_led.c	2005-10-06 02:34:39.000000000 +0300
+@@ -0,0 +1,41 @@
++/* 
++ * Bluetooth interface driver helper for controlling bluetooth leds available in iPAQ h6300.
++ * 
++ * Copyright (C) 2005 Mika Laitio  <lamikr@cc.jyu.fi>
++ * Ideas from the brf6150 bt driver made by Todd Blumer for the pxa hx4700.
++ * 
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ */
++
++#include <linux/module.h>
++#include <linux/kernel.h>
++#include <linux/delay.h>
++#include <linux/device.h>
++
++#include <asm/hardware.h>
++#include <asm/arch/gpio.h>
++
++/* 
++ * Low level access for disabling h6300 bt led.
++ *
++ * TODO: implement for h6300 
++ */
++void h6300_clear_led(int led_num)
++{
++	printk(KERN_NOTICE "h6300_bt_led.c h6300_clear_led() done\n");
++	//hx4700_set_led(led_num, 0, 16);
++}
++EXPORT_SYMBOL(h6300_clear_led);
++
++/* 
++ * Low level access for setting up the bt led.
++ *
++ * TODO: implement for h6300 
++ */
++void h6300_set_led(int led_num, int duty_time, int cycle_time)
++{
++	printk(KERN_NOTICE "h6300_bt_led.c h6300_set_led() done\n");
++}
++EXPORT_SYMBOL(h6300_set_led);
+diff -Naur linux-2.6.16.16/drivers/bluetooth/omap/h6300_bt_led.h h6300_dev/drivers/bluetooth/omap/h6300_bt_led.h
+--- linux-2.6.16.16/drivers/bluetooth/omap/h6300_bt_led.h	1970-01-01 02:00:00.000000000 +0200
++++ h6300_dev/drivers/bluetooth/omap/h6300_bt_led.h	2005-10-06 02:34:39.000000000 +0300
+@@ -0,0 +1,9 @@
++#ifndef H6300_BT_LED_H_
++#define H6300_BT_LED_H_
++
++#define INDEX_BT_LED	2
++
++void h6300_clear_led(int led_num);
++void h6300_set_led(int led_num, int duty_time, int cycle_time);
++
++#endif /*H6300_BT_LED_H_*/
+diff -Naur linux-2.6.16.16/drivers/bluetooth/omap/Makefile h6300_dev/drivers/bluetooth/omap/Makefile
+--- linux-2.6.16.16/drivers/bluetooth/omap/Makefile	1970-01-01 02:00:00.000000000 +0200
++++ h6300_dev/drivers/bluetooth/omap/Makefile	2005-10-06 02:34:39.000000000 +0300
+@@ -0,0 +1,6 @@
++#
++# Makefile for the Linux iPAQ H6300 BRF6100 Bluetooth device drivers.
++#
++
++h6300_bt-objs				:= h6300_bt_led.o h6300_bt_brf6100.o
++obj-$(CONFIG_BT_H6300)		+= h6300_bt.o
+diff -Naur linux-2.6.16.16/drivers/i2c/busses/i2c-omap.c h6300_dev/drivers/i2c/busses/i2c-omap.c
+--- linux-2.6.16.16/drivers/i2c/busses/i2c-omap.c	2006-05-17 21:41:29.000000000 +0300
++++ h6300_dev/drivers/i2c/busses/i2c-omap.c	2006-04-02 00:23:01.000000000 +0300
+@@ -163,17 +163,22 @@
+ 
+ static int omap_i2c_get_clocks(struct omap_i2c_dev *dev)
+ {
+-	if (cpu_is_omap16xx() || cpu_is_omap24xx()) {
++	if (cpu_is_omap24xx()) {
+ 		dev->iclk = clk_get(dev->dev, "i2c_ick");
+-		if (IS_ERR(dev->iclk))
++		if (IS_ERR(dev->iclk)) {
+ 			return -ENODEV;
++		}
++		dev->fclk = clk_get(dev->dev, "i2c_fck");
++		if (IS_ERR(dev->fclk)) {
++			clk_put(dev->fclk);
++			return -ENODEV;
++		}
+ 	}
+ 
+-	dev->fclk = clk_get(dev->dev, "i2c_fck");
+-	if (IS_ERR(dev->fclk)) {
+-		if (dev->iclk != NULL)
+-			clk_put(dev->iclk);
+-		return -ENODEV;
++	if (cpu_class_is_omap1()) {
++		dev->fclk = clk_get(dev->dev, "i2c_fck");
++		if (IS_ERR(dev->fclk))
++			return -ENODEV;
+ 	}
+ 
+ 	return 0;
+diff -Naur linux-2.6.16.16/drivers/i2c/chips/Kconfig h6300_dev/drivers/i2c/chips/Kconfig
+--- linux-2.6.16.16/drivers/i2c/chips/Kconfig	2006-05-17 21:41:29.000000000 +0300
++++ h6300_dev/drivers/i2c/chips/Kconfig	2006-04-24 20:53:29.000000000 +0300
+@@ -46,6 +46,16 @@
+ 	  This driver can also be built as a module.  If so, the module
+ 	  will be called pcf8574.
+ 
++config PCA9535
++        tristate "Philips PCA9535 16-bit I/O port"
++        depends on I2C 
++        help
++          If you say yes here you get support for the Philips PCA9535
++          16-bit I/O port.
++	
++          This driver can also be built as a module.  If so, the module
++          will be called pca9535.
++
+ config SENSORS_PCA9539
+ 	tristate "Philips PCA9539 16-bit I/O port"
+ 	depends on I2C && EXPERIMENTAL
+diff -Naur linux-2.6.16.16/drivers/i2c/chips/Makefile h6300_dev/drivers/i2c/chips/Makefile
+--- linux-2.6.16.16/drivers/i2c/chips/Makefile	2006-05-17 21:41:29.000000000 +0300
++++ h6300_dev/drivers/i2c/chips/Makefile	2006-04-24 20:53:29.000000000 +0300
+@@ -7,6 +7,7 @@
+ obj-$(CONFIG_SENSORS_EEPROM)	+= eeprom.o
+ obj-$(CONFIG_SENSORS_MAX6875)	+= max6875.o
+ obj-$(CONFIG_SENSORS_M41T00)	+= m41t00.o
++obj-$(CONFIG_PCA9535)   		+= pca9535.o
+ obj-$(CONFIG_SENSORS_PCA9539)	+= pca9539.o
+ obj-$(CONFIG_SENSORS_PCF8574)	+= pcf8574.o
+ obj-$(CONFIG_SENSORS_PCF8591)	+= pcf8591.o
+diff -Naur linux-2.6.16.16/drivers/i2c/chips/pca9535.c h6300_dev/drivers/i2c/chips/pca9535.c
+--- linux-2.6.16.16/drivers/i2c/chips/pca9535.c	1970-01-01 02:00:00.000000000 +0200
++++ h6300_dev/drivers/i2c/chips/pca9535.c	2006-04-24 20:53:29.000000000 +0300
+@@ -0,0 +1,412 @@
++/*
++    Driver for Philips PCA9535 16-bit low power I/O port with interrupt
++
++    This program is free software; you can redistribute it and/or modify
++    it under the terms of the GNU General Public License as published by
++    the Free Software Foundation; either version 2 of the License, or
++    (at your option) any later version.
++    
++    This program is distributed in the hope that it will be useful,
++    but WITHOUT ANY WARRANTY; without even the implied warranty of
++    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++    GNU General Public License for more details.
++
++    You should have received a copy of the GNU General Public License
++    along with this program; if not, write to the Free Software
++    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
++    
++    Copyright (C) 2005 Husam Senussi
++    Framework based on Pawel Kolodziejski's pca9535 driver in 
++    handheld.org's 2.6.13 kernel. Driver updated by Mika Laitio.
++*/
++
++#include <linux/module.h>
++#include <linux/init.h>
++#include <linux/slab.h>
++#include <linux/i2c.h>
++#include <linux/hwmon-sysfs.h>
++#include <linux/hwmon.h>
++#include <linux/err.h>
++
++#include <asm/arch/pca9535.h>
++#include <linux/delay.h>
++
++#include <linux/interrupt.h>
++#include <asm/mach-types.h>
++#include <asm/irq.h>
++#include <asm/mach/arch.h>
++#include <asm/hardware.h>
++
++EXPORT_SYMBOL(pca9535_gpio_read);
++EXPORT_SYMBOL(pca9535_gpio_write);
++EXPORT_SYMBOL(pca9535_gpio_direction);
++
++static int pca9535_attach_adapter(struct i2c_adapter *adapter);
++static int pca9535_detach_client(struct i2c_client *client);
++static int pca9535_attach(struct i2c_adapter *adapter, int address, int zero_or_minus_one);
++static u32 pca9535_read_reg(struct i2c_client *client, u8 regaddr);
++static void pca9535_write_reg(struct i2c_client *client, u8 regaddr, u16 param);
++
++enum pca9535_cmd
++{
++        PCA9535_INPUT_0         = 0,
++        PCA9535_INPUT_1         = 1,
++        PCA9535_OUTPUT_0        = 2,
++        PCA9535_OUTPUT_1        = 3,
++        PCA9535_INVERT_0        = 4,
++        PCA9535_INVERT_1        = 5,
++        PCA9535_DIRECTION_0     = 6,
++        PCA9535_DIRECTION_1     = 7,
++};
++
++struct pca9535_data {
++	struct semaphore  lock;
++        struct i2c_client client;
++};
++
++static struct i2c_driver pca9535_driver = {
++        .driver = {
++                .name   = "pca9535",
++        },
++	.attach_adapter		= pca9535_attach_adapter,
++	.detach_client		= pca9535_detach_client,
++};
++
++static struct i2c_client   *pca9535_i2c_client = NULL;
++static struct pca9535_data pca9535_inited;
++
++static unsigned short normal_i2c[] = { 0x20, I2C_CLIENT_END };
++
++#define DRIVER_VERSION  "20 OCT 2005"
++#define DRIVER_NAME     "PCA9535"
++
++/* 
++ * sysfs callback function.
++ */ 
++static ssize_t pca9535_show(struct device *dev, struct device_attribute *attr,
++                            char *buf)
++{
++        struct sensor_device_attribute *psa = to_sensor_dev_attr(attr);
++        struct i2c_client *client = to_i2c_client(dev);
++        return sprintf(buf, "%02X\n", (pca9535_read_reg(client, psa->index) >> 8));
++}
++
++/* 
++ * sysfs callback function.
++ */ 
++static ssize_t pca9535_store(struct device *dev, struct device_attribute *attr,
++                             const char *buf, size_t count)
++{
++        struct sensor_device_attribute *psa = to_sensor_dev_attr(attr);
++        struct i2c_client *client = to_i2c_client(dev);
++        unsigned long val = simple_strtoul(buf, NULL, 0);
++	unsigned long old = pca9535_read_reg(client, psa->index);
++
++        if (val > 0xff)
++                return -EINVAL;
++	
++	val = (old & 0xff) | (val << 8);
++        pca9535_write_reg(client, psa->index, val);
++        return count;
++}
++
++#define PCA9535_ENTRY_RO(name, cmd_idx) \
++        static SENSOR_DEVICE_ATTR(name, S_IRUGO, pca9535_show, NULL, cmd_idx)
++
++#define PCA9535_ENTRY_RW(name, cmd_idx) \
++        static SENSOR_DEVICE_ATTR(name, S_IRUGO | S_IWUSR, pca9535_show, \
++                                  pca9535_store, cmd_idx)
++
++PCA9535_ENTRY_RO(input0, PCA9535_INPUT_0);
++PCA9535_ENTRY_RO(input1, PCA9535_INPUT_1);
++PCA9535_ENTRY_RW(output0, PCA9535_OUTPUT_0);
++PCA9535_ENTRY_RW(output1, PCA9535_OUTPUT_1);
++PCA9535_ENTRY_RW(invert0, PCA9535_INVERT_0);
++PCA9535_ENTRY_RW(invert1, PCA9535_INVERT_1);
++PCA9535_ENTRY_RW(direction0, PCA9535_DIRECTION_0);
++PCA9535_ENTRY_RW(direction1, PCA9535_DIRECTION_1);
++
++static struct attribute *pca9535_attributes[] = {
++        &sensor_dev_attr_input0.dev_attr.attr,
++        &sensor_dev_attr_input1.dev_attr.attr,
++        &sensor_dev_attr_output0.dev_attr.attr,
++        &sensor_dev_attr_output1.dev_attr.attr,
++        &sensor_dev_attr_invert0.dev_attr.attr,
++        &sensor_dev_attr_invert1.dev_attr.attr,
++        &sensor_dev_attr_direction0.dev_attr.attr,
++        &sensor_dev_attr_direction1.dev_attr.attr,
++        NULL
++};
++
++static struct attribute_group pca9535_defattr_group = {
++        .attrs = pca9535_attributes,
++};
++//End of sysfs management code. 
++
++I2C_CLIENT_INSMOD;
++
++u32 pca9535_read_input(void)
++{
++	return pca9535_read_reg(pca9535_i2c_client, 0);
++}
++EXPORT_SYMBOL(pca9535_read_input);
++
++void pca9535_write_output(u16 param)
++{
++	pca9535_write_reg(pca9535_i2c_client, 2, param);
++}
++EXPORT_SYMBOL(pca9535_write_output);
++
++void pca9535_set_dir(u16 param)
++{
++	pca9535_write_reg(pca9535_i2c_client, 6, param);
++}
++EXPORT_SYMBOL(pca9535_set_dir);
++
++static int pca9535_attach_adapter(struct i2c_adapter *adapter)
++{
++	return i2c_probe(adapter, &addr_data, pca9535_attach);
++}
++
++static int pca9535_attach(struct i2c_adapter *adapter, int address, int zero_or_minus_one)
++{
++	struct i2c_client *new_client;
++	int err = 0;
++
++	new_client = &(pca9535_inited.client);
++	i2c_set_clientdata(new_client, 0);
++	new_client->addr = address;
++	new_client->adapter = adapter;
++	new_client->driver = &pca9535_driver;
++	strcpy(new_client->name, DRIVER_NAME);
++
++	if ((err = i2c_attach_client(new_client)))
++		goto exit_free;
++
++	pca9535_i2c_client = new_client;
++	
++	init_MUTEX(&pca9535_inited.lock);
++	i2c_set_clientdata(pca9535_i2c_client, &pca9535_inited);
++	
++	sysfs_create_group(&pca9535_i2c_client->dev.kobj, &pca9535_defattr_group);
++	
++	printk("pca9535_attach() ok, address = %d, zero_or_minus_one = %d\n", address, zero_or_minus_one);
++	return 0;
++
++exit_free:
++	printk("pca9535_attach() failed, error code = %d\n", err);
++	return err;
++}
++
++static int pca9535_detach_client(struct i2c_client *client)
++{
++	int err;
++
++	if ((err = i2c_detach_client(client))) {
++		dev_err(&client->dev, "Client deregistration failed, client not detached.\n");
++		return err;
++	}
++	pca9535_i2c_client = NULL;
++
++	return 0;
++}
++
++static int __init pca9535_init(void)
++{
++	return i2c_add_driver(&pca9535_driver);
++}
++
++static void __exit pca9535_exit(void)
++{
++        i2c_del_driver(&pca9535_driver);
++}
++
++/* 
++ * Reads the value of GPIO available via I2C.
++ */
++int pca9535_gpio_read(int gpio){
++	unsigned char reg = 0;
++	unsigned long val = 0;
++
++	printk("9535_gpio_read() called\n");
++	if(!pca9535_i2c_client)
++		return -ENODEV;
++
++	if(gpio < GPIO0 || gpio > GPIO17)
++		return -EINVAL;
++
++	if(gpio >= GPIO0 && gpio <= GPIO7){
++		reg   	 = PCA9535_INPUT_0;
++		gpio	-= GPIO0;
++	}else if(gpio >= GPIO8 && gpio <= GPIO17){
++		reg    	 = PCA9535_INPUT_1;
++                gpio    -= GPIO8;
++	}
++
++	down(&pca9535_inited.lock);
++
++	// Read the existing values first
++	val = pca9535_read_reg(pca9535_i2c_client, reg) >> 8;
++	val = (val >> gpio) & 0x01;
++
++	up(&pca9535_inited.lock);
++
++	return val;
++}
++
++/* 
++ * Set the value of I2C GPIO.
++ */
++int pca9535_gpio_write(int gpio, unsigned char value){
++	unsigned char in_reg  = 0;
++        unsigned char out_reg = 0;
++        unsigned long val = 0;
++	unsigned long old = 0;
++	int	      ret = 0;
++
++        if(!pca9535_i2c_client)
++                return -ENODEV;
++
++        if(gpio < GPIO0 || gpio > GPIO17)
++                return -EINVAL;
++
++        if(gpio >= GPIO0 && gpio <= GPIO7){
++                in_reg   = PCA9535_INPUT_0;
++                out_reg  = PCA9535_OUTPUT_0;
++                gpio    -= GPIO0;
++        }else if(gpio >= GPIO8 && gpio <= GPIO17){
++                in_reg   = PCA9535_INPUT_1;
++                out_reg  = PCA9535_OUTPUT_1;
++                gpio    -= GPIO8;
++        }
++
++	down(&pca9535_inited.lock);
++
++        // Read the existing values first
++        val = pca9535_read_reg(pca9535_i2c_client, in_reg);
++	old = val >> 8;
++
++	switch(value){
++	case LOW:
++		old |= (1 << gpio);
++		break;
++	case HI:
++		old &= ~(1 << gpio);
++		break;
++	default:
++		ret = -EINVAL;
++		goto error;
++	}
++
++	val = (val & 0xff) | (old << 8);	
++
++	// write the values back to the register
++	pca9535_write_reg(pca9535_i2c_client, out_reg, val);
++error:
++
++	up(&pca9535_inited.lock);
++	return ret;
++}
++
++/*
++ * Set the direction of I2C GPIO.
++ */ 
++int pca9535_gpio_direction(int gpio, unsigned char direction){
++        unsigned char reg = 0;
++        unsigned long val = 0;
++	unsigned long old = 0;
++        int           ret = 0;
++
++        if(!pca9535_i2c_client)
++                return -ENODEV;
++
++        if(gpio < GPIO0 || gpio > GPIO17)
++                return -EINVAL;
++
++        if(gpio >= GPIO0 && gpio <= GPIO7){
++                reg   	 = PCA9535_DIRECTION_0;
++                gpio    -= GPIO0;
++        }else if(gpio >= GPIO8 && gpio <= GPIO17){
++                reg   	 = PCA9535_DIRECTION_1;
++                gpio    -= GPIO8;
++        }
++
++        down(&pca9535_inited.lock);
++
++        // Read the existing values first
++        old = pca9535_read_reg(pca9535_i2c_client, reg);
++	val = old >> 8;
++
++        switch(direction){
++        case GPIO_INPUT: 
++                val |= (1 << gpio);
++                break;
++        case GPIO_OUTPUT: 
++                val &= ~(1 << gpio);
++                break;
++        default:
++                ret = -EINVAL;
++                goto error;
++        }
++
++	val = (old & 0xff) | (val << 8);
++
++        // write the values back to the register
++        pca9535_write_reg(pca9535_i2c_client, reg, val);
++error:
++
++        up(&pca9535_inited.lock);
++        return ret;
++}
++
++static u32 pca9535_read_reg(struct i2c_client *client, u8 regaddr)
++{
++	char buffer[3];
++	int r;
++	u32 data;
++
++	buffer[0] = regaddr;
++	buffer[1] = 0;
++	buffer[2] = 0;
++
++	r = i2c_master_send(client, buffer, 1);
++	if (r != 1) {
++		printk(KERN_ERR "pca9535: read failed, status %d\n", r);
++		return 0xffffffff;
++	}
++
++	r = i2c_master_recv(client, buffer, 3);
++	if (r != 3) {
++		printk(KERN_ERR "pca9535: read failed, status %d\n", r);
++		return 0xffffffff;
++	}
++
++	data = buffer[1];
++	data |= buffer[2] << 8;
++	//printk(KERN_ERR "%s: reading %x in %x\n", __FUNCTION__, data, regaddr);
++
++	return data;
++}
++
++static void pca9535_write_reg(struct i2c_client *client, u8 regaddr, u16 data)
++{
++	char buffer[3];
++	int r;
++
++	//printk(KERN_ERR "%s: writing %x in %x\n", __FUNCTION__, data, regaddr);
++	buffer[0] = regaddr;
++	buffer[1] = data >> 8;
++	buffer[2] = data & 0xff;
++
++	r = i2c_master_send(client, buffer, 3);
++	if (r != 3) {
++		printk(KERN_ERR "pca9535: write failed, status %d\n", r);
++	}
++}
++
++MODULE_AUTHOR("Husam Senussi <husamsenussi@gmail.com>");
++MODULE_DESCRIPTION("PCA9535 driver");
++MODULE_LICENSE("GPL");
++
++module_init(pca9535_init);
++module_exit(pca9535_exit);
+diff -Naur linux-2.6.16.16/drivers/input/keyboard/omap-keypad.c h6300_dev/drivers/input/keyboard/omap-keypad.c
+--- linux-2.6.16.16/drivers/input/keyboard/omap-keypad.c	2006-05-17 21:41:29.000000000 +0300
++++ h6300_dev/drivers/input/keyboard/omap-keypad.c	2006-04-24 20:53:29.000000000 +0300
+@@ -4,11 +4,12 @@
+  * OMAP Keypad Driver
+  *
+  * Copyright (C) 2003 Nokia Corporation
+- * Written by Timo Teräs <ext-timo.teras@nokia.com>
++ * Written by Timo Terï¿½s <ext-timo.teras@nokia.com>
++ * iPAQ h6300 key and joypad support added by Mika Laitio. (2005)
+  *
+  * Added support for H2 & H3 Keypad
+  * Copyright (C) 2004 Texas Instruments
+- *
++ * 
+  * This program is free software; you can redistribute it and/or modify
+  * it under the terms of the GNU General Public License as published by
+  * the Free Software Foundation; either version 2 of the License, or
+@@ -44,6 +45,19 @@
+ #include <asm/arch/mux.h>
+ 
+ #undef NEW_BOARD_LEARNING_MODE
++//#define NEW_BOARD_LEARNING_MODE 1
++
++/*
++ * Following 5 keypad events are not really sent to userspace. 
++ * Instead if the good combination of them is sent, then that is send.
++ * (up, right, down, left, enter)
++ */
++#define	_H6300_JOYPAD_UP_RIGHT		1	// 00001
++#define _H6300_JOYPAD_DOWN_RIGHT	2	// 00010
++#define _h6300_JOYPAD_DOWN_LEFT		4	// 00100
++#define _h6300_JOYPAD_UP_LEFT		8	// 01000
++#define _H6300_JOYPAD_KEY_OK		16	// 10000
++#define _H6300_JOYPAD_REPORT_COLUMN	4
+ 
+ static void omap_kp_tasklet(unsigned long);
+ static void omap_kp_timer(unsigned long);
+@@ -53,6 +67,8 @@
+ static int kp_enable = 1;
+ static int kp_cur_group = -1;
+ 
++static int prevJoypadKeycodePressEmulated;
++
+ struct omap_kp {
+ 	struct input_dev *input;
+ 	struct timer_list timer;
+@@ -139,7 +155,7 @@
+ 		for (col = 0; col < omap_kp->cols; col++) {
+ 			omap_writew(~(1 << col) & 0xff, OMAP_MPUIO_BASE + OMAP_MPUIO_KBC);
+ 
+-			if (machine_is_omap_osk() || machine_is_omap_h2() || machine_is_omap_h3()) {
++			if (machine_is_omap_osk() || machine_is_omap_h2() || machine_is_omap_h3() || machine_is_omap_h6300()) {
+ 				udelay(9);
+ 			} else {
+ 				udelay(4);
+@@ -169,17 +185,26 @@
+ 	return -1;
+ }
+ 
++int is_key_down(unsigned char new_state[],
++		int col,
++		int row)
++{
++	return (new_state[col] & (1 << row)) ? 1 : 0;
++}
++
+ static void omap_kp_tasklet(unsigned long data)
+ {
+ 	struct omap_kp *omap_kp_data = (struct omap_kp *) data;
+ 	unsigned char new_state[8], changed, key_down = 0;
+ 	int col, row;
+ 	int spurious = 0;
++	int report_key, report_col, report_row, joypad_checked;	// h6300-joypad specific variables
+ 
+ 	/* check for any changes */
+ 	omap_kp_scan_keypad(omap_kp_data, new_state);
+ 
+ 	/* check for changes and print those */
++	joypad_checked	= 0;
+ 	for (col = 0; col < omap_kp_data->cols; col++) {
+ 		changed = new_state[col] ^ keypad_state[col];
+ 		key_down |= new_state[col];
+@@ -201,14 +226,177 @@
+ 				spurious = 1;
+ 				continue;
+ 			}
+-
+-			if (!(kp_cur_group == (key & GROUP_MASK) ||
+-			      kp_cur_group == -1))
+-				continue;
+-
+-			kp_cur_group = key & GROUP_MASK;
+-			input_report_key(omap_kp_data->input, key & ~GROUP_MASK,
+-					 !!(new_state[col] & (1 << row)));
++ 			if (machine_is_omap_h6300() && 
++ 			   ((col == 1) || (col == _H6300_JOYPAD_REPORT_COLUMN)))
++ 			{
++ 				if (col == _H6300_JOYPAD_REPORT_COLUMN)
++ 				{
++ 					continue;
++ 				}
++ 				if ((joypad_checked == 0) &&
++ 				    ((key == _H6300_JOYPAD_KEY_OK) ||
++ 				     (key == _h6300_JOYPAD_UP_LEFT) ||
++ 	    			     (key == _H6300_JOYPAD_UP_RIGHT) ||
++ 				     (key == _H6300_JOYPAD_DOWN_RIGHT) ||
++ 				     (key == _h6300_JOYPAD_DOWN_LEFT)))
++ 				{
++ 					if (is_key_down(new_state, col, row))
++ 					{
++ 						/*
++ 						 * only enter pressed
++ 						 * 1 0 0 _H6300_JOYPAD_KEY_OK 0 0
++ 						 * --> 100100 == 36
++ 						 */
++ 						 if (new_state[1] == 36)
++ 						 {
++ 						 	joypad_checked	= 1;
++ 							prevJoypadKeycodePressEmulated	= KEY_ENTER;
++ 							new_state[_H6300_JOYPAD_REPORT_COLUMN]	= 48;	//110000
++ 							report_key	= prevJoypadKeycodePressEmulated;
++ 							report_col	= _H6300_JOYPAD_REPORT_COLUMN;
++ 							report_row	= 4;
++ 							input_report_key(omap_kp_data->input,
++ 									report_key,
++ 							 		new_state[report_col] & (1 << report_row));
++ 						 }						
++ 						/*
++ 						 * enter, up_left and up_right sensors pressed.
++ 						 * 1 _H6300_JOYPAD_UP_RIGHT 0 _H6300_JOYPAD_KEY_OK 0 _h6300_JOYPAD_UP_LEFT
++ 						 * --> 110101 == 53
++ 						 * OR
++ 						 * 1 KEY_UP_RIGHT 0 0 0 _h6300_JOYPAD_UP_LEFT
++ 						 * --> 110001 == 42
++ 						 * --> move to up
++ 						 */
++ 						else if ((new_state[1] == 53) ||
++ 						         (new_state[1] == 49))
++ 						{
++ 							joypad_checked	= 1;
++ 							prevJoypadKeycodePressEmulated	= KEY_UP;
++ 							new_state[_H6300_JOYPAD_REPORT_COLUMN]	= 40;	//101000
++ 							report_key	= prevJoypadKeycodePressEmulated;
++ 							report_col	= _H6300_JOYPAD_REPORT_COLUMN;
++ 							report_row	= 3;
++ 							input_report_key(omap_kp_data->input,
++ 									report_key,
++ 							 		new_state[report_col] & (1 << report_row));
++ 						}
++ 						/*
++ 						 * enter, down_left and down_right sensors pressed
++ 						 * --> 101110 == 46
++ 						 * OR
++ 						 * down_left and down_right
++ 						 * -->101010 == 42
++ 						 * --> move to down
++ 						 */
++ 						else if ((new_state[1] == 46) ||
++ 							 (new_state[1] == 42))
++ 						{
++ 							joypad_checked	= 1;
++ 							prevJoypadKeycodePressEmulated	= KEY_DOWN;
++ 							new_state[_H6300_JOYPAD_REPORT_COLUMN]	= 34;	//100010
++ 							report_key	= prevJoypadKeycodePressEmulated;
++ 							report_col	= _H6300_JOYPAD_REPORT_COLUMN;
++ 							report_row	= 1;
++ 							input_report_key(omap_kp_data->input,
++ 									report_key,
++ 							 		new_state[report_col] & (1 << report_row));
++ 						}												
++ 						/*
++ 						 * enter, up_right and down_right sensors pressed
++ 						 * --> 111100 == 60
++ 						 * or
++ 						 * down_right and up_right
++ 						 * --> 111000 == 56
++ 						 * --> move to right
++ 						 */
++ 						else if ((new_state[1] == 60) ||
++ 							 (new_state[1] == 56))
++ 						{
++ 							joypad_checked	= 1;
++ 							prevJoypadKeycodePressEmulated	= KEY_RIGHT;
++ 							new_state[_H6300_JOYPAD_REPORT_COLUMN]	= 33;	//100001
++ 							report_key	= prevJoypadKeycodePressEmulated;
++ 							report_col	= _H6300_JOYPAD_REPORT_COLUMN;
++ 							report_row	= 0;
++ 							input_report_key(omap_kp_data->input,
++ 									report_key,
++ 							 		new_state[report_col] & (1 << report_row));
++ 						}
++ 						/*
++ 						 * enter, up_left and down_left sensors pressed
++ 						 * --> 100111 == 39
++ 						 * or up_left and down_left
++ 						 * --> 100011 == 35
++ 						 * --> move to left
++ 						 */
++ 						else if ((new_state[1] == 39) ||
++ 							 (new_state[1] == 35))
++ 						{
++ 							joypad_checked	= 1;
++ 							prevJoypadKeycodePressEmulated	= KEY_LEFT;
++ 							new_state[_H6300_JOYPAD_REPORT_COLUMN]	= 36;	//100100
++ 							report_key	= prevJoypadKeycodePressEmulated;
++ 							report_col	= _H6300_JOYPAD_REPORT_COLUMN;
++ 							report_row	= 2;
++ 							input_report_key(omap_kp_data->input,
++ 									report_key,
++ 							 		new_state[report_col] & (1 << report_row));
++ 						}
++ 						else
++ 						{
++ 							//printk("missed new_state = %d\n", new_state[1]);
++ 						}
++ 					}
++ 					else
++ 					{
++ 						if (prevJoypadKeycodePressEmulated != 0)
++ 						{
++ 							// report key up event
++ 							joypad_checked	= 1;
++ 							new_state[_H6300_JOYPAD_REPORT_COLUMN]	= 32;	//100000
++ 							report_key	= prevJoypadKeycodePressEmulated;
++ 							report_col	= _H6300_JOYPAD_REPORT_COLUMN;
++ 							switch(prevJoypadKeycodePressEmulated)
++ 							{
++ 								case KEY_RIGHT:
++									report_row	= 0;
++ 									break;
++ 								case KEY_DOWN:
++ 									report_row	= 1;
++ 									break;
++ 								case KEY_LEFT:
++ 									report_row	= 2;
++ 									break;
++ 								case KEY_UP:
++ 									report_row	= 3;
++ 									break;
++ 								case KEY_ENTER:
++ 									report_row	= 4;
++ 									break;
++ 								default:
++ 									printk(KERN_WARNING "Unknown iPAQ h6300 column 1 key = %d released. This should newer happen!\n",
++ 										key);
++ 									report_row	= 0;
++ 							}
++ 							input_report_key(omap_kp_data->input,
++ 									report_key,
++ 							 		new_state[report_col] & (1 << report_row));
++ 							prevJoypadKeycodePressEmulated	= 0;
++ 						}
++ 					}
++ 				}
++ 			}
++ 			else
++ 			{
++				if (!(kp_cur_group == (key & GROUP_MASK) ||
++				      kp_cur_group == -1))
++					continue;
++
++				kp_cur_group = key & GROUP_MASK;
++				input_report_key(omap_kp_data->input, key & ~GROUP_MASK,
++						 !!(new_state[col] & (1 << row)));
++ 			}
+ #endif
+ 		}
+ 	}
+@@ -348,10 +536,11 @@
+ 			omap_set_gpio_direction(row_gpios[i], 1);
+ 		}
+ 	}
++	prevJoypadKeycodePressEmulated		= 0;
+ 
+ 	init_timer(&omap_kp->timer);
+ 	omap_kp->timer.function = omap_kp_timer;
+-	omap_kp->timer.data = (unsigned long) omap_kp;
++	omap_kp->timer.data = (unsigned long)omap_kp;
+ 
+ 	/* get the irq and init timer*/
+ 	tasklet_enable(&kp_tasklet);
+@@ -376,7 +565,7 @@
+ 	input_register_device(omap_kp->input);
+ 
+ 	if (machine_is_omap_h2() || machine_is_omap_h3() ||
+-	    machine_is_omap_perseus2()) {
++	    machine_is_omap_perseus2() || machine_is_omap_h6300()) {
+ 		omap_writew(0xff, OMAP_MPUIO_BASE + OMAP_MPUIO_GPIO_DEBOUNCING);
+ 	}
+ 	/* scan current status and enable interrupt */
+@@ -447,6 +636,6 @@
+ module_init(omap_kp_init);
+ module_exit(omap_kp_exit);
+ 
+-MODULE_AUTHOR("Timo Teräs");
++MODULE_AUTHOR("Timo Terï¿½s");
+ MODULE_DESCRIPTION("OMAP Keypad Driver");
+ MODULE_LICENSE("GPL");
+diff -Naur linux-2.6.16.16/drivers/input/touchscreen/omap/Makefile h6300_dev/drivers/input/touchscreen/omap/Makefile
+--- linux-2.6.16.16/drivers/input/touchscreen/omap/Makefile	2006-05-17 21:41:30.000000000 +0300
++++ h6300_dev/drivers/input/touchscreen/omap/Makefile	2005-10-22 03:52:45.000000000 +0300
+@@ -8,5 +8,6 @@
+ objs-$(CONFIG_ARCH_OMAP16XX)$(CONFIG_MACH_OMAP_H3) += ts_hx.o
+ objs-$(CONFIG_ARCH_OMAP15XX)$(CONFIG_MACH_OMAP_INNOVATOR) += ts_inn1510.o
+ objs-$(CONFIG_ARCH_OMAP16XX)$(CONFIG_MACH_OMAP_OSK) += ts_osk.o
++objs-$(CONFIG_ARCH_OMAP15XX)$(CONFIG_MACH_OMAP_H6300) += ts_hx.o
+ 
+ omapts-objs := omap_ts.o $(objs-yy)
+diff -Naur linux-2.6.16.16/drivers/input/touchscreen/omap/omap_ts.c h6300_dev/drivers/input/touchscreen/omap/omap_ts.c
+--- linux-2.6.16.16/drivers/input/touchscreen/omap/omap_ts.c	2006-05-17 21:41:30.000000000 +0300
++++ h6300_dev/drivers/input/touchscreen/omap/omap_ts.c	2006-02-21 23:54:33.000000000 +0200
+@@ -46,7 +46,7 @@
+ #define OMAP_TS_NAME	"omap_ts"
+ 
+ static struct ts_device *__initdata ts_devs[] = {
+-#if defined(CONFIG_MACH_OMAP_H2) || defined(CONFIG_MACH_OMAP_H3)
++#if defined(CONFIG_MACH_OMAP_H2) || defined(CONFIG_MACH_OMAP_H3) || defined(CONFIG_MACH_OMAP_H6300)
+ 	&hx_ts,
+ #endif
+ #ifdef CONFIG_MACH_OMAP_OSK
+diff -Naur linux-2.6.16.16/drivers/input/touchscreen/omap/ts_hx.c h6300_dev/drivers/input/touchscreen/omap/ts_hx.c
+--- linux-2.6.16.16/drivers/input/touchscreen/omap/ts_hx.c	2006-05-17 21:41:30.000000000 +0300
++++ h6300_dev/drivers/input/touchscreen/omap/ts_hx.c	2006-04-24 20:53:29.000000000 +0300
+@@ -39,6 +39,7 @@
+ 
+ #define	H2_GPIO_NUM		4
+ #define	H3_GPIO_NUM		48
++#define H6300_GPIO_NUM	2
+ 
+ #define OMAP_TSC2101_XRES		       500
+ #define TOUCHSCREEN_DATA_REGISTERS_PAGE	 0x0
+@@ -88,6 +89,9 @@
+ 	} else if (machine_is_omap_h3()) {
+ 		gpio = H3_GPIO_NUM;
+ 		omap_cfg_reg(W19_1610_GPIO48);
++	} else if (machine_is_omap_h6300 ()) {
++		gpio = H6300_GPIO_NUM;
++		omap_cfg_reg(M14_1510_GPIO2);	
+ 	} else
+ 		return -ENODEV;
+ 
+@@ -180,5 +184,7 @@
+ 		omap_free_gpio(H2_GPIO_NUM);
+ 	else if (machine_is_omap_h3())
+ 		omap_free_gpio(H3_GPIO_NUM);
++	else if (machine_is_omap_h6300())
++		omap_free_gpio(H6300_GPIO_NUM);
+ }
+ #endif
+diff -Naur linux-2.6.16.16/drivers/mmc/mmc.c h6300_dev/drivers/mmc/mmc.c
+--- linux-2.6.16.16/drivers/mmc/mmc.c	2006-05-17 21:41:30.000000000 +0300
++++ h6300_dev/drivers/mmc/mmc.c	2006-03-28 10:34:39.000000000 +0300
+@@ -964,7 +964,7 @@
+ 		mmc_decode_scr(card);
+ 	}
+ 
+-	mmc_deselect_cards(host);
++	//mmc_deselect_cards(host);
+ }
+ 
+ static unsigned int mmc_calculate_clock(struct mmc_host *host)
+diff -Naur linux-2.6.16.16/drivers/ssi/omap-tsc2101.c h6300_dev/drivers/ssi/omap-tsc2101.c
+--- linux-2.6.16.16/drivers/ssi/omap-tsc2101.c	2006-05-17 21:41:30.000000000 +0300
++++ h6300_dev/drivers/ssi/omap-tsc2101.c	2006-04-24 20:53:29.000000000 +0300
+@@ -36,10 +36,11 @@
+ #include <asm/arch/hardware.h>
+ #include <asm/hardware/tsc2101.h>
+ #include <asm/arch/gpioexpander.h>
++#include <asm/arch/gpio.h>
+ 
+ #include "omap-tsc2101.h"
+ 
+-#if CONFIG_ARCH_OMAP16XX
++#if CONFIG_ARCH_OMAP1
+ #include <../drivers/ssi/omap-uwire.h>
+ #else
+ #error "Unsupported configuration"
+@@ -66,27 +67,28 @@
+ 	if (count++ == 0) {
+ 		int ret = 0;
+ 		/* set the Mux to provide MCLK to TSC2101 */
+-		if (machine_is_omap_h3()) {
++		if (machine_is_omap_h3())
+ 			ret = omap_cfg_reg(V5_1710_MCLK_ON);
+-		} else {
+-			if (machine_is_omap_h2()) {
+-				ret = omap_cfg_reg(R10_1610_MCLK_ON);
++		else if (machine_is_omap_h2())
++			ret = omap_cfg_reg(R10_1610_MCLK_ON);
++		else if (machine_is_omap_h6300())
++			ret = omap_cfg_reg(R10_1510_MCLK_ON);
++
++		if (!cpu_is_omap1510 ()) {
++			/* Get the MCLK */
++			tsc2101_mclk_ck = clk_get(NULL, "mclk");
++			if (NULL == tsc2101_mclk_ck) {
++				printk(KERN_ERR "Unable to get the clock MCLK!!!\n");;
++				ret = -EPERM;
++				goto done;
+ 			}
+-		}
+-
+-		/* Get the MCLK */
+-		tsc2101_mclk_ck = clk_get(NULL, "mclk");
+-		if (NULL == tsc2101_mclk_ck) {
+-			printk(KERN_ERR "Unable to get the clock MCLK!!!\n");;
+-			ret = -EPERM;
+-			goto done;
+-		}
+-		if (clk_set_rate(tsc2101_mclk_ck, 12000000)) {
+-			printk(KERN_ERR "Unable to set rate to the MCLK!!!\n");;
+-			ret = -EPERM;
+-			goto done;
+-		}
+-		clk_enable(tsc2101_mclk_ck);
++			if (clk_set_rate(tsc2101_mclk_ck, 12000000)) {
++				printk(KERN_ERR "Unable to set rate to the MCLK!!!\n");;
++				ret = -EPERM;
++				goto done;
++			}
++			clk_enable(tsc2101_mclk_ck);
++		} /* if (!cpu_is_omap1510 ()) */
+ 
+ 		ret = omap_tsc2101_configure();
+ 
+@@ -116,10 +118,16 @@
+ 			}
+ 		}
+ 
+-		/* Release the MCLK */
+-		clk_disable(tsc2101_mclk_ck);
+-		clk_put(tsc2101_mclk_ck);
+-		tsc2101_mclk_ck = NULL;
++		if (!cpu_is_omap1510 ()) {
++			/* Release the MCLK */
++			clk_disable(tsc2101_mclk_ck);
++			clk_put(tsc2101_mclk_ck);
++			tsc2101_mclk_ck = NULL;
++		}
++
++#if defined(CONFIG_MACH_OMAP_H6300)
++		omap_free_gpio(8);
++#endif
+ 
+ 		module_put(THIS_MODULE);
+ 	}
+@@ -150,7 +158,10 @@
+ 			return;
+ 		}
+ 	}
+-	if (machine_is_omap_h3()) {
++	if (machine_is_omap_h3() || machine_is_omap_h6300()) {
++
++		if (machine_is_omap_h6300())
++			omap_set_gpio_dataout (8, 0);
+ 
+ 		ret =
+ 		    omap_uwire_data_transfer(0, ((page << 11) | (address << 5)),
+@@ -159,6 +170,8 @@
+ 			printk(KERN_ERR
+ 			       "uwire-write returned error for address %x\n",
+ 			       address);
++		if (machine_is_omap_h6300())
++			omap_set_gpio_dataout (8, 1);
+ 			return;
+ 		}
+ 		ret = omap_uwire_data_transfer(0, data, 16, 0, NULL, 0);
+@@ -166,10 +179,14 @@
+ 			printk(KERN_ERR
+ 			       "uwire-write returned error for address %x\n",
+ 			       address);
++			if (machine_is_omap_h6300())
++				omap_set_gpio_dataout (8, 1);
+ 			return;
+ 		}
+-	}
+ 
++		if (machine_is_omap_h6300())
++			omap_set_gpio_dataout (8, 1);
++	}
+ }
+ 
+ void omap_tsc2101_reads(int page, u8 startaddress, u16 * data, int numregs)
+@@ -178,9 +195,13 @@
+ 	if (machine_is_omap_h2()) {
+ 		cs = 1;
+ 	}
+-	if (machine_is_omap_h3()) {
++	if (machine_is_omap_h3() || machine_is_omap_h6300()) {
+ 		cs = 0;
+ 	}
++
++	if (machine_is_omap_h6300())
++		omap_set_gpio_dataout(8, 0);
++
+ 	(void)omap_uwire_data_transfer(cs, (0x8000 | (page << 11)
+ 					    | (startaddress << 5)),
+ 				       16, 0, NULL, 1);
+@@ -188,6 +209,9 @@
+ 		omap_uwire_data_transfer(cs, 0, 0, 16, data, 1);
+ 	}
+ 	omap_uwire_data_transfer(cs, 0, 0, 16, data, 0);
++
++	if (machine_is_omap_h6300())
++		omap_set_gpio_dataout(8, 1);
+ }
+ 
+ u16 omap_tsc2101_read(int page, u8 address)
+@@ -228,9 +252,24 @@
+ 		omap_cfg_reg(N14_1610_UWIRE_CS0);
+ 		omap_uwire_configure_mode(0, uwire_flags);
+ 	}
++	if (machine_is_omap_h6300()) {
++		uwire_flags = UWIRE_READ_RISING_EDGE | UWIRE_WRITE_RISING_EDGE;
++		omap_cfg_reg(N14_1510_UWIRE_CS0);
++		omap_uwire_configure_mode(0, uwire_flags);
++
++		omap_request_gpio(8);
++		omap_set_gpio_dataout(8, 0);
++		omap_set_gpio_direction (8, 0);
++	}
+ 
+ 	/* Configure MCLK enable */
+-	omap_writel(omap_readl(PU_PD_SEL_2) | (1 << 22), PU_PD_SEL_2);	
++	if (cpu_is_omap16xx() || cpu_is_omap1710())
++		omap_writel(omap_readl(PU_PD_SEL_2) | (1 << 22), PU_PD_SEL_2);	
++	if (machine_is_omap_h6300()) {
++		omap_cfg_reg(V19_1510_UWIRE_SCLK);
++		omap_cfg_reg(W21_1510_UWIRE_SDO);
++		omap_cfg_reg(U18_1510_UWIRE_SDI);
++	}
+ 
+ 	return 0;
+ }
+@@ -243,5 +282,5 @@
+ 
+ MODULE_AUTHOR("Texas Instruments");
+ MODULE_DESCRIPTION
+-    ("Glue audio driver for the TI OMAP1610/OMAP1710 TSC2101 codec.");
++    ("Glue audio driver for the TI OMAP1510/1610/OMAP1710 TSC2101 codec.");
+ MODULE_LICENSE("GPL");
+diff -Naur linux-2.6.16.16/drivers/ssi/omap-uwire.c h6300_dev/drivers/ssi/omap-uwire.c
+--- linux-2.6.16.16/drivers/ssi/omap-uwire.c	2006-05-17 21:41:30.000000000 +0300
++++ h6300_dev/drivers/ssi/omap-uwire.c	2006-04-24 20:53:29.000000000 +0300
+@@ -10,7 +10,7 @@
+  * Ported to 2.6 uwire interface.
+  * Copyright (C) 2004 Texas Instruments.
+  *
+- * Generalization patches by Juha Yrjölä <juha.yrjola@nokia.com>
++ * Generalization patches by Juha Yrjï¿½lï¿½ <juha.yrjola@nokia.com>
+  *
+  *  This program is free software; you can redistribute	 it and/or modify it
+  *  under  the terms of	 the GNU General  Public License as published by the
+@@ -212,6 +212,10 @@
+ 		omap_cfg_reg(N14_1610_UWIRE_CS0);
+ 		omap_cfg_reg(P15_1610_UWIRE_CS3);
+ 	}
++	if (machine_is_omap_h6300()) {
++		omap_cfg_reg(N14_1510_UWIRE_CS0);
++		omap_cfg_reg(P15_1510_UWIRE_CS3);
++	}
+ 	if (machine_is_omap_perseus2()) {
+ 		/* configure pins: MPU_UW_nSCS1, MPU_UW_SDO, MPU_UW_SCLK */
+ 		int val = omap_readl(OMAP730_IO_CONF_9) & ~0x00EEE000;
+diff -Naur linux-2.6.16.16/drivers/telephony/Kconfig h6300_dev/drivers/telephony/Kconfig
+--- linux-2.6.16.16/drivers/telephony/Kconfig	2006-05-11 04:56:24.000000000 +0300
++++ h6300_dev/drivers/telephony/Kconfig	2005-10-06 02:34:39.000000000 +0300
+@@ -41,7 +41,18 @@
+ 	help
+ 	  Say Y here to configure in PCMCIA service support for the Quicknet
+ 	  cards manufactured by Quicknet Technologies, Inc.  This changes the
+-	  card initialization code to work with the card manager daemon.
++	  card initialization code to work with the card manager daemon.	  
++
++config GSM_H6300
++	tristate "H6300 P5186 GSM/GPRS DRIVER"
++	depends on PHONE && I2C && PCA9535
++	help
++	  Bluetooth H6300 P5186 gsm/gprs driver.
++	  This driver provides the firmware loading mechanism for the P5185
++	  gsm/gprs hardware in iPAQ h6300.
++
++	  Say Y here to compile support for P5186 gsm/gprs devices into the
++	  kernel or say M to compile it as module (h6300_gsm).
+ 
+ endmenu
+ 
+diff -Naur linux-2.6.16.16/drivers/telephony/Makefile h6300_dev/drivers/telephony/Makefile
+--- linux-2.6.16.16/drivers/telephony/Makefile	2006-05-11 04:56:24.000000000 +0300
++++ h6300_dev/drivers/telephony/Makefile	2005-10-06 02:34:39.000000000 +0300
+@@ -2,6 +2,7 @@
+ # Makefile for drivers/telephony
+ #
+ 
+-obj-$(CONFIG_PHONE) += phonedev.o
+-obj-$(CONFIG_PHONE_IXJ) += ixj.o
+-obj-$(CONFIG_PHONE_IXJ_PCMCIA) += ixj_pcmcia.o
++obj-$(CONFIG_PHONE)				+= phonedev.o
++obj-$(CONFIG_PHONE_IXJ)			+= ixj.o
++obj-$(CONFIG_PHONE_IXJ_PCMCIA)	+= ixj_pcmcia.o
++obj-$(CONFIG_GSM_H6300)			+= omap/
+diff -Naur linux-2.6.16.16/drivers/telephony/omap/h6300_gsm_led.c h6300_dev/drivers/telephony/omap/h6300_gsm_led.c
+--- linux-2.6.16.16/drivers/telephony/omap/h6300_gsm_led.c	1970-01-01 02:00:00.000000000 +0200
++++ h6300_dev/drivers/telephony/omap/h6300_gsm_led.c	2005-10-06 02:34:39.000000000 +0300
+@@ -0,0 +1,40 @@
++/* 
++ * GSM interface driver helper for controlling bluetooth leds available in iPAQ h6300.
++ * 
++ * Copyright (C) 2005 Mika Laitio  <lamikr@cc.jyu.fi>
++ * 
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ */
++
++#include <linux/module.h>
++#include <linux/kernel.h>
++#include <linux/delay.h>
++#include <linux/device.h>
++
++#include <asm/hardware.h>
++#include <asm/arch/gpio.h>
++
++/* 
++ * Low level access for disabling h6300 gsm led.
++ *
++ * TODO: implement for h6300 
++ */
++void h6300_clear_gsm_led(int led_num)
++{
++	printk(KERN_NOTICE "h6300_gsm_led.c h6300_clear_gsm_led() done\n");
++	//hx4700_set_led(led_num, 0, 16);
++}
++EXPORT_SYMBOL(h6300_clear_gsm_led);
++
++/* 
++ * Low level access for setting up the gsm led.
++ *
++ * TODO: implement for h6300 
++ */
++void h6300_set_gsm_led(int led_num, int duty_time, int cycle_time)
++{
++	printk(KERN_NOTICE "h6300_gsm_led.c h6300_set_gsm_led() done\n");
++}
++EXPORT_SYMBOL(h6300_set_gsm_led);
+diff -Naur linux-2.6.16.16/drivers/telephony/omap/h6300_gsm_led.h h6300_dev/drivers/telephony/omap/h6300_gsm_led.h
+--- linux-2.6.16.16/drivers/telephony/omap/h6300_gsm_led.h	1970-01-01 02:00:00.000000000 +0200
++++ h6300_dev/drivers/telephony/omap/h6300_gsm_led.h	2005-10-06 02:34:39.000000000 +0300
+@@ -0,0 +1,10 @@
++#ifndef H6300_GSM_LED_H_
++#define H6300_GSM_LED_H_
++
++#define INDEX_GSM_LED	1
++
++void h6300_clear_gsm_led(int led_num);
++void h6300_set_gsm_led(int led_num, int duty_time, int cycle_time);
++
++
++#endif /*H6300_GSM_LED_H_*/
+diff -Naur linux-2.6.16.16/drivers/telephony/omap/h6300_gsm_p5186.c h6300_dev/drivers/telephony/omap/h6300_gsm_p5186.c
+--- linux-2.6.16.16/drivers/telephony/omap/h6300_gsm_p5186.c	1970-01-01 02:00:00.000000000 +0200
++++ h6300_dev/drivers/telephony/omap/h6300_gsm_p5186.c	2006-01-23 00:09:23.000000000 +0200
+@@ -0,0 +1,172 @@
++/* 
++ * Wavecom P5186 GPRS and GSM module driver for iPAQ h6300.
++ * 
++ * Copyright (C) 2005 Mika Laitio <lamikr@cc.jyu.fi>
++ * 
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ */
++
++#include <linux/module.h>
++#include <linux/kernel.h>
++#include <linux/delay.h>
++#include <linux/platform_device.h>
++
++#include <asm/hardware.h>
++#include <asm/arch/gpio.h>
++
++#include <asm/arch/pca9535.h>
++#include <asm/arch/h6300_uart_info.h>
++#include "h6300_gsm_led.h"
++
++static void
++h6300_gsm_configure(struct uart_omap_port *up, int enable)
++{
++	printk(KERN_NOTICE "h6300_gsm_p5186.c h6300_gsm_configure() started, enable = %d\n", enable);
++	
++	// printk( KERN_NOTICE "h6300 configure bluetooth: %d\n", enable );
++	if (enable == 0) {
++		pca9535_gpio_write(GPIO_I2C_GPRS_RESET, GPIO_VALUE_OFF);	// turn off gpio
++		mdelay(5);
++		h6300_clear_gsm_led(INDEX_GSM_LED);
++	}
++	else if (enable == 1) {
++		pca9535_gpio_write(GPIO_I2C_GPRS_RESET, GPIO_VALUE_ON);	// turn on gpio
++		mdelay(5);				
++	}
++	else if (enable == 2) {
++		h6300_set_gsm_led(INDEX_GSM_LED, 16, 16);
++	}
++	printk(KERN_NOTICE "h6300_gsm_p5186.c h6300_gsm_configure() done\n");
++}
++
++static void
++h6300_gsm_set_txrx(struct uart_omap_port *up, int txrx)
++{
++	printk(KERN_NOTICE "h6300_gsm_p5186.c h6300_gsm_set_txrx(), txrx = %d done\n", txrx);
++	/* do nothing */
++}
++
++static int
++h6300_gsm_get_txrx(struct uart_omap_port *up)
++{
++	printk(KERN_NOTICE "h6300_gsm_p5186.c h6300_gsm_get_txrx() done\n");
++	/* do nothing */
++	return 0;
++}
++
++static int
++h6300_gsm_probe(struct platform_device *pdev)
++{
++	int	ii;
++	int	curVal;
++	
++	struct h6300_uart_funcs *funcs = (struct h6300_uart_funcs *)pdev->dev.platform_data;
++/*
++	printk(KERN_NOTICE "h6300_gsm_p5186.c h6300_gsm_probe() started\n");	
++	for (ii = 0; ii < 8; ii++)
++	{
++		curVal	= pca9535_gpio_read(ii);
++		printk(KERN_NOTICE "I2C[%d] = %d ", ii, curVal);
++	}
++	for (ii = 10; ii < 18; ii++)
++	{
++		curVal	= pca9535_gpio_read(ii);
++		printk(KERN_NOTICE "I2C[%d] = %d ", ii, curVal);
++	}
++	printk(KERN_NOTICE "\nfirst check done\n");
++*/
++	pca9535_gpio_direction(GPIO_I2C_GPRS_RESET, GPIO_DIR_OUTPUT);	// set gpio direction to be output
++	pca9535_gpio_write(GPIO_I2C_GPRS_RESET, GPIO_VALUE_ON);	// turn on gpio
++	mdelay(200);
++	
++	pca9535_gpio_direction(GPIO_I2C_MIC_OP_EN, GPIO_DIR_OUTPUT);	// set gpio direction to be output
++	pca9535_gpio_write(GPIO_I2C_MIC_OP_EN, GPIO_VALUE_ON);	// turn on gpio
++	mdelay(200);
++
++	pca9535_gpio_direction(GPIO_I2C_SPK_OP_PD, GPIO_DIR_OUTPUT);	// set gpio direction to be output
++	pca9535_gpio_write(GPIO_I2C_SPK_OP_PD, GPIO_VALUE_ON);	// pd = pulldown?, normal off = on
++
++	mdelay(200);
++	
++	//pca9535_gpio_direction(
++	/* configure bluetooth UART */
++	//h6300_gpio_mode(GPIO_NR_H6300_BT_RXD_MD);
++	//h6300_gpio_mode(GPIO_NR_H6300_BT_TXD_MD);
++	//h6300_gpio_mode(GPIO_NR_H6300_BT_UART_CTS_MD);
++	//h6300_gpio_mode(GPIO_NR_H6300_BT_UART_RTS_MD);
++
++	funcs->configure	= h6300_gsm_configure;
++	funcs->set_txrx		= h6300_gsm_set_txrx;
++	funcs->get_txrx		= h6300_gsm_get_txrx;
++
++	/* Make sure the LED is off */
++	h6300_clear_gsm_led(INDEX_GSM_LED);	
++/*	
++	for (ii = 0; ii < 8; ii++)
++	{
++		curVal	= pca9535_gpio_read(ii);
++		printk(KERN_NOTICE "I2C[%d] = %d ", ii, curVal);
++	}
++	for (ii = 10; ii < 18; ii++)
++	{
++		curVal	= pca9535_gpio_read(ii);
++		printk(KERN_NOTICE "I2C[%d] = %d ", ii, curVal);
++	}
++*/	
++	printk(KERN_NOTICE "\nh6300_gsm_p5186.c h6300_gsm_probe() done\n");
++		
++	return 0;
++}
++
++static int
++h6300_gsm_remove(struct platform_device *pdev)
++{
++	struct h6300_uart_funcs *funcs = (struct h6300_uart_funcs *)pdev->dev.platform_data;
++	
++	printk(KERN_NOTICE "h6300_gsm_p5186.c h6300_gsm_remove() started\n");	
++
++	pca9535_gpio_write(GPIO_I2C_GPRS_RESET, 0);	// turn off gpio
++	
++	funcs->configure	= NULL;
++	funcs->set_txrx		= NULL;
++	funcs->get_txrx		= NULL;
++
++	/* Make sure the LED is off */
++	h6300_clear_gsm_led(INDEX_GSM_LED);
++	
++	printk(KERN_NOTICE "h6300_gsm_p5186.c, h6300_gsm_remove() done\n");
++
++	return 0;
++}
++
++static struct platform_driver gsm_driver = {
++	.probe    = h6300_gsm_probe,
++	.remove   = h6300_gsm_remove,
++	.driver = {
++		.name	= "h6300_gsm",
++	},
++};
++
++static int __init
++h6300_gsm_init(void)
++{
++	printk(KERN_NOTICE "h6300 GSM Driver init()\n");
++	return platform_driver_register(&gsm_driver);
++}
++
++static void __exit
++h6300_gsm_exit(void)
++{
++	printk(KERN_NOTICE "h6300 GSM Driver exit()\n");
++	platform_driver_unregister(&gsm_driver);
++}
++
++module_init(h6300_gsm_init);
++module_exit(h6300_gsm_exit);
++
++MODULE_AUTHOR("Mika Laitio, <lamikr@cc.jyu.fi>");
++MODULE_DESCRIPTION("iPAQ h6300 Wavecom P5186 GPRS and GSM module driver.");
++MODULE_LICENSE("GPL");
++
+diff -Naur linux-2.6.16.16/drivers/telephony/omap/Makefile h6300_dev/drivers/telephony/omap/Makefile
+--- linux-2.6.16.16/drivers/telephony/omap/Makefile	1970-01-01 02:00:00.000000000 +0200
++++ h6300_dev/drivers/telephony/omap/Makefile	2005-10-06 02:34:39.000000000 +0300
+@@ -0,0 +1,6 @@
++#
++# Makefile for the Linux iPAQ H6300 BRF6100 Bluetooth device drivers.
++#
++
++h6300_gsm-objs			:= h6300_gsm_led.o h6300_gsm_p5186.o
++obj-$(CONFIG_GSM_H6300)	+= h6300_gsm.o
+diff -Naur linux-2.6.16.16/drivers/usb/gadget/omap_udc.c h6300_dev/drivers/usb/gadget/omap_udc.c
+--- linux-2.6.16.16/drivers/usb/gadget/omap_udc.c	2006-05-17 21:41:30.000000000 +0300
++++ h6300_dev/drivers/usb/gadget/omap_udc.c	2006-04-24 20:53:29.000000000 +0300
+@@ -60,7 +60,8 @@
+ #undef	USB_TRACE
+ 
+ /* bulk DMA seems to be behaving for both IN and OUT */
+-#define	USE_DMA
++//#define	USE_DMA
++#undef USE_DMA
+ 
+ /* ISO too */
+ #define	USE_ISO
+@@ -2147,7 +2148,7 @@
+ 	/* boards that don't have VBUS sensing can't autogate 48MHz;
+ 	 * can't enter deep sleep while a gadget driver is active.
+ 	 */
+-	if (machine_is_omap_innovator() || machine_is_omap_osk())
++	if (machine_is_omap_innovator() || machine_is_omap_osk() || machine_is_omap_h6300())
+ 		omap_vbus_session(&udc->gadget, 1);
+ 
+ done:
+@@ -2170,7 +2171,7 @@
+ 	if (udc->dc_clk != NULL)
+ 		omap_udc_enable_clock(1);
+ 
+-	if (machine_is_omap_innovator() || machine_is_omap_osk())
++	if (machine_is_omap_innovator() || machine_is_omap_osk() || machine_is_omap_h6300())
+ 		omap_vbus_session(&udc->gadget, 0);
+ 
+ 	if (udc->transceiver)
+@@ -2791,7 +2792,7 @@
+ 		hmc = HMC_1510;
+ 		type = "(unknown)";
+ 
+-		if (machine_is_omap_innovator()) {
++		if (machine_is_omap_innovator() || machine_is_omap_h6300()) {
+ 			/* just set up software VBUS detect, and then
+ 			 * later rig it so we always report VBUS.
+ 			 * FIXME without really sensing VBUS, we can't
+diff -Naur linux-2.6.16.16/drivers/usb/host/ohci-omap.c h6300_dev/drivers/usb/host/ohci-omap.c
+--- linux-2.6.16.16/drivers/usb/host/ohci-omap.c	2006-05-17 21:41:30.000000000 +0300
++++ h6300_dev/drivers/usb/host/ohci-omap.c	2006-02-06 15:36:21.000000000 +0200
+@@ -353,11 +353,7 @@
+ 	if (IS_ERR(usb_host_ck))
+ 		return PTR_ERR(usb_host_ck);
+ 
+-	if (!cpu_is_omap1510())
+-		usb_dc_ck = clk_get(0, "usb_dc_ck");
+-	else
+-		usb_dc_ck = clk_get(0, "lb_ck");
+-
++	usb_dc_ck = clk_get(0, "usb_dc_ck");
+ 	if (IS_ERR(usb_dc_ck)) {
+ 		clk_put(usb_host_ck);
+ 		return PTR_ERR(usb_dc_ck);
+diff -Naur linux-2.6.16.16/drivers/video/omap/lcd_h6300.c h6300_dev/drivers/video/omap/lcd_h6300.c
+--- linux-2.6.16.16/drivers/video/omap/lcd_h6300.c	1970-01-01 02:00:00.000000000 +0200
++++ h6300_dev/drivers/video/omap/lcd_h6300.c	2006-04-24 20:53:29.000000000 +0300
+@@ -0,0 +1,159 @@
++/*
++ * File: drivers/video/omap_new/lcd-h6300.c
++ *
++ * LCD panel support for the TI OMAP1510 Innovator board
++ *
++ * Copyright (C) 2004 Nokia Corporation
++ * Author: Imre Deak <imre.deak@nokia.com>
++ *
++ * This program is free software; you can redistribute it and/or modify it
++ * under the terms of the GNU General Public License as published by the
++ * Free Software Foundation; either version 2 of the License, or (at your
++ * option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful, but
++ * WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
++ * General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License along
++ * with this program; if not, write to the Free Software Foundation, Inc.,
++ * 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
++ */
++
++#include <linux/module.h>
++#include <linux/platform_device.h>
++#include <asm/io.h>
++
++#include <asm/arch/pca9535.h>
++#include <asm/arch/omapfb.h>
++
++/* #define OMAPFB_DBG 1 */
++
++#include "debug.h"
++
++//static struct clk *h6300_lcd_ck;
++
++static int h6300_panel_init(struct omapfb_device *fbdev)
++{
++	DBGENTER(1);
++/*
++	if ((h6300_lcd_ck = clk_get (NULL, "lcd_ck")) == NULL) {
++		printk(KERN_ERR "Unable to get the clock LCD_CK!!!\n");
++		return -EPERM;
++	} clk_enable(h6300_lcd_ck);
++*/
++	DBGLEAVE(1);
++	printk(KERN_INFO "lcd_h6300.c: h6300_panel_init() done\n");
++	return 0;
++}
++
++static void h6300_panel_cleanup(void)
++{
++	DBGENTER(1);
++/*
++	if (h6300_lcd_ck) {
++		clk_disable(h6300_lcd_ck);
++		clk_put(h6300_lcd_ck);
++		h6300_lcd_ck = NULL;
++	}
++*/
++	DBGLEAVE(1);
++	printk(KERN_INFO "lcd_h6300.c: h6300_panel_cleanup() done\n");
++}
++
++static int h6300_panel_enable(void)
++{
++	DBGENTER(1);
++	DBGLEAVE(1);
++	printk(KERN_INFO "lcd_h6300.c: h6300_panel_enable() done\n");
++	return 0;
++}
++
++static void h6300_panel_disable(void)
++{
++	DBGENTER(1);
++	DBGLEAVE(1);
++	printk(KERN_INFO "lcd_h6300.c: h6300_panel_disable() done\n");	
++}
++
++static unsigned long h6300_panel_get_caps(void)
++{
++	printk(KERN_INFO "lcd_h6300.c: h6300_panel_get_caps() called\n");	
++	return 0;
++}
++
++struct lcd_panel h6300_panel = {
++	.name		= "h6300",
++	.config		= OMAP_LCDC_PANEL_TFT,
++
++	.bpp		= 16,
++	.data_lines	= 16,
++	.x_res		= 240,
++	.y_res		= 320,
++	.pixel_clock	= 21000,
++	.hsw		= 12,
++	.hfp		= 10,
++	.hbp		= 10,
++	.vsw		= 3,
++	.vfp		= 10,
++	.vbp		= 3,
++	.pcd		= 0,
++
++	.init		= h6300_panel_init,
++	.cleanup	= h6300_panel_cleanup,
++	.enable		= h6300_panel_enable,
++	.disable	= h6300_panel_disable,
++	.get_caps	= h6300_panel_get_caps,
++};
++
++static int h6300_panel_probe(struct platform_device *pdev)
++{
++	DBGENTER(1);
++	omapfb_register_panel(&h6300_panel);
++	return 0;
++}
++
++static int h6300_panel_remove(struct platform_device *pdev)
++{
++	DBGENTER(1);
++	return 0;
++}
++
++static int h6300_panel_suspend(struct platform_device *pdev, pm_message_t mesg)
++{
++	DBGENTER(1);
++	pca9535_gpio_write(GPIO3, HI);
++	return 0;
++}
++
++static int h6300_panel_resume(struct platform_device *pdev)
++{
++	DBGENTER(1);
++	pca9535_gpio_write(GPIO3, LOW);
++	return 0;
++}
++
++struct platform_driver h6300_panel_driver = {
++	.probe		= h6300_panel_probe,
++	.remove		= h6300_panel_remove,
++	.suspend	= h6300_panel_suspend,
++	.resume		= h6300_panel_resume,
++	.driver		= {
++		.name	= "lcd_h6300",
++		.owner	= THIS_MODULE,
++	},
++};
++
++static int h6300_panel_drv_init(void)
++{
++	return platform_driver_register(&h6300_panel_driver);
++}
++
++static void h6300_panel_drv_cleanup(void)
++{
++	platform_driver_unregister(&h6300_panel_driver);
++}
++
++module_init(h6300_panel_drv_init);
++module_exit(h6300_panel_drv_cleanup);
+diff -Naur linux-2.6.16.16/drivers/video/omap/Makefile h6300_dev/drivers/video/omap/Makefile
+--- linux-2.6.16.16/drivers/video/omap/Makefile	2006-05-17 21:41:30.000000000 +0300
++++ h6300_dev/drivers/video/omap/Makefile	2006-02-21 23:54:33.000000000 +0200
+@@ -23,6 +23,7 @@
+ objs-y$(CONFIG_MACH_OMAP_OSK) += lcd_osk.o
+ objs-y$(CONFIG_MACH_OMAP_PERSEUS2) += lcd_p2.o
+ objs-y$(CONFIG_MACH_OMAP_APOLLON) += lcd_apollon.o
++objs-$(CONFIG_ARCH_OMAP15XX)$(CONFIG_MACH_OMAP_H6300) += lcd_h6300.o
+ 
+ objs-y$(CONFIG_FB_OMAP_LCD_LPH8923) += lcd_lph8923.o
+ 
+diff -Naur linux-2.6.16.16/include/asm-arm/arch-omap/board-h6300.h h6300_dev/include/asm-arm/arch-omap/board-h6300.h
+--- linux-2.6.16.16/include/asm-arm/arch-omap/board-h6300.h	1970-01-01 02:00:00.000000000 +0200
++++ h6300_dev/include/asm-arm/arch-omap/board-h6300.h	2006-04-24 20:53:29.000000000 +0300
+@@ -0,0 +1,40 @@
++/*
++ * linux/include/asm-arm/arch-omap/board-innovator.h
++ *
++ * Copyright (C) 2001 RidgeRun, Inc.
++ *
++ * This program is free software; you can redistribute it and/or modify it
++ * under the terms of the GNU General Public License as published by the
++ * Free Software Foundation; either version 2 of the License, or (at your
++ * option) any later version.
++ *
++ * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED
++ * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
++ * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN
++ * NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
++ * INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
++ * NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF
++ * USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
++ * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
++ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
++ * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
++ *
++ * You should have received a copy of the GNU General Public License along
++ * with this program; if not, write to the Free Software Foundation, Inc.,
++ * 675 Mass Ave, Cambridge, MA 02139, USA.
++ */
++#ifndef __ASM_ARCH_OMAP_H6300_H
++#define __ASM_ARCH_OMAP_H6300_H
++
++#ifndef OMAP_SDRAM_DEVICE
++#define OMAP_SDRAM_DEVICE				D256M_1X16_4B
++#endif
++
++#define OMAP1510P1_IMIF_PRI_VALUE		0x00
++#define OMAP1510P1_EMIFS_PRI_VALUE		0x00
++#define OMAP1510P1_EMIFF_PRI_VALUE		0x00
++
++#define NR_FPGA_IRQS					24
++#define NR_IRQS                 		IH_BOARD_BASE + NR_FPGA_IRQS
++
++#endif /* __ASM_ARCH_OMAP_H6300_H */
+diff -Naur linux-2.6.16.16/include/asm-arm/arch-omap/h6300_uart_info.h h6300_dev/include/asm-arm/arch-omap/h6300_uart_info.h
+--- linux-2.6.16.16/include/asm-arm/arch-omap/h6300_uart_info.h	1970-01-01 02:00:00.000000000 +0200
++++ h6300_dev/include/asm-arm/arch-omap/h6300_uart_info.h	2005-10-14 18:55:31.000000000 +0300
+@@ -0,0 +1,33 @@
++/*
++ * Support file for calling h6300 uart configuration functions.
++ * Used at least by h6300_bt driver.
++ * 
++ * Copyright (c) 2005 SDG Systems, LLC
++ * 2005-03-29   Todd Blumer     Converted  basic structure to support hx4700
++ * 2005-10-03   Mika Laitio (lamikr@cc.jyu.fi)	Reorganized for the iPAQ h6300 bt driver.
++ */
++
++#ifndef _H6300_UART_INFO_H
++#define _H6300_UART_INFO_H
++
++#include "omap_serial.h"
++
++#define GPIO_BT_PWR_EN 3
++#define GPIO_N_BT_RST 9
++
++#define GPIO_I2C_GPRS_RESET 16
++#define GPIO_I2C_MIC_OP_EN 10
++#define GPIO_I2C_SPK_OP_PD 11
++
++#define GPIO_VALUE_OFF	0
++#define GPIO_VALUE_ON	1
++
++#define GPIO_DIR_OUTPUT 1
++
++struct h6300_uart_funcs {
++	void (*configure)( struct uart_omap_port *up, int state);
++	void (*set_txrx)( struct uart_omap_port *up, int txrx);
++	int (*get_txrx)( struct uart_omap_port *up);
++};
++
++#endif
+diff -Naur linux-2.6.16.16/include/asm-arm/arch-omap/hardware.h h6300_dev/include/asm-arm/arch-omap/hardware.h
+--- linux-2.6.16.16/include/asm-arm/arch-omap/hardware.h	2006-05-17 21:41:31.000000000 +0300
++++ h6300_dev/include/asm-arm/arch-omap/hardware.h	2006-02-06 15:36:21.000000000 +0200
+@@ -290,6 +290,10 @@
+ #include "board-innovator.h"
+ #endif
+ 
++#ifdef CONFIG_MACH_OMAP_H6300
++#include "board-h6300.h"
++#endif
++
+ #ifdef CONFIG_MACH_OMAP_H2
+ #include "board-h2.h"
+ #endif
+diff -Naur linux-2.6.16.16/include/asm-arm/arch-omap/mux.h h6300_dev/include/asm-arm/arch-omap/mux.h
+--- linux-2.6.16.16/include/asm-arm/arch-omap/mux.h	2006-05-17 21:41:31.000000000 +0300
++++ h6300_dev/include/asm-arm/arch-omap/mux.h	2006-05-18 00:38:24.000000000 +0300
+@@ -320,6 +320,13 @@
+ 	P15_1610_UWIRE_CS3,
+ 	N15_1610_UWIRE_CS1,
+ 
++	/* OMAP-1510 uWire */
++	P15_1510_UWIRE_CS3,
++	N14_1510_UWIRE_CS0,
++	V19_1510_UWIRE_SCLK,
++	W21_1510_UWIRE_SDO,
++	U18_1510_UWIRE_SDI,
++
+ 	/* OMAP-1610 Flash */
+ 	L3_1610_FLASH_CS2B_OE,
+ 	M8_1610_FLASH_CS2B_WE,
+@@ -384,6 +391,7 @@
+ 	T20_1610_LOW_PWR,
+ 
+ 	/* MCLK Settings */
++	R10_1510_MCLK_ON,
+ 	V5_1710_MCLK_ON,
+ 	V5_1710_MCLK_OFF,
+ 	R10_1610_MCLK_ON,
+diff -Naur linux-2.6.16.16/include/asm-arm/arch-omap/omap-alsa.h h6300_dev/include/asm-arm/arch-omap/omap-alsa.h
+--- linux-2.6.16.16/include/asm-arm/arch-omap/omap-alsa.h	2006-05-17 21:41:31.000000000 +0300
++++ h6300_dev/include/asm-arm/arch-omap/omap-alsa.h	2006-03-08 13:28:16.000000000 +0200
+@@ -1,6 +1,6 @@
+ /*
+  * linux/include/asm-arm/arch-omap/omap-alsa.h
+- *
++ * 
+  * Alsa Driver for AIC23 and TSC2101 codecs on OMAP platform boards.
+  *
+  * Copyright (C) 2006 Mika Laitio <lamikr@cc.jyu.fi>
+diff -Naur linux-2.6.16.16/include/asm-arm/arch-omap/omap_serial.h h6300_dev/include/asm-arm/arch-omap/omap_serial.h
+--- linux-2.6.16.16/include/asm-arm/arch-omap/omap_serial.h	1970-01-01 02:00:00.000000000 +0200
++++ h6300_dev/include/asm-arm/arch-omap/omap_serial.h	2005-10-04 00:58:34.000000000 +0300
+@@ -0,0 +1,62 @@
++/*
++ * Omap/h6300 serial driver private interface. 
++ * Code originates from the pxa-serial.h available in the handheld org drivers
++ * for iPAQ PXA4700.
++ *
++ * Copyright (c) 2005 SDG Systems, LLC
++ * 2005-03-29   Todd Blumer     Converted  basic structure to support hx4700
++ * 2005-10-03   Mika Laitio (lamikr@cc.jyu.fi)	Reorganized for the iPAQ h6300 bt driver.
++ */
++ 
++#ifndef _OMAP_SERIAL_H
++#define _OMAP_SERIAL_H
++
++#define OMAP_SERIAL_TX 1
++#define OMAP_SERIAL_RX 2
++
++#include <linux/tty.h>
++#include <linux/serial_core.h>
++
++struct platform_omap_serial_funcs;
++
++struct uart_omap_port {
++	struct uart_port			port;
++	unsigned char				ier;
++	unsigned char				lcr;
++	unsigned char				mcr;
++	unsigned int    			lsr_break_flag;
++	unsigned int				cken;
++	char					*name;
++	struct platform_omap_serial_funcs	*pf;
++};
++
++/* A pointer to such a structure can be contained in the platform_data
++ * field of every PXA UART platform_device. If the field is NULL, the
++ * serial port works as usual.
++ *
++ * For the sake of simplicity/performance no one of the function pointers
++ * in the structure below can be NULL.
++ */
++struct platform_omap_serial_funcs {
++	/* Platform-specific function to initialize whatever is connected
++         to this serial port... enable=1 -> enable transceiver,
++         0 -> disable transceiver. */
++	void (*configure) (struct uart_omap_port *up, int enable);
++        /* Platform-specific function to enable or disable the individual
++           transmitter/receiver submodules. On transceivers without echo
++           cancellation (e.g. SIR) transmitter always has priority, e.g.
++           if both bits are set, only the transmitter is enabled. */
++        void (*set_txrx) (struct uart_omap_port *up, int txrx);
++	/* Get the current state of tx/rx (see bitflags above) */
++	int (*get_txrx) (struct uart_omap_port *up);
++};
++
++/*
++ * The variables below are located in arch/arm/mach-omap/board_h6300.c
++ * Machine-specific code may want to put a pointer to a static
++ * platform_pxa_serial_funcs structure in the dev.platform_data
++ * field of the respective port device.
++ */
++extern struct platform_device btuart_device;
++
++#endif
+diff -Naur linux-2.6.16.16/include/asm-arm/arch-omap/pca9535.h h6300_dev/include/asm-arm/arch-omap/pca9535.h
+--- linux-2.6.16.16/include/asm-arm/arch-omap/pca9535.h	1970-01-01 02:00:00.000000000 +0200
++++ h6300_dev/include/asm-arm/arch-omap/pca9535.h	2005-10-25 03:24:45.000000000 +0300
+@@ -0,0 +1,39 @@
++#ifndef _PCA9535_H
++#define _PCA9535_H
++
++enum  pca9535_gpios {
++	GPIO0 = 0,
++	GPIO1 = 1,
++	GPIO2 = 2,
++	GPIO3 = 3,
++	GPIO4 = 4,
++	GPIO5 = 5,
++	GPIO6 = 6,
++	GPIO7 = 7,
++	GPIO8 = 8,
++	GPIO9 = 9,
++	GPIO10 = 10,
++	GPIO11 = 11,
++	GPIO12 = 12,
++	GPIO13 = 13,
++	GPIO14 = 14,
++	GPIO15 = 15,
++	GPIO16 = 16,
++	GPIO17 = 17
++};
++
++enum gpio_values {
++	HI	= 0,
++	LOW	= 1
++};
++
++enum gpio_direction {
++	GPIO_INPUT	= 0,
++	GPIO_OUTPUT	= 1
++};
++
++extern int pca9535_gpio_read(int gpio);
++extern int pca9535_gpio_write(int gpio, unsigned char val);	
++extern int pca9535_gpio_direction(int gpio, unsigned char direction);
++
++#endif
+diff -Naur linux-2.6.16.16/Makefile h6300_dev/Makefile
+--- linux-2.6.16.16/Makefile	2006-05-17 21:41:27.000000000 +0300
++++ h6300_dev/Makefile	2006-05-18 01:45:17.000000000 +0300
+@@ -11,7 +11,7 @@
+ # expect to learn how to build the kernel reading this file.
+ 
+ # Add custom flags here to avoid conflict with updates
+-EXTRAVERSION := $(EXTRAVERSION)-omap2
++EXTRAVERSION := $(EXTRAVERSION)-omap1-h6300
+ 
+ # Do not print "Entering directory ..."
+ MAKEFLAGS += --no-print-directory
+diff -Naur linux-2.6.16.16/sound/arm/omap/omap-alsa-tsc2101.c h6300_dev/sound/arm/omap/omap-alsa-tsc2101.c
+--- linux-2.6.16.16/sound/arm/omap/omap-alsa-tsc2101.c	2006-05-17 21:41:31.000000000 +0300
++++ h6300_dev/sound/arm/omap/omap-alsa-tsc2101.c	2006-03-30 23:15:31.000000000 +0300
+@@ -96,7 +96,11 @@
+ static snd_pcm_hardware_t tsc2101_snd_omap_alsa_playback = {
+ 	.info = (SNDRV_PCM_INFO_INTERLEAVED | SNDRV_PCM_INFO_BLOCK_TRANSFER |
+ 		 SNDRV_PCM_INFO_MMAP | SNDRV_PCM_INFO_MMAP_VALID),	
+-	.formats = (SNDRV_PCM_FMTBIT_S16_LE),
++#ifdef CONFIG_MACH_OMAP_H6300
++	.formats = (SNDRV_PCM_FMTBIT_S8),
++#else
++ 	.formats = (SNDRV_PCM_FMTBIT_S16_LE),
++#endif
+ 	.rates = (SNDRV_PCM_RATE_8000 | SNDRV_PCM_RATE_11025 |
+ 		  SNDRV_PCM_RATE_16000 |
+ 		  SNDRV_PCM_RATE_22050 | SNDRV_PCM_RATE_32000 |
+@@ -136,7 +140,7 @@
+ };
+ 
+ /* 
+- * Simplified write for tsc Audio
++ * Simplified write for tsc2101 audio registers.
+  */
+ inline void tsc2101_audio_write(u8 address, u16 data)
+ {
+@@ -144,7 +148,7 @@
+ }
+ 
+ /* 
+- * Simplified read for tsc  Audio
++ * Simplified read for tsc2101 audio registers.
+  */
+ inline u16 tsc2101_audio_read(u8 address)
+ {
+@@ -246,14 +250,17 @@
+ #endif				/* #ifdef TSC_MASTER */
+ 	tsc2101_audio_write(TSC2101_AUDIO_CTRL_3, data);
+ 
+-	/* program the PLLs */
++	/* Program the PLLs. This code assumes that the 12 Mhz MCLK is in use.
++         * If MCLK rate is something else, these values must be changed.
++	 * See the tsc2101 specification for the details.
++	 */
+ 	if (rate_reg_info[count].fs_44kHz) {
+-		/* 44.1 khz - 12 MHz Mclk */
++		/* samplerate = (44.1kHZ / x), where x is int. */
+ 		tsc2101_audio_write(TSC2101_PLL_PROG_1, PLL1_PLLSEL |
+ 				PLL1_PVAL(1) | PLL1_I_VAL(7));	/* PVAL 1; I_VAL 7 */
+ 		tsc2101_audio_write(TSC2101_PLL_PROG_2, PLL2_D_VAL(0x1490));	/* D_VAL 5264 */
+ 	} else {
+-		/* 48 khz - 12 Mhz Mclk */
++		/* samplerate = (48.kHZ / x), where x is int. */
+ 		tsc2101_audio_write(TSC2101_PLL_PROG_1, PLL1_PLLSEL |
+ 			       PLL1_PVAL(1) | PLL1_I_VAL(8));	/* PVAL 1; I_VAL 8 */
+ 		tsc2101_audio_write(TSC2101_PLL_PROG_2, PLL2_D_VAL(0x780));	/* D_VAL 1920 */
+@@ -317,21 +324,14 @@
+ 		       CODEC_CLOCK);
+ 	}
+ 	curRate	= (uint)clk_get_rate(tsc2101_mclk);
+-	DPRINTK("old clock rate = %d\n", curRate);
+ 	if (curRate != CODEC_CLOCK) {
+ 		err	= clk_set_rate(tsc2101_mclk, CODEC_CLOCK);
+ 		if (err) {
+ 			printk(KERN_WARNING
+ 			       "Cannot set MCLK clock rate for TSC2101 CODEC, error code = %d\n", err);
+-			//return -ECANCELED;
++			return -ECANCELED;
+ 		}
+ 	}
+-	else
+-	{
+-		printk(KERN_INFO
+-		       "omap_alsa_tsc2101_clock_on(), no need to change rate, no need to change clock rate, rate already %d Hz.\n",
+-		       CODEC_CLOCK);
+-	}
+ 	err		= clk_enable(tsc2101_mclk);
+ 	curRate		= (uint)clk_get_rate(tsc2101_mclk);
+ 	curUseCount	= clk_get_usecount(tsc2101_mclk);
+@@ -349,8 +349,7 @@
+ }
+ 
+ /*
+- * Do some sanity check, turn clock off and then turn
+- *  codec audio off
++ * Do some sanity check, turn clock off and then turn codec audio off
+  */
+ int tsc2101_clock_off(void) 
+ {
+@@ -374,10 +373,6 @@
+ 	tsc2101_audio_write(TSC2101_CODEC_POWER_CTRL,
+ 			    ~(CPC_SP1PWDN | CPC_SP2PWDN | CPC_BASSBC));
+ 	DPRINTK("audio codec off\n");
+-#ifdef DUMP_TSC2101_AUDIO_REGISTERS
+-	printk("tsc2101_clock_off()\n");
+-	dump_tsc2101_audio_reg();
+-#endif	
+ 	return 0;	
+ }
+ 
+@@ -420,18 +415,22 @@
+ };
+ 
+ static int __init omap_alsa_tsc2101_init(void)
+-{
+-	int err;
+-	
++{	
+ 	ADEBUG();
+-	err = platform_driver_register(&omap_alsa_driver);
+-
+-	return err;
++#ifdef DUMP_TSC2101_AUDIO_REGISTERS
++	printk("omap_alsa_tsc2101_init()\n");
++	dump_tsc2101_audio_reg();
++#endif
++	return platform_driver_register(&omap_alsa_driver);
+ }
+ 
+ static void __exit omap_alsa_tsc2101_exit(void)
+ {
+ 	ADEBUG();
++#ifdef DUMP_TSC2101_AUDIO_REGISTERS
++	printk("omap_alsa_tsc2101_exit()\n");
++	dump_tsc2101_audio_reg();
++#endif
+ 	platform_driver_unregister(&omap_alsa_driver);
+ }
+ 
+diff -Naur linux-2.6.16.16/sound/arm/omap/omap-alsa-tsc2101-mixer.c h6300_dev/sound/arm/omap/omap-alsa-tsc2101-mixer.c
+--- linux-2.6.16.16/sound/arm/omap/omap-alsa-tsc2101-mixer.c	2006-05-17 21:41:31.000000000 +0300
++++ h6300_dev/sound/arm/omap/omap-alsa-tsc2101-mixer.c	2006-05-10 02:42:13.000000000 +0300
+@@ -50,47 +50,53 @@
+ //#define M_DPRINTK(ARGS...)  printk(KERN_INFO "<%s>: ",__FUNCTION__);printk(ARGS)
+ #define M_DPRINTK(ARGS...)  		/* nop */
+ 
++#define CHECK_BIT(INDX, ARG) (((ARG) & TSC2101_BIT(INDX)) >> INDX)
++#define IS_UNMUTED(INDX, ARG) (((CHECK_BIT(INDX, ARG)) == 0))
++
+ #define DGC_DALVL_EXTRACT(ARG) ((ARG & 0x7f00) >> 8)
+ #define DGC_DARVL_EXTRACT(ARG) ((ARG & 0x007f))
+-#define GET_DGC_DALMU_BIT_VALUE(ARG)  (((ARG) & TSC2101_BIT(15)) >> 15)
+-#define GET_DGC_DARMU_BIT_VALUE(ARG)  (((ARG) & TSC2101_BIT(7)) >> 7)
+-#define IS_DGC_DALMU_UNMUTED(ARG)  (((GET_DGC_DALMU_BIT_VALUE(ARG)) == 0))
+-#define IS_DGC_DARMU_UNMUTED(ARG) (((GET_DGC_DARMU_BIT_VALUE(ARG)) == 0))
+ 
+ #define HGC_ADPGA_HED_EXTRACT(ARG) ((ARG & 0x7f00) >> 8)
+-#define GET_DGC_HGCMU_BIT_VALUE(ARG) (((ARG) & TSC2101_BIT(15)) >> 15)
+-#define IS_DGC_HGCMU_UNMUTED(ARG) (((GET_DGC_HGCMU_BIT_VALUE(ARG)) == 0))
+-
+ #define HNGC_ADPGA_HND_EXTRACT(ARG) ((ARG & 0x7f00) >> 8)
+-#define GET_DGC_HNGCMU_BIT_VALUE(ARG) (((ARG) & TSC2101_BIT(15)) >> 15)
+-#define IS_DGC_HNGCMU_UNMUTED(ARG) (((GET_DGC_HNGCMU_BIT_VALUE(ARG)) == 0))
++#define BGC_ADPGA_BGC_EXTRACT(ARG) ((ARG & 0x7f00) >> 8)
+ 
+ static int current_playback_target	= PLAYBACK_TARGET_LOUDSPEAKER;
+ static int current_rec_src 		= REC_SRC_SINGLE_ENDED_MICIN_HED;
+ 
++/* 
++ * Simplified write for the tsc2101 audio registers.
++ */
++inline void omap_tsc2101_audio_write(u8 address, u16 data)
++{
++	omap_tsc2101_write(PAGE2_AUDIO_CODEC_REGISTERS, address, data);
++}
++
++/* 
++ * Simplified read for the tsc2101 audio registers.
++ */
++inline u16 omap_tsc2101_audio_read(u8 address)
++{
++	return (omap_tsc2101_read(PAGE2_AUDIO_CODEC_REGISTERS, address));
++}
++
+ /*
+- * Used for switching between TSC2101 recourd sources.
+- * Logic is adjusted from the TSC2101 OSS code.
++ * For selecting tsc2101 recourd source.
+  */
+-static int set_record_source(int val)
++static void set_record_source(int val)
+ {
+ 	u16	data;
+-	int	maskedVal;
+ 	
+-	FN_IN;
+-	maskedVal	= 0xe0 & val;	
+-
+-	data	= omap_tsc2101_read(TSC2101_AUDIO_CODEC_REGISTERS_PAGE2, 
+-				TSC2101_MIXER_PGA_CTRL);
++	/* Mute Analog Sidetone
++	 * Analog sidetone gain db?
++	 * Input selected by MICSEL connected to ADC
++	 */
++	data	= MPC_ASTMU | MPC_ASTG(0x45);
+ 	data	&= ~MPC_MICSEL(7); /* clear all MICSEL bits */
+-	data	|= maskedVal;
+-	omap_tsc2101_write(TSC2101_AUDIO_CODEC_REGISTERS_PAGE2,
+-				TSC2101_MIXER_PGA_CTRL,
+-				data);
++	data	|= MPC_MICSEL(val);
++	data	|= MPC_MICADC;
++	omap_tsc2101_audio_write(TSC2101_MIXER_PGA_CTRL, data);
++	
+ 	current_rec_src	= val;
+-
+-	FN_OUT(0);
+-	return 0;
+ }
+ 
+ /*
+@@ -147,32 +153,34 @@
+ 	volL	= get_mixer_volume_as_dac_gain_control_volume(mixerVolL);
+ 	volR	= get_mixer_volume_as_dac_gain_control_volume(mixerVolR);
+ 	
+-	val	= omap_tsc2101_read(TSC2101_AUDIO_CODEC_REGISTERS_PAGE2, TSC2101_DAC_GAIN_CTRL);
++	val	= omap_tsc2101_audio_read(TSC2101_DAC_GAIN_CTRL);
+ 	/* keep the old mute bit settings */
+ 	val	&= ~(DGC_DALVL(OUTPUT_VOLUME_MIN) | DGC_DARVL(OUTPUT_VOLUME_MIN));
+ 	val	|= DGC_DALVL(volL) | DGC_DARVL(volR);
+ 	retVal	= 2;
+ 	if (retVal) {
+-		omap_tsc2101_write(TSC2101_AUDIO_CODEC_REGISTERS_PAGE2, 
+-				TSC2101_DAC_GAIN_CTRL, 
+-				val);
++		omap_tsc2101_audio_write(TSC2101_DAC_GAIN_CTRL, val);
+ 	}
+ 	M_DPRINTK("to registry: left = %d, right = %d, total = %d\n", DGC_DALVL_EXTRACT(val), DGC_DARVL_EXTRACT(val), val);
+ 	return retVal;
+ }
+ 
+-int dac_gain_control_unmute_control(int muteLeft, int muteRight)
++/**
++ * If unmuteLeft/unmuteRight == 0  --> mute
++ * If unmuteLeft/unmuteRight == 1 --> unmute
++ */
++int dac_gain_control_unmute(int unmuteLeft, int unmuteRight)
+ {
+ 	u16 val;
+ 	int count;
+ 
+ 	count	= 0;
+-	val	= omap_tsc2101_read(TSC2101_AUDIO_CODEC_REGISTERS_PAGE2, TSC2101_DAC_GAIN_CTRL);
++	val	= omap_tsc2101_audio_read(TSC2101_DAC_GAIN_CTRL);
+ 	/* in alsa mixer 1 --> on, 0 == off. In tsc2101 registry 1 --> off, 0 --> on
+ 	 * so if values are same, it's time to change the registry value.
+ 	 */
+-	if (muteLeft == GET_DGC_DALMU_BIT_VALUE(val)) {
+-		if (muteLeft == 0) {
++	if (unmuteLeft != IS_UNMUTED(15, val)) {
++		if (unmuteLeft == 0) {
+ 			/* mute --> turn bit on */
+ 			val	= val | DGC_DALMU;
+ 		}
+@@ -182,8 +190,8 @@
+ 		}
+ 		count++;
+ 	} /* L */
+-	if (muteRight == GET_DGC_DARMU_BIT_VALUE(val)) {
+-		if (muteRight == 0) {
++	if (unmuteRight != IS_UNMUTED(7, val)) {
++		if (unmuteRight == 0) {
+ 			/* mute --> turn bit on */
+ 			val	= val | DGC_DARMU;
+ 		}
+@@ -194,14 +202,47 @@
+ 		count++;
+ 	} /* R */
+ 	if (count) {
+-		omap_tsc2101_write(TSC2101_AUDIO_CODEC_REGISTERS_PAGE2, TSC2101_DAC_GAIN_CTRL, val);
++		omap_tsc2101_audio_write(TSC2101_DAC_GAIN_CTRL, val);
+ 		M_DPRINTK("changed value, is_unmuted left = %d, right = %d\n", 
+-			IS_DGC_DALMU_UNMUTED(val),
+-			IS_DGC_DARMU_UNMUTED(val));
++			IS_UNMUTED(15, val),
++			IS_UNMUTED(7, val));
+ 	}
+ 	return count;	
+ }
+ 
++/**
++ * unmute: 0 --> mute, 1 --> unmute
++ * page2RegIndx: Registry index in tsc2101 page2.
++ * muteBitIndx: Index number for the bit in registry that indicates whether muted or unmuted.
++ */
++int adc_pga_unmute_control(int unmute, int page2regIndx, int muteBitIndx)
++{
++	int count;
++	u16 val;
++	
++	count	= 0;
++	val 	= omap_tsc2101_audio_read(page2regIndx);
++	/* in alsa mixer 1 --> on, 0 == off. In tsc2101 registry 1 --> off, 0 --> on
++	 * so if the values are same, it's time to change the registry value...
++	 */
++	if (unmute != IS_UNMUTED(muteBitIndx, val)) {
++		if (unmute == 0) {
++			/* mute --> turn bit on */
++			val	= val | TSC2101_BIT(muteBitIndx);
++		}
++		else {
++			/* unmute --> turn bit off */
++			val	= val & ~TSC2101_BIT(muteBitIndx);
++		}
++		M_DPRINTK("changed value, is_unmuted = %d\n", IS_UNMUTED(muteBitIndx, val));
++		count++;
++	}
++	if (count) {
++		omap_tsc2101_audio_write(page2regIndx, val);
++	}
++	return count;
++}
++
+ /*
+  * Converts the DGC registry value read from the TSC2101 registry to 
+  * Alsa mixer volume format (0 - 100).
+@@ -271,14 +312,11 @@
+ 	/* Convert 0 -> 100 volume to 0x0(min) -> 0x7D(max) volume range */
+ 	/* NOTE: 0 is minimum volume and not mute */
+ 	volume	= get_mixer_volume_as_headset_gain_control_volume(mixerVol);	
+-	val	= omap_tsc2101_read(TSC2101_AUDIO_CODEC_REGISTERS_PAGE2, 
+-				TSC2101_HEADSET_GAIN_CTRL);
++	val	= omap_tsc2101_audio_read(TSC2101_HEADSET_GAIN_CTRL);
+ 	/* preserve the old mute settings */
+ 	val	&= ~(HGC_ADPGA_HED(INPUT_VOLUME_MAX));
+ 	val	|= HGC_ADPGA_HED(volume);
+-	omap_tsc2101_write(TSC2101_AUDIO_CODEC_REGISTERS_PAGE2, 
+-			TSC2101_HEADSET_GAIN_CTRL,
+-			val);	
++	omap_tsc2101_audio_write(TSC2101_HEADSET_GAIN_CTRL, val);	
+ 	retVal	= 1;
+ 	
+ 	M_DPRINTK("to registry = %d\n", val);	
+@@ -305,71 +343,37 @@
+ 	 * NOTE: 0 is minimum volume and not mute 
+ 	 */
+ 	volume	= get_mixer_volume_as_headset_gain_control_volume(mixerVol);
+-	val	= omap_tsc2101_read(TSC2101_AUDIO_CODEC_REGISTERS_PAGE2, TSC2101_HANDSET_GAIN_CTRL);
++	val	= omap_tsc2101_audio_read(TSC2101_HANDSET_GAIN_CTRL);
+ 	/* preserve the old mute settigns */
+ 	val	&= ~(HNGC_ADPGA_HND(INPUT_VOLUME_MAX));
+ 	val	|= HNGC_ADPGA_HND(volume);
+-	omap_tsc2101_write(TSC2101_AUDIO_CODEC_REGISTERS_PAGE2, 
+-			TSC2101_HANDSET_GAIN_CTRL,
+-			val);
++	omap_tsc2101_audio_write(TSC2101_HANDSET_GAIN_CTRL, val);
+ 	retVal	= 1;
+ 	
+ 	M_DPRINTK("to registry = %d\n", val);	
+ 	return retVal;
+ }
+ 
+-void init_record_sources(void)
+-{
+-	/* Mute Analog Sidetone
+-	 * analog sidetone gain db?
+-	 * Cell Phone In not connected to ADC
+-	 * Input selected by MICSEL connected to ADC
+-	 */
+-	omap_tsc2101_write(TSC2101_AUDIO_CODEC_REGISTERS_PAGE2, 
+-			  TSC2101_MIXER_PGA_CTRL,
+-			  MPC_ASTMU | MPC_ASTG(0x40) | ~MPC_CPADC | MPC_MICADC);
+-	/* Set record source, Select MIC_INHED input for headset */
+-	set_record_source(REC_SRC_SINGLE_ENDED_MICIN_HED);	
+-}
+-
+ void set_loudspeaker_to_playback_target(void)
+ {
+-	u16	val;
+-
+-	/* power down sp1, sp2 and loudspeaker */
+-	omap_tsc2101_write(TSC2101_AUDIO_CODEC_REGISTERS_PAGE2,
+-			TSC2101_CODEC_POWER_CTRL,
++	/* power down SPK1, SPK2 and loudspeaker */
++	omap_tsc2101_audio_write(TSC2101_CODEC_POWER_CTRL,
+ 			CPC_SP1PWDN | CPC_SP2PWDN | CPC_LDAPWDF);	
+ 	/* ADC, DAC, Analog Sidetone, cellphone, buzzer softstepping enabled
+ 	 * 1dB AGC hysteresis
+ 	 * MICes bias 2V
+ 	 */
+-	omap_tsc2101_write(TSC2101_AUDIO_CODEC_REGISTERS_PAGE2, 
+-			TSC2101_AUDIO_CTRL_4, 
+-			AC4_MB_HED(0));
++	omap_tsc2101_audio_write(TSC2101_AUDIO_CTRL_4, AC4_MB_HED(0));
+ 
+ 	/* DAC left and right routed to SPK1/SPK2
+ 	 * SPK1/SPK2 unmuted
+-	 * keyclicks routed to SPK1/SPK2
+-	 */
+-	val	= AC5_DIFFIN |
++	 * Keyclicks routed to SPK1/SPK2 */
++	omap_tsc2101_audio_write(TSC2101_AUDIO_CTRL_5, 
++			AC5_DIFFIN |
+ 			AC5_DAC2SPK1(3) | AC5_AST2SPK1 | AC5_KCL2SPK1 |
+-			AC5_DAC2SPK2(3) | AC5_AST2SPK2 | AC5_KCL2SPK2 |
+-			AC5_HDSCPTC;
+-	val	= val & ~AC5_HDSCPTC;
+-	omap_tsc2101_write(TSC2101_AUDIO_CODEC_REGISTERS_PAGE2,
+-			TSC2101_AUDIO_CTRL_5,
+-			val);
+-	
+-	/* powerdown spk1/out32n and spk2 */
+-	val	= omap_tsc2101_read(TSC2101_AUDIO_CODEC_REGISTERS_PAGE2,
+-				TSC2101_POWERDOWN_STS);
+-	val	= val & ~(~PS_SPK1FL | ~PS_HNDFL | PS_LSPKFL);
+-	omap_tsc2101_write(TSC2101_AUDIO_CODEC_REGISTERS_PAGE2,
+-			TSC2101_POWERDOWN_STS,
+-			val);
+-
+-	/* routing selected to SPK1 goes to OUT8P/OUT84 alsa. (loudspeaker)
++			AC5_DAC2SPK2(3) | AC5_AST2SPK2 | AC5_KCL2SPK2);
++	
++	/* routing selected to SPK1 goes also to OUT8P/OUT8N. (loudspeaker)
+ 	 * analog sidetone routed to loudspeaker
+ 	 * buzzer pga routed to loudspeaker
+ 	 * keyclick routing to loudspeaker
+@@ -381,43 +385,242 @@
+ 	 * Enable loudspeaker short protection control (0 = enable protection)
+ 	 * VGND short protection control (0 = enable protection)
+ 	 */
+-	omap_tsc2101_write(TSC2101_AUDIO_CODEC_REGISTERS_PAGE2,
+-			TSC2101_AUDIO_CTRL_6,
++	omap_tsc2101_audio_write(TSC2101_AUDIO_CTRL_6,
+ 			AC6_SPL2LSK | AC6_AST2LSK | AC6_BUZ2LSK | AC6_KCL2LSK |
+-			AC6_CPI2LSK | AC6_MIC2CPO | AC6_SPL2CPO |
+-			~AC6_MUTLSPK | ~AC6_MUTSPK2 | ~AC6_LDSCPTC | ~AC6_VGNDSCPTC);
++			AC6_CPI2LSK | AC6_MIC2CPO | AC6_SPL2CPO);
+ 	current_playback_target	= PLAYBACK_TARGET_LOUDSPEAKER;
+ }
+ 
+ void set_headphone_to_playback_target(void)
+ {
+-	/* power down sp1, sp2 and loudspeaker */
+-	omap_tsc2101_write(TSC2101_AUDIO_CODEC_REGISTERS_PAGE2,
+-			TSC2101_CODEC_POWER_CTRL,
++	/* power down SPK1, SPK2 and loudspeaker */
++	omap_tsc2101_audio_write(TSC2101_CODEC_POWER_CTRL,
+ 			CPC_SP1PWDN | CPC_SP2PWDN | CPC_LDAPWDF);
+ 	/* ADC, DAC, Analog Sidetone, cellphone, buzzer softstepping enabled */
+ 	/* 1dB AGC hysteresis */
+ 	/* MICes bias 2V */
+-	omap_tsc2101_write(TSC2101_AUDIO_CODEC_REGISTERS_PAGE2,
+-				TSC2101_AUDIO_CTRL_4, 
+-				AC4_MB_HED(0));
+-
+-	/* DAC left and right routed to SPK2 */
+-	/* SPK1/2 unmuted */
+-	omap_tsc2101_write(TSC2101_AUDIO_CODEC_REGISTERS_PAGE2,
+-			TSC2101_AUDIO_CTRL_5,
++	omap_tsc2101_audio_write(TSC2101_AUDIO_CTRL_4, AC4_MB_HED(0));
++				
++	/* DAC left and right routed to SPK1/SPK2
++	 * SPK1/SPK2 unmuted
++	 * Keyclicks routed to SPK1/SPK2 */
++	omap_tsc2101_audio_write(TSC2101_AUDIO_CTRL_5,
+ 			AC5_DAC2SPK1(3) | AC5_AST2SPK1 | AC5_KCL2SPK1 |
+ 			AC5_DAC2SPK2(3) | AC5_AST2SPK2 | AC5_KCL2SPK2 |
+ 			AC5_HDSCPTC);
+-
+-	/* OUT8P/N muted, CPOUT muted */
+-	omap_tsc2101_write(TSC2101_AUDIO_CODEC_REGISTERS_PAGE2,
+-			TSC2101_AUDIO_CTRL_6,
++			
++	/* OUT8P/OUT8N muted, CPOUT muted */
++	omap_tsc2101_audio_write(TSC2101_AUDIO_CTRL_6,
+ 			AC6_MUTLSPK | AC6_MUTSPK2 | AC6_LDSCPTC |
+ 			AC6_VGNDSCPTC);
+ 	current_playback_target	= PLAYBACK_TARGET_HEADPHONE;
+ }
+ 
++void set_telephone_to_playback_target(void)
++{
++	/* 
++	 * 0110 1101 0101 1100
++	 * power down MICBIAS_HED, Analog sidetone, SPK2, DAC, 
++	 * Driver virtual ground, loudspeaker. Values D2-d5 are flags.
++	 */	 
++	omap_tsc2101_audio_write(TSC2101_CODEC_POWER_CTRL,
++			CPC_MBIAS_HED | CPC_ASTPWD | CPC_SP2PWDN | CPC_DAPWDN |
++			CPC_VGPWDN | CPC_LSPWDN);
++			
++	/* 
++	 * 0010 1010 0100 0000
++	 * ADC, DAC, Analog Sidetone, cellphone, buzzer softstepping enabled
++	 * 1dB AGC hysteresis
++	 * MICes bias 2V
++	 */
++	omap_tsc2101_audio_write(TSC2101_AUDIO_CTRL_4,
++			AC4_MB_HND | AC4_MB_HED(0) | AC4_AGCHYS(1) | 
++			AC4_BISTPD | AC4_ASSTPD | AC4_DASTPD);
++	printk("set_telephone_to_playback_target(), TSC2101_AUDIO_CTRL_4 = %d\n", omap_tsc2101_audio_read(TSC2101_AUDIO_CTRL_4));
++			
++	/* 
++	 * 1110 0010 0000 0010
++	 * DAC left and right routed to SPK1/SPK2
++	 * SPK1/SPK2 unmuted
++	 * keyclicks routed to SPK1/SPK2
++	 */	 
++	omap_tsc2101_audio_write(TSC2101_AUDIO_CTRL_5,
++			AC5_DIFFIN | AC5_DAC2SPK1(3) | 
++		  	AC5_CPI2SPK1 | AC5_MUTSPK2);
++	
++	omap_tsc2101_audio_write(TSC2101_AUDIO_CTRL_6,
++			AC6_MIC2CPO | AC6_MUTLSPK | 
++			AC6_LDSCPTC | AC6_VGNDSCPTC | AC6_CAPINTF);
++	current_playback_target	= PLAYBACK_TARGET_CELLPHONE;
++}
++
++/*
++ * 1100 0101 1101 0000
++ * 
++ * #define MPC_ASTMU           TSC2101_BIT(15)
++ * #define MPC_ASTG(ARG)       (((ARG) & 0x7F) << 8)
++ * #define MPC_MICSEL(ARG)     (((ARG) & 0x07) << 5)
++ * #define MPC_MICADC          TSC2101_BIT(4)
++ * #define MPC_CPADC           TSC2101_BIT(3)
++ * #define MPC_ASTGF           (0x01)
++ */
++static void set_telephone_to_record_source(void)
++{
++	u16	val;
++	
++	/* 
++	 * D0       = 0: 
++	 * 		--> AGC is off for handset input.
++	 *		--> ADC PGA is controlled by the ADMUT_HDN + ADPGA_HND
++	 *          (D15, D14-D8)
++	 * D4 - D1  = 0000 
++	 * 		--> AGC time constant for handset input, 
++	 * 		attack time = 8 mc, decay time = 100 ms
++	 * D7 - D5  = 000
++	 * 		--> AGC Target gain for handset input = -5.5 db
++	 * D14 - D8 = 011 1100
++	 * 		--> ADC handset PGA settings = 60 = 30 db
++	 * D15 		= 0
++	 * 		--> Handset input ON (unmuted)
++	 */
++	val	= 0x3c00;	// 0011 1100 0000 0000 = 60 = 30
++	omap_tsc2101_audio_write(TSC2101_HANDSET_GAIN_CTRL, val);
++	
++	/*
++	 * D0		= 0
++	 * 		--> AGC is off for headset/Aux input
++	 * 		--> ADC headset/Aux PGA is contoller by ADMUT_HED + ADPGA_HED
++	 *          (D15, D14-D8)
++	 * D4 - D1	= 0000 
++	 * 		--> Agc constant for headset/Aux input,
++	 *      	attack time = 8 mc, decay time = 100 ms      
++	 * D7 - D5	= 000
++	 * 		--> AGC target gain for headset input = -5.5 db
++	 * D14 - D8 = 000 0000
++	 * 		--> Adc headset/AUX pga settings = 0 db
++	 * D15		= 1
++	 * 		--> Headset/AUX input muted
++	 * 
++	 * Mute headset aux input
++	 */
++	val	= 0x8000;	// 1000 0000 0000 0000
++	omap_tsc2101_audio_write(TSC2101_HEADSET_GAIN_CTRL, val);
++	set_record_source(REC_SRC_MICIN_HND_AND_AUX1);
++
++	// hacks start
++	/* D0		= flag, Headset/Aux or handset PGA flag
++	 * 		--> & with 1 (= 1 -->gain applied == pga register settings)
++	 * D1		= 0, DAC channel PGA soft stepping control
++	 * 		--> 0.5 db change every WCLK
++	 * D2		= flag, DAC right channel PGA flag
++	 * 		--> & with 1
++	 * D3		= flag, DAC left channel PGA flag
++	 * 		-- > & with 1
++	 * D7 - D4	= 0001, keyclick length
++	 * 		--> 4 periods key clicks
++	 * D10 - D8 = 100, keyclick frequenzy
++	 * 		--> 1 kHz, 
++	 * D11		= 0, Headset/Aux or handset soft stepping control
++	 * 		--> 0,5 db change every WCLK or ADWS
++	 * D14 -D12 = 100, Keyclick applitude control
++	 * 		--> Medium amplitude
++	 * D15		= 0, keyclick disabled
++	 */
++	val	= omap_tsc2101_audio_read(TSC2101_AUDIO_CTRL_2);
++	val	= val & 0x441d;
++	val	= val | 0x4410;	// D14, D10, D4 bits == 1
++	omap_tsc2101_audio_write(TSC2101_AUDIO_CTRL_2, val);
++
++	/*
++	 * D0		= 0	(reserved, write always 0)
++	 * D1		= flag,
++	 * 			--> & with 1
++	 * D2 - D5	= 0000 (reserved, write always 0000)
++	 * D6		= 1
++	 * 			--> MICBIAS_HND = 2.0 v
++	 * D8 - D7	= 00
++	 * 			--> MICBIAS_HED = 3.3 v
++	 * D10 - D9	= 01, 
++	 * 			--> Mic AGC hysteric selection = 2 db
++	 * D11		= 1, 
++	 * 			--> Disable buzzer PGA soft stepping
++	 * D12		= 0,
++	 * 			--> Enable CELL phone PGA soft stepping control
++	 * D13		= 1
++	 * 			--> Disable analog sidetone soft stepping control
++	 * D14		= 0
++	 * 			--> Enable DAC PGA soft stepping control
++	 * D15		= 0,
++	 * 			--> Enable headset/Aux or Handset soft stepping control
++	 */
++	val	= omap_tsc2101_audio_read(TSC2101_AUDIO_CTRL_4);
++	val	= val & 0x2a42;	// 0010 1010 0100 0010
++	val	= val | 0x2a40;	// bits D13, D11, D9, D6 == 1
++	omap_tsc2101_audio_write(TSC2101_AUDIO_CTRL_4, val);
++	printk("set_telephone_to_record_source(), TSC2101_AUDIO_CTRL_4 = %d\n", omap_tsc2101_audio_read(TSC2101_AUDIO_CTRL_4));
++	/*
++	 * D0		= 0
++	 * 		--> reserved, write always = 0
++	 * D1		= flag, read only
++	 * 		--> & with 1
++	 * D5 - D2	= 1111, Buzzer input PGA settings
++	 * 		--> 0 db
++	 * D6		= 1,
++	 * 		--> power down buzzer input pga
++	 * D7		= flag, read only
++	 * 		--> & with 1
++	 * D14 - D8	= 101 1101
++	 * 		--> 12 DB
++	 * D15		= 0
++	 * 		--> power up cell phone input PGA
++	 */
++	val	= omap_tsc2101_audio_read(TSC2101_BUZZER_GAIN_CTRL);
++	val	= val & 0x5dfe;
++	val	= val | 0x5dfe;	// bits, D14, D12, D11, D10, D8, D6, D5,D4,D3,D2
++	omap_tsc2101_audio_write(TSC2101_BUZZER_GAIN_CTRL, val);
++	
++	/* D6 - D0	= 000 1001
++	 * 		--> -4.5 db for DAC right channel volume control
++	 * D7		= 1
++	 * 		-->  DAC right channel muted
++	 * D14 - D8 = 000 1001
++	 * 		--> -4.5 db for DAC left channel volume control
++	 * D15 		= 1
++	 * 		--> DAC left channel muted
++	 */
++	//val	= omap_tsc2101_audio_read(TSC2101_DAC_GAIN_CTRL);
++	val	= 0x8989;
++	omap_tsc2101_audio_write(TSC2101_DAC_GAIN_CTRL, val);	
++	
++	/*  0000 0000 0100 0000
++	 * 
++	 * D1 - D0	= 0
++	 * 		--> GPIO 1 pin output is three stated
++	 * D2		= 0
++	 * 		--> Disaple GPIO2 for CLKOUT mode
++	 * D3		= 0
++	 * 		--> Disable GPUI1 for interrupt detection
++	 * D4		= 0
++	 * 		--> Disable GPIO2 for headset detection interrupt
++	 * D5		= reserved, always 0
++	 * D7 - D6	= 01
++	 * 		--> 8 ms clitch detection
++	 * D8		= reserved, write only 0
++	 * D10 -D9	= 00
++	 * 		--> 16 ms de bouncing programmatitily 
++	 *          for glitch detection during headset detection
++	 * D11		= flag for button press
++	 * D12		= flag for headset detection
++	 * D14-D13	= 00
++	 * 		--> type of headset detected = 00 == no stereo headset deected
++	 * D15		= 0
++	 * 		--> Disable headset detection
++	 * 
++	 * */
++	val	= 0x40;
++	omap_tsc2101_audio_write(TSC2101_AUDIO_CTRL_7, val);	
++}
++
+ /*
+  * Checks whether the headset is detected.
+  * If headset is detected, the type is returned. Type can be
+@@ -433,8 +636,7 @@
+ 	u16	curVal;
+ 	
+ 	curType	= 0;	/* not detected */
+-	curVal	= omap_tsc2101_read(TSC2101_AUDIO_CODEC_REGISTERS_PAGE2, 
+-					TSC2101_AUDIO_CTRL_7);
++	curVal	= omap_tsc2101_audio_read(TSC2101_AUDIO_CTRL_7);
+ 	curDetected	= curVal & AC7_HDDETFL;
+ 	if (curDetected) {
+ 		printk("headset detected, checking type from %d \n", curVal);
+@@ -461,13 +663,10 @@
+ 	 * AGC enable for handset input
+ 	 * Handset input not muted
+ 	 */
+-	val	= omap_tsc2101_read(TSC2101_AUDIO_CODEC_REGISTERS_PAGE2, 
+-				TSC2101_HANDSET_GAIN_CTRL);
++	val	= omap_tsc2101_audio_read(TSC2101_HANDSET_GAIN_CTRL);
+ 	val	= val | HNGC_AGCEN_HND;	
+ 	val	= val & ~HNGC_ADMUT_HND;
+-	omap_tsc2101_write(TSC2101_AUDIO_CODEC_REGISTERS_PAGE2, 
+-			TSC2101_HANDSET_GAIN_CTRL,
+-			val);	
++	omap_tsc2101_audio_write(TSC2101_HANDSET_GAIN_CTRL, val);	
+ 			
+ 	/* mic input volume control
+ 	 * SET_MIC in the OSS driver 
+@@ -479,7 +678,7 @@
+ 	 */
+ 	set_mixer_volume_as_dac_gain_control_volume(DEFAULT_OUTPUT_VOLUME, DEFAULT_OUTPUT_VOLUME);	
+ 	/* unmute */
+-	dac_gain_control_unmute_control(1, 1);
++	dac_gain_control_unmute(1, 1);
+ }
+ 
+ /*
+@@ -490,11 +689,11 @@
+ 	FN_IN;
+ 	
+ 	/* Headset/Hook switch detect enabled */
+-	omap_tsc2101_write(TSC2101_AUDIO_CODEC_REGISTERS_PAGE2,
+-			TSC2101_AUDIO_CTRL_7,
+-			AC7_DETECT);
++	omap_tsc2101_audio_write(TSC2101_AUDIO_CTRL_7, AC7_DETECT);
+ 
+-	init_record_sources();
++	/* Select headset to record source (MIC_INHED)*/
++	set_record_source(REC_SRC_SINGLE_ENDED_MICIN_HED);
++	/* Init loudspeaker as a default playback target*/
+ 	init_playback_targets();
+ 
+ 	FN_OUT(0);
+@@ -503,7 +702,7 @@
+ static int __pcm_playback_target_info(snd_kcontrol_t *kcontrol, snd_ctl_elem_info_t *uinfo) 
+ {
+ 	static char *texts[PLAYBACK_TARGET_COUNT] = {
+-        	"Loudspeaker", "Headphone"
++        	"Loudspeaker", "Headphone", "Cellphone"
+ 	};
+ 
+ 	uinfo->type = SNDRV_CTL_ELEM_TYPE_ENUMERATED;
+@@ -533,12 +732,18 @@
+ 	if ((curVal >= 0) &&
+ 	    (curVal < PLAYBACK_TARGET_COUNT) &&
+ 	    (curVal != current_playback_target)) {		
+-		if (curVal == 0) {
+-			set_loudspeaker_to_playback_target();		
++		if (curVal == PLAYBACK_TARGET_LOUDSPEAKER) {
++			set_record_source(REC_SRC_SINGLE_ENDED_MICIN_HED);
++			set_loudspeaker_to_playback_target();
+ 		}
+-		else {
++		else if (curVal == PLAYBACK_TARGET_HEADPHONE) {
++			set_record_source(REC_SRC_SINGLE_ENDED_MICIN_HND);
+ 			set_headphone_to_playback_target();
+ 		}
++		else if (curVal == PLAYBACK_TARGET_CELLPHONE) {
++			set_telephone_to_record_source();
++			set_telephone_to_playback_target();
++		}
+ 		retVal	= 1;
+ 	}
+ 	return retVal;
+@@ -563,7 +768,7 @@
+ 	u16 volR;	
+ 	u16 val;
+ 	
+-	val	= omap_tsc2101_read(TSC2101_AUDIO_CODEC_REGISTERS_PAGE2, TSC2101_DAC_GAIN_CTRL);
++	val	= omap_tsc2101_audio_read(TSC2101_DAC_GAIN_CTRL);
+ 	M_DPRINTK("registry value = %d!\n", val);
+ 	volL	= DGC_DALVL_EXTRACT(val);
+ 	volR	= DGC_DARVL_EXTRACT(val);
+@@ -603,16 +808,16 @@
+  */
+ static int __pcm_playback_switch_get(snd_kcontrol_t *kcontrol, snd_ctl_elem_value_t *ucontrol) 
+ {
+-	u16 val	= omap_tsc2101_read(TSC2101_AUDIO_CODEC_REGISTERS_PAGE2, TSC2101_DAC_GAIN_CTRL);
++	u16 val	= omap_tsc2101_audio_read(TSC2101_DAC_GAIN_CTRL);
+ 	
+-	ucontrol->value.integer.value[0]	= IS_DGC_DALMU_UNMUTED(val);
+-	ucontrol->value.integer.value[1]	= IS_DGC_DARMU_UNMUTED(val);
++	ucontrol->value.integer.value[0]	= IS_UNMUTED(15, val);	// left
++	ucontrol->value.integer.value[1]	= IS_UNMUTED(7, val);	// right
+ 	return 0;
+ }
+ 
+ static int __pcm_playback_switch_put(snd_kcontrol_t *kcontrol, snd_ctl_elem_value_t *ucontrol) 
+ {
+-	return dac_gain_control_unmute_control(ucontrol->value.integer.value[0], 
++	return dac_gain_control_unmute(ucontrol->value.integer.value[0], 
+ 					ucontrol->value.integer.value[1]);
+ }
+ 
+@@ -630,8 +835,7 @@
+ 	u16 val;
+ 	u16 vol;
+ 	
+-	val	= omap_tsc2101_read(TSC2101_AUDIO_CODEC_REGISTERS_PAGE2, 
+-				TSC2101_HEADSET_GAIN_CTRL);
++	val	= omap_tsc2101_audio_read(TSC2101_HEADSET_GAIN_CTRL);
+ 	M_DPRINTK("registry value = %d\n", val);
+ 	vol	= HGC_ADPGA_HED_EXTRACT(val);
+ 	vol	= vol & ~HGC_ADMUT_HED;
+@@ -662,38 +866,17 @@
+  */
+ static int __headset_playback_switch_get(snd_kcontrol_t *kcontrol, snd_ctl_elem_value_t *ucontrol) 
+ {
+-	u16 val = omap_tsc2101_read(TSC2101_AUDIO_CODEC_REGISTERS_PAGE2, 
+-				TSC2101_HEADSET_GAIN_CTRL);
+-	ucontrol->value.integer.value[0]	= IS_DGC_HGCMU_UNMUTED(val);
++	u16 val = omap_tsc2101_audio_read(TSC2101_HEADSET_GAIN_CTRL);
++	ucontrol->value.integer.value[0]	= IS_UNMUTED(15, val);
+ 	return 0;
+ }
+ 
+ static int __headset_playback_switch_put(snd_kcontrol_t *kcontrol, snd_ctl_elem_value_t *ucontrol) 
+ {
+-	int count = 0;
+-	u16 val = omap_tsc2101_read(TSC2101_AUDIO_CODEC_REGISTERS_PAGE2, 
+-				TSC2101_HEADSET_GAIN_CTRL);
+-	/* in alsa mixer 1 --> on, 0 == off. In tsc2101 registry 1 --> off, 0 --> on
+-	 * so if values are same, it's time to change the registry value...
+-	 */
+-	if (ucontrol->value.integer.value[0] == GET_DGC_HGCMU_BIT_VALUE(val)) {
+-		if (ucontrol->value.integer.value[0] == 0) {
+-			/* mute --> turn bit on */
+-			val	= val | HGC_ADMUT_HED;
+-		}
+-		else {
+-			/* unmute --> turn bit off */
+-			val	= val & ~HGC_ADMUT_HED;
+-		}
+-		count++;
+-		M_DPRINTK("changed value, is_unmuted = %d\n", IS_DGC_HGCMU_UNMUTED(val));
+-	}
+-	if (count) {
+-		omap_tsc2101_write(TSC2101_AUDIO_CODEC_REGISTERS_PAGE2, 
+-				TSC2101_HEADSET_GAIN_CTRL, 
+-				val);
+-	}
+-	return count;
++	// mute/unmute headset
++	return adc_pga_unmute_control(ucontrol->value.integer.value[0],
++				TSC2101_HEADSET_GAIN_CTRL,
++				15);
+ }
+ 
+ static int __handset_playback_volume_info(snd_kcontrol_t *kcontrol, snd_ctl_elem_info_t *uinfo) 
+@@ -710,7 +893,7 @@
+ 	u16 val;
+ 	u16 vol;
+ 	
+-	val	= omap_tsc2101_read(TSC2101_AUDIO_CODEC_REGISTERS_PAGE2, TSC2101_HANDSET_GAIN_CTRL);
++	val	= omap_tsc2101_audio_read(TSC2101_HANDSET_GAIN_CTRL);
+ 	M_DPRINTK("registry value = %d\n", val);
+ 	vol	= HNGC_ADPGA_HND_EXTRACT(val);
+ 	vol	= vol & ~HNGC_ADMUT_HND;
+@@ -740,42 +923,74 @@
+  */
+ static int __handset_playback_switch_get(snd_kcontrol_t *kcontrol, snd_ctl_elem_value_t *ucontrol) 
+ {
+-	u16 val = omap_tsc2101_read(TSC2101_AUDIO_CODEC_REGISTERS_PAGE2, TSC2101_HANDSET_GAIN_CTRL);
+-	ucontrol->value.integer.value[0]	= IS_DGC_HNGCMU_UNMUTED(val);
++	u16 val = omap_tsc2101_audio_read(TSC2101_HANDSET_GAIN_CTRL);
++	ucontrol->value.integer.value[0]	= IS_UNMUTED(15, val);
+ 	return 0;
+ }
+ 
+ static int __handset_playback_switch_put(snd_kcontrol_t *kcontrol, snd_ctl_elem_value_t *ucontrol) 
+ {
+-	int count = 0;
+-	u16 val = omap_tsc2101_read(TSC2101_AUDIO_CODEC_REGISTERS_PAGE2, TSC2101_HANDSET_GAIN_CTRL);
+-	
+-	/* in alsa mixer 1 --> on, 0 == off. In tsc2101 registry 1 --> off, 0 --> on
+-	 * so if values are same, it's time to change the registry value...
+-	 */
+-	if (ucontrol->value.integer.value[0] == GET_DGC_HNGCMU_BIT_VALUE(val)) {
+-		if (ucontrol->value.integer.value[0] == 0) {
+-			/* mute --> turn bit on */
+-			val	= val | HNGC_ADMUT_HND;
+-		}
+-		else {
+-			/* unmute --> turn bit off */
+-			val	= val & ~HNGC_ADMUT_HND;
+-		}
+-		M_DPRINTK("changed value, is_unmuted = %d\n", IS_DGC_HNGCMU_UNMUTED(val));
+-		count++;
+-	}
+-	if (count) {
+-		omap_tsc2101_write(TSC2101_AUDIO_CODEC_REGISTERS_PAGE2, 
+-				TSC2101_HANDSET_GAIN_CTRL, 
+-				val);
+-	}
+-	return count;
++	// handset mute/unmute
++	return adc_pga_unmute_control(ucontrol->value.integer.value[0],
++				TSC2101_HANDSET_GAIN_CTRL,
++				15);
++}
++
++static int __cellphone_input_switch_info(snd_kcontrol_t *kcontrol, snd_ctl_elem_info_t *uinfo) 
++{
++	uinfo->type 			= SNDRV_CTL_ELEM_TYPE_BOOLEAN;
++	uinfo->count			= 1;
++	uinfo->value.integer.min	= 0;
++	uinfo->value.integer.max	= 1;
++	return 0;
++}
++
++/* When BGC_MUT_CP (bit 15) = 1, power down cellphone input pga.
++ * When BGC_MUT_CP = 0, power up cellphone input pga.
++ */
++static int __cellphone_input_switch_get(snd_kcontrol_t *kcontrol, snd_ctl_elem_value_t *ucontrol) 
++{
++	u16 val = omap_tsc2101_audio_read(TSC2101_BUZZER_GAIN_CTRL);
++	ucontrol->value.integer.value[0]	= IS_UNMUTED(15, val);
++	return 0;
++}
++
++static int __cellphone_input_switch_put(snd_kcontrol_t *kcontrol, snd_ctl_elem_value_t *ucontrol) 
++{
++	return adc_pga_unmute_control(ucontrol->value.integer.value[0],
++				TSC2101_BUZZER_GAIN_CTRL,
++				15);	
++}
++
++static int __buzzer_input_switch_info(snd_kcontrol_t *kcontrol, snd_ctl_elem_info_t *uinfo) 
++{
++	uinfo->type 			= SNDRV_CTL_ELEM_TYPE_BOOLEAN;
++	uinfo->count			= 1;
++	uinfo->value.integer.min	= 0;
++	uinfo->value.integer.max	= 1;
++	return 0;
++}
++
++/* When BGC_MUT_BU (bit 6) = 1, power down cellphone input pga.
++ * When BGC_MUT_BU = 0, power up cellphone input pga.
++ */
++static int __buzzer_input_switch_get(snd_kcontrol_t *kcontrol, snd_ctl_elem_value_t *ucontrol) 
++{
++	u16 val = omap_tsc2101_audio_read(TSC2101_BUZZER_GAIN_CTRL);
++	ucontrol->value.integer.value[0]	= IS_UNMUTED(6, val);
++	return 0;
++}
++
++static int __buzzer_input_switch_put(snd_kcontrol_t *kcontrol, snd_ctl_elem_value_t *ucontrol) 
++{
++	return adc_pga_unmute_control(ucontrol->value.integer.value[0],
++				TSC2101_BUZZER_GAIN_CTRL,
++				6);	
+ }
+ 
+ static snd_kcontrol_new_t tsc2101_control[] __devinitdata = {
+ 	{
+-		.name  = "Playback Playback Route",
++		.name  = "Target Playback Route",
+ 		.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
+ 		.index = 0,
+ 		.access= SNDRV_CTL_ELEM_ACCESS_READWRITE,
+@@ -801,7 +1016,7 @@
+ 	}, {
+ 		.name  = "Headset Playback Volume",
+ 		.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
+-		.index = 1,
++		.index = 0,
+ 		.access= SNDRV_CTL_ELEM_ACCESS_READWRITE,
+ 		.info  = __headset_playback_volume_info,
+ 		.get   = __headset_playback_volume_get,
+@@ -809,7 +1024,7 @@
+ 	}, {
+ 		.name  = "Headset Playback Switch",
+ 		.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
+-		.index = 1,
++		.index = 0,
+ 		.access= SNDRV_CTL_ELEM_ACCESS_READWRITE,
+ 		.info  = __headset_playback_switch_info,
+ 		.get   = __headset_playback_switch_get,
+@@ -817,7 +1032,7 @@
+ 	}, {
+ 		.name  = "Handset Playback Volume",
+ 		.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
+-		.index = 2,
++		.index = 0,
+ 		.access= SNDRV_CTL_ELEM_ACCESS_READWRITE,
+ 		.info  = __handset_playback_volume_info,
+ 		.get   = __handset_playback_volume_get,
+@@ -825,12 +1040,28 @@
+ 	}, {
+ 		.name  = "Handset Playback Switch",
+ 		.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
+-		.index = 2,
++		.index = 0,
+ 		.access= SNDRV_CTL_ELEM_ACCESS_READWRITE,
+ 		.info  = __handset_playback_switch_info,
+ 		.get   = __handset_playback_switch_get,
+ 		.put   = __handset_playback_switch_put,
+-	}	
++	}, {
++		.name  = "Cellphone Input Switch",
++		.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
++		.index = 0,
++		.access= SNDRV_CTL_ELEM_ACCESS_READWRITE,
++		.info  = __cellphone_input_switch_info,
++		.get   = __cellphone_input_switch_get,
++		.put   = __cellphone_input_switch_put,
++	}, {
++		.name  = "Buzzer Input Switch",
++		.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
++		.index = 0,
++		.access= SNDRV_CTL_ELEM_ACCESS_READWRITE,
++		.info  = __buzzer_input_switch_info,
++		.get   = __buzzer_input_switch_get,
++		.put   = __buzzer_input_switch_put,
++	}
+ };
+ 
+ #ifdef CONFIG_PM
+diff -Naur linux-2.6.16.16/sound/arm/omap/omap-alsa-tsc2101-mixer.h h6300_dev/sound/arm/omap/omap-alsa-tsc2101-mixer.h
+--- linux-2.6.16.16/sound/arm/omap/omap-alsa-tsc2101-mixer.h	2006-05-17 21:41:31.000000000 +0300
++++ h6300_dev/sound/arm/omap/omap-alsa-tsc2101-mixer.h	2006-03-30 23:15:31.000000000 +0300
+@@ -56,20 +56,21 @@
+ #define INPUT_VOLUME_MAX		0x7D
+ #define INPUT_VOLUME_RANGE		(INPUT_VOLUME_MAX - INPUT_VOLUME_MIN)
+ 
+-#define PLAYBACK_TARGET_COUNT		0x02
++#define PLAYBACK_TARGET_COUNT		0x03
+ #define PLAYBACK_TARGET_LOUDSPEAKER	0x00
+ #define PLAYBACK_TARGET_HEADPHONE	0x01
++#define PLAYBACK_TARGET_CELLPHONE	0x02
+ 
+ /* following are used for register 03h Mixer PGA control bits D7-D5 for selecting record source */
+ #define REC_SRC_TARGET_COUNT		0x08
+-#define REC_SRC_SINGLE_ENDED_MICIN_HED	MPC_MICSEL(0)	// oss code referred to MIXER_LINE
+-#define REC_SRC_SINGLE_ENDED_MICIN_HND	MPC_MICSEL(1)	// oss code referred to MIXER_MIC
+-#define REC_SRC_SINGLE_ENDED_AUX1	MPC_MICSEL(2)
+-#define REC_SRC_SINGLE_ENDED_AUX2	MPC_MICSEL(3)
+-#define REC_SRC_MICIN_HED_AND_AUX1	MPC_MICSEL(4)
+-#define REC_SRC_MICIN_HED_AND_AUX2	MPC_MICSEL(5)
+-#define REC_SRC_MICIN_HND_AND_AUX1	MPC_MICSEL(6)
+-#define REC_SRC_MICIN_HND_AND_AUX2	MPC_MICSEL(7)
++#define REC_SRC_SINGLE_ENDED_MICIN_HED	0x00	// oss code referred to MIXER_LINE
++#define REC_SRC_SINGLE_ENDED_MICIN_HND	0x01	// oss code referred to MIXER_MIC
++#define REC_SRC_SINGLE_ENDED_AUX1	0x02
++#define REC_SRC_SINGLE_ENDED_AUX2	0x03
++#define REC_SRC_MICIN_HED_AND_AUX1	0x04
++#define REC_SRC_MICIN_HED_AND_AUX2	0x05
++#define REC_SRC_MICIN_HND_AND_AUX1	0x06
++#define REC_SRC_MICIN_HND_AND_AUX2	0x07
+ 
+ #define DEFAULT_OUTPUT_VOLUME		90	// default output volume to dac dgc
+ #define DEFAULT_INPUT_VOLUME		20	// default record volume
+diff -Naur linux-2.6.16.16/sound/oss/Kconfig h6300_dev/sound/oss/Kconfig
+--- linux-2.6.16.16/sound/oss/Kconfig	2006-05-17 21:41:31.000000000 +0300
++++ h6300_dev/sound/oss/Kconfig	2006-02-06 15:36:21.000000000 +0200
+@@ -13,8 +13,8 @@
+ 
+ config SOUND_OMAP_TSC2101
+ 	tristate "TSC2101 Stereo Codec"
+-	depends on SOUND_OMAP && ( MACH_OMAP_H2 || MACH_OMAP_H3 || MACH_OMAP_H4 || MACH_OMAP_APOLLON)
+-	select OMAP_TSC2101 if ( MACH_OMAP_H2 || MACH_OMAP_H3 )
++	depends on SOUND_OMAP && ( MACH_OMAP_H2 || MACH_OMAP_H3 || MACH_OMAP_H4 || MACH_OMAP_APOLLON || MACH_OMAP_H6300)
++	select OMAP_TSC2101 if ( MACH_OMAP_H2 || MACH_OMAP_H3 || MACH_OMAP_H6300 )
+ 	select OMAP_UWIRE if ARCH_OMAP1
+ 	---help---
+ 	  Tsc2101 Audio Codec Driver for OMAP will be enabled.
+diff -Naur linux-2.6.16.16/sound/oss/omap-audio-tsc2101.c h6300_dev/sound/oss/omap-audio-tsc2101.c
+--- linux-2.6.16.16/sound/oss/omap-audio-tsc2101.c	2006-05-17 21:41:31.000000000 +0300
++++ h6300_dev/sound/oss/omap-audio-tsc2101.c	2006-04-02 00:23:01.000000000 +0300
+@@ -48,7 +48,7 @@
+ #include "omap-audio.h"
+ #include "omap-audio-dma-intfc.h"
+ #include <asm/arch/mcbsp.h>
+-#ifdef CONFIG_ARCH_OMAP16XX
++#if defined(CONFIG_ARCH_OMAP16XX) || defined(CONFIG_MACH_OMAP_H6300)
+ #include <../drivers/ssi/omap-uwire.h>
+ #include <asm/arch/dsp_common.h>
+ #elif defined(CONFIG_ARCH_OMAP24XX)
+@@ -73,10 +73,16 @@
+ 
+ #ifdef CONFIG_ARCH_OMAP16XX
+ #define PLATFORM_NAME "OMAP16XX"
++#elif CONFIG_MACH_OMAP_H6300
++#define PLATFORM_NAME "OMAP15XX"
+ #elif defined(CONFIG_ARCH_OMAP24XX)
+ #define PLATFORM_NAME "OMAP2"
+ #endif
+ 
++#if CONFIG_ARCH_OMAP16XX
++#define OMAP_DSP_BASE        0xE0000000
++#endif
++
+ /* Define to set the tsc as the master w.r.t McBSP */
+ #define TSC_MASTER
+ 
+@@ -123,7 +129,7 @@
+ /*********** Debug Macros ********/
+ /* To Generate a rather shrill tone -test the entire path */
+ //#define TONE_GEN
+-/* To Generate a tone for each keyclick - test the tsc,spi paths*/
++///* To Generate a tone for each keyclick - test the tsc,spi paths*/
+ //#define TEST_KEYCLICK
+ /* To dump the tsc registers for debug */
+ //#define TSC_DUMP_REGISTERS
+@@ -230,6 +236,17 @@
+ };
+ 
+ static struct omap_mcbsp_reg_cfg initial_config = {
++#ifdef CONFIG_MACH_OMAP_H6300
++	.spcr2 = 0x0005,
++	.spcr1 = 0x0005,
++	.rcr2  = 0x8041,
++	.rcr1  = 0x8041,
++	.xcr2  = 0x00a1,
++	.xcr1  = 0x00a1,
++	.srgr2 = 0xb000,
++	.srgr1 = 0xb000,
++	.pcr0  = 0x0081,
++#else
+ 	.spcr2 = FREE | FRST | GRST | XRST | XINTM(3),
+ 	.spcr1 = RINTM(3) | RRST,
+ 	.rcr2  = RPHASE | RFRLEN2(OMAP_MCBSP_WORD_8) |
+@@ -253,6 +270,7 @@
+ #endif				/* tsc Master defs */
+ 
+ #endif				/* platform specific inits */
++#endif /* CONFIG_MACH_OMAP_H6300 */
+ };
+ 
+ /***************************** MODULES SPECIFIC FUNCTION PROTOTYPES ********************/
