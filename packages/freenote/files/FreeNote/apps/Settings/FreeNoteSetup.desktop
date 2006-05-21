@@ -1,0 +1,9 @@
+[Desktop Entry]
+Comment=
+Exec=FreeNoteSetup
+Icon=fnsetup
+Type=Application
+Name=FNSetup
+Name[ja]=FN設定
+Display=640x480/144dpi,480x640/144dpi
+CanFastload=0
