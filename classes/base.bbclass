@@ -483,7 +483,7 @@ python base_do_patch() {
 		if "maxdate" in parm:
 			maxdate = parm["maxdate"]
 		else:
-			maxdate = bb.data.getVar('DATE', d, 1)
+			maxdate = "20711226"
 
 		pn = bb.data.getVar('PN', d, 1)
 		srcdate = bb.data.getVar('SRCDATE_%s' % pn, d, 1)
