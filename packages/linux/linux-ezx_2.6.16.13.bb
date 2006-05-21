@@ -6,7 +6,7 @@ MAINTAINER = "Michael 'Mickey' Lauer <mickey@vanille.de>"
 LICENSE = "GPL"
 DEPENDS += "quilt-native"
 EZX = "ezx6"
-PR = "${EZX}-r0"
+PR = "${EZX}-r1"
 
 inherit kernel
 
@@ -14,7 +14,7 @@ inherit kernel
 # source
 
 SRC_URI = "http://www.kernel.org/pub/linux/kernel/v2.6/linux-2.6.16.tar.bz2 \
-           http://people.openezx.org/laforge/kernel/patches-2.6.16-2.6.16.13-exz6.tar.bz2 \
+           http://people.openezx.org/stefan/patches/patches-2.6.16-2.6.16.13-exz6-symlink-fix.tar.bz2 \
            file://defconfig-a780 \
            file://defconfig-e680"
 S = "${WORKDIR}/linux-2.6.16"
