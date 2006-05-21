@@ -3,7 +3,7 @@ SECTION = "opie/base"
 ALLOW_EMPTY = 1
 PACKAGE_ARCH = "all"
 LICENSE = "MIT"
-PR = "r5"
+PR = "r6"
 
 PACKAGES = "task-qpe-applets task-qpe-games task-qpe-inputmethods \
 	task-qpe-multimedia task-qpe-emulators task-qpe-applications \
@@ -17,6 +17,7 @@ RDEPENDS_task-qpe-applications = "\
     camera-assistant \
     cumulus \
     dviviewer \
+    freenote \
     inkwp \
     iqnotes \
     justreader \
