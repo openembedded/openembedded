@@ -31,7 +31,10 @@ def check_app_exists(app, d):
 def check_sanity(e):
 	from bb import note, error, data, __version__
 	from bb.event import Handled, NotHandled, getName
-	from distutils.version import LooseVersion
+	try:
+		from distutils.version import LooseVersion
+	except ImportError:
+		def LooseVersion(v): print "WARNING: sanity.bbclass can't compare versions without python-distutils"; return 1
 	import os
 
 	# Check the bitbake version meets minimum requirements
