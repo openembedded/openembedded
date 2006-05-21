@@ -1,9 +1,9 @@
-PR = "r1"
 DESCRIPTION = "The GNU cc and gcc C compilers."
 HOMEPAGE = "http://www.gnu.org/software/gcc/"
 SECTION = "devel"
 LICENSE = "GPL"
 MAINTAINER = "Gerald Britton <gbritton@doomcom.org>"
+PR = "r2"
 
 inherit autotools gettext
 
@@ -27,3 +27,9 @@ SRC_URI_append_fail-fast = " file://zecke-no-host-includes.patch;patch=1 "
 
 
 include gcc4-build.inc
+
+EXTRA_OECONF += "--disable-libssp"
+
+FORTRAN = ""
+HAS_GFORTRAN = ""
+HAS_G2C = "no"
