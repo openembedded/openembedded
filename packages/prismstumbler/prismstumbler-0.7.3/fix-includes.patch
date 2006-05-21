@@ -1,0 +1,26 @@
+
+#
+# Patch managed by http://www.holgerschurig.de/patcher.html
+#
+
+--- prismstumbler-0.7.3/src/gpsd/Makefile.in~fix-includes
++++ prismstumbler-0.7.3/src/gpsd/Makefile.in
+@@ -92,18 +92,6 @@
+ COMPILE_AND_LINK.c = \
+     $(CC) $(CPPFLAGS) $(DEFS) $(CFLAGS) $(LDFLAGS)
+ 
+-## Where to look for X include files.  (-I/usr/X11R5/include)
+-X_INCLUDE = @X_CFLAGS@
+-
+-## Where to look for include files.
+-INCLUDE = -I. $(X_INCLUDE)
+-
+-## Implicit rules.
+-.SUFFIXES: .c
+-.c.o:
+-	$(COMPILE.c) $(INCLUDE) -o $@ $<
+-
+-
+ ## Libraries and object files
+ LIB_OBJECTS = netlib.o nmea_parse.o serial.o tm.o em.o $(MOTIF_OBJECTS)
+ 
