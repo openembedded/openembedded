@@ -17,11 +17,12 @@ RRECOMMENDS = "gst-plugin-mad \
 	gst-plugin-ivorbis \
 	gst-plugin-tcp"
 
-SRC_URI += " file://playlist-segfault.patch;patch=1;pnum=0"
+SRC_URI += " file://playlist-segfault.patch;patch=1;pnum=0 \
+             file://fix-includepath.patch;patch=1"
 
 SECTION = "gpe"
 PRIORITY = "optional"
-PR = "r1"
+PR = "r2"
 
 PARALLEL_MAKE=""
 

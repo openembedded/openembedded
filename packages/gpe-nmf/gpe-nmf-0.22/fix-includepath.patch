@@ -1,0 +1,15 @@
+
+#
+# Patch managed by http://www.holgerschurig.de/patcher.html
+#
+
+--- gpe-nmf-0.22/Makefile~fix-includepath
++++ gpe-nmf-0.22/Makefile
+@@ -27,7 +27,6 @@
+ PACKAGE_LDFLAGS += -L../libgpewidget
+ BUILD = ../build
+ else
+-PACKAGE_CFLAGS += -I/usr/include/gpe
+ BUILD = build
+ endif
+ PACKAGE_LDFLAGS += $(GPELIBS) $(GTKLDFLAGS)
