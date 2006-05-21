@@ -1,0 +1,42 @@
+diff -Nur xserver-common-1.8.orig/X11/Xinit.d/12keymap xserver-common-1.8/X11/Xinit.d/12keymap
+--- xserver-common-1.8.orig/X11/Xinit.d/12keymap	2006-05-17 12:02:52.645201000 +0200
++++ xserver-common-1.8/X11/Xinit.d/12keymap	2006-05-17 12:03:49.401573648 +0200
+@@ -9,6 +9,9 @@
+ 	"SHARP Akita" | "SHARP Borzoi" | "SHARP Spitz")
+ 		xmodmap - < /etc/X11/slcXXXX.xmodmap
+ 		;;				
++	"SHARP Poodle")
++		xmodmap - < /etc/X11/poodle.xmodmap
++		;;
+         "Sharp-Collie")
+                 xmodmap - < /etc/X11/collie.xmodmap
+                 ;;
+diff -Nur xserver-common-1.8.orig/X11/poodle.xmodmap xserver-common-1.8/X11/poodle.xmodmap
+--- xserver-common-1.8.orig/X11/poodle.xmodmap	1970-01-01 01:00:00.000000000 +0100
++++ xserver-common-1.8/X11/poodle.xmodmap	2006-05-18 13:42:45.711264920 +0200
+@@ -0,0 +1,25 @@
++keycode 37 = Control_L
++keycode 64 = Alt_L
++
++
++keycode 50 = Shift_L
++keycode 62 = Shift_R
++keycode 75 = Mode_switch
++
++
++
++clear control
++clear shift
++clear lock
++clear mod4
++clear mod1
++
++add control = Control_L
++add shift = Shift_L Shift_R
++add lock = Caps_Lock
++
++! This is AltGr
++add mod4 = Mode_switch
++
++add mod1 = Alt_L
++
