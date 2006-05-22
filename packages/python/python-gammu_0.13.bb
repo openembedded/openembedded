@@ -4,9 +4,9 @@ SECTION = "devel/python"
 DEPENDS = "gammu"
 LICENSE = "GPL"
 MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
-PR = "r0"
+PR = "ml0"
 
-SRC_URI = "http://cihar.com/gammu/python/python-gammu-${PV}.tar.bz2"
+SRC_URI = "http://dl.cihar.com/python-gammu/latest/python-gammu-${PV}.tar.bz2"
 
 inherit distutils
 
