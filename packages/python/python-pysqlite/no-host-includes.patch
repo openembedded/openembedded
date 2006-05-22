@@ -1,0 +1,40 @@
+
+#
+# Patch managed by http://www.holgerschurig.de/patcher.html
+#
+
+--- pysqlite/setup.py~no-host-includes
++++ pysqlite/setup.py
+@@ -11,8 +11,8 @@
+ macros = []
+ 
+ if sys.platform in ("linux-i386", "linux2"): # most Linux
+-    include_dirs = ['/usr/include/sqlite']
+-    library_dirs = ['/usr/lib/']
++    include_dirs = []
++    library_dirs = []
+     libraries = [sqlite]
+     runtime_library_dirs = []
+     extra_objects = []
+@@ -21,8 +21,8 @@
+         LOCALBASE = os.environ.get("LOCALBASE", "/opt/local")
+     else:
+         LOCALBASE = os.environ.get("LOCALBASE", "/usr/local")
+-    include_dirs = ['%s/include' % LOCALBASE]
+-    library_dirs = ['%s/lib/' % LOCALBASE]
++    include_dirs = []
++    library_dirs = []
+     libraries = [sqlite]
+     runtime_library_dirs = []
+     extra_objects = []
+@@ -33,8 +33,8 @@
+     runtime_library_dirs = []
+     extra_objects = []
+ elif os.name == "posix": # most Unixish platforms
+-    include_dirs = ['/usr/local/include']
+-    library_dirs = ['/usr/local/lib']
++    include_dirs = []
++    library_dirs = []
+     libraries = [sqlite]
+     # On some platorms, this can be used to find the shared libraries
+     # at runtime, if they are in a non-standard location. Doesn't

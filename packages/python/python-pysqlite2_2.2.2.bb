@@ -11,6 +11,4 @@ PR = "ml0"
 SRC_URI = "http://initd.org/pub/software/pysqlite/releases/2.2/${PV}/${SRCNAME}-${PV}.tar.gz"
 S = "${WORKDIR}/${SRCNAME}-${PV}"
 
-EXTRA_OEMAKE = "-e"
-
 inherit distutils
