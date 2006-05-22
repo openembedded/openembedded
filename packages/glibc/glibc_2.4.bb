@@ -6,6 +6,11 @@ PRIORITY = "required"
 DEFAULT_PREFERENCE = "-1"
 PR = "r5"
 
+# the -isystem in bitbake.conf screws up glibc do_stage
+BUILD_CPPFLAGS = "-I${STAGING_DIR}/${BUILD_SYS}/include"
+TARGET_CPPFLAGS = "-I${STAGING_DIR}/${TARGET_SYS}/include"
+
+
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/glibc-2.4"
 
 GLIBC_ADDONS ?= "ports,nptl,libidn"

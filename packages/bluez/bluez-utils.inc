@@ -15,9 +15,8 @@ SRC_URI = "http://bluez.sourceforge.net/download/bluez-utils-${PV}.tar.gz \
 	file://02dtl1_cs.sh"
 
 # Almost all serial CF cards w/ manfid 0x0000,0x0000 seem to use the bcs protocol
-# Let's default to that instead of 'any' and see if we break something with that
-SRC_URI_append_familiar   = " file://default-manfid-0x0-to-bcps.patch;patch=1"
-SRC_URI_append_openzaurus = " file://default-manfid-0x0-to-bcps.patch;patch=1"
+# Let's default to that instead of 'any' until further notice...
+SRC_URI += " file://default-manfid-0x0-to-bcps.patch;patch=1"
 
 S = "${WORKDIR}/bluez-utils-${PV}"
 
