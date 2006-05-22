@@ -106,7 +106,12 @@ do_munge() {
 
 addtask munge before do_patch after do_unpack
 
+export default_mmap_threshold_familiar = "32*1024"
+
 do_configure () {
+	if [ "x$default_mmap_threshold" != "x" ]; then
+		echo "malloc-CPPFLAGS=-DDEFAULT_MMAP_THRESHOLD=\"(${default_mmap_threshold})\"" >configparms
+	fi
 # override this function to avoid the autoconf/automake/aclocal/autoheader
 # calls for now
 # don't pass CPPFLAGS into configure, since it upsets the kernel-headers
