@@ -134,6 +134,7 @@ SLUGOS_PACKAGES = "\
 	samba \
 	sane-backends \
 	sed \
+	setserial \
 	ssmtp \
 	strace \
 	streamripper \
