@@ -182,7 +182,25 @@ Ausgecheckt, Revision 516.
 
         <section>
             <title>Getting OpenEmbedded</title>
-            <para></para>
+            <para>
+The OpenEmbedded metadate has a high righ of development, so it's a good idea to stay up to date.
+
+<screen>	    
+#get the snapshot
+wget http://ewi546.ewi.utwente.nl/OE/OE.db.bz2 http://ewi546.ewi.utwente.nl/OE/OE.db.bz2.md5sum
+
+#verify the integrity
+cat OE.db.bz2.md5sum
+md5sum OE.db.bz2
+
+#extract the tarball
+bunzip OE.db.bz2
+
+#check the development branch
+monotone --db=OE.db co -b org.openembedded.dev
+</screen>
+
+           </para>
         </section>
 
         <section>
