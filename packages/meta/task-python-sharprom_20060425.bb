@@ -1,45 +1,50 @@
-DESCRIPTION= "Everything Python for SharpROM"
+DESCRIPTION = "Everything Python for SharpROM"
 MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 HOMEPAGE = "http://www.vanille.de/projects/python.spy"
 LICENSE = "MIT"
-PR = "ml2"
+PR = "ml4"
 
 NONWORKING = "\
 		python-codes		\
 		python-crypto		\
+		python-gammu		\
 		python-gmpy		\
+		python-pybluez		\
 		python-pysqlite		\
 		python-pygtk		\
 		python-pyqwt		\
 		python-sgmlop		\
+		python-sword            \
 		python-vorbis"
 
-DEPENDS = "\
+RDEPENDS = "\
 		python-ao 		\
-		python-pybluez		\
 		python-constraint	\
 		python-dialog		\
 		python-egenix-mx-base   \
-		python-pycurl		\
 		python-fnorb		\
 		python-fpconst		\
 		python-gnosis		\
 		python-hmm		\
 		python-irclib		\
-		python-irclib		\
+		python-itools		\
 		python-libgmail		\
 		python-logilab		\
 		python-mad		\
 		python-native		\
 		python-numeric		\
+		python-numarray		\
 		python-ogg		\
 		python-pexpect		\
 		python-pychecker	\
+		python-pycurl		\
+		python-pyfits		\
 		python-pyflakes		\
 		python-pygoogle		\
 		python-pylinda		\
 		python-pylint		\
 		python-pyqt		\
+		python-pyraf		\
 		python-pyreverse	\
 		python-pyro		\
 		python-pyserial		\
@@ -53,7 +58,8 @@ DEPENDS = "\
 		python-sip		\
 		python-snmplib		\
 		python-soappy		\
-		python-sword		\
+		python-spydi		\
+		python-spyro		\
 		python-tlslite		\
 		python-urwid		\
 		python-vmaps		\
@@ -61,7 +67,6 @@ DEPENDS = "\
 		plone			\
 		twisted			\
 		zope"
-RDEPENDS=${DEPENDS}
 
 #fixme add python-pycap once libdnet is in again
 #fixme add python-pyx once kpathwhich-native is there

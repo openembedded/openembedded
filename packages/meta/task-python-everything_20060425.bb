@@ -2,23 +2,27 @@ DESCRIPTION= "Everything Python"
 MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 HOMEPAGE = "http://www.vanille.de/projects/python.spy"
 LICENSE = "MIT"
-PR = "ml2"
+PR = "ml7"
 
-DEPENDS = "\
+BROKEN_BECAUSE_GCC4 = "\
+		python-egenix-mx-base"
+
+RDEPENDS = "\
 		python-ao 		\
 		python-pybluez		\
 		python-constraint	\
 		python-crypto		\
 		python-dialog		\
-		python-egenix-mx-base   \
 		python-pycurl		\
 		python-fnorb		\
 		python-fpconst		\
+		python-gammu		\
 		python-gmpy		\
 		python-gnosis		\
 		python-hmm		\
 		python-inotify		\
 		python-irclib		\
+		python-itools		\
 		python-logilab		\
 		python-libgmail		\
 		python-mad		\
@@ -28,6 +32,7 @@ DEPENDS = "\
 		python-pexpect		\
 		python-pychecker	\
 		python-pycodes		\
+		python-pyfits		\
 		python-pyflakes		\
 		python-pygame		\
 		python-pygoogle		\
@@ -37,6 +42,7 @@ DEPENDS = "\
 		python-pylint		\
 		python-pyqt		\
 		python-pyqwt		\
+		python-pyraf		\
 		python-pyreverse	\
 		python-pyrex		\
 		python-pyro		\
@@ -53,6 +59,8 @@ DEPENDS = "\
 		python-sgmlop		\
 		python-snmplib		\
 		python-soappy		\
+		python-spydi		\
+		python-spyro		\
 		python-sword		\
 		python-pysqlite		\
 		python-pysqlite2	\
@@ -64,7 +72,7 @@ DEPENDS = "\
 		plone			\
 		twisted			\
 		zope"
-RDEPENDS=${DEPENDS}
+
 
 #fixme add python-pycap once libdnet is in again
 #fixme add python-pyx once kpathwhich-native is there
