@@ -1,11 +1,11 @@
 DESCRIPTION = "Hexatrolic a Ball Game"
 SECTION     = "opie/games"
 PRIORITY    = "optional"
-MAINTAINER  = "none"
 LICENSE     = "GPL"
 AUTHOR      = "Helge Plehn"
 HOMEPAGE    = "http://hexatrolic.i-networx.de/"
 APPNAME     = "hexatrolic"
+PR          = "r1"
 
 
 SRC_URI = "http://handhelds.org/~zecke/oe_packages/hexatrolic-103beta3-zecke1.tar.bz2"

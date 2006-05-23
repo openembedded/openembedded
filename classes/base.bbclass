@@ -171,9 +171,8 @@ oe_libinstall() {
 	if [ -z "$dir" ]; then
 		dir=`pwd`
 	fi
-	if [ -d "$dir/.libs" ]; then
-		dir=$dir/.libs
-	fi
+	dotlai=$libname.lai
+	dir=$dir`(cd $dir; find -name "$dotlai") | sed "s/^\.//;s/\/$dotlai\$//;q"`
 	olddir=`pwd`
 	__runcmd cd $dir
 
@@ -191,14 +190,13 @@ oe_libinstall() {
 	if [ -f "$dota" -o -n "$require_static" ]; then
 		__runcmd install -m 0644 $dota $destpath/
 	fi
-	dotlai=$libname.lai
 	if [ -f "$dotlai" -a -n "$libtool" ]; then
 		if test -n "$staging_install"
 		then
 			# stop libtool using the final directory name for libraries
 			# in staging:
 			__runcmd rm -f $destpath/$libname.la
-			__runcmd sed -e 's/^installed=yes$/installed=no/' $dotlai >$destpath/$libname.la
+			__runcmd sed -e 's/^installed=yes$/installed=no/' -e '/^dependency_libs=/s,${WORKDIR}[[:alnum:]/\._+-]*/\([[:alnum:]\._+-]*\),${STAGING_LIBDIR}/\1,g' $dotlai >$destpath/$libname.la
 		else
 			__runcmd install -m 0644 $dotlai $destpath/$libname.la
 		fi

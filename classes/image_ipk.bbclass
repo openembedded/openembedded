@@ -53,6 +53,32 @@ fakeroot do_rootfs () {
 	${IMAGE_POSTPROCESS_COMMAND}
 }
 
+DISTRO_LOCALE_FEEDS_PREFIXES ?= ""
+DISTRO_LOCALE_FEEDS_HEADER ?= ""
+
+python __anonymous() {
+	prefixes = bb.data.getVar("DISTRO_LOCALE_FEEDS_PREFIXES", d, 1).split()
+	locale_feeds = bb.data.getVar("DISTRO_LOCALE_FEEDS_HEADER", d, 1)
+
+	# add template
+	locale_feeds += "# For each supported locale there is a subfeed in each of the feed folders.\n"
+	locale_feeds += "# You can use your webbrowser to check for valid locale codes.\n\n"
+	locale_feeds += "# To point ipkg at packages for your locale, replace <my_locale> with the\n"
+	locale_feeds += "# locale code in the template below and remove the leading '#' characters.\n\n"
+	for p in prefixes:
+		locale_feeds += "# src/gz %s-locale-<my_locale> %s/locale/<my_locale>\n" % (p.split('/')[-1], p)
+	
+	# add feed for each IMAGE_LINGUA
+	linguas = bb.data.getVar("IMAGE_LINGUAS", d, 1).split()
+	for l in linguas:
+		fst = l.split('-')[0]
+		locale_feeds += "\n# %s locale feeds\n" % fst
+		for p in prefixes:
+			locale_feeds += "src/gz %s-locale-%s %s/locale/%s\n" % (p.split('/')[-1], fst, p, fst)
+	
+	bb.data.setVar("DISTRO_LOCALE_FEEDS", locale_feeds, d)
+}
+
 insert_feed_uris () {
 	
 	echo "Building feeds for [${DISTRO}].."
@@ -69,4 +95,14 @@ insert_feed_uris () {
 		# insert new feed-sources
 		echo "src/gz $feed_name $feed_uri" >> ${IMAGE_ROOTFS}/etc/ipkg/${feed_name}-feed.conf
 	done			
+
+	if [ -z ${FEED_URIS} ]; then
+cat > ${IMAGE_ROOTFS}/etc/ipkg/${DISTRO}-${DISTRO_VERSION}-feeds.conf <<EOF
+${DISTRO_FEEDS}
+EOF
+
+cat > ${IMAGE_ROOTFS}/etc/ipkg/${DISTRO}-${DISTRO_VERSION}-locale-feeds.conf <<EOF
+${DISTRO_LOCALE_FEEDS}
+EOF
+	fi
 }

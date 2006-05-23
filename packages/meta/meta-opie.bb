@@ -118,7 +118,7 @@ task-opie-apps = "opie-advancedfm opie-bartender opie-calculator \
                   opie-console opie-dagger opie-embeddedkonsole \
                   opie-euroconv opie-eye opie-ftp opie-gutenbrowser \
                   opie-helpbrowser opie-irc opie-keypebble opie-odict \
-                  opie-oxygen opie-rdesktop opie-reader opie-remote \
+                  opie-oxygen opie-reader opie-remote \
                   opie-sheet opie-tableviewer opie-tinykate \
                   opie-wellenreiter opie-write opie-zsafe"
 
@@ -181,7 +181,7 @@ task-opie-irda = "irda-utils libopieobex0 obexftp obexpush"
 #
 
 task-opie-extra-apps = "opie-calculator opie-checkbook opie-mail opie-eye \
-                        opie-rdesktop opie-wellenreiter opie-irc \
+                        opie-wellenreiter opie-irc \
                         opie-mediaplayer2 \
                         konqueror-embedded qpdf2"
 
