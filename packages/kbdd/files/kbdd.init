@@ -12,6 +12,11 @@ case $1 in
     killall kbdd
     ;;
 
+'restart')
+    $0 stop
+    $o start
+    ;;
+
 *)
     echo "usage: $0 { start | stop | restart }"
     ;;
