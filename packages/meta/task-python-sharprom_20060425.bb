@@ -2,7 +2,7 @@ DESCRIPTION = "Everything Python for SharpROM"
 MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 HOMEPAGE = "http://www.vanille.de/projects/python.spy"
 LICENSE = "MIT"
-PR = "ml2"
+PR = "ml4"
 
 NONWORKING = "\
 		python-codes		\
@@ -22,7 +22,6 @@ RDEPENDS = "\
 		python-constraint	\
 		python-dialog		\
 		python-egenix-mx-base   \
-		python-pycurl		\
 		python-fnorb		\
 		python-fpconst		\
 		python-gnosis		\
@@ -34,14 +33,18 @@ RDEPENDS = "\
 		python-mad		\
 		python-native		\
 		python-numeric		\
+		python-numarray		\
 		python-ogg		\
 		python-pexpect		\
 		python-pychecker	\
+		python-pycurl		\
+		python-pyfits		\
 		python-pyflakes		\
 		python-pygoogle		\
 		python-pylinda		\
 		python-pylint		\
 		python-pyqt		\
+		python-pyraf		\
 		python-pyreverse	\
 		python-pyro		\
 		python-pyserial		\
