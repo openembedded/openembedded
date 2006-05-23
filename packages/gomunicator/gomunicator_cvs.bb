@@ -7,13 +7,11 @@ DEPENDS = "libgpewidget gtk+ glib-2.0 alsa-lib"
 #Remove the dash below when 0.1.3 changes in PV
 PV = "0.1.3+cvs-${CVSDATE}"
 
-
 inherit autotools pkgconfig
 
-SRC_URI = "cvs://anonymous@cvs.sourceforge.net/cvsroot/xanadux;module=gomunicator"
+SRC_URI = "cvs://anonymous@xanadux.cvs.sourceforge.net/cvsroot/xanadux;module=gomunicator"
 S = "${WORKDIR}/${PN}"
 
 do_install_append() {
 	install -d ${D}${datadir}/applications
-	install -m 0644 gomunicator.desktop ${D}${datadir}/applications/
 }
