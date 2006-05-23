@@ -22,7 +22,7 @@ do_compile () {
 		   "-I."
 }
 
-do_install () {
+fakeroot do_install () {
 	oe_runmake "DSTROOT=${D}" install
 }
 

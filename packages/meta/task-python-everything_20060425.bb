@@ -2,7 +2,7 @@ DESCRIPTION= "Everything Python"
 MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 HOMEPAGE = "http://www.vanille.de/projects/python.spy"
 LICENSE = "MIT"
-PR = "ml5"
+PR = "ml7"
 
 BROKEN_BECAUSE_GCC4 = "\
 		python-egenix-mx-base"
@@ -32,6 +32,7 @@ RDEPENDS = "\
 		python-pexpect		\
 		python-pychecker	\
 		python-pycodes		\
+		python-pyfits		\
 		python-pyflakes		\
 		python-pygame		\
 		python-pygoogle		\
@@ -41,6 +42,7 @@ RDEPENDS = "\
 		python-pylint		\
 		python-pyqt		\
 		python-pyqwt		\
+		python-pyraf		\
 		python-pyreverse	\
 		python-pyrex		\
 		python-pyro		\
