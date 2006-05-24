@@ -1,0 +1,138 @@
+#!/usr/bin/env python
+# License of this file:
+#  Copy, Modify, Change, Sell it at your will.
+#
+# There is absolutely no warranty with this file
+#
+# (C) Copyright 2006 Holger Hans Peter Freyther
+
+
+
+def check_dir(name, error):
+    """
+    Check if the given directory exists, if not error
+    is printed and the application is left.
+    """
+    import os, sys
+    import stat
+    if not os.path.isdir(name):
+        print error
+        sys.exit(-1)
+
+
+def find_packages(dir):
+    import os
+    contents = os.listdir(dir)
+    ipks = []
+    for f in contents:
+        (root,ext) = os.path.splitext(f)
+        if ext == ".ipk":
+            ipks.append( f )
+    return ipks
+
+def diff_dirs( old_ipks, new_ipks ):
+    """
+    We will return three lists. The first one will
+    contain the files that are only in a, the second
+    the files in both directories and the third one
+    will
+    """
+    only_old = [ i for i in old_ipks if i not in new_ipks]
+    both     = [ i for i in old_ipks if i in new_ipks ]
+    only_new = [ i for i in new_ipks if i not in old_ipks]
+
+    return only_old, both, only_new
+
+def diff_packages( old, new ):
+    def compare( name, version, attribute, txt ):
+        """
+        Compare package with name and version with method
+        and print error message
+        """
+        try:
+            left  = getattr( old[package_name][version], 'get_' + attribute )
+            right = getattr( new[package_name][version], 'get_' + attribute )
+            if not left() == right():
+                print txt
+        except Exception, e:
+            raise e
+            print "Error with %s %s and '%s'" % (package_name,version, txt)
+
+    for package_name in old.keys():
+        for version in old[package_name].keys():
+            print "Comparing %s %s" % (package_name, version)
+            compare( package_name, version, 'maintainer', "Maintainer is different" )
+            compare( package_name, version, 'architecture', "Architecture is different" )
+            compare( package_name, version, 'description', "Description is different" )
+            compare( package_name, version, 'depends', "Depends are different" )
+            compare( package_name, version, 'provides', "Provides are different" )
+            compare( package_name, version, 'conflicts', "Provides are different" )
+            compare( package_name, version, 'suggests', "Suggests are different" )
+            compare( package_name, version, 'source', "Source is different" )
+            compare( package_name, version, 'section', "Section is different" )
+            compare( package_name, version, 'file_list', "Filelist is different" )
+            compare( package_name, version, 'file_all_list', "Filelist is different" )
+            compare( package_name, version, 'md5', "MD5 is different" )
+
+def print_result_start( old, both, new ):
+    """
+    Print the findings of ipkg-diff
+    """
+    print "ipkg-diff diff report"
+    print "%d packages found" % (len(old)+len(both)+len(new))
+    print "# of old/removed packages: %d" % len(old)
+    print "# of new packages: %d" % len(new)
+    print "# of possible changed packages: %d" % len(both)
+    print ""
+
+    if len(old) > 0:
+        for i in old:
+            print "Vanished ipk: %s" % i
+
+    if len(new) > 0:
+        for i in new:
+            print "New ipk: %s" % i
+
+
+def parse_packages(dir, package_names):
+    import ipkg, os
+    packages = {}
+
+    for package in package_names:
+        p = ipkg.Package(os.path.join(dir, package))
+
+        if not p.get_package() in packages:
+            packages[p.get_package()] = {}
+        packages[p.get_package()][p.get_version()] = p
+
+    return packages
+
+
+if __name__ == "__main__":
+    import os,sys
+
+    # sanity
+    if len(sys.argv) != 3:
+        print "ipkg-diff OLD NEW"
+        sys.exit(-2)
+
+    # check dirs
+    check_dir(sys.argv[1], "Source Directory does not exist")
+    check_dir(sys.argv[2], "Dest Directory does not exists")
+
+    # find packages
+    old_ipks = find_packages(sys.argv[1])
+    new_ipks = find_packages(sys.argv[2])
+
+    # find removed and new files
+    only_old, both, only_new = diff_dirs( old_ipks, new_ipks )
+
+    # print a summary header
+    print_result_start( only_old, both, only_new )
+
+    # start diffing the content by parsing the packages
+    print "Loading Content into memory"
+    old_packages = parse_packages(sys.argv[1], both )
+    new_packages = parse_packages(sys.argv[2], both )
+
+    diff_packages( old_packages, new_packages )
