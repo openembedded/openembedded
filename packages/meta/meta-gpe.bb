@@ -2,7 +2,7 @@ PACKAGES = gpe-base-depends gpe-task-base gpe-task-settings gpe-task-pim gpe-tas
 DESCRIPTION = "Meta-package for GPE Palmtop Environment"
 MAINTAINER = "Phil Blundell <pb@handhelds.org>"
 PACKAGE_ARCH = "all"
-PR = "r45"
+PR = "r46"
 
 ALLOW_EMPTY = "1"
 
@@ -14,6 +14,7 @@ RDEPENDS_gpe-base-depends := "${gpe-base-depends}"
 DEPENDS += " ${gpe-base-depends}"
 
 gpe-task-base = "\
+    bl \
     gpe-bootsplash \
     bluez-utils-dbus \
     matchbox \
