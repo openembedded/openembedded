@@ -1,0 +1,11 @@
+--- busybox-1.1.2/Makefile.orig	2006-04-10 14:45:46.000000000 -0500
++++ busybox-1.1.2/Makefile	2006-05-15 00:54:31.000000000 -0500
+@@ -79,6 +79,8 @@
+ 	top_srcdir=$(top_srcdir) \
+ 	top_builddir=$(top_builddir) \
+ 	KBUILD_SRC=$(top_srcdir) \
++	PREFIX=$(PREFIX) \
++	CROSS=$(CROSS) \
+ 	-f $(CURDIR)/Makefile $@
+ 
+ $(KBUILD_OUTPUT)/Rules.mak:

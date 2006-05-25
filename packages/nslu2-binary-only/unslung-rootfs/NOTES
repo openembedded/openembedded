@@ -530,5 +530,9 @@ Syntax fixes in prep for newer busybox:
 
 Flash filesystem cleanup (regained space):
  - replaced dupl 'date' utility with symlink, corrected 'killall' symlink
- - removed 'mt', 'libexec' from flash
- - adjusted 'unsling' to use common 'find' options
+ - removed 'mt', 'libexec', 'locate', 'xargs', 'updatedb' from flash
+   (TODO: strip ipkg database entries out for 'findutils' and 'cpio')
+ - adjusted 'unsling' to use common 'find' options (hope to replace soon)
+
+Upgraded slingbox to v1.1.3 busybox base; enabled 'more' command
+(note: upgrade added 3KB in size, 'more' added 4KB in size)
