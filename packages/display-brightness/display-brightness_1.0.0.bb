@@ -5,7 +5,7 @@ DEPENDS = ""
 PRIORITY = "optional"
 LICENSE = "GPLv2"
 PACKAGE_ARCH = "all"
-PR = "r2"
+PR = "r3"
 
 SRC_URI = "file://display-brightness.sh"
 
