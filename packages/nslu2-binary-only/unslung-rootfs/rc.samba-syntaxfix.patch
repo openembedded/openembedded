@@ -1,0 +1,23 @@
+--- nslu2-linksys-ramdisk-2.3r63/etc/rc.d/rc.samba~	2006-05-16 14:22:33.000000000 -0500
++++ nslu2-linksys-ramdisk-2.3r63/etc/rc.d/rc.samba	2006-05-16 16:47:45.000000000 -0500
+@@ -5,16 +5,16 @@
+ if [ -n "`pidof smbd`" ] ; then
+     killall smbd 2>/dev/null
+ fi
+-if [ -n "`pidof smbd`" ] ; then
++#if [ -n "`pidof smbd`" ] ; then
+ #    killall -9 smbd 2>/dev/null
+-fi
++#fi
+ 
+ if [ -n "`pidof nmbd`" ] ; then
+     killall nmbd 2>/dev/null
+ fi
+-if [ -n "`pidof nmbd`" ] ; then
++#if [ -n "`pidof nmbd`" ] ; then
+ #    killall -9 nmbd 2>/dev/null
+-fi
++#fi
+ sleep 2
+ /usr/sbin/smbd -D; 
+ /usr/sbin/nmbd -D;

@@ -1,5 +1,5 @@
 LICENSE = MIT
-PR = "r14"
+PR = "r15"
 
 IMAGE_BASENAME = "unslung"
 
@@ -10,11 +10,15 @@ DEPENDS  = "virtual/kernel \
 	${UNSLUNG_EXTRA_DEPENDS}"
 
 RDEPENDS  = "kernel update-modules unslung-rootfs \
-	libc6-unslung slingbox ipkg cpio findutils \
+	libc6-unslung slingbox ipkg \
+	cpio \
+	findutils \
 	${UNSLUNG_EXTRA_RDEPENDS}"
 
 IPKG_INSTALL = "kernel update-modules unslung-rootfs \
-	libc6-unslung slingbox ipkg cpio findutils \
+	libc6-unslung slingbox ipkg \
+	cpio \
+	findutils \
 	${UNSLUNG_EXTRA_INSTALL}"
 
 IMAGE_PREPROCESS_COMMAND += "unslung_clean_image; "
@@ -61,6 +65,20 @@ unslung_clean_image () {
 	# Strip symbols and fix permissions on the libgcc_s.so.1 library
 	${STRIP} ${IMAGE_ROOTFS}/lib/libgcc_s.so.1
 	chmod ugo+x ${IMAGE_ROOTFS}/lib/libgcc_s.so.1
+
+	# We need cpio and find, but we don't need any of the other stuff in the
+	# packages (users can install the full package with ipkg after unsling).
+	# (make sure that if the package is not included (i.e. using slingbox
+	# instead) that the files are not deleted; they might be part of slingbox)
+
+	#-- these are for cpio:
+	rm -f ${IMAGE_ROOTFS}/usr/bin/mt
+	rm -rf ${IMAGE_ROOTFS}/usr/bin/libexec
+
+	#-- and these for find:
+	rm -f ${IMAGE_ROOTFS}/usr/bin/locate
+	rm -f ${IMAGE_ROOTFS}/usr/bin/updatedb
+	rm -f ${IMAGE_ROOTFS}/usr/bin/xargs
 }
 
 python () {

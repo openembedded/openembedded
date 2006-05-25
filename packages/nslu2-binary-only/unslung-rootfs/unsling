@@ -162,7 +162,7 @@ fi
 
 echo
 echo "Copying the complete rootfs from / to $targ ..."
-/usr/bin/find / -print0 -mount | /usr/bin/cpio -p -0 -d -m -u $targ
+/usr/bin/find / -xdev -print | /usr/bin/cpio -p -d -m -u $targ
 rm -rf $targ/dev ; mv $targ/dev.state $targ/dev
 rm -rf $targ/var ; mv $targ/var.state $targ/var
 
