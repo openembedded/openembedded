@@ -1,6 +1,6 @@
 SECTION = "base"
 
-PR = "r12"
+PR = "r13"
 
 DEPENDS = "nslu2-linksys-libs nslu2-linksys-sambacodepages"
 
@@ -31,6 +31,7 @@ SRC_URI = "http://nslu.sf.net/downloads/nslu2-linksys-ramdisk-2.3r63-2.tar.bz2 \
 	   file://rc.reset_usrgrpshare-diversion.patch;patch=1 \
 	   file://rc.rstimezone-diversion.patch;patch=1 \
 	   file://rc.samba-diversion.patch;patch=1 \
+	   file://rc.samba-syntaxfix.patch;patch=1 \
 	   file://rc.sysinit-diversion.patch;patch=1 \
 	   file://rc.thttpd-diversion.patch;patch=1 \
 	   file://rc.xinetd-diversion.patch;patch=1 \
@@ -43,6 +44,7 @@ SRC_URI = "http://nslu.sf.net/downloads/nslu2-linksys-ramdisk-2.3r63-2.tar.bz2 \
 	   file://mount_usbdevfs.patch;patch=1 \
 	   file://security-fixes.patch;patch=1 \
 	   file://rc.sysinit-clean_var.patch;patch=1 \
+	   file://rc.sysinit-cpbug.patch;patch=1 \
 	   file://rc.modules-nls.patch;patch=1 \
 	   file://telnet-passwd.patch;patch=1 \
 	   file://upgrade.htm \
@@ -144,6 +146,19 @@ do_compile () {
 	# 950 (Chinese BIG-5)
 	rm -f ${S}/etc/samba/codepages/codepage.950
 	# ISO8859-1 (Latin 1) - keep
+
+	# /bin/killall and /usr/bin/killall are both symlinks to busybox.  This
+	# is a problem if killall is ever replaced by slingbox or a native utility.
+	# Fix by making /bin/killall (the wrong place) a symlink to /usr/bin/killall.
+	rm -f ${S}/bin/killall
+	ln -s ../usr/bin/killall ${S}/bin/killall
+
+	# There are two identical binary copies of "date" on the image.  Replace
+	# the one in /usr/sbin with a symlink to the one in /bin.  This saves a
+	# bit of flash space, and makes it possible to replace the date binary with
+	# a link to busybox or slingbox at some point.
+	rm -r ${S}/usr/sbin/date
+	ln -s ../../bin/date ${S}/usr/sbin/date
 }
 
 do_install () {

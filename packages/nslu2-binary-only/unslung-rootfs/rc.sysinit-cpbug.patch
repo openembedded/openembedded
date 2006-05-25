@@ -1,0 +1,19 @@
+--- nslu2-linksys-ramdisk-2.3r63/etc/rc.d/rc.sysinit~	2006-05-16 17:35:56.000000000 -0500
++++ nslu2-linksys-ramdisk-2.3r63/etc/rc.d/rc.sysinit	2006-05-16 17:36:10.000000000 -0500
+@@ -11,14 +11,14 @@
+ if ( [ ! -f /.sda1root ] && [ ! -f /.sda2root ] && [ ! -f /.sdb1root ] && [ ! -f /.sdb2root ] ) ; then
+   /bin/echo "Creating ramfs for /dev:"
+   /bin/mount -t ramfs ramfs /mnt/tmpmnt
+-  /bin/cp -rp /dev/* /mnt/tmpmnt/
++  /bin/cp -a /dev/* /mnt/tmpmnt/
+   /bin/mkdir -p /dev.state
+   /bin/mount -o bind /dev /dev.state
+   /bin/mount -o bind /mnt/tmpmnt /dev
+   /bin/umount /mnt/tmpmnt
+   /bin/echo "Creating ramfs for /var:"
+   /bin/mount -t ramfs ramfs /mnt/tmpmnt -o maxsize=256
+-  /bin/cp -rp /var/* /mnt/tmpmnt/
++  /bin/cp -a /var/* /mnt/tmpmnt/
+   /bin/mkdir -p /var.state
+   /bin/mount -o bind /var /var.state
+   /bin/mount -o bind /mnt/tmpmnt /var
