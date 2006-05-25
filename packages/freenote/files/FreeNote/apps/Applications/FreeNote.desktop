@@ -1,0 +1,10 @@
+[Desktop Entry]
+Comment=
+Exec=FreeNote
+Icon=freenote
+Type=Application
+Name=FreeNoteQt
+Display=640x480/144dpi,480x640/144dpi
+MimeType=application/freenote
+MimeTypeIcons=freenote
+CanFastload=1
