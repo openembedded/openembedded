@@ -177,12 +177,9 @@ run_timer() {
 		case "`uname -r`" in
 		2.4*)	key_ints="`cat /proc/interrupts | grep keyboard | awk '{print $2}'`";;
 		2.6*)	key_ints="`cat /proc/interrupts | grep Spitzkbd`"
-			test -z "$key_ints" && key_ints="`cat /proc/interrupts | grep -i corgikbd`"
-			test -z "$key_ints" && key_ints="`cat /proc/interrupts | grep -i locomokbd`";;	
+			test -z "$key_ints" && key_ints="`cat /proc/interrupts | grep -i corgikbd`";;	
 		esac		
 	
-		test -z "$key_ints" && debug_echo "Couldn't read keyboard ints!"
-		
 		stty -echo  <"$OUT_TTY" >"$OUT_TTY" 2>&1
 		echo -en "\n\nPlease press any key to launch altboot." > "$OUT_TTY"
 		
@@ -195,8 +192,7 @@ run_timer() {
 			case "`uname -r`" in
 			2.4*)	key_ints_now="`cat /proc/interrupts | grep keyboard | awk '{print $2}'`";;
 			2.6*)	key_ints_now="`cat /proc/interrupts | grep Spitzkbd`"
-				test -z "$key_ints_now" && key_ints_now="`cat /proc/interrupts | grep -i corgikbd`"
-				test -z "$key_ints_now" && key_ints_now="`cat /proc/interrupts | grep -i locomokbd`";;	
+				test -z "$key_ints_now" && key_ints_now="`cat /proc/interrupts | grep -i corgikbd`";;	
 			esac		
 			
 			if test "$key_ints_now" != "$key_ints" -o -z "$key_ints_now"
@@ -327,7 +323,7 @@ then
 	debug_shell 4 >/dev/null 2>&1 &
 fi
 
-if test -f /proc/cmdline -a "`ps ax|wc -l|tr -d " "`" -gt 30 -a "$1" != "-force" -a "$1" != "+force"
+if test -f /proc/cmdline -a "`ps ax|wc -l|tr -d " "`" -gt 30 -a "$1" != "-force"
 then
 	echo "altboot: Using real init [$REAL_INIT] [$*] [`ps ax|wc -l|tr -d " "`] *" >"$OUT_TTY"
 	exec $REAL_INIT $*
