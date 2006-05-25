@@ -1,9 +1,7 @@
 require qte-common_${PV}.inc
-PR = "r0"
+PR = "r1"
 
-EXTRA_OECONF += "-thread -static"
-export SYSCONF_CXXFLAGS = "${CXXFLAGS} -pipe -DQWS -fexceptions -frtti -DNO_DEBUG ${EXTRA_DEFINES} -DUSE_BIDI"
-#export SYSCONF_CXXFLAGS = "${CXXFLAGS} -pipe -DQWS -fexceptions -frtti -fvisibility=hidden -DGCC_SUPPORTS_VISIBILITY -DNO_DEBUG ${EXTRA_DEFINES} -DUSE_BIDI"
+EXTRA_OECONF += "-static"
 
 do_stage() {
 	rm -rf ${STAGING_DIR}/${HOST_SYS}/qt2
@@ -13,6 +11,7 @@ do_stage() {
 	install -d ${STAGING_DIR}/${HOST_SYS}/qt2/include
 	cp -pfLR include/* ${STAGING_DIR}/${HOST_SYS}/qt2/include
 	cp -pPR lib/fonts ${STAGING_DIR}/${HOST_SYS}/qt2/lib/
+	install -m 0644 src/kernel/qsnoopdata_qws_p.h ${STAGING_DIR}/${HOST_SYS}/qt2/include/
 }
 
 do_install() {

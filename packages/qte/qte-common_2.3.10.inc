@@ -41,12 +41,19 @@ SRC_URI = "ftp://ftp.trolltech.com/pub/qt/source/qt-embedded-${PV}-free.tar.gz;m
 	   file://sharp_char.h \
 	   file://switches.h "
 
+#
+# add device specific patches here
+#
 SRC_URI_append_simpad       = "file://devfs.patch;patch=1 "
 SRC_URI_append_c7x0         = "file://kernel-keymap.patch;patch=1;pnum=0 file://kernel-keymap-corgi.patch;patch=1 \
                                file://c7x0-w100-accel.patch;patch=1 file://suspend-resume-hooks.patch;patch=1 "
-SRC_URI_append_spitz        = "file://kernel-keymap.patch;patch=1;pnum=0 file://kernel-keymap-corgi.patch;patch=1 file://kernel-keymap-CXK.patch;patch=1 "
-SRC_URI_append_akita        = "file://kernel-keymap.patch;patch=1;pnum=0 file://kernel-keymap-corgi.patch;patch=1 file://kernel-keymap-CXK.patch;patch=1 "
+SRC_URI_append_spitz        = "file://kernel-keymap.patch;patch=1;pnum=0 file://kernel-keymap-corgi.patch;patch=1 \
+                               file://kernel-keymap-CXK.patch;patch=1 "
+SRC_URI_append_akita        = "file://kernel-keymap.patch;patch=1;pnum=0 file://kernel-keymap-corgi.patch;patch=1 \
+                               file://kernel-keymap-CXK.patch;patch=1 "
 SRC_URI_append_poodle       = "file://kernel-keymap.patch;patch=1;pnum=0 "
+SRC_URI_append_a780         = "file://kernel-keymap.patch;patch=1;pnum=0 "
+SRC_URI_append_e680         = "file://kernel-keymap.patch;patch=1;pnum=0 "
 SRC_URI_append_tosa         = "file://kernel-keymap.patch;patch=1;pnum=0 file://kernel-keymap-tosa.patch;patch=1 "
 SRC_URI_append_jornada7xx   = "file://kernel-keymap.patch;patch=1;pnum=0 file://ipaq_sound_fix.patch;patch=1 "
 SRC_URI_append_jornada56x   = "file://kernel-keymap.patch;patch=1;pnum=0 file://ipaq_sound_fix.patch;patch=1 "
@@ -61,7 +68,6 @@ SRC_URI_append_h1910        = "file://ipaq-keyboard.patch;patch=1 file://ipaq_so
 
 
 S = "${WORKDIR}/qt-${PV}"
-
 export QTDIR = "${S}"
 
 def qte_arch(d):
@@ -77,6 +83,9 @@ def qte_arch(d):
 
 QTE_ARCH := "${@qte_arch(d)}"
 
+#
+# add device configuration here
+#
 EXTRA_OECONF_CONFIG = "-qconfig qpe"
 EXTRA_OECONF_CONFIG_c7x0 = "-qconfig qpe -accel-w100"
 EXTRA_OECONF_CONFIG_native = "-qconfig qpe -qvfb"
@@ -85,11 +94,13 @@ EXTRA_OECONF = "-system-jpeg -system-libpng -system-zlib -no-qvfb -no-xft -no-vn
 EXTRA_OEMAKE = "-e"
 
 #
-# FIXME: Add more here
+# add device flags here
 #
 EXTRA_DEFINES 			= "-DQT_QWS_TSLIB -DQT_QWS_CUSTOM -DWARNING_UNKNOWN_DEVICE"
 EXTRA_DEFINES_collie 		= "-DQT_QWS_TSLIB -DQT_QWS_CUSTOM -DQT_QWS_SL5XXX"
 EXTRA_DEFINES_poodle		= "-DQT_QWS_TSLIB -DQT_QWS_CUSTOM -DQT_QWS_SL5XXX"
+EXTRA_DEFINES_a780		= "-DQT_QWS_TSLIB -DQT_QWS_CUSTOM -DQT_QWS_EZX"
+EXTRA_DEFINES_e680		= "-DQT_QWS_TSLIB -DQT_QWS_CUSTOM -DQT_QWS_EZX"
 EXTRA_DEFINES_tosa		= "-DQT_QWS_TSLIB                 -DQT_QWS_SL5XXX -DQT_QWS_SL6000"
 EXTRA_DEFINES_h3600     	= "-DQT_QWS_TSLIB -DQT_QWS_CUSTOM -DQT_QWS_IPAQ" 
 EXTRA_DEFINES_h3900 		= "-DQT_QWS_TSLIB -DQT_QWS_CUSTOM -DQT_QWS_IPAQ"
@@ -104,6 +115,9 @@ EXTRA_DEFINES_spitz		= "-DQT_QWS_TSLIB -DQT_QWS_CUSTOM -DQT_QWS_SLC700 -DQT_QWS_
 EXTRA_DEFINES_akita             = "-DQT_QWS_TSLIB -DQT_QWS_CUSTOM -DQT_QWS_SLC700 -DQT_QWS_SL5XXX -DQT_QWS_SLCXK"
 EXTRA_DEFINES_mnci 		= "                               -DQT_QWS_RAMSES                 -DQT_QWS_DEVFS"
 
+#
+# don't touch anything below here
+#
 export SYSCONF_CC = "${CC}"
 export SYSCONF_CXX = "${CXX}"
 export SYSCONF_LINK = "${CCLD}"
@@ -111,6 +125,7 @@ export SYSCONF_SHLIB = "${CCLD}"
 export SYSCONF_CFLAGS = "${CFLAGS}"
 export SYSCONF_LINK_SHLIB = "${CCLD}"
 export SYSCONF_CXXFLAGS = "${CXXFLAGS} -pipe -DQWS -fno-exceptions -fno-rtti -DNO_DEBUG ${EXTRA_DEFINES} -DUSE_BIDI"
+# enable if gcc supports visibility
 #export SYSCONF_CXXFLAGS = "${CXXFLAGS} -pipe -DQWS -fno-exceptions -fno-rtti -fvisibility=hidden -DGCC_SUPPORTS_VISIBILITY -DNO_DEBUG ${EXTRA_DEFINES} -DUSE_BIDI"
 export SYSCONF_LFLAGS = "${LDFLAGS} -lts"
 export SYSCONF_LFLAGS_mnci = "${LDFLAGS}"
