@@ -1,5 +1,5 @@
 LICENSE = MIT
-PR = "r15"
+PR = "r16"
 
 IMAGE_BASENAME = "unslung"
 
@@ -73,7 +73,7 @@ unslung_clean_image () {
 
 	#-- these are for cpio:
 	rm -f ${IMAGE_ROOTFS}/usr/bin/mt
-	rm -rf ${IMAGE_ROOTFS}/usr/bin/libexec
+	rm -rf ${IMAGE_ROOTFS}/usr/libexec
 
 	#-- and these for find:
 	rm -f ${IMAGE_ROOTFS}/usr/bin/locate
