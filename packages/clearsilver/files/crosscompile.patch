@@ -1,0 +1,59 @@
+Index: clearsilver-0.10.3/cgi/Makefile
+===================================================================
+--- clearsilver-0.10.3.orig/cgi/Makefile
++++ clearsilver-0.10.3/cgi/Makefile
+@@ -30,13 +30,13 @@ $(CGI_LIB): $(CGI_OBJ)
+ 	$(RANLIB) $@
+ 
+ $(STATIC_EXE): $(STATIC_OBJ) $(DEP_LIBS)
+-	$(LD) $@ $(STATIC_OBJ) -L$(LIB_DIR) $(DLIBS) $(LIBS)
++	$(LD) $@ $(STATIC_OBJ) -L$(LIB_DIR) $(DLIBS) $(LIBS) $(LDFLAGS)
+ 
+ $(STATIC_CSO): $(STATIC_OBJ) $(DEP_LIBS)
+-	$(LDSHARED) -o $@ $(STATIC_OBJ) -L$(LIB_DIR) $(DLIBS) $(LIBS)
++	$(LDSHARED) -o $@ $(STATIC_OBJ) -L$(LIB_DIR) $(DLIBS) $(LIBS) $(LDFLAGS)
+ 
+ $(CGICSTEST_EXE): $(CGICSTEST_OBJ) $(DEP_LIBS)
+-	$(LD) $@ $(CGICSTEST_OBJ) -L$(LIB_DIR) $(DLIBS) $(LIBS)
++	$(LD) $@ $(CGICSTEST_OBJ) -L$(LIB_DIR) $(DLIBS) $(LIBS) $(LDFLAGS)
+ 
+ install: all
+ 	$(NEOTONIC_ROOT)/mkinstalldirs $(DESTDIR)$(cs_includedir)/cgi
+Index: clearsilver-0.10.3/cs/Makefile
+===================================================================
+--- clearsilver-0.10.3.orig/cs/Makefile
++++ clearsilver-0.10.3/cs/Makefile
+@@ -22,9 +22,9 @@ CSDUMP_EXE = csdump
+ CSDUMP_SRC = csdump.c
+ CSDUMP_OBJ = $(CSDUMP_SRC:%.c=%.o)
+ 
+-LIBS += -L$(LIB_DIR) -lneo_cs -lneo_utl #  -lefence
++LIBS += -L$(LIB_DIR) -lneo_cs -lneo_utl $(LDFLAGS) #  -lefence
+ 
+-TARGETS = $(CS_LIB) $(CSTEST_EXE) $(CSR_EXE) test
++TARGETS = $(CS_LIB) $(CSR_EXE) $(CSTEST_EXE)
+ 
+ CS_TESTS = test.cs test2.cs test3.cs test4.cs test5.cs test6.cs test7.cs \
+            test8.cs test9.cs test10.cs test11.cs test12.cs test13.cs \
+Index: clearsilver-0.10.3/python/Makefile
+===================================================================
+--- clearsilver-0.10.3.orig/python/Makefile
++++ clearsilver-0.10.3/python/Makefile
+@@ -11,7 +11,7 @@ NEO_UTIL_PYD = neo_cgi.pyd
+ NEO_UTIL_SRC = neo_cgi.c neo_util.c neo_cs.c
+ NEO_UTIL_OBJ = $(NEO_UTIL_SRC:%.c=%.o)
+ 
+-CFLAGS += $(PYTHON_INC)
++#CFLAGS += $(PYTHON_INC)
+ DLIBS += -lneo_cgi -lneo_cs -lneo_utl 
+ LIBS += -L$(LIB_DIR) $(DLIBS) $(DB2_LIB)
+ 
+@@ -21,6 +21,8 @@ else
+ TARGETS = $(NEO_UTIL_SO)
+ endif
+ 
++PYTHON_SITE = /usr/lib/python2.4/site-packages/
++
+ all: $(TARGETS)
+ 
+ $(NEO_UTIL_SO): setup.py $(NEO_UTIL_SRC) $(DEP_LIBS)
