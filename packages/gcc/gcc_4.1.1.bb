@@ -9,7 +9,7 @@ inherit autotools gettext
 
 include gcc-package.inc
 
-SRC_URI = "http://ftp.gnu.org/pub/gnu/gcc/${P}/${P}.tar.bz2 \
+SRC_URI = "http://ftp.gnu.org/pub/gnu/gcc/gcc-4.1.1/gcc-4.1.1.tar.bz2 \
 	file://arm-nolibfloat.patch;patch=1 \
 	file://arm-softfloat.patch;patch=1 \
 	file://ldflags.patch;patch=1"
