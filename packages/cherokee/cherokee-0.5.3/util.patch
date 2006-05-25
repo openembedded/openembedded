@@ -1,0 +1,29 @@
+
+#
+# Patch managed by http://www.xwaves.net
+#
+
+Index: cherokee-0.5.3/cherokee/util.c
+===================================================================
+--- cherokee-0.5.3.orig/cherokee/util.c	2006-04-01 17:58:59.000000000 +0200
++++ cherokee-0.5.3/cherokee/util.c	2006-05-23 20:37:12.000000000 +0200
+@@ -32,6 +32,7 @@
+ #include <sys/types.h>
+ #include <sys/stat.h>
+ #include <unistd.h>
++#include <errno.h>
+ 
+ #ifdef HAVE_SYS_TIME_H
+ # include <sys/time.h>
+@@ -385,9 +386,9 @@
+ 
+ 
+ 
+-#if defined(HAVE_PTHREAD) && !defined(HAVE_READDIR_R)
++/*#if defined(HAVE_PTHREAD) && !defined(HAVE_READDIR_R)*/
+ static pthread_mutex_t readdir_mutex = PTHREAD_MUTEX_INITIALIZER;
+-#endif
++/*#endif*/
+ 
+ /* The readdir subroutine is reentrant when an application program
+  * uses different DirectoryPointer parameter values (returned from the
