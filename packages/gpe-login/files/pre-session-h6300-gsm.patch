@@ -1,0 +1,21 @@
+diff -Naur gpe-login-0.86/X11/gpe-login.pre-session gpe-login-0.86_new/X11/gpe-login.pre-session
+--- gpe-login-0.86/X11/gpe-login.pre-session	2006-02-04 01:40:49.000000000 +0200
++++ gpe-login-0.86_new/X11/gpe-login.pre-session	2006-05-24 20:57:25.000000000 +0300
+@@ -28,11 +28,16 @@
+ chown $USER /dev/snd/controlC0
+ fi
+ 
+-# serial device (GSM phone of HTC devices)
++# serial device (GSM phone of HTC devices, bluetooth on iPAQ h6300)
+ if [ -e /dev/tts/0 ]; then
+ chown $USER /dev/tts/0
+ fi
+ 
++# serial device (GSM phone of iPAQ h6300 devices)
++if [ -e /dev/tts/1 ]; then
++chown $USER /dev/tts/1
++fi
++
+ # touchscreen devices #
+ 
+ if [ -e /dev/touchscreen/0raw ]; then

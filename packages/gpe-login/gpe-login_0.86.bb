@@ -10,5 +10,6 @@ RPROVIDES   = "gpe-session-starter"
 PR = "r0"
 
 
-SRC_URI += "file://removeblue-fontsize8.patch;patch=1"
+SRC_URI += "file://removeblue-fontsize8.patch;patch=1 \
+	    file://pre-session-h6300-gsm.patch;patch=1"
 
