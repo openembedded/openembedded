@@ -5,10 +5,12 @@ HOMEPAGE = "http://kernel.org/pub/linux/utils/kernel/pcmcia/pcmcia.html"
 SECTION = "kernel/userland"
 PRIORITY = "optional"
 
-SRC_URI = "http://kernel.org/pub/linux/utils/kernel/pcmcia/pcmciautils-${PV}.tar.bz2"
+SRC_URI = "http://kernel.org/pub/linux/utils/kernel/pcmcia/pcmciautils-${PV}.tar.bz2 \
+           file://makefile_fix.patch;patch=1 \
+	   file://version_workaround.patch;patch=1"
 S = "${WORKDIR}/pcmciautils-${PV}"
 
-PR = "r3"
+PR = "r0"
 
 export HOSTCC = "${BUILD_CC}"
 export etcdir = "${sysconfdir}"
@@ -18,7 +20,7 @@ export udevrulesdir = "${sysconfdir}/udev/rules.d"
 export UDEV = 1
 LD = "${CC}"
 CFLAGS =+ "-I${S}/src"
-CFLAGS =+ '-DPCMCIAUTILS_VERSION=010'
+CFLAGS =+ '-DPCMCIAUTILS_VERSION=013'
 
 PARALLEL_MAKE = ""
 EXTRA_OEMAKE = "-e 'STRIP=echo' 'LIB_OBJS=-lc -lsysfs'"
