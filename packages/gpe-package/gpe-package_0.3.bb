@@ -1,14 +1,19 @@
 LICENSE = "GPL"
-PR = "r1"
+PR = "r2"
 inherit gpe pkgconfig
 
 DESCRIPTION = "A package manager GUI for GPE"
-DEPENDS = "ipkg libgpewidget"
+DEPENDS = "ipkg libgpewidget gpe-su"
 RDEPENDS = "gpe-icons"
 SECTION = "gpe"
 PRIORITY = "optional"
 
-pkg_postinst () {
-#!/bin/sh
-chmod u+s /usr/bin/gpe-package
+SRC_URI += " file://sbin-and-no-suid-install.patch;patch=1 \
+	     file://gpe-package"
+
+FILES_${PN} += " /usr/bin/gpe-package"
+
+do_install_append() {
+	install -d ${D}/usr/bin
+	install -m 0755 ${WORKDIR}/gpe-package ${D}/usr/bin
 }
