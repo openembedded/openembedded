@@ -2,6 +2,7 @@ DESCRIPTION = "Ethernet/FDDI station activity monitor"
 LICENSE = "BSD"
 SECTION = "network"
 HOMEPAGE = "http://www-nrg.ee.lbl.gov/"
+DEPENDS = "fakeroot-native"
 RRECOMMENDS = "arpwatch-data"
 
 SRC_URI = "ftp://ftp.ee.lbl.gov/arpwatch-${PV}.tar.gz \
