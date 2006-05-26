@@ -3,7 +3,7 @@ AUTHOR = "Patrick Steiner <patrick.steiner@a1.net>"
 MAINTAINER = "Patrick Steiner <patrick.steiner@a1.net>"
 DEPENDS = ""
 PRIORITY = "optional"
-PR = "r1"
+PR = "r2"
 LICENSE = "GPLv2"
 
 SRC_URI = "file://display-brightness.sh"

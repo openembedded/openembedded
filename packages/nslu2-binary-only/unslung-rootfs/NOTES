@@ -524,11 +524,14 @@ Fix extraneous boot messages from jffs2 filesystem driver (change options
 used when building the flash jffs image).
 
 Added pl2303.c patch for TIOCMGET/MSET/MBIS/MBIC.
-
 Syntax fixes in prep for newer busybox:
  - comments in rc.samba, "cp" in rc.sysinit
 
 Flash filesystem cleanup (regained space):
  - replaced dupl 'date' utility with symlink, corrected 'killall' symlink
- - removed 'mt', 'libexec' from flash
- - adjusted 'unsling' to use common 'find' options
+ - removed 'mt', 'libexec', 'locate', 'xargs', 'updatedb' from flash
+   (TODO: strip ipkg database entries out for 'findutils' and 'cpio')
+ - adjusted 'unsling' to use common 'find' options (hope to replace soon)
+
+Upgraded slingbox to v1.1.3 busybox base; enabled 'more' command
+(note: upgrade added 3KB in size, 'more' added 4KB in size)

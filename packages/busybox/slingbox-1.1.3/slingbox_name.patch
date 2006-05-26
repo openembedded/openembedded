@@ -1,0 +1,10 @@
+--- busybox-1.1.2/applets/applets.c~	2006-03-22 15:16:25.000000000 -0600
++++ busybox-1.1.2/applets/applets.c	2006-05-15 11:53:18.000000000 -0500
+@@ -447,6 +447,7 @@
+ 	if(ENABLE_FEATURE_SUID_CONFIG) parse_config_file ();
+ 
+ 	if(!strncmp(name, "busybox", 7)) busybox_main(argc, argv);
++	if(!strncmp(name, "slingbox", 8)) busybox_main(argc, argv);
+ 	/* Do a binary search to find the applet entry given the name. */
+ 	applet_using = find_applet_by_name(name);
+ 	if(applet_using) {

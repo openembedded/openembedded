@@ -5,7 +5,7 @@ provides a POSIX calling interface to PCRE; the regular expressions \
 themselves still follow Perl syntax and semantics. The header file for \
 the POSIX-style functions is called pcreposix.h."
 SECTION = "devel"
-PR = "r4"
+PR = "r5"
 LICENSE = "BSD"
 SRC_URI = "ftp://ftp.csx.cam.ac.uk/pub/software/programming/pcre/pcre-${PV}.tar.bz2"
 S = "${WORKDIR}/pcre-${PV}"
@@ -19,6 +19,10 @@ CFLAGS_append = " -D_REENTRANT"
 EXTRA_OECONF = " --with-link-size=2 --enable-newline-is-lf --with-match-limit=10000000"
 
 do_compile () {
+	# stop libtool from trying to link with host libraries - fix from #33
+	# this resolve build problem on amd64 - #1015
+	sed -i 's:-L\$:-L${STAGING_LIBDIR} -L\$:' ${S}/${TARGET_SYS}-libtool
+
 	# The generation of dftables can lead to timestamp problems with ccache
 	# because the generated config.h seems newer.  It is sufficient to ensure that the
 	# attempt to build dftables inside make will actually work (foo_FOR_BUILD is
