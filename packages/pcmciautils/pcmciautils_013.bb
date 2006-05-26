@@ -8,9 +8,10 @@ PRIORITY = "optional"
 SRC_URI = "http://kernel.org/pub/linux/utils/kernel/pcmcia/pcmciautils-${PV}.tar.bz2 \
            file://makefile_fix.patch;patch=1 \
 	   file://version_workaround.patch;patch=1"
+
 S = "${WORKDIR}/pcmciautils-${PV}"
 
-PR = "r0"
+PR = "r4"
 
 export HOSTCC = "${BUILD_CC}"
 export etcdir = "${sysconfdir}"
