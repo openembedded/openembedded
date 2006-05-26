@@ -1,0 +1,28 @@
+--- busybox-1.1.2/util-linux/umount.c~	2006-03-22 15:16:26.000000000 -0600
++++ busybox-1.1.2/util-linux/umount.c	2006-05-15 11:43:23.000000000 -0500
+@@ -21,7 +21,7 @@
+ #include <getopt.h>
+ #include "busybox.h"
+ 
+-#define OPTION_STRING		"flDnrvad"
++#define OPTION_STRING		"flDnrvadL"
+ #define OPT_FORCE			1
+ #define OPT_LAZY			2
+ #define OPT_DONTFREELOOP	4
+@@ -29,6 +29,7 @@
+ #define OPT_REMOUNT			16
+ #define OPT_IGNORED			32	// -v is ignored
+ #define OPT_ALL				(ENABLE_FEATURE_UMOUNT_ALL ? 64 : 0)
++#define OPT_LINKSYS_LAZY		256
+ 
+ int umount_main(int argc, char **argv)
+ {
+@@ -51,6 +52,8 @@
+ 	argc -= optind;
+ 	argv += optind;
+ 
++	if (opt & OPT_LINKSYS_LAZY) opt |= OPT_LAZY; /* -L option same as -l */
++
+ 	doForce = MAX((opt & OPT_FORCE), (opt & OPT_LAZY));
+ 
+ 	/* Get a list of mount points from mtab.  We read them all in now mostly
