@@ -3,8 +3,12 @@ LICENSE = "xmame"
 SECTION = "games"
 PRIORITY = "optional"
 DEPENDS = "expat virtual/libsdl libsdl-mixer"
+PR = "r1"
 
-SRC_URI = "http://x.mame.net/download/historic/xmame-${PV}.tar.bz2 file://tiny.mak"
+SRC_URI = "http://x.mame.net/download/historic/xmame-${PV}.tar.bz2 \
+	file://arm.patch;patch=1 \
+	file://tiny.mak"
+
 S = "${WORKDIR}/xmame-${PV}"
 
 inherit flow-lossage
