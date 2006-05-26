@@ -1,4 +1,3 @@
-SECTION = "network"
 DESCRIPTION = "Quagga is a routing software suite, providing \
 implementations of OSPFv2, OSPFv3, RIP v1 and v2, RIPv3 and BGPv4 for \
 Unix platforms, particularly FreeBSD, Linux, Solaris and NetBSD. \
@@ -6,11 +5,14 @@ Quagga is a fork of GNU Zebra which was developed by Kunihiro \
 Ishiguro. The Quagga tree aims to build a more involved community \
 around Quagga than the current centralised model of GNU Zebra."
 HOMEPAGE = "http://www.quagga.net/"
+SECTION = "network"
+MAINTAINER = "Jamie Lenehan <lenehan@twibble.org>"
 LICENSE = "GPL"
 DEPENDS = "readline ncurses perl-native"
-PR = "r0"
 
-SRC_URI = "http://www.quagga.net/download/quagga-${PV}.tar.gz \
+# ${QUAGGASUBDIR} is deal with old versions. Set to "/attic" for old
+# versions and leave it empty for recent versions.
+SRC_URI = "http://www.quagga.net/download${QUAGGASUBDIR}/quagga-${PV}.tar.gz \
 	   file://fix-for-lib-inpath.patch;patch=1 \
 	   file://quagga.init \
 	   file://quagga.default \
@@ -53,11 +55,11 @@ EXTRA_OECONF = "--prefix=${prefix} \
 
 # Split into a main package and seperate per-protocol packages
 PACKAGES = "${PN} \
-	    ${PN}-ospfd ${PN}-ospf6d ${PN}-bpgd ${PN}-ripd ${PN}-ripngd ${PN}-isisd \
+	    ${PN}-ospfd ${PN}-ospf6d ${PN}-bgpd ${PN}-ripd ${PN}-ripngd ${PN}-isisd \
 	    ${PN}-ospfclient ${PN}-watchquagga ${PN}-dev ${PN}-doc"
 FILES_${PN}-ospfd	= "${libdir}/quagga/ospfd /usr/lib/libospf.so.*"
 FILES_${PN}-ospf6d	= "${libdir}/quagga/ospf6d"
-FILES_${PN}-bpgd	= "${libdir}/quagga/bgpd"
+FILES_${PN}-bgpd	= "${libdir}/quagga/bgpd"
 FILES_${PN}-ripd	= "${libdir}/quagga/ripd"
 FILES_${PN}-ripngd	= "${libdir}/quagga/ripngd"
 FILES_${PN}-isisd	= "${libdir}/quagga/isisd"
@@ -77,7 +79,7 @@ PKG_${PN}-ospfclient	= ${PN}-ospfclient
 # Each of the per-protocol packages depends on the main package
 RDEPENDS_${PN}-ospfd	= ${PN}
 RDEPENDS_${PN}-ospf6d	= ${PN}
-RDEPENDS_${PN}-bpgd	= ${PN}
+RDEPENDS_${PN}-bgpd	= ${PN}
 RDEPENDS_${PN}-ripd 	= ${PN}
 RDEPENDS_${PN}-ripngd 	= ${PN}
 RDEPENDS_${PN}-isisd 	= ${PN}
@@ -106,12 +108,16 @@ do_install () {
 
 # Add quagga's user and groups
 pkg_postinst_${PN} () {
-        grep -q quagga: /etc/group || addgroup quagga
+	grep -q quagga: /etc/group || addgroup quagga
 	grep -q quaggavty: /etc/group || addgroup quaggavty
-        grep -q quagga: /etc/passwd || adduser --disabled-password --home=/var/run/quagga/ --ingroup quagga -g "Quagga routing suite" quagga
+	grep -q quagga: /etc/passwd || adduser --disabled-password --home=/var/run/quagga/ --ingroup quagga -g "Quagga routing suite" quagga
 }
 
 # Stop apps before uninstall
+pkg_prerm_${PN} () {
+	${sysconfdir}/init.d/quagga stop
+}
+
 pkg_prerm_${PN}-ospfd () {
 	${sysconfdir}/init.d/quagga stop ospfd
 }
@@ -121,7 +127,7 @@ pkg_prerm_${PN}-ospf6d () {
 }
 
 pkg_prerm_${PN}-bgpd () {
-	${sysconfdir}/init.d/quagga stop bpgd
+	${sysconfdir}/init.d/quagga stop bgpd
 }
 
 pkg_prerm_${PN}-ripd () {
