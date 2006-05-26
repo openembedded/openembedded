@@ -1,0 +1,68 @@
+
+http://bugs.openembedded.org/show_bug.cgi?id=182
+
+
+eric@eric-weiss.de changed:
+
+           What    |Removed                     |Added
+----------------------------------------------------------------------------
+                 CC|                            |eric@eric-weiss.de
+             Status|NEW                         |RESOLVED
+         Resolution|                            |WORKSFORME
+
+
+
+
+------- Comment #2 from eric@eric-weiss.de  2006-05-10 05:30 -------
+add following patch to directory
+org.openembedded.dev/packages/xmame/files/
+with name xmame-0.100.arm.patch
+
+#################snipp######################
+Index: xmame-0.100/src/unix/unix.mak
+===================================================================
+--- xmame-0.100.orig/src/unix/unix.mak	2005-09-17 03:43:56.000000000 +0200
++++ xmame-0.100/src/unix/unix.mak	2006-05-26 14:20:23.150163928 +0200
+@@ -20,7 +20,7 @@
+ CFLAGS.risc       = -DALIGN_INTS -DALIGN_SHORTS 
+ CFLAGS.risc_lsb   = -DALIGN_INTS -DALIGN_SHORTS -DLSB_FIRST
+ CFLAGS.mips       = -DALIGN_INTS -DALIGN_SHORTS -DSGI_FIX_MWA_NOP
+-
++CFLAGS.arm       = -DALIGN_INTS -DALIGH_SHORTS -DLSB_FIRST
+ ##############################################################################
+ # Architecture-dependent settings
+ ##############################################################################
+@@ -59,7 +59,7 @@
+ LIBS.svgafx     = $(X11LIB) -lvga -lvgagl -lglide3
+ endif
+ LIBS.openstep	= -framework AppKit
+-LIBS.SDL	= $(X11LIB) `$(SDL_CONFIG) --libs`
++LIBS.SDL	= `$(SDL_CONFIG) --libs`
+ LIBS.photon2	= -L/usr/lib -lph -lphrender
+ 
+ CFLAGS.x11      = $(X11INC) $(XINPUT_DEVICES_CFLAGS) $(XINERAMA_CFLAGS)
+@@ -638,7 +638,7 @@
+ 
+ $(OBJ)/%.a:
+ 	$(CC_COMMENT) @echo 'Archiving $@ ...'
+-	$(CC_COMPILE) ar $(AR_OPTS) $@ $^
++	$(CC_COMPILE) $(AR) $(AR_OPTS) $@ $^
+ 	$(CC_COMPILE) $(RANLIB) $@
+ 
+ $(OSDEPEND): $(UNIX_OBJS)
+@@ -674,13 +674,13 @@
+ # generate asm source files for the 68000/68020 emulators
+ $(OBJ)/cpu/m68000/68000.asm:  src/cpu/m68000/make68k.c
+ 	$(CC_COMMENT) @echo Compiling $<...
+-	$(CC_COMPILE) $(CC) $(MY_CFLAGS) -O0 -DDOS -o $(OBJ)/cpu/m68000/make68k $<
++	$(CC_COMPILE) $(BUILD_CC) $(MY_CFLAGS) -O0 -DDOS -o $(OBJ)/cpu/m68000/make68k $<
+ 	$(CC_COMMENT) @echo Generating $@...
+ 	$(CC_COMPILE) $(OBJ)/cpu/m68000/make68k $@ $(OBJ)/cpu/m68000/68000tab.asm 00
+ 
+ $(OBJ)/cpu/m68000/68020.asm:  src/cpu/m68000/make68k.c
+ 	$(CC_COMMENT) @echo Compiling $<...
+-	$(CC_COMPILE) $(CC) $(MY_CFLAGS) -O0 -DDOS -o $(OBJ)/cpu/m68000/make68k $<
++	$(CC_COMPILE) $(BUILD_CC) $(MY_CFLAGS) -O0 -DDOS -o $(OBJ)/cpu/m68000/make68k $<
+ 	$(CC_COMMENT) @echo Generating $@...
+ 	$(CC_COMPILE) $(OBJ)/cpu/m68000/make68k $@ $(OBJ)/cpu/m68000/68020tab.asm 20
+ 
