@@ -11,6 +11,7 @@ SRC_URI = "${SOURCEFORGE_MIRROR}/net-snmp/net-snmp-${PV}.tar.gz \
 	
 inherit autotools
 
+PARALLEL_MAKE = ""
 EXTRA_OECONF = "--enable-shared --disable-manuals" 
 EXTRA_OEMAKE = "INSTALL_PREFIX=${D}"
 
