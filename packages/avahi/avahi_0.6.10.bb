@@ -43,6 +43,10 @@ INITSCRIPT_NAME_avahi-dnsconfd = "avahi-dnsconfd"
 INITSCRIPT_PARAMS_avahi-dnsconfd = "defaults 22 19"
 
 pkg_postinst_avahi-daemon () {
+	if [ "x$D" != "x" ]; then
+		exit 1
+	fi
+
 	grep avahi /etc/group || addgroup avahi
 	grep avahi /etc/passwd || adduser --disabled-password --system --home /var/run/avahi-daemon --no-create-home avahi --ingroup avahi -g Avahi
 	/etc/init.d/dbus-1 force-reload
