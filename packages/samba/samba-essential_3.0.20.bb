@@ -1,4 +1,4 @@
-PR = "r2"
+PR = "r3"
 
 SRC_URI = "http://us2.samba.org/samba/ftp/stable/samba-${PV}.tar.gz \
 	   file://configure.patch;patch=1 \
@@ -47,11 +47,21 @@ do_install_append() {
 	install -d "${D}${sysconfdir}/samba"	
 	install -d "${D}/usr/share/samba/help"	
 	
-	install ${WORKDIR}/smb-essential-inactive.conf "${D}${sysconfdir}/samba/"
-	install ${WORKDIR}/smb-essential.conf "${D}${sysconfdir}/samba/smb.conf"
+	install -m 0644 ${WORKDIR}/smb-essential-inactive.conf "${D}${sysconfdir}/samba/"
+	install -m 0644 ${WORKDIR}/smb-essential.conf "${D}${sysconfdir}/samba/smb.conf"
 
-	install ${WORKDIR}/Managing-Samba.txt  ${D}/usr/share/samba/help
+	install -m 0644 ${WORKDIR}/Managing-Samba.txt  ${D}/usr/share/samba/help
 	
+}
+
+do_configure_append() {
+	distro_up="`echo "${DISTRO}" | awk '{printf("%s\n",toupper($0))}'`"
+	
+	cat ${WORKDIR}/smb-essential-inactive.conf | sed "s/MYWORKGROUP/${distro_up}/" > ${WORKDIR}/smb-essential-inactive.conf_
+	mv  ${WORKDIR}/smb-essential-inactive.conf_ ${WORKDIR}/smb-essential-inactive.conf 
+
+	cat ${WORKDIR}/smb-essential.conf | sed "s/MYWORKGROUP/${distro_up}/" > ${WORKDIR}/smb-essential.conf_
+	mv  ${WORKDIR}/smb-essential.conf_ ${WORKDIR}/smb-essential.conf 	
 }
 
 FILES_${PN} = "${bindir}/smbpasswd \	       
