@@ -4,7 +4,7 @@ your networked PDA.
 
 Since it is generally a bad idea to allow everyone read and write access
 to your PDA, you will have to configure at least one user to get access to
-any shared folder but "tmp" (tmp is read-write for everyone).
+any shared folder.
 
 How to create a Samba user with password:
 
@@ -31,4 +31,10 @@ How to create a Samba user with password:
 	Added user testuser.
 	root@poodle:/usr/bin# 
 
-- Done ;)
+- After you have added your new samba user, you'll have to restart the samba
+  server by running "/etc/init.d/samba restart" or by rebooting the device
+  
+- Use the newly created username / password combination to access your network
+  shares. Please note the the Samba username must also exist as a unix username!
+  
+  

@@ -1,12 +1,13 @@
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "http://us2.samba.org/samba/ftp/stable/samba-${PV}.tar.gz \
 	   file://configure.patch;patch=1 \
 	   file://cifs.patch;patch=1 \
 	   file://config-lfs.patch;patch=1 \
-	   file://init \
+	   file://init-essential \
            file://quota.patch;patch=1;pnum=0 \
 	   file://smb-essential.conf \
+	   file://smb-essential-inactive.conf \	   
 	   file://Managing-Samba.txt"
 	   
 S := ${WORKDIR}/samba-${PV}/source
@@ -41,12 +42,14 @@ do_install_append() {
 	rm -f ${D}/sbin/mount.smbfs
 	rmdir ${D}/sbin
 	install -d "${D}${sysconfdir}/init.d"
-	install -c -m 755 ${WORKDIR}/init ${D}${sysconfdir}/init.d/samba
+	install -c -m 755 ${WORKDIR}/init-essential ${D}${sysconfdir}/init.d/samba
 	
 	install -d "${D}${sysconfdir}/samba"	
 	install -d "${D}/usr/share/samba/help"	
 	
+	install ${WORKDIR}/smb-essential-inactive.conf "${D}${sysconfdir}/samba/"
 	install ${WORKDIR}/smb-essential.conf "${D}${sysconfdir}/samba/smb.conf"
+
 	install ${WORKDIR}/Managing-Samba.txt  ${D}/usr/share/samba/help
 	
 }
