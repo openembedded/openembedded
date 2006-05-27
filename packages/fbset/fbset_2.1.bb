@@ -1,9 +1,9 @@
 #
 # Copyright Matthias Hentges <devel@hentges.net> (c) 2006
-# License: GPL (see http://www.gnu.org/licenses/gpl.txt for a copy of the license)
+# License: MIT (see http://www.opensource.org/licenses/mit-license.php for a copy of the license)
 #
 # Filename: fbset_2.1.bb
-# Date: 27-May-06
+# Date: 28-May-06
 
 DESCRIPTION = "The fbset console tool"
 MAINTAINER = "Matthias 'CoreDump' Hentges <oe@hentges.net>"
