@@ -1,0 +1,44 @@
+--- NRCit.orig/src/gtk/webi.cc.orig     2006-04-04 01:53:14.000000000 +0300
++++ NRCit/src/gtk/webi.cc       2006-04-04 01:44:20.000000000 +0300
+@@ -839,12 +839,15 @@
+     status->status = WEBI_LOADING_COMPLETE;
+     status->statusCode = statusCode;
+ 
++    g_signal_emit_by_name(webi, "status", status);
+ //    assert(status->ready == status->files);
+ }
+ 
+ void MyRoot::internalStatusStartItem(const OSB::ResourceStatus * _status)
+ {
+     if (!internal) return;
++
++    status->status = WEBI_LOADING_START;
+     status->files++;
+     g_signal_emit_by_name(webi, "status", status);
+ }
+@@ -852,6 +855,8 @@
+ void MyRoot::internalStatusHeadersItem(const OSB::ResourceStatus * _status)
+ {
+     if (!internal) return;
++
++    status->status = WEBI_LOADING_START;
+     if (_status->size()) {
+         status->size += _status->size();
+         status->totalSize += _status->size(); 
+@@ -863,6 +868,8 @@
+ void MyRoot::internalStatusProgressItem(const OSB::ResourceStatus * _status)
+ {
+     if (!internal) return;
++    
++    status->status = WEBI_LOADING_START;
+     status->totalReceived += _status->lastReceived();
+     // in case Content-Length -header is not present
+     if (!_status->size()) {
+@@ -880,6 +887,7 @@
+     status->ready++;
+     if (_status->error()) {
+         // FIXME: handle errors as well.u
++	status->status = WEBI_LOADING_ERROR;
+     }
+ 
+     g_signal_emit_by_name(webi, "status", status);
