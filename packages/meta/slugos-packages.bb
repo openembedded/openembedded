@@ -19,6 +19,7 @@ PACKAGES = "${PN}"
 # KEEP IN ALPHABETICAL ORDER
 SLUGOS_PACKAGES = "\
 	alsa-lib \
+	asterisk \
 	atftp \
 	audiofile \
 	aumix \
