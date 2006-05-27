@@ -774,6 +774,11 @@ ftp://ftp.kernel.org/pub	ftp://ftp.jp.kernel.org/pub
 ftp://ftp.gnupg.org/gcrypt/     ftp://ftp.franken.de/pub/crypt/mirror/ftp.gnupg.org/gcrypt/
 ftp://ftp.gnupg.org/gcrypt/     ftp://ftp.surfnet.nl/pub/security/gnupg/
 ftp://ftp.gnupg.org/gcrypt/     http://gulus.USherbrooke.ca/pub/appl/GnuPG/
+ftp://dante.ctan.org/tex-archive ftp://ftp.fu-berlin.de/tex/CTAN
+ftp://dante.ctan.org/tex-archive http://sunsite.sut.ac.jp/pub/archives/ctan/
+ftp://dante.ctan.org/tex-archive http://ctan.unsw.edu.au/
+
+
 
 ftp://.*/.*/	http://www.oesources.org/source/current/
 http://.*/.*/	http://www.oesources.org/source/current/
