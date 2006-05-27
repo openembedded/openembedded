@@ -12,12 +12,19 @@ SRC_URI = "${SOURCEFORGE_MIRROR}/net-snmp/net-snmp-${PV}.tar.gz \
 inherit autotools
 
 EXTRA_OECONF = "--enable-shared --disable-manuals" 
-EXTRA_OECONF_mipsel += "--with-endianness=little"
-
 EXTRA_OEMAKE = "INSTALL_PREFIX=${D}"
 
 do_configure() {
-	oe_runconf
+	# endianness fun.. inspired by openssl.inc
+	. ${CONFIG_SITE}
+	if test "x$ac_cv_c_bigendian" = "xyes"; then
+	    ENDIANESS=" --with-endianness=big"
+	elif test "x$ac_cv_c_littleendian" = "xyes"; then
+	    ENDIANESS=" --with-endianness=little"
+	else
+	    oefatal do_configure cannot determine endianess
+	fi
+	oe_runconf $ENDIANESS
 }
 
 do_install_append() {
