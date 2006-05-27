@@ -1,5 +1,5 @@
 LICENSE = "GPLv2"
-DEPENDS = "gtk+"
+DEPENDS = "gtk+ intltool-native"
 SRC_URI = "http://savannah.nongnu.org/download/${PN}/${PN}-${PV}.tar.gz \
 	   file://leafpad.desktop \
 	   file://leafpad.png"
