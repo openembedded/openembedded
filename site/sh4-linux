@@ -254,11 +254,6 @@ mysql_cv_func_atomic_sub=${mysql_cv_func_atomic_sub=no}
 mysql_cv_func_atomic_add=${mysql_cv_func_atomic_add=no}
 ac_cv_conv_longlong_to_float=${ac_cv_conv_longlong_to_float=yes}
 
-# minicom
-ac_cv_header_getopt_h=${ac_cv_header_getopt_h=xno}
-ac_cv_func_getopt_long=${ac_cv_func_getopt_long=xno}
-am_cv_sys_posix_termios=${ac_cv_sys_posix_termios=yes}
-
 # gettext
 am_cv_func_working_getline=${am_cv_func_working_getline=yes}
 
