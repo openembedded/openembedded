@@ -2,9 +2,9 @@ LICENSE = "GPL"
 DESCRIPTION = "A file-synchronization tool"
 SECTION = "console/network"
 PRIORITY = "optional"
-PR = "r1"
+PR = "r0"
 
-SRC_URI = "http://rsync.samba.org/ftp/rsync/old-versions/rsync-${PV}.tar.gz \
+SRC_URI = "http://rsync.samba.org/ftp/rsync/rsync-${PV}.tar.gz \
            file://rsyncd.conf"
 
 inherit autotools
