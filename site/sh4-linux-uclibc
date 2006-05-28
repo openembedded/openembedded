@@ -24,3 +24,6 @@ ac_cv_have_broken_snprintf=${ac_cv_have_broken_snprintf=no}
 ac_cv_have_accrights_in_msghdr=${ac_cv_have_accrights_in_msghdr=no}
 ac_cv_have_control_in_msghdr=${ac_cv_have_control_in_msghdr=yes}
 ac_cv_have_openpty_ctty_bug=${ac_cv_have_openpty_ctty_bug=yes}
+
+# sudo
+sudo_cv_uid_t_len=${sudo_cv_uid_t_len=10}
