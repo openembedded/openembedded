@@ -6,9 +6,14 @@
 # INHERIT += "packaged-staging"
 #
 
-do_pstage () {
-#do our magic here 
+
+do_stage_prepend() {
+echo
 }
 
-addtask pstage before do_build
-addtask pstage after do_package
+do_stage_append () {
+echo
+}
+
+
+
