@@ -6,6 +6,10 @@
 # INHERIT += "packaged-staging"
 #
 
+# Summary:
+# This class will have two modes of operation:
+# LEETVARNAME1: repopulated staging from scratch for each packages
+# LEETVARNAME2: append each package to staging
 
 do_stage_prepend() {
 echo
