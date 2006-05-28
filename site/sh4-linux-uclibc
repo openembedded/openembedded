@@ -27,3 +27,6 @@ ac_cv_have_openpty_ctty_bug=${ac_cv_have_openpty_ctty_bug=yes}
 
 # sudo
 sudo_cv_uid_t_len=${sudo_cv_uid_t_len=10}
+
+# vim
+ac_cv_sizeof_int=${ac_cv_sizeof_int=4}
