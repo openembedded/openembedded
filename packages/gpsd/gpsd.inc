@@ -4,6 +4,9 @@ PRIORITY = "optional"
 LICENSE = "GPL"
 DEPENDS = "dbus-0.23.4 ncurses"
 
+EXTRA_OECONF = "--x-includes=${STAGING_INCDIR}/X11  \
+		--x-libraries=${STAGING_LIBDIR}"
+
 SRC_URI = "http://download.berlios.de/gpsd/gpsd-${PV}.tar.gz \
 	file://gpsd"
 
