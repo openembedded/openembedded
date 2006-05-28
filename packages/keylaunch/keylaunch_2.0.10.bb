@@ -13,12 +13,15 @@ DESCRIPTION = "A small utility for binding commands to a hot key.\
  program is already running, keylaunch can bring its window to the front\
  rather than just running another copy."
 PACKAGE_ARCH = "${MACHINE_ARCH}"
-PR = "r5"
+PR = "r6"
 
-SRC_URI += " file://keylaunchrc"
+SRC_URI += " file://keylaunchrc \
+	     file://80chvt-SUID"
 
 do_install_prepend () {
+	install -d ${D}/etc/X11/Xinit.d
 	install ${WORKDIR}/keylaunchrc ${S}/keylaunchrc
+	install ${WORKDIR}/80chvt-SUID ${D}/etc/X11/Xinit.d
 }
 
 export CVSBUILD="no"

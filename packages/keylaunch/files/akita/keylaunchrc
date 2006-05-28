@@ -22,3 +22,7 @@ key=....F27:-:gpe-calendar
 #key=....F28:-:                                                                 
 key=....F29:-:gpe-mini-browser                                                                 
 #key=....F30:-:                                                                 
+
+# VT changing
+key=...*Left:-:~chvt 1
+key=...*Right:-:~chvt 3
