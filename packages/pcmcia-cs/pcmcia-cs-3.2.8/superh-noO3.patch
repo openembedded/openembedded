@@ -1,0 +1,11 @@
+--- pcmcia-cs-3.2.8/rules.mk_orig	2006-05-26 23:23:12.000000000 +0000
++++ pcmcia-cs-3.2.8/rules.mk	2006-05-26 23:23:18.000000000 +0000
+@@ -1,7 +1,7 @@
+ # Global defaults
+ 
+ # Kernel compiles must have optimization enabled!
+-CFLAGS = -O3 -Wall -Wstrict-prototypes -pipe $(WFLAG)
++CFLAGS = -O2 -Wall -Wstrict-prototypes -pipe $(WFLAG)
+ COFLAGS = -kv
+ YFLAGS = -d
+ 
