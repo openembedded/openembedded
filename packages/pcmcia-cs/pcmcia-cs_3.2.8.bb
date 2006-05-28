@@ -20,6 +20,8 @@ SRC_URI = "${SOURCEFORGE_MIRROR}/pcmcia-cs/pcmcia-cs-${PV}.tar.gz \
 	   file://wnv.conf"
 
 SRC_URI_append_spitz = " file://nocleanup.patch;patch=1"
+SRC_URI_append_sh3 = " file://superh-noO3.patch;patch=1"
+
 S = "${WORKDIR}/pcmcia-cs-${PV}"
 
 INITSCRIPT_NAME = "pcmcia"
