@@ -1,1 +1,31 @@
 This branch will hold the code for the Google Summer of Code 2006 project "Putting staging under packagemanagement"
+
+The Plan:
+
+1) abuse current do_stage methods:
+
+	do_stage_prepend() {
+		old_dir = STAGING_FOODIR
+		STAGING_FOODIR = new_dir
+	}
+
+	do_stage_append() {
+		$packagemanager --make-me-a-new-package ${PN}.packageformat $new_dir
+		STAGING_FOODIR = old_dir
+		$packagemanager --install ${PN}.packageformat --dest STAGING_FOODIR 
+	}
+
+2) Track down duplicate files across packages
+
+3) compare the hacky packages with the -dev packages intended for the target
+
+4) converge staging packages and -dev packages
+
+[...]
+
+N) use -dev packages
+
+	do_stage() {
+		$packagemanager --install ${PN}-dev --dest STAGING_FOODIR
+	} 
+
