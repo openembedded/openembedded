@@ -1,8 +1,8 @@
-SECTION = "base"
 DESCRIPTION = "This package provides the necessary \
 infrastructure for basic TCP/IP based networking."
+SECTION = "base"
 LICENSE = "GPL"
-PR = "r10"
+PR = "r11"
 
 inherit update-rc.d
 
