@@ -4,7 +4,7 @@ SECTION  = "gpe/libs"
 PRIORITY = "optional"
 DEPENDS  = "libgpewidget libgpepimc sqlite"
 MAINTAINER  = "Florian Boor <florian.boor@kernelconcepts.de>"
-PV = "0.21+cvs${SRCDATE}"
+PV = "0.30+cvs${SRCDATE}"
 PR = "r0"
 DEFAULT_PREFERENCE = "-1"
 
