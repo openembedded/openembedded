@@ -1,4 +1,4 @@
-DESCRIPTION = "Navigation application for use with GPS adapters"
+DESCRIPTION = "A GPS navigation application for the Opie environment."
 SECTION = "opie/applications"
 PRIORITY = "optional"
 MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
@@ -15,7 +15,6 @@ S = "${WORKDIR}/qpegps_my"
 inherit palmtop
 
 QMAKE_PROFILES = "qpegps.pro"
-EXTRA_QMAKEVARS_POST += "LIBS=-lqpe"
 
 do_install() {
         install -d ${D}${palmtopdir}/bin \

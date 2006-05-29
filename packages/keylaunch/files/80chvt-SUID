@@ -1,0 +1,25 @@
+#! /bin/sh
+#
+# Copyright Matthias Hentges <devel@hentges.net> (c) 2006
+# License: GPL (see http://www.gnu.org/licenses/gpl.txt for a copy of the license)
+#
+# Filename: chvt-SUID.sh
+# Date: 28-May-06
+
+
+#
+# Sets the SUID bit on chvt to allow changing to the VT from inside X by
+# any user. Since a SUID binary still is a security risk, we chmod only
+# when keylaunch is used and not by default.
+#
+
+for target in /usr/bin/chvt.console-tools
+do
+	if test "`ls -l "$target" | awk '{print $1}'|cut -c 2-4`" != "rws" 
+	then
+		echo "Making [$target] SUID root..."
+		chmod u+s "$target"
+	else
+		echo "Ignoring [$target]"
+	fi
+done
