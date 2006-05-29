@@ -22,3 +22,7 @@ key=....F18:-:gpe-calendar
 #key=....F19:-:                                                                 
 #key=....F19:-:                                                                 
 #key=....F10:-:                                                                 
+
+# VT changing
+key=...*Left:-:~chvt 1
+key=...*Right:-:~chvt 3
