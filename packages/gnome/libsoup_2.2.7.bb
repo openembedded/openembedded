@@ -14,5 +14,5 @@ FILES_${PN}-doc = "${datadir}"
 do_stage() {
 	autotools_stage_all
 	install -d ${STAGING_DATADIR}/pkgconfig
-	install -m 0644 ${D}${libdir}/pkgconfig/* ${STAGING_DATADIR}/pkgconfig/
+	install -m 0644 ${S}/*.pc ${STAGING_DATADIR}/pkgconfig/
 }
