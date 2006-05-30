@@ -4,8 +4,9 @@ LICENSE = "GPL"
 HOMEPAGE = "http://openezx.org"
 AUTHOR = "Harald Welte"
 MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
+PR = "r1"
 
-SRC_URI = "svn://svn.openezx.org/trunk/src;module=gpiotool;proto=http"
+SRC_URI = "svn://svn.openezx.org/trunk/src/userspace;module=gpiotool;proto=http"
 S = "${WORKDIR}/gpiotool"
 
 do_compile() {

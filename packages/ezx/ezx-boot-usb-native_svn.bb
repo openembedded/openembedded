@@ -1,9 +1,12 @@
 DESCRIPTION = "Boots an EZX device with a user supplied kernel zImage"
 DEPENDS = "libusb-native"
 SECTION = "devel"
+AUTHOR = "Harald Welte"
+MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 LICENSE = "GPL"
+PR = "r1"
 
-SRC_URI = "svn://svn.openezx.org/trunk/src;module=boot_usb;proto=http"
+SRC_URI = "svn://svn.openezx.org/trunk/src/host;module=boot_usb;proto=http"
 S = "${WORKDIR}/boot_usb"
 
 inherit native
