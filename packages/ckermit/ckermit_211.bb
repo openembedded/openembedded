@@ -8,6 +8,7 @@ MAINTAINER = "Holger Schurig"
 HOMEPAGE = "http://www.columbia.edu/kermit/"
 SECTION = "console/network"
 SRC_URI = "ftp://kermit.columbia.edu/kermit/archives/cku${PV}.tar.gz"
+PR = "r1"
 
 #
 # From http://www.columbia.edu/kermit/ck80.html#license
@@ -63,6 +64,11 @@ export BINDIR = "${bindir}"
 export MANDIR = "${mandir}/man1"
 export INFODIR = "${infodir}"
 
+# Additional flags. For uclibc we add -DNOARROWKEYS which stops ckermit
+# trying to look inside the stdio headers.
+CKERMIT_ADDITIONAL = ""
+CKERMIT_ADDITIONAL_linux-uclibc = "-DNOARROWKEYS"
+
 do_compile () {
 	# The original makefile doesn't differentiate between CC and CC_FOR_BUILD,
 	# so we build wart manually. Note that you need a ckwart.o with the proper
@@ -83,7 +89,8 @@ do_compile () {
 		-DNOSERVER -DNOSEXP -DNORLOGIN -DNOOLDMODEMS -DNOSSH -DNOLISTEN \
 		-DNORESEND -DNOAUTODL -DNOSTREAMING -DNOHINTS -DNOCKXYZ -DNOLEARN \
 		-DNOMKDIR -DNOPERMS -DNOCKTIMERS -DNOCKREGEX -DNOREALPATH \
-		-DCK_SMALL -DNOLOGDIAL -DNORENAME -DNOWHATAMI"
+		-DCK_SMALL -DNOLOGDIAL -DNORENAME -DNOWHATAMI \
+		${CKERMIT_ADDITIONAL}"
 }
 
 do_install () {
