@@ -1,0 +1,11 @@
+--- mplayer_20060519/Makefile.orig	2006-05-30 09:32:23.000000000 +0100
++++ mplayer_20060519/Makefile	2006-05-30 09:34:07.000000000 +0100
+@@ -438,7 +438,7 @@
+ 	$(CC) -DCODECS2HTML codec-cfg.c mp_msg.o -o $@
+ 
+ $(PRG_CFG): codec-cfg.c codec-cfg.h help_mp.h
+-	$(HOST_CC) $(HOST_CFLAGS) -I. codec-cfg.c -o $(PRG_CFG) \
++	$(BUILD_CC) -Ilibmpdemux -Iloader -Ilibvo -I. codec-cfg.c -o $(PRG_CFG) \
+ 	-DCODECS2HTML $(EXTRA_LIB) $(EXTRA_INC)
+ 
+ install: $(ALL_PRG)
