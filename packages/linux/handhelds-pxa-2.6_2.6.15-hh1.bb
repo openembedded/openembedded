@@ -2,6 +2,7 @@ SECTION = "kernel"
 DESCRIPTION = "handhelds.org Linux kernel for PXA based devices."
 MAINTAINER = "Greg Gilbert <greg@treke.net>"
 LICENSE = "GPL"
+PR = "r1"
 
 COMPATIBLE_HOST = "arm.*-linux"
 

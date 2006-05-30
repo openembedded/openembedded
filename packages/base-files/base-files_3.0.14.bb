@@ -1,7 +1,7 @@
 DESCRIPTION = "Miscellaneous files for the base system."
 SECTION = "base"
 PRIORITY = "required"
-PR = "r45"
+PR = "r46"
 LICENSE = "GPL"
 
 PACKAGE_ARCH = "${MACHINE_ARCH}"

@@ -3,7 +3,7 @@ DESCRIPTION = "Enables PPP dial-in through a serial connection"
 MAINTAINER = "Rene Wagner <rw@handhelds.org>"
 DEPENDS = "ppp"
 RDEPENDS = "ppp"
-PR = "r4"
+PR = "r5"
 LICENSE = "MIT"
 
 SRC_URI = "file://host-peer \
@@ -22,7 +22,11 @@ pkg_postinst() {
 if test "x$D" != "x"; then
 	exit 1
 else
-	adduser --system --home /dev/null --no-create-home --empty-password --ingroup nogroup -s ${sbindir}/ppp-dialin ppp
+	if grep -q '^ppp:' /etc/passwd; then
+		echo "ppp: login exists"
+	else
+		adduser --system --home /dev/null --no-create-home --empty-password --ingroup nogroup -s ${sbindir}/ppp-dialin ppp
+	fi
 fi
 }
 

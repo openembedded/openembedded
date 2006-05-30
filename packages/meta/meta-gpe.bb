@@ -1,7 +1,7 @@
 PACKAGES = gpe-base-depends gpe-task-base gpe-task-settings gpe-task-pim gpe-task-apps gpe-task-games gpe-task-connectivity
 DESCRIPTION = "Meta-package for GPE Palmtop Environment"
 MAINTAINER = "Phil Blundell <pb@handhelds.org>"
-PR = "r44"
+PR = "r45"
 
 ALLOW_EMPTY = "1"
 
@@ -91,8 +91,10 @@ gpe-task-apps = "\
     gpe-what \
     matchbox-panel-hacks \
     gpe-aerial \
-    gpe-soundbite \
-    rosetta"
+    gpe-soundbite"
+    
+# causes a >15 secs delay on initial boot
+#    rosetta"
 
 RDEPENDS_gpe-task-apps := "${gpe-task-apps}"
 DEPENDS += " ${gpe-task-apps}"

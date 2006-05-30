@@ -1,9 +1,17 @@
 FEED_URIS_append_openzaurus = " x11##http://ewi546.ewi.utwente.nl/mirror/www.openzaurus.org/official/unstable/${DISTRO_VERSION}/feed/x11 "
 FEED_URIS_append_opensimpad = " x11##http://ewi546.ewi.utwente.nl/mirror/www.openzaurus.org/official/unstable/${DISTRO_VERSION}/feed/x11 \
                                 gpe##http://ewi546.ewi.utwente.nl/mirror/www.openzaurus.org/official/unstable/${DISTRO_VERSION}/feed/gpe"
-FEED_URIS_append_familiar   = " x11##http://familiar.handhelds.org/releases/${DISTRO_VERSION}/feed/x11"
 
-PR = "r23"
+DISTRO_FEEDS_append_familiar () {
+
+# x11 - additional packages specific to the x11 graphical environment
+src/gz x11 ${DISTRO_FEED_PREFIX}/x11
+src/gz x11-${MACHINE} ${DISTRO_FEED_PREFIX}/x11/machine/${MACHINE}
+}
+
+DISTRO_LOCALE_FEEDS_PREFIXES_append_familiar = " ${DISTRO_FEED_PREFIX}/x11"
+
+PR = "r21"
 
 export IMAGE_BASENAME = "gpe-image"
 
@@ -23,6 +31,7 @@ GPE_EXTRA_INSTALL_smallscreen = "gpe-task-games ${GPE_EXTRA_THEMES}"
 #ship more stuff with devices with >16MB of flash
 GPE_BIGFLASH_DEPENDS := '${@base_conditional("ROOT_FLASH_SIZE", "16", "", "\
         gpe-theme-clearlooks \
+	sylpheed \
         figment \
 ",d)}'
 
@@ -54,7 +63,6 @@ export IPKG_INSTALL = "task-bootstrap gpe-task-base \
 		       ${XSERVER} \
 		       ${GPE_EXTRA_INSTALL}"
 
-IMAGE_PREPROCESS_COMMAND = "create_etc_timestamp "
 ROOTFS_POSTPROCESS_COMMAND += "zap_root_password; "
 
 inherit image_ipk
