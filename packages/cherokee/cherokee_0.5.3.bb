@@ -5,7 +5,7 @@ DEPENDS = "pcre gnutls"
 HOMEPAGE = "http://www.0x50.org/"
 PR = "r1"
 
-SRC_URI = "http://www.0x50.org/download/0.5/${PV}/${P}.tar.gz \
+SRC_URI = "http://www.0x50.org/download/0.5/${PV}/cherokee-${PV}.tar.gz \
 	  file://configure.patch;patch=1 \
 	  file://Makefile.in.patch;patch=1 \
 	  file://Makefile.cget.patch;patch=1 \
