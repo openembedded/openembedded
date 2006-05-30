@@ -2,7 +2,7 @@ DESCRIPTION = "A console URL download utility featuring HTTP, FTP, and more."
 SECTION = "console/network"
 MAINTAINER = "Chris Larson <kergoth@handhelds.org>"
 DEPENDS = ""
-PR = "r4"
+PR = "r5"
 LICENSE = "GPL"
 
 SRC_URI = "${GNU_MIRROR}/wget/wget-${PV}.tar.gz \
@@ -18,6 +18,9 @@ EXTRA_OECONF = "--enable-ipv6"
 EXTRA_OECONF_unslung = ""
 # SlugOS kernels do not support ipv6. Can be loaded as a module. 
 EXTRA_OECONF_slugos = ""
+
+# Disable checking for SSL since that searches the system paths
+EXTRA_OECONF += "--without-ssl"
 
 do_configure () {
 	if [ ! -e acinclude.m4 ]; then
