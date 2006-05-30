@@ -1,7 +1,8 @@
-SECTION = "base"
-LICENSE= "GPL"
 DESCRIPTION = "Command line tool for GPE backlight control"
 MAINTAINER = "Simon Pickering <S.G.Pickering@bath.ac.uk>"
+SECTION = "base"
+LICENSE = "GPL"
+DEPENDS = "glib-2.0"
 
 SRC_URI = "http://people.bath.ac.uk/enpsgp/Zaurus/bl/${PN}-${PV}.tar.gz"
 
