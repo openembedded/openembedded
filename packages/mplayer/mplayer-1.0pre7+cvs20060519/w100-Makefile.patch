@@ -1,0 +1,10 @@
+--- mplayer_20060519/Makefile.orig	2006-05-30 10:29:18.000000000 +0100
++++ mplayer_20060519/Makefile	2006-05-30 10:29:53.000000000 +0100
+@@ -74,6 +74,7 @@
+           $(DIRECTFB_LIB) \
+           $(CACA_LIB) \
+ 	  $(VESA_LIB) \
++	  $(W100_LIB)
+ 
+ ifeq ($(EXTERNAL_VIDIX),yes)
+ VO_LIBS += $(EXTERNAL_VIDIX_LIB)

@@ -1,0 +1,20 @@
+--- mplayer_20060519/libvo/video_out.c.orig	2006-05-30 11:25:57.000000000 +0100
++++ mplayer_20060519/libvo/video_out.c	2006-05-30 11:26:49.000000000 +0100
+@@ -86,6 +86,7 @@
+ extern vo_functions_t video_out_syncfb;
+ extern vo_functions_t video_out_fbdev;
+ extern vo_functions_t video_out_fbdev2;
++extern vo_functions_t video_out_w100;
+ extern vo_functions_t video_out_svga;
+ extern vo_functions_t video_out_png;
+ extern vo_functions_t video_out_ggi;
+@@ -196,6 +197,9 @@
+ 	&video_out_fbdev,
+ 	&video_out_fbdev2,
+ #endif
++#ifdef HAVE_W100
++	&video_out_w100,
++#endif
+ #ifdef HAVE_SVGALIB
+ 	&video_out_svga,
+ #endif
