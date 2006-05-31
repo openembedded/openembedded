@@ -1,0 +1,42 @@
+--- pdm-1.0/main.c	2003-12-09 11:43:22.000000000 -0700
++++ pdm-1.0.new/main.c	2004-05-25 09:01:53.897999256 -0700
+@@ -80,10 +80,10 @@
+ 
+ /* spawn_session()
+    Spawns a new session based on the given name under the authority
+-   of the given UID.
++   of the given UID/GID.
+ */
+ 
+-static pid_t spawn_session(char *app, uid_t uid) {
++static pid_t spawn_session(char *app, uid_t uid, gid_t gid) {
+ 
+   char *argv[2] = { 0, 0 };  
+   pid_t pid = 0;
+@@ -103,10 +103,13 @@
+     /* If a different UID was specified, then try to change to that UID */
+ 
+     if (uid != getuid()) {
+-      if (seteuid(uid) == -1) {
++      if (setresuid(uid, uid, uid) == -1) {
+ 	fprintf(stderr, "Error:  Unable to set the UID of the process.\n");
+ 	exit(-1);
+       }
++      if (setresgid(gid,gid,gid) == -1) {
++      	fprintf(stderr, "Error:  Unable to set the GID of the process.\n");
++      }
+     }
+ 
+     argv[0] = app;
+@@ -319,7 +322,10 @@
+ 
+     /* Start the session */
+     VERBOSE("Spawning session '%s'\n", session);
+-    session_pid = spawn_session(session, curuser ? curuser->pw_uid : getuid());
++
++    session_pid = spawn_session(session, 
++    				curuser ? curuser->pw_uid : getuid(),
++				curuser ? curuser->pw_gid : getgid());
+     
+     if (session_pid == -1) {
+       fprintf(stderr, "Fatal:  Unable to spawn the session '%s'.\n", session);

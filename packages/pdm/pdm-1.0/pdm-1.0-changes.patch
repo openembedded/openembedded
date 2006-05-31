@@ -1,0 +1,209 @@
+diff -urN pdm-1.0/conf/pdm.conf.example pdm-1.0.new/conf/pdm.conf.example
+--- pdm-1.0/conf/pdm.conf.example	2003-12-08 18:23:41.000000000 -0700
++++ pdm-1.0.new/conf/pdm.conf.example	2004-09-01 13:11:14.519527656 -0700
+@@ -23,3 +23,6 @@
+ # for a session
+ 
+ Session=pixil
++
++# When the session is completed, then respawn and start again
++SessionPost=respawn
+diff -urN pdm-1.0/conf/pdm.conf.x11 pdm-1.0.new/conf/pdm.conf.x11
+--- pdm-1.0/conf/pdm.conf.x11	2003-12-09 10:23:01.000000000 -0700
++++ pdm-1.0.new/conf/pdm.conf.x11	2004-09-01 13:11:14.520527504 -0700
+@@ -19,3 +19,6 @@
+ # for a session
+ 
+ Session=matchbox
++SessionPost=respawn
++#SessionPost=reboot
++#SessionPost=shutdown
+diff -urN pdm-1.0/config.c pdm-1.0.new/config.c
+--- pdm-1.0/config.c	2003-12-16 12:23:27.000000000 -0700
++++ pdm-1.0.new/config.c	2004-09-01 13:11:14.520527504 -0700
+@@ -234,6 +234,23 @@
+   return 0;
+ }
+ 
++static int post_callback(int line, char *key, char *value, dminfo_t *info) {
++
++  if (info->flags & FLAG_AUTH) {
++    fprintf(stderr, 
++    "%d: Post session behavior is ignored when auth is turned on.\n", line);
++    return 0;
++  }
++
++  if (!value) return -1;
++
++  if (!strcmpi(value, "reboot")) info->postsession = POST_REBOOT;
++  else if (!strcmpi(value, "respawn")) info->postsession = POST_RESPAWN;
++  else if (!strcmpi(value, "shutdown")) info->postsession = POST_SHUTDOWN;
++
++  return 0;
++}
++
+ /* calibrate_callback()
+    Callback for the 'TSCalibrate' keyword
+ */
+@@ -271,20 +288,21 @@
+    "NULL" terminated list here to save a bit of room.  
+ */
+ 
+-#define KEYWORD_COUNT 6
+-
+ struct {
+   char *keyword;
+   int (*callback)(int, char *, char *, dminfo_t *);
+-} keywords[KEYWORD_COUNT] = {
++} keywords[] = {
+   { "Server", server_callback },
+   { "Auth", auth_callback },
+   { "User", user_callback },
+   { "Session", session_callback },
++  { "SessionPost", post_callback },
+   { "TSCalibrate", calibrate_callback },
+-  { "TSCalBinary", calbin_callback },
++  { "TSCalBinary", calbin_callback }
+ };
+ 
++#define KEYWORD_COUNT (sizeof(keywords)/sizeof(keywords[0]))
++
+ /*  do_config()
+     Given a filename, process it and fill out the dminfo_t structure 
+ */
+diff -urN pdm-1.0/main.c pdm-1.0.new/main.c
+--- pdm-1.0/main.c	2003-12-09 11:43:22.000000000 -0700
++++ pdm-1.0.new/main.c	2004-09-01 13:11:14.520527504 -0700
+@@ -29,6 +29,8 @@
+    handles authinication through a plugin system.  
+ */
+ 
++#define _GNU_SOURCE
++
+ #include <stdarg.h>
+ #include <stdio.h>
+ #include <stdlib.h>
+@@ -60,6 +62,29 @@
+ 
+ static dminfo_t dminfo;
+ 
++static void exec_external(const char *str) {
++	int argc = 0;
++	char **argv = 0;
++        char *ptr = (char *) str;
++
++	while(ptr) {
++		char *next = strchr(ptr, ' ');
++		argv = (char **) realloc(argv, (argc + 2) * sizeof (char *));
++		argv[argc] = ptr;
++		if (next) {
++		   *next = 0;
++		   ptr = next + 1;
++		}
++		else ptr = 0;
++		argc++;
++	}
++
++	argv[argc] = 0;
++
++	/* We're not supposed to come back */
++	execvp(argv[0], argv);
++}
++
+ /* spawn_app()
+    Spawn the given application.  A simple fork() / execvp() is all that
+    is needed here */
+@@ -80,10 +105,10 @@
+ 
+ /* spawn_session()
+    Spawns a new session based on the given name under the authority
+-   of the given UID.
++   of the given UID/GID.
+ */
+ 
+-static pid_t spawn_session(char *app, uid_t uid) {
++static pid_t spawn_session(char *app, uid_t uid, gid_t gid) {
+ 
+   char *argv[2] = { 0, 0 };  
+   pid_t pid = 0;
+@@ -103,10 +128,13 @@
+     /* If a different UID was specified, then try to change to that UID */
+ 
+     if (uid != getuid()) {
+-      if (seteuid(uid) == -1) {
++      if (setresuid(uid, uid, uid) == -1) {
+ 	fprintf(stderr, "Error:  Unable to set the UID of the process.\n");
+ 	exit(-1);
+       }
++      if (setresgid(gid,gid,gid) == -1) {
++      	fprintf(stderr, "Error:  Unable to set the GID of the process.\n");
++      }
+     }
+ 
+     argv[0] = app;
+@@ -319,7 +347,10 @@
+ 
+     /* Start the session */
+     VERBOSE("Spawning session '%s'\n", session);
+-    session_pid = spawn_session(session, curuser ? curuser->pw_uid : getuid());
++
++    session_pid = spawn_session(session, 
++    				curuser ? curuser->pw_uid : getuid(),
++				curuser ? curuser->pw_gid : getgid());
+     
+     if (session_pid == -1) {
+       fprintf(stderr, "Fatal:  Unable to spawn the session '%s'.\n", session);
+@@ -345,6 +376,27 @@
+     }
+ 
+     session_pid = 0;
++
++    if (dminfo.flags & FLAG_AUTH) 
++      continue;
++
++    /* Check to see what to do after a session dies */
++    /* This is only if auth isn't enabled */
++
++    /* On respawn (default), just come back around */
++    if (dminfo.postsession == POST_RESPAWN)
++	continue;
++
++    /* Kill off the server */
++    if (server_pid > 0) kill_child(server_pid);
++
++    /* Decide which external function to turn into */
++    if (dminfo.postsession == POST_REBOOT)
++    	exec_external(PDM_REBOOT_COMMAND);
++    else
++    	exec_external(PDM_HALT_COMMAND);
++     
++    return 0;
+   }
+   
+  gendm_done:
+diff -urN pdm-1.0/pdm.h pdm-1.0.new/pdm.h
+--- pdm-1.0/pdm.h	2003-12-08 12:28:50.000000000 -0700
++++ pdm-1.0.new/pdm.h	2004-09-01 13:11:14.521527352 -0700
+@@ -34,6 +34,13 @@
+ #define FLAG_AUTH 0x01
+ #define FLAG_CAL  0x02
+ 
++#define POST_RESPAWN  0x00
++#define POST_REBOOT   0x01
++#define POST_SHUTDOWN 0x02
++
++#define PDM_HALT_COMMAND "/sbin/halt"
++#define PDM_REBOOT_COMMAND "/sbin/reboot"
++
+ typedef struct {
+   char *server;        /* The GUI server to start */
+   int argc;
+@@ -47,6 +54,8 @@
+   struct passwd *user;      /* The static user data is stored here */
+   char *session;            /* The static session to use is stored here */
+ 
++  int postsession;          /* What do do with the session when we are done */
++
+   struct {
+     char *bin;              /* Calibration binary */
+     int argc;

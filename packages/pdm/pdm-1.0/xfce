@@ -1,0 +1,24 @@
+#!/bin/sh
+
+# Set some variables of some consequence
+
+export PATH=$PATH:/usr/X11R6/bin:/usr/lib/ICAClient/
+export DISPLAY=:0
+
+# Because we're not actually logging in, we do this 
+# FIXME: PDM should do this instead
+
+export HOME=/user
+
+# Allow all comers
+/usr/X11R6/bin/xhost +
+
+# Start the screen saver
+xscreensaver -no-splash &
+
+# Start the rest of the XFCE world
+xfce-mcs-manager
+xfwm4 --daemon
+xftaskbar4 &
+xfdesktop &
+exec xfce4-panel

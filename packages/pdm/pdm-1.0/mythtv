@@ -1,0 +1,22 @@
+#!/bin/sh
+
+# Set some variables of some consequence
+
+export DISPLAY=:0
+
+# Because we're not actually logging in, we do this 
+# FIXME: PDM should do this instead
+
+export HOME=/root
+
+# Allow all comers
+#/usr/bin/xhost +
+
+# Start the screen saver
+#xscreensaver -no-splash &
+
+# Start MythTV
+#This assumes that mythbackend is running already and
+#mythtv-setup 
+#has been run already
+mythfrontend
