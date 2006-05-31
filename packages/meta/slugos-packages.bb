@@ -136,6 +136,7 @@ SLUGOS_PACKAGES = "\
 	sane-backends \
 	sed \
 	setserial \
+	smartmontools \
 	ssmtp \
 	strace \
 	streamripper \
