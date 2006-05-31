@@ -13,25 +13,23 @@
 
 DEPLOY_DIR_PSTAGE 	= "${DEPLOY_DIR}/pstage" 
 
-PSTAGE_BUILD_CMD        :=  ${STAGING_BINDIR}/${IPKGBUILDCMD}
-PSTAGE_INSTALL_CMD      :=  "${STAGING_BINDIR}/ipkg-cl install -f ${DEPLOY_DIR_PSTAGE}/ipkg.conf -force-depends -o "
+PSTAGE_BUILD_CMD        = "${IPKGBUILDCMD}"
+PSTAGE_INSTALL_CMD      = "ipkg-cl install -f ${DEPLOY_DIR_PSTAGE}/ipkg.conf -force-depends -o "
 
-OLD_STAGING_DIR         := ${STAGING_DIR}
-STAGING_DIR_do_stage 	= "${TMPDIR}/pstaging"
-STAGING_DIR		= "${TMPDIR}/pstaging"
 
 
 do_stage_prepend() {
-#STAGING_DIR="${TMPDIR}/pstaging"
-#STAGING_DIR_do_stage="${TMPDIR}/pstaging"
-echo
+#move away the staging dir to avoid relocation troubles
+mv ${STAGING_DIR} ${TMPDIR}/pstage
+
+mkdir -p ${STAGING_BINDIR}
 mkdir -p ${STAGING_LIBDIR}
 mkdir -p ${STAGING_INCDIR}
-
 }
 
 do_stage_append() {
 
+mkdir -p ${DEPLOY_DIR_PSTAGE}
 mkdir -p ${STAGING_DIR}/CONTROL
 echo "Package: ${PN}"                   >  ${STAGING_DIR}/CONTROL/control
 echo "Version: ${PV}"                   >> ${STAGING_DIR}/CONTROL/control
@@ -57,10 +55,14 @@ ipkgarchs="all any noarch ${TARGET_ARCH} ${IPKG_ARCHS} ${MACHINE}"
 
 mkdir -p ${DEPLOY_DIR_PSTAGE}
 
-${PSTAGE_BUILD_CMD} ${STAGING_DIR} ${DEPLOY_DIR_PSTAGE}
-${PSTAGE_INSTALL_CMD} ${OLD_STAGING_DIR}  ${DEPLOY_DIR_PSTAGE}/${PN}_${PV}_${PACKAGE_ARCH}.ipk
-rm -rf ${STAGING_DIR}
 
-echo
+${PSTAGE_BUILD_CMD} ${STAGING_DIR} ${DEPLOY_DIR_PSTAGE}
+
+rm -rf ${STAGING_DIR}
+#move back stagingdir so we can install packages   
+mv ${TMPDIR}/pstage ${STAGING_DIR}
+
+${PSTAGE_INSTALL_CMD} ${STAGING_DIR}  ${DEPLOY_DIR_PSTAGE}/${PN}_${PV}_${PACKAGE_ARCH}.ipk
+
 }
 
