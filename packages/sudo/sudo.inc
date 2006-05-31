@@ -20,5 +20,10 @@ do_configure_prepend () {
 }
 
 pkg_postinst() {
-	chmod 0440 ${sysconfdir}/sudoers
+	if [ "x$D" != "x" ]; then
+		exit 1
+	fi
+
+	chmod 4111 /usr/bin/sudo
+	chmod 0440 /etc/sudoers
 }
