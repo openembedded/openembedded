@@ -33,6 +33,7 @@ mv ${STAGING_DIR} ${TMPDIR}/pstage
 mkdir -p ${STAGING_BINDIR}
 mkdir -p ${STAGING_LIBDIR}
 mkdir -p ${STAGING_INCDIR}
+mkdir -p ${STAGING_DATADIR}
 }
 
 do_stage_append() {
