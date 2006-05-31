@@ -4,7 +4,11 @@ include perl.inc
 
 SRC_URI += "file://config.sh-armeb-linux \
 	    file://config.sh-arm-linux \
-	    file://config.sh-i386-linux"
+	    file://config.sh-i386-linux \
+	    file://config.sh-i486-linux \
+	    file://config.sh-i586-linux"
+
+PARALLEL_MAKE = ""
 
 PR = "r15"
 
@@ -15,8 +19,10 @@ do_configure() {
 	rm Makefile.SH.patch
 	cp ${WORKDIR}/Makefile.SH.patch .
 	cp ${WORKDIR}/config.sh-mipsel-linux .
-	cp ${WORKDIR}/config.sh-i686-linux .
 	cp ${WORKDIR}/config.sh-i386-linux .
+	cp ${WORKDIR}/config.sh-i486-linux .
+	cp ${WORKDIR}/config.sh-i586-linux .
+	cp ${WORKDIR}/config.sh-i686-linux .
 	cp ${WORKDIR}/config.sh-armeb-linux .
 	#perl insists on an extra config.sh for arm EABI
 	cp config.sh-arm-linux config.sh-arm-linux-gnueabi 
@@ -33,6 +39,13 @@ do_configure() {
 		s,d_sockatmark='define',d_sockatmark='undef',g;" > $newfile
 	done
 	sed -i -e 's,./install_me_here,${D},g' config.sh-${TARGET_ARCH}-${TARGET_OS}
+	sed -i -e "s%/usr/include/%${STAGING_INCDIR}/%g" config.sh-${TARGET_ARCH}-${TARGET_OS}
+
+	#These are strewn all over the source tree
+	for foo in `grep -m1 \/usr\/include\/.*\\.h ${WORKDIR}/* -r | cut -f 1 -d ":"` ; do
+		echo Fixing: $foo
+		sed -e "s%/usr/include/%${STAGING_INCDIR}/%g" -i $foo
+	done
 	rm -f config
 	echo "ARCH = ${TARGET_ARCH}" > config
 	echo "OS = ${TARGET_OS}" >> config
