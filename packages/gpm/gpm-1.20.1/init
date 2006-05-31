@@ -1,12 +1,12 @@
-#! /bin/sh i-e 
+#! /bin/sh  
 
 # Grab the common functions
-. /etc/init.d/functions
+#. /etc/init.d/functions
 
 # FIXME: 
 # Add a configuration file for GPM here
 
-test -x /bin/gpm || exit 0
+test -x /usr/sbin/gpm || exit 0
 
 case "$1" in
   start)
@@ -14,10 +14,12 @@ case "$1" in
     	mkfifo /dev/gpmdata
     fi
 
-    action "Starting GPM:" start-stop-daemon -S -x /bin/gpm -- -R -m /dev/mouse -t imps2
+    echo "Starting GPM:" 
+    start-stop-daemon -S -x /usr/sbin/gpm -- -R -m /dev/psaux -t ps2
     ;;
   stop)
-    action "Stopping GPM:" start-stop-daemon -K -x /bin/gpm
+    echo "Stopping GPM:" 
+    start-stop-daemon -K -x /usr/sbin/gpm
     ;;
   restart|force-reload) 
     $0 stop
