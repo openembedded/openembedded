@@ -1,0 +1,21 @@
+--- gimp-2.3.8/configure.in.orig	2006-05-31 10:16:40.000000000 +0100
++++ gimp-2.3.8/configure.in	2006-05-31 10:18:56.000000000 +0100
+@@ -1342,7 +1342,10 @@
+ # Check for libwmf2
+ ###################
+ 
++AC_ARG_WITH(libwmf, [  --without-libwmf          build without libwmf support])
++
+ have_libwmf=no
++if test "x$with_libwmf" != xno; then
+ AC_PATH_PROG(WMF_CONFIG, libwmf-config, no)
+ if test "x$WMF_CONFIG" != "xno" ; then
+   have_libwmf=yes
+@@ -1359,6 +1362,7 @@
+ else
+   have_libwmf="no (libwmf not found)"
+ fi
++fi
+ AC_SUBST(LIBWMF)
+ AC_SUBST(WMF_CFLAGS)
+ 
