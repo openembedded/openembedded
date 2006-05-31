@@ -10,6 +10,7 @@ SRC_URI = "ftp://ftp.kernel.org/pub/linux/daemons/autofs/v4/autofs-${PV}.tar.bz2
            file://Makefile.rules-cross.patch;patch=1"
 
 EXTRA_OEMAKE="TARGET_PREFIX=${TARGET_PREFIX}"
+PARALLEL_MAKE = ""
 
 inherit autotools
 
