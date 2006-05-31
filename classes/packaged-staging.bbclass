@@ -6,6 +6,13 @@
 # INHERIT += "packaged-staging"
 #
 
+
+# BUGS:
+# * no state saving mechanism is present, so a failed do stage has pstage/ and staging/ swapped
+# * doesn't check for existing packages
+# * does not distinguish between -native, -cross and other packages
+# * is oblivious to CROSSDIR  
+
 # Summary:
 # This class will have two modes of operation:
 # LEETVARNAME1: repopulated staging from scratch for each packages
