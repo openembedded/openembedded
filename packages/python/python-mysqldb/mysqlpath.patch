@@ -1,0 +1,19 @@
+Index: MySQL-python-1.2.1_p2/_mysql.c
+===================================================================
+--- MySQL-python-1.2.1_p2.orig/_mysql.c	2006-05-31 12:07:36.000000000 +0200
++++ MySQL-python-1.2.1_p2/_mysql.c	2006-05-31 12:08:25.000000000 +0200
+@@ -36,10 +36,10 @@
+ #endif
+ 
+ #include "structmember.h"
+-#include "mysql.h"
+-#include "my_config.h"
+-#include "mysqld_error.h"
+-#include "errmsg.h"
++#include "mysql/mysql.h"
++#include "mysql/my_config.h"
++#include "mysql/mysqld_error.h"
++#include "mysql/errmsg.h"
+ 
+ #if PY_VERSION_HEX < 0x02020000
+ # define MyTuple_Resize(t,n,d) _PyTuple_Resize(t, n, d)
