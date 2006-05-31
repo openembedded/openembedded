@@ -1,0 +1,27 @@
+--- NFORCE-Linux-x86-1.0-0310-pkg1/nvsound/main/Makefile.kbuild.sav	2006-05-16 09:44:26.000000000 -0600
++++ NFORCE-Linux-x86-1.0-0310-pkg1/nvsound/main/Makefile.kbuild	2006-05-16 09:48:57.000000000 -0600
+@@ -48,16 +48,16 @@
+ EXTRA_LDFLAGS := -d
+ 
+ # Figure out how many args remap_page_ranges() wants or new remap call
+-ifeq ($(shell sh $(src)/conftest.sh "$(CC)" "$(KERNEL_SOURCES)" "$(KERNEL_OUTPUT)" remap_pfn_range), 1)
++#ifeq ($(shell sh $(src)/conftest.sh "$(CC)" "$(KERNEL_SOURCES)" "$(KERNEL_OUTPUT)" remap_pfn_range), 1)
+   EXTRA_CFLAGS += -DNV_REMAP_PFN_RANGE_PRESENT
+-else
+-  REMAP_PAGE_RANGE := $(shell sh $(src)/conftest.sh "$(CC)" "$(KERNEL_SOURCES)" "$(KERNEL_OUTPUT)" remap_page_range)
+-
+-  ifeq ($(REMAP_PAGE_RANGE),5)
+-   EXTRA_CFLAGS += -DREMAP_NEW
+-  endif
++#else
++#  REMAP_PAGE_RANGE := $(shell sh $(src)/conftest.sh "$(CC)" "$(KERNEL_SOURCES)" "$(KERNEL_OUTPUT)" remap_page_range)
+ 
+-endif
++#  ifeq ($(REMAP_PAGE_RANGE),5)
++#   EXTRA_CFLAGS += -DREMAP_NEW
++#  endif
++#
++#endif
+ 
+ PATCHLEVEL ?= $(shell sh ./conftest.sh "$(CC)" "$(KERNEL_SOURCES)" "$(KERNEL_OUTPUT)" kernel_patch_level)
+ ifeq ($(PATCHLEVEL), 4)

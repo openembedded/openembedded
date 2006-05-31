@@ -1,0 +1,60 @@
+--- ../../../temp/NVIDIA-Linux-x86-1.0-8756-pkg1/usr/src/nv/Makefile.kbuild	2006-03-29 16:02:20.000000000 -0700
++++ nv/Makefile.kbuild	2006-04-26 13:50:47.249353208 -0600
+@@ -28,7 +28,7 @@
+ # Christian Zander (zander@mail.minion.de) (enhancements)
+ #
+ 
+-all: install
++all: module 
+ install: package-install
+ 
+ #
+@@ -310,19 +310,17 @@
+ # sufficient privileges. Rebuild the module dependency file.
+ #
+ 
+-module-install: suser-sanity-check module
++module-install: module
+ 	@mkdir -p $(MODULE_ROOT)/video; \
+-	install -m 0664 -o root -g root $(MODULE_OBJECT) $(MODULE_ROOT)/video; \
+-	PATH="$(PATH):/bin:/sbin" depmod -ae;
++	install -m 0664 $(MODULE_OBJECT) $(MODULE_ROOT)/video; \
++	#PATH="$(PATH):/bin:/sbin" depmod -ae;
+ 
+ #
+ # This target builds, then installs, then creates device nodes and inserts
+ # the module, if successful.
+ #
+ 
+-package-install: module-install rmmod-sanity-check
+-	PATH="$(PATH):/bin:/sbin" modprobe $(MODULE_NAME) && \
+-	echo "$(MODULE_OBJECT) installed successfully.";
++package-install: module-install
+ 
+ #
+ # Build an object file suitable for further processing by the installer and
+--- ../../../temp/NVIDIA-Linux-x86-1.0-8756-pkg1/usr/src/nv/Makefile.nvidia	2006-03-29 16:02:20.000000000 -0700
++++ nv/Makefile.nvidia	2006-04-26 13:52:19.573317832 -0600
+@@ -102,7 +102,7 @@
+ 
+ VERSION_HDR=nv_compiler.h
+ 
+-all: install
++all: module
+ 
+ install: package-install
+ 
+@@ -123,11 +123,9 @@
+ mdl: gcc-sanity-check rivafb-sanity-check $(LINUX_MODULE) $(RESMAN_KERNEL_MODULE)
+ 	$(LD) -r -o nvidia.o $(LINUX_MODULE) $(RESMAN_KERNEL_MODULE)
+ 
+-package-install: module suser-sanity-check rmmod-sanity-check
++package-install: module 
+ 	mkdir -p $(MODULE_ROOT)/video && \
+-	install -m 0664 -o root -g root nvidia.o $(MODULE_ROOT)/video/nvidia.o$(O) && \
+-	PATH="$(PATH):/bin:/sbin" depmod -a && \
+-		PATH="$(PATH):/bin:/sbin" modprobe nvidia && \
++	install -m 0664 nvidia.o $(MODULE_ROOT)/video/nvidia.o$(O) && \
+ 	echo "nvidia.o installed successfully."; \
+ 
+ $(VERSION_HDR): 
