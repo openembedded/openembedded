@@ -4,7 +4,7 @@
 
 DESCRIPTION = "Linux video capture/overlay driver for the AMD Geode LX"
 HOMEPAGE = "http://www.amd.com/embedded"
-MAINTAINER = "Raymond Danks <raymondd@ia.amd.com>"
+MAINTAINER = "Raymond Danks <info-linux@geode.amd.com>"
 
 PR = "r0"
 AMD_DRIVER_VERSION = "03.02.0100"

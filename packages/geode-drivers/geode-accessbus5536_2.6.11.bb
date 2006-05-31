@@ -4,7 +4,7 @@
 
 DESCRIPTION = "Linux Access Bus driver for the AMD Geode 5535/5536"
 HOMEPAGE = "http://www.amd.com/embedded"
-MAINTAINER = "Raymond Danks <raymondd@ia.amd.com>"
+MAINTAINER = "Raymond Danks <info-linux@geode.amd.com>"
 
 PR = "r0"
 AMD_DRIVER_VERSION = "01.00.0401"

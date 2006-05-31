@@ -4,7 +4,7 @@
 
 DESCRIPTION="A multi-purpose linux bootloader"
 HOMEPAGE="http://syslinux.zytor.com/"
-MAINTAINER = "Raymond Danks <raymondd@ia.amd.com>"
+MAINTAINER = "Raymond Danks <info-linux@geode.amd.com>"
 LICENSE="GPL"
 
 PR="r1"

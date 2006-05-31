@@ -3,9 +3,9 @@
 # Released under the MIT license (see packages/COPYING)
 
 DESCRIPTION="CPU testing utilities in optimized assembler for maximum loading P6, K7, K6, P5 chips"
-MAINTAINER = "Raymond Danks <raymondd@ia.amd.com>"
+MAINTAINER = "Raymond Danks <info-linux@geode.amd.com>"
 HOMEPAGE="http://pages.sbcglobal.net/redelm/"
-LICENSE="GNU"
+LICENSE="GPL"
 
 SRC_URI="http://pages.sbcglobal.net/redelm/${PN}_1_4_tar.gz \
 	file://gcc_CC.patch;patch=1"

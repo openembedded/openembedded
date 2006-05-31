@@ -4,7 +4,7 @@
 
 LICENSE = "GPL"
 HOMEPAGE = "http://www.amd.com/embedded"
-MAINTAINER = "Raymond Danks <raymondd@ia.amd.com>"
+MAINTAINER = "Raymond Danks <info-linux@geode.amd.com>"
 
 inherit autotools module-base
 
