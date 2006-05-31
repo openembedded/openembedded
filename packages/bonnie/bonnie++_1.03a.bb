@@ -4,7 +4,7 @@
 
 DESCRIPTION="Tests large file IO and creation/deletion of small files."
 LICENSE="GPL"
-MAINTAINER = "Raymond Danks <raymondd@ia.amd.com>"
+MAINTAINER = "Raymond Danks <info-linux@geode.amd.com>"
 
 
 SRC_URI="${SOURCEFORGE_MIRROR}/bonnie/${PN}-${PV}.tgz"
@@ -14,7 +14,11 @@ inherit autotools
 EXES="bonnie++ zcav"
 SCRIPTS="bon_csv2html bon_csv2txt"
 
-FILES_${PN} = "/bin /sbin"
+PACKAGES += "bonnie-scripts"
+
+FILES_${PN} = "/sbin"
+FILES_bonnie-scripts="/bin"
+
 S="${WORKDIR}/${PN}-${PV}"
 
 do_install () {
