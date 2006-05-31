@@ -1,0 +1,27 @@
+Index: pkg_depends.c
+===================================================================
+RCS file: /cvs/familiar/dist/ipkg/C/pkg_depends.c,v
+retrieving revision 1.65
+diff -u -r1.65 pkg_depends.c
+--- C/pkg_depends.c	16 Sep 2005 20:03:48 -0000	1.65
++++ C/pkg_depends.c	17 Apr 2006 18:36:41 -0000
+@@ -106,6 +108,11 @@
+ 	  satisfier_entry_pkg = NULL;
+ 
+ 	  if (compound_depend->type == GREEDY_DEPEND) {
++	       int old_sw = pkg->state_want;
++	       /* Mark this package as to-be-installed temporarily,
++		  since some of the dependent packages may in turn
++		  depend on this one.  */
++	       pkg->state_want = SW_INSTALL;
+ 	       /* foreach possible satisfier */
+ 	       for (j = 0; j < compound_depend->possibility_count; j++) {
+ 		    /* foreach provided_by, which includes the abstract_pkg itself */
+@@ -161,6 +171,7 @@
+ 			 }
+ 		    }
+ 	       }
++	       pkg->state_want = old_sw;
+ 
+ 	       continue;
+ 	  }

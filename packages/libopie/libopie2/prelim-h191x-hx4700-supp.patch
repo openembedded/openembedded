@@ -1,0 +1,106 @@
+===================================================================
+RCS file: /home/cvs/opie/libopie2/opiecore/device/odevice_ipaq.cpp,v
+retrieving revision 1.19
+retrieving revision 1.24
+diff -u -p -r1.19 -r1.24
+--- opie/libopie2/opiecore/device/odevice_ipaq.cpp	2005/08/10 19:44:56	1.19
++++ opie/libopie2/opiecore/device/odevice_ipaq.cpp	2006/04/27 10:45:16	1.24
+@@ -151,6 +151,11 @@ void iPAQ::init(const QString& model)
+         d->m_model = Model_iPAQ_H22xx;
+     else if ( d->m_modelstr == "H1910" )
+         d->m_model = Model_iPAQ_H191x;
++    else if ( d->m_modelstr == "H1940" )
++        d->m_model = Model_iPAQ_H1940;
++    else if ( d->m_modelstr == "HX4700" )
++        d->m_model = Model_iPAQ_HX4700;
++
+     else
+         d->m_model = Model_Unknown;
+ 
+@@ -162,6 +167,8 @@ void iPAQ::init(const QString& model)
+         case Model_iPAQ_H5xxx:
+         case Model_iPAQ_H22xx:
+         case Model_iPAQ_H191x:
++        case Model_iPAQ_H1940:
++	case Model_iPAQ_HX4700:
+             d->m_rotation = Rot0;
+             break;
+         case Model_iPAQ_H36xx:
+@@ -300,11 +307,16 @@ bool iPAQ::filter ( int /*unicode*/, int
+             // add the rotation to it and modolo. No we've the original offset
+             // add the offset to the Key_Left key
+             if (( d->m_model == Model_iPAQ_H5xxx ) ||
+-		( d->m_model == Model_iPAQ_H191x ))
++		( d->m_model == Model_iPAQ_H191x ) ||
++		( d->m_model == Model_iPAQ_H1940 ))
+                 newkeycode = Key_Left + ( keycode - Key_Left + 3 ) % 4;
+             break;
+         }
+ 
++        // map Power Button short/long press to F6 for h191x
++        case Key_F6:
++            if ( d->m_model != Model_iPAQ_H191x )
++                break;
+         // map Power Button short/long press to F34/F35
+         case Key_SysReq: {
+             if ( isPress ) {
+@@ -374,6 +386,14 @@ bool iPAQ::setDisplayBrightness ( int br
+         // No Global::shellQuote as we gurantee it to be sane
+         res = ( ::system( QFile::encodeName(cmdline) ) == 0 );
+         break; 
++	
++    case Model_iPAQ_HX4700:
++            cmdline = QString::fromLatin1( "echo %1 > /sys/class/backlight/w100fb/brightness" ).arg( bright );
++        // No Global::shellQuote as we gurantee it to be sane
++        res = ( ::system( QFile::encodeName(cmdline) ) == 0 );
++        break; 
++	
++
+     default:
+         if (( fd = ::open ( "/dev/touchscreen/0", O_WRONLY )) >= 0 ) {
+             FLITE_IN bl;
+@@ -399,9 +419,12 @@ int iPAQ::displayBrightnessResolution() 
+         case Model_iPAQ_H39xx:
+             return 64;
+         case Model_iPAQ_H5xxx:
++	case Model_iPAQ_HX4700:
+             return 255;
+         case Model_iPAQ_H191x:
+-            return 183;
++            return 7;
++        case Model_iPAQ_H1940:
++            return 44;
+         default:
+             return 2;
+     }
+===================================================================
+RCS file: /home/cvs/opie/libopie2/opiecore/device/odevice.h,v
+retrieving revision 1.25
+retrieving revision 1.26
+diff -u -p -r1.25 -r1.26
+--- opie/libopie2/opiecore/device/odevice.h	2005/09/03 18:01:49	1.25
++++ opie/libopie2/opiecore/device/odevice.h	2005/10/06 18:58:40	1.26
+@@ -69,6 +69,7 @@ enum OModel {
+     Model_iPAQ_H5xxx    = ( Model_iPAQ | 0x0006 ),
+     Model_iPAQ_H22xx    = ( Model_iPAQ | 0x0007 ),
+     Model_iPAQ_H191x    = ( Model_iPAQ | 0x0008 ),
++    Model_iPAQ_H1940    = ( Model_iPAQ | 0x0009 ),
+ 
+     Model_Jornada       = ( 6 << 16 ),
+     Model_Jornada_56x   = ( Model_Jornada | 0x0001 ),
+===================================================================
+RCS file: /home/cvs/opie/libopie2/opiecore/device/odevice.h,v
+retrieving revision 1.27
+retrieving revision 1.28
+diff -u -p -r1.27 -r1.28
+--- opie/libopie2/opiecore/device/odevice.h	2006/04/23 20:19:27	1.27
++++ opie/libopie2/opiecore/device/odevice.h	2006/04/27 10:45:16	1.28
+@@ -70,7 +70,7 @@ enum OModel {
+     Model_iPAQ_H22xx    = ( Model_iPAQ | 0x0007 ),
+     Model_iPAQ_H191x    = ( Model_iPAQ | 0x0008 ),
+     Model_iPAQ_H1940    = ( Model_iPAQ | 0x0009 ),
+-
++    Model_iPAQ_HX4700   = ( Model_iPAQ | 0x000A ),
+     Model_Jornada       = ( 6 << 16 ),
+     Model_Jornada_56x   = ( Model_Jornada | 0x0001 ),
+     Model_Jornada_720   = ( Model_Jornada | 0x0002 ),
