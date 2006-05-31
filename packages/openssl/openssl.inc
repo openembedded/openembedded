@@ -57,6 +57,9 @@ do_compile () {
 	linux-sh4)
 		target=debian-sh4
 		;;
+	linux-i486)
+		target=linux-pentium
+		;;
 	linux-i586)
 		target=linux-pentium
 		;;
