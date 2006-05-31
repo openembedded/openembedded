@@ -703,7 +703,7 @@ python __anonymous () {
 	if need_machine:
 		import re
 		this_machine = bb.data.getVar('MACHINE', d, 1)
-		if not re.match(need_machine, this_machine):
+		if this_machine and not re.match(need_machine, this_machine):
 			raise bb.parse.SkipPackage("incompatible with machine %s" % this_machine)
 
 	pn = bb.data.getVar('PN', d, 1)
