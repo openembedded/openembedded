@@ -1,0 +1,25 @@
+Index: dialog-1.0-20050306/configure.in
+===================================================================
+--- dialog-1.0-20050306.orig/configure.in
++++ dialog-1.0-20050306/configure.in
+@@ -137,6 +137,20 @@ strcasecmp \
+ waitpid \
+ )
+ 
++AH_TEMPLATE([HAVE_FLUSHINP], [Define if you have the flushinp function])
++AH_TEMPLATE([HAVE_GETBEGX], [Define if you have the getbegx function])
++AH_TEMPLATE([HAVE_GETBEGY], [Define if you have the getbegy function])
++AH_TEMPLATE([HAVE_GETBEGYX], [Define if you have the getbegyx function])
++AH_TEMPLATE([HAVE_GETCURX], [Define if you have the getcurx function])
++AH_TEMPLATE([HAVE_GETCURY], [Define if you have the getcury function])
++AH_TEMPLATE([HAVE_GETMAXX], [Define if you have the getcury function])
++AH_TEMPLATE([HAVE_GETMAXY], [Define if you have the getcury function])
++AH_TEMPLATE([HAVE_GETMAXYX], [Define if you have the getcury function])
++AH_TEMPLATE([HAVE_GETPARX], [Define if you have the getcury function])
++AH_TEMPLATE([HAVE_GETPARY], [Define if you have the getcury function])
++AH_TEMPLATE([HAVE_GETPARYX], [Define if you have the getcury function])
++AH_TEMPLATE([HAVE_WGET_WCH], [Define if you have the getcury function])
++
+ CF_CURSES_FUNCS(\
+ flushinp \
+ getbegx \
