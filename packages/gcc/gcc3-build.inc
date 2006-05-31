@@ -81,6 +81,7 @@ do_configure () {
 		export LD_FOR_TARGET="${HOST_PREFIX}ld"
 		export NM_FOR_TARGET="${HOST_PREFIX}nm"
 		export AR_FOR_TARGET="${HOST_PREFIX}ar"
+		export GFORTRAN_FOR_TARGET="gfortran"
 		export RANLIB_FOR_TARGET="${HOST_PREFIX}ranlib"
 	fi
 	export CC_FOR_BUILD="${BUILD_CC}"
