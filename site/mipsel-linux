@@ -114,3 +114,6 @@ sudo_cv_uid_t_len=${sudo_cv_uid_t_len=10}
 
 #intercom
 ac_cv_func_fnmatch_works=${ac_cv_func_fnmatch_works=yes}
+
+#lmbench
+ac_cv_uint=${ac_cv_unit=yes}

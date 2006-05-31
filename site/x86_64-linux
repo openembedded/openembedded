@@ -78,3 +78,6 @@ utils_cv_sys_open_max=${utils_cv_sys_open_max=1015}
 
 # gettext
 am_cv_func_working_getline=${am_cv_func_working_getline=yes}
+
+#gcc
+ac_cv_lib_m_sin=${ac_cv_lib_m_sin=yes}

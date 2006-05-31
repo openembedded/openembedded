@@ -51,6 +51,7 @@ glib_cv_uscore=${glib_cv_uscore=no}
 glib_cv___va_copy=${glib_cv___va_copy=yes}
 glib_cv_va_copy=${glib_cv_va_copy=yes}
 glib_cv_va_val_copy=${glib_cv_va_val_copy=yes}
+glib_cv_rtldglobal_broken=${glib_cv_rtldglobal_broken=yes}
 
 # glib-2.0
 glib_cv_stack_grows=${glib_cv_stack_grows=no}
@@ -60,7 +61,7 @@ glib_cv_use_pid_surrogate=${glib_cv_use_pid_surrogate=yes}
 
 # jikes-native
 ac_cv_sizeof_wchar_t=4
--
+
 # startup-notification
 lf_cv_sane_realloc=yes
 
@@ -129,3 +130,13 @@ am_cv_func_working_getline=${am_cv_func_working_getline=yes}
 
 # intercom
 ac_cv_func_fnmatch_works=yes
+
+#sudo
+sudo_cv_uid_t_len=${sudo_cv_uid_t_len=10}
+
+#audacity
+ac_cv_file_lib_src_libmad_frame_h=${ac_cv_file_lib_src_libmad_frame_h=no}
+
+# xorg X11R7
+ac_cv_sys_linker_h=${ac_cv_sys_linker_h=no}
+ac_cv_file__usr_share_X11_sgml_defs_ent=${ac_cv_file__usr_share_X11_sgml_defs_ent=no}

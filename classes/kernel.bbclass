@@ -109,6 +109,16 @@ kernel_do_stage() {
 	mkdir -p ${STAGING_KERNEL_DIR}/include/pcmcia
 	cp -fR include/pcmcia/* ${STAGING_KERNEL_DIR}/include/pcmcia/
 
+	if [ -d drivers/crypto ]; then
+		mkdir -p ${STAGING_KERNEL_DIR}/drivers/crypto
+		cp -fR drivers/crypto/* ${STAGING_KERNEL_DIR}/drivers/crypto/
+	fi
+
+	if [ -d include/acpi ]; then
+		mkdir -p ${STAGING_KERNEL_DIR}/include/acpi
+		cp -fR include/acpi/* ${STAGING_KERNEL_DIR}/include/acpi/
+	fi
+
 	if [ -d include/sound ]; then
 		mkdir -p ${STAGING_KERNEL_DIR}/include/sound
 		cp -fR include/sound/* ${STAGING_KERNEL_DIR}/include/sound/
@@ -133,7 +143,7 @@ kernel_do_stage() {
 	# Check if arch/${ARCH}/Makefile exists and install it
 	if [ -e arch/${ARCH}/Makefile ]; then
 		install -d ${STAGING_KERNEL_DIR}/arch/${ARCH}
-		install -m 0644 arch/${ARCH}/Makefile ${STAGING_KERNEL_DIR}/arch/${ARCH}
+		install -m 0644 arch/${ARCH}/Makefile* ${STAGING_KERNEL_DIR}/arch/${ARCH}
 	fi
 	cp -fR include/config* ${STAGING_KERNEL_DIR}/include/	
 	install -m 0644 ${KERNEL_OUTPUT} ${STAGING_KERNEL_DIR}/${KERNEL_IMAGETYPE}
