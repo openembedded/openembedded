@@ -1,0 +1,111 @@
+--- openh323/configure.in	2004-01-31 00:37:15.000000000 -0700
++++ openh323.new/configure.in	2005-01-06 10:17:31.576277416 -0700
+@@ -36,62 +36,12 @@
+ 
+ echo "OpenH323 version is ${OPENH323_VERSION}"
+ 
+-AC_DEFINE_UNQUOTED(OPENH323_MAJOR,   $MAJOR_VERSION)
+-AC_DEFINE_UNQUOTED(OPENH323_MINOR,   $MINOR_VERSION)
+-AC_DEFINE_UNQUOTED(OPENH323_BUILD,   $BUILD_NUMBER)
+-AC_DEFINE_UNQUOTED(OPENH323_VERSION, "$OPENH323_VERSION")
+-
+-dnl ########################################################################
+-dnl look for ptlib, use a preference order of explicit PWLIBDIR, directory
+-dnl at same level, home directory, /usr/local or /usr.
+-
+-if test "${PWLIBDIR:-unset}" != "unset" ; then
+-  AC_CHECK_FILE(${PWLIBDIR}/version.h, HAS_PTLIB=1)
+-fi
+-if test "${HAS_PTLIB:-unset}" = "unset" ; then
+-  AC_CHECK_FILE(${OPENH323DIR}/../pwlib/version.h, HAS_PTLIB=1)
+-  if test "${HAS_PTLIB:-unset}" != "unset" ; then
+-    PWLIBDIR="${OPENH323DIR}/../pwlib"
+-  else
+-    AC_CHECK_FILE(${HOME}/pwlib/include/ptlib.h, HAS_PTLIB=1)
+-    if test "${HAS_PTLIB:-unset}" != "unset" ; then
+-      PWLIBDIR="${HOME}/pwlib"
+-    else
+-      AC_CHECK_FILE(/usr/local/include/ptlib.h, HAS_PTLIB=1)
+-      if test "${HAS_PTLIB:-unset}" != "unset" ; then
+-        AC_PATH_PROG(PTLIB_CONFIG, ptlib-config, , /usr/local/bin)
+-      else
+-        AC_CHECK_FILE(/usr/include/ptlib.h, HAS_PTLIB=1)
+-        if test "${HAS_PTLIB:-unset}" != "unset" ; then
+-          AC_PATH_PROG(PTLIB_CONFIG, ptlib-config, , /usr/share/pwlib/make/)
+-        fi
+-      fi
+-    fi
+-  fi
+-fi
+-
+-if test "${HAS_PTLIB:-unset}" = "unset" ; then
+-  echo "Cannot find pwlib - please install or set PWLIBDIR and try again"
+-  exit
+-fi
+-
+-if test "${PWLIBDIR:-unset}" = "unset" ; then
+-  if test "${PTLIB_CONFIG:-unset}" = "unset" ; then
+-    echo "Cannot find ptlib-config - please install and try again"
+-    exit
+-  fi
+-  PWLIBDIR=`$PTLIB_CONFIG --prefix`
+-fi
+-
+-if test "x$PWLIBDIR" = "x/usr" -o "x$PWLIBDIR" = "x/usr/"; then
+-  PWLIBDIR="/usr/share/pwlib/"
+-fi
+-if test "xPWLIBDIR" = "x/usr/local" -o "x$PWLIBDIR" = "x/usr/"; then
+-  PWLIBDIR="/usr/local/share/pwlib/"
+-fi
++AC_DEFINE_UNQUOTED(OPENH323_MAJOR,   $MAJOR_VERSION,[THis is the build major])
++AC_DEFINE_UNQUOTED(OPENH323_MINOR,   $MINOR_VERSION,[This is the build minor])
++AC_DEFINE_UNQUOTED(OPENH323_BUILD,   $BUILD_NUMBER,[THis is the build version])
++AC_DEFINE_UNQUOTED(OPENH323_VERSION, "$OPENH323_VERSION", [THis is the build number])
+ 
+ echo "PWLib prefix set to.... $PWLIBDIR"
+-
+ AC_SUBST(PWLIBDIR)
+ 
+ 
+@@ -103,8 +53,8 @@
+ 
+ dnl MSWIN_DISPLAY video,Video System
+ dnl MSWIN_DEFINE  video,H323_VIDEO
+-AC_DEFINE(H323_AUDIO_CODECS,1)
+-AC_DEFINE(H323_VIDEO,1)
++AC_DEFINE(H323_AUDIO_CODECS,1,[Define this if you are using audio codecs])
++AC_DEFINE(H323_VIDEO,1,[Define this if you are using video])
+ 
+ 
+ dnl ########################################################################
+@@ -197,7 +147,7 @@
+   AC_MSG_NOTICE(Forcing use of local Speex sources)
+ elif test "${localspeex}" = "no" ; then
+   AC_MSG_NOTICE(Forcing use of system Speex library)
+-  AC_DEFINE(H323_SYSTEM_SPEEX, 1)
++  AC_DEFINE(H323_SYSTEM_SPEEX, 1, [Define this if you are using the system Speex])
+   AC_SUBST(H323_SYSTEM_SPEEX, 1)
+ else
+   AC_CHECK_LIB(speex, speex_encoder_destroy, SPEEX=1)
+@@ -272,9 +222,9 @@
+ dnl MSWIN_DISPLAY ixj,Quicknet Internet xJACK cards
+ dnl MSWIN_DEFINE  ixj,HAS_IXJ
+ 
+-AC_CHECK_HEADERS(linux/telephony.h sys/telephony.h /usr/local/include/sys/telephony.h, HAS_IXJ=1)
++AC_CHECK_HEADERS(linux/telephony.h, HAS_IXJ=1)
+ if test "x$HAS_IXJ" != "x" ; then
+-  AC_DEFINE(HAS_IXJ, 1)
++  AC_DEFINE(HAS_IXJ, 1,[Define this if you are using Quicknet])
+ fi
+ 
+ dnl ########################################################################
+--- openh323/include/gkserver.h	2004-08-07 05:11:52.000000000 -0700
++++ openh323.new/include/gkserver.h	2005-01-05 19:11:45.000000000 -0700
+@@ -405,7 +405,6 @@
+     H225_GatekeeperConfirm & gcf;
+     H225_GatekeeperReject  & grj;
+ 
+-  protected:
+     virtual Response OnHandlePDU();
+ };
+ 
