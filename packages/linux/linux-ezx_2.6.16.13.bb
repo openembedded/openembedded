@@ -10,6 +10,8 @@ PR = "${EZX}-r4"
 
 inherit kernel
 
+FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/linux-ezx"
+
 ##############################################################
 # source
 
