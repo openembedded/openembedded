@@ -3,6 +3,9 @@ inherit native
 DEPENDS = ""
 PR = "r1"
 
+PACKAGES=""
+RRECOMMENDS_${PN}=""
+
 do_configure() {
 	oe_runconf
 }
@@ -19,5 +22,9 @@ do_stage() {
 	do
 		install -m 0755 $binary ${STAGING_BINDIR}
 	done
+}
+
+do_install () {
+	:
 }
 
