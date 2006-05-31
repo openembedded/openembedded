@@ -1,0 +1,2 @@
+COMPATIBLE_MACHINE = "a780"
+DEPENDS = "a780-kernel-2.6 e680-kernel-2.6"

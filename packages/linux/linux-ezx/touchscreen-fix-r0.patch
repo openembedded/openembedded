@@ -1,0 +1,19 @@
+
+#
+# Patch managed by http://www.mn-logistik.de/unsupported/pxa250/patcher
+#
+
+--- linux-2.6.16/drivers/input/touchscreen/pcap_ts.c~touchscreen-fix-r0	2006-05-30 23:18:22.000000000 +0200
++++ linux-2.6.16/drivers/input/touchscreen/pcap_ts.c	2006-05-30 23:29:34.000000000 +0200
+@@ -126,10 +126,7 @@
+ 	if (ret < 0)
+ 		return ret;
+ 
+-	if (tmp & 0x00400000)
+-		return -EIO;
+-
+-	if (pcap_ts->read_state == COORDINATE) {
++	if (pcap_ts->read_state == COORDINATE && !(tmp & 0x00400000)) {
+ 		pcap_ts->x = (tmp & SSP_PCAP_ADD1_VALUE_MASK);
+ 		pcap_ts->y = (tmp & SSP_PCAP_ADD2_VALUE_MASK)
+ 						>>SSP_PCAP_ADD2_VALUE_SHIFT;
