@@ -12,6 +12,7 @@
 # * doesn't check for existing packages
 # * does not distinguish between -native, -cross and other packages
 # * is oblivious to CROSSDIR  
+# * breaks when a recipe needs stuff from STAGING_DIR to be present during do_stage, broken behaviour IMO
 
 # Summary:
 # This class will have two modes of operation:
