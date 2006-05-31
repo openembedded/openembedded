@@ -4,12 +4,12 @@
 
 DESCRIPTION="Mtools is a collection of utilities for accessing MS-DOS disks from Unix without mounting them."
 HOMEPAGE="http://mtools.linux.lu"
-MAINTAINER = "Raymond Danks <raymondd@ia.amd.com>"
+MAINTAINER = "Raymond Danks <info-linux@geode.amd.com>"
 LICENSE="GPL"
 
 SRC_URI="http://mtools.linux.lu/mtools-${PV}.tar.gz \
 	file://mtools-makeinfo.patch;patch=1"
 
-DEPENDS = "tetex-native"
+#DEPENDS = "tetex-native"
 
 inherit autotools
