@@ -90,11 +90,6 @@ do_munge() {
 	# Integrate ports into tree
 	mv ${WORKDIR}/ports ${S}
 
-        # Need to copy some extra folder content for sh arch. - OE bug #954
-	case ${TARGET_ARCH} in
-		sh*) cp ${WORKDIR}/libc/sysdeps/sh/${TARGET_ARCH}/*.S ${WORKDIR}/libc/sysdeps/sh;;
-	esac
-
 	# http://www.handhelds.org/hypermail/oe/51/5135.html
 	# Some files were moved around between directories on
 	# 2005-12-21, which means that any attempt to check out
