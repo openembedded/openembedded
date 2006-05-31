@@ -1,0 +1,13 @@
+--- emelfm2-0.0.8/Makefile	2004-04-30 04:17:57.000000000 -0700
++++ emelfm2-0.0.8.new/Makefile	2004-08-05 14:14:59.486331016 -0700
+@@ -176,8 +176,8 @@
+ $(DEPS_FILE): $(BUILD_FILE)
+ 	@echo "generating dependencies: '$(DEPS_FILE)'"
+ 	@touch $(DEPS_FILE)
+-	@makedepend -s "# generated dependencies" -f $(DEPS_FILE) -- $(lCFLAGS) -- $(SOURCES)
+-	@rm $(DEPS_FILE).bak
++	@$(CC) $(lCFLAGS) -M $(SOURCES) >> $(DEPS_FILE)
++	@rm -f $(DEPS_FILE).bak
+ 
+ marshals: $(MARSHALS_HEADER) $(MARSHALS_BODY)
+ $(MARSHALS_HEADER): $(MARSHALS_LIST)
