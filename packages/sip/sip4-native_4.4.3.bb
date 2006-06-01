@@ -19,5 +19,8 @@ do_configure_prepend() {
 
 do_stage() {
 	install -m 0755 sip ${STAGING_BINDIR}/sip4
+	cd ${WORKDIR}/sip-${PV} && python configure.py
+	install -d ${STAGING_PYDIR}/site-packages
+	install -m 0755 sip*.py ${STAGING_PYDIR}/site-packages
 }
 

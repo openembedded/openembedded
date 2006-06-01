@@ -2,7 +2,7 @@ LICENSE = "GPL"
 DEFAULT_PREFERENCE = "-1"
 
 S = "${WORKDIR}/${PN}"
-PV = "0.73+cvs${SRCDATE}"
+PV = "0.72+cvs${SRCDATE}"
 PR = "r1"
 
 PARALLEL_MAKE = ""

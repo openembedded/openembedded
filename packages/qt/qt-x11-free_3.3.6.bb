@@ -53,6 +53,10 @@ do_compile() {
 }
 
 do_stage() {
+	install -d ${STAGING_QT_DIR}/bin
+	ln -sf ${STAGING_BINDIR}/moc3 ${STAGING_QT_DIR}/bin/moc
+	ln -sf ${STAGING_BINDIR}/uic3 ${STAGING_QT_DIR}/bin/uic
+	ln -sf ${STAGING_BINDIR}/qmake ${STAGING_QT_DIR}/bin/qmake
 	install -d ${STAGING_QT_DIR}/lib
 	oe_soinstall lib/libqt-mt.so.${PV} ${STAGING_QT_DIR}/lib
 	install -d ${STAGING_QT_DIR}/include/private
