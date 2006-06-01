@@ -1,12 +1,17 @@
-include util-linux.inc
+DESCRIPTION = "Util-linux is a suite of essential utilities for any Linux system."
+SECTION = "base"
+LICENSE = "GPL"
+DEPENDS = "zlib-native ncurses-native"
 
-PR = "r0"
+inherit autotools native
 
-inherit native
-
-PACKAGES = ""
-RRECCOMMENDS_${PN} = ""
-RDEPENDS_${PN} = ""
+SRC_URI = "ftp://ftp.kernel.org/pub/linux/utils/util-linux/util-linux-${PV}.tar.bz2 \
+           file://gcc34.patch;patch=1 \
+           file://MCONFIG \
+           file://make_include \
+           file://swapargs.h \
+	   file://fdiskbsdlabel_thumb.diff;patch=1 \
+           file://defines.h"
 
 S="${WORKDIR}/util-linux-${PV}"
 
@@ -25,6 +30,3 @@ do_stage () {
 	autotools_stage_all
 }
 
-do_install () {
-	:
-}
