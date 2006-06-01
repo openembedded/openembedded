@@ -1,0 +1,16 @@
+
+#
+# Patch managed by http://www.mn-logistik.de/unsupported/pxa250/patcher
+#
+
+--- linux-2.6.16/drivers/i2c/chips/Makefile~e680-disable-boomer	2006-05-31 18:52:44.000000000 +0200
++++ linux-2.6.16/drivers/i2c/chips/Makefile	2006-05-31 18:56:38.000000000 +0200
+@@ -17,7 +17,7 @@
+ 
+ obj-$(CONFIG_I2C_ADCM2700)	+= e680_camera.o
+ obj-$(CONFIG_I2C_A780_CAMERA)	+= a780_camera.o
+-obj-$(CONFIG_PXA_EZX_E680)	+= boomer.o
++//obj-$(CONFIG_PXA_EZX_E680)	+= boomer.o
+ 
+ ifeq ($(CONFIG_I2C_DEBUG_CHIP),y)
+ EXTRA_CFLAGS += -DDEBUG

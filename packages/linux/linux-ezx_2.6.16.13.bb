@@ -18,6 +18,8 @@ FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/linux-ezx"
 SRC_URI = "http://www.kernel.org/pub/linux/kernel/v2.6/linux-2.6.16.tar.bz2 \
            http://people.openezx.org/stefan/patches/patches-2.6.16-2.6.16.13-exz6-symlink-fix.tar.bz2 \
            file://touchscreen-fix-r0.patch;patch=1 \
+           file://e680-keypad-compile-HACK.patch;patch=1 \
+           file://e680-disable-boomer-HACK.patch;patch=1 \
            file://defconfig-a780 \
            file://defconfig-e680"
 S = "${WORKDIR}/linux-2.6.16"
