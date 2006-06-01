@@ -1,0 +1,65 @@
+--- /tmp/Makefile	2005-09-01 17:07:30.218823872 +0200
++++ gpe-today-0.09/Makefile	2005-09-01 17:07:32.698446912 +0200
+@@ -1,7 +1,7 @@
+ PACKAGE = gpe-today
+ PREFIX = /usr/local
+ VERSION = 0.09
+-CVSBUILD = no
++CVSBUILD =no 
+ #DEBUG = yes
+ #EFENCE = yes
+ 
+@@ -9,28 +9,27 @@
+ 
+ MEMBERS = main todo calendar date xsettings
+ 
+-GTKCFLAGS = `pkg-config --cflags gtk+-2.0`
+-GTKLDFLAGS += `pkg-config --libs gtk+-2.0`
+-
+-CPPFLAGS = -I../libgpewidget -I../libeventdb -I../libtododb -I../libxsettings -I../libxsettings-client -D_GNU_SOURCE
+-
+ ifeq ($(EFENCE),yes)
+-LDFLAGS = -lefence
++PACKAGE_LDFLAGS = -lefence
+ endif
+ 
+ ifeq ($(DEBUG),yes)
+-CFLAGS = -g
++package_CFLAGS = -g
+ else
+-CFLAGS = -Os -fomit-frame-pointer
++PACKAGE_CFLAGS = -Os -fomit-frame-pointer
+ endif
+ 
+-CFLAGS += -Wall $(GTKCFLAGS)
+-LDFLAGS += $(GTKLDFLAGS) -L/usr/local/lib -L../libeventdb -leventdb -L../libtododb -ltododb -L../libxsettings -L../libxsettings-client -lXsettings-client -Wl,-rpath-link,../libxsettings -Wl,-rpath-link,../libgpepimc -Wl,-rpath-link,../libdisplaymigration
+-CPPFLAGS += -DPACKAGE=\"$(PACKAGE)\" -DPREFIX=\"$(PREFIX)\" -DPACKAGE_LOCALE_DIR=\"$(PREFIX)/share/locale\"
+-#CFLAGS += -MD
+-
+ .SUFFIXES: .d
+ 
++ifeq ($(CVSBUILD),yes)
++PACKAGE_CPPFLAGS += -I../libeventdb -I../libtododb -I../libxsettings -I../libxsettings-client -I../libdisplaymigration -I../libgpepimc
++PACKAGE_LDFLAGS += -L../libeventdb -L../libtododb -L../libxsettings-client -Wl,-rpath-link,../libxsettings -L../libgpepimc
++endif
++PACKAGE_CPPFLAGS += $(STANDARD_CPPFLAGS)
++PACKAGE_CFLAGS += $(STANDARD_CFLAGS) $(GPECFLAGS)
++PACKAGE_LDFLAGS += $(STANDARD_LDFLAGS) $(GPELIBS) -leventdb -ltododb -lXsettings-client -lsqlite -lgpepimc
++   
++
+ OBJS = $(patsubst %,%.o,$(MEMBERS))
+ DEPS = $(patsubst %,%.d,$(MEMBERS))
+ SOURCES = $(patsubst %,%.c,$(MEMBERS))
+@@ -43,10 +42,10 @@
+ BUILD = build
+ endif
+ 
+-all: $(PACKAGE) all-mo
++all: $(PACKAGE)
+ 
+ $(PACKAGE): $(OBJS)
+-	$(CC) -o $@ $^ -L../libgpewidget -lgpewidget -lsqlite $(LDFLAGS)
++	$(CC) -o $@ $^ $(LDFLAGS) $(PACKAGE_LDFLAGS)
+ 
+ install-program: all $(PACKAGE).desktop
+ 	for i in $(PIXMAPS); do install -D -m 644 pixmaps/$$i $(DESTDIR)$(PREFIX)/share/$(PACKAGE)/pixmaps/$$i; done

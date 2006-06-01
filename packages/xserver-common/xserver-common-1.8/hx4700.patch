@@ -1,0 +1,10 @@
+--- xserver-common-1.8/X11/hx4700.xmodmap.orig	2006-05-13 01:18:59.000000000 +0200
++++ xserver-common-1.8/X11/hx4700.xmodmap	2006-05-13 01:19:02.000000000 +0200
+@@ -1,6 +1,6 @@
+ keycode 75 = XF86Calendar
+ keycode 76 = telephone
+ keycode 95 = XF86Mail
+-keycode 96 = XF86Record
++keycode 96 = XF86AudioRecord
+ keycode 110 = XF86Start
+ keycode 124 = XF86PowerDown

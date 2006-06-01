@@ -1,0 +1,10 @@
+--- gpe-today-0.11/main.c.orig	2006-05-21 18:59:40.000000000 +0200
++++ gpe-today-0.11/main.c	2006-05-21 19:01:15.000000000 +0200
+@@ -85,6 +85,7 @@
+ /* some code adpated from mbdesktop.c copyright matthew allum */
+ void set_background(const char *spec)
+ {
++	return;
+         /* img-tiled:<filename>
+          * img-streched:<filename> -- will be tiled too
+          * col-solid:<filename>
