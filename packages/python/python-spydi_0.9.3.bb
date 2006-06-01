@@ -9,7 +9,7 @@ PRIORITY = "optional"
 LICENSE = "MIT"
 PR = "ml0"
 
-SRC_URI = "http://lsc.fie.umich.mx/%7esadit/spyro/spydi-${PV}.tgz"
+SRC_URI = "http://lsc.fie.umich.mx/%7esadit/spyro/SPyDI-${PV}.tar.gz"
 S = "${WORKDIR}/SPyDI-${PV}"
 
 inherit distutils
