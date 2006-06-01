@@ -8,11 +8,11 @@ SRC_URI = "ftp://ftp.kernel.org/pub/linux/daemons/autofs/v4/autofs-${PV}.tar.bz2
            ftp://ftp.kernel.org/pub/linux/daemons/autofs/v4/autofs-4.1.4-non-replicated-ping.patch;patch=1 \
            file://cross.patch;patch=1 \
            file://Makefile.rules-cross.patch;patch=1"
+	   
+inherit autotools
 
 EXTRA_OEMAKE="TARGET_PREFIX=${TARGET_PREFIX}"
 PARALLEL_MAKE = ""
-
-inherit autotools
 
 do_configure_prepend () {
 	if [ ! -e acinclude.m4 ]; then
