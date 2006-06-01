@@ -10,3 +10,4 @@ file://libao.m4.patch;patch=1"
 
 inherit autotools
 
+EXTRA_OECONF="--with-ao-includes=${STAGING_INCDIR} --with-ao-libraries=${STAGING_LIBDIR}"
