@@ -1,0 +1,42 @@
+
+#
+# Patch managed by http://www.mn-logistik.de/unsupported/pxa250/patcher
+#
+
+--- linux-2.6.16/arch/arm/mach-pxa/ezx.c~e680-keypad-compile-fix.patch	2006-05-31 18:47:58.000000000 +0200
++++ linux-2.6.16/arch/arm/mach-pxa/ezx.c	2006-05-31 18:51:57.000000000 +0200
+@@ -404,24 +404,20 @@
+ 	KEYPAD_NONE,
+ };
+ #elif defined(CONFIG_PXA_EZX_E680)
+-#error "kbd matrix still needs to be converted to new row/col layout"
+ static unsigned char ezx_keycode[] = {
+-	/* col 0 */
+-	KEY_UP, KEY_DOWN, 0, 0, 0, 0, 0, 0,
+-	/* col 1 */
+-	KEY_RIGHT, KEY_LEFT, 0, 0, 0, 0, 0, 0,
+-	/* col 2 */
+-	0, KEYPAD_GAME_R, 0, 0, 0, 0, 0, 0,
+-	/* col 3 */
+-	KEYPAD_HOME, KEYPAD_GAME_L, KEYPAD_CENTER, 0, 0, 0, 0, 0,
++    /* row 0 */
++    KEY_KPENTER, KEY_MENU, KEY_CANCEL, KEY_PAGEUP, KEY_UP,
++    /* row 1 */
++    KEY_KP1, KEY_KP2, KEY_KP3, KEY_ENTER, KEY_KPENTER, /*center joypad */
++    /* row 2 */
++    KEY_KP4, KEY_KP5, KEY_KP6, KEY_PAGEDOWN, KEY_PHONE,
++    /* row 3 */
++    KEY_KP7, KEY_KP8, KEY_KP9, KEY_PHONE, KEY_LEFT,
++    /* row 4 */
++    KEY_KPASTERISK, KEY_KP0, KEY_KPDOT, KEY_PAGEDOWN, KEY_DOWN,
+ };
+ static unsigned char ezx_direct_keycode[] = {
+ 	KEY_CAMERA,
+-	KEYPAD_NONE,
+-	KEYPAD_NONE,
+-	KEYPAD_A,
+-	KEY_POWER,
+-	KEYPAD_B,
+ };
+ #elif defined(CONFIG_PXA_EZX_A780)
+ static unsigned char ezx_keycode[] = {
