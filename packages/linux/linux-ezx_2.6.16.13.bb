@@ -6,18 +6,33 @@ MAINTAINER = "Michael 'Mickey' Lauer <mickey@vanille.de>"
 LICENSE = "GPL"
 DEPENDS += "quilt-native"
 EZX = "ezx6"
-PR = "${EZX}-r4"
+PR = "${EZX}-r5"
 
 inherit kernel
 
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/linux-ezx"
+RPSRC = "http://www.rpsys.net/openzaurus/patches/archive"
 
 ##############################################################
-# source
-
+# source and patches
+#
 SRC_URI = "http://www.kernel.org/pub/linux/kernel/v2.6/linux-2.6.16.tar.bz2 \
            http://people.openezx.org/stefan/patches/patches-2.6.16-2.6.16.13-exz6-symlink-fix.tar.bz2 \
            file://touchscreen-fix-r0.patch;patch=1 \
+           \
+           ${RPSRC}/led_core-r15.patch;patch=1 \
+           ${RPSRC}/led_triggers-r14.patch;patch=1 \
+           ${RPSRC}/led_trig_timer-r8.patch;patch=1 \
+           ${RPSRC}/led_trig_sharpsl_pm-r5.patch;patch=1 \
+           ${RPSRC}/led_zaurus-r10.patch;patch=1 \
+           ${RPSRC}/led_locomo-r7.patch;patch=1 \
+           ${RPSRC}/led_ixp4xx-r2.patch;patch=1 \
+           ${RPSRC}/led_tosa-r5.patch;patch=1 \
+           ${RPSRC}/led_ide-r6.patch;patch=1 \
+           ${RPSRC}/led_nand-r3.patch;patch=1 \
+           \
+           file://led_ezx-r0.patch;patch=1 \
+           \
            file://e680-keypad-compile-HACK.patch;patch=1 \
            file://e680-disable-boomer-HACK.patch;patch=1 \
            file://defconfig-a780 \
@@ -51,7 +66,7 @@ do_ezxpatch() {
 }
 
 do_configure() {
-	rm -f ${S}/.config
+	mv ${S}/.config harald.config
 
 	if [ ! -e ${WORKDIR}/defconfig-${MACHINE} ]; then
 		die "No default configuration for ${MACHINE} available."
@@ -79,7 +94,9 @@ do_configure() {
 	yes '' | oe_runmake oldconfig
 }
 
-# Check the kernel is below the 1024*1024 byte limit for the boot-over usb
+###############################################################
+# check the kernel is below the 1024*1024 byte limit for the boot-over usb
+#
 do_compile_append() {
 	size=`ls -l arch/${ARCH}/boot/${KERNEL_IMAGETYPE} | awk '{ print $5}'`
 	if [ $size -ge 1294336 ]; then	
@@ -89,6 +106,9 @@ do_compile_append() {
 	fi
 }
 
+###############################################################
+# put into deploy directory
+#
 do_deploy() {
         install -d ${DEPLOY_DIR_IMAGE}
         install -m 0644 arch/${ARCH}/boot/${KERNEL_IMAGETYPE} ${DEPLOY_DIR_IMAGE}/${KERNEL_IMAGETYPE}-${PV}-${MACHINE}-${DATETIME}.bin

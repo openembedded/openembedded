@@ -1,0 +1,174 @@
+
+#
+# Patch managed by http://www.holgerschurig.de/patcher.html
+#
+
+--- linux-2.6.16/arch/arm/mach-pxa/ezx.c~led_ezx-r0.patch
++++ linux-2.6.16/arch/arm/mach-pxa/ezx.c
+@@ -357,6 +357,15 @@
+ 	.num_resources	= ARRAY_SIZE(ezx_backlight_resources),
+ };
+ 
++/*
++ * EZX LEDs
++ */
++static struct platform_device ezxled_device = {
++	.name		= "ezx-led",
++	.id		= -1,
++};
++
++
+ /* keyboard */
+ 
+ #if defined(CONFIG_PXA_EZX_V700)
+@@ -770,6 +779,7 @@
+ 
+ static struct platform_device *devices[] __initdata = {
+ 	&ezx_bp_device,
++	&ezxled_device,
+ };
+ 
+ static void __init
+--- linux-2.6.16/drivers/leds/Kconfig~led_ezx-r0.patch
++++ linux-2.6.16/drivers/leds/Kconfig
+@@ -59,6 +59,13 @@
+ 	  This option enables support for the LEDs on Sharp Zaurus
+ 	  SL-6000 series.
+ 
++config LEDS_EZX
++	tristate "LED Support for the Motorola EZX Platform"
++	depends LEDS_CLASS && PXA_EZX && PXA_EZX_E680
++	help
++	  This options enables support for the LEDs on Motorola EZX
++	  A780 and E680(i) GSM Phones.
++
+ config LEDS_TRIGGER_TIMER
+ 	tristate "LED Timer Trigger"
+ 	depends LEDS_TRIGGERS
+--- linux-2.6.16/drivers/leds/Makefile~led_ezx-r0.patch
++++ linux-2.6.16/drivers/leds/Makefile
+@@ -10,7 +10,8 @@
+ obj-$(CONFIG_LEDS_SPITZ)		+= leds-spitz.o
+ obj-$(CONFIG_LEDS_IXP4XX)		+= leds-ixp4xx-gpio.o
+ obj-$(CONFIG_LEDS_TOSA)			+= leds-tosa.o
++obj-$(CONFIG_LEDS_EZX)			+= leds-ezx.o
+ 
+ # LED Triggers
+ obj-$(CONFIG_LEDS_TRIGGER_TIMER)	+= ledtrig-timer.o
+-obj-$(CONFIG_LEDS_TRIGGER_IDE_DISK)	+= ledtrig-ide-disk.o
+\ Kein Zeilenumbruch am Dateiende.
++obj-$(CONFIG_LEDS_TRIGGER_IDE_DISK)	+= ledtrig-ide-disk.o
+--- /dev/null
++++ linux-2.6.16/drivers/leds/leds-ezx.c
+@@ -0,0 +1,111 @@
++/*
++ * EZX Platform LED Driver
++ *
++ * Copyright 2006 Vanille-Media
++ *
++ * Author: Michael Lauer <mickey@Vanille.de>
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ *
++ */
++
++#include <linux/config.h>
++#include <linux/kernel.h>
++#include <linux/init.h>
++#include <linux/platform_device.h>
++#include <linux/leds.h>
++//#include <asm/mach-types.h>
++//#include <asm/arch/hardware.h>
++//#include <asm/arch/pxa-regs.h>
++#include "../misc/ezx/ssp_pcap.h"
++
++static void ezxled_red_set(struct led_classdev *led_cdev, enum led_brightness value)
++{
++	printk( KERN_DEBUG "exzled_red_set: %d", value );
++}
++
++static void ezxled_green_set(struct led_classdev *led_cdev, enum led_brightness value)
++{
++	printk( KERN_DEBUG "exzled_green_set: %d", value );
++}
++
++static struct led_classdev ezx_red_led = {
++	.name			= "ezx:red",
++	.default_trigger	= "timer",
++	.brightness_set		= ezxled_red_set,
++};
++
++static struct led_classdev ezx_green_led = {
++	.name			= "ezx:green",
++	.default_trigger	= "timer",
++	.brightness_set		= ezxled_green_set,
++};
++
++#ifdef CONFIG_PM
++static int ezxled_suspend(struct platform_device *dev, pm_message_t state)
++{
++	led_classdev_suspend(&ezx_red_led);
++	led_classdev_suspend(&ezx_green_led);
++	return 0;
++}
++
++static int ezxled_resume(struct platform_device *dev)
++{
++	led_classdev_resume(&ezx_red_led);
++	led_classdev_resume(&ezx_green_led);
++	return 0;
++}
++#endif
++
++static int ezxled_probe(struct platform_device *pdev)
++{
++	int ret;
++
++	ret = led_classdev_register(&pdev->dev, &ezx_red_led);
++	if (ret < 0)
++		return ret;
++
++	ret = led_classdev_register(&pdev->dev, &ezx_green_led);
++	if (ret < 0)
++		led_classdev_unregister(&ezx_red_led);
++
++	return ret;
++}
++
++static int ezxled_remove(struct platform_device *pdev)
++{
++	led_classdev_unregister(&ezx_red_led);
++	led_classdev_unregister(&ezx_green_led);
++	return 0;
++}
++
++static struct platform_driver ezxled_driver = {
++	.probe		= ezxled_probe,
++	.remove		= ezxled_remove,
++#ifdef CONFIG_PM
++	.suspend	= ezxled_suspend,
++	.resume		= ezxled_resume,
++#endif
++	.driver		= {
++		.name		= "ezx-led",
++	},
++};
++
++static int __init ezxled_init(void)
++{
++	return platform_driver_register(&ezxled_driver);
++}
++
++static void __exit ezxled_exit(void)
++{
++ 	platform_driver_unregister(&ezxled_driver);
++}
++
++module_init(ezxled_init);
++module_exit(ezxled_exit);
++
++MODULE_AUTHOR("Michael Lauer <mickey@Vanille.de>");
++MODULE_DESCRIPTION("EZX LED driver");
++MODULE_LICENSE("GPL");

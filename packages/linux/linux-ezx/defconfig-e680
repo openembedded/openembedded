@@ -1,7 +1,7 @@
 #
 # Automatically generated make config: don't edit
 # Linux kernel version: 2.6.16.13
-# Thu May 18 19:40:25 2006
+# Fri Jun  2 15:01:31 2006
 #
 CONFIG_ARM=y
 CONFIG_MMU=y
@@ -14,6 +14,7 @@ CONFIG_ARCH_MTD_XIP=y
 #
 CONFIG_EXPERIMENTAL=y
 CONFIG_BROKEN_ON_SMP=y
+CONFIG_LOCK_KERNEL=y
 CONFIG_INIT_ENV_ARG_LIMIT=32
 
 #
@@ -171,7 +172,7 @@ CONFIG_ALIGNMENT_TRAP=y
 #
 CONFIG_ZBOOT_ROM_TEXT=0x0
 CONFIG_ZBOOT_ROM_BSS=0x0
-CONFIG_CMDLINE="mem=32M root=/dev/mmcblk0p1 rootfstype=ext3 rootdelay=1 ip=192.168.1.2:192.168.1.10:192.168.1.10:255.255.255.0:ezx:usb0:off console=ttyS2,115200n8 console=tty0"
+CONFIG_CMDLINE="console=ttyS2,115200n8 console=tty1 noinitrd root=/dev/mmcblk0p1 rootfstype=ext3 rootdelay=5 ip=192.168.1.2:192.168.1.10:192.168.1.10:255.255.255.0:ezx:usb0:off   debug"
 # CONFIG_XIP_KERNEL is not set
 
 #
@@ -847,6 +848,15 @@ CONFIG_SPI_BITBANG=m
 #
 
 #
+# LED devices
+#
+CONFIG_NEW_LEDS=y
+CONFIG_LEDS_CLASS=y
+CONFIG_LEDS_TRIGGERS=y
+CONFIG_LEDS_EZX=m
+CONFIG_LEDS_TRIGGER_TIMER=y
+
+#
 # Multimedia devices
 #
 # CONFIG_VIDEO_DEV is not set
@@ -1220,6 +1230,7 @@ CONFIG_LOG_BUF_SHIFT=14
 # CONFIG_DETECT_SOFTLOCKUP is not set
 # CONFIG_SCHEDSTATS is not set
 # CONFIG_DEBUG_SLAB is not set
+CONFIG_DEBUG_PREEMPT=y
 # CONFIG_DEBUG_MUTEXES is not set
 # CONFIG_DEBUG_SPINLOCK is not set
 # CONFIG_DEBUG_SPINLOCK_SLEEP is not set
