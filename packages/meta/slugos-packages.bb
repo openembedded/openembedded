@@ -19,7 +19,6 @@ PACKAGES = "${PN}"
 # KEEP IN ALPHABETICAL ORDER
 SLUGOS_PACKAGES = "\
 	alsa-lib \
-	asterisk \
 	atftp \
 	audiofile \
 	aumix \
@@ -190,6 +189,7 @@ UCLIBC_UNSUPPORTABLE_PACKAGES = "\
 # These packages work with glibc, but break on uclibc.
 UCLIBC_BROKEN_PACKAGES = "\
 	alsa-utils \
+	asterisk \
 	bogofilter \
 	ircp \
 	"
