@@ -17,8 +17,7 @@ RPSRC = "http://www.rpsys.net/openzaurus/patches/archive"
 # source and patches
 #
 SRC_URI = "http://www.kernel.org/pub/linux/kernel/v2.6/linux-2.6.16.tar.bz2 \
-           http://people.openezx.org/stefan/patches/patches-2.6.16-2.6.16.13-exz6-symlink-fix.tar.bz2 \
-           file://touchscreen-fix-r0.patch;patch=1 \
+	   file://ezx6-jumbo.patch;patch=1 \
            \
            ${RPSRC}/led_core-r15.patch;patch=1 \
            ${RPSRC}/led_triggers-r14.patch;patch=1 \
@@ -32,6 +31,7 @@ SRC_URI = "http://www.kernel.org/pub/linux/kernel/v2.6/linux-2.6.16.tar.bz2 \
            ${RPSRC}/led_nand-r3.patch;patch=1 \
            \
            file://led_ezx-r0.patch;patch=1 \
+	   file://touchscreen-fix-r0.patch;patch=1 \
            \
            file://e680-keypad-compile-HACK.patch;patch=1 \
            file://e680-disable-boomer-HACK.patch;patch=1 \
@@ -118,4 +118,4 @@ do_deploy() {
 do_deploy[dirs] = "${S}"
 
 addtask deploy before do_package after do_install
-addtask ezxpatch before do_patch after do_unpack
+#addtask ezxpatch before do_patch after do_unpack
