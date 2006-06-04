@@ -1,0 +1,194 @@
+===================================================================
+RCS file: /home/cvs/linux/kernel26/arch/arm/mach-pxa/h2200/h2200_pm.c,v
+retrieving revision 1.16
+retrieving revision 1.16.2.1
+diff -u -p -r1.16 -r1.16.2.1
+--- kernel26/arch/arm/mach-pxa/h2200/h2200_pm.c	2006/03/04 03:49:29	1.16
++++ kernel26/arch/arm/mach-pxa/h2200/h2200_pm.c	2006/06/04 17:37:23	1.16.2.1
+@@ -17,7 +17,6 @@
+ #include <asm/hardware.h>
+ #include <asm/io.h>
+ #include <asm/arch/pxa-regs.h>
+-#include <asm/arch/pxa-pm_ll.h>
+ 
+ #include <asm/arch/h2200-asic.h>
+ #include <asm/hardware/ipaq-hamcop.h>
+@@ -29,20 +28,19 @@
+    must save the bootloader before it gets overwritten, and restore it at
+    suspend.
+ 
+-   There is are two problems with using the HTC bootloader:
+-   1) as it primes the memory system on resume, it overwrites 0xa0000000;
+-   2) it does its initialization and then jumps to 0xa0040000, which on Linux
+-   is somewhere in kernel code. The solution to the first problem is simply
+-   to save and restore 0xa0000000 on suspend/resume. There are a couple of
+-   solutions to the second problem:
++   The problem with using the HTC bootloader is that it does its
++   initialization and then jumps to 0xa0040000, which on Linux
++   is somewhere in kernel code. There are a couple of solutions to this
++   problem:
+ 
+    1. Save/restore enough bytes at 0xa0040000 to insert code to jump to the
+       resume function. This is still a little risky depending on what's
+       at 0xa0040000.
+ 
+-   2. Store a relocatable code fragment into SRAM that jumps to the resume
+-      function. This is safer since we don't have to worry about stomping
+-      on the kernel; and we have to copy the bootloader into place anyway.
++   2. Store a position-independent code fragment into SRAM that jumps to the
++      resume function. This is safer since we don't have to worry about
++      stomping on the kernel; and we have to copy the bootloader into place
++      anyway.
+ 
+    Both methods have been tested to work. Method #2 seems safer so that is
+    what we're using.
+@@ -63,13 +61,10 @@
+ 
+ static u8  *bootloader;
+ static int bootloader_valid = 0;
+-static u32 *addr_a0000000;
+-static u32 save_a0000000;
+ 
+ #define BOOTLOADER_LOAD_DELAY (HZ * 30)
+ static struct work_struct fw_work;
+ 
+-struct pxa_ll_pm_ops *ll_ops_orig;
+ extern struct pm_ops pxa_pm_ops;
+ 
+ static int (*pxa_pm_enter_orig)(suspend_state_t state);
+@@ -85,8 +80,6 @@ static int h2200_pxa_pm_enter(suspend_st
+ 	}
+ 
+ 	ret = pxa_pm_enter_orig(state);
+-	if (ret)
+-		return ret;
+ 
+ 	MSC0 = 0x246c7ffc;
+ 	(void)MSC0;
+@@ -95,35 +88,9 @@ static int h2200_pxa_pm_enter(suspend_st
+ 	MSC2 = 0x7ff07ff0;
+ 	(void)MSC2;
+ 
+-	return 0;
+-}
+-
+-static void h2200_pxa_ll_pm_suspend(unsigned long resume_addr)
+-{
+-	/* Save the value at 0xa0000000 phys because the HTC bootloader
+-	   will overwrite it. */
+-	save_a0000000 = *addr_a0000000;
+-
+-	/* XXX Do we still need to flush the cache though we've mapped
+-	 * the SRAM as uncacheable? */
+-
+-	return;
+-}
+-
+-static void h2200_pxa_ll_pm_resume(void)
+-{
+-	/* Restore the value at 0xa0000000 phys. */
+-	*addr_a0000000 = save_a0000000;
+-
+-	/* XXX Do we still need to flush the cache though we've mapped
+-	 * the SRAM as uncacheable? */
++	return ret;
+ }
+ 
+-static struct pxa_ll_pm_ops h2200_ll_pm_ops = {
+-	.suspend = h2200_pxa_ll_pm_suspend,
+-	.resume  = h2200_pxa_ll_pm_resume,
+-};
+-
+ /* Return a pointer to the bootloader. */
+ u8 *
+ get_hamcop_bootloader(void)
+@@ -132,13 +99,23 @@ get_hamcop_bootloader(void)
+ }
+ EXPORT_SYMBOL(get_hamcop_bootloader);
+ 
++/* Patch the bootloader so it resumes to the address in PSPR
++ * instead of 0xa0040000. */
++static void h2200_patch_fw(void)
++{
++	int i;
++	u32 *code = (u32 *)bootloader;
++
++	i = 0x75c / sizeof(u32);
++	code[i++] = 0xe59f0000; /* ldr r0, [pc, #0] */
++	code[i++] = 0xe590f000; /* ldr pc, [r0] */
++	code[i++] = 0x40f00008; /* PSPR */
++}
+ 
+ #if defined(CONFIG_FW_LOADER) || defined(CONFIG_FW_LOADER_MODULE)
+ static void h2200_load_bootloader(void *data)
+ {
+ 	const struct firmware *fw;
+-	u32 *code;
+-	int i;
+ 
+ 	if (request_firmware(&fw, "h2200_bootloader.bin", &h2200_hamcop.dev)) {
+ 		printk(KERN_ERR "h2200_pm: request_firmware failed\n");
+@@ -154,20 +131,12 @@ static void h2200_load_bootloader(void *
+ 	memcpy(bootloader, fw->data, fw->size < HAMCOP_SRAM_Size ?
+ 				       fw->size : HAMCOP_SRAM_Size);
+ 	release_firmware(fw);
+-
+-	/* Patch the bootloader so it resumes to the address in PSPR
+-	 * instead of 0xa0040000. */
+-	code = (u32 *)bootloader;
+-	i = 0x75c / sizeof(u32);
+-	code[i++] = 0xe59f0000; /* ldr r0, [pc, #0] */
+-	code[i++] = 0xe590f000; /* ldr pc, [r0] */
+-	code[i++] = 0x40f00008; /* PSPR */
+-
++	h2200_patch_fw();
+ 	bootloader_valid = 1;
+ }
+ #endif
+ 
+-static int __init h2200_ll_pm_init(void) {
++static int __init h2200_pm_init(void) {
+ 
+ 	u8 *sram;
+ 
+@@ -175,8 +144,6 @@ static int __init h2200_ll_pm_init(void)
+ 
+ 		printk("Initialising wince bootloader suspend workaround\n");
+ 
+-		addr_a0000000 = phys_to_virt(0xa0000000);
+-		ll_ops_orig = pxa_pm_set_ll_ops(&h2200_ll_pm_ops);
+ 		pxa_pm_enter_orig = pxa_pm_ops.enter;
+ 		pxa_pm_ops.enter = h2200_pxa_pm_enter;
+ 
+@@ -198,9 +165,11 @@ static int __init h2200_ll_pm_init(void)
+ 		 * another. Check for the HTC bootloader by looking for
+ 		 * 'b 0x80' at +0x0, and for 'ECEC' at +0x40. */
+ 		if (((u32 *)bootloader)[0]    == 0xea00001e &&
+-		    ((u32 *)bootloader)[0x10] == 0x43454345)
++		    ((u32 *)bootloader)[0x10] == 0x43454345) {
++
++		    h2200_patch_fw();
+ 		    bootloader_valid = 1;
+-		else
++		} else
+ 		    printk(KERN_ERR "h2200_pm: bootloader may be invalid; "
+ 			   "resume may not work\n");
+ 
+@@ -231,14 +200,13 @@ static int __init h2200_ll_pm_init(void)
+ 	return 0;
+ }
+ 
+-static void __exit h2200_ll_pm_exit(void)
++static void __exit h2200_pm_exit(void)
+ {
+ 	pxa_pm_ops.enter = pxa_pm_enter_orig;
+-	pxa_pm_set_ll_ops(ll_ops_orig);
+ }
+ 
+-module_init(h2200_ll_pm_init);
+-module_exit(h2200_ll_pm_exit);
++module_init(h2200_pm_init);
++module_exit(h2200_pm_exit);
+ 
+ MODULE_AUTHOR("Matt Reimer <mreimer@vpop.net>");
+ MODULE_DESCRIPTION("HP iPAQ h2200 power management support for HTC bootloader");

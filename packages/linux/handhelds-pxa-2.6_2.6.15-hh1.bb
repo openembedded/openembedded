@@ -9,6 +9,7 @@ COMPATIBLE_HOST = "arm.*-linux"
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/handhelds-pxa-${PV}"
 
 SRC_URI = "${HANDHELDS_CVS};module=linux/kernel26;tag=${@'K' + bb.data.getVar('PV',d,1).replace('.', '-')} \
+	file://h2200_pm.c.patch;patch=1 \
 	file://defconfig"
 
 S = "${WORKDIR}/kernel26"
