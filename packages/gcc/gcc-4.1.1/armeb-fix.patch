@@ -1,6 +1,6 @@
 --- gcc-4.0-20050305/gcc/config/arm/linux-elf.h.orig	2005-03-23 18:44:54.822707377 +0100
 +++ gcc-4.0-20050305/gcc/config/arm/linux-elf.h	2005-03-23 18:46:18.228560206 +0100
-@@ -31,19 +31,33 @@
+@@ -28,19 +28,35 @@
  /* Do not assume anything about header files.  */
  #define NO_IMPLICIT_EXTERN_C
  
@@ -9,11 +9,13 @@
 + * arm*b-*-linux* (big endian) configurations.
 + */
 +#if TARGET_BIG_ENDIAN_DEFAULT
-+#define TARGET_ENDIAN_DEFAULT ARM_FLAG_BIG_END
++#define TARGET_ENDIAN_DEFAULT 1
++#define TARGET_BIG_END 1
 +#define TARGET_ENDIAN_OPTION "mbig-endian"
 +#define TARGET_LINKER_EMULATION "armelfb_linux"
 +#else
 +#define TARGET_ENDIAN_DEFAULT 0
++#define TARGET_BIG_END 0
 +#define TARGET_ENDIAN_OPTION "mlittle-endian"
 +#define TARGET_LINKER_EMULATION "armelf_linux"
 +#endif
@@ -37,7 +39,7 @@
  
  /* The GNU C++ standard library requires that these macros be defined.  */
  #undef CPLUSPLUS_CPP_SPEC
-@@ -90,7 +104,7 @@
+@@ -90,7 +75,7 @@
     %{rdynamic:-export-dynamic} \
     %{!dynamic-linker:-dynamic-linker /lib/ld-linux.so.2} \
     -X \
@@ -46,17 +48,19 @@
     SUBTARGET_EXTRA_LINK_SPEC
  
  #define TARGET_OS_CPP_BUILTINS()		\
---- gcc-4.0-20050305/gcc/config.gcc.orig	2005-03-23 18:46:23.318105335 +0100
-+++ gcc-4.0-20050305/gcc/config.gcc	2005-03-23 18:47:41.592546386 +0100
-@@ -650,6 +650,11 @@
- 	;;
- arm*-*-linux*)			# ARM GNU/Linux with ELF
- 	tm_file="dbxelf.h elfos.h linux.h arm/elf.h  arm/linux-gas.h arm/linux-elf.h arm/aout.h arm/arm.h"
-+	case $target in
-+	arm*b-*-linux*)
-+		tm_defines="${tm_defines} TARGET_BIG_ENDIAN_DEFAULT=1"
-+		;;
-+	esac
- 	tmake_file="${tmake_file} arm/t-arm arm/t-linux"
- 	extra_parts="crtbegin.o crtbeginS.o crtend.o crtendS.o"
- 	gnu_ld=yes
+*** gcc/gcc/config.gcc.orig	2006-06-04 17:59:06.000000000 +0200
+--- gcc/gcc/config.gcc	2006-06-04 17:59:52.000000000 +0200
+***************
+*** 672,677 ****
+--- 672,682 ----
+  	;;
+  arm*-*-linux*)			# ARM GNU/Linux with ELF
+  	tm_file="dbxelf.h elfos.h linux.h arm/elf.h arm/linux-gas.h arm/linux-elf.h" 
++         case $target in
++         arm*b-*-linux*)
++                 tm_defines="${tm_defines} TARGET_BIG_ENDIAN_DEFAULT=1"
++                 ;;
++         esac
+  	tmake_file="${tmake_file} t-linux arm/t-arm"
+  	case ${target} in
+  	arm*-*-linux-gnueabi)
