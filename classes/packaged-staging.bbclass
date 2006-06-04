@@ -40,8 +40,8 @@ do_stage_append() {
 
 mkdir -p ${DEPLOY_DIR_PSTAGE}
 mkdir -p ${STAGING_DIR}/CONTROL
-echo "Package: ${PN}"                   >  ${STAGING_DIR}/CONTROL/control
-echo "Version: ${PV}"                   >> ${STAGING_DIR}/CONTROL/control
+echo "Package: staging-${PN}"           >  ${STAGING_DIR}/CONTROL/control
+echo "Version: ${PV}-${PR}"             >> ${STAGING_DIR}/CONTROL/control
 echo "Description: ${DESCRIPTION}"      >> ${STAGING_DIR}/CONTROL/control
 echo "Section: ${SECTION}"              >> ${STAGING_DIR}/CONTROL/control
 echo "Priority: Optional"               >> ${STAGING_DIR}/CONTROL/control
@@ -71,7 +71,7 @@ rm -rf ${STAGING_DIR}
 #move back stagingdir so we can install packages   
 mv ${TMPDIR}/pstage ${STAGING_DIR}
 
-${PSTAGE_INSTALL_CMD} ${STAGING_DIR}  ${DEPLOY_DIR_PSTAGE}/${PN}_${PV}_${PACKAGE_ARCH}.ipk
+${PSTAGE_INSTALL_CMD} ${STAGING_DIR}  ${DEPLOY_DIR_PSTAGE}/staging-${PN}_${PV}_${PACKAGE_ARCH}.ipk
 
 }
 
