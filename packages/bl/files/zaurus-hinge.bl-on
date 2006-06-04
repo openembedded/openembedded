@@ -1,0 +1,10 @@
+#! /bin/sh
+#
+# Copyright Matthias Hentges <devel@hentges.net> (c) 2006
+# License: GPL (see http://www.gnu.org/licenses/gpl.txt for a copy of the license)
+#
+# Filename: zaurus-hinge.bl-on
+# Date: 04-Jun-06
+
+test -z "${ZD_BINDIR}" && ZD_BINDIR="/usr/bin"
+${ZD_BINDIR}/bl on
