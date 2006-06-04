@@ -6,13 +6,14 @@ SECTION = "console/utils"
 PRIORITY = "optional"
 DEPENDS = "ncurses glib-2.0"
 RDEPENDS = "ncurses-terminfo"
+PR ="r1"
 
 SRC_URI = "http://www.ibiblio.org/pub/Linux/utils/file/managers/mc/mc-${PV}.tar.gz"
 
 inherit autotools
 
 EXTRA_OECONF = "--disable-glibtest --without-x --without-samba \
---without-nfs --without-gpm-mouse"
+--without-nfs --without-gpm-mouse --with-screen=ncurses"
 
 do_configure() {
 	gnu-configize
