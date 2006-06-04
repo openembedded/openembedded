@@ -3,7 +3,7 @@ SECTION = "libs"
 LICENSE = "BSD"
 HOMEPAGE = "http://www.speex.org"
 DEPENDS = "libogg"
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "http://downloads.us.xiph.org/releases/speex/speex-${PV}.tar.gz"
 
@@ -33,3 +33,8 @@ do_stage() {
 	install -d ${STAGING_INCDIR}/speex
 	install -m 0644 include/speex/*.h ${STAGING_INCDIR}/speex
 }
+
+PACKAGES += "libspeex"
+
+FILES_${PN} = "${bindir}/*"
+FILES_libspeex = "${libdir}/libspeex*"
