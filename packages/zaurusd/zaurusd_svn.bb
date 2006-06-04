@@ -4,11 +4,15 @@ MAINTAINER = "Richard Purdie <rpurdie@openedhand.com>"
 LICENSE = "GPL"
 DEPENDS = "tslib"
 PV = "0.0+svn${CVSDATE}"
-PR = "r6"
+PR = "r7"
 
 SRC_URI = "svn://svn.o-hand.com/repos/misc/trunk;module=zaurusd;proto=http \
            file://zaurus-hinge.in \
-	   file://add-poodle.patch;patch=1" 
+	   file://add-poodle.patch;patch=1\
+	   file://zaurus-hinge.matchbox-portrait \
+	   file://zaurus-hinge.matchbox-landscape \
+	   file://zaurus-hinge.bl-on \
+	   file://zaurus-hinge.bl-off" 
 
 S = "${WORKDIR}/${PN}"
 
@@ -16,6 +20,15 @@ PACKAGE_ARCH = "${MACHINE_ARCH}"
  
 do_configure_prepend () {
 	cp ${WORKDIR}/zaurus-hinge.in ${S}/scripts
+}
+
+do_install_append() {
+	install -d "${D}/etc/zaurusd/hinge-landscape.d"
+	install -d "${D}/etc/zaurusd/hinge-portrait.d"
+	install -d "${D}/etc/zaurusd/hinge-close.d"
+	
+	install -m 0755 "${WORKDIR}/zaurus-hinge.matchbox-landscape" "${D}/etc/zaurusd/hinge-landscape.d/20-matchbox-landscape"
+	install -m 0755 "${WORKDIR}/zaurus-hinge.matchbox-portrait" "${D}/etc/zaurusd/hinge-portrait.d/20-matchbox-portrait"
 }
 
 inherit autotools pkgconfig update-rc.d

@@ -1,0 +1,26 @@
+#!/bin/sh
+
+  if [ -x ${ZD_BINDIR}/xrandr ]; then
+    ${ZD_BINDIR}/xrandr -o left 
+  fi
+  # just to be extra safe
+  sleep 1
+      
+  echo "panel_user = [$panel_user]"
+
+  if ! test -e "/tmp/gpe-panel.session-$panel_user"
+  then
+    cp /home/$panel_user/.matchbox/mbdock.session "/tmp/gpe-panel.session-$panel_user"
+  else
+    rm "/tmp/gpe-panel.session-$panel_user"
+  fi
+  
+  if test -n "$panel_user"
+  then
+    echo "Running panel as user [$panel_user]"
+    ps aux | grep "$panel_user" | grep -q "mbinputmgr " || su $panel_user -c ${ZD_BINDIR}/mbinputmgr &
+  else
+     # A failsafe can't hurt
+     echo "Warning: Running mbinputmgr as root!"
+     ps aux | grep -q "mbinputmgr " || ${ZD_BINDIR}/mbinputmgr &
+  fi
