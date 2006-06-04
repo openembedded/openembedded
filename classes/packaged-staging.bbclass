@@ -23,15 +23,15 @@ DEPLOY_DIR_PSTAGE 	= "${DEPLOY_DIR}/pstage"
 
 PSTAGE_BUILD_CMD        = "${IPKGBUILDCMD}"
 PSTAGE_INSTALL_CMD      = "ipkg-cl install -f ${DEPLOY_DIR_PSTAGE}/ipkg.conf -force-depends -o "
-
+PSTAGE_PKGNAME 		= "staging-${PN}_${PV}-${PR}_${PACKAGE_ARCH}.ipk"
 
 
 do_stage_prepend() {
 #move away the staging dir to avoid relocation troubles
 
-if [ -e ${DEPLOY_DIR_PSTAGE}/staging-${PN}_${PV}-${PR}_${PACKAGE_ARCH}.ipk ]; then
-	echo "Staging stuff already packaged, using that instead"
-	${PSTAGE_INSTALL_CMD} ${STAGING_DIR}  ${DEPLOY_DIR_PSTAGE}/staging-${PN}_${PV}-${PR}_${PACKAGE_ARCH}.ipk
+if [ -e ${DEPLOY_DIR_PSTAGE}/${PSTAGE_PKGNAME} ]; then
+	oenote "Staging stuff already packaged, using that instead"
+	${PSTAGE_INSTALL_CMD} ${STAGING_DIR}  ${DEPLOY_DIR_PSTAGE}/${PSTAGE_PKGNAME}
 	exit 0      
 fi
 
@@ -80,7 +80,7 @@ rm -rf ${STAGING_DIR}
 #move back stagingdir so we can install packages   
 mv ${TMPDIR}/pstage ${STAGING_DIR}
 
-${PSTAGE_INSTALL_CMD} ${STAGING_DIR}  ${DEPLOY_DIR_PSTAGE}/staging-${PN}_${PV}-${PR}_${PACKAGE_ARCH}.ipk
+${PSTAGE_INSTALL_CMD} ${STAGING_DIR}  ${DEPLOY_DIR_PSTAGE}/${PSTAGE_PKGNAME}
 
 }
 
