@@ -28,12 +28,21 @@ PSTAGE_INSTALL_CMD      = "ipkg-cl install -f ${DEPLOY_DIR_PSTAGE}/ipkg.conf -fo
 
 do_stage_prepend() {
 #move away the staging dir to avoid relocation troubles
+
+if [ -e ${DEPLOY_DIR_PSTAGE}/staging-${PN}_${PV}-${PR}_${PACKAGE_ARCH}.ipk ]; then
+	echo "Staging stuff already packaged, using that instead"
+	${PSTAGE_INSTALL_CMD} ${STAGING_DIR}  ${DEPLOY_DIR_PSTAGE}/staging-${PN}_${PV}-${PR}_${PACKAGE_ARCH}.ipk
+	exit 0      
+fi
+
+
 mv ${STAGING_DIR} ${TMPDIR}/pstage
 
 mkdir -p ${STAGING_BINDIR}
 mkdir -p ${STAGING_LIBDIR}
 mkdir -p ${STAGING_INCDIR}
-mkdir -p ${STAGING_DATADIR}
+mkdir -p ${STAGING_DATADIR}/aclocal
+
 }
 
 do_stage_append() {
@@ -71,7 +80,7 @@ rm -rf ${STAGING_DIR}
 #move back stagingdir so we can install packages   
 mv ${TMPDIR}/pstage ${STAGING_DIR}
 
-${PSTAGE_INSTALL_CMD} ${STAGING_DIR}  ${DEPLOY_DIR_PSTAGE}/staging-${PN}_${PV}_${PACKAGE_ARCH}.ipk
+${PSTAGE_INSTALL_CMD} ${STAGING_DIR}  ${DEPLOY_DIR_PSTAGE}/staging-${PN}_${PV}-${PR}_${PACKAGE_ARCH}.ipk
 
 }
 
