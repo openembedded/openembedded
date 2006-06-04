@@ -25,6 +25,14 @@ PSTAGE_BUILD_CMD        = "${IPKGBUILDCMD}"
 PSTAGE_INSTALL_CMD      = "ipkg-cl install -f ${DEPLOY_DIR_PSTAGE}/ipkg.conf -force-depends -o "
 PSTAGE_PKGNAME 		= "staging-${PN}_${PV}-${PR}_${PACKAGE_ARCH}.ipk"
 
+do_clean_append() {
+        """clear the build and temp directories"""
+        stagepkg = bb.data.expand("${DEPLOY_DIR_PSTAGE}/${PSTAGE_PKGNAME}", d)
+        if stagepkg == '//': raise bb.build.FuncFailed("wrong DATADIR")
+        bb.note("removing " + stagepkg)
+        os.system('rm -rf ' + stagepkg)
+}
+
 
 do_stage_prepend() {
 #move away the staging dir to avoid relocation troubles
