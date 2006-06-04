@@ -8,6 +8,8 @@ SRC_URI = "http://people.bath.ac.uk/enpsgp/Zaurus/bl/${PN}-${PV}.tar.gz \
 	   file://zaurus-hinge.bl-on \
 	   file://zaurus-hinge.bl-off"
 
+PR = "r1"
+
 inherit pkgconfig
 
 FILES_${PN} = "${bindir} /etc"

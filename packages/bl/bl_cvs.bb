@@ -11,7 +11,7 @@ SRC_URI = "${HANDHELDS_CVS};module=apps/h3600_test \
 	   
 
 S = "${WORKDIR}/h3600_test"
-PR = "r0"
+PR = "r1"
 
 inherit pkgconfig
 
