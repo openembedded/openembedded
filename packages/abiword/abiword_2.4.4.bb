@@ -6,7 +6,7 @@ LICENSE="GPLv2"
 DEPENDS     = "perl-native libgsf libgnomeprint libgnomeprintui libglade libfribidi enchant jpeg libpng perl glibc libxml2"
 RDEPENDS    = "enchant glibc-gconv-ibm850 glibc-gconv-cp1252 \
                glibc-gconv-iso8859-15 glibc-gconv-iso8859-1"
-PR="r1"
+PR="r0"
 
 SRC_URI = "http://www.abiword.org/downloads/abiword/${PV}/source/abiword-${PV}.tar.gz"
 S = "${WORKDIR}/abiword-${PV}/abi"
@@ -33,8 +33,6 @@ inherit autotools
 PARALLEL_MAKE=""
 
 EXTRA_OECONF = "--disable-pspell --enable-enchant"
-
-LDFLAGS += "-Wl,--export-dynamic"
 
 do_install_append() {
         install -d ${D}${datadir}/pixmaps/
