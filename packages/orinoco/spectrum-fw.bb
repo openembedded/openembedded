@@ -8,7 +8,7 @@ SRC_URI = "file://get_symbol_fw \
 
 S = "${WORKDIR}"
 
-do_compile() {
+do_fetch_append() {
 	./get_symbol_fw
 }
 
