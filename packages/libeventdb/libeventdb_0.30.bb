@@ -1,3 +1,5 @@
+DEFAULT_PREFERENCE = "-1"
+
 LICENSE     = "LGPL"
 DESCRIPTION = "Database access library for GPE calendar"
 SECTION  = "gpe/libs"
