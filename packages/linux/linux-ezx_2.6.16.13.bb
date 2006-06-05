@@ -30,11 +30,14 @@ SRC_URI = "http://www.kernel.org/pub/linux/kernel/v2.6/linux-2.6.16.tar.bz2 \
            ${RPSRC}/led_ide-r6.patch;patch=1 \
            ${RPSRC}/led_nand-r3.patch;patch=1 \
            \
-           file://led_ezx-r0.patch;patch=1 \
 	   file://touchscreen-fix-r0.patch;patch=1 \
            \
            file://e680-keypad-compile-HACK.patch;patch=1 \
            file://e680-disable-boomer-HACK.patch;patch=1 \
+           \
+           file://e680-leds-r0.patch;patch=1 \
+           file://a780-leds-r0.patch;patch=1 \
+           \
            file://defconfig-a780 \
            file://defconfig-e680"
 S = "${WORKDIR}/linux-2.6.16"
@@ -50,10 +53,13 @@ COMPATIBLE_MACHINE = '(a780|e680)'
 
 CMDLINE_CON = "console=ttyS2,115200n8 console=tty1 noinitrd"
 CMDLINE_ROOT = "root=/dev/mmcblk0p1 rootfstype=ext3 rootdelay=5"
-# CMDLINE_OTHER = "dyntick=enable"
+# uncomment if you want to boot over NFS
+#CMDLINE_ROOT = "root=/dev/nfs nfsroot=192.168.1.10:/export/opie-image rootdelay=5 3"
+# uncomment to enable dyntick
+#CMDLINE_OTHER = "dyntick=enable"
 CMDLINE_DEBUG = '${@base_conditional("DISTRO_TYPE", "release", "quiet", "debug",d)}'
 CMDLINE_IP = "ip=192.168.1.2:192.168.1.10:192.168.1.10:255.255.255.0:ezx:usb0:off"
-CMDLINE = "${CMDLINE_CON} ${CMDLINE_ROOT} ${CMDLINE_IP} ${CMDLINE_ROTATE} ${CMDLINE_OTHER} ${CMDLINE_DEBUG}"
+CMDLINE = "${CMDLINE_CON} ${CMDLINE_ROOT} ${CMDLINE_IP} ${CMDLINE_ROTATE} ${CMDLINE_OTHER} ${CMDLINE_DEBUG} mem=32M"
 
 ###############################################################
 # module configs specific to this kernel
