@@ -3,11 +3,12 @@ LICENSE = "GPL"
 SECTION = "gpe"
 PRIORITY = "optional"
 MAINTAINER = "Florian Boor <florian.boor@kernelconcepts.de>"
-PR="r1"
+PR="r2"
 
 inherit gpe
 
-SRC_URI += " file://fixsegfault.patch;patch=1;pnum=0"
+SRC_URI += " file://fixsegfault.patch;patch=1;pnum=0 \
+	     file://ipaq-sleep-configName.patch;patch=1"
 
 DEPENDS = "gtk+ libgpewidget libxsettings libxsettings-client pcmcia-cs xst xset ipaq-sleep ntp gpe-login gpe-icons"
 RDEPENDS_${PN} = "xst xset ipaq-sleep ntpdate gpe-login gpe-icons"
