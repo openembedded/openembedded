@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-import sys, os, string, getopt
+import sys, os, string, getopt, re
 
 mtncmd = "monotone"
 
@@ -25,14 +25,10 @@ def main(argv = None):
         for line in input:
             if len(line) > 0:
                 if line[0] == '#':
-                    parts = line.split()
-                    if len(parts) > 2:
-                        cmd = parts[1]
-                        # deal with whilespace in filenames (badly)
-                        fileName = parts[2]
-                        i = 3
-                        while i < len(parts) and fileName.count('"') % 2:
-                            fileName += " %s" % parts[i]
+                    matches = re.search("#\s+(\w+)\s+\"(.*)\"", line)
+                    if matches is not None:
+                        cmd = matches.group(1)
+                        fileName = matches.group(2)
                         if cmd == "delete_file":
                             if reverse:
                                 print "%s add %s" % (mtncmd, fileName)
