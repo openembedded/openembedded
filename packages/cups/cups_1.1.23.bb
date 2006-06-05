@@ -1,4 +1,4 @@
-DEPENDS = "openssl jpeg libpng zlib"
+DEPENDS = "openssl jpeg libpng zlib install-native"
 DESCRIPTION = "An Internet printing system for Unix."
 SECTION = "console/utils"
 LICENSE = "GPL LGPL"

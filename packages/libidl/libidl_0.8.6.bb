@@ -1,7 +1,7 @@
 LICENSE = "LGPL"
 DESCRIPTION = "Library for parsing CORBA IDL files"
 SECTION = "gnome/libs"
-DEPENDS = "glib-2.0"
+DEPENDS = "glib-2.0 libidl-native"
 PR = "r2"
 
 SRC_URI = "http://ftp.gnome.org/pub/GNOME/sources/libIDL/0.8/libIDL-${PV}.tar.bz2"
