@@ -1,0 +1,2183 @@
+Index: arch/arm/configs/lpd270_defconfig
+===================================================================
+RCS file: arch/arm/configs/lpd270_defconfig
+diff -N arch/arm/configs/lpd270_defconfig
+*** /dev/null	1 Jan 1970 00:00:00 -0000
+--- arch/arm/configs/lpd270_defconfig	1 Jun 2006 17:31:13 -0000	1.3
+***************
+*** 0 ****
+--- 1,926 ----
++ #
++ # Automatically generated make config: don't edit
++ # Linux kernel version: 2.6.17-rc5
++ # Tue May 30 12:40:27 2006
++ #
++ CONFIG_ARM=y
++ CONFIG_MMU=y
++ CONFIG_RWSEM_GENERIC_SPINLOCK=y
++ CONFIG_GENERIC_HWEIGHT=y
++ CONFIG_GENERIC_CALIBRATE_DELAY=y
++ CONFIG_ARCH_MTD_XIP=y
++ CONFIG_VECTORS_BASE=0xffff0000
++ 
++ #
++ # Code maturity level options
++ #
++ CONFIG_EXPERIMENTAL=y
++ CONFIG_BROKEN_ON_SMP=y
++ CONFIG_INIT_ENV_ARG_LIMIT=32
++ 
++ #
++ # General setup
++ #
++ CONFIG_LOCALVERSION=""
++ CONFIG_LOCALVERSION_AUTO=y
++ CONFIG_SWAP=y
++ CONFIG_SYSVIPC=y
++ # CONFIG_POSIX_MQUEUE is not set
++ # CONFIG_BSD_PROCESS_ACCT is not set
++ CONFIG_SYSCTL=y
++ # CONFIG_AUDIT is not set
++ # CONFIG_IKCONFIG is not set
++ # CONFIG_RELAY is not set
++ CONFIG_INITRAMFS_SOURCE=""
++ CONFIG_UID16=y
++ CONFIG_CC_OPTIMIZE_FOR_SIZE=y
++ # CONFIG_EMBEDDED is not set
++ CONFIG_KALLSYMS=y
++ # CONFIG_KALLSYMS_ALL is not set
++ # CONFIG_KALLSYMS_EXTRA_PASS is not set
++ CONFIG_HOTPLUG=y
++ CONFIG_PRINTK=y
++ CONFIG_BUG=y
++ CONFIG_ELF_CORE=y
++ CONFIG_BASE_FULL=y
++ CONFIG_FUTEX=y
++ CONFIG_EPOLL=y
++ CONFIG_SHMEM=y
++ CONFIG_SLAB=y
++ # CONFIG_TINY_SHMEM is not set
++ CONFIG_BASE_SMALL=0
++ # CONFIG_SLOB is not set
++ CONFIG_OBSOLETE_INTERMODULE=y
++ 
++ #
++ # Loadable module support
++ #
++ CONFIG_MODULES=y
++ # CONFIG_MODULE_UNLOAD is not set
++ # CONFIG_MODVERSIONS is not set
++ # CONFIG_MODULE_SRCVERSION_ALL is not set
++ # CONFIG_KMOD is not set
++ 
++ #
++ # Block layer
++ #
++ # CONFIG_BLK_DEV_IO_TRACE is not set
++ 
++ #
++ # IO Schedulers
++ #
++ CONFIG_IOSCHED_NOOP=y
++ CONFIG_IOSCHED_AS=y
++ CONFIG_IOSCHED_DEADLINE=y
++ CONFIG_IOSCHED_CFQ=y
++ CONFIG_DEFAULT_AS=y
++ # CONFIG_DEFAULT_DEADLINE is not set
++ # CONFIG_DEFAULT_CFQ is not set
++ # CONFIG_DEFAULT_NOOP is not set
++ CONFIG_DEFAULT_IOSCHED="anticipatory"
++ 
++ #
++ # System Type
++ #
++ # CONFIG_ARCH_CLPS7500 is not set
++ # CONFIG_ARCH_CLPS711X is not set
++ # CONFIG_ARCH_CO285 is not set
++ # CONFIG_ARCH_EBSA110 is not set
++ # CONFIG_ARCH_EP93XX is not set
++ # CONFIG_ARCH_FOOTBRIDGE is not set
++ # CONFIG_ARCH_INTEGRATOR is not set
++ # CONFIG_ARCH_IOP3XX is not set
++ # CONFIG_ARCH_IXP4XX is not set
++ # CONFIG_ARCH_IXP2000 is not set
++ # CONFIG_ARCH_IXP23XX is not set
++ # CONFIG_ARCH_L7200 is not set
++ CONFIG_ARCH_PXA=y
++ # CONFIG_ARCH_RPC is not set
++ # CONFIG_ARCH_SA1100 is not set
++ # CONFIG_ARCH_S3C2410 is not set
++ # CONFIG_ARCH_SHARK is not set
++ # CONFIG_ARCH_LH7A40X is not set
++ # CONFIG_ARCH_OMAP is not set
++ # CONFIG_ARCH_VERSATILE is not set
++ # CONFIG_ARCH_REALVIEW is not set
++ # CONFIG_ARCH_IMX is not set
++ # CONFIG_ARCH_H720X is not set
++ # CONFIG_ARCH_AAEC2000 is not set
++ # CONFIG_ARCH_AT91RM9200 is not set
++ 
++ #
++ # Intel PXA2xx Implementations
++ #
++ # CONFIG_ARCH_LUBBOCK is not set
++ CONFIG_MACH_LOGICPD_PXA270=y
++ # CONFIG_MACH_MAINSTONE is not set
++ # CONFIG_ARCH_PXA_IDP is not set
++ # CONFIG_PXA_SHARPSL is not set
++ CONFIG_PXA27x=y
++ CONFIG_IWMMXT=y
++ 
++ #
++ # Processor Type
++ #
++ CONFIG_CPU_32=y
++ CONFIG_CPU_XSCALE=y
++ CONFIG_CPU_32v5=y
++ CONFIG_CPU_ABRT_EV5T=y
++ CONFIG_CPU_CACHE_VIVT=y
++ CONFIG_CPU_TLB_V4WBI=y
++ 
++ #
++ # Processor Features
++ #
++ # CONFIG_ARM_THUMB is not set
++ CONFIG_XSCALE_PMU=y
++ 
++ #
++ # Bus support
++ #
++ 
++ #
++ # PCCARD (PCMCIA/CardBus) support
++ #
++ # CONFIG_PCCARD is not set
++ 
++ #
++ # Kernel Features
++ #
++ # CONFIG_PREEMPT is not set
++ # CONFIG_NO_IDLE_HZ is not set
++ CONFIG_HZ=100
++ # CONFIG_AEABI is not set
++ # CONFIG_ARCH_DISCONTIGMEM_ENABLE is not set
++ CONFIG_SELECT_MEMORY_MODEL=y
++ CONFIG_FLATMEM_MANUAL=y
++ # CONFIG_DISCONTIGMEM_MANUAL is not set
++ # CONFIG_SPARSEMEM_MANUAL is not set
++ CONFIG_FLATMEM=y
++ CONFIG_FLAT_NODE_MEM_MAP=y
++ # CONFIG_SPARSEMEM_STATIC is not set
++ CONFIG_SPLIT_PTLOCK_CPUS=4096
++ CONFIG_ALIGNMENT_TRAP=y
++ 
++ #
++ # Boot options
++ #
++ CONFIG_ZBOOT_ROM_TEXT=0x0
++ CONFIG_ZBOOT_ROM_BSS=0x0
++ CONFIG_CMDLINE="root=/dev/mtdblock2 rootfstype=jffs2 ip=dhcp console=ttyS0,115200 mem=64M"
++ #CONFIG_CMDLINE="root=/dev/nfs nfsroot=192.168.3.5:/opt/nfs-exports/pxa-nfs-root ip=dhcp console=ttyS0,115200 mem=64M"
++ # CONFIG_XIP_KERNEL is not set
++ 
++ #
++ # Floating point emulation
++ #
++ 
++ #
++ # At least one emulation must be selected
++ #
++ CONFIG_FPE_NWFPE=y
++ # CONFIG_FPE_NWFPE_XP is not set
++ # CONFIG_FPE_FASTFPE is not set
++ 
++ #
++ # Userspace binary formats
++ #
++ CONFIG_BINFMT_ELF=y
++ # CONFIG_BINFMT_AOUT is not set
++ # CONFIG_BINFMT_MISC is not set
++ # CONFIG_ARTHUR is not set
++ 
++ #
++ # Power management options
++ #
++ # CONFIG_PM is not set
++ # CONFIG_APM is not set
++ 
++ #
++ # Networking
++ #
++ CONFIG_NET=y
++ 
++ #
++ # Networking options
++ #
++ # CONFIG_NETDEBUG is not set
++ # CONFIG_PACKET is not set
++ CONFIG_UNIX=y
++ # CONFIG_NET_KEY is not set
++ CONFIG_INET=y
++ # CONFIG_IP_MULTICAST is not set
++ # CONFIG_IP_ADVANCED_ROUTER is not set
++ CONFIG_IP_FIB_HASH=y
++ CONFIG_IP_PNP=y
++ CONFIG_IP_PNP_DHCP=y
++ # CONFIG_IP_PNP_BOOTP is not set
++ # CONFIG_IP_PNP_RARP is not set
++ # CONFIG_NET_IPIP is not set
++ # CONFIG_NET_IPGRE is not set
++ # CONFIG_ARPD is not set
++ # CONFIG_SYN_COOKIES is not set
++ # CONFIG_INET_AH is not set
++ # CONFIG_INET_ESP is not set
++ # CONFIG_INET_IPCOMP is not set
++ # CONFIG_INET_XFRM_TUNNEL is not set
++ # CONFIG_INET_TUNNEL is not set
++ CONFIG_INET_DIAG=y
++ CONFIG_INET_TCP_DIAG=y
++ # CONFIG_TCP_CONG_ADVANCED is not set
++ CONFIG_TCP_CONG_BIC=y
++ # CONFIG_IPV6 is not set
++ # CONFIG_INET6_XFRM_TUNNEL is not set
++ # CONFIG_INET6_TUNNEL is not set
++ # CONFIG_NETFILTER is not set
++ 
++ #
++ # DCCP Configuration (EXPERIMENTAL)
++ #
++ # CONFIG_IP_DCCP is not set
++ 
++ #
++ # SCTP Configuration (EXPERIMENTAL)
++ #
++ # CONFIG_IP_SCTP is not set
++ 
++ #
++ # TIPC Configuration (EXPERIMENTAL)
++ #
++ # CONFIG_TIPC is not set
++ # CONFIG_ATM is not set
++ # CONFIG_BRIDGE is not set
++ # CONFIG_VLAN_8021Q is not set
++ # CONFIG_DECNET is not set
++ # CONFIG_LLC2 is not set
++ # CONFIG_IPX is not set
++ # CONFIG_ATALK is not set
++ # CONFIG_X25 is not set
++ # CONFIG_LAPB is not set
++ # CONFIG_NET_DIVERT is not set
++ # CONFIG_ECONET is not set
++ # CONFIG_WAN_ROUTER is not set
++ 
++ #
++ # QoS and/or fair queueing
++ #
++ # CONFIG_NET_SCHED is not set
++ 
++ #
++ # Network testing
++ #
++ # CONFIG_NET_PKTGEN is not set
++ # CONFIG_HAMRADIO is not set
++ # CONFIG_IRDA is not set
++ # CONFIG_BT is not set
++ # CONFIG_IEEE80211 is not set
++ 
++ #
++ # Device Drivers
++ #
++ 
++ #
++ # Generic Driver Options
++ #
++ CONFIG_STANDALONE=y
++ CONFIG_PREVENT_FIRMWARE_BUILD=y
++ # CONFIG_FW_LOADER is not set
++ # CONFIG_DEBUG_DRIVER is not set
++ 
++ #
++ # Connector - unified userspace <-> kernelspace linker
++ #
++ # CONFIG_CONNECTOR is not set
++ 
++ #
++ # Memory Technology Devices (MTD)
++ #
++ CONFIG_MTD=y
++ # CONFIG_MTD_DEBUG is not set
++ # CONFIG_MTD_CONCAT is not set
++ CONFIG_MTD_PARTITIONS=y
++ CONFIG_MTD_REDBOOT_PARTS=y
++ CONFIG_MTD_REDBOOT_DIRECTORY_BLOCK=-1
++ # CONFIG_MTD_REDBOOT_PARTS_UNALLOCATED is not set
++ # CONFIG_MTD_REDBOOT_PARTS_READONLY is not set
++ # CONFIG_MTD_CMDLINE_PARTS is not set
++ # CONFIG_MTD_AFS_PARTS is not set
++ 
++ #
++ # User Modules And Translation Layers
++ #
++ CONFIG_MTD_CHAR=y
++ CONFIG_MTD_BLOCK=y
++ # CONFIG_FTL is not set
++ # CONFIG_NFTL is not set
++ # CONFIG_INFTL is not set
++ # CONFIG_RFD_FTL is not set
++ 
++ #
++ # RAM/ROM/Flash chip drivers
++ #
++ CONFIG_MTD_CFI=y
++ # CONFIG_MTD_JEDECPROBE is not set
++ CONFIG_MTD_GEN_PROBE=y
++ CONFIG_MTD_CFI_ADV_OPTIONS=y
++ CONFIG_MTD_CFI_NOSWAP=y
++ # CONFIG_MTD_CFI_BE_BYTE_SWAP is not set
++ # CONFIG_MTD_CFI_LE_BYTE_SWAP is not set
++ CONFIG_MTD_CFI_GEOMETRY=y
++ CONFIG_MTD_MAP_BANK_WIDTH_1=y
++ CONFIG_MTD_MAP_BANK_WIDTH_2=y
++ CONFIG_MTD_MAP_BANK_WIDTH_4=y
++ # CONFIG_MTD_MAP_BANK_WIDTH_8 is not set
++ # CONFIG_MTD_MAP_BANK_WIDTH_16 is not set
++ # CONFIG_MTD_MAP_BANK_WIDTH_32 is not set
++ # CONFIG_MTD_CFI_I1 is not set
++ CONFIG_MTD_CFI_I2=y
++ # CONFIG_MTD_CFI_I4 is not set
++ # CONFIG_MTD_CFI_I8 is not set
++ # CONFIG_MTD_OTP is not set
++ CONFIG_MTD_CFI_INTELEXT=y
++ # CONFIG_MTD_CFI_AMDSTD is not set
++ # CONFIG_MTD_CFI_STAA is not set
++ CONFIG_MTD_CFI_UTIL=y
++ # CONFIG_MTD_RAM is not set
++ # CONFIG_MTD_ROM is not set
++ # CONFIG_MTD_ABSENT is not set
++ # CONFIG_MTD_OBSOLETE_CHIPS is not set
++ # CONFIG_MTD_XIP is not set
++ 
++ #
++ # Mapping drivers for chip access
++ #
++ # CONFIG_MTD_COMPLEX_MAPPINGS is not set
++ # CONFIG_MTD_PHYSMAP is not set
++ CONFIG_MTD_LOGICPD_PXA270=y
++ # CONFIG_MTD_ARM_INTEGRATOR is not set
++ # CONFIG_MTD_SHARP_SL is not set
++ # CONFIG_MTD_PLATRAM is not set
++ 
++ #
++ # Self-contained MTD device drivers
++ #
++ # CONFIG_MTD_SLRAM is not set
++ # CONFIG_MTD_PHRAM is not set
++ # CONFIG_MTD_MTDRAM is not set
++ # CONFIG_MTD_BLOCK2MTD is not set
++ 
++ #
++ # Disk-On-Chip Device Drivers
++ #
++ # CONFIG_MTD_DOC2000 is not set
++ # CONFIG_MTD_DOC2001 is not set
++ # CONFIG_MTD_DOC2001PLUS is not set
++ 
++ #
++ # NAND Flash Device Drivers
++ #
++ # CONFIG_MTD_NAND is not set
++ 
++ #
++ # OneNAND Flash Device Drivers
++ #
++ # CONFIG_MTD_ONENAND is not set
++ 
++ #
++ # Parallel port support
++ #
++ # CONFIG_PARPORT is not set
++ 
++ #
++ # Plug and Play support
++ #
++ 
++ #
++ # Block devices
++ #
++ CONFIG_BLK_DEV_LOGICPD_CF=y
++ # CONFIG_BLK_DEV_COW_COMMON is not set
++ # CONFIG_BLK_DEV_LOOP is not set
++ # CONFIG_BLK_DEV_NBD is not set
++ # CONFIG_BLK_DEV_RAM is not set
++ # CONFIG_BLK_DEV_INITRD is not set
++ # CONFIG_CDROM_PKTCDVD is not set
++ # CONFIG_ATA_OVER_ETH is not set
++ 
++ #
++ # ATA/ATAPI/MFM/RLL support
++ #
++ CONFIG_IDE=y
++ CONFIG_BLK_DEV_IDE=y
++ 
++ #
++ # Please see Documentation/ide.txt for help/info on IDE drives
++ #
++ # CONFIG_BLK_DEV_IDE_SATA is not set
++ CONFIG_BLK_DEV_IDEDISK=y
++ # CONFIG_IDEDISK_MULTI_MODE is not set
++ # CONFIG_BLK_DEV_IDECD is not set
++ # CONFIG_BLK_DEV_IDETAPE is not set
++ # CONFIG_BLK_DEV_IDEFLOPPY is not set
++ # CONFIG_IDE_TASK_IOCTL is not set
++ 
++ #
++ # IDE chipset support/bugfixes
++ #
++ # CONFIG_IDE_GENERIC is not set
++ # CONFIG_IDE_ARM is not set
++ # CONFIG_BLK_DEV_IDEDMA is not set
++ # CONFIG_IDEDMA_AUTO is not set
++ # CONFIG_BLK_DEV_HD is not set
++ 
++ #
++ # SCSI device support
++ #
++ # CONFIG_RAID_ATTRS is not set
++ # CONFIG_SCSI is not set
++ 
++ #
++ # Multi-device support (RAID and LVM)
++ #
++ # CONFIG_MD is not set
++ 
++ #
++ # Fusion MPT device support
++ #
++ # CONFIG_FUSION is not set
++ 
++ #
++ # IEEE 1394 (FireWire) support
++ #
++ 
++ #
++ # I2O device support
++ #
++ 
++ #
++ # Network device support
++ #
++ CONFIG_NETDEVICES=y
++ # CONFIG_DUMMY is not set
++ # CONFIG_BONDING is not set
++ # CONFIG_EQUALIZER is not set
++ # CONFIG_TUN is not set
++ 
++ #
++ # PHY device support
++ #
++ # CONFIG_PHYLIB is not set
++ 
++ #
++ # Ethernet (10 or 100Mbit)
++ #
++ CONFIG_NET_ETHERNET=y
++ CONFIG_MII=y
++ CONFIG_SMC91X=y
++ # CONFIG_DM9000 is not set
++ 
++ #
++ # Ethernet (1000 Mbit)
++ #
++ 
++ #
++ # Ethernet (10000 Mbit)
++ #
++ 
++ #
++ # Token Ring devices
++ #
++ 
++ #
++ # Wireless LAN (non-hamradio)
++ #
++ # CONFIG_NET_RADIO is not set
++ 
++ #
++ # Wan interfaces
++ #
++ # CONFIG_WAN is not set
++ # CONFIG_PPP is not set
++ # CONFIG_SLIP is not set
++ # CONFIG_SHAPER is not set
++ # CONFIG_NETCONSOLE is not set
++ # CONFIG_NETPOLL is not set
++ # CONFIG_NET_POLL_CONTROLLER is not set
++ 
++ #
++ # ISDN subsystem
++ #
++ # CONFIG_ISDN is not set
++ 
++ #
++ # Input device support
++ #
++ CONFIG_INPUT=y
++ 
++ #
++ # Userland interfaces
++ #
++ CONFIG_INPUT_MOUSEDEV=y
++ CONFIG_INPUT_MOUSEDEV_PSAUX=y
++ CONFIG_INPUT_MOUSEDEV_SCREEN_X=1024
++ CONFIG_INPUT_MOUSEDEV_SCREEN_Y=768
++ # CONFIG_INPUT_JOYDEV is not set
++ # CONFIG_INPUT_TSDEV is not set
++ CONFIG_INPUT_EVDEV=y
++ # CONFIG_INPUT_EVBUG is not set
++ 
++ #
++ # Input Device Drivers
++ #
++ CONFIG_INPUT_KEYBOARD=y
++ CONFIG_KEYBOARD_ATKBD=y
++ # CONFIG_KEYBOARD_SUNKBD is not set
++ # CONFIG_KEYBOARD_LKKBD is not set
++ # CONFIG_KEYBOARD_XTKBD is not set
++ # CONFIG_KEYBOARD_NEWTON is not set
++ # CONFIG_INPUT_MOUSE is not set
++ # CONFIG_INPUT_JOYSTICK is not set
++ # CONFIG_INPUT_TOUCHSCREEN is not set
++ # CONFIG_INPUT_MISC is not set
++ 
++ #
++ # Hardware I/O ports
++ #
++ CONFIG_SERIO=y
++ # CONFIG_SERIO_SERPORT is not set
++ CONFIG_SERIO_LIBPS2=y
++ # CONFIG_SERIO_RAW is not set
++ # CONFIG_GAMEPORT is not set
++ 
++ #
++ # Character devices
++ #
++ CONFIG_VT=y
++ CONFIG_VT_CONSOLE=y
++ CONFIG_HW_CONSOLE=y
++ # CONFIG_SERIAL_NONSTANDARD is not set
++ 
++ #
++ # Serial drivers
++ #
++ # CONFIG_SERIAL_8250 is not set
++ 
++ #
++ # Non-8250 serial port support
++ #
++ CONFIG_SERIAL_PXA=y
++ CONFIG_SERIAL_PXA_CONSOLE=y
++ CONFIG_SERIAL_CORE=y
++ CONFIG_SERIAL_CORE_CONSOLE=y
++ CONFIG_UNIX98_PTYS=y
++ CONFIG_LEGACY_PTYS=y
++ CONFIG_LEGACY_PTY_COUNT=256
++ 
++ #
++ # IPMI
++ #
++ # CONFIG_IPMI_HANDLER is not set
++ 
++ #
++ # Watchdog Cards
++ #
++ # CONFIG_WATCHDOG is not set
++ # CONFIG_NVRAM is not set
++ # CONFIG_DTLK is not set
++ # CONFIG_R3964 is not set
++ 
++ #
++ # Ftape, the floppy tape device driver
++ #
++ # CONFIG_RAW_DRIVER is not set
++ 
++ #
++ # TPM devices
++ #
++ # CONFIG_TCG_TPM is not set
++ # CONFIG_TELCLOCK is not set
++ 
++ #
++ # I2C support
++ #
++ # CONFIG_I2C is not set
++ 
++ #
++ # SPI support
++ #
++ # CONFIG_SPI is not set
++ # CONFIG_SPI_MASTER is not set
++ 
++ #
++ # Dallas's 1-wire bus
++ #
++ # CONFIG_W1 is not set
++ 
++ #
++ # Hardware Monitoring support
++ #
++ CONFIG_HWMON=y
++ # CONFIG_HWMON_VID is not set
++ # CONFIG_SENSORS_F71805F is not set
++ # CONFIG_HWMON_DEBUG_CHIP is not set
++ 
++ #
++ # Misc devices
++ #
++ 
++ #
++ # LED devices
++ #
++ # CONFIG_NEW_LEDS is not set
++ 
++ #
++ # LED drivers
++ #
++ 
++ #
++ # LED Triggers
++ #
++ 
++ #
++ # Multimedia devices
++ #
++ # CONFIG_VIDEO_DEV is not set
++ CONFIG_VIDEO_V4L2=y
++ 
++ #
++ # Digital Video Broadcasting Devices
++ #
++ # CONFIG_DVB is not set
++ 
++ #
++ # Graphics support
++ #
++ CONFIG_FB=y
++ CONFIG_FB_CFB_FILLRECT=y
++ CONFIG_FB_CFB_COPYAREA=y
++ CONFIG_FB_CFB_IMAGEBLIT=y
++ # CONFIG_FB_MACMODES is not set
++ CONFIG_FB_FIRMWARE_EDID=y
++ # CONFIG_FB_MODE_HELPERS is not set
++ # CONFIG_FB_TILEBLITTING is not set
++ # CONFIG_FB_S1D13XXX is not set
++ CONFIG_FB_PXA=y
++ # CONFIG_FB_PXA_PARAMETERS is not set
++ # CONFIG_FB_PXA_LPD_LQ64D343 is not set
++ # CONFIG_FB_PXA_LPD_LQ035Q7DB02 is not set
++ # CONFIG_FB_PXA_LPD_LQ057Q3DC02 is not set
++ CONFIG_FB_PXA_LPD_LQ10D368=y
++ # CONFIG_FB_VIRTUAL is not set
++ 
++ #
++ # Console display driver support
++ #
++ # CONFIG_VGA_CONSOLE is not set
++ CONFIG_DUMMY_CONSOLE=y
++ CONFIG_FRAMEBUFFER_CONSOLE=y
++ # CONFIG_FRAMEBUFFER_CONSOLE_ROTATION is not set
++ # CONFIG_FONTS is not set
++ CONFIG_FONT_8x8=y
++ CONFIG_FONT_8x16=y
++ 
++ #
++ # Logo configuration
++ #
++ CONFIG_LOGO=y
++ CONFIG_LOGO_LINUX_MONO=y
++ CONFIG_LOGO_LINUX_VGA16=y
++ CONFIG_LOGO_LINUX_CLUT224=y
++ # CONFIG_BACKLIGHT_LCD_SUPPORT is not set
++ 
++ #
++ # Sound
++ #
++ # CONFIG_SOUND is not set
++ 
++ #
++ # USB support
++ #
++ CONFIG_USB_ARCH_HAS_HCD=y
++ CONFIG_USB_ARCH_HAS_OHCI=y
++ # CONFIG_USB_ARCH_HAS_EHCI is not set
++ # CONFIG_USB is not set
++ 
++ #
++ # NOTE: USB_STORAGE enables SCSI, and 'SCSI disk support'
++ #
++ 
++ #
++ # USB Gadget Support
++ #
++ # CONFIG_USB_GADGET is not set
++ 
++ #
++ # MMC/SD Card support
++ #
++ # CONFIG_MMC is not set
++ 
++ #
++ # Real Time Clock
++ #
++ CONFIG_RTC_LIB=y
++ # CONFIG_RTC_CLASS is not set
++ 
++ #
++ # File systems
++ #
++ CONFIG_EXT2_FS=y
++ # CONFIG_EXT2_FS_XATTR is not set
++ # CONFIG_EXT2_FS_XIP is not set
++ # CONFIG_EXT3_FS is not set
++ # CONFIG_REISERFS_FS is not set
++ # CONFIG_JFS_FS is not set
++ # CONFIG_FS_POSIX_ACL is not set
++ # CONFIG_XFS_FS is not set
++ # CONFIG_OCFS2_FS is not set
++ # CONFIG_MINIX_FS is not set
++ # CONFIG_ROMFS_FS is not set
++ CONFIG_INOTIFY=y
++ # CONFIG_QUOTA is not set
++ CONFIG_DNOTIFY=y
++ # CONFIG_AUTOFS_FS is not set
++ # CONFIG_AUTOFS4_FS is not set
++ # CONFIG_FUSE_FS is not set
++ 
++ #
++ # CD-ROM/DVD Filesystems
++ #
++ # CONFIG_ISO9660_FS is not set
++ # CONFIG_UDF_FS is not set
++ 
++ #
++ # DOS/FAT/NT Filesystems
++ #
++ CONFIG_FAT_FS=y
++ CONFIG_MSDOS_FS=y
++ CONFIG_VFAT_FS=y
++ CONFIG_FAT_DEFAULT_CODEPAGE=437
++ CONFIG_FAT_DEFAULT_IOCHARSET="iso8859-1"
++ # CONFIG_NTFS_FS is not set
++ 
++ #
++ # Pseudo filesystems
++ #
++ CONFIG_PROC_FS=y
++ CONFIG_SYSFS=y
++ # CONFIG_TMPFS is not set
++ # CONFIG_HUGETLB_PAGE is not set
++ CONFIG_RAMFS=y
++ # CONFIG_CONFIGFS_FS is not set
++ 
++ #
++ # Miscellaneous filesystems
++ #
++ # CONFIG_ADFS_FS is not set
++ # CONFIG_AFFS_FS is not set
++ # CONFIG_HFS_FS is not set
++ # CONFIG_HFSPLUS_FS is not set
++ # CONFIG_BEFS_FS is not set
++ # CONFIG_BFS_FS is not set
++ # CONFIG_EFS_FS is not set
++ # CONFIG_JFFS_FS is not set
++ CONFIG_JFFS2_FS=y
++ CONFIG_JFFS2_FS_DEBUG=0
++ CONFIG_JFFS2_FS_WRITEBUFFER=y
++ # CONFIG_JFFS2_SUMMARY is not set
++ # CONFIG_JFFS2_COMPRESSION_OPTIONS is not set
++ CONFIG_JFFS2_ZLIB=y
++ CONFIG_JFFS2_RTIME=y
++ # CONFIG_JFFS2_RUBIN is not set
++ # CONFIG_CRAMFS is not set
++ # CONFIG_VXFS_FS is not set
++ # CONFIG_HPFS_FS is not set
++ # CONFIG_QNX4FS_FS is not set
++ # CONFIG_SYSV_FS is not set
++ # CONFIG_UFS_FS is not set
++ 
++ #
++ # Network File Systems
++ #
++ CONFIG_NFS_FS=y
++ CONFIG_NFS_V3=y
++ # CONFIG_NFS_V3_ACL is not set
++ # CONFIG_NFS_V4 is not set
++ # CONFIG_NFS_DIRECTIO is not set
++ # CONFIG_NFSD is not set
++ CONFIG_ROOT_NFS=y
++ CONFIG_LOCKD=y
++ CONFIG_LOCKD_V4=y
++ CONFIG_NFS_COMMON=y
++ CONFIG_SUNRPC=y
++ # CONFIG_RPCSEC_GSS_KRB5 is not set
++ # CONFIG_RPCSEC_GSS_SPKM3 is not set
++ # CONFIG_SMB_FS is not set
++ # CONFIG_CIFS is not set
++ # CONFIG_NCP_FS is not set
++ # CONFIG_CODA_FS is not set
++ # CONFIG_AFS_FS is not set
++ # CONFIG_9P_FS is not set
++ 
++ #
++ # Partition Types
++ #
++ # CONFIG_PARTITION_ADVANCED is not set
++ CONFIG_MSDOS_PARTITION=y
++ 
++ #
++ # Native Language Support
++ #
++ CONFIG_NLS=y
++ CONFIG_NLS_DEFAULT="iso8859-1"
++ CONFIG_NLS_CODEPAGE_437=y
++ # CONFIG_NLS_CODEPAGE_737 is not set
++ # CONFIG_NLS_CODEPAGE_775 is not set
++ # CONFIG_NLS_CODEPAGE_850 is not set
++ # CONFIG_NLS_CODEPAGE_852 is not set
++ # CONFIG_NLS_CODEPAGE_855 is not set
++ # CONFIG_NLS_CODEPAGE_857 is not set
++ # CONFIG_NLS_CODEPAGE_860 is not set
++ # CONFIG_NLS_CODEPAGE_861 is not set
++ # CONFIG_NLS_CODEPAGE_862 is not set
++ # CONFIG_NLS_CODEPAGE_863 is not set
++ # CONFIG_NLS_CODEPAGE_864 is not set
++ # CONFIG_NLS_CODEPAGE_865 is not set
++ # CONFIG_NLS_CODEPAGE_866 is not set
++ # CONFIG_NLS_CODEPAGE_869 is not set
++ # CONFIG_NLS_CODEPAGE_936 is not set
++ # CONFIG_NLS_CODEPAGE_950 is not set
++ # CONFIG_NLS_CODEPAGE_932 is not set
++ # CONFIG_NLS_CODEPAGE_949 is not set
++ # CONFIG_NLS_CODEPAGE_874 is not set
++ # CONFIG_NLS_ISO8859_8 is not set
++ # CONFIG_NLS_CODEPAGE_1250 is not set
++ # CONFIG_NLS_CODEPAGE_1251 is not set
++ # CONFIG_NLS_ASCII is not set
++ CONFIG_NLS_ISO8859_1=y
++ # CONFIG_NLS_ISO8859_2 is not set
++ # CONFIG_NLS_ISO8859_3 is not set
++ # CONFIG_NLS_ISO8859_4 is not set
++ # CONFIG_NLS_ISO8859_5 is not set
++ # CONFIG_NLS_ISO8859_6 is not set
++ # CONFIG_NLS_ISO8859_7 is not set
++ # CONFIG_NLS_ISO8859_9 is not set
++ # CONFIG_NLS_ISO8859_13 is not set
++ # CONFIG_NLS_ISO8859_14 is not set
++ # CONFIG_NLS_ISO8859_15 is not set
++ # CONFIG_NLS_KOI8_R is not set
++ # CONFIG_NLS_KOI8_U is not set
++ # CONFIG_NLS_UTF8 is not set
++ 
++ #
++ # Profiling support
++ #
++ # CONFIG_PROFILING is not set
++ 
++ #
++ # Kernel hacking
++ #
++ # CONFIG_PRINTK_TIME is not set
++ CONFIG_MAGIC_SYSRQ=y
++ CONFIG_DEBUG_KERNEL=y
++ CONFIG_LOG_BUF_SHIFT=14
++ CONFIG_DETECT_SOFTLOCKUP=y
++ # CONFIG_SCHEDSTATS is not set
++ # CONFIG_DEBUG_SLAB is not set
++ # CONFIG_DEBUG_MUTEXES is not set
++ # CONFIG_DEBUG_SPINLOCK is not set
++ # CONFIG_DEBUG_SPINLOCK_SLEEP is not set
++ # CONFIG_DEBUG_KOBJECT is not set
++ CONFIG_DEBUG_BUGVERBOSE=y
++ CONFIG_DEBUG_INFO=y
++ # CONFIG_DEBUG_FS is not set
++ # CONFIG_DEBUG_VM is not set
++ CONFIG_FRAME_POINTER=y
++ # CONFIG_UNWIND_INFO is not set
++ CONFIG_FORCED_INLINING=y
++ # CONFIG_RCU_TORTURE_TEST is not set
++ CONFIG_DEBUG_USER=y
++ # CONFIG_DEBUG_WAITQ is not set
++ CONFIG_DEBUG_ERRORS=y
++ CONFIG_DEBUG_LL=y
++ # CONFIG_DEBUG_ICEDCC is not set
++ 
++ #
++ # Security options
++ #
++ # CONFIG_KEYS is not set
++ # CONFIG_SECURITY is not set
++ 
++ #
++ # Cryptographic options
++ #
++ # CONFIG_CRYPTO is not set
++ 
++ #
++ # Hardware crypto devices
++ #
++ 
++ #
++ # Library routines
++ #
++ # CONFIG_CRC_CCITT is not set
++ # CONFIG_CRC16 is not set
++ CONFIG_CRC32=y
++ # CONFIG_LIBCRC32C is not set
++ CONFIG_ZLIB_INFLATE=y
++ CONFIG_ZLIB_DEFLATE=y
+Index: arch/arm/kernel/head.S
+===================================================================
+RCS file: /cvs/eps/dev_eng/sw/products/Linux/PXAEngine/pxa/linux-2.6.17-rc5/arch/arm/kernel/head.S,v
+retrieving revision 1.1.1.1
+diff -c -3 -p -r1.1.1.1 head.S
+*** arch/arm/kernel/head.S	29 May 2006 00:53:47 -0000	1.1.1.1
+--- arch/arm/kernel/head.S	1 Jun 2006 17:37:16 -0000
+*************** ENTRY(stext)
+*** 74,79 ****
+--- 74,93 ----
+  	msr	cpsr_c, #PSR_F_BIT | PSR_I_BIT | MODE_SVC @ ensure svc mode
+  						@ and irqs disabled
+  	mrc	p15, 0, r9, c0, c0		@ get processor id
++ 
++ 	/* LPD--
++ 	 * This fakes out the Linux kernel into believing that it is
++ 	 * running on a Mainstone hardware platform. The LogicLoader (LoLo)
++ 	 * doesn't currently pass kernel parameters correctly for 2.6 ARM
++ 	 * kernels. Therefore, we just hardcode it here.
++ 	 *
++ 	 * --LPD
++ 	 */
++ 	mov	r0, #0
++ 	mov	r1, #0x300
++ 	orr	r1, r1, #0x0a0
++ 	orr	r1, r1, #0x002
++ 
+  	bl	__lookup_processor_type		@ r5=procinfo r9=cpuid
+  	movs	r10, r5				@ invalid processor (r5=0)?
+  	beq	__error_p			@ yes, error 'p'
+Index: arch/arm/mach-pxa/lpd270.c
+===================================================================
+RCS file: /cvs/eps/dev_eng/sw/products/Linux/PXAEngine/pxa/linux-2.6.17-rc5/arch/arm/mach-pxa/lpd270.c,v
+retrieving revision 1.1.1.1
+retrieving revision 1.2
+diff -c -3 -p -r1.1.1.1 -r1.2
+*** arch/arm/mach-pxa/lpd270.c	29 May 2006 00:53:55 -0000	1.1.1.1
+--- arch/arm/mach-pxa/lpd270.c	1 Jun 2006 17:04:24 -0000	1.2
+*************** static void lpd270_backlight_power(int o
+*** 246,288 ****
+  	}
+  }
+  
+! /* 5.7" TFT QVGA (LoLo display number 1) */
+! static struct pxafb_mach_info sharp_lq057q3dc02 __initdata = {
+! 	.pixclock		= 100000,
+! 	.xres			= 240,
+! 	.yres			= 320,
+! 	.bpp			= 16,
+! 	.hsync_len		= 64,
+! 	.left_margin		= 0x27,
+! 	.right_margin		= 0x09,
+! 	.vsync_len		= 0x04,
+! 	.upper_margin		= 0x08,
+! 	.lower_margin		= 0x14,
+! 	.sync			= 0,
+! 	.lccr0			= 0x07800080,
+! 	.lccr3			= 0x04400007,
+! 	.pxafb_backlight_power	= lpd270_backlight_power,
+! };
+! 
+  /* 6.4" TFT VGA (LoLo display number 5) */
+  static struct pxafb_mach_info sharp_lq64d343 __initdata = {
+  	.pixclock		= 20000,
+  	.xres			= 640,
+  	.yres			= 480,
+  	.bpp			= 16,
+! 	.hsync_len		= 49,
+! 	.left_margin		= 0x89,
+! 	.right_margin		= 0x19,
+! 	.vsync_len		= 18,
+  	.upper_margin		= 0x22,
+  	.lower_margin		= 0,
+! 	.sync			= FB_SYNC_HOR_HIGH_ACT | FB_SYNC_VERT_HIGH_ACT,
+! 	.lccr0			= 0x07800080,
+  	.lccr3			= 0x04400001,
+  	.pxafb_backlight_power	= lpd270_backlight_power,
+  };
+  
+! /* 3.5" TFT QVGA (LoLo display number 8) */
+  static struct pxafb_mach_info sharp_lq035q7db02_20 __initdata = {
+  	.pixclock		= 100000,
+  	.xres			= 240,
+--- 246,273 ----
+  	}
+  }
+  
+! #ifdef CONFIG_FB_PXA_LPD_LQ64D343
+  /* 6.4" TFT VGA (LoLo display number 5) */
+  static struct pxafb_mach_info sharp_lq64d343 __initdata = {
+  	.pixclock		= 20000,
+  	.xres			= 640,
+  	.yres			= 480,
+  	.bpp			= 16,
+! 	.hsync_len		= 64,
+! 	.left_margin		= 0x88,
+! 	.right_margin		= 0x18,
+! 	.vsync_len		= 64,
+  	.upper_margin		= 0x22,
+  	.lower_margin		= 0,
+! 	.sync			= 0,
+! 	.lccr0			= 0x078000f9,
+  	.lccr3			= 0x04400001,
+  	.pxafb_backlight_power	= lpd270_backlight_power,
+  };
++ #endif
+  
+! #ifdef CONFIG_FB_PXA_LPD_LQ035Q7DB02
+! /* 3.5" TFT QVGA (LoLo display number 8) */ 
+  static struct pxafb_mach_info sharp_lq035q7db02_20 __initdata = {
+  	.pixclock		= 100000,
+  	.xres			= 240,
+*************** static struct pxafb_mach_info sharp_lq03
+*** 299,304 ****
+--- 284,330 ----
+  	.lccr3			= 0x04400007,
+  	.pxafb_backlight_power	= lpd270_backlight_power,
+  };
++ #endif
++ 
++ #ifdef CONFIG_FB_PXA_LPD_LQ057Q3DC02
++ /* 5.7" TFT QVGA (LoLo display number 1) */ 
++ static struct pxafb_mach_info sharp_lq057q3dc02 __initdata = {
++ 	.pixclock		= 100000,
++ 	.xres			= 240,
++ 	.yres			= 320,
++ 	.bpp			= 16,
++ 	.hsync_len		= 64,
++ 	.left_margin		= 0x27,
++ 	.right_margin		= 0x09,
++ 	.vsync_len		= 0x04,
++ 	.upper_margin		= 0x08,
++ 	.lower_margin		= 0x14,
++ 	.sync			= 0,
++ 	.lccr0			= 0x07800080,
++ 	.lccr3			= 0x04400007,
++ 	.pxafb_backlight_power	= lpd270_backlight_power,
++ };
++ #endif
++ 
++ #ifdef CONFIG_FB_PXA_LPD_LQ10D368
++ /* 10.4" TFT QVGA (LoLo display number 7) */ 
++ static struct pxafb_mach_info sharp_lq10d368 __initdata = {
++ 	.pixclock		= 25000,
++ 	.xres			= 640,
++ 	.yres			= 480,
++ 	.bpp			= 16,
++ 	.hsync_len		= 0x31,
++ 	.left_margin		= 0x89,
++ 	.right_margin		= 0x19,
++ 	.vsync_len		= 0x12,
++ 	.upper_margin		= 0x22,
++ 	.lower_margin		= 0x00,
++ 	.sync			= FB_SYNC_HOR_HIGH_ACT | FB_SYNC_VERT_HIGH_ACT,
++ 	.lccr0			= 0x078000f8,
++ 	.lccr3			= 0x04400001,
++ 	.pxafb_backlight_power	= lpd270_backlight_power,
++ };
++ #endif
+  
+  static struct platform_device *platform_devices[] __initdata = {
+  	&smc91x_device,
+*************** static void __init lpd270_init(void)
+*** 345,353 ****
+  
+  	platform_add_devices(platform_devices, ARRAY_SIZE(platform_devices));
+  
+! 	// set_pxa_fb_info(&sharp_lq057q3dc02);
+  	set_pxa_fb_info(&sharp_lq64d343);
+! 	// set_pxa_fb_info(&sharp_lq035q7db02_20);
+  
+  	pxa_set_ohci_info(&lpd270_ohci_platform_data);
+  }
+--- 371,387 ----
+  
+  	platform_add_devices(platform_devices, ARRAY_SIZE(platform_devices));
+  
+! #ifdef CONFIG_FB_PXA_LPD_LQ64D343
+  	set_pxa_fb_info(&sharp_lq64d343);
+! #elif defined(CONFIG_FB_PXA_LPD_LQ045Q7DB02)
+! 	set_pxa_fb_info(&sharp_lq035q7db02_20);
+! #elif defined(CONFIG_FB_PXA_LPD_LQ057Q3DC02)
+! 	set_pxa_fb_info(&sharp_lq057q3dc02);
+! #elif defined(CONFIG_FB_PXA_LPD_LQ10D368)
+! 	set_pxa_fb_info(&sharp_lq10d368);
+! #elif defined(CONFIG_FB_PXA)
+! 	printk("No Logic LCD panel selected!");
+! #endif
+  
+  	pxa_set_ohci_info(&lpd270_ohci_platform_data);
+  }
+Index: drivers/block/Kconfig
+===================================================================
+RCS file: /cvs/eps/dev_eng/sw/products/Linux/PXAEngine/pxa/linux-2.6.17-rc5/drivers/block/Kconfig,v
+retrieving revision 1.1.1.1
+retrieving revision 1.2
+diff -c -3 -p -r1.1.1.1 -r1.2
+*** drivers/block/Kconfig	29 May 2006 00:55:20 -0000	1.1.1.1
+--- drivers/block/Kconfig	1 Jun 2006 17:05:41 -0000	1.2
+***************
+*** 4,9 ****
+--- 4,16 ----
+  
+  menu "Block devices"
+  
++ config BLK_DEV_LOGICPD_CF
++        bool "LogicPD memory-mapped CompactFlash card support"
++        depends on MACH_LOGICPD_PXA270
++        ---help---
++          If you want to use the memory-mapped comapct flash card on
++          the LogicPD SDK, say Y.
++ 
+  config BLK_DEV_FD
+  	tristate "Normal floppy disk support"
+  	depends on ARCH_MAY_HAVE_PC_FDC
+Index: drivers/block/Makefile
+===================================================================
+RCS file: /cvs/eps/dev_eng/sw/products/Linux/PXAEngine/pxa/linux-2.6.17-rc5/drivers/block/Makefile,v
+retrieving revision 1.1.1.1
+retrieving revision 1.2
+diff -c -3 -p -r1.1.1.1 -r1.2
+*** drivers/block/Makefile	29 May 2006 00:55:20 -0000	1.1.1.1
+--- drivers/block/Makefile	1 Jun 2006 17:05:59 -0000	1.2
+***************
+*** 5,10 ****
+--- 5,12 ----
+  # Rewritten to use lists instead of if-statements.
+  # 
+  
++ obj-$(CONFIG_BLK_DEV_LOGICPD_CF)+= lpd270-cf.o
++ 
+  obj-$(CONFIG_MAC_FLOPPY)	+= swim3.o
+  obj-$(CONFIG_BLK_DEV_FD)	+= floppy.o
+  obj-$(CONFIG_AMIGA_FLOPPY)	+= amiflop.o
+Index: drivers/block/lpd270-cf.c
+===================================================================
+RCS file: drivers/block/lpd270-cf.c
+diff -N drivers/block/lpd270-cf.c
+*** /dev/null	1 Jan 1970 00:00:00 -0000
+--- drivers/block/lpd270-cf.c	1 Jun 2006 16:23:35 -0000	1.1
+***************
+*** 0 ****
+--- 1,675 ----
++ /*
++  * Support for LogicPD SDK Memory-mapped CompactFlash interface
++  *
++  * Copyright 2006 Logic Product Development <peterb@logicpd.com>
++  *
++  * This file is subject to the terms and conditions of the GNU General Public
++  * License.  See the file COPYING in the main directory of this archive
++  * for more details.
++  */
++ 
++ 
++ /* Uncomment the following if you want verbose error reports. */
++ /* #define VERBOSE_ERRORS */
++ 
++ #include <linux/blkdev.h>
++ #include <linux/errno.h>
++ #include <linux/signal.h>
++ #include <linux/interrupt.h>
++ #include <linux/timer.h>
++ #include <linux/fs.h>
++ #include <linux/kernel.h>
++ #include <linux/genhd.h>
++ #include <linux/slab.h>
++ #include <linux/string.h>
++ #include <linux/ioport.h>
++ #include <linux/mc146818rtc.h> /* CMOS defines */
++ #include <linux/init.h>
++ #include <linux/blkpg.h>
++ #include <linux/hdreg.h>
++ 
++ #define REALLY_SLOW_IO
++ #include <asm/system.h>
++ #include <asm/io.h>
++ #include <asm/uaccess.h>
++ #include <asm/delay.h>
++ 
++ #ifdef __arm__
++ #undef  HD_IRQ
++ #endif
++ #include <asm/irq.h>
++ #ifdef __arm__
++ #define HD_IRQ IRQ_HARDDISK
++ #endif
++ 
++ #define DEBUG
++ 
++ /* Hd controller regster ports */
++ 
++ #define HD_DATA		0x1f0		/* _CTL when writing */
++ #define HD_ERROR	0x1f1		/* see err-bits */
++ #define HD_NSECTOR	0x1f2		/* nr of sectors to read/write */
++ #define HD_SECTOR	0x1f3		/* starting sector */
++ #define HD_LCYL		0x1f4		/* starting cylinder */
++ #define HD_HCYL		0x1f5		/* high byte of starting cyl */
++ #define HD_CURENT	0x1f6		/* 101dhhhh , d=drive, hhhh=head */
++ #define HD_STATUS	0x1f7		/* see status-bits */
++ #define HD_FEATURE	HD_ERROR	/* same io address, read=error, write=feature */
++ #define HD_PRECOMP	HD_FEATURE	/* obsolete use of this port - predates IDE */
++ #define HD_COMMAND	HD_STATUS	/* same io address, read=status, write=cmd */
++ 
++ #define HD_CMD		0x3f6		/* used for resets */
++ #define HD_ALTSTATUS	0x3f6		/* same as HD_STATUS but doesn't clear irq */
++ 
++ /* Bits of HD_STATUS */
++ #define ERR_STAT		0x01
++ #define INDEX_STAT		0x02
++ #define ECC_STAT		0x04	/* Corrected error */
++ #define DRQ_STAT		0x08
++ #define SEEK_STAT		0x10
++ #define SERVICE_STAT		SEEK_STAT
++ #define WRERR_STAT		0x20
++ #define READY_STAT		0x40
++ #define BUSY_STAT		0x80
++ 
++ /* Bits for HD_ERROR */
++ #define MARK_ERR		0x01	/* Bad address mark */
++ #define TRK0_ERR		0x02	/* couldn't find track 0 */
++ #define ABRT_ERR		0x04	/* Command aborted */
++ #define MCR_ERR			0x08	/* media change request */
++ #define ID_ERR			0x10	/* ID field not found */
++ #define MC_ERR			0x20	/* media changed */
++ #define ECC_ERR			0x40	/* Uncorrectable ECC error */
++ #define BBD_ERR			0x80	/* pre-EIDE meaning:  block marked bad */
++ #define ICRC_ERR		0x80	/* new meaning:  CRC error during transfer */
++ 
++ static DEFINE_SPINLOCK(hd_lock);
++ static struct request_queue *hd_queue;
++ 
++ #define MAJOR_NR HD_MAJOR
++ #define QUEUE (hd_queue)
++ #define CURRENT elv_next_request(hd_queue)
++ 
++ #define TIMEOUT_VALUE	(6*HZ)
++ #define	HD_DELAY	0
++ 
++ #define MAX_ERRORS     16	/* Max read/write errors/sector */
++ #define RESET_FREQ      8	/* Reset controller every 8th retry */
++ #define RECAL_FREQ      4	/* Recalibrate every 4th retry */
++ #define MAX_HD		2
++ 
++ #define STAT_OK		(READY_STAT|SEEK_STAT)
++ #define OK_STATUS(s)	(((s)&(STAT_OK|(BUSY_STAT|WRERR_STAT|ERR_STAT)))==STAT_OK)
++ 
++ static int driveno = 0;
++ static int debug = 0;
++ 
++ // Start of CF registers
++ #define CPLD_ATA_REG_BASE 0x14001800
++ static unsigned char *reg_base;
++ 
++ static inline unsigned int read_reg(unsigned char *base, unsigned int reg)
++ {
++   volatile unsigned short val;
++ 
++   if (reg & 1)
++ 	val = *((volatile unsigned short *)(base + reg - 1)) >> 8;
++   else
++ 	val = *((volatile unsigned short *)(base + reg));
++ 
++   if (debug)
++ 	printk("%s: %02x %04x \n", __FUNCTION__, reg, val);
++ 
++   return val;
++ }
++ 
++ static inline void write_reg(unsigned char *base, unsigned int reg, unsigned int val)
++ {
++   if (debug)
++ 	printk("%s: %02x %04x\n", __FUNCTION__, reg, val);
++   if (reg & 1)
++ 	*((volatile unsigned short *)(base + reg - 1)) = (val << 8);
++   else
++ 	*((volatile unsigned short *)(base + reg)) = val;
++ }
++ 
++ #define CB_DATA		0x08
++ #define CB_ERR		0x0d
++ #define CB_SC_SN	0x02
++ #define CB_CYL		0x04
++ #define CB_STAT		0x07
++ #define CB_DH_CMD	0x06
++ #define CB_ASTAT	0x0e
++ #define CB_DC		0x0e
++ #define CB_DA		0x0f
++ 
++ #define CB_STAT_BSY 0x80
++ #define CB_STAT_DRQ 0x08
++ #define CB_STAT_SEEK 0x10
++ #define CB_STAT_DF 0x20
++ #define CB_STAT_READY 0x40
++ #define CB_STAT_ERR 0x01
++ #define CB_DC_HD15 0x08
++ #define CB_DC_NIEN 0x02
++ 
++ #define CMD_IDENTIFY_DEVICE 0xec
++ #define CMD_READ_SECTORS 0x20
++ #define CMD_WRITE_SECTORS 0x30
++ 
++ #define TIMEOUT 0x800000
++ 
++ int cfide_card_present(void)
++ {
++   unsigned char data, data1, data2;
++ 
++   /* Flip Sector Count */
++   data = read_reg(reg_base, CB_SC_SN);
++   data1 = (~data) & 0xff;
++   write_reg(reg_base, CB_SC_SN, data1);
++ 
++   /* write to the data register to waggle the bus */
++   write_reg(reg_base, CB_DATA, data);
++ 
++   /* Read back the sector count and if it matches what we put there
++ 	 then the CF is present */
++   data2 = read_reg(reg_base, CB_SC_SN);
++   if (data2 == data1)
++ 	return 1;
++   else {
++ 	printk("data %02x data1 %02x data2 %02x\n", data, data1, data2);
++ 	return 0;
++   }
++ }
++ 
++ /*
++  *  This struct defines the HD's and their types.
++  */
++ struct hd_i_struct {
++ 	unsigned int head,sect,cyl,wpcom,lzone,ctl;
++ 	int unit;
++ 	int recalibrate;
++ 	int special_op;
++ };
++ 	
++ #ifdef HD_TYPE
++ static struct hd_i_struct hd_info[] = { HD_TYPE };
++ static int NR_HD = ((sizeof (hd_info))/(sizeof (struct hd_i_struct)));
++ #else
++ static struct hd_i_struct hd_info[MAX_HD];
++ static int NR_HD;
++ #endif
++ 
++ static struct gendisk *hd_gendisk[MAX_HD];
++ 
++ 
++ 
++ #if (HD_DELAY > 0)
++ 
++ #include <asm/i8253.h>
++ 
++ unsigned long last_req;
++ 
++ unsigned long read_timer(void)
++ {
++ 	unsigned long t, flags;
++ 	int i;
++ 
++ 	spin_lock_irqsave(&i8253_lock, flags);
++ 	t = jiffies * 11932;
++     	outb_p(0, 0x43);
++ 	i = inb_p(0x40);
++ 	i |= inb(0x40) << 8;
++ 	spin_unlock_irqrestore(&i8253_lock, flags);
++ 	return(t - i);
++ }
++ #endif
++ 
++ static void __init hd_setup(char *str, int *ints)
++ {
++ 	int hdind = 0;
++ 
++ 	if (ints[0] != 3)
++ 		return;
++ 	if (hd_info[0].head != 0)
++ 		hdind=1;
++ 	hd_info[hdind].head = ints[2];
++ 	hd_info[hdind].sect = ints[3];
++ 	hd_info[hdind].cyl = ints[1];
++ 	hd_info[hdind].wpcom = 0;
++ 	hd_info[hdind].lzone = ints[1];
++ 	hd_info[hdind].ctl = (ints[2] > 8 ? 8 : 0);
++ 	NR_HD = hdind+1;
++ }
++ 
++ 
++ 
++ void cfide_wait_fin(void)
++ {
++   unsigned long timer;
++ 
++   // printk("%s:%d\n", __FUNCTION__, __LINE__);
++ 
++   udelay(500);  // wait 500us
++ 
++   for (timer = 0;
++ 	   timer < TIMEOUT && (read_reg(reg_base, CB_STAT) & CB_STAT_BSY); ++timer)
++ 	yield();
++ 
++   if (timer == TIMEOUT)
++ 	printk("%s:%d\n", __FUNCTION__, __LINE__);
++ }
++ 
++ void cfide_wait_drq(void)
++ {
++   unsigned long timer;
++ 
++   for (timer = 0;
++ 	   timer < TIMEOUT && !(read_reg(reg_base, CB_STAT) & CB_STAT_DRQ); ++timer)
++ 	yield();
++ 
++   if (timer == TIMEOUT)
++ 	printk("%s:%d\n", __FUNCTION__, __LINE__);
++ }
++ 
++ static union {
++   struct hd_driveid id;
++   short sh[512/2];
++ } info_buf;
++ 
++ 
++ /* Read cnt sectors from the flash, starting at lba, storing the data
++    at dest */
++ static int cfide_read_sectors(uint8_t *dest, uint32_t lba, uint32_t cnt)
++ {
++   uint8_t sect, head, devHead, status, devCtrl;
++   uint16_t cyl;
++   uint32_t orig_lba = lba;
++   uint32_t i,j;
++   uint16_t data;
++ 
++   // printk("%s: dest %p lba %u cnt %u\n", __FUNCTION__, dest, lba, cnt);
++ 
++   if (lba + cnt > info_buf.id.lba_capacity) {
++ 	printk("%s: %u+%u is larger than %u\n", __FUNCTION__, lba, cnt, info_buf.id.lba_capacity);
++ 	return -EINVAL;
++   }
++ 
++   if (cnt > 255) {
++ 	printk("%s: cnt %u is too large\n", __FUNCTION__, cnt);
++ 	return -EINVAL;
++   }
++ 
++ 
++   /* translate from LBA */
++   sect = lba & 0xff;
++   lba >>= 8;
++   cyl = lba & 0xffff;
++   lba >>= 16;
++   head = (lba & 0x0f) | 0x40;
++ 
++   devCtrl = CB_DC_HD15 | CB_DC_NIEN;
++   devHead = driveno | head;
++ 
++   write_reg(reg_base, CB_DC, devCtrl);
++   write_reg(reg_base, CB_SC_SN, ((uint16_t)cnt & 0xff) | ((uint16_t)sect << 8));
++   write_reg(reg_base, CB_CYL, cyl);
++ 
++   write_reg(reg_base, CB_DH_CMD, devHead | (CMD_READ_SECTORS << 8));
++ 
++   for (j=0; j<cnt; ++j) {
++ 	udelay(1);  // spin for a moment to let the controller raise BSY
++ 
++ 	cfide_wait_fin();
++ 	cfide_wait_drq();
++ 	for (i=0; i<256; ++i) {
++ 	  data = read_reg(reg_base, CB_DATA);
++ #if 0
++ 	  *dest++ = data>>8;
++ 	  *dest++ = data;
++ #else
++ 	  *dest++ = data;
++ 	  *dest++ = data>>8;
++ #endif
++ 	}
++ 
++ 
++ 	cfide_wait_fin();
++ 
++ 	status = read_reg(reg_base, CB_STAT);
++ 	if (status & (CB_STAT_DF|CB_STAT_ERR)) {
++ 	  printk("%s: error at block %d status %#x\n", __FUNCTION__, orig_lba+j, status);
++ 	  break;
++ 	}
++ 
++   }
++ 
++   return 0;
++ }
++ 
++ /* Write cnt sectors to the flash, starting at lba, reading the data
++    from src */
++ static int cfide_write_sectors(uint8_t *src, uint32_t lba, uint32_t cnt)
++ {
++   uint8_t sect, head, devHead, status, devCtrl;
++   uint16_t cyl;
++   uint32_t orig_lba = lba;
++   uint32_t i,j;
++   uint16_t data;
++ 
++   if (lba + cnt > info_buf.id.lba_capacity) {
++ 	printk("%s: %u+%u is larger than %u\n", __FUNCTION__, lba, cnt, info_buf.id.lba_capacity);
++ 	return -EINVAL;
++   }
++ 
++   if (cnt > 255) {
++ 	printk("%s: cnt %u is too large\n", __FUNCTION__, cnt);
++ 	return -EINVAL;
++   }
++ 
++   /* translate from LBA */
++   sect = lba & 0xff;
++   lba >>= 8;
++   cyl = lba & 0xffff;
++   lba >>= 16;
++   head = (lba & 0x0f) | 0x40;
++ 
++   devCtrl = CB_DC_HD15 | CB_DC_NIEN;
++   devHead = driveno | head;
++ 
++   write_reg(reg_base, CB_DC, devCtrl);
++   write_reg(reg_base, CB_SC_SN, ((uint16_t)cnt & 0xff) | ((uint16_t)sect << 8));
++   write_reg(reg_base, CB_CYL, cyl);
++ 
++   write_reg(reg_base, CB_DH_CMD, devHead | (CMD_WRITE_SECTORS << 8));
++ 
++   for (j=0; j<cnt; ++j) {
++ 	udelay(1);  // spin for a moment to let the controller raise BSY
++ 
++ 	cfide_wait_fin();
++ 
++ 	cfide_wait_drq();
++ 
++ 	for (i=0; i<256; ++i) {
++ #if 0
++ 	  data = (*src++ << 8);
++ 	  data |= *src++;
++ #else
++ 	  data = *src++;
++ 	  data |= (*src++ << 8);
++ #endif
++ 	  write_reg(reg_base, CB_DATA, data);
++ 	}
++ 	
++ 	cfide_wait_fin();
++ 
++ 	status = read_reg(reg_base, CB_STAT);
++ 	if (status & (CB_STAT_DF|CB_STAT_ERR)) {
++ 	  printk("%s: error at block %d status %#x\n", __FUNCTION__, orig_lba+j, status);
++ 	  break;
++ 	}
++ 
++   }
++   return 0;
++ }
++ 
++ 
++ static void cfide_transfer(unsigned long sector,
++         unsigned long nsect, char *buffer, int write)
++ {
++   int ret;
++     if (write)
++ 	  ret = cfide_write_sectors(buffer, sector, nsect);
++ 	else
++ 	  ret = cfide_read_sectors(buffer, sector, nsect);
++ 	if (ret)
++ 	  printk("%s:%d\n", __FUNCTION__, __LINE__);
++ 	  
++ }
++ 
++ 
++ static void do_hd_request (request_queue_t * q)
++ {
++   struct request *req;
++ 
++   // printk("%s:%d q %p\n", __FUNCTION__, __LINE__, q);
++ 
++   while ((req = elv_next_request(q)) != NULL) {
++     if (blk_fs_request(req)) {
++ 	  cfide_transfer(req->sector, req->current_nr_sectors,
++ 					 req->buffer, rq_data_dir(req));
++ 	  end_request(req, 1);
++ 	} else {
++ 	  printk (KERN_NOTICE "Skip non-fs request\n");
++ 	  end_request(req, 0);
++ 	  continue;
++ 	}
++   }
++ }
++ 
++ static int hd_getgeo(struct block_device *bdev, struct hd_geometry *geo)
++ {
++ 	struct hd_i_struct *disk = bdev->bd_disk->private_data;
++ 
++ 	geo->heads = disk->head;
++ 	geo->sectors = disk->sect;
++ 	geo->cylinders = disk->cyl;
++ 	return 0;
++ }
++ 
++ 
++ static struct block_device_operations hd_fops = {
++ 	.getgeo =	hd_getgeo,
++ };
++ 
++ void cfide_fetch_info(void)
++ {
++   int i;
++ 
++   // printk("%s:%d\n", __FUNCTION__, __LINE__);
++ 
++   /* Select the drive and wait for it to finish */
++   driveno &= 1;
++   write_reg(reg_base, CB_DH_CMD, driveno);
++   cfide_wait_fin();
++ 
++   // printk("%s:%d\n", __FUNCTION__, __LINE__);
++ 
++   write_reg(reg_base, CB_DH_CMD, driveno | (CMD_IDENTIFY_DEVICE << 8));
++   cfide_wait_fin();
++ 
++   // printk("%s:%d\n", __FUNCTION__, __LINE__);
++ 
++ 
++   cfide_wait_drq();
++ 
++   // printk("%s:%d\n", __FUNCTION__, __LINE__);
++ 
++   for (i=0; i<512; i+=2)
++ 	info_buf.sh[i/2] = read_reg(reg_base, CB_DATA);
++ 
++   /* Fix lba_capcity */
++   info_buf.id.lba_capacity = (info_buf.id.lba_capacity>>16) | (info_buf.id.lba_capacity<<16);
++   // printk("%s:%d lba_capacity %#x\n", __FUNCTION__, __LINE__, info_buf.id.lba_capacity);
++ }
++ 
++ /*
++  * This is the hard disk IRQ description. The SA_INTERRUPT in sa_flags
++  * means we run the IRQ-handler with interrupts disabled:  this is bad for
++  * interrupt latency, but anything else has led to problems on some
++  * machines.
++  *
++  * We enable interrupts in some of the routines after making sure it's
++  * safe.
++  */
++ 
++ static int __init hd_init(void)
++ {
++ 	int drive;
++ 
++ 	printk("%s:%d MAJOR_NR %d\n", __FUNCTION__, __LINE__, MAJOR_NR);
++ 
++ 	if (register_blkdev(MAJOR_NR,"hd"))
++ 		return -1;
++ 
++ 	reg_base = (unsigned char *) ioremap_nocache(CPLD_ATA_REG_BASE, 0x1000);
++ 	if (!reg_base) {
++ 	  printk("%s:%d\n", __FUNCTION__, __LINE__);
++ 	  return -ENOMEM;
++ 	}
++ 
++ 	/* If no card present, return */
++ 	if (!cfide_card_present()) {
++ 	  printk("No CompactFlash card detected\n");
++ 	  iounmap(reg_base);
++ 	  return 0;
++ 	}
++ 
++ 	/* Fetchthe device info */
++ 	cfide_fetch_info();
++ 
++ 	hd_queue = blk_init_queue(do_hd_request, &hd_lock);
++ 	printk("%s:%d hd_queue %p\n", __FUNCTION__, __LINE__, hd_queue);
++ 	if (!hd_queue) {
++ 		unregister_blkdev(MAJOR_NR,"hd");
++ 		return -ENOMEM;
++ 	}
++ 
++ 
++ 	blk_queue_max_sectors(hd_queue, 255);
++ 	blk_queue_hardsect_size(hd_queue, 512);
++ 
++ #if 1
++ 	hd_info[0].cyl = info_buf.id.cyls;
++ 	hd_info[0].head = info_buf.id.heads;
++ 	hd_info[0].wpcom = 0;
++ 	hd_info[0].ctl = 0;
++ 	hd_info[0].lzone = 0;
++ 	hd_info[0].sect = info_buf.id.sectors;
++ 	NR_HD++;
++ 
++ 	printk("%s:%d NR_HD %d\n", __FUNCTION__, __LINE__, NR_HD);
++ 
++ #else
++ #ifdef __i386__
++ 	if (!NR_HD) {
++ 		extern struct drive_info drive_info;
++ 		unsigned char *BIOS = (unsigned char *) &drive_info;
++ 		unsigned long flags;
++ 		int cmos_disks;
++ 
++ 		for (drive=0 ; drive<2 ; drive++) {
++ 			hd_info[drive].cyl = *(unsigned short *) BIOS;
++ 			hd_info[drive].head = *(2+BIOS);
++ 			hd_info[drive].wpcom = *(unsigned short *) (5+BIOS);
++ 			hd_info[drive].ctl = *(8+BIOS);
++ 			hd_info[drive].lzone = *(unsigned short *) (12+BIOS);
++ 			hd_info[drive].sect = *(14+BIOS);
++ #ifdef does_not_work_for_everybody_with_scsi_but_helps_ibm_vp
++ 			if (hd_info[drive].cyl && NR_HD == drive)
++ 				NR_HD++;
++ #endif
++ 			BIOS += 16;
++ 		}
++ 
++ 	/*
++ 		We query CMOS about hard disks : it could be that 
++ 		we have a SCSI/ESDI/etc controller that is BIOS
++ 		compatible with ST-506, and thus showing up in our
++ 		BIOS table, but not register compatible, and therefore
++ 		not present in CMOS.
++ 
++ 		Furthermore, we will assume that our ST-506 drives
++ 		<if any> are the primary drives in the system, and 
++ 		the ones reflected as drive 1 or 2.
++ 
++ 		The first drive is stored in the high nibble of CMOS
++ 		byte 0x12, the second in the low nibble.  This will be
++ 		either a 4 bit drive type or 0xf indicating use byte 0x19 
++ 		for an 8 bit type, drive 1, 0x1a for drive 2 in CMOS.
++ 
++ 		Needless to say, a non-zero value means we have 
++ 		an AT controller hard disk for that drive.
++ 
++ 		Currently the rtc_lock is a bit academic since this
++ 		driver is non-modular, but someday... ?         Paul G.
++ 	*/
++ 
++ 		spin_lock_irqsave(&rtc_lock, flags);
++ 		cmos_disks = CMOS_READ(0x12);
++ 		spin_unlock_irqrestore(&rtc_lock, flags);
++ 
++ 		if (cmos_disks & 0xf0) {
++ 			if (cmos_disks & 0x0f)
++ 				NR_HD = 2;
++ 			else
++ 				NR_HD = 1;
++ 		}
++ 	}
++ #endif /* __i386__ */
++ #ifdef __arm__
++ 	if (!NR_HD) {
++ 		/* We don't know anything about the drive.  This means
++ 		 * that you *MUST* specify the drive parameters to the
++ 		 * kernel yourself.
++ 		 */
++ 		printk("hd: no drives specified - use hd=cyl,head,sectors"
++ 			" on kernel command line\n");
++ 	}
++ #endif
++ #endif
++ 	if (!NR_HD)
++ 		goto out;
++ 
++ 	for (drive=0 ; drive < NR_HD ; drive++) {
++ 		struct gendisk *disk = alloc_disk(64);
++ 		struct hd_i_struct *p = &hd_info[drive];
++ 		if (!disk)
++ 			goto Enomem;
++ 		disk->major = MAJOR_NR;
++ 		disk->first_minor = drive << 6;
++ 		disk->fops = &hd_fops;
++ 		sprintf(disk->disk_name, "hd%c", 'a'+drive);
++ 		disk->private_data = p;
++ 		set_capacity(disk, p->head * p->sect * p->cyl);
++ 		disk->queue = hd_queue;
++ 		p->unit = drive;
++ 		hd_gendisk[drive] = disk;
++ 		printk ("%s: %luMB, CHS=%d/%d/%d\n",
++ 			disk->disk_name, (unsigned long)get_capacity(disk)/2048,
++ 			p->cyl, p->head, p->sect);
++ 	}
++ 
++ 	/* Let them fly */
++ 	for(drive=0; drive < NR_HD; drive++)
++ 		add_disk(hd_gendisk[drive]);
++ 
++ 	return 0;
++ 
++ out:
++ 	unregister_blkdev(MAJOR_NR,"hd");
++ 	blk_cleanup_queue(hd_queue);
++ 	return -1;
++ Enomem:
++ 	while (drive--)
++ 		put_disk(hd_gendisk[drive]);
++ 	goto out;
++ }
++ 
++ static int __init parse_hd_setup (char *line) {
++ 	int ints[6];
++ 
++ 	(void) get_options(line, ARRAY_SIZE(ints), ints);
++ 	hd_setup(NULL, ints);
++ 
++ 	return 1;
++ }
++ __setup("hd=", parse_hd_setup);
++ 
++ module_init(hd_init);
++ 
++ /*
++  * Local variables:
++  *  c-indent-level: 4
++  *  tab-width: 4
++  * End:
++  */
+Index: drivers/mtd/maps/Kconfig
+===================================================================
+RCS file: /cvs/eps/dev_eng/sw/products/Linux/PXAEngine/pxa/linux-2.6.17-rc5/drivers/mtd/maps/Kconfig,v
+retrieving revision 1.1.1.1
+retrieving revision 1.2
+diff -c -3 -p -r1.1.1.1 -r1.2
+*** drivers/mtd/maps/Kconfig	29 May 2006 00:58:44 -0000	1.1.1.1
+--- drivers/mtd/maps/Kconfig	30 May 2006 13:04:33 -0000	1.2
+*************** config MTD_MAINSTONE
+*** 137,142 ****
+--- 137,149 ----
+  	  This provides a driver for the on-board flash of the Intel
+  	  'Mainstone PXA27x evaluation board.
+  
++ config MTD_LOGICPD_PXA270
++ 	tristate "CFI Flash device mapped on LogicPD PXA270 Card Engine"
++ 	depends on MACH_LOGICPD_PXA270 && MTD_CFI_INTELEXT && MTD_PARTITIONS
++ 	help
++ 	  This provides a driver for the on-board flash of the LogicPD
++ 	  PXA270 Card Engine.
++ 
+  config MTD_OCTAGON
+  	tristate "JEDEC Flash device mapped on Octagon 5066 SBC"
+  	depends on X86 && MTD_JEDEC && MTD_COMPLEX_MAPPINGS
+Index: drivers/mtd/maps/Makefile
+===================================================================
+RCS file: /cvs/eps/dev_eng/sw/products/Linux/PXAEngine/pxa/linux-2.6.17-rc5/drivers/mtd/maps/Makefile,v
+retrieving revision 1.1.1.1
+retrieving revision 1.2
+diff -c -3 -p -r1.1.1.1 -r1.2
+*** drivers/mtd/maps/Makefile	29 May 2006 00:58:44 -0000	1.1.1.1
+--- drivers/mtd/maps/Makefile	30 May 2006 13:04:33 -0000	1.2
+*************** obj-$(CONFIG_MTD_ICHXROM)	+= ichxrom.o
+*** 22,27 ****
+--- 22,28 ----
+  obj-$(CONFIG_MTD_TSUNAMI)	+= tsunami_flash.o
+  obj-$(CONFIG_MTD_LUBBOCK)	+= lubbock-flash.o
+  obj-$(CONFIG_MTD_MAINSTONE)	+= mainstone-flash.o
++ obj-$(CONFIG_MTD_LOGICPD_PXA270)+= lpd270-flash.o
+  obj-$(CONFIG_MTD_MBX860)	+= mbx860.o
+  obj-$(CONFIG_MTD_CEIVA)		+= ceiva.o
+  obj-$(CONFIG_MTD_OCTAGON)	+= octagon-5066.o
+Index: drivers/mtd/maps/lpd270-flash.c
+===================================================================
+RCS file: drivers/mtd/maps/lpd270-flash.c
+diff -N drivers/mtd/maps/lpd270-flash.c
+*** /dev/null	1 Jan 1970 00:00:00 -0000
+--- drivers/mtd/maps/lpd270-flash.c	30 May 2006 13:03:55 -0000	1.1
+***************
+*** 0 ****
+--- 1,197 ----
++ /*
++  * $Id: lpd270-flash.c,v 1.1 2006/05/30 13:03:55 LOGIC+peterb Exp $
++  *
++  * Map driver for the Lpd270 developer platform.
++  *
++  * Author:	Nicolas Pitre
++  * Copyright:	(C) 2001 MontaVista Software Inc.
++  *
++  * This program is free software; you can redistribute it and/or modify
++  * it under the terms of the GNU General Public License version 2 as
++  * published by the Free Software Foundation.
++  */
++ 
++ #include <linux/module.h>
++ #include <linux/types.h>
++ #include <linux/kernel.h>
++ #include <linux/init.h>
++ #include <linux/dma-mapping.h>
++ #include <linux/slab.h>
++ 
++ #include <linux/mtd/mtd.h>
++ #include <linux/mtd/map.h>
++ #include <linux/mtd/partitions.h>
++ 
++ #include <asm/io.h>
++ #include <asm/hardware.h>
++ #include <asm/arch/pxa-regs.h>
++ // #include <asm/arch/lpd270.h>
++ 
++ 
++ #define ROM_ADDR	0x00000000
++ #define FLASH_ADDR	0x04000000
++ 
++ #define WINDOW_SIZE 	0x04000000
++ 
++ static void lpd270_map_inval_cache(struct map_info *map, unsigned long from,
++ 				      ssize_t len)
++ {
++ 	consistent_sync((char *)map->cached + from, len, DMA_FROM_DEVICE);
++ }
++ 
++ static struct map_info lpd270_maps[2] = { {
++ 	.size =		WINDOW_SIZE,
++ 	.phys =		PXA_CS0_PHYS,
++ 	.inval_cache = 	lpd270_map_inval_cache,
++ }, {
++ 	.size =		WINDOW_SIZE,
++ 	.phys =		PXA_CS1_PHYS,
++ 	.inval_cache = 	lpd270_map_inval_cache,
++ } };
++ 
++ static struct mtd_partition lpd270_partitions[] = {
++ 	{
++ 		.name =		"Bootloader",
++ 		.size =		0x000C0000,
++ 		.offset =	0,
++ 		.mask_flags =	MTD_WRITEABLE  /* force read-only */
++ 	},{
++ 		.name =		"YAFFS",
++ 		.size =		0x00F40000,
++ 		.offset =	0x000C0000,
++ 	},{
++ 		.name =		"Filesystem",
++ 		.size =		MTDPART_SIZ_FULL,
++ 		.offset =	0x01000000
++ 	}
++ };
++ 
++ static struct mtd_info *mymtds[2];
++ static struct mtd_partition *parsed_parts[2];
++ static int nr_parsed_parts[2];
++ 
++ static const char *probes[] = { "RedBoot", "cmdlinepart", NULL };
++ 
++ static int __init init_lpd270(void)
++ {
++ 	int SW7 = 0;  /* FIXME: get from SCR (Mst doc section 3.2.1.1) */
++ 	int ret = 0, i;
++ 
++ 	lpd270_maps[0].bankwidth = (BOOT_DEF & 1) ? 2 : 4;
++ 	lpd270_maps[1].bankwidth = 4;
++ 
++ 	/* Compensate for SW7 which swaps the flash banks */
++ 	lpd270_maps[SW7].name = "processor flash";
++ 	lpd270_maps[SW7 ^ 1].name = "main board flash";
++ 
++ 	printk(KERN_NOTICE "Lpd270 configured to boot from %s\n",
++ 	       lpd270_maps[0].name);
++ 
++ 	// Set VPP in CPLD to allow writes to the flash
++ 	{
++ 	  unsigned short *p;
++ 
++ 	  p = ioremap(0x08000000, PAGE_SIZE);
++ 	  if (!p) {
++ 	    printk("%s:%d ioremap failed\n", __FUNCTION__, __LINE__);
++ 	  } else {
++ 	    printk("%s:%d CTRL REG %04x\n", __FUNCTION__, __LINE__, *p);
++ 	    *p |= (1<<3); // FL_VPEN
++ 	    iounmap(p);
++ 	  }
++ 	}
++ 
++ 	for (i = 0; i < 2; i++) {
++ 		lpd270_maps[i].virt = ioremap_nocache(lpd270_maps[i].phys,
++ 						 WINDOW_SIZE);
++ 		if (!lpd270_maps[i].virt) {
++ 			printk(KERN_WARNING "Failed to ioremap %s\n",
++ 			       lpd270_maps[i].name);
++ 			if (!ret)
++ 				ret = -ENOMEM;
++ 			continue;
++ 		}
++ #if 0
++ 		lpd270_maps[i].cached =
++ 			ioremap_cached(lpd270_maps[i].phys, WINDOW_SIZE);
++ 		if (!lpd270_maps[i].cached)
++ 			printk(KERN_WARNING "Failed to ioremap cached %s\n",
++ 			       lpd270_maps[i].name);
++ #endif
++ 		simple_map_init(&lpd270_maps[i]);
++ 
++ 		printk(KERN_NOTICE
++ 		       "Probing %s at physical address 0x%08lx"
++ 		       " (%d-bit bankwidth)\n",
++ 		       lpd270_maps[i].name, lpd270_maps[i].phys,
++ 		       lpd270_maps[i].bankwidth * 8);
++ 
++ 		mymtds[i] = do_map_probe("cfi_probe", &lpd270_maps[i]);
++ 
++ 		if (!mymtds[i]) {
++ 			iounmap((void *)lpd270_maps[i].virt);
++ 			if (lpd270_maps[i].cached)
++ 				iounmap(lpd270_maps[i].cached);
++ 			if (!ret)
++ 				ret = -EIO;
++ 			continue;
++ 		}
++ 		mymtds[i]->owner = THIS_MODULE;
++ 
++ 		ret = parse_mtd_partitions(mymtds[i], probes,
++ 					   &parsed_parts[i], 0);
++ 
++ 		if (ret > 0)
++ 			nr_parsed_parts[i] = ret;
++ 	}
++ 
++ 	if (!mymtds[0] && !mymtds[1])
++ 		return ret;
++ 
++ 	for (i = 0; i < 2; i++) {
++ 		if (!mymtds[i]) {
++ 			printk(KERN_WARNING "%s is absent. Skipping\n",
++ 			       lpd270_maps[i].name);
++ 		} else if (nr_parsed_parts[i]) {
++ 			add_mtd_partitions(mymtds[i], parsed_parts[i],
++ 					   nr_parsed_parts[i]);
++ 		} else if (!i) {
++ 			printk("Using static partitions on %s\n",
++ 			       lpd270_maps[i].name);
++ 			add_mtd_partitions(mymtds[i], lpd270_partitions,
++ 					   ARRAY_SIZE(lpd270_partitions));
++ 		} else {
++ 			printk("Registering %s as whole device\n",
++ 			       lpd270_maps[i].name);
++ 			add_mtd_device(mymtds[i]);
++ 		}
++ 	}
++ 	return 0;
++ }
++ 
++ static void __exit cleanup_lpd270(void)
++ {
++ 	int i;
++ 	for (i = 0; i < 2; i++) {
++ 		if (!mymtds[i])
++ 			continue;
++ 
++ 		if (nr_parsed_parts[i] || !i)
++ 			del_mtd_partitions(mymtds[i]);
++ 		else
++ 			del_mtd_device(mymtds[i]);
++ 
++ 		map_destroy(mymtds[i]);
++ 		iounmap((void *)lpd270_maps[i].virt);
++ 		if (lpd270_maps[i].cached)
++ 			iounmap(lpd270_maps[i].cached);
++ 		kfree(parsed_parts[i]);
++ 	}
++ }
++ 
++ module_init(init_lpd270);
++ module_exit(cleanup_lpd270);
++ 
++ MODULE_LICENSE("GPL");
++ MODULE_AUTHOR("Nicolas Pitre <nico@cam.org>");
++ MODULE_DESCRIPTION("MTD map driver for Logic PXA270");
+Index: drivers/net/smc91x.h
+===================================================================
+RCS file: /cvs/eps/dev_eng/sw/products/Linux/PXAEngine/pxa/linux-2.6.17-rc5/drivers/net/smc91x.h,v
+retrieving revision 1.1.1.1
+retrieving revision 1.2
+diff -c -3 -p -r1.1.1.1 -r1.2
+*** drivers/net/smc91x.h	29 May 2006 00:59:41 -0000	1.1.1.1
+--- drivers/net/smc91x.h	29 May 2006 17:42:44 -0000	1.2
+***************
+*** 129,134 ****
+--- 129,152 ----
+  #define SMC_insb(a, r, p, l)	readsb((a) + (r), p, (l))
+  #define SMC_outsb(a, r, p, l)	writesb((a) + (r), p, (l))
+  
++ #elif	defined(CONFIG_MACH_LOGICPD_PXA270)
++ 
++ #define SMC_CAN_USE_8BIT	0
++ #define SMC_CAN_USE_16BIT	1
++ #define SMC_CAN_USE_32BIT	0
++ #define SMC_IO_SHIFT		0
++ #define SMC_NOWAIT		1
++ #define SMC_USE_PXA_DMA		1
++ 
++ // #define SMC_inb(a, r)		readb((a) + (r))
++ #define SMC_inw(a, r)		readw((a) + (r))
++ // #define SMC_inl(a, r)		readl((a) + (r))
++ // #define SMC_outb(v, a, r)	writeb(v, (a) + (r))
++ #define SMC_outw(v, a, r)	writew(v, (a) + (r))
++ // #define SMC_outl(v, a, r)	writel(v, (a) + (r))
++ #define SMC_insw(a, r, p, l)	readsw((a) + (r), p, l)
++ #define SMC_outsw(a, r, p, l)	writesw((a) + (r), p, l)
++ 
+  #elif	defined(CONFIG_ARCH_INNOKOM) || \
+  	defined(CONFIG_MACH_MAINSTONE) || \
+  	defined(CONFIG_ARCH_PXA_IDP) || \
+Index: drivers/video/Kconfig
+===================================================================
+RCS file: /cvs/eps/dev_eng/sw/products/Linux/PXAEngine/pxa/linux-2.6.17-rc5/drivers/video/Kconfig,v
+retrieving revision 1.1.1.1
+retrieving revision 1.2
+diff -c -3 -p -r1.1.1.1 -r1.2
+*** drivers/video/Kconfig	29 May 2006 01:04:29 -0000	1.1.1.1
+--- drivers/video/Kconfig	1 Jun 2006 17:06:34 -0000	1.2
+*************** config FB_PXA_PARAMETERS
+*** 1402,1407 ****
+--- 1402,1436 ----
+  
+  	  <file:Documentation/fb/pxafb.txt> describes the available parameters.
+  
++ choice
++ 	prompt "Select LogicPD LCD panel type"
++ 
++ config FB_PXA_LPD_LQ64D343
++        bool "6.4\" TFT VGA 640x480"
++        depends on FB_PXA
++        ---help---
++          Sharp LQ64D343 LCD panel
++ 
++ config FB_PXA_LPD_LQ035Q7DB02
++        bool "3.5\" TFT QVGA 240x320"
++        depends on FB_PXA
++        ---help---
++          Sharp LQ035Q7DB02 LCD panel
++ 
++ config FB_PXA_LPD_LQ057Q3DC02
++        bool "5.7\" TFT QVGA 240x320"
++        depends on FB_PXA
++        ---help---
++          Sharp LQ057Q3DC02 LCD panel
++ 
++ config FB_PXA_LPD_LQ10D368
++        bool "10.4\" TFT VGA 640x480"
++        depends on FB_PXA
++        ---help---
++          Sharp LQ10D368 LCD panel
++ 
++ endchoice
++ 
+  config FB_W100
+  	tristate "W100 frame buffer support"
+  	depends on FB && PXA_SHARPSL
