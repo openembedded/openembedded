@@ -114,6 +114,11 @@ kernel_do_stage() {
 		cp -fR drivers/crypto/* ${STAGING_KERNEL_DIR}/drivers/crypto/
 	fi
 
+        if [ -d include/media ]; then
+                mkdir -p ${STAGING_KERNEL_DIR}/include/media
+                cp -fR include/media/* ${STAGING_KERNEL_DIR}/include/media/
+        fi
+
 	if [ -d include/acpi ]; then
 		mkdir -p ${STAGING_KERNEL_DIR}/include/acpi
 		cp -fR include/acpi/* ${STAGING_KERNEL_DIR}/include/acpi/
