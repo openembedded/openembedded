@@ -3,8 +3,8 @@
 # Patch managed by http://www.mn-logistik.de/unsupported/pxa250/patcher
 #
 
---- linux-2.6.16/arch/arm/mach-pxa/ezx.c~led_ezx-r0.patch	2006-06-03 15:17:43.000000000 +0200
-+++ linux-2.6.16/arch/arm/mach-pxa/ezx.c	2006-06-05 15:14:59.000000000 +0200
+--- linux-2.6.16/arch/arm/mach-pxa/ezx.c~e680-leds-r0.patch	2006-06-06 17:14:06.000000000 +0200
++++ linux-2.6.16/arch/arm/mach-pxa/ezx.c	2006-06-06 17:23:14.000000000 +0200
 @@ -357,6 +357,17 @@
  	.num_resources	= ARRAY_SIZE(ezx_backlight_resources),
  };
@@ -23,7 +23,7 @@
  /* keyboard */
  
  #if defined(CONFIG_PXA_EZX_V700)
-@@ -770,6 +781,9 @@
+@@ -766,6 +777,9 @@
  
  static struct platform_device *devices[] __initdata = {
  	&ezx_bp_device,
@@ -33,8 +33,8 @@
  };
  
  static void __init
---- linux-2.6.16/drivers/leds/Kconfig~led_ezx-r0.patch	2006-06-03 15:17:47.000000000 +0200
-+++ linux-2.6.16/drivers/leds/Kconfig	2006-06-03 15:17:47.000000000 +0200
+--- linux-2.6.16/drivers/leds/Kconfig~e680-leds-r0.patch	2006-06-06 17:14:05.000000000 +0200
++++ linux-2.6.16/drivers/leds/Kconfig	2006-06-06 17:23:14.000000000 +0200
 @@ -59,6 +59,13 @@
  	  This option enables support for the LEDs on Sharp Zaurus
  	  SL-6000 series.
@@ -49,8 +49,8 @@
  config LEDS_TRIGGER_TIMER
  	tristate "LED Timer Trigger"
  	depends LEDS_TRIGGERS
---- linux-2.6.16/drivers/leds/Makefile~led_ezx-r0.patch	2006-06-03 15:17:47.000000000 +0200
-+++ linux-2.6.16/drivers/leds/Makefile	2006-06-03 15:17:47.000000000 +0200
+--- linux-2.6.16/drivers/leds/Makefile~e680-leds-r0.patch	2006-06-06 17:14:05.000000000 +0200
++++ linux-2.6.16/drivers/leds/Makefile	2006-06-06 17:23:14.000000000 +0200
 @@ -10,7 +10,8 @@
  obj-$(CONFIG_LEDS_SPITZ)		+= leds-spitz.o
  obj-$(CONFIG_LEDS_IXP4XX)		+= leds-ixp4xx-gpio.o
@@ -62,9 +62,9 @@
 -obj-$(CONFIG_LEDS_TRIGGER_IDE_DISK)	+= ledtrig-ide-disk.o
 \ Kein Zeilenumbruch am Dateiende.
 +obj-$(CONFIG_LEDS_TRIGGER_IDE_DISK)	+= ledtrig-ide-disk.o
---- /dev/null	2006-06-05 13:59:28.329930680 +0200
-+++ linux-2.6.16/drivers/leds/leds-e680.c	2006-06-05 15:11:42.000000000 +0200
-@@ -0,0 +1,269 @@
+--- /dev/null	2006-06-06 16:58:36.577045136 +0200
++++ linux-2.6.16/drivers/leds/leds-e680.c	2006-06-06 17:55:46.000000000 +0200
+@@ -0,0 +1,307 @@
 +/*
 + * EZX Platform LED Driver for the Motorola E680(i) GSM Phone
 + *
@@ -81,6 +81,7 @@
 + */
 +
 +#include <linux/config.h>
++#include <linux/delay.h>
 +#include <linux/kernel.h>
 +#include <linux/init.h>
 +#include <linux/platform_device.h>
@@ -88,15 +89,14 @@
 +#include <asm/mach-types.h>
 +#include <asm/arch/hardware.h>
 +#include <asm/arch/pxa-regs.h>
-+//FIXME this belongs to somewhere else, please
-+//      adjust when ssp_pcap.h reached its final destination
-+#include "../misc/ezx/ssp_pcap.h"
++#include <asm/arch/ezx-pcap.h>
 +
-+//FIXME move defines to header file
-+#define IND_CNTL_R_BUL 46
-+#define IND_CNTL_G_BUL 47
++//FIXME move defines to a common header file
++#define IND_CNTL_R_BUL     46
++#define IND_CNTL_G_BUL     47
 +#define SSP_PCAP_LED_MASK  0x000fffe0
 +#define SSP_PCAP_LED_SHIFT 5
++#define GPIO_TC_MM_EN      99
 +
 +static enum led_brightness old_red;
 +static enum led_brightness old_green;
@@ -241,6 +241,28 @@
 +	e680led_led_set( old_red, old_green, 1 && value );
 +}
 +
++static void e680led_keypad_set(struct led_classdev *led_cdev, enum led_brightness value)
++{
++	/* this is not working yet, as there is something else missing */
++#if 0
++	printk( KERN_DEBUG "e680led_keypad_set: %d\n", value );
++
++	pxa_gpio_mode(GPIO_TC_MM_EN);
++	GPDR(GPIO_TC_MM_EN)   |= GPIO_bit(GPIO_TC_MM_EN);
++	GPSR(GPIO_TC_MM_EN)   = GPIO_bit(GPIO_TC_MM_EN);
++
++	udelay( 100 );
++
++    if ( value ) {
++		GPCR(GPIO_TC_MM_EN)   = GPIO_bit(GPIO_TC_MM_EN);
++		PGSR3 &= ~GPIO_bit(GPIO_TC_MM_EN);
++    } else {
++		GPSR(GPIO_TC_MM_EN)   = GPIO_bit(GPIO_TC_MM_EN);
++		PGSR3 |= GPIO_bit(GPIO_TC_MM_EN);
++    }
++#endif
++}
++
 +static struct led_classdev e680_red_led = {
 +	.name			= "e680:red",
 +	.default_trigger	= "none",
@@ -259,12 +281,19 @@
 +	.brightness_set		= e680led_blue_set,
 +};
 +
++static struct led_classdev e680_keypad_led = {
++	.name			= "e680:keypad",
++	.default_trigger	= "none",
++	.brightness_set		= e680led_keypad_set,
++};
++
 +#ifdef CONFIG_PM
 +static int e680led_suspend(struct platform_device *dev, pm_message_t state)
 +{
 +	led_classdev_suspend(&e680_red_led);
 +	led_classdev_suspend(&e680_green_led);
 +	led_classdev_suspend(&e680_blue_led);
++	led_classdev_suspend(&e680_keypad_led);
 +	return 0;
 +}
 +
@@ -273,6 +302,7 @@
 +	led_classdev_resume(&e680_red_led);
 +	led_classdev_resume(&e680_green_led);
 +	led_classdev_resume(&e680_blue_led);
++	led_classdev_resume(&e680_keypad_led);
 +	return 0;
 +}
 +#endif
@@ -294,6 +324,13 @@
 +		led_classdev_unregister(&e680_red_led);
 +		led_classdev_unregister(&e680_green_led);
 +	}
++	
++	ret = led_classdev_register(&pdev->dev, &e680_keypad_led);
++	if (ret < 0) {
++		led_classdev_unregister(&e680_red_led);
++		led_classdev_unregister(&e680_green_led);
++		led_classdev_unregister(&e680_blue_led);
++	}
 +	return ret;
 +}
 +
@@ -302,6 +339,7 @@
 +	led_classdev_unregister(&e680_red_led);
 +	led_classdev_unregister(&e680_green_led);
 +	led_classdev_unregister(&e680_blue_led);
++	led_classdev_unregister(&e680_keypad_led);
 +	return 0;
 +}
 +
