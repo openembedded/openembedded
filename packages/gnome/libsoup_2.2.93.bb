@@ -13,6 +13,5 @@ FILES_${PN}-doc = "${datadir}"
 
 do_stage() {
 	autotools_stage_all
-	install -d ${STAGING_DATADIR}/pkgconfig
-	install -m 0644 ${S}/libsoup.pc ${STAGING_DATADIR}/pkgconfig/libsoup-2.2.pc
+	install -m 0644 ${STAGING_DATADIR}/pkgconfig/libsoup.pc ${STAGING_DATADIR}/pkgconfig/libsoup-2.2.pc
 }
