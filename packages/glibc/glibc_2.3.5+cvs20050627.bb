@@ -7,7 +7,7 @@ MAINTAINER = "Phil Blundell <pb@handhelds.org>"
 
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/glibc-cvs-2.3.5"
 SRCDATE = "20050627"
-PR = "r6"
+PR = "r7"
 
 GLIBC_ADDONS ?= "ports,linuxthreads"
 GLIBC_EXTRA_OECONF ?= ""
@@ -54,6 +54,7 @@ SRC_URI = "http://familiar.handhelds.org/source/v0.8.3/stash_libc_sources.redhat
 	   file://dl-cache-libcmp.patch;patch=1 \
 	   file://ldsocache-varrun.patch;patch=1 \
 	   file://5090_all_stubs-rule-fix.patch;patch=1 \
+	   file://raise.patch;patch=1 \
            file://etc/ld.so.conf \
 	   file://generate-supported.mk"
 
