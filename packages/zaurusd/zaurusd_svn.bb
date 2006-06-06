@@ -10,9 +10,7 @@ SRC_URI = "svn://svn.o-hand.com/repos/misc/trunk;module=zaurusd;proto=http \
            file://zaurus-hinge.in \
 	   file://add-poodle.patch;patch=1\
 	   file://zaurus-hinge.matchbox-portrait \
-	   file://zaurus-hinge.matchbox-landscape \
-	   file://zaurus-hinge.bl-on \
-	   file://zaurus-hinge.bl-off" 
+	   file://zaurus-hinge.matchbox-landscape" 
 
 S = "${WORKDIR}/${PN}"
 
