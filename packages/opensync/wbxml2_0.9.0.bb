@@ -12,6 +12,9 @@ do_configure_append() {
 	sed -i s:-I/usr/include::g */Makefile
 }
 
+do_stage() {
+	autotools_stage_all
+}
 
 PACKAGES += "${PN}-tools"
 
