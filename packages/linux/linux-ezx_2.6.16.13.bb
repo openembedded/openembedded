@@ -6,7 +6,7 @@ MAINTAINER = "Michael 'Mickey' Lauer <mickey@vanille.de>"
 LICENSE = "GPL"
 DEPENDS += "quilt-native"
 EZX = "ezx6"
-PR = "${EZX}-r7"
+PR = "${EZX}-r8"
 
 inherit kernel
 
@@ -29,6 +29,9 @@ SRC_URI = "http://www.kernel.org/pub/linux/kernel/v2.6/linux-2.6.16.tar.bz2 \
            ${RPSRC}/led_tosa-r5.patch;patch=1 \
            ${RPSRC}/led_ide-r6.patch;patch=1 \
            ${RPSRC}/led_nand-r3.patch;patch=1 \
+           ${RPSRC}/corgi_bl_cleanup-r3.patch;patch=1 \
+           ${RPSRC}/corgi_bl_generic-r3.patch;patch=1 \
+           ${RPSRC}/backlight_sysfs_fix-r0.patch;patch=1 \
            \
 	   file://touchscreen-fix-r0.patch;patch=1 \
            \
@@ -37,6 +40,7 @@ SRC_URI = "http://www.kernel.org/pub/linux/kernel/v2.6/linux-2.6.16.tar.bz2 \
            \
            file://e680-leds-r1.patch;patch=1 \
            file://a780-leds-r0.patch;patch=1 \
+           file://ezx-backlight-r0.patch;patch=1 \
            \
            file://defconfig-a780 \
            file://defconfig-e680"
