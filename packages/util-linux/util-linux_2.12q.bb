@@ -4,4 +4,4 @@ ARM_INSTRUCTION_SET = "arm"
 
 include util-linux.inc
 
-PR = "r4"
+PR = "r5"
