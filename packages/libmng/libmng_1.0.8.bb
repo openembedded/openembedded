@@ -16,6 +16,9 @@ do_compile() {
 
 do_stage() {
 	oe_libinstall -so libmng ${STAGING_LIBDIR}
+        install -m 0644 ${S}/libmng.h ${STAGING_INCDIR}/
+	install -m 0644 ${S}/libmng_conf.h ${STAGING_INCDIR}/
+	install -m 0644 ${S}/libmng_types.h ${STAGING_INCDIR}/
 }
 
 do_install() {
