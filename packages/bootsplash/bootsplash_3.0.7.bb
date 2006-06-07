@@ -7,7 +7,8 @@ HOMEPAGE="http://www.bootsplash.org"
 SECTION = "media-gfx"
 LICENSE = "GPL"
 SRC_URI="ftp://ftp.openbios.org/pub/bootsplash/rpm-sources/bootsplash/bootsplash-${PV}.tar.bz2 \
-         file://freetype2.patch;patch=1"
+         file://freetype2.patch;patch=1 \
+	 file://gcc-issues.patch;patch=1"
 
 DEPENDS="freetype libmng"
 PR = "r1"
