@@ -1,10 +1,10 @@
 
 #
-# Patch managed by http://www.holgerschurig.de/patcher.html
+# Patch managed by http://www.mn-logistik.de/unsupported/pxa250/patcher
 #
 
---- linux-2.6.16/arch/arm/mach-pxa/ezx.c~ezx-backlight-r0.patch
-+++ linux-2.6.16/arch/arm/mach-pxa/ezx.c
+--- linux-2.6.16/arch/arm/mach-pxa/ezx.c~ezx-backlight-r0.patch	2006-06-07 16:00:29.000000000 +0200
++++ linux-2.6.16/arch/arm/mach-pxa/ezx.c	2006-06-07 16:21:09.000000000 +0200
 @@ -344,17 +344,12 @@
  	.pxafb_lcd_power	= &pxafb_lcd_power,
  };
@@ -28,8 +28,16 @@
  };
  
  #ifdef CONFIG_PXA_EZX_E680
---- linux-2.6.16/drivers/video/backlight/Kconfig~ezx-backlight-r0.patch
-+++ linux-2.6.16/drivers/video/backlight/Kconfig
+@@ -786,6 +781,7 @@
+ 
+ static struct platform_device *devices[] __initdata = {
+ 	&ezx_bp_device,
++	&ezxbacklight_device,
+ #ifdef CONFIG_PXA_EZX_E680
+ 	&e680led_device,
+ #endif
+--- linux-2.6.16/drivers/video/backlight/Kconfig~ezx-backlight-r0.patch	2006-06-07 16:00:28.000000000 +0200
++++ linux-2.6.16/drivers/video/backlight/Kconfig	2006-06-07 16:00:30.000000000 +0200
 @@ -58,3 +58,12 @@
  	  If you have a HP Jornada 680, say y to enable the
  	  backlight driver.
@@ -43,16 +51,16 @@
 +	  backlight driver.
 +
 +
---- linux-2.6.16/drivers/video/backlight/Makefile~ezx-backlight-r0.patch
-+++ linux-2.6.16/drivers/video/backlight/Makefile
+--- linux-2.6.16/drivers/video/backlight/Makefile~ezx-backlight-r0.patch	2006-03-20 06:53:29.000000000 +0100
++++ linux-2.6.16/drivers/video/backlight/Makefile	2006-06-07 16:00:30.000000000 +0200
 @@ -5,3 +5,5 @@
  obj-$(CONFIG_BACKLIGHT_CORGI)	+= corgi_bl.o
  obj-$(CONFIG_BACKLIGHT_HP680)	+= hp680_bl.o
  obj-$(CONFIG_SHARP_LOCOMO)	+= locomolcd.o
 +obj-$(CONFIG_BACKLIGHT_EZX)	+= ezx_bl.o
 +
---- /dev/null
-+++ linux-2.6.16/drivers/video/backlight/ezx_bl.c
+--- /dev/null	2006-06-07 15:54:31.503752232 +0200
++++ linux-2.6.16/drivers/video/backlight/ezx_bl.c	2006-06-07 16:51:14.000000000 +0200
 @@ -0,0 +1,148 @@
 +/*
 + * Backlight Driver for Motorola A780 and E680(i) GSM Phones.
