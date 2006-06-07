@@ -1,0 +1,11 @@
+--- ipaq-sleep-0.9/ipaq-sleep.init.orig	2006-06-05 12:11:38.889777832 +0200
++++ ipaq-sleep-0.9/ipaq-sleep.init	2006-06-05 12:11:53.059623688 +0200
+@@ -9,7 +9,7 @@
+        ;;
+   stop)
+        echo -n "Stopping sleep daemon: ipaq-sleep"
+-       /sbin/start-stop-daemon --stop --quiet --oknodo --exec /usr/bin/ipaq-sleep
++       /sbin/start-stop-daemon --stop --quiet --exec /usr/bin/ipaq-sleep
+        echo "."
+        ;;
+   *)

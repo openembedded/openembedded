@@ -1,29 +1,30 @@
 diff -Naur trunk_orig/Makefile trunk/Makefile
---- trunk_orig/Makefile	2006-04-01 11:01:54.000000000 +0200
-+++ trunk/Makefile	2006-04-01 12:40:45.000000000 +0200
-@@ -12,7 +12,7 @@
- ifdef CONFIG_STATIC
+--- trunk_orig/Makefile	2006-06-06 10:09:03.000000000 +0300
++++ trunk/Makefile	2006-06-06 17:18:59.000000000 +0300
+@@ -18,7 +18,8 @@
  LDFLAGS+=-static
  endif
+ ifdef BUILD_DOCS
 -DOCS=qemu-doc.html qemu-tech.html qemu.1 qemu-img.1
++#DOCS=qemu-doc.html qemu-tech.html qemu.1 qemu-img.1
 +DOCS=
- 
- all: dyngen$(EXESUF) $(TOOLS) $(DOCS)
- 	for d in $(TARGET_DIRS); do \
-@@ -54,10 +54,10 @@
-                        pc-bios/proll.elf \
-                        pc-bios/linux_boot.bin "$(datadir)"
- 	mkdir -p "$(docdir)"
--	install -m 644 qemu-doc.html  qemu-tech.html "$(docdir)"
-+#	install -m 644 qemu-doc.html  qemu-tech.html "$(docdir)"
- ifndef CONFIG_WIN32
- 	mkdir -p "$(mandir)/man1"
--	install qemu.1 qemu-img.1 "$(mandir)/man1"
-+#	install qemu.1 qemu-img.1 "$(mandir)/man1"
- 	mkdir -p "$(datadir)/keymaps"
- 	install -m 644 $(addprefix keymaps/,$(KEYMAPS)) "$(datadir)/keymaps"
+ else
+ DOCS=
  endif
-@@ -122,10 +122,10 @@
+@@ -58,10 +59,10 @@
+ 
+ install-doc: $(DOCS)
+ 	mkdir -p "$(DESTDIR)$(docdir)"
+-	$(INSTALL) -m 644 qemu-doc.html  qemu-tech.html "$(DESTDIR)$(docdir)"
++	#$(INSTALL) -m 644 qemu-doc.html  qemu-tech.html "$(DESTDIR)$(docdir)"
+ ifndef CONFIG_WIN32
+ 	mkdir -p "$(DESTDIR)$(mandir)/man1"
+-	$(INSTALL) qemu.1 qemu-img.1 "$(DESTDIR)$(mandir)/man1"
++	#$(INSTALL) qemu.1 qemu-img.1 "$(DESTDIR)$(mandir)/man1"
+ endif
+ 
+ install: all $(if $(BUILD_DOCS),install-doc)
+@@ -151,10 +152,10 @@
  	$(datadir)/ppc_rom.bin \
  	$(datadir)/video.x \
  	$(datadir)/proll.elf \
