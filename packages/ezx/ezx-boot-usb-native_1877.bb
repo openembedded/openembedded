@@ -4,9 +4,9 @@ SECTION = "devel"
 AUTHOR = "Harald Welte"
 MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 LICENSE = "GPL"
-PR = "r1"
+PR = "r0"
 
-SRC_URI = "svn://svn.openezx.org/trunk/src/host;module=boot_usb;proto=http"
+SRC_URI = "svn://svn.openezx.org/trunk/src/host;module=boot_usb;proto=http;rev=${PV}"
 S = "${WORKDIR}/boot_usb"
 
 inherit native

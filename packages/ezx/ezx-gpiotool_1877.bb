@@ -1,12 +1,12 @@
-DESCRIPTION = "Gpiotool can read/write gpio configuration as well as individual gpio pins from userspace."
+DESCRIPTION = "Gpiotool can read/write gpio configuration from userspace."
 SECTION = "devel"
 LICENSE = "GPL"
-HOMEPAGE = "http://openezx.org"
+HOMEPAGE = "http://www.openezx.org"
 AUTHOR = "Harald Welte"
 MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
-PR = "r1"
+PR = "r0"
 
-SRC_URI = "svn://svn.openezx.org/trunk/src/userspace;module=gpiotool;proto=http"
+SRC_URI = "svn://svn.openezx.org/trunk/src/userspace;module=gpiotool;proto=http;rev=${PV}"
 S = "${WORKDIR}/gpiotool"
 
 do_compile() {
