@@ -1,0 +1,282 @@
+
+#
+# Patch managed by http://www.holgerschurig.de/patcher.html
+#
+
+--- linux-2.6.16/arch/arm/mach-pxa/ezx.c~ezx-backlight-r1.patch
++++ linux-2.6.16/arch/arm/mach-pxa/ezx.c
+@@ -274,34 +274,9 @@
+ 	.udc_command		= ezx_udc_command,
+ };
+ 
+-/* pxafb */
+-
+-#define BKLIGHT_PRESCALE	2
+-#define BKLIGHT_PERIOD		49
+-#define DEFAULT_DUTYCYCLE	25
+-#define MAX_DUTYCYCLE		(BKLIGHT_PERIOD+1)
+-#define MIN_DUTYCYCLE		0
+-
+-static void pxafb_backlight_power(int on)
+-{
+-	if (on) {
+-		CKEN |= CKEN0_PWM0;
+-		PWM_CTRL0 = BKLIGHT_PRESCALE;
+-		PWM_PERVAL0 = BKLIGHT_PERIOD;
+-		PWM_PWDUTY0 = DEFAULT_DUTYCYCLE;
+-
+-		GPDR0 |= 0x00010000; //PWM0 is GPIO16
+-		pxa_gpio_mode(GPIO16_PWM0_MD);
+-	} else {
+-		PWM_PWDUTY0 = 0;
+-		GAFR0_U &= 0xfffffffc;
+-		GPDR0 &= 0xfffeffff; /* set gpio16 (pwm0) as input */
+-		CKEN &= ~CKEN0_PWM0;
+-		PWM_PWDUTY0 = MIN_DUTYCYCLE;
+-	}
+-}
+-
+-//#define mdelay(x) udelay((x)*1000)
++/*
++ * EZX PXA Framebuffer
++ */
+ 
+ static void pxafb_lcd_power(int on)
+ {
+@@ -326,35 +301,24 @@
+ 	.xres		= 240,
+ 	.yres		= 320,
+ 	.bpp		= 16,
+-
+ 	.hsync_len	= 10,
+ 	.left_margin	= 20,
+ 	.right_margin	= 10,
+-
+ 	.vsync_len	= 2,
+ 	.upper_margin	= 3,
+ 	.lower_margin	= 2,
+-
+ 	.sync		= FB_SYNC_HOR_HIGH_ACT | FB_SYNC_VERT_HIGH_ACT,
+-
+ 	.lccr0		= 0x002008F8,
+ 	.lccr3		= 0x0430FF09,
+-
+-	.pxafb_backlight_power	= &pxafb_backlight_power,
+-	.pxafb_lcd_power	= &pxafb_lcd_power,
+-};
+-
+-
+-/* backlight for lcd */
+-
+-static struct resource ezx_backlight_resources[] = {
++	.pxafb_lcd_power= &pxafb_lcd_power,
+ };
+ 
+-static struct platform_device ezx_backlight_device = {
+-	.name		= "ezx-lcd-backlight",
++/*
++ * EZX LCD Backlight
++ */
++static struct platform_device ezxbacklight_device = {
++	.name		= "ezx-bl",
+ 	.id		= -1,
+-	.resource	= ezx_backlight_resources,
+-	.num_resources	= ARRAY_SIZE(ezx_backlight_resources),
+ };
+ 
+ #ifdef CONFIG_PXA_EZX_E680
+@@ -786,6 +750,7 @@
+ 
+ static struct platform_device *devices[] __initdata = {
+ 	&ezx_bp_device,
++	&ezxbacklight_device,
+ #ifdef CONFIG_PXA_EZX_E680
+ 	&e680led_device,
+ #endif
+--- linux-2.6.16/drivers/video/backlight/Kconfig~ezx-backlight-r1.patch
++++ linux-2.6.16/drivers/video/backlight/Kconfig
+@@ -58,3 +58,12 @@
+ 	  If you have a HP Jornada 680, say y to enable the
+ 	  backlight driver.
+ 
++config BACKLIGHT_EZX
++	tristate "Motorola EXZ Backlight Driver (A780/E680/E680i)"
++	depends on BACKLIGHT_DEVICE && PXA_EZX
++	default y
++	help
++	  If you have a Motorola A780 or E680(i), say y to enable the
++	  backlight driver.
++
++
+--- linux-2.6.16/drivers/video/backlight/Makefile~ezx-backlight-r1.patch
++++ linux-2.6.16/drivers/video/backlight/Makefile
+@@ -5,3 +5,5 @@
+ obj-$(CONFIG_BACKLIGHT_CORGI)	+= corgi_bl.o
+ obj-$(CONFIG_BACKLIGHT_HP680)	+= hp680_bl.o
+ obj-$(CONFIG_SHARP_LOCOMO)	+= locomolcd.o
++obj-$(CONFIG_BACKLIGHT_EZX)	+= ezx_bl.o
++
+--- /dev/null
++++ linux-2.6.16/drivers/video/backlight/ezx_bl.c
+@@ -0,0 +1,161 @@
++/*
++ * Backlight Driver for Motorola A780 and E680(i) GSM Phones.
++ *
++ * Copyright 2006 Vanille Media
++ *
++ * Author: Michael Lauer <mickey@Vanille.de>
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ *
++ */
++
++#include <linux/module.h>
++#include <linux/kernel.h>
++#include <linux/init.h>
++#include <linux/platform_device.h>
++#include <linux/spinlock.h>
++#include <linux/fb.h>
++#include <linux/backlight.h>
++
++#include <asm/arch/pxa-regs.h>
++#include <asm/arch/ezx.h>
++
++#define EZX_MIN_INTENSITY      00
++#define EZX_MAX_INTENSITY      50
++#define EZX_DEFAULT_INTENSITY  25
++
++static spinlock_t bl_lock = SPIN_LOCK_UNLOCKED;
++static struct backlight_properties ezxbl_data;
++static struct backlight_device *ezx_backlight_device;
++static int last_intensity;
++
++static int ezx_send_intensity(struct backlight_device *bd)
++{
++	unsigned long flags;
++	int intensity = bd->props->brightness;
++
++	printk( KERN_DEBUG "ezx_set_intensity to %d", intensity );
++
++	if (bd->props->power != FB_BLANK_UNBLANK)
++		intensity = 0;
++	if (bd->props->fb_blank != FB_BLANK_UNBLANK)
++		intensity = 0;
++
++	spin_lock_irqsave(&bl_lock, flags);
++
++	printk( KERN_DEBUG "backlight last intensity was %d, new intensity is %d", last_intensity, intensity );
++	
++	if ( !last_intensity && intensity ) {
++		printk( KERN_DEBUG "backlight power ON" );
++		/* need to power on backlight */
++		PWM_CTRL0 = 2; /* pre-scaler */
++		PWM_PWDUTY0 = intensity; /* duty cycle */
++		PWM_PERVAL0 = 49; /* period */
++		pxa_set_cken(CKEN0_PWM0, 1); /* clock enable */
++		GPDR0 |= 0x00010000; /* set GPIO16 as output */
++		pxa_gpio_mode(GPIO16_PWM0_MD); /* set GPIO16 as output */
++	}
++	else if ( last_intensity && !intensity ) {
++		printk( KERN_DEBUG "backlight power OFF" );
++		/* need to power off backlight */
++		PWM_PWDUTY0 = 0;
++    		GAFR0_U &= 0xFFFFFFFC;
++    		GPDR0 &= 0xFFFEFFFF; //PWM0 is GPIO16, set PWM0 as input when turn off bklight
++		pxa_set_cken(CKEN0_PWM0, 0); /* clock disable */
++	} else if ( last_intensity && intensity ) {
++		printk( KERN_DEBUG "backlight adjusting duty cycle" );
++		/* need to adjust duty cycle */
++		PWM_PWDUTY0 = intensity; /* duty cycle */
++	}
++	spin_unlock_irqrestore(&bl_lock, flags);
++	last_intensity = intensity;
++	return 0;
++}
++
++static int ezx_get_intensity(struct backlight_device *bd)
++{
++	return last_intensity;
++}
++
++static int ezx_set_intensity(struct backlight_device *bd)
++{
++	return ezx_send_intensity(ezx_backlight_device);
++}
++
++#ifdef CONFIG_PM
++static int ezx_bl_suspend(struct platform_device *pdev, pm_message_t state)
++{
++	//set suspend flag
++	ezx_set_intensity(ezx_backlight_device);
++	return 0;
++}
++
++static int ezx_bl_resume(struct platform_device *pdev)
++{
++	// set resume flag
++	ezx_set_intensity(ezx_backlight_device);
++	return 0;
++}
++#else
++#define ezx_bl_suspend	NULL
++#define ezx_bl_resume	NULL
++#endif
++
++static struct backlight_properties ezx_bl_data = {
++	.owner          = THIS_MODULE,
++	.get_brightness = ezx_get_intensity,
++	.max_brightness = EZX_MAX_INTENSITY,
++	.update_status	= ezx_set_intensity,
++};
++
++static int __init ezx_bl_probe(struct platform_device *pdev)
++{
++	ezx_backlight_device = backlight_device_register ("ezx-bl",
++		NULL, &ezx_bl_data);
++	if (IS_ERR (ezx_backlight_device))
++		return PTR_ERR (ezx_backlight_device);
++
++	//ezx_bl_data.requested_brightness = EZX_DEFAULT_INTENSITY;
++	//ezx_bl_data.requested_power = FB_BLANK_UNBLANK;
++	//ezx_set_intensity(ezx_backlight_device, ezx_bl_data.requested_brightness);
++
++	printk("EZX Backlight Driver Initialized.\n");
++	return 0;
++}
++
++static int ezx_bl_remove(struct platform_device *pdev)
++{
++	backlight_device_unregister(ezx_backlight_device);
++
++	printk("EZX Backlight Driver Unloaded.\n");
++	return 0;
++}
++
++static struct platform_driver ezx_bl_driver = {
++	.probe		= ezx_bl_probe,
++	.remove		= ezx_bl_remove,
++	.suspend	= ezx_bl_suspend,
++	.resume		= ezx_bl_resume,
++	.driver		= {
++		.name		= "ezx-bl",
++	},
++};
++
++static int __init ezx_bl_init(void)
++{
++	return platform_driver_register(&ezx_bl_driver);
++}
++
++static void __exit ezx_bl_exit(void)
++{
++ 	platform_driver_unregister(&ezx_bl_driver);
++}
++
++module_init(ezx_bl_init);
++module_exit(ezx_bl_exit);
++
++MODULE_AUTHOR("Michael Lauer <mickey@Vanille.de>");
++MODULE_DESCRIPTION("Backlight Driver for Motorola A780|E680(i)");
++MODULE_LICENSE("GPL");
