@@ -6,6 +6,8 @@ DEPENDS     = "libmimedir libeventdb"
 MAINTAINER  = "Florian Boor <florian.boor@kernelconcepts.de>
 PR          = "r0"
 
+DEFAULT_PREFERENCE = "-1"
+
 inherit pkgconfig gpe autotools
 
 SRC_URI = "${GPE_MIRROR}/${PN}-${PV}.tar.bz2"

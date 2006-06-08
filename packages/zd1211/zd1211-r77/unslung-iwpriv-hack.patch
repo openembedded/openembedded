@@ -1,0 +1,19 @@
+--- zd1211-driver-r74/src/zd1205.c~	2006-04-16 09:42:15.000000000 -0500
++++ zd1211-driver-r74/src/zd1205.c	2006-04-27 12:29:03.000000000 -0500
+@@ -349,8 +349,14 @@
+                 { SIOCIWFIRSTPRIV + 0xA, IW_PRIV_TYPE_INT | IW_PRIV_SIZE_FIXED | 1, 0, "connect" },
+                 { SIOCIWFIRSTPRIV + 0xB, IW_PRIV_TYPE_INT | IW_PRIV_SIZE_FIXED | 1, 0, "set_mac_mode" },
+                 { SIOCIWFIRSTPRIV + 0xC, 0, IW_PRIV_TYPE_CHAR | 12, "get_mac_mode" },
+-                { SIOCIWFIRSTPRIV + 0xD, 0, 0, "save_conf" /* has been removed */ },
+-                { SIOCIWFIRSTPRIV + 0xE, 0, 0, "load_conf" /* has been removed */ },
++// HACK HACK HACK - The following two lines are commented out in order to make
++// iwpriv work on Unslung (2.4.22 kernel) - this kernel's Wireless Extensions
++// can only handle up to 16 iwpriv entries in this structure.  Yes, the correct
++// fix is to patch the Wireless Extensions in the Unslung kernel.  This hack
++// should be removed when that's actually done.  ~mwester 27APR2006
++//                { SIOCIWFIRSTPRIV + 0xD, 0, 0, "save_conf" /* has been removed */ },
++//                { SIOCIWFIRSTPRIV + 0xE, 0, 0, "load_conf" /* has been removed */ },
++// End of HACK
+                 { SIOCIWFIRSTPRIV + 0xF, 0, IW_PRIV_TYPE_CHAR | 14, "get_Region" },
+                 { SIOCIWFIRSTPRIV + 0x9,IW_PRIV_TYPE_INT | IW_PRIV_SIZE_FIXED | 1, 0, "set_Region" },
+         };
