@@ -5,7 +5,9 @@ MAINTAINER = "Shane Volpe <shane.volpe@gmail.com>"
 PR = "r1"
 
 SRC_URI = "ftp://ftp.kernel.org/pub/linux/kernel/v2.6/testing/linux-2.6.17-rc5.tar.bz2 \
-           file://linux-2.6.17-rc5.patch;pnum=0;patch=1"
+           file://linux-2.6.17-rc5.patch;pnum=0;patch=1 \
+           file://defconfig"
+
 
 S = "${WORKDIR}/linux-2.6.17-rc5"
 
@@ -18,7 +20,9 @@ ARCH = "arm"
 KERNEL_IMAGETYPE = "zImage"
 
 do_configure_prepend() {
-	install -m 0644 ${S}/arch/arm/configs/lpd270_defconfig ${S}/.config
+#	install -m 0644 ${S}/arch/arm/configs/lpd270_defconfig ${S}/.config
+	install -m 0644 ${WORKDIR}/defconfig ${S}/.config
+
 }
 
 do_deploy() {
