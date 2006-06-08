@@ -52,6 +52,7 @@ hostname = "openembedded"
 hostname_slugos = "nslu2"
 hostname_mnci = "MNCI"
 hostname_rt3000 = "MNRT"
+hostname_jlime = "JLime"
 
 do_install () {
 	for d in ${dirs755}; do
