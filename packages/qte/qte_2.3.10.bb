@@ -167,6 +167,6 @@ do_install() {
 	install -m 0644 include/*.h ${D}/${includedir}/qte/
 }
 
-PACKAGE_ARCH = "${MACHINE_ARCH}"
+PACKAGE_ARCH_${PN} = "${MACHINE_ARCH}"
 FILES_${PN} = "${palmqtdir}/lib/"
 FILES_${PN}-dev = "${includedir}/*"
