@@ -10,7 +10,7 @@ MAINTAINER = "Philip Blundell <pb@handhelds.org>"
 DEPENDS += "glib-2.0-native gtk-doc"
 DEPENDS += "virtual/libiconv virtual/libintl"
 PACKAGES =+ "glib-2.0-utils "
-PR = "r3"
+PR = "r4"
 
 LEAD_SONAME = "libglib-2.0.*"
 FILES_glib-2.0-utils = "${bindir}/*"
@@ -20,7 +20,8 @@ EXTRA_OECONF = "--disable-debug"
 SRC_URI = "ftp://ftp.gtk.org/pub/gtk/v2.4/glib-${PV}.tar.bz2 \
            file://glibinclude.patch;patch=1;pnum=2 \
            file://visibility.patch;patch=1 \
-           file://glibconfig-sysdefs.h"
+           file://glibconfig-sysdefs.h \
+           file://configure-libtool.patch;patch=1"
 
 S = "${WORKDIR}/glib-${PV}"
 

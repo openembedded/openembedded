@@ -9,7 +9,7 @@ PRIORITY = "optional"
 DEPENDS += "glib-2.0-native gtk-doc"
 DEPENDS += "virtual/libiconv virtual/libintl"
 PACKAGES =+ "glib-2.0-utils "
-PR = "r0"
+PR = "r1"
 
 DEFAULT_PREFERENCE = "-100"
 
@@ -19,7 +19,8 @@ FILES_glib-2.0-utils = "${bindir}/*"
 EXTRA_OECONF = "--disable-debug"
 
 SRC_URI = "ftp://ftp.gtk.org/pub/gtk/v2.10/glib-${PV}.tar.bz2 \
-           file://glibconfig-sysdefs.h"
+           file://glibconfig-sysdefs.h \
+           file://configure-libtool.patch;patch=1"
 
 S = "${WORKDIR}/glib-${PV}"
 

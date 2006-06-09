@@ -18,9 +18,11 @@ EXTRA_OECONF = "--disable-debug"
 
 SRC_URI = "ftp://ftp.gtk.org/pub/gtk/v2.4/glib-${PV}.tar.bz2 \
            file://gtk-doc.patch;patch=1 \
-           file://glibconfig-sysdefs.h"
+           file://glibconfig-sysdefs.h \
+           file://configure-libtool.patch;patch=1"
 
 S = "${WORKDIR}/glib-${PV}"
+PR = "r1"
 
 inherit autotools pkgconfig gettext
 
