@@ -8,7 +8,7 @@ DEPENDS = "zlib libpng jpeg tslib uicmoc-native"
 DEPENDS_mnci = "zlib libpng jpeg uicmoc-native"
 DEPENDS_append_c7x0 = " sharp-aticore-oss"
 PROVIDES = "virtual/qte virtual/libqte2"
-PR = "r35"
+PR = "r36"
 
 SRC_URI = "ftp://ftp.trolltech.com/pub/qt/source/qt-embedded-${PV}-free.tar.gz;md5sum=af7ad30113afc500cab7f5b2f4dec0d7 \
    	   file://qpe.patch;patch=1 \
@@ -162,7 +162,11 @@ do_stage() {
 
 do_install() {
 	oe_libinstall -so -C lib libqte ${D}${palmqtdir}/lib/
+
+	install -d ${D}/${includedir}/qte
+	install -m 0644 include/*.h ${D}/${includedir}/qte/
 }
 
 PACKAGE_ARCH = "${MACHINE_ARCH}"
-FILES_${PN} = "${palmqtdir}"
+FILES_${PN} = "${palmqtdir}/lib/"
+FILES_${PN}-dev = "${includedir}/*"
