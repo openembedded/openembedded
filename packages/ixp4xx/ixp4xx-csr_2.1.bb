@@ -35,10 +35,11 @@ SRC_URI += "file://mii-debug.patch;patch=1"
 SRC_URI += "file://rtl8201-support.patch;patch=1"
 SRC_URI += "file://gcc4.patch;patch=1"
 SRC_URI += "file://oe-makefile.patch;patch=1"
+SRC_URI += "file://livelock.patch;patch=1"
 
 DEPENDS = "ixp-osal"
 S = "${WORKDIR}/ixp400_xscale_sw"
-PR = "r9"
+PR = "r10"
 
 COMPATIBLE_HOST = "^arm.*-linux.*"
 
