@@ -7,7 +7,11 @@ COMPATIBLE_HOST = "sh.*-linux"
 COMPATIBLE_MACHINE = 'jornada6xx'
 
 SRC_URI = "http://www.jlime.com/downloads/Releases/donkey/kernels/6xx/sources/jlime-2.6.16.20-patched.tar.gz \
-           file://defconfig_jlime"
+           file://defconfig_jlime \
+	   file://volatile-traps.c.patch;patch=1  \
+	   file://volatile-signal.c.patch;patch=1 \
+	   file://volatile-sys_sh.c.patch;patch=1 \
+	   file://Optimize-O1.patch;patch=1"
 
 S = "${WORKDIR}/linux-${PV}"
 

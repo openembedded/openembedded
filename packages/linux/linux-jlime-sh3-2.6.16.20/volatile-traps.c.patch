@@ -1,0 +1,47 @@
+--- linux-2.6.16.20/arch/sh/kernel/traps.c_orig	2006-06-09 00:03:58.000000000 +0000
++++ linux-2.6.16.20/arch/sh/kernel/traps.c	2006-06-09 00:07:04.000000000 +0000
+@@ -51,7 +51,7 @@
+ #define DO_ERROR(trapnr, signr, str, name, tsk)				\
+ asmlinkage void do_##name(unsigned long r4, unsigned long r5,		\
+ 			  unsigned long r6, unsigned long r7,		\
+-			  struct pt_regs regs)				\
++			  volatile struct pt_regs regs)				\
+ {									\
+ 	unsigned long error_code;					\
+  									\
+@@ -89,7 +89,7 @@
+ 
+ DEFINE_SPINLOCK(die_lock);
+ 
+-void die(const char * str, struct pt_regs * regs, long err)
++void die(const char * str, volatile struct pt_regs * regs, long err)
+ {
+ 	static int die_counter;
+ 
+@@ -102,7 +102,7 @@
+ 	do_exit(SIGSEGV);
+ }
+ 
+-static inline void die_if_kernel(const char * str, struct pt_regs * regs, long err)
++static inline void die_if_kernel(const char * str, volatile struct pt_regs * regs, long err)
+ {
+ 	if (!user_mode(regs))
+ 		die(str, regs, err);
+@@ -117,7 +117,7 @@
+  * - other kernel errors are bad
+  * - return 0 if fixed-up, -EFAULT if non-fatal (to the kernel) fault
+  */
+-static int die_if_no_fixup(const char * str, struct pt_regs * regs, long err)
++static int die_if_no_fixup(const char * str, volatile struct pt_regs * regs, long err)
+ {
+ 	if (!user_mode(regs))
+ 	{
+@@ -581,7 +581,7 @@
+ 
+ asmlinkage void do_exception_error(unsigned long r4, unsigned long r5,
+ 				   unsigned long r6, unsigned long r7,
+-				   struct pt_regs regs)
++				   volatile struct pt_regs regs)
+ {
+ 	long ex;
+ 	asm volatile("stc	r2_bank, %0" : "=r" (ex));

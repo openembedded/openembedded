@@ -1,0 +1,22 @@
+--- linux-2.6.16.20/Makefile_orig	2006-06-08 23:14:14.000000000 +0000
++++ linux-2.6.16.20/Makefile	2006-06-08 23:15:39.000000000 +0000
+@@ -185,8 +185,8 @@
+ 
+ HOSTCC  	= gcc
+ HOSTCXX  	= g++
+-HOSTCFLAGS	= -Wall -Wstrict-prototypes -O2 -fomit-frame-pointer
+-HOSTCXXFLAGS	= -O2
++HOSTCFLAGS	= -Wall -Wstrict-prototypes -O1 -fomit-frame-pointer
++HOSTCXXFLAGS	= -O1
+ 
+ # 	Decide whether to build built-in, modular, or both.
+ #	Normally, just do built-in.
+@@ -501,7 +501,7 @@
+ ifdef CONFIG_CC_OPTIMIZE_FOR_SIZE
+ CFLAGS		+= -Os
+ else
+-CFLAGS		+= -O2
++CFLAGS		+= -O1
+ endif
+ 
+ #Add align options if CONFIG_CC_* is not equal to 0
