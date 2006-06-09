@@ -54,8 +54,26 @@ do_stage() {
 
 do_install() {
 	oe_libinstall -so libqpe ${D}${palmtopdir}/lib
+
+    install -d ${D}${includedir}/qpe \
+               ${D}${includedir}/qtopia/private
+
+	for i in ${S}/*.h
+	do
+		install -m 0644 $i ${D}${includedir}/qpe/`basename $i`
+		install -m 0644 $i ${D}${includedir}/qtopia/`basename $i`
+		install -m 0644 $i ${D}${includedir}/qtopia/private/`basename $i`
+	done
+	for i in ${S}/backend/*.h
+	do
+		install -m 0644 $i ${D}${includedir}/qpe/`basename $i`
+		install -m 0644 $i ${D}${includedir}/qtopia/`basename $i`
+		install -m 0644 $i ${D}${includedir}/qtopia/private/`basename $i`
+	done
+	rm -f ${D}${includedir}/qtopia/*_p.h # remove private stuff out of qtopia
 }
 
-PACKAGES = "libqpe1"
-FILES_libqpe1 = "${palmtopdir}/lib"
-PACKAGE_ARCH = "${MACHINE_ARCH}"
+#PACKAGES = "libqpe1"
+FILES_${PN} = "${palmtopdir}/lib"
+FILES_${PN}-dev = "${includedir}"
+PACKAGE_ARCH_${PN} = "${MACHINE_ARCH}"
