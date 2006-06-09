@@ -73,9 +73,32 @@ do_install() {
 	do
 		oe_libinstall -so libopie$f ${D}${palmtopdir}/lib
 	done
+
+	install -d ${D}${includedir}/opie2/private
+
+        for module in ${MODULES}
+        do
+            cd $module
+	    for i in `find . -name "*.h"`
+	    do
+		install -m 0644 $i ${D}${includedir}/opie2/`basename $i`
+	    done
+            cd ..
+        done
+
+	for header in ${PRIVATE}
+	do
+		install -m 0644 opiepim/private/$header ${D}${includedir}/opie2/private/
+	done
+
+	install -m 0644 ${WORKDIR}/include.pro ${OPIEDIR}/include.pro
+	# special case for uic-created header files
+	install -m 0644 opiepim/ui/opimrecurrencebase.h ${D}${includedir}/opie2/
+	install -m 0644 opieui/otimepickerbase.h ${D}${includedir}/opie2/
+	install -m 0644 opiepim/core/opimtemplatebase.h ${D}${includedir}/opie2/
 }
 
-PACKAGES = "libopiecore2 libopiedb2 libopiesecurity2 libopiemm2 libopienet2 libopiepim2 libopieui2 libopiebluez2"
+PACKAGES = "libopiecore2 libopiedb2 libopiesecurity2 libopiemm2 libopienet2 libopiepim2 libopieui2 libopiebluez2 libopie-dev"
 
 DESCRIPTION_libopiecore2 = "Opie Development Platform 1.x Core Library"
 FILES_libopiecore2 = "${palmtopdir}/lib/libopiecore2.so*"
@@ -94,3 +117,4 @@ FILES_libopiesecurity2 = "${palmtopdir}/lib/libopiesecurity2.so*"
 DESCRIPTION_libopiebluez2 = "Opie Development Platform 1.x Bluetooth Library"
 FILES_libopiebluez2 = "${palmtopdir}/lib/libopiebluez2.so*"
 
+FILES_libopie-dev = "${includedir}"
