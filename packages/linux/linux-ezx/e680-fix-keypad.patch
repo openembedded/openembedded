@@ -1,0 +1,150 @@
+
+#
+# Patch managed by http://www.mn-logistik.de/unsupported/pxa250/patcher
+#
+
+--- linux-2.6.16/arch/arm/mach-pxa/ezx.c~e680-fix-keypad	2006-06-09 01:55:06.000000000 +0200
++++ linux-2.6.16/arch/arm/mach-pxa/ezx.c	2006-06-09 03:09:26.000000000 +0200
+@@ -341,71 +341,25 @@
+ };
+ #endif
+ 
+-/* keyboard */
+-
+-#if defined(CONFIG_PXA_EZX_V700)
+-#error "kbd matrix still needs to be converted to new row/col layout"
+-static unsigned char ezx_keycode[] = {
+-	/* col 0 */
+-	KEY_UP, KEY_DOWN, KEY_LEFT, KEY_RIGHT,
+-	KEYPAD_POUND, KEY_0, KEY_9, 0,
+-	/* col 1 */
+-	KEY_2, KEY_4, KEY_6, KEY_8,
+-	KEY_7, KEYPAD_SLEFT, KEYPAD_SRIGHT, 0,
+-	/* col 2 */
+-	KEY_MENU, KEY_1, KEY_3, KEY_5,
+-	KEY_KPASTERISK, KEY_VOLUMEUP, KEY_VOLUMEDOWN, 0,
+-	/* col 3 */
+-	KEY_CAMERA, KEYPAD_CLEAR, KEYPAD_CARRIER, KEYPAD_ACTIVATE,
+-	KEYPAD_SEND, KEYPAD_SMART, KEYPAD_VAVR, 0,
+-};
+-static unsigned char ezx_direct_keycode[] = {
+-	KEYPAD_NONE,
+-	KEYPAD_NONE,
+-	KEYPAD_NONE,
+-	KEYPAD_NONE,
+-	KEYPAD_NONE,
+-	KEYPAD_NONE,
+-};
+-#elif defined(CONFIG_PXA_EZX_E680_P4A)
+-#error "kbd matrix still needs to be converted to new row/col layout"
+-static unsigned char ezx_keycode[] = {
+-	/* col 0 */
+-	KEY_UP, KEY_DOWN, KEY_LEFT, 0, 0, 0, 0, 0,
+-	/* col 1 */
+-	KEY_RIGHT, KEY_CENTER, KEY_HOME, 0, 0, 0, 0, 0,
+-	/* col 2 */
+-	KEYPAD_GAME_R, 0, KEYPAD_GAME_L, 0, 0, 0, 0, 0,
+-	/* col 3 */
+-	KEY_A, KEY_B, 0, 0, 0, 0, 0, 0,
+-};
+-static unsigned char ezx_direct_keycode[] = {
+-	KEY_CAMERA,
+-	KEYPAD_NONE,
+-	KEYPAD_NONE,
+-	KEYPAD_NONE,
+-	KEY_POWER,
+-	KEYPAD_NONE,
+-};
+-#elif defined(CONFIG_PXA_EZX_E680)
+-#error "kbd matrix still needs to be converted to new row/col layout"
++/*
++ * PXA Keyboard
++ */
++#if defined(CONFIG_PXA_EZX_E680)
+ static unsigned char ezx_keycode[] = {
+-	/* col 0 */
+-	KEY_UP, KEY_DOWN, 0, 0, 0, 0, 0, 0,
+-	/* col 1 */
+-	KEY_RIGHT, KEY_LEFT, 0, 0, 0, 0, 0, 0,
+-	/* col 2 */
+-	0, KEYPAD_GAME_R, 0, 0, 0, 0, 0, 0,
+-	/* col 3 */
+-	KEYPAD_HOME, KEYPAD_GAME_L, KEYPAD_CENTER, 0, 0, 0, 0, 0,
++	/* row 0 */
++	KEY_UP, KEY_RIGHT, 0, KEY_PHONE,
++	/* row 1 */
++	KEY_DOWN, KEY_LEFT, KEY_VOLUMEUP, KEY_VOLUMEDOWN,
++	/* row 2 */
++	0, 0, 0, KEY_KPENTER,
+ };
+ static unsigned char ezx_direct_keycode[] = {
+ 	KEY_CAMERA,
+-	KEYPAD_NONE,
+-	KEYPAD_NONE,
+-	KEYPAD_A,
++	0,
++	0,
++	KEY_HOME,
+ 	KEY_POWER,
+-	KEYPAD_B,
++	KEY_MENU,
+ };
+ #elif defined(CONFIG_PXA_EZX_A780)
+ static unsigned char ezx_keycode[] = {
+@@ -424,22 +378,12 @@
+ 	KEY_CAMERA,
+ };
+ #else
+-#error "no EZX subarchitecture defined !?!"
++#error "no EZX subarchitecture defined"
+ #endif
+ 
+ static int ezx_kbd_init(void)
+ {
+-#if defined(CONFIG_PXA_EZX_E680_P4A)
+-	pxa_gpio_mode(93 | GPIO_ALT_FN_1_IN);  /* KP_DKIN<0>, VR Key */
+-	pxa_gpio_mode(97 | GPIO_ALT_FN_1_IN);  /* KP_DKIN<4>, power key */
+-	pxa_gpio_mode(100 | GPIO_ALT_FN_1_IN);  /* KP_MKIN<0> */
+-	pxa_gpio_mode(101 | GPIO_ALT_FN_1_IN);  /* KP_MKIN<1> */
+-	pxa_gpio_mode(102 | GPIO_ALT_FN_1_IN);  /* KP_MKIN<2> */
+-	pxa_gpio_mode(103 | GPIO_ALT_FN_2_OUT); /* KP_MKOUT<0> */
+-	pxa_gpio_mode(104 | GPIO_ALT_FN_2_OUT); /* KP_MKOUT<1> */
+-	pxa_gpio_mode(105 | GPIO_ALT_FN_2_OUT); /* KP_MKOUT<2> */
+-	pxa_gpio_mode(106 | GPIO_ALT_FN_2_OUT); /* KP_MKOUT<3> */
+-#elif defined(CONFIG_PXA_EZX_E680)
++#if defined(CONFIG_PXA_EZX_E680)
+ 	pxa_gpio_mode(93 | GPIO_ALT_FN_1_IN);  /* KP_DKIN<0>, VR Key */
+ 	pxa_gpio_mode(96 | GPIO_ALT_FN_1_IN);  /* KP_DKIN<3>, GAME_A */
+ 	pxa_gpio_mode(97 | GPIO_ALT_FN_1_IN);  /* KP_DKIN<4>, power key */
+@@ -455,7 +399,7 @@
+ 	GPDR(GPIO_TC_MM_EN)   |= GPIO_bit(GPIO_TC_MM_EN);
+ 	GPSR(GPIO_TC_MM_EN)   = GPIO_bit(GPIO_TC_MM_EN);
+ 	PGSR3 |= GPIO_bit(GPIO_TC_MM_EN);
+-#elif defined (CONFIG_PXA_EZX_A780)
++#elif defined(CONFIG_PXA_EZX_A780)
+ 	pxa_gpio_mode(93 | GPIO_ALT_FN_1_IN);   /* KP_DKIN<0>, voice_rec */
+ 	pxa_gpio_mode(97 | GPIO_ALT_FN_3_IN);   /* KP_MKIN<3> */
+ 	pxa_gpio_mode(98 | GPIO_ALT_FN_3_IN);   /* KP_MKIN<4> */
+@@ -476,10 +420,7 @@
+ 	.scan_interval	= HZ/40,
+ 	.matrix		= {
+ 		.keycode = &ezx_keycode,
+-#if defined(CONFIG_ARCH_EXZ_E680_P4A)
+-		.cols	= 4,
+-		.rows	= 3,
+-#elif defined(CONFIG_PXA_EZX_E680)
++#if defined(CONFIG_PXA_EZX_E680)
+ 		.cols	= 4,
+ 		.rows 	= 3,
+ #elif defined(CONFIG_PXA_EZX_A780)
+@@ -489,9 +430,7 @@
+ 	},
+ 	.direct		= {
+ 		.keycode = &ezx_direct_keycode,
+-#if defined(CONFIG_PXA_EZX_E680_P4A)
+-		.num	= 4,
+-#elif defined(CONFIG_PXA_EZX_E680)
++#if defined(CONFIG_PXA_EZX_E680)
+ 		.num	= 5,
+ #elif defined(CONFIG_PXA_EZX_A780)
+ 		.num	= 1,

@@ -6,7 +6,7 @@ MAINTAINER = "Michael 'Mickey' Lauer <mickey@vanille.de>"
 LICENSE = "GPL"
 DEPENDS += "quilt-native"
 EZX = "ezx6"
-PR = "${EZX}-r10"
+PR = "${EZX}-r11"
 
 inherit kernel
 
@@ -35,12 +35,13 @@ SRC_URI = "http://www.kernel.org/pub/linux/kernel/v2.6/linux-2.6.16.tar.bz2 \
            \
 	   file://touchscreen-fix-r0.patch;patch=1 \
            \
-           file://e680-keypad-compile-HACK.patch;patch=1 \
            file://e680-disable-boomer-HACK.patch;patch=1 \
            \
            file://e680-leds-r1.patch;patch=1 \
            file://a780-leds-r0.patch;patch=1 \
            file://ezx-backlight-r1.patch;patch=1 \
+           file://e680-fix-keypad.patch;patch=1 \
+           file://pxakbd-fix-directkeys.patch;patch=1 \
            \
            file://defconfig-a780 \
            file://defconfig-e680"

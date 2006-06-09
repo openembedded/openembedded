@@ -1,0 +1,15 @@
+
+#
+# Patch managed by http://www.mn-logistik.de/unsupported/pxa250/patcher
+#
+
+--- linux-2.6.16/drivers/input/keyboard/pxakbd.c~pxakbd-fix-directkeys	2006-06-09 03:16:35.000000000 +0200
++++ linux-2.6.16/drivers/input/keyboard/pxakbd.c	2006-06-09 03:21:04.000000000 +0200
+@@ -279,6 +279,7 @@
+ 		KPC_ME | KPC_DE |   /* matrix and direct keypad enabled */
+ 		((pxakbd->pd->matrix.cols-1)<<23) | /* columns */
+ 		((pxakbd->pd->matrix.rows-1)<<26) | /* rows */
++		((pxakbd->pd->direct.num-1)<<6) | /* direct keys */
+ 		KPC_MS_ALL); /* scan all columns */
+ 
+ 	pxa_set_cken(CKEN19_KEYPAD, 1);
