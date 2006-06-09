@@ -6,7 +6,7 @@ MAINTAINER = "Michael 'Mickey' Lauer <mickey@vanille.de>"
 LICENSE = "GPL"
 DEPENDS += "quilt-native"
 EZX = "ezx6"
-PR = "${EZX}-r11"
+PR = "${EZX}-r12"
 
 inherit kernel
 
@@ -43,6 +43,7 @@ SRC_URI = "http://www.kernel.org/pub/linux/kernel/v2.6/linux-2.6.16.tar.bz2 \
            file://e680-fix-keypad.patch;patch=1 \
            file://pxakbd-fix-directkeys.patch;patch=1 \
            \
+           file://logo_linux_clut224.ppm \
            file://defconfig-a780 \
            file://defconfig-e680"
 S = "${WORKDIR}/linux-2.6.16"
@@ -79,6 +80,7 @@ do_ezxpatch() {
 
 do_configure() {
 	mv ${S}/.config harald.config
+	install -m 0644 ${WORKDIR}/logo_linux_clut224.ppm drivers/video/logo/logo_linux_clut224.ppm
 
 	if [ ! -e ${WORKDIR}/defconfig-${MACHINE} ]; then
 		die "No default configuration for ${MACHINE} available."
