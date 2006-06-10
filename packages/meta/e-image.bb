@@ -10,6 +10,8 @@ export IPKG_INSTALL += "task-e-x11-core \
                         gpe-task-connectivity \
                         gpe-task-games \
                         figment \
+                        gaim \
+                        sylpheed \
                         xhost \
                         gpe-soundserver \
                         gpe-confd \
