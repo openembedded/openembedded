@@ -2,7 +2,7 @@ DESCRIPTION = "X Input extension library."
 SECTION = "x11/libs"
 LICENSE = "MIT-X"
 
-DEPENDS = "xproto libx11 xext"
+DEPENDS = "xproto libx11 libxext"
 
 XORG_PN = "libXi"
 
