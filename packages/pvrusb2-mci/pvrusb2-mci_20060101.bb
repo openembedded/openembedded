@@ -3,7 +3,7 @@ PRIORITY = "optional"
 SECTION = "kernel/modules"
 MAINTAINER = "dyoung <dyoung@thestuffguy.com>"
 LICENSE = "GPL"
-PR = "r0"
+PR = "r1"
 # It in fact requires these modules, but for now is using the local ones.
 # RRECOMMEND = "kernel-module-tveeprom kernel-module-tuner kernel-module-msp3400 kernel-module-saa7115"
 RRECOMMEND = "kernel-module-tda9887"
@@ -23,7 +23,7 @@ EXTRA_OEMAKE = "'CFLAGS=${CFLAGS}' \
                 'KDIR=${STAGING_KERNEL_DIR}'" 
 
 export TARGET_LDFLAGS = "-L${STAGING_DIR}/${TARGET_SYS}/lib \
-                         -rpath-link ${STAGING_DIR}/${TARGET_SYS}/lib"
+                         -Wl,-rpath-link,${STAGING_DIR}/${TARGET_SYS}/lib"
 
 
 do_compile() {   
