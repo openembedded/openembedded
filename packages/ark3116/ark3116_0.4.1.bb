@@ -4,7 +4,7 @@ PRIORITY = "optional"
 SECTION = "kernel/modules"
 MAINTAINER = "eFfeM <fransmeulenbroeks at yahoo dot com>"
 LICENSE = "GPL"
-PR = "r1"
+PR = "r2"
 RRECOMMENDS = "kernel-module-usbserial"
  
 SRC_URI = "http://avr.auctionant.de/ark3116_linux_driver/releases/ark3116-0.4.1.tgz \
@@ -27,7 +27,7 @@ EXTRA_OEMAKE = "'V=1' 'CFLAGS=${CFLAGS}' \
                 'KDIR=${STAGING_KERNEL_DIR}'" 
 
 export TARGET_LDFLAGS = "-L${STAGING_DIR}/${TARGET_SYS}/lib \
-                         -rpath-link,${STAGING_DIR}/${TARGET_SYS}/lib"
+                         -Wl,-rpath-link,${STAGING_DIR}/${TARGET_SYS}/lib"
 
 do_install() {   
         install -d ${D}${base_libdir}/modules/${KERNEL_VERSION}/kernel/drivers/usb/serial
