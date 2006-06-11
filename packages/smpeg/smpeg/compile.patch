@@ -14,3 +14,15 @@
  
  bin_SCRIPTS = smpeg-config
  
+--- smpeg/MPEGaudio.h~compile	2006-06-10 22:41:41.000000000 +0200
++++ smpeg/MPEGaudio.h	2006-06-10 22:41:51.000000000 +0200
+@@ -34,6 +34,9 @@
+ 
+ class MPEGstream;
+ 
++int Decode_MPEGaudio(void *udata);
++void Play_MPEGaudioSDL(void *udata, Uint8 *stream, int len);
++
+ /* MPEG/WAVE Sound library
+ 
+    (C) 1997 by Woo-jae Jung */
