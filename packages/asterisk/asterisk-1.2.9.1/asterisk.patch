@@ -154,6 +154,15 @@
  
  ifneq ($(wildcard .depend),)
    include .depend
+@@ -215,7 +215,7 @@
+ chan_alsa.o: $(ALSA_SRC)
+ 
+ chan_alsa.so: chan_alsa.o
+-	$(CC) $(SOLINK) -o $@ $< -lasound -lm -ldl
++	$(CC) $(SOLINK) -o $@ $< -lasound -lm -ldl $(LDFLAGS)
+ 
+ chan_nbs.so: chan_nbs.o
+ 	$(CC) $(SOLINK) -o $@ $< -lnbs
 --- asterisk-1.2.9.1/pbx/Makefile~asterisk
 +++ asterisk-1.2.9.1/pbx/Makefile
 @@ -59,7 +59,7 @@

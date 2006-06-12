@@ -1,8 +1,8 @@
-DESCRIPTION="The Astersisk open source software PBX"
+DESCRIPTION="The Asterisk open source software PBX"
 HOMEPAGE="www.asterisk.org"
 LICENSE="GPL"
-DEPENDS="ncurses zlib openssl curl"
-PR = "r1"
+DEPENDS="ncurses zlib openssl curl alsa-lib"
+PR = "r2"
 
 SRC_URI="http://ftp.digium.com/pub/asterisk/releases/asterisk-${PV}.tar.gz \
          file://asterisk.patch;patch=1"
