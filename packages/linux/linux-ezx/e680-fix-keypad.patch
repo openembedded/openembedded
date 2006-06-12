@@ -3,8 +3,8 @@
 # Patch managed by http://www.mn-logistik.de/unsupported/pxa250/patcher
 #
 
---- linux-2.6.16/arch/arm/mach-pxa/ezx.c~e680-fix-keypad	2006-06-09 01:55:06.000000000 +0200
-+++ linux-2.6.16/arch/arm/mach-pxa/ezx.c	2006-06-09 03:09:26.000000000 +0200
+--- linux-2.6.16/arch/arm/mach-pxa/ezx.c~e680-fix-keypad.patch	2006-06-11 00:47:33.000000000 +0200
++++ linux-2.6.16/arch/arm/mach-pxa/ezx.c	2006-06-12 16:13:28.000000000 +0200
 @@ -341,71 +341,25 @@
  };
  #endif
@@ -71,19 +71,19 @@
 -	/* col 3 */
 -	KEYPAD_HOME, KEYPAD_GAME_L, KEYPAD_CENTER, 0, 0, 0, 0, 0,
 +	/* row 0 */
-+	KEY_UP, KEY_RIGHT, 0, KEY_PHONE,
++	KEY_UP, KEY_RIGHT, KEY_RESERVED, KEY_PHONE,
 +	/* row 1 */
 +	KEY_DOWN, KEY_LEFT, KEY_VOLUMEUP, KEY_VOLUMEDOWN,
 +	/* row 2 */
-+	0, 0, 0, KEY_KPENTER,
++	KEY_RESERVED, KEY_RESERVED, KEY_RESERVED, KEY_KPENTER,
  };
  static unsigned char ezx_direct_keycode[] = {
  	KEY_CAMERA,
 -	KEYPAD_NONE,
 -	KEYPAD_NONE,
 -	KEYPAD_A,
-+	0,
-+	0,
++	KEY_RESERVED,
++	KEY_RESERVED,
 +	KEY_HOME,
  	KEY_POWER,
 -	KEYPAD_B,
@@ -137,14 +137,16 @@
  		.cols	= 4,
  		.rows 	= 3,
  #elif defined(CONFIG_PXA_EZX_A780)
-@@ -489,9 +430,7 @@
+@@ -489,10 +430,8 @@
  	},
  	.direct		= {
  		.keycode = &ezx_direct_keycode,
 -#if defined(CONFIG_PXA_EZX_E680_P4A)
 -		.num	= 4,
 -#elif defined(CONFIG_PXA_EZX_E680)
+-		.num	= 5,
 +#if defined(CONFIG_PXA_EZX_E680)
- 		.num	= 5,
++		.num	= 6,
  #elif defined(CONFIG_PXA_EZX_A780)
  		.num	= 1,
+ #endif
