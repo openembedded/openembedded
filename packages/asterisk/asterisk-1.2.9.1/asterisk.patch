@@ -210,3 +210,12 @@
    TARGET+=astman
  endif
  
+@@ -64,7 +64,7 @@
+ 	$(CC) $(CFLAGS) -o $@ $^
+ 
+ smsq: smsq.o
+-	$(CC) $(CFLAGS) -o smsq ${SOL} smsq.o -lpopt
++	$(CC) $(CFLAGS) -o smsq ${SOL} smsq.o -lpopt $(LDFLAGS)
+ 
+ streamplayer: streamplayer.o
+ 	$(CC) $(CFLAGS) -o streamplayer ${SOL} streamplayer.o ${SOLLIBS}
