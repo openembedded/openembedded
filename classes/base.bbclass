@@ -816,6 +816,21 @@ ftp://ftp.kernel.org/pub	ftp://ftp.uk.kernel.org/pub
 ftp://ftp.kernel.org/pub	ftp://ftp.hk.kernel.org/pub
 ftp://ftp.kernel.org/pub	ftp://ftp.au.kernel.org/pub
 ftp://ftp.kernel.org/pub	ftp://ftp.jp.kernel.org/pub
+ftp://ftp.gnupg.org/gcrypt/     ftp://ftp.franken.de/pub/crypt/mirror/ftp.gnupg.org/gcrypt/
+ftp://ftp.gnupg.org/gcrypt/     ftp://ftp.surfnet.nl/pub/security/gnupg/
+ftp://ftp.gnupg.org/gcrypt/     http://gulus.USherbrooke.ca/pub/appl/GnuPG/
+ftp://dante.ctan.org/tex-archive ftp://ftp.fu-berlin.de/tex/CTAN
+ftp://dante.ctan.org/tex-archive http://sunsite.sut.ac.jp/pub/archives/ctan/
+ftp://dante.ctan.org/tex-archive http://ctan.unsw.edu.au/
+ftp://ftp.gnutls.org/pub/gnutls ftp://ftp.gnutls.org/pub/gnutls/
+ftp://ftp.gnutls.org/pub/gnutls ftp://ftp.gnupg.org/gcrypt/gnutls/
+ftp://ftp.gnutls.org/pub/gnutls http://www.mirrors.wiretapped.net/security/network-security/gnutls/
+ftp://ftp.gnutls.org/pub/gnutls ftp://ftp.mirrors.wiretapped.net/pub/security/network-security/gnutls/
+ftp://ftp.gnutls.org/pub/gnutls http://josefsson.org/gnutls/releases/
+
+ftp://.*/.*/	http://ewi546.ewi.utwente.nl/mirror/www.openzaurus.org/official/unstable/3.5.4/sources/
+http://.*/.*/	http://ewi546.ewi.utwente.nl/mirror/www.openzaurus.org/official/unstable/3.5.4/sources/
+
 ftp://.*/.*/	http://www.oesources.org/source/current/
 http://.*/.*/	http://www.oesources.org/source/current/
 }
