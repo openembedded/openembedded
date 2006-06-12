@@ -185,6 +185,15 @@
    FORMAT_LIBS+=format_ogg_vorbis.so
  endif
  
+@@ -57,7 +57,7 @@
+ 	$(CC) $(SOLINK) -o $@ ${CYGSOLINK} $< ${CYGSOLIB} -lm
+ 
+ format_ogg_vorbis.so : format_ogg_vorbis.o
+-	$(CC) $(SOLINK) -o $@ ${CYGSOLINK} $< ${CYGSOLIB} -logg -lvorbis -lvorbisenc -lm
++	$(CC) $(SOLINK) -o $@ ${CYGSOLINK} $< ${CYGSOLIB} -logg -lvorbis -lvorbisenc -lm $(LDFLAGS)
+ 
+ install: all
+ 	for x in $(FORMAT_LIBS); do $(INSTALL) -m 755 $$x $(DESTDIR)$(MODULES_DIR) ; done
 --- asterisk-1.2.9.1/utils/Makefile~asterisk
 +++ asterisk-1.2.9.1/utils/Makefile
 @@ -22,11 +22,11 @@
