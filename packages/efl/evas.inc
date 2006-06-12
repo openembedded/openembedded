@@ -12,7 +12,7 @@ inherit efl
 export FREETYPE_CONFIG		= "${STAGING_BINDIR}/freetype-config${@binconfig_suffix(d)}"
 
 SRC_URI = "http://enlightenment.freedesktop.org/files/evas-${PV}.tar.gz \
-           file://fix-configure-${PV}.patch;patch=1 \
+           file://fix-configure.patch;patch=1 \
            ${E_CVS};module=e17/libs/evas/m4;date=20060101"
 
 S = "${WORKDIR}/evas-${PV}"

@@ -3,9 +3,11 @@ SECTION = "x11/libs"
 LICENSE= "MIT-X"
 #MAINTAINER = ""
 
-SRC_URI = "${XORG_MIRROR}/X11R7.0/src/proto/${PN}-X11R7.0-${PV}.tar.bz2"
+SRC_URI = "${XORG_MIRROR}/${XORG_RELEASE}/src/proto/${PN}-${XORG_RELEASE}-${PV}.tar.bz2"
 
-S = "${WORKDIR}/${PN}-X11R7.0-${PV}"
+S = "${WORKDIR}/${PN}-${XORG_RELEASE}-${PV}"
+
+XORG_RELEASE ?= "X11R7.0"
 
 inherit autotools pkgconfig
 

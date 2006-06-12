@@ -4,6 +4,7 @@ LICENSE = "MIT-X"
 
 DEPENDS = "xproto libx11 libxext"
 
+XORG_RELEASE = "X11R7.1"
 XORG_PN = "libXi"
 
 include xorg-xlibs.inc
