@@ -819,7 +819,7 @@ Index: SDL-1.2.7/src/video/qtopia/SDL_QWin.h
  class SDL_QWin : public QWidget
  {
    void QueueKey(QKeyEvent *e, int pressed);
-+  int SDL_QWin::ApplyKeyRotation(int key);
++  int ApplyKeyRotation(int key);
   public:
    SDL_QWin(const QSize& size);
    virtual ~SDL_QWin();

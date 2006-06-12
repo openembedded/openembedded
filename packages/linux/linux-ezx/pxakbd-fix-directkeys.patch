@@ -3,9 +3,62 @@
 # Patch managed by http://www.mn-logistik.de/unsupported/pxa250/patcher
 #
 
---- linux-2.6.16/drivers/input/keyboard/pxakbd.c~pxakbd-fix-directkeys	2006-06-09 03:16:35.000000000 +0200
-+++ linux-2.6.16/drivers/input/keyboard/pxakbd.c	2006-06-09 03:21:04.000000000 +0200
-@@ -279,6 +279,7 @@
+--- linux-2.6.16/drivers/input/keyboard/pxakbd.c~pxakbd-fix-directkeys.patch	2006-06-11 00:47:25.000000000 +0200
++++ linux-2.6.16/drivers/input/keyboard/pxakbd.c	2006-06-12 16:10:03.000000000 +0200
+@@ -20,7 +20,7 @@
+ #include <asm/arch/irqs.h>
+ #include <asm/arch/pxa-regs.h>
+ 
+-#if 0
++#if 1
+ #define DEBUGP(x, args ...) printk(x, ## args)
+ #else
+ #define DEBUGP(x, args ...)
+@@ -44,8 +44,7 @@
+ 	unsigned int i;
+ 	int num_pressed = 0;
+ 
+-	kpdk = KPDK & 0x0000000f;
+-
++	kpdk = KPDK & 0x000000ff;
+ 	for (i = 0; i < pxakbd->pd->direct.num; i++) {
+ 		int pressed = 0;
+ 
+@@ -54,11 +53,12 @@
+ 			num_pressed++;
+ 			DEBUGP("pxakbd: pressed: direct %u\n", i);
+ 		}
+-
+-		input_report_key(pxakbd->input, pxakbd->pd->direct.keycode[i],
+-				 pressed);
++		if (pxakbd->pd->direct.keycode[i] != KEY_RESERVED) {
++			DEBUGP( "pxakbd: sending to input layer: keycode = %d, pressed = %d\n", pxakbd->pd->direct.keycode[i], pressed );
++			input_report_key(pxakbd->input, pxakbd->pd->direct.keycode[i],
++			pressed);
++		}
+ 	}
+-
+ 	return num_pressed;
+ }
+ 
+@@ -248,16 +248,6 @@
+ 		set_bit(pxakbd->pd->matrix.keycode[i], input_dev->keybit);
+ 	clear_bit(0, input_dev->keybit);
+ 
+-#if 0
+-	input_dev2->evbit[0] = ;
+-	input_dev2->keycode = pxakbd->pd->direct.keycode;
+-	input_dev2->keycodesize = sizeof(unsigned char);
+-	input_dev2->keycodemax = pxakbd->pd->direct.num;
+-
+-	for (i = 0; i < input_dev2->keycodemax; i++)
+-		set_bit(ezxkbd->keycode[i], input_dev2->keybit);
+-#endif
+-
+ 	if (request_irq(pxakbd->irq, pxakbd_interrupt, 0, "pxakbd", pxakbd)) {
+ 		printk(KERN_ERR "pxakbd: can't request irq %d\n", pxakbd->irq);
+ 		ret = -EBUSY;
+@@ -279,6 +269,7 @@
  		KPC_ME | KPC_DE |   /* matrix and direct keypad enabled */
  		((pxakbd->pd->matrix.cols-1)<<23) | /* columns */
  		((pxakbd->pd->matrix.rows-1)<<26) | /* rows */
@@ -13,3 +66,18 @@
  		KPC_MS_ALL); /* scan all columns */
  
  	pxa_set_cken(CKEN19_KEYPAD, 1);
+@@ -375,13 +366,11 @@
+ static int pxakbd_remove(struct platform_device *pdev)
+ {
+ 	struct pxakbd *pxakbd = platform_get_drvdata(pdev);
+-
++	input_unregister_device(pxakbd->input);
+ 	platform_set_drvdata(pdev, NULL);
+ 	release_resource(pxakbd->res);
+ 	free_irq(pxakbd->irq, pxakbd);
+-	input_unregister_device(pxakbd->input);
+ 	kfree(pxakbd);
+-
+ 	return 0;
+ }
+ 
