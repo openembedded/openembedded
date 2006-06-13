@@ -5,7 +5,7 @@ SECTION = "base"
 LICENSE = "LGPL"
 
 PV = "0.0+cvs${SRCDATE}"
-PR = "r35"
+PR = "r36"
 
 SRC_URI = "cvs://cvs:@pubcvs.arm.linux.org.uk/mnt/src/cvsroot;module=tslib \
            file://usec_fix.patch;patch=1 \
