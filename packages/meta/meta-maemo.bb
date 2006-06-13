@@ -1,8 +1,7 @@
-
-PR          = "r7"
 PACKAGES    = maemo-task-base maemo-task-apps maemo-task-libs-install maemo-task-theme
 DESCRIPTION = "Meta-package for maemo environment"
 MAINTAINER  = "Florian Boor <florian@kernelconcepts.de>"
+PR          = "r8"
 
 ALLOW_EMPTY = "1"
 
@@ -34,7 +33,6 @@ maemo-task-base = "\
     xhost \
     xrdb \
     libgtkstylus \
-    detect-stylus \
     outo \
     hildon-initscripts \
     libosso \

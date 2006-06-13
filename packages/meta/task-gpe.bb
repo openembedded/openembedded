@@ -1,5 +1,5 @@
 DESCRIPTION = "Task packages for GPE Palmtop Environment"
-PR = "r2"
+PR = "r3"
 LICENSE = MIT
 ALLOW_EMPTY = "1"
 
@@ -40,7 +40,6 @@ RDEPENDS_gpe-task-base := "\
     gpe-confd \
     gpe-autostarter \
     libgtkstylus \
-    detect-stylus \
     suspend-desktop \
     teleport \
     xauth \
