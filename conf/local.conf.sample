@@ -88,9 +88,10 @@ PREFERRED_PROVIDERS += " virtual/${TARGET_PREFIX}g++:gcc-cross"
 # ENABLE_BINARY_LOCALE_GENERATION = "0"
 # ASSUME_PROVIDED += "qemu-native"
 
-# Uncomment this to select a particular kernel version if supported by 
-# your MACHINE setting. Currently only supported by poodle and tosa.
-# ZKERNEL_VERSION = "2.6"
+# Uncomment this to select a particular major kernel version if the MACHINE setting
+# supports more than one major kernel version. Currently this is suported by the
+# following MACHINE types: poodle, tosa and simpad.
+# MACHINE_KERNEL_VERSION = "2.6"
 
 # Uncomment one of these to build packages during the build process.
 # This is done automatically if you set DISTRO (see above)
