@@ -1,0 +1,40 @@
+Index: mainwindow.cc
+===================================================================
+RCS file: /cvs/opie/noncore/settings/mediummount/mainwindow.cc,v
+retrieving revision 1.7
+diff -u -r1.7 mainwindow.cc
+--- mediummount/mainwindow.cc	19 Sep 2004 19:11:07 -0000	1.7
++++ mediummount/mainwindow.cc	14 Jun 2006 15:30:05 -0000
+@@ -1,5 +1,6 @@
+ 
+ 
++#include <qpe/config.h>
+ #include <qtabwidget.h>
+ #include <qlayout.h>
+ #include <qtooltip.h>
+@@ -20,15 +21,20 @@
+   : QDialog( parent, name, modal, WStyle_ContextHelp  )
+ 
+ {
+-    setCaption ( tr( "Medium Mount Settings" ));
++    Config c( "qpe" );
++    c.setGroup( "Startup" );
++    if ( c.readNumEntry( "FirstUse", 42 ) != 0 )
++    {
++	setCaption ( tr( "Medium Mount Settings" ));
+ 
+-    m_lay = new QVBoxLayout( this );
++	m_lay = new QVBoxLayout( this );
+ 
+-    m_tab = new QTabWidget( this );
++	m_tab = new QTabWidget( this );
+ 
+-    m_lay->addWidget( m_tab );
++	m_lay->addWidget( m_tab );
+ 
+-    init();
++	init();
++    }
+ }
+ 
+ MainWindow::~MainWindow()
