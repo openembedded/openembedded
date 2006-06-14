@@ -7,8 +7,8 @@ PRIORITY = "optional"
 MAINTAINER = "Phil Blundell <pb@handhelds.org>"
 DEPENDS = "glib-2.0 xserver-common"
 RDEPENDS_${PN} += "xserver-common"
-PR = "r0"
+PR = "r1"
 
 INITSCRIPT_NAME = "gpe-dm"
-INITSCRIPT_PARAMS = "start 99 5 2 . stop 20 0 1 6 ."
+INITSCRIPT_PARAMS = "start 99 5 . stop 20 0 1 6 ."
 
