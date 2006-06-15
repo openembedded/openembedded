@@ -39,7 +39,7 @@ SRC_URI += "file://livelock.patch;patch=1"
 
 DEPENDS = "ixp-osal"
 S = "${WORKDIR}/ixp400_xscale_sw"
-PR = "r10"
+PR = "r11"
 
 COMPATIBLE_HOST = "^arm.*-linux.*"
 
