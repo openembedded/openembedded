@@ -5,7 +5,8 @@ OPENDREAMBOX_COMMON = "base-files busybox \
 	base-passwd ncurses joe mc vsftpd timezones-alternative \
 	netkit-base fakelocale less dreambox-bootlogo  \
 	dreambox-dccamd dreambox-keymaps tuxbox-image-info dvbsnoop \
-	dreambox-compat tuxbox-common mrouted smartmontools hddtemp"
+	dreambox-compat tuxbox-common mrouted smartmontools hddtemp \
+	bash"
 
 OPENDREAMBOX_COMMON_D = "util-linux e2fsprogs \
 	ppp module-init-tools modutils-initscripts samba"
@@ -36,7 +37,7 @@ OPENDREAMBOX_TUXBOX_R = " \
 
 # dvb api specific stuff
 OPENDREAMBOX_V2_ONLY = "dreambox-dvb-tools tuxbox-stream"
-OPENDREAMBOX_V3_ONLY = "dreambox-dvb-tools-v3 dvbtune sctzap dvbtraffic"
+OPENDREAMBOX_V3_ONLY = "dreambox-dvb-tools-v3 sctzap dvbtraffic"
 
 # enigma languages
 # disabled: enigma-locale-ar enigma-locale-sr enigma-locale-ur
