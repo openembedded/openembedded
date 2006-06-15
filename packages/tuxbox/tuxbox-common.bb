@@ -3,14 +3,16 @@ LICENSE = "GPL"
 MAINTAINER = "Felix Domke <tmbinc@elitdvb.net>"
 
 PN = "tuxbox-common"
-PR = "r7"
+PV = "7"
+PR = "r8"
 
-SRC_URI = "http://dreamboxupdate.com/download/opendreambox/tuxbox-common-${PR}.tar.gz \
+CVSDATE = "20060614"
+SRC_URI = "http://dreamboxupdate.com/download/opendreambox/tuxbox-common-r${PV}.tar.gz \
 	cvs://anoncvs@cvs.tuxbox.org/cvs/tuxbox/;module=cdk/root/share/tuxbox;method=ext;tag=dreambox"
 
 FILES_${PN} = "/"
 
-S = "${WORKDIR}/tuxbox-common-${PR}"
+S = "${WORKDIR}/tuxbox-common-r${PV}"
 
 do_install() {
 
@@ -23,11 +25,6 @@ do_install() {
 	install -m 0644 ${WORKDIR}/tuxbox/terrestrial.xml ${D}/etc/tuxbox/terrestrial.xml
 	install -m 0644 ${S}/timezone.xml ${D}/etc/tuxbox/timezone.xml
 
-	echo "ln -s /etc/tuxbox /var/" > ${D}/etc/init.d/tuxbox-links.sh
-	echo "ln -s /etc /var/" >> ${D}/etc/init.d/tuxbox-links.sh
-	echo "mkdir -p /var/tuxbox/config" >> ${D}/etc/init.d/tuxbox-links.sh
-	echo "ln -s /etc/enigma /var/tuxbox/config/" >> ${D}/etc/init.d/tuxbox-links.sh
-
 	cat <<EOF >> ${D}/etc/init.d/tuxbox-hdd.sh
 # sleep after 10min
 hdparm -S 120 /dev/ide/host0/bus0/target0/lun0/disc
@@ -37,8 +34,6 @@ hdparm -X66 /dev/ide/host0/bus0/target0/lun0/disc
 hdparm -M 128 /dev/ide/host0/bus0/target0/lun0/disc
 EOF
 
-	chmod a+x ${D}/etc/init.d/tuxbox-links.sh
-	ln -sf ../init.d/tuxbox-links.sh ${D}/etc/rcS.d/S38tuxbox-links.sh
 	chmod a+x ${D}/etc/init.d/tuxbox-hdd.sh
 	ln -sf ../init.d/tuxbox-hdd.sh ${D}/etc/rcS.d/S38tuxbox-hdd.sh
 	ln -sf /etc/tuxbox/timezone.xml ${D}/etc/
