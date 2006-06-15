@@ -5,7 +5,7 @@ SECTION = "base"
 LICENSE = "LGPL"
 
 PV = "0.0+cvs${SRCDATE}"
-PR = "r35"
+PR = "r37"
 
 SRC_URI = "cvs://cvs:@pubcvs.arm.linux.org.uk/mnt/src/cvsroot;module=tslib \
            file://usec_fix.patch;patch=1 \
@@ -73,6 +73,12 @@ do_install_append() {
 
 SRC_URI_OVERRIDES_PACKAGE_ARCH = "0"
 CONFFILES_${PN} = "${sysconfdir}/ts.conf"
+
+RDEPENDS_tslib-conf_h1940 = "detect-stylus"
+RDEPENDS_tslib-conf_h2200 = "detect-stylus"
+RDEPENDS_tslib-conf_h3600 = "detect-stylus"
+RDEPENDS_tslib-conf_h3900 = "detect-stylus"
+RDEPENDS_tslib-conf_h6300 = "detect-stylus"
 
 PACKAGE_ARCH_tslib-conf = "${MACHINE_ARCH}"
 PACKAGE_ARCH_mnci = "${MACHINE_ARCH}"

@@ -4,7 +4,7 @@ SECTION = "devel"
 AUTHOR = "Harald Welte"
 MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 LICENSE = "GPL"
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "svn://svn.openezx.org/trunk/src/host;module=boot_usb;proto=http;rev=${PV}"
 S = "${WORKDIR}/boot_usb"
@@ -12,7 +12,7 @@ S = "${WORKDIR}/boot_usb"
 inherit native
 
 do_compile() {
-	${CC} ${CFLAGS} -lusb -o ezx-boot-usb boot_usb.c
+	${CC} ${CFLAGS} ${LDFLAGS} -lusb -o ezx-boot-usb boot_usb.c
 }
 
 do_deploy() {

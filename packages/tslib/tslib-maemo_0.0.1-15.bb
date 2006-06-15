@@ -1,7 +1,7 @@
 DEFAULT_PREFERENCE = "-1"
 SECTION = "base"
 DESCRIPTION = "tslib is a touchscreen access library (maemo patched version)."
-PR = "r1"
+PR = "r2"
 PROVIDES = "tslib"
 
 DEFAULT_PREFERENCE = "-1"
