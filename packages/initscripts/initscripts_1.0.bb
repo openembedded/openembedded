@@ -6,7 +6,7 @@ DEPENDS = "makedevs"
 DEPENDS_openzaurus = "makedevs virtual/kernel"
 RDEPENDS = "makedevs"
 LICENSE = "GPL"
-PR = "r59"
+PR = "r60"
 
 SRC_URI = "file://halt \
            file://ramdisk \
@@ -43,6 +43,7 @@ SRC_URI_append_spitz        = " file://keymap-*.map"
 SRC_URI_append_borzoi       = " file://keymap-*.map"
 SRC_URI_append_collie       = " file://keymap-*.map"
 SRC_URI_append_poodle       = " file://keymap-*.map"
+SRC_URI_append_opendreambox = " file://var.tar.gz.default"
 
 def read_kernel_version(d):
 	import bb
@@ -114,8 +115,16 @@ do_install () {
 			;;
     esac
 
-	install -m 0755 ${WORKDIR}/banner	${D}${sysconfdir}/init.d/banner
-	install -m 0755 ${WORKDIR}/devices	${D}${sysconfdir}/init.d/devices
+	# speed up booting a bit
+	if [ "${DISTRO}" == "opendreambox" ]; then
+		NO_BANNER=yes    # we don't have a vt
+		NO_CHECKROOT=yes # we never fsck on /
+		NO_DEVICES=yes   # we have devfs, and don't need these symlinks.
+		install -m 0644 ${WORKDIR}/var.tar.gz.default ${D}${sysconfdir}/var.tar.gz
+	fi
+
+	[ -z "$NO_BANNER" ] && install -m 0755 ${WORKDIR}/banner	${D}${sysconfdir}/init.d/banner
+	[ -z "$NO_DEVICES" ] && install -m 0755 ${WORKDIR}/devices	${D}${sysconfdir}/init.d/devices
 	install -m 0755 ${WORKDIR}/umountfs	${D}${sysconfdir}/init.d/umountfs
 #
 # Create runlevel links
@@ -135,8 +144,8 @@ do_install () {
 	ln -sf		../init.d/umountnfs.sh	${D}${sysconfdir}/rc0.d/S31umountnfs.sh
 #	ln -sf		../init.d/umountfs	${D}${sysconfdir}/rc0.d/S40umountfs
 	ln -sf		../init.d/halt		${D}${sysconfdir}/rc0.d/S90halt
-	ln -sf		../init.d/banner	${D}${sysconfdir}/rcS.d/S02banner
-	ln -sf		../init.d/checkroot.sh	${D}${sysconfdir}/rcS.d/S10checkroot.sh
+	[ -z "$NO_BANNER" ] && ln -sf		../init.d/banner	${D}${sysconfdir}/rcS.d/S02banner
+	[ -z "$NO_CHECKROOT" ] && ln -sf		../init.d/checkroot.sh	${D}${sysconfdir}/rcS.d/S10checkroot.sh
 #	ln -sf		../init.d/checkfs.sh	${D}${sysconfdir}/rcS.d/S30checkfs.sh
 	ln -sf		../init.d/mountall.sh	${D}${sysconfdir}/rcS.d/S35mountall.sh
 	ln -sf		../init.d/hostname.sh	${D}${sysconfdir}/rcS.d/S39hostname.sh
@@ -144,7 +153,7 @@ do_install () {
 	ln -sf		../init.d/bootmisc.sh	${D}${sysconfdir}/rcS.d/S55bootmisc.sh
 #	ln -sf		../init.d/urandom	${D}${sysconfdir}/rcS.d/S55urandom
 	ln -sf		../init.d/finish	${D}${sysconfdir}/rcS.d/S99finish
-	ln -sf		../init.d/devices	${D}${sysconfdir}/rcS.d/S05devices
+	[ -z "$NO_DEVICES" ] && ln -sf		../init.d/devices	${D}${sysconfdir}/rcS.d/S05devices
 	# udev will run at S04 if installed
 	ln -sf		../init.d/sysfs.sh	${D}${sysconfdir}/rcS.d/S03sysfs
 	ln -sf		../init.d/populate-volatile.sh	${D}${sysconfdir}/rcS.d/S37populate-volatile.sh
