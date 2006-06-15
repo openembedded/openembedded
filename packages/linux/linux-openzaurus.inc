@@ -59,6 +59,13 @@ module_autoload_snd-soc-spitz_spitz = "snd-soc-spitz"
 do_configure() {
 	rm -f ${S}/.config
 
+	if [ "${MACHINE}" == "tosa" ]; then
+		gcc_version=`${KERNEL_CC} -dumpversion`		
+		if [ "${gcc_version}" == "4.0.1" ] || [ "${gcc_version}" == "4.0.2" ]; then
+			die "tosa kernel wont work with gcc 4.0.x"
+		fi
+	fi
+
 	if [ ! -e ${WORKDIR}/defconfig-${MACHINE} ]; then
 		die "No default configuration for ${MACHINE} available."
 	fi
@@ -100,6 +107,43 @@ do_configure() {
 		echo "# CONFIG_OABI_COMPAT is not set"  >> ${S}/.config
 	fi
 
+	if [ "${DISTRO}" == "openzaurus" ]; then
+		case ${MACHINE} in
+			c7x0 | akita | spitz )
+				echo "CONFIG_LOGO_OZ640_CLUT224=y"            >> ${S}/.config
+				echo "# CONFIG_LOGO_OZ480_CLUT224 is not set" >> ${S}/.config
+				echo "# CONFIG_LOGO_OZ240_CLUT224 is not set" >> ${S}/.config
+				;;
+			tosa )
+				echo "CONFIG_LOGO_OZ480_CLUT224=y"            >> ${S}/.config
+				echo "# CONFIG_LOGO_OZ640_CLUT224 is not set" >> ${S}/.config
+				echo "# CONFIG_LOGO_OZ240_CLUT224 is not set" >> ${S}/.config
+				;;
+			poodle | collie )
+				echo "CONFIG_LOGO_OZ240_CLUT224=y"            >> ${S}/.config
+				echo "# CONFIG_LOGO_OZ640_CLUT224 is not set" >> ${S}/.config
+				echo "# CONFIG_LOGO_OZ480_CLUT224 is not set" >> ${S}/.config
+				;;
+		esac 
+		echo "CONFIG_LOGO=y"                          >> ${S}/.config
+		echo "# CONFIG_LOGO_LINUX_CLUT224 is not set" >> ${S}/.config
+		echo "# CONFIG_LOGO_OHAND_CLUT224 is not set" >> ${S}/.config
+	elif [ "${DISTRO}" == "poky" ]; then
+		echo "CONFIG_LOGO=y"                          >> ${S}/.config
+		echo "CONFIG_LOGO_OHAND_CLUT224=y"            >> ${S}/.config
+		echo "# CONFIG_LOGO_OZ240_CLUT224 is not set" >> ${S}/.config
+		echo "# CONFIG_LOGO_OZ480_CLUT224 is not set" >> ${S}/.config
+		echo "# CONFIG_LOGO_OZ640_CLUT224 is not set" >> ${S}/.config
+		echo "# CONFIG_LOGO_LINUX_CLUT224 is not set" >> ${S}/.config
+	else 
+		echo "# CONFIG_LOGO is not set"               >> ${S}/.config
+		echo "# CONFIG_LOGO_OHAND_CLUT224 is not set" >> ${S}/.config
+		echo "# CONFIG_LOGO_LINUX_CLUT224 is not set" >> ${S}/.config
+		echo "# CONFIG_LOGO_OZ240_CLUT224 is not set" >> ${S}/.config
+		echo "# CONFIG_LOGO_OZ480_CLUT224 is not set" >> ${S}/.config
+		echo "# CONFIG_LOGO_OZ640_CLUT224 is not set" >> ${S}/.config
+	fi
+
 	sed -e '/CONFIG_AEABI/d' \
 	    -e '/CONFIG_OABI_COMPAT=/d' \
 	    -e '/CONFIG_CMDLINE=/d' \
@@ -107,6 +151,12 @@ do_configure() {
 	    -e '/CONFIG_MTDRAM_TOTAL_SIZE=/d' \
 	    -e '/CONFIG_MTDRAM_ERASE_SIZE=/d' \
 	    -e '/CONFIG_MTDRAM_ABS_POS=/d' \
+	    -e '/CONFIG_LOGO=/d' \
+	    -e '/CONFIG_LOGO_LINUX_CLUT224=/d' \
+	    -e '/CONFIG_LOGO_OHAND_CLUT224=/d' \
+	    -e '/CONFIG_LOGO_OZ240_CLUT224=/d' \
+	    -e '/CONFIG_LOGO_OZ480_CLUT224=/d' \
+	    -e '/CONFIG_LOGO_OZ640_CLUT224=/d' \
 	    '${WORKDIR}/defconfig-${MACHINE}' >>'${S}/.config'
 
 	yes '' | oe_runmake oldconfig
@@ -138,7 +188,7 @@ do_compile_append() {
 
 do_deploy() {
         install -d ${DEPLOY_DIR_IMAGE}
-        install -m 0644 arch/${ARCH}/boot/${KERNEL_IMAGETYPE} ${DEPLOY_DIR_IMAGE}/${KERNEL_IMAGETYPE}-${PV}-${MACHINE}-${DATETIME}.bin-${PR}
+        install -m 0644 arch/${ARCH}/boot/${KERNEL_IMAGETYPE} ${DEPLOY_DIR_IMAGE}/${KERNEL_IMAGETYPE}-${PV}-${MACHINE}-${DATETIME}.bin
         tar -cvzf ${DEPLOY_DIR_IMAGE}/modules-${KERNEL_RELEASE}-${MACHINE}.tgz -C ${D} lib	
 }
 
