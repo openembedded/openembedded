@@ -41,10 +41,11 @@ SRC_URI += "file://gcc4.patch;patch=1"
 SRC_URI += "file://oe-makefile.patch;patch=1"
 SRC_URI += "file://livelock.patch;patch=1"
 SRC_URI += "file://module-param.patch;patch=1"
+SRC_URI += "file://module-use-count.patch;patch=1"
 
 DEPENDS = "ixp-osal"
 S = "${WORKDIR}/ixp400_xscale_sw"
-PR = "r0"
+PR = "r1"
 
 COMPATIBLE_HOST = "^arm.*-linux.*"
 
@@ -81,7 +82,7 @@ EXTRA_OEMAKE = "'AR=${AR}' \
 		'${IX_TARGET}_COMPONENTS=${COMPONENTS}' \
 		'${IX_TARGET}_CODELETS_COMPONENTS=${CODELETS_COMPONENTS}' \
 		'IX_DEVICE=ixp42X' \
-		'IX_INCLUDE_MICROCODE=1' \
+		'IX_BUILD_MICROCODE=1' \
 		'IX_UTOPIAMODE=0' \
 		'IX_MPHYSINGLEPORT=1' \
 		${IX_ENSURE} \
@@ -122,4 +123,5 @@ PACKAGES = "${PN}"
 do_install () {
 	install -d ${D}${base_libdir}/modules/${KERNEL_VERSION}/kernel/drivers/ixp400
 	install -m 0644 lib/${IX_TARGET}/ixp400.ko ${D}${base_libdir}/modules/${KERNEL_VERSION}/kernel/drivers/ixp400/
+	install -m 0644 lib/${IX_TARGET}/IxNpeMicrocode.dat ${D}${base_libdir}/modules/${KERNEL_VERSION}/kernel/drivers/ixp400/
 }
