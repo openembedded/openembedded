@@ -1,13 +1,12 @@
 DESCRIPTION = "A Client for Wi-Fi Protected Access (WPA)."
 SECTION = "network"
 LICENSE = "GPL"
-MAINTAINER = "Holger Schurig"
+MAINTAINER = "Marcin Juszkiewicz <openembedded@hrw.one.pl>"
 HOMEPAGE = "http://hostap.epitest.fi/wpa_supplicant/"
 DEPENDS = "openssl hostap-modules"
-DEPENDS_mtx-1_append = "madwifi-modules"
 RCONFLICTS_${PN} = "wpa-supplicant-nossl"
 RREPLACES_${PN} = "wpa-supplicant-nossl"
-PR = "r5"
+PR = "r6"
 
 SRC_URI = "http://hostap.epitest.fi/releases/wpa_supplicant-${PV}.tar.gz \
 	file://madwifi-bsd-fix.diff;patch=1;pnum=0 \
@@ -45,3 +44,5 @@ do_install () {
 	install -d ${D}${docdir}/wpa_supplicant
 	install -m 644 ${S}/README ${D}${docdir}/wpa_supplicant
 }
+
+CONFFILES_${PN} = "${sysconfdir}/wpa_supplicant.conf"
