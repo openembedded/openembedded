@@ -19,7 +19,6 @@ SRC_URI = "git://rsync.kernel.org/pub/scm/linux/kernel/git/torvalds/linux-2.6.gi
            ${RPSRC}/zlib_inflate-r3.patch;patch=1;status=pending \
            ${RPSRC}/logo_rotate_fix-r1.patch;patch=1;status=pending \
            ${RPSRC}/poodle_partsize-r0.patch;patch=1;status=pending \
-           ${RPSRC}/mmc_oops_fix-r0.patch;patch=1 \
            ${RPSRC}/mmcsd_large_cards-r0.patch;patch=1 \
            ${RPSRC}/mmcsd_no_scr_check-r0.patch;patch=1 \
 #           ${RPSRC}/alsa/asoc-v0.10rc8.patch;patch=1 \

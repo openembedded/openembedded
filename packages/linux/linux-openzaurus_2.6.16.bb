@@ -60,10 +60,10 @@ SRC_URI = "http://www.kernel.org/pub/linux/kernel/v2.6/linux-2.6.16.tar.bz2 \
            ${RPSRC}/led_sysfs_fix-r0.patch;patch=1;status=merged \
            ${RPSRC}/backlight_sysfs_fix-r0.patch;patch=1;status=merged \
            ${RPSRC}/pxaohci_pwrlimit-r0.patch;patch=1;status=merged \
+           ${RPSRC}/mmc_oops_fix-r1.patch;patch=1;status=merged \
            ${RPSRC}/zlib_inflate-r3.patch;patch=1;status=pending \
            ${RPSRC}/logo_rotate_fix-r1.patch;patch=1;status=pending \
            ${RPSRC}/poodle_partsize-r0.patch;patch=1;status=pending \
-           ${RPSRC}/mmc_oops_fix-r0.patch;patch=1 \
            ${RPSRC}/mmcsd_large_cards-r0.patch;patch=1 \
            ${RPSRC}/mmcsd_no_scr_check-r0.patch;patch=1 \
            ${RPSRC}/alsa/asoc-v0.10rc4.patch;patch=1 \
