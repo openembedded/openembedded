@@ -8,7 +8,7 @@ MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 LICENSE = "LGPL"
 RDEPENDS = "python-core"
 
-SRC_URI = "http://twisted.sourceforge.net/Twisted-${PV}.tar.bz2"
+SRC_URI = "http://tmrc.mit.edu/mirror/twisted/old/Twisted-${PV}.tar.bz2"
 S = "${WORKDIR}/Twisted-${PV}"
 
 inherit distutils
