@@ -42,7 +42,7 @@
   */
   #ifdef CONFIG_IXP400_ETH_NPEC_ONLY
 ! int dev_max_count = 1; /* only NPEC is used */
-! elif defined (CONFIG_IXP400_ETH_NPEB_ONLY)
+! #elif defined (CONFIG_IXP400_ETH_NPEB_ONLY)
 ! int dev_max_count = 1; /* only NPEB is used */
   #elif defined (CONFIG_ARCH_IXDP425) || defined(CONFIG_ARCH_IXDPG425)\
         || defined (CONFIG_ARCH_ADI_COYOTE)
