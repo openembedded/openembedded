@@ -1,6 +1,6 @@
 include linux-openzaurus.inc
 
-PR = "r37"
+PR = "r38"
 
 # Handy URLs
 # git://rsync.kernel.org/pub/scm/linux/kernel/git/torvalds/linux-2.6.git \
@@ -13,6 +13,7 @@ PR = "r37"
 # Patches submitted upstream are towards top of this list 
 # Hacks should clearly named and at the bottom
 SRC_URI = "http://www.kernel.org/pub/linux/kernel/v2.6/linux-2.6.16.tar.bz2 \
+	   \
            file://rmk-mmc1.patch;patch=1;status=merged \
            file://rmk-mmc2.patch;patch=1;status=merged \
            ${RPSRC}/led_core-r15.patch;patch=1;status=merged \
@@ -61,9 +62,13 @@ SRC_URI = "http://www.kernel.org/pub/linux/kernel/v2.6/linux-2.6.16.tar.bz2 \
            ${RPSRC}/backlight_sysfs_fix-r0.patch;patch=1;status=merged \
            ${RPSRC}/pxaohci_pwrlimit-r0.patch;patch=1;status=merged \
            ${RPSRC}/mmc_oops_fix-r1.patch;patch=1;status=merged \
+           file://00-hostap.patch;patch=1;status=merged \
+           file://10-pcnet.patch;patch=1;status=merged \
+	   \
            ${RPSRC}/zlib_inflate-r3.patch;patch=1;status=pending \
            ${RPSRC}/logo_rotate_fix-r1.patch;patch=1;status=pending \
            ${RPSRC}/poodle_partsize-r0.patch;patch=1;status=pending \
+	   \
            ${RPSRC}/mmcsd_large_cards-r0.patch;patch=1 \
            ${RPSRC}/mmcsd_no_scr_check-r0.patch;patch=1 \
            ${RPSRC}/alsa/asoc-v0.10rc4.patch;patch=1 \
@@ -86,22 +91,24 @@ SRC_URI = "http://www.kernel.org/pub/linux/kernel/v2.6/linux-2.6.16.tar.bz2 \
            ${RPSRC}/usb_pxa27x_udc-r0.patch;patch=1 \
            ${RPSRC}/usb_add_epalloc-r1.patch;patch=1 \
            ${DOSRC}/kexec-arm-r2.patch;patch=1 \
-           ${RPSRC}/pxa_cf_initorder_hack-r1.patch;patch=1 \
-           ${RPSRC}/poodle_ts_hack-r0.patch;patch=1 \
            ${RPSRC}/integrator_rgb-r0.patch;patch=1 \
            ${RPSRC}/logo_oh-r0.patch.bz2;patch=1 \
            ${RPSRC}/logo_oz-r1.patch.bz2;patch=1 \
            file://add-oz-release-string.patch;patch=1 \
-           file://pxa-serial-hack.patch;patch=1 \
            ${RPSRC}/pxa-linking-bug.patch;patch=1 \
            file://serial-add-support-for-non-standard-xtals-to-16c950-driver.patch;patch=1 \
-           file://connectplus-remove-ide-HACK.patch;patch=1 \
            file://hrw-pcmcia-ids-r2.patch;patch=1 \
-           file://00-hostap.patch;patch=1 \
            file://locomo-kbd-hotkeys.patch;patch=1 \
            file://locomo-sysrq+keyrepeat.patch;patch=1 \
            file://locomo-lcd-def-bightness.patch;patch=1 \
-           file://squashfs3.0-2.6.15.patch;patch=1 \
+	   \
+           file://pxa-serial-hack.patch;patch=1;status=hack \
+           ${RPSRC}/pxa_cf_initorder_hack-r1.patch;patch=1;status=hack \
+           ${RPSRC}/poodle_ts_hack-r0.patch;patch=1;status=hack \
+           file://connectplus-remove-ide-HACK.patch;patch=1;status=hack \
+	   \
+           file://squashfs3.0-2.6.15.patch;patch=1;status=external \
+	   \
            file://defconfig-c7x0 \
            file://defconfig-ipaq-pxa270 \
            file://defconfig-collie \
