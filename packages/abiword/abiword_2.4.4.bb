@@ -1,12 +1,12 @@
-DESCRIPTION ="AbiWord is free word processing program similar to Microsoft(r) Word""
-HOMEPAGE="http://www.abiword.org""
+DESCRIPTION ="AbiWord is free word processing program similar to Microsoft(r) Word"
+HOMEPAGE="http://www.abiword.org"
 MAINTAINER="Koen Kooi <koen@handhelds.org>"
 LICENSE="GPLv2"
 
 DEPENDS     = "perl-native libgsf libgnomeprint libgnomeprintui libglade libfribidi enchant jpeg libpng perl glibc libxml2"
 RDEPENDS    = "enchant glibc-gconv-ibm850 glibc-gconv-cp1252 \
                glibc-gconv-iso8859-15 glibc-gconv-iso8859-1"
-PR="r0"
+PR="r1"
 
 SRC_URI = "http://www.abiword.org/downloads/abiword/${PV}/source/abiword-${PV}.tar.gz"
 S = "${WORKDIR}/abiword-${PV}/abi"
