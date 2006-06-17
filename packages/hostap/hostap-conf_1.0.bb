@@ -4,7 +4,7 @@ SECTION = "kernel/modules"
 PRIORITY = "optional"
 LICENSE = "GPL"
 PACKAGE_ARCH = "all"
-PR = "r6"
+PR = "r7"
 
 SRC_URI = "file://hostap_cs.conf \
            file://hostap_cs.modalias \
