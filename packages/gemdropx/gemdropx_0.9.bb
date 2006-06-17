@@ -1,38 +1,33 @@
-DESCRIPTION = "Classic arcade puzzle game Qtopia/Opie - based on SDL"
-SECTION = "opie/games"
+DESCRIPTION = "Classic arcade puzzle game - SDL edition."
 PRIORITY = "optional"
 MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 LICENSE = "GPL"
 HOMEPAGE = "http://www.newbreedsoftware.com/gemdropx/"
-DEPENDS = "virtual/libqpe libsdl-qpe libsdl-image"
 PR = "r4"
 
+APPIMAGE = "${WORKDIR}/gemdropx.png"
+
 SRC_URI = "ftp://ftp.billsgames.com/unix/x/gemdropx/src/gemdropx-${PV}.tar.gz \
-           file://directories.patch;patch=1 \
-           file://icon.png"
+           file://gemdropx.png"
 
-inherit palmtop
+inherit qmake sdl
 
-EXTRA_QMAKEVARS_POST += "INCLUDEPATH+=${STAGING_INCDIR}/SDL LIBS+=-lSDL LIBS+=-lSDL_mixer \
-			LIBS+=-lSDLmain LIBS+=-lSDL_image LIBS+=-lpthread"
+EXTRA_QMAKEVARS_POST += "CONFIG-=qt \
+                         INCLUDEPATH+=${STAGING_INCDIR}/SDL \
+                         LIBS+=-lSDL \
+                         LIBS+=-lSDL_mixer \
+			 LIBS+=-lSDL_image \
+                         LIBS+=-lpthread \
+                         DEFINES+=DATA_PREFIX=\\"\"${datadir}/gemdropx/\\"\""
 
 do_configure_prepend() {
-        qmake -project -o gemdropx.pro
+        qmake -project -nopwd gemdropx.c -o gemdropx.pro
 }
 
 do_install() {
-        install -d ${D}${palmtopdir}/bin \
-		   ${D}${palmtopdir}/apps/Games \
-		   ${D}${palmtopdir}/pics \
-		   ${D}${palmtopdir}/share/gemdropx
-        install -D -m 0755 gemdropx ${D}${palmtopdir}/bin/gemdropx
-	install -D -m 0644 ${WORKDIR}/icon.png ${D}${palmtopdir}/pics/gemdropx.png
-	cp -pPR data/* ${D}${palmtopdir}/share/gemdropx
+        install -d ${D}${bindir}
+	install -m 0755 gemdropx ${D}${bindir}/gemdropx
+	install -d ${D}${datadir}/gemdropx/
+	cp -pPR data/* ${D}${datadir}/gemdropx/
 
-	echo "[Desktop Entry]" >${D}${palmtopdir}/apps/Games/gemdropx.desktop
-	echo "Comment=Puzzle game" >>${D}${palmtopdir}/apps/Games/gemdropx.desktop
-	echo "Exec=gemdropx" >>${D}${palmtopdir}/apps/Games/gemdropx.desktop
-	echo "Icon=gemdropx" >>${D}${palmtopdir}/apps/Games/gemdropx.desktop
-	echo "Type=Application" >>${D}${palmtopdir}/apps/Games/gemdropx.desktop
-	echo "Name=GemdropX" >>${D}${palmtopdir}/apps/Games/gemdropx.desktop
 }
