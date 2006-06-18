@@ -7,6 +7,8 @@ LICENSE = "Kermit"
 MAINTAINER = "Holger Schurig"
 HOMEPAGE = "http://www.columbia.edu/kermit/"
 SECTION = "console/network"
+PR = "r1"
+
 SRC_URI = "ftp://kermit.columbia.edu/kermit/archives/cku${PV}.tar.gz"
 
 #
@@ -89,4 +91,5 @@ do_compile () {
 do_install () {
 	install -d ${D}${BINDIR} ${D}${MANDIR} ${D}${INFODIR}
 	oe_runmake 'DESTDIR=${D}' 'MANDIR=${D}${MANDIR}' install
+	cd ${D}${bindir} && ln -sf kermit kermit-sshsub
 }
