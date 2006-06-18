@@ -1,6 +1,6 @@
 include linux-openzaurus.inc
 
-PR = "r18"
+PR = "r19"
 
 DEFAULT_PREFERENCE = "-1"
 
@@ -19,6 +19,8 @@ SRC_URI = "git://rsync.kernel.org/pub/scm/linux/kernel/git/torvalds/linux-2.6.gi
            ${RPSRC}/zlib_inflate-r3.patch;patch=1;status=pending \
            ${RPSRC}/logo_rotate_fix-r1.patch;patch=1;status=pending \
            ${RPSRC}/poodle_partsize-r0.patch;patch=1;status=pending \
+           file://00-hostap.patch;patch=1;status=pending \
+           file://10-pcnet.patch;patch=1;status=pending \
            ${RPSRC}/mmcsd_large_cards-r0.patch;patch=1 \
            ${RPSRC}/mmcsd_no_scr_check-r0.patch;patch=1 \
 #           ${RPSRC}/alsa/asoc-v0.10rc8.patch;patch=1 \
@@ -42,21 +44,24 @@ SRC_URI = "git://rsync.kernel.org/pub/scm/linux/kernel/git/torvalds/linux-2.6.gi
            ${RPSRC}/usb_pxa27x_udc-r0.patch;patch=1 \
            ${RPSRC}/usb_add_epalloc-r1.patch;patch=1 \
            ${DOSRC}/kexec-arm-r2.patch;patch=1 \
-           ${RPSRC}/pxa_cf_initorder_hack-r1.patch;patch=1 \
-           ${RPSRC}/poodle_ts_hack-r0.patch;patch=1 \
-           ${RPSRC}/integrator_rgb-r0.patch;patch=1 \
-           ${RPSRC}/logo_oh-r0.patch.bz2;patch=1 \
-           ${RPSRC}/logo_oz-r1.patch.bz2;patch=1 \
-           file://add-oz-release-string.patch;patch=1 \
-           file://pxa-serial-hack.patch;patch=1 \
-           ${RPSRC}/pxa-linking-bug.patch;patch=1 \
            file://serial-add-support-for-non-standard-xtals-to-16c950-driver.patch;patch=1 \
-           file://connectplus-remove-ide-HACK.patch;patch=1 \
-           file://24-hostap_cs_id.diff;patch=1 \
+           file://hrw-pcmcia-ids-r2.patch;patch=1 \
            file://locomo-kbd-hotkeys.patch;patch=1 \
            file://locomo-sysrq+keyrepeat.patch;patch=1 \
            file://locomo-lcd-def-bightness.patch;patch=1 \
-           file://hrw-pcmcia-ids-r2.patch;patch=1 \
+           ${RPSRC}/locomo_led_default_trigger-r0.patch;patch=1 \
+           ${RPSRC}/poodle_mmcsd_fix-r0.patch;patch=1 \
+           ${RPSRC}/poodle_ssp-r1.patch;patch=1 \
+           ${RPSRC}/poodle_pm-r0.patch;patch=1 \
+           ${RPSRC}/logo_oh-r0.patch.bz2;patch=1;status=unmergable \
+           ${RPSRC}/logo_oz-r2.patch.bz2;patch=1;status=unmergable \
+           ${RPSRC}/pxa-linking-bug.patch;patch=1;status=unmergable \
+           file://add-oz-release-string.patch;patch=1;status=unmergable \
+           ${RPSRC}/integrator_rgb-r0.patch;patch=1;status=hack \
+           ${RPSRC}/pxa_cf_initorder_hack-r1.patch;patch=1;status=hack \
+           file://pxa-serial-hack.patch;patch=1;status=hack \
+           file://connectplus-remove-ide-HACK.patch;patch=1;status=hack \
+           file://squashfs3.0-2.6.15.patch;patch=1;status=external \
            file://defconfig-c7x0 \
            file://defconfig-ipaq-pxa270 \
            file://defconfig-collie \
@@ -65,6 +70,9 @@ SRC_URI = "git://rsync.kernel.org/pub/scm/linux/kernel/git/torvalds/linux-2.6.gi
            file://defconfig-spitz \
            file://defconfig-qemuarm \
            file://defconfig-tosa "
+
+# Add this to enable pm debug code (useful with a serial lead)
+#  ${RPSRC}/sharpsl_pm_debug-r0.patch;patch=1
 
 # Disabled until I find the reason this gives issues with cdc_subset
 #            ${RPSRC}/usb_rndis_tweaks-r0.patch;patch=1 \
@@ -102,9 +110,6 @@ SRC_URI_append_tosa = "\
 	   ${DOSRC}/wm97xx-miscdevs-resume-r0.patch;patch=1 \
 	   ${DOSRC}/wm9712-reset-loop-r0.patch;patch=1 \
 	   ${DOSRC}/tosa-asoc-r1.patch;patch=1 "
-
-SRC_URI_append_poodle = "\
-	   ${RPSRC}/rp_poodle_hacks-r0.patch;patch=1"
 
 S = "${WORKDIR}/git"
 
