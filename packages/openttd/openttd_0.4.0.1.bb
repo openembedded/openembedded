@@ -1,6 +1,7 @@
 DESCRIPTION = "Open source clone of the Microprose game 'Transport Tycoon Deluxe' - SDL edition."
 HOMEPAGE = "http://openttd.sf.net"
-LICENSE = "GPL"
+LICENSE = "GPLv2"
+PR = "r1"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/openttd/openttd-${PV}-source.tar.gz"
 
@@ -13,7 +14,7 @@ EXTRA_OEMAKE = "WITH_ZLIB=1 \
 		WITH_NETWORK=1 \
 		VERBOSE=1 \
 		INSTALL=1 \
-		PREFIX=usr \
+		PREFIX=/usr \
 		BINARY_DIR=bin \
 		DATA_DIR=share/games/openttd \
 		PERSONAL_DIR=.openttd \
@@ -25,8 +26,12 @@ inherit sdl
 
 do_install() {
     oe_runmake install DESTDIR="${D}"
+
     install -d ${D}${datadir}/games/openttd/scenario/
+    install -d ${D}${datadir}/games/openttd/data
+
     install -m 0644 ${S}/scenario/*.scn ${D}${datadir}/games/openttd/scenario/
+    install -m 0644 ${S}/data/*.grf ${D}${datadir}/games/openttd/data/
 }
 
 FILES_${PN} += "${datadir}/*"

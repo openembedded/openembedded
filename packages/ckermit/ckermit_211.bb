@@ -96,4 +96,7 @@ do_compile () {
 do_install () {
 	install -d ${D}${BINDIR} ${D}${MANDIR} ${D}${INFODIR}
 	oe_runmake 'DESTDIR=${D}' 'MANDIR=${D}${MANDIR}' install
+	# Fix up dangling symlink
+	rm ${D}${BINDIR}/kermit-sshsub
+	(cd ${D}${BINDIR} && ln -s ${BINDIR}/kermit kermit-sshusb)
 }
