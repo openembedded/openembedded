@@ -64,6 +64,7 @@ SRC_URI = "http://www.kernel.org/pub/linux/kernel/v2.6/linux-2.6.16.tar.bz2 \
            ${RPSRC}/zlib_inflate-r3.patch;patch=1;status=pending \
            ${RPSRC}/logo_rotate_fix-r1.patch;patch=1;status=pending \
            ${RPSRC}/poodle_partsize-r0.patch;patch=1;status=pending \
+           ${RPSRC}/jffs2_longfilename-r1.patch;patch=1;status=pending \
            file://00-hostap.patch;patch=1;status=pending \
            file://10-pcnet.patch;patch=1;status=pending \
            ${RPSRC}/mmcsd_large_cards-r0.patch;patch=1 \
@@ -78,7 +79,6 @@ SRC_URI = "http://www.kernel.org/pub/linux/kernel/v2.6/linux-2.6.16.tar.bz2 \
            ${RPSRC}/hx2750_test1-r3.patch;patch=1 \
            ${RPSRC}/pxa_timerfix-r0.patch;patch=1 \
            ${RPSRC}/input_power-r4.patch;patch=1 \
-           ${RPSRC}/jffs2_longfilename-r1.patch;patch=1 \
            ${RPSRC}/pxa25x_cpufreq-r0.patch;patch=1 \
            ${RPSRC}/collie_frontlight-r1.patch;patch=1 \
            ${RPSRC}/zaurus_reboot-r0.patch;patch=1 \
