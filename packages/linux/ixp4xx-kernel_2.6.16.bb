@@ -12,6 +12,8 @@ PR = "r7.${PR_CONFIG}"
 
 include ixp4xx-kernel.inc
 
+SRC_URI += "file://defconfig"
+
 # IXP4XX_PATCHES - full list of patches to apply
 IXP4XX_PATCHES  = ""
 

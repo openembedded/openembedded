@@ -12,6 +12,8 @@ PR = "r0.${PR_CONFIG}"
 
 include ixp4xx-kernel.inc
 
+SRC_URI += "file://defconfig"
+
 RPSRC = "http://www.rpsys.net/openzaurus/patches"
 
 # IXP4XX_PATCHES - full list of patches to apply
