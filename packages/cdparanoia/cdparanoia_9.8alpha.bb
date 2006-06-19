@@ -2,11 +2,12 @@
 # Copyright (C) 2005, Advanced Micro Devices, Inc.  All Rights Reserved
 # Released under the MIT license (see packages/COPYING)
 
-PR="r1"
+PR="r2"
 LICENSE="GPL"
 
 SRC_URI="http://downloads.xiph.org/releases/cdparanoia/cdparanoia-III-alpha9.8.src.tgz \
-	 file://fixes.patch;patch=1"
+	 file://fixes.patch;patch=1 \
+	 file://Makefile.patch;patch=1"
 
 S="${WORKDIR}/cdparanoia-III-alpha9.8"
 
