@@ -7,7 +7,7 @@ DESCRIPTION = "Free peer-reviewed portable C++ source libraries"
 HOMEPAGE = "http://www.boost.org/"
 MAINTAINER = "John Bowler <jbowler@acm.org>"
 SECTION = "libs"
-DEPENDS = "boost-jam-native"
+DEPENDS = "boost-jam-native zlib"
 PRIORITY = "optional"
 LICENSE = "Boost Software License"
 PR = "r1"
@@ -18,10 +18,9 @@ inherit debian
 BOOST_VER = "${@"_".join(bb.data.getVar("PV",d,1).split("."))}"
 BOOST_MAJ = "${@"_".join(bb.data.getVar("PV",d,1).split(".")[0:2])}"
 BOOST_P = "boost_${BOOST_VER}"
-SRC_URI = "${SOURCEFORGE_MIRROR}/boost/${BOOST_P}.tar.bz2 \
-		file://unit_test_log10f.patch;patch=1 \
-		file://linux-uclibc.patch;patch=1 \
-		"
+SRC_URI = "${SOURCEFORGE_MIRROR}/boost/${BOOST_P}.tar.bz2"
+#SRC_URI += "file://unit_test_log10f.patch;patch=1"
+SRC_URI += "file://linux-uclibc.patch;patch=1"
 
 S = "${WORKDIR}/${BOOST_P}"
 
@@ -54,6 +53,15 @@ FILES_boost-thread-mt = "${libdir}/libboost_thread-mt.so.${PV}"
 
 PACKAGES += "boost-unit-test-framework"
 FILES_boost-unit-test-framework = "${libdir}/libboost_unit_test_framework.so.${PV}"
+
+PACKAGES += "boost-iostreams"
+FILES_boost-iostreams = "${libdir}/libboost_iostreams.so.${PV}"
+
+PACKAGES += "boost-serialization"
+FILES_boost-serialization = "${libdir}/libboost_serialization.so.${PV}"
+
+PACKAGES += "boost-wserialization"
+FILES_boost-wserialization = "${libdir}/libboost_wserialization.so.${PV}"
 
 # Python - remove this and set:
 #PYTHON_ROOT = "/dev/null"
@@ -99,12 +107,19 @@ EQD = '\"'
 #boost.bb:   "...  '-sGCC=... '${SQD}'-DBOOST_PLATFORM_CONFIG=${EQD}config${EQD}'${SQD} ..."
 BJAM_CONF = "${SQD}'-DBOOST_PLATFORM_CONFIG=${EQD}boost/config/platform/${TARGET_OS}.hpp${EQD}'${SQD}"
 
+# bzip2 and zip are disabled because... they're broken - the compilation simply
+# isn't working with bjam.  I guess they will fix it, but who needs it?  This
+# only affects the (new in 33) iostream library.
 BJAM_TOOLS   = "-sTOOLS=gcc \
 		'-sGCC=${CC} '${BJAM_CONF} \
 		'-sGXX=${CXX} '${BJAM_CONF} \
-		-sBUILD='release <optimization>space <inlining>on <debug-symbols>off' \
+		'-sGCC_INCLUDE_DIRECTORY=${STAGING_INCDIR}' \
+		'-sGCC_STDLIB_DIRECTORY=${STAGING_LIBDIR}' \
+		'-sNO_BZIP2=1' \
+		'-sNO_ZLIB=1' \
+		'-sBUILD=release <optimization>space <inlining>on <debug-symbols>off' \
 		'-sPYTHON_VERSION=${PYTHON_VERSION}' \
-		--layout=system \
+		'--layout=system' \
 		"
 
 BJAM_OPTS    = '${BJAM_TOOLS} \
@@ -112,6 +127,10 @@ BJAM_OPTS    = '${BJAM_TOOLS} \
 		--with-python-root=${PYTHON_ROOT} \
 		${BJAM_EXTRA}'
 
+
+do_configure_prepend() {
+	cp -f boost/config/platform/linux.hpp boost/config/platform/linux-gnueabi.hpp
+}
 
 do_compile() {
 	set -ex
