@@ -4,7 +4,7 @@
 MAINTAINER = "NSLU2 Linux <nslu2-linux@yahoogroups.com>"
 HOMEPAGE = "http://www.intel.com/design/network/products/npfamily/ixp420.htm"
 LICENSE = "GPL"
-PR = "r13"
+PR = "r14"
 
 DEPENDS = "ixp-osal"
 DEPENDS = "ixp4xx-csr"
@@ -23,6 +23,7 @@ SRC_URI += "file://netdev_max_backlog.patch;patch=1"
 SRC_URI += "file://debug.patch;patch=1"
 SRC_URI += "file://Makefile.patch;patch=1"
 SRC_URI += "file://params.patch;patch=1"
+SRC_URI += "file://module-param.patch;patch=1"
 SRC_URI += "file://modprobe.conf"
 
 S = "${WORKDIR}"
