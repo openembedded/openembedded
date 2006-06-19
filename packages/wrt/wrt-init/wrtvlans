@@ -1,8 +1,0 @@
-#!/bin/sh
-
-# the ethernet switch distinguishes the WAN port and the 4 LAN ports by VLAN tags
-# this might not yet be correct for all devices, only checked on the WRT54G
-vconfig set_name_type VLAN_PLUS_VID_NO_PAD
-ifconfig eth0 up
-vconfig add eth0 0
-vconfig add eth0 1

@@ -1,4 +1,0 @@
-#!/bin/sh
-
-# change LEDs
-echo 0x01 > /proc/sys/diag

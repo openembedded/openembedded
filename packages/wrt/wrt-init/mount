@@ -1,6 +1,0 @@
-#!/bin/sh
-
-mount -o remount,rw /
-mount /proc
-mount /var
-mount /dev/pts
