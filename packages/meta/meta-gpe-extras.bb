@@ -2,7 +2,7 @@ PACKAGES = gpe-task-apps-extra gpe-task-games gpe-task-web gpe-task-desktopapps
 DESCRIPTION = "Meta-package of extra applications for the GPE Palmtop Environment"
 MAINTAINER = "Phil Blundell <pb@handhelds.org>"
 PACKAGE_ARCH = "all"
-PR="r2"
+PR="r3"
 
 ALLOW_EMPTY = 1
 
@@ -17,7 +17,6 @@ DEPENDS += " ${gpe-task-apps-extra}"
 
 gpe-task-web = "\
     gpe-irc \
-    minimo \
     gaim"
 
 RDEPENDS_gpe-task-web := "${gpe-task-web}"
