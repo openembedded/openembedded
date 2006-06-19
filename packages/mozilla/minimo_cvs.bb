@@ -13,6 +13,7 @@ PV = "0.0cvs${CVSDATE}"
 FILES_${PN} += "${libdir}/mozilla-minimo"
 PR = "r8"
 LICENSE = "MPL/LGPL/GPL"
+BROKEN = "1"
 
 inherit mozilla
 
