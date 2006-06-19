@@ -53,7 +53,9 @@ do_configure() {
 }
 
 do_install_append() {
-	ln -s libperl.so.${PV} ${D}/${libdir}/libperl.so.5
+	# Make sure the shared library is configured before trying to symlink it
+	grep -q "useshrplib='false'" ${S}/config.sh ||
+		ln -s libperl.so.${PV} ${D}/${libdir}/libperl.so.5
 	sed -i -e "s,${D},,g" ${D}/${libdir}/perl5/${PV}/${TARGET_ARCH}-${TARGET_OS}/Config_heavy.pl
 }
 
