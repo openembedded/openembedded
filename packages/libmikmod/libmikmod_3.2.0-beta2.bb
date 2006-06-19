@@ -2,9 +2,6 @@ DESCRIPTION = "libmikmod is a module player library supporting many formats, inc
 SECTION = "libs"
 PRIORITY = "optional"
 LICENSE = "LGPL"
-RPROVIDES = "libmikmod"
-PR = "r1"
-
 SRC_URI = "http://mikmod.raphnet.net/files/libmikmod-${PV}.tar.gz \
 file://m4.patch;patch=1 \
 file://autofoo.patch;patch=1"
@@ -26,6 +23,3 @@ do_stage() {
 	install -d ${STAGING_DATADIR}/aclocal/
 	install -m 0644 libmikmod.m4 ${STAGING_DATADIR}/aclocal/
 }
-
-FILES_${PN} = "${libdir}"
-FILES_${PN}-dev += "${bindir}"
