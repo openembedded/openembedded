@@ -2,9 +2,11 @@ SECTION = "base"
 DESCRIPTION = "Dillon's Cron is a multi-user cron written from scratch, \
 similar to vixie-cron but with major differences."
 LICENSE = "GPL"
+PR = "r1"
 
 SRC_URI = "http://ibiblio.org/pub/Linux/system/daemons/cron/dcron-${PV}.tar.gz \
-	   file://compile.patch;patch=1"
+	   file://compile.patch;patch=1 \
+	   file://strip.patch;patch=1"
 
 do_install () {
 	install -d ${D}${bindir} ${D}${sbindir} \
