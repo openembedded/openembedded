@@ -8,7 +8,7 @@ RDEPENDS = "python-fcntl python-io"
 
 PR = "r1"
 
-SRC_URI = "http://www.vanille.de/mirror/${SRCNAME}-${PV}.tar.bz2"
+SRC_URI = "${SOURCEFORGE_MIRROR}/${SRCNAME}/${SRCNAME}-${PV}.zip"
 S = "${WORKDIR}/${SRCNAME}-${PV}"
 
 inherit distutils

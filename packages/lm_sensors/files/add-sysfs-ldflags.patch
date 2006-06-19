@@ -1,0 +1,20 @@
+
+#
+# Patch managed by http://www.holgerschurig.de/patcher.html
+#
+
+--- lm_sensors-2.10.0/lib/Module.mk~add-sysfs-ldflags
++++ lm_sensors-2.10.0/lib/Module.mk
+@@ -66,10 +66,10 @@
+ # How to create the shared library
+ ifdef SYSFS_SUPPORT
+ $(MODULE_DIR)/$(LIBSHLIBNAME): $(LIBSHOBJECTS)
+-	$(CC) -shared -Wl,-soname,$(LIBSHSONAME) -o $@ $^ -lc -lm -lsysfs
++	$(CC) $(LDFLAGS) -shared -Wl,-soname,$(LIBSHSONAME) -o $@ $^ -lc -lm -lsysfs
+ else
+ $(MODULE_DIR)/$(LIBSHLIBNAME): $(LIBSHOBJECTS)
+-	$(CC) -shared -Wl,-soname,$(LIBSHSONAME) -o $@ $^ -lc -lm
++	$(CC) $(LDFLAGS) -shared -Wl,-soname,$(LIBSHSONAME) -o $@ $^ -lc -lm
+ endif
+ 
+ $(MODULE_DIR)/$(LIBSHSONAME): $(MODULE_DIR)/$(LIBSHLIBNAME)

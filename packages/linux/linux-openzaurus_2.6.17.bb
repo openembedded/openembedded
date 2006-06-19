@@ -1,6 +1,6 @@
 include linux-openzaurus.inc
 
-PR = "r0"
+PR = "r1"
 
 DEFAULT_PREFERENCE = "-1"
 
@@ -19,40 +19,38 @@ SRC_URI = "http://www.kernel.org/pub/linux/kernel/v2.6/linux-2.6.17.tar.bz2 \
            ${RPSRC}/zlib_inflate-r3.patch;patch=1;status=pending \
            ${RPSRC}/logo_rotate_fix-r1.patch;patch=1;status=pending \
            ${RPSRC}/poodle_partsize-r0.patch;patch=1;status=pending \
+           ${RPSRC}/jffs2_longfilename-r1.patch;patch=1;status=pending \
+           ${RPSRC}/collie_frontlight-r6.patch;patch=1;status=pending \
            file://00-hostap.patch;patch=1;status=pending \
            file://10-pcnet.patch;patch=1;status=pending \
+           ${RPSRC}/zaurus_reboot-r3.patch;patch=1 \
+           ${RPSRC}/poodle_mmcsd_fix-r0.patch;patch=1 \
+           ${RPSRC}/poodle_ssp-r1.patch;patch=1 \
+           ${RPSRC}/locomo_led_default_trigger-r0.patch;patch=1 \
+           ${RPSRC}/sharpsl_pm-do-r2.patch;patch=1 \
            ${RPSRC}/mmcsd_large_cards-r0.patch;patch=1 \
            ${RPSRC}/mmcsd_no_scr_check-r0.patch;patch=1 \
 #           ${RPSRC}/alsa/asoc-v0.10rc8.patch;patch=1 \
            ${RPSRC}/alsa/asoc-v0.10rc4.patch;patch=1 \
            ${RPSRC}/asoc_fixups-r1.patch;patch=1 \
-           ${RPSRC}/hx2750_base-r24.patch;patch=1 \
-           ${RPSRC}/hx2750_bl-r5.patch;patch=1 \
+           ${RPSRC}/hx2750_base-r25.patch;patch=1 \
+           ${RPSRC}/hx2750_bl-r7.patch;patch=1 \
            ${RPSRC}/hx2750_pcmcia-r2.patch;patch=1 \
            ${RPSRC}/pxa_keys-r5.patch;patch=1 \
            ${RPSRC}/tsc2101-r12.patch;patch=1 \
            ${RPSRC}/hx2750_test1-r3.patch;patch=1 \
            ${RPSRC}/pxa_timerfix-r0.patch;patch=1 \
            ${RPSRC}/input_power-r5.patch;patch=1 \
-           ${RPSRC}/jffs2_longfilename-r1.patch;patch=1 \
            ${RPSRC}/pxa25x_cpufreq-r0.patch;patch=1 \
-           ${RPSRC}/collie_frontlight-r4.patch;patch=1 \
-           ${RPSRC}/zaurus_reboot-r1.patch;patch=1 \
            ${RPSRC}/sharpsl_pm_fixes1-r0.patch;patch=1 \
            ${RPSRC}/pm_changes-r1.patch;patch=1 \
-           ${RPSRC}/sharpsl_pm-do-r2.patch;patch=1 \
            ${RPSRC}/usb_pxa27x_udc-r0.patch;patch=1 \
            ${RPSRC}/usb_add_epalloc-r1.patch;patch=1 \
            ${DOSRC}/kexec-arm-r2.patch;patch=1 \
+           ${RPSRC}/locomo_kbd_tweak-r0.patch;patch=1 \
+           ${RPSRC}/poodle_pm-r1.patch;patch=1 \
            file://serial-add-support-for-non-standard-xtals-to-16c950-driver.patch;patch=1 \
            file://hrw-pcmcia-ids-r2.patch;patch=1 \
-           file://locomo-kbd-hotkeys.patch;patch=1 \
-           file://locomo-sysrq+keyrepeat.patch;patch=1 \
-           file://locomo-lcd-def-bightness.patch;patch=1 \
-           ${RPSRC}/locomo_led_default_trigger-r0.patch;patch=1 \
-           ${RPSRC}/poodle_mmcsd_fix-r0.patch;patch=1 \
-           ${RPSRC}/poodle_ssp-r1.patch;patch=1 \
-           ${RPSRC}/poodle_pm-r0.patch;patch=1 \
            ${RPSRC}/logo_oh-r0.patch.bz2;patch=1;status=unmergable \
            ${RPSRC}/logo_oz-r2.patch.bz2;patch=1;status=unmergable \
            ${RPSRC}/pxa-linking-bug.patch;patch=1;status=unmergable \

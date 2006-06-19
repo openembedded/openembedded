@@ -669,7 +669,7 @@ CONFIG_UNIX98_PTYS=y
 #
 # Hardware Monitoring support
 #
-CONFIG_HWMON is not set
+# CONFIG_HWMON is not set
 
 #
 # Misc devices

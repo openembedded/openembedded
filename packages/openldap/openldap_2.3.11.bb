@@ -12,12 +12,13 @@ PRIORITY = "optional"
 LICENSE = "OpenLDAP"
 SECTION = "libs"
 
-PR = "r1"
+PR = "r2"
 
 LDAP_VER = "${@'.'.join(bb.data.getVar('PV',d,1).split('.')[0:2])}"
 
 SRC_URI = "ftp://ftp.openldap.org/pub/OpenLDAP/openldap-release/${P}.tgz"
 SRC_URI += "file://openldap-m4-pthread.patch;patch=1"
+SCR-URI += "file://initscript";
 # The build tries to run a host executable, this fails.  The patch
 # causes the executable and its data to be installed instead of
 # the output - ucgendat must be run after the ipkg install!
@@ -263,6 +264,23 @@ FILES_${PN}-bin = "${bindir}"
 FILES_${PN}-dev = "${includedir} ${libdir}/lib*.so ${libdir}/*.la ${libdir}/*.a ${libexecdir}/openldap/*.a"
 
 do_install_append() {
+	install -d ${D}${sysconfdir}/init.d
+	cat ${WORKDIR}/initscript > ${D}${sysconfdir}/init.d/openldap
+	chmod 755 ${D}${sysconfdir}/init.d/openldap
 	# This is duplicated in /etc/openldap and is for slapd
 	rm -f ${D}${localstatedir}/openldap-data/DB_CONFIG.example
+}
+
+pkg_postinst () {
+        if test -n "${D}"; then
+                D="-r $D"
+        fi
+        update-rc.d $D acpid defaults
+}
+
+pkg_prerm () {
+        if test -n "${D}"; then
+                D="-r $D"
+        fi
+        update-rc.d $D acpid remove
 }
