@@ -1,0 +1,16 @@
+Index: dcron-2.3.3/Makefile
+===================================================================
+--- dcron-2.3.3.orig/Makefile	2006-06-19 15:47:35.774568368 +0200
++++ dcron-2.3.3/Makefile	2006-06-19 15:47:43.713361488 +0200
+@@ -14,11 +14,9 @@
+ 
+ crond:	${OBJS}
+ 	${CC} ${CFLAGS} -o crond ${OBJS} ${LIB}
+-	strip crond
+ 
+ crontab:  ${D_OBJS}
+ 	${CC} ${CFLAGS} -o crontab ${D_OBJS}
+-	strip crontab
+ 
+ protos.h: ${SRCS} ${D_SRCS}
+ 	fgrep -h Prototype ${SRCS} ${D_SRCS} >protos.h
