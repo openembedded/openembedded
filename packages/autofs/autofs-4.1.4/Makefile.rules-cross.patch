@@ -1,0 +1,30 @@
+--- autofs-4.1.4/Makefile.rules.orig	2006-04-06 16:47:33.000000000 -0500
++++ autofs-4.1.4/Makefile.rules	2006-04-06 16:49:16.000000000 -0500
+@@ -18,19 +18,19 @@
+ # The STRIP defined here *must not* remove any dynamic-loading symbols
+ 
+ ifdef DEBUG
+-CFLAGS    = -O2 -g -DDEBUG
+-LDFLAGS   = -g
++CFLAGS    += -O2 -g -DDEBUG
++LDFLAGS   += -g
+ STRIP     = :
+ else
+-CFLAGS    = -O3 -fomit-frame-pointer -Wall
+-LDFLAGS   = -s
+-STRIP     = strip --strip-debug
++CFLAGS    += -O3 -fomit-frame-pointer -Wall
++LDFLAGS   += -s
++STRIP     = ${TARGET_PREFIX}strip --strip-debug
+ endif
+ 
+-CC        = gcc
+-CXX       = g++
++CC        ?= ${TARGET_PREFIX}gcc
++CXX       ?= ${TARGET_PREFIX}g++
+ CXXFLAGS  = $(CFLAGS)
+-LD        = ld
++LD        ?= ${TARGET_PREFIX}ld
+ SOLDFLAGS = -shared -Xlinker -rpath -Xlinker $(autofslibdir)
+ 
+ # Standard rules
