@@ -1,0 +1,26 @@
+debug only patch to add information about MII id problems
+
+--- ixp400_xscale_sw/src/ethMii/IxEthMii.c	1970-01-01 00:00:00.000000000 +0000
++++ ixp400_xscale_sw/src/ethMii/IxEthMii.c	1970-01-01 00:00:00.000000000 +0000
+@@ -122,6 +122,10 @@ ixEthMiiPhyScan(BOOL phyPresent[], UINT3
+ 		    )
+ 		{
+ 		    /* supported phy */
++                    ixOsalLog (IX_OSAL_LOG_LVL_MESSAGE,
++                               IX_OSAL_LOG_DEV_STDOUT,
++				"ixEthMiiPhyScan, Mii %d: Mii PHY ID %8.8x\n", 
++				i, ixEthMiiPhyId[i], 3, 4, 5, 6);
+ 		    phyPresent[i] = TRUE;
+ 		} /* end of if(ixEthMiiPhyId) */
+ 		else
+@@ -131,8 +135,8 @@ ixEthMiiPhyScan(BOOL phyPresent[], UINT3
+ 			/* unsupported phy */
+                         ixOsalLog (IX_OSAL_LOG_LVL_ERROR,
+                                    IX_OSAL_LOG_DEV_STDOUT,
+-				    "ixEthMiiPhyScan : unexpected Mii PHY ID %8.8x\n", 
+-				    ixEthMiiPhyId[i], 2, 3, 4, 5, 6);
++				    "ixEthMiiPhyScan, Mii %d: unexpected Mii PHY ID %8.8x\n", 
++				    i, ixEthMiiPhyId[i], 3, 4, 5, 6);
+ 			ixEthMiiPhyId[i] = IX_ETH_MII_UNKNOWN_PHY_ID;
+ 			phyPresent[i] = TRUE;
+ 		    }
