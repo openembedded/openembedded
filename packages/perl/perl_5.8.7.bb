@@ -6,7 +6,9 @@ SRC_URI += "file://config.sh-armeb-linux \
 	    file://config.sh-arm-linux \
 	    file://config.sh-i386-linux \
 	    file://config.sh-i486-linux \
-	    file://config.sh-i586-linux"
+	    file://config.sh-i586-linux \
+	    file://config.sh-sh3-linux \
+	    file://config.sh-sh4-linux"
 
 PARALLEL_MAKE = ""
 
@@ -24,6 +26,8 @@ do_configure() {
 	cp ${WORKDIR}/config.sh-i586-linux .
 	cp ${WORKDIR}/config.sh-i686-linux .
 	cp ${WORKDIR}/config.sh-armeb-linux .
+	cp ${WORKDIR}/config.sh-sh3-linux .
+	cp ${WORKDIR}/config.sh-sh4-linux .
 	#perl insists on an extra config.sh for arm EABI
 	cp config.sh-arm-linux config.sh-arm-linux-gnueabi 
 	# nslu2 LE uclibc builds do not work with the default config.sh
@@ -53,7 +57,9 @@ do_configure() {
 }
 
 do_install_append() {
-	ln -s libperl.so.${PV} ${D}/${libdir}/libperl.so.5
+	# Make sure the shared library is configured before trying to symlink it
+	grep -q "useshrplib='false'" ${S}/config.sh ||
+		ln -s libperl.so.${PV} ${D}/${libdir}/libperl.so.5
 	sed -i -e "s,${D},,g" ${D}/${libdir}/perl5/${PV}/${TARGET_ARCH}-${TARGET_OS}/Config_heavy.pl
 }
 

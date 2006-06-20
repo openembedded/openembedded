@@ -1,0 +1,18 @@
+--- blueprobe-0.17/blueprobe.init.orig	2006-01-21 19:47:56.000000000 +0100
++++ blueprobe-0.17/blueprobe.init	2006-06-15 00:40:57.000000000 +0200
+@@ -74,6 +74,15 @@
+ 	PROTO=texas
+ 	PROBE=no
+ 	;;
++    "HTC Universal")
++	BLUETOOTH=yes
++	PORT=/dev/ttyS1
++	SCRIPT=/etc/bluetooth/TIInit_3.2.26.bts
++	SPEED='`[ -f "$BLUETOOTH_SCRIPT" ] && echo 921600 || echo 115200`'
++	PROTO=texas
++	PROBE=no
++	;;
++                                             	
+     *)
+ 	BLUETOOTH=no
+         ;;

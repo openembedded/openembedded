@@ -145,7 +145,6 @@ IXP4XX_PATCHES ?= ""
 
 SRC_URI  = "${IXP4XX_SRCURI}"
 SRC_URI += "${IXP4XX_PATCHES}"
-SRC_URI += "file://defconfig"
 
 COMPATIBLE_HOST = 'arm.*-linux'
 
