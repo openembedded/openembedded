@@ -1,17 +1,14 @@
-LICENSE = "LGPL"
-
 DESCRIPTION = "C++ implementation of the Multimedia Internet KEYing (RFC3830)"
 SECTION = "libs"
+LICENSE = "LGPL"
 PRIORITY = "optional"
 DEPENDS = "libmutil0 openssl"
+PR = "r1"
 
 inherit autotools
 
 SRC_URI = "http://www.minisip.org/snapshots/libmikey-${PV}.tar.gz"
 S="${WORKDIR}/libmikey-${PV}"
-
-
-PACKAGES = "${PN}"
 
 FILES_${PN} = " ${libdir}/libmikey.so.0 ${libdir}/libmikey.so.0.0.0 " 
 
