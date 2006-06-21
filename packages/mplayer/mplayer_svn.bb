@@ -5,8 +5,7 @@ HOMEPAGE = "http://www.mplayerhq.hu/"
 DEPENDS = "virtual/libsdl libmad zlib libpng jpeg mplayer-common"
 RDEPENDS = "mplayer-common"
 LICENSE = "GPL"
-SRC_URI = "http://www.xora.org.uk/oe/mplayer_20060519.tar.bz2 \
-           http://www.xora.org.uk/oe/ffmpeg_20060519.tar.bz2 \
+SRC_URI = "svn://svn.mplayerhq.hu/;module=mplayer \
 	   file://vo_w100.c \
 	   file://vo_w100_api.h \
 	   file://vo_w100_fb.h \
@@ -19,13 +18,16 @@ SRC_URI = "http://www.xora.org.uk/oe/mplayer_20060519.tar.bz2 \
 MAINTAINER="Graeme Gregory <dp@xora.org.uk>"
 RCONFLICTS_${PN} = "mplayer-atty"
 RREPLACES_${PN} = "mplayer-atty"
+
+PV = "1.0pre8+svn${SRCDATE}"
 PR = "r0"
+DEFAULT_PREFERENCE = "-1"
 
 PARALLEL_MAKE = ""
 
 DEPENDS_append_c7x0 = " sharp-aticore-oss"
 
-S = "${WORKDIR}/mplayer_20060519"
+S = "${WORKDIR}/mplayer/trunk/"
 
 PACKAGES =+ "mencoder"
 
@@ -60,7 +62,6 @@ EXTRA_OECONF = " \
 EXTRA_OECONF_append_c7x0 = " --enable-w100 "
 
 do_configure() {
-	cp -r ${WORKDIR}/ffmpeg_20060519/libavcodec ${WORKDIR}/ffmpeg_20060519/libavutil ${WORKDIR}/ffmpeg_20060519/libavformat ${S}
 	cp ${WORKDIR}/vo_w100.c ${S}/libvo
 	cp ${WORKDIR}/vo_w100_api.h ${S}/libvo
 	cp ${WORKDIR}/vo_w100_fb.h ${S}/libvo
