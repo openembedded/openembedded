@@ -5,7 +5,9 @@ LICENSE = "GPL"
 MAINTAINER = "Patrick Steiner <patrick.steiner@a1.net>"
 
 PV = "0.0+svn${SRCDATE}"
-PR = "r0"
+PR = "r1"
+
+EXTRA_OECONF=" --disable-gnome --with-platform=gpe --with-html-component=none"
 
 SRC_URI = "svn://svn.cronos.be/svn/tinymail;module=trunk;proto=https \
            file://gtk-doc.m4 \
