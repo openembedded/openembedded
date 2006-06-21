@@ -13,18 +13,10 @@ case "$action" in
 start)
 	echo -n "Start Dreambox DVB Subsystem:"
 	
-	echo -n "[xilleon] "
-	modprobe xilleon
-	echo -n "[avs] "
-	modprobe avs
-	echo -n "[lcd] "
-	modprobe lcd
-	echo -n "[fp] "
+	modprobe dreambox_keyboard
 	modprobe fp
-	echo -n "[dreambox_rc2]"
-	modprobe dreambox_rc2
-	echo -n "[rfmod]"
 	modprobe rfmod
+
 	echo " done!"
 	
 	# redisplay bootlogo, either the "wait..." or the normal
