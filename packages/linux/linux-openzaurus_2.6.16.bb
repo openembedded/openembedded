@@ -67,8 +67,6 @@ SRC_URI = "http://www.kernel.org/pub/linux/kernel/v2.6/linux-2.6.16.tar.bz2 \
            ${RPSRC}/jffs2_longfilename-r1.patch;patch=1;status=pending \
            file://00-hostap.patch;patch=1;status=pending \
            file://10-pcnet.patch;patch=1;status=pending \
-           ${RPSRC}/mmcsd_large_cards-r0.patch;patch=1 \
-           ${RPSRC}/mmcsd_no_scr_check-r0.patch;patch=1 \
            ${RPSRC}/alsa/asoc-v0.10rc4.patch;patch=1 \
            ${RPSRC}/asoc_fixups-r0.patch;patch=1 \
            ${RPSRC}/hx2750_base-r24.patch;patch=1 \
@@ -80,11 +78,11 @@ SRC_URI = "http://www.kernel.org/pub/linux/kernel/v2.6/linux-2.6.16.tar.bz2 \
            ${RPSRC}/pxa_timerfix-r0.patch;patch=1 \
            ${RPSRC}/input_power-r4.patch;patch=1 \
            ${RPSRC}/pxa25x_cpufreq-r0.patch;patch=1 \
-           ${RPSRC}/collie_frontlight-r1.patch;patch=1 \
-           ${RPSRC}/zaurus_reboot-r0.patch;patch=1 \
+           ${RPSRC}/collie_frontlight-r1.patch;patch=1;status=pending \
+           ${RPSRC}/zaurus_reboot-r0.patch;patch=1;status=merged \
            ${RPSRC}/sharpsl_pm_fixes1-r0.patch;patch=1 \
            ${RPSRC}/pm_changes-r1.patch;patch=1 \
-           ${RPSRC}/sharpsl_pm-do-r2.patch;patch=1 \
+           ${RPSRC}/sharpsl_pm-do-r2.patch;patch=1;status=merged \
            ${RPSRC}/usb_pxa27x_udc-r0.patch;patch=1 \
            ${RPSRC}/usb_add_epalloc-r1.patch;patch=1 \
            ${DOSRC}/kexec-arm-r2.patch;patch=1 \
@@ -97,6 +95,8 @@ SRC_URI = "http://www.kernel.org/pub/linux/kernel/v2.6/linux-2.6.16.tar.bz2 \
            ${RPSRC}/logo_oz-r2.patch.bz2;patch=1;status=unmergable \
            ${RPSRC}/pxa-linking-bug.patch;patch=1;status=unmergable \
            file://add-oz-release-string.patch;patch=1;status=unmergable \
+           ${RPSRC}/mmcsd_large_cards-r0.patch;patch=1;status=hack \
+           ${RPSRC}/mmcsd_no_scr_check-r0.patch;patch=1;status=hack \
            ${RPSRC}/integrator_rgb-r0.patch;patch=1;status=hack \
            ${RPSRC}/pxa_cf_initorder_hack-r1.patch;patch=1;status=hack \
            ${RPSRC}/poodle_ts_hack-r0.patch;patch=1;status=hack \
