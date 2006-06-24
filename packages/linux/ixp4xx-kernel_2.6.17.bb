@@ -8,7 +8,7 @@ PR_CONFIG = "1"
 # Increment the number below (i.e. the digits after PR) when
 # making changes within this file or for changes to the patches
 # applied to the kernel.
-PR = "r1.${PR_CONFIG}"
+PR = "r2.${PR_CONFIG}"
 
 include ixp4xx-kernel.inc
 
@@ -31,3 +31,5 @@ IXP4XX_PATCHES += "${SVN_SRC}/15-jffs2-endian-config.patch;patch=1"
 IXP4XX_PATCHES += "${SVN_SRC}/20-nas100d-cmdline-fixup.patch;patch=1"
 IXP4XX_PATCHES += "${SVN_SRC}/20-nslu2-cmdline-fixup.patch;patch=1"
 IXP4XX_PATCHES += "${SVN_SRC}/50-leds-arm-cpu-activity.patch;patch=1"
+IXP4XX_PATCHES += "${SVN_SRC}/75-dsmg600.patch;patch=1"
+IXP4XX_PATCHES += "${SVN_SRC}/76-dsmg600-pwrbtn.patch;patch=1"
