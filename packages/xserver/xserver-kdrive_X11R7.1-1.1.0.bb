@@ -24,7 +24,8 @@ SRC_URI = "http://ftp.x.org/pub/X11R7.1/src/xserver/xorg-server-X11R7.1-1.1.0.ta
 	file://enable-builtin-fonts.patch;patch=1 \
 	file://optional-xkb.patch;patch=1 \
 	file://disable-xf86-dga-xorgcfg.patch;patch=1 \
-	file://enable-tslib.patch;patch=1"
+	file://enable-tslib.patch;patch=1 \
+	file://xcalibrate.patch;patch=1"
 
 SRC_URI_append_mnci   = " file://onlyfb.patch;patch=1"
 SRC_URI_append_poodle = " file://xserver-kdrive-poodle.patch;patch=1"

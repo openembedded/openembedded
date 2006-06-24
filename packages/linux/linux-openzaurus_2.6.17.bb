@@ -1,6 +1,6 @@
 include linux-openzaurus.inc
 
-PR = "r1"
+PR = "r2"
 
 DEFAULT_PREFERENCE = "-1"
 
@@ -16,21 +16,20 @@ DEFAULT_PREFERENCE = "-1"
 # Hacks should clearly named and at the bottom
 #           ftp://ftp.kernel.org/pub/linux/kernel/people/akpm/patches/2.6/2.6.14-rc2/2.6.14-rc2-mm1/2.6.14-rc2-mm1.bz2;patch=1 \	   
 SRC_URI = "http://www.kernel.org/pub/linux/kernel/v2.6/linux-2.6.17.tar.bz2 \
+           ${RPSRC}/poodle_partsize-r0.patch;patch=1;status=merged \
+           ${RPSRC}/jffs2_longfilename-r1.patch;patch=1;status=merged \
+           ${RPSRC}/locomo_led_default_trigger-r0.patch;patch=1;status=merged \
+           ${RPSRC}/zaurus_reboot-r3.patch;patch=1;status=merged \
+           ${RPSRC}/poodle_mmcsd_fix-r0.patch;patch=1;status=merged \
+           ${RPSRC}/poodle_ssp-r1.patch;patch=1;status=merged \
+           ${RPSRC}/sharpsl_pm-do-r2.patch;patch=1;status=merged \
            ${RPSRC}/zlib_inflate-r3.patch;patch=1;status=pending \
            ${RPSRC}/logo_rotate_fix-r1.patch;patch=1;status=pending \
-           ${RPSRC}/poodle_partsize-r0.patch;patch=1;status=pending \
-           ${RPSRC}/jffs2_longfilename-r1.patch;patch=1;status=pending \
            ${RPSRC}/collie_frontlight-r6.patch;patch=1;status=pending \
+           ${RPSRC}/input_modalias_fix-r0.patch;patch=1;status=pending \
            file://00-hostap.patch;patch=1;status=pending \
            file://10-pcnet.patch;patch=1;status=pending \
-           ${RPSRC}/zaurus_reboot-r3.patch;patch=1 \
-           ${RPSRC}/poodle_mmcsd_fix-r0.patch;patch=1 \
-           ${RPSRC}/poodle_ssp-r1.patch;patch=1 \
-           ${RPSRC}/locomo_led_default_trigger-r0.patch;patch=1 \
-           ${RPSRC}/sharpsl_pm-do-r2.patch;patch=1 \
-           ${RPSRC}/mmcsd_large_cards-r0.patch;patch=1 \
-           ${RPSRC}/mmcsd_no_scr_check-r0.patch;patch=1 \
-#           ${RPSRC}/alsa/asoc-v0.10rc8.patch;patch=1 \
+#           ${RPSRC}/alsa/asoc-v0.10-oz-r0.patch;patch=1 \
            ${RPSRC}/alsa/asoc-v0.10rc4.patch;patch=1 \
            ${RPSRC}/asoc_fixups-r1.patch;patch=1 \
            ${RPSRC}/hx2750_base-r25.patch;patch=1 \
@@ -49,12 +48,15 @@ SRC_URI = "http://www.kernel.org/pub/linux/kernel/v2.6/linux-2.6.17.tar.bz2 \
            ${DOSRC}/kexec-arm-r2.patch;patch=1 \
            ${RPSRC}/locomo_kbd_tweak-r0.patch;patch=1 \
            ${RPSRC}/poodle_pm-r1.patch;patch=1 \
+           ${RPSRC}/pxafb_changeres-r0.patch;patch=1 \
            file://serial-add-support-for-non-standard-xtals-to-16c950-driver.patch;patch=1 \
            file://hrw-pcmcia-ids-r2.patch;patch=1 \
            ${RPSRC}/logo_oh-r0.patch.bz2;patch=1;status=unmergable \
            ${RPSRC}/logo_oz-r2.patch.bz2;patch=1;status=unmergable \
            ${RPSRC}/pxa-linking-bug.patch;patch=1;status=unmergable \
            file://add-oz-release-string.patch;patch=1;status=unmergable \
+           ${RPSRC}/mmcsd_large_cards-r0.patch;patch=1;status=hack \
+           ${RPSRC}/mmcsd_no_scr_check-r0.patch;patch=1;status=hack \
            ${RPSRC}/integrator_rgb-r0.patch;patch=1;status=hack \
            ${RPSRC}/pxa_cf_initorder_hack-r1.patch;patch=1;status=hack \
            file://pxa-serial-hack.patch;patch=1;status=hack \
@@ -78,15 +80,10 @@ SRC_URI = "http://www.kernel.org/pub/linux/kernel/v2.6/linux-2.6.17.tar.bz2 \
 #           http://tglx.de/projects/armirq/2.6.17-rc3/patch-2.6.17-rc3-armirq4.patch;patch=1 \
 #           ${RPSRC}/../pxa27x_overlay-r0.patch;patch=1 \
 
-# These patches would really help collie/poodle but we 
-# need someone to maintain them
-# ${JLSRC}/zaurus-lcd-2.6.11.diff.gz;patch=1 
-#   (Pavel Machek's git tree has updated versions of this?)
-#   Also parts were recently committed to mainline by rmk (drivers/mfd/)
-# ${JLSRC}/zaurus-base-2.6.11.diff.gz;patch=1 
-#   (This is mostly in mainline now?)
-# ${JLSRC}/zaurus-local-2.6.11.diff.gz;patch=1 \
-# ${JLSRC}/zaurus-leds-2.6.11.diff.gz;patch=1 \
+# Is anything out of this still needed? Parts were commited to mainline by rmk (drivers/mfd/)
+# (Pavel Machek's git tree has updated versions of this?)
+#  ${JLSRC}/zaurus-lcd-2.6.11.diff.gz;patch=1 
+
 
 SRC_URI_append_tosa = "\
 	   ${CHSRC}/usb-ohci-hooks-r1.patch;patch=1 \

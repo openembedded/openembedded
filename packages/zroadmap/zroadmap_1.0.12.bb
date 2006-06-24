@@ -7,28 +7,39 @@ direction, speed, etc..). Voice messages are generated that duplicate some of th
 SECTION = "opie/applications"
 PRIORITY = "optional"
 AUTHOR = "Pascal Martin <pascal.martin@iname.com>"
-HOMEPAGE = "http://roadmap.digitalomaha.net/maps.html"
 MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
+HOMEPAGE = "http://roadmap.digitalomaha.net/maps.html"
 LICENSE = "GPL"
-PR = "r2"
+PR = "r0"
 
-SRC_URI = "http://roadmap.digitalomaha.net/roadmap/roadmap_1_0_8_src.tar.gz \
+SRC_URI = "http://www.roadmap.digitalomaha.net/roadmap/roadmap_1_0_12p2_src.tar.gz \
+           file://qt2-fixes.patch;pnum=2;patch=1 \
            http://roadmap.digitalomaha.net/maps/usdir.rdm.tgz \
            file://zroadgps.png"
-
-S = "${WORKDIR}/roadmap-${PV}/src/qt"
+S = "${WORKDIR}/roadmap-${PV}/src"
 
 inherit palmtop
 
+QT_LIBRARY = '${@base_conditional("PALMTOP_USE_MULTITHREADED_QT", "yes", "qte-mt", "qte",d)}'
+QT_LIBRARY_append_c7x0 = " -laticore"
+
 EXTRA_OEMAKE = 'DESKTOP=QPE MOC=${OE_QMAKE_MOC} UIC=${OE_QMAKE_UIC} \
-                GUILDFLAGS="-lz -lpng -ljpeg -lts -lqte -lqpe -Wl,-rpath-link,${STAGING_LIBDIR} -L${STAGING_LIBDIR} -L${QTDIR}/lib"'
+                GUICFLAGS="-I${OE_QMAKE_INCDIR_QT} -I${S} -DQWS" \
+                GUILDFLAGS="-lz -lpng -ljpeg -lts -l${QT_LIBRARY} -lqpe -Wl,-rpath-link,${STAGING_LIBDIR} -L${STAGING_LIBDIR} -L${QTDIR}/lib"'
 PARALLEL_MAKE = ""
 
 do_configure() {
-	rm -rf moc*
+	echo removing pregenerated stuff
+	find . -name "moc*"|xargs rm -f
+}
+
+do_compile() {
+	oe_runmake libguiroadmap.a libguiroadgps.a libroadmap.a unix/libosroadmap.a
+	cd qt && oe_runmake
 }
 
 do_install() {
+	cd qt
         install -d ${D}${palmtopdir}/bin
 	install -d ${D}${palmtopdir}/apps/Applications
 	install -d ${D}${palmtopdir}/pics

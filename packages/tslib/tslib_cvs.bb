@@ -1,11 +1,11 @@
 DESCRIPTION = "tslib is a plugin-based flexible touchscreen access library."
 HOMEPAGE = "http://cvs.arm.linux.org.uk/"
-AUTHOR = "Russel King. Plugins by Chris Larson et. al."
+AUTHOR = "Russell King w/ plugins by Chris Larson et. al."
 SECTION = "base"
 LICENSE = "LGPL"
 
 PV = "0.0+cvs${SRCDATE}"
-PR = "r38"
+PR = "r39"
 
 SRC_URI = "cvs://cvs:@pubcvs.arm.linux.org.uk/mnt/src/cvsroot;module=tslib \
            file://usec_fix.patch;patch=1 \

@@ -18,5 +18,5 @@ vncviewer.c \
 ../libvncauth/d3des.c
 
 tightvncviewer : $(SOURCES)
-	$(CC) $(CFLAGS) $(LDFLAGS) -I. -I../include -I../libvncauth/ -lX11 -lXaw -ljpeg -lz -o tightvncviewer $(SOURCES)
+	$(CC) $(CFLAGS) $(LDFLAGS) -I. -I../include -I../libvncauth/ -lX11 -lXaw6 -ljpeg -lz -o tightvncviewer $(SOURCES)
 
