@@ -1,0 +1,36 @@
+This is an OpenEmbedded only patch to make the code buildable in
+the OpenEmbedded environment.
+
+--- ixp400-eth/Makefile	1970-01-01 00:00:00.000000000 +0000
++++ ixp400-eth/Makefile	1970-01-01 00:00:00.000000000 +0000
+@@ -0,0 +1,30 @@
++obj-m := ixp400_eth.o
++
++CFLAGS_ixp400_eth.o = -DWall \
++          -I$(IXP4XX_CSR_DIR) \
++          -I$(OSAL_DIR)/ \
++          -I$(OSAL_DIR)/os/linux/include/ \
++          -I$(OSAL_DIR)/os/linux/include/modules/ \
++          -I$(OSAL_DIR)/os/linux/include/modules/ioMem/ \
++          -I$(OSAL_DIR)/os/linux/include/modules/core/ \
++          -I$(OSAL_DIR)/os/linux/include/modules/bufferMgt/ \
++          -I$(OSAL_DIR)/os/linux/include/core/  \
++          -I$(OSAL_DIR)/os/linux/include/platforms/ \
++          -I$(OSAL_DIR)/os/linux/include/platforms/ixp400/ \
++          -I$(OSAL_DIR)/os/linux/include/core/ \
++          -I$(OSAL_DIR)/include/ \
++          -I$(OSAL_DIR)/include/modules/ \
++          -I$(OSAL_DIR)/include/modules/bufferMgt/ \
++          -I$(OSAL_DIR)/include/modules/ioMem/ \
++          -I$(OSAL_DIR)/include/modules/core/ \
++          -I$(OSAL_DIR)/include/platforms/ \
++          -I$(OSAL_DIR)/include/platforms/ixp400/ \
++          -I$(OSAL_DIR)/include/platforms/ixp400/xp425/ \
++          -I$(OSAL_DIR)/os/linux/include/platforms/ixp400/ixp425/ \
++	  $(IX_CFLAGS)
++
++default:
++	$(MAKE) ARCH=arm CROSS_COMPILE=$(LINUX_CROSS_COMPILE) $(KERNEL_VERBOSE) symverfile=$(IXP4XX_CSR_SYMVERS) -C $(LINUX_SRC) SUBDIRS=$(PWD) modules
++
++clean:
++	rm -f ixp400_eth.ko

@@ -1,0 +1,28 @@
+ ixp400_eth.c |    6 +++++-
+ 1 files changed, 5 insertions(+), 1 deletion(-)
+
+Index: ixp400-eth-1.5.1-r0/ixp400_eth.c
+===================================================================
+--- ixp400-eth-1.5.1-r0.orig/ixp400_eth.c
++++ ixp400-eth-1.5.1-r0/ixp400_eth.c
+@@ -1848,7 +1848,11 @@
+     skb->len -= header_len;
+    
+     /* fill the pkt arrival time (set at the irq callback entry) */
++#if LINUX_VERSION_CODE < KERNEL_VERSION(2,6,14)
+     skb->stamp = irq_stamp;
++#else
++    skb_set_timestamp(skb, &irq_stamp);
++#endif
+  
+     /* fill the input device field */
+     skb->dev = dev;
+@@ -3040,7 +3044,7 @@
+ }
+ 
+ /* set port MAC addr and update the dev struct if successfull */
+-int ixp400_dev_set_mac_address(struct net_device *dev, void *addr)
++static int ixp400_dev_set_mac_address(struct net_device *dev, void *addr)
+ {
+     int res;
+     IxEthAccMacAddr npeMacAddr;

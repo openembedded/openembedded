@@ -1,0 +1,75 @@
+*** ixp/ixp400_eth.c.orig	Wed Jun  7 21:31:59 2006
+--- ixp/ixp400_eth.c	Fri Jun  9 14:55:18 2006
+***************
+*** 112,135 ****
+  #define MOD_VERSION "1.5"
+  
+  /* Module parameters */
+! static int npe_learning = 1;      /* default : NPE learning & filtering enable */
+! static int log_level = 0;         /* default : no log */
+! static int no_ixp400_sw_init = 0; /* default : init core components of the IXP400 Software */
+! static int no_phy_scan = 0;       /* default : do phy discovery */
+! static int phy_reset = 0;         /* default : mo phy reset */
+  
+  /* maximum number of ports supported by this driver ixp0, ixp1 ....
+   * The default is to configure all ports defined in EthAcc component
+  */
+  #ifdef CONFIG_IXP400_ETH_NPEC_ONLY
+! static int dev_max_count = 1; /* only NPEC is used */
+! #elif defined (CONFIG_IXP400_ETH_NPEB_ONLY)
+! static int dev_max_count = 1; /* only NPEB is used */
+  #elif defined (CONFIG_ARCH_IXDP425) || defined(CONFIG_ARCH_IXDPG425)\
+        || defined (CONFIG_ARCH_ADI_COYOTE)
+! static int dev_max_count = 2; /* only NPEB and NPEC */
+  #elif defined (CONFIG_ARCH_IXDP465) || defined(CONFIG_MACH_IXDP465)
+! static int dev_max_count = 3; /* all NPEs are used */
+  #endif
+  
+  #ifndef CONFIG_IXP400_NAPI
+--- 112,136 ----
+  #define MOD_VERSION "1.5"
+  
+  /* Module parameters */
+! /* gcc 4.1.1+kernel2.6.16 do not like it if these are static! */
+! int npe_learning = 1;      /* default : NPE learning & filtering enable */
+! int log_level = 0;         /* default : no log */
+! int no_ixp400_sw_init = 0; /* default : init core components of the IXP400 Software */
+! int no_phy_scan = 0;       /* default : do phy discovery */
+! int phy_reset = 0;         /* default : mo phy reset */
+  
+  /* maximum number of ports supported by this driver ixp0, ixp1 ....
+   * The default is to configure all ports defined in EthAcc component
+  */
+  #ifdef CONFIG_IXP400_ETH_NPEC_ONLY
+! int dev_max_count = 1; /* only NPEC is used */
+! #elif defined (CONFIG_IXP400_ETH_NPEB_ONLY)
+! int dev_max_count = 1; /* only NPEB is used */
+  #elif defined (CONFIG_ARCH_IXDP425) || defined(CONFIG_ARCH_IXDPG425)\
+        || defined (CONFIG_ARCH_ADI_COYOTE)
+! int dev_max_count = 2; /* only NPEB and NPEC */
+  #elif defined (CONFIG_ARCH_IXDP465) || defined(CONFIG_MACH_IXDP465)
+! int dev_max_count = 3; /* all NPEs are used */
+  #endif
+  
+  #ifndef CONFIG_IXP400_NAPI
+***************
+*** 138,146 ****
+   * skbuf to push into the linux stack, and avoid the performance degradations 
+   * during overflow.
+   */
+! static int ixp400_netdev_max_backlog = 290;
+  
+! static int datapath_poll = 1;     /* default : rx/tx polling, not interrupt driven*/
+  
+  MODULE_PARM(ixp400_netdev_max_backlog, "i");
+  MODULE_PARM_DESC(ixp400_netdev_max_backlog, "Should be set to the value of /proc/sys/net/core/netdev_max_backlog (perf affecting)");
+--- 139,147 ----
+   * skbuf to push into the linux stack, and avoid the performance degradations 
+   * during overflow.
+   */
+! int ixp400_netdev_max_backlog = 290;
+  
+! int datapath_poll = 1;     /* default : rx/tx polling, not interrupt driven*/
+  
+  MODULE_PARM(ixp400_netdev_max_backlog, "i");
+  MODULE_PARM_DESC(ixp400_netdev_max_backlog, "Should be set to the value of /proc/sys/net/core/netdev_max_backlog (perf affecting)");

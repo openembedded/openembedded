@@ -1,0 +1,54 @@
+--- ixp400_eth/ixp400_eth.c~	2006-01-09 01:03:11.000000000 +1030
++++ ixp400_eth/ixp400_eth.c	2006-01-09 01:05:27.000000000 +1030
+@@ -139,12 +139,12 @@
+  * skbuf to push into the linux stack, and avoid the performance degradations 
+  * during overflow.
+  */
+-static int netdev_max_backlog = 290;
++static int ixp400_netdev_max_backlog = 290;
+ 
+ static int datapath_poll = 1;     /* default : rx/tx polling, not interrupt driven*/
+ 
+-MODULE_PARM(netdev_max_backlog, "i");
+-MODULE_PARM_DESC(netdev_max_backlog, "Should be set to the value of /proc/sys/net/core/netdev_max_backlog (perf affecting)");
++MODULE_PARM(ixp400_netdev_max_backlog, "i");
++MODULE_PARM_DESC(ixp400_netdev_max_backlog, "Should be set to the value of /proc/sys/net/core/netdev_max_backlog (perf affecting)");
+ MODULE_PARM(datapath_poll, "i");
+ MODULE_PARM_DESC(datapath_poll, "If non-zero, use polling method for datapath instead of interrupts");
+ #endif /* CONFIG_IXP400_NAPI */
+@@ -213,7 +213,7 @@
+  * high traffic rates. To measure the maximum throughput between the
+  * ports of the driver,
+  * - Modify /proc/sys/net/core/netdev_max_backlog value in the kernel 
+- * - Adjust netdev_max_backlog=n in the driver's command line
++ * - Adjust ixp400_netdev_max_backlog=n in the driver's command line
+  * in order to get the best rates depending on the testing tool 
+  * and the OS load.
+  *
+@@ -1997,7 +1997,7 @@
+     /* check if the system accepts more traffic and
+      * against chained mbufs 
+      */
+-    if ((qlevel < netdev_max_backlog)
++    if ((qlevel < ixp400_netdev_max_backlog)
+         && (IX_OSAL_MBUF_NEXT_PKT_IN_CHAIN_PTR(mbuf) == NULL))
+ #else
+     /* check against chained mbufs
+@@ -3776,13 +3776,13 @@
+ #ifndef CONFIG_IXP400_NAPI
+     /* set the softirq rx queue thresholds 
+      * (These numbers are based on tuning experiments)
+-     * maxbacklog =  (netdev_max_backlog * 10) / 63;
++     * maxbacklog =  (ixp400_netdev_max_backlog * 10) / 63;
+     */
+-    if (netdev_max_backlog == 0)
++    if (ixp400_netdev_max_backlog == 0)
+     {
+-	netdev_max_backlog = 290; /* system default */
++	ixp400_netdev_max_backlog = 290; /* system default */
+     }
+-    netdev_max_backlog /= BACKLOG_TUNE;
++    ixp400_netdev_max_backlog /= BACKLOG_TUNE;
+ 
+     TRACE;
+ #endif

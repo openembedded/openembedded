@@ -1,0 +1,41 @@
+little endian support
+
+ ixp400_eth.c |   20 ++++++++++++++++++++
+ 1 file changed, 20 insertions(+)
+
+--- ixp400-eth/ixp400_eth.c	1970-01-01 00:00:00.000000000 +0000
++++ ixp400-eth/ixp400_eth.c	1970-01-01 00:00:00.000000000 +0000
+@@ -2040,6 +2040,16 @@ static void rx_cb(UINT32 callbackTag, IX
+ 	skb->tail = skb->data + len;
+ 	skb->len = len;
+ 	
++#ifndef __ARMEB__
++	{
++	    /* Byte swap all words containing data from the buffer. */
++	    unsigned long *p = (unsigned long*)((unsigned)skb->data & ~0x3);
++	    unsigned long *e = (unsigned long*)(((unsigned)skb->data + skb->len + 3) & ~0x3);
++	    while (p < e)
++		*p = ntohl(*p), ++p;
++	}
++#endif
++
+ #ifdef DEBUG_DUMP
+ 	skb_dump("rx", skb);
+ #endif
+@@ -2431,6 +2441,16 @@ static int dev_hard_start_xmit(struct sk
+ 	return 0;
+     }
+ 
++#ifndef __ARMEB__
++    {
++	/* Byte swap all words containing data from the buffer. */
++	unsigned long *p = (unsigned long*)((unsigned)skb->data & ~0x3);
++	unsigned long *e = (unsigned long*)(((unsigned)skb->data + skb->len + 3) & ~0x3);
++	while (p < e)
++	    *p = ntohl(*p), ++p;
++    }
++#endif
++
+ #ifdef DEBUG_DUMP
+     skb_dump("tx", skb);
+ #endif
