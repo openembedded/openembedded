@@ -1,0 +1,52 @@
+#! /bin/sh
+#
+# Copyright Matthias Hentges <devel@hentges.net> (c) 2006
+# License: GPL (see http://www.gnu.org/licenses/gpl.txt for a copy of the license)
+#
+# Filename: oz-bootsplash.init
+# Date: 24-Jun-06
+
+
+MACHINE="`sed -n "/^Hardware/s/.*\:\ \(.*\)/\1/p" /proc/cpuinfo`"
+
+case "$MACHINE" in
+*Poodle* | *Collie* )		
+	DISPLAY_TYPE="qvga"
+	DISPLAY_ORIENTATION="portrait";;
+*Tosa*)	
+	DISPLAY_TYPE="vga"
+	DISPLAY_ORIENTATION="portrait";;
+*)								
+	DISPLAY_TYPE="vga"
+	DISPLAY_ORIENTATION="landscape";;
+esac
+
+show_bootsplash() {
+	bp_source="/usr/share/oz-bootsplash/oz-bootsplash-${DISPLAY_TYPE}-${DISPLAY_ORIENTATION}.raw.gz"
+
+	if test -e "$bp_source"
+	then
+		# kernel messages look ugly in our bootsplash
+		echo "0" > /proc/sys/kernel/printk
+
+		# Clear tty2 	
+		echo -e "\033c" > /dev/tty2
+		
+		# Turn off the cursor on tty2
+		echo -e "\033[?25l\000" > /dev/tty2 
+
+		chvt 2
+	
+		echo -e "\nLoading bootsplash..." > /dev/tty2
+		echo "Use Alt-LeftArrow to see the boot messages." > /dev/tty2
+		
+		echo -e "\n${DISPLAY_TYPE}-${DISPLAY_ORIENTATION}-${MACHINE}" > /dev/tty2
+
+		zcat "$bp_source" > /dev/fb0
+	else
+		echo "`basename $0`: [$bp_source] not found!"
+	fi
+
+}
+
+show_bootsplash
