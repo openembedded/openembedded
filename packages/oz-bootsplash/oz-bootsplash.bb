@@ -5,7 +5,7 @@
 # Filename: oz-bootsplash.bb
 # Date: 24-Jun-06
 
-DESCRIPTION = "<description>"
+DESCRIPTION = "A simple bootsplash for OpenZaurus"
 MAINTAINER = "Matthias 'CoreDump' Hentges <oe@hentges.net>"
 HOMEPAGE = "http://www.hentges.net/misc/openzaurus/index.shtml"
 LICENSE = "GPL"
