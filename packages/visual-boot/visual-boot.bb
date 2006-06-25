@@ -56,5 +56,3 @@ pkg_postrm() {
 	update-rc.d -f visual-boot-x11 remove
 	update-rc.d -f visual-boot-zaurusd remove
 }
-
-RL_APM=
