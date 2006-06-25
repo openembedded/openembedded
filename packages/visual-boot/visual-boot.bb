@@ -13,7 +13,7 @@ LICENSE = "GPL"
 ######################################################################################
 
 PV = "0.0.1"
-PR = "r0"
+PR = "r1"
 
 ######################################################################################
 
@@ -24,35 +24,19 @@ SRC_URI = "file://visual-boot*"
 do_install() {
 	install -d ${D}/usr/share/visual-boot
 	install -d ${D}/etc/init.d
+	install -d ${D}/etc/rcS.d
+	install -d ${D}/etc/rc5.d
 	
 	install -m 0644 ${WORKDIR}/*.raw.gz ${D}/usr/share/visual-boot
 	install -m 0755 ${WORKDIR}/visual-boot.init ${D}/etc/init.d/visual-boot
 	
-	ln -s /etc/init.d/visual-boot ${D}/etc/init.d/visual-boot-mountall
-	ln -s /etc/init.d/visual-boot ${D}/etc/init.d/visual-boot-networking
-	ln -s /etc/init.d/visual-boot ${D}/etc/init.d/visual-boot-apm	
-	ln -s /etc/init.d/visual-boot ${D}/etc/init.d/visual-boot-bt	
-	ln -s /etc/init.d/visual-boot ${D}/etc/init.d/visual-boot-x11
-	ln -s /etc/init.d/visual-boot ${D}/etc/init.d/visual-boot-zaurusd		
-}
-
-######################################################################################
-
-pkg_postinst() {
-	update-rc.d visual-boot-mountall start 34 S .
-	update-rc.d visual-boot-networking start 39 S .
-	update-rc.d visual-boot-apm start 19 5 .
-	update-rc.d visual-boot-bt start 22 5 .
-	update-rc.d visual-boot-x11 start 98 5 .
-	update-rc.d visual-boot-zaurusd start 99 5 .
+	# We can not use update-rc.d to enable visual-boot right after flashing
+	ln -s /etc/init.d/visual-boot ${D}/etc/rcS.d/S34visual-boot-mountall
+	ln -s /etc/init.d/visual-boot ${D}/etc/rcS.d/S39visual-boot-networking
+	ln -s /etc/init.d/visual-boot ${D}/etc/rc5.d/S19visual-boot-apm	
+	ln -s /etc/init.d/visual-boot ${D}/etc/rc5.d/S22visual-boot-bt	
+	ln -s /etc/init.d/visual-boot ${D}/etc/rc5.d/S98visual-boot-x11
+	ln -s /etc/init.d/visual-boot ${D}/etc/rc5.d/S99visual-boot-zaurusd	
 	
 }
 
-pkg_postrm() {
-	update-rc.d -f visual-boot-mountasll remove
-	update-rc.d -f visual-boot-networking remove
-	update-rc.d -f visual-boot-apm remove
-	update-rc.d -f visual-boot-bt remove
-	update-rc.d -f visual-boot-x11 remove
-	update-rc.d -f visual-boot-zaurusd remove
-}
