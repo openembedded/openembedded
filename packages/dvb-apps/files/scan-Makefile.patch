@@ -1,0 +1,8 @@
+--- linuxtv-dvb-apps-1.1.1/util/scan/Makefile.orig	2006-06-17 20:28:56.637456500 +0200
++++ linuxtv-dvb-apps-1.1.1/util/scan/Makefile	2006-06-17 20:29:41.912286000 +0200
+@@ -1,5 +1,4 @@
+ 
+-CC = gcc
+ CFLAGS = -MD -g -Wall -O2 -I../../include
+ LFLAGS = -g -Wall
+ 

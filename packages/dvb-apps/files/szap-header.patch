@@ -1,0 +1,11 @@
+--- linuxtv-dvb-apps-1.1.1/util/szap/szap.c.orig	2006-06-17 20:50:44.455190000 +0200
++++ linuxtv-dvb-apps-1.1.1/util/szap/szap.c	2006-06-17 20:50:47.295367500 +0200
+@@ -45,7 +45,7 @@
+ 
+ #include <linux/dvb/frontend.h>
+ #include <linux/dvb/dmx.h>
+-#include "lnb.h"
++#include "../lib/lnb.h"
+ 
+ #ifndef TRUE
+ #define TRUE (1==1)

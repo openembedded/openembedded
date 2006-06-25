@@ -1,0 +1,11 @@
+--- linuxtv-dvb-apps-1.1.1/util/dvbnet/Makefile.orig	2006-06-17 21:02:22.866838000 +0200
++++ linuxtv-dvb-apps-1.1.1/util/dvbnet/Makefile	2006-06-17 21:02:29.571257000 +0200
+@@ -12,7 +12,7 @@
+ 	$(CC) $(CFLAGS) -c $< -o $@
+ 
+ $(TARGET): $(OBJS)
+-	$(CC) -o $@ $(OBJS) $(LFLAGS)
++	$(CC) $(CFLAGS) -o $@ $(OBJS) $(LFLAGS)
+ 
+ version.h:
+ 	printf '#define VERSION_INFO "%s (Build %s)"\n' \

@@ -1,0 +1,8 @@
+--- linuxtv-dvb-apps-1.1.1/util/dvbnet/Makefile.orig	2006-06-17 20:42:17.255492000 +0200
++++ linuxtv-dvb-apps-1.1.1/util/dvbnet/Makefile	2006-06-17 20:42:27.384125000 +0200
+@@ -1,5 +1,4 @@
+ 
+-CC      = gcc
+ CFLAGS  = -g -O2 -MD -Wall -I. -I../../include
+ LFLAGS  =
+ 
