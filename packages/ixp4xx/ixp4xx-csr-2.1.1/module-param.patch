@@ -5,10 +5,10 @@ Index: ixp400_xscale_sw/src/oslinux/IxLinuxInit.c
 ===================================================================
 --- ixp400_xscale_sw.orig/src/oslinux/IxLinuxInit.c
 +++ ixp400_xscale_sw/src/oslinux/IxLinuxInit.c
-@@ -93,7 +93,11 @@
- /* Module parameters */
- static int livelock_dispatcher = 0;/* default: don't use livelock dispatcher*/
- 
+@@ -103,7 +103,11 @@
+ #if KERNEL_VERSION(2,6,0) <= LINUX_VERSION_CODE
+ MODULE_VERSION("2.1.1");
+ #endif
 +#if LINUX_VERSION_CODE <= KERNEL_VERSION(2,6,16)
  MODULE_PARM(livelock_dispatcher, "i");
 +#else

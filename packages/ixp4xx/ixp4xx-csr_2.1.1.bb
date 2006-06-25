@@ -30,31 +30,25 @@ LICENSE_HOMEPAGE = "http://www.intel.com/design/network/products/npfamily/ixp425
 SRC_URI =  "http://www.intel.com/Please-Read-The-BB-File/BSD_ixp400AccessLibrary-2_1.zip"
 SRC_URI += "http://www.intel.com/Please-Read-The-BB-File/BSD_ixp400AccessLibrary-2_1_1.zip"
 SRC_URI += "http://www.intel.com/Please-Read-The-BB-File/IPL_ixp400NpeLibrary-2_1.zip"
-SRC_URI += "file://Makefile.patch;patch=1"
-SRC_URI += "file://ixethdb-header.patch;patch=1"
 SRC_URI += "file://bit-macro.patch;patch=1"
-SRC_URI += "file://ixnpemhconfigisr-is-private.patch;patch=1"
 SRC_URI += "file://le.patch;patch=1"
 SRC_URI += "file://mii-debug.patch;patch=1"
 SRC_URI += "file://rtl8201-support.patch;patch=1"
-SRC_URI += "file://gcc4.patch;patch=1"
 SRC_URI += "file://oe-makefile.patch;patch=1"
 SRC_URI += "file://livelock.patch;patch=1"
 SRC_URI += "file://module-param.patch;patch=1"
-SRC_URI += "file://module-use-count.patch;patch=1"
+SRC_URI += "file://undefined-attribute.patch;patch=1"
 
 DEPENDS = "ixp-osal"
 S = "${WORKDIR}/ixp400_xscale_sw"
-PR = "r1"
+PR = "r2"
 
 COMPATIBLE_HOST = "^arm.*-linux.*"
 
 inherit module
 
 do_pre_patch () {
-	( cd ${WORKDIR} ; mkdir patches ; mv BSD_ixp400AccessLibrary-2_1_1.patch patches/ ; \
-	  echo "BSD_ixp400AccessLibrary-2_1_1.patch -p0" >> patches/series ; \
-	  quilt push )
+	cd ${WORKDIR} ; patch -p0 < BSD_ixp400AccessLibrary-2_1_1.patch
 }
 
 addtask pre_patch before do_patch
@@ -77,6 +71,7 @@ CODELETS_COMPONENTS = ""
 # the ixp4xx-csr module, this *requires* the IPL_ixp400NpeLibrary-2_1.zip
 # to be added to the SRC_URI - see above.
 EXTRA_OEMAKE = "'AR=${AR}' \
+		'IX_LINUXVER=2.6' \
 		'IX_XSCALE_SW=${S}' \
 		'IX_TARGET=${IX_TARGET}' \
 		'${IX_TARGET}_COMPONENTS=${COMPONENTS}' \
@@ -93,7 +88,7 @@ EXTRA_OEMAKE = "'AR=${AR}' \
 		'OSAL_MODULE=${OSAL_DIR}/${OSAL_PATH}/ixp_osal.o' \
 		"
 
-MAKE_TARGETS = "lib/${IX_TARGET}/ixp400.o"
+MAKE_TARGETS = "ixp400"
 
 KCONFIG_FILE = "${STAGING_KERNEL_DIR}/kernel-config"
 do_stage () {
@@ -109,7 +104,7 @@ do_stage () {
 		${CONFIG_MODULE_SRCVERSION_ALL:+-a} \
 		-i '${STAGING_KERNEL_DIR}/Module.symvers' \
 		-o '${STAGING_KERNEL_DIR}/ixp400-csr.symvers' \
-		${MAKE_TARGETS} 2>&1 | egrep .
+		lib/${IX_TARGET}/ixp400.o 2>&1 | egrep .
 	then
 		echo "MODPOST errors - see above"
 		return 1
