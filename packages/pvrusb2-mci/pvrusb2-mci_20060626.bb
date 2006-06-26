@@ -4,7 +4,7 @@ PRIORITY = "optional"
 SECTION = "kernel/modules"
 MAINTAINER = "eFfeM <fransmeulenbroeks at yahoo dot com>"
 LICENSE = "GPL"
-PR = "r0"
+PR = "r1"
 RRECOMMENDS = "kernel-module-tveeprom \
 	kernel-module-firmware-class \
 	kernel-module-tuner \
@@ -16,6 +16,8 @@ RRECOMMENDS = "kernel-module-tveeprom \
 	kernel-module-videodev"
  
 SRC_URI = "http://www.isely.net/downloads/pvrusb2-mci-${PV}.tar.bz2 \
+           file://hotplug.functions \
+           file://firmware.hotplug \
            file://Makefile.patch;patch=1" 
 
 S = "${WORKDIR}/pvrusb2-mci-${PV}/driver"
@@ -40,4 +42,7 @@ export TARGET_LDFLAGS = "-L${STAGING_DIR}/${TARGET_SYS}/lib \
 do_install() {   
         install -d ${D}${base_libdir}/modules/${KERNEL_VERSION}/kernel/drivers/usb/media
         install -m 0644 *${KERNEL_OBJECT_SUFFIX} ${D}${base_libdir}/modules/${KERNEL_VERSION}/kernel/drivers/usb/media
+	mkdir -p ${D}/etc/hotplug.d/firmware
+	cp ${WORKDIR}/hotplug.functions ${D}/etc/hotplug.d/firmware
+	cp ${WORKDIR}/firmware.hotplug ${D}/etc/hotplug.d/firmware
 }
