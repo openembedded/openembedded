@@ -6,7 +6,7 @@ DESCRIPTION = "Packages that are compatible with the SlugOS firmware"
 MAINTAINER = "NSLU2 Linux <nslu2-linux@yahoogroups.com>"
 HOMEPAGE = "http://www.nslu2-linux.org"
 LICENSE = "MIT"
-PR = "r3"
+PR = "r4"
 CONFLICTS = "db3"
 PROVIDES += "${SLUGOS_IMAGENAME}-packages"
 
@@ -19,6 +19,7 @@ PACKAGES = "${PN}"
 # KEEP IN ALPHABETICAL ORDER
 SLUGOS_PACKAGES = "\
 	alsa-lib \
+	apr \
 	atftp \
 	audiofile \
 	aumix \
@@ -29,12 +30,15 @@ SLUGOS_PACKAGES = "\
 	bind \
 	binutils \
 	bison \
+	bluez-libs \
 	bluez-utils-nodbus \
 	boost \
 	bridge-utils \
 	bwmon \
 	bzip2 \
 	ccxstream \
+	cdparanoia \
+	cdstatus \
 	cherokee \
 	coreutils \
 	cron \
@@ -68,6 +72,7 @@ SLUGOS_PACKAGES = "\
 	grep \
 	gtk-doc \
 	gzip \
+	icecast \
 	ifupdown \
 	ipkg-utils \
 	iptables \
@@ -98,10 +103,12 @@ SLUGOS_PACKAGES = "\
 	make \
 	masqmail \
 	mdadm \
+	memtester \
 	mgetty \
 	miau \ 
 	microcom \
 	minicom \
+	motion \
 	mpd \
 	mt-daapd \
 	mtd-utils \
@@ -117,6 +124,7 @@ SLUGOS_PACKAGES = "\
 	openobex-apps \
 	openldap \
 	openntpd \
+	openobex \
 	openssh \
 	openvpn \
 	patch \
@@ -127,6 +135,8 @@ SLUGOS_PACKAGES = "\
 	ppp \
 	procps \
 	puppy \
+	pvrusb2-mci \
+	pwc \
 	python \
 	quilt \
 	reiserfsprogs reiser4progs \
@@ -134,6 +144,7 @@ SLUGOS_PACKAGES = "\
 	samba \
 	sane-backends \
 	sed \
+	setpwc \
 	setserial \
 	smartmontools \
 	ssmtp \
@@ -152,6 +163,7 @@ SLUGOS_PACKAGES = "\
 	vlan \
 	vsftpd \
 	wakelan \
+	watchdog \
 	wget \
 	wireless-tools \
 	wpa-supplicant \
@@ -162,16 +174,11 @@ SLUGOS_PACKAGES = "\
 
 # Packages currently broken on all platforms
 SLUGOS_BROKEN_PACKAGES = "\
-	icecast \
 	irssi \
-	obexftp openobex \
-	pvrusb2-mci \
-	pwc \
+	obexftp \
 	qc-usb-messenger \
-	setpwc \
-	unionfs-modules unionfs-utils \
-	watchdog \
-	memtester \
+	unionfs-modules \
+	unionfs-utils \
 	"
 
 # These packages will never build because uclibc lacks (and always will lack)
@@ -190,6 +197,7 @@ UCLIBC_UNSUPPORTABLE_PACKAGES = "\
 UCLIBC_BROKEN_PACKAGES = "\
 	alsa-utils \
 	asterisk \
+	asterisk-sounds \
 	bogofilter \
 	ircp \
 	"
