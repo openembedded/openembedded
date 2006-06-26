@@ -3,8 +3,8 @@ SECTION = "opie/inputmethods"
 PRIORITY = "optional"
 LICENSE = "GPL"
 HOMEPAGE = "http://www.sikigami.com/nunome-Qtopia-1.0/"
-RDEPENDS = "font-ttf-japanese"
-PR = "r0"
+RDEPENDS = "virtual/japanese-font"
+PR = "r1"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/gakusei/nunome-Qtopia-src-cleaned.tar.bz2 \
 	file://nunome.patch;patch=1"
