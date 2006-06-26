@@ -12,13 +12,13 @@ PRIORITY = "optional"
 LICENSE = "OpenLDAP"
 SECTION = "libs"
 
-PR = "r3"
+PR = "r4"
 
 LDAP_VER = "${@'.'.join(bb.data.getVar('PV',d,1).split('.')[0:2])}"
 
 SRC_URI = "ftp://ftp.openldap.org/pub/OpenLDAP/openldap-release/${P}.tgz"
 SRC_URI += "file://openldap-m4-pthread.patch;patch=1"
-SCR_URI += "file://initscript";
+SRC_URI += "file://initscript"
 # The build tries to run a host executable, this fails.  The patch
 # causes the executable and its data to be installed instead of
 # the output - ucgendat must be run after the ipkg install!
