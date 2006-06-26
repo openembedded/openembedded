@@ -1,11 +1,11 @@
-DESCRIPTION = "The Openobex project aims to make an \
-open source implementation of the Object Exchange \
-(OBEX) protocol."
+DESCRIPTION = "The Openobex project is an open source implementation of the \
+Object Exchange (OBEX) protocol."
 HOMEPAGE = "http://openobex.triq.net"
 SECTION = "libs"
 PROVIDES = "openobex-apps"
+DEPENDS = "libusb bluez-libs"
 LICENSE = "GPL"
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/openobex/openobex-${PV}.tar.gz \
            file://disable-cable-test.patch;patch=1" \
@@ -14,7 +14,7 @@ SRC_URI = "${SOURCEFORGE_MIRROR}/openobex/openobex-${PV}.tar.gz \
 inherit autotools binconfig pkgconfig
 
 EXTRA_OECONF = "--enable-apps --enable-syslog --enable-dump \
-                --with-usb=${STAGING_DIR} --with-bluez=${STAGING_DIR}"
+                --with-usb=${STAGING_LIBDIR}/.. --with-bluez=${STAGING_LIBDIR}/.."
 
 do_stage() {
 	oe_libinstall -so -C lib libopenobex ${STAGING_LIBDIR}
