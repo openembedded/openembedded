@@ -4,7 +4,7 @@ LICENSE = "LGPL"
 AUTHOR = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 MAINTAINER = "${AUTHOR}"
 HOMEPAGE = "http://www.Vanille.de/projects/efl++.html"
-DEPENDS = "virtual/evas virtual/ecore edje libsigc++-2.0"
+DEPENDS = "virtual/evas virtual/ecore etk edje libsigc++-2.0"
 PROVIDES = "virtual/efl++"
 
 SRC_URI = "http://www.Vanille.de/download/efl/efl++_${PV}.tar.bz2 \
