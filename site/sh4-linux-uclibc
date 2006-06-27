@@ -30,3 +30,8 @@ sudo_cv_uid_t_len=${sudo_cv_uid_t_len=10}
 
 # vim
 ac_cv_sizeof_int=${ac_cv_sizeof_int=4}
+
+# ipsec-tools
+ac_cv_va_copy=${ac_cv_va_copy=no}
+ac_cv___va_copy=${ac_cv___va_copy=yes}
+racoon_cv_bug_getaddrinfo=${racoon_cv_bug_getaddrinfo=no}
