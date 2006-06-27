@@ -1,0 +1,12 @@
+--- linuxtv-dvb-apps-1.1.1/util/dvbtraffic/Makefile.orig	2006-06-17 20:38:43.150111250 +0200
++++ linuxtv-dvb-apps-1.1.1/util/dvbtraffic/Makefile	2006-06-17 20:41:04.318933750 +0200
+@@ -1,6 +1,8 @@
+ 
++CFLAGS = -MD -g -O2 -Wall -I../../include 
++
+ dvbtraffic: dvbtraffic.c
+-	gcc -MD -g -O2 -Wall -I../../include $< -o $@
++	$(CC) $(CFLAGS) $< -o $@
+ 
+ clean:
+ 	rm -f *.o *.d dvbtraffic

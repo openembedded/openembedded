@@ -171,11 +171,9 @@ oe_libinstall() {
 	if [ -z "$dir" ]; then
 		dir=`pwd`
 	fi
-	dotlai=$libname.lai
-	dir=$dir`(cd $dir; find -name "$dotlai") | sed "s/^\.//;s/\/$dotlai\$//;q"`
-	#if [ -d "$dir/.libs" ]; then
-	#	dir=$dir/.libs
-	#fi
+	if [ -d "$dir/.libs" ]; then
+		dir=$dir/.libs
+	fi
 	olddir=`pwd`
 	__runcmd cd $dir
 
@@ -193,7 +191,7 @@ oe_libinstall() {
 	if [ -f "$dota" -o -n "$require_static" ]; then
 		__runcmd install -m 0644 $dota $destpath/
 	fi
-#	dotlai=$libname.lai
+	dotlai=$libname.lai
 	if [ -f "$dotlai" -a -n "$libtool" ]; then
 		if test -n "$staging_install"
 		then

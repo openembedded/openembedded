@@ -1,0 +1,8 @@
+--- linuxtv-dvb-apps-1.1.1/util/szap/Makefile.orig	2006-06-17 20:36:50.743086250 +0200
++++ linuxtv-dvb-apps-1.1.1/util/szap/Makefile	2006-06-17 20:37:07.716147000 +0200
+@@ -1,4 +1,4 @@
+-CC = gcc
++
+ CFLAGS = -MD -Wall -g -O2 -I../../include -I../lib
+ LFLAGS = -Wall -g -O2
+ RM = rm -f

@@ -1,0 +1,25 @@
+#! /bin/sh
+#
+# Copyright Matthias Hentges <devel@hentges.net> (c) 2006
+# License: GPL (see http://www.gnu.org/licenses/gpl.txt for a copy of the license)
+#
+# Filename: visual-boot.init
+# Date: 25-Jun-06
+
+
+SRC_FILE="`basename $0 | sed "s/S[0-9][0-9]//"`"
+
+# echo "# # # [`readlink /proc/self/fd/0`] # # #"
+# echo "# # # [`readlink /proc/self/fd/1`] # # #"
+# echo "# # # [`readlink /proc/self/fd/2`] # # #"
+# echo "# # # [`sh -c /usr/bin/tty`] # # #"
+# 
+# readlink /proc/self/fd/1 | grep -q "tty1" && exit 0
+
+chvt 2
+if test -e /usr/share/visual-boot/${SRC_FILE}.raw.gz
+then
+	zcat /usr/share/visual-boot/${SRC_FILE}.raw.gz > /dev/fb0
+else
+	echo "[/usr/share/visual-boot/$SRC_FILE] not found" > /dev/tty1
+fi

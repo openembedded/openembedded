@@ -1,0 +1,15 @@
+--- linuxtv-dvb-apps-1.1.1/util/dvbdate/Makefile.orig	2006-06-17 20:44:23.483380750 +0200
++++ linuxtv-dvb-apps-1.1.1/util/dvbdate/Makefile	2006-06-17 20:44:45.844778250 +0200
+@@ -1,11 +1,10 @@
+ 
+-CC      = gcc
+ CFLAGS  = -g -O2 -MD -Wall -I. -I../../include
+ LFLAGS  =
+ 
+ OBJS    = dvbdate.o
+ TARGET  = dvbdate
+-DESTDIR = /usr/local/bin/
++DESTDIR = /usr/bin/
+ 
+ all: $(TARGET)
+ 
