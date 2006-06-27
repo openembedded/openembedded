@@ -11,7 +11,7 @@ PR = "r2"
 
 DEPENDS = "curl librsvg osb-nrcore"
 
-SRC_URI = "cvs://anonymous@cvs.sourceforge.net/cvsroot/gtk-webcore;module=NRCit;date=${FIXEDCVSDATE} \
+SRC_URI = "cvs://anonymous@gtk-webcore.cvs.sourceforge.net/cvsroot/gtk-webcore;module=NRCit;date=${FIXEDCVSDATE} \
 	   file://stop-load.image-loading.patch;patch=1	\
    	   file://gdk-colorspace.diff;patch=1"
 S = "${WORKDIR}/NRCit"

@@ -11,7 +11,7 @@ PR = "r1"
 
 DEPENDS = "glib-2.0 gtk+ pango osb-jscore"
 
-SRC_URI = "cvs://anonymous@cvs.sourceforge.net/cvsroot/gtk-webcore;module=NRCore;date=${FIXEDCVSDATE} \
+SRC_URI = "cvs://anonymous@gtk-webcore.cvs.sourceforge.net/cvsroot/gtk-webcore;module=NRCore;date=${FIXEDCVSDATE} \
 	   file://KWIQ-mimetype-segfault.patch;patch=1 \
 	   file://setHandle_segfault-fix.patch;patch=1"
 S = "${WORKDIR}/NRCore"

@@ -12,7 +12,7 @@ PR = "r1"
 DEPENDS = "osb-nrcit gtk+ glib-2.0 libglade"
 RRECOMMENDS = "gdk-pixbuf-loader-gif gdk-pixbuf-loader-ico gdk-pixbuf-loader-jpeg gdk-pixbuf-loader-png"
 
-SRC_URI = "cvs://anonymous@cvs.sourceforge.net/cvsroot/gtk-webcore;module=osb-browser;date=${FIXEDCVSDATE} \
+SRC_URI = "cvs://anonymous@gtk-webcore.cvs.sourceforge.net/cvsroot/gtk-webcore;module=osb-browser;date=${FIXEDCVSDATE} \
            file://no-pedantic.patch;patch=1"
 S = "${WORKDIR}/osb-browser"
 
