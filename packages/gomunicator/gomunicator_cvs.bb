@@ -4,7 +4,6 @@ LICENSE = "GPLv2"
 AUTHOR = "Robert Woerle"
 MAINTAINER = "Koen Kooi <koen@handhelds.org>"
 DEPENDS = "libgpewidget gtk+ glib-2.0 alsa-lib"
-RDEPENDS = "alsa-lib"
 #Remove the dash below when 0.1.3 changes in PV
 PV = "0.1.3+cvs-${SRCDATE}"
 
