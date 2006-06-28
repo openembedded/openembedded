@@ -1,5 +1,6 @@
 DESCRIPTION = "CTorrent is a console BitTorrent client written in the C \
-programming language."
+programming language. This version is with the extensions from \
+http://www.rahul.net/dholmes/ctorrent/ (dnh2 + vfat patch)"
 DEPENDS = "openssl"
 LICENSE = "GPL"
 SECTION = "network"
