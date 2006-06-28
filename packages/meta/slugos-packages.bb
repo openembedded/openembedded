@@ -6,7 +6,7 @@ DESCRIPTION = "Packages that are compatible with the SlugOS firmware"
 MAINTAINER = "NSLU2 Linux <nslu2-linux@yahoogroups.com>"
 HOMEPAGE = "http://www.nslu2-linux.org"
 LICENSE = "MIT"
-PR = "r4"
+PR = "r5"
 CONFLICTS = "db3"
 PROVIDES += "${SLUGOS_IMAGENAME}-packages"
 
@@ -103,7 +103,6 @@ SLUGOS_PACKAGES = "\
 	make \
 	masqmail \
 	mdadm \
-	memtester \
 	mgetty \
 	miau \ 
 	microcom \
@@ -175,6 +174,7 @@ SLUGOS_PACKAGES = "\
 # Packages currently broken on all platforms
 SLUGOS_BROKEN_PACKAGES = "\
 	irssi \
+	memtester \
 	obexftp \
 	qc-usb-messenger \
 	unionfs-modules \
