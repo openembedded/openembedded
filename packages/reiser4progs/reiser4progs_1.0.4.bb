@@ -8,7 +8,7 @@ MAINTAINER = "John Bowler <jbowler@acm.org>"
 SECTION = "base"
 LICENSE = "GPL-2"
 
-SRC_URI = "ftp://ftp.namesys.com/pub/${PN}/${P}.tar.gz \
+SRC_URI = "ftp://ftp.namesys.com/pub/old-versions/${PN}/${P}.tar.gz \
 		file://align.patch;patch=1"
 
 LIBAAL = "libaal"
