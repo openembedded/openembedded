@@ -10,8 +10,6 @@ export IPKG_INSTALL += "task-e-x11-core \
                         gpe-task-connectivity \
                         gpe-task-games \
                         figment \
-                        gaim \
-                        sylpheed \
                         xhost \
                         gpe-soundserver \
                         gpe-confd \
@@ -31,6 +29,8 @@ export IPKG_INSTALL += "task-e-x11-core \
 #                        gdk-pixbuf-loader-ras \
 #                        gdk-pixbuf-loader-tga \
 #                        gdk-pixbuf-loader-wbmp \
+#                        gaim \
+#                        sylpheed \
 
 DEPENDS += "task-e-x11-core meta-gpe e17-gpe-menu-convert figment xhost gpe-soundserver gpe-confd xauth"
 
