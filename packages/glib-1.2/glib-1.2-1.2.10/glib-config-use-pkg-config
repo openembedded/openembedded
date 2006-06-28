@@ -1,11 +1,5 @@
-patch glib-config so it indirects to pkgconfig for cflags and libs
-
-#
-# Patch managed by http://www.holgerschurig.de/patcher.html
-#
-
---- glib-1.2.10/glib-config.in~glib-config-use-pkg-config
-+++ glib-1.2.10/glib-config.in
+--- glib-1.2.10/glib-config.in.orig	2006-06-28 12:28:53.000000000 +0100
++++ glib-1.2.10/glib-config.in	2006-06-28 12:31:33.000000000 +0100
 @@ -28,6 +28,8 @@
  
  lib_glib=yes
@@ -15,7 +9,7 @@ patch glib-config so it indirects to pkgconfig for cflags and libs
  while test $# -gt 0; do
    case "$1" in
    -*=*) optarg=`echo "$1" | sed 's/[-_a-zA-Z0-9]*=//'` ;;
-@@ -55,20 +57,9 @@
+@@ -55,20 +57,14 @@
        echo @GLIB_VERSION@
        exit 0
        ;;
@@ -33,13 +27,18 @@ patch glib-config so it indirects to pkgconfig for cflags and libs
 -      ;;
 -    gthread)
 -      lib_gthread=yes
-+    --cflags | --libs | glib | gmodule | gthread)
++    --cflags | --libs)
 +      cmd="$cmd $1 "
 +      echo_pkgconfig="yes"
++      ;;
++    glib | gmodule | gthread)
++      cmd="$cmd $1 "
++      echo_pkgconfig="yes"
++      module_provided="yes"
        ;;
      *)
        usage 1 1>&2
-@@ -83,26 +74,6 @@
+@@ -83,26 +79,9 @@
  if test "$echo_exec_prefix" = "yes"; then
  	echo $exec_prefix
  fi
@@ -66,5 +65,8 @@ patch glib-config so it indirects to pkgconfig for cflags and libs
 -	fi
 -	echo -L@libdir@ $libsp $libsa
 +if test "$echo_pkgconfig" = "yes"; then
++        if test -z "$module_provided" ; then
++                cmd="$cmd glib"
++        fi
 +	echo `$cmd`
  fi
