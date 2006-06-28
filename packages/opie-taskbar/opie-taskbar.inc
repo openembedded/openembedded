@@ -86,6 +86,15 @@ do_install() {
 
         install -m 0644 ${WORKDIR}/pics/capslock.xpm ${D}${palmtopdir}/pics/
         install -m 0644 ${WORKDIR}/pics/numlock.xpm ${D}${palmtopdir}/pics/
+
+	case ${MACHINE} in
+	c7x0)
+		install -d ${D}${sysconfdir}/apm/event.d/
+		install -m 0755 ${WORKDIR}/qpe-suspend-resume ${D}${sysconfdir}/apm/event.d/00-qpe-suspend-resume.sh
+                ;;
+        *)
+                ;;
+        esac	
 }
 
 updatercd_postinst_mnci() {
@@ -97,6 +106,6 @@ fi
 update-rc.d $D ${INITSCRIPT_NAME} ${INITSCRIPT_PARAMS}
 }
 
-FILES_opie-taskbar_append = " /etc ${palmtopdir}/apps ${palmtopdir}/pics"
+FILES_opie-taskbar_append = " ${sysconfdir} ${palmtopdir}/apps ${palmtopdir}/pics"
 
 PACKAGE_ARCH = "${MACHINE_ARCH}"
