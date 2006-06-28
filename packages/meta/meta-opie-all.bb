@@ -4,7 +4,7 @@ ALLOW_EMPTY = 1
 PACKAGE_ARCH = "all"
 LICENSE = "MIT"
 DEPENDS = "meta-opie"
-PR = "r4"
+PR = "r5"
 
 PACKAGES = "task-qpe-applets task-qpe-games task-qpe-inputmethods \
 	task-qpe-multimedia task-qpe-emulators task-qpe-applications \
@@ -158,7 +158,6 @@ qpf-hunkysans \
 qpf-hunkyserif \
 qpf-qte \
 qpf-helvetica \
-qpf-unifont \
 qpf-utopia \
 terminus \
 "
