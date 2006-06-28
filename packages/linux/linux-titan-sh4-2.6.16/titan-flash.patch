@@ -1,0 +1,3153 @@
+
+Add the driver for onboard flash.
+The quality of this driver means that it has not been included in the
+upstream CVS.
+This implements the block device translation layer to match what the 
+onboard firmware implements.
+
+diff -durN -X ../diff.ignore linux/drivers/block/Kconfig gcc3.4.4/drivers/block/Kconfig
+--- linux/drivers/block/Kconfig	2005-11-09 13:53:31.000000000 +1100
++++ gcc3.4.4/drivers/block/Kconfig	2005-11-09 14:00:47.000000000 +1100
+@@ -190,6 +190,13 @@
+ 	  To compile this driver as a module, choose M here: the
+ 	  module will be called DAC960.
+ 
++config BLK_SSFDC
++	tristate "SmartMedia(TM) Driver (sm)"
++	depends on SH_TITAN
++	help
++	Say Y here if you want the SmartMedia chip enabled.
++	  Otherwise say N.
++
+ config BLK_DEV_UMEM
+ 	tristate "Micro Memory MM5415 Battery Backed RAM support (EXPERIMENTAL)"
+ 	depends on PCI && EXPERIMENTAL
+diff -durN -X ../diff.ignore linux/drivers/block/Makefile gcc3.4.4/drivers/block/Makefile
+--- linux/drivers/block/Makefile	2004-12-25 08:35:24.000000000 +1100
++++ gcc3.4.4/drivers/block/Makefile	2005-11-09 14:00:47.000000000 +1100
+@@ -35,6 +35,7 @@
+ obj-$(CONFIG_BLK_CPQ_DA)	+= cpqarray.o
+ obj-$(CONFIG_BLK_CPQ_CISS_DA)  += cciss.o
+ obj-$(CONFIG_BLK_DEV_DAC960)	+= DAC960.o
++obj-$(CONFIG_BLK_SSFDC)		+= ssfdc.o
+ obj-$(CONFIG_CDROM_PKTCDVD)	+= pktcdvd.o
+ 
+ obj-$(CONFIG_BLK_DEV_UMEM)	+= umem.o
+diff -durN -X ../diff.ignore linux/drivers/block/ssfdc.c gcc3.4.4/drivers/block/ssfdc.c
+--- linux/drivers/block/ssfdc.c	1970-01-01 10:00:00.000000000 +1000
++++ gcc3.4.4/drivers/block/ssfdc.c	2005-11-09 14:00:47.000000000 +1100
+@@ -0,0 +1,2738 @@
++/* $id:   $
++ssfdc.c - Solid State Flopyy Disk Card
++
++Original source curtesy of Toshiba Corporation.
++
++Modification for use by Linux provided by Nimble Microsystems Inc.
++
++TODO:
++
++Modification History:
++	
++	March 2001 - Initial port of Toshiba sources by Bill Mann
++	May 2001 - Debug of staticly linked ssfdc driver, Bill Mann
++	Nov 2001 	- Reimplementation using tasklets and timers.
++	May 2002 - Partition support added.
++	Oct 2003 - Port to kernel 2.6.0
++	Mar 2004 - Stabilization refinements...
++
++Overview:  The kernel interfaces to the device via the "block_device_operations 
++	ssfdc_fops", the device's request handling function 
++	"do_ssfdc_request(request_queue_t * q)", or by the ioctl interface ssfdc_ioctl().
++
++	do_ssfdc_request() purpose is to kickstart ssfdc_thread via a wake_up call.  ssfdc_thread
++	then processes requests from the queue.
++
++	Blocks are mapped logically.  So a sector read/write results in the determination
++	of the logical block address of the block containing the desired sector and the
++	corresponding physical block being accessed.  Note the use of ReadBlock, WriteBlock,
++	and PhyBlock, Log2Phy[] etc.
++
++	This driver implements a wear leveling strategy where sector writes to the
++	SmartMedia causes the block which is the target of the write to be copied into a
++	new block, the new data written and the old block erased.  This makes the driver 
++	more complicated than a straightforward sector read/write.
++
++*/
++
++/* Section device headers */
++#define DEBUG_SSFDC					0
++#define DEBUG_SSFDC_STRUCT			0
++#define DEBUG_SSFDC_REQUEST			0
++#define DEBUG_SSFDC_READREDT		0
++#define DEBUG_SSFDC_WRITE			0
++#define DEBUG_SSFDC_WRITESECT		0
++#define DEBUG_SSFDC_WRITEBLKS		0
++#define DEBUG_SSFDC_READ			0
++#define DEBUG_SSFDC_ADDR			0
++#define DEBUG_SSFDC_ASSIGNRELEASE	0
++#define SSFDC_READINGTASKLET		0
++/* Edition Compilation Mode */
++
++#include <linux/module.h>
++
++#include <asm/delay.h>
++#include <linux/sched.h>
++#include <linux/interrupt.h>
++
++#include <linux/fs.h>
++#include <linux/hdreg.h>
++#include <linux/file.h>
++#include <linux/stat.h>
++#include <linux/time.h>
++#include <linux/errno.h>
++#include <linux/major.h>
++#include <linux/init.h>
++#include <linux/devfs_fs_kernel.h>
++#include <asm/uaccess.h>
++#include <asm/hardirq.h>
++#include <linux/bio.h>
++#include <linux/blkdev.h>
++#include <linux/slab.h>
++#include <linux/highmem.h>
++
++#include "ssfdc.h"
++
++#define SSFDC_MAJOR	240
++
++static int static_ssfdc_debug = 0;
++
++static DECLARE_WAIT_QUEUE_HEAD(ssfdc_wait);
++
++static struct gendisk *disks[MAX_SSFDC];
++static ssfdc_dev *ssfdc[MAX_SSFDC];
++
++static int ssfdc_open(struct inode *i_node, struct file *fptr);
++static int ssfdc_release(struct inode *i_node, struct file *fptr);
++static int ssfdc_ioctl(struct inode *i_node, struct file *fptr, unsigned cmd, unsigned long arg);
++static int ssfdc_revalidate(struct gendisk *disk);
++void do_ssfdc_request(request_queue_t * q);
++
++static struct block_device_operations ssfdc_fops = {
++	.owner			= THIS_MODULE,
++	.open			= ssfdc_open,
++	.release		= ssfdc_release,
++	.ioctl			= ssfdc_ioctl,
++	// bjm out .revalidate_disk	= ssfdc_revalidate,
++};
++
++
++/***************************************************************************
++	BIT Control Macro
++ ***************************************************************************/
++static char BitData[] = {0x01,0x02,0x04,0x08,0x10,0x20,0x40,0x80 };
++#define	SetBit(a,b)	(a[(unsigned char)((b)/8)]|= BitData[(b)%8])
++#define	ClrBit(a,b)	(a[(unsigned char)((b)/8)]&=~BitData[(b)%8])
++#define	ChkBit(a,b)	(a[(unsigned char)((b)/8)] & BitData[(b)%8])
++
++/***************************************************************************/
++static int MediaReadSector(ssfdc_dev *, struct request *, char *, long,int);
++static int MediaWriteSector(ssfdc_dev *, struct request *, char *, long,int);
++
++/***************************************************************************/
++static int  CheckLogCHS(ssfdc_dev *,unsigned int *,unsigned char *,unsigned char *);
++static int  CheckMediaWP(ssfdc_dev *);
++static int  ConvMediaAddr(ssfdc_dev *,long);
++static int  IncMediaAddr(ssfdc_dev *);
++static int  WriteReqInCurrBlk(ssfdc_dev *, long, int *);
++/******************************************/
++/******************************************/
++static int  AssignWriteBlock(ssfdc_dev *, int);
++/******************************************/
++/******************************************/
++static int  SetPhyFmtValue(ssfdc_dev *);
++static int  SearchCIS(ssfdc_dev *,unsigned int *);
++static int  MakeLogTable(ssfdc_dev *,unsigned int);
++/******************************************/
++static int  MarkFailPhyOneBlock(ssfdc_dev *);
++
++static void _ReadSsfdcBuf(ssfdc_dev *, unsigned char *databuf,unsigned char *redundant); 
++static void _WriteSsfdcBuf(ssfdc_dev *,unsigned char *,unsigned char *);
++static void _ReadSsfdcWord(ssfdc_dev *,unsigned int *);
++static void _ReadRedtSsfdcBuf(ssfdc_dev *, unsigned char *redundant);
++static void _WriteRedtSsfdcBuf(ssfdc_dev*, unsigned char *redundant);
++
++/***************************************************************************/
++static void _SetSsfdcCmd(ssfdc_dev *, unsigned char);
++static void _SetSsfdcAddr(ssfdc_dev *, unsigned char);
++static void _SetSsfdcBlock(ssfdc_dev *);
++static void _SetSsfdcChip(ssfdc_dev *);
++static void _SetSsfdcStandby(ssfdc_dev *);
++static int  _CheckSsfdcBusy(ssfdc_dev *, unsigned int);
++static int  _CheckSsfdcStatus(ssfdc_dev *);
++static void _ResetSsfdcErr(ssfdc_dev *psm);
++static unsigned char _CheckDevCode(unsigned char);
++void SsfdcReset(ssfdc_dev *);
++void CntReset(ssfdc_dev *);
++
++static char BitCount(unsigned char);
++static char BitCountWord(unsigned int);
++
++static void _WaitTimer(long int);
++typedef void (*timeout_fn)(unsigned long);
++static void ssfdc_rw_request(ssfdc_dev *psm, struct request *req);
++static int ssfdc_end_request(ssfdc_dev *psm, struct request *req, int status);
++static void ssfdc_terminate_request(ssfdc_dev *psm, struct request *req);
++static struct request *ssfdc_get_request(ssfdc_dev *psm);
++
++/* debugging utils etc. */
++
++#if DEBUG_SSFDC
++static void dump_ssfdc_state(ssfdc_dev * psm);
++#endif
++
++/* end of debugging utils etc. */
++
++/* our tasklets */
++/* top level R/W initiation tasklet */
++static void initxfer(unsigned long);
++#if 0	// use thread and not a tasklet
++DECLARE_TASKLET(initxfer_tasklet0, initxfer, 0);
++#ifdef CONFIG_SH_NIMBLE_MINI
++DECLARE_TASKLET(initxfer_tasklet1, initxfer, 1);
++#endif
++#endif
++
++/* Sector Write Tasklets,  This group includes a readcopy tasklet for block copies...*/
++
++/* Tasklet to read a sector into a temporary buffer for later write */
++
++/* power is turned on, and then left on for TIMER_ON_TIMEOUT */
++// bjm debug struct timer_list mediachange_timer;
++// bjm debug static void mediachangetest(unsigned long);
++
++// bjm out
++// bjm out struct timer_list waiting_timer;
++static void waiting_timeout(unsigned long);
++
++/******************************************************************************/
++static void trans_result        \
++    (unsigned char,unsigned char,unsigned char *,unsigned char *);
++static void calculate_ecc           \
++    (unsigned char *,unsigned char *,unsigned char *,unsigned char *,unsigned char *);
++static unsigned char correct_data   \
++    (unsigned char *,unsigned char *,unsigned char,unsigned char,unsigned char);
++
++                                              /* CP0-CP5 code table           */
++static unsigned char ecctable[256] = {
++    0x00,0x55,0x56,0x03,0x59,0x0C,0x0F,0x5A,0x5A,0x0F,0x0C,0x59,0x03,0x56,0x55,0x00,
++    0x65,0x30,0x33,0x66,0x3C,0x69,0x6A,0x3F,0x3F,0x6A,0x69,0x3C,0x66,0x33,0x30,0x65,
++    0x66,0x33,0x30,0x65,0x3F,0x6A,0x69,0x3C,0x3C,0x69,0x6A,0x3F,0x65,0x30,0x33,0x66,
++    0x03,0x56,0x55,0x00,0x5A,0x0F,0x0C,0x59,0x59,0x0C,0x0F,0x5A,0x00,0x55,0x56,0x03,
++    0x69,0x3C,0x3F,0x6A,0x30,0x65,0x66,0x33,0x33,0x66,0x65,0x30,0x6A,0x3F,0x3C,0x69,
++    0x0C,0x59,0x5A,0x0F,0x55,0x00,0x03,0x56,0x56,0x03,0x00,0x55,0x0F,0x5A,0x59,0x0C,
++    0x0F,0x5A,0x59,0x0C,0x56,0x03,0x00,0x55,0x55,0x00,0x03,0x56,0x0C,0x59,0x5A,0x0F,
++    0x6A,0x3F,0x3C,0x69,0x33,0x66,0x65,0x30,0x30,0x65,0x66,0x33,0x69,0x3C,0x3F,0x6A,
++    0x6A,0x3F,0x3C,0x69,0x33,0x66,0x65,0x30,0x30,0x65,0x66,0x33,0x69,0x3C,0x3F,0x6A,
++    0x0F,0x5A,0x59,0x0C,0x56,0x03,0x00,0x55,0x55,0x00,0x03,0x56,0x0C,0x59,0x5A,0x0F,
++    0x0C,0x59,0x5A,0x0F,0x55,0x00,0x03,0x56,0x56,0x03,0x00,0x55,0x0F,0x5A,0x59,0x0C,
++    0x69,0x3C,0x3F,0x6A,0x30,0x65,0x66,0x33,0x33,0x66,0x65,0x30,0x6A,0x3F,0x3C,0x69,
++    0x03,0x56,0x55,0x00,0x5A,0x0F,0x0C,0x59,0x59,0x0C,0x0F,0x5A,0x00,0x55,0x56,0x03,
++    0x66,0x33,0x30,0x65,0x3F,0x6A,0x69,0x3C,0x3C,0x69,0x6A,0x3F,0x65,0x30,0x33,0x66,
++    0x65,0x30,0x33,0x66,0x3C,0x69,0x6A,0x3F,0x3F,0x6A,0x69,0x3C,0x66,0x33,0x30,0x65,
++    0x00,0x55,0x56,0x03,0x59,0x0C,0x0F,0x5A,0x5A,0x0F,0x0C,0x59,0x03,0x56,0x55,0x00
++};
++
++#define    BIT7    0x80
++#define    BIT6    0x40
++#define    BIT5    0x20
++#define    BIT4    0x10
++#define    BIT3    0x08
++#define    BIT2    0x04
++#define    BIT1    0x02
++#define    BIT0    0x01
++ 
++#define    BIT1BIT0    0x03
++#define    BIT23       0x00800000L
++#define    MASK_CPS    0x3f
++#define    CORRECTABLE 0x00555554L 
++
++/*
++    Transfer result
++    LP14,12,10,... & LP15,13,11,... -> LP15,14,13,... & LP7,6,5,..
++*/
++static void trans_result(reg2,reg3,ecc1,ecc2)
++unsigned char reg2;                           /* LP14,LP12,LP10,...           */
++unsigned char reg3;                           /* LP15,LP13,LP11,...           */
++unsigned char *ecc1;                          /* LP15,LP14,LP13,...           */
++unsigned char *ecc2;                          /* LP07,LP06,LP05,...           */
++{
++    unsigned char a;                          /* Working for reg2,reg3        */
++    unsigned char b;                          /* Working for ecc1,ecc2        */
++    unsigned char i;                          /* For counting                 */
++ 
++    a=BIT7; b=BIT7;                           /* 80h=10000000b                */
++    *ecc1=*ecc2=0;                            /* Clear ecc1,ecc2              */
++    for(i=0; i<4; ++i) {
++        if ((reg3&a)!=0) *ecc1|=b;            /* LP15,13,11,9 -> ecc1         */
++        b=b>>1;                               /* Right shift                  */
++        if ((reg2&a)!=0) *ecc1|=b;            /* LP14,12,10,8 -> ecc1         */
++        b=b>>1;                               /* Right shift                  */
++        a=a>>1;                               /* Right shift                  */
++    }
++    b=BIT7;                                   /* 80h=10000000b                */
++    for(i=0; i<4; ++i) {
++        if ((reg3&a)!=0) *ecc2|=b;            /* LP7,5,3,1 -> ecc2            */
++        b=b>>1;                               /* Right shift                  */
++        if ((reg2&a)!=0) *ecc2|=b;            /* LP6,4,2,0 -> ecc2            */
++        b=b>>1;                               /* Right shift                  */
++        a=a>>1;                               /* Right shift                  */
++    }
++}
++
++
++/*
++    Calculating ECC
++    data[0-255] -> ecc1,ecc2,ecc3 using CP0-CP5 code table[0-255]
++*/
++static void calculate_ecc(table,data,ecc1,ecc2,ecc3)
++unsigned char *table;                         /* CP0-CP5 code table           */
++unsigned char *data;                          /* DATA                         */
++unsigned char *ecc1;                          /* LP15,LP14,LP13,...           */
++unsigned char *ecc2;                          /* LP07,LP06,LP05,...           */
++unsigned char *ecc3;                          /* CP5,CP4,CP3,...,"1","1"      */
++{
++    unsigned int i;                           /* For counting                 */
++    unsigned char a;                          /* Working for table            */
++    unsigned char reg1;                       /* D-all,CP5,CP4,CP3,...        */
++    unsigned char reg2;                       /* LP14,LP12,L10,...            */
++    unsigned char reg3;                       /* LP15,LP13,L11,...            */
++ 
++    reg1=reg2=reg3=0;                         /* Clear parameter              */
++ 
++    for(i=0; i<256; ++i) {
++        a=table[data[i]];                     /* Get CP0-CP5 code from table  */
++        reg1^=(a&MASK_CPS);                   /* XOR with a                   */
++        if ((a&BIT6)!=0) {                    /* If D_all(all bit XOR) = 1    */
++            reg3^=(unsigned char)i;           /* XOR with counter             */
++            reg2^=~((unsigned char)i);        /* XOR with inv. of counter     */
++        }
++    }
++ 
++    /* Trans LP14,12,10,... & LP15,13,11,... -> LP15,14,13,... & LP7,6,5,..   */
++    trans_result(reg2,reg3,ecc1,ecc2);
++ 
++    *ecc1=~(*ecc1); *ecc2=~(*ecc2);           /* Inv. ecc2 & ecc3             */
++    *ecc3=((~reg1)<<2)|BIT1BIT0;              /* Make TEL format              */
++}
++ 
++static unsigned char correct_data(data,eccdata,ecc1,ecc2,ecc3)
++unsigned char *data;                          /* DATA                         */
++unsigned char *eccdata;                       /* ECC DATA                     */
++unsigned char ecc1;                           /* LP15,LP14,LP13,...           */
++unsigned char ecc2;                           /* LP07,LP06,LP05,...           */
++unsigned char ecc3;                           /* CP5,CP4,CP3,...,"1","1"      */
++{
++    unsigned long l;                          /* Working to check d           */
++    unsigned long d;                          /* Result of comparison         */
++    unsigned int i;                           /* For counting                 */
++    unsigned char d1,d2,d3;                   /* Result of comparison         */
++    unsigned char a;                          /* Working for add              */
++    unsigned char add;                        /* Byte address of cor. DATA    */
++    unsigned char b;                          /* Working for bit              */
++    unsigned char bit;                        /* Bit address of cor. DATA     */
++ 
++    d1=ecc1^eccdata[1]; d2=ecc2^eccdata[0];   /* Compare LP's                 */
++    d3=ecc3^eccdata[2];                       /* Comapre CP's                 */
++    d=((unsigned long)d1<<16)                 /* Result of comparison         */
++        +((unsigned long)d2<<8)
++        +(unsigned long)d3;
++ 
++    if (d==0) return(0);                      /* If No error, return          */
++    if (((d^(d>>1))&CORRECTABLE)==CORRECTABLE) {    /* If correctable         */
++        l=BIT23;
++        add=0;                                /* Clear parameter              */
++        a=BIT7;
++        for(i=0; i<8; ++i) {                  /* Checking 8 bit               */
++            if ((d&l)!=0) add|=a;             /* Make byte address from LP's  */
++            l>>=2; a>>=1;                     /* Right Shift                  */
++        }
++        bit=0;                                /* Clear parameter              */
++        b=BIT2;
++        for(i=0; i<3; ++i) {                  /* Checking 3 bit               */
++            if ((d&l)!=0) bit|=b;             /* Make bit address from CP's   */
++            l>>=2; b>>=1;                     /* Right shift                  */
++        }
++        b=BIT0;
++        data[add]^=(b<<bit);                  /* Put corrected data           */
++        return(1);
++    }
++    i=0;                                      /* Clear count                  */
++    d&=0x00ffffffL;                           /* Masking                      */
++    while(d) {                                /* If d=0 finish counting       */
++        if (d&BIT0) ++i;                      /* Count number of 1 bit        */
++        d>>=1;                                /* Right shift                  */
++    }
++    if (i==1) {                               /* If ECC error                 */
++        eccdata[1]=ecc1; eccdata[0]=ecc2;    /* Put right ECC code           */
++        eccdata[2]=ecc3;
++        return(2);
++    }
++    return(3);                                /* Uncorrectable error          */
++}
++/***************************************************************************
++    Common Subroutine
++ ***************************************************************************/
++char BitCount(unsigned char cdata)
++{
++    char bitcount=0;
++    while(cdata) {
++        bitcount+=(cdata &0x01);
++        cdata   /=2;
++    }
++    return(bitcount);
++}
++ 
++char BitCountWord(unsigned int cdata)
++{
++    char bitcount=0;
++    while(cdata) {
++        bitcount+=(cdata &0x01);
++        cdata   /=2;
++    }
++    return(bitcount);
++}
++
++/***************************************************************************/
++void StringCopy(char *stringA, char *stringB, int count)
++{
++    int i;
++    for(i=0; i<count; i++)
++        *stringA++ = *stringB++;
++}
++ 
++int StringCmp(char *stringA, char *stringB, int count)
++{
++    int i;
++    for (i=0;i<count;i++)
++        if (*stringA++ != *stringB++)   return(ERROR);
++    return(SUCCESS);
++}
++/***************************************************************************/
++int  CheckDataBlank(unsigned char *redundant)
++{
++    char i;
++    for(i=0; i<REDTSIZE; i++)
++        if(*redundant++!=0xFF)      return(ERROR);
++    return(SUCCESS);
++}
++
++int  CheckFailBlock(unsigned char *redundant)
++{
++    redundant+=REDT_BLOCK;
++    if(*redundant==0xFF)            return(SUCCESS);
++    if(! *redundant)                return(ERROR);
++    if(BitCount(*redundant)<7)     return(ERROR);
++    return(SUCCESS);
++}
++
++int  CheckCisBlock(unsigned char *redundant)
++{
++    if(! (*(redundant+REDT_ADDR1H)|*(redundant+REDT_ADDR1L)))
++        return(SUCCESS);
++    if(! (*(redundant+REDT_ADDR2H)|*(redundant+REDT_ADDR2L)))
++        return(SUCCESS);
++    return(ERROR);
++}
++
++int  CheckDataStatus(unsigned char *redundant)
++{
++    redundant+=REDT_DATA;
++    if(*redundant==0xFF)            return(SUCCESS);
++    if(! *redundant)                return(ERROR);
++    if(BitCount(*redundant)<5)     return(ERROR);
++    return(SUCCESS);
++}
++
++int  LoadLogBlockAddr(ssfdc_dev *psm)
++{
++    unsigned int addr1,addr2;
++    addr1=*(psm->Redundant+REDT_ADDR1H)*0x100+*(psm->Redundant+REDT_ADDR1L);
++    addr2=*(psm->Redundant+REDT_ADDR2H)*0x100+*(psm->Redundant+REDT_ADDR2L);
++    if(addr1==addr2)
++        if((addr1 &0xF000)==0x1000)
++            { psm->LogBlock=(addr1 &0x0FFF)/2; return(SUCCESS); }
++    if(BitCountWord(addr1^addr2)>1)            return(ERROR);
++    if((addr1 &0xF000)==0x1000)
++        if(! (BitCountWord(addr1) &0x0001))
++            { psm->LogBlock=(addr1 &0x0FFF)/2; return(SUCCESS); }
++    if((addr2 &0xF000)==0x1000)
++        if(! (BitCountWord(addr2) &0x0001))
++            { psm->LogBlock=(addr2 &0x0FFF)/2; return(SUCCESS); }
++    return(ERROR);
++}
++/***************************************************************************/
++void ClrRedundantData(unsigned char *redundant)
++{
++    char i;
++    for(i=0; i<REDTSIZE; i++)   *(redundant+i)=0xFF;
++}
++
++/***************************************************************************/
++void SetLogBlockAddr(ssfdc_dev *psm, unsigned char *redundant)
++{
++    unsigned int addr;
++    *(redundant+REDT_BLOCK)=0xFF;
++    *(redundant+REDT_DATA) =0xFF;
++    addr=psm->LogBlock*2+0x1000;
++    if((BitCountWord(addr)%2)) addr++;
++    *(redundant+REDT_ADDR1H)=*(redundant+REDT_ADDR2H)=addr/0x100;
++    *(redundant+REDT_ADDR1L)=*(redundant+REDT_ADDR2L)=(unsigned char)addr;
++}
++
++void SetFailBlock(unsigned char *redundant)
++{
++    char i;
++    for(i=0; i<REDTSIZE; i++)
++        *redundant++=((i==REDT_BLOCK)?0xF0:0xFF);
++}
++
++void SetDataStatus(unsigned char *redundant)
++{
++    redundant+=REDT_DATA;
++    *redundant=0x00;
++}
++
++
++/***************************************************************************
++    NAND Memory (SmartMedia) Control Subroutine
++ ***************************************************************************/
++static void _SetSsfdcCmd(ssfdc_dev *psm, unsigned char cmd)
++{
++    _HwSetCmd(psm);
++    _HwOutData(psm,cmd);
++    _HwSetData(psm);
++}
++ 
++static void _SetSsfdcAddr(ssfdc_dev *psm, unsigned char add)
++{
++    unsigned int addr;
++
++#if DEBUG_SSFDC_ADDR
++	printk(KERN_DEBUG "_SetSsfdcAddr() Zone %d LogBlock %d PhyBlock %d Sector %d\n",
++		psm->Zone,psm->LogBlock,psm->PhyBlock,psm->Sector);
++#endif
++    addr=(unsigned int)psm->Zone*psm->MaxBlocks+psm->PhyBlock;
++    addr=addr*(unsigned int)psm->MaxSectors+psm->Sector;
++    if((psm->Attribute &MPS)==PS256)       /* for 256byte/page */
++        addr=addr*2+(unsigned int)add;
++/*-----------------------------------------------*/
++    _HwSetAddr(psm);
++    _HwOutData(psm,0x00);
++    _HwOutData(psm,(unsigned char)addr);
++    _HwOutData(psm,(unsigned char)(addr/0x0100));
++    if((psm->Attribute &MADC)==AD4CYC)
++        _HwOutData(psm,(unsigned char)(psm->Zone/2)); /* Patch */
++    _HwSetData(psm);
++}
++
++static void _SetSsfdcBlock(ssfdc_dev *psm)
++{
++    unsigned int addr;
++#if DEBUG_SSFDC_ASSIGNRELEASE
++	printk(KERN_DEBUG "_SetSsfdcBlock() set card addr to PhyBlock %d\n", psm->PhyBlock);
++#endif
++    addr=(unsigned int)psm->Zone*psm->MaxBlocks+psm->PhyBlock;
++    addr=addr*(unsigned int)psm->MaxSectors;
++    if((psm->Attribute &MPS)==PS256)       /* for 256byte/page */
++        addr=addr*2;
++/*-----------------------------------------------*/
++    _HwSetAddr(psm);
++    _HwOutData(psm,(unsigned char)addr);
++    _HwOutData(psm,(unsigned char)(addr/0x0100));
++    if((psm->Attribute &MADC)==AD4CYC)
++        _HwOutData(psm,(unsigned char)(psm->Zone/2)); /* Patch */
++    _HwSetData(psm);
++}
++
++static inline void _SetSsfdcStandby(ssfdc_dev *psm)
++{
++    _HwSetStandby(psm);
++}
++
++static int _CheckSsfdcStatus(ssfdc_dev *psm)
++{
++	int status;
++    if((status=_HwInData(psm)) & WR_FAIL) {
++	   printk(KERN_DEBUG "_CheckSsfdcStatus() error %x\n", status);
++	   return(ERROR);
++	}
++    return(SUCCESS);
++} 
++
++static void _ResetSsfdcErr(ssfdc_dev *psm)
++{
++    _HwSetCmd(psm);
++    _HwOutData(psm,SSFDC_RST_CHIP);
++    _HwSetData(psm);
++   	while(1) {
++		udelay(30);
++		if(! _HwChkBusy(psm))     break;
++	}
++    _HwSetStandby(psm);
++}
++
++static void waiting_timeout(unsigned long psm)
++{
++	// enable the wakeup signal!
++	wake_up(&((ssfdc_dev *)psm)->thread_wq);
++}
++
++/*
++	_CheckSsfdcBusy()
++
++	set a timer in jiffies from int time x .1ms
++*/
++
++static int _CheckSsfdcBusy(ssfdc_dev *psm, unsigned int time)
++{
++	unsigned long	incr_div = 4;
++	unsigned long	incr_us = time / incr_div,
++					jticks=time/(MSEC * JIFFY_TICK_MS);
++	unsigned long 	tick_retried=0, wrap_flag, expires;
++
++	if (!jticks) {
++		// small delay first to test completion
++		do {
++			udelay(incr_us);
++			if (!_HwChkBusy(psm))
++				return(SUCCESS);
++		} while (incr_div--);
++		return(ERROR);
++	}
++
++	// Block the wakeup signal?
++
++one_more_time:
++	expires = jiffies + jticks;
++	wrap_flag = ( expires < jiffies);
++
++	do {
++		wait_event_interruptible_timeout(psm->thread_wq, 0, jticks);
++		if (!_HwChkBusy(psm)) {
++			return(SUCCESS);
++		}
++	} while (wrap_flag ? expires <= jiffies : expires >= jiffies);
++
++#if 1
++	// Is the chip not busy?  If so its an ERROR
++	if (!_HwChkBusy(psm)) {
++		return(SUCCESS);
++	}
++	else {
++		// if we came back, give us one more tick/time
++		if (! tick_retried ) {
++			tick_retried = 1;
++			jticks = 0;
++			printk(".");
++			goto one_more_time;
++		}
++		return(ERROR);
++	}
++#endif
++}
++
++static void _SetSsfdcChip(ssfdc_dev *psm)
++{
++    _HwSetAddr(psm);
++    _HwOutData(psm,0x00);
++    _HwSetData(psm);
++}
++/***************************************************************************
++    NAND Memory (SmartMedia)  Buffer Data Xfer Subroutine
++ ***************************************************************************/      
++static void _ReadSsfdcBuf(ssfdc_dev *psm,unsigned char *databuf,unsigned char *redundant)
++{
++    int i;
++    for(i=0x00;i<(((psm->Attribute &MPS)==PS256)?0x100:0x200);i++)
++        *databuf++   =_HwInData(psm);
++    for(i=0x00;i<(((psm->Attribute &MPS)==PS256)?0x08:0x10);i++)
++        *redundant++ =_HwInData(psm);
++}
++ 
++static void _WriteSsfdcBuf(ssfdc_dev *psm, unsigned char *databuf,unsigned char *redundant)
++{
++    int i;
++    for(i=0x00;i<(((psm->Attribute &MPS)==PS256)?0x100:0x200);i++)
++        _HwOutData(psm,*databuf++);
++    for(i=0x00;i<(((psm->Attribute &MPS)==PS256)?0x08:0x10);i++)
++        _HwOutData(psm,*redundant++);
++}
++
++static void _ReadSsfdcWord(ssfdc_dev *psm, unsigned int *pdata)
++{
++    *pdata =_HwInData(psm)*0x100;
++    *pdata|=(unsigned char)_HwInData(psm);
++}
++
++static void _ReadRedtSsfdcBuf(ssfdc_dev *psm,unsigned char *redundant)
++{
++    int i;
++    for(i=0x00;i<(((psm->Attribute &MPS)==PS256)?0x08:0x10);i++)
++        redundant[i] =_HwInData(psm);
++}
++ 
++static void _WriteRedtSsfdcBuf(ssfdc_dev *psm, unsigned char *redundant)
++{
++    char i;
++    for(i=0x00;i<(((psm->Attribute &MPS)==PS256)?0x08:0x10);i++)
++        _HwOutData(psm,*redundant++);
++}
++
++/***************************************************************************
++    Timer Control Subroutine
++ ***************************************************************************/
++#define SHORT_DELAY 1
++
++
++
++
++void _GetDateTime(char *date)
++{
++}
++
++/*
++_WaitTimer(long time) time is in ticks.
++*/
++
++static inline void _WaitTimer(long time)
++{
++}
++
++/***************************************************************************
++    SmartMedia Function Command Subroutine
++ ***************************************************************************/
++void SsfdcReset(ssfdc_dev *psm)
++{
++    _SetSsfdcCmd(psm, SSFDC_RST_CHIP);
++    _CheckSsfdcBusy(psm,BUSY_RESET);
++    _SetSsfdcCmd(psm,SSFDC_READ);
++    _CheckSsfdcBusy(psm,BUSY_READ);
++    _SetSsfdcStandby(psm);
++}
++
++void SsfdcWriteRedtMode(ssfdc_dev *psm)
++{
++    _SetSsfdcCmd(psm,SSFDC_RST_CHIP);
++    _CheckSsfdcBusy(psm,BUSY_RESET);
++    _SetSsfdcCmd(psm,SSFDC_READ_REDT);
++    _CheckSsfdcBusy(psm,BUSY_READ);
++    _SetSsfdcStandby(psm);
++}
++
++void SsfdcReadID(ssfdc_dev *psm, unsigned int *pid)
++{
++    _SetSsfdcCmd(psm,SSFDC_READ_ID);
++    _SetSsfdcChip(psm);
++    _ReadSsfdcWord(psm,pid);
++    _SetSsfdcStandby(psm);
++}
++
++int  SsfdcCheckStatus(ssfdc_dev *psm)
++{
++    _SetSsfdcCmd(psm,SSFDC_RDSTATUS);
++    if(_CheckSsfdcStatus(psm))
++        { _SetSsfdcStandby(psm);      return(ERROR); }
++    _SetSsfdcStandby(psm);
++    return(SUCCESS);
++}
++
++int  SsfdcReadSect(ssfdc_dev *psm, unsigned char *buf,unsigned char *redundant)
++{
++#if DEBUG_SSFDC_READ
++	 printk(KERN_DEBUG "SsfdcReadSect() - Zone %d LogBlock %d, PhyBlock %d, Sector %d\n",
++        psm->Zone, psm->LogBlock, psm->PhyBlock, psm->Sector);
++#endif
++    _SetSsfdcCmd(psm,SSFDC_READ);
++    _SetSsfdcAddr(psm, EVEN);
++    if(_CheckSsfdcBusy(psm,BUSY_READ))
++        { _ResetSsfdcErr(psm);        return(ERROR); }
++    _ReadSsfdcBuf(psm,buf,redundant);
++    if(_CheckSsfdcBusy(psm,BUSY_READ))
++        { _ResetSsfdcErr(psm);        return(ERROR); }
++    if((psm->Attribute &MPS)==PS256) {
++        _SetSsfdcCmd(psm,SSFDC_READ);
++        _SetSsfdcAddr(psm, ODD);
++        if(_CheckSsfdcBusy(psm,BUSY_READ))
++            { _ResetSsfdcErr(psm);    return(ERROR); }
++        _ReadSsfdcBuf(psm,buf+0x100,redundant+0x08);
++        if(_CheckSsfdcBusy(psm,BUSY_READ))
++            { _ResetSsfdcErr(psm);    return(ERROR); }
++    }
++    _SetSsfdcStandby(psm);
++    return(SUCCESS);
++}
++
++int  SsfdcWriteSect(ssfdc_dev *psm, unsigned char *buf, unsigned char *redundant)
++{
++#if DEBUG_SSFDC_WRITESECT
++	printk(KERN_DEBUG "SsfdcWriteSect() - Zone %d LogBlock %d, PhyBlock %d, Sector %d\n", \
++		psm->Zone, psm->LogBlock, psm->PhyBlock, psm->Sector);
++#endif
++    _SetSsfdcCmd(psm,SSFDC_WRDATA);
++    _SetSsfdcAddr(psm,EVEN);
++    _WriteSsfdcBuf(psm,buf,redundant);
++    _SetSsfdcCmd(psm,SSFDC_WRITE);
++    if(_CheckSsfdcBusy(psm,BUSY_PROG))
++        { _ResetSsfdcErr(psm); 
++#if DEBUG_SSFDC_WRITESECT
++			printk(KERN_DEBUG "SsfdcWriteSect() e 1\n");
++#endif
++		return(ERROR); }
++    if((psm->Attribute &MPS)==PS256) {
++        _SetSsfdcCmd(psm,SSFDC_RDSTATUS);
++        if(_CheckSsfdcStatus(psm))
++            { _SetSsfdcStandby(psm);  return(SUCCESS); }
++        _SetSsfdcCmd(psm,SSFDC_WRDATA);
++        _SetSsfdcAddr(psm,ODD);
++        _WriteSsfdcBuf(psm,buf+0x100,redundant+0x08);
++        _SetSsfdcCmd(psm,SSFDC_WRITE);
++        if(_CheckSsfdcBusy(psm,BUSY_PROG))
++            { _ResetSsfdcErr(psm);
++#if DEBUG_SSFDC_WRITESECT
++            printk(KERN_DEBUG "SsfdcWriteSect() e 2\n");
++#endif
++		    return(ERROR); }
++    }
++    _SetSsfdcStandby(psm);
++    return(SUCCESS);
++}
++
++int  SsfdcEraseBlock(ssfdc_dev *psm)
++{
++    _SetSsfdcCmd(psm,SSFDC_ERASE1);
++    _SetSsfdcBlock(psm);
++    _SetSsfdcCmd(psm,SSFDC_ERASE2);
++    if(_CheckSsfdcBusy(psm,BUSY_ERASE) || SsfdcCheckStatus(psm)) { 
++		_ResetSsfdcErr(psm);
++		return(ERROR);
++	}
++    _SetSsfdcStandby(psm);
++    return(SUCCESS);
++}
++
++int  SsfdcReadRedtData(ssfdc_dev *psm, unsigned char *redundant)
++{
++#if DEBUG_SSFDC_READREDT
++	printk(KERN_DEBUG " +");
++#endif
++    _SetSsfdcCmd(psm,SSFDC_READ_REDT);
++    _SetSsfdcAddr(psm,EVEN);
++    if(_CheckSsfdcBusy(psm,BUSY_READ))
++        { _ResetSsfdcErr(psm);        
++#if DEBUG_SSFDC_READREDT
++			printk(KERN_DEBUG " e 1\n");
++#endif
++		return(ERROR); }
++    _ReadRedtSsfdcBuf(psm, redundant);
++    if(_CheckSsfdcBusy(psm,BUSY_READ))
++        { _ResetSsfdcErr(psm);
++#if DEBUG_SSFDC_READREDT
++			printk(KERN_DEBUG " e 2\n");
++#endif
++	        return(ERROR); }
++    if((psm->Attribute &MPS)==PS256) {
++        _SetSsfdcCmd(psm,SSFDC_READ_REDT);
++        _SetSsfdcAddr(psm,ODD);
++        if(_CheckSsfdcBusy(psm,BUSY_READ))
++            { _ResetSsfdcErr(psm);
++#if DEBUG_SSFDC_READREDT
++				printk(KERN_DEBUG " e 3\n");
++#endif
++
++			    return(ERROR); }
++        _ReadRedtSsfdcBuf(psm, redundant+0x08);
++        if(_CheckSsfdcBusy(psm,BUSY_READ))
++            { _ResetSsfdcErr(psm);
++#if DEBUG_SSFDC_READREDT
++				printk(KERN_DEBUG " e 4\n");
++#endif
++			    return(ERROR); }
++    }
++    _SetSsfdcStandby(psm);
++#if DEBUG_SSFDC_READREDT
++	printk(KERN_DEBUG " -\n");
++#endif
++    return(SUCCESS);
++}
++
++int  SsfdcWriteRedtData(ssfdc_dev *psm, unsigned char *redundant)
++{
++    _SetSsfdcCmd(psm,SSFDC_WRDATA);
++    _SetSsfdcAddr(psm,EVEN);
++    _WriteRedtSsfdcBuf(psm,redundant);
++    _SetSsfdcCmd(psm,SSFDC_WRITE);
++    if(_CheckSsfdcBusy(psm,BUSY_PROG))
++        { _ResetSsfdcErr(psm);        return(ERROR); }
++    if((psm->Attribute &MPS)==PS256) {
++        _SetSsfdcCmd(psm,SSFDC_RDSTATUS);
++        if(_CheckSsfdcStatus(psm))
++            { _SetSsfdcStandby(psm);  return(SUCCESS); }
++        _SetSsfdcCmd(psm,SSFDC_WRDATA);
++        _SetSsfdcAddr(psm,ODD);
++        _WriteRedtSsfdcBuf(psm,redundant+0x08);
++        _SetSsfdcCmd(psm,SSFDC_WRITE);
++        if(_CheckSsfdcBusy(psm,BUSY_PROG))
++            { _ResetSsfdcErr(psm);    return(ERROR); }
++    }
++    _SetSsfdcStandby(psm);
++    return(SUCCESS);
++}
++
++/***************************************************************************
++    SmartMedia ID Code Check & Mode Set Subroutine
++ ***************************************************************************/
++int  SetSsfdcModel(ssfdc_dev *psm, unsigned char dcode)
++{
++    switch(_CheckDevCode(dcode))   {
++       	case SSFDC1MB:
++		psm->Model        = SSFDC1MB;
++		psm->Attribute    = FLASH | AD3CYC | BS16 | PS256;
++		psm->MaxZones     = 1;
++		psm->MaxBlocks    = 256;
++		psm->MaxLogBlocks = 250;
++		psm->MaxSectors   = 8;
++		break;
++       	case SSFDC2MB:
++		psm->Model        = SSFDC2MB;
++		psm->Attribute    = FLASH | AD3CYC | BS16 | PS256;
++		psm->MaxZones     = 1;
++		psm->MaxBlocks    = 512;
++		psm->MaxLogBlocks = 500;
++		psm->MaxSectors   = 8;
++		break;
++       	case SSFDC4MB:
++		psm->Model        = SSFDC4MB;
++		psm->Attribute    = FLASH | AD3CYC | BS16 | PS512;
++		psm->MaxZones     = 1;
++		psm->MaxBlocks    = 512;
++		psm->MaxLogBlocks = 500;
++		psm->MaxSectors   = 16;
++		break;
++       	case SSFDC8MB:
++		psm->Model        = SSFDC8MB;
++		psm->Attribute    = FLASH | AD3CYC | BS16 | PS512;
++		psm->MaxZones     = 1;
++		psm->MaxBlocks    = 1024;
++		psm->MaxLogBlocks = 1000;
++		psm->MaxSectors   = 16;
++		break;
++       	case SSFDC16MB:
++		psm->Model        = SSFDC16MB;
++		psm->Attribute    = FLASH | AD3CYC | BS32 | PS512;
++		psm->MaxZones     = 1;
++		psm->MaxBlocks    = 1024;
++		psm->MaxLogBlocks = 1000;
++		psm->MaxSectors   = 32;
++		break;
++       	case SSFDC32MB:
++		psm->Model        = SSFDC32MB;
++		psm->Attribute    = FLASH | AD3CYC | BS32 | PS512;
++		psm->MaxZones     = 2;
++		psm->MaxBlocks    = 1024;
++		psm->MaxLogBlocks = 1000;
++		psm->MaxSectors   = 32;
++		break;
++       	case SSFDC64MB:
++		psm->Model        = SSFDC64MB;
++		psm->Attribute    = FLASH | AD4CYC | BS32 | PS512;
++		psm->MaxZones     = 4;
++		psm->MaxBlocks    = 1024;
++		psm->MaxLogBlocks = 1000;
++		psm->MaxSectors   = 32;
++		break;
++	case SSFDC128MB:
++		psm->Model        = SSFDC128MB;
++		psm->Attribute    = FLASH | AD4CYC | BS32 | PS512;
++		psm->MaxZones     = 8;
++		psm->MaxBlocks    = 1024;
++		psm->MaxLogBlocks = 1000;
++		psm->MaxSectors   = 32;
++		break;
++	default:
++		psm->Model        = NOSSFDC;
++		return(ERROR);
++	}
++	return(SUCCESS);
++}
++
++/***************************************************************************/
++static unsigned char _CheckDevCode(unsigned char dcode)
++{
++    switch(dcode){
++        case 0x6E:
++        case 0xE8:
++        case 0xEC:  return(SSFDC1MB);       /*  8Mbit (1M) NAND */
++        case 0x64:
++        case 0xEA:  return(SSFDC2MB);       /* 16Mbit (2M) NAND */
++        case 0x6B:
++        case 0xE3:
++        case 0xE5:  return(SSFDC4MB);       /* 32Mbit (4M) NAND */
++        case 0xE6:  return(SSFDC8MB);       /* 64Mbit (8M) NAND */
++        case 0x73:  return(SSFDC16MB);      /*128Mbit (16M)NAND */
++        case 0x75:  return(SSFDC32MB);      /*256Mbit (32M)NAND */
++        case 0x76:  return(SSFDC64MB);      /*512Mbit (64M)NAND */
++        case 0x79:  return(SSFDC128MB);     /*  1Gbit(128M)NAND */
++        default:    return(ERROR);
++    }
++}
++/***************************************************************************
++    SmartMedia Power Control Subroutine
++ ***************************************************************************/
++void CntReset(ssfdc_dev *psm)
++{
++    _HwSetStandby(psm);
++    _HwVccOff(psm);
++}
++
++int  CntPowerOn(ssfdc_dev *psm)
++{
++    _HwVccOn(psm);
++    _WaitTimer(TIME_PON);
++    if(_HwChkPower(psm))
++        return(SUCCESS);
++    _HwVccOff(psm);
++    return(ERROR);
++}
++
++#if 0	// remove for now
++static void mediachangetest(unsigned long dev_idx)
++{
++	ssfdc_dev *psm = ssfdc[dev_idx];
++	unsigned int cardpresent;
++	unsigned long flags;
++
++	spin_lock_irqsave( &psm->req_queue_lock, flags );
++	// bjm spin_lock( &psm->req_queue_lock);
++
++	del_timer(&mediachange_timer);
++
++	// check current card presence
++	if ( ! (cardpresent = CntPowerOn(psm)) && psm->CardPresent ) {
++		psm->MediaChange = 1;
++		psm->DataBuf_Valid = 0;
++	}
++	psm->CardPresent = cardpresent;
++
++	// set up to run again...
++	mediachange_timer.function = mediachangetest;
++	mediachange_timer.expires = jiffies + (HZ / 2);
++	mediachange_timer.data = dev_idx;
++	add_timer(&mediachange_timer);
++
++	spin_unlock_irqrestore( &psm->req_queue_lock, flags );
++	// bjm spin_unlock( &psm->req_queue_lock);
++}
++#endif
++
++int  CheckCardExist(ssfdc_dev *psm)
++{
++    char i,j,k;
++    if(! _HwChkStatus(psm))                   /***** Not Status Change *****/
++        if(_HwChkCardIn(psm)) return(SUCCESS);    /* Card exist in Slot */
++    for(i=0,j=0,k=0; i<0x10; i++) {
++        if(_HwChkCardIn(psm))                 /***** Status Change *****/
++             { j++; k=0; }
++        else { j=0; k++; }
++        if(j>3)     return(SUCCESS);            /* Card exist in Slot */
++        if(k>3)     return(ERROR);              /* NO Card exist in Slot */
++        _WaitTimer(TIME_CDCHK);
++    }
++    return(ERROR);
++}
++
++int  CheckSsfdcWP(ssfdc_dev *psm)
++{   /* ERROR: WP, SUCCESS: Not WP */
++    char i;
++    for(i=0; i<0x08; i++) {
++        if(_HwChkWP(psm))
++            return(ERROR);
++        _WaitTimer(TIME_WPCHK);
++    }
++    return(SUCCESS);
++}
++
++/******************************************/
++int  CheckCISdata(unsigned char *buf,unsigned char *redundant)
++{
++    static unsigned char cis[]={ 0x01,0x03,0xD9,0x01,0xFF,0x18,0x02,0xDF,0x01,0x20 };
++    unsigned char ecc1,ecc2,ecc3;
++    unsigned int err;
++    calculate_ecc(ecctable,buf,&ecc1,&ecc2,&ecc3);
++    err=correct_data(buf,redundant+0x0D,ecc1,ecc2,ecc3);
++    if(err==0 || err==1 || err==2)
++        return(StringCmp(buf,cis,10));
++    buf+=0x100;
++    calculate_ecc(ecctable,buf,&ecc1,&ecc2,&ecc3);
++    err=correct_data(buf,redundant+0x08,ecc1,ecc2,ecc3);
++    if(err==0 || err==1 || err==2)
++        return(StringCmp(buf,cis,10));
++    return(ERROR);
++}
++
++int  CheckECCdata(unsigned char *buf,unsigned char *redundant)
++{
++    unsigned char ecc1,ecc2,ecc3;
++    unsigned int err, corr=SUCCESS;
++    calculate_ecc(ecctable,buf,&ecc1,&ecc2,&ecc3);
++    err=correct_data(buf,redundant+0x0D,ecc1,ecc2,ecc3);
++    if(err==1 || err==2)    corr=CORRECT;
++    else if(err)            return(ERROR);
++    buf+=0x100;
++    calculate_ecc(ecctable,buf,&ecc1,&ecc2,&ecc3);
++    err=correct_data(buf,redundant+0x08,ecc1,ecc2,ecc3);
++    if(err==1 || err==2)    corr=CORRECT;
++    else if(err)            return(ERROR);
++    return(corr);
++}
++
++void SetECCdata(unsigned char *buf,unsigned char *redundant)
++{
++    calculate_ecc(ecctable,buf,redundant+0x0E,redundant+0x0D,redundant+0x0F);
++    buf+=0x100;
++    calculate_ecc(ecctable,buf,redundant+0x09,redundant+0x08,redundant+0x0A);
++}
++
++/***************************************************************************
++	Power Control & Media Exist Check Function
++ ***************************************************************************/
++
++/***************************************************************************
++	SmartMedia Read/Write/Erase Function
++ ***************************************************************************/
++static int MediaReadSector(ssfdc_dev *psm, struct request *req,
++				char * bbuf, long start,int count)
++{
++	char *buf;
++	int i, err, request_complete, 
++		PrevBlock = NO_ASSIGN;
++	int read_status=0;
++
++	if (ConvMediaAddr(psm, start)) {
++		printk(KERN_ERR "MediaReadSector() - bad address conversion\n");
++		goto read_exit;
++	}
++
++	psm->ReqSectorSize = count;
++	psm->BufIndex = 0;
++	psm->RetryCount = 0;
++
++#if DEBUG_SSFDC_READ
++	printk(KERN_DEBUG "MediaReadSector() - read %d sectors @ %d\n", psm->ReqSectorSize, start);
++#endif
++	while (psm->ReqSectorSize) {
++    	// if this PhyBlock is not assigned, fill with dummy data and return
++    	// An assigned block results in a card access and readsector schedule...
++    		if (psm->PhyBlock == NO_ASSIGN) {
++#if DEBUG_SSFDC_READ
++			printk(KERN_DEBUG "Read NO_ASSIGN block %x\n", psm->PhyBlock);
++#endif
++			buf = bbuf + psm->BufIndex;
++			for(i=0; i<SSFDC_SECTSIZE; i++)
++				*buf++=DUMMY_DATA;
++		}
++	    else {
++			// send our command
++			if (PrevBlock != psm->PhyBlock) {
++#if DEBUG_SSFDC_READ
++	printk(KERN_DEBUG "Read block %x\n", psm->PhyBlock);
++#endif
++				PrevBlock = psm->PhyBlock;
++				_SetSsfdcCmd(psm,SSFDC_READ);
++				_SetSsfdcAddr(psm, EVEN);
++				for (i=0; i<5; ++i) {
++					if (!_HwChkBusy(psm))
++						break;
++					udelay(10);
++				}
++			}
++
++
++			if ( _HwChkBusy(psm) ) {
++				++psm->Sect_rd_errs_ttl;
++#if DEBUG_SSFDC_READ
++				printk(KERN_DEBUG "MediaReadSector() - Hardware busy!\n");
++#endif
++			}
++			else {
++				++psm->Sector_reads;
++				_ReadSsfdcBuf( psm, psm->SectBuf, psm->Redundant);
++
++				// verify the integrity of what was read
++				if (CheckDataStatus(psm->Redundant)) {
++#if DEBUG_SSFDC_READ
++					printk(KERN_DEBUG "Bad Data Status\n");
++#endif
++					goto error_state;
++				}
++
++				switch (err = CheckECCdata(psm->SectBuf,psm->Redundant))
++				{
++					case CORRECT:
++						// Correctable data, fix and copy like SUCCESS
++						SetECCdata(psm->SectBuf,psm->Redundant);
++					case SUCCESS:
++						memcpy(bbuf + psm->BufIndex, psm->SectBuf, SSFDC_SECTSIZE);
++						break;
++
++					case ERROR:
++error_state:
++						++psm->Sect_rd_errs_ttl;
++#if DEBUG_SSFDC_READ
++						printk(KERN_DEBUG "readsector() - err == ERROR\n");
++#endif
++						_ResetSsfdcErr(psm);
++						if (++psm->RetryCount < RD_RETRY_LIMIT) {
++							continue;
++						}
++						break;
++					default:
++						ssfdc_terminate_request( psm, req);
++						break;
++				}
++ 
++			}	// if ( _HwChkBusy(psm) )
++		}	// if (psm->PhyBlock == NO_ASSIGN)
++
++		// common req/buffer management code for either unassigned or assigned
++		// block from /dev/ssfdc
++		psm->RetryCount = 0;
++		psm->BufIndex += SSFDC_SECTSIZE;
++		request_complete = (--psm->ReqSectorSize == 0);
++        	if (request_complete) {
++			// completed the read, req->buffer now has requested sector(s).
++        		// End the request waking sleeping process and reschedule initxfer().
++#if DEBUG_SSFDC_READ
++			printk(KERN_DEBUG "readsector() - req %x complete\n", req);
++#endif
++			read_status = 1;
++		}
++		else if (IncMediaAddr(psm)) {
++			printk(KERN_DEBUG "readsector() - IncMediaAddr() error.\n");
++			goto read_exit;
++		}
++	}	// while (psm->ReqSectorSize)
++
++read_exit:
++	psm->XferState = xfer_idle;
++
++	return read_status;
++
++}
++
++/*
++	ReadBlkCopy(ssfdc_dev *psm, unsigned char *buf)
++*/
++int ReadBlkCopy(ssfdc_dev *psm, unsigned char *buf, char *rd_sector_status)
++{
++	int err, read_error=0, rw_retry=0;
++	unsigned long PrevBlock=NO_ASSIGN;
++
++	if ( ! buf ) {
++		printk(KERN_ERR "NULL buffer pointer\n");
++		return ERROR;
++	}
++
++	if (psm->PhyBlock == NO_ASSIGN) {
++		memset(buf, 0xff, psm->MaxSectors * SSFDC_SECTSIZE);
++		memset(rd_sector_status, 1, sizeof(char) * MAX_SECTNUM);
++		return SUCCESS;
++	}
++
++#if 0
++	printk(KERN_ERR "ReadBlkCopy() - LogBlk %d\n", psm->LogBlock);
++#endif
++
++	for (psm->Sector = 0; 
++		psm->PhyBlock != NO_ASSIGN && psm->Sector < psm->MaxSectors; 
++		++psm->Sector) 
++	{
++		if (PrevBlock != psm->PhyBlock) {
++			_SetSsfdcCmd(psm,SSFDC_READ);
++			_SetSsfdcAddr(psm, EVEN);
++			PrevBlock = psm->PhyBlock;
++			_CheckSsfdcBusy(psm, BUSY_ADDR_SET);
++		}
++
++		if ( _HwChkBusy(psm) ) {
++			printk(KERN_ERR "%s: HW busy during block copy!\n", MAJOR_NAME);
++			goto error_state;
++		}
++
++		_ReadSsfdcBuf( psm, psm->SectBuf, psm->Redundant);
++		if (CheckDataStatus(psm->Redundant)) {
++			printk("KERN_ERR reading Block %d, sector %d\n", psm->PhyBlock, psm->Sector);
++			goto error_state;
++		}
++
++		// Attempt to correct
++		switch (err = CheckECCdata(psm->SectBuf,psm->Redundant))
++		{
++			case CORRECT:
++#if DEBUG_SSFDC_WRITE
++				printk(KERN_DEBUG "ReadBlkCopy() - err == CORRECT\n");
++#endif
++				SetECCdata(psm->SectBuf,psm->Redundant);
++			case SUCCESS:
++				read_error = 0;
++				rw_retry = 0;
++				memcpy(buf + (psm->Sector * SSFDC_SECTSIZE), psm->SectBuf, SSFDC_SECTSIZE);
++				rd_sector_status[psm->Sector] = 1;
++				read_error = 0;
++				break;
++
++			case ERROR:
++error_state:
++/*bjm*/ printk("ERR - ECC error reading Block %d, Sector %d\n", psm->PhyBlock,psm->Sector);
++#if DEBUG_SSFDC_WRITE
++				printk(KERN_DEBUG "ReadBlkCopy() - err == ERROR\n");
++				printk("_ResetSsfdcErr(psm)\n");
++#endif
++				_ResetSsfdcErr(psm);
++				PrevBlock = NO_ASSIGN;
++				if (++rw_retry < RD_RETRY_LIMIT) {
++					// retry current Sector/loop counter on next loop iteration.
++					--psm->Sector;
++				}
++				else {
++					// set sector data in copy buf to the unassigned value 0xFF
++					// next loop iteration will read next Sector, zero RetryCount 
++					// for next sectors read
++					// map bad sector...
++					memset(buf + psm->Sector * SSFDC_SECTSIZE, 0xFF, SSFDC_SECTSIZE);
++					rw_retry = 0;
++					rd_sector_status[psm->Sector] = 0;
++					++psm->Sect_rd_errs_ttl;
++					read_error = 1;
++				}
++#if DEBUG_SSFDC_WRITE
++				printk(KERN_DEBUG "Unable to read Blk %d Sector %d\n", psm->PhyBlock, psm->Sector);
++#endif
++				break;
++		}
++	}
++	if (!read_error) {
++		if (SsfdcEraseBlock(psm)) {
++			MarkFailPhyOneBlock(psm);
++			++psm->Bad_blks_erase;
++		}
++		else {
++			ClrBit(psm->Assign[psm->Zone], psm->PhyBlock);
++		}
++	}
++	else {
++		printk("Read error block %d\n", psm->PhyBlock);
++		MarkFailPhyOneBlock(psm);
++	}
++	psm->Sector = 0;
++	return read_error ? ERROR : SUCCESS;
++}
++
++/*
++	WriteBlock()
++*/
++int WriteBlock(ssfdc_dev *psm, char *buf, char *wr_sector_status)
++{
++	int write_error=0, reassign_retry=0;
++
++	for ( reassign_retry = 0; reassign_retry < REASSIGN_RETRY_LIMIT; ++reassign_retry)
++	{
++		/*
++		assign new write block for write req
++			- set new write address
++			- write buffer to new block
++		*/
++#if DEBUG_SSFDC_WRITE
++		if (AssignWriteBlock(psm,1)) {
++#else
++		if (AssignWriteBlock(psm,0)) {
++#endif
++			write_error = 1;
++			printk(KERN_ERR "sm%dd Unable to assign new write block.\n", psm->sm_minor); 
++			memset(wr_sector_status, 1, sizeof(char) * MAX_SECTNUM); 
++			// ssfdc_terminate_request(psm, req);
++			return ERROR;
++		}
++
++#if 0
++		printk(KERN_ERR "WriteBlock() - LogBlock %d\n", psm->LogBlock);
++#endif
++
++		for (psm->Sector = 0; psm->Sector < psm->MaxSectors; ++psm->Sector)
++		{
++			memcpy(psm->SectBuf,buf+psm->Sector*SSFDC_SECTSIZE,SSFDC_SECTSIZE);
++
++			_SetSsfdcCmd(psm,SSFDC_WRDATA);
++			_SetSsfdcAddr(psm,EVEN);
++			ClrRedundantData(psm->Redundant);
++			SetLogBlockAddr(psm,psm->Redundant);
++			SetECCdata(psm->SectBuf,psm->Redundant);
++			_WriteSsfdcBuf(psm,psm->SectBuf,psm->Redundant);
++
++#if DEBUG_SSFDC_WRITE
++			printk("%d ", psm->Sector);
++#endif
++
++			_SetSsfdcCmd(psm, SSFDC_WRITE);
++			if ( ! _CheckSsfdcBusy(psm, BUSY_PROG) && !SsfdcCheckStatus(psm)) {
++#if DEBUG_SSFDC_WRITE
++				printk("\nMulti-Sector write OK!\n");
++#endif
++				_SetSsfdcStandby(psm);
++				// mark status a success
++				wr_sector_status[psm->Sector] = 1;
++
++#if 0	// bjm removed
++				{	unsigned char parbuf[SSFDC_SECTSIZE];
++					unsigned char redtpar[REDTSIZE];
++
++					_SetSsfdcCmd(psm,SSFDC_READ);
++					_SetSsfdcAddr(psm, EVEN);
++
++					udelay(30);
++					if ( _HwChkBusy(psm) ) {
++						_ResetSsfdcErr(psm);
++						printk("paranoid read failure\n");
++					}
++					else {
++						_ReadSsfdcBuf(psm, parbuf, redtpar);
++						if (CheckDataStatus(redtpar)) {
++							printk("paranoid read, bad data status\n");
++						}
++						else {
++							switch( err = CheckECCdata(parbuf,redtpar))
++							{
++								case CORRECT:
++									printk("paranoid correctable\n");
++									SetECCdata(parbuf,redtpar);
++								case SUCCESS:
++									if (memcmp(parbuf,psm->SectBuf, SSFDC_SECTSIZE))
++										write_error = 1;
++									else
++										write_error = 0;
++									break;
++								case ERROR:
++									MarkFailPhyOneBlock(psm);
++									write_error=1;
++									break;
++							}
++						}
++					}
++				}	// bjm end of paranoid read back test...
++#endif
++			}
++			else {
++#if DEBUG_SSFDC_WRITE
++				printk("\nMulti-Sector write FAILED!\n");
++#endif
++				// mark status a failure
++				wr_sector_status[psm->Sector] = 0;
++				_ResetSsfdcErr(psm);
++				write_error = 1;
++				break;
++			}	// for (psm->Sector ...)
++			if (write_error)
++				break;
++		}
++		if ( ! write_error ) {
++			psm->Log2Phy[psm->Zone][psm->LogBlock] = psm->WriteBlock;	
++			break;
++		}
++	}
++	psm->Sector = 0;
++	return write_error ? ERROR : SUCCESS;
++}
++
++/* 
++	MediaWriteSector()
++
++*/
++static int MediaWriteSector(ssfdc_dev *psm, struct request *req, char * bbuf, long start, int count)
++{
++	int write_error=0, unwritten_block=0;
++	char *buf;
++	unsigned long curr_sector, blksize, PrevBlock;
++	unsigned long writebuf_index, readbio_index;
++	int i, sector,  rw_retry=0;
++	int sectors_in_block;
++	char rd_sector_status[MAX_SECTNUM];
++	char wr_sector_status[MAX_SECTNUM];
++
++	// optimized write, new vars
++	int	bio_endios=0;
++	int	bio_bvecs=0;
++	struct bio *bio;
++	// optimized for write
++
++#if DEBUG_SSFDC_WRITE
++	printk(KERN_DEBUG "+MediaWriteSector()\n");
++#endif
++
++	if (!count) {
++		printk("MediaWriteSector() count == 0!\n");
++		ssfdc_end_request(psm, req, 0);
++		return 1;
++	}
++
++	if (CheckMediaWP(psm)) {
++		printk(KERN_DEBUG "%s: write protected media.\n", MAJOR_NAME);
++		ssfdc_terminate_request( psm, req);
++		psm->XferState = xfer_idle;
++		return -EIO;
++	}
++
++	// allocate block size buffer
++	blksize = psm->MaxSectors * SSFDC_SECTSIZE;
++#if DEBUG_SSFDC_WRITE
++	printk(KERN_DEBUG "%s: Allocate %d sized block.\n", MAJOR_NAME, blksize);
++#endif
++	if ((buf = kmalloc(blksize, GFP_ATOMIC)) == NULL) {
++		printk(KERN_ERR "%s: Null buffer allocated!\n", MAJOR_NAME);
++		ssfdc_terminate_request( psm, req);
++		goto the_exit;
++	}
++
++	/*
++		Loop to handle a request at the curr_sector of count sectors.
++		The write operation my encompas more than one phys block.
++	*/
++	curr_sector = start;
++	sectors_in_block = 0;
++	// zero out our sector R/W status array
++	memset(rd_sector_status, 1, sizeof(char) * MAX_SECTNUM);
++	memset(wr_sector_status, 1, sizeof(char) * MAX_SECTNUM);
++
++	// rangecheck this sector within the device.
++	if (ConvMediaAddr(psm, curr_sector)) {
++		ssfdc_terminate_request(psm, req);
++		printk(KERN_ERR "WriteSector: ConvMediaAddr() error\n");
++#if DEBUG_SSFDC_WRITE
++		printk(KERN_DEBUG "-MediaWriteSector()\n");
++#endif
++		return 0;
++	}
++	
++#if DEBUG_SSFDC_WRITE
++		printk(KERN_DEBUG "MediaWriteSector() Zone %d, LogBlock %d PhyBlock %d, Sector %d\n",
++						psm->Zone,psm->LogBlock, psm->PhyBlock,psm->Sector);
++#endif
++
++	PrevBlock = NO_ASSIGN;
++	rw_retry = 0;
++
++#if DEBUG_SSFDC_WRITE
++	printk(KERN_DEBUG "Copy Zone %d, Phys %d\n", psm->Zone, psm->PhyBlock);
++#endif
++	// As a technique for wear leveling, a write to the SM results in the contents
++	// of the block to be copied into a blocksize buffer, the write data of the 
++	// write request being overlayed onto the buffer containing the copied block,
++	// a new logical to physical mapping defined, and the buffer written into this
++	// newly mapped (logically) physical block.
++
++	// read the physical block into the buffer.
++#if DEBUG_SSFDC_WRITE
++	printk(KERN_DEBUG "ReadBlock = %d LogBlock %d\n", psm->PhyBlock, psm->LogBlock);
++#endif
++	if (ReadBlkCopy(psm, buf, rd_sector_status) != SUCCESS) {
++		printk(KERN_ERR "Unable to read block.\n");
++		goto the_exit;
++	}
++
++#if DEBUG_SSFDC_WRITE
++	printk(KERN_DEBUG "Read from pending write request ");
++#endif
++		
++#if 0
++	int bio_idx=0;
++#endif
++	rq_for_each_bio(bio, req) {
++		struct bio_vec *bvec;
++		int i, break_flag=0;
++#if 0
++		int segment_idx;
++		printk(KERN_ERR "bio %d\n", bio_idx++);
++
++		segment_idx = 0;
++#endif
++		// bio_bvecs = 0;
++		bio_for_each_segment(bvec, bio, i) {
++#if 0
++			printk(KERN_ERR "segment %d\n", segment_idx++);
++#endif
++			// The conditions...
++			// bio fits within block
++			if (WriteReqInCurrBlk(psm,curr_sector + (bvec->bv_len >> 9) - 1,&sector)
++				&& WriteReqInCurrBlk(psm,curr_sector, &sector))
++			{
++#if 0
++				printk(KERN_ERR "LogBlk %d: write at %d, %d sectors\n", 
++							psm->LogBlock, curr_sector % psm->MaxSectors, bio_cur_sectors(bio));
++#endif
++				// write bio into copied block
++				++bio_bvecs;
++				writebuf_index = sector * SSFDC_SECTSIZE;
++#if 0
++				printk(KERN_ERR "memcpy buf at 0x%x, 0x%x bytes\n",
++						writebuf_index, bvec->bv_len);
++#endif
++				memcpy(buf + writebuf_index, 
++						page_address(bvec->bv_page) + bvec->bv_offset, bvec->bv_len);
++				unwritten_block = 1;
++				curr_sector += bvec->bv_len >> 9;
++			}
++			// bio fits partially within block
++			else if (WriteReqInCurrBlk(psm,curr_sector, &sector))
++			{
++				// put portion of bio in block
++				++bio_bvecs;
++				writebuf_index = sector * SSFDC_SECTSIZE;
++				sectors_in_block = psm->MaxSectors - sector;
++				readbio_index = sectors_in_block * SSFDC_SECTSIZE;
++#if 0
++				printk(KERN_ERR "memcpy buf at %x, %x bytes\n",
++						writebuf_index, readbio_index);
++#endif
++				memcpy(buf + writebuf_index, 
++					page_address(bvec->bv_page) + bvec->bv_offset, readbio_index);
++#if 0
++				printk(KERN_ERR "LogBlk %d: partial-write at %d, %d sectors first\n",
++								psm->LogBlock, curr_sector % psm->MaxSectors, sectors_in_block);
++#endif
++				// write block
++				unwritten_block = 0;
++				if (WriteBlock(psm, buf, wr_sector_status) != SUCCESS) {
++					printk(KERN_ERR "Unable to write block %d\n", psm->LogBlock);
++					// write_error - writing this block failed
++					break_flag = 1;
++					break;
++				}
++				// incr addr & read next block, 
++				curr_sector += sectors_in_block;
++				if (ConvMediaAddr(psm,curr_sector) != SUCCESS) {
++					printk(KERN_ERR "MediaWriteSector() IncMediaAddr() error!\n");
++					// write_error - address into next block is bogus
++					write_error = 1;
++					break_flag = 1;
++					break;
++				}
++				if (ReadBlkCopy(psm, buf, rd_sector_status) != SUCCESS) {
++					printk(KERN_ERR "MediaWriteSector() ReadBlkCopy() error!\n");
++					// write error - next block read error
++					write_error = 1;
++					break_flag =1;
++					break;
++				}
++				// write remainder of bio into block
++#if 0
++				printk(KERN_ERR "LogBlk %d: partial-write at %d, %d sectors, second write\n",
++					psm->LogBlock, curr_sector % psm->MaxSectors, (bvec->bv_len >> 9) - sectors_in_block);
++#endif
++#if 0
++				printk(KERN_ERR "memcpy buf at 0x%x, from bio 0x%x, for 0x%x bytes\n",
++						0, readbio_index, ((bvec->bv_len >> 9) - sectors_in_block) * SSFDC_SECTSIZE);
++#endif
++				memcpy(buf, (page_address(bvec->bv_page) + bvec->bv_offset) + readbio_index,
++								((bvec->bv_len >> 9) - sectors_in_block) * SSFDC_SECTSIZE);
++				writebuf_index = ((bvec->bv_len >> 9) - sectors_in_block) * SSFDC_SECTSIZE;
++				unwritten_block = 1;
++				curr_sector += (bvec->bv_len >> 9) - sectors_in_block;
++			}
++			// bio is not in block at all.  coplete unwritten block and exit loop.
++			else {
++				// write current block
++#if 0
++				printk(KERN_ERR "bio no longer in block\n");
++#endif
++				if (unwritten_block) {
++					if (WriteBlock(psm, buf, wr_sector_status) != SUCCESS) {
++						printk(KERN_ERR "MediaWriteSector() WriteBlock() error!\n");
++						// write_error
++					}
++					unwritten_block = 0;
++				}
++				break_flag = 1;
++				break;
++			}
++		}
++		// bjm if (bio_bvecs) +bio_bvecs;
++
++		if (break_flag)
++			break;
++	}
++
++	if (unwritten_block) {
++		if (WriteBlock(psm, buf, wr_sector_status) != SUCCESS) {
++			printk(KERN_ERR "MediaWriteSector() WriteBlock() error!\n");
++			write_error = 1;
++		}
++	}
++
++	if (!(bio_endios=bio_bvecs)) {
++		if (static_ssfdc_debug)
++			printk("no bios from request!\n");
++		++bio_endios;
++		write_error = 0;
++	}
++
++the_exit:
++	// log sector status for the copied/unmodified Sectors and flag any that have cpy errors
++	for (sector = 0; sector < psm->MaxSectors; ++sector) {
++		if ( ! rd_sector_status[sector] )
++			printk(KERN_ERR "%s: READ sector %d invalid for block %d!\n", \
++					MAJOR_NAME, sector, psm->LogBlock); 
++		if ( ! wr_sector_status[sector])
++			printk(KERN_ERR "%s: WRITTEN sector %d invalid for block %d!\n", \
++					MAJOR_NAME, sector, psm->LogBlock); 
++	}
++
++	// free our prev allocated block for copy...
++	if (buf)
++		kfree(buf);
++
++	psm->XferState = xfer_idle;
++
++#if DEBUG_SSFDC_WRITE
++	printk(KERN_DEBUG "-MediaWriteSector()\n");
++#endif
++	if (static_ssfdc_debug)
++		printk("end_request(%d) ", ! write_error);
++	for (i = 0; i < bio_endios; ++i) {
++		if (static_ssfdc_debug)
++			printk("%d ", i);
++		ssfdc_end_request(psm, req, ! write_error);
++	}
++	if (static_ssfdc_debug)
++		printk("\n");
++
++	return ! write_error;
++
++}
++
++
++/***************************************************************************
++	SmartMedia Logical Format Subroutine
++ ***************************************************************************/
++int CheckLogCHS(ssfdc_dev *psm, unsigned int *c,unsigned char *h,unsigned char *s)
++{
++	switch(psm->Model) {
++		case SSFDC1MB:  	*c=125;	*h= 4;	*s= 4;	break;
++		case SSFDC2MB:  	*c=125;	*h= 4;	*s= 8;	break;
++		case SSFDC4MB:  	*c=250;	*h= 4;	*s= 8;	break;
++		case SSFDC8MB:  	*c=250;	*h= 4;	*s=16;	break;
++		case SSFDC16MB: 	*c=500;	*h= 4;	*s=16;	break;
++		case SSFDC32MB: 	*c=500;	*h= 8;	*s=16;	break;
++		case SSFDC64MB: 	*c=500;	*h= 8;	*s=32;	break;
++		case SSFDC128MB:	*c=500;	*h=16;	*s=32;	break;
++		default:
++        	*c= 0; *h= 0; *s= 0;
++			psm->ErrCode=ERR_NoSmartMedia;
++			return(ERROR);
++	}
++	return(SUCCESS);
++}
++/***************************************************************************
++	Power Control & Media Exist Check Subroutine
++ ***************************************************************************/
++
++int CheckMediaWP(ssfdc_dev *psm)
++{
++	if(psm->Attribute &MWP)
++		{ psm->ErrCode=ERR_WrtProtect;	return(ERROR); }
++	return(SUCCESS);
++}
++
++/***************************************************************************
++	SmartMedia Physical Address Control Subroutine
++ ***************************************************************************/
++int ConvMediaAddr(ssfdc_dev *psm, long addr)
++{
++	long temp;
++	temp          =addr/psm->MaxSectors;
++	psm->Sector  =addr%psm->MaxSectors;
++	psm->LogBlock=temp%psm->MaxLogBlocks;
++	psm->Zone    =temp/psm->MaxLogBlocks;
++	if(psm->Zone<psm->MaxZones) {
++		ClrRedundantData(psm->Redundant);
++		SetLogBlockAddr(psm,psm->Redundant);
++		psm->PhyBlock=psm->Log2Phy[psm->Zone][psm->LogBlock];
++#if DEBUG_SSFDC_ASSIGNRELEASE
++		printk(KERN_DEBUG "ConvMediaAddr() LogBlock %d -> PhyBlock %d\n", 
++			psm->LogBlock, psm->PhyBlock);
++#endif
++		return(SUCCESS);
++	}
++	psm->ErrCode=ERR_OutOfLBA;
++	return(ERROR);
++}
++
++int IncMediaAddr(ssfdc_dev *psm)
++{
++	if(++psm->Sector<psm->MaxSectors)
++		return(SUCCESS);
++	psm->Sector=0;
++	if(++psm->LogBlock<psm->MaxLogBlocks) {
++		ClrRedundantData(psm->Redundant);
++		SetLogBlockAddr(psm,psm->Redundant);
++		psm->PhyBlock=psm->Log2Phy[psm->Zone][psm->LogBlock];
++#if DEBUG_SSFDC_ASSIGNRELEASE
++		printk(KERN_DEBUG "IncMediaAddr() PhyBlock %d <- LogBlock %d\n", 
++			psm->PhyBlock, psm->LogBlock);
++#endif
++		return(SUCCESS);
++	}
++	psm->LogBlock=0;
++	if(++psm->Zone<psm->MaxZones) {
++		ClrRedundantData(psm->Redundant);
++		SetLogBlockAddr(psm,psm->Redundant);
++		psm->PhyBlock=psm->Log2Phy[psm->Zone][psm->LogBlock];
++#if DEBUG_SSFDC_ASSIGNRELEASE
++		printk(KERN_DEBUG "IncMediaAddr() PhyBlock %d <- LogBlock %d\n", 
++			psm->PhyBlock, psm->LogBlock);
++#endif
++		return(SUCCESS);
++	}
++	psm->Zone=0;
++	psm->ErrCode=ERR_OutOfLBA;
++	return(ERROR);
++}
++
++/***************************************************************************/
++
++
++static int WriteReqInCurrBlk(ssfdc_dev *psm, long sector, int *blksector)
++{
++	long temp;
++	unsigned char   Zone;         /* Zone Number */
++	unsigned int    LogBlock;     /* Logical Block Number of Zone */
++
++	if (!psm)
++		return 0;
++
++	temp = sector / psm->MaxSectors;
++	*blksector = sector % psm->MaxSectors;
++	LogBlock = temp % psm->MaxLogBlocks;
++	Zone = temp / psm->MaxLogBlocks;
++
++	return (psm->LogBlock == LogBlock && psm->Zone == Zone);
++}
++
++/***************************************************************************
++	SmartMedia Read/Write Subroutine with Retry
++ ***************************************************************************/
++
++/***************************************************************************
++	SmartMedia Physical Block Assign/Release Subroutine
++ ***************************************************************************/
++int AssignWriteBlock(ssfdc_dev *psm, int verbose_flag)
++{
++	psm->ReadBlock=psm->PhyBlock;
++#if DEBUG_SSFDC_WRITE
++	int Zonesave=psm->Zone, ZoneIndex;
++#endif
++
++#if DEBUG_SSFDC_WRITE
++	if (verbose_flag) {
++		printk("AssignWriteBlock() verbose mode. psm->Zone %d\n",psm->Zone);
++		for (psm->Zone = 0; psm->Zone < psm->MaxZones; psm->Zone++) {
++			int free_blk=0;
++			printk("\tZone %d, AssignStart %d and ", psm->Zone, psm->AssignStart[psm->Zone]);
++			for (psm->WriteBlock=0; psm->WriteBlock < psm->MaxLogBlocks; psm->WriteBlock++)
++				if (! ChkBit(psm->Assign[psm->Zone],psm->WriteBlock)) ++free_blk;
++			printk("%d free blocks.\n", free_blk);
++		}
++		psm->Zone = Zonesave;
++	}
++#endif
++	for(psm->WriteBlock=psm->AssignStart[psm->Zone]; psm->WriteBlock<psm->MaxBlocks; psm->WriteBlock++)
++		if(! ChkBit(psm->Assign[psm->Zone],psm->WriteBlock)) {
++			SetBit(psm->Assign[psm->Zone],psm->WriteBlock);
++			psm->AssignStart[psm->Zone]=psm->WriteBlock+1;
++			psm->PhyBlock=psm->WriteBlock;
++			psm->SectCopyMode=REQ_ERASE;
++#if DEBUG_SSFDC_ASSIGNRELEASE
++    printk(KERN_DEBUG "AssignWriteBlock() - WriteBlock %d ReadBlock %d LogBlock %d\n",
++            psm->WriteBlock, psm->ReadBlock, psm->LogBlock);
++#endif
++			return(SUCCESS);
++		} 
++	for(psm->WriteBlock=0; psm->WriteBlock<psm->AssignStart[psm->Zone]; psm->WriteBlock++)
++		if(! ChkBit(psm->Assign[psm->Zone],psm->WriteBlock)) {
++			SetBit(psm->Assign[psm->Zone],psm->WriteBlock);
++			psm->AssignStart[psm->Zone]=psm->WriteBlock+1;
++			psm->PhyBlock=psm->WriteBlock;
++			psm->SectCopyMode=REQ_ERASE;
++#if DEBUG_SSFDC_ASSIGNRELEASE
++    printk(KERN_DEBUG "AssignWriteBlock() - WriteBlock %d PhyBlock %d LogBlock %d\n",
++            psm->WriteBlock, psm->PhyBlock, psm->LogBlock);
++#endif
++			return(SUCCESS);
++		}
++	psm->WriteBlock=NO_ASSIGN;
++	psm->ErrCode=ERR_WriteFault;
++	return(ERROR);
++}
++
++/***************************************************************************
++	SmartMedia Physical Format Check Local Subroutine
++ ***************************************************************************/
++static int SetPhyFmtValue(ssfdc_dev *psm)
++{
++	unsigned int idcode;
++	SsfdcReadID(psm, &idcode);
++	if(SetSsfdcModel(psm,(unsigned char)idcode))
++		return(ERROR);
++	if(CheckSsfdcWP(psm))
++	 	psm->Attribute|=WP;
++	return(SUCCESS);
++}
++
++static int SearchCIS(ssfdc_dev *psm, unsigned int *pcis)
++{
++	psm->Zone=0;	psm->Sector=0;
++	for(psm->PhyBlock=0; psm->PhyBlock<(psm->MaxBlocks-psm->MaxLogBlocks-1); psm->PhyBlock++) {
++		if(SsfdcReadRedtData(psm, psm->Redundant))
++			{ SsfdcReset(psm);	 	return(ERROR); }  
++		if(! CheckFailBlock(psm->Redundant)) {
++			if(CheckCisBlock(psm->Redundant))
++				{ SsfdcReset(psm);	return(ERROR); }  
++			break;
++		}
++	}
++	while(psm->Sector<psm->MaxSectors) {
++		if(psm->Sector)
++			if(SsfdcReadRedtData(psm, psm->Redundant))
++				{ SsfdcReset(psm);	return(ERROR); } 
++		if(! CheckDataStatus(psm->Redundant)) {
++			if(SsfdcReadSect(psm,psm->WorkBuf,psm->Redundant))
++				{ SsfdcReset(psm);	return(ERROR); } 
++			if(CheckCISdata(psm->WorkBuf,psm->Redundant))
++				{ SsfdcReset(psm);	return(ERROR); }
++			*pcis=psm->PhyBlock;
++			SsfdcReset(psm); 
++			return(SUCCESS);
++		}
++		psm->Sector++;
++	}
++	SsfdcReset(psm); 
++	return(ERROR);
++}
++
++/***************************************************************************/
++static int MakeLogTable(ssfdc_dev *psm, unsigned int start)
++{
++	unsigned int block;
++	unsigned int blk_total=0, blk_blank=0, blk_nologaddr=0,
++				 blk_fail=0, blk_assigned=0;
++
++#if DEBUG_SSFDC
++	printk(KERN_DEBUG "MakeLogTable()\n");
++#endif
++	psm->DataBuf_Valid = 1;
++	psm->Sector=0;
++	for(psm->Zone=0; psm->Zone<psm->MaxZones; psm->Zone++) {
++		/* set all LogBlocks to NO_ASSIGN */
++		for(psm->LogBlock=0; psm->LogBlock<psm->MaxLogBlocks; psm->LogBlock++)
++			psm->Log2Phy[psm->Zone][psm->LogBlock]=NO_ASSIGN;
++		/* for all Assigns[zone][PhyBlock] = 0x00 */
++		for(psm->PhyBlock=0; psm->PhyBlock<(MAX_BLOCKNUM/8); psm->PhyBlock++)
++			psm->Assign[psm->Zone][psm->PhyBlock]=0x00;
++		/*******************************************************************/
++		for(psm->PhyBlock=0; psm->PhyBlock<psm->MaxBlocks; psm->PhyBlock++) {
++			if((! psm->Zone) && (psm->PhyBlock<start)) {
++				SetBit(psm->Assign[psm->Zone],psm->PhyBlock);
++				continue;
++			}
++			++blk_total;
++			if(SsfdcReadRedtData(psm,psm->Redundant)) {
++				SsfdcReset(psm);  
++#if 0
++				printk(KERN_ERR "error 1 PhyBlock %d\n", psm->PhyBlock); 
++#endif
++				return(ERROR);
++			}
++			if(! CheckDataBlank(psm->Redundant)) {
++				++blk_blank;
++				continue;
++			}
++			SetBit(psm->Assign[psm->Zone],psm->PhyBlock);
++			if(CheckFailBlock(psm->Redundant)) {
++#if 0
++				printk("Zone %d, Block %d failed\n", psm->Zone, psm->PhyBlock);
++#endif
++				++blk_fail;
++				continue;
++			}
++			if(LoadLogBlockAddr(psm)) {
++				++blk_nologaddr;
++				continue;
++			}
++			if(psm->LogBlock>=psm->MaxLogBlocks)
++				continue;
++			++blk_assigned;
++			if(psm->Log2Phy[psm->Zone][psm->LogBlock]==NO_ASSIGN) {
++#if DEBUG_SSFDC_ASSIGNRELEASE
++				if (psm->LogBlock == 0)
++    				printk(KERN_DEBUG "MakeLogTable() LogBlock %d = PhyBlock %d\n",
++            			psm->LogBlock, psm->PhyBlock);
++#endif
++				psm->Log2Phy[psm->Zone][psm->LogBlock]=psm->PhyBlock;
++				continue;
++			}
++			psm->Sector=psm->MaxSectors-1;
++			if(SsfdcReadRedtData(psm,psm->Redundant)) {
++				SsfdcReset(psm); 
++#if 0
++				printk(KERN_ERR "error 2\n"); 
++#endif
++				return(ERROR);
++			}
++			psm->Sector=0;
++			block=psm->LogBlock;
++			if(! LoadLogBlockAddr(psm)) 
++				if(psm->LogBlock==block) {
++#ifdef L2P_ERR_ERASE	/***************************************************/
++					block=psm->Log2Phy[psm->Zone][psm->LogBlock];
++					psm->Log2Phy[psm->Zone][psm->LogBlock]=psm->PhyBlock;
++					psm->PhyBlock=block;
++					if(!(psm->Attribute &MWP)) {
++						SsfdcReset(psm);
++						if(SsfdcEraseBlock(psm)) {
++							printk(KERN_ERR "error 3\n");
++							return(ERROR);
++						}
++						if(SsfdcCheckStatus(psm)) {
++							if(MarkFailPhyOneBlock(psm)) {
++								printk(KERN_ERR "error 4\n");
++								return(ERROR); 
++							}
++						}
++						else ClrBit(psm->Assign[psm->Zone],psm->PhyBlock);
++					}
++					psm->PhyBlock=psm->Log2Phy[psm->Zone][psm->LogBlock];
++#else	/*******************************************************************/
++					psm->Log2Phy[psm->Zone][psm->LogBlock]=psm->PhyBlock;
++#endif	/*******************************************************************/
++					continue;
++				}
++#ifdef L2P_ERR_ERASE	/***************************************************/
++			if(!(psm->Attribute &MWP)) {
++				SsfdcReset(psm);
++				if(SsfdcEraseBlock(psm)) {
++					printk(KERN_ERR "error 5\n"); 
++					return(ERROR);
++				}
++				if(SsfdcCheckStatus(psm)) {
++					if(MarkFailPhyOneBlock(psm)) {
++						printk(KERN_ERR "error 6\n");
++						return(ERROR);
++					}
++				}
++				else ClrBit(psm->Assign[psm->Zone],psm->PhyBlock);
++			}
++#endif	/*******************************************************************/
++		}
++		psm->AssignStart[psm->Zone]=0;
++	}
++	SsfdcReset(psm);
++#if 0
++	printk("MakeLogTable()\n");
++	printk("\t%d failed\n", blk_fail);
++	printk("\t%d blank\n", blk_blank);
++	printk("\t%d assigned\n", blk_assigned);
++	printk("\t%d no logical addr\n", blk_nologaddr);
++	printk("\n\t%d total\n", blk_total);
++	printk("\t%d sum total\n", blk_fail + blk_blank + blk_assigned + blk_nologaddr);
++#endif
++	return(SUCCESS);
++}
++
++/***************************************************************************/
++static int MarkFailPhyOneBlock(ssfdc_dev *psm)
++{
++	unsigned char sect;
++	sect=psm->Sector;
++	SetFailBlock(psm->WorkRedund);
++	SsfdcWriteRedtMode(psm); 
++	for(psm->Sector=0; psm->Sector<psm->MaxSectors; psm->Sector++)
++		if(SsfdcWriteRedtData(psm,psm->WorkRedund)) {
++			SsfdcReset(psm);
++			psm->Sector=sect;
++			psm->ErrCode=ERR_HwError;
++			return(ERROR);
++		}	/* NO Status Check */
++	SsfdcReset(psm);	
++	psm->Sector=sect;
++	return(SUCCESS);
++}
++
++/***************************************************************************
++	SmartMedia Control subroutine
++	Rev 0.30('98-06-30)  ***** BETA RELEASE *****
++	Copyright (c) 1997-98, Toshiba Corporation.  All rights reserved.
++ ***************************************************************************/
++
++
++/* Linux Driver Modifications */
++/*
++dump_ssfdc_state
++*/
++#if DEBUG_SSFDC
++void dump_ssfdc_state(ssfdc_dev * psm)
++{
++#if DEBUG_SSFDC_STRUCT
++	// misc structure dump information
++	printk(KERN_DEBUG "psm->\n");
++	/* unsigned long   */ printk(KERN_DEBUG "\t address %x\n", psm->address);
++    /* int             */ printk(KERN_DEBUG "\t sm_minor %d\n",psm->sm_minor);
++    /* struct dentry   printk(KERN_DEBUG "\t *sm_dentry %x\n",psm->sm_dentry );*/ 
++    /* kdev_t          */ printk(KERN_DEBUG "\t sm_device %x\n",psm->sm_device);
++    /* int             */ printk(KERN_DEBUG "\t sm_flags %x\n",psm->sm_flags);
++    /* unsigned int    */ printk(KERN_DEBUG "\t UseCount %d\n",psm->UseCount);
++    /* unsigned int    */ printk(KERN_DEBUG "\t ErrCode %d\n",psm->ErrCode);
++    /* unsigned int    */ printk(KERN_DEBUG "\t MediaChange %d\n",psm->MediaChange);
++    /* unsigned int    */ printk(KERN_DEBUG "\t SectCopyMode %d\n",psm->SectCopyMode);                                                                              
++    /* unsigned int    */ printk(KERN_DEBUG "\t HostCyl %d\n",psm->HostCyl );
++    /* unsigned char   */ printk(KERN_DEBUG "\t HostHead %d\n",psm->HostHead );
++    /* unsigned char   */ printk(KERN_DEBUG "\t HostSect %d\n",psm->HostSect );
++    /* unsigned int  */ printk(KERN_DEBUG "\t ReadBlock %d\n",psm->ReadBlock );
++    /* unsigned int  */ printk(KERN_DEBUG "\t WriteBlock %d\n",psm->WriteBlock );
++ 
++    /* Card attributes */
++    /* unsigned char */ printk(KERN_DEBUG "\t Model %d\n",psm->Model );
++    /* unsigned char */ printk(KERN_DEBUG "\t Attribute %x\n",psm->Attribute );
++    /* unsigned char */ printk(KERN_DEBUG "\t MaxZones %d\n",psm->MaxZones );
++    /* unsigned char */ printk(KERN_DEBUG "\t MaxSectors %d\n",psm->MaxSectors );
++    /* unsigned int  */ printk(KERN_DEBUG "\t MaxBlocks %d\n",psm->MaxBlocks );
++    /* unsigned int  */ printk(KERN_DEBUG "\t MaxLogBlocks %d\n",psm->MaxLogBlocks );
++    /* unsigned char */ printk(KERN_DEBUG "\t Zone %d\n",psm->Zone );
++    /* unsigned char */ printk(KERN_DEBUG "\t Sector %d\n",psm->Sector );
++    /* unsigned int  */ printk(KERN_DEBUG "\t PhyBlock %d\n",psm->PhyBlock );
++    /* unsigned int  */ printk(KERN_DEBUG "\t LogBlock %d\n",psm->LogBlock );
++#endif
++}
++#endif
++
++typedef struct {
++	int sm_error;
++	int lnx_error;
++	char *smerrstr;
++} errmap;
++
++static errmap error_map_table [] = {
++	{ NO_ERROR,	0x0000, ""},
++	{ ERR_WriteFault,	EIO, "Peripheral Device Write Fault	"},
++	{ ERR_HwError,	EIO, "Hardware Error"},
++	{ ERR_DataStatus,	EIO, "DataStatus Error"},
++	{ ERR_EccReadErr, EIO, "Unrecovered Read Error" },
++	{ ERR_CorReadErr, EIO, "Recovered Read Data with ECC" },
++	{ ERR_OutOfLBA, EIO, "Illegal Logical Block Address" },
++	{ ERR_WrtProtect, EROFS, "Write Protected" },
++	{ ERR_ChangedMedia, EIO, "Medium Changed" },
++	{ ERR_UnknownMedia, EIO, "Incompatible Medium Installed" },
++	{ ERR_IllegalFmt, EIO, "Medium Format Corrupted" },
++	{ ERR_NoSmartMedia, EIO, "Medium Not Present" } 
++};
++
++static int ssfdc_maperror(int ssfdc_error) {
++	int loopus=0;
++
++	if (!ssfdc_error) return 0;
++
++	do {
++		if (error_map_table[loopus].sm_error == ssfdc_error) {
++			printk("%s\n", error_map_table[loopus].smerrstr);
++			return -error_map_table[loopus].lnx_error;
++		}
++	} while (++loopus < (sizeof(error_map_table) / (sizeof(errmap))));
++
++	printk(KERN_ERR "%s: error code %d is not mapped, EIO\n", MAJOR_NAME, ssfdc_error);
++	return -EIO;
++}
++
++static int ssfdc_thread(void * arg)
++{
++	ssfdc_dev *psm = arg;
++	unsigned long flags;
++
++	daemonize("sm%dd",psm->sm_minor);
++
++	spin_lock_irqsave(&current->sighand->siglock,flags); // _irq
++	sigfillset(&current->blocked);
++	recalc_sigpending();
++	spin_unlock_irqrestore(&current->sighand->siglock,flags); // _irq
++
++	while (!psm->exiting) {
++		if ( ssfdc_get_request(psm) )
++			initxfer(psm->sm_minor);
++
++		spin_lock_irqsave(&psm->req_queue_lock,flags); // _irq
++		// bjm spin_lock(&psm->req_queue_lock); // _irq
++		psm->waiting = 0;
++		spin_unlock_irqrestore(&psm->req_queue_lock,flags); // _irq
++		// bjm spin_unlock(&psm->req_queue_lock); // _irq
++		if (wait_event_interruptible(psm->thread_wq,ssfdc_get_request(psm)))
++			printk("ssfdc_thread() interrupted\n");
++		// wait_event(psm->thread_wq,ssfdc_get_request(psm));
++		spin_lock_irqsave(&psm->req_queue_lock,flags); // _irq
++		// bjm spin_lock(&psm->req_queue_lock); // _irq
++		psm->waiting = 1;
++		spin_unlock_irqrestore(&psm->req_queue_lock,flags); // _irq
++		// bjm spin_unlock(&psm->req_queue_lock); // _irq
++	}
++
++	printk("ssfdcd Exiting!\n");
++
++	complete_and_exit(&psm->thread_dead, 0);
++
++}
++
++/*
++ssfdc_init_device(ssfdc_dev *, int minor, unsigned long baseaddr, int removable)
++	reset and initialize the ssfdc_dev structure
++*/
++static int ssfdc_init_device(ssfdc_dev *psm, int minor, unsigned long baseaddr)
++{
++	int pid;
++
++	// Establish ssfdc state
++	psm->XferState = xfer_idle;
++	psm->ErrCode = NO_ERROR;
++	psm->MediaChange = SUCCESS;
++	psm->SectCopyMode = COMPLETED;
++	psm->UseCount = 0; 
++	psm->DataBuf_Valid = 0;
++
++	// set minor number
++	psm->sm_minor = minor;
++	// io address
++	psm->address = baseaddr;
++	if (!request_region(psm->address, 3, "sm")) {
++		printk(KERN_ERR "sm: memory already in use!\n");
++		return ERROR;
++	}
++	spin_lock_init(&psm->req_queue_lock);
++
++	// thread related inititializations...
++	init_completion(&psm->thread_dead);
++	init_waitqueue_head(&psm->thread_wq);
++
++	pid = kernel_thread(ssfdc_thread, psm, CLONE_KERNEL);
++	if (pid < 0)
++		printk("ssfdc: ERROR starting thread!\n");
++	else
++		printk("ssfdc: started kernel thread sm%dd pid %d\n", psm->sm_minor, pid);
++
++	// switch on power to device, and set basic attributes of card (no logical to phys mapping)
++	if ( ! CntPowerOn(psm) && ! CheckCardExist(psm) ) {
++		SetPhyFmtValue(psm);
++	}
++	else {
++		printk(KERN_ERR "ssfdc_init_device() unable to SetPhyFmtValue()\n");
++	}
++
++#if DEBUG_SSFDC
++	dump_ssfdc_state(psm);
++#endif
++
++	return SUCCESS;
++}
++
++static int ssfdc_dev_blk_size(ssfdc_dev *psm)
++{
++	if (!psm)
++		return 0;
++
++	// because of the physical to logical block mapping, not as many blocks
++	// as expected...
++	switch(psm->Model) {
++		case SSFDC1MB:
++			return (250 * 8 * 512) / SSFDC_BLKSIZE;
++		case SSFDC2MB:
++			return (500 * 8 * 512) / SSFDC_BLKSIZE;
++		case SSFDC4MB:
++			return (500 * 16 * 512) / SSFDC_BLKSIZE;
++		case SSFDC8MB:
++			return (1000 * 16 * 512) / SSFDC_BLKSIZE;
++		case SSFDC16MB:
++			return (1000 * 32 * 512) / SSFDC_BLKSIZE;
++		case SSFDC32MB:
++			return (2000 * 32 * 512) / SSFDC_BLKSIZE;
++		case SSFDC64MB:
++			return (4000 * 32 * 512) / SSFDC_BLKSIZE;
++		case SSFDC128MB:
++			return (8000 * 32 * 512) / SSFDC_BLKSIZE;
++		default:
++			return 0;
++	}
++}
++
++inline int ssfdc_dev_sectors(ssfdc_dev *psm) {
++	return ssfdc_dev_blk_size(psm) * (SSFDC_BLKSIZE/SSFDC_SECTSIZE);
++}
++
++static int ssfdc_open(struct inode *in, struct file *fptr) 
++{ 
++	int error_code=NO_ERROR;
++	ssfdc_dev *psm = in->i_bdev->bd_disk->private_data;
++	unsigned long flags;
++
++#if DEBUG_SSFDC
++	printk(KERN_DEBUG "+ssfdc_open()\n");
++#endif
++
++	if (!fptr) {
++		return -EIO;
++	}
++
++	spin_lock_irqsave(&psm->req_queue_lock,flags);
++	// bjm spin_lock(&psm->req_queue_lock);
++	// Power up smartmedia device, check for card, check media
++	if ((error_code=CntPowerOn(psm))) {
++		printk(KERN_ERR "%s PowerUP error\n", MAJOR_NAME);
++	}
++	else if ((error_code=CheckCardExist(psm))) {// Check the existence of a card
++		printk(KERN_ERR "%s No Card!\n", MAJOR_NAME);
++	}
++	else if ( ! psm->UseCount++ ) {
++		spin_unlock_irqrestore(&psm->req_queue_lock,flags);
++		// bjm spin_unlock(&psm->req_queue_lock);
++		check_disk_change(in->i_bdev);
++		spin_lock_irqsave(&psm->req_queue_lock,flags);
++		// bjm spin_lock(&psm->req_queue_lock);
++	}
++
++	if ( ! psm->ErrCode ) {
++		// check our open mode against that of removable media's
++		if (WRITE_PROTECTED(psm)) {
++			printk(KERN_ERR "mount read only detected.\n");
++		}
++	}
++
++#if DEBUG_SSFDC
++	dump_ssfdc_state(psm);
++    printk(KERN_DEBUG "-ssfdc_open() error_code %d\n", error_code);
++#endif
++
++	spin_unlock_irqrestore(&psm->req_queue_lock,flags);
++
++#if DEBUG_SSFDC
++	printk("-ssfdc_open()\n");
++#endif
++
++	return ssfdc_maperror(error_code);
++}
++
++static int ssfdc_release(struct inode *i_node, struct file *fptr)
++{
++	int drive;
++    ssfdc_dev *psm=NULL;
++	unsigned long flags;
++
++#if DEBUG_SSFDC
++	printk(KERN_DEBUG "+ssfdc_release("); 
++#endif
++
++	psm = (ssfdc_dev *) i_node->i_bdev->bd_disk->private_data;
++	drive = psm->sm_minor;
++
++#if DEBUG_SSFDC
++	printk(KERN_DEBUG "%d)\n", drive); 
++#endif
++	if (drive < 0 || drive >= MAX_SSFDC)
++        	return -ENODEV;
++  
++	spin_lock_irqsave(&psm->req_queue_lock,flags);
++	// bjm spin_lock(&psm->req_queue_lock);
++
++	if (!psm->UseCount)
++		printk(KERN_ERR "sm: Zero use count!\n");
++	else {
++		--psm->UseCount;
++	}
++
++#if DEBUG_SSFDC
++	dump_ssfdc_state(psm);
++#endif
++
++#if DEBUG_SSFDC
++	printk(KERN_DEBUG "-ssfdc_release()\n");
++#endif
++
++	spin_unlock_irqrestore(&psm->req_queue_lock,flags);
++	// bjm spin_unlock(&psm->req_queue_lock);
++
++	return 0;
++}
++
++static int ssfdc_ioctl(struct inode *i_node, struct file *fptr, unsigned cmd, unsigned long arg)
++{
++	int err, drive, int_val;
++	unsigned char heads, sectors;
++	unsigned int cylinders;
++	struct hd_geometry  geo;
++	ssfdc_dev *psm;
++
++#if DEBUG_SSFDC
++	printk(KERN_DEBUG "ssfdc_ioctl(%d)", cmd);
++#endif
++
++	if (i_node == NULL)
++		return -EINVAL;
++
++	psm = (ssfdc_dev *) i_node->i_bdev->bd_disk->private_data;
++ 	drive = psm->sm_minor;
++	
++	if (drive < 0 || drive >= MAX_SSFDC)
++        	return -ENODEV;                                                                         
++	switch(cmd) {
++		case BLKROSET: /* set device read-only (0 = read-write) */
++			if (!capable(CAP_SYS_ADMIN))
++				return -EACCES;
++			if (copy_from_user((void *) &int_val, (int *)arg, sizeof(int_val)))
++				return -EFAULT;
++			if (int_val)
++				psm->Attribute |= MWP;
++			else
++				psm->Attribute &= ~MWP;
++			return 0;
++			
++		case BLKROGET:/* get read-only status (0 = read_write) */
++			int_val = psm->Attribute & MWP;
++			copy_to_user(arg, (void *) &int_val, sizeof(int_val));
++			return 0;
++
++		/* case BLKRRPART: */		/* re-read partition table */
++
++		case BLKGETSIZE:
++#if DEBUG_SSFDC
++			printk(KERN_DEBUG "BLKGETSIZE");
++#else
++			printk(KERN_DEBUG "ssfdc_ioctl(BLKGETSIZE) not handled.\n");
++#endif
++			break;
++
++		case HDIO_GETGEO:
++			if ((void *) arg == NULL) return -EINVAL;
++			if (!access_ok(VERIFY_WRITE,  arg, sizeof(geo)))
++				return -EFAULT;
++			if ((err=CheckLogCHS( psm, &cylinders, &heads, &sectors)))
++				return ssfdc_maperror(err);	
++			memset(&geo, 0, sizeof(geo));
++			geo.cylinders = cylinders;
++			geo.heads = heads;
++			geo.sectors = sectors;
++			geo.start = get_start_sect(i_node->i_bdev);
++			if (copy_to_user((void *) arg, &geo, sizeof(geo)))
++				return -EFAULT;		
++			if (copy_to_user((void *) arg, &geo, sizeof(geo)))
++				return -EFAULT;		
++			return 0;
++	}
++	return -EINVAL;
++}
++
++
++
++static int ssfdc_revalidate(struct gendisk *disk)
++{
++    unsigned int cis;
++    ssfdc_dev *psm=NULL;
++    int error_code=NO_ERROR;
++	unsigned long flags;
++
++#if DEBUG_SSFDC
++	printk(KERN_DEBUG "ssfdc_revalidate()\n");
++#endif
++
++	psm = disk->private_data;
++
++	spin_lock_irqsave(&psm->req_queue_lock,flags);
++	// bjm spin_lock(&psm->req_queue_lock);
++
++	if ( ! psm->DataBuf_Valid ) {
++		if ((error_code=SetPhyFmtValue(psm)))
++			printk(KERN_ERR "ssfdc_revalidate() SetPhyFmtValue error\n");
++		else if ((error_code=SearchCIS(psm,&cis)))
++			printk(KERN_ERR "ssfdc_revalidate() SearchCIS error\n");
++		else if ((error_code=MakeLogTable(psm,cis+1)))
++			printk(KERN_ERR "ssfdc_revalidate() MakeLogTable error\n");
++	}
++	spin_unlock_irqrestore(&psm->req_queue_lock,flags); 
++	// bjm spin_unlock(&psm->req_queue_lock); 
++
++	return ssfdc_maperror(error_code);
++}
++
++int __init ssfdc_init(void)
++{
++	int i;
++	int err = 0;
++
++#if DEBUG_SSFDC
++	printk(KERN_DEBUG "+ssfdc_init()\n");
++#endif
++
++	memset(disks, 0, sizeof(struct gendisk *) * MAX_SSFDC);
++	memset(ssfdc, 0, sizeof(struct ssfdc_dev *) * MAX_SSFDC);
++	for (i=0; i<MAX_SSFDC; ++i) {
++		disks[i] = alloc_disk(1 << SSFDC_PARTN_BITS);
++		ssfdc[i] = kmalloc(sizeof(ssfdc_dev), GFP_KERNEL);
++		if (!disks[i]  || !ssfdc[i]) {
++			err = -ENOMEM; 
++			goto no_memory_error;
++		}
++		memset( ssfdc[i], 0, sizeof(ssfdc_dev));
++	}
++
++	if (register_blkdev(SSFDC_MAJOR, "smartmedia")) {
++		printk(KERN_ERR "Unable to get major number %d for ssfdc device\n", 
++                       SSFDC_MAJOR);
++                err = -EBUSY;
++		goto busy_error;
++	}
++
++	devfs_mk_dir("sm");
++
++	for ( i=0; i < MAX_SSFDC; ++i) {
++		disks[i]->major = SSFDC_MAJOR;
++		disks[i]->first_minor = i << SSFDC_PARTN_BITS;
++		disks[i]->fops = &ssfdc_fops;
++		sprintf(disks[i]->disk_name, "sm%d", i);
++		sprintf(disks[i]->devfs_name, "sm/%d", i);
++		disks[i]->private_data = ssfdc[i];
++		ssfdc_init_device(ssfdc[i], i << SSFDC_PARTN_BITS,
++			CPLD_BASE_ADDRESS + SMART_MEDIA_ONE_OFFSET);
++
++		disks[i]->queue = ssfdc[i]->req_queue = 
++					blk_init_queue(do_ssfdc_request, &ssfdc[i]->req_queue_lock);
++		ssfdc[i]->req_queue->queuedata = ssfdc[i];
++
++		set_capacity(disks[i], ssfdc_dev_sectors(ssfdc[i]));
++		// bjm blk_queue_max_sectors(disks[i]->queue, 32);
++		// bjm blk_queue_max_phys_segments(disks[i]->queue, 4);
++		blk_queue_max_segment_size(disks[i]->queue, (ssfdc[i]->MaxSectors / 2) * K_BYTE);
++		add_disk(disks[i]);
++	}
++
++#if 0	// bjm debug
++#ifndef CONFIG_SH_NIMBLE_MINI
++	mediachangetest(0L);
++#else
++	mediachangetest(1L);
++#endif
++#endif	// bjm debug
++
++#if DEBUG_SSFDC
++	printk(KERN_DEBUG "-ssfdc_init(0)\n");
++#endif
++	return 0;
++
++busy_error:
++no_memory_error:
++	for (i=0; i < MAX_SSFDC; ++i) {
++		if (disks[i] && disks[i]->queue)
++			kfree(disks[i]->queue);
++		put_disk(disks[i]);
++		if (ssfdc[i])
++			kfree(ssfdc[i]);
++	}
++#if DEBUG_SSFDC
++	printk(KERN_DEBUG "-ssfdc_init(%d)\n", -ENOMEM);
++#endif
++	return -ENOMEM;
++}
++
++void __init ssfdc_clean(void)
++{
++	int i;
++
++	printk(KERN_DEBUG "SSFDC exit code\n");
++
++	for (i=0; i < MAX_SSFDC; ++i) {
++		if (disks[i] != NULL) {
++			blk_cleanup_queue(disks[i]->queue);
++			del_gendisk(disks[i]);
++			put_disk(disks[i]);
++		}
++
++		if (ssfdc[i]) {
++			// signal thread to exit...
++			ssfdc[i]->exiting = 1;
++			wake_up(&ssfdc[i]->thread_wq);
++			wait_for_completion(&ssfdc[i]->thread_dead);
++
++			if (ssfdc[i]->address)
++				release_region(ssfdc[i]->address, 3);
++			kfree(ssfdc[i]);
++		}
++	}
++
++	if (unregister_blkdev(SSFDC_MAJOR, "smartmedia"))
++		printk(KERN_WARNING "smartmedia: cannot unregister blkdev\n");
++	devfs_remove("sm");
++}
++
++#if DEBUG_SSFDC
++void dump_request(struct request *req)
++{
++#if DEBUG_SSFDC_REQUEST && DEBUG_SSFDC_REQUEST
++	printk(KERN_DEBUG "req->\n");
++	/* int */	printk(KERN_DEBUG "\t req->cmd %x\n", req->cmd);		/* READ or WRITE */
++	/* int errors */	printk(KERN_DEBUG "\t req->errors %d\n", req->errors);
++	/* unsigned long */	printk(KERN_DEBUG "\t req->sector %d\n", req->sector);
++	/* unsigned long */	printk(KERN_DEBUG "\t req->nr_sectors %d\n",req->nr_sectors);
++	/* unsigned long */	printk(KERN_DEBUG "\t req->hard_sector %d\n", req->hard_sector);
++	/* unsigned int */	printk(KERN_DEBUG "\t req->nr_hw_segments %d\n",req->nr_hw_segments);
++	/* unsigned long */	printk(KERN_DEBUG "\t req->current_nr_sectors %d\n",req->current_nr_sectors);
++
++#endif
++}
++#endif
++
++void do_ssfdc_request(request_queue_t * rq)
++{
++	ssfdc_dev *psm = rq->queuedata;
++
++	if ( ! psm->waiting )
++		wake_up(&psm->thread_wq);
++}
++
++static struct request * ssfdc_get_request(ssfdc_dev *psm)
++{
++	struct request *treq;
++	unsigned long flags;
++
++	spin_lock_irqsave(&psm->req_queue_lock, flags);
++	// bjm spin_lock(&psm->req_queue_lock);
++	treq = elv_next_request(psm->req_queue);
++	spin_unlock_irqrestore(&psm->req_queue_lock, flags);
++	// bjm spin_unlock(&psm->req_queue_lock);
++	
++	return treq;
++}
++
++static void ssfdc_terminate_request(ssfdc_dev *psm, struct request *req)
++{
++	unsigned long flags;
++
++	if (psm && req) {
++		spin_lock_irqsave(&psm->req_queue_lock, flags);
++		// bjm spin_lock(&psm->req_queue_lock);
++		end_request(req,0);
++		spin_unlock_irqrestore(&psm->req_queue_lock, flags);
++		// bjm spin_unlock(&psm->req_queue_lock);
++	}
++}
++
++
++static int ssfdc_end_request(ssfdc_dev *psm, struct request *req, int status)
++{
++	unsigned long flags;
++
++	if (!psm || !req) {
++		printk(KERN_DEBUG "ssfdc_end_request() NULL psm or req!\n");
++		return 0;
++	}
++
++#if DEBUG_SSFDC_REQUEST
++	printk("ssfdc_end_request(%p)\n", req);
++#endif
++
++	spin_lock_irqsave(&psm->req_queue_lock,flags);
++	// bjm spin_lock(&psm->req_queue_lock);
++	end_request(req,status);
++	spin_unlock_irqrestore(&psm->req_queue_lock,flags);
++	// bjm spin_unlock(&psm->req_queue_lock);
++    return 0;
++}
++
++void initxfer(unsigned long dev_idx)
++{
++	ssfdc_dev *psm = ssfdc[dev_idx];
++	struct request *req;
++	int error_code;
++	unsigned int cis;
++
++#if	DEBUG_SSFDC
++	// printk(KERN_DEBUG "+initxfer(%d)", dev_idx);
++#endif
++	// get device lock, and check idle flag, setting if not busy
++
++	req = ssfdc_get_request(psm);
++
++	// if the device is idle, setup a read or write operation
++	if (psm->XferState == xfer_idle) {
++		// get the current request from our device's request list.
++		if (!req) {
++#if DEBUG_SSFDC
++//			printk(KERN_DEBUG "initxfer() terminate, no schedule.\n");
++#endif
++		}
++		// Absence of power indicates absence of card.
++		// terminate request and exit...
++		if ( ! _HwChkPower(psm) ) {
++			printk(KERN_DEBUG "initxfer() - Media power NOT!\n");
++			ssfdc_terminate_request(psm,req);
++			return;
++		}
++
++		// We have a request and we have a card.  Is the Log2Phys mapping still valid?
++		if ( ! psm->DataBuf_Valid ) {
++			if ((error_code = SetPhyFmtValue(psm)))
++				printk(KERN_DEBUG "%s SetPhyFmtValue error\n", MAJOR_NAME);
++			else if ((error_code = SearchCIS(psm,&cis)))
++				printk(KERN_DEBUG "%s SearchCIS error\n", MAJOR_NAME);
++			else if ((error_code = MakeLogTable(psm,cis+1)))
++				printk(KERN_DEBUG "%s MakeLogTable error\n", MAJOR_NAME);
++			if (error_code) {
++				printk(KERN_DEBUG "%s error %d\n", MAJOR_NAME, error_code);
++				ssfdc_terminate_request(psm,req);
++				return;
++			}
++		}
++
++		psm->XferState = xfer_busy;
++#if DEBUG_SSFDC
++		printk(KERN_DEBUG " initxfer() - do the request %x\n", req);
++#endif
++		ssfdc_rw_request(psm, req); 
++	}
++#if DEBUG_SSFDC
++	else {
++		printk(KERN_DEBUG "initxfer(%d) dev is busy, no reschedule.\n", dev_idx);
++	}
++#endif
++
++}
++
++
++void ssfdc_rw_request(ssfdc_dev *psm, struct request *req)
++{
++	int (*rwsector)(ssfdc_dev *, struct request *, char *, long, int);
++	unsigned sector, count;
++	int rw_return=1;
++
++	if (rq_data_dir(req) == WRITE)
++		rwsector = MediaWriteSector;
++	else if (rq_data_dir(req) == READ)
++		rwsector = MediaReadSector;
++	else {
++		printk(KERN_DEBUG "%s: command %d not implemented!\n", MAJOR_NAME, (int) rq_data_dir(req));
++		goto terminal_error;
++	}
++
++	/*
++	*/
++	sector = req->sector;
++	count = req->nr_sectors;
++
++	// check that the request does not extend past ssfdc's max size
++	if ( (sector + count) > ssfdc_dev_sectors(psm) ) {
++		printk(KERN_ERR "Attempt to read past end of device!");
++		goto terminal_error;
++	}
++	else {
++
++		// for each segment in each bio_vec R/W from/to device.
++
++		count = req->current_nr_sectors;
++		rw_return = rwsector(psm, req, req->buffer, sector, count);
++
++		if (rq_data_dir(req) == READ)
++			ssfdc_end_request(psm, req, rw_return);
++	}
++
++	// things appear OK...
++	return;
++
++terminal_error:
++	ssfdc_terminate_request( psm, req);
++	psm->XferState = xfer_idle;
++}
++
++module_init(ssfdc_init);
++module_exit(ssfdc_clean);
++
++MODULE_LICENSE("GPL");
++
++/* End of Linux Driver Modifications */
+diff -durN -X ../diff.ignore linux/drivers/block/ssfdc.h gcc3.4.4/drivers/block/ssfdc.h
+--- linux/drivers/block/ssfdc.h	1970-01-01 10:00:00.000000000 +1000
++++ gcc3.4.4/drivers/block/ssfdc.h	2005-11-09 14:00:47.000000000 +1100
+@@ -0,0 +1,372 @@
++/* $id:   $ */
++#ifndef _SSFDC_H
++#define _SSFDC_H
++
++/*
++	Linux related defines
++*/
++
++#ifdef CONFIG_SH_NIMBLE_MINI
++#define MAX_SSFDC	2		/* two drives */
++#else
++#define MAX_SSFDC	1		/* only one drive */
++#endif
++
++#define SSFDC_MAJOR_NAME  "sm"   
++#define MAJOR_NAME  SSFDC_MAJOR_NAME
++#define SSFDC_PARTN_BITS  4   /* number of minor dev bits for partitions */
++#define PARTN_MASK  ((1<<SSFDC_PARTN_BITS)-1) /* a useful bit mask */
++#define MAX_DRIVES  MAX_SSFDC
++
++/***************************************************************************
++	SmartMedia Controll Header
++	Rev 0.30('98-06-30)  ***** BETA RELEASE *****
++	Copyright (c) 1997-98, Toshiba Corporation.  All rights reserved.
++ ***************************************************************************/
++
++/***************************************************************************
++	Define Difinetion
++ ***************************************************************************/
++#define	SUCCESS			 0			/* SUCCESS     */
++#define	ERROR 			-1			/* ERROR       */
++#define	CORRECT 		 1			/* CORRECTABLE */
++
++/***************************************************************************/
++#define	NO_ERROR			0x0000	/* NO ERROR							   */
++#define	ERR_WriteFault		0x0003	/* Peripheral Device Write Fault	   */
++#define	ERR_HwError   		0x0004	/* Hardware Error					   */
++#define	ERR_DataStatus		0x0010	/* DataStatus Error					   */
++#define	ERR_EccReadErr		0x0011	/* Unrecovered Read Error			   */
++#define	ERR_CorReadErr		0x0018	/* Recovered Read Data with ECC		   */
++#define	ERR_OutOfLBA  		0x0021	/* Illegal Logical Block Address	   */
++#define	ERR_WrtProtect		0x0027	/* Write Protected					   */
++#define	ERR_ChangedMedia	0x0028	/* Medium Changed					   */
++#define	ERR_UnknownMedia	0x0030	/* Incompatible Medium Installed	   */
++#define	ERR_IllegalFmt		0x0031	/* Medium Format Corrupted			   */
++#define	ERR_NoSmartMedia	0x003A	/* Medium Not Present				   */
++
++/***************************************************************************
++	Common Controll Header
++	Rev 1.30('98-06-30)  ***** BETA RELEASE *****
++	Copyright (c) 1997-98, Toshiba Corporation.  All rights reserved.
++ ***************************************************************************/
++
++/***************************************************************************
++	SmartMedia Controller Definition
++ ***************************************************************************/
++/* I/O Mode Address */
++#define	DATA(p)		(p->address+0x00)	/* R/W	Data Reg */
++#define	STATUS(p)		(p->address+0x02)	/* R/-	Status Reg */
++#define	MODE(p)		(p->address+0x02)	/* -/W	Mode Reg */
++
++/* Controller Status Reg (Read Only) */
++#define	STS_BUSY	0x80
++#define	STS_VCC		0x10
++#define	STS_SCHG	0x08
++#define	STS_WP		0x01
++#define	STS_CENB	0x04
++
++#ifdef CONFIG_SH_TITAN
++/* Controller Mode Reg (Write Only) */
++/* keep PCI clock running on bit 3 */
++/* CE# on bit 2, CLE on bit 1 and ALE on bit 0 */
++#define	STANDBY		(0x00 | 0x00 | 0x08)
++#define	WR_DATA		(0x00 | 0x04 | 0x08)
++#define	WR_CMD		(0x02 | 0x04 | 0x08)
++#define	WR_ADR		(0x01 | 0x04 | 0x08)
++#else
++/* Controller Mode Reg (Write Only) */
++#define	STANDBY		0x00
++#define	WR_DATA		0x10
++#define	WR_CMD		0x11
++#define	WR_ADR		0x12
++#define	PW_OFF		0x80
++#define	PW_ON		0x88
++#endif
++
++/***************************************************************************/
++#define	_HwSetData(p) 		ctrl_outb(WR_DATA,MODE(p))
++#define	_HwSetCmd(p)		ctrl_outb(WR_CMD,MODE(p))
++#define	_HwSetAddr(p)		ctrl_outb(WR_ADR,MODE(p))
++#define	_HwSetStandby(p)	ctrl_outb(STANDBY,MODE(p))
++
++#define _HwInData(p)        ctrl_inb(DATA(p))
++#define	_HwOutData(p,a)		ctrl_outb((a),DATA(p))
++
++#ifdef	CONFIG_SH_TITAN
++#define	_HwVccOn(p)	
++#define	_HwVccOff(p)
++#else
++#define	_HwVccOn(p)			ctrl_outb(PW_ON,MODE(p))
++#define	_HwVccOff(p)		ctrl_outb(PW_OFF,MODE(p))
++#endif
++
++#ifdef CONFIG_SH_TITAN
++#define _HwChkCardIn(p)		(1)
++#define _HwChkStatus(p)		(0)
++#define _HwChkWP(p)		(0)
++#define _HwChkPower(p)		(1)
++#define _HwChkBusy(p)		(ctrl_inb(STATUS(p))&STS_BUSY)
++
++#else
++
++#define	_HwChkCardIn(p)		(ctrl_inb(STATUS(p))&STS_CENB)
++#define	_HwChkStatus(p)		(ctrl_inb(STATUS(p))&(STS_SCHG))
++#define	_HwChkWP(p)			(ctrl_inb(STATUS(p))&(STS_WP))
++#define	_HwChkPower(p)		(ctrl_inb(STATUS(p))&(STS_VCC))
++#define	_HwChkBusy(p)		(ctrl_inb(STATUS(p))&STS_BUSY)
++
++#endif
++
++#define	_HwRdStatus(p)		(ctrl_inb(STATUS(p)))
++/***************************************************************************/
++#ifdef CONFIG_SH_NIMBLE_MINI
++#define CPLD_BASE_ADDRESS		0xB4030000L
++#define SMART_MEDIA_ONE_OFFSET		0x08	// The "built-in" SmartMedia
++#define SMART_MEDIA_TWO_OFFSET		0x00	// The "removable" SmartMedia
++#elif CONFIG_SH_TITAN
++#define CPLD_BASE_ADDRESS		0xA4000000L
++#define SMART_MEDIA_ONE_OFFSET		0x00
++#else
++#define CPLD_BASE_ADDRESS		0xB8030000L
++#define SMART_MEDIA_ONE_OFFSET      	0x00    // The "built-in" SmartMedia
++#endif
++
++/***************************************************************************
++	Program & Macro for SmartMedia Controller
++	Rev 0.30('98-06-30)  ***** BETA RELEASE *****
++	Copyright (c) 1997-98, Toshiba Corporation.  All rights reserved.
++ ***************************************************************************/
++/***************************************************************************
++	Define Definition
++ ***************************************************************************/
++#define	K_BYTE				1024	/* Kilo Byte */
++#define	SSFDC_SECTSIZE 		512		/* Sector buffer size */
++#define SSFDC_BLKSIZE		(K_BYTE * 4)
++#define	REDTSIZE			16		/* Redundant buffer size */
++
++/***************************************************************************/
++#define	DUMMY_DATA		0xFF	/* No Assign Sector Read Data */
++
++/***************************************************************************
++	Max Zone/Block/Sectors Data Definition
++ ***************************************************************************/
++#define	MAX_ZONENUM		0x08	/* Max Zone Numbers in a SmartMedia */
++#define	MAX_BLOCKNUM	0x0400	/* Max Block Numbers in a Zone */
++#define	MAX_SECTNUM		0x20	/* Max Sector Numbers in a Block */
++#define	MAX_LOGBLOCK	1000	/* Max Logical Block Numbers in a Zone */
++
++/***************************************************************************
++	Logical to Physical Block Table Data Definition
++ ***************************************************************************/
++#define	NO_ASSIGN		0xFFFF	/* No Assign Logical Block Address */
++
++/***************************************************************************
++	'SectCopyMode' Data
++ ***************************************************************************/
++#define	COMPLETED		 0			/* Sector Copy Completed     */
++#define	REQ_ERASE		 1			/* Request Read Block Erase  */
++#define	REQ_FAIL		 2			/* Request Read Block Failed */
++
++/***************************************************************************
++	Retry Counter Definition
++ ***************************************************************************/
++#define	RDERR_REASSIGN	1		/* Reassign with Read Error */
++#define	L2P_ERR_ERASE	1		/* BlockErase for Contradicted L2P Table */
++
++/***************************************************************************
++	SmartMedia Command & Status Definition
++ ***************************************************************************/
++/* SmartMedia Command */
++#define	SSFDC_WRDATA		0x80
++#define	SSFDC_READ			0x00
++#define	SSFDC_READ_REDT		0x50
++#define	SSFDC_READ1			0x00
++#define	SSFDC_READ2			0x01
++#define	SSFDC_READ3			0x50
++#define	SSFDC_RST_CHIP		0xFF
++#define	SSFDC_WRITE			0x10
++#define	SSFDC_DUMMY_WRITE	0x11
++#define SSFDC_MULTI_WRITE   0x15
++#define	SSFDC_ERASE1		0x60
++#define	SSFDC_ERASE2		0xD0
++#define	SSFDC_RDSTATUS		0x70
++#define	SSFDC_READ_ID		0x90
++
++/* SmartMedia Status */
++#define	WR_FAIL		0x01	/* 0:Pass,          1:Fail */
++#define	SUSPENDED	0x20	/* 0:Not Suspended, 1:Suspended */
++#define	READY		0x40	/* 0:Busy,          1:Ready */
++#define	WR_PRTCT	0x80	/* 0:Protect,       1:Not Protect */
++
++#define USEC		1
++#define	MSEC		1000 * USEC
++#define JIFFY_TICK_MS	(MSEC / HZ)
++
++// #define	BUSY_PROG	20 * MSEC	/* 200-1000us -----	Program Time */
++#define	BUSY_PROG	1000 * USEC	/* 200-1000us -----	Program Time */
++#define BUSY_DUMMY_WRITE	10 * USEC	/*	2-10us	dummy write */
++#define BUSY_MULTI_WRITE	1000 * USEC	/*	200 - 1000 usec */
++#define	BUSY_ERASE	10 * MSEC	/* 2-10ms -----	Block Erase Time */
++#define	BUSY_READ	100 * USEC	/* tR     : 100us -----	Data transfer Time */
++#define	BUSY_RESET	10 * USEC	/* tRST   :   10us -----	Device Resetting Time  */
++#define BUSY_ADDR_SET	25 * USEC
++
++#define	TIME_PON	30		/* 300ms ------	Power On Wait Time */
++#define	TIME_CDCHK	2			/*  20ms ------	Card Check Interval Timer */
++#define	TIME_WPCHK	1			/*   5ms ------	WP Check Interval Timer */
++
++/* Power On Timeout */
++#define POWER_ON_TIMEOUT	(HZ*2)
++
++/* Default retry limit for Read/Write */
++#define RD_RETRY_LIMIT	3
++#define WR_RETRY_LIMIT	4
++#define BLOCK_READ_RETRY_LIMIT	2
++#define BLOCK_WRITE_RETRY_LIMIT 3
++#define REASSIGN_RETRY_LIMIT 	4
++
++/***************************************************************************
++	Redundant Data
++ ***************************************************************************/
++#define	REDT_DATA	0x04
++#define	REDT_BLOCK	0x05
++
++#define	REDT_ADDR1H	0x06
++#define	REDT_ADDR1L	0x07
++#define	REDT_ADDR2H	0x0B
++#define	REDT_ADDR2L	0x0C
++
++#define	REDT_ECC10	0x0D
++#define	REDT_ECC11	0x0E
++#define	REDT_ECC12	0x0F
++
++#define	REDT_ECC20	0x08
++#define	REDT_ECC21	0x09
++#define	REDT_ECC22	0x0A
++
++/***************************************************************************
++	SmartMedia Model & Attribute
++ ***************************************************************************/
++/* SmartMedia Attribute */
++#define	NOWP		0x00	/* 0... .... No Write Protect */
++#define	WP  		0x80	/* 1... .... Write Protected */
++#define	MASK		0x00	/* .00. .... NAND MASK ROM Model */
++#define	FLASH		0x20	/* .01. .... NAND Flash ROM Model */
++#define	AD3CYC		0x00	/* ...0 .... Address 3-cycle */
++#define	AD4CYC		0x10	/* ...1 .... Address 4-cycle */
++#define	BS16		0x00	/* .... 00.. 16page/block */
++#define	BS32		0x04	/* .... 01.. 32page/block */
++#define	PS256		0x00	/* .... ..00 256byte/page */
++#define	PS512		0x01	/* .... ..01 512byte/page */
++
++#define	MWP			0x80	/* WriteProtect mask */
++#define	MFLASH		0x60	/* Flash Rom mask */
++#define	MADC		0x10	/* Address Cycle */
++#define	MBS			0x0C	/* BlockSize mask */
++#define	MPS			0x03	/* PageSize mask */
++
++/* SmartMedia Model */
++#define	NOSSFDC			0x00	/*   NO SmartMedia */
++#define	SSFDC1MB		0x01	/*  1MB SmartMedia */
++#define	SSFDC2MB		0x02	/*  2MB SmartMedia */
++#define	SSFDC4MB		0x03	/*  4MB SmartMedia */
++#define	SSFDC8MB		0x04	/*  8MB SmartMedia */
++#define	SSFDC16MB		0x05	/* 16MB SmartMedia */
++#define	SSFDC32MB		0x06	/* 32MB SmartMedia */
++#define	SSFDC64MB		0x07	/* 64MB SmartMedia */
++#define	SSFDC128MB		0x08	/*128MB SmartMedia */
++
++#define EVEN             0          /* Even Page for 256byte/page */
++#define ODD              1          /* Odd  Page for 256byte/page */
++
++/***************************************************************************
++	Struct Definition
++ ***************************************************************************/
++/* Linux kernel additions */
++
++/* device buffer xfer status */
++typedef enum { xfer_idle, xfer_busy} xfer_states;
++
++/* Smartmedia device structure */
++typedef struct {
++	unsigned long		address;
++	int 				sm_minor;
++	int					sm_flags;
++	int					busy;
++	int					waiting;
++
++	/* queue of io requests for the device */
++	spinlock_t			req_queue_lock;
++	request_queue_t 	*req_queue;
++
++	/* our thread related parameters */
++	struct completion 	thread_dead;
++	int 				exiting;
++	wait_queue_head_t 	thread_wq;
++
++	/* accounting variables for each buffer io operation
++		each request may have a chain of buffers, each of
++		which may require I/O of multiple sectors */
++	unsigned int		ReqSectorSize;
++	unsigned int		BufIndex;
++	unsigned int		SectorWriteIndex;
++
++	/* CHS parameters */
++	unsigned int		HostCyl;
++	unsigned char		HostHead;
++	unsigned char		HostSect;
++
++	/* State Information */
++	xfer_states			XferState;
++	unsigned int  		UseCount;
++	unsigned int  		RetryCount;
++	unsigned int  		ErrCode;
++	unsigned int  		MediaChange;
++	unsigned int  		CardPresent;
++	unsigned int  		SectCopyMode;
++
++	/* Working Databuf Area */
++	unsigned char 		SectBuf[SSFDC_SECTSIZE];
++	unsigned char 		WorkBuf[SSFDC_SECTSIZE];
++	unsigned char 		Redundant[REDTSIZE];
++	unsigned char 		WorkRedund[REDTSIZE];
++	unsigned int  		DataBuf_Valid;
++	unsigned int  		Log2Phy[MAX_ZONENUM][MAX_LOGBLOCK];
++	unsigned char 		Assign[MAX_ZONENUM][MAX_BLOCKNUM/8];
++	unsigned int  		AssignStart[MAX_ZONENUM];
++	unsigned int  		ReadBlock;
++	unsigned int  		WriteBlock;
++
++	/* Card attributes */
++	unsigned char 		Model;
++	unsigned char 		Attribute;
++	unsigned char 		MaxZones;
++	unsigned char 		MaxSectors;
++	unsigned int  		MaxBlocks;
++	unsigned int  		MaxLogBlocks; 
++
++	/* Address of current access (Media) */
++	unsigned char		Zone;         /* Zone Number */
++	unsigned char		Sector;       /* Sector(512byte) Number on Block */
++	unsigned int		PhyBlock;     /* Physical Block Number on Zone */
++	unsigned int		LogBlock;     /* Logical Block Number of Zone */               
++
++	/* device statistics */
++	unsigned int		Sector_reads;
++	unsigned int		Sector_writes;
++	unsigned int		Sect_rd_errs_ttl;
++	unsigned int		Sect_wr_errs_ttl;
++	unsigned int		Bad_blks_rd;
++	unsigned int		Bad_blks_wr;
++	unsigned int		Bad_blks_erase;
++} ssfdc_dev;
++
++
++/****************************************************************************/
++/*	Handy defines															*/
++/****************************************************************************/
++#define WRITE_PROTECTED(p)	(p->Attribute & WP)
++
++/* End of Linux kernel additions */
++#endif	/* #ifndef _SSFDC_H */

@@ -1,5 +1,5 @@
 include ${PN}.inc
-PR = "r3"
+PR = "r4"
 
 SRC_URI = "${HANDHELDS_CVS};tag=${TAG};module=opie/core/apps/calibrate \
            ${HANDHELDS_CVS};tag=${TAG};module=opie/noncore/settings/mediummount \
@@ -15,3 +15,5 @@ SRC_URI = "${HANDHELDS_CVS};tag=${TAG};module=opie/core/apps/calibrate \
            file://qpe.conf \
 	   file://locale.conf \
 	   file://opie_defaults"
+
+SRC_URI_append_c7x0 = " file://qpe-suspend-resume"

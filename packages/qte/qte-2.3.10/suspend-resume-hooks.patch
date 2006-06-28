@@ -1,12 +1,10 @@
-Suspend/Resume hooks for QScreen and usage from QApplication
-Manuel Teira <manuel.teira@telefonica.net>
 
 #
 # Patch managed by http://www.holgerschurig.de/patcher.html
 #
 
---- qt-2.3.10/src/kernel/qgfx_qws.h~suspend-resume-hooks
-+++ qt-2.3.10/src/kernel/qgfx_qws.h
+--- qt-2.3.10.foo/src/kernel/qgfx_qws.h~suspend-resume-hooks
++++ qt-2.3.10.foo/src/kernel/qgfx_qws.h
 @@ -192,6 +192,8 @@
      virtual int pixmapLinestepAlignment() { return 64; }
  
@@ -16,8 +14,8 @@ Manuel Teira <manuel.teira@telefonica.net>
      virtual bool onCard(unsigned char *) const;
      virtual bool onCard(unsigned char *, ulong& out_offset) const;
  
---- qt-2.3.10/src/kernel/qapplication_qws.cpp~suspend-resume-hooks
-+++ qt-2.3.10/src/kernel/qapplication_qws.cpp
+--- qt-2.3.10.foo/src/kernel/qapplication_qws.cpp~suspend-resume-hooks
++++ qt-2.3.10.foo/src/kernel/qapplication_qws.cpp
 @@ -480,6 +480,7 @@
      int region_offset_window;
  #ifndef QT_NO_COP
@@ -35,7 +33,7 @@ Manuel Teira <manuel.teira@telefonica.net>
  		queue.append(e);
  	    }
  #endif
-@@ -851,6 +852,26 @@
+@@ -851,6 +852,42 @@
      }
  }
  
@@ -53,6 +51,22 @@ Manuel Teira <manuel.teira@telefonica.net>
 +    if ( e->message.data() == QCString( "returnFromSuspend()" ) ) {
 +	if ( qt_screen ) qt_screen->prepareToResume();
 +	delete e;
++        QWidgetList  *list = QApplication::topLevelWidgets();
++        if ( list ) {
++            QWidgetListIt it( *list );
++            QWidget * w;
++            while ( (w=it.current()) != 0 ) {
++                ++it;
++                if ( !w->testWFlags(Qt::WType_Desktop) ) {
++                    QETWidget *etw = (QETWidget*)w;
++                    if ( etw->isVisible() ) {
++                        etw->repaintHierarchy( etw->geometry(), TRUE );
++                        etw->repaintDecoration( qApp->desktop()->rect(), TRUE );
++                    }
++                }
++            }
++            delete list;
++        }
 +	return TRUE;
 +    }
 +    return FALSE;

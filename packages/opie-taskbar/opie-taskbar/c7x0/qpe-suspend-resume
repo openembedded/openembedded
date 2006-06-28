@@ -1,0 +1,33 @@
+#!/bin/sh
+
+QTDIR=/opt/QtPalmtop
+LD_LIBRARY_PATH=$QTDIR
+export LD_LIBRARY_PATH QTDIR
+LOGGING=0
+log() {
+  if [ $LOGGING -eq 1 ]; then
+    echo "$(date +%y/%m/%d-%H:%m:%S): $@" >> /var/log/qte.log
+  fi
+}
+
+retcode=1
+tries=3
+
+if [ "$1" = suspend ]; then
+    while [ $retcode -ne 0 -a $tries -gt 0 ]; do
+      log "-> $QTDIR/bin/qcop QPE/System 'aboutToSuspend()'"
+      $QTDIR/bin/qcop QPE/System 'aboutToSuspend()'
+      retcode=$?
+      tries=`expr $tries - 1`
+      log "<- Result $retcode"
+    done
+elif [ "$1" = resume ]; then
+    while [ $retcode -ne 0 -a $tries -gt 0 ]; do
+      log "-> $QTDIR/bin/qcop QPE/System 'returnFromSuspend()'"
+      $QTDIR/bin/qcop QPE/System 'returnFromSuspend()'
+      retcode=$?
+      tries=`expr $tries - 1`
+      log "<- Result $retcode"
+    done
+fi
+
