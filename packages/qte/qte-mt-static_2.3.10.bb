@@ -1,5 +1,5 @@
 require qte-common_${PV}.inc
-PR = "r2"
+PR = "r3"
 
 EXTRA_OECONF += "-static"
 
