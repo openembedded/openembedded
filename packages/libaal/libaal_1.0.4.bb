@@ -8,7 +8,7 @@ MAINTAINER = "John Bowler <jbowler@acm.org>"
 SECTION = "base"
 LICENSE = "GPL-2"
 
-SRC_URI = "ftp://ftp.namesys.com/pub/reiser4progs/${P}.tar.gz"
+SRC_URI = "ftp://ftp.namesys.com/pub/reiser4progs/old-versions/${P}.tar.gz"
 
 inherit autotools
 
