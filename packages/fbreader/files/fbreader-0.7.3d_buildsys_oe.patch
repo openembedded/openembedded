@@ -1,0 +1,158 @@
+diff -urd fbreader-0.7.3d_orig/fbreader/Makefile fbreader-0.7.3d/fbreader/Makefile
+--- fbreader-0.7.3d_orig/fbreader/Makefile	2006-05-03 23:56:31.000000000 +0200
++++ fbreader-0.7.3d/fbreader/Makefile	2006-05-04 12:02:42.000000000 +0200
+@@ -47,7 +47,7 @@
+ 	@$(LD) $(LDFLAGS) -o $(TARGET) `find common -name *.o` $(TARGET_ARCH)/$(UI_TYPE)/*.o $(LIBS)
+ 	@echo " OK"
+ 
+-install: all .really-install
++install: .really-install
+ 
+ .really-install:
+ 	@cd $(TARGET_ARCH); make install 
+Nur in fbreader-0.7.3d/fbreader: Makefile~.
+diff -urd fbreader-0.7.3d_orig/fbreader/openzaurus/gpe/fbreader.desktop fbreader-0.7.3d/fbreader/openzaurus/gpe/fbreader.desktop
+--- fbreader-0.7.3d_orig/fbreader/openzaurus/gpe/fbreader.desktop	2006-05-03 23:56:31.000000000 +0200
++++ fbreader-0.7.3d/fbreader/openzaurus/gpe/fbreader.desktop	2006-05-05 09:42:06.000000000 +0200
+@@ -2,7 +2,7 @@
+ Name=FBReader
+ Comment=E-Book Reader
+ Exec=FBReader
+-Icon=fbreader/FBReader
++Icon=FBReader
+ Type=Application
+ Terminal=0
+ Categories=Application;Utility
+diff -urd fbreader-0.7.3d_orig/fbreader/openzaurus/Makefile fbreader-0.7.3d/fbreader/openzaurus/Makefile
+--- fbreader-0.7.3d_orig/fbreader/openzaurus/Makefile	2006-05-03 23:56:31.000000000 +0200
++++ fbreader-0.7.3d/fbreader/openzaurus/Makefile	2006-05-05 12:32:28.000000000 +0200
+@@ -1,5 +1,6 @@
+ ROOTDIR = $(PWD)/../..
+ include $(ROOTDIR)/makefiles/platforms.mk
++include $(ROOTDIR)/makefiles/config.mk
+ 
+ ifeq "$(UI_TYPE)" "opie"
+ 	BASEDIR = data/opt/QtPalmtop
+@@ -7,7 +8,7 @@
+ 	APPDIR = $(BASEDIR)/apps/Applications
+ 	STYLE = $(RESOLUTION)
+ else # UI_TYPE == gpe
+-	BASEDIR = data/usr
++	BASEDIR = /usr
+ 	PICSDIR = $(BASEDIR)/share/pixmaps/fbreader
+ 	APPDIR = $(BASEDIR)/share/applications
+ 	STYLE = gpe$(RESOLUTION)
+@@ -34,7 +35,23 @@
+ 	@make .cleandir
+ 
+ install:
+-
++	@install -d $(DESTDIR)$(INSTALLDIR)/bin
++	@install -s ../FBReader $(DESTDIR)$(INSTALLDIR)/bin
++	@install -d $(DESTDIR)$(INSTALLDIR)/share/FBReader
++	@install -d $(DESTDIR)$(INSTALLDIR)/share/FBReader/formats/html
++	@install -m 0644 ../share/FBReader/formats/html/html.ent $(DESTDIR)$(INSTALLDIR)/share/FBReader/formats/html
++	@install -d $(DESTDIR)$(INSTALLDIR)/share/pixmaps/fbreader
++	@install -m 0644 ../icons/$(ICONSIZE)/FBReader.png $(DESTDIR)$(INSTALLDIR)/share/pixmaps/
++	@install -m 0644 $(wildcard ../icons/$(ICONSIZE)/FBReader/*) $(DESTDIR)$(INSTALLDIR)/share/pixmaps/fbreader/
++	@install -d $(DESTDIR)$(INSTALLDIR)/share/FBReader/encodings
++	@install -m 0644 $(wildcard ../share/FBReader/encodings/*) $(DESTDIR)$(INSTALLDIR)/share/FBReader/encodings
++	@install -m 0644 $(wildcard ../share/FBReader/*.zip) $(DESTDIR)$(INSTALLDIR)/share/FBReader
++	@install -d $(DESTDIR)$(INSTALLDIR)/share/FBReader/help
++	@install -m 0644 ../data/help/HowToStart.brownish.$(RESOLUTION).fb2 $(DESTDIR)$(INSTALLDIR)/share/FBReader/help/HowToStart.fb2
++	@install -d $(DESTDIR)$(INSTALLDIR)/share/FBReader/default
++	@install -m 0644 ../data/default/keymap.pdaxrom.xml $(DESTDIR)$(INSTALLDIR)/share/FBReader/default/keymap.xml
++	@install -m 0644 ../data/default/styles.$(STYLE).xml $(DESTDIR)$(INSTALLDIR)/share/FBReader/default/styles.xml
++                                                                                                                                
+ clean: .cleandir
+ 	@rm -f *.ipk
+ 
+Nur in fbreader-0.7.3d/fbreader/openzaurus: Makefile~.
+diff -urd fbreader-0.7.3d_orig/makefiles/arch/openzaurus.mk fbreader-0.7.3d/makefiles/arch/openzaurus.mk
+--- fbreader-0.7.3d_orig/makefiles/arch/openzaurus.mk	2006-05-03 23:56:31.000000000 +0200
++++ fbreader-0.7.3d/makefiles/arch/openzaurus.mk	2006-05-05 12:05:29.000000000 +0200
+@@ -1,28 +1,28 @@
+ include $(ROOTDIR)/makefiles/arch/dummy.mk
+ 
+-BASEDIR = /opt/openzaurus-3.5.4/usr/local/arm/oe
+-TOOLSDIR = $(BASEDIR)/bin
+-INCDIR = $(BASEDIR)/arm-linux/include
+-LIBDIR = $(BASEDIR)/arm-linux/lib
++INSTALLDIR=/usr/
+ 
+-RM = rm -rvf
+-RM_QUIET = rm -rf
+-QTINCLUDE = -I $(INCDIR)/qt2
+-GTKINCLUDE = -I$(LIBDIR)/glib-2.0/include -I$(LIBDIR)/gtk-2.0/include -I$(INCDIR)/glib-2.0 -I$(INCDIR)/gtk-2.0 -I$(INCDIR)/pango-1.0 -I$(INCDIR)/atk-1.0
+-MOC = $(TOOLSDIR)/moc
+-CC = $(TOOLSDIR)/arm-linux-gcc
+-AR = $(TOOLSDIR)/arm-linux-ar rsu
+-LD = $(TOOLSDIR)/arm-linux-g++
++CC = $(CCLD) $(TARGET_CFLAGS)
++AR = ar rsu
++LD = $(CXX)
+ 
+-EXPATLIBS = -lexpat
+-ENCALIBS = -lenca
+-BZIP2LIBS = -lbz2
++DEPGEN = $(CC) -MM
++CFLAGS = -pipe $(DUMMY_SECTIONS) -fno-exceptions -fno-rtti -Wall -Wno-ctor-dtor-privacy -W -DINSTALLDIR=\"$(INSTALLDIR)\"
+ 
+-ifeq "$(UI_TYPE)" "opie"
+-	UILIBS = -lqte -lqpe
++#MOC = moc-qt3
++#QTINCLUDE = -I /usr/include/qt3
++
++GTKINCLUDE = $(shell pkg-config --cflags gtk+-2.0)
++
++ifeq "$(UI_TYPE)" "qt"
++	UILIBS = -lqt-mt
+ else
+-	UILIBS = -lgpewidget -lgtk-x11-2.0 -lgdk-x11-2.0 -lgdk_pixbuf-2.0
++	UILIBS = $(shell pkg-config --libs gtk+-2.0) -lgpewidget
+ endif
+ 
+-CFLAGS = -pipe -DOPIE_NO_DEBUG -DQT_NO_DEBUG $(DUMMY_SECTIONS) -DINSTALLDIR=\"$(INSTALLDIR)\" -DQWS -fno-exceptions -fno-rtti -march=armv4 -mtune=xscale --param large-function-growth=2000 --param inline-unit-growth=200 -Wall -Wno-ctor-dtor-privacy -W -Winline
+-DEPGEN = $(CC) -MM
++EXPATLIBS = -lexpat
++ENCALIBS = -lenca
++BZIP2LIBS = -lbz2
++
++RM = rm -rvf
++RM_QUIET = rm -rf
+diff -urd fbreader-0.7.3d_orig/makefiles/config.mk fbreader-0.7.3d/makefiles/config.mk
+--- fbreader-0.7.3d_orig/makefiles/config.mk	2006-05-03 23:56:31.000000000 +0200
++++ fbreader-0.7.3d/makefiles/config.mk	2006-05-04 10:13:13.000000000 +0200
+@@ -7,7 +7,7 @@
+ CFLAGS += -DLIBICONV_PLUG
+ 
+ ifeq "$(TARGET_STATUS)" "release"
+-	CFLAGS += -O3
++	CFLAGS += -Os
+ 	LDFLAGS += -s
+ endif
+ ifeq "$(TARGET_STATUS)" "debug"
+diff -urd fbreader-0.7.3d_orig/makefiles/target.mk fbreader-0.7.3d/makefiles/target.mk
+--- fbreader-0.7.3d_orig/makefiles/target.mk	2006-05-03 23:56:31.000000000 +0200
++++ fbreader-0.7.3d/makefiles/target.mk	2006-05-04 10:25:20.000000000 +0200
+@@ -1,6 +1,7 @@
+-#TARGET_ARCH = openzaurus
++TARGET_ARCH = openzaurus
+ #UI_TYPE = opie
+-#UI_TYPE = gpe
++UI_TYPE = gpe
++RESOLUTION = 240x320
+ 
+ #TARGET_ARCH = opensimpad-0.9.0
+ #UI_TYPE = opie
+@@ -8,8 +9,8 @@
+ #TARGET_ARCH = qvfb
+ #UI_TYPE = opie
+ 
+-TARGET_ARCH = maemo
+-UI_TYPE = maemo
++#TARGET_ARCH = maemo
++#UI_TYPE = maemo
+ 
+ #TARGET_ARCH = desktop
+ #UI_TYPE = gtk

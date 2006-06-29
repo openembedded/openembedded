@@ -1,24 +1,14 @@
-Index: fbreader-0.7.3c/makefiles/target.mk
-===================================================================
---- fbreader-0.7.3c.orig/makefiles/target.mk	2006-04-27 23:56:44.000000000 +0200
-+++ fbreader-0.7.3c/makefiles/target.mk	2006-04-28 22:59:55.152319760 +0200
-@@ -1,6 +1,6 @@
--#TARGET_ARCH = openzaurus
+
+--- fbreader-0.7.1b/makefiles/target.mk.orig	2005-12-06 14:29:15.000000000 -0800
++++ fbreader-0.7.1b/makefiles/target.mk	2006-02-15 01:16:33.000000000 -0800
+@@ -10,8 +10,8 @@
+ TARGET_ARCH = maemo
+ UI_TYPE = maemo
+ 
+-#TARGET_ARCH = desktop
+-#UI_TYPE = gtk
 +TARGET_ARCH = openzaurus
- #UI_TYPE = opie
--#UI_TYPE = gpe
 +UI_TYPE = gpe
+ #UI_TYPE = qt
  
- #TARGET_ARCH = opensimpad-0.9.0
- #UI_TYPE = opie
-@@ -8,8 +8,8 @@
- #TARGET_ARCH = qvfb
- #UI_TYPE = opie
- 
--TARGET_ARCH = maemo
--UI_TYPE = maemo
-+#TARGET_ARCH = maemo
-+#UI_TYPE = maemo
- 
- #TARGET_ARCH = desktop
- #UI_TYPE = gtk
+ #TARGET_ARCH = zaurus
