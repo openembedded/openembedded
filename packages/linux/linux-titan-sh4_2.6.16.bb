@@ -7,7 +7,7 @@ PR = "r0"
 # The "date=20060328" should be changed to "tag=linux-2_6_16" - but the
 # tag won't exit till 2.6.17 is released
 SRC_URI = "ftp://ftp.kernel.org/pub/linux/kernel/v2.6/linux-${PV}.tar.bz2 \
-cvs://anonymous@linuxsh.cvs.sourceforge.net/cvsroot/linuxsh;module=linux;data=20060331 \
+cvs://anonymous@linuxsh.cvs.sourceforge.net/cvsroot/linuxsh;module=linux;date=20060331 \
 	   file://titan-flash.patch;patch=1 \
 	   file://titan-config"
 S = "${WORKDIR}/linux-${PV}"
@@ -17,8 +17,11 @@ COMPATIBLE_HOST = 'sh4.*-linux'
 inherit kernel
 
 ARCH = "sh"
-KERNEL_IMAGETYPE = "vmlinux"
-KERNEL_OUTPUT = "${KERNEL_IMAGETYPE}"
+KERNEL_IMAGETYPE = "zImage"
+KERNEL_OUTPUT = "arch/${ARCH}/boot/${KERNEL_IMAGETYPE}"
+
+# Fix up kernel version - sh kernels get -sh added automatically
+KERNEL_RELEASE = "${KERNEL_VERSION}"
 
 #
 # The linux-sh cvs tree is a "drop in source tree" and needs to be copied

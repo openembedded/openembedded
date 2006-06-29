@@ -5,9 +5,9 @@ upstream CVS.
 This implements the block device translation layer to match what the 
 onboard firmware implements.
 
-diff -durN -X ../diff.ignore linux/drivers/block/Kconfig gcc3.4.4/drivers/block/Kconfig
---- linux/drivers/block/Kconfig	2005-11-09 13:53:31.000000000 +1100
-+++ gcc3.4.4/drivers/block/Kconfig	2005-11-09 14:00:47.000000000 +1100
+diff -duNr linux-2.6.16-orig/drivers/block/Kconfig linux-2.6.16/drivers/block/Kconfig
+--- linux-2.6.16-orig/drivers/block/Kconfig	2006-06-29 16:12:57.000000000 +1000
++++ linux-2.6.16/drivers/block/Kconfig	2006-06-29 16:13:27.000000000 +1000
 @@ -190,6 +190,13 @@
  	  To compile this driver as a module, choose M here: the
  	  module will be called DAC960.
@@ -22,10 +22,10 @@ diff -durN -X ../diff.ignore linux/drivers/block/Kconfig gcc3.4.4/drivers/block/
  config BLK_DEV_UMEM
  	tristate "Micro Memory MM5415 Battery Backed RAM support (EXPERIMENTAL)"
  	depends on PCI && EXPERIMENTAL
-diff -durN -X ../diff.ignore linux/drivers/block/Makefile gcc3.4.4/drivers/block/Makefile
---- linux/drivers/block/Makefile	2004-12-25 08:35:24.000000000 +1100
-+++ gcc3.4.4/drivers/block/Makefile	2005-11-09 14:00:47.000000000 +1100
-@@ -35,6 +35,7 @@
+diff -duNr linux-2.6.16-orig/drivers/block/Makefile linux-2.6.16/drivers/block/Makefile
+--- linux-2.6.16-orig/drivers/block/Makefile	2006-06-29 16:12:57.000000000 +1000
++++ linux-2.6.16/drivers/block/Makefile	2006-06-29 16:13:27.000000000 +1000
+@@ -21,6 +21,7 @@
  obj-$(CONFIG_BLK_CPQ_DA)	+= cpqarray.o
  obj-$(CONFIG_BLK_CPQ_CISS_DA)  += cciss.o
  obj-$(CONFIG_BLK_DEV_DAC960)	+= DAC960.o
@@ -33,10 +33,10 @@ diff -durN -X ../diff.ignore linux/drivers/block/Makefile gcc3.4.4/drivers/block
  obj-$(CONFIG_CDROM_PKTCDVD)	+= pktcdvd.o
  
  obj-$(CONFIG_BLK_DEV_UMEM)	+= umem.o
-diff -durN -X ../diff.ignore linux/drivers/block/ssfdc.c gcc3.4.4/drivers/block/ssfdc.c
---- linux/drivers/block/ssfdc.c	1970-01-01 10:00:00.000000000 +1000
-+++ gcc3.4.4/drivers/block/ssfdc.c	2005-11-09 14:00:47.000000000 +1100
-@@ -0,0 +1,2738 @@
+diff -duNr linux-2.6.16-orig/drivers/block/ssfdc.c linux-2.6.16/drivers/block/ssfdc.c
+--- linux-2.6.16-orig/drivers/block/ssfdc.c	1970-01-01 10:00:00.000000000 +1000
++++ linux-2.6.16/drivers/block/ssfdc.c	2006-06-29 16:13:50.000000000 +1000
+@@ -0,0 +1,2742 @@
 +/* $id:   $
 +ssfdc.c - Solid State Flopyy Disk Card
 +
@@ -122,6 +122,7 @@ diff -durN -X ../diff.ignore linux/drivers/block/ssfdc.c gcc3.4.4/drivers/block/
 +static ssfdc_dev *ssfdc[MAX_SSFDC];
 +
 +static int ssfdc_open(struct inode *i_node, struct file *fptr);
++static int ssfdc_getgeo(struct block_device *bdev, struct hd_geometry *geo);
 +static int ssfdc_release(struct inode *i_node, struct file *fptr);
 +static int ssfdc_ioctl(struct inode *i_node, struct file *fptr, unsigned cmd, unsigned long arg);
 +static int ssfdc_revalidate(struct gendisk *disk);
@@ -130,6 +131,7 @@ diff -durN -X ../diff.ignore linux/drivers/block/ssfdc.c gcc3.4.4/drivers/block/
 +static struct block_device_operations ssfdc_fops = {
 +	.owner			= THIS_MODULE,
 +	.open			= ssfdc_open,
++	.getgeo			= ssfdc_getgeo,
 +	.release		= ssfdc_release,
 +	.ioctl			= ssfdc_ioctl,
 +	// bjm out .revalidate_disk	= ssfdc_revalidate,
@@ -2385,10 +2387,7 @@ diff -durN -X ../diff.ignore linux/drivers/block/ssfdc.c gcc3.4.4/drivers/block/
 +
 +static int ssfdc_ioctl(struct inode *i_node, struct file *fptr, unsigned cmd, unsigned long arg)
 +{
-+	int err, drive, int_val;
-+	unsigned char heads, sectors;
-+	unsigned int cylinders;
-+	struct hd_geometry  geo;
++	int drive, int_val;
 +	ssfdc_dev *psm;
 +
 +#if DEBUG_SSFDC
@@ -2429,27 +2428,32 @@ diff -durN -X ../diff.ignore linux/drivers/block/ssfdc.c gcc3.4.4/drivers/block/
 +			printk(KERN_DEBUG "ssfdc_ioctl(BLKGETSIZE) not handled.\n");
 +#endif
 +			break;
-+
-+		case HDIO_GETGEO:
-+			if ((void *) arg == NULL) return -EINVAL;
-+			if (!access_ok(VERIFY_WRITE,  arg, sizeof(geo)))
-+				return -EFAULT;
-+			if ((err=CheckLogCHS( psm, &cylinders, &heads, &sectors)))
-+				return ssfdc_maperror(err);	
-+			memset(&geo, 0, sizeof(geo));
-+			geo.cylinders = cylinders;
-+			geo.heads = heads;
-+			geo.sectors = sectors;
-+			geo.start = get_start_sect(i_node->i_bdev);
-+			if (copy_to_user((void *) arg, &geo, sizeof(geo)))
-+				return -EFAULT;		
-+			if (copy_to_user((void *) arg, &geo, sizeof(geo)))
-+				return -EFAULT;		
-+			return 0;
 +	}
 +	return -EINVAL;
 +}
 +
++
++static int ssfdc_getgeo(struct block_device *bdev, struct hd_geometry *geo)
++{
++	unsigned char heads, sectors;
++	unsigned int cylinders;
++	struct gendisk *disk = bdev->bd_disk;
++	ssfdc_dev *psm = disk->private_data;
++	int drive = psm->sm_minor;
++	int err;
++
++	if (drive < 0 || drive >= MAX_SSFDC)
++        	return -ENODEV;                                                                         
++
++	err = CheckLogCHS(psm, &cylinders, &heads, &sectors);
++	if (err)
++		return ssfdc_maperror(err);
++	
++	geo->heads = heads;
++	geo->sectors = sectors;
++	geo->cylinders = cylinders;
++	return 0;
++}
 +
 +
 +static int ssfdc_revalidate(struct gendisk *disk)
@@ -2775,9 +2779,9 @@ diff -durN -X ../diff.ignore linux/drivers/block/ssfdc.c gcc3.4.4/drivers/block/
 +MODULE_LICENSE("GPL");
 +
 +/* End of Linux Driver Modifications */
-diff -durN -X ../diff.ignore linux/drivers/block/ssfdc.h gcc3.4.4/drivers/block/ssfdc.h
---- linux/drivers/block/ssfdc.h	1970-01-01 10:00:00.000000000 +1000
-+++ gcc3.4.4/drivers/block/ssfdc.h	2005-11-09 14:00:47.000000000 +1100
+diff -duNr linux-2.6.16-orig/drivers/block/ssfdc.h linux-2.6.16/drivers/block/ssfdc.h
+--- linux-2.6.16-orig/drivers/block/ssfdc.h	1970-01-01 10:00:00.000000000 +1000
++++ linux-2.6.16/drivers/block/ssfdc.h	2006-06-29 16:13:27.000000000 +1000
 @@ -0,0 +1,372 @@
 +/* $id:   $ */
 +#ifndef _SSFDC_H
