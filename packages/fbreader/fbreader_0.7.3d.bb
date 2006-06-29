@@ -1,4 +1,3 @@
-
 DESCRIPTION = "FBreader is an ebook reader"
 LICENSE = "GPL2"
 HOMEPAGE = "http://only.mawhrin.net/fbreader/"
@@ -7,7 +6,7 @@ PRIORITY = "optional"
 DEPENDS = "gtk+ enca expat"
 MAINTAINER = "Florian Boor <florian@kernelconcepts.de>"
 
-SRC_URI = "http://only.mawhrin.net/fbreader/fbreader-sources-${PV}.tgz \
+SRC_URI = "http://only.mawhrin.net/fbreader/obsolete/fbreader-sources-${PV}.tgz \
 	file://fbreader-0.7.3d_buildsys_oe.patch;patch=1"
 
 FILES_${PN} += "${datadir}/FBReader"
