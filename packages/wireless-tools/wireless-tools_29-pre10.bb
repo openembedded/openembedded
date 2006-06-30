@@ -2,7 +2,7 @@ DESCRIPTION = "Tools for the Linux Standard Wireless Extension Subsystem"
 HOMEPAGE = "http://www.hpl.hp.com/personal/Jean_Tourrilhes/Linux/Tools.html"
 SECTION = "base"
 PRIORITY = "optional"
-MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
+MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>, Marcin Juszkiewicz <openembedded@hrw.one.pl>"
 LICENSE = "GPL"
 
 SRC_URI = "http://www.hpl.hp.com/personal/Jean_Tourrilhes/Linux/wireless_tools.29.pre10.tar.gz \
