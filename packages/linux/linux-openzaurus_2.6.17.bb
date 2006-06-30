@@ -1,6 +1,6 @@
 include linux-openzaurus.inc
 
-PR = "r2"
+PR = "r3"
 
 DEFAULT_PREFERENCE = "-1"
 
@@ -30,8 +30,9 @@ SRC_URI = "http://www.kernel.org/pub/linux/kernel/v2.6/linux-2.6.17.tar.bz2 \
            file://00-hostap.patch;patch=1;status=pending \
            file://10-pcnet.patch;patch=1;status=pending \
 #           ${RPSRC}/alsa/asoc-v0.10-oz-r0.patch;patch=1 \
-           ${RPSRC}/alsa/asoc-v0.10rc4.patch;patch=1 \
-           ${RPSRC}/asoc_fixups-r1.patch;patch=1 \
+	  ${RPSRC}/alsa/asoc-v0.10.patch;patch=1 \
+#           ${RPSRC}/alsa/asoc-v0.10rc4.patch;patch=1 \
+#           ${RPSRC}/asoc_fixups-r1.patch;patch=1 \
            ${RPSRC}/hx2750_base-r25.patch;patch=1 \
            ${RPSRC}/hx2750_bl-r7.patch;patch=1 \
            ${RPSRC}/hx2750_pcmcia-r2.patch;patch=1 \
@@ -45,7 +46,7 @@ SRC_URI = "http://www.kernel.org/pub/linux/kernel/v2.6/linux-2.6.17.tar.bz2 \
            ${RPSRC}/pm_changes-r1.patch;patch=1 \
            ${RPSRC}/usb_pxa27x_udc-r0.patch;patch=1 \
            ${RPSRC}/usb_add_epalloc-r1.patch;patch=1 \
-           ${DOSRC}/kexec-arm-r2.patch;patch=1 \
+           ${DOSRC}/kexec-arm-r3.patch;patch=1 \
            ${RPSRC}/locomo_kbd_tweak-r0.patch;patch=1 \
            ${RPSRC}/poodle_pm-r1.patch;patch=1 \
            ${RPSRC}/pxafb_changeres-r0.patch;patch=1 \
@@ -88,23 +89,23 @@ SRC_URI = "http://www.kernel.org/pub/linux/kernel/v2.6/linux-2.6.17.tar.bz2 \
 SRC_URI_append_tosa = "\
 	   ${CHSRC}/usb-ohci-hooks-r1.patch;patch=1 \
 	   ${CHSRC}/tmio-core-r4.patch;patch=1 \
-	   ${CHSRC}/tmio-tc6393-r5.patch;patch=1 \
+	   ${DOSRC}/temp/tmio-tc6393-r6.patch;patch=1 \
 	   ${CHSRC}/tmio-nand-r5.patch;patch=1 \
-	   ${CHSRC}/tmio-ohci-r3.patch;patch=1 \
+	   ${DOSRC}/temp/tmio-ohci-r4.patch;patch=1 \
 	   ${CHSRC}/tmio-fb-r6.patch;patch=1 \
-	   ${DOSRC}/tosa-keyboard-r14.patch;patch=1 \
+	   ${DOSRC}/tosa-keyboard-r17.patch;patch=1 \
 	   ${DOSRC}/tosa-pxaac97-r6.patch;patch=1 \
 	   ${DOSRC}/tosa-tmio-r6.patch;patch=1 \
-	   ${DOSRC}/tosa-power-r15.patch;patch=1 \
-	   ${DOSRC}/tosa-tmio-lcd-r7.patch;patch=1 \
-	   ${DOSRC}/tosa-bluetooth-r6.patch;patch=1 \
+	   ${DOSRC}/tosa-power-r17.patch;patch=1 \
+	   ${DOSRC}/tosa-tmio-lcd-r8.patch;patch=1 \
+	   ${DOSRC}/tosa-bluetooth-r8.patch;patch=1 \
 	   ${DOSRC}/wm97xx-lg7-r0.patch;patch=1 \
-	   ${DOSRC}/wm9712-suspend-cold-res-r0.patch;patch=1 \
+	   ${DOSRC}/wm9712-suspend-cold-res-r1.patch;patch=1 \
 	   ${DOSRC}/sharpsl-pm-postresume-r0.patch;patch=1 \
 	   ${DOSRC}/wm97xx-dig-restore-r0.patch;patch=1 \
 	   ${DOSRC}/wm97xx-miscdevs-resume-r0.patch;patch=1 \
-	   ${DOSRC}/wm9712-reset-loop-r0.patch;patch=1 \
-	   ${DOSRC}/tosa-asoc-r1.patch;patch=1 "
+	   ${DOSRC}/wm9712-reset-loop-r1.patch;patch=1"
+#	   ${DOSRC}/tosa-asoc-r1.patch;patch=1 "
 
 S = "${WORKDIR}/linux-2.6.17"
 

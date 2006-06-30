@@ -14,7 +14,7 @@ S = "${WORKDIR}/linux-${PV}"
 inherit kernel
 
 #Lets let 3.4.x handle the compilation of this one
-KERNEL_CCSUFFIX = "-3.4.3"
+KERNEL_CCSUFFIX = "-3.4.4"
 
 ARCH = "sh"
 KERNEL_IMAGETYPE = "zImage"

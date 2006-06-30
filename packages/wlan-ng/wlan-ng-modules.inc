@@ -64,6 +64,7 @@ FILES_wlan-ng-modules-usb = "/lib/modules/${KERNEL_VERSION}/wlan-ng/prism2_usb${
 FILES_wlan-ng-modules-cs  = "/lib/modules/${KERNEL_VERSION}/wlan-ng/prism2_cs${KERNEL_OBJECT_SUFFIX}"
 FILES_wlan-ng-modules-pci = "/lib/modules/${KERNEL_VERSION}/wlan-ng/prism2_pci${KERNEL_OBJECT_SUFFIX} \
 			     /lib/modules/${KERNEL_VERSION}/wlan-ng/prism2_plx${KERNEL_OBJECT_SUFFIX}"
+RDEPENDS_wlan-ng-modules-p80211 = "wlan-ng-utils"
 RDEPENDS_wlan-ng-modules-usb = "wlan-ng-modules-p80211"
 RDEPENDS_wlan-ng-modules-cs  = "wlan-ng-modules-p80211"
 RDEPENDS_wlan-ng-modules-pci = "wlan-ng-modules-p80211"
