@@ -1,0 +1,19 @@
+*** cdparanoia-III-alpha9.8/Makefile.in-	Mon Mar 27 23:09:24 2006
+--- cdparanoia-III-alpha9.8/Makefile.in	Mon Mar 27 23:09:56 2006
+***************
+*** 44,50 ****
+  	cd interface && $(MAKE) all
+  	cd paranoia && $(MAKE) all
+  	$(MAKE) cdparanoia CFLAGS="$(OPT)" 
+! 	strip cdparanoia
+  
+  debug:  
+  	cd interface && $(MAKE) debug
+--- 44,50 ----
+  	cd interface && $(MAKE) all
+  	cd paranoia && $(MAKE) all
+  	$(MAKE) cdparanoia CFLAGS="$(OPT)" 
+! 	$(STRIP) cdparanoia
+  
+  debug:  
+  	cd interface && $(MAKE) debug
