@@ -2,6 +2,7 @@ DESCRIPTION = "Settings-daemon is a bridge between xst/gpe-confd and gconf"
 LICENSE = "GPL"
 DEPENDS = "gconf xst glib-2.0"
 SECTION = "gpe"
+PV = "svn+${CVSDATE}"
 
 SRC_URI = "svn://svn.o-hand.com/repos/matchbox/trunk;module=${PN};proto=http \
 	   file://70settings-daemon"
