@@ -1,0 +1,75 @@
+Index: Configure
+===================================================================
+--- linux-wlan-ng-devel.orig/Configure	(revision 1772)
++++ linux-wlan-ng-devel/Configure	(working copy)
+@@ -269,6 +269,12 @@
+         write_bool KERN_25
+ fi
+ 
++# flag to indicate new kbuild for modules in 2-6-17 
++if [ $VERSION_CODE -gt `version 2 6 16` ] ; then
++    KERN_26=y
++    write_bool KERN_26
++fi
++
+ if [ "$SRC_RELEASE" != "$CUR_RELEASE" ] ; then
+ 	$ECHO "WARNING: the current running kernel is actually version $CUR_RELEASE."
+ fi
+Index: src/p80211/Makefile
+===================================================================
+--- linux-wlan-ng-devel.orig/src/p80211/Makefile	(revision 1772)
++++ linux-wlan-ng-devel/src/p80211/Makefile	(working copy)
+@@ -72,15 +72,18 @@
+ 
+ PWD := $(shell pwd)
+ default:
+-
++ifeq ($(KERN_26),y)
++	$(MAKE) -C $(LINUX_SRC) M='$(PWD)' WLAN_SRC=$(WLAN_SRC)
++	cp Modules.symvers ../prism2/driver
++else 
+ ifeq ($(KERN_25), y)
+ 	$(MAKE) -C $(LINUX_SRC) M='$(PWD)/.. $(PWD)' WLAN_SRC=$(WLAN_SRC) modules
+ else
+ 	$(MAKE) -C $(LINUX_SRC) SUBDIRS=$(PWD) WLAN_SRC=$(WLAN_SRC) modules
+ endif # KERN_25
+-
++endif # KERN_26
+ clean:
+-	rm -f *.o *.ko .*.cmd *.mod.c  *.flags .*.flags
++	rm -f *.o *.ko .*.cmd *.mod.c  *.flags .*.flags Modules.symvers
+ 
+ install:
+ 	mkdir -p $(TARGET_MODDIR)
+Index: src/prism2/driver/Makefile
+===================================================================
+--- linux-wlan-ng-devel.orig/src/prism2/driver/Makefile	(revision 1772)
++++ linux-wlan-ng-devel/src/prism2/driver/Makefile	(working copy)
+@@ -83,19 +83,26 @@
+ PWD := $(shell pwd)
+ 
+ default:
++#if new kbuild in 2.6.17 or later
++ifeq ($(KERN_26), y)
++	$(MAKE) -C $(LINUX_SRC) M='$(PWD)' WLAN_SRC=$(WLAN_SRC)
++
++else
+ ifeq ($(KERN_25), y)
+ 	$(MAKE) -C $(LINUX_SRC) M='$(PWD)/../.. $(PWD)' WLAN_SRC=$(WLAN_SRC) \
+ 		modules
++
+ else # kbuild 2.4
+ 	$(MAKE) -C $(LINUX_SRC) SUBDIRS=$(PWD) WLAN_SRC=$(WLAN_SRC) \
+ 		modules
+ 
+ endif # kbuild switch
++endif # KERN_26
+ 
+ endif  #KERNELRELEASE
+ 
+ clean:
+-	rm -f *.o *.ko .*.cmd *.mod.c  *.flags .*.flags
++	rm -f *.o *.ko .*.cmd *.mod.c  *.flags .*.flags Modules.symvers
+ 
+ install:
+ ifeq ($(KERN_25), y)
