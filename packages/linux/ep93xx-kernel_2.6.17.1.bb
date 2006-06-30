@@ -7,15 +7,17 @@ PR = "r0"
 COMPATIBLE_MACHINE = "ep93xx"
 
 SRC_URI = "ftp://ftp.kernel.org/pub/linux/kernel/v2.6/linux-2.6.17.1.tar.bz2 \
-	   http://www.wantstofly.org/~buytenh/ep93xx/derevo19.diff;patch=1 \
+	   http://www.wantstofly.org/~buytenh/ep93xx/derevo19.diff;pnum=1;patch=1 \
            file://defconfig \
 		   "
 
-S = "${WORKDIR}/linux-2.6.16"
+S = "${WORKDIR}/linux-2.6.17.1"
 
 inherit kernel
 
 KERNEL_IMAGETYPE = "zImage"
+
+
 
 do_configure() {
         rm -f ${S}/.config
