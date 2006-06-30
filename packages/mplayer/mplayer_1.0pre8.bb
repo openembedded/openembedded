@@ -13,7 +13,9 @@ SRC_URI = "http://www1.mplayerhq.hu/MPlayer/releases/MPlayer-${PV}.tar.bz2 \
 	   file://w100-configure.patch;patch=1 \
 	   file://w100-Makefile.patch;patch=1 \
 	   file://w100-video_out.patch;patch=1 \
-	   file://w100-mplayer.patch;patch=1"
+	   file://w100-mplayer.patch;patch=1 \
+           file://libmpdemux-ogg-include.patch;patch=1 \
+           file://libmpcodecs-ogg-include.patch;patch=1"
 
 MAINTAINER="Graeme Gregory <dp@xora.org.uk>"
 RCONFLICTS_${PN} = "mplayer-atty"
