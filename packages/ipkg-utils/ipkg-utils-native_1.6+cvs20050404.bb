@@ -1,7 +1,8 @@
 include ipkg-utils_${PV}.bb
+SRC_URI += "file://ipkg-utils-fix.patch;patch=1"
 
 RDEPENDS = ""
-PR = "r6"
+PR = "r7"
 
 inherit native
 
