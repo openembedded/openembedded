@@ -6,7 +6,7 @@ LICENSE = "GPL QPL"
 MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 DEPENDS = "uicmoc4-native qmake2-native freetype jpeg libx11 xft libxext libxrender libxrandr libxcursor"
 PROVIDES = "qt4x11"
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "ftp://ftp.trolltech.com/qt/source/qt-x11-opensource-src-${PV}.tar.gz \
            file://cross-compile.patch;patch=1 \
@@ -15,7 +15,8 @@ SRC_URI = "ftp://ftp.trolltech.com/qt/source/qt-x11-opensource-src-${PV}.tar.gz 
            file://no-qmake.patch;patch=1 \
            file://gcc4_1.patch;patch=1 \
            file://configurable-cpu-extensions.patch;patch=1 \
-           file://fix-mkspecs.patch;patch=1"
+           file://fix-mkspecs.patch;patch=1 \
+           file://fix-asm-constraints.patch;patch=1"
 S = "${WORKDIR}/qt-x11-opensource-src-${PV}"
 
 PARALLEL_MAKE = ""
@@ -24,9 +25,22 @@ inherit qmake-base qt4x11 pkgconfig
 
 export QTDIR = "${S}"
 STAGING_QT_DIR = "${STAGING_DIR}/${TARGET_SYS}/qt4"
-export ARCH = "${TARGET_ARCH}"
-export ARCH_i686 = "x86"
 EXTRA_OEMAKE = "-e"
+
+def qt_arch(d):
+	import bb, re
+	arch = bb.data.getVar('TARGET_ARCH', d, 1)
+	if re.match("^i.86$", arch):
+		arch = "x86"
+	elif re.match("^arm.*", arch):
+		arch = "arm"
+	elif arch == "x86_64":
+		arch = "x86"
+	elif arch == "mipsel":
+		arch = "mips"
+	return arch
+
+QT_ARCH := "${@qt_arch(d)}"
 
 # FIXME:
 # * add missing options
@@ -46,11 +60,12 @@ do_configure() {
 	echo "DEFINES -= QT_NO_CAST_TO_ASCII" >>src/qbase.pri
 	echo "DEFINES += QT_NO_XIM" >>src/qbase.pri
 	unset QMAKESPEC
-	#export QMAKESPEC="linux-oe-g++"
 	ln -sf ${STAGING_BINDIR}/qmake2 bin/qmake
+	ln -sf ./linux-g++ mkspecs/linux-gnueabi-g++
+	#export QMAKESPEC="linux-oe-g++" 
 	#rm -rf ./mkspecs
 	#ln -sf ${QMAKE_MKSPEC_PATH} ./mkspecs
-	echo yes | ./configure -prefix / -platform ${TARGET_OS}-g++ -crossarch ${ARCH} ${QT_CONFIG_FLAGS} -fast \
+	echo yes | ./configure -prefix / -platform ${TARGET_OS}-g++ -crossarch ${QT_ARCH} ${QT_CONFIG_FLAGS} -fast \
 		-L${STAGING_LIBDIR} -I${STAGING_INCDIR} -I${STAGING_INCDIR}/freetype2 -I${STAGING_INCDIR}/mysql
 }
 
