@@ -5,7 +5,7 @@ Bible software with a constantly growing list of front-ends \
 SECTION = "libs"
 PRIORITY = "optional"
 LICENSE = "GPL"
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "http://www.crosswire.org/ftpmirror/pub/sword/source/v1.5/sword-${PV}.tar.gz"
 
@@ -23,3 +23,5 @@ do_stage() {
 	done
 
 }
+
+FILES_${PN} = "${libdir}/libsword*so ${sysconfdir} ${bindir} ${datadir}"
