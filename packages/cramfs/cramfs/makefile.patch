@@ -1,0 +1,28 @@
+Jordan Crouse (AMD)
+08/20/04 - Fix for kernels with less then modern cramfs implementations
+RH9, I'm looking at you.
+
+Index: cramfs-1.1/GNUmakefile
+===================================================================
+--- cramfs-1.1.orig/GNUmakefile	2002-02-23 01:52:41.000000000 +0100
++++ cramfs-1.1/GNUmakefile	2006-06-19 15:39:38.756086200 +0200
+@@ -1,6 +1,7 @@
+ CC = gcc
+ CFLAGS = -W -Wall -O2 -g
+-CPPFLAGS = -I.
++LFLAGS=-I. $(LDFLAGS)
++
+ LDLIBS = -lz
+ PROGS = mkcramfs cramfsck
+ 
+@@ -9,4 +10,10 @@
+ distclean clean:
+ 	rm -f $(PROGS)
+ 
++mkcramfs: mkcramfs.c
++	$(CC) $(LFLAGS) $(CPPFLAGS) $(CFLAGS) -o $@ $< $(LDLIBS)
++
++cramfsck: cramfsck.c
++	$(CC) $(LFLAGS) $(CPPFLAGS) $(CFLAGS) -o $@ $< $(LDLIBS)
++
+ .PHONY: all clean
