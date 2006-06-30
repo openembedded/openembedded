@@ -1,8 +1,12 @@
 SECTION = "base"
 include ipkg-utils_${PV}.bb
-PR = "r4"
+SRC_URI += "file://ipkg-utils-fix.patch;patch=1"
+PR = "r5"
 inherit native
 DEPENDS = ""
+RDEPENDS = ""
+# Avoid circular dependencies from package_ipk.bbclass
+PACKAGES = ""
 
 do_stage() {
         for i in ${INSTALL}; do
