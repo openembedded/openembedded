@@ -1,0 +1,11 @@
+--- xx/lib/client.c.orig	2006-07-01 12:32:46.000000000 +0200
++++ xx/lib/client.c	2006-07-01 12:33:01.000000000 +0200
+@@ -61,7 +61,7 @@
+ 
+ static cmech_list_t *cmechlist; /* global var which holds the list */
+ 
+-static sasl_global_callbacks_t global_callbacks;
++sasl_global_callbacks_t global_callbacks;
+ 
+ static int _sasl_client_active = 0;
+ 
