@@ -1,0 +1,11 @@
+--- scummvm-0.6.1b/configure_orig	2006-07-01 16:42:17.000000000 +0000
++++ scummvm-0.6.1b/configure	2006-07-01 16:48:04.000000000 +0000
+@@ -362,7 +362,7 @@
+ fi
+ 
+ case $cxx_version in
+-	2.95.[2-9]|2.95.[2-9][-.]*|3.[0-9]|3.[0-9].[0-9])
++	2.95.[2-9]|2.95.[2-9][-.]*|3.[0-9]|3.[0-9].[0-9]|4.[0-9].[0-9])
+ 		_cxx_major=`echo $cxx_version | cut -d '.' -f 1`
+ 		_cxx_minor=`echo $cxx_version | cut -d '.' -f 2`
+ 		cxx_version="$cxx_version, ok"
