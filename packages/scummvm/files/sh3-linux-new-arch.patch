@@ -1,0 +1,18 @@
+--- scummvm-0.6.1b/configure_orig	2006-07-01 17:15:30.000000000 +0000
++++ scummvm-0.6.1b/configure	2006-07-01 17:19:41.000000000 +0000
+@@ -462,6 +462,15 @@
+ 	    type_2_byte='short'
+ 	    type_4_byte='int'
+ 	    ;;
++	sh3-linux)
++	    echo "Crosscompiling to $_host, forcing endianess, aligment and type sizes"
++	    DEFINES="$DEFINES -DUNIX"
++	    _def_endianess='#define SCUMM_LITTLE_ENDIAN'
++	    _def_align='#define SCUMM_NEED_ALiGMENT'
++	    type_1_byte='char'
++	    type_2_byte='short'
++	    type_4_byte='int'
++	    ;;
+ 	*)
+ 	    echo "Cross-compiling to unknown target, please add your target to configure."
+ 	    exit 1
