@@ -5,13 +5,14 @@ MAINTAINER = "Mark Teel (mark@teel.ws)"
 HOMEPAGE = "http://www.wviewweather.com/"
 DEPENDS += " bash util-linux gd openssl curl update-rc.d"
 
-SRC_URI = "${SOURCEFORGE_MIRROR}/wview/wview-${PV}.tar.gz"
+SRC_URI = "${SOURCEFORGE_MIRROR}/wview/wview-${PV}.tar.gz \
+	file://Makefile.am.patch;patch=1"
 
 S = "${WORKDIR}/wview-${PV}"
 
 inherit autotools
 
-EXTRA_OECONF += " --enable-wunderground" 
+EXTRA_OECONF += "--prefix=${D} --enable-wunderground" 
 
 do_install_append() {
 	install -d ${D}/${sysconfdir}/init.d

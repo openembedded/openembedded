@@ -1,0 +1,11 @@
+--- mutt-1.5.4/keymap.h.orig	2006-07-01 16:50:25.000000000 +0200
++++ mutt-1.5.4/keymap.h	2006-07-01 16:50:58.000000000 +0200
+@@ -19,6 +19,8 @@
+ #ifndef KEYMAP_H
+ #define KEYMAP_H
+ 
++#include "mapping.h"
++
+ /* maximal length of a key binding sequence used for buffer in km_bindkey */
+ #define MAX_SEQ 8
+ 
