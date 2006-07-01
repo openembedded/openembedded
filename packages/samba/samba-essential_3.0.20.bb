@@ -1,4 +1,4 @@
-PR = "r3"
+PR = "r4"
 
 SRC_URI = "http://us2.samba.org/samba/ftp/stable/samba-${PV}.tar.gz \
 	   file://configure.patch;patch=1 \
@@ -42,6 +42,8 @@ do_install_append() {
 	rm -f ${D}/sbin/mount.smbfs
 	rmdir ${D}/sbin
 	install -d "${D}${sysconfdir}/init.d"
+	install -d "${D}${sysconfdir}/samba/private"
+	
 	install -c -m 755 ${WORKDIR}/init-essential ${D}${sysconfdir}/init.d/samba
 	
 	install -d "${D}${sysconfdir}/samba"	
