@@ -1,11 +1,12 @@
 DEPENDS = ""
 DESCRIPTION = "Highly configurable, modular and secure inetd"
 MAINTAINER = "NSLU2 Linux <nslu2-linux@yahoogroups.com>"
-PR="r3"
+PR="r4"
 
 SRC_URI = "http://www.xinetd.org/xinetd-${PV}.tar.gz \
 	  file://xinetd.init \
 	  file://xinetd.conf \
+	  file://service.c.patch;patch=1 \
 	  "
 
 EXTRA_OECONF="--disable-nls"

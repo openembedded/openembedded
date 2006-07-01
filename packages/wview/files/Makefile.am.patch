@@ -1,0 +1,24 @@
+--- wview-3.1.3/wunderground/Makefile.am.orig	2006-07-01 18:28:45.000000000 +0200
++++ wview-3.1.3/wunderground/Makefile.am	2006-07-01 18:29:23.000000000 +0200
+@@ -9,8 +9,6 @@
+ INCLUDES = \
+ 		-I$(top_srcdir)/common \
+ 		-I$(prefix)/include \
+-		-I/usr/include \
+-		-I/usr/local/include \
+ 		-D_GNU_SOURCE \
+ 		-DBUILD_WVWUNDERGROUND
+ 
+@@ -36,10 +34,10 @@
+ endif
+ 
+ # define library directories
+-wvwunderd_LDFLAGS = -L/usr/lib -L/usr/local/lib -L$(prefix)/lib
++wvwunderd_LDFLAGS = -L$(prefix)/lib
+ 
+ if DB_MYSQL
+-wvwunderd_LDFLAGS += -L$(prefix)/lib/mysql -L/usr/lib/mysql
++wvwunderd_LDFLAGS += -L$(prefix)/lib/mysql
+ else
+ if DB_PGRESQL
+ wvwunderd_LDFLAGS += -L$(prefix)/lib -L$(prefix)/pgsql/lib

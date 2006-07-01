@@ -1,0 +1,24 @@
+--- xinetd-2.3.13/xinetd/service.c.orig	2006-07-01 19:14:23.000000000 +0200
++++ xinetd-2.3.13/xinetd/service.c	2006-07-01 19:22:28.000000000 +0200
+@@ -764,8 +764,8 @@
+                return FAILED;
+ 
+             if ( last == NULL ) {
+-               last = SAIN( SVC_LAST_DGRAM_ADDR(sp) ) = 
+-		  SAIN( calloc( 1, sizeof(union xsockaddr) ) );
++               last = SAIN(calloc( 1, sizeof(union xsockaddr) ) );
++	       SVC_LAST_DGRAM_ADDR(sp) = (union xsockaddr *)last;
+             }
+ 
+             (void) time( &current_time ) ;
+@@ -791,8 +791,8 @@
+                return FAILED;
+ 
+ 	    if( last == NULL ) {
+-               last = SAIN6(SVC_LAST_DGRAM_ADDR(sp)) = 
+-		  SAIN6(calloc( 1, sizeof(union xsockaddr) ) );
++               last = SAIN6(calloc( 1, sizeof(union xsockaddr) ) );
++	       SVC_LAST_DGRAM_ADDR(sp) = (union xsockaddr *)last;
+             }
+ 
+             (void) time( &current_time ) ;

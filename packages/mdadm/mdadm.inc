@@ -7,6 +7,9 @@ LICENSE = "GPL"
 
 SRC_URI = "ftp://ftp.kernel.org/pub/linux/utils/raid/mdadm/${PN}-${PV}.tar.bz2"
 
+CFLAGS += "-fno-strict-aliasing"
+
+
 inherit autotools
 
 INHIBIT_AUTO_STAGE = "1"

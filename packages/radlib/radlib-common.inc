@@ -4,7 +4,8 @@ DESCRIPTION = "radlib is a rapid application development library for unix interp
 MAINTAINER = "Mark Teel (mark@teel.ws)"
 HOMEPAGE = "http://www.radlib.teel.ws/"
 
-SRC_URI = "${SOURCEFORGE_MIRROR}/radlib/radlib-${PV}.tar.gz"
+SRC_URI = "${SOURCEFORGE_MIRROR}/radlib/radlib-${PV}.tar.gz \
+	file://Makefile.am.patch;patch=1"
 
 S = "${WORKDIR}/radlib-${PV}"
 

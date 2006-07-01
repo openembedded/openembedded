@@ -4,7 +4,7 @@ LICENSE = "GPLv2"
 MAINTAINER = "Chris Larson <kergoth@handhelds.org>"
 SECTION = "console/multimedia"
 DEPENDS = "libvorbis libogg libid3tag libao zlib libmikmod libmad flac audiofile virtual/libiconv"
-PR = "r5"
+PR = "r6"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/musicpd/mpd-${PV}.tar.gz \
            file://save-volume-state.patch;patch=1"
@@ -16,7 +16,8 @@ inherit autotools
 # in staging - remove the --with and replace with --enable to use the local
 # versions.
 
-EXTRA_OECONF = "--enable-ogg \
+EXTRA_OECONF = "--prefix=${D} \
+		--enable-ogg \
 		--with-id3tag-libraries=${STAGING_LIBDIR} \
 		--with-id3tag-includes=${STAGING_INCDIR} \
 		--with-mad-libraries=${STAGING_LIBDIR} \
