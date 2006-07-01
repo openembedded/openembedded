@@ -1,0 +1,20 @@
+--- ./plugin/key/key_large/key_large.c.orig	2006-07-01 16:22:38.000000000 +0200
++++ ./plugin/key/key_large/key_large.c	2006-07-01 16:23:06.000000000 +0200
+@@ -266,7 +266,7 @@
+ 		ordering |= HASHED_NAME_MASK;
+ 
+ 		offset = plug_call(hash->o.hash_ops, build,
+-				   name + INLINE_CHARS,
++				   (unsigned char *)name + INLINE_CHARS,
+ 				   len - INLINE_CHARS);
+ 	}
+ 
+@@ -382,7 +382,7 @@
+ 	.get_name	= key_large_get_name
+ };
+ 
+-static reiser4_plug_t key_large_plug = {
++reiser4_plug_t key_large_plug = {
+ 	.cl    = class_init,
+ 	.id    = {KEY_LARGE_ID, 0, KEY_PLUG_TYPE},
+ #ifndef ENABLE_MINIMAL

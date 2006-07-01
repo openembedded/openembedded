@@ -1,0 +1,20 @@
+--- x/plugin/key/key_short/key_short.c.orig	2006-07-01 16:14:46.000000000 +0200
++++ x/plugin/key/key_short/key_short.c	2006-07-01 16:16:50.000000000 +0200
+@@ -248,7 +248,7 @@
+ 		objectid |= HASHED_NAME_MASK;
+ 		
+ 		offset = plug_call(hash->o.hash_ops, build,
+-				   name + OBJECTID_CHARS,
++				   (unsigned char*)name + OBJECTID_CHARS,
+ 				   len - OBJECTID_CHARS);
+ 	}
+ 	
+@@ -367,7 +367,7 @@
+ 	.get_name       = key_short_get_name
+ };
+ 
+-static reiser4_plug_t key_short_plug = {
++reiser4_plug_t key_short_plug = {
+ 	.cl    = class_init,
+ 	.id    = {KEY_SHORT_ID, 0, KEY_PLUG_TYPE},
+ #ifndef ENABLE_MINIMAL
