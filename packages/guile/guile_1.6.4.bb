@@ -1,9 +1,15 @@
-SECTION = "unknown"
-LICENSE = "GPL"
-MAINTAINER = "Phil Blundell <pb@handhelds.org>"
-SRC_URI = "http://ftp.gnu.org/pub/gnu/guile/guile-${PV}.tar.gz \
-	   file://configure-lossage.patch;patch=1"
+DESCRIPTION = "Guile is an interpreter for the Scheme programming language, \
+packaged as a library which can be incorporated into your programs."
+HOMEPAGE = "http://www.gnu.org/software/guile/guile.html"
+SECTION = "devel/scheme"
 DEPENDS = "guile-native"
+MAINTAINER = "Phil Blundell <pb@handhelds.org>"
+LICENSE = "GPL"
+PR = "r1"
+
+SRC_URI = "http://ftp.gnu.org/pub/gnu/guile/guile-${PV}.tar.gz \
+           file://configure-lossage.patch;patch=1 \
+           file://gcc4.patch;patch=1"
 
 inherit autotools
 
