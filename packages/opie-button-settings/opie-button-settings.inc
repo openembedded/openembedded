@@ -1,4 +1,4 @@
-DESCRIPTION = "Device-buttons settings dialog"
+DESCRIPTION = "Opie device buttons settings dialog"
 SECTION = "opie/settings"
 PRIORITY = "optional"
 MAINTAINER = "Team Opie <opie@handhelds.org>"
