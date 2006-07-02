@@ -1,0 +1,11 @@
+--- scummvm-0.6.1b/configure_orig	2006-07-01 16:42:17.000000000 +0000
++++ scummvm-0.6.1b/configure	2006-07-01 16:43:12.000000000 +0000
+@@ -355,7 +355,7 @@
+ 
+ echocheck "compiler version"
+ 
+-cxx_name=`( $cc -v ) 2>&1 | tail -1 | cut -d ' ' -f 1`
++cxx_name=`( $cc -v ) 2>&1 | tail -n 1 | cut -d ' ' -f 1`
+ cxx_version=`( $CXX -dumpversion ) 2>&1`
+ if test "$?" -gt 0; then
+ 	cxx_version="not found"

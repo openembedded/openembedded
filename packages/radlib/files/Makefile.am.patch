@@ -1,0 +1,24 @@
+--- radlib-2.6.2/src/Makefile.am.orig	2006-07-01 18:56:09.000000000 +0200
++++ radlib-2.6.2/src/Makefile.am	2006-07-01 18:56:48.000000000 +0200
+@@ -14,8 +14,8 @@
+ 
+ if MYSQL
+ MY_INCLUDES 	= \
+-		-I$(prefix)/include/mysql \
+-		-I/usr/include/mysql
++		-I$(prefix)/include/mysql
++
+ MY_SOURCES  	= \
+ 		$(top_srcdir)/database/mysql/my_database.c \
+ 		$(top_srcdir)/src/raddatabase.c
+@@ -24,8 +24,8 @@
+ endif
+ if PGRESQL
+ PG_INCLUDES 	= \
+-		-I$(prefix)/include \
+-		-I/usr/include
++		-I$(prefix)/include
++
+ PG_SOURCES	= \
+ 		$(top_srcdir)/database/postgresql/pg_database.c \
+ 		$(top_srcdir)/src/raddatabase.c
