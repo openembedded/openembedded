@@ -1,6 +1,5 @@
 include ${PN}.inc
 
-PR = "r3"
 
 SRC_URI = "${HANDHELDS_CVS};tag=${TAG};module=opie/noncore/apps/${APPNAME} \
            ${HANDHELDS_CVS};tag=${TAG};module=opie/pics \
