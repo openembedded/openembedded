@@ -1,0 +1,13 @@
+[app] (title=Panel 0)
+  [Deco]	{NONE}
+[end]
+[app] (title=Panel 1)
+  [Deco]	{NONE}
+[end]
+[app] (title=rxvt)
+  [Dimensions]	{635 440}
+[end]
+[app] (title=x-terminal-emulator)
+  [Dimensions]  {635 440}
+[end]                    
+
