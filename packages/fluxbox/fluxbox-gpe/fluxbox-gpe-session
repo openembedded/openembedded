@@ -1,0 +1,30 @@
+#!/bin/sh
+#
+# Session script for fluxbox-gpe, heavily based on matchbox's session script
+#
+
+# Install "apps" file with defaults for GPE usage
+if test -e /usr/share/fluxbox/apps.gpe
+then
+	mkdir -p $HOME/.fluxbox
+	test -e $HOME/.fluxbox/apps || cp /usr/share/fluxbox/apps.gpe $HOME/.fluxbox/apps
+fi
+
+
+if [ -e $HOME/.fluxbox/session ]
+then
+exec $HOME/.fluxbox/session
+fi
+
+if [ -e /usr/share/fluxbox/session ]
+then
+exec /usr/share/fluxbox/session
+fi
+
+# Default files to run if $HOME/.matchbox/session or /etc/matchbox/session
+# dont exist. 
+
+matchbox-desktop &
+matchbox-panel  --orientation south -no-flip &
+sleep 5
+exec startfluxbox $@  
