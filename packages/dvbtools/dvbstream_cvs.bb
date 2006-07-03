@@ -4,7 +4,7 @@ PRIORITY = "optional"
 LICENSE = "GPLV2"
 MAINTAINER = "Phil Blundell <pb@debian.org>"
 DEPENDS = "libxml2"
-SRC_URI = "cvs://anonymous@cvs.sourceforge.net/cvsroot/dvbtools;module=dvbstream"
+SRC_URI = "cvs://anonymous@dvbtools.cvs.sourceforge.net/cvsroot/dvbtools;module=dvbstream"
 S = "${WORKDIR}/dvbstream"
 
 CFLAGS_append = " -D_GNU_SOURCE"

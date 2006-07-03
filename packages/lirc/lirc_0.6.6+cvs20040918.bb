@@ -8,7 +8,7 @@ DEPENDS = "virtual/kernel"
 PR = "r8"
 
 S = "${WORKDIR}/lirc"
-SRC_URI = "cvs://anonymous@cvs.sourceforge.net/cvsroot/lirc;module=lirc;date=20040918;method=pserver \
+SRC_URI = "cvs://anonymous@lirc.cvs.sourceforge.net/cvsroot/lirc;module=lirc;date=20040918;method=pserver \
 	file://split-hauppauge.patch;patch=1 \
 	file://lircd.init file://lircmd.init"
 

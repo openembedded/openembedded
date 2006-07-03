@@ -4,7 +4,7 @@ DEPENDS = "zlib tremor libmad libid3tag libsidplay glib-2.0 libmikmod-3.1.11"
 LICENSE = "GPL"
 PR = "r3"
 
-SRC_URI = "cvs://anonymous@cvs.sourceforge.net/cvsroot/xmms-embedded;module=xmms-embedded;date=${PV} \
+SRC_URI = "cvs://anonymous@xmms-embedded.cvs.sourceforge.net/cvsroot/xmms-embedded;module=xmms-embedded;date=${PV} \
            file://bogusincdir.patch;patch=1 \
            file://gtkremoval.patch;patch=1 \
            file://removenativeincdir.patch;patch=1 \

@@ -4,7 +4,7 @@ PV = "2.0.0-cvs-mco1-${CVSDATE}"
 
 WEBCVSURL = "http://handhelds.org/cgi-bin/cvsweb.cgi/~checkout~/gaim"
 
-SRC_URI = "cvs://anonymous@cvs.sourceforge.net/cvsroot/gaim;module=gaim \
+SRC_URI = "cvs://anonymous@gaim.cvs.sourceforge.net/cvsroot/gaim;module=gaim \
 	${WEBCVSURL}/no-superimposed-version-on-logo.patch;patch=1 \
 	${WEBCVSURL}/01-optional-icons-in-dialogs.patch;patch=1 \
 	${WEBCVSURL}/02-request-field-dialogs.patch;patch=1 \

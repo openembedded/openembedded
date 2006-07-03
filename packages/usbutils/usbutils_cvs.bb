@@ -6,7 +6,7 @@ PRIORITY = "optional"
 PV = "0.70-cvs${CVSDATE}"
 PR = "r3"
 
-SRC_URI = "cvs://anonymous@cvs.sourceforge.net/cvsroot/linux-usb;module=usbutils"
+SRC_URI = "cvs://anonymous@linux-usb.cvs.sourceforge.net/cvsroot/linux-usb;module=usbutils"
 S = "${WORKDIR}/usbutils"
 
 inherit autotools 

@@ -6,7 +6,7 @@ HOMEPAGE = "http://sf.net/projects/puppy/"
 LICENSE = "GPL"
 PR = "r1"
 
-SRC_URI = "cvs://anonymous:@cvs.sourceforge.net/cvsroot/puppy;module=puppy;tag=PUPPY_1_9"
+SRC_URI = "cvs://anonymous:@puppy.cvs.sourceforge.net/cvsroot/puppy;module=puppy;tag=PUPPY_1_9"
 S = "${WORKDIR}/puppy"
 
 inherit autotools

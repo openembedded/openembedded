@@ -7,7 +7,7 @@ PR = "r0"
 
 inherit e
 
-SRC_URI = "cvs://anonymous@cvs.sourceforge.net/cvsroot/evidence;module=evidence;date=${PV}"
+SRC_URI = "cvs://anonymous@evidence.cvs.sourceforge.net/cvsroot/evidence;module=evidence;date=${PV}"
 S = "${WORKDIR}/evidence"
 
 EXTRA_OECONF = "--with-edje-cc=${STAGING_BINDIR}/edje_cc \

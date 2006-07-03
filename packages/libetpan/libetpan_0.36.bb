@@ -7,7 +7,7 @@ PR = "r3"
 S = "${WORKDIR}/libetpan"
 TAG="rel-0-36"
 LICENSE = "BSD"
-SRC_URI = "cvs://anonymous@cvs.sourceforge.net/cvsroot/libetpan;tag=${TAG};module=libetpan \
+SRC_URI = "cvs://anonymous@libetpan.cvs.sourceforge.net/cvsroot/libetpan;tag=${TAG};module=libetpan \
           file://etpan_configure.patch;patch=1 \
           file://reentrant.patch;patch=1 \
           file://gnutls.patch;patch=1 "

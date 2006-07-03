@@ -7,7 +7,7 @@ RDEPENDS = "kernel (${KERNEL_VERSION})"
 DEPENDS = "virtual/kernel"
 PV = "cvs-bsd${CVSDATE}"
 
-SRC_URI = "cvs://anonymous@cvs.sourceforge.net/cvsroot/madwifi;module=madwifi;tag=BSD;date=${CVSDATE}"
+SRC_URI = "cvs://anonymous@madwifi.cvs.sourceforge.net/cvsroot/madwifi;module=madwifi;tag=BSD;date=${CVSDATE}"
 
 S = "${WORKDIR}/madwifi"
 

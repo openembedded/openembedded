@@ -10,7 +10,7 @@ HOMEPAGE = "http://sourceforge.net/projects/avetanabt/"
 PV = "0.0cvs${CVSDATE}"
 PR = "r2"
 
-SRC_URI = "cvs://anonymous@cvs.sourceforge.net/cvsroot/avetanabt;module=avetanabt \
+SRC_URI = "cvs://anonymous@avetanabt.cvs.sourceforge.net/cvsroot/avetanabt;module=avetanabt \
 	   file://avetanalocaldevice.patch;patch=1"
 
 S = "${WORKDIR}/avetanabt"

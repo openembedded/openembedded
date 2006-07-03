@@ -10,7 +10,7 @@ PROVIDES = "virtual/bootloader"
 
 S = "${WORKDIR}/u-boot"
 
-SRC_URI = "cvs://anonymous@cvs.sourceforge.net/cvsroot/u-boot;module=u-boot \
+SRC_URI = "cvs://anonymous@u-boot.cvs.sourceforge.net/cvsroot/u-boot;module=u-boot \
 	   file://arm_flags.patch;patch=1"
 
 EXTRA_OEMAKE = "CROSS_COMPILE=${TARGET_PREFIX}"

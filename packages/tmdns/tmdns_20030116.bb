@@ -2,7 +2,7 @@ LICENSE = "GPL"
 SECTION = "console/network"
 DESCRIPTION = "tmdns is a multicast DNS server."
 
-SRC_URI = "cvs://anonymous:@cvs.sourceforge.net/cvsroot/zeroconf;module=tmdns;date=${PV} \
+SRC_URI = "cvs://anonymous:@zeroconf.cvs.sourceforge.net/cvsroot/zeroconf;module=tmdns;date=${PV} \
 	   file://install-init.d.patch;patch=1 \
 	   file://busybox-init.d.patch;patch=1 \
 	   file://char-signed-idiocy.patch;patch=1"

@@ -4,7 +4,7 @@ PRIORITY = "optional"
 LICENSE = "GPLv2"
 MAINTAINER = "Phil Blundell <pb@debian.org>"
 DEPENDS = "libxml2"
-SRC_URI = "cvs://anonymous@cvs.sourceforge.net/cvsroot/dvbtools;module=dvbtune"
+SRC_URI = "cvs://anonymous@dvbtools.cvs.sourceforge.net/cvsroot/dvbtools;module=dvbtune"
 S = "${WORKDIR}/dvbtune"
 
 CFLAGS += "\$(shell xml2-config --cflags)"

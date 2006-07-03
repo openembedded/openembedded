@@ -8,8 +8,8 @@ LICENSE = "MIT"
 
 DEPENDS = "libusb"
 
-SRC_URI = "cvs://anonymous@cvs.sourceforge.net/cvsroot/puppy;method=pserver;module=ftpd-topfield;tag=FTPD_TOPFIELD_0_5_2 \
-	   cvs://anonymous@cvs.sourceforge.net/cvsroot/puppy;method=pserver;module=libtopfield;tag=LIBTOPFIELD_0_5_0 \
+SRC_URI = "cvs://anonymous@puppy.cvs.sourceforge.net/cvsroot/puppy;method=pserver;module=ftpd-topfield;tag=FTPD_TOPFIELD_0_5_2 \
+	   cvs://anonymous@puppy.cvs.sourceforge.net/cvsroot/puppy;method=pserver;module=libtopfield;tag=LIBTOPFIELD_0_5_0 \
 	   file://init"
 
 # The source will end up in the subdirectory 'ftpd-topfield' - no release name

@@ -7,7 +7,7 @@ PRIORITY = "optional"
 LICENSE = "BSD"
 PV = "cvs${CVSDATE}"
 
-SRC_URI="cvs://anonymous@cvs.sourceforge.net/cvsroot/olsrd;module=olsrd-current \
+SRC_URI="cvs://anonymous@olsrd.cvs.sourceforge.net/cvsroot/olsrd;module=olsrd-current \
 	file://init \
 	file://olsrd.conf"
 

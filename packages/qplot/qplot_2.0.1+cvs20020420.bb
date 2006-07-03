@@ -8,7 +8,7 @@ CVSDATE = 20020420
 PV = "2.0.1-cvs-${CVSDATE}"
 PR = "r1"
 
-SRC_URI = "cvs://anonymous@cvs.sourceforge.net/cvsroot/qplot;module=qplot \
+SRC_URI = "cvs://anonymous@qplot.cvs.sourceforge.net/cvsroot/qplot;module=qplot \
 	   file://gcc3.patch;patch=1"
 S = "${WORKDIR}/qplot"
 
