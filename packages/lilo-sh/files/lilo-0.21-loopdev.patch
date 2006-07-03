@@ -1,0 +1,11 @@
+--- lilo/device.c.oot	Mon Jan 10 09:37:00 2000
++++ lilo/device.c	Mon Jan 10 09:37:37 2000
+@@ -192,4 +192,8 @@
+ 	sprintf(tmp,"/dev/sdb%d",i);
+ 	cache_add(tmp,0x810+i);
+     }
++    for (i = 0; i <= 7; i++) {
++	sprintf(tmp,"/dev/loop%d",i);
++	cache_add(tmp,0x700+i);
++    }
+ }

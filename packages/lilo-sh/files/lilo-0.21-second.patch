@@ -1,0 +1,36 @@
+I have a problem to report with lilo, and the fix for it. I am not sure
+whether this is the right place for it though, I am also CCing the lilo
+maintainer Werner Almesberger.
+
+When lilo gets control from the bios (whether lilo is on disk, or on the
+floppy), it is checking the wrong location when it tries to parse the
+parameter line construction area to determine whether it needs to clean
+up extra blank spaces. This is causing lilo to eat up the last character(s)
+of the command line that it passes to the kernel.
+
+Specifically, the code
+
+cpcodn:	cmp	byte ptr (di-1),#32 ! last was space ?
+
+is using the memory contents of ds:di-1 for the compare. It should
+really be using es:di-1. I checked, ds=0x0b00 around here, so the
+code ended up checking 0x0b00:(di-1) instead of 0x9000:(di-1). It
+is quite possible that the memory that lilo checks has garbage, 
+causing it to make wrong decision. A "seg es" just before the cmp 
+fixes the problem. I am attaching the patch below.
+
+Kanoj
+
+--- second.0	Mon Sep 20 13:52:01 1999
++++ second.S	Tue Sep 28 10:20:54 1999
+@@ -816,7 +816,8 @@
+ 	je	cpcodsp		! yes -> discard next
+ 	lodsb			! get next byte
+ 	jmp	cpcolp
+-cpcodn:	cmp	byte ptr (di-1),#32 ! last was space ?
++cpcodn:	seg	es
++	cmp	byte ptr (di-1),#32 ! last was space ?
+ 	jne	nocopt		! no -> go on
+ 	dec	di		! discard it
+ nocopt:	mov	si,options	! append variable options
+

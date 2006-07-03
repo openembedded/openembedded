@@ -1,0 +1,552 @@
+--- lilo.new/lilo.c.noraid	Tue Sep 21 23:58:01 1999
++++ lilo.new/lilo.c	Wed Sep 22 04:18:22 1999
+@@ -24,11 +24,11 @@
+ #include "cfg.h"
+ #include "identify.h"
+ #include "partition.h"
+-
++#include "md-int.h"
+ 
+ #define S2(x) #x
+ #define S(x) S2(x)
+-
++#define MAX_TOKEN 200
+ 
+ static void show_other(int fd)
+ {
+@@ -227,15 +227,21 @@
+ {
+     char *name,*config_file,*reboot_arg,*identify,*ident_opt,*new_root;
+     char *uninst_dev;
+-    int query,more,version,uninstall,validate;
++    int query,more,version,uninstall,validate,do_md_install,pass;
+     BOOT_SECTOR dummy;
+     IMAGE_DESCR dummy2;
+     struct stat st;
+-    int fd;
++    int fd, md_fd;
++    md_array_info_t md_array_info;
++    md_disk_info_t md_disk_info;
++    char md_boot_name[MAX_TOKEN+1];
++    char md_boot_map[MAX_TOKEN+1];
++    DT_ENTRY md_disk;
++    DT_ENTRY *disk;
+ 
+     config_file = DFL_CONFIG;
+     reboot_arg = identify = ident_opt = new_root = uninst_dev = NULL;
+-    query = version = uninstall = validate = 0;
++    pass = do_md_install = query = version = uninstall = validate = 0;
+     name = *argv++;
+     argc--;
+     cfg_init(cf_options);
+@@ -414,43 +420,117 @@
+     }
+     preload_dev_cache();
+     if (identify) identify_image(identify,ident_opt);
+-    if (uninstall)
+-	bsect_uninstall(uninst_dev ? uninst_dev : cfg_get_strg(cf_options,
+-	  "boot"),cfg_get_strg(cf_options,"backup"),validate);
+-    compact = cfg_get_flag(cf_options,"compact");
+-    linear = cfg_get_flag(cf_options,"linear");
+-    nowarn = cfg_get_flag(cf_options,"nowarn");
+-    if (cfg_get_strg(cf_options,"verbose"))
+-	verbose += to_number(cfg_get_strg(cf_options,"verbose"));
+-    if (reboot_arg) {
+-	map_patch_first(cfg_get_strg(cf_options,"map") ? cfg_get_strg(
+-	  cf_options,"map") : MAP_FILE,reboot_arg);
+-	exit(0);
+-    }
+-    if (argc) usage(name);
+-    geo_init(cfg_get_strg(cf_options,"disktab"));
+-    if (query)
+-	show_images(!cfg_get_strg(cf_options,"map") ? MAP_FILE :
+-	  cfg_get_strg(cf_options,"map"));
+-    bsect_open(cfg_get_strg(cf_options,"boot"),cfg_get_strg(cf_options,"map") ?
+-      cfg_get_strg(cf_options,"map") : MAP_FILE,cfg_get_strg(cf_options,
+-      "install"),cfg_get_strg(cf_options,"delay") ? to_number(cfg_get_strg(
+-      cf_options,"delay")) : 0,cfg_get_strg(cf_options,"timeout") ?
+-      to_number(cfg_get_strg(cf_options,"timeout")) : -1);
+-    if (more) {
+-        cfg_init(cf_top);
+-        if (cfg_parse(cf_top)) cfg_error("Syntax error");
+-    }
+-    if (!bsect_number()) die("No images have been defined.");
+-    check_fallback();
+-    if (!test)
+-	if (cfg_get_strg(cf_options,"force-backup"))
+-	    bsect_update(cfg_get_strg(cf_options,"force-backup"),1);
+-	else bsect_update(cfg_get_strg(cf_options,"backup"),0);
+-    else {
+-	bsect_cancel();
+-	fprintf(stderr,"The boot sector and the map file have *NOT* been "
+-	  "altered.\n");
++    if (strncmp("/dev/md",cfg_get_strg(cf_options,"boot"),7) == 0) {
++	if ((md_fd=open(cfg_get_strg(cf_options,"boot"),O_NOACCESS)) < 0)
++	    die("Unable to open %s",cfg_get_strg(cf_options,"boot"));
++	if (fstat(md_fd,&st) < 0)
++	    die("Unable to stat %s",cfg_get_strg(cf_options,"boot"));
++	if (!S_ISBLK(st.st_mode))
++	    die("%s is not a block device",cfg_get_strg(cf_options,"boot"));
++	if (ioctl(md_fd,GET_ARRAY_INFO,&md_array_info) < 0)
++	    die("Unable to get RAID info on %s",cfg_get_strg(cf_options,"boot"));
++	if ((md_array_info.major_version == 0) && (md_array_info.minor_version < 90))
++	    die("Raid versions < 0.90 are not supported");
++	if (md_array_info.level != 1)
++	    die("Only RAID1 devices are supported as boot devices");
++	do_md_install = 1;
++	strcpy(md_boot_name,cfg_get_strg(cf_options,"boot"));
++	if (cfg_get_strg(cf_options,"map"))
++	    strcpy(md_boot_map,cfg_get_strg(cf_options,"map"));
++	else
++	    strcpy(md_boot_map,MAP_FILE);
++	md_disk.device = (MD_MAJOR << 8) | md_array_info.md_minor;
++	md_disk.bios = 0x80;
++	md_disk.next = disktab;
++	disktab = &md_disk;
++    }
++    while( (pass == 0) || (do_md_install && (pass < md_array_info.nr_disks)) ) {
++	if(do_md_install) {
++	    GEOMETRY geo;
++	    DEVICE dev;
++	    int device,disk_fd;
++	    char new_name[MAX_TOKEN+1];
++
++	    if(pass > 0) {
++		close(fd);
++		cfg_init(cf_options);
++		fd = cfg_open(config_file);
++		more = cfg_parse(cf_options);
++	    }
++	    md_disk_info.number = pass;
++	    if (ioctl(md_fd,GET_DISK_INFO,&md_disk_info) < 0)
++		die("main: GET_DISK_INFO: %s", strerror(errno));
++	    device = (md_disk_info.major << 8) | md_disk_info.minor;
++	    disk_fd = dev_open(&dev,device,O_NOACCESS);
++	    if (md_disk_info.state == MD_DISK_FAULTY) {
++		printf("disk %s marked as faulty, skipping\n",dev.name);
++		pass++;
++		continue;
++	    }
++	    geo_query_dev(&geo,device,1);
++	    disk = alloc_t(DT_ENTRY);
++	    disk->bios = 0x80;
++	    disk->device = device & 0xfff0;
++	    disk->sectors = geo.sectors;
++	    disk->heads = geo.heads;
++	    disk->cylinders = geo.cylinders;
++	    disk->start = geo.start;
++	    disk->next = disktab;
++	    disktab = disk;
++	    if (cfg_get_strg(cf_options,"boot")) cfg_unset(cf_options,"boot");
++	    if (cfg_get_strg(cf_options,"map")) cfg_unset(cf_options,"map");
++	    strncpy(new_name,dev.name,8);
++	    new_name[8] = '\0';
++	    cfg_set(cf_options,"boot",new_name,NULL);
++	    snprintf(new_name,MAX_TOKEN,"%s.%04x",md_boot_map,device);
++	    cfg_set(cf_options,"map",new_name,NULL);
++	    printf("boot = %s, map = %s\n", cfg_get_strg(cf_options,"boot"),
++		cfg_get_strg(cf_options,"map"));
++	    md_disk.sectors = geo.sectors;
++	    md_disk.heads = geo.heads;
++	    md_disk.cylinders = geo.cylinders;
++	    md_disk.start = geo.start;
++	}
++	    
++	pass++;
++	if (uninstall)
++	    bsect_uninstall(uninst_dev ? uninst_dev : cfg_get_strg(cf_options,
++	      "boot"),cfg_get_strg(cf_options,"backup"),validate);
++	compact = cfg_get_flag(cf_options,"compact");
++	linear = cfg_get_flag(cf_options,"linear");
++	nowarn = cfg_get_flag(cf_options,"nowarn");
++	if (cfg_get_strg(cf_options,"verbose"))
++	    verbose += to_number(cfg_get_strg(cf_options,"verbose"));
++	if (reboot_arg) {
++	    map_patch_first(cfg_get_strg(cf_options,"map") ? cfg_get_strg(
++	      cf_options,"map") : MAP_FILE,reboot_arg);
++	    exit(0);
++	}
++	if (argc) usage(name);
++	geo_init(cfg_get_strg(cf_options,"disktab"));
++	if (query)
++	    show_images(!cfg_get_strg(cf_options,"map") ? MAP_FILE :
++	      cfg_get_strg(cf_options,"map"));
++	bsect_open(cfg_get_strg(cf_options,"boot"),cfg_get_strg(cf_options,"map") ?
++	  cfg_get_strg(cf_options,"map") : MAP_FILE,cfg_get_strg(cf_options,
++	  "install"),cfg_get_strg(cf_options,"delay") ? to_number(cfg_get_strg(
++	  cf_options,"delay")) : 0,cfg_get_strg(cf_options,"timeout") ?
++	  to_number(cfg_get_strg(cf_options,"timeout")) : -1);
++	if (more) {
++            cfg_init(cf_top);
++            if (cfg_parse(cf_top)) cfg_error("Syntax error");
++	}
++	if (!bsect_number()) die("No images have been defined.");
++	check_fallback();
++	if (!test)
++	    if (cfg_get_strg(cf_options,"force-backup"))
++		bsect_update(cfg_get_strg(cf_options,"force-backup"),1);
++	    else bsect_update(cfg_get_strg(cf_options,"backup"),0);
++	else {
++	    bsect_cancel();
++	    fprintf(stderr,"The boot sector and the map file have *NOT* been "
++	      "altered.\n");
++	}
+     }
+     return 0;
+ }
+--- lilo.new/geometry.c.noraid	Wed Sep 22 00:55:32 1999
++++ lilo.new/geometry.c	Wed Sep 22 03:13:29 1999
+@@ -35,18 +35,9 @@
+     struct stat st;
+ } ST_BUF;
+ 
+-typedef struct _dt_entry {
+-    int device,bios;
+-    int sectors;
+-    int heads; /* 0 if inaccessible */
+-    int cylinders;
+-    int start;
+-    struct _dt_entry *next;
+-} DT_ENTRY;
+ 
+-
+-static DT_ENTRY *disktab = NULL;
+-static int old_disktab = 0;
++DT_ENTRY *disktab = NULL;
++int old_disktab = 0;
+ 
+ 
+ void geo_init(char *name)
+@@ -260,7 +251,7 @@
+ }
+ 
+ 
+-static void geo_query_dev(GEOMETRY *geo,int device,int all)
++void geo_query_dev(GEOMETRY *geo,int device,int all)
+ {
+     DEVICE dev;
+     int fd,get_all;
+--- lilo.new/geometry.h.noraid	Wed Sep 22 00:56:06 1999
++++ lilo.new/geometry.h	Wed Sep 22 03:12:23 1999
+@@ -18,6 +18,17 @@
+     int boot; /* non-zero after geo_open_boot */
+ } GEOMETRY;
+ 
++typedef struct _dt_entry {
++    int device,bios;
++    int sectors;
++    int heads; /* 0 if inaccessible */
++    int cylinders;
++    int start;
++    struct _dt_entry *next;
++} DT_ENTRY;
++
++extern DT_ENTRY *disktab;
++
+ void geo_init(char *name);
+ 
+ /* Loads the disk geometry table. */
+@@ -59,5 +70,10 @@
+ 
+ /* lseeks in the file associated with GEO for the sector at address ADDR.
+    Returns a non-zero integer on success, zero on failure. */
++
++void geo_query_dev(GEOMETRY *geo,int device,int all);
++
++/* opens the specified device and gets the geometry information.  That
++   information is then stored in *geo */
+ 
+ #endif
+--- lilo.new/md-int.h.noraid	Wed Sep 22 13:06:36 1999
++++ lilo.new/md-int.h	Tue Sep 21 22:57:41 1999
+@@ -0,0 +1,290 @@
++/*
++   md.h : Multiple Devices driver for Linux
++          Copyright (C) 1994-96 Marc ZYNGIER
++	  <zyngier@ufr-info-p7.ibp.fr> or
++	  <maz@gloups.fdn.fr>
++	  
++   This program is free software; you can redistribute it and/or modify
++   it under the terms of the GNU General Public License as published by
++   the Free Software Foundation; either version 2, or (at your option)
++   any later version.
++   
++   You should have received a copy of the GNU General Public License
++   (for example /usr/src/linux/COPYING); if not, write to the Free
++   Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.  
++*/
++
++#ifndef MD_INT_H
++#define MD_INT_H
++
++/* don't include the kernel RAID header! */
++#define _MD_H
++
++typedef unsigned int md_u32;
++typedef unsigned short md_u16;
++typedef unsigned char md_u8;
++
++#include <linux/major.h>
++#include <sys/ioctl.h>
++
++/*
++ * Different major versions are not compatible.
++ * Different minor versions are only downward compatible.
++ * Different patchlevel versions are downward and upward compatible.
++ */
++
++struct md_version {
++	int major;
++	int minor;
++	int patchlevel;
++};
++
++/*
++ * default readahead
++ */
++#define MD_READAHEAD	(256 * 1024)
++
++/* These are the ioctls for md versions < 0.50 */
++#define REGISTER_MD_DEV		_IO (MD_MAJOR, 1)
++#define START_MD     		_IO (MD_MAJOR, 2)
++#define STOP_MD      		_IO (MD_MAJOR, 3)
++
++/* status */
++#define RAID_VERSION            _IOR (MD_MAJOR, 0x10, struct md_version)
++#define GET_ARRAY_INFO          _IOR (MD_MAJOR, 0x11, md_array_info_t)
++#define GET_DISK_INFO           _IOR (MD_MAJOR, 0x12, md_disk_info_t)
++#define PRINT_RAID_DEBUG        _IO (MD_MAJOR, 0x13)
++
++/* configuration */
++#define CLEAR_ARRAY             _IO (MD_MAJOR, 0x20)
++#define ADD_NEW_DISK            _IOW (MD_MAJOR, 0x21, md_disk_info_t)
++#define HOT_REMOVE_DISK         _IO (MD_MAJOR, 0x22)
++#define SET_ARRAY_INFO          _IOW (MD_MAJOR, 0x23, md_array_info_t)
++#define SET_DISK_INFO           _IO (MD_MAJOR, 0x24)
++#define WRITE_RAID_INFO         _IO (MD_MAJOR, 0x25)
++#define UNPROTECT_ARRAY         _IO (MD_MAJOR, 0x26)
++#define PROTECT_ARRAY           _IO (MD_MAJOR, 0x27)
++#define HOT_ADD_DISK            _IO (MD_MAJOR, 0x28)
++
++/* usage */
++#define RUN_ARRAY               _IOW (MD_MAJOR, 0x30, struct md_param)
++#define START_ARRAY             _IO (MD_MAJOR, 0x31)
++#define STOP_ARRAY              _IO (MD_MAJOR, 0x32)
++#define STOP_ARRAY_RO           _IO (MD_MAJOR, 0x33)
++#define RESTART_ARRAY_RW        _IO (MD_MAJOR, 0x34)
++
++
++/* for raid < 0.50 only */
++#define MD_PERSONALITY_SHIFT	16
++
++#define MD_RESERVED       0UL
++#define LINEAR            1UL
++#define STRIPED           2UL
++#define RAID0             STRIPED
++#define RAID1             3UL
++#define RAID5             4UL
++#define TRANSLUCENT       5UL
++#define LVM               6UL
++#define MAX_PERSONALITY   7UL
++
++/*
++ * MD superblock.
++ *
++ * The MD superblock maintains some statistics on each MD configuration.
++ * Each real device in the MD set contains it near the end of the device.
++ * Some of the ideas are copied from the ext2fs implementation.
++ *
++ * We currently use 4096 bytes as follows:
++ *
++ *	word offset	function
++ *
++ *	   0  -    31	Constant generic MD device information.
++ *        32  -    63   Generic state information.
++ *	  64  -   127	Personality specific information.
++ *	 128  -   511	12 32-words descriptors of the disks in the raid set.
++ *	 512  -   911	Reserved.
++ *	 912  -  1023	Disk specific descriptor.
++ */
++
++/*
++ * If x is the real device size in bytes, we return an apparent size of:
++ *
++ *	y = (x & ~(MD_RESERVED_BYTES - 1)) - MD_RESERVED_BYTES
++ *
++ * and place the 4kB superblock at offset y.
++ */
++#define MD_RESERVED_BYTES		(64 * 1024)
++#define MD_RESERVED_SECTORS		(MD_RESERVED_BYTES / 512)
++#define MD_RESERVED_BLOCKS		(MD_RESERVED_BYTES / BLOCK_SIZE)
++
++#define MD_NEW_SIZE_SECTORS(x)		((x & ~(MD_RESERVED_SECTORS - 1)) - MD_RESERVED_SECTORS)
++#define MD_NEW_SIZE_BLOCKS(x)		((x & ~(MD_RESERVED_BLOCKS - 1)) - MD_RESERVED_BLOCKS)
++
++#define MD_SB_BYTES			4096
++#define MD_SB_WORDS			(MD_SB_BYTES / 4)
++#define MD_SB_BLOCKS			(MD_SB_BYTES / BLOCK_SIZE)
++#define MD_SB_SECTORS			(MD_SB_BYTES / 512)
++
++/*
++ * The following are counted in 32-bit words
++ */
++#define	MD_SB_GENERIC_OFFSET		0
++#define MD_SB_PERSONALITY_OFFSET	64
++#define MD_SB_DISKS_OFFSET		128
++#define MD_SB_DESCRIPTOR_OFFSET		992
++
++#define MD_SB_GENERIC_CONSTANT_WORDS	32
++#define MD_SB_GENERIC_STATE_WORDS	32
++#define MD_SB_GENERIC_WORDS		(MD_SB_GENERIC_CONSTANT_WORDS + MD_SB_GENERIC_STATE_WORDS)
++#define MD_SB_PERSONALITY_WORDS		64
++#define MD_SB_DISKS_WORDS		384
++#define MD_SB_DESCRIPTOR_WORDS		32
++#define MD_SB_RESERVED_WORDS		(1024 - MD_SB_GENERIC_WORDS - MD_SB_PERSONALITY_WORDS - MD_SB_DISKS_WORDS - MD_SB_DESCRIPTOR_WORDS)
++#define MD_SB_EQUAL_WORDS		(MD_SB_GENERIC_WORDS + MD_SB_PERSONALITY_WORDS + MD_SB_DISKS_WORDS)
++#define MD_SB_DISKS			(MD_SB_DISKS_WORDS / MD_SB_DESCRIPTOR_WORDS)
++
++/*
++ * Device "operational" state bits
++ */
++#define MD_DISK_FAULTY		0 /* disk is faulty / operational */
++#define MD_DISK_ACTIVE		1 /* disk is running or spare disk */
++#define MD_DISK_SYNC		2 /* disk is in sync with the raid set */
++
++typedef struct md_device_descriptor_s {
++	md_u32 number;		/* 0 Device number in the entire set	      */
++	md_u32 major;		/* 1 Device major number		      */
++	md_u32 minor;		/* 2 Device minor number		      */
++	md_u32 raid_disk;	/* 3 The role of the device in the raid set   */
++	md_u32 state;		/* 4 Operational state			      */
++	md_u32 reserved[MD_SB_DESCRIPTOR_WORDS - 5];
++} md_descriptor_t;
++
++#define MD_SB_MAGIC		0xa92b4efc
++
++/*
++ * Superblock state bits
++ */
++#define MD_SB_CLEAN		0
++#define MD_SB_ERRORS		1
++
++typedef struct md_superblock_s {
++	/*
++	 * Constant generic information
++	 */
++	md_u32 md_magic;		/*  0 MD identifier 			      */
++	md_u32 major_version;	/*  1 major version to which the set conforms */
++	md_u32 minor_version;	/*  2 minor version ...			      */
++	md_u32 patch_version;	/*  3 patchlevel version ...		      */
++	md_u32 gvalid_words;	/*  4 Number of used words in this section    */
++	md_u32 set_magic;	/*  5 Raid set identifier		      */
++	md_u32 ctime;		/*  6 Creation time			      */
++	md_u32 level;		/*  7 Raid personality			      */
++	md_u32 size;		/*  8 Apparent size of each individual disk   */
++	md_u32 nr_disks;	/*  9 total disks in the raid set	      */
++	md_u32 raid_disks;	/* 10 disks in a fully functional raid set    */
++	md_u32 md_minor;	/* 11 preferred MD minor device number	      */
++	md_u32 gstate_creserved[MD_SB_GENERIC_CONSTANT_WORDS - 12];
++
++	/*
++	 * Generic state information
++	 */
++	md_u32 utime;		/*  0 Superblock update time		      */
++	md_u32 state;		/*  1 State bits (clean, ...)		      */
++	md_u32 active_disks;	/*  2 Number of currently active disks	      */
++	md_u32 working_disks;	/*  3 Number of working disks		      */
++	md_u32 failed_disks;	/*  4 Number of failed disks		      */
++	md_u32 spare_disks;	/*  5 Number of spare disks		      */
++	md_u32 gstate_sreserved[MD_SB_GENERIC_STATE_WORDS - 6];
++
++	/*
++	 * Personality information
++	 */
++	md_u32 layout;		/*  0 the array's physical layout	      */
++	md_u32 chunk_size;	/*  1 chunk size in bytes		      */
++	md_u32 pstate_reserved[MD_SB_PERSONALITY_WORDS - 2];
++
++	/*
++	 * Disks information
++	 */
++	md_descriptor_t disks[MD_SB_DISKS];
++
++	/*
++	 * Reserved
++	 */
++	md_u32 reserved[MD_SB_RESERVED_WORDS];
++
++	/*
++	 * Active descriptor
++	 */
++	md_descriptor_t descriptor;
++
++} md_superblock_t;
++
++/*
++ * options passed in raidstart:
++ */
++
++#define MAX_CHUNK_SIZE (4096*1024)
++
++struct md_param
++{
++	int			personality;	/* 1,2,3,4 */
++	int			chunk_size;	/* in bytes */
++	int			max_fault;	/* unused for now */
++};
++
++typedef struct md_array_info_s {
++	/*
++	 * Generic constant information
++	 */
++	md_u32 major_version;
++	md_u32 minor_version;
++	md_u32 patch_version;
++	md_u32 ctime;
++	md_u32 level;
++	md_u32 size;
++	md_u32 nr_disks;
++	md_u32 raid_disks;
++	md_u32 md_minor;
++	md_u32 not_persistent;
++
++	/*
++	 * Generic state information
++	 */
++	md_u32 utime;		/*  0 Superblock update time		      */
++	md_u32 state;		/*  1 State bits (clean, ...)		      */
++	md_u32 active_disks;	/*  2 Number of currently active disks	      */
++	md_u32 working_disks;	/*  3 Number of working disks		      */
++	md_u32 failed_disks;	/*  4 Number of failed disks		      */
++	md_u32 spare_disks;	/*  5 Number of spare disks		      */
++
++	/*
++	 * Personality information
++	 */
++	md_u32 layout;		/*  0 the array's physical layout	      */
++	md_u32 chunk_size;	/*  1 chunk size in bytes		      */
++
++} md_array_info_t;
++
++typedef struct md_disk_info_s {
++	/*
++	 * configuration/status of one particular disk
++	 */
++	md_u32 number;
++	md_u32 major;
++	md_u32 minor;
++	md_u32 raid_disk;
++	md_u32 state;
++
++} md_disk_info_t;
++
++
++/*
++ * Supported RAID5 algorithms
++ */
++#define RAID5_ALGORITHM_LEFT_ASYMMETRIC		0
++#define RAID5_ALGORITHM_RIGHT_ASYMMETRIC	1
++#define RAID5_ALGORITHM_LEFT_SYMMETRIC		2
++#define RAID5_ALGORITHM_RIGHT_SYMMETRIC		3
++
++#endif _MD_H
