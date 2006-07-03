@@ -7,22 +7,8 @@
 # Date: 24-Jun-06
 
 
-MACHINE="`sed -n "/^Hardware/s/.*\:\ \(.*\)/\1/p" /proc/cpuinfo`"
-
-case "$MACHINE" in
-*Poodle* | *Collie* )		
-	DISPLAY_TYPE="qvga"
-	DISPLAY_ORIENTATION="portrait";;
-*Tosa*)	
-	DISPLAY_TYPE="vga"
-	DISPLAY_ORIENTATION="portrait";;
-*)								
-	DISPLAY_TYPE="vga"
-	DISPLAY_ORIENTATION="landscape";;
-esac
-
 show_bootsplash() {
-	bp_source="/usr/share/oz-bootsplash/oz-bootsplash-${DISPLAY_TYPE}-${DISPLAY_ORIENTATION}.raw.gz"
+	bp_source="/usr/share/oz-bootsplash/oz-bootsplash.raw.gz"
 
 	if test -e "$bp_source"
 	then
@@ -38,9 +24,7 @@ show_bootsplash() {
 		chvt 2
 	
 		echo -e "\nLoading bootsplash..." > /dev/tty2
-		echo "Use Alt-LeftArrow to see the boot messages." > /dev/tty2
-		
-		echo -e "\n${DISPLAY_TYPE}-${DISPLAY_ORIENTATION}-${MACHINE}" > /dev/tty2
+		echo "Use Alt-LeftArrow to see the boot messages." > /dev/tty2				
 
 		zcat "$bp_source" > /dev/fb0
 	else

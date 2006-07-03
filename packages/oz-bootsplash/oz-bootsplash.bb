@@ -12,18 +12,19 @@ LICENSE = "GPL"
 
 ######################################################################################
 
+PACKAGE_ARCH = "${MACHINE}"
 RCONFLICTS = "gpe-bootsplash"
 RREPLACES = "gpe-bootsplash"
 
 ######################################################################################
 
 PV = "0.0.1" 
-PR = "r1"
+PR = "r2"
 
 ######################################################################################
 
 SRC_URI = "file://oz-bootsplash.init \
-	   file://openzaurus*"
+	   file://openzaurus-bootsplash*"
 	   
 ######################################################################################
 	   
@@ -31,6 +32,7 @@ do_install() {
 	install -d ${D}/usr/share/oz-bootsplash
 	install -d ${D}/etc/init.d
 	install -d ${D}/etc/rcS.d
+	
 	
 	install -m 0644 ${WORKDIR}/*.raw.gz ${D}/usr/share/oz-bootsplash
 	install -m 0755 ${WORKDIR}/oz-bootsplash.init ${D}/etc/init.d/oz-bootsplash
@@ -42,13 +44,9 @@ do_install() {
 ######################################################################################
 
 pkg_postinst() {
-	update-alternatives --install /usr/share/oz-bootsplash/oz-bootsplash-qvga-portrait.raw.gz bootsplash-qvga-portrait /usr/share/oz-bootsplash/openzaurus-qvga-portrait.raw.gz 10
-	update-alternatives --install /usr/share/oz-bootsplash/oz-bootsplash-vga-portrait.raw.gz bootsplash-vga-portrait /usr/share/oz-bootsplash/openzaurus-vga-portrait.raw.gz 10
-	update-alternatives --install /usr/share/oz-bootsplash/oz-bootsplash-vga-landscape.raw.gz bootsplash-vga-landscape /usr/share/oz-bootsplash/openzaurus-vga-landscape.raw.gz 10
+	update-alternatives --install /usr/share/oz-bootsplash/oz-bootsplash.raw.gz openzaurus-bootsplash /usr/share/oz-bootsplash/openzaurus-bootsplash.raw.gz 10
 }
 
 pkg_postrm() { 
-	update-alternatives --remove bootsplash-qvga-portrait /usr/share/oz-bootsplash/openzaurus-qvga-portrait.raw.gz 10
-	update-alternatives --remove bootsplash-vga-portrait /usr/share/oz-bootsplash/openzaurus-vga-portrait.raw.gz 10
-	update-alternatives --remove bootsplash-vga-landscape /usr/share/oz-bootsplash/openzaurus-vga-landscape.raw.gz 10	
+	update-alternatives --remove openzaurus-bootsplash /usr/share/oz-bootsplash/openzaurus-bootsplash.raw.gz 
 }
