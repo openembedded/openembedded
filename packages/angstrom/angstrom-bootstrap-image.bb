@@ -8,7 +8,7 @@ RDEPENDS = "angstrom-base-depends"
 
 export IMAGE_BASENAME = "bootstrap-image"
 export IMAGE_LINGUAS = ""
-export IPKG_INSTALL = "angstrom-base-depends"
+export IPKG_INSTALL = "${RDEPENDS}"
 
 inherit image_ipk
 

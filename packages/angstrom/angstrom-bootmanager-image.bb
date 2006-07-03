@@ -8,7 +8,7 @@ RDEPENDS = "angstrom-base-depends angstrom-bootmanager"
 
 export IMAGE_BASENAME = "bootmanager-image"
 export IMAGE_LINGUAS = ""
-export IPKG_INSTALL = "angstrom-base-depends angstrom-bootmanager"
+export IPKG_INSTALL = "${RDEPENDS}"
 
 inherit image_ipk
 

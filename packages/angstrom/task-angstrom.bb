@@ -4,7 +4,7 @@ ALLOW_EMPTY = "1"
 
 PACKAGES = "\
     angstrom-base-depends \
-    angstrom-X-base-depends \
+    angstrom-x11-base-depends \
     angsgrom-gpe-task-base \
     angstrom-gpe-task-settings \
     angstrom-gpe-task-pim \
@@ -24,7 +24,7 @@ RDEPENDS_angstrom-base-depends = "\
     angstrom-version \	
     "
 
-RDEPENDS_angstrom-X-base-depends := "\
+RDEPENDS_angstrom-x11-base-depends := "\
     diet-x11 \
     virtual/xserver"
 
