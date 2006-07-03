@@ -1,4 +1,4 @@
-include irk.inc
+require irk.inc
 
 DESCRIPTION += "(version with Targus support)"
 HOMEPAGE = "http://angela1.data-uncertain.co.uk/~zaurus/irk.php"

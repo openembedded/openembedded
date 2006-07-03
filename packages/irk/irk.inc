@@ -3,7 +3,7 @@ SECTION = "opie/inputmethods"
 PRIORITY = "optional"
 LICENSE = "GPL"
 HOMEPAGE = "http://angela1.data-uncertain.co.uk/~zaurus/irk.php"
-DEPENDS = "virtual/libqpe lirc"
+DEPENDS = "lirc"
 
 S = "${WORKDIR}/irk"
 
