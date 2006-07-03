@@ -4,10 +4,11 @@ PRIORITY = "optional"
 MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 LICENSE = "GPL"
 HOMEPAGE = "http://community.zaurus.com/projects/tximage/"
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "http://www.openzaurus.org/mirror/tximage-${PV}.tar.gz \
-           file://gcc3.patch;patch=1"
+           file://gcc3.patch;patch=1 \
+           file://gcc4.patch;patch=1"
 
 inherit palmtop
 
