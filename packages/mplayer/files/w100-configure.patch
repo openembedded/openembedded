@@ -1,0 +1,53 @@
+--- mplayer_20060519/configure.orig	2006-05-30 10:23:24.000000000 +0100
++++ mplayer_20060519/configure	2006-05-30 10:27:24.000000000 +0100
+@@ -1585,6 +1585,7 @@
+ _svga=auto
+ _vesa=auto
+ _fbdev=auto
++_w100=no
+ _dvb=auto
+ _dvbhead=auto
+ _dxr2=auto
+@@ -1767,6 +1768,8 @@
+   --disable-vesa)	_vesa=no	;;
+   --enable-fbdev)	_fbdev=yes	;;
+   --disable-fbdev)	_fbdev=no	;;
++  --enable-w100)        _w100=yes       ;;
++  --disable-w100)       _w100=no        ;;
+   --enable-dvb)		_dvb=yes	;;
+   --disable-dvb)        _dvb=no		;;
+   --enable-dvbhead)	_dvbhead=yes	;;
+@@ -4200,6 +4203,17 @@
+ fi
+ echores "$_fbdev"
+ 
++echocheck "ATI Imageon 100 (w100)"
++if test "$_w100" = yes ; then
++  _def_w100='#define HAVE_W100 1'
++  _ld_w100='-laticore'
++  _vosrc="$_vosrc vo_w100.c"
++  _vomodules="w100 $_vomodules"
++else
++  _def_w100='#undef HAVE_W100'
++  _novomodules="w100 $_novomodules"
++fi
++echores "$_w100"
+ 
+ 
+ echocheck "DVB"
+@@ -7441,6 +7455,7 @@
+ AA_LIB = $_ld_aa
+ CACA_INC = $_inc_caca
+ CACA_LIB = $_ld_caca
++W100_LIB = $_ld_w100
+ 
+ # audio output
+ ALSA_LIB = $_ld_alsa
+@@ -8238,6 +8253,7 @@
+ $_def_xmga
+ $_def_syncfb
+ $_def_fbdev
++$_def_w100
+ $_def_dxr2
+ $_def_dxr3
+ $_def_dvb

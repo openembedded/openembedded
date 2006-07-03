@@ -1,0 +1,31 @@
+--- mplayer_20060519/mplayer.c.orig	2006-05-30 12:31:01.000000000 +0100
++++ mplayer_20060519/mplayer.c	2006-05-30 12:33:41.000000000 +0100
+@@ -628,6 +628,18 @@
+   exit_player(NULL);
+ }
+ 
++//w100 driver additions
++int g_sigcont = 0;
++
++static void misc_sighandler(int x){
++  switch(x){
++    case SIGCONT:
++      ++ g_sigcont;
++      break;
++  }
++}
++
++
+ //extern void write_avi_header_1(FILE *f,int fcc,float fps,int width,int height);
+ 
+ extern void mp_input_register_options(m_config_t* cfg);
+@@ -2732,6 +2744,9 @@
+ #endif
+ #endif
+ 
++// w100 driver additions
++  signal(SIGCONT,misc_sighandler);
++    
+ #ifdef HAVE_NEW_GUI
+   if(use_gui){
+        guiInit();
