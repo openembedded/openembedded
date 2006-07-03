@@ -1,0 +1,1971 @@
+This is the patch that upgrade lilo to match the version included in
+the old lilosh CVS.
+
+diff -ruN lilo.orig/ChangeLog lilo/ChangeLog
+--- lilo.orig/ChangeLog	Thu Jan  1 09:00:00 1970
++++ lilo/ChangeLog	Thu Dec  7 16:17:10 2000
+@@ -0,0 +1,44 @@
++2000-11-26  NIIBE Yutaka  <gniibe@m17n.org>
++
++	* first.S (done): Flush the cache.
++	* second.c (start): Call cache_flush.
++	(cache_flush): New function.
++
++2000-11-25  NIIBE Yutaka  <gniibe@m17n.org>
++
++	* first.S: Don't put '$' for register spec.
++	* second.c (start): Don't put '$' for register spec.
++	(machine_type, memory_size, io_base, put_string_1, read_sectors): 
++	Likewise.
++	* second.lds: Use new tool chain's ldscript.
++	* defs.h: Add declaration of memcpy.
++	
++2000-09-09  NIIBE Yutaka  <gniibe@m17n.org>
++
++	* first.S (real_start): Set argument 0 for cache enable call.
++
++2000-08-19  NIIBE Yutaka  <gniibe@m17n.org>
++
++	* second.c (get_sector_address): Bug fix for # of sector == 0.
++	(start): Support machine types of CqREEK and SolutionEngine.
++
++	* first.S (load_sector_address): Bug fix for checking LBA.
++	(real_start): Call "enable cache" BIOS feature.
++
++2000-08-05  NIIBE Yutaka  <gniibe@m17n.org>
++
++	* Makefile (first.o): Added -traditional for "'" in comments.
++
++	* second.c (machine_type, serial_type, memory_size, io_base): New
++	functions.
++	(start): Implement kernel command line handling a bit.
++	(read_sectors): Emit error message.
++	(get_sector_address): Emit error message.
++
++	* first.S (read_a_sector): Implement error handling.
++	(load_sector_address): Check if it's LBA.
++
++2000-07-22  NIIBE Yutaka  <gniibe@m17n.org>
++
++	* second.c (start): Don't load two magic sectors at the memory
++	of executable image.
+diff -ruN lilo.orig/Makefile lilo/Makefile
+--- lilo.orig/Makefile	Fri Dec  8 10:10:02 2000
++++ lilo/Makefile	Fri Dec  8 11:46:04 2000
+@@ -39,76 +39,55 @@
+ GO=-DGO=0x`sed '/go/s/^.*go  0 \(....\) A.*$$/\1/p;d' first.lis`
+ 
+ SHELL=/bin/sh
+-CC=cc
+-CPP=$(CC) -E
+-AS86=as86 -0 -a
+-LD86=ld86 -0
+ 
+-CFLAGS=-Wall -g $(PCONFIG)
+-LDFLAGS=#-Xlinker -qmagic
++CROSS_COMPILE = sh3-linux-
++CC	=$(CROSS_COMPILE)gcc
++LD	=$(CROSS_COMPILE)ld
++OBJCOPY =$(CROSS_COMPILE)objcopy
++STRIP   =$(CROSS_COMPILE)strip
++
++CFLAGS  = -O2 -I. -pipe -fPIC $(CONFIG) -DPATH_MAX=255
++CPP=$(CC) -E -traditional
++
++#CFLAGS=-Wall -g $(PCONFIG)
++#LDFLAGS=#-Xlinker -qmagic
+ 
+ OBJS=lilo.o map.o geometry.o boot.o device.o common.o bsect.o cfg.o temp.o \
+   partition.o identify.o
+ 
+-.SUFFIXES:	.img .b
++.SUFFIXES:	.b
+ 
+-all:		check-config lilo boot.b dump.b os2_d.b chain.b dparam.com \
+-		  activate
+-
+-check-config:
+-		$(CPP) check-config.cpp $(PCONFIG) >/dev/null
++all:		lilo boot.b
+ 
+ .c.o:
+ 		$(CC) -c $(CFLAGS) $*.c
+ 
+-.s.o:
+-		$(AS86) -w -o $*.o $*.s
+-
+-.o.img:
+-		$(LD86) -s -o $*.img $*.o
++boot.b:		first.bin second.bin
++		cat first.bin second.bin >boot.b
+ 
+-.img.b:
+-		dd if=$*.img of=$*.b bs=32 skip=1
++first.bin:	first.exe
++		$(OBJCOPY) -S first.exe -O binary first.bin
+ 
+-activate:	activate.c
+-		$(CC) -Wall -s -O -o activate activate.c $(LDFLAGS)
+-
+-dparam.com:	dparam.img
+-		dd if=dparam.img of=dparam.com bs=288 skip=1
+-
+-lilo:		$(OBJS)
+-		$(CC) -o lilo $(LDFLAGS) $(OBJS)
++second.bin:	second.exe
++		$(OBJCOPY) -R .comment -S second.exe -O binary second.bin
+ 
+-boot.b:		first.b second.b
+-		(dd if=first.b bs=512 conv=sync; dd if=second.b) >boot.b
++first.exe:	first.o
++		$(LD) -EL -e start first.o -o first.exe -Ttext 0x8c200000
+ 
+-first.s:	first.S lilo.h lilo
+-		$(CPP) $(PCONFIG) `./lilo -X` first.S -o first.s
++second.exe:	second.o string.o
++		$(LD) -T second.lds -EL second.o string.o -o second.exe -Ttext 0x8c201000
+ 
+-second.s:	second.S lilo.h lilo
+-		$(CPP) $(PCONFIG) $(GO) `./lilo -X` second.S -o second.s
++first.o:	first.S
++		$(CC) $(CFLAGS) -c first.S
+ 
+-chain.s:	chain.S lilo.h
+-		$(CPP) $(PCONFIG) $(GO) chain.S -o chain.s
++second.o:	second.c
++		$(CC) $(CFLAGS) -c second.c
+ 
+-os2_d.s:	chain.S lilo.h
+-		$(CPP) $(PCONFIG) $(GO) chain.S -DDOS_D -o os2_d.s
++string.o:	string.c
++		$(CC) $(CFLAGS) -c string.c
+ 
+-#dos_d.s:	chain.S lilo.h first.lis
+-#		$(CPP) $(PCONFIG) $(GO) chain.S -DDOS_D -o dos_d.s
+-
+-dump.s:		dump.S lilo.h first.lis
+-		$(CPP) $(PCONFIG) `./lilo -X` dump.S -DDOS_D -o dump.s \
+-	          -DGO=0x`sed '/go/s/^.*go  0 \(....\) A.*$$/\1/p;d' first.lis`
+-
+-xxx.s:		chain.S lilo.h
+-		$(CPP) chain.S -DXXX -o xxx.s
+-
+-first.o first.lis:	first.s
+-		$(AS86) -w -o first.o -l first.lis first.s
+-
+-second.lis:	second.s
+-		$(AS86) -w -l second.lis second.s
++lilo:		$(OBJS)
++		$(CC) -o lilo $(LDFLAGS) $(OBJS)
+ 
+ install:	all
+ 		if [ ! -d $$ROOT$(SBIN_DIR) ]; then mkdir $$ROOT$(SBIN_DIR); fi
+@@ -118,13 +97,9 @@
+ 		  mkdir $$ROOT$(USRSBIN_DIR); fi
+ 		if [ -f $$ROOT$(BOOT_DIR)/boot.b ]; then \
+ 		  mv $$ROOT$(BOOT_DIR)/boot.b $$ROOT$(BOOT_DIR)/boot.old; fi
+-		if [ -f $$ROOT$(BOOT_DIR)/chain.b ]; then \
+-		  mv $$ROOT$(BOOT_DIR)/chain.b $$ROOT$(BOOT_DIR)/chain.old; fi
+-		if [ -f $$ROOT$(BOOT_DIR)/os2_d.b ]; then \
+-		  mv $$ROOT$(BOOT_DIR)/os2_d.b $$ROOT$(BOOT_DIR)/os2_d.old; fi
+-		cp boot.b chain.b os2_d.b $$ROOT$(BOOT_DIR)
++		cp boot.b $$ROOT$(BOOT_DIR)
+ 		cp lilo $$ROOT$(SBIN_DIR)
+-		strip $$ROOT$(SBIN_DIR)/lilo
++		$(STRIP) $$ROOT$(SBIN_DIR)/lilo
+ 		cp keytab-lilo.pl $$ROOT$(USRSBIN_DIR)
+ 		@if [ -e $$ROOT/etc/lilo/install ]; then echo; \
+ 		  echo -n "$$ROOT/etc/lilo/install is obsolete. LILO is now ";\
+@@ -142,11 +117,8 @@
+ 		  && mv ../lilo ../lilo-`cat VERSION`
+ 
+ clean:
+-		rm -f *.o *.img *.lis first.s second.s chain.s \
+-		  os2_d.s dump.s tmp_make first.b second.b
+-
+-spotless:	clean
+-		rm -f lilo activate boot.b chain.b os2_d.b dump.b dparam.com
++		rm -f *.o *.exe *.bin tmp_make
++		rm -f lilo boot.b
+ 
+ ### Dependencies
+ activate.o : activate.c 
+diff -ruN lilo.orig/chain.S lilo/chain.S
+--- lilo.orig/chain.S	Thu Oct 15 05:14:25 1998
++++ lilo/chain.S	Thu Jan  1 09:00:00 1970
+@@ -1,255 +0,0 @@
+-/* chain.S  -  LILO boot chainer */
+-
+-/* Copyright 1992-1998 Werner Almesberger. See file COPYING for details. */
+-
+-
+-#define LILO_ASM
+-#include "lilo.h"
+-
+-
+-	.text
+-
+-	.globl	_main
+-	.org	0
+-
+-_main:	jmp	start
+-
+-	.org	6
+-
+-	.ascii	"LILO"
+-	.word	STAGE_CHAIN
+-	.word	VERSION
+-
+-offset:	.word	0
+-drive:	.byte	0
+-	.byte	0			! head, always zero
+-
+-hint:	.word	drvmap			! pointer to drive map
+-
+-ptable:	.blkw	0x20			! partition table to preload
+-
+-start:	cli				! set SS:SP to 0:7C00
+-	xor	ax,ax
+-	mov	ss,ax
+-	mov	ax,#0x7c00
+-	mov	sp,ax
+-	sti
+-	mov	ax,#SETUPSEG		! move boot sector to default location
+-	mov	ds,ax
+-	xor	ax,ax
+-	mov	es,ax
+-	mov	cx,#256
+-mtmp = SETUPSECS-1			! broken math ...
+-	mov	si,#mtmp*512
+-	mov	di,#BOOTSEG*16
+-	rep
+-	movsw
+-#ifdef DOS_D
+-dos4:	seg	es
+-	mov	byte ptr BOOTSEG*16+0x24,#0x81
+-#endif
+-	mov	cx,#0x20		! move partition table
+-	mov	si,#ptable
+-	mov	di,#PART_TABLE
+-	rep
+-	movsw
+-					! mess with the partition table
+-#if defined(LCF_REWRITE_TABLE) || defined(LCF_READONLY)
+-	mov	si,#prtmap		! get partition table change rules
+-prtclp:	lodsw				! bios == 0 indicates end
+-	or	al,al
+-	jz	pmend			! at end -> quit
+-	cmp	al,cache		! already in cache ?
+-	je	incache			! yes -> no loading required
+-	push	ax			! save table data
+-	call	flush			! flush the cache
+-	pop	ax
+-	push	ax
+-	mov	cache,al		! remember drive in cache
+-	cmp	al,drive		! boot drive ?
+-	jne	noc			! no -> load into scratch area
+-	xor	ax,ax			! load at 0000:0600
+-	mov	bx,#PARTS_LOAD
+-	jmp	loadit
+-noc:	mov	ax,ds
+-	mov	bx,#PARTS_SCR		! scratch area
+-loadit:	mov	es,ax			! set up pointers and remember them
+-	mov	ces,ax
+-	mov	cbx,bx
+-	mov	ax,#0x201		! load partition table, one sector
+-	mov	dx,cache		! drive from cache (DH = 0)
+-	mov	cx,#1
+-	int	0x13			! load it
+-	jc	wrfail			! error -> abort
+-	pop	ax			! get BIOS and offset
+-incache:les	bx,cbx			! load pointer
+-	add	bx,#PART_TABLE_OFFSET	! move to partition table
+-	add	bl,ah			! offset is always in [0x1be,0x1fd]
+-	lodsw				! see what we need to do
+-	seg	es			! match ?
+-	cmp	byte ptr (bx),al
+-	jne	nocng			! no -> do not change
+-	seg	es			! change
+-	mov	byte ptr (bx),ah
+-	mov	byte ptr dirty,#1	! mark as dirty
+-nocng:	br	prtclp			! next one
+-
+-flush:	test	byte ptr dirty,#1	! dirty ?
+-	jz	noflush			! no -> do not write
+-	mov	ax,#0x301		! write one sector
+-	mov	dx,cache		! get the drive
+-	or	dl,dl			! nothing cached ?
+-	jz	noflush			! no -> do not flush
+-	les	bx,cbx			! reload pointer
+-	int	0x13			! write ...
+-	jc	wrfail			! argl
+-noflush:ret
+-pmend:	call	flush			! flush table
+-	br	nopp			! and proceed
+-wrfail:	mov	si,#failmsg		! complain
+-	call	say
+-	mov	ax,#FIRSTSEG		! try to restart LILO
+-	jmpi	#GO,FIRSTSEG
+-
+-cache:	.byte	0			! drive, 0 means not cached
+-	.byte	0			! head, always 0
+-cbx:	.blkw	1
+-ces:	.blkw	1
+-dirty:	.byte	0
+-
+-#endif
+-
+-nopp:
+-	mov	ax,drvmap		! need to install mapper ?
+-	or	ax,ax
+-	jz	noimap			! no -> go on
+-	call	swap13
+-noimap:
+-
+-	mov	si,offset		! DS:SI and ES:SI point to the partition
+-	add	si,#PART_TABLE
+-	mov	dx,drive		! initialize DX (drive and head)
+-	xor	ax,ax			! set DS and ES to zero
+-#ifdef XXX
+-	mov	ax,ds
+-	mov	es,ax
+-	mov	si,#lilosig
+-	mov	bx,#cmd
+-	mov	dl,#0xfe
+-#else
+-	mov	ds,ax
+-	mov	es,ax
+-#endif
+-	mov	bp,#0			! might help some boot problems
+-	mov	ax,#0xaa55		! boot signature (just in case ...)
+-	jmpi	#BOOTSEG*16,0		! start boot sector
+-
+-#ifdef XXX
+-lilosig:.ascii	"LILO"
+-cmd:	.ascii	"98"
+-	.byte	0
+-#endif
+-
+-#if defined(LCF_REWRITE_TABLE)
+-
+-! Display a NUL-terminated string on the console
+-
+-say:	lodsb			! get byte
+-	or	al,al		! NUL ?
+-	jz	aret		! yes -> done
+-	mov	ah,#14		! display, tty-style
+-	xor	bh,bh
+-	int	0x10
+-	jmp	say		! next one
+-aret:	ret			! done
+-
+-failmsg:.ascii	"Rewrite error."
+-	.byte	13,10,0
+-
+-#endif
+-
+-swap13: seg	es		! allocate 1 kB
+-	dec	word ptr [0x413]
+-	int	0x12		! get start segment
+-	mov	cl,#6
+-	shl	ax,cl
+-	cli			! disable interrupts
+-	xor	bx,bx		! zero a few registers
+-	mov	di,bx
+-	seg	es		! change offset
+-	xchg	bx,[0x4c]
+-	mov	old13of,bx
+-	mov	bx,ax		! change segment
+-	seg	es
+-	xchg	bx,[0x4e]
+-	mov	old13sg,bx
+-	mov	es,ax		! move drive swapper
+-	mov	si,#new13
+-	mov	cx,#new13end-new13
+-	rep
+-	movsb
+-	sti			! enable interrupts
+-	ret			! done
+-
+-new13:	push	ax		! save AX (contains function code in AH)
+-	push	bp		! need BP to mess with stack
+-	mov	bp,sp
+-	! Stack layout:
+-	!
+-	!   +8	INT flags
+-	!   +6	INT CS
+-	!   +4	INT IP
+-	!   +2	AX
+-	! BP+0 BP
+-	pushf			! push flags (to act like interrupt)
+-	push	si
+-	mov	si,#drvmap-new13
+-mapfl:	seg	cs		! get next entry
+-	lodsw
+-	or	ax,ax		! at end ?
+-	jz	nomap		! yes -> do not map
+-	cmp	dl,al		! match ?
+-	jne	mapfl		! no -> continue
+-	mov	dl,ah		! map drive
+-nomap:	pop	si		! restore SI
+-	mov	8(bp),ax	! overwrite old flags (to remember mapping)
+-	mov	ax,2(bp)	! restore AX
+-	mov	bp,(bp)		! restore BP
+-	.byte	0x9a		! CALL FAR
+-old13of:.word	0
+-old13sg:.word	0
+-	push	bp		! save BP again
+-	mov	bp,sp
+-	! New stack layout:
+-	!
+-	!   +10	mapping (was flags)
+-	!   +8	INT CS
+-	!   +6	INT IP
+-	!   +4	AX
+-	!   +2  obsolete BP
+-	! BP+0  BP
+-	xchg	ax,4(bp)	! save AX and get command
+-	pushf			! fix driver number, if necessary
+-	cmp	ah,#8 ! do not fix
+-	je	done13
+-	cmp	ah,#0x15 ! do not fix
+-	je	done13
+-	mov	ax,10(bp)	! no mapping ?
+-	or	ax,ax
+-	jz	done13
+-	mov	dl,al		! fix mapping
+-done13:	mov	ax,4(bp)	! restore AX
+-	pop	10(bp)		! restore flags
+-	pop	bp		! get BP
+-	add	sp,#4		! fix SP
+-	iret			! done
+-
+-drvmap:	.blkw	DRVMAP_SIZE+1
+-
+-new13end:
+-
+-#if defined(LCF_REWRITE_TABLE)
+-prtmap:	.blkw	PRTMAP_SIZE*2+1	! only first word of last entry is read
+-#endif
+-
+-theend:
+diff -ruN lilo.orig/chain.old.S lilo/chain.old.S
+--- lilo.orig/chain.old.S	Wed Jun 18 16:42:15 1997
++++ lilo/chain.old.S	Thu Jan  1 09:00:00 1970
+@@ -1,260 +0,0 @@
+-/* chain.S  -  LILO boot chainer */
+-
+-/* Copyright 1992-1997 Werner Almesberger. See file COPYING for details. */
+-
+-
+-#define LILO_ASM
+-#include "lilo.h"
+-
+-
+-	.text
+-
+-	.globl	_main
+-	.org	0
+-
+-_main:	jmp	start
+-
+-	.org	2
+-
+-	.ascii	"LILO"
+-	.word	STAGE_CHAIN
+-	.word	VERSION
+-
+-offset:	.word	0
+-drive:	.byte	0
+-	.byte	0			! head, always zero
+-
+-start:	cli				! set SS:SP to 0:7C00
+-	xor	ax,ax
+-	mov	ss,ax
+-	mov	ax,#0x7c00
+-	mov	sp,ax
+-	sti
+-	mov	ax,#SETUPSEG		! move boot sector to default location
+-	mov	ds,ax
+-	xor	ax,ax
+-	mov	es,ax
+-	mov	cx,#256
+-	mov	si,#512
+-	mov	di,#BOOTSEG*16
+-	rep
+-	movsw
+-	push	bx			! save secret message
+-#ifdef DOS_D
+-#if 0
+-	seg	es
+-	cmp	byte ptr BOOTSEG*16+0x26,#0x29
+-	je	dos4
+-	mov	bx,#baddos		! complain
+-	call	say
+-	mov	ax,#FIRSTSEG		! restart LILO
+-	jmpi	#GO,FIRSTSEG
+-#endif
+-dos4:	seg	es
+-	mov	byte ptr BOOTSEG*16+0x24,#0x81
+-#endif
+-	mov	cx,#0x20		! move partition table
+-	mov	si,#PART_TABLE_OFFSET
+-	mov	di,#PART_TABLE
+-	rep
+-	movsw
+-#if defined(SWAP_HD) || defined(SWAP_FD)
+-	call	swap13
+-#endif
+-					! table entry
+-	pop	bx			! get secret message (active partition)
+-#ifdef LCF_REWRITE_TABLE
+-	or	bl,bl			! none set ?
+-	jz	tonopp			! yes -> do not patch
+-br tonopp
+-	cmp	bx,#0x81		! valid code ?
+-	jb	towrfail		! no -> abort
+-	cmp	bx,#0x84
+-	jna	wrokay			! yes -> continue
+-towrfail:br	wrfail
+-tonopp:	br	nopp
+-wrokay:	push	bx			! save BX
+-	xor	ax,ax			! ES becomes 0
+-	mov	es,ax
+-	mov	ax,#0x201		! load partition table, one sector
+-	mov	dx,#0x80		! first drive
+-	mov	cx,#1
+-	mov	bx,#PARTS_LOAD
+-	int	0x13			! load it
+-	jc	wrfail			! error -> abort
+-	mov	cx,#4			! process all four entries
+-	mov	bx,#PART_TABLE
+-ptchpt:	seg	es			! clear all active flags
+-	mov	byte ptr (bx),#0
+-#if defined(LCF_FIX_TYPE) && defined(LCF_HIDE_DOS)
+-	seg	es
+-	mov	al,(bx+4)		! get partition type
+-	cmp	al,#PART_DOS12		! hidden ?
+-	je	hideme			! no -> hide it
+-	cmp	al,#PART_DOS16
+-	je	hideme
+-	cmp	al,#PART_DOS32
+-	jne	nonrel			! already hidden -> continue
+-hideme:	add	al,#HIDDEN_OFF		! write back corrected value
+-	seg	es
+-	mov	(bx+4),al
+-#endif
+-nonrel:	add	bx,#16			! next entry
+-	loop	ptchpt
+-	pop	bx			! compute active flag position
+-	dec	bx
+-	shl	bl,1
+-	shl	bx,1
+-	shl	bx,1
+-	shl	bx,1
+-	cmp	bx,offset		! right ?
+-	jne	wrfail			! no -> abort
+-	seg	es			! set active flag
+-	mov	byte ptr (bx+PART_TABLE),#0x80
+-#ifdef LCF_FIX_TYPE
+-	seg	es			! is this a 
+-	mov	al,byte ptr (bx+PART_TABLE+4)
+-	cmp	al,#PART_HDOS12		! hidden ?
+-	je	unhideme		! yes -> unhide it
+-	cmp	al,#PART_HDOS16
+-	je	unhideme
+-	cmp	al,#PART_HDOS32
+-	jne	nounhid			! not hidden -> continue
+-unhideme:sub	al,#HIDDEN_OFF		! write back corrected value
+-	seg	es
+-	mov	(bx+PART_TABLE+4),al
+-#endif
+-nounhid:mov	ax,#0x301		! save it (restore all registers for
+-	mov	dx,#0x80		! paranoia)
+-	mov	cx,#1
+-	mov	bx,#0x600
+-	int	0x13			! write ...
+-	jc	wrfail			! argl
+-	mov	bx,#passmsg		! confirm modification
+-	call	say
+-	jmp	nopp
+-wrfail:	mov	bx,#failmsg		! complain
+-	call	say
+-	mov	ax,#FIRSTSEG		! restart LILO
+-	jmpi	#GO,FIRSTSEG
+-#endif
+-nopp:	mov	si,offset		! DS:SI and ES:SI point to the partition
+-	add	si,#PART_TABLE
+-	mov	dx,drive		! initialize DX (drive and head)
+-	xor	ax,ax			! set DS and ES to zero
+-#ifdef XXX
+-	mov	ax,ds
+-	mov	es,ax
+-	mov	si,#lilosig
+-	mov	bx,#cmd
+-	mov	dl,#0xfe
+-#else
+-	mov	ds,ax
+-	mov	es,ax
+-#endif
+-	mov	bp,#0			! might help some boot problems
+-	mov	ax,#0xaa55		! boot signature (just in case ...)
+-	jmpi	#BOOTSEG*16,0		! start boot sector
+-
+-#ifdef XXX
+-lilosig:.ascii	"LILO"
+-cmd:	.ascii	"98"
+-	.byte	0
+-#endif
+-
+-#if defined(DOS_D) || defined(LCF_REWRITE_TABLE)
+-
+-! Display a NUL-terminated string on the console
+-
+-say:	mov	al,(bx)		! get byte
+-	or	al,al		! NUL ?
+-	jz	aret		! yes -> done
+-	push	bx		! save pointer
+-	mov	ah,#14		! display, tty-style
+-	xor	bh,bh
+-	int	0x10
+-	pop	bx
+-	inc	bx		! next one
+-	jmp	say
+-aret:	ret			! done
+-
+-#ifdef DOS_D
+-baddos:	.ascii	"Need DOS version 4 or newer."
+-	.byte	13,10,0
+-#endif
+-
+-failmsg:.ascii	"Rewrite error."
+-	.byte	13,10,0
+-
+-passmsg:.ascii	"Rewrote the partition table."
+-	.byte	13,10,0
+-
+-#endif
+-
+-#if defined(SWAP_HD) || defined(SWAP_FD)
+-
+-swap13: seg	es		! allocate 1 kB
+-	dec	word ptr [0x413]
+-	int	0x12		! get start segment
+-	mov	cl,#6
+-	shl	ax,cl
+-	cli			! disable interrupts
+-	xor	bx,bx		! zero a few registers
+-	mov	di,bx
+-	seg	es		! change offset
+-	xchg	bx,[0x4c]
+-	mov	old13of,bx
+-	mov	bx,ax		! change segment
+-	seg	es
+-	xchg	bx,[0x4e]
+-	mov	old13sg,bx
+-	mov	es,ax		! move drive swapper
+-	mov	si,#new13
+-	mov	cx,#new13end-new13
+-	rep
+-	movsb
+-	sti			! enable interrupts
+-	ret			! done
+-
+-new13:	seg	cs		! save function code
+-	mov	fcode-new13,ah
+-	test	dl,#0x80	! hard disk drive ?
+-#ifdef SWAP_FD
+-	jnz	noswap		! yes -> go on
+-#else
+-	jz	noswap		! no -> go on
+-#endif
+-	xor	dl,#1		! swap drive 0 and 1
+-noswap:	pushf
+-	.byte	0x9a		! CALL FAR
+-old13of:.word	0
+-old13sg:.word	0
+-	pushf			! fix driver number, if necessary
+-	seg	cs
+-	cmp	byte ptr fcode-new13,#8	! do not fix
+-	je	done13
+-	seg	cs
+-	cmp	byte ptr fcode-new13,#0x15 ! do not fix
+-	je	done13
+-	test	dl,#0x80	! hard disk drive ?
+-#ifdef SWAP_FD
+-	jnz	done13		! yes -> go on
+-#else
+-	jz	done13		! no -> go on
+-#endif
+-	xor	dl,#1		! fix it
+-done13:	seg	cs
+-	mov	tmpbx-new13,bx	! restore flags
+-	mov	bx,sp
+-	seg	ss
+-	pop	6(bx)
+-	seg	cs
+-	mov	bx,tmpbx-new13
+-	iret			! done
+-new13end:
+-fcode:	.byte	0		! function code
+-tmpbx:	.word	0
+-
+-#endif
+-
+-theend:
+diff -ruN lilo.orig/defs.h lilo/defs.h
+--- lilo.orig/defs.h	Thu Jan  1 09:00:00 1970
++++ lilo/defs.h	Thu Dec  7 16:17:10 2000
+@@ -0,0 +1,2 @@
++extern void *memcpy (void *__dest, const void *__src, unsigned int __n);
++extern int strlen (__const char *__s);
+diff -ruN lilo.orig/dump.S lilo/dump.S
+--- lilo.orig/dump.S	Wed Jun 18 16:42:22 1997
++++ lilo/dump.S	Thu Jan  1 09:00:00 1970
+@@ -1,131 +0,0 @@
+-/* dump.S  -  LILO register dumper */
+-
+-/* Copyright 1995-1997 Werner Almesberger. See file COPYING for details. */
+-
+-
+-#define LILO_ASM
+-#include "lilo.h"
+-
+-
+-	.text
+-
+-	.globl	_main
+-	.org	0
+-
+-_main:	push	sp	! push all registers
+-	push	ss
+-	pushf
+-	push	es
+-	push	ds
+-	push	cs
+-	push	bp
+-	push	di
+-	push	si
+-	push	dx
+-	push	cx
+-	push	bx
+-	push	ax
+-	mov	ax,#BOOTSEG	! let DS point to where we really are
+-	mov	ds,ax
+-	mov	bx,#msgs	! set up loop
+-l:	call	say		! output message
+-	cmp	byte ptr (bx),#0 ! at end ?
+-	je	back		! yes -> back to LILO
+-	pop	ax		! get next data word
+-	push	bx
+-	call	wout		! output data word
+-	pop	bx
+-	jmp	l		! next round
+-
+-#if 0
+-back:	mov	ax,#FIRSTSEG
+-	mov	ds,ax
+-	mov	word ptr (CODE_START_1),#CODE_START_1+8
+-	mov	word ptr (CODE_START_1+2),#FIRSTSEG
+-	mov	word ptr (CODE_START_1+4),#CODE_START_1+12
+-	mov	byte ptr (CODE_START_1+6),#0xfe
+-	mov	es,ax		! adjust segments
+-	mov	ax,#BOOTSEG
+-	mov	ds,ax
+-	mov	word ptr (10),#0xffff ! no timeout
+-	mov	si,#haltnow	! copy string data
+-	mov	di,#CODE_START_1+8
+-	mov	cx,#6
+-	rep
+-	movsb
+-	mov	ax,#FIRSTSEG	! restart LILO
+-	jmpi	#GO,FIRSTSEG
+-#else
+-back:	hlt			! stay here
+-	jmp	back
+-#endif
+-
+-! Display a NUL-terminated string on the console
+-
+-say:	mov	al,(bx)		! get byte
+-	inc	bx		! move pointer
+-	or	al,al		! NUL ?
+-	jz	aret		! yes -> done
+-	push	bx		! save pointer
+-	mov	ah,#14		! display, tty-style
+-	xor	bh,bh
+-	int	0x10
+-	pop	bx
+-	jmp	say		! next one
+-
+-wout:	push	ax		! display one word
+-	mov	al,ah
+-	call	bout
+-	pop	ax
+-bout:	push	ax		! display one byte
+-	shr	al,#4
+-	call	nout
+-	pop	ax
+-nout:	and	al,#15		! display one nibble
+-	add	al,#48
+-	cmp	al,#58
+-	jb	nokay
+-	add	al,#7
+-nokay:	xor	bh,bh		! display on screen
+-	mov	ah,#14
+-	int	0x10
+-aret:	ret
+- 
+-msgs:	.byte	13,10
+-	.ascii	"Register dump:"
+-	.byte	13,10,10
+-	.ascii	"AX="
+-	.byte	0
+-	.ascii	" BX="
+-	.byte	0
+-	.ascii	" CX="
+-	.byte	0
+-	.ascii	" DX="
+-	.byte	0,13,10
+-	.ascii	"SI="
+-	.byte	0
+-	.ascii	" DI="
+-	.byte	0
+-	.ascii	" BP="
+-	.byte	0,13,10
+-	.ascii	"CS="
+-	.byte	0
+-	.ascii	" DS="
+-	.byte	0
+-	.ascii	" ES="
+-	.byte	0,13,10
+-	.ascii	"F="
+-	.byte	0,13,10
+-	.ascii	"SS:SP="
+-	.byte	0
+-	.ascii	":"
+-	.byte	0,13,10,10
+-#if 0
+-	.ascii	"Restarting LILO ..."
+-#else
+-	.ascii	"System halted."
+-#endif
+-	.byte	13,10,10,0,0
+-
+-haltnow:.ascii	"LILO"			! prevent automatic reboot
+-	.byte	0
+diff -ruN lilo.orig/first.S lilo/first.S
+--- lilo.orig/first.S	Sat Dec  5 08:20:12 1998
++++ lilo/first.S	Thu Dec  7 16:17:10 2000
+@@ -1,226 +1,257 @@
+-/* first.S  -  LILO first stage boot loader */
+-
+-/* Copyright 1992-1998 Werner Almesberger. See file COPYING for details. */
+-
+-
+-#define LILO_ASM
+-#include "lilo.h"
+-
+-#ifndef LCF_NO1STDIAG
+-#define CYL_CHECK
+-#endif
+-
+-
+-	.text
+-
+-	.globl	_main
+-
+-	.org	0
+-
+-_main:	cli			! NT 4 blows up if this is missing
+-	jmp	start
+-
+-	.org	6
+-
+-! Boot device parameters. They are set by the installer.
+-
++/* $Id: first.S,v 1.16 2000/11/26 07:11:58 gniibe Exp $
++ *
++ * Primary boot loader
++ *
++ *  lilo/arch/sh/first.S
++ *
++ *  Copyright (C) 2000  Niibe Yutaka
++ *
++ * This file is subject to the terms and conditions of the GNU General
++ * Public License.
++ *
++ */
++
++/*
++ * NOTE: Keep this code "position independent", so that this works well
++ *       among machines with different memory map.
++ *
++ *       Some machine starts its memmory at 0x08000000 (Area2),
++ *       while others starts at 0x0c000000 (Area3).
++ */
++
++/*
++ * Memory map:
++ *  [ First Loader         ] 512
++ *  [ Stack                ] 4096-512
++ *  [ Second Loader        ] 4KB
++ *  [ Reserved             ] 4KB
++ *  [ MAP load area        ] 512
++ *  [ Descriptor table 1/2 ] 512
++ *  [ Descriptor table 2/2 ] 512
++ *  [ Default Command Line ] 512
++ *  [ Keyboard Translation ] 512
++ *  [ Greeting Message     ] 512
++ *  [ Reserved             ]
++ *  [ Reserved             ]
++ *
++ */
++	.global start
++start:
++	bra	real_start
++	.byte	3	! This becomes "mov r0, r12" with next "l"
++	!
++	.ascii  "lba"	! special marker for LBA32
++	!
+ 	.ascii	"LILO"
+-	.word	STAGE_FIRST
+-	.word	VERSION
++	.word	1
++#if 1
++	/* EDIT HERE ! */
++			! Depends LILOs version
++	.word	20
++#else
++		      /* v--- Major Version */
++	.word	4*256 + 21
++	!    /* ^--- Minor Version*/     
++#endif
+ 
++/* x86 LILO parameters (Not used for SuperH... yet) */
+ timeout:.word	0		! input timeout
+ delay:	.word	0		! boot delay
+ port:	.byte	0		! COM port (0 = unused, 1 = COM1, etc.)
+ sparam:	.byte	0		! serial port parameters (0 = unused)
+ 
+-tstamp:	.long	0		! timestamp
++/* Timestamp (Filled by LILO command) */
++tstamp:	.long	0
+ 
+-d1_cx:	.word	0		! first descriptor sector address
++/* First descripter sector (Filled by LILO command) */
++d1_cx:	.word	0
+ d1_dx:	.word	0
+-d1_al:	.byte	0		! (unused)
++d1_al:	.byte	0
+ 
+-d2_cx:	.word	0		! second descriptor sector address
++/* Second descripter sector (Filled by LILO command) */
++d2_cx:	.word	0
+ d2_dx:	.word	0
+-d2_al:	.byte	0		! (unused)
++d2_al:	.byte	0
+ 
+-dc_cx:	.word	0		! default command-line sector address
++/* Default command-line sector (Filled by LILO command) */
++dc_cx:	.word	0
+ dc_dx:	.word	0
+-dc_al:	.byte	0		! (unused)
++dc_al:	.byte	0
+ 
++/* Prompt? (Filled by LILO command) */
+ prompt:	.byte	0		! indicates whether to always enter prompt
+ 				! (also used as alignment byte)
+ 
++/* Greeting message length & sector (Filled by LILO command) */
+ ms_len:	.word	0		! initial greeting message
+ ms_cx:	.word	0
+ ms_dx:	.word	0
+-ms_al:	.byte	0		! (unused)
++ms_al:	.byte	0
+ 
++/* Second descripter sector (Filled by LILO command) */
+ kt_cx:	.word	0		! keyboard translation table
+ kt_dx:	.word	0
+ kt_al:	.byte	0
+ 
+ d_addr:				! second stage sector addresses
+ 
+-	.org	CODE_START_1
+-
+-ext_si:	.word	0		! external interface
+-ext_es:	.word	0
+-ext_bx:	.word	0
+-ext_dl:	.byte	0
+-
+-start:	mov	ax,#BOOTSEG	! set DS
+-	mov	ds,ax
+-	mov	ext_es,es	! copy possible external parameters
+-	mov	ext_si,si
+-	mov	ext_bx,bx
+-	mov	ext_dl,dl
+-	mov	ax,#FIRSTSEG	! beam us up ...
+-	mov	es,ax
+-	mov	cx,#256
+-	sub	si,si
+-	sub	di,di
+-	cld
+-	rep
+-	movsw
+-	jmpi	go,FIRSTSEG
+-
+-go:	cli			! no interrupts
+-	mov	ds,ax		! AX is already set
+-	mov	es,ax		! (ES may be wrong when restarting)
+-	mov	sp,#STACK	! set the stack
+-	mov	ax,#STACKSEG
+-	mov	ss,ax
+-	sti			! now it is safe
+-
+-	mov	al,#0x0d	! gimme a CR ...
+-	call	display
+-	mov	al,#0x0a	! ... an LF ...
+-	call	display
+-	mov	al,#0x4c	! ... an 'L' ...
+-	call	display
+-
+-lagain:	mov	si,#d_addr	! ready to load the second stage loader
+-	mov	bx,#SECOND
+-	cld
+-sload:	lodsw			! get CX
+-	mov	cx,ax
+-	lodsw			! get DX
+-	mov	dx,ax
+-	or	ax,cx		! at EOF ?
+-	jz	done		! yes -> start it
+-	inc	si		! skip the length byte
+-	call	cread
+-	jc	error		! error -> start over again
+-	add	bx,#512		! next sector
+-	jmp	sload
+-error:
+-#ifndef LCF_NO1STDIAG
+-	push	ax		! display a space
+-	mov	al,#32
+-	call	display
+-	pop	ax
+-	mov	al,ah		! display error code
+-	call	bout
+-#endif
+-	xor	ax,ax		! reset the FDC
+-	mov	dl,al
+-	int	0x13
+-	jmp	lagain		! redo from start
+-done:	mov	al,#0x49	! display an 'I'
+-	call	display
+-	jmpi	0,SECONDSEG	! start the second stage loader
+-
+-#ifndef LCF_NO1STDIAG
+-bout:	push	ax		! display one byte
+-	shr	al,#4
+-	call	nout
+-	pop	ax
+-nout:	and	al,#15		! display one nibble
+-	add	al,#48
+-	cmp	al,#58
+-	jb	nokay
+-	add	al,#7
+-nokay:				! fall through
+-#endif
+-
+-display:xor	bh,bh		! display on screen
+-	mov	ah,#14
+-	int	0x10
+-	ret
+-
+-linerr:	pop	dx		! discard stack contents
+-	pop	cx
+-	pop	bx
+-	ret			! (carry is already set)
+-
+-cread:	test	dl,#LINEAR_FLAG	! linear address ?
+-	jz	readsect	! no -> go on
+-	and	dl,#0xff-LINEAR_FLAG ! remove flag
+-
+-!
+-! Translate the linear address into a sector/track/cylinder address
+-!
+-	push	bx		! BX is used as scratch
+-	push	cx		! LSW
+-	push	dx		! MSW with drive
+-	mov	ah,#8		! get drive geometry (do not clobber ES:DI)
+-	int	0x13
+-	jc	linerr		! error -> quit
+-	mov	al,dh		! AL <- #heads-1
+-	pop	dx		! get MSW
+-	mov	t_drive,dl	! save drive
+-	mov	dl,dh		! linear address (high) into DX
+-	xor	dh,dh
+-#ifdef CYL_CHECK
+-	push	cx		! compute #cyls-1
+-	xchg	ch,cl
+-	rol	ch,1
+-	rol	ch,1
+-	and	ch,#3
+-	mov	n_cyl,cx	! save #cyls-1
+-	pop	cx
+-#endif
+-	and	cx,#0x3f	! CX <- #secs
+-	mul	cl		! AX <- #secs/cyl
+-	add	ax,cx
+-	xchg	ax,bx
+-	pop	ax		! linear address (low) into AX
+-	div	bx		! DX <- cylinder, AX <- remaining secs
+-	xchg	ax,dx
+-	div	cl		! AL <- track, AH <- sector
+-	inc	ah
+-	mov	t_sector,ah
+-	xchg	ax,dx		! AX <- cylinder, DL <- track
+-	mov	dh,dl		! set up DX (head:drive)
+-	mov	dl,t_drive
+-#ifdef CYL_CHECK
+-	cmp	ax,n_cyl	! valid cylinder number ?
+-	ja	linerr3		! no -> error
+-#endif
+-	xchg	ah,al		! build cylinder number
+-	ror	al,1
+-	ror	al,1
+-	or	al,t_sector
+-	mov	cx,ax
+-	pop	bx		! restore BX
+-readsect:
+-	mov	ax,#0x201	! read one sector
+-	int	0x13
+-	ret			! quit, possibly with errors
+-
+-#ifdef CYL_CHECK
+-linerr3:pop	bx		! pop BX and linear address
+-	xor	ax,ax		! zero indicates internal error
+-	stc			! error
+-	ret
+-
+-n_cyl:	.word	0		! temporary space
+-#endif
+-t_drive:.byte	0
+-t_sector:.byte	0
+-
+-
+-/* Here are at least 66 bytes of free space. This is reserved for the
+-   partition table and the boot signature. */
++	.long	0xffffffff
++	.long	0xffffffff
++	.long	0xffffffff
++	.long	0xffffffff
++	.long	0xffffffff
++	.long	0xffffffff
++	.long	0xffffffff
++	.long	0xffffffff
++	.long	0xffffffff
++	.long	0xffffffff
++	.long	0xffffffff
++
++	.word	0xffff
++
++	.align	2
++real_start:
++	/* Get base pointer, to be position independent */
++	mova	next, r0
++	mov	#0x02, r1
++	shll8	r1
++	sub	r1, r0
++	mov	r0, r12		! Base pointer
++	!
++	mov	#0x10, r1
++	shll8	r1
++	mov	r12, r15
++	add	r1, r15		! Setup stack pointer
++	!
++	mov	#0x10, r13		! buffer number
++	!
++	/* Enable cache */
++	mov	#6, r0			! Cache "on"
++	mov	#0, r4
++	trapa	#0x3f
++	!
++	/* Output message "L" */
++	mova	message, r0
++	mov	r0, r4
++	mov	#1, r5
++	mov	#0, r0			! Serial Output
++	trapa	#0x3f
++	!
++	/* Load second stage loader */
++	mov	#52, r11	! #52: desc# of second stage loader
++loop:	mov	r11, r4
++	bsr	load_sector_address	! get r4 (=dev) and r5 (=lba)
++	 add	r12, r4		! desc# --> address of descriptor
++	bt	done
++	!
++	mov	r13, r6
++	shll8	r6
++	bsr	read_a_sector
++	 add	r12, r6	! buffer number -> buffer address
++	!
++	add	#2, r13	! buffer # += 2
++	bra	loop
++	 add	#5, r11	! next desc# is +5
++
++done:
++	/* Flush cache */
++	mov	#6, r0			! Cache "on"
++	mov	#0, r4
++	trapa	#0x3f
++
++	/* Jump to the second loader */
++	mov	#0x10, r0
++	shll8	r0
++	add	r12, r0	! Get the address into r0
++	jmp	@r0
++	 mov	r12, r4	! First argument is base pointer
++
++	.align	2
++message:
++	.string "L"
++
++	.align	2
++/*
++ * LOAD_SECTOR_ADDRESS:
++ *     Read the sector descripter (5-byte tuple), and translate
++ *     it as device number and lba.  Set T flag if its NULL.
++ *
++ * INPUT: r4 (pointer to descripter (5-byte long, not aligned)
++ * OUTPUT: r4 (DEVICE #), r5 (LBA) and T register (T when done)
++ * Clobbers: r0, r1, r2, r3
++ */
++load_sector_address:
++	mov.b	@r4+, r0
++	extu.b	r0, r0
++	mov.b	@r4+, r1
++	extu.b	r1, r1
++	mov.b	@r4+, r2
++	extu.b	r2, r2
++	mov.b	@r4+, r3
++	extu.b	r3, r3
++	!
++	shll8	r3
++	or	r3, r1
++	shll8	r1
++	or	r0, r1
++	mov	r1, r5
++	mov.b	@r4, r0
++	cmp/eq	#0, r0
++	bt	1f		! NULL (end of descriptor)
++	!
++	/* Check if its really LBA... */
++	mov	r2, r0
++	and	#0x0F, r0	! Get device number
++	mov	#0xc0, r3
++	extu.b	r3, r3
++	cmp/hi	r2, r3
++	bf	1f		! Unset T
++	!
++	/* Its not LBA!! */
++	mova	not_lba_message, r0
++	mov	r0, r4
++	mov	#36, r5
++	mov	#0, r0			! Serial Output
++	trapa	#0x3f
++	sett			! End of descriptor
++	!
++1:	rts
++	 mov	r0, r4	! device number
++
++/*
++ * READ a sector
++ * INPUT: r4 (DEVICE #), r5 (LBA), r6 (BUFFER ADDRESS)
++ * OUTPUT: r0 (RESULT)
++ *
++ * Invoke BIOS call READ_SECTORS with number_of_sectors=1.
++ */
++read_a_sector:
++	mov	#2, r0			! READ SECTORS
++	mov	#1, r7			! number of sectors
++	trapa	#0x3f
++	!
++	tst	r0, r0
++	bt	1f
++	! /* ERROR */
++	mova	read_error_message, r0
++	mov	r0, r4
++	mov	#19, r5
++	mov	#0, r0			! Serial Output
++	trapa	#0x3f
++	! /* Go to the monitor */
++	mov	#0, r0
++	jmp	@r0
++	 nop
++	!
++1:	rts
++	 nop
++
++	.align	2
++not_lba_message:
++	.string "ERROR: Sector address is not in LBA\n"
++	.align	2
++read_error_message:
++	.string "ERROR: Sector read\n"
+ 
+-theend:
++	.align	9
++next:
+--- lilo.orig/second.c	Thu Jan  1 09:00:00 1970
++++ lilo/second.c	Thu Dec  7 21:03:56 2000
+@@ -0,0 +1,411 @@
++/* $Id: second.c,v 1.22 2000/11/26 07:11:16 gniibe Exp $
++ *
++ * Secondary boot loader
++ *
++ *  lilo/arch/sh/second.c
++ *
++ *  Copyright (C) 2000  Niibe Yutaka
++ *
++ * This file is subject to the terms and conditions of the GNU General
++ * Public License.
++ *
++ */
++
++#include "defs.h"
++
++static void put_string (unsigned char *);
++static int get_sector_address (unsigned long, int *, unsigned long *);
++static int load_sectors (unsigned long, unsigned long);
++static int read_sectors (int, unsigned long, unsigned char *, int);
++static int load_sectors_with_maps (int, int, unsigned long *);
++
++static int machine_type (void);
++static int serial_type (void);
++static int memory_size (void);
++static int io_base (void);
++static void cache_flush (void);
++
++static const char hexchars[] = "0123456789abcdef";
++#define digits hexchars		/* 10base is same for 16base (up to 10) */
++static inline char highhex (int x) {  return hexchars[(x >> 4) & 0xf];  }
++static inline char lowhex (int x) {  return hexchars[x & 0xf];  }
++static void printouthex (int);
++
++static unsigned long base_pointer = 0;	/* Avoid BSS */
++static unsigned long kernel_image = 0;	/* Avoid BSS */
++
++/* Sector descriptor */
++#define SD_DESCR1	24
++#define SD_DESCR2	29
++#define SD_DEFCMD	34
++/* 39 prompt (byte) */
++/* 40 length (word) */
++#define SD_MSG		42
++#define SD_KBDTBL	47
++
++static inline char *string_set (char *dest, const char *str)
++{
++  int len = strlen (str);
++  memcpy (dest, str, len);
++  return dest + len;
++}
++
++void
++start (unsigned long base)
++{
++  base_pointer = base;
++
++  put_string ("I");
++  load_sectors (SD_DESCR1, 0x3200);
++  load_sectors (SD_DESCR2, 0x3400);
++  put_string ("L");
++  /* XXX: checksum */
++
++  load_sectors (SD_DEFCMD, 0x3600);
++  load_sectors (SD_KBDTBL, 0x3800);
++  put_string ("O ");
++
++#if 0
++  load_sectors (SD_MSG, 0x3a00);
++#endif
++  /* XXX: delay, key check... */
++  /* XXX: list up images */
++  /* XXX: check signature */
++  /* Input command line */
++  /* XXX: Is there default command line?  Use it! */
++  put_string ("boot: ");
++  put_string ("first-image\n");	/* XXX: should handle input commandline... */
++
++  /* Structure of descriptor
++   [ checksum 2byte ]
++   [ DESCR_SIZE:52-byte
++      (image-name (16-byte)
++       passwd     (16-byte)
++       rd_size    (4-byte)
++       initrd     (5-byte sector desc)
++       start      (5-byte sector desc)
++       start_page (16-bit)
++       flags      (16-bit)
++       vga_mode   (16-bit)
++      )
++   ] * 19
++  */
++
++  put_string ("Loading ");
++  put_string ((char *)(base_pointer+0x3200+2)); /* Image name */
++
++  kernel_image = base_pointer + 0x10000 - 0x400;
++  {
++    int desc = 0x3200+2+16+16+4+5; /* kernel image */
++
++    /* Skip two sectors: Fallback command line and options */
++    desc = load_sectors_with_maps (desc, 0, &kernel_image);
++    put_string (".");
++
++    while (desc != 0)
++      {
++	desc = load_sectors_with_maps (desc, 0, &kernel_image);
++	put_string (".");
++      }
++  }
++  put_string ("done.\n");
++
++#if 0
++  {
++    int i;
++
++    put_string ("DUMP: ");
++    for (i=0; i<16; i++)
++      printouthex (*(unsigned char *)(base_pointer+0x10000+i));
++    put_string ("\n");
++  }
++#endif
++
++  /* XXX: kernel paramerter setting */
++  {
++    unsigned long parm = base_pointer - 0x200000 + 0x1000;
++    char *cmdline = (char *)(parm+256);
++    int mem_size;
++    unsigned char *p;
++
++    *(long *)parm      = 1;	/* Read only mount? */
++    *(long *)(parm+4)  = 0;	/* RAMDISK Flags */
++    *(long *)(parm+8)  = 0x0301; /* Root device: XXX should get from cls.. */
++    *(long *)(parm+12) = 1;	/* Loader type (LILO = 1) */
++    *(long *)(parm+16) = 0;	/* Initrd start */
++    *(long *)(parm+20) = 0;	/* Initrd size */
++    *(long *)(parm+24) = 0;	/* Not defined yet */
++
++    /* XXX: Should take the line from command line sector... */
++#define DC_MAGIC	0xf4f2	/* magic number of default cmd. line sector */
++    p = (unsigned char *)(base_pointer+0x3600);
++    if(p[0] == (DC_MAGIC & 0xff) && p[1] == (DC_MAGIC >> 8))
++      cmdline = string_set(cmdline, p+2);
++    cmdline = string_set(cmdline, (char *)(base_pointer + 0x10000 - 0x200));
++
++#if 0
++    /* Query to BIOS and build the command line string */
++    /* Build string "mem=XXM" */
++    mem_size = memory_size ();    
++    mem_size >>= 20; /* In Mega-byte */
++    cmdline = string_set (cmdline, "mem=");
++    if (mem_size >= 100)
++      {
++	*cmdline++ = digits[mem_size/100];
++	mem_size = mem_size % 100;
++      }
++    if (mem_size >= 10)
++      {
++	*cmdline++ = digits[mem_size/10];
++	mem_size = mem_size % 10;
++      }
++    *cmdline++ = digits[mem_size];
++    *cmdline++ = 'M';
++    *cmdline++ = ' ';
++
++    switch (machine_type ())
++      {
++      case 0: /* Unknown board */
++	{			/* Build string "sh_mv=unknown,0xXXXXXX,1" */
++	  unsigned int io = io_base ();
++	  int b31_24, b23_16, b15_08, b07_00;
++
++	  b31_24 = (io>>24)&0xff;
++	  b23_16 = (io>>16)&0xff;
++	  b15_08 = (io>>8)&0xff;
++	  b07_00 = (io>>0)&0xff;
++
++	  cmdline = string_set (cmdline, "sh_mv=unknown,0x");
++	  *cmdline++ = highhex (b31_24); *cmdline++ = lowhex (b31_24);
++	  *cmdline++ = highhex (b23_16); *cmdline++ = lowhex (b23_16);
++	  *cmdline++ = highhex (b15_08); *cmdline++ = lowhex (b15_08);
++	  *cmdline++ = highhex (b07_00); *cmdline++ = lowhex (b07_00);
++	  cmdline = string_set (cmdline, ",1 ");
++	  break;
++	}
++
++      case 1:
++	cmdline = string_set (cmdline, "sh_mv=CqREEK ");
++	break;
++
++      case 3:
++	cmdline = string_set (cmdline, "sh_mv=SolutionEngine ");
++	break;
++      }
++
++    if (serial_type () == 0)
++      cmdline = string_set (cmdline, "console=ttySC0,115200");
++    else
++      cmdline = string_set (cmdline, "console=ttySC1,115200");
++#endif
++
++    *cmdline = '\0';		/* Terminate the string */
++  }
++
++  cache_flush ();
++  asm volatile ("jmp @r0; nop"
++		: /* no output */
++		: "z" (base_pointer + 0x10000));
++}
++
++static int
++load_sectors_with_maps (int desc, int offset, unsigned long *buf_p)
++{
++  int dev;
++  unsigned long lba;
++  int i, count;
++
++  /* Load the map at 0x3000 */
++  if (load_sectors (desc, 0x3000) < 0)
++    return 0;
++
++  for (i = offset*5; i<505; i+=5)
++    {
++      if ((count = get_sector_address (0x3000+i, &dev, &lba)) == 0)
++	return 0;
++
++      read_sectors (dev, lba, (unsigned char *)*buf_p, count);
++      *buf_p += count*512;
++    }
++
++  /* There's next map */
++  return 0x3000+505;
++}
++
++static int
++machine_type (void)
++{
++  register long __sc0 __asm__ ("r0") = 3; /* FEATURE QUERY */
++
++  asm volatile ("trapa	#0x3F"
++		: "=z" (__sc0)
++		: "0" (__sc0)
++		: "memory");
++
++  return (__sc0 >> 8);
++}
++
++static int
++serial_type (void)
++{
++  register long __sc0 __asm__ ("r0") = 3; /* FEATURE QUERY */
++
++  asm volatile ("trapa	#0x3F"
++		: "=z" (__sc0)
++		: "0" (__sc0)
++		: "memory");
++
++  return (__sc0 & 0x07);
++}
++
++static int
++memory_size (void)
++{
++  register long __sc0 __asm__ ("r0") = 4; /* MEMORY SIZE */
++
++  asm volatile ("trapa	#0x3F"
++		: "=z" (__sc0)
++		: "0" (__sc0)
++		: "memory");
++
++  return (__sc0);
++}
++
++static int
++io_base (void)
++{
++  register long __sc0 __asm__ ("r0") = 5; /* IO BASE */
++
++  asm volatile ("trapa	#0x3F"
++		: "=z" (__sc0)
++		: "0" (__sc0)
++		: "memory");
++
++  return (__sc0);
++}
++
++static void
++cache_flush (void)
++{
++  register long __sc0 __asm__ ("r0") = 6; /* CACHE_CONTROL */
++  register long __sc4 __asm__ ("r4") = 0; /* ENABLE */
++
++  asm volatile ("trapa	#0x3F"
++		: "=z" (__sc0)
++		: "0" (__sc0), "r" (__sc4)
++		: "memory");
++}
++
++static void inline
++put_string_1 (unsigned char *str, long len)
++{
++  register long __sc0 __asm__ ("r0") = 0; /* OUTPUT */
++  register long __sc4 __asm__ ("r4") = (long) str;
++  register long __sc5 __asm__ ("r5") = (long) len; /* For New BIOS */
++
++  asm volatile ("trapa	#0x3F"
++		: "=z" (__sc0)
++		: "0" (__sc0), "r" (__sc4),  "r" (__sc5)
++		: "memory");
++}
++
++static void
++put_string (unsigned char *str)
++{
++  int len = strlen (str);
++  put_string_1 (str, len);
++}
++
++static int
++read_sectors (int dev, unsigned long lba, unsigned char *buf, int count)
++{
++  register long __sc0 __asm__ ("r0") = 2; /* READ SECTORS */
++  register long __sc4 __asm__ ("r4") = (long) dev;
++  register long __sc5 __asm__ ("r5") = (long) lba;
++  register long __sc6 __asm__ ("r6") = (long) buf;
++  register long __sc7 __asm__ ("r7") = (long) count;
++
++  asm volatile ("trapa	#0x3F"
++		: "=z" (__sc0)
++		: "0" (__sc0), "r" (__sc4),  "r" (__sc5),
++		  "r" (__sc6),  "r" (__sc7)
++		: "memory");
++
++  if (__sc0 < 0)
++    put_string ("ERROR: Sector read\n");
++
++  return __sc0;
++}
++
++static int
++get_sector_address (unsigned long sector_desc, int *devp, unsigned long *lbap)
++{
++  unsigned long s;
++  unsigned char *p = (unsigned char *)(sector_desc+base_pointer);
++  int len;
++
++  /* Number of sectors */
++  len = (int)p[4];
++  if (len == 0)
++    return 0;
++
++  /* p[2]: drive number */
++  if ((int)p[2] < 0xc0)
++    /* XXX: should return error */
++    put_string ("ERROR: Sector address is not in LBA\n");
++
++  *devp = (int)p[2] & 0x0f;
++
++  s = p[0] + (p[1]<<8) + (p[3]<<16);
++
++  *lbap = s;
++
++#if 0
++  {
++    unsigned long lba = *lbap;
++
++    put_string ("DEV= ");
++    printouthex ((*devp)&0xff);
++    put_string ("\n");
++    put_string ("LBA= ");
++    printouthex ((lba>>24)&0xff);
++    printouthex ((lba>>16)&0xff);
++    printouthex ((lba>>8)&0xff);
++    printouthex (lba&0xff);
++    put_string ("\n");
++  }
++#endif
++
++  return len;
++}
++
++static int
++load_sectors (unsigned long sector_desc, unsigned long mem)
++{
++  int dev;
++  unsigned long lba;
++  int count;
++  unsigned char *buf = (unsigned char *)(mem+base_pointer);
++
++  count = get_sector_address (sector_desc, &dev, &lba);
++
++  if (count)
++    return read_sectors (dev, lba, buf, count);
++
++  return -1;
++}
++
++#if 0
++static void
++printouthex(int x)
++{
++  char z[4];
++
++  z[0] = highhex (x);
++  z[1] = lowhex (x);
++  z[2] = ' ';
++  z[3] = '\0';
++
++  put_string (z);
++}
++#endif
+diff -ruN lilo.orig/second.lds lilo/second.lds
+--- lilo.orig/second.lds	Thu Jan  1 09:00:00 1970
++++ lilo/second.lds	Fri Dec  8 11:13:20 2000
+@@ -0,0 +1,212 @@
++OUTPUT_FORMAT("elf32-sh-linux", "elf32-sh-linux", "elf32-sh-linux")
++OUTPUT_ARCH(sh)
++ENTRY(start)
++SECTIONS
++{
++  /* Read-only sections, merged into text segment: */
++  . = 0x400000 + SIZEOF_HEADERS;
++  .interp     : { *(.interp) 	}
++  .hash          : { *(.hash)		}
++  .dynsym        : { *(.dynsym)		}
++  .dynstr        : { *(.dynstr)		}
++  .gnu.version   : { *(.gnu.version)	}
++  .gnu.version_d   : { *(.gnu.version_d)	}
++  .gnu.version_r   : { *(.gnu.version_r)	}
++  .rel.init      : { *(.rel.init)	}
++  .rela.init     : { *(.rela.init)	}
++  .rel.text      :
++    {
++      *(.rel.text)
++      *(.rel.text.*)
++      *(.rel.gnu.linkonce.t*)
++    }
++  .rela.text     :
++    {
++      *(.rela.text)
++      *(.rela.text.*)
++      *(.rela.gnu.linkonce.t*)
++    }
++  .rel.fini      : { *(.rel.fini)	}
++  .rela.fini     : { *(.rela.fini)	}
++  .rel.rodata    :
++    {
++      *(.rel.rodata)
++      *(.rel.rodata.*)
++      *(.rel.gnu.linkonce.r*)
++    }
++  .rela.rodata   :
++    {
++      *(.rela.rodata)
++      *(.rela.rodata.*)
++      *(.rela.gnu.linkonce.r*)
++    }
++  .rel.data      :
++    {
++      *(.rel.data)
++      *(.rel.data.*)
++      *(.rel.gnu.linkonce.d*)
++    }
++  .rela.data     :
++    {
++      *(.rela.data)
++      *(.rela.data.*)
++      *(.rela.gnu.linkonce.d*)
++    }
++  .rel.ctors     : { *(.rel.ctors)	}
++  .rela.ctors    : { *(.rela.ctors)	}
++  .rel.dtors     : { *(.rel.dtors)	}
++  .rela.dtors    : { *(.rela.dtors)	}
++  .rel.got       : { *(.rel.got)		}
++  .rela.got      : { *(.rela.got)		}
++  .rel.sdata     :
++    {
++      *(.rel.sdata)
++      *(.rel.sdata.*)
++      *(.rel.gnu.linkonce.s*)
++    }
++  .rela.sdata     :
++    {
++      *(.rela.sdata)
++      *(.rela.sdata.*)
++      *(.rela.gnu.linkonce.s*)
++    }
++  .rel.sbss      : { *(.rel.sbss)		}
++  .rela.sbss     : { *(.rela.sbss)	}
++  .rel.bss       : { *(.rel.bss)		}
++  .rela.bss      : { *(.rela.bss)		}
++  .rel.plt       : { *(.rel.plt)		}
++  .rela.plt      : { *(.rela.plt)		}
++  .init          : 
++  { 
++    KEEP (*(.init))
++  } =0
++  .plt      : { *(.plt)	}
++  .text      :
++  {
++    *(.text)
++    *(.text.*)
++    *(.stub)
++    /* .gnu.warning sections are handled specially by elf32.em.  */
++    *(.gnu.warning)
++    *(.gnu.linkonce.t*)
++  } =0
++  _etext = .;
++  PROVIDE (etext = .);
++  .fini      :
++  {
++    KEEP (*(.fini))
++  } =0
++  .rodata   : { *(.rodata) *(.rodata.*) *(.gnu.linkonce.r*) }
++  .rodata1   : { *(.rodata1) }
++  /* Adjust the address for the data segment.  We want to adjust up to
++     the same address within the page on the next page up.  */
++/*  . = ALIGN(0x10000) + (. & (0x10000 - 1)); */
++  .data    :
++  {
++    __data_start = . ;
++    *(.data)
++    *(.data.*)
++    *(.gnu.linkonce.d*)
++    SORT(CONSTRUCTORS)
++  }
++  .data1   : { *(.data1) }
++  .eh_frame : { *(.eh_frame) }
++  .gcc_except_table : { *(.gcc_except_table) }
++  .note.ABI-tag : { *(.note.ABI-tag) }
++  .ctors   : 
++  {
++    /* gcc uses crtbegin.o to find the start of
++       the constructors, so we make sure it is
++       first.  Because this is a wildcard, it
++       doesn't matter if the user does not
++       actually link against crtbegin.o; the
++       linker won't look for a file to match a
++       wildcard.  The wildcard also means that it
++       doesn't matter which directory crtbegin.o
++       is in.  */
++    KEEP (*crtbegin.o(.ctors))
++    /* We don't want to include the .ctor section from
++       from the crtend.o file until after the sorted ctors.
++       The .ctor section from the crtend file contains the
++       end of ctors marker and it must be last */
++    KEEP (*(EXCLUDE_FILE (*crtend.o ) .ctors))
++    KEEP (*(SORT(.ctors.*)))
++    KEEP (*(.ctors))
++  }
++   .dtors         :
++  {
++    KEEP (*crtbegin.o(.dtors))
++    KEEP (*(EXCLUDE_FILE (*crtend.o ) .dtors))
++    KEEP (*(SORT(.dtors.*)))
++    KEEP (*(.dtors))
++  }
++  .got           : { *(.got.plt) *(.got) }
++  .dynamic       : { *(.dynamic) }
++  /* We want the small data sections together, so single-instruction offsets
++     can access them all, and initialized data all before uninitialized, so
++     we can shorten the on-disk segment size.  */
++  .sdata     : 
++  {
++    *(.sdata) 
++    *(.sdata.*)
++    *(.gnu.linkonce.s.*)
++  }
++  _edata = .;
++  PROVIDE (edata = .);
++  __bss_start = .;
++  .sbss      :
++  {
++    *(.dynsbss)
++    *(.sbss)
++    *(.sbss.*)
++    *(.scommon)
++  }
++  .bss       :
++  {
++   *(.dynbss)
++   *(.bss)
++   *(.bss.*)
++   *(COMMON)
++   /* Align here to ensure that the .bss section occupies space up to
++      _end.  Align after .bss to ensure correct alignment even if the
++      .bss section disappears because there are no input sections.  */
++   . = ALIGN(32 / 8);
++  }
++  . = ALIGN(32 / 8);
++  _end = .;
++  PROVIDE (end = .);
++  /* Stabs debugging sections.  */
++  .stab 0 : { *(.stab) }
++  .stabstr 0 : { *(.stabstr) }
++  .stab.excl 0 : { *(.stab.excl) }
++  .stab.exclstr 0 : { *(.stab.exclstr) }
++  .stab.index 0 : { *(.stab.index) }
++  .stab.indexstr 0 : { *(.stab.indexstr) }
++  .comment 0 : { *(.comment) }
++  /* DWARF debug sections.
++     Symbols in the DWARF debugging sections are relative to the beginning
++     of the section so we begin them at 0.  */
++  /* DWARF 1 */
++  .debug          0 : { *(.debug) }
++  .line           0 : { *(.line) }
++  /* GNU DWARF 1 extensions */
++  .debug_srcinfo  0 : { *(.debug_srcinfo) }
++  .debug_sfnames  0 : { *(.debug_sfnames) }
++  /* DWARF 1.1 and DWARF 2 */
++  .debug_aranges  0 : { *(.debug_aranges) }
++  .debug_pubnames 0 : { *(.debug_pubnames) }
++  /* DWARF 2 */
++  .debug_info     0 : { *(.debug_info) }
++  .debug_abbrev   0 : { *(.debug_abbrev) }
++  .debug_line     0 : { *(.debug_line) }
++  .debug_frame    0 : { *(.debug_frame) }
++  .debug_str      0 : { *(.debug_str) }
++  .debug_loc      0 : { *(.debug_loc) }
++  .debug_macinfo  0 : { *(.debug_macinfo) }
++  /* SGI/MIPS DWARF 2 extensions */
++  .debug_weaknames 0 : { *(.debug_weaknames) }
++  .debug_funcnames 0 : { *(.debug_funcnames) }
++  .debug_typenames 0 : { *(.debug_typenames) }
++  .debug_varnames  0 : { *(.debug_varnames) }
++  /* These must appear regardless of  .  */
++}
+diff -ruN lilo.orig/string.c lilo/string.c
+--- lilo.orig/string.c	Thu Jan  1 09:00:00 1970
++++ lilo/string.c	Thu Dec  7 16:17:10 2000
+@@ -0,0 +1,22 @@
++#include <stddef.h>
++
++/* Implementation taken from Linux kernel (linux/lib/string.c) */
++
++size_t strlen(const char * s)
++{
++	const char *sc;
++
++	for (sc = s; *sc != '\0'; ++sc)
++		/* nothing */;
++	return sc - s;
++}
++
++void * memcpy(void * dest,const void *src,size_t count)
++{
++	char *tmp = (char *) dest, *s = (char *) src;
++
++	while (count--)
++		*tmp++ = *s++;
++
++	return dest;
++}
