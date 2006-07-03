@@ -24,6 +24,11 @@ RDEPENDS_angstrom-base-depends = "\
     angstrom-version \	
     "
 
+RRECOMMENDS_angstrom-base-depends = "\
+        ${BOOTMODULES_RRECOMMENDS} \
+	"
+
+
 RDEPENDS_angstrom-x11-base-depends := "\
     diet-x11 \
     virtual/xserver"
