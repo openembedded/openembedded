@@ -6,7 +6,7 @@ DEPENDS = "makedevs"
 DEPENDS_openzaurus = "makedevs virtual/kernel"
 RDEPENDS = "makedevs"
 LICENSE = "GPL"
-PR = "r68"
+PR = "r69"
 
 SRC_URI = "file://halt \
            file://ramdisk \
@@ -31,7 +31,8 @@ SRC_URI = "file://halt \
            file://sysfs.sh \
            file://device_table.txt \
            file://populate-volatile.sh \
-           file://volatiles "
+           file://volatiles \
+	   file://save-rtc.sh"
 
 SRC_URI_append_arm          = " file://alignment.sh"
 SRC_URI_append_openzaurus   = " file://checkversion"
@@ -82,6 +83,7 @@ do_install () {
 	install -m 0755    ${WORKDIR}/devpts		${D}${sysconfdir}/default
 	install -m 0755    ${WORKDIR}/sysfs.sh		${D}${sysconfdir}/init.d
 	install -m 0755    ${WORKDIR}/populate-volatile.sh ${D}${sysconfdir}/init.d
+	install -m 0755    ${WORKDIR}/save-rtc.sh	${D}${sysconfdir}/init.d
 	install -m 0644    ${WORKDIR}/volatiles		${D}${sysconfdir}/default/volatiles/00_core
 	if [ "${TARGET_ARCH}" = "arm" ]; then
 		install -m 0755 ${WORKDIR}/alignment.sh	${D}${sysconfdir}/init.d
@@ -117,6 +119,8 @@ do_install () {
 	ln -sf		../init.d/umountnfs.sh	${D}${sysconfdir}/rc0.d/S31umountnfs.sh
 	ln -sf		../init.d/umountfs	${D}${sysconfdir}/rc0.d/S40umountfs
 	ln -sf		../init.d/halt		${D}${sysconfdir}/rc0.d/S90halt
+	ln -sf		../init.d/save-rtc.sh	${D}${sysconfdir}/rc0.d/S25save-rtc.sh
+	ln -sf		../init.d/save-rtc.sh	${D}${sysconfdir}/rc6.d/S25save-rtc.sh	
 	ln -sf		../init.d/banner	${D}${sysconfdir}/rcS.d/S02banner
 	ln -sf		../init.d/checkroot.sh	${D}${sysconfdir}/rcS.d/S10checkroot.sh
 #	ln -sf		../init.d/checkfs.sh	${D}${sysconfdir}/rcS.d/S30checkfs.sh
