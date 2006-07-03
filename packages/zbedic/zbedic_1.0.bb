@@ -6,7 +6,7 @@ LICENSE = "GPL"
 DEPENDS = "libbedic"
 APPTYPE = "binary"
 APPDESKTOP = "${WORKDIR}/misc"
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/bedic/zbedic_${PV}-0.tgz \
            file://opie-icons.patch;patch=1 \
@@ -18,11 +18,11 @@ S = "${WORKDIR}"
 inherit opie
 export OE_QMAKE_LINK="${CXX}"
 
+EXTRA_QMAKEVARS_POST += "INCLUDEPATH+=${STAGING_INCDIR}/libbedic LIBS+=-lbedic LIBS+=-lsqlite3 TARGET=zbedic"
 
-do_configure() {
-	cd ${S} && rm -rf *~ && qmake -project && qmake -makefile -spec ${QMAKESPEC} -after \
-        INCLUDEPATH=${STAGING_INCDIR}/libbedic DEFINES+=QWS \
-	LIBS+=-lqpe LIBS+=-lbedic LIBS+=-lsqlite3 DESTDIR=${S} TARGET=zbedic
+do_configure_prepend() {
+	rm -f Makefile
+	qmake -project
 }
 
 do_install() {
