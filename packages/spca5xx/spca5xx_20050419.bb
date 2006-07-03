@@ -1,12 +1,12 @@
 DESCRIPTION = "USB Webcam driver for spca5xx chipset family supporting \
-over 100 models of camera""
+over 100 models of camera"
 PRIORITY = "optional"
 SECTION = "kernel/modules"
 MAINTAINER = "dyoung <dyoung8888@yahoo.com>"
 LICENSE = "GPL"
 PR = "r0"
 
-SRC_URI = "http://mxhaard.free.fr/spca50x/Download/spca5xx-20050419.tar.gz"
+SRC_URI = "http://mxhaard.free.fr/spca50x/Download/oldrelease/spca5xx-20050419.tar.gz"
 
 S = "${WORKDIR}/spca5xx-20050419"
 
