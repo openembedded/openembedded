@@ -3,6 +3,7 @@ PR = "r0"
 ALLOW_EMPTY = "1"
 
 PACKAGES = "\
+    angstrom-base-depends \
     angstrom-X-base-depends \
     angsgrom-gpe-task-base \
     angstrom-gpe-task-settings \
@@ -12,6 +13,16 @@ PACKAGES = "\
     angstrom-task-office \
     angstrom-task-printing \
     angstrom-task-sectest"
+
+RDEPENDS_angstrom-base-depends = "\
+    base-files \
+    base-passwd tinylogin \ 
+    busybox \
+    udev \
+    sysvinit initscripts sysvinit-pidof \
+    netbase \
+    angstrom-version \	
+    "
 
 RDEPENDS_angstrom-X-base-depends := "\
     diet-x11 \
