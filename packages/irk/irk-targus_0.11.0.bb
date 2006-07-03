@@ -1,4 +1,5 @@
 require irk.inc
+PR = "r2"
 
 DESCRIPTION += "(version with Targus support)"
 HOMEPAGE = "http://angela1.data-uncertain.co.uk/~zaurus/irk.php"

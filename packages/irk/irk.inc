@@ -9,7 +9,7 @@ S = "${WORKDIR}/irk"
 
 inherit palmtop
 
-EXTRA_QMAKEVARS_POST = "CONFIG-=qtopia INCLUDEPATH+=${STAGING_INCDIR}/lirc"
+EXTRA_QMAKEVARS_POST += "CONFIG-=qtopia INCLUDEPATH+=${STAGING_INCDIR}/lirc"
 
 do_install() {
 	install -d ${D}${sysconfdir}/
