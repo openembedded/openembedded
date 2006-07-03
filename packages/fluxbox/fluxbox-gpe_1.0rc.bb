@@ -13,7 +13,7 @@ RCONFLICTS = "fluxbox"
 
 ######################################################################################
 
-PR = "r2"
+PR = "r3"
 S = "${WORKDIR}/fluxbox-${PV}"
 
 ######################################################################################
@@ -27,7 +27,7 @@ SRC_URI = "http://switch.dl.sourceforge.net/sourceforge/fluxbox/fluxbox-${PV}.ta
 
 ######################################################################################
 
-PACKAGES = "${PN} ${PN}-styles"
+PACKAGES += "${PN}-styles"
 
 DESCRIPTION_${PN}-styles = "The default styles for fluxbox"
 
