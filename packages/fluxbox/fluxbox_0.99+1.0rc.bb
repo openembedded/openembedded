@@ -73,7 +73,7 @@ do_install_append() {
 
 ######################################################################################
 
-ALTERNATIVE_PATH = "${bindir}/fluxbox-gpe-session"
-ALTERNATIVE_NAME = "x-window-manager"
-ALTERNATIVE_LINK = "${bindir}/x-window-manager"
-ALTERNATIVE_PRIORITY = "15"
+ALTERNATIVE_PATH_${PN}-gpe = "${bindir}/fluxbox-gpe-session"
+ALTERNATIVE_NAME_${PN}-gpe = "x-window-manager"
+ALTERNATIVE_LINK_${PN}-gpe = "${bindir}/x-window-manager"
+ALTERNATIVE_PRIORITY_${PN}-gpe = "15"
