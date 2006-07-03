@@ -8,7 +8,7 @@ HOMEPAGE = "http://vexed.sourceforge.net/"
 PACKAGE_ARCH = "all"
 PR = "r1"
 
-SRC_URI = "cvs://anonymous@cvs.sourceforge.net/cvsroot/vexed/;module=vexed/levelpacks"
+SRC_URI = "cvs://anonymous@vexed.cvs.sourceforge.net/cvsroot/vexed/;module=vexed/levelpacks"
 
 S = "${WORKDIR}"
 
