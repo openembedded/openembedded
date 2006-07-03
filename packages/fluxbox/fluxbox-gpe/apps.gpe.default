@@ -1,0 +1,7 @@
+[app] (title=Panel 0)
+  [Deco]	{NONE}
+  [Sticky]	{yes}
+[end]
+[app] (title=Panel 1)
+  [Deco]	{NONE}
+[end]

@@ -4,10 +4,20 @@
 #
 
 # Install "apps" file with defaults for GPE usage
-if test -e /usr/share/fluxbox/apps.gpe
+
+MACHINE="`cat /proc/cpuinfo | sed -n "/^Hardware/s/.*\:\ \(.*\)/\1/p"`"
+
+case $MACHINE in
+*Akita | *Spitz | *Borzoi | *Terrier)	
+	APPS="apps.gpe.akita";;
+*)	
+	APPS="apps.gpe.default";;
+esac
+
+if test -e /usr/share/fluxbox/$APPS
 then
 	mkdir -p $HOME/.fluxbox
-	test -e $HOME/.fluxbox/apps || cp /usr/share/fluxbox/apps.gpe $HOME/.fluxbox/apps
+	test -e $HOME/.fluxbox/apps || cp /usr/share/fluxbox/$APPS $HOME/.fluxbox/apps
 fi
 
 
