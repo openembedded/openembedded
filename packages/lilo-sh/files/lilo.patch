@@ -1,0 +1,42 @@
+diff -u --new-file --recursive lilo.old/geometry.c lilo/geometry.c
+--- lilo.old/geometry.c	Wed Oct 14 15:24:41 1998
++++ lilo/geometry.c	Sat Feb 20 15:27:23 1999
+@@ -342,6 +342,27 @@
+ 	    geo->sectors = hdprm.sectors;
+ 	    geo->start = hdprm.start;
+ 	    break;
++	case COMPAQ_SMART2_MAJOR+0:
++	case COMPAQ_SMART2_MAJOR+1:
++	case COMPAQ_SMART2_MAJOR+2:
++	case COMPAQ_SMART2_MAJOR+3:
++	case COMPAQ_SMART2_MAJOR+4:
++	case COMPAQ_SMART2_MAJOR+5:
++	case COMPAQ_SMART2_MAJOR+6:
++	case COMPAQ_SMART2_MAJOR+7:
++	    geo->device = 0x80+last_dev(MAJOR_HD,64)+(MINOR(device) >> 4);
++	    if (ioctl(fd,HDIO_GETGEO,&hdprm) < 0)
++		die("geo_query_dev HDIO_GETGEO (dev 0x%04x): %s",device,
++		  strerror(errno));
++	    if (all && !hdprm.sectors)
++		die("HDIO_REQ not supported for your Array controller. Please "
++		  "use a DISK section");
++	    geo->heads = hdprm.heads;
++	    geo->cylinders = hdprm.cylinders;
++	    geo->sectors = hdprm.sectors;
++	    geo->start = hdprm.start;
++	    break;
++
+ 	default:
+ 	    die("Sorry, don't know how to handle device 0x%04x",device);
+     }
+diff -u --new-file --recursive lilo.old/lilo.h lilo/lilo.h
+--- lilo.old/lilo.h	Fri Dec  4 12:55:31 1998
++++ lilo/lilo.h	Sat Feb 20 15:29:10 1999
+@@ -39,6 +39,7 @@
+ #define MAJOR_DAC960	48 /* First Mylex DAC960 PCI RAID controller */
+ #define MAJOR_IDE5	55 /* IDE on fifth interface */
+ #define MAJOR_IDE6	57 /* IDE on sixth interface */
++#define COMPAQ_SMART2_MAJOR	72 /* First Smart/2 Major */
+ 
+ #define MAX_IMAGES      ((SECTOR_SIZE*2-2)/sizeof(IMAGE_DESCR))
+ 			  /* maximum number of images */

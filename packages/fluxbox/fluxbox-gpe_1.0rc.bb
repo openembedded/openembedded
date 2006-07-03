@@ -13,14 +13,14 @@ RCONFLICTS = "fluxbox"
 
 ######################################################################################
 
-PR = "r1"
+PR = "r2"
 S = "${WORKDIR}/fluxbox-${PV}"
 
 ######################################################################################
 
 SRC_URI = "http://switch.dl.sourceforge.net/sourceforge/fluxbox/fluxbox-${PV}.tar.gz \
 	   file://gpe-init.patch;patch=1\
-	   file://apps.gpe \
+	   file://apps.gpe.* \
 	   file://style.gpe-default \
 	   file://fluxbox-gpe-session \
 	   file://fluxbox-gpe.session" 
@@ -37,7 +37,7 @@ FILES_${PN} = "/usr/bin \
 	       /usr/share/fluxbox/init \
 	       /usr/share/fluxbox/keys \
 	       /usr/share/fluxbox/menu \
-	       /usr/share/fluxbox/apps.gpe \
+	       /usr/share/fluxbox/apps.gpe* \
 	       /usr/share/fluxbox/session \
 	       /usr/share/fluxbox/styles/gpe-default"
 
@@ -59,7 +59,7 @@ do_install_append() {
 	install -d ${D}/usr/share/fluxbox
 	install -d ${D}/usr/share/fluxbox/styles
 	
-	install -m 0644 ${WORKDIR}/apps.gpe ${D}/usr/share/fluxbox
+	install -m 0644 ${WORKDIR}/apps.gpe.* ${D}/usr/share/fluxbox
 	install -m 0755 ${WORKDIR}/fluxbox-gpe.session ${D}/usr/share/fluxbox/session
 	install -m 0644 ${WORKDIR}/style.gpe-default ${D}/usr/share/fluxbox/styles/gpe-default
 	install -m 0755 ${WORKDIR}/fluxbox-gpe-session ${D}/usr/bin
