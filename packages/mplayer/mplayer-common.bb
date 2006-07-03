@@ -8,11 +8,12 @@
 DESCRIPTION = "Preconfigured mplayer preferences"
 MAINTAINER = "Matthias 'CoreDump' Hentges <oe@hentges.net>"
 HOMEPAGE = "http://www.hentges.net/misc/openzaurus/index.shtml"
+PACKAGE_ARCH = "all"
 
 ######################################################################################
 
 PV = "0.0.1"
-PR = "r0"
+PR = "r1"
 
 ######################################################################################
 
