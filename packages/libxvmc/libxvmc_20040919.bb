@@ -4,7 +4,7 @@ DEPENDS = "x11 xext libxv drm xserver-xorg"
 PR = "r2"
 
 SRC_URI = "cvs://anoncvs@cvs.freedesktop.org/cvs/xlibs;module=XvMC;date=${PV};method=pserver \
-	cvs://anonymous@cvs.sourceforge.net/cvsroot/unichrome;module=libxvmc;date=${PV};method=pserver \
+	cvs://anonymous@unichrome.cvs.sourceforge.net/cvsroot/unichrome;module=libxvmc;date=${PV};method=pserver \
 	file://via.patch;patch=1 \
 	file://true.patch"
 S = "${WORKDIR}/XvMC"

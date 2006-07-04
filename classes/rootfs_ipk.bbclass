@@ -22,6 +22,7 @@ PID = "${@os.getpid()}"
 
 # some default locales
 IMAGE_LINGUAS ?= "de-de fr-fr en-gb"
+LINGUAS_NAMES ?= "de fr en"
 
 LINGUAS_INSTALL = "${@" ".join(map(lambda s: "locale-base-%s" % s, bb.data.getVar('IMAGE_LINGUAS', d, 1).split()))}"
 
@@ -158,6 +159,15 @@ insert_feed_uris_t () {
                 # insert new feed-sources
                 echo "src/gz $feed_name $feed_uri" >> ${T}/ipkg.conf
         done
+		for line in ${LINGUAS_NAMES}; do
+				feed_name="locale{$line}"
+				feed_uri="${FEED_BASE_URI}/feed/locale/${line}"
+
+                echo "Added $feed_name feed with URL $feed_uri"
+
+                # insert new feed-sources
+                echo "src/gz $feed_name $feed_uri" >> ${T}/ipkg.conf
+		done
 }
 
 

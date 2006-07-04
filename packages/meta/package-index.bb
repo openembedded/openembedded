@@ -4,6 +4,7 @@ PR = "r0"
 
 DEPENDS = "ipkg-native"
 
+EXCLUDE_FROM_WORLD = "1"
 INHIBIT_DEFAULT_DEPS = "1"
 ALLOW_EMPTY = 1
 PACKAGES = ""

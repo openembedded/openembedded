@@ -6,7 +6,7 @@ FEED_URIS_append_opensimpad = " opie##http://ewi546.ewi.utwente.nl/mirror/www.op
 FEED_URIS_append_familiar   = " opie##http://familiar.handhelds.org/releases/${DISTRO_VERSION}/feed/opie"
 
 LICENSE = "MIT"
-PR = "r19"
+PR = "r20"
 
 DEPENDS = "task-bootstrap meta-opie"
 
@@ -19,6 +19,8 @@ INSTALL_PACKAGES = "task-bootstrap task-opie-base task-opie-base-applets \
 		    task-opie-extra-settings \
 		    task-opie-bluetooth task-opie-irda \
 		    ${extra_stuff}"
+
+INSTALL_PACKAGES_append_tosa = " opie-recorder "
 
 export IPKG_INSTALL = "${INSTALL_PACKAGES}"
 
