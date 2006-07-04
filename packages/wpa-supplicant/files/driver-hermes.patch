@@ -36,11 +36,11 @@
 +#include "wpa_supplicant.h"
 +#include "priv_netlink.h"
 +
-+#include "hostap_common.h"
 +#include "driver_wext.h"
 +#include "driver_hermes.h"
 +
-+
++#define MAC2STR(a) (a)[0], (a)[1], (a)[2], (a)[3], (a)[4], (a)[5] 
++#define MACSTR "%02x:%02x:%02x:%02x:%02x:%02x"
 +
 +/* Enumeration for supported Hermes Types */
 +enum

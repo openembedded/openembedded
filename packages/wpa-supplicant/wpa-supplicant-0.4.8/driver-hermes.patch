@@ -1,5 +1,10 @@
+
+#
+# Patch managed by http://www.holgerschurig.de/patcher.html
+#
+
 --- /dev/null
-+++ wpa_supplicant-0.4.7/driver_hermes.c
++++ wpa_supplicant/driver_hermes.c
 @@ -0,0 +1,705 @@
 +/*
 + * WPA Supplicant - testing driver interface
@@ -31,11 +36,11 @@
 +#include "wpa_supplicant.h"
 +#include "priv_netlink.h"
 +
-+#include "hostap_common.h"
 +#include "driver_wext.h"
 +#include "driver_hermes.h"
 +
-+
++#define MAC2STR(a) (a)[0], (a)[1], (a)[2], (a)[3], (a)[4], (a)[5] 
++#define MACSTR "%02x:%02x:%02x:%02x:%02x:%02x"
 +
 +/* Enumeration for supported Hermes Types */
 +enum
@@ -707,7 +712,7 @@
 +#endif
 +};
 --- /dev/null
-+++ wpa_supplicant-0.4.7/driver_hermes.h
++++ wpa_supplicant/driver_hermes.h
 @@ -0,0 +1,173 @@
 +#ifndef HERMES_DRIVER_H
 +#define HERMES_DRIVER_H
