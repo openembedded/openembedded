@@ -10,7 +10,7 @@ MAINTAINER = "Matthias 'CoreDump' Hentges <oe@hentges.net>"
 HOMEPAGE = "http://fluxbox.sourceforge.net"
 LICENSE = "MIT"
 REALPV = "1.0rc"
-PR = "r0"
+PR = "r1"
 
 ######################################################################################
 
@@ -51,7 +51,7 @@ FILES_${PN}-doc = "/usr/share/man"
 
 ######################################################################################
 
-inherit autotools update-alternatives
+inherit autotools
 
 ######################################################################################
 
@@ -73,7 +73,10 @@ do_install_append() {
 
 ######################################################################################
 
-ALTERNATIVE_PATH_${PN}-gpe = "${bindir}/fluxbox-gpe-session"
-ALTERNATIVE_NAME_${PN}-gpe = "x-window-manager"
-ALTERNATIVE_LINK_${PN}-gpe = "${bindir}/x-window-manager"
-ALTERNATIVE_PRIORITY_${PN}-gpe = "15"
+pkg_postinst_${PN}-gpe() { 
+       update-alternatives --install /usr/bin/x-window-manager x-window-manager /usr/bin/fluxbox-gpe-session 15
+}
+
+pkg_postrm_${PN}-gpe() {   
+       update-alternatives --remove x-window-manager /usr/bin/fluxbox-gpe-session
+}
