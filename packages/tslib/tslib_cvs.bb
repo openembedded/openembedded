@@ -1,7 +1,7 @@
 SECTION = "base"
 DESCRIPTION = "tslib is a touchscreen access library."
 PV = "0.0cvs${CVSDATE}"
-PR = "r38"
+PR = "r39"
 
 SRC_URI_OVERRIDES_PACKAGE_ARCH = "0"
 PACKAGE_ARCH_tslib-conf = "${MACHINE}"
@@ -15,6 +15,8 @@ SRC_URI = "cvs://cvs:@pubcvs.arm.linux.org.uk/mnt/src/cvsroot;module=tslib \
 	   file://tslib.sh"
 SRC_URI_append_mnci += " file://devfs.patch;patch=1"
 SRC_URI_append_mnci += " file://event1.patch;patch=1"
+SRC_URI_append_poodle += "file://ts-2.4.conf file://ts-2.6.conf"
+
 S = "${WORKDIR}/tslib"
 LICENSE = "LGPL"
 CONFFILES_${PN} = "${sysconfdir}/ts.conf"
@@ -37,6 +39,8 @@ do_install_prepend () {
 	install -m 0644 ${WORKDIR}/ts.conf ${S}/etc/ts.conf
 }
 
+export ZKERNEL_VERSION=bb.data.getVar("ZKERNEL_VERSION", d, 1)
+
 do_install_append() {
 	install -d ${D}${sysconfdir}/profile.d/
 	install -m 0755 ${WORKDIR}/tslib.sh ${D}${sysconfdir}/profile.d/
@@ -53,6 +57,11 @@ do_install_append() {
 		for f in ts.conf-corgi ts.conf-corgi-2.4; do
 			install -m 0644 ${WORKDIR}/$f ${D}${datadir}/tslib/
 		done
+		rm -f ${D}${sysconfdir}/ts.conf
+		;;
+	poodle )
+		install -d ${D}${datadir}/tslib
+		install -m 0644 ${WORKDIR}/ts-${ZKERNEL_VERSION}.conf ${D}${datadir}/tslib/ts.conf
 		rm -f ${D}${sysconfdir}/ts.conf
 		;;
 	simpad )
