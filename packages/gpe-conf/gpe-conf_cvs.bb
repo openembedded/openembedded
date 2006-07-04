@@ -2,13 +2,11 @@ DEFAULT_PREFERENCE = "-1"
 
 S = "${WORKDIR}/${PN}"
 PV = "0.1.29+cvs${SRCDATE}"
-PR = "r1"
+PR = "r2"
 
-inherit gpe
+inherit autotools gpe
 
-SRC_URI =	"${HANDHELDS_CVS};module=gpe/base/${PN} \
-		 file://Makefile.dpkg_ipkg \
-    		 file://Makefile.translation"
+SRC_URI =	"${HANDHELDS_CVS};module=gpe/base/${PN}"
 
 PACKAGES = "gpe-conf gpe-conf-panel"
 LICENSE = "GPL"
@@ -24,18 +22,4 @@ FILES_${PN} = "${sysconfdir} ${bindir} ${datadir}/pixmaps \
 		${datadir}/applications/gpe-conf-* ${datadir}/gpe/pixmaps \
 		${datadir}/gpe-conf"
 FILES_gpe-conf-panel = "${datadir}/applications/gpe-conf.desktop"
-
-
-do_compile () {
-	sed -i 's:CVSBUILD = yes:CVSBUILD = no:' Makefile
-	mkdir build
-	cp ${WORKDIR}/Makefile.* build/
-	oe_runmake PREFIX=${prefix}
-	oe_runmake all-desktop PREFIX=${prefix}
-}
-
-do_install () {
-        oe_runmake PREFIX=${prefix} DESTDIR=${D} install-program
-}
-
 
