@@ -19,15 +19,15 @@ RREPLACES = "gpe-bootsplash"
 ######################################################################################
 
 PV = "0.0.1" 
-PR = "r2"
+PR = "r3"
 
 ######################################################################################
 
 SRC_URI = "file://oz-bootsplash.init \
 	   file://openzaurus-bootsplash*"
-	   
+
 ######################################################################################
-	   
+
 do_install() {
 	install -d ${D}/usr/share/oz-bootsplash
 	install -d ${D}/etc/init.d
@@ -43,10 +43,9 @@ do_install() {
 
 ######################################################################################
 
-pkg_postinst() {
-	update-alternatives --install /usr/share/oz-bootsplash/oz-bootsplash.raw.gz openzaurus-bootsplash /usr/share/oz-bootsplash/openzaurus-bootsplash.raw.gz 10
-}
+inherit update-alternatives
 
-pkg_postrm() { 
-	update-alternatives --remove openzaurus-bootsplash /usr/share/oz-bootsplash/openzaurus-bootsplash.raw.gz 
-}
+ALTERNATIVE_PATH = "${datadir}/oz-bootsplash/openzaurus-bootsplash.raw.gz"
+ALTERNATIVE_LINK = "${datadir}/oz-bootsplash/oz-bootsplash.raw.gz"
+ALTERNATIVE_NAME = "openzaurus-bootsplash"
+ALTERNATIVE_PRIORITY = "10"
