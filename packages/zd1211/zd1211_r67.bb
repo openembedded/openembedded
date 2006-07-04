@@ -3,7 +3,7 @@ PRIORITY = "optional"
 SECTION = "kernel/modules"
 MAINTAINER = "Oyvind Repvik <nail@nslu2-linux.org>"
 LICENSE = "GPL"
-PR = "r2"
+PR = "r3"
 RDEPENDS = "wireless-tools"
 
 SRC_URI = "http://zd1211.ath.cx/download/zd1211-driver-${PV}.tgz \
@@ -20,7 +20,7 @@ inherit module
 
 do_compile () {
         unset CFLAGS CPPFLAGS CXXFLAGS LDFLAGS CC LD CPP
-        oe_runmake 'MODPATH={D}${base_libdir}/modules/${KERNEL_VERSION}/kernel/drivers/net' \
+        oe_runmake 'MODPATH=${D}${base_libdir}/modules/${KERNEL_VERSION}/kernel/drivers/net' \
 		   'KERNEL_SOURCE=${STAGING_KERNEL_DIR}' \
 		   'KDIR=${STAGING_KERNEL_DIR}' \
 		   'KERNEL_VERSION=${KERNEL_VERSION}' \
