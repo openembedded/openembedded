@@ -7,6 +7,7 @@ DEFAULT_PREFERENCE = "-1"
 
 KERNEL_CCSUFFIX = "-3.3.4"
 COMPATIBLE_HOST = "arm.*-linux"
+COMPATIBLE_MACHINE = '(h3600|simpad)'
 
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/handhelds-sa-${PV}"
 SRC_URI = "${HANDHELDS_CVS};module=linux/kernel;tag=${@'K' + bb.data.getVar('PV',d,1).replace('.', '-')} \
