@@ -1,0 +1,168 @@
+The following minor changes were taken from the debian hping2 package:
+
+--- hping2-2.rc3.orig/antigetopt.c
++++ hping2-2.rc3/antigetopt.c
+@@ -140,7 +140,7 @@
+ #define UNK_LONG_ERRSTRING "unrecognized option `--%s'\n"
+ #define ARG_SHORT_ERRSTRING "option requires an argument -- %c\n"
+ #define ARG_LONG_ERRSTRING "option `--%s' requires an argument\n"
+-#define AMB_ERRSTRING "option `--%s' is ambiguos\n"
++#define AMB_ERRSTRING "option `--%s' is ambiguous\n"
+ #define IERR_ERRSTRING "internal error. ago_gnu_error() called with " \
+ 			   "a bad error code (%d)\n"
+ void ago_gnu_error(char *pname, int error)
+--- hping2-2.rc3.orig/bytesex.h
++++ hping2-2.rc3/bytesex.h
+@@ -7,16 +7,11 @@
+ #ifndef ARS_BYTESEX_H
+ #define ARS_BYTESEX_H
+ 
+-#if 	defined(__i386__) \
+-	|| defined(__alpha__) \
+-	|| (defined(__mips__) && (defined(MIPSEL) || defined (__MIPSEL__)))
++#include <endian.h>
++
++#if __BYTE_ORDER == __LITTLE_ENDIAN
+ #define BYTE_ORDER_LITTLE_ENDIAN
+-#elif 	defined(__mc68000__) \
+-	|| defined (__sparc__) \
+-	|| defined (__sparc) \
+-	|| defined (__PPC__) \
+-	|| defined (__BIG_ENDIAN__) \
+-	|| (defined(__mips__) && (defined(MIPSEB) || defined (__MIPSEB__)))
++#elif __BYTE_ORDER == __BIG_ENDIAN
+ #define BYTE_ORDER_BIG_ENDIAN
+ #else
+ # error can not find the byte order for this architecture, fix bytesex.h
+--- hping2-2.rc3.orig/getlhs.c
++++ hping2-2.rc3/getlhs.c
+@@ -55,6 +55,12 @@
+ 	case DLT_IEEE802_11:
+ 		linkhdr_size = 14;
+ 		break;
++	case DLT_IEEE802_11:
++		linkhdr_size = 14;
++		break;
++	case DLT_TOKEN_RING:
++		linkhdr_size = 20;
++		break;
+ 	case DLT_ATM_RFC1483:
+ #ifdef DLT_CIP
+ 	case DLT_CIP:
+@@ -105,6 +111,15 @@
+ 	} else if ( strstr(ifname, "wlan") ) {
+ 		linkhdr_size = WLANHDR_SIZE;
+ 		return 0;
++	} else if (strstr(ifname, "atm")) {
++		linkhdr_size = 0;
++		return 0;
++	} else if ( strstr(ifname, "wlan") ) {
++		linkhdr_size = WLANHDR_SIZE;
++		return 0;
++	} else if ( strstr(ifname, "tr") ) {
++		linkhdr_size = TRHDR_SIZE;
++		return 0;
+ 	}
+ 	else
+ 		return -1;
+--- hping2-2.rc3.orig/listen.c
++++ hping2-2.rc3/listen.c
+@@ -10,6 +10,7 @@
+ 
+ #include <stdlib.h>
+ #include <stdio.h>
++#include <stdlib.h>
+ #include <string.h>
+ #include <unistd.h>
+ #include <sys/types.h>
+--- hping2-2.rc3.orig/main.c
++++ hping2-2.rc3/main.c
+@@ -26,6 +26,7 @@
+ #include <time.h>
+ #include <sys/time.h>
+ #include <sys/types.h>
++#include <time.h>
+ 
+ #include "hping2.h"
+ 
+--- hping2-2.rc3.orig/resolve.c
++++ hping2-2.rc3/resolve.c
+@@ -12,6 +12,7 @@
+ #include <sys/types.h>
+ #include <netdb.h>
+ #include <stdio.h>
++#include <stdlib.h>
+ #include <string.h>
+ #include <sys/socket.h>
+ #include <netinet/in.h>
+--- hping2-2.rc3.orig/sendicmp.c
++++ hping2-2.rc3/sendicmp.c
+@@ -19,6 +19,7 @@
+ #include <string.h>
+ #include <signal.h>
+ #include <errno.h>
++#include <time.h>
+ 
+ #include "hping2.h"
+ #include "globals.h"
+--- hping2-2.rc3.orig/sendtcp.c
++++ hping2-2.rc3/sendtcp.c
+@@ -15,6 +15,8 @@
+ #include <sys/time.h>
+ #include <unistd.h>
+ #include <signal.h>
++#include <errno.h>
++#include <time.h>
+ 
+ #include "hping2.h"
+ #include "globals.h"
+--- hping2-2.rc3.orig/sendudp.c
++++ hping2-2.rc3/sendudp.c
+@@ -15,6 +15,8 @@
+ #include <sys/time.h>
+ #include <unistd.h>
+ #include <signal.h>
++#include <errno.h>
++#include <time.h>
+ 
+ #include "hping2.h"
+ #include "globals.h"
+--- hping2-2.rc3.orig/statistics.c
++++ hping2-2.rc3/statistics.c
+@@ -10,6 +10,7 @@
+ 
+ #include <stdlib.h>
+ #include <stdio.h>
++#include <stdlib.h>
+ 
+ #include "hping2.h"
+ #include "globals.h"
+@@ -33,7 +34,7 @@
+ 			lossrate = 100;
+ 
+ 	fprintf(stderr, "\n--- %s hping statistic ---\n", targetname);
+-	fprintf(stderr, "%d packets tramitted, %d packets received, "
++	fprintf(stderr, "%d packets transmitted, %d packets received, "
+ 			"%d%% packet loss\n", sent_pkt, recv_pkt, lossrate);
+ 	if (out_of_sequence_pkt)
+ 		fprintf(stderr, "%d out of sequence packets received\n",
+--- hping2-2.rc3.orig/usage.c
++++ hping2-2.rc3/usage.c
+@@ -12,6 +12,7 @@
+ 
+ #include <stdlib.h>
+ #include <stdio.h>
++#include <stdlib.h>
+ 
+ void	show_usage(void)
+ {
+--- hping2-2.rc3.orig/version.c
++++ hping2-2.rc3/version.c
+@@ -10,6 +10,7 @@
+ 
+ #include <stdlib.h>
+ #include <stdio.h>
++#include <stdlib.h>
+ 
+ #include "release.h"
+ #include "hping2.h"
