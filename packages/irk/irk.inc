@@ -3,13 +3,13 @@ SECTION = "opie/inputmethods"
 PRIORITY = "optional"
 LICENSE = "GPL"
 HOMEPAGE = "http://angela1.data-uncertain.co.uk/~zaurus/irk.php"
-DEPENDS = "virtual/libqpe lirc"
+DEPENDS = "lirc"
 
 S = "${WORKDIR}/irk"
 
 inherit palmtop
 
-EXTRA_QMAKEVARS_POST = "CONFIG-=qtopia INCLUDEPATH+=${STAGING_INCDIR}/lirc"
+EXTRA_QMAKEVARS_POST += "CONFIG-=qtopia INCLUDEPATH+=${STAGING_INCDIR}/lirc"
 
 do_install() {
 	install -d ${D}${sysconfdir}/

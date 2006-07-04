@@ -4,10 +4,11 @@ AUTHOR = "Russell King w/ plugins by Chris Larson et. al."
 SECTION = "base"
 LICENSE = "LGPL"
 
-PV = "0.0+cvs${SRCDATE}"
-PR = "r39"
+RV := "${PV}"
+PV = "0.1+cvs-${RV}"
+PR = "r0"
 
-SRC_URI = "cvs://cvs:@pubcvs.arm.linux.org.uk/mnt/src/cvsroot;module=tslib \
+SRC_URI = "cvs://cvs:@pubcvs.arm.linux.org.uk/mnt/src/cvsroot;module=tslib;date=${RV} \
            file://usec_fix.patch;patch=1 \
            file://ts.conf \
            file://ts-2.6.conf \

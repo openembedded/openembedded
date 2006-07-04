@@ -1,5 +1,5 @@
 LICENSE = "OSL"
-PR = "r4"
+PR = "r5"
 
 DESCRIPTION = "handhelds.org screen capture utility"
 SRC_URI = "file://scap.sh file://scap.desktop file://scap.png"

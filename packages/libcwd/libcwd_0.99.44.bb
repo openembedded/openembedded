@@ -12,6 +12,10 @@ SRC_URI = "http://puzzle.dl.sourceforge.net/sourceforge/libcwd/libcwd-${PV}.tar.
 
 inherit autotools
 
+do_configure() {
+	oe_runconf
+}
+
 PARALLEL_MAKE = ""
 
 PACKAGES =+ "${PN}-config ${PN}-mt"

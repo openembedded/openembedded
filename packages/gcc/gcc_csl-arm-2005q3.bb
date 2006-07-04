@@ -4,7 +4,7 @@ SECTION = "devel"
 LICENSE = "GPL"
 BINV = "3.4.4"
 PV = "3.4.4+csl-arm-2005q3"
-PR = "r1"
+PR = "r2"
 
 FILESDIR = "${FILE_DIRNAME}/gcc-csl-arm"
 

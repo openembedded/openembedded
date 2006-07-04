@@ -1,6 +1,6 @@
-include iqnotes.inc
+require iqnotes.inc
 
-PR = "r4"
+PR = "r5"
 
 SRC_URI = "http://www.vanille.de/mirror/iqnotes-2.0.2-src.tar.bz2 \
            file://md5.diff;patch=1 \

@@ -63,8 +63,13 @@ python __anonymous () {
     import bb, re
     if (re.match('linux-uclibc$', bb.data.getVar('TARGET_OS', d, 1)) != None):
         bb.data.setVar('EXTRA_OECONF_DEP', '${EXTRA_OECONF_uclibc}', d)
+    elif (re.match('linux-uclibcgnueabi$', bb.data.getVar('TARGET_OS', d, 1)) != None):
+        bb.data.setVar('EXTRA_OECONF_DEP', '${EXTRA_OECONF_uclibc}', d)
+    elif (re.match('linux-gnueabi$', bb.data.getVar('TARGET_OS', d, 1)) != None):
+           bb.data.setVar('EXTRA_OECONF_DEP', '${EXTRA_OECONF_glibc}', d)
     elif (re.match('linux$', bb.data.getVar('TARGET_OS', d, 1)) != None):
         bb.data.setVar('EXTRA_OECONF_DEP', '${EXTRA_OECONF_glibc}', d)
+
 }
 
 do_configure () {

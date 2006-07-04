@@ -1,25 +1,18 @@
-DEFAULT_PREFERENCE = "-1"
-SECTION = "base"
 DESCRIPTION = "tslib is a touchscreen access library (maemo patched version)."
-PR = "r2"
+SECTION = "GPL"
+LICENSE = "LGPL"
 PROVIDES = "tslib"
+PR = "r3"
 
 DEFAULT_PREFERENCE = "-1"
-
-SRC_URI_OVERRIDES_PACKAGE_ARCH = "0"
-PACKAGE_ARCH_tslib-conf = "${MACHINE_ARCH}"
 
 SRC_URI = "http://repository.maemo.org/pool/maemo/ossw/source/t/tslib/tslib_${PV}.tar.gz \
 	   file://ts.conf \
 	   file://tslib.sh"
-
 S = "${WORKDIR}/tslib"
-LICENSE = "LGPL"
-CONFFILES_${PN} = "${sysconfdir}/ts.conf"
 
 inherit autotools
 
-PACKAGES = "tslib-maemo-conf libts-maemo libts-maemo-dev tslib-maemo-tests tslib-maemo-calibrate"
 EXTRA_OECONF = "--enable-shared"
 
 do_stage () {
@@ -35,6 +28,11 @@ do_install_append() {
 	install -d ${D}${sysconfdir}/profile.d/
 	install -m 0755 ${WORKDIR}/tslib.sh ${D}${sysconfdir}/profile.d/
 }
+
+SRC_URI_OVERRIDES_PACKAGE_ARCH = "0"
+PACKAGE_ARCH_tslib-conf = "${MACHINE_ARCH}"
+CONFFILES_${PN} = "${sysconfdir}/ts.conf"
+PACKAGES = "tslib-maemo-conf libts-maemo libts-maemo-dev tslib-maemo-tests tslib-maemo-calibrate"
 
 RDEPENDS_libts-maemo = "tslib-maemo-conf"
 
