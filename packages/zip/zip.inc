@@ -1,5 +1,5 @@
 SECTION = "console/utils"
-SRC_URI = "http://ftp.info-zip.org/pub/infozip/src/zip231.tar.gz"
+SRC_URI = "http://ftp.info-zip.org/pub/infozip/src/zip${@bb.data.getVar('PV',d,1).replace('.', '')}.tar.gz"
 LICENSE = "Info-ZIP"
 EXTRA_OEMAKE = "'CC=${CC}' 'BIND=${CC}' 'AS=${CC} -c' 'CPP=${CPP}' \
 		'CFLAGS=-I. -DUNIX ${CFLAGS}' 'INSTALL=install' \
@@ -14,4 +14,3 @@ do_install() {
 		   BINDIR=${D}${bindir} MANDIR=${D}${mandir}/man1 \
 		   install
 }
-
