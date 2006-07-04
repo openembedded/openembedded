@@ -4,6 +4,7 @@ MAINTAINER = "Greg Gilbert <greg@treke.net>"
 LICENSE = "GPL"
 #
 COMPATIBLE_HOST = "arm.*-linux"
+COMPATIBLE_MACHINE = '(h3900|h2200|ipaq-pxa270)'
 
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/handhelds-pxa-${PV}"
 
