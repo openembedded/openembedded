@@ -3,9 +3,9 @@
 # Signed off by Michael 'Mickey' Lauer <mickey@Vanille.de>
 #
 
---- src/qt/qt_main.cc~qt2-fixes.patch
+--- src/qt/qt_main.cc~qt2-fixes-r1.patch
 +++ src/qt/qt_main.cc
-@@ -136,7 +136,7 @@
+@@ -137,7 +137,7 @@
        switch (orientation[0]) {
           case 't':
           case 'T': break;
@@ -14,7 +14,7 @@
           case 'b':
           case 'B': moveDockWindow (toolBar, DockBottom); break;
  
-@@ -145,7 +145,7 @@
+@@ -146,7 +146,7 @@
  
           case 'r':
           case 'R': moveDockWindow (toolBar, DockRight); break;
@@ -23,21 +23,13 @@
           default: roadmap_log (ROADMAP_FATAL,
                          "Invalid toolbar orientation %s", orientation);
        }
---- src/qt/Makefile~qt2-fixes.patch
+--- src/qt/Makefile~qt2-fixes-r1.patch
 +++ src/qt/Makefile
-@@ -11,14 +11,9 @@
+@@ -19,7 +19,7 @@
  
- # --- QT-specific options ------------------------------------------------
- 
--CFLAGS += -I$(QTDIR)/include -I/usr/include/qt3 -I/usr/local/include/qt3
--CFLAGS += -fno-rtti -fno-exceptions
--LIBS += -L$(QTDIR)/lib -lqt-mt
--
--
  ifeq ($(DESKTOP),QPE)
--   CFLAGS += -I$(QTDIR)/include -DQWS
+    CFLAGS += -I$(QTDIR)/include -DQWS
 -   LIBS += -lqte -lqpe
-+   CFLAGS += -I$(QTDIR)/include -DQWS
 +   LIBS += -lqpe
     INSTALLDIR=$(QTDIR)
  endif

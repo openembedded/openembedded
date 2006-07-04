@@ -24,7 +24,7 @@ QT_LIBRARY = '${@base_conditional("PALMTOP_USE_MULTITHREADED_QT", "yes", "qte-mt
 QT_LIBRARY_append_c7x0 = " -laticore"
 
 EXTRA_OEMAKE = 'DESKTOP=QPE MOC=${OE_QMAKE_MOC} UIC=${OE_QMAKE_UIC} QTDIR=${QTDIR} \
-                CFLAGS="-DQWS -I${S} ${OE_QMAKE_CXXFLAGS} -I${OE_QMAKE_INCDIR_QT}" \
+                CFLAGS="-DQWS -DQT_NO_ROTATE -I${S} ${OE_QMAKE_CXXFLAGS} -I${OE_QMAKE_INCDIR_QT}" \
                 LDFLAGS="${OE_QMAKE_LDFLAGS} -L${OE_QMAKE_LIBDIR_QT} -Wl,-rpath-link,${OE_QMAKE_LIBDIR_QT}" '
 PARALLEL_MAKE = ""
 
