@@ -1,0 +1,23 @@
+Stop it looking for config.h. It doesn't need it and trying to include this
+from libc-headers results in an compile time error.
+
+--- lilo/lilo.h	2006/06/28 05:40:25	1.1
++++ lilo/lilo.h	2006/06/28 05:40:36
+@@ -11,17 +11,6 @@
+ #ifndef LILO_H
+ #define LILO_H
+ 
+-/*
+- * Starting with 2.1.something, Linux kernels put VGA constants and segment
+- * definitions into asm/boot.h instead of linux/config.h
+- */
+-
+-#ifdef HAS_BOOT_H
+-#include <asm/boot.h>
+-#else
+-#include <linux/config.h>
+-#endif
+-
+ #define VERSION		20 /* Boot sector, map file, and chain loader format
+ 			      revision. This number does not necessarily have
+ 			      to correspond to the version number of the entire

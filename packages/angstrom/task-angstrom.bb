@@ -3,7 +3,8 @@ PR = "r0"
 ALLOW_EMPTY = "1"
 
 PACKAGES = "\
-    angstrom-X-base-depends \
+    angstrom-base-depends \
+    angstrom-x11-base-depends \
     angsgrom-gpe-task-base \
     angstrom-gpe-task-settings \
     angstrom-gpe-task-pim \
@@ -13,7 +14,22 @@ PACKAGES = "\
     angstrom-task-printing \
     angstrom-task-sectest"
 
-RDEPENDS_angstrom-X-base-depends := "\
+RDEPENDS_angstrom-base-depends = "\
+    base-files \
+    base-passwd tinylogin \ 
+    busybox \
+    udev \
+    sysvinit initscripts sysvinit-pidof \
+    netbase \
+    angstrom-version \	
+    "
+
+RRECOMMENDS_angstrom-base-depends = "\
+        ${BOOTMODULES_RRECOMMENDS} \
+	"
+
+
+RDEPENDS_angstrom-x11-base-depends := "\
     diet-x11 \
     virtual/xserver"
 

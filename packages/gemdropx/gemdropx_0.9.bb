@@ -18,6 +18,7 @@ EXTRA_QMAKEVARS_POST += "CONFIG-=qt \
                          LIBS+=-lSDL_mixer \
 			 LIBS+=-lSDL_image \
                          LIBS+=-lpthread \
+                         LIBS+=-Wl,-rpath-link,${OE_QMAKE_LIBDIR_QT} \
                          DEFINES+=DATA_PREFIX=\\"\"${datadir}/gemdropx/\\"\""
 
 do_configure_prepend() {

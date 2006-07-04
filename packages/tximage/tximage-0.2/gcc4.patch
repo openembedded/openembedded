@@ -1,0 +1,15 @@
+
+#
+# Signed off by Michael 'Mickey' Lauer <mickey@Vanille.de>
+#
+
+--- tximage-0.2/imageviewer.h~gcc4
++++ tximage-0.2/imageviewer.h
+@@ -32,6 +32,7 @@
+ #include "imagereader.h"
+ 
+ class ImageWidget;
++class ImageViewer;
+ class QString;
+ class QImage;
+ class QScrollView;

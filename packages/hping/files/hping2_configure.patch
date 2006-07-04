@@ -1,0 +1,75 @@
+Allow the byteorder and target os type to be specified via
+environment variables when running the configured shell script, don't
+try and run the resultant binary after building it, don't set various
+compiler related environment varibles - we'll let OE set those.
+
+diff -dur hping2-rc3-orig/configure hping2-rc3/configure
+--- hping2-rc3-orig/configure	2005-12-03 19:04:44.000000000 +1100
++++ hping2-rc3/configure	2005-12-03 19:05:58.000000000 +1100
+@@ -13,16 +13,19 @@
+ 	exit 0
+ fi
+ 
+-CC=${CC:=cc}
++if [ "x$BYTEORDER" = "x" ]; then
++	CC=${CC:=cc}
+ 
+-echo build byteorder.c...
+-$CC byteorder.c -o byteorder || exit 1
++	echo build byteorder.c...
++	$CC byteorder.c -o byteorder || exit 1
++
++	BYTEORDER=`./byteorder -m`
++fi
+ 
+ INSTALL_MANPATH=`echo $MANPATH|cut -f1 -d:`
+ if [ "$INSTALL_MANPATH" = "" ]; then
+ 	INSTALL_MANPATH="/usr/local/man"
+ fi
+-BYTEORDER=`./byteorder -m`
+ 
+ echo create byteorder.h...
+ cat > byteorder.h <<EOF
+@@ -38,7 +41,9 @@
+ #endif /* __BYTEORDER_H */
+ EOF
+ 
+-CONFIGOSTYPE=`uname -s | tr [a-z] [A-Z]`
++if [ "x$CONFIGOSTYPE" = "x" ]; then
++  CONFIGOSTYPE=`uname -s | tr [a-z] [A-Z]`
++fi
+ if [ ! "$CONFIGOSTYPE" ]; then
+ 	CONFIGOSTYPE=UNKNOWN
+ fi
+diff -dur hping2-rc3-orig/Makefile.in hping2-rc3/Makefile.in
+--- hping2-rc3-orig/Makefile.in	2005-12-03 19:04:44.000000000 +1100
++++ hping2-rc3/Makefile.in	2005-12-03 19:05:41.000000000 +1100
+@@ -6,17 +6,6 @@
+ # $date: Sun Jul 25 17:56:15 MET DST 1999$ 
+ # $rev: 3$ 
+ 
+-CC= gcc
+-AR=/usr/bin/ar
+-RANLIB=/usr/bin/ranlib
+-CCOPT= -O2 -Wall @PCAP_INCLUDE@
+-DEBUG= -g
+-#uncomment the following if you need libpcap based build under linux
+-#(not raccomanded)
+-COMPILE_TIME= @FORCE_LIBPCAP@
+-INSTALL_MANPATH=@MANPATH@
+-@PCAP@
+-
+ OBJ=	main.o getifname.o getlhs.o \
+ 	linux_sockpacket.o parseoptions.o datafiller.o \
+ 	datahandler.o gethostname.o \
+@@ -44,10 +33,6 @@
+ 
+ hping2: byteorder.h $(OBJ)
+ 	$(CC) -o hping2 $(CCOPT) $(DEBUG) $(OBJ) $(PCAP) @SOLARISLIB@
+-	@echo
+-	./hping2 -v
+-	@echo "use \`make strip' to strip hping2 binary"
+-	@echo "use \`make install' to install hping2"
+ 
+ byteorder.h:
+ 	./configure

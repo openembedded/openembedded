@@ -1,0 +1,405 @@
+--- MPlayer-1.0pre8/libavcodec/armv4l/dsputil_arm_s.S.orig	2006-07-03 09:53:33.000000000 +0100
++++ MPlayer-1.0pre8/libavcodec/armv4l/dsputil_arm_s.S	2006-07-03 10:06:58.000000000 +0100
+@@ -16,6 +16,13 @@
+ @ License along with this library; if not, write to the Free Software
+ @ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+ @
++#if defined(__ARM_ARCH_5__) || \
++    defined(__ARM_ARCH_5T__) || \
++    defined(__ARM_ARCH_5TE__)
++#define PLD(code...)   code
++#else
++#define PLD(code...)
++#endif
+ 
+ .macro  ADJ_ALIGN_QUADWORD_D shift, Rd0, Rd1, Rd2, Rd3, Rn0, Rn1, Rn2, Rn3, Rn4
+         mov \Rd0, \Rn0, lsr #(\shift * 8)
+@@ -74,7 +81,7 @@
+ put_pixels16_arm:
+         @ void func(uint8_t *block, const uint8_t *pixels, int line_size, int h)
+         @ block = word aligned, pixles = unaligned
+-        pld [r1]
++        PLD ( pld [r1] )
+         stmfd sp!, {r4-r11, lr} @ R14 is also called LR
+         adr r5, 5f
+         ands r4, r1, #3
+@@ -85,7 +92,7 @@
+         ldmia r1, {r4-r7}
+         add r1, r1, r2
+         stmia r0, {r4-r7}
+-        pld [r1]
++        PLD ( pld [r1] )
+         subs r3, r3, #1
+         add r0, r0, r2
+         bne 1b
+@@ -95,7 +102,7 @@
+         ldmia r1, {r4-r8}
+         add r1, r1, r2
+         ADJ_ALIGN_QUADWORD_D 1, r9, r10, r11, r12, r4, r5, r6, r7, r8
+-        pld [r1]
++        PLD ( pld [r1] )
+         subs r3, r3, #1
+         stmia r0, {r9-r12}
+         add r0, r0, r2
+@@ -106,7 +113,7 @@
+         ldmia r1, {r4-r8}
+         add r1, r1, r2
+         ADJ_ALIGN_QUADWORD_D 2, r9, r10, r11, r12, r4, r5, r6, r7, r8
+-        pld [r1]
++        PLD ( pld [r1] )
+         subs r3, r3, #1
+         stmia r0, {r9-r12}
+         add r0, r0, r2
+@@ -117,7 +124,7 @@
+         ldmia r1, {r4-r8}
+         add r1, r1, r2
+         ADJ_ALIGN_QUADWORD_D 3, r9, r10, r11, r12, r4, r5, r6, r7, r8
+-        pld [r1]
++        PLD ( pld [r1] )
+         subs r3, r3, #1
+         stmia r0, {r9-r12}
+         add r0, r0, r2
+@@ -136,7 +143,7 @@
+ put_pixels8_arm:
+         @ void func(uint8_t *block, const uint8_t *pixels, int line_size, int h)
+         @ block = word aligned, pixles = unaligned
+-        pld [r1]
++        PLD ( pld [r1] )
+         stmfd sp!, {r4-r5,lr} @ R14 is also called LR
+         adr r5, 5f
+         ands r4, r1, #3
+@@ -147,7 +154,7 @@
+         ldmia r1, {r4-r5}
+         add r1, r1, r2
+         subs r3, r3, #1
+-        pld [r1]
++        PLD ( pld [r1] )
+         stmia r0, {r4-r5}
+         add r0, r0, r2
+         bne 1b
+@@ -157,7 +164,7 @@
+         ldmia r1, {r4-r5, r12}
+         add r1, r1, r2
+         ADJ_ALIGN_DOUBLEWORD 1, r4, r5, r12
+-        pld [r1]
++        PLD ( pld [r1] )
+         subs r3, r3, #1
+         stmia r0, {r4-r5}
+         add r0, r0, r2
+@@ -168,7 +175,7 @@
+         ldmia r1, {r4-r5, r12}
+         add r1, r1, r2
+         ADJ_ALIGN_DOUBLEWORD 2, r4, r5, r12
+-        pld [r1]
++        PLD ( pld [r1] )
+         subs r3, r3, #1
+         stmia r0, {r4-r5}
+         add r0, r0, r2
+@@ -179,7 +186,7 @@
+         ldmia r1, {r4-r5, r12}
+         add r1, r1, r2
+         ADJ_ALIGN_DOUBLEWORD 3, r4, r5, r12
+-        pld [r1]
++        PLD ( pld [r1] )
+         subs r3, r3, #1
+         stmia r0, {r4-r5}
+         add r0, r0, r2
+@@ -198,7 +205,7 @@
+ put_pixels8_x2_arm:
+         @ void func(uint8_t *block, const uint8_t *pixels, int line_size, int h)
+         @ block = word aligned, pixles = unaligned
+-        pld [r1]
++        PLD ( pld [r1] )
+         stmfd sp!, {r4-r10,lr} @ R14 is also called LR
+         adr r5, 5f
+         ands r4, r1, #3
+@@ -210,7 +217,7 @@
+         ldmia r1, {r4-r5, r10}
+         add r1, r1, r2
+         ADJ_ALIGN_DOUBLEWORD_D 1, r6, r7, r4, r5, r10
+-        pld [r1]
++        PLD ( pld [r1] )
+         RND_AVG32 r8, r9, r4, r5, r6, r7, r12
+         subs r3, r3, #1
+         stmia r0, {r8-r9}
+@@ -223,7 +230,7 @@
+         add r1, r1, r2
+         ADJ_ALIGN_DOUBLEWORD_D 1, r6, r7, r4, r5, r10
+         ADJ_ALIGN_DOUBLEWORD_D 2, r8, r9, r4, r5, r10
+-        pld [r1]
++        PLD ( pld [r1] )
+         RND_AVG32 r4, r5, r6, r7, r8, r9, r12
+         subs r3, r3, #1
+         stmia r0, {r4-r5}
+@@ -236,7 +243,7 @@
+         add r1, r1, r2
+         ADJ_ALIGN_DOUBLEWORD_D 2, r6, r7, r4, r5, r10
+         ADJ_ALIGN_DOUBLEWORD_D 3, r8, r9, r4, r5, r10
+-        pld [r1]
++        PLD ( pld [r1] )
+         RND_AVG32 r4, r5, r6, r7, r8, r9, r12
+         subs r3, r3, #1
+         stmia r0, {r4-r5}
+@@ -248,7 +255,7 @@
+         ldmia r1, {r4-r5, r10}
+         add r1, r1, r2
+         ADJ_ALIGN_DOUBLEWORD_D 3, r6, r7, r4, r5, r10
+-        pld [r1]
++        PLD ( pld [r1] )
+         RND_AVG32 r8, r9, r6, r7, r5, r10, r12
+         subs r3, r3, #1
+         stmia r0, {r8-r9}
+@@ -267,7 +274,7 @@
+ put_no_rnd_pixels8_x2_arm:
+         @ void func(uint8_t *block, const uint8_t *pixels, int line_size, int h)
+         @ block = word aligned, pixles = unaligned
+-        pld [r1]
++        PLD ( pld [r1] )
+         stmfd sp!, {r4-r10,lr} @ R14 is also called LR
+         adr r5, 5f
+         ands r4, r1, #3
+@@ -279,7 +286,7 @@
+         ldmia r1, {r4-r5, r10}
+         add r1, r1, r2
+         ADJ_ALIGN_DOUBLEWORD_D 1, r6, r7, r4, r5, r10
+-        pld [r1]
++        PLD ( pld [r1] )
+         NO_RND_AVG32 r8, r9, r4, r5, r6, r7, r12
+         subs r3, r3, #1
+         stmia r0, {r8-r9}
+@@ -292,7 +299,7 @@
+         add r1, r1, r2
+         ADJ_ALIGN_DOUBLEWORD_D 1, r6, r7, r4, r5, r10
+         ADJ_ALIGN_DOUBLEWORD_D 2, r8, r9, r4, r5, r10
+-        pld [r1]
++        PLD ( pld [r1] )
+         NO_RND_AVG32 r4, r5, r6, r7, r8, r9, r12
+         subs r3, r3, #1
+         stmia r0, {r4-r5}
+@@ -305,7 +312,7 @@
+         add r1, r1, r2
+         ADJ_ALIGN_DOUBLEWORD_D 2, r6, r7, r4, r5, r10
+         ADJ_ALIGN_DOUBLEWORD_D 3, r8, r9, r4, r5, r10
+-        pld [r1]
++        PLD ( pld [r1] )
+         NO_RND_AVG32 r4, r5, r6, r7, r8, r9, r12
+         subs r3, r3, #1
+         stmia r0, {r4-r5}
+@@ -317,7 +324,7 @@
+         ldmia r1, {r4-r5, r10}
+         add r1, r1, r2
+         ADJ_ALIGN_DOUBLEWORD_D 3, r6, r7, r4, r5, r10
+-        pld [r1]
++        PLD ( pld [r1] )
+         NO_RND_AVG32 r8, r9, r6, r7, r5, r10, r12
+         subs r3, r3, #1
+         stmia r0, {r8-r9}
+@@ -338,7 +345,7 @@
+ put_pixels8_y2_arm:
+         @ void func(uint8_t *block, const uint8_t *pixels, int line_size, int h)
+         @ block = word aligned, pixles = unaligned
+-        pld [r1]
++        PLD ( pld [r1] )
+         stmfd sp!, {r4-r11,lr} @ R14 is also called LR
+         adr r5, 5f
+         ands r4, r1, #3
+@@ -352,13 +359,13 @@
+         add r1, r1, r2
+ 6:      ldmia r1, {r6-r7}
+         add r1, r1, r2
+-        pld [r1]
++        PLD ( pld [r1] )
+         RND_AVG32 r8, r9, r4, r5, r6, r7, r12
+         ldmia r1, {r4-r5}
+         add r1, r1, r2
+         stmia r0, {r8-r9}
+         add r0, r0, r2
+-        pld [r1]
++        PLD ( pld [r1] )
+         RND_AVG32 r8, r9, r6, r7, r4, r5, r12
+         subs r3, r3, #1
+         stmia r0, {r8-r9}
+@@ -369,18 +376,18 @@
+ 2:
+         ldmia r1, {r4-r6}
+         add r1, r1, r2
+-        pld [r1]
++        PLD ( pld [r1] )
+         ADJ_ALIGN_DOUBLEWORD 1, r4, r5, r6
+ 6:      ldmia r1, {r7-r9}
+         add r1, r1, r2
+-        pld [r1]
++        PLD ( pld [r1] )
+         ADJ_ALIGN_DOUBLEWORD 1, r7, r8, r9
+         RND_AVG32 r10, r11, r4, r5, r7, r8, r12
+         stmia r0, {r10-r11}
+         add r0, r0, r2
+         ldmia r1, {r4-r6}
+         add r1, r1, r2
+-        pld [r1]
++        PLD ( pld [r1] )
+         ADJ_ALIGN_DOUBLEWORD 1, r4, r5, r6
+         subs r3, r3, #1
+         RND_AVG32 r10, r11, r7, r8, r4, r5, r12
+@@ -392,18 +399,18 @@
+ 3:
+         ldmia r1, {r4-r6}
+         add r1, r1, r2
+-        pld [r1]
++        PLD ( pld [r1] )
+         ADJ_ALIGN_DOUBLEWORD 2, r4, r5, r6
+ 6:      ldmia r1, {r7-r9}
+         add r1, r1, r2
+-        pld [r1]
++        PLD ( pld [r1] )
+         ADJ_ALIGN_DOUBLEWORD 2, r7, r8, r9
+         RND_AVG32 r10, r11, r4, r5, r7, r8, r12
+         stmia r0, {r10-r11}
+         add r0, r0, r2
+         ldmia r1, {r4-r6}
+         add r1, r1, r2
+-        pld [r1]
++        PLD ( pld [r1] )
+         ADJ_ALIGN_DOUBLEWORD 2, r4, r5, r6
+         subs r3, r3, #1
+         RND_AVG32 r10, r11, r7, r8, r4, r5, r12
+@@ -415,18 +422,18 @@
+ 4:
+         ldmia r1, {r4-r6}
+         add r1, r1, r2
+-        pld [r1]
++        PLD ( pld [r1] )
+         ADJ_ALIGN_DOUBLEWORD 3, r4, r5, r6
+ 6:      ldmia r1, {r7-r9}
+         add r1, r1, r2
+-        pld [r1]
++        PLD ( pld [r1] )
+         ADJ_ALIGN_DOUBLEWORD 3, r7, r8, r9
+         RND_AVG32 r10, r11, r4, r5, r7, r8, r12
+         stmia r0, {r10-r11}
+         add r0, r0, r2
+         ldmia r1, {r4-r6}
+         add r1, r1, r2
+-        pld [r1]
++        PLD ( pld [r1] )
+         ADJ_ALIGN_DOUBLEWORD 3, r4, r5, r6
+         subs r3, r3, #1
+         RND_AVG32 r10, r11, r7, r8, r4, r5, r12
+@@ -447,7 +454,7 @@
+ put_no_rnd_pixels8_y2_arm:
+         @ void func(uint8_t *block, const uint8_t *pixels, int line_size, int h)
+         @ block = word aligned, pixles = unaligned
+-        pld [r1]
++        PLD ( pld [r1] )
+         stmfd sp!, {r4-r11,lr} @ R14 is also called LR
+         adr r5, 5f
+         ands r4, r1, #3
+@@ -461,13 +468,13 @@
+         add r1, r1, r2
+ 6:      ldmia r1, {r6-r7}
+         add r1, r1, r2
+-        pld [r1]
++        PLD ( pld [r1] )
+         NO_RND_AVG32 r8, r9, r4, r5, r6, r7, r12
+         ldmia r1, {r4-r5}
+         add r1, r1, r2
+         stmia r0, {r8-r9}
+         add r0, r0, r2
+-        pld [r1]
++        PLD ( pld [r1] )
+         NO_RND_AVG32 r8, r9, r6, r7, r4, r5, r12
+         subs r3, r3, #1
+         stmia r0, {r8-r9}
+@@ -478,18 +485,18 @@
+ 2:
+         ldmia r1, {r4-r6}
+         add r1, r1, r2
+-        pld [r1]
++        PLD ( pld [r1] )
+         ADJ_ALIGN_DOUBLEWORD 1, r4, r5, r6
+ 6:      ldmia r1, {r7-r9}
+         add r1, r1, r2
+-        pld [r1]
++        PLD ( pld [r1] )
+         ADJ_ALIGN_DOUBLEWORD 1, r7, r8, r9
+         NO_RND_AVG32 r10, r11, r4, r5, r7, r8, r12
+         stmia r0, {r10-r11}
+         add r0, r0, r2
+         ldmia r1, {r4-r6}
+         add r1, r1, r2
+-        pld [r1]
++        PLD ( pld [r1] )
+         ADJ_ALIGN_DOUBLEWORD 1, r4, r5, r6
+         subs r3, r3, #1
+         NO_RND_AVG32 r10, r11, r7, r8, r4, r5, r12
+@@ -501,18 +508,18 @@
+ 3:
+         ldmia r1, {r4-r6}
+         add r1, r1, r2
+-        pld [r1]
++        PLD ( pld [r1] )
+         ADJ_ALIGN_DOUBLEWORD 2, r4, r5, r6
+ 6:      ldmia r1, {r7-r9}
+         add r1, r1, r2
+-        pld [r1]
++        PLD ( pld [r1] )
+         ADJ_ALIGN_DOUBLEWORD 2, r7, r8, r9
+         NO_RND_AVG32 r10, r11, r4, r5, r7, r8, r12
+         stmia r0, {r10-r11}
+         add r0, r0, r2
+         ldmia r1, {r4-r6}
+         add r1, r1, r2
+-        pld [r1]
++        PLD ( pld [r1] )
+         ADJ_ALIGN_DOUBLEWORD 2, r4, r5, r6
+         subs r3, r3, #1
+         NO_RND_AVG32 r10, r11, r7, r8, r4, r5, r12
+@@ -524,18 +531,18 @@
+ 4:
+         ldmia r1, {r4-r6}
+         add r1, r1, r2
+-        pld [r1]
++        PLD ( pld [r1] )
+         ADJ_ALIGN_DOUBLEWORD 3, r4, r5, r6
+ 6:      ldmia r1, {r7-r9}
+         add r1, r1, r2
+-        pld [r1]
++        PLD ( pld [r1] )
+         ADJ_ALIGN_DOUBLEWORD 3, r7, r8, r9
+         NO_RND_AVG32 r10, r11, r4, r5, r7, r8, r12
+         stmia r0, {r10-r11}
+         add r0, r0, r2
+         ldmia r1, {r4-r6}
+         add r1, r1, r2
+-        pld [r1]
++        PLD ( pld [r1] )
+         ADJ_ALIGN_DOUBLEWORD 3, r4, r5, r6
+         subs r3, r3, #1
+         NO_RND_AVG32 r10, r11, r7, r8, r4, r5, r12
+@@ -562,7 +569,7 @@
+         ldmia r1, {r8-r10}
+ .endif
+         add r1, r1, r2
+-        pld [r1]
++        PLD ( pld [r1] )
+ .if \align == 0
+         ADJ_ALIGN_DOUBLEWORD_D 1, r4, r5, r6, r7, r8
+ .elseif \align == 1
+@@ -624,7 +631,7 @@
+ put_pixels8_xy2_arm:
+         @ void func(uint8_t *block, const uint8_t *pixels, int line_size, int h)
+         @ block = word aligned, pixles = unaligned
+-        pld [r1]
++        PLD ( pld [r1] )
+         stmfd sp!, {r4-r11,lr} @ R14 is also called LR
+         adrl r12, 5f
+         ands r4, r1, #3
+@@ -661,7 +668,7 @@
+ put_no_rnd_pixels8_xy2_arm:
+         @ void func(uint8_t *block, const uint8_t *pixels, int line_size, int h)
+         @ block = word aligned, pixles = unaligned
+-        pld [r1]
++        PLD ( pld [r1] )
+         stmfd sp!, {r4-r11,lr} @ R14 is also called LR
+         adrl r12, 5f
+         ands r4, r1, #3

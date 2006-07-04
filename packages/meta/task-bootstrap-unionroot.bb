@@ -1,8 +1,6 @@
 DESCRIPTION = "Core packages required for a basic installation with unionroot"
 MAINTAINER = "Chris Lord <cwiiis@handhelds.org>"
 PROVIDES = "task-bootstrap"
-PN = "task-bootstrap"
-PV = "1.0unionroot"
 PR = "r1"
 DEFAULT_PREFERENCE = "-1"
 

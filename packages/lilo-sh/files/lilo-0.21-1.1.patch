@@ -1,0 +1,35 @@
+--- lilo/Makefile-	Fri Dec  4 15:35:07 1998
++++ lilo/Makefile	Wed Mar 17 01:04:07 1999
+@@ -24,7 +24,7 @@
+ #   VARSETUP	  Enables use of variable-size setup segments.
+ #   XL_SECS=n	  Support for extra large (non-standard) floppies.
+ 
+-CONFIG=-DIGNORECASE -DVARSETUP -DREWRITE_TABLE
++CONFIG=-DIGNORECASE -DVARSETUP -DREWRITE_TABLE -DLARGE_EBDA -DONE_SHOT
+ 
+ # End of configuration variables
+ 
+--- lilo/second.S-	Fri Dec  4 15:20:07 1998
++++ lilo/second.S	Wed Mar 17 01:03:53 1999
+@@ -830,9 +830,20 @@
+ 	call	load1
+ 	seg	es
+ 	mov	CL_MAGIC_ADDR,#CL_MAGIC ! set magic number
++#ifndef LCF_LARGE_EBDA
+ 	seg	es
+ 	mov	word ptr CL_OFFSET,#PARMLINE+SECOND_SS
+ 				! set parameter line offset
++#else
++	mov	di,#0x8000
++	mov	si,#PARMLINE
++	mov	cx,#CL_LENGTH
++	rep
++	movsb
++	seg	es
++	mov	word ptr CL_OFFSET,#0x8000
++				! set parameter line offset
++#endif
+ 	pop	si		! restore SI
+ 	lodsw			! get flags bit map
+ 	mov	bx,ax
+

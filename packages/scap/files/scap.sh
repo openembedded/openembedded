@@ -2,7 +2,7 @@
 
 sleep 2
 if [ -x /usr/bin/bl ]; then
-	bl toggle
+	bl off
 fi
 MODEL=`cat /proc/cpuinfo | grep ^Hardware | sed "s/.* //"`
 test -e /etc/scap.conf && USER=`cat /etc/scap.conf`
@@ -15,6 +15,6 @@ RES=`fbset 2>/dev/null | awk "/geometry/ { print \$2 "x" \$3 }"`
  echo ""
  cat /dev/fb0) | nc www.handhelds.org 80
 if [ -x /usr/bin/bl ]; then
-	bl toggle
+	bl on
 fi
         

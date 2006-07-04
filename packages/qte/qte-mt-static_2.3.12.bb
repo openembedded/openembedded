@@ -1,7 +1,7 @@
 require qte-common_${PV}.inc
-PR = "r2"
+PR = "r3"
 
-EXTRA_OECONF += "-static"
+EXTRA_OECONF += "-static -thread"
 
 do_stage() {
 	rm -rf ${STAGING_DIR}/${HOST_SYS}/qt2
