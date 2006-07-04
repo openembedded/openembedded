@@ -1,6 +1,6 @@
 include linux-openzaurus.inc
 
-PR = "r3"
+PR = "r4"
 
 DEFAULT_PREFERENCE = "-1"
 
@@ -23,16 +23,14 @@ SRC_URI = "http://www.kernel.org/pub/linux/kernel/v2.6/linux-2.6.17.tar.bz2 \
            ${RPSRC}/poodle_mmcsd_fix-r0.patch;patch=1;status=merged \
            ${RPSRC}/poodle_ssp-r1.patch;patch=1;status=merged \
            ${RPSRC}/sharpsl_pm-do-r2.patch;patch=1;status=merged \
-           ${RPSRC}/zlib_inflate-r3.patch;patch=1;status=pending \
-           ${RPSRC}/logo_rotate_fix-r1.patch;patch=1;status=pending \
-           ${RPSRC}/collie_frontlight-r6.patch;patch=1;status=pending \
-           ${RPSRC}/input_modalias_fix-r0.patch;patch=1;status=pending \
-           file://00-hostap.patch;patch=1;status=pending \
-           file://10-pcnet.patch;patch=1;status=pending \
-#           ${RPSRC}/alsa/asoc-v0.10-oz-r0.patch;patch=1 \
-	  ${RPSRC}/alsa/asoc-v0.10.patch;patch=1 \
-#           ${RPSRC}/alsa/asoc-v0.10rc4.patch;patch=1 \
-#           ${RPSRC}/asoc_fixups-r1.patch;patch=1 \
+           ${RPSRC}/zlib_inflate-r3.patch;patch=1;status=merged \
+           ${RPSRC}/logo_rotate_fix-r1.patch;patch=1;status=merged \
+           ${RPSRC}/collie_frontlight-r6.patch;patch=1;status=merged \
+           ${RPSRC}/input_modalias_fix-r0.patch;patch=1;status=merged \
+           file://00-hostap.patch;patch=1;status=merged \
+           file://10-pcnet.patch;patch=1;status=merged \
+           ${RPSRC}/asoc-v0.11pre2-oz.patch;patch=1 \
+           ${RPSRC}/asoc_updates-r1.patch;patch=1 \
            ${RPSRC}/hx2750_base-r25.patch;patch=1 \
            ${RPSRC}/hx2750_bl-r7.patch;patch=1 \
            ${RPSRC}/hx2750_pcmcia-r2.patch;patch=1 \
