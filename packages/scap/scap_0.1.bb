@@ -1,5 +1,6 @@
 LICENSE = "OSL"
-PR = "r6"
+PACKAGE_ARCH = "all"
+PR = "r7"
 
 DESCRIPTION = "handhelds.org screen capture utility"
 SRC_URI = "file://scap.sh file://scap.desktop file://scap.png"
