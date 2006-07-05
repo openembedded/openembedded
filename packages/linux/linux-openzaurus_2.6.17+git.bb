@@ -1,6 +1,6 @@
 include linux-openzaurus.inc
 
-PR = "r20"
+PR = "r2"
 
 DEFAULT_PREFERENCE = "-1"
 
@@ -15,23 +15,9 @@ DEFAULT_PREFERENCE = "-1"
 # Patches submitted upstream are towards top of this list 
 # Hacks should clearly named and at the bottom
 #           ftp://ftp.kernel.org/pub/linux/kernel/people/akpm/patches/2.6/2.6.14-rc2/2.6.14-rc2-mm1/2.6.14-rc2-mm1.bz2;patch=1 \	   
-SRC_URI = "git://rsync.kernel.org/pub/scm/linux/kernel/git/torvalds/linux-2.6.git;tag=553698f944ed715dfe023b4cef07601f0ce735f0 \
-           ${RPSRC}/poodle_partsize-r0.patch;patch=1;status=merged \
-           ${RPSRC}/jffs2_longfilename-r1.patch;patch=1;status=merged \
-           ${RPSRC}/locomo_led_default_trigger-r0.patch;patch=1;status=merged \
-           ${RPSRC}/zaurus_reboot-r3.patch;patch=1;status=merged \
-           ${RPSRC}/poodle_mmcsd_fix-r0.patch;patch=1;status=merged \
-           ${RPSRC}/poodle_ssp-r1.patch;patch=1;status=merged \
-           ${RPSRC}/sharpsl_pm-do-r2.patch;patch=1;status=merged \
-           ${RPSRC}/zlib_inflate-r3.patch;patch=1;status=pending \
-           ${RPSRC}/logo_rotate_fix-r1.patch;patch=1;status=pending \
-           ${RPSRC}/collie_frontlight-r6.patch;patch=1;status=pending \
-           ${RPSRC}/input_modalias_fix-r0.patch;patch=1;status=pending \
-           file://00-hostap.patch;patch=1;status=pending \
-           file://10-pcnet.patch;patch=1;status=pending \
-#           ${RPSRC}/alsa/asoc-v0.10-oz-r0.patch;patch=1 \
-           ${RPSRC}/alsa/asoc-v0.10rc4.patch;patch=1 \
-           ${RPSRC}/asoc_fixups-r1.patch;patch=1 \
+SRC_URI = "git://rsync.kernel.org/pub/scm/linux/kernel/git/torvalds/linux-2.6.git;tag=c6482dde1c2811afba289b2344268f850595f350 \
+           ${RPSRC}/alsa/asoc-v0.11pre2.patch;patch=1 \
+           ${RPSRC}/asoc_updates-r1.patch;patch=1 \
            ${RPSRC}/hx2750_base-r25.patch;patch=1 \
            ${RPSRC}/hx2750_bl-r7.patch;patch=1 \
            ${RPSRC}/hx2750_pcmcia-r2.patch;patch=1 \
@@ -40,15 +26,15 @@ SRC_URI = "git://rsync.kernel.org/pub/scm/linux/kernel/git/torvalds/linux-2.6.gi
            ${RPSRC}/hx2750_test1-r3.patch;patch=1 \
            ${RPSRC}/pxa_timerfix-r0.patch;patch=1 \
            ${RPSRC}/input_power-r5.patch;patch=1 \
-           ${RPSRC}/pxa25x_cpufreq-r0.patch;patch=1 \
+           ${RPSRC}/pxa25x_cpufreq-r1.patch;patch=1 \
            ${RPSRC}/sharpsl_pm_fixes1-r0.patch;patch=1 \
            ${RPSRC}/pm_changes-r1.patch;patch=1 \
            ${RPSRC}/usb_pxa27x_udc-r0.patch;patch=1 \
-           ${RPSRC}/usb_add_epalloc-r1.patch;patch=1 \
+           ${RPSRC}/usb_add_epalloc-r2.patch;patch=1 \
            ${DOSRC}/kexec-arm-r2.patch;patch=1 \
            ${RPSRC}/locomo_kbd_tweak-r0.patch;patch=1 \
            ${RPSRC}/poodle_pm-r1.patch;patch=1 \
-           ${RPSRC}/pxafb_changeres-r0.patch;patch=1 \
+           ${RPSRC}/pxafb_changeres-r1.patch;patch=1 \
            file://serial-add-support-for-non-standard-xtals-to-16c950-driver.patch;patch=1 \
            file://hrw-pcmcia-ids-r2.patch;patch=1 \
            ${RPSRC}/logo_oh-r0.patch.bz2;patch=1;status=unmergable \
@@ -109,4 +95,4 @@ SRC_URI_append_tosa = "\
 S = "${WORKDIR}/git"
 
 # to get module dependencies working
-KERNEL_RELEASE = "2.6.17-rc3"
+KERNEL_RELEASE = "2.6.17"
