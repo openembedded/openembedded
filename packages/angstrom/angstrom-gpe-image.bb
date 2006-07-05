@@ -3,10 +3,13 @@ LICENSE = MIT
 MAINTAINER = "Koen Kooi <koen@dominion.kabel.utwente.nl>"
 PR = "r0"
 
+ANGSTROM_EXTRA_INSTALL ?= ""
+
 export IMAGE_BASENAME = "gpe-image"
 
 DEPENDS = "task-angstrom"
 RDEPENDS = "\
+    virtual/xserver \
     angstrom-base-depends \
     angstrom-x11-base-depends \
     angsgrom-gpe-task-base \
