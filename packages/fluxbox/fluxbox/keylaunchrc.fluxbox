@@ -1,0 +1,28 @@
+key=....F9:-:gpe-calendar
+key=....F10:-:gpe-contacts
+key=....F13:-:sylpheed
+#key=....F12:-:~matchbox-remote -next
+#key=...*F12:-:~matchbox-remote -desktop
+#key=....F11:-:~matchbox-remote -menu
+#key=...*1:-:~zoom out
+#key=...*2:-:~zoom in
+key=...*3:-:~display-brightness.sh down 
+key=...*4:-:~display-brightness.sh up 
+                                                                                
+# LCD Softkeys                                                                  
+# Please note that the space _between_ two softkeys can be used, too ;)         
+key=....F20:-:~matchbox-remote -next
+key=....F21:-:~matchbox-remote -desktop
+key=....F22:-:~matchbox-remote -prev
+key=....F23:-:sylpheed                                                          
+#key=....F24:-:                                                                  
+key=....F25:-:gpe-contacts                                                      
+#key=....F26:-:                                                                  
+key=....F27:-:gpe-calendar                                                      
+#key=....F28:-:                                                                 
+key=....F29:-:gpe-mini-browser                                                                 
+#key=....F30:-:                                                                 
+
+# VT changing
+key=...*Left:-:~chvt 1
+key=...*Right:-:~chvt 3
