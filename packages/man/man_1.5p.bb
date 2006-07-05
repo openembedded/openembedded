@@ -12,6 +12,9 @@ RDEPENDS_${PN} = "less groff"
 SRC_URI = "ftp://ftp.kernel.org/pub/linux/utils/man/man-${PV}.tar.bz2 \
 		file://man.conf"
 
+# Disable parallel make or it tries to link objects before they are built
+PARALLEL_MAKE = ""
+
 EXTRA_OEMAKE = ""
 GS = "-DGREPSILENT=\"q\""
 DEFS = "-DUSG -DDO_COMPRESS ${GS}"

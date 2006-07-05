@@ -5,6 +5,7 @@ LICENSE = "GPL"
 #
 KERNEL_CCSUFFIX = "-3.3.4"
 COMPATIBLE_HOST = "arm.*-linux"
+COMPATIBLE_MACHINE = '(h3900|h2200|ipaq-pxa270)'
 
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/handhelds-pxa-${PV}"
 
