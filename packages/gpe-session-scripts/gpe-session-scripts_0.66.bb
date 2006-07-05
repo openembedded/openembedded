@@ -1,5 +1,5 @@
 LICENSE = "GPL"
-PR = "r7"
+PR = "r8"
 
 inherit gpe
 
@@ -25,6 +25,16 @@ do_install_append() {
 
 	install -d ${D}${sysconfdir}/gpe/xsettings-default.d
 	install -m 0644 ${WORKDIR}/disable-composite.xsettings ${D}${sysconfdir}/gpe/xsettings-default.d/disable-composite
+	
+	mv ${D}/usr/bin/gpe-logout ${D}/usr/bin/gpe-logout.matchbox
+}
+
+pkg_postinst_${PN}() { 
+	update-alternatives --install /usr/bin/gpe-logout gpe-logout /usr/bin/gpe-logout.matchbox 10
+}
+
+pkg_postrm_${PN}() {   
+       update-alternatives --remove gpe-logout /usr/bin/gpe-logout.matchbox 
 }
 
 # This makes use of GUI_MACHINE_CLASS, so set PACKAGE_ARCH appropriately
