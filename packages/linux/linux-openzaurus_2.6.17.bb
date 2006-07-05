@@ -1,6 +1,6 @@
 include linux-openzaurus.inc
 
-PR = "r4"
+PR = "r5"
 
 DEFAULT_PREFERENCE = "-1"
 
@@ -83,6 +83,17 @@ SRC_URI = "http://www.kernel.org/pub/linux/kernel/v2.6/linux-2.6.17.tar.bz2 \
 # (Pavel Machek's git tree has updated versions of this?)
 #  ${JLSRC}/zaurus-lcd-2.6.11.diff.gz;patch=1 
 
+# These patches are extracted from Pavel Machek's git tree
+# (diff against vanilla kernel)
+SRC_URI_append_collie = "\
+	   ${DOSRC}/collie/mtd-sharp-flash-hack-r0.patch;patch=1 \
+	   ${DOSRC}/collie/collie-r0.patch;patch=1 \
+	   ${DOSRC}/collie/locomolcd-backlight-r0.patch;patch=1 \
+	   ${DOSRC}/collie/ucb1x00-touch-audio-r0.patch;patch=1 \
+	   ${DOSRC}/collie/collie-mcp-r0.patch;patch=1 \
+	   ${DOSRC}/collie/sa1100-udc-r0.patch;patch=1 \
+#	   ${DOSRC}/collie/collie-pm-r1.patch;patch=1 \
+	   "
 
 SRC_URI_append_tosa = "\
 	   ${CHSRC}/usb-ohci-hooks-r1.patch;patch=1 \
