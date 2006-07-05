@@ -1,7 +1,7 @@
 DESCRIPTION = "GPE task manager"
 SECTION = "gpe"
 LICENSE = "GPL"
-DEPENDS = "libgpewidget"
+DEPENDS = "libgpelaunch libgpewidget"
 
 inherit gpe
 
