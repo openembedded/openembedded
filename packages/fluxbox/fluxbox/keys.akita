@@ -1,0 +1,7 @@
+Mod1 Tab :NextWindow
+Mod1 Shift Tab :PrevWindow
+F12 :NextWindow 2
+F11 :ExecCommand matchbox-remote -menu
+Mod4 F11 :RootMenu
+Mod4 F12 :Minimize
+Mod1 r :Reconfigure
