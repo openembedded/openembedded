@@ -1,19 +1,19 @@
 DESCRIPTION = "Enigma2 is an experimental, but useful framebuffer-based frontend for DVB functions"
 MAINTAINER = "Felix Domke <tmbinc@elitedvb.net>"
 DEPENDS = "jpeg libungif libmad libpng libsigc++-1.2 gettext-native \
-	dreambox-dvbincludes freetype libdvbsi++ python swig-native python-pyxml \
+	dreambox-dvbincludes freetype libdvbsi++ python swig-native  \
 	libfribidi gstreamer gst-plugins-base gst-plugins-ugly gst-plugins-good"
 RDEPENDS = "python-codecs python-core python-lang python-re python-threading \
-	python-xml python-pyxml python-fcntl gst-plugin-decodebin python-stringold \
+	python-xml python-fcntl gst-plugin-decodebin python-stringold \
 	gst-plugin-id3demux gst-plugin-mad gst-plugin-ogg gst-plugin-playbin \
 	gst-plugin-typefindfunctions gst-plugin-vorbis gst-plugin-audioconvert \
-	gst-plugin-wavparse"
+	gst-plugin-wavparse python-netclient"
 RDEPENDS_append_dm7020 = " gst-plugin-ossaudio"
 RDEPENDS_append_dm7025 = " gst-plugin-alsa"
 
 PN = "enigma2"
 PR = "r0"
-CVSDATE = "20060429"
+CVSDATE = "20060705"
 PV = "1.0cvs${CVSDATE}"
 
 SRC_URI = "cvs://anonymous@dreamboxupdate.com/cvs;module=enigma2;method=pserver \
