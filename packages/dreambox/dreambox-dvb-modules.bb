@@ -13,7 +13,7 @@ def get_modules_extension(bb, d):
 	return ""
 
 KV_dm7025 = "2.6.12.6"
-PV_dm7025 = "${KV}-20060621${@get_modules_extension(bb, d)}"
+PV_dm7025 = "${KV}-20060627${@get_modules_extension(bb, d)}"
 
 RDEPENDS = "kernel (${KV})"
 PR = "r0"
