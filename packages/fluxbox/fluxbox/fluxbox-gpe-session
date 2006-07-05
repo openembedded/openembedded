@@ -25,7 +25,7 @@ fi
 if test -e /usr/share/fluxbox/$KEYS
 then
 	mkdir -p $HOME/.fluxbox
-	test -e $HOME/.fluxbox/KEYS || cp /usr/share/fluxbox/$KEYS $HOME/.fluxbox/keys
+	test -e $HOME/.fluxbox/keys || cp /usr/share/fluxbox/$KEYS $HOME/.fluxbox/keys
 fi
 
 
