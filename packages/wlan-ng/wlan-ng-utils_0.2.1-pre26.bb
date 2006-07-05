@@ -3,7 +3,7 @@ HOMEPAGE = "http://www.linux-wlan.org"
 SECTION = "kernel/userland"
 DEPENDS = "virtual/kernel"
 LICENSE = "GPL"
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "ftp://ftp.linux-wlan.org/pub/linux-wlan-ng/linux-wlan-ng-${PV}.tar.bz2 \
 	file://only-the-utils.patch;patch=1 \
@@ -60,7 +60,8 @@ do_install() {
 	install -d ${D}${sysconfdir}/apm/resume.d
 	install -m 0755 ${WORKDIR}/resume ${D}${sysconfdir}/apm/resume.d/wlan-ng
 	install -m 0755 ${WORKDIR}/usbctl ${D}${base_sbindir}/usbctl
-	install -d ${D}${mandir}
+	install -d ${D}${mandir}/man1
+	install -m 0644 ${S}/man/*.1 ${D}${mandir}/man1/
 }
 
 FILES_${PN} = "/etc /sbin"
