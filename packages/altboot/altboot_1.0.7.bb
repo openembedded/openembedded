@@ -13,24 +13,35 @@ LICENSE = "GPL"
 
 ######################################################################################
 
-RRECOMMENDS = "e2fsprogs-e2fsck dosfstools"
-RRECOMMENDS_append_akita = " kexec-tools"
-RRECOMMENDS_append_spitz = " kexec-tools"
-RRECOMMENDS_append_c7x0 = " kexec-tools"
+RRECOMMENDS_${PN} = "e2fsprogs-e2fsck dosfstools"
+RRECOMMENDS_${PN}_append_akita = " kexec-tools"
+RRECOMMENDS_${PN}_append_spitz = " kexec-tools"
+RRECOMMENDS_${PN}_append_c7x0 = " kexec-tools"
+
+RDEPENDS_${PN} = "${PN}-conf"
+RDEPENDS_${PN}-conf = "${PN}"
 
 ######################################################################################
 
-PR = "r1"
+PR = "r0"
 
 ######################################################################################
 
-PACKAGE_ARCH = "${MACHINE}"
+PACKAGES = "${PN}-conf ${PN}-doc ${PN}"
+
+PACKAGE_ARCH_${PN} = all
+PACKAGE_ARCH_${PN}-doc = all
+PACKAGE_ARCH_${PN}-conf = "${MACHINE}"
 
 TAG = "${@'v' + bb.data.getVar('PV',d,1).replace('.', '-')}"
 
 SRC_URI = "cvs://anonymous@hentges.net/hentgescvs;method=pserver;tag=${TAG};module=altboot"
 
 S = "${WORKDIR}/altboot/"
+
+######################################################################################
+
+FILES_${PN}-conf = "/etc/altboot*.cfg"
 
 ######################################################################################
 
@@ -53,19 +64,9 @@ do_install() {
 	install -m 0644 ${WORKDIR}/altboot/altboot.func ${D}/etc
 	install -m 0755 ${WORKDIR}/altboot/init.altboot ${D}/sbin
 	
-	if test -d ${WORKDIR}/altboot/${MACHINE}/altboot-menu/	
-	then
-		install -m 0755 ${WORKDIR}/altboot/${MACHINE}/altboot-menu/*-* ${D}/etc/altboot-menu
-	else
-		install -m 0755 ${WORKDIR}/altboot/altboot-menu/*-* ${D}/etc/altboot-menu
-	fi
+	install -m 0755 ${WORKDIR}/altboot/altboot-menu/*-* ${D}/etc/altboot-menu
 
-	if test -d ${WORKDIR}/altboot/${MACHINE}/altboot-menu/Advanced/
-	then
-		install -m 0755 ${WORKDIR}/altboot/${MACHINE}/altboot-menu/Advanced/*-* ${D}/etc/altboot-menu/Advanced
-	else
-		install -m 0755 ${WORKDIR}/altboot/altboot-menu/Advanced/*-* ${D}/etc/altboot-menu/Advanced
-	fi
+	install -m 0755 ${WORKDIR}/altboot/altboot-menu/Advanced/*-* ${D}/etc/altboot-menu/Advanced
 	
 	install -m 0755 ${WORKDIR}/altboot/altboot.rc/*.sh ${D}/etc/altboot.rc
 	install -m 0644 ${WORKDIR}/altboot/altboot.rc/*.txt ${D}/etc/altboot.rc	
@@ -80,13 +81,13 @@ do_configure() {
 
 ######################################################################################
 
-pkg_postinst() {
+pkg_postinst_${PN}() {
 	update-alternatives --install /sbin/init init /sbin/init.altboot 55
 }
 
 ######################################################################################
 
-pkg_postrm() {
+pkg_postrm_${PN}() {
 	update-alternatives --remove init /sbin/init.altboot
 }
 
