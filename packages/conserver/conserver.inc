@@ -11,3 +11,8 @@ inherit autotools
 # Stop install being called with -s so it doesn't try and run the host strip command
 #
 EXTRA_OEMAKE=" INSTALL_PROGRAM=install"
+
+#
+# Include the examples in the documentation package
+#
+FILES_${PN}-doc += "${datadir}/examples/conserver"
