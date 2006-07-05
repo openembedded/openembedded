@@ -55,3 +55,22 @@
 [app] (gpe-sketchbook)
   [Dimensions]	{471 314}
 [end]
+[app] (gpe-todo)
+  [Dimensions]	{364 344}
+[end]
+[app] (gpe-contacts)
+  [Dimensions]	{327 395}
+  [Position]	(UPPERLEFT)	{134 34}
+[end]
+[app] (gpe-conf)
+  [Dimensions]	{380 400}
+  [Position]	(UPPERLEFT)	{93 34}
+[end]
+[app] (gpe-package)
+  [Dimensions]	{635 440}
+  [Position]	(UPPERLEFT)	{0 0}
+[end]
+[app] (matchbox-panel-manager)
+  [Dimensions]	{431 326}
+  [Position]	(UPPERLEFT)	{85 52}
+[end]

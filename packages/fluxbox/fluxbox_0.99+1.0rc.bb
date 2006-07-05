@@ -10,7 +10,7 @@ MAINTAINER = "Matthias 'CoreDump' Hentges <oe@hentges.net>"
 HOMEPAGE = "http://fluxbox.sourceforge.net"
 LICENSE = "MIT"
 REALPV = "1.0rc"
-PR = "r1"
+PR = "r2"
 
 ######################################################################################
 
