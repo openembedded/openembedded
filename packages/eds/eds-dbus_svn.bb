@@ -1,5 +1,5 @@
 LICENSE = "LGPL"
-DEPENDS = "glib-2.0 gtk+ gconf dbus db gnome-common libglade libiconv"
+DEPENDS = "glib-2.0 gtk+ gconf dbus db gnome-common libglade virtual/libiconv"
 MAINTAINER = "Richard Purdie <richard@openedhand.com>"
 DESCRIPTION = "Evolution database backend server"
 
