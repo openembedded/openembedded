@@ -686,7 +686,7 @@ start_networking() {
 		then
 			echo -e "\nRunning cardctl to setup networking..."
 			/etc/init.d/pcmcia start >/dev/null 2>&1 || die "/etc/init.d/pcmcia start failed!"
-			sleep 1
+			sleep 3
 		else	
 			# With kernel 2.6.16+ udev is used 
 			echo -e "\nRunning udevd to setup networking..."
@@ -719,10 +719,25 @@ start_networking() {
 
 	if test -z "$WLAN_NIC"
 	then
-		debug_echo "WARNING: WLAN_NIC is empty!\n" 
-		debug_echo "Filter result: [$WLAN_NIC]"
-		debug_echo "iwconfig: [`iwconfig`]"
-		mdie "No network interface found"
+		# cardctl needs some time....
+		echo -n "Waiting for WLAN card.."
+		timeout=0
+		while test "$timeout" -lt 10
+		do
+			WLAN_NIC="`iwconfig 2>/dev/null | grep ESSID | grep -v wifi | awk '{print $1}'`"
+			test -n "$WLAN_NIC" && break			
+			echo -n "."
+			let timeout=$timeout+1
+			sleep 1
+		done	
+		
+		if test -z  "$WLAN_NIC"
+		then
+			debug_echo "WARNING: WLAN_NIC is empty!\n" 
+			debug_echo "Filter result: [$WLAN_NIC]"
+			debug_echo "iwconfig: [`iwconfig`]"
+			mdie "No network interface found"
+		fi			
 	fi
 	
 	# WLAN with DHCP needs some time to get a lease, set up the routing, etc.	

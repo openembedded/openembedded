@@ -25,7 +25,7 @@ run_module() {
 	
 	if test -z "$nfs_host"
 	then
-		die "${C_RED}No configured NFS drives found in /etc/fstab$C_RESET"
+		mdie "${C_RED}No configured NFS drives found in /etc/fstab$C_RESET"
 		
 	fi
 	
@@ -79,7 +79,7 @@ run_module() {
 		selection="$nfs_mounts"
 	fi
 	
-	mkdir -p /media/nfsroot || die "mkdir -p /media/nfsroot failed!"
+	mkdir -p /media/nfsroot || mdie "mkdir -p /media/nfsroot failed!"
 	
 	echo -n "Mounting NFS root..."
 	
@@ -91,7 +91,7 @@ run_module() {
 		umount /media/nfsroot || die "umount failed!"
 	fi
 		
-	mount -t nfs "$selection" /media/nfsroot && echo ok || die "mount -t nfs "$selection" /media/nfsroot failed!"
+	mount -t nfs "$selection" /media/nfsroot && echo ok || mdie "mount -t nfs "$selection" /media/nfsroot failed!"
 	
 	# Use configured resolv.conf in the pivoted rootfs
 	#echo -n "Copying resolv.conf..."
