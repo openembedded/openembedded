@@ -1,8 +1,0 @@
---- gnumeric-1.5.2/Makefile.am.orig	2005-08-01 11:32:36.119921544 +0000
-+++ gnumeric-1.5.2/Makefile.am	2005-08-01 11:32:44.689618752 +0000
-@@ -1,4 +1,4 @@
--SUBDIRS = . po po-functions src plugins icons templates doc schemas
-+SUBDIRS = . po po-functions src plugins icons templates schemas
- if WITH_WIN32
-   SUBDIRS += tools
- endif
