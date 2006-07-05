@@ -1,7 +1,8 @@
 DESCRIPTION = "Core packages required for a basic installation with unionroot"
 MAINTAINER = "Chris Lord <cwiiis@handhelds.org>"
 PROVIDES = "task-bootstrap"
-PR = "r1"
+RPROVIDES = "task-bootstrap"
+PR = "r2"
 DEFAULT_PREFERENCE = "-1"
 
 # The BOOTSTRAP_EXTRA_ variables are often manipulated by the
