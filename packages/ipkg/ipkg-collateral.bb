@@ -1,7 +1,8 @@
 DESCRIPTION = "ipkg configuration files"
 SECTION = "base"
 LICENSE = "MIT"
-PR = "r3"
+PR = "r4"
+PACKAGE_ARCH = "all"
 
 SRC_URI = " \
 file://ipkg.conf.comments	\
