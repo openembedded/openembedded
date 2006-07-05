@@ -1,15 +1,16 @@
 #Angstrom GPE image
 LICENSE = MIT
 MAINTAINER = "Koen Kooi <koen@dominion.kabel.utwente.nl>"
-PR = "r0"
+PR = "r1"
 
 ANGSTROM_EXTRA_INSTALL ?= ""
+XSERVER ?= "xserver-kdrive-fbdev"
 
 export IMAGE_BASENAME = "gpe-image"
 
 DEPENDS = "task-angstrom"
 RDEPENDS = "\
-    virtual/xserver \
+    ${XSERVER} \
     angstrom-base-depends \
     angstrom-x11-base-depends \
     angsgrom-gpe-task-base \
