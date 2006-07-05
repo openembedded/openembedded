@@ -1,4 +1,4 @@
 QUAGGASUBDIR = "/attic"
 include quagga.inc
-PR = "r1"
+PR = "r2"
 SRC_URI += "file://ospfd-no-opaque-lsa-fix.patch;patch=1"

@@ -91,6 +91,10 @@ RDEPENDS_${PN}		+= "iproute2"
 # These are required for vtysh
 RDEPENDS_${PN}		+= "ncurses readline"
 
+# Indicate that the default files are configuration files
+CONFFILES_${PN} = "${sysconfdir}/default/quagga"
+CONFFILES_${PN}-watchquagga = "${sysconfdir}/default/watchquagga"
+
 do_install () {
 	# Install init script and default settings
 	install -m 0755 -d ${D}${sysconfdir}/default ${D}${sysconfdir}/init.d ${D}${sysconfdir}/quagga
