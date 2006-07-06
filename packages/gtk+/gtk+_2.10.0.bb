@@ -8,6 +8,9 @@ MAINTAINER = "Philip Blundell <pb@handhelds.org>"
 DEPENDS = "glib-2.0 pango atk jpeg libpng xext libxcursor gtk-doc libgcrypt cairo"
 PR = "r0"
 
+# disable per default - untested and not all patches included.
+DEFAULT_PREFERENCE = "-1" 
+
 SRC_URI = "ftp://ftp.gtk.org/pub/gtk/v2.10/gtk+-${PV}.tar.bz2 \
            file://no-xwc.patch;patch=1 \
            file://automake-lossage.patch;patch=1 \
