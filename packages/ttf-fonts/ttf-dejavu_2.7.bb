@@ -3,8 +3,7 @@ LICENSE = "Bitstream Vera"
 HOMEPAGE = "http://dejavu.sourceforge.net/wiki/index.php/Main_Page"
 MAINTAINER = "Marcin Juszkiewicz <openembedded@hrw.one.pl>"
 
-
-SRC_URI = "${SOURCEFORGE_MIRROR}/dejavu/dejavu-ttf-${PV}-1.tar.gz"
+SRC_URI = "${SOURCEFORGE_MIRROR}/dejavu/dejavu-ttf-${PV}.tar.gz"
 
 include ttf.inc
 
