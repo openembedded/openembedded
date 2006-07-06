@@ -1,5 +1,5 @@
 DESCRIPTION = "Task packages for the Angstrom distribution"
-PR = "r2"
+PR = "r3"
 ALLOW_EMPTY = "1"
 
 BOOTMODULES_RRECOMMENDS ?= ""
@@ -23,7 +23,7 @@ RDEPENDS_angstrom-base-depends = "\
     busybox \
     udev \
     sysvinit initscripts sysvinit-pidof \
-    netbase \
+    netbase dropbear \
     angstrom-version \
     ipkg \
     "
