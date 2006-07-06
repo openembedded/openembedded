@@ -1,5 +1,5 @@
---- linux-2.6.16.20/drivers/ide/ide-io.c_orig	2006-07-01 23:54:34.000000000 +0000
-+++ linux-2.6.16.20/drivers/ide/ide-io.c	2006-07-01 23:55:50.000000000 +0000
+--- linux-2.6.17-vanilla/drivers/ide/ide-io.c	2006-06-18 01:49:35.000000000 +0000
++++ linux-2.6.17/drivers/ide/ide-io.c	2006-07-06 14:18:13.000000000 +0000
 @@ -1442,10 +1442,10 @@
  				++count;
  				if (time_after(jiffies, last_msgtime + HZ)) {
