@@ -114,14 +114,6 @@ do_munge() {
 	rm -f ${S}/ports/sysdeps/unix/sysv/linux/arm/bits/fenv.h
 	# Obsoleted by sysdeps/gnu/bits/utmp.h
 	rm -f ${S}/ports/sysdeps/unix/sysv/linux/arm/bits/utmp.h
-
-	# http://www.handhelds.org/hypermail/oe/51/5135.html
-	# Some files were moved around between directories on
-	# 2005-12-21, which means that any attempt to check out
-	# from CVS using a datestamp older than that will be doomed.
-	#
-	# This is a workaround for that problem.
-	rm -rf ${S}/bits
 }
 
 addtask munge before do_patch after do_unpack
