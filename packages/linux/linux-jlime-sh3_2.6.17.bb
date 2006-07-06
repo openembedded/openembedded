@@ -6,7 +6,7 @@ PR = "r0"
 COMPATIBLE_HOST = "sh.*-linux"
 #COMPATIBLE_MACHINE = "jornada6xx"
 
-SRC_URI = "http://www.kernel.orgm/pub/linux/kernel/v2.6/linux-2.6.17.tar.gz \
+SRC_URI = "http://www.kernel.org/pub/linux/kernel/v2.6/linux-2.6.17.tar.gz \
            file://defconfig_jlime \
 	   file://LinuxSH-2.6.17.patch;patch=0"
 	   	            
@@ -17,7 +17,7 @@ inherit kernel
 #Lets let 3.4.x handle the compilation of this one
 KERNEL_CCSUFFIX = "-3.4.4"
 
-ARCH = "arm"
+ARCH = "sh"
 KERNEL_IMAGETYPE = "zImage"
 FILES_kernel-image = "/boot/${KERNEL_IMAGETYPE}*"
 

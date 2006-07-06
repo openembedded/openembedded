@@ -1,7 +1,7 @@
 #
 # Automatically generated make config: don't edit
 # Linux kernel version: 2.6.17
-# Wed Jul  5 15:21:05 2006
+# Thu Jul  6 12:45:31 2006
 #
 CONFIG_SUPERH=y
 CONFIG_RWSEM_GENERIC_SPINLOCK=y
@@ -492,16 +492,16 @@ CONFIG_BLK_DEV_IDE=y
 # CONFIG_BLK_DEV_IDE_SATA is not set
 CONFIG_BLK_DEV_IDEDISK=y
 CONFIG_IDEDISK_MULTI_MODE=y
-# CONFIG_BLK_DEV_IDECS is not set
+CONFIG_BLK_DEV_IDECS=y
 # CONFIG_BLK_DEV_IDECD is not set
 # CONFIG_BLK_DEV_IDETAPE is not set
 # CONFIG_BLK_DEV_IDEFLOPPY is not set
-# CONFIG_IDE_TASK_IOCTL is not set
+CONFIG_IDE_TASK_IOCTL=y
 
 #
 # IDE chipset support/bugfixes
 #
-# CONFIG_IDE_GENERIC is not set
+CONFIG_IDE_GENERIC=y
 # CONFIG_BLK_DEV_IDEPNP is not set
 CONFIG_IDE_SH=y
 # CONFIG_IDE_ARM is not set
