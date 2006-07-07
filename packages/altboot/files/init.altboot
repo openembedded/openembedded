@@ -178,7 +178,8 @@ run_timer() {
 		2.4*)	key_ints="`cat /proc/interrupts | grep keyboard | awk '{print $2}'`";;
 		2.6*)	key_ints="`cat /proc/interrupts | grep Spitzkbd`"
 			test -z "$key_ints" && key_ints="`cat /proc/interrupts | grep -i corgikbd`"
-			test -z "$key_ints" && key_ints="`cat /proc/interrupts | grep -i locomokbd`";;	
+			test -z "$key_ints" && key_ints="`cat /proc/interrupts | grep -i locomokbd`"
+			test -z "$key_ints" && key_ints="`cat /proc/interrupts | grep -i tosakbd`";;	
 		esac		
 	
 		test -z "$key_ints" && debug_echo "Couldn't read keyboard ints!"
@@ -196,7 +197,8 @@ run_timer() {
 			2.4*)	key_ints_now="`cat /proc/interrupts | grep keyboard | awk '{print $2}'`";;
 			2.6*)	key_ints_now="`cat /proc/interrupts | grep Spitzkbd`"
 				test -z "$key_ints_now" && key_ints_now="`cat /proc/interrupts | grep -i corgikbd`"
-				test -z "$key_ints_now" && key_ints_now="`cat /proc/interrupts | grep -i locomokbd`";;	
+				test -z "$key_ints_now" && key_ints_now="`cat /proc/interrupts | grep -i locomokbd`"
+				test -z "$key_ints_now" && key_ints_now="`cat /proc/interrupts | grep -i tosakbd`";;	
 			esac		
 			
 			if test "$key_ints_now" != "$key_ints" -o -z "$key_ints_now"
