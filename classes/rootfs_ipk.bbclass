@@ -107,7 +107,7 @@ log_check() {
 				then
 					echo "log_check: There were error messages in the logfile"
 					echo -e "log_check: Matched keyword: [$keyword_die]\n"
-					echo "$lf_txt" | grep -v log_check | grep -i "$keyword_die"
+					echo "$lf_txt" | grep -v log_check | grep -i "$keyword_die" -C1
 					echo ""
 					do_exit=1				
 				fi
