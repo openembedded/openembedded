@@ -5,7 +5,7 @@
 #
 DESCRIPTION = "Packages that are required for the SlugOS native build environment"
 LICENSE = "MIT"
-PR = "r1"
+PR = "r2"
 
 INHIBIT_DEFAULT_DEPS = "1"
 EXCLUDE_FROM_WORLD = "1"
@@ -57,6 +57,7 @@ SLUGOS_NATIVE = "\
 	gcc \
 	gnu-config \
 	gzip \
+	libc6-dev \
 	libtool \
 	lrzsz \
 	m4 \
