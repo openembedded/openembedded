@@ -10,6 +10,7 @@ HOMEPAGE = "http://www.busybox.net"
 LICENSE = "GPL"
 SECTION = "base"
 PRIORITY = "required"
+PR = "r1"
 
 DEFAULT_PREFERENCE = "-1"
 
@@ -58,7 +59,14 @@ INITSCRIPT_PARAMS_${PN}_openslug = "start 20 ."
 inherit cml1 update-rc.d
 
 do_configure () {
-	install -m 0644 ${WORKDIR}/defconfig ${S}/.config
+	install -m 0644 ${WORKDIR}/defconfig ${S}/.config.oe
+
+	echo "CROSS_COMPILER_PREFIX=\"${TARGET_PREFIX}\"" > ${S}/.config
+	echo "USING_CROSS_COMPILER=y" >> ${S}/.config
+
+	sed -e 	'/CROSS_COMPILER_PREFIX/d' \
+	    -e 	'/USING_CROSS_COMPILER/d' \
+		'${S}/.config.oe' >>'${S}/.config'
 	cml1_do_configure
 }
 
