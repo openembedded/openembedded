@@ -1,0 +1,4 @@
+# Include nodes for the /dev/sm0 flash block mapping driver
+# and the two paritions /dev/sm0p1 and /dev/sm0p2
+/dev/sm0	b	664	0	0	240	0	-	-	-
+/dev/sm0p	b	664	0	0	240	1	1	1	2

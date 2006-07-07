@@ -1,0 +1,14 @@
+Don't try and strip ssmtp during install as this tries to run the native
+strip rather than strip for the target platform.
+
+--- ssmtp-2.61/Makefile.in	2006/07/04 04:43:06	1.1
++++ ssmtp-2.61/Makefile.in	2006/07/04 04:43:17
+@@ -48,7 +48,7 @@
+ .PHONY: install
+ install: ssmtp $(GEN_CONFIG)
+ 	$(INSTALL) -d -m 755 $(bindir)
+-	$(INSTALL) -s -m 755 ssmtp $(bindir)/ssmtp
++	$(INSTALL) -m 755 ssmtp $(bindir)/ssmtp
+ 	$(INSTALL) -d -m 755 $(mandir)
+ 	$(INSTALL) -m 644 $(srcdir)/ssmtp.8 $(mandir)/ssmtp.8
+ 	$(INSTALL) -d -m 755 $(SSMTPCONFDIR)

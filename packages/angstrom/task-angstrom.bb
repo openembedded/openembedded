@@ -1,9 +1,12 @@
 DESCRIPTION = "Task packages for the Angstrom distribution"
-PR = "r0"
+PR = "r3"
 ALLOW_EMPTY = "1"
+
+BOOTMODULES_RRECOMMENDS ?= ""
 
 PACKAGES = "\
     angstrom-base-depends \
+    angstrom-base-wifi \
     angstrom-x11-base-depends \
     angsgrom-gpe-task-base \
     angstrom-gpe-task-settings \
@@ -15,19 +18,29 @@ PACKAGES = "\
     angstrom-task-sectest"
 
 RDEPENDS_angstrom-base-depends = "\
-    base-files \
+    base-files keymaps \
     base-passwd tinylogin \ 
     busybox \
     udev \
     sysvinit initscripts sysvinit-pidof \
-    netbase \
-    angstrom-version \	
+    netbase dropbear \
+    angstrom-version \
+    ipkg \
     "
 
 RRECOMMENDS_angstrom-base-depends = "\
         ${BOOTMODULES_RRECOMMENDS} \
 	"
 
+RDEPENDS_angstrom-base-wifi = "\
+    hostap-utils \
+    hostap-conf \
+    prism3-support \
+    prism3-firmware \
+    acx-firmware \
+    wireless-tools \
+    wpa-supplicant \
+    "
 
 RDEPENDS_angstrom-x11-base-depends := "\
     diet-x11 \

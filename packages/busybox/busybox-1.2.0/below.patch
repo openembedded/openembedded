@@ -1,0 +1,46 @@
+Index: busybox-1.1.0/modutils/modprobe.c
+===================================================================
+--- busybox-1.1.0.orig/modutils/modprobe.c	2006-01-11 06:43:56.000000000 +0100
++++ busybox-1.1.0/modutils/modprobe.c	2006-03-14 16:36:54.000000000 +0100
+@@ -509,6 +509,41 @@
+ 					}
+ 				}
+ 			}
++			else if ((strncmp (buffer, "below", 5) == 0) && isspace (buffer[5])) {
++				char *mod, *deps;
++				if (parse_tag_value (buffer + 6, &mod, &deps)) {
++					struct dep_t *dt;
++
++					for (dt = first; dt; dt = dt->m_next) {
++						if (strcmp (dt->m_name, mod) == 0)
++							break;
++					}
++					if (dt) {
++						char *pp;
++						char *name;
++
++						pp = name = deps;
++
++						for (;;) {
++							while (*pp != 0 && !isspace (*pp))
++								pp++;
++							if (isspace (*pp))
++								*(pp++) = 0;
++							
++							dt->m_depcnt++;
++							dt->m_deparr = (char **) xrealloc (dt->m_deparr,
++											   sizeof (char *) * dt->m_depcnt);
++							dt->m_deparr[dt->m_depcnt - 1] = bb_xstrdup (name);
++
++							while (isspace (*pp))
++								pp++;
++							name = pp;
++							if (*pp == 0)
++								break;
++						}
++					}
++				}
++			}
+ 		}
+ 	}
+ 	close ( fd );

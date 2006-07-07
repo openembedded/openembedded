@@ -1,0 +1,2 @@
+# Include nodes for the SCI/SCIF serial ports on SH* boards
+/dev/ttySC	c	640	0	5	204	8	0	1	3
