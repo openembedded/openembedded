@@ -2,7 +2,7 @@ DESCRIPTION= "Everything Python"
 MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 HOMEPAGE = "http://www.vanille.de/projects/python.spy"
 LICENSE = "MIT"
-PR = "ml7"
+PR = "ml8"
 
 BROKEN_BECAUSE_GCC4 = "\
 		python-egenix-mx-base"
@@ -68,6 +68,7 @@ RDEPENDS = "\
 		python-urwid		\
 		python-vmaps		\
 		python-vorbis		\
+		python-webpy		\
 		moin			\
 		plone			\
 		twisted			\
