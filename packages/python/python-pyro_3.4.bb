@@ -10,9 +10,9 @@ LICENSE = "MIT"
 RDEPENDS = "python-core python-crypt python-io python-lang python-math \
 python-netserver python-pickle python-re python-shell python-stringold \
 python-threading"
-PR = "r1"
+PR = "r2"
 
-SRC_URI = "cvs://anonymous:@cvs.sourceforge.net/cvsroot/pyro;module=Pyro;method=pserver;tag=pyro3_4  \
+SRC_URI = "cvs://anonymous:@pyro.cvs.sourceforge.net/cvsroot/pyro;module=Pyro;method=pserver;tag=pyro3_4  \
            file://pyro-unattended-install.patch;patch=1;pnum=0"
 S="${WORKDIR}/Pyro"
 

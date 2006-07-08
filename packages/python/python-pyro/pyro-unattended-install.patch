@@ -13,4 +13,4 @@
  [install]
  optimize=1
 -#install-scripts=/foo/bar
-+install-scripts= ../image/usr/lib/python2.3
++install-scripts= ../image/usr/lib/python2.4
