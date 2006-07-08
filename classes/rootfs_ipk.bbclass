@@ -139,7 +139,14 @@ remove_init_link () {
 	fi
 }
 
+make_zimage_symlink_relative () {
+	if [ -L ${IMAGE_ROOTFS}/boot/zImage ]; then
+		(cd ${IMAGE_ROOTFS}/boot/ && for i in `ls zImage-* | sort`; do ln -sf $i zImage; done)
+	fi
+}
+
 # export the zap_root_password, create_etc_timestamp and remote_init_link
-EXPORT_FUNCTIONS zap_root_password create_etc_timestamp remove_init_link
+EXPORT_FUNCTIONS zap_root_password create_etc_timestamp remove_init_link make_zimage_symlink_relative
+ 
 
 addtask rootfs before do_build after do_install
