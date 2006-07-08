@@ -3,9 +3,9 @@ SECTION = "devel/python"
 PRIORITY = "optional"
 MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 LICENSE = "PSF"
-RDEPENDS = "python-netserver"
+RDEPENDS = "python-netserver python-netclient python-pprint"
 
-PR = "ml0"
+PR = "ml1"
 
 SRC_URI = "file://web.py"
 S = "${WORKDIR}"
