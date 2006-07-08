@@ -6,7 +6,7 @@ LICENSE = "LGPL"
 
 RV := "${PV}"
 PV = "0.1+cvs-${RV}"
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "cvs://cvs:@pubcvs.arm.linux.org.uk/mnt/src/cvsroot;module=tslib;date=${RV} \
            file://usec_fix.patch;patch=1 \
@@ -38,7 +38,7 @@ do_install_append() {
 	install -d ${D}${sysconfdir}/profile.d/
 	install -m 0755 ${WORKDIR}/tslib.sh ${D}${sysconfdir}/profile.d/
 	case ${MACHINE} in
-	a780 | e680 | h3600 | h3900 | h1940 | h6300 | h2200 | ipaq-pxa270 | blueangel)
+	a780 | e680 | h3600 | h3900 | h1940 | h6300 | h2200 | ipaq-pxa270 | blueangel | h4000)
 		install -d ${D}${datadir}/tslib
 		for f in ts-2.6.conf ts.conf-h3600-2.4; do
 			install -m 0644 ${WORKDIR}/$f ${D}${datadir}/tslib/
@@ -80,6 +80,8 @@ RDEPENDS_tslib-conf_h2200 = "detect-stylus"
 RDEPENDS_tslib-conf_h3600 = "detect-stylus"
 RDEPENDS_tslib-conf_h3900 = "detect-stylus"
 RDEPENDS_tslib-conf_h6300 = "detect-stylus"
+RDEPENDS_tslib-conf_blueangel = "detect-stylus"
+RDEPENDS_tslib-conf_h4000 = "detect-stylus"
 
 PACKAGE_ARCH_tslib-conf = "${MACHINE_ARCH}"
 PACKAGE_ARCH_mnci = "${MACHINE_ARCH}"
