@@ -62,7 +62,7 @@ do_install() {
 		   DESTDIR=${D} install
 }
 
-include python-${PV}-manifest.inc
+require python-${PV}-manifest.inc
 
 RPROVIDES_python-core = "python"
 RPROVIDES_python-curses = "python"
