@@ -1,7 +1,7 @@
 # Only list packages which will not build 'cross' in here.
 DESCRIPTION = "Packages that are to be compiled natively for the SlugOS firmware"
 LICENSE = "MIT"
-PR = "r0"
+PR = "r1"
 
 INHIBIT_DEFAULT_DEPS = "1"
 EXCLUDE_FROM_WORLD = "1"
@@ -10,6 +10,7 @@ PACKAGES = "${PN}"
 
 SLUGOS_NATIVE_PACKAGES = "\
 	apache \
+	php-native \
 	"
 
 SLUGOS_BROKEN_NATIVE_PACKAGES = "\
