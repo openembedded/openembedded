@@ -6,7 +6,7 @@ DESCRIPTION = "Packages that are compatible with the SlugOS firmware"
 MAINTAINER = "NSLU2 Linux <nslu2-linux@yahoogroups.com>"
 HOMEPAGE = "http://www.nslu2-linux.org"
 LICENSE = "MIT"
-PR = "r5"
+PR = "r6"
 CONFLICTS = "db3"
 PROVIDES += "${SLUGOS_IMAGENAME}-packages"
 
@@ -72,6 +72,7 @@ SLUGOS_PACKAGES = "\
 	grep \
 	gtk-doc \
 	gzip \
+	hdparm \
 	icecast \
 	ifupdown \
 	ipkg-utils \
@@ -94,6 +95,7 @@ SLUGOS_PACKAGES = "\
 	libusb \
 	libvorbis \
 	libxml2 \
+	lirc \
 	lrzsz \
 	lsof \
 	lvm2 \
