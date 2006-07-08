@@ -5,13 +5,14 @@
 #
 DESCRIPTION = "Packages that are required for the SlugOS native build environment"
 LICENSE = "MIT"
-PR = "r2"
+PR = "r3"
 
 INHIBIT_DEFAULT_DEPS = "1"
 EXCLUDE_FROM_WORLD = "1"
 ALLOW_EMPTY = "1"
 PACKAGES = "${PN}"
 PROVIDES += "${SLUGOS_IMAGENAME}-native"
+DEPENDS = "libc6-dev"
 
 # Run-time only (RDEPENDS) stuff - no package explicitly provides
 # these targets.
@@ -57,7 +58,6 @@ SLUGOS_NATIVE = "\
 	gcc \
 	gnu-config \
 	gzip \
-	libc6-dev \
 	libtool \
 	lrzsz \
 	m4 \
