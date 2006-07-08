@@ -128,9 +128,9 @@ RDEPENDS_python-fcntl="python-core"
 FILES_python-fcntl="${libdir}/python2.4/lib-dynload/fcntl.so "
 
 DESCRIPTION_python-netclient="Python Internet Protocol Clients"
-PR_python-netclient="ml0"
+PR_python-netclient="ml1"
 RDEPENDS_python-netclient="python-core python-datetime python-io python-lang python-logging python-mime"
-FILES_python-netclient="${libdir}/python2.4/_LWPCookieJar.* ${libdir}/python2.4/_MozillaCookieJar.* ${libdir}/python2.4/base64.* ${libdir}/python2.4/cookielib.* ${libdir}/python2.4/ftplib.* ${libdir}/python2.4/gopherlib.* ${libdir}/python2.4/hmac.* ${libdir}/python2.4/httplib.* ${libdir}/python2.4/mimetypes.* ${libdir}/python2.4/nntplib.* ${libdir}/python2.4/poplib.* ${libdir}/python2.4/smtplib.* ${libdir}/python2.4/telnetlib.* ${libdir}/python2.4/urllib.* ${libdir}/python2.4/urllib2.* ${libdir}/python2.4/urlparse.* "
+FILES_python-netclient="${libdir}/python2.4/_LWPCookieJar.* ${libdir}/python2.4/_MozillaCookieJar.* ${libdir}/python2.4/base64.* ${libdir}/python2.4/cookielib.* ${libdir}/python2.4/ftplib.* ${libdir}/python2.4/gopherlib.* ${libdir}/python2.4/hmac.* ${libdir}/python2.4/httplib.* ${libdir}/python2.4/mimetypes.* ${libdir}/python2.4/nntplib.* ${libdir}/python2.4/poplib.* ${libdir}/python2.4/smtplib.* ${libdir}/python2.4/telnetlib.* ${libdir}/python2.4/urllib.* ${libdir}/python2.4/urllib2.* ${libdir}/python2.4/urlparse.* ${libdir}/python2.4/Cookie.*"
 
 DESCRIPTION_python-pprint="Python Pretty-Print Support"
 PR_python-pprint="ml0"
