@@ -4,7 +4,7 @@ MAINTAINER = "Marcin Juszkiewicz <openembedded@hrw.one.pl>"
 RDEPENDS = "initscripts console-tools"
 LICENSE = "GPL"
 PACKAGE_ARCH = "${MACHINE}"
-PR = "r5"
+PR = "r9"
 
 inherit update-rc.d
 
@@ -25,7 +25,7 @@ do_install () {
     install -m 0755 ${WORKDIR}/keymap ${D}${sysconfdir}/init.d/
 
     case ${MACHINE} in
-        c7x0 | tosa | spitz | akita | collie | poodle )
+        c7x0 | tosa | spitz | akita | borzoi | collie | poodle )
             install -m 0644 ${WORKDIR}/keymap-*.map	${D}${sysconfdir}
             ;;
         *)
