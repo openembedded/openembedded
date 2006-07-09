@@ -4,7 +4,7 @@ LICENSE = "GPL"
 PR = "r0"
 
 COMPATIBLE_HOST = "arm.*-linux"
-#COMPATIBLE_MACHINE = "jornada7xx"
+COMPATIBLE_MACHINE = "jornada7xx"
 
 SRC_URI = "http://www.kernel.orgm/pub/linux/kernel/v2.6/linux-2.6.17.tar.gz \
            file://defconf_jlime \
