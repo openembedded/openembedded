@@ -4,8 +4,8 @@ PROVIDES = "qemu-native"
 
 SRC_URI = "svn://nowt.dyndns.org/svn/qemu;module=trunk;proto=https \
            file://configure.patch;patch=1 \
-           file://trunk_nodocs.patch;patch=1"
-           
+           "
+
 S = "${WORKDIR}/trunk"
 
 inherit autotools native
