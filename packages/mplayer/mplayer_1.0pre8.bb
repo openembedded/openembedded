@@ -2,7 +2,7 @@ DESCRIPTION = "Open Source multimedia player."
 SECTION = "opie/multimedia"
 PRIORITY = "optional"
 HOMEPAGE = "http://www.mplayerhq.hu/"
-DEPENDS = "virtual/libsdl libmad zlib libpng jpeg libungif liba52 fontconfig alsa-lib lzo ncurses lame"
+DEPENDS = "virtual/libsdl libmad zlib libpng jpeg liba52 fontconfig alsa-lib lzo ncurses lame"
 RDEPENDS = "mplayer-common"
 LICENSE = "GPL"
 SRC_URI = "http://www1.mplayerhq.hu/MPlayer/releases/MPlayer-${PV}.tar.bz2 \
@@ -21,7 +21,7 @@ SRC_URI = "http://www1.mplayerhq.hu/MPlayer/releases/MPlayer-${PV}.tar.bz2 \
 MAINTAINER="Graeme Gregory <dp@xora.org.uk>"
 RCONFLICTS_${PN} = "mplayer-atty"
 RREPLACES_${PN} = "mplayer-atty"
-PR = "r1"
+PR = "r2"
 
 PARALLEL_MAKE = ""
 
@@ -75,7 +75,7 @@ EXTRA_OECONF = " \
         --disable-ftp \
         --disable-vstream \
         \
-        --enable-gif \
+        --disable-gif \
         --enable-png \
         --enable-jpeg \
         --disable-libcdio \
