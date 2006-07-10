@@ -1,9 +1,10 @@
 SECTION = "console/network"
 DESCRIPTION = "Utilities for the IP protocol, including traceroute6, \
 tracepath, tracepath6, ping, ping6 and arping."
+SECTION = "console/network"
+MAINTAINER = "Jamie Lenehan <lenehan@twibble.org>"
 LICENSE ="BSD"
-PRIORITY = "optional"
-PR = "r2"
+PR = "r3"
 
 SRC_URI = "http://www.tux.org/pub/people/alexey-kuznetsov/ip-routing/iputils-ss020927.tar.gz \
 	    file://debian-fixes.patch;patch=1 \
@@ -11,7 +12,8 @@ SRC_URI = "http://www.tux.org/pub/people/alexey-kuznetsov/ip-routing/iputils-ss0
 	    file://standard-header-types.patch;patch=1 \
 	    file://tracepath6-mtu-opt.patch;patch=1 \
 	    file://remove-glibc-headers.patch;patch=1 \
-	    file://iputils-retvals.patch;patch=1"
+	    file://iputils-retvals.patch;patch=1 \
+	    file://glibc-2.4-compat.patch;patch=1"
 S = "${WORKDIR}/iputils"
 
 PACKAGES = "${PN}-ping ${PN}-ping6 ${PN}-arping ${PN}-tracepath ${PN}-tracepath6 ${PN}-traceroute6 ${PN}-doc"

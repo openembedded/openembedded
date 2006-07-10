@@ -1,0 +1,78 @@
+This patch renames the ICMP6 variables to the new names, as used in glibc
+2.4. It also provides a header which will define the new names to the old
+names - as used in glibc < 2.4 and uclibc, so that it'll build on
+uclibc, glibc < 2.4 and glibc 2.4.
+
+--- iputils/ping6.c	2006/07/10 02:23:05	1.1
++++ iputils/ping6.c	2006/07/10 02:30:06
+@@ -71,6 +71,7 @@
+ #include <netinet/in.h>
+ #include <netinet/ip6.h>
+ #include <netinet/icmp6.h>
++#include "glibc_compat.h"
+ 
+ /* define to specify we want type0 routing headers */
+ #define IPV6_SRCRT_TYPE_0	0
+@@ -86,7 +87,6 @@
+ #define HAVE_SIN6_SCOPEID 1
+ #endif
+ 
+-
+ uint32_t flowlabel;
+ uint32_t tclass;
+ struct cmsghdr *srcrt;
+@@ -781,7 +781,7 @@
+ 		case ICMP6_DST_UNREACH_ADMIN:
+ 			printf("Administratively prohibited");
+ 			break;
+-		case ICMP6_DST_UNREACH_NOTNEIGHBOR:
++		case ICMP6_DST_UNREACH_BEYONDSCOPE:
+ 			printf("Not neighbour");
+ 			break;
+ 		case ICMP6_DST_UNREACH_ADDR:
+@@ -827,13 +827,13 @@
+ 	case ICMP6_ECHO_REPLY:
+ 		printf("Echo reply");
+ 		break;
+-	case ICMP6_MEMBERSHIP_QUERY:
++	case MLD_LISTENER_QUERY:
+ 		printf("MLD Query");
+ 		break;
+-	case ICMP6_MEMBERSHIP_REPORT:
++	case MLD_LISTENER_REPORT:
+ 		printf("MLD Report");
+ 		break;
+-	case ICMP6_MEMBERSHIP_REDUCTION:
++	case MLD_LISTENER_REDUCTION:
+ 		printf("MLD Reduction");
+ 		break;
+ 	default:
+--- /dev/null	2006-07-03 23:05:35.026189000 +1000
++++ iputils/glibc_compat.h	2006-07-10 12:30:04.000000000 +1000
+@@ -0,0 +1,26 @@
++/*
++ * glibc 2.4 renamed some of the IPv6 related constants.
++ * 
++ * We use the new names and rename them back the old names if the new names
++ * are not definied anyway.
++ */
++#ifndef GLIBC_COMPAT
++#define GLIBC_COMPAT
++
++#ifndef ICMP6_DST_UNREACH_BEYONDSCOPE
++#define ICMP6_DST_UNREACH_BEYONDSCOPE ICMP6_DST_UNREACH_NOTNEIGHBOR
++#endif
++
++#ifndef MLD_LISTENER_QUERY
++#define MLD_LISTENER_QUERY ICMP6_MEMBERSHIP_QUERY
++#endif
++
++#ifndef MLD_LISTENER_REPORT
++#define MLD_LISTENER_REPORT ICMP6_MEMBERSHIP_REPORT
++#endif
++
++#ifndef MLD_LISTENER_REDUCTION
++#define MLD_LISTENER_REDUCTION ICMP6_MEMBERSHIP_REDUCTION
++#endif
++
++#endif
