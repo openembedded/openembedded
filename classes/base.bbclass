@@ -593,7 +593,7 @@ base_do_compile() {
 }
 
 
-addtask stage after do_compile
+addtask stage after do_install
 base_do_stage () {
 	:
 }
@@ -605,7 +605,7 @@ do_populate_staging[dirs] = "${STAGING_DIR}/${TARGET_SYS}/bin ${STAGING_DIR}/${T
 			     ${STAGING_DATADIR} \
 			     ${S} ${B}"
 
-addtask populate_staging after do_compile
+addtask populate_staging after do_stage
 
 #python do_populate_staging () {
 #	if not bb.data.getVar('manifest', d):

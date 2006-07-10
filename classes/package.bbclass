@@ -726,4 +726,4 @@ python package_do_package () {
 do_package[dirs] = "${D}"
 populate_packages[dirs] = "${D}"
 EXPORT_FUNCTIONS do_package do_shlibs do_split_locales mapping_rename_hook
-addtask package before do_build after do_populate_staging
+addtask package before do_stage after do_install
