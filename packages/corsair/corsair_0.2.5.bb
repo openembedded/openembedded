@@ -6,17 +6,10 @@ AUTHOR = "Joe Rumsey <joe@rumsey.org>"
 HOMEPAGE = "http://corsair.sf.net/"
 DEPENDS = "opie-pics"
 RDEPENDS = "opie-pics"
-PV = "0.2.0"
-PR = "r4"
-
-SRCDATE = "20050911"
-#application was released 20050910 - next versions will be released as tarballs
-#corsair-024.patch from 'mistermix' http://www.oesf.org/forums/index.php?showtopic=14661
 
 inherit palmtop
 
-SRC_URI = "http://ewi546.ewi.utwente.nl/mirror/hrw-oe-sources/corsair_cvs.sourceforge.net__20050911.tar.gz \
-           file://corsair-024.patch;patch=1 \
+SRC_URI = "${SOURCEFORGE_MIRROR}/corsair/corsair-${PV}.tar.gz \
            file://corsair-opie.patch;patch=1"
 
 S = "${WORKDIR}/corsair"
