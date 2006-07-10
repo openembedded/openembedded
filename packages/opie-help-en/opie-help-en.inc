@@ -4,6 +4,10 @@ PRIORITY = "optional"
 MAINTAINER = "Team Opie <opie@handhelds.org>"
 LICENSE = "GPL"
 ALLOW_EMPTY = 1
+PACKAGE_ARCH = "all"
+
+PACKAGES += "${PN}"
+RDEPENDS_${PN} = "opie-helpbrowser"
 
 S = "${WORKDIR}/html"
 
