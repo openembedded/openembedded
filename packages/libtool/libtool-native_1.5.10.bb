@@ -20,13 +20,20 @@ do_stage () {
 	oe_libinstall -a -so -C libltdl libltdl ${STAGING_LIBDIR}
 	install -m 0644 libltdl/ltdl.h ${STAGING_INCDIR}/
 	for dir in ${STAGING_DATADIR} ${STAGING_DATADIR_safe}; do
+		ltdldir="${dir}/libtool/libltdl"
 		install -d $dir/libtool \
+			   $ltdldir \
 			   $dir/aclocal
 		install -c config.guess $dir/libtool/config.guess
 		install -c config.sub $dir/libtool/config.sub
 		install -c -m 0644 ltmain.sh $dir/libtool/
 		install -c -m 0644 libtool.m4 $dir/aclocal/
 		install -c -m 0644 ltdl.m4 $dir/aclocal/
+
+		for src in README COPYING.LIB Makefile.am configure.ac \
+				config-h.in ltdl.c ltdl.h; do
+			install -m 0644 libltdl/${src} ${ltdldir}
+		done
 	done
 }
 
