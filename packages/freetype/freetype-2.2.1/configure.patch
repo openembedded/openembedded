@@ -1,0 +1,41 @@
+--- freetype-2.2.1/builds/unix/configure.ac.orig	2006-07-10 10:31:58.000000000 +0100
++++ freetype-2.2.1/builds/unix/configure.ac	2006-07-10 10:33:50.000000000 +0100
+@@ -119,9 +119,9 @@
+ 
+ # Check for system zlib
+ 
+-# don't quote AS_HELP_STRING!
++# don't quote AC_HELP_STRING!
+ AC_ARG_WITH([zlib],
+-  AS_HELP_STRING([--without-zlib],
++  AC_HELP_STRING([--without-zlib],
+                  [use internal zlib instead of system-wide]))
+ if test x$with_zlib != xno && test -z "$LIBZ"; then
+   AC_CHECK_LIB([z], [gzsetparams], [AC_CHECK_HEADER([zlib.h], [LIBZ='-lz'])])
+@@ -135,9 +135,9 @@
+ 
+ # Whether to use Mac OS resource-based fonts.
+ 
+-# don't quote AS_HELP_STRING!
++# don't quote AC_HELP_STRING!
+ AC_ARG_WITH([old-mac-fonts],
+-  AS_HELP_STRING([--with-old-mac-fonts],
++  AC_HELP_STRING([--with-old-mac-fonts],
+                  [allow Mac resource-based fonts to be used]))
+ if test x$with_old_mac_fonts = xyes; then
+   orig_LDFLAGS="${LDFLAGS}"
+--- freetype-2.2.1/builds/unix/unix-cc.in.orig	2006-07-10 10:40:41.000000000 +0100
++++ freetype-2.2.1/builds/unix/unix-cc.in	2006-07-10 10:43:10.000000000 +0100
+@@ -14,8 +14,11 @@
+ 
+ CC           := @CC@
+ COMPILER_SEP := $(SEP)
++SHELL        := @SHELL@
++top_builddir := $(BUILD_DIR)
+ 
+-LIBTOOL ?= $(BUILD_DIR)/libtool
++
++LIBTOOL ?= @LIBTOOL@
+ 
+ 
+ # The object file extension (for standard and static libraries).  This can be
