@@ -1,6 +1,6 @@
 include linux-openzaurus.inc
 
-PR = "r7"
+PR = "r8"
 
 DEFAULT_PREFERENCE = "-1"
 
