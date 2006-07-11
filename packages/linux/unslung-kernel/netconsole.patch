@@ -25,7 +25,7 @@ diff -Naur linux-2.4.22/drivers/net/Makefile.orig linux-2.4.22/drivers/net/Makef
 diff -Naur linux-2.4.22/drivers/net/netconsole.c.orig linux-2.4.22/drivers/net/netconsole.c
 --- linux-2.4.22/drivers/net/netconsole.c.orig	2006-07-02 23:40:44.597695500 -0500
 +++ linux-2.4.22/drivers/net/netconsole.c	2006-07-10 15:58:44.000000000 -0500
-@@ -0,0 +1,347 @@
+@@ -0,0 +1,353 @@
 +/*  linux/drivers/net/netconsole.c
 + *
 + *  Copyright (C) 2001  Ingo Molnar <mingo@redhat.com>
@@ -73,7 +73,7 @@ diff -Naur linux-2.4.22/drivers/net/netconsole.c.orig linux-2.4.22/drivers/net/n
 +
 +static struct net_device *netconsole_dev;
 +static u16 source_port, target_port;
-+static u32 source_ipaddr, target_ip, target_ipaddr;
++static u32 source_ip, target_ip, target_ipaddr;
 +static unsigned char daddr[6] = {0xff, 0xff, 0xff, 0xff, 0xff, 0xff} ;
 +
 +#define NETCONSOLE_VERSION 0x01
@@ -194,8 +194,8 @@ diff -Naur linux-2.4.22/drivers/net/netconsole.c.orig linux-2.4.22/drivers/net/n
 +	iph->ttl      = 64;
 +        iph->protocol = IPPROTO_UDP;
 +	iph->check    = 0;
-+        iph->saddr    = source_ipaddr;
-+        iph->daddr    = target_ipaddr;
++        iph->saddr    = source_ip;
++        iph->daddr    = target_ip;
 +	iph->check    = ip_fast_csum((unsigned char *)iph, iph->ihl);
 +
 +	eth = (struct ethhdr *) skb_push(skb, ETH_HLEN);
@@ -262,7 +262,8 @@ diff -Naur linux-2.4.22/drivers/net/netconsole.c.orig linux-2.4.22/drivers/net/n
 +MODULE_AUTHOR("Ingo Molnar <mingo@redhat.com>");
 +MODULE_DESCRIPTION("kernel network console implementation");
 +MODULE_LICENSE("GPL");
-+MODULE_PARM(target_ip, "s");
++MODULE_PARM(target_ip, "i");
++MODULE_PARM(target_ipaddr, "s");
 +MODULE_PARM(target_eth_byte0, "i");
 +MODULE_PARM(target_eth_byte1, "i");
 +MODULE_PARM(target_eth_byte2, "i");
@@ -306,22 +307,27 @@ diff -Naur linux-2.4.22/drivers/net/netconsole.c.orig linux-2.4.22/drivers/net/n
 +		printk(KERN_ERR "netconsole: network device %s is not an IP protocol device, aborting.\n", dev);
 +		return -1;
 +	}
-+	source_ipaddr = ntohl(in_dev->ifa_list->ifa_local);
-+	if (!source_ipaddr) {
++	source_ip = ntohl(in_dev->ifa_list->ifa_local);
++	if (!source_ip) {
 +		printk(KERN_ERR "netconsole: network device %s has no local address, aborting.\n", dev);
 +		return -1;
 +	}
-+	source_ipaddr = htonl(source_ipaddr);
-+#define IP(x) ((char *)&source_ipaddr)[x]
++	source_ip = htonl(source_ip);
++#define IP(x) ((char *)&source_ip)[x]
 +	printk(KERN_INFO "netconsole: using source IP %i.%i.%i.%i\n",
 +		IP(0), IP(1), IP(2), IP(3));
 +#undef IP
-+	if (!target_ip) {
-+		printk(KERN_ERR "netconsole: target_ip parameter not specified, aborting.\n");
-+		return -1;
++	if (!target_ipaddr) {
++		if (!target_ip) {
++			printk(KERN_ERR "netconsole: neither target_ipaddr nor target_ip parameter not specified, aborting.\n");
++			return -1;
++		} else {
++			target_ip = htonl(target_ip);
++		}
++	} else {
++		target_ip = in_aton(target_ipaddr);
 +	}
-+	target_ipaddr = in_aton(target_ip);
-+#define IP(x) ((char *)&target_ipaddr)[x]
++#define IP(x) ((char *)&target_ip)[x]
 +	printk(KERN_INFO "netconsole: using target IP %i.%i.%i.%i\n",
 +		IP(0), IP(1), IP(2), IP(3));
 +#undef IP

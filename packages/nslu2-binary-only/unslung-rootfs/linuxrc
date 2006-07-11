@@ -13,7 +13,7 @@ if ( [ -f "/.nc" ] ) ; then
     /sbin/insmod ixp425_eth.o
     /sbin/ifconfig ixp0 $NC_SLUGIP
     /bin/echo "Insmod netconsole"
-    /sbin/insmod netconsole.o target_ip=$NC_TARGIP
+    /sbin/insmod netconsole.o target_ipaddr=$NC_TARGIP
     /bin/echo "Redirecting output via nc and restarting /linuxrc ..."
     export RERUN=1
     exec /linuxrc 2>&1 | tee /dev/console | /usr/bin/nc $NC_TARGIP 6666
