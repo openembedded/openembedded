@@ -1,5 +1,8 @@
 DESCRIPTION = "An audio format Conversion library"
-SECTION = "libs"
+HOMEPAGE = "http://www.mega-nerd.com/libsndfile"
+AUTHOR = "Erik de Castro Lopo"
+MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
+SECTION = "libs/multimedia"
 LICENSE = "LGPL"
 PR = "r0"
 
@@ -13,5 +16,6 @@ do_stage() {
 	install -m 0644 ${S}/src/sndfile.h ${STAGING_INCDIR}/
 }
 
+#FIXME package the rest
 PACKAGES = "${PN}"
 FILES_${PN} = "${libdir}/libsndfile.so*"
