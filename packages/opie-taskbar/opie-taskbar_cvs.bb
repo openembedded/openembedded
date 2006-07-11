@@ -1,5 +1,6 @@
 include ${PN}.inc
 PV = "${OPIE_CVS_PV}"
+PR = "r1"
 
 SRC_URI = "${HANDHELDS_CVS};module=opie/core/apps/calibrate \
            ${HANDHELDS_CVS};module=opie/noncore/settings/mediummount \
