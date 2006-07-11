@@ -1,6 +1,6 @@
 SECTION = "base"
 
-PR = "r13"
+PR = "r14"
 
 DEPENDS = "nslu2-linksys-libs nslu2-linksys-sambacodepages"
 
@@ -20,6 +20,7 @@ SRC_URI = "http://nslu.sf.net/downloads/nslu2-linksys-ramdisk-2.3r63-2.tar.bz2 \
 	   file://rc.optware-stop \
 	   file://rc-diversion.patch;patch=1 \
 	   file://rc.1-diversion.patch;patch=1 \
+	   file://rc.1-timestamp.patch;patch=1 \
 	   file://rc.crond-diversion.patch;patch=1 \
 	   file://rc.halt-diversion.patch;patch=1 \
 	   file://rc.local-diversion.patch;patch=1 \

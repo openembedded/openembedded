@@ -1,0 +1,8 @@
+--- nslu2-linksys-ramdisk-2.3r63/etc/rc.d/rc.1~	2006-07-10 19:48:11.000000000 -0500
++++ nslu2-linksys-ramdisk-2.3r63/etc/rc.d/rc.1	2006-07-10 19:48:24.000000000 -0500
+@@ -45,3 +45,5 @@
+ /usr/bin/Set_Led ready
+ /usr/bin/Set_Led beep1
+ /bin/echo  "Checking disk status :"; /usr/sbin/CheckDiskFull 2 >/dev/null
++/bin/sleep 5
++/bin/date

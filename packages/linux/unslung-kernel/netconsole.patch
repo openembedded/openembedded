@@ -23,9 +23,9 @@ diff -Naur linux-2.4.22/drivers/net/Makefile.orig linux-2.4.22/drivers/net/Makef
  # HIPPI adapters
  #
 diff -Naur linux-2.4.22/drivers/net/netconsole.c.orig linux-2.4.22/drivers/net/netconsole.c
---- linux-2.4.22/drivers/net/netconsole.c.orig	1969-12-31 18:00:00.000000000 -0600
-+++ linux-2.4.22/drivers/net/netconsole.c	2006-02-26 16:16:23.000000000 -0600
-@@ -0,0 +1,342 @@
+--- linux-2.4.22/drivers/net/netconsole.c.orig	2006-07-02 23:40:44.597695500 -0500
++++ linux-2.4.22/drivers/net/netconsole.c	2006-07-10 15:58:44.000000000 -0500
+@@ -0,0 +1,347 @@
 +/*  linux/drivers/net/netconsole.c
 + *
 + *  Copyright (C) 2001  Ingo Molnar <mingo@redhat.com>
@@ -38,6 +38,7 @@ diff -Naur linux-2.4.22/drivers/net/netconsole.c.orig linux-2.4.22/drivers/net/n
 + *
 + * 2001-09-17    started by Ingo Molnar.
 + * 2006-02-26    very minor modifications to suit the NSLU2 w/Unslung -- Mike Westerhof.
++ * 2006-07-10    usability mods for Unslung (text only, and IP addrs) -- Mike Westerhof.
 + */
 +
 +/****************************************************************
@@ -72,11 +73,12 @@ diff -Naur linux-2.4.22/drivers/net/netconsole.c.orig linux-2.4.22/drivers/net/n
 +
 +static struct net_device *netconsole_dev;
 +static u16 source_port, target_port;
-+static u32 source_ip, target_ip;
++static u32 source_ipaddr, target_ip, target_ipaddr;
 +static unsigned char daddr[6] = {0xff, 0xff, 0xff, 0xff, 0xff, 0xff} ;
 +
 +#define NETCONSOLE_VERSION 0x01
-+#define HEADER_LEN 5
++/* HEADER_LEN was "5" -- it's zero for Unslung; makes it work better with netcat */
++#define HEADER_LEN 0
 +
 +#define MAX_UDP_CHUNK 1460
 +#define MAX_PRINT_CHUNK (MAX_UDP_CHUNK-HEADER_LEN)
@@ -86,7 +88,9 @@ diff -Naur linux-2.4.22/drivers/net/netconsole.c.orig linux-2.4.22/drivers/net/n
 + * to make sure the message gets out even in
 + * extreme OOM situations.
 + */
-+#define MAX_NETCONSOLE_SKBS 32
++/* Was 32, lowered to 16 for Unslung (to save memory) */
++#define MAX_NETCONSOLE_SKBS 16
++
 +
 +static spinlock_t netconsole_lock = SPIN_LOCK_UNLOCKED;
 +static int nr_netconsole_skbs;
@@ -162,13 +166,14 @@ diff -Naur linux-2.4.22/drivers/net/netconsole.c.orig linux-2.4.22/drivers/net/n
 +
 +	atomic_set(&skb->users, 1);
 +	skb_reserve(skb, total_len - msg_len - HEADER_LEN);
-+	skb->data[0] = NETCONSOLE_VERSION;
-+
-+	spin_lock_irqsave(&sequence_lock, flags);
-+	put_unaligned(htonl(offset), (u32 *) (skb->data + 1));
-+	offset += msg_len;
-+	spin_unlock_irqrestore(&sequence_lock, flags);
-+
++/* Header data removed for Unslung -- its presence makes netcat less useful
++ *	skb->data[0] = NETCONSOLE_VERSION;
++ *
++ *	spin_lock_irqsave(&sequence_lock, flags);
++ *	put_unaligned(htonl(offset), (u32 *) (skb->data + 1));
++ *	offset += msg_len;
++ *	spin_unlock_irqrestore(&sequence_lock, flags);
++ */
 +	memcpy(skb->data + HEADER_LEN, msg, msg_len);
 +	skb->len += msg_len + HEADER_LEN;
 +
@@ -189,8 +194,8 @@ diff -Naur linux-2.4.22/drivers/net/netconsole.c.orig linux-2.4.22/drivers/net/n
 +	iph->ttl      = 64;
 +        iph->protocol = IPPROTO_UDP;
 +	iph->check    = 0;
-+        iph->saddr    = source_ip;
-+        iph->daddr    = target_ip;
++        iph->saddr    = source_ipaddr;
++        iph->daddr    = target_ipaddr;
 +	iph->check    = ip_fast_csum((unsigned char *)iph, iph->ihl);
 +
 +	eth = (struct ethhdr *) skb_push(skb, ETH_HLEN);
@@ -257,7 +262,7 @@ diff -Naur linux-2.4.22/drivers/net/netconsole.c.orig linux-2.4.22/drivers/net/n
 +MODULE_AUTHOR("Ingo Molnar <mingo@redhat.com>");
 +MODULE_DESCRIPTION("kernel network console implementation");
 +MODULE_LICENSE("GPL");
-+MODULE_PARM(target_ip, "i");
++MODULE_PARM(target_ip, "s");
 +MODULE_PARM(target_eth_byte0, "i");
 +MODULE_PARM(target_eth_byte1, "i");
 +MODULE_PARM(target_eth_byte2, "i");
@@ -280,7 +285,7 @@ diff -Naur linux-2.4.22/drivers/net/netconsole.c.orig linux-2.4.22/drivers/net/n
 +	if (!target_port)
 +		target_port = 6666;
 +	if (!source_port)
-+		source_port = 6666;
++		source_port = 6665;
 +	if (!dev)
 +		dev = "ixp0";
 +
@@ -301,13 +306,13 @@ diff -Naur linux-2.4.22/drivers/net/netconsole.c.orig linux-2.4.22/drivers/net/n
 +		printk(KERN_ERR "netconsole: network device %s is not an IP protocol device, aborting.\n", dev);
 +		return -1;
 +	}
-+	source_ip = ntohl(in_dev->ifa_list->ifa_local);
-+	if (!source_ip) {
++	source_ipaddr = ntohl(in_dev->ifa_list->ifa_local);
++	if (!source_ipaddr) {
 +		printk(KERN_ERR "netconsole: network device %s has no local address, aborting.\n", dev);
 +		return -1;
 +	}
-+	source_ip = htonl(source_ip);
-+#define IP(x) ((char *)&source_ip)[x]
++	source_ipaddr = htonl(source_ipaddr);
++#define IP(x) ((char *)&source_ipaddr)[x]
 +	printk(KERN_INFO "netconsole: using source IP %i.%i.%i.%i\n",
 +		IP(0), IP(1), IP(2), IP(3));
 +#undef IP
@@ -315,8 +320,8 @@ diff -Naur linux-2.4.22/drivers/net/netconsole.c.orig linux-2.4.22/drivers/net/n
 +		printk(KERN_ERR "netconsole: target_ip parameter not specified, aborting.\n");
 +		return -1;
 +	}
-+	target_ip = htonl(target_ip);
-+#define IP(x) ((char *)&target_ip)[x]
++	target_ipaddr = in_aton(target_ip);
++#define IP(x) ((char *)&target_ipaddr)[x]
 +	printk(KERN_INFO "netconsole: using target IP %i.%i.%i.%i\n",
 +		IP(0), IP(1), IP(2), IP(3));
 +#undef IP

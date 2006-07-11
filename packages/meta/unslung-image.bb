@@ -1,5 +1,5 @@
 LICENSE = MIT
-PR = "r16"
+PR = "r17"
 
 IMAGE_BASENAME = "unslung"
 
@@ -19,6 +19,7 @@ IPKG_INSTALL = "kernel update-modules unslung-rootfs \
 	libc6-unslung slingbox ipkg \
 	cpio \
 	findutils \
+	kernel-module-netconsole \
 	${UNSLUNG_EXTRA_INSTALL}"
 
 IMAGE_PREPROCESS_COMMAND += "unslung_clean_image; "
