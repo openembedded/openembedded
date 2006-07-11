@@ -38,6 +38,7 @@ RDEPENDS = "\
 		python-pexpect		\
 		python-pychecker	\
 		python-pycurl		\
+		python-pyephem		\
 		python-pyfits		\
 		python-pyflakes		\
 		python-pygoogle		\
