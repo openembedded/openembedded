@@ -208,12 +208,12 @@ monotone --db=OE.db co -b org.openembedded.dev
 
         <section>
             <title>Configuring OpenEmbedded</title>
-            <para></para>
+            <para>This section is a stub, help us by expanding it</para>
         </section>
 
         <section>
             <title>Building Software</title>
-            <para></para>
+            <para>This section is a stub, help us by expanding it</para>
         </section>
     </chapter>
 
@@ -239,12 +239,12 @@ they will be added automatically.</para>
 
         <section>
             <title>BitBake Collections <anchor id="collections" /></title>
-            <para></para>
+            <para>This section is a stub, help us by expanding it</para>
         </section>
 
         <section>
             <title>Overrides <anchor id="overrides" /></title>
-            <para></para>
+            <para>This section is a stub, help us by expanding it</para>
         </section>
     </chapter>
 
@@ -253,22 +253,22 @@ they will be added automatically.</para>
 
         <section>
             <title>Creating a new Distribution</title>
-            <para></para>
+            <para>This section is a stub, help us by expanding it</para>
         </section>
 
         <section>
             <title>Adding a new Machine</title>
-            <para></para>
+            <para>This section is a stub, help us by expanding it</para>
         </section>
 
         <section>
             <title>Adding a new Package</title>
-            <para></para>
+            <para>This section is a stub, help us by expanding it</para>
         </section>
 
         <section>
             <title>Creating your own image</title>
-            <para></para>
+            <para>This section is a stub, help us by expanding it</para>
         </section>
 
         <section>
@@ -464,7 +464,7 @@ needed library and use ${BOOTSTRAP_EXTRA_RDEPENDS} to make sure this package is 
 
         <section>
             <title>Using a new package format</title>
-            <para></para>
+            <para>This section is a stub, help us by expanding it</para>
         </section>
     </chapter>
 
