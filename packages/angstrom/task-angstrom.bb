@@ -1,5 +1,5 @@
 DESCRIPTION = "Task packages for the Angstrom distribution"
-PR = "r3"
+PR = "r4"
 ALLOW_EMPTY = "1"
 
 BOOTMODULES_RRECOMMENDS ?= ""
@@ -22,6 +22,7 @@ RDEPENDS_angstrom-base-depends = "\
     base-passwd tinylogin \ 
     busybox \
     udev \
+    update-modules module-init-tools \
     sysvinit initscripts sysvinit-pidof \
     netbase dropbear \
     angstrom-version \

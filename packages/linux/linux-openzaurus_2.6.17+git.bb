@@ -1,6 +1,6 @@
 include linux-openzaurus.inc
 
-PR = "r4"
+PR = "r5"
 
 DEFAULT_PREFERENCE = "-1"
 
@@ -35,6 +35,7 @@ SRC_URI = "git://rsync.kernel.org/pub/scm/linux/kernel/git/torvalds/linux-2.6.gi
            ${RPSRC}/locomo_kbd_tweak-r0.patch;patch=1 \
            ${RPSRC}/poodle_pm-r1.patch;patch=1 \
            ${RPSRC}/pxafb_changeres-r1.patch;patch=1 \
+           ${RPSRC}/poodle_audio-r0.patch;patch=1 \
            file://serial-add-support-for-non-standard-xtals-to-16c950-driver.patch;patch=1 \
            file://hrw-pcmcia-ids-r3.patch;patch=1 \
            ${RPSRC}/logo_oh-r0.patch.bz2;patch=1;status=unmergable \

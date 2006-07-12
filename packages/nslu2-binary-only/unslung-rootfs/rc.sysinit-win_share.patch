@@ -1,0 +1,15 @@
+--- nslu2-linksys-ramdisk-2.3r63/etc/rc.d/rc.sysinit.orig     2006-07-11 01:36:28.000000000 -0500
++++ nslu2-linksys-ramdisk-2.3r63/etc/rc.d/rc.sysinit  2006-07-11 10:10:29.000000000 -0500
+@@ -43,6 +43,12 @@
+   > /var/log/wtmp
+ fi
+ 
++# Clean up /etc/win_share.info (fixes bug where shares appear
++# multiple times. Do not create the file if it doesn't exist, though.
++if ( [ -f /etc/win_share.info ] ) ; then
++  > /etc/win_share.info
++fi
++
+ /bin/echo  "Starting Hostname :"; hostname  ${HOSTNAME}; check_status
+ #/bin/echo  "Starting System Log :"; . /etc/rc.d/rc.syslogd
+ /bin/echo  "Starting Modules :"; . /etc/rc.d/rc.modules
