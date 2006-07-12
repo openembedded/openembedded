@@ -1,0 +1,16 @@
+
+#
+# Signed off by Michael 'Mickey' Lauer <mickey@Vanille.de>
+#
+
+--- kdenox/konq-embed/dropin/kapplication.h~gcc4
++++ kdenox/konq-embed/dropin/kapplication.h
+@@ -122,7 +122,7 @@
+    // required since kdelibs 3.4
+    void updateUserTimestamp(unsigned long = 0) {}
+ 
+-   static int KApplication::startDragDistance();
++   static int startDragDistance();
+ 
+ signals:
+     // required by KHTMLView
