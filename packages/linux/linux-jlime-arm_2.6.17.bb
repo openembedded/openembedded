@@ -34,7 +34,7 @@ KERNEL_IMAGETYPE = "zImage"
 FILES_kernel-image = "/boot/${KERNEL_IMAGETYPE}*"
 
 do_configure_prepend() {
-	install -m 0644 ${WORKDIR}/defconfig_jlime ${S}/.config
+	install -m 0644 ${WORKDIR}/defconf_jlime ${S}/.config
 }
 
 do_deploy() {

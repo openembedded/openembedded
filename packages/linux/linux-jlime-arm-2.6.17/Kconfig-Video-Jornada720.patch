@@ -1,6 +1,6 @@
---- linux-2.6.17/drivers/video/Kconfig_orig	2006-07-02 23:34:29.000000000 +0000
-+++ linux-2.6.17/drivers/video/Kconfig	2006-07-02 23:38:36.000000000 +0000
-@@ -613,6 +613,17 @@
+--- linux-2.6.17-vanilla/drivers/video/Kconfig	2006-06-18 01:49:35.000000000 +0000
++++ linux-2.6.17/drivers/video/Kconfig	2006-07-10 17:06:11.000000000 +0000
+@@ -613,6 +613,16 @@
  	  framebuffer.  Product specs at
  	  <http://www.erd.epson.com/vdc/html/products.htm>.
  
@@ -10,7 +10,6 @@
 +	select FB_CFB_FILLRECT
 +	select FB_CFB_COPYAREA
 +	select FB_CFB_IMAGEBLIT
-+	select FB_SOFT_CURSOR
 +	help
 +	Support for the 1356 framebuffer device on the HP Jornada
 +	710/720/728 hanheld pc.

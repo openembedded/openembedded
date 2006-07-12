@@ -1,6 +1,6 @@
---- linux-2.6.17/drivers/video/epson1356fb.c_orig	2006-07-03 00:20:43.000000000 +0000
-+++ linux-2.6.17/drivers/video/epson1356fb.c	2006-07-03 00:16:37.000000000 +0000
-@@ -0,0 +1,341 @@
+--- linux-2.6.17-vanilla/drivers/video/epson1356fb.c	1970-01-01 00:00:00.000000000 +0000
++++ linux-2.6.17/drivers/video/epson1356fb.c	2006-07-10 17:06:11.000000000 +0000
+@@ -0,0 +1,345 @@
 +/*
 + * linux/drivers/video/epson1356fb.c -- Epson 1356 LCD Controller Frame Buffer Device
 + *
@@ -34,7 +34,11 @@
 +#include <linux/dma-mapping.h>
 +
 +#include <asm/uaccess.h>
++#include <asm/hardware.h>
++
 +#include <asm/arch/jornada720.h>
++
++#include "console/fbcon.h"
 +
 +u32 pseudo_pal[16];
 +

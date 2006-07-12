@@ -1,5 +1,5 @@
---- linux-2.6.17/drivers/video/Makefile_orig	2006-07-02 23:39:37.000000000 +0000
-+++ linux-2.6.17/drivers/video/Makefile	2006-07-02 23:40:15.000000000 +0000
+--- linux-2.6.17-vanilla/drivers/video/Makefile	2006-06-18 01:49:35.000000000 +0000
++++ linux-2.6.17/drivers/video/Makefile	2006-07-10 17:06:11.000000000 +0000
 @@ -75,6 +75,7 @@
  obj-$(CONFIG_FB_SUN3)             += sun3fb.o
  obj-$(CONFIG_FB_HIT)              += hitfb.o

@@ -1,6 +1,6 @@
---- linux-2.6.17/drivers/input/keyboard/jornada720_kbd.c_orig	2006-07-03 00:18:52.000000000 +0000
-+++ linux-2.6.17/drivers/input/keyboard/jornada720_kbd.c	2006-07-03 00:16:36.000000000 +0000
-@@ -0,0 +1,97 @@
+--- linux-2.6.17-vanilla/drivers/input/keyboard/jornada720_kbd.c	1970-01-01 00:00:00.000000000 +0000
++++ linux-2.6.17/drivers/input/keyboard/jornada720_kbd.c	2006-07-10 17:06:11.000000000 +0000
+@@ -0,0 +1,98 @@
 +/*
 + * Jornada 720 keyboard interface
 + */
@@ -25,7 +25,7 @@
 +
 +static char jornada720_kbd_name[] = "Jornada 720 keyboard";
 +
-+static struct input_dev dev;
++static struct input_dev *dev;
 +
 +static unsigned char jornada720_normal_keymap[128] = {
 +	0, 1, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 87, KEY_VOLUMEUP, KEY_VOLUMEDOWN, KEY_MUTE,
@@ -55,12 +55,12 @@
 +		keycode = jornada720_normal_keymap[key];
 +
 +		if (mcu_data < 128) {
-+			input_report_key(&dev, keycode, 1);
-+			input_sync(&dev);
++			input_report_key(dev, keycode, 1);
++			input_sync(dev);
 +		}
 +		else {
-+			input_report_key(&dev, keycode, 0);
-+			input_sync(&dev);
++			input_report_key(dev, keycode, 0);
++			input_sync(dev);
 +		}
 +	}
 +
@@ -74,25 +74,26 @@
 +	int i;
 +	printk("jorada720_kbd: Jornada 720 keyboard\n");
 +	
-+	init_input_dev(&dev);
-+	dev.evbit[0] = BIT(EV_KEY) | BIT(EV_REP);
-+	dev.keybit[LONG(KEY_SUSPEND)] |= BIT(KEY_SUSPEND);
++	/*init_input_dev(&dev);*/
++	dev = input_allocate_device();
++	dev->evbit[0] = BIT(EV_KEY) | BIT(EV_REP);
++	dev->keybit[LONG(KEY_SUSPEND)] |= BIT(KEY_SUSPEND);
 +	
 +	for ( i=0 ; i<=128 ; i++ ) {
 +		if (!(jornada720_normal_keymap[i])) {
 +		}
 +		else
-+			set_bit(jornada720_normal_keymap[i], dev.keybit);
++			set_bit(jornada720_normal_keymap[i], dev->keybit);
 +	}
 +	
-+	dev.name = jornada720_kbd_name;
++	dev->name = jornada720_kbd_name;
 +
 +	if (request_irq(GPIO_JORNADA720_KEYBOARD_IRQ, jornada720_keyboard_interrupt, SA_INTERRUPT, "Jornada720 Keyboard", NULL))
 +		printk("Unable to grab Jornada 720 keyboard IRQ!\n");
 +		
 +	set_irq_type(GPIO_JORNADA720_KEYBOARD_IRQ, IRQT_FALLING);
 +			
-+	input_register_device(&dev);
++	input_register_device(dev);
 +	
 +	return 0;
 +}

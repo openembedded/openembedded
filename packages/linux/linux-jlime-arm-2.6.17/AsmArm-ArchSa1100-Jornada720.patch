@@ -1,13 +1,23 @@
---- linux-2.6.17/include/asm-arm/arch-sa1100/jornada720.h_orig	2006-07-02 23:42:42.000000000 +0000
-+++ linux-2.6.17/include/asm-arm/arch-sa1100/jornada720.h	2006-07-02 23:50:32.000000000 +0000
-@@ -19,9 +19,37 @@
+--- linux-2.6.17-vanilla/include/asm-arm/arch-sa1100/jornada720.h	2006-06-18 01:49:35.000000000 +0000
++++ linux-2.6.17/include/asm-arm/arch-sa1100/jornada720.h	2006-07-10 17:06:11.000000000 +0000
+@@ -11,6 +11,8 @@
+ #error "include <asm/hardware.h> instead"
+ #endif
+ 
++#define jornada720_mcu_read() jornada720_mcu_byte(MCU_TxDummy)
++
+ #define SA1111_BASE             (0x40000000)
+ 
+ #define GPIO_JORNADA720_KEYBOARD	GPIO_GPIO(0)
+@@ -19,9 +21,38 @@
  #define GPIO_JORNADA720_KEYBOARD_IRQ	IRQ_GPIO0
  #define GPIO_JORNADA720_MOUSE_IRQ		IRQ_GPIO9
  
 +/* Epson 1356 LCD controll parameters */
-+#define REGISTER_OFFSET ((unsigned char *) 0xf00000000)
-+#define DISP_MEM_OFFSET ((unsigned char *) 0xf10000000)
-+#define DISP_MEM_OFFSET_PHYS ((unsigned char *) 0x482000000)
++#define REGISTER_OFFSET ((unsigned char *) 0xf0000000/* 0 */)
++#define DISP_MEM_OFFSET ((unsigned char *) 0xf1000000/* 0 */)
++#define DISP_MEM_OFFSET_PHYS ((unsigned char *) 0x48200000/* 0 filip wtf? */)
++#define ALLOCATED_FB_MEM_SIZE 0x80000 /* display memory size (512kb) */
 +
 +#define MAX_BPP              16
 +#define MAX_XRES            640
@@ -34,7 +44,7 @@
  void jornada720_mcu_init(void);
 +int  jornada720_mcu_byte(int arg_data);
 +int  jornada720_mcu_start(int arg_data);
-+voide jornada720_mcu_end(void);
++void jornada720_mcu_end(void);
  void jornada_contrast(int arg_contrast);
  void jornada720_battery(void);
  int jornada720_getkey(unsigned char *data, int size);
