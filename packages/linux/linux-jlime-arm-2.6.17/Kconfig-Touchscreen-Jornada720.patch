@@ -1,5 +1,5 @@
---- linux-2.6.17/drivers/input/touchscreen/Kconfig_orig	2006-07-02 23:31:00.000000000 +0000
-+++ linux-2.6.17/drivers/input/touchscreen/Kconfig	2006-07-02 23:32:53.000000000 +0000
+--- linux-2.6.17-vanilla/drivers/input/touchscreen/Kconfig	2006-06-18 01:49:35.000000000 +0000
++++ linux-2.6.17/drivers/input/touchscreen/Kconfig	2006-07-10 17:06:11.000000000 +0000
 @@ -108,4 +108,11 @@
  	  To compile this driver as a module, choose M here: the
  	  module will be called hp680_ts_input.
@@ -9,6 +9,6 @@
 +	depends on SA1100_JORNADA720
 +	help
 +	  Say Y here if you are using a HP Jornada 710/720/728 handheld
-+	  and want to user the touchscreen.
++	  and want to use the touchscreen.
 +	  
  endif

@@ -9,16 +9,16 @@ PRIORITY = "optional"
 DEPENDS += "glib-2.0-native gtk-doc"
 DEPENDS += "virtual/libiconv virtual/libintl"
 PACKAGES =+ "glib-2.0-utils "
-PR = "r2"
+PR = "r1"
 
 LEAD_SONAME = "libglib-2.0.*"
+FILES_${PN} = "${libdir}/lib*.so.*"
+FILES_${PN}-dev += "${libdir}/glib-2.0/include ${datadir}/glib-2.0/gettext"
 FILES_glib-2.0-utils = "${bindir}/*"
 
 EXTRA_OECONF = "--disable-debug"
 
-DEFAULT_PREFERENCE="-1"
-
-SRC_URI = "http://download.gnome.org/sources/glib/2.10//glib-${PV}.tar.bz2 \
+SRC_URI = "ftp://ftp.gtk.org/pub/gtk/v2.8/glib-${PV}.tar.bz2 \
            file://glibconfig-sysdefs.h \
            file://configure-libtool.patch;patch=1"
 
@@ -37,11 +37,7 @@ do_configure_prepend () {
 }
 
 do_stage () {
-	oe_libinstall -so -C glib libglib-2.0 ${STAGING_LIBDIR}
-	oe_libinstall -so -C gmodule libgmodule-2.0 ${STAGING_LIBDIR}
-	oe_libinstall -so -C gthread libgthread-2.0 ${STAGING_LIBDIR}
-	oe_libinstall -so -C gobject libgobject-2.0 ${STAGING_LIBDIR}
-	autotools_stage_includes
+	autotools_stage_all
 	install -d ${STAGING_INCDIR}/glib-2.0/glib
 	install -m 0755 ${S}/glibconfig.h ${STAGING_INCDIR}/glib-2.0/glibconfig.h
 	install -d ${STAGING_DATADIR}/aclocal

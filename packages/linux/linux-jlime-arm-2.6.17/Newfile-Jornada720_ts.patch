@@ -1,5 +1,5 @@
---- linux-2.6.17/drivers/input/touchscreen/jornada720_ts.c_orig	2006-07-03 00:17:18.000000000 +0000
-+++ linux-2.6.17/drivers/input/touchscreen/jornada720_ts.c	2006-07-03 00:16:37.000000000 +0000
+--- linux-2.6.17-vanilla/drivers/input/touchscreen/jornada720_ts.c	1970-01-01 00:00:00.000000000 +0000
++++ linux-2.6.17/drivers/input/touchscreen/jornada720_ts.c	2006-07-10 17:06:11.000000000 +0000
 @@ -0,0 +1,103 @@
 +/*
 + * Jornada 720 touchscreen interface based on Jornada 56x interface
@@ -25,7 +25,7 @@
 +
 +static char jornada720_ts_name[] = "Jornada 720 touchscreen";
 +
-+static struct input_dev dev;
++static struct input_dev *dev;
 +
 +static irqreturn_t jornada720_mouse_interrupt(int irq, void *dev_id, struct pt_regs *regs)
 +{
@@ -37,9 +37,9 @@
 +	down = ( (GPLR & GPIO_JORNADA720_MOUSE) == 0);
 +	
 +	if(!down) {
-+		input_report_key(&dev, BTN_TOUCH, down); /* report a pen up */
-+		input_report_abs(&dev, ABS_PRESSURE, 0);
-+		input_sync(&dev);
++		input_report_key(dev, BTN_TOUCH, down); /* report a pen up */
++		input_report_abs(dev, ABS_PRESSURE, 0);
++		input_sync(dev);
 +		return IRQ_HANDLED;
 +	}
 +	
@@ -68,11 +68,11 @@
 +	x = (X[0] + X[1] + X[2])/3;
 +	y = (Y[0] + Y[1] + Y[2])/3;
 +	
-+	input_report_key(&dev, BTN_TOUCH, down);
-+	input_report_abs(&dev, ABS_X, x);
-+	input_report_abs(&dev, ABS_Y, y);
-+	input_report_abs(&dev, ABS_PRESSURE, 1);
-+	input_sync(&dev);
++	input_report_key(dev, BTN_TOUCH, down);
++	input_report_abs(dev, ABS_X, x);
++	input_report_abs(dev, ABS_Y, y);
++	input_report_abs(dev, ABS_PRESSURE, 1);
++	input_sync(dev);
 +	
 +	return IRQ_HANDLED;
 +	
@@ -82,22 +82,22 @@
 +{
 +	printk("jornada720_ts: Jornada 720 touchscreen\n");
 +	
-+	init_input_dev(&dev);
-+	dev.evbit[0] = BIT(EV_KEY) | BIT(EV_ABS);
-+	dev.absbit[0] = BIT(ABS_X) | BIT(ABS_Y) | BIT(ABS_PRESSURE);
-+	dev.keybit[LONG(BTN_TOUCH)] = BIT(BTN_TOUCH);
++	dev = input_allocate_device();
++	dev->evbit[0] = BIT(EV_KEY) | BIT(EV_ABS);
++	dev->absbit[0] = BIT(ABS_X) | BIT(ABS_Y) | BIT(ABS_PRESSURE);
++	dev->keybit[LONG(BTN_TOUCH)] = BIT(BTN_TOUCH);
 +	
-+	dev.absmin[ABS_X] = 270; dev.absmin[ABS_Y] = 180;
-+	dev.absmax[ABS_X] = 3900;  dev.absmax[ABS_Y] = 3700;
++	dev->absmin[ABS_X] = 270; dev->absmin[ABS_Y] = 180;
++	dev->absmax[ABS_X] = 3900;  dev->absmax[ABS_Y] = 3700;
 +	
-+	dev.name = jornada720_ts_name;
++	dev->name = jornada720_ts_name;
 +
 +	if (request_irq(GPIO_JORNADA720_MOUSE_IRQ, jornada720_mouse_interrupt, SA_INTERRUPT, "Jornada720 Mouse", NULL))
 +		printk("Unable to grab Jornada 720 touchscreen IRQ!\n");
 +		
 +	set_irq_type(GPIO_JORNADA720_MOUSE_IRQ, IRQT_RISING);
 +	
-+	input_register_device(&dev);
++	input_register_device(dev);
 +	
 +	return 0;
 +}
