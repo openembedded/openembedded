@@ -9,3 +9,9 @@ S = "${WORKDIR}/bitbake-${PV}"
 inherit distutils
 
 include bitbake-package.inc
+
+RDEPENDS += "python-shell python-lang python-textutils  python-pickle"
+
+PR = "r1"
+
+
