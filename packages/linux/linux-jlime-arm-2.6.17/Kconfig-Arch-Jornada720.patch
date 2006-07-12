@@ -1,5 +1,5 @@
---- linux-2.6.17/arch/arm/Kconfig_orig	2006-07-02 20:41:49.000000000 +0000
-+++ linux-2.6.17/arch/arm/Kconfig	2006-07-02 20:42:57.000000000 +0000
+--- linux-2.6.17-vanilla/arch/arm/Kconfig	2006-06-18 01:49:35.000000000 +0000
++++ linux-2.6.17/arch/arm/Kconfig	2006-07-10 17:06:11.000000000 +0000
 @@ -669,7 +669,7 @@
  
  config CPU_FREQ_SA1110

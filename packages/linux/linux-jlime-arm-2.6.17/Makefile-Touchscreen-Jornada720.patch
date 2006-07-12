@@ -1,5 +1,5 @@
---- linux-2.6.17/drivers/input/touchscreen/Makefile_orig	2006-07-02 23:28:02.000000000 +0000
-+++ linux-2.6.17/drivers/input/touchscreen/Makefile	2006-07-02 23:29:42.000000000 +0000
+--- linux-2.6.17-vanilla/drivers/input/touchscreen/Makefile	2006-06-18 01:49:35.000000000 +0000
++++ linux-2.6.17/drivers/input/touchscreen/Makefile	2006-07-10 17:06:11.000000000 +0000
 @@ -12,3 +12,4 @@
  obj-$(CONFIG_TOUCHSCREEN_MTOUCH) += mtouch.o
  obj-$(CONFIG_TOUCHSCREEN_MK712)	+= mk712.o
