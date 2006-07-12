@@ -1,16 +1,10 @@
-PR = "r1"
 DESCRIPTION = "GNOME XSLT library"
 SECTION = "libs"
 PRIORITY = "optional"
-MAINTAINER = "Chris Larson <kergoth@handhelds.org>"
 DEPENDS = "libxml2"
 LICENSE = "MIT"
-PACKAGES = "${PN}-dev ${PN}-utils ${PN} ${PN}-doc ${PN}-locale"
 
-FILES_${PN}-dev += "${bindir}/xslt-config"
-FILES_${PN}-utils += "${bindir}"
-
-SRC_URI = "ftp://xmlsoft.org/libxml2/old/libxslt-${PV}.tar.gz"
+SRC_URI = "ftp://xmlsoft.org/libxml2/libxslt-${PV}.tar.gz"
 S = "${WORKDIR}/libxslt-${PV}"
 
 inherit autotools pkgconfig 
@@ -43,3 +37,8 @@ do_stage () {
 	chmod a+rx ${STAGING_BINDIR}/xslt-config
 	install -m 0644 libxslt.m4 ${STAGING_DATADIR}/aclocal/
 }
+
+PACKAGES = "${PN}-dev ${PN}-utils ${PN} ${PN}-doc ${PN}-locale"
+
+FILES_${PN}-dev += "${bindir}/xslt-config"
+FILES_${PN}-utils += "${bindir}"

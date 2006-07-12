@@ -4,14 +4,15 @@ PRIORITY = "optional"
 HOMEPAGE = "http://www.konqueror.org/"
 DEPENDS = "openssl pcre virtual/libqte2 dcopidl-native dcopidl2cpp-native"
 LICENSE = "LGPL/GPL"
-PR = "r2"
+PR = "r3"
 
 # this Konqueror needs the KDEDIR set and the font helvetica installed on the target
 
 inherit autotools
 
 SRC_URI = "svn://anonsvn.kde.org/home/kde/tags/KDE/3.5.1;module=kdelibs;date=${PV} \
-           svn://anonsvn.kde.org/home/kde/trunk;module=kdenox;date=${PV}"
+           svn://anonsvn.kde.org/home/kde/trunk;module=kdenox;date=${PV} \
+           file://gcc4.patch;patch=1"
 # uncomment this for a static build
 #          file://inject-extraflags.patch;patch=1"
 S = "${WORKDIR}/kdenox"
