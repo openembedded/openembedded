@@ -1,5 +1,5 @@
 DESCRIPTION = "Alsa sound library"
-MAINTAINER = "Lorn Potter <lpotter@trolltech.com>"
+"
 SECTION = "libs/multimedia"
 LICENSE = "GPL"
 PR = "r0"
