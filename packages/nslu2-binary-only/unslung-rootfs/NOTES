@@ -539,3 +539,10 @@ Upgraded slingbox to v1.1.3 busybox base; enabled 'more' command
 Added network console debugging support:
  - patched netconsole driver,  added netconsole kernel module to image
  - updated /linuxrc (& misc files) for basic support of same
+
+Added ".nodisk" flag -- presence of the ".nodisk" file on the flash root
+will force a one-time-only boot to flash. This makes for easier testing and
+maintenance; easier than plugging and unplugging disks.
+
+Empty the /etc/win_share.info file on boot (fixes problem with multiple
+identical shares appearing on a system).
