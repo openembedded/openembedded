@@ -9,7 +9,7 @@ PR = "r1"
 
 EXTRA_OECONF=" --disable-gnome --with-platform=gpe --with-html-component=none"
 
-SRC_URI = "svn://svn.cronos.be/svn/tinymail;module=trunk;proto=https \
+SRC_URI = "svn://svn.tinymail.org/svn/tinymail/;module=trunk;proto=https \
            file://gtk-doc.m4 \
            file://gtk-doc.make"
 
