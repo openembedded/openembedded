@@ -1,5 +1,5 @@
 DESCRIPTION = "ALSA Utilities"
-MAINTAINER = "Lorn Potter <lpotter@trolltech.com>"
+HOMEPAGE = "http://www.alsa-project.org"
 SECTION = "console/utils"
 LICENSE = "GPL"
 DEPENDS = "alsa-lib ncurses"
@@ -22,12 +22,9 @@ PACKAGES += "alsa-utils-speakertest"
 PACKAGES += "alsa-utils-aseqnet"
 PACKAGES += "alsa-utils-alsactl"
 
-
 # We omit alsaconf, because
 # a) this is a bash script
-# b) it creates config files for RedHat, Debian, Mandrake etc, but not
-#    for Familiar, OpenZaurus etc
-
+# b) it creates config files not suitable for OE-based distros
 
 FILES_${PN} = ""
 FILES_alsa-utils-aplay       = "${bindir}/aplay ${bindir}/arecord"

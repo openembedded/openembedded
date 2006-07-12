@@ -2,7 +2,7 @@ DESCRIPTION = "Everything Python for SharpROM"
 MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 HOMEPAGE = "http://www.vanille.de/projects/python.spy"
 LICENSE = "MIT"
-PR = "ml5"
+PR = "ml6"
 
 NONWORKING = "\
 		python-codes		\
@@ -30,6 +30,7 @@ RDEPENDS = "\
 		python-itools		\
 		python-libgmail		\
 		python-logilab		\
+		python-lxml		\
 		python-mad		\
 		python-native		\
 		python-numeric		\
