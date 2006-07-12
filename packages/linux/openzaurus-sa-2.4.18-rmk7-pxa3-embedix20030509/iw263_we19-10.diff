@@ -1,0 +1,483 @@
+Index: linux/include/linux/wireless.h
+===================================================================
+--- linux.orig/include/linux/wireless.h	2006-03-29 17:09:22.826613944 +0200
++++ linux/include/linux/wireless.h	2006-03-29 17:25:16.105693496 +0200
+@@ -1,7 +1,7 @@
+ /*
+  * This file define a set of standard wireless extensions
+  *
+- * Version :	18	12.3.05
++ * Version :	19	18.3.05
+  *
+  * Authors :	Jean Tourrilhes - HPL - <jt@hpl.hp.com>
+  * Copyright (c) 1997-2005 Jean Tourrilhes, All Rights Reserved.
+@@ -69,11 +69,12 @@
+ 
+ /***************************** INCLUDES *****************************/
+ 
+-/* To minimise problems in user space, I might remove those headers
+- * at some point. Jean II */
+-#include <linux/types.h>		/* for "caddr_t" et al		*/
+-#include <linux/socket.h>		/* for "struct sockaddr" et al	*/
+-#include <linux/if.h>			/* for IFNAMSIZ and co... */
++/* Do not put any header in this file, this creates a mess when
++ * exported to user space. Most users have included all the
++ * relevant headers anyway... Jean II */
++/*#include <linux/types.h>*/		/* for "caddr_t" et al		*/
++/*#include <linux/socket.h>*/		/* for "struct sockaddr" et al	*/
++/*#include <linux/if.h>*/		/* for IFNAMSIZ and co... */
+ 
+ /***************************** VERSION *****************************/
+ /*
+@@ -82,7 +83,7 @@
+  * (there is some stuff that will be added in the future...)
+  * I just plan to increment with each new version.
+  */
+-#define WIRELESS_EXT	18
++#define WIRELESS_EXT	19
+ 
+ /*
+  * Changes :
+@@ -197,6 +198,15 @@
+  *	  related parameters (extensible up to 4096 parameter values)
+  *	- Add wireless events: IWEVGENIE, IWEVMICHAELMICFAILURE,
+  *	  IWEVASSOCREQIE, IWEVASSOCRESPIE, IWEVPMKIDCAND
++ *
++ * V18 to V19
++ * ----------
++ *	- Remove (struct iw_point *)->pointer from events and streams
++ *	- Remove header includes to help user space
++ *	- Increase IW_ENCODING_TOKEN_MAX from 32 to 64
++ *	- Add IW_QUAL_ALL_UPDATED and IW_QUAL_ALL_INVALID macros
++ *	- Add explicit flag to tell stats are in dBm : IW_QUAL_DBM
++ *	- Add IW_IOCTL_IDX() and IW_EVENT_IDX() macros
+  */
+ 
+ /**************************** CONSTANTS ****************************/
+@@ -322,6 +332,7 @@
+ /* The first and the last (range) */
+ #define SIOCIWFIRST	0x8B00
+ #define SIOCIWLAST	SIOCIWLASTPRIV		/* 0x8BFF */
++#define IW_IOCTL_IDX(cmd)	((cmd) - SIOCIWFIRST)
+ 
+ /* Even : get (world access), odd : set (root access) */
+ #define IW_IS_SET(cmd)	(!((cmd) & 0x1))
+@@ -366,6 +377,7 @@
+ 					 * (struct iw_pmkid_cand) */
+ 
+ #define IWEVFIRST	0x8C00
++#define IW_EVENT_IDX(cmd)	((cmd) - IWEVFIRST)
+ 
+ /* ------------------------- PRIVATE INFO ------------------------- */
+ /*
+@@ -427,12 +439,15 @@
+ #define IW_MODE_MONITOR	6	/* Passive monitor (listen only) */
+ 
+ /* Statistics flags (bitmask in updated) */
+-#define IW_QUAL_QUAL_UPDATED	0x1	/* Value was updated since last read */
+-#define IW_QUAL_LEVEL_UPDATED	0x2
+-#define IW_QUAL_NOISE_UPDATED	0x4
++#define IW_QUAL_QUAL_UPDATED	0x01	/* Value was updated since last read */
++#define IW_QUAL_LEVEL_UPDATED	0x02
++#define IW_QUAL_NOISE_UPDATED	0x04
++#define IW_QUAL_ALL_UPDATED	0x07
++#define IW_QUAL_DBM		0x08	/* Level + Noise are dBm */
+ #define IW_QUAL_QUAL_INVALID	0x10	/* Driver doesn't provide value */
+ #define IW_QUAL_LEVEL_INVALID	0x20
+ #define IW_QUAL_NOISE_INVALID	0x40
++#define IW_QUAL_ALL_INVALID	0x70
+ 
+ /* Frequency flags */
+ #define IW_FREQ_AUTO		0x00	/* Let the driver decides */
+@@ -443,7 +458,7 @@
+ #define IW_MAX_ENCODING_SIZES	8
+ 
+ /* Maximum size of the encoding token in bytes */
+-#define IW_ENCODING_TOKEN_MAX	32	/* 256 bits (for now) */
++#define IW_ENCODING_TOKEN_MAX	64	/* 512 bits (for now) */
+ 
+ /* Flags for encoding (along with the token) */
+ #define IW_ENCODE_INDEX		0x00FF	/* Token index (if needed) */
+@@ -1039,12 +1054,16 @@
+ #define IW_EV_CHAR_LEN	(IW_EV_LCP_LEN + IFNAMSIZ)
+ #define IW_EV_UINT_LEN	(IW_EV_LCP_LEN + sizeof(__u32))
+ #define IW_EV_FREQ_LEN	(IW_EV_LCP_LEN + sizeof(struct iw_freq))
+-#define IW_EV_POINT_LEN	(IW_EV_LCP_LEN + sizeof(struct iw_point))
+ #define IW_EV_PARAM_LEN	(IW_EV_LCP_LEN + sizeof(struct iw_param))
+ #define IW_EV_ADDR_LEN	(IW_EV_LCP_LEN + sizeof(struct sockaddr))
+ #define IW_EV_QUAL_LEN	(IW_EV_LCP_LEN + sizeof(struct iw_quality))
+ 
+-/* Note : in the case of iw_point, the extra data will come at the
+- * end of the event */
++/* iw_point events are special. First, the payload (extra data) come at
++ * the end of the event, so they are bigger than IW_EV_POINT_LEN. Second,
++ * we omit the pointer, so start at an offset. */
++#define IW_EV_POINT_OFF (((char *) &(((struct iw_point *) NULL)->length)) - \
++			  (char *) NULL)
++#define IW_EV_POINT_LEN	(IW_EV_LCP_LEN + sizeof(struct iw_point) - \
++			 IW_EV_POINT_OFF)
+ 
+ #endif	/* _LINUX_WIRELESS_H */
+Index: linux/include/net/iw_handler.h
+===================================================================
+--- linux.orig/include/net/iw_handler.h	2006-03-29 17:09:22.587650272 +0200
++++ linux/include/net/iw_handler.h	2006-03-29 17:25:16.106693344 +0200
+@@ -1,10 +1,10 @@
+ /*
+  * This file define the new driver API for Wireless Extensions
+  *
+- * Version :	6	21.6.04
++ * Version :	7	18.3.05
+  *
+  * Authors :	Jean Tourrilhes - HPL - <jt@hpl.hp.com>
+- * Copyright (c) 2001-2004 Jean Tourrilhes, All Rights Reserved.
++ * Copyright (c) 2001-2005 Jean Tourrilhes, All Rights Reserved.
+  */
+ 
+ #ifndef _IW_HANDLER_H
+@@ -206,7 +206,7 @@
+  * will be needed...
+  * I just plan to increment with each new version.
+  */
+-#define IW_HANDLER_VERSION	6
++#define IW_HANDLER_VERSION	7
+ 
+ /*
+  * Changes :
+@@ -231,6 +231,13 @@
+  *	- Remove spy #ifdef, they are always on -> cleaner code
+  *	- Add IW_DESCR_FLAG_NOMAX flag for very large requests
+  *	- Start migrating get_wireless_stats to struct iw_handler_def
++ *
++ * V6 to V7
++ * --------
++ *	- Add struct ieee80211_device pointer in struct iw_public_data
++ *	- Remove (struct iw_point *)->pointer from events and streams
++ *	- Remove spy_offset from struct iw_handler_def
++ *	- Add "check" version of event macros for ieee802.11 stack
+  */
+ 
+ /**************************** CONSTANTS ****************************/
+@@ -331,9 +338,6 @@
+ 	 * We will automatically export that to user space... */
+ 	const struct iw_priv_args *	private_args;
+ 
+-	/* This field will be *removed* in the next version of WE */
+-	long			spy_offset;	/* DO NOT USE */
+-
+ 	/* New location of get_wireless_stats, to de-bloat struct net_device.
+ 	 * The old pointer in struct net_device will be gradually phased
+ 	 * out, and drivers are encouraged to use this one... */
+@@ -397,16 +401,21 @@
+ /* --------------------- DEVICE WIRELESS DATA --------------------- */
+ /*
+  * This is all the wireless data specific to a device instance that
+- * is managed by the core of Wireless Extensions.
++ * is managed by the core of Wireless Extensions or the 802.11 layer.
+  * We only keep pointer to those structures, so that a driver is free
+  * to share them between instances.
+  * This structure should be initialised before registering the device.
+  * Access to this data follow the same rules as any other struct net_device
+  * data (i.e. valid as long as struct net_device exist, same locking rules).
+  */
++/* Forward declaration */
++struct ieee80211_device;
++/* The struct */
+ struct iw_public_data {
+ 	/* Driver enhanced spy support */
+-	struct iw_spy_data *	spy_data;
++	struct iw_spy_data *		spy_data;
++	/* Structure managed by the in-kernel IEEE 802.11 layer */
++	struct ieee80211_device *	ieee80211;
+ };
+ 
+ /**************************** PROTOTYPES ****************************/
+@@ -421,7 +430,7 @@
+ extern int dev_get_wireless_info(char * buffer, char **start, off_t offset,
+ 				 int length);
+ 
+-/* Handle IOCTLs, called in net/code/dev.c */
++/* Handle IOCTLs, called in net/core/dev.c */
+ extern int wireless_process_ioctl(struct ifreq *ifr, unsigned int cmd);
+ 
+ /* Second : functions that may be called by driver modules */
+@@ -476,7 +485,7 @@
+ 		     int	event_len)	/* Real size of payload */
+ {
+ 	/* Check if it's possible */
+-	if((stream + event_len) < ends) {
++	if(likely((stream + event_len) < ends)) {
+ 		iwe->len = event_len;
+ 		memcpy(stream, (char *) iwe, event_len);
+ 		stream += event_len;
+@@ -492,14 +501,17 @@
+ static inline char *
+ iwe_stream_add_point(char *	stream,		/* Stream of events */
+ 		     char *	ends,		/* End of stream */
+-		     struct iw_event *iwe,	/* Payload */
+-		     char *	extra)
++		     struct iw_event *iwe,	/* Payload length + flags */
++		     char *	extra)		/* More payload */
+ {
+ 	int	event_len = IW_EV_POINT_LEN + iwe->u.data.length;
+ 	/* Check if it's possible */
+-	if((stream + event_len) < ends) {
++	if(likely((stream + event_len) < ends)) {
+ 		iwe->len = event_len;
+-		memcpy(stream, (char *) iwe, IW_EV_POINT_LEN);
++		memcpy(stream, (char *) iwe, IW_EV_LCP_LEN);
++		memcpy(stream + IW_EV_LCP_LEN,
++		       ((char *) iwe) + IW_EV_LCP_LEN + IW_EV_POINT_OFF,
++		       IW_EV_POINT_LEN - IW_EV_LCP_LEN);
+ 		memcpy(stream + IW_EV_POINT_LEN, extra, iwe->u.data.length);
+ 		stream += event_len;
+ 	}
+@@ -523,7 +535,7 @@
+ 	event_len -= IW_EV_LCP_LEN;
+ 
+ 	/* Check if it's possible */
+-	if((value + event_len) < ends) {
++	if(likely((value + event_len) < ends)) {
+ 		/* Add new value */
+ 		memcpy(value, (char *) iwe + IW_EV_LCP_LEN, event_len);
+ 		value += event_len;
+@@ -534,4 +546,85 @@
+ 	return value;
+ }
+ 
++/*------------------------------------------------------------------*/
++/*
++ * Wrapper to add an Wireless Event to a stream of events.
++ * Same as above, with explicit error check...
++ */
++static inline char *
++iwe_stream_check_add_event(char *	stream,		/* Stream of events */
++			   char *	ends,		/* End of stream */
++			   struct iw_event *iwe,	/* Payload */
++			   int		event_len,	/* Size of payload */
++			   int *	perr)		/* Error report */
++{
++	/* Check if it's possible, set error if not */
++	if(likely((stream + event_len) < ends)) {
++		iwe->len = event_len;
++		memcpy(stream, (char *) iwe, event_len);
++		stream += event_len;
++	} else
++		*perr = -E2BIG;
++	return stream;
++}
++
++/*------------------------------------------------------------------*/
++/*
++ * Wrapper to add an short Wireless Event containing a pointer to a
++ * stream of events.
++ * Same as above, with explicit error check...
++ */
++static inline char *
++iwe_stream_check_add_point(char *	stream,		/* Stream of events */
++			   char *	ends,		/* End of stream */
++			   struct iw_event *iwe,	/* Payload length + flags */
++			   char *	extra,		/* More payload */
++			   int *	perr)		/* Error report */
++{
++	int	event_len = IW_EV_POINT_LEN + iwe->u.data.length;
++	/* Check if it's possible */
++	if(likely((stream + event_len) < ends)) {
++		iwe->len = event_len;
++		memcpy(stream, (char *) iwe, IW_EV_LCP_LEN);
++		memcpy(stream + IW_EV_LCP_LEN,
++		       ((char *) iwe) + IW_EV_LCP_LEN + IW_EV_POINT_OFF,
++		       IW_EV_POINT_LEN - IW_EV_LCP_LEN);
++		memcpy(stream + IW_EV_POINT_LEN, extra, iwe->u.data.length);
++		stream += event_len;
++	} else
++		*perr = -E2BIG;
++	return stream;
++}
++
++/*------------------------------------------------------------------*/
++/*
++ * Wrapper to add a value to a Wireless Event in a stream of events.
++ * Be careful, this one is tricky to use properly :
++ * At the first run, you need to have (value = event + IW_EV_LCP_LEN).
++ * Same as above, with explicit error check...
++ */
++static inline char *
++iwe_stream_check_add_value(char *	event,		/* Event in the stream */
++			   char *	value,		/* Value in event */
++			   char *	ends,		/* End of stream */
++			   struct iw_event *iwe,	/* Payload */
++			   int		event_len,	/* Size of payload */
++			   int *	perr)		/* Error report */
++{
++	/* Don't duplicate LCP */
++	event_len -= IW_EV_LCP_LEN;
++
++	/* Check if it's possible */
++	if(likely((value + event_len) < ends)) {
++		/* Add new value */
++		memcpy(value, (char *) iwe + IW_EV_LCP_LEN, event_len);
++		value += event_len;
++		/* Patch LCP */
++		iwe->len = value - event;
++		memcpy(event, (char *) iwe, IW_EV_LCP_LEN);
++	} else
++		*perr = -E2BIG;
++	return value;
++}
++
+ #endif	/* _IW_HANDLER_H */
+Index: linux/net/core/wireless.c
+===================================================================
+--- linux.orig/net/core/wireless.c	2006-03-29 17:09:22.827613792 +0200
++++ linux/net/core/wireless.c	2006-03-29 17:29:41.734311808 +0200
+@@ -58,6 +58,13 @@
+  *	o Add wmb() in iw_handler_set_spy() for non-coherent archs/cpus
+  * Based on patch from Pavel Roskin <proski@gnu.org> :
+  *	o Fix kernel data leak to user space in private handler handling
++ *
++ * v7 - 18.3.05 - Jean II
++ *	o Remove (struct iw_point *)->pointer from events and streams
++ *	o Remove spy_offset from struct iw_handler_def
++ *	o Start deprecating dev->get_wireless_stats, output a warning
++ *	o If IW_QUAL_DBM is set, show dBm values in /proc/net/wireless
++ *	o Don't loose INVALID/DBM flags when clearing UPDATED flags (iwstats)
+  */
+ 
+ /***************************** INCLUDES *****************************/
+@@ -310,10 +317,14 @@
+ 	   (dev->wireless_handlers->get_wireless_stats != NULL))
+ 		return dev->wireless_handlers->get_wireless_stats(dev);
+ 
+-	/* Old location, will be phased out in next WE */
+-	return (dev->get_wireless_stats ?
+-		dev->get_wireless_stats(dev) :
+-		(struct iw_statistics *) NULL);
++	/* Old location, field to be removed in next WE */
++	if(dev->get_wireless_stats) {
++		printk(KERN_DEBUG "%s (WE) : Driver using old /proc/net/wireless support, please fix driver !\n",
++		       dev->name);
++		return dev->get_wireless_stats(dev);
++	}
++	/* Not found */
++	return (struct iw_statistics *) NULL;
+ }
+ 
+ /* ---------------------------------------------------------------- */
+@@ -408,10 +419,12 @@
+ 			       stats->qual.qual,
+ 			       stats->qual.updated & IW_QUAL_QUAL_UPDATED
+ 			       ? '.' : ' ',
+-			       ((__u8) stats->qual.level),
++				   ((__s32) stats->qual.level) - 
++				   ((stats->qual.updated & IW_QUAL_DBM) ? 0x100 : 0),
+ 			       stats->qual.updated & IW_QUAL_LEVEL_UPDATED
+ 			       ? '.' : ' ',
+-			       ((__u8) stats->qual.noise),
++				   ((__s32) stats->qual.noise) - 
++				   ((stats->qual.updated & IW_QUAL_DBM) ? 0x100 : 0),
+ 			       stats->qual.updated & IW_QUAL_NOISE_UPDATED
+ 			       ? '.' : ' ',
+ 			       stats->discard.nwid,
+@@ -419,8 +432,8 @@
+ 			       stats->discard.fragment,
+ 			       stats->discard.retries,
+ 			       stats->discard.misc,
+-			       stats->miss.beacon);
+-		stats->qual.updated = 0;
++				   stats->miss.beacon);
++		stats->qual.updated &= ~IW_QUAL_ALL_UPDATED;
+ 	}
+ 	else
+ 		size = 0;
+@@ -503,9 +516,9 @@
+ 				sizeof(struct iw_statistics)))
+ 			return -EFAULT;
+ 
+-		/* Check if we need to clear the update flag */
++		/* Check if we need to clear the updated flag */
+ 		if(wrq->u.data.flags != 0)
+-			stats->qual.updated = 0;
++			stats->qual.updated &= ~IW_QUAL_ALL_UPDATED;
+ 		return 0;
+ 	} else
+ 		return -EOPNOTSUPP;
+@@ -1036,10 +1049,11 @@
+ 	struct iw_event  *event;		/* Mallocated whole event */
+ 	int event_len;				/* Its size */
+ 	int hdr_len;				/* Size of the event header */
++	int wrqu_off = 0;			/* Offset in wrqu */
+ 	/* Don't "optimise" the following variable, it will crash */
+ 	unsigned	cmd_index;		/* *MUST* be unsigned */
+ 
+-	/* Get the description of the IOCTL */
++	/* Get the description of the Event */
+ 	if(cmd <= SIOCIWLAST) {
+ 		cmd_index = cmd - SIOCIWFIRST;
+ 		if(cmd_index < standard_ioctl_num)
+@@ -1082,6 +1096,8 @@
+ 		/* Calculate extra_len - extra is NULL for restricted events */
+ 		if(extra != NULL)
+ 			extra_len = wrqu->data.length * descr->token_size;
++		/* Always at an offset in wrqu */
++		wrqu_off = IW_EV_POINT_OFF;
+ #ifdef WE_EVENT_DEBUG
+ 		printk(KERN_DEBUG "%s (WE) : Event 0x%04X, tokens %d, extra_len %d\n", dev->name, cmd, wrqu->data.length, extra_len);
+ #endif	/* WE_EVENT_DEBUG */
+@@ -1092,7 +1108,7 @@
+ 	event_len = hdr_len + extra_len;
+ 
+ #ifdef WE_EVENT_DEBUG
+-	printk(KERN_DEBUG "%s (WE) : Event 0x%04X, hdr_len %d, event_len %d\n", dev->name, cmd, hdr_len, event_len);
++	printk(KERN_DEBUG "%s (WE) : Event 0x%04X, hdr_len %d, wrqu_off %d, event_len %d\n", dev->name, cmd, hdr_len, wrqu_off, event_len);
+ #endif	/* WE_EVENT_DEBUG */
+ 
+ 	/* Create temporary buffer to hold the event */
+@@ -1103,7 +1119,7 @@
+ 	/* Fill event */
+ 	event->len = event_len;
+ 	event->cmd = cmd;
+-	memcpy(&event->u, wrqu, hdr_len - IW_EV_LCP_LEN);
++	memcpy(&event->u, ((char *) wrqu) + wrqu_off, hdr_len - IW_EV_LCP_LEN);
+ 	if(extra != NULL)
+ 		memcpy(((char *) event) + hdr_len, extra, extra_len);
+ 
+@@ -1141,10 +1157,7 @@
+ 	/* This is the new way */
+ 	if(dev->wireless_data)
+ 		return(dev->wireless_data->spy_data);
+-
+-	/* This is the old way. Doesn't work for multi-headed drivers.
+-	 * It will be removed in the next version of WE. */
+-	return (dev->priv + dev->wireless_handlers->spy_offset);
++	return NULL;
+ }
+ 
+ /*------------------------------------------------------------------*/
+@@ -1189,7 +1202,7 @@
+ 		       sizeof(struct iw_quality) * IW_MAX_SPY);
+ 
+ #ifdef WE_SPY_DEBUG
+-		printk(KERN_DEBUG "iw_handler_set_spy() :  offset %ld, spydata %p, num %d\n", dev->wireless_handlers->spy_offset, spydata, wrqu->data.length);
++		printk(KERN_DEBUG "iw_handler_set_spy() :  wireless_data %p, spydata %p, num %d\n", dev->wireless_data, spydata, wrqu->data.length);
+ 		for (i = 0; i < wrqu->data.length; i++)
+ 			printk(KERN_DEBUG
+ 			       "%02X:%02X:%02X:%02X:%02X:%02X \n",
+@@ -1242,7 +1255,7 @@
+ 		       sizeof(struct iw_quality) * spydata->spy_number);
+ 	/* Reset updated flags. */
+ 	for(i = 0; i < spydata->spy_number; i++)
+-		spydata->spy_stat[i].updated = 0;
++		spydata->spy_stat[i].updated &= ~IW_QUAL_ALL_UPDATED;
+ 	return 0;
+ }
+ 
+@@ -1357,7 +1370,7 @@
+ 		return;
+ 
+ #ifdef WE_SPY_DEBUG
+-	printk(KERN_DEBUG "wireless_spy_update() :  offset %ld, spydata %p, address %02X:%02X:%02X:%02X:%02X:%02X\n", dev->wireless_handlers->spy_offset, spydata, address[0], address[1], address[2], address[3], address[4], address[5]);
++	printk(KERN_DEBUG "wireless_spy_update() :  wireless_data %p, spydata %p, address %02X:%02X:%02X:%02X:%02X:%02X\n", dev->wireless_data, spydata, address[0], address[1], address[2], address[3], address[4], address[5]);
+ #endif	/* WE_SPY_DEBUG */
+ 
+ 	/* Update all records that match */
