@@ -1,5 +1,5 @@
 DESCRIPTION = "Alsa sound library"
-"
+HOMEPAGE = "http://www.alsa-project.org"
 SECTION = "libs/multimedia"
 LICENSE = "GPL"
 PR = "r0"
@@ -16,7 +16,7 @@ inherit autotools pkgconfig
 
 EXTRA_OECONF = "--with-cards=pdaudiocf --with-oss=yes"
 
-do_stage () {
+do_stage() {
 	oe_libinstall -so -C src libasound ${STAGING_LIBDIR}/
 	install -d ${STAGING_INCDIR}/alsa/sound
 	install -m 0644 include/*.h ${STAGING_INCDIR}/alsa/

@@ -1,5 +1,5 @@
 DESCRIPTION = "Alsa OSS Compatibility Package"
-"
+HOMEPAGE = "http://www.alsa-project.org"
 SECTION = "libs/multimedia"
 LICENSE = "GPL"
 DEPENDS = "alsa-lib"

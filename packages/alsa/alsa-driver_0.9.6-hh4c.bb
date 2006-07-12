@@ -1,3 +1,6 @@
+# needs a gcc4 fix
+BROKEN = "1"
+
 DESCRIPTION = "Alsa Drivers"
 MAINTAINER = "Pigi"
 SECTION = "base"
