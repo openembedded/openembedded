@@ -6,7 +6,7 @@ LICENSE = "LGPL"
 
 RV := "${PV}"
 PV = "0.1+cvs-${RV}"
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "cvs://cvs:@pubcvs.arm.linux.org.uk/mnt/src/cvsroot;module=tslib;date=${RV} \
            file://usec_fix.patch;patch=1 \
@@ -81,6 +81,7 @@ RDEPENDS_tslib-conf_h3600 = "detect-stylus"
 RDEPENDS_tslib-conf_h3900 = "detect-stylus"
 RDEPENDS_tslib-conf_h6300 = "detect-stylus"
 RDEPENDS_tslib-conf_blueangel = "detect-stylus"
+RDEPENDS_tslib-conf_htcuniversal = "detect-stylus"
 RDEPENDS_tslib-conf_h4000 = "detect-stylus"
 
 PACKAGE_ARCH_tslib-conf = "${MACHINE_ARCH}"
