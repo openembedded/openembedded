@@ -13,10 +13,11 @@ RDEPENDS_append_dm7025 = " gst-plugin-alsa"
 
 PN = "enigma2"
 PR = "r0"
-CVSDATE = "20060705"
+CVSDATE = "20060711"
 PV = "1.0cvs${CVSDATE}"
 
 SRC_URI = "cvs://anonymous@dreamboxupdate.com/cvs;module=enigma2;method=pserver \
+	   http://sources.dreamboxupdate.com/download/backport_some_changes.diff.bz2;patch=1;pnum=2 \
            file://enigma2.sh"
 
 S = "${WORKDIR}/enigma2"
