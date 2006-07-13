@@ -10,7 +10,7 @@ PALMTOP_USE_MULTITHREADED_QT ?= "yes"
 #
 PREFERRED_PROVIDER_virtual/libqte2 ?= '${@base_conditional("PALMTOP_USE_MULTITHREADED_QT", "yes", "qte-mt", "qte", d)}'
 PREFERRED_PROVIDER_virtual/libqpe1 ?= "libqpe-opie"
-PREFERRED_VERSIION_qte-mt ?= "${QTE_VERSION}"
+PREFERRED_VERSION_qte-mt ?= "${QTE_VERSION}"
 PREFERRED_VERSION_qte ?= "${QTE_VERSION}"
 SRCDATE_libopie2 ?= "${OPIE_VERSION}"
 SRCDATE_libopieobex0 ?= "${OPIE_VERSION}"
