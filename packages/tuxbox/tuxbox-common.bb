@@ -3,16 +3,16 @@ LICENSE = "GPL"
 MAINTAINER = "Felix Domke <tmbinc@elitdvb.net>"
 
 PN = "tuxbox-common"
-PV = "7"
-PR = "r8"
+PR = "r7"
+CVSDATE = "20060628"
+PV = "cvs${CVSDATE}"
 
-CVSDATE = "20060614"
-SRC_URI = "http://dreamboxupdate.com/download/opendreambox/tuxbox-common-r${PV}.tar.gz \
-	cvs://anoncvs@cvs.tuxbox.org/cvs/tuxbox/;module=cdk/root/share/tuxbox;method=ext;tag=dreambox"
+SRC_URI = "cvs://anoncvs@cvs.tuxbox.org/cvs/tuxbox/;module=cdk/root/share/tuxbox;method=ext;tag=dreambox;date=${CVSDATE} \
+	http://dreamboxupdate.com/download/opendreambox/tuxbox-common-${PR}.tar.gz"
 
 FILES_${PN} = "/"
 
-S = "${WORKDIR}/tuxbox-common-r${PV}"
+S = "${WORKDIR}/tuxbox-common-${PR}"
 
 do_install() {
 
