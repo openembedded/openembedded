@@ -162,6 +162,8 @@ python populate_packages () {
 					continue
 			if (not os.path.islink(file)) and (not os.path.exists(file)):
 				continue
+			if file.find('.pyo') != -1:
+				continue
 			fpath = os.path.join(root,file)
 			dpath = os.path.dirname(fpath)
 			bb.mkdirhier(dpath)
