@@ -5,7 +5,7 @@ DEPENDS = "initscripts console-tools"
 RDEPENDS = "initscripts console-tools"
 LICENSE = "GPL"
 PACKAGE_ARCH = "${MACHINE}"
-PR = "r9"
+PR = "r10"
 
 inherit update-rc.d
 
