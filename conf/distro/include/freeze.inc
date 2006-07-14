@@ -1,6 +1,6 @@
 # general configuration file for freezing a distribution
 #
-# If freeze.conf is included (require conf/distro/include/freeze.conf) in the
+# If freeze.conf is included (require conf/distro/include/freeze.inc) in the
 # distro conf file it will define BBFILES from the information in
 # ${DISTRO}-bbfiles.conf or ${DISTRO}-packages.conf (whichever
 # exists in that order of preference.)
@@ -16,10 +16,10 @@ FROZEN_DIR ?= "/non/-existent/-directory/-for/-security"
 # includes allow the frozen file to be stored alongside local.conf
 # and in the conf/distro directory - the former take precedence over
 # the latter.
-require conf/distro/include/${DISTRO}-packages.conf
+require conf/distro/include/${DISTRO}-packages.inc
 include conf/${DISTRO}-packages.conf
 include ${FROZEN_DIR}/${DISTRO}-packages.conf
 
-require conf/distro/include/${DISTRO}-bbfiles.conf
+require conf/distro/include/${DISTRO}-bbfiles.inc
 include conf/${DISTRO}-bbfiles.conf
 include ${FROZEN_DIR}/${DISTRO}-bbfiles.conf
