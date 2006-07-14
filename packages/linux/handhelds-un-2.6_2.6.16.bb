@@ -3,7 +3,7 @@ MAINTAINER = "goxboxlive <goxboxlive@gmail.com>"
 LICENSE = "GPL"
 PR="r0"
 
-SRC_URI = "cvs -d :pserver:anoncvs@anoncvs.handhelds.org:/cvs checkout -d linux-2.6.16-hh2 linux/kernel26"
+SRC_URI = "${HANDHELDS_CVS};module=linux/kernel26;tag=linux-2.6.16-hh2"
 S = "${WORKDIR}/linux-2.6.16-hh2"
 
 COMPATIBLE_HOST = "arm.*-linux"
