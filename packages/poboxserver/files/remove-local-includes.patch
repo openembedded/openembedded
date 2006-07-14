@@ -1,0 +1,16 @@
+
+#
+# Signed off by Michael 'Mickey' Lauer <mickey@Vanille.de>
+#
+
+--- OpenPOBox/server/Makefile.in~remove-local-includes
++++ OpenPOBox/server/Makefile.in
+@@ -11,8 +11,6 @@
+ #	-I../asearch -I../romakana -I../include -g
+ 
+ CFLAGS = -DUNIX @CFLAGS@ \
+-	-I/usr/local/include -I/usr/local/lib/glib/include \
+-	-I@prefix@/include \
+ 	-I../asearch -I../romakana -I../include -g
+ 
+ pbserver: pbserver.o server.o poboxlib.o romakana_he.o lookup.o

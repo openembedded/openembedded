@@ -4,11 +4,11 @@ LICENSE = "GPL"
 DEPENDS = "perl-native ruby-native nkf-native"
 PR = "r2"
 
-BROKEN = "1"
-
 SRC_URI = "http://pitecan.com/OpenPOBox/dist/pobox-${PV}.tgz \
            http://www.vanille.de/mirror/pbserver-${PV}.tar.gz \
-           file://OpenPOBox-1.25.diff;patch=1"
+           file://OpenPOBox-1.25.diff;patch=1 \
+           file://remove-local-includes.patch;patch=1 \
+           file://pbserver.sh"
 S = "${WORKDIR}/OpenPOBox"
 
 inherit autotools update-rc.d
@@ -25,6 +25,7 @@ do_compile() {
 	oe_runmake
 	cp ${S}/dict/data/fugodic ${WORKDIR}/pbserver/fugodic.txt
 	oe_runmake -C ${WORKDIR}/pbserver dic
+	#patch -p1 
 }
 
 do_install() {
@@ -33,5 +34,5 @@ do_install() {
 	install -m 0644 ${WORKDIR}/pbserver/staticdic ${D}${palmtopdir}/pobox/
 	install -m 0644 ${WORKDIR}/pbserver/learndic ${D}${palmtopdir}/pobox/
 	install -d ${D}${sysconfdir}/init.d/
-	install -m 0755 ${WORKDIR}/pbserver/pbserver.sh ${D}${sysconfdir}/init.d/pbserver
+	install -m 0755 ${WORKDIR}/pbserver.sh ${D}${sysconfdir}/init.d/pbserver
 }
