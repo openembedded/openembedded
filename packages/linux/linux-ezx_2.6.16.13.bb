@@ -6,7 +6,7 @@ MAINTAINER = "Michael 'Mickey' Lauer <mickey@vanille.de>"
 LICENSE = "GPL"
 DEPENDS += "quilt-native"
 EZX = "ezx6"
-PR = "${EZX}-r12"
+PR = "${EZX}-r13"
 
 inherit kernel
 
@@ -65,7 +65,7 @@ CMDLINE_ROOT = "root=/dev/mmcblk0p1 rootfstype=ext3 rootdelay=5"
 #CMDLINE_OTHER = "dyntick=enable"
 CMDLINE_DEBUG = '${@base_conditional("DISTRO_TYPE", "release", "quiet", "debug",d)}'
 CMDLINE_IP = "ip=192.168.1.2:192.168.1.10:192.168.1.10:255.255.255.0:ezx:usb0:off"
-CMDLINE = "${CMDLINE_CON} ${CMDLINE_ROOT} ${CMDLINE_IP} ${CMDLINE_ROTATE} ${CMDLINE_OTHER} ${CMDLINE_DEBUG} mem=32M"
+CMDLINE = "${CMDLINE_CON} ${CMDLINE_ROOT} ${CMDLINE_IP} ${CMDLINE_ROTATE} ${CMDLINE_OTHER} ${CMDLINE_DEBUG} mem=32M@0xA0000000 mem=16M@0xAC000000"
 
 ###############################################################
 # module configs specific to this kernel
