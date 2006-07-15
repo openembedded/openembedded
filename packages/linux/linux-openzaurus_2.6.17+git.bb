@@ -1,6 +1,6 @@
 include linux-openzaurus.inc
 
-PR = "r5"
+PR = "r7"
 
 DEFAULT_PREFERENCE = "-1"
 
@@ -15,7 +15,7 @@ DEFAULT_PREFERENCE = "-1"
 # Patches submitted upstream are towards top of this list 
 # Hacks should clearly named and at the bottom
 #           ftp://ftp.kernel.org/pub/linux/kernel/people/akpm/patches/2.6/2.6.14-rc2/2.6.14-rc2-mm1/2.6.14-rc2-mm1.bz2;patch=1 \	   
-SRC_URI = "git://rsync.kernel.org/pub/scm/linux/kernel/git/torvalds/linux-2.6.git;tag=c6482dde1c2811afba289b2344268f850595f350 \
+SRC_URI = "git://rsync.kernel.org/pub/scm/linux/kernel/git/torvalds/linux-2.6.git;tag=ab36ce8c77403da4362de0447d188cd049d52d81 \
            ${RPSRC}/alsa/asoc-v0.11pre2.patch;patch=1 \
            ${RPSRC}/asoc_updates-r1.patch;patch=1 \
            ${RPSRC}/hx2750_base-r25.patch;patch=1 \
@@ -30,12 +30,13 @@ SRC_URI = "git://rsync.kernel.org/pub/scm/linux/kernel/git/torvalds/linux-2.6.gi
            ${RPSRC}/sharpsl_pm_fixes1-r0.patch;patch=1 \
            ${RPSRC}/pm_changes-r1.patch;patch=1 \
            ${RPSRC}/usb_pxa27x_udc-r0.patch;patch=1 \
-           ${RPSRC}/usb_add_epalloc-r2.patch;patch=1 \
+           ${RPSRC}/usb_add_epalloc-r3.patch;patch=1 \
            ${DOSRC}/kexec-arm-r2.patch;patch=1 \
            ${RPSRC}/locomo_kbd_tweak-r0.patch;patch=1 \
            ${RPSRC}/poodle_pm-r1.patch;patch=1 \
            ${RPSRC}/pxafb_changeres-r1.patch;patch=1 \
            ${RPSRC}/poodle_audio-r0.patch;patch=1 \
+           ${RPSRC}/nand_sharpsl_fix-r0.patch;patch=1 \
            file://serial-add-support-for-non-standard-xtals-to-16c950-driver.patch;patch=1 \
            file://hrw-pcmcia-ids-r3.patch;patch=1 \
            ${RPSRC}/logo_oh-r0.patch.bz2;patch=1;status=unmergable \
