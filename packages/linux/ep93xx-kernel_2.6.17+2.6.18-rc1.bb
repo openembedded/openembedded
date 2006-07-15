@@ -2,21 +2,24 @@ DESCRIPTION = "Linux Kernel for Cirrus Logic ep39xx compatible machines"
 SECTION = "kernel"
 MAINTAINER = "Koen Kooi <koen@dominion.kabel.utwente.nl>"
 LICENSE = "GPL"
-PR = "r2"
+PR = "r0"
 
 COMPATIBLE_MACHINE = "ep93xx"
 
-SRC_URI = "ftp://ftp.kernel.org/pub/linux/kernel/v2.6/linux-2.6.16.tar.bz2 \
-	   http://www.wantstofly.org/~buytenh/ep93xx/derevo17.diff;patch=1 \
-	   file://eabi-enums.patch;patch=1 \
+SRC_URI = "ftp://ftp.kernel.org/pub/linux/kernel/v2.6/linux-2.6.17.tar.bz2 \
+	   http://ftp.kernel.org/pub/linux/kernel/v2.6/testing/patch-2.6.18-rc1.bz2;patch=1 \
+	   http://ftp.kernel.org/pub/linux/kernel/v2.6/snapshots/patch-2.6.18-rc1-git9.bz2;patch=1 \
+	   http://www.wantstofly.org/~buytenh/ep93xx/derevo20.diff;pnum=1;patch=1 \
            file://defconfig \
 		   "
 
-S = "${WORKDIR}/linux-2.6.16"
+S = "${WORKDIR}/linux-2.6.17"
 
 inherit kernel
 
 KERNEL_IMAGETYPE = "zImage"
+
+
 
 do_configure() {
         rm -f ${S}/.config
