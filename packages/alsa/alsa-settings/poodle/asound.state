@@ -1,0 +1,148 @@
+state.Poodle {
+	control.1 {
+		comment.access 'read write'
+		comment.type INTEGER
+		comment.count 2
+		comment.range '0 - 127'
+		iface MIXER
+		name 'Playback Volume'
+		value.0 121
+		value.1 121
+	}
+	control.2 {
+		comment.access 'read write'
+		comment.type BOOLEAN
+		comment.count 2
+		iface MIXER
+		name 'Playback Switch'
+		value.0 false
+		value.1 false
+	}
+	control.3 {
+		comment.access 'read write'
+		comment.type INTEGER
+		comment.count 2
+		comment.range '0 - 31'
+		iface MIXER
+		name 'Capture Volume'
+		value.0 23
+		value.1 23
+	}
+	control.4 {
+		comment.access 'read write'
+		comment.type BOOLEAN
+		comment.count 2
+		iface MIXER
+		name 'Line Capture Switch'
+		value.0 false
+		value.1 false
+	}
+	control.5 {
+		comment.access 'read write'
+		comment.type BOOLEAN
+		comment.count 1
+		iface MIXER
+		name 'Mic Boost (+20dB)'
+		value false
+	}
+	control.6 {
+		comment.access 'read write'
+		comment.type BOOLEAN
+		comment.count 1
+		iface MIXER
+		name 'Capture Mic Switch'
+		value false
+	}
+	control.7 {
+		comment.access 'read write'
+		comment.type INTEGER
+		comment.count 1
+		comment.range '0 - 3'
+		iface MIXER
+		name 'Sidetone Playback Volume'
+		value 0
+	}
+	control.8 {
+		comment.access 'read write'
+		comment.type BOOLEAN
+		comment.count 1
+		iface MIXER
+		name 'ADC High Pass Filter Switch'
+		value true
+	}
+	control.9 {
+		comment.access 'read write'
+		comment.type BOOLEAN
+		comment.count 1
+		iface MIXER
+		name 'Store DC Offset Switch'
+		value false
+	}
+	control.10 {
+		comment.access 'read write'
+		comment.type ENUMERATED
+		comment.count 1
+		comment.item.0 None
+		comment.item.1 '32Khz'
+		comment.item.2 '44.1Khz'
+		comment.item.3 '48Khz'
+		iface MIXER
+		name 'Playback De-emphasis'
+		value None
+	}
+	control.11 {
+		comment.access 'read write'
+		comment.type ENUMERATED
+		comment.count 1
+		comment.item.0 'Line In'
+		comment.item.1 Mic
+		iface MIXER
+		name 'Input Mux'
+		value 'Line In'
+	}
+	control.12 {
+		comment.access 'read write'
+		comment.type BOOLEAN
+		comment.count 1
+		iface MIXER
+		name 'Output Mixer Line Bypass Switch'
+		value false
+	}
+	control.13 {
+		comment.access 'read write'
+		comment.type BOOLEAN
+		comment.count 1
+		iface MIXER
+		name 'Output Mixer Mic Sidetone Switc'
+		value false
+	}
+	control.14 {
+		comment.access 'read write'
+		comment.type BOOLEAN
+		comment.count 1
+		iface MIXER
+		name 'Output Mixer HiFi Playback Swit'
+		value true
+	}
+	control.15 {
+		comment.access 'read write'
+		comment.type ENUMERATED
+		comment.count 1
+		comment.item.0 Headphone
+		comment.item.1 Off
+		iface MIXER
+		name 'Jack Function'
+		value Headphone
+	}
+	control.16 {
+		comment.access 'read write'
+		comment.type ENUMERATED
+		comment.count 1
+		comment.item.0 Auto
+		comment.item.1 On
+		comment.item.2 Off
+		iface MIXER
+		name 'Speaker Function'
+		value Auto
+	}
+}
