@@ -37,12 +37,20 @@ do_clean_append() {
 do_stage_prepend() {
 #move away the staging dir to avoid relocation troubles
 
+if [ -e ${STAGING_DIR}/${P}.spawn ]; then
+        oenote "List of spawned packages found: ${P}.spawn"
+        for spawn in `cat ${STAGING_DIR}/${P}.spawn | grep -v ${PN}-locale` 
+                do ${PSTAGE_INSTALL_CMD} ${STAGING_DIR}  ${DEPLOY_DIR_IPK}/${spawn}_${PV}-${PR}_${PACKAGE_ARCH}.ipk         
+        done
+        exit 0
+fi
+
+
 if [ -e ${DEPLOY_DIR_PSTAGE}/${PSTAGE_PKGNAME} ]; then
 	oenote "Staging stuff already packaged, using that instead"
 	${PSTAGE_INSTALL_CMD} ${STAGING_DIR}  ${DEPLOY_DIR_PSTAGE}/${PSTAGE_PKGNAME}
 	exit 0      
 fi
-
 
 mv ${STAGING_DIR} ${TMPDIR}/pstage
 
