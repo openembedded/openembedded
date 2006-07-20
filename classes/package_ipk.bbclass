@@ -11,9 +11,6 @@ python package_ipk_fn () {
 
 python do_write_ipk_list () {
 	import os, sys
-        #pkg = bb.data.getVar('PKG', d, 1)
-        #pkgfn = bb.data.getVar('PKGFN', d, 1)
-        #rootfs = bb.data.getVar('IMAGE_ROOTFS', d, 1)
         ipkdir = bb.data.getVar('DEPLOY_DIR_IPK', d, 1)
         stagingdir = bb.data.getVar('STAGING_DIR', d, 1)
         tmpdir = bb.data.getVar('TMPDIR', d, 1)
@@ -27,16 +24,18 @@ python do_write_ipk_list () {
                 bb.debug(1, "No packages; nothing to do")
                 return
 
-        for pkg in packages.split():
-                localdata = bb.data.createCopy(d)
-
 	# Generate ipk.conf if it or the stamp doesnt exist
         listfile = os.path.join(stagingdir,"%s.spawn" %  bb.data.getVar('P', d, 1))
         if not os.access(listfile, os.R_OK):
 		os.system('rm -f ' + listfile)
                 f = open(listfile,"w")
                 for spawn in packages.split():
-			f.write("%s\n" % spawn)
+			#check if the packagename change due to debian shlib renaming
+                	localdata = bb.data.createCopy(d)
+                	pkgname = bb.data.getVar('PKG_%s' % spawn, localdata, 1)
+                	if not pkgname:
+                        	pkgname = spawn
+			f.write("%s\n" % pkgname)
                 f.close()
 }
 
