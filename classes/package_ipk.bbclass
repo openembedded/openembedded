@@ -30,7 +30,7 @@ python do_write_ipk_list () {
 		os.system('rm -f ' + listfile)
                 f = open(listfile,"w")
                 for spawn in packages.split():
-			#check if the packagename change due to debian shlib renaming
+			#check if the packagename has changed due to debian shlib renaming
                 	localdata = bb.data.createCopy(d)
                 	pkgname = bb.data.getVar('PKG_%s' % spawn, localdata, 1)
                 	if not pkgname:
