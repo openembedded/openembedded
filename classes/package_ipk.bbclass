@@ -1,11 +1,43 @@
 inherit package
 DEPENDS_prepend="${@["ipkg-utils-native ", ""][(bb.data.getVar('PACKAGES', d, 1) == '')]}"
 BOOTSTRAP_EXTRA_RDEPENDS += "ipkg-collateral ipkg ipkg-link"
-PACKAGEFUNCS += "do_package_ipk"
+PACKAGEFUNCS += "do_package_ipk do_write_ipk_list"
 
 python package_ipk_fn () {
 	from bb import data
 	bb.data.setVar('PKGFN', bb.data.getVar('PKG',d), d)
+}
+
+
+python do_write_ipk_list () {
+	import os, sys
+        #pkg = bb.data.getVar('PKG', d, 1)
+        #pkgfn = bb.data.getVar('PKGFN', d, 1)
+        #rootfs = bb.data.getVar('IMAGE_ROOTFS', d, 1)
+        ipkdir = bb.data.getVar('DEPLOY_DIR_IPK', d, 1)
+        stagingdir = bb.data.getVar('STAGING_DIR', d, 1)
+        tmpdir = bb.data.getVar('TMPDIR', d, 1)
+
+        packages = bb.data.getVar('PACKAGES', d, 1)
+        if not packages:
+                bb.debug(1, "PACKAGES not defined, nothing to package")
+                return
+
+        if packages == []:
+                bb.debug(1, "No packages; nothing to do")
+                return
+
+        for pkg in packages.split():
+                localdata = bb.data.createCopy(d)
+
+	# Generate ipk.conf if it or the stamp doesnt exist
+        listfile = os.path.join(stagingdir,"%s.spawn" %  bb.data.getVar('P', d, 1))
+        if not os.access(listfile, os.R_OK):
+		os.system('rm -f ' + listfile)
+                f = open(listfile,"w")
+                for spawn in packages.split():
+			f.write("%s\n" % spawn)
+                f.close()
 }
 
 python package_ipk_install () {
