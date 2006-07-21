@@ -1,4 +1,4 @@
-PR = "r4"
+PR = "r5"
 DESCRIPTION = "The GNU cc and gcc C compilers."
 HOMEPAGE = "http://www.gnu.org/software/gcc/"
 SECTION = "devel"
@@ -29,11 +29,16 @@ SRC_URI = "http://ftp.gnu.org/pub/gnu/gcc/gcc-4.1.1/gcc-4.1.1.tar.bz2 \
 
 SRC_URI_append_fail-fast = " file://zecke-no-host-includes.patch;patch=1 "
 
-include gcc4-build.inc
-EXTRA_OECONF += "--disable-libssp"
-
-FORTRAN = ""
-HAS_GFORTRAN = ""
+#Set the fortran bits
+FORTRAN = "" # "f95"
+HAS_GFORTRAN ?= "no"
 HAS_G2C = "no"
 
+#Set the java bits
+JAVA_arm = "" # ",java" 
+
+include gcc3-build.inc
+
+
+EXTRA_OECONF += "--disable-libssp"
   
