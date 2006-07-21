@@ -14,6 +14,8 @@ python do_write_ipk_list () {
         ipkdir = bb.data.getVar('DEPLOY_DIR_IPK', d, 1)
         stagingdir = bb.data.getVar('STAGING_DIR', d, 1)
         tmpdir = bb.data.getVar('TMPDIR', d, 1)
+	p = bb.data.getVar('P', d, 1)
+ 	pr = bb.data.getVar('PR', d, 1)
 
         packages = bb.data.getVar('PACKAGES', d, 1)
         if not packages:
@@ -25,7 +27,7 @@ python do_write_ipk_list () {
                 return
 
 	# Generate ipk.conf if it or the stamp doesnt exist
-        listfile = os.path.join(stagingdir,"%s.spawn" %  bb.data.getVar('P', d, 1))
+        listfile = os.path.join(stagingdir,"pkgmaps","%s-%s.spawn" %  ( p , pr ))
         if not os.access(listfile, os.R_OK):
 		os.system('rm -f ' + listfile)
                 f = open(listfile,"w")

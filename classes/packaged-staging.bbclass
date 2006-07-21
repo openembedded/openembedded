@@ -37,9 +37,9 @@ do_clean_append() {
 do_stage_prepend() {
 #move away the staging dir to avoid relocation troubles
 
-if [ -e ${STAGING_DIR}/${P}.spawn ]; then
+if [ -e ${STAGING_DIR}/pkgmaps/${P}-${PR}.spawn ]; then
         oenote "List of spawned packages found: ${P}.spawn"
-        for spawn in `cat ${STAGING_DIR}/${P}.spawn | grep -v ${PN}-locale` 
+        for spawn in `cat ${STAGING_DIR}/${P}-${PR}.spawn | grep -v ${PN}-locale` 
                 do ${PSTAGE_INSTALL_CMD} ${STAGING_DIR}  ${DEPLOY_DIR_IPK}/${spawn}_${PV}-${PR}_${PACKAGE_ARCH}.ipk         
         done
         exit 0
