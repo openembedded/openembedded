@@ -1,7 +1,7 @@
 #
 # Automatically generated make config: don't edit
 # Linux kernel version: 2.6.17
-# Fri Jul 14 16:37:19 2006
+# Sat Jul 22 02:03:58 2006
 #
 CONFIG_ARM=y
 CONFIG_MMU=y
@@ -22,14 +22,16 @@ CONFIG_INIT_ENV_ARG_LIMIT=32
 # General setup
 #
 CONFIG_LOCALVERSION=""
-CONFIG_LOCALVERSION_AUTO=y
+# CONFIG_LOCALVERSION_AUTO is not set
 # CONFIG_SWAP is not set
-# CONFIG_SYSVIPC is not set
+CONFIG_SYSVIPC=y
 # CONFIG_POSIX_MQUEUE is not set
-# CONFIG_BSD_PROCESS_ACCT is not set
+CONFIG_BSD_PROCESS_ACCT=y
+# CONFIG_BSD_PROCESS_ACCT_V3 is not set
 # CONFIG_SYSCTL is not set
 # CONFIG_AUDIT is not set
-# CONFIG_IKCONFIG is not set
+CONFIG_IKCONFIG=y
+CONFIG_IKCONFIG_PROC=y
 # CONFIG_RELAY is not set
 CONFIG_INITRAMFS_SOURCE=""
 CONFIG_UID16=y
@@ -299,70 +301,8 @@ CONFIG_TCP_CONG_BIC=y
 #
 # CONFIG_NET_PKTGEN is not set
 # CONFIG_HAMRADIO is not set
-CONFIG_IRDA=m
-
-#
-# IrDA protocols
-#
-CONFIG_IRLAN=m
-# CONFIG_IRNET is not set
-CONFIG_IRCOMM=m
-# CONFIG_IRDA_ULTRA is not set
-
-#
-# IrDA options
-#
-# CONFIG_IRDA_CACHE_LAST_LSAP is not set
-# CONFIG_IRDA_FAST_RR is not set
-# CONFIG_IRDA_DEBUG is not set
-
-#
-# Infrared-port device drivers
-#
-
-#
-# SIR device drivers
-#
-# CONFIG_IRTTY_SIR is not set
-
-#
-# Dongle support
-#
-
-#
-# Old SIR device drivers
-#
-# CONFIG_IRPORT_SIR is not set
-
-#
-# Old Serial dongle support
-#
-
-#
-# FIR device drivers
-#
-CONFIG_SA1100_FIR=m
-CONFIG_BT=m
-CONFIG_BT_L2CAP=m
-CONFIG_BT_SCO=m
-CONFIG_BT_RFCOMM=m
-# CONFIG_BT_RFCOMM_TTY is not set
-CONFIG_BT_BNEP=m
-# CONFIG_BT_BNEP_MC_FILTER is not set
-# CONFIG_BT_BNEP_PROTO_FILTER is not set
-CONFIG_BT_HIDP=m
-
-#
-# Bluetooth device drivers
-#
-CONFIG_BT_HCIUART=m
-# CONFIG_BT_HCIUART_H4 is not set
-# CONFIG_BT_HCIUART_BCSP is not set
-CONFIG_BT_HCIDTL1=m
-CONFIG_BT_HCIBT3C=m
-CONFIG_BT_HCIBLUECARD=m
-CONFIG_BT_HCIBTUART=m
-CONFIG_BT_HCIVHCI=m
+# CONFIG_IRDA is not set
+# CONFIG_BT is not set
 CONFIG_IEEE80211=m
 # CONFIG_IEEE80211_DEBUG is not set
 CONFIG_IEEE80211_CRYPT_WEP=m
@@ -802,6 +742,8 @@ CONFIG_SOUND=m
 # Advanced Linux Sound Architecture
 #
 CONFIG_SND=m
+CONFIG_SND_TIMER=m
+CONFIG_SND_PCM=m
 # CONFIG_SND_SEQUENCER is not set
 # CONFIG_SND_MIXER_OSS is not set
 # CONFIG_SND_PCM_OSS is not set
@@ -822,7 +764,7 @@ CONFIG_SND_VERBOSE_PROCFS=y
 #
 # ALSA ARM devices
 #
-# CONFIG_SND_SA11XX_UDA1341 is not set
+CONFIG_SND_SA11XX_UDA1341=m
 
 #
 # PCMCIA devices
@@ -861,7 +803,23 @@ CONFIG_USB_ARCH_HAS_OHCI=y
 # Real Time Clock
 #
 CONFIG_RTC_LIB=y
-# CONFIG_RTC_CLASS is not set
+CONFIG_RTC_CLASS=y
+CONFIG_RTC_HCTOSYS=y
+CONFIG_RTC_HCTOSYS_DEVICE="rtc0"
+
+#
+# RTC interfaces
+#
+CONFIG_RTC_INTF_SYSFS=y
+CONFIG_RTC_INTF_PROC=y
+CONFIG_RTC_INTF_DEV=y
+
+#
+# RTC drivers
+#
+# CONFIG_RTC_DRV_M48T86 is not set
+CONFIG_RTC_DRV_SA1100=y
+# CONFIG_RTC_DRV_TEST is not set
 
 #
 # File systems
