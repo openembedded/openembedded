@@ -544,7 +544,7 @@ python base_eventhandler() {
 		path_to_packages = path_to_bbfiles[:path_to_bbfiles.rindex( "packages" )]
 		monotone_revision = "<unknown>"
 		try:
-			monotone_revision = file( "%s/MT/revision" % path_to_packages ).read().strip()
+			monotone_revision = file( "%s/_MTN/revision" % path_to_packages ).read().strip()
 		except IOError:
 			pass
 		bb.data.setVar( 'OE_REVISION', monotone_revision, e.data )
