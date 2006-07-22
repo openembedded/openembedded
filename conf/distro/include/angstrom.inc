@@ -37,7 +37,6 @@ BUILD_OPTIMIZATION = "-Os"
 TARGET_FPU_arm = "soft"
 
 #Always ship these packages
-BOOTSTRAP_EXTRA_DEPENDS += "angstrom-version coreutils dropbear sysvinit"
 BOOTSTRAP_EXTRA_RDEPENDS += "angstrom-version coreutils dropbear sysvinit"
 
 #Name the generated images in a sane way
