@@ -1,7 +1,7 @@
 #
 # Automatically generated make config: don't edit
 # Linux kernel version: 2.6.17
-# Sat Jul 22 02:03:58 2006
+# Sat Jul 22 02:55:51 2006
 #
 CONFIG_ARM=y
 CONFIG_MMU=y
@@ -599,7 +599,8 @@ CONFIG_SERIAL_SA1100_CONSOLE=y
 CONFIG_SERIAL_CORE=y
 CONFIG_SERIAL_CORE_CONSOLE=y
 CONFIG_UNIX98_PTYS=y
-# CONFIG_LEGACY_PTYS is not set
+CONFIG_LEGACY_PTYS=y
+CONFIG_LEGACY_PTY_COUNT=8
 
 #
 # IPMI

@@ -17,6 +17,7 @@
 /dev/mtdblock	b	640	0	0	31	0	0	1	8
 /dev/console	c	662	0	5	5	1	-	-
 /dev/urandom    c       644     0       0       1       9       -       -       -
+/dev/random     c       644     0       0       1       8       -       -       -
 /bin/tinylogin	f	4755	0	0	-	-	-	-
 /bin/mount	f	4755	0	0	-	-	-	-
 /bin/umount	f	4755	0	0	-	-	-	-
