@@ -1,6 +1,6 @@
 include linux-openzaurus.inc
 
-PR = "r9"
+PR = "r10"
 
 DEFAULT_PREFERENCE = "-1"
 
@@ -29,8 +29,8 @@ SRC_URI = "http://www.kernel.org/pub/linux/kernel/v2.6/linux-2.6.17.tar.bz2 \
            ${RPSRC}/input_modalias_fix-r0.patch;patch=1;status=merged \
            file://00-hostap.patch;patch=1;status=merged \
            file://10-pcnet.patch;patch=1;status=merged \
-           ${RPSRC}/asoc-v0.11pre2-oz.patch;patch=1 \
-           ${RPSRC}/asoc_updates-r1.patch;patch=1 \
+           ${RPSRC}/asoc-v0.11pre5-oz.patch;patch=1 \
+           ${RPSRC}/asoc_fixes2-r0.patch;patch=1 \
            ${RPSRC}/hx2750_base-r25.patch;patch=1 \
            ${RPSRC}/hx2750_bl-r7.patch;patch=1 \
            ${RPSRC}/hx2750_pcmcia-r2.patch;patch=1 \
@@ -48,7 +48,7 @@ SRC_URI = "http://www.kernel.org/pub/linux/kernel/v2.6/linux-2.6.17.tar.bz2 \
            ${RPSRC}/locomo_kbd_tweak-r0.patch;patch=1 \
            ${RPSRC}/poodle_pm-r1.patch;patch=1 \
            ${RPSRC}/pxafb_changeres-r0.patch;patch=1 \
-           ${RPSRC}/poodle_audio-r0.patch;patch=1 \
+           ${RPSRC}/poodle_audio-r1.patch;patch=1 \
            file://serial-add-support-for-non-standard-xtals-to-16c950-driver.patch;patch=1 \
            file://hrw-pcmcia-ids-r3.patch;patch=1 \
            ${RPSRC}/logo_oh-r0.patch.bz2;patch=1;status=unmergable \
