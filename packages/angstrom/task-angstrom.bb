@@ -44,7 +44,7 @@ RDEPENDS_angstrom-base-wifi = "\
     "
 
 RDEPENDS_angstrom-x11-base-depends := "\
-    diet-x11 \
+    libx11 \
     virtual/xserver"
 
 RDEPENDS_angstrom-gpe-task-base := "\
