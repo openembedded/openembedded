@@ -1,0 +1,12 @@
+--- tango-icon-theme-0.6.1/configure.ac.orig	2005-12-10 20:48:31 +0100
++++ tango-icon-theme-0.6.1/configure.ac	2005-12-10 20:49:18 +0100
+@@ -38,8 +38,7 @@
+    AC_MSG_RESULT([yes])
+ else
+    AC_MSG_RESULT([no])
++   ICONMAP="true"
+-   AC_MSG_ERROR([icon-naming-utils >= $UTILS_REQUIRED is required to build
+-                 and install tango-icon-theme])
+ fi
+ 
+ # Check for convert from ImageMagick to add the 1x1 frame to 22x22 icons
