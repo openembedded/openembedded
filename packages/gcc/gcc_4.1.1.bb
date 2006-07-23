@@ -30,15 +30,15 @@ SRC_URI = "http://ftp.gnu.org/pub/gnu/gcc/gcc-4.1.1/gcc-4.1.1.tar.bz2 \
 SRC_URI_append_fail-fast = " file://zecke-no-host-includes.patch;patch=1 "
 
 #Set the fortran bits
-FORTRAN = "" # "f95"
-HAS_GFORTRAN ?= "no"
+FORTRAN = "" 
+HAS_GFORTRAN = "no"
 HAS_G2C = "no"
 
 #Set the java bits
-JAVA_arm = "" # ",java" 
+JAVA_arm = ""  
 
 include gcc3-build.inc
 
 
-EXTRA_OECONF += "--disable-libssp"
+EXTRA_OECONF += " --disable-libssp "
   
