@@ -1,3 +1,4 @@
 require anthy_${PV}.bb
-DEPENDS =""
+PACKAGES = ""
+DEPENDS = ""
 inherit native
