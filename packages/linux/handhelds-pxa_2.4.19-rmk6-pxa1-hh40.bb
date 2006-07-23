@@ -3,12 +3,10 @@ DESCRIPTION = "handhelds.org Linux kernel for PXA25x based devices."
 MAINTAINER = "Phil Blundell <pb@handhelds.org>"
 LICENSE = "GPL"
 PR = "r0"
-DEFAULT_PREFERENCE="-1"
-
 
 KERNEL_CCSUFFIX = "-3.3.4"
 COMPATIBLE_HOST = "arm.*-linux"
-COMPATIBLE_MACHINE = '(h3900|h2200|ipaq-pxa270)'
+COMPATIBLE_MACHINE = '(h3900|h5xxx)'
 
 SRC_URI = "${HANDHELDS_CVS};module=linux/kernel;tag=${@'K' + bb.data.getVar('PV',d,1).replace('.', '-')} \
 	   file://defconfig-${PACKAGE_ARCH} \
