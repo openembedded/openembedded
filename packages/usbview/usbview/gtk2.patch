@@ -1,0 +1,21 @@
+--- usbview-1.0/configure.in.orig	2006-07-18 14:31:32.000000000 -0600
++++ usbview-1.0/configure.in	2006-07-18 14:31:58.000000000 -0600
+@@ -9,7 +9,7 @@
+ AM_PROG_CC_STDC
+ AC_HEADER_STDC
+ 
+-AM_PATH_GTK(1.2.0, ,
++AM_PATH_GTK_2_0(1.2.0, ,
+             AC_MSG_ERROR(Cannot find GTK: Is gtk-config in path?))
+ 
+ 
+--- usbview-1.0/usbtree.c.orig	2006-07-18 14:36:39.996545080 -0600
++++ usbview-1.0/usbtree.c	2006-07-18 14:36:54.531335456 -0600
+@@ -31,6 +31,7 @@
+ #include <sys/stat.h>
+ #include <unistd.h>
+ #include <errno.h>
++#define GTK_ENABLE_BROKEN
+ #include <gtk/gtk.h>
+ 
+ #include "usbtree.h"
