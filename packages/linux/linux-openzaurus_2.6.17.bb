@@ -1,6 +1,6 @@
 include linux-openzaurus.inc
 
-PR = "r10"
+PR = "r11"
 
 DEFAULT_PREFERENCE = "-1"
 
@@ -31,12 +31,12 @@ SRC_URI = "http://www.kernel.org/pub/linux/kernel/v2.6/linux-2.6.17.tar.bz2 \
            file://10-pcnet.patch;patch=1;status=merged \
            ${RPSRC}/asoc-v0.11pre5-oz.patch;patch=1 \
            ${RPSRC}/asoc_fixes2-r0.patch;patch=1 \
-           ${RPSRC}/hx2750_base-r25.patch;patch=1 \
+           ${RPSRC}/hx2750_base-r26.patch;patch=1 \
            ${RPSRC}/hx2750_bl-r7.patch;patch=1 \
            ${RPSRC}/hx2750_pcmcia-r2.patch;patch=1 \
            ${RPSRC}/pxa_keys-r5.patch;patch=1 \
            ${RPSRC}/tsc2101-r12.patch;patch=1 \
-           ${RPSRC}/hx2750_test1-r3.patch;patch=1 \
+           ${RPSRC}/hx2750_test1-r4.patch;patch=1 \
            ${RPSRC}/pxa_timerfix-r0.patch;patch=1 \
            ${RPSRC}/input_power-r5.patch;patch=1 \
            ${RPSRC}/pxa25x_cpufreq-r0.patch;patch=1 \
