@@ -1,11 +1,10 @@
+include xorg-lib-common.inc
+
 DESCRIPTION = "X Damage extension library."
-SECTION = "x11/libs"
-#MAINTAINER = ""
 LICENSE= "BSD-X"
 
-DEPENDS = "libx11 damageproto libxfixes xproto"
+DEPENDS += " libx11 damageproto libxfixes fixesproto xextproto"
 PROVIDES = "xdamage"
 
 XORG_PN = "libXdamage"
 
-include xorg-xlibs.inc

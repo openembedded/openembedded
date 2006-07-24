@@ -1,14 +1,10 @@
-DESCRIPTION = "Xinerama library"
-SECTION = "x11/libs"
-PRIORITY = "optional"
-#MAINTAINER = ""
-LICENSE = "MIT"
+include xorg-lib-common.inc
 
-DEPENDS = "xineramaproto xproto libx11 libxext"
+DESCRIPTION = "Xinerama library"
+PRIORITY = "optional"
+
+DEPENDS += " libx11 libxext xextproto xineramaproto"
 PROVIDES = "xinerama"
 
 XORG_PN = "libXinerama"
 
-include xorg-xlibs.inc
-
-EXTRA_OECONF="--enable-malloc0returnsnull"

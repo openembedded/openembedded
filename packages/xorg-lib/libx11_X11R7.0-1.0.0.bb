@@ -1,19 +1,15 @@
+include xorg-lib-common.inc
+
 DESCRIPTION = "Base X libs."
-SECTION = "x11/libs"
-PRIORITY = "optional"
-LICENSE = "XFree86"
 
-DEPENDS = "xproto xextproto libxau xtrans libxdmcp xcmiscproto xf86bigfontproto kbproto inputproto bigreqsproto util-macros"
+DEPENDS += " bigreqsproto xproto xextproto xtrans libxau xcmiscproto \
+	libxdmcp xf86bigfontproto kbproto inputproto"
 PROVIDES = "x11"
-
-FILES_${PN} += "${datadir}/X11/XKeysymDB ${datadir}/X11/XErrorDB"
-FILES_${PN}-locale += "${datadir}/X11/locale"
 
 XORG_PN = "libX11"
 
-include xorg-xlibs.inc
-
-EXTRA_OECONF="--enable-malloc0returnsnull"
+FILES_${PN} += "${datadir}/X11/XKeysymDB ${datadir}/X11/XErrorDB ${libdir}/X11/Xcms.txt"
+FILES_${PN}-locale += "${datadir}/X11/locale ${libdir}/X11/locale"
 
 do_compile() {
 	(

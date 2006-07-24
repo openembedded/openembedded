@@ -1,16 +1,15 @@
-DESCRIPTION = "X Athena Widgets library"
-SECTION = "x11/libs"
-PRIORITY = "optional"
-#MAINTAINER = ""
-LICENSE = "MIT"
+include xorg-lib-common.inc
 
-DEPENDS = "xproto libx11 libxt libxmu libxpm"
+DESCRIPTION = "Xaw is the X Athena Widget Set."
+
+DEPENDS += " xproto libx11 libxext xextproto libxt libxmu libxpm libxp printproto libxau"
 PROVIDES = "xaw"
 
-XORG_RELEASE = "X11R7.1"
 XORG_PN = "libXaw"
 
-include xorg-xlibs.inc
-
-# FIXME: libXaw needs a full x11, not diet
-BROKEN = "1"
+do_stage () {
+	autotools_stage_all
+	ln -sf libXaw6.so.6 ${STAGING_LIBDIR}/libXaw.so.6
+	ln -sf libXaw7.so.7 ${STAGING_LIBDIR}/libXaw.so.7
+	ln -sf libXaw7.so.7 ${STAGING_LIBDIR}/libXaw.so
+}

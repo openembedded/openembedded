@@ -1,13 +1,10 @@
-DESCRIPTION = "X11 ICE library"
-SECTION = "libs"
-PRIORITY = "optional"
-#MAINTAINER = ""
-LICENSE= "MIT"
+include xorg-lib-common.inc
 
-DEPENDS = "libx11 util-macros"
+DESCRIPTION = "X11 ICE library"
+PRIORITY = "optional"
+
+DEPENDS += " xproto xtrans"
 PROVIDES = "ice"
 
-XORG_RELEASE = "X11R7.1"
 XORG_PN = "libICE"
 
-include xorg-xlibs.inc

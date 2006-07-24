@@ -1,12 +1,9 @@
+include xorg-lib-common.inc
+
 DESCRIPTION = "X Resize and Rotate extension library."
-SECTION = "x11/libs"
-#MAINTAINER = ""
 LICENSE = "BSD-X"
 
-DEPENDS = "randrproto libx11 libxrender libxext"
+DEPENDS += " libx11 randrproto libxext xextproto libxrender renderproto"
 
 XORG_PN = "libXrandr"
 
-include xorg-xlibs.inc
-
-EXTRA_OECONF="--enable-malloc0returnsnull"

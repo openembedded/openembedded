@@ -1,13 +1,9 @@
+include xorg-lib-common.inc
+
 DESCRIPTION = "X Render extension library."
-SECTION = "libs"
-#MAINTAINER = ""
-LICENSE = "BSD"
+LICENSE = "BSD-X"
 
-DEPENDS = "renderproto libx11"
+DEPENDS += " libx11 renderproto"
 
-XORG_RELEASE = "X11R7.1"
 XORG_PN = "libXrender"
 
-include xorg-xlibs.inc
-
-EXTRA_OECONF="--enable-malloc0returnsnull"

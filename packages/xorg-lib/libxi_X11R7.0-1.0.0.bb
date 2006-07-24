@@ -1,11 +1,8 @@
-DESCRIPTION = "X Input extension library."
-SECTION = "x11/libs"
-LICENSE = "MIT-X"
+include xorg-lib-common.inc
 
-DEPENDS = "xproto libx11 libxext"
+DESCRIPTION = "X Input extension library."
+
+DEPENDS += " xproto libx11 xextproto libxext inputproto"
 
 XORG_PN = "libXi"
 
-include xorg-xlibs.inc
-
-EXTRA_OECONF="--enable-malloc0returnsnull"

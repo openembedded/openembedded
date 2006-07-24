@@ -1,15 +1,12 @@
-DESCRIPTION = "X Window System miscellaneous utility library"
-SECTION = "x11/libs"
-PRIORITY = "optional"
-#MAINTAINER = ""
-LICENSE = "MIT"
+include xorg-lib-common.inc
 
-DEPENDS = "libxt libxext util-macros"
+DESCRIPTION = "X Window System miscellaneous utility library"
+PRIORITY = "optional"
+
+DEPENDS += " libxt libxext xextproto libx11"
 PROVIDES = "xmu"
 
 XORG_PN = "libXmu"
-
-include xorg-xlibs.inc
 
 PACKAGES =+ "libxmuu libxmuu-dev"
 

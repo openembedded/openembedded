@@ -1,13 +1,10 @@
-DESCRIPTION = "X Display Manager Control Protocol library."
-SECTION = "x11/libs"
-PRIORITY = "optional"
-#MAINTAINER = ""
-LICENSE= "MIT"
+include xorg-lib-common.inc
 
-DEPENDS = "xproto util-macros"
+DESCRIPTION = "X Display Manager Control Protocol library."
+PRIORITY = "optional"
+
+DEPENDS += " xproto"
 PROVIDES = "xdmcp"
 
-XORG_RELEASE = "X11R7.1"
 XORG_PN = "libXdmcp"
 
-include xorg-xlibs.inc

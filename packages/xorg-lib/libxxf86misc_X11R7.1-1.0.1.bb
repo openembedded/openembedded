@@ -1,12 +1,9 @@
-DESCRIPTION = "Xxf86vm extension library."
-SECTION = "x11/libs"
-LICENSE = "MIT"
-DEPENDS = "libx11 libxext"
+include xorg-lib-common.inc
 
-XORG_RELEASE = "X11R7.1"
+#DESCRIPTION = ""
+
+DEPENDS += " xproto libx11 xextproto libxext xf86miscproto"
+PROVIDES = "xxf86misc"
+
 XORG_PN = "libXxf86misc"
-
-include xorg-xlibs.inc
-
-EXTRA_OECONF="--enable-malloc0returnsnull"
 

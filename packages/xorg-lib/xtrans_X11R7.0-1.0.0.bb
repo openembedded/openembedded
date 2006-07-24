@@ -1,9 +1,8 @@
-LICENSE = "MIT"
-SECTION = "x11/libs"
+include xorg-lib-common.inc
+
 DESCRIPTION = "network API translation layer to \
 insulate X applications and libraries from OS \
 network vageries."
 
-XORG_PN = "${PN}"
+#DEPENDS += " "
 
-include xorg-xlibs.inc

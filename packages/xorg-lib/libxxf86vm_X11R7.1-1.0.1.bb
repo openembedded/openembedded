@@ -1,13 +1,8 @@
+include xorg-lib-common.inc
+
 DESCRIPTION = "Xxf86vm extension library."
-SECTION = "x11/libs"
-LICENSE = "MIT"
 
-DEPENDS = "libx11 libxext"
+DEPENDS += " xproto libx11 xextproto libxext xf86vidmodeproto"
 
-XORG_RELEASE = "X11R7.1"
 XORG_PN = "libXxf86vm"
-
-include xorg-xlibs.inc
-
-EXTRA_OECONF="--enable-malloc0returnsnull"
 

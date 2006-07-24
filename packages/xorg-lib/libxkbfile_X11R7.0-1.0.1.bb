@@ -1,11 +1,8 @@
+include xorg-lib-common.inc
+
 DESCRIPTION = "X11 keyboard library"
-SECTION = "libs"
+LICENSE= "GPL"
 PRIORITY = "optional"
-#MAINTAINER = ""
-LICENSE = "GPL"
 
-DEPENDS = "libx11"
+DEPENDS += " libx11 kbproto"
 
-XORG_PN = "${PN}"
-
-include xorg-xlibs.inc

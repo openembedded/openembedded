@@ -1,12 +1,10 @@
-DESCRIPTION = "X Test Extension: client side library"
-SECTION = "x11/libs"
-PRIORITY = "optional"
-#MAINTAINER = ""
-LICENSE = "GPL"
+include xorg-lib-common.inc
 
-DEPENDS = "libx11 libxext recordproto xextproto inputproto"
+DESCRIPTION = "X Test Extension: client side library"
+PRIORITY = "optional"
+
+DEPENDS += " libx11 libxext recordproto xextproto inputproto"
 PROVIDES = "xtst"
 
 XORG_PN = "libXtst"
 
-include xorg-xlibs.inc

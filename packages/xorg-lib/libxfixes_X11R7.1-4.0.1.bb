@@ -1,11 +1,9 @@
+include xorg-lib-common.inc
+
 DESCRIPTION = "X Fixes extension library."
-SECTION = "x11/libs"
-#MAINTAINER = ""
 LICENSE= "BSD-X"
 
-DEPENDS = "libx11 fixesproto"
+DEPENDS += " libx11 xproto fixesproto xextproto"
 
-XORG_RELEASE = "X11R7.1"
 XORG_PN = "libXfixes"
 
-include xorg-xlibs.inc

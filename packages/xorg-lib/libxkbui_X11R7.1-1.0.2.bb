@@ -1,13 +1,8 @@
-DESCRIPTION = "X11 keyboard library"
-SECTION = "libs"
+include xorg-lib-common.inc
+
+DESCRIPTION = "X11 lbxkbui library"
+LICENSE= "GPL"
 PRIORITY = "optional"
-#MAINTAINER = ""
-LICENSE = "GPL"
 
-DEPENDS = "libx11 libxt libxkbfile"
-
-XORG_RELEASE = "X11R7.1"
-XORG_PN = "${PN}"
-
-include xorg-xlibs.inc
-
+DEPENDS += " libx11 libxt libxkbfile"
+PROVIDES = "xkbui"

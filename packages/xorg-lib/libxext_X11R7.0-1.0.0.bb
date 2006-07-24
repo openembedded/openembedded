@@ -1,15 +1,10 @@
-DESCRIPTION = "X Server Extension library"
-SECTION = "x11/libs"
-PRIORITY = "optional"
-#MAINTAINER = ""
-LICENSE= "MIT"
+include xorg-lib-common.inc
 
-DEPENDS = "xproto libx11 xextproto util-macros"
+DESCRIPTION = "X Server Extension library"
+PRIORITY = "optional"
+
+DEPENDS += " xproto libx11 xextproto libxau"
 PROVIDES = "xext"
 
-EXTRA_OECONF="--enable-malloc0returnsnull"
-
 XORG_PN = "libXext"
-
-include xorg-xlibs.inc
 

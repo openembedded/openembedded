@@ -1,14 +1,11 @@
-DESCRIPTION = "X FreeType library. Client-side fonts with FreeType."
-LICENSE = "MIT-X"
-SECTION = "x11/libs"
+include xorg-lib-common.inc
 
-DEPENDS = "libx11 xproto libxrender freetype fontconfig"
+DESCRIPTION = "X FreeType library. Client-side fonts with FreeType."
+
+DEPENDS += " libxrender freetype fontconfig"
 PROVIDES = "xft"
 
-
 XORG_PN = "libXft"
-
-include xorg-xlibs.inc
 
 FILES_${PN} = ${libdir}/lib*.so.*
 FILES_${PN}-dev = ${includedir} ${libdir}/lib*.so ${libdir}/*.la \

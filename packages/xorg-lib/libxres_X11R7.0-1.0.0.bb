@@ -1,13 +1,8 @@
-DESCRIPTION = "X Resource usage library."
-SECTION = "x11/libs"
-#MAINTAINER = ""
-LICENSE = "X-MIT"
+include xorg-lib-common.inc
 
-DEPENDS = "libx11 xextproto libxext resourceproto"
-PROVIDES = "xres"
+DESCRIPTION = "X Resource usage library."
+
+DEPENDS += " libx11 libxext xextproto resourceproto"
 
 XORG_PN = "libXres"
 
-include xorg-xlibs.inc
-
-EXTRA_OECONF="--enable-malloc0returnsnull"

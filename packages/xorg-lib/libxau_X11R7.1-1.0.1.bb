@@ -1,14 +1,10 @@
-DESCRIPTION = "Authorization Protocol for X."
-SECTION = "x11/libs"
-PRIORITY = "optional"
-#MAINTAINER = ""
-LICENSE= "MIT"
+include xorg-lib-common.inc
 
-DEPENDS = "xproto util-macros"
+DESCRIPTION = "A Sample Authorization Protocol for X"
+PRIORITY = "optional"
+
+DEPENDS += " xproto"
 PROVIDES = "xau"
 
-XORG_RELEASE = "X11R7.1"
 XORG_PN = "libXau"
-
-include xorg-xlibs.inc
 

@@ -1,16 +1,12 @@
-DESCRIPTION = "X Toolkit Intrinsics"
-SECTION = "x11/libs"
-PRIORITY = "optional"
-#MAINTAINER = ""
-LICENSE =  "X-MIT"
+include xorg-lib-common.inc
 
-DEPENDS = "libx11 libsm util-macros"
+DESCRIPTION = "X Toolkit Intrinsics"
+PRIORITY = "optional"
+
+DEPENDS += " libsm libx11 xproto kbproto"
 PROVIDES = "xt"
 
-XORG_RELEASE = "X11R7.1"
 XORG_PN = "libXt"
-
-include xorg-xlibs.inc
 
 EXTRA_OECONF="--enable-malloc0returnsnull --disable-install-makestrs --disable-xkb"
 
