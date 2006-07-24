@@ -1,0 +1,107 @@
+Index: genext2fs-1.4rc1/genext2fs.c
+===================================================================
+--- genext2fs-1.4rc1.orig/genext2fs.c
++++ genext2fs-1.4rc1/genext2fs.c
+@@ -409,7 +409,9 @@ swab32(uint32 val)
+ typedef struct
+ {
+ 	superblock_decl
+-	uint32 s_reserved[235];       // Reserved
++	uint32  s_reserved1[9];
++	char s_volume[16];
++	uint32 s_reserved2[222];       // Reserved
+ } superblock;
+ 
+ typedef struct
+@@ -1122,7 +1124,7 @@ extend_blk(filesystem *fs, uint32 nod, b
+ 	while(create)
+ 	{
+ 		int i, copyb = 0;
+-		if(!(fs->sb.s_reserved[200] & OP_HOLES))
++		if(!(fs->sb.s_reserved2[187] & OP_HOLES))
+ 			copyb = 1;
+ 		else
+ 			for(i = 0; i < BLOCKSIZE / 4; i++)
+@@ -1784,7 +1786,8 @@ swap_badfs(filesystem *fs)
+ 
+ // initialize an empty filesystem
+ static filesystem *
+-init_fs(int nbblocks, int nbinodes, int nbresrvd, int holes, uint32 fs_timestamp)
++init_fs(int nbblocks, int nbinodes, int nbresrvd, int holes,
++		uint32 fs_timestamp, char *volumeid)
+ {
+ 	int i;
+ 	filesystem *fs;
+@@ -1847,6 +1850,9 @@ init_fs(int nbblocks, int nbinodes, int 
+ 	fs->sb.s_magic = EXT2_MAGIC_NUMBER;
+ 	fs->sb.s_lastcheck = fs_timestamp;
+ 
++	if (volumeid != NULL)
++		strncpy(fs->sb.s_volume, volumeid, sizeof(fs->sb.s_volume));
++
+ 	// set up groupdescriptors
+ 	for(i = 0,bbmpos=2+gd,ibmpos=3+gd,itblpos =4+gd;
+ 		i<nbgroups;
+@@ -1945,7 +1951,7 @@ init_fs(int nbblocks, int nbinodes, int 
+ 
+ 	// options for me
+ 	if(holes)
+-		fs->sb.s_reserved[200] |= OP_HOLES;
++		fs->sb.s_reserved2[187] |= OP_HOLES;
+ 	
+ 	return fs;
+ }
+@@ -2276,7 +2282,7 @@ static void
+ dump_fs(filesystem *fs, FILE * fh, int swapit)
+ {
+ 	int nbblocks = fs->sb.s_blocks_count;
+-	fs->sb.s_reserved[200] = 0;
++	fs->sb.s_reserved2[187] = 0;
+ 	if(swapit)
+ 		swap_goodfs(fs);
+ 	if(fwrite(fs, BLOCKSIZE, nbblocks, fh) < nbblocks)
+@@ -2341,6 +2347,7 @@ main(int argc, char **argv)
+ 	uint16 endian = 1;
+ 	int bigendian = !*(char*)&endian;
+ 	filesystem *fs;
++	char *volumeid = NULL;
+ 	int i;
+ 	int c;
+ 	struct stats stats;
+@@ -2359,6 +2366,7 @@ main(int argc, char **argv)
+ 	  { "size-in-blocks",	required_argument,	NULL, 'b' },
+ 	  { "bytes-per-inode",	required_argument,	NULL, 'i' },
+ 	  { "number-of-inodes",	required_argument,	NULL, 'I' },
++	  { "volume-id",	required_argument,	NULL, 'L' },
+ 	  { "reserved-blocks",	required_argument,	NULL, 'r' },
+ 	  { "block-map",	required_argument,	NULL, 'g' },
+ 	  { "fill-value",	required_argument,	NULL, 'e' },
+@@ -2372,7 +2380,7 @@ main(int argc, char **argv)
+ 	  { 0, 0, 0, 0}
+ 	} ;
+ 
+-	while((c = getopt_long(argc, argv, "x:d:D:b:I:i:r:g:e:zfqUPhv", longopts, NULL)) != EOF) {
++	while((c = getopt_long(argc, argv, "x:d:D:b:I:i:L:r:g:e:zfqUPhv", longopts, NULL)) != EOF) {
+ 		switch(c)
+ 		{
+ 			case 'x':
+@@ -2391,6 +2399,9 @@ main(int argc, char **argv)
+ 			case 'I':
+ 				nbinodes = SI_atof(optarg);
+ 				break;
++			case 'L':
++				volumeid = optarg;
++				break;
+ 			case 'r':
+ 				nbresrvd = SI_atof(optarg);
+ 				break;
+@@ -2517,7 +2528,8 @@ main(int argc, char **argv)
+ 			nbresrvd = nbblocks * RESERVED_BLOCKS;
+ 		if(fs_timestamp == -1)
+ 			fs_timestamp = time(NULL);
+-		fs = init_fs(nbblocks, nbinodes, nbresrvd, holes, fs_timestamp);
++		fs = init_fs(nbblocks, nbinodes, nbresrvd, holes,
++				fs_timestamp, volumeid);
+ 	}
+ 	for(i = 0; i < didx; i++)
+ 	{
