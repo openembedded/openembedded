@@ -1,0 +1,11 @@
+--- trunk/Makefile.orig	2006-07-24 09:55:12.000000000 +0100
++++ trunk/Makefile	2006-07-24 09:56:18.000000000 +0100
+@@ -410,7 +410,7 @@
+ endif
+ 
+ codec-cfg: codec-cfg.c codec-cfg.h help_mp.h
+-	$(HOST_CC) -I. -DCODECS2HTML codec-cfg.c -o $@
++	$(BUILD_CC) -Ilibmpdemux -Iloader -Ilibvo -I. -DCODECS2HTML codec-cfg.c -o $@
+ 
+ codecs.conf.h: codec-cfg etc/codecs.conf
+ 	./codec-cfg ./etc/codecs.conf > $@
