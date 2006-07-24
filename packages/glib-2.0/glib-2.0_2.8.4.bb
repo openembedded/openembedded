@@ -13,7 +13,8 @@ PR = "r2"
 
 LEAD_SONAME = "libglib-2.0.*"
 FILES_${PN} = "${libdir}/lib*.so.*"
-FILES_${PN}-dev += "${libdir}/glib-2.0/include ${datadir}/glib-2.0/gettext"
+FILES_${PN}-dev += "${libdir}/glib-2.0/include ${datadir}/glib-2.0/gettext \
+	${libdir}/glib-2.0/include/glibconfig.h"
 FILES_glib-2.0-utils = "${bindir}/*"
 
 EXTRA_OECONF = "--disable-debug"

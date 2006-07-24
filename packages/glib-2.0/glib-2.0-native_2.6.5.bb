@@ -10,10 +10,12 @@ MAINTAINER = "Philip Blundell <pb@handhelds.org>"
 DEPENDS = "gtk-doc-native"
 PR = "r4"
 
+export PERL_PATH="/usr/bin/env perl"
 EXTRA_OECONF = "--disable-debug"
 
 SRC_URI = "ftp://ftp.gtk.org/pub/gtk/v2.6/glib-${PV}.tar.bz2 \
 	   file://glib-gettextize-dir.patch;patch=1 \
+	   file://glib-mkenums-nowarn.patch;patch=1 \
            file://glibconfig-sysdefs.h \
            file://configure-libtool.patch;patch=1"
 

@@ -15,6 +15,11 @@ PR = "r4"
 LEAD_SONAME = "libglib-2.0.*"
 FILES_glib-2.0-utils = "${bindir}/*"
 
+# Add some files to glib-2.0 dev that normally don't get pulled in
+
+FILES_${PN}-dev += "${libdir}/glib-2.0/include/glibconfig.h \
+	${datadir}/glib-2.0/gettext/po/Makefile.in.in"
+
 EXTRA_OECONF = "--disable-debug"
 
 SRC_URI = "ftp://ftp.gtk.org/pub/gtk/v2.4/glib-${PV}.tar.bz2 \
