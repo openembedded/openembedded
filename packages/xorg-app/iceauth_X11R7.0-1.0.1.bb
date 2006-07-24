@@ -1,2 +1,6 @@
-include app-common.inc
-DEPENDS = "libx11 libice"
+include xorg-app-common.inc
+
+#DESCRIPTION = ""
+
+DEPENDS += " xproto libice"
+

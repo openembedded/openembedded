@@ -1,12 +1,8 @@
-LICENSE = "MIT"
-DEPENDS = "libx11 libxext libxtst"
-DESCRIPTION = "X display information utility"
-SECTION = "x11/base"
+include xorg-app-common.inc
 
-SRC_URI = "${XORG_MIRROR}/X11R7.0/src/app/${PN}-X11R7.0-1.0.1.tar.bz2 \
-	   file://disable-xkb.patch;patch=1"
-S = "${WORKDIR}/${PN}-X11R7.0-${PV}"
+DESCRIPTION = "X display information utility"
+LICENSE = "MIT"
+
+DEPENDS += " libxtst libxext libx11 libxxf86vm libxxf86dga libxxf86misc libxi libxrender libxinerama libdmx libxp"
 
 EXTRA_OECONF = "--disable-xkb"
-
-inherit autotools pkgconfig 

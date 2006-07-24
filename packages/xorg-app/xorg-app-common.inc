@@ -1,13 +1,18 @@
 DESCRIPTION = "X application"
+HOMEPAGE = "http://www.x.org"
 SECTION = "x11/apps"
-LICENSE= "MIT-X"
+#MAINTAINER = ""
+LICENSE = "MIT-X"
 
-SRC_URI = "${XORG_MIRROR}/X11R7.0/src/app/${PN}-X11R7.0-${PV}.tar.bz2"
+#DEPENDS = ""
+XORG_PN = "${PN}"
+SRC_URI = "${XORG_MIRROR}/${@bb.data.getVar('PV', d, 1)[0:7]}/src/app/${XORG_PN}-${PV}.tar.gz"
+S = "${WORKDIR}/${XORG_PN}-${PV}"
 
-S = ${WORKDIR}/${PN}-X11R7.0-${PV}
+FILES_${PN} += "  /usr/lib/X11/${XORG_PN}"
 
 inherit autotools pkgconfig
 
-do_stage () {
+do_stage() {
 	autotools_stage_all
 }

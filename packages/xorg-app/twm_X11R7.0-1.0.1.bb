@@ -1,14 +1,10 @@
-PR = "r1"
+include xorg-app-common.inc
 
-include app-common.inc
-DEPENDS = "libx11 libxt libxmu"
+DESCRIPTION = "tiny window manager"
 
-inherit update-alternatives
+DEPENDS += " libx11 libxext libxt libxmu"
 
 ALTERNATIVE_PATH = "${bindir}/twm"
 ALTERNATIVE_NAME = "x-window-manager"
 ALTERNATIVE_LINK = "${bindir}/x-window-manager"
 ALTERNATIVE_PRIORITY = "1"
-
-
-

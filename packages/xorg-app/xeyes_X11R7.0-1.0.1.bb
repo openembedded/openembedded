@@ -1,2 +1,5 @@
-include app-common.inc
-DEPENDS = "libx11 libxau libxext libxmu"
+include xorg-app-common.inc
+
+#DESCRIPTION = ""
+
+DEPENDS += " libx11 libxau libxt libxext libxmu"
