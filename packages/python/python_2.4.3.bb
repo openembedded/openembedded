@@ -44,7 +44,8 @@ do_compile() {
 		   HOSTPYTHON=${STAGING_BINDIR}/python \
 		   STAGING_LIBDIR=${STAGING_LIBDIR} \
 		   STAGING_INCDIR=${STAGING_INCDIR} \
-		   BUILD_SYS=${BUILD_SYS} HOST_SYS=${HOST_SYS}
+		   BUILD_SYS=${BUILD_SYS} HOST_SYS=${HOST_SYS} \
+		   OPT="${CFLAGS}"
 }
 
 do_stage() {
