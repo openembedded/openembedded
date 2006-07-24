@@ -1,6 +1,6 @@
 include xorg-util-common.inc
 
-DESCRIPTION = "X autotools macros"
+#DESCRIPTION = ""
 
 #DEPENDS += " "
 
