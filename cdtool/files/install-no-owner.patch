@@ -1,0 +1,33 @@
+--- cdtool-2.1.8pre4/Makefile.in.orig	2006-06-05 20:38:28.567261984 -0600
++++ cdtool-2.1.8pre4/Makefile.in	2006-06-05 20:38:46.218578576 -0600
+@@ -44,13 +44,13 @@
+ install: install-files install-links
+ install-files:
+ 	mkdir -p $(DESTDIR)$(bindir)
+-	$(INSTALL) cdctrl $(DESTDIR)$(bindir) -o root
+-	$(INSTALL) cdloop $(DESTDIR)$(bindir) -o root
+-	$(INSTALL) cdadd $(DESTDIR)$(bindir) -o root
+-	$(INSTALL) cdown $(DESTDIR)$(bindir) -o root
+-	$(INSTALL) cdtool2cddb $(DESTDIR)$(bindir) -o root
++	$(INSTALL) cdctrl $(DESTDIR)$(bindir) 
++	$(INSTALL) cdloop $(DESTDIR)$(bindir)
++	$(INSTALL) cdadd $(DESTDIR)$(bindir)
++	$(INSTALL) cdown $(DESTDIR)$(bindir)
++	$(INSTALL) cdtool2cddb $(DESTDIR)$(bindir)
+ 
+-	mkdir -p $(DESTDIR)$(mandir)/man1
++	$(INSTALL) -d $(DESTDIR)$(mandir)/man1
+ 	$(INSTALL) cdctrl.1 $(DESTDIR)$(mandir)/man1
+ 	$(INSTALL) cdloop.1 $(DESTDIR)$(mandir)/man1
+ 	$(INSTALL) cdadd.1 $(DESTDIR)$(mandir)/man1
+@@ -58,8 +58,8 @@
+ 	$(INSTALL) cdtool.1 $(DESTDIR)$(mandir)/man1
+ 	$(INSTALL) cdtool2cddb.1 $(DESTDIR)$(mandir)/man1
+ 
+-	mkdir -p $(DESTDIR)$(libdir)/cdtool
+-	$(INSTALL) cdtool $(DESTDIR)$(libdir)/cdtool -o root
++	$(INSTALL) -d  $(DESTDIR)$(libdir)/cdtool
++	$(INSTALL) cdtool $(DESTDIR)$(libdir)/cdtool
+  
+ LINKTARGET = ../lib/cdtool/cdtool
+ LINKS = cdplay cdpause cdstop cdclose cdeject cdir cdinfo cdreset \
