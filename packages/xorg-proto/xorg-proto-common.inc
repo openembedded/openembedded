@@ -1,16 +1,16 @@
 DESCRIPTION = "X protocol headers"
+HOMEPAGE = "http://www.x.org"
 SECTION = "x11/libs"
-LICENSE= "MIT-X"
 #MAINTAINER = ""
+LICENSE = "MIT-X"
 
-SRC_URI = "${XORG_MIRROR}/${XORG_RELEASE}/src/proto/${PN}-${XORG_RELEASE}-${PV}.tar.bz2"
-
-S = "${WORKDIR}/${PN}-${XORG_RELEASE}-${PV}"
-
-XORG_RELEASE ?= "X11R7.0"
+#DEPENDS = ""
+XORG_PN = "${PN}"
+SRC_URI = "${XORG_MIRROR}/${@bb.data.getVar('PV', d, 1)[0:7]}/src/proto/${XORG_PN}-${PV}.tar.gz"
+S = "${WORKDIR}/${XORG_PN}-${PV}"
 
 inherit autotools pkgconfig
 
-do_stage () {
+do_stage() {
 	autotools_stage_all
 }

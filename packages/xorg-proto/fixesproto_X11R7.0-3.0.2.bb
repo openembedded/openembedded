@@ -1,3 +1,7 @@
-include proto-common.inc
+include xorg-proto-common.inc
+
+#DESCRIPTION = ""
+
+#DEPENDS += " "
 
 CONFLICTS = "fixesext"

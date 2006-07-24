@@ -1,2 +1,5 @@
-include proto-common.inc
-XORG_RELEASE = "X11R7.1"
+include xorg-proto-common.inc
+
+#DESCRIPTION = ""
+
+#DEPENDS += " "

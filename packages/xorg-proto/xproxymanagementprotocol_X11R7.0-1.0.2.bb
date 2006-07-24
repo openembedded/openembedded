@@ -1,1 +1,6 @@
-include proto-common.inc
+include xorg-proto-common.inc
+
+PROVIDES="xproxymngproto"
+#DESCRIPTION = ""
+
+#DEPENDS += " "
