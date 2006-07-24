@@ -6,15 +6,18 @@ HOMEPAGE = "http://www.gzip.org/zlib/"
 LICENSE = "zlib"
 
 SRC_URI = "http://www.zlib.net/zlib-1.2.3.tar.bz2 \
-		file://visibility.patch;patch=1"
+		file://visibility.patch;patch=1 \
+		file://libtool_staging.patch;patch=1"
 
 S = "${WORKDIR}/zlib-${PV}"
+
+DEPENDS = "libtool-cross"
 
 export LDSHARED = "${CC} -shared -Wl,-soname,libz.so.1"
 LDFLAGS_append = " -L. -lz"
 CFLAGS_prepend = "-fPIC -DZLIB_DLL "
 AR_append = " rc"
-EXTRA_OEMAKE = ""
+EXTRA_OEMAKE = " LIBTOOL=${TARGET_SYS}-libtool"
 
 do_compile() {
 	./configure --prefix=${prefix} --exec_prefix=${exec_prefix} --shared --libdir=${libdir} --includedir=${includedir}
@@ -24,6 +27,8 @@ do_compile() {
 do_stage() {
 	install -m 0644 zlib.h ${STAGING_INCDIR}/zlib.h
 	install -m 0644 zconf.h ${STAGING_INCDIR}/zconf.h
+
+	mv libz.la ${STAGING_LIBDIR}/
 	oe_libinstall -a -so libz ${STAGING_LIBDIR}
 }
 
