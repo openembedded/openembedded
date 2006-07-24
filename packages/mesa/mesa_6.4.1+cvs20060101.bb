@@ -3,19 +3,33 @@ SECTION = "unknown"
 SRCDATE = "20060101"
 PV = "6.4.1+cvs${SRCDATE}"
 
-SRC_URI = "${FREEDESKTOP_CVS}/mesa;module=Mesa;method=pserver;date=${SRCDATE}"
+SRC_URI = "${FREEDESKTOP_CVS}/mesa;module=Mesa;method=pserver;date=${SRCDATE} \
+	file://mklib-rpath-link.patch;patch=1"
 S = "${WORKDIR}/Mesa"
 
 LICENSE = "LGPL"
 
-RDEPENDS = "expat libx11 libxext libxxf86vm libxi libxmu libice"
-DEPENDS = "xf86vidmodeproto glproto"
+RDEPENDS = "expat" 
+DEPENDS = "makedepend-native xf86vidmodeproto glproto libx11 libxext libxxf86vm libxi libxmu libice"
 
 # gcc-3.4 blows up in gtktext with -frename-registers on arm-linux
 CXXFLAGS := "${@'${CXXFLAGS}'.replace('-frename-registers', '')}"
 
+do_configure() {
+	cd configs
+
+	ln -sf linux current
+	sed -e "s%CC *= *.*%CC = ${CC}%" -i current
+	sed -e "s%CXX *= *.*%CXX = ${CXX}%" -i current
+	sed -e "s%LD *= *.*%LD = ${LD}%" -i current
+	sed -e "s%OPT_FLAGS *= *.*%OPT_FLAGS = ${TARGET_CFLAGS}%" -i current
+	sed -e "s%X11_INCLUDES *= *.*%X11_INCLUDES = -I${STAGING_INCDIR}/X11%" -i current
+	sed -e "s%EXTRA_LIB_PATH *= *.*%EXTRA_LIB_PATH = ${LDFLAGS}%" -i current
+	echo "SRC_DIRS = mesa glu glut/glx" >> current
+}
+
 do_compile() {
-	oe_runmake linux CC="${CC}" CXX="${CXX}" CFLAGS="${CFLAGS}" CXXFLAGS="${CXXFLAGS}" LD="${LD}" LDFLAGS="${LDFLAGS}"
+	oe_runmake default
 }
 
 do_install() {

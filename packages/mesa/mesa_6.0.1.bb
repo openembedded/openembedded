@@ -6,6 +6,7 @@ S = "${WORKDIR}/Mesa-${PV}"
 LICENSE = "LGPL"
 # gcc-3.4 blows up in gtktext with -frename-registers on arm-linux
 CXXFLAGS := "${@'${CXXFLAGS}'.replace('-frename-registers', '')}"
+DEPENDS = "makedepend-native"
 
 do_compile() {
 	oe_runmake linux CC="${CC}" CXX="${CXX}" CFLAGS="${CFLAGS}" CXXFLAGS="${CXXFLAGS}" LD="${LD}" LDFLAGS="${LDFLAGS}"
