@@ -1,0 +1,332 @@
+# tsclient patch 
+# Copyright (C) 2004, Advanced Micro Devices, Inc.  All Rights Reserved
+# Released under the GPL license 
+
+diff -urN tsclient-0.132/Makefile.am tsclient-0.132.diff/Makefile.am
+--- tsclient-0.132/Makefile.am	2003-11-08 16:21:32.000000000 -0700
++++ tsclient-0.132.diff/Makefile.am	2004-08-24 16:53:40.000000000 -0600
+@@ -1,6 +1,6 @@
+ ## Process this file with automake to produce Makefile.in
+ 
+-SUBDIRS = src applet po
++SUBDIRS = @SDIRS@ 
+ 
+ appicondir = $(datadir)/pixmaps
+ appicon_DATA = tsclient.png
+diff -urN tsclient-0.132/configure.in tsclient-0.132.diff/configure.in
+--- tsclient-0.132/configure.in	2003-11-09 00:09:31.000000000 -0700
++++ tsclient-0.132.diff/configure.in	2004-08-24 16:57:35.000000000 -0600
+@@ -12,8 +12,30 @@
+ AM_PROG_CC_STDC
+ AC_HEADER_STDC
+ 
+-pkg_modules="libgnomeui-2.0"
+-pkg_modules="libpanelapplet-2.0"
++SDIRS="src"
++
++dnl Once libgnomeui disappears, this is all we need
++pkg_modules="gtk+-2.0 gdk-pixbuf-2.0"
++
++AC_ARG_WITH(applet, [   --without-applet  Don't build the panel applet ],
++withapplet=no, withapplet=yes)
++
++echo "With applet: $withapplet"
++
++if test "$withapplet" != "no"; then 
++	pkg_modules="$pkg_modules libpanelapplet-2.0"
++	SDIRS="$SDIRS applet"
++fi
++
++AC_ARG_WITH(ica, [   --without-ica   Don't build in support for the ICA client ],
++withica=no, withica=yes)
++
++if test "$withica" != "no"; then 
++   CFLAGS="$CFLAGS -DENABLE_ICA"
++fi
++
++SDIRS="$SDIRS po"
++
+ PKG_CHECK_MODULES(PACKAGE, [$pkg_modules])
+ AC_SUBST(PACKAGE_CFLAGS)
+ AC_SUBST(PACKAGE_LIBS)
+@@ -41,6 +63,8 @@
+         AC_MSG_RESULT(no)
+ fi
+ 
++AC_SUBST(SDIRS)
++
+ dnl ==========================================================================
+ 
+ AC_OUTPUT([
+diff -urN tsclient-0.132/src/connect.c tsclient-0.132.diff/src/connect.c
+--- tsclient-0.132/src/connect.c	2003-11-08 19:45:43.000000000 -0700
++++ tsclient-0.132.diff/src/connect.c	2004-08-24 16:57:53.000000000 -0600
+@@ -460,6 +460,7 @@
+   gtk_widget_ref (miProtocol);
+   if (!g_find_program_in_path ("Xnest")) { gtk_widget_set_sensitive (miProtocol, FALSE); }
+ 
++#ifdef ENABLE_ICA
+   miProtocol = gtk_menu_item_new_with_mnemonic ("ICA");
+   gtk_container_add (GTK_CONTAINER (mnuProtocol), miProtocol);
+   gtk_tooltips_set_tip (tooltips, miProtocol, _("ICA protocol is used to connect to Citrix servers."), NULL);
+@@ -468,6 +469,7 @@
+   if (!g_find_program_in_path ("wfica") &&
+       !g_file_test ("/usr/lib/ICAClient/wfica", G_FILE_TEST_EXISTS) )
+     { gtk_widget_set_sensitive (miProtocol, FALSE); }
++#endif
+ 
+   gtk_option_menu_set_menu (GTK_OPTION_MENU (optProtocol), mnuProtocol);
+ 
+diff -urN tsclient-0.132/src/rdpfile.c tsclient-0.132.diff/src/rdpfile.c
+--- tsclient-0.132/src/rdpfile.c	2003-11-08 19:41:58.000000000 -0700
++++ tsclient-0.132.diff/src/rdpfile.c	2004-08-24 16:53:40.000000000 -0600
+@@ -585,7 +585,7 @@
+   widget = lookup_widget (main_window, "optSize2");
+   if (gtk_toggle_button_get_active ((GtkToggleButton *) widget)) {
+     widget = lookup_widget (main_window, "optSize");
+-    if ((int) gtk_option_menu_get_history (GTK_OPTION_MENU (widget)) > 0) {
++    if ((int) gtk_option_menu_get_history (GTK_OPTION_MENU (widget)) >= 0) {
+       switch ((int) gtk_option_menu_get_history (GTK_OPTION_MENU (widget))) {
+       case 0:
+         rdp->desktopwidth = 640;
+diff -urN tsclient-0.132/src/support.c tsclient-0.132.diff/src/support.c
+--- tsclient-0.132/src/support.c	2003-11-09 00:12:17.000000000 -0700
++++ tsclient-0.132.diff/src/support.c	2004-08-24 16:57:46.000000000 -0600
+@@ -13,7 +13,7 @@
+ #include <gtk/gtk.h>
+ #include <gdk/gdk.h>
+ #include <glib.h>
+-#include <libgnomeui/gnome-about.h>
++#include <gtk/gtkdialog.h>
+ 
+ #include <libintl.h>
+ #define _(x) gettext(x)
+@@ -528,7 +528,9 @@
+       //buffer[strlen(buffer)-2] = '\0';
+       c_argv[c_argc++] = strdup(buffer);
+ 
+-    } else if (rdp->protocol == 3) {
++    }
++#ifdef ENABLE_ICA
++ else if (rdp->protocol == 3) {
+       // ICA/Citrix Connection
+       if (g_find_program_in_path ("wfica")) {
+         cmd = "wfica";
+@@ -542,21 +544,25 @@
+       c_argv[c_argc++] = g_strdup (buffer);
+ 
+       if ( rdp->username && strlen (rdp->username) ) {
+-        sprintf(buffer, "-username %s", (char*)g_strescape(rdp->username, NULL));
+-        c_argv[c_argc++] = g_strdup (buffer);
++	sprintf(buffer, "-username");
++	c_argv[c_argc++] = g_strdup (buffer);
++	c_argv[c_argc++] = g_strdup ((char *)g_strescape(rdp->username, NULL));
+       }
+       if ( rdp->password && strlen (rdp->password) ) {
+-        sprintf(buffer, "-password %s", (char*)g_strescape(rdp->password, NULL));
+-        c_argv[c_argc++] = g_strdup (buffer);
++	sprintf(buffer, "-password");
++	c_argv[c_argc++] = g_strdup (buffer);
++	c_argv[c_argc++] = g_strdup ((char *)g_strescape(rdp->password, NULL));
+       }
+       if ( rdp->domain && strlen (rdp->domain) ) {
+-        sprintf(buffer, "-domain %s", (char*)g_strescape(rdp->domain, NULL));
+-        c_argv[c_argc++] = g_strdup (buffer);
++	sprintf(buffer, "-domain");
++	c_argv[c_argc++] = g_strdup (buffer);
++	c_argv[c_argc++] = g_strdup ((char *)g_strescape(rdp->domain, NULL));
+       }
+ 
+       if ( rdp->client_hostname && strlen (rdp->client_hostname) ) {
+-        sprintf(buffer, "-clientname %s", (char*)g_strescape(rdp->client_hostname, NULL));
+-        c_argv[c_argc++] = g_strdup (buffer);
++	sprintf(buffer, "-clientname");
++	c_argv[c_argc++] = g_strdup (buffer);
++	c_argv[c_argc++] = g_strdup ((char *)g_strescape(rdp->client_hostname, NULL));       
+       }
+ 
+       switch (rdp->desktopwidth) {
+@@ -624,30 +630,24 @@
+       }
+ 
+       if (rdp->enable_alternate_shell == 1) {
+-        if ( rdp->alternate_shell && strlen (rdp->alternate_shell) ) {
+-          sprintf(buffer, "-program %s", (char*)g_strescape(rdp->alternate_shell, NULL));
+-          c_argv[c_argc++] = g_strdup (buffer);
+-        }
+-
+-        if ( rdp->shell_working_directory && strlen (rdp->shell_working_directory) ) {
+-          sprintf(buffer, "-directory %s", (char*)g_strescape(rdp->shell_working_directory, NULL));
+-          c_argv[c_argc++] = g_strdup (buffer);
+-        }
++	sprintf(buffer, "-program");
++	c_argv[c_argc++] = g_strdup (buffer);
++	c_argv[c_argc++] = g_strdup ((char *)g_strescape(rdp->alternate_shell, NULL));    
+       }
+-
+-      if (strlen(rdp->proto_file) && g_file_test (rdp->proto_file, G_FILE_TEST_EXISTS)) {
+-        sprintf(buffer, "-passwd");
+-        c_argv[c_argc++] = g_strdup (buffer);
+-        sprintf(buffer, "%s", (char*)g_strescape(rdp->proto_file, NULL));
+-        c_argv[c_argc++] = g_strdup (buffer);
++      
++      if ( rdp->shell_working_directory && strlen (rdp->shell_working_directory) ) {
++	sprintf(buffer, "-directory");
++	c_argv[c_argc++] = g_strdup (buffer);
++	c_argv[c_argc++] = g_strdup ((char *)g_strescape(rdp->shell_working_directory, NULL));    
+       }
+ 
+       if ( rdp->full_address && strlen (rdp->full_address) ) {
+-        sprintf(buffer, "-description %s", (char*)g_strescape(rdp->full_address, NULL));
+-        c_argv[c_argc++] = g_strdup (buffer);
++	sprintf(buffer, "-desc");
++	c_argv[c_argc++] = g_strdup (buffer);
++	c_argv[c_argc++] = g_strdup ((char *)g_strescape(rdp->full_address, NULL));    
+       }
+-		
+-    }
++ }
++#endif
+ 
+     c_argv[c_argc++] = NULL;
+     
+@@ -663,7 +663,10 @@
+       }
+       if (std_err && strlen(std_err)) {
+         g_warning ("\n%s\n", std_err);
+-        tsc_error_message ((gchar*)std_err);
++	/* Note - this is a stupid and irresponsible thing to do - 
++	Really, this needs to be handled more intellegently 
++	*/
++        /* tsc_error_message ((gchar*)std_err); */
+       }
+     } else {
+       if (!g_spawn_async (NULL, (gchar**)c_argv, NULL, G_SPAWN_SEARCH_PATH,
+@@ -733,47 +736,82 @@
+   gtk_widget_show_all (dialog);
+ }
+ 
++static void 
++update_label(GtkWidget *label, const gchar *str) {
++  GString *string;
++
++  gchar *tmp = g_markup_escape_text (str, -1);
++
++  string = g_string_new (NULL);
++  g_string_append(string, tmp);
++  gtk_label_set_markup (GTK_LABEL (label), string->str);
++  g_string_free (string, TRUE);
++}
++
++void tsc_about_dialog() {
++  GtkWidget *about = NULL;
++  GtkWidget *name_label, *comments_label, *copyright_label;
++  GtkWidget *logo_image;
++  GtkWidget *vbox;
+ 
+-void tsc_about_dialog ()
+-{
+-  static GtkWidget *about = NULL;
+-  const gchar *name      = _("Terminal Server Client");
+-  const gchar *version   = VERSION;
+-  const gchar *copyright = "(C) 2003 Erick Woods\n<http://www.gnomepro.com/tsclient/>";
+-  const gchar *authors[] = { "Erick Woods <erick@gnomepro.com>", NULL };
+-  const gchar *documenters[] = { NULL };
+-  const gchar *translator_credits = NULL;
+   GdkPixbuf *pixbuf = create_pixbuf ("tsclient.png");
+ 
+-  const gchar *comments = \
+-    "Terminal Server Client is a frontend for \nrdesktop <http://www.rdesktop.org/> \nand vncviewer.\n" \
+-    "\n" \
+-    "Terminal Server Client is licensed under the \n" \
+-    "GNU General Public License (GPL)\n<http://www.gnu.org/licenses/gpl.html>\n" \
+-    "\n" \
+-    "Images by: Jakub \"jimmac\" Steiner and others.";
++  about = gtk_dialog_new_with_buttons (_("About"),
++				       NULL,
++				       GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
++				       GTK_STOCK_CLOSE, GTK_RESPONSE_CLOSE,
++				       NULL);
+   
+-  if (about) {
+-    gtk_window_present (GTK_WINDOW (about));
+-    return;
+-  }
++  vbox = gtk_vbox_new (FALSE, 8);
++  gtk_container_set_border_width (GTK_CONTAINER (vbox), 5);
+   
+-  about = gnome_about_new ( 
+-        name,
+-        version,
+-        copyright,
+-        comments, 
+-        authors, 
+-        documenters, 
+-        translator_credits,  
+-        pixbuf);
++  gtk_box_pack_start (GTK_BOX (GTK_DIALOG (about)->vbox), vbox, TRUE, TRUE, 0);
+   
+-  //gtk_window_set_wmclass (GTK_WINDOW (about), "terminal server client", "Terminal Server Client");
+-  g_signal_connect (G_OBJECT (about), "destroy", G_CALLBACK (gtk_widget_destroyed), &about);
+-  gtk_widget_show_all (about);  
+-  return;
+-}
++  logo_image = gtk_image_new ();
++  gtk_box_pack_start (GTK_BOX (vbox), logo_image, FALSE, FALSE, 0);
+ 
++  if (pixbuf)
++    gtk_image_set_from_pixbuf (GTK_IMAGE (logo_image), pixbuf);
++  
++  name_label = gtk_label_new (NULL);
++  gtk_label_set_selectable (GTK_LABEL (name_label), TRUE);
++  gtk_label_set_justify (GTK_LABEL (name_label), GTK_JUSTIFY_CENTER);
++  gtk_box_pack_start (GTK_BOX (vbox), name_label, FALSE, FALSE, 0);
++  
++  gtk_label_set_markup (GTK_LABEL (name_label), _("Terminal Server Client"));
++
++  comments_label = gtk_label_new (NULL);
++  gtk_label_set_selectable (GTK_LABEL (comments_label), TRUE);
++  gtk_label_set_justify (GTK_LABEL (comments_label), GTK_JUSTIFY_CENTER);
++  gtk_label_set_line_wrap (GTK_LABEL (comments_label), TRUE);
++  gtk_box_pack_start (GTK_BOX (vbox), comments_label, FALSE, FALSE, 0);
++
++  update_label(comments_label, "Terminal Server Client is a frontend for \nrdesktop " \
++	       "<http://www.rdesktop.org/> \nand vncviewer.\n" \
++	       "\n" \
++	       "Terminal Server Client is licensed under the \n" \
++	       "GNU General Public License (GPL)\n<http://www.gnu.org/licenses/gpl.html>\n" \
++	       "\n" \
++	       "Images by: Jakub \"jimmac\" Steiner and others.");
++  
++  copyright_label = gtk_label_new (NULL);
++  gtk_label_set_selectable (GTK_LABEL (copyright_label), TRUE);
++  gtk_label_set_justify (GTK_LABEL (copyright_label), GTK_JUSTIFY_CENTER);
++  gtk_box_pack_start (GTK_BOX (vbox), copyright_label, FALSE, FALSE, 0);
++
++  update_label(copyright_label, "(C) 2003 Erick Woods\n<http://www.gnomepro.com/tsclient/>");
++
++  gtk_widget_show_all (vbox);
++
++  gtk_window_set_resizable (GTK_WINDOW (about), FALSE);
++
++  g_signal_connect_swapped (GTK_OBJECT (about), 
++			    "response", 
++			    G_CALLBACK (gtk_widget_destroy),
++			    GTK_OBJECT (about));
++
++  gtk_widget_show_all (about);
++}
+ 
+ void tsc_quick_pick_activate (GtkMenuItem *menuitem, gpointer user_data)
+ {
+@@ -847,8 +885,10 @@
+     gtk_widget_set_sensitive ((GtkWidget*) g_object_get_data (G_OBJECT (main_win), "txtProgramPath"), FALSE);
+     gtk_widget_set_sensitive ((GtkWidget*) g_object_get_data (G_OBJECT (main_win), "txtStartFolder"), FALSE);
+     break;
++#ifdef ENABLE_ICA
+   case 3:  // ica
+     break;
++#endif
+   default:
+     break;
+   }
