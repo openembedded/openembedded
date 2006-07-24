@@ -22,6 +22,9 @@ DEPENDS="intltool libx11 gtk+ libxml2 libglade"
 LDFLAGS_append = " -Wl,--export-dynamic"
 
 inherit autotools
+
+export INTLTOOL_PERL="/usr/bin/env perl"
+
 EXTRA_OECONF="--with-xml --with-gtk --disable-locking --without-pixbuf \
 	--with-jpeg --with-xpm" 
 
