@@ -23,7 +23,7 @@ if ! grep -q '[[:space:]]ramfs$' /proc/filesystems; then
     exit 0
 fi
 
-if [ ! -e /proc/sys/kernel/hotplug ]; then
+if [ ! -e /proc/sys/kernel/hotplug ] && [ ! -e /sys/kernel/uevent_helper ] ; then
     echo "udev requires hotplug support, not started."
     exit 0
 fi

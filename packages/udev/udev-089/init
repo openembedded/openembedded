@@ -84,7 +84,11 @@ set_hotplug_handler() {
   case "$(uname -r)" in
     2.6.1[0-4]|2.6.1[0-4][!0-9]*) HANDLER='/sbin/udevsend' ;;
   esac
-  echo $HANDLER > /proc/sys/kernel/hotplug
+  if [ -e /sys/kernel/uevent_helper ] ; then
+    echo $HANDLER > /sys/kernel/uevent_helper
+  else
+    echo $HANDLER > /proc/sys/kernel/hotplug
+  fi
 }
 
 # shell version of /usr/bin/tty
@@ -145,7 +149,7 @@ if [ ! -d /sys/class/ ]; then
   exit 1
 fi
 
-if [ ! -e /proc/sys/kernel/hotplug ]; then
+if [ ! -e /proc/sys/kernel/hotplug ] && [ ! -e /sys/kernel/uevent_helper ]; then
   echo "udev requires hotplug support, not started."
   exit 1
 fi
