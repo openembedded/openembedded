@@ -14,9 +14,8 @@ inherit autotools pkgconfig
 
 do_stage() {
 	autotools_stage_all
-	
-	cp ${STAGING_BINDIR}/libIDL-config-2 ${STAGING_BINDIR}/libIDL-config-2.orig
-	cat ${STAGING_BINDIR}/libIDL-config-2.orig | sed -e 's:${includedir}:${STAGING_INCDIR}:' > ${STAGING_BINDIR}/libIDL-config-2
+
+	cat ${S}/libIDL-config-2 | sed -e 's:${includedir}:${STAGING_INCDIR}:' > ${STAGING_BINDIR}/libIDL-config-2
 }
 
 FILES_${PN} = "${libdir}/*.so.*"
