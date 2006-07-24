@@ -1,4 +1,7 @@
-include font-common.inc
+include xorg-font-common.inc
 
-DEPENDS = "mkfontscale"
-FILES_${PN} = "${libdir}/X11/fonts/*"
+DESCRIPTION = "X font aliases."
+
+DEPENDS = "xserver-xorg font-util"
+RDEPENDS = "encodings font-util"
+

@@ -1,31 +1,32 @@
-DESCRIPTION = "X font files"
+HOMEPAGE = "http://www.x.org"
 SECTION = "x11/fonts"
-LICENSE= "MIT-X"
+#MAINTAINER = ""
+LICENSE = "MIT-X"
 
-SRC_URI = "${XORG_MIRROR}/X11R7.0/src/font/${PN}-X11R7.0-${PV}.tar.bz2"
-S = "${WORKDIR}/${PN}-X11R7.0-${PV}"
-FONT_DIR = "${datadir}/share/fonts"
-DEPENDS = "encodings mkfontscale mkfontdir"
+DEPENDS = " encodings font-alias font-util-native mkfontdir-native mkfontscale-native"
+RDEPENDS = "encodings font-util font-alias"
+
+XORG_PN = "${PN}"
+SRC_URI = "${XORG_MIRROR}/${@bb.data.getVar('PV', d, 1)[0:7]}/src/font/${XORG_PN}-${PV}.tar.gz"
+S = "${WORKDIR}/${XORG_PN}-${PV}"
 
 inherit autotools pkgconfig
 
-do_stage () {
+FILES_${PN} += " ${libdir}/X11/fonts"
+
+do_install_append() {
+	find ${D}${libdir}/X11/fonts -type f -name fonts.dir | xargs rm -f
+	find ${D}${libdir}/X11/fonts -type f -name fonts.scale | xargs rm -f
+}
+
+do_stage() {
 	autotools_stage_all
 }
 
-
-FILES_${PN} += " ${libdir}/X11/fonts/*.gz ${libdir}/X11/fonts/*/*.gz"
-
 pkg_postinst_${PN} () {
-
-        if [ "x$D" != "x" ]; then
-                exit 1
-        fi
-
-        for fontdir in /usr/lib/X11/fonts/* /usr/lib/X11/fonts/*/*  ; do
-                if test -d $fontdir ; then
-                        mkfontdir $fontdir
-                        mkfontscale $fontdir
-                fi
-        done
+	set -x
+	for fontdir in `find $D/usr/lib/X11/fonts -type d`; do 
+		mkfontdir $fontdir
+		mkfontscale $fontdir
+	done
 }

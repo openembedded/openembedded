@@ -2,4 +2,6 @@ include xorg-font-common.inc
 
 #DESCRIPTION = ""
 
-#DEPENDS += " "
+DEPENDS = "mkfontscale-native"
+RDEPENDS = ""
+

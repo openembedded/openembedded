@@ -1,5 +1,5 @@
 include xorg-font-common.inc
 
-#DESCRIPTION = ""
+DESCRIPTION = "Adobe typeface software"
 
 #DEPENDS += " "
