@@ -1,12 +1,16 @@
 DESCRIPTION = "X data files"
-SECTION = "x11/data"
-LICENSE= "MIT-X"
+HOMEPAGE = "http://www.x.org"
+SECTION = "x11/datas"
+#MAINTAINER = ""
+LICENSE = "MIT-X"
 
-SRC_URI = "${XORG_MIRROR}/X11R7.0/src/data/${PN}-X11R7.0-${PV}.tar.bz2"
-S = "${WORKDIR}/${PN}-X11R7.0-${PV}"
+#DEPENDS = ""
+XORG_PN = "${PN}"
+SRC_URI = "${XORG_MIRROR}/${@bb.data.getVar('PV', d, 1)[0:7]}/src/data/${XORG_PN}-${PV}.tar.gz"
+S = "${WORKDIR}/${XORG_PN}-${PV}"
 
 inherit autotools pkgconfig
 
-do_stage () {
+do_stage() {
 	autotools_stage_all
 }

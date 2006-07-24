@@ -2,5 +2,5 @@ include xorg-data-common.inc
 
 #DESCRIPTION = ""
 
-#DEPENDS += " "
+DEPENDS += " libxcursor"
 
