@@ -8,9 +8,9 @@
 ########################################################################################################################
  
 
-PROVIDES+="python-threading python-distutils python-textutils python-codecs python-pickle python-datetime python-core python-io python-compiler python-compression python-re python-xmlrpc python-terminal python-email python-image python-resource python-devel python-math python-hotshot python-unixadmin python-tkinter python-gdbm python-fcntl python-netclient python-pprint python-netserver python-curses python-syslog python-html python-readline python-pydoc python-logging python-mailbox python-xml python-mime python-tests python-unittest python-stringold python-lib-old-and-deprecated python-compile python-shell python-bsddb python-mmap python-zlib python-db python-crypt python-idle python-lang python-audio "
+PROVIDES+="python-threading python-distutils python-textutils python-codecs python-pickle python-datetime python-core python-io python-compiler python-compression python-re python-xmlrpc python-terminal python-email python-image python-resource python-devel python-math python-hotshot python-unixadmin python-tkinter python-gdbm python-fcntl python-netclient python-pprint python-netserver python-curses python-syslog python-html python-readline python-pydoc python-logging python-mailbox python-xml python-mime python-tests python-unittest python-stringold python-lib-old-and-deprecated python-compile python-shell python-bsddb python-mmap python-zlib python-db python-crypt python-idle python-lang python-audio python-profile "
 
-PACKAGES="python-threading python-distutils python-textutils python-codecs python-pickle python-datetime python-core python-io python-compiler python-compression python-re python-xmlrpc python-terminal python-email python-image python-resource python-devel python-math python-hotshot python-unixadmin python-tkinter python-gdbm python-fcntl python-netclient python-pprint python-netserver python-curses python-syslog python-html python-readline python-pydoc python-logging python-mailbox python-xml python-mime python-tests python-unittest python-stringold python-lib-old-and-deprecated python-compile python-shell python-bsddb python-mmap python-zlib python-db python-crypt python-idle python-lang python-audio "
+PACKAGES="python-threading python-distutils python-textutils python-codecs python-pickle python-datetime python-core python-io python-compiler python-compression python-re python-xmlrpc python-terminal python-email python-image python-resource python-devel python-math python-hotshot python-unixadmin python-tkinter python-gdbm python-fcntl python-netclient python-pprint python-netserver python-curses python-syslog python-html python-readline python-pydoc python-logging python-mailbox python-xml python-mime python-tests python-unittest python-stringold python-lib-old-and-deprecated python-compile python-shell python-bsddb python-mmap python-zlib python-db python-crypt python-idle python-lang python-audio python-profile "
 
 DESCRIPTION_python-threading="Python Threading & Synchronization Support"
 PR_python-threading="ml0"
@@ -257,5 +257,10 @@ PR_python-audio="ml0"
 RDEPENDS_python-audio="python-core"
 FILES_python-audio="${libdir}/python2.4/wave.* ${libdir}/python2.4/chunk.* ${libdir}/python2.4/lib-dynload/ossaudiodev.so ${libdir}/python2.4/lib-dynload/audioop.so "
 
+
+DESCRIPTION_python-profile="Python Profiler Support"
+PR_python-profile="ml0"
+RDEPENDS_python-profile="python-core"
+FILES_python-profile="${libdir}/python2.4/profile.* ${libdir}/python2.4/pstats.* "
 
 
