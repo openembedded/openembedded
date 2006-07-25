@@ -1,0 +1,12 @@
+The -mno-implicit-fp is for gcc 4.x while for gcc 3.x we need -m4-nofpu.
+Since kernels built with gcc 4.x don't work on sh4 anwyay we patch this 
+unconditionally for building with gcc 3.x
+
+--- madwifi-ng-r1527-20060425/hal/public/sh4-le-elf.inc~	2006-07-25 13:41:29.000000000 +1000
++++ madwifi-ng-r1527-20060425/hal/public/sh4-le-elf.inc	2006-07-25 13:41:29.000000000 +1000
+@@ -59,4 +59,4 @@
+ 
+ LDOPTS=	-EL
+ COPTS+=	-DAH_BYTE_ORDER=AH_LITTLE_ENDIAN
+-COPTS+= -ml -m4 -mno-implicit-fp
++COPTS+= -ml -m4 -m4-nofpu
