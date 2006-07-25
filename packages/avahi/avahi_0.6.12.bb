@@ -5,6 +5,7 @@ AUTHOR = "Lennart Poettering <lennart@poettering.net>"
 HOMEPAGE = "http://avahi.org"
 MAINTAINER = "Philipp Zabel <philipp.zabel@gmail.com>"
 LICENSE= "GPL"
+PR = "r1"
 
 DEPENDS = "expat libdaemon dbus"
 RRECOMMENDS = "libnss-mdns"
@@ -35,6 +36,11 @@ CONFFILES_avahi-daemon = "${sysconfdir}/avahi/avahi-daemon.conf"
 
 EXTRA_OECONF = "--with-distro=debian --disable-gdbm --disable-gtk --disable-mono --disable-monodoc --disable-qt3 --disable-qt4 --disable-python"
 inherit autotools pkgconfig update-rc.d
+
+
+do_stage() {
+	autotools_stage_all
+}
 
 INITSCRIPT_PACKAGES = "avahi-daemon avahi-dnsconfd"
 INITSCRIPT_NAME_avahi-daemon = "avahi-daemon"
