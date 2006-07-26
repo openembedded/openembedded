@@ -11,3 +11,4 @@ PROVIDES = "xfont"
 
 XORG_PN = "libXfont"
 
+S = "${WORKDIR}/libXfont-1.2.0"
