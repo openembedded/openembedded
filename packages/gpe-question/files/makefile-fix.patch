@@ -1,0 +1,11 @@
+--- /tmp/Makefile	2006-07-26 11:14:27.000000000 +0200
++++ gpe-question-0.04/Makefile	2006-07-26 11:14:41.284411000 +0200
+@@ -21,7 +21,7 @@
+ 	$(CC) -o $@ $^ $(LDFLAGS) $(PACKAGE_LDFLAGS)
+ 
+ install-program: all
+-	install -Ds $(PACKAGE) $(DESTDIR)$(PREFIX)/bin/$(PACKAGE)
++	install -D -s $(PACKAGE) $(DESTDIR)$(PREFIX)/bin/$(PACKAGE)
+ 
+ clean:
+ 	rm -f $(PACKAGE).o $(PACKAGE) $(DEPS)
