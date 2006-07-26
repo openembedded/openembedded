@@ -3,6 +3,8 @@ PR = "r0"
 
 inherit gpe
 
+SRC_URI += "file://makefile-fix.patch;patch=1"
+
 DEPENDS = "libgpewidget"
 SECTION = "gpe"
 MAINTAINER = "Florian Boor <florian.boor@kernelconcepts.de>"

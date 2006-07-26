@@ -1,0 +1,11 @@
+--- /tmp/Makefile	2006-07-26 11:02:47.000000000 +0200
++++ gpe-gallery-0.97/Makefile	2006-07-26 11:05:07.584411000 +0200
+@@ -28,7 +28,7 @@
+ 	$(CC) -o $@ $^ $(LDFLAGS) $(PACKAGE_LDFLAGS)
+ 
+ install-program: all
+-	install -Ds $(PACKAGE) $(DESTDIR)$(PREFIX)/bin/$(PACKAGE)
++	install -D -s $(PACKAGE) $(DESTDIR)$(PREFIX)/bin/$(PACKAGE)
+ 	install -D -m 644 $(PACKAGE).png $(DESTDIR)$(PREFIX)/share/pixmaps/$(PACKAGE).png
+ 	install -D -m 644 $(PACKAGE).applications $(DESTDIR)/$(PREFIX)/share/application-registry/$(PACKAGE).applications
+ 	mkdir -p $(DESTDIR)$(PREFIX)/share/applications
