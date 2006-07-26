@@ -3,7 +3,7 @@ include xorg-lib-common.inc
 DESCRIPTION = "X Resize and Rotate extension library."
 LICENSE = "BSD-X"
 
-DEPENDS += " libx11 randrproto libxext xextproto libxrender renderproto"
+DEPENDS += " virtual/x11 randrproto libxext xextproto libxrender renderproto"
 
 XORG_PN = "libXrandr"
 

@@ -2,7 +2,7 @@ DESCRIPTION = "teTeX is a complete (pdf)(La)TeX distribution for UNIX compatible
 HOMEPAGE = "http://www.tug.org/tetex" 
 LICENSE = "GPL"
 SECTION = "console/utils"
-DEPENDS = "tetex-native flex gd ncurses libpng t1lib libx11 libxau libxext libxt zlib"
+DEPENDS = "tetex-native flex gd ncurses libpng t1lib virtual/x11 libxau libxext libxt zlib"
 MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 PR = "r5"
 

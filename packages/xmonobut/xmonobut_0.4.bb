@@ -2,7 +2,7 @@ LICENSE = "GPL"
 PR = "r1"
 DESCRIPTION = "utility to allow middle and right clicking with a stylus"
 SECTION = "x11/utils"
-DEPENDS = "libx11 libxext libxpm"
+DEPENDS = "virtual/x11 libxext libxpm"
 SRC_URI = "http://www.handhelds.org/~mallum/downloadables/xmonobut/xmonobut-${PV}.tar.gz \
 	   file://xmonobut.desktop"
 inherit autotools

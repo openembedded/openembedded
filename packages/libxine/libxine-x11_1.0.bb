@@ -3,7 +3,7 @@ This version is configued for the usage with X11"
 SECTION = "libs"
 PRIORITY = "optional"
 LICENSE = "GPL"
-DEPENDS = "zlib libogg libvorbis tremor libmad libmodplug esound-gpe libx11 libxext"
+DEPENDS = "zlib libogg libvorbis tremor libmad libmodplug esound-gpe virtual/x11 libxext"
 PROVIDES = "virtual/libxine"
 PR = "r0"
 

@@ -1,5 +1,5 @@
 require uim.inc
-DEPENDS = "gtk+ uim-native anthy fontconfig x11 libxft xt glib-2.0 ncurses"
+DEPENDS = "gtk+ uim-native anthy fontconfig virtual/x11 libxft xt glib-2.0 ncurses"
 
 SRC_URI += "file://uim-module-manager.patch;patch=1"
 

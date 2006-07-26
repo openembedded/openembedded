@@ -1,7 +1,7 @@
 DESCRIPTION = "X11 VNC server"
 SECTION = "x11"
 PRIORITY = "optional"
-DEPENDS = "zlib jpeg libx11"
+DEPENDS = "zlib jpeg virtual/x11"
 LICENSE = "GPL"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/libvncserver/LibVNCServer-${PV}.tar.gz"

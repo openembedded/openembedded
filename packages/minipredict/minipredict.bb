@@ -1,7 +1,7 @@
 inherit gpe pkgconfig
 
 DESCRIPTION = "Minipredict is a app that sits above the dock, e.g. mbdock, and suggests words for completion."
-DEPENDS = "libx11 libxext gtk+ libdictionary zlib"
+DEPENDS = "virtual/x11 libxext gtk+ libdictionary zlib"
 SECTION = "gpe"
 PRIORITY = "optional"
 

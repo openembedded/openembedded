@@ -1,5 +1,5 @@
 SECTION = "gpe"
-DEPENDS = "glib-2.0 dbus hotplug-dbus libx11"
+DEPENDS = "glib-2.0 dbus hotplug-dbus virtual/x11"
 RDEPENDS = "hotplug-dbus"
 LICENSE = "GPL"
 

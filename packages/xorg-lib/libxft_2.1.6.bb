@@ -1,6 +1,6 @@
 SECTION = "x11/libs"
 LICENSE = "MIT-X"
-DEPENDS = "libx11 xproto libxrender freetype fontconfig"
+DEPENDS = "virtual/x11 xproto libxrender freetype fontconfig"
 DESCRIPTION = "X FreeType library. Client-side fonts with FreeType."
 PROVIDES = "xft"
 PR = "r1"

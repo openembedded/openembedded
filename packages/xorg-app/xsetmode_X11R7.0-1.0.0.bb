@@ -2,5 +2,5 @@ include xorg-app-common.inc
 
 #DESCRIPTION = ""
 
-DEPENDS += " libxi libx11"
+DEPENDS += " libxi virtual/x11"
 

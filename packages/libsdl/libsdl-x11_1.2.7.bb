@@ -2,7 +2,7 @@ DESCRIPTION = "Simple DirectMedia Layer - X11 Edition"
 SECTION = "libs"
 PRIORITY = "optional"
 MAINTAINER = "Phil Blundell <pb@handhelds.org>"
-DEPENDS = "libx11 libxext"
+DEPENDS = "virtual/x11 libxext"
 PROVIDES = "virtual/libsdl"
 LICENSE = "LGPL"
 

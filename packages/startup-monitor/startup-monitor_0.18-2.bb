@@ -3,7 +3,7 @@ LICENSE = "GPL"
 SECTION = "libs"
 PRIORITY = "optional"
 MAINTAINER = "Florian Boor <florian.boor@kernelconcepts.de>"
-DEPENDS = "libx11 startup-notification glib-2.0 libmatchbox"
+DEPENDS = "virtual/x11 startup-notification glib-2.0 libmatchbox"
 
 inherit gpe pkgconfig 
 

@@ -1,7 +1,7 @@
 BROKEN = "1"
 # is unfetchable now - upstream updated to 20050728
 
-DEPENDS += "lua-native lua libx11 libxext"
+DEPENDS += "lua-native lua virtual/x11 libxext"
 DESCRIPTION = "Ion is a tiling tabbed window manager designed with keyboard \
 users in mind."
 HOMEPAGE = "http://modeemi.fi/~tuomov/ion/"

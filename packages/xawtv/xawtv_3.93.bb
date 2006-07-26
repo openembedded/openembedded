@@ -4,7 +4,7 @@ DESCRIPTION = "XawTV is a simple Xaw-based TV program which uses the bttw \
 driver or video4linux.  It also contains various command-line utilities for \
 grabbing images and AVI movies, tuning in TV stations, etc."
 MAINTAINER = "Chris Larson <kergoth@handhelds.org>"
-DEPENDS = "libxaw libxmu libxt libxpm libxext libx11 ncurses libxft fs jpeg"
+DEPENDS = "libxaw libxmu libxt libxpm libxext virtual/x11 ncurses libxft fs jpeg"
 
 SRC_URI = "http://dl.bytesex.org/releases/xawtv/xawtv-${PV}.tar.gz \
 	   file://make.patch;patch=1"

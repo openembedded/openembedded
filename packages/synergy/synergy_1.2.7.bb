@@ -5,7 +5,7 @@ MAINTAINER = "Justin Patrin <papercrane@reversefold.com>"
 SECTION = "x11"
 # NOTE: This depends on full x11, not diet-x11
 DEPENDS = "libx11 libxtst"
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/synergy2/synergy-${PV}.tar.gz"
 

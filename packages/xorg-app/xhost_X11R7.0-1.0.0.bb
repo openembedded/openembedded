@@ -4,5 +4,5 @@ DESCRIPTION = "Server access control program for X"
 MAINTAINER = "Rene Wagner <rw@handhelds.org>"
 LICENSE = "MIT"
 
-DEPENDS += " libx11 libxmu libxau"
+DEPENDS += " virtual/x11 libxmu libxau"
 

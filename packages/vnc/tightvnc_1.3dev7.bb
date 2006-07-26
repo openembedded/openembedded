@@ -1,6 +1,6 @@
 DESCRIPTION = "A Unix VNC client"
 HOMEPAGE = "http://www.tightvnc.com/"
-DEPENDS = "libx11 zlib libxmu libxaw"
+DEPENDS = "virtual/x11 zlib libxmu libxaw"
 LICENSE = "GPL"
 MAINTAINER = "Graeme Gregory <dp@xora.org.uk>"
 

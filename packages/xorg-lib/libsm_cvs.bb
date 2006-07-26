@@ -2,7 +2,7 @@ PV = "6.0.3+cvs${SRCDATE}"
 LICENSE = "MIT-X"
 SECTION = "libs"
 PRIORITY = "optional"
-DEPENDS = "libx11 libice"
+DEPENDS = "virtual/x11 libice"
 DESCRIPTION = "Session management library"
 PR = "r1"
 

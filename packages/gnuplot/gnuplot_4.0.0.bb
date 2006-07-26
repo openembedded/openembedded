@@ -4,7 +4,7 @@ SECTION = "console/scientific"
 LICENSE = "BSD-4"
 PRIORITY = "optional"
 MAINTAINER = "Philip Frampton"
-DEPENDS = "libx11 libpng gd readline"
+DEPENDS = "virtual/x11 libpng gd readline"
 PR = "r3"
 
 SRC_URI = "ftp://ftp.gnuplot.info/pub/gnuplot/gnuplot-${PV}.tar.gz \

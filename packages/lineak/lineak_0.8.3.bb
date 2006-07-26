@@ -3,7 +3,7 @@ SECTION = "gpe/multimedia"
 HOMEPAGE = "http://lineak.sourceforge.net"
 LICENSE = "GPLv2"
 MAINTAINER = "Justin Patrin <papercrane@reversefold.com>"
-DEPENDS = "libx11 libxext"
+DEPENDS = "virtual/x11 libxext"
 PR = "r0"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/lineak/lineakd-${PV}.tar.gz \

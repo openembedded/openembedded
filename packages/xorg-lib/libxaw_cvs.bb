@@ -2,7 +2,7 @@ PV = "0.0+cvs${SRCDATE}"
 LICENSE = "MIT"
 SECTION = "x11/libs"
 PRIORITY = "optional"
-DEPENDS = "xproto libx11 libxt libxmu libxpm"
+DEPENDS = "xproto virtual/x11 libxt libxmu libxpm"
 PROVIDES = "xaw"
 DESCRIPTION = "X Athena Widgets library"
 

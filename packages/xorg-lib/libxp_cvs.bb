@@ -3,7 +3,7 @@ LICENSE = "MIT"
 PV = "0.0+cvs${SRCDATE}"
 
 SECTION = "libs"
-DEPENDS = "libx11 libxext"
+DEPENDS = "virtual/x11 libxext"
 DESCRIPTION = "X print extension library."
 
 SRC_URI = "${FREEDESKTOP_CVS}/xlibs;module=Xp"

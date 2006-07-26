@@ -4,7 +4,7 @@ PRIORITY = "optional"
 HOMEPAGE = "http://www.trolltech.com"
 LICENSE = "GPL QPL"
 MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
-DEPENDS = "uicmoc4-native qmake2-native freetype jpeg libx11 xft libxext libxrender libxrandr libxcursor"
+DEPENDS = "uicmoc4-native qmake2-native freetype jpeg virtual/x11 xft libxext libxrender libxrandr libxcursor"
 PROVIDES = "qt4x11"
 PR = "r1"
 

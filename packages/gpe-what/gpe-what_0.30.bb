@@ -3,7 +3,7 @@ SECTION = "gpe"
 inherit gpe
 
 DESCRIPTION = "GPE modal help"
-DEPENDS = "libx11"
+DEPENDS = "virtual/x11"
 MAINTAINER = "Phil Blundell <pb@handhelds.org>"
 
 do_compile_prepend() {

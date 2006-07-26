@@ -4,4 +4,4 @@ DESCRIPTION = "X server resource database utility"
 MAINTAINER = "Rene Wagner <rw@handhelds.org>"
 LICENSE = "xrdb"
 
-DEPENDS += " libxmu libx11 libxext"
+DEPENDS += " libxmu virtual/x11 libxext"

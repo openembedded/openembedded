@@ -1,6 +1,6 @@
 LICENSE = "GPL"
 SECTION = "x11/libs"
-DEPENDS = "libx11 libxext"
+DEPENDS = "virtual/x11 libxext"
 DESCRIPTION = "X Video extension library."
 
 SRC_URI = "${XLIBS_MIRROR}/libXv-${PV}.tar.bz2"

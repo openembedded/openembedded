@@ -3,7 +3,7 @@ LICENSE = "LGPL"
 SECTION = "libs"
 PRIORITY = "optional"
 MAINTAINER = "Phil Blundell <pb@handhelds.org>"
-DEPENDS = "libx11"
+DEPENDS = "virtual/x11"
 
 inherit autotools pkgconfig 
 

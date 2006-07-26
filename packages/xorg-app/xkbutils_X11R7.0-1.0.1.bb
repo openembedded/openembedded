@@ -2,5 +2,5 @@ include xorg-app-common.inc
 
 #DESCRIPTION = ""
 
-DEPENDS += " libxaw libxkbfile libx11"
+DEPENDS += " libxaw libxkbfile virtual/x11"
 

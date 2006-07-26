@@ -4,7 +4,7 @@ LICENSE = "GPLv2"
 MAINTAINER = "Justin Patrin <papercrane@reversefold.com>"
 SECTION = "editor"
 # full X (non-diet) is needed for X support
-#DEPENDS = "libx11"
+DEPENDS = "libx11"
 # and it needs to run some generated binaries..
 DEPENDS += "qemu-native"
 PR = "r2"
@@ -16,7 +16,7 @@ S = "${WORKDIR}/emacs"
 
 inherit autotools
 
-EXTRA_OECONF = "--without-x"
+#EXTRA_OECONF = "--without-x"
 
 #QEMU = "/usr/bin/qemu-arm -L ${WORKDIR}/usr/local/gnemul/qemu-arm -L ${STAGING_DIR}/${TARGET_SYS}"
 QEMU = "qemu-arm -L ${STAGING_DIR}/${TARGET_SYS}"

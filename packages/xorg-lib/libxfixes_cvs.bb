@@ -1,7 +1,7 @@
 PV = "0.0+cvs${SRCDATE}"
 LICENSE= "BSD-X"
 SECTION = "x11/libs"
-DEPENDS = "libx11 fixesext"
+DEPENDS = "virtual/x11 fixesext"
 DESCRIPTION = "X Fixes extension library."
 
 SRC_URI = "${FREEDESKTOP_CVS}/xlibs;module=Xfixes"

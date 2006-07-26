@@ -2,7 +2,7 @@ PV = "0.0+cvs${SRCDATE}"
 LICENSE = "MIT"
 
 SECTION = "x11/libs"
-DEPENDS = "libx11 libxext xxf86vmext"
+DEPENDS = "virtual/x11 libxext xxf86vmext"
 DESCRIPTION = "Xxf86vm extension library."
 
 SRC_URI = "${FREEDESKTOP_CVS}/xlibs;module=Xxf86vm"

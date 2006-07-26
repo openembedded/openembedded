@@ -1,7 +1,7 @@
 DESCRIPTION = "Well known terminal emulator"
 SECTION = "x11/utils"
 PR = "r1"
-DEPENDS = "libx11 libxft"
+DEPENDS = "virtual/x11 libxft"
 LICENSE = "GPL"
 SRC_URI = "${HANDHELDS_CVS};module=apps/rxvt \
 	   file://include.patch;patch=1"

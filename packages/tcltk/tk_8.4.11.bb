@@ -2,7 +2,7 @@ DESCRIPTION = "Tool Command Language ToolKit Extension"
 LICENSE = "tcl"
 SECTION = "devel/tcltk"
 HOMEPAGE = "http://tcl.sourceforge.net"
-DEPENDS = "tcl libx11 libxt"
+DEPENDS = "tcl virtual/x11 libxt"
 RDEPENDS = "tcl"
 PR = "r4"
 

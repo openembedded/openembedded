@@ -3,7 +3,7 @@ FIXEDSRCDATE = "${@bb.data.getVar('FILE', d, 1).split('_')[-1].split('.')[0]}"
 DEFAULT_PREFERENCE = "1"
 
 LICENSE = "MIT"
-DEPENDS = "tslib xproto libxdmcp xextproto xtrans libxau libx11 libxext libxrandr fixesproto damageproto libxfont resourceproto compositeproto xcalibrateext recordproto videoproto scrnsaverproto"
+DEPENDS = "tslib xproto libxdmcp xextproto xtrans libxau virtual/x11 libxext libxrandr fixesproto damageproto libxfont resourceproto compositeproto xcalibrateext recordproto videoproto scrnsaverproto"
 PROVIDES = "virtual/xserver"
 RPROVIDES = "virtual/xserver"
 PACKAGES = "xserver-kdrive-mach64 xserver-kdrive-fbdev xserver-kdrive-vesa xserver-kdrive-mga xserver-kdrive-via xserver-kdrive-ati xserver-kdrive-fake xserver-kdrive-i810 xserver-kdrive-xephyr xserver-kdrive-epson ${PN}-doc ${PN}-dev ${PN}-locale"

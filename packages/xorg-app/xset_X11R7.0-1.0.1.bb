@@ -4,7 +4,7 @@ DESCRIPTION = "user preference utility for X"
 MAINTAINER = "Florian Boor <florian.boor@kernelconcepts.de>"
 LICENSE = "MIT"
 
-DEPENDS += " libxmu libxext libx11 libxxf86misc libxfontcache libxp"
+DEPENDS += " libxmu libxext virtual/x11 libxxf86misc libxfontcache libxp"
 
 SRC_URI += "file://disable-xkb.patch;patch=1"
 

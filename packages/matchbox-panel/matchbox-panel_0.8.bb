@@ -1,7 +1,7 @@
 SECTION = "x11/utils"
 DESCRIPTION = "Matchbox panel"
 LICENSE = "GPL"
-DEPENDS = "libmatchbox libx11 libxext libxpm"
+DEPENDS = "libmatchbox virtual/x11 libxext libxpm"
 RDEPENDS = "libmatchbox matchbox-common"
 
 SRC_URI = "ftp://ftp.handhelds.org/matchbox/sources/matchbox-panel/${PV}/matchbox-panel-${PV}.tar.bz2"

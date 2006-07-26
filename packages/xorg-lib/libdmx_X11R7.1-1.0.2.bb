@@ -2,4 +2,4 @@ include xorg-lib-common.inc
 
 #DESCRIPTION = ""
 
-DEPENDS += " libx11 libxext xextproto dmxproto"
+DEPENDS += " virtual/x11 libxext xextproto dmxproto"
