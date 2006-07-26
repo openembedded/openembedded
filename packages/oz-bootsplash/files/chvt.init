@@ -1,0 +1,13 @@
+#! /bin/sh
+#
+# Copyright Matthias Hentges <devel@hentges.net> (c) 2006
+# License: GPL (see http://www.gnu.org/licenses/gpl.txt for a copy of the license)
+#
+# Filename: chvt1.init
+# Date: 26-Jul-06
+
+
+case "$1" in
+start)	chvt 1;;
+esac
+
