@@ -1,7 +1,7 @@
 DESCRIPTION = "Miscellaneous files for the base system."
 SECTION = "base"
 PRIORITY = "required"
-PR = "r52"
+PR = "r53"
 LICENSE = "GPL"
 
 SRC_URI = " \
@@ -129,6 +129,10 @@ do_install_append_slugos() {
 	rmdir ${D}/home/root
 	install -m 0755 -d ${D}/root
 	ln -s ../root ${D}/home/root
+}
+
+do_install_append_netbook-pro () {
+	mkdir -p ${D}/initrd
 }
 
 PACKAGES = "${PN}-doc ${PN}"
