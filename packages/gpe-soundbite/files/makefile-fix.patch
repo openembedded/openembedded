@@ -1,0 +1,11 @@
+--- /tmp/Makefile	2006-07-26 10:51:15.000000000 +0200
++++ gpe-soundbite-1.0.6/Makefile	2006-07-26 10:52:02.924411000 +0200
+@@ -38,7 +38,7 @@
+ 	$(CC) -o $@ $^ $(LDFLAGS) $(PACKAGE_LDFLAGS)
+ 
+ install-program: all $(PACKAGE)-play.desktop  $(PACKAGE)-record.desktop
+-	install -Ds $(PACKAGE) $(DESTDIR)$(PREFIX)/bin/$(PACKAGE)
++	install -D -s $(PACKAGE) $(DESTDIR)$(PREFIX)/bin/$(PACKAGE)
+ 	install -D $(PACKAGE)-play $(DESTDIR)$(PREFIX)/bin/$(PACKAGE)-play
+ 	install -D $(PACKAGE)-record $(DESTDIR)$(PREFIX)/bin/$(PACKAGE)-record
+ 	mkdir -p $(DESTDIR)$(PREFIX)/share/applications
