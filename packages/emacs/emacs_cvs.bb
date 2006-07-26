@@ -3,8 +3,11 @@ HOMEPAGE = "http://www.gnu.org/software/emacs/"
 LICENSE = "GPLv2"
 MAINTAINER = "Justin Patrin <papercrane@reversefold.com>"
 SECTION = "editor"
-DEPENDS = "qemu-native"
-PR = "r0"
+# full X (non-diet) is needed for X support
+DEPENDS = "libx11"
+# and it needs to run some generated binaries..
+DEPENDS += "qemu-native"
+PR = "r1"
 
 SRC_URI = "cvs://anoncvs:anonymous@cvs.savannah.gnu.org/sources/emacs;module=emacs"
 #           http://fabrice.bellard.free.fr/qemu/qemu-gnemul-0.5.3.tar.gz"
@@ -12,8 +15,7 @@ S = "${WORKDIR}/emacs"
 
 inherit autotools
 
-# full X (non-diet) is needed for X support
-EXTRA_OECONF = "--without-x"
+EXTRA_OECONF = "--with-x"
 
 #QEMU = "/usr/bin/qemu-arm -L ${WORKDIR}/usr/local/gnemul/qemu-arm -L ${STAGING_DIR}/${TARGET_SYS}"
 QEMU = "qemu-arm -L ${STAGING_DIR}/${TARGET_SYS}"
