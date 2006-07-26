@@ -11,7 +11,7 @@ ALLOW_EMPTY = 1
 # X
 #
 RDEPENDS_task-e-x11-core = "rxvt-unicode xstroke xtscal xrandr xmodmap xdpyinfo \
-                            ttf-bitstream-vera chkhinge gpe-bootsplash-theme-e"
+                            ttf-bitstream-vera gpe-bootsplash-theme-e"
 
 #
 # E-core
