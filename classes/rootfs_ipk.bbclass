@@ -31,6 +31,7 @@ real_do_rootfs () {
 	mkdir -p ${IMAGE_ROOTFS}/dev
 
 	if [ -z "${DEPLOY_KEEP_PACKAGES}" ]; then
+		touch ${DEPLOY_DIR_IPK}/Packages
 		ipkg-make-index -r ${DEPLOY_DIR_IPK}/Packages -p ${DEPLOY_DIR_IPK}/Packages -l ${DEPLOY_DIR_IPK}/Packages.filelist -m ${DEPLOY_DIR_IPK}
 	fi
 	mkdir -p ${T}
