@@ -10,7 +10,7 @@ DEPENDS += "qemu-native"
 #NOTE: I have found that this only works with qemu-0.8.0. If I use 0.8.1 or 0.8.2
 # the build gets hung up on compiling certain .el files
 
-PR = "r4"
+PR = "r5"
 
 SRC_URI = "cvs://anoncvs:anonymous@cvs.savannah.gnu.org/sources/emacs;module=emacs \
            file://use-qemu.patch;patch=1"
@@ -18,7 +18,7 @@ S = "${WORKDIR}/emacs"
 
 inherit autotools
 
-PACKAGES = "emacs-el emacs"
+PACKAGES = "${PN}-el ${PN}-dbg ${PN} ${PN}-doc ${PN}-dev ${PN}-locale"
 
 FILES_emacs-el = "${datadir}/emacs/22.0.50/*/*.el.gz \
                   ${datadir}/emacs/22.0.50/*/*/*.el.gz"
