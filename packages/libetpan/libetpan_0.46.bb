@@ -7,17 +7,16 @@ LICENSE = "BSD"
 PR = "r0"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/libetpan/libetpan-${PV}.tar.gz \
-          file://etpan_suffix.patch;patch=1 \
-	  file://mailstream.patch;patch=1 \
-	  file://configure-pthreads.patch;patch=1 "
+           file://honor-oe-lflags.patch;patch=1"
 
 inherit autotools pkgconfig gettext
 
 EXTRA_OECONF = "--without-openssl --with-gnutls --disable-db"
+
 PARALLEL_MAKE = ""
 
 do_stage() {
-	oe_runmake install includedir=${STAGING_INCDIR} libdir=${STAGING_LIBDIR} bindir=${STAGING_BINDIR}
+	autotools_stage_all
 }
 
 FILES_${PN} = "${libdir}/lib*.so.*"
