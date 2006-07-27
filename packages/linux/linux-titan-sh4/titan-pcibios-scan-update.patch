@@ -1,0 +1,22 @@
+--- linux-2.6.17/include/asm-sh/pci.h.orig	2006-07-27 10:17:30.000000000 +1000
++++ linux-2.6.17/include/asm-sh/pci.h	2006-07-27 10:21:53.000000000 +1000
+@@ -143,6 +143,19 @@
+ /* generic pci stuff */
+ #include <asm-generic/pci.h>
+ 
++#ifdef CONFIG_SH_TITAN
++/*
++ * With the updated BIOS the RTL8139D is function 1 while the
++ * mini-pci card is function 0 of the RTL8139D. This is a feature
++ * which enables more pci bus-master inputs than are available by
++ * using a bus-master sharing feature of the RTL8139D. Without this
++ * patch the RTL8139D isn't detected when no mini-pci card is
++ * inserted.
++ */
++#undef pcibios_scan_all_fns
++#define pcibios_scan_all_fns(a, b) ((b)?0:1) 
++#endif
++
+ /* generic DMA-mapping stuff */
+ #include <asm-generic/pci-dma-compat.h>
+ 
