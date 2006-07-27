@@ -6,7 +6,7 @@ diff -Nur emacs~/Makefile.in emacs/Makefile.in
  	(cd lisp; $(MAKE) $(MFLAGS) bootstrap-prepare)
  	(cd src; $(MAKE) $(MFLAGS) bootstrap)
 -	(cd lisp; $(MAKE) $(MFLAGS) bootstrap EMACS=../src/bootstrap-emacs${EXEEXT})
-+	(cd lisp; $(MAKE) $(MFLAGS) bootstrap EMACS="${QEMU} ../src/bootstrap-emacs${EXEEXT})"
++	(cd lisp; $(MAKE) $(MFLAGS) bootstrap EMACS="${QEMU} ../src/bootstrap-emacs${EXEEXT}")
  	(cd src; $(MAKE) $(MFLAGS) mostlyclean)
  	$(MAKE) $(MFLAGS) all
  	(cd lisp; $(MAKE) $(MFLAGS) bootstrap-after)
