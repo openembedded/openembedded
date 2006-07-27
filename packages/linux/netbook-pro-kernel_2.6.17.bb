@@ -2,12 +2,12 @@ DESCRIPTION = "Linux Kernel for Psion/Teklogix netbookpro  compatible machines"
 SECTION = "kernel"
 MAINTAINER = "Koen Kooi <koen@dominion.kabel.utwente.nl>"
 LICENSE = "GPL"
-PR = "r0"
+PR = "r1"
 
 COMPATIBLE_MACHINE = "netbook-pro"
 
 SRC_URI = "ftp://ftp.kernel.org/pub/linux/kernel/v2.6/linux-2.6.17.tar.bz2 \
-	http://linuxtogo.org/~koen/netbook-base-r2.patch;patch=1 \
+	http://linuxtogo.org/~koen/netbook-base-r3.patch;patch=1 \
 	http://linuxtogo.org/~koen/netbook-pcon-r0.patch;patch=1 \
 	http://linuxtogo.org/~koen/netbook-pcon-i2c-r1.patch;patch=1 \
 	http://linuxtogo.org/~koen/defconfig \
