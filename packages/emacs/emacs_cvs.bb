@@ -7,6 +7,9 @@ SECTION = "editor"
 DEPENDS = "libx11"
 # and it needs to run some generated binaries..
 DEPENDS += "qemu-native"
+#NOTE: I have found that this only works with qemu-0.8.0. If I use 0.8.1 or 0.8.2
+# the build gets hung up on compiling certain .el files
+
 PR = "r3"
 
 SRC_URI = "cvs://anoncvs:anonymous@cvs.savannah.gnu.org/sources/emacs;module=emacs \
