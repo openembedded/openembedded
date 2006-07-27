@@ -1,6 +1,8 @@
 DESCRIPTION = "Task packages for the Angstrom distribution"
-PR = "r6"
+PR = "r7"
 ALLOW_EMPTY = "1"
+
+PACKAGE_ARCH = "${MACHINE_ARCH}"
 
 BOOTMODULES_RRECOMMENDS ?= ""
 
@@ -30,6 +32,9 @@ RDEPENDS_angstrom-base-depends = "\
     wireless-tools \
     tslib-tests tslib-calibrate \
 "
+
+RDEPENDS_angstrom-base-depends_append_ipaq-pxa270 = " tiinit acx-firmware "
+
 
 RRECOMMENDS_angstrom-base-depends = "\
         ${BOOTMODULES_RRECOMMENDS} \
