@@ -1,5 +1,5 @@
 DESCRIPTION = "Task packages for the Angstrom distribution"
-PR = "r4"
+PR = "r6"
 ALLOW_EMPTY = "1"
 
 BOOTMODULES_RRECOMMENDS ?= ""
@@ -27,10 +27,14 @@ RDEPENDS_angstrom-base-depends = "\
     netbase dropbear \
     angstrom-version \
     ipkg \
-    "
+    wireless-tools \
+    tslib-tests tslib-calibrate \
+"
 
 RRECOMMENDS_angstrom-base-depends = "\
         ${BOOTMODULES_RRECOMMENDS} \
+	kernel-module-g-ether \
+	kernel-module-hostap-cs \
 	"
 
 RDEPENDS_angstrom-base-wifi = "\
