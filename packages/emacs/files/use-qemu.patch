@@ -6,7 +6,7 @@ diff -Nur emacs~/Makefile.in emacs/Makefile.in
  	(cd lisp; $(MAKE) $(MFLAGS) bootstrap-prepare)
  	(cd src; $(MAKE) $(MFLAGS) bootstrap)
 -	(cd lisp; $(MAKE) $(MFLAGS) bootstrap EMACS=../src/bootstrap-emacs${EXEEXT})
-+	(cd lisp; $(MAKE) $(MFLAGS) bootstrap EMACS="${QEMU} ../src/bootstrap-emacs${EXEEXT}")
++	(cd lisp; $(MAKE) $(MFLAGS) bootstrap EMACS="${QEMU} ../src/bootstrap-emacs${EXEEXT})"
  	(cd src; $(MAKE) $(MFLAGS) mostlyclean)
  	$(MAKE) $(MFLAGS) all
  	(cd lisp; $(MAKE) $(MFLAGS) bootstrap-after)
@@ -34,6 +34,18 @@ diff -Nur emacs~/lib-src/Makefile.in emacs/lib-src/Makefile.in
  
  /* We need the following in order to create a <getopt.h> when the system
     doesn't have one that works with the given compiler.  */
+diff -Nur emacs~/lisp/Makefile.in emacs/lisp/Makefile.in
+--- emacs~/lisp/Makefile.in	2006-07-25 09:45:55.000000000 -0700
++++ emacs/lisp/Makefile.in	2006-07-26 14:09:59.000000000 -0700
+@@ -28,7 +28,7 @@
+ # You can specify a different executable on the make command line,
+ # e.g. "make EMACS=../src/emacs ...".
+ 
+-EMACS = ../src/emacs
++EMACS = ${QEMU} ../src/emacs
+ 
+ # Command line flags for Emacs.  This must include --multibyte,
+ # otherwise some files will not compile.
 diff -Nur emacs~/src/Makefile.in emacs/src/Makefile.in
 --- emacs~/src/Makefile.in	2006-07-25 09:46:16.000000000 -0700
 +++ emacs/src/Makefile.in	2006-07-26 07:37:44.000000000 -0700
