@@ -1,7 +1,7 @@
 #Angstrom GPE image
 LICENSE = MIT
 MAINTAINER = "Koen Kooi <koen@dominion.kabel.utwente.nl>"
-PR = "r1"
+PR = "r2"
 
 PREFERRED_PROVIDER_libgpewidget 	?= "libgpewidget"
 PREFERRED_PROVIDER_tslib 		?= "tslib"
@@ -18,7 +18,7 @@ RDEPENDS = "\
     ${XSERVER} \
     angstrom-base-depends \
     angstrom-x11-base-depends \
-    angsgrom-gpe-task-base \
+    angstrom-gpe-task-base \
     angstrom-gpe-task-settings \
     angstrom-gpe-task-pim \
     ${ANGSTROM_EXTRA_INSTALL}"

@@ -1,5 +1,5 @@
 DESCRIPTION = "Task packages for the Angstrom distribution"
-PR = "r7"
+PR = "r9"
 ALLOW_EMPTY = "1"
 
 PACKAGE_ARCH = "${MACHINE_ARCH}"
@@ -10,11 +10,11 @@ PACKAGES = "\
     angstrom-base-depends \
     angstrom-base-wifi \
     angstrom-x11-base-depends \
-    angsgrom-gpe-task-base \
+    angstrom-gpe-task-base \
     angstrom-gpe-task-settings \
     angstrom-gpe-task-pim \
     angstrom-gpe-task-apps \
-    angstgrom-gpe-task-games \ 
+    angstrom-gpe-task-games \ 
     angstrom-task-office \
     angstrom-task-printing \
     angstrom-task-sectest"
@@ -28,7 +28,7 @@ RDEPENDS_angstrom-base-depends = "\
     sysvinit initscripts sysvinit-pidof \
     netbase dropbear \
     angstrom-version \
-    ipkg \
+    ipkg ipkg-collateral \
     wireless-tools \
     tslib-tests tslib-calibrate \
 "
@@ -38,8 +38,11 @@ RDEPENDS_angstrom-base-depends_append_ipaq-pxa270 = " tiinit acx-firmware "
 
 RRECOMMENDS_angstrom-base-depends = "\
         ${BOOTMODULES_RRECOMMENDS} \
+	kernel-module-evdev \
+	kernel-module-uinput \
 	kernel-module-g-ether \
 	kernel-module-hostap-cs \
+	kernel-module-af-packet \
 	"
 
 RDEPENDS_angstrom-base-wifi = "\
@@ -54,7 +57,10 @@ RDEPENDS_angstrom-base-wifi = "\
 
 RDEPENDS_angstrom-x11-base-depends := "\
     libx11 \
-    virtual/xserver"
+    virtual/xserver \
+    ttf-dejavu-sans \
+    ttf-dejavu-sans-mono \
+    "
 
 RDEPENDS_angstrom-gpe-task-base := "\
     matchbox \
@@ -65,7 +71,6 @@ RDEPENDS_angstrom-gpe-task-base := "\
     xhost \
     xrdb \
     gpe-soundserver \
-    ttf-dejavu \
     gpe-dm \
     gpe-login \
     gpe-session-scripts \
