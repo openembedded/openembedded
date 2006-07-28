@@ -1,5 +1,5 @@
 DESCRIPTION = "SDK packages for Opie and GPE"
-PR = "r2"
+PR = "r3"
 LICENSE = MIT
 ALLOW_EMPTY = "1"
 
@@ -35,16 +35,18 @@ RDEPENDS_task-sdk-base := "\
     libetpan-dev \
     libgcrypt-dev \
     libglade-dev \
+    libgnutls-dev \
     libgpg-error-dev \ 
     libidl-dev \
     libiw-dev \
-    libmimedir-dev \
+    libmimedir-3.3-dev \
     libpcap-dev \
     libpixman-dev \
     libpng-dev \
     libschedule-dev \
     libsm-dev \
     libsoundgen-dev \
+    libsoup-2.2-dev \
     libsvg-dev \
     libtododb-dev \
     libts-dev \
@@ -106,7 +108,8 @@ RDEPENDS_task-sdk-gpe := "\
     libgpepimc-dev \
     libgpevtype-dev \
     libgpelaunch-dev \
-    libgpewidget-dev"
+    libgpewidget-dev \
+    libhandoff-dev"
 
 RDEPENDS_task-sdk-opie := "\
     libopiebluez2 \
