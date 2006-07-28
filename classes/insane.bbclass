@@ -1,24 +1,21 @@
 #
 # BB Class inspired by ebuild.sh
 #
-# As I will be copying code from from ebuild.sh this is
-# Copyright Gentoo Foundation 1999-2006
-# GPLv2
-#
 # This class will test files after installation for certain
 # security issues and other kind of issues.
 #
 # Checks we do:
 #  -Check the ownership and permissions
 #  -Check the RUNTIME path for the $TMPDIR
+#  -Check if .la files wrongly point to workdir
+#  -Check if .pc files wrongly point to workdir
+#  -Check if packages contains .dbg or .so files where they should be in -dev or -dbg
 #
-# Checks that are planned:
-#  -Check installed and stages .la files
 
 
 #
 # We need to have the scanelf utility as soon as
-# possible.
+# possible and this is contained within the pax-utils-native
 #
 
 # We play a special package function
