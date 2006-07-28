@@ -8,9 +8,10 @@ SRC_URI = "http://fontconfig.org/release/fontconfig-${PV}.tar.gz \
            file://fc-lang.patch;patch=1 \
 	   file://local.conf"
 
-PR = "r1"
+PR = "r2"
 
-PACKAGES =+ "fontconfig-utils "
+PACKAGES =+ "fontconfig-utils-dbg fontconfig-utils "
+FILES_fontconfig-utils-dbg = "${bindir}/*.dbg"
 FILES_fontconfig-utils = "${bindir}/*"
 
 # Work around past breakage in debian.bbclass
