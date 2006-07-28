@@ -27,7 +27,7 @@ RDEPENDS_angstrom-base-depends = "\
     base-passwd tinylogin \ 
     busybox \
     udev \
-    update-modules module-init-tools \
+    update-modules module-init-tools modutils-initscripts \
     sysvinit initscripts sysvinit-pidof \
     netbase dropbear \
     angstrom-version \
