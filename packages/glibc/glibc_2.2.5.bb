@@ -1,5 +1,5 @@
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/glibc-cvs"
-PR = "r5"
+PR = "r6"
 DESCRIPTION = "GNU C Library"
 HOMEPAGE = "http://www.gnu.org/software/libc/libc.html"
 LICENSE = "LGPL"
