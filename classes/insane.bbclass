@@ -23,7 +23,40 @@ inherit package
 PACKAGE_DEPENDS += "pax-utils-native"
 PACKAGEFUNCS += " do_package_qa "
 
+def package_qa_check_rpath(path):
+    pass
+
+def package_qa_check_devdbg(path, name):
+    pass
+
+def package_qa_check_perm(path):
+    pass
+
+def package_qa_check_staged(path):
+    pass
+
+
+# The PACKAGE FUNC to scan each package
 python do_package_qa () {
+    bb.note("DO PACKAGE QA")
+    workdir  = bb.data.getVar('WORKDIR', d, True)
+    packages = bb.data.getVar('PACKAGES',d, True)
+
+    # no packages should be scanned
+    if not packages:
+        return
+
+    for package in packages.split():
+        bb.note("Package: %s" % package)
+        path = "%s/install/%s" % (workdir, package)
+        package_qa_check_rpath(path)
+        package_qa_check_devdbg(path,package)
+        package_qa_check_perm(path)
 }
 
 
+# The Staging Func, to check all staging
+addtask qa_staging after do_populate_staging before do_build
+python do_qa_staging() {
+    bb.note("Staged!")
+}
