@@ -1,7 +1,7 @@
 #Angstrom bootstrap image
 LICENSE = MIT
 MAINTAINER = "Koen Kooi <koen@dominion.kabel.utwente.nl>"
-PR = "r0"
+PR = "r2"
 
 DEPENDS = "task-angstrom"
 RDEPENDS = "angstrom-base-depends"
