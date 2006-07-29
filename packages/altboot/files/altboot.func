@@ -77,7 +77,7 @@ check_target() {
 		
 	if test "$real_fs_found" != 1 -a "$image_found" != 1
 	then
-		die "Nothing to do!"
+		mdie "No direct-install or loop-images found. Nothing to do!"
 	fi
 }
 
