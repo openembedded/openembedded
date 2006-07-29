@@ -2,5 +2,5 @@ include xorg-app-common.inc
 
 #DESCRIPTION = ""
 
-DEPENDS += " libxv virtual/x11"
+DEPENDS += " libxv virtual/libx11"
 

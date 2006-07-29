@@ -3,7 +3,7 @@ HOMEPAGE = "http://www.gnu.org/software/libc/libc.html"
 LICENSE = "LGPL"
 SECTION = "libs"
 PRIORITY = "required"
-PR = "r6"
+PR = "r7"
 
 DEFAULT_PREFERENCE_sh3 = "-99"
 

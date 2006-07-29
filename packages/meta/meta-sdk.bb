@@ -1,7 +1,7 @@
 DESCRIPTION = "Meta package for SDK including GPE and Opie"
 LICENSE = MIT
 DEPENDS = "ipkg-native ipkg-utils-native fakeroot-native sed-native"
-PR = "r10"
+PR = "r11"
 
 PACKAGES = ""
 

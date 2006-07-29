@@ -3,7 +3,7 @@
 # Released under the MIT license (see packages/COPYING)
 
 DESCRIPTION="XFCE4 Utilities"
-DEPENDS = "virtual/x11 libxfcegui4 xfce-mcs-manager"
+DEPENDS = "virtual/libx11 libxfcegui4 xfce-mcs-manager"
 inherit xfce
 
 FILES_${PN} += " /usr/share/xfce4/AUTHORS \

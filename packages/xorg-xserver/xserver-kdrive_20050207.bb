@@ -3,11 +3,11 @@ FIXEDSRCDATE = "${@bb.data.getVar('FILE', d, 1).split('_')[-1].split('.')[0]}"
 DEFAULT_PREFERENCE = "1"
 
 LICENSE = "MIT"
-DEPENDS = "tslib xproto libxdmcp xextensions-1.0.1 xtrans libxau virtual/x11 libxext libxrandr fixesext damageext libxfont resourceext compositeext xcalibrateext recordext"
+DEPENDS = "tslib xproto libxdmcp xextensions-1.0.1 xtrans libxau virtual/libx11 libxext libxrandr fixesext damageext libxfont resourceext compositeext xcalibrateext recordext"
 
 # Uncomment the following DEPENDS line and the commented line in SRC_URI
 # to make this snapshot build against X11R7.0 xlibs.
-#DEPENDS = "tslib xproto libxdmcp xextproto xtrans libxau virtual/x11 libxext libxrandr fixesproto damageproto libxfont resourceproto compositeproto xcalibrateext recordproto"
+#DEPENDS = "tslib xproto libxdmcp xextproto xtrans libxau virtual/libx11 libxext libxrandr fixesproto damageproto libxfont resourceproto compositeproto xcalibrateext recordproto"
 
 PROVIDES = "virtual/xserver"
 RPROVIDES = "virtual/xserver"

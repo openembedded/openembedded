@@ -1,7 +1,7 @@
 SECTION = "x11/libs"
 PRIORITY = "optional"
 MAINTAINER = "Phil Blundell <pb@handhelds.org>"
-DEPENDS = "virtual/x11 libsm"
+DEPENDS = "virtual/libx11 libsm"
 PROVIDES = "xt"
 DESCRIPTION = "X Toolkit Intrinsics"
 LICENSE = "X-MIT"

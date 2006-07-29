@@ -1,7 +1,7 @@
 SECTION = "console/utils"
 DESCRIPTION = "Video4linux Two sample applications"
 LICENSE = "PD"
-DEPENDS = "libxaw virtual/x11 libxt"
+DEPENDS = "libxaw virtual/libx11 libxt"
 
 SRC_URI = "http://www.thedirks.org/pub/v4l2/apps/apps${PV}.tgz"
 S = "${WORKDIR}"

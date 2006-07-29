@@ -8,7 +8,7 @@ inherit xfce
 
 FILES_${PN} += "${datadir}/xfwm4/defaults ${datadir}/xfwm4/themes/default.keys/*"
 
-DEPENDS = "startup-notification virtual/x11 xpm libxfce4util libxfcegui4 libxfce4mcs xfce-mcs-manager"
+DEPENDS = "startup-notification virtual/libx11 xpm libxfce4util libxfcegui4 libxfce4mcs xfce-mcs-manager"
 
 
 EXTRA_OECONF += " --enable-startup-notification"

@@ -80,7 +80,7 @@ do_install() {
 	rm -f ${D}/etc/rpc
 }
 
-TMP_LOCALE="/tmp/locale/${libdir}/locale"
+TMP_LOCALE="/tmp/locale${libdir}/locale"
 
 locale_base_postinst() {
 #!/bin/sh

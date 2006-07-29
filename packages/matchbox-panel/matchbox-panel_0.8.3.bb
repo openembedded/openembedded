@@ -1,6 +1,6 @@
 DESCRIPTION = "Matchbox Window Manager Panel"
 LICENSE = "GPL"
-DEPENDS = "libmatchbox virtual/x11 libxext libxpm apmd startup-notification virtual/kernel"
+DEPENDS = "libmatchbox virtual/libx11 libxext libxpm apmd startup-notification virtual/kernel"
 SECTION = "x11/wm"
 PR = "r1"
 

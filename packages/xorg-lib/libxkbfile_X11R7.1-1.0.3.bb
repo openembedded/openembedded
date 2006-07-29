@@ -4,5 +4,5 @@ DESCRIPTION = "X11 keyboard library"
 LICENSE= "GPL"
 PRIORITY = "optional"
 
-DEPENDS += " virtual/x11 kbproto"
+DEPENDS += " virtual/libx11 kbproto"
 

@@ -4,5 +4,5 @@ DESCRIPTION = "X11 lbxkbui library"
 LICENSE= "GPL"
 PRIORITY = "optional"
 
-DEPENDS += " virtual/x11 libxt libxkbfile"
+DEPENDS += " virtual/libx11 libxt libxkbfile"
 PROVIDES = "xkbui"

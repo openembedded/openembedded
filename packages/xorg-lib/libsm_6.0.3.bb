@@ -2,7 +2,7 @@ SECTION = "libs"
 LICENSE = "MIT-X"
 PRIORITY = "optional"
 MAINTAINER = "Phil Blundell <pb@handhelds.org>"
-DEPENDS = "virtual/x11 libice"
+DEPENDS = "virtual/libx11 libice"
 DESCRIPTION = "Session management library"
 PR = "r1"
 

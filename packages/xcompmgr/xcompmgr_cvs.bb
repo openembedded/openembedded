@@ -3,7 +3,7 @@ LICENSE = "BSD-X"
 SECTION = "x11"
 PRIORITY = "optional"
 MAINTAINER = "Phil Blundell <pb@handhelds.org>"
-DEPENDS = "virtual/x11 libxdamage libxcomposite libxrender"
+DEPENDS = "virtual/libx11 libxdamage libxcomposite libxrender"
 DESCRIPTION = "X Compositing Manager"
 
 SRC_URI = "${FREEDESKTOP_CVS}/xapps;module=xcompmgr"

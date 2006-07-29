@@ -16,7 +16,7 @@ HOMEPAGE="http://www.jwz.org/xscreensaver/"
 PR = "r1"
 SECTION="x11-misc"
 
-DEPENDS = "intltool virtual/x11 gtk+ libxml2 libglade"
+DEPENDS = "intltool virtual/libx11 gtk+ libxml2 libglade"
 
 # xscreensaver-demo is a glade app
 LDFLAGS_append = " -Wl,--export-dynamic"

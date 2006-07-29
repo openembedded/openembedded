@@ -4,5 +4,5 @@ DESCRIPTION = "X Event Viewer"
 MAINTAINER = "Justin Patrin <papercrane@reversefold.com>"
 LICENSE = "MIT"
 
-DEPENDS += " virtual/x11"
+DEPENDS += " virtual/libx11"
 

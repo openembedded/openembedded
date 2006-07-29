@@ -1,5 +1,5 @@
 PV = "0.0+cvs${SRCDATE}"
-DEPENDS = "virtual/x11 libxmu libxext"
+DEPENDS = "virtual/libx11 libxmu libxext"
 DESCRIPTION = "X server resource database utility"
 MAINTAINER = "Rene Wagner <rw@handhelds.org>"
 SECTION = "x11/base"
