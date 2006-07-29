@@ -3,7 +3,7 @@ SECTION = "x11/apps"
 LICENSE = "MIT-X"
 S="${WORKDIR}/mkfontscale-${PV}"
 
-DEPENDS = "virtual/x11-native libfontenc-native"
+DEPENDS = "virtual/libx11-native libfontenc-native"
 
 SRC_URI = "${XORG_MIRROR}/X11R7.0/src/app/mkfontscale-${PV}.tar.bz2"
 

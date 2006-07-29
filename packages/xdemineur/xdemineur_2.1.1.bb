@@ -1,7 +1,7 @@
 inherit gpe
 LICENSE = "BSD-X"
 
-DEPENDS = "virtual/x11 libxpm"
+DEPENDS = "virtual/libx11 libxpm"
 SECTION = "gpe"
 DESCRIPTION = "Mine-sweeper game for GPE."
 PRIORITY = "optional"

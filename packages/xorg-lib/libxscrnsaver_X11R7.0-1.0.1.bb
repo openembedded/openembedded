@@ -3,7 +3,7 @@ include xorg-lib-common.inc
 DESCRIPTION = "X screen saver extension library."
 LICENSE = "GPL"
 
-DEPENDS += " virtual/x11 libxext xextproto scrnsaverproto"
+DEPENDS += " virtual/libx11 libxext xextproto scrnsaverproto"
 
 XORG_PN = "libXScrnSaver"
 

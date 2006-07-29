@@ -2,4 +2,4 @@ include xorg-app-common.inc
 
 #DESCRIPTION = ""
 
-DEPENDS += " virtual/x11 libxmu libxrender libxft libxext"
+DEPENDS += " virtual/libx11 libxmu libxrender libxft libxext"

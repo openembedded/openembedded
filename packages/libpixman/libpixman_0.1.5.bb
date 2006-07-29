@@ -1,7 +1,7 @@
 SECTION = "libs"
 PRIORITY = "optional"
 MAINTAINER = "Phil Blundell <pb@debian.org>"
-DEPENDS = "virtual/x11"
+DEPENDS = "virtual/libx11"
 DESCRIPTION = "Cairo support library"
 LICENSE = "X11"
 SRC_URI = "http://cairographics.org/snapshots/libpixman-${PV}.tar.gz"

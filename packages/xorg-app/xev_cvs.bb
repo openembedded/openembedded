@@ -4,7 +4,7 @@ HOMEPAGE = "http://freedesktop.org/wiki/Software_2fxapps"
 LICENSE = "MIT"
 MAINTAINER = "Justin Patrin <papercrane@reversefold.com>"
 SECTION = "x11/base"
-DEPENDS = "virtual/x11 libxau"
+DEPENDS = "virtual/libx11 libxau"
 PR = "r1"
 
 SRC_URI = "${FREEDESKTOP_CVS}/xapps;module=xev \

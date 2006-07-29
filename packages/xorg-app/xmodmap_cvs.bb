@@ -5,7 +5,7 @@ MAINTAINER = "Rene Wagner <rw@handhelds.org>"
 SECTION = "x11/base"
 PR = "r1"
 
-DEPENDS = "virtual/x11"
+DEPENDS = "virtual/libx11"
 
 SRC_URI = "${FREEDESKTOP_CVS}/xorg;module=xc/programs/xmodmap \
            file://autofoo.patch;patch=1"

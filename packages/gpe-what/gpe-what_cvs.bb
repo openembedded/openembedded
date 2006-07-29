@@ -10,4 +10,4 @@ inherit autotools gpe
 SRC_URI =   "${HANDHELDS_CVS};module=gpe/base/${PN}"
 
 DESCRIPTION = "GPE modal help"
-DEPENDS = "virtual/x11 gtk+"
+DEPENDS = "virtual/libx11 gtk+"

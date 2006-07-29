@@ -3,7 +3,7 @@ HOMEPAGE = "http://www.rawmaterialsoftware.com/juce"
 AUTHOR = "Julian Stoerer"
 MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 LICENSE = "GPL"
-DEPENDS = "alsa-lib freetype virtual/x11"
+DEPENDS = "alsa-lib freetype virtual/libx11"
 PR = "r0"
 
 #FIXME the patches are a) HACKS and b) something's wrong with lineend conversion

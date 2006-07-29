@@ -1,6 +1,6 @@
 SECTION = "libs"
 PRIORITY = "optional"
-DEPENDS = "virtual/x11 libpng fontconfig libxrender"
+DEPENDS = "virtual/libx11 libpng fontconfig libxrender"
 DESCRIPTION = "Cairo graphics library"
 LICENSE = "MPL LGPL"
 PR = "r0"

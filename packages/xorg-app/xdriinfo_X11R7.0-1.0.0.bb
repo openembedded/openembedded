@@ -2,5 +2,5 @@ include xorg-app-common.inc
 
 #DESCRIPTION = ""
 
-DEPENDS += " virtual/x11 glproto mesa"
+DEPENDS += " virtual/libx11 glproto mesa"
 

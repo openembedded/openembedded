@@ -3,7 +3,7 @@ DESCRIPTION = "Xinerama library"
 SECTION = "x11/libs"
 PRIORITY = "optional"
 MAINTAINER = "Phil Blundell <pb@handhelds.org>"
-DEPENDS = "panoramixext xproto virtual/x11 libxext"
+DEPENDS = "panoramixext xproto virtual/libx11 libxext"
 PROVIDES = "xinerama"
 PR = "r1"
 

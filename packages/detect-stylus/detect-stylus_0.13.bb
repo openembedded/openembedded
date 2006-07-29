@@ -3,7 +3,7 @@ LICENSE = "GPL"
 
 PR = "r2"
 
-DEPENDS = "virtual/x11 xcursor-transparent-theme xrdb"
+DEPENDS = "virtual/libx11 xcursor-transparent-theme xrdb"
 SECTION = "gpe"
 RDEPENDS = "xrdb"
 

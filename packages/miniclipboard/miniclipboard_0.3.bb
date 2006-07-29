@@ -2,7 +2,7 @@ SECTION = "x11/utils"
 inherit gpe
 LICENSE = "LGPL"
 DESCRIPTION = "Clipboard management application"
-DEPENDS = "virtual/x11"
+DEPENDS = "virtual/libx11"
 RDEPENDS = "gdk-pixbuf-loader-xpm"
 MAINTAINER = "Phil Blundell <pb@handhelds.org>"
 PR = "r1"

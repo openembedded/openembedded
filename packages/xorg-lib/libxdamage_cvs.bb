@@ -1,7 +1,7 @@
 PV = "0.0+cvs${SRCDATE}"
 LICENSE= "BSD-X"
 SECTION = "x11/libs"
-DEPENDS = "virtual/x11 damageext libxfixes xproto"
+DEPENDS = "virtual/libx11 damageext libxfixes xproto"
 PROVIDES = "xdamage"
 DESCRIPTION = "X Damage extension library."
 
