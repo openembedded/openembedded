@@ -26,6 +26,7 @@ PSTAGE_INSTALL_CMD      = "ipkg-cl install -f ${DEPLOY_DIR_PSTAGE}/ipkg.conf -fo
 PSTAGE_PKGNAME 		= "staging-${PN}_${PV}-${PR}_${PACKAGE_ARCH}.ipk"
 
 SPAWNFILE 		= "${STAGING_DIR}/pkgmaps/${P}-${PR}.spawn"
+SPAWNIPK		= "${DEPLOY_DIR_IPK}/${spawn}_${PV}-${PR}_${PACKAGE_ARCH}.ipk"
 
 do_clean_append() {
         """clear the build and temp directories"""
@@ -72,18 +73,20 @@ ipkgarchs="all any noarch ${TARGET_ARCH} ${IPKG_ARCHS} ${IPKG_EXTRA_ARCHS} ${MAC
     done
 
 #blacklist packages poking in staging *and* cross
-if [ ${PN} != "linux-libc-headers"] ; then
+if [ ${PN} != "linux-libc-headers" ] ; then
 	#check for generated packages
 	if [ -e ${SPAWNFILE} ]; then
         	oenote "List of spawned packages found: ${P}.spawn"
         	for spawn in `cat ${SPAWNFILE} | grep -v ${PN}-locale` ; do \
-			if [ -e ${spawn} ]; then
-               	 		${PSTAGE_INSTALL_CMD} ${STAGING_DIR}  ${DEPLOY_DIR_IPK}/${spawn}_${PV}-${PR}_${PACKAGE_ARCH}.ipk         
+			if [ -e ${SPAWNIPK} ]; then
+               	 		${PSTAGE_INSTALL_CMD} ${STAGING_DIR} ${SPAWNIPK}          
 			else
-				echo "ipkg not found, probably empty package"
+				oenote "${SPAWNIPK} not found, probably empty package"
 			fi
         	done
         	exit 0
+	else
+		oenote "Spawn file not found!"
 	fi
 fi #if ${PN}
 }
