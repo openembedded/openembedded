@@ -1,13 +1,12 @@
 DESCRIPTION = "Amiga Emulator based on SDL"
 SECTION = "base"
 PRIORITY = "optional"
-DEPENDS = "virtual/libsdl"
+DEPENDS = "virtual/libsdl zlib"
 LICENSE = "GPL"
-PR = "r2"
+PR = "r0"
 
-SRC_URI = "http://rcdrummond.net/uae/old/e-uae-${PV}/e-uae-${PV}.tar.bz2 \
+SRC_URI = "http://rcdrummond.net/uae/e-uae-${PV}/e-uae-${PV}.tar.bz2 \
            file://configure.patch;patch=1"
-#           file://m4.patch;patch=1"
 
 inherit autotools 
 
@@ -23,14 +22,4 @@ PARALLEL_MAKE = ""
 
 do_configure_prepend () {
 	touch NEWS AUTHORS ChangeLog
-}
-
-do_install_append() {
-# Packages NEVER, ever, ever, ever touch home directories directly.
-# ever.
-# Either update a global config in /etc, install it into /etc/skel/ for
-# new users homedirs, rely on the user installing it to put it in place,
-# or dont install it at all.  --CL
-#	install -d ${D}/home/root
-#	install ${FILESDIR}/uaerc ${D}/home/root/.uaerc
 }
