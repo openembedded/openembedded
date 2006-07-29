@@ -1,5 +1,5 @@
 DESCRIPTION = "Task packages for the Angstrom distribution"
-PR = "r11"
+PR = "r12"
 ALLOW_EMPTY = "1"
 
 PACKAGE_ARCH = "${MACHINE_ARCH}"
@@ -60,7 +60,7 @@ RDEPENDS_angstrom-base-wifi = "\
     "
 
 RDEPENDS_angstrom-x11-base-depends := "\
-    libx11 \
+    virtual/libx11 \
     virtual/xserver \
     ttf-dejavu-sans \
     ttf-dejavu-sans-mono \
