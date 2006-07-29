@@ -7,7 +7,6 @@ DEPENDS = "expat glib-2.0 virtual/libintl dbus-glib-native"
 
 SRC_URI = "http://freedesktop.org/software/dbus/releases/dbus-glib-${PV}.tar.gz \
 	   file://cross.patch;patch=1 \
-	   file://dbus-glib-0.70-fix-includes.patch;patch=1 \
 	   file://no-examples.patch;patch=1 \
 	   file://no-introspect.patch;patch=1"
 
