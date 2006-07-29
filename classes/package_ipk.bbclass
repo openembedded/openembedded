@@ -29,6 +29,7 @@ python do_write_ipk_list () {
 	# Generate ipk.conf if it or the stamp doesnt exist
         listfile = os.path.join(stagingdir,"pkgmaps","%s-%s.spawn" %  ( p , pr ))
         if not os.access(listfile, os.R_OK):
+		os.system('mkdir -p ' + stagingdir + '/pkgmaps')
 		os.system('rm -f ' + listfile)
                 f = open(listfile,"w")
                 for spawn in packages.split():

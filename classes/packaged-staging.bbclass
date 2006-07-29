@@ -25,6 +25,8 @@ PSTAGE_BUILD_CMD        = "${IPKGBUILDCMD}"
 PSTAGE_INSTALL_CMD      = "ipkg-cl install -f ${DEPLOY_DIR_PSTAGE}/ipkg.conf -force-depends -o "
 PSTAGE_PKGNAME 		= "staging-${PN}_${PV}-${PR}_${PACKAGE_ARCH}.ipk"
 
+SPAWNFILE 		= "${STAGING_DIR}/pkgmaps/${P}-${PR}.spawn"
+
 do_clean_append() {
         """clear the build and temp directories"""
         stagepkg = bb.data.expand("${DEPLOY_DIR_PSTAGE}/${PSTAGE_PKGNAME}", d)
@@ -35,16 +37,59 @@ do_clean_append() {
 
 
 do_stage_prepend() {
-#move away the staging dir to avoid relocation troubles
 
-if [ -e ${STAGING_DIR}/pkgmaps/${P}-${PR}.spawn ]; then
-        oenote "List of spawned packages found: ${P}.spawn"
-        for spawn in `cat ${STAGING_DIR}/${P}-${PR}.spawn | grep -v ${PN}-locale` 
-                do ${PSTAGE_INSTALL_CMD} ${STAGING_DIR}  ${DEPLOY_DIR_IPK}/${spawn}_${PV}-${PR}_${PACKAGE_ARCH}.ipk         
-        done
-        exit 0
+if [ -e ${STAGING_DIR} ]; then
+	echo
+else
+	mkdir -p ${STAGING_DIR}
 fi
 
+if [ -e ${DEPLOY_DIR_PSTAGE} ]; then
+	echo
+else
+	mkdir -p ${DEPLOY_DIR_PSTAGE}
+fi
+
+
+
+if [ -e ${STAGING_DIR}/usr ]; then
+        oenote "${STAGING_DIR}/usr already present, leaving it alone"
+else
+	oenote "${STAGING_DIR}/usr not present, symlinking it"
+	ln -s ${STAGING_DIR}/ ${STAGING_DIR}/usr
+fi
+
+#assemble appropriate ipkg.conf
+if [ -e ${DEPLOY_DIR_PSTAGE}/ipkg.conf ]; then
+        rm ${DEPLOY_DIR_PSTAGE}/ipkg.conf
+fi
+
+ipkgarchs="all any noarch ${TARGET_ARCH} ${IPKG_ARCHS} ${IPKG_EXTRA_ARCHS} ${MACHINE}"
+    priority=1
+    for arch in $ipkgarchs; do
+      echo "arch $arch $priority" >> ${DEPLOY_DIR_PSTAGE}/ipkg.conf
+      priority=$(expr $priority + 5)
+    done
+
+#blacklist packages poking in staging *and* cross
+if [ ${PN} != "linux-libc-headers"] ; then
+	#check for generated packages
+	if [ -e ${SPAWNFILE} ]; then
+        	oenote "List of spawned packages found: ${P}.spawn"
+        	for spawn in `cat ${SPAWNFILE} | grep -v ${PN}-locale` ; do \
+			if [ -e ${spawn} ]; then
+               	 		${PSTAGE_INSTALL_CMD} ${STAGING_DIR}  ${DEPLOY_DIR_IPK}/${spawn}_${PV}-${PR}_${PACKAGE_ARCH}.ipk         
+			else
+				echo "ipkg not found, probably empty package"
+			fi
+        	done
+        	exit 0
+	fi
+fi #if ${PN}
+}
+
+
+old.do_stage_prepend() {
 
 if [ -e ${DEPLOY_DIR_PSTAGE}/${PSTAGE_PKGNAME} ]; then
 	oenote "Staging stuff already packaged, using that instead"
@@ -61,7 +106,7 @@ mkdir -p ${STAGING_DATADIR}/aclocal
 
 }
 
-do_stage_append() {
+old.do_stage_append() {
 
 mkdir -p ${DEPLOY_DIR_PSTAGE}
 mkdir -p ${STAGING_DIR}/CONTROL
