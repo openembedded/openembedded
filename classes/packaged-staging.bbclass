@@ -39,7 +39,7 @@ do_clean_append() {
 
 do_stage_prepend() {
 
-detect aborted staging attempts
+#detect aborted staging attempts
 if [ -e ${TMPDIR}/moved-staging ]; then
         oenote "Detected a moved staging, moving it back"
 	${TMPDIR}/pstage ${STAGING_DIR} && rm ${TMPDIR}/moved-staging
