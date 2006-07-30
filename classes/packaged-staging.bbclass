@@ -39,6 +39,12 @@ do_clean_append() {
 
 do_stage_prepend() {
 
+detect aborted staging attempts
+if [ -e ${TMPDIR}/moved-staging ]; then
+        oenote "Detected a moved staging, moving it back"
+	${TMPDIR}/pstage ${STAGING_DIR} && rm ${TMPDIR}/moved-staging
+fi
+
 if [ -e ${STAGING_DIR} ]; then
 	echo
 else
@@ -89,10 +95,6 @@ if [ ${PN} != "linux-libc-headers" ] ; then
 		oenote "Spawn file not found!"
 	fi
 fi #if ${PN}
-}
-
-
-old.do_stage_prepend() {
 
 if [ -e ${DEPLOY_DIR_PSTAGE}/${PSTAGE_PKGNAME} ]; then
 	oenote "Staging stuff already packaged, using that instead"
@@ -100,6 +102,7 @@ if [ -e ${DEPLOY_DIR_PSTAGE}/${PSTAGE_PKGNAME} ]; then
 	exit 0      
 fi
 
+touch ${TMPDIR}/moved-staging
 mv ${STAGING_DIR} ${TMPDIR}/pstage
 
 mkdir -p ${STAGING_BINDIR}
@@ -109,7 +112,7 @@ mkdir -p ${STAGING_DATADIR}/aclocal
 
 }
 
-old.do_stage_append() {
+do_stage_append() {
 
 mkdir -p ${DEPLOY_DIR_PSTAGE}
 mkdir -p ${STAGING_DIR}/CONTROL
@@ -122,27 +125,14 @@ echo "Maintainer: ${MAINTAINER}"        >> ${STAGING_DIR}/CONTROL/control
 echo "Architecture: ${PACKAGE_ARCH}"    >> ${STAGING_DIR}/CONTROL/control
 echo "Source: ${SRC_URI}"               >> ${STAGING_DIR}/CONTROL/control
 
-if [ -e ${DEPLOY_DIR_PSTAGE}/ipkg.conf ]; then
-	rm ${DEPLOY_DIR_PSTAGE}/ipkg.conf
-fi
-
-ipkgarchs="all any noarch ${TARGET_ARCH} ${IPKG_ARCHS} ${MACHINE}"
-    priority=1
-    for arch in $ipkgarchs; do
-      echo "arch $arch $priority" >> ${DEPLOY_DIR_PSTAGE}/ipkg.conf
-      priority=$(expr $priority + 5)
-    done
-
-
-
 mkdir -p ${DEPLOY_DIR_PSTAGE}
-
 
 ${PSTAGE_BUILD_CMD} ${STAGING_DIR} ${DEPLOY_DIR_PSTAGE}
 
 rm -rf ${STAGING_DIR}
 #move back stagingdir so we can install packages   
 mv ${TMPDIR}/pstage ${STAGING_DIR}
+rm ${TMPDIR}/moved-staging
 
 ${PSTAGE_INSTALL_CMD} ${STAGING_DIR}  ${DEPLOY_DIR_PSTAGE}/${PSTAGE_PKGNAME}
 
