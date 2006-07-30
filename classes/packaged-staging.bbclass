@@ -8,11 +8,14 @@
 
 
 # BUGS:
-# * no state saving mechanism is present, so a failed do stage has pstage/ and staging/ swapped
-# * doesn't check for existing packages
 # * does not distinguish between -native, -cross and other packages
 # * is oblivious to CROSSDIR  
 # * breaks when a recipe needs stuff from STAGING_DIR to be present during do_stage, broken behaviour IMO
+
+# TODO:
+# * also make packages for CROSSDIR
+# * rebuild package-index each run for regular packages to pull in the Depends:
+# * also build a feed for native and cross packages 
 
 # Summary:
 # This class will have two modes of operation:
