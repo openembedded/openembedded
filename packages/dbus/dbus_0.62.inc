@@ -5,6 +5,9 @@ DESCRIPTION = "message bus system for applications to talk to one another"
 LICENSE = "GPL"
 DEPENDS = "expat glib-2.0 virtual/libintl"
 
+
+FILESPATH = "${FILE_DIRNAME}/dbus-0.6x:${FILE_DIRNAME}/dbus"
+
 SRC_URI = "http://freedesktop.org/software/dbus/releases/dbus-${PV}.tar.gz \
 	   file://cross.patch;patch=1 \
 	   file://tmpdir.patch;patch=1 \
