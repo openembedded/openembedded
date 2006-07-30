@@ -5,7 +5,7 @@ LICENSE = "MIT-X"
 
 DEPENDS = "xproto virtual/libx11 xextproto xext xau xpm ncurses"
 
-SRC_URI = "${XORG_MIRROR}/X11R7.0/src/extras/${PN}-${PV}.tar.gz"
+SRC_URI = "${XORG_MIRROR}/development/X11R7.0-RC4/extras/${PN}-${PV}.tar.gz"
 
 inherit autotools pkgconfig
 
