@@ -1,15 +1,19 @@
 SECTION = "base"
-PR = "r0"
+PR = "r1"
 HOMEPAGE = "http://www.freedesktop.org/Software/dbus"
 DESCRIPTION = "message bus system for applications to talk to one another"
 LICENSE = "GPL"
 DEPENDS = "expat glib-2.0 virtual/libintl"
+
+
+FILESPATH = "${FILE_DIRNAME}/dbus-0.6x:${FILE_DIRNAME}/dbus"
 
 SRC_URI = "http://freedesktop.org/software/dbus/releases/dbus-${PV}.tar.gz \
 	   file://cross.patch;patch=1 \
 	   file://tmpdir.patch;patch=1 \
 	   file://dbus-1.init \
 	   file://no-examples.patch;patch=1 \
+	   file://fix-segfault.patch;patch=1 \
 	   ${SRC_URI_EXTRA}"
 
 inherit autotools pkgconfig update-rc.d gettext

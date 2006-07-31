@@ -1,5 +1,5 @@
 LICENSE = MIT
-PR = "r17"
+PR = "r18"
 
 IMAGE_BASENAME = "unslung"
 
@@ -80,6 +80,21 @@ unslung_clean_image () {
 	rm -f ${IMAGE_ROOTFS}/usr/bin/locate
 	rm -f ${IMAGE_ROOTFS}/usr/bin/updatedb
 	rm -f ${IMAGE_ROOTFS}/usr/bin/xargs
+
+	# FIXME: change made 24 Jul 2006 by the OE folks changes the "strip"
+	# behavior to create an extra file named <filename>.dbg containing
+	# the stripped symbols.  These dbg files are supposed to be packaged
+	# separately by the standard bb routines, but for some reason this
+	# does not alway occur.  This extremely ugly step is to remove the
+	# dbg cruft from the rootfs if any are left in the obvious locations.
+	# Once someone figures out why and what the right way is to fix this,
+	# this code should be removed.
+
+	rm -f ${IMAGE_ROOTFS}/bin/*.dbg
+	rm -f ${IMAGE_ROOTFS}/sbin/*.dbg
+	rm -f ${IMAGE_ROOTFS}/usr/bin/*.dbg
+	rm -f ${IMAGE_ROOTFS}/usr/sbin/*.dbg
+	rm -f ${IMAGE_ROOTFS}/lib/*.dbg
 }
 
 python () {

@@ -6,7 +6,8 @@ PRIORITY = "optional"
 LICENSE = "XFree86"
 
 DEPENDS = "libxcb xproto xextproto libxau xtrans libxdmcp xcmiscproto xf86bigfontproto kbproto inputproto bigreqsproto util-macros"
-PROVIDES = "virtual/x11"
+PROVIDES = "virtual/libx11"
+RPROVIDES = "virtual/libx11"
 
 FILES_${PN} += "${datadir}/X11/XKeysymDB ${datadir}/X11/XErrorDB"
 FILES_${PN}-locale += "${datadir}/X11/locale"

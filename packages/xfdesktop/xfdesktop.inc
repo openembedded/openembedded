@@ -4,7 +4,7 @@
 
 DESCRIPTION="xfce4 Desktop Background Manager"
 SECTION = "x11/base"
-DEPENDS = "virtual/x11 libxfcegui4 libxfce4mcs libxml2"
+DEPENDS = "virtual/libx11 libxfcegui4 libxfce4mcs libxml2"
 
 inherit xfce
 PACKAGES += "xfdesktop-backdrops ${PN}-mcs-plugins"

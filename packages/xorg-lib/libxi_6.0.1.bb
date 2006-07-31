@@ -1,7 +1,7 @@
 DESCRIPTION = "X Input Extension library"
 LICENSE = "MIT-X"
 SECTION = "x11/libs"
-DEPENDS = "xproto virtual/x11 xextensions"
+DEPENDS = "xproto virtual/libx11 xextensions"
 PR = "r1"
 
 SRC_URI = "${XLIBS_MIRROR}/libXi-${PV}.tar.bz2 \

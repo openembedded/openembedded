@@ -7,9 +7,10 @@ SRC_URI = "http://freedesktop.org/fontconfig/release/fontconfig-${PV}.tar.gz \
            file://fc-glyphname.patch;patch=1 \
            file://fc-lang.patch;patch=1 \
 	   file://local.conf"
-PR = "r7"
+PR = "r8"
 
-PACKAGES =+ "fontconfig-utils "
+PACKAGES =+ "fontconfig-utils-dbg fontconfig-utils "
+FILES_fontconfig-utils-dbg = "${bindir}/*.dbg"
 FILES_fontconfig-utils = "${bindir}/*"
 
 # Work around past breakage in debian.bbclass

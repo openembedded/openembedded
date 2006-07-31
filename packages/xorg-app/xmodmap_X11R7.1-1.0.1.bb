@@ -4,5 +4,5 @@ DESCRIPTION = "utility for modifying keymaps and pointer button mappings in X"
 MAINTAINER = "Rene Wagner <rw@handhelds.org>"
 LICENSE = "MIT"
 
-DEPENDS += " virtual/x11"
+DEPENDS += " virtual/libx11"
 

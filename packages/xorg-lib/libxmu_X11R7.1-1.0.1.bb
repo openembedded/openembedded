@@ -3,7 +3,7 @@ include xorg-lib-common.inc
 DESCRIPTION = "X Window System miscellaneous utility library"
 PRIORITY = "optional"
 
-DEPENDS += " libxt libxext xextproto virtual/x11"
+DEPENDS += " libxt libxext xextproto virtual/libx11"
 PROVIDES = "xmu"
 
 XORG_PN = "libXmu"

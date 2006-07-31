@@ -2,5 +2,5 @@ include xorg-app-common.inc
 
 #DESCRIPTION = ""
 
-DEPENDS += " virtual/x11 libfs"
+DEPENDS += " virtual/libx11 libfs"
 

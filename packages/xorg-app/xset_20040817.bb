@@ -5,7 +5,7 @@ FIXEDSRCDATE = "${@bb.data.getVar('FILE', d, 1).split('_')[-1].split('.')[0]}"
 PV = "0.0+cvs${FIXEDSRCDATE}"
 PR = "r1"
 
-DEPENDS = "virtual/x11 libxext xextensions libxmu"
+DEPENDS = "virtual/libx11 libxext xextensions libxmu"
 
 CFLAGS += "-D_GNU_SOURCE"
 

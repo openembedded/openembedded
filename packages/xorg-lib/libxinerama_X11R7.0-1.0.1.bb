@@ -3,7 +3,7 @@ include xorg-lib-common.inc
 DESCRIPTION = "Xinerama library"
 PRIORITY = "optional"
 
-DEPENDS += " virtual/x11 libxext xextproto xineramaproto"
+DEPENDS += " virtual/libx11 libxext xextproto xineramaproto"
 PROVIDES = "xinerama"
 
 XORG_PN = "libXinerama"

@@ -26,6 +26,8 @@ do_configure() {
 
 do_compile_prepend() {
 	${BUILD_CC} -o objs/apinames src/tools/apinames.c
+	mkdir -p ${STAGING_LIBDIR}/.libs
+	cp ${STAGING_LIBDIR}/libz* ${STAGING_LIBDIR}/.libs/
 }
 
 do_stage() {

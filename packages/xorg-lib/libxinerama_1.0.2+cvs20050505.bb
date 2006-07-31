@@ -3,7 +3,7 @@ LICENSE = "MIT"
 SECTION = "x11/libs"
 PRIORITY = "optional"
 MAINTAINER = "Phil Blundell <pb@handhelds.org>"
-DEPENDS = "panoramixext xproto virtual/x11 libxext"
+DEPENDS = "panoramixext xproto virtual/libx11 libxext"
 PROVIDES = "xinerama"
 
 SRC_URI = "${FREEDESKTOP_CVS}/xlibs;module=Xinerama;date=20050505"

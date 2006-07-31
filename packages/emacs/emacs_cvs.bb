@@ -7,23 +7,29 @@ SECTION = "editor"
 DEPENDS = "libx11"
 # and it needs to run some generated binaries..
 DEPENDS += "qemu-native"
-PR = "r2"
+#NOTE: I have found that this only works with qemu-0.8.0. If I use 0.8.1 or 0.8.2
+# the build gets hung up on compiling certain .el files
+
+PR = "r5"
 
 SRC_URI = "cvs://anoncvs:anonymous@cvs.savannah.gnu.org/sources/emacs;module=emacs \
            file://use-qemu.patch;patch=1"
-#           http://fabrice.bellard.free.fr/qemu/qemu-gnemul-0.5.3.tar.gz"
 S = "${WORKDIR}/emacs"
 
 inherit autotools
 
-#EXTRA_OECONF = "--without-x"
+PACKAGES = "${PN}-el ${PN}-dbg ${PN} ${PN}-doc ${PN}-dev ${PN}-locale"
 
-#QEMU = "/usr/bin/qemu-arm -L ${WORKDIR}/usr/local/gnemul/qemu-arm -L ${STAGING_DIR}/${TARGET_SYS}"
+FILES_emacs-el = "${datadir}/emacs/22.0.50/*/*.el.gz \
+                  ${datadir}/emacs/22.0.50/*/*/*.el.gz"
+
 QEMU = "qemu-arm -L ${STAGING_DIR}/${TARGET_SYS}"
 
 LDFLAGS += "-L${CROSS_DIR}/${TARGET_SYS}/lib"
 
-do_compile_prepend() {
+do_bootstrap() {
+    cp "${CROSS_DIR}/${TARGET_SYS}/lib/libgcc_s.so.1" "${S}"
+    export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:${S}"
     export QEMU="${QEMU}"
 
     sed -i 's:/usr/lib:${STAGING_LIBDIR}:g' ${S}/src/s/gnu-linux.h
@@ -31,4 +37,12 @@ do_compile_prepend() {
 
     cd "${S}"
     make bootstrap
+}
+
+addtask bootstrap before do_compile after do_configure
+
+do_compile_prepend() {
+    cp "${CROSS_DIR}/${TARGET_SYS}/lib/libgcc_s.so.1" "${S}"
+    export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:${S}"
+    export QEMU="${QEMU}"
 }

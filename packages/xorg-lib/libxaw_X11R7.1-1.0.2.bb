@@ -2,7 +2,7 @@ include xorg-lib-common.inc
 
 DESCRIPTION = "Xaw is the X Athena Widget Set."
 
-DEPENDS += " xproto virtual/x11 libxext xextproto libxt libxmu libxpm libxp printproto libxau"
+DEPENDS += " xproto virtual/libx11 libxext xextproto libxt libxmu libxpm libxp printproto libxau"
 PROVIDES = "xaw"
 
 XORG_PN = "libXaw"

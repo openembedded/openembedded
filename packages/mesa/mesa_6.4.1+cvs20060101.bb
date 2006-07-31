@@ -10,7 +10,7 @@ S = "${WORKDIR}/Mesa"
 LICENSE = "LGPL"
 
 RDEPENDS = "expat" 
-DEPENDS = "makedepend-native xf86vidmodeproto glproto virtual/x11 libxext libxxf86vm libxi libxmu libice"
+DEPENDS = "makedepend-native xf86vidmodeproto glproto virtual/libx11 libxext libxxf86vm libxi libxmu libice"
 
 # gcc-3.4 blows up in gtktext with -frename-registers on arm-linux
 CXXFLAGS := "${@'${CXXFLAGS}'.replace('-frename-registers', '')}"

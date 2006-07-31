@@ -2,7 +2,7 @@ include xorg-lib-common.inc
 
 DESCRIPTION = "X print extension library."
 
-DEPENDS += " virtual/x11 libxext xextproto libxau printproto"
+DEPENDS += " virtual/libx11 libxext xextproto libxau printproto"
 
 XORG_PN = "libXp"
 

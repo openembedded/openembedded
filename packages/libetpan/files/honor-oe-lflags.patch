@@ -1,6 +1,11 @@
---- libetpan-0.45/configure.in.orig	2006-05-09 09:48:36.000000000 +0100
-+++ libetpan-0.45/configure.in	2006-05-09 09:48:55.000000000 +0100
-@@ -350,7 +350,7 @@
+
+#
+# Signed off by Michael 'Mickey' Lauer <mickey@Vanille.de>
+#
+
+--- libetpan-0.46/configure.in~honor-oe-lflags
++++ libetpan-0.46/configure.in
+@@ -361,7 +361,7 @@
        LDFLAGS="-$flag $LDFLAGS"
        AC_TRY_LINK([], [pthread_create();], 
                        [pthflag=yes; checkpthread=no], 

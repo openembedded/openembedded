@@ -9,7 +9,6 @@ PR = "r0"
 DEPENDS = "python-native"
 
 SRC_URI = "http://freedesktop.org/software/dbus/releases/dbus-python-${PV}.tar.gz \
-	   file://cross.patch;patch=1 \
-	   file://dbus-python-0.70-fix-binary-modules-dir.patch;patch=1"
+	   file://cross.patch;patch=1"
 
 inherit distutils

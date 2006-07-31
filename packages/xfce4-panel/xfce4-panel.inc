@@ -4,7 +4,7 @@
 
 DESCRIPTION = "XFCE4 Panel"
 SECTION = "x11"
-DEPENDS = "startup-notification virtual/x11 libxfcegui4 libxfce4mcs xfce-mcs-manager libxml2"
+DEPENDS = "startup-notification virtual/libx11 libxfcegui4 libxfce4mcs xfce-mcs-manager libxml2"
 
 inherit pkgconfig xfce
 

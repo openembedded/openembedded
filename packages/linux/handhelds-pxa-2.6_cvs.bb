@@ -25,12 +25,17 @@ ALLOW_EMPTY_ipaq_pxa270 = 1
 K_MAJOR = "2"
 K_MINOR = "6"
 K_MICRO = "16"
-HHV     = "4"
+HHV     = "5"
 #
 
 KERNEL_PRIORITY = "${@'%d' % (int(bb.data.getVar('K_MAJOR',d,1)) * 100000000 + int(bb.data.getVar('K_MINOR',d,1)) * 1000000 + int(bb.data.getVar('K_MICRO',d,1)) * 10000 + float(bb.data.getVar('HHV',d,1)))}"
 do_configure() {
-        rm -f ${S}/.config
+
+	if [ `grep EXTRAVERSION Makefile | grep hh | awk '{print $3}' | sed s/-hh//` != ${HHV} ]; then
+        	die "-hh version mismatch"
+	fi
+
+	rm -f ${S}/.config
 
         if [ ! -e ${WORKDIR}/defconfig ]; then
                 die "No default configuration for ${MACHINE} available."
@@ -56,6 +61,7 @@ do_deploy() {
         install -d ${DEPLOY_DIR_IMAGE}
         install -m 0644 arch/${ARCH}/boot/${KERNEL_IMAGETYPE} ${DEPLOY_DIR_IMAGE}/${KERNEL_IMAGETYPE}-${PV}-${MACHINE}-${DATETIME}
 }
+
 
 do_deploy[dirs] = "${S}"
 
