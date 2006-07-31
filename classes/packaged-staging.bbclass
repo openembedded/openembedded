@@ -14,8 +14,8 @@
 
 # TODO:
 # * also make packages for CROSSDIR
-# * rebuild package-index each run for regular packages to pull in the Depends:
 # * also build a feed for native and cross packages 
+# * make package detection a bit smarter (search for compatible archs)
 
 # Summary:
 # This class will have two modes of operation:
@@ -31,6 +31,8 @@ PSTAGE_PKGNAME 		= "staging-${PN}_${PV}-${PR}_${PACKAGE_ARCH}.ipk"
 
 SPAWNFILE 		= "${STAGING_DIR}/pkgmaps/${P}-${PR}.spawn"
 SPAWNIPK                = ${spawn}
+
+STAGING_BASEDIR		= "${STAGING_LIBDIR}/.."
 
 do_clean_append() {
         """clear the build and temp directories"""
@@ -49,10 +51,10 @@ if [ -e ${TMPDIR}/moved-staging ]; then
 	rm -rf ${STAGING_DIR} && ${TMPDIR}/pstage ${STAGING_DIR} && rm ${TMPDIR}/moved-staging
 fi
 
-if [ -e ${STAGING_DIR} ]; then
+if [ -e ${STAGING_BASEDIR} ]; then
 	echo
 else
-	mkdir -p ${STAGING_DIR}
+	mkdir -p ${STAGING_BASEDIR}
 fi
 
 if [ -e ${DEPLOY_DIR_PSTAGE} ]; then
@@ -63,11 +65,11 @@ fi
 
 
 
-if [ -e ${STAGING_DIR}/usr ]; then
-        oenote "${STAGING_DIR}/usr already present, leaving it alone"
+if [ -e ${STAGING_BASEDIR}/usr ]; then
+        oenote "${STAGING_BASEDIR}/usr already present, leaving it alone"
 else
-	oenote "${STAGING_DIR}/usr not present, symlinking it"
-	ln -s ${STAGING_DIR}/ ${STAGING_DIR}/usr
+	oenote "${STAGING_BASEDIR}/usr not present, symlinking it"
+	ln -s ${STAGING_BASEDIR}/ ${STAGING_BASEDIR}/usr
 fi
 
 #assemble appropriate ipkg.conf
@@ -84,16 +86,16 @@ ipkgarchs="all any noarch ${TARGET_ARCH} ${IPKG_ARCHS} ${IPKG_EXTRA_ARCHS} ${MAC
 echo "src oe file:${DEPLOY_DIR_IPK}" >> ${DEPLOY_DIR_PSTAGE}/ipkg.conf 
 export OLD_PWD=`pwd`
 cd ${DEPLOY_DIR_IPK} && ipkg-make-index -p Packages . ; cd ${OLD_PWD}
-${PSTAGE_UPDATE_CMD} ${STAGING_DIR}
+${PSTAGE_UPDATE_CMD} ${STAGING_BASEDIR}
 
 #blacklist packages poking in staging *and* cross
 if [ ${PN} != "linux-libc-headers" ] ; then
 	#check for generated packages
 	if [ -e ${SPAWNFILE} ]; then
         	oenote "List of spawned packages found: ${P}.spawn"
-        	for spawn in `cat ${SPAWNFILE} | grep -v ${PN}-locale` ; do \
+        	for spawn in `cat ${SPAWNFILE} | grep -v locale` ; do \
 			if [ -e ${DEPLOY_DIR_IPK}/${spawn}* ]; then
-               	 		${PSTAGE_INSTALL_CMD} ${STAGING_DIR} ${spawn}          
+               	 		${PSTAGE_INSTALL_CMD} ${STAGING_BASEDIR} ${spawn}          
 			else
 				oenote "${spawn} not found, probably empty package"
 			fi
