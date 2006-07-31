@@ -37,6 +37,7 @@ HAS_G2C = "no"
 #Set the java bits
 JAVA_arm = ""  
 
+LANGUAGES = "c,c++"
 include gcc3-build.inc
 
 
