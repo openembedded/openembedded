@@ -26,7 +26,7 @@
 DEPLOY_DIR_PSTAGE 	= "${DEPLOY_DIR}/pstage" 
 
 PSTAGE_BUILD_CMD        = "${IPKGBUILDCMD}"
-PSTAGE_INSTALL_CMD      = "ipkg-cl install -f ${DEPLOY_DIR_PSTAGE}/ipkg.conf -o "
+PSTAGE_INSTALL_CMD      = "ipkg-cl install -force-depends -f ${DEPLOY_DIR_PSTAGE}/ipkg.conf -o "
 PSTAGE_UPDATE_CMD	= "ipkg-cl update -f ${DEPLOY_DIR_PSTAGE}/ipkg.conf -o "
 PSTAGE_PKGNAME 		= "staging-${PN}_${PV}-${PR}_${PACKAGE_ARCH}.ipk"
 
