@@ -4,7 +4,7 @@ HOMEPAGE = "http://www.busybox.net"
 LICENSE = "GPL"
 SECTION = "base"
 PRIORITY = "required"
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "http://www.busybox.net/downloads/busybox-${PV}.tar.gz \
            file://defconfig \
@@ -40,6 +40,8 @@ do_configure () {
 do_compile () {
 	unset CFLAGS
 	base_do_compile
+	# Just in case fdisk is compiled in, do not overwrite the Linksys one
+	sed -i -e '/fdisk/d' ${S}/busybox.links
 }
 
 do_install () {
