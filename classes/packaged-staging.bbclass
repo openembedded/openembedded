@@ -91,7 +91,7 @@ if [ ${PN} != "linux-libc-headers" ] ; then
 	if [ -e ${SPAWNFILE} ]; then
         	oenote "List of spawned packages found: ${P}.spawn"
         	for spawn in `cat ${SPAWNFILE} | grep -v locale` ; do \
-			if [ -e ${DEPLOY_DIR_IPK}/${spawn}* ]; then
+			if [ -e ${DEPLOY_DIR_IPK}/${spawn}_* ]; then
                	 		${PSTAGE_INSTALL_CMD} ${STAGING_BASEDIR} ${spawn}          
 			else
 				oenote "${spawn} not found, probably empty package"
