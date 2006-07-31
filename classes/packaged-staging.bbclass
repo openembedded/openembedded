@@ -16,6 +16,7 @@
 # * also make packages for CROSSDIR
 # * also build a feed for native and cross packages 
 # * make package detection a bit smarter (search for compatible archs)
+# * make do_clean clean staging as well
 
 # Summary:
 # This class will have two modes of operation:
@@ -51,15 +52,11 @@ if [ -e ${TMPDIR}/moved-staging ]; then
 	rm -rf ${STAGING_DIR} && ${TMPDIR}/pstage ${STAGING_DIR} && rm ${TMPDIR}/moved-staging
 fi
 
-if [ -e ${STAGING_BASEDIR} ]; then
-	echo
-else
+if [ ! -e ${STAGING_BASEDIR} ]; then
 	mkdir -p ${STAGING_BASEDIR}
 fi
 
-if [ -e ${DEPLOY_DIR_PSTAGE} ]; then
-	echo
-else
+if [ ! -e ${DEPLOY_DIR_PSTAGE} ]; then
 	mkdir -p ${DEPLOY_DIR_PSTAGE}
 fi
 
