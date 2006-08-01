@@ -49,8 +49,16 @@ do_stage_prepend() {
 #detect aborted staging attempts
 if [ -e ${TMPDIR}/moved-staging ]; then
         oenote "Detected a moved staging, moving it back"
-	rm -rf ${STAGING_DIR} && ${TMPDIR}/pstage ${STAGING_DIR} && rm ${TMPDIR}/moved-staging
+	rm -rf ${STAGING_DIR} && mv ${TMPDIR}/pstage ${STAGING_DIR} && rm ${TMPDIR}/moved-staging
 fi
+
+#detect aborted staging attempts into cross/
+if [ -e ${TMPDIR}/moved-cross ]; then
+        oenote "Detected a moved cross/, moving it back"
+        rm -rf ${CROSS_DIR} && mv ${TMPDIR}/pcross ${CROSS_DIR} && rm ${TMPDIR}/moved-cross
+fi
+
+
 
 if [ ! -e ${STAGING_BASEDIR} ]; then
 	mkdir -p ${STAGING_BASEDIR}
@@ -117,6 +125,7 @@ if [ ${PN} != "glibc-intermediate" ] ; then
 	fi
 
 	touch ${TMPDIR}/moved-staging
+	touch ${TMPDIR}/moved-cross
 	mv ${STAGING_DIR} ${TMPDIR}/pstage
 
 	mkdir -p ${STAGING_BINDIR}
@@ -150,6 +159,7 @@ if [ ${PN} != "glibc-intermediate" ] ; then
 	#move back stagingdir so we can install packages   
 	mv ${TMPDIR}/pstage ${STAGING_DIR}
 	rm ${TMPDIR}/moved-staging
+	rm ${TMPDIR}/moved-cross
 
 	${PSTAGE_INSTALL_CMD} ${STAGING_DIR}  ${DEPLOY_DIR_PSTAGE}/${PSTAGE_PKGNAME}
 else
