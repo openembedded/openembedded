@@ -3,6 +3,8 @@ MAINTAINER = "Arjan Schrijver <arjan@anymore.nl>"
 SECTION = "kernel"
 LICENSE = "GPL"
 
+PR = "r1"
+
 COMPATIBLE_HOST = "arm.*-linux"
 
 SRC_URI = "ftp://ftp.kernel.org/pub/linux/kernel/v2.6/linux-2.6.17.tar.bz2 \
@@ -14,6 +16,8 @@ SRC_URI = "ftp://ftp.kernel.org/pub/linux/kernel/v2.6/linux-2.6.17.tar.bz2 \
            http://rtpnet.nerim.net/ipaq/patches/2.6.17-1/WIP/h1940_batt.patch;patch=1 \
            http://rtpnet.nerim.net/ipaq/patches/2.6.17-1/WIP/mtd_partition.patch;patch=1 \
            http://anymore.nl/ipaq/usbgadget_fixups.patch;patch=1 \
+           http://anymore.nl/ipaq/udc_usb_gadget_register_driver_fix.patch;patch=1 \
+           http://anymore.nl/ipaq/udc_unbind.patch;patch=1 \
            file://defconfig"
 
 S = "${WORKDIR}/linux-2.6.17"
