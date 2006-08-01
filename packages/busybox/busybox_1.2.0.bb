@@ -12,8 +12,6 @@ SECTION = "base"
 PRIORITY = "required"
 PR = "r1"
 
-DEFAULT_PREFERENCE = "-1"
-
 SRC_URI = "http://www.busybox.net/downloads/busybox-${PV}.tar.gz \
 #	   file://udhcppidfile.patch;patch=1 \
 #	   file://udhcppidfile-breakage.patch;patch=1 \
