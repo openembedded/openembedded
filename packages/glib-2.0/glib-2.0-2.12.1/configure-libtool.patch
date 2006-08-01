@@ -1,0 +1,20 @@
+--- glib-2.12.0/configure.in.orig	2006-07-07 09:21:56.000000000 +0100
++++ glib-2.12.0/configure.in	2006-07-07 09:25:44.000000000 +0100
+@@ -1169,7 +1169,7 @@
+   dnl No use for this on Win32
+   G_MODULE_LDFLAGS=
+ else
+-  G_MODULE_LDFLAGS=`(./libtool --config; echo eval echo \\$export_dynamic_flag_spec) | sh`
++  G_MODULE_LDFLAGS=`(./$host_alias-libtool --config; echo eval echo \\$export_dynamic_flag_spec) | sh`
+ fi
+ dnl G_MODULE_IMPL= don't reset, so cmd-line can override
+ G_MODULE_NEED_USCORE=0
+@@ -1234,7 +1234,7 @@
+ 	LDFLAGS="$LDFLAGS $G_MODULE_LDFLAGS"
+ dnl *** check for OSF1/5.0 RTLD_GLOBAL brokenness
+ 	echo "void glib_plugin_test(void) { }" > plugin.c
+-	${SHELL} ./libtool --mode=compile ${CC} -shared \
++	${SHELL} ./$host_alias-libtool --mode=compile ${CC} -shared \
+ 		-export-dynamic -o plugin.o plugin.c 2>&1 >/dev/null
+ 	AC_CACHE_CHECK([for RTLD_GLOBAL brokenness],
+ 		glib_cv_rtldglobal_broken,[
