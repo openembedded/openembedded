@@ -29,6 +29,7 @@ PSTAGE_BUILD_CMD        = "${IPKGBUILDCMD}"
 PSTAGE_INSTALL_CMD      = "ipkg-cl install -force-depends -f ${DEPLOY_DIR_PSTAGE}/ipkg.conf -o "
 PSTAGE_UPDATE_CMD	= "ipkg-cl update -f ${DEPLOY_DIR_PSTAGE}/ipkg.conf -o "
 PSTAGE_PKGNAME 		= "staging-${PN}_${PV}-${PR}_${PACKAGE_ARCH}.ipk"
+PCROSS_PKGNAME		= "cross-${PN}_${PV}-${PR}_${BUILD_ARCH}.ipk"
 
 SPAWNFILE 		= "${STAGING_DIR}/pkgmaps/${P}-${PR}.spawn"
 SPAWNIPK                = ${spawn}
@@ -68,7 +69,9 @@ if [ ! -e ${DEPLOY_DIR_PSTAGE} ]; then
 	mkdir -p ${DEPLOY_DIR_PSTAGE}
 fi
 
-
+if [ ! -e ${CROSS_DIR} ]; then
+        mkdir -p ${CROSS_DIR}
+fi
 
 if [ -e ${STAGING_BASEDIR}/usr ]; then
         oenote "${STAGING_BASEDIR}/usr already present, leaving it alone"
@@ -82,7 +85,7 @@ if [ -e ${DEPLOY_DIR_PSTAGE}/ipkg.conf ]; then
         rm ${DEPLOY_DIR_PSTAGE}/ipkg.conf
 fi
 
-ipkgarchs="all any noarch ${TARGET_ARCH} ${IPKG_ARCHS} ${IPKG_EXTRA_ARCHS} ${MACHINE}"
+ipkgarchs="${BUILD_ARCH} all any noarch ${TARGET_ARCH} ${IPKG_ARCHS} ${IPKG_EXTRA_ARCHS} ${MACHINE}"
     priority=1
     for arch in $ipkgarchs; do
       echo "arch $arch $priority" >> ${DEPLOY_DIR_PSTAGE}/ipkg.conf
@@ -90,7 +93,7 @@ ipkgarchs="all any noarch ${TARGET_ARCH} ${IPKG_ARCHS} ${IPKG_EXTRA_ARCHS} ${MAC
     done
 echo "src oe file:${DEPLOY_DIR_IPK}" >> ${DEPLOY_DIR_PSTAGE}/ipkg.conf 
 export OLD_PWD=`pwd`
-cd ${DEPLOY_DIR_IPK} && ipkg-make-index -p Packages . ; cd ${OLD_PWD}
+cd ${DEPLOY_DIR_IPK} && rm *${BUILD_ARCH}.ipk -f ; ipkg-make-index -p Packages . ; cd ${OLD_PWD}
 ${PSTAGE_UPDATE_CMD} ${STAGING_BASEDIR}
 
 #blacklist packages poking in staging *and* cross
@@ -124,9 +127,16 @@ if [ ${PN} != "glibc-intermediate" ] ; then
 		exit 0      
 	fi
 
+        if [ -e ${DEPLOY_DIR_PSTAGE}/${PCROSS_PKGNAME} ]; then
+                oenote "Cross stuff already packaged, using that instead"
+                ${PSTAGE_INSTALL_CMD} ${CROSS_DIR}  ${DEPLOY_DIR_PSTAGE}/${PCROSS_PKGNAME}
+                exit 0
+        fi
+
 	touch ${TMPDIR}/moved-staging
 	touch ${TMPDIR}/moved-cross
 	mv ${STAGING_DIR} ${TMPDIR}/pstage
+	mv ${CROSS_DIR} ${TMPDIR}/pcross
 
 	mkdir -p ${STAGING_BINDIR}
 	mkdir -p ${STAGING_LIBDIR}
@@ -141,7 +151,10 @@ do_stage_append() {
 
 if [ ${PN} != "glibc-intermediate" ] ; then
 	mkdir -p ${DEPLOY_DIR_PSTAGE}
+
+	#make a package for staging
 	mkdir -p ${STAGING_DIR}/CONTROL
+
 	echo "Package: staging-${PN}"           >  ${STAGING_DIR}/CONTROL/control
 	echo "Version: ${PV}-${PR}"             >> ${STAGING_DIR}/CONTROL/control
 	echo "Description: ${DESCRIPTION}"      >> ${STAGING_DIR}/CONTROL/control
@@ -151,17 +164,34 @@ if [ ${PN} != "glibc-intermediate" ] ; then
 	echo "Architecture: ${PACKAGE_ARCH}"    >> ${STAGING_DIR}/CONTROL/control
 	echo "Source: ${SRC_URI}"               >> ${STAGING_DIR}/CONTROL/control
 
-	mkdir -p ${DEPLOY_DIR_PSTAGE}
+        ${PSTAGE_BUILD_CMD} ${STAGING_DIR} ${DEPLOY_DIR_PSTAGE}
+        rm -rf ${STAGING_DIR}
 
-	${PSTAGE_BUILD_CMD} ${STAGING_DIR} ${DEPLOY_DIR_PSTAGE}
 
-	rm -rf ${STAGING_DIR}
+	#make a package for cross
+        mkdir -p ${CROSS_DIR}/CONTROL
+
+        echo "Package: cross-${PN}"           	>  ${STAGING_DIR}/CONTROL/control
+        echo "Version: ${PV}-${PR}"             >> ${STAGING_DIR}/CONTROL/control
+        echo "Description: ${DESCRIPTION}"      >> ${STAGING_DIR}/CONTROL/control
+        echo "Section: ${SECTION}"              >> ${STAGING_DIR}/CONTROL/control
+        echo "Priority: Optional"               >> ${STAGING_DIR}/CONTROL/control
+        echo "Maintainer: ${MAINTAINER}"        >> ${STAGING_DIR}/CONTROL/control
+        echo "Architecture: ${BUILD_ARCH}"    	>> ${STAGING_DIR}/CONTROL/control
+        echo "Source: ${SRC_URI}"               >> ${STAGING_DIR}/CONTROL/control
+	
+	${PSTAGE_BUILD_CMD} ${CROSS_DIR} ${DEPLOY_DIR_PSTAGE}
+	rm -rf ${CROSS_DIR}
+
+
 	#move back stagingdir so we can install packages   
 	mv ${TMPDIR}/pstage ${STAGING_DIR}
+	mv ${TMPDIR}/pcross ${CROSS_DIR}
 	rm ${TMPDIR}/moved-staging
 	rm ${TMPDIR}/moved-cross
 
 	${PSTAGE_INSTALL_CMD} ${STAGING_DIR}  ${DEPLOY_DIR_PSTAGE}/${PSTAGE_PKGNAME}
+	${PSTAGE_INSTALL_CMD} ${STAGING_DIR}  ${DEPLOY_DIR_PSTAGE}/${PCROSS_PKGNAME}
 else
 	oenote "Glibc-intermediate detected (again)"
 fi #if !glibc-intermediate
