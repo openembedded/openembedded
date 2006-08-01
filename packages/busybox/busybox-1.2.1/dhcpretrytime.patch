@@ -1,0 +1,85 @@
+
+#
+# Patch managed by http://www.holgerschurig.de/patcher.html
+#
+
+Index: busybox-1.1.0/networking/udhcp/dhcpc.c
+===================================================================
+--- busybox-1.1.0.orig/networking/udhcp/dhcpc.c	2006-03-14 17:19:31.000000000 +0100
++++ busybox-1.1.0/networking/udhcp/dhcpc.c	2006-03-14 17:20:45.000000000 +0100
+@@ -48,6 +48,7 @@
+ static unsigned long requested_ip; /* = 0 */
+ static unsigned long server_addr;
+ static unsigned long timeout;
++static unsigned long retrytime = 60;
+ static int packet_num; /* = 0 */
+ static int fd = -1;
+ 
+@@ -95,6 +96,7 @@
+ "  -r, --request=IP                IP address to request (default: none)\n"
+ "  -s, --script=file               Run file at dhcp events (default:\n"
+ "                                  " DEFAULT_SCRIPT ")\n"
++"  -t, --retrytime                 time to retry DHCP request (default 60s)\n")
+ "  -v, --version                   Display version\n"
+ 	);
+ 	exit(0);
+@@ -214,6 +216,7 @@
+ 		{"quit",	no_argument,		0, 'q'},
+ 		{"request",	required_argument,	0, 'r'},
+ 		{"script",	required_argument,	0, 's'},
++		{"retrytime",	required_argument,	0, 't'},
+ 		{"version",	no_argument,		0, 'v'},
+ 		{0, 0, 0, 0}
+ 	};
+@@ -229,7 +232,7 @@
+ 	/* get options */
+ 	while (1) {
+ 		int option_index = 0;
+-		c = getopt_long(argc, argv, "c:CV:fbH:h:F:i:np:qr:s:v", arg_options, &option_index);
++  		c = getopt_long(argc, argv, "c:CV:fbH:h:F:i:np:qr:s:t:v", arg_options, &option_index);
+ 		if (c == -1) break;
+ 
+ 		switch (c) {
+@@ -305,6 +308,9 @@
+ 		case 's':
+ 			client_config.script = optarg;
+ 			break;
++		case 't':
++			retrytime = atol(optarg);
++			break;
+ 		case 'v':
+ 			printf("udhcpcd, version %s\n\n", VERSION);
+ 			return 0;
+@@ -394,7 +400,7 @@
+ 				  	}
+ 					/* wait to try again */
+ 					packet_num = 0;
+-					timeout = now + 60;
++					timeout = now + retrytime;
+ 				}
+ 				break;
+ 			case RENEW_REQUESTED:
+Index: busybox-1.1.0/networking/ifupdown.c
+===================================================================
+--- busybox-1.1.0.orig/networking/ifupdown.c	2006-01-11 06:43:51.000000000 +0100
++++ busybox-1.1.0/networking/ifupdown.c	2006-03-14 17:19:41.000000000 +0100
+@@ -506,7 +506,7 @@
+ static int dhcp_up(struct interface_defn_t *ifd, execfn *exec)
+ {
+ 	if (execable("/sbin/udhcpc")) {
+-		return( execute("udhcpc -n -p /var/run/udhcpc.%iface%.pid -i "
++		return( execute("udhcpc -b -p /var/run/udhcpc.%iface%.pid -i "
+ 					"%iface% [[-H %hostname%]] [[-c %clientid%]]", ifd, exec));
+ 	} else if (execable("/sbin/pump")) {
+ 		return( execute("pump -i %iface% [[-h %hostname%]] [[-l %leasehours%]]", ifd, exec));
+@@ -526,8 +526,8 @@
+ 		/* SIGUSR2 forces udhcpc to release the current lease and go inactive,
+ 		 * and SIGTERM causes udhcpc to exit.  Signals are queued and processed
+ 		 * sequentially so we don't need to sleep */
+-		result = execute("kill -USR2 `cat /var/run/udhcpc.%iface%.pid` 2>/dev/null", ifd, exec);
+-		result += execute("kill -TERM `cat /var/run/udhcpc.%iface%.pid` 2>/dev/null", ifd, exec);
++		result = execute("kill -USR2 `cat /var/run/udhcpc.%iface%.pid 2>/dev/null` 2>/dev/null", ifd, exec);
++		result += execute("kill -TERM `cat /var/run/udhcpc.%iface%.pid 2>/dev/null` 2>/dev/null", ifd, exec);
+ 	} else if (execable("/sbin/pump")) {
+ 		result = execute("pump -i %iface% -k", ifd, exec);
+ 	} else if (execable("/sbin/dhclient")) {
