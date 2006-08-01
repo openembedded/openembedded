@@ -1,7 +1,7 @@
 DESCRIPTION = "Freetype font rendering library"
 SECTION = "libs"
 LICENSE = "freetype"
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/freetype/freetype-${PV}.tar.bz2 \
 	   file://configure.patch;patch=1 \
@@ -14,6 +14,7 @@ DEFAULT_PREFERENCE = "-1"
 
 LIBTOOL = "${S}/builds/unix/${HOST_SYS}-libtool"
 EXTRA_OEMAKE = "'LIBTOOL=${LIBTOOL}'"
+EXTRA_OECONF = "--without-zlib"
 
 do_configure() {
 	cd builds/unix
@@ -26,8 +27,6 @@ do_configure() {
 
 do_compile_prepend() {
 	${BUILD_CC} -o objs/apinames src/tools/apinames.c
-	mkdir -p ${STAGING_LIBDIR}/.libs
-	cp ${STAGING_LIBDIR}/libz* ${STAGING_LIBDIR}/.libs/
 }
 
 do_stage() {
