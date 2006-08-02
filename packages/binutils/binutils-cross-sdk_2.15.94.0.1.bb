@@ -1,3 +1,4 @@
+PR = "r1"
 SECTION = "devel"
 include binutils_${PV}.bb
 inherit sdk
@@ -8,4 +9,13 @@ EXTRA_OECONF = "--with-sysroot=${CROSS_DIR}/${TARGET_SYS} \
 
 do_stage() {
 	:
+}
+
+do_install () {
+        autotools_do_install
+                                                                               
+        # Install the libiberty header
+        install -d ${D}${includedir}
+        install -m 644 ${S}/include/ansidecl.h ${D}${includedir}
+        install -m 644 ${S}/include/libiberty.h ${D}${includedir}
 }
