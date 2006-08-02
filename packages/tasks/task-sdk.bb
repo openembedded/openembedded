@@ -1,5 +1,5 @@
 DESCRIPTION = "SDK packages for Opie and GPE"
-PR = "r3"
+PR = "r4"
 LICENSE = MIT
 ALLOW_EMPTY = "1"
 
@@ -14,11 +14,14 @@ PACKAGES = "\
 RDEPENDS_task-sdk-bare := "\
     glibc \
     glibc-dev \
+    libgcc1 \
     "	
 
 RDEPENDS_task-sdk-base := "\
     glibc \
     glibc-dev \
+    libgcc1 \
+    alsa-dev \
     audiofile-dev \
     bluez-libs-dev \
     dbus-dev \
@@ -31,6 +34,7 @@ RDEPENDS_task-sdk-base := "\
     ipkg-dev \
     jpeg-dev \
     libapm-dev \
+    libasound2 \
     libdisplaymigration-dev \
     libetpan-dev \
     libgcrypt-dev \
