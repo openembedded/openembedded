@@ -69,10 +69,6 @@ if [ ! -e ${DEPLOY_DIR_PSTAGE} ]; then
 	mkdir -p ${DEPLOY_DIR_PSTAGE}
 fi
 
-if [ ! -e ${CROSS_DIR} ]; then
-        mkdir -p ${CROSS_DIR}
-fi
-
 if [ -e ${STAGING_BASEDIR}/usr ]; then
         oenote "${STAGING_BASEDIR}/usr already present, leaving it alone"
 else
@@ -134,9 +130,12 @@ if [ ${PN} != "glibc-intermediate" ] ; then
         fi
 
 	touch ${TMPDIR}/moved-staging
-	touch ${TMPDIR}/moved-cross
 	mv ${STAGING_DIR} ${TMPDIR}/pstage
-	mv ${CROSS_DIR} ${TMPDIR}/pcross
+
+	if [ -e ${CROSS_DIR} ]; then
+		mv ${CROSS_DIR} ${TMPDIR}/pcross
+		touch ${TMPDIR}/moved-cross
+	fi
 
 	mkdir -p ${STAGING_BINDIR}
 	mkdir -p ${STAGING_LIBDIR}
@@ -169,26 +168,27 @@ if [ ${PN} != "glibc-intermediate" ] ; then
 
 
 	#make a package for cross
-        mkdir -p ${CROSS_DIR}/CONTROL
+	if [ -e ${CROSS_DIR} ]; then
+	        mkdir -p ${CROSS_DIR}/CONTROL
 
-        echo "Package: cross-${PN}"           	>  ${STAGING_DIR}/CONTROL/control
-        echo "Version: ${PV}-${PR}"             >> ${STAGING_DIR}/CONTROL/control
-        echo "Description: ${DESCRIPTION}"      >> ${STAGING_DIR}/CONTROL/control
-        echo "Section: ${SECTION}"              >> ${STAGING_DIR}/CONTROL/control
-        echo "Priority: Optional"               >> ${STAGING_DIR}/CONTROL/control
-        echo "Maintainer: ${MAINTAINER}"        >> ${STAGING_DIR}/CONTROL/control
-        echo "Architecture: ${BUILD_ARCH}"    	>> ${STAGING_DIR}/CONTROL/control
-        echo "Source: ${SRC_URI}"               >> ${STAGING_DIR}/CONTROL/control
+	        echo "Package: cross-${PN}"           	>  ${CROSS_DIR}/CONTROL/control
+	        echo "Version: ${PV}-${PR}"             >> ${CROSS_DIR}/CONTROL/control
+	        echo "Description: ${DESCRIPTION}"      >> ${CROSS_DIR}/CONTROL/control
+	        echo "Section: ${SECTION}"              >> ${CROSS_DIR}/CONTROL/control
+	        echo "Priority: Optional"               >> ${CROSS_DIR}/CONTROL/control
+	        echo "Maintainer: ${MAINTAINER}"        >> ${CROSS_DIR}/CONTROL/control
+	        echo "Architecture: ${BUILD_ARCH}"    	>> ${CROSS_DIR}/CONTROL/control
+	        echo "Source: ${SRC_URI}"               >> ${CROSS_DIR}/CONTROL/control
 	
-	${PSTAGE_BUILD_CMD} ${CROSS_DIR} ${DEPLOY_DIR_PSTAGE}
-	rm -rf ${CROSS_DIR}
-
+		${PSTAGE_BUILD_CMD} ${CROSS_DIR} ${DEPLOY_DIR_PSTAGE}
+		rm -rf ${CROSS_DIR}
+	        mv ${TMPDIR}/pcross ${CROSS_DIR}
+		rm ${TMPDIR}/moved-cross
+	fi # if -e CROSS_DIR
 
 	#move back stagingdir so we can install packages   
 	mv ${TMPDIR}/pstage ${STAGING_DIR}
-	mv ${TMPDIR}/pcross ${CROSS_DIR}
 	rm ${TMPDIR}/moved-staging
-	rm ${TMPDIR}/moved-cross
 
 	${PSTAGE_INSTALL_CMD} ${STAGING_DIR}  ${DEPLOY_DIR_PSTAGE}/${PSTAGE_PKGNAME}
 	${PSTAGE_INSTALL_CMD} ${STAGING_DIR}  ${DEPLOY_DIR_PSTAGE}/${PCROSS_PKGNAME}
