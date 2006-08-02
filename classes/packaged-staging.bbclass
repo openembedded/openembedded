@@ -117,17 +117,16 @@ fi #if ${PN}
 
 if [ ${PN} != "glibc-intermediate" ] ; then
 
+        if [ -e ${DEPLOY_DIR_PSTAGE}/${PCROSS_PKGNAME} ]; then
+                oenote "Cross stuff already packaged, using that instead"
+                ${PSTAGE_INSTALL_CMD} ${CROSS_DIR}  ${DEPLOY_DIR_PSTAGE}/${PCROSS_PKGNAME}
+        fi
+
 	if [ -e ${DEPLOY_DIR_PSTAGE}/${PSTAGE_PKGNAME} ]; then
 		oenote "Staging stuff already packaged, using that instead"
 		${PSTAGE_INSTALL_CMD} ${STAGING_DIR}  ${DEPLOY_DIR_PSTAGE}/${PSTAGE_PKGNAME}
 		exit 0      
 	fi
-
-        if [ -e ${DEPLOY_DIR_PSTAGE}/${PCROSS_PKGNAME} ]; then
-                oenote "Cross stuff already packaged, using that instead"
-                ${PSTAGE_INSTALL_CMD} ${CROSS_DIR}  ${DEPLOY_DIR_PSTAGE}/${PCROSS_PKGNAME}
-                exit 0
-        fi
 
 	touch ${TMPDIR}/moved-staging
 	mv ${STAGING_DIR} ${TMPDIR}/pstage
@@ -168,7 +167,7 @@ if [ ${PN} != "glibc-intermediate" ] ; then
 
 
 	#make a package for cross
-	if [ -e ${CROSS_DIR} ]; then
+	if [ -e ${CROSS_DIR} ] ; then
 	        mkdir -p ${CROSS_DIR}/CONTROL
 
 	        echo "Package: cross-${PN}"           	>  ${CROSS_DIR}/CONTROL/control
@@ -184,6 +183,8 @@ if [ ${PN} != "glibc-intermediate" ] ; then
 		rm -rf ${CROSS_DIR}
 	        mv ${TMPDIR}/pcross ${CROSS_DIR}
 		rm ${TMPDIR}/moved-cross
+
+		${PSTAGE_INSTALL_CMD} ${STAGING_DIR}  ${DEPLOY_DIR_PSTAGE}/${PCROSS_PKGNAME}
 	fi # if -e CROSS_DIR
 
 	#move back stagingdir so we can install packages   
@@ -191,7 +192,6 @@ if [ ${PN} != "glibc-intermediate" ] ; then
 	rm ${TMPDIR}/moved-staging
 
 	${PSTAGE_INSTALL_CMD} ${STAGING_DIR}  ${DEPLOY_DIR_PSTAGE}/${PSTAGE_PKGNAME}
-	${PSTAGE_INSTALL_CMD} ${STAGING_DIR}  ${DEPLOY_DIR_PSTAGE}/${PCROSS_PKGNAME}
 else
 	oenote "Glibc-intermediate detected (again)"
 fi #if !glibc-intermediate
