@@ -180,9 +180,12 @@ if [ ${PN} != "glibc-intermediate" ] ; then
 	        echo "Source: ${SRC_URI}"               >> ${CROSS_DIR}/CONTROL/control
 	
 		${PSTAGE_BUILD_CMD} ${CROSS_DIR} ${DEPLOY_DIR_PSTAGE}
-		rm -rf ${CROSS_DIR}
-	        mv ${TMPDIR}/pcross ${CROSS_DIR}
-		rm ${TMPDIR}/moved-cross
+
+		if [ -e ${TMPDIR}/pcross ] ; then  
+			rm -rf ${CROSS_DIR}
+		        mv ${TMPDIR}/pcross ${CROSS_DIR}
+			rm ${TMPDIR}/moved-cross
+		fi
 
 		${PSTAGE_INSTALL_CMD} ${STAGING_DIR}  ${DEPLOY_DIR_PSTAGE}/${PCROSS_PKGNAME}
 	fi # if -e CROSS_DIR
