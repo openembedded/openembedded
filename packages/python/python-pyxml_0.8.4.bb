@@ -5,7 +5,7 @@ MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 LICENSE = "PSF"
 RDEPENDS = "python-core python-xml python-netclient"
 SRCNAME = "pyxml"
-PV = "0.8.3"
+PR = "ml0"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/pyxml/PyXML-${PV}.tar.gz"
 S = "${WORKDIR}/PyXML-${PV}"
