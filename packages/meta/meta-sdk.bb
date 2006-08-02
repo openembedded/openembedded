@@ -5,7 +5,7 @@ DEPENDS = "ipkg-native ipkg-utils-native fakeroot-native \
            libidl libsvg-cairo sed-native \
            meta-gpe gstreamer\
            opie-mail"
-PR = "r8"
+PR = "r10"
 
 PACKAGES = ""
 
@@ -19,7 +19,8 @@ IPKG_HOST = "ipkg-cl -f ${SDK_DIR}/ipkg-host.conf -o ${SDK_OUTPUT}"
 IPKG_TARGET = "ipkg-cl -f ${SDK_DIR}/ipkg-target.conf -o ${SDK_OUTPUT}/${prefix}"
 
 HOST_INSTALL = "binutils-cross-sdk gcc-cross-sdk gdb-cross"
-TARGET_INSTALL = "libc6 libc6-dev \
+TARGET_INSTALL = "libc6 libc6-dev libgcc1 \
+alsa-dev \
 compositeext-dev \
 damageext-dev \
 dbus-dev \
@@ -42,17 +43,19 @@ libfreetype-dev \
 libgcrypt-dev \
 libglade-2.0-dev \
 libglib-2.0-dev \
+libgnutls-dev \
 libgpelaunch-dev \
 libgpepimc-dev \
 libgpevtype-dev \
 libgpewidget-dev \
 libgpg-error-dev \
+libhandoff-dev \
 libice-dev \
 libidl-2-dev \
 libipkg-dev \
 libjpeg-dev \
 libmb-dev \
-libmimedir-dev \
+libmimedir-0.3-dev \
 libopenobex-1.0-dev \
 libpcap-dev \
 libpixman-dev \
@@ -65,6 +68,7 @@ libsm-dev \
 libsoundgen-dev \
 libsqlite-dev \
 libstartup-notification-1-dev \
+libsoup-2.2-dev \
 libsvg-cairo-dev \
 libsvg-dev \
 libtododb-dev \
