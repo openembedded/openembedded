@@ -49,7 +49,6 @@ libgpepimc-dev \
 libgpevtype-dev \
 libgpewidget-dev \
 libgpg-error-dev \
-libhandoff-dev \
 libice-dev \
 libidl-2-dev \
 libipkg-dev \
