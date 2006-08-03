@@ -1,4 +1,4 @@
-PV = "0.0+git"
+PV = "1.1.0+git${SRCDATE}"
 DEFAULT_PREFERENCE = "-2"
 
 LICENSE = "MIT"
@@ -26,7 +26,7 @@ SRC_URI = "git://anongit.freedesktop.org/xorg/xserver;protocol=git \
 	file://fbdev-not-fix.patch;patch=1  \
 	file://enable-builtin-fonts.patch;patch=1 \
 	file://optional-xkb.patch;patch=1 \
-	file://disable-xf86-dga-xorgcfg.patch;patch=1 \
+#	file://disable-xf86-dga-xorgcfg.patch;patch=1 \
 	file://enable-tslib.patch;patch=1"
 
 SRC_URI_append_mnci   = " file://onlyfb.patch;patch=1"
@@ -43,5 +43,6 @@ EXTRA_OECONF = "--enable-composite --enable-kdrive \
 		--disable-xorg --disable-xorgcfg \
 		--disable-xkb --disable-xnest --disable-xvfb \
 		--disable-xevie --disable-xprint --disable-xtrap \
+		--disable-dmx \
 		--with-default-font-path=built-ins \
 		ac_cv_file__usr_share_X11_sgml_defs_ent=no"
