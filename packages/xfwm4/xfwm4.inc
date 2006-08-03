@@ -14,6 +14,10 @@ RDEPENDS = "xfwm4-theme-default"
 
 EXTRA_OECONF += " --enable-startup-notification"
 
+do_configure_append() {
+	sed -i s:/usr/include/xfce4::g mcs-plugin/Makefile
+}
+
 PACKAGES_DYNAMIC = "xfwm4-theme-*"
 
 python populate_packages_prepend () {
