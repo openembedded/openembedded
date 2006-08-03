@@ -39,6 +39,7 @@ EXTRA_OECONF = "--enable-composite --enable-kdrive \
 		--disable-dga --disable-dri --disable-xinerama \
 		--disable-xf86misc --disable-xf86vidmode \
 		--disable-xorg --disable-xorgcfg \
+		--disable-dmx \ 
 		--disable-xkb --disable-xnest --disable-xvfb \
 		--disable-xevie --disable-xprint --disable-xtrap \
 		--with-default-font-path=built-ins \
