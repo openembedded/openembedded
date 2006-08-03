@@ -1,4 +1,4 @@
-PV = "1.1.0+git"
+PV = "1.1.0+git${SRCDATE}"
 DEFAULT_PREFERENCE = "-2"
 
 LICENSE = "MIT"
@@ -43,5 +43,6 @@ EXTRA_OECONF = "--enable-composite --enable-kdrive \
 		--disable-xorg --disable-xorgcfg \
 		--disable-xkb --disable-xnest --disable-xvfb \
 		--disable-xevie --disable-xprint --disable-xtrap \
+		--disable-dmx \
 		--with-default-font-path=built-ins \
 		ac_cv_file__usr_share_X11_sgml_defs_ent=no"
