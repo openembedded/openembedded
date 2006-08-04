@@ -1,15 +1,15 @@
-diff -Nur ecore-0.9.9.015~/configure.in ecore-0.9.9.015/configure.in
---- ecore-0.9.9.015~/configure.in	2005-09-26 16:59:23.000000000 -0700
-+++ ecore-0.9.9.015/configure.in	2005-09-26 17:01:02.000000000 -0700
+diff -Nur ecore-0.9.9.032~/configure.in ecore-0.9.9.032/configure.in
+--- ecore-0.9.9.032~/configure.in	2006-08-03 12:12:43.000000000 -0700
++++ ecore-0.9.9.032/configure.in	2006-08-03 12:13:30.000000000 -0700
 @@ -16,7 +16,6 @@
  AC_CHECK_SIZEOF(long, 4)
  AM_ENABLE_SHARED
  AM_PROG_LIBTOOL
 -AC_C___ATTRIBUTE__
- 
- if test "x${bindir}" = 'x${exec_prefix}/bin'; then
-   if test "x${exec_prefix}" = "xNONE"; then
-@@ -262,9 +261,7 @@
+ 							
+ dnl Set PACKAGE_DATA_DIR in config.h.
+ if test "x${prefix}" = "xNONE"; then
+@@ -205,10 +204,8 @@
        AM_CONDITIONAL(BUILD_ECORE_X, true)
        AC_DEFINE(BUILD_ECORE_X, 1, [Build Ecore_X Module])
        have_ecore_x="yes"
@@ -20,3 +20,4 @@ diff -Nur ecore-0.9.9.015~/configure.in ecore-0.9.9.015/configure.in
 +      x_libs="-lX11 -lXext"
        ecore_x_libs="-lecore_x";
      ],[
+       AM_CONDITIONAL(BUILD_ECORE_X, false)
