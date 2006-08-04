@@ -1,5 +1,5 @@
 DESCRIPTION = "SDK packages for Opie and GPE"
-PR = "r4"
+PR = "r5"
 LICENSE = MIT
 ALLOW_EMPTY = "1"
 
@@ -107,6 +107,7 @@ RDEPENDS_task-sdk-x11-ext := "\
 #    libxss-dev \
 
 RDEPENDS_task-sdk-gpe := "\
+    libcontactsdb-dev \
     esound-gpe-dev \
     libeventdb-dev \
     libgpepimc-dev \
