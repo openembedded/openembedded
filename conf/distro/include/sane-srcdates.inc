@@ -1,6 +1,6 @@
 # Lock down some SRCDATEs, see http://svn.o-hand.com/view/poky/trunk/openembedded/conf/distro/poky.conf for the original version 
 
-SRCDATE_gconf-dbus ?= "20060119"
+SRCDATE_gconf-dbus ?= "20060719"
 SRCDATE_gnome-vfs-dbus ?= "20060119"
 SRCDATE_contacts ?= "20060707"
 SRCDATE_dates ?= "20060707"
@@ -26,4 +26,5 @@ SRCDATE_tslib ?= "20051101"
 SRCDATE_libfakekey ?= "20051101"
 SRCDATE_qemu-native ?= "20060526"
 SRCDATE_oprofile ?= "20060214"
+SRCDATE_xcalibrate ?= "20060804"
 SRCDATE_zaurusd ?= "20060628"
