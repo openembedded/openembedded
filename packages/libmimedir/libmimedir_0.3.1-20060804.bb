@@ -2,12 +2,11 @@ DESCRIPTION = "RFC2425 MIME Directory Profile library, supporting vCard and iCal
 SECTION = "libs"
 PRIORITY = "optional"
 LICENSE = "LGPL"
-DEPENDS = "intltool-native"
-PR = "r2"
+DEPENDS = "intltool-native glib-2.0"
+PR = "r0"
+SRCDATE = "20060804"
 #Remove the dash below when 0.3.1 changes in PV
 PV = "0.3.1+cvs-${SRCDATE}"
-
-DEFAULT_PREFERENCE = -1
 
 SRC_URI = "cvs://anonymous@anoncvs.gnome.org/cvs/gnome;module=libmimedir \
            file://mimedir-update.patch;patch=1"
@@ -25,4 +24,3 @@ do_stage() {
 PACKAGES += libmimedir-utils
 FILES_libmimedir-utils = "${bindir}"
 FILES_${PN} = "${libdir}"
-
