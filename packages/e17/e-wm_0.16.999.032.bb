@@ -1,5 +1,5 @@
 DESCRIPTION = "E17 - the Enlightenment Window Mananger"
-DEPENDS = "evas-x11 ecore-x11 edje eet embryo e"
+DEPENDS = "evas-x11 ecore-x11 edje eet embryo"
 LICENSE = "MIT"
 PR = "r3"
 
