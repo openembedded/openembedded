@@ -2,9 +2,11 @@ DESCRIPTION = "Entice is the E17 picture viewer"
 # can also depend on GIMP for editing
 DEPENDS = "edb evas-x11 ecore-x11 edje epsilon esmart-x11"
 LICENSE = "MIT"
-PR = "r1"
+PR = "r2"
 
 inherit e
+
+RDEPENDS += "esmart-x11"
 
 SRC_URI = "${E_CVS};module=e17/apps/entice;date=${PV}"
 S = "${WORKDIR}/entice"
