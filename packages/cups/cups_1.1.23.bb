@@ -4,7 +4,7 @@ LICENSE = "GPL LGPL"
 
 DEPENDS = "openssl jpeg libpng zlib install-native"
 
-PR = "r3"
+PR = "r4"
 
 SRC_URI = "ftp://ftp.easysw.com/pub/cups/${PV}/cups-${PV}-source.tar.bz2 \
            file://strftime_fix.patch;patch=1"
@@ -33,7 +33,9 @@ fakeroot do_install () {
 do_stage () {
 	install -d ${STAGING_INCDIR}/cups
 	install ${S}/cups/*.h ${STAGING_INCDIR}/cups/
+	install ${S}/filter/*.h ${STAGING_INCDIR}/cups/
 	oe_libinstall -C cups -so libcups ${STAGING_LIBDIR}
+	oe_libinstall -C filter -so libcupsimage ${STAGING_LIBDIR}
 }
 
 #package the html for the webgui inside the main packages (~1MB uncompressed)
