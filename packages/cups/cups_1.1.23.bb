@@ -3,12 +3,8 @@ SECTION = "console/utils"
 LICENSE = "GPL LGPL"
 
 DEPENDS = "openssl jpeg libpng zlib install-native"
-#the web interface needs a subset of the docs to function, but we don't package that (yet), so we rrecommend the 7MB docs package
-# NOTE: this only affects the webgui, not the cmdline or apps using cups
-RRECOMMENDS = "cups-doc"
 
-
-PR = "r2"
+PR = "r3"
 
 SRC_URI = "ftp://ftp.easysw.com/pub/cups/${PV}/cups-${PV}-source.tar.bz2 \
            file://strftime_fix.patch;patch=1"
@@ -39,4 +35,13 @@ do_stage () {
 	install ${S}/cups/*.h ${STAGING_INCDIR}/cups/
 	oe_libinstall -C cups -so libcups ${STAGING_LIBDIR}
 }
+
+#package the html for the webgui inside the main packages (~1MB uncompressed)
+FILES_${PN} += "${datadir}/doc/cups/images \
+		${datadir}/doc/cups/*html \
+		${datadir}/doc/cups/*.css \
+		"
+
+
+
 
