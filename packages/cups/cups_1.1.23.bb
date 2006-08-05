@@ -1,9 +1,14 @@
-DEPENDS = "openssl jpeg libpng zlib install-native"
 DESCRIPTION = "An Internet printing system for Unix."
 SECTION = "console/utils"
 LICENSE = "GPL LGPL"
 
-PR = "r1"
+DEPENDS = "openssl jpeg libpng zlib install-native"
+#the web interface needs a subset of the docs to function, but we don't package that (yet), so we rrecommend the 7MB docs package
+# NOTE: this only affects the webgui, not the cmdline or apps using cups
+RRECOMMENDS = "cups-doc"
+
+
+PR = "r2"
 
 SRC_URI = "ftp://ftp.easysw.com/pub/cups/${PV}/cups-${PV}-source.tar.bz2 \
            file://strftime_fix.patch;patch=1"
