@@ -172,7 +172,7 @@ oe_libinstall() {
 		dir=`pwd`
 	fi
 	dotlai=$libname.lai
-	dir=$dir`(cd $dir; find -name "$dotlai") | sed "s/^\.//;s/\/$dotlai\$//;q"`
+	dir=$dir`(cd $dir;find . -name "$dotlai") | sed "s/^\.//;s/\/$dotlai\$//;q"`
 	olddir=`pwd`
 	__runcmd cd $dir
 
