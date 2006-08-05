@@ -1,1 +1,1 @@
-include dnsmasq.inc
+require dnsmasq.inc

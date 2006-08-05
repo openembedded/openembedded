@@ -1,4 +1,4 @@
-include bluez-utils.inc
+require bluez-utils.inc
 
 PR = "r0"
 

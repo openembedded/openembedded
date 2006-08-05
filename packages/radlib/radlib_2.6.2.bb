@@ -1,3 +1,3 @@
-include radlib-common.inc
-include radlib.inc
+require radlib-common.inc
+require radlib.inc
 PR = "r1"

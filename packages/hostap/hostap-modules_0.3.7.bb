@@ -1,4 +1,4 @@
-include hostap-modules.inc
+require hostap-modules.inc
 PR = "r8"
 
 SRC_URI += "file://Makefile.patch;patch=1 \

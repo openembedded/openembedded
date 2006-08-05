@@ -13,7 +13,7 @@ SRC_URI = "http://kernel.org/pub/linux/utils/kernel/hotplug/udev-${PV}.tar.gz \
            file://arm_inotify_fix.patch;patch=1 \
 	   file://mount.blacklist"
 
-include udev.inc
+require udev.inc
 
 INITSCRIPT_PARAMS = "start 03 S ."
 

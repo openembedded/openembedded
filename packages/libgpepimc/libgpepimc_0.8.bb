@@ -1,1 +1,1 @@
-include libgpepimc.inc
+require libgpepimc.inc

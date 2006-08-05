@@ -10,7 +10,7 @@ HOMEPAGE = "http://sourceforge.jp/projects/efont/"
 SRC_URI = "http://download.sourceforge.jp/efont/10087/sazanami-20040629.tar.bz2"
 S = "${WORKDIR}/sazanami-20040629"
 
-include ttf.inc
+require ttf.inc
 
 PACKAGES = "ttf-sazanami-gothic ttf-sazanami-mincho"
 FILES_ttf-sazanami-gothic = "${datadir}/fonts/truetype/sazanami-gothic.ttf \

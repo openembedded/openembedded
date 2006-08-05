@@ -5,7 +5,7 @@ SRC_URI = "http://kernel.org/pub/linux/utils/kernel/hotplug/udev-${PV}.tar.gz \
            file://permissions.rules \
 	   file://init"
 
-include udev.inc
+require udev.inc
 
 PR = "r8"
 UDEV_EXTRAS = "extras/scsi_id/ extras/volume_id/"

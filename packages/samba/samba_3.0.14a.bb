@@ -9,7 +9,7 @@ SRC_URI = "http://us2.samba.org/samba/ftp/stable/samba-${PV}.tar.gz \
 	   "
 S = ${WORKDIR}/${P}/source
 
-include samba.inc
+require samba.inc
 inherit update-rc.d
 
 INITSCRIPT_NAME = "samba"

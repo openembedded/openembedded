@@ -5,7 +5,7 @@ PR = "r3"
 SRC_URI = "cvs://readonly:readonly@cvs.kaffe.org/cvs/kaffe;module=kaffe"
 S = "${WORKDIR}/kaffe"
 
-include kaffe.inc
+require kaffe.inc
 
 inherit native
 

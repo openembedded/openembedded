@@ -1,4 +1,4 @@
-include lua.inc
+require lua.inc
 
 PR = "r2"
 DEPENDS += "readline-native"
@@ -11,5 +11,5 @@ S = "${WORKDIR}/lua-${PV}"
 FILESPATH = "${FILE_DIRNAME}/lua-${PV}:${FILE_DIRNAME}/lua:${FILE_DIRNAME}/files"
 
 inherit native
-include lua-build.inc
+require lua-build.inc
 

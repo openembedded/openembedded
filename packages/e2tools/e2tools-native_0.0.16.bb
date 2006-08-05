@@ -1,5 +1,5 @@
 SECTION = "base"
-include e2tools_${PV}.bb
+require e2tools_${PV}.bb
 inherit native
 
 DEPENDS = "e2fsprogs-libs-native e2fsprogs-native"

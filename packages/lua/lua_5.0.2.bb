@@ -1,4 +1,4 @@
-include lua.inc
+require lua.inc
 
 DEPENDS += "readline"
 PR = "r3"
@@ -10,5 +10,5 @@ SRC_URI = "http://www.lua.org/ftp/lua-${PV}.tar.gz \
 S = "${WORKDIR}/lua-${PV}"
 FILESPATH = "${FILE_DIRNAME}/lua-${PV}:${FILE_DIRNAME}/lua:${FILE_DIRNAME}/files"
 
-include lua-build.inc
+require lua-build.inc
 inherit binconfig

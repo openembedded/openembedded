@@ -1,4 +1,4 @@
-include git.bb
+require git.bb
 inherit native
 
 do_stage () {

@@ -1,2 +1,2 @@
-include gst-plugins.inc
+require gst-plugins.inc
 DEPENDS += "gst-plugins-base"

@@ -1,2 +1,2 @@
-include ethtool.inc
+require ethtool.inc
 PR="r0"

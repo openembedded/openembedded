@@ -1,4 +1,4 @@
-include openssl.inc
+require openssl.inc
 
 PR = "r3"
 

@@ -1,4 +1,4 @@
-include gnupg.inc
+require gnupg.inc
 
 DEPENDS += "readline"
 EXTRA_OECONF += "--with-readline=${STAGING_LIBDIR}/.."

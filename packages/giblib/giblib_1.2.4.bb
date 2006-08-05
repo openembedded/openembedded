@@ -1,3 +1,3 @@
-include giblib.inc
+require giblib.inc
 
 PR = "r1"

@@ -1,1 +1,1 @@
-include debianutils.inc
+require debianutils.inc

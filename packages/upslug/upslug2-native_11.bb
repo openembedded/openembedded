@@ -1,2 +1,2 @@
-include upslug2_${PV}.bb
+require upslug2_${PV}.bb
 inherit native

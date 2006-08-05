@@ -10,4 +10,4 @@ PR = "r0"
 AMD_DRIVER_VERSION = "01.00.0401"
 AMD_DRIVER_LABEL = "AccessBus_Linux_5536_${AMD_DRIVER_VERSION}"
 
-include geode-modules.inc
+require geode-modules.inc

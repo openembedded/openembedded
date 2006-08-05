@@ -1,1 +1,1 @@
-include dialog.inc
+require dialog.inc

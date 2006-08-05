@@ -1,3 +1,3 @@
-include kdepimpi_${PV}.bb
+require kdepimpi_${PV}.bb
 
-include pwmpi.inc
+require pwmpi.inc

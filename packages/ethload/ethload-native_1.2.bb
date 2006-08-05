@@ -1,5 +1,5 @@
 SECTION = "console/network"
-include ethload_${PV}.bb
+require ethload_${PV}.bb
 inherit native
 
 do_stage() {

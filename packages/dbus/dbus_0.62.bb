@@ -1,4 +1,4 @@
-include dbus_${PV}.inc
+require dbus_${PV}.inc
 
 FILESPATH = "${FILE_DIRNAME}/dbus-0.6x:${FILE_DIRNAME}/dbus"
 DEPENDS = "expat glib-2.0 virtual/libintl dbus-native"

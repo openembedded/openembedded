@@ -1,4 +1,4 @@
-include wlan-ng-modules.inc
+require wlan-ng-modules.inc
 PR = "r3"
 
 SRC_URI += "ftp://ftp.linux-wlan.org/pub/linux-wlan-ng/linux-wlan-ng-${PV}.tar.bz2 \

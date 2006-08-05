@@ -4,7 +4,7 @@
 # problems in the initscripts on SlugOS.  The problems
 # mostly come down to the order the scripts are executed
 # in.
-include initscripts_${PV}.bb
+require initscripts_${PV}.bb
 
 MAINTAINER = "John Bowler <jbowler@acm.org>"
 RCONFLICTS = "initscripts"

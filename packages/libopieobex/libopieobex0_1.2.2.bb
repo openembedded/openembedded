@@ -1,4 +1,4 @@
-include libopieobex0.inc
+require libopieobex0.inc
 
 
 SRC_URI = "${HANDHELDS_CVS};tag=${TAG};module=opie/core/obex \

@@ -1,4 +1,4 @@
-include xorg-lib-common.inc
+require xorg-lib-common.inc
 
 DESCRIPTION = "Xaw is the X Athena Widget Set."
 

@@ -1,5 +1,5 @@
 SECTION = "console/network"
-include mysql_${PV}.bb
+require mysql_${PV}.bb
 inherit native
 
 PACKAGES = ""

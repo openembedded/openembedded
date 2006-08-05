@@ -1,4 +1,4 @@
-include python-pyrex_${PV}.bb
+require python-pyrex_${PV}.bb
 inherit native
 DEPENDS = "python-native"
 RDEPENDS = ""

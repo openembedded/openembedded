@@ -1,4 +1,4 @@
-include xorg-lib-common.inc
+require xorg-lib-common.inc
 
 DESCRIPTION = "Session management library"
 PRIORITY = "optional"

@@ -1,4 +1,4 @@
-include libsdl-ttf_${PV}.bb
+require libsdl-ttf_${PV}.bb
 inherit native
 
 DEPENDS = "libsdl-native"

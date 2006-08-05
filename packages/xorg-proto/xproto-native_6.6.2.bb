@@ -1,4 +1,4 @@
 SECTION = "unknown"
-include xproto_${PV}.bb
+require xproto_${PV}.bb
 inherit native
 PROVIDES = ""

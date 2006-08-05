@@ -1,5 +1,5 @@
 SECTION = "base"
-include uclibc_${PV}.bb
+require uclibc_${PV}.bb
 
 FILESPATH = "${@base_set_filespath([ '${FILE_DIRNAME}/uclibc-${PV}', '${FILE_DIRNAME}/uclibc', '${FILE_DIRNAME}/files', '${FILE_DIRNAME}' ], d)}"
 

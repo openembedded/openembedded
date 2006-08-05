@@ -1,5 +1,5 @@
 SECTION = "console/utils"
-include stat_${PV}.bb
+require stat_${PV}.bb
 inherit native
 S = "${WORKDIR}/stat-${PV}"
 

@@ -1,4 +1,4 @@
-include xorg-lib-common.inc
+require xorg-lib-common.inc
 
 DESCRIPTION = "X Resize and Rotate extension library."
 LICENSE = "BSD-X"

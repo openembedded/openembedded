@@ -10,7 +10,7 @@ PR_CONFIG = "1"
 # applied to the kernel.
 PR = "r2.${PR_CONFIG}"
 
-include ixp4xx-kernel.inc
+require ixp4xx-kernel.inc
 
 SRC_URI += "http://svn.nslu2-linux.org/svnroot/kernel/trunk/patches/2.6.17/defconfig"
 

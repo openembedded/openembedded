@@ -1,7 +1,7 @@
 S = "${WORKDIR}/ipkg-${PV}"
 
-include ipkg_${PV}.bb
-include ipkg-native.inc
+require ipkg_${PV}.bb
+require ipkg-native.inc
 
 inherit autotools pkgconfig native
 
