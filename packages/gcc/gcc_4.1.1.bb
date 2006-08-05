@@ -6,7 +6,7 @@ LICENSE = "GPL"
 
 inherit autotools gettext
 
-include gcc-package.inc
+require gcc-package.inc
 
 SRC_URI = "http://ftp.gnu.org/pub/gnu/gcc/gcc-4.1.1/gcc-4.1.1.tar.bz2 \
 	file://100-uclibc-conf.patch;patch=1 \
@@ -39,7 +39,7 @@ HAS_G2C = "no"
 JAVA_arm = ""  
 
 LANGUAGES = "c,c++"
-include gcc3-build.inc
+require gcc3-build.inc
 
 
 EXTRA_OECONF += " --disable-libssp "
