@@ -7,6 +7,7 @@ inherit e
 
 SRC_URI = "${E_URI}/enlightenment-${PV}.tar.gz \
            file://fix-configure.patch;patch=1 \
+           file://set-autoscroll-defaults.patch;patch=1 \
            file://Xsession.d/98enlightenment"
 
 #           cvs://anonymous@thinktux.net/root;module=e17/apps/e/data/themes;date=20050926"
