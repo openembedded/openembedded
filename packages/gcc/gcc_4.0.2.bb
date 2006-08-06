@@ -14,7 +14,8 @@ SRC_URI = "${GNU_MIRROR}/gcc/gcc-${PV}/gcc-${PV}.tar.bz2 \
 	file://arm-nolibfloat.patch;patch=1 \
 	file://arm-softfloat.patch;patch=1 \
 	file://ldflags.patch;patch=1 \
-	file://GCOV_PREFIX_STRIP-cross-profile_4.1.patch;patch=1"
+	file://GCOV_PREFIX_STRIP-cross-profile_4.1.patch;patch=1 \
+	file://zecke-xgcc-cpp.patch;patch=1 "
 
 # uclibc patches below
 SRC_URI_append = " file://100-uclibc-conf.patch;patch=1   \
