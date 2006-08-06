@@ -34,7 +34,7 @@ do_install () {
 	oe_runmake package
 	cd ${S}
 	mkdir -p ${mozdir}
-	cp -rL $MOZ_OBJDIR/dist/minimo/* ${mozdir}/
+	cp -RL $MOZ_OBJDIR/dist/minimo/* ${mozdir}/
 	mkdir -p ${D}${datadir}/applications
 	install -m 0644 ${WORKDIR}/minimo.desktop ${D}${datadir}/applications/minimo.desktop
 	mkdir -p ${D}${datadir}/pixmaps

@@ -59,7 +59,7 @@ do_install() {
 
 	install -d ${D}/usr
 	for dir in usr/bin nvsound/lib ; do
-		cp -a ${S}/$dir ${D}/usr/
+		cp -pPR ${S}/$dir ${D}/usr/
 	done
 	
 }

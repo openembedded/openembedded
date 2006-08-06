@@ -42,7 +42,7 @@ do_compile() {
 do_stage() {
 	install -m 0755 bin/qmake ${STAGING_BINDIR}/qmake2
 	install -d ${STAGING_DIR}/${CROSS_SYS}/qt4/
-	cp -dfR mkspecs ${STAGING_DIR}/${CROSS_SYS}/qt4/
+	cp -PfR mkspecs ${STAGING_DIR}/${CROSS_SYS}/qt4/
 }
 
 do_install() {

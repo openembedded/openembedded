@@ -51,9 +51,9 @@ do_stage () {
 
 	# First the include files, maintain the tree structure (ixp4xx-csr
 	# expects the exact same tree)
-	cp -rf --dereference include ${OSAL_DIR}
+	cp -RLf include ${OSAL_DIR}
 	install -d ${OSAL_DIR}/os/linux
-	cp -rf --dereference os/linux/include ${OSAL_DIR}/os/linux
+	cp -RLf os/linux/include ${OSAL_DIR}/os/linux
 
 	# Install the library/object
 	install -d ${OSAL_DIR}/${OSAL_PATH}

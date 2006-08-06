@@ -14,12 +14,12 @@ do_compile() {
 
 do_install() {
 	install -d ${D}${libdir}
-	cp -pd lib/* ${D}${libdir}/
+	cp -pP lib/* ${D}${libdir}/
 	install -d ${D}${includedir}
-	cp -r include/GL ${D}${includedir}/
+	cp -R include/GL ${D}${includedir}/
 }
 
 do_stage() {
-        cp -pd lib/* ${STAGING_LIBDIR}/
-        cp -r include/GL ${STAGING_INCDIR}/
+        cp -pP lib/* ${STAGING_LIBDIR}/
+        cp -R include/GL ${STAGING_INCDIR}/
 }
