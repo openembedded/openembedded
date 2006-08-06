@@ -1,4 +1,4 @@
-include xorg-data-common.inc
+require xorg-data-common.inc
 
 #DESCRIPTION = ""
 

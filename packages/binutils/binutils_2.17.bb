@@ -26,4 +26,4 @@ SRC_URI += "\
 S = "${WORKDIR}/binutils-${PV}"
 B = "${S}/build.${HOST_SYS}.${TARGET_SYS}"
 
-include binutils.inc
+require binutils.inc

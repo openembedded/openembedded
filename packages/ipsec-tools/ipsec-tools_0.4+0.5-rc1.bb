@@ -1,4 +1,4 @@
-include ipsec-tools.inc
+require ipsec-tools.inc
 
 BV = "${@bb.data.getVar('PV', d, 1).split('+')[1]}"
 SRC_URI = "${SOURCEFORGE_MIRROR}/ipsec-tools/ipsec-tools-${BV}.tar.bz2 \

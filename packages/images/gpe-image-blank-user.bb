@@ -1,4 +1,4 @@
-include gpe-image.bb
+require gpe-image.bb
 
 MAINTAINER = "Rob Taylor <rjt@cambridgebroadband.com"
 

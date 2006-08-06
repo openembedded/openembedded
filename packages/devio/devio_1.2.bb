@@ -1,1 +1,1 @@
-include devio.inc
+require devio.inc

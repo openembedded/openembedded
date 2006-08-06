@@ -2,7 +2,7 @@
 # Copyright (C) 2004-2005, Advanced Micro Devices, Inc.  All Rights Reserved
 # Released under the MIT license (see packages/COPYING)
 
-include beecrypt_${PV}.bb
+require beecrypt_${PV}.bb
 S = "${WORKDIR}/beecrypt-${PV}"
 
 inherit native

@@ -1,4 +1,4 @@
-include xorg-util-common.inc
+require xorg-util-common.inc
 inherit native
 
 #DESCRIPTION = ""

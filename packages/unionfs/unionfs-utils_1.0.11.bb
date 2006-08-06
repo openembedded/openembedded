@@ -1,2 +1,2 @@
-include unionfs-utils.inc
-include unionfs_${PV}.inc
+require unionfs-utils.inc
+require unionfs.inc

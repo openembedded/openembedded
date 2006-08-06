@@ -1,5 +1,5 @@
 INHIBIT_AUTOTOOLS_DEPS = "1"
-include gawk_${PV}.bb
+require gawk_${PV}.bb
 
 inherit native
 

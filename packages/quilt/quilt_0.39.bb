@@ -1,7 +1,7 @@
 RDEPENDS_${PN} += "patch diffstat bzip2"
 
-include quilt.inc
+require quilt_${PV}.inc
 
 inherit autotools gettext
 
-include quilt-package.inc
+require quilt-package.inc

@@ -1,4 +1,4 @@
-include esmart.inc
+require esmart.inc
 PR = "r0"
 
 SRC_URI += "file://disable-x-only-features.patch;patch=1"

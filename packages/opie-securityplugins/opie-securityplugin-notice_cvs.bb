@@ -1,4 +1,4 @@
-include opie-securityplugin-notice.inc
+require opie-securityplugin-notice.inc
 
 PV = "${OPIE_CVS_PV}"
 

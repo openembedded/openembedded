@@ -1,4 +1,4 @@
-include crimsonfields_${PV}.bb
+require crimsonfields_${PV}.bb
 inherit native
 
 DEPENDS = "libsdl-native libsdl-ttf-native"

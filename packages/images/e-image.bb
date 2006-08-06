@@ -1,4 +1,4 @@
-include e-image-core.bb
+require e-image-core.bb
 DESCRIPTION = "An X11-based distribution with the Enlightenment Window Manager and Tools"
 PR = "r5"
 

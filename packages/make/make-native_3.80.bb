@@ -1,4 +1,4 @@
-include make_${PV}.bb
+require make_${PV}.bb
 inherit native
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/make-${PV}"
 S = "${WORKDIR}/make-${PV}"

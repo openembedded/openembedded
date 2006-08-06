@@ -1,4 +1,4 @@
-include xorg-font-common.inc
+require xorg-font-common.inc
 
 DESCRIPTION = "X font utils."
 

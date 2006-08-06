@@ -1,4 +1,4 @@
-include classpath.inc
+require classpath.inc
 
 DEPENDS = "jikes-native zip-native"
 RDEPENDS_${PBN}-minimal = "${PBN}-common (>= ${PV})"

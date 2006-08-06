@@ -1,4 +1,4 @@
-include xorg-doc-common.inc
+require xorg-doc-common.inc
 
 #DESCRIPTION = ""
 

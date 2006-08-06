@@ -1,4 +1,4 @@
-include ecore.inc
+require ecore.inc
 PR = "r2"
 
 EXTRA_OECONF = "--enable-ecore-fb \

@@ -1,4 +1,4 @@
-include monotone.inc
+require monotone.inc
 
 PR = "r0"
 

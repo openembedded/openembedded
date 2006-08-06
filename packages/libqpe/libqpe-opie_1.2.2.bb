@@ -1,4 +1,4 @@
-include ${PN}.inc
+require ${PN}.inc
 
 TAG = "${@'v' + bb.data.getVar('PV',d,1).replace('.', '_')}" 
 

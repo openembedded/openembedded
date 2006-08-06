@@ -1,5 +1,5 @@
 SECTION = "devel"
-include binutils_csl-arm-20050603.bb
+require binutils_csl-arm-20050603.bb
 inherit cross
 DEPENDS += "flex-native bison-native"
 PROVIDES = "virtual/${TARGET_PREFIX}binutils"

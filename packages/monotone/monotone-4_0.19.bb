@@ -1,4 +1,4 @@
-include monotone.inc
+require monotone.inc
 
 SUBV = "1"
 PR = "r0"

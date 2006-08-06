@@ -2,7 +2,7 @@
 # Copyright (C) 2005-2006, Advanced Micro Devices, Inc.  All Rights Reserved
 # Released under the MIT license (see /COPYING)
 
-include nvidia-drivers.inc
+require nvidia-drivers.inc
 
 PKG_BASENAME="NVIDIA-Linux-${NVIDIA_ARCH}-${PV}-${NVIDIA_PKGRUN}"
 

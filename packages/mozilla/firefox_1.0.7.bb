@@ -11,7 +11,7 @@ S = "${WORKDIR}/mozilla"
 
 inherit mozilla
 
-include firefox.inc
+require firefox.inc
 
 do_compile_prepend() {
 	cp ${WORKDIR}/jsautocfg.h ${S}/js/src/

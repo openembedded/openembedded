@@ -1,4 +1,4 @@
-include genext2fs_${PV}.bb
+require genext2fs_${PV}.bb
 inherit native
 
 do_stage () {

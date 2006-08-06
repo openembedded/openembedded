@@ -1,4 +1,4 @@
-include bitbake.inc
+require bitbake.inc
 
 # Don't use the tip of svn by default
 DEFAULT_PREFERENCE = "-1"
@@ -13,4 +13,4 @@ S = "${WORKDIR}/bitbake"
 
 inherit distutils
 
-include bitbake-package.inc
+require bitbake-package.inc

@@ -1,4 +1,4 @@
-include vim_${PV}.bb
+require vim_${PV}.bb
 
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/vim-${PV}"
 

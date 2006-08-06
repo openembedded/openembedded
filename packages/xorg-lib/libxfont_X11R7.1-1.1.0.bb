@@ -1,4 +1,4 @@
-include xorg-lib-common.inc
+require xorg-lib-common.inc
 
 DESCRIPTION = "X font library (used by the X server)."
 LICENSE= "BSD-X"

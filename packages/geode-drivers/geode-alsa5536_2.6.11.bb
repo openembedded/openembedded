@@ -10,4 +10,4 @@ PR = "r0"
 AMD_DRIVER_VERSION = "1.00.0500"
 AMD_DRIVER_LABEL = "Audio_LinuxALSA_5536_${AMD_DRIVER_VERSION}"
 
-include geode-modules.inc
+require geode-modules.inc

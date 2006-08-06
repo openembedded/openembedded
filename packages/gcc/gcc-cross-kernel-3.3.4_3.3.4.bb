@@ -2,7 +2,7 @@ SECTION = "devel"
 # cut-down gcc for kernel builds
 # only installs ${TARGET_PREFIX}gcc-${PV}, not ${TARGET_PREFIX}gcc.
 
-include gcc-cross-initial_${PV}.bb
+require gcc-cross-initial_${PV}.bb
 
 PROVIDES = "virtual/${TARGET_PREFIX}gcc-${PV}"
 

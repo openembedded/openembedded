@@ -1,4 +1,4 @@
-include xorg-util-common.inc
+require xorg-util-common.inc
 
 DESCRIPTION = "imake utility"
 

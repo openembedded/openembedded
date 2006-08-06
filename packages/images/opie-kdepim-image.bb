@@ -1,4 +1,4 @@
-include opie-image.bb
+require opie-image.bb
 
 DEPENDS += "kdepimpi"
 PR = "r1"

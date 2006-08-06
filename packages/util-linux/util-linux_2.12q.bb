@@ -2,6 +2,6 @@
 #FIXME: remove this
 ARM_INSTRUCTION_SET = "arm"
 
-include util-linux.inc
+require util-linux.inc
 
 PR = "r5"

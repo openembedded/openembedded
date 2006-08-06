@@ -1,4 +1,4 @@
-include eet_${PV}.bb
+require eet_${PV}.bb
 inherit native
 DEPENDS = "zlib-native jpeg-native"
 

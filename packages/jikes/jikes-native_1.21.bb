@@ -1,6 +1,6 @@
 SECTION = "devel"
 inherit native
-include jikes_${PV}.bb
+require jikes_${PV}.bb
 S = "${WORKDIR}/jikes-${PV}"
 
 do_stage() {

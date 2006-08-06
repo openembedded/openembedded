@@ -1,4 +1,4 @@
-include ntp_4.1.2.bb
+require ntp_4.1.2.bb
 DEPENDS = "openssl"
 PR = "r2"
 

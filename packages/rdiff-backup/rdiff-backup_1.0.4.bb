@@ -1,2 +1,2 @@
-include rdiff-backup.inc
+require rdiff-backup.inc
 PR = "r0"

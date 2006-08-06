@@ -1,4 +1,4 @@
-include librtaudio_${PV}.bb
+require librtaudio_${PV}.bb
 
 inherit autotools
 

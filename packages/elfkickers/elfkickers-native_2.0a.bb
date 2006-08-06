@@ -1,4 +1,4 @@
-include elfkickers_${PV}.bb
+require elfkickers_${PV}.bb
 inherit native
 
 ELFPKGS = "sstrip"

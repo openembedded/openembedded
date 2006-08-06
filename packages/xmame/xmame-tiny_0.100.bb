@@ -1,4 +1,4 @@
-include xmame_${PV}.bb
+require xmame_${PV}.bb
 
 DESCRIPTION = "Multiple Arcade Machine Emulator based on SDL (tiny version)"
 TINY = 1

@@ -4,7 +4,7 @@ PV = "1.1.4+cvs${SRCDATE}"
 SRC_URI = "cvs://readonly:readonly@cvs.kaffe.org/cvs/kaffe;module=kaffe"
 S = "${WORKDIR}/kaffe"
 
-include kaffe.inc
+require kaffe.inc
 
 DEPENDS += "libqpe-opie"
 

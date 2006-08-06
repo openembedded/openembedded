@@ -5,7 +5,7 @@ SRC_URI = "http://kernel.org/pub/linux/utils/kernel/hotplug/udev-${PV}.tar.gz \
            file://fix-alignment.patch;patch=1 \
            file://tty-symlinks.patch;patch=1"
 
-include udev.inc
+require udev.inc
 
 PR = "r7"
 UDEV_EXTRAS = "extras/scsi_id/ extras/volume_id/ extras/run_directory/"

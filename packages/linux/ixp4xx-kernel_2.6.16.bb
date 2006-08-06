@@ -10,7 +10,7 @@ PR_CONFIG = "4"
 # applied to the kernel.
 PR = "r7.${PR_CONFIG}"
 
-include ixp4xx-kernel.inc
+require ixp4xx-kernel.inc
 
 SRC_URI += "file://defconfig"
 

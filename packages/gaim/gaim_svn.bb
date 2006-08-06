@@ -9,7 +9,7 @@ SRC_URI = "svn://svn.sourceforge.net/svnroot/gaim;module=trunk;proto=https \
 	file://gevolution-eds-dbus.patch;patch=1 \
 	"
 
-include gaim.inc
+require gaim.inc
 
 S = "${WORKDIR}/trunk"
 

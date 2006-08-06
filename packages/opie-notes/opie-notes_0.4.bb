@@ -1,4 +1,4 @@
-include ${PN}.inc
+require ${PN}.inc
 
 SRCDATE = 20051027
 

@@ -1,1 +1,1 @@
-include didiwiki.inc
+require didiwiki.inc

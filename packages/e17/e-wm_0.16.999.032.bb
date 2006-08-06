@@ -1,12 +1,13 @@
 DESCRIPTION = "E17 - the Enlightenment Window Mananger"
 DEPENDS = "evas-x11 ecore-x11 edje eet embryo"
 LICENSE = "MIT"
-PR = "r3"
+PR = "r4"
 
 inherit e update-alternatives
 
 SRC_URI = "${E_URI}/enlightenment-${PV}.tar.gz \
            file://fix-configure.patch;patch=1 \
+           file://set-autoscroll-defaults.patch;patch=1 \
            file://Xsession.d/98enlightenment"
 
 S = "${WORKDIR}/enlightenment-${PV}"

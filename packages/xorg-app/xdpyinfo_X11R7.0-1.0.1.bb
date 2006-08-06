@@ -1,4 +1,4 @@
-include xorg-app-common.inc
+require xorg-app-common.inc
 
 DESCRIPTION = "X display information utility"
 LICENSE = "MIT"

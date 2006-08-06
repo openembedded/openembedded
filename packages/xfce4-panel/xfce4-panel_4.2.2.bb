@@ -3,4 +3,4 @@
 # Released under the MIT license (see packages/COPYING)
 
 PR="r1"
-include ${PN}.inc
+require ${PN}.inc

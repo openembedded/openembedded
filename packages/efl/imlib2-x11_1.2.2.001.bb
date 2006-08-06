@@ -1,4 +1,4 @@
-include imlib2.inc
+require imlib2.inc
 DEPENDS += "virtual/libx11 libxext"
 PR = "r1"
 

@@ -1,4 +1,4 @@
-include edje_${PV}.bb
+require edje_${PV}.bb
 PR = "r3"
 
 inherit native
