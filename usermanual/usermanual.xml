@@ -111,7 +111,7 @@ The package needs gtk+ to build ('DEPENDS') and requires the 'cool-ttf-fonts' pa
 SRC_URI = "http://www.host.com/foo/files/${P}.tar.bz2;md5sum=yoursum"
                 </screen>
 
-This will tell the fetcher to where to download the sources from and it will check the integrity using md5sum if you provided the appropriate <emphasis>yoursum</emphasis>. You can make one by doing <screen>md5sum foo-1.9.tar.bz2</screen> and replacing <emphasis>yoursum</emphasis> with the md5sum on your screen. A typical md5sum will look like this: <screen>a6434b0fc8a54c3dec3d6875bf3be8db </screen>Notice the <emphasis>${P}</emphasis> variable, that one holds the package name, <emphasis>${PN}</emphasis> in BitBake speak and the package version, <emphasis>${PV}</emphasis> in BitBake speak. It's a short way of writing <emphasis>${PN}-${PV}</emphasis>. Using this notation means you can copy the recipe when a new version is released without having to alter the contents. You do need to check if everything is still correct, because new versions mean new bugs.
+This will tell the fetcher to where to download the sources from and it will check the integrity using md5sum if you provided the appropriate <emphasis>yoursum</emphasis>. You can make one by doing <screen>md5sum foo-1.9.tar.bz2</screen> and replacing <emphasis>yoursum</emphasis> with the md5sum on your screen. A typical md5sum will look like this: <screen>a6434b0fc8a54c3dec3d6875bf3be8mtn </screen>Notice the <emphasis>${P}</emphasis> variable, that one holds the package name, <emphasis>${PN}</emphasis> in BitBake speak and the package version, <emphasis>${PV}</emphasis> in BitBake speak. It's a short way of writing <emphasis>${PN}-${PV}</emphasis>. Using this notation means you can copy the recipe when a new version is released without having to alter the contents. You do need to check if everything is still correct, because new versions mean new bugs.
             </para>
 
             <para>Before we can move to the actual building we need to find out which build system the package is using. If we're lucky, we see a <emphasis>configure</emphasis> file in the build tree this is an indicator that we can <emphasis>inherit autotools</emphasis> if we see a <emphasis>.pro</emphasis> file, it might be qmake, which needs <emphasis>inherit qmake</emphasis>. Virtually all gtk apps use autotools:
@@ -186,21 +186,21 @@ Ausgecheckt, Revision 516.
             <title>Getting OpenEmbedded</title>
             <para>
 The OpenEmbedded metadate has a high rate of development, so it's a good idea to stay up to date.
-You'll need monotone 0.25 to get the metadata and stay up to date. Monotone is available in most distributions and has binaries at http://venge.net/monotone/
+You'll need monotone 0.28 to get the metadata and stay up to date. Monotone is available in most distributions and has binaries at http://venge.net/monotone/
 
 <screen>	    
 #get the snapshot
-wget http://openembedded.org/snapshots/OE.db.bz2 http://openembedded.org/snapshots/OE.db.bz2.md5
+wget http://openembedded.org/snapshots/OE.mtn.bz2 http://openembedded.org/snapshots/OE.mtn.bz2.md5
 
 #verify the integrity
-cat OE.db.bz2.md5sum
-md5sum OE.db.bz2
+cat OE.mtn.bz2.md5sum
+md5sum OE.mtn.bz2
 
 #extract the tarball
-bunzip OE.db.bz2
+bunzip OE.mtn.bz2
 
 #check the development branch
-monotone --db=OE.db co -b org.openembedded.dev
+mtn --mtn=OE.mtn co -b org.openembedded.dev
 </screen>
 
            </para>
