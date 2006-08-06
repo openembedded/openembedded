@@ -55,6 +55,7 @@ SRC_URI = "http://familiar.handhelds.org/source/v0.8.3/stash_libc_sources.redhat
 	   file://ldsocache-varrun.patch;patch=1 \
 	   file://5090_all_stubs-rule-fix.patch;patch=1 \
 	   file://raise.patch;patch=1 \
+	   file://zecke-sane-readelf.patch;patch=1 \
            file://etc/ld.so.conf \
 	   file://generate-supported.mk"
 
