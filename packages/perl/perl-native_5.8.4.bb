@@ -13,9 +13,9 @@ S = "${WORKDIR}/perl-${PV}"
 
 do_configure () {
     ./Configure					\
-    -Dcc="${BUILD_CC}"				\
-    -Dcflags="${BUILD_CFLAGS}"			\
-    -Dldflags="${BUILD_LDFLAGS} -Wl,-rpath,${STAGING_LIBDIR}"		\
+    -Dcc="${CC}"				\
+    -Dcflags="${CFLAGS}"			\
+    -Dldflags="${LDFLAGS}"		\
     -Dusethreads				\
     -Duselargefiles				\
     -Dprefix=${prefix}				\
