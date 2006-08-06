@@ -8,7 +8,7 @@ DEPENDS += "qemu-native"
 #NOTE: I have found that this only works with qemu-0.8.0. If I use 0.8.1 or 0.8.2
 # the build gets hung up on compiling certain .el files
 
-PR = "r6"
+PR = "r7"
 
 DEFAULT_PREFERENCE = "-1"
 
@@ -20,14 +20,15 @@ inherit autotools
 
 PACKAGES = "${PN}-el ${PN}-dbg ${PN} ${PN}-doc ${PN}-dev ${PN}-locale"
 
-FILES_emacs-el = "${datadir}/emacs/22.0.50/*/*.el.gz \
+FILES_${PN}-el = "${datadir}/emacs/22.0.50/*/*.el.gz \
                   ${datadir}/emacs/22.0.50/*/*/*.el.gz"
 
-QEMU = "qemu-arm -L ${STAGING_DIR}/${TARGET_SYS}"
+FILES_${PN} += "${datadir}/emacs"
 
+QEMU = "qemu-arm -L ${STAGING_DIR}/${TARGET_SYS}"
 LDFLAGS += "-L${CROSS_DIR}/${TARGET_SYS}/lib"
 
-EXTRA_OECONF = "--without-x"
+EXTRA_OECONF = "--without-sound --without-x"
 
 do_bootstrap() {
     cp "${CROSS_DIR}/${TARGET_SYS}/lib/libgcc_s.so.1" "${S}"
