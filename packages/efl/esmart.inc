@@ -2,6 +2,7 @@ DESCRIPTION = "ESmart is a collection of smart Evas objects"
 LICENSE = "MIT"
 DEPENDS = "virtual/evas virtual/ecore virtual/imlib2 epsilon edje libtool"
 PROVIDES += "virtual/esmart"
+PACKAGES_DYNAMIC += "libesmart*"
 
 inherit efl
 
