@@ -1,3 +1,3 @@
-include perl.inc
+require perl.inc
 
 PR = "r2"

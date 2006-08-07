@@ -7,7 +7,8 @@ LICENSE = "zlib"
 
 SRC_URI = "http://www.zlib.net/zlib-1.2.3.tar.bz2 \
 		file://visibility.patch;patch=1 \
-		file://libtool_staging.patch;patch=1"
+		file://libtool_staging.patch;patch=1 \
+		file://sane-target.patch;patch=1 "
 
 S = "${WORKDIR}/zlib-${PV}"
 
@@ -19,9 +20,13 @@ CFLAGS_prepend = "-fPIC -DZLIB_DLL "
 AR_append = " rc"
 EXTRA_OEMAKE = " LIBTOOL=${TARGET_SYS}-libtool"
 
+# extra configure options, can be reset in the -native variant
+ZLIB_EXTRA = "--target=${TARGET_OS}"
+ZLIB_SHARED= "libz.so.${PV}"
+
 do_compile() {
-	./configure --prefix=${prefix} --exec_prefix=${exec_prefix} --shared --libdir=${libdir} --includedir=${includedir}
-	oe_runmake -e MAKEFLAGS="" libz.so.${PV} libz.a
+	./configure --prefix=${prefix} --exec_prefix=${exec_prefix} --shared --libdir=${libdir} --includedir=${includedir} ${ZLIB_EXTRA}
+	oe_runmake -e MAKEFLAGS="" ${ZLIB_SHARED} libz.a
 }
 
 do_stage() {

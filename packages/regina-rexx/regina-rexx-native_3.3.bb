@@ -1,4 +1,4 @@
-include regina-rexx_${PV}.bb
+require regina-rexx_${PV}.bb
 inherit native
 DEPENDS = ""
 

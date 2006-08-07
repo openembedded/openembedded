@@ -1,4 +1,4 @@
-include dpkg.inc
+require dpkg.inc
 DEPENDS += "bzip2"
 
 SRC_URI += "file://autofoo.patch;patch=1"

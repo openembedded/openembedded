@@ -2,7 +2,7 @@
 # Copyright (C) 2004, Advanced Micro Devices, Inc.  All Rights Reserved
 # Released under the MIT license (see packages/COPYING)
 
-include bootsplash_${PV}.bb
+require bootsplash_${PV}.bb
 
 inherit native
 S="${WORKDIR}/bootsplash-${PV}"

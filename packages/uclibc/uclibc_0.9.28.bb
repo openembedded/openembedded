@@ -1,7 +1,7 @@
 DEFAULT_PREFERENCE = "1"
 PR = "r3"
 
-include uclibc.inc
+require uclibc.inc
 
 # This is the correct KERNEL_SOURCE location, if the uClibc
 # fix_includes.sh script is run (see nokernelheader.patch below)

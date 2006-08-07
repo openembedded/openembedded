@@ -1,4 +1,4 @@
-include swig_${PV}.bb
+require swig_${PV}.bb
 inherit native
 
 do_stage() {

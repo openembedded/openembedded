@@ -1,13 +1,13 @@
 DESCRIPTION = "Task packages for the Angstrom distribution"
-PR = "r12"
+PR = "r14"
 ALLOW_EMPTY = "1"
 
 PACKAGE_ARCH = "${MACHINE_ARCH}"
 
 BOOTMODULES_RRECOMMENDS ?= ""
 DEBUG_APPS ?= ""
-DEBUG_APPS += '${@base_conditional("DISTRO_TYPE", "release", "", "strace gdb",d)}'
-
+DEBUG_APPS += '${@base_conditional("DISTRO_TYPE", "release", "", "strace gdb procps",d)}'
+EXTRA_STUFF ?= ""
 
 PACKAGES = "\
     angstrom-base-depends \
@@ -34,6 +34,7 @@ RDEPENDS_angstrom-base-depends = "\
     ipkg ipkg-collateral \
     wireless-tools \
     tslib-tests tslib-calibrate \
+    ${EXTRA_STUFF} \
     ${DEBUG_APPS} \
 "
 
@@ -68,6 +69,7 @@ RDEPENDS_angstrom-x11-base-depends := "\
 
 RDEPENDS_angstrom-gpe-task-base := "\
     matchbox \
+    dbus-glib \
     xcursor-transparent-theme \
     rxvt-unicode \
     matchbox-themes-gtk \

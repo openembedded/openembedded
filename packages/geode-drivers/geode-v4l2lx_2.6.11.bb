@@ -10,7 +10,7 @@ PR = "r0"
 AMD_DRIVER_VERSION = "03.02.0100"
 AMD_DRIVER_LABEL = "Graphics_Video4Linux2_LX_${AMD_DRIVER_VERSION}"
 
-include geode-modules.inc
+require geode-modules.inc
 
 S="${WORKDIR}/${AMD_DRIVER_LABEL}/lxv4l2"
 

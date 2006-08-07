@@ -1,3 +1,3 @@
-include hostap-daemon.inc
+require hostap-daemon.inc
 
 PR = "r1"

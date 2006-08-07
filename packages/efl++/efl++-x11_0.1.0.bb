@@ -1,3 +1,3 @@
-include efl++.inc
+require efl++.inc
 
 EXTRA_QMAKEVARS_POST += "CONFIG+=eflecorex11"

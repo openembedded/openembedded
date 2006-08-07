@@ -5,7 +5,7 @@ PR = "r0"
 DESCRIPTION="NIS version 2 server for Linux."
 HOMEPAGE="http://www.linux-nis.org/nis/ypserv/index.html"
 
-include nis.inc
+require nis.inc
 
 SRC_URI = "ftp://ftp.kernel.org/pub/linux/utils/net/NIS/OLD/${PN}/${P}.tar.bz2"
 

@@ -1,4 +1,4 @@
-include evas.inc
+require evas.inc
 PR = "r5"
 
 EXTRA_OECONF = "--enable-fb         \

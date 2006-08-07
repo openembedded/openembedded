@@ -1,4 +1,4 @@
-include gpe-contacts.inc
+require gpe-contacts.inc
 
 PR="r2"
 SRC_URI = "${GPE_MIRROR}/gpe-contacts-${PV}.tar.bz2"

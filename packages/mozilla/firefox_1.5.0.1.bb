@@ -10,7 +10,7 @@ DEFAULT_PREFERENCE = "-1"
 
 inherit mozilla
 
-include firefox.inc
+require firefox.inc
 
 do_compile_prepend() {
 	cp ${WORKDIR}/jsautocfg.h ${S}/js/src/

@@ -4,4 +4,4 @@ PR = "r1"
 
 inherit module
 
-include wlags-modules_${PV}.inc
+require wlags-modules_${PV}.inc

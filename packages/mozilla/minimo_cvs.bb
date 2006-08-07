@@ -21,7 +21,7 @@ export MOZ_CO_PROJECT="minimo"
 export MINIMO=1
 export MOZ_OBJDIR="${WORKDIR}/build-${TARGET_SYS}"
 
-include mozilla-cvs.inc
+require mozilla-cvs.inc
 
 do_compile () {
 	mozilla_do_compile
@@ -34,7 +34,7 @@ do_install () {
 	oe_runmake package
 	cd ${S}
 	mkdir -p ${mozdir}
-	cp -rL $MOZ_OBJDIR/dist/minimo/* ${mozdir}/
+	cp -RL $MOZ_OBJDIR/dist/minimo/* ${mozdir}/
 	mkdir -p ${D}${datadir}/applications
 	install -m 0644 ${WORKDIR}/minimo.desktop ${D}${datadir}/applications/minimo.desktop
 	mkdir -p ${D}${datadir}/pixmaps

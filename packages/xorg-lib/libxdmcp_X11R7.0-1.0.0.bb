@@ -1,4 +1,4 @@
-include xorg-lib-common.inc
+require xorg-lib-common.inc
 
 DESCRIPTION = "X Display Manager Control Protocol library."
 PRIORITY = "optional"

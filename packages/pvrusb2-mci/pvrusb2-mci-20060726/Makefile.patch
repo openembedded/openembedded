@@ -1,0 +1,25 @@
+*** driver/Makefile.orig	2006-04-02 03:40:31.000000000 +0200
+--- driver/Makefile	2006-04-26 21:56:46.000000000 +0200
+***************
+*** 57,66 ****
+    CONFIG_VARS+= CONFIG_VIDEO_PVRUSB2_DEBUGIFC=y
+  
+    modules modules_install clean:
+! 	$(MAKE) INSTALL_MOD_DIR=$(INSTALL_MOD_DIR) -C $(KDIR) M=$(M) $(CONFIG_VARS) $@
+  
+    install:
+! 	$(MAKE) INSTALL_MOD_DIR=$(INSTALL_MOD_DIR) -C $(KDIR) M=$(M) $(CONFIG_VARS) modules_install
+  
+  else
+  
+--- 57,66 ----
+    CONFIG_VARS+= CONFIG_VIDEO_PVRUSB2_DEBUGIFC=y
+  
+    modules modules_install clean:
+! 	$(MAKE) INSTALL_MOD_DIR=$(INSTALL_MOD_DIR) -C $(KDIR) CFLAGS="$(CFLAGS)" M=$(M) $(CONFIG_VARS) $@
+  
+    install:
+! 	$(MAKE) INSTALL_MOD_DIR=$(INSTALL_MOD_DIR) -C $(KDIR) CFLAGS="$(CFLAGS)" M=$(M) $(CONFIG_VARS) modules_install
+  
+  else
+  

@@ -12,12 +12,12 @@ DEFAULT_PREFERENCE = "-1"
 
 inherit autotools gettext
 
-include gcc-package.inc
+require gcc-package.inc
 
 SRC_URI = "cvs://anonymous@cvs.savannah.gnu.org/cvsroot/gcc;method=pserver;tag=csl-arm-branch;module=gcc;date=${SRCDATE} \
 	   file://gcc34-arm-tune.patch;patch=1"
 
-include gcc3-build.inc
+require gcc3-build.inc
 
 S = "${WORKDIR}/gcc"
 

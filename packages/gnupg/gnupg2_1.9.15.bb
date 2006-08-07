@@ -1,3 +1,3 @@
-include gnupg2.inc
+require gnupg2.inc
 
 PR = "r3"

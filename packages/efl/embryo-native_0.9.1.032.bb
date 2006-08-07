@@ -1,4 +1,4 @@
-include embryo_${PV}.bb
+require embryo_${PV}.bb
 inherit native
 
 do_stage_append() {

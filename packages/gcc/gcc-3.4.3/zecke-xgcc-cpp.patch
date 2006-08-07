@@ -1,0 +1,16 @@
+In contrast to the other versions this only patches libstdc++
+
+
+Index: gcc-3.4.3/Makefile.in
+===================================================================
+--- gcc-3.4.3.orig/Makefile.in	2004-11-05 05:14:05.000000000 +0100
++++ gcc-3.4.3/Makefile.in	2006-08-06 13:03:37.000000000 +0200
+@@ -21964,6 +21964,8 @@
+ 	AS="$(AS_FOR_TARGET)"; export AS; \
+ 	CC="$(CC_FOR_TARGET)"; export CC; \
+ 	CFLAGS="$(CFLAGS_FOR_TARGET)"; export CFLAGS; \
++	CPP="$(CC_FOR_TARGET) -E"; export CCP; \
++	CPPFLAGS=""; export CPPFLAGS; \
+ 	CONFIG_SHELL="$(SHELL)"; export CONFIG_SHELL; \
+ 	CPPFLAGS="$(CFLAGS_FOR_TARGET)"; export CPPFLAGS; \
+ 	CXX_FOR_TARGET="$(RAW_CXX_FOR_TARGET)"; export CXX_FOR_TARGET; \

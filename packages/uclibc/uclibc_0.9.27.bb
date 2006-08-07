@@ -1,7 +1,7 @@
 DEFAULT_PREFERENCE = "1"
 PR = "r7"
 
-include uclibc.inc
+require uclibc.inc
 
 # This patch removes the typedef of __kernel_key_t from
 # include/bits/ipc.h.  Because this removes a typedef some

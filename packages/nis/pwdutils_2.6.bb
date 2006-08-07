@@ -10,7 +10,7 @@ information stored in local files, NIS, NIS+ or LDAP \
 and can replace the shadow suite completely."
 HOMEPAGE="http://lists.suse.com/archive/pwdutils/"
 
-include nis.inc
+require nis.inc
 
 SRC_URI = "ftp://ftp.kernel.org/pub/linux/utils/net/NIS/OLD/${PN}/${P}.tar.bz2"
 

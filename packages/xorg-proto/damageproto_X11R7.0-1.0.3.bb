@@ -1,4 +1,4 @@
-include xorg-proto-common.inc
+require xorg-proto-common.inc
 
 #DESCRIPTION = ""
 

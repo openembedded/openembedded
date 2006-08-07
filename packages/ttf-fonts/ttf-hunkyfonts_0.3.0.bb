@@ -8,7 +8,7 @@ SRC_URI = "${SOURCEFORGE_MIRROR}/hunkyfonts/hunkyfonts-${PV}.tar.bz2"
 
 S = "${WORKDIR}/hunkyfonts-${PV}/TTF/"
 
-include ttf.inc
+require ttf.inc
 
 PACKAGES = "ttf-hunky-sans ttf-hunky-serif"
 

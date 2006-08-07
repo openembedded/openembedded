@@ -4,4 +4,4 @@ SRC_URI = "http://ftp.sudo.ws/sudo/dist/sudo-${PV}.tar.gz \
 	   file://autofoo.patch;patch=1 \
 	   file://noexec-link.patch;patch=1"
 
-include sudo.inc
+require sudo.inc

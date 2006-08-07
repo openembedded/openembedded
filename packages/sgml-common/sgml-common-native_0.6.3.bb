@@ -1,5 +1,5 @@
 SECTION = "base"
-include sgml-common_${PV}.bb
+require sgml-common_${PV}.bb
 inherit native
 
 DEPENDS = ""

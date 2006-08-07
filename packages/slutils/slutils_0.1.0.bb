@@ -21,7 +21,7 @@ do_fetch() {
 	for u in ${UTILS}
 	do
 		install -d ${S}/$u
-		cp -dfR `ls -dp ${FILESDIR}/$u/*|grep -v SCCS` ${S}/$u/
+		cp -PfR `ls -dp ${FILESDIR}/$u/*|grep -v SCCS` ${S}/$u/
 	done
 }
 

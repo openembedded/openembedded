@@ -1,4 +1,4 @@
-include squashfs-tools_${PV}.bb
+require squashfs-tools_${PV}.bb
 
 DEPENDS = "lzma-native"
 

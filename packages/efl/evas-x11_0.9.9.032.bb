@@ -1,4 +1,4 @@
-include evas.inc
+require evas.inc
 DEPENDS += "edb virtual/libx11 libxext freetype"
 PR = "r7"
 

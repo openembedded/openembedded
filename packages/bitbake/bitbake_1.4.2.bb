@@ -1,4 +1,4 @@
-include bitbake.inc
+require bitbake.inc
 
 # We don't need a toolchain...
 INHIBIT_DEFAULT_DEPS = "1"
@@ -8,7 +8,7 @@ S = "${WORKDIR}/bitbake-${PV}"
 
 inherit distutils
 
-include bitbake-package.inc
+require bitbake-package.inc
 
 RDEPENDS += "python-shell python-lang python-textutils  python-pickle"
 

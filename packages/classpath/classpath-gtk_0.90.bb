@@ -1,4 +1,4 @@
-include classpath.inc
+require classpath.inc
 
 DEPENDS = "glib-2.0 gtk+ libart-lgpl pango libxtst jikes-native zip-native"
 RDEPENDS_${PBN}-gtk = "${PBN}-common (>= ${PV})"

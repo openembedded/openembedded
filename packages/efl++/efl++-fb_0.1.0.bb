@@ -1,1 +1,1 @@
-include efl++.inc
+require efl++.inc

@@ -1,4 +1,4 @@
-include esmart.inc
+require esmart.inc
 PR = "r2"
 
 SRC_URI += "file://include-stdio.patch;patch=1"

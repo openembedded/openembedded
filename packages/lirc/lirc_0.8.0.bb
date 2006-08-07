@@ -32,7 +32,7 @@ INITSCRIPT_PARAMS = "defaults 20"
 INITSCRIPT_NAME_lirc-exec = "lircexec"
 INITSCRIPT_PARAMS_lirc-exec = "defaults 21"
 
-include lirc-config.inc
+require lirc-config.inc
 
 EXTRA_OEMAKE = 'SUBDIRS="daemons tools"'
 

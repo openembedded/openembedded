@@ -1,4 +1,4 @@
-include patch.inc
+require patch.inc
 
 SRC_URI = "${GNU_MIRROR}/patch/patch-2.5.4.tar.gz \
 	   file://2.5.9.patch;patch=1 \

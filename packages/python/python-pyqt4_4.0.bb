@@ -63,7 +63,7 @@ do_install() {
 		echo "from PyQt4.${module} import *\n" >> ${D}${libdir}/${PYTHON_DIR}/site-packages/PyQt4/Qt.py
 		install -m 0755 ${module}/lib${module}.so ${D}${libdir}/${PYTHON_DIR}/site-packages/PyQt4/${module}.so
     done
-	cp -a elementtree ${D}${libdir}/${PYTHON_DIR}/site-packages/PyQt4/
+	cp -pPR elementtree ${D}${libdir}/${PYTHON_DIR}/site-packages/PyQt4/
 	cp __init__.py ${D}${libdir}/${PYTHON_DIR}/site-packages/PyQt4/
 }
 

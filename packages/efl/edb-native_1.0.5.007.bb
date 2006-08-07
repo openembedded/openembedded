@@ -1,4 +1,4 @@
-include edb_${PV}.bb
+require edb_${PV}.bb
 inherit native
 DEPENDS = "zlib-native"
 

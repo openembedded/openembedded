@@ -1,4 +1,4 @@
-include xorg-app-common.inc
+require xorg-app-common.inc
 
 DESCRIPTION = "user preference utility for X"
 MAINTAINER = "Florian Boor <florian.boor@kernelconcepts.de>"

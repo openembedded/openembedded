@@ -1,2 +1,2 @@
-include gpsd.inc
+require gpsd.inc
 PR = "r0"

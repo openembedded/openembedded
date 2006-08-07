@@ -1,4 +1,4 @@
-include stunnel.inc
+require stunnel.inc
 
 PR = "r1"
 SRC_URI = "ftp://stunnel.mirt.net/stunnel/OBSOLETE/stunnel-${PV}.tar.gz \

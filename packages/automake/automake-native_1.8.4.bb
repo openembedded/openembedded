@@ -1,5 +1,5 @@
 SECTION = "devel"
-include automake_${PV}.bb
+require automake_${PV}.bb
 S = "${WORKDIR}/automake-${PV}"
 DEPENDS = "autoconf-native"
 RDEPENDS_${PN} = "autoconf-native perl-native-runtime"

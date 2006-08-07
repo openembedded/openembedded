@@ -1,0 +1,15 @@
+Index: kernel26/arch/arm/mach-pxa/hx4700/Kconfig
+===================================================================
+RCS file: /cvs/linux/kernel26/arch/arm/mach-pxa/hx4700/Kconfig,v
+retrieving revision 1.22
+diff -u -r1.22 Kconfig
+--- kernel26/arch/arm/mach-pxa/hx4700/Kconfig	28 Mar 2006 19:12:12 -0000	1.22
++++ kernel26/arch/arm/mach-pxa/hx4700/Kconfig	6 Aug 2006 23:24:52 -0000
+@@ -2,6 +2,7 @@
+ 	bool "HP iPAQ hx4700"
+ 	select PXA27x
+ 	select GPIO_KEYS
++	select IWMMXT
+ 	help
+ 	  This enables support for the HP iPAQ hx4700 handheld.
+ 	  

@@ -1,4 +1,4 @@
-include xorg-app-common.inc
+require xorg-app-common.inc
 
 DESCRIPTION = "tiny window manager"
 

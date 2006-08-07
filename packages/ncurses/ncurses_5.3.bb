@@ -8,4 +8,4 @@ SRC_URI = "${GNU_MIRROR}/ncurses/ncurses-${BaseV}.tar.gz \
 	   file://configure.patch;patch=1"
 S = "${WORKDIR}/ncurses-${BaseV}"
 
-include ncurses.inc
+require ncurses.inc
