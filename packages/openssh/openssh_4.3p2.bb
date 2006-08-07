@@ -15,7 +15,7 @@ used to provide applications with a secure communication channel."
 HOMEPAGE = "http://www.openssh.org/"
 LICENSE = "BSD"
 MAINTAINER = "Bruno Randolf <bruno.randolf@4g-systems.biz>"
-PR = "r10"
+PR = "r0"
 
 SRC_URI = "ftp://ftp.openbsd.org/pub/OpenBSD/OpenSSH/portable/openssh-${PV}.tar.gz \
            file://sshd_config \
