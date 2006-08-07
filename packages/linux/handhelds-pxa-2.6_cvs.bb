@@ -3,17 +3,18 @@ DESCRIPTION = "handhelds.org Linux kernel for PXA based devices."
 MAINTAINER = "Greg Gilbert <greg@treke.net>"
 LICENSE = "GPL"
 PV = "${K_MAJOR}.${K_MINOR}.${K_MICRO}-hh${HHV}+cvs${SRCDATE}"
-PR = "r0"
+PR = "r1"
 #
 COMPATIBLE_HOST = "arm.*-linux"
-COMPATIBLE_MACHINE = '(h3900|h2200|ipaq-pxa270)'
+COMPATIBLE_MACHINE = '(h3900|h5xxx|h2200|ipaq-pxa270)'
 
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/handhelds-pxa-${PV}"
 
 SRC_URI = "${HANDHELDS_CVS};module=linux/kernel26  \
            file://24-hostap_cs_id.diff;patch=1 \
            file://hrw-pcmcia-ids-r2.patch;patch=1 \
-           file://defconfig"
+           file://hx-iwmmxt.patch;patch=1 \
+	   file://defconfig"
 
 S = "${WORKDIR}/kernel26"
 
