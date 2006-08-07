@@ -1,5 +1,5 @@
 DESCRIPTION = "Task packages for the Angstrom distribution"
-PR = "r14"
+PR = "r15"
 ALLOW_EMPTY = "1"
 
 PACKAGE_ARCH = "${MACHINE_ARCH}"
@@ -8,6 +8,7 @@ BOOTMODULES_RRECOMMENDS ?= ""
 DEBUG_APPS ?= ""
 DEBUG_APPS += '${@base_conditional("DISTRO_TYPE", "release", "", "strace gdb procps",d)}'
 EXTRA_STUFF ?= ""
+PCMCIA_MANAGER ?= "pcmciautils"
 
 PACKAGES = "\
     angstrom-base-depends \
@@ -36,6 +37,7 @@ RDEPENDS_angstrom-base-depends = "\
     tslib-tests tslib-calibrate \
     ${EXTRA_STUFF} \
     ${DEBUG_APPS} \
+    ${PCMCIA_MANAGER} \	
 "
 
 RDEPENDS_angstrom-base-depends_append_ipaq-pxa270 = " tiinit acx-firmware "
