@@ -1,5 +1,5 @@
---- libopie2/opiecore/device/odevice_jornada.cpp_orig	2006-08-06 12:36:55.000000000 +0000
-+++ libopie2/opiecore/device/odevice_jornada.cpp	2006-08-06 12:53:45.000000000 +0000
+--- libopie2/opiecore/device/odevice_jornada.cpp_orig	2006-08-06 14:34:15.000000000 +0000
++++ libopie2/opiecore/device/odevice_jornada.cpp	2006-08-06 14:34:53.000000000 +0000
 @@ -125,9 +125,12 @@
      if ( model == "HP Jornada 56x" ) {
          d->m_modelstr = "Jornada 56x";
@@ -27,19 +27,20 @@
          return 255;
      else
      	return 0;
-@@ -185,9 +190,10 @@
+@@ -185,10 +190,11 @@
      	    cmdline = QString::fromLatin1( "echo 4 > /sys/class/backlight/sa1100fb/power");
          else
      	    cmdline = QString::fromLatin1( "echo 0 > /sys/class/backlight/sa1100fb/power; echo %1 > /sys/class/backlight/sa1100fb/brightness" ).arg( bright );
 -    } else if ( d->m_model == Model_Jornada_720 ) {
 +    } else if ( d->m_model == Model_Jornada_7xx ) {
          cmdline = QString::fromLatin1( "echo %1 > /sys/class/backlight/e1356fb/brightness" ).arg( bright );
--    }
 +    } else if ( d->m_model == Model_Jornada_6xx ) {
 +        cmdline = QString::fromLatin1( "echo %1 > /sys/class/backlight/hp680-bl/brightness" ).arg( bright );
- 
+     }
+-
      // No Global::shellQuote as we gurantee it to be sane
      res = ( ::system( QFile::encodeName(cmdline) ) == 0 );
+ 
 @@ -204,9 +210,11 @@
  
      if ( d->m_model == Model_Jornada_56x ) {
