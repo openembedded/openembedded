@@ -2,7 +2,7 @@ LICENSE  = "GPL"
 SECTION  = "gpe"
 PRIORITY = "optional"
 
-DEPENDS = "gtk+ esound audiofile libgpewidget libxsettings libxsettings-client"
+DEPENDS = "gtk+ esound-gpe audiofile libgpewidget libxsettings libxsettings-client"
 RDEPENDS_${PN} = "xst xset ipaq-sleep ntpdate gpe-login gpe-icons timezones"
 RDEPENDS_gpe-conf-panel = "gpe-conf"
 
@@ -18,7 +18,7 @@ PACKAGES += "gpe-conf-panel"
 FILES_${PN} = "${sysconfdir} ${bindir} ${datadir}/pixmaps \
                 ${datadir}/applications/gpe-conf-* ${datadir}/gpe/pixmaps \
                 ${datadir}/gpe-conf"
-				
+
 FILES_gpe-conf-panel = "${datadir}/applications/gpe-conf.desktop"
 
 
