@@ -3,7 +3,7 @@ HOMEPAGE = "http://www.alsa-project.org"
 SECTION = "console/utils"
 LICENSE = "GPL"
 DEPENDS = "alsa-lib ncurses"
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "ftp://ftp.alsa-project.org/pub/utils/alsa-utils-${PV}.tar.bz2"
 
@@ -49,5 +49,6 @@ DESCRIPTION_alsa-utils-alsaconf     = "a bash script that creates ALSA configura
 
 RDEPENDS_alsa-utils-aplay  += "alsa-conf"
 RDEPENDS_alsa-utils-amixer += "alsa-conf"
+RDEPENDS_alsa-utils-alsamixer += "alsa-conf"
 
 ALLOW_EMPTY_alsa-utils = "1"
