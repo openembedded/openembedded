@@ -5,7 +5,8 @@ PRIORITY = "optional"
 MAINTAINER = "Philip Blundell <pb@handhelds.org>"
 DEPENDS = "libgpewidget libgpepimc sqlite"
 
-inherit pkgconfig gpe
+GPE_TARBALL_SUFFIX = "bz2"
+inherit pkgconfig gpe autotools
 
 headers = "todo-db.h"
 
@@ -20,5 +21,5 @@ do_stage () {
 
 do_install () {
 	gpe_do_install
-	oe_runmake PREFIX=${prefix} DESTDIR=${D} install-devel
+#	oe_runmake PREFIX=${prefix} DESTDIR=${D} install-devel
 }
