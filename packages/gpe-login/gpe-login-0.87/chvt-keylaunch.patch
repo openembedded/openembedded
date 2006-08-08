@@ -1,0 +1,12 @@
+--- /tmp/gpe-login.keylaunchrc	2006-05-29 23:46:42.806081576 +0200
++++ gpe-login-0.87/gpe-login.keylaunchrc	2006-05-29 23:48:18.476537456 +0200
+@@ -1,3 +1,9 @@
+ key=????XF86AudioRecord:xcalibrate:/usr/bin/gpe-xcalibrate.sh
+ key=????XF86PowerDown:-:/usr/bin/apm --suspend
+ key=????Held XF86PowerDown:-:bl toggle
++
++# VT changing
++key=...*Left:-:~chvt 1
++key=...*Right:-:~chvt 3
++key=...*Escape:-:~/etc/init.d/gpe-dm stop
++
