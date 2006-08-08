@@ -4,12 +4,13 @@ PRIORITY = "optional"
 LICENSE = "LGPL"
 DEPENDS = "intltool-native glib-2.0"
 PR = "r0"
+DEFAULT_PREFERENCE = "5"
 SRCDATE = "20060804"
-#Remove the dash below when 0.3.1 changes in PV
-PV = "0.3.1+cvs-${SRCDATE}"
+PV = "0.4.0+cvs${SRCDATE}"
 
 SRC_URI = "cvs://anonymous@anoncvs.gnome.org/cvs/gnome;module=libmimedir \
-           file://mimedir-update.patch;patch=1"
+           file://mimedir-update.patch;patch=1 \
+           file://mimedir-write-sequence.patch;patch=1;pnum=0"
 
 S = "${WORKDIR}/libmimedir"
 

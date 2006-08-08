@@ -1,0 +1,105 @@
+diff -ur bootchart-0.9-org/script/bootchartd bootchart-0.9/script/bootchartd
+--- bootchart-0.9-org/script/bootchartd	2005-11-13 19:40:01.000000000 +0200
++++ bootchart-0.9/script/bootchartd	2006-08-03 19:06:22.000000000 +0300
+@@ -1,4 +1,4 @@
+-#!/bin/sh
++#!/bin/bash
+ #
+ # Bootchart logger script
+ # Ziga Mahkovec  <ziga.mahkovec@klika.si>
+@@ -43,10 +43,12 @@
+ 	# boot), a tmpfs is mounted in /mnt.  The mount point is immediately
+ 	# released using a lazy umount, so the script must never leave that
+ 	# directory.
+-	LOG_DIR="$( mktemp -d /tmp/bootchart.XXXXXX 2>/dev/null )"
++	#LOG_DIR="$( mktemp -d /tmp/bootchart.XXXXXX 2>/dev/null )"
++	LOG_DIR=""
+ 	if [ -z "$LOG_DIR" ]; then
+-		LOG_DIR="/mnt"
+-		LAZY_UMOUNT="yes"
++		LOG_DIR="/bootchart"
++		mkdir -p $LOG_DIR
++		#LAZY_UMOUNT="yes"
+ 		mount -n -t tmpfs -o size=$TMPFS_SIZE none "$LOG_DIR" >/dev/null 2>&1
+ 	fi
+ 	cd "$LOG_DIR"
+@@ -54,7 +56,7 @@
+ 	[ -n "$LAZY_UMOUNT" ] && umount -nfl "$LOG_DIR"
+ 
+ 	# Enable process accounting if configured
+-	if [ "$PROCESS_ACCOUNTING" = "yes" ]; then
++	if [ "$PROCESS_ACCOUNTING" = "yes" -a -x /usr/sbin/accton ]; then
+ 		> kernel_pacct
+ 		accton kernel_pacct
+ 	fi
+@@ -153,7 +155,7 @@
+ 
+ 	# Stop process accounting if configured
+ 	local pacct=
+-	if [ "$PROCESS_ACCOUNTING" = "yes" ]; then
++	if [ "$PROCESS_ACCOUNTING" = "yes" -a -x /usr/sbin/accton ]; then
+ 		accton
+ 		pacct=kernel_pacct
+ 	fi
+@@ -215,18 +217,34 @@
+ 	# Started by the kernel.  Start the logger in background and exec
+ 	# init(1).
+ 	IN_INIT="yes"
+-	echo "Starting bootchart logging"
+-	start &
+ 	
+ 	# Optionally, an alternative init(1) process may be specified using
+ 	# the kernel command line (e.g. "bootchart_init=/sbin/initng")
++	# Optionally, possible to override sample period using
++	# the kernel command line (e.g. "bootchart_sample_period=0.1")
+ 	init="/sbin/init"
+-	for i in $@; do
++
++	#kparams=$@
++	# For some reason, handheld kernel doesn't pass command line here - fish for it
++	mount -t proc none /bootchart
++	kparams=`cat /bootchart/cmdline`
++	umount /bootchart
++
++	echo "Kernel params: $kparams"
++	for i in $kparams; do
+ 		if [ "${i%%=*}" = "bootchart_init" ]; then
+ 			init="${i#*=}"
+ 			break
+ 		fi
++		if [ "${i%%=*}" = "bootchart_sample_period" ]; then
++			SAMPLE_PERIOD="${i#*=}"
++			break
++		fi
+ 	done
++
++	echo "Starting bootchart logging, sample period: ${SAMPLE_PERIOD}s"
++	start &
++
+ 	exec $init $*
+ fi
+ 
+diff -ur bootchart-0.9-org/script/bootchartd.conf bootchart-0.9/script/bootchartd.conf
+--- bootchart-0.9-org/script/bootchartd.conf	2005-11-13 19:40:01.000000000 +0200
++++ bootchart-0.9/script/bootchartd.conf	2006-08-03 15:21:31.000000000 +0300
+@@ -10,16 +10,17 @@
+ BOOTLOG_LOCK=".lock"
+ 
+ # Sampling period (in seconds)
+-SAMPLE_PERIOD=0.2
++# Default 0.2 is not fine enough to catch peculiarities in OE-based distro
++SAMPLE_PERIOD=0.1
+ 
+ # Whether to enable and store BSD process accounting information.  The
+ # kernel needs to be configured to enable v3 accounting
+ # (CONFIG_BSD_PROCESS_ACCT_V3). accton from the GNU accounting utilities
+ # is also required.
+-PROCESS_ACCOUNTING="no"
++PROCESS_ACCOUNTING="yes"
+ 
+ # Tarball for the various boot log files
+-BOOTLOG_DEST=/var/log/bootchart.tgz
++BOOTLOG_DEST=/bootchart.tgz
+ 
+ # Whether to automatically generate the boot chart once the boot logger
+ # completes.  The boot chart will be generated in $AUTO_RENDER_DIR.

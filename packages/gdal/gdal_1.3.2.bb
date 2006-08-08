@@ -33,6 +33,6 @@ do_compile() {
 
 do_package_prepend() {
 	# the brokenness....
-	os.system('cp -a ${D}${D}* ${D}../')
+	os.system('cp -pPR ${D}${D}* ${D}../')
 }	
 

@@ -54,7 +54,7 @@ do_compile () {
 do_stage () {
 	install -d ${STAGING_INCDIR}/linux/ixp4xx-csr
 	install -m 0644 src/include/*.h ${STAGING_INCDIR}/linux/ixp4xx-csr/
-	cp -rf --dereference src/linux/* ${STAGING_INCDIR}/linux/ixp4xx-csr/
+	cp -RLf src/linux/* ${STAGING_INCDIR}/linux/ixp4xx-csr/
 }
 
 do_install () {

@@ -20,6 +20,6 @@ do_configure_prepend() {
 
 do_install() {
         install -d ${D}${palmtopdir}
-	cp -dfr `ls -dp ${WORKDIR}/${palmtopdir}/*|grep -v SCCS` ${D}${palmtopdir}/
+	cp -Pfr `ls -dp ${WORKDIR}/${palmtopdir}/*|grep -v SCCS` ${D}${palmtopdir}/
         install -D -m 755 txdrug ${D}${palmtopdir}/bin/txdrug
 }

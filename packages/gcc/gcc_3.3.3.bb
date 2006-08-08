@@ -93,6 +93,7 @@ SRC_URI = "${GNU_MIRROR}/gcc/releases/gcc-${PV}/gcc-${PV}.tar.bz2 \
 	file://gcc-uclibc-3.3-110-conf.patch;patch=1 \
 	file://gcc-uclibc-3.3-120-softfloat.patch;patch=1 \
 	file://gcc-uclibc-3.3-200-code.patch;patch=1 \
+	file://zecke-xgcc-cpp.patch;patch=1 \
 	file://bash3.patch;patch=1"
 
 MIRRORS_prepend () {
