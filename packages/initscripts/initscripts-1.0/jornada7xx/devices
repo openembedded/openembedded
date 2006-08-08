@@ -48,7 +48,7 @@ else
 	if test "$VERBOSE" != "no"; then echo -n "Populating /dev: "; fi
 	cd /
 	mkdir -p dev/input
-        mknod /dev/input/ts0 c 13 128
+        mknod /dev/input/ts0 c 13 65
 	mknod /dev/ttySC1 c 9 204
 	mknod /dev/irda0  c 10 204
 	mkdir -p dev/msys

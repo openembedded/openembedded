@@ -21,5 +21,5 @@ do_install() {
 	install -d ${D}${bindir}
 	install -m 0755 src/freedroid ${D}${bindir}
         install -d ${D}${datadir}/freedroid/
-	cp -a graphics map sound ${D}${datadir}/freedroid/
+	cp -pPR graphics map sound ${D}${datadir}/freedroid/
 }

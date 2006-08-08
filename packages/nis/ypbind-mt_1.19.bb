@@ -14,7 +14,7 @@ of known secure NIS server (/etc/yp.conf) Binds to \
 the server which answered as first."
 HOMEPAGE="http://www.linux-nis.org/nis/ypbind-mt/index.html"
 
-include nis.inc
+require nis.inc
 
 # ypbind-mt now provides all the functionality of ypbind
 # and is used in place of it.

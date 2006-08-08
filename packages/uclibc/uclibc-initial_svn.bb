@@ -1,5 +1,5 @@
 SECTION = "base"
-include uclibc_svn.bb
+require uclibc_svn.bb
 
 FILESPATH = "${@base_set_filespath([ '${FILE_DIRNAME}/uclibc-cvs', '${FILE_DIRNAME}/uclibc', '${FILE_DIRNAME}/files', '${FILE_DIRNAME}' ], d)}"
 

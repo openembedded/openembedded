@@ -1,1 +1,1 @@
-include php.inc
+require php.inc

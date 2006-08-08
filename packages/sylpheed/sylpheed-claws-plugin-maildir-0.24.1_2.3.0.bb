@@ -1,4 +1,4 @@
-include sylpheed-claws-extra-plugins.inc
+require sylpheed-claws-extra-plugins.inc
 
 DEPENDS_append = " db"
 

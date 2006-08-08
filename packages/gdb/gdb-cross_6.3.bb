@@ -33,6 +33,6 @@ do_configure () {
 
 do_stage() {
 	oe_runmake 'DESTDIR=${CROSS_DIR}' install
-	cp -a ${CROSS_DIR}${prefix}/* ${CROSS_DIR}
+	cp -pPR ${CROSS_DIR}${prefix}/* ${CROSS_DIR}
 	rm -rf ${CROSS_DIR}${prefix}
 }

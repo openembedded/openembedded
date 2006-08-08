@@ -39,7 +39,7 @@ do_compile() {
 do_stage() {
 	install -m 0755 bin/qmake ${STAGING_BINDIR}
 	install -d ${QMAKE_MKSPEC_PATH}
-	cp -dfR mkspecs/* ${QMAKE_MKSPEC_PATH}
+	cp -fPR mkspecs/* ${QMAKE_MKSPEC_PATH}
 }
 
 do_install() {

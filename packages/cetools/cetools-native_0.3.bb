@@ -1,5 +1,5 @@
 SECTION = "console/network"
-include cetools_${PV}.bb
+require cetools_${PV}.bb
 inherit native
 
 do_stage() {

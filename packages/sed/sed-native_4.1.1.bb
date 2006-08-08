@@ -1,3 +1,3 @@
 SECTION = "console/utils"
-include sed_${PV}.bb
+require sed_${PV}.bb
 inherit native

@@ -1,1 +1,1 @@
-include ipkg.inc
+require ipkg.inc

@@ -1,6 +1,6 @@
 SECTION = "console/utils"
 inherit native
-include unzip_${PV}.bb
+require unzip_${PV}.bb
 
 do_stage() {
 	install -d ${STAGING_BINDIR}

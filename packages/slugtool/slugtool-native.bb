@@ -1,5 +1,5 @@
 SECTION = "unknown"
-include slugtool.bb
+require slugtool.bb
 inherit native
 
 FILESPATH = "${@base_set_filespath([ '${FILE_DIRNAME}/slugtool-${PV}', '${FILE_DIRNAME}/slugtool', '${FILE_DIRNAME}/files', '${FILE_DIRNAME}' ], d)}"

@@ -1,4 +1,4 @@
-include xorg-lib-common.inc
+require xorg-lib-common.inc
 
 PR = "r1"
 SRC_URI += "file://no-scalable-crash.patch;patch=1"

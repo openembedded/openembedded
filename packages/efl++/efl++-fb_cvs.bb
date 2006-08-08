@@ -1,4 +1,4 @@
-include efl++.inc
+require efl++.inc
 
 PV = "0.1.0+cvs${SRCDATE}"
 

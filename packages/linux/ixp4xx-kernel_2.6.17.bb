@@ -3,14 +3,14 @@
 # Increment PR_CONFIG for changes to the ixp4xx-kernel specific
 # defconfig (do *NOT* increment anything in here for changes
 # to other kernel configs!)
-PR_CONFIG = "1"
+PR_CONFIG = "2"
 #
 # Increment the number below (i.e. the digits after PR) when
 # making changes within this file or for changes to the patches
 # applied to the kernel.
 PR = "r2.${PR_CONFIG}"
 
-include ixp4xx-kernel.inc
+require ixp4xx-kernel.inc
 
 SRC_URI += "http://svn.nslu2-linux.org/svnroot/kernel/trunk/patches/2.6.17/defconfig"
 

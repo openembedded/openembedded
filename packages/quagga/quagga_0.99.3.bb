@@ -1,2 +1,2 @@
-include quagga.inc
+require quagga.inc
 PR = "r2"

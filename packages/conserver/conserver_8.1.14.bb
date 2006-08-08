@@ -1,2 +1,2 @@
-include conserver.inc
+require conserver.inc
 PR="r2"

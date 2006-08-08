@@ -1,4 +1,4 @@
-include dpkg.inc
+require dpkg.inc
 DEPENDS += "bzip2"
 
 inherit autotools gettext

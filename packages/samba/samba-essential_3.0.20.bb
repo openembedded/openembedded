@@ -14,7 +14,7 @@ S := ${WORKDIR}/samba-${PV}/source
 
 RCONFILCTS = samba
 
-include samba-essential.inc
+require samba-essential.inc
 inherit update-rc.d
 
 INITSCRIPT_NAME = "samba"

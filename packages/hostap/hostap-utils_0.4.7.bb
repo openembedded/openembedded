@@ -1,3 +1,3 @@
-include hostap-utils.inc
+require hostap-utils.inc
 
 DEFAULT_PREFERENCE = "-1"

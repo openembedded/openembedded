@@ -1,2 +1,2 @@
-include olsrd.inc
+require olsrd.inc
 PR = "r1"

@@ -1,4 +1,4 @@
-include ccdv.bb
+require ccdv.bb
 inherit native
 
 do_stage () {

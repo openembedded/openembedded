@@ -1,4 +1,4 @@
-include xorg-driver-input.inc
+require xorg-driver-input.inc
 
 #DESCRIPTION = ""
 

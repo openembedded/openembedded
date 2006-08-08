@@ -1,4 +1,4 @@
-include opie-securityplugin-blueping.inc
+require opie-securityplugin-blueping.inc
 
 PV = "${OPIE_CVS_PV}"
 

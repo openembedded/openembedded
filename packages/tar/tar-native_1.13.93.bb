@@ -1,5 +1,5 @@
 SECTION = "base"
-include tar_${PV}.bb
+require tar_${PV}.bb
 inherit native
 S = "${WORKDIR}/tar-${PV}"
 

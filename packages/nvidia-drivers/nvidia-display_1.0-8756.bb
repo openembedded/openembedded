@@ -2,7 +2,7 @@
 # Copyright (C) 2005-2006, Advanced Micro Devices, Inc.  All Rights Reserved
 # Released under the MIT license (see /COPYING)
 
-include nvidia-drivers.inc
+require nvidia-drivers.inc
 
 PKG_BASENAME="NVIDIA-Linux-${NVIDIA_ARCH}-${PV}-${NVIDIA_PKGRUN}"
 
@@ -30,13 +30,13 @@ do_install() {
 
 	install -d ${D}/usr
 	for dir in bin include lib share ; do
-		cp -a ${WORKDIR}/${PKG_BASENAME}/usr/$dir ${D}/usr/
+		cp -pPR ${WORKDIR}/${PKG_BASENAME}/usr/$dir ${D}/usr/
 	done
 	
 	#X11R7.0 style...
 	install -d ${D}/usr/lib/xorg/
 	cp ${WORKDIR}/${PKG_BASENAME}/usr/X11R6/lib/lib* ${D}/usr/lib/
-	cp -a ${WORKDIR}/${PKG_BASENAME}/usr/X11R6/lib/modules ${D}/usr/lib/xorg/
+	cp -pPR ${WORKDIR}/${PKG_BASENAME}/usr/X11R6/lib/modules ${D}/usr/lib/xorg/
 	ln -s libglx.so.1.0.8756 ${D}/usr/lib/xorg/modules/extensions/libglx.so
 	
 }

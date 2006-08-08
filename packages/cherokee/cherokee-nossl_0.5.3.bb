@@ -1,4 +1,4 @@
-include cherokee_${PV}.bb
+require cherokee_${PV}.bb
 
 DEPENDS = "pcre"
 

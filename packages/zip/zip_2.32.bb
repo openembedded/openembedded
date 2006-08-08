@@ -1,2 +1,2 @@
-include zip.inc
+require zip.inc
 PR="r0"

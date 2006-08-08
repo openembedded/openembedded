@@ -1,3 +1,3 @@
 # This package builds the devio program for the build architecture
-include devio_cvs.bb
-include devio-native.inc
+require devio_cvs.bb
+require devio-native.inc

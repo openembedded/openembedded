@@ -1,4 +1,4 @@
-include xorg-doc-common.inc
+require xorg-doc-common.inc
 
 DESCRIPTION = "The documentation in this package is from xc/doc in the monolithic \
 source tree."

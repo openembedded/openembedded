@@ -1,3 +1,3 @@
-include ruby_${PV}.bb
+require ruby_${PV}.bb
 inherit native
 DEPENDS = ""

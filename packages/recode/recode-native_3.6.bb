@@ -1,4 +1,4 @@
-include recode_${PV}.bb
+require recode_${PV}.bb
 
 inherit native
 

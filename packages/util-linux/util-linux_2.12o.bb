@@ -1,3 +1,3 @@
-include util-linux.inc
+require util-linux.inc
 
 PR = "r6"

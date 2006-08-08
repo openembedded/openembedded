@@ -3,7 +3,7 @@
 #FIXME: remove the following
 ARM_INSTRUCTION_SET = "arm"
 
-include monotone.inc
+require monotone.inc
 
 PR = "r0"
 

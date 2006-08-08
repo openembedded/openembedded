@@ -1,4 +1,4 @@
-include genext2fs.inc
+require genext2fs.inc
 
 TRIMMEDV = "${@bb.data.getVar('PV', d, 1).split('+')[1]}"
 FILESPATH = "${FILE_DIRNAME}/genext2fs-${PV}:${FILE_DIRNAME}/genext2fs:${FILE_DIRNAME}/files"

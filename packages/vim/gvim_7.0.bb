@@ -1,6 +1,6 @@
 VIMVER = "70"
 
-include vim.inc
+require vim.inc
 
 DEPENDS += "gtk+"
 FILESPATH = "${@base_set_filespath([ '${FILE_DIRNAME}/vim-7.0', '${FILE_DIRNAME}/vim', '${FILE_DIRNAME}/files', '${FILE_DIRNAME}' ], d)}"

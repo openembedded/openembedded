@@ -1,4 +1,4 @@
-include nylon-image-standard.bb
+require nylon-image-standard.bb
 
 export IMAGE_BASENAME = "nylon-extra"
  

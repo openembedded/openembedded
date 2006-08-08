@@ -6,7 +6,7 @@ DESCRIPTION = "Packages that are compatible with the SlugOS firmware"
 MAINTAINER = "NSLU2 Linux <nslu2-linux@yahoogroups.com>"
 HOMEPAGE = "http://www.nslu2-linux.org"
 LICENSE = "MIT"
-PR = "r6"
+PR = "r10"
 CONFLICTS = "db3"
 PROVIDES += "${SLUGOS_IMAGENAME}-packages"
 
@@ -61,6 +61,7 @@ SLUGOS_PACKAGES = "\
 	findutils \
 	flac \
 	flex \
+	flite \
 	ftpd-topfield \
 	gawk \
 	gcc \
@@ -95,16 +96,19 @@ SLUGOS_PACKAGES = "\
 	libusb \
 	libvorbis \
 	libxml2 \
+	linphone \
 	lirc \
 	lrzsz \
 	lsof \
 	lvm2 \
 	m4 \
+	madplay \
 	madwifi-ng \
 	mailx \
 	make \
 	masqmail \
 	mdadm \
+	memtester \
 	mgetty \
 	miau \ 
 	microcom \
@@ -176,7 +180,6 @@ SLUGOS_PACKAGES = "\
 # Packages currently broken on all platforms
 SLUGOS_BROKEN_PACKAGES = "\
 	irssi \
-	memtester \
 	obexftp \
 	qc-usb-messenger \
 	unionfs-modules \

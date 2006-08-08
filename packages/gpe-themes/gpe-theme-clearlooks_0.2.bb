@@ -13,7 +13,7 @@ SRC_URI =		"http://dominion.kabel.utwente.nl/koen/pda/files/${P}.tar.gz"
 
 do_install() {
 install -d ${D}${datadir}/themes/
-cp -dpR ${WORKDIR}/Clearlooks ${D}${datadir}/themes/ 
+cp -PpR ${WORKDIR}/Clearlooks ${D}${datadir}/themes/ 
 }
 
 

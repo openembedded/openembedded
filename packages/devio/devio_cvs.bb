@@ -1,2 +1,2 @@
 CVS_TAG = ""
-include devio-cvs.inc
+require devio-cvs.inc

@@ -1,6 +1,6 @@
 VIMVER = "64"
 
-include vim.inc
+require vim.inc
 
 EXTRA_OECONF = "--enable-gui=none --disable-gtktest \
 		--disable-xim --with-features=normal \

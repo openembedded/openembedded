@@ -1,4 +1,4 @@
-include olsrd.inc
+require olsrd.inc
 PR = "r2"
 
 SRC_URI += "file://0.4.9-httpinfo-makefile.diff;patch=1"

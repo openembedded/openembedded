@@ -1,4 +1,4 @@
-include ecore.inc
+require ecore.inc
 DEPENDS += "evas-x11"
 PR = "r3"
 

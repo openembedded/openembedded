@@ -1,5 +1,6 @@
 SECTION = "libs"
-include zlib_${PV}.bb
+require zlib_${PV}.bb
+ZLIB_EXTRA = ""
 inherit native
 
 DEPENDS = "libtool-native"

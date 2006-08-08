@@ -1,4 +1,4 @@
-include wlan-ng-modules.inc
+require wlan-ng-modules.inc
 PR = "r0"
 PV = "0.2.3+svn${SRCDATE}"
 
