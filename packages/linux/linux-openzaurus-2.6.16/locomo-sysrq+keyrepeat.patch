@@ -47,20 +47,3 @@
  #define LOCOMOKBD_PRESSED	1
  
  struct locomokbd {
-@@ -146,6 +149,7 @@
- 	locomokbd_charge_all(membase);
- 
- 	num_pressed = 0;
-+
- 	for (col = 0; col < KB_COLS; col++) {
- 
- 		locomokbd_activate_col(membase, col);
-@@ -155,7 +159,7 @@
- 		for (row = 0; row < KB_ROWS; row++) {
- 			scancode = SCANCODE(col, row);
- 			if (rowd & KB_ROWMASK(row)) {
--				/* printk(KERN_ERR "locomokbd: COL [%i] ROW [%i] scancode [%i] keycode [%i]\n",col,row,scancode,locomokbd->keycode[scancode]); */
-+				/* printk(KERN_ERR "locomokbd: ROW [%i] COL [%i] scancode [%i] keycode [%i]\n",row,col,scancode,locomokbd->keycode[scancode]); */
- 				num_pressed += 1;
- 				input_report_key(locomokbd->input, locomokbd->keycode[scancode], 1);
- 			} else {
