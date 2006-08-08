@@ -23,8 +23,8 @@ SRC_URI = "ftp://ftp.gtk.org/pub/gtk/v2.10/gtk+-${PV}.tar.bz2 \
 	   file://migration.patch;patch=1;pnum=0 \
            file://run-iconcache.patch;patch=1 \
            file://disable-print.patch;patch=1 \
-           file://hardcoded_libtool.patch;patch=1"
-#           file://no-demos.patch;patch=1
+           file://hardcoded_libtool.patch;patch=1 \
+           file://no-demos.patch;patch=1"
 #           file://gtk+-handhelds.patch;patch=1
 #	   file://single-click.patch;patch=1
 #	   file://spinbutton.patch;patch=1 \
