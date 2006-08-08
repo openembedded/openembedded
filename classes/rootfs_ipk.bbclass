@@ -160,7 +160,7 @@ insert_feed_uris_t () {
                 echo "src/gz $feed_name $feed_uri" >> ${T}/ipkg.conf
         done
 		for line in ${LINGUAS_NAMES}; do
-				feed_name="locale{$line}"
+				feed_name="locale-${line}"
 				feed_uri="${FEED_BASE_URI}/feed/locale/${line}"
 
                 echo "Added $feed_name feed with URL $feed_uri"

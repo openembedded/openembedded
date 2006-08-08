@@ -1,7 +1,7 @@
 SECTION = "base"
 DESCRIPTION = "tslib is a touchscreen access library."
 PV = "0.0cvs${CVSDATE}"
-PR = "r40"
+PR = "r41"
 
 SRC_URI_OVERRIDES_PACKAGE_ARCH = "0"
 PACKAGE_ARCH_tslib-conf = "${MACHINE}"
@@ -39,8 +39,6 @@ do_install_prepend () {
 	install -m 0644 ${WORKDIR}/ts.conf ${S}/etc/ts.conf
 }
 
-export ZKERNEL_VERSION=bb.data.getVar("ZKERNEL_VERSION", d, 1)
-
 do_install_append() {
 	install -d ${D}${sysconfdir}/profile.d/
 	install -m 0755 ${WORKDIR}/tslib.sh ${D}${sysconfdir}/profile.d/
@@ -61,7 +59,7 @@ do_install_append() {
 		;;
 	poodle )
 		install -d ${D}${datadir}/tslib
-		install -m 0644 ${WORKDIR}/ts-${ZKERNEL_VERSION}.conf ${D}${datadir}/tslib/ts.conf
+		install -m 0644 ${WORKDIR}/ts-2.*.conf ${D}${datadir}/tslib/
 		rm -f ${D}${sysconfdir}/ts.conf
 		;;
 	simpad )

@@ -24,4 +24,4 @@ do_deploy() {
 	esac
 }
 
-addtask deploy before do_build after do_compile
+addtask deploy before do_package after do_compile

@@ -46,11 +46,3 @@
  };
  
  #define KB_ROWS			16
-@@ -150,6 +155,7 @@
- 		for (row = 0; row < KB_ROWS; row++) {
- 			scancode = SCANCODE(col, row);
- 			if (rowd & KB_ROWMASK(row)) {
-+				/* printk(KERN_ERR "locomokbd: COL [%i] ROW [%i] scancode [%i] keycode [%i]\n",col,row,scancode,locomokbd->keycode[scancode]); */
- 				num_pressed += 1;
- 				input_report_key(locomokbd->input, locomokbd->keycode[scancode], 1);
- 			} else {

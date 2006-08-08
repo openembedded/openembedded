@@ -1,11 +1,15 @@
-DEPENDS = "openssl jpeg libpng zlib"
 DESCRIPTION = "An Internet printing system for Unix."
 SECTION = "console/utils"
 LICENSE = "GPL LGPL"
 
-SRC_URI = "ftp://ftp.easysw.com/pub/cups/${PV}/cups-${PV}-source.tar.bz2"
+DEPENDS = "openssl jpeg libpng zlib install-native"
 
-inherit autotools
+PR = "r4"
+
+SRC_URI = "ftp://ftp.easysw.com/pub/cups/${PV}/cups-${PV}-source.tar.bz2 \
+           file://strftime_fix.patch;patch=1"
+
+inherit autotools binconfig
 
 LDFLAGS += " -L${STAGING_LIBDIR} "
 
@@ -22,6 +26,24 @@ do_compile () {
 		   "-I."
 }
 
-do_install () {
+fakeroot do_install () {
 	oe_runmake "DSTROOT=${D}" install
 }
+
+do_stage () {
+	install -d ${STAGING_INCDIR}/cups
+	install ${S}/cups/*.h ${STAGING_INCDIR}/cups/
+	install ${S}/filter/*.h ${STAGING_INCDIR}/cups/
+	oe_libinstall -C cups -so libcups ${STAGING_LIBDIR}
+	oe_libinstall -C filter -so libcupsimage ${STAGING_LIBDIR}
+}
+
+#package the html for the webgui inside the main packages (~1MB uncompressed)
+FILES_${PN} += "${datadir}/doc/cups/images \
+		${datadir}/doc/cups/*html \
+		${datadir}/doc/cups/*.css \
+		"
+
+
+
+

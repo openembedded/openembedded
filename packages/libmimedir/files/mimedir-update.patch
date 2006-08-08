@@ -1,0 +1,403 @@
+diff -Nur libmimedir_orig/Makefile.am libmimedir/Makefile.am
+--- libmimedir_orig/Makefile.am	2002-08-15 15:36:01.000000000 +0200
++++ libmimedir/Makefile.am	2006-08-04 15:51:06.000000000 +0200
+@@ -5,7 +5,22 @@
+ 	mimedir-1.0.pc.in	\
+ 	intltool-extract.in	\
+ 	intltool-merge.in	\
+-	intltool-update.in
++	intltool-update.in \
++	debian/changelog \
++	debian/copyright \
++	debian/control \
++	debian/compat \
++	debian/rules \
++	debian/libmimedir0.files \
++	debian/libmimedir-dev.files
++	
+ 
+ pkgconfigdir = $(libdir)/pkgconfig
+ pkgconfig_DATA = mimedir-1.0.pc
++
++deb: dist
++	-mkdir $(top_builddir)/debian-build
++	cd $(top_builddir)/debian-build && tar zxf ../$(top_builddir)/$(PACKAGE)-$(VERSION).tar.gz
++	cd $(top_builddir)/debian-build/$(PACKAGE)-$(VERSION) && dpkg-buildpackage -S -D -rfakeroot
++	cd $(top_builddir)/debian-build/$(PACKAGE)-$(VERSION) && dpkg-buildpackage -D -rfakeroot
++	-rm -rf $(top_builddir)/debian-build/$(PACKAGE)-$(VERSION)
+diff -Nur libmimedir_orig/configure.in libmimedir/configure.in
+--- libmimedir_orig/configure.in	2006-02-09 13:30:13.000000000 +0100
++++ libmimedir/configure.in	2006-08-04 15:51:06.000000000 +0200
+@@ -3,7 +3,7 @@
+ AC_INIT(MIME Directory Library, 0.4.0, mailto:srittau@jroger.in-berlin.de, libmimedir)
+ AC_PREREQ(2.53)
+ AC_CONFIG_SRCDIR(mimedir/mimedir-attribute.c)
+-AM_INIT_AUTOMAKE(AC_PACKAGE_NAME, AC_PACKAGE_VERSION)
++AM_INIT_AUTOMAKE(libmimedir, AC_PACKAGE_VERSION)
+ AC_PROG_INTLTOOL
+ AM_CONFIG_HEADER(config.h)
+ 
+diff -Nur libmimedir_orig/mimedir/Makefile.am libmimedir/mimedir/Makefile.am
+--- libmimedir_orig/mimedir/Makefile.am	2002-12-19 16:21:27.000000000 +0100
++++ libmimedir/mimedir/Makefile.am	2006-08-04 15:56:36.000000000 +0200
+@@ -26,6 +26,7 @@
+ 	mimedir-period.c		\
+ 	mimedir-profile.c		\
+ 	mimedir-recurrence.c		\
++	mimedir-recurrence-rule.c       \
+ 	mimedir-utils.c			\
+ 	mimedir-utils.h			\
+ 	mimedir-valarm.c		\
+@@ -52,6 +53,7 @@
+ 	mimedir-period.h		\
+ 	mimedir-profile.h		\
+ 	mimedir-recurrence.h		\
++	mimedir-recurrence-rule.h       \
+ 	mimedir-valarm.h		\
+ 	mimedir-vcal.h			\
+ 	mimedir-vcard.h			\
+diff -Nur libmimedir_orig/mimedir/mimedir-attribute.c libmimedir/mimedir/mimedir-attribute.c
+--- libmimedir_orig/mimedir/mimedir-attribute.c	2006-01-01 04:38:29.000000000 +0100
++++ libmimedir/mimedir/mimedir-attribute.c	2006-08-04 15:51:06.000000000 +0200
+@@ -1417,7 +1417,7 @@
+ 	g_return_val_if_fail (parameter != NULL, FALSE);
+ 
+ 	p = mimedir_attribute_get_parameter (attribute, parameter);
+-	if (p)
++	if (p && p->values)
+ 		return (gchar *) p->values->data;
+ 	else
+ 		return NULL;
+diff -Nur libmimedir_orig/mimedir/mimedir-recurrence-rule.c libmimedir/mimedir/mimedir-recurrence-rule.c
+--- libmimedir_orig/mimedir/mimedir-recurrence-rule.c	1970-01-01 01:00:00.000000000 +0100
++++ libmimedir/mimedir/mimedir-recurrence-rule.c	2006-08-04 15:52:39.000000000 +0200
+@@ -0,0 +1,171 @@
++/* RFC 2445 iCal Recurrence Rule Object
++ * Copyright (C) 2004 Phil Blundell <pb@nexus.co.uk>
++ *
++ * $Id: mimedir-recurrence.h,v 1.1 2002/08/28 04:57:12 srittau Exp $
++ *
++ * This library is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU Lesser General Public
++ * License as published by the Free Software Foundation; either
++ * version 2.1 of the License, or (at your option) any later version.
++ *
++ * This library is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
++ * Lesser General Public License for more details.
++ *
++ * You should have received a copy of the GNU Lesser General Public
++ * License along with this library; if not, write to the Free Software
++ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
++ */
++
++#ifdef HAVE_CONFIG_H
++#include <config.h>
++#endif
++
++#include "mimedir-recurrence-rule.h"
++
++
++#ifndef _
++#define _(x) (dgettext(GETTEXT_PACKAGE, (x)))
++#endif
++
++
++static void	 mimedir_recurrence_rule_class_init	(MIMEDirRecurrenceRuleClass	*klass);
++static void	 mimedir_recurrence_rule_init		(MIMEDirRecurrenceRule		*recurrence);
++static void	 mimedir_recurrence_rule_dispose	(GObject			*object);
++
++
++struct _MIMEDirRecurrenceRulePriv {
++	MIMEDirRecurrenceFrequency frequency;
++	int interval;
++};
++
++static GObjectClass *parent_class = NULL;
++
++/*
++ * Class and Object Management
++ */
++
++GType
++mimedir_recurrence_rule_get_type (void)
++{
++	static GType mimedir_recurrence_rule_type = 0;
++
++	if (!mimedir_recurrence_rule_type) {
++		static const GTypeInfo mimedir_recurrence_rule_info = {
++			sizeof (MIMEDirRecurrenceRuleClass),
++			NULL, /* base_init */
++			NULL, /* base_finalize */
++			(GClassInitFunc) mimedir_recurrence_rule_class_init,
++			NULL, /* class_finalize */
++			NULL, /* class_data */
++			sizeof (MIMEDirRecurrenceRule),
++			1,    /* n_preallocs */
++			(GInstanceInitFunc) mimedir_recurrence_rule_init,
++		};
++
++		mimedir_recurrence_rule_type = g_type_register_static (G_TYPE_OBJECT,
++								       "MIMEDirRecurrenceRule",
++								       &mimedir_recurrence_rule_info,
++								       0);
++	}
++
++	return mimedir_recurrence_rule_type;
++}
++
++
++static void
++mimedir_recurrence_rule_class_init (MIMEDirRecurrenceRuleClass *klass)
++{
++	GObjectClass *gobject_class;
++
++	g_return_if_fail (klass != NULL);
++	g_return_if_fail (MIMEDIR_IS_RECURRENCE_RULE_CLASS (klass));
++
++	gobject_class = G_OBJECT_CLASS (klass);
++
++	gobject_class->dispose      = mimedir_recurrence_rule_dispose;
++
++	parent_class = g_type_class_peek_parent (klass);
++}
++
++
++static void
++mimedir_recurrence_rule_init (MIMEDirRecurrenceRule *rule)
++{
++	MIMEDirRecurrenceRulePriv *priv;
++
++	g_return_if_fail (rule != NULL);
++	g_return_if_fail (MIMEDIR_IS_RECURRENCE_RULE (rule));
++
++	priv = g_new0 (MIMEDirRecurrenceRulePriv, 1);
++	rule->priv = priv;
++}
++
++
++static void
++mimedir_recurrence_rule_dispose (GObject *object)
++{
++	MIMEDirRecurrenceRule *rule;
++
++	g_return_if_fail (object != NULL);
++	g_return_if_fail (MIMEDIR_IS_RECURRENCE_RULE (object));
++
++	rule = MIMEDIR_RECURRENCE_RULE (object);
++
++	g_free (rule->priv);
++	rule->priv = NULL;
++
++	G_OBJECT_CLASS (parent_class)->dispose (object);
++}
++
++/*
++ * Public Methods
++ */
++
++/**
++ * mimedir_recurrence_rule_new:
++ *
++ * Creates a new iCal recurrence object.
++ *
++ * Return value: a new recurrence object
++ **/
++MIMEDirRecurrenceRule *
++mimedir_recurrence_rule_new (void)
++{
++	MIMEDirRecurrenceRule *rule;
++
++	rule = g_object_new (MIMEDIR_TYPE_RECURRENCE_RULE, NULL);
++
++	return rule;
++}
++
++/**
++ * mimedir_recurrence_rule_get_frequency:
++ *
++ * Retrieves the base frequency for the corresponding recurrence object.
++ *
++ * Return value: a #MIMEDirRecurrenceFrequency
++ **/
++MIMEDirRecurrenceFrequency
++mimedir_recurrence_rule_get_frequency (MIMEDirRecurrenceRule *rule)
++{
++	g_return_val_if_fail (MIMEDIR_IS_RECURRENCE_RULE (rule), 0);
++
++	return rule->priv->frequency;
++}
++
++/**
++ * mimedir_recurrence_rule_get_interval:
++ *
++ * Retrieves the interval for the corresponding recurrence object.
++ *
++ * Return value: an #int
++ **/
++int
++mimedir_recurrence_rule_get_interval (MIMEDirRecurrenceRule *rule)
++{
++	g_return_val_if_fail (MIMEDIR_IS_RECURRENCE_RULE (rule), 0);
++
++	return rule->priv->interval;
++}
+diff -Nur libmimedir_orig/mimedir/mimedir-recurrence-rule.h libmimedir/mimedir/mimedir-recurrence-rule.h
+--- libmimedir_orig/mimedir/mimedir-recurrence-rule.h	1970-01-01 01:00:00.000000000 +0100
++++ libmimedir/mimedir/mimedir-recurrence-rule.h	2006-08-04 15:52:39.000000000 +0200
+@@ -0,0 +1,74 @@
++/* RFC 2445 iCal Recurrence Rule Object
++ * Copyright (C) 2004 Phil Blundell <pb@nexus.co.uk>
++ *
++ * $Id: mimedir-recurrence.h,v 1.1 2002/08/28 04:57:12 srittau Exp $
++ *
++ * This library is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU Lesser General Public
++ * License as published by the Free Software Foundation; either
++ * version 2.1 of the License, or (at your option) any later version.
++ *
++ * This library is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
++ * Lesser General Public License for more details.
++ *
++ * You should have received a copy of the GNU Lesser General Public
++ * License along with this library; if not, write to the Free Software
++ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
++ */
++
++#ifndef __MIMEDIR_RECURRENCE_RULE_H__
++#define __MIMEDIR_RECURRENCE_RULE_H__
++
++#include <glib.h>
++#include <glib-object.h>
++
++#include "mimedir/mimedir-datetime.h"
++
++#define MIMEDIR_TYPE_RECURRENCE_RULE		(mimedir_recurrence_get_type())
++#define MIMEDIR_RECURRENCE_RULE(obj)		(G_TYPE_CHECK_INSTANCE_CAST ((obj), MIMEDIR_TYPE_RECURRENCE_RULE, MIMEDirRecurrenceRule))
++#define MIMEDIR_RECURRENCE_RULE_CLASS(klass)	(G_TYPE_CHECK_CLASS_CAST ((klass), MIMEDIR_TYPE_RECURRENCE_RULE, MIMEDirRecurrenceRuleClass))
++#define MIMEDIR_IS_RECURRENCE_RULE(obj)		(G_TYPE_CHECK_INSTANCE_TYPE ((obj), MIMEDIR_TYPE_RECURRENCE_RULE))
++#define MIMEDIR_IS_RECURRENCE_RULE_CLASS(klass)	(G_TYPE_CHECK_CLASS_TYPE ((klass), MIMEDIR_TYPE_RECURRENCE_RULE))
++
++typedef struct _MIMEDirRecurrenceRule		MIMEDirRecurrenceRule;
++typedef struct _MIMEDirRecurrenceRulePriv	MIMEDirRecurrenceRulePriv;
++typedef struct _MIMEDirRecurrenceRuleClass	MIMEDirRecurrenceRuleClass;
++
++typedef enum {
++	MIMEDIR_RECURRENCE_RULE_SECONDLY,
++	MIMEDIR_RECURRENCE_RULE_MINUTELY,
++	MIMEDIR_RECURRENCE_RULE_HOURLY,
++	MIMEDIR_RECURRENCE_RULE_DAILY,
++	MIMEDIR_RECURRENCE_RULE_WEEKLY,
++	MIMEDIR_RECURRENCE_RULE_MONTHLY,
++	MIMEDIR_RECURRENCE_RULE_YEARLY,
++} MIMEDirRecurrenceFrequency;
++
++struct _MIMEDirRecurrenceRule
++{
++	GObject parent;
++
++	MIMEDirRecurrenceRulePriv *priv;
++};
++
++struct _MIMEDirRecurrenceRuleClass
++{
++	GObjectClass parent_class;
++};
++
++MIMEDirRecurrenceFrequency	mimedir_recurrence_rule_get_frequency (MIMEDirRecurrenceRule *);
++int				mimedir_recurrence_rule_get_interval (MIMEDirRecurrenceRule *);
++int				mimedir_recurrence_rule_get_count (MIMEDirRecurrenceRule *);
++MIMEDirDateTime		       *mimedir_recurrence_rule_get_end_date (MIMEDirRecurrenceRule *);
++
++void				mimedir_recurrence_rule_set (MIMEDirRecurrenceRule *,
++							     MIMEDirRecurrenceFrequency freq,
++							     int interval);
++
++GType				mimedir_recurrence_rule_get_type		(void);
++MIMEDirRecurrenceRule	       *mimedir_recurrence_rule_new			(void);
++
++#endif
++
+diff -Nur libmimedir_orig/mimedir/mimedir-vcomponent.c libmimedir/mimedir/mimedir-vcomponent.c
+--- libmimedir_orig/mimedir/mimedir-vcomponent.c	2005-11-26 16:40:20.000000000 +0100
++++ libmimedir/mimedir/mimedir-vcomponent.c	2006-08-04 15:51:06.000000000 +0200
+@@ -951,52 +951,33 @@
+ 
+ 		s++;
+ 
+-		num = mimedir_vcomponent_parse_number (name, "DURATION", &s, &err);
+-		if (err) {
+-			g_propagate_error (error, err);
+-			return 0;
+-		}
+-		if (s[0] != 'H') {
+-			g_set_error (error, MIMEDIR_ATTRIBUTE_ERROR, MIMEDIR_ATTRIBUTE_ERROR_INVALID_FORMAT, MIMEDIR_ATTRIBUTE_ERROR_INVALID_FORMAT_STR, "DURATION", name);
+-			return 0;
+-		}
+-		s++;
+-		duration += num * SECS_PER_HOUR;
+-
+-		if (s[0]) {
++		while (s[0] != '\0') {
+ 			num = mimedir_vcomponent_parse_number (name, "DURATION", &s, &err);
+ 			if (err) {
+ 				g_propagate_error (error, err);
+ 				return 0;
+ 			}
+-			if (s[0] != 'M') {
+-				g_set_error (error, MIMEDIR_ATTRIBUTE_ERROR, MIMEDIR_ATTRIBUTE_ERROR_INVALID_FORMAT, MIMEDIR_ATTRIBUTE_ERROR_INVALID_FORMAT_STR, "DURATION", name);
+-				return 0;
+-			}
+-			s++;
+-			duration += num * SECS_PER_MINUTE;
+-		}
+ 
+-		if (s[0]) {
+-			num = mimedir_vcomponent_parse_number (name, "DURATION", &s, &err);
+-			if (err) {
+-				g_propagate_error (error, err);
+-				return 0;
+-			}
+-			if (s[0] != 'S') {
++			switch (s[0]) {
++			case 'H':
++				s++;
++				duration += num * SECS_PER_HOUR;
++				break;
++			case 'M':
++				s++;
++				duration += num * SECS_PER_MINUTE;
++				break;
++			case 'S':
++				s++;
++				duration += num;
++				break;
++			default:
+ 				g_set_error (error, MIMEDIR_ATTRIBUTE_ERROR, MIMEDIR_ATTRIBUTE_ERROR_INVALID_FORMAT, MIMEDIR_ATTRIBUTE_ERROR_INVALID_FORMAT_STR, "DURATION", name);
+ 				return 0;
+ 			}
+-			s++;
+-			duration += num;
+ 		}
+ 	}
+ 
+-	if (s[0] != '\0') {
+-		g_set_error (error, MIMEDIR_ATTRIBUTE_ERROR, MIMEDIR_ATTRIBUTE_ERROR_INVALID_FORMAT, MIMEDIR_ATTRIBUTE_ERROR_INVALID_FORMAT_STR, "DURATION", name);
+-		return 0;
+-	}
+-
+ 	return neg ? -duration : duration;
+ }
+ 
+@@ -2996,7 +2977,7 @@
+ 	g_free (priv->location);
+ 	g_free (priv->location_alt);
+ 	priv->location     = g_strdup (location);
+-	priv->location_alt = g_strdup (uri);
++	priv->location_alt = uri ? g_strdup (uri) : NULL;
+ }
+ 
+ /**
