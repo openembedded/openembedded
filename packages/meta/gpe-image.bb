@@ -1,9 +1,6 @@
 FEED_URIS_append_openzaurus = " x11##${FEED_BASE_URI}/feed/x11 "
-FEED_URIS_append_opensimpad = " x11##http://ewi546.ewi.utwente.nl/mirror/www.openzaurus.org/official/unstable/${DISTRO_VERSION}/feed/x11 \
-                                gpe##http://ewi546.ewi.utwente.nl/mirror/www.openzaurus.org/official/unstable/${DISTRO_VERSION}/feed/gpe"
-FEED_URIS_append_familiar   = " x11##http://familiar.handhelds.org/releases/${DISTRO_VERSION}/feed/x11"
 
-PR = "r22"
+PR = "r23"
 
 export IMAGE_BASENAME = "gpe-image"
 
@@ -20,21 +17,11 @@ GPE_EXTRA_INSTALL_bigscreen = "gpe-task-games ${GPE_EXTRA_THEMES}"
 GPE_EXTRA_DEPENDS_smallscreen = "${GPE_EXTRA_THEMES}"
 GPE_EXTRA_INSTALL_smallscreen = "gpe-task-games ${GPE_EXTRA_THEMES}"
 
-#ship more stuff with devices with >16MB of flash
-GPE_BIGFLASH_DEPENDS := '${@base_conditional("ROOT_FLASH_SIZE", "16", "", "\
-        gpe-theme-clearlooks \
-	sylpheed \
-        figment \
-",d)}'
-
-
-GPE_BIGFLASH_INSTALL := '${@base_conditional("ROOT_FLASH_SIZE", "16", "", "\
-		gpe-task-connectivity \
-		${GPE_BIGFLASH_DEPENDS} \
-",d)}'
-
-GPE_EXTRA_DEPENDS += ${GPE_BIGFLASH_DEPENDS}
-GPE_EXTRA_INSTALL += ${GPE_BIGFLASH_INSTALL}
+GPE_EXTRA_DEPENDS_poodle += "gpe-theme-clearlooks figment gpe-task-connectivity "
+GPE_EXTRA_DEPENDS_c7x0   += "gpe-theme-clearlooks sylpheed figment gpe-task-connectivity "
+GPE_EXTRA_DEPENDS_akita  += "gpe-theme-clearlooks sylpheed figment gpe-task-connectivity "
+GPE_EXTRA_DEPENDS_spitz  += "gpe-theme-clearlooks sylpheed figment gpe-task-connectivity "
+GPE_EXTRA_DEPENDS_tosa   += "gpe-theme-clearlooks sylpheed figment gpe-task-connectivity "
 
 GPE_EXTRA_DEPENDS_none = ""
 GPE_EXTRA_INSTALL_none = ""
@@ -52,8 +39,7 @@ DEPENDS = "task-bootstrap \
 export IPKG_INSTALL = "task-bootstrap gpe-task-base \
            	       gpe-task-pim gpe-task-settings \
 	               gpe-task-apps ${GPE_EXTRA_DEPENDS} \
-		       ${XSERVER} \
-		       ${GPE_EXTRA_INSTALL}"
+		       ${XSERVER} "
 
 IMAGE_PREPROCESS_COMMAND = "create_etc_timestamp "
 ROOTFS_POSTPROCESS_COMMAND += "zap_root_password; "
