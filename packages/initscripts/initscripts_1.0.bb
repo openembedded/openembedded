@@ -36,6 +36,7 @@ SRC_URI = "file://halt \
 
 SRC_URI_append_arm          = " file://alignment.sh"
 SRC_URI_append_openzaurus   = " file://checkversion"
+SRC_URI_append_opendreambox = " file://var.tar.gz.default"
 
 def read_kernel_version(d):
 	import bb

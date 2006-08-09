@@ -8,7 +8,7 @@ MAINTAINER = "Phil Blundell <pb@handhelds.org>"
 DEFAULT_PREFERENCE_sh3 = "-99"
 
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/glibc-cvs"
-PR = "r17"
+PR = "r18"
 
 GLIBC_ADDONS ?= "linuxthreads"
 GLIBC_EXTRA_OECONF ?= ""
@@ -40,6 +40,8 @@ SRC_URI_append_arm = " file://dyn-ldconfig.patch;patch=1;pnum=0"
 
 SRC_URI_append_openmn = " file://ldsocache-varrun.patch;patch=1"
 
+SRC_URI_append_mipsel = " file://mips_fix.patch;patch=1;pnum=1"
+
 S = "${WORKDIR}/libc"
 B = "${WORKDIR}/build-${TARGET_SYS}"
 
@@ -51,6 +53,18 @@ EXTRA_OECONF = "--enable-kernel=${OLDEST_KERNEL} \
 	        --enable-add-ons=${GLIBC_ADDONS} \
 		--with-headers=${CROSS_DIR}/${TARGET_SYS}/include \
 		${GLIBC_EXTRA_OECONF}"
+
+do_munge() {
+	# http://www.handhelds.org/hypermail/oe/51/5135.html
+	# Some files were moved around between directories on
+	# 2005-12-21, which means that any attempt to check out
+	# from CVS using a datestamp older than that will be doomed.
+	#
+	# This is a workaround for that problem.
+	rm -rf ${S}/bits
+}
+
+addtask munge before do_patch after do_unpack
 
 do_configure () {
 # override this function to avoid the autoconf/automake/aclocal/autoheader

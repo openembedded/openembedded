@@ -306,6 +306,8 @@ python populate_packages () {
 					continue
 			if (not os.path.islink(file)) and (not os.path.exists(file)):
 				continue
+			if file.find('.pyo') != -1:
+				continue
 			fpath = os.path.join(root,file)
 			dpath = os.path.dirname(fpath)
 			bb.mkdirhier(dpath)
@@ -718,9 +720,10 @@ python package_do_split_locales() {
 
 	bb.data.setVar('PACKAGES', ' '.join(packages), d)
 
-	rdep = (bb.data.getVar('RDEPENDS_%s' % mainpkg, d, 1) or bb.data.getVar('RDEPENDS', d, 1) or "").split()
-	rdep.append('%s-locale*' % pn)
-	bb.data.setVar('RDEPENDS_%s' % mainpkg, ' '.join(rdep), d)
+# we don't want to RDEPEND any package on created locales.
+#	rdep = (bb.data.getVar('RDEPENDS_%s' % mainpkg, d, 1) or bb.data.getVar('RDEPENDS', d, 1) or "").split()
+#	rdep.append('%s-locale*' % pn)
+#	bb.data.setVar('RDEPENDS_%s' % mainpkg, ' '.join(rdep), d)
 }
 
 PACKAGEFUNCS = "do_install package_do_split_locales \

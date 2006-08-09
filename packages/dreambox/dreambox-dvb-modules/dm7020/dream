@@ -1,0 +1,39 @@
+#!/bin/sh
+
+usage()
+{
+	echo "Usage: $0 {start|stop|status|restart|reload}"
+}
+
+if [ $# -lt 1 ] ; then usage ; break ; fi
+action=$1
+
+case "$action" in
+
+start)
+	echo -n "Start Dreambox DVB Subsystem:"
+	/sbin/insmod /lib/modules/`uname -r`/extra/head.ko
+	echo " head."
+	
+	# redisplay bootlogo, either the "wait..." or the normal
+	[ -e /etc/dropbear/dropbear_rsa_host_key ] && /usr/bin/showiframe /boot/bootlogo.mvi || /usr/bin/showiframe /boot/bootlogo_wait.mvi
+		;;
+
+stop)
+	;;
+
+status)
+	;;
+
+restart|reload)
+	$0 stop
+	$0 start
+	;;
+
+*)
+	usage
+	;;
+
+esac
+
+exit 0

@@ -6,10 +6,12 @@ DEPENDS = "libid3tag"
 LICENSE = "GPL"
 PR = "r2"
 
-SRC_URI = "ftp://ftp.mars.org/pub/mpeg/libmad-${PV}.tar.gz"
+SRC_URI = "ftp://ftp.mars.org/pub/mpeg/libmad-${PV}.tar.gz \
+	file://pkgconfig.patch;patch=1;pnum=1"
+
 S = "${WORKDIR}/libmad-${PV}"
 
-inherit autotools 
+inherit autotools pkgconfig
 
 EXTRA_OECONF = "-enable-speed --enable-shared"
 # The ASO's don't take any account of thumb...

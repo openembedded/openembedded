@@ -10,7 +10,8 @@ FILES_libipkg = "${libdir}"
 AUTO_LIBNAME_PKGS = "libipkg"
 
 SRC_URI = "${HANDHELDS_CVS};module=familiar/dist/ipkg;tag=${@'V' + bb.data.getVar('PV',d,1).replace('.', '-')} \
-	file://terse.patch;patch=1"
+	file://terse.patch;patch=1 \
+	file://libbb_tar_gnu_extensions.patch;patch=1"
 
 S = "${WORKDIR}/ipkg/C"
 

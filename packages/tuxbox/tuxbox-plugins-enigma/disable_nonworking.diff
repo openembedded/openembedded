@@ -1,0 +1,19 @@
+diff -Naur plugins_org/Makefile.am plugins/Makefile.am
+--- plugins_org/Makefile.am	2005-11-19 21:55:18.000000000 +0100
++++ plugins/Makefile.am	2006-01-12 01:26:06.000000000 +0100
+@@ -1,7 +1,7 @@
+ AUTOMAKE_OPTIONS = gnu
+ 
+ SUBDIRS = \
+-	include tuxmail tuxtxt tuxcom fx2 vncviewer enigma
++	enigma
+ 
+ pkgconfigdir = $(libdir)/pkgconfig
+ pkgconfig_DATA = \
+diff -Naur plugins_org/enigma/Makefile.am plugins/enigma/Makefile.am
+--- plugins_org/enigma/Makefile.am	2005-11-19 19:31:51.000000000 +0100
++++ plugins/enigma/Makefile.am	2006-01-12 01:26:20.000000000 +0100
+@@ -1,2 +1,2 @@
+-SUBDIRS = demo dreamdata ngrabstart ngrabstop dslconnect dsldisconnect rss script weather dbswitch getset dreamflash movieplayer
++SUBDIRS = demo dreamdata ngrabstart ngrabstop dslconnect dsldisconnect rss script weather dbswitch getset movieplayer
+ 

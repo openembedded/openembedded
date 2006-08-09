@@ -28,6 +28,7 @@ SRC_URI = "http://www.busybox.net/downloads/busybox-${PV}.tar.gz \
 	   file://dhcp-hostname.patch;patch=1 \
 	   file://gzip-spurious-const.patch;patch=1 \
 	   file://ifupdown-spurious-environ.patch;patch=1 \
+	   file://nptl_task.patch;patch=1 \
            file://uclibc_posix.patch;patch=1 \
            file://defconfig \
            file://busybox-cron \

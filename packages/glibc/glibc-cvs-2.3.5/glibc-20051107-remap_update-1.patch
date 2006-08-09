@@ -1,0 +1,26 @@
+Submitted By: Jim Gifford (patches at jg555 dot com)
+Date: 2005-10-18
+Initial Package Version: 20051017 Snapshot
+Origin: Jim Gifford based on BZ 1458
+Upstream Status: Sent
+Description: Fixes MREMAP_FIXED error that can occur on the MIPS
+	     and ALPHA architectures using the current glibc snapshot.
+ 
+--- glibc-20051017/sysdeps/unix/sysv/linux/alpha/bits/mman.h.orig	2005-10-18 07:07:00.000000000 +0000
++++ glibc-20051017/sysdeps/unix/sysv/linux/alpha/bits/mman.h	2005-10-18 07:07:11.000000000 +0000
+@@ -86,6 +86,7 @@
+ /* Flags for `mremap'.  */
+ #ifdef __USE_GNU
+ # define MREMAP_MAYMOVE	1
++# define MREMAP_FIXED   2
+ #endif
+ 
+ /* Advice to `madvise'.  */
+--- glibc-20051017/sysdeps/unix/sysv/linux/mips/bits/mman.h.orig	2005-10-18 06:59:19.000000000 +0000
++++ glibc-20051017/sysdeps/unix/sysv/linux/mips/bits/mman.h	2005-10-18 06:59:51.000000000 +0000
+@@ -89,4 +89,5 @@
+ /* Flags for `mremap'.  */
+ #ifdef __USE_GNU
+ # define MREMAP_MAYMOVE	1
++# define MREMAP_FIXED   2
+ #endif

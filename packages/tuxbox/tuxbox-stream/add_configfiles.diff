@@ -1,0 +1,55 @@
+diff -Naur stream/AUTHORS stream_configure/AUTHORS
+--- stream/AUTHORS	1970-01-01 01:00:00.000000000 +0100
++++ stream_configure/AUTHORS	2004-09-17 17:47:12.000000000 +0200
+@@ -0,0 +1,22 @@
++In order of appearance in cvs:
++------------------------------------------------
++Felix Domke		<tmbinc@berlios.de>
++Andreas Oberritter	<obi@berlios.de>
++Steffen Hehn		<mcclean@berlios.de>
++Andreas Monzner		<ghostrider@berlios.de>
++Florian Roks		<trh@berlios.de>
++Ronny Strutz		<tripledes@berlios.de>
++Bastian Blank		<waldi@berlios.de>
++Henning Heinold		<woglinde@berlios.de>
++Rainer Scherg		<rasc@berlios.de>
++Steffen Buehl		<shadow@berlios.de>
++Wolfram Joost		<wjoost@berlios.de>
++Thomas Herold		<dertom@berlios.de>
++Stefan Pluecken		<thedoc@berlios.de>
++Florian Schirmer	<jolt@berlios.de>
++Christoph Ketzler	<chkdesign@berlios.de>
++Bernhard Roth		<bernroth@berlios.de>
++
++Also many thanks to everyone who supported development
++without having cvs write access
++
+diff -Naur stream/configure.ac stream_configure/configure.ac
+--- stream/configure.ac	1970-01-01 01:00:00.000000000 +0100
++++ stream_configure/configure.ac	2004-11-16 00:13:26.000000000 +0100
+@@ -0,0 +1,25 @@
++AC_INIT([tuxbox-stream],[1.0.0],[obi@tuxbox.org])
++AM_INIT_AUTOMAKE([dist-bzip2 no-define])
++
++TUXBOX_APPS
++TUXBOX_APPS_DIRECTORYY
++
++AC_PROG_CC
++AC_PROG_LIBTOOL
++AC_PROG_RANLIB
++
++TUXBOX_APPS_DVB
++TUXBOX_APPS_DRIVER
++
++TUXBOX_APPS_LIB_PKGCONFIG(MPEGTOOLS,tuxbox-mpegtools)
++
++AC_ARG_WITH(boxtype,
++	[  --with-boxtype=NAME dreambox/dbox2 [[dbox2,dreambox]]],
++	[BOXTYPE="$withval"],[BOXTYPE="dbox2"])
++AC_SUBST(BOXTYPE)
++AM_CONDITIONAL(BOXTYPE_DREAMBOX,test "$BOXTYPE" != "dbox2")
++AM_CONDITIONAL(BOXTYPE_DBOX2,test "$BOXTYPE" = "dbox2")
++
++AC_OUTPUT([
++Makefile
++])

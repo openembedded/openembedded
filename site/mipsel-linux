@@ -1,5 +1,6 @@
 ac_cv_c_littleendian=${ac_cv_c_littleendian=yes}
 ac_cv_c_bigendian=${ac_cv_c_bigendian=no}
+ac_cv_have_little_endian_long_long=${ac_cv_have_little_endian_long_long=yes}
 
 ac_cv_func_getpgrp_void=${ac_cv_func_getpgrp_void=yes}
 ac_cv_func_setvbuf_reversed=${ac_cv_func_setvbuf_reversed=no}
@@ -102,9 +103,15 @@ rd_cv_ieee_works=${rd_cv_ieee_works=yes}
 
 # gettext
 am_cv_func_working_getline=${am_cv_func_working_getline=yes}
-
 # samba
+samba_cv_LINUX_LFS_SUPPORT=${samba_cv_LINUX_LFS_SUPPORT=yes}
+samba_cv_HAVE_OFF64_T=${samba_cv_HAVE_OFF64_T=yes}
+samba_cv_have_longlong=${samba_cv_have_longlong=yes}
+samba_cv_HAVE_UNSIGNED_CHAR=${samba_cv_HAVE_UNSIGNED_CHAR=yes}
 samba_cv_HAVE_GETTIMEOFDAY_TZ=${samba_cv_HAVE_GETTIMEOFDAY_TZ=yes}
+samba_cv_HAVE_C99_VSNPRINTF=${samba_cv_HAVE_C99_VSNPRINTF=yes}
+samba_cv_HAVE_BROKEN_READDIR=${samba_cv_HAVE_BROKEN_READDIR=no}
+samba_cv_HAVE_IFACE_IFCONF=${samba_cv_HAVE_IFACE_IFCONF=yes}
 
 # vim
 ac_cv_sizeof_int=${ac_cv_sizeof_int=4}

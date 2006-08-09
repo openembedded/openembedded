@@ -11,7 +11,6 @@ PR = "r7"
 
 GLIBC_ADDONS ?= "ports,linuxthreads"
 GLIBC_EXTRA_OECONF ?= ""
-
 GLIBC_BROKEN_LOCALES = "sid_ET tr_TR mn_MN"
 
 #
@@ -56,7 +55,8 @@ SRC_URI = "http://familiar.handhelds.org/source/v0.8.3/stash_libc_sources.redhat
 	   file://5090_all_stubs-rule-fix.patch;patch=1 \
 	   file://raise.patch;patch=1 \
            file://etc/ld.so.conf \
-	   file://generate-supported.mk"
+	   file://generate-supported.mk \
+	   file://fix_mips_rlimit_rtprio.patch;patch=1;pnum=1"
 
 # seems to fail on tls platforms
 SRC_URI_append_arm = " file://dyn-ldconfig-20041128.patch;patch=1"

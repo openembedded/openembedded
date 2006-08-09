@@ -29,7 +29,8 @@ FILES_${PN}-symlinks = " \
 	${bindir}/strip"
 
 EXTRA_OECONF = "--program-prefix=${TARGET_PREFIX} \
-		--enable-shared"
+		--enable-shared \
+		--disable-multilib "
 
 # This is necessary due to a bug in the binutils Makefiles
 EXTRA_OEMAKE = "configure-build-libiberty all"

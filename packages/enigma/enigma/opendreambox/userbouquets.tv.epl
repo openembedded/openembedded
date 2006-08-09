@@ -1,0 +1,4 @@
+#NAME Bouquets (TV)
+#SERVICE: 4097:7:0:33fc5:0:0:0:0:0:0:/etc/enigma/userbouquet.33fc5.tv
+#TYPE 16385
+/etc/enigma/userbouquet.33fc5.tv

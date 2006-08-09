@@ -1,0 +1,1053 @@
+diff -Naur tuxtxt_org/tuxtxt.c tuxtxt/tuxtxt.c
+--- tuxtxt_org/tuxtxt.c	2006-03-11 00:07:55.000000000 +0100
++++ tuxtxt/tuxtxt.c	2006-03-11 00:14:21.000000000 +0100
+@@ -6,21 +6,50 @@
+  *    continued 2004-2005 by Roland Meier <RolandMeier@Siemens.com>           *
+  *                       and DBLuelle <dbluelle@blau-weissoedingen.de>        *
+  *                                                                            *
++ *              ported 2006 to Dreambox 7025 / 32Bit framebuffer              *
++ *                   by Seddi <seddi@i-have-a-dreambox.com>                   *
++ *                                                                            *
+  ******************************************************************************/
+ 
+ 
+-
+ #include "tuxtxt.h"
+ 
++static char saved_wss[32];
++static char saved_pin8[32];
++
++void readproc(const char* source, char *dest)
++{
++	FILE *f=fopen(source, "rt");
++	if(f)
++	{
++		fgets(dest, 255, f);
++		fclose(f);
++	}
++}
++
++void writeproc(const char* dest, const char *value)
++{
++	FILE *f=fopen(dest, "w");
++	if (f)
++	{
++		fwrite(value, strlen(value), 1, f);
++		fclose(f);
++	}
++}
++
+ void FillRect(int x, int y, int w, int h, int color)
+ {
+-	unsigned char *p = lfb + x + y * var_screeninfo.xres;
++	unsigned char *p = lfb + x*4 + y * fix_screeninfo.line_length;
++	int xtmp;
+ 
+ 	if (w > 0)
+ 		for ( ; h > 0 ; h--)
+ 		{
+-			memset(p, color, w);
+-			p += var_screeninfo.xres;
++			for (xtmp=0; xtmp<=w; xtmp++)
++			{
++				memcpy(p+xtmp*4,bgra[color],4);
++			}
++			p += fix_screeninfo.line_length;
+ 		}
+ }
+ void FillBorder(int color)
+@@ -198,17 +227,17 @@
+ 
+ void ClearBB(int color)
+ {
+-	memset(lfb + (var_screeninfo.yres-var_screeninfo.yoffset)*var_screeninfo.xres, color, var_screeninfo.xres*var_screeninfo.yres);
++	FillRect(0,(var_screeninfo.yres-var_screeninfo.yoffset),fix_screeninfo.line_length,var_screeninfo.yres, color);
+ }
+ 
+ void ClearFB(int color)
+ {
+-	memset(lfb + var_screeninfo.xres*var_screeninfo.yoffset, color, var_screeninfo.xres*var_screeninfo.yres);
++	FillRect(0,var_screeninfo.yoffset,fix_screeninfo.line_length,var_screeninfo.yres,color);
+ }
+ 
+ void ClearB(int color)
+ {
+-	memset(lfb, color, 2*var_screeninfo.xres*var_screeninfo.yres);
++	FillRect(0,0,fix_screeninfo.line_length,var_screeninfo.yres*2,color);
+ }
+ 
+ 
+@@ -254,47 +283,29 @@
+ 
+ void setcolors(unsigned short *pcolormap, int offset, int number)
+ {
+-	int i, changed=0;
++	int i,trans_tmp;
+ 	int j = offset; /* index in global color table */
+ 
+-	unsigned short t = tr0[transp2];
+-	tr0[transp2] = (trans_mode+7)<<11 | 0x7FF;
+-#ifndef HAVE_DREAMBOX_HARDWARE
+-	/* "correct" semi-transparent for Nokia (GTX only allows 2(?) levels of transparency) */
+-	if (tuxbox_get_vendor() == TUXBOX_VENDOR_NOKIA)
+-		tr0[transp2] = 0xFFFF;
+-#endif
+-	if (t != tr0[transp2]) changed = 1;
++	trans_tmp=25-trans_mode;
++
++	bgra[transp2][3]=((trans_tmp+7)<<11 | 0x7FF)>>8;
++
+ 	for (i = 0; i < number; i++)
+ 	{
+-		int r = (pcolormap[i] << 12) & 0xf000;
+-		int g = (pcolormap[i] <<  8) & 0xf000;
+-		int b = (pcolormap[i] <<  4) & 0xf000;
+-
++		int r = (pcolormap[i] << 12 & 0xF000) >> 8;
++		int g = (pcolormap[i] << 8 & 0xF000) >> 8;
++		int b = (pcolormap[i] << 4 & 0xF000) >> 8;
+ 
+ 		r = (r * (0x3f+(color_mode<<3))) >> 8;
+ 		g = (g * (0x3f+(color_mode<<3))) >> 8;
+ 		b = (b * (0x3f+(color_mode<<3))) >> 8;
+-		if (rd0[j] != r)
+-		{
+-			rd0[j] = r;
+-			changed = 1;
+-		}
+-		if (gn0[j] != g)
+-		{
+-			gn0[j] = g;
+-			changed = 1;
+-		}
+-		if (bl0[j] != b)
+-		{
+-			bl0[j] = b;
+-			changed = 1;
+-		}
++
++		bgra[j][2]=r;
++		bgra[j][1]=g;
++		bgra[j][0]=b;
++		
+ 		j++;
+ 	}
+-	if (changed)
+-		if (ioctl(fb, FBIOPUTCMAP, &colormap_0) == -1)
+-			perror("TuxTxt <FBIOPUTCMAP>");
+ }
+ 
+ 
+@@ -1471,13 +1482,14 @@
+ }
+ 
+ /******************************************************************************
+- * plugin_exec                                                                *
++ * main loop                                                                  *
+  ******************************************************************************/
+ 
+-void plugin_exec(PluginParam *par)
++int main(int argc, char **argv)
+ {
+ 	char cvs_revision[] = "$Revision: 1.95 $";
+ 
++	int cnt=0;
+ #if !TUXTXT_CFG_STANDALONE
+ 	int initialized = tuxtxt_init();
+ 	if ( initialized )
+@@ -1487,30 +1499,70 @@
+ 	/* show versioninfo */
+ 	sscanf(cvs_revision, "%*s %s", versioninfo);
+ 	printf("TuxTxt %s\n", versioninfo);
++	printf("for 32bpp framebuffer\n");
+ 
+ 	/* get params */
+-	tuxtxt_cache.vtxtpid = fb = lcd = rc = sx = ex = sy = ey = -1;
++	if (argc==1)
++	{
++		printf("\nUSAGE: tuxtxt vtpid\n");
++		printf("No PID given, so scanning for PIDs ...\n\n");
++		tuxtxt_cache.vtxtpid=0;
++	}
++	else 
++	{
++		tuxtxt_cache.vtxtpid = atoi(argv[1]);
++	}
+ 
+-	for (; par; par = par->next)
++	/* open Framebuffer */
++	if ((fb=open("/dev/fb/0", O_RDWR)) == -1)
+ 	{
+-		if (!strcmp(par->id, P_ID_VTXTPID))
+-			tuxtxt_cache.vtxtpid = atoi(par->val);
+-		else if (!strcmp(par->id, P_ID_FBUFFER))
+-			fb = atoi(par->val);
+-		else if (!strcmp(par->id, P_ID_LCD))
+-			lcd = atoi(par->val);
+-		else if (!strcmp(par->id, P_ID_RCINPUT))
+-			rc = atoi(par->val);
+-		else if (!strcmp(par->id, P_ID_OFF_X))
+-			sx = atoi(par->val);
+-		else if (!strcmp(par->id, P_ID_END_X))
+-			ex = atoi(par->val);
+-		else if (!strcmp(par->id, P_ID_OFF_Y))
+-			sy = atoi(par->val);
+-		else if (!strcmp(par->id, P_ID_END_Y))
+-			ey = atoi(par->val);
++		perror("TuxTxt <open /dev/fb/0>");
++		return 0;
+ 	}
+ 
++	rc=-1;
++	while(1)
++	{
++		struct stat s;
++		char tmp[128];
++		sprintf(tmp, "/dev/input/event%d", cnt);
++		if (stat(tmp, &s))
++			break;
++		/* open Remote Control */
++		if ((rc=open(tmp, O_RDONLY)) == -1)
++		{
++			perror("TuxTxt <open remote control>");
++			return 0;
++		}
++		if (ioctl(rc, EVIOCGNAME(128), tmp) < 0)
++			perror("EVIOCGNAME failed");
++		if (strstr(tmp, "remote control"))
++			break;
++		close(rc);
++		rc=-1;
++		++cnt;
++	}
++	
++	if (rc == -1)
++	{
++		printf("couldnt find correct input device!!!\n");
++		return -1;
++	}
++
++	fcntl(rc, F_SETFL, fcntl(rc, F_GETFL) | O_EXCL | O_NONBLOCK);
++
++	/* open LCD  */
++	if ((lcd=open("/dev/dbox/lcd0", O_RDWR)) == -1)
++	{
++		perror("TuxTxt <open /dev/dbox/lcd0>");
++		return 0;
++	}
++
++	sx = 80;
++	ex = 620;
++	sy = 80;
++	ey = 505;
++
+ 	if (tuxtxt_cache.vtxtpid == -1 || fb == -1 || rc == -1 || sx == -1 || ex == -1 || sy == -1 || ey == -1)
+ 	{
+ 		printf("TuxTxt <Invalid Param(s)>\n");
+@@ -1572,6 +1623,7 @@
+ 					int vendor = 3; /* values unknown, rely on requested values */
+ #endif
+ 
++#if 0
+ 					if (vendor < 3) /* scart-parameters only known for 3 dboxes, FIXME: order must be like in info.h */
+ 					{
+ 						for (i = 0; i < 6; i++) /* FIXME: FBLK seems to cause troubles */
+@@ -1604,6 +1656,7 @@
+ 								perror("TuxTxt <ioctl(avs)>");
+ 						}
+ 					}
++#endif
+ 					continue; /* otherwise ignore exit key */
+ 				}
+ 				default:
+@@ -1690,6 +1743,10 @@
+ 
+ 	/* exit */
+ 	CleanUp();
++	
++	close(rc);
++	close(lcd);
++	close(fb);
+ 
+ #if !TUXTXT_CFG_STANDALONE
+ 	if ( initialized )
+@@ -1859,6 +1916,14 @@
+ 	            dumpl25 = ival & 1;
+ 			else if (1 == sscanf(line, "UseTTF %i", &ival))
+ 	            usettf = ival & 1;
++			else if (1 == sscanf(line, "StartX %i", &ival))
++	            sx = ival;
++			else if (1 == sscanf(line, "EndX %i", &ival))
++	            ex = ival;
++			else if (1 == sscanf(line, "StartY %i", &ival))
++	            sy = ival;
++			else if (1 == sscanf(line, "EndY %i", &ival))
++	            ey = ival;
+ 		}
+ 		fclose(conf);
+ 	}
+@@ -1926,11 +1991,8 @@
+ 		typettf.font.pix_height = (FT_UShort) 23;
+ 	}
+ 
+-#if HAVE_DVB_API_VERSION >= 3
+-	typettf.flags = FT_LOAD_MONOCHROME;
+-#else
+ 	typettf.image_type = ftc_image_mono;
+-#endif
++
+ 	if ((error = FTC_Manager_Lookup_Face(manager, typettf.font.face_id, &face)))
+ 	{
+ 		typettf.font.face_id = (usettf ? (FTC_FaceID) TUXTXTTTF : TUXTXTOTB);
+@@ -1949,6 +2011,7 @@
+ 			 ymosaic[0], ymosaic[1], ymosaic[2], StartX, StartY, ascender);
+ #endif
+ 
++
+ 	/* get fixed screeninfo */
+ 	if (ioctl(fb, FBIOGET_FSCREENINFO, &fix_screeninfo) == -1)
+ 	{
+@@ -2048,40 +2111,25 @@
+ 	tuxtxt_start(tuxtxt_cache.vtxtpid);
+ #endif
+ 
+-	/* open avs */
+-	if ((avs = open(AVS, O_RDWR)) == -1)
+-	{
+-		perror("TuxTxt <open AVS>");
+-		return 0;
+-	}
+-
+-	ioctl(avs, AVSIOGSCARTPIN8, &fnc_old);
+-	ioctl(avs, AVSIOSSCARTPIN8, &fncmodes[screen_mode1]);
+-
+-	/* open saa */
+-	if ((saa = open(SAA, O_RDWR)) == -1)
+-	{
+-		perror("TuxTxt <open SAA>");
+-		return 0;
+-	}
+-
+-	ioctl(saa, SAAIOGWSS, &saa_old);
+-	ioctl(saa, SAAIOSWSS, &saamodes[screen_mode1]);
+-
++	readproc("/proc/stb/denc/0/wss", saved_wss);
++	writeproc("/proc/stb/denc/0/wss", saamodes[screen_mode1]);
++	
++	readproc("/proc/stb/avs/0/sb", saved_pin8);
++	writeproc("/proc/stb/avs/0/sb", fncmodes[screen_mode1]);
++	
++#if 0
+ 	/* open pig */
+ 	if ((pig = open(PIG, O_RDWR)) == -1)
+ 	{
+ 		perror("TuxTxt <open PIG>");
+ 		return 0;
+ 	}
++#endif
+ 
+ 	/* setup rc */
+ 	fcntl(rc, F_SETFL, O_NONBLOCK);
+ 	ioctl(rc, RC_IOCTL_BCODES, 1);
+ 
+-
+-
+-
+ 	gethotlist();
+ 	SwitchScreenMode(screenmode);
+ 	prevscreenmode = screenmode;
+@@ -2115,8 +2163,8 @@
+ 	tuxtxt_stop();
+ #endif
+ 	/* restore videoformat */
+-	ioctl(avs, AVSIOSSCARTPIN8, &fnc_old);
+-	ioctl(saa, SAAIOSWSS, &saa_old);
++	writeproc("/proc/stb/avs/0/sb", saved_pin8);
++	writeproc("/proc/stb/denc/0/wss", saved_wss);
+ 
+ 	if (restoreaudio)
+ 	{
+@@ -2125,6 +2173,7 @@
+ #else
+ 		int vendor = 3; /* values unknown, rely on requested values */
+ #endif
++#if 0
+ 		if (vendor < 3) /* scart-parameters only known for 3 dboxes, FIXME: order must be like in info.h */
+ 		{
+ 			for (i = 1; i < 6; i += 2) /* restore dvb audio */
+@@ -2134,6 +2183,7 @@
+ 					perror("TuxTxt <ioctl(avs)>");
+ 			}
+ 		}
++#endif
+ 	}
+ 
+ 	if (var_screeninfo.yoffset)
+@@ -2143,12 +2193,9 @@
+ 		if (ioctl(fb, FBIOPAN_DISPLAY, &var_screeninfo) == -1)
+ 			perror("TuxTxt <FBIOPAN_DISPLAY>");
+ 	}
+-	 /* close avs */
+-	close(avs);
+-
+-	/* close saa */
+-	close(saa);
+ 
++	/* clear screen */
++	memset(lfb,0, var_screeninfo.yres*fix_screeninfo.line_length);
+ 
+ 	/* close freetype */
+ 	FTC_Manager_Done(manager);
+@@ -2157,6 +2204,14 @@
+ 	/* unmap framebuffer */
+ 	munmap(lfb, fix_screeninfo.smem_len);
+ 
++	/* close lcd */
++	close(lcd);
++	
++	/* close rc */
++	close(rc);
++
++	/* close framebuffer */
++	close(fb);
+ 
+ 	if (hotlistchanged)
+ 		savehotlist();
+@@ -2190,6 +2245,10 @@
+ 			fprintf(conf, "ShowLevel2p5 %d\n", showl25);
+ 			fprintf(conf, "DumpLevel2p5 %d\n", dumpl25);
+ 			fprintf(conf, "UseTTF %d\n", usettf);
++			fprintf(conf, "StartX %d\n", sx);
++			fprintf(conf, "EndX %d\n", ex);
++			fprintf(conf, "StartY %d\n", sy);
++			fprintf(conf, "EndY %d\n", ey);
+ 			fclose(conf);
+ 		}
+ 	}
+@@ -2851,6 +2910,7 @@
+ 					memset(&menu[Menu_Width*MenuLine[M_COL] + 3+color_mode  ], 0x20,24-color_mode);
+ 					Menu_HighlightLine(menu, MenuLine[menuitem], 1);
+ 					setcolors((unsigned short *)defaultcolors, 0, SIZECOLTABLE);
++					Menu_Init(menu, current_pid, menuitem, hotindex);
+ 					break;
+ 				case M_TRA:
+ 					saveconfig = 1;
+@@ -2862,6 +2922,7 @@
+ 					memset(&menu[Menu_Width*MenuLine[M_TRA] + 3+trans_mode  ], 0x20,24-trans_mode);
+ 					Menu_HighlightLine(menu, MenuLine[menuitem], 1);
+ 					setcolors((unsigned short *)defaultcolors, 0, SIZECOLTABLE);
++					Menu_Init(menu, current_pid, menuitem, hotindex);
+ 					break;
+ 				case M_PID:
+ 				{
+@@ -2970,6 +3031,7 @@
+ 					memset(&menu[Menu_Width*MenuLine[M_COL] + 3+color_mode  ], 0x20,24-color_mode);
+ 					Menu_HighlightLine(menu, MenuLine[menuitem], 1);
+ 					setcolors((unsigned short *)defaultcolors, 0, SIZECOLTABLE);
++					Menu_Init(menu, current_pid, menuitem, hotindex);
+ 					break;
+ 				case M_TRA:
+ 					saveconfig = 1;
+@@ -2981,6 +3043,7 @@
+ 					memset(&menu[Menu_Width*MenuLine[M_TRA] + 3+trans_mode  ], 0x20,24-trans_mode);
+ 					Menu_HighlightLine(menu, MenuLine[menuitem], 1);
+ 					setcolors((unsigned short *)defaultcolors, 0, SIZECOLTABLE);
++					Menu_Init(menu, current_pid, menuitem, hotindex);
+ 					break;
+ 				case M_PID:
+ 					if (!getpidsdone)
+@@ -3286,8 +3349,8 @@
+ 					memcpy(&menu[Menu_Width*MenuLine[M_SC1] + Menu_Width - 5], &configonoff[menulanguage][screen_mode1  ? 3 : 0], 3);
+ 					Menu_HighlightLine(menu, MenuLine[menuitem], 1);
+ 
+-					ioctl(avs, AVSIOSSCARTPIN8, &fncmodes[screen_mode1]);
+-					ioctl(saa, SAAIOSWSS, &saamodes[screen_mode1]);
++					writeproc("/proc/stb/avs/0/sb", fncmodes[screen_mode1]);
++					writeproc("/proc/stb/denc/0/wss", saamodes[screen_mode1]);
+ 
+ 					break;
+ 
+@@ -3854,9 +3917,9 @@
+ 
+ void SwitchScreenMode(int newscreenmode)
+ {
+-#if HAVE_DVB_API_VERSION >= 3
++
+ 	struct v4l2_format format;
+-#endif
++
+ 	/* reset transparency mode */
+ 	if (transpmode)
+ 		transpmode = 0;
+@@ -3935,8 +3998,8 @@
+ 		ioctl(pig, VIDIOC_S_FMT, &format);
+ 		ioctl(pig, VIDIOC_OVERLAY, &sm);
+ #endif
+-		ioctl(avs, AVSIOSSCARTPIN8, &fncmodes[screen_mode2]);
+-		ioctl(saa, SAAIOSWSS, &saamodes[screen_mode2]);
++		writeproc("/proc/stb/avs/0/sb", fncmodes[screen_mode2]);
++		writeproc("/proc/stb/denc/0/wss", saamodes[screen_mode2]);
+ 	}
+ 	else /* not split */
+ 	{
+@@ -3950,8 +4013,8 @@
+ 		displaywidth= (ex-sx);
+ 		StartX = sx; //+ (ex-sx - 40*fontwidth) / 2; /* center screen */
+ 
+-		ioctl(avs, AVSIOSSCARTPIN8, &fncmodes[screen_mode1]);
+-		ioctl(saa, SAAIOSWSS, &saamodes[screen_mode1]);
++		writeproc("/proc/stb/avs/0/sb", fncmodes[screen_mode1]);
++		writeproc("/proc/stb/denc/0/wss", saamodes[screen_mode1]);
+ 	}
+ }
+ 
+@@ -3985,8 +4048,8 @@
+ 	else if (transpmode == 1) /* semi-transparent BG with FG text */
+ 	{
+ 		/* restore videoformat */
+-		ioctl(avs, AVSIOSSCARTPIN8, &fnc_old);
+-		ioctl(saa, SAAIOSWSS, &saa_old);
++		writeproc("/proc/stb/avs/0/sb", saved_pin8);
++		writeproc("/proc/stb/denc/0/wss", saved_wss);
+ 
+ 		ClearBB(transp);
+ 		tuxtxt_cache.pageupdate = 1;
+@@ -3994,8 +4057,8 @@
+ 	else /* TV mode */
+ 	{
+ 		/* restore videoformat */
+-		ioctl(avs, AVSIOSSCARTPIN8, &fnc_old);
+-		ioctl(saa, SAAIOSWSS, &saa_old);
++		writeproc("/proc/stb/avs/0/sb", saved_pin8);
++		writeproc("/proc/stb/denc/0/wss", saved_wss);
+ 
+ 		ClearFB(transp);
+ 		clearbbcolor = FullScrColor;
+@@ -4025,13 +4088,13 @@
+ 	tuxtxt_cache.pageupdate = 1;
+ }
+ 
+-void RenderDRCS(
++void RenderDRCS( //FIX ME
+ 	unsigned char *s,	/* pointer to char data, parity undecoded */
+ 	unsigned char *d,	/* pointer to frame buffer of top left pixel */
+ 	unsigned char *ax, /* array[0..12] of x-offsets, array[0..10] of y-offsets for each pixel */
+ 	unsigned char fgcolor, unsigned char bgcolor)
+ {
+-	int bit, x, y;
++	int bit, x, y, ltmp;
+ 	unsigned char *ay = ax + 13; /* array[0..10] of y-offsets for each pixel */
+ 
+ 	for (y = 0; y < 10; y++) /* 10*2 bytes a 6 pixels per char definition */
+@@ -4052,36 +4115,56 @@
+ 
+ 			f1 = (c1 & bit) ? fgcolor : bgcolor;
+ 			f2 = (c2 & bit) ? fgcolor : bgcolor;
++
+ 			for (i = 0; i < h; i++)
+ 			{
+ 				if (ax[x+1] > ax[x])
+-					memset(d + ax[x], f1, ax[x+1] - ax[x]);
++				{
++//					memset(d + ax[x], f1, ax[x+1] - ax[x]);
++					for (ltmp=0 ; ltmp <= (ax[x+1]-ax[x]); ltmp++)
++					{
++						memcpy(d + ax[x]*4 +ltmp*4,bgra[f1],4);
++					}
++				}
+ 				if (ax[x+7] > ax[x+6])
+-					memset(d + ax[x+6], f2, ax[x+7] - ax[x+6]); /* 2nd byte 6 pixels to the right */
+-				d += var_screeninfo.xres;
++				{
++//					memset(d + ax[x+6], f2, ax[x+7] - ax[x+6]); /* 2nd byte 6 pixels to the right */
++					for (ltmp=0 ; ltmp <= (ax[x+7]-ax[x+6]); ltmp++)
++					{
++						memcpy(d + ax[x+6]*4 +ltmp*4,bgra[f2],4);
++					}
++
++				}
++				d += fix_screeninfo.line_length;
+ 			}
+-			d -= h * var_screeninfo.xres;
++			d -= h * fix_screeninfo.line_length;
+ 		}
+-		d += h * var_screeninfo.xres;
++		d += h * fix_screeninfo.line_length;
+ 	}
+ }
+ 
+ 
+ void DrawVLine(int x, int y, int l, int color)
+ {
+-	unsigned char *p = lfb + x + y * var_screeninfo.xres;
++	unsigned char *p = lfb + x*4 + y * fix_screeninfo.line_length;
+ 
+ 	for ( ; l > 0 ; l--)
+ 	{
+-		*p = color;
+-		p += var_screeninfo.xres;
++		memcpy(p,bgra[color],4);
++		p += fix_screeninfo.line_length;
+ 	}
+ }
+ 
+ void DrawHLine(int x, int y, int l, int color)
+ {
++	int ltmp;
+ 	if (l > 0)
+-		memset(lfb + x + y * var_screeninfo.xres, color, l);
++	{
++		for (ltmp=0; ltmp <= l; ltmp++)
++		{
++			memcpy(lfb + x*4 + ltmp*4 + y * fix_screeninfo.line_length, bgra[color], 4);
++		}
++	}
+ }
+ 
+ void FillRectMosaicSeparated(int x, int y, int w, int h, int fgcolor, int bgcolor, int set)
+@@ -4095,48 +4178,54 @@
+ 
+ void FillTrapez(int x0, int y0, int l0, int xoffset1, int h, int l1, int color)
+ {
+-	unsigned char *p = lfb + x0 + y0 * var_screeninfo.xres;
++	unsigned char *p = lfb + x0*4 + y0 * fix_screeninfo.line_length;
+ 	int xoffset, l;
+ 	int yoffset;
++	int ltmp;
+ 
+ 	for (yoffset = 0; yoffset < h; yoffset++)
+ 	{
+ 		l = l0 + ((l1-l0) * yoffset + h/2) / h;
+ 		xoffset = (xoffset1 * yoffset + h/2) / h;
+ 		if (l > 0)
+-			memset(p + xoffset, color, l);
+-		p += var_screeninfo.xres;
++		{
++			for (ltmp=0; ltmp <= l; ltmp++)
++			{
++				memcpy(p + xoffset*4 +ltmp*4, bgra[color], 4);
++			}
++		}
++		p += fix_screeninfo.line_length;
+ 	}
+ }
+ void FlipHorz(int x, int y, int w, int h)
+ {
+-	unsigned char buf[w];
+-	unsigned char *p = lfb + x + y * var_screeninfo.xres;
++	unsigned char buf[w*4];
++	unsigned char *p = lfb + x*4 + y * fix_screeninfo.line_length;
+ 	int w1,h1;
+ 
+ 	for (h1 = 0 ; h1 < h ; h1++)
+ 	{
+-		memcpy(buf,p,w);
++		memcpy(buf,p,w*4);
+ 		for (w1 = 0 ; w1 < w ; w1++)
+ 		{
+-			*(p+w1) = buf[w-(w1+1)];
++			memcpy(p+w1*4,buf+((w-w1)*4)-4,4);
+ 		}
+-		p += var_screeninfo.xres;
++		p += fix_screeninfo.line_length;
+ 	}
+ }
+ void FlipVert(int x, int y, int w, int h)
+ {
+-	unsigned char buf[w];
+-	unsigned char *p = lfb + x + y * var_screeninfo.xres, *p1, *p2;
++	unsigned char buf[w*4];
++	unsigned char *p = lfb + x*4 + y * fix_screeninfo.line_length, *p1, *p2;
+ 	int h1;
+ 
+ 	for (h1 = 0 ; h1 < h/2 ; h1++)
+ 	{
+-		p1 = (p+(h1*var_screeninfo.xres));
+-		p2 = (p+(h-(h1+1))*var_screeninfo.xres);
+-		memcpy(buf,p1,w);
+-		memcpy(p1,p2,w);
+-		memcpy(p2,buf,w);
++		p1 = (p+(h1*fix_screeninfo.line_length));
++		p2 = (p+(h-(h1+1))*fix_screeninfo.line_length);
++		memcpy(buf,p1,w*4);
++		memcpy(p1,p2,w*4);
++		memcpy(p2,buf,w*4);
+ 	}
+ }
+ 
+@@ -4377,7 +4466,7 @@
+ 			else if (*aShapes[Char - 0x20] == S_ADT)
+ 			{
+ 				int x,y,f,c;
+-				unsigned char* p = lfb + PosX + (PosY+yoffset)* var_screeninfo.xres;
++				unsigned char* p = lfb + PosX*4 + (PosY+yoffset)* fix_screeninfo.line_length;
+ 				for (y=0; y<fontheight;y++)
+ 				{
+ 					for (f=0; f<factor; f++)
+@@ -4385,9 +4474,9 @@
+ 						for (x=0; x<curfontwidth*xfactor;x++)
+ 						{
+ 							c = (y&4 ? (x/3)&1 :((x+3)/3)&1);
+-							*(p+x) = (c ? fgcolor : bgcolor);
++							memcpy((p+x*4),bgra[(c ? fgcolor : bgcolor)],4);
+ 						}
+-						p += var_screeninfo.xres;
++						p += fix_screeninfo.line_length;
+ 					}
+ 				}
+ 				PosX += curfontwidth;
+@@ -4422,7 +4511,7 @@
+ 			}
+ 			axdrcs[12] = curfontwidth; /* adjust last x-offset according to position, FIXME: double width */
+ 			RenderDRCS(p,
+-						  lfb + PosX + (yoffset + PosY) * var_screeninfo.xres,
++						  lfb + PosX*4 + (yoffset + PosY) * fix_screeninfo.line_length,
+ 						  axdrcs, fgcolor, bgcolor);
+ 		}
+ 		else
+@@ -4590,21 +4679,19 @@
+ 		return;
+ 	}
+ 
++
+ 	if (!(glyph = FT_Get_Char_Index(face, Char)))
+ 	{
+ #if TUXTXT_DEBUG
+-		printf("TuxTxt <FT_Get_Char_Index for Char %x \"%c\" failed\n", Char, Char);
++		printf("TuxTxt <FT_Get_Char_Index for Char %d %x \"%c\" failed\n", Char, Char, Char);
+ #endif
+ 		FillRect(PosX, PosY + yoffset, curfontwidth, factor*fontheight, bgcolor);
+ 		PosX += curfontwidth;
+ 		return;
+ 	}
+ 
+-#if HAVE_DVB_API_VERSION >= 3
+-	if ((error = FTC_SBitCache_Lookup(cache, &typettf, glyph, &sbit, NULL)) != 0)
+-#else
+ 	if ((error = FTC_SBit_Cache_Lookup(cache, &typettf, glyph, &sbit)) != 0)
+-#endif
++
+ 	{
+ #if TUXTXT_DEBUG
+ 		printf("TuxTxt <FTC_SBitCache_Lookup: 0x%x> c%x a%x g%x w%d h%d x%d y%d\n",
+@@ -4631,11 +4718,8 @@
+ 			Char = G2table[0][0x20+ Attribute->diacrit];
+ 		if ((glyph = FT_Get_Char_Index(face, Char)))
+ 		{
+-#if HAVE_DVB_API_VERSION >= 3
+-			if ((error = FTC_SBitCache_Lookup(cache, &typettf, glyph, &sbit_diacrit, NULL)) == 0)
+-#else
+ 			if ((error = FTC_SBit_Cache_Lookup(cache, &typettf, glyph, &sbit_diacrit)) == 0)
+-#endif
++
+ 			{
+ 					sbitbuffer = localbuffer;
+ 					memcpy(sbitbuffer,sbit->buffer,sbit->pitch*sbit->height);
+@@ -4662,7 +4746,7 @@
+ 			sbit->height = fontheight - ascender + sbit->top - TTFShiftY; /* limit char height to defined/calculated fontheight */
+ 
+ 
+-		p = lfb + PosX + (yoffset + PosY + Row) * var_screeninfo.xres; /* running pointer into framebuffer */
++		p = lfb + PosX*4 + (yoffset + PosY + Row) * fix_screeninfo.line_length; /* running pointer into framebuffer */
+ 		for (Row = sbit->height; Row; Row--) /* row counts up, but down may be a little faster :) */
+ 		{
+ 			int pixtodo = (usettf ? sbit->width : curfontwidth);
+@@ -4671,8 +4755,8 @@
+ 			for (Bit = xfactor * (sbit->left + TTFShiftX); Bit > 0; Bit--) /* fill left margin */
+ 			{
+ 				for (f = factor-1; f >= 0; f--)
+-					*(p + f*var_screeninfo.xres) = bgcolor;
+-				p++;
++					memcpy((p + f*fix_screeninfo.line_length),bgra[bgcolor],4);/*bgcolor*/
++				p+=4;
+ 				if (!usettf)
+ 					pixtodo--;
+ 			}
+@@ -4692,14 +4776,15 @@
+ 						color = bgcolor;
+ 
+ 					for (f = factor-1; f >= 0; f--)
+-						*(p + f*var_screeninfo.xres) = color;
+-					p++;
++						memcpy((p + f*fix_screeninfo.line_length),bgra[color],4);
++					p+=4;
+ 
+ 					if (xfactor > 1) /* double width */
+ 					{
+ 						for (f = factor-1; f >= 0; f--)
+-							*(p + f*var_screeninfo.xres) = color;
+-						p++;
++							memcpy((p + f*fix_screeninfo.line_length),bgra[color],4);
++						p+=4;
++
+ 						if (!usettf)
+ 							pixtodo--;
+ 					}
+@@ -4710,11 +4795,11 @@
+ 				  Bit > 0; Bit--) /* fill rest of char width */
+ 			{
+ 				for (f = factor-1; f >= 0; f--)
+-					*(p + f*var_screeninfo.xres) = bgcolor;
+-				p++;
++					memcpy((p + f*fix_screeninfo.line_length),bgra[bgcolor],4);
++				p+=4;
+ 			}
+ 
+-			p = pstart + factor*var_screeninfo.xres;
++			p = pstart + factor*fix_screeninfo.line_length;
+ 		}
+ 
+ 		Row = ascender - sbit->top + sbit->height + TTFShiftY;
+@@ -5428,7 +5513,7 @@
+ void CopyBB2FB()
+ {
+ 	unsigned char *src, *dst, *topsrc;
+-	int fillcolor, i, screenwidth;
++	int fillcolor, i, screenwidth, swtmp;
+ 
+ 	/* line 25 */
+ 	if (!pagecatching)
+@@ -5445,8 +5530,8 @@
+ 		if (ioctl(fb, FBIOPAN_DISPLAY, &var_screeninfo) == -1)
+ 			perror("TuxTxt <FBIOPAN_DISPLAY>");
+ 
+-		if (StartX > 0 && *lfb != *(lfb + var_screeninfo.xres * var_screeninfo.yres)) /* adapt background of backbuffer if changed */
+-			FillBorder(*(lfb + var_screeninfo.xres * var_screeninfo.yoffset));
++		if (StartX > 0 && *lfb != *(lfb + fix_screeninfo.line_length * var_screeninfo.yres)) /* adapt background of backbuffer if changed */
++			FillBorder(*(lfb + fix_screeninfo.line_length * var_screeninfo.yoffset));
+ //			 ClearBB(*(lfb + var_screeninfo.xres * var_screeninfo.yoffset));
+ 
+ 		if (clearbbcolor >= 0)
+@@ -5457,18 +5542,18 @@
+ 		return;
+ 	}
+ 
+-	src = dst = topsrc = lfb + StartY*var_screeninfo.xres;
++	src = dst = topsrc = lfb + StartY*fix_screeninfo.line_length;
+ 
+ 
+ 	if (var_screeninfo.yoffset)
+-		dst += var_screeninfo.xres * var_screeninfo.yres;
++		dst += fix_screeninfo.line_length * var_screeninfo.yres;
+ 	else
+ 	{
+-		src += var_screeninfo.xres * var_screeninfo.yres;
+-		topsrc += var_screeninfo.xres * var_screeninfo.yres;
++		src += fix_screeninfo.line_length * var_screeninfo.yres;
++		topsrc += fix_screeninfo.line_length * var_screeninfo.yres;
+ 	}
+ 	if (!pagecatching )
+-		memcpy(dst+(24*fontheight)*var_screeninfo.xres, src + (24*fontheight)*var_screeninfo.xres, var_screeninfo.xres*fontheight); /* copy line25 in normal height */
++		memcpy(dst+(24*fontheight)*fix_screeninfo.line_length, src + (24*fontheight)*fix_screeninfo.line_length, fix_screeninfo.line_length*fontheight); /* copy line25 in normal height */
+ 
+ 	if (transpmode)
+ 		fillcolor = transp;
+@@ -5476,47 +5561,53 @@
+ 		fillcolor = FullScrColor;
+ 
+ 	if (zoommode == 2)
+-		src += 12*fontheight*var_screeninfo.xres;
++		src += 12*fontheight*fix_screeninfo.line_length;
+ 
+ 	if (screenmode == 1) /* copy topmenu in normal height (since PIG also keeps dimensions) */
+ 	{
+ 		unsigned char *topdst = dst;
+ 
+-		screenwidth = TV43STARTX;
++		screenwidth = ( TV43STARTX ) * 4;
+ 
+ 		topsrc += screenwidth;
+ 		topdst += screenwidth;
+ 		for (i=0; i < 24*fontheight; i++)
+ 		{
+ 			memcpy(topdst, topsrc,ex-screenwidth);
+-			topdst += var_screeninfo.xres;
+-			topsrc += var_screeninfo.xres;
++			topdst += fix_screeninfo.line_length;
++			topsrc += fix_screeninfo.line_length;
+ 		}
+ 	}
+ 	else if (screenmode == 2)
+-		screenwidth = TV169FULLSTARTX;
++		screenwidth = ( TV169FULLSTARTX ) * 4;
+ 	else
+-		screenwidth = var_screeninfo.xres;
++		screenwidth = fix_screeninfo.line_length;//var_screeninfo.xres;
+ 
+ 	for (i = StartY; i>0;i--)
+ 	{
+-		memset(dst - i*var_screeninfo.xres, fillcolor, screenwidth);
++		for (swtmp=0; swtmp<=screenwidth; swtmp++)
++		{
++			memcpy(dst - i*fix_screeninfo.line_length+swtmp*4, bgra[fillcolor], 4);
++		}
+ 	}
+ 
+ 	for (i = 12*fontheight; i; i--)
+ 	{
+ 		memcpy(dst, src, screenwidth);
+-		dst += var_screeninfo.xres;
++		dst += fix_screeninfo.line_length;
+ 		memcpy(dst, src, screenwidth);
+-		dst += var_screeninfo.xres;
+-		src += var_screeninfo.xres;
++		dst += fix_screeninfo.line_length;
++		src += fix_screeninfo.line_length;
+ 	}
+ 
+ //	if (!pagecatching )
+ //		memcpy(dst, lfb + (StartY+24*fontheight)*var_screeninfo.xres, var_screeninfo.xres*fontheight); /* copy line25 in normal height */
+ 	for (i = var_screeninfo.yres - StartY - 25*fontheight; i >= 0;i--)
+ 	{
+-		memset(dst + var_screeninfo.xres*(fontheight+i), fillcolor, screenwidth);
++		for (swtmp=0; swtmp<= screenwidth;swtmp++)
++		{
++			memcpy(dst + fix_screeninfo.line_length*(fontheight+i)+swtmp*4, bgra[fillcolor], 4);
++		}
+ 	}
+ }
+ 
+@@ -5835,8 +5926,8 @@
+ 					RenderDRCS(
+ 						page_char + 20 * (DRCSCOLS * row + col + 2),
+ 						lfb
+-						+ (StartY + fontheight + DRCSYSPC * row + var_screeninfo.yres - var_screeninfo.yoffset) * var_screeninfo.xres
+-						+ StartX + DRCSXSPC * col,
++						+ (StartY + fontheight + DRCSYSPC * row + var_screeninfo.yres - var_screeninfo.yoffset) * fix_screeninfo.line_length
++						+ (StartX + DRCSXSPC * col)*4,
+ 						ax, white, black);
+ 
+ 			memset(page_char + 40, 0xff, 24*40); /* don't render any char below row 0 */
+@@ -6261,8 +6352,8 @@
+ 				case KEY_VOLUMEDOWN:	RCCode = RC_MINUS;	break;
+ 				case KEY_MUTE:		RCCode = RC_MUTE;	break;
+ 				case KEY_HELP:		RCCode = RC_HELP;	break;
+-				case KEY_SETUP:		RCCode = RC_DBOX;	break;
+-				case KEY_HOME:		RCCode = RC_HOME;	break;
++				case KEY_MENU:		RCCode = RC_DBOX;	break;
++				case KEY_EXIT:		RCCode = RC_HOME;	break;
+ 				case KEY_POWER:		RCCode = RC_STANDBY;	break;
+ 				}
+ 				return 1;
+diff -Naur tuxtxt_org/tuxtxt.h tuxtxt/tuxtxt.h
+--- tuxtxt_org/tuxtxt.h	2006-03-11 00:07:55.000000000 +0100
++++ tuxtxt/tuxtxt.h	2006-03-10 23:20:32.000000000 +0100
+@@ -1,3 +1,6 @@
++#ifndef __tuxtxt_h__
++#define __tuxtxt_h__
++
+ /******************************************************************************
+  *                      <<< TuxTxt - Teletext Plugin >>>                      *
+  *                                                                            *
+@@ -6,6 +9,9 @@
+  *    continued 2004-2005 by Roland Meier <RolandMeier@Siemens.com>           *
+  *                       and DBLuelle <dbluelle@blau-weissoedingen.de>        *
+  *                                                                            *
++ *              ported 2006 to Dreambox 7025 / 32Bit framebuffer              *
++ *                   by Seddi <seddi@i-have-a-dreambox.com>                   *
++ *                                                                            *
+  ******************************************************************************/
+ 
+ #define TUXTXT_CFG_STANDALONE 0  // 1:plugin only 0:use library
+@@ -41,7 +47,6 @@
+ #include <dbox/avs_core.h>
+ #include <dbox/saa7126_core.h>
+ #include <dbox/fp.h>
+-#include <plugin.h>
+ #include <dbox/lcd-ks0713.h>
+ 
+ 
+@@ -257,11 +262,8 @@
+ FTC_Manager     manager;
+ FTC_SBitCache   cache;
+ FTC_SBit        sbit;
+-#if HAVE_DVB_API_VERSION < 3
++
+ #define FONTTYPE FTC_Image_Desc
+-#else
+-#define FONTTYPE FTC_ImageTypeRec
+-#endif
+ 
+ FT_Face			face;
+ FONTTYPE typettf;
+@@ -426,7 +428,7 @@
+ int hotlist[10];
+ int maxhotlist;
+ 
+-int pig, avs, saa, rc, fb, lcd;
++int pig, rc, fb, lcd;
+ int sx, ex, sy, ey;
+ int PosX, PosY, StartX, StartY;
+ int lastpage;
+@@ -435,7 +437,7 @@
+ char dumpl25;
+ int catch_row, catch_col, catched_page, pagecatching;
+ int prev_100, prev_10, next_10, next_100;
+-int fnc_old, saa_old, screen_mode1, screen_mode2, color_mode, trans_mode, national_subset, national_subset_secondary, auto_national, swapupdown, showhex, menulanguage;
++int screen_mode1, screen_mode2, color_mode, trans_mode, national_subset, national_subset_secondary, auto_national, swapupdown, showhex, menulanguage;
+ int pids_found, current_service, getpidsdone;
+ int SDT_ready;
+ int pc_old_row, pc_old_col;     /* for page catching */
+@@ -450,8 +452,8 @@
+ unsigned char FullRowColor[25];
+ unsigned char FullScrColor;
+ tstPageinfo *pageinfo = 0;/* pointer to cached info of last decoded page */
+-const int fncmodes[] = {AVS_FNCOUT_EXT43, AVS_FNCOUT_EXT169};
+-const int saamodes[] = {SAA_WSS_43F, SAA_WSS_169F};
++const char * fncmodes[] = {"12", "6"};
++const char * saamodes[] = {"4:3_full_format", "16:9_full_format"};
+ 
+ struct timeval tv_delay;
+ int  subtitledelay, delaystarted;
+@@ -976,7 +978,7 @@
+ 	ATR_CATCHMENU1 /* catch menu line */
+ };
+ 
+-/* colortable */
++/* define color names */
+ enum
+ {
+ 	black = 0,
+@@ -1037,7 +1039,7 @@
+ //unsigned short page_atrb[40 * 25]; /*  ?????:h:cc:bbbb:ffff -> ?=reserved, h=double height, c=charset (0:G0 / 1:G1c / 2:G1s), b=background, f=foreground */
+ 
+ 
+-/* colormaps */
++/* colormap */
+ const unsigned short defaultcolors[] =	/* 0x0bgr */
+ {
+ 	0x000, 0x00f, 0x0f0, 0x0ff, 0xf00, 0xf0f, 0xff0, 0xfff,
+@@ -1047,6 +1049,20 @@
+ 	0x420, 0x210, 0x420, 0x000, 0x000
+ };
+ 
++/* 32bit colortable */
++unsigned char bgra[][4] = { 
++"\0\0\0\xFF", "\0\0\0\xFF", "\0\0\0\xFF", "\0\0\0\xFF",
++"\0\0\0\xFF", "\0\0\0\xFF", "\0\0\0\xFF", "\0\0\0\xFF",
++"\0\0\0\xFF", "\0\0\0\xFF", "\0\0\0\xFF", "\0\0\0\xFF",
++"\0\0\0\xFF", "\0\0\0\xFF", "\0\0\0\xFF", "\0\0\0\xFF",
++"\0\0\0\xFF", "\0\0\0\xFF", "\0\0\0\xFF", "\0\0\0\xFF",
++"\0\0\0\xFF", "\0\0\0\xFF", "\0\0\0\xFF", "\0\0\0\xFF",
++"\0\0\0\xFF", "\0\0\0\xFF", "\0\0\0\xFF", "\0\0\0\xFF",
++"\0\0\0\xFF", "\0\0\0\xFF", "\0\0\0\xFF", "\0\0\0\xFF",
++"\0\0\0\xFF", "\0\0\0\xFF", "\0\0\0\xC0", "\0\0\0\x00",
++"\0\0\0\x33" };
++
++/* old 8bit color table */
+ unsigned short rd0[] = {0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0, 0x00<<8, 0x00<<8, 0x00<<8, 0,      0      };
+ unsigned short gn0[] = {0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0, 0x20<<8, 0x10<<8, 0x20<<8, 0,      0      };
+ unsigned short bl0[] = {0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0, 0x40<<8, 0x20<<8, 0x40<<8, 0,      0      };
+@@ -1559,10 +1575,5 @@
+ 					  unsigned char *pAPx0, unsigned char *pAPy0,
+ 					  tObjType ObjType, unsigned char* pagedata);
+ 
+-/* Local Variables: */
+-/* indent-tabs-mode:t */
+-/* tab-width:3 */
+-/* c-basic-offset:3 */
+-/* comment-column:0 */
+-/* fill-column:120 */
+-/* End: */
++
++#endif

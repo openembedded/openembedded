@@ -1,0 +1,114 @@
+diff -Naur sysdeps/unix/clock_nanosleep.c sysdeps-patched/unix/clock_nanosleep.c
+--- libc/sysdeps/unix/clock_nanosleep.c	2003-06-25 02:00:04.000000000 +0200
++++ libc/sysdeps-patched/unix/clock_nanosleep.c	2006-02-28 22:16:20.000000000 +0100
+@@ -21,7 +21,7 @@
+ #include <errno.h>
+ #include <time.h>
+ #include <hp-timing.h>
+-#include <sysdep-cancel.h>
++
+ 
+ #if HP_TIMING_AVAIL
+ # define CPUCLOCK_P(clock) \
+diff -Naur sysdeps/unix/sysv/linux/clock_nanosleep.c sysdeps-patched/unix/sysv/linux/clock_nanosleep.c
+--- libc/sysdeps/unix/sysv/linux/clock_nanosleep.c	2003-06-15 23:21:46.000000000 +0200
++++ libc/sysdeps-patched/unix/sysv/linux/clock_nanosleep.c	2006-02-28 22:16:20.000000000 +0100
+@@ -18,7 +18,7 @@
+ 
+ #include <time.h>
+ 
+-#include <sysdep-cancel.h>
++#include <sysdep.h>
+ #include "kernel-features.h"
+ 
+ 
+@@ -32,18 +32,7 @@
+   INTERNAL_SYSCALL_DECL (err);
+   int r;
+ 
+-  if (SINGLE_THREAD_P)
+-    r = INTERNAL_SYSCALL (clock_nanosleep, err, 4, clock_id, flags, req, rem);
+-  else
+-    {
+-      int oldstate = LIBC_CANCEL_ASYNC ();
+-
+-      r = INTERNAL_SYSCALL (clock_nanosleep, err, 4, clock_id, flags, req,
+-			    rem);
+-
+-      LIBC_CANCEL_RESET (oldstate);
+-    }
+-
++  r = INTERNAL_SYSCALL (clock_nanosleep, err, 4, clock_id, flags, req, rem);
+   return (INTERNAL_SYSCALL_ERROR_P (r, err)
+ 	  ? INTERNAL_SYSCALL_ERRNO (r, err) : 0);
+ }
+@@ -59,20 +48,15 @@
+   if (!__libc_missing_posix_timers)					      \
+     {									      \
+       INTERNAL_SYSCALL_DECL (err);					      \
+-									      \
+-      int oldstate = LIBC_CANCEL_ASYNC ();				      \
+-									      \
+       int r = INTERNAL_SYSCALL (clock_nanosleep, err, 4, clock_id, flags,     \
+ 				req, rem);				      \
+ 									      \
+-      LIBC_CANCEL_RESET (oldstate);					      \
+-									      \
+       if (!INTERNAL_SYSCALL_ERROR_P (r, err))				      \
+ 	return 0;							      \
+ 									      \
+       if (INTERNAL_SYSCALL_ERRNO (r, err) != ENOSYS)			      \
+ 	return INTERNAL_SYSCALL_ERRNO (r, err);				      \
+-									      \
++      									      \
+       __libc_missing_posix_timers = 1;					      \
+     }
+ # endif
+diff -Naur libc_org/sysdeps/mips/Makefile libc/sysdeps/mips/Makefile
+--- libc_org/sysdeps/mips/Makefile	2000-09-06 09:52:59.000000000 +0200
++++ libc/sysdeps/mips/Makefile	2006-02-28 23:31:13.000000000 +0100
+@@ -1,3 +1,7 @@
++ifeq ($(subdir),rt)
++librt-sysdep_routines += rt-sysdep
++endif
++
+ ifeq ($(subdir),misc)
+ sysdep_headers += regdef.h fpregdef.h sys/regdef.h sys/fpregdef.h \
+ 		  sys/asm.h sgidefs.h
+diff -Naur libc_org/sysdeps/mips/rt-sysdep.S libc/sysdeps/mips/rt-sysdep.S
+--- libc_org/sysdeps/mips/rt-sysdep.S	1970-01-01 01:00:00.000000000 +0100
++++ libc/sysdeps/mips/rt-sysdep.S	2006-02-28 23:34:20.000000000 +0100
+@@ -0,0 +1 @@
++#include <sysdep.S>
+diff -Naur libc_org/linuxthreads/sysdeps/unix/sysv/linux/mips/sysdep-cancel.h libc/linuxthreads/sysdeps/unix/sysv/linux/mips/sysdep-cancel.h
+--- libc_org/linuxthreads/sysdeps/unix/sysv/linux/mips/sysdep-cancel.h	2003-07-28 20:45:37.000000000 +0200
++++ libc/linuxthreads/sysdeps/unix/sysv/linux/mips/sysdep-cancel.h	2004-08-25 07:55:34.000000000 +0200
+@@ -1,4 +1,4 @@
+-/* Copyright (C) 2003 Free Software Foundation, Inc.
++/* Copyright (C) 2003, 2004 Free Software Foundation, Inc.
+    This file is part of the GNU C Library.
+    Contributed by Guido Guenther <agx@sigxcpu.org>, 2003.
+ 
+@@ -118,18 +118,16 @@
+ #  define CENABLE	la t9, __pthread_enable_asynccancel; jalr t9;
+ #  define CDISABLE	la t9, __pthread_disable_asynccancel; jalr t9;
+ #  define __local_multiple_threads __pthread_multiple_threads
++# elif defined IS_IN_librt
++#  define CENABLE	la t9, __librt_enable_asynccancel; jalr t9;
++#  define CDISABLE	la t9, __librt_disable_asynccancel; jalr t9;
++#  define __local_multiple_threads __librt_multiple_threads
+ # else
+ #  define CENABLE	la t9, __libc_enable_asynccancel; jalr t9;
+ #  define CDISABLE	la t9, __libc_disable_asynccancel; jalr t9;
+ #  define __local_multiple_threads __libc_multiple_threads
+ # endif
+ 
+-# if !defined NOT_IN_libc
+-#  define __local_multiple_threads __libc_multiple_threads
+-# else
+-#  define __local_multiple_threads __pthread_multiple_threads
+-# endif
+-
+ # ifndef __ASSEMBLER__
+ extern int __local_multiple_threads attribute_hidden;
+ #  define SINGLE_THREAD_P __builtin_expect (__local_multiple_threads == 0, 1)

@@ -1,0 +1,13 @@
+diff -Naur plugins_org/enigma/rss/rss.cpp plugins/enigma/rss/rss.cpp
+--- plugins/enigma/rss/rss.cpp	2006-01-11 16:59:35.000000000 +0100
++++ plugins/enigma/rss/rss.cpp	2006-01-11 17:00:55.000000000 +0100
+@@ -82,8 +82,7 @@
+ 
+ 	setFocus(theList);
+ 
+-	if (!theConfigParser.parse("/var/tuxbox/config/feeds.xml"))
+-		theConfigParser.parse(CONFIGDIR"/feeds.xml");
++	theConfigParser.parse(CONFIGDIR"/feeds.xml");
+ 
+ 	theRssFeed = new rssFeed();
+ 	theRssFeed->hide();

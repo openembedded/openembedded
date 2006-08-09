@@ -1,0 +1,398 @@
+diff -u -r1.36 frontend.h
+--- a/include/lib/dvb/frontend.h	5 Aug 2005 15:03:40 -0000	1.36
++++ b/include/lib/dvb/frontend.h	6 Nov 2005 09:42:02 -0000
+@@ -74,41 +74,43 @@
+ class eFrontend: public Object
+ {
+ 	int type,
+-			fd,
++		fd,
+ #if HAVE_DVB_API_VERSION < 3
+-			secfd,
++		secfd,
+ #else
+-			curContTone,
+-			curVoltage,
++		curContTone,
++		curVoltage,
+ #endif
+-			needreset,
+-			lastcsw,
+-			lastucsw,
+-			lastToneBurst,
+-			lastRotorCmd,
+-			lastSmatvFreq,
+-			curRotorPos;    // current Orbital Position
++		needreset,
++		lastcsw,
++		lastucsw,
++		lastToneBurst,
++		lastRotorCmd,
++		lastSmatvFreq,
++		curRotorPos;    // current Orbital Position
+ 
+ 	eLNB *lastLNB;
+ 	eTransponder *transponder;
+ 	static eFrontend *frontend;
+ 	eTimer rotorTimer1, rotorTimer2, 
+ #if HAVE_DVB_API_VERSION >=3
+-				timeout,
++		timeout,
+ #endif
+-				checkRotorLockTimer, checkLockTimer, updateTransponderTimer;
++		checkRotorLockTimer, checkLockTimer, updateTransponderTimer;
+ 	eSocketNotifier *sn;
+ 	int tries, noRotorCmd, wasLoopthrough, lostlockcount;
+ 	Signal1<void, eTransponder*> tpChanged;
+ // ROTOR INPUTPOWER
+ 	timeval rotorTimeout;
+-	int idlePowerInput;
+-	int runningPowerInput;
+-	int newPos;
++	int idlePowerInput_l,
++		idlePowerInput_h,
++		runningPowerInput,
++		newPos,
++		voltageState;
+ // Non blocking rotor turning
+ 	int DeltaA,
+-			voltage,
+-			increased;
++		voltage,
++		increased;
+ ///////////////////
+ #if HAVE_DVB_API_VERSION < 3
+ 	FrontendParameters front;
+diff -u -r1.92 frontend.cpp
+--- a/lib/dvb/frontend.cpp	3 Oct 2005 12:14:47 -0000	1.92
++++ b/lib/dvb/frontend.cpp	6 Nov 2005 09:42:10 -0000
+@@ -28,6 +28,10 @@
+ 
+ eFrontend* eFrontend::frontend;
+ 
++#ifndef I2C_SLAVE_FORCE
++#define I2C_SLAVE_FORCE	0x0706
++#endif
++
+ eFrontend::eFrontend(int type, const char *demod, const char *sec)
+ :type(type), 
+ 	curRotorPos(10000), transponder(0), rotorTimer1(eApp), 
+@@ -36,7 +40,8 @@
+ 	timeout(eApp), 
+ #endif
+ 	checkRotorLockTimer(eApp), checkLockTimer(eApp), 
+-	updateTransponderTimer(eApp), sn(0), noRotorCmd(0)
++	updateTransponderTimer(eApp), sn(0), noRotorCmd(0),
++	idlePowerInput_l(0), idlePowerInput_h(0)
+ {
+ 	CONNECT(rotorTimer1.timeout, eFrontend::RotorStartLoop );
+ 	CONNECT(rotorTimer2.timeout, eFrontend::RotorRunningLoop );
+@@ -817,7 +822,10 @@
+ 			seq.voltage=SEC_VOLTAGE_OFF;
+ 			break;
+ 	}
+-	return ::ioctl(secfd, SEC_SEND_SEQUENCE, &seq);
++	int ret = ::ioctl(secfd, SEC_SEND_SEQUENCE, &seq);
++	if ( ret < 0 )
++		eDebug("SEC_SEND_SEQUENCE failed(%m)");
++	return ret;
+ }
+ #else
+ int eFrontend::SendSequence( const eSecCmdSequence &seq )
+@@ -1015,10 +1023,7 @@
+ 	// send DiSEqC Sequence ( normal diseqc switches )
+ 	seq.continuousTone = eSecCmdSequence::TONE_OFF;
+ 	if ( SendSequence(seq) < 0 )
+-	{
+-		eDebug("SendSequence failed (%m)");
+ 		return -1;
+-	}
+ 	else if ( lnb->getDiSEqC().SeqRepeat )   // Sequence Repeat selected ?
+ 	{
+ 		usleep( 100000 ); // between seq repeats we wait 75ms
+@@ -1047,6 +1052,37 @@
+ 	return 0;
+ }
+ 
++#define STATIC 0
++#define DYNAMIC 1
++void setCurrentLimitingMode(int mode)
++{
++#if HAVE_DVB_API_VERSION < 3
++	if ( eSystemInfo::getInstance()->getHwType() == eSystemInfo::DM7020 )
++	{
++		int fd=::open("/dev/i2c/0", O_RDWR);
++		if ( fd >= 0 )
++		{
++			unsigned char data[2];
++			::ioctl(fd, I2C_SLAVE_FORCE, 0x10 >> 1);
++			if(::read(fd, data, 1) != 1)
++				eDebug("error read lnbp (%m)");
++			else
++			{
++				if (mode == STATIC)
++					data[0] |= 0x80;  // set static current limiting
++				else
++					data[0] &= ~0x80; // set dynamic current limiting
++				if(::write(fd, data, 1) != 1)
++					eDebug("error write lnbp (%m)");
++			}
++			::close(fd);
++		}
++		else
++			eDebug("couldn't open /dev/i2c/0 (%m)");
++	}
++#endif
++}
++
+ int eFrontend::RotorUseInputPower(eSecCmdSequence& seq, eLNB *lnb )
+ {
+ #if HAVE_DVB_API_VERSION < 3
+@@ -1054,7 +1090,6 @@
+ #else
+ 	dvb_diseqc_master_cmd *commands = seq.commands;
+ #endif
+-	idlePowerInput=0;
+ 	runningPowerInput=0;
+ 	int secTone = seq.continuousTone;
+ 
+@@ -1068,14 +1103,12 @@
+ 
+ 	seq.continuousTone=SEC_TONE_OFF;
+ 	if ( SendSequence(seq) < 0 )
+-	{
+-		eDebug("SendSequence failed (%m)");
+ 		return -2;
+-	}
+ 	else if ( lnb->getDiSEqC().SeqRepeat )   // Sequence Repeat selected ?
+ 	{
+ 		usleep( 100000 ); // between seq repeats we wait 100ms
+-		SendSequence(seq);  // then repeat the cmd
++		if ( SendSequence(seq) < 0 )
++			return -2;
+ 	}
+ 
+ 	if ( lastLNB != lnb )
+@@ -1085,15 +1118,48 @@
+ 	}
+ 	else
+ 	{
+-		usleep( 100*1000 ); // wait 100ms
+-//		eDebug("sleep 100ms");
++		usleep( 50*1000 ); // wait 50ms
++//		eDebug("sleep 50ms");
++	}
++
++	// get power input of Rotor on idle 13V .. only working with a dreambox
++	if ( !idlePowerInput_l )
++	{
++		idlePowerInput_l = readInputPower();
++		if ( idlePowerInput_l < 0 )
++			return idlePowerInput_l;
++//		eDebug("idle power input l = %dmA", idlePowerInput_l );
+ 	}
+ 
+-// get power input of Rotor on idle  not work on dbox yet .. only dreambox
+-	idlePowerInput = readInputPower();
+-	if ( idlePowerInput < 0 )
+-		return idlePowerInput;
+-// eDebug("idle power input = %dmA", idlePowerInput );
++	setCurrentLimitingMode(STATIC);
++
++	// get power input of Rotor on idle 18V .. only working with a dreambox
++	if ( !idlePowerInput_h)
++	{
++#if HAVE_DVB_API_VERSION < 3
++		if (::ioctl(secfd, SEC_SET_VOLTAGE, increased ? SEC_VOLTAGE_18_5 : SEC_VOLTAGE_18) < 0 )
++			eDebug("SEC_SET_VOLTAGE failed (%m)");
++#else
++		 if ( ::ioctl(fd, FE_SET_VOLTAGE, SEC_VOLTAGE_18) < 0 )
++			eDebug("FE_SET_VOLTAGE failed (%m)");
++#endif
++		usleep( 50*1000 ); // wait 50ms
++		idlePowerInput_h = readInputPower();
++		if ( idlePowerInput_h < 0 )
++		{
++			setCurrentLimitingMode(DYNAMIC);
++			return idlePowerInput_h;
++		}
++//		eDebug("idle power input h = %dmA", idlePowerInput_h );
++#if HAVE_DVB_API_VERSION < 3
++		if (::ioctl(secfd, SEC_SET_VOLTAGE, increased ? SEC_VOLTAGE_13_5 : SEC_VOLTAGE_13) < 0 )
++			eDebug("SEC_SET_VOLTAGE failed (%m)");
++#else
++		if ( ::ioctl(fd, FE_SET_VOLTAGE, SEC_VOLTAGE_13) < 0 )
++			eDebug("FE_SET_VOLTAGE failed (%m)");
++#endif
++		usleep( 50*1000 ); // wait 50ms
++	}
+ 
+ 	// send DiSEqC Sequence (Rotor)
+ 	seq.commands=&commands[seq.numCommands];  // last command is rotor cmd... see above...
+@@ -1104,7 +1170,7 @@
+ 	seq.continuousTone=secTone;
+ 	if ( SendSequence(seq) < 0 )
+ 	{
+-		eDebug("SendSequence failed (%m)");
++		setCurrentLimitingMode(DYNAMIC);
+ 		return -2;
+ 	}
+ 	// set rotor start timeout  // 2 sek..
+@@ -1129,11 +1195,14 @@
+ 	{
+ 		runningPowerInput = readInputPower();
+ 		if ( runningPowerInput < 0 )
++		{
++			setCurrentLimitingMode(DYNAMIC);
+ 			return;
++		}
+ //		eDebug("running %d mA", runningPowerInput);
+ //		eDebug("delta %d mA", DeltaA);
+ 
+-		if ( abs(runningPowerInput-idlePowerInput ) >= (DeltaA&0xFF) ) // rotor running ?
++		if ( abs(runningPowerInput-idlePowerInput_l ) >= (DeltaA&0xFF) ) // rotor running ?
+ 		{
+ 			if ( (DeltaA & 0x200) == 0x200 )
+ 			{
+@@ -1164,17 +1233,44 @@
+ {
+ 	timeval now;
+ 	gettimeofday(&now,0);
++
++	if ( voltageState == eSecCmdSequence::VOLTAGE_13 )
++	{
++		timeval tmp = rotorTimeout - now;
++		int timeout_msek = tmp.tv_sec * 1000 + tmp.tv_usec / 1000;
++		if ( timeout_msek < 149700 ) // rotor running at least 300msek?
++		{
++			// then switch to higher voltage
++#if HAVE_DVB_API_VERSION < 3
++			if (::ioctl(secfd, SEC_SET_VOLTAGE, increased ? SEC_VOLTAGE_18_5 : SEC_VOLTAGE_18) < 0 )
++				eDebug("SEC_SET_VOLTAGE failed (%m)");
++#else
++			 if ( ::ioctl(fd, FE_SET_VOLTAGE, voltage) < 0 )
++				eDebug("FE_SET_VOLTAGE failed (%m)");
++			curVoltage = voltage;
++#endif
++			voltageState = eSecCmdSequence::VOLTAGE_18;
++			setCurrentLimitingMode(DYNAMIC);
++		}
++	}
++
+ 	if ( rotorTimeout < now )
+ 	{
+ 		eDebug("Rotor timeouted :-(");
+ 		/* emit */ s_RotorTimeout();
++		setCurrentLimitingMode(DYNAMIC);
+ 	}
+ 	else
+ 	{
++		int &idlePowerInput = (voltageState == eSecCmdSequence::VOLTAGE_13) ? idlePowerInput_l : idlePowerInput_h;
++
+ 		runningPowerInput = readInputPower();
+ 		if ( runningPowerInput < 0 )
++		{
++			setCurrentLimitingMode(DYNAMIC);
+ 			return;
+-//		eDebug("running %d mA", runningPowerInput);
++		}
++		// eDebug("running %d mA, idle %d mA", runningPowerInput, idlePowerInput);
+ 
+ 		if ( abs( idlePowerInput-runningPowerInput ) <= (DeltaA&0xFF) ) // rotor stoped ?
+ 		{
+@@ -1196,7 +1292,8 @@
+ 
+ void eFrontend::RotorFinish(bool tune)
+ {
+-	if ( eSystemInfo::getInstance()->canMeasureLNBCurrent() == 1 )
++	setCurrentLimitingMode(DYNAMIC);
++	if ( voltageState == eSecCmdSequence::VOLTAGE_18 )
+ 	{
+ 		if ( voltage != eSecCmdSequence::VOLTAGE_18 )
+ #if HAVE_DVB_API_VERSION < 3
+@@ -1208,7 +1305,7 @@
+ 		curVoltage = voltage;
+ #endif
+ 	}
+-	else  // can only measure with lower lnb voltage ( 13V )
++	else
+ 	{
+ 		if ( voltage != eSecCmdSequence::VOLTAGE_13 )
+ #if HAVE_DVB_API_VERSION < 3
+@@ -2000,16 +2097,10 @@
+ 			commands[cmdCount-1].u.diseqc.params[1]);
+ #endif
+ 
+-		// drive rotor with 18V when we can measure inputpower
+-		// or we know which orbital pos currently is selected
++		// when we can measure inputpower we start rotor turning with 13V
+ 		if ( lnb->getDiSEqC().useRotorInPower&1 )
+-		{
+-			if ( eSystemInfo::getInstance()->canMeasureLNBCurrent() == 1 )  // can measure with voltage > 13V ?
+-				seq.voltage = eSecCmdSequence::VOLTAGE_18;
+-			else
+-				seq.voltage = eSecCmdSequence::VOLTAGE_13;
+-		}
+-		else
++			voltageState = seq.voltage = eSecCmdSequence::VOLTAGE_13;
++		else  // without measure input power we must start with the correct voltage
+ 			seq.voltage = voltage;
+ 
+ 		lastRotorCmd=RotorCmd;
+@@ -2040,14 +2131,12 @@
+ send:
+ 		seq.voltage=voltage;
+ 		if ( SendSequence(seq) < 0 )
+-		{
+-			eDebug("SendSequence failed (%m)");
+ 			return -1;
+-		}
+ 		else if ( lnb->getDiSEqC().DiSEqCMode >= eDiSEqC::V1_1 && lnb->getDiSEqC().SeqRepeat )  // Sequence Repeat ?
+ 		{
+ 			usleep( 100000 ); // between seq repeats we wait 80ms
+-			SendSequence(seq);  // just do it *g*
++			if ( SendSequence(seq) < 0 )
++				return -1;
+ 		}
+ 	}
+ 	else if ( lastcsw != csw )
+@@ -2177,10 +2266,7 @@
+ 		seq.continuousTone = eSecCmdSequence::TONE_OFF;
+ 		seq.toneBurst = eSecCmdSequence::NONE;
+ 		if (SendSequence(seq) < 0 )
+-		{
+-			eDebug("SendSequence failed (%m)");
+ 			return -1;
+-		}
+ 	}
+ 	if ( ioctl(fd, FE_SET_POWER_STATE, FE_POWER_OFF) < 0 )
+ 		eDebug("FE_SET_POWER_STATE failed (%m)");
+Index: lib/system/info.cpp
+===================================================================
+RCS file: /cvs/tuxbox/apps/tuxbox/enigma/lib/system/info.cpp,v
+retrieving revision 1.33
+diff -u -r1.33 info.cpp
+--- a/lib/system/info.cpp	21 Feb 2005 16:53:26 -0000	1.33
++++ b/lib/system/info.cpp	6 Nov 2005 09:42:10 -0000
+@@ -172,19 +172,8 @@
+ 					midstr="9";
+ 					modelstr="DM7020";
+ 					cpustr="STB04500, 252MHz";
+-					hasrfmod = hashdd = haslcd = hasci
+-					= canrecordts = hasstandbywakeuptimer = cantimeshift = 1;
+-					// check if the box revision is new enough to measure
+-					// lnb power with > 13V ( revisions with lnbp21 can this )
+-					int fd = open("/dev/dbox/fp0", O_RDWR);
+-					if ( fd >=0 )
+-					{
+-						if ( ::ioctl( fd, 0x100, 0 ) == 0 )
+-							canmeasurelnbcurrent=1;
+-						else
+-							canmeasurelnbcurrent=2;
+-						close(fd);
+-					}
++					hasrfmod = hashdd = haslcd = hasci = canrecordts =
++					hasstandbywakeuptimer = cantimeshift = canmeasurelnbcurrent = 1;
+ 					hwtype = DM7020;
+ 					defaulttimertype=ePlaylistEntry::RecTimerEntry|ePlaylistEntry::recDVR;
+ 					break;

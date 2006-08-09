@@ -21,6 +21,7 @@ SRC_URI = "http://www.busybox.net/downloads/busybox-${PV}.tar.gz \
 	   file://dhcpretrytime.patch;patch=1 \
 	   file://fbset.patch;patch=1 \
 	   file://hdparm_M.patch;patch=1 \
+	   file://nptl_task.patch;patch=1 \
 	   file://ifupdown-spurious-environ.patch;patch=1 \
 	   file://iproute-flush-cache.patch;patch=1;pnum=0 \
 	   file://mount-all-type.patch;patch=1 \
@@ -30,6 +31,7 @@ SRC_URI = "http://www.busybox.net/downloads/busybox-${PV}.tar.gz \
 	   file://thumb-bsdlabel.patch;patch=1 \
 	   file://glibc2.4-icmp6.patch;patch=1 \
            file://uclibc_posix.patch;patch=1 \
+	   file://keymap_endianess.patch;patch=1 \
            file://defconfig \
            file://busybox-cron \
 	   file://busybox-httpd \

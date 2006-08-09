@@ -1,0 +1,19 @@
+Submitted By: Jim Gifford (patches at jg555 dot com)
+Date: 2005-10-01
+Initial Package Version: 2.6.12.0
+Origin: Jim Gifford
+Upstream Status: Sent
+Description: Fixes Compile Issue with Sysklogd
+ 
+diff -Naur linux-libc-headers-2.6.12.0.orig/include/asm-mips/atomic.h linux-libc-headers-2.6.12.0/include/asm-mips/atomic.h
+--- linux-libc-headers-2.6.12.0.orig/include/asm-mips/atomic.h	2005-07-06 00:17:30.000000000 +0000
++++ linux-libc-headers-2.6.12.0/include/asm-mips/atomic.h	2005-10-01 22:04:26.000000000 +0000
+@@ -18,7 +18,7 @@
+ typedef struct { volatile int counter; } atomic_t;
+ 
+ #ifdef __mips64
+-typedef struct { volatile __s64 counter; } atomic64_t;
++typedef struct { volatile long counter; } atomic64_t;
+ #endif
+ 
+ #endif /* _ASM_ATOMIC_H */

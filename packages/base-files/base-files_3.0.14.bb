@@ -135,6 +135,13 @@ do_install_append_netbook-pro () {
 	mkdir -p ${D}/initrd
 }
 
+do_install_append_opendreambox() {
+	> ${D}/${sysconfdir}/resolv.conf
+	rm -r ${D}/mnt
+	ln -s /media/hdd ${D}/hdd
+	ln -s /media ${D}/mnt
+}
+
 PACKAGES = "${PN}-doc ${PN}"
 FILES_${PN} = "/"
 FILES_${PN}-doc = "${docdir} ${datadir}/common-licenses"

@@ -1,0 +1,24 @@
+diff -Naur stream/Makefile.am stream_patched/Makefile.am
+--- stream/Makefile.am	2005-06-01 17:20:04.000000000 +0200
++++ stream_patched/Makefile.am	2005-08-08 14:03:02.000000000 +0200
+@@ -2,6 +2,8 @@
+ sbin_PROGRAMS = streampes streamts streamsec udpstreamts udpstreampes
+ udpstreampes_LDADD = -lpthread
+ udpstreampes_SOURCES = udpstreampes.cpp
++INCLUDES = @MPEGTOOLS_CFLAGS@
++streamts_LDADD = @MPEGTOOLS_LIBS@
+ else
+ sbin_PROGRAMS = streampes streamts streamsec udpstreamts streamfile fserver
+ INCLUDES = @MPEGTOOLS_CFLAGS@
+diff -Naur stream/streamts.c stream_patched/streamts.c
+--- stream/streamts.c	2005-08-02 23:32:31.000000000 +0200
++++ stream_patched/streamts.c	2005-08-08 17:02:14.000000000 +0200
+@@ -57,7 +57,7 @@
+     #ifdef HAVE_DREAMBOX_HARDWARE
+ 	#define DMXDEV "/dev/dvb/card0/demux1"
+ 	#define DVRDEV "/dev/dvb/card0/dvr1"
+-	#undef TRANSFORM
++	#define TRANSFORM
+     #else
+ 	#define DMXDEV "/dev/dvb/card0/demux0"
+ 	#define DMXDEV "/dev/dvb/card0/dvr0"

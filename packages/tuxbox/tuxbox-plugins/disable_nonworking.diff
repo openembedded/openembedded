@@ -1,0 +1,12 @@
+diff -Naur plugins_org/Makefile.am plugins/Makefile.am
+--- plugins_org/Makefile.am	2005-11-19 21:55:18.000000000 +0100
++++ plugins/Makefile.am	2006-01-12 01:24:26.000000000 +0100
+@@ -1,7 +1,7 @@
+ AUTOMAKE_OPTIONS = gnu
+ 
+ SUBDIRS = \
+-	include tuxmail tuxtxt tuxcom tuxcal fx2 vncviewer enigma
++	include tuxmail tuxtxt tuxcom tuxcal fx2 vncviewer
+ 
+ pkgconfigdir = $(libdir)/pkgconfig
+ pkgconfig_DATA = \

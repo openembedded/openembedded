@@ -1,0 +1,1059 @@
+Submitted By: Jim Gifford (patches at jg555 dot com)
+Date: 2005-09-27
+Initial Package Version: 20050919 Snapshot
+Origin: Daniel Jacobwitz
+Upstream Status: Submitted by Origin
+Description: Adds NPTL support for MIPS
+ 
+diff -Naur glibc-20050919.orig/nptl/sysdeps/unix/sysv/linux/mips/lowlevellock.h glibc-20050919/nptl/sysdeps/unix/sysv/linux/mips/lowlevellock.h
+--- glibc-20050919.orig/nptl/sysdeps/unix/sysv/linux/mips/lowlevellock.h	2005-03-28 09:21:52.000000000 +0000
++++ glibc-20050919/nptl/sysdeps/unix/sysv/linux/mips/lowlevellock.h	2005-09-27 16:15:20.000000000 +0000
+@@ -30,6 +30,8 @@
+ #define FUTEX_WAKE		1
+ #define FUTEX_REQUEUE		3
+ #define FUTEX_CMP_REQUEUE	4
++#define FUTEX_WAKE_OP		5
++#define FUTEX_OP_CLEAR_WAKE_IF_GT_ONE	((4 << 24) | 1)
+ 
+ /* Initializer for compatibility lock.	*/
+ #define LLL_MUTEX_LOCK_INITIALIZER (0)
+@@ -39,7 +41,7 @@
+     INTERNAL_SYSCALL_DECL (__err);					      \
+     long int __ret;							      \
+     __ret = INTERNAL_SYSCALL (futex, __err, 4,				      \
+-			      (futexp), FUTEX_WAIT, (val), 0);		      \
++			      (long) (futexp), FUTEX_WAIT, (val), 0);	      \
+     INTERNAL_SYSCALL_ERROR_P (__ret, __err) ? -__ret : __ret;		      \
+   })
+ 
+@@ -48,7 +50,7 @@
+     INTERNAL_SYSCALL_DECL (__err);					      \
+     long int __ret;							      \
+     __ret = INTERNAL_SYSCALL (futex, __err, 4,				      \
+-			      (futexp), FUTEX_WAIT, (val), (timespec));	      \
++			      (long) (futexp), FUTEX_WAIT, (val), (timespec));\
+     INTERNAL_SYSCALL_ERROR_P (__ret, __err) ? -__ret : __ret;		      \
+   })
+ 
+@@ -57,7 +59,7 @@
+     INTERNAL_SYSCALL_DECL (__err);					      \
+     long int __ret;							      \
+     __ret = INTERNAL_SYSCALL (futex, __err, 4,				      \
+-			      (futexp), FUTEX_WAKE, (nr), 0);		      \
++			      (long) (futexp), FUTEX_WAKE, (nr), 0);	      \
+     INTERNAL_SYSCALL_ERROR_P (__ret, __err) ? -__ret : __ret;		      \
+   })
+ 
+@@ -67,11 +69,23 @@
+     INTERNAL_SYSCALL_DECL (__err);					      \
+     long int __ret;							      \
+     __ret = INTERNAL_SYSCALL (futex, __err, 6,				      \
+-			      (futexp), FUTEX_CMP_REQUEUE, (nr_wake),	      \
++			      (long) (futexp), FUTEX_CMP_REQUEUE, (nr_wake),  \
+ 			      (nr_move), (mutex), (val));		      \
+     INTERNAL_SYSCALL_ERROR_P (__ret, __err);				      \
+   })
+ 
++/* Returns non-zero if error happened, zero if success.  */
++#define lll_futex_wake_unlock(futexp, nr_wake, nr_wake2, futexp2) \
++  ({									      \
++    INTERNAL_SYSCALL_DECL (__err);					      \
++    long int __ret;							      \
++									      \
++    __ret = INTERNAL_SYSCALL (futex, __err, 6,				      \
++			      (futexp), FUTEX_WAKE_OP, (nr_wake),	      \
++			      (nr_wake2), (futexp2),			      \
++			      FUTEX_OP_CLEAR_WAKE_IF_GT_ONE);		      \
++    INTERNAL_SYSCALL_ERROR_P (__ret, __err);				      \
++  })
+ 
+ static inline int __attribute__((always_inline))
+ __lll_mutex_trylock(int *futex)
+diff -Naur glibc-20050919.orig/nptl/sysdeps/unix/sysv/linux/mips/mips64/sysdep-cancel.h glibc-20050919/nptl/sysdeps/unix/sysv/linux/mips/mips64/sysdep-cancel.h
+--- glibc-20050919.orig/nptl/sysdeps/unix/sysv/linux/mips/mips64/sysdep-cancel.h	1970-01-01 00:00:00.000000000 +0000
++++ glibc-20050919/nptl/sysdeps/unix/sysv/linux/mips/mips64/sysdep-cancel.h	2005-09-27 16:15:20.000000000 +0000
+@@ -0,0 +1,183 @@
++/* Copyright (C) 2003, 2004, 2005 Free Software Foundation, Inc.
++   This file is part of the GNU C Library.
++
++   The GNU C Library is free software; you can redistribute it and/or
++   modify it under the terms of the GNU Lesser General Public
++   License as published by the Free Software Foundation; either
++   version 2.1 of the License, or (at your option) any later version.
++
++   The GNU C Library is distributed in the hope that it will be useful,
++   but WITHOUT ANY WARRANTY; without even the implied warranty of
++   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
++   Lesser General Public License for more details.
++
++   You should have received a copy of the GNU Lesser General Public
++   License along with the GNU C Library; if not, write to the Free
++   Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
++   02111-1307 USA.  */
++
++#include <sysdep.h>
++#include <sysdeps/generic/sysdep.h>
++#include <tls.h>
++#ifndef __ASSEMBLER__
++# include <nptl/pthreadP.h>
++#endif
++#include <sys/asm.h>
++
++/* Gas will put the initial save of $gp into the CIE, because it appears to
++   happen before any instructions.  So we use cfi_same_value instead of
++   cfi_restore.  */
++
++#ifdef HAVE_ASM_CFI_DIRECTIVES
++# define cfi_same_value .cfi_same_value
++#else
++# define cfi_same_value
++#endif
++
++#if !defined NOT_IN_libc || defined IS_IN_libpthread || defined IS_IN_librt
++
++#ifdef __PIC__
++# undef PSEUDO
++# define PSEUDO(name, syscall_name, args)				      \
++      .align 2;								      \
++  L(pseudo_start):							      \
++      cfi_startproc;							      \
++      cfi_adjust_cfa_offset (STKSPACE);					      \
++      cfi_rel_offset (gp, STKOFF_GP);					      \
++  99: PTR_LA t9,__syscall_error;					      \
++      /* manual cpreturn */						      \
++      REG_L gp, STKOFF_GP(sp);						      \
++      cfi_same_value (gp);						      \
++      RESTORESTK;							      \
++      jr t9;								      \
++  .type __##syscall_name##_nocancel, @function;				      \
++  .globl __##syscall_name##_nocancel;					      \
++  __##syscall_name##_nocancel:						      \
++    SAVESTK;								      \
++    .cpsetup t9, STKOFF_GP, name;					      \
++    cfi_rel_offset (gp, STKOFF_GP);					      \
++    li v0, SYS_ify(syscall_name);					      \
++    syscall;								      \
++    bne a3, zero, SYSCALL_ERROR_LABEL;			       		      \
++    /* manual cpreturn */						      \
++    REG_L gp, STKOFF_GP(sp);						      \
++    cfi_same_value (gp);						      \
++    RESTORESTK;								      \
++    ret;								      \
++  .size __##syscall_name##_nocancel,.-__##syscall_name##_nocancel;	      \
++  ENTRY (name)								      \
++    SAVESTK;								      \
++    .cpsetup t9, STKOFF_GP, name;					      \
++    cfi_rel_offset (gp, STKOFF_GP);					      \
++    SINGLE_THREAD_P(v1);						      \
++    bne zero, v1, L(pseudo_cancel);					      \
++    .set noreorder;							      \
++    li v0, SYS_ify(syscall_name);					      \
++    syscall;								      \
++    .set reorder;							      \
++    bne a3, zero, SYSCALL_ERROR_LABEL;			       		      \
++    /* manual cpreturn */						      \
++    REG_L gp, STKOFF_GP(sp);						      \
++    cfi_same_value (gp);						      \
++    RESTORESTK;								      \
++    ret;								      \
++  L(pseudo_cancel):							      \
++    cfi_adjust_cfa_offset (STKSPACE);					      \
++    cfi_rel_offset (gp, STKOFF_GP);					      \
++    REG_S ra, STKOFF_RA(sp);						      \
++    cfi_rel_offset (ra, STKOFF_RA);					      \
++    PUSHARGS_##args;			/* save syscall args */	      	      \
++    CENABLE;								      \
++    REG_S v0, STKOFF_SVMSK(sp);		/* save mask */			      \
++    POPARGS_##args;			/* restore syscall args */	      \
++    .set noreorder;							      \
++    li v0, SYS_ify (syscall_name);				      	      \
++    syscall;								      \
++    .set reorder;							      \
++    REG_S v0, STKOFF_SC_V0(sp);		/* save syscall result */             \
++    REG_S a3, STKOFF_SC_ERR(sp);	/* save syscall error flag */	      \
++    REG_L a0, STKOFF_SVMSK(sp);		/* pass mask as arg1 */		      \
++    CDISABLE;								      \
++    REG_L a3, STKOFF_SC_ERR(sp);	/* restore syscall error flag */      \
++    REG_L ra, STKOFF_RA(sp);		/* restore return address */	      \
++    REG_L v0, STKOFF_SC_V0(sp);		/* restore syscall result */          \
++    bne a3, zero, SYSCALL_ERROR_LABEL;					      \
++    /* manual cpreturn */						      \
++    REG_L gp, STKOFF_GP(sp);						      \
++    cfi_same_value (gp);						      \
++    RESTORESTK;								      \
++  L(pseudo_end):
++
++
++# undef PSEUDO_END
++# define PSEUDO_END(sym) cfi_endproc; .end sym; .size sym,.-sym
++
++#endif
++
++# define PUSHARGS_0	/* nothing to do */
++# define PUSHARGS_1	PUSHARGS_0 REG_S a0, STKOFF_A0(sp); cfi_rel_offset (a0, STKOFF_A0);
++# define PUSHARGS_2	PUSHARGS_1 REG_S a1, STKOFF_A1(sp); cfi_rel_offset (a1, STKOFF_A1);
++# define PUSHARGS_3	PUSHARGS_2 REG_S a2, STKOFF_A2(sp); cfi_rel_offset (a2, STKOFF_A2);
++# define PUSHARGS_4	PUSHARGS_3 REG_S a3, STKOFF_A3(sp); cfi_rel_offset (a3, STKOFF_A3);
++# define PUSHARGS_5	PUSHARGS_4 REG_S a4, STKOFF_A4(sp); cfi_rel_offset (a3, STKOFF_A4);
++# define PUSHARGS_6	PUSHARGS_5 REG_S a5, STKOFF_A5(sp); cfi_rel_offset (a3, STKOFF_A5);
++
++# define POPARGS_0	/* nothing to do */
++# define POPARGS_1	POPARGS_0 REG_L a0, STKOFF_A0(sp);
++# define POPARGS_2	POPARGS_1 REG_L a1, STKOFF_A1(sp);
++# define POPARGS_3	POPARGS_2 REG_L a2, STKOFF_A2(sp);
++# define POPARGS_4	POPARGS_3 REG_L a3, STKOFF_A3(sp);
++# define POPARGS_5	POPARGS_4 REG_L a4, STKOFF_A4(sp);
++# define POPARGS_6	POPARGS_5 REG_L a5, STKOFF_A5(sp);
++
++/* Save an even number of slots.  Should be 0 if an even number of slots
++   are used below, or SZREG if an odd number are used.  */
++# define STK_PAD	SZREG
++
++/* Place values that we are more likely to use later in this sequence, i.e.
++   closer to the SP at function entry.  If you do that, the are more
++   likely to already be in your d-cache.  */
++# define STKOFF_A5	(STK_PAD)
++# define STKOFF_A4	(STKOFF_A5 + SZREG)
++# define STKOFF_A3	(STKOFF_A4 + SZREG)
++# define STKOFF_A2	(STKOFF_A3 + SZREG)	/* MT and more args.  */
++# define STKOFF_A1	(STKOFF_A2 + SZREG)	/* MT and 2 args.  */
++# define STKOFF_A0	(STKOFF_A1 + SZREG)	/* MT and 1 arg.  */
++# define STKOFF_RA	(STKOFF_A0 + SZREG)	/* Used if MT.  */
++# define STKOFF_SC_V0	(STKOFF_RA + SZREG)	/* Used if MT.  */
++# define STKOFF_SC_ERR	(STKOFF_SC_V0 + SZREG)	/* Used if MT.  */
++# define STKOFF_SVMSK	(STKOFF_SC_ERR + SZREG)	/* Used if MT.  */
++# define STKOFF_GP	(STKOFF_SVMSK + SZREG)	/* Always used.  */
++
++# define STKSPACE	(STKOFF_GP + SZREG)
++# define SAVESTK 	PTR_SUBU sp, STKSPACE; cfi_adjust_cfa_offset(STKSPACE)
++# define RESTORESTK 	PTR_ADDU sp, STKSPACE; cfi_adjust_cfa_offset(-STKSPACE)
++
++# ifdef IS_IN_libpthread
++#  define CENABLE	PTR_LA t9, __pthread_enable_asynccancel; jalr t9
++#  define CDISABLE	PTR_LA t9, __pthread_disable_asynccancel; jalr t9
++# elif defined IS_IN_librt
++#  define CENABLE	PTR_LA t9, __librt_enable_asynccancel; jalr t9
++#  define CDISABLE	PTR_LA t9, __librt_disable_asynccancel; jalr t9
++# else
++#  define CENABLE	PTR_LA t9, __libc_enable_asynccancel; jalr t9
++#  define CDISABLE	PTR_LA t9, __libc_disable_asynccancel; jalr t9
++# endif
++
++# ifndef __ASSEMBLER__
++#  define SINGLE_THREAD_P						\
++	__builtin_expect (THREAD_GETMEM (THREAD_SELF,			\
++					 header.multiple_threads)	\
++			  == 0, 1)
++# else
++#  define SINGLE_THREAD_P(reg)						\
++	READ_THREAD_POINTER(reg);					\
++	lw reg, MULTIPLE_THREADS_OFFSET(reg)
++#endif
++
++#elif !defined __ASSEMBLER__
++
++# define SINGLE_THREAD_P 1
++# define NO_CANCELLATION 1
++
++#endif
+diff -Naur glibc-20050919.orig/sysdeps/mips/dl-machine.h glibc-20050919/sysdeps/mips/dl-machine.h
+--- glibc-20050919.orig/sysdeps/mips/dl-machine.h	2005-03-28 09:32:04.000000000 +0000
++++ glibc-20050919/sysdeps/mips/dl-machine.h	2005-09-27 16:15:20.000000000 +0000
+@@ -266,13 +266,13 @@
+ 	" STRINGXP(PTR_ADDU) " $7, $7, " STRINGXP (PTRSIZE) " \n\
+ 	# Make sure the stack pointer is aligned for _dl_init_internal.\n\
+ 	and $2, $29, -2 * " STRINGXP(SZREG) "\n\
+-	" STRINGXP(PTR_S) " $29, -4($2)\n\
++	" STRINGXP(PTR_S) " $29, -" STRINGXP(SZREG) "($2)\n\
+ 	" STRINGXP(PTR_SUBIU) " $29, $2, 32\n\
+ 	" STRINGXP(SAVE_GP(16)) "\n\
+ 	# Call the function to run the initializers.\n\
+ 	jal _dl_init_internal\n\
+ 	# Restore the stack pointer for _start.\n\
+-	" STRINGXP(PTR_L)  " $29, 28($29)\n\
++	" STRINGXP(PTR_L)  " $29, 32-" STRINGXP(SZREG) "($29)\n\
+ 	# Pass our finalizer function to the user in $2 as per ELF ABI.\n\
+ 	" STRINGXP(PTR_LA) " $2, _dl_fini\n\
+ 	# Jump to the user entry point.\n\
+@@ -336,28 +336,24 @@
+ # endif
+       {
+ 	struct link_map *sym_map = RESOLVE_MAP (&sym, version, r_type);
+-	Elf32_Addr value = sym == NULL ? 0 : sym_map->l_addr + sym->st_value;
+-
+-	if (sym)
+-	  value += sym->st_value;
+ 
+ 	switch (r_type)
+ 	  {
+ 	  case R_MIPS_TLS_DTPMOD64:
+ 	  case R_MIPS_TLS_DTPMOD32:
+ 	    if (sym_map)
+-	      *(ElfW(Word) *)reloc_addr = sym_map->l_tls_modid;
++	      *(ElfW(Addr) *)reloc_addr = sym_map->l_tls_modid;
+ 	    break;
+ 
+ 	  case R_MIPS_TLS_DTPREL64:
+ 	  case R_MIPS_TLS_DTPREL32:
+-	    *(ElfW(Word) *)reloc_addr += TLS_DTPREL_VALUE (sym);
++	    *(ElfW(Addr) *)reloc_addr += TLS_DTPREL_VALUE (sym);
+ 	    break;
+ 
+ 	  case R_MIPS_TLS_TPREL32:
+ 	  case R_MIPS_TLS_TPREL64:
+ 	    CHECK_STATIC_TLS (map, sym_map);
+-	    *(ElfW(Word) *)reloc_addr += TLS_TPREL_VALUE (sym_map, sym);
++	    *(ElfW(Addr) *)reloc_addr += TLS_TPREL_VALUE (sym_map, sym);
+ 	    break;
+ 	  }
+ 
+diff -Naur glibc-20050919.orig/sysdeps/unix/sysv/linux/mips/bits/socket.h glibc-20050919/sysdeps/unix/sysv/linux/mips/bits/socket.h
+--- glibc-20050919.orig/sysdeps/unix/sysv/linux/mips/bits/socket.h	2004-12-15 01:00:55.000000000 +0000
++++ glibc-20050919/sysdeps/unix/sysv/linux/mips/bits/socket.h	2005-09-27 16:15:20.000000000 +0000
+@@ -219,10 +219,10 @@
+     socklen_t msg_namelen;	/* Length of address data.  */
+ 
+     struct iovec *msg_iov;	/* Vector of data to send/receive into.  */
+-    int msg_iovlen;		/* Number of elements in the vector.  */
++    size_t msg_iovlen;		/* Number of elements in the vector.  */
+ 
+     void *msg_control;		/* Ancillary data (eg BSD filedesc passing). */
+-    socklen_t msg_controllen;	/* Ancillary data buffer length.  */
++    size_t msg_controllen;	/* Ancillary data buffer length.  */
+ 
+     int msg_flags;		/* Flags on received message.  */
+   };
+@@ -270,8 +270,8 @@
+ 
+   __cmsg = (struct cmsghdr *) ((unsigned char *) __cmsg
+ 			       + CMSG_ALIGN (__cmsg->cmsg_len));
+-  if ((unsigned char *) (__cmsg + 1) >= ((unsigned char *) __mhdr->msg_control
+-					 + __mhdr->msg_controllen)
++  if ((unsigned char *) (__cmsg + 1) > ((unsigned char *) __mhdr->msg_control
++					+ __mhdr->msg_controllen)
+       || ((unsigned char *) __cmsg + CMSG_ALIGN (__cmsg->cmsg_len)
+ 	  > ((unsigned char *) __mhdr->msg_control + __mhdr->msg_controllen)))
+     /* No more entries.  */
+@@ -284,13 +284,12 @@
+    <linux/socket.h>.  */
+ enum
+   {
+-    SCM_RIGHTS = 0x01,		/* Transfer file descriptors.  */
++    SCM_RIGHTS = 0x01		/* Transfer file descriptors.  */
+ #define SCM_RIGHTS SCM_RIGHTS
+ #ifdef __USE_BSD
+-    SCM_CREDENTIALS = 0x02,     /* Credentials passing.  */
++    , SCM_CREDENTIALS = 0x02	/* Credentials passing.  */
+ # define SCM_CREDENTIALS SCM_CREDENTIALS
+ #endif
+-    __SCM_CONNECT = 0x03	/* Data array is `struct scm_connect'.  */
+   };
+ 
+ /* User visible structure for SCM_CREDENTIALS message */
+diff -Naur glibc-20050919.orig/sysdeps/unix/sysv/linux/mips/mips64/Makefile glibc-20050919/sysdeps/unix/sysv/linux/mips/mips64/Makefile
+--- glibc-20050919.orig/sysdeps/unix/sysv/linux/mips/mips64/Makefile	1970-01-01 00:00:00.000000000 +0000
++++ glibc-20050919/sysdeps/unix/sysv/linux/mips/mips64/Makefile	2005-09-27 16:15:20.000000000 +0000
+@@ -0,0 +1,9 @@
++ifeq ($(subdir),socket)
++CFLAGS-recv.c += -fexceptions
++CFLAGS-send.c += -fexceptions
++endif
++
++ifeq ($(subdir),nptl)
++CFLAGS-recv.c += -fexceptions
++CFLAGS-send.c += -fexceptions
++endif
+diff -Naur glibc-20050919.orig/sysdeps/unix/sysv/linux/mips/mips64/n32/sysdep.h glibc-20050919/sysdeps/unix/sysv/linux/mips/mips64/n32/sysdep.h
+--- glibc-20050919.orig/sysdeps/unix/sysv/linux/mips/mips64/n32/sysdep.h	2005-02-25 15:18:12.000000000 +0000
++++ glibc-20050919/sysdeps/unix/sysv/linux/mips/mips64/n32/sysdep.h	2005-09-27 16:15:20.000000000 +0000
+@@ -66,22 +66,28 @@
+ #define INTERNAL_SYSCALL_ERRNO(val, err)     (val)
+ 
+ #undef INTERNAL_SYSCALL
+-#define INTERNAL_SYSCALL(name, err, nr, args...) internal_syscall##nr(name, err, args)
++#define INTERNAL_SYSCALL(name, err, nr, args...) \
++	internal_syscall##nr (, "li\t$2, %2\t\t\t# " #name "\n\t",	\
++			      "i" (SYS_ify (name)), err, args)
+ 
+-#define internal_syscall0(name, err, dummy...) 				\
++#undef INTERNAL_SYSCALL_NCS
++#define INTERNAL_SYSCALL_NCS(number, err, nr, args...) \
++	internal_syscall##nr (= number, , "r" (__v0), err, args)
++
++#define internal_syscall0(ncs_init, cs_init, input, err, dummy...)	\
+ ({ 									\
+ 	long _sys_result;						\
+ 									\
+ 	{								\
+-	register long __v0 asm("$2"); 					\
+-	register long __a3 asm("$7"); 					\
++	register long long __v0 asm("$2") ncs_init;			\
++	register long long __a3 asm("$7");				\
+ 	__asm__ volatile ( 						\
+ 	".set\tnoreorder\n\t" 						\
+-	"li\t$2, %2\t\t\t# " #name "\n\t"				\
++	cs_init								\
+ 	"syscall\n\t" 							\
+ 	".set reorder" 							\
+ 	: "=r" (__v0), "=r" (__a3) 					\
+-	: "i" (SYS_ify(name))						\
++	: input								\
+ 	: __SYSCALL_CLOBBERS); 						\
+ 	err = __a3;							\
+ 	_sys_result = __v0;						\
+@@ -89,21 +95,21 @@
+ 	_sys_result;							\
+ })
+ 
+-#define internal_syscall1(name, err, arg1) 				\
++#define internal_syscall1(ncs_init, cs_init, input, err, arg1)		\
+ ({ 									\
+ 	long _sys_result;						\
+ 									\
+ 	{								\
+-	register long long __v0 asm("$2"); 				\
++	register long long __v0 asm("$2") ncs_init;			\
+ 	register long long __a0 asm("$4") = (long long) arg1; 		\
+ 	register long long __a3 asm("$7"); 				\
+ 	__asm__ volatile ( 						\
+ 	".set\tnoreorder\n\t" 						\
+-	"li\t$2, %3\t\t\t# " #name "\n\t"				\
++	cs_init								\
+ 	"syscall\n\t" 							\
+ 	".set reorder" 							\
+ 	: "=r" (__v0), "=r" (__a3) 					\
+-	: "r" (__a0), "i" (SYS_ify(name)) 				\
++	: input, "r" (__a0)		 				\
+ 	: __SYSCALL_CLOBBERS); 						\
+ 	err = __a3;							\
+ 	_sys_result = __v0;						\
+@@ -111,22 +117,22 @@
+ 	_sys_result;							\
+ })
+ 
+-#define internal_syscall2(name, err, arg1, arg2) 			\
++#define internal_syscall2(ncs_init, cs_init, input, err, arg1, arg2)	\
+ ({ 									\
+ 	long _sys_result;						\
+ 									\
+ 	{								\
+-	register long long __v0 asm("$2"); 				\
++	register long long __v0 asm("$2") ncs_init;			\
+ 	register long long __a0 asm("$4") = (long long) arg1; 		\
+ 	register long long __a1 asm("$5") = (long long) arg2; 		\
+ 	register long long __a3 asm("$7"); 				\
+ 	__asm__ volatile ( 						\
+ 	".set\tnoreorder\n\t" 						\
+-	"li\t$2, %4\t\t\t# " #name "\n\t" 				\
++	cs_init								\
+ 	"syscall\n\t" 							\
+ 	".set\treorder" 						\
+ 	: "=r" (__v0), "=r" (__a3) 					\
+-	: "r" (__a0), "r" (__a1), "i" (SYS_ify(name))			\
++	: input, "r" (__a0), "r" (__a1)					\
+ 	: __SYSCALL_CLOBBERS); 						\
+ 	err = __a3;							\
+ 	_sys_result = __v0;						\
+@@ -134,23 +140,23 @@
+ 	_sys_result;							\
+ })
+ 
+-#define internal_syscall3(name, err, arg1, arg2, arg3) 			\
++#define internal_syscall3(ncs_init, cs_init, input, err, arg1, arg2, arg3) \
+ ({ 									\
+ 	long _sys_result;						\
+ 									\
+ 	{								\
+-	register long long __v0 asm("$2"); 				\
++	register long long __v0 asm("$2") ncs_init;			\
+ 	register long long __a0 asm("$4") = (long long) arg1; 		\
+ 	register long long __a1 asm("$5") = (long long) arg2; 		\
+ 	register long long __a2 asm("$6") = (long long) arg3; 		\
+ 	register long long __a3 asm("$7"); 				\
+ 	__asm__ volatile ( 						\
+ 	".set\tnoreorder\n\t" 						\
+-	"li\t$2, %5\t\t\t# " #name "\n\t" 				\
++	cs_init								\
+ 	"syscall\n\t" 							\
+ 	".set\treorder" 						\
+ 	: "=r" (__v0), "=r" (__a3) 					\
+-	: "r" (__a0), "r" (__a1), "r" (__a2), "i" (SYS_ify(name)) 	\
++	: input, "r" (__a0), "r" (__a1), "r" (__a2)			\
+ 	: __SYSCALL_CLOBBERS); 						\
+ 	err = __a3;							\
+ 	_sys_result = __v0;						\
+@@ -158,23 +164,23 @@
+ 	_sys_result;							\
+ })
+ 
+-#define internal_syscall4(name, err, arg1, arg2, arg3, arg4) 		\
++#define internal_syscall4(ncs_init, cs_init, input, err, arg1, arg2, arg3, arg4) \
+ ({ 									\
+ 	long _sys_result;						\
+ 									\
+ 	{								\
+-	register long long __v0 asm("$2"); 				\
++	register long long __v0 asm("$2") ncs_init;			\
+ 	register long long __a0 asm("$4") = (long long) arg1; 		\
+ 	register long long __a1 asm("$5") = (long long) arg2; 		\
+ 	register long long __a2 asm("$6") = (long long) arg3; 		\
+ 	register long long __a3 asm("$7") = (long long) arg4; 		\
+ 	__asm__ volatile ( 						\
+ 	".set\tnoreorder\n\t" 						\
+-	"li\t$2, %5\t\t\t# " #name "\n\t" 				\
++	cs_init								\
+ 	"syscall\n\t" 							\
+ 	".set\treorder" 						\
+ 	: "=r" (__v0), "+r" (__a3) 					\
+-	: "r" (__a0), "r" (__a1), "r" (__a2), "i" (SYS_ify(name)) 	\
++	: input, "r" (__a0), "r" (__a1), "r" (__a2)		 	\
+ 	: __SYSCALL_CLOBBERS); 						\
+ 	err = __a3;							\
+ 	_sys_result = __v0;						\
+@@ -182,12 +188,12 @@
+ 	_sys_result;							\
+ })
+ 
+-#define internal_syscall5(name, err, arg1, arg2, arg3, arg4, arg5) 	\
++#define internal_syscall5(ncs_init, cs_init, input, err, arg1, arg2, arg3, arg4, arg5) \
+ ({ 									\
+ 	long _sys_result;						\
+ 									\
+ 	{								\
+-	register long long __v0 asm("$2"); 				\
++	register long long __v0 asm("$2") ncs_init;			\
+ 	register long long __a0 asm("$4") = (long long) arg1; 		\
+ 	register long long __a1 asm("$5") = (long long) arg2; 		\
+ 	register long long __a2 asm("$6") = (long long) arg3; 		\
+@@ -195,12 +201,11 @@
+ 	register long long __a4 asm("$8") = (long long) arg5; 		\
+ 	__asm__ volatile ( 						\
+ 	".set\tnoreorder\n\t" 						\
+-	"li\t$2, %5\t\t\t# " #name "\n\t" 				\
++	cs_init								\
+ 	"syscall\n\t" 							\
+ 	".set\treorder" 						\
+ 	: "=r" (__v0), "+r" (__a3) 					\
+-	: "r" (__a0), "r" (__a1), "r" (__a2), "i" (SYS_ify(name)), 	\
+-	  "r" (__a4) 							\
++	: input, "r" (__a0), "r" (__a1), "r" (__a2), "r" (__a4)		\
+ 	: __SYSCALL_CLOBBERS); 						\
+ 	err = __a3;							\
+ 	_sys_result = __v0;						\
+@@ -208,12 +213,12 @@
+ 	_sys_result;							\
+ })
+ 
+-#define internal_syscall6(name, err, arg1, arg2, arg3, arg4, arg5, arg6)\
++#define internal_syscall6(ncs_init, cs_init, input, err, arg1, arg2, arg3, arg4, arg5, arg6) \
+ ({ 									\
+ 	long _sys_result;						\
+ 									\
+ 	{								\
+-	register long long __v0 asm("$2"); 				\
++	register long long __v0 asm("$2") ncs_init;			\
+ 	register long long __a0 asm("$4") = (long long) arg1; 		\
+ 	register long long __a1 asm("$5") = (long long) arg2; 		\
+ 	register long long __a2 asm("$6") = (long long) arg3; 		\
+@@ -222,12 +227,12 @@
+ 	register long long __a5 asm("$9") = (long long) arg6; 		\
+ 	__asm__ volatile ( 						\
+ 	".set\tnoreorder\n\t" 						\
+-	"li\t$2, %5\t\t\t# " #name "\n\t" 				\
++	cs_init								\
+ 	"syscall\n\t" 							\
+ 	".set\treorder" 						\
+ 	: "=r" (__v0), "+r" (__a3) 					\
+-	: "r" (__a0), "r" (__a1), "r" (__a2), "i" (SYS_ify(name)), 	\
+-	  "r" (__a4), "r" (__a5)					\
++	: input, "r" (__a0), "r" (__a1), "r" (__a2), "r" (__a4),	\
++	  "r" (__a5)							\
+ 	: __SYSCALL_CLOBBERS); 						\
+ 	err = __a3;							\
+ 	_sys_result = __v0;						\
+diff -Naur glibc-20050919.orig/sysdeps/unix/sysv/linux/mips/mips64/n64/sysdep.h glibc-20050919/sysdeps/unix/sysv/linux/mips/mips64/n64/sysdep.h
+--- glibc-20050919.orig/sysdeps/unix/sysv/linux/mips/mips64/n64/sysdep.h	2005-02-25 15:18:13.000000000 +0000
++++ glibc-20050919/sysdeps/unix/sysv/linux/mips/mips64/n64/sysdep.h	2005-09-27 16:15:20.000000000 +0000
+@@ -66,22 +66,28 @@
+ #define INTERNAL_SYSCALL_ERRNO(val, err)     (val)
+ 
+ #undef INTERNAL_SYSCALL
+-#define INTERNAL_SYSCALL(name, err, nr, args...) internal_syscall##nr(name, err, args)
++#define INTERNAL_SYSCALL(name, err, nr, args...) \
++	internal_syscall##nr (, "li\t$2, %2\t\t\t# " #name "\n\t",	\
++			      "i" (SYS_ify (name)), err, args)
+ 
+-#define internal_syscall0(name, err, dummy...) 				\
++#undef INTERNAL_SYSCALL_NCS
++#define INTERNAL_SYSCALL_NCS(number, err, nr, args...) \
++	internal_syscall##nr (= number, , "r" (__v0), err, args)
++
++#define internal_syscall0(ncs_init, cs_init, input, err, dummy...)	\
+ ({ 									\
+ 	long _sys_result;						\
+ 									\
+ 	{								\
+-	register long __v0 asm("$2"); 					\
+-	register long __a3 asm("$7"); 					\
++	register long __v0 asm("$2") ncs_init;				\
++	register long __a3 asm("$7");					\
+ 	__asm__ volatile ( 						\
+ 	".set\tnoreorder\n\t" 						\
+-	"li\t$2, %2\t\t\t# " #name "\n\t"				\
++	cs_init								\
+ 	"syscall\n\t" 							\
+ 	".set reorder" 							\
+ 	: "=r" (__v0), "=r" (__a3) 					\
+-	: "i" (SYS_ify(name))						\
++	: input								\
+ 	: __SYSCALL_CLOBBERS); 						\
+ 	err = __a3;							\
+ 	_sys_result = __v0;						\
+@@ -89,21 +95,21 @@
+ 	_sys_result;							\
+ })
+ 
+-#define internal_syscall1(name, err, arg1) 				\
++#define internal_syscall1(ncs_init, cs_init, input, err, arg1)		\
+ ({ 									\
+ 	long _sys_result;						\
+ 									\
+ 	{								\
+-	register long __v0 asm("$2"); 					\
++	register long __v0 asm("$2") ncs_init;				\
+ 	register long __a0 asm("$4") = (long) arg1; 			\
+ 	register long __a3 asm("$7"); 					\
+ 	__asm__ volatile ( 						\
+ 	".set\tnoreorder\n\t" 						\
+-	"li\t$2, %3\t\t\t# " #name "\n\t"				\
++	cs_init								\
+ 	"syscall\n\t" 							\
+ 	".set reorder" 							\
+ 	: "=r" (__v0), "=r" (__a3) 					\
+-	: "r" (__a0), "i" (SYS_ify(name)) 				\
++	: input, "r" (__a0)		 				\
+ 	: __SYSCALL_CLOBBERS); 						\
+ 	err = __a3;							\
+ 	_sys_result = __v0;						\
+@@ -111,22 +117,22 @@
+ 	_sys_result;							\
+ })
+ 
+-#define internal_syscall2(name, err, arg1, arg2) 			\
++#define internal_syscall2(ncs_init, cs_init, input, err, arg1, arg2)	\
+ ({ 									\
+ 	long _sys_result;						\
+ 									\
+ 	{								\
+-	register long __v0 asm("$2"); 					\
++	register long __v0 asm("$2") ncs_init;				\
+ 	register long __a0 asm("$4") = (long) arg1; 			\
+ 	register long __a1 asm("$5") = (long) arg2; 			\
+ 	register long __a3 asm("$7"); 					\
+ 	__asm__ volatile ( 						\
+ 	".set\tnoreorder\n\t" 						\
+-	"li\t$2, %4\t\t\t# " #name "\n\t" 				\
++	cs_init								\
+ 	"syscall\n\t" 							\
+ 	".set\treorder" 						\
+ 	: "=r" (__v0), "=r" (__a3) 					\
+-	: "r" (__a0), "r" (__a1), "i" (SYS_ify(name))			\
++	: input, "r" (__a0), "r" (__a1)					\
+ 	: __SYSCALL_CLOBBERS); 						\
+ 	err = __a3;							\
+ 	_sys_result = __v0;						\
+@@ -134,23 +140,23 @@
+ 	_sys_result;							\
+ })
+ 
+-#define internal_syscall3(name, err, arg1, arg2, arg3) 			\
++#define internal_syscall3(ncs_init, cs_init, input, err, arg1, arg2, arg3) \
+ ({ 									\
+ 	long _sys_result;						\
+ 									\
+ 	{								\
+-	register long __v0 asm("$2"); 					\
++	register long __v0 asm("$2") ncs_init;				\
+ 	register long __a0 asm("$4") = (long) arg1; 			\
+ 	register long __a1 asm("$5") = (long) arg2; 			\
+ 	register long __a2 asm("$6") = (long) arg3; 			\
+ 	register long __a3 asm("$7"); 					\
+ 	__asm__ volatile ( 						\
+ 	".set\tnoreorder\n\t" 						\
+-	"li\t$2, %5\t\t\t# " #name "\n\t" 				\
++	cs_init								\
+ 	"syscall\n\t" 							\
+ 	".set\treorder" 						\
+ 	: "=r" (__v0), "=r" (__a3) 					\
+-	: "r" (__a0), "r" (__a1), "r" (__a2), "i" (SYS_ify(name)) 	\
++	: input, "r" (__a0), "r" (__a1), "r" (__a2)			\
+ 	: __SYSCALL_CLOBBERS); 						\
+ 	err = __a3;							\
+ 	_sys_result = __v0;						\
+@@ -158,23 +164,23 @@
+ 	_sys_result;							\
+ })
+ 
+-#define internal_syscall4(name, err, arg1, arg2, arg3, arg4) 		\
++#define internal_syscall4(ncs_init, cs_init, input, err, arg1, arg2, arg3, arg4) \
+ ({ 									\
+ 	long _sys_result;						\
+ 									\
+ 	{								\
+-	register long __v0 asm("$2"); 					\
++	register long __v0 asm("$2") ncs_init;				\
+ 	register long __a0 asm("$4") = (long) arg1; 			\
+ 	register long __a1 asm("$5") = (long) arg2; 			\
+ 	register long __a2 asm("$6") = (long) arg3; 			\
+ 	register long __a3 asm("$7") = (long) arg4; 			\
+ 	__asm__ volatile ( 						\
+ 	".set\tnoreorder\n\t" 						\
+-	"li\t$2, %5\t\t\t# " #name "\n\t" 				\
++	cs_init								\
+ 	"syscall\n\t" 							\
+ 	".set\treorder" 						\
+ 	: "=r" (__v0), "+r" (__a3) 					\
+-	: "r" (__a0), "r" (__a1), "r" (__a2), "i" (SYS_ify(name)) 	\
++	: input, "r" (__a0), "r" (__a1), "r" (__a2)		 	\
+ 	: __SYSCALL_CLOBBERS); 						\
+ 	err = __a3;							\
+ 	_sys_result = __v0;						\
+@@ -182,12 +188,12 @@
+ 	_sys_result;							\
+ })
+ 
+-#define internal_syscall5(name, err, arg1, arg2, arg3, arg4, arg5) 	\
++#define internal_syscall5(ncs_init, cs_init, input, err, arg1, arg2, arg3, arg4, arg5) \
+ ({ 									\
+ 	long _sys_result;						\
+ 									\
+ 	{								\
+-	register long __v0 asm("$2"); 					\
++	register long __v0 asm("$2") ncs_init;				\
+ 	register long __a0 asm("$4") = (long) arg1; 			\
+ 	register long __a1 asm("$5") = (long) arg2; 			\
+ 	register long __a2 asm("$6") = (long) arg3; 			\
+@@ -195,12 +201,11 @@
+ 	register long __a4 asm("$8") = (long) arg5; 			\
+ 	__asm__ volatile ( 						\
+ 	".set\tnoreorder\n\t" 						\
+-	"li\t$2, %5\t\t\t# " #name "\n\t" 				\
++	cs_init								\
+ 	"syscall\n\t" 							\
+ 	".set\treorder" 						\
+ 	: "=r" (__v0), "+r" (__a3) 					\
+-	: "r" (__a0), "r" (__a1), "r" (__a2), "i" (SYS_ify(name)), 	\
+-	  "r" (__a4) 							\
++	: input, "r" (__a0), "r" (__a1), "r" (__a2), "r" (__a4)		\
+ 	: __SYSCALL_CLOBBERS); 						\
+ 	err = __a3;							\
+ 	_sys_result = __v0;						\
+@@ -208,12 +213,12 @@
+ 	_sys_result;							\
+ })
+ 
+-#define internal_syscall6(name, err, arg1, arg2, arg3, arg4, arg5, arg6)\
++#define internal_syscall6(ncs_init, cs_init, input, err, arg1, arg2, arg3, arg4, arg5, arg6) \
+ ({ 									\
+ 	long _sys_result;						\
+ 									\
+ 	{								\
+-	register long __v0 asm("$2"); 					\
++	register long __v0 asm("$2") ncs_init;				\
+ 	register long __a0 asm("$4") = (long) arg1; 			\
+ 	register long __a1 asm("$5") = (long) arg2; 			\
+ 	register long __a2 asm("$6") = (long) arg3; 			\
+@@ -222,12 +227,12 @@
+ 	register long __a5 asm("$9") = (long) arg6; 			\
+ 	__asm__ volatile ( 						\
+ 	".set\tnoreorder\n\t" 						\
+-	"li\t$2, %5\t\t\t# " #name "\n\t" 				\
++	cs_init								\
+ 	"syscall\n\t" 							\
+ 	".set\treorder" 						\
+ 	: "=r" (__v0), "+r" (__a3) 					\
+-	: "r" (__a0), "r" (__a1), "r" (__a2), "i" (SYS_ify(name)), 	\
+-	  "r" (__a4), "r" (__a5)					\
++	: input, "r" (__a0), "r" (__a1), "r" (__a2), "r" (__a4),	\
++	  "r" (__a5)							\
+ 	: __SYSCALL_CLOBBERS); 						\
+ 	err = __a3;							\
+ 	_sys_result = __v0;						\
+diff -Naur glibc-20050919.orig/sysdeps/unix/sysv/linux/mips/mips64/syscalls.list glibc-20050919/sysdeps/unix/sysv/linux/mips/mips64/syscalls.list
+--- glibc-20050919.orig/sysdeps/unix/sysv/linux/mips/mips64/syscalls.list	2004-07-21 06:13:15.000000000 +0000
++++ glibc-20050919/sysdeps/unix/sysv/linux/mips/mips64/syscalls.list	2005-09-27 16:15:20.000000000 +0000
+@@ -1,16 +1,12 @@
+ # File name	Caller	Syscall name	Args	Strong name	Weak names
+ 
+-lseek		-	lseek		i:iii	__libc_lseek	__lseek lseek __llseek llseek __libc_lseek64 __lseek64 lseek64
+-
+-# proper socket implementations:
+-recvfrom	-	recvfrom	i:ibniBN __libc_recvfrom __recvfrom recvfrom
+-sendto		-	sendto		i:ibnibn __libc_sendto	__sendto sendto
++lseek		-	lseek		Ci:iii	__libc_lseek	__lseek lseek __llseek llseek __libc_lseek64 __lseek64 lseek64
+ 
+ # semaphore and shm system calls
+ msgctl		-	msgctl		i:iip	__msgctl	msgctl
+ msgget		-	msgget		i:ii	__msgget	msgget
+-msgrcv		-	msgrcv		i:ibnii	__msgrcv	msgrcv
+-msgsnd		-	msgsnd		i:ibni	__msgsnd	msgsnd
++msgrcv		-	msgrcv		Ci:ibnii __msgrcv	msgrcv
++msgsnd		-	msgsnd		Ci:ibni	__msgsnd	msgsnd
+ shmat		-	shmat		i:ipi	__shmat		shmat
+ shmctl		-	shmctl		i:iip	__shmctl	shmctl
+ shmdt		-	shmdt		i:s	__shmdt		shmdt
+diff -Naur glibc-20050919.orig/sysdeps/unix/sysv/linux/mips/ptrace.c glibc-20050919/sysdeps/unix/sysv/linux/mips/ptrace.c
+--- glibc-20050919.orig/sysdeps/unix/sysv/linux/mips/ptrace.c	2004-11-24 04:36:11.000000000 +0000
++++ glibc-20050919/sysdeps/unix/sysv/linux/mips/ptrace.c	1970-01-01 00:00:00.000000000 +0000
+@@ -1,111 +0,0 @@
+-/* Copyright (C) 1995, 1996, 1997, 1998, 2000, 2002, 2003, 2004
+-	Free Software Foundation, Inc.
+-   This file is part of the GNU C Library.
+-
+-   The GNU C Library is free software; you can redistribute it and/or
+-   modify it under the terms of the GNU Lesser General Public
+-   License as published by the Free Software Foundation; either
+-   version 2.1 of the License, or (at your option) any later version.
+-
+-   The GNU C Library is distributed in the hope that it will be useful,
+-   but WITHOUT ANY WARRANTY; without even the implied warranty of
+-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+-   Lesser General Public License for more details.
+-
+-   You should have received a copy of the GNU Lesser General Public
+-   License along with the GNU C Library; if not, write to the Free
+-   Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+-   02111-1307 USA.  */
+-
+-#include <errno.h>
+-#include <sgidefs.h>
+-#include <sys/types.h>
+-#include <sys/ptrace.h>
+-#include <sys/user.h>
+-#include <stdarg.h>
+-
+-#include <sysdep.h>
+-#include <sys/syscall.h>
+-#include <bp-checks.h>
+-#include <sgidefs.h>
+-
+-#if _MIPS_SIM == _ABIN32
+-__extension__ typedef long long int reg_type;
+-#else
+-typedef long int reg_type;
+-#endif
+-
+-reg_type
+-ptrace (enum __ptrace_request request, ...)
+-{
+-  reg_type res, ret;
+-  va_list ap;
+-  pid_t pid;
+-  void *addr;
+-  reg_type data;
+-
+-  va_start (ap, request);
+-  pid = va_arg (ap, pid_t);
+-  addr = va_arg (ap, void *);
+-  data = va_arg (ap, reg_type);
+-  va_end (ap);
+-
+-  if (request > 0 && request < 4)
+-    data = &ret;
+-
+-#if __BOUNDED_POINTERS__
+-  switch (request)
+-    {
+-    case PTRACE_PEEKTEXT:
+-    case PTRACE_PEEKDATA:
+-    case PTRACE_PEEKUSER:
+-    case PTRACE_POKETEXT:
+-    case PTRACE_POKEDATA:
+-    case PTRACE_POKEUSER:
+-      (void) CHECK_1 ((int *) addr);
+-      (void) CHECK_1 ((int *) data);
+-      break;
+-
+-    case PTRACE_GETREGS:
+-    case PTRACE_SETREGS:
+-      /* We don't know the size of data, so the best we can do is ensure
+-	 that `data' is valid for at least one word.  */
+-      (void) CHECK_1 ((int *) data);
+-      break;
+-
+-    case PTRACE_GETFPREGS:
+-    case PTRACE_SETFPREGS:
+-      /* We don't know the size of data, so the best we can do is ensure
+-	 that `data' is valid for at least one word.  */
+-      (void) CHECK_1 ((int *) data);
+-      break;
+-
+-    case PTRACE_GETFPXREGS:
+-    case PTRACE_SETFPXREGS:
+-      /* We don't know the size of data, so the best we can do is ensure
+-	 that `data' is valid for at least one word.  */
+-      (void) CHECK_1 ((int *) data);
+-      break;
+-
+-    case PTRACE_TRACEME:
+-    case PTRACE_CONT:
+-    case PTRACE_KILL:
+-    case PTRACE_SINGLESTEP:
+-    case PTRACE_ATTACH:
+-    case PTRACE_DETACH:
+-    case PTRACE_SYSCALL:
+-      /* Neither `data' nor `addr' needs any checks.  */
+-      break;
+-    };
+-#endif
+-
+-  res = INLINE_SYSCALL (ptrace, 4, request, pid,
+-			__ptrvalue (addr), __ptrvalue (data));
+-  if (res >= 0 && request > 0 && request < 4)
+-    {
+-      __set_errno (0);
+-      return ret;
+-    }
+-
+-  return res;
+-}
+diff -Naur glibc-20050919.orig/sysdeps/unix/sysv/linux/mips/sys/ptrace.h glibc-20050919/sysdeps/unix/sysv/linux/mips/sys/ptrace.h
+--- glibc-20050919.orig/sysdeps/unix/sysv/linux/mips/sys/ptrace.h	2004-11-24 04:37:35.000000000 +0000
++++ glibc-20050919/sysdeps/unix/sysv/linux/mips/sys/ptrace.h	1970-01-01 00:00:00.000000000 +0000
+@@ -1,136 +0,0 @@
+-/* `ptrace' debugger support interface.  Linux version.
+-   Copyright (C) 1996, 1997, 1998, 1999, 2000, 2002, 2003, 2004
+-	Free Software Foundation, Inc.
+-   This file is part of the GNU C Library.
+-
+-   The GNU C Library is free software; you can redistribute it and/or
+-   modify it under the terms of the GNU Lesser General Public
+-   License as published by the Free Software Foundation; either
+-   version 2.1 of the License, or (at your option) any later version.
+-
+-   The GNU C Library is distributed in the hope that it will be useful,
+-   but WITHOUT ANY WARRANTY; without even the implied warranty of
+-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+-   Lesser General Public License for more details.
+-
+-   You should have received a copy of the GNU Lesser General Public
+-   License along with the GNU C Library; if not, write to the Free
+-   Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+-   02111-1307 USA.  */
+-
+-#ifndef _SYS_PTRACE_H
+-#define _SYS_PTRACE_H	1
+-
+-#include <features.h>
+-#include <sgidefs.h>
+-
+-__BEGIN_DECLS
+-
+-/* Type of the REQUEST argument to `ptrace.'  */
+-enum __ptrace_request
+-{
+-  /* Indicate that the process making this request should be traced.
+-     All signals received by this process can be intercepted by its
+-     parent, and its parent can use the other `ptrace' requests.  */
+-  PTRACE_TRACEME = 0,
+-#define PT_TRACE_ME PTRACE_TRACEME
+-
+-  /* Return the word in the process's text space at address ADDR.  */
+-  PTRACE_PEEKTEXT = 1,
+-#define PT_READ_I PTRACE_PEEKTEXT
+-
+-  /* Return the word in the process's data space at address ADDR.  */
+-  PTRACE_PEEKDATA = 2,
+-#define PT_READ_D PTRACE_PEEKDATA
+-
+-  /* Return the word in the process's user area at offset ADDR.  */
+-  PTRACE_PEEKUSER = 3,
+-#define PT_READ_U PTRACE_PEEKUSER
+-
+-  /* Write the word DATA into the process's text space at address ADDR.  */
+-  PTRACE_POKETEXT = 4,
+-#define PT_WRITE_I PTRACE_POKETEXT
+-
+-  /* Write the word DATA into the process's data space at address ADDR.  */
+-  PTRACE_POKEDATA = 5,
+-#define PT_WRITE_D PTRACE_POKEDATA
+-
+-  /* Write the word DATA into the process's user area at offset ADDR.  */
+-  PTRACE_POKEUSER = 6,
+-#define PT_WRITE_U PTRACE_POKEUSER
+-
+-  /* Continue the process.  */
+-  PTRACE_CONT = 7,
+-#define PT_CONTINUE PTRACE_CONT
+-
+-  /* Kill the process.  */
+-  PTRACE_KILL = 8,
+-#define PT_KILL PTRACE_KILL
+-
+-  /* Single step the process.
+-     This is not supported on all machines.  */
+-  PTRACE_SINGLESTEP = 9,
+-#define PT_STEP PTRACE_SINGLESTEP
+-
+-  /* Get all general purpose registers used by a processes.
+-     This is not supported on all machines.  */
+-   PTRACE_GETREGS = 12,
+-#define PT_GETREGS PTRACE_GETREGS
+-
+-  /* Set all general purpose registers used by a processes.
+-     This is not supported on all machines.  */
+-   PTRACE_SETREGS = 13,
+-#define PT_SETREGS PTRACE_SETREGS
+-
+-  /* Get all floating point registers used by a processes.
+-     This is not supported on all machines.  */
+-   PTRACE_GETFPREGS = 14,
+-#define PT_GETFPREGS PTRACE_GETFPREGS
+-
+-  /* Set all floating point registers used by a processes.
+-     This is not supported on all machines.  */
+-   PTRACE_SETFPREGS = 15,
+-#define PT_SETFPREGS PTRACE_SETFPREGS
+-
+-  /* Attach to a process that is already running. */
+-  PTRACE_ATTACH = 16,
+-#define PT_ATTACH PTRACE_ATTACH
+-
+-  /* Detach from a process attached to with PTRACE_ATTACH.  */
+-  PTRACE_DETACH = 17,
+-#define PT_DETACH PTRACE_DETACH
+-
+-  /* Get all extended floating point registers used by a processes.
+-     This is not supported on all machines.  */
+-   PTRACE_GETFPXREGS = 18,
+-#define PT_GETFPXREGS PTRACE_GETFPXREGS
+-
+-  /* Set all extended floating point registers used by a processes.
+-     This is not supported on all machines.  */
+-   PTRACE_SETFPXREGS = 19,
+-#define PT_SETFPXREGS PTRACE_SETFPXREGS
+-
+-  /* Continue and stop at the next (return from) syscall.  */
+-  PTRACE_SYSCALL = 24
+-#define PT_SYSCALL PTRACE_SYSCALL
+-};
+-
+-/* Perform process tracing functions.  REQUEST is one of the values
+-   above, and determines the action to be taken.
+-   For all requests except PTRACE_TRACEME, PID specifies the process to be
+-   traced.
+-
+-   PID and the other arguments described above for the various requests should
+-   appear (those that are used for the particular request) as:
+-     pid_t PID, void *ADDR, int DATA, void *ADDR2
+-   after REQUEST.  */
+-#if _MIPS_SIM == _ABIN32
+-__extension__ extern long long int ptrace
+-  (enum __ptrace_request __request, ...) __THROW;
+-#else
+-extern long int ptrace (enum __ptrace_request __request, ...) __THROW;
+-#endif
+-
+-__END_DECLS
+-
+-#endif /* _SYS_PTRACE_H */

@@ -1,0 +1,12 @@
+i:/elitedvb/audio/ac3default=00000000
+i:/ezap/lcd/brightness=00000087
+i:/ezap/lcd/contrast=0000000a
+i:/ezap/lcd/inverted=00000000
+i:/ezap/rc/repeatRate=00000025
+i:/ezap/serviceselector/showButtons=00000001
+u:/elitedvb/video/vcr_switching=00000000
+u:/ezap/rc/TextInputField/nextCharTimeout=00000320
+i:/enigma/plugins/needoffsets/bottom=00000221
+i:/enigma/plugins/needoffsets/left=0000002c
+i:/enigma/plugins/needoffsets/right=000002a3
+i:/enigma/plugins/needoffsets/top=0000001d

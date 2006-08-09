@@ -1,0 +1,5 @@
+dest root /
+dest cf /media/cf/
+dest ram /media/ram/
+dest hdd /media/hdd/
+dest usb /media/usb/

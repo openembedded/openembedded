@@ -3,7 +3,7 @@ SECTION = "base"
 LICENSE = "GPL"
 MAINTAINER = "Chris Larson <kergoth@handhelds.org>"
 HOMEPAGE = "http://freshmeat.net/projects/sysvinit/"
-PR = "r25"
+PR = "r19"
 
 # USE_VT and SERIAL_CONSOLE are generally defined by the MACHINE .conf.
 # Set PACKAGE_ARCH appropriately.
@@ -101,6 +101,15 @@ EOF
 	mv ${D}${bindir}/last ${D}${bindir}/last.${PN}
 	mv ${D}${bindir}/mesg ${D}${bindir}/mesg.${PN}
 	mv ${D}${bindir}/wall ${D}${bindir}/wall.${PN}
+}
+
+do_install_append_opendreambox () {
+	cat <<EOF >>${D}/etc/inittab
+# enigma
+gui:2:respawn:/usr/bin/enigma.sh
+# enigma2
+e2:3:respawn:/usr/bin/enigma2.sh
+EOF
 }
 
 pkg_postinst_${PN} () {

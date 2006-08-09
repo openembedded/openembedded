@@ -1,0 +1,12 @@
+diff -Naur sysdeps/unix/sysv/linux/mips/bits/resource.h sysdeps_fixed/unix/sysv/linux/mips/bits/resource.h
+--- libc/sysdeps/unix/sysv/linux/mips/bits/resource.h	2005-06-20 17:07:34.000000000 +0200
++++ libc/sysdeps_fixed/unix/sysv/linux/mips/bits/resource.h	2006-04-08 18:48:58.000000000 +0200
+@@ -98,7 +98,7 @@
+   /* Maximum realtime priority allowed for non-priviledged
+      processes.  */
+   __RLIMIT_RTPRIO = 14,
+-#define RLIMIT_RTPRIO _RLIMIT_RTPRIO
++#define RLIMIT_RTPRIO __RLIMIT_RTPRIO
+ 
+   __RLIMIT_NLIMITS = 15,
+   __RLIM_NLIMITS = __RLIMIT_NLIMITS

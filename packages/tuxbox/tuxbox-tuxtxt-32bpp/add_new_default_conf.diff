@@ -1,0 +1,36 @@
+diff -Naur tuxtxt_org/tuxtxt2.conf tuxtxt_32bpp/tuxtxt2.conf
+--- tuxtxt/tuxtxt2.conf	1970-01-01 01:00:00.000000000 +0100
++++ tuxtxt/tuxtxt2.conf	2006-03-10 22:07:15.000000000 +0100
+@@ -0,0 +1,23 @@
++ScreenMode16x9Normal 0
++ScreenMode16x9Divided 0
++Brightness 10
++MenuLanguage 0
++AutoNational 1
++NationalSubset 5
++SwapUpDown 0
++ShowHexPages 0
++Transparency 0xA
++TTFWidthFactor16 28
++TTFHeightFactor16 16
++TTFShiftX 0
++TTFShiftY 0
++Screenmode 0
++ShowFLOF 1
++Show39 1
++ShowLevel2p5 1
++DumpLevel2p5 0
++UseTTF 0
++StartX 50
++EndX 670
++StartY 30
++EndY 538
+diff -Naur tuxtxt_org/tuxtxt.conf tuxtxt_32bpp/tuxtxt.conf
+--- tuxtxt/tuxtxt.conf	2006-03-10 22:13:26.000000000 +0100
++++ tuxtxt/tuxtxt.conf	1970-01-01 01:00:00.000000000 +0100
+@@ -1,5 +0,0 @@
+-ScreenMode16x9Normal 0
+-ScreenMode16x9Divided 0
+-ColorDimmed 1
+-AutoNational 1
+-NationalSubset 4
