@@ -18,7 +18,7 @@ libxkbui libxxf86misc libxi libdmx libxtst libxres mesa"
 REPENDS="rgb"
 
 XORG_PN = "xorg-server"
-SRC_URI = "${XORG_MIRROR}/${@bb.data.getVar('PV', d, 1)[0:7]}/src/xserver/${XORG_PN}-${PV}.tar.gz \
+SRC_URI = "${XORG_MIRROR}/${@bb.data.getVar('PV', d, 1)[0:7]}/src/xserver/${XORG_PN}-${PV}.tar.bz2 \
 	file://xorg.conf"
 
 S = "${WORKDIR}/${XORG_PN}-${PV}"
