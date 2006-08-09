@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section>
+  <title>autotools</title>
+
+  <para>Autotools is one of the most commonly seen configuration methods for
+  applications. Anything that uses the standard <command>./configure; make;
+  make install</command> sequence is using autotools. Usually the configure
+  script will support a large number of options to specify various
+  installation directories, to disable and/or enable various features and
+  options to specify search paths for headers and libraries.</para>
+
+  <para>The autotools class takes care of all of the details for you. It
+  defines appropriate tasks for <command>do_configure</command>,
+  <command>do_compile</command>, <command>do_stage</command> and
+  <command>do_install</command>. At it's simplest adding an inherit for the
+  autotools class is all that is required. The netcat recipe for example
+  is:<screen>DESCRIPTION = "GNU Netcat"
+HOMEPAGE = "http://netcat.sourceforge.net"
+LICENSE = "GPLv2"
+MAINTAINER = "Your name &lt;yname@example.com&gt;"
+SECTION = "console/networking"
+PR = "r1"
+
+SRC_URI = "${SOURCEFORGE_MIRROR}/netcat/netcat-${PV}.tar.bz2"
+
+inherit autotools</screen>The header is defined, the location of the source
+  code and then inherit. For the simplest cases that is all that is required.
+  If you need to pass addition parameters to the configure script, such as for
+  enabling and/or disabling options, then they can be specified via the
+  <command>EXTRA_OECONF</command> variable. This example from the lftp recipe
+  shows several extra options being passed to the configure script:<screen>EXTRA_OECONF = "--disable-largefile --disable-rpath --with-included-readline=no"</screen>If
+  you define your own tasks for <command>do_configure</command>,
+  <command>do_compile</command>, <command>do_stage</command> or
+  <command>do_install</command> then they will override the methods generated
+  by the autotools class. If you need to perform additional operations (rather
+  than replacing the generated operations) you can use the
+  <command>do_&lt;task&gt;_append</command> or
+  <command>do_&lt;task&gt;_prepend</command> methods. The following example
+  from the conserver recipe shows some additional items being
+  installed:<screen># Include the init script and default settings in the package
+do_install_append () {
+    install -m 0755 -d ${D}${sysconfdir}/default ${D}${sysconfdir}/init.d
+    install -m 0644 ${WORKDIR}/conserver.default ${D}${sysconfdir}/default/conserver
+    install -m 0755 ${WORKDIR}/conserver.init ${D}${sysconfdir}/init.d/conserver
+}</screen></para>
+
+  <section>
+    <title>oe_runconf / autotools_do_configure</title>
+
+    <para>Autotools generates a configuration method called
+    <command>oe_runconf</command> which runs the actual configure script, and
+    a method called <command>autotools_do_configure</command> which generates
+    the configure file (runs automake and autoconf) and then calls
+    <command>oe_runconf</command>. The generated
+    <command>do_configure</command> task just calls
+    autotools_do_configure.</para>
+
+    <para>It is sometimes desirable to implement your own
+    <command>do_configure</command> method, where additional configuration is
+    required or where you wish to inhibit the running of automake and
+    autoconf, and then manually call <command>oe_runconf</command>.</para>
+
+    <para>The following example from the ipacct recipe shows an example of
+    avoiding the use of automake/autoconf:<screen>do_configure() {
+    oe_runconf
+}</screen>Sometimes manual manipulations of the autotools files is required
+    prior to calling autoconf/automake. In this case you can defined your own
+    do_configure which performs the required actions and then calls
+    <command>autotools_do_configure</command>.</para>
+  </section>
+
+  <section>
+    <title>Presetting autoconf variables (the site file)</title>
+
+    <para>The autotools configuration method has support for caching the
+    results of tests. In the cross-compilation case it is sometimes necessary
+    to prime the cache with pre-calculated results (since tests designed to
+    run on the target cannot be run when cross-compiling). These are defined
+    via the site file for the architecture you are using which is found in
+    <command>org.openembedded.dev/site/&lt;arch&gt;-&lt;target-os&gt;</command>.</para>
+
+    <para>There are some things that you should keep in mind about the caching
+    of configure tests:</para>
+
+    <orderedlist>
+      <listitem>
+        <para>Check the other site files to see if there any entries for the
+        application you are attempting to build.</para>
+
+        <para>Sometimes entries are only updated for the target that the
+        developer has access to. If they exist for another target then it may
+        provide a good idea of what needs to be defined.</para>
+      </listitem>
+
+      <listitem>
+        <para>Sometimes the same cache value is used by multiple
+        applications.</para>
+
+        <para>This can have the side effect where a value added for one
+        application breaks the build of another. It is a very good idea to
+        empty the site file of all other values if you are having build
+        problems to ensure that none of the existing values are causing
+        problems. </para>
+      </listitem>
+
+      <listitem>
+        <para>Not all values can be stored in the cache</para>
+
+        <para>Caching of variables is defined by the author of the configure
+        script, so sometimes not all variables can be set via the cache. In
+        this case it often means resorting to patching the original configure
+        scripts to achieve the desired result.</para>
+      </listitem>
+    </orderedlist>
+
+    <para>Sometimes it's useful to manually check values from the site file.
+    This can prove useful in situations where autotools is not used but you
+    still need some of the same information that an autotools configure script
+    would require. The following from the net-snmp recipe shows an example of
+    using the existing site file entries for endianess to pass the required
+    endianess option to the configure script:<screen>do_configure() {
+    # endianness fun.. inspired by openssl.inc
+    . ${CONFIG_SITE}
+    if test "x$ac_cv_c_bigendian" = "xyes"; then
+        ENDIANESS=" --with-endianness=big"
+    elif test "x$ac_cv_c_littleendian" = "xyes"; then
+        ENDIANESS=" --with-endianness=little"
+    else
+        oefatal do_configure cannot determine endianess
+    fi
+    oe_runconf $ENDIANESS
+}</screen>It is also possible to disable the use of the cached values from the
+    site file by clearing the definition of <command>CONFIG_SITE</command>
+    prior to running the configure script. Doing this disables the use of the
+    site file entirely. This however should be used as a last resort. The
+    following example from the db recipe shows an example of this:<screen># Cancel the site stuff - it's set for db3 and destroys the
+# configure.
+CONFIG_SITE = ""
+do_configure() {
+    oe_runconf
+}</screen></para>
+  </section>
+</section>
