@@ -1,6 +1,6 @@
 DESCRIPTION ="AbiWord is free word processing program similar to Microsoft(r) Word""
 HOMEPAGE="http://www.abiword.org""
-MAINTAINER="Koen Kooi <koen@handhelds.org>"
+MAINTAINER="Koen Kooi <koen@linuxtogo.org>"
 LICENSE="GPLv2"
 
 DEPENDS     = "perl-native libgsf libgnomeprint libgnomeprintui libglade libfribidi enchant jpeg libpng perl glibc libxml2"

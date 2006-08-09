@@ -1,6 +1,6 @@
 LICENSE =	"GPL"
 DESCRIPTION =	"Sync daemon for GPE and OpenSync"
-MAINTAINER =	"Koen Kooi <koen@handhelds.org>"
+MAINTAINER =	"Koen Kooi <koen@linuxtogo.org>"
 
 
 SRC_URI =	"${HANDHELDS_CVS};module=gpe/base/gpesyncd"

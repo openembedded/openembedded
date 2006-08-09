@@ -1,5 +1,5 @@
 LICENSE = 	""
-MAINTAINER = "Koen Kooi <koen@handhelds.org>"
+MAINTAINER = "Koen Kooi <koen@linuxtogo.org>"
 
 DEPENDS =	"dbus gconf glib-2.0 libosso bluez-libs"
 

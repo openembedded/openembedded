@@ -1,6 +1,6 @@
 DESCRIPTION = "GmailFS provides a mountable Linux filesystem which uses your Gmail account as its storage medium."
 HOMEPAGE = "http://richard.jones.name/google-hacks/gmail-filesystem/gmail-filesystem.html"
-MAINTAINER = "koen Kooi <koen@handhelds.org>"
+MAINTAINER = "koen Kooi <koen@linuxtogo.org>"
 LICENSE = "GPL"
 
 DEPENDS = "fuse libgmail python-fuse"
