@@ -2,12 +2,11 @@ LICENSE  = "GPL"
 SECTION  = "gpe"
 PRIORITY = "optional"
 
-DEPENDS = "gtk+ esound-gpe audiofile libgpewidget libxsettings libxsettings-client xset ipaq-sleep ntpdate timezones"
+DEPENDS = "gtk+ esound-gpe audiofile libgpewidget libxsettings libxsettings-client"
 RDEPENDS_${PN} = "xst xset ipaq-sleep ntpdate gpe-login gpe-icons timezones"
 RDEPENDS_gpe-conf-panel = "gpe-conf"
 
 MAINTAINER = "Florian Boor <florian.boor@kernelconcepts.de>"
-PR="r1"
 
 GPE_TARBALL_SUFFIX = "bz2"
 
@@ -20,5 +19,3 @@ FILES_${PN} = "${sysconfdir} ${bindir} ${datadir}/pixmaps \
                 ${datadir}/gpe-conf"
 
 FILES_gpe-conf-panel = "${datadir}/applications/gpe-conf.desktop"
-
-
