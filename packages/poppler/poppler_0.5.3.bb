@@ -2,11 +2,9 @@ DESCRIPTION = "Poppler is a PDF rendering library based on the xpdf-3.0 code bas
 MAINTAINER = "Koen Kooi <koen@dominion.kabel.utwente.nl>"
 DEPENDS = "fontconfig jpeg gtk+ cairo"
 LICENSE = "GPL"
-PV = "0.5.1+cvs20060418"
-PR = "r0"
+PR = "r1"
 
-SRC_URI = "cvs://anoncvs@cvs.freedesktop.org/cvs/poppler;module=poppler;date=${PV}"
-S = "${WORKDIR}/poppler"
+SRC_URI = "http://poppler.freedesktop.org/${PN}-${PV}.tar.gz"
 
 inherit autotools pkgconfig
 
