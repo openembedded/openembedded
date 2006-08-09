@@ -18,7 +18,8 @@ SRC_URI = "svn://developer.imendio.com/svn/gnome-vfs-dbus;module=trunk;proto=htt
            file://glib-after-nameser.patch;patch=1;pnum=1 \
 	   file://gtk-doc.m4 \
 	   file://gtk-doc.make \
-	   file://werror_compile.patch;patch=1;pnum=1"
+	   file://werror_compile.patch;patch=1;pnum=1 \
+	   file://dbus-api-change.patch;patch=1"
 
 EXTRA_OECONF = "--with-ipc=dbus --disable-gtk-doc"
 S = "${WORKDIR}/trunk"

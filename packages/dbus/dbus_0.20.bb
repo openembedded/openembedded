@@ -2,6 +2,7 @@ SECTION = "base"
 HOMEPAGE = "http://www.freedesktop.org/Software/dbus"
 DESCRIPTION = "message bus system for applications to talk to one another"
 DEPENDS = "expat glib-2.0 virtual/libintl"
+PROVIDES = "dbus-glib"
 LICENSE = "GPL"
 
 SRC_URI = "http://freedesktop.org/Software/dbus/releases/dbus-${PV}.tar.gz \
