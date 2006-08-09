@@ -4,7 +4,11 @@
   -*- tab-width: 4; c-basic-offset: 4; indent-tabs-mode: nil -*-
 -->
 <!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.2//EN"
-                      "http://www.oasis-open.org/docbook/xml/4.2/docbookx.dtd">
+                      "http://www.oasis-open.org/docbook/xml/4.2/docbookx.dtd" [
+<!ENTITY class-distutils           SYSTEM "reference/class_distutils.xml">
+<!ENTITY class-update-alternatives SYSTEM "reference/class_update-alternatives.xml">
+<!ENTITY class-update-rcd          SYSTEM "reference/class_update-rc.d.xml">
+]>
 <book>
     <bookinfo>
         <title>OpenEmbedded User Manual</title>
@@ -491,4 +495,13 @@ When utilizing OpenEmbedded you avoid searching for patches at many different pl
             <para>OpenEmbedded will create complete flashable images using different output formats and filesystems. This allows you to create complete and specialized distributions easily.</para>
         </section>
     </chapter>
+
+<!-- Reference manual. Sorted alphabetically. All entries are pulled in from external files -->
+    <chapter>
+        <title>Reference</title>
+        &class-distutils;
+        &class-update-alternatives;
+        &class-update-rcd;
+    </chapter>
+
 </book>
