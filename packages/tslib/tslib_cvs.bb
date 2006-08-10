@@ -1,7 +1,7 @@
 SECTION = "base"
 DESCRIPTION = "tslib is a touchscreen access library."
 PV = "0.0cvs${CVSDATE}"
-PR = "r41"
+PR = "r42"
 
 SRC_URI_OVERRIDES_PACKAGE_ARCH = "0"
 PACKAGE_ARCH_tslib-conf = "${MACHINE}"
@@ -16,6 +16,7 @@ SRC_URI = "cvs://cvs:@pubcvs.arm.linux.org.uk/mnt/src/cvsroot;module=tslib \
 SRC_URI_append_mnci += " file://devfs.patch;patch=1"
 SRC_URI_append_mnci += " file://event1.patch;patch=1"
 SRC_URI_append_poodle += "file://ts-2.4.conf file://ts-2.6.conf"
+SRC_URI_append_collie += "file://ts-2.4.conf file://ts-2.6.conf"
 
 S = "${WORKDIR}/tslib"
 LICENSE = "LGPL"
@@ -57,7 +58,7 @@ do_install_append() {
 		done
 		rm -f ${D}${sysconfdir}/ts.conf
 		;;
-	poodle )
+	poodle | collie )
 		install -d ${D}${datadir}/tslib
 		install -m 0644 ${WORKDIR}/ts-2.*.conf ${D}${datadir}/tslib/
 		rm -f ${D}${sysconfdir}/ts.conf
