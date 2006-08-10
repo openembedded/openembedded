@@ -4,6 +4,7 @@ LICENSE = "libpng"
 SECTION = "libs"
 PRIORITY = "required"
 MAINTAINER = "Chris Larson <kergoth@handhelds.org>"
+PR = "r1"
 
 DEPENDS = "zlib"
 
@@ -20,7 +21,7 @@ FILES_${PN}-dev = ${includedir} ${libdir}/lib*.so ${libdir}/*.la \
 SRC_URI = "${SOURCEFORGE_MIRROR}/libpng/libpng-${PV}.tar.bz2"
 S = "${WORKDIR}/libpng-${PV}"
 
-inherit pkgconfig binconfig
+inherit pkgconfig binconfig pkgconfig
 
 EXTRA_OEMAKE_append = " ZLIBINC=${STAGING_INCDIR} ZLIBLIB=${STAGING_LIBDIR}"
 
@@ -30,6 +31,18 @@ do_compile() {
 	oe_runmake 'CC=${CC}' 'LD=${LD}' 'CFLAGS=${CFLAGS}' \
 		   'ZLIBINC=${STAGING_INCDIR}' \
 		   'ZLIBLIB=${STAGING_LIBDIR}'
+}
+
+# apperently libpng doesn't expand the vars in libpng.pc, so we'll do that with sed
+# pkgconfig.bbclass will use a similar trick to fix them
+
+do_stage_prepend() {
+	sed -i  -e 's:=@libdir@:=${libdir}:;' \
+		-e 's:=@includedir@:=${includedir}:;' \
+		-e 's:=@prefix@:=${prefix}:' \
+		-e 's:=@exec_prefix@:=${exec_prefix}:' \
+		libpng.pc
+
 }
 
 do_stage() {
