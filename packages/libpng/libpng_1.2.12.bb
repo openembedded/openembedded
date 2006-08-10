@@ -4,7 +4,7 @@ LICENSE = "libpng"
 SECTION = "libs"
 PRIORITY = "required"
 MAINTAINER = "Chris Larson <kergoth@handhelds.org>"
-PR = "r1"
+PR = "r2"
 
 DEPENDS = "zlib"
 
@@ -41,6 +41,7 @@ do_stage_prepend() {
 		-e 's:=@includedir@:=${includedir}:;' \
 		-e 's:=@prefix@:=${prefix}:' \
 		-e 's:=@exec_prefix@:=${exec_prefix}:' \
+            	-e 's:-lpng12:-lpng12\ -lz:' \
 		libpng.pc
 
 }
