@@ -2,25 +2,22 @@ export IMAGE_BASENAME = "opie-image"
 export IMAGE_LINGUAS = ""
 
 FEED_URIS_append_openzaurus = " opie##${FEED_BASE_URI}/feed/opie "
-FEED_URIS_append_opensimpad = " opie##http://ewi546.ewi.utwente.nl/mirror/www.openzaurus.org/official/unstable/${DISTRO_VERSION}/feed/opie"
-FEED_URIS_append_familiar   = " opie##http://familiar.handhelds.org/releases/${DISTRO_VERSION}/feed/opie"
 
 LICENSE = "MIT"
-PR = "r20"
+PR = "r21"
 
 DEPENDS = "task-bootstrap meta-opie"
-
-extra_stuff := '${@base_conditional("ROOT_FLASH_SIZE", "16", "", "task-opie-extra-games task-opie-extra-apps task-opie-extra-styles",d)}'
 
 INSTALL_PACKAGES = "task-bootstrap task-opie-base task-opie-base-applets \
 		    task-opie-base-inputmethods task-opie-base-apps \
 		    task-opie-base-settings task-opie-base-decorations \
 		    task-opie-base-styles task-opie-base-pim \
 		    task-opie-extra-settings \
-		    task-opie-bluetooth task-opie-irda \
-		    ${extra_stuff}"
+		    task-opie-bluetooth task-opie-irda "
 
-INSTALL_PACKAGES_append_tosa = " opie-recorder "
+INSTALL_PACKAGES_append_tosa  = " opie-recorder "
+INSTALL_PACKAGES_append_akita = " task-opie-extra-games task-opie-extra-apps task-opie-extra-styles "
+INSTALL_PACKAGES_append_spitz = " task-opie-extra-games task-opie-extra-apps task-opie-extra-styles "
 
 export IPKG_INSTALL = "${INSTALL_PACKAGES}"
 
