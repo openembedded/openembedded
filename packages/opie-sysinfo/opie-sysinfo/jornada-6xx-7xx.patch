@@ -1,0 +1,13 @@
+--- sysinfo/versioninfo.cpp_orig	2006-08-06 15:16:55.000000000 +0000
++++ sysinfo/versioninfo.cpp	2006-08-06 15:17:31.000000000 +0000
+@@ -136,8 +136,8 @@
+         modelPixmap += "simpad";
+     else if ( model == Model_Jornada_56x )
+         modelPixmap += "jornada56x";
+-    else if ( model == Model_Jornada_720 )
+-        modelPixmap += "jornada720";
++    else if ( model == Model_Jornada_7xx )
++        modelPixmap += "jornada7xx";
+     else
+         modelPixmap += "pda";
+ 

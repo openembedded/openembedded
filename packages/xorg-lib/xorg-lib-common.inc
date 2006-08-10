@@ -5,7 +5,7 @@ LICENSE = "MIT-X"
 
 DEPENDS = "util-macros"
 XORG_PN = "${PN}"
-SRC_URI = "${XORG_MIRROR}/${@bb.data.getVar('PV', d, 1)[0:7]}/src/lib/${XORG_PN}-${PV}.tar.gz"
+SRC_URI = "${XORG_MIRROR}/${@bb.data.getVar('PV', d, 1)[0:7]}/src/lib/${XORG_PN}-${PV}.tar.bz2"
 S = "${WORKDIR}/${XORG_PN}-${PV}"
 
 inherit autotools pkgconfig

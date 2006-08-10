@@ -1,7 +1,7 @@
 LICENSE = "GPL"
 SECTION = "x11/utils"
 S = "${WORKDIR}/gnumeric-${PV}"
-MAINTAINER = "Koen Kooi <koen@handhelds.org>"
+MAINTAINER = "Koen Kooi <koen@linuxtogo.org>"
 DEPENDS = "libgsf gtk+ libxml2 goffice libglade libart-lgpl intltool-native libgnomecanvas libgnomeprint libgnomeprintui libbonoboui"
 DESCRIPTION = "Gnumeric spreadsheet for GNOME"
 

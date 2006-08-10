@@ -7,7 +7,7 @@ DEPENDS = " encodings font-alias font-util-native mkfontdir-native mkfontscale-n
 RDEPENDS = "encodings font-util font-alias"
 
 XORG_PN = "${PN}"
-SRC_URI = "${XORG_MIRROR}/${@bb.data.getVar('PV', d, 1)[0:7]}/src/font/${XORG_PN}-${PV}.tar.gz"
+SRC_URI = "${XORG_MIRROR}/${@bb.data.getVar('PV', d, 1)[0:7]}/src/font/${XORG_PN}-${PV}.tar.bz2"
 S = "${WORKDIR}/${XORG_PN}-${PV}"
 
 inherit autotools pkgconfig

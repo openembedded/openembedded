@@ -7,7 +7,7 @@ inherit gnome
 LICENSE="GPL"
 SRC_URI += "file://configure.patch;patch=1"
 
-DEPENDS = "gnome-vfs gnome-menus libgnomeui gail"
+DEPENDS = "gnome-vfs gnome-desktop gnome-menus libgnomeui gail"
 EXTRA_OECONF = "--disable-gtk-doc"
 
 

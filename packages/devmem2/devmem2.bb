@@ -1,4 +1,4 @@
-SRC_URI = "http://www.lart.tudelft.nl/lartware/port/devmem2.c"
+SRC_URI = "http://www.abcsinc.com/small-linux/devmem2.c"
 LICENSE = "GPL"
 
 S = "${WORKDIR}"

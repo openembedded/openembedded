@@ -1,7 +1,6 @@
 DESCRIPTION = "FarSight is an audio/video conferencing framework specifically designed for Instant Messengers."
 HOMEPAGE = "http://farsight.sf.net"
-SRC_URI = "http://ewi546.ewi.utwente.nl/OE/source/${PN}_${PV}.tar.bz2"
-PR="r1"
+SRC_URI = "http://telepathy.freedesktop.org/releases/farsight/${P}.tar.gz"
 
 MAINTAINER = "Koen Kooi <koen@dominion.kabel.utwente.nl>"
 
@@ -9,7 +8,6 @@ DEPENDS = "glib-2.0 libxml2 zlib dbus libjingle gstreamer gst-plugins-base"
 
 inherit autotools pkgconfig
 
-S=  "${WORKDIR}/${PN}"
 EXTRA_OECONF = " \
 --disable-debug \
   --disable-gtk-doc \

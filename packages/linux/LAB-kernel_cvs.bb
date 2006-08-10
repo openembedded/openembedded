@@ -1,6 +1,6 @@
 SECTION = "kernel"
 DESCRIPTION = "Liux As Bootloader kernelm"
-MAINTAINER = "Koen Kooi <koen@handhelds.org>"
+MAINTAINER = "Koen Kooi <koen@linuxtogo.org>"
 LICENSE = "GPL"
 PV = "${K_MAJOR}.${K_MINOR}.${K_MICRO}-hh${HHV}+cvs${SRCDATE}"
 
@@ -9,7 +9,6 @@ PV = "${K_MAJOR}.${K_MINOR}.${K_MICRO}-hh${HHV}+cvs${SRCDATE}"
 
 DEFAULT_PREFERENCE = "-1"
 
-KERNEL_CCSUFFIX = "-3.4.4"
 COMPATIBLE_HOST = "arm.*-linux"
 
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/handhelds-pxa-${PV}"

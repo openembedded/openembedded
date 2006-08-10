@@ -7,7 +7,7 @@ SRC_URI = "svn://ixion.tartarus.org/main;module=puzzles;rev=6712 \
 S = "${WORKDIR}/puzzles/"
 
 do_configure() {
-        cd ${S} && ${STAGING_BINDIR}/perl mkfiles.pl
+        cd ${S} && perl mkfiles.pl
 }
 
 do_compile_prepend = " \

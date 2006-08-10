@@ -1,6 +1,6 @@
 DESCRIPTION =	"Galago is a desktop presence framework, designed to transmit presence information between programs."
 HOMEPAGE =	"http://www.galago-project.org/"
-MAINTAINER =	"Koen Kooi <koen@handhelds.org>"
+MAINTAINER =	"Koen Kooi <koen@linuxtogo.org>"
 LICENSE =	"LGPL"
 DEPENDS = 	"gettext dbus glib-2.0"
 PR =		"r1"

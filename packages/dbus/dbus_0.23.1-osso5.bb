@@ -5,6 +5,7 @@ HOMEPAGE = "http://www.freedesktop.org/Software/dbus"
 DESCRIPTION = "message bus system for applications to talk to one another"
 LICENSE = "GPL"
 DEPENDS = "expat glib-2.0 virtual/libintl"
+PROVIDES = "dbus-glib"
 
 SRC_URI = "http://repository.maemo.org/pool/maemo/ossw/source/d/${PN}/${PN}_${PV}.tar.gz \
 	   file://cross.patch;patch=1 \

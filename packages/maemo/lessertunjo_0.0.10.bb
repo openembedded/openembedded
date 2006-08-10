@@ -1,5 +1,5 @@
 LICENSE =	"LGPL"
-MAINTAINER =	"Koen Kooi <koen@handhelds.org>"
+MAINTAINER =	"Koen Kooi <koen@linuxtogo.org>"
 
 DEPENDS =	"gconf-osso hildon-libs dbus libosso"
 SRC_URI =	"http://repository.maemo.org/pool/maemo/ossw/source/l/lessertunjo/lessertunjo_${PV}-3.tar.gz"

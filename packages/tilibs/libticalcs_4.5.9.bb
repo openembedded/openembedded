@@ -1,5 +1,5 @@
 LICENSE = "GPLv2"
-MAINTAINER = "Koen Kooi <koen@handhelds.org>"
+MAINTAINER = "Koen Kooi <koen@linuxtogo.org>"
 HOMEPAGE = "http://lpg.ticalc.org/prj_tilp/index.html"
 
 DPENDS = "libticables libtifiles"

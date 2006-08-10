@@ -1,6 +1,6 @@
 LICENSE = "GPL"
 HOMEPAGE = "http://www.xchat.org"
-MAINTAINER = "Koen Kooi <koen@handhelds.org"
+MAINTAINER = "Koen Kooi <koen@linuxtogo.org"
 DEPENDS = "libgcrypt zlib gtk+"
 SRC_URI = "http://www.xchat.org/files/source/2.6/xchat-${PV}.tar.bz2"
 
