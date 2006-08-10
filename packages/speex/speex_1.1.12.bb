@@ -7,6 +7,8 @@ PR = "r1"
 
 SRC_URI = "http://downloads.us.xiph.org/releases/speex/speex-${PV}.tar.gz"
 
+PARALLEL_MAKE = ""
+
 inherit autotools pkgconfig
 
 # Some interesting options are:

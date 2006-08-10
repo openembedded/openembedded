@@ -9,7 +9,7 @@ DISTRO_NAME = "Angstrom"
 ANGSTROM_URI = "http://www.angstrom-distribution.org"
 
 #Set the default maintainer to angstrom-dev
-MAINTAINER = "Angstrom Developers <angstrom-dev@handhelds.org>"
+MAINTAINER = "Angstrom Developers <angstrom-dev@linuxtogo.org>"
 
 #use ipkg package format with debian style naming
 #use multimachine buildrules 

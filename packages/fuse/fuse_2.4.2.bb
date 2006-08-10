@@ -1,6 +1,6 @@
 HOMEPAGE = "http://fuse.sf.net"
 DESCRIPTION = "With FUSE it is possible to implement a fully functional filesystem in a userspace program"
-MAINTAINER = "Koen Kooi <koen@handhelds.org>"
+MAINTAINER = "Koen Kooi <koen@linuxtogo.org>"
 
 LICENSE_${PN} = "LGPL"
 

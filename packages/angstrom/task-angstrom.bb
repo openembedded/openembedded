@@ -1,5 +1,5 @@
 DESCRIPTION = "Task packages for the Angstrom distribution"
-PR = "r15"
+PR = "r16"
 ALLOW_EMPTY = "1"
 
 PACKAGE_ARCH = "${MACHINE_ARCH}"
@@ -71,7 +71,6 @@ RDEPENDS_angstrom-x11-base-depends := "\
 
 RDEPENDS_angstrom-gpe-task-base := "\
     matchbox \
-    dbus-glib \
     xcursor-transparent-theme \
     rxvt-unicode \
     matchbox-themes-gtk \

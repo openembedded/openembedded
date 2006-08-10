@@ -1,5 +1,5 @@
 LICENSE = "LGPL"
-MAINTAINER = "Koen Kooi <koen@handhelds.org>"
+MAINTAINER = "Koen Kooi <koen@linuxtogo.org>"
 
 inherit gnome
 

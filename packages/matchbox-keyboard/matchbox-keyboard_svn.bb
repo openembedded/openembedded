@@ -2,7 +2,7 @@ DESCRIPTION = "Matchbox virtual keyboard for X11"
 LICENSE = "GPL"
 DEPENDS = "libfakekey expat libxft"
 SECTION = "x11"
-MAINTAINER = "Koen Kooi <koen@handhelds.org>"
+MAINTAINER = "Koen Kooi <koen@linuxtogo.org>"
 PV = "0.0+svn${SRCDATE}"
 PR="r2"
 
