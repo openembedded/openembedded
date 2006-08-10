@@ -6,7 +6,9 @@
 <!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.2//EN"
                       "http://www.oasis-open.org/docbook/xml/4.2/docbookx.dtd" [
 <!ENTITY class-autotools           SYSTEM "reference/class_autotools.xml">
+<!ENTITY class-binconfig           SYSTEM "reference/class_binconfig.xml">
 <!ENTITY class-distutils           SYSTEM "reference/class_distutils.xml">
+<!ENTITY class-pkgconfig           SYSTEM "reference/class_pkgconfig.xml">
 <!ENTITY class-update-alternatives SYSTEM "reference/class_update-alternatives.xml">
 <!ENTITY class-update-rcd          SYSTEM "reference/class_update-rc.d.xml">
 ]>
@@ -501,7 +503,9 @@ When utilizing OpenEmbedded you avoid searching for patches at many different pl
     <chapter>
         <title>Reference</title>
         &class-autotools;
+        &class-binconfig;
         &class-distutils;
+        &class-pkgconfig;
         &class-update-alternatives;
         &class-update-rcd;
     </chapter>

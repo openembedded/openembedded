@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section>
+  <title>binconfig</title>
+
+  <para>The binconfig class is for packages that install
+  <command>&lt;pkg&gt;-config</command> scripts that provide information about
+  the build settings for the package. It's usually provided by libraries which
+  and is used by other packages to determine various compiler options.</para>
+
+  <para>Since the script is used at build time it is required to be copied
+  into the staging area. All the actions performed by the class are appended
+  to the <emphasis>do_stage</emphasis> task.</para>
+
+  <para>The actions performed by the binconfig class are:</para>
+
+  <orderedlist>
+    <listitem>
+      <para>Copies the <command>&lt;x&gt;-config</command> script from the
+      package into <command>${STAGING_BINDIR} </command>directory;</para>
+    </listitem>
+
+    <listitem>
+      <para>If the package is not native then it modifies the contents of the
+      <command>&lt;x&gt;-config</command> script in the staging area to ensure
+      that all the paths in the script refer to the staging area;</para>
+    </listitem>
+
+    <listitem>
+      <para>If the package is native then
+      the<command>&lt;x&gt;-config</command> script is renamed to
+      <command>&lt;x&gt;-config-native</command> to ensure that the native and
+      non-native versions do not interfere with each other.</para>
+    </listitem>
+  </orderedlist>
+
+  <para>A package is considered to be native it also inherits the native
+  class.</para>
+
+  <para>The class will search in <command>${S}</command>, and all it's
+  subdirectories, for files that end in <command>-config</command> and process
+  them as described above. All that is required to use the class is the
+  addition of binconfig in an inherit statement:</para>
+
+  <para><screen>inherit autotools binconfig</screen></para>
+</section>
