@@ -1,31 +1,14 @@
 This branch will hold the code for the Google Summer of Code 2006 project "Putting staging under packagemanagement"
 
-The Plan:
+The goal is to populate (and de-populate) the staging area using packages OE generates instead of manually poking .h and .so files into it.
 
-1) abuse current do_stage methods:
+First we need to identify three classes of packages:
 
-	do_stage_prepend() {
-		old_dir = STAGING_FOODIR
-		STAGING_FOODIR = new_dir
-	}
+* 'native'  - These packages run on the buildsystem (e.g. quilt-native)
+* 'cross'   - These packages run on the buildsystem, but creates things for the target system (e.g gcc-cross)
+* 'regular' - These packages run on the targetsystem (e.g. glibc)
 
-	do_stage_append() {
-		$packagemanager --make-me-a-new-package ${PN}.packageformat $new_dir
-		STAGING_FOODIR = old_dir
-		$packagemanager --install ${PN}.packageformat --dest STAGING_FOODIR 
-	}
+1. Installing packages If we have packages that can be installed into the staging area we have two modes of operation:    * Start over from scratch    * Incrementally install and remove packages 1.1 Start over from scratchFor each to be built package we will repopulate the staging directory from scratch. The benefits are a clean environment and avoids packages picking stuff up at random. Conflicts when installing packages can only happen when two different providers are trying to install the same file. This can only be a bug of the OpenEmbedded meta data. This approach will not require any conflict handling or resolutionIncrementally installing packagesIn contrast to repopluating the staging area from scratch we install additional dependencies and remove conflicting packages. The installing and removing of packages is assumed to be faster than repopulating from scratch. Once a package completed we could consider removing the non-native depends to avoid a growing staging directory. One issue is with the clean task. We could assume that cleaning a package will remove it from the staging area as well. There is one possible problem with it. Let us assume we want to clean quilt-native, virtually every package DEPENDS on it, we would have to clean the staging area completely. If this is the wished behaviour needs to be discussed. 
 
-2) Track down duplicate files across packages
 
-3) compare the hacky packages with the -dev packages intended for the target
-
-4) converge staging packages and -dev packages
-
-[...]
-
-N) use -dev packages
-
-	do_stage() {
-		$packagemanager --install ${PN}-dev --dest STAGING_FOODIR
-	} 
 
