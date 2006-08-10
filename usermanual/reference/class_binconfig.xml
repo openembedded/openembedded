@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <section>
-  <title>binconfig</title>
+  <title>binconfig class</title>
 
   <para>The binconfig class is for packages that install
   <command>&lt;pkg&gt;-config</command> scripts that provide information about

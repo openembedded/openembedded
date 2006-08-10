@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <section>
-  <title>update-alternatives</title>
+  <title>update-alternatives class</title>
 
   <para>Some commands are available from multiple sources. As an example we
   have <command>/bin/sh</command> available from <emphasis>busybox</emphasis>

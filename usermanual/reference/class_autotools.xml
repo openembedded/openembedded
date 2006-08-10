@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <section>
-  <title>autotools</title>
+  <title>autotools class</title>
 
   <para>Autotools is one of the most commonly seen configuration methods for
   applications. Anything that uses the standard <command>./configure; make;

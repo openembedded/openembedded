@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <section>
-  <title>pkgconfig</title>
+  <title>pkgconfig class</title>
 
   <para>The pkgconfig class is for packages that install
   <command>&lt;pkg&gt;.pc</command> files that provide information about the

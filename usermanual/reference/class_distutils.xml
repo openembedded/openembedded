@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <section>
-  <title>distutils</title>
+  <title>distutils class</title>
 
   <para>Distutils is a standard python system for building and installing
   modules. This class is used to automate the building of python modules that

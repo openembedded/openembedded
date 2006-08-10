@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <section>
-  <title>update-rc.d</title>
+  <title>update-rc.d class</title>
 
   <para>Services which need to be started during boot need to be registered
   using the update-rc.d command. These services are required to have an init
