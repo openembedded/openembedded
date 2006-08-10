@@ -2,6 +2,9 @@ DESCRIPTION = "Daemon to allow scratchbox to use your device as a CPU tranparenc
 HOMEPAGE = "http://scratchbox.org"
 LICENSE = "GPLv2"
 DEPENDS = "fakeroot"
+PR = "r1"
+RRECOMMENDS = "kernel-module-nfs"
+
 
 SRC_URI = "http://scratchbox.org/download/files/sbox-releases/apophis/src/${P}.tar.gz" 
 
