@@ -6,14 +6,13 @@ DESCRIPTION = "Packages that are compatible with the SlugOS firmware"
 MAINTAINER = "NSLU2 Linux <nslu2-linux@yahoogroups.com>"
 HOMEPAGE = "http://www.nslu2-linux.org"
 LICENSE = "MIT"
-PR = "r10"
+PR = "r11"
 CONFLICTS = "db3"
 PROVIDES += "${SLUGOS_IMAGENAME}-packages"
 
 EXCLUDE_FROM_WORLD = "1"
 INHIBIT_DEFAULT_DEPS = "1"
 ALLOW_EMPTY = 1
-PACKAGES = "${PN}"
 
 # The list of packages to build for the ucslugc DISTRO.
 # KEEP IN ALPHABETICAL ORDER
