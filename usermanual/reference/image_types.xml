@@ -1,0 +1,269 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section>
+  <title>Image types</title>
+
+  <para>One of the most commonly used outputs from a build is a filesystem
+  image containing the root filesystem for the target device. There are
+  several variables which can be used to control the type of output images and
+  the settings for those images such as endianess or compression ratios. This
+  section details the available images and the variable that effect them. See
+  the <emphasis>image_ipk</emphasis> class description in the reference
+  section for details on how image generation is configured.</para>
+
+  <para>The final root file system will consist of all of the files located in
+  <command>${IMAGE_ROOTFS}</command> which is usually
+  <command>tmp/rootfs</command> in your build area. One important difference
+  between the image and the root file system directory is that any files which
+  can only be created by privileged users, such as device nodes, will not
+  appear in the <command>${IMAGE_ROOTFS}</command> directory but they will be
+  present in any images that are generated. This is due to
+  <emphasis>fakeroot</emphasis> system keeping track of these special files
+  and making them available when generating the image even though they are not
+  appear in the root filesystem directory. For this reason it is important to
+  always create an actual image to use for testing, even if it's just a .tar
+  archive, to ensure you have the correct device nodes and any other special
+  files.</para>
+
+  <section>
+    <title>Defining images</title>
+
+    <para>Each supported image type is defined via a set of variables with the
+    name of the image type appended. The behaviour of the built in image types
+    can be changed by modifying these variables, and new types created by
+    defining these variables for the new type.</para>
+
+    <para>The variables that define an image type are:</para>
+
+    <variablelist>
+      <varlistentry>
+        <term>IMAGE_CMD_&lt;type&gt;</term>
+
+        <listitem>
+          <para>Specifies the command that is run to generate an image of the
+          specified type.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>EXTRA_IMAGECMD_&lt;type&gt;</term>
+
+        <listitem>
+          <para>Used to pass additional command line arguments to the
+          <command>IMAGE_CMD</command> without needing to redefine the entire
+          image command. Often used to pass options such as endianess and
+          compression rations. You need to look at the
+          <command>IMAGE_CMD</command> to determine which command these
+          options are being passed to.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>IMAGE_ROOTFS_SIZE_&lt;type&gt;</term>
+
+        <listitem>
+          <para>For those image types that generate a fixed size image this
+          variable is used to specify the required image size.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>IMAGE_DEPENDS_&lt;type&gt;</term>
+
+        <listitem>
+          <para>Lists the packages that the <command>IMAGE_CMD</command>
+          depends on. As an example the jffs2 filesystem creation depends on
+          <command>mkfs.jffs2</command> command which is part of the mtd
+          utilities and therefore depends on mtd-utils-native.</para>
+        </listitem>
+      </varlistentry>
+    </variablelist>
+  </section>
+
+  <section>
+    <title>Available image types</title>
+
+    <para>The following image types are built in to openembedded:</para>
+
+    <variablelist>
+      <varlistentry>
+        <term>jffs2</term>
+
+        <listitem>
+          <para>Creates jffs2 <emphasis>"Journaling flash file system
+          2"</emphasis> images. This is a read/write, compressed filesystem
+          for mtd (flash) devices. It is not supported for block
+          devices.<screen>IMAGE_CMD_jffs2 = "mkfs.jffs2 --root=${IMAGE_ROOTFS} \
+  --faketime \
+  --output=${DEPLOY_DIR_IMAGE}/${IMAGE_NAME}.rootfs.jffs2 \
+  ${EXTRA_IMAGECMD}"</screen></para>
+
+          <para>The <command>EXTRA_IMAGECMD</command> variable for jffs2 is
+          passed to <command>mkfs.jffs2</command> and by default is used to
+          enabled pad, to define the endianess and to specify the block
+          size:</para>
+
+          <para><screen>EXTRA_IMAGECMD_jffs2 = "--pad --little-endian --eraseblock=0x40000"</screen></para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>cramfs</term>
+
+        <listitem>
+          <para>Creates cramfs <emphasis>"Compression ROM file
+          system"</emphasis> images. This is a read only compressed filesystem
+          which is used directly by decompressing files into RAM as they are
+          accessed. Files sizes are limited to 16MB, file system size is
+          limited to 256MB, only 8-bit uid and guids are support, no hard
+          links are supported and no time stamps are supported.<screen>IMAGE_CMD_cramfs = "mkcramfs ${IMAGE_ROOTFS} \
+  ${DEPLOY_DIR_IMAGE}/${IMAGE_NAME}.rootfs.cramfs \
+  ${EXTRA_IMAGECMD}"</screen></para>
+
+          <para>The <command>EXTRA_IMAGECMD</command> variable for cramfs is
+          passed to <command>mkcramfs</command> and is not used by
+          default.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>ext2</term>
+
+        <listitem>
+          <para>Creates an <emphasis>"Extended Filesystem 2"</emphasis> image
+          file. This is the standard Linux non-journaling file system.<screen>IMAGE_CMD_ext2 = "genext2fs -b ${IMAGE_ROOTFS_SIZE} \
+  -d ${IMAGE_ROOTFS} \
+  ${DEPLOY_DIR_IMAGE}/${IMAGE_NAME}.rootfs.ext2 \
+  ${EXTRA_IMAGECMD}"</screen></para>
+
+          <para>The <command>EXTRA_IMAGECMD</command> variable for ext2 is
+          passed to <command>genext2fs</command> and is not used by
+          default.</para>
+
+          <para>The <command>IMAGE_ROOTS_SIZE</command> variable is used to
+          specify the size of the ext2 image and is set to 64k by
+          default:<screen>IMAGE_ROOTFS_SIZE_ext2 = "65536"</screen></para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>ext2.gz</term>
+
+        <listitem>
+          <para>Creates a version of the ext2 filesystem image compressed with
+          <command>gzip</command>.</para>
+
+          <para><screen>IMAGE_CMD_ext2.gz = "mkdir ${DEPLOY_DIR_IMAGE}/tmp.gz; \
+genext2fs -b ${IMAGE_ROOTFS_SIZE} -d ${IMAGE_ROOTFS} \
+  ${DEPLOY_DIR_IMAGE}/tmp.gz/${IMAGE_NAME}.rootfs.ext2 \
+  ${EXTRA_IMAGECMD}; \
+gzip -f -9 ${DEPLOY_DIR_IMAGE}/tmp.gz/${IMAGE_NAME}.rootfs.ext2; \
+mv ${DEPLOY_DIR_IMAGE}/tmp.gz/${IMAGE_NAME}.rootfs.ext2.gz \
+  ${DEPLOY_DIR_IMAGE}/${IMAGE_NAME}.rootfs.ext2.gz; \
+rmdir ${DEPLOY_DIR_IMAGE}/tmp.gz"</screen></para>
+
+          <para>The <command>EXTRA_IMAGECMD</command> variable for ext2.gz is
+          passed to <command>genext2fs</command> and is not used by
+          default.</para>
+
+          <para>The <command>IMAGE_ROOTS_SIZE</command> variable is used to
+          specify the size of the ext2 image and is set to 64k by
+          default:</para>
+
+          <para><screen>IMAGE_ROOTFS_SIZE_ext2.gz = "65536"</screen></para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>squashfs</term>
+
+        <listitem>
+          <para>Creates a squashfs image. This is a read only compressed
+          filesystem which is used directly with files uncompressed into RAM
+          as they are accessed. Files and filesystems may be up to 2^64 bytes
+          in size, full 32-bit uid and gids are stored, it detects duplicate
+          files and stores only a single copy, all meta-data is compressed and
+          big and little endian filesystems can be mounted on any
+          platform.</para>
+
+          <para><screen>IMAGE_CMD_squashfs = "mksquashfs ${IMAGE_ROOTFS} \
+  ${DEPLOY_DIR_IMAGE}/${IMAGE_NAME}.rootfs.squashfs \
+  ${EXTRA_IMAGECMD} -noappend"</screen></para>
+
+          <para>The <command>EXTRA_IMAGECMD</command> variable for squashfs is
+          passed to <command>mksquashfs</command> and by default is used
+          specify the endianess and block size of the filesystem:</para>
+
+          <para><screen>EXTRA_IMAGECMD_squashfs = "-le -b 16384"</screen></para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>tar</term>
+
+        <listitem>
+          <para>Creates a <command>bzip2</command> compressed .tar
+          archive.</para>
+
+          <para><screen>IMAGE_CMD_tar = "cd ${IMAGE_ROOTFS} &amp;&amp; \
+  tar -jcvf ${DEPLOY_DIR_IMAGE}/${IMAGE_NAME}.rootfs.tar.bz2 ."</screen></para>
+
+          <para>The <command>EXTRA_IMAGECMD</command> variable in not
+          supported for tar images.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>tar.gz</term>
+
+        <listitem>
+          <para>Creates a <command>gzip</command> compressed .tar
+          archive.</para>
+
+          <para><screen>IMAGE_CMD_tar.gz = "cd ${IMAGE_ROOTFS} &amp;&amp; \
+  tar -zcvf ${DEPLOY_DIR_IMAGE}/${IMAGE_NAME}.rootfs.tar.gz ."</screen></para>
+
+          <para>The <command>EXTRA_IMAGECMD</command> variable in not
+          supported for .tar.gz images.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>tar.bz2</term>
+
+        <listitem>
+          <para>Creates a <command>bzip2</command> compressed .tar
+          archive.</para>
+
+          <para><screen>IMAGE_CMD_tar.bz2 = "cd ${IMAGE_ROOTFS} &amp;&amp; \
+  tar -jcvf ${DEPLOY_DIR_IMAGE}/${IMAGE_NAME}.rootfs.tar.bz2 ."</screen></para>
+
+          <para>The <command>EXTRA_IMAGECMD</command> variable in not
+          supported for tar.bz2 images.</para>
+        </listitem>
+      </varlistentry>
+    </variablelist>
+
+    <para>The above built in list of image types is defined in the bitbake
+    configuration file:
+    <command>org.openembedded.dev/conf/bitbake.conf</command>.</para>
+  </section>
+
+  <section>
+    <title>Custom image types</title>
+
+    <para>Custom image types can be created by defining the
+    <command>IMAGE_CMD</command> variable, and optionally the
+    <command>EXTRA_IMAGECMD</command>, <command>IMAGE_ROOTFS_SIZE</command>
+    and <command>IMAGE_DEPENDS</command> variables, for your new image
+    type.</para>
+
+    <para>An example can be found in
+    <command>conf/machine/wrt54.conf</command> where it defines a new image
+    type, <emphasis>squashfs-lzma</emphasis>, for a squashfs filesystem using
+    lzma compression instead of the standard gzip compression:<screen>IMAGE_DEPENDS_squashfs-lzma = "squashfs-tools-native"
+IMAGE_CMD_squashfs-lzma = "mksquashfs-lzma ${IMAGE_ROOTFS} \
+  ${DEPLOY_DIR_IMAGE}/${IMAGE_NAME}.rootfs.squashfs-lzma \
+  ${EXTRA_IMAGECMD} -noappend"
+EXTRA_IMAGECMD_squashfs-lzma = "-root-owned -le"</screen></para>
+  </section>
+</section>
