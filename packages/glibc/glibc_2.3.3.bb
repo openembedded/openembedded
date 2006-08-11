@@ -1,4 +1,4 @@
-PR = "r4"
+PR = "r5"
 DESCRIPTION = "GNU C Library"
 HOMEPAGE = "http://www.gnu.org/software/libc/libc.html"
 LICENSE = "LGPL"
