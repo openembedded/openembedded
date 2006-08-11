@@ -12,7 +12,7 @@ SRC_URI += "file://config.sh-armeb-linux \
 
 PARALLEL_MAKE = ""
 
-PR = "r16"
+PR = "r17"
 
 do_configure() {
 	ln -sf ${HOSTPERL} ${STAGING_BINDIR}/hostperl
