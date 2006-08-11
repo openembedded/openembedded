@@ -1,11 +1,11 @@
-PR = "r3"
+PR = "r4"
 SECTION = "libs"
 PRIORITY = "required"
 MAINTAINER = "Chris Larson <kergoth@handhelds.org>"
 DEPENDS = "libtool-cross"
 DESCRIPTION = "libjpeg is a library for handling the JPEG (JFIF) image format."
-PACKAGES =+ "jpeg-tools "
-FILES_jpeg-tools = "${bindir}/[!.]*"
+PACKAGES += "jpeg-tools "
+FILES_jpeg-tools = "${bindir}/*"
 LICENSE ="jpeg"
 SRC_URI = "http://www.ijg.org/files/jpegsrc.v${PV}.tar.gz \
 	   file://debian.patch;patch=1 \
