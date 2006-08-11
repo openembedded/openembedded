@@ -1,6 +1,8 @@
 SECTION = "libs"
 include glibc_${PV}.bb
 
+EXCLUDE_FROM_SHLIBS = "1"
+
 DEFAULT_PREFERENCE = "-1"
 
 do_install () {
