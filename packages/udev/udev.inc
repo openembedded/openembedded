@@ -33,7 +33,8 @@ bindir = "/bin"
 sbindir = "/sbin"
 
 UDEV_EXTRAS = "<override me>"
-FILES_${PN} += "${usrbindir} ${usrsbindir}"
+FILES_${PN} += "${usrbindir}/[!.]* ${usrsbindir}/[!.]*"
+FILES_${PN}-dbg += "${usrbindir}/.debug ${usrsbindir}/.debug"
 EXTRA_OEMAKE = "-e \
 		'EXTRAS=${UDEV_EXTRAS}' \
 		'STRIP=echo'"
