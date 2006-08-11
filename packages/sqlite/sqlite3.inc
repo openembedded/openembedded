@@ -35,7 +35,7 @@ do_stage() {
 #	oe_runmake install DESTDIR=${D} prefix=${prefix} exec_prefix=${exec_prefix}
 #}
 
-PACKAGES = "libsqlite libsqlite-dev libsqlite-doc sqlite3"
+PACKAGES = "libsqlite libsqlite-dev libsqlite-doc sqlite3 sqlite3-dbg"
 FILES_sqlite3 = "${bindir}/*"
 FILES_libsqlite = "${libdir}/*.so.*"
 FILES_libsqlite-dev = "${libdir}/*.a ${libdir}/*.la ${libdir}/*.so \
