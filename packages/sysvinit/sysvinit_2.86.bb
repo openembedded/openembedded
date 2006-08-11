@@ -3,7 +3,7 @@ SECTION = "base"
 LICENSE = "GPL"
 MAINTAINER = "Chris Larson <kergoth@handhelds.org>"
 HOMEPAGE = "http://freshmeat.net/projects/sysvinit/"
-PR = "r27"
+PR = "r28"
 
 # USE_VT and SERIAL_CONSOLE are generally defined by the MACHINE .conf.
 # Set PACKAGE_ARCH appropriately.
@@ -40,7 +40,7 @@ ALTERNATIVE_PATH = "${base_sbindir}/init.sysvinit"
 ALTERNATIVE_PRIORITY = "50"
 
 PACKAGES =+ "sysvinit-pidof sysvinit-sulogin"
-FILES_${PN} += "${base_sbindir}/[!.]* ${base_bindir}/[!.]*"
+FILES_${PN} += "${base_sbindir}/* ${base_bindir}/*"
 FILES_sysvinit-pidof = "${base_bindir}/pidof.sysvinit"
 FILES_sysvinit-sulogin = "${base_sbindir}/sulogin"
 
