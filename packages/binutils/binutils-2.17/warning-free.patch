@@ -1,0 +1,94 @@
+Index: binutils-2.17/gas/read.c
+===================================================================
+--- binutils-2.17.orig/gas/read.c	2006-08-08 11:25:56.000000000 +0200
++++ binutils-2.17/gas/read.c	2006-08-10 11:19:24.000000000 +0200
+@@ -1283,7 +1283,7 @@
+   unsigned int align_limit = ALIGN_LIMIT;
+   unsigned int align;
+   char *stop = NULL;
+-  char stopc;
++  char stopc = 0;
+   offsetT fill = 0;
+   int max;
+   int fill_p;
+@@ -1427,7 +1427,7 @@
+   offsetT temp, size;
+   symbolS *symbolP = NULL;
+   char *stop = NULL;
+-  char stopc;
++  char stopc = 0;
+   expressionS exp;
+ 
+   if (flag_mri)
+@@ -1542,7 +1542,7 @@
+   symbolS *sym;
+   offsetT align;
+   char *stop = NULL;
+-  char stopc;
++  char stopc = 0;
+ 
+   if (!flag_mri)
+     {
+@@ -1811,7 +1811,7 @@
+ {
+   offsetT temp;
+   char *stop = NULL;
+-  char stopc;
++  char stopc = 0;
+ 
+   if (flag_mri)
+     stop = mri_comment_field (&stopc);
+@@ -1933,7 +1933,7 @@
+   int c;
+   symbolS *symbolP;
+   char *stop = NULL;
+-  char stopc;
++  char stopc = 0;
+ 
+   if (flag_mri)
+     stop = mri_comment_field (&stopc);
+@@ -2885,7 +2885,7 @@
+   expressionS val;
+   char *p = 0;
+   char *stop = NULL;
+-  char stopc;
++  char stopc=0;
+   int bytes;
+ 
+ #ifdef md_flush_pending_output
+@@ -3061,7 +3061,7 @@
+   int flen;
+   char temp[MAXIMUM_NUMBER_OF_CHARS_FOR_FLOAT];
+   char *stop = NULL;
+-  char stopc;
++  char stopc = 0;
+ 
+   if (flag_mri)
+     stop = mri_comment_field (&stopc);
+@@ -3138,7 +3138,7 @@
+ s_struct (int ignore ATTRIBUTE_UNUSED)
+ {
+   char *stop = NULL;
+-  char stopc;
++  char stopc = 0;
+ 
+   if (flag_mri)
+     stop = mri_comment_field (&stopc);
+@@ -3518,7 +3518,7 @@
+   int c;
+   expressionS exp;
+   char *stop = NULL;
+-  char stopc;
++  char stopc = 0;
+ 
+ #ifdef md_flush_pending_output
+   md_flush_pending_output ();
+@@ -5014,7 +5014,7 @@
+ equals (char *sym_name, int reassign)
+ {
+   char *stop = NULL;
+-  char stopc;
++  char stopc = 0;
+ 
+   input_line_pointer++;
+   if (*input_line_pointer == '=')
