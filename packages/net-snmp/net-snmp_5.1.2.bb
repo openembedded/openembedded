@@ -3,6 +3,8 @@ HOMEPAGE = "http://www.net-snmp.org/"
 LICENSE = "BSD"
 MAINTAINER = "Bruno Randolf <bruno.randolf@4g-systems.biz>"
 DEPENDS = "openssl"
+PR = "r1"
+
 SRC_URI = "${SOURCEFORGE_MIRROR}/net-snmp/net-snmp-${PV}.tar.gz \
 	file://uclibc-fix.patch;patch=1 \
 	file://init \
@@ -36,11 +38,12 @@ do_install_append() {
 	install -m 644 ${WORKDIR}/snmptrapd.conf ${D}${sysconfdir}/snmp/
 }
 
-PACKAGES = "net-snmp-doc net-snmp-dev net-snmp-libs net-snmp-mibs net-snmp-server net-snmp-client"
-FILES_net-snmp-libs = "${libdir}"
+PACKAGES = "net-snmp-dbg net-snmp-doc net-snmp-dev net-snmp-libs net-snmp-mibs net-snmp-server net-snmp-client"
+FILES_net-snmp-libs = "${libdir}/*"
 FILES_net-snmp-mibs = "${datadir}/snmp/mibs"
-FILES_net-snmp-server = "${sbindir} ${sysconfdir}"
-FILES_net-snmp-client = "${bindir} ${datadir}/snmp/"
+FILES_net-snmp-server = "${sbindir}/* ${sysconfdir}"
+FILES_net-snmp-client = "${bindir}/* ${datadir}/snmp/"
+FILES_net-snmp-dbg += "${libdir}/.debug/ ${sbindir}/.debug/ ${bindir}/.debug/"
 RDEPENDS_net-snmp-server += "net-snmp-mibs"
 RDEPENDS_net-snmp-client += "net-snmp-mibs"
 
