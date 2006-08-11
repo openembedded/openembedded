@@ -2,7 +2,7 @@ DESCRIPTION = "Perl is a popular scripting language."
 MAINTAINER="David Karlstrom <daka@thg.se>"
 HOMEPAGE = "http://www.perl.org/"
 LICENSE = "Artistic|GPL"
-PR = "r1"
+PR = "r2"
 
 SECTION = "libs"
 inherit native
