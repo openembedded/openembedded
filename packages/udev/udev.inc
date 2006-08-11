@@ -14,7 +14,7 @@ SRC_URI += " \
 
 UDEV_DEVFS_RULES ?= "0"
 
-PACKAGES =+ "udev-utils"
+PACKAGES += "udev-utils"
 FILES_udev-utils = "${usrbindir}/udevinfo ${usrbindir}/udevtest"
 
 inherit update-rc.d
@@ -33,7 +33,7 @@ bindir = "/bin"
 sbindir = "/sbin"
 
 UDEV_EXTRAS = "<override me>"
-FILES_${PN} += "${usrbindir}/[!.]* ${usrsbindir}/[!.]*"
+FILES_${PN} += "${usrbindir}/* ${usrsbindir}/*"
 FILES_${PN}-dbg += "${usrbindir}/.debug ${usrsbindir}/.debug"
 EXTRA_OEMAKE = "-e \
 		'EXTRAS=${UDEV_EXTRAS}' \
