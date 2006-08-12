@@ -1,7 +1,7 @@
 #
 # Automatically generated make config: don't edit
 # Linux kernel version: 2.6.16-hh5
-# Thu Aug 10 14:18:29 2006
+# Sat Aug 12 10:50:22 2006
 #
 CONFIG_ARM=y
 CONFIG_MMU=y
@@ -191,13 +191,13 @@ CONFIG_IPAQ_HANDHELD=y
 # Compaq/HP iPAQ Drivers
 #
 CONFIG_IPAQ_CLOCKS=y
-CONFIG_IPAQ_SLEEVE=m
+CONFIG_IPAQ_SLEEVE=y
 CONFIG_IPAQ_SAMCOP=y
 # CONFIG_IPAQ_HAMCOP is not set
 CONFIG_IPAQ_SAMCOP_TOUCHSCREEN=y
 # CONFIG_IPAQ_SAMCOP_FSI is not set
 # CONFIG_IPAQ_SAMCOP_SLEEVE is not set
-# CONFIG_IPAQ_SAMCOP_DMA is not set
+CONFIG_IPAQ_SAMCOP_DMA=y
 CONFIG_DMABOUNCE=y
 
 #
