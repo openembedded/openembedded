@@ -1,0 +1,11 @@
+--- /tmp/Makefile	2006-08-12 12:16:47.000000000 +0200
++++ ipaq-sleep-0.9/Makefile	2006-08-12 12:22:42.188306000 +0200
+@@ -24,7 +24,7 @@
+ 	$(CC) -o $(PACKAGE) $(PACKAGE).o $(LDFLAGS) $(PACKAGE_LDFLAGS)
+ 
+ install-program: all
+-	install -Ds $(PACKAGE) $(DESTDIR)$(PREFIX)/bin/$(PACKAGE)
++	install -D -s $(PACKAGE) $(DESTDIR)$(PREFIX)/bin/$(PACKAGE)
+ 	mkdir -p $(DESTDIR)/etc/init.d
+ 	install $(PACKAGE).init $(DESTDIR)/etc/init.d/$(PACKAGE)
+ 	install $(PACKAGE).conf $(DESTDIR)/etc/$(PACKAGE).conf
