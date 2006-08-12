@@ -38,7 +38,7 @@ I haven't been able to spot any troubles with this change.
 
 2.2 Keeping track of what regular packages OE generates
 
-OE is able to do debian-style shared lib renaming (fontconfig -> libfontconfig0.ipk) and saves the mappings in staging/pkgmaps. The pkgmaps file is lacking some vital info however. The resulting algo is pretty trivial:
+OE is able to do debian-style shared lib renaming (fontconfig -> libfontconfig0.ipk) and saves the mappings in staging/pkgmaps. The pkgmaps file is lacking some vital info however. The resulting algo is pretty neat:
 
 PACKAGEFUNCS += "do_write_ipk_list"
 
@@ -75,6 +75,37 @@ python do_write_ipk_list () {
                 f.close()
 }
 
+So now OE will spit out a spawnfile for each revision of a recipe, instead of one per recipe as the pkgmap code does.
+
+2.3 Installing regular packages
+
+Now we know what OE generates we can install those:
+
+PSTAGE_INSTALL_CMD      = "ipkg-cl install -force-depends -f ${DEPLOY_DIR_PSTAGE}/ipkg.conf -o "
+PSTAGE_UPDATE_CMD       = "ipkg-cl update -f ${DEPLOY_DIR_PSTAGE}/ipkg.conf -o "
+SPAWNFILE               = "${STAGING_DIR}/pkgmaps/${P}-${PR}.spawn"
+SPAWNIPK                = ${spawn}
+STAGING_BASEDIR         = "${STAGING_LIBDIR}/.."
+
+
+       #check for generated packages
+        if [ -e ${SPAWNFILE} ]; then
+                oenote "List of spawned packages found: ${P}.spawn"
+                for spawn in `cat ${SPAWNFILE} | grep -v locale` ; do \
+                        if [ -e ${DEPLOY_DIR_IPK}/${spawn}_* ]; then
+                                ${PSTAGE_INSTALL_CMD} ${STAGING_BASEDIR} ${spawn}
+                                # clean up .la files to avoid having references to the builddirs in the binaries
+                                for lafile in ${STAGING_LIBDIR}/*.la ; do \
+                                        sed -i s:installed=yes:installed=no:g ${lafile}
+                                done
+                        else
+                                oenote "${spawn} not found, probably empty package"
+                        fi
+                done
+                exit 0
+        else
+                oenote "Spawn file not found!"
+        fi
 
 
 
