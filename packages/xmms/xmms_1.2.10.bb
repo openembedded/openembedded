@@ -2,22 +2,28 @@ DESCRIPTION = "The X MultiMedia System"
 HOMEPAGE = "http://www.xmms.org/"
 LICENSE = "GPL"
 SECTION = "x11/multimedia"
-# TODO add esd mikmod vorbis
-DEPENDS = "gtk+-1.2"
+# TODO add esd
+DEPENDS = "gtk+-1.2 libvorbis mikmod"
 
 SRC_URI = "http://www.xmms.org/files/1.2.x/xmms-${PV}.tar.bz2 \
-           file://gcc4.patch;patch=1"
+           file://gcc4.patch;patch=1 \
+	   file://acinclude.m4"
+PR = "r1"
 
-inherit autotools
+inherit autotools binconfig
 
-# TODO enable esd mikmod vorbis
-EXTRA_OECONF = "--disable-opengl --disable-esd --disable-mikmod --disable-vorbis"
+# TODO enable esd
+EXTRA_OECONF = "--disable-opengl --disable-esd \
+                --with-vorbis-includes=${STAGING_INCDIR} \
+                --with-ogg-includes=${STAGING_INCDIR} \
+                --with-vorbis-libraries=${STAGING_LIBDIR} \
+                --with-ogg-libraries=${STAGING_LIBDIR}"
 
-do_configure() {
-	oe_runconf
+do_configure_prepend() {
+	cp ${WORKDIR}/acinclude.m4 ${S}
+	rm ${S}/libxmms/acinclude.m4
 }
 
-do_compile() {
-	oe_runmake LIBTOOL=${STAGING_BINDIR}/${TARGET_PREFIX}libtool
+do_stage() {
+	autotools_stage_all
 }
-
