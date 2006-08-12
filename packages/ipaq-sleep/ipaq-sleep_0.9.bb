@@ -7,6 +7,7 @@ SECTION = "x11/base"
 RDEPENDS = "apm"
 
 SRC_URI_append = " file://init-script-busybox.patch;patch=1"
+SRC_URI_append = " file://install-fix.patch;patch=1"
 
 PR = "r1"
 

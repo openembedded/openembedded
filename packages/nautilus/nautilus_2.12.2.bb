@@ -5,7 +5,7 @@
 inherit gnome
 LICENSE="GPL"
 
-DEPENDS="librsvg eel esound gnome-desktop"
+DEPENDS="librsvg libexif eel esound gnome-desktop"
 
 EXTRA_OECONF = "--disable-gtk-doc"
 

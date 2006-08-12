@@ -1,2 +1,2 @@
-include sqlite3.inc
+require sqlite3.inc
 PR = "r2"

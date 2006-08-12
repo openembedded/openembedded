@@ -1,5 +1,5 @@
 DESCRIPTION = "Task packages for the Angstrom distribution"
-PR = "r16"
+PR = "r17"
 ALLOW_EMPTY = "1"
 
 PACKAGE_ARCH = "${MACHINE_ARCH}"
@@ -35,6 +35,7 @@ RDEPENDS_angstrom-base-depends = "\
     ipkg ipkg-collateral \
     wireless-tools \
     tslib-tests tslib-calibrate \
+    util-linux-mount util-linux-umount \
     ${EXTRA_STUFF} \
     ${DEBUG_APPS} \
     ${PCMCIA_MANAGER} \	
