@@ -5,7 +5,7 @@ provides a POSIX calling interface to PCRE; the regular expressions \
 themselves still follow Perl syntax and semantics. The header file for \
 the POSIX-style functions is called pcreposix.h."
 SECTION = "devel"
-PR = "r5"
+PR = "r6"
 LICENSE = "BSD"
 SRC_URI = "ftp://ftp.csx.cam.ac.uk/pub/software/programming/pcre/pcre-${PV}.tar.bz2"
 S = "${WORKDIR}/pcre-${PV}"
@@ -38,4 +38,4 @@ do_stage () {
 }
 
 FILES_${PN} = "${libdir}/lib*.so*"
-FILES_${PN}-dev += "${bindir}"
+FILES_${PN}-dev += "${bindir}/*"
