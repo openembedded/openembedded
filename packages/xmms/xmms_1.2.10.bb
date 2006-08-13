@@ -7,6 +7,7 @@ DEPENDS = "gtk+-1.2 libvorbis mikmod"
 
 SRC_URI = "http://www.xmms.org/files/1.2.x/xmms-${PV}.tar.bz2 \
            file://gcc4.patch;patch=1 \
+           file://xmms-config-dequote.patch;patch=1 \
 	   file://acinclude.m4"
 PR = "r1"
 
