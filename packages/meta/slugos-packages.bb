@@ -102,6 +102,7 @@ SLUGOS_PACKAGES = "\
 	lvm2 \
 	m4 \
 	madplay \
+	madwifi-ng \
 	mailx \
 	make \
 	masqmail \
@@ -178,7 +179,6 @@ SLUGOS_PACKAGES = "\
 # Packages currently broken on all platforms
 SLUGOS_BROKEN_PACKAGES = "\
 	irssi \
-	madwifi-ng \
 	obexftp \
 	qc-usb-messenger \
 	unionfs-modules \
