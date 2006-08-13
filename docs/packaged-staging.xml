@@ -25,21 +25,30 @@
 <para>The goal is to populate (and de-populate) the staging area using packages OE generates instead of manually poking .h and .so files into it.</para>
 
 <para>First we need to identify three classes of packages:
-
-* 'native'  - These packages run on the buildsystem (e.g. quilt-native)
-* 'cross'   - These packages run on the buildsystem, but creates things for the target system (e.g gcc-cross)
-* 'regular' - These packages run on the targetsystem (e.g. glibc)
+<itemizedlist>
+<listitem><para>'native'  - These packages run on the buildsystem (e.g. quilt-native)</para></listitem>
+<listitem><para>'cross'   - These packages run on the buildsystem, but creates things for the target system (e.g gcc-cross)</para></listitem>
+<listitem><para>'regular' - These packages run on the targetsystem (e.g. glibc)</para></listitem>
+</itemizedlist>
 </para>
 <para>
 And some terminology:
 
-* 'current metadata' 	- the metadata found in the org.openembedded.dev branch
-* 'the branch' 		- the org.openembedded.packaged-staging branch
+<itemizedlist>
+<listitem><para>'current metadata' 	- the metadata found in the org.openembedded.dev branch</para></listitem>
+<listitem><para>'the branch' 		- the org.openembedded.packaged-staging branch</para></listitem>
+</itemizedlist>
+
 </para>
 </chapter>
 
 <chapter>
-<title>Installing packages</title> <para>If we have packages that can be installed into the staging area we have two modes of operation:    * Start over from scratch    * Incrementally install and remove packages 
+<title>Installing packages</title> <para>If we have packages that can be installed into the staging area we have two modes of operation:
+            <itemizedlist>
+                <listitem><para>Start over from scratch</para></listitem>
+                <listitem><para>Incrementally install and remove packages</para></listitem>
+             </itemizedlist>
+
 </para>
 <section>
 <title>Start over from scratch</title><para>For each to be built package we will repopulate the staging directory from scratch. The benefits are a clean environment and avoids packages picking stuff up at random. Conflicts when installing packages can only happen when two different providers are trying to install the same file. This can only be a bug of the OpenEmbedded meta data. This approach will not require any conflict handling or resolution
@@ -59,7 +68,7 @@ And some terminology:
 <title>Rearranging tasks</title>
 
 <para>In the current metadata packaging happens after staging:
-
+<screen>
 ============================================================
 --- classes/base.bbclass	18c5b851966c94c02ada5f5c8563f8d59ecb0972+++ classes/base.bbclass	97972c3da5a46e53731eca2d4935d1f7ed45b5aa@@ -593,7 +593,7 @@ base_do_compile() { }
 
@@ -67,6 +76,7 @@ And some terminology:
 
 
 ============================================================--- classes/package.bbclass	35e8e063abe6888f5dbc0a4e6862c7ce05e6e10d+++ classes/package.bbclass	5eeb3a5518350fcf30706cbe34aadc9bae46c360@@ -726,4 +726,4 @@ EXPORT_FUNCTIONS do_package do_shlibs do do_package[dirs] = "${D}" populate_packages[dirs] = "${D}" EXPORT_FUNCTIONS do_package do_shlibs do_split_locales mapping_rename_hook+addtask package before do_stage after do_install-addtask package before do_build after do_stage
+</screen>
 
 I haven't been able to spot any troubles with this change.
 </para>
@@ -77,6 +87,7 @@ I haven't been able to spot any troubles with this change.
 
 <para>OE is able to do debian-style shared lib renaming (fontconfig -> libfontconfig0.ipk) and saves the mappings in staging/pkgmaps. The pkgmaps file is lacking some vital info however. The resulting algo is pretty neat:
 
+<screen>
 PACKAGEFUNCS += "do_write_ipk_list"
 
 python do_write_ipk_list () {
@@ -111,6 +122,7 @@ python do_write_ipk_list () {
                         f.write("%s\n" % pkgname)
                 f.close()
 }
+</screen>
 
 So now OE will spit out a spawnfile for each revision of a recipe, instead of one per recipe as the pkgmap code does.
 </para>
@@ -121,6 +133,7 @@ So now OE will spit out a spawnfile for each revision of a recipe, instead of on
 <para>
 Now we know what OE generates we can install those:
 
+<screen>
 PSTAGE_INSTALL_CMD      = "ipkg-cl install -force-depends -f ${DEPLOY_DIR_PSTAGE}/ipkg.conf -o "
 PSTAGE_UPDATE_CMD       = "ipkg-cl update -f ${DEPLOY_DIR_PSTAGE}/ipkg.conf -o "
 SPAWNFILE               = "${STAGING_DIR}/pkgmaps/${P}-${PR}.spawn"
@@ -128,24 +141,26 @@ SPAWNIPK                = ${spawn}
 STAGING_BASEDIR         = "${STAGING_LIBDIR}/.."
 
 
-       #check for generated packages
-        if [ -e ${SPAWNFILE} ]; then
-                oenote "List of spawned packages found: ${P}.spawn"
-                for spawn in `cat ${SPAWNFILE} | grep -v locale` ; do \
-                        if [ -e ${DEPLOY_DIR_IPK}/${spawn}_* ]; then
-                                ${PSTAGE_INSTALL_CMD} ${STAGING_BASEDIR} ${spawn}
-                                # clean up .la files to avoid having references to the builddirs in the binaries
-                                for lafile in ${STAGING_LIBDIR}/*.la ; do \
-                                        sed -i s:installed=yes:installed=no:g ${lafile}
-                                done
-                        else
-                                oenote "${spawn} not found, probably empty package"
-                        fi
-                done
-                exit 0
-        else
-                oenote "Spawn file not found!"
-        fi
+#check for generated packages
+ if [ -e ${SPAWNFILE} ]; then
+         oenote "List of spawned packages found: ${P}.spawn"
+         for spawn in `cat ${SPAWNFILE} | grep -v locale` ; do \
+                 if [ -e ${DEPLOY_DIR_IPK}/${spawn}_* ]; then
+                         ${PSTAGE_INSTALL_CMD} ${STAGING_BASEDIR} ${spawn}
+                         # clean up .la files to avoid having references to the builddirs in the binaries
+                         for lafile in ${STAGING_LIBDIR}/*.la ; do \
+                                 sed -i s:installed=yes:installed=no:g ${lafile}
+                         done
+                 else
+                         oenote "${spawn} not found, probably empty package"
+                 fi
+         done
+         exit 0
+ else
+         oenote "Spawn file not found!"
+ fi
+</screen>
+
 </para>
 </section>
 </chapter>
