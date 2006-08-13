@@ -22,7 +22,7 @@ EXTRA_OECONF = "--disable-opengl --disable-esd \
 
 do_configure_prepend() {
 	cp ${WORKDIR}/acinclude.m4 ${S}
-	rm ${S}/libxmms/acinclude.m4
+	rm ${S}/libxmms/acinclude.m4 || true
 }
 
 do_stage() {
