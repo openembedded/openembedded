@@ -1,3 +1,21 @@
+<?xml version='1.0'   encoding='utf-8'?>
+<!--
+  ex:ts=4:sw=4:sts=4:et
+  -*- tab-width: 4; c-basic-offset: 4; indent-tabs-mode: nil -*-
+-->
+<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.2//EN"
+                      "http://www.oasis-open.org/docbook/xml/4.2/docbookx.dtd">
+<book>
+    <bookinfo>
+        <title>OpenEmbedded Packaged-Staging Project</title>
+        <authorgroup>
+            <corpauthor>Koen Kooi</corpauthor>
+        </authorgroup>
+        <copyright>
+            <year>2006</year>
+            <holder>Koen Kooi</holder>
+        </copyright>
+
 0. Introduction
 
 This branch will hold the code for the Google Summer of Code 2006 project "Putting staging under packagemanagement"
@@ -109,5 +127,6 @@ STAGING_BASEDIR         = "${STAGING_LIBDIR}/.."
 
 
 
+</book>
 
 
