@@ -15,34 +15,50 @@
             <year>2006</year>
             <holder>Koen Kooi</holder>
         </copyright>
+    </bookinfo>	
 
-0. Introduction
+<chapter>
+<title>Introduction</title>
 
-This branch will hold the code for the Google Summer of Code 2006 project "Putting staging under packagemanagement"
+<para>This branch will hold the code for the Google Summer of Code 2006 project "Putting staging under packagemanagement"</para>
 
-The goal is to populate (and de-populate) the staging area using packages OE generates instead of manually poking .h and .so files into it.
+<para>The goal is to populate (and de-populate) the staging area using packages OE generates instead of manually poking .h and .so files into it.</para>
 
-First we need to identify three classes of packages:
+<para>First we need to identify three classes of packages:
 
 * 'native'  - These packages run on the buildsystem (e.g. quilt-native)
 * 'cross'   - These packages run on the buildsystem, but creates things for the target system (e.g gcc-cross)
 * 'regular' - These packages run on the targetsystem (e.g. glibc)
-
+</para>
+<para>
 And some terminology:
 
 * 'current metadata' 	- the metadata found in the org.openembedded.dev branch
 * 'the branch' 		- the org.openembedded.packaged-staging branch
+</para>
+</chapter>
 
+<chapter>
+<title>Installing packages</title> <para>If we have packages that can be installed into the staging area we have two modes of operation:    * Start over from scratch    * Incrementally install and remove packages 
+</para>
+<section>
+<title>Start over from scratch</title><para>For each to be built package we will repopulate the staging directory from scratch. The benefits are a clean environment and avoids packages picking stuff up at random. Conflicts when installing packages can only happen when two different providers are trying to install the same file. This can only be a bug of the OpenEmbedded meta data. This approach will not require any conflict handling or resolution
+</para>
+</section>
 
-1. Installing packages If we have packages that can be installed into the staging area we have two modes of operation:    * Start over from scratch    * Incrementally install and remove packages 1.1 Start over from scratchFor each to be built package we will repopulate the staging directory from scratch. The benefits are a clean environment and avoids packages picking stuff up at random. Conflicts when installing packages can only happen when two different providers are trying to install the same file. This can only be a bug of the OpenEmbedded meta data. This approach will not require any conflict handling or resolution
+<section>
+<title>Incrementally installing packages</title><para>In contrast to repopluating the staging area from scratch we install additional dependencies and remove conflicting packages. The installing and removing of packages is assumed to be faster than repopulating from scratch. Once a package completed we could consider removing the non-native depends to avoid a growing staging directory. One issue is with the clean task. We could assume that cleaning a package will remove it from the staging area as well. There is one possible problem with it. Let us assume we want to clean quilt-native, virtually every package DEPENDS on it, we would have to clean the staging area completely. If this is the wished behaviour needs to be discussed. 
+</para>
+</section>
+</chapter>
 
-1.2 Incrementally installing packagesIn contrast to repopluating the staging area from scratch we install additional dependencies and remove conflicting packages. The installing and removing of packages is assumed to be faster than repopulating from scratch. Once a package completed we could consider removing the non-native depends to avoid a growing staging directory. One issue is with the clean task. We could assume that cleaning a package will remove it from the staging area as well. There is one possible problem with it. Let us assume we want to clean quilt-native, virtually every package DEPENDS on it, we would have to clean the staging area completely. If this is the wished behaviour needs to be discussed. 
+<chapter>
+<title>Implementation</title>
 
-2. Implementation
+<section>
+<title>Rearranging tasks</title>
 
-2.1 Rearranging tasks
-
-In the current metadata packaging happens after staging:
+<para>In the current metadata packaging happens after staging:
 
 ============================================================
 --- classes/base.bbclass	18c5b851966c94c02ada5f5c8563f8d59ecb0972+++ classes/base.bbclass	97972c3da5a46e53731eca2d4935d1f7ed45b5aa@@ -593,7 +593,7 @@ base_do_compile() { }
@@ -53,10 +69,13 @@ In the current metadata packaging happens after staging:
 ============================================================--- classes/package.bbclass	35e8e063abe6888f5dbc0a4e6862c7ce05e6e10d+++ classes/package.bbclass	5eeb3a5518350fcf30706cbe34aadc9bae46c360@@ -726,4 +726,4 @@ EXPORT_FUNCTIONS do_package do_shlibs do do_package[dirs] = "${D}" populate_packages[dirs] = "${D}" EXPORT_FUNCTIONS do_package do_shlibs do_split_locales mapping_rename_hook+addtask package before do_stage after do_install-addtask package before do_build after do_stage
 
 I haven't been able to spot any troubles with this change.
+</para>
+</section>
 
-2.2 Keeping track of what regular packages OE generates
+<section>
+<title>Keeping track of what regular packages OE generates</title>
 
-OE is able to do debian-style shared lib renaming (fontconfig -> libfontconfig0.ipk) and saves the mappings in staging/pkgmaps. The pkgmaps file is lacking some vital info however. The resulting algo is pretty neat:
+<para>OE is able to do debian-style shared lib renaming (fontconfig -> libfontconfig0.ipk) and saves the mappings in staging/pkgmaps. The pkgmaps file is lacking some vital info however. The resulting algo is pretty neat:
 
 PACKAGEFUNCS += "do_write_ipk_list"
 
@@ -94,9 +113,12 @@ python do_write_ipk_list () {
 }
 
 So now OE will spit out a spawnfile for each revision of a recipe, instead of one per recipe as the pkgmap code does.
+</para>
+</section>
 
-2.3 Installing regular packages
-
+<section>
+<title>Installing regular packages</title>
+<para>
 Now we know what OE generates we can install those:
 
 PSTAGE_INSTALL_CMD      = "ipkg-cl install -force-depends -f ${DEPLOY_DIR_PSTAGE}/ipkg.conf -o "
@@ -124,7 +146,9 @@ STAGING_BASEDIR         = "${STAGING_LIBDIR}/.."
         else
                 oenote "Spawn file not found!"
         fi
-
+</para>
+</section>
+</chapter>
 
 
 </book>
