@@ -254,6 +254,16 @@ fi #if !glibc-intermediate
 }
 </screen>
 
+A package will fail to stage if it needs files from staging during its own staging. We can solve that, and the ugly check for glibc-intermediate:
+
+<screen>
+... stage stuff...
+ipkg list_installed | awk '{print $1}' > installed-list
+cat installed-list | xargs ipkg -recursive -force-depends remove
+... make a package of the remaing bits ...
+cat installed-list | xargs ipkg install
+ipkg install newly-packaged-stuff
+</screen>
 
 </para>
 </section>
