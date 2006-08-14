@@ -276,12 +276,14 @@ ipkg install newly-packaged-stuff
 <section>
 	<title>Current state</title>
 <para>
+The metadata in the packaged-staging branch well, once it's done building the toolchains. The infamous 'bitbake nano' testcase works as well as other packages present in the packaged-staging branch.
 </para>
 </section>
 
 <section>
 	<title>How to proceed from here</title>
 <para>
+First the gcc-cross problem has the be fixed, with the solution mentioned in the previous chapter. After that a org.openembedded.dev.packaged-staging branch should be created where patched will be applied on top of org.openembedded.dev to test 'bitbake angstrom-bootstrap-image'. Once that passes all tests succesfully, it can be propagated back to org.openembedded.dev.
 </para>
 </section>
 
