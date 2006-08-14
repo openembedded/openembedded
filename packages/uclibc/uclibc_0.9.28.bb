@@ -1,5 +1,5 @@
 DEFAULT_PREFERENCE = "1"
-PR = "r4"
+PR = "r5"
 
 require uclibc.inc
 
@@ -31,6 +31,8 @@ SRC_URI += " file://thumb-sysnum-h.patch;patch=1"
 SRC_URI += " file://thumb-asm-swi.patch;patch=1"
 SRC_URI += " file://thumb-call-via-rx.patch;patch=1"
 SRC_URI += " file://dl-startup.h.patch;patch=1"
+SRC_URI += " file://dl-string.h.patch;patch=1"
+SRC_URI += " file://dl-sysdep.h.patch;patch=1"
 #
 # This is a core change and is controversial, maybe even wrong
 # on some architectures
