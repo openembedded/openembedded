@@ -3,7 +3,7 @@ SECTION = "libs"
 PRIORITY = "optional"
 LICENSE = "LGPL"
 DEPENDS = "intltool-native glib-2.0"
-PR = "r1"
+PR = "r2"
 DEFAULT_PREFERENCE = "5"
 SRCDATE = "20060804"
 PV = "0.4.0+cvs${SRCDATE}"
@@ -23,7 +23,6 @@ do_stage() {
 	autotools_stage_all
 }
 
-PACKAGES += libmimedir-utils
+PACKAGES =+ libmimedir-utils
 PACKAGES_DYNAMIC = "libmimedir-0.4*"
-FILES_libmimedir-utils = "${bindir}"
-FILES_${PN} = "${libdir}"
+FILES_libmimedir-utils = "${bindir}/"
