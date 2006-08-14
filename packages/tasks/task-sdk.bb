@@ -30,7 +30,7 @@ RDEPENDS_task-sdk-base := "\
     freetype-dev \
     glib-2.0-dev \
     gstreamer-dev \
-    ice-dev \
+    libice-dev \
     ipkg-dev \
     jpeg-dev \
     libapm-dev \
