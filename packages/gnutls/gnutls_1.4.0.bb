@@ -11,6 +11,7 @@ SRC_URI = "ftp://ftp.gnutls.org/pub/gnutls/gnutls-${PV}.tar.bz2 \
 inherit autotools binconfig
 
 PACKAGES =+ "${PN}-openssl ${PN}-extra ${PN}-bin"
+PACKAGES_DYNAMIC = "libgnutls*"
 FILES_${PN}-openssl = "${libdir}/libgnutls-openssl.so.*"
 FILES_${PN}-extra = "${libdir}/libgnutls-extra.so.*"
 FILES_${PN} = "${libdir}/libgnutls.so.*"
