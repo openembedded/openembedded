@@ -1,0 +1,10 @@
+--- uClibc-0.9.28/ldso/ldso/arm/dl-sysdep.h.orig	2006-08-14 17:22:50.000000000 +0200
++++ uClibc-0.9.28/ldso/ldso/arm/dl-sysdep.h	2006-08-14 17:23:45.000000000 +0200
+@@ -43,6 +43,7 @@
+ 	return m;
+ }
+ #define do_rem(result, n, base) ((result) = arm_modulus(n, base))
++#define do_div_10(result, remain) ((result) = (((result) - (remain)) / 2) * -(-1ul / 5ul))
+ 
+ /* Here we define the magic numbers that this dynamic loader should accept */
+ #define MAGIC1 EM_ARM
