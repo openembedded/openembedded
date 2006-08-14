@@ -7,9 +7,10 @@ MAINTAINER = "Chris Lord <chris@openedhand.com>"
 
 inherit autotools pkgconfig
 
+PACKAGES_DYNAMIC = "libsoup-2.2*"
 FILES_${PN} = "${libdir}/lib*.so.*"
-FILES_${PN}-dev = "${includedir} ${libdir}"
-FILES_${PN}-doc = "${datadir}"
+FILES_${PN}-dev = "${includedir}/ ${libdir}/"
+FILES_${PN}-doc = "${datadir}/"
 
 do_stage() {
 	autotools_stage_all
