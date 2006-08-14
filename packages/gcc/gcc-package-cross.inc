@@ -7,6 +7,7 @@ OLD_INHIBIT_PACKAGE_STRIP := "${INHIBIT_PACKAGE_STRIP}"
 INHIBIT_PACKAGE_STRIP = "1"
 
 PACKAGES = "libgcc libstdc++ libg2c libg2c-dev libgfortran libgfortran-dev"
+PACKAGES_DYNAMIC = "libgcc* libstdc++* libg2c* libgfortran*"
 
 PACKAGE_ARCH_libg2c = "${TARGET_ARCH}"
 PACKAGE_ARCH_libg2c-dev = "${TARGET_ARCH}"
