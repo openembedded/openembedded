@@ -2,7 +2,7 @@ DESCRIPTION="The Asterisk open source software PBX"
 HOMEPAGE="www.asterisk.org"
 LICENSE="GPL"
 DEPENDS="ncurses zlib openssl curl alsa-lib libogg libvorbis popt"
-PR = "r5"
+PR = "r6"
 
 SRC_URI="http://ftp.digium.com/pub/asterisk/releases/asterisk-${PV}.tar.gz \
 	 file://uclibc-compat-getloadavg.patch;patch=1 \
@@ -15,8 +15,8 @@ export CROSS_COMPILE_BIN="${STAGING_BINDIR}"
 export CROSS_COMPILE_TARGET="${STAGING_DIR}/${HOST_SYS}"
 
 export CROSS_ARCH="Linux"
-export CROSS_PROC="arm"
-export SUB_PROC="xscale"
+
+export CROSS_PROC="${TARGET_ARCH}"
 
 export MAKECMDGOALS="dont-optimize"
 
