@@ -43,7 +43,7 @@ RDEPENDS_task-sdk-base := "\
     libgpg-error-dev \ 
     libidl-dev \
     libiw-dev \
-    libmimedir-3.3-dev \
+    libmimedir-0.4-dev \
     libpcap-dev \
     libpixman-dev \
     libpng-dev \
@@ -61,7 +61,7 @@ RDEPENDS_task-sdk-base := "\
     readline-dev \
     sqlite-dev \
     zlib-dev \
-    xmu-dev"
+    libxmu-dev"
 
 RDEPENDS_task-sdk-x11 := "\
     atk-dev \

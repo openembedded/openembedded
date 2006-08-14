@@ -24,5 +24,6 @@ do_stage() {
 }
 
 PACKAGES += libmimedir-utils
+PACKAGES_DYNAMIC = "libmimedir-0.4*"
 FILES_libmimedir-utils = "${bindir}"
 FILES_${PN} = "${libdir}"

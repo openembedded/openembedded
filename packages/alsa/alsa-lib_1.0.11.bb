@@ -25,7 +25,8 @@ do_stage() {
 	install -m 0644 utils/alsa.m4 ${STAGING_DATADIR}/aclocal/
 }
 
-PACKAGES = "libasound alsa-server alsa-conf alsa-doc alsa-dev"
+PACKAGES += "libasound alsa-server alsa-conf alsa-doc alsa-dev"
+PACKAGES_DYNAMIC = "libasound*"
 FILES_libasound = "${libdir}/libasound.so*"
 FILES_alsa-server = "${bindir}"
 FILES_alsa-conf = "${datadir}"
