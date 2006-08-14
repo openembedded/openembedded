@@ -283,7 +283,27 @@ The metadata in the packaged-staging branch well, once it's done building the to
 <section>
 	<title>How to proceed from here</title>
 <para>
-First the gcc-cross problem has the be fixed, with the solution mentioned in the previous chapter. After that a org.openembedded.dev.packaged-staging branch should be created where patched will be applied on top of org.openembedded.dev to test 'bitbake angstrom-bootstrap-image'. Once that passes all tests succesfully, it can be propagated back to org.openembedded.dev.
+First the gcc-cross problem has the be fixed, with the solution mentioned in the previous chapter. After that a org.openembedded.dev.packaged-staging branch should be created where patched will be applied on top of org.openembedded.dev to test 'bitbake angstrom-bootstrap-image'. Once that passes all tests succesfully, it can be propagated back to org.openembedded.dev. Extracting patches and applying: 1 hour
+</para>
+<para>
+packaged-staging.bbclass has a BUGS and TODO section:
+<screen>
+# BUGS:
+# * does not distinguish between -native, -cross and other packages
+# * breaks when a recipe needs stuff from STAGING_DIR to be present during do_stage, broken behaviour IMO
+# * same goes for CROSS_DIR
+</screen>
+
+We could save some CPU cycles and disk IO by doing checking "inherits('cross')" and "inherits('native')" in a python method. The solution for the chicken-and-egg problem has been mentioned earlier.
+
+<screen>
+# TODO:
+# * also build a feed for native and cross packages
+# * make do_clean clean staging as well
+</screen>
+
+The code for both items is in packaged-staging.bbclass already, but in different methods. Estimated time: 30 minutes.
+
 </para>
 </section>
 
