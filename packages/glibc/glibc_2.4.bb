@@ -4,7 +4,7 @@ LICENSE = "LGPL"
 SECTION = "libs"
 PRIORITY = "required"
 DEFAULT_PREFERENCE = "-1"
-PR = "r8"
+PR = "r9"
 
 # the -isystem in bitbake.conf screws up glibc do_stage
 BUILD_CPPFLAGS = "-I${STAGING_DIR}/${BUILD_SYS}/include"
