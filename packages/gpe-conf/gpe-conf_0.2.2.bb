@@ -7,9 +7,7 @@ RDEPENDS_${PN} = "xst xset ipaq-sleep ntpdate gpe-login gpe-icons timezones"
 RDEPENDS_gpe-conf-panel = "gpe-conf"
 
 MAINTAINER = "Florian Boor <florian.boor@kernelconcepts.de>"
-PR="r2"
-
-SRC_URI += " file://timezone-fault.patch;patch=1;pnum=0"
+PR="r0"
 
 GPE_TARBALL_SUFFIX = "bz2"
 
@@ -22,5 +20,3 @@ FILES_${PN} = "${sysconfdir} ${bindir} ${datadir}/pixmaps \
                 ${datadir}/gpe-conf"
 
 FILES_gpe-conf-panel = "${datadir}/applications/gpe-conf.desktop"
-
-
