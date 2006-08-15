@@ -14,7 +14,7 @@ SRC_URI += " \
 
 UDEV_DEVFS_RULES ?= "0"
 
-PACKAGES += "udev-utils"
+PACKAGES =+ "udev-utils"
 FILES_udev-utils = "${usrbindir}/udevinfo ${usrbindir}/udevtest"
 
 inherit update-rc.d

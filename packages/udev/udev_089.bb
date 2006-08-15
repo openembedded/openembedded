@@ -3,7 +3,7 @@ DESCRIPTION = "udev is a daemon which dynamically creates and removes device nod
 the hotplug package and requires a kernel not older than 2.6.12."
 RPROVIDES = "hotplug"
 
-PR = "r3"
+PR = "r4"
 
 SRC_URI = "http://kernel.org/pub/linux/utils/kernel/hotplug/udev-${PV}.tar.gz \
 	   file://noasmlinkage.patch;patch=1 \
@@ -16,7 +16,7 @@ require udev.inc
 
 INITSCRIPT_PARAMS = "start 03 S ."
 
-FILES_${PN} += "${base_libdir}"
+FILES_${PN} += "${base_libdir}/udev/*"
 UDEV_EXTRAS = "extras/firmware/ extras/scsi_id/ extras/volume_id/ extras/run_directory/"
 EXTRA_OEMAKE += "libudevdir=/lib/udev"
 
