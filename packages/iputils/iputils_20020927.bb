@@ -4,7 +4,7 @@ tracepath, tracepath6, ping, ping6 and arping."
 SECTION = "console/network"
 MAINTAINER = "Jamie Lenehan <lenehan@twibble.org>"
 LICENSE ="BSD"
-PR = "r3"
+PR = "r4"
 
 SRC_URI = "http://www.tux.org/pub/people/alexey-kuznetsov/ip-routing/iputils-ss020927.tar.gz \
 	    file://debian-fixes.patch;patch=1 \
@@ -16,7 +16,7 @@ SRC_URI = "http://www.tux.org/pub/people/alexey-kuznetsov/ip-routing/iputils-ss0
 	    file://glibc-2.4-compat.patch;patch=1"
 S = "${WORKDIR}/iputils"
 
-PACKAGES = "${PN}-ping ${PN}-ping6 ${PN}-arping ${PN}-tracepath ${PN}-tracepath6 ${PN}-traceroute6 ${PN}-doc"
+PACKAGES += "${PN}-ping ${PN}-ping6 ${PN}-arping ${PN}-tracepath ${PN}-tracepath6 ${PN}-traceroute6"
 FILES_${PN}		= ""
 FILES_${PN}-ping	= "${base_bindir}/ping.${PN}"
 FILES_${PN}-ping6	= "${base_bindir}/ping6.${PN}"
@@ -35,9 +35,9 @@ do_compile () {
 do_install () {
 	install -m 0755 -d ${D}${base_bindir} ${D}${bindir} ${D}${mandir}/man8
 	# SUID root programs
-	install -m 4755 ping ${D}${base_bindir}/ping.${PN}
-	install -m 4755 ping6 ${D}${base_bindir}/ping6.${PN}
-	install -m 4755 traceroute6 ${D}${bindir}/
+	install -m 4555 ping ${D}${base_bindir}/ping.${PN}
+	install -m 4555 ping6 ${D}${base_bindir}/ping6.${PN}
+	install -m 4555 traceroute6 ${D}${bindir}/
 	# Other programgs
 	for i in arping tracepath tracepath6; do
 	  install -m 0755 $i ${D}${bindir}/
@@ -49,7 +49,9 @@ do_install () {
 }
 
 # Busybox also provides ping and ping6, so use update-alternatives
+# Also fixup SUID bit for applications that need it
 pkg_postinst_${PN}-ping () {
+	chmod 4555 ${base_bindir}/ping.${PN}
 	update-alternatives --install ${base_bindir}/ping ping ping.${PN} 100
 }
 pkg_prerm_${PN}-ping () {
@@ -57,8 +59,13 @@ pkg_prerm_${PN}-ping () {
 }
 
 pkg_postinst_${PN}-ping6 () {
+	chmod 4555 ${base_bindir}/ping6.${PN}
 	update-alternatives --install ${base_bindir}/ping6 ping6 ping6.${PN} 100
 }
 pkg_prerm_${PN}-ping6 () {
 	update-alternatives --remove ping6 ping6.${PN}
+}
+
+pkg_postinst_${PN}-traceroute6 () {
+	chmod 4555 ${bindir}/traceroute6
 }
