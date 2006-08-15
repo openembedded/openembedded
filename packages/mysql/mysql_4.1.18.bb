@@ -5,7 +5,7 @@ DEPENDS += "ncurses mysql-native"
 LICENSE = "GPL"
 PR="r2"
 
-SRC_URI = "http://mirrors.develooper.com/mysql/Downloads/MySQL-4.1/mysql-${PV}.tar.gz \
+SRC_URI = "http://downloads.mysql.com/archives/mysql-4.1/mysql-${PV}.tar.gz \
            file://autofoo.patch;patch=1 \
 	   file://gen_lex_hash.patch;patch=1 \
 	   file://my.cnf \
