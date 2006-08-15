@@ -3,7 +3,7 @@ SECTION = "x11/apps"
 #MAINTAINER = ""
 LICENSE = "MIT-X"
 
-DEPENDS = "xproto virtual/libx11 xextproto xext xau xpm ncurses"
+DEPENDS = "libxaw xproto virtual/libx11 xextproto xext xau xpm ncurses"
 
 SRC_URI = "${XORG_MIRROR}/development/X11R7.0-RC4/extras/${PN}-${PV}.tar.gz"
 
