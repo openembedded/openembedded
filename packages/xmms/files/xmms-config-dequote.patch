@@ -1,0 +1,25 @@
+--- xmms-1.2.10/xmms-config.in.orig	2006-08-13 06:55:56.000000000 +0100
++++ xmms-1.2.10/xmms-config.in	2006-08-13 06:56:52.000000000 +0100
+@@ -12,15 +12,15 @@
+ #
+ # This work is released under the GNU GPL, version 2 or later.
+ 
+-prefix="@prefix@"
+-exec_prefix="@exec_prefix@"
++prefix=@prefix@
++exec_prefix=@exec_prefix@
+ exec_prefix_set=no
+-data_dir="@datadir@/@PACKAGE@"
++data_dir=@datadir@/@PACKAGE@
+ 
+-version="@VERSION@"
+-include_dir="@includedir@"
+-xmms_include_dir="@includedir@/@PACKAGE@"
+-lib_dir="@libdir@"
++version=@VERSION@
++include_dir=@includedir@
++xmms_include_dir=@includedir@/@PACKAGE@
++lib_dir=@libdir@
+ 
+ if ( (gtk-config --version) > /dev/null 2>&1)  then
+    gtk_libs=`gtk-config --libs`
