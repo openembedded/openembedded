@@ -28,5 +28,5 @@ do_stage() {
 	autotools_stage_includes
 
 	install -d ${STAGING_DATADIR}/aclocal
-	cp ${S}/libgnutls.m4 ${STAGING_DATADIR}/aclocal/
+	cp ${S}/lib/libgnutls.m4 ${STAGING_DATADIR}/aclocal/
 }
