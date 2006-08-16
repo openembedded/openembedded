@@ -1,0 +1,16 @@
+
+#
+# Patch managed by http://www.mn-logistik.de/unsupported/pxa250/patcher
+#
+
+--- qt-2.3.10/src/tools/qvaluestack.h~gcc4	2005-01-23 15:00:47.000000000 +0100
++++ qt-2.3.10/src/tools/qvaluestack.h	2006-03-19 02:32:56.000000000 +0100
+@@ -54,7 +54,7 @@
+     {
+ 	T elem( this->last() );
+ 	if ( !this->isEmpty() )
+-	    remove( this->fromLast() );
++	    this->remove( this->fromLast() );
+ 	return elem;
+     }
+     T& top() { return this->last(); }
