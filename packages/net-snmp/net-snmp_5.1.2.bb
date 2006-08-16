@@ -18,15 +18,16 @@ EXTRA_OECONF = "--enable-shared --disable-manuals"
 EXTRA_OEMAKE = "INSTALL_PREFIX=${D}"
 
 do_configure() {
-	# endianness fun.. inspired by openssl.inc
+	# endianness fun... inspired by openssl.inc
 	. ${CONFIG_SITE}
-	if test "x$ac_cv_c_bigendian" = "xyes"; then
+	if [ "x$ac_cv_c_bigendian" = "xyes" -o "x$ac_cv_c_littleendian" = "xno" ]; then
 	    ENDIANESS=" --with-endianness=big"
-	elif test "x$ac_cv_c_littleendian" = "xyes"; then
+	elif [ "x$ac_cv_c_littleendian" = "xyes" -o "x$ac_cv_c_bigendian" = "xno" ]; then
 	    ENDIANESS=" --with-endianness=little"
 	else
 	    oefatal do_configure cannot determine endianess
 	fi
+	oenote Determined endianess as: $ENDIANESS
 	oe_runconf $ENDIANESS
 }
 
