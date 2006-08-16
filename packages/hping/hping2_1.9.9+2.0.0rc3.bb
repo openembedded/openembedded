@@ -24,14 +24,15 @@ S="${WORKDIR}/hping2-rc3"
 do_configure() {
 	# endianness fun.. inspired by openssl.inc
 	. ${CONFIG_SITE}
-        BYTEORDER="UNKNOWN"
-	if test "x$ac_cv_c_bigendian" = "xyes"; then
+	BYTEORDER="UNKNOWN"
+	if [ "x$ac_cv_c_bigendian" = "xyes" -o "x$ac_cv_c_littleendian" = "xno" ]; then
 	    BYTEORDER="__BIG_ENDIAN_BITFIELD"
-	elif test "x$ac_cv_c_littleendian" = "xyes"; then
+	elif [ "x$ac_cv_c_littleendian" = "xyes" -o "x$ac_cv_c_bigendian" = "xno" ]; then
 	    BYTEORDER="__LITTLE_ENDIAN_BITFIELD"
 	else
 	    oefatal do_configure cannot determine endianess
 	fi
+	oenote Determined byteorder as: $BYTEORDER
 	BYTEORDER="${BYTEORDER}" CONFIGOSTYPE="LINUX" ./configure
 }
 
