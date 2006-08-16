@@ -1,11 +1,11 @@
 include ${PN}.inc
 
-PR = "r2" 
+PR = "r4" 
 
 SRC_URI = "${HANDHELDS_CVS};tag=${TAG};module=opie/core/apps/calibrate \
            ${HANDHELDS_CVS};tag=${TAG};module=opie/noncore/settings/mediummount \
            ${HANDHELDS_CVS};tag=${TAG};module=opie/core/launcher \
-           ${HANDHELDS_CVS};tag=${TAG};module=opie/pics \
+           ${HANDHELDS_CVS};tag=v1_2_2;module=opie/pics \
            ${HANDHELDS_CVS};tag=${TAG};module=opie/apps \
            ${HANDHELDS_CVS};tag=${TAG};module=opie/root \
            ${HANDHELDS_CVS};tag=${TAG};module=opie/etc \
