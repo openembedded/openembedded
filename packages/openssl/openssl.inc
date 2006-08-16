@@ -28,15 +28,12 @@ do_compile () {
 
 	# endianness fun.. whee
 	. ${CONFIG_SITE}
-	if test "x$ac_cv_c_bigendian" = "xyes"; then
+	if [ "x$ac_cv_c_bigendian" = "xyes" -o "x$ac_cv_c_littleendian" = "xno" ]; then
 		CFLAG="${CFLAG} -DB_ENDIAN"
-	elif test "x$ac_cv_c_littleendian" = "xyes"; then
+	elif [ "x$ac_cv_c_littleendian" = "xyes" -o "x$ac_cv_c_bigendian" = "xno" ]; then
 		CFLAG="${CFLAG} -DL_ENDIAN"
-	elif test "x$ac_cv_c_bigendian" = "xno" && test "x$ac_cv_c_littleendian" = "xno"; then
-		# no idea what to do with this...
-		:
 	else
-		CFLAG="${CFLAG} -DL_ENDIAN"
+		oefatal do_configure cannot determine endianess
 	fi
 
 	os=${HOST_OS}
