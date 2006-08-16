@@ -3,7 +3,7 @@ DEPENDS = "zlib libgcrypt lzo"
 MAINTAINER = "Eric Shattow <lucent@gmail.com>"
 
 LICENSE = "LGPL"
-PR = "r3"
+PR = "r4"
 
 SRC_URI = "ftp://ftp.gnutls.org/pub/gnutls/devel/gnutls-${PV}.tar.bz2 \
            file://gnutls-openssl.patch;patch=1 \
@@ -32,5 +32,8 @@ do_stage() {
 	oe_libinstall -C libextra/.libs -so -a libgnutls-extra ${STAGING_LIBDIR}
 	oe_libinstall -C libextra/.libs -so -a libgnutls-openssl ${STAGING_LIBDIR}
 	autotools_stage_includes
+
+	install -d ${STAGING_DATADIR}/aclocal
+	cp ${S}/libgnutls.m4 ${STAGING_DATADIR}/aclocal/
 }
 

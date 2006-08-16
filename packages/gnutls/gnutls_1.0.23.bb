@@ -1,6 +1,6 @@
 DESCRIPTION = "GNU Transport Layer Security Library"
 DEPENDS = "zlib libgcrypt"
-PR = "r5"
+PR = "r6"
 
 LICENSE = "LGPL"
 
@@ -26,5 +26,8 @@ do_stage() {
 	oe_libinstall -C libextra/.libs -so -a libgnutls-extra ${STAGING_LIBDIR}
 	oe_libinstall -C libextra/.libs -so -a libgnutls-openssl ${STAGING_LIBDIR}
 	autotools_stage_includes
+
+	install -d ${STAGING_DATADIR}/aclocal
+	cp ${S}/libgnutls.m4 ${STAGING_DATADIR}/aclocal/
 }
 
