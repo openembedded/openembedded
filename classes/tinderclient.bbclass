@@ -255,6 +255,14 @@ def tinder_do_tinder_report(event):
     information immediately. The caching/queuing needs to be
     implemented. Also sending more or less information is not
     implemented yet.
+
+    We have two temporary files stored in the TMP directory. One file
+    contains the assigned machine id for the tinderclient. This id gets
+    assigned when we connect the box and start the build process the second
+    file is used to workaround an EventHandler limitation. If BitBake is ran
+    with the continue option we want the Build to fail even if we get the
+    BuildCompleted Event. In this case we have to look up the status and
+    send it instead of 100/success.
     """
     from bb.event import getName
     from bb import data, mkdirhier, build
@@ -264,7 +272,6 @@ def tinder_do_tinder_report(event):
     name = getName(event)
     log  = ""
     status = 1
-    #print asd 
     # Check what we need to do Build* shows we start or are done
     if name == "BuildStarted":
         tinder_build_start(event.data)
@@ -275,6 +282,12 @@ def tinder_do_tinder_report(event):
             f = file(data.getVar('TINDER_LOG', event.data, True), 'rw+')
             f.truncate(0)
             f.close()
+
+            # write a status to the file. This is needed for the -k option
+            # of BitBake
+            g = file(data.getVar('TMPDIR', event.data, True)+"/tinder-status", 'rw+')
+            g.truncate(0)
+            g.close()
         except IOError:
             pass
 
@@ -302,9 +315,20 @@ def tinder_do_tinder_report(event):
         build.exec_task('do_clean', event.data)
         log += "<--- TINDERBOX Package %s failed (FAILURE)\n" % data.getVar('P', event.data, True)
         status = 200
+        # remember the failure for the -k case
+        h = file(data.getVar('TMPDIR', event.data, True)+"/tinder-status", 'w')
+        h.write("200")
     elif name == "BuildCompleted":
         log += "Build Completed\n"
         status = 100
+        # Check if we have a old status...
+        try:
+            h = file(data.getVar('TMPDIR',event.data,True)+'/tinder-status', 'r')
+            status = int(h.read())
+            print "New status %d" % status
+        except:
+            pass
+
     elif name == "MultipleProviders":
         log += "---> TINDERBOX Multiple Providers\n"
         log += "multiple providers are available (%s);\n" % ", ".join(event.getCandidates())
@@ -315,6 +339,9 @@ def tinder_do_tinder_report(event):
         log += "Error: No Provider for: %s\n" % event.getItem()
         log += "Error:Was Runtime: %d\n" % event.isRuntime()
         status = 200
+        # remember the failure for the -k case
+        h = file(data.getVar('TMPDIR', event.data, True)+"/tinder-status", 'w')
+        h.write("200")
 
     # now post the log
     if len(log) == 0:
