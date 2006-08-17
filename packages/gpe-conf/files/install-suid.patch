@@ -1,0 +1,17 @@
+Index: Makefile.am
+===================================================================
+RCS file: /cvs/gpe/base/gpe-conf/Makefile.am,v
+retrieving revision 1.4
+diff -B -b -u -r1.4 Makefile.am
+--- Makefile.am	10 Aug 2006 14:58:50 -0000	1.4
++++ Makefile.am	17 Aug 2006 11:38:39 -0000
+@@ -175,6 +175,9 @@
+ 	rm -rf autom4te.cache
+ 	rm -f *.d *~
+ 
++install-data-hook:
++	chmod u+s $(DESTDIR)$(bindir)/gpe-conf                
++
+ deb: dist
+ 	-mkdir $(top_builddir)/debian-build
+ 	cd $(top_builddir)/debian-build && tar xzf $(top_builddir)/../$(PACKAGE)-$(VERSION).tar.gz

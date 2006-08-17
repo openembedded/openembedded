@@ -7,11 +7,13 @@ RDEPENDS_${PN} = "xst xset ipaq-sleep ntpdate gpe-login gpe-icons timezones"
 RDEPENDS_gpe-conf-panel = "gpe-conf"
 
 MAINTAINER = "Florian Boor <florian.boor@kernelconcepts.de>"
-PR="r0"
+PR="r1"
 
 GPE_TARBALL_SUFFIX = "bz2"
 
 inherit gpe autotools pkgconfig
+
+SRC_URI += " file://install-suid.patch;patch=1;pnum=0"
 
 PACKAGES += "gpe-conf-panel"
 
