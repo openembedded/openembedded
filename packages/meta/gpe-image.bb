@@ -1,6 +1,6 @@
 FEED_URIS_append_openzaurus = " x11##${FEED_BASE_URI}/feed/x11 "
 
-PR = "r23"
+PR = "r24"
 
 export IMAGE_BASENAME = "gpe-image"
 
@@ -17,11 +17,17 @@ GPE_EXTRA_INSTALL_bigscreen = "gpe-task-games ${GPE_EXTRA_THEMES}"
 GPE_EXTRA_DEPENDS_smallscreen = "${GPE_EXTRA_THEMES}"
 GPE_EXTRA_INSTALL_smallscreen = "gpe-task-games ${GPE_EXTRA_THEMES}"
 
-GPE_EXTRA_DEPENDS_poodle += "gpe-theme-clearlooks figment gpe-task-connectivity "
-GPE_EXTRA_DEPENDS_c7x0   += "gpe-theme-clearlooks sylpheed figment gpe-task-connectivity "
-GPE_EXTRA_DEPENDS_akita  += "gpe-theme-clearlooks sylpheed figment gpe-task-connectivity "
-GPE_EXTRA_DEPENDS_spitz  += "gpe-theme-clearlooks sylpheed figment gpe-task-connectivity "
-GPE_EXTRA_DEPENDS_tosa   += "gpe-theme-clearlooks sylpheed figment gpe-task-connectivity "
+GPE_EXTRA_DEPENDS_poodle += "gpe-theme-clearlooks figment "
+GPE_EXTRA_DEPENDS_c7x0   += "gpe-theme-clearlooks sylpheed figment "
+GPE_EXTRA_DEPENDS_akita  += "gpe-theme-clearlooks sylpheed figment "
+GPE_EXTRA_DEPENDS_spitz  += "gpe-theme-clearlooks sylpheed figment "
+GPE_EXTRA_DEPENDS_tosa   += "gpe-theme-clearlooks sylpheed figment "
+
+GPE_EXTRA_RDEPENDS_poodle += "gpe-task-connectivity"
+GPE_EXTRA_RDEPENDS_c7x0   += "gpe-task-connectivity"
+GPE_EXTRA_RDEPENDS_akita  += "gpe-task-connectivity"
+GPE_EXTRA_RDEPENDS_spitz  += "gpe-task-connectivity"
+GPE_EXTRA_RDEPENDS_tosa   += "gpe-task-connectivity"
 
 GPE_EXTRA_DEPENDS_none = ""
 GPE_EXTRA_INSTALL_none = ""
@@ -39,7 +45,7 @@ DEPENDS = "task-bootstrap \
 export IPKG_INSTALL = "task-bootstrap gpe-task-base \
            	       gpe-task-pim gpe-task-settings \
 	               gpe-task-apps ${GPE_EXTRA_DEPENDS} \
-		       ${XSERVER} "
+		       ${GPE_EXTRA_RDEPENDS} ${XSERVER} "
 
 IMAGE_PREPROCESS_COMMAND = "create_etc_timestamp "
 ROOTFS_POSTPROCESS_COMMAND += "zap_root_password; "
