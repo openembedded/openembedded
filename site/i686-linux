@@ -202,3 +202,8 @@ jm_cv_func_working_readdir=yes
 #xserver-xorg
 ac_cv_sys_linker_h=${ac_cv_sys_linker_h=no}
 ac_cv_file__usr_share_X11_sgml_defs_ent=${ac_cv_file__usr_share_X11_sgml_defs_ent=no}
+
+# slrn
+slrn_cv___va_copy=${slrn_cv___va_copy=yes}
+slrn_cv_va_copy=${slrn_cv_va_copy=no}
+slrn_cv_va_val_copy=${slrn_cv_va_val_copy=yes}

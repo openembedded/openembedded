@@ -140,3 +140,13 @@ ac_cv_file_lib_src_libmad_frame_h=${ac_cv_file_lib_src_libmad_frame_h=no}
 # xorg X11R7
 ac_cv_sys_linker_h=${ac_cv_sys_linker_h=no}
 ac_cv_file__usr_share_X11_sgml_defs_ent=${ac_cv_file__usr_share_X11_sgml_defs_ent=no}
+
+# ipsec-tools
+ac_cv_va_copy=${ac_cv_va_copy=no}
+ac_cv___va_copy=${ac_cv___va_copy=yes}
+racoon_cv_bug_getaddrinfo=${racoon_cv_bug_getaddrinfo=no}
+
+# slrn
+slrn_cv___va_copy=${slrn_cv___va_copy=yes}
+slrn_cv_va_copy=${slrn_cv_va_copy=no}
+slrn_cv_va_val_copy=${slrn_cv_va_val_copy=yes}
