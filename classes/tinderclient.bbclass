@@ -279,14 +279,17 @@ def tinder_do_tinder_report(event):
 
         try:
             # truncate the tinder log file
-            f = file(data.getVar('TINDER_LOG', event.data, True), 'rw+')
-            f.truncate(0)
+            f = file(data.getVar('TINDER_LOG', event.data, True), 'w')
+            f.write("")
             f.close()
+        except:
+            pass
 
+        try:
             # write a status to the file. This is needed for the -k option
             # of BitBake
-            g = file(data.getVar('TMPDIR', event.data, True)+"/tinder-status", 'rw+')
-            g.truncate(0)
+            g = file(data.getVar('TMPDIR', event.data, True)+"/tinder-status", 'w')
+            g.write("")
             g.close()
         except IOError:
             pass
@@ -325,7 +328,6 @@ def tinder_do_tinder_report(event):
         try:
             h = file(data.getVar('TMPDIR',event.data,True)+'/tinder-status', 'r')
             status = int(h.read())
-            print "New status %d" % status
         except:
             pass
 
