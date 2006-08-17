@@ -15,7 +15,9 @@ FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/handhelds-pxa-${PV}"
 
 SRC_URI = "${HANDHELDS_CVS};module=linux/kernel26  \
 	   file://initramfs_list \
-           file://defconfig"
+           file://defconfig \
+           file://greatwall_header \
+           file://greatwall_trailer"
 
 S = "${WORKDIR}/kernel26"
 
@@ -26,7 +28,7 @@ ALLOW_EMPTY_kernel-image_h2200 = 1
 
 K_MAJOR = "2"
 K_MINOR = "6"
-K_MICRO = "15"
+K_MICRO = "16"
 HHV     = "0"
 #
 
@@ -47,6 +49,9 @@ do_configure() {
 do_deploy() {
         install -d ${DEPLOY_DIR_IMAGE}
         install -m 0644 arch/${ARCH}/boot/${KERNEL_IMAGETYPE} ${DEPLOY_DIR_IMAGE}/LAB-image-${MACHINE}
+
+	# Generate the HTC flavor, which must be a multiple of 512 bytes long.
+	cat ${WORKDIR}/greatwall_header arch/${ARCH}/boot/${KERNEL_IMAGETYPE} ${WORKDIR}/greatwall_trailer | dd conv=sync of=${DEPLOY_DIR_IMAGE}/LAB-image-${MACHINE}.htc
 }
 
 do_stage() {
