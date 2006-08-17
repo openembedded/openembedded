@@ -109,3 +109,8 @@ jm_cv_func_working_readdir=yes
 ac_cv_va_copy=${ac_cv_va_copy=no}
 ac_cv___va_copy=${ac_cv___va_copy=yes}
 racoon_cv_bug_getaddrinfo=${racoon_cv_bug_getaddrinfo=no}
+
+# slrn
+slrn_cv___va_copy=${slrn_cv___va_copy=yes}
+slrn_cv_va_copy=${slrn_cv_va_copy=no}
+slrn_cv_va_val_copy=${slrn_cv_va_val_copy=yes}
