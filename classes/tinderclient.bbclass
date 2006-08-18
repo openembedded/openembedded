@@ -315,7 +315,7 @@ def tinder_do_tinder_report(event):
     elif name == "PkgSucceeded":
         log += "<--- TINDERBOX Package %s done (SUCCESS)\n" % data.getVar('P', event.data, True)
     elif name == "PkgFailed":
-        if not data.getVar('TINDER_AUTOBUILD') == 0:
+        if not data.getVar('TINDER_AUTOBUILD', event.data, True) == "0":
             build.exec_task('do_clean', event.data)
         log += "<--- TINDERBOX Package %s failed (FAILURE)\n" % data.getVar('P', event.data, True)
         status = 200
