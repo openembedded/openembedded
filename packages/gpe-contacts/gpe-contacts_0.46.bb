@@ -2,7 +2,7 @@ DESCRIPTION = "GPE contacts manager"
 LICENSE = "GPL"
 SECTION = "gpe"
 
-DEPENDS = "libcontactsdb libgpewidget libgpepimc libgpevtype dbus-glib"
+DEPENDS = "libcontactsdb libgpewidget libgpepimc libgpevtype dbus"
 RDEPENDS = "gpe-icons"
 
 GPE_TARBALL_SUFFIX = "bz2"
