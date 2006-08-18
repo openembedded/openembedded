@@ -137,7 +137,9 @@
       <term>IMAGE_PREPROCESS_COMMAND</term>
 
       <listitem>
-        <para>Additional commands to run prior to processing the image.</para>
+        <para>Additional commands to run prior to processing the image. Note
+        that these command runs within the same <xref linkend="fakeroot" />
+        instance as the rest of this class.</para>
 
         <para>Default: <command>""</command></para>
       </listitem>
@@ -147,7 +149,9 @@
       <term>IMAGE_POSTPROCESS_COMMAND</term>
 
       <listitem>
-        <para>Additional commands to run after processing the image.</para>
+        <para>Additional commands to run after processing the image. Note that
+        these command runs within the same <xref linkend="fakeroot" />
+        instance as the rest of this class.</para>
 
         <para>Default: <command>""</command></para>
       </listitem>
@@ -184,19 +188,16 @@
   <section>
     <title>Special node handling (fakeroot)</title>
 
-    <para>Special nodes, such as /dev nodes, and files with special
-    permissions, such as suid files, are handled via the fakeroot system. This
-    means that when you view the contents of the root filesystem these device
-    appear to be created incorrectly:</para>
+    <para>Special nodes, such as <command>/dev</command> nodes, and files with
+    special permissions, such as suid files, are handled via the <xref
+    linkend="fakeroot" /> system. This means that when you view the contents
+    of the root filesystem these device appear to be created
+    incorrectly:</para>
 
-    <para>While these devices do not appear correctly on disk, fakeroot keeps
-    track of what they should be and when generating images it will provide
-    the proper files to the commands (such as tar) which are processing the
-    root filesystem. Note that for this to work all of the commands related to
-    generating the image must be run under fakeroot. This is the remove for
-    the IMAGE_PREPROCESS_COMMAND and IMAGE_POSTPROCESS_COMMAND variables -
-    these variables are processed while still under the fakeroot
-    process.</para>
+    <para>The <command>IMAGE_PREPROCESS_COMMAND</command> and
+    <command>IMAGE_POSTPROCESS_COMMAND</command> variables will be processed
+    within the same <xref linkend="fakeroot" /> instance as the rest of the
+    rest of this class.</para>
   </section>
 
   <section>
@@ -204,11 +205,11 @@
 
     <para>There are two variables that can be defined for creating device
     nodes. The newer version supports multiple device node tables and searches
-    for the specified files along ${BBPATH} so that relative file names may be
-    used.</para>
+    for the specified files along <command>${BBPATH}</command> so that
+    relative file names may be used.</para>
 
-    <para>The following example from machine/titan.conf shows the use of
-    multiple device tables:</para>
+    <para>The following example from <command>machine/titan.conf</command>
+    shows the use of multiple device tables:</para>
 
     <para><screen># Add the SCI devices to minimal /dev
 IMAGE_DEVICE_TABLES = "files/device_table-minimal.txt files/device_table_add-sci.txt device_table_add-sm.txt"
@@ -230,10 +231,11 @@ IMAGE_DEVICE_TABLES = "files/device_table-minimal.txt files/device_table_add-sci
         <term>files/device_table_add-sci.txt</term>
 
         <listitem>
-          <para>This contains details for creating the /dev/SC{0,1,2} nodes
-          which are required for the SH processors on board SCI and SCIF
-          serial ports. On the titan the serial console is provided via one of
-          these ports and so we require the device node to be present.</para>
+          <para>This contains details for creating the
+          <command>/dev/SC{0,1,2}</command> nodes which are required for the
+          SH processors on board SCI and SCIF serial ports. On the titan the
+          serial console is provided via one of these ports and so we require
+          the device node to be present.</para>
         </listitem>
       </varlistentry>
 
@@ -241,10 +243,10 @@ IMAGE_DEVICE_TABLES = "files/device_table-minimal.txt files/device_table_add-sci
         <term>device_table_add-sm.txt</term>
 
         <listitem>
-          <para>This contains details fro creating the /dev/sm0 and
-          /dev/sm0p{0,1,2} devices nodes for the block driver and associated
-          partitions that is used to managed the flash on the titan
-          board.</para>
+          <para>This contains details fro creating the
+          <command>/dev/sm0</command> and <command>/dev/sm0p{0,1,2}</command>
+          devices nodes for the block driver and associated partitions that is
+          used to managed the flash on the titan board.</para>
         </listitem>
       </varlistentry>
     </variablelist>

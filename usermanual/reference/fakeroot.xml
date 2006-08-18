@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section id="fakeroot" xreflabel="fakeroot">
+  <title>fakeroot (device node handling)</title>
+
+  <para>The fakeroot program is designed to allow non-root users to perform
+  actions that normally require root as part of the package generation
+  process. It is used by <xref linkend="rootfs_ipkg_class" /> the for root
+  filesystem creation and by <xref linkend="image_ipkg_class" /> the for image
+  creation. Some recipies also use fakeroot to assist with parts of the
+  package installation (usually) or building that requires root
+  priviliges.</para>
+
+  <para>In particular fakeroot deals with:</para>
+
+  <itemizedlist>
+    <listitem>
+      <para>Device nodes; and</para>
+    </listitem>
+
+    <listitem>
+      <para>Ownership and group (uid &amp; gid) management.</para>
+    </listitem>
+  </itemizedlist>
+
+  <section>
+    <title>How fakeroot works</title>
+
+    <para>First of all we'll look at an example of how the fakeroot process
+    works when used manually.</para>
+
+    <para>If we attempt to create a device node as a normal (non-root) user
+    the command will fail, telling is that we do not have permission to create
+    device nodes:<screen>~%&gt; mknod hdc b 22 0
+mknod: `hdc': Operation not permitted</screen>Yet the <xref
+    linkend="image_ipkg_class" /> is able to create device nodes and include
+    them in the final images, qll without the need to have root
+    priviliges.</para>
+
+    <para>Let's try and create that node again, this time we'll run the
+    commands from within the fakeroot process:<screen>~%&gt; ./tmp/staging/x86_64-linux/bin/fakeroot
+~#&gt; mknod hdc b 22 0
+~#&gt; ls -l hdc
+brw-------  1 root root 22, 0 Aug 18 13:20 hdc
+~#&gt;</screen>So it looks like we have succesfully managed to create a device
+    node, even though we did not have to give a password for the root user. In
+    reality this device node still doesn't exist, it just looks like it
+    exists. Fakeroot is lying to the shell process and telling it that
+    <emphasis>"yes, this file exists and these are it's
+    properties"</emphasis>. We'll talk more about how fakeroot actually works
+    in a minute.</para>
+
+    <para>In this case <command>hdc</command> is the cd-rom drive, so let's
+    try and actually mount the cd-rom:<screen>~#&gt; mkdir disk
+~#&gt; mount hdc disk
+ERROR: ld.so: object 'libfakeroot.so.0' from LD_PRELOAD cannot be preloaded: ignored.
+mount: only root can do that
+~#&gt;</screen>So even though it appears we have root permissions, and that we
+    created a device node, you see that the system gives an error about
+    libfakeroot and about not being able to run mount because we are not
+    root.</para>
+
+    <para>If we exit the fakeroot process and then look at the device node we
+    see this:<screen>~#&gt; exit
+~%&gt; ls -l hdc
+brw-------  1 user user 22, 0 Aug 18 13:20 hdc
+~#&gt;</screen></para>
+
+    <para>Note that it isn't a device node at all, just an empty file owned by
+    the current user!</para>
+
+    <para>So what exactly is fakeroot doing? It's using
+    <command>LD_PRELOAD</command> to load a shared libary into program which
+    replaces calls into libc, such as open and stat, and then returns
+    information to make it look like certain commands without actually
+    performing them. So when creating a device node fakeroot will:</para>
+
+    <orderedlist>
+      <listitem>
+        <para>Intercept the mknod system call and instead of creating a device
+        node it'll just created an empty file, owned by the user who run
+        fakeroot;</para>
+      </listitem>
+
+      <listitem>
+        <para>It rembers the fact that mknod was called by root and the
+        properties of the device node;</para>
+      </listitem>
+
+      <listitem>
+        <para>When a program, such as ls, calls stat on the file fakeroot
+        remebers that it was device node, owned by root, and modifies that
+        stat information to return this to ls. So ls sees a device node even
+        though one doesn't exist.</para>
+      </listitem>
+    </orderedlist>
+
+    <para>When we tried to run mount we recieved the error <command>"ERROR:
+    ld.so: object 'libfakeroot.so.0' from LD_PRELOAD cannot be preloaded:
+    ignored."</command>. This is due to the fact that mount is an suid root
+    binary, and for security reasons <command>LD_PRELOAD</command> is disabled
+    on suid binaries.</para>
+
+    <para>There are some very important points to remember when dealing with
+    fakeroot:</para>
+
+    <orderedlist>
+      <listitem>
+        <para>All information regarding devices nodes, uid and gids will be
+        lost when fakeroot exists;</para>
+      </listitem>
+
+      <listitem>
+        <para>None of the device nodes, uid or gid's will appear on disk,
+        however if you for example tar up a directory from within fakeroot all
+        of these device, uid's and gid's will appear in the tar
+        archive;</para>
+      </listitem>
+
+      <listitem>
+        <para>Any suid binaries will not interact with fakeroot;</para>
+      </listitem>
+
+      <listitem>
+        <para>Any static binaries will not interact with fakeroot;</para>
+      </listitem>
+    </orderedlist>
+
+  </section>
+
+  <section>
+    <title>Root filesystem, images and fakeroot</title>
+
+    <para>Many people have been been confused by the generated root filesystem
+    not containing and valid device nodes. But this is the expected
+    behaviour.</para>
+
+    <para>When you look at a generated root filesystem you'll notice that the
+    device nodes all appear to be incorrectly created:<screen>~%&gt; ls -l tmp/rootfs/dev | grep ttySC
+-rw-r--r--  1 root root 0 Aug 16 13:07 ttySC0
+-rw-r--r--  1 root root 0 Aug 16 13:07 ttySC1
+-rw-r--r--  1 root root 0 Aug 16 13:07 ttySC2
+~%&gt;</screen>These are empty files and not device nodes at all.</para>
+
+    <para>If we look in the image files generated from that root filesystem
+    everthing is actually ok:<screen>~%&gt; tar -ztvf tmp/deploy/images/titan-titan-20060816030639.rootfs.tar.gz | grep " ./dev/ttySC"
+crw-r----- root/root     204,8 2006-08-16 13:07:12 ./dev/ttySC0
+crw-r----- root/root     204,9 2006-08-16 13:07:12 ./dev/ttySC1
+crw-r----- root/root    204,10 2006-08-16 13:07:12 ./dev/ttySC2
+~%&gt;</screen>The images are created from within the same fakeroot process as
+    the creation of the root filesystem and therefore it correctly picks up
+    all of the special files and permissions from fakeroot.</para>
+
+    <para><emphasis role="bold">NOTE: This means that you cannot use the root
+    filesystem in tmp/rootfs directly on your target device. You need to use
+    the .tar.gz image and uncompress it as root in order to generate a root
+    filesystem which is suitable for use directly on the target (or as an NFS
+    root).</emphasis></para>
+  </section>
+
+  <section>
+    <title>Recipes and fakeroot</title>
+
+    <para>Some applications require that you have root permissions to run
+    their installation routine, and this is another area where fakeroot can
+    help. In a recipe a standard task, such as <emphasis>do_install</emphasis>
+    for example:<screen>do_install() {
+    install -d ${D}${bindir} ${D}${sbindir} ${D}${mandir}/man8 \
+               ${D}${sysconfdir}/default \
+               ${D}${sysconfdir}/init.d \
+               ${D}${datadir}/arpwatch
+
+    oe_runmake install DESTDIR=${D}
+    oe_runmake install-man DESTDIR=${D}
+    ...</screen>can be modified to run within a fakeroot environment by
+    prefings the task with fakeroot:<screen><emphasis role="bold">fakeroot</emphasis> do_install() {
+    install -d ${D}${bindir} ${D}${sbindir} ${D}${mandir}/man8 \
+               ${D}${sysconfdir}/default \
+               ${D}${sysconfdir}/init.d \
+               ${D}${datadir}/arpwatch
+
+    oe_runmake install DESTDIR=${D}
+    oe_runmake install-man DESTDIR=${D}
+    ...</screen></para>
+  </section>
+</section>

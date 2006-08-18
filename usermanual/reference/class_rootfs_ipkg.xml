@@ -203,14 +203,14 @@
     </varlistentry>
   </variablelist>
 
-  <para>Note that the entire process is run under the control of fakeroot, so
-  any permissions, special devices files etc will be remember by fakeroot by
-  lost once the class has completed. This is why the
-  <command>ROOTFS_POSTPROCESS_COMMAND</command> is useful - it performs it's
-  actions while under the control of fakeroot. The class also provides a
-  function real_do_rootfs which is executed without fakeroot - this is used
-  from other classes, such as <xref linkend="image_ipkg_class" />, to perform
-  the functionality of this class under the control of it's own fakeroot
-  process so that it can perform additional actions under the control of
-  fakeroot in addition to that performed by the rootfs_ipkg class.</para>
+  <para>Note that the entire process is run under the control of <xref
+  linkend="fakeroot" /> in order to handle device files, uid and gid's. The
+  <command>ROOTFS_POSTPROCESS_COMMAND</command> is useful due to the fact that
+  it runs within he same <xref linkend="fakeroot" /> instance as the rest of
+  this class.</para>
+
+  <para>The class also provides a function <command>real_do_rootfs</command>
+  which is executed without <xref linkend="fakeroot" /> and therefore can be
+  used from other classes, such as <xref linkend="image_ipkg_class" />, that
+  are already running under the control of <xref linkend="fakeroot" />.</para>
 </section>

@@ -8,6 +8,7 @@
 <!ENTITY class-autotools           SYSTEM "reference/class_autotools.xml">
 <!ENTITY class-binconfig           SYSTEM "reference/class_binconfig.xml">
 <!ENTITY class-distutils           SYSTEM "reference/class_distutils.xml">
+<!ENTITY fakeroot                  SYSTEM "reference/fakeroot.xml">
 <!ENTITY class-image_ipkg          SYSTEM "reference/class_image_ipkg.xml">
 <!ENTITY image-types               SYSTEM "reference/image_types.xml">
 <!ENTITY class-pkgconfig           SYSTEM "reference/class_pkgconfig.xml">
@@ -509,6 +510,7 @@ When utilizing OpenEmbedded you avoid searching for patches at many different pl
         &class-autotools;
         &class-binconfig;
         &class-distutils;
+        &fakeroot;
         &class-image_ipkg;
         &image-types;
         &class-pkgconfig;
