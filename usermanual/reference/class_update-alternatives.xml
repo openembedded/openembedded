@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<section>
+<section id="update-alternatives_class" xreflabel="update-alternatives class">
   <title>update-alternatives class</title>
 
   <para>Some commands are available from multiple sources. As an example we

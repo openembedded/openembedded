@@ -1,0 +1,280 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section id="image_ipkg_class" xreflabel="image_ipkg class">
+  <title>image_ipkg class</title>
+
+  <para>The image_ipkg class is used to generate images containing a root
+  filesystem, as generate by the <xref linkend="rootfs_ipkg_class" /> class,
+  for use on the target device. This could be a <emphasis>jffs2</emphasis>
+  image to be written into flash on the target device for example. In addition
+  it also configures the ipkg feeds (where to get updates from) in the root
+  filesystem and is able to generate multiple different image types.</para>
+
+  <para>Summary of actions performed by the <emphasis>image_ipkg</emphasis>
+  class:</para>
+
+  <orderedlist>
+    <listitem>
+      <para>Inherits the <xref linkend="rootfs_ipkg_class" /> in order to
+      bring in the functionality required to generate a root filesystem image
+      from a set of ipkg's that will be suitable for included in the
+      image(s);</para>
+    </listitem>
+
+    <listitem>
+      <para>Sets <command>BUILD_ALL_DEPS = "1"</command> to force dependency
+      system to build all packages that are listed in the
+      <command>RDEPENDS</command> and/or <command>RRECOMENDS</command> of the
+      packages to be installed;</para>
+    </listitem>
+
+    <listitem>
+      <para>Determines the name of the image device tables or table
+      (<command>IMAGE_DEVICE_TABLES/IMAGE_DEVICE_TABLE</command>) which will
+      be used to determine the device nodes to create in
+      <command>/dev</command> directory in the root filesystem;</para>
+    </listitem>
+
+    <listitem>
+      <para>Erases the contents of any existing root filesystem image,
+      <command>${IMAGE_ROOTFS}</command>;</para>
+    </listitem>
+
+    <listitem>
+      <para>If devfs is not being used then the <command>/dev</command>
+      directory, <command>${IMAGE_ROOTFS}/dev</command>, will be created and
+      then populated with the device nodes described by the image device table
+      or tables (using "<command>makedevs -r ${IMAGE_ROOTFS} -D
+      &lt;table&gt;</command>" for each device table);</para>
+    </listitem>
+
+    <listitem>
+      <para>Call into <xref linkend="rootfs_ipkg_class" /> to install all of
+      the required components into the root filesystem;</para>
+    </listitem>
+
+    <listitem>
+      <para>Configures the ipkg feed information in the root filesystem for
+      the <command>FEED_URIS</command>;</para>
+    </listitem>
+
+    <listitem>
+      <para>Run any image per-processing commands as specified via
+      <command>${IMAGE_PREPROCESS_COMMAND}</command>;</para>
+    </listitem>
+
+    <listitem>
+      <para>Calls <command>bbimage</command> on the root filesystem for each
+      required image type, as specified via
+      <command>${IMAGE_FSTYPES}</command>, to generate the actual filesystem
+      images;</para>
+    </listitem>
+
+    <listitem>
+      <para>Run any image post-processing commands, as specified via
+      <command>${IMAGE_POSTPROCESS_COMMAND}</command>.</para>
+    </listitem>
+  </orderedlist>
+
+  <para>The following variables may be used to control some of the behaviour
+  of this class (remember we use <xref linkend="rootfs_ipkg_class" /> to build
+  the filesystem image, so look at the variables defined by that class as
+  well):</para>
+
+  <variablelist>
+    <varlistentry>
+      <term>USE_DEVFS</term>
+
+      <listitem>
+        <para>Indicates if the image will be using devfs, the device
+        filesystem, or not. If devfs is being used then no
+        <command>/dev</command> directory will be required in the image. Set
+        to <command>"1"</command> to indicate that devfs is being used. Note
+        that devfs has been removed from the Linux kernel 2.6 series and most
+        platforms are moving towards the use of udev as a replacement for
+        devfs.</para>
+
+        <para>Default: <command>"0"</command></para>
+      </listitem>
+    </varlistentry>
+
+    <varlistentry>
+      <term>IMAGE_DEVICE_TABLES</term>
+
+      <listitem>
+        <para>Specifies one, or more, files containing a list of the device
+        nodes that should be created in the /dev directory of the image. Each
+        file is searched for via the <command>${BBPATH}</command> and
+        therefore can be specified as a file relative to the top of the build.
+        Device files are processed in the specified order. NOTE: If
+        <command>IMAGE_DEVICE_TABLE</command> is set then this variable is
+        ignored.</para>
+
+        <para>Example: <command>IMAGE_DEVICE_TABLES =
+        "files/device_table-minimal.txt files/device_table_add-sci.txt
+        device_table_add-sm.txt"</command></para>
+
+        <para>Default:
+        <command>"files/device_table-minimal.txt"</command></para>
+      </listitem>
+    </varlistentry>
+
+    <varlistentry>
+      <term>IMAGE_DEVICE_TABLE</term>
+
+      <listitem>
+        <para>Specifies the file that lists the device nodes that should be
+        created in the <command>/dev </command>directory of the image. This
+        needs to be an absolute filename and so should be specified relative
+        to <command>${BBPATH}</command>. Only a single device table is
+        supported. Use <command>IMAGE_DEVICE_TABLES</command> instead if you
+        want to use multiple device tables.</para>
+
+        <para>Default: <command>""</command></para>
+      </listitem>
+    </varlistentry>
+
+    <varlistentry>
+      <term>IMAGE_PREPROCESS_COMMAND</term>
+
+      <listitem>
+        <para>Additional commands to run prior to processing the image.</para>
+
+        <para>Default: <command>""</command></para>
+      </listitem>
+    </varlistentry>
+
+    <varlistentry>
+      <term>IMAGE_POSTPROCESS_COMMAND</term>
+
+      <listitem>
+        <para>Additional commands to run after processing the image.</para>
+
+        <para>Default: <command>""</command></para>
+      </listitem>
+    </varlistentry>
+
+    <varlistentry>
+      <term>IMAGE_FSTYPES</term>
+
+      <listitem>
+        <para>Specifies the type of image files to create. The supported image
+        types and details on modify existing types and creating new types is
+        provided in the <xref linkend="image_types" /> section.</para>
+
+        <para>Default: <command>"jffs2"</command></para>
+      </listitem>
+    </varlistentry>
+
+    <varlistentry>
+      <term>FEED_URIS</term>
+
+      <listitem>
+        <para>The name of the feeds to be configured in the image by default.
+        Each entry consists of the feed name, followed by two pound signs and
+        then followed by the actual feed URI.</para>
+
+        <para>Example: <command>FEED_URIS =
+        "example##http://dist.example.com/ipkg-titan-glibc/"</command></para>
+
+        <para>Default: <command>""</command></para>
+      </listitem>
+    </varlistentry>
+  </variablelist>
+
+  <section>
+    <title>Special node handling (fakeroot)</title>
+
+    <para>Special nodes, such as /dev nodes, and files with special
+    permissions, such as suid files, are handled via the fakeroot system. This
+    means that when you view the contents of the root filesystem these device
+    appear to be created incorrectly:</para>
+
+    <para>While these devices do not appear correctly on disk, fakeroot keeps
+    track of what they should be and when generating images it will provide
+    the proper files to the commands (such as tar) which are processing the
+    root filesystem. Note that for this to work all of the commands related to
+    generating the image must be run under fakeroot. This is the remove for
+    the IMAGE_PREPROCESS_COMMAND and IMAGE_POSTPROCESS_COMMAND variables -
+    these variables are processed while still under the fakeroot
+    process.</para>
+  </section>
+
+  <section>
+    <title>Device (/dev) nodes</title>
+
+    <para>There are two variables that can be defined for creating device
+    nodes. The newer version supports multiple device node tables and searches
+    for the specified files along ${BBPATH} so that relative file names may be
+    used.</para>
+
+    <para>The following example from machine/titan.conf shows the use of
+    multiple device tables:</para>
+
+    <para><screen># Add the SCI devices to minimal /dev
+IMAGE_DEVICE_TABLES = "files/device_table-minimal.txt files/device_table_add-sci.txt device_table_add-sm.txt"
+</screen></para>
+
+    <para>It uses the standard minimal device tables but adds some additional
+    items which are not normally needed:</para>
+
+    <variablelist>
+      <varlistentry>
+        <term>files/device_table-minimal.txt</term>
+
+        <listitem>
+          <para>This is the standard minimal set of device nodes.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>files/device_table_add-sci.txt</term>
+
+        <listitem>
+          <para>This contains details for creating the /dev/SC{0,1,2} nodes
+          which are required for the SH processors on board SCI and SCIF
+          serial ports. On the titan the serial console is provided via one of
+          these ports and so we require the device node to be present.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>device_table_add-sm.txt</term>
+
+        <listitem>
+          <para>This contains details fro creating the /dev/sm0 and
+          /dev/sm0p{0,1,2} devices nodes for the block driver and associated
+          partitions that is used to managed the flash on the titan board.
+          </para>
+        </listitem>
+      </varlistentry>
+    </variablelist>
+
+    <para>Prior to support for multiple device tables this would have required
+    the creation of a titan specific device table.</para>
+  </section>
+
+  <section>
+    <title>Image types</title>
+
+    <para>The type of filesystem images to create are specified via the
+    IMAGE_FSTYPES variable. A full description of the available image types,
+    options of the images and details on creating new image types is provided
+    in the <xref linkend="image_types" /> section.</para>
+  </section>
+
+  <section>
+    <title>Package feeds (feed_uris)</title>
+
+    <para>Package feeds are used by the ipkg command to determine where to
+    retrieve updates and new packages from.</para>
+
+    <para>Multiple feeds are support. Each is provided with a feed name and
+    the URL which will contain the packages. The following example shows the
+    addition of two feeds, one called <emphasis>base</emphasis> and one called
+    <emphasis>updates</emphasis>:</para>
+
+    <para><screen>FEED_URIS += " \
+        base##http://oe.example.com/releases/${DISTRO_VERSION}/feed/base \
+        updates##http://oe.example.com/releases/${DISTRO_VERSION}/feed/updates"</screen></para>
+  </section>
+</section>

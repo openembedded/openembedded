@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<section>
+<section id="binconfig_class" xreflabel="binconfig class">
   <title>binconfig class</title>
 
   <para>The binconfig class is for packages that install

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<section>
+<section id="distutils_class" xreflabel="distutils class">
   <title>distutils class</title>
 
   <para>Distutils is a standard python system for building and installing

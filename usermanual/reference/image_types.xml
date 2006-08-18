@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<section>
+<section id="image_types" xreflabel="image types">
   <title>Image types</title>
 
   <para>One of the most commonly used outputs from a build is a filesystem

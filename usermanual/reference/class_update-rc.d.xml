@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<section>
+<section id="update-rc-d_class" xreflabel="update-rc.d class">
   <title>update-rc.d class</title>
 
   <para>Services which need to be started during boot need to be registered
