@@ -1,4 +1,4 @@
-PR = "r1"
+PR = "r2"
 CVSDATE_${PN} = "20050904"
 PV = "2.0.0-cvs-mco1-${CVSDATE}"
 
@@ -34,6 +34,6 @@ DEPENDS += "startup-notification"
 EXTRA_AUTORECONF = ""
 
 #disable "X Session Management"... It is EVIL
-EXTRA_OECONF += "--disable-sm --enable-startup-notification"
+EXTRA_OECONF += "--disable-sm --enable-startup-notification --with-gnutls-includes=${STAGING_INCDIR}"
 
 
