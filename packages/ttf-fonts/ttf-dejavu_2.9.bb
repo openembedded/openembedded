@@ -5,7 +5,7 @@ MAINTAINER = "Marcin Juszkiewicz <openembedded@hrw.one.pl>"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/dejavu/dejavu-ttf-${PV}.tar.gz"
 
-include ttf.inc
+require ttf.inc
 
 S = "${WORKDIR}/dejavu-ttf-${PV}"
 
