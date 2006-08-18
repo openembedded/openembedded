@@ -12,7 +12,7 @@ PR = "r1"
 
 do_configure_prepend() {
 
-	cp ${STAGING_DATADIR}/libtool/* ${S}/unix/scripts/
+	cp ${STAGING_DATADIR}/libtool/*.* ${S}/unix/scripts/
 	
 }
 do_configure () {
