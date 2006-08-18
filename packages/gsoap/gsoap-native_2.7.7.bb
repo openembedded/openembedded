@@ -1,4 +1,7 @@
 require gsoap_${PV}.bb
+
+DEPENDS = ""
+
 inherit native
 
 do_stage() {
