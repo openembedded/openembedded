@@ -4,8 +4,8 @@
 
   <para>The binconfig class is for packages that install
   <command>&lt;pkg&gt;-config</command> scripts that provide information about
-  the build settings for the package. It's usually provided by libraries which
-  and is used by other packages to determine various compiler options.</para>
+  the build settings for the package. It is usually provided by libraries
+  and then used by other packages to determine various compiler options.</para>
 
   <para>Since the script is used at build time it is required to be copied
   into the staging area. All the actions performed by the class are appended

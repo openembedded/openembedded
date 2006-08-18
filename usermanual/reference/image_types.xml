@@ -7,11 +7,11 @@
   several variables which can be used to control the type of output images and
   the settings for those images such as endianess or compression ratios. This
   section details the available images and the variable that effect them. See
-  the <emphasis>image_ipk</emphasis> class description in the reference
-  section for details on how image generation is configured.</para>
+  the <xref linkend="image_ipkg_class" /> section for details on how image
+  generation is configured.</para>
 
   <para>The final root file system will consist of all of the files located in
-  <command>${IMAGE_ROOTFS}</command> which is usually
+  <command>${IMAGE_ROOTFS}</command>, which is usually
   <command>tmp/rootfs</command> in your build area. One important difference
   between the image and the root file system directory is that any files which
   can only be created by privileged users, such as device nodes, will not
@@ -50,8 +50,8 @@
         <listitem>
           <para>Used to pass additional command line arguments to the
           <command>IMAGE_CMD</command> without needing to redefine the entire
-          image command. Often used to pass options such as endianess and
-          compression rations. You need to look at the
+          image command. This is often used to pass options such as endianess
+          and compression rations. You need to look at the
           <command>IMAGE_CMD</command> to determine which command these
           options are being passed to.</para>
         </listitem>

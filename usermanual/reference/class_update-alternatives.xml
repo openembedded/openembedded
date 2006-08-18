@@ -8,7 +8,7 @@
   size perspective, but limited in functionality, while the bash version is
   much larger but also provides far more features. The alternatives system is
   designed to handle the situation where two commands are provided by two, or
-  more, packages. It ensure that one of the alternatives is always the
+  more, packages. It ensures that one of the alternatives is always the
   currently selected one and ensures that there are no problems with
   installing and/or removing the various alternatives.</para>
 

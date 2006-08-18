@@ -86,10 +86,9 @@ root@titan:/etc#</screen>The start and stop sequence numbers need to ensure
   <section>
     <title>Multiple update-rc.d packages</title>
 
-    <para>Define multiple init scripts within the one recipe is also supported
-    but note that each init script must be in it's own package. You cannot
-    have multiple init scripts in a single package. The following example is
-    from the quagga recipe:<screen># Main init script starts all deamons
+    <para>Defining multiple init scripts within the one recipe is also
+    supported. Note that each init script must be in it's own package. The
+    following example is from the quagga recipe:<screen># Main init script starts all deamons
 # Seperate init script for watchquagga
 INITSCRIPT_PACKAGES                 = "${PN} ${PN}-watchquagga"
 INITSCRIPT_NAME_${PN}               = "quagga"

@@ -100,7 +100,7 @@ do_install_append () {
         application breaks the build of another. It is a very good idea to
         empty the site file of all other values if you are having build
         problems to ensure that none of the existing values are causing
-        problems. </para>
+        problems.</para>
       </listitem>
 
       <listitem>
@@ -121,9 +121,9 @@ do_install_append () {
     endianess option to the configure script:<screen>do_configure() {
     # endianness fun.. inspired by openssl.inc
     . ${CONFIG_SITE}
-    if test "x$ac_cv_c_bigendian" = "xyes"; then
+    if [ "x$ac_cv_c_bigendian" = "xyes" -o "x$ac_cv_c_littleendian" = "xno" ]; then
         ENDIANESS=" --with-endianness=big"
-    elif test "x$ac_cv_c_littleendian" = "xyes"; then
+    elif [ "x$ac_cv_c_littleendian" = "xyes" -o "x$ac_cv_c_bigendian" = "xno" ]; then
         ENDIANESS=" --with-endianness=little"
     else
         oefatal do_configure cannot determine endianess
@@ -131,8 +131,8 @@ do_install_append () {
     oe_runconf $ENDIANESS
 }</screen>It is also possible to disable the use of the cached values from the
     site file by clearing the definition of <command>CONFIG_SITE</command>
-    prior to running the configure script. Doing this disables the use of the
-    site file entirely. This however should be used as a last resort. The
+    prior to running the configure script. Doing this will disable the use of
+    the site file entirely. This however should be used as a last resort. The
     following example from the db recipe shows an example of this:<screen># Cancel the site stuff - it's set for db3 and destroys the
 # configure.
 CONFIG_SITE = ""
