@@ -4,10 +4,11 @@ preconfigured Mail Transport Agent (MTA) such as Exim or PostFix."
 LICENSE = "GPL"
 SECTION = "libs/network"
 DEPENDS = "openssl"
+PR = "r1"
 
 SRC_URI = "http://www.stafford.uklinux.net/libesmtp/libesmtp-${PV}.tar.bz2"
 
-inherit autotools 
+inherit autotools binconfig
 
 EXTRA_OECONF = "--disable-isoc --with-openssl=${STAGING_LIBDIR}/.."
 
