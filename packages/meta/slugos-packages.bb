@@ -6,7 +6,7 @@ DESCRIPTION = "Packages that are compatible with the SlugOS firmware"
 MAINTAINER = "NSLU2 Linux <nslu2-linux@yahoogroups.com>"
 HOMEPAGE = "http://www.nslu2-linux.org"
 LICENSE = "MIT"
-PR = "r11"
+PR = "r12"
 CONFLICTS = "db3"
 PROVIDES += "${SLUGOS_IMAGENAME}-packages"
 
@@ -14,11 +14,13 @@ EXCLUDE_FROM_WORLD = "1"
 INHIBIT_DEFAULT_DEPS = "1"
 ALLOW_EMPTY = 1
 
-# The list of packages to build for the ucslugc DISTRO.
+# The list of packages to build for the slugos DISTRO.
 # KEEP IN ALPHABETICAL ORDER
 SLUGOS_PACKAGES = "\
 	alsa-lib \
-	apr \
+	alsa-utils \
+	asterisk \
+	asterisk-sounds \
 	atftp \
 	audiofile \
 	aumix \
@@ -31,7 +33,6 @@ SLUGOS_PACKAGES = "\
 	bison \
 	bluez-libs \
 	bluez-utils-nodbus \
-	boost \
 	bridge-utils \
 	bwmon \
 	bzip2 \
@@ -77,6 +78,7 @@ SLUGOS_PACKAGES = "\
 	ifupdown \
 	ipkg-utils \
 	iptables \
+	ircp \
 	joe \
 	jpeg \
 	lcdproc \
@@ -95,7 +97,6 @@ SLUGOS_PACKAGES = "\
 	libusb \
 	libvorbis \
 	libxml2 \
-	linphone \
 	lirc \
 	lrzsz \
 	lsof \
@@ -154,7 +155,6 @@ SLUGOS_PACKAGES = "\
 	ssmtp \
 	strace \
 	streamripper \
-	sudo \
 	sysfsutils \
 	syslog-ng \
 	tar \
@@ -199,11 +199,11 @@ UCLIBC_UNSUPPORTABLE_PACKAGES = "\
 
 # These packages work with glibc, but break on uclibc.
 UCLIBC_BROKEN_PACKAGES = "\
-	alsa-utils \
-	asterisk \
-	asterisk-sounds \
+	apr \
 	bogofilter \
-	ircp \
+	boost \
+	linphone \
+	sudo \
 	"
 
 # Packages which build only with glibc (some of these use internal
