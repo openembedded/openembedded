@@ -1,5 +1,5 @@
 # IceCream distributed compiling support
-# 
+#
 # We need to create a tar.bz2 of our toolchain and set
 # ICECC_VERSION, ICECC_CXX and ICEC_CC
 #
@@ -13,7 +13,7 @@ def create_env(bb,d):
     # host prefix is empty (let us duplicate the query for ease)
     prefix = bb.data.expand('${HOST_PREFIX}', d)
     if len(prefix) == 0:
-    	return ""
+        return ""
 
     import tarfile
     import socket
@@ -28,12 +28,12 @@ def create_env(bb,d):
     name    = socket.gethostname()
 
     try:
-	os.stat(ice_dir + '/' + target_sys + '/lib/ld-linux.so.2')
-	os.stat(ice_dir + '/' + target_sys + '/bin/g++')
+        os.stat(ice_dir + '/' + target_sys + '/lib/ld-linux.so.2')
+        os.stat(ice_dir + '/' + target_sys + '/bin/g++')
     except:
-	return ""
+        return ""
 
-    VERSION = '3.4.3'    
+    VERSION = '3.4.3'
     cross_name = prefix + distro + target_sys + float +VERSION+ name
     tar_file = ice_dir + '/ice/' + cross_name + '.tar.bz2'
 
@@ -41,10 +41,10 @@ def create_env(bb,d):
         os.stat(tar_file)
         return tar_file
     except:
-	try:
-	    os.makedirs(ice_dir+'/ice')
-	except:
-	    pass
+        try:
+            os.makedirs(ice_dir+'/ice')
+        except:
+            pass
 
     # FIXME find out the version of the compiler
     tar = tarfile.open(tar_file, 'w:bz2')
@@ -102,15 +102,14 @@ def use_icc_version(bb,d):
     # Constin native native
     prefix = bb.data.expand('${HOST_PREFIX}', d)
     if len(prefix) == 0:
-	return "no"
-	
-	
-    native = bb.data.expand('${PN}', d)	
-    blacklist = [ "-cross", "-native" ]
+        return "no"
+
+
+    blacklist = [ "cross", "native" ]
 
     for black in blacklist:
-        if black in native:
-	    return "no"
+        if bb.data.inherits_class(black, d):
+            return "no"
 
     return "yes"
 
@@ -118,13 +117,13 @@ def icc_path(bb,d,compile):
     native = bb.data.expand('${PN}', d)
     blacklist = [ "ulibc", "glibc", "ncurses" ]
     for black in blacklist:
-    	if black in native:
-    	    return ""
+        if black in native:
+            return ""
 
-    if "-native" in native:
-	compile = False
-    if "-cross"  in native:
-    	compile = False
+    blacklist = [ "cross", "native" ]
+    for black in blacklist:
+        if bb.data.inherits_class(black, d):
+            compile = False
 
     prefix = bb.data.expand('${HOST_PREFIX}', d)
     if compile and len(prefix) != 0:
@@ -151,6 +150,6 @@ do_compile_prepend() {
     export ICECC_CXX="${HOST_PREFIX}g++"
 
     if [ "${@use_icc_version(bb,d)}" = "yes" ]; then
-    	export ICECC_VERSION="${@icc_version(bb,d)}"
+        export ICECC_VERSION="${@icc_version(bb,d)}"
     fi
 }
