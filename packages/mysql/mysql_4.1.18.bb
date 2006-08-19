@@ -3,19 +3,25 @@ SECTION = "libs"
 HOMEPAGE = "http://www.mysql.com/"
 DEPENDS += "ncurses mysql-native"
 LICENSE = "GPL"
-PR = "r1"
+PR="r2"
 
-SRC_URI = "http://mirrors.develooper.com/mysql/Downloads/MySQL-4.1/mysql-${PV}.tar.gz \
+SRC_URI = "http://downloads.mysql.com/archives/mysql-4.1/mysql-${PV}.tar.gz \
            file://autofoo.patch;patch=1 \
-	   file://gen_lex_hash.patch;patch=1"
+	   file://gen_lex_hash.patch;patch=1 \
+	   file://my.cnf \
+	   file://mysqld.sh"
 
 S = "${WORKDIR}/mysql-${PV}"
 
 FILESPATH = "${@base_set_filespath([ '${FILE_DIRNAME}/mysql-${PV}', '${FILE_DIRNAME}/files', '${FILE_DIRNAME}' ], d)}"
 
 BINCONFIG_GLOB = "mysql_config"
-inherit autotools binconfig
 
+inherit autotools binconfig update-rc.d
+
+INITSCRIPT_PACKAGES = "mysql-server"
+INITSCRIPT_NAME = "mysqld"
+INITSCRIPT_PARAMS = "start 45 S . stop 45 0 6 1 ."
 
 EXTRA_OEMAKE = "'GEN_LEX_HASH=${STAGING_BINDIR}/gen_lex_hash'"
 EXTRA_OECONF = " --with-embedded-server --prefix=/usr --sysconfdir=/etc/mysql --localstatedir=/var/mysql --datadir=/var/mysql --disable-dependency-tracking --without-raid --without-debug --with-low-memory --without-query-cache --without-man --without-docs --without-innodb "
@@ -30,13 +36,29 @@ do_install() {
 	oe_runmake 'DESTDIR=${D}' install
 	mv -f ${D}${libdir}/mysql/* ${D}${libdir}
 	rmdir ${D}${libdir}/mysql
+
+	install -d ${D}/etc/init.d
+	install -m 0644 ${WORKDIR}/my.cnf ${D}/etc/
+	install -m 0755 ${WORKDIR}/mysqld.sh ${D}/etc/init.d/mysqld
 }
 
-pkg_postinst () {
+pkg_postinst_mysql-server () {
+	if [ "x$D" != "x" ]; then
+		exit 1
+	fi
+
 	grep mysql /etc/passwd || adduser --disabled-password --home=/var/mysql --ingroup nogroup mysql
+
+	#Install the database
+	test -d /usr/bin || mkdir -p /usr/bin
+	test -e /usr/bin/hostname || ln -s /bin/hostname /usr/bin/hostname
+	chmod go+rw /var/run
+	
+	mysql_install_db
+	
 }
 
-pkg_postrm () {
+pkg_postrm_mysql-server () {
 	grep mysql /etc/passwd && deluser mysql
 }
 
@@ -112,4 +134,6 @@ ${sbindir}/ndb_cpcd \
 ${sbindir}/ndbd \
 ${sbindir}/ndb_mgmd \
 ${datadir}/mysql/ \
-${localstatedir}/mysql/"
+${localstatedir}/mysql/ \
+${sysconfdir}/init.d \
+${sysconfdir}/my.cnf"

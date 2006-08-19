@@ -11,13 +11,14 @@ DEPENDS = "task-bootstrap meta-opie"
 INSTALL_PACKAGES = "task-bootstrap task-opie-base task-opie-base-applets \
 		    task-opie-base-inputmethods task-opie-base-apps \
 		    task-opie-base-settings task-opie-base-decorations \
-		    task-opie-base-styles task-opie-base-pim \
+		    task-opie-base-styles \
 		    task-opie-extra-settings \
-		    task-opie-bluetooth task-opie-irda "
+		    task-opie-irda "
 
-INSTALL_PACKAGES_append_tosa  = " opie-recorder "
-INSTALL_PACKAGES_append_akita = " task-opie-extra-games task-opie-extra-apps task-opie-extra-styles "
-INSTALL_PACKAGES_append_spitz = " task-opie-extra-games task-opie-extra-apps task-opie-extra-styles "
+INSTALL_PACKAGES_append_poodle  = " task-opie-base-pim task-opie-bluetooth "
+INSTALL_PACKAGES_append_tosa    = " task-opie-base-pim task-opie-bluetooth opie-recorder "
+INSTALL_PACKAGES_append_akita   = " task-opie-base-pim task-opie-bluetooth task-opie-extra-games task-opie-extra-apps task-opie-extra-styles "
+INSTALL_PACKAGES_append_spitz   = " task-opie-base-pim task-opie-bluetooth task-opie-extra-games task-opie-extra-apps task-opie-extra-styles "
 
 export IPKG_INSTALL = "${INSTALL_PACKAGES}"
 

@@ -1,8 +1,12 @@
-SECTION = "x11/network"
 DESCRIPTION = "Lightweight gtk+2 browser."
+MAINTAINER = "Chris Lord <cwiiis@handhelds.org>"
+SECTION = "x11/network"
+PRIORITY = "optional"
 LICENSE = "GPL"
 DEPENDS = "gtk+"
 RDEPENDS = "gdk-pixbuf-loader-xpm"
+PR = "r1"
+
 SRC_URI="http://www.dillo.org/download/dillo-${PV}.tar.gz \
          file://gtk2.patch;patch=1;pnum=1 \
 	 file://fix_about_syntax.patch;patch=1;pnum=1 \
@@ -10,12 +14,11 @@ SRC_URI="http://www.dillo.org/download/dillo-${PV}.tar.gz \
 	 file://dillo.png \
 	 file://dillorc"
 
-MAINTAINER = "Chris Lord <cwiiis@handhelds.org>"
-PRIORITY = "optional"
-
 S = "${WORKDIR}/dillo-${PV}/"
 
 inherit autotools pkgconfig
+
+EXTRA_OECONF = "--enable-cookies"
 
 do_install() {
 	install -d ${D}${bindir}
