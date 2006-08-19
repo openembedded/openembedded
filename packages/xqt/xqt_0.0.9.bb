@@ -2,14 +2,12 @@ HOMEPAGE = "http://xqt.sourceforge.jp"
 LICENSE = "GPL"
 SECTION = "x11"
 
-
 SRCDATE = "20041111"
-DEPENDS = "freetype libxi libxmu flex-2.5.4-native virtual/libqte2 libqpe-opie"
+DEPENDS = "freetype libxi libxmu flex-native virtual/libqte2 libqpe-opie"
 
 SRC_URI = "cvs://anonymous@cvs.sourceforge.jp/cvsroot/xqt;module=xc;method=pserver \
 	   file://imake-staging.patch;patch=1 \
 	   file://moc_call.patch;patch=1 "
-
 
 S = "${WORKDIR}/xc"
 
