@@ -4,6 +4,8 @@ PR = "r3"
 
 require kaffe.inc
 
+RDEPENDS_${PN} = ""
+
 inherit native
 
 EXTRA_OECONF = "--disable-alsatest \
