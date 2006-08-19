@@ -1,4 +1,3 @@
-SECTION = "base"
 DESCRIPTION = "Sudo (superuser do) allows a system \
 administrator to give certain users (or groups of \
 users) the ability to run some (or all) commands \
