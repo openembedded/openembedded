@@ -13,6 +13,7 @@
 <!ENTITY image-types               SYSTEM "reference/image_types.xml">
 <!ENTITY class-pkgconfig           SYSTEM "reference/class_pkgconfig.xml">
 <!ENTITY class-rootfs_ipkg         SYSTEM "reference/class_rootfs_ipkg.xml">
+<!ENTITY var-src-uri               SYSTEM "reference/var_src_uri.xml">
 <!ENTITY class-update-alternatives SYSTEM "reference/class_update-alternatives.xml">
 <!ENTITY class-update-rcd          SYSTEM "reference/class_update-rc.d.xml">
 ]>
@@ -515,6 +516,7 @@ When utilizing OpenEmbedded you avoid searching for patches at many different pl
         &image-types;
         &class-pkgconfig;
         &class-rootfs_ipkg;
+        &var-src-uri;
         &class-update-alternatives;
         &class-update-rcd;
     </chapter>

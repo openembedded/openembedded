@@ -1,0 +1,671 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section id="src_uri_variable" xreflabel="SRC_URI variable">
+  <title>SRC_URI variable: Source code and patches</title>
+
+  <para>All recipies need to contain a definition of
+  <command>SRC_URI</command>. It determines what files and source code is
+  needed and where that source code should be obtained from. This includes
+  patches to be applied and basic files that are shipped as part of the
+  meta-data for the package.</para>
+
+  <para>A typical <command>SRC_URI</command> contains a list of URL's, patches
+  and files as shown in this example from quagga:<screen>SRC_URI = "http://www.quagga.net/download/quagga-${PV}.tar.gz \
+           file://ospfd-no-opaque-lsa-fix.patch;patch=1 \
+           file://fix-for-lib-inpath.patch;patch=1 \
+           file://quagga.init \
+           file://quagga.default \
+           file://watchquagga.init \
+           file://watchquagga.default"</screen>All source code and files will
+  be placed into the work directory, <command>${WORKDIR}</command>, for the
+  package. All patches will be placed into a <command>patches</command>
+  subdirectory of the package source directory, <command>${S}</command>, and
+  then automatically applied to the source.</para>
+
+  <para>Before downloading from a remote URI a check will be made to see if
+  what is to be retrieved is already present in the download source directory,
+  <command>${DL_DIR}</command>, along with an associated md5 sum. If the
+  source is present in the downloaded sources directory and the md5 sum
+  matches that listed in the associated md5 sum file, then that version will
+  be used in preference to retrieving a new version . Any source that is
+  retrieved from a remote URI will be stored in the download source directory
+  and an appropriate md5 sum generated and stored alongside it.</para>
+
+  <para>Each URI supports a set of additional options. These options are
+  tag/value pairs of the form <command>"a=b"</command> and are semi-colon
+  separated from each other and from the URI. The follow examples shows two
+  options being included, the patch and pnum options:<screen>file://ospfd-no-opaque-lsa-fix.patch;patch=1;pnum=2</screen>The
+  supported methods for fetching source and files is:</para>
+
+  <variablelist>
+    <varlistentry>
+      <term>http, https, ftps</term>
+
+      <listitem>
+        <para>Used to download files and source code via the specified URL.
+        These types are fetched from the specified location using wget.</para>
+      </listitem>
+    </varlistentry>
+
+    <varlistentry>
+      <term>file</term>
+
+      <listitem>
+        <para>Used for files that are included locally in the meta-data. These
+        may be plain files, such as init scripts to be added to the final
+        package, or they may be patch files to be applied to other
+        source.</para>
+      </listitem>
+    </varlistentry>
+
+    <varlistentry>
+      <term>cvs</term>
+
+      <listitem>
+        <para>Used to download from a CVS repository.</para>
+      </listitem>
+    </varlistentry>
+
+    <varlistentry>
+      <term>svn</term>
+
+      <listitem>
+        <para>Used to download from a subversion repository.</para>
+      </listitem>
+    </varlistentry>
+
+    <varlistentry>
+      <term>git</term>
+
+      <listitem>
+        <para>Used to download from a git repository.</para>
+      </listitem>
+    </varlistentry>
+  </variablelist>
+
+  <para>When source code is specified as a part of <command>SRC_URI</command>
+  it is unpacked into the work directory, <command>${WORKDIR}</command>. The
+  unpacker recognises several archive and compression types and for these it
+  will extract all of the files from the archive into the work directory. The
+  supported types are:</para>
+
+  <variablelist>
+    <varlistentry>
+      <term>.tar</term>
+
+      <listitem>
+        <para>Tar archives which will be extracted with <command>"tar x
+        --no-same-owner -f &lt;srcfile&gt;"</command>.</para>
+      </listitem>
+    </varlistentry>
+
+    <varlistentry>
+      <term>.tgz, .tar.gz</term>
+
+      <listitem>
+        <para>Gzip compressed tar archives which will be extracted with
+        <command>"tar xz --no-same-owner -f &lt;srcfile&gt;"</command>.</para>
+      </listitem>
+    </varlistentry>
+
+    <varlistentry>
+      <term>.tbz, .tar.bz2</term>
+
+      <listitem>
+        <para>Bzip2 compressed tar archives which will be extracted with
+        <command>"bzip2 -dc &lt;srcfile&gt; | tar x --no-same-owner -f
+        -"</command>.</para>
+      </listitem>
+    </varlistentry>
+
+    <varlistentry>
+      <term>.gz, .Z, .z</term>
+
+      <listitem>
+        <para>Gzip compressed files which will be decompressed with
+        <command>"gzip -dc &lt;srcfile&gt; &gt;
+        &lt;dstfile&gt;"</command>.</para>
+      </listitem>
+    </varlistentry>
+
+    <varlistentry>
+      <term>.bz2</term>
+
+      <listitem>
+        <para>Bzip2 compressed files which will be decompressed with
+        <command>"bzip2 -dc &lt;srcfile&gt; &gt;
+        &lt;dstfile&gt;"</command>.</para>
+      </listitem>
+    </varlistentry>
+
+    <varlistentry>
+      <term>.zip</term>
+
+      <listitem>
+        <para>Zip archives which will be extracted with <command>"unzip -q
+        &lt;srcfile&gt;"</command>.</para>
+      </listitem>
+    </varlistentry>
+  </variablelist>
+
+  <para>The downloading of the source files occurs in the
+  <emphasis>fetch</emphasis> task, the unpacking and copying to the work
+  directory occurs in the <emphasis>unpack</emphasis> task and the applying of
+  patches occurs in the <emphasis>patch</emphasis> task.</para>
+
+  <section>
+    <title>http/https/ftp (wget)</title>
+
+    <para>The wget fetcher handles http, https and ftp URLs.<screen>http://www.quagga.net/download/quagga-${PV}.tar.gz</screen></para>
+
+    <para>Supported options:</para>
+
+    <variablelist>
+      <varlistentry>
+        <term>md5sum</term>
+
+        <listitem>
+          <para>If an md5sum is provided then the downloaded files will only
+          be considered valid if the md5sum of the downloaded file matches the
+          md5sum option provided.</para>
+        </listitem>
+      </varlistentry>
+    </variablelist>
+
+    <para>Related variables:</para>
+
+    <variablelist>
+      <varlistentry>
+        <term>MIRRORS</term>
+
+        <listitem>
+          <para>Mirrors define alternative locations to download source files
+          from. See the mirror section below for more information.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>DL_DIR</term>
+
+        <listitem>
+          <para>The downloaded files will be placed in this directory with the
+          name exactly as supplied via the URI.</para>
+        </listitem>
+      </varlistentry>
+    </variablelist>
+  </section>
+
+  <section>
+    <title>file: for patches and additional files</title>
+
+    <para>The file URI's are used to copy files included as part of the
+    package meta data into the work directory to be used when building the
+    package. Typical use of the file URI's is to specify patches that be
+    applied to the source and to provide additional files, such as init
+    scripts, to be included in the final package.</para>
+
+    <para>The following example shows the specification of a patch
+    file:<screen>file://ospfd-no-opaque-lsa-fix.patch;patch=1</screen></para>
+
+    <para>Patch files are be copied to the patches subdirectory of the source
+    directory, <command>${S}/patches</command>, and then applied from the
+    source directory. The patches are searched for along the path specified
+    via the file path variable, <command>${FILESPATH},</command> and if not
+    found the directory specified by the file directory variable,
+    <command>${FILEDIR}</command>, is also checked.</para>
+
+    <para>The following example shows the specification of a non-patch file.
+    In this case it's an init script:<screen>file://quagga.init</screen>Non-patch
+    files are copied to the work directory, <command>${WORKDIR}</command>. You
+    can access these files from with a recipe by referring to them relative to
+    the work directory. The following example from quagga show the above init
+    script being included in the package by copying it during the install
+    task:<screen>do_install () {
+    # Install init script and default settings
+    install -m 0755 -d ${D}${sysconfdir}/default ${D}${sysconfdir}/init.d ${D}${sysconfdir}/quagga
+    install -m 0644 <emphasis role="bold">${WORKDIR}/quagga.init</emphasis> ${D}${sysconfdir}/init.d/quagga
+...</screen></para>
+
+    <para>Supported options:</para>
+
+    <variablelist>
+      <varlistentry>
+        <term>patch</term>
+
+        <listitem>
+          <para>Used as <command>"patch=1"</command> to define this file as a
+          patch file. Patch files will be copied to
+          <command>${S}/patches</command> and then applied to source from
+          within the source directory, <command>${S}</command>.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>pnum</term>
+
+        <listitem>
+          <para>By default patches are applied with the <command>"-p
+          1"</command> parameter, which strips off the first directory of the
+          pathname in the patches. This option is used to explicitly control
+          value passed to <command>"-p"</command>. The most typical use is
+          when the patches are relative to the source directory already and
+          need to be applied using <command>"-p 0"</command>, in which case
+          the <command>"pnum=0"</command> option is supplied.</para>
+        </listitem>
+      </varlistentry>
+    </variablelist>
+  </section>
+
+  <section>
+    <title>cvs</title>
+
+    <para>The cvs fetcher is used to retrieve files from a CVS repository.
+    <screen>    cvs://anonymous@cvs.sourceforge.net/cvsroot/linuxsh;module=linux;date=20051111</screen>A
+    cvs URI will retrieve the source from a cvs repository. Note that use of
+    the <emphasis>date=</emphasis> to specify a checkout for specified date.
+    It is preferable to use either a <emphasis>date=</emphasis> or a
+    <emphasis>tag=</emphasis> option to select a specific date and/or tag from
+    cvs rather than leave the checkout floating at the head revision. </para>
+
+    <para>Supported options:</para>
+
+    <variablelist>
+      <varlistentry>
+        <term>module</term>
+
+        <listitem>
+          <para>The name of a module to retrieve. This is a required parameter
+          and there is no default value.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>tag</term>
+
+        <listitem>
+          <para>The name of a cvs tag to retrieve. Releases are often tagged
+          with a specific name to allow easy access. Either a tag or a date
+          can be specified, but not both.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>date</term>
+
+        <listitem>
+          <para>The date to retrieve. This requests that files as of the
+          specified date, rather then the current code or a tagged release. If
+          no date or tag options are specified, then the date is set to the
+          current date. The date is of any form accepted by cvs with the most
+          common format being <command>"YYYYMMDD"</command>.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>method</term>
+
+        <listitem>
+          <para>The method used to access the repository. Common options are
+          <command>"pserver"</command> and <command>"ext"</command> (for cvs
+          over rsh or ssh). The default is
+          <command>"pserver"</command>.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>rsh</term>
+
+        <listitem>
+          <para>The rsh command to use with the <command>"ext"</command>
+          method. Common options are <command>"rsh"</command> or
+          <command>"ssh"</command>. The default is
+          <command>"rsh"</command>.</para>
+        </listitem>
+      </varlistentry>
+    </variablelist>
+
+    <para>Related variables:<variablelist>
+        <varlistentry>
+          <term>CVS_TARBALL_STASH</term>
+
+          <listitem>
+            <para>Used to specifies a location to search for pre-generated tar
+            archives to use instead of accessing cvs directly.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>DL_DIR</term>
+
+          <listitem>
+            <para>A compressed tar archive of the retrieved files will be
+            placed in this directory. The archive name will be of the form:
+            <command>"&lt;module&gt;_&lt;host&gt;_&lt;tag&gt;_&lt;date&gt;.tar.gz"</command>.
+            Path separators in <command>module</command> will be replaced with
+            full stops.</para>
+          </listitem>
+        </varlistentry>
+      </variablelist></para>
+  </section>
+
+  <section>
+    <title>svn</title>
+
+    <para>The svn fetcher is used to retrieve files from a subversion
+    repository. </para>
+
+    <para><screen>    svn://svn.xiph.org/trunk;module=Tremor;rev=4573;proto=http</screen></para>
+
+    <para>Supported options:</para>
+
+    <variablelist>
+      <varlistentry>
+        <term>module</term>
+
+        <listitem>
+          <para>The name of a module to retrieve. This is a required parameter
+          and there is no default value.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>rev</term>
+
+        <listitem>
+          <para>The revision to retrieve. Revisions in subversion are integer
+          values.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>proto</term>
+
+        <listitem>
+          <para>The method to use to access the repository. Common options are
+          <command>"svn"</command>, <command>"svn+ssh"</command>,
+          <command>"http"</command> and <command>"https"</command>. The
+          default is <command>"svn"</command>.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>rsh</term>
+
+        <listitem>
+          <para>The rsh command to use with using the
+          <command>"svn+ssh"</command> method. Common options are
+          <command>"rsh"</command> or <command>"ssh"</command>. The default is
+          <command>"ssh"</command>.</para>
+        </listitem>
+      </varlistentry>
+    </variablelist>
+
+    <para>Related variables:<variablelist>
+        <varlistentry>
+          <term>DL_DIR</term>
+
+          <listitem>
+            <para>A compressed tar archive of the retrieved files will be
+            placed in this directory. The archive name will be of the form:
+            <command>"&lt;module&gt;_&lt;host&gt;_&lt;path&gt;_&lt;revn&gt;_&lt;date&gt;.tar.gz"</command>.
+            Path separators in <command>path</command> and
+            <command>module</command> will be replaced with full stops.</para>
+          </listitem>
+        </varlistentry>
+      </variablelist></para>
+  </section>
+
+  <section>
+    <title>git</title>
+
+    <para>The git fetcher is used to retrieve files from a git repository.
+    <screen>  SRC_URI = "git://www.denx.de/git/u-boot.git;protocol=git;tag=${TAG}"</screen></para>
+
+    <para>Supported options:</para>
+
+    <variablelist>
+      <varlistentry>
+        <term>tag</term>
+
+        <listitem>
+          <para>The tag to retrieve. The default is
+          <command>"master"</command>.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>protocol</term>
+
+        <listitem>
+          <para>The method to use to access the repository. Common options are
+          <command>"git"</command> and <command>"rsync"</command>. The default
+          is <command>"rsync"</command>.</para>
+        </listitem>
+      </varlistentry>
+    </variablelist>
+
+    <para>Related variables</para>
+
+    <para><variablelist>
+        <varlistentry>
+          <term>GIT_DIR</term>
+
+          <listitem>
+            <para>The directory where git clones will be stored.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>DL_DIR</term>
+
+          <listitem>
+            <para>A compressed tar archive of the retrieved files will be
+            placed in this directory. The archive name will be of the form:
+            <command>"git_&lt;host&gt;&lt;mpath&gt;_&lt;tag&gt;.tar.gz"</command>.
+            Path separators in <command>host</command> will be replaced with
+            full stops.</para>
+          </listitem>
+        </varlistentry>
+      </variablelist></para>
+  </section>
+
+  <section>
+    <title>Mirrors</title>
+
+    <para>The support for mirror sites enables spreading the load over sites
+    and allows for downloads to occur even when one of the mirror sites are
+    unavailable.</para>
+
+    <para>Default mirrors, along with their primary URL, include:</para>
+
+    <variablelist>
+      <varlistentry>
+        <term>GNU_MIRROR</term>
+
+        <listitem>
+          <para>ftp://ftp.gnu.org/gnu</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>DEBIAN_MIRROR</term>
+
+        <listitem>
+          <para>ftp://ftp.debian.org/debian/pool</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>SOURCEFORGE_MIRROR</term>
+
+        <listitem>
+          <para>http://heanet.dl.sourceforge.net/sourceforge</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>GPE_MIRROR</term>
+
+        <listitem>
+          <para>http://handhelds.org/pub/projects/gpe/source</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>XLIBS_MIRROR</term>
+
+        <listitem>
+          <para>http://xlibs.freedesktop.org/release</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>XORG_MIRROR</term>
+
+        <listitem>
+          <para>http://xorg.freedesktop.org/releases</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>GNOME_MIRROR</term>
+
+        <listitem>
+          <para>http://ftp.gnome.org/pub/GNOME/sources</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>FREEBSD_MIRROR</term>
+
+        <listitem>
+          <para>ftp://ftp.freebsd.org/pub/FreeBSD</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>GENTOO_MIRROR</term>
+
+        <listitem>
+          <para>http://distro.ibiblio.org/pub/linux/distributions/gentoo/distfiles</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>APACHE_MIRROR</term>
+
+        <listitem>
+          <para>http://www.apache.org/dist</para>
+        </listitem>
+      </varlistentry>
+    </variablelist>
+
+    <para>When creating new recipes this mirrors should be used when you wish
+    to use one of the above sites by referring to the name of the mirror in
+    the URI, as show in this example from flex:<screen>SRC_URI = "${SOURCEFORGE_MIRROR}/lex/flex-2.5.31.tar.bz2</screen></para>
+
+    <para>You can manually define your mirrors if you wish to force the use of
+    a specific mirror by exporting the appropriate mirrors in
+    <command>local.conf</command> with them set to the local mirror:<screen>export GNU_MIRROR = "http://www.planetmirror.com/pub/gnu"
+export DEBIAN_MIRROR = "http://mirror.optusnet.com.au/debian/pool"
+export SOURCEFORGE_MIRROR = "http://optusnet.dl.sourceforge.net/sourceforge"</screen></para>
+
+    <para>Mirrors can be extended in individual recipes via the use of
+    <command>MIRRORS_prepend</command> or <command>MIRROR_append</command>.
+    Each entry in the list contains the mirror name on the left-hand side and
+    the URI of the mirror on the right-hand side. The following example from
+    libffi shows the addition of two URI for the
+    <command>"${GNU_MIRROR}/gcc/"</command> URI:<screen>MIRRORS_prepend () {
+  ${GNU_MIRROR}/gcc/  http://gcc.get-software.com/releases/
+  ${GNU_MIRROR}/gcc/  http://mirrors.rcn.net/pub/sourceware/gcc/releases/
+}</screen></para>
+  </section>
+
+  <section>
+    <title>Manipulating SRC_URI</title>
+
+    <para>Sometimes it is desirable to only include patches for a specific
+    architecture and/or to include different files based on the architecture.
+    This can be done via the SRC_URI_append and/or SRC_URI_prepend methods for
+    adding additional URI's based on the architecture or machine name.</para>
+
+    <para>In this example from glibc, the patch creates a configuration file
+    for glibc, which should only be used or the sh4 architecture. Therefore
+    this patch is appended to the SRC_URI, but only for the sh4 architecture.
+    For other architectures it is ignored:<screen># Build fails on sh4 unless no-z-defs is defined
+SRC_URI_append_sh4 = " file://no-z-defs.patch;patch=1"</screen></para>
+  </section>
+
+  <section>
+    <title>Source distribution (src_distribute_local)</title>
+
+    <para>In order to obtain a set of source files for a build you can use the
+    <emphasis>src_distribute_local</emphasis> class. This will result in all
+    the files that were actually used during a build to be made available and
+    therefore they can be distributed with the binaries.</para>
+
+    <para>Enabling this option is as simply as activating the functionality by
+    included the required class in one of your configuration files:<screen>SRC_DIST_LOCAL = "copy"
+INHERIT += "src_distribute_local"</screen></para>
+
+    <para>Now during a build each recipe which has a LICENSE that mandates
+    source availability, like the GPL ,will be placed into the source
+    distribution directory, <command>${SRC_DISTRIBUTEDIR}</command>, after
+    building.</para>
+
+    <para>There are some options available to effect the option</para>
+
+    <variablelist>
+      <varlistentry>
+        <term>SRC_DIST_LOCAL</term>
+
+        <listitem>
+          <para>Specifies if the source files should be copied, symlinked or
+          moved and symlinked back. The default is
+          <command>"move+symlink"</command>.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>SRC_DISTRIBUTEDIR</term>
+
+        <listitem>
+          <para>Specifies the source distribution directory - this is why the
+          source files that was used for the build are placed. The default is
+          <command>"${DEPLOY_DIR}/sources"</command>.</para>
+        </listitem>
+      </varlistentry>
+    </variablelist>
+
+    <para>The valid values for <command>SRC_DIST_LOCAL</command> are:</para>
+
+    <variablelist>
+      <varlistentry>
+        <term>copy</term>
+
+        <listitem>
+          <para>Copies the files to the downloaded sources directory into the
+          distribution directory.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>symlink</term>
+
+        <listitem>
+          <para>Symlinks the files from the downloaded sources directory into
+          the distribution directory.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>move+symlink</term>
+
+        <listitem>
+          <para>Moves the files from the downloaded sources directory into the
+          distribution directory. Then creates a symlink in the download
+          sources directory to the moved files.</para>
+        </listitem>
+      </varlistentry>
+    </variablelist>
+  </section>
+</section>
