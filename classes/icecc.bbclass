@@ -4,6 +4,14 @@
 # ICECC_VERSION, ICECC_CXX and ICEC_CC
 #
 
+def icc_determine_gcc_version(gcc):
+    """
+    Hack to determine the version of GCC
+
+    'i686-apple-darwin8-gcc-4.0.1 (GCC) 4.0.1 (Apple Computer, Inc. build 5363)'
+    """
+    return os.popen("%s --version" % gcc ).readline()[2]
+
 def create_env(bb,d):
     """
     Create a tar.bz of the current toolchain
@@ -23,32 +31,31 @@ def create_env(bb,d):
     prefix  = bb.data.expand('${HOST_PREFIX}' , d)
     distro  = bb.data.expand('${DISTRO}', d)
     target_sys = bb.data.expand('${TARGET_SYS}',  d)
-    #float   = bb.data.getVar('${TARGET_FPU}', d)
-    float   = "anyfloat"
+    float   = bb.data.getVar('${TARGET_FPU}', d) or "hard"
     name    = socket.gethostname()
 
     try:
-        os.stat(ice_dir + '/' + target_sys + '/lib/ld-linux.so.2')
-        os.stat(ice_dir + '/' + target_sys + '/bin/g++')
+        os.stat(os.path.join(ice_dir, target_sys, 'lib', 'ld-linux.so.2'))
+        os.stat(os.path.join(ice_dir, target_sys, 'bin', 'g++'))
     except:
         return ""
 
-    VERSION = '3.4.3'
+    VERSION = icc_determine_gcc_version( os.path.join(ice_dir,target_sys,"bin","g++") )
     cross_name = prefix + distro + target_sys + float +VERSION+ name
-    tar_file = ice_dir + '/ice/' + cross_name + '.tar.bz2'
+    tar_file = os.path.join(ice_dir, 'ice', cross_name + '.tar.bz2')
 
     try:
         os.stat(tar_file)
         return tar_file
     except:
         try:
-            os.makedirs(ice_dir+'/ice')
+            os.makedirs(os.path.join(ice_dir,'ice'))
         except:
             pass
 
     # FIXME find out the version of the compiler
     tar = tarfile.open(tar_file, 'w:bz2')
-    tar.add(ice_dir + '/' + target_sys + '/lib/ld-linux.so.2', 
+    tar.add(ice_dir + '/' + target_sys + '/lib/ld-linux.so.2',
             target_sys + 'cross/lib/ld-linux.so.2')
     tar.add(ice_dir + '/' + target_sys + '/lib/ld-linux.so.2',
             target_sys + 'cross/lib/ld-2.3.3.so')
@@ -78,7 +85,7 @@ def create_path(compilers, type, bb, d):
     """
     import os
 
-    staging = bb.data.expand('${STAGING_DIR}', d) + "/ice/" + type
+    staging = os.path.join(bb.data.expand('${STAGING_DIR}', d), "ice", type)
     icecc   = bb.data.getVar('ICECC_PATH', d)
 
     # Create the dir if necessary
@@ -89,7 +96,7 @@ def create_path(compilers, type, bb, d):
 
 
     for compiler in compilers:
-        gcc_path = staging + "/" + compiler
+        gcc_path = os.path.join(staging, compiler)
         try:
             os.stat(gcc_path)
         except:
