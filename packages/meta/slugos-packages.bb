@@ -94,6 +94,7 @@ SLUGOS_PACKAGES = "\
 	libol \
 	libpng \
 	libtool \
+	libupnp \
 	libusb \
 	libvorbis \
 	libxml2 \
@@ -162,6 +163,7 @@ SLUGOS_PACKAGES = "\
 	tiff \
 	unzip \
 	usbutils \
+	ushare \
 	util-linux \
 	vim \
 	vlan \
