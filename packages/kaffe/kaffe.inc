@@ -3,6 +3,7 @@ HOMEPAGE = "http://www.kaffe.org/"
 LICENSE  = "GPL LGPL W3C Classpath BSD"
 
 DEPENDS = "jikes-native fastjar-native libffi zip-native"
+RDEPENDS_${PN} = "${PN}-common (>= ${PV})"
 
 SRC_URI += "file://disable-automake-checks.patch;patch=1"
 
@@ -45,7 +46,6 @@ oe_runconf () {
 
 PACKAGES =+ "${PN}-common"
 FILES_${PN} += "${libdir}/${PN}"
-RDEPENDS_${PN} = "${PN}-common (>= ${PV})"
 FILES_${PN}-common = "${libdir}/${PN}/jre/lib/*.jar"
 
 do_install () {
