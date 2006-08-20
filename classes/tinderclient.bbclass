@@ -240,8 +240,8 @@ def tinder_tinder_start(d, event):
     output.append( "---> TINDERBOX BUILDING '%(packages)s'" )
     output.append( "<--- TINDERBOX STARTING BUILD NOW" )
 
-    output.append( "" ) 
- 
+    output.append( "" )
+
     return "\n".join(output) % vars()
 
 def tinder_do_tinder_report(event):
@@ -311,13 +311,13 @@ def tinder_do_tinder_report(event):
     elif name == "TaskFailed":
         log += "<--- TINDERBOX Task %s failed (FAILURE)\n" % event.task
     elif name == "PkgStarted":
-        log += "---> TINDERBOX Package %s started\n" % data.getVar('P', event.data, True)
+        log += "---> TINDERBOX Package %s started\n" % data.getVar('PF', event.data, True)
     elif name == "PkgSucceeded":
-        log += "<--- TINDERBOX Package %s done (SUCCESS)\n" % data.getVar('P', event.data, True)
+        log += "<--- TINDERBOX Package %s done (SUCCESS)\n" % data.getVar('PF', event.data, True)
     elif name == "PkgFailed":
         if not data.getVar('TINDER_AUTOBUILD', event.data, True) == "0":
             build.exec_task('do_clean', event.data)
-        log += "<--- TINDERBOX Package %s failed (FAILURE)\n" % data.getVar('P', event.data, True)
+        log += "<--- TINDERBOX Package %s failed (FAILURE)\n" % data.getVar('PF', event.data, True)
         status = 200
         # remember the failure for the -k case
         h = file(data.getVar('TMPDIR', event.data, True)+"/tinder-status", 'w')
