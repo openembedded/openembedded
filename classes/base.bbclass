@@ -1,3 +1,4 @@
+BB_DEFAULT_TASK = "build"
 PATCHES_DIR="${S}"
 
 def base_dep_prepend(d):
@@ -584,6 +585,7 @@ python base_eventhandler() {
 addtask configure after do_unpack do_patch
 do_configure[dirs] = "${S} ${B}"
 do_configure[bbdepcmd] = "do_populate_staging"
+do_configure[deptask] = "do_populate_staging"
 base_do_configure() {
 	:
 }
