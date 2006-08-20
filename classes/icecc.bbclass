@@ -34,6 +34,8 @@ def create_env(bb,d):
     float   = bb.data.getVar('${TARGET_FPU}', d) or "hard"
     name    = socket.gethostname()
 
+    # Stupid check to determine if we have built a libc and a cross
+    # compiler.
     try:
         os.stat(os.path.join(ice_dir, target_sys, 'lib', 'ld-linux.so.2'))
         os.stat(os.path.join(ice_dir, target_sys, 'bin', 'g++'))
@@ -54,27 +56,41 @@ def create_env(bb,d):
             pass
 
     # FIXME find out the version of the compiler
+    # Consider using -print-prog-name={cc1,cc1plus}
+    # and            -print-file-name=specs
+
+    # We will use the GCC to tell us which tools to use
+    #  What we need is:
+    #        -gcc
+    #        -g++
+    #        -as
+    #        -cc1
+    #        -cc1plus
+    #  and we add them to /usr/bin
+
     tar = tarfile.open(tar_file, 'w:bz2')
-    tar.add(ice_dir + '/' + target_sys + '/lib/ld-linux.so.2',
-            target_sys + 'cross/lib/ld-linux.so.2')
-    tar.add(ice_dir + '/' + target_sys + '/lib/ld-linux.so.2',
-            target_sys + 'cross/lib/ld-2.3.3.so')
-    tar.add(ice_dir + '/' + target_sys + '/lib/libc-2.3.3.so',
-            target_sys + 'cross/lib/libc-2.3.3.so')
-    tar.add(ice_dir + '/' + target_sys + '/lib/libc.so.6',
-           target_sys + 'cross/lib/libc.so.6')
-    tar.add(ice_dir + '/' + target_sys + '/bin/gcc',
-            target_sys + 'cross/usr/bin/gcc')
-    tar.add(ice_dir + '/' + target_sys + '/bin/g++',
-            target_sys + 'cross/usr/bin/g++')
-    tar.add(ice_dir + '/' + target_sys + '/bin/as',
-            target_sys + 'cross/usr/bin/as')
-    tar.add(ice_dir + '/lib/gcc/' + target_sys +'/'+ VERSION + '/specs',
-            target_sys+'cross/usr/lib/gcc/'+target_sys+'/'+VERSION+'/lib/specs')
-    tar.add(ice_dir + '/libexec/gcc/'+target_sys+'/' + VERSION + '/cc1',
-            target_sys + 'cross/usr/lib/gcc/'+target_sys+'/'+VERSION+'/lib/cc1')
-    tar.add(ice_dir + '/libexec/gcc/arm-linux/' + VERSION + '/cc1plus',
-            target_sys+'cross/usr/lib/gcc/'+target_sys+'/'+VERSION+'/lib/cc1plus')
+
+    # Now add the required files
+    tar.add(os.path.join(ice_dir,target_sys,'bin','gcc'),
+            os.path.join("usr","bin","gcc") )
+    tar.add(os.path.join(ice_dir,target_sys,'bin','g++'),
+            os.path.join("usr","bin","g++") )
+    tar.add(os.path.join(ice_dir,target_sys,'bin','as'),
+            os.path.join("usr","bin","as") )
+
+    # Now let us find cc1 and cc1plus
+    cc1 = os.popen("%s -print-prog-name=cc1" % data.getVar('CC', d, True)).read()[:-1]
+    cc1plus = os.popen("%s -print-prog-name=cc1plus" % data.getVar('CC', d, True)).read()[:-1]
+    spec = os.popen("%s -print-file-name=specs" % data.getVar('CC', d, True)).read()[:-1]
+
+    # CC1 and CC1PLUS should be there...
+    tar.add(cc1, os.path.join('usr', 'bin', 'cc1'))
+    tar.add(cc1plus, os.path.join('usr', 'bin', 'cc1plus'))
+
+    # spec - if it exists
+    if os.path.exists(spec):
+        tar.add(spec)
+
     tar.close()
     return tar_file
 
