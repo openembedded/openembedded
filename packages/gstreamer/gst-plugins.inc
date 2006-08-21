@@ -2,8 +2,8 @@ DESCRIPTION = "Plugins for GStreamer"
 SECTION = "multimedia"
 PRIORITY = "optional"
 MAINTAINER = "Felix Domke <tmbinc@elitedvb.net>"
-DEPENDS = "gstreamer libmikmod libmad liboil libogg tremor libvorbis libid3tag"
-PR = "r0"
+DEPENDS = "gstreamer libmikmod libmad liboil libogg tremor libvorbis libid3tag esound-gpe"
+PR = "r1"
 
 # until we have decided for a final naming scheme,
 # keep using version 0.8
@@ -13,7 +13,7 @@ inherit autotools pkgconfig gconf
 
 SRC_URI = "http://gstreamer.freedesktop.org/src/${PN}/${PN}-${PV}.tar.bz2"
 
-EXTRA_OECONF = "--disable-x --disable-aalib --disable-esd --disable-shout2 \
+EXTRA_OECONF = "--disable-x --disable-aalib --disable-shout2 \
 		--disable-sdl"
 
 acpaths = "-I ${S}/common/m4 -I ${S}/m4"
@@ -28,8 +28,8 @@ python populate_packages_prepend () {
 	do_split_packages(d, gst_libdir, '^libgst(.*)\.l?a$', 'gst-plugin-%s-dev', 'GStreamer plugin for %s (development files)')
 }
 
-do_stage() {
-	autotools_stage_all
-}
+#do_stage() {
+#	autotools_stage_all
+#}
 
 ALLOW_EMPTY = "1"
