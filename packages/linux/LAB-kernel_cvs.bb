@@ -33,7 +33,12 @@ HHV     = "0"
 #
 
 KERNEL_PRIORITY = "${@'%d' % (int(bb.data.getVar('K_MAJOR',d,1)) * 100000000 + int(bb.data.getVar('K_MINOR',d,1)) * 1000000 + int(bb.data.getVar('K_MICRO',d,1)) * 10000 + float(bb.data.getVar('HHV',d,1)))}"
+
 do_configure() {
+	if [ `grep EXTRAVERSION Makefile | grep hh | awk '{print $3}' | sed s/-hh//` != ${HHV} ]; then
+		die "-hh version mismatch"
+	fi
+
 	# Substitute our uid/gid so the initramfs gets the right ownership.
 	MY_UID=`id -u`
 	MY_GID=`id -g`
