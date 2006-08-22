@@ -1,10 +1,12 @@
 DEFAULT_PREFERENCE = "-1"
 
-require udev.inc
-
 DESCRIPTION = "udev is a daemon which dynamically creates and removes device nodes from \
 /dev/, handles hotplug events and loads drivers at boot time. It replaces \
 the hotplug package and requires a kernel not older than 2.6.15."
+DESCRIPTION_libvolume-id = "libvolume_id shared library, \
+used to detect the type of a file system and read its metadata."
+DESCRIPTION_libvolume-id-dev = "libvolume_id development headers, \
+needed to link programs with libvolume_id."
 
 PR = "r0"
 
@@ -13,6 +15,8 @@ SRC_URI = "http://kernel.org/pub/linux/utils/kernel/hotplug/udev-${PV}.tar.gz \
 	   file://flags.patch;patch=1 \
 	   file://mount.blacklist \
 	   "
+
+require udev.inc
 
 SRC_URI_append_h2200 = " file://50-hostap_cs.rules "
 PACKAGE_ARCH_h2200 = "h2200"
