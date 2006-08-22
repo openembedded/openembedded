@@ -3,6 +3,10 @@ DEFAULT_PREFERENCE = "-1"
 DESCRIPTION = "udev is a daemon which dynamically creates and removes device nodes from \
 /dev/, handles hotplug events and loads drivers at boot time. It replaces \
 the hotplug package and requires a kernel not older than 2.6.15."
+DESCRIPTION_libvolume-id = "libvolume_id shared library, \
+used to detect the type of a file system and read its metadata."
+DESCRIPTION_libvolume-id-dev = "libvolume_id development headers, \
+needed to link programs with libvolume_id."
 
 PR = "r0"
 
