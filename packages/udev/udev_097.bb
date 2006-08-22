@@ -1,7 +1,5 @@
 DEFAULT_PREFERENCE = "-1"
 
-require udev.inc
-
 DESCRIPTION = "udev is a daemon which dynamically creates and removes device nodes from \
 /dev/, handles hotplug events and loads drivers at boot time. It replaces \
 the hotplug package and requires a kernel not older than 2.6.15."
@@ -13,6 +11,8 @@ SRC_URI = "http://kernel.org/pub/linux/utils/kernel/hotplug/udev-${PV}.tar.gz \
 	   file://flags.patch;patch=1 \
 	   file://mount.blacklist \
 	   "
+
+require udev.inc
 
 SRC_URI_append_h2200 = " file://50-hostap_cs.rules "
 PACKAGE_ARCH_h2200 = "h2200"
