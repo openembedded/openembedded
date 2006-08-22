@@ -1,5 +1,5 @@
 DESCRIPTION = "Task packages for the Angstrom distribution"
-PR = "r17"
+PR = "r18"
 ALLOW_EMPTY = "1"
 
 PACKAGE_ARCH = "${MACHINE_ARCH}"
@@ -142,7 +142,7 @@ RDEPENDS_angstrom-task-office := "\
     gnumeric \
     abiword \
     imposter \
-    evince \
+#    evince \
     gqview"
 
 RDEPENDS_angstrom-task-printing := "\
@@ -154,11 +154,11 @@ RDEPENDS_angstrom-task-sectest := "\
     ettercap \
     stunnel \
     curl \
-    dsniff \
+#    dsniff \
     prismstumbler \
-    tcpdump \
+#    tcpdump \
     kismet \
     hydra \
     thcrut \
-    driftnet \
+#    driftnet \
     miniclipboard"
