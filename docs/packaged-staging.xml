@@ -288,7 +288,7 @@ The whole concept of ad-hoc creating seperate packages for native and cross pack
 Stuffing all archs in the ipkg.conf is wrong as well, since it could allow installing of x86 stuff in an ARM based staging. I have no real solution for that yet.
 </para>
 <para>
-The hardcoded use of ipkg sucks, but it's the only package format OE can generate reliably. Using checkinstall would solve that, but that would introduce even more bootstrap and self-hosting problems.
+The hardcoded use of ipkg sucks, but it's the only package format OE can generate reliably. Using checkinstall would solve that, but that would introduce even more bootstrap and self-hosting problems since we'd need more tools before even starting to think about starting a build.
 </para>
 
 </section>
