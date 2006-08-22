@@ -198,3 +198,7 @@ do_deploy() {
 do_deploy[dirs] = "${S}"
 
 addtask deploy before do_package after do_install
+
+# wlan-ng stuff need compiled kernel sources
+do_rm_work() {
+}
