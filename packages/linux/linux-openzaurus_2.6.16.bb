@@ -1,6 +1,6 @@
 require linux-openzaurus.inc
 
-PR = "r43"
+PR = "r44"
 
 # Handy URLs
 # git://rsync.kernel.org/pub/scm/linux/kernel/git/torvalds/linux-2.6.git \
@@ -65,12 +65,8 @@ SRC_URI = "http://www.kernel.org/pub/linux/kernel/v2.6/linux-2.6.16.tar.bz2 \
            ${RPSRC}/logo_rotate_fix-r1.patch;patch=1;status=merged \
            ${RPSRC}/poodle_partsize-r0.patch;patch=1;status=merged \
            ${RPSRC}/jffs2_longfilename-r1.patch;patch=1;status=merged \
-           ${RPSRC}/zlib_inflate-r3.patch;patch=1;status=pending \
-           ${RPSRC}/logo_rotate_fix-r1.patch;patch=1;status=pending \
-           ${RPSRC}/poodle_partsize-r0.patch;patch=1;status=pending \
-           ${RPSRC}/jffs2_longfilename-r1.patch;patch=1;status=pending \
-           file://00-hostap.patch;patch=1;status=pending \
-           file://10-pcnet.patch;patch=1;status=pending \
+           file://00-hostap.patch;patch=1;status=merged \
+           file://10-pcnet.patch;patch=1;status=merged \
            ${RPSRC}/alsa/asoc-v0.10rc4.patch;patch=1 \
            ${RPSRC}/asoc_fixups-r0.patch;patch=1 \
            ${RPSRC}/hx2750_base-r24.patch;patch=1 \
@@ -82,7 +78,7 @@ SRC_URI = "http://www.kernel.org/pub/linux/kernel/v2.6/linux-2.6.16.tar.bz2 \
            ${RPSRC}/pxa_timerfix-r0.patch;patch=1 \
            ${RPSRC}/input_power-r4.patch;patch=1 \
            ${RPSRC}/pxa25x_cpufreq-r0.patch;patch=1 \
-           ${RPSRC}/collie_frontlight-r1.patch;patch=1;status=pending \
+           ${RPSRC}/collie_frontlight-r1.patch;patch=1;status=merged \
            ${RPSRC}/zaurus_reboot-r0.patch;patch=1;status=merged \
            ${RPSRC}/sharpsl_pm_fixes1-r0.patch;patch=1 \
            ${RPSRC}/pm_changes-r1.patch;patch=1 \
