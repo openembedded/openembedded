@@ -1,6 +1,6 @@
 include linux-openzaurus.inc
 
-PR = "r16"
+PR = "r17"
 
 # Handy URLs
 # git://rsync.kernel.org/pub/scm/linux/kernel/git/torvalds/linux-2.6.git \
