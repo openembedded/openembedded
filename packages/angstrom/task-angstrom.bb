@@ -1,5 +1,5 @@
 DESCRIPTION = "Task packages for the Angstrom distribution"
-PR = "r18"
+PR = "r19"
 ALLOW_EMPTY = "1"
 
 PACKAGE_ARCH = "${MACHINE_ARCH}"
@@ -46,10 +46,20 @@ RRECOMMENDS_angstrom-base-depends = "\
 	"
 
 RDEPENDS_angstrom-base-wifi = "\
-    hostap-utils \
-    hostap-conf \
-    prism3-support \
-    prism3-firmware \
-    wireless-tools \
-    wpa-supplicant \
-    "
+    	hostap-utils \
+    	hostap-conf \
+    	prism3-support \
+    	prism3-firmware \
+    	wireless-tools \
+    	wpa-supplicant \
+	"
+
+RRECOMMENDS_angstrom-base-wifi = "\
+ 	kernel-module-arc4 \
+	kernel-module-michael-mic \
+	kernel-module-aes \
+	kernel-module-ieee80211-crypt-tkip \
+	kernel-module-ieee80211-crypt-wep \
+	kernel-module-ieee80211-crypt \
+	kernel-module-ieee80211-crypt-ccmp \
+	"
