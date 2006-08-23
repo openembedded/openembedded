@@ -1,5 +1,5 @@
 DESCRIPTION = "Task packages for the Angstrom distribution"
-PR = "r18"
+PR = "r19"
 ALLOW_EMPTY = "1"
 
 PACKAGE_ARCH = "${MACHINE_ARCH}"
@@ -16,7 +16,7 @@ PACKAGES = "\
 
 RDEPENDS_angstrom-base-depends = "\
     base-files keymaps \
-    base-passwd tinylogin \ 
+    base-passwd tinylogin \
     busybox \
     udev \
     update-modules module-init-tools modutils-initscripts \
@@ -24,12 +24,12 @@ RDEPENDS_angstrom-base-depends = "\
     netbase dropbear \
     angstrom-version \
     ipkg ipkg-collateral \
-    wireless-tools \
     tslib-tests tslib-calibrate \
     util-linux-mount util-linux-umount \
     ${EXTRA_STUFF} \
     ${DEBUG_APPS} \
-    ${PCMCIA_MANAGER} \	
+    ${PCMCIA_MANAGER} \
+    angstrom-base-wifi \
 "
 
 RDEPENDS_angstrom-base-depends_append_ipaq-pxa270 = " tiinit acx-firmware "
@@ -37,13 +37,12 @@ RDEPENDS_angstrom-base-depends_append_h4000 = " tiinit acx-firmware "
 RDEPENDS_angstrom-base-depends_append_htcuniversal = " tiinit acx-firmware "
 
 RRECOMMENDS_angstrom-base-depends = "\
-        ${BOOTMODULES_RRECOMMENDS} \
-	kernel-module-evdev \
-	kernel-module-uinput \
-	kernel-module-g-ether \
-	kernel-module-hostap-cs \
-	kernel-module-af-packet \
-	"
+    ${BOOTMODULES_RRECOMMENDS} \
+    kernel-module-evdev \
+    kernel-module-uinput \
+    kernel-module-g-ether \
+    kernel-module-af-packet \
+"
 
 RDEPENDS_angstrom-base-wifi = "\
     hostap-utils \
@@ -53,3 +52,16 @@ RDEPENDS_angstrom-base-wifi = "\
     wireless-tools \
     wpa-supplicant \
     "
+
+RRECOMMENDS_angstrom-base-wifi = "\
+    kernel-module-hostap-cs \
+    kernel-module-orinoco-cs \
+    kernel-module-spectrum-cs \
+    kernel-module-arc4 \
+    kernel-module-michael-mic \
+    kernel-module-aes \
+    kernel-module-ieee80211-crypt-tkip \
+    kernel-module-ieee80211-crypt-wep \
+    kernel-module-ieee80211-crypt \
+    kernel-module-ieee80211-crypt-ccmp \
+"
