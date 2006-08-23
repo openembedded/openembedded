@@ -9,7 +9,7 @@
 
   <para>Since the contents of the file is used at build time it is required to
   be copied into the staging area. All the actions performed by the class are
-  appended to the <emphasis>do_stage</emphasis> task.</para>
+  appended to the <emphasis>stage</emphasis> task.</para>
 
   <para>The actions performed by the pkgconfig class are:</para>
 
@@ -27,12 +27,12 @@
     </listitem>
   </orderedlist>
 
-  <para>A package is considered to be native it also inherits the native
+  <para>A package is considered to be native if it also inherits the native
   class.</para>
 
-  <para>The class will search in <command>${S}</command>, and all it's
-  subdirectories, for files that end in <command>.pc</command> (it will ignore
-  those that end in <command>-uninstalled.pc)</command> and process them as
-  described above. All that is required to use the class is the addition of
-  pkgconfig in an inherit statement:<screen>inherit autotools pkgconfig</screen></para>
+  <para>The class will search in source directory, <command>${S}</command>,
+  and all it's subdirectories, for files that end in <command>.pc</command>
+  (it will ignore those that end in <command>-uninstalled.pc)</command> and
+  process them as described above. All that is required to use the class is
+  the addition of pkgconfig in an inherit statement:<screen>inherit autotools pkgconfig</screen></para>
 </section>

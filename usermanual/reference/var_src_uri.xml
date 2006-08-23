@@ -34,7 +34,7 @@
   tag/value pairs of the form <command>"a=b"</command> and are semi-colon
   separated from each other and from the URI. The follow examples shows two
   options being included, the patch and pnum options:<screen>file://ospfd-no-opaque-lsa-fix.patch;patch=1;pnum=2</screen>The
-  supported methods for fetching source and files is:</para>
+  supported methods for fetching source and files are:</para>
 
   <variablelist>
     <varlistentry>
@@ -42,7 +42,7 @@
 
       <listitem>
         <para>Used to download files and source code via the specified URL.
-        These types are fetched from the specified location using wget.</para>
+        These are fetched from the specified location using wget.</para>
       </listitem>
     </varlistentry>
 
@@ -85,8 +85,8 @@
   <para>When source code is specified as a part of <command>SRC_URI</command>
   it is unpacked into the work directory, <command>${WORKDIR}</command>. The
   unpacker recognises several archive and compression types and for these it
-  will extract all of the files from the archive into the work directory. The
-  supported types are:</para>
+  will decompress any compressed files and extract all of the files from
+  archives into the work directory. The supported types are:</para>
 
   <variablelist>
     <varlistentry>
@@ -197,8 +197,8 @@
   <section>
     <title>file: for patches and additional files</title>
 
-    <para>The file URI's are used to copy files included as part of the
-    package meta data into the work directory to be used when building the
+    <para>The file URI's are used to copy files, included as part of the
+    package meta data, into the work directory to be used when building the
     package. Typical use of the file URI's is to specify patches that be
     applied to the source and to provide additional files, such as init
     scripts, to be included in the final package.</para>
@@ -216,10 +216,10 @@
     <para>The following example shows the specification of a non-patch file.
     In this case it's an init script:<screen>file://quagga.init</screen>Non-patch
     files are copied to the work directory, <command>${WORKDIR}</command>. You
-    can access these files from with a recipe by referring to them relative to
-    the work directory. The following example from quagga show the above init
-    script being included in the package by copying it during the install
-    task:<screen>do_install () {
+    can access these files from within a recipe by referring to them relative
+    to the work directory. The following example, from the quagga recipe,
+    shows the above init script being included in the package by copying it
+    during the <emphasis>install</emphasis> task:<screen>do_install () {
     # Install init script and default settings
     install -m 0755 -d ${D}${sysconfdir}/default ${D}${sysconfdir}/init.d ${D}${sysconfdir}/quagga
     install -m 0644 <emphasis role="bold">${WORKDIR}/quagga.init</emphasis> ${D}${sysconfdir}/init.d/quagga
@@ -246,7 +246,7 @@
           <para>By default patches are applied with the <command>"-p
           1"</command> parameter, which strips off the first directory of the
           pathname in the patches. This option is used to explicitly control
-          value passed to <command>"-p"</command>. The most typical use is
+          the value passed to <command>"-p"</command>. The most typical use is
           when the patches are relative to the source directory already and
           need to be applied using <command>"-p 0"</command>, in which case
           the <command>"pnum=0"</command> option is supplied.</para>
@@ -264,7 +264,7 @@
     the <emphasis>date=</emphasis> to specify a checkout for specified date.
     It is preferable to use either a <emphasis>date=</emphasis> or a
     <emphasis>tag=</emphasis> option to select a specific date and/or tag from
-    cvs rather than leave the checkout floating at the head revision. </para>
+    cvs rather than leave the checkout floating at the head revision.</para>
 
     <para>Supported options:</para>
 
@@ -351,7 +351,7 @@
     <title>svn</title>
 
     <para>The svn fetcher is used to retrieve files from a subversion
-    repository. </para>
+    repository.</para>
 
     <para><screen>    svn://svn.xiph.org/trunk;module=Tremor;rev=4573;proto=http</screen></para>
 
@@ -570,7 +570,7 @@ export DEBIAN_MIRROR = "http://mirror.optusnet.com.au/debian/pool"
 export SOURCEFORGE_MIRROR = "http://optusnet.dl.sourceforge.net/sourceforge"</screen></para>
 
     <para>Mirrors can be extended in individual recipes via the use of
-    <command>MIRRORS_prepend</command> or <command>MIRROR_append</command>.
+    <command>MIRRORS_prepend</command> or <command>MIRRORS_append</command>.
     Each entry in the list contains the mirror name on the left-hand side and
     the URI of the mirror on the right-hand side. The following example from
     libffi shows the addition of two URI for the
@@ -585,13 +585,14 @@ export SOURCEFORGE_MIRROR = "http://optusnet.dl.sourceforge.net/sourceforge"</sc
 
     <para>Sometimes it is desirable to only include patches for a specific
     architecture and/or to include different files based on the architecture.
-    This can be done via the SRC_URI_append and/or SRC_URI_prepend methods for
-    adding additional URI's based on the architecture or machine name.</para>
+    This can be done via the <command>SRC_URI_append</command> and/or
+    <command>SRC_URI_prepend</command> methods for adding additional URI's
+    based on the architecture or machine name.</para>
 
     <para>In this example from glibc, the patch creates a configuration file
     for glibc, which should only be used or the sh4 architecture. Therefore
-    this patch is appended to the SRC_URI, but only for the sh4 architecture.
-    For other architectures it is ignored:<screen># Build fails on sh4 unless no-z-defs is defined
+    this patch is appended to the <command>SRC_URI</command>, but only for the
+    sh4 architecture. For other architectures it is ignored:<screen># Build fails on sh4 unless no-z-defs is defined
 SRC_URI_append_sh4 = " file://no-z-defs.patch;patch=1"</screen></para>
   </section>
 
@@ -600,15 +601,16 @@ SRC_URI_append_sh4 = " file://no-z-defs.patch;patch=1"</screen></para>
 
     <para>In order to obtain a set of source files for a build you can use the
     <emphasis>src_distribute_local</emphasis> class. This will result in all
-    the files that were actually used during a build to be made available and
-    therefore they can be distributed with the binaries.</para>
+    the files that were actually used during a build being made available in a
+    seperate directory and therefore they can be distributed with the
+    binaries.</para>
 
-    <para>Enabling this option is as simply as activating the functionality by
-    included the required class in one of your configuration files:<screen>SRC_DIST_LOCAL = "copy"
+    <para>Enabling this option is as simple as activating the functionality by
+    including the required class in one of your configuration files:<screen>SRC_DIST_LOCAL = "copy"
 INHERIT += "src_distribute_local"</screen></para>
 
     <para>Now during a build each recipe which has a LICENSE that mandates
-    source availability, like the GPL ,will be placed into the source
+    source availability, like the GPL, will be placed into the source
     distribution directory, <command>${SRC_DISTRIBUTEDIR}</command>, after
     building.</para>
 

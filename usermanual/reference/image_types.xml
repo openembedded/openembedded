@@ -6,31 +6,32 @@
   image containing the root filesystem for the target device. There are
   several variables which can be used to control the type of output images and
   the settings for those images such as endianess or compression ratios. This
-  section details the available images and the variable that effect them. See
+  section details the available images and the variables that effect them. See
   the <xref linkend="image_ipkg_class" /> section for details on how image
   generation is configured.</para>
 
   <para>The final root file system will consist of all of the files located in
-  <command>${IMAGE_ROOTFS}</command>, which is usually
-  <command>tmp/rootfs</command> in your build area. One important difference
-  between the image and the root file system directory is that any files which
-  can only be created by privileged users, such as device nodes, will not
-  appear in the <command>${IMAGE_ROOTFS}</command> directory but they will be
-  present in any images that are generated. This is due to
-  <emphasis>fakeroot</emphasis> system keeping track of these special files
-  and making them available when generating the image even though they are not
-  appear in the root filesystem directory. For this reason it is important to
-  always create an actual image to use for testing, even if it's just a .tar
-  archive, to ensure you have the correct device nodes and any other special
-  files.</para>
+  image root filesystem directory, <command>${IMAGE_ROOTFS}</command>, which
+  is usually <command>tmp/rootfs</command> in the build area. One important
+  difference between the images and the root file system directory is that any
+  files which can only be created by privileged users, such as device nodes,
+  will not appear in the <command>${IMAGE_ROOTFS}</command> directory but they
+  will be present in any images that are generated. This is due to
+  <emphasis><xref linkend="fakeroot" /> </emphasis>system keeping track of
+  these special files and making them available when generating the image -
+  even though they do not appear in the root filesystem directory. For this
+  reason it is important to always create an actual image to use for testing,
+  even if it's just a <command>.tar</command> archive, to ensure you have the
+  correct device nodes and any other special files.</para>
 
   <section>
     <title>Defining images</title>
 
-    <para>Each supported image type is defined via a set of variables with the
-    name of the image type appended. The behaviour of the built in image types
-    can be changed by modifying these variables, and new types created by
-    defining these variables for the new type.</para>
+    <para>Each supported image type is defined via a set of variables. Each
+    variables has the name of the image type appended to indicate the settings
+    for that particular image type. The behaviour of the built in image types
+    can be changed by modifying these variables, and new types can be created
+    by defining these variables for the new type.</para>
 
     <para>The variables that define an image type are:</para>
 
@@ -39,8 +40,8 @@
         <term>IMAGE_CMD_&lt;type&gt;</term>
 
         <listitem>
-          <para>Specifies the command that is run to generate an image of the
-          specified type.</para>
+          <para>Specifies the actual command that is run to generate an image
+          of the specified type.</para>
         </listitem>
       </varlistentry>
 
@@ -49,11 +50,11 @@
 
         <listitem>
           <para>Used to pass additional command line arguments to the
-          <command>IMAGE_CMD</command> without needing to redefine the entire
+          <command>IMAGE_CMD</command> without the need to redefine the entire
           image command. This is often used to pass options such as endianess
           and compression rations. You need to look at the
-          <command>IMAGE_CMD</command> to determine which command these
-          options are being passed to.</para>
+          <command>IMAGE_CMD</command> definition to determine how these
+          options are being used.</para>
         </listitem>
       </varlistentry>
 
@@ -82,7 +83,7 @@
   <section>
     <title>Available image types</title>
 
-    <para>The following image types are built in to openembedded:</para>
+    <para>The following image types are built in to OpenEmbedded:</para>
 
     <variablelist>
       <varlistentry>
@@ -114,7 +115,7 @@
           system"</emphasis> images. This is a read only compressed filesystem
           which is used directly by decompressing files into RAM as they are
           accessed. Files sizes are limited to 16MB, file system size is
-          limited to 256MB, only 8-bit uid and guids are support, no hard
+          limited to 256MB, only 8-bit uids and gids are supported, no hard
           links are supported and no time stamps are supported.<screen>IMAGE_CMD_cramfs = "mkcramfs ${IMAGE_ROOTFS} \
   ${DEPLOY_DIR_IMAGE}/${IMAGE_NAME}.rootfs.cramfs \
   ${EXTRA_IMAGECMD}"</screen></para>
@@ -180,7 +181,7 @@ rmdir ${DEPLOY_DIR_IMAGE}/tmp.gz"</screen></para>
           <para>Creates a squashfs image. This is a read only compressed
           filesystem which is used directly with files uncompressed into RAM
           as they are accessed. Files and filesystems may be up to 2^64 bytes
-          in size, full 32-bit uid and gids are stored, it detects duplicate
+          in size, full 32-bit uids and gids are stored, it detects duplicate
           files and stores only a single copy, all meta-data is compressed and
           big and little endian filesystems can be mounted on any
           platform.</para>

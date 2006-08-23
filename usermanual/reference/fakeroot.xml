@@ -3,12 +3,12 @@
   <title>fakeroot (device node handling)</title>
 
   <para>The fakeroot program is designed to allow non-root users to perform
-  actions that normally require root as part of the package generation
-  process. It is used by <xref linkend="rootfs_ipkg_class" /> the for root
-  filesystem creation and by <xref linkend="image_ipkg_class" /> for the
-  creation of filesystem images. Some recipes also use fakeroot to assist with
-  parts of the package installation (usually) or building that requires root
-  privileges.</para>
+  actions that would normally require root privileges as part of the package
+  generation process. It is used by the <xref linkend="rootfs_ipkg_class" />
+  for root filesystem creation and by the <xref linkend="image_ipkg_class" />
+  for the creation of filesystem images. Some recipes also use fakeroot to
+  assist with parts of the package installation (usually) or building where
+  root privligeses are expected by the package.</para>
 
   <para>In particular fakeroot deals with:</para>
 
@@ -28,7 +28,7 @@
     <para>First of all we'll look at an example of how the fakeroot process
     works when used manually.</para>
 
-    <para>If we attempt to create a device node as a normal, non-root, user
+    <para>If we attempt to create a device node as a normal non-root user then
     the command will fail, telling is that we do not have permission to create
     device nodes:<screen>~%&gt; mknod hdc b 22 0
 mknod: `hdc': Operation not permitted</screen>Yet the <xref
@@ -37,7 +37,7 @@ mknod: `hdc': Operation not permitted</screen>Yet the <xref
     privileges.</para>
 
     <para>Let's try and create that node again, this time we'll run the
-    commands from within the fakeroot process:<screen>~%&gt; ./tmp/staging/x86_64-linux/bin/fakeroot
+    commands from within a fakeroot process:<screen>~%&gt; ./tmp/staging/x86_64-linux/bin/fakeroot
 ~#&gt; mknod hdc b 22 0
 ~#&gt; ls -l hdc
 brw-------  1 root root 22, 0 Aug 18 13:20 hdc
@@ -59,8 +59,8 @@ mount: only root can do that
     libfakeroot and about not being able to run mount because we are not
     root.</para>
 
-    <para>If we exit the fakeroot process and then look at the device node we
-    see this:<screen>~#&gt; exit
+    <para>If we exit the fakeroot process and then look at the device node
+    this is what we see:<screen>~#&gt; exit
 ~%&gt; ls -l hdc
 brw-------  1 user user 22, 0 Aug 18 13:20 hdc
 ~#&gt;</screen></para>
@@ -72,13 +72,13 @@ brw-------  1 user user 22, 0 Aug 18 13:20 hdc
     <command>LD_PRELOAD</command> to load a shared library into program which
     replaces calls into libc, such as open and stat, and then returns
     information to make it look like certain commands succeeded without
-    actually performing them. So when creating a device node fakeroot
-    will:</para>
+    actually performing those commands. So when creating a device node
+    fakeroot will:</para>
 
     <orderedlist>
       <listitem>
         <para>Intercept the mknod system call and instead of creating a device
-        node it'll just created an empty file, owned by the user who run
+        node it'll just create an empty file, owned by the user who run
         fakeroot;</para>
       </listitem>
 
@@ -111,9 +111,9 @@ brw-------  1 user user 22, 0 Aug 18 13:20 hdc
       </listitem>
 
       <listitem>
-        <para>None of the device nodes, uid or gid's will appear on disk,
-        however if you for example tar up a directory from within fakeroot all
-        of these device, uid's and gid's will appear in the tar
+        <para>None of the device nodes, uids or gids will appear on disk.
+        However if you tar up a directory from within fakeroot (for example),
+        all of these device, uids and gids will appear correctly in the tar
         archive;</para>
       </listitem>
 
@@ -131,7 +131,7 @@ brw-------  1 user user 22, 0 Aug 18 13:20 hdc
     <title>Root filesystem, images and fakeroot</title>
 
     <para>Many people have been confused by the generated root filesystem not
-    containing and valid device nodes. But this is the expected
+    containing any valid device nodes. This is in fact the expected
     behaviour.</para>
 
     <para>When you look at a generated root filesystem you'll notice that the
@@ -142,7 +142,7 @@ brw-------  1 user user 22, 0 Aug 18 13:20 hdc
 ~%&gt;</screen>These are empty files and not device nodes at all.</para>
 
     <para>If we look in the image files generated from that root filesystem
-    everything is actually ok:<screen>~%&gt; tar -ztvf tmp/deploy/images/titan-titan-20060816030639.rootfs.tar.gz | grep " ./dev/ttySC"
+    then everything is actually ok:<screen>~%&gt; tar -ztvf tmp/deploy/images/titan-titan-20060816030639.rootfs.tar.gz | grep " ./dev/ttySC"
 crw-r----- root/root     204,8 2006-08-16 13:07:12 ./dev/ttySC0
 crw-r----- root/root     204,9 2006-08-16 13:07:12 ./dev/ttySC1
 crw-r----- root/root    204,10 2006-08-16 13:07:12 ./dev/ttySC2
@@ -162,8 +162,9 @@ crw-r----- root/root    204,10 2006-08-16 13:07:12 ./dev/ttySC2
 
     <para>Some applications require that you have root permissions to run
     their installation routine, and this is another area where fakeroot can
-    help. In a recipe a standard task, such as <emphasis>do_install</emphasis>
-    for example:<screen>do_install() {
+    help. In a recipe the method for a standard task, such as the
+    <command>do_install</command> method for the <emphasis>install</emphasis>
+    task:<screen>do_install() {
     install -d ${D}${bindir} ${D}${sbindir} ${D}${mandir}/man8 \
                ${D}${sysconfdir}/default \
                ${D}${sysconfdir}/init.d \
@@ -172,7 +173,7 @@ crw-r----- root/root    204,10 2006-08-16 13:07:12 ./dev/ttySC2
     oe_runmake install DESTDIR=${D}
     oe_runmake install-man DESTDIR=${D}
     ...</screen>can be modified to run within a fakeroot environment by
-    prefixing the task with fakeroot:<screen><emphasis role="bold">fakeroot</emphasis> do_install() {
+    prefixing the method name with fakeroot:<screen><emphasis role="bold">fakeroot</emphasis> do_install() {
     install -d ${D}${bindir} ${D}${sbindir} ${D}${mandir}/man8 \
                ${D}${sysconfdir}/default \
                ${D}${sysconfdir}/init.d \

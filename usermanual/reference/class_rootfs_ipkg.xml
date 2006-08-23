@@ -4,20 +4,19 @@
 
   <para>The <emphasis>rootf_ipk</emphasis> class us used to create a root
   filesystem for the target device from a set of .ipkg packages. The end
-  result is a directory containing all the files that need to be packages that
-  would need to be included in the root filesystem of the target
-  device.</para>
+  result is a directory containing all the files that need to be included in
+  the root filesystem of the target device.</para>
 
-  <para>This class is normally not useddirectly, but instead used from
-  the<xref linkend="image_ipkg_class" /> which creates disk images from a set
-  of <command>.ipkg</command> files.</para>
+  <para>This class is normally not used directly, but instead used from the
+  <xref linkend="image_ipkg_class" /> which creates images from a set of
+  <command>.ipkg</command> files.</para>
 
   <para>Summary of actions performed by the <emphasis>rootfs_ipkg</emphasis>
   class:</para>
 
   <orderedlist>
     <listitem>
-      <para>Erase an existing root filesyste image by deleting the entire
+      <para>Erase any existing root filesystem image by deleting the entire
       contents of <command>${IMAGE_ROOTFS}</command>;</para>
     </listitem>
 
@@ -37,11 +36,11 @@
     </listitem>
 
     <listitem>
-      <para>Install locale related .ipkg packages;</para>
+      <para>Installs locale related .ipkg packages;</para>
     </listitem>
 
     <listitem>
-      <para>Install the list of requested <command>.ipkg</command> packages,
+      <para>Installs the list of requested <command>.ipkg</command> packages,
       <command>${IPKG_INSTALL}</command>;</para>
     </listitem>
 
@@ -75,12 +74,12 @@
       <para>Makes available a set of functions which may be used by callers of
       the class: <command>zap_root_password</command>,
       <command>create_etc_timestamp</command> and
-      <command>remote_init_link</command>;</para>
+      <command>remove_init_link</command>;</para>
     </listitem>
 
     <listitem>
-      <para>Adds the rootfs task to run after the do_install task
-      <command>"addtask rootfs before do_build and
+      <para>Adds the rootfs task to run after the <emphasis>install</emphasis>
+      task <command>"addtask rootfs before do_build and
       do_install"</command>.</para>
     </listitem>
   </orderedlist>
@@ -204,9 +203,9 @@
   </variablelist>
 
   <para>Note that the entire process is run under the control of <xref
-  linkend="fakeroot" /> in order to handle device files, uid and gid's. The
+  linkend="fakeroot" /> in order to handle device files, uids and gids. The
   <command>ROOTFS_POSTPROCESS_COMMAND</command> is useful due to the fact that
-  it runs within he same <xref linkend="fakeroot" /> instance as the rest of
+  it runs within the same <xref linkend="fakeroot" /> instance as the rest of
   this class.</para>
 
   <para>The class also provides a function <command>real_do_rootfs</command>
