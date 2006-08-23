@@ -51,7 +51,7 @@ RDEPENDS_angstrom-base-wifi = "\
     prism3-firmware \
     wireless-tools \
     wpa-supplicant \
-    "
+"
 
 RRECOMMENDS_angstrom-base-wifi = "\
     kernel-module-hostap-cs \
