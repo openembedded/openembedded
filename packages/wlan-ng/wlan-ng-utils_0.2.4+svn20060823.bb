@@ -3,7 +3,8 @@ HOMEPAGE = "http://www.linux-wlan.org"
 SECTION = "kernel/userland"
 DEPENDS = "virtual/kernel"
 LICENSE = "GPL"
-PR = "r2"
+
+SRCDATE = "20060823"
 PV = "0.2.4+svn${SRCDATE}"
 
 SRC_URI = "svn://svn.shaftnet.org/linux-wlan-ng;module=trunk \
@@ -69,7 +70,3 @@ do_install() {
 }
 
 FILES_${PN} = "/etc /sbin"
-
-DEFAULT_PREFERENCE = "-1"
-
-FILESPATH = "${@base_set_filespath([ '${FILE_DIRNAME}/${PN}-0.2.4+svn20060823', '${FILE_DIRNAME}/files', '${FILE_DIRNAME}/wlan-ng-utils' ], d)}"
