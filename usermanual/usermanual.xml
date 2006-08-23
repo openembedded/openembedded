@@ -253,6 +253,16 @@ they will be added automatically.</para>
         <section>
             <title>BitBake Collections <anchor id="collections" /></title>
             <para>This section is a stub, help us by expanding it</para>
+            <para>
+<screen>
+BBFILES := "${OEDIR}/openembedded/packages/*/*.bb ${LOCALDIR}/packages/*/*.bb"
+BBFILE_COLLECTIONS = "upstream local"
+BBFILE_PATTERN_upstream = "^${OEDIR}/openembedded/packages/"
+BBFILE_PATTERN_local = "^${LOCALDIR}/packages/"
+BBFILE_PRIORITY_upstream = "5"
+BBFILE_PRIORITY_local = "10"
+</screen>
+</para>
         </section>
 
         <section>
