@@ -3,8 +3,8 @@ SECTION = "libs"
 PRIORITY = "optional"
 LICENSE = "LGPL"
 DEPENDS = "intltool-native glib-2.0"
-PR = "r1"
-SRCDATE = "20060804"
+PR = "r2"
+CVSDATE = "20060804"
 #Remove the dash below when 0.3.1 changes in PV
 PV = "0.3.1+cvs-${CVSDATE}"
 
