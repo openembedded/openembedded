@@ -543,7 +543,8 @@ python base_eventhandler() {
 		msg += messages.get(name[5:]) or name[5:]
 	elif name == "UnsatisfiedDep":
 		msg += "package %s: dependency %s %s" % (e.pkg, e.dep, name[:-3].lower())
-	note(msg)
+	if msg:
+		note(msg)
 
 	if name.startswith("BuildStarted"):
 		bb.data.setVar( 'BB_VERSION', bb.__version__, e.data )
