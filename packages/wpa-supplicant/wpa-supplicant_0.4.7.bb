@@ -26,13 +26,13 @@ do_compile () {
 
 do_install () {
 	install -d ${D}${sbindir}
-	install -m755 wpa_supplicant ${D}${sbindir}
-	install -m755 wpa_passphrase ${D}${sbindir}
-	install -m755 wpa_cli        ${D}${sbindir}
+	install -m 755 wpa_supplicant ${D}${sbindir}
+	install -m 755 wpa_passphrase ${D}${sbindir}
+	install -m 755 wpa_cli        ${D}${sbindir}
 
 	install -d ${D}${sysconfdir}
-	install -m644 ${WORKDIR}/wpa_supplicant.conf ${D}${sysconfdir}
+	install -m 644 ${WORKDIR}/wpa_supplicant.conf ${D}${sysconfdir}
 
 	install -d ${D}${docdir}/wpa_supplicant
-	install -m644 README ${D}${docdir}/wpa_supplicant
+	install -m 644 README ${D}${docdir}/wpa_supplicant
 }

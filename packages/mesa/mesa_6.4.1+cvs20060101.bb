@@ -25,6 +25,7 @@ do_configure() {
 	sed -e "s%OPT_FLAGS *= *.*%OPT_FLAGS = ${TARGET_CFLAGS}%" -i current
 	sed -e "s%X11_INCLUDES *= *.*%X11_INCLUDES = -I${STAGING_INCDIR}/X11%" -i current
 	sed -e "s%EXTRA_LIB_PATH *= *.*%EXTRA_LIB_PATH = ${LDFLAGS}%" -i current
+	sed -i s:\$\(CC\):gcc:g  ../src/mesa/x86/Makefile
 	echo "SRC_DIRS = mesa glu glut/glx" >> current
 }
 

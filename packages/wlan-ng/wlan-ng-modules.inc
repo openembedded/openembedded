@@ -13,7 +13,6 @@ SRC_URI = "file://no-compat.patch;patch=1 \
 #	file://module_param_array.patch;patch=1 \
 	file://scripts-makefile-hostcc.patch;patch=1 \
 	file://pcmciasrc.patch;patch=1 \
-	file://pcmcia-driver.patch;patch=1 \
 	file://config.in"
 
 inherit module

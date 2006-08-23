@@ -1,0 +1,11 @@
+--- dbus-0.92/bus/Makefile.am.orig	2006-08-20 14:37:07.393810316 +0200
++++ dbus-0.92/bus/Makefile.am	2006-08-20 14:38:01.509274554 +0200
+@@ -107,7 +107,7 @@
+  		$(mkinstalldirs) $(DESTDIR)$(DBUS_DAEMONDIR); \
+  		chmod 755 $(DESTDIR)$(DBUS_DAEMONDIR); \
+  	fi
+-	$(INSTALL_PROGRAM) dbus-daemon $(DESTDIR)$(DBUS_DAEMONDIR)
++	$(INSTALL_PROGRAM) .libs/dbus-daemon $(DESTDIR)$(DBUS_DAEMONDIR)
+ 	$(mkinstalldirs) $(DESTDIR)$(localstatedir)/run/dbus
+ 	$(mkinstalldirs) $(DESTDIR)$(configdir)/system.d
+ 	$(mkinstalldirs) $(DESTDIR)$(datadir)/dbus-1/services
