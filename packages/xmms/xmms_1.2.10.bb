@@ -3,14 +3,17 @@ HOMEPAGE = "http://www.xmms.org/"
 LICENSE = "GPL"
 SECTION = "x11/multimedia"
 # TODO add esd
-DEPENDS = "gtk+-1.2 libvorbis mikmod alsa-lib"
+DEPENDS = "gtk+-1.2 libvorbis mikmod alsa-lib libsm esound"
 
 SRC_URI = "http://www.xmms.org/files/1.2.x/xmms-${PV}.tar.bz2 \
            file://gcc4.patch;patch=1 \
            file://xmms-config-dequote.patch;patch=1 \
 	   file://acinclude.m4 \
            file://xmms.sh"
-PR = "r2"
+PR = "r3"
+
+RRECOMMENDS_${PN} = "xmms-plugin-output-oss xmms-plugin-output-alsa \
+                    xmms-mad xmms-tremor"
 
 inherit autotools binconfig
 
@@ -35,6 +38,31 @@ do_install_append() {
 	install xmms/xmms_mini.xpm ${D}${datadir}/pixmaps
 }
 
+PACKAGES_DYNAMIC = "xmms-plugin-effect-* xmms-plugin-general-* \
+                    xmms-plugin-input-* xmms-plugin-output-* \
+		    xmms-plugin-visualisation-*"
+
+python populate_packages_prepend () {
+	import os.path
+
+	xmms_libdir = bb.data.expand('${libdir}/xmms', d)
+	effects_root = os.path.join(xmms_libdir, 'Effect')
+	general_root = os.path.join(xmms_libdir, 'General')
+	input_root = os.path.join(xmms_libdir, 'Input')
+	output_root = os.path.join(xmms_libdir, 'Output')
+	visualisation_root = os.path.join(xmms_libdir, 'Visualization')
+
+	do_split_packages(d, effects_root, '^lib(.*)\.so$', 'xmms-plugin-effect-%s', 'XMMS Effect plugin for %s')
+	do_split_packages(d, general_root, '^lib(.*)\.so$', 'xmms-plugin-general-%s', 'XMMS General plugin for %s')
+	do_split_packages(d, input_root, '^lib(.*)\.so$', 'xmms-plugin-input-%s', 'XMMS Input plugin for %s')
+	do_split_packages(d, output_root, '^lib(.*)\.so$', 'xmms-plugin-output-%s', 'XMMS Output plugin for %s')
+	do_split_packages(d, visualisation_root, '^lib(.*)\.so$', 'xmms-plugin-visualization-%s', 'XMMS Visualization plugin for %s')
+}
+
 do_stage() {
 	autotools_stage_all
 }
+
+FILES_${PN} = "${bindir}/xmms ${bindir}/xmms.sh ${libdir}/libxmms*.so.* \
+               ${datadir}/applications/xmms.desktop \
+	       ${datadir}/pixmaps/xmms_mini.xpm"
