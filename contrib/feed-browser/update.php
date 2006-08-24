@@ -39,6 +39,7 @@
 $start = time();
 $p_count = 0;
 
+define('DB_FILENAME', './feeds.db');
 
 $feeds = db_query("SELECT f_name, f_uri FROM feeds");
 
@@ -151,22 +152,30 @@ function insert_ipkgs ($package, $version, $depends, $section, $arch, $maintaine
 
 function db_query($query)
 {
-	$db_name = "./feeds.db";
-	$db_h = sqlite_open($db_name);
-	$query_h = sqlite_query ($db_h, $query);
-	$result = sqlite_fetch_all ($query_h, SQLITE_ASSOC);
-	sqlite_close($db_h);
-	return ($result);
+	$result = FALSE;
+
+	if($db_h = sqlite_open(DB_FILENAME))
+	{
+		$query_h = sqlite_query ($db_h, $query);
+		$result = sqlite_fetch_all ($query_h, SQLITE_ASSOC);
+		sqlite_close($db_h);
+	}
+
+	return $result;
 }
 
 
 function db_query_n($query)
 {
-	$db_name = "./feeds.db";
-	$db_h = sqlite_open($db_name);
-	$query_h = sqlite_query ($db_h, $query);
-	sqlite_close($db_h);
-	return ($result);
+	$result = FALSE;
+
+	if($db_h = sqlite_open(DB_FILENAME))
+	{
+		$query_h = sqlite_query ($db_h, $query);
+		sqlite_close($db_h);
+	}
+
+	return $result;
 }
 
 
