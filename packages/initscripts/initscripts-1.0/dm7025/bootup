@@ -1,0 +1,70 @@
+modprobe lcd
+echo 4 > /proc/progress
+
+mount -t proc proc /proc
+echo 8 > /proc/progress
+
+mount -t sysfs sysfs /sys
+echo 12 > /proc/progress
+
+depmod -Ae
+echo 16 > /proc/progress
+
+swapon -a
+echo 20 > /proc/progress
+
+mount -at nonfs,nosmbfs,noncpfs 2>/dev/null
+echo 24 > /proc/progress
+
+tar xzf /etc/var.tar.gz -C /
+echo 28 > /proc/progress
+
+# sleep after 10min
+hdparm -S 120 /dev/ide/host0/bus0/target0/lun0/disc
+echo 32 > /proc/progress
+# set UDMA66
+hdparm -X66 /dev/ide/host0/bus0/target0/lun0/disc
+echo 34 > /proc/progress
+# accustic management
+hdparm -M 128 /dev/ide/host0/bus0/target0/lun0/disc
+
+echo 38 > /proc/progress
+modprobe xilleon
+
+echo 42 > /proc/progress
+modprobe dreambox_keyboard
+
+echo 46 > /proc/progress
+modprobe fp
+
+echo 50 > /proc/progress
+modprobe rfmod
+
+echo 54 > /proc/progress
+[ -e /etc/dropbear/dropbear_rsa_host_key ] && /usr/bin/showiframe
+
+echo 58 > /proc/progress
+/boot/bootlogo.mvi || /usr/bin/showiframe /boot/bootlogo_wait.mvi
+
+echo 62 > /proc/progress
+hostname -F /etc/hostname
+
+echo 66 > /proc/progress
+/usr/bin/wdog /usr/bin/dccamd -
+
+echo 70 > /proc/progress
+ifup -a
+
+echo 78 > /proc/progress
+mount -at
+
+echo 82 > /proc/progress
+[ -e "/etc/sysctl.conf" ] && /sbin/sysctl -p "/etc/sysctl.conf"
+
+echo 86 > /proc/progress
+ldconfig
+
+echo 90 > /proc/progress
+
+ipkg-cl configure
+echo 94 > /proc/progress
