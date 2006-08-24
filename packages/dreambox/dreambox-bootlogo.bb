@@ -7,14 +7,18 @@ MAINTAINER = "Felix Domke <tmbinc@elitedvb.net>"
 PV = "1.0"
 PR = "r1"
 
-SRC_URI = "http://sources.dreamboxupdate.com/download/7020/bootlogo_dm7020.elf \
+SRC_URI = "http://sources.dreamboxupdate.com/download/7020/bootlogo_dm600pvr.elf \
+	http://sources.dreamboxupdate.com/download/7020/bootlogo_dm7020.elf \
 	http://sources.dreamboxupdate.com/download/7020/bootlogo_dm7025.elf \
 	http://sources.dreamboxupdate.com/download/7020/bootlogo_dm7020.mvi \
 	http://sources.dreamboxupdate.com/download/7020/bootlogo_wait_dm7020.mvi \
 	http://sources.dreamboxupdate.com/download/7020/backdrop_dm7020.mvi \
 	http://sources.dreamboxupdate.com/download/7020/bootlogo_dm7025.mvi \
 	http://sources.dreamboxupdate.com/download/7020/bootlogo_wait_dm7025.mvi \
-	http://sources.dreamboxupdate.com/download/7020/backdrop_dm7025.mvi"
+	http://sources.dreamboxupdate.com/download/7020/backdrop_dm7025.mvi \
+	http://sources.dreamboxupdate.com/download/7020/bootlogo_dm600pvr.mvi \
+	http://sources.dreamboxupdate.com/download/7020/bootlogo_wait_dm600pvr.mvi \
+	http://sources.dreamboxupdate.com/download/7020/backdrop_dm600pvr.mvi"
 
 S = "${WORKDIR}/"
 
