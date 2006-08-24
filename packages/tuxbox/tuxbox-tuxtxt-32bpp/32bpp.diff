@@ -244,7 +244,7 @@ diff -Naur tuxtxt_org/tuxtxt.c tuxtxt/tuxtxt.c
  	if (tuxtxt_cache.vtxtpid == -1 || fb == -1 || rc == -1 || sx == -1 || ex == -1 || sy == -1 || ey == -1)
  	{
  		printf("TuxTxt <Invalid Param(s)>\n");
-@@ -1572,6 +1623,7 @@
+@@ -1572,6 +1624,7 @@
  					int vendor = 3; /* values unknown, rely on requested values */
  #endif
  
@@ -252,7 +252,7 @@ diff -Naur tuxtxt_org/tuxtxt.c tuxtxt/tuxtxt.c
  					if (vendor < 3) /* scart-parameters only known for 3 dboxes, FIXME: order must be like in info.h */
  					{
  						for (i = 0; i < 6; i++) /* FIXME: FBLK seems to cause troubles */
-@@ -1604,6 +1656,7 @@
+@@ -1604,6 +1657,7 @@
  								perror("TuxTxt <ioctl(avs)>");
  						}
  					}
@@ -260,7 +260,7 @@ diff -Naur tuxtxt_org/tuxtxt.c tuxtxt/tuxtxt.c
  					continue; /* otherwise ignore exit key */
  				}
  				default:
-@@ -1690,6 +1743,10 @@
+@@ -1690,6 +1744,10 @@
  
  	/* exit */
  	CleanUp();
@@ -271,7 +271,7 @@ diff -Naur tuxtxt_org/tuxtxt.c tuxtxt/tuxtxt.c
  
  #if !TUXTXT_CFG_STANDALONE
  	if ( initialized )
-@@ -1859,6 +1916,14 @@
+@@ -1859,6 +1917,14 @@
  	            dumpl25 = ival & 1;
  			else if (1 == sscanf(line, "UseTTF %i", &ival))
  	            usettf = ival & 1;
@@ -286,7 +286,7 @@ diff -Naur tuxtxt_org/tuxtxt.c tuxtxt/tuxtxt.c
  		}
  		fclose(conf);
  	}
-@@ -1926,11 +1991,8 @@
+@@ -1926,11 +1992,8 @@
  		typettf.font.pix_height = (FT_UShort) 23;
  	}
  
@@ -299,7 +299,7 @@ diff -Naur tuxtxt_org/tuxtxt.c tuxtxt/tuxtxt.c
  	if ((error = FTC_Manager_Lookup_Face(manager, typettf.font.face_id, &face)))
  	{
  		typettf.font.face_id = (usettf ? (FTC_FaceID) TUXTXTTTF : TUXTXTOTB);
-@@ -1949,6 +2011,7 @@
+@@ -1949,6 +2012,7 @@
  			 ymosaic[0], ymosaic[1], ymosaic[2], StartX, StartY, ascender);
  #endif
  
@@ -307,7 +307,7 @@ diff -Naur tuxtxt_org/tuxtxt.c tuxtxt/tuxtxt.c
  	/* get fixed screeninfo */
  	if (ioctl(fb, FBIOGET_FSCREENINFO, &fix_screeninfo) == -1)
  	{
-@@ -2048,40 +2111,25 @@
+@@ -2048,40 +2112,25 @@
  	tuxtxt_start(tuxtxt_cache.vtxtpid);
  #endif
  
@@ -356,7 +356,7 @@ diff -Naur tuxtxt_org/tuxtxt.c tuxtxt/tuxtxt.c
  	gethotlist();
  	SwitchScreenMode(screenmode);
  	prevscreenmode = screenmode;
-@@ -2115,8 +2163,8 @@
+@@ -2115,8 +2164,8 @@
  	tuxtxt_stop();
  #endif
  	/* restore videoformat */
@@ -367,7 +367,7 @@ diff -Naur tuxtxt_org/tuxtxt.c tuxtxt/tuxtxt.c
  
  	if (restoreaudio)
  	{
-@@ -2125,6 +2173,7 @@
+@@ -2125,6 +2174,7 @@
  #else
  		int vendor = 3; /* values unknown, rely on requested values */
  #endif
@@ -375,7 +375,7 @@ diff -Naur tuxtxt_org/tuxtxt.c tuxtxt/tuxtxt.c
  		if (vendor < 3) /* scart-parameters only known for 3 dboxes, FIXME: order must be like in info.h */
  		{
  			for (i = 1; i < 6; i += 2) /* restore dvb audio */
-@@ -2134,6 +2183,7 @@
+@@ -2134,6 +2184,7 @@
  					perror("TuxTxt <ioctl(avs)>");
  			}
  		}
@@ -383,7 +383,7 @@ diff -Naur tuxtxt_org/tuxtxt.c tuxtxt/tuxtxt.c
  	}
  
  	if (var_screeninfo.yoffset)
-@@ -2143,12 +2193,9 @@
+@@ -2143,12 +2194,9 @@
  		if (ioctl(fb, FBIOPAN_DISPLAY, &var_screeninfo) == -1)
  			perror("TuxTxt <FBIOPAN_DISPLAY>");
  	}
@@ -398,7 +398,7 @@ diff -Naur tuxtxt_org/tuxtxt.c tuxtxt/tuxtxt.c
  
  	/* close freetype */
  	FTC_Manager_Done(manager);
-@@ -2157,6 +2204,14 @@
+@@ -2157,6 +2205,14 @@
  	/* unmap framebuffer */
  	munmap(lfb, fix_screeninfo.smem_len);
  
@@ -413,7 +413,7 @@ diff -Naur tuxtxt_org/tuxtxt.c tuxtxt/tuxtxt.c
  
  	if (hotlistchanged)
  		savehotlist();
-@@ -2190,6 +2245,10 @@
+@@ -2190,6 +2246,10 @@
  			fprintf(conf, "ShowLevel2p5 %d\n", showl25);
  			fprintf(conf, "DumpLevel2p5 %d\n", dumpl25);
  			fprintf(conf, "UseTTF %d\n", usettf);
@@ -424,7 +424,7 @@ diff -Naur tuxtxt_org/tuxtxt.c tuxtxt/tuxtxt.c
  			fclose(conf);
  		}
  	}
-@@ -2851,6 +2910,7 @@
+@@ -2851,6 +2911,7 @@
  					memset(&menu[Menu_Width*MenuLine[M_COL] + 3+color_mode  ], 0x20,24-color_mode);
  					Menu_HighlightLine(menu, MenuLine[menuitem], 1);
  					setcolors((unsigned short *)defaultcolors, 0, SIZECOLTABLE);
@@ -432,7 +432,7 @@ diff -Naur tuxtxt_org/tuxtxt.c tuxtxt/tuxtxt.c
  					break;
  				case M_TRA:
  					saveconfig = 1;
-@@ -2862,6 +2922,7 @@
+@@ -2862,6 +2923,7 @@
  					memset(&menu[Menu_Width*MenuLine[M_TRA] + 3+trans_mode  ], 0x20,24-trans_mode);
  					Menu_HighlightLine(menu, MenuLine[menuitem], 1);
  					setcolors((unsigned short *)defaultcolors, 0, SIZECOLTABLE);
@@ -440,7 +440,7 @@ diff -Naur tuxtxt_org/tuxtxt.c tuxtxt/tuxtxt.c
  					break;
  				case M_PID:
  				{
-@@ -2970,6 +3031,7 @@
+@@ -2970,6 +3032,7 @@
  					memset(&menu[Menu_Width*MenuLine[M_COL] + 3+color_mode  ], 0x20,24-color_mode);
  					Menu_HighlightLine(menu, MenuLine[menuitem], 1);
  					setcolors((unsigned short *)defaultcolors, 0, SIZECOLTABLE);
@@ -448,7 +448,7 @@ diff -Naur tuxtxt_org/tuxtxt.c tuxtxt/tuxtxt.c
  					break;
  				case M_TRA:
  					saveconfig = 1;
-@@ -2981,6 +3043,7 @@
+@@ -2981,6 +3044,7 @@
  					memset(&menu[Menu_Width*MenuLine[M_TRA] + 3+trans_mode  ], 0x20,24-trans_mode);
  					Menu_HighlightLine(menu, MenuLine[menuitem], 1);
  					setcolors((unsigned short *)defaultcolors, 0, SIZECOLTABLE);
@@ -456,7 +456,7 @@ diff -Naur tuxtxt_org/tuxtxt.c tuxtxt/tuxtxt.c
  					break;
  				case M_PID:
  					if (!getpidsdone)
-@@ -3286,8 +3349,8 @@
+@@ -3286,8 +3350,8 @@
  					memcpy(&menu[Menu_Width*MenuLine[M_SC1] + Menu_Width - 5], &configonoff[menulanguage][screen_mode1  ? 3 : 0], 3);
  					Menu_HighlightLine(menu, MenuLine[menuitem], 1);
  
@@ -467,7 +467,17 @@ diff -Naur tuxtxt_org/tuxtxt.c tuxtxt/tuxtxt.c
  
  					break;
  
-@@ -3854,9 +3917,9 @@
+@@ -3414,7 +3478,8 @@
+ 	}
+ 
+ 	/* generate pagenumber */
+-	temp_page |= Number << inputcounter*4;
++	if (inputcounter >= 0)
++		temp_page |= Number << inputcounter*4;
+ 
+ 	inputcounter--;
+ 
+@@ -3854,9 +3919,9 @@
  
  void SwitchScreenMode(int newscreenmode)
  {
@@ -479,7 +489,7 @@ diff -Naur tuxtxt_org/tuxtxt.c tuxtxt/tuxtxt.c
  	/* reset transparency mode */
  	if (transpmode)
  		transpmode = 0;
-@@ -3935,8 +3998,8 @@
+@@ -3935,8 +4000,8 @@
  		ioctl(pig, VIDIOC_S_FMT, &format);
  		ioctl(pig, VIDIOC_OVERLAY, &sm);
  #endif
@@ -490,7 +500,7 @@ diff -Naur tuxtxt_org/tuxtxt.c tuxtxt/tuxtxt.c
  	}
  	else /* not split */
  	{
-@@ -3950,8 +4013,8 @@
+@@ -3950,8 +4015,8 @@
  		displaywidth= (ex-sx);
  		StartX = sx; //+ (ex-sx - 40*fontwidth) / 2; /* center screen */
  
@@ -501,7 +511,7 @@ diff -Naur tuxtxt_org/tuxtxt.c tuxtxt/tuxtxt.c
  	}
  }
  
-@@ -3985,8 +4048,8 @@
+@@ -3985,8 +4050,8 @@
  	else if (transpmode == 1) /* semi-transparent BG with FG text */
  	{
  		/* restore videoformat */
@@ -512,7 +522,7 @@ diff -Naur tuxtxt_org/tuxtxt.c tuxtxt/tuxtxt.c
  
  		ClearBB(transp);
  		tuxtxt_cache.pageupdate = 1;
-@@ -3994,8 +4057,8 @@
+@@ -3994,8 +4059,8 @@
  	else /* TV mode */
  	{
  		/* restore videoformat */
@@ -523,7 +533,7 @@ diff -Naur tuxtxt_org/tuxtxt.c tuxtxt/tuxtxt.c
  
  		ClearFB(transp);
  		clearbbcolor = FullScrColor;
-@@ -4025,13 +4088,13 @@
+@@ -4025,13 +4090,13 @@
  	tuxtxt_cache.pageupdate = 1;
  }
  
@@ -539,7 +549,7 @@ diff -Naur tuxtxt_org/tuxtxt.c tuxtxt/tuxtxt.c
  	unsigned char *ay = ax + 13; /* array[0..10] of y-offsets for each pixel */
  
  	for (y = 0; y < 10; y++) /* 10*2 bytes a 6 pixels per char definition */
-@@ -4052,36 +4115,56 @@
+@@ -4052,36 +4117,56 @@
  
  			f1 = (c1 & bit) ? fgcolor : bgcolor;
  			f2 = (c2 & bit) ? fgcolor : bgcolor;
@@ -605,7 +615,7 @@ diff -Naur tuxtxt_org/tuxtxt.c tuxtxt/tuxtxt.c
  }
  
  void FillRectMosaicSeparated(int x, int y, int w, int h, int fgcolor, int bgcolor, int set)
-@@ -4095,48 +4178,54 @@
+@@ -4095,48 +4180,54 @@
  
  void FillTrapez(int x0, int y0, int l0, int xoffset1, int h, int l1, int color)
  {
@@ -675,7 +685,7 @@ diff -Naur tuxtxt_org/tuxtxt.c tuxtxt/tuxtxt.c
  	}
  }
  
-@@ -4377,7 +4466,7 @@
+@@ -4377,7 +4468,7 @@
  			else if (*aShapes[Char - 0x20] == S_ADT)
  			{
  				int x,y,f,c;
@@ -684,7 +694,7 @@ diff -Naur tuxtxt_org/tuxtxt.c tuxtxt/tuxtxt.c
  				for (y=0; y<fontheight;y++)
  				{
  					for (f=0; f<factor; f++)
-@@ -4385,9 +4474,9 @@
+@@ -4385,9 +4476,9 @@
  						for (x=0; x<curfontwidth*xfactor;x++)
  						{
  							c = (y&4 ? (x/3)&1 :((x+3)/3)&1);
@@ -696,7 +706,7 @@ diff -Naur tuxtxt_org/tuxtxt.c tuxtxt/tuxtxt.c
  					}
  				}
  				PosX += curfontwidth;
-@@ -4422,7 +4511,7 @@
+@@ -4422,7 +4513,7 @@
  			}
  			axdrcs[12] = curfontwidth; /* adjust last x-offset according to position, FIXME: double width */
  			RenderDRCS(p,
@@ -705,7 +715,7 @@ diff -Naur tuxtxt_org/tuxtxt.c tuxtxt/tuxtxt.c
  						  axdrcs, fgcolor, bgcolor);
  		}
  		else
-@@ -4590,21 +4679,19 @@
+@@ -4590,21 +4681,19 @@
  		return;
  	}
  
@@ -730,7 +740,7 @@ diff -Naur tuxtxt_org/tuxtxt.c tuxtxt/tuxtxt.c
  	{
  #if TUXTXT_DEBUG
  		printf("TuxTxt <FTC_SBitCache_Lookup: 0x%x> c%x a%x g%x w%d h%d x%d y%d\n",
-@@ -4631,11 +4718,8 @@
+@@ -4631,11 +4720,8 @@
  			Char = G2table[0][0x20+ Attribute->diacrit];
  		if ((glyph = FT_Get_Char_Index(face, Char)))
  		{
@@ -743,7 +753,7 @@ diff -Naur tuxtxt_org/tuxtxt.c tuxtxt/tuxtxt.c
  			{
  					sbitbuffer = localbuffer;
  					memcpy(sbitbuffer,sbit->buffer,sbit->pitch*sbit->height);
-@@ -4662,7 +4746,7 @@
+@@ -4662,7 +4748,7 @@
  			sbit->height = fontheight - ascender + sbit->top - TTFShiftY; /* limit char height to defined/calculated fontheight */
  
  
@@ -752,7 +762,7 @@ diff -Naur tuxtxt_org/tuxtxt.c tuxtxt/tuxtxt.c
  		for (Row = sbit->height; Row; Row--) /* row counts up, but down may be a little faster :) */
  		{
  			int pixtodo = (usettf ? sbit->width : curfontwidth);
-@@ -4671,8 +4755,8 @@
+@@ -4671,8 +4757,8 @@
  			for (Bit = xfactor * (sbit->left + TTFShiftX); Bit > 0; Bit--) /* fill left margin */
  			{
  				for (f = factor-1; f >= 0; f--)
@@ -763,7 +773,7 @@ diff -Naur tuxtxt_org/tuxtxt.c tuxtxt/tuxtxt.c
  				if (!usettf)
  					pixtodo--;
  			}
-@@ -4692,14 +4776,15 @@
+@@ -4692,14 +4778,15 @@
  						color = bgcolor;
  
  					for (f = factor-1; f >= 0; f--)
@@ -783,7 +793,7 @@ diff -Naur tuxtxt_org/tuxtxt.c tuxtxt/tuxtxt.c
  						if (!usettf)
  							pixtodo--;
  					}
-@@ -4710,11 +4795,11 @@
+@@ -4710,11 +4797,11 @@
  				  Bit > 0; Bit--) /* fill rest of char width */
  			{
  				for (f = factor-1; f >= 0; f--)
@@ -798,7 +808,7 @@ diff -Naur tuxtxt_org/tuxtxt.c tuxtxt/tuxtxt.c
  		}
  
  		Row = ascender - sbit->top + sbit->height + TTFShiftY;
-@@ -5428,7 +5513,7 @@
+@@ -5428,7 +5515,7 @@
  void CopyBB2FB()
  {
  	unsigned char *src, *dst, *topsrc;
@@ -807,7 +817,7 @@ diff -Naur tuxtxt_org/tuxtxt.c tuxtxt/tuxtxt.c
  
  	/* line 25 */
  	if (!pagecatching)
-@@ -5445,8 +5530,8 @@
+@@ -5445,8 +5532,8 @@
  		if (ioctl(fb, FBIOPAN_DISPLAY, &var_screeninfo) == -1)
  			perror("TuxTxt <FBIOPAN_DISPLAY>");
  
@@ -818,7 +828,7 @@ diff -Naur tuxtxt_org/tuxtxt.c tuxtxt/tuxtxt.c
  //			 ClearBB(*(lfb + var_screeninfo.xres * var_screeninfo.yoffset));
  
  		if (clearbbcolor >= 0)
-@@ -5457,18 +5542,18 @@
+@@ -5457,18 +5544,18 @@
  		return;
  	}
  
@@ -842,7 +852,7 @@ diff -Naur tuxtxt_org/tuxtxt.c tuxtxt/tuxtxt.c
  
  	if (transpmode)
  		fillcolor = transp;
-@@ -5476,47 +5561,53 @@
+@@ -5476,47 +5563,53 @@
  		fillcolor = FullScrColor;
  
  	if (zoommode == 2)
@@ -907,7 +917,7 @@ diff -Naur tuxtxt_org/tuxtxt.c tuxtxt/tuxtxt.c
  	}
  }
  
-@@ -5835,8 +5926,8 @@
+@@ -5835,8 +5928,8 @@
  					RenderDRCS(
  						page_char + 20 * (DRCSCOLS * row + col + 2),
  						lfb
@@ -918,7 +928,7 @@ diff -Naur tuxtxt_org/tuxtxt.c tuxtxt/tuxtxt.c
  						ax, white, black);
  
  			memset(page_char + 40, 0xff, 24*40); /* don't render any char below row 0 */
-@@ -6261,8 +6352,8 @@
+@@ -6261,8 +6354,8 @@
  				case KEY_VOLUMEDOWN:	RCCode = RC_MINUS;	break;
  				case KEY_MUTE:		RCCode = RC_MUTE;	break;
  				case KEY_HELP:		RCCode = RC_HELP;	break;
