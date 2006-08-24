@@ -1,0 +1,9 @@
+[Desktop Entry]
+Encoding=UTF-8
+Name=Network Manager
+Comment=NetworkManager control applet
+Exec=nm-applet
+Type=PanelApp
+Icon=none
+Categories=Panel;Utility;
+
