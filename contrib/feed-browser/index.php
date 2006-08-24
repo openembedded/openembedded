@@ -239,12 +239,18 @@ function searchletter($searchletter = '')
 
 function searchpkg ($searchword)
 {
-	$result = db_query("SELECT DISTINCT p_name,p_desc,p_section  FROM packages WHERE p_name LIKE '$searchword' ORDER BY p_name ASC;");    
+	if($result = db_query("SELECT DISTINCT p_name,p_desc,p_section  FROM packages WHERE p_name LIKE '$searchword' ORDER BY p_name ASC"))
+	{
+	    return generate_list_of_packages($result);
+	}
+}
 
+function generate_list_of_packages($query_result)
+{
 	$ipkgoutput = "<table>\n";
 	$ipkgoutput .="<tr><th>Package</th><th>Section</th><th>Description</th></tr>\n";
 
-	foreach($result as $package)
+	foreach($query_result as $package)
 	{
 		if (!strstr ($package['p_name'], 'locale'))
 		{
@@ -272,36 +278,10 @@ function searchpkg ($searchword)
 
 function searchsection($section)
 {
-	$result= db_query("SELECT DISTINCT p_name,p_desc,p_section FROM packages WHERE p_section like '$section%' order by p_section asc, p_name asc;");
-
-	$ipkgoutput = "<table>\n";
-	$ipkgoutput .="<tr><th>Package</th><th>Section</th><th>Description</th></tr>\n";
-
-	foreach($result as $package)
-	{
-		if (!strstr ($package['p_name'], 'locale'))
-		{
-			if(strlen($package['p_desc'])> 40)
-			{
-				$pos = strpos($package['p_desc'],' ',  40);
-
-				if($pos)
-				{
-					$package['p_desc'] = substr($package['p_desc'], 0, $pos) . '...';
-				}
-			}
-
-			$ipkgoutput .= sprintf ("<tr><td><a href='?action=details&amp;pnm=%s'>%s</a></td><td><a href=\"?action=section&amp;section=%s\">%s</a></td><td>%s</td></tr>",
-				urlencode($package['p_name']),
-				$package['p_name'],
-				$package['p_section'], $package['p_section'],
-				htmlentities($package['p_desc']));
-		}//if strstr
+	if($result = db_query("SELECT DISTINCT p_name,p_desc,p_section FROM packages WHERE p_section LIKE '$section%' ORDER BY p_section ASC, p_name ASC"))
+	{	
+	    return generate_list_of_packages($result);
 	}
-
-	$ipkgoutput .= "</table>\n";
-
-	return $ipkgoutput;
 }
 
 function pkgdetails ($package)
