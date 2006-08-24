@@ -4,7 +4,7 @@ MAINTAINER = "Felix Domke <tmbinc@elitdvb.net>"
 SRC_URI = "cvs://anoncvs@cvs.tuxbox.org/cvs/tuxbox;module=apps/tuxbox/libtuxbox;method=ext \
            file://acinclude.m4"
 
-CVSDATE = "20040928"
+SRCDATE = "20040928"
 PN = "libtuxbox"
 PR = "r1"
 S = "${WORKDIR}/libtuxbox"
