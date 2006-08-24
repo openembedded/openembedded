@@ -1,23 +1,39 @@
 <?php
-// (c) Koen Kooi 2006
+/* (c) Koen Kooi 2006
+ *
+ * This program is free software; you can redistribute it and/or  modify it under
+ * the terms of the GNU General Public License as published by the Free
+ * Software Foundation; either version 2 of the License.
+ *
+ * This program is distributed in the hope that it will be useful,  but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU Library General Public License along
+ * with this library; see the file COPYING.LIB.  If not, write to the Free
+ * Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
+ * USA.         
+ *              
+ */         
+
 
 /*
-A package entry looks like this:
-Package: zeroconf
-Version: 0.9-r0
-Depends: libc6 (>= 2.4)
-Provides: libfontconfig-utils
-Replaces: libfontconfig-utils
-Conflicts: libfontconfig-utils
-Section: net
-Architecture: armv5te
-Maintainer: Angstrom Developers <angstrom-dev@handhelds.org>
-MD5Sum: b8bd197224e24759d2162091a0fa727f
-Size: 12346
-Filename: zeroconf_0.9-r0_armv5te.ipk
-Source: http://www.progsoc.org/~wildfire/zeroconf/download/zeroconf-0.9.tar.gz file://zeroconf-default file://debian-zeroconf
-Description: IPv4 link-local address allocator
-*/
+   A package entry looks like this:
+   Package: zeroconf
+   Version: 0.9-r0
+   Depends: libc6 (>= 2.4)
+   Provides: libfontconfig-utils
+   Replaces: libfontconfig-utils
+   Conflicts: libfontconfig-utils
+   Section: net
+   Architecture: armv5te
+   Maintainer: Angstrom Developers <angstrom-dev@handhelds.org>
+   MD5Sum: b8bd197224e24759d2162091a0fa727f
+   Size: 12346
+   Filename: zeroconf_0.9-r0_armv5te.ipk
+   Source: http://www.progsoc.org/~wildfire/zeroconf/download/zeroconf-0.9.tar.gz file://zeroconf-default file://debian-zeroconf
+   Description: IPv4 link-local address allocator
+ */
 
 
 $start = time();
