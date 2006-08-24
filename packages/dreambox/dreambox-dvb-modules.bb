@@ -31,7 +31,6 @@ INITSCRIPT_PARAMS = "start 39 S ."
 do_install_dm7020() {
 	install -d ${D}/etc/init.d
 	install -d ${D}/lib/modules/${KV}/extra
-	install -m 0755 ${WORKDIR}/dream ${D}/etc/init.d/
 	for f in head; do
 		install -m 0644 $f.ko ${D}/lib/modules/${KV}/extra/$f.ko;
 	done
@@ -40,7 +39,6 @@ do_install_dm7020() {
 do_install_dm7025() {
 	install -d ${D}/etc/init.d
 	install -d ${D}/lib/modules/${KV}/extra
-	install -m 0755 ${WORKDIR}/dream ${D}/etc/init.d/
 	for f in alps_bsbe1.ko avs.ko dreambox_rc2.ko \
 		dreambox_keyboard.ko fp.ko lcd.ko \
 		rfmod.ko stb-proc.ko cu1216mk3.ko \
