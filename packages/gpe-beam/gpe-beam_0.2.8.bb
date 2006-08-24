@@ -3,7 +3,7 @@ PR = "r0"
 inherit gpe
 
 DESCRIPTION = "GPE infrared communication applet"
-DEPENDS = "gtk+ libgpewidget libmimedir libgpevtype openobex irda-utils dbus"
+DEPENDS = "gtk+ libgpewidget libmimedir libgpevtype openobex irda-utils dbus-glib"
 RDEPENDS = "irda-utils"
 SECTION = "gpe"
 PRIORITY = "optional"
