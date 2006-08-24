@@ -1,6 +1,6 @@
 require linux-openzaurus.inc
 
-PR = "r16"
+PR = "r20"
 
 # Handy URLs
 # git://rsync.kernel.org/pub/scm/linux/kernel/git/torvalds/linux-2.6.git \
@@ -25,10 +25,13 @@ SRC_URI = "http://www.kernel.org/pub/linux/kernel/v2.6/linux-2.6.17.tar.bz2 \
            ${RPSRC}/logo_rotate_fix-r1.patch;patch=1;status=merged \
            ${RPSRC}/collie_frontlight-r6.patch;patch=1;status=merged \
            ${RPSRC}/input_modalias_fix-r0.patch;patch=1;status=merged \
+           ${RPSRC}/spectrumcs_fix-r0.patch;patch=1 \
            file://00-hostap.patch;patch=1;status=merged \
            file://10-pcnet.patch;patch=1;status=merged \
-           ${RPSRC}/asoc-v0.11pre5-oz.patch;patch=1 \
-           ${RPSRC}/asoc_fixes2-r2.patch;patch=1 \
+           ${RPSRC}/alsa/asoc-v0.11pre12.patch;patch=1 \
+           ${RPSRC}/asoc_makefile-r0.patch;patch=1 \
+           ${RPSRC}/alsa/asoc_platform_dev_fix-r0.patch;patch=1 \
+           ${RPSRC}/asoc_poodle_morehack-r0.patch;patch=1 \
            ${RPSRC}/hx2750_base-r27.patch;patch=1 \
            ${RPSRC}/hx2750_bl-r7.patch;patch=1 \
            ${RPSRC}/hx2750_pcmcia-r2.patch;patch=1 \
