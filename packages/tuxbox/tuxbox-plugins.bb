@@ -12,8 +12,10 @@ PR = "r0"
 
 CFLAGS_append = " -DOE"
 CFLAGS_append_dm7020 = " -DHAVE_DREAMBOX_HARDWARE -DDREAMBOX"
+CFLAGS_append_dm600pvr = " -DHAVE_DREAMBOX_HARDWARE -DDREAMBOX"
 CXXFLAGS_append = " -DOE"
 CXXFLAGS_append_dm7020 = " -DHAVE_DREAMBOX_HARDWARE -DDREAMBOX"
+CXXFLAGS_append_dm600pvr = " -DHAVE_DREAMBOX_HARDWARE -DDREAMBOX"
 
 PACKAGES = "tuxbox-plugins-dev tuxbox-plugin-tuxtxt tuxbox-plugin-tuxmail \
 	tuxbox-plugin-tuxcom tuxbox-plugin-mines tuxbox-plugin-pacman \
@@ -60,6 +62,8 @@ sbindir = "/usr/sbin"
 
 EXTRA_OECONF = "--with-target=native"
 EXTRA_OECONF_append_dm7020 = " --with-boxtype=dm7020"
+# checkme!
+EXTRA_OECONF_append_dm600pvr = " --with-boxtype=dm7020"
 
 do_install_append() {
 	install -d ${D}/etc/tuxbox/tuxtxt/
