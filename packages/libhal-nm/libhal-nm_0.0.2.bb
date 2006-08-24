@@ -1,11 +1,13 @@
-DESCRIPTION="A library emulating libhal on systems where HAL cannot run"
-SECTION="libs"
-LICENSE="LGPL"
-HOMEPAGE="http://www.handhelds.org/~mmp"
+DESCRIPTION = "A library emulating libhal on systems where HAL cannot run"
+SECTION = "libs"
+LICENSE = "LGPL"
+HOMEPAGE = "http://www.handhelds.org/~mmp"
 MAINTAINER = "Milan Plzik <mmp@handhelds.org>"
-PRIORITY="optional"
-DEPENDS="glib-2.0"
-SRC_URI="http://www.handhelds.org/~mmp/files/libhal-nm-${PV}.tar.gz"
+PRIORITY = "optional"
+DEPENDS = "glib-2.0"
+SRC_URI = "http://www.handhelds.org/~mmp/files/libhal-nm-${PV}.tar.gz"
+
+PR = "r1"
 
 inherit autotools
 
@@ -16,9 +18,4 @@ do_stage () {
 do_install () {
 	oe_runmake DESTDIR=${D} install
 }
-
-PACKAGES="${PN} ${PN}-dev"
-
-FILES_${PN}="${libdir}"
-FILES_${PN}-dev="/usr/include"
 
