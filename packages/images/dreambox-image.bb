@@ -1,17 +1,17 @@
 export IMAGE_BASENAME = "dreambox-image"
 
 OPENDREAMBOX_COMMON = "base-files busybox \
-	ipkg initscripts sysvinit netbase dropbear tinylogin \
+	ipkg initscripts-opendreambox sysvinit netbase dropbear tinylogin \
 	base-passwd ncurses joe mc vsftpd timezones-alternative \
 	netkit-base fakelocale less dreambox-bootlogo  \
 	dreambox-dccamd dreambox-keymaps tuxbox-image-info dvbsnoop \
 	dreambox-compat tuxbox-common mrouted smartmontools hddtemp"
 
 OPENDREAMBOX_COMMON_D = "util-linux e2fsprogs \
-	ppp module-init-tools modutils-initscripts samba"
+	ppp module-init-tools samba"
 
 OPENDREAMBOX_COMMON_R = "util-linux-sfdisk util-linux-fdisk e2fsprogs-mke2fs \
-	e2fsprogs-e2fsck ppp module-init-tools-depmod 	modutils-initscripts \
+	e2fsprogs-e2fsck ppp module-init-tools-depmod \
 	base-files-doc sambaserver"
 
 # experimental packages
