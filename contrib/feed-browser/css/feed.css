@@ -29,11 +29,6 @@ td
 	vertical-align: top;
 }
 
-#page { 
-	margin: 1em auto;
-	width: 80%;
-}
-
 #letters
 {
 	margin: 1em 0;
@@ -59,4 +54,31 @@ h2
 dt
 {
 	padding-top: 0.5em;
+}
+
+#sections
+{
+	list-style: none;
+	font-size: 0.8em;
+}
+
+.subsections
+{
+	list-style: none;
+	margin-left: -1em;
+}
+
+#page 
+{ 
+}
+
+#left
+{
+	float: left;
+	width: 20%;
+}
+
+#right
+{
+	width: 79%;
 }

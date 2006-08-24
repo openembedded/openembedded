@@ -30,22 +30,6 @@
  *
  */
 
-?>
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
-<head>
-<title>Feed browser</title>
-<meta http-equiv="Content-Style-Type" content="text/css" />
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<style type="text/css" media="all">@import "css/feed.css";</style>
-<body >
-
-<div id="page">
-<ul id="menu">
-<li><a href="./">Main page</a></li>
-<li><a href="./?action=sectionslist">Sections list</a></li>
-</ul>
-<?php
-
 error_reporting(E_ALL);
 
 define('DB_FILENAME', './feeds.db');
@@ -77,24 +61,30 @@ switch($action)
 
 	case "letter":
 		$letter = $_GET['g'];
-		$ipkgoutput = searchletter ($letter);
-		break;
-
-	case 'sectionslist':
-		$ipkgoutput = sectionslist();
+		$ipkgoutput = searchpkg ("{$letter}%");
 		break;
 
 	default:
-		$ipkgoutput = searchletter ("a");
+		$ipkgoutput = searchpkg("a");
 		break;
 }
 
 
-echo $ipkgoutput;
-
 ?>
-</div>
-</body>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+    <head>
+	<title>Feed browser</title>
+	<meta http-equiv="Content-Style-Type" content="text/css" />
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<style type="text/css" media="all">@import "css/feed.css";</style>
+    </head>
+    <body >
+	<div id="page">
+	    <div id="left"><?php echo sectionslist(); ?></div>
+	    <div id="right"><?php echo searchletter(); echo $ipkgoutput; ?></div>
+	</div>
+    </body>
 </html>
 <?php
 
@@ -225,7 +215,7 @@ function test_insert_ipkgs ($db)
 
 }
 
-function searchletter($searchletter)
+function searchletter($searchletter = '')
 {
 	$ipkgoutput = "<div id='letters'>";
 	$alfabet = array('a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y');
@@ -238,16 +228,11 @@ function searchletter($searchletter)
 		}
 		else
 		{
-			$ipkgoutput .= sprintf(" <a href='?action=letter&g=%s'>%s</a> |", $letter, $letter );
+			$ipkgoutput .= sprintf(" <a href='?action=letter&amp;g=%s' title='packages which names begins with \"%s\"'>%s</a> |", $letter, $letter, $letter );
 		}
 	}
 
-	$ipkgoutput .= " <a href='?action=letter&g=z'>z</a></div>";
-
-	if(isset($searchletter)) 
-	{
-		$ipkgoutput .= searchpkg("$searchletter%");
-	}
+	$ipkgoutput .= " <a href='?action=letter&amp;g=z' title='packages which names begins with \"z\"'>z</a></div>";
 
 	return $ipkgoutput;
 }
@@ -274,8 +259,8 @@ function searchpkg ($searchword)
 			}
 
 			$ipkgoutput .= sprintf
-				("<tr><td><a href='?action=details&pnm=%s'>%s</a></td><td><a href=\"?action=section&section=%s\">%s</a></td><td> %s</td>\n",
-				urlencode($package['p_name']), $package['p_name'], $package['p_section'], $package['p_section'], $package['p_desc']);
+				("<tr><td><a href='?action=details&amp;pnm=%s'>%s</a></td><td><a href=\"?action=section&amp;section=%s\">%s</a></td><td> %s</td></tr>\n",
+				urlencode($package['p_name']), $package['p_name'], $package['p_section'], $package['p_section'], htmlentities($package['p_desc']));
 		}
 
 	}
@@ -306,11 +291,11 @@ function searchsection($section)
 				}
 			}
 
-			$ipkgoutput .= sprintf ("<tr><td><a href='?action=details&pnm=%s'>%s</a></td><td><a href=\"?action=section&section=%s\">%s</a></td><td>%s</td>",
+			$ipkgoutput .= sprintf ("<tr><td><a href='?action=details&amp;pnm=%s'>%s</a></td><td><a href=\"?action=section&amp;section=%s\">%s</a></td><td>%s</td></tr>",
 				urlencode($package['p_name']),
 				$package['p_name'],
 				$package['p_section'], $package['p_section'],
-				$package['p_desc']);
+				htmlentities($package['p_desc']));
 		}//if strstr
 	}
 
@@ -321,7 +306,9 @@ function searchsection($section)
 
 function pkgdetails ($package)
 {
-	$result = db_query("SELECT * FROM packages,feeds WHERE packages.p_name='$package' AND feeds.f_name = packages.p_feed");
+	$result = db_query("SELECT * FROM packages,feeds
+				WHERE packages.p_name='$package' AND feeds.f_name = packages.p_feed 
+				ORDER BY packages.p_version DESC");
 	
 	// display first result
 
@@ -330,7 +317,7 @@ function pkgdetails ($package)
 		$package = $result[0];
 
 		$details = sprintf("<h1>Package details for %s %s</h1>", $package['packages.p_name'], $package['packages.p_version']);
-		$details .= sprintf ("<p id='description'>%s</p>", $package['packages.p_desc']);
+		$details .= sprintf ("<p id='description'>%s</p>", htmlentities($package['packages.p_desc']));
 		$details .= "<dl>";
 
 		$details .= sprintf ("\n<dt>Maintainer:</dt><dd>%s</dd>", htmlentities(str_replace('@', ' at ', $package['packages.p_maintainer'])));
@@ -342,7 +329,7 @@ function pkgdetails ($package)
 
 		if($package['packages.p_section'])
 		{
-			$details .= sprintf ("\n<dt>Section:</dt><dd><a href='?action=section&section=%s'>%s</a></dd>", $package['packages.p_section'],$package['packages.p_section']);
+			$details .= sprintf ("\n<dt>Section:</dt><dd><a href='?action=section&amp;section=%s'>%s</a></dd>", $package['packages.p_section'],$package['packages.p_section']);
 		}
 		
 		if($package['packages.p_depends'])
@@ -417,8 +404,11 @@ function pkgdetails ($package)
 
 		foreach($result as $packages_a)
 		{
-			$details .= sprintf("\n<li><a href='%s'>%s %s</a> for %s</li>\n",
+			$details .= sprintf("\n<li><a href='%s' title='%s %s for %s'>%s %s</a> for %s</li>\n",
 				$packages_a['feeds.f_uri']."/".$packages_a['packages.p_file'],
+				$packages_a['packages.p_name'],
+				$packages_a['packages.p_version'],
+				$packages_a['packages.p_arch'],
 				$packages_a['packages.p_name'],
 				$packages_a['packages.p_version'],
 				$packages_a['packages.p_arch']);
@@ -456,7 +446,7 @@ function addlinks ($input)
 		{
 			// find position of string in line
 			$pos = strpos ($input, $element, $offset);
-			$link = sprintf("<a href=\"?action=details&pnm=%s\">$element</a>", urlencode ($element));
+			$link = sprintf("<a href=\"?action=details&amp;pnm=%s\">$element</a>", urlencode ($element));
 
 			// replace element with a link
 			$input = substr_replace ($input, $link, $pos, strlen ($element));
@@ -480,13 +470,62 @@ function sectionslist()
 
 	if($result =  db_query ("SELECT DISTINCT p_section FROM packages ORDER BY p_section"))
 	{
-		$ipkgoutput = "<ul>\n";
+		$ipkgoutput = "<ul id='sections'>\n";
+
+		$section_up = $result[0]['p_section'];
+		$section_level = FALSE;
+		$opie_top = FALSE;
 
 		foreach($result as $item)
 		{
-			$ipkgoutput .= sprintf ("<li><a href='?action=section&section=%s'>%s</a></li>",
+			$section_name = $item['p_section'];
+
+			if(0 === strpos($section_name, 'opie') AND !$opie_top)
+			{
+				$opie_top = TRUE;
+
+				$section_up = 'opie';
+			}
+			elseif($opie_top AND 0 !== strpos($section_name, 'opie'))
+			{
+				$opie_top = FALSE;
+			}
+
+			if(
+				strpos($section_name, '/')		// subsection
+			)
+			{
+				if(0 === strpos($section_name, $section_up . '/'))	// console/network are not part of console/net
+				{
+					if(!$section_level)
+					{
+						$ipkgoutput .= '<li><ul class="subsections">';
+					}
+
+					$section_name = str_replace($section_up . '/', '', $item['p_section']);
+					$section_level = TRUE;
+				}
+			}
+			elseif($section_level)
+			{
+				$section_up = $section_name;
+				$ipkgoutput .= '</ul></li>';
+				$section_level = FALSE;
+			}
+			else
+			{
+				$section_up = $section_name;
+			}
+
+			$ipkgoutput .= sprintf ("<li><a href='?action=section&amp;section=%s' title='%s'>%s</a></li>",
 				urlencode($item['p_section']),
-				$item['p_section']);
+				urlencode($item['p_section']),
+				$section_name);
+		}
+
+		if($section_level)
+		{
+		    $ipkgoutput .= '</ul></li>';
 		}
 
 		$ipkgoutput .= "</ul>\n";
