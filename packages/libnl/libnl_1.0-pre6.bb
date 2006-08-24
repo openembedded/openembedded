@@ -4,22 +4,16 @@ LICENSE = "LGPL"
 HOMEPAGE = "http://people.suug.ch/~tgr/libnl/"
 MAINTAINER = "Milan Plzik <mmp@handhelds.org>"
 PRIORITY = "optional"
-DEPENDS = "glibc"
+PV = "0.99+1.0-pre6"
 
 inherit autotools pkgconfig gpe
 
-SRC_URI= "http://people.suug.ch/~tgr/libnl/files/${P}.tar.gz \
+SRC_URI= "http://people.suug.ch/~tgr/libnl/files/${PN}-1.0-pre6.tar.gz \
            file://local-includes.patch;patch=1"
 
-do_install() {
-        oe_runmake prefix=${prefix} DESTDIR=${D} install
-}
+S = "${WORKDIR}/${PN}-1.0-pre6"
 
 do_stage () {
 	autotools_stage_all prefix=${prefix}
-}
-
-do_install () {
-	oe_runmake prefix=${prefix} DESTDIR=${D} install
 }
 
