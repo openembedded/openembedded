@@ -55,3 +55,8 @@ h2
 	display: inline;
 	list-style: none;
 }
+
+dt
+{
+	padding-top: 0.5em;
+}

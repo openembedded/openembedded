@@ -48,44 +48,9 @@
 
 error_reporting(E_ALL);
 
-$db_name = "./feeds.db";
-$db = sqlite_open($db_name);
+define('DB_FILENAME', './feeds.db');
 
-//initialiaze db
-if (db_table_exists ($db, 'packages') === FALSE)
-{  
-	sqlite_query ($db, "CREATE TABLE  packages (
-		p_name         varchar(50),
-		p_version    varchar(10),
-		p_arch        varchar(12),
-		p_depends    varchar(50),
-		p_maintainer    varchar(50),
-		p_homepage    varchar(100),
-		p_section    varchar(20),
-		p_replaces    varchar(50),
-		p_provides    varchar(50),
-		p_recommends varchar(50),
-		p_conflicts    varchar(50),
-		p_size        int(10),
-		p_md5        char(32),
-		p_source    varchar(500),
-		p_feed        varchar(20),
-		p_file        varchar(100),
-		p_desc        varchar(1000))");
-}
-
-if (db_table_exists ($db, 'feeds') === FALSE)
-{  
-	sqlite_query ($db, "CREATE TABLE feeds (
-		f_name         varchar(20),
-		f_uri        varchar(100),
-		f_comments    varchar(500))");
-
-	test_insert_ipkgs ($db) ;
-}
-
-//close the db
-sqlite_close($db);
+check_database();
 
 $action = '';
 
@@ -159,18 +124,11 @@ function db_table_exists ($db, $mytable)
 	return FALSE;
 }
 
-function get_archs_fromdb()
-{
-	return db_query("SELECT DISTINCT p_arch FROM packagess ORDER BY p_arch");
-}
-
 function db_query($query)
 {
-	global $db_name;
-
 	$result = FALSE;
 
-	if($db_h = sqlite_open($db_name))
+	if($db_h = sqlite_open(DB_FILENAME))
 	{
 		if($query_h = sqlite_query ($db_h, $query))
 		{
@@ -373,43 +331,43 @@ function pkgdetails ($package)
 
 		$details = sprintf("<h1>Package details for %s %s</h1>", $package['packages.p_name'], $package['packages.p_version']);
 		$details .= sprintf ("<p id='description'>%s</p>", $package['packages.p_desc']);
-		$details .= "<table>";
+		$details .= "<dl>";
 
-		$details .= sprintf ("\n<tr><td>Maintainer:</td><td>%s</td>", htmlentities(str_replace('@', ' at ', $package['packages.p_maintainer'])));
+		$details .= sprintf ("\n<dt>Maintainer:</dt><dd>%s</dd>", htmlentities(str_replace('@', ' at ', $package['packages.p_maintainer'])));
 		
 		if($package['packages.p_homepage']) 
 		{
-			$details .= sprintf ("\n<tr><td>Homepage:</td><td>%s</td>", $package['packages.p_homepage']);
+			$details .= sprintf ("\n<dt>Homepage:</dt><dd>%s</dd>", $package['packages.p_homepage']);
 		}
 
 		if($package['packages.p_section'])
 		{
-			$details .= sprintf ("\n<tr><td>Section:</td><td><a href='?action=section&section=%s'>%s</td>", $package['packages.p_section'],$package['packages.p_section']);
+			$details .= sprintf ("\n<dt>Section:</dt><dd><a href='?action=section&section=%s'>%s</a></dd>", $package['packages.p_section'],$package['packages.p_section']);
 		}
 		
 		if($package['packages.p_depends'])
 		{
-			$details .= sprintf ("\n<tr><td>Depends:</td><td>%s</td>", addlinks ($package['packages.p_depends']));
+			$details .= sprintf ("\n<dt>Depends:</dt><dd>%s</dd>", addlinks ($package['packages.p_depends']));
 		}
 		
 		if($package['packages.p_recommends'])
 		{
-			$details .= sprintf ("\n<tr><td>Recommends:</td><td>%s</td>", addlinks ($package['packages.p_recommends']));
+			$details .= sprintf ("\n<dt>Recommends:</dt><dd>%s</dd>", addlinks ($package['packages.p_recommends']));
 		}
 		
 		if($package['packages.p_replaces'])
 		{
-			$details .= sprintf ("\n<tr><td>Replaces:</td><td>%s</td>", addlinks ($package['packages.p_replaces']));
+			$details .= sprintf ("\n<dt>Replaces:</dt><dd>%s</dd>", addlinks ($package['packages.p_replaces']));
 		}
 		
 		if($package['packages.p_provides'])
 		{
-			$details .= sprintf ("\n<tr><td>Provides:</td><td>%s</td>", addlinks ($package['packages.p_provides']));
+			$details .= sprintf ("\n<dt>Provides:</dt><dd>%s</dd>", addlinks ($package['packages.p_provides']));
 		}
 		
 		if($package['packages.p_conflicts'])
 		{
-			$details .= sprintf ("\n<tr><td>Conflicts:</td><td>%s</td>", addlinks ($package['packages.p_conflicts']));
+			$details .= sprintf ("\n<dt>Conflicts:</dt><dd>%s</dd>", addlinks ($package['packages.p_conflicts']));
 		}
 		
 		$size = $package['packages.p_size'];
@@ -429,7 +387,7 @@ function pkgdetails ($package)
 			$size = sprintf("%s Bytes", $size);
 		}
 
-		$details .= sprintf ("\n<tr><td>Size:</td><td>%s</td></tr></table>", $size);
+		$details .= sprintf ("\n<dt>Size:</dt><dd>%s</dd></dl>", $size);
 
 		if($package['packages.p_source'])
 		{
@@ -535,6 +493,47 @@ function sectionslist()
 	}
 
 	return $ipkgoutput;
+}
+
+function check_database()
+{
+	if($db = sqlite_open(DB_FILENAME))
+	{
+		//initialize db
+		if (db_table_exists ($db, 'packages') === FALSE)
+		{  
+			sqlite_query ($db, "CREATE TABLE  packages (
+				p_name         varchar(50),
+				p_version    varchar(10),
+				p_arch        varchar(12),
+				p_depends    varchar(50),
+				p_maintainer    varchar(50),
+				p_homepage    varchar(100),
+				p_section    varchar(20),
+				p_replaces    varchar(50),
+				p_provides    varchar(50),
+				p_recommends varchar(50),
+				p_conflicts    varchar(50),
+				p_size        int(10),
+				p_md5        char(32),
+				p_source    varchar(500),
+				p_feed        varchar(20),
+				p_file        varchar(100),
+				p_desc        varchar(1000))");
+		}
+
+		if (db_table_exists ($db, 'feeds') === FALSE)
+		{  
+			sqlite_query ($db, "CREATE TABLE feeds (
+				f_name         varchar(20),
+				f_uri        varchar(100),
+				f_comments    varchar(500))");
+
+			test_insert_ipkgs ($db) ;
+		}
+
+		sqlite_close($db);
+	}
 }
 
 ?>
