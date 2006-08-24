@@ -2,7 +2,7 @@ DESCRIPTION = "SWIG - Simplified Wrapper and Interface Generator"
 SECTION = "unknown"
 HOMEPAGE = "http://swig.sourceforge.net/"
 LICENSE = "BSD"
-PV = "0.0cvs${CVSDATE}"
+PV = "0.0cvs${SRCDATE}"
 PR = "r0"
 
 SRC_URI = "cvs://anonymous:@cvs.sourceforge.net/cvsroot/swig;module=SWIG"

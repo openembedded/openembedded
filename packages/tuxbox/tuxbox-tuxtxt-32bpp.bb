@@ -10,8 +10,8 @@ SRC_URI = "cvs://anoncvs@cvs.tuxbox.org/cvs/tuxbox;module=apps/tuxbox/plugins/tu
 
 FILES_${PN} = "/usr/bin /usr/share/fonts /usr/lib/enigma2/python/Plugins/Extensions/Tuxtxt /etc/tuxtxt"
 
-CVSDATE = "20060112"
-PV = "0.0+cvs${CVSDATE}"
+SRCDATE = "20060112"
+PV = "0.0+cvs${SRCDATE}"
 PR = "r2"
 
 S = "${WORKDIR}/tuxtxt"

@@ -1,4 +1,4 @@
-CVSDATE = "20060408"
+SRCDATE = "20060408"
 include enigma_cvs.bb
 SRC_URI_append = " file://network_fix.diff;patch=1;pnum=1 \
 	file://rotor_fix.diff;patch=1;pnum=1 \

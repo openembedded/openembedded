@@ -8,9 +8,9 @@ SRC_URI = "cvs://anoncvs@cvs.tuxbox.org/cvs/tuxbox;module=apps/dvb/tools/stream;
            file://enable_transform.diff;patch=1;pnum=1 \
 	   file://add_configfiles.diff;patch=1;pnum=1"
 
-CVSDATE = "20050802"
+SRCDATE = "20050802"
 S = "${WORKDIR}/stream"
-PV = "1.0+${CVSDATE}"
+PV = "1.0+${SRCDATE}"
 PR = "r1"
 
 inherit autotools pkgconfig

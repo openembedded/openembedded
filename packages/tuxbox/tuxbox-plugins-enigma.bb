@@ -7,8 +7,8 @@ SRC_URI = "cvs://anoncvs@cvs.tuxbox.org/cvs/tuxbox;module=apps/tuxbox/plugins;me
 	   file://fix_config_path.diff;patch=1;pnum=1 \
 	   file://fix_install_weather_pics.diff;patch=1;pnum=1"
 
-CVSDATE = "20060112"
-PV = "0.0+cvs${CVSDATE}"
+SRCDATE = "20060112"
+PV = "0.0+cvs${SRCDATE}"
 PR = "r0"
 
 CFLAGS_append = " -I${STAGING_INCDIR}/enigma -DHAVE_DREAMBOX_HARDWARE -DDREAMBOX"

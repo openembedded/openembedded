@@ -4,7 +4,7 @@ MAINTAINER = "Felix Domke <tmbinc@elitedvb.net>"
 LICENSE = "GPL"
 
 DEFAULT_PREFERENCE=-1
-PV = "cvs-${CVSDATE}"
+PV = "cvs-${SRCDATE}"
 PN = "enigma"
 PR = "r0"
 

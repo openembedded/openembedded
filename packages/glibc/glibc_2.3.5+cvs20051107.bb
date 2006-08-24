@@ -6,7 +6,7 @@ PRIORITY = "required"
 MAINTAINER = "Felix Domke <tmbinc@elitedvb.net>"
 
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/glibc-cvs-2.3.5"
-CVSDATE = "20051107"
+SRCDATE = "20051107"
 PR = "r0"
 
 GLIBC_ADDONS ?= "ports,linuxthreads"
