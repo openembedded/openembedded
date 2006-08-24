@@ -4,10 +4,10 @@ MAINTAINER = "Felix Domke <tmbinc@elitdvb.net>"
 
 PN = "tuxbox-common"
 PR = "r7"
-CVSDATE = "20060628"
-PV = "cvs${CVSDATE}"
+SRCDATE = "20060628"
+PV = "cvs${SRCDATE}"
 
-SRC_URI = "cvs://anoncvs@cvs.tuxbox.org/cvs/tuxbox/;module=cdk/root/share/tuxbox;method=ext;tag=dreambox;date=${CVSDATE} \
+SRC_URI = "cvs://anoncvs@cvs.tuxbox.org/cvs/tuxbox/;module=cdk/root/share/tuxbox;method=ext;tag=dreambox;date=${SRCDATE} \
 	http://dreamboxupdate.com/download/opendreambox/tuxbox-common-${PR}.tar.gz"
 
 FILES_${PN} = "/"
@@ -25,17 +25,6 @@ do_install() {
 	install -m 0644 ${WORKDIR}/tuxbox/terrestrial.xml ${D}/etc/tuxbox/terrestrial.xml
 	install -m 0644 ${S}/timezone.xml ${D}/etc/tuxbox/timezone.xml
 
-	cat <<EOF >> ${D}/etc/init.d/tuxbox-hdd.sh
-# sleep after 10min
-hdparm -S 120 /dev/ide/host0/bus0/target0/lun0/disc
-# set UDMA66
-hdparm -X66 /dev/ide/host0/bus0/target0/lun0/disc
-# accustic management
-hdparm -M 128 /dev/ide/host0/bus0/target0/lun0/disc
-EOF
-
-	chmod a+x ${D}/etc/init.d/tuxbox-hdd.sh
-	ln -sf ../init.d/tuxbox-hdd.sh ${D}/etc/rcS.d/S38tuxbox-hdd.sh
 	ln -sf /etc/tuxbox/timezone.xml ${D}/etc/
 
 	install -d ${D}/usr/share/tuxbox
