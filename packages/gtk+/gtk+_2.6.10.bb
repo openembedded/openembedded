@@ -6,10 +6,10 @@ SECTION = "libs"
 PRIORITY = "optional"
 MAINTAINER = "Philip Blundell <pb@handhelds.org>"
 DEPENDS = "glib-2.0 pango atk jpeg libpng xext libxcursor gtk-doc libgcrypt"
-PR = "r4"
+PR = "r5"
 
 RRECOMMENDS_${PN} = "glibc-gconv-iso8859-1" 
-RRECOMMENDS_${PN}_openzaurus = "glibc-gconv-iso8859-1 gdk-pixbuf-loader-png gdk-pixbuf-loader-jpg gdk-pixbuf-loader-gif gdk-pixbuf-loader-xpm"
+RRECOMMENDS_${PN}_openzaurus = "glibc-gconv-iso8859-1 gdk-pixbuf-loader-png gdk-pixbuf-loader-jpeg gdk-pixbuf-loader-gif gdk-pixbuf-loader-xpm"
 
 SRC_URI = "ftp://ftp.gtk.org/pub/gtk/v2.6/gtk+-${PV}.tar.bz2 \
            file://help.patch;patch=1 \
