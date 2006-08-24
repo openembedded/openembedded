@@ -32,6 +32,17 @@ do_install_dm7020() {
 	done;
 }
 
+do_install_dm600pvr() {
+	install -d ${STAGING_INCDIR}/ci
+	install -d ${STAGING_INCDIR}/dbox
+	install -d ${STAGING_INCDIR}/dreambox
+	install -d ${STAGING_INCDIR}/ost
+	install -d ${STAGING_INCDIR}/tuxbox
+	for f in ${INPUT_FILES} ${INPUT_FILES_OST}; do
+		install -m 0644 ${S}/$f ${STAGING_INCDIR}/$f
+	done;
+}
+
 do_install_dm7025() {
 	install -d ${STAGING_INCDIR}/ci
 	install -d ${STAGING_INCDIR}/dbox
