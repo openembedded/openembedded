@@ -15,6 +15,9 @@ def get_modules_extension(bb, d):
 KV_dm7025 = "2.6.12.6"
 PV_dm7025 = "${KV}-20060711${@get_modules_extension(bb, d)}"
 
+KV_dm600pvr = "2.6.12"
+PV_dm600pvr = "${KV}-20060525"
+
 RDEPENDS = "kernel (${KV})"
 PR = "r0"
 
@@ -23,13 +26,14 @@ SRC_URI_append_dm7025 = "http://sources.dreamboxupdate.com/download/7020/fpupgra
 
 S = "${WORKDIR}"
 
-inherit update-rc.d
-
-INITSCRIPT_NAME = "dream"
-INITSCRIPT_PARAMS = "start 39 S ."
+do_install_dm600pvr() {
+	install -d ${D}/lib/modules/${KV}/extra
+	for f in head; do
+		install -m 0644 $f.ko ${D}/lib/modules/${KV}/extra/$f.ko;
+	done
+}
 
 do_install_dm7020() {
-	install -d ${D}/etc/init.d
 	install -d ${D}/lib/modules/${KV}/extra
 	for f in head; do
 		install -m 0644 $f.ko ${D}/lib/modules/${KV}/extra/$f.ko;
@@ -37,7 +41,6 @@ do_install_dm7020() {
 }
 
 do_install_dm7025() {
-	install -d ${D}/etc/init.d
 	install -d ${D}/lib/modules/${KV}/extra
 	for f in alps_bsbe1.ko avs.ko dreambox_rc2.ko \
 		dreambox_keyboard.ko fp.ko lcd.ko \
