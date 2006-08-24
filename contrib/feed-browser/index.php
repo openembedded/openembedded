@@ -300,7 +300,7 @@ function pkgdetails ($package)
 		$details .= sprintf ("<p id='description'>%s</p>", htmlentities($package['packages.p_desc']));
 		$details .= "<dl>";
 
-		$details .= sprintf ("\n<dt>Maintainer:</dt><dd>%s</dd>", htmlentities(str_replace('@', ' at ', $package['packages.p_maintainer'])));
+		$details .= sprintf ("\n<dt>Maintainer:</dt><dd>%s</dd>", str_replace(array('@',', '), array(' at ', '<br />'), htmlentities($package['packages.p_maintainer'])));
 		
 		if($package['packages.p_homepage']) 
 		{
