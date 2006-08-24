@@ -151,7 +151,7 @@ function insert_ipkgs ($package, $version, $depends, $section, $arch, $maintaine
 
 function db_query($query)
 {
-	$db_name = "/home/koen/feeds.db";
+	$db_name = "./feeds.db";
 	$db_h = sqlite_open($db_name);
 	$query_h = sqlite_query ($db_h, $query);
 	$result = sqlite_fetch_all ($query_h, SQLITE_ASSOC);
@@ -162,7 +162,7 @@ function db_query($query)
 
 function db_query_n($query)
 {
-	$db_name = "/home/koen/feeds.db";
+	$db_name = "./feeds.db";
 	$db_h = sqlite_open($db_name);
 	$query_h = sqlite_query ($db_h, $query);
 	sqlite_close($db_h);
