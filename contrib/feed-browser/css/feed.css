@@ -1,0 +1,57 @@
+body
+{
+	color: #000;
+	background-color: #fff;
+	font-family: Sans;
+	padding: 0;
+	margin: 0;
+}
+
+a
+{
+	text-decoration: none;
+	color: #0066cc
+}
+
+table
+{
+	width: 100%;
+}
+
+th
+{
+	font-weight: bold;
+}
+
+td
+{
+	padding: 0 0.5em;
+	vertical-align: top;
+}
+
+#page { 
+	margin: 1em auto;
+	width: 80%;
+}
+
+#letters
+{
+	margin: 1em 0;
+	text-align: center;
+}
+
+h1
+{
+	font-size: 125%;
+}
+
+h2
+{
+	font-size: 105%;
+}
+
+#menu, #menu li
+{
+	display: inline;
+	list-style: none;
+}
