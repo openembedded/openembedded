@@ -1,21 +1,29 @@
 PV = "1.1.0+git${SRCDATE}"
 DEFAULT_PREFERENCE = "-2"
 
+PR = "r1"
+
 LICENSE = "MIT"
 DEPENDS = "tslib libxkbfile xf86dgaproto xf86vidmodeproto xf86miscproto xproto libxdmcp xextproto xtrans libxau virtual/libx11 libxext libxrandr fixesproto damageproto libxfont resourceproto compositeproto xcalibrateext recordproto videoproto scrnsaverproto"
 
 PROVIDES = "virtual/xserver"
 RPROVIDES = "virtual/xserver"
-PACKAGES = "xserver-kdrive-fbdev xserver-kdrive-fake xserver-kdrive-xephyr ${PN}-doc ${PN}-dev ${PN}-locale"
+PACKAGES =+ "xserver-kdrive-fbdev xserver-kdrive-fake xserver-kdrive-xephyr ${PN}-doc ${PN}-dev ${PN}-locale"
 SECTION = "x11/base"
 DESCRIPTION = "X server from freedesktop.org"
 DESCRIPTION_xserver-kdrive-fbdev = "X server from freedesktop.org, supporting generic framebuffer devices"
 DESCRIPTION_xserver-kdrive-fake = "Fake X server"
 DESCRIPTION_xserver-kdrive-xephyr = "X server in an X window"
 
+FILES_${PN} += "${libdir}/xserver/SecurityPolicy"
+
 FILES_xserver-kdrive-fbdev = "${bindir}/Xfbdev"
 FILES_xserver-kdrive-fake = "${bindir}/Xfake"
 FILES_xserver-kdrive-xephyr = "${bindir}/Xephyr"
+
+RDEPENDS_xserver-kdrive-fbdev = "${PN}"
+RDEPENDS_xserver-kdrive-fake = "${PN}"
+RDEPENDS_xserver-kdrive-xephyr = "${PN}"
 
 SRC_URI = "git://anongit.freedesktop.org/xorg/xserver;protocol=git \
 	file://kmode.patch;patch=1 \
