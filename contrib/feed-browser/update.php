@@ -35,6 +35,7 @@
    Description: IPv4 link-local address allocator
  */
 
+error_reporting(E_ALL);
 
 $start = time();
 $p_count = 0;
@@ -45,82 +46,96 @@ $feeds = db_query("SELECT f_name, f_uri FROM feeds");
 
 foreach($feeds as $feed)
 {
+    print("Updating {$feed['f_name']}: {$feed['f_uri']}\n");
+    db_query_n("DELETE FROM packages WHERE p_feed = '{$feed['f_name']}'");
 
-	print("Updating $feed[f_name]: $feed[f_uri]\n");
-	db_query_n("DELETE FROM packages WHERE p_feed = '$feed[f_name]'");
-	
-	$count = 0;
+    $count = 0;
 
-	$packagesgz_h = fopen("compress.zlib://$feed[f_uri]/Packages.gz", "r");
-	if ($packagesgz_h) {
-		while (!feof($packagesgz_h)) {
-			$buffer = fscanf($packagesgz_h, "%[^:]: %[ -~]");
-			list ($field, $value) = $buffer;
+    $packagesgz_h = fopen("compress.zlib://{$feed['f_uri']}/Packages.gz", "r");
 
+    if ($packagesgz_h)
+    {
+	$package_info = array(
+	    'name'=>'', 'version'=>'', 'arch'=>'', 'depends'=>'', 
+	    'maintainer'=>'',  'homepage'=>'',  'section'=>'',  'replaces'=>'', 
+	    'provides'=>'', 'recommends'=>'', 'conflicts'=>'', 'size'=>'',  
+	    'md5sum'=>'', 'source'=>'', 'feed'=>'', 'file'=>'', 'desc'=>''
+	    );
 
-			if($field == 'Package' && $count > 0)
-			{
-				insert_ipkgs ($package, $version, $depends, $section, $arch, $maintainer, $md5sum, $size, $file, $source, $desc,$feed[f_name], $conflicts, $provides, $replaces,  $recommends);
-				unset($package, $version, $depends, $section, $arch, $maintainer, $md5sum, $size, $file, $source, $desc,  $conflicts, $provides, $replaces,  $recommends);
-			}
+	while (!feof($packagesgz_h)) 
+	{
+	    $buffer = fscanf($packagesgz_h, "%[^:]: %[ -~]");
+	    list ($field, $value) = $buffer;
 
+	    if($field == 'Package' && $count > 0)
+	    {
+		insert_ipkgs($package_info);
 
-			switch($field)
-			{
-				case 'Package':
-					$package = $value; 	
-					$count++;	
-					break;
-				case 'Version':
-					$version = $value;
-					break;
-				case 'Depends':
-					$depends = $value;
-					break;
-				case 'Provides':
-					$provides = $value;
-					break;
-				case 'Recommends':
-					$recommends = $value;
-					break;
-				case 'Replaces':
-					$replaces = $value;
-					break;
-				case 'Conflicts':
-					$conflicts = $value;
-					break;
-				case 'Section':
-					$section = $value;
-					break;
-				case 'Architecture':
-					$arch = $value;
-					break;
-				case 'Maintainer':
-					$maintainer = str_replace("'","\"", $value);
-					break;
-				case 'MD5sum':
-					$md5sum = $value;
-					break;
-				case 'Size':
-					$size = $value;
-					break;
-				case 'Filename':
-					$file = $value;
-					break;
-				case 'Source':
-					$source = $value;
-					break;
-				case 'Description':
-					$desc = str_replace("'","\"", $value);
-					break;
-			}
+		$package_info = array(
+		    'name'=>'', 'version'=>'', 'arch'=>'', 'depends'=>'', 
+		    'maintainer'=>'',  'homepage'=>'',  'section'=>'',  'replaces'=>'', 
+		    'provides'=>'', 'recommends'=>'', 'conflicts'=>'', 'size'=>'',  
+		    'md5sum'=>'', 'source'=>'', 'feed'=>'', 'file'=>'', 'desc'=>''
+		);
+	    }
 
-		}
-		insert_ipkgs ($package, $version, $depends, $section, $arch, $maintainer, $md5sum, $size, $file, $source, $desc,$feed[f_name], $conflicts, $provides, $replaces,  $recommends);
+	    switch($field)
+	    {
+		case 'Package':
+		    $package_info['name'] = $value; 	
+		    $count++;	
+		    break;
+		case 'Version':
+		    $package_info['version'] = $value;
+		    break;
+		case 'Depends':
+		    $package_info['depends'] = $value;
+		    break;
+		case 'Provides':
+		    $package_info['provides'] = $value;
+		    break;
+		case 'Recommends':
+		    $package_info['recommends'] = $value;
+		    break;
+		case 'Replaces':
+		    $package_info['replaces'] = $value;
+		    break;
+		case 'Conflicts':
+		    $package_info['conflicts'] = $value;
+		    break;
+		case 'Section':
+		    $package_info['section'] = $value;
+		    break;
+		case 'Architecture':
+		    $package_info['arch'] = $value;
+		    break;
+		case 'Maintainer':
+		    $package_info['maintainer'] = str_replace("'","\"", $value);
+		    break;
+		case 'MD5sum':
+		    $package_info['md5sum'] = $value;
+		    break;
+		case 'Size':
+		    $package_info['size'] = $value;
+		    break;
+		case 'Filename':
+		    $package_info['file'] = $value;
+		    break;
+		case 'Source':
+		    $package_info['source'] = $value;
+		    break;
+		case 'Description':
+		    $package_info['desc'] = str_replace("'","\"", $value);
+		    break;
+	    }
+
 	}
 
-$p_count = $count + $p_count;
-gzclose($packagesgz_h);
+	insert_ipkgs($package_info);
+    }
+
+    $p_count = $count + $p_count;
+    gzclose($packagesgz_h);
 }
 //close the db
 
@@ -141,41 +156,48 @@ $seconds = $difference;
 print "Added $p_count packages in $days days, $hours hours, $minutes minutes and $seconds seconds \n";
 
 
-function insert_ipkgs ($package, $version, $depends, $section, $arch, $maintainer, $md5sum, $size, $file, $source, $desc, $feed, $conflicts, $provides, $replaces, $recommends)
+function insert_ipkgs(&$package_info)
 {
-	db_query_n(
-		"INSERT INTO packages   (p_name,      p_version,  p_depends, p_arch, p_maintainer, p_section, p_size, p_md5,   p_source, p_desc, p_feed, p_file, p_conflicts, p_provides, p_replaces, p_recommends)
-		VALUES                  ('$package', '$version', '$depends', '$arch', '$maintainer',  '$section',  '$size',  '$md5sum', '$source', '$desc', '$feed', '$file', '$conflicts', '$provides', '$replaces', '$recommends')
-		");
+    db_query_n("INSERT INTO packages VALUES (
+	'{$package_info['name']}', '{$package_info['version']}',
+       	'{$package_info['arch']}', '{$package_info['depends']}',
+	'{$package_info['maintainer']}',  '{$package_info['homepage']}',
+	'{$package_info['section']}',  '{$package_info['replaces']}',
+	'{$package_info['provides']}', '{$package_info['recommends']}',
+	'{$package_info['conflicts']}', '{$package_info['size']}',
+	'{$package_info['md5sum']}', '{$package_info['source']}',
+	'{$package_info['feed']}', '{$package_info['file']}',
+	'{$package_info['desc']}'
+	)");
 }
 
 
 function db_query($query)
 {
-	$result = FALSE;
+    $result = FALSE;
 
-	if($db_h = sqlite_open(DB_FILENAME))
-	{
-		$query_h = sqlite_query ($db_h, $query);
-		$result = sqlite_fetch_all ($query_h, SQLITE_ASSOC);
-		sqlite_close($db_h);
-	}
+    if($db_h = sqlite_open(DB_FILENAME))
+    {
+	$query_h = sqlite_query ($db_h, $query);
+	$result = sqlite_fetch_all ($query_h, SQLITE_ASSOC);
+	sqlite_close($db_h);
+    }
 
-	return $result;
+    return $result;
 }
 
 
 function db_query_n($query)
 {
-	$result = FALSE;
+    $result = FALSE;
 
-	if($db_h = sqlite_open(DB_FILENAME))
-	{
-		$query_h = sqlite_query ($db_h, $query);
-		sqlite_close($db_h);
-	}
+    if($db_h = sqlite_open(DB_FILENAME))
+    {
+	$query_h = sqlite_query ($db_h, $query);
+	sqlite_close($db_h);
+    }
 
-	return $result;
+    return $result;
 }
 
 
