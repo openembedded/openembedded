@@ -5,12 +5,9 @@ MAINTAINER = "Mustafa Yuecel <yuecelm@ee.ethz.ch>"
 LICENSE = "GPL"
 HOMEPAGE = "http://sourceforge.net/projects/avetanabt/"
 
-DEFAULT_PREFERENCE = "-1"
+PR = "r0"
 
-PV = "20060413+cvs${SRCDATE}"
-PR = "r5"
-
-SRC_URI = "cvs://anonymous@avetanabt.cvs.sourceforge.net/cvsroot/avetanabt;module=avetanabt"
+SRC_URI = "${SOURCEFORGE_MIRROR}/avetanabt/avetanaBluetooth-${PV}.tgz"
 
 S = "${WORKDIR}/avetanabt"
 
