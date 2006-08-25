@@ -30,6 +30,7 @@
  *
  */
 
+require_once 'includes/config.inc';
 require_once 'includes/functions.inc';
 
 check_database();

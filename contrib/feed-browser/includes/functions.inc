@@ -20,8 +20,6 @@
 
 error_reporting(E_ALL);
 
-define('DB_FILENAME', './feeds.db');
-
 function db_query($query)
 {
     $result = FALSE;
@@ -35,7 +33,6 @@ function db_query($query)
 
     return $result;
 }
-
 
 function db_query_n($query)
 {
@@ -76,88 +73,29 @@ function db_table_exists ($db, $mytable)
 	return FALSE;
 }
 
-function test_insert_ipkgs ($db) 
+function insert_feeds ($db) 
 {
+	global $feeds;
 
-	sqlite_query($db,
-		"INSERT INTO feeds (f_name,           f_uri)
-		VALUES             ('3541-base',    'http://ewi546.ewi.utwente.nl/mirror/www.openzaurus.org/official/unstable/3.5.4.1/feed/base')
-		");
+	if(isset($feeds))
+	{
+		$id = 1;
 
-	sqlite_query($db,
-		"INSERT INTO feeds (f_name,             f_uri)
-		VALUES             ('3541-opie',    'http://ewi546.ewi.utwente.nl/mirror/www.openzaurus.org/official/unstable/3.5.4.1/feed/opie')
-		");
+		foreach($feeds as $distro)
+		{
+			foreach($distro['feeds'] as $feed)
+			{
+				sqlite_query($db, "INSERT INTO feeds (f_id, f_name, f_uri) VALUES
+					(
+						{$id},
+						'{$distro['distro_name']} {$distro['distro_version']} {$feed['name']}',
+						'{$distro['feed_base_url']}{$feed['url']}'
+					)");
 
-	sqlite_query($db,
-		"INSERT INTO feeds (f_name,             f_uri)
-		VALUES             ('3541-perl',    'http://ewi546.ewi.utwente.nl/mirror/www.openzaurus.org/official/unstable/3.5.4.1/feed/perl')
-		");
-	sqlite_query($db,
-		"INSERT INTO feeds (f_name,             f_uri)
-		VALUES             ('3541-python',    'http://ewi546.ewi.utwente.nl/mirror/www.openzaurus.org/official/unstable/3.5.4.1/feed/python')
-		");
-	sqlite_query($db,
-		"INSERT INTO feeds (f_name,             f_uri)
-		VALUES             ('3541-upgrades',    'http://ewi546.ewi.utwente.nl/mirror/www.openzaurus.org/official/unstable/3.5.4.1/feed/upgrades')
-		");
-	sqlite_query($db,
-		"INSERT INTO feeds (f_name,             f_uri)
-		VALUES             ('3541-x11',    'http://ewi546.ewi.utwente.nl/mirror/www.openzaurus.org/official/unstable/3.5.4.1/feed/x11')
-		");
-	sqlite_query($db,
-		"INSERT INTO feeds (f_name,             f_uri)
-		VALUES             ('3541-machine-c7x0',    'http://ewi546.ewi.utwente.nl/mirror/www.openzaurus.org/official/unstable/3.5.4.1/feed/machine/c7x0')
-		");
-	sqlite_query($db,
-		"INSERT INTO feeds (f_name,             f_uri)
-		VALUES             ('3541-machine-spitz',    'http://ewi546.ewi.utwente.nl/mirror/www.openzaurus.org/official/unstable/3.5.4.1/feed/machine/spitz')
-		");
-	sqlite_query($db,
-		"INSERT INTO feeds (f_name,             f_uri)
-		VALUES             ('3541-machine-akita',    'http://ewi546.ewi.utwente.nl/mirror/www.openzaurus.org/official/unstable/3.5.4.1/feed/machine/akita')
-		");
-
-	sqlite_query($db,
-		"INSERT INTO feeds (f_name,             f_uri)
-		VALUES             ('3541-upgrades-machine-akita',    'http://ewi546.ewi.utwente.nl/mirror/www.openzaurus.org/official/unstable/3.5.4.1/feed/upgrades/machine/akita')
-		");
-
-	sqlite_query($db,
-		"INSERT INTO feeds (f_name,             f_uri)
-		VALUES             ('3541-upgrades-machine-c7x0',    'http://ewi546.ewi.utwente.nl/mirror/www.openzaurus.org/official/unstable/3.5.4.1/feed/upgrades/machine/c7x0')
-		");
-
-	sqlite_query($db,
-		"INSERT INTO feeds (f_name,             f_uri)
-		VALUES             ('3541-upgrades-machine-spitz',    'http://ewi546.ewi.utwente.nl/mirror/www.openzaurus.org/official/unstable/3.5.4.1/feed/upgrades/machine/spitz')
-		");
-
-	sqlite_query($db,
-		"INSERT INTO feeds (f_name,             f_uri)
-		VALUES             ('3541-upgrades-machine-tosa',    'http://ewi546.ewi.utwente.nl/mirror/www.openzaurus.org/official/unstable/3.5.4.1/feed/upgrades/machine/tosa')
-		");
-
-	sqlite_query($db,
-		"INSERT INTO feeds (f_name,           f_uri)
-		VALUES             ('354-base',    'http://ewi546.ewi.utwente.nl/mirror/www.openzaurus.org/official/unstable/3.5.4/feed/base')
-		");
-
-	sqlite_query($db,
-		"INSERT INTO feeds (f_name,             f_uri)
-		VALUES             ('354-opie',    'http://ewi546.ewi.utwente.nl/mirror/www.openzaurus.org/official/unstable/3.5.4/feed/opie')
-		");
-
-	sqlite_query($db,
-		"INSERT INTO feeds (f_name,             f_uri)
-		VALUES             ('354-x11',    'http://ewi546.ewi.utwente.nl/mirror/www.openzaurus.org/official/unstable/3.5.4/feed/x11')
-		");
-
-	sqlite_query($db,
-		"INSERT INTO feeds (f_name,             f_uri)
-		VALUES             ('354-upgrades',    'http://ewi546.ewi.utwente.nl/mirror/www.openzaurus.org/official/unstable/3.5.4/feed/upgrades')
-		");
-
+				$id++;
+			}
+		}
+	}
 }
 
 function searchletter($searchletter = '')
@@ -233,7 +171,7 @@ function pkgdetails ($package)
 {
 	$result = db_query("SELECT * FROM packages,feeds
 				WHERE (packages.p_name='$package' OR packages.p_provides='$package')
-				    AND feeds.f_name = packages.p_feed 
+				    AND feeds.f_id = packages.p_feed 
 				ORDER BY packages.p_version DESC, feeds.f_name ASC, packages.p_arch DESC ");
 	
 	// display first result
@@ -492,7 +430,7 @@ function check_database()
 				f_uri        varchar(100),
 				f_comments    varchar(500))");
 
-			test_insert_ipkgs ($db) ;
+			insert_feeds ($db) ;
 		}
 
 		sqlite_close($db);
