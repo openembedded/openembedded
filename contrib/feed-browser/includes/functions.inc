@@ -426,9 +426,10 @@ function check_database()
 		if (db_table_exists ($db, 'feeds') === FALSE)
 		{  
 			sqlite_query ($db, "CREATE TABLE feeds (
-				f_name         varchar(20),
+				f_id         int(8),
+				f_name       varchar(32),
 				f_uri        varchar(100),
-				f_comments    varchar(500))");
+				f_comments   varchar(500))");
 
 			insert_feeds ($db) ;
 		}
