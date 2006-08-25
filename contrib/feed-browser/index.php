@@ -289,7 +289,7 @@ function pkgdetails ($package)
 {
 	$result = db_query("SELECT * FROM packages,feeds
 				WHERE packages.p_name='$package' AND feeds.f_name = packages.p_feed 
-				ORDER BY packages.p_version DESC");
+				ORDER BY packages.p_version DESC, feeds.f_name ASC, packages.p_arch DESC ");
 	
 	// display first result
 
@@ -381,18 +381,20 @@ function pkgdetails ($package)
 
 		}
 
-		$details .= "\n<h2>Available versions and architectures:</h2><ul>\n";
+		$details .= "\n<h2>Available versions and architectures:</h2><ul id='download'>\n";
 
 		foreach($result as $packages_a)
 		{
-			$details .= sprintf("\n<li><a href='%s' title='%s %s for %s'>%s %s</a> for %s</li>\n",
+			$details .= sprintf("\n<li><a class='download' href='%s' title='%s %s for %s'>%s %s</a> for %s (%s feed)</li>\n",
 				$packages_a['feeds.f_uri']."/".$packages_a['packages.p_file'],
 				$packages_a['packages.p_name'],
 				$packages_a['packages.p_version'],
 				$packages_a['packages.p_arch'],
 				$packages_a['packages.p_name'],
 				$packages_a['packages.p_version'],
-				$packages_a['packages.p_arch']);
+				$packages_a['packages.p_arch'],
+				$packages_a['feeds.f_name']
+			);
 		}
 
 		$details .= "</ul>\n";
