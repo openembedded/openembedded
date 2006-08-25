@@ -42,7 +42,7 @@ check_database();
 $start = time();
 $p_count = 0;
 
-$feeds = db_query("SELECT f_name, f_uri FROM feeds");
+$feeds = db_query("SELECT f_id, f_name, f_uri FROM feeds");
 
 foreach($feeds as $feed)
 {
@@ -59,8 +59,8 @@ foreach($feeds as $feed)
 	    'name'=>'', 'version'=>'', 'arch'=>'', 'depends'=>'', 
 	    'maintainer'=>'',  'homepage'=>'',  'section'=>'',  'replaces'=>'', 
 	    'provides'=>'', 'recommends'=>'', 'conflicts'=>'', 'size'=>'',  
-	    'md5sum'=>'', 'source'=>'', 'feed'=>'', 'file'=>'', 'desc'=>''
-	    );
+	    'md5sum'=>'', 'source'=>'', 'feed'=>$feed['f_id'], 'file'=>'', 'desc'=>''
+	);
 
 	while (!feof($packagesgz_h)) 
 	{
@@ -75,7 +75,7 @@ foreach($feeds as $feed)
 		    'name'=>'', 'version'=>'', 'arch'=>'', 'depends'=>'', 
 		    'maintainer'=>'',  'homepage'=>'',  'section'=>'',  'replaces'=>'', 
 		    'provides'=>'', 'recommends'=>'', 'conflicts'=>'', 'size'=>'',  
-		    'md5sum'=>'', 'source'=>'', 'feed'=>'', 'file'=>'', 'desc'=>''
+		    'md5sum'=>'', 'source'=>'', 'feed'=>$feed['f_id'], 'file'=>'', 'desc'=>''
 		);
 	    }
 
@@ -161,7 +161,7 @@ function insert_ipkgs(&$package_info)
 {
     db_query_n("INSERT INTO packages VALUES (
 	'{$package_info['name']}', '{$package_info['version']}',
-       	'{$package_info['arch']}', '{$package_info['depends']}',
+	'{$package_info['arch']}', '{$package_info['depends']}',
 	'{$package_info['maintainer']}',  '{$package_info['homepage']}',
 	'{$package_info['section']}',  '{$package_info['replaces']}',
 	'{$package_info['provides']}', '{$package_info['recommends']}',
@@ -169,7 +169,7 @@ function insert_ipkgs(&$package_info)
 	'{$package_info['md5sum']}', '{$package_info['source']}',
 	'{$package_info['feed']}', '{$package_info['file']}',
 	'{$package_info['desc']}'
-	)");
+    )");
 }
 
 ?>

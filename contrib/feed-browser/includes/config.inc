@@ -1,6 +1,6 @@
 <?php
 
-define('DB_FILENAME', './feeds2.db');
+define('DB_FILENAME', './feeds.db');
 
 $feeds = array(
 	array(

@@ -79,15 +79,20 @@ function insert_feeds ($db)
 
 	if(isset($feeds))
 	{
+		$id = 1;
+
 		foreach($feeds as $distro)
 		{
 			foreach($distro['feeds'] as $feed)
 			{
-				sqlite_query($db, "INSERT INTO feeds (f_name, f_uri) VALUES
+				sqlite_query($db, "INSERT INTO feeds (f_id, f_name, f_uri) VALUES
 					(
+						{$id},
 						'{$distro['distro_name']} {$distro['distro_version']} {$feed['name']}',
 						'{$distro['feed_base_url']}{$feed['url']}'
 					)");
+
+				$id++;
 			}
 		}
 	}
@@ -166,7 +171,7 @@ function pkgdetails ($package)
 {
 	$result = db_query("SELECT * FROM packages,feeds
 				WHERE (packages.p_name='$package' OR packages.p_provides='$package')
-				    AND feeds.f_name = packages.p_feed 
+				    AND feeds.f_id = packages.p_feed 
 				ORDER BY packages.p_version DESC, feeds.f_name ASC, packages.p_arch DESC ");
 	
 	// display first result
