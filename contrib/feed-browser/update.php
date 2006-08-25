@@ -46,7 +46,7 @@ $feeds = db_query("SELECT f_name, f_uri FROM feeds");
 
 foreach($feeds as $feed)
 {
-    print("Updating {$feed['f_name']}: {$feed['f_uri']}\n");
+    print("Updating {$feed['f_name']}: {$feed['f_uri']}: ");
     db_query_n("DELETE FROM packages WHERE p_feed = '{$feed['f_name']}'");
 
     $count = 0;
@@ -135,6 +135,7 @@ foreach($feeds as $feed)
     }
 
     $p_count = $count + $p_count;
+    print("$count packages\n");
     gzclose($packagesgz_h);
 }
 //close the db
