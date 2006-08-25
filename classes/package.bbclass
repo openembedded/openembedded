@@ -738,4 +738,4 @@ do_package[dirs] = "${D}"
 do_package[deptask] = "do_package"
 populate_packages[dirs] = "${D}"
 EXPORT_FUNCTIONS do_package do_shlibs do_split_locales mapping_rename_hook
-addtask package before do_build after do_populate_staging
+addtask package before do_build after do_install
