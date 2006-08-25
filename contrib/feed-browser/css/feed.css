@@ -3,8 +3,32 @@ body
 	color: #000;
 	background-color: #fff;
 	font-family: Sans;
-	padding: 0;
+	padding: 10px;
 	margin: 0;
+}
+
+#left
+{
+	position: absolute;
+	left:10px;
+	top:10px;
+	width:200px;
+	background:#fff;
+}
+
+#right
+{
+	background:#fff;
+	margin-left: 199px;
+	margin-right: 0;
+	voice-family: "\"}\"";
+	voice-family: inherit;
+	margin-left: 201px;
+	margin-right:0;
+}
+html>body #right {
+	margin-left: 201px;
+	margin-right:0;
 }
 
 a
@@ -37,18 +61,13 @@ td
 
 h1
 {
+	padding-top: 1em;
 	font-size: 125%;
 }
 
 h2
 {
 	font-size: 105%;
-}
-
-#menu, #menu li
-{
-	display: inline;
-	list-style: none;
 }
 
 dt
@@ -58,6 +77,7 @@ dt
 
 #sections
 {
+	padding-top: 1em;
 	list-style: none;
 	font-size: 0.8em;
 }
@@ -67,18 +87,13 @@ dt
 	list-style: none;
 	margin-left: -1em;
 }
-
-#page 
-{ 
+.download:before
+{
+	content:  url("http://ewi546.ewi.utwente.nl/tmp/hrw/fb/img/package-x-generic.png"); 
+	padding: 0 2px;
 }
 
-#left
+#download
 {
-	float: left;
-	width: 20%;
-}
-
-#right
-{
-	width: 79%;
+	list-style: none;
 }

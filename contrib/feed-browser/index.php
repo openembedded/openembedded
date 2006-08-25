@@ -80,10 +80,11 @@ switch($action)
 	<style type="text/css" media="all">@import "css/feed.css";</style>
     </head>
     <body >
-	<div id="page">
-	    <div id="left"><?php echo sectionslist(); ?></div>
 	    <div id="right"><?php echo searchletter(); echo $ipkgoutput; ?></div>
-	</div>
+		<div id="left">
+			<h1>Sections list</h1>
+			<?php echo sectionslist(); ?>
+		</div>
     </body>
 </html>
 <?php
