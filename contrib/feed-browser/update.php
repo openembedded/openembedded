@@ -16,6 +16,7 @@
  *              
  */         
 
+require_once 'includes/functions.inc';
 
 /*
    A package entry looks like this:
@@ -35,12 +36,10 @@
    Description: IPv4 link-local address allocator
  */
 
-error_reporting(E_ALL);
+check_database();
 
 $start = time();
 $p_count = 0;
-
-define('DB_FILENAME', './feeds.db');
 
 $feeds = db_query("SELECT f_name, f_uri FROM feeds");
 
@@ -171,36 +170,5 @@ function insert_ipkgs(&$package_info)
 	'{$package_info['desc']}'
 	)");
 }
-
-
-function db_query($query)
-{
-    $result = FALSE;
-
-    if($db_h = sqlite_open(DB_FILENAME))
-    {
-	$query_h = sqlite_query ($db_h, $query);
-	$result = sqlite_fetch_all ($query_h, SQLITE_ASSOC);
-	sqlite_close($db_h);
-    }
-
-    return $result;
-}
-
-
-function db_query_n($query)
-{
-    $result = FALSE;
-
-    if($db_h = sqlite_open(DB_FILENAME))
-    {
-	$query_h = sqlite_query ($db_h, $query);
-	sqlite_close($db_h);
-    }
-
-    return $result;
-}
-
-
 
 ?>
