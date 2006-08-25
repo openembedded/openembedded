@@ -288,7 +288,8 @@ function searchsection($section)
 function pkgdetails ($package)
 {
 	$result = db_query("SELECT * FROM packages,feeds
-				WHERE packages.p_name='$package' AND feeds.f_name = packages.p_feed 
+				WHERE (packages.p_name='$package' OR packages.p_provides='$package')
+				    AND feeds.f_name = packages.p_feed 
 				ORDER BY packages.p_version DESC, feeds.f_name ASC, packages.p_arch DESC ");
 	
 	// display first result
@@ -410,20 +411,17 @@ function pkgdetails ($package)
 function addlinks ($input)
 {
 	// split input elements up
-	$elements = preg_split ('/[\s,]+/', $input);
+	$elements = explode (', ', $input);
 
 	$offset = 0;
 
 	foreach ($elements as $element)
 	{
-		// skip version information and empty elements (shouldn't happend)
-		if (!eregi('^([0-9a-z\-]*)$', $element) OR empty($element))
-		{ 
-			continue;
-		}
+		// strip version number
+		$element = ereg_replace('^(.*)( \((.*)\))+$', '\\1', $element);
 
 		// do we have this package in the db?
-		$result =  db_query ("SELECT DISTINCT p_name FROM packages WHERE p_name='{$element}'");    
+		$result =  db_query ("SELECT DISTINCT p_name FROM packages WHERE p_name='{$element}' OR p_provides='{$element}'");    
 
 		if(isset($result[0]['p_name']))
 		{
@@ -442,7 +440,6 @@ function addlinks ($input)
 			$offset += strlen ($element);
 		}
 	}
-
 
 	return $input;
 } 
