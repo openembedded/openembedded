@@ -21,7 +21,7 @@ PV_dm600pvr = "${KV}-20060525"
 RDEPENDS = "kernel (${KV})"
 PR = "r0"
 
-SRC_URI = "http://sources.dreamboxupdate.com/snapshots/dreambox-dvb-modules-${MACHINE}-${PV}.tar.bz2 file://dream "
+SRC_URI = "http://sources.dreamboxupdate.com/snapshots/dreambox-dvb-modules-${MACHINE}-${PV}.tar.bz2 "
 SRC_URI_append_dm7025 = "http://sources.dreamboxupdate.com/download/7020/fpupgrade-${MACHINE}-v2"
 
 S = "${WORKDIR}"
