@@ -20,6 +20,8 @@ S = "${WORKDIR}/enigma"
 
 FILES_${PN} += " ${datadir}/tuxbox ${datadir}/fonts"
 
+PACKAGES_DYNAMIC = "enigma-locale-*"
+
 inherit autotools pkgconfig
 
 EXTRA_OECONF = "--with-target=native --with-boxtype=${MACHINE} "
