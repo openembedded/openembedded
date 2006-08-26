@@ -122,11 +122,6 @@ do_munge() {
 
 addtask munge before do_patch after do_unpack
 
-# gcc uses -Werror which break on a "you have no thumb interwork" _warning_
-do_configure_prepend() {
-        sed -i s:-Werror:: ${S}/configure
-}
-
 
 do_configure () {
 # override this function to avoid the autoconf/automake/aclocal/autoheader
