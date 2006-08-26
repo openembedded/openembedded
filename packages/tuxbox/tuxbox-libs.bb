@@ -3,10 +3,11 @@ DEPENDS = "zlib dreambox-dvbincludes"
 MAINTAINER = "Felix Domke <tmbinc@elitdvb.net>"
 SRC_URI = "cvs://anoncvs@cvs.tuxbox.org/cvs/tuxbox;module=apps/misc/libs;method=ext \
            file://acinclude.m4"
-
 SRCDATE = "20040928"
 
 PR = "r2"
+
+PACKAGES_DYNAMIC = "libtuxbox-*"
 
 S = "${WORKDIR}/libs"
 
