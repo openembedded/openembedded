@@ -11,9 +11,10 @@ FILES_${PN}-utils = "${bindir}"
 
 inherit autotools
 
+EXTRA_OECONF = " --without-x"
+
 do_stage() {
 	oe_libinstall -so -C lib/.libs libungif ${STAGING_LIBDIR}
 
 	install -m 0644 lib/gif_lib.h ${STAGING_INCDIR}/
-
 }
