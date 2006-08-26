@@ -74,7 +74,7 @@ do_install () {
 	install -d ${D}/busybox
 	ls ${D} -R
 
-	mv ${D}${base_bindir} ${D}${base_sbindir} ${D}${prefix} ${D}/busybox/
+	cp -dPr ${D}${base_bindir} ${D}${base_sbindir} ${D}${prefix} ${D}/busybox/
 	# Move the busybox binary back to /bin
 	install -d ${D}${base_bindir}
 	mv ${D}/busybox${base_bindir}/busybox ${D}${base_bindir}/
