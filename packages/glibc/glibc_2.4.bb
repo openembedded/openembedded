@@ -3,7 +3,6 @@ HOMEPAGE = "http://www.gnu.org/software/libc/libc.html"
 LICENSE = "LGPL"
 SECTION = "libs"
 PRIORITY = "required"
-DEFAULT_PREFERENCE = "-1"
 PR = "r10"
 
 # the -isystem in bitbake.conf screws up glibc do_stage
@@ -16,7 +15,7 @@ FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/glibc-2.4"
 GLIBC_ADDONS ?= "ports,nptl,libidn"
 GLIBC_EXTRA_OECONF ?= ""
 
-GLIBC_BROKEN_LOCALES = "sid_ET tr_TR mn_MN"
+GLIBC_BROKEN_LOCALES = "sid_ET tr_TR mn_MN gez_ET gez_ER bn_BD te_IN"
 
 #
 # For now, we will skip building of a gcc package if it is a uclibc one
@@ -122,6 +121,12 @@ do_munge() {
 }
 
 addtask munge before do_patch after do_unpack
+
+# gcc uses -Werror which break on a "you have no thumb interwork" _warning_
+do_configure_prepend() {
+        sed -i s:-Werror:: ${S}/configure
+}
+
 
 do_configure () {
 # override this function to avoid the autoconf/automake/aclocal/autoheader
