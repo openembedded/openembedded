@@ -43,6 +43,8 @@ do_install () {
 	install -m 0755    ${WORKDIR}/umountnfs.sh	${D}${sysconfdir}/init.d
 	install -m 0755    ${WORKDIR}/bootup  ${D}${sysconfdir}/init.d
 
+	install -m 0755    ${WORKDIR}/var.tar.gz.default ${D}${sysconfdir}/var.tar.gz
+
 #
 # Install device dependent scripts
 #
