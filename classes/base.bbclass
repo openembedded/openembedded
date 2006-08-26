@@ -50,7 +50,7 @@ def base_set_filespath(path, d):
 		overrides = overrides + ":"
 		for o in overrides.split(":"):
 			filespath.append(os.path.join(p, o))
-	bb.data.setVar("FILESPATH", ":".join(filespath), d)
+	return ":".join(filespath)
 
 FILESPATH = "${@base_set_filespath([ "${FILE_DIRNAME}/${PF}", "${FILE_DIRNAME}/${P}", "${FILE_DIRNAME}/${PN}", "${FILE_DIRNAME}/files", "${FILE_DIRNAME}" ], d)}"
 
