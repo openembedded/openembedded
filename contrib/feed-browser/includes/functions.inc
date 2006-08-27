@@ -332,68 +332,80 @@ function sectionslist()
 
 	if($result =  db_query ("SELECT DISTINCT p_section FROM packages ORDER BY p_section"))
 	{
-		$ipkgoutput = "<ul id='sections'>\n";
+		$section_up = '';
 
-		$section_up = $result[0]['p_section'];
-		$section_level = FALSE;
-		$opie_top = FALSE;
+		$sections = array();
 
-		foreach($result as $item)
+		foreach($result as $package)
 		{
-			$section_name = $item['p_section'];
+			$section_split = explode('/', $package['p_section']);
 
-			if(0 === strpos($section_name, 'opie') AND !$opie_top)
+			if($section_up != $section_split[0])
 			{
-				$opie_top = TRUE;
-
-				$section_up = 'opie';
-			}
-			elseif($opie_top AND 0 !== strpos($section_name, 'opie'))
-			{
-				$opie_top = FALSE;
+				$section_up = $section_split[0];
 			}
 
-			if(
-				strpos($section_name, '/')		// subsection
-			)
+			if(isset($section_split[1]))	// x11/gnome/libs
 			{
-				if(0 === strpos($section_name, $section_up . '/'))	// console/network are not part of console/net
+				$sections[$section_up][$section_split[1]] = $section_split[1];
+
+				if(isset($section_split[2]))	// x11/gnome/libs
 				{
-					if(!$section_level)
-					{
-						$ipkgoutput .= '<li><ul class="subsections">';
-					}
-
-					$section_name = str_replace($section_up . '/', '', $item['p_section']);
-					$section_level = TRUE;
+					$sections[ $section_up ][ $section_split[1] ] = array($section_split[2]=>$section_split[2]);
 				}
 			}
-			elseif($section_level)
-			{
-				$section_up = $section_name;
-				$ipkgoutput .= '</ul></li>';
-				$section_level = FALSE;
-			}
-			else
-			{
-				$section_up = $section_name;
-			}
-
-			$ipkgoutput .= sprintf ("<li><a href='?action=section&amp;section=%s' title='%s'>%s</a></li>",
-				urlencode($item['p_section']),
-				urlencode($item['p_section']),
-				$section_name);
 		}
 
-		if($section_level)
+		$output = "<ul id='sections'>\n";
+
+		foreach($sections as $section_name1=>$item)
 		{
-		    $ipkgoutput .= '</ul></li>';
+			$output .= sprintf ("<li><a href='?action=section&amp;section=%s' title='%s'>%s</a>",
+				urlencode($section_name1),
+				urlencode($section_name1),
+				$section_name1);
+
+			if(is_array($item))
+			{
+				$output .= '<ul class="subsections">';
+
+				foreach($item as $section_name2=>$subitem)
+				{
+					$section_name = "{$section_name1}/{$section_name2}";
+					$output .= sprintf ("<li><a href='?action=section&amp;section=%s' title='%s'>%s</a>",
+						urlencode($section_name),
+						urlencode($section_name),
+						$section_name2);
+
+					if(is_array($subitem))
+					{
+						$output .= '<ul class="subsections">';
+
+						foreach($subitem as $section_name3=>$subitem2)
+						{
+							$section_name = "{$section_name1}/{$section_name2}/{$section_name3}";
+							$output .= sprintf ("<li><a href='?action=section&amp;section=%s' title='%s'>%s</a></li>",
+								urlencode($section_name),
+								urlencode($section_name),
+								$section_name3);
+						}
+
+						$output .= '</ul>';
+					}
+
+					$output .= '</li>';
+				}
+
+				$output .= '</ul>';
+			}
+
+			$output .= '</li>';
 		}
 
-		$ipkgoutput .= "</ul>\n";
+		$output .= "</ul>\n";
 	}
 
-	return $ipkgoutput;
+	return $output;
 }
 
 function check_database()
