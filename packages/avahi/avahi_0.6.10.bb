@@ -5,6 +5,7 @@ AUTHOR = "Lennart Poettering <lennart@poettering.net>"
 HOMEPAGE = "http://avahi.org"
 MAINTAINER = "Philipp Zabel <philipp.zabel@gmail.com>"
 LICENSE= "GPL"
+PR = "r1"
 
 DEPENDS = "expat libdaemon dbus"
 RRECOMMENDS = "libnss-mdns"
@@ -42,6 +43,8 @@ INITSCRIPT_PARAMS_avahi-daemon = "defaults 21 19"
 INITSCRIPT_NAME_avahi-dnsconfd = "avahi-dnsconfd"
 INITSCRIPT_PARAMS_avahi-dnsconfd = "defaults 22 19"
 
+# At the time the postinst runs, dbus might not be setup so only restart if running
+
 pkg_postinst_avahi-daemon () {
 	if [ "x$D" != "x" ]; then
 		exit 1
@@ -49,7 +52,12 @@ pkg_postinst_avahi-daemon () {
 
 	grep avahi /etc/group || addgroup avahi
 	grep avahi /etc/passwd || adduser --disabled-password --system --home /var/run/avahi-daemon --no-create-home avahi --ingroup avahi -g Avahi
-	/etc/init.d/dbus-1 force-reload
+
+	DBUSPID=`pidof dbus-daemon`
+
+	if [ "x$DBUSPID" != "x" ]; then
+		/etc/init.d/dbus-1 force-reload
+	fi
 }
 
 pkg_postrm_avahi-daemon () {
