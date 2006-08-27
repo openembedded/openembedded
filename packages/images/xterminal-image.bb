@@ -2,7 +2,7 @@ export IMAGE_BASENAME = "xterminal-image"
 
 IMAGE_LINGUAS = ""
 
-XTERMINAL_PACKAGES = "task-bootstrap task-xterminal"
+XTERMINAL_PACKAGES = "${MACHINE_TASK_PROVIDER} task-xterminal"
 
 export IPKG_INSTALL = "${XTERMINAL_PACKAGES}"
 DEPENDS = "${XTERMINAL_PACKAGES}"
