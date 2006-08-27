@@ -1,0 +1,32 @@
+--- dbus-glib-0.71/tools/Makefile.am.orig	2006-08-27 12:54:34.351198198 +0200
++++ dbus-glib-0.71/tools/Makefile.am	2006-08-27 12:55:12.533584373 +0200
+@@ -9,7 +9,7 @@
+ BUILT_SOURCES = dbus-glib-bindings.h dbus-bus-introspect.xml
+ 
+ dbus-bus-introspect.xml:
+-	DBUS_TOP_BUILDDIR=$(top_builddir) dbus-send --system --print-reply=literal --dest=org.freedesktop.DBus /org/freedesktop/DBus org.freedesktop.DBus.Introspectable.Introspect > dbus-bus-introspect.xml.tmp && mv dbus-bus-introspect.xml.tmp dbus-bus-introspect.xml
++	DBUS_TOP_BUILDDIR=$(top_builddir) ./run-with-tmp-session-bus.sh dbus-send --print-reply=literal --dest=org.freedesktop.DBus /org/freedesktop/DBus org.freedesktop.DBus.Introspectable.Introspect > dbus-bus-introspect.xml.tmp && mv dbus-bus-introspect.xml.tmp dbus-bus-introspect.xml
+ 
+ EXTRA_DIST = run-with-tmp-session-bus.sh
+ 
+--- dbus-glib-0.71/tools/run-with-tmp-session-bus.sh.orig	2006-08-27 11:52:17.497666746 +0200
++++ dbus-glib-0.71/tools/run-with-tmp-session-bus.sh	2006-08-27 12:53:22.626715838 +0200
+@@ -27,16 +27,15 @@
+ echo "escaped service dir is: $ESCAPED_SERVICE_DIR" >&2
+ 
+ ## create a configuration file based on the standard session.conf
+-cat $DBUS_TOP_BUILDDIR/tools/session.conf |  \
++cat $datadir/dbus/session.conf |  \
+     sed -e 's/<servicedir>.*$/<servicedir>'$ESCAPED_SERVICE_DIR'<\/servicedir>/g' |  \
+     sed -e 's/<include.*$//g'                \
+   > $CONFIG_FILE
+ 
+ echo "Created configuration file $CONFIG_FILE" >&2
+ 
+-export PATH=$DBUS_TOP_BUILDDIR/bus:$PATH
+ ## the libtool script found by the path search should already do this, but
+-export LD_LIBRARY_PATH=$DBUS_TOP_BUILDDIR/dbus/.libs:$LD_LIBRARY_PATH
++export LD_LIBRARY_PATH=$libdir:$LD_LIBRARY_PATH
+ 
+ unset DBUS_SESSION_BUS_ADDRESS
+ unset DBUS_SESSION_BUS_PID
