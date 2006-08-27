@@ -8,7 +8,11 @@ RCONFLICTS="links-x11"
 MAINTAINER = "Graeme Gregory <dp@xora.org.uk>"
 
 SRC_URI = "http://links.twibright.com/download/links-${PV}.tar.bz2 \
-           file://ac-prog-cxx.patch;patch=1"
+           file://ac-prog-cxx.patch;patch=1 \
+           file://cookies-save-0.96.patch;patch=1 \
+           file://links-2.1pre17-fix-segfault-on-loading-cookies.patch;patch=1"
+
+PR = "r1"
 
 inherit autotools
 
