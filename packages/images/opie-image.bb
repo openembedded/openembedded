@@ -6,12 +6,12 @@ FEED_URIS_append_familiar   = " opie##http://familiar.handhelds.org/releases/${D
 LICENSE = "MIT"
 PR = "r21"
 
-DEPENDS = "task-bootstrap task-opie"
+DEPENDS = "${MACHINE_TASK_PROVIDER} task-opie"
 RDEPENDS = "${INSTALL_PACKAGES}"
 
 extra_stuff := '${@base_conditional("ROOT_FLASH_SIZE", "24", "", "task-opie-extra-games task-opie-extra-apps task-opie-extra-styles",d)}'
 
-INSTALL_PACKAGES = "task-bootstrap task-opie-base task-opie-base-applets \
+INSTALL_PACKAGES = "${MACHINE_TASK_PROVIDER} task-opie-base task-opie-base-applets \
 		    task-opie-base-inputmethods task-opie-base-apps \
 		    task-opie-base-settings task-opie-base-decorations \
 		    task-opie-base-styles task-opie-base-pim \

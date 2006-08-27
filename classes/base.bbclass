@@ -40,6 +40,20 @@ def base_conditional(variable, checkvalue, truevalue, falsevalue, d):
 	else:
 		return falsevalue
 
+def base_contains(variable, checkvalue, truevalue, falsevalue, d):
+       import bb
+       if bb.data.getVar(variable,d,1).find(checkvalue) != -1:
+               return truevalue
+       else:
+               return falsevalue
+
+def base_both_contain(variable1, variable2, checkvalue, d):
+       import bb
+       if bb.data.getVar(variable1,d,1).find(checkvalue) != -1 and bb.data.getVar(variable2,d,1).find(checkvalue) != -1:
+               return checkvalue
+       else:
+               return ""
+
 DEPENDS_prepend="${@base_dep_prepend(d)} "
 
 def base_set_filespath(path, d):

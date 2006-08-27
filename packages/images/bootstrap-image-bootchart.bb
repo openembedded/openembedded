@@ -1,8 +1,8 @@
 export IMAGE_BASENAME = "bootstrap-image-bootchart"
 export IMAGE_LINGUAS = ""
-export IPKG_INSTALL = "task-bootstrap bootchart acct"
+export IPKG_INSTALL = "${MACHINE_TASK_PROVIDER} bootchart acct"
 
-DEPENDS = "task-bootstrap bootchart"
+DEPENDS = "${MACHINE_TASK_PROVIDER} bootchart"
 RDEPENDS = "acct"
 
 inherit image_ipk

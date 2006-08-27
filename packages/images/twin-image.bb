@@ -1,13 +1,13 @@
 export IMAGE_BASENAME="twin-image"
 
-DEPENDS = 'task-bootstrap \
+DEPENDS = '${MACHINE_TASK_PROVIDER} \
           twin \
 	  orpheus \
 	  nano \
 	  vim \
 	  mutt'
 
-export IPKG_INSTALL = 'task-bootstrap \
+export IPKG_INSTALL = '${MACHINE_TASK_PROVIDER} \
 		       twin \
 		       orpheus \
 		       nano \
