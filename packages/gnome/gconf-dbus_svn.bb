@@ -1,5 +1,5 @@
 SECTION = "x11/utils"
-DEPENDS = "gtk+ glib-2.0 dbus libxml2 popt"
+DEPENDS = "gtk+ glib-2.0 dbus dbus-glib libxml2 popt"
 DESCRIPTION = "Settings daemon using DBUS for communication."
 LICENSE = "GPL"
 MAINTAINER = "Florian Boor <florian@kernelconcepts.de>"
@@ -21,7 +21,8 @@ S = "${WORKDIR}/trunk"
 
 PARALLEL_MAKE = ""
 
-FILES_${PN} += " ${libdir}/GConf/2/*.so ${libdir}/dbus-1.0 ${sysconfdir} ${datadir}/dbus*"
+FILES_${PN} += " ${libdir}/gconf-dbus/2/*.so ${libdir}/dbus-1.0 ${sysconfdir} ${datadir}/dbus*"
+FILES_${PN}-dbg += "${libdir}/gconf-dbus/2/.debug"
 
 EXTRA_OECONF = " --with-ipc=dbus --disable-gtk-doc --enable-gtk --host=${HOST_SYS} --enable-shared --disable-static"
 
