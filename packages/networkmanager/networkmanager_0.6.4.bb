@@ -4,7 +4,7 @@ LICENSE = "GPL"
 HOMEPAGE = "http://www.gnome.org"
 MAINTAINER = "Milan Plzik <mmp@handhelds.org>"
 PRIORITY = "optional"
-DEPENDS = "libnl dbus dbus-glib libhal-nm libgpewidget gnome-keyring gconf-dbus wireless-tools"
+DEPENDS = "libnl dbus dbus-glib libhal-nm libgpewidget gnome-keyring gconf-dbus wireless-tools libglade"
 RDEPENDS = "wpa-supplicant dhcdbd gnome-keyring hicolor-icon-theme"
 
 PR = "r1"

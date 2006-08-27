@@ -14,7 +14,7 @@ KERNEL_IMAGETYPE = "vmlinux"
 KERNEL_OUTPUT = "arch/${ARCH}/boot/compressed/${KERNEL_IMAGETYPE}"
 KERNEL_CCSUFFIX = "-3.3.4"
 
-#DEPENDS = "uboot"
+DEPENDS = "u-boot"
 
 inherit kernel
 
@@ -25,13 +25,17 @@ do_configure_prepend() {
         oe_runmake oldconfig
 }
 
-do_deploy_omap5912osk() {
-        install -d ${DEPLOY_DIR_IMAGE}
-        arm-linux-objcopy -O binary -R .note -R .comment -S arch/arm/boot/compressed/vmlinux ${DEPLOY_DIR}/linux.bin
-        gzip -f -9 ${DEPLOY_DIR}/linux.bin
-        mkimage -A arm -O linux -T kernel -C gzip -a 0x10c08000 -e 0x10c08000 -n "OE" -d ${DEPLOY_DIR}/linux.bin.gz ${DEPLOY_DIR}/uImage_bb.cc
-        cp ${DEPLOY_DIR}/uImage_bb.cc /tftpboot
-#        install -m 0644 arch/${ARCH}/boot/${KERNEL_IMAGETYPE} ${DEPLOY_DIR_IMAGE}/${KERNEL_IMAGETYPE}-${MACHINE}-${DATETIME}.bin
+do_deploy() {
+        if [ "${MACHINE}" == "omap5912osk" ]; then
+                install -d ${DEPLOY_DIR_IMAGE}
+                arm-linux-objcopy -O binary -R .note -R .comment -S arch/arm/boot/compressed/vmlinux ${DEPLOY_DIR_IMAGE}/linux.bin
+                gzip -f -9 ${DEPLOY_DIR_IMAGE}/linux.bin
+                mkimage -A arm -O linux -T kernel -C gzip -a 0x10c08000 -e 0x10c08000 -n "OE" -d ${DEPLOY_DIR_IMAGE}/linux.bin.gz ${DEPLOY_DIR_IMAGE}/${KERNEL_IMAGETYPE}-${MACHINE}-${DATETIME}.bin
+                rm ${DEPLOY_DIR_IMAGE}/linux.bin.gz
+
+#               cp ${DEPLOY_DIR}/uImage_bb.cc /tftpboot
+#               install -m 0644 arch/${ARCH}/boot/${KERNEL_IMAGETYPE} ${DEPLOY_DIR_IMAGE}/${KERNEL_IMAGETYPE}-${MACHINE}-${DATETIME}.bin
+        fi
 }
 
 

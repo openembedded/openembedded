@@ -16,6 +16,8 @@
  *              
  */         
 
+require_once 'includes/config.inc';
+require_once 'includes/functions.inc';
 
 /*
    A package entry looks like this:
@@ -35,18 +37,16 @@
    Description: IPv4 link-local address allocator
  */
 
-error_reporting(E_ALL);
+check_database();
 
 $start = time();
 $p_count = 0;
 
-define('DB_FILENAME', './feeds.db');
-
-$feeds = db_query("SELECT f_name, f_uri FROM feeds");
+$feeds = db_query("SELECT f_id, f_name, f_uri FROM feeds");
 
 foreach($feeds as $feed)
 {
-    print("Updating {$feed['f_name']}: {$feed['f_uri']}\n");
+    print("Updating {$feed['f_name']}: ");
     db_query_n("DELETE FROM packages WHERE p_feed = '{$feed['f_name']}'");
 
     $count = 0;
@@ -59,8 +59,8 @@ foreach($feeds as $feed)
 	    'name'=>'', 'version'=>'', 'arch'=>'', 'depends'=>'', 
 	    'maintainer'=>'',  'homepage'=>'',  'section'=>'',  'replaces'=>'', 
 	    'provides'=>'', 'recommends'=>'', 'conflicts'=>'', 'size'=>'',  
-	    'md5sum'=>'', 'source'=>'', 'feed'=>'', 'file'=>'', 'desc'=>''
-	    );
+	    'md5sum'=>'', 'source'=>'', 'feed'=>$feed['f_id'], 'file'=>'', 'desc'=>''
+	);
 
 	while (!feof($packagesgz_h)) 
 	{
@@ -75,7 +75,7 @@ foreach($feeds as $feed)
 		    'name'=>'', 'version'=>'', 'arch'=>'', 'depends'=>'', 
 		    'maintainer'=>'',  'homepage'=>'',  'section'=>'',  'replaces'=>'', 
 		    'provides'=>'', 'recommends'=>'', 'conflicts'=>'', 'size'=>'',  
-		    'md5sum'=>'', 'source'=>'', 'feed'=>'', 'file'=>'', 'desc'=>''
+		    'md5sum'=>'', 'source'=>'', 'feed'=>$feed['f_id'], 'file'=>'', 'desc'=>''
 		);
 	    }
 
@@ -135,6 +135,7 @@ foreach($feeds as $feed)
     }
 
     $p_count = $count + $p_count;
+    print("$count packages\n");
     gzclose($packagesgz_h);
 }
 //close the db
@@ -160,7 +161,7 @@ function insert_ipkgs(&$package_info)
 {
     db_query_n("INSERT INTO packages VALUES (
 	'{$package_info['name']}', '{$package_info['version']}',
-       	'{$package_info['arch']}', '{$package_info['depends']}',
+	'{$package_info['arch']}', '{$package_info['depends']}',
 	'{$package_info['maintainer']}',  '{$package_info['homepage']}',
 	'{$package_info['section']}',  '{$package_info['replaces']}',
 	'{$package_info['provides']}', '{$package_info['recommends']}',
@@ -168,38 +169,7 @@ function insert_ipkgs(&$package_info)
 	'{$package_info['md5sum']}', '{$package_info['source']}',
 	'{$package_info['feed']}', '{$package_info['file']}',
 	'{$package_info['desc']}'
-	)");
+    )");
 }
-
-
-function db_query($query)
-{
-    $result = FALSE;
-
-    if($db_h = sqlite_open(DB_FILENAME))
-    {
-	$query_h = sqlite_query ($db_h, $query);
-	$result = sqlite_fetch_all ($query_h, SQLITE_ASSOC);
-	sqlite_close($db_h);
-    }
-
-    return $result;
-}
-
-
-function db_query_n($query)
-{
-    $result = FALSE;
-
-    if($db_h = sqlite_open(DB_FILENAME))
-    {
-	$query_h = sqlite_query ($db_h, $query);
-	sqlite_close($db_h);
-    }
-
-    return $result;
-}
-
-
 
 ?>

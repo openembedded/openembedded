@@ -1,9 +1,9 @@
 DESCRIPTION = "userspace utilities for kernel nfs"
 PRIORITY = "optional"
-SECTION = "console/networking"
+SECTION = "console/network"
 MAINTAINER = "dyoung <dyoung@thestuffguy.com>"
 LICENSE = "GPL"
-PR = "r5"
+PR = "r6"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/nfs/nfs-utils-${PV}.tar.gz \
 	file://acinclude-lossage.patch;patch=1 \
