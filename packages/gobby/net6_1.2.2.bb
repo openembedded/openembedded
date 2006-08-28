@@ -7,4 +7,10 @@ inherit autotools pkgconfig
 
 SRC_URI = "http://releases.0x539.de/${PN}/${P}.tar.gz"
 
-
+do_stage() {
+    autotools_stage_all
+    install -d ${STAGING_LIBDIR}
+    install -d ${STAGING_INCDIR}/net6
+    install -m 644 inc/*.hpp ${STAGING_INCDIR}/net6
+    install -m 755 .libs/*so* ${STAGING_LIBDIR}/
+}
