@@ -109,7 +109,7 @@ def do_split_packages(d, root, file_regex, output_pattern, description, postinst
 			continue
 		f = os.path.join(dvar + root, o)
 		mode = os.lstat(f).st_mode
-		if not (stat.S_ISREG(mode) or (allow_dirs and stat.S_ISDIR(mode))):
+		if not (stat.S_ISREG(mode) or stat.S_ISLNK(mode) or (allow_dirs and stat.S_ISDIR(mode))):
 			continue
 		on = legitimize_package_name(m.group(1))
 		pkg = output_pattern % on
