@@ -5,9 +5,8 @@ SECTION = "base"
 LICENSE = "LGPL"
 
 PR = "r0"
-SRCDATE_tslib = "now"
 
-SRC_URI = "svn://svn.berlios.de/svnroot/repos/tslib/tags/tslib;module=${PV};proto=http \
+SRC_URI = "http://download.berlios.de/tslib/tslib-1.0.tar.bz2 \
            file://ts.conf \
            file://ts-2.6.conf \
            file://ts.conf-h3600-2.4 \
@@ -17,7 +16,6 @@ SRC_URI = "svn://svn.berlios.de/svnroot/repos/tslib/tags/tslib;module=${PV};prot
            file://tslib.sh"
 SRC_URI_append_mnci += " file://devfs.patch;patch=1"
 SRC_URI_append_mnci += " file://event1.patch;patch=1"
-S = "${WORKDIR}/${PV}"
 
 inherit autotools pkgconfig
 
@@ -71,7 +69,6 @@ do_install_append() {
 }
 
 SRC_URI_OVERRIDES_PACKAGE_ARCH = "0"
-CONFFILES_${PN} = "${sysconfdir}/ts.conf"
 
 RDEPENDS_tslib-conf_h1940 = "detect-stylus"
 RDEPENDS_tslib-conf_h2200 = "detect-stylus"
@@ -86,12 +83,17 @@ RDEPENDS_tslib-conf_h4000 = "detect-stylus"
 PACKAGE_ARCH_tslib-conf = "${MACHINE_ARCH}"
 PACKAGE_ARCH_mnci = "${MACHINE_ARCH}"
 
-PACKAGES = "tslib-conf libts libts-dev tslib-tests tslib-calibrate"
+PACKAGES =+ "tslib-conf libts-dev tslib-tests tslib-calibrate"
+DEBIAN_NOAUTONAME_tslib-conf = "1"
+DEBIAN_NOAUTONAME_tslib-tests = "1"
+DEBIAN_NOAUTONAME_tslib-calibrate = "1"
 
-RDEPENDS_libts = "tslib-conf"
+RDEPENDS_${PN} = "tslib-conf"
 
+
+FILES_${PN}-dbg += "${libdir}/ts/.debug*"
 FILES_tslib-conf = "${sysconfdir}/ts.conf ${sysconfdir}/profile.d/tslib.sh ${datadir}/tslib"
-FILES_libts = "${libdir}/*.so.* ${libdir}/ts/*.so*"
+FILES_${PN} = "${libdir}/*.so.* ${libdir}/ts/*.so*"
 FILES_libts-dev = "${FILES_tslib-dev}"
 FILES_tslib-calibrate += "${bindir}/ts_calibrate"
 FILES_tslib-tests = "${bindir}/ts_harvest ${bindir}/ts_print ${bindir}/ts_print_raw ${bindir}/ts_test"
