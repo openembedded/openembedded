@@ -4,7 +4,7 @@ LICENSE = "GPL"
 SECTION = "libs"
 PRIORITY = "optional"
 
-RRECOMMENDS_${PN} = "avahi-daemon zeroconf"
+RRECOMMENDS_${PN} = "zeroconf"
 PR = "r1"
 
 EXTRA_OECONF = "--libdir=/lib"
