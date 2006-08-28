@@ -114,6 +114,17 @@ do_install_append () {
       </listitem>
     </orderedlist>
 
+    <para>All site files are shell scripts which are run by autoconf and
+    therefore the syntax is the same as you would use in sh. There are two
+    current methods of settings variables that is used in the existing site
+    files. This include explicitly settings the value of the variable:<screen>ac_cv_sys_restartable_syscalls=yes</screen>and
+    conditionally setting the value of the variable:<screen>ac_cv_uchar=${ac_cv_uchar=no}</screen>The
+    conditional version is using shell syntax to say "<emphasis>only set this
+    to the specified value if it is not currently set</emphasis>". The
+    conditional version allows the variable to be set in the shell prior to
+    calling configure and it will then not be replaced by the value from the
+    site file.</para>
+
     <para>Sometimes it's useful to manually check values from the site file.
     This can prove useful in situations where autotools is not used but you
     still need some of the same information that an autotools configure script
