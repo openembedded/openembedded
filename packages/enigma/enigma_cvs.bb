@@ -3,7 +3,7 @@ DESCRIPTION = "Enigma is a framebuffer-based frontend for DVB functions"
 MAINTAINER = "Felix Domke <tmbinc@elitedvb.net>"
 LICENSE = "GPL"
 
-DEFAULT_PREFERENCE=-1
+SRCDATE = "20060829"
 PV = "cvs-${SRCDATE}"
 PN = "enigma"
 PR = "r0"
@@ -14,7 +14,9 @@ SRC_URI = "cvs://anoncvs@cvs.tuxbox.org/cvs/tuxbox;module=apps/tuxbox/enigma;met
            file://userbouquet* \
            http://sources.dreamboxupdate.com/download/opendreambox/enigma/boot-${MACHINE} \
            file://enigma_enter_standby.sh \
-           file://enigma_leave_standby.sh"
+           file://enigma_leave_standby.sh \
+           file://rotor_fix.diff;patch=1;pnum=1 \
+           file://disable_boot.diff;patch=1;pnum=1"
 
 S = "${WORKDIR}/enigma"
 
@@ -24,7 +26,7 @@ PACKAGES_DYNAMIC = "enigma-locale-*"
 
 inherit autotools pkgconfig
 
-EXTRA_OECONF = "--with-target=native --with-boxtype=${MACHINE} "
+EXTRA_OECONF = "--with-target=native --with-boxtype=${MACHINE} --with-webif=standard --with-epg=private --with-enigma-debug=yes --with-reiserfs=no"
 
 do_configure_prepend() {
 	mkdir -p m4
