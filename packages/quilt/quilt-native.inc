@@ -8,8 +8,7 @@ INHIBIT_AUTOTOOLS_DEPS = "1"
 
 inherit autotools native
 
-PATCHCLEANCMD = ""
-PATCHCMD = "num='%s'; name='%s'; file='%s'; patch -p "$num" -i "$file""
+PATCHTOOL = "patch"
 EXTRA_OECONF = "--disable-nls"
 
 do_configure () {
