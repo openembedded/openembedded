@@ -23,5 +23,6 @@ do_stage () {
 	autotools_stage_all
 
 	# for dbus-glib-native introspection generation
+	install -d ${STAGING_DATADIR}/dbus
 	install -m 0644 bus/session.conf ${STAGING_DATADIR}/dbus/session.conf
 }
