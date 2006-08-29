@@ -1,7 +1,7 @@
 PV = "1.1.0+git${SRCDATE}"
 DEFAULT_PREFERENCE = "-2"
 
-PR = "r1"
+PR = "r2"
 
 LICENSE = "MIT"
 DEPENDS = "tslib libxkbfile xf86dgaproto xf86vidmodeproto xf86miscproto xproto libxdmcp xextproto xtrans libxau virtual/libx11 libxext libxrandr fixesproto damageproto libxfont resourceproto compositeproto xcalibrateext recordproto videoproto scrnsaverproto"
@@ -35,7 +35,8 @@ SRC_URI = "git://anongit.freedesktop.org/xorg/xserver;protocol=git \
 	file://enable-builtin-fonts.patch;patch=1 \
 	file://optional-xkb.patch;patch=1 \
 #	file://disable-xf86-dga-xorgcfg.patch;patch=1 \
-	file://enable-tslib.patch;patch=1"
+	file://enable-tslib.patch;patch=1 \
+	file://xcalibrate.patch;patch=1"
 
 SRC_URI_append_mnci   = " file://onlyfb.patch;patch=1"
 SRC_URI_append_poodle = " file://xserver-kdrive-poodle.patch;patch=1"
