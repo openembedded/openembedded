@@ -4,7 +4,7 @@ PRIORITY = "required"
 MAINTAINER = "Felix Domke <tmbinc@elitedvb.net>"
 PV_dm7020 = "35"
 PV_dm7025 = "45"
-PV_dm600pvr = "44"
+PV_dm600pvr = "45"
 PR = "r0"
 
 SRC_URI = "http://sources.dreamboxupdate.com/download/7020/secondstage-${MACHINE}-${PV}.bin"
