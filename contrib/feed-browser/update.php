@@ -47,7 +47,7 @@ $feeds = db_query("SELECT f_id, f_name, f_uri FROM feeds");
 foreach($feeds as $feed)
 {
     print("Updating {$feed['f_name']}: ");
-    db_query_n("DELETE FROM packages WHERE p_feed = '{$feed['f_name']}'");
+    db_query_n("DELETE FROM packages WHERE p_feed = '{$feed['f_id']}'");
 
     $count = 0;
 
@@ -104,7 +104,7 @@ foreach($feeds as $feed)
 		    $package_info['conflicts'] = $value;
 		    break;
 		case 'Section':
-		    $package_info['section'] = $value;
+		    $package_info['section'] = strtolower($value);
 		    break;
 		case 'Architecture':
 		    $package_info['arch'] = $value;
