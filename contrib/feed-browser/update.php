@@ -39,10 +39,15 @@ require_once 'includes/functions.inc';
 
 check_database();
 
+$feeds = db_query("SELECT f_id, f_name, f_uri FROM feeds");
+
+if($argc > 1 AND $argv[1] == 'upgrades')
+{
+	$feeds = db_query("SELECT f_id, f_name, f_uri FROM feeds WHERE f_type = 'upgrades'");
+}
+
 $start = time();
 $p_count = 0;
-
-$feeds = db_query("SELECT f_id, f_name, f_uri FROM feeds");
 
 foreach($feeds as $feed)
 {

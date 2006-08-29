@@ -85,11 +85,12 @@ function insert_feeds ($db)
 		{
 			foreach($distro['feeds'] as $feed)
 			{
-				sqlite_query($db, "INSERT INTO feeds (f_id, f_name, f_uri) VALUES
+				sqlite_query($db, "INSERT INTO feeds (f_id, f_name, f_uri, f_type) VALUES
 					(
 						{$id},
 						'{$distro['distro_name']} {$distro['distro_version']} {$feed['name']}',
-						'{$distro['feed_base_url']}{$feed['url']}'
+						'{$distro['feed_base_url']}{$feed['url']}',
+						'{$feed['type']}'
 					)");
 
 				$id++;
@@ -441,7 +442,8 @@ function check_database()
 				f_id         int(8),
 				f_name       varchar(32),
 				f_uri        varchar(100),
-				f_comments   varchar(500))");
+				f_type		 varchar(16)
+		)");
 
 			insert_feeds ($db) ;
 		}
