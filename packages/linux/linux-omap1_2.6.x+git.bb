@@ -9,24 +9,19 @@ S = "${WORKDIR}/git"
 
 KERNEL_IMAGETYPE = "vmlinux"
 KERNEL_OUTPUT = "arch/${ARCH}/boot/compressed/${KERNEL_IMAGETYPE}"
-#KERNEL_CCSUFFIX = "-4.1.1"
 
 DEPENDS = "u-boot"
 
 inherit kernel
 
-# GIT does not have the UTS_RELEASE in version.h used to find the kernel version
-KERNEL_RELEASE = "2.6.17"
-
 COMPATIBLE_HOST = 'arm.*-linux'
 
 do_configure_prepend() {
         if [ "${MACHINE}" == "omap5912osk" ] ; then
-                 make omap_osk_5912_defconfig
+                 oe_runmake omap_osk_5912_defconfig
         fi
-        
-        oe_runmake oldconfig
-}
+
+}        
 
 do_deploy() {
         if [ "${MACHINE}" == "omap5912osk" ]; then

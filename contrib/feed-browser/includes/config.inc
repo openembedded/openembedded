@@ -11,50 +11,62 @@ $feeds = array(
 			array(
 				'name'=>'base',
 				'url'=>'base',
+				'type'=>'normal',
 			),
 			array(
 				'name'=>'opie',
 				'url'=>'opie',
+				'type'=>'normal',
 			),
 			array(
 				'name'=>'x11',
 				'url'=>'x11',
+				'type'=>'normal',
 			),
 			array(
 				'name'=>'upgrades',
 				'url'=>'upgrades',
+				'type'=>'upgrades',
 			),
 			array(
 				'name'=>'perl',
 				'url'=>'perl',
+				'type'=>'normal',
 			),
 			array(
 				'name'=>'python',
 				'url'=>'python',
+				'type'=>'normal',
 			),
 			array(
 				'name'=>'Collie upgrades',
 				'url'=>'upgrades/machine/collie',
+				'type'=>'upgrades',
 			),
 			array(
 				'name'=>'Tosa upgrades',
 				'url'=>'upgrades/machine/tosa',
+				'type'=>'upgrades',
 			),
 			array(
 				'name'=>'Poodle upgrades',
 				'url'=>'upgrades/machine/poodle',
+				'type'=>'upgrades',
 			),
 			array(
 				'name'=>'Poodle',
 				'url'=>'machine/poodle',
+				'type'=>'normal',
 			),
 			array(
 				'name'=>'Collie',
 				'url'=>'machine/collie',
+				'type'=>'normal',
 			),
 			array(
 				'name'=>'Tosa',
 				'url'=>'machine/tosa',
+				'type'=>'normal',
 			)
 		)
 	),
@@ -66,50 +78,62 @@ $feeds = array(
 			array(
 				'name'=>'base',
 				'url'=>'base',
+				'type'=>'normal',
 			),
 			array(
 				'name'=>'opie',
 				'url'=>'opie',
+				'type'=>'normal',
 			),
 			array(
 				'name'=>'perl',
 				'url'=>'perl',
+				'type'=>'normal',
 			),
 			array(
 				'name'=>'python',
 				'url'=>'python',
+				'type'=>'normal',
 			),
 			array(
 				'name'=>'upgrades',
 				'url'=>'upgrades',
+				'type'=>'upgrades',
 			),
 			array(
 				'name'=>'x11',
 				'url'=>'x11',
+				'type'=>'normal',
 			),
 			array(
 				'name'=>'C7x0',
 				'url'=>'machine/c7x0',
+				'type'=>'normal',
 			),
 			array(
 				'name'=>'Spitz',
 				'url'=>'machine/spitz',
+				'type'=>'normal',
 			),
 			array(
 				'name'=>'Akita',
 				'url'=>'machine/akita',
+				'type'=>'normal',
 			),
 			array(
 				'name'=>'Akita upgrades',
 				'url'=>'upgrades/machine/akita',
+				'type'=>'upgrades',
 			),
 			array(
 				'name'=>'C7x0 upgrades',
 				'url'=>'upgrades/machine/c7x0',
+				'type'=>'upgrades',
 			),
 			array(
 				'name'=>'Spitz upgrades',
 				'url'=>'upgrades/machine/spitz',
+				'type'=>'upgrades',
 			)
 		)
 	)
