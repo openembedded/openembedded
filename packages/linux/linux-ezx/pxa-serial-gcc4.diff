@@ -1,0 +1,11 @@
+--- /tmp/pxa.c	2006-08-29 10:51:57.000000000 +0200
++++ linux-2.6.16/drivers/serial/pxa.c	2006-08-29 10:52:38.545780000 +0200
+@@ -241,7 +241,7 @@
+ /*
+  * This handles the interrupt from one port.
+  */
+-static inline irqreturn_t
++inline irqreturn_t
+ serial_pxa_irq(int irq, void *dev_id, struct pt_regs *regs)
+ {
+ 	struct uart_pxa_port *up = (struct uart_pxa_port *)dev_id;
