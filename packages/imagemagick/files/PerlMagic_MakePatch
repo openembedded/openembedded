@@ -1,0 +1,13 @@
+Index: ImageMagick-6.2.5/PerlMagick/Makefile.PL.in
+===================================================================
+--- ImageMagick-6.2.5.orig/PerlMagick/Makefile.PL.in	2005-04-21 00:27:36.000000000 +0800
++++ ImageMagick-6.2.5/PerlMagick/Makefile.PL.in	2005-10-04 04:43:35.239036400 +0800
+@@ -72,6 +72,8 @@
+ 
+    # Use same compiler as ImageMagick
+    'PERLMAINCC'	=> '@PERLMAINCC@',
++   'AR' => '@AR@',
++   'LD' => '@PERLMAINCC@',
+ 
+    # Set Perl installation prefix to ImageMagick installation prefix
+ #   'PREFIX'	=> '@prefix@',
