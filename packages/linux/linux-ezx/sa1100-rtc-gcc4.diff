@@ -1,0 +1,11 @@
+--- /tmp/sa1100-rtc.c	2006-08-29 10:51:48.000000000 +0200
++++ linux-2.6.16/drivers/char/sa1100-rtc.c	2006-08-29 10:52:14.995780000 +0200
+@@ -126,7 +126,7 @@
+ 	tval->tm_mday = days + 1;
+ }
+ 
+-static irqreturn_t rtc_interrupt(int irq, void *dev_id, struct pt_regs *regs)
++irqreturn_t rtc_interrupt(int irq, void *dev_id, struct pt_regs *regs)
+ {
+ 	unsigned int rtsr = RTSR;
+ 
