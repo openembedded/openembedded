@@ -111,7 +111,7 @@ do_deploy() {
 
 do_deploy[dirs] = "${S}"
 
-addtask deploy before do_build after do_compile
+addtask deploy before do_package after do_install
 
 PACKAGE_ARCH_corgi    = "c7x0"
 PACKAGE_ARCH_shepherd = "c7x0"
