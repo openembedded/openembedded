@@ -174,6 +174,9 @@ def patch_init(d):
 		def __init__(self, dir, d):
 			PatchSet.__init__(self, dir, d)
 			self.initialized = False
+			p = os.path.join(self.dir, 'patches')
+			if not os.path.exists(p):
+				os.mkdir(p)
 
 		def Clean(self):
 			try:
