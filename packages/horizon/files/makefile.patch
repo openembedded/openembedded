@@ -1,0 +1,34 @@
+--- /tmp/Makefile	2006-08-30 12:51:56.000000000 +0200
++++ horizon/src/Makefile	2006-08-30 12:53:03.025780000 +0200
+@@ -2,12 +2,11 @@
+ 
+ all: .depend $(BINARY)
+ 
+-CFLAGS  = -g -O2 -Wall -Werror                              \
+-	  -I/usr/X11R6/include                              \
++HCFLAGS  = -g -O2 -Wall -Werror                              \
+ 	  `sdl-config --cflags`                             \
+ 	  `pkg-config --cflags glib-2.0 gobject-2.0 libpng` \
+ 	  -I.
+-LDFLAGS = -L/usr/X11R6/lib -lX11                            \
++HLDFLAGS = -lX11                            \
+ 	  `sdl-config --libs`                               \
+ 	  `pkg-config --libs glib-2.0 gobject-2.0 libpng`   \
+ 	  -ljpeg
+@@ -16,7 +15,7 @@
+ OBJS   = $(CFILES:.c=.o)
+ 
+ $(BINARY): $(OBJS) 
+-	$(CC) *.o */*.o -o $@ $(LDFLAGS)
++	$(CC) *.o */*.o -o $@ $(LDFLAGS) $(HLDFLAGS)
+ 
+ clean:
+ 	rm -f $(OBJS) $(BINARY) *.o *~ */*~ */*/*~ .depend
+@@ -35,6 +34,6 @@
+ 	./$(BINARY) /tmp/horizon
+ 
+ .depend: *.[ch] */*.[ch]
+-	$(CC) -M $(CFLAGS) */*.c *.c > .depend
++	$(CC) -M $(CFLAGS) $(HCFLAGS) */*.c *.c > .depend
+ 
+ include .depend
