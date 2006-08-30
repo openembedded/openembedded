@@ -3,12 +3,14 @@ DESCRIPTION = "GPE bluetooth support user interface tool."
 SECTION     = "gpe"
 PRIORITY    = "optional"
 MAINTAINER  = "Florian Boor <florian.boor@kernelconcepts.de>"
-PR          = "r0"
+PR          = "r1"
 
-DEPENDS = "gtk+ libcontactsdb libdisplaymigration libgpewidget openobex libgpevtype bluez-libs sqlite dbus libglade blueprobe bluez-utils-dbus"
+DEPENDS = "gtk+ libcontactsdb libdisplaymigration libgpewidget openobex libgpevtype bluez-libs sqlite dbus-glib libglade blueprobe bluez-utils-dbus"
 RDEPENDS = "bluez-utils-dbus blueprobe"
 
 GPE_TARBALL_SUFFIX= "bz2"
 inherit gpe autotools
+
+SRC_URI += "file://hciattach-bts.patch;patch=1"
 
 FILES_${PN} += '${datadir}/bluez-pin'

@@ -21,11 +21,11 @@ GPE_EXTRA_INSTALL += "${GPE_EXTRA_INSTALL_${GUI_MACHINE_CLASS}}"
 
 XSERVER ?= "xserver-kdrive-fbdev"
 
-DEPENDS = "task-bootstrap task-gpe"
+DEPENDS = "${MACHINE_TASK_PROVIDER} task-gpe"
 RDEPENDS = "${IPKG_INSTALL}"
 
 export IPKG_INSTALL = "\
-    task-bootstrap \
+    ${MACHINE_TASK_PROVIDER} \
     gpe-task-base \
     gpe-task-pim \
     gpe-task-settings \

@@ -3,7 +3,7 @@ PR = "r0"
 HOMEPAGE = "http://www.freedesktop.org/Software/dbus"
 DESCRIPTION = "message bus system for applications to talk to one another"
 LICENSE = "GPL"
-DEPENDS = "expat glib-2.0 virtual/libintl dbus-glib-native"
+DEPENDS = "expat glib-2.0 virtual/libintl dbus-glib-native dbus"
 
 SRC_URI = "http://freedesktop.org/software/dbus/releases/dbus-glib-${PV}.tar.gz \
 	   file://cross.patch;patch=1 \

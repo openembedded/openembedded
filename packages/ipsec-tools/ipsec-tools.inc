@@ -3,7 +3,8 @@ Linux-2.6 IPsec implementation."
 DEPENDS = "virtual/kernel openssl readline flex"
 LICENSE = "BSD"
 MAINTAINER = "Chris Larson <kergoth@handhelds.org>"
-SECTION = "console/net"
+SECTION = "console/network"
+PR = "r1"
 
 inherit autotools
 

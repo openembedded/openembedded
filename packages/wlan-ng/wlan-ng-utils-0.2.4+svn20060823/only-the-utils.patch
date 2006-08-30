@@ -1,0 +1,26 @@
+Index: trunk/src/Makefile
+===================================================================
+--- trunk.orig/src/Makefile	2006-08-21 16:24:58.000000000 +0200
++++ trunk/src/Makefile	2006-08-23 12:49:08.000000000 +0200
+@@ -44,7 +44,7 @@
+ 
+ -include ../config.mk
+ 
+-DIRS=mkmeta shared wlanctl nwepgen wlancfg p80211 prism2
++DIRS=mkmeta shared wlanctl nwepgen wlancfg prism2
+ 
+ ifneq ($(wildcard *.addon),) 
+ DIRS+=`cat *.addon`
+Index: trunk/src/prism2/Makefile
+===================================================================
+--- trunk.orig/src/prism2/Makefile	2006-08-21 16:24:57.000000000 +0200
++++ trunk/src/prism2/Makefile	2006-08-23 12:48:32.000000000 +0200
+@@ -44,7 +44,7 @@
+ 
+ -include ../../config.mk
+ 
+-DIRS=driver ridlist download
++DIRS=ridlist download
+ 
+ ifneq ($(wildcard *.addon),) 
+ DIRS+=`cat *.addon`

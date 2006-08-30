@@ -5,7 +5,7 @@ IMAGE_LINGUAS = ""
 X_DEPENDS = "virtual/xserver"
 X_RDEPENDS = "xserver-kdrive-fbdev"
 
-XFCE_DEPENDS = "task-bootstrap task-xfce-base"
+XFCE_DEPENDS = "${MACHINE_TASK_PROVIDER} task-xfce-base"
 XFCE_RDEPENDS = "${XFCE_DEPENDS}"
 
 export IPKG_INSTALL = "${X_RDEPENDS} ${XFCE_RDEPENDS}"

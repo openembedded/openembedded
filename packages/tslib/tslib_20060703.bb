@@ -84,7 +84,6 @@ RDEPENDS_tslib-conf_h6300 = "detect-stylus"
 RDEPENDS_tslib-conf_blueangel = "detect-stylus"
 RDEPENDS_tslib-conf_htcuniversal = "detect-stylus"
 RDEPENDS_tslib-conf_h4000 = "detect-stylus"
-RDEPENDS_tslib-conf_ipaq-pxa270 = "detect-stylus"
 
 PACKAGE_ARCH_tslib-conf = "${MACHINE_ARCH}"
 PACKAGE_ARCH_mnci = "${MACHINE_ARCH}"
