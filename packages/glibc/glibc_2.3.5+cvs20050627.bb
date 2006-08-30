@@ -108,6 +108,7 @@ do_configure () {
 	if [ "x$default_mmap_threshold" != "x" ]; then
 		echo "malloc-CPPFLAGS=-DDEFAULT_MMAP_THRESHOLD=\"(${default_mmap_threshold})\"" >configparms
 	fi
+	echo "localedir=/usr/lib/locale" >> configparms
 # override this function to avoid the autoconf/automake/aclocal/autoheader
 # calls for now
 # don't pass CPPFLAGS into configure, since it upsets the kernel-headers
