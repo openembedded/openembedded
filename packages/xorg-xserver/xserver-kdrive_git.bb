@@ -4,26 +4,32 @@ DEFAULT_PREFERENCE = "-2"
 PR = "r3"
 
 LICENSE = "MIT"
-DEPENDS = "tslib libxkbfile xf86dgaproto xf86vidmodeproto xf86miscproto xproto libxdmcp xextproto xtrans libxau virtual/libx11 libxext libxrandr fixesproto damageproto libxfont resourceproto compositeproto xcalibrateext recordproto videoproto scrnsaverproto"
+DEPENDS = "tslib virtual/libsdl libxkbfile xf86dgaproto xf86vidmodeproto xf86miscproto xproto libxdmcp xextproto xtrans libxau virtual/libx11 libxext libxrandr fixesproto damageproto libxfont resourceproto compositeproto libxcalibrate recordproto videoproto scrnsaverproto"
 
 PROVIDES = "virtual/xserver"
 RPROVIDES = "virtual/xserver"
-PACKAGES =+ "xserver-kdrive-fbdev xserver-kdrive-fake xserver-kdrive-xephyr ${PN}-doc ${PN}-dev ${PN}-locale"
+PACKAGES =+ "xserver-kdrive-fbdev xserver-kdrive-sdl xserver-kdrive-fake xserver-kdrive-xephyr xserver-kdrive-epson ${PN}-doc ${PN}-dev ${PN}-locale"
 SECTION = "x11/base"
 DESCRIPTION = "X server from freedesktop.org"
 DESCRIPTION_xserver-kdrive-fbdev = "X server from freedesktop.org, supporting generic framebuffer devices"
 DESCRIPTION_xserver-kdrive-fake = "Fake X server"
 DESCRIPTION_xserver-kdrive-xephyr = "X server in an X window"
+DESCRIPTION_xserver-kdrive-epson = "X server from freedesktop.org, supporting Epson S1D13806 devices"
+DESCRIPTION_xserver-kdrive-epson = "X server from freedesktop.org, SDL version"
 
 FILES_${PN} += "${libdir}/xserver/SecurityPolicy"
 
 FILES_xserver-kdrive-fbdev = "${bindir}/Xfbdev"
 FILES_xserver-kdrive-fake = "${bindir}/Xfake"
 FILES_xserver-kdrive-xephyr = "${bindir}/Xephyr"
+FILES_xserver-kdrive-epson = "${bindir}/Xepson"
+FILES_xserver-kdrive-sdl = "${bindir}/Xsdl"
 
 RDEPENDS_xserver-kdrive-fbdev = "${PN}"
 RDEPENDS_xserver-kdrive-fake = "${PN}"
 RDEPENDS_xserver-kdrive-xephyr = "${PN}"
+RDEPENDS_xserver-kdrive-epson = "${PN}"
+RDEPENDS_xserver-kdrive-sdl = "${PN}"
 
 SRC_URI = "git://anongit.freedesktop.org/xorg/xserver;protocol=git \
 	file://kmode.patch;patch=1 \
@@ -34,6 +40,7 @@ SRC_URI = "git://anongit.freedesktop.org/xorg/xserver;protocol=git \
 	file://fbdev-not-fix.patch;patch=1  \
 	file://enable-builtin-fonts.patch;patch=1 \
 	file://optional-xkb.patch;patch=1 \
+	file://enable-epson.patch;patch=1 \
 #	file://disable-xf86-dga-xorgcfg.patch;patch=1 \
 	"
 
@@ -53,5 +60,7 @@ EXTRA_OECONF = "--enable-composite --enable-kdrive \
 		--disable-xevie --disable-xprint --disable-xtrap \
 		--disable-dmx \
 		--with-default-font-path=built-ins \
-		--enable-tslib \
+		--enable-tslib --enable-xcalibrate \
 		ac_cv_file__usr_share_X11_sgml_defs_ent=no"
+
+
