@@ -3,7 +3,7 @@ DESCRIPTION = "Enigma is a framebuffer-based frontend for DVB functions"
 MAINTAINER = "Felix Domke <tmbinc@elitedvb.net>"
 LICENSE = "GPL"
 
-SRCDATE = "20060829"
+SRCDATE = "20060831"
 PV = "cvs-${SRCDATE}"
 PN = "enigma"
 PR = "r0"
