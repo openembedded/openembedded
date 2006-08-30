@@ -21,3 +21,5 @@ mount -at nfs,smbfs,cpfs 2>/dev/null
 [ -e "/etc/sysctl.conf" ] && /sbin/sysctl -p "/etc/sysctl.conf"
 ldconfig
 ipkg-cl configure
+ln -s demux0 /dev/dvb/card0/demux1
+ln -s dvr2 /dev/dvb/card0/dvr1
