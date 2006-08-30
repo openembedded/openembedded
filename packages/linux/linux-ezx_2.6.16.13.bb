@@ -5,8 +5,8 @@ HOMEPAGE = "http://www.openezx.org"
 MAINTAINER = "Michael 'Mickey' Lauer <mickey@vanille.de>"
 LICENSE = "GPL"
 DEPENDS += "quilt-native"
-EZX = "ezx6"
-PR = "${EZX}-r13"
+EZX = "ezx7"
+PR = "${EZX}-r0"
 
 inherit kernel
 
@@ -17,33 +17,12 @@ RPSRC = "http://www.rpsys.net/openzaurus/patches/archive"
 # source and patches
 #
 SRC_URI = "http://www.kernel.org/pub/linux/kernel/v2.6/linux-2.6.16.tar.bz2 \
-	   http://people.openezx.org/stefan/patches/patches-2.6.16-2.6.16.13-exz6-symlink-fix.tar.bz2 \
+           http://people.openezx.org/stefan/patches/patches-2.6.16-2.6.16.13-ezx7.tar.bz2 \
            \
-           ${RPSRC}/led_core-r15.patch;patch=1 \
-           ${RPSRC}/led_triggers-r14.patch;patch=1 \
-           ${RPSRC}/led_trig_timer-r8.patch;patch=1 \
-           ${RPSRC}/led_trig_sharpsl_pm-r5.patch;patch=1 \
-           ${RPSRC}/led_zaurus-r10.patch;patch=1 \
-           ${RPSRC}/led_locomo-r7.patch;patch=1 \
-           ${RPSRC}/led_ixp4xx-r2.patch;patch=1 \
-           ${RPSRC}/led_tosa-r5.patch;patch=1 \
-           ${RPSRC}/led_ide-r6.patch;patch=1 \
-           ${RPSRC}/led_nand-r3.patch;patch=1 \
-           ${RPSRC}/corgi_bl_cleanup-r3.patch;patch=1 \
-           ${RPSRC}/corgi_bl_generic-r3.patch;patch=1 \
-           ${RPSRC}/backlight_sysfs_fix-r0.patch;patch=1 \
-           \
-	   file://touchscreen-fix-r0.patch;patch=1 \
-           \
-           file://e680-disable-boomer-HACK.patch;patch=1 \
-           \
-           file://e680-leds-r1.patch;patch=1 \
-           file://a780-leds-r0.patch;patch=1 \
-           file://ezx-backlight-r1.patch;patch=1 \
-           file://e680-fix-keypad.patch;patch=1 \
-           file://pxakbd-fix-directkeys.patch;patch=1 \
-           \
-           file://logo_linux_clut224.ppm \
+           file://sa1100-rtc-gcc4.diff;patch=1 \
+	   file://pxa-serial-gcc4.diff;patch=1 \
+	   \
+	   file://logo_linux_clut224.ppm \
            file://defconfig-a780 \
            file://defconfig-e680"
 S = "${WORKDIR}/linux-2.6.16"
@@ -79,7 +58,6 @@ do_ezxpatch() {
 }
 
 do_configure() {
-	mv ${S}/.config harald.config
 	install -m 0644 ${WORKDIR}/logo_linux_clut224.ppm drivers/video/logo/logo_linux_clut224.ppm
 
 	if [ ! -e ${WORKDIR}/defconfig-${MACHINE} ]; then

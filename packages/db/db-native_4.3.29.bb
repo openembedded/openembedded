@@ -10,4 +10,8 @@ inherit native
 
 require db_${PV}.bb
 
+do_package() {
+:
+}
+
 PACKAGES = ""

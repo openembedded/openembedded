@@ -39,15 +39,20 @@ require_once 'includes/functions.inc';
 
 check_database();
 
+$feeds = db_query("SELECT f_id, f_name, f_uri FROM feeds");
+
+if($argc > 1 AND $argv[1] == 'upgrades')
+{
+	$feeds = db_query("SELECT f_id, f_name, f_uri FROM feeds WHERE f_type = 'upgrades'");
+}
+
 $start = time();
 $p_count = 0;
-
-$feeds = db_query("SELECT f_id, f_name, f_uri FROM feeds");
 
 foreach($feeds as $feed)
 {
     print("Updating {$feed['f_name']}: ");
-    db_query_n("DELETE FROM packages WHERE p_feed = '{$feed['f_name']}'");
+    db_query_n("DELETE FROM packages WHERE p_feed = '{$feed['f_id']}'");
 
     $count = 0;
 
@@ -104,7 +109,7 @@ foreach($feeds as $feed)
 		    $package_info['conflicts'] = $value;
 		    break;
 		case 'Section':
-		    $package_info['section'] = $value;
+		    $package_info['section'] = strtolower($value);
 		    break;
 		case 'Architecture':
 		    $package_info['arch'] = $value;
