@@ -23,7 +23,7 @@ ALLOW_EMPTY = 1
 
 EXTRA_OEMAKE = "OPENZAURUS_RELEASE=-${DISTRO_VERSION}"
 COMPATIBLE_HOST = "arm.*-linux"
-COMPATIBLE_MACHINE = '(collie|poodle|c7x0|akita|spitz|tosa|ipaq-pxa270|qemuarm)'
+COMPATIBLE_MACHINE = '(collie|poodle|c7x0|akita|spitz|tosa|ipoq-pxa270|qemuarm)'
 
 CMDLINE_CON = "console=ttyS0,115200n8 console=tty1 noinitrd"
 CMDLINE_ROOT = "root=/dev/mtdblock2 rootfstype=jffs2"

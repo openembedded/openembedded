@@ -8,6 +8,7 @@ KV = "2.4.18"
 RMKV = "7"
 PXAV = "3"
 SHARPV = "20031107"
+COMPATIBLE_MACHINE = "(poodle|corgi|shepherd|husky|poodle255|tosa)"
 
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/openzaurus-pxa-${KV}-rmk${RMKV}-pxa${PXAV}-embedix${SHARPV}"
 
