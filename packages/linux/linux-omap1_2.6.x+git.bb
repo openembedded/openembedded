@@ -3,7 +3,8 @@ SECTION = "kernel"
 DESCRIPTION = "Linux kernel for OMAP processors"
 LICENSE = "GPL"
 
-SRC_URI = "git://source.mvista.com/git/linux-omap-2.6.git;protocol=git"
+SRC_URI = "git://source.mvista.com/git/linux-omap-2.6.git;protocol=git \
+           file://defconfig"
 
 S = "${WORKDIR}/git"
 
@@ -17,10 +18,11 @@ inherit kernel
 COMPATIBLE_HOST = 'arm.*-linux'
 
 do_configure_prepend() {
-        if [ "${MACHINE}" == "omap5912osk" ] ; then
-                 oe_runmake omap_osk_5912_defconfig
-        fi
-
+#        if [ "${MACHINE}" == "omap5912osk" ] ; then
+#                oe_runmake omap_osk_5912_defconfig
+#        fi
+         install -m 0644 ${WORKDIR}/defconfig ${S}/.config
+         make oldconfig
 }        
 
 do_deploy() {

@@ -10,7 +10,7 @@ COREDEF="00_core"
 
 create_file() {
 	EXEC=" 
-	touch \"$1\" 
+	touch \"$1\"; 
 	chown ${TUSER}.${TGROUP} $1 || echo \"Failed to set owner -${TUSER}- for -$1-.\" >/dev/tty0 2>&1 
 	chmod ${TMODE} $1 || echo \"Failed to set mode -${TMODE}- for -$1-.\" >/dev/tty0 2>&1 " 
 
@@ -21,7 +21,7 @@ create_file() {
 
 mk_dir() {
 	EXEC=" 
-	mkdir -p \"$1\" 
+	mkdir -p \"$1\"; 
 	chown ${TUSER}.${TGROUP} $1 || echo \"Failed to set owner -${TUSER}- for -$1-.\" >/dev/tty0 2>&1 
 	chmod ${TMODE} $1 || echo \"Failed to set mode -${TMODE}- for -$1-.\" >/dev/tty0 2>&1 "
 

@@ -8,7 +8,10 @@ COMPATIBLE_MACHINE = '(h3900|h2200|h4000|h5xxx|htcuniversal|ipaq-pxa270)'
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/handhelds-pxa-${PV}"
 
 SRC_URI = "${HANDHELDS_CVS};module=linux/kernel26;tag=${@'K' + bb.data.getVar('PV',d,1).replace('.', '-')} \
-	file://defconfig"
+           file://24-hostap_cs_id.diff;patch=1 \
+           file://hrw-pcmcia-ids-r2.patch;patch=1 \
+           file://hx-iwmmxt.patch;patch=1 \
+	   file://defconfig"
 
 S = "${WORKDIR}/kernel26"
 
