@@ -4,14 +4,14 @@
 # problems in the initscripts on SlugOS.  The problems
 # mostly come down to the order the scripts are executed
 # in.
-require initscripts_${PV}.bb
+include initscripts_${PV}.bb
 
 MAINTAINER = "John Bowler <jbowler@acm.org>"
 RCONFLICTS = "initscripts"
 # All other standard definitions inherited from initscripts
 # Except the PR which is hacked here.  The format used is
 # a suffix
-PR := "${PR}.9"
+PR := "${PR}.10"
 
 FILESPATH = "${@base_set_filespath([ '${FILE_DIRNAME}/${P}', '${FILE_DIRNAME}/initscripts-${PV}', '${FILE_DIRNAME}/files', '${FILE_DIRNAME}' ], d)}"
 
@@ -64,15 +64,20 @@ do_install_append() {
 	# udev will run at S04 if installed
 	rm	${D}${sysconfdir}/rcS.d/S03sysfs
 	rm	${D}${sysconfdir}/rcS.d/S38devpts.sh
-#	rm	${D}${sysconfdir}/rcS.d/S06alignment
+	rm	${D}${sysconfdir}/rcS.d/S06alignment
+	rm 	${D}${sysconfdir}/rcS.d/S37populate-volatile.sh
+	rm 	${D}${sysconfdir}/rc0.d/S25save-rtc.sh
+	rm      ${D}${sysconfdir}/rc6.d/S25save-rtc.sh
+
+
 
 	# Check the result
 	find ${D}${sysconfdir}/rc?.d ! -type d -print | {
 		status=0
 		while read d
 		do
-			oenote "initscripts-slugos: unexpected link $f"
-			status = 1
+			oenote "initscripts-slugos: unexpected link $d"
+			status=1
 		done
 		test $status -eq 0 ||
 			oefatal "initscripts-slugos: new links break do_install"
@@ -102,6 +107,7 @@ do_install_append() {
 	# base-files populate-volatile.sh runs at S37
 	update-rc.d -r ${D} devpts.sh		start 38 S .
 	# slugos file syslog starts here (39)
+	update-rc.d -r ${D} populate-volatile.sh	start 37 S .
 
 	# set hostname and domainname before the network script works (by
 	# entering them at level 40), networking may reset them.
@@ -138,6 +144,7 @@ do_install_append() {
 	# This is the special, correct, slugos umountnfs.sh (it looks in
 	# the /proc/mounts information, not /etc/fstab)
 	update-rc.d -r ${D} umountnfs.sh	start 31 0 6 .
+	update-rc.d -r ${D} save-rtc.sh		start 25 0 6 .
 	# portmap stops at 32
 	# slugos network syslog stops here (39)
 	# networking stops at 40 (nothing else does, believe me.)
