@@ -1,0 +1,15 @@
+--- gpe-package-0.3/Makefile	2005-08-26 06:14:00.000000000 -0700
++++ gpe-package-0.3-oe/Makefile	2006-05-24 16:51:02.459320395 -0700
+@@ -52,9 +52,9 @@
+ 	mkdir -p $(DESTDIR)/CONTROL
+ 	sed -e s/VERSION/$(VERSION)/ < familiar/control > $(DESTDIR)/CONTROL/control
+ 	mkdir -p $(DESTDIR)/etc/gpe
+-	mkdir -p $(DESTDIR)/$(PREFIX)/bin
+-	$(INSTALL) -m 4755 $(PACKAGE) $(DESTDIR)$(PREFIX)/bin/$(PACKAGE)
+-	$(STRIP) $(DESTDIR)$(PREFIX)/bin/$(PACKAGE)
++	mkdir -p $(DESTDIR)/$(PREFIX)/sbin
++	$(INSTALL) -m 0744 $(PACKAGE) $(DESTDIR)$(PREFIX)/sbin/$(PACKAGE)
++	$(STRIP) $(DESTDIR)$(PREFIX)/sbin/$(PACKAGE)
+ 	mkdir -p $(DESTDIR)$(PREFIX)/share/pixmaps
+ 	for i in $(PIXMAPS); do install -m 644 -D pixmaps/$$i $(DESTDIR)$(PREFIX)/share/pixmaps/$$i; done
+ 	mkdir -p $(DESTDIR)$(PREFIX)/share/applications
