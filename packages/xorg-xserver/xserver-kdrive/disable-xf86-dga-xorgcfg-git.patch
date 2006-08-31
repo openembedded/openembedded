@@ -1,0 +1,39 @@
+Index: git/configure.ac
+===================================================================
+--- git.orig/configure.ac	2006-08-31 22:44:06.000000000 +0200
++++ git/configure.ac	2006-08-31 22:49:39.000000000 +0200
+@@ -513,7 +513,11 @@
+ XEXTXORG_LIB='$(top_builddir)/Xext/libXextbuiltin.la'
+ 
+ dnl Core modules for most extensions, et al.
++if test "$KDRIVE" = yes; then
++REQUIRED_MODULES="randrproto renderproto [fixesproto >= 4.0] damageproto xcmiscproto xextproto xproto xtrans xf86bigfontproto [scrnsaverproto >= 1.1] bigreqsproto resourceproto fontsproto inputproto [kbproto >= 1.0.3]"
++else
+ REQUIRED_MODULES="randrproto renderproto [fixesproto >= 4.0] damageproto xcmiscproto xextproto xproto xtrans xf86miscproto xf86vidmodeproto xf86bigfontproto [scrnsaverproto >= 1.1] bigreqsproto resourceproto fontsproto inputproto xf86dgaproto [kbproto >= 1.0.3]"
++fi
+ REQUIRED_LIBS="xfont xau fontenc"
+ 
+ AM_CONDITIONAL(XV, [test "x$XV" = xyes])
+@@ -1540,7 +1544,9 @@
+ AC_SUBST(XKB_COMPILED_DIR)
+ 
+ dnl and the rest of these are generic, so they're in config.h
++if test ! x"$KDRIVE" = xyes; then
+ AC_DEFINE(XFreeXDGA, 1, [Build XDGA support])
++fi
+ AC_DEFINE(XResExtension, 1, [Build XRes extension])
+ 
+ dnl CYGWIN does not define fd_set if _POSIX_SOURCE is defined
+@@ -1560,10 +1566,12 @@
+ 
+ AC_DEFINE_DIR(PROJECTROOT, prefix, [Overall prefix])
+ 
++if test ! "x$KDRIVE" = xyes ; then
+ dnl xorgconfig CLI configuration utility
+ PKG_CHECK_MODULES([XORGCONFIG_DEP], [xkbfile x11])
+ AC_SUBST(XORGCONFIG_DEP_CFLAGS)
+ AC_SUBST(XORGCONFIG_DEP_LIBS)
++fi
+ 
+ dnl xorgcfg GUI configuration utility
+ AC_ARG_ENABLE(xorgcfg, AS_HELP_STRING([--enable-xorgcfg], 
