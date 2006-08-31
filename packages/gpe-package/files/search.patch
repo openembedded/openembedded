@@ -1,0 +1,313 @@
+--- /tmp/interface.c	2006-08-31 09:49:57.000000000 +0200
++++ gpe-package-0.3/interface.c	2006-08-31 09:50:20.855780000 +0200
+@@ -27,6 +27,10 @@
+ #include <locale.h>
+ #include <libintl.h>
+ 
++#ifdef ENABLE_PCRE
++#include <pcre.h>
++#endif
++
+ #define _(x) gettext(x)
+ #define N_(_x) (_x)
+ 
+@@ -55,11 +59,8 @@
+ #define MI_PACKAGES_APPLY   7
+ #define MI_FILTER_INST		8
+ #define MI_FILTER_NOTINST	9
+-#define MI_PACKAGES_INFO    10
+-
+-#define TREE_SHOW_ALL		0x00
+-#define TREE_SHOW_INST		0x01
+-#define TREE_SHOW_NOTINST	0x02
++#define MI_FILTER_SEARCH	10
++#define MI_PACKAGES_INFO    11
+ 
+ #define HELPMESSAGE "GPE-Package\nVersion " VERSION \
+ 		"\nGPE frontend for ipkg\n\nflorian@handhelds.org"
+@@ -79,7 +80,6 @@
+ 
+ static description_t *pkg_info = NULL;
+ static int pkg_count = 0;
+-static int tree_filter = TREE_SHOW_ALL;
+ 
+ int sock;
+ static pkcommand_t running_command = CMD_NONE;
+@@ -91,10 +91,12 @@
+ static GtkWidget *notebook;
+ static GtkWidget *txLog;
+ static GtkWidget *treeview;
++static GtkTreeModel *filter;
++static gchar *filter_term = NULL;
+ static GtkTreeStore *store = NULL;
+ static GtkToolItem *bApply;
+ static GtkWidget *miUpdate, *miSysUpgrade, *miSelectLocal, *miApply;
+-static GtkWidget *miFilterInst, *miFilterNotInst;
++static GtkWidget *miFilterInst, *miFilterNotInst, *miFilterSearch;
+ static GtkWidget *sbar;
+ GtkWidget *fMain;
+ static GtkWidget *dlgAction = NULL;
+@@ -102,10 +104,17 @@
+ static GtkTextBuffer *infobuffer = NULL;
+ static GtkWidget *mMain;
+ 
++#ifdef ENABLE_PCRE
++static gboolean is_regexp;
++#endif
+ 
+ /* some forwards */
+ gboolean get_pending_messages ();
+ void on_tree_filter_changed(GtkCheckMenuItem *menuitem, gpointer user_data);
++void on_tree_filter_search_changed (GtkCheckMenuItem *menuitem, gpointer user_data);
++gboolean filter_visible_func (GtkTreeModel *model, GtkTreeIter *iter, gpointer user_data);
++void set_filter_term (const gchar *text, gboolean regexp);
++void search_entry_activated (GtkEntry *entry, gpointer user_data);
+ void create_fMain (void);
+ void on_select_local(GtkButton *button, gpointer user_data);
+ void on_packages_update_clicked(GtkButton *button, gpointer user_data);
+@@ -125,8 +134,10 @@
+   { N_("/Packages/Show Insta_lled"), "", on_tree_filter_changed, MI_FILTER_INST , "<CheckItem>"},
+   { N_("/Packages/Show _Not Installed"), "", on_tree_filter_changed, MI_FILTER_NOTINST, "<CheckItem>"},
+   { N_("/_Packages/s2"), NULL , NULL,    0, "<Separator>"},
+-  { N_("/Packages/Show _Info"), "<Control> I", on_package_info_clicked, MI_PACKAGES_INFO , "<Item>"},
++  { N_("/Packages/_Search"), "<Control> I", on_tree_filter_search_changed, MI_FILTER_SEARCH , "<CheckItem>"},
+   { N_("/_Packages/s3"), NULL , NULL,    0, "<Separator>"},
++  { N_("/Packages/Show _Info"), "<Control> I", on_package_info_clicked, MI_PACKAGES_INFO , "<Item>"},
++  { N_("/_Packages/s4"), NULL , NULL,    0, "<Separator>"},
+   { N_("/Packages/_Update lists"), "<Control> U", on_packages_update_clicked, MI_PACKAGES_UPDATE , "<Item>"},
+   { N_("/Packages/Upgrade _System"), "", on_system_update_clicked, MI_PACKAGES_UPGRADE, "<Item>"},
+   { N_("/_Packages/s3"), NULL , NULL,    0, "<Separator>"},
+@@ -215,10 +226,10 @@
+ GtkWidget *
+ progress_dialog (gchar * text, GdkPixbuf * pixbuf)
+ {
+-GtkWidget *window;
+-GtkWidget *label;
+-GtkWidget *image;
+-GtkWidget *hbox;
++	GtkWidget *window;
++	GtkWidget *label;
++	GtkWidget *image;
++	GtkWidget *hbox;
+ 	
+ 	window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
+ 	hbox = gtk_hbox_new (FALSE, 0);
+@@ -227,6 +238,7 @@
+ 
+ 	gtk_window_set_type_hint (GTK_WINDOW (window),
+ 				  GDK_WINDOW_TYPE_HINT_DIALOG);
++	gtk_window_set_title (GTK_WINDOW (window), _("Working"));
+ 
+ 	gtk_label_set_line_wrap (GTK_LABEL (label), TRUE);
+ 
+@@ -381,9 +393,9 @@
+ 
+ void update_tree(void)
+ {
+-guint id;
+-int i;
+-GtkTreeIter iter;
++	guint id;
++	int i;
++	GtkTreeIter iter;
+ 
+ 	id = gtk_statusbar_get_context_id(GTK_STATUSBAR(sbar),"upd");
+ 	gtk_statusbar_push(GTK_STATUSBAR(sbar),
+@@ -392,10 +404,6 @@
+ 	gtk_tree_store_clear(GTK_TREE_STORE(store));
+ 	
+ 	for (i=0; i<pkg_count; i++) {
+-		if (((tree_filter & TREE_SHOW_INST) && (pkg_info[i].status == SS_INSTALLED))
+-			|| ((tree_filter & TREE_SHOW_NOTINST) && (pkg_info[i].status != SS_INSTALLED)))		
+-			continue;
+-		
+ 		gtk_tree_store_append (store, &iter, NULL);
+ 	
+ 		gtk_tree_store_set (store, &iter,
+@@ -412,14 +420,137 @@
+ 
+ void on_tree_filter_changed(GtkCheckMenuItem *menuitem, gpointer user_data)
+ {
+-	tree_filter =
+-		!gtk_check_menu_item_get_active(GTK_CHECK_MENU_ITEM(miFilterInst)) *
+-		TREE_SHOW_INST +
+-		!gtk_check_menu_item_get_active(GTK_CHECK_MENU_ITEM(miFilterNotInst)) *
+-		TREE_SHOW_NOTINST;
+-	update_tree();
++	if (filter)
++		gtk_tree_model_filter_refilter (GTK_TREE_MODEL_FILTER (filter));
+ }
+ 
++gboolean filter_visible_func (GtkTreeModel *model, GtkTreeIter *iter, gpointer user_data)
++{
++	gboolean installed;
++	gboolean not_installed;
++	GValue value_installed = { 0, };
++	GValue value_name = { 0, };
++	const gchar *pkgname;
++
++	installed = gtk_check_menu_item_get_active(GTK_CHECK_MENU_ITEM(miFilterInst));
++	not_installed = gtk_check_menu_item_get_active(GTK_CHECK_MENU_ITEM(miFilterNotInst));
++        
++	gtk_tree_model_get_value (model, iter, COL_INSTALLED, &value_installed);
++        
++	if (g_value_get_boolean (&value_installed)) {
++		/* Package is installed */
++		if (!installed)
++			return FALSE;
++		} else {
++		/* Package is not installed */
++		if (!not_installed)
++			return FALSE;
++	}
++
++	if (!filter_term)
++		return TRUE;
++
++	gtk_tree_model_get_value (model, iter, COL_NAME, &value_name);
++
++	pkgname = g_value_get_string (&value_name);
++
++#ifdef ENABLE_PCRE
++	pcre *re;
++	gint ret;
++	const gchar *error;
++	gint error_offset;
++
++	if (is_regexp) {
++		re = pcre_compile (filter_term, 0, &error, &error_offset, NULL);
++
++		if (re) {
++			ret = pcre_exec (re, NULL, pkgname, strlen (pkgname), 0, 0, NULL, 0); 
++
++			g_free (re);
++
++			if (ret >= 0) {
++				return TRUE;
++			}
++		}
++
++		return FALSE;
++	}
++#endif
++
++	if (strstr (pkgname, filter_term))
++		return TRUE;
++
++	return FALSE;
++}
++
++void set_filter_term (const gchar *text, gboolean regexp)
++{
++	if (filter_term) {
++		g_free (filter_term);
++	}
++	
++	filter_term = g_strdup (text);
++
++#ifdef ENABLE_PCRE
++	is_regexp = regexp;
++#endif
++
++	gtk_tree_model_filter_refilter (GTK_TREE_MODEL_FILTER (filter));
++}
++
++void search_entry_activated (GtkEntry *entry, gpointer user_data)
++{
++	GtkDialog *dialog = user_data;
++
++	gtk_dialog_response (dialog, GTK_RESPONSE_ACCEPT);
++}
++
++void on_tree_filter_search_changed (GtkCheckMenuItem *menuitem, gpointer user_data)
++{
++	GtkWidget *dialog;
++	GtkWidget *entry;
++	const gchar *text;
++#ifdef ENABLE_PCRE
++	GtkWidget *checkbutton;
++#endif
++
++	if (gtk_check_menu_item_get_active (GTK_CHECK_MENU_ITEM (miFilterSearch))) {
++		dialog = gtk_dialog_new_with_buttons (_("Search term:"),
++			GTK_WINDOW (fMain),
++			GTK_DIALOG_DESTROY_WITH_PARENT,
++		        GTK_STOCK_OK, GTK_RESPONSE_ACCEPT,
++			GTK_STOCK_CANCEL, GTK_RESPONSE_REJECT,
++			NULL);
++		entry = gtk_entry_new ();
++		g_signal_connect (G_OBJECT (entry), "activate", G_CALLBACK (search_entry_activated), dialog);
++		gtk_widget_show (entry);
++		gtk_container_add (GTK_CONTAINER (GTK_DIALOG (dialog)->vbox), entry);
++#ifdef ENABLE_PCRE
++		checkbutton = gtk_check_button_new_with_label (_("Regular expression"));
++		gtk_widget_show (checkbutton);
++		gtk_container_add (GTK_CONTAINER (GTK_DIALOG (dialog)->vbox), checkbutton);
++#endif
++		if (gtk_dialog_run (GTK_DIALOG (dialog)) == GTK_RESPONSE_ACCEPT) {
++			text = gtk_entry_get_text (GTK_ENTRY (entry));
++			if (strlen (text)) {
++#ifdef ENABLE_PCRE			
++				set_filter_term (text, gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (checkbutton)));
++#else
++				set_filter_term (text, FALSE);
++#endif
++			} else {
++				gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (miFilterSearch), FALSE);
++			}
++		} else {
++			gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (miFilterSearch), FALSE);
++                }
++		gtk_widget_destroy (dialog);
++	} else {
++		set_filter_term (NULL, FALSE);
++	}
++		
++        
++}
+ 
+ void on_about_clicked (GtkWidget * w)
+ {
+@@ -740,9 +871,9 @@
+ 
+ void on_package_info_clicked(GtkButton *button, gpointer user_data)
+ {
+-GtkTreeIter iter;
+-GtkTreeSelection *sel;
+-char *name = NULL;
++	GtkTreeIter iter;
++	GtkTreeSelection *sel;
++	char *name = NULL;
+ 	
+ 	sel = gtk_tree_view_get_selection(GTK_TREE_VIEW(treeview));
+ 	
+@@ -848,7 +979,7 @@
+ 	selection = gtk_tree_view_get_selection (treeview);
+ 	if (gtk_tree_selection_get_selected (selection, NULL, &iter) == FALSE) 
+ 		return FALSE;
+-	gtk_tree_model_get (GTK_TREE_MODEL (store), &iter, COL_VERSION, &version, -1);
++	gtk_tree_model_get (GTK_TREE_MODEL (filter), &iter, COL_VERSION, &version, -1);
+ 	gtk_statusbar_push(GTK_STATUSBAR(sbar),0,version);
+ 
+ 	return TRUE;
+@@ -882,6 +1013,8 @@
+ 		MI_FILTER_INST);
+ 	miFilterNotInst = gtk_item_factory_get_item_by_action(itemfactory,
+ 		MI_FILTER_NOTINST);
++	miFilterSearch = gtk_item_factory_get_item_by_action(itemfactory,
++		MI_FILTER_SEARCH);
+ 	
+ 	gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(miFilterInst),TRUE); 
+ 	gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(miFilterNotInst),TRUE); 
+@@ -984,7 +1117,9 @@
+ 	gtk_box_pack_start(GTK_BOX(vbox), cur, TRUE, TRUE, 0);	
+ 
+ 	/* packages tree */
+-	treeview = gtk_tree_view_new_with_model (GTK_TREE_MODEL (store));
++	filter = gtk_tree_model_filter_new (GTK_TREE_MODEL (store), NULL);
++	gtk_tree_model_filter_set_visible_func (GTK_TREE_MODEL_FILTER (filter), filter_visible_func, NULL, NULL);
++	treeview = gtk_tree_view_new_with_model (GTK_TREE_MODEL (filter));
+ 	gtk_tree_view_set_reorderable(GTK_TREE_VIEW(treeview),FALSE);
+ 	gtk_tree_view_set_rules_hint (GTK_TREE_VIEW(treeview),TRUE);
+ 	gtk_container_add(GTK_CONTAINER(cur),treeview);	
+ 
