@@ -1,0 +1,15 @@
+--- glibc-2.3.3/ports/sysdeps/unix/sysv/linux/arm/socket.S.orig	2006-07-12 13:57:05.990485563 -0700
++++ glibc-2.3.3/ports/sysdeps/unix/sysv/linux/arm/socket.S	2006-07-12 13:58:41.197865230 -0700
+@@ -32,7 +32,11 @@
+    The .S files for the other calls just #define socket and #include this.  */
+ 
+ #ifndef __socket
+-#define __socket P(__,socket)
++#  ifndef NO_WEAK_ALIAS
++#    define __socket P(__,socket)
++#  else
++#    define __socket socket
++#  endif
+ #endif
+ 
+ #define PUSHARGS_1	str a1, [sp, $-4]!
