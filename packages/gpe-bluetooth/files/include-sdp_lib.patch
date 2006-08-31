@@ -1,0 +1,9 @@
+--- gpe-bluetooth-0.54/main.h.orig	2006-08-31 09:49:46.000000000 +0200
++++ gpe-bluetooth-0.54/main.h	2006-08-31 09:49:48.000000000 +0200
+@@ -1,5 +1,6 @@
+ #include <gtk/gtk.h>
+ #include <bluetooth/sdp.h>
++#include <bluetooth/sdp_lib.h>
+ 
+ struct bt_device
+ {
