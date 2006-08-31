@@ -1,10 +1,10 @@
 PV = "1.1.0+git${SRCDATE}"
 DEFAULT_PREFERENCE = "-2"
 
-PR = "r3"
+PR = "r4"
 
 LICENSE = "MIT"
-DEPENDS = "tslib virtual/libsdl libxkbfile xf86dgaproto xf86vidmodeproto xf86miscproto xproto libxdmcp xextproto xtrans libxau virtual/libx11 libxext libxrandr fixesproto damageproto libxfont resourceproto compositeproto libxcalibrate recordproto videoproto scrnsaverproto"
+DEPENDS = "tslib virtual/libsdl libxkbfile xproto libxdmcp xextproto xtrans libxau virtual/libx11 libxext libxrandr fixesproto damageproto libxfont resourceproto compositeproto libxcalibrate recordproto videoproto scrnsaverproto"
 
 PROVIDES = "virtual/xserver"
 RPROVIDES = "virtual/xserver"
@@ -41,7 +41,7 @@ SRC_URI = "git://anongit.freedesktop.org/xorg/xserver;protocol=git \
 	file://enable-builtin-fonts.patch;patch=1 \
 	file://optional-xkb.patch;patch=1 \
 	file://enable-epson.patch;patch=1 \
-#	file://disable-xf86-dga-xorgcfg.patch;patch=1 \
+	file://disable-xf86-dga-xorgcfg-git.patch;patch=1 \
 	"
 
 SRC_URI_append_mnci   = " file://onlyfb.patch;patch=1"
@@ -62,5 +62,4 @@ EXTRA_OECONF = "--enable-composite --enable-kdrive \
 		--with-default-font-path=built-ins \
 		--enable-tslib --enable-xcalibrate \
 		ac_cv_file__usr_share_X11_sgml_defs_ent=no"
-
 
