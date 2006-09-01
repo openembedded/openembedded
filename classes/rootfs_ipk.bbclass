@@ -42,7 +42,7 @@ real_do_rootfs () {
 		echo "src oe file:${DEPLOY_DIR_IPK}" > ${T}/ipkg.conf
 	fi
 	
-	ipkgarchs="all any noarch ${TARGET_ARCH} ${IPKG_ARCHS} ${MACHINE}"
+ 	ipkgarchs="${IPKG_ARCHS}"
 	priority=1
 	for arch in $ipkgarchs; do
 		echo "arch $arch $priority" >> ${T}/ipkg.conf
