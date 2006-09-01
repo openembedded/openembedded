@@ -2,7 +2,7 @@ DESCRIPTION = "GNU roff"
 SECTION = "base"
 LICENSE = "GPL"
 MAINTAINER = "Inge Arnesen <inge.arnesen@gmail.com>"
-PR = "r2"
+PR = "r3"
 
 SRC_URI = "http://ftp.gnu.org/gnu/groff/groff-${PV}.tar.gz \
 	           file://Makefile.in.patch;patch=1 \
@@ -15,11 +15,14 @@ PARALLEL_MAKE = ""
 EXTRA_OECONF="--prefix=${D} --exec-prefix=${D} --bindir=${D}${bindir} --datadir=${D}${datadir} --mandir=${D}${datadir}/man --infodir=${D}${datadir}/info"
 inherit autotools
 
-do_configure () {
+do_configure() {
 	oe_runconf
 }
 
-#do_install() {
-#	oe_runmake 'PREFIX=${D}' install
-#}
-
+#
+# The installer refuses to do anything if the prefix directory does not
+# already exist, so create it manually before the standard install runs.
+#
+do_install_prepend() {
+	install -m 0755 -d ${D}
+}
