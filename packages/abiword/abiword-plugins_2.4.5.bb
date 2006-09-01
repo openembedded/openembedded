@@ -1,5 +1,5 @@
 DESCRIPTION ="AbiWord is free word processing program similar to Microsoft(r) Word""
-SECTION = "gnome"
+SECTION = "gnome/office"
 HOMEPAGE="http://www.abiword.org""
 MAINTAINER="Koen Kooi <koen@dominion.kabel.utwente.nl>"
 LICENSE="GPLv2"
