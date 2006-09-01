@@ -134,7 +134,7 @@ EOF
         cat <<EOF >${SDK_DIR}/ipkg-target.conf
 src oe file:${DEPLOY_DIR_IPK}
 EOF
-	ipkgarchs="all any noarch ${TARGET_ARCH} ${IPKG_ARCHS} ${MACHINE}"
+	ipkgarchs="${IPKG_ARCHS}"
         priority=1
         for arch in $ipkgarchs; do
                 echo "arch $arch $priority" >> ${SDK_DIR}/ipkg-target.conf
