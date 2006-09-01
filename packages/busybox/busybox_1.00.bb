@@ -10,7 +10,7 @@ HOMEPAGE = "http://www.busybox.net"
 LICENSE = "GPL"
 SECTION = "base"
 PRIORITY = "required"
-PR = "r32"
+PR = "r37"
 
 SRC_URI = "http://www.busybox.net/downloads/busybox-${PV}.tar.gz \
            file://add-getkey-applet.patch;patch=1 \
@@ -22,6 +22,7 @@ SRC_URI = "http://www.busybox.net/downloads/busybox-${PV}.tar.gz \
 	   file://readlink.patch;patch=1 \
 	   file://iproute-flush-cache.patch;patch=1;pnum=0 \
 	   file://rmmod.patch;patch=1 \
+	   file://df.patch;patch=1 \
 	   file://below.patch;patch=1 \
 	   file://fbset.patch;patch=1 \
 	   file://mount-all-type.patch;patch=1 \
@@ -29,6 +30,9 @@ SRC_URI = "http://www.busybox.net/downloads/busybox-${PV}.tar.gz \
 	   file://gzip-spurious-const.patch;patch=1 \
 	   file://ifupdown-spurious-environ.patch;patch=1 \
            file://uclibc_posix.patch;patch=1 \
+	   file://unzip-enhancement-and-fixes.patch;patch=1;pnum=0 \
+	   file://unzip-endian-fixes.patch;patch=1;pnum=0 \
+	   file://start-stop-daemon-oknodo-support.patch;patch=1 \
            file://defconfig \
            file://busybox-cron \
 	   file://busybox-httpd \
@@ -146,6 +150,7 @@ pkg_prerm_${PN} () {
 	# providing its files, this will make update-alternatives work, but the update-rc.d part
 	# for syslog, httpd and/or udhcpd will fail if there is no other package providing sh
 	tmpdir=`mktemp -d /tmp/busyboxrm-XXXXXX`
+	cp -a /bin/busybox $tmpdir/
 	ln -s /bin/busybox $tmpdir/[
 	ln -s /bin/busybox $tmpdir/test
 	ln -s /bin/busybox $tmpdir/head
