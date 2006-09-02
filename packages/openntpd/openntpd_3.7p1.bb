@@ -6,7 +6,7 @@ LICENSE = "BSD"
 SECTION = "console/network"
 MAINTAINER = "Oyvind Repvik <nail@nslu2-linux.org>"
 DEPENDS = "timezones"
-PR="r11"
+PR="r12"
 
 SRC_URI = "http://www.zip.com.au/~dtucker/openntpd/release/openntpd-${PV}.tar.gz \
 	   file://autofoo.patch;patch=1 \
@@ -23,7 +23,10 @@ inherit autotools update-rc.d
 
 EXTRA_OECONF += "CFLAGS=-DUSE_ADJTIMEX --disable-strip --prefix=/usr \
 		--sysconfdir=/etc  --with-privsep-path=/${localstatedir}/shared/empty \
-		--with-privsep-user=ntpd"
+		--with-privsep-user=ntpd \
+		--with-builtin-arc4random \
+		--without-ssl-dir \
+		"
 
 do_install_prepend() {
         install -d ${D}${sysconfdir}/init.d
