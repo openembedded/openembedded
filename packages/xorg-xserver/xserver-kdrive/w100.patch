@@ -1,7 +1,7 @@
-Index: xorg-server-X11R7.1-1.1.0/hw/kdrive/w100/ati.c
+Index: git/hw/kdrive/w100/ati.c
 ===================================================================
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ xorg-server-X11R7.1-1.1.0/hw/kdrive/w100/ati.c	2006-09-02 11:47:21.000000000 +0200
++++ git/hw/kdrive/w100/ati.c	2006-09-02 12:12:14.000000000 +0200
 @@ -0,0 +1,434 @@
 +/*
 + * Copyright © 2006 Alberto Mardegan <mardy@users.sourceforge.net>
@@ -437,10 +437,10 @@ Index: xorg-server-X11R7.1-1.1.0/hw/kdrive/w100/ati.c
 +    ATIGetColors,               /* getColors */
 +    ATIPutColors,               /* putColors */
 +};
-Index: xorg-server-X11R7.1-1.1.0/hw/kdrive/w100/ati_cursor.c
+Index: git/hw/kdrive/w100/ati_cursor.c
 ===================================================================
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ xorg-server-X11R7.1-1.1.0/hw/kdrive/w100/ati_cursor.c	2006-09-02 11:47:21.000000000 +0200
++++ git/hw/kdrive/w100/ati_cursor.c	2006-09-02 12:12:14.000000000 +0200
 @@ -0,0 +1,93 @@
 +/*
 + * Copyright © 2006 Alberto Mardegan <mardy@users.sourceforge.net>
@@ -535,10 +535,10 @@ Index: xorg-server-X11R7.1-1.1.0/hw/kdrive/w100/ati_cursor.c
 +ATICursorFini(ScreenPtr pScreen)
 +{
 +}
-Index: xorg-server-X11R7.1-1.1.0/hw/kdrive/w100/ati_dma.c
+Index: git/hw/kdrive/w100/ati_dma.c
 ===================================================================
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ xorg-server-X11R7.1-1.1.0/hw/kdrive/w100/ati_dma.c	2006-09-02 11:47:21.000000000 +0200
++++ git/hw/kdrive/w100/ati_dma.c	2006-09-02 12:12:14.000000000 +0200
 @@ -0,0 +1,333 @@
 +/*
 + * Copyright © 2006 Alberto Mardegan <mardy@users.sourceforge.net>
@@ -873,10 +873,10 @@ Index: xorg-server-X11R7.1-1.1.0/hw/kdrive/w100/ati_dma.c
 +    atis->ring_write &= atis->ring_mask;
 +    MMIO_OUT32(mmio, mmCP_RB_WPTR, atis->ring_write);
 +}
-Index: xorg-server-X11R7.1-1.1.0/hw/kdrive/w100/ati_dma.h
+Index: git/hw/kdrive/w100/ati_dma.h
 ===================================================================
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ xorg-server-X11R7.1-1.1.0/hw/kdrive/w100/ati_dma.h	2006-09-02 11:47:21.000000000 +0200
++++ git/hw/kdrive/w100/ati_dma.h	2006-09-02 12:12:14.000000000 +0200
 @@ -0,0 +1,176 @@
 +/*
 + * Copyright © 2004 Eric Anholt
@@ -1054,10 +1054,10 @@ Index: xorg-server-X11R7.1-1.1.0/hw/kdrive/w100/ati_dma.h
 +inline void
 +ATIWaitAvailMMIO(ATIScreenInfo *atis, int n);
 +#endif /* _ATI_DMA_H_ */
-Index: xorg-server-X11R7.1-1.1.0/hw/kdrive/w100/ati_draw.c
+Index: git/hw/kdrive/w100/ati_draw.c
 ===================================================================
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ xorg-server-X11R7.1-1.1.0/hw/kdrive/w100/ati_draw.c	2006-09-02 11:47:21.000000000 +0200
++++ git/hw/kdrive/w100/ati_draw.c	2006-09-02 12:12:14.000000000 +0200
 @@ -0,0 +1,477 @@
 +/*
 + * Copyright © 2006 Alberto Mardegan <mardy@users.sourceforge.net>
@@ -1536,10 +1536,10 @@ Index: xorg-server-X11R7.1-1.1.0/hw/kdrive/w100/ati_draw.c
 +{
 +    kaaDrawFini(pScreen);
 +}
-Index: xorg-server-X11R7.1-1.1.0/hw/kdrive/w100/ati_draw.h
+Index: git/hw/kdrive/w100/ati_draw.h
 ===================================================================
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ xorg-server-X11R7.1-1.1.0/hw/kdrive/w100/ati_draw.h	2006-09-02 11:47:21.000000000 +0200
++++ git/hw/kdrive/w100/ati_draw.h	2006-09-02 12:12:14.000000000 +0200
 @@ -0,0 +1,107 @@
 +/*
 + * Copyright © 2004 Eric Anholt
@@ -1648,10 +1648,10 @@ Index: xorg-server-X11R7.1-1.1.0/hw/kdrive/w100/ati_draw.h
 +#endif /* USE_DMA */
 +
 +#endif /* _ATI_DRAW_H_ */
-Index: xorg-server-X11R7.1-1.1.0/hw/kdrive/w100/ati.h
+Index: git/hw/kdrive/w100/ati.h
 ===================================================================
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ xorg-server-X11R7.1-1.1.0/hw/kdrive/w100/ati.h	2006-09-02 11:47:21.000000000 +0200
++++ git/hw/kdrive/w100/ati.h	2006-09-02 12:12:14.000000000 +0200
 @@ -0,0 +1,256 @@
 +/*
 + * $Id: ati.h,v 1.18 2005-06-10 02:14:44 anholt Exp $
@@ -1909,10 +1909,10 @@ Index: xorg-server-X11R7.1-1.1.0/hw/kdrive/w100/ati.h
 +extern KdCardFuncs ATIFuncs;
 +
 +#endif /* _ATI_H_ */
-Index: xorg-server-X11R7.1-1.1.0/hw/kdrive/w100/ati_microcode.c
+Index: git/hw/kdrive/w100/ati_microcode.c
 ===================================================================
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ xorg-server-X11R7.1-1.1.0/hw/kdrive/w100/ati_microcode.c	2006-09-02 11:47:21.000000000 +0200
++++ git/hw/kdrive/w100/ati_microcode.c	2006-09-02 12:12:14.000000000 +0200
 @@ -0,0 +1,412 @@
 +/*
 + * Copyright Â© 2006 Alberto Mardegan <mardy@users.sourceforge.net>
@@ -2326,10 +2326,10 @@ Index: xorg-server-X11R7.1-1.1.0/hw/kdrive/w100/ati_microcode.c
 +    ,
 +    {0x00000000, 0x00000000}
 +};
-Index: xorg-server-X11R7.1-1.1.0/hw/kdrive/w100/ati_stub.c
+Index: git/hw/kdrive/w100/ati_stub.c
 ===================================================================
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ xorg-server-X11R7.1-1.1.0/hw/kdrive/w100/ati_stub.c	2006-09-02 11:47:21.000000000 +0200
++++ git/hw/kdrive/w100/ati_stub.c	2006-09-02 12:12:14.000000000 +0200
 @@ -0,0 +1,103 @@
 +/*
 + * Copyright © 2006 Alberto Mardegan <mardy@users.sourceforge.net>
@@ -2434,11 +2434,11 @@ Index: xorg-server-X11R7.1-1.1.0/hw/kdrive/w100/ati_stub.c
 +
 +    return ret;
 +}
-Index: xorg-server-X11R7.1-1.1.0/hw/kdrive/w100/Makefile.am
+Index: git/hw/kdrive/w100/Makefile.am
 ===================================================================
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ xorg-server-X11R7.1-1.1.0/hw/kdrive/w100/Makefile.am	2006-09-02 11:47:21.000000000 +0200
-@@ -0,0 +1,53 @@
++++ git/hw/kdrive/w100/Makefile.am	2006-09-02 12:42:38.000000000 +0200
+@@ -0,0 +1,56 @@
 +if KDRIVEFBDEV
 +FBDEV_INCLUDES =-I$(top_srcdir)/hw/kdrive/fbdev
 +FBDEV_LIBS = $(top_builddir)/hw/kdrive/fbdev/libfbdev.a
@@ -2491,11 +2491,14 @@ Index: xorg-server-X11R7.1-1.1.0/hw/kdrive/w100/Makefile.am
 +	$(TSLIB_FLAG)
 +
 +
-+Xw100_DEPENDENCIES = $(W100_LIBS) @KDRIVE_LIBS@
-Index: xorg-server-X11R7.1-1.1.0/hw/kdrive/w100/w100_const.h
++Xw100_DEPENDENCIES =			\
++        libw100.a                       \
++        $(FBDEV_LIBS)                   \
++        $(VESA_LIBS)
+Index: git/hw/kdrive/w100/w100_const.h
 ===================================================================
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ xorg-server-X11R7.1-1.1.0/hw/kdrive/w100/w100_const.h	2006-09-02 11:47:21.000000000 +0200
++++ git/hw/kdrive/w100/w100_const.h	2006-09-02 12:12:14.000000000 +0200
 @@ -0,0 +1,25 @@
 +#define CSQ_CNTL_MODE_FREERUN   0x8
 +
@@ -2522,10 +2525,10 @@ Index: xorg-server-X11R7.1-1.1.0/hw/kdrive/w100/w100_const.h
 +#define W100_CCE_PACKET3_PAINT_MULTI    0xc0001a00
 +#define W100_CCE_PACKET3_BITBLT_MULTI   0xc0001b00
 +
-Index: xorg-server-X11R7.1-1.1.0/hw/kdrive/w100/w100_regs.h
+Index: git/hw/kdrive/w100/w100_regs.h
 ===================================================================
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ xorg-server-X11R7.1-1.1.0/hw/kdrive/w100/w100_regs.h	2006-09-02 11:47:21.000000000 +0200
++++ git/hw/kdrive/w100/w100_regs.h	2006-09-02 12:12:14.000000000 +0200
 @@ -0,0 +1,3802 @@
 +#ifndef _W100_REGS_H_
 +#define _W100_REGS_H_
@@ -6329,10 +6332,10 @@ Index: xorg-server-X11R7.1-1.1.0/hw/kdrive/w100/w100_regs.h
 +
 +
 +#endif //_W100_REGS_H_
-Index: xorg-server-X11R7.1-1.1.0/hw/kdrive/Makefile.am
+Index: git/hw/kdrive/Makefile.am
 ===================================================================
---- xorg-server-X11R7.1-1.1.0.orig/hw/kdrive/Makefile.am	2006-09-02 11:47:21.000000000 +0200
-+++ xorg-server-X11R7.1-1.1.0/hw/kdrive/Makefile.am	2006-09-02 11:47:21.000000000 +0200
+--- git.orig/hw/kdrive/Makefile.am	2006-09-02 12:12:13.000000000 +0200
++++ git/hw/kdrive/Makefile.am	2006-09-02 12:12:14.000000000 +0200
 @@ -7,6 +7,10 @@
  FBDEV_SUBDIRS = fbdev epson
  endif
@@ -6352,11 +6355,11 @@ Index: xorg-server-X11R7.1-1.1.0/hw/kdrive/Makefile.am
  	$(VESA_SUBDIRS)		\
  	$(XEPHYR_SUBDIRS)       \
  	fake
-Index: xorg-server-X11R7.1-1.1.0/configure.ac
+Index: git/configure.ac
 ===================================================================
---- xorg-server-X11R7.1-1.1.0.orig/configure.ac	2006-09-02 11:47:21.000000000 +0200
-+++ xorg-server-X11R7.1-1.1.0/configure.ac	2006-09-02 11:51:56.000000000 +0200
-@@ -434,6 +434,7 @@
+--- git.orig/configure.ac	2006-09-02 12:12:14.000000000 +0200
++++ git/configure.ac	2006-09-02 12:12:14.000000000 +0200
+@@ -442,6 +442,7 @@
  AC_ARG_ENABLE(kdrive,         AS_HELP_STRING([--enable-kdrive], [Build kdrive servers (default: no)]), [KDRIVE=$enableval], [KDRIVE=no])
  AC_ARG_ENABLE(xephyr,         AS_HELP_STRING([--enable-xephyr], [Build the kdrive Xephyr server (default: auto)]), [XEPHYR=$enableval], [XEPHYR=auto])
  AC_ARG_ENABLE(xsdl,           AS_HELP_STRING([--enable-xsdl], [Build the kdrive Xsdl server (default: auto)]), [XSDL=$enableval], [XSDL=auto])
@@ -6364,7 +6367,7 @@ Index: xorg-server-X11R7.1-1.1.0/configure.ac
  dnl xprint
  AC_ARG_ENABLE(freetype,       AS_HELP_STRING([ --enable-freetype], [Build Xprint FreeType backend (default: yes)]), [XP_USE_FREETYPE=$enableval],[XP_USE_FREETYPE=no])
  AC_ARG_WITH(freetype-config,  AS_HELP_STRING([ --with-freetype-config=PROG], [Use FreeType configuration program PROG (default: auto)]), freetype_config=$withval, freetype_config=auto)
-@@ -1497,6 +1498,10 @@
+@@ -1519,6 +1520,10 @@
  AC_SUBST([XSDL_LIBS])
  AC_SUBST([XSDL_INCS])
  
@@ -6375,7 +6378,7 @@ Index: xorg-server-X11R7.1-1.1.0/configure.ac
  
  dnl these only go in xkb-config.h (which is shared by the Xorg and Xnest servers)
  AC_DEFINE(__XKBDEFRULES__, "xorg", [Default XKB rules])
-@@ -1739,6 +1744,7 @@
+@@ -1753,6 +1758,7 @@
  hw/kdrive/epson/Makefile
  hw/kdrive/fake/Makefile
  hw/kdrive/fbdev/Makefile

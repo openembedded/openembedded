@@ -13,7 +13,7 @@ DESCRIPTION_xserver-kdrive-fake = "Fake X server"
 DESCRIPTION_xserver-kdrive-xephyr = "X server in an X window"
 DESCRIPTION_xserver-kdrive-epson = "X server from freedesktop.org, supporting Epson S1D13806 devices"
 DESCRIPTION_xserver-kdrive-sdl = "X server from freedesktop.org, SDL version"
-DESCRIPTION_xserver-kdrive-w100 = "X server from freedesktop.org, w100 version"
+DESCRIPTION_xserver-kdrive-w100 = "X server from freedesktop.org, supporting the ATI imageon w100 chipset"
 
 FILES_${PN} += "${libdir}/xserver/SecurityPolicy"
 
