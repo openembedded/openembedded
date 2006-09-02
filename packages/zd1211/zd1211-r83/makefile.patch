@@ -1,6 +1,6 @@
---- zd1211-driver-r59/Makefile.orig	2006-02-25 16:04:26.000000000 +0100
-+++ zd1211-driver-r59/Makefile	2006-02-25 17:11:27.000000000 +0100
-@@ -4,24 +4,23 @@
+--- zd1211-driver-r83/Makefile.orig	2006-09-02 16:00:00.000000000 +0200
++++ zd1211-driver-r83/Makefile	2006-09-02 16:01:57.000000000 +0200
+@@ -4,10 +4,10 @@
  #
  #
  
@@ -8,16 +8,16 @@
 -CPP=g++
 -LD=ld
 -rM=rm -f -r
-+CC ?= gcc
-+CPP ?= g++
-+LD ?= ld
++#CC=gcc
++#CPP=g++
++#LD=ld
++#rM=rm -f -r
  
--MODPATH := /lib/modules/$(shell uname -r)
-+MODPATH ?= /lib/modules/$(shell uname -r)
- 
+ VERSION := $(shell uname -r)
+ MODPATH := /lib/modules/$(VERSION)
+@@ -15,14 +15,14 @@
  # if the kernel is 2.6.x, turn on this
--KERN_26=y
-+#KERN_26=y
+ KERN_26=y
  
 -KERNEL_SOURCE=$(MODPATH)/source
 +KERNEL_SOURCE ?= $(MODPATH)/source
@@ -26,15 +26,14 @@
  # set to 1 for zd1211b
  ZD1211REV_B=0
  
--SRC_DIR=src
+ SRC_DIR=src
 -DEFINES=-D__KERNEL__ -DMODULE=1
-+SRC_DIR=src
-+DEFINES ?=-D__KERNEL__ -DMODULE=1
++DEFINES ?= -D__KERNEL__ -DMODULE=1
  
  
  
-@@ -227,9 +226,9 @@
- 	depmod -a
+@@ -228,9 +228,9 @@
+ 	depmod -a $(VERSION)
  
  #for apdbg
 -	gcc -o apdbg apdbg.c
