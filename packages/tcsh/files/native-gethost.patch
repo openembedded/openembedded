@@ -1,0 +1,13 @@
+Index: tcsh-6.14.00/Makefile.in
+===================================================================
+--- tcsh-6.14.00.orig/Makefile.in	2006-09-02 22:08:32.355780000 +0200
++++ tcsh-6.14.00/Makefile.in	2006-09-02 22:08:58.865780000 +0200
+@@ -359,7 +359,7 @@
+ 
+ gethost:  gethost.c sh.err.h tc.const.h sh.h
+ 	rm -f gethost
+-	${CC} -o gethost ${LDFLAGS} ${CFLAGS} ${CPPFLAGS} ${DFLAGS} $(srcdir)/gethost.c ${LIBES} ${EXTRALIBS}
++	${BUILD_CC} -o gethost ${BUILD_LDFLAGS} ${BUILD_CFLAGS} ${BUILD_CPPFLAGS} ${BUILD_DFLAGS} $(srcdir)/gethost.c ${BUILD_LIBES} ${BUILD_EXTRALIBS}
+ 
+ tc.defs.c:	gethost host.defs
+ 	@rm -f $@
