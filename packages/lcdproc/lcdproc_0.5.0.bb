@@ -5,7 +5,7 @@ LICENSE = "GPL"
 PRIORITY = "optional"
 MAINTAINER = "Oyvind Repvik <nail@nslu2-linux.org>"
 SECTION = "utils"
-PR="r1"
+PR="r2"
 
 DEPENDS = "libusb ncurses"
 RRECOMMENDS_lcdproc = "lcdd"
@@ -85,7 +85,7 @@ INITSCRIPT_NAME_lcdproc = "lcdproc"
 INITSCRIPT_PARAMS_lcdd = "defaults 70 21"
 INITSCRIPT_PARAMS_lcdproc = "defaults 71 20"
 
-EXTRA_OECONF = "--enable-drivers=all"
+EXTRA_OECONF = "--enable-drivers=all --enable-libusb"
 
 do_install () {
 	# binaries
