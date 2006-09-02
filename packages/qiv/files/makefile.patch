@@ -1,0 +1,22 @@
+--- /tmp/Makefile	2006-09-02 13:04:25.000000000 +0200
++++ qiv-1.9/Makefile	2006-09-02 13:05:05.255780000 +0200
+@@ -4,7 +4,7 @@
+ ######################################################################
+ 
+ # Directory where qiv will be installed under.
+-PREFIX = /usr/local
++PREFIX = /usr/
+ 
+ # Font to use for statusbar in fullscreen mode
+ STATUSBAR_FONT = "fixed"
+@@ -53,10 +53,6 @@
+ # Do not edit below here!
+ ######################################################################
+ 
+-CC        = gcc
+-CFLAGS    = -O2 -Wall -fomit-frame-pointer -finline-functions \
+-	    -fcaller-saves -ffast-math -fno-strength-reduce \
+-	    -fthread-jumps #-march=pentium #-DSTAT_MACROS_BROKEN
+ 
+ INCLUDES  = `imlib-config --cflags-gdk`
+ LIBS      = `imlib-config --libs-gdk`
