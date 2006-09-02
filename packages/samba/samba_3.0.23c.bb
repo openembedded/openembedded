@@ -1,5 +1,3 @@
-LICENCE="GPL-2"
-MAINTAINER="Oyvind Repvik <nail@nslu2-linux.org>"
 PR = "r0"
 
 SRC_URI = "http://us2.samba.org/samba/ftp/stable/samba-${PV}.tar.gz \
