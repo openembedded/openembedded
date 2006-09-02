@@ -11,7 +11,7 @@ RCONFLICTS = "initscripts"
 # All other standard definitions inherited from initscripts
 # Except the PR which is hacked here.  The format used is
 # a suffix
-PR := "${PR}.10"
+PR := "${PR}.11"
 
 FILESPATH = "${@base_set_filespath([ '${FILE_DIRNAME}/${P}', '${FILE_DIRNAME}/initscripts-${PV}', '${FILE_DIRNAME}/files', '${FILE_DIRNAME}' ], d)}"
 
@@ -64,7 +64,7 @@ do_install_append() {
 	# udev will run at S04 if installed
 	rm	${D}${sysconfdir}/rcS.d/S03sysfs
 	rm	${D}${sysconfdir}/rcS.d/S38devpts.sh
-	rm	${D}${sysconfdir}/rcS.d/S06alignment
+	rm -f	${D}${sysconfdir}/rcS.d/S06alignment
 	rm 	${D}${sysconfdir}/rcS.d/S37populate-volatile.sh
 	rm 	${D}${sysconfdir}/rc0.d/S25save-rtc.sh
 	rm      ${D}${sysconfdir}/rc6.d/S25save-rtc.sh

@@ -35,6 +35,13 @@ require_once 'includes/functions.inc';
 
 check_database();
 
+$name = '';
+
+if(isset($_GET['name']))
+{
+	$name = $_GET['name'];
+}
+
 $action = '';
 
 if(isset($_GET['action']))
@@ -48,10 +55,8 @@ switch($action)
 		$ipkgoutput = pkgdetails ($_GET['pnm']);
 		break;
 
-	case "package":
-		$edit = $_POST['edit'];
-		$searchword = $edit['searchword'];
-		$ipkgoutput = searchpkg ("%$searchword%");
+	case "search":
+		$ipkgoutput = searchpkg ("%{$name}%");
 		break;
 
 	case "section":
@@ -78,7 +83,18 @@ switch($action)
 	<style type="text/css" media="all">@import "css/feed.css";</style>
     </head>
     <body >
-	    <div id="right"><?php echo searchletter(); echo $ipkgoutput; ?></div>
+		<div id="right">
+			<?php echo searchletter(); ?>
+			<form action="" method="get">
+				<fieldset>
+					<label for="name">Package name</label>
+					<input type="text" name="name" value="<?php echo $name; ?>" />
+					<input type="hidden" name="action" value="search" />
+					<input type="submit" value="Search" />
+				</fieldset>
+			</form>
+			<?php echo $ipkgoutput; ?>
+		</div>
 		<div id="left">
 			<h1>Sections list</h1>
 			<?php echo sectionslist(); ?>
