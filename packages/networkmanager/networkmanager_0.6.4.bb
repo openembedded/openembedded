@@ -5,9 +5,9 @@ HOMEPAGE = "http://www.gnome.org"
 MAINTAINER = "Milan Plzik <mmp@handhelds.org>"
 PRIORITY = "optional"
 DEPENDS = "libnl dbus dbus-glib libhal-nm libgpewidget gnome-keyring gconf-dbus wireless-tools libglade"
-RDEPENDS = "wpa-supplicant dhcdbd gnome-keyring hicolor-icon-theme"
+RDEPENDS = "wpa-supplicant iproute2 dhcdbd gnome-keyring hicolor-icon-theme"
 
-PR = "r1"
+PR = "r2"
 
 SRC_URI="http://www.handhelds.org/~mmp/files/NetworkManager-${PV}-gpe.tar.gz \
 	file://dbus-api-fix.patch;patch=1 \
