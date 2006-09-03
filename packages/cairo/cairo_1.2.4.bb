@@ -6,8 +6,7 @@ DESCRIPTION = "Cairo graphics library"
 LICENSE = "MPL LGPL"
 PR = "r1"
 
-SRC_URI = "http://cairographics.org/releases/cairo-${PV}.tar.gz \
-           file://cairo-fixed.patch;patch=1"
+SRC_URI = "http://cairographics.org/releases/cairo-${PV}.tar.gz"
 
 inherit autotools pkgconfig 
 
