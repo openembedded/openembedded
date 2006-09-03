@@ -4,7 +4,7 @@ AUTHOR = "Erik de Castro Lopo"
 MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 SECTION = "libs/multimedia"
 LICENSE = "LGPL"
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "http://www.mega-nerd.com/libsndfile/libsndfile-${PV}.tar.gz"
 S = "${WORKDIR}/libsndfile-${PV}"
@@ -17,5 +17,4 @@ do_stage() {
 }
 
 #FIXME package the rest
-PACKAGES = "${PN}"
 FILES_${PN} = "${libdir}/libsndfile.so*"

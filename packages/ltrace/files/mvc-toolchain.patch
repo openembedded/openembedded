@@ -1,0 +1,32 @@
+diff -ru ltrace-0.3.36/sysdeps/linux-gnu/arm/arch.h ltrace-0.3.36-mvc/sysdeps/linux-gnu/arm/arch.h
+--- ltrace-0.3.36/sysdeps/linux-gnu/arm/arch.h	2004-11-09 20:25:15.000000000 +0800
++++ ltrace-0.3.36-mvc/sysdeps/linux-gnu/arm/arch.h	2005-12-17 02:00:34.000000000 +0800
+@@ -1,4 +1,5 @@
+-#define BREAKPOINT_VALUE { 0x01, 0x00, 0x9f, 0xef }
++#define BREAKPOINT_VALUE { 0xfe, 0xde, 0xff, 0xe7}
++
+ #define BREAKPOINT_LENGTH 4
+ #define DECR_PC_AFTER_BREAK 0
+ 
+diff -ru ltrace-0.3.36/sysdeps/linux-gnu/arm/plt.c ltrace-0.3.36-mvc/sysdeps/linux-gnu/arm/plt.c
+--- ltrace-0.3.36/sysdeps/linux-gnu/arm/plt.c	2004-11-09 20:25:15.000000000 +0800
++++ ltrace-0.3.36-mvc/sysdeps/linux-gnu/arm/plt.c	2005-12-19 08:08:54.000000000 +0800
+@@ -5,5 +5,5 @@
+ GElf_Addr
+ arch_plt_sym_val (struct ltelf *lte, size_t ndx, GElf_Rela *rela)
+ {
+-  return lte->plt_addr + 20 + ndx * 12;
++  return lte->plt_addr + 16 + ndx * 16;
+ }
+diff -ru ltrace-0.3.36/wait_for_something.c ltrace-0.3.36-mvc/wait_for_something.c
+--- ltrace-0.3.36/wait_for_something.c	2004-06-14 23:55:50.000000000 +0800
++++ ltrace-0.3.36-mvc/wait_for_something.c	2005-12-17 02:21:15.000000000 +0800
+@@ -82,7 +82,7 @@
+ 		event.thing = LT_EV_UNKNOWN;
+ 		return &event;
+ 	}
+-	if (WSTOPSIG(status) != SIGTRAP) {
++	if (WSTOPSIG(status) != SIGTRAP && WSTOPSIG(status) != SIGILL) {
+ 		event.thing = LT_EV_SIGNAL;
+ 		event.e_un.signum = WSTOPSIG(status);
+ 		return &event;

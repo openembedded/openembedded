@@ -113,6 +113,6 @@ RDEPENDS_angstrom-task-sectest := "\
 #    tcpdump \
     kismet \
     hydra \
-    thcrut \
+#    thcrut \
 #    driftnet \
     miniclipboard"

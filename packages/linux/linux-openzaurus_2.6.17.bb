@@ -1,6 +1,6 @@
 require linux-openzaurus.inc
 
-PR = "r20"
+PR = "r21"
 
 # Handy URLs
 # git://rsync.kernel.org/pub/scm/linux/kernel/git/torvalds/linux-2.6.git \
@@ -115,7 +115,9 @@ SRC_URI_append_tosa = "\
 	   ${DOSRC}/sharpsl-pm-postresume-r0.patch;patch=1 \
 	   ${DOSRC}/wm97xx-dig-restore-r0.patch;patch=1 \
 	   ${DOSRC}/wm97xx-miscdevs-resume-r0.patch;patch=1 \
-	   ${DOSRC}/wm9712-reset-loop-r1.patch;patch=1"
+	   ${DOSRC}/wm9712-reset-loop-r1.patch;patch=1 \
+	   file://tosa-lcdnoise-r0.patch;patch=1 \
+	   file://wm97xx-lcdnoise-r0.patch;patch=1 "
 #	   ${DOSRC}/tosa-asoc-r1.patch;patch=1 "
 
 S = "${WORKDIR}/linux-2.6.17"

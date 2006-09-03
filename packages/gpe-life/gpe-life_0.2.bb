@@ -2,7 +2,8 @@ DESCRIPTION = "Conway's Game of Life for GPE"
 LICENSE = "GPL"
 PRIORITY = "optional"
 MAINTAINER = "Rene Wagner <rw@handhelds.org>"
-SECTION = "gpe"
+SECTION = "gpe/games"
+PR = "r1"
 
 DEPENDS = "glib-2.0 gtk+ libglade"
 

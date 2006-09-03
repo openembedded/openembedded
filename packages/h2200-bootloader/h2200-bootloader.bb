@@ -3,6 +3,10 @@ ALLOW_EMPTY = "1"
 MAINTAINER = "Koen Kooi <koen@linuxtogo.org>"
 PR="r2"
 
+COMPATIBLE_MACHINE = "h2200"
+#it is a shell script, but lets protect the innocent some more
+PACKAGE_ARCH = "h2200"
+
 pkg_postinst() {
 #!/bin/sh
 mkdir -p /lib/firmware

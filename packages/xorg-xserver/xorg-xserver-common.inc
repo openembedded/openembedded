@@ -15,7 +15,7 @@ resourceproto xineramaproto xtrans evieext libxkbfile libxfont libxau \
 libfontenc libxdmcp libxxf86vm libxaw libxmu libxt libxpm libxext libx11 \
 libxkbui libxxf86misc libxi libdmx libxtst libxres mesa"
 
-REPENDS="rgb"
+RDEPENDS="rgb"
 
 XORG_PN = "xorg-server"
 SRC_URI = "${XORG_MIRROR}/${@bb.data.getVar('PV', d, 1)[0:7]}/src/xserver/${XORG_PN}-${PV}.tar.bz2 \
@@ -24,6 +24,9 @@ SRC_URI = "${XORG_MIRROR}/${@bb.data.getVar('PV', d, 1)[0:7]}/src/xserver/${XORG
 S = "${WORKDIR}/${XORG_PN}-${PV}"
 
 inherit autotools pkgconfig
+
+
+EXTRA_OECONF = "--disable-builddocs"
 
 PACKAGES =+ "${PN}-xprint ${PN}-xvfb ${PN}-utils"
 

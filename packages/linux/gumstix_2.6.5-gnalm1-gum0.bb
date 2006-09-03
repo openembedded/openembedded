@@ -5,6 +5,8 @@ SECTION = "kernel"
 DESCRIPTION = "Linux kernel for OMAP processors"
 LICENSE = "GPL"
 
+COMPATIBLE_MACHINE = "gumstix"
+
 # NOTE: pulled local linux-2.6.5-gnalm1, since it didn't apply cleanly
 SRC_URI = "ftp://ftp.kernel.org/pub/linux/kernel/v2.6/linux-2.6.5.tar.bz2 \
            file://linux-2.6.5-gnalm1.patch;patch=1 \

@@ -1,0 +1,73 @@
+--- busybox-1.00/debianutils/start_stop_daemon.c.orig	2006-07-23 00:06:14.000000000 +0200
++++ busybox-1.00/debianutils/start_stop_daemon.c	2006-07-23 00:21:39.000000000 +0200
+@@ -160,7 +160,7 @@
+ }
+ 
+ 
+-static void
++static int 
+ do_stop(void)
+ {
+ 	char what[1024];
+@@ -183,7 +183,7 @@
+ 	if (!found) {
+ 		if (!quiet)
+ 			printf("no %s found; none killed.\n", what);
+-		return;
++		return -1;
+ 	}
+ 	for (p = found; p; p = p->next) {
+ 		if (kill(p->pid, signal_nr) == 0) {
+@@ -200,6 +200,7 @@
+ 				printf(" %d", -p->pid);
+ 		printf(").\n");
+ 	}
++	return killed;
+ }
+ 
+ 
+@@ -209,6 +210,7 @@
+ 	{ "background",			0,		NULL,		'b' },
+ 	{ "quiet",				0,		NULL,		'q' },
+ 	{ "make-pidfile",		0,		NULL,		'm' },
++	{ "oknodo",		0,		NULL,		'o' },
+ 	{ "startas",			1,		NULL,		'a' },
+ 	{ "name",				1,		NULL,		'n' },
+ 	{ "signal",				1,		NULL,		's' },
+@@ -223,6 +225,7 @@
+ #define SSD_OPT_BACKGROUND	4
+ #define SSD_OPT_QUIET		8
+ #define SSD_OPT_MAKEPID		16
++#define SSD_OPT_OKNODO		32
+ 
+ int
+ start_stop_daemon_main(int argc, char **argv)
+@@ -234,7 +237,7 @@
+ 	bb_applet_long_options = ssd_long_options;
+ 
+ 	bb_opt_complementaly = "K~S:S~K";
+-	opt = bb_getopt_ulflags(argc, argv, "KSbqma:n:s:u:x:p:",
++	opt = bb_getopt_ulflags(argc, argv, "KSbqmoa:n:s:u:x:p:",
+ 			&startas, &cmdname, &signame, &userspec, &execname, &pidfile);
+ 
+ 	/* Check one and only one context option was given */
+@@ -265,8 +268,8 @@
+ 		user_id = my_getpwnam(userspec);
+ 
+ 	if (opt & SSD_CTX_STOP) {
+-		do_stop();
+-		return EXIT_SUCCESS;
++		int i = do_stop();
++		return (opt & SSD_OPT_OKNODO) ? 0 : (i <= 0);
+ 	}
+ 
+ 	do_procinit();
+@@ -274,7 +277,7 @@
+ 	if (found) {
+ 		if (!quiet)
+ 			printf("%s already running.\n%d\n", execname ,found->pid);
+-		return EXIT_SUCCESS;
++		return (opt & SSD_OPT_OKNODO) ? EXIT_SUCCESS : EXIT_FAILURE;
+ 	}
+ 	*--argv = startas;
+ 	if (opt & SSD_OPT_BACKGROUND) {

@@ -1,0 +1,31 @@
+--- /tmp/configure.in	2006-09-02 12:44:16.000000000 +0200
++++ imlib-1.9.15/configure.in	2006-09-02 12:44:22.975780000 +0200
+@@ -43,19 +43,6 @@
+   oCFLAGS="$CFLAGS"
+   LIBS="$LIBS `glib-config --libs gmodule`"
+   CFLAGS="$CFLAGS `glib-config --cflags gmodule`"
+-  AC_TRY_RUN([
+-#include <glib.h>
+-#include <gmodule.h>
+-main ()
+-{
+-    if (g_module_supported ())
+-        exit (0);
+-    else
+-        exit (1);
+-}
+-], dynworks=true)
+-  LIBS="$oLIBS"
+-  CFLAGS="$oCFLAGS"
+ fi
+ 
+ dnl Now we check to see if our libtool supports shared lib deps
+@@ -141,7 +128,7 @@
+ fi
+ AC_SUBST(GX_LIBS)
+ 
+-CPPFLAGS="$CPPFLAGS -I$includedir -I$prefix/include"
++CPPFLAGS="$CPPFLAGS"
+ 
+ SUPPORT_LIBS=""
+ 
