@@ -1,7 +1,7 @@
 DESCRIPTION = "An audio format Conversion library"
 SECTION = "libs"
 LICENSE = "LGPL"
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "http://www.mega-nerd.com/libsndfile/libsndfile-${PV}.tar.gz"
 S = "${WORKDIR}/libsndfile-${PV}"
@@ -13,5 +13,4 @@ do_stage() {
 	install -m 0644 ${S}/src/sndfile.h ${STAGING_INCDIR}/
 }
 
-PACKAGES = "${PN}"
 FILES_${PN} = "${libdir}/libsndfile.so*"
