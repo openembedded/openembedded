@@ -1,18 +1,16 @@
-LICENSE = "GPL"
-SECTION = "console/network"
-DEPENDS = "jpeg libpng gpm flex openssl zlib"
 DESCRIPTION = "Links is graphics and text mode WWW \
 browser, similar to Lynx."
-RCONFLICTS="links-x11"
-
+HOMEPAGE = "http://links.twibright.com/"
+SECTION = "console/network"
 MAINTAINER = "Graeme Gregory <dp@xora.org.uk>"
-
+LICENSE = "GPL"
+DEPENDS = "jpeg libpng gpm flex openssl zlib"
+RCONFLICTS="links-x11"
+PR = "r0"
 SRC_URI = "http://links.twibright.com/download/links-${PV}.tar.bz2 \
            file://ac-prog-cxx.patch;patch=1 \
            file://cookies-save-0.96.patch;patch=1 \
            file://links-2.1pre17-fix-segfault-on-loading-cookies.patch;patch=1"
-
-PR = "r1"
 
 inherit autotools
 
