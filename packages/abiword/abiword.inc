@@ -1,8 +1,8 @@
-DESCRIPTION ="AbiWord is free word processing program similar to Microsoft(r) Word""
+DESCRIPTION = "AbiWord is free word processing program similar to Microsoft(r) Word"
 SECTION = "gnome/office"
-HOMEPAGE="http://www.abiword.org""
-MAINTAINER="Koen Kooi <koen@linuxtogo.org>"
-LICENSE="GPLv2"
+HOMEPAGE = "http://www.abiword.org""
+MAINTAINER = "Koen Kooi <koen@linuxtogo.org>"
+LICENSE = "GPLv2"
 
 DEPENDS     = "perl-native libgsf libgnomeprint libgnomeprintui libglade libfribidi enchant jpeg libpng perl glibc libxml2"
 RDEPENDS    = "enchant glibc-gconv-ibm850 glibc-gconv-cp1252 \
