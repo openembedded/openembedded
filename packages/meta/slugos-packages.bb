@@ -99,6 +99,7 @@ SLUGOS_PACKAGES = "\
 	libvorbis \
 	libxml2 \
 	lirc \
+	litestream \
 	lrzsz \
 	lsof \
 	lvm2 \
