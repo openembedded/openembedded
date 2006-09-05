@@ -1,6 +1,5 @@
 DESCRIPTION = "The Persistence of Vision Raytracer is a high-quality, totally free tool for creating stunning three-dimensional graphics. "
 HOMEPAGE = "http://www.povray.org"
-SECTION = "foo/bar"
 #Make this a weak assigment to allow branding of the povray binary 
 MAINTAINER ?= "Koen Kooi <koen@openembedded.org>"
 LICENSE = "povray"
