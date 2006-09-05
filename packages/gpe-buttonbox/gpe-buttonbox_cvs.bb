@@ -1,6 +1,6 @@
 DEFAULT_PREFERENCE = "-1"
 LICENSE = "GPL"
-DESCIPTION = "Buttonbox for gpe"
+DESCRIPTION = "Buttonbox for gpe"
 
 SRC_URI = "${HANDHELDS_CVS};module=gpe/base/gpe-buttonbox"
 
