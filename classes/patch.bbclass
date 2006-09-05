@@ -120,21 +120,20 @@ def patch_init(d):
 			self.patches.insert(self._current or 0, patch)
 
 		def _applypatch(self, patch, force = None, reverse = None):
-			shellcmd = ["patch", "<", patch['file'], "-p", patch['strippath']]
+			shellcmd = ["cat", patch['file'], "|", "patch", "-p", patch['strippath']]
 			if reverse:
 				shellcmd.append('-R')
-			shellcmd.append('--dry-run')
 
-			try:
-				output = runcmd(["sh", "-c", " ".join(shellcmd)], self.dir)
-			except CmdError:
-				if force:
-					shellcmd.pop(len(shellcmd) - 1)
-					output = runcmd(["sh", "-c", " ".join(shellcmd)], self.dir)
-				else:
-					import sys
-					raise sys.exc_value
+			if not force:
+				shellcmd.append('--dry-run')
 
+			output = runcmd(["sh", "-c", " ".join(shellcmd)], self.dir)
+
+			if force:
+				return
+
+			shellcmd.pop(len(shellcmd) - 1)
+			output = runcmd(["sh", "-c", " ".join(shellcmd)], self.dir)
 			return output
 
 		def Push(self, force = None, all = None):
