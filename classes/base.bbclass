@@ -324,6 +324,16 @@ python base_do_clean() {
 	os.system('rm -f '+ dir)
 }
 
+addtask rebuild
+do_rebuild[dirs] = "${TOPDIR}"
+do_rebuild[nostamp] = "1"
+do_rebuild[bbdepcmd] = ""
+python base_do_rebuild() {
+	"""rebuild a package"""
+	bb.build.exec_task('do_clean', d)
+	bb.build.exec_task('do_' + bb.data.getVar('BB_DEFAULT_TASK', d, 1), d)
+}
+
 addtask mrproper
 do_mrproper[dirs] = "${TOPDIR}"
 do_mrproper[nostamp] = "1"
@@ -685,7 +695,7 @@ python () {
 # Patch handling
 inherit patch
 
-EXPORT_FUNCTIONS do_clean do_mrproper do_fetch do_unpack do_configure do_compile do_install do_package do_populate_pkgs do_stage
+EXPORT_FUNCTIONS do_clean do_mrproper do_fetch do_unpack do_configure do_compile do_install do_package do_populate_pkgs do_stage do_rebuild
 
 MIRRORS[func] = "0"
 MIRRORS () {
