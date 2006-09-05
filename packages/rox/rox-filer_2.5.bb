@@ -42,14 +42,14 @@ do_install() {
 	cp ${WORKDIR}/${P}/ROX-Filer/.DirIcon ${D}${datadir}/rox/.DirIcon
 	cp ${WORKDIR}/${P}/rox.xml ${D}${datadir}/mime/packages
 
- 	for $f in ${WORKDIR}/${P}/ROX-Filer/Messages/*.gmo;  do
+ 	for f in ${WORKDIR}/${P}/ROX-Filer/Messages/*.gmo;  do
  	    export ROXTMP=`basename $f .gmo` ;
  	    if [ $ROXTMP == "sp" ]; then
  		export ROXTMP="es" ;
  	    fi
  	    install -d ${D}${datadir}/locale/$ROXTMP/LC_MESSAGES;
- 	    cp $f debian/rox-filer/usr/share/locale/$ROXTMP/LC_MESSAGES/rox.mo;
+ 	    cp $f ${D}${datadir}/locale/$ROXTMP/LC_MESSAGES/rox.mo;
  	done
-
+}
 
 FILES_${PN} += "${datadir}/rox/ ${datadir}/mime/"
