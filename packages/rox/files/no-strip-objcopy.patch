@@ -1,0 +1,13 @@
+--- /tmp/Makefile.in	2006-09-04 22:08:51.000000000 +0200
++++ rox-filer-2.5/ROX-Filer/src/Makefile.in	2006-09-04 22:09:00.275780000 +0200
+@@ -51,10 +51,6 @@
+ ${PROG}: ${OBJECTS}
+ 	${CC} -o "${PROG}" ${OBJECTS} ${LDFLAGS}
+ 	mv "${PROG}" "${PLATFORM_DIR}"
+-	-(cd "${PLATFORM_DIR}" && \
+-	 objcopy --only-keep-debug ROX-Filer ROX-Filer.dbg && \
+-	 strip ROX-Filer && \
+-	 objcopy --add-gnu-debuglink=ROX-Filer.dbg ROX-Filer)
+ 
+ clean:
+ 	rm -f *.o Makefile.bak
