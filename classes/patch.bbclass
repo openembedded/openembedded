@@ -117,7 +117,11 @@ def patch_init(d):
 			""""""
 			PatchSet.Import(self, patch, force)
 
-			self.patches.insert(self._current or 0, patch)
+			if self._current is not None:
+				i = self._current + 1
+			else:
+				i = 0
+			self.patches.insert(i, patch)
 
 		def _applypatch(self, patch, force = None, reverse = None):
 			shellcmd = ["cat", patch['file'], "|", "patch", "-p", patch['strippath']]
@@ -137,18 +141,22 @@ def patch_init(d):
 			return output
 
 		def Push(self, force = None, all = None):
+			bb.note("self._current is %s" % self._current)
+			bb.note("patches is %s" % self.patches)
 			if all:
 				for i in self.patches:
 					if self._current is not None:
 						self._current = self._current + 1
 					else:
 						self._current = 0
+					bb.note("applying patch %s" % i)
 					self._applypatch(i, force)
 			else:
 				if self._current is not None:
 					self._current = self._current + 1
 				else:
 					self._current = 0
+				bb.note("applying patch %s" % self.patches[self._current])
 				self._applypatch(self.patches[self._current], force)
 
 
