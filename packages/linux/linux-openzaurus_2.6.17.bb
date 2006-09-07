@@ -1,6 +1,6 @@
 require linux-openzaurus.inc
 
-PR = "r21"
+PR = "r22"
 
 # Handy URLs
 # git://rsync.kernel.org/pub/scm/linux/kernel/git/torvalds/linux-2.6.git \
@@ -28,10 +28,9 @@ SRC_URI = "http://www.kernel.org/pub/linux/kernel/v2.6/linux-2.6.17.tar.bz2 \
            ${RPSRC}/spectrumcs_fix-r0.patch;patch=1 \
            file://00-hostap.patch;patch=1;status=merged \
            file://10-pcnet.patch;patch=1;status=merged \
-           ${RPSRC}/alsa/asoc-v0.11pre12.patch;patch=1 \
+           ${RPSRC}/alsa/asoc-v0.11.3.patch;patch=1 \
+	   ${RPSRC}/alsa/asoc_zaurus_fixups-r0.patch;patch=1 \
            ${RPSRC}/asoc_makefile-r0.patch;patch=1 \
-           ${RPSRC}/alsa/asoc_platform_dev_fix-r0.patch;patch=1 \
-           ${RPSRC}/asoc_poodle_morehack-r0.patch;patch=1 \
            ${RPSRC}/hx2750_base-r27.patch;patch=1 \
            ${RPSRC}/hx2750_bl-r7.patch;patch=1 \
            ${RPSRC}/hx2750_pcmcia-r2.patch;patch=1 \
@@ -46,10 +45,11 @@ SRC_URI = "http://www.kernel.org/pub/linux/kernel/v2.6/linux-2.6.17.tar.bz2 \
            ${RPSRC}/usb_pxa27x_udc-r0.patch;patch=1 \
            ${RPSRC}/usb_add_epalloc-r1.patch;patch=1 \
            ${DOSRC}/kexec-arm-r3.patch;patch=1 \
-           ${RPSRC}/locomo_kbd_tweak-r0.patch;patch=1 \
-           ${RPSRC}/poodle_pm-r1.patch;patch=1 \
+           ${RPSRC}/locomo_kbd_tweak-r1.patch;patch=1 \
+           ${RPSRC}/poodle_pm-r2.patch;patch=1 \
            ${RPSRC}/pxafb_changeres-r0.patch;patch=1 \
-           ${RPSRC}/poodle_audio-r1.patch;patch=1 \
+           ${RPSRC}/poodle_audio-r2.patch;patch=1 \
+           ${RPSRC}/pxa27x_overlay-r1.patch;patch=1 \
            file://serial-add-support-for-non-standard-xtals-to-16c950-driver.patch;patch=1 \
            file://hrw-pcmcia-ids-r4.patch;patch=1 \
            ${RPSRC}/logo_oh-r0.patch.bz2;patch=1;status=unmergable \
