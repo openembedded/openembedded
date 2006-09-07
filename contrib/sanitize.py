@@ -301,7 +301,7 @@ if __name__ == "__main__":
     in_routine = False
     commentBloc = []
     olines = []
-    unknownVar = set()
+    unknownVar = []
     for line in lines: 
         line = line.rstrip()
         line = follow_rule(2, line)
@@ -350,7 +350,7 @@ if __name__ == "__main__":
             if not varexist:
                 s = string.split(line)[0].rstrip().lstrip()
                 if s not in unknownVar: 
-                    unknownVar.add(s)
+                    unknownVar.append(s)
                 if not in_routine:
                     print "## Warning: unknown variable/routine \"%s\"" % line
                     OE_vars['others'].append(line)
