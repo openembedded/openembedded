@@ -29,6 +29,7 @@ DEPLOY_DIR_PSTAGE 	= "${DEPLOY_DIR}/pstage"
 PSTAGE_BUILD_CMD        = "${IPKGBUILDCMD}"
 PSTAGE_INSTALL_CMD      = "ipkg-cl install -force-depends -f ${DEPLOY_DIR_PSTAGE}/ipkg.conf -o "
 PSTAGE_UPDATE_CMD	= "ipkg-cl update -f ${DEPLOY_DIR_PSTAGE}/ipkg.conf -o "
+PSTAGE_LIST_CMD		= "ipkg-cl list_installed -f ${DEPLOY_DIR_PSTAGE}/ipkg.conf -o "
 PSTAGE_PKGNAME 		= "staging-${PN}_${PV}-${PR}_${PACKAGE_ARCH}.ipk"
 PCROSS_PKGNAME		= "cross-${PN}_${PV}-${PR}_${BUILD_ARCH}.ipk"
 
@@ -184,8 +185,13 @@ fi #if !glibc intermediate
 
 do_stage_append() {
 
+mkdir -p ${DEPLOY_DIR_PSTAGE}
+
+# list the packages currently installed in staging
+${PSTAGE_LIST_CMD} ${STAGING_BASEDIR} | awk '{print $1}' > ${DEPLOY_DIR_PSTAGE}/installed_list         
+
+
 if [ ${PN} != "glibc-intermediate" ] ; then
-	mkdir -p ${DEPLOY_DIR_PSTAGE}
 
 	#make a package for staging
 	mkdir -p ${STAGING_DIR}/CONTROL
