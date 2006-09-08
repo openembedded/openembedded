@@ -6,7 +6,7 @@ DESCRIPTION = "Packages that are compatible with the SlugOS firmware"
 MAINTAINER = "NSLU2 Linux <nslu2-linux@yahoogroups.com>"
 HOMEPAGE = "http://www.nslu2-linux.org"
 LICENSE = "MIT"
-PR = "r13"
+PR = "r14"
 CONFLICTS = "db3"
 PROVIDES += "${SLUGOS_IMAGENAME}-packages"
 
@@ -74,7 +74,7 @@ SLUGOS_PACKAGES = "\
 	gtk-doc \
 	gzip \
 	hdparm \
-	icecast \
+#	icecast \
 	ifupdown \
 	ipkg-utils \
 	iptables \
