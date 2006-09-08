@@ -11,6 +11,7 @@ export CFLAG = "-fPIC -DTHREADS -D_REENTRANT -DDSO_DLFCN -DHAVE_DLFCN_H -DTERMIO
 
 # -02 does not work on mipsel: ssh hangs when it tries to read /dev/urandom
 export CFLAG_mtx-1 := "${@'${CFLAG}'.replace('-O2', '')}"
+export CFLAG_mtx-2 := "${@'${CFLAG}'.replace('-O2', '')}"
 
 export DIRS = "crypto ssl apps"
 export EX_LIBS = "-lgcc -ldl -L${STAGING_LIBDIR}"
