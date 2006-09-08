@@ -1,0 +1,54 @@
+diff -NurBb ccaudio2-0.9.0/src/detect.cpp /tmp/ccaudiosrc/detect.cpp
+--- ccaudio2-0.9.0/src/detect.cpp	2006-05-02 02:20:18.000000000 +0200
++++ tmp/ccaudiosrc/detect.cpp	2006-05-02 02:17:27.000000000 +0200
+@@ -32,6 +32,7 @@
+ #include <cctype>
+ #include <cmath>
+ #include <ctime>
++#include <iostream>
+ 
+ #ifdef  HAVE_STDINT_H
+ #include <stdint.h>
+@@ -198,7 +199,7 @@
+ 		// time of a rolled loop on the machine on which it was developed 
+ 		for(j = sample;  j < limit;  j++)
+ 		{
+-			famp = amp[j];
++			famp = amp[2*j+1];
+ 	  		state->energy += famp*famp;
+ 	    
+ 			// With GCC 2.95, the following unrolled code seems to take about 35%
+diff -NurBb ccaudio2-0.9.0/src/oss.cpp /tmp/ccaudiosrc/oss.cpp
+--- ccaudio2-0.9.0/src/oss.cpp	2006-03-30 00:17:28.000000000 +0200
++++ tmp/ccaudiosrc/oss.cpp	2006-05-02 02:17:27.000000000 +0200
+@@ -39,7 +39,7 @@
+ #include "audio2.h"
+ #include <cmath>
+ #include <cstdio>
+-
++#include <iostream>
+ extern int _oss_ccaudio_dummy;
+ int _oss_ccaudio_dummy = 0;
+ 
+@@ -183,6 +183,10 @@
+ 
+ 	if(ioctl(dsp, SOUND_PCM_WRITE_RATE, &srate))
+ 		return false;
++	if ( srate == 0 ) {
++		std::cerr << "ossSetAudio: invalid rate " << rate << std::endl;
++		return false;
++	}
+ 
+ 	if(ioctl(dsp, SOUND_PCM_WRITE_CHANNELS, &channels))
+ 		return false;
+@@ -192,7 +196,10 @@
+ 	ioctl(dsp, SNDCTL_DSP_GETBLKSIZE, &blksize);
+ 	info.framesize = blksize;	
+ 	info.framecount = toSamples(info.encoding, blksize);
++	if ( srate )
+ 	info.framing = (info.framecount * 1000l) / srate;
++	else
++		info.framing = (info.framecount * 500l);
+ 
+ 	bufsize = info.framecount * channels;
+ 
