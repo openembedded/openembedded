@@ -4,8 +4,9 @@ PRIORITY = "optional"
 MAINTAINER = "Bruno Randolf <bruno.randolf@4g-systems.biz>"
 LICENSE = "GPL"
 DEPENDS = "virtual/kernel"
-SRCDATE = "20060114"
-PV = "cvs${SRCDATE}"
+SRCDATE = "20060810"
+PV = "cvs${CVSDATE}"
+
 
 INHIBIT_PACKAGE_STRIP = "1"
 
