@@ -1,6 +1,6 @@
 require linux-openzaurus.inc
 
-PR = "r42"
+PR = "r45"
 
 # Handy URLs
 # git://rsync.kernel.org/pub/scm/linux/kernel/git/torvalds/linux-2.6.git \
@@ -68,6 +68,7 @@ SRC_URI = "http://www.kernel.org/pub/linux/kernel/v2.6/linux-2.6.16.tar.bz2 \
            file://00-hostap.patch;patch=1;status=merged \
            file://10-pcnet.patch;patch=1;status=merged \
            ${RPSRC}/alsa/asoc-v0.10rc4.patch;patch=1 \
+           file://maxpower-message.patch;patch=1;status=backported \
            ${RPSRC}/asoc_fixups-r0.patch;patch=1 \
            ${RPSRC}/hx2750_base-r24.patch;patch=1 \
            ${RPSRC}/hx2750_bl-r5.patch;patch=1 \
