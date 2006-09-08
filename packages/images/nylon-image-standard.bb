@@ -1,3 +1,4 @@
+LICENSE = MIT
 require nylon-image-base.bb
 
 export IMAGE_BASENAME = "nylon-standard"
@@ -26,4 +27,3 @@ DEPENDS += "hostap-modules ntp \
 	
 RDEPENDS += "hostap-modules-pci ntpdate \
 	${NYLON_STANDARD}"
-LICENSE = MIT

@@ -5,6 +5,7 @@ MAINTAINER = "Holger Schurig"
 HOMEPAGE = "http://hostap.epitest.fi/wpa_supplicant/"
 DEPENDS = "openssl"
 DEPENDS_mtx-1_append = "madwifi-modules"
+DEPENDS_mtx-2_append = "madwifi-modules"
 PR = "r1"
 
 SRC_URI = "http://hostap.epitest.fi/releases/wpa_supplicant-${PV}.tar.gz \

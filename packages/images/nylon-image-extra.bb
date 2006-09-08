@@ -1,3 +1,5 @@
+LICENSE = MIT
+
 require nylon-image-standard.bb
 
 export IMAGE_BASENAME = "nylon-extra"
@@ -7,5 +9,3 @@ RDEPENDS = "\
     netperf \
     nylon-statistics \
     openvpn"
-
-LICENSE = MIT

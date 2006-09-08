@@ -1,0 +1,36 @@
+diff -NurbB ccaudio2-0.9.0/src/audio2.h ccaudio2-0.9.0.patched/src/audio2.h
+--- ccaudio2-0.9.0/src/audio2.h	2006-05-03 14:44:12.000000000 +0200
++++ ccaudio2-0.9.0.patched/src/audio2.h	2006-06-09 11:03:24.000000000 +0200
+@@ -1957,6 +1957,8 @@
+ 	 */ 
+ 	inline bool isEnabled(void)
+ 		{return enabled;};
++
++	virtual void reset(void) {}
+ };
+ 
+ /**
+diff -NurbB ccaudio2-0.9.0/src/detect.cpp ccaudio2-0.9.0.patched/src/detect.cpp
+--- ccaudio2-0.9.0/src/detect.cpp	2006-05-03 14:44:12.000000000 +0200
++++ ccaudio2-0.9.0.patched/src/detect.cpp	2006-06-09 12:36:30.000000000 +0200
+@@ -316,7 +316,7 @@
+ 			}
+ 			// ... and second harmonic test
+ 			if(i >= 4 &&
+-				(row_energy[best_row] + col_energy[best_col]) > 42.0*state->energy &&
++				(row_energy[best_row] + col_energy[best_col]) > 37.0*state->energy &&
+ 				goertzelResult (&state->col_out2nd[best_col])*DTMF_2ND_HARMONIC_COL < col_energy[best_col] &&
+ 				goertzelResult (&state->row_out2nd[best_row])*DTMF_2ND_HARMONIC_ROW < row_energy[best_row])
+ 			{
+diff -NurbB ccaudio2-0.9.0/src/oss.cpp ccaudio2-0.9.0.patched/src/oss.cpp
+--- ccaudio2-0.9.0/src/oss.cpp	2006-06-08 14:53:27.000000000 +0200
++++ ccaudio2-0.9.0.patched/src/oss.cpp	2006-06-08 20:07:30.000000000 +0200
+@@ -75,6 +75,8 @@
+ 	void resetRecord(void);
+ 	void enableRecord(void);
+ 	void disableRecord(void);
++	void reset(void) { ioctl(dsp, SNDCTL_DSP_RESET, NULL); }
++
+ };
+ 
+ OSSAudioDevice::OSSAudioDevice(int fdsp, int fmixer, DeviceMode mode)
