@@ -1,6 +1,6 @@
 require linux-openzaurus.inc
 
-PR = "r22"
+PR = "r23"
 
 # Handy URLs
 # git://rsync.kernel.org/pub/scm/linux/kernel/git/torvalds/linux-2.6.git \
@@ -29,7 +29,7 @@ SRC_URI = "http://www.kernel.org/pub/linux/kernel/v2.6/linux-2.6.17.tar.bz2 \
            file://00-hostap.patch;patch=1;status=merged \
            file://10-pcnet.patch;patch=1;status=merged \
            ${RPSRC}/alsa/asoc-v0.11.3.patch;patch=1 \
-	   ${RPSRC}/alsa/asoc_zaurus_fixups-r0.patch;patch=1 \
+           ${RPSRC}/alsa/asoc_zaurus_fixups-r0.patch;patch=1 \
            ${RPSRC}/asoc_makefile-r0.patch;patch=1 \
            ${RPSRC}/hx2750_base-r27.patch;patch=1 \
            ${RPSRC}/hx2750_bl-r7.patch;patch=1 \
@@ -62,6 +62,7 @@ SRC_URI = "http://www.kernel.org/pub/linux/kernel/v2.6/linux-2.6.17.tar.bz2 \
            ${RPSRC}/pxa_cf_initorder_hack-r1.patch;patch=1;status=hack \
            file://pxa-serial-hack.patch;patch=1;status=hack \
            file://connectplus-remove-ide-HACK.patch;patch=1;status=hack \
+           file://orinoco-remove-all-which-are-in-hostap-HACK.patch;patch=1;status=unmergable-hack \
            file://squashfs3.0-2.6.15.patch;patch=1;status=external \
            file://defconfig-c7x0 \
            file://defconfig-ipaq-pxa270 \
