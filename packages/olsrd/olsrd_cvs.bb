@@ -5,7 +5,10 @@ MAINTAINER = "Bruno Randolf <bruno.randolf@4g-systems.biz>"
 SECTION = "console/network"
 PRIORITY = "optional"
 LICENSE = "BSD"
-PV = "1:0.0+cvs${SRCDATE}"
+SRCDATE = "20051020"
+PV = "0.4.9+cvs${SRCDATE}"
+
+DEFAULT_PREFERENCE = "-1"
 
 SRC_URI="cvs://anonymous@cvs.sourceforge.net/cvsroot/olsrd;module=olsrd-current \
 	file://init \
