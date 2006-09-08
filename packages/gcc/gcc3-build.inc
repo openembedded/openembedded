@@ -18,7 +18,7 @@ JAVA_mipsel = ""
 JAVA_sh3 = ""
 # gcc4-build sets this to f95
 FORTRAN ?= "f77"
-LANGUAGES ?= "c,c++,${FORTRAN}${JAVA}"
+LANGUAGES = "c,c++"
 
 EXTRA_OECONF = "${@['--enable-clocale=generic', ''][bb.data.getVar('USE_NLS', d, 1) != 'no']} \
                 --with-gnu-ld \
