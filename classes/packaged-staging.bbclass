@@ -188,7 +188,8 @@ do_stage_append() {
 mkdir -p ${DEPLOY_DIR_PSTAGE}
 
 # list the packages currently installed in staging
-${PSTAGE_LIST_CMD} ${STAGING_BASEDIR} | awk '{print $1}' > ${DEPLOY_DIR_PSTAGE}/installed_list         
+${PSTAGE_LIST_CMD} ${STAGING_BASEDIR} | awk '{print $1}' > ${DEPLOY_DIR_PSTAGE}/installed-staging_list         
+${PSTAGE_LIST_CMD} ${CROSSDIR} | awk '{print $1}' > ${DEPLOY_DIR_PSTAGE}/installed-cross_list
 
 
 if [ ${PN} != "glibc-intermediate" ] ; then
@@ -230,7 +231,7 @@ if [ ${PN} != "glibc-intermediate" ] ; then
 			rm ${TMPDIR}/moved-cross
 		fi
 
-		${PSTAGE_INSTALL_CMD} ${STAGING_DIR}  ${DEPLOY_DIR_PSTAGE}/${PCROSS_PKGNAME}
+		${PSTAGE_INSTALL_CMD} ${CROSS_DIR}  ${DEPLOY_DIR_PSTAGE}/${PCROSS_PKGNAME}
 	fi # if -e CROSS_DIR
 
 	#move back stagingdir so we can install packages   
