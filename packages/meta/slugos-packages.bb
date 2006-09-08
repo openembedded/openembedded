@@ -6,7 +6,7 @@ DESCRIPTION = "Packages that are compatible with the SlugOS firmware"
 MAINTAINER = "NSLU2 Linux <nslu2-linux@yahoogroups.com>"
 HOMEPAGE = "http://www.nslu2-linux.org"
 LICENSE = "MIT"
-PR = "r12"
+PR = "r13"
 CONFLICTS = "db3"
 PROVIDES += "${SLUGOS_IMAGENAME}-packages"
 
@@ -164,7 +164,6 @@ SLUGOS_PACKAGES = "\
 	tiff \
 	unzip \
 	usbutils \
-	ushare \
 	util-linux \
 	vim \
 	vlan \
@@ -186,6 +185,7 @@ SLUGOS_BROKEN_PACKAGES = "\
 	qc-usb-messenger \
 	unionfs-modules \
 	unionfs-utils \
+	ushare \
 	"
 
 # These packages will never build because uclibc lacks (and always will lack)
