@@ -1,0 +1,761 @@
+--- linux-org/arch/mips/au1000/mtx-2/Makefile	2006-05-01 13:34:12.664217250 +0200
++++ linux/arch/mips/au1000/mtx-2/Makefile	2006-05-01 13:33:35.609901500 +0200
+@@ -15,6 +15,6 @@
+ 
+ O_TARGET := mtx-2.o
+ 
+-obj-y := init.o board_setup.o irqmap.o
++obj-y := init.o board_setup.o irqmap.o slic.o
+ 
+ include $(TOPDIR)/Rules.make
+--- linux-org/arch/mips/au1000/mtx-2/slic.c	1970-01-01 01:00:00.000000000 +0100
++++ linux/arch/mips/au1000/mtx-2/slic.c	2006-06-20 13:46:05.321244750 +0200
+@@ -0,0 +1,704 @@
++/*
++ * Driver for the SLIC
++ *
++ * After the module is loaded there is a device /dev/misc/slic
++ * that can be read. A read returns if the DETECT-line has been toggled,
++ * indicating an offhook-event.
++ *
++ * Commands to be written to the device:
++ * P1 - Power on
++ * P0 - Power off
++ * ID - Idle state
++ * AC - Active state
++ * AR - Active state with reverse polarity
++ * R1 - Ringing on
++ * R0 - Ringing off
++ */
++
++#include <linux/config.h>
++#include <linux/errno.h>
++#include <linux/init.h>
++#include <linux/irq.h>
++#include <linux/kernel.h>
++#include <linux/miscdevice.h>
++#include <linux/module.h>
++#include <linux/poll.h>
++#include <linux/sched.h>
++#include <linux/slab.h>
++#include <linux/timer.h>
++#include <linux/interrupt.h>
++#include <linux/types.h>
++#include <linux/version.h>
++#include <asm/uaccess.h>
++#include <asm/au1000.h>
++#include <linux/slic.h>
++
++/* #define DEBUG */
++#ifdef DEBUG
++#define debug(args...) printk(args)
++#else	/* DEBUG */
++#define debug(args...)
++#endif	/* DEBUG */
++
++/*---------[ declarations ]-----------------*/
++
++#ifdef CONFIG_MIPS_MTX1
++
++//#define SLIC_D0          (AU1500_GPIO_205) /* D0 - D3 */
++//#define SLIC_D1          (AU1500_GPIO_206)
++//#define SLIC_D2          (AU1500_GPIO_208)
++//#define SLIC_PD          (AU1500_GPIO_209) /* Power down */
++#define SLIC_D0_GPIO     (5)
++#define SLIC_D1_GPIO     (6)
++#define SLIC_D2_GPIO     (8)
++#define SLIC_PD_GPIO     (9)
++#define SLIC_OH          (AU1000_GPIO_8)   /* Off hook */
++#define SLIC_OH_GPIO     (8)               /* GPIO-pin */
++#define SLIC_D0          (AU1500_GPIO_205) /* D0 - D3 */
++#define SLIC_D1          (AU1500_GPIO_206)
++#define SLIC_D2          (AU1500_GPIO_208)
++#define SLIC_PD          (AU1500_GPIO_209) /* Power down */
++#define SLIC_DP_DIR      (GPIO2_DIR)       /* Direction-register */
++#define SLIC_DP_OUT      (GPIO2_OUTPUT)    /* Output-register */
++#define SLIC_DP_PINSTATE (GPIO2_PINSTATE)  /* Input-register */
++
++inline void gpio_init(void) {
++	au_writel(au_readl(SYS_TRIOUTCLR) & ~SLIC_OH_GPIO, SYS_TRIOUTCLR); // SLIC_OH_GPIO as tristate
++	au_writel((au_readl(SLIC_DP_DIR) | ((1 << SLIC_PD_GPIO)|(1 << SLIC_D0_GPIO)|(1 << SLIC_D1_GPIO)|(1 << SLIC_D2_GPIO))), SLIC_DP_DIR);
++}
++
++inline void gpio_write(unsigned short bitmask, unsigned short value) {
++	au_writel((bitmask << 16) | value, SLIC_DP_OUT);
++}
++inline short gpio_read(unsigned short pin) {
++	return (au_readl(SLIC_DP_PINSTATE) >> pin) & 1;
++}
++
++inline short gpio2_read(unsigned short pin) {
++	return (au_readl(SYS_PINSTATERD) >> pin) & 1;
++}
++#elif defined CONFIG_MIPS_MTX2
++
++//#define SLIC_D0          (AU1000_GPIO_10) /* D0 - D3 */
++//#define SLIC_D1          (AU1000_GPIO_11)
++//#define SLIC_D2          (AU1000_GPIO_12)
++//#define SLIC_PD          (AU1000_GPIO_13) /* Power down */
++#define SLIC_D0_GPIO     (10)               /* GPIO-pins */
++#define SLIC_D1_GPIO     (11)
++#define SLIC_D2_GPIO     (12)
++#define SLIC_PD_GPIO     (13)
++
++#define SLIC_OH          (AU1000_GPIO_9)   /* Off hook */
++#define SLIC_OH_GPIO     (9)               /* GPIO-pin */
++
++inline void gpio_init(void) {
++	au_writel(au_readl(SYS_PINFUNC) & ~SYS_PF_U3, SYS_PINFUNC); // configure GPIO9-14 as GPIO
++	au_writel(1<<SLIC_OH_GPIO, SYS_TRIOUTCLR); /* SLIC_OH_GPIO as tristate */
++}
++
++
++inline void gpio_write(unsigned int bitmask, unsigned int value) {
++	au_writel(bitmask & ~value, SYS_OUTPUTCLR);
++	au_writel(bitmask & value, SYS_OUTPUTSET);
++}
++
++inline short gpio_read(unsigned short pin) {
++	return (au_readl(SYS_PINSTATERD)>>pin) & 1;
++}
++
++inline short gpio2_read(unsigned short pin) {
++	return (au_readl(SYS_PINSTATERD)>>pin) & 1;
++}
++#else
++#error Cannot find hardware platform
++#endif
++
++
++/* States of SLIC-device, set via PD- and Dx-Pins */
++/* ---------------------------------------------- */
++#define SLIC_BITMASK ((1 << SLIC_PD_GPIO)|(1 << SLIC_D0_GPIO)|(1 << SLIC_D1_GPIO)|(1 << SLIC_D2_GPIO))
++/* Hi-Z-state, for onhook-condition, only detects offhook-event, minimum power-usage */
++#define SLIC_STATE_IDLE (1 << SLIC_PD_GPIO)
++/* Active-state, for offhook-condition and other states where phone needs to be powered */
++#define SLIC_STATE_ACTIVE ((1 << SLIC_PD_GPIO)|(1 << SLIC_D1_GPIO))
++/* Active-state with reverse polarity */
++#define SLIC_STATE_REVERSE ((1 << SLIC_PD_GPIO)|(1 << SLIC_D1_GPIO)|(1 << SLIC_D2_GPIO))
++/* Ringing-state */
++#define SLIC_STATE_RINGING ((1 << SLIC_PD_GPIO)|(1 << SLIC_D0_GPIO))
++/* Powerdown-state */
++#define SLIC_STATE_POWERDOWN (0)
++
++#define SLIC_SET_STATE(x) do {				\
++		current_state = x;					\
++		gpio_write(SLIC_BITMASK, x);		\
++	} while (0)
++
++enum Slic_State { ONHOOK, OFFHOOK };
++
++enum Event { evONHOOK, evOFFHOOK, evFLASH };
++
++static DECLARE_WAIT_QUEUE_HEAD(slic_wait_queue);
++static int slic_minor = -1;
++static char is_inuse = 0;
++static char state_changed = 0;
++static enum Event last_value = 0;
++static unsigned long event_time = 0;
++static enum Slic_State event_value = 0;
++static u32 current_state = 0;
++static char active_reverse = 0;
++
++/* Timer-stuff */
++static char restart_timer = 1; /* Bool, if true, timer will be restarted by timer-function. */
++static char timer_started = 0; /* Bool, if true, timer was added. */
++static struct timer_list slic_ring_timer;
++static struct timer_list slic_timer;
++
++#define RING_TIMER_INTERVALL (HZ/50) /* 25 Hz */
++#define RINGOFF_TIME (4*HZ)
++#define RINGON_TIME (1*HZ)
++
++static void irq_taskletFunc(unsigned long dummy);
++DECLARE_TASKLET(irq_tasklet, irq_taskletFunc, (unsigned long)&state_changed);
++
++enum Timer_Task { DEBOUNCE_ONHOOK, DETECT_FLASH_MIN, DETECT_FLASH_MAX, POWERON };
++
++inline enum Slic_State get_current_slic_state(void) {
++	return gpio2_read(SLIC_OH_GPIO) ? ONHOOK : OFFHOOK;
++}
++
++#define DEBOUNCE_TIME  200
++#define FLASH_MIN_TIME 170
++#define FLASH_MAX_TIME 310
++#define POWERON_TIME   200
++
++unsigned int flash_min_t = FLASH_MIN_TIME;
++unsigned int flash_max_t = FLASH_MAX_TIME;
++
++
++static void slic_start_timer (unsigned long time_base, unsigned int timeout, enum Timer_Task timer_task );
++
++/*---------[ Timer functions ]--------------------*/
++
++/* The timer is used to toggle the d2-pin with 25 Hz. This generates the
++   ring-tone in the phone. */
++
++static unsigned long ringtone = 0;
++static unsigned long ringpause = RINGOFF_TIME;
++static unsigned long ringsignal = RINGON_TIME;
++
++static void slic_do_ring (unsigned long data)
++{
++	/* Debug-output */
++	/*
++	static int count = 0;
++	if (((++count) % 50) == 0)
++		debug(".");
++	*/
++
++	/* Toggle d2-pin */
++	u32 tmp = gpio_read(SLIC_D2_GPIO);
++	gpio_write((1 << SLIC_D2_GPIO), (tmp ? 0 : 1) << SLIC_D2_GPIO);
++
++	if (restart_timer) {
++		if ( jiffies<ringtone ) {
++			slic_ring_timer.expires += RING_TIMER_INTERVALL;
++		} else {
++			slic_ring_timer.expires += ringpause;
++			ringtone += ringpause + ringsignal;
++		}
++		add_timer(&slic_ring_timer);
++	}
++}
++
++static void slic_start_ring_timer (void)
++{
++	if (timer_started)
++		return;
++	timer_started = 1;
++	restart_timer = 1; /* Reenable self-reschedule */
++	ringtone = jiffies + ringsignal;
++	slic_ring_timer.expires = jiffies;
++	slic_do_ring(0);
++}
++
++static void slic_stop_ring_timer (void)
++{
++	if (!timer_started)
++		return;
++	restart_timer = 0; /* Timer-func mustn't reschedule itself while being stopped */
++	del_timer_sync(&slic_ring_timer);
++	timer_started = 0;
++}
++
++
++/*---------[ SLIC Functions ]-----------------*/
++
++/* Sets the SLIC to Hi-Z-state for powersaving. */
++static void slic_idle (void)
++{
++	slic_stop_ring_timer();
++	SLIC_SET_STATE(SLIC_STATE_IDLE);
++}
++
++/* Sets slic to active state. */
++static void slic_active (void)
++{
++	slic_stop_ring_timer();
++	if ( active_reverse )
++		SLIC_SET_STATE(SLIC_STATE_REVERSE);
++	else
++		SLIC_SET_STATE(SLIC_STATE_ACTIVE);
++}
++
++/* Starts the timer-controlled toggling of the d-pins, which generates the
++   ringtone on the analog phone. */
++static void slic_ring_on (void)
++{
++	if ( current_state != SLIC_STATE_RINGING ) {
++		SLIC_SET_STATE(SLIC_STATE_RINGING);
++		slic_start_ring_timer(); /* start ringing */
++	}
++}
++
++/* Stops the timer to pause the ringing. */
++static void slic_ring_off (void)
++{
++	if ( current_state == SLIC_STATE_RINGING ) {
++		slic_stop_ring_timer();
++		//SLIC_SET_STATE(SLIC_STATE_IDLE); <-- generates an irq!?
++		gpio_write((1 << SLIC_D2_GPIO), 0);
++		current_state = SLIC_STATE_IDLE;
++	}
++}
++
++/* Powers up the slic device */
++static void slic_power_on (void)
++{
++	// this can generate a wrong off-hook event, so we 'debounce' the power on
++	event_time = jiffies; // this stops irq from generating off-hook event
++	SLIC_SET_STATE(SLIC_STATE_IDLE);
++	slic_start_timer(event_time, POWERON_TIME, POWERON);
++}
++
++/* Shuts down the slic-device */
++static void slic_power_off (void)
++{
++	slic_stop_ring_timer();
++	SLIC_SET_STATE(SLIC_STATE_POWERDOWN);
++}
++
++#ifdef DEBUG
++/* Testing: Turn on single pin */
++static void slic_test (int pin)
++{
++	switch (pin) {
++	case '0':
++		SLIC_SET_STATE(1 << SLIC_PD_GPIO);
++		break;
++	case '1':
++		SLIC_SET_STATE(1 << SLIC_D0_GPIO);
++		break;
++	case '2':
++		SLIC_SET_STATE(1 << SLIC_D1_GPIO);
++		break;
++	case '3':
++		SLIC_SET_STATE(1 << SLIC_D2_GPIO);
++		break;
++	default:
++		break;
++	}
++}
++#endif
++
++/*---------[ Interrupt handling ]-----------------*/
++
++static void generate_event(enum Event ev) {
++	// storing only the current event, can lead to a event loss if the application
++	// doesn't read an event before the next occurs -> use an event queue to deliver
++	// events in sequence !!
++	debug("event: %i\n", ev);
++	last_value = ev;
++	state_changed = 1;
++	wake_up (&slic_wait_queue);
++}
++
++// timeout in ms ; if timebase is 0 timeout is increased, otherwise absolute time_base+timeout is used
++static void slic_start_timer (unsigned long time_base, unsigned int timeout, enum Timer_Task timer_task )
++{
++	if ( time_base == 0 )
++		slic_timer.expires += (timeout * HZ)/ 1000;
++	else
++		slic_timer.expires = time_base + (timeout * HZ)/ 1000;
++	slic_timer.data = (unsigned long) timer_task;
++	add_timer(&slic_timer);
++}
++
++// timer used for - debouncing offhook (setting slic active, results in a onhook offhook irq)
++//                - distinguish between onhook and flash
++static void slic_do_timer (unsigned long timer_task) {
++	enum Slic_State current = get_current_slic_state();
++	int done = 0;
++
++	switch ( timer_task ) {
++	case DEBOUNCE_ONHOOK:
++		if ( current == OFFHOOK ) {
++			// done, stable onhook state reached
++			done = 1;
++		} else { // current == ONHOOK
++			slic_start_timer(0, flash_min_t, DETECT_FLASH_MIN);
++		}
++		break;
++	case DETECT_FLASH_MIN:
++		if ( current == ONHOOK ) {
++			slic_start_timer(0, flash_max_t - flash_min_t, DETECT_FLASH_MAX);
++		} else { // current == OFFHOOK
++			// offhook too short for flash, ignore
++			done = 1;
++		}
++		break;
++	case DETECT_FLASH_MAX:
++		if ( current == ONHOOK ) {
++			// off-hook state reached
++			slic_idle();
++			generate_event(evONHOOK);
++			done = 1;
++		} else { // current == OFFHOOK
++			// flash signal detected
++			generate_event(evFLASH);
++			done = 1;
++		}
++		break;
++	case POWERON:
++		if ( current == ONHOOK ) {
++			done = 1; // power on event 'debounced'
++		} else if ( current == OFFHOOK ) {
++			// probably we were off-hook when activating the slic; go off-hook now
++			slic_active();
++			generate_event(evOFFHOOK);
++			slic_start_timer(event_time, DEBOUNCE_TIME, DEBOUNCE_ONHOOK);
++		}
++	}
++
++	if ( done ) {
++		//re-enable irq and be careful to not loose a state change
++		event_time = 0;
++		if ( current != get_current_slic_state() && event_time==0 ) {
++			event_time = jiffies;
++			event_value = get_current_slic_state();
++			tasklet_schedule(&irq_tasklet);
++		}
++	}
++}
++
++static void irq_taskletFunc(unsigned long dummy)
++{
++	if ( (current_state == SLIC_STATE_IDLE || current_state == SLIC_STATE_RINGING) &&
++		 event_value == OFFHOOK ) {
++		slic_active();
++		generate_event(evOFFHOOK);
++		slic_start_timer(event_time, DEBOUNCE_TIME, DEBOUNCE_ONHOOK);
++	} else if ( ( current_state == SLIC_STATE_ACTIVE || current_state == SLIC_STATE_REVERSE ) &&
++				event_value == ONHOOK ) {
++		slic_start_timer(event_time, flash_min_t, DETECT_FLASH_MIN);
++	} else {
++		// ignore event
++		event_time = 0;
++	}
++}
++
++/* The interrupt is raised by a state-change on the DET-pin. This signals an
++   offhook-condition on the phone. */
++static void slic_irq (int irq, void *private, struct pt_regs *regs)
++{
++	if ( !event_time ) {
++		event_time = jiffies;
++		event_value = get_current_slic_state();
++		tasklet_schedule(&irq_tasklet);
++	}
++}
++
++static int slic_startirq (void)
++{
++	if (request_irq(SLIC_OH, slic_irq, SA_INTERRUPT, "slic", (void *) &state_changed) < 0) {
++		return -1;
++	}
++
++	return 0;
++}
++
++static int slic_stopirq  (void)
++{
++	free_irq (SLIC_OH, (void *) &state_changed);
++	return 0;
++}
++
++/*---------[ File Functions ]-----------------*/
++
++static int slic_open (struct inode *inode, struct file *file)
++{
++	if (MINOR(inode->i_rdev) != slic_minor)
++		return -ENODEV;
++	if (is_inuse)
++		return -EBUSY;
++	is_inuse = 1;
++	state_changed = 0;
++	MOD_INC_USE_COUNT;
++	return 0;
++}
++
++static int slic_release (struct inode *inode, struct file *file)
++{
++	if (MINOR(inode->i_rdev) == slic_minor) {
++		is_inuse = 0;
++	}
++	MOD_DEC_USE_COUNT;
++	return 0;
++}
++
++static ssize_t slic_read (struct file *file, char *buf, size_t count, loff_t *ppos)
++{
++	if (count < 1)
++		return -EINVAL;
++	if (!state_changed)
++		interruptible_sleep_on (&slic_wait_queue);
++
++	state_changed = 0;
++	if (copy_to_user(buf, &last_value, 1)) {
++		return -EFAULT;
++	}
++	return 1;
++}
++
++/* The SLIC is controlled with 2-byte commands. The first byte selects the type
++   of the command, the second is an additional parameter or ignored. */
++static ssize_t slic_write (struct file *file, const char *buf, size_t count, loff_t *ppos)
++{
++	char localbuff[2];
++	size_t bytes_read = 0;
++	if (count < 2 || (count % 2))
++		return -EINVAL;
++	while (bytes_read < count) {
++		if (copy_from_user(localbuff, buf + bytes_read, 2))
++			return -EFAULT;
++		bytes_read += 2;
++		debug("SLIC: ");
++		switch (localbuff[0]) {
++		case 'P':
++			/* Power-command */
++			if (localbuff[1] == '0') {
++				debug("Power off\n");
++				slic_power_off();
++			} else {
++				debug("Power on\n");
++				slic_power_on();
++			}
++			break;
++		case 'R':
++			/* Ring-command */
++			if (localbuff[1] == '0') {
++				debug("Ring off\n");
++				slic_ring_off();
++			} else {
++				debug("Ring on\n");
++				slic_ring_on();
++			}
++			break;
++		case 'M':
++			/* Mode-command: 0 - active standard mode, 1 - active reverse mode  */
++			if (localbuff[1] == '0') {
++				debug("Active default\n");
++				active_reverse = 0;
++				if ( current_state == SLIC_STATE_REVERSE )
++					slic_active();
++			} else {
++				debug("Active reverse default\n");
++				active_reverse = 1;
++				if ( current_state == SLIC_STATE_ACTIVE )
++					slic_active();
++			}
++			break;
++
++#ifdef DEBUG
++		case 'A':
++			/* Active-command */
++			debug("Active\n");
++			slic_active();
++			break;
++		case 'I':
++			/* Idle-command */
++			debug("Idle\n");
++			slic_idle();
++			break;
++		case 'T':
++			/* Test-command */
++			debug("Test %c\n", localbuff[1]);
++			slic_test(localbuff[1]);
++			break;
++#endif
++		default:
++			return -EFAULT;
++		}
++	}
++	return count; /* Everything read */
++}
++
++static int
++slic_ioctl(struct inode *inode, struct file *file, unsigned int cmd, unsigned long arg)
++{
++	// don't using file information for now; only one slic supported
++	int ret = 0;
++
++	/*
++	 * extract the type and number bitfields, and don't decode
++	 * wrong cmds: return ENOTTY (inappropriate ioctl) before access_ok()
++	 */
++	if (_IOC_TYPE(cmd) != SLIC_IOC_MAGIC) return -ENOTTY;
++	if (_IOC_NR(cmd) > SLIC_IOC_MAXNR) return -ENOTTY;
++
++	switch (cmd) {
++	case IOC_SLIC_POWER:
++		/* Power-command */
++		if ( arg ) {
++			debug("Power on\n");
++			slic_power_on();
++		} else {
++			debug("Power off\n");
++			slic_power_off();
++		}
++		break;
++	case IOC_SLIC_RING:
++		/* Ring-command */
++		if ( arg ) {
++			debug("Ring on\n");
++			slic_ring_on();
++		} else {
++			debug("Ring off\n");
++			slic_ring_off();
++		}
++		break;
++	case IOC_SLIC_MODE:
++		/* Mode-command: 0 - active standard mode, 1 - active reverse mode  */
++		if ( arg ) {
++			debug("Active reverse default\n");
++			active_reverse = 1;
++			if ( current_state == SLIC_STATE_ACTIVE )
++				slic_active();
++		} else {
++			debug("Active default\n");
++			active_reverse = 0;
++			if ( current_state == SLIC_STATE_REVERSE )
++				slic_active();
++		}
++		break;
++	case IOC_SLIC_HOOKFLASH:
++		/* set hook-flash time */
++	{
++		int min = arg & 0xffff;
++		int max = arg>>16;
++		if ( min<max && min >= 20 && max <= 1000 ) {
++			flash_min_t = min;
++			flash_max_t = max;
++		} else {
++			ret = -EINVAL;
++		}
++	}
++	break;
++
++#ifdef DEBUG
++	case IOC_SLIC_TEST:
++		/* Test-command */
++		debug("Test %li\n", arg & SLIC_BITMASK);
++		SLIC_SET_STATE(arg);
++		break;
++#endif
++	default:
++		ret = -ENOTTY;
++	}
++
++	return ret;
++}
++
++static unsigned int slic_poll (struct file *file, poll_table * wait)
++{
++	unsigned int mask = 0;
++
++	poll_wait (file, &slic_wait_queue, wait);
++	if (state_changed) /* state changed since last time. */
++		mask |= POLLIN | POLLRDNORM;
++	return mask;
++}
++
++/*---------[ Module stuff ]-----------------*/
++
++static struct file_operations slic_fops = {
++	.owner = THIS_MODULE,
++	.llseek = NULL,
++	.read = slic_read,
++	.write = slic_write,
++	.readdir = NULL,
++	.poll = slic_poll,
++	.ioctl = slic_ioctl,
++	.mmap = NULL,
++	.open = slic_open,
++	.flush = NULL,
++	.release = slic_release
++};
++
++static struct miscdevice slic_miscdev = {
++	MISC_DYNAMIC_MINOR,
++	"slic",
++	&slic_fops
++};
++
++void __exit slic_cleanup (void)
++{
++	is_inuse = 1;
++	slic_stop_ring_timer();
++	slic_stopirq();
++	misc_deregister(&slic_miscdev);
++}
++
++int __init slic_init (void)
++{
++	printk("Surfbox2 SLIC driver\n");
++	debug("         with debug\n");
++
++	is_inuse = 1;
++
++	// prepare time for handling RING
++	init_timer(&slic_ring_timer);
++	slic_ring_timer.function = slic_do_ring;
++	slic_ring_timer.data = 0;
++
++	// prepare time for onhook/offhook debounce and flash detection
++	init_timer(&slic_timer);
++	slic_timer.function = slic_do_timer;
++	slic_timer.data = 0;
++
++	/* Set GPIOs for Dx- and PD-pins as output */
++	gpio_init();
++
++	/* Set initial state */
++	slic_power_off();
++
++	/* Register device */
++	if (misc_register(&slic_miscdev) >= 0) {
++		slic_minor = slic_miscdev.minor;
++		if (slic_startirq () == 0) {
++			/* Everything fine */
++			is_inuse = 0;
++			return 0;
++		}
++		/* Error */
++		misc_deregister(&slic_miscdev);
++	}
++	return 1;
++}
++
++module_init(slic_init);
++module_exit(slic_cleanup);
++
++MODULE_AUTHOR("Ingo Salzmann");
++MODULE_DESCRIPTION("Driver for MTX SLIC");
++MODULE_LICENSE("GPL");
++EXPORT_NO_SYMBOLS;
+--- linux-org/include/linux/slic.h	1970-01-01 01:00:00.000000000 +0100
++++ linux/include/linux/slic.h	2006-06-20 13:46:05.321244750 +0200
+@@ -0,0 +1,41 @@
++/**
++ * @file    slic.h
++ * @author  Thomas Geffert <geffert@4g-systems.com>
++ * @date    Tue Jun 20 13:22:01 2006
++ *
++ * @brief Some ioctl declarations for the mtx slic driver
++ *
++ *
++ */
++
++/*
++ * (c) COPYRIGHT 2006 by 4G Systems GmbH Germany
++ * All rights reserved.
++ */
++
++
++#ifndef SLIC__H__
++#define SLIC__H__
++
++#define SLIC_IOC_MAGIC			0xC1  /// an arbitrary number for identifying slic ioctls
++
++// ioctl argument: arg == 0 -> power off, arg == 1 -> power on
++#define IOC_SLIC_POWER			_IOW(SLIC_IOC_MAGIC, 0x00, unsigned int)
++
++// ioctl argument: arg == 0 -> ring off, arg == 1 -> ring on
++#define IOC_SLIC_RING			_IOW(SLIC_IOC_MAGIC, 0x01, unsigned int)
++
++// ioctl argument: arg == 0 -> active, arg == 1 -> active reverse
++#define IOC_SLIC_MODE			_IOW(SLIC_IOC_MAGIC, 0x02, unsigned int)
++
++// ioctl argument: set hook-flash time; arg&0xffff is min time in ms, arg>>16 is max time in ms
++// 20 <= min < max <= 1000
++#define IOC_SLIC_HOOKFLASH		_IOW(SLIC_IOC_MAGIC, 0x04, unsigned int)
++
++// ioctl argument: write arg to slic register ; only available if slic driver compiled with DEBUG
++#define IOC_SLIC_TEST			_IOW(SLIC_IOC_MAGIC, 0x03, unsigned int)
++
++#define SLIC_IOC_MAXNR			0x04  /// max number of supported ioctl calls
++
++
++#endif /* SLIC__H__ */

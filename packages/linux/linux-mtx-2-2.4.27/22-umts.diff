@@ -1,0 +1,28 @@
+diff -Nurb linux-2.4.27-mtx2/drivers/usb/serial/usbserial.c linux-2.4.27-mtx2-umts/drivers/usb/serial/usbserial.c
+--- linux-old/drivers/usb/serial/usbserial.c	2004-08-14 20:38:57.000000000 +0200
++++ linux/drivers/usb/serial/usbserial.c	2005-06-07 10:53:03.000000000 +0200
+@@ -332,7 +332,7 @@
+ static __u16	vendor	= 0x05f9;
+ static __u16	product	= 0xffff;
+ 
+-static struct usb_device_id generic_device_ids[2]; /* Initially all zeroes. */
++static struct usb_device_id generic_device_ids[5]; /* Initially all zeroes. */
+ 
+ /* All of the device info needed for the Generic Serial Converter */
+ static struct usb_serial_device_type generic_device = {
+@@ -1773,6 +1773,15 @@
+ 	generic_device_ids[0].idVendor = vendor;
+ 	generic_device_ids[0].idProduct = product;
+ 	generic_device_ids[0].match_flags = USB_DEVICE_ID_MATCH_VENDOR | USB_DEVICE_ID_MATCH_PRODUCT;
++	generic_device_ids[1].idVendor = 0xaf0;
++	generic_device_ids[1].idProduct = 0x5000;
++	generic_device_ids[1].match_flags = USB_DEVICE_ID_MATCH_VENDOR | USB_DEVICE_ID_MATCH_PRODUCT;
++	generic_device_ids[2].idVendor = 0xaf0;
++	generic_device_ids[2].idProduct = 0x6000;
++	generic_device_ids[2].match_flags = USB_DEVICE_ID_MATCH_VENDOR | USB_DEVICE_ID_MATCH_PRODUCT;
++	generic_device_ids[3].idVendor = 0xaf0;
++	generic_device_ids[3].idProduct = 0x6300;
++	generic_device_ids[3].match_flags = USB_DEVICE_ID_MATCH_VENDOR | USB_DEVICE_ID_MATCH_PRODUCT;
+ 	/* register our generic driver with ourselves */
+ 	usb_serial_register (&generic_device);
+ #endif

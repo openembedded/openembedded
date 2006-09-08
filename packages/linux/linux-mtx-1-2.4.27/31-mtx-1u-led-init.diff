@@ -1,0 +1,16 @@
+--- linux/arch/mips/au1000/mtx-1/board_setup.c.pre	2005-08-27 17:09:39.000000000 +0200
++++ linux/arch/mips/au1000/mtx-1/board_setup.c	2005-08-27 17:38:56.000000000 +0200
+@@ -91,9 +91,12 @@
+ 	au_writel( 0x00000002, SYS_OUTPUTSET ); // set EXT_IO3 ON
+ 	au_writel( 0x00000020, SYS_OUTPUTCLR ); // set eth PHY TX_ER to OFF
+ 
++	au_writel( 0x0c003000, SYS_OUTPUTSET );
++	au_writel( 0x12004c00, SYS_OUTPUTCLR );
++
+ 	// enable LED and set it to green
+ 	au_writel( au_readl(GPIO2_DIR) | 0x1800, GPIO2_DIR );
+-	au_writel( 0x18000800, GPIO2_OUTPUT );
++	au_writel( 0x18000000, GPIO2_OUTPUT );
+ 
+ 	board_pci_idsel = mtx1_pci_idsel;
+ 

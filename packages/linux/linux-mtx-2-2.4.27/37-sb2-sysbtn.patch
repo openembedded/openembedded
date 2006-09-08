@@ -1,0 +1,246 @@
+--- linux/arch/mips/au1000/mtx-2/Makefile.org	2006-05-29 10:45:47.702096500 +0200
++++ linux/arch/mips/au1000/mtx-2/Makefile	2006-05-29 10:46:05.643217750 +0200
+@@ -15,6 +15,6 @@
+ 
+ O_TARGET := mtx-2.o
+ 
+-obj-y := init.o board_setup.o irqmap.o slic.o lcd.o
++obj-y := init.o board_setup.o irqmap.o slic.o lcd.o pollbtn.o
+ 
+ include $(TOPDIR)/Rules.make
+--- linux/arch/mips/au1000/mtx-2/pollbtn.c.org	1970-01-01 01:00:00.000000000 +0100
++++ linux/arch/mips/au1000/mtx-2/pollbtn.c	2006-05-29 10:42:53.071182750 +0200
+@@ -0,0 +1,233 @@
++#include <linux/config.h>
++#include <linux/module.h>
++#include <linux/version.h>
++#include <linux/types.h>
++#include <linux/errno.h>
++#include <linux/kernel.h>
++#include <linux/poll.h>
++#include <linux/sched.h>
++#include <linux/miscdevice.h>
++#include <linux/slab.h>
++#include <linux/init.h>
++#include <linux/irq.h>
++#include <asm/uaccess.h>
++#include <asm/au1000.h>
++
++static int mtx_btn_ms = 100;
++MODULE_PARM(mtx_btn_ms, "i");
++MODULE_PARM_DESC(mtx_btn_ms, "The time in ms to wait between polls (default 100)");
++
++/* Bitposition of button in GPIO-byte */
++#define SB2_BTNPOWER_GPIO   (11)
++#define SB2_BTNRESET_GPIO   (12) /* The MTX-1 Button is attached to GPIO207. */
++#define SB2_BTNCONNECT_GPIO (13)
++#define SB2_BTNDISPLAY_GPIO (14)
++#define SB2_BTN_4_GPIO      (15)
++
++/* IRQs for buttons */
++#define SB2_BTN_IRQ   (AU1500_GPIO_208_218)
++
++/* Pinstate of GPIO-port */
++#define SB2_BTN_PINSTATE   (GPIO2_PINSTATE)
++
++/* Direction of GPIO-register */
++#define SB2_BTN_DIR   (GPIO2_DIR)
++
++static struct timer_list check_button_timer;
++static int restart_timer = 1;
++
++#define MAX_ACCESS 4
++struct priv_data {
++	char in_use;
++	char state_changed;
++	char last_state;
++	char current_state;
++	wait_queue_head_t btn_wait_queue;
++};
++static struct priv_data priv_data[MAX_ACCESS];
++
++/*---------[ Hardware Functions ]-----------------*/
++
++static void mtx_initbuttons (void)
++{
++	int i;
++	for (i = 11; i <= 15; ++i) {
++		/* Clear dir-bit to configure GPIO as input */
++		au_writel (au_readl(SB2_BTN_DIR) & ~(1 << i), SB2_BTN_DIR);
++	}
++}
++
++static unsigned char lval=0, cval = 0;
++
++static void check_buttons (unsigned long timer_task) {
++	int i;
++	cval = (au_readl(GPIO2_PINSTATE) >> 11) & 0x1f;
++	if (lval != cval) {
++		for (i=0; i<MAX_ACCESS; ++i) {
++			if (priv_data[i].in_use == 1 && cval != priv_data[i].last_state) {
++				priv_data[i].current_state = cval;
++				priv_data[i].state_changed = 1;
++				wake_up_interruptible(&priv_data[i].btn_wait_queue);
++			}
++		}
++		lval = cval;
++	}
++
++	if ( restart_timer ) {
++		check_button_timer.expires += mtx_btn_ms/10;
++		add_timer(&check_button_timer);
++	}
++}
++
++/*---------[ File Functions ]-----------------*/
++
++static int mtxsysbtn_minor = -1, is_inuse = 0;
++
++static int mtxsysbtn_open (struct inode *inode, struct file *file)
++{
++	struct priv_data *pd=NULL;
++	int i;
++	if (MINOR(inode->i_rdev) != mtxsysbtn_minor)
++		return -ENODEV;
++
++	MOD_INC_USE_COUNT;
++
++	// search an unused priv_data
++	for (i=0; i<MAX_ACCESS; ++i) {
++		if (priv_data[i].in_use == 0 ) {
++			priv_data[i].last_state = cval;
++			priv_data[i].current_state = cval;
++			priv_data[i].state_changed = 0;
++			pd = file->private_data = &priv_data[i];
++			init_waitqueue_head(&pd->btn_wait_queue);
++			priv_data[i].in_use = 1;
++			break;
++		}
++	}
++
++	if (file->private_data==NULL) {
++		return -ENOMEM;
++	}
++
++	return 0;
++}
++
++static int mtxsysbtn_release (struct inode *inode, struct file *file)
++{
++	struct priv_data *pd = (struct priv_data*)file->private_data;
++	if ( pd ) {
++		pd->in_use = 0;
++		file->private_data=NULL;
++	}
++
++	MOD_DEC_USE_COUNT;
++	return 0;
++}
++
++static ssize_t mtxsysbtn_read (struct file *file, char *buf, size_t count, loff_t *ppos)
++{
++	struct priv_data *pd = (struct priv_data*)file->private_data;
++	if (count < 1 || !pd )
++		return -EINVAL;
++	if (!pd->state_changed) {
++		interruptible_sleep_on(&pd->btn_wait_queue);
++	}
++	char chg = pd->current_state ^ pd->last_state;
++	char chgack=0;
++
++	int r[5],i,c=0;
++	for (i = 0; i<5; i++) {
++		if ( chg & (1 << i)) {
++			r[c] = i+1;
++			if ((pd->current_state & (1 << i)) == 0)
++				r[c] |= 0x80;
++			chgack |= (1<<i);
++			if ( ++c > count ) {
++				break;
++			}
++		}
++	}
++	pd->last_state ^= chgack;
++
++	if ( pd->last_state == pd->current_state ) {
++		pd->state_changed = 0;
++	}
++
++	if (copy_to_user(buf, r, c)) {
++		return -EFAULT;
++	}
++
++	return c;
++}
++
++static unsigned int mtxsysbtn_poll (struct file *file, poll_table * wait)
++{
++	unsigned int mask = 0;
++	struct priv_data *pd = (struct priv_data*)file->private_data;
++	if (!pd)
++		return -EINVAL;
++
++	poll_wait(file, &pd->btn_wait_queue, wait);
++	if (pd->state_changed) /* state changed since last time. */
++		mask |= POLLIN | POLLRDNORM;
++	return mask;
++}
++
++/*---------[ Module stuff ]-----------------*/
++
++static struct file_operations mtxsysbtn_fops = {
++	.owner = THIS_MODULE,
++	.read = mtxsysbtn_read,
++	.poll = mtxsysbtn_poll,
++	.open = mtxsysbtn_open,
++	.release = mtxsysbtn_release
++};
++
++static struct miscdevice mtxsysbtn_miscdev = {
++	MISC_DYNAMIC_MINOR /* SYSBTN_MINOR */ ,
++	"btn",
++	&mtxsysbtn_fops
++};
++
++void __exit cleanup_mtx_sysbtn (void)
++{
++	restart_timer = 0;
++	del_timer_sync(&check_button_timer);
++	is_inuse = 1;
++	misc_deregister(&mtxsysbtn_miscdev);
++	is_inuse = 0;
++}
++
++int __init init_mtx_sysbtn (void)
++{
++	memset(priv_data, 0, sizeof(struct priv_data)*MAX_ACCESS);
++	init_timer(&check_button_timer);
++	check_button_timer.function = check_buttons;
++	check_button_timer.data = 0;
++	check_button_timer.expires = jiffies+100;
++	add_timer(&check_button_timer);
++
++	is_inuse = 1;
++	mtx_initbuttons();
++	if (misc_register(&mtxsysbtn_miscdev) >= 0) {
++		mtxsysbtn_minor = mtxsysbtn_miscdev.minor;
++		printk(KERN_INFO "MTX-1 System Button minor: %d\n",
++					 mtxsysbtn_miscdev.minor);
++		if (1) {
++			is_inuse = 0;
++			return 0;
++		}
++
++		misc_deregister(&mtxsysbtn_miscdev);
++	}
++	is_inuse = 0;
++	return 1;
++}
++
++module_init(init_mtx_sysbtn);
++module_exit(cleanup_mtx_sysbtn);
++
++MODULE_AUTHOR("Simon Krahnke");
++MODULE_DESCRIPTION("Driver for MTX buttons");
++MODULE_LICENSE("GPL");
++EXPORT_NO_SYMBOLS;

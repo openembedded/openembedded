@@ -1,0 +1,47 @@
+diff -Nur linux-orig/arch/mips/au1000/mtx-2/board_setup.c linux-mtx-2-2.4.27-idsel-fix/linux/arch/mips/au1000/mtx-2/board_setup.c
+--- linux-orig/arch/mips/au1000/mtx-2/board_setup.c	2006-05-26 12:39:00.000000000 +0200
++++ linux/arch/mips/au1000/mtx-2/board_setup.c	2006-06-02 17:50:09.000000000 +0200
+@@ -46,8 +46,11 @@
+ #include <asm/pgtable.h>
+ #include <asm/au1000.h>
+ 
++static int mtx2_pci_idsel(unsigned int devsel, int assert);
++extern int (*board_pci_idsel)(unsigned int devsel, int assert);
++
+ extern struct rtc_ops no_rtc_ops;
+ 
+ void board_reset (void)
+ {
+ 	/* Hit BCSR.SYSTEM_CONTROL[SW_RST] */
+@@ -115,5 +118,31 @@
+ 	au_writel( au_readl(GPIO2_DIR) | 0x1800, GPIO2_DIR );
+ 	au_writel( 0x18000800, GPIO2_OUTPUT );
+ #endif
++
++
++	board_pci_idsel = mtx2_pci_idsel;
++
+ 	printk("4G Systems MTX-2 Board\n");
+ }
++
++
++static int mtx2_pci_idsel(unsigned int devsel, int assert)
++{
++#define MTX_IDSEL_ONLY_0_AND_3 0
++#if MTX_IDSEL_ONLY_0_AND_3
++	if (devsel != 0 && devsel != 3) {
++		printk("*** not 0 or 3\n");
++		return 0;
++	}
++#endif
++
++	if (assert && devsel != 0) {
++		// supress signal to cardbus
++		au_writel( (1<<(16+5)) | (0<<5), GPIO2_OUTPUT); // set EXT_IO3 OFF
++	}
++	else {
++		au_writel( (1<<(16+5)) | (1<<5), GPIO2_OUTPUT); // set EXT_IO3 ON
++	}
++	au_sync_udelay(1);
++	return 1;
++}

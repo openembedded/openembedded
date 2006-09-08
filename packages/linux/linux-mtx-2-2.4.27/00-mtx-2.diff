@@ -1,0 +1,3032 @@
+diff -uNr linux-old/arch/mips/Makefile linux/arch/mips/Makefile
+--- linux-old/arch/mips/Makefile	2004-11-24 12:11:50.000000000 +0100
++++ linux/arch/mips/Makefile	2006-04-30 18:50:41.679294000 +0200
+@@ -306,6 +306,13 @@
+ LOADADDR      += 0x80100000
+ endif
+ 
++ifdef CONFIG_MIPS_MTX2
++LIBS          += arch/mips/au1000/mtx-2/mtx-2.o \
++                 arch/mips/au1000/common/au1000.o
++SUBDIRS       += arch/mips/au1000/mtx-2 arch/mips/au1000/common
++LOADADDR      += 0x80100000
++endif
++
+ ifdef CONFIG_MIPS_PB1550
+ LIBS          += arch/mips/au1000/pb1550/pb1550.o \
+                  arch/mips/au1000/common/au1000.o
+diff -uNr linux-old/arch/mips/au1000/mtx-2/Makefile linux/arch/mips/au1000/mtx-2/Makefile
+--- linux-old/arch/mips/au1000/mtx-2/Makefile	1970-01-01 01:00:00.000000000 +0100
++++ linux/arch/mips/au1000/mtx-2/Makefile	2006-04-30 18:52:46.383087500 +0200
+@@ -0,0 +1,20 @@
++#
++#  Copyright 2003 MontaVista Software Inc.
++#  Author: MontaVista Software, Inc.
++#     	ppopov@mvista.com or source@mvista.com
++#       Bruno Randolf <bruno.randolf@4g-systems.biz>
++#
++# Makefile for 4G Systems MTX-2 board.
++#
++# Note! Dependencies are done automagically by 'make dep', which also
++# removes any old dependencies. DON'T put your own dependencies here
++# unless it's something special (ie not a .c file).
++#
++
++USE_STANDARD_AS_RULE := true
++
++O_TARGET := mtx-2.o
++
++obj-y := init.o board_setup.o irqmap.o
++
++include $(TOPDIR)/Rules.make
+diff -uNr linux-old/arch/mips/au1000/mtx-2/board_setup.c linux/arch/mips/au1000/mtx-2/board_setup.c
+--- linux-old/arch/mips/au1000/mtx-2/board_setup.c	1970-01-01 01:00:00.000000000 +0100
++++ linux/arch/mips/au1000/mtx-2/board_setup.c	2006-04-30 18:52:50.967374000 +0200
+@@ -0,0 +1,90 @@
++/*
++ *
++ * BRIEF MODULE DESCRIPTION
++ *	4G Systems MTX-2 board setup.
++ *
++ * Copyright 2003 MontaVista Software Inc.
++ * Author: MontaVista Software, Inc.
++ *         	ppopov@mvista.com or source@mvista.com
++ *         Bruno Randolf <bruno.randolf@4g-systems.biz>
++ *
++ *  This program is free software; you can redistribute  it and/or modify it
++ *  under  the terms of  the GNU General  Public License as published by the
++ *  Free Software Foundation;  either version 2 of the  License, or (at your
++ *  option) any later version.
++ *
++ *  THIS  SOFTWARE  IS PROVIDED   ``AS  IS'' AND   ANY  EXPRESS OR IMPLIED
++ *  WARRANTIES,   INCLUDING, BUT NOT  LIMITED  TO, THE IMPLIED WARRANTIES OF
++ *  MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.  IN
++ *  NO  EVENT  SHALL   THE AUTHOR  BE    LIABLE FOR ANY   DIRECT, INDIRECT,
++ *  INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
++ *  NOT LIMITED   TO, PROCUREMENT OF  SUBSTITUTE GOODS  OR SERVICES; LOSS OF
++ *  USE, DATA,  OR PROFITS; OR  BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
++ *  ANY THEORY OF LIABILITY, WHETHER IN  CONTRACT, STRICT LIABILITY, OR TORT
++ *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
++ *  THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
++ *
++ *  You should have received a copy of the  GNU General Public License along
++ *  with this program; if not, write  to the Free Software Foundation, Inc.,
++ *  675 Mass Ave, Cambridge, MA 02139, USA.
++ */
++#include <linux/config.h>
++#include <linux/init.h>
++#include <linux/sched.h>
++#include <linux/ioport.h>
++#include <linux/mm.h>
++#include <linux/console.h>
++#include <linux/mc146818rtc.h>
++#include <linux/delay.h>
++
++#include <asm/cpu.h>
++#include <asm/bootinfo.h>
++#include <asm/irq.h>
++#include <asm/keyboard.h>
++#include <asm/mipsregs.h>
++#include <asm/reboot.h>
++#include <asm/pgtable.h>
++#include <asm/au1000.h>
++
++extern struct rtc_ops no_rtc_ops;
++
++void __init board_setup(void)
++{
++	rtc_ops = &no_rtc_ops;
++
++#if defined (CONFIG_USB_OHCI) || defined (CONFIG_AU1X00_USB_DEVICE)
++#ifdef CONFIG_AU1X00_USB_DEVICE
++	// 2nd USB port is USB device
++	au_writel(au_readl(SYS_PINFUNC) & (u32)(~0x8000), SYS_PINFUNC);
++#endif
++	// enable USB power switch
++	au_writel( au_readl(GPIO2_DIR) | 0x10, GPIO2_DIR );
++	au_writel( 0x100000, GPIO2_OUTPUT );
++#endif // defined (CONFIG_USB_OHCI) || defined (CONFIG_AU1000_USB_DEVICE)
++
++#ifdef CONFIG_PCI
++#if defined(__MIPSEB__)
++	au_writel(0xf | (2<<6) | (1<<4), Au1500_PCI_CFG);
++#else
++	au_writel(0xf, Au1500_PCI_CFG);
++#endif
++#endif
++
++	// initialize sys_pinfunc:
++	// disable second ethernet port (SYS_PF_NI2)
++	// set U3/GPIO23 to GPIO23 (SYS_PF_U3)
++	au_writel( SYS_PF_NI2 | SYS_PF_U3, SYS_PINFUNC );
++
++	// initialize GPIO
++	au_writel( 0xFFFFFFFF, SYS_TRIOUTCLR );
++	au_writel( 0x00000001, SYS_OUTPUTCLR ); // set M66EN (PCI 66MHz) to OFF
++	au_writel( 0x00000008, SYS_OUTPUTSET ); // set PCI CLKRUN# to OFF
++	au_writel( 0x00000020, SYS_OUTPUTCLR ); // set eth PHY TX_ER to OFF
++       au_writel( 0x00010000, SYS_OUTPUTSET ); // set ETH_RESET# to get PHY out of reset.
++
++	// enable LED and set it to green
++	au_writel( au_readl(GPIO2_DIR) | 0x1800, GPIO2_DIR );
++	au_writel( 0x18000800, GPIO2_OUTPUT );
++
++	printk("4G Systems MTX-2 Board\n");
++}
+diff -uNr linux-old/arch/mips/au1000/mtx-2/init.c linux/arch/mips/au1000/mtx-2/init.c
+--- linux-old/arch/mips/au1000/mtx-2/init.c	1970-01-01 01:00:00.000000000 +0100
++++ linux/arch/mips/au1000/mtx-2/init.c	2006-04-30 18:52:58.171824250 +0200
+@@ -0,0 +1,74 @@
++/*
++ *
++ * BRIEF MODULE DESCRIPTION
++ *	4G Systems MTX-2 board setup+
++ *
++ * Copyright 2003 MontaVista Software Inc.
++ * Author: MontaVista Software, Inc.
++ *         	ppopov@mvista.com or source@mvista.com
++ *         Bruno Randolf <bruno.randolf@4g-systems.biz>
++ *
++ *  This program is free software; you can redistribute  it and/or modify it
++ *  under  the terms of  the GNU General  Public License as published by the
++ *  Free Software Foundation;  either version 2 of the  License, or (at your
++ *  option) any later version.
++ *
++ *  THIS  SOFTWARE  IS PROVIDED   ``AS  IS'' AND   ANY  EXPRESS OR IMPLIED
++ *  WARRANTIES,   INCLUDING, BUT NOT  LIMITED  TO, THE IMPLIED WARRANTIES OF
++ *  MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.  IN
++ *  NO  EVENT  SHALL   THE AUTHOR  BE    LIABLE FOR ANY   DIRECT, INDIRECT,
++ *  INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
++ *  NOT LIMITED   TO, PROCUREMENT OF  SUBSTITUTE GOODS  OR SERVICES; LOSS OF
++ *  USE, DATA,  OR PROFITS; OR  BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
++ *  ANY THEORY OF LIABILITY, WHETHER IN  CONTRACT, STRICT LIABILITY, OR TORT
++ *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
++ *  THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
++ *
++ *  You should have received a copy of the  GNU General Public License along
++ *  with this program; if not, write  to the Free Software Foundation, Inc.,
++ *  675 Mass Ave, Cambridge, MA 02139, USA.
++ */
++
++#include <linux/init.h>
++#include <linux/mm.h>
++#include <linux/sched.h>
++#include <linux/bootmem.h>
++#include <asm/addrspace.h>
++#include <asm/bootinfo.h>
++#include <linux/config.h>
++#include <linux/string.h>
++#include <linux/kernel.h>
++#include <linux/sched.h>
++
++int prom_argc;
++char **prom_argv, **prom_envp;
++extern void  __init prom_init_cmdline(void);
++extern char *prom_getenv(char *envname);
++
++const char *get_system_type(void)
++{
++	return "MTX-2";
++}
++
++int __init prom_init(int argc, char **argv, char **envp, int *prom_vec)
++{
++	unsigned char *memsize_str;
++	unsigned long memsize;
++
++	prom_argc = argc;
++	prom_argv = argv;
++	prom_envp = envp;
++
++	mips_machgroup = MACH_GROUP_ALCHEMY;
++	mips_machtype = MACH_MTX2;	/* set the platform # */
++	prom_init_cmdline();
++
++	memsize_str = prom_getenv("memsize");
++	if (!memsize_str) {
++		memsize = 0x04000000;
++	} else {
++		memsize = simple_strtol(memsize_str, NULL, 0);
++	}
++	add_memory_region(0, memsize, BOOT_MEM_RAM);
++	return 0;
++}
+diff -uNr linux-old/arch/mips/au1000/mtx-2/irqmap.c linux/arch/mips/au1000/mtx-2/irqmap.c
+--- linux-old/arch/mips/au1000/mtx-2/irqmap.c	1970-01-01 01:00:00.000000000 +0100
++++ linux/arch/mips/au1000/mtx-2/irqmap.c	2006-04-30 18:52:11.892932000 +0200
+@@ -0,0 +1,83 @@
++/*
++ * BRIEF MODULE DESCRIPTION
++ *	Au1xxx irq map table
++ *
++ * Copyright 2003 Embedded Edge, LLC
++ *		dan@embeddededge.com
++ *
++ *  This program is free software; you can redistribute	 it and/or modify it
++ *  under  the terms of	 the GNU General  Public License as published by the
++ *  Free Software Foundation;  either version 2 of the	License, or (at your
++ *  option) any later version.
++ *
++ *  THIS  SOFTWARE  IS PROVIDED	  ``AS	IS'' AND   ANY	EXPRESS OR IMPLIED
++ *  WARRANTIES,	  INCLUDING, BUT NOT  LIMITED  TO, THE IMPLIED WARRANTIES OF
++ *  MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.  IN
++ *  NO	EVENT  SHALL   THE AUTHOR  BE	 LIABLE FOR ANY	  DIRECT, INDIRECT,
++ *  INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
++ *  NOT LIMITED	  TO, PROCUREMENT OF  SUBSTITUTE GOODS	OR SERVICES; LOSS OF
++ *  USE, DATA,	OR PROFITS; OR	BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
++ *  ANY THEORY OF LIABILITY, WHETHER IN	 CONTRACT, STRICT LIABILITY, OR TORT
++ *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
++ *  THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
++ *
++ *  You should have received a copy of the  GNU General Public License along
++ *  with this program; if not, write  to the Free Software Foundation, Inc.,
++ *  675 Mass Ave, Cambridge, MA 02139, USA.
++ */
++#include <linux/errno.h>
++#include <linux/init.h>
++#include <linux/irq.h>
++#include <linux/kernel_stat.h>
++#include <linux/module.h>
++#include <linux/signal.h>
++#include <linux/sched.h>
++#include <linux/types.h>
++#include <linux/interrupt.h>
++#include <linux/ioport.h>
++#include <linux/timex.h>
++#include <linux/slab.h>
++#include <linux/random.h>
++#include <linux/delay.h>
++
++#include <asm/bitops.h>
++#include <asm/bootinfo.h>
++#include <asm/io.h>
++#include <asm/mipsregs.h>
++#include <asm/system.h>
++#include <asm/au1000.h>
++
++/* Need to define this.
++*/
++au1xxx_irq_map_t au1xxx_irq_map[] = {
++	{ 0, 0, 0}
++};
++
++int au1xxx_nr_irqs = 0;
++
++#ifdef CONFIG_PCI
++
++#define INTA AU1000_PCI_INTA
++#define INTB AU1000_PCI_INTB
++#define INTC AU1000_PCI_INTC
++#define INTD AU1000_PCI_INTD
++#define INTX 0xFF /* not valid */
++
++int __init
++au1xxx_pci_irqmap(struct pci_dev *dev, unsigned char idsel, unsigned char pin)
++{
++	static char pci_irq_table[][4] =
++	/*
++	 *	PCI IDSEL/INTPIN->INTLINE
++	 *	A       B       C       D
++	 */
++	{
++		{INTA, INTB, INTC, INTD},   /* IDSEL 0 */
++		{INTA, INTB, INTC, INTD},   /* IDSEL 1 */
++		{INTA, INTB, INTC, INTD},   /* IDSEL 2 */
++		{INTA, INTB, INTC, INTD},   /* IDSEL 3 */
++	};
++	const long min_idsel = 0, max_idsel = 3, irqs_per_slot = 4;
++	return PCI_IRQ_TABLE_LOOKUP;
++};
++#endif
+diff -uNr linux-old/arch/mips/config-shared.in linux/arch/mips/config-shared.in
+--- linux-old/arch/mips/config-shared.in	2004-11-24 12:11:50.000000000 +0100
++++ linux/arch/mips/config-shared.in	2006-04-30 18:54:03.599913250 +0200
+@@ -33,6 +33,7 @@
+ dep_bool 'Support for Alchemy PB1550 board' CONFIG_MIPS_PB1550 $CONFIG_MIPS32
+ dep_bool 'Support for MyCable XXS1500 board' CONFIG_MIPS_XXS1500 $CONFIG_MIPS32
+ dep_bool 'Support for 4G Systems MTX-1 board' CONFIG_MIPS_MTX1 $CONFIG_MIPS32
++dep_bool 'Support for 4G Systems MTX-2 board' CONFIG_MIPS_MTX2 $CONFIG_MIPS32
+ dep_bool 'Support for Cogent CSB250 board' CONFIG_COGENT_CSB250 $CONFIG_MIPS32
+ dep_bool 'Support for BAGET MIPS series (EXPERIMENTAL)' CONFIG_BAGET_MIPS $CONFIG_MIPS32 $CONFIG_EXPERIMENTAL
+ bool 'Support for CASIO CASSIOPEIA E-10/15/55/65' CONFIG_CASIO_E55
+@@ -321,6 +322,11 @@
+    define_bool CONFIG_SOC_AU1500 y
+    define_bool CONFIG_NONCOHERENT_IO y
+ fi
++if [ "$CONFIG_MIPS_MTX2" = "y" ]; then
++   define_bool CONFIG_SOC_AU1X00 y
++   define_bool CONFIG_SOC_AU1550 y
++   define_bool CONFIG_NONCOHERENT_IO y
++fi
+ if [ "$CONFIG_COGENT_CSB250" = "y" ]; then
+    define_bool CONFIG_SOC_AU1X00 y
+    define_bool CONFIG_SOC_AU1500 y
+diff -uNr linux-old/arch/mips/defconfig linux/arch/mips/defconfig
+--- linux-old/arch/mips/defconfig	2004-11-24 12:11:50.000000000 +0100
++++ linux/arch/mips/defconfig	2006-04-30 18:54:08.200200750 +0200
+@@ -34,6 +34,7 @@
+ # CONFIG_MIPS_PB1550 is not set
+ # CONFIG_MIPS_XXS1500 is not set
+ # CONFIG_MIPS_MTX1 is not set
++# CONFIG_MIPS_MTX2 is not set
+ # CONFIG_COGENT_CSB250 is not set
+ # CONFIG_BAGET_MIPS is not set
+ # CONFIG_CASIO_E55 is not set
+diff -uNr linux-old/arch/mips/defconfig-atlas linux/arch/mips/defconfig-atlas
+--- linux-old/arch/mips/defconfig-atlas	2004-11-24 12:11:50.000000000 +0100
++++ linux/arch/mips/defconfig-atlas	2006-04-30 18:54:12.896494250 +0200
+@@ -32,6 +32,7 @@
+ # CONFIG_MIPS_PB1550 is not set
+ # CONFIG_MIPS_XXS1500 is not set
+ # CONFIG_MIPS_MTX1 is not set
++# CONFIG_MIPS_MTX2 is not set
+ # CONFIG_COGENT_CSB250 is not set
+ # CONFIG_BAGET_MIPS is not set
+ # CONFIG_CASIO_E55 is not set
+diff -uNr linux-old/arch/mips/defconfig-bosporus linux/arch/mips/defconfig-bosporus
+--- linux-old/arch/mips/defconfig-bosporus	2004-11-24 12:11:50.000000000 +0100
++++ linux/arch/mips/defconfig-bosporus	2006-04-30 18:54:21.893056500 +0200
+@@ -34,6 +34,7 @@
+ # CONFIG_MIPS_PB1550 is not set
+ # CONFIG_MIPS_XXS1500 is not set
+ # CONFIG_MIPS_MTX1 is not set
++# CONFIG_MIPS_MTX2 is not set
+ # CONFIG_COGENT_CSB250 is not set
+ # CONFIG_BAGET_MIPS is not set
+ # CONFIG_CASIO_E55 is not set
+@@ -208,6 +209,7 @@
+ CONFIG_MTD_BOSPORUS=y
+ # CONFIG_MTD_XXS1500 is not set
+ # CONFIG_MTD_MTX1 is not set
++# CONFIG_MTD_MTX2 is not set
+ # CONFIG_MTD_DB1X00 is not set
+ # CONFIG_MTD_PB1550 is not set
+ # CONFIG_MTD_HYDROGEN3 is not set
+diff -uNr linux-old/arch/mips/defconfig-capcella linux/arch/mips/defconfig-capcella
+--- linux-old/arch/mips/defconfig-capcella	2004-11-24 12:11:50.000000000 +0100
++++ linux/arch/mips/defconfig-capcella	2006-04-30 18:54:26.265329750 +0200
+@@ -34,6 +34,7 @@
+ # CONFIG_MIPS_PB1550 is not set
+ # CONFIG_MIPS_XXS1500 is not set
+ # CONFIG_MIPS_MTX1 is not set
++# CONFIG_MIPS_MTX2 is not set
+ # CONFIG_COGENT_CSB250 is not set
+ # CONFIG_BAGET_MIPS is not set
+ # CONFIG_CASIO_E55 is not set
+diff -uNr linux-old/arch/mips/defconfig-cobalt linux/arch/mips/defconfig-cobalt
+--- linux-old/arch/mips/defconfig-cobalt	2004-11-24 12:11:50.000000000 +0100
++++ linux/arch/mips/defconfig-cobalt	2006-04-30 18:54:30.161573250 +0200
+@@ -32,6 +32,7 @@
+ # CONFIG_MIPS_PB1550 is not set
+ # CONFIG_MIPS_XXS1500 is not set
+ # CONFIG_MIPS_MTX1 is not set
++# CONFIG_MIPS_MTX2 is not set
+ # CONFIG_COGENT_CSB250 is not set
+ # CONFIG_BAGET_MIPS is not set
+ # CONFIG_CASIO_E55 is not set
+diff -uNr linux-old/arch/mips/defconfig-csb250 linux/arch/mips/defconfig-csb250
+--- linux-old/arch/mips/defconfig-csb250	2004-11-24 12:11:50.000000000 +0100
++++ linux/arch/mips/defconfig-csb250	2006-04-30 18:54:34.969873750 +0200
+@@ -34,6 +34,7 @@
+ # CONFIG_MIPS_PB1550 is not set
+ # CONFIG_MIPS_XXS1500 is not set
+ # CONFIG_MIPS_MTX1 is not set
++# CONFIG_MIPS_MTX2 is not set
+ CONFIG_COGENT_CSB250=y
+ # CONFIG_BAGET_MIPS is not set
+ # CONFIG_CASIO_E55 is not set
+diff -uNr linux-old/arch/mips/defconfig-db1000 linux/arch/mips/defconfig-db1000
+--- linux-old/arch/mips/defconfig-db1000	2004-11-24 12:11:50.000000000 +0100
++++ linux/arch/mips/defconfig-db1000	2006-04-30 18:54:42.246328500 +0200
+@@ -34,6 +34,7 @@
+ # CONFIG_MIPS_PB1550 is not set
+ # CONFIG_MIPS_XXS1500 is not set
+ # CONFIG_MIPS_MTX1 is not set
++# CONFIG_MIPS_MTX2 is not set
+ # CONFIG_COGENT_CSB250 is not set
+ # CONFIG_BAGET_MIPS is not set
+ # CONFIG_CASIO_E55 is not set
+@@ -214,6 +215,7 @@
+ # CONFIG_MTD_BOSPORUS is not set
+ # CONFIG_MTD_XXS1500 is not set
+ # CONFIG_MTD_MTX1 is not set
++# CONFIG_MTD_MTX2 is not set
+ CONFIG_MTD_DB1X00=y
+ CONFIG_MTD_DB1X00_BOOT=y
+ CONFIG_MTD_DB1X00_USER=y
+diff -uNr linux-old/arch/mips/defconfig-db1100 linux/arch/mips/defconfig-db1100
+--- linux-old/arch/mips/defconfig-db1100	2004-11-24 12:11:50.000000000 +0100
++++ linux/arch/mips/defconfig-db1100	2006-04-30 18:54:50.098819250 +0200
+@@ -34,6 +34,7 @@
+ # CONFIG_MIPS_PB1550 is not set
+ # CONFIG_MIPS_XXS1500 is not set
+ # CONFIG_MIPS_MTX1 is not set
++# CONFIG_MIPS_MTX2 is not set
+ # CONFIG_COGENT_CSB250 is not set
+ # CONFIG_BAGET_MIPS is not set
+ # CONFIG_CASIO_E55 is not set
+@@ -214,6 +215,7 @@
+ # CONFIG_MTD_BOSPORUS is not set
+ # CONFIG_MTD_XXS1500 is not set
+ # CONFIG_MTD_MTX1 is not set
++# CONFIG_MTD_MTX2 is not set
+ CONFIG_MTD_DB1X00=y
+ # CONFIG_MTD_DB1X00_BOOT is not set
+ CONFIG_MTD_DB1X00_USER=y
+diff -uNr linux-old/arch/mips/defconfig-db1500 linux/arch/mips/defconfig-db1500
+--- linux-old/arch/mips/defconfig-db1500	2004-11-24 12:11:50.000000000 +0100
++++ linux/arch/mips/defconfig-db1500	2006-04-30 18:54:53.499031750 +0200
+@@ -34,6 +34,7 @@
+ # CONFIG_MIPS_PB1550 is not set
+ # CONFIG_MIPS_XXS1500 is not set
+ # CONFIG_MIPS_MTX1 is not set
++# CONFIG_MIPS_MTX2 is not set
+ # CONFIG_COGENT_CSB250 is not set
+ # CONFIG_BAGET_MIPS is not set
+ # CONFIG_CASIO_E55 is not set
+diff -uNr linux-old/arch/mips/defconfig-db1550 linux/arch/mips/defconfig-db1550
+--- linux-old/arch/mips/defconfig-db1550	2004-10-20 02:00:40.000000000 +0200
++++ linux/arch/mips/defconfig-db1550	2006-04-30 18:58:13.603537500 +0200
+@@ -34,6 +34,7 @@
+ # CONFIG_MIPS_PB1550 is not set
+ # CONFIG_MIPS_XXS1500 is not set
+ # CONFIG_MIPS_MTX1 is not set
++# CONFIG_MIPS_MTX2 is not set
+ # CONFIG_COGENT_CSB250 is not set
+ # CONFIG_BAGET_MIPS is not set
+ # CONFIG_CASIO_E55 is not set
+@@ -213,6 +214,7 @@
+ # CONFIG_MTD_BOSPORUS is not set
+ # CONFIG_MTD_XXS1500 is not set
+ # CONFIG_MTD_MTX1 is not set
++# CONFIG_MTD_MTX2 is not set
+ # CONFIG_MTD_DB1X00 is not set
+ CONFIG_MTD_PB1550=y
+ CONFIG_MTD_PB1550_BOOT=y
+diff -uNr linux-old/arch/mips/defconfig-ddb5476 linux/arch/mips/defconfig-ddb5476
+--- linux-old/arch/mips/defconfig-ddb5476	2004-11-24 12:11:50.000000000 +0100
++++ linux/arch/mips/defconfig-ddb5476	2006-04-30 18:54:56.835240250 +0200
+@@ -32,6 +32,7 @@
+ # CONFIG_MIPS_PB1550 is not set
+ # CONFIG_MIPS_XXS1500 is not set
+ # CONFIG_MIPS_MTX1 is not set
++# CONFIG_MIPS_MTX2 is not set
+ # CONFIG_COGENT_CSB250 is not set
+ # CONFIG_BAGET_MIPS is not set
+ # CONFIG_CASIO_E55 is not set
+diff -uNr linux-old/arch/mips/defconfig-ddb5477 linux/arch/mips/defconfig-ddb5477
+--- linux-old/arch/mips/defconfig-ddb5477	2004-11-24 12:11:50.000000000 +0100
++++ linux/arch/mips/defconfig-ddb5477	2006-04-30 18:55:00.011438750 +0200
+@@ -32,6 +32,7 @@
+ # CONFIG_MIPS_PB1550 is not set
+ # CONFIG_MIPS_XXS1500 is not set
+ # CONFIG_MIPS_MTX1 is not set
++# CONFIG_MIPS_MTX2 is not set
+ # CONFIG_COGENT_CSB250 is not set
+ # CONFIG_BAGET_MIPS is not set
+ # CONFIG_CASIO_E55 is not set
+diff -uNr linux-old/arch/mips/defconfig-decstation linux/arch/mips/defconfig-decstation
+--- linux-old/arch/mips/defconfig-decstation	2004-11-24 12:11:51.000000000 +0100
++++ linux/arch/mips/defconfig-decstation	2006-04-30 18:55:02.803613250 +0200
+@@ -34,6 +34,7 @@
+ # CONFIG_MIPS_PB1550 is not set
+ # CONFIG_MIPS_XXS1500 is not set
+ # CONFIG_MIPS_MTX1 is not set
++# CONFIG_MIPS_MTX2 is not set
+ # CONFIG_COGENT_CSB250 is not set
+ # CONFIG_BAGET_MIPS is not set
+ # CONFIG_CASIO_E55 is not set
+diff -uNr linux-old/arch/mips/defconfig-e55 linux/arch/mips/defconfig-e55
+--- linux-old/arch/mips/defconfig-e55	2004-11-24 12:11:51.000000000 +0100
++++ linux/arch/mips/defconfig-e55	2006-04-30 18:55:05.687793500 +0200
+@@ -34,6 +34,7 @@
+ # CONFIG_MIPS_PB1550 is not set
+ # CONFIG_MIPS_XXS1500 is not set
+ # CONFIG_MIPS_MTX1 is not set
++# CONFIG_MIPS_MTX2 is not set
+ # CONFIG_COGENT_CSB250 is not set
+ # CONFIG_BAGET_MIPS is not set
+ CONFIG_CASIO_E55=y
+diff -uNr linux-old/arch/mips/defconfig-eagle linux/arch/mips/defconfig-eagle
+--- linux-old/arch/mips/defconfig-eagle	2004-11-24 12:11:51.000000000 +0100
++++ linux/arch/mips/defconfig-eagle	2006-04-30 18:55:11.956185250 +0200
+@@ -34,6 +34,7 @@
+ # CONFIG_MIPS_PB1550 is not set
+ # CONFIG_MIPS_XXS1500 is not set
+ # CONFIG_MIPS_MTX1 is not set
++# CONFIG_MIPS_MTX2 is not set
+ # CONFIG_COGENT_CSB250 is not set
+ # CONFIG_BAGET_MIPS is not set
+ # CONFIG_CASIO_E55 is not set
+@@ -217,6 +218,7 @@
+ # CONFIG_MTD_BOSPORUS is not set
+ # CONFIG_MTD_XXS1500 is not set
+ # CONFIG_MTD_MTX1 is not set
++# CONFIG_MTD_MTX2 is not set
+ # CONFIG_MTD_DB1X00 is not set
+ # CONFIG_MTD_PB1550 is not set
+ # CONFIG_MTD_HYDROGEN3 is not set
+diff -uNr linux-old/arch/mips/defconfig-ev64120 linux/arch/mips/defconfig-ev64120
+--- linux-old/arch/mips/defconfig-ev64120	2004-11-24 12:11:51.000000000 +0100
++++ linux/arch/mips/defconfig-ev64120	2006-04-30 18:55:14.956372750 +0200
+@@ -34,6 +34,7 @@
+ # CONFIG_MIPS_PB1550 is not set
+ # CONFIG_MIPS_XXS1500 is not set
+ # CONFIG_MIPS_MTX1 is not set
++# CONFIG_MIPS_MTX2 is not set
+ # CONFIG_COGENT_CSB250 is not set
+ # CONFIG_BAGET_MIPS is not set
+ # CONFIG_CASIO_E55 is not set
+diff -uNr linux-old/arch/mips/defconfig-ev96100 linux/arch/mips/defconfig-ev96100
+--- linux-old/arch/mips/defconfig-ev96100	2004-11-24 12:11:51.000000000 +0100
++++ linux/arch/mips/defconfig-ev96100	2006-04-30 18:55:18.712607500 +0200
+@@ -34,6 +34,7 @@
+ # CONFIG_MIPS_PB1550 is not set
+ # CONFIG_MIPS_XXS1500 is not set
+ # CONFIG_MIPS_MTX1 is not set
++# CONFIG_MIPS_MTX2 is not set
+ # CONFIG_COGENT_CSB250 is not set
+ # CONFIG_BAGET_MIPS is not set
+ # CONFIG_CASIO_E55 is not set
+diff -uNr linux-old/arch/mips/defconfig-hp-lj linux/arch/mips/defconfig-hp-lj
+--- linux-old/arch/mips/defconfig-hp-lj	2004-11-24 12:11:51.000000000 +0100
++++ linux/arch/mips/defconfig-hp-lj	2006-04-30 18:55:28.065192000 +0200
+@@ -34,6 +34,7 @@
+ # CONFIG_MIPS_PB1550 is not set
+ # CONFIG_MIPS_XXS1500 is not set
+ # CONFIG_MIPS_MTX1 is not set
++# CONFIG_MIPS_MTX2 is not set
+ # CONFIG_COGENT_CSB250 is not set
+ # CONFIG_BAGET_MIPS is not set
+ # CONFIG_CASIO_E55 is not set
+@@ -193,6 +194,7 @@
+ # CONFIG_MTD_BOSPORUS is not set
+ # CONFIG_MTD_XXS1500 is not set
+ # CONFIG_MTD_MTX1 is not set
++# CONFIG_MTD_MTX2 is not set
+ # CONFIG_MTD_DB1X00 is not set
+ # CONFIG_MTD_PB1550 is not set
+ # CONFIG_MTD_HYDROGEN3 is not set
+diff -uNr linux-old/arch/mips/defconfig-hydrogen3 linux/arch/mips/defconfig-hydrogen3
+--- linux-old/arch/mips/defconfig-hydrogen3	2004-11-24 12:11:51.000000000 +0100
++++ linux/arch/mips/defconfig-hydrogen3	2006-04-30 18:55:34.601600500 +0200
+@@ -34,6 +34,7 @@
+ # CONFIG_MIPS_PB1550 is not set
+ # CONFIG_MIPS_XXS1500 is not set
+ # CONFIG_MIPS_MTX1 is not set
++# CONFIG_MIPS_MTX2 is not set
+ # CONFIG_COGENT_CSB250 is not set
+ # CONFIG_BAGET_MIPS is not set
+ # CONFIG_CASIO_E55 is not set
+@@ -214,6 +215,7 @@
+ # CONFIG_MTD_BOSPORUS is not set
+ # CONFIG_MTD_XXS1500 is not set
+ # CONFIG_MTD_MTX1 is not set
++# CONFIG_MTD_MTX2 is not set
+ # CONFIG_MTD_DB1X00 is not set
+ # CONFIG_MTD_PB1550 is not set
+ CONFIG_MTD_HYDROGEN3=y
+diff -uNr linux-old/arch/mips/defconfig-ip22 linux/arch/mips/defconfig-ip22
+--- linux-old/arch/mips/defconfig-ip22	2004-11-24 12:11:51.000000000 +0100
++++ linux/arch/mips/defconfig-ip22	2006-04-30 18:55:37.781799250 +0200
+@@ -34,6 +34,7 @@
+ # CONFIG_MIPS_PB1550 is not set
+ # CONFIG_MIPS_XXS1500 is not set
+ # CONFIG_MIPS_MTX1 is not set
++# CONFIG_MIPS_MTX2 is not set
+ # CONFIG_COGENT_CSB250 is not set
+ # CONFIG_BAGET_MIPS is not set
+ # CONFIG_CASIO_E55 is not set
+diff -uNr linux-old/arch/mips/defconfig-it8172 linux/arch/mips/defconfig-it8172
+--- linux-old/arch/mips/defconfig-it8172	2004-11-24 12:11:51.000000000 +0100
++++ linux/arch/mips/defconfig-it8172	2006-04-30 18:55:44.362210500 +0200
+@@ -34,6 +34,7 @@
+ # CONFIG_MIPS_PB1550 is not set
+ # CONFIG_MIPS_XXS1500 is not set
+ # CONFIG_MIPS_MTX1 is not set
++# CONFIG_MIPS_MTX2 is not set
+ # CONFIG_COGENT_CSB250 is not set
+ # CONFIG_BAGET_MIPS is not set
+ # CONFIG_CASIO_E55 is not set
+@@ -195,6 +196,7 @@
+ # CONFIG_MTD_BOSPORUS is not set
+ # CONFIG_MTD_XXS1500 is not set
+ # CONFIG_MTD_MTX1 is not set
++# CONFIG_MTD_MTX2 is not set
+ # CONFIG_MTD_DB1X00 is not set
+ # CONFIG_MTD_PB1550 is not set
+ # CONFIG_MTD_HYDROGEN3 is not set
+diff -uNr linux-old/arch/mips/defconfig-ivr linux/arch/mips/defconfig-ivr
+--- linux-old/arch/mips/defconfig-ivr	2004-11-24 12:11:51.000000000 +0100
++++ linux/arch/mips/defconfig-ivr	2006-04-30 18:55:47.746422000 +0200
+@@ -34,6 +34,7 @@
+ # CONFIG_MIPS_PB1550 is not set
+ # CONFIG_MIPS_XXS1500 is not set
+ # CONFIG_MIPS_MTX1 is not set
++# CONFIG_MIPS_MTX2 is not set
+ # CONFIG_COGENT_CSB250 is not set
+ # CONFIG_BAGET_MIPS is not set
+ # CONFIG_CASIO_E55 is not set
+diff -uNr linux-old/arch/mips/defconfig-jmr3927 linux/arch/mips/defconfig-jmr3927
+--- linux-old/arch/mips/defconfig-jmr3927	2004-11-24 12:11:51.000000000 +0100
++++ linux/arch/mips/defconfig-jmr3927	2006-04-30 18:55:51.314645000 +0200
+@@ -32,6 +32,7 @@
+ # CONFIG_MIPS_PB1550 is not set
+ # CONFIG_MIPS_XXS1500 is not set
+ # CONFIG_MIPS_MTX1 is not set
++# CONFIG_MIPS_MTX2 is not set
+ # CONFIG_COGENT_CSB250 is not set
+ # CONFIG_BAGET_MIPS is not set
+ # CONFIG_CASIO_E55 is not set
+diff -uNr linux-old/arch/mips/defconfig-lasat linux/arch/mips/defconfig-lasat
+--- linux-old/arch/mips/defconfig-lasat	2004-11-24 12:11:51.000000000 +0100
++++ linux/arch/mips/defconfig-lasat	2006-04-30 18:55:56.730983500 +0200
+@@ -34,6 +34,7 @@
+ # CONFIG_MIPS_PB1550 is not set
+ # CONFIG_MIPS_XXS1500 is not set
+ # CONFIG_MIPS_MTX1 is not set
++# CONFIG_MIPS_MTX2 is not set
+ # CONFIG_COGENT_CSB250 is not set
+ # CONFIG_BAGET_MIPS is not set
+ # CONFIG_CASIO_E55 is not set
+@@ -198,6 +199,7 @@
+ # CONFIG_MTD_BOSPORUS is not set
+ # CONFIG_MTD_XXS1500 is not set
+ # CONFIG_MTD_MTX1 is not set
++# CONFIG_MTD_MTX2 is not set
+ # CONFIG_MTD_DB1X00 is not set
+ # CONFIG_MTD_PB1550 is not set
+ # CONFIG_MTD_HYDROGEN3 is not set
+diff -uNr linux-old/arch/mips/defconfig-malta linux/arch/mips/defconfig-malta
+--- linux-old/arch/mips/defconfig-malta	2004-11-24 12:11:51.000000000 +0100
++++ linux/arch/mips/defconfig-malta	2006-04-30 18:55:59.771173500 +0200
+@@ -34,6 +34,7 @@
+ # CONFIG_MIPS_PB1550 is not set
+ # CONFIG_MIPS_XXS1500 is not set
+ # CONFIG_MIPS_MTX1 is not set
++# CONFIG_MIPS_MTX2 is not set
+ # CONFIG_COGENT_CSB250 is not set
+ # CONFIG_BAGET_MIPS is not set
+ # CONFIG_CASIO_E55 is not set
+diff -uNr linux-old/arch/mips/defconfig-mirage linux/arch/mips/defconfig-mirage
+--- linux-old/arch/mips/defconfig-mirage	2004-11-24 12:11:52.000000000 +0100
++++ linux/arch/mips/defconfig-mirage	2006-04-30 18:56:06.291581000 +0200
+@@ -34,6 +34,7 @@
+ # CONFIG_MIPS_PB1550 is not set
+ # CONFIG_MIPS_XXS1500 is not set
+ # CONFIG_MIPS_MTX1 is not set
++# CONFIG_MIPS_MTX2 is not set
+ # CONFIG_COGENT_CSB250 is not set
+ # CONFIG_BAGET_MIPS is not set
+ # CONFIG_CASIO_E55 is not set
+@@ -209,6 +210,7 @@
+ # CONFIG_MTD_BOSPORUS is not set
+ # CONFIG_MTD_XXS1500 is not set
+ # CONFIG_MTD_MTX1 is not set
++# CONFIG_MTD_MTX2 is not set
+ # CONFIG_MTD_DB1X00 is not set
+ # CONFIG_MTD_PB1550 is not set
+ # CONFIG_MTD_HYDROGEN3 is not set
+diff -uNr linux-old/arch/mips/defconfig-mpc30x linux/arch/mips/defconfig-mpc30x
+--- linux-old/arch/mips/defconfig-mpc30x	2004-11-24 12:11:52.000000000 +0100
++++ linux/arch/mips/defconfig-mpc30x	2006-04-30 18:56:09.391774750 +0200
+@@ -34,6 +34,7 @@
+ # CONFIG_MIPS_PB1550 is not set
+ # CONFIG_MIPS_XXS1500 is not set
+ # CONFIG_MIPS_MTX1 is not set
++# CONFIG_MIPS_MTX2 is not set
+ # CONFIG_COGENT_CSB250 is not set
+ # CONFIG_BAGET_MIPS is not set
+ # CONFIG_CASIO_E55 is not set
+diff -uNr linux-old/arch/mips/defconfig-mtx-1 linux/arch/mips/defconfig-mtx-1
+--- linux-old/arch/mips/defconfig-mtx-1	2004-11-24 12:11:52.000000000 +0100
++++ linux/arch/mips/defconfig-mtx-1	2006-04-30 18:56:26.612851000 +0200
+@@ -34,6 +34,7 @@
+ # CONFIG_MIPS_PB1550 is not set
+ # CONFIG_MIPS_XXS1500 is not set
+ CONFIG_MIPS_MTX1=y
++# CONFIG_MIPS_MTX2 is not set
+ # CONFIG_COGENT_CSB250 is not set
+ # CONFIG_BAGET_MIPS is not set
+ # CONFIG_CASIO_E55 is not set
+diff -uNr linux-old/arch/mips/defconfig-nino linux/arch/mips/defconfig-nino
+--- linux-old/arch/mips/defconfig-nino	2004-11-24 12:11:52.000000000 +0100
++++ linux/arch/mips/defconfig-nino	2006-04-30 18:56:33.605288000 +0200
+@@ -34,6 +34,7 @@
+ # CONFIG_MIPS_PB1550 is not set
+ # CONFIG_MIPS_XXS1500 is not set
+ # CONFIG_MIPS_MTX1 is not set
++# CONFIG_MIPS_MTX2 is not set
+ # CONFIG_COGENT_CSB250 is not set
+ # CONFIG_BAGET_MIPS is not set
+ # CONFIG_CASIO_E55 is not set
+diff -uNr linux-old/arch/mips/defconfig-ocelot linux/arch/mips/defconfig-ocelot
+--- linux-old/arch/mips/defconfig-ocelot	2004-11-24 12:11:52.000000000 +0100
++++ linux/arch/mips/defconfig-ocelot	2006-04-30 18:56:41.721795250 +0200
+@@ -32,6 +32,7 @@
+ # CONFIG_MIPS_PB1550 is not set
+ # CONFIG_MIPS_XXS1500 is not set
+ # CONFIG_MIPS_MTX1 is not set
++# CONFIG_MIPS_MTX2 is not set
+ # CONFIG_COGENT_CSB250 is not set
+ # CONFIG_BAGET_MIPS is not set
+ # CONFIG_CASIO_E55 is not set
+@@ -194,6 +195,7 @@
+ # CONFIG_MTD_BOSPORUS is not set
+ # CONFIG_MTD_XXS1500 is not set
+ # CONFIG_MTD_MTX1 is not set
++# CONFIG_MTD_MTX2 is not set
+ # CONFIG_MTD_DB1X00 is not set
+ # CONFIG_MTD_PB1550 is not set
+ # CONFIG_MTD_HYDROGEN3 is not set
+diff -uNr linux-old/arch/mips/defconfig-osprey linux/arch/mips/defconfig-osprey
+--- linux-old/arch/mips/defconfig-osprey	2004-11-24 12:11:52.000000000 +0100
++++ linux/arch/mips/defconfig-osprey	2006-04-30 18:56:45.994062250 +0200
+@@ -34,6 +34,7 @@
+ # CONFIG_MIPS_PB1550 is not set
+ # CONFIG_MIPS_XXS1500 is not set
+ # CONFIG_MIPS_MTX1 is not set
++# CONFIG_MIPS_MTX2 is not set
+ # CONFIG_COGENT_CSB250 is not set
+ # CONFIG_BAGET_MIPS is not set
+ # CONFIG_CASIO_E55 is not set
+diff -uNr linux-old/arch/mips/defconfig-pb1000 linux/arch/mips/defconfig-pb1000
+--- linux-old/arch/mips/defconfig-pb1000	2004-11-24 12:11:52.000000000 +0100
++++ linux/arch/mips/defconfig-pb1000	2006-04-30 18:56:53.594537250 +0200
+@@ -34,6 +34,7 @@
+ # CONFIG_MIPS_PB1550 is not set
+ # CONFIG_MIPS_XXS1500 is not set
+ # CONFIG_MIPS_MTX1 is not set
++# CONFIG_MIPS_MTX2 is not set
+ # CONFIG_COGENT_CSB250 is not set
+ # CONFIG_BAGET_MIPS is not set
+ # CONFIG_CASIO_E55 is not set
+@@ -215,6 +216,7 @@
+ # CONFIG_MTD_BOSPORUS is not set
+ # CONFIG_MTD_XXS1500 is not set
+ # CONFIG_MTD_MTX1 is not set
++# CONFIG_MTD_MTX2 is not set
+ # CONFIG_MTD_DB1X00 is not set
+ # CONFIG_MTD_PB1550 is not set
+ # CONFIG_MTD_HYDROGEN3 is not set
+diff -uNr linux-old/garch/mips/defconfig-pb1100 linux/arch/mips/defconfig-pb1100
+--- linux-old/arch/mips/defconfig-pb1100	2004-11-24 12:11:52.000000000 +0100
++++ linux/arch/mips/defconfig-pb1100	2006-04-30 18:56:59.990937000 +0200
+@@ -34,6 +34,7 @@
+ # CONFIG_MIPS_PB1550 is not set
+ # CONFIG_MIPS_XXS1500 is not set
+ # CONFIG_MIPS_MTX1 is not set
++# CONFIG_MIPS_MTX2 is not set
+ # CONFIG_COGENT_CSB250 is not set
+ # CONFIG_BAGET_MIPS is not set
+ # CONFIG_CASIO_E55 is not set
+@@ -196,6 +197,7 @@
+ # CONFIG_MTD_BOSPORUS is not set
+ # CONFIG_MTD_XXS1500 is not set
+ # CONFIG_MTD_MTX1 is not set
++# CONFIG_MTD_MTX2 is not set
+ CONFIG_MTD_PB1500_BOOT=y
+ CONFIG_MTD_PB1500_USER=y
+ # CONFIG_MTD_DB1X00 is not set
+diff -uNr linux-old/garch/mips/defconfig-pb1500 linux/arch/mips/defconfig-pb1500
+--- linux-old/arch/mips/defconfig-pb1500	2004-11-24 12:11:52.000000000 +0100
++++ linux/arch/mips/defconfig-pb1500	2006-04-30 18:57:06.155322250 +0200
+@@ -34,6 +34,7 @@
+ # CONFIG_MIPS_PB1550 is not set
+ # CONFIG_MIPS_XXS1500 is not set
+ # CONFIG_MIPS_MTX1 is not set
++# CONFIG_MIPS_MTX2 is not set
+ # CONFIG_COGENT_CSB250 is not set
+ # CONFIG_BAGET_MIPS is not set
+ # CONFIG_CASIO_E55 is not set
+@@ -213,6 +214,7 @@
+ # CONFIG_MTD_BOSPORUS is not set
+ # CONFIG_MTD_XXS1500 is not set
+ # CONFIG_MTD_MTX1 is not set
++# CONFIG_MTD_MTX2 is not set
+ CONFIG_MTD_PB1500_BOOT=y
+ # CONFIG_MTD_PB1500_USER is not set
+ # CONFIG_MTD_DB1X00 is not set
+diff -uNr linux-old/garch/mips/defconfig-pb1550 linux/arch/mips/defconfig-pb1550
+--- linux-old/arch/mips/defconfig-pb1550	2004-11-24 12:11:52.000000000 +0100
++++ linux/arch/mips/defconfig-pb1550	2006-04-30 18:57:12.627726750 +0200
+@@ -34,6 +34,7 @@
+ CONFIG_MIPS_PB1550=y
+ # CONFIG_MIPS_XXS1500 is not set
+ # CONFIG_MIPS_MTX1 is not set
++# CONFIG_MIPS_MTX2 is not set
+ # CONFIG_COGENT_CSB250 is not set
+ # CONFIG_BAGET_MIPS is not set
+ # CONFIG_CASIO_E55 is not set
+@@ -213,6 +214,7 @@
+ # CONFIG_MTD_BOSPORUS is not set
+ # CONFIG_MTD_XXS1500 is not set
+ # CONFIG_MTD_MTX1 is not set
++# CONFIG_MTD_MTX2 is not set
+ # CONFIG_MTD_DB1X00 is not set
+ CONFIG_MTD_PB1550=y
+ CONFIG_MTD_PB1550_BOOT=y
+diff -uNr linux-old/garch/mips/defconfig-rbtx4927 linux/arch/mips/defconfig-rbtx4927
+--- linux-old/arch/mips/defconfig-rbtx4927	2004-11-24 12:11:52.000000000 +0100
++++ linux/arch/mips/defconfig-rbtx4927	2006-04-30 18:57:15.871929500 +0200
+@@ -32,6 +32,7 @@
+ # CONFIG_MIPS_PB1550 is not set
+ # CONFIG_MIPS_XXS1500 is not set
+ # CONFIG_MIPS_MTX1 is not set
++# CONFIG_MIPS_MTX2 is not set
+ # CONFIG_COGENT_CSB250 is not set
+ # CONFIG_BAGET_MIPS is not set
+ # CONFIG_CASIO_E55 is not set
+diff -uNr linux-old/garch/mips/defconfig-rm200 linux/arch/mips/defconfig-rm200
+--- linux-old/arch/mips/defconfig-rm200	2004-11-24 12:11:52.000000000 +0100
++++ linux/arch/mips/defconfig-rm200	2006-04-30 18:57:19.128133000 +0200
+@@ -34,6 +34,7 @@
+ # CONFIG_MIPS_PB1550 is not set
+ # CONFIG_MIPS_XXS1500 is not set
+ # CONFIG_MIPS_MTX1 is not set
++# CONFIG_MIPS_MTX2 is not set
+ # CONFIG_COGENT_CSB250 is not set
+ # CONFIG_BAGET_MIPS is not set
+ # CONFIG_CASIO_E55 is not set
+diff -uNr linux-old/garch/mips/defconfig-sb1250-swarm linux/arch/mips/defconfig-sb1250-swarm
+--- linux-old/arch/mips/defconfig-sb1250-swarm	2004-11-24 12:11:53.000000000 +0100
++++ linux/arch/mips/defconfig-sb1250-swarm	2006-04-30 18:57:22.820363750 +0200
+@@ -34,6 +34,7 @@
+ # CONFIG_MIPS_PB1550 is not set
+ # CONFIG_MIPS_XXS1500 is not set
+ # CONFIG_MIPS_MTX1 is not set
++# CONFIG_MIPS_MTX2 is not set
+ # CONFIG_COGENT_CSB250 is not set
+ # CONFIG_BAGET_MIPS is not set
+ # CONFIG_CASIO_E55 is not set
+diff -uNr linux-old/garch/mips/defconfig-sead linux/arch/mips/defconfig-sead
+--- linux-old/arch/mips/defconfig-sead	2004-11-24 12:11:53.000000000 +0100
++++ linux/arch/mips/defconfig-sead	2006-04-30 18:57:28.392712000 +0200
+@@ -32,6 +32,7 @@
+ # CONFIG_MIPS_PB1550 is not set
+ # CONFIG_MIPS_XXS1500 is not set
+ # CONFIG_MIPS_MTX1 is not set
++# CONFIG_MIPS_MTX2 is not set
+ # CONFIG_COGENT_CSB250 is not set
+ # CONFIG_BAGET_MIPS is not set
+ # CONFIG_CASIO_E55 is not set
+diff -uNr linux-old/garch/mips/defconfig-stretch linux/arch/mips/defconfig-stretch
+--- linux-old/arch/mips/defconfig-stretch	2004-11-10 02:32:57.000000000 +0100
++++ linux/arch/mips/defconfig-stretch	2006-04-30 18:58:16.823738750 +0200
+@@ -34,6 +34,7 @@
+ # CONFIG_MIPS_PB1550 is not set
+ # CONFIG_MIPS_XXS1500 is not set
+ # CONFIG_MIPS_MTX1 is not set
++# CONFIG_MIPS_MTX2 is not set
+ # CONFIG_COGENT_CSB250 is not set
+ # CONFIG_BAGET_MIPS is not set
+ # CONFIG_CASIO_E55 is not set
+diff -uNr linux-old/garch/mips/defconfig-tb0226 linux/arch/mips/defconfig-tb0226
+--- linux-old/arch/mips/defconfig-tb0226	2004-11-24 12:11:53.000000000 +0100
++++ linux/arch/mips/defconfig-tb0226	2006-04-30 18:57:32.156947250 +0200
+@@ -34,6 +34,7 @@
+ # CONFIG_MIPS_PB1550 is not set
+ # CONFIG_MIPS_XXS1500 is not set
+ # CONFIG_MIPS_MTX1 is not set
++# CONFIG_MIPS_MTX2 is not set
+ # CONFIG_COGENT_CSB250 is not set
+ # CONFIG_BAGET_MIPS is not set
+ # CONFIG_CASIO_E55 is not set
+diff -uNr linux-old/garch/mips/defconfig-tb0229 linux/arch/mips/defconfig-tb0229
+--- linux-old/arch/mips/defconfig-tb0229	2004-11-24 12:11:53.000000000 +0100
++++ linux/arch/mips/defconfig-tb0229	2006-04-30 18:57:35.369148000 +0200
+@@ -34,6 +34,7 @@
+ # CONFIG_MIPS_PB1550 is not set
+ # CONFIG_MIPS_XXS1500 is not set
+ # CONFIG_MIPS_MTX1 is not set
++# CONFIG_MIPS_MTX2 is not set
+ # CONFIG_COGENT_CSB250 is not set
+ # CONFIG_BAGET_MIPS is not set
+ # CONFIG_CASIO_E55 is not set
+diff -uNr linux-old/garch/mips/defconfig-ti1500 linux/arch/mips/defconfig-ti1500
+--- linux-old/arch/mips/defconfig-ti1500	2004-11-24 12:11:53.000000000 +0100
++++ linux/arch/mips/defconfig-ti1500	2006-04-30 18:57:42.681605000 +0200
+@@ -34,6 +34,7 @@
+ # CONFIG_MIPS_PB1550 is not set
+ CONFIG_MIPS_XXS1500=y
+ # CONFIG_MIPS_MTX1 is not set
++# CONFIG_MIPS_MTX2 is not set
+ # CONFIG_COGENT_CSB250 is not set
+ # CONFIG_BAGET_MIPS is not set
+ # CONFIG_CASIO_E55 is not set
+@@ -213,6 +214,7 @@
+ # CONFIG_MTD_BOSPORUS is not set
+ CONFIG_MTD_XXS1500=y
+ # CONFIG_MTD_MTX1 is not set
++# CONFIG_MTD_MTX2 is not set
+ # CONFIG_MTD_DB1X00 is not set
+ # CONFIG_MTD_PB1550 is not set
+ # CONFIG_MTD_HYDROGEN3 is not set
+diff -uNr linux-old/garch/mips/defconfig-workpad linux/arch/mips/defconfig-workpad
+--- linux-old/arch/mips/defconfig-workpad	2004-11-24 12:11:53.000000000 +0100
++++ linux/arch/mips/defconfig-workpad	2006-04-30 18:57:46.913869500 +0200
+@@ -34,6 +34,7 @@
+ # CONFIG_MIPS_PB1550 is not set
+ # CONFIG_MIPS_XXS1500 is not set
+ # CONFIG_MIPS_MTX1 is not set
++# CONFIG_MIPS_MTX2 is not set
+ # CONFIG_COGENT_CSB250 is not set
+ # CONFIG_BAGET_MIPS is not set
+ # CONFIG_CASIO_E55 is not set
+diff -uNr linux-old/garch/mips/defconfig-xxs1500 linux/arch/mips/defconfig-xxs1500
+--- linux-old/arch/mips/defconfig-xxs1500	2004-11-24 12:11:53.000000000 +0100
++++ linux/arch/mips/defconfig-xxs1500	2006-04-30 18:57:56.206450250 +0200
+@@ -34,6 +34,7 @@
+ # CONFIG_MIPS_PB1550 is not set
+ CONFIG_MIPS_XXS1500=y
+ # CONFIG_MIPS_MTX1 is not set
++# CONFIG_MIPS_MTX2 is not set
+ # CONFIG_COGENT_CSB250 is not set
+ # CONFIG_BAGET_MIPS is not set
+ # CONFIG_CASIO_E55 is not set
+@@ -213,6 +214,7 @@
+ # CONFIG_MTD_BOSPORUS is not set
+ CONFIG_MTD_XXS1500=y
+ # CONFIG_MTD_MTX1 is not set
++# CONFIG_MTD_MTX2 is not set
+ # CONFIG_MTD_DB1X00 is not set
+ # CONFIG_MTD_PB1550 is not set
+ # CONFIG_MTD_HYDROGEN3 is not set
+diff -uNr linux-old/garch/mips/defconfig-yosemite linux/arch/mips/defconfig-yosemite
+--- linux-old/arch/mips/defconfig-yosemite	2004-11-24 12:11:53.000000000 +0100
++++ linux/arch/mips/defconfig-yosemite	2006-04-30 18:57:59.338646000 +0200
+@@ -34,6 +34,7 @@
+ # CONFIG_MIPS_PB1550 is not set
+ # CONFIG_MIPS_XXS1500 is not set
+ # CONFIG_MIPS_MTX1 is not set
++# CONFIG_MIPS_MTX2 is not set
+ # CONFIG_COGENT_CSB250 is not set
+ # CONFIG_BAGET_MIPS is not set
+ # CONFIG_CASIO_E55 is not set
+diff -uNr linux-old/garch/mips64/defconfig linux/arch/mips64/defconfig
+--- linux-old/arch/mips64/defconfig	2004-11-24 12:11:59.000000000 +0100
++++ linux/arch/mips64/defconfig	2006-04-30 18:58:19.915932000 +0200
+@@ -34,6 +34,7 @@
+ # CONFIG_MIPS_PB1550 is not set
+ # CONFIG_MIPS_XXS1500 is not set
+ # CONFIG_MIPS_MTX1 is not set
++# CONFIG_MIPS_MTX2 is not set
+ # CONFIG_COGENT_CSB250 is not set
+ # CONFIG_BAGET_MIPS is not set
+ # CONFIG_CASIO_E55 is not set
+diff -uNr linux-old/garch/mips64/defconfig-atlas linux/arch/mips64/defconfig-atlas
+--- linux-old/arch/mips64/defconfig-atlas	2004-11-24 12:11:59.000000000 +0100
++++ linux/arch/mips64/defconfig-atlas	2006-04-30 18:58:25.160259750 +0200
+@@ -32,6 +32,7 @@
+ # CONFIG_MIPS_PB1550 is not set
+ # CONFIG_MIPS_XXS1500 is not set
+ # CONFIG_MIPS_MTX1 is not set
++# CONFIG_MIPS_MTX2 is not set
+ # CONFIG_COGENT_CSB250 is not set
+ # CONFIG_BAGET_MIPS is not set
+ # CONFIG_CASIO_E55 is not set
+diff -uNr linux-old/garch/mips64/defconfig-decstation linux/arch/mips64/defconfig-decstation
+--- linux-old/arch/mips64/defconfig-decstation	2004-11-24 12:11:59.000000000 +0100
++++ linux/arch/mips64/defconfig-decstation	2006-04-30 18:58:31.416650750 +0200
+@@ -32,6 +32,7 @@
+ # CONFIG_MIPS_PB1550 is not set
+ # CONFIG_MIPS_XXS1500 is not set
+ # CONFIG_MIPS_MTX1 is not set
++# CONFIG_MIPS_MTX2 is not set
+ # CONFIG_COGENT_CSB250 is not set
+ # CONFIG_BAGET_MIPS is not set
+ # CONFIG_CASIO_E55 is not set
+diff -uNr linux-old/garch/mips64/defconfig-ip22 linux/arch/mips64/defconfig-ip22
+--- linux-old/arch/mips64/defconfig-ip22	2004-11-24 12:11:59.000000000 +0100
++++ linux/arch/mips64/defconfig-ip22	2006-04-30 18:58:34.396837000 +0200
+@@ -34,6 +34,7 @@
+ # CONFIG_MIPS_PB1550 is not set
+ # CONFIG_MIPS_XXS1500 is not set
+ # CONFIG_MIPS_MTX1 is not set
++# CONFIG_MIPS_MTX2 is not set
+ # CONFIG_COGENT_CSB250 is not set
+ # CONFIG_BAGET_MIPS is not set
+ # CONFIG_CASIO_E55 is not set
+diff -uNr linux-old/garch/mips64/defconfig-ip27 linux/arch/mips64/defconfig-ip27
+--- linux-old/arch/mips64/defconfig-ip27	2004-11-24 12:11:59.000000000 +0100
++++ linux/arch/mips64/defconfig-ip27	2006-04-30 18:58:37.477029500 +0200
+@@ -34,6 +34,7 @@
+ # CONFIG_MIPS_PB1550 is not set
+ # CONFIG_MIPS_XXS1500 is not set
+ # CONFIG_MIPS_MTX1 is not set
++# CONFIG_MIPS_MTX2 is not set
+ # CONFIG_COGENT_CSB250 is not set
+ # CONFIG_BAGET_MIPS is not set
+ # CONFIG_CASIO_E55 is not set
+diff -uNr linux-old/garch/mips64/defconfig-jaguar linux/arch/mips64/defconfig-jaguar
+--- linux-old/arch/mips64/defconfig-jaguar	2004-11-24 12:11:59.000000000 +0100
++++ linux/arch/mips64/defconfig-jaguar	2006-04-30 18:58:40.977248250 +0200
+@@ -34,6 +34,7 @@
+ # CONFIG_MIPS_PB1550 is not set
+ # CONFIG_MIPS_XXS1500 is not set
+ # CONFIG_MIPS_MTX1 is not set
++# CONFIG_MIPS_MTX2 is not set
+ # CONFIG_COGENT_CSB250 is not set
+ # CONFIG_BAGET_MIPS is not set
+ # CONFIG_CASIO_E55 is not set
+diff -uNr linux-old/garch/mips64/defconfig-malta linux/arch/mips64/defconfig-malta
+--- linux-old/arch/mips64/defconfig-malta	2004-11-24 12:11:59.000000000 +0100
++++ linux/arch/mips64/defconfig-malta	2006-04-30 18:58:44.281454750 +0200
+@@ -34,6 +34,7 @@
+ # CONFIG_MIPS_PB1550 is not set
+ # CONFIG_MIPS_XXS1500 is not set
+ # CONFIG_MIPS_MTX1 is not set
++# CONFIG_MIPS_MTX2 is not set
+ # CONFIG_COGENT_CSB250 is not set
+ # CONFIG_BAGET_MIPS is not set
+ # CONFIG_CASIO_E55 is not set
+diff -uNr linux-old/garch/mips64/defconfig-ocelotc linux/arch/mips64/defconfig-ocelotc
+--- linux-old/arch/mips64/defconfig-ocelotc	2004-11-24 12:11:59.000000000 +0100
++++ linux/arch/mips64/defconfig-ocelotc	2006-04-30 18:58:47.137633250 +0200
+@@ -33,7 +33,7 @@
+ # CONFIG_MIPS_HYDROGEN3 is not set
+ # CONFIG_MIPS_PB1550 is not set
+ # CONFIG_MIPS_XXS1500 is not set
+-# CONFIG_MIPS_MTX1 is not set
++# CONFIG_MIPS_MTX2 is not set
+ # CONFIG_COGENT_CSB250 is not set
+ # CONFIG_BAGET_MIPS is not set
+ # CONFIG_CASIO_E55 is not set
+diff -uNr linux-old/garch/mips64/defconfig-sb1250-swarm linux/arch/mips64/defconfig-sb1250-swarm
+--- linux-old/arch/mips64/defconfig-sb1250-swarm	2004-11-24 12:11:59.000000000 +0100
++++ linux/arch/mips64/defconfig-sb1250-swarm	2006-04-30 18:58:50.077817000 +0200
+@@ -34,6 +34,7 @@
+ # CONFIG_MIPS_PB1550 is not set
+ # CONFIG_MIPS_XXS1500 is not set
+ # CONFIG_MIPS_MTX1 is not set
++# CONFIG_MIPS_MTX2 is not set
+ # CONFIG_COGENT_CSB250 is not set
+ # CONFIG_BAGET_MIPS is not set
+ # CONFIG_CASIO_E55 is not set
+diff -uNr linux-old/garch/mips64/defconfig-sead linux/arch/mips64/defconfig-sead
+--- linux-old/arch/mips64/defconfig-sead	2004-11-24 12:11:59.000000000 +0100
++++ linux/arch/mips64/defconfig-sead	2006-04-30 18:58:52.893993000 +0200
+@@ -32,6 +32,7 @@
+ # CONFIG_MIPS_PB1550 is not set
+ # CONFIG_MIPS_XXS1500 is not set
+ # CONFIG_MIPS_MTX1 is not set
++# CONFIG_MIPS_MTX2 is not set
+ # CONFIG_COGENT_CSB250 is not set
+ # CONFIG_BAGET_MIPS is not set
+ # CONFIG_CASIO_E55 is not set
+diff -uNr linux-old/gdrivers/mtd/maps/Config.in linux/drivers/mtd/maps/Config.in
+--- linux-old/drivers/mtd/maps/Config.in	2004-11-24 12:12:41.000000000 +0100
++++ linux/drivers/mtd/maps/Config.in	2006-04-30 18:59:02.642602250 +0200
+@@ -54,6 +54,7 @@
+    dep_tristate '  Bosporus MTD support' CONFIG_MTD_BOSPORUS $CONFIG_MIPS_BOSPORUS
+    dep_tristate '  XXS1500 boot flash device' CONFIG_MTD_XXS1500 $CONFIG_MIPS_XXS1500
+    dep_tristate '  MTX-1 flash device' CONFIG_MTD_MTX1 $CONFIG_MIPS_MTX1
++   dep_tristate '  MTX-2 flash device' CONFIG_MTD_MTX2 $CONFIG_MIPS_MTX2
+    if [ "$CONFIG_MTD_PB1500" = "y" -o "$CONFIG_MTD_PB1500" = "m" \
+ 	-o "$CONFIG_MTD_PB1100" = "y" -o "$CONFIG_MTD_PB1100" = "m" ]; then
+       bool '  Pb[15]00 boot flash device' CONFIG_MTD_PB1500_BOOT 
+diff -uNr linux-old/gdrivers/mtd/maps/Makefile linux/drivers/mtd/maps/Makefile
+--- linux-old/drivers/mtd/maps/Makefile	2004-11-24 12:12:41.000000000 +0100
++++ linux/drivers/mtd/maps/Makefile	2006-04-30 18:51:08.540972750 +0200
+@@ -54,6 +54,7 @@
+ obj-$(CONFIG_MTD_PB1500)	+= pb1xxx-flash.o
+ obj-$(CONFIG_MTD_XXS1500)       += xxs1500.o
+ obj-$(CONFIG_MTD_MTX1)		+= mtx-1.o
++obj-$(CONFIG_MTD_MTX2)		+= mtx-2.o
+ obj-$(CONFIG_MTD_LASAT)		+= lasat.o
+ obj-$(CONFIG_MTD_DB1X00)        += db1x00-flash.o
+ obj-$(CONFIG_MTD_PB1550)        += pb1550-flash.o
+diff -Nur linux-old/Documentation/Configure.help linux/Documentation/Configure.help
+--- linux-old/Documentation/Configure.help	2006-03-21 19:18:40.000000000 +0100
++++ linux/Documentation/Configure.help	2006-04-27 18:10:01.000000000 +0200
+@@ -2631,6 +2631,16 @@
+   kernel built with this option will not run on any other type of
+   processor or vice versa.
+ 
++4G-Systems MTX-1
++CONFIG_MIPS_MTX1
++  Select this if you intend to compile the kernel for use in a
++  4G-Systems Access Cube or SurfBoxI.
++
++4G-Systems MTX-2
++CONFIG_MIPS_MTX2
++  Select this if you intend to compile the kernel for use in a
++  4G-Systems SurfBoxII
++
+ CPU feature configuration
+ CONFIG_CPU_ADVANCED
+   Saying yes here allows you to select support for various features
+--- linux-old/arch/mips/defconfig-mtx-2	1970-01-01 01:00:00.000000000 +0100
++++ linux/arch/mips/defconfig-mtx-2	2006-04-30 20:35:58.000000000 +0200
+@@ -0,0 +1,1456 @@
++#
++# Automatically generated make config: don't edit
++#
++CONFIG_MIPS=y
++CONFIG_MIPS32=y
++# CONFIG_MIPS64 is not set
++
++#
++# Code maturity level options
++#
++CONFIG_EXPERIMENTAL=y
++
++#
++# Loadable module support
++#
++CONFIG_MODULES=y
++# CONFIG_MODVERSIONS is not set
++CONFIG_KMOD=y
++
++#
++# Machine selection
++#
++# CONFIG_ACER_PICA_61 is not set
++# CONFIG_MIPS_BOSPORUS is not set
++# CONFIG_MIPS_MIRAGE is not set
++# CONFIG_MIPS_DB1000 is not set
++# CONFIG_MIPS_DB1100 is not set
++# CONFIG_MIPS_DB1500 is not set
++# CONFIG_MIPS_DB1550 is not set
++# CONFIG_MIPS_PB1000 is not set
++# CONFIG_MIPS_PB1100 is not set
++# CONFIG_MIPS_PB1500 is not set
++# CONFIG_MIPS_HYDROGEN3 is not set
++# CONFIG_MIPS_PB1550 is not set
++# CONFIG_MIPS_XXS1500 is not set
++CONFIG_MIPS_MTX1=y
++# CONFIG_COGENT_CSB250 is not set
++# CONFIG_BAGET_MIPS is not set
++# CONFIG_CASIO_E55 is not set
++# CONFIG_MIPS_COBALT is not set
++# CONFIG_DECSTATION is not set
++# CONFIG_MIPS_EV64120 is not set
++# CONFIG_MIPS_EV96100 is not set
++# CONFIG_MIPS_IVR is not set
++# CONFIG_HP_LASERJET is not set
++# CONFIG_IBM_WORKPAD is not set
++# CONFIG_LASAT is not set
++# CONFIG_MIPS_ITE8172 is not set
++# CONFIG_MIPS_ATLAS is not set
++# CONFIG_MIPS_MAGNUM_4000 is not set
++# CONFIG_MIPS_MALTA is not set
++# CONFIG_MIPS_SEAD is not set
++# CONFIG_MOMENCO_OCELOT is not set
++# CONFIG_MOMENCO_OCELOT_G is not set
++# CONFIG_MOMENCO_OCELOT_C is not set
++# CONFIG_MOMENCO_JAGUAR_ATX is not set
++# CONFIG_PMC_BIG_SUR is not set
++# CONFIG_PMC_STRETCH is not set
++# CONFIG_PMC_YOSEMITE is not set
++# CONFIG_DDB5074 is not set
++# CONFIG_DDB5476 is not set
++# CONFIG_DDB5477 is not set
++# CONFIG_NEC_OSPREY is not set
++# CONFIG_NEC_EAGLE is not set
++# CONFIG_OLIVETTI_M700 is not set
++# CONFIG_NINO is not set
++# CONFIG_SGI_IP22 is not set
++# CONFIG_SGI_IP27 is not set
++# CONFIG_SIBYTE_SB1xxx_SOC is not set
++# CONFIG_SNI_RM200_PCI is not set
++# CONFIG_TANBAC_TB0226 is not set
++# CONFIG_TANBAC_TB0229 is not set
++# CONFIG_TOSHIBA_JMR3927 is not set
++# CONFIG_TOSHIBA_RBTX4927 is not set
++# CONFIG_VICTOR_MPC30X is not set
++# CONFIG_ZAO_CAPCELLA is not set
++# CONFIG_HIGHMEM is not set
++CONFIG_RWSEM_GENERIC_SPINLOCK=y
++# CONFIG_RWSEM_XCHGADD_ALGORITHM is not set
++CONFIG_SOC_AU1X00=y
++CONFIG_SOC_AU1500=y
++CONFIG_NONCOHERENT_IO=y
++# CONFIG_MIPS_AU1000 is not set
++
++#
++# CPU selection
++#
++CONFIG_CPU_MIPS32=y
++# CONFIG_CPU_MIPS64 is not set
++# CONFIG_CPU_R3000 is not set
++# CONFIG_CPU_TX39XX is not set
++# CONFIG_CPU_VR41XX is not set
++# CONFIG_CPU_R4300 is not set
++# CONFIG_CPU_R4X00 is not set
++# CONFIG_CPU_TX49XX is not set
++# CONFIG_CPU_R5000 is not set
++# CONFIG_CPU_R5432 is not set
++# CONFIG_CPU_R6000 is not set
++# CONFIG_CPU_NEVADA is not set
++# CONFIG_CPU_R8000 is not set
++# CONFIG_CPU_R10000 is not set
++# CONFIG_CPU_RM7000 is not set
++# CONFIG_CPU_RM9000 is not set
++# CONFIG_CPU_SB1 is not set
++CONFIG_PAGE_SIZE_4KB=y
++# CONFIG_PAGE_SIZE_16KB is not set
++# CONFIG_PAGE_SIZE_64KB is not set
++CONFIG_CPU_HAS_PREFETCH=y
++# CONFIG_VTAG_ICACHE is not set
++CONFIG_64BIT_PHYS_ADDR=y
++# CONFIG_CPU_ADVANCED is not set
++CONFIG_CPU_HAS_LLSC=y
++# CONFIG_CPU_HAS_LLDSCD is not set
++# CONFIG_CPU_HAS_WB is not set
++CONFIG_CPU_HAS_SYNC=y
++
++#
++# General setup
++#
++CONFIG_CPU_LITTLE_ENDIAN=y
++# CONFIG_BUILD_ELF64 is not set
++CONFIG_NET=y
++CONFIG_PCI=y
++CONFIG_PCI_NEW=y
++CONFIG_PCI_AUTO=y
++CONFIG_PCI_NAMES=y
++# CONFIG_ISA is not set
++# CONFIG_TC is not set
++# CONFIG_MCA is not set
++# CONFIG_SBUS is not set
++CONFIG_HOTPLUG=y
++
++#
++# PCMCIA/CardBus support
++#
++CONFIG_PCMCIA=m
++CONFIG_CARDBUS=y
++# CONFIG_TCIC is not set
++# CONFIG_I82092 is not set
++# CONFIG_I82365 is not set
++# CONFIG_PCMCIA_AU1X00 is not set
++
++#
++# PCI Hotplug Support
++#
++# CONFIG_HOTPLUG_PCI is not set
++# CONFIG_HOTPLUG_PCI_COMPAQ is not set
++# CONFIG_HOTPLUG_PCI_COMPAQ_NVRAM is not set
++# CONFIG_HOTPLUG_PCI_SHPC is not set
++# CONFIG_HOTPLUG_PCI_SHPC_POLL_EVENT_MODE is not set
++# CONFIG_HOTPLUG_PCI_PCIE is not set
++# CONFIG_HOTPLUG_PCI_PCIE_POLL_EVENT_MODE is not set
++CONFIG_SYSVIPC=y
++# CONFIG_BSD_PROCESS_ACCT is not set
++CONFIG_SYSCTL=y
++CONFIG_KCORE_ELF=y
++# CONFIG_KCORE_AOUT is not set
++# CONFIG_BINFMT_AOUT is not set
++CONFIG_BINFMT_ELF=y
++# CONFIG_MIPS32_COMPAT is not set
++# CONFIG_MIPS32_O32 is not set
++# CONFIG_MIPS32_N32 is not set
++# CONFIG_BINFMT_ELF32 is not set
++CONFIG_BINFMT_MISC=y
++# CONFIG_OOM_KILLER is not set
++# CONFIG_CMDLINE_BOOL is not set
++# CONFIG_PM is not set
++
++#
++# Memory Technology Devices (MTD)
++#
++CONFIG_MTD=y
++# CONFIG_MTD_DEBUG is not set
++CONFIG_MTD_PARTITIONS=y
++# CONFIG_MTD_CONCAT is not set
++# CONFIG_MTD_REDBOOT_PARTS is not set
++# CONFIG_MTD_CMDLINE_PARTS is not set
++
++#
++# User Modules And Translation Layers
++#
++CONFIG_MTD_CHAR=y
++CONFIG_MTD_BLOCK=y
++# CONFIG_FTL is not set
++# CONFIG_NFTL is not set
++# CONFIG_INFTL is not set
++
++#
++# RAM/ROM/Flash chip drivers
++#
++CONFIG_MTD_CFI=y
++# CONFIG_MTD_JEDECPROBE is not set
++CONFIG_MTD_GEN_PROBE=y
++# CONFIG_MTD_CFI_ADV_OPTIONS is not set
++CONFIG_MTD_CFI_INTELEXT=y
++CONFIG_MTD_CFI_AMDSTD=y
++CONFIG_MTD_CFI_AMDSTD_RETRY=y
++CONFIG_MTD_CFI_AMDSTD_RETRY_MAX=5
++# CONFIG_MTD_CFI_STAA is not set
++CONFIG_MTD_CFI_UTIL=y
++# CONFIG_MTD_RAM is not set
++# CONFIG_MTD_ROM is not set
++# CONFIG_MTD_ABSENT is not set
++# CONFIG_MTD_OBSOLETE_CHIPS is not set
++# CONFIG_MTD_AMDSTD is not set
++# CONFIG_MTD_SHARP is not set
++# CONFIG_MTD_JEDEC is not set
++
++#
++# Mapping drivers for chip access
++#
++# CONFIG_MTD_COMPLEX_MAPPINGS is not set
++# CONFIG_MTD_PHYSMAP is not set
++# CONFIG_MTD_DB1X00 is not set
++CONFIG_MTD_MTX1=y
++# CONFIG_MTD_CSTM_MIPS_IXX is not set
++# CONFIG_MTD_OCELOT is not set
++# CONFIG_MTD_LASAT is not set
++# CONFIG_MTD_PCI is not set
++# CONFIG_MTD_PCMCIA is not set
++
++#
++# Self-contained MTD device drivers
++#
++# CONFIG_MTD_PMC551 is not set
++# CONFIG_MTD_SLRAM is not set
++# CONFIG_MTD_MTDRAM is not set
++# CONFIG_MTD_BLKMTD is not set
++
++#
++# Disk-On-Chip Device Drivers
++#
++# CONFIG_MTD_DOC2000 is not set
++# CONFIG_MTD_DOC2001 is not set
++# CONFIG_MTD_DOC2001PLUS is not set
++# CONFIG_MTD_DOCPROBE is not set
++
++#
++# NAND Flash Device Drivers
++#
++# CONFIG_MTD_NAND is not set
++
++#
++# Parallel port support
++#
++# CONFIG_PARPORT is not set
++
++#
++# Plug and Play configuration
++#
++# CONFIG_PNP is not set
++# CONFIG_ISAPNP is not set
++
++#
++# Block devices
++#
++# CONFIG_BLK_DEV_FD is not set
++# CONFIG_BLK_DEV_XD is not set
++# CONFIG_PARIDE is not set
++# CONFIG_BLK_CPQ_DA is not set
++# CONFIG_BLK_CPQ_CISS_DA is not set
++# CONFIG_CISS_SCSI_TAPE is not set
++# CONFIG_CISS_MONITOR_THREAD is not set
++# CONFIG_BLK_DEV_DAC960 is not set
++# CONFIG_BLK_DEV_UMEM is not set
++# CONFIG_BLK_DEV_SX8 is not set
++CONFIG_BLK_DEV_LOOP=y
++CONFIG_BLK_DEV_NBD=m
++CONFIG_BLK_DEV_RAM=m
++CONFIG_BLK_DEV_RAM_SIZE=4096
++# CONFIG_BLK_DEV_INITRD is not set
++# CONFIG_BLK_STATS is not set
++
++#
++# Multi-device support (RAID and LVM)
++#
++# CONFIG_MD is not set
++# CONFIG_BLK_DEV_MD is not set
++# CONFIG_MD_LINEAR is not set
++# CONFIG_MD_RAID0 is not set
++# CONFIG_MD_RAID1 is not set
++# CONFIG_MD_RAID5 is not set
++# CONFIG_MD_MULTIPATH is not set
++# CONFIG_BLK_DEV_LVM is not set
++
++#
++# Networking options
++#
++CONFIG_PACKET=y
++CONFIG_PACKET_MMAP=y
++CONFIG_NETLINK_DEV=m
++CONFIG_NETFILTER=y
++# CONFIG_NETFILTER_DEBUG is not set
++CONFIG_FILTER=y
++CONFIG_UNIX=y
++CONFIG_INET=y
++CONFIG_IP_MULTICAST=y
++CONFIG_IP_ADVANCED_ROUTER=y
++CONFIG_IP_MULTIPLE_TABLES=y
++CONFIG_IP_ROUTE_FWMARK=y
++CONFIG_IP_ROUTE_NAT=y
++CONFIG_IP_ROUTE_MULTIPATH=y
++CONFIG_IP_ROUTE_TOS=y
++CONFIG_IP_ROUTE_VERBOSE=y
++CONFIG_IP_PNP=y
++CONFIG_IP_PNP_DHCP=y
++# CONFIG_IP_PNP_BOOTP is not set
++# CONFIG_IP_PNP_RARP is not set
++CONFIG_NET_IPIP=m
++CONFIG_NET_IPGRE=m
++CONFIG_NET_IPGRE_BROADCAST=y
++CONFIG_IP_MROUTE=y
++CONFIG_IP_PIMSM_V1=y
++CONFIG_IP_PIMSM_V2=y
++# CONFIG_ARPD is not set
++# CONFIG_INET_ECN is not set
++CONFIG_SYN_COOKIES=y
++
++#
++#   IP: Netfilter Configuration
++#
++CONFIG_IP_NF_CONNTRACK=y
++CONFIG_IP_NF_FTP=m
++CONFIG_IP_NF_AMANDA=m
++CONFIG_IP_NF_TFTP=m
++CONFIG_IP_NF_IRC=m
++CONFIG_IP_NF_QUEUE=m
++CONFIG_IP_NF_IPTABLES=y
++CONFIG_IP_NF_MATCH_LIMIT=m
++CONFIG_IP_NF_MATCH_MAC=m
++CONFIG_IP_NF_MATCH_PKTTYPE=m
++CONFIG_IP_NF_MATCH_MARK=m
++CONFIG_IP_NF_MATCH_MULTIPORT=m
++CONFIG_IP_NF_MATCH_TOS=m
++CONFIG_IP_NF_MATCH_RECENT=m
++CONFIG_IP_NF_MATCH_ECN=m
++CONFIG_IP_NF_MATCH_DSCP=m
++CONFIG_IP_NF_MATCH_AH_ESP=m
++CONFIG_IP_NF_MATCH_LENGTH=m
++CONFIG_IP_NF_MATCH_TTL=m
++CONFIG_IP_NF_MATCH_TCPMSS=m
++CONFIG_IP_NF_MATCH_HELPER=m
++CONFIG_IP_NF_MATCH_STATE=y
++CONFIG_IP_NF_MATCH_CONNTRACK=y
++CONFIG_IP_NF_MATCH_UNCLEAN=m
++CONFIG_IP_NF_MATCH_OWNER=m
++CONFIG_IP_NF_FILTER=y
++CONFIG_IP_NF_TARGET_REJECT=y
++CONFIG_IP_NF_TARGET_MIRROR=m
++CONFIG_IP_NF_NAT=y
++CONFIG_IP_NF_NAT_NEEDED=y
++CONFIG_IP_NF_TARGET_MASQUERADE=y
++CONFIG_IP_NF_TARGET_REDIRECT=y
++CONFIG_IP_NF_NAT_AMANDA=m
++# CONFIG_IP_NF_NAT_LOCAL is not set
++CONFIG_IP_NF_NAT_SNMP_BASIC=m
++CONFIG_IP_NF_NAT_IRC=m
++CONFIG_IP_NF_NAT_FTP=m
++CONFIG_IP_NF_NAT_TFTP=m
++CONFIG_IP_NF_MANGLE=y
++CONFIG_IP_NF_TARGET_TOS=m
++CONFIG_IP_NF_TARGET_ECN=m
++CONFIG_IP_NF_TARGET_DSCP=m
++CONFIG_IP_NF_TARGET_MARK=y
++CONFIG_IP_NF_TARGET_LOG=y
++CONFIG_IP_NF_TARGET_ULOG=m
++CONFIG_IP_NF_TARGET_TCPMSS=m
++CONFIG_IP_NF_ARPTABLES=m
++CONFIG_IP_NF_ARPFILTER=m
++CONFIG_IP_NF_ARP_MANGLE=m
++
++#
++#   IP: Virtual Server Configuration
++#
++# CONFIG_IP_VS is not set
++CONFIG_IPV6=m
++
++#
++#   IPv6: Netfilter Configuration
++#
++CONFIG_IP6_NF_QUEUE=m
++CONFIG_IP6_NF_IPTABLES=m
++CONFIG_IP6_NF_MATCH_LIMIT=m
++CONFIG_IP6_NF_MATCH_MAC=m
++CONFIG_IP6_NF_MATCH_RT=m
++CONFIG_IP6_NF_MATCH_OPTS=m
++CONFIG_IP6_NF_MATCH_FRAG=m
++CONFIG_IP6_NF_MATCH_HL=m
++CONFIG_IP6_NF_MATCH_MULTIPORT=m
++CONFIG_IP6_NF_MATCH_OWNER=m
++CONFIG_IP6_NF_MATCH_MARK=m
++CONFIG_IP6_NF_MATCH_IPV6HEADER=m
++CONFIG_IP6_NF_MATCH_AHESP=m
++CONFIG_IP6_NF_MATCH_LENGTH=m
++CONFIG_IP6_NF_MATCH_EUI64=m
++CONFIG_IP6_NF_FILTER=m
++CONFIG_IP6_NF_TARGET_LOG=m
++CONFIG_IP6_NF_MANGLE=m
++CONFIG_IP6_NF_TARGET_MARK=m
++# CONFIG_KHTTPD is not set
++
++#
++#    SCTP Configuration (EXPERIMENTAL)
++#
++# CONFIG_IP_SCTP is not set
++# CONFIG_ATM is not set
++CONFIG_VLAN_8021Q=m
++
++#
++#  
++#
++# CONFIG_IPX is not set
++# CONFIG_ATALK is not set
++
++#
++# Appletalk devices
++#
++# CONFIG_DEV_APPLETALK is not set
++# CONFIG_DECNET is not set
++CONFIG_BRIDGE=m
++# CONFIG_X25 is not set
++# CONFIG_LAPB is not set
++# CONFIG_LLC is not set
++# CONFIG_NET_DIVERT is not set
++# CONFIG_ECONET is not set
++# CONFIG_WAN_ROUTER is not set
++# CONFIG_NET_FASTROUTE is not set
++# CONFIG_NET_HW_FLOWCONTROL is not set
++
++#
++# QoS and/or fair queueing
++#
++CONFIG_NET_SCHED=y
++CONFIG_NET_SCH_CBQ=m
++CONFIG_NET_SCH_HTB=m
++CONFIG_NET_SCH_CSZ=m
++# CONFIG_NET_SCH_HFSC is not set
++CONFIG_NET_SCH_PRIO=m
++CONFIG_NET_SCH_RED=m
++CONFIG_NET_SCH_SFQ=m
++CONFIG_NET_SCH_TEQL=m
++CONFIG_NET_SCH_TBF=m
++CONFIG_NET_SCH_GRED=m
++# CONFIG_NET_SCH_NETEM is not set
++CONFIG_NET_SCH_DSMARK=m
++CONFIG_NET_SCH_INGRESS=m
++CONFIG_NET_QOS=y
++CONFIG_NET_ESTIMATOR=y
++CONFIG_NET_CLS=y
++CONFIG_NET_CLS_TCINDEX=m
++CONFIG_NET_CLS_ROUTE4=m
++CONFIG_NET_CLS_ROUTE=y
++CONFIG_NET_CLS_FW=m
++CONFIG_NET_CLS_U32=m
++CONFIG_NET_CLS_RSVP=m
++CONFIG_NET_CLS_RSVP6=m
++CONFIG_NET_CLS_POLICE=y
++
++#
++# Network testing
++#
++CONFIG_NET_PKTGEN=m
++CONFIG_IPSEC_NAT_TRAVERSAL=y
++CONFIG_IPSEC=m
++
++#
++# IPSec options (Openswan)
++#
++CONFIG_IPSEC_IPIP=y
++CONFIG_IPSEC_AH=y
++CONFIG_IPSEC_AUTH_HMAC_MD5=y
++CONFIG_IPSEC_AUTH_HMAC_SHA1=y
++CONFIG_IPSEC_ESP=y
++CONFIG_IPSEC_ENC_3DES=y
++CONFIG_IPSEC_ENC_AES=y
++CONFIG_IPSEC_ALG=y
++CONFIG_IPSEC_ALG_AES=m
++CONFIG_IPSEC_ALG_CRYPTOAPI=m
++CONFIG_IPSEC_ALG_NON_LIBRE=y
++CONFIG_IPSEC_IPCOMP=y
++CONFIG_IPSEC_DEBUG=y
++
++#
++# Telephony Support
++#
++# CONFIG_PHONE is not set
++# CONFIG_PHONE_IXJ is not set
++# CONFIG_PHONE_IXJ_PCMCIA is not set
++
++#
++# ATA/IDE/MFM/RLL support
++#
++# CONFIG_IDE is not set
++# CONFIG_BLK_DEV_HD is not set
++
++#
++# SCSI support
++#
++CONFIG_SCSI=m
++
++#
++# SCSI support type (disk, tape, CD-ROM)
++#
++CONFIG_BLK_DEV_SD=m
++CONFIG_SD_EXTRA_DEVS=40
++# CONFIG_CHR_DEV_ST is not set
++# CONFIG_CHR_DEV_OSST is not set
++CONFIG_BLK_DEV_SR=m
++# CONFIG_BLK_DEV_SR_VENDOR is not set
++CONFIG_SR_EXTRA_DEVS=2
++# CONFIG_CHR_DEV_SG is not set
++
++#
++# Some SCSI devices (e.g. CD jukebox) support multiple LUNs
++#
++# CONFIG_SCSI_DEBUG_QUEUES is not set
++# CONFIG_SCSI_MULTI_LUN is not set
++# CONFIG_SCSI_CONSTANTS is not set
++# CONFIG_SCSI_LOGGING is not set
++
++#
++# SCSI low-level drivers
++#
++# CONFIG_BLK_DEV_3W_XXXX_RAID is not set
++# CONFIG_SCSI_7000FASST is not set
++# CONFIG_SCSI_ACARD is not set
++# CONFIG_SCSI_AHA152X is not set
++# CONFIG_SCSI_AHA1542 is not set
++# CONFIG_SCSI_AHA1740 is not set
++# CONFIG_SCSI_AACRAID is not set
++# CONFIG_SCSI_AIC7XXX is not set
++# CONFIG_SCSI_AIC79XX is not set
++# CONFIG_SCSI_AIC7XXX_OLD is not set
++# CONFIG_SCSI_DPT_I2O is not set
++# CONFIG_SCSI_ADVANSYS is not set
++# CONFIG_SCSI_IN2000 is not set
++# CONFIG_SCSI_AM53C974 is not set
++# CONFIG_SCSI_MEGARAID is not set
++# CONFIG_SCSI_MEGARAID2 is not set
++# CONFIG_SCSI_SATA is not set
++# CONFIG_SCSI_SATA_SVW is not set
++# CONFIG_SCSI_SATA_PROMISE is not set
++# CONFIG_SCSI_SATA_SX4 is not set
++# CONFIG_SCSI_SATA_SIL is not set
++# CONFIG_SCSI_SATA_SIS is not set
++# CONFIG_SCSI_SATA_VIA is not set
++# CONFIG_SCSI_SATA_VITESSE is not set
++# CONFIG_SCSI_BUSLOGIC is not set
++# CONFIG_SCSI_CPQFCTS is not set
++# CONFIG_SCSI_DMX3191D is not set
++# CONFIG_SCSI_DTC3280 is not set
++# CONFIG_SCSI_EATA is not set
++# CONFIG_SCSI_EATA_DMA is not set
++# CONFIG_SCSI_EATA_PIO is not set
++# CONFIG_SCSI_FUTURE_DOMAIN is not set
++# CONFIG_SCSI_GDTH is not set
++# CONFIG_SCSI_GENERIC_NCR5380 is not set
++# CONFIG_SCSI_INITIO is not set
++# CONFIG_SCSI_INIA100 is not set
++# CONFIG_SCSI_NCR53C406A is not set
++# CONFIG_SCSI_NCR53C7xx is not set
++# CONFIG_SCSI_SYM53C8XX_2 is not set
++# CONFIG_SCSI_NCR53C8XX is not set
++# CONFIG_SCSI_SYM53C8XX is not set
++# CONFIG_SCSI_PAS16 is not set
++# CONFIG_SCSI_PCI2000 is not set
++# CONFIG_SCSI_PCI2220I is not set
++# CONFIG_SCSI_PSI240I is not set
++# CONFIG_SCSI_QLOGIC_FAS is not set
++# CONFIG_SCSI_QLOGIC_ISP is not set
++# CONFIG_SCSI_QLOGIC_FC is not set
++# CONFIG_SCSI_QLOGIC_1280 is not set
++# CONFIG_SCSI_SIM710 is not set
++# CONFIG_SCSI_SYM53C416 is not set
++# CONFIG_SCSI_DC390T is not set
++# CONFIG_SCSI_T128 is not set
++# CONFIG_SCSI_U14_34F is not set
++# CONFIG_SCSI_NSP32 is not set
++# CONFIG_SCSI_DEBUG is not set
++
++#
++# PCMCIA SCSI adapter support
++#
++# CONFIG_SCSI_PCMCIA is not set
++
++#
++# Fusion MPT device support
++#
++# CONFIG_FUSION is not set
++# CONFIG_FUSION_BOOT is not set
++# CONFIG_FUSION_ISENSE is not set
++# CONFIG_FUSION_CTL is not set
++# CONFIG_FUSION_LAN is not set
++
++#
++# IEEE 1394 (FireWire) support (EXPERIMENTAL)
++#
++# CONFIG_IEEE1394 is not set
++
++#
++# I2O device support
++#
++# CONFIG_I2O is not set
++# CONFIG_I2O_PCI is not set
++# CONFIG_I2O_BLOCK is not set
++# CONFIG_I2O_LAN is not set
++# CONFIG_I2O_SCSI is not set
++# CONFIG_I2O_PROC is not set
++
++#
++# Network device support
++#
++CONFIG_NETDEVICES=y
++
++#
++# ARCnet devices
++#
++# CONFIG_ARCNET is not set
++CONFIG_DUMMY=m
++CONFIG_BONDING=m
++# CONFIG_EQUALIZER is not set
++CONFIG_TUN=m
++# CONFIG_ETHERTAP is not set
++
++#
++# Ethernet (10 or 100Mbit)
++#
++CONFIG_NET_ETHERNET=y
++CONFIG_MIPS_AU1X00_ENET=y
++# CONFIG_BCM5222_DUAL_PHY is not set
++# CONFIG_SUNLANCE is not set
++# CONFIG_HAPPYMEAL is not set
++# CONFIG_SUNBMAC is not set
++# CONFIG_SUNQE is not set
++# CONFIG_SUNGEM is not set
++# CONFIG_NET_VENDOR_3COM is not set
++# CONFIG_LANCE is not set
++# CONFIG_NET_VENDOR_SMC is not set
++# CONFIG_NET_VENDOR_RACAL is not set
++# CONFIG_HP100 is not set
++# CONFIG_NET_ISA is not set
++# CONFIG_NET_PCI is not set
++# CONFIG_NET_POCKET is not set
++
++#
++# Ethernet (1000 Mbit)
++#
++# CONFIG_ACENIC is not set
++# CONFIG_DL2K is not set
++# CONFIG_E1000 is not set
++# CONFIG_MYRI_SBUS is not set
++# CONFIG_NS83820 is not set
++# CONFIG_HAMACHI is not set
++# CONFIG_YELLOWFIN is not set
++# CONFIG_R8169 is not set
++# CONFIG_SK98LIN is not set
++# CONFIG_TIGON3 is not set
++# CONFIG_FDDI is not set
++# CONFIG_HIPPI is not set
++# CONFIG_PLIP is not set
++CONFIG_PPP=y
++CONFIG_PPP_MULTILINK=y
++CONFIG_PPP_FILTER=y
++CONFIG_PPP_ASYNC=y
++CONFIG_PPP_SYNC_TTY=m
++CONFIG_PPP_DEFLATE=m
++CONFIG_PPP_BSDCOMP=m
++CONFIG_PPPOE=m
++# CONFIG_SLIP is not set
++
++#
++# Wireless LAN (non-hamradio)
++#
++CONFIG_NET_RADIO=y
++# CONFIG_STRIP is not set
++# CONFIG_WAVELAN is not set
++# CONFIG_ARLAN is not set
++CONFIG_AIRONET4500=m
++CONFIG_AIRONET4500_NONCS=m
++# CONFIG_AIRONET4500_PNP is not set
++CONFIG_AIRONET4500_PCI=y
++# CONFIG_AIRONET4500_ISA is not set
++# CONFIG_AIRONET4500_I365 is not set
++CONFIG_AIRONET4500_PROC=m
++CONFIG_AIRO=m
++# CONFIG_HERMES is not set
++# CONFIG_PLX_HERMES is not set
++# CONFIG_TMD_HERMES is not set
++# CONFIG_PCI_HERMES is not set
++
++#
++# Wireless Pcmcia cards support
++#
++# CONFIG_PCMCIA_HERMES is not set
++# CONFIG_AIRO_CS is not set
++# CONFIG_PCMCIA_ATMEL is not set
++CONFIG_NET_WIRELESS=y
++
++#
++# Token Ring devices
++#
++# CONFIG_TR is not set
++# CONFIG_NET_FC is not set
++# CONFIG_RCPCI is not set
++CONFIG_SHAPER=m
++
++#
++# Wan interfaces
++#
++# CONFIG_WAN is not set
++
++#
++# PCMCIA network device support
++#
++# CONFIG_NET_PCMCIA is not set
++
++#
++# Amateur Radio support
++#
++# CONFIG_HAMRADIO is not set
++
++#
++# IrDA (infrared) support
++#
++# CONFIG_IRDA is not set
++
++#
++# ISDN subsystem
++#
++# CONFIG_ISDN is not set
++
++#
++# Input core support
++#
++# CONFIG_INPUT is not set
++# CONFIG_INPUT_KEYBDEV is not set
++# CONFIG_INPUT_MOUSEDEV is not set
++# CONFIG_INPUT_JOYDEV is not set
++# CONFIG_INPUT_EVDEV is not set
++# CONFIG_INPUT_UINPUT is not set
++
++#
++# Character devices
++#
++# CONFIG_VT is not set
++# CONFIG_SERIAL is not set
++# CONFIG_SERIAL_EXTENDED is not set
++CONFIG_SERIAL_NONSTANDARD=y
++# CONFIG_COMPUTONE is not set
++# CONFIG_ROCKETPORT is not set
++# CONFIG_CYCLADES is not set
++# CONFIG_DIGIEPCA is not set
++# CONFIG_DIGI is not set
++# CONFIG_ESPSERIAL is not set
++# CONFIG_MOXA_INTELLIO is not set
++# CONFIG_MOXA_SMARTIO is not set
++# CONFIG_ISI is not set
++# CONFIG_SYNCLINK is not set
++# CONFIG_SYNCLINKMP is not set
++# CONFIG_N_HDLC is not set
++# CONFIG_RISCOM8 is not set
++# CONFIG_SPECIALIX is not set
++# CONFIG_SX is not set
++# CONFIG_RIO is not set
++# CONFIG_STALDRV is not set
++# CONFIG_SERIAL_TX3912 is not set
++# CONFIG_SERIAL_TX3912_CONSOLE is not set
++# CONFIG_SERIAL_TXX9 is not set
++# CONFIG_SERIAL_TXX9_CONSOLE is not set
++CONFIG_AU1X00_UART=y
++CONFIG_AU1X00_SERIAL_CONSOLE=y
++# CONFIG_TXX927_SERIAL is not set
++# CONFIG_MIPS_HYDROGEN3_BUTTONS is not set
++CONFIG_UNIX98_PTYS=y
++CONFIG_UNIX98_PTY_COUNT=256
++
++#
++# I2C support
++#
++CONFIG_I2C=m
++CONFIG_I2C_ALGOBIT=m
++# CONFIG_I2C_PHILIPSPAR is not set
++# CONFIG_I2C_ELV is not set
++# CONFIG_I2C_VELLEMAN is not set
++# CONFIG_SCx200_I2C is not set
++CONFIG_I2C_AU1X00GPIO=m
++CONFIG_I2C_AU1X00GPIO_SCL=206
++CONFIG_I2C_AU1X00GPIO_SDA=207
++# CONFIG_SCx200_ACB is not set
++# CONFIG_I2C_ALGOPCF is not set
++# CONFIG_I2C_MAINBOARD is not set
++CONFIG_I2C_CHARDEV=m
++CONFIG_I2C_PROC=m
++
++#
++# Hardware sensors support
++#
++CONFIG_SENSORS=y
++# CONFIG_SENSORS_ADM1021 is not set
++# CONFIG_SENSORS_ADM1024 is not set
++# CONFIG_SENSORS_ADM1025 is not set
++# CONFIG_SENSORS_ADM1026 is not set
++# CONFIG_SENSORS_ADM9240 is not set
++# CONFIG_SENSORS_ASB100 is not set
++# CONFIG_SENSORS_DS1621 is not set
++# CONFIG_SENSORS_FSCPOS is not set
++# CONFIG_SENSORS_FSCSCY is not set
++# CONFIG_SENSORS_GL518SM is not set
++# CONFIG_SENSORS_GL520SM is not set
++# CONFIG_SENSORS_MAXILIFE is not set
++# CONFIG_SENSORS_XEONTEMP is not set
++# CONFIG_SENSORS_IT87 is not set
++# CONFIG_SENSORS_MAX6650 is not set
++# CONFIG_SENSORS_MTP008 is not set
++CONFIG_SENSORS_LM75=m
++CONFIG_SENSORS_LM78=m
++CONFIG_SENSORS_LM80=m
++CONFIG_SENSORS_LM83=m
++CONFIG_SENSORS_LM85=m
++CONFIG_SENSORS_LM87=m
++CONFIG_SENSORS_LM90=m
++CONFIG_SENSORS_LM92=m
++CONFIG_SENSORS_PC87360=m
++# CONFIG_SENSORS_SIS5595 is not set
++# CONFIG_SENSORS_SMSC47M1 is not set
++# CONFIG_SENSORS_THMC50 is not set
++# CONFIG_SENSORS_VIA686A is not set
++# CONFIG_SENSORS_VT1211 is not set
++# CONFIG_SENSORS_VT8231 is not set
++# CONFIG_SENSORS_W83781D is not set
++# CONFIG_SENSORS_W83627HF is not set
++# CONFIG_SENSORS_W83L785TS is not set
++CONFIG_SENSORS_OTHER=y
++CONFIG_SENSORS_BT869=m
++CONFIG_SENSORS_DDCMON=m
++CONFIG_SENSORS_EEPROM=m
++CONFIG_SENSORS_MATORB=m
++CONFIG_SENSORS_PCF8574=m
++CONFIG_SENSORS_PCF8591=m
++
++#
++# Mice
++#
++# CONFIG_BUSMOUSE is not set
++# CONFIG_MOUSE is not set
++
++#
++# Joysticks
++#
++# CONFIG_INPUT_GAMEPORT is not set
++
++#
++# Input core support is needed for gameports
++#
++
++#
++# Input core support is needed for joysticks
++#
++# CONFIG_QIC02_TAPE is not set
++# CONFIG_IPMI_HANDLER is not set
++# CONFIG_IPMI_PANIC_EVENT is not set
++# CONFIG_IPMI_DEVICE_INTERFACE is not set
++# CONFIG_IPMI_KCS is not set
++# CONFIG_IPMI_WATCHDOG is not set
++
++#
++# Watchdog Cards
++#
++# CONFIG_WATCHDOG is not set
++# CONFIG_SCx200 is not set
++# CONFIG_SCx200_GPIO is not set
++# CONFIG_AMD_PM768 is not set
++# CONFIG_NVRAM is not set
++# CONFIG_RTC is not set
++# CONFIG_DTLK is not set
++# CONFIG_R3964 is not set
++# CONFIG_APPLICOM is not set
++
++#
++# Ftape, the floppy tape device driver
++#
++# CONFIG_FTAPE is not set
++# CONFIG_AGP is not set
++
++#
++# Direct Rendering Manager (XFree86 DRI support)
++#
++# CONFIG_DRM is not set
++
++#
++# PCMCIA character devices
++#
++# CONFIG_PCMCIA_SERIAL_CS is not set
++# CONFIG_SYNCLINK_CS is not set
++CONFIG_AU1X00_GPIO=m
++# CONFIG_TS_AU1X00_ADS7846 is not set
++
++#
++# File systems
++#
++# CONFIG_QUOTA is not set
++# CONFIG_QFMT_V2 is not set
++# CONFIG_AUTOFS_FS is not set
++# CONFIG_AUTOFS4_FS is not set
++CONFIG_REISERFS_FS=m
++# CONFIG_REISERFS_CHECK is not set
++# CONFIG_REISERFS_PROC_INFO is not set
++# CONFIG_ADFS_FS is not set
++# CONFIG_ADFS_FS_RW is not set
++# CONFIG_AFFS_FS is not set
++# CONFIG_HFS_FS is not set
++# CONFIG_HFSPLUS_FS is not set
++# CONFIG_BEFS_FS is not set
++# CONFIG_BEFS_DEBUG is not set
++# CONFIG_BFS_FS is not set
++CONFIG_EXT3_FS=m
++CONFIG_JBD=m
++# CONFIG_JBD_DEBUG is not set
++CONFIG_FAT_FS=m
++CONFIG_MSDOS_FS=m
++# CONFIG_UMSDOS_FS is not set
++CONFIG_VFAT_FS=m
++# CONFIG_EFS_FS is not set
++# CONFIG_JFFS_FS is not set
++CONFIG_JFFS2_FS=y
++CONFIG_JFFS2_FS_DEBUG=0
++# CONFIG_JFFS2_FS_NAND is not set
++# CONFIG_CRAMFS is not set
++CONFIG_TMPFS=y
++CONFIG_RAMFS=y
++CONFIG_ISO9660_FS=m
++CONFIG_JOLIET=y
++CONFIG_ZISOFS=y
++# CONFIG_JFS_FS is not set
++# CONFIG_JFS_DEBUG is not set
++# CONFIG_JFS_STATISTICS is not set
++# CONFIG_MINIX_FS is not set
++# CONFIG_VXFS_FS is not set
++CONFIG_NTFS_FS=m
++# CONFIG_NTFS_RW is not set
++# CONFIG_HPFS_FS is not set
++CONFIG_PROC_FS=y
++CONFIG_DEVFS_FS=y
++CONFIG_DEVFS_MOUNT=y
++# CONFIG_DEVFS_DEBUG is not set
++CONFIG_DEVPTS_FS=y
++# CONFIG_QNX4FS_FS is not set
++# CONFIG_QNX4FS_RW is not set
++# CONFIG_ROMFS_FS is not set
++CONFIG_EXT2_FS=m
++# CONFIG_SYSV_FS is not set
++# CONFIG_UDF_FS is not set
++# CONFIG_UDF_RW is not set
++# CONFIG_UFS_FS is not set
++# CONFIG_UFS_FS_WRITE is not set
++# CONFIG_XFS_FS is not set
++# CONFIG_XFS_QUOTA is not set
++# CONFIG_XFS_RT is not set
++# CONFIG_XFS_TRACE is not set
++# CONFIG_XFS_DEBUG is not set
++
++#
++# Network File Systems
++#
++# CONFIG_CODA_FS is not set
++# CONFIG_INTERMEZZO_FS is not set
++CONFIG_NFS_FS=y
++CONFIG_NFS_V3=y
++# CONFIG_NFS_DIRECTIO is not set
++CONFIG_ROOT_NFS=y
++CONFIG_NFSD=y
++CONFIG_NFSD_V3=y
++# CONFIG_NFSD_TCP is not set
++CONFIG_SUNRPC=y
++CONFIG_LOCKD=y
++CONFIG_LOCKD_V4=y
++CONFIG_SMB_FS=m
++# CONFIG_SMB_NLS_DEFAULT is not set
++# CONFIG_SMB_UNIX is not set
++# CONFIG_NCP_FS is not set
++# CONFIG_NCPFS_PACKET_SIGNING is not set
++# CONFIG_NCPFS_IOCTL_LOCKING is not set
++# CONFIG_NCPFS_STRONG is not set
++# CONFIG_NCPFS_NFS_NS is not set
++# CONFIG_NCPFS_OS2_NS is not set
++# CONFIG_NCPFS_SMALLDOS is not set
++# CONFIG_NCPFS_NLS is not set
++# CONFIG_NCPFS_EXTRAS is not set
++CONFIG_ZISOFS_FS=m
++
++#
++# Partition Types
++#
++# CONFIG_PARTITION_ADVANCED is not set
++CONFIG_MSDOS_PARTITION=y
++CONFIG_SMB_NLS=y
++CONFIG_NLS=y
++
++#
++# Native Language Support
++#
++CONFIG_NLS_DEFAULT="iso8859-15"
++CONFIG_NLS_CODEPAGE_437=m
++# CONFIG_NLS_CODEPAGE_737 is not set
++# CONFIG_NLS_CODEPAGE_775 is not set
++CONFIG_NLS_CODEPAGE_850=m
++# CONFIG_NLS_CODEPAGE_852 is not set
++# CONFIG_NLS_CODEPAGE_855 is not set
++# CONFIG_NLS_CODEPAGE_857 is not set
++# CONFIG_NLS_CODEPAGE_860 is not set
++# CONFIG_NLS_CODEPAGE_861 is not set
++# CONFIG_NLS_CODEPAGE_862 is not set
++# CONFIG_NLS_CODEPAGE_863 is not set
++# CONFIG_NLS_CODEPAGE_864 is not set
++# CONFIG_NLS_CODEPAGE_865 is not set
++# CONFIG_NLS_CODEPAGE_866 is not set
++# CONFIG_NLS_CODEPAGE_869 is not set
++# CONFIG_NLS_CODEPAGE_936 is not set
++# CONFIG_NLS_CODEPAGE_950 is not set
++# CONFIG_NLS_CODEPAGE_932 is not set
++# CONFIG_NLS_CODEPAGE_949 is not set
++# CONFIG_NLS_CODEPAGE_874 is not set
++# CONFIG_NLS_ISO8859_8 is not set
++# CONFIG_NLS_CODEPAGE_1250 is not set
++# CONFIG_NLS_CODEPAGE_1251 is not set
++CONFIG_NLS_ISO8859_1=m
++# CONFIG_NLS_ISO8859_2 is not set
++# CONFIG_NLS_ISO8859_3 is not set
++# CONFIG_NLS_ISO8859_4 is not set
++# CONFIG_NLS_ISO8859_5 is not set
++# CONFIG_NLS_ISO8859_6 is not set
++# CONFIG_NLS_ISO8859_7 is not set
++# CONFIG_NLS_ISO8859_9 is not set
++# CONFIG_NLS_ISO8859_13 is not set
++# CONFIG_NLS_ISO8859_14 is not set
++CONFIG_NLS_ISO8859_15=m
++# CONFIG_NLS_KOI8_R is not set
++# CONFIG_NLS_KOI8_U is not set
++CONFIG_NLS_UTF8=m
++
++#
++# Multimedia devices
++#
++CONFIG_VIDEO_DEV=m
++
++#
++# Video For Linux
++#
++CONFIG_VIDEO_PROC_FS=y
++# CONFIG_I2C_PARPORT is not set
++
++#
++# Video Adapters
++#
++# CONFIG_VIDEO_BT848 is not set
++# CONFIG_VIDEO_PMS is not set
++CONFIG_VIDEO_CPIA=m
++# CONFIG_VIDEO_CPIA_PP is not set
++CONFIG_VIDEO_CPIA_USB=m
++# CONFIG_VIDEO_SAA5249 is not set
++# CONFIG_TUNER_3036 is not set
++# CONFIG_VIDEO_STRADIS is not set
++# CONFIG_VIDEO_ZORAN is not set
++# CONFIG_VIDEO_ZORAN_BUZ is not set
++# CONFIG_VIDEO_ZORAN_DC10 is not set
++# CONFIG_VIDEO_ZORAN_LML33 is not set
++# CONFIG_VIDEO_ZR36120 is not set
++# CONFIG_VIDEO_MEYE is not set
++
++#
++# Radio Adapters
++#
++# CONFIG_RADIO_GEMTEK_PCI is not set
++# CONFIG_RADIO_MAXIRADIO is not set
++# CONFIG_RADIO_MAESTRO is not set
++# CONFIG_RADIO_MIROPCM20 is not set
++
++#
++# Sound
++#
++CONFIG_SOUND=m
++# CONFIG_SOUND_ALI5455 is not set
++# CONFIG_SOUND_BT878 is not set
++# CONFIG_SOUND_CMPCI is not set
++# CONFIG_SOUND_EMU10K1 is not set
++# CONFIG_MIDI_EMU10K1 is not set
++# CONFIG_SOUND_FUSION is not set
++# CONFIG_SOUND_CS4281 is not set
++# CONFIG_SOUND_ES1370 is not set
++# CONFIG_SOUND_ES1371 is not set
++# CONFIG_SOUND_ESSSOLO1 is not set
++# CONFIG_SOUND_MAESTRO is not set
++# CONFIG_SOUND_MAESTRO3 is not set
++# CONFIG_SOUND_FORTE is not set
++# CONFIG_SOUND_ICH is not set
++# CONFIG_SOUND_RME96XX is not set
++# CONFIG_SOUND_SONICVIBES is not set
++# CONFIG_SOUND_AU1X00 is not set
++# CONFIG_SOUND_AU1550_PSC is not set
++# CONFIG_SOUND_AU1550_I2S is not set
++# CONFIG_SOUND_TRIDENT is not set
++# CONFIG_SOUND_MSNDCLAS is not set
++# CONFIG_SOUND_MSNDPIN is not set
++# CONFIG_SOUND_VIA82CXXX is not set
++# CONFIG_MIDI_VIA82CXXX is not set
++CONFIG_SOUND_OSS=m
++# CONFIG_SOUND_TRACEINIT is not set
++# CONFIG_SOUND_DMAP is not set
++# CONFIG_SOUND_AD1816 is not set
++# CONFIG_SOUND_AD1889 is not set
++# CONFIG_SOUND_SGALAXY is not set
++# CONFIG_SOUND_ADLIB is not set
++# CONFIG_SOUND_ACI_MIXER is not set
++# CONFIG_SOUND_CS4232 is not set
++# CONFIG_SOUND_SSCAPE is not set
++# CONFIG_SOUND_GUS is not set
++# CONFIG_SOUND_VMIDI is not set
++# CONFIG_SOUND_TRIX is not set
++# CONFIG_SOUND_MSS is not set
++# CONFIG_SOUND_MPU401 is not set
++# CONFIG_SOUND_NM256 is not set
++# CONFIG_SOUND_MAD16 is not set
++# CONFIG_SOUND_PAS is not set
++# CONFIG_PAS_JOYSTICK is not set
++# CONFIG_SOUND_PSS is not set
++# CONFIG_SOUND_SB is not set
++# CONFIG_SOUND_AWE32_SYNTH is not set
++# CONFIG_SOUND_KAHLUA is not set
++# CONFIG_SOUND_WAVEFRONT is not set
++# CONFIG_SOUND_MAUI is not set
++# CONFIG_SOUND_YM3812 is not set
++# CONFIG_SOUND_OPL3SA1 is not set
++# CONFIG_SOUND_OPL3SA2 is not set
++# CONFIG_SOUND_YMFPCI is not set
++# CONFIG_SOUND_YMFPCI_LEGACY is not set
++# CONFIG_SOUND_UART6850 is not set
++# CONFIG_SOUND_AEDSP16 is not set
++# CONFIG_SOUND_TVMIXER is not set
++# CONFIG_SOUND_AD1980 is not set
++# CONFIG_SOUND_WM97XX is not set
++
++#
++# USB support
++#
++CONFIG_USB=y
++# CONFIG_USB_DEBUG is not set
++
++#
++# Miscellaneous USB options
++#
++CONFIG_USB_DEVICEFS=y
++# CONFIG_USB_BANDWIDTH is not set
++
++#
++# USB Host Controller Drivers
++#
++# CONFIG_USB_EHCI_HCD is not set
++# CONFIG_USB_UHCI is not set
++# CONFIG_USB_UHCI_ALT is not set
++CONFIG_USB_OHCI=m
++CONFIG_USB_NON_PCI_OHCI=m
++
++#
++# USB Device Class drivers
++#
++CONFIG_USB_AUDIO=m
++CONFIG_USB_EMI26=m
++
++#
++#   USB Bluetooth can only be used with disabled Bluetooth subsystem
++#
++CONFIG_USB_MIDI=m
++CONFIG_USB_STORAGE=m
++CONFIG_USB_STORAGE_DEBUG=y
++CONFIG_USB_STORAGE_DATAFAB=y
++CONFIG_USB_STORAGE_FREECOM=y
++# CONFIG_USB_STORAGE_ISD200 is not set
++CONFIG_USB_STORAGE_DPCM=y
++CONFIG_USB_STORAGE_HP8200e=y
++CONFIG_USB_STORAGE_SDDR09=y
++CONFIG_USB_STORAGE_SDDR55=y
++CONFIG_USB_STORAGE_JUMPSHOT=y
++CONFIG_USB_ACM=m
++CONFIG_USB_PRINTER=m
++
++#
++# USB Human Interface Devices (HID)
++#
++# CONFIG_USB_HID is not set
++
++#
++#     Input core support is needed for USB HID input layer or HIDBP support
++#
++# CONFIG_USB_HIDINPUT is not set
++# CONFIG_USB_HIDDEV is not set
++# CONFIG_USB_KBD is not set
++# CONFIG_USB_MOUSE is not set
++# CONFIG_USB_AIPTEK is not set
++# CONFIG_USB_WACOM is not set
++# CONFIG_USB_KBTAB is not set
++# CONFIG_USB_POWERMATE is not set
++
++#
++# USB Imaging devices
++#
++CONFIG_USB_DC2XX=m
++CONFIG_USB_MDC800=m
++CONFIG_USB_SCANNER=m
++CONFIG_USB_MICROTEK=m
++CONFIG_USB_HPUSBSCSI=m
++
++#
++# USB Multimedia devices
++#
++CONFIG_USB_IBMCAM=m
++CONFIG_USB_KONICAWC=m
++CONFIG_USB_OV511=m
++CONFIG_USB_PWC=m
++CONFIG_USB_SE401=m
++CONFIG_USB_STV680=m
++# CONFIG_USB_W9968CF is not set
++CONFIG_USB_VICAM=m
++CONFIG_USB_DSBR=m
++CONFIG_USB_DABUSB=m
++
++#
++# USB Network adaptors
++#
++CONFIG_USB_PEGASUS=m
++CONFIG_USB_RTL8150=m
++CONFIG_USB_KAWETH=m
++CONFIG_USB_CATC=m
++CONFIG_USB_CDCETHER=m
++CONFIG_USB_USBNET=m
++
++#
++# USB port drivers
++#
++# CONFIG_USB_USS720 is not set
++
++#
++# USB Serial Converter support
++#
++CONFIG_USB_SERIAL=m
++# CONFIG_USB_SERIAL_DEBUG is not set
++CONFIG_USB_SERIAL_GENERIC=y
++CONFIG_USB_SERIAL_BELKIN=m
++CONFIG_USB_SERIAL_WHITEHEAT=m
++CONFIG_USB_SERIAL_DIGI_ACCELEPORT=m
++CONFIG_USB_SERIAL_EMPEG=m
++CONFIG_USB_SERIAL_FTDI_SIO=m
++CONFIG_USB_SERIAL_VISOR=m
++CONFIG_USB_SERIAL_IPAQ=m
++CONFIG_USB_SERIAL_IR=m
++CONFIG_USB_SERIAL_EDGEPORT=m
++CONFIG_USB_SERIAL_EDGEPORT_TI=m
++CONFIG_USB_SERIAL_KEYSPAN_PDA=m
++CONFIG_USB_SERIAL_KEYSPAN=m
++CONFIG_USB_SERIAL_KEYSPAN_USA28=y
++CONFIG_USB_SERIAL_KEYSPAN_USA28X=y
++CONFIG_USB_SERIAL_KEYSPAN_USA28XA=y
++CONFIG_USB_SERIAL_KEYSPAN_USA28XB=y
++CONFIG_USB_SERIAL_KEYSPAN_USA19=y
++CONFIG_USB_SERIAL_KEYSPAN_USA18X=y
++CONFIG_USB_SERIAL_KEYSPAN_USA19W=y
++CONFIG_USB_SERIAL_KEYSPAN_USA19QW=y
++CONFIG_USB_SERIAL_KEYSPAN_USA19QI=y
++CONFIG_USB_SERIAL_KEYSPAN_MPR=y
++CONFIG_USB_SERIAL_KEYSPAN_USA49W=y
++CONFIG_USB_SERIAL_KEYSPAN_USA49WLC=y
++CONFIG_USB_SERIAL_MCT_U232=m
++CONFIG_USB_SERIAL_KLSI=m
++CONFIG_USB_SERIAL_KOBIL_SCT=m
++CONFIG_USB_SERIAL_PL2303=m
++CONFIG_USB_SERIAL_CYBERJACK=m
++CONFIG_USB_SERIAL_XIRCOM=m
++CONFIG_USB_SERIAL_OMNINET=m
++
++#
++# USB Miscellaneous drivers
++#
++CONFIG_USB_RIO500=m
++CONFIG_USB_AUERSWALD=m
++CONFIG_USB_TIGL=m
++CONFIG_USB_BRLVGER=m
++CONFIG_USB_LCD=m
++
++#
++# Support for USB gadgets
++#
++# CONFIG_USB_GADGET is not set
++
++#
++# USB clients (devices, not hosts)
++#
++CONFIG_USBD=m
++
++#
++# 
++#
++# CONFIG_USBD_HIGH_SPEED is not set
++# CONFIG_USBD_NO_SERIAL_NUMBER is not set
++CONFIG_USBD_SERIAL_NUMBER_STR=""
++CONFIG_USBD_MAXPOWER=0
++
++#
++# 
++#
++CONFIG_USBD_PROCFS=y
++CONFIG_USBD_PROCFSM=m
++
++#
++# Function Drivers
++#
++
++#
++# Network Function
++#
++CONFIG_USBD_NETWORK=m
++CONFIG_USBD_NETWORK_VENDORID=12b9
++CONFIG_USBD_NETWORK_PRODUCTID=f001
++CONFIG_USBD_NETWORK_BCDDEVICE=0100
++CONFIG_USBD_NETWORK_MANUFACTURER="Belcarra"
++CONFIG_USBD_NETWORK_PRODUCT_NAME="Belcarra BLAN Device"
++
++#
++# 
++#
++# CONFIG_USBD_NETWORK_BLAN is not set
++CONFIG_USBD_NETWORK_SAFE=y
++CONFIG_USBD_NETWORK_SAFE_DESC="SAFE Net Cfg"
++CONFIG_USBD_NETWORK_SAFE_INTF="Data Intf"
++# CONFIG_USBD_NETWORK_SAFE_DO_NOT_SETTIME is not set
++# CONFIG_USBD_NETWORK_SAFE_CRC is not set
++CONFIG_USBD_NETWORK_SAFE_NOBRIDGE=y
++
++#
++# 
++#
++# CONFIG_USBD_NETWORK_CDC is not set
++# CONFIG_USBD_NETWORK_BASIC is not set
++# CONFIG_USBD_NETWORK_BASIC2 is not set
++
++#
++# 
++#
++# CONFIG_USBD_NETWORK_START_SINGLE is not set
++# CONFIG_USBD_NETWORK_EP0TEST is not set
++
++#
++# CDC ACM Function
++#
++CONFIG_USBD_ACM=m
++CONFIG_USBD_ACM_VENDORID=12b9
++CONFIG_USBD_ACM_PRODUCTID=f002
++CONFIG_USBD_ACM_BCDDEVICE=0100
++CONFIG_USBD_ACM_MANUFACTURER="Belcarra"
++CONFIG_USBD_ACM_PRODUCT_NAME="Belcarra ACM Device"
++CONFIG_USBD_ACM_DESC="Acm Cfg"
++CONFIG_USBD_ACM_COMM_INTF="Comm Intf"
++CONFIG_USBD_ACM_DATA_INTF="Data Intf"
++# CONFIG_USBD_ACM_TRACE is not set
++
++#
++# 
++#
++
++#
++# Random Mouse Function
++#
++# CONFIG_USBD_MOUSE is not set
++
++#
++# Bus Interface
++#
++
++#
++# AMD AU1X000 Bus Interface
++#
++CONFIG_USBD_AU1X00_BUS=m
++CONFIG_USBD_AU1X00_SCLOCK=400
++CONFIG_AU1000_USB_DEVICE=y
++CONFIG_AU1X00_USB_DEVICE=y
++# CONFIG_USBD_BI_REGISTER_TRACE is not set
++
++#
++# Bluetooth support
++#
++CONFIG_BLUEZ=m
++CONFIG_BLUEZ_L2CAP=m
++CONFIG_BLUEZ_SCO=m
++CONFIG_BLUEZ_RFCOMM=m
++CONFIG_BLUEZ_RFCOMM_TTY=y
++CONFIG_BLUEZ_BNEP=m
++CONFIG_BLUEZ_BNEP_MC_FILTER=y
++CONFIG_BLUEZ_BNEP_PROTO_FILTER=y
++
++#
++# Bluetooth device drivers
++#
++CONFIG_BLUEZ_HCIUSB=m
++CONFIG_BLUEZ_HCIUSB_SCO=y
++CONFIG_BLUEZ_HCIUART=m
++CONFIG_BLUEZ_HCIUART_H4=y
++CONFIG_BLUEZ_HCIUART_BCSP=y
++CONFIG_BLUEZ_HCIUART_BCSP_TXCRC=y
++CONFIG_BLUEZ_HCIBFUSB=m
++# CONFIG_BLUEZ_HCIDTL1 is not set
++# CONFIG_BLUEZ_HCIBT3C is not set
++# CONFIG_BLUEZ_HCIBLUECARD is not set
++# CONFIG_BLUEZ_HCIBTUART is not set
++CONFIG_BLUEZ_HCIVHCI=m
++
++#
++# Kernel hacking
++#
++CONFIG_CROSSCOMPILE=y
++# CONFIG_RUNTIME_DEBUG is not set
++# CONFIG_KGDB is not set
++# CONFIG_GDB_CONSOLE is not set
++# CONFIG_DEBUG_INFO is not set
++# CONFIG_MAGIC_SYSRQ is not set
++# CONFIG_MIPS_UNCACHED is not set
++CONFIG_LOG_BUF_SHIFT=0
++
++#
++# Cryptographic options
++#
++CONFIG_CRYPTO=y
++CONFIG_CRYPTO_HMAC=y
++CONFIG_CRYPTO_NULL=m
++CONFIG_CRYPTO_MD4=m
++CONFIG_CRYPTO_MD5=m
++CONFIG_CRYPTO_SHA1=m
++CONFIG_CRYPTO_SHA256=m
++CONFIG_CRYPTO_SHA512=m
++CONFIG_CRYPTO_DES=m
++CONFIG_CRYPTO_BLOWFISH=m
++CONFIG_CRYPTO_TWOFISH=m
++CONFIG_CRYPTO_SERPENT=m
++CONFIG_CRYPTO_AES=m
++CONFIG_CRYPTO_CAST5=m
++CONFIG_CRYPTO_CAST6=m
++CONFIG_CRYPTO_TEA=m
++CONFIG_CRYPTO_ARC4=m
++CONFIG_CRYPTO_DEFLATE=m
++CONFIG_CRYPTO_MICHAEL_MIC=m
++CONFIG_CRYPTO_TEST=m
++
++#
++# Library routines
++#
++CONFIG_CRC32=m
++CONFIG_ZLIB_INFLATE=y
++CONFIG_ZLIB_DEFLATE=y
++CONFIG_FW_LOADER=m
+--- linux-old/drivers/i2c/Makefile	2006-05-01 10:20:41.922591250 +0200
++++ linux/drivers/i2c/Makefile	2006-04-30 20:35:58.000000000 +0200
+@@ -6,7 +6,7 @@
+ 
+ export-objs	:= i2c-core.o i2c-algo-bit.o i2c-algo-pcf.o \
+ 		   i2c-algo-ite.o i2c-algo-sibyte.o i2c-algo-sgi.o \
+-		   i2c-algo-au1550.o i2c-proc.o
++		   i2c-algo-au1550.o i2c-proc.o i2c-au1550.o
+ 
+ obj-$(CONFIG_I2C)		+= i2c-core.o
+ obj-$(CONFIG_I2C_CHARDEV)	+= i2c-dev.o
+--- linux-old/drivers/i2c/i2c-au1550.c	2004-09-19 00:07:37.000000000 +0200
++++ linux/drivers/i2c/i2c-au1550.c	2006-04-30 20:35:58.000000000 +0200
+@@ -34,6 +34,8 @@
+ #include <linux/i2c.h>
+ #include <linux/i2c-algo-au1550.h>
+ 
++#include <linux/module.h>
++
+ static int
+ pb1550_reg(struct i2c_client *client)
+ {
+@@ -116,6 +118,7 @@
+ 	return pb1550_board_adapter.algo->master_xfer(&pb1550_board_adapter, &wm_i2c_msg, 1);
+ }
+ 
++EXPORT_SYMBOL(pb1550_wm_codec_write);
+ 
+ MODULE_AUTHOR("Dan Malek, Embedded Edge, LLC.");
+ MODULE_DESCRIPTION("SMBus adapter Alchemy pb1550");
+--- linux/drivers/net/au1000_eth.c~00-mtx-2.diff	2006-06-10 14:01:44.602796000 +0200
++++ linux/drivers/net/au1000_eth.c	2006-06-10 13:56:07.353719250 +0200
+@@ -6,7 +6,9 @@
+  * Copyright 2002 TimeSys Corp.
+  * Author: MontaVista Software, Inc.
+  *         	ppopov@mvista.com or source@mvista.com
+- *
++ *         Bjoern Riemer 2004
++ *           riemer@fokus.fraunhofer.de or riemer@riemer-nt.de
++ *             // fixed the link beat detection with ioctls (SIOCGMIIPHY)
+  * ########################################################################
+  *
+  *  This program is free software; you can distribute it and/or modify it
+@@ -83,7 +85,7 @@
+ static int au1000_set_config(struct net_device *dev, struct ifmap *map);
+ static void set_rx_mode(struct net_device *);
+ static struct net_device_stats *au1000_get_stats(struct net_device *);
+-static inline void update_tx_stats(struct net_device *, u32, u32);
++static inline void update_tx_stats(struct net_device *, u32);
+ static inline void update_rx_stats(struct net_device *, u32);
+ static void au1000_timer(unsigned long);
+ static int au1000_ioctl(struct net_device *, struct ifreq *, int);
+@@ -656,6 +658,7 @@
+ 	ks8995m_status,
+ };
+ 
++
+ #ifdef CONFIG_MIPS_BOSPORUS
+ struct phy_ops stub_ops = {
+ 	stub_init,
+@@ -674,6 +677,7 @@
+ 	{"Broadcom BCM5201 10/100 BaseT PHY",0x0040,0x6212, &bcm_5201_ops,0},
+ 	{"Broadcom BCM5221 10/100 BaseT PHY",0x0040,0x61e4, &bcm_5201_ops,0},
+ 	{"Broadcom BCM5222 10/100 BaseT PHY",0x0040,0x6322, &bcm_5201_ops,1},
++	{"Broadcom BCM5241 10/100 BaseT PHY",0x0143,0xBC31, &bcm_5201_ops,1},
+ 	{"AMD 79C901 HomePNA PHY",0x0000,0x35c8, &am79c901_ops,0},
+ 	{"AMD 79C874 10/100 BaseT PHY",0x0022,0x561b, &am79c874_ops,0},
+ 	{"LSI 80227 10/100 BaseT PHY",0x0016,0xf840, &lsi_80227_ops,0},
+@@ -810,28 +814,39 @@
+ 	int phy_found=0;
+ #endif
+ 
++#if 0
++	if (aup && aup->mii)
++	  aup->mii->chip_info = NULL;
++#endif
++
++
+ 	/* search for total of 32 possible mii phy addresses */
+ 	for (phy_addr = 0; phy_addr < 32; phy_addr++) {
+ 		u16 mii_status;
+ 		u16 phy_id0, phy_id1;
+ 		int i;
+ 
+-		#ifdef CONFIG_BCM5222_DUAL_PHY
++#ifdef CONFIG_BCM5222_DUAL_PHY
+ 		/* Mask the already found phy, try next one */
+ 		if (au_macs[0]->mii && au_macs[0]->mii->mii_control_reg) {
+ 			if (au_macs[0]->phy_addr == phy_addr)
+ 				continue;
+ 		}
+-		#endif
++#endif
+ 
+ 		mii_status = mdio_read(dev, phy_addr, MII_STATUS);
+ 		if (mii_status == 0xffff || mii_status == 0x0000)
+ 			/* the mii is not accessable, try next one */
+ 			continue;
+ 
++
+ 		phy_id0 = mdio_read(dev, phy_addr, MII_PHY_ID0);
+ 		phy_id1 = mdio_read(dev, phy_addr, MII_PHY_ID1);
+ 
++		/*printk ("mii_probe: found PHY at address 0x%X : %04X/%04X\n", phy_addr,
++			phy_id0, phy_id1
++			); */
++
+ 		/* search our mii table for the current mii */ 
+ 		for (i = 0; mii_chip_table[i].phy_id1; i++) {
+ 			if (phy_id0 == mii_chip_table[i].phy_id0 &&
+@@ -853,7 +868,7 @@
+ 				// values and set indicators. We need to do 
+ 				// this now since mdio_{read,write} need the 
+ 				// control and data register addresses.
+-				#ifdef CONFIG_BCM5222_DUAL_PHY
++#ifdef CONFIG_BCM5222_DUAL_PHY
+ 				if ( mii_chip_table[i].dual_phy) {
+ 
+ 					/* assume both phys are controlled 
+@@ -867,11 +882,13 @@
+ 					aup->mii->mii_data_reg = (u32 *)
+ 						&au_macs[0]->mac->mii_data;
+ 				}
+-				#endif
++#endif
+ 				goto found;
+ 			}
+ 		}
+ 	}
++	return -1;
++
+ found:
+ 
+ #ifdef CONFIG_MIPS_BOSPORUS
+@@ -1027,24 +1044,26 @@
+ 	struct au1000_private *aup = (struct au1000_private *) dev->priv;
+ 
+ 	if (au1000_debug > 4) 
+-		printk(KERN_INFO "%s: reset mac, aup %x\n", 
+-				dev->name, (unsigned)aup);
++		printk(KERN_INFO "%s: reset mac, aup %x, macid %d\n", 
++				dev->name, (unsigned)aup, aup->mac_id);
++
++	return;
+ 
+ 	spin_lock_irqsave(&aup->lock, flags);
+ 	del_timer(&aup->timer);
+ 	hard_stop(dev);
+-	#ifdef CONFIG_BCM5222_DUAL_PHY
++#ifdef CONFIG_BCM5222_DUAL_PHY
+ 	if (aup->mac_id != 0) {
+-	#endif
++#endif
+ 		/* If BCM5222, we can't leave MAC0 in reset because then 
+ 		 * we can't access the dual phy for ETH1 */
+ 		*aup->enable = MAC_EN_CLOCK_ENABLE;
+ 		au_sync_delay(2);
+ 		*aup->enable = 0;
+ 		au_sync_delay(2);
+-	#ifdef CONFIG_BCM5222_DUAL_PHY
++#ifdef CONFIG_BCM5222_DUAL_PHY
+ 	}
+-	#endif
++#endif
+ 	aup->tx_full = 0;
+ 	for (i = 0; i < NUM_RX_DMA; i++) {
+ 		/* reset control bits */
+@@ -1140,17 +1159,39 @@
+ 		iflist[1].macen_addr = AU1550_MAC1_ENABLE;
+ 		iflist[0].irq = AU1550_MAC0_DMA_INT;
+ 		iflist[1].irq = AU1550_MAC1_DMA_INT;
++		/*printk ("***** Au1550 Ethernet *****\n");*/
+ 		break;
+ #endif
+ 	default:
+ 		num_ifs = 0;
+ 	}
++	
++	{
++	  unsigned long pf = au_readl(SYS_PINFUNC);
++	  pf &= ~1;
++
++	  au_writel (pf, SYS_PINFUNC);
++	  au_writel (0x10000, SYS_OUTPUTSET);
++
++	}
++	
++
++	
+ 	for(i = 0; i < num_ifs; i++) {
++	        /*printk ("*** calling au1000_probe(0x%08lX, %d, %d)\n", iflist[i].base_addr, iflist[i].irq, i);*/
+ 		dev = au1000_probe(iflist[i].base_addr, iflist[i].irq, i);
++	        /*printk ("*** left au1000_probe\n");*/
++
+ 		iflist[i].dev = dev;
++
++	        /*printk ("*** 1\n");*/
++
+ 		if (dev)
+ 			found_one++;
+ 	}
++
++	printk("Au1x Ethernet found %d ethernet devices\n", found_one);
++
+ 	if (!found_one)
+ 		return -ENODEV;
+ 	return 0;
+@@ -1194,6 +1235,7 @@
+ 	/* Allocate the data buffers */
+ 	aup->vaddr = (u32)dma_alloc(MAX_BUF_SIZE * 
+ 			(NUM_TX_BUFFS+NUM_RX_BUFFS), &aup->dma_addr);
++
+ 	if (!aup->vaddr) {
+ 		kfree(dev);
+ 		release_region(ioaddr, MAC_IOSIZE);
+@@ -1227,6 +1269,7 @@
+ 		setup_hw_rings(aup, MAC0_RX_DMA_ADDR, MAC0_TX_DMA_ADDR);
+ 		aup->mac_id = 0;
+ 		au_macs[0] = aup;
++
+ 	}
+ 		else
+ 	if (ioaddr == iflist[1].base_addr)
+@@ -1257,6 +1300,8 @@
+ 		printk(KERN_ERR "%s: out of memory\n", dev->name);
+ 		goto err_out;
+ 	}
++
++	aup->mii->chip_info = NULL;
+ 	aup->mii->mii_control_reg = 0;
+ 	aup->mii->mii_data_reg = 0;
+ 
+@@ -1284,6 +1329,7 @@
+ 		aup->rx_dma_ring[i]->buff_stat = (unsigned)pDB->dma_addr;
+ 		aup->rx_db_inuse[i] = pDB;
+ 	}
++
+ 	for (i = 0; i < NUM_TX_DMA; i++) {
+ 		pDB = GetFreeDB(aup);
+ 		if (!pDB) {
+@@ -1383,12 +1429,17 @@
+ 	aup->phy_ops->phy_status(dev, aup->phy_addr, &link, &speed);
+ 	control = MAC_DISABLE_RX_OWN | MAC_RX_ENABLE | MAC_TX_ENABLE;
+ #ifndef CONFIG_CPU_LITTLE_ENDIAN
++	/*riemer: fix for startup without cable */
++	if (!link) 
++		dev->flags &= ~IFF_RUNNING;
++
+ 	control |= MAC_BIG_ENDIAN;
+ #endif
+ 	if (link && (dev->if_port == IF_PORT_100BASEFX)) {
+ 		control |= MAC_FULL_DUPLEX;
+ 	}
+ 	aup->mac->control = control;
++	aup->mac->vlan1_tag = 0x8100; /* activate vlan support */
+ 	au_sync();
+ 
+ 	spin_unlock_irqrestore(&aup->lock, flags);
+@@ -1541,14 +1592,11 @@
+ 
+ 
+ static inline void 
+-update_tx_stats(struct net_device *dev, u32 status, u32 pkt_len)
++update_tx_stats(struct net_device *dev, u32 status)
+ {
+ 	struct au1000_private *aup = (struct au1000_private *) dev->priv;
+ 	struct net_device_stats *ps = &aup->stats;
+ 
+-	ps->tx_packets++;
+-	ps->tx_bytes += pkt_len;
+-
+ 	if (status & TX_FRAME_ABORTED) {
+ 		if (dev->if_port == IF_PORT_100BASEFX) {
+ 			if (status & (TX_JAB_TIMEOUT | TX_UNDERRUN)) {
+@@ -1581,7 +1629,7 @@
+ 	ptxd = aup->tx_dma_ring[aup->tx_tail];
+ 
+ 	while (ptxd->buff_stat & TX_T_DONE) {
+-		update_tx_stats(dev, ptxd->status, ptxd->len & 0x3ff);
++		update_tx_stats(dev, ptxd->status);
+ 		ptxd->buff_stat &= ~TX_T_DONE;
+ 		ptxd->len = 0;
+ 		au_sync();
+@@ -1603,6 +1651,7 @@
+ static int au1000_tx(struct sk_buff *skb, struct net_device *dev)
+ {
+ 	struct au1000_private *aup = (struct au1000_private *) dev->priv;
++	struct net_device_stats *ps = &aup->stats;
+ 	volatile tx_dma_t *ptxd;
+ 	u32 buff_stat;
+ 	db_dest_t *pDB;
+@@ -1622,7 +1671,7 @@
+ 		return 1;
+ 	}
+ 	else if (buff_stat & TX_T_DONE) {
+-		update_tx_stats(dev, ptxd->status, ptxd->len & 0x3ff);
++		update_tx_stats(dev, ptxd->status);
+ 		ptxd->len = 0;
+ 	}
+ 
+@@ -1642,6 +1691,9 @@
+ 	else
+ 		ptxd->len = skb->len;
+ 
++	ps->tx_packets++;
++	ps->tx_bytes += ptxd->len;
++
+ 	ptxd->buff_stat = pDB->dma_addr | TX_DMA_ENABLE;
+ 	au_sync();
+ 	dev_kfree_skb(skb);
+@@ -1840,17 +1892,35 @@
+ 
+ static int au1000_ioctl(struct net_device *dev, struct ifreq *rq, int cmd)
+ {
+-	//u16 *data = (u16 *)&rq->ifr_data;
++/*
++// This structure is used in all SIOCxMIIxxx ioctl calls 
++struct mii_ioctl_data {
++ 0      u16             phy_id;
++ 1      u16             reg_num;
++ 2      u16             val_in;
++ 3      u16             val_out;
++};*/
++	u16 *data = (u16 *)&rq->ifr_data;
++	struct au1000_private *aup = (struct au1000_private *) dev->priv;
++	//struct mii_ioctl_data *data = (struct mii_ioctl_data *) & rq->ifr_data;
+ 
+ 	/* fixme */
+ 	switch(cmd) { 
+ 		case SIOCDEVPRIVATE:	/* Get the address of the PHY in use. */
+-		//data[0] = PHY_ADDRESS;
++		case SIOCGMIIPHY:
++		        if (!netif_running(dev))
++                		return -EINVAL;
++			data[0] = aup->phy_addr;
+ 		case SIOCDEVPRIVATE+1:	/* Read the specified MII register. */
+-		//data[3] = mdio_read(ioaddr, data[0], data[1]); 
++		case SIOCGMIIREG:
++			data[3] =  mdio_read(dev, data[0], data[1]); 
++			//data->val_out = mdio_read(dev,data->phy_id,data->reg_num);
+ 		return 0;
+ 		case SIOCDEVPRIVATE+2:	/* Write the specified MII register */
+-		//mdio_write(ioaddr, data[0], data[1], data[2]);
++		case SIOCSMIIREG: 
++			if (!capable(CAP_NET_ADMIN))
++				return -EPERM;
++			mdio_write(dev, data[0], data[1],data[2]);
+ 		return 0;
+ 		default:
+ 		return -EOPNOTSUPP;
+--- linux-old/drivers/sound/au1550_psc.c	2004-09-19 00:07:37.000000000 +0200
++++ linux/drivers/sound/au1550_psc.c	2006-04-30 20:35:58.000000000 +0200
+@@ -55,14 +55,15 @@
+ #include <asm/au1xxx_psc.h>
+ #include <asm/au1xxx_dbdma.h>
+ 
+-#ifdef CONFIG_MIPS_PB1550
++#if defined(CONFIG_MIPS_PB1550) || defined(CONFIG_MIPS_MTX2)
+ #include <asm/pb1550.h>
+ #endif
+ 
+-#ifdef CONFIG_MIPS_DB1550
++#ifdef CONFIG_MIPS_PB1550
+ #include <asm/db1x00.h>
+ #endif
+ 
++
+ #undef OSS_DOCUMENTED_MIXER_SEMANTICS
+ 
+ #define AU1550_MODULE_NAME "Au1550 psc audio"
+@@ -626,10 +627,13 @@
+ {
+ 	struct dmabuf  *db = &s->dma_adc;
+ 	int	i;
++	unsigned long   flags;
+ 
+ 	if (!db->stopped)
+ 		return;
+ 
++	spin_lock_irqsave(&s->lock, flags);
++
+ 	/* Put two buffers on the ring to get things started.
+ 	*/
+ 	for (i=0; i<2; i++) {
+@@ -648,6 +652,7 @@
+ 	au_sync();
+ 
+ 	db->stopped = 0;
++	spin_unlock_irqrestore(&s->lock, flags);
+ }
+ 
+ static int
+--- linux-old/include/asm-mips/db1x00.h	2004-11-24 12:13:39.000000000 +0100
++++ linux/include/asm-mips/db1x00.h	2006-04-30 20:35:58.000000000 +0200
+@@ -27,7 +27,7 @@
+ #ifndef __ASM_DB1X00_H
+ #define __ASM_DB1X00_H
+ 
+-#ifdef CONFIG_MIPS_DB1550
++#if defined(CONFIG_MIPS_DB1550) || defined(CONFIG_MIPS_MTX2)
+ #define BCSR_KSEG1_ADDR 0xAF000000
+ #define NAND_PHYS_ADDR   0x20000000
+ #define DBDMA_AC97_TX_CHAN DSCR_CMD0_PSC1_TX
+--- linux-old/include/asm-mips/bootinfo.h	2006-05-01 11:55:50.363346500 +0200
++++ linux/include/asm-mips/bootinfo.h	2006-05-01 12:25:54.932125000 +0200
+@@ -180,6 +180,7 @@
+ #define MACH_MTX1		7	/* 4G MTX-1 Au1500-based board */
+ #define MACH_CSB250		8	/* Cogent Au1500 */
+ #define MACH_PB1550     	9       /* Au1550-based eval board */
++#define MACH_MTX2		10	/* 4G MTX-2 Au1550-based board */
+ 
+ /*
+  * Valid machtype for group NEC_VR41XX
+--- linux-old/include/asm-mips64/bootinfo.h	2006-05-01 11:56:02.584110250 +0200
++++ linux/include/asm-mips64/bootinfo.h	2006-05-01 12:26:42.047069500 +0200
+@@ -179,6 +179,7 @@
+ #define MACH_XXS1500		6       /* Au1500-based eval board */
+ #define MACH_MTX1		7	/* 4G MTX-1 Au1500-based board */
+ #define MACH_CSB250		8	/* Cogent Au1500 */
++#define MACH_MTX2		10	/* 4G MTX-2 Au1550-based board */
+ 
+ /*
+  * Valid machtype for group NEC_VR41XX
+--- linux-old/arch/mips/au1000/common/dbdma.c	2004-07-14 08:27:07.000000000 +0200
++++ linux/arch/mips/au1000/common/dbdma.c	2006-04-30 20:35:58.000000000 +0200
+@@ -41,7 +41,9 @@
+ #include <asm/au1xxx_dbdma.h>
+ #include <asm/system.h>
+ 
+-#if defined(CONFIG_SOC_AU1550) || defined(CONFIG_SOC_AU1200)
++#include <linux/module.h>
++
++#if 1 // defined(CONFIG_SOC_AU1550) || defined(CONFIG_SOC_AU1200)
+ 
+ /*
+  * The Descriptor Based DMA supports up to 16 channels.
+@@ -830,5 +832,18 @@
+ 	} while (dp != ctp->chan_desc_base);
+ }
+ 
++
++EXPORT_SYMBOL(au1xxx_dbdma_dump);
++EXPORT_SYMBOL(au1xxx_dbdma_put_source);
++EXPORT_SYMBOL(au1xxx_dbdma_put_dest);
++EXPORT_SYMBOL(au1xxx_dbdma_ring_alloc);
++EXPORT_SYMBOL(au1xxx_dbdma_start);
++EXPORT_SYMBOL(au1xxx_dbdma_get_dest);
++EXPORT_SYMBOL(au1xxx_dbdma_chan_alloc);
++EXPORT_SYMBOL(au1xxx_get_dma_residue);
++EXPORT_SYMBOL(au1xxx_dbdma_set_devwidth);
++EXPORT_SYMBOL(au1xxx_dbdma_chan_free);
++EXPORT_SYMBOL(au1xxx_dbdma_reset);
++
+ #endif /* defined(CONFIG_SOC_AU1550) || defined(CONFIG_SOC_AU1200) */
+ 

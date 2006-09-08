@@ -1,0 +1,42 @@
+--- linux/drivers/usb/host/usb-ohci.c.orig	2006-03-30 11:38:08.972225500 +0200
++++ linux/drivers/usb/host/usb-ohci.c	2006-03-30 11:39:46.858343000 +0200
+@@ -104,6 +104,10 @@
+ 
+ #define OHCI_UNLINK_TIMEOUT	(HZ / 10)
+ 
++static int ohci_delay = 3000;
++MODULE_PARM(ohci_delay, "i");
++MODULE_PARM_DESC(ohci_delay, "Wait time [ms] for OHCI to come up");
++
+ /*-------------------------------------------------------------------------*/
+ 
+ /* AMD-756 (D2 rev) reports corrupt register contents in some cases.
+@@ -2587,12 +2591,12 @@
+ 		hc_release_ohci (ohci);
+ 		return -ENODEV;
+ 	}
+-
++#if 0
+ 	/* FIXME this is a second HC reset; why?? */
+ 	writel (ohci->hc_control = OHCI_USB_RESET, &ohci->regs->control);
+ 	(void)readl (&ohci->regs->intrdisable); /* PCI posting flush */
+ 	wait_ms (10);
+-
++#endif
+ 	usb_register_bus (ohci->bus);
+ 	
+ 	if (request_irq (irq, hc_interrupt, SA_SHIRQ,
+@@ -2668,6 +2672,13 @@
+ 	void *mem_base;
+ 	int status;
+ 
++	printk ("waiting for ohci to come up\n");
++	mdelay(ohci_delay);
++	/* We have to wait for about four seconds for some devices to be available.
++	 * This may only be a matter of the Option Globetrotter Fusion,
++	 * that may need to much time to start up correctly. */
++	printk ("ohci should be up\n");
++			
+ 	if (pci_enable_device(dev) < 0)
+ 		return -ENODEV;
+ 
