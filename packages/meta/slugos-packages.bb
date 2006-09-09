@@ -16,6 +16,9 @@ ALLOW_EMPTY = 1
 
 # The list of packages to build for the slugos DISTRO.
 # KEEP IN ALPHABETICAL ORDER
+# Do *not* simply comment out a line. That will break. Instead
+# remove the package and place it in the corresponding "broken" list
+
 SLUGOS_PACKAGES = "\
 	alsa-lib \
 	alsa-utils \
@@ -74,7 +77,6 @@ SLUGOS_PACKAGES = "\
 	gtk-doc \
 	gzip \
 	hdparm \
-#	icecast \
 	ifupdown \
 	ipkg-utils \
 	iptables \
@@ -185,6 +187,7 @@ SLUGOS_BROKEN_PACKAGES = "\
 	qc-usb-messenger \
 	unionfs-modules \
 	unionfs-utils \
+	icecast \
 	"
 
 # These packages will never build because uclibc lacks (and always will lack)
