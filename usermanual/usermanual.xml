@@ -184,13 +184,13 @@ It's important to use <emphasis>+=</emphasis> so it will get appended to the sta
         <section>
             <title>Getting <application>BitBake</application></title>
             <para>The required version of <application>BitBake</application> is changing rapidly. At the time of writing (16th of May 2006) <application>BitBake</application> 1.4.2 was required.</para>
-            <para>A safe method is to get <application>BitBake</application> from the stable Subversion branch.
+            <para>A safe method is to get <application>BitBake</application> from a stable (even mior number) Subversion branch.
             <screen>
-<command>svn</command> co http://svn.berlios.de/svnroot/repos/bitbake/branches/bitbake-1.4
+<command>svn</command> co http://svn.berlios.de/svnroot/repos/bitbake/branches/bitbake-1.6
 ...
-A   bitbake-1.4/classes/base.bbclass
-U   bitbake-1.4
-Ausgecheckt, Revision 516.
+A   bitbake-1.6/classes/base.bbclass
+U   bitbake-1.6
+Ausgecheckt, Revision 570.
             </screen>
             <application>BitBake</application> is checked out now; this completes the first and most critical dependency of OpenEmbedded. Issuing <command>svn</command> <command>up</command> in the <emphasis>bitbake-1.4</emphasis> directory will update <application>BitBake</application> to the latest stable version, but generally it is a good idea to stick with a specific known working version of <application>BitBake</application> until OpenEmbedded asks you to upgrade.
             </para>
