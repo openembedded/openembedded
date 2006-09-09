@@ -1,20 +1,29 @@
 #!/usr/bin/env python
 
-# sanitize a bitbake file following the OpenEmbedded style guidelines 
-# see http://openembedded.org/wiki/StyleGuide 
-# (C) 2006 Cyril Romain <cyril.romain@gmail.com>
-# MIT license
+""" sanitize a bitbake file following the OpenEmbedded style guidelines
 
-# TODO: 
-#   -  add the others OpenEmbedded variables commonly used
-#   ./ handle comments in .bb files
-#   -  parse command arguments and print usage on misuse
-#       . prevent giving more than one .bb file in arguments
-#   -  write result to a file
-#   -  backup the original .bb file
-#   -  make a diff and ask confirmation for patching ?
-#   -  /!\ startswith('SOMETHING') is not taken into account due to the previous startswith('S').
-#   -  count rule breaks and displays them in the order frequence
+see http://openembedded.org/wiki/StyleGuide 
+(C) 2006 Cyril Romain <cyril.romain@gmail.com>
+MIT license
+
+This script requires the odict module written by Nicola Larosa and Michael 
+Foord.
+To get the odict module is available on:
+ Debian: apt-get install rest2web
+ Gentoo: emerge pythonutils
+ or can be download here: http://www.voidspace.org.uk/python/odict.html
+
+TODO: 
+ - add the others OpenEmbedded variables commonly used:
+ - parse command arguments and print usage on misuse
+    . prevent giving more than one .bb file in arguments
+ - write result to a file
+ - backup the original .bb file
+ - make a diff and ask confirmation for patching ?
+ - do not use startswith only:
+    /!\ startswith('SOMETHING') is not taken into account due to the previous startswith('S').
+ - count rule breaks and displays them in the order frequence
+"""
 
 from odict import OrderedDict
 import fileinput
@@ -22,9 +31,9 @@ import string
 import re
 
 __author__ = "Cyril Romain <cyril.romain@gmail.com>"
-__version__ = "$Revision: 0.3 $"
+__version__ = "$Revision: 0.4 $"
 
-# The ordered list of OpenEmbedded variables
+# The standard set of variables often found in .bb files in the preferred order
 OE_vars = OrderedDict([
     ('DESCRIPTION', []),
     ('AUTHOR', []),
@@ -45,6 +54,7 @@ OE_vars = OrderedDict([
     ('PR', []),
     ('SRC_URI', []),
     ('S', []),
+    ('GPE_TARBALL_SUFFIX', []),
     ('inherit', []),
     ('EXTRA_', []),
     ('do_fetch', []),
@@ -128,7 +138,6 @@ OE_vars = OrderedDict([
     ('GLIBC_ADDONS', []),
     ('GLIBC_EXTRA_OECONF', []),
     ('GNOME_VFS_HEADERS', []),
-    ('GPE_TARBALL_SUFFIX', []),
     ('HEADERS', []),
     ('INHIBIT_DEFAULT_DEPS', []),
     ('INITSCRIPT_NAME', []),
@@ -201,90 +210,108 @@ OE_vars = OrderedDict([
 varRegexp = r'^([A-Z_0-9]*)([ \t]*?)([+.:]?=[+.]?)([ \t]*?)("[^"]*["\\]?)'
 routineRegexp = r'^([a-zA-Z0-9_ -]+?)\('
 
-# Style guideline #0: No spaces are allowed at the beginning of lines that define a variable or a do_ routine
-def check_rule0(line): 
+# _Format guideline #0_: 
+#   No spaces are allowed at the beginning of lines that define a variable or 
+#   a do_ routine
+def respect_rule0(line): 
     return line.lstrip()==line
-def follow_rule0(line): 
+def conformTo_rule0(line): 
     return line.lstrip()
 
-# Style guideline #1: No spaces are allowed behind the line continuation symbol '\'
-def check_rule1(line):
+# _Format guideline #1_: 
+#   No spaces are allowed behind the line continuation symbol '\'
+def respect_rule1(line):
     if line.rstrip().endswith('\\'):
         return line.endswith('\\')
     else: 
         return True
-def follow_rule1(line):
+def conformTo_rule1(line):
     return line.rstrip()
 
-# Style guideline #2: Tabs should not be used (use spaces instead).
-def check_rule2(line):
+# _Format guideline #2_: 
+#   Tabs should not be used (use spaces instead).
+def respect_rule2(line):
     return line.count('\t')==0
-def follow_rule2(line):
+def conformTo_rule2(line):
     return line.expandtabs()
 
-# Style guideline #3: Comments inside bb files are allowed using the '#' character at the beginning of a line.
-def check_rule3(line):
+# _Format guideline #3_:
+#   Comments inside bb files are allowed using the '#' character at the 
+#   beginning of a line.
+def respect_rule3(line):
     if line.lstrip().startswith('#'):
         return line.startswith('#')
     else: 
         return True
-def follow_rule3(line):
+def conformTo_rule3(line):
     return line.lstrip()
 
-# Style guideline #4: Use quotes on the right hand side of assignments: FOO = "BAR"
-def check_rule4(line):
+# _Format guideline #4_:
+#   Use quotes on the right hand side of assignments: FOO = "BAR"
+def respect_rule4(line):
     return re.match(varRegexp, line) is not None
-def follow_rule4(line):
-    return follow_rule5(line)
+def conformTo_rule4(line):
+    return conformTo_rule5_(line)
 
-# Style guideline #5: The correct spacing for a variable is FOO = "BAR".
-def check_rule5(line):
+# _Format guideline #5_:
+#   The correct spacing for a variable is FOO = "BAR".
+def respect_rule5(line):
     r = re.search(varRegexp, line)
     return r is not None and r.group(2)==" " and r.group(4)==" "
-def follow_rule5(line):
+def conformTo_rule5(line):
     r = re.search(varRegexp, line)
     return ''.join([r.group(1), ' ', r.group(3), ' ', r.group(5)])
 
-# Style guideline #6: Don't use spaces or tabs on empty lines
-def check_rule6(line):
+# _Format guideline #6_:
+#   Don't use spaces or tabs on empty lines
+def respect_rule6(line):
     return not line.isspace() or line=="\n"
-def follow_rule6(line):
+def conformTo_rule6(line):
     return ""
 
-# Style guideline #7: Indentation of multiline variables such as SRC_URI is desireable.
-def check_rule7(line):
+# _Format guideline #7_:
+#   Indentation of multiline variables such as SRC_URI is desireable.
+def respect_rule7(line):
     return True
-def follow_rule7(line):
+def conformTo_rule7(line):
     return line
 
 rules = (
-    (check_rule0, follow_rule0, "No spaces are allowed at the beginning of lines that define a variable or a do_ routine"),
-    (check_rule1, follow_rule1, "No spaces are allowed behind the line continuation symbol '\\'"),
-    (check_rule2, follow_rule2, "Tabs should not be used (use spaces instead)"),
-    (check_rule3, follow_rule3, "Comments inside bb files are allowed using the '#' character at the beginning of a line"),
-    (check_rule4, follow_rule4, "Use quotes on the right hand side of assignments: FOO = \"BAR\""),
-    (check_rule5, follow_rule5, "The correct spacing for a variable is FOO = \"BAR\""),
-    (check_rule6, follow_rule6, "Don't use spaces or tabs on empty lines"),
-    (check_rule7, follow_rule7, "Indentation of multiline variables such as SRC_URI is desireable"),
+    (respect_rule0, conformTo_rule0, "No spaces are allowed at the beginning of lines that define a variable or a do_ routine"),
+    (respect_rule1, conformTo_rule1, "No spaces are allowed behind the line continuation symbol '\\'"),
+    (respect_rule2, conformTo_rule2, "Tabs should not be used (use spaces instead)"),
+    (respect_rule3, conformTo_rule3, "Comments inside bb files are allowed using the '#' character at the beginning of a line"),
+    (respect_rule4, conformTo_rule4, "Use quotes on the right hand side of assignments: FOO = \"BAR\""),
+    (respect_rule5, conformTo_rule5, "The correct spacing for a variable is FOO = \"BAR\""),
+    (respect_rule6, conformTo_rule6, "Don't use spaces or tabs on empty lines"),
+    (respect_rule7, conformTo_rule7, "Indentation of multiline variables such as SRC_URI is desireable"),
 )
 
+# Function to check that a line respects a rule. If not, it tries to conform
+# the line to the rule. Reminder or Disgression message are dump accordingly.
 def follow_rule(i, line):
     oldline = line
+    # if the line does not respect the rule
     if not rules[i][0](line):
+        # try to conform it to the rule
         line = rules[i][1](line)
+        # if the line still does not respect the rule
         if not rules[i][0](line):
-            print "## Rule %d disgression: on this line: " % i, line
-            print "## Warning: ", rules[i][2]
+            # this is a rule disgression
+            print "## Disgression: ", rules[i][2], " in:", line
         else:
+            # just remind user about his/her errors
             print "## Reminder: ", rules[i][2], " in :", oldline
     return line
 
 
 if __name__ == "__main__":
 
-    # -- retrieves lines of the .bb file --
+    # -- retrieves the lines of the .bb file --
     lines = []
     for line in fileinput.input():
+        # use 'if True' to warn user about all the rule he/she breaks
+        # use 'if False' to conform to rules{2,1,6} without warnings
         if True:
             lines.append(line)
         else:
@@ -301,12 +328,13 @@ if __name__ == "__main__":
     in_routine = False
     commentBloc = []
     olines = []
-    unknownVar = []
     for line in lines: 
+        # rstrip line to remove line breaks characters
         line = line.rstrip()
         line = follow_rule(2, line)
         line = follow_rule(1, line)
         line = follow_rule(6, line)
+
         # ignore empty lines
         if line.isspace() or line is '':
             # flush comments into the olines
@@ -348,15 +376,12 @@ if __name__ == "__main__":
                     var = (keep==True or in_routine==True) and k or ""
                     break
             if not varexist:
-                s = string.split(line)[0].rstrip().lstrip()
-                if s not in unknownVar: 
-                    unknownVar.append(s)
                 if not in_routine:
                     print "## Warning: unknown variable/routine \"%s\"" % line
                     OE_vars['others'].append(line)
         if not keep and not in_routine: var = ""
 
-    # -- prepare the sanitized .bb file --
+    # -- dump the sanitized .bb file --
     #for k in OE_vars: print k, OE_vars[k]
     addEmptyLine = False
     for k in OE_vars:
@@ -366,4 +391,4 @@ if __name__ == "__main__":
             for l in OE_vars[k]: 
                 olines.append(l)
     for line in olines: print line
-    #for i in unknownVar: print i, '\n'
+
