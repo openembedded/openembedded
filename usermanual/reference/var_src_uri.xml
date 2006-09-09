@@ -334,6 +334,15 @@
         </varlistentry>
 
         <varlistentry>
+          <term>CVSDIR</term>
+
+          <listitem>
+            <para>The directory in which the cvs checkouts will be performed.
+            The default is <command>${DL_DIR}/cvs</command>.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
           <term>DL_DIR</term>
 
           <listitem>
@@ -401,6 +410,15 @@
 
     <para>Related variables:<variablelist>
         <varlistentry>
+          <term>SVNDIR</term>
+
+          <listitem>
+            <para>The directory in which the svn checkouts will be performed..
+            The default is <command>${DL_DIR}/svn</command>.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
           <term>DL_DIR</term>
 
           <listitem>
@@ -447,10 +465,11 @@
 
     <para><variablelist>
         <varlistentry>
-          <term>GIT_DIR</term>
+          <term>GITDIR</term>
 
           <listitem>
-            <para>The directory where git clones will be stored.</para>
+            <para>The directory in which the git checkouts will be performed.
+            The default is <command>${DL_DIR}/git</command>.</para>
           </listitem>
         </varlistentry>
 
