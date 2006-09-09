@@ -2,7 +2,7 @@ DESCRIPTION = "The Zsh shell"
 SECTION = "base/shell"
 PRIORITY = "optional"
 MAINTAINER = "Chris Larson <kergoth@handhelds.org>"
-DEPENDS = "ncurses pcre"
+DEPENDS = "ncurses libpcre"
 PR = "r2"
 LICENSE = "zsh"
 

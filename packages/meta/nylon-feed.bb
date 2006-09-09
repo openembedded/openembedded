@@ -24,7 +24,7 @@ DEPENDS = "${NYLON_FEED} \
     openssl \
     openswan \
     openvpn \
-    pcre \
+    libpcre \
     ppp-dsl \
     rp-pppoe \
     simple-firewall \

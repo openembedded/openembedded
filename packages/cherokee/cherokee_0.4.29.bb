@@ -1,7 +1,7 @@
 # Cherokee web server
 DESCRIPTION = "Cherokee Web Server fast and secure"
 LICENSE = "GPL"
-DEPENDS = "openssl pcre"
+DEPENDS = "openssl libpcre"
 SRC_URI = "http://www.0x50.org/download/0.4/${PV}/${P}.tar.gz \
 	  file://configure.patch;patch=1 \
 	  file://Makefile.in.patch;patch=1 \

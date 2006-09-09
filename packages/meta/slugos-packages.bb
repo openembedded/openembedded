@@ -138,7 +138,7 @@ SLUGOS_PACKAGES = "\
 	openvpn \
 	patch \
 	pciutils \
-	pcre \
+	libpcre \
 	perl \
 	pkgconfig \
 	ppp \
