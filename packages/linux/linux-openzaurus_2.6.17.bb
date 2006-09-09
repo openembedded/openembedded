@@ -1,6 +1,6 @@
 require linux-openzaurus.inc
 
-PR = "r25"
+PR = "r26"
 
 # Handy URLs
 # git://rsync.kernel.org/pub/scm/linux/kernel/git/torvalds/linux-2.6.git \
@@ -48,7 +48,7 @@ SRC_URI = "http://www.kernel.org/pub/linux/kernel/v2.6/linux-2.6.17.tar.bz2 \
            ${RPSRC}/locomo_kbd_tweak-r1.patch;patch=1 \
            ${RPSRC}/poodle_pm-r3.patch;patch=1 \
            ${RPSRC}/pxafb_changeres-r0.patch;patch=1 \
-           ${RPSRC}/poodle_audio-r3.patch;patch=1 \
+           ${RPSRC}/poodle_audio-r4.patch;patch=1 \
            ${RPSRC}/pxa27x_overlay-r2.patch;patch=1 \
            file://serial-add-support-for-non-standard-xtals-to-16c950-driver.patch;patch=1 \
            file://hrw-pcmcia-ids-r4.patch;patch=1 \
