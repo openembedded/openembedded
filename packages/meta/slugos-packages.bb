@@ -185,7 +185,6 @@ SLUGOS_BROKEN_PACKAGES = "\
 	qc-usb-messenger \
 	unionfs-modules \
 	unionfs-utils \
-	ushare \
 	"
 
 # These packages will never build because uclibc lacks (and always will lack)
@@ -207,6 +206,7 @@ UCLIBC_BROKEN_PACKAGES = "\
 	boost \
 	linphone \
 	sudo \
+	ushare \
 	"
 
 # Packages which build only with glibc (some of these use internal
