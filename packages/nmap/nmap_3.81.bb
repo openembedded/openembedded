@@ -3,7 +3,7 @@ HOMEPAGE = "http://www.insecure.org/nmap/"
 MAINTAINER = "Chris Larson <kergoth@handhelds.org>"
 SECTION = "console/network"
 LICENSE = "GPL"
-DEPENDS = "libpcap pcre"
+DEPENDS = "libpcap libpcre"
 PR = "r1"
 
 inherit autotools

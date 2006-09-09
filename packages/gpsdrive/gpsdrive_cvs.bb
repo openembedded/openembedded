@@ -7,7 +7,7 @@ DEFAULT_PREFERENCE="-1"
 
 PACKAGES += "gpsdrive-add"
 DESCRIPTION = "GPS navigation/map display software"
-DEPENDS = "virtual/libc libart-lgpl gtk+ pcre gpsd"
+DEPENDS = "virtual/libc libart-lgpl gtk+ libpcre gpsd"
 RDEPENDS_${PN} = "gdk-pixbuf-loader-gif gpsd"
 MAINTAINER = "Koen Kooi <koen@linuxtogo.org>"
 SECTION = "x11"

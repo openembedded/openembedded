@@ -1,5 +1,5 @@
 SECTION = "console/network"
-DEPENDS = "virtual/db pcre postfix-native"
+DEPENDS = "virtual/db libpcre postfix-native"
 LICENSE = "IPL"
 PR = "r8"
 

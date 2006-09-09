@@ -1,7 +1,7 @@
 DESCRIPTION = "Cherokee Web Server fast and secure"
 DESCRIPTION_cget = "Small downloader based in the Cherokee client library"
 LICENSE = "GPL"
-DEPENDS = "pcre gnutls"
+DEPENDS = "libpcre gnutls"
 HOMEPAGE = "http://www.0x50.org/"
 PR = "r1"
 

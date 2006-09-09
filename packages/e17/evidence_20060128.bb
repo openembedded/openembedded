@@ -1,7 +1,7 @@
 DESCRIPTION = "evidence, an enlightenemt file manager"
 LICENSE = "GPL"
 # can support dbus, avifile, libmpeg3
-DEPENDS = "pkgconfig gtk+ glib-2.0 ecore-x11 evas-x11 edb eet edje imlib2-x11 libpng epeg jpeg pcre curl taglib libvorbis libogg libxine-x11 emotion freetype"
+DEPENDS = "pkgconfig gtk+ glib-2.0 ecore-x11 evas-x11 edb eet edje imlib2-x11 libpng epeg jpeg libpcre curl taglib libvorbis libogg libxine-x11 emotion freetype"
 RDEPENDS += "examine"
 PR = "r0"
 
