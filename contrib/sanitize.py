@@ -1,17 +1,11 @@
 #!/usr/bin/env python
 
-""" sanitize a bitbake file following the OpenEmbedded style guidelines
-
+"""\
+Sanitize a bitbake file following the OpenEmbedded style guidelines,
 see http://openembedded.org/wiki/StyleGuide 
+
 (C) 2006 Cyril Romain <cyril.romain@gmail.com>
 MIT license
-
-This script requires the odict module written by Nicola Larosa and Michael 
-Foord.
-To get the odict module is available on:
- Debian: apt-get install rest2web
- Gentoo: emerge pythonutils
- or can be download here: http://www.voidspace.org.uk/python/odict.html
 
 TODO: 
  - add the others OpenEmbedded variables commonly used:
@@ -25,7 +19,6 @@ TODO:
  - count rule breaks and displays them in the order frequence
 """
 
-from odict import OrderedDict
 import fileinput
 import string
 import re
@@ -34,181 +27,186 @@ __author__ = "Cyril Romain <cyril.romain@gmail.com>"
 __version__ = "$Revision: 0.4 $"
 
 # The standard set of variables often found in .bb files in the preferred order
-OE_vars = OrderedDict([
-    ('DESCRIPTION', []),
-    ('AUTHOR', []),
-    ('HOMEPAGE', []),
-    ('SECTION', []),
-    ('PRIORITY', []),
-    ('MAINTAINER', []),
-    ('LICENSE', []),
-    ('DEPENDS', []),
-    ('RDEPENDS', []),
-    ('RRECOMMENDS', []),
-    ('RSUGGESTS', []),
-    ('PROVIDES', []),
-    ('RPROVIDES', []),
-    ('RCONFLICTS', []),
-    ('SRCDATE', []),
-    ('PV', []),
-    ('PR', []),
-    ('SRC_URI', []),
-    ('S', []),
-    ('GPE_TARBALL_SUFFIX', []),
-    ('inherit', []),
-    ('EXTRA_', []),
-    ('do_fetch', []),
-    ('do_unpack', []),
-    ('do_patch', []),
-    ('do_configure', []),
-    ('do_compile', []),
-    ('do_install', []),
-    ('do_package', []),
-    ('do_stage', []),
-    ('PACKAGE_ARCH', []),
-    ('PACKAGES', []),
-    ('FILES', []),
-    ('WORKDIR', []),
-    ('acpaths', []),
-    ('addhandler', []),
-    ('addtask', []),
-    ('bindir', []),
-    ('export', []),
-    ('headers', []),
-    ('include', []),
-    ('includedir', []),
-    ('python', []),
-    ('qtopiadir', []),
-    ('pkg_postins', []),
-    ('pkg_postrm', []),
-    ('require', []),
-    ('sbindir', []),
-    ('basesysconfdir', []),
-    ('sysconfdir', []),
-    ('ALLOW_EMPTY', []),
-    ('ALTERNATIVE_LINK', []),
-    ('ALTERNATIVE_NAME', []),
-    ('ALTERNATIVE_PATH', []),
-    ('ALTERNATIVE_PRIORITY', []),
-    ('ALTNAME', []),
-    ('AMD_DRIVER_LABEL', []),
-    ('AMD_DRIVER_VERSION', []),
-    ('ANGSTROM_EXTRA_INSTALL', []),
-    ('APPDESKTOP', []),
-    ('APPIMAGE', []),
-    ('APPNAME', []),
-    ('APPTYPE', []),
-    ('APPWEB_BUILD', []),
-    ('APPWEB_HOST', []),
-    ('AR', []),
-    ('ARCH', []),
-    ('ARM_INSTRUCTION_SET', []),
-    ('ARM_MUTEX', []),
-    ('ART_CONFIG', []),
-    ('B', []),
-    ('BJAM_OPTS', []),
-    ('BJAM_TOOLS', []),
-    ('BONOBO_HEADERS', []),
-    ('BOOTSCRIPTS', []),
-    ('BROKEN', []),
-    ('BUILD_ALL_DEPS', []),
-    ('BUILD_CPPFLAGS', []),
-    ('CFLAGS', []),
-    ('CCFLAGS', []),
-    ('CMDLINE', []),
-    ('COLLIE_MEMORY_SIZE', []),
-    ('COMPATIBLE_HOST', []),
-    ('COMPATIBLE_MACHINE', []),
-    ('COMPILE_HERMES', []),
-    ('CONFFILES', []),
-    ('CONFLICTS', []),
-    ('CORE_EXTRA_D', []),
-    ('CORE_PACKAGES_D', []),
-    ('CORE_PACKAGES_RD', []),
-    ('CPPFLAGS', []),
-    ('CVSDATE', []),
-    ('CXXFLAGS', []),
-    ('DEBIAN_NOAUTONAME', []),
-    ('DEBUG_APPS', []),
-    ('DEFAULT_PREFERENCE', []),
-    ('DB4_CONFIG', []),
-    ('EXCLUDE_FROM_SHLIBS', []),
-    ('EXCLUDE_FROM_WORLD', []),
-    ('FIXEDSRCDATE', []),
-    ('GLIBC_ADDONS', []),
-    ('GLIBC_EXTRA_OECONF', []),
-    ('GNOME_VFS_HEADERS', []),
-    ('HEADERS', []),
-    ('INHIBIT_DEFAULT_DEPS', []),
-    ('INITSCRIPT_NAME', []),
-    ('INITSCRIPT_PACKAGES', []),
-    ('INITSCRIPT_PARAMS', []),
-    ('IPKG_INSTALL', []),
-    ('KERNEL_IMAGETYPE', []),
-    ('KERNEL_IMAGEDEST', []),
-    ('KERNEL_OUTPUT', []),
-    ('KERNEL_RELEASE', []),
-    ('KERNEL_PRIORITY', []),
-    ('KERNEL_SOURCE', []),
-    ('KERNEL_SUFFIX', []),
-    ('KERNEL_VERSION', []),
-    ('K_MAJOR', []),
-    ('K_MICRO', []),
-    ('K_MINOR', []),
-    ('HHV', []),
-    ('KV', []),
-    ('LDFLAGS', []),
-    ('LD', []),
-    ('LD_SO', []),
-    ('LDLIBS', []),
-    ('LEAD_SONAME', []),
-    ('LIBTOOL', []),
-    ('LIBBDB_EXTRA', []),
-    ('LIBV', []),
-    ('MACHINE', []),
-    ('MACHINE_ESSENTIAL_EXTRA_RDEPENDS', []),
-    ('MACHINE_ESSENTIAL_EXTRA_RRECOMMENDS', []),
-    ('MACHINE_EXTRA_RDEPENDS', []),
-    ('MACHINE_EXTRA_RRECOMMENDS', []),
-    ('MACHINE_FEATURES', []),
-    ('MACHINE_TASKS', []),
-    ('MACHTYPE', []),
-    ('MAKE_TARGETS', []),
-    ('MESSAGEUSER', []),
-    ('MESSAGEHOME', []),
-    ('MIRRORS', []),
-    ('MUTEX', []),
-    ('OE_QMAKE_INCDIR_QT', []),
-    ('OE_QMAKE_CXXFLAGS', []),
-    ('ORBIT_IDL_SRC', []),
-    ('PARALLEL_MAKE', []),
-    ('PAKCAGE_ARCH', []),
-    ('PCMCIA_MANAGER', []),
-    ('PKG_BASENAME', []),
-    ('QEMU', []),
-    ('QMAKE_PROFILES', []),
-    ('QPEDIR', []),
-    ('QPF_DESCRIPTION', []),
-    ('QPF_PKGPATTERN', []),
-    ('QT_CONFIG_FLAGS', []),
-    ('QT_LIBRARY', []),
-    ('ROOTFS_POSTPROCESS_COMMAND', []),
-    ('RREPLACES', []),
-    ('TARGET_CFLAGS', []),
-    ('TARGET_CPPFLAGS', []),
-    ('TARGET_LDFLAGS', []),
-    ('UBOOT_MACHINE', []),
-    ('UCLIBC_BASE', []),
-    ('UCLIBC_PATCHES', []),
-    ('UNSLUNG_PACKAGES', []),
-    ('VIRTUAL_NAME', []),
-    ('XORG_PN', []),
-    ('XSERVER', []),
-    ('others', [])
-])
+OE_vars = [
+    'DESCRIPTION',
+    'AUTHOR',
+    'HOMEPAGE',
+    'SECTION',
+    'PRIORITY',
+    'MAINTAINER',
+    'LICENSE',
+    'DEPENDS',
+    'RDEPENDS',
+    'RRECOMMENDS',
+    'RSUGGESTS',
+    'PROVIDES',
+    'RPROVIDES',
+    'RCONFLICTS',
+    'SRCDATE',
+    'PV',
+    'PR',
+    'SRC_URI',
+    'S',
+    'GPE_TARBALL_SUFFIX',
+    'inherit',
+    'EXTRA_',
+    'do_fetch',
+    'do_unpack',
+    'do_patch',
+    'do_configure',
+    'do_compile',
+    'do_install',
+    'do_package',
+    'do_stage',
+    'PACKAGE_ARCH',
+    'PACKAGES',
+    'FILES',
+    'WORKDIR',
+    'acpaths',
+    'addhandler',
+    'addtask',
+    'bindir',
+    'export',
+    'headers',
+    'include',
+    'includedir',
+    'python',
+    'qtopiadir',
+    'pkg_postins',
+    'pkg_postrm',
+    'require',
+    'sbindir',
+    'basesysconfdir',
+    'sysconfdir',
+    'ALLOW_EMPTY',
+    'ALTERNATIVE_LINK',
+    'ALTERNATIVE_NAME',
+    'ALTERNATIVE_PATH',
+    'ALTERNATIVE_PRIORITY',
+    'ALTNAME',
+    'AMD_DRIVER_LABEL',
+    'AMD_DRIVER_VERSION',
+    'ANGSTROM_EXTRA_INSTALL',
+    'APPDESKTOP',
+    'APPIMAGE',
+    'APPNAME',
+    'APPTYPE',
+    'APPWEB_BUILD',
+    'APPWEB_HOST',
+    'AR',
+    'ARCH',
+    'ARM_INSTRUCTION_SET',
+    'ARM_MUTEX',
+    'ART_CONFIG',
+    'B',
+    'BJAM_OPTS',
+    'BJAM_TOOLS',
+    'BONOBO_HEADERS',
+    'BOOTSCRIPTS',
+    'BROKEN',
+    'BUILD_ALL_DEPS',
+    'BUILD_CPPFLAGS',
+    'CFLAGS',
+    'CCFLAGS',
+    'CMDLINE',
+    'COLLIE_MEMORY_SIZE',
+    'COMPATIBLE_HOST',
+    'COMPATIBLE_MACHINE',
+    'COMPILE_HERMES',
+    'CONFFILES',
+    'CONFLICTS',
+    'CORE_EXTRA_D',
+    'CORE_PACKAGES_D',
+    'CORE_PACKAGES_RD',
+    'CPPFLAGS',
+    'CVSDATE',
+    'CXXFLAGS',
+    'DEBIAN_NOAUTONAME',
+    'DEBUG_APPS',
+    'DEFAULT_PREFERENCE',
+    'DB4_CONFIG',
+    'EXCLUDE_FROM_SHLIBS',
+    'EXCLUDE_FROM_WORLD',
+    'FIXEDSRCDATE',
+    'GLIBC_ADDONS',
+    'GLIBC_EXTRA_OECONF',
+    'GNOME_VFS_HEADERS',
+    'HEADERS',
+    'INHIBIT_DEFAULT_DEPS',
+    'INITSCRIPT_NAME',
+    'INITSCRIPT_PACKAGES',
+    'INITSCRIPT_PARAMS',
+    'IPKG_INSTALL',
+    'KERNEL_IMAGETYPE',
+    'KERNEL_IMAGEDEST',
+    'KERNEL_OUTPUT',
+    'KERNEL_RELEASE',
+    'KERNEL_PRIORITY',
+    'KERNEL_SOURCE',
+    'KERNEL_SUFFIX',
+    'KERNEL_VERSION',
+    'K_MAJOR',
+    'K_MICRO',
+    'K_MINOR',
+    'HHV',
+    'KV',
+    'LDFLAGS',
+    'LD',
+    'LD_SO',
+    'LDLIBS',
+    'LEAD_SONAME',
+    'LIBTOOL',
+    'LIBBDB_EXTRA',
+    'LIBV',
+    'MACHINE',
+    'MACHINE_ESSENTIAL_EXTRA_RDEPENDS',
+    'MACHINE_ESSENTIAL_EXTRA_RRECOMMENDS',
+    'MACHINE_EXTRA_RDEPENDS',
+    'MACHINE_EXTRA_RRECOMMENDS',
+    'MACHINE_FEATURES',
+    'MACHINE_TASKS',
+    'MACHTYPE',
+    'MAKE_TARGETS',
+    'MESSAGEUSER',
+    'MESSAGEHOME',
+    'MIRRORS',
+    'MUTEX',
+    'OE_QMAKE_INCDIR_QT',
+    'OE_QMAKE_CXXFLAGS',
+    'ORBIT_IDL_SRC',
+    'PARALLEL_MAKE',
+    'PAKCAGE_ARCH',
+    'PCMCIA_MANAGER',
+    'PKG_BASENAME',
+    'QEMU',
+    'QMAKE_PROFILES',
+    'QPEDIR',
+    'QPF_DESCRIPTION',
+    'QPF_PKGPATTERN',
+    'QT_CONFIG_FLAGS',
+    'QT_LIBRARY',
+    'ROOTFS_POSTPROCESS_COMMAND',
+    'RREPLACES',
+    'TARGET_CFLAGS',
+    'TARGET_CPPFLAGS',
+    'TARGET_LDFLAGS',
+    'UBOOT_MACHINE',
+    'UCLIBC_BASE',
+    'UCLIBC_PATCHES',
+    'UNSLUNG_PACKAGES',
+    'VIRTUAL_NAME',
+    'XORG_PN',
+    'XSERVER',
+    'others'
+]
 
 varRegexp = r'^([A-Z_0-9]*)([ \t]*?)([+.:]?=[+.]?)([ \t]*?)("[^"]*["\\]?)'
 routineRegexp = r'^([a-zA-Z0-9_ -]+?)\('
+
+# Variables seen in the processed .bb
+seen_vars = {}
+for v in OE_vars: 
+    seen_vars[v] = []
 
 # _Format guideline #0_: 
 #   No spaces are allowed at the beginning of lines that define a variable or 
@@ -353,11 +351,11 @@ if __name__ == "__main__":
             commentBloc.append(line)
             continue
 
-        if OE_vars.has_key(var):
+        if seen_vars.has_key(var):
             for c in commentBloc: 
-                OE_vars[var].append(c)
+                seen_vars[var].append(c)
                 commentBloc = []
-            OE_vars[var].append(line)
+            seen_vars[var].append(line)
         else:
             varexist = False
             for k in OE_vars:
@@ -370,15 +368,15 @@ if __name__ == "__main__":
                         line = follow_rule(4, line)
                         line = follow_rule(5, line)
                     for c in commentBloc: 
-                        OE_vars[k].append(c)
+                        seen_vars[k].append(c)
                         commentBloc = []
-                    OE_vars[k].append(line)
+                    seen_vars[k].append(line)
                     var = (keep==True or in_routine==True) and k or ""
                     break
             if not varexist:
                 if not in_routine:
                     print "## Warning: unknown variable/routine \"%s\"" % line
-                    OE_vars['others'].append(line)
+                    seen_vars['others'].append(line)
         if not keep and not in_routine: var = ""
 
     # -- dump the sanitized .bb file --
@@ -386,9 +384,9 @@ if __name__ == "__main__":
     addEmptyLine = False
     for k in OE_vars:
         if k=='SRC_URI': addEmptyLine = True
-        if OE_vars[k] != []: 
+        if seen_vars[k] != []: 
             if addEmptyLine: olines.append("")
-            for l in OE_vars[k]: 
+            for l in seen_vars[k]: 
                 olines.append(l)
     for line in olines: print line
 
