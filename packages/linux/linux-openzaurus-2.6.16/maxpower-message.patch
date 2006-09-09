@@ -1,0 +1,55 @@
+From: Daniel Drake <dsd@gentoo.org>
+Date: Fri, 26 May 2006 20:36:28 +0000 (+0100)
+Subject: [PATCH] USB: print message when device is rejected due to insufficient power
+X-Git-Tag: v2.6.18-rc1
+X-Git-Url: http://kernel.org/git/?p=linux/kernel/git/torvalds/linux-2.6.git;a=commitdiff;h=1fbe75e12f0dd567c86533e13ba2605f3ecad2e1
+
+[PATCH] USB: print message when device is rejected due to insufficient power
+
+2.6.16 introduces USB power budgeting in the Linux kernel, and since then, a
+fair number of users have observed that some of their devices no longer work in
+unpowered hubs (this is not a bug, the devices claim that they need more than
+100mA).
+
+The very least we can do is print an informational message to the kernel log
+when this happens, otherwise it is not at all clear why the device was not
+accepted.
+
+Signed-off-by: Daniel Drake <dsd@gentoo.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@suse.de>
+---
+
+--- a/drivers/usb/core/hub.c
++++ b/drivers/usb/core/hub.c
+@@ -1176,6 +1176,7 @@ static int choose_configuration(struct u
+ {
+ 	int i;
+ 	int num_configs;
++	int insufficient_power = 0;
+ 	struct usb_host_config *c, *best;
+ 
+ 	best = NULL;
+@@ -1228,8 +1229,10 @@ static int choose_configuration(struct u
+ 		 */
+ 
+ 		/* Rule out configs that draw too much bus current */
+-		if (c->desc.bMaxPower * 2 > udev->bus_mA)
++		if (c->desc.bMaxPower * 2 > udev->bus_mA) {
++			insufficient_power++;
+ 			continue;
++		}
+ 
+ 		/* If the first config's first interface is COMM/2/0xff
+ 		 * (MSFT RNDIS), rule it out unless Linux has host-side
+@@ -1263,6 +1266,11 @@ static int choose_configuration(struct u
+ 			best = c;
+ 	}
+ 
++	if (insufficient_power > 0)
++		dev_info(&udev->dev, "rejected %d configuration%s "
++			"due to insufficient available bus power\n",
++			insufficient_power, plural(insufficient_power));
++
+ 	if (best) {
+ 		i = best->desc.bConfigurationValue;
+ 		dev_info(&udev->dev,

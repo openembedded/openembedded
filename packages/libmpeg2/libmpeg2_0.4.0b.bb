@@ -4,14 +4,16 @@ PRIORITY = "optional"
 MAINTAINER = "Tim Ansell <ipks@mithis.net>"
 DEPENDS = "virtual/libsdl"
 LICENSE = "GPL"
+PR = "r1"
 
 SRC_URI = "http://libmpeg2.sourceforge.net/files/mpeg2dec-${PV}.tar.gz \
 			file://Makefile.patch;patch=1 "
+
 S = "${WORKDIR}/mpeg2dec-0.4.0"
 
 inherit autotools
 
-EXTRA_OECONF="--enable-shared"
+EXTRA_OECONF="--enable-shared --without-x"
 
 do_stage() {
 	oe_libinstall -a -so -C libmpeg2 libmpeg2 ${STAGING_LIBDIR}
