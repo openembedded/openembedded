@@ -10,7 +10,7 @@ boots your Linux system. LILO loads the Linux kernel from a floppy or \
 a hard drive, boots the kernel, and passes control of the system to \
 the kernel. LILO can also boot other operating systems. LILO-sh is a \
 port of LILO to the SH processor."
-SECTION="bootloader"
+SECTION="bootloaders"
 MAINTAINER = "Jamie Lenehan <lenehan@twibble.org>"
 LICENSE = "MIT"
 PR = "r0"
