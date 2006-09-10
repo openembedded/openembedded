@@ -9,139 +9,139 @@ SECTION = "network"
 MAINTAINER = "Jamie Lenehan <lenehan@twibble.org>"
 LICENSE = "GPL"
 DEPENDS = "readline ncurses perl-native"
+# Each of the per-protocol packages depends on the main package
+RDEPENDS_${PN}-ospfd    = ${PN}
+RDEPENDS_${PN}-ospf6d   = ${PN}
+RDEPENDS_${PN}-bgpd     = ${PN}
+RDEPENDS_${PN}-ripd     = ${PN}
+RDEPENDS_${PN}-ripngd   = ${PN}
+RDEPENDS_${PN}-isisd    = ${PN}
+RDEPENDS_${PN}-ospfclient = ${PN}
+RDEPENDS_${PN}-doc      = ""
+RDEPENDS_${PN}-watchquagga = ${PN}
+# the "ip" command from busybox is not sufficient (flush by protocol flushes all routes)
+RDEPENDS_${PN}          += "iproute2"
+# These are required for vtysh
+RDEPENDS_${PN}          += "ncurses readline"
 
 # ${QUAGGASUBDIR} is deal with old versions. Set to "/attic" for old
 # versions and leave it empty for recent versions.
 SRC_URI = "http://www.quagga.net/download${QUAGGASUBDIR}/quagga-${PV}.tar.gz \
-	   file://fix-for-lib-inpath.patch;patch=1 \
-	   file://quagga.init \
-	   file://quagga.default \
-	   file://watchquagga.init \
-	   file://watchquagga.default"
-
-# Main init script starts all deamons
-# Seperate init script for watchquagga
-INITSCRIPT_PACKAGES			= "${PN} ${PN}-watchquagga"
-INITSCRIPT_NAME_${PN}			= "quagga"
-INITSCRIPT_PARAMS_${PN} 		= "defaults 15 85"
-INITSCRIPT_NAME_${PN}-watchquagga	= "watchquagga"
-INITSCRIPT_PARAMS_${PN}-watchquagga	= "defaults 90 10"
+           file://fix-for-lib-inpath.patch;patch=1 \
+           file://quagga.init \
+           file://quagga.default \
+           file://watchquagga.init \
+           file://watchquagga.default"
 
 inherit autotools update-rc.d
 
 # Turn on options and changes paths.
 # This matches the layout and configuration of the debian quagga package
 EXTRA_OECONF = "--prefix=${prefix} \
-		--libexecdir=${libexecdir}/quagga \
-		--sbindir=${libdir}/quagga \
-		--sysconfdir=${sysconfdir}/quagga \
-		--localstatedir=${localstatedir}/run/quagga \
-		--enable-exampledir=${docdir}/quagga/examples/ \
-		--enable-vtysh \
-		--enable-isisd \
-		--enable-watchquagga \
-		--enable-ospf-te \
-		--enable-opaque-lsa \
-		--enable-ipv6 \
-		--enable-ospfclient=yes \
-		--enable-multipath=64 \
-		--enable-user=quagga \
-		--enable-group=quagga \
-		--enable-vty-group=quaggavty \
-		--enable-configfile-mask=0640 \
-		--enable-logfile-mask=0640 \
-		--enable-rtadv \
-		--enable-tcp-md5"
+                --libexecdir=${libexecdir}/quagga \
+                --sbindir=${libdir}/quagga \
+                --sysconfdir=${sysconfdir}/quagga \
+                --localstatedir=${localstatedir}/run/quagga \
+                --enable-exampledir=${docdir}/quagga/examples/ \
+                --enable-vtysh \
+                --enable-isisd \
+                --enable-watchquagga \
+                --enable-ospf-te \
+                --enable-opaque-lsa \
+                --enable-ipv6 \
+                --enable-ospfclient=yes \
+                --enable-multipath=64 \
+                --enable-user=quagga \
+                --enable-group=quagga \
+                --enable-vty-group=quaggavty \
+                --enable-configfile-mask=0640 \
+                --enable-logfile-mask=0640 \
+                --enable-rtadv \
+                --enable-tcp-md5"
+
+do_install () {
+        # Install init script and default settings
+        install -m 0755 -d ${D}${sysconfdir}/default ${D}${sysconfdir}/init.d ${D}${sysconfdir}/quagga
+        install -m 0644 ${WORKDIR}/quagga.default ${D}${sysconfdir}/default/quagga
+        install -m 0644 ${WORKDIR}/watchquagga.default ${D}${sysconfdir}/default/watchquagga
+        install -m 0755 ${WORKDIR}/quagga.init ${D}${sysconfdir}/init.d/quagga
+        install -m 0755 ${WORKDIR}/watchquagga.init ${D}${sysconfdir}/init.d/watchquagga
+        # Install quagga
+        oe_runmake install DESTDIR=${D} prefix=${prefix} \
+                libexecdir=${libexecdir}/quagga \
+                sbindir=${libdir}/quagga \
+                sysconfdir=${sysconfdir}/quagga \
+                localstatedir=${localstatedir}/run/quagga
+}
 
 # Split into a main package and seperate per-protocol packages
 PACKAGES = "${PN} \
-	    ${PN}-ospfd ${PN}-ospf6d ${PN}-bgpd ${PN}-ripd ${PN}-ripngd ${PN}-isisd \
-	    ${PN}-ospfclient ${PN}-watchquagga ${PN}-dev ${PN}-doc"
-FILES_${PN}-ospfd	= "${libdir}/quagga/ospfd /usr/lib/libospf.so.*"
-FILES_${PN}-ospf6d	= "${libdir}/quagga/ospf6d"
-FILES_${PN}-bgpd	= "${libdir}/quagga/bgpd"
-FILES_${PN}-ripd	= "${libdir}/quagga/ripd"
-FILES_${PN}-ripngd	= "${libdir}/quagga/ripngd"
-FILES_${PN}-isisd	= "${libdir}/quagga/isisd"
-FILES_${PN}-ospfclient	= "${libdir}/quagga/ospfclient /usr/lib/libospfapiclient.so.*"
-FILES_${PN}-dev		= "/usr/include /usr/lib/lib*.so /usr/lib/*.la /usr/lib/*.a"
-FILES_${PN}-doc		= "/usr/share/doc /usr/share/man /usr/share/info"
-FILES_${PN}-watchquagga	= "${libdir}/quagga/watchquagga ${sysconfdir}/default/watchquagga \
-			   ${sysconfdir}/init.d/watchquagga"
-FILES_${PN}		= "${bindir}/vtysh ${libdir}/quagga/zebra /usr/lib/libzebra*.so.* \
-			   ${sysconfdir}/quagga \
-			   ${sysconfdir}/default/quagga ${sysconfdir}/init.d/quagga"
+            ${PN}-ospfd ${PN}-ospf6d ${PN}-bgpd ${PN}-ripd ${PN}-ripngd ${PN}-isisd \
+            ${PN}-ospfclient ${PN}-watchquagga ${PN}-dev ${PN}-doc"
 
-# Stop the names being rewritten due to the internal shared libraries
-PKG_${PN}-ospfd		= ${PN}-ospfd
-PKG_${PN}-ospfclient	= ${PN}-ospfclient
-
-# Each of the per-protocol packages depends on the main package
-RDEPENDS_${PN}-ospfd	= ${PN}
-RDEPENDS_${PN}-ospf6d	= ${PN}
-RDEPENDS_${PN}-bgpd	= ${PN}
-RDEPENDS_${PN}-ripd 	= ${PN}
-RDEPENDS_${PN}-ripngd 	= ${PN}
-RDEPENDS_${PN}-isisd 	= ${PN}
-RDEPENDS_${PN}-ospfclient = ${PN}
-RDEPENDS_${PN}-doc	= ""
-RDEPENDS_${PN}-watchquagga = ${PN}
-# the "ip" command from busybox is not sufficient (flush by protocol flushes all routes)
-RDEPENDS_${PN}		+= "iproute2"
-# These are required for vtysh
-RDEPENDS_${PN}		+= "ncurses readline"
+FILES_${PN}-ospfd       = "${libdir}/quagga/ospfd /usr/lib/libospf.so.*"
+FILES_${PN}-ospf6d      = "${libdir}/quagga/ospf6d"
+FILES_${PN}-bgpd        = "${libdir}/quagga/bgpd"
+FILES_${PN}-ripd        = "${libdir}/quagga/ripd"
+FILES_${PN}-ripngd      = "${libdir}/quagga/ripngd"
+FILES_${PN}-isisd       = "${libdir}/quagga/isisd"
+FILES_${PN}-ospfclient  = "${libdir}/quagga/ospfclient /usr/lib/libospfapiclient.so.*"
+FILES_${PN}-dev         = "/usr/include /usr/lib/lib*.so /usr/lib/*.la /usr/lib/*.a"
+FILES_${PN}-doc         = "/usr/share/doc /usr/share/man /usr/share/info"
+FILES_${PN}-watchquagga = "${libdir}/quagga/watchquagga ${sysconfdir}/default/watchquagga \
+                           ${sysconfdir}/init.d/watchquagga"
+FILES_${PN}             = "${bindir}/vtysh ${libdir}/quagga/zebra /usr/lib/libzebra*.so.* \
+                           ${sysconfdir}/quagga \
+                           ${sysconfdir}/default/quagga ${sysconfdir}/init.d/quagga"
 
 # Indicate that the default files are configuration files
 CONFFILES_${PN} = "${sysconfdir}/default/quagga"
 CONFFILES_${PN}-watchquagga = "${sysconfdir}/default/watchquagga"
 
-do_install () {
-	# Install init script and default settings
-	install -m 0755 -d ${D}${sysconfdir}/default ${D}${sysconfdir}/init.d ${D}${sysconfdir}/quagga
-	install -m 0644 ${WORKDIR}/quagga.default ${D}${sysconfdir}/default/quagga
-	install -m 0644 ${WORKDIR}/watchquagga.default ${D}${sysconfdir}/default/watchquagga
-	install -m 0755 ${WORKDIR}/quagga.init ${D}${sysconfdir}/init.d/quagga
-	install -m 0755 ${WORKDIR}/watchquagga.init ${D}${sysconfdir}/init.d/watchquagga
-	# Install quagga
-	oe_runmake install DESTDIR=${D} prefix=${prefix} \
-		libexecdir=${libexecdir}/quagga \
-		sbindir=${libdir}/quagga \
-		sysconfdir=${sysconfdir}/quagga \
-		localstatedir=${localstatedir}/run/quagga
-}
+# Stop the names being rewritten due to the internal shared libraries
+PKG_${PN}-ospfd         = ${PN}-ospfd
+PKG_${PN}-ospfclient    = ${PN}-ospfclient
+
+# Main init script starts all deamons
+# Seperate init script for watchquagga
+INITSCRIPT_PACKAGES                     = "${PN} ${PN}-watchquagga"
+INITSCRIPT_NAME_${PN}                   = "quagga"
+INITSCRIPT_PARAMS_${PN}                 = "defaults 15 85"
+INITSCRIPT_NAME_${PN}-watchquagga       = "watchquagga"
+INITSCRIPT_PARAMS_${PN}-watchquagga     = "defaults 90 10"
 
 # Add quagga's user and groups
 pkg_postinst_${PN} () {
-	grep -q quagga: /etc/group || addgroup quagga
-	grep -q quaggavty: /etc/group || addgroup quaggavty
-	grep -q quagga: /etc/passwd || adduser --disabled-password --home=/var/run/quagga/ --ingroup quagga -g "Quagga routing suite" quagga
+        grep -q quagga: /etc/group || addgroup quagga
+        grep -q quaggavty: /etc/group || addgroup quaggavty
+        grep -q quagga: /etc/passwd || adduser --disabled-password --home=/var/run/quagga/ --ingroup quagga -g "Quagga routing suite" quagga
 }
 
 # Stop apps before uninstall
 pkg_prerm_${PN} () {
-	${sysconfdir}/init.d/quagga stop
+        ${sysconfdir}/init.d/quagga stop
 }
 
 pkg_prerm_${PN}-ospfd () {
-	${sysconfdir}/init.d/quagga stop ospfd
+        ${sysconfdir}/init.d/quagga stop ospfd
 }
 
 pkg_prerm_${PN}-ospf6d () {
-	${sysconfdir}/init.d/quagga stop ospf6d
+        ${sysconfdir}/init.d/quagga stop ospf6d
 }
 
 pkg_prerm_${PN}-bgpd () {
-	${sysconfdir}/init.d/quagga stop bgpd
+        ${sysconfdir}/init.d/quagga stop bgpd
 }
 
 pkg_prerm_${PN}-ripd () {
-	${sysconfdir}/init.d/quagga stop ripd
+        ${sysconfdir}/init.d/quagga stop ripd
 }
 
 pkg_prerm_${PN}-ripngd () {
-	${sysconfdir}/init.d/quagga stop ripngd
+        ${sysconfdir}/init.d/quagga stop ripngd
 }
 
 pkg_prerm_${PN}-isisd () {
-	${sysconfdir}/init.d/quagga stop isisd
+        ${sysconfdir}/init.d/quagga stop isisd
 }

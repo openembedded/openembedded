@@ -1,2 +1,3 @@
-require quagga.inc
 PR = "r2"
+
+require quagga.inc
