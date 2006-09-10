@@ -1,7 +1,7 @@
 SECTION = "console/network"
 DEPENDS = "virtual/db libpcre postfix-native"
 LICENSE = "IPL"
-PR = "r8"
+PR = "r9"
 
 SRC_URI = "ftp://ftp.porcupine.org/mirrors/postfix-release/official/postfix-${PV}.tar.gz \
 	   file://${FILESDIR}/makedefs.patch;patch=1 \
@@ -73,3 +73,8 @@ pkg_postinst () {
 pkg_postrm () {
 	update-alternatives --remove sendmail ${sbindir}/sendmail 
 }
+
+# Exclude .debug directories from the main package
+FILES_${PN} = "${sysconfdir} ${localstatedir} ${bindir}/* ${sbindir}/* \
+               ${libexecdir}/postfix/*"
+FILES_${PN}-dbg += "${libexecdir}/postfix/.debug"
