@@ -8,7 +8,7 @@ PR = "r3"
 
 SRC_URI = "${GNU_MIRROR}/gawk/gawk-${PV}.tar.gz"
 
-inherit autotools
+inherit autotools update-alternatives
 
 do_configure_prepend () {
         grep -E '^AC_DEFUN' m4/*.m4|grep -E '\(\[?(AM|AC)_'|xargs rm -f
@@ -21,9 +21,7 @@ FILES_gawk-common += "${datadir}/awk/* ${libexecdir}/awk/*"
 FILES_pgawk = "${bindir}/pgawk*"
 FILES_${PN}-dbg += "${libexecdir}/awk/.debug"
 
-pkg_postinst_${PN} () {
-        update-alternatives --install ${bindir}/awk awk gawk 100
-}
-pkg_prerm_${PN} () {
-        update-alternatives --remove awk gawk
-}
+ALTERNATIVE_NAME = "awk"
+ALTERNATIVE_PATH = "gawk"
+ALTERNATIVE_LINK = "${bindir}/awk"
+ALTERNATIVE_PRIORITY = "100"
