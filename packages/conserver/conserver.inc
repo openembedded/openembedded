@@ -3,6 +3,7 @@ consoles and logs all data to a central host."
 HOMEPAGE = "http://www.conserver.com/"
 SECTION = "console/network"
 LICENSE = "BSD"
+PR = "r1"
 
 SRC_URI = "http://www.conserver.com/conserver-${PV}.tar.gz \
 	   file://conserver.init \
@@ -29,3 +30,6 @@ do_install_append () {
 	install -m 0644 ${WORKDIR}/conserver.default ${D}${sysconfdir}/default/conserver
 	install -m 0755 ${WORKDIR}/conserver.init ${D}${sysconfdir}/init.d/conserver
 }
+
+FILES_${PN} = "${sysconfdir} ${bindir}/* ${libdir}/${PN}/* ${sbindir}/*"
+FILES_${PN}-dbg = "${bindir}/.debug ${sbindir}/.debug ${libdir}/${PN}/.debug"
