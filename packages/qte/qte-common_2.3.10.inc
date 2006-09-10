@@ -11,7 +11,7 @@ PROVIDES = "virtual/libqte2"
 
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/qte-${PV}"
 
-SRC_URI = "ftp://ftp.trolltech.com/pub/qt/source/qt-embedded-${PV}-free.tar.gz;md5sum=af7ad30113afc500cab7f5b2f4dec0d7 \
+SRC_URI = "ftp://ftp.trolltech.com/pub/qt/source/qt-embedded-${PV}-free.tar.gz;md5sum=1f7ad30113afc500cab7f5b2f4dec0d7 \
    	   file://qpe.patch;patch=1 \
 	   file://vt-switch.patch;patch=1 \
 	   file://daemonize.patch;patch=1 \
