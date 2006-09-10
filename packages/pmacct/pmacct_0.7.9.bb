@@ -25,4 +25,4 @@ do_install() {
 	install -m 644 ${WORKDIR}/pmacct.conf.eth0 ${D}${sysconfdir}/pmacct
 }
 
-CONFFILES_nylon = "/etc/pmacct/pmacct.conf.eth0"
+CONFFILES_${PN}_nylon = "${sysconfdir}/pmacct/pmacct.conf.eth0"

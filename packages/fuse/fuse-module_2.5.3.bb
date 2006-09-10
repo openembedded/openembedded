@@ -6,7 +6,9 @@ LICENSE = "GPL"
 
 
 DEPENDS = "fakeroot-native"
-RRECOMMEND = "fuse"
+RRECOMMENDS = "fuse"
+
+PR = "r1"
 
 SRC_URI="${SOURCEFORGE_MIRROR}/fuse/fuse-${PV}.tar.gz"
 S = "${WORKDIR}/fuse-${PV}"

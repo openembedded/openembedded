@@ -1,0 +1,252 @@
+--- linux/drivers/usb/acm.c~45-acm-tty.patch	2006-06-07 11:21:21.648422000 +0200
++++ linux/drivers/usb/acm.c	2006-06-09 17:20:51.735793750 +0200
+@@ -139,6 +139,8 @@
+  * Internal driver structures.
+  */
+ 
++#define TD_SIZE 16384
++
+ struct acm {
+ 	struct usb_device *dev;				/* the coresponding usb device */
+ 	struct usb_interface *iface;			/* the interfaces - +0 control +1 data */
+@@ -153,6 +155,11 @@
+ 	unsigned int minor;				/* acm minor number */
+ 	unsigned char throttle;				/* throttled by tty layer */
+ 	unsigned char clocal;				/* termios CLOCAL */
++	unsigned long throttle_start;
++	unsigned char resubmit_to_unthrottle;		/* Leftover data from last operation */
++	unsigned char *throttle_data;
++	int td_len;
++	int td_busy;
+ };
+ 
+ /* global params controlling max sizes for read, write, control */
+@@ -166,6 +173,96 @@
+ 
+ #define ACM_READY(acm)	(acm && acm->dev && acm->used)
+ 
++
++/*
++ * Helper functions to optimize throttleing
++ */
++static int
++acm_fill_tty(struct urb *urb, struct tty_struct *tty, unsigned char *data, int length)
++{
++	struct acm *acm = urb->context;
++	int n = 0;
++	/*printk("acm_fill_tty: %d bytes\n", length);*/
++	if (!urb->status && !acm->throttle)  {
++		for (n = 0; n < length && !acm->throttle; n++) {
++			/* if we insert more than TTY_FLIPBUF_SIZE characters,
++			 * we drop them. */
++			if (tty->flip.count >= TTY_FLIPBUF_SIZE) {
++				tty_flip_buffer_push(tty);
++			}
++			tty_insert_flip_char(tty, data[n], 0);
++		}
++		tty_flip_buffer_push(tty);
++	}
++	/*printk("copied %d bytes.\n", n);*/
++	return n;
++}
++
++static int
++acm_shift_if_throttle(unsigned char *data, int *length, int shift_by)
++{
++	if (shift_by < *length) {
++		dbg("need to shift uncopied %d bytes to front.", *length - shift_by);
++		memmove(data, data + shift_by, *length - shift_by);
++		*length -= shift_by;
++		return 1;
++	}
++	return 0;
++}
++
++static int
++acm_buffer_if_thottle(struct acm *acm, unsigned char *data, int start, int *length)
++{
++	int copied = *length;
++	if (start < *length) {
++		int space = TD_SIZE - acm->td_len;
++		int needed = *length - start;
++		copied = (space < needed)? space: needed;
++		dbg("need to push %d to throttle buffer, can copy %d.",
++				needed, copied);
++		memcpy(acm->throttle_data + acm->td_len, data, copied);
++		acm->td_len += copied;
++		*length -= copied;
++	}
++	return copied;
++}
++
++static int
++acm_empty_throttle(struct urb *urb, struct tty_struct *tty)
++{
++	unsigned long flags;
++	struct acm *acm = urb->context;
++
++	save_flags(flags);
++	cli();
++
++	if (acm->td_busy) {
++		restore_flags(flags);
++		return 0;
++	}
++	acm->td_busy = 1;
++	restore_flags(flags);
++
++	if (acm->td_len > 0) {
++
++		dbg("acm_empty_throttle: trying to empty throttle buffer: %d bytes.",
++		  acm->td_len);
++
++		/* if there has been something left from previous operations
++		 * we try to complete this before looking at the urb */
++		int copied = acm_fill_tty(urb, tty, acm->throttle_data, acm->td_len);
++		if (acm_shift_if_throttle(acm->throttle_data, &acm->td_len, copied)) {
++			/* we were unable to empty the throttle data, so we can't
++			 * copy anything more now */
++			acm->td_busy = 0;
++			return 0;
++		}
++		acm->td_len = 0;
++	}
++	acm->td_busy = 0;
++	return 1;
++}
++
+ /*
+  * Functions for ACM control messages.
+  */
+@@ -238,36 +335,40 @@
+ 	struct acm *acm = urb->context;
+ 	struct tty_struct *tty = acm->tty;
+ 	unsigned char *data = urb->transfer_buffer;
+-	int i = 0;
++	int copied = 0;
++	int buffered = 0;
+ 
+ 	if (!ACM_READY(acm)) return;
+ 
+-	if (urb->status)
++	if (urb->status) {
+ 		dbg("nonzero read bulk status received: %d", urb->status);
++	}
+ 
+-	if (!urb->status && !acm->throttle)  {
+-		for (i = 0; i < urb->actual_length && !acm->throttle; i++) {
+-			/* if we insert more than TTY_FLIPBUF_SIZE characters,
+-			 * we drop them. */
+-			if (tty->flip.count >= TTY_FLIPBUF_SIZE) {
+-				tty_flip_buffer_push(tty);
+-			}
+-			tty_insert_flip_char(tty, data[i], 0);
+-		}
+-		tty_flip_buffer_push(tty);
++	dbg("acm_read_bulk, calling acm_empty_throttle()");
++	if (!acm_empty_throttle(urb, tty)) {
++		dbg("could not empty throttle buffer, entering throttle state, acm->td_busy: %d.", acm->td_busy);
+ 	}
+ 
++	/* got here, either there was nothing in the throttle data or it could
++	 * all be copied without throttleing again */
++	copied = acm_fill_tty(urb, tty, data, urb->actual_length);
+ 	if (acm->throttle) {
+-		memmove(data, data + i, urb->actual_length - i);
+-		urb->actual_length -= i;
+-		return;
++		int length = urb->actual_length;
++		buffered = acm_buffer_if_thottle(acm, data, copied, &urb->actual_length);
++		if (buffered < length - copied
++				&& acm_shift_if_throttle(data, &urb->actual_length, copied + buffered)) {
++			printk("need to resubmit to unthrottle\n");
++			acm->resubmit_to_unthrottle = 1;
++			return;
++		}
+ 	}
+ 
+ 	urb->actual_length = 0;
+ 	urb->dev = acm->dev;
+ 
+-	if (usb_submit_urb(urb))
++	if (usb_submit_urb(urb)) {
+ 		dbg("failed resubmitting read urb");
++	}
+ }
+ 
+ static void acm_write_bulk(struct urb *urb)
+@@ -330,7 +431,12 @@
+ 
+ 	acm_set_control(acm, acm->ctrlout = ACM_CTRL_DTR | ACM_CTRL_RTS);
+ 
+-	/* force low_latency on so that our tty_push actually forces the data through, 
++	acm->resubmit_to_unthrottle = 0;
++	acm->td_len = 0;
++	acm->td_busy = 0;
++	acm->throttle_data = kmalloc(TD_SIZE * sizeof (*acm->throttle_data), GFP_KERNEL);
++
++	/* force low_latency on so that our tty_push actually forces the data through,
+ 	   otherwise it is scheduled, and with high data rates data can get lost. */
+ 	tty->low_latency = 1;
+ 
+@@ -352,6 +458,7 @@
+ 		} else {
+ 			tty_unregister_devfs(&acm_tty_driver, acm->minor);
+ 			acm_table[acm->minor] = NULL;
++			kfree(acm->throttle_data);
+ 			kfree(acm);
+ 		}
+ 	}
+@@ -363,8 +470,16 @@
+ 	struct acm *acm = tty->driver_data;
+ 
+ 	if (!ACM_READY(acm)) return -EINVAL;
+-	if (acm->writeurb.status == -EINPROGRESS) return 0;
+-	if (!count) return 0;
++
++	if (acm->writeurb.status == -EINPROGRESS) {
++		dbg("tty_write in progress");
++		return 0;
++	}
++
++	if (!count) {
++		dbg("tty_write: nothing to write");
++		return 0;
++	}
+ 
+ 	count = (count > acm->writesize) ? acm->writesize : count;
+ 
+@@ -401,16 +516,32 @@
+ {
+ 	struct acm *acm = tty->driver_data;
+ 	if (!ACM_READY(acm)) return;
++	dbg("acm_tty_throttle ON %ld ---> %ld", jiffies-acm->throttle_start, jiffies);
+ 	acm->throttle = 1;
++	acm->throttle_start = jiffies;
+ }
+ 
+ static void acm_tty_unthrottle(struct tty_struct *tty)
+ {
+ 	struct acm *acm = tty->driver_data;
+ 	if (!ACM_READY(acm)) return;
++	dbg("acm_tty_throttle OFF %ld ---> %ld", jiffies, jiffies-acm->throttle_start);
+ 	acm->throttle = 0;
+-	if (acm->readurb.status != -EINPROGRESS)
++
++	dbg("acm_tty_unthrottle, calling acm_empty_throttle()");
++	if (!acm_empty_throttle(&acm->readurb, tty)) {
++		if (acm->td_busy) {
++			printk("***** pending acm_empty_throttle!\n");
++		} else {
++			dbg("throttle not emptied.\n");
++		}
++	}
++
++	if (acm->resubmit_to_unthrottle != 0) {
++		dbg("resubmit_to_unthrottle: acm_read_bulk");
++		acm->resubmit_to_unthrottle = 0;
+ 		acm_read_bulk(&acm->readurb);
++	}
+ }
+ 
+ static void acm_tty_break_ctl(struct tty_struct *tty, int state)

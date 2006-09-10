@@ -1,0 +1,446 @@
+--- /dev/null	1970-01-01 01:00:00.000000000 +0100
++++ linux/arch/mips/au1000/mtx-1/mtx-1_sysled.c	2005-08-27 15:30:51.000000000 +0200
+@@ -0,0 +1,398 @@
++/*
++ *      Driver for the MTX-1 System LEDs.
++ *
++ *      (c) Copyright 2005 4G Systems <info@4g-systems.biz>, All Rights Reserved.
++ *                              http://www.4g-systems.biz
++ *
++ *      This program is free software; you can redistribute it and/or
++ *      modify it under the terms of the GNU General Public License
++ *      as published by the Free Software Foundation; either version
++ *      2 of the License, or (at your option) any later version.
++ *
++ *      Neither Alan Cox nor CymruNet Ltd. admit liability nor provide
++ *      warranty for any of this software. This material is provided
++ *      "AS-IS" and at no charge.
++ *
++ *      (c) Copyright 2005    4G Systems <info@4g-systems.biz>
++ *
++ *      Release 0.01.
++ *
++ *      Author: Michael Stickel  michael.stickel@4g-systems.biz
++ *
++ *
++ *      After the module is loaded there will be a device /dev/misc/leds
++ *      that can be written to. There are two bits, each represents one LED
++ *
++ *
++ */
++
++static int errno;
++#define __KERNEL_SYSCALLS__
++
++#include <linux/config.h>
++#include <linux/module.h>
++#include <linux/version.h>
++#include <linux/types.h>
++#include <linux/errno.h>
++#include <linux/kernel.h>
++#include <linux/sched.h>
++#include <linux/miscdevice.h>
++#include <linux/slab.h>
++#include <linux/init.h>
++#include <linux/smp_lock.h>
++#include <asm/unistd.h>
++
++#include <asm/uaccess.h>
++
++#include <asm/au1000.h>
++
++#include <asm/io.h>
++
++
++#include "mtx-1_sysled.h"
++
++
++#ifndef FALSE
++# define FALSE (0)
++#endif
++
++#ifndef TRUE
++# define TRUE (!FALSE)
++#endif
++
++
++/* handle up_and_exit confusion */
++#if LINUX_VERSION_CODE < KERNEL_VERSION(2,4,9)
++typedef struct semaphore            THREAD_SEM;
++#define THREAD_SEM_EXIT(c,l)        up_and_exit(c,l)
++#define THREAD_SEM_DECLARE(c)       DECLARE_MUTEX_LOCKED(c)
++#define THREAD_SEM_INIT(c)          init_MUTEX_LOCKED(c)
++#define THREAD_SEM_WAIT_COMPLETE(c) {down(c);up(c);}
++
++#else
++#include <linux/completion.h>
++typedef struct completion           THREAD_SEM;
++#define THREAD_SEM_EXIT(c,l)        complete_and_exit(c,l)
++#define THREAD_SEM_DECLARE(c)       DECLARE_COMPLETION(c)
++#define THREAD_SEM_INIT(c)          init_completion(c)
++#define THREAD_SEM_WAIT_COMPLETE(c) wait_for_completion(c)
++#endif
++
++
++//---------[ Hardware Functions ]-----------------
++
++
++
++static unsigned char sysled_gpios[10] =
++{
++  211,  // Power  = GPIO211
++  212,  // Status = GPIO212
++
++#if 1
++  12,   // LEDBar1 Blue = GPIO12 0
++  13,   // LEDBar1 Red  = GPIO13
++
++  26,   // LEDBar3 Blue = GPIO27 1
++  27,   // LEDBar3 Red  = GPIO26
++
++  10,   // LEDBar0 Blue = GPIO10 2
++  11,   // LEDBar0 Red  = GPIO11
++
++  14,   // LEDBar2 Blue = GPIO14 3
++  25,   // LEDBar2 Red  = GPIO28
++#else
++   7,    // IOCTRL0
++   8,    // IOCTRL1
++
++   15,   // IOCTRL2
++  205,   // IOCTRL3
++
++  206,   // IOCTRL4
++  208,   // LEDBar2 Blue = GPIO14
++
++  255,
++  255
++#endif
++};
++static int num_sysled_gpios = sizeof(sysled_gpios) / sizeof(sysled_gpios[0]);
++
++
++static void mtx1_setled (int ledno, char on)
++{
++  if (ledno >= 0 && ledno < num_sysled_gpios)
++    {
++      if (sysled_gpios[ledno] >= 200 && sysled_gpios[ledno] < 231)
++	{
++	  unsigned long pinmask = 1 << (sysled_gpios[ledno] - 200);
++	  au_writel((pinmask<<16) | (on ? pinmask : 0), GPIO2_OUTPUT);
++	}
++      else if (sysled_gpios[ledno] < 32)
++	{
++	  unsigned long pinmask = 1 << sysled_gpios[ledno];
++	  if (on)
++	    au_writel(pinmask, SYS_OUTPUTSET);
++	  else
++	    au_writel(pinmask, SYS_OUTPUTCLR);
++	}
++    }
++}
++
++
++//---------[ LED Precalculation ]-----------------
++
++typedef struct current_led_config_s
++{
++	unsigned char  period;
++	unsigned long  pattern[8]; /* bit-pattern: up to 3.2*8 seconds. 25.6 seconds at 10 Hz */
++	short          current_value;
++	unsigned char  led_state; /* 0 = off, 1 = on */
++} current_led_config_t;
++
++static current_led_config_t current_led_config[10];
++static THREAD_SEM           mtx1_ledthread_exited;
++static int                  mtx1_ledthread_pid;
++
++static int mtx1_led_thread (void *user_data)
++{
++	int last_jiffies = jiffies - HZ/10; /* initialize with meaningfull value */
++
++	lock_kernel();
++
++	daemonize ();
++	spin_lock_irq (&current->sigmask_lock);
++	sigemptyset (&current->blocked);
++	recalc_sigpending (current);
++	spin_unlock_irq (&current->sigmask_lock);
++
++	strncpy (current->comm, "mtx1led", sizeof(current->comm) - 1);
++	current->comm[sizeof(current->comm) - 1] = '\0';
++
++	do {
++		int i;
++
++		// missed_values = (jiffies - last_jiffies) / (HZ/10);
++		last_jiffies = jiffies;
++
++		// 1/10 second later.
++		for (i=0; i < num_sysled_gpios; i++)
++		{
++			int  index = current_led_config[i].current_value;
++			if (current_led_config[i].period > 0 && index < 256)
++			{
++				char led_on = (current_led_config[i].pattern[(index>>5)&7] >> (index&0x1f)) & 1;
++
++				if (led_on != current_led_config[i].led_state)
++					mtx1_setled (i, led_on);
++				current_led_config[i].led_state = led_on;
++
++				current_led_config[i].current_value++;
++				if (current_led_config[i].current_value > current_led_config[i].period)
++					current_led_config[i].current_value = 0;
++			}
++		}
++
++		current->state = TASK_INTERRUPTIBLE;
++        /* long timeout = */ schedule_timeout(HZ / 10);
++	} while (!signal_pending(current));
++
++  THREAD_SEM_EXIT (&mtx1_ledthread_exited, 0);
++  return 0;
++}
++
++
++static int mtx1_start_ledthread (void)
++{
++	THREAD_SEM_INIT (&mtx1_ledthread_exited);
++
++	printk ("starting mtx1 ledthread\n");
++	mtx1_ledthread_pid = kernel_thread(mtx1_led_thread,
++									   NULL,
++									   CLONE_FS | CLONE_FILES | CLONE_SIGHAND);
++	if (mtx1_ledthread_pid >= 0)
++		return 0;
++	return -1;
++}
++
++
++static void mtx1_stop_ledthread (void)
++{
++	int waitpid_result = 0;
++	if (mtx1_ledthread_pid > 0) {
++		int ret = kill_proc(mtx1_ledthread_pid, SIGTERM, 1);
++		if (ret==0)
++		{
++			THREAD_SEM_WAIT_COMPLETE(&mtx1_ledthread_exited);
++			waitpid_result = waitpid (mtx1_ledthread_pid, NULL, __WCLONE|WNOHANG);
++			mtx1_ledthread_pid = 0;
++		}
++	}
++//	return waitpid_result;
++}
++
++//---------[ File Functions ]-----------------
++
++static int mtx1sysled_minor = -1;
++
++static int mtx1sysled_open (struct inode *inode, struct file *file)
++{
++    if (MINOR(inode->i_rdev)!=mtx1sysled_minor) return -ENODEV;
++	MOD_INC_USE_COUNT;
++
++	return 0;
++}
++
++
++static int mtx1sysled_release (struct inode *inode, struct file *file) {
++	if (MINOR(inode->i_rdev)==mtx1sysled_minor) {
++	}
++	MOD_DEC_USE_COUNT;
++	return 0;
++}
++
++
++static ssize_t mtx1sysled_write (struct file *file, const char *buf, size_t count, loff_t *ppos) {
++	led_control_t  ctrl_entry;
++	size_t         buflen;
++
++	if (ppos != &file->f_pos)
++		return -ESPIPE;
++
++	if (count < 1)
++		return -EINVAL;
++
++	if (copy_from_user (&ctrl_entry, buf, sizeof(unsigned char)))
++		return -EFAULT;
++
++	if ((ctrl_entry.flags & 0x1f) <= 0)
++		return -EINVAL;
++
++	buflen = (count < sizeof(led_control_t)) ? count : sizeof(led_control_t);
++	if (copy_from_user (&ctrl_entry, buf, buflen))
++		return -EFAULT;
++
++	int numentries = (buflen-1) / sizeof(led_control_entry_t);
++
++	if ((ctrl_entry.flags & 0x1f) < numentries)
++		numentries = ctrl_entry.flags & 0x1f;
++
++	int i;
++	for (i=0; i < numentries; i++) {
++		unsigned short led_id  = ctrl_entry.led[i].led_id;
++		if (led_id < num_sysled_gpios) {
++			current_led_config[led_id].period = ctrl_entry.led[i].period;
++			memcpy (current_led_config[led_id].pattern, ctrl_entry.led[i].pattern, sizeof(unsigned long)*8);
++			current_led_config[led_id].current_value = 0;
++
++			// may update the led output (if the led should be set to 1 or 0).
++		}
++	}
++	return count;
++}
++
++
++
++static struct file_operations mtx1sysled_fops = {
++	.owner = THIS_MODULE,
++	.llseek = NULL,
++	.read = NULL,
++	.write = mtx1sysled_write,
++	.readdir = NULL,
++	.poll = NULL,
++	.ioctl = NULL,
++	.mmap = NULL,
++	.open = mtx1sysled_open,
++	.flush = NULL,
++	.release = mtx1sysled_release
++};
++
++
++static struct miscdevice mtx1sysled_miscdev = {
++	MISC_DYNAMIC_MINOR /* SYSLED_MINOR */ ,
++	"leds",
++	&mtx1sysled_fops
++};
++
++
++
++//---------[ Module Functions ]-----------------
++
++
++void __exit cleanup_mtx1_sysled (void)
++{
++	mtx1_stop_ledthread ();
++	misc_deregister(&mtx1sysled_miscdev);
++}
++
++
++int __init init_mtx1_sysled (void)
++{
++  printk("MTX-1 System LED driver\n");
++
++
++  unsigned long gpio_mask = 0L;
++  unsigned long gpio2_mask = 0L;
++  int i;
++  for (i=0; i < num_sysled_gpios; i++)
++	{
++	  if (sysled_gpios[i] < 32)  /* GPIO00..xx */
++	        gpio2_mask |= 1<<sysled_gpios[i];
++	  
++	  else if (sysled_gpios[i] >= 200 && sysled_gpios[i] < 216) /* GPIO200..231 */
++		gpio2_mask |= 1 << (sysled_gpios[i] - 200);
++	}
++
++  if (gpio2_mask) {
++	au_writel(au_readl(GPIO2_DIR) | gpio2_mask, GPIO2_DIR);
++	au_writel(gpio2_mask<<16, GPIO2_OUTPUT);
++    }
++
++  if (gpio_mask) {
++	    au_writel(gpio_mask, SYS_OUTPUTCLR);
++  }
++
++  // Clear SYS_LED#10 = U910-OE#
++  au_writel(1<<28, SYS_OUTPUTCLR);
++
++
++  if (misc_register (&mtx1sysled_miscdev) < 0)
++    {
++      return 1;
++    }
++  mtx1sysled_minor = mtx1sysled_miscdev.minor;
++
++  for (i=0; i < num_sysled_gpios; i++) {
++	  current_led_config[i].period  = 32;
++	  current_led_config[i].pattern[0] = 0x0;
++	  current_led_config[i].current_value = 0;
++	  current_led_config[i].led_state = 0;
++	  mtx1_setled (i, 0);
++  }
++  current_led_config[2].period  = 31;
++  current_led_config[2].pattern[0] = 0xFFFFFFFF;
++  current_led_config[3].period  = 31;
++  current_led_config[3].pattern[0] = 0xFFFFFFFF;
++  current_led_config[4].period  = 31;
++  current_led_config[4].pattern[0] = 0xFFFFFFFF;
++  current_led_config[5].period  = 31;
++  current_led_config[5].pattern[0] = 0xFFFFFFFF;
++  current_led_config[6].period  = 31;
++  current_led_config[6].pattern[0] = 0xFFFFFFFF;
++  current_led_config[7].period  = 31;
++  current_led_config[7].pattern[0] = 0xFFFFFFFF;
++
++
++  if (mtx1_start_ledthread ())
++  {
++	  // Error
++  }
++
++  return 0;
++}
++
++__initcall(init_mtx1_sysled);
++__exitcall(cleanup_mtx1_sysled);
++
++MODULE_AUTHOR("Michael Stickel");
++MODULE_DESCRIPTION("Driver for the MTX-1 system LEDs");
++MODULE_LICENSE("GPL");
++EXPORT_NO_SYMBOLS;
+--- /dev/null	1970-01-01 01:00:00.000000000 +0100
++++ linux/arch/mips/au1000/mtx-1/mtx-1_sysled.h	2005-08-27 15:00:41.000000000 +0200
+@@ -0,0 +1,32 @@
++#ifndef __MTX1_SYSLED_H__
++#define __MTX1_SYSLED_H__
++ /*
++  * flags:
++  *  Bit  Function
++  *   7   set to 0
++  *   6   set to 0
++  *   5   set to 0
++  * 4..0  The number of led-control records. 1 means one record, 15 means records.
++  *
++  */
++
++
++typedef struct led_control_entry_s
++{
++	unsigned short led_id;
++	unsigned char  period;     /* 0..0xff   unit is 1/10 of a second */
++	unsigned long  pattern[8]; /* bit-pattern: up to 3.2*8 seconds. 25.6 seconds at 10 Hz */
++} led_control_entry_t;
++
++
++typedef struct led_control_s
++{
++	unsigned char  flags;
++	led_control_entry_t led[31];
++} led_control_t;
++
++#define MTX1SYSLED_CONTROL_SIZE(x) (sizeof(unsigned char)+(x)*sizeof(led_control_entry_t))
++
++#define MTX1SYSLED_FLAGS_NUMENTRIES(n) ((n)&0x1f)
++
++#endif
+--- linux/arch/mips/au1000/mtx-1/Makefile.orig	2005-08-27 15:59:31.000000000 +0200
++++ linux/arch/mips/au1000/mtx-1/Makefile	2005-08-27 15:59:45.000000000 +0200
+@@ -15,6 +15,6 @@
+ 
+ O_TARGET := mtx-1.o
+ 
+-obj-y := init.o board_setup.o irqmap.o mtx-1_watchdog.o mtx-1_sysbtn.o
++obj-y := init.o board_setup.o irqmap.o mtx-1_watchdog.o mtx-1_sysbtn.o mtx-1_sysled.o
+ 
+ include $(TOPDIR)/Rules.make

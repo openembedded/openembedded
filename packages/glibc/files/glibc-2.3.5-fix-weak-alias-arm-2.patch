@@ -1,0 +1,11 @@
+--- glibc-2.3.3/ports/sysdeps/unix/sysv/linux/arm/socket.S.orig	2006-07-12 14:38:22.208228359 -0700
++++ glibc-2.3.3/ports/sysdeps/unix/sysv/linux/arm/socket.S	2006-07-12 14:39:56.911675066 -0700
+@@ -123,5 +123,7 @@
+ #endif
+ 
+ PSEUDO_END (__socket)
+-
++ 
++#ifndef NO_WEAK_ALIAS
+ weak_alias (__socket, socket)
++#endif

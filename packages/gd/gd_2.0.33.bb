@@ -13,7 +13,8 @@ inherit autotools binconfig gettext
 EXTRA_OECONF += " --with-zlib=${STAGING_LIBDIR}/.. \
                   --with-png=${STAGING_LIBDIR}/.. \
                   --with-jpeg=${STAGING_LIBDIR}/.. \
-                  --without-xpm"
+                  --without-xpm \
+                  --without-x"
 
 EXTRA_OEMAKE = "LDFLAGS=-L${STAGING_LIBDIR}"
 

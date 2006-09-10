@@ -3,7 +3,7 @@ incorporating all the features you would expect in a robust mail client."
 HOMEPAGE = "http://balsa.gnome.org"
 SECTION = "x11/network"
 LICENSE = "GPL"
-DEPENDS = "libesmtp glib-2.0 libgnome libgnomeui gtk+ gnome-vfs libbonobo aspell pcre libtool openssl gtkhtml-3.0"
+DEPENDS = "libesmtp glib-2.0 libgnome libgnomeui gtk+ gnome-vfs libbonobo aspell libpcre libtool openssl gtkhtml-3.0"
 RDEPENDS = "gdk-pixbuf-loader-xpm"
 PR = "r3"
 

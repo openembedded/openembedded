@@ -7,6 +7,8 @@ Open Source framework for the layout and rendering of \
 internationalized text."
 PR = "r0"
 
+PACKAGES_DYNAMIC = "pango-module-*"
+
 RRECOMMENDS_${PN} = "pango-module-basic-x pango-module-basic-fc" 
 
 # seems to go wrong with default cflags
@@ -26,11 +28,7 @@ FILES_${PN} = "/etc ${bindir} ${libdir}/libpango*.so.*"
 LIBV = "1.5.0"
 
 do_stage () {
-	for lib in pango pangox pangoft2 pangoxft pangocairo; do
-		oe_libinstall -so -C pango lib$lib-1.0 ${STAGING_LIBDIR}/
-	done
-	install -d ${STAGING_INCDIR}/pango
-	install -m 0644 ${S}/pango/pango*.h ${STAGING_INCDIR}/pango/
+	autotools_stage_all
 }
 
 postinst_prologue() {

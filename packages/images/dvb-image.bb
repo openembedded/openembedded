@@ -2,7 +2,7 @@ export IMAGE_BASENAME = "dvb-image"
 
 IMAGE_LINGUAS = ""
 
-DVB_PACKAGES = "task-bootstrap task-dvb"
+DVB_PACKAGES = "${MACHINE_TASK_PROVIDER} task-dvb"
 
 export IPKG_INSTALL = "${DVB_PACKAGES}"
 DEPENDS = "${DVB_PACKAGES}"

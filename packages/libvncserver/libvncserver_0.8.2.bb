@@ -6,7 +6,7 @@ MAINTAINER = "Patrik Gfeller <gfellerpatrik@gmx.net>"
 SECTION = "libs"
 PRIORITY = "optional"
 PROVIDES = "x11vnc"
-DEPENDS = "virtual/libsdl virtual/libx11 zlib jpeg"
+DEPENDS = "virtual/libsdl virtual/libx11 zlib jpeg libxext"
 PR = "r2"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/libvncserver/LibVNCServer-${PV}.tar.gz;md5sum=17a18e398af6c1730f72068022a152aa"

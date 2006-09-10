@@ -3,6 +3,8 @@ SECTION = "kernel"
 LICENSE = "GPL"
 PR = "r1"
 
+COMPATIBLE_MACHINE = "gumstix"
+
 SRC_URI = "ftp://ftp.kernel.org/pub/linux/kernel/v2.6/linux-${PV}.tar.bz2 \
 		   cvs://anoncvs:anoncvs@cvs.infradead.org/home/cvs;module=mtd;date=20060223 \ 
            file://defconfig-gumstix \

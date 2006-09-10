@@ -7,6 +7,9 @@ LICENSE = "GPL"
 RDEPENDS = "hostap-modules hostap-utils (${PV})"
 DEPENDS = "openssl"
 DEPENDS_mtx-1_append = "madwifi-modules"
+DEPENDS_mtx-2_append = "madwifi-modules"
+CPPFLAGS_append_mtx-1 = " -I${STAGING_INCDIR}/madwifi/"
+CPPFLAGS_append_mtx-2 = " -I${STAGING_INCDIR}/madwifi/"
 
 SRC_URI = "http://hostap.epitest.fi/releases/hostapd-${PV}.tar.gz \
 	file://makefile-cross.diff;patch=1;pnum=0 \

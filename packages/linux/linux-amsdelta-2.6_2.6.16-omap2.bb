@@ -3,6 +3,8 @@ DESCRIPTION = "2.6 Linux kernel for the Amstrad Delta (E3)"
 LICENSE = "GPL"
 MAINTAINER = "Jonathan McDowell <noodles@earth.li>"
 
+COMPATIBLE_MACHINE = "amsdelta"
+
 SRC_URI = "ftp://ftp.kernel.org/pub/linux/kernel/v2.6/linux-2.6.16.tar.bz2 \
 	http://www.muru.com/linux/omap/patches/patch-2.6.16-omap2.bz2;patch=1 \
 	http://the.earth.li/pub/e3/2.6.16/00-ams-delta-backlight.diff;patch=1 \

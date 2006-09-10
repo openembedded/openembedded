@@ -1,4 +1,15 @@
 def legitimize_package_name(s):
+	import re
+
+	def fixutf(m):
+		cp = m.group(1)
+		if cp:
+			return ('\u%s' % cp).decode('unicode_escape').encode('utf-8')
+
+	# Handle unicode codepoints encoded as <U0123>, as in glibc locale files.
+	s = re.sub('<U([0-9A-Fa-f]{1,4})>', fixutf, s)
+
+	# Remaining package name validity fixes
 	return s.lower().replace('_', '-').replace('@', '+').replace(',', '+').replace('/', '-')
 
 STAGING_PKGMAPS_DIR ?= "${STAGING_DIR}/pkgmaps"
@@ -725,7 +736,7 @@ python package_do_split_locales() {
 	bb.data.setVar('RDEPENDS_%s' % mainpkg, ' '.join(rdep), d)
 }
 
-PACKAGEFUNCS ?= " do_install package_do_split_locales \
+PACKAGEFUNCS ?= " package_do_split_locales \
 		populate_packages package_do_shlibs \
 		package_do_pkgconfig read_shlibdeps"
 python package_do_package () {
@@ -738,4 +749,4 @@ do_package[dirs] = "${D}"
 do_package[deptask] = "do_package"
 populate_packages[dirs] = "${D}"
 EXPORT_FUNCTIONS do_package do_shlibs do_split_locales mapping_rename_hook
-addtask package before do_build after do_populate_staging
+addtask package before do_build after do_install

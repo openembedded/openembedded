@@ -7,7 +7,7 @@ PRIORITY = "optional"
 DEPENDS = "jpeg libpng zlib"
 
 
-SRC_URI = "http://biolpc22.york.ac.uk/pub/CVS_HEAD/wx-cvs-Gtk.tar.bz2"
+SRC_URI = "http://biolpc22.york.ac.uk/pub/CVS_HEAD/v1/wx-cvs-Gtk.tar.bz2"
 #SRC_URI = "${SOURCEFORGE_MIRROR}/wxwindows/wxBase-${PV}.tar.bz2"
 
 S = "${WORKDIR}/wxGTK"

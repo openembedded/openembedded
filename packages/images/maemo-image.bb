@@ -15,11 +15,11 @@ MAEMO_EXTRA_INSTALL = "osso-af-services osso-af-base-apps scap dosfstools"
 
 XSERVER ?= "xserver-kdrive-omap"
 
-DEPENDS = "task-bootstrap \
+DEPENDS = "${MACHINE_TASK_PROVIDER} \
 	   meta-maemo \
 	   ${MAEMO_EXTRA_DEPENDS}"
 
-export IPKG_INSTALL = "task-bootstrap maemo-task-base maemo-task-theme \
+export IPKG_INSTALL = "${MACHINE_TASK_PROVIDER} maemo-task-base maemo-task-theme \
 	               maemo-task-apps ${MAEMO_EXTRA_INSTALL} \
 		       ${XSERVER}"
 

@@ -6,7 +6,7 @@ DESCRIPTION = "Packages that are compatible with the SlugOS firmware"
 MAINTAINER = "NSLU2 Linux <nslu2-linux@yahoogroups.com>"
 HOMEPAGE = "http://www.nslu2-linux.org"
 LICENSE = "MIT"
-PR = "r12"
+PR = "r14"
 CONFLICTS = "db3"
 PROVIDES += "${SLUGOS_IMAGENAME}-packages"
 
@@ -16,6 +16,9 @@ ALLOW_EMPTY = 1
 
 # The list of packages to build for the slugos DISTRO.
 # KEEP IN ALPHABETICAL ORDER
+# Do *not* simply comment out a line. That will break. Instead
+# remove the package and place it in the corresponding "broken" list
+
 SLUGOS_PACKAGES = "\
 	alsa-lib \
 	alsa-utils \
@@ -74,7 +77,6 @@ SLUGOS_PACKAGES = "\
 	gtk-doc \
 	gzip \
 	hdparm \
-	icecast \
 	ifupdown \
 	ipkg-utils \
 	iptables \
@@ -99,6 +101,7 @@ SLUGOS_PACKAGES = "\
 	libvorbis \
 	libxml2 \
 	lirc \
+	litestream \
 	lrzsz \
 	lsof \
 	lvm2 \
@@ -135,7 +138,7 @@ SLUGOS_PACKAGES = "\
 	openvpn \
 	patch \
 	pciutils \
-	pcre \
+	libpcre \
 	perl \
 	pkgconfig \
 	ppp \
@@ -163,7 +166,6 @@ SLUGOS_PACKAGES = "\
 	tiff \
 	unzip \
 	usbutils \
-	ushare \
 	util-linux \
 	vim \
 	vlan \
@@ -185,6 +187,7 @@ SLUGOS_BROKEN_PACKAGES = "\
 	qc-usb-messenger \
 	unionfs-modules \
 	unionfs-utils \
+	icecast \
 	"
 
 # These packages will never build because uclibc lacks (and always will lack)
@@ -206,6 +209,7 @@ UCLIBC_BROKEN_PACKAGES = "\
 	boost \
 	linphone \
 	sudo \
+	ushare \
 	"
 
 # Packages which build only with glibc (some of these use internal

@@ -5,6 +5,5 @@ DESCRIPTION = "A package of M4 macros to produce scripts to \
 automatically configure sourcecode." 
 
 PR = "r1"
-RRECOMMENDS_${PN} = "automake"
 SECTION = "devel"
 inherit autotools

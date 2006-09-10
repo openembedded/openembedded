@@ -1,0 +1,67 @@
+diff -Nurb linux/arch/mips/au1000/mtx-1/board_setup.c /home/br1/linux-idsel/arch/mips/au1000/mtx-1/board_setup.c
+--- linux/arch/mips/au1000/mtx-1/board_setup.c	2005-08-18 18:23:59.000000000 +0200
++++ /home/br1/linux-idsel/arch/mips/au1000/mtx-1/board_setup.c	2005-08-18 18:19:48.000000000 +0200
+@@ -48,6 +48,10 @@
+ 
+ extern struct rtc_ops no_rtc_ops;
+ 
++extern int (*board_pci_idsel)(unsigned int devsel, int assert);
++int	mtx1_pci_idsel(unsigned int devsel, int assert);
++
++
+ void board_reset (void)
+ {
+ 	/* Hit BCSR.SYSTEM_CONTROL[SW_RST] */
+@@ -85,11 +89,39 @@
+ 	au_writel( 0xFFFFFFFF, SYS_TRIOUTCLR );
+ 	au_writel( 0x00000001, SYS_OUTPUTCLR ); // set M66EN (PCI 66MHz) to OFF
+ 	au_writel( 0x00000008, SYS_OUTPUTSET ); // set PCI CLKRUN# to OFF
++	au_writel( 0x00000002, SYS_OUTPUTSET ); // set EXT_IO3 ON
+ 	au_writel( 0x00000020, SYS_OUTPUTCLR ); // set eth PHY TX_ER to OFF
+ 
+ 	// enable LED and set it to green
+ 	au_writel( au_readl(GPIO2_DIR) | 0x1800, GPIO2_DIR );
+ 	au_writel( 0x18000800, GPIO2_OUTPUT );
+ 
++	board_pci_idsel = mtx1_pci_idsel;
++
+ 	printk("4G Systems MTX-1 Board\n");
+ }
++
++
++/* 
++ */
++int
++mtx1_pci_idsel(unsigned int devsel, int assert)
++{
++#define MTX_IDSEL_ONLY_0_AND_3 0
++#if MTX_IDSEL_ONLY_0_AND_3
++	if (devsel != 0 && devsel != 3) {
++		printk("*** not 0 or 3\n");
++		return 0;
++	}
++#endif
++
++	if (assert && devsel != 0) {
++		// supress signal to cardbus
++		au_writel( 0x00000002, SYS_OUTPUTCLR ); // set EXT_IO3 OFF
++	}
++	else {
++		au_writel( 0x00000002, SYS_OUTPUTSET ); // set EXT_IO3 ON
++	}
++	au_sync_udelay(1);
++	return 1;
++}
+diff -Nurb linux/arch/mips/au1000/mtx-1/irqmap.c /home/br1/linux-idsel/arch/mips/au1000/mtx-1/irqmap.c
+--- linux/arch/mips/au1000/mtx-1/irqmap.c	2005-08-18 18:24:05.000000000 +0200
++++ /home/br1/linux-idsel/arch/mips/au1000/mtx-1/irqmap.c	2005-08-16 16:37:39.000000000 +0200
+@@ -73,7 +73,7 @@
+ 	 *	A       B       C       D
+ 	 */
+ 	{
+-		{INTA, INTB, INTX, INTX},   /* IDSEL 0 */
++		{INTA, INTA, INTX, INTX},   /* IDSEL 0 */
+ 		{INTB, INTA, INTX, INTX},   /* IDSEL 1 */
+ 		{INTC, INTD, INTX, INTX},   /* IDSEL 2 */
+ 		{INTD, INTC, INTX, INTX},   /* IDSEL 3 */
+

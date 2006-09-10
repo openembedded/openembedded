@@ -1,0 +1,140 @@
+--- linux/drivers/usb/serial/usbserial.c~33-usbserial-bulk_in_size-4096.diff	2006-03-31 15:05:46.674445000 +0200
++++ linux/drivers/usb/serial/usbserial.c	2006-04-07 12:23:56.970400500 +0200
+@@ -332,6 +332,9 @@
+ static __u16	vendor	= 0x05f9;
+ static __u16	product	= 0xffff;
+ 
++static int count_smaller64 = 0;
++static int count_bigger64 = 0;
++
+ static struct usb_device_id generic_device_ids[5]; /* Initially all zeroes. */
+ 
+ /* All of the device info needed for the Generic Serial Converter */
+@@ -396,6 +399,10 @@
+    drivers depend on it.
+ */
+ 
++/* global params controlling max sizes for read, write, control */
++static int maxszr = 0;
++static int maxszw = 0;
++static int maxszc = 0;
+ 
+ static int			serial_refcount;
+ static struct tty_driver	serial_tty_driver;
+@@ -1272,6 +1279,14 @@
+ 	  	tty_flip_buffer_push(tty);
+ 	}
+ 
++	if (urb->actual_length>64) {
++		count_bigger64++;
++	} else {
++		count_smaller64++;
++	}
++
++	/*printk("*** %d\n", urb->actual_length);*/
++
+ 	/* Continue trying to always read  */
+ 	usb_fill_bulk_urb (port->read_urb, serial->dev,
+ 			   usb_rcvbulkpipe (serial->dev,
+@@ -1505,7 +1520,8 @@
+ 			err("No free urbs available");
+ 			goto probe_error;
+ 		}
+-		buffer_size = endpoint->wMaxPacketSize;
++		buffer_size = (endpoint->wMaxPacketSize > maxszr)?
++			endpoint->wMaxPacketSize: maxszr;
+ 		port->bulk_in_endpointAddress = endpoint->bEndpointAddress;
+ 		port->bulk_in_buffer = kmalloc (buffer_size, GFP_KERNEL);
+ 		if (!port->bulk_in_buffer) {
+@@ -1530,7 +1546,8 @@
+ 			err("No free urbs available");
+ 			goto probe_error;
+ 		}
+-		buffer_size = endpoint->wMaxPacketSize;
++		buffer_size = (endpoint->wMaxPacketSize > maxszw)?
++			endpoint->wMaxPacketSize: maxszw;
+ 		port->bulk_out_size = buffer_size;
+ 		port->bulk_out_endpointAddress = endpoint->bEndpointAddress;
+ 		port->bulk_out_buffer = kmalloc (buffer_size, GFP_KERNEL);
+@@ -1556,7 +1573,8 @@
+ 			err("No free urbs available");
+ 			goto probe_error;
+ 		}
+-		buffer_size = endpoint->wMaxPacketSize;
++		buffer_size = (endpoint->wMaxPacketSize > maxszc)?
++			endpoint->wMaxPacketSize: maxszc;
+ 		port->interrupt_in_endpointAddress = endpoint->bEndpointAddress;
+ 		port->interrupt_in_buffer = kmalloc (buffer_size, GFP_KERNEL);
+ 		if (!port->interrupt_in_buffer) {
+@@ -1807,6 +1825,7 @@
+ 
+ static void __exit usb_serial_exit(void)
+ {
++	printk("*** received packets\n< 64: %d\n> 64: %d\n", count_smaller64, count_bigger64);
+ 
+ #ifdef CONFIG_USB_SERIAL_GENERIC
+ 	/* remove our generic driver */
+@@ -1874,6 +1893,15 @@
+ MODULE_PARM(debug, "i");
+ MODULE_PARM_DESC(debug, "Debug enabled or not");
+ 
++MODULE_PARM(maxszr, "i");
++MODULE_PARM_DESC(maxszr, "User specified USB endpoint read size");
++
++MODULE_PARM(maxszw, "i");
++MODULE_PARM_DESC(maxszw, "User specified USB endpoint write size");
++
++MODULE_PARM(maxszc, "i");
++MODULE_PARM_DESC(maxszc, "User specified USB endpoint control size");
++
+ #ifdef CONFIG_USB_SERIAL_GENERIC
+ MODULE_PARM(vendor, "h");
+ MODULE_PARM_DESC(vendor, "User specified USB idVendor");
+--- linux/drivers/usb/acm.c.orig	2006-04-07 13:56:33.837683000 +0200
++++ linux/drivers/usb/acm.c	2006-04-07 12:14:37.995466750 +0200
+@@ -155,6 +155,11 @@
+ 	unsigned char clocal;				/* termios CLOCAL */
+ };
+ 
++/* global params controlling max sizes for read, write, control */
++static int maxszr = 0;
++static int maxszw = 0;
++static int maxszc = 0;
++
+ static struct usb_driver acm_driver;
+ static struct tty_driver acm_tty_driver;
+ static struct acm *acm_table[ACM_TTY_MINORS];
+@@ -573,9 +578,13 @@
+ 			}
+ 			memset(acm, 0, sizeof(struct acm));
+ 
+-			ctrlsize = epctrl->wMaxPacketSize;
+-			readsize = epread->wMaxPacketSize;
+-			acm->writesize = epwrite->wMaxPacketSize;
++			ctrlsize = (epctrl->wMaxPacketSize > maxszc)?
++				epctrl->wMaxPacketSize: maxszc;
++			readsize = (epread->wMaxPacketSize > maxszr)?
++				epread->wMaxPacketSize: maxszr;
++			acm->writesize = (epwrite->wMaxPacketSize > maxszw)?
++				epwrite->wMaxPacketSize: maxszw;
++
+ 			acm->iface = cfacm->interface + j;
+ 			acm->minor = minor;
+ 			acm->dev = dev;
+@@ -740,6 +749,16 @@
+ module_init(acm_init);
+ module_exit(acm_exit);
+ 
++
++MODULE_PARM(maxszr, "i");
++MODULE_PARM_DESC(maxszr, "User specified USB endpoint read size");
++
++MODULE_PARM(maxszw, "i");
++MODULE_PARM_DESC(maxszw, "User specified USB endpoint write size");
++
++MODULE_PARM(maxszc, "i");
++MODULE_PARM_DESC(maxszc, "User specified USB endpoint control size");
++
+ MODULE_AUTHOR( DRIVER_AUTHOR );
+ MODULE_DESCRIPTION( DRIVER_DESC );
+ MODULE_LICENSE("GPL");

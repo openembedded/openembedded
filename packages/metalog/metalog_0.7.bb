@@ -1,5 +1,5 @@
 DESCRIPTION = "Metalog is a replacement for syslogd."
-DEPENDS = "pcre"
+DEPENDS = "libpcre"
 LICENSE = "GPL"
 PR = "r0"
 

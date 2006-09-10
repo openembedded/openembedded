@@ -20,7 +20,7 @@ DESCRIPTION_xserver-kdrive-epson = "X server from freedesktop.org, supporting Ep
 DESCRIPTION_xserver-kdrive-fake = "Fake X server"
 DESCRIPTION_xserver-kdrive-xephyr = "X server in an X window"
 
-PR = "r11"
+PR = "r12"
 
 FILES_xserver-kdrive-fbdev = "${bindir}/Xfbdev"
 FILES_xserver-kdrive-ati = "${bindir}/Xati"

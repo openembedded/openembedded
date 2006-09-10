@@ -2,7 +2,7 @@ DESCRIPTION = "ngrep strives to provide most of GNU grep's \
 common features, applying them to the network layer."
 SECTION = "console/network"
 PRIORITY = "optional"
-DEPENDS = "libpcap pcre"
+DEPENDS = "libpcap libpcre"
 LICENSE="ngrep"
 SRC_URI = "${SOURCEFORGE_MIRROR}/ngrep/ngrep-${PV}.tar.bz2 \
            file://use-our-pcre.patch;patch=1"

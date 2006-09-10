@@ -1,0 +1,677 @@
+diff -NurBb src/audio2.h patched_src/audio2.h
+--- ccaudio2-0.9.0/src/audio2.h	2006-04-06 10:25:17.000000000 +0200
++++ ccaudio2-0.9.0/patched_src/audio2.h	2006-04-22 14:13:25.000000000 +0200
+@@ -82,6 +82,7 @@
+ #endif
+ 
+ #include <ctime>
++#include "fixedPoint.H"
+ 
+ namespace ost {
+ 
+@@ -760,7 +761,7 @@
+ 	Rate rate;
+ 	unsigned samples;
+ 	Linear frame;
+-	double df1, df2, p1, p2;
++	FixedPoint df1, df2, p1, p2;
+ 	Level m1, m2;
+ 	bool silencer;
+ 
+diff -NurBb src/detect.cpp patched_src/detect.cpp
+--- ccaudio2-0.9.0/src/detect.cpp	2005-07-29 22:16:35.000000000 +0200
++++ ccaudio2-0.9.0/patched_src/detect.cpp	2006-04-22 14:13:26.000000000 +0200
+@@ -78,6 +78,13 @@
+ 	static float dtmf_col[] = { 1209.0, 1336.0, 1477.0, 1633.0 };
+ 	static float fax_freq = 1100.0;
+ 
++	// fixed value for dtmf_detect_(row|col)[].fac for SAMPLE_RATE = 8000
++	static float init[4][4]={ {1.70774,1.1641,0.916368,-0.644862},
++							  {1.64528,0.99637,0.70695,-1.00725},
++							  {1.56869,0.798618,0.460779,-1.36221},
++							  {1.4782,0.568533,0.185089,-1.67677}
++	};
++
+ 	state = (dtmf_detect_state_t *)malloc(sizeof(dtmf_detect_state_t));
+ 	memset(state, 0, sizeof(state));
+ 
+@@ -85,15 +92,19 @@
+ 	{
+ 		theta = (float)(2.0 * M_PI * (dtmf_row[i] / SAMPLE_RATE));
+ 		dtmf_detect_row[i].fac = (float)(2.0 * cos(theta));
++		dtmf_detect_row[i].fac = init[i][0];
+ 
+ 		theta = (float)(2.0 * M_PI * (dtmf_col[i] / SAMPLE_RATE));
+ 		dtmf_detect_col[i].fac = (float)(2.0 * cos(theta));
++		dtmf_detect_col[i].fac = init[i][1];
+ 
+ 		theta = (float)(2.0 * M_PI * (dtmf_row[i] * 2.0 / SAMPLE_RATE));
+ 		dtmf_detect_row_2nd[i].fac = (float)(2.0 * cos(theta));
++		dtmf_detect_row_2nd[i].fac = init[i][2];
+ 
+ 		theta = (float)(2.0 * M_PI * (dtmf_col[i] * 2.0 / SAMPLE_RATE));
+ 		dtmf_detect_col_2nd[i].fac = (float)(2.0 * cos(theta));
++		dtmf_detect_col_2nd[i].fac = init[i][3];
+ 
+ 		goertzelInit(&state->row_out[i], &dtmf_detect_row[i]);
+ 		goertzelInit(&state->col_out[i], &dtmf_detect_col[i]);
+@@ -196,30 +207,30 @@
+ 			state->row_out[0].v2 = state->row_out[0].v3;
+ 			state->row_out[0].v3 = state->row_out[0].fac*state->row_out[0].v2 - v1 + famp;
+ 
+-			v1 = state->col_out[0].v2;
+-			state->col_out[0].v2 = state->col_out[0].v3;
+-			state->col_out[0].v3 = state->col_out[0].fac*state->col_out[0].v2 - v1 + famp;
+-
+ 			v1 = state->row_out[1].v2;
+ 			state->row_out[1].v2 = state->row_out[1].v3;
+ 			state->row_out[1].v3 = state->row_out[1].fac*state->row_out[1].v2 - v1 + famp;
+ 
+-			v1 = state->col_out[1].v2;
+-			state->col_out[1].v2 = state->col_out[1].v3;
+-			state->col_out[1].v3 = state->col_out[1].fac*state->col_out[1].v2 - v1 + famp;
+-
+ 			v1 = state->row_out[2].v2;
+ 			state->row_out[2].v2 = state->row_out[2].v3;
+ 			state->row_out[2].v3 = state->row_out[2].fac*state->row_out[2].v2 - v1 + famp;
+ 
+-			v1 = state->col_out[2].v2;
+-			state->col_out[2].v2 = state->col_out[2].v3;
+-			state->col_out[2].v3 = state->col_out[2].fac*state->col_out[2].v2 - v1 + famp;
+-
+ 			v1 = state->row_out[3].v2;
+ 			state->row_out[3].v2 = state->row_out[3].v3;
+ 			state->row_out[3].v3 = state->row_out[3].fac*state->row_out[3].v2 - v1 + famp;
+ 
++			v1 = state->col_out[0].v2;
++			state->col_out[0].v2 = state->col_out[0].v3;
++			state->col_out[0].v3 = state->col_out[0].fac*state->col_out[0].v2 - v1 + famp;
++
++			v1 = state->col_out[1].v2;
++			state->col_out[1].v2 = state->col_out[1].v3;
++			state->col_out[1].v3 = state->col_out[1].fac*state->col_out[1].v2 - v1 + famp;
++
++			v1 = state->col_out[2].v2;
++			state->col_out[2].v2 = state->col_out[2].v3;
++			state->col_out[2].v3 = state->col_out[2].fac*state->col_out[2].v2 - v1 + famp;
++
+ 			v1 = state->col_out[3].v2;
+ 			state->col_out[3].v2 = state->col_out[3].v3;
+ 			state->col_out[3].v3 = state->col_out[3].fac*state->col_out[3].v2 - v1 + famp;
+@@ -228,34 +239,34 @@
+ 			state->col_out2nd[0].v2 = state->col_out2nd[0].v3;
+ 			state->col_out2nd[0].v3 = state->col_out2nd[0].fac*state->col_out2nd[0].v2 - v1 + famp;
+ 
+-			v1 = state->row_out2nd[0].v2;
+-			state->row_out2nd[0].v2 = state->row_out2nd[0].v3;
+-			state->row_out2nd[0].v3 = state->row_out2nd[0].fac*state->row_out2nd[0].v2 - v1 + famp;
+-
+ 			v1 = state->col_out2nd[1].v2;
+ 			state->col_out2nd[1].v2 = state->col_out2nd[1].v3;
+ 			state->col_out2nd[1].v3 = state->col_out2nd[1].fac*state->col_out2nd[1].v2 - v1 + famp;
+ 
+-			v1 = state->row_out2nd[1].v2;
+-			state->row_out2nd[1].v2 = state->row_out2nd[1].v3;
+-			state->row_out2nd[1].v3 = state->row_out2nd[1].fac*state->row_out2nd[1].v2 - v1 + famp;
+-
+ 			v1 = state->col_out2nd[2].v2;
+ 			state->col_out2nd[2].v2 = state->col_out2nd[2].v3;
+ 			state->col_out2nd[2].v3 = state->col_out2nd[2].fac*state->col_out2nd[2].v2 - v1 + famp;
+ 
+-			v1 = state->row_out2nd[2].v2;
+-			state->row_out2nd[2].v2 = state->row_out2nd[2].v3;
+-			state->row_out2nd[2].v3 = state->row_out2nd[2].fac*state->row_out2nd[2].v2 - v1 + famp;
+-
+ 			v1 = state->col_out2nd[3].v2;
+ 			state->col_out2nd[3].v2 = state->col_out2nd[3].v3;
+ 			state->col_out2nd[3].v3 = state->col_out2nd[3].fac*state->col_out2nd[3].v2 - v1 + famp;
+ 
++			v1 = state->row_out2nd[0].v2;
++			state->row_out2nd[0].v2 = state->row_out2nd[0].v3;
++			state->row_out2nd[0].v3 = state->row_out2nd[0].fac*state->row_out2nd[0].v2 - v1 + famp;
++
++			v1 = state->row_out2nd[1].v2;
++			state->row_out2nd[1].v2 = state->row_out2nd[1].v3;
++			state->row_out2nd[1].v3 = state->row_out2nd[1].fac*state->row_out2nd[1].v2 - v1 + famp;
++
++			v1 = state->row_out2nd[2].v2;
++			state->row_out2nd[2].v2 = state->row_out2nd[2].v3;
++			state->row_out2nd[2].v3 = state->row_out2nd[2].fac*state->row_out2nd[2].v2 - v1 + famp;
++
+ 			v1 = state->row_out2nd[3].v2;
+ 			state->row_out2nd[3].v2 = state->row_out2nd[3].v3;
+ 			state->row_out2nd[3].v3 = state->row_out2nd[3].fac*state->row_out2nd[3].v2 - v1 + famp;
+-
++#ifdef FAXDETECT
+ 			v1 = state->fax_tone.v2;
+ 			state->fax_tone.v2 = state->fax_tone.v3;
+ 			state->fax_tone.v3 = state->fax_tone.fac*state->fax_tone.v2 - v1 + famp;
+@@ -263,13 +274,15 @@
+ 			v1 = state->fax_tone.v2;
+ 			state->fax_tone2nd.v2 = state->fax_tone2nd.v3;
+ 			state->fax_tone2nd.v3 = state->fax_tone2nd.fac*state->fax_tone2nd.v2 - v1 + famp;
++#endif
+ 		}
+ 		state->current_sample += (limit - sample);
+ 		if(state->current_sample < 102)
+ 			continue;
+ 
++#ifdef FAXDETECT
+ 		fax_energy = goertzelResult(&state->fax_tone);
+-
++#endif
+ 		// We are at the end of a DTMF detection block
+ 		// Find the peak row and the peak column
+ 		row_energy[0] = goertzelResult (&state->row_out[0]);
+@@ -332,6 +345,7 @@
+ 			}
+ 		}
+ 
++#ifdef FAXDETECT
+ 		if (!hit && (fax_energy >= FAX_THRESHOLD) && (fax_energy > state->energy * 21.0))
+ 		{
+ 			fax_energy_2nd = goertzelResult(&state->fax_tone2nd);
+@@ -356,6 +370,7 @@
+ 			}
+ 			state->fax_hits = 0;
+ 		}
++#endif
+ 		state->hit1 = state->hit2;
+ 		state->hit2 = state->hit3;
+ 		state->hit3 = hit;
+diff -NurBb src/fixedPoint.C patched_src/fixedPoint.C
+--- ccaudio2-0.9.0/src/fixedPoint.C	1970-01-01 01:00:00.000000000 +0100
++++ ccaudio2-0.9.0/patched_src/fixedPoint.C	2006-04-22 14:13:26.000000000 +0200
+@@ -0,0 +1,145 @@
++#include "fixedPoint.H"
++
++#include <math.h>
++
++#define TABLESIZE (1<<RES_BITS)
++
++static FixedPoint sinGenerator(int x) {
++	FixedPoint q(2 * x * 3.14156);
++	q /= NUMPOINTS;
++	return FixedPoint(sin(static_cast<double>(q)));
++}
++
++static FixedPoint cosGenerator(int x) {
++	FixedPoint q(2 * x * 3.14156);
++	q /= NUMPOINTS;
++	return FixedPoint(cos(static_cast<double>(q)));
++}
++
++static FixedPoint sinGeneratorSmall(int x) {
++	FixedPoint q(2 * x * 3.14156);
++	q /= NUMPOINTS * NUMPOINTS;
++	return FixedPoint(sin(static_cast<double>(q)));
++}
++
++void FixedPoint::generateTables() {
++	int i;
++	std::cout << "unsigned short sinL[] = { 0";
++	for (i=1; i<TABLESIZE; ++i )
++		std::cout << ", " << sinGenerator(i).getNKS();
++	std::cout << "};" << std::endl;
++
++	std::cout << "unsigned short sinS[] = { 0";
++	for (i=1; i<TABLESIZE; ++i )
++		std::cout << ", " << sinGeneratorSmall(i).getNKS();
++	std::cout << "};" << std::endl;
++
++	std::cout << "unsigned short cosL[] = { " << (1<<decimalPlaces)-1;
++	for (i=1; i<TABLESIZE; ++i )
++		std::cout << ", " << cosGenerator(i).getNKS();
++	std::cout << "};" << std::endl;
++}
++
++#define USE_TABLE_LOOKUP
++#ifdef USE_TABLE_LOOKUP
++
++// table for RES_BITS==6
++//unsigned short sinL[] = { 0, 1607, 3214, 4820, 6422, 8021, 9615, 11203, 12784, 14358, 15923, 17478, 19023, 20557, 22077, 23585, 25078, 26557, 28019, 29465, 30892, 32302, 33691, 35061, 36409, 37735, 39039, 40318, 41574, 42805, 44010, 45188, 46340, 47463, 48558, 49623, 50659, 51664, 52638, 53580, 54490, 55367, 56211, 57021, 57797, 58537, 59243, 59913, 60546, 61144, 61704, 62227, 62713, 63161, 63571, 63943, 64276, 64570, 64826, 65042, 65220, 65358, 65456, 65516};
++//unsigned short sinS[] = { 0, 5, 11, 17, 24, 30, 36, 42, 49, 55, 61, 68, 74, 80, 86, 93, 99, 105, 112, 118, 124, 130, 137, 143, 149, 156, 162, 168, 174, 181, 187, 193, 200, 206, 212, 218, 225, 231, 237, 244, 250, 256, 262, 269, 275, 281, 288, 294, 300, 306, 313, 319, 325, 332, 338, 344, 350, 357, 363, 369, 375, 382, 388, 394};
++//unsigned short cosL[] = { 65535, 65516, 65457, 65358, 65220, 65043, 64826, 64571, 64276, 63943, 63572, 63162, 62714, 62228, 61705, 61144, 60547, 59913, 59244, 58538, 57798, 57022, 56212, 55368, 54491, 53582, 52639, 51665, 50660, 49625, 48559, 47465, 46341, 45190, 44011, 42807, 41576, 40320, 39040, 37737, 36410, 35062, 33692, 32303, 30894, 29466, 28020, 26559, 25081, 23587, 22080, 20558, 19025, 17480, 15925, 14360, 12787, 11205, 9617, 8023, 6425, 4822, 3217, 1609};
++
++// table for RES_BITS==7
++//unsigned short sinL[] = { 0, 803, 1607, 2411, 3214, 4018, 4820, 5622, 6422, 7223, 8021, 8819, 9615, 10410, 11203, 11994, 12784, 13573, 14358, 15141, 15923, 16702, 17478, 18252, 19023, 19791, 20557, 21318, 22077, 22832, 23585, 24334, 25078, 25819, 26557, 27290, 28019, 28744, 29465, 30181, 30892, 31599, 32302, 32999, 33691, 34378, 35061, 35737, 36409, 37074, 37735, 38390, 39039, 39681, 40318, 40950, 41574, 42193, 42805, 43411, 44010, 44603, 45188, 45768, 46340, 46905, 47463, 48014, 48558, 49094, 49623, 50144, 50659, 51165, 51664, 52155, 52638, 53113, 53580, 54039, 54490, 54933, 55367, 55793, 56211, 56620, 57021, 57413, 57797, 58171, 58537, 58894, 59243, 59582, 59913, 60234, 60546, 60850, 61144, 61428, 61704, 61970, 62227, 62475, 62713, 62942, 63161, 63371, 63571, 63762, 63943, 64114, 64276, 64428, 64570, 64703, 64826, 64939, 65042, 65136, 65220, 65294, 65358, 65412, 65456, 65491, 65516, 65531};
++//unsigned short sinS[] = { 0, 0, 2, 3, 5, 6, 8, 9, 11, 13, 14, 16, 17, 19, 20, 22, 24, 25, 27, 28, 30, 31, 33, 35, 36, 38, 39, 41, 42, 44, 46, 47, 49, 50, 52, 53, 55, 57, 58, 60, 61, 63, 64, 66, 68, 69, 71, 72, 74, 75, 77, 79, 80, 82, 83, 85, 86, 88, 90, 91, 93, 94, 96, 97, 99, 101, 102, 104, 105, 107, 108, 110, 112, 113, 115, 116, 118, 119, 121, 123, 124, 126, 127, 129, 130, 132, 134, 135, 137, 138, 140, 141, 143, 145, 146, 148, 149, 151, 152, 154, 156, 157, 159, 160, 162, 163, 165, 167, 168, 170, 171, 173, 174, 176, 178, 179, 181, 182, 184, 185, 187, 189, 190, 192, 193, 195, 196, 198};
++//unsigned short cosL[] = { 65535, 65531, 65516, 65491, 65457, 65412, 65358, 65294, 65220, 65136, 65043, 64939, 64826, 64703, 64571, 64428, 64276, 64115, 63943, 63762, 63572, 63371, 63162, 62942, 62714, 62476, 62228, 61971, 61705, 61429, 61144, 60850, 60547, 60235, 59913, 59583, 59244, 58896, 58538, 58172, 57798, 57414, 57022, 56621, 56212, 55795, 55368, 54934, 54491, 54040, 53582, 53114, 52639, 52156, 51665, 51166, 50660, 50146, 49625, 49095, 48559, 48015, 47465, 46906, 46341, 45769, 45190, 44604, 44011, 43412, 42807, 42195, 41576, 40951, 40320, 39684, 39040, 38391, 37737, 37077, 36410, 35739, 35062, 34380, 33692, 33000, 32303, 31601, 30894, 30182, 29466, 28746, 28020, 27292, 26559, 25822, 25081, 24335, 23587, 22835, 22080, 21320, 20558, 19793, 19025, 18254, 17480, 16704, 15925, 15143, 14360, 13574, 12787, 11996, 11205, 10412, 9617, 8820, 8023, 7224, 6425, 5624, 4822, 4020, 3217, 2414, 1609, 805};
++
++unsigned short sinL[] = { 0, 803, 1607, 2411, 3214, 4018, 4820, 5622, 6422, 7223, 8021, 8819, 9615, 10410, 11203, 11994, 12784, 13573, 14358, 15141, 15923, 16702, 17478, 18252, 19023, 19792, 20557, 21318, 22077, 22833, 23585, 24334, 25078, 25820, 26557, 27290, 28019, 28745, 29465, 30181, 30892, 31600, 32302, 32999, 33691, 34379, 35061, 35737, 36409, 37075, 37735, 38390, 39039, 39682, 40319, 40950, 41574, 42194, 42806, 43411, 44010, 44603, 45189, 45768, 46340, 46906, 47464, 48014, 48558, 49095, 49624, 50145, 50659, 51166, 51664, 52155, 52638, 53114, 53581, 54039, 54490, 54933, 55368, 55794, 56211, 56621, 57021, 57413, 57797, 58172, 58538, 58895, 59243, 59583, 59913, 60234, 60547, 60850, 61144, 61429, 61704, 61971, 62228, 62475, 62713, 62942, 63161, 63371, 63571, 63762, 63943, 64114, 64276, 64428, 64571, 64703, 64826, 64939, 65043, 65136, 65220, 65294, 65358, 65412, 65457, 65491, 65516, 65531};
++unsigned short sinS[] = { 0, 0, 2, 3, 5, 6, 8, 9, 11, 13, 14, 16, 17, 19, 20, 22, 24, 25, 27, 28, 30, 31, 33, 35, 36, 38, 39, 41, 42, 44, 46, 47, 49, 50, 52, 53, 55, 57, 58, 60, 61, 63, 64, 66, 68, 69, 71, 72, 74, 75, 77, 79, 80, 82, 83, 85, 86, 88, 90, 91, 93, 94, 96, 97, 99, 101, 102, 104, 105, 107, 108, 110, 112, 113, 115, 116, 118, 119, 121, 123, 124, 126, 127, 129, 130, 132, 134, 135, 137, 138, 140, 141, 143, 145, 146, 148, 149, 151, 152, 154, 156, 157, 159, 160, 162, 163, 165, 167, 168, 170, 171, 173, 174, 176, 178, 179, 181, 182, 184, 185, 187, 189, 190, 192, 193, 195, 196, 198};
++unsigned short cosL[] = { 65535, 65531, 65516, 65491, 65457, 65412, 65358, 65294, 65220, 65136, 65043, 64939, 64826, 64703, 64571, 64428, 64276, 64115, 63943, 63762, 63572, 63371, 63162, 62942, 62714, 62475, 62228, 61971, 61705, 61429, 61144, 60850, 60547, 60235, 59913, 59583, 59244, 58895, 58538, 58172, 57798, 57414, 57022, 56621, 56212, 55794, 55368, 54934, 54491, 54040, 53581, 53114, 52639, 52156, 51665, 51166, 50660, 50146, 49624, 49095, 48559, 48015, 47464, 46906, 46341, 45768, 45189, 44604, 44011, 43412, 42806, 42194, 41576, 40950, 40320, 39683, 39040, 38390, 37736, 37076, 36410, 35738, 35061, 34379, 33692, 32999, 32302, 31600, 30894, 30181, 29465, 28745, 28020, 27291, 26558, 25821, 25080, 24334, 23586, 22834, 22079, 21319, 20557, 19792, 19024, 18253, 17479, 16703, 15924, 15142, 14359, 13573, 12786, 11996, 11204, 10411, 9616, 8820, 8022, 7223, 6424, 5623, 4821, 4019, 3216, 2413, 1608, 804};
++
++
++inline FixedPoint sinhelper(int v)
++{
++	return FixedPoint(0, sinL[v]);
++}
++
++inline FixedPoint sinhelperSmall(int v)
++{
++	return FixedPoint(0, sinS[v]);
++}
++
++inline FixedPoint coshelper(int v)
++{
++	return FixedPoint(0, cosL[v]);
++}
++
++#else
++inline FixedPoint sinhelper(int v)
++{
++	return sinGenerator(v);
++}
++
++inline FixedPoint sinhelperSmall(int v)
++{
++	return sinGeneratorSmall(v);
++}
++
++inline FixedPoint coshelper(int v)
++{
++	return cosGenerator(v);
++}
++
++#endif
++
++FixedPoint sin(const FixedPoint& v) {
++	// scaled to use NUMPOINTS==(1<<RES_BITS+2) as 2pi range
++
++	// get the quadrant
++	int q = (static_cast<int>(v) >> RES_BITS) & 3;
++
++	// handle sin(alpha) as sin(large+small) with large+small=alpha
++	// large is here 0-NUMPOINTS, small is (alpha-large) scaled to NUMPOINTS
++	int large = static_cast<int>(v) & (TABLESIZE-1);
++	int small = v.getNKS()>>(FixedPoint::decimalPlaces - RES_BITS);
++
++	// calculate sin for first quadrant
++	FixedPoint r;
++	// assuming coshelper2(small) == 1
++	if ( q&1 ) {
++		r = coshelper(large)-sinhelper(large)*sinhelperSmall(small);
++	} else {
++		r = sinhelper(large)+sinhelperSmall(small)*coshelper(large);
++	}
++
++	if ( q>1 )
++		r.negate();
++
++	return r;
++}
++
++FixedPoint
++cos(const FixedPoint& v) {
++	// scaled to use NUMPOINTS==(1<<RES_BITS+2) as 2pi range
++
++	// get the quadrant
++	int q = (static_cast<int>(v) >> RES_BITS) & 3;
++
++	// handle sin(alpha) as sin(large+small) with large+small=alpha
++	// large is here 0-NUMPOINTS, small is (alpha-large) scaled to NUMPOINTS
++	int large = static_cast<int>(v) & (TABLESIZE-1);
++	int small = v.getNKS()>>(FixedPoint::decimalPlaces - RES_BITS);
++
++	// calculate sin for first quadrant
++	FixedPoint r;
++	// assuming coshelper2(small) == 1
++	if ( q&1 ) {
++		r = sinhelper(large)+sinhelperSmall(small)*coshelper(large);
++	} else {
++		r = coshelper(large)-sinhelper(large)*sinhelperSmall(small);
++	}
++
++	if ( q==1 || q==2 )
++		r.negate();
++
++	return r;
++}
+diff -NurBb src/fixedPoint.H patched_src/fixedPoint.H
+--- ccaudio2-0.9.0/src/fixedPoint.H	1970-01-01 01:00:00.000000000 +0100
++++ ccaudio2-0.9.0/patched_src/fixedPoint.H	2006-04-22 14:13:26.000000000 +0200
+@@ -0,0 +1,239 @@
++#ifndef FIXEDPOINT__H__
++#define FIXEDPOINT__H__
++
++#include <iostream>
++
++#define longlong
++
++const int RES_BITS = 7;
++const int NUMPOINTS = (1<<(RES_BITS+2));
++
++const int FP_PI_TRIG = (1<<(RES_BITS+1)); // use this as pi in trig functions
++
++class FixedPoint;
++static inline int prepareMultiply(FixedPoint& r, FixedPoint&f);
++static inline void check_overflow(const FixedPoint&a, const FixedPoint&b);
++
++class FixedPoint {
++public:
++#ifdef longlong
++	typedef long long _fp;
++#else
++	typedef long _fp;
++#endif
++
++	FixedPoint() { value=0; }
++	FixedPoint(int v) { value = static_cast<_fp>(v) << decimalPlaces; }
++	FixedPoint(unsigned int v) { value = static_cast<_fp>(v) << decimalPlaces; }
++	FixedPoint(double v) { value = static_cast<_fp>(v * (1 << decimalPlaces)); }
++	FixedPoint(float v) { value = static_cast<_fp>(v * (1 << decimalPlaces)); }
++	FixedPoint(const FixedPoint& a) { value = a.value; }
++	FixedPoint(int ganz, int komma) { value = (static_cast<_fp>(ganz)<<decimalPlaces) + komma; }
++
++	operator _fp() const { return value >> decimalPlaces; }
++	operator int() const { return value >> decimalPlaces; } // this conversion can overflow!!
++	operator double() const { return (double)value / (1<<decimalPlaces); }
++	operator bool() const { return value != 0; }
++
++#ifdef longlong
++
++	friend FixedPoint operator*(const FixedPoint& a, const FixedPoint& b)
++	{
++		FixedPoint r(a);
++		FixedPoint f(b);
++
++		// shift r.value and f.value so, that no overrun occurs
++		int shift = prepareMultiply(r, f);
++		check_overflow(r,f);
++
++		r.value *= f.value;
++
++		// shift away nks
++		r.value >>= shift;
++
++		return r;
++	}
++
++	void operator*=(const FixedPoint& b)
++	{
++		FixedPoint f(b);
++
++		// shift r.value and f.value so, that no overrun occurs
++		int shift = prepareMultiply(*this, f);
++		check_overflow(*this, f);
++
++		value *= f.value;
++
++		// shift away nks
++		value >>= shift;
++	}
++
++#endif
++	friend FixedPoint operator*(const FixedPoint& a, int v)
++	{ FixedPoint r(a); r.value *= v; return r; }
++	friend FixedPoint operator*(int v, const FixedPoint& b)
++	{ FixedPoint r(b); r.value *= v; return r; }
++	void operator*=(int v)
++	{ value *= v; }
++
++#ifdef longlong
++	friend FixedPoint operator/(const FixedPoint& a, const FixedPoint& b)
++	{ FixedPoint r(a); r.value<<=decimalPlaces; r.value /= b.value; return r; }
++	void operator/=(const FixedPoint& a)
++	{ value<<=decimalPlaces; value /= a.value; }
++#else
++	friend FixedPoint operator/(const FixedPoint& a, const FixedPoint& b)
++	{
++		FixedPoint r;
++		long long v = a.value;
++		v <<= decimalPlaces;
++		v /= b.value;
++		r.value = v;
++		return r;
++	}
++	void operator/=(const FixedPoint& a)
++	{
++		long long v = value;
++		v <<= decimalPlaces;
++		v /= a.value;
++		value = v;
++	}
++#endif
++	friend FixedPoint operator/(const FixedPoint& a, int v)
++	{ FixedPoint r(a); r.value /= v; return r; }
++	void operator/=(int v)
++	{ value /= v; }
++
++	friend FixedPoint operator+(const FixedPoint& a, const FixedPoint& b)
++	{ FixedPoint r(a); r.value += b.value; return r; }
++	friend FixedPoint operator+(const FixedPoint& a, int v)
++	{ FixedPoint r(a); r.value += v<<decimalPlaces; return r; }
++	friend FixedPoint operator+(int v, const FixedPoint& b)
++	{ FixedPoint r(b); r.value += v<<decimalPlaces; return r; }
++	friend FixedPoint operator-(const FixedPoint& a, const FixedPoint& b)
++	{ FixedPoint r(a); r.value -= b.value; return r; }
++	friend FixedPoint operator-(const FixedPoint& a, int v)
++	{ FixedPoint r(a); r.value -= v<<decimalPlaces; return r; }
++	friend FixedPoint operator-(int v, const FixedPoint& b)
++	{ FixedPoint r(b); r.value -= v<<decimalPlaces; return r; }
++
++	void operator+=(const FixedPoint& a)
++	{ value += a.value; }
++	void operator-=(const FixedPoint& a)
++	{ value -= a.value; }
++
++	friend bool operator==(const FixedPoint& a, const FixedPoint& b)
++	{ return a.value == b.value; }
++	friend bool operator==(const FixedPoint& a, int v)
++	{ return a.value == (v << decimalPlaces); }
++	friend bool operator==(int v, const FixedPoint& b)
++	{ return (v << decimalPlaces) == b.value; }
++
++	friend bool operator!=(const FixedPoint& a, const FixedPoint& b)
++	{ return a.value != b.value; }
++	friend bool operator!=(const FixedPoint& a, int v)
++	{ return a.value != (v << decimalPlaces); }
++	friend bool operator!=(int v, const FixedPoint& b)
++	{ return (v << decimalPlaces) != b.value ; }
++
++	friend bool operator<(const FixedPoint& a, const FixedPoint& b)
++	{ return a.value < b.value; }
++	friend bool operator<(const FixedPoint& a, int v)
++	{ return a.value < (v << decimalPlaces); }
++	friend bool operator<(int v, const FixedPoint& b)
++	{ return (v << decimalPlaces)< b.value; }
++
++	friend bool operator>(const FixedPoint& a, const FixedPoint& b)
++	{ return a.value > b.value; }
++	friend bool operator>(const FixedPoint& a, int v)
++	{ return a.value > (v << decimalPlaces) ; }
++	friend bool operator>(int v, const FixedPoint& b)
++	{ return (v << decimalPlaces )> b.value; }
++
++	friend bool operator>=(const FixedPoint& a, const FixedPoint& b)
++	{ return a.value >= b.value; }
++	friend bool operator<=(const FixedPoint& a, const FixedPoint& b)
++	{ return a.value <= b.value; }
++	friend bool operator>=(const FixedPoint& a, int v)
++	{ return a.value >= ( v << decimalPlaces ); }
++	friend bool operator>=(int v, const FixedPoint& b)
++	{ return ( v << decimalPlaces ) >= b.value; }
++	friend bool operator<=(const FixedPoint& a, int v)
++	{ return a.value <= ( v << decimalPlaces ); }
++	friend bool operator<=(int v, const FixedPoint& b)
++	{ return ( v << decimalPlaces ) <= b.value; }
++
++	friend std::ostream& operator<<(std::ostream& os, FixedPoint f)
++	{
++		return os << (double)f << " [" << std::hex << (_fp)f << "#" << f.getNKS() << std::dec << "]";
++	}
++
++	friend FixedPoint sin(const FixedPoint& v);
++	friend FixedPoint cos(const FixedPoint& v);
++
++	unsigned int getNKS() const { return value & ((1<<decimalPlaces)-1); }
++
++	void negate() { value *= -1; }
++	friend FixedPoint operator-(const FixedPoint& f) { FixedPoint r(f); r.value *= -1; return r; }
++
++	static const int decimalPlaces=16;
++
++	_fp value;
++
++	static void generateTables();
++
++private:
++	//FixedPoint sinLookup(const FixedPoint& v);
++	//FixedPoint cosLookup(const FixedPoint& v);
++};
++
++
++
++int prepareMultiply(FixedPoint& r, FixedPoint&f) {
++	int shift = 0;
++	FixedPoint::_fp first;
++	if ( r.value < 0 ) {
++		first=0x4000000000000000LL;
++		while ( shift<FixedPoint::decimalPlaces && (r.value & first )) {
++			++shift;
++			first>>=1;
++		}
++	} else {
++		first=0x4000000000000000LL;
++		while ( shift<FixedPoint::decimalPlaces && !(r.value & first )) {
++			++shift;
++			first>>=1;
++		}
++	}
++	if ( f.value < 0 ) {
++		first=0x4000000000000000LL;
++		while ( shift<FixedPoint::decimalPlaces && (f.value & first )) {
++			++shift;
++			first>>=1;
++		}
++	} else {
++		first=0x4000000000000000LL;
++		while ( shift<FixedPoint::decimalPlaces && !(f.value & first )) {
++			++shift;
++			first>>=1;
++		}
++	}
++
++	if ( shift<FixedPoint::decimalPlaces ) {
++		int donow = FixedPoint::decimalPlaces-shift;
++		std::cerr << "  prec loss " << donow << ": " << r << "/" << f << std::endl;
++		r.value >>= donow/2;
++		f.value >>= donow-(donow/2);
++	}
++	return shift;
++}
++
++void check_overflow(const FixedPoint&a, const FixedPoint&b) {
++	if ( a<0 && b<0 || (a>0 && b>0) ) {
++		if ( a.value * b.value < 0 )
++			std::cerr << "  overflow1: " << a << " * " << b << "=" << a.value*b.value << std::endl;
++	} else if ( a.value * b.value > 0 )
++		std::cerr << "  overflow2: " << a << " * " << b << "=" << a.value*b.value << std::endl;
++}
++
++#endif /* FIXEDPOINT__H__ */
+diff -NurBb src/Makefile.am patched_src/Makefile.am
+--- ccaudio2-0.9.0/src/Makefile.am	2006-03-01 17:43:29.000000000 +0100
++++ ccaudio2-0.9.0/patched_src/Makefile.am	2006-04-22 14:13:25.000000000 +0200
+@@ -14,12 +14,13 @@
+ RELEASE = -version-info @LT_VERSION@ -release @LT_RELEASE@
+ ccxxincludedir=$(includedir)/cc++
+ ccxxinclude_HEADERS = audio2.h
++AM_CXXFLAGS=-msoft-float
+ 
+ lib_LTLIBRARIES = libccaudio2.la
+ 
+ libccaudio2_la_SOURCES = audiofile.cpp friends.cpp codec.cpp tone.cpp \
+ 	fileio.cpp buffer.cpp stream.cpp oss.cpp w32.cpp osx.cpp \
+-	mapper.cpp dialers.cpp teltones.cpp detect.cpp audiobase.cpp
++	mapper.cpp dialers.cpp teltones.cpp detect.cpp audiobase.cpp fixedPoint.C
+ 
+ libccaudio2_la_LDFLAGS = $(DYN_LOADER) $(AUDIO_LIBS) -lm $(RELEASE)
+ 
+diff -NurBb src/tone.cpp patched_src/tone.cpp
+--- ccaudio2-0.9.0/src/tone.cpp	2006-03-01 16:51:13.000000000 +0100
++++ ccaudio2-0.9.0/patched_src/tone.cpp	2006-04-22 14:13:25.000000000 +0200
+@@ -37,12 +37,15 @@
+ 
+ #include "private.h"
+ #include "audio2.h"
+-#include <cmath>
++#include "fixedPoint.H"
+ 
+ #ifndef M_PI
+ #define M_PI    3.14159265358979323846
+ #endif
+ 
++#undef M_PI
++#define M_PI FP_PI_TRIG
++
+ using namespace ost;
+ 
+ AudioTone::AudioTone(timeout_t duration, Rate r)
+@@ -59,8 +62,8 @@
+ AudioTone::AudioTone(unsigned freq, Level l, timeout_t duration, Rate r)
+ {
+ 	rate = r;
+-    df1 = (freq * M_PI * 2) / (long)rate;
+-    df2 = (freq * M_PI * 2) / (long)rate;
++    df1 = FixedPoint(freq * M_PI * 2) / (int)rate;
++    df2 = FixedPoint(freq * M_PI * 2) / (int)rate;
+     p1 = 0, p2 = 0;
+     samples = (duration * (long)rate) / 1000;
+ 	m1 = l / 2;
+@@ -73,8 +76,8 @@
+ AudioTone::AudioTone(unsigned f1, unsigned f2, Level l1, Level l2, timeout_t duration, Rate r)
+ {
+ 	rate = r;
+-    df1 = (f1 * M_PI * 2) / (long)r;
+-    df2 = (f2 * M_PI * 2) / (long)r;
++    df1 = FixedPoint(f1 * M_PI * 2) / (int)r;
++    df2 = FixedPoint(f2 * M_PI * 2) / (int)r;
+     p1 = 0, p2 = 0;
+     samples = (duration * (long)r) / 1000;
+ 	m1 = l1 / 2;
+@@ -124,8 +127,8 @@
+ 
+ void AudioTone::single(unsigned freq, Level l)
+ {
+-    df1 = (freq * M_PI * 2) / (long)rate;
+-    df2 = (freq * M_PI * 2) / (long)rate;
++    df1 = FixedPoint(freq * M_PI * 2) / (int)rate;
++    df2 = FixedPoint(freq * M_PI * 2) / (int)rate;
+         m1 = l / 2; 
+         m2 = l / 2; 
+ 	silencer = false;
+@@ -133,8 +136,8 @@
+ 
+ void AudioTone::dual(unsigned f1, unsigned f2, Level l1, Level l2)
+ {
+-    df1 = (f1 * M_PI * 2) / (long)rate;
+-    df2 = (f2 * M_PI * 2) / (long)rate;
++    df1 = FixedPoint(f1 * M_PI * 2) / (int)rate;
++    df2 = FixedPoint(f2 * M_PI * 2) / (int)rate;
+         m1 = l1 / 2;
+         m2 = l2 / 2;
+ 	silencer = false;
+@@ -188,8 +191,8 @@
+ 				continue;
+ 			}
+ 		
+-	                *(data++) = (Level)(sin(p1) * (double)m1) +
+-        	                (Level)(sin(p2) * (double)m2);
++			*(data++) = (Level)(int)(sin(p1) * m1) +
++				(Level)(int)(sin(p2) * m2);
+ 
+ 			p1 += df1;
+ 			p2 += df2;
+@@ -199,8 +202,8 @@
+ 	{
+ 		while(count--)
+ 		{
+-                	*(data++) = (Level)(sin(p1) * (double)m1) +
+-                        	(Level)(sin(p2) * (double)m2);
++			*(data++) = (Level)(int)(sin(p1) * m1) +
++                        	(Level)(int)(sin(p2) * m2);
+ 
+ 	                p1 += df1;
+         	        p2 += df2;

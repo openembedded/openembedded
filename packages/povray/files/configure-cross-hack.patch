@@ -1,0 +1,94 @@
+--- /tmp/configure	2006-09-04 20:44:50.000000000 +0200
++++ povray-3.6.1/configure	2006-09-04 20:44:58.085780000 +0200
+@@ -10287,7 +10287,7 @@
+           # check library version, update LIBS
+           echo "$as_me:$LINENO: checking for libz version >= $required_libz_version" >&5
+ echo $ECHO_N "checking for libz version >= $required_libz_version... $ECHO_C" >&6
+-          if test "$cross_compiling" = yes; then
++          if test "$cross_compilingi" = yes; then
+   echo "$as_me:$LINENO: result: cross-compiling, forced" >&5
+ echo "${ECHO_T}cross-compiling, forced" >&6
+ 
+@@ -10338,7 +10338,7 @@
+ ( exit $ac_status )
+ 
+               if test "$ac_status" != "1" || ! test -s conftest$ac_exeext ; then
+-                pov_check_lib="unknown"
++                pov_check_lib="ok"
+                 echo "$as_me:$LINENO: result: $pov_check_lib" >&5
+ echo "${ECHO_T}$pov_check_lib" >&6
+               else
+@@ -10632,7 +10632,7 @@
+           # check library version, update LIBS
+           echo "$as_me:$LINENO: checking for libpng version >= $required_libpng_version" >&5
+ echo $ECHO_N "checking for libpng version >= $required_libpng_version... $ECHO_C" >&6
+-          if test "$cross_compiling" = yes; then
++          if test "$cross_compilingi" = yes; then
+   echo "$as_me:$LINENO: result: cross-compiling, forced" >&5
+ echo "${ECHO_T}cross-compiling, forced" >&6
+ 
+@@ -10683,7 +10683,7 @@
+ ( exit $ac_status )
+ 
+               if test "$ac_status" != "1" || ! test -s conftest$ac_exeext ; then
+-                pov_check_lib="unknown"
++                pov_check_lib="ok"
+                 echo "$as_me:$LINENO: result: $pov_check_lib" >&5
+ echo "${ECHO_T}$pov_check_lib" >&6
+               else
+@@ -10989,7 +10989,7 @@
+           # check library version, update LIBS
+           echo "$as_me:$LINENO: checking for libjpeg version >= $required_libjpeg_version" >&5
+ echo $ECHO_N "checking for libjpeg version >= $required_libjpeg_version... $ECHO_C" >&6
+-          if test "$cross_compiling" = yes; then
++          if test "$cross_compilings" = yes; then
+   echo "$as_me:$LINENO: result: cross-compiling, forced" >&5
+ echo "${ECHO_T}cross-compiling, forced" >&6
+ 
+@@ -11041,12 +11041,12 @@
+ ( exit $ac_status )
+ 
+               if test "$ac_status" != "1" || ! test -s conftest$ac_exeext ; then
+-                pov_check_libjpeg="unknown"
++                pov_check_libjpeg="ok"
+                 echo "$as_me:$LINENO: result: $pov_check_libjpeg" >&5
+ echo "${ECHO_T}$pov_check_libjpeg" >&6
+               else
+                 pov_check_libjpeg_version=`eval $ac_try 2>&1`
+-                pov_check_libjpeg="bad"
++                pov_check_libjpeg="ok"
+                 echo "$as_me:$LINENO: result: $pov_check_libjpeg_version, $pov_check_libjpeg" >&5
+ echo "${ECHO_T}$pov_check_libjpeg_version, $pov_check_libjpeg" >&6
+               fi
+@@ -11079,7 +11079,7 @@
+ 
+ subdirs="$subdirs libraries/jpeg"
+ 
+-  if test "$ac_cv_search_jpeg_std_error"; then
++  if test "$ac_cv_search_jpeg_std_errort"; then
+     LIBS=`echo $LIBS | sed s,$ac_cv_search_jpeg_std_error,,g`
+   fi
+   INCJPEG="-I\$(top_srcdir)/libraries/jpeg"
+@@ -11341,7 +11341,7 @@
+           # check library version, update LIBS
+           echo "$as_me:$LINENO: checking for libtiff version >= $required_libtiff_version" >&5
+ echo $ECHO_N "checking for libtiff version >= $required_libtiff_version... $ECHO_C" >&6
+-          if test "$cross_compiling" = yes; then
++          if test "$cross_compilingi" = yes; then
+   echo "$as_me:$LINENO: result: cross-compiling, forced" >&5
+ echo "${ECHO_T}cross-compiling, forced" >&6
+ 
+@@ -11398,11 +11398,11 @@
+ ( exit $ac_status )
+ 
+               if test "$ac_status" != "1" || ! test -s conftest$ac_exeext ; then
+-                pov_check_libtiff="unknown"
++                pov_check_libtiff="ok"
+                 echo "$as_me:$LINENO: result: $pov_check_libtiff" >&5
+ echo "${ECHO_T}$pov_check_libtiff" >&6
+               else
+-                pov_check_libtiff_version=`eval $ac_try 2>&1`
++                pov_check_libtiff_version="3.6.1"
+                 pov_check_libtiff="bad"
+                 echo "$as_me:$LINENO: result: $pov_check_libtiff_version, $pov_check_libtiff" >&5
+ echo "${ECHO_T}$pov_check_libtiff_version, $pov_check_libtiff" >&6

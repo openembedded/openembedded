@@ -1,0 +1,22 @@
+--- linux-old/drivers/usb/serial/usbserial.c	2005-08-28 20:23:40.000000000 +0200
++++ linux/drivers/usb/serial/usbserial.c	2005-08-28 20:23:12.000000000 +0200
+@@ -499,6 +499,19 @@
+ 		/* get_usb_serial checks port->tty, so cannot be used */
+ 		serial = port->serial;
+ 		if (port->write_busy) {
++
++			/*-- how is the status of the outgoing urb? --*/
++			/*-- did we miss a callback? --*/
++			/*-- problem with the hack below is that we may */
++			/*   corrup structures we currently walk thru */
++			if (port->write_urb && port->write_urb->status != -EINPROGRESS) {
++				if (port->write_urb->complete)
++					port->write_urb->complete(port->write_urb);
++				else
++					dbg("%s: URB %p has no complete function\n", __FUNCTION__, port->write_urb);
++			}
++
++
+ 			dbg("%s - port %d busy", __FUNCTION__, port->number);
+ 			pos = pos->next;
+ 			continue;

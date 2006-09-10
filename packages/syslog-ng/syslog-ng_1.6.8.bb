@@ -1,9 +1,10 @@
-PR = "r8"
+PR = "r9"
 MAINTAINER = "Oyvind Repvik <nail@nslu2-linux.org"
 DESCRIPTION = "Alternative system logger daemon"
 DEPENDS = "libol flex"
 
 SRC_URI = "http://www.balabit.com/downloads/syslog-ng/1.6/src/${PN}-${PV}.tar.gz \
+          file://syslog-ng.conf \
 	  file://initscript"
 
 S = "${WORKDIR}/${PN}-${PV}"
@@ -16,7 +17,7 @@ INITSCRIPT_PARAMS = "defaults 05"
 
 do_install_append() {
 	install -d ${D}/${sysconfdir}/${PN}
-	install ${S}/doc/syslog-ng.conf.sample ${D}${sysconfdir}/${PN}/syslog-ng.conf
+	install ${WORKDIR}/syslog-ng.conf ${D}${sysconfdir}/${PN}/syslog-ng.conf
 	install -d ${D}/${sysconfdir}/init.d
 	install -m 755 ${WORKDIR}/initscript ${D}/${sysconfdir}/init.d/syslog-ng
 }

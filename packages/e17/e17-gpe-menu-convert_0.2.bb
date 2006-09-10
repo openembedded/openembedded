@@ -4,7 +4,10 @@ RDEPENDS += "edje-utils e-wm"
 LICENSE = "MIT"
 SECTION = "e/apps"
 MAINTAINER = "Justin Patrin <papercrane@reversefold.com>"
-PR = "r3"
+PR = "r4"
+
+#this is a shell script
+PACKAGE_ARCH = "all"
 
 SRC_URI = "file://e17-gpe-menu-convert.sh"
 

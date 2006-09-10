@@ -1,0 +1,20 @@
+--- linux/drivers/mtd/maps/mtx-2.c~	2006-06-27 13:19:32.476822000 +0200
++++ linux/drivers/mtd/maps/mtx-2.c	2006-07-03 12:40:28.940335250 +0200
+@@ -111,7 +111,7 @@
+                 .name   = "yamon",
+                 .size   = 0x00060000,
+                 .offset = MTDPART_OFS_APPEND,
+-                .mask_flags = MTD_WRITEABLE  /* force read-only */
++                /*.mask_flags = MTD_WRITEABLE */ /* force read-only */
+         },{
+                 // * System1 0x00c60000 0x000A0000  
+                 .name   = "user fs/1",
+@@ -132,7 +132,7 @@
+                 .name   = "yamon environment",
+                 .size   = 0x00040000,
+                 .offset = MTDPART_OFS_APPEND,
+-                .mask_flags = MTD_WRITEABLE  /* force read-only */
++                /*.mask_flags = MTD_WRITEABLE */ /* force read-only */
+         }
+ };
+ 

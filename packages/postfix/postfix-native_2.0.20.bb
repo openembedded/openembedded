@@ -2,7 +2,7 @@ SECTION = "console/network"
 require postfix_${PV}.bb
 inherit native
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/postfix-${PV}"
-DEPENDS = "virtual/db-native pcre-native"
+DEPENDS = "virtual/db-native libpcre-native"
 export DIRS = "src/util src/global src/postconf"
 
 do_stage () {

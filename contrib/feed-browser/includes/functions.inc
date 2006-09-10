@@ -20,8 +20,6 @@
 
 error_reporting(E_ALL);
 
-define('DB_FILENAME', './feeds.db');
-
 function db_query($query)
 {
     $result = FALSE;
@@ -35,7 +33,6 @@ function db_query($query)
 
     return $result;
 }
-
 
 function db_query_n($query)
 {
@@ -76,88 +73,30 @@ function db_table_exists ($db, $mytable)
 	return FALSE;
 }
 
-function test_insert_ipkgs ($db) 
+function insert_feeds ($db) 
 {
+	global $feeds;
 
-	sqlite_query($db,
-		"INSERT INTO feeds (f_name,           f_uri)
-		VALUES             ('3541-base',    'http://ewi546.ewi.utwente.nl/mirror/www.openzaurus.org/official/unstable/3.5.4.1/feed/base')
-		");
+	if(isset($feeds))
+	{
+		$id = 1;
 
-	sqlite_query($db,
-		"INSERT INTO feeds (f_name,             f_uri)
-		VALUES             ('3541-opie',    'http://ewi546.ewi.utwente.nl/mirror/www.openzaurus.org/official/unstable/3.5.4.1/feed/opie')
-		");
+		foreach($feeds as $distro)
+		{
+			foreach($distro['feeds'] as $feed)
+			{
+				sqlite_query($db, "INSERT INTO feeds (f_id, f_name, f_uri, f_type) VALUES
+					(
+						{$id},
+						'{$distro['distro_name']} {$distro['distro_version']} {$feed['name']}',
+						'{$distro['feed_base_url']}{$feed['url']}',
+						'{$feed['type']}'
+					)");
 
-	sqlite_query($db,
-		"INSERT INTO feeds (f_name,             f_uri)
-		VALUES             ('3541-perl',    'http://ewi546.ewi.utwente.nl/mirror/www.openzaurus.org/official/unstable/3.5.4.1/feed/perl')
-		");
-	sqlite_query($db,
-		"INSERT INTO feeds (f_name,             f_uri)
-		VALUES             ('3541-python',    'http://ewi546.ewi.utwente.nl/mirror/www.openzaurus.org/official/unstable/3.5.4.1/feed/python')
-		");
-	sqlite_query($db,
-		"INSERT INTO feeds (f_name,             f_uri)
-		VALUES             ('3541-upgrades',    'http://ewi546.ewi.utwente.nl/mirror/www.openzaurus.org/official/unstable/3.5.4.1/feed/upgrades')
-		");
-	sqlite_query($db,
-		"INSERT INTO feeds (f_name,             f_uri)
-		VALUES             ('3541-x11',    'http://ewi546.ewi.utwente.nl/mirror/www.openzaurus.org/official/unstable/3.5.4.1/feed/x11')
-		");
-	sqlite_query($db,
-		"INSERT INTO feeds (f_name,             f_uri)
-		VALUES             ('3541-machine-c7x0',    'http://ewi546.ewi.utwente.nl/mirror/www.openzaurus.org/official/unstable/3.5.4.1/feed/machine/c7x0')
-		");
-	sqlite_query($db,
-		"INSERT INTO feeds (f_name,             f_uri)
-		VALUES             ('3541-machine-spitz',    'http://ewi546.ewi.utwente.nl/mirror/www.openzaurus.org/official/unstable/3.5.4.1/feed/machine/spitz')
-		");
-	sqlite_query($db,
-		"INSERT INTO feeds (f_name,             f_uri)
-		VALUES             ('3541-machine-akita',    'http://ewi546.ewi.utwente.nl/mirror/www.openzaurus.org/official/unstable/3.5.4.1/feed/machine/akita')
-		");
-
-	sqlite_query($db,
-		"INSERT INTO feeds (f_name,             f_uri)
-		VALUES             ('3541-upgrades-machine-akita',    'http://ewi546.ewi.utwente.nl/mirror/www.openzaurus.org/official/unstable/3.5.4.1/feed/upgrades/machine/akita')
-		");
-
-	sqlite_query($db,
-		"INSERT INTO feeds (f_name,             f_uri)
-		VALUES             ('3541-upgrades-machine-c7x0',    'http://ewi546.ewi.utwente.nl/mirror/www.openzaurus.org/official/unstable/3.5.4.1/feed/upgrades/machine/c7x0')
-		");
-
-	sqlite_query($db,
-		"INSERT INTO feeds (f_name,             f_uri)
-		VALUES             ('3541-upgrades-machine-spitz',    'http://ewi546.ewi.utwente.nl/mirror/www.openzaurus.org/official/unstable/3.5.4.1/feed/upgrades/machine/spitz')
-		");
-
-	sqlite_query($db,
-		"INSERT INTO feeds (f_name,             f_uri)
-		VALUES             ('3541-upgrades-machine-tosa',    'http://ewi546.ewi.utwente.nl/mirror/www.openzaurus.org/official/unstable/3.5.4.1/feed/upgrades/machine/tosa')
-		");
-
-	sqlite_query($db,
-		"INSERT INTO feeds (f_name,           f_uri)
-		VALUES             ('354-base',    'http://ewi546.ewi.utwente.nl/mirror/www.openzaurus.org/official/unstable/3.5.4/feed/base')
-		");
-
-	sqlite_query($db,
-		"INSERT INTO feeds (f_name,             f_uri)
-		VALUES             ('354-opie',    'http://ewi546.ewi.utwente.nl/mirror/www.openzaurus.org/official/unstable/3.5.4/feed/opie')
-		");
-
-	sqlite_query($db,
-		"INSERT INTO feeds (f_name,             f_uri)
-		VALUES             ('354-x11',    'http://ewi546.ewi.utwente.nl/mirror/www.openzaurus.org/official/unstable/3.5.4/feed/x11')
-		");
-
-	sqlite_query($db,
-		"INSERT INTO feeds (f_name,             f_uri)
-		VALUES             ('354-upgrades',    'http://ewi546.ewi.utwente.nl/mirror/www.openzaurus.org/official/unstable/3.5.4/feed/upgrades')
-		");
-
+				$id++;
+			}
+		}
+	}
 }
 
 function searchletter($searchletter = '')
@@ -233,7 +172,7 @@ function pkgdetails ($package)
 {
 	$result = db_query("SELECT * FROM packages,feeds
 				WHERE (packages.p_name='$package' OR packages.p_provides='$package')
-				    AND feeds.f_name = packages.p_feed 
+				    AND feeds.f_id = packages.p_feed 
 				ORDER BY packages.p_version DESC, feeds.f_name ASC, packages.p_arch DESC ");
 	
 	// display first result
@@ -394,68 +333,80 @@ function sectionslist()
 
 	if($result =  db_query ("SELECT DISTINCT p_section FROM packages ORDER BY p_section"))
 	{
-		$ipkgoutput = "<ul id='sections'>\n";
+		$section_up = '';
 
-		$section_up = $result[0]['p_section'];
-		$section_level = FALSE;
-		$opie_top = FALSE;
+		$sections = array();
 
-		foreach($result as $item)
+		foreach($result as $package)
 		{
-			$section_name = $item['p_section'];
+			$section_split = explode('/', $package['p_section']);
 
-			if(0 === strpos($section_name, 'opie') AND !$opie_top)
+			if($section_up != $section_split[0])
 			{
-				$opie_top = TRUE;
-
-				$section_up = 'opie';
-			}
-			elseif($opie_top AND 0 !== strpos($section_name, 'opie'))
-			{
-				$opie_top = FALSE;
+				$section_up = $section_split[0];
 			}
 
-			if(
-				strpos($section_name, '/')		// subsection
-			)
+			if(isset($section_split[1]))	// x11/gnome/libs
 			{
-				if(0 === strpos($section_name, $section_up . '/'))	// console/network are not part of console/net
+				$sections[$section_up][$section_split[1]] = $section_split[1];
+
+				if(isset($section_split[2]))	// x11/gnome/libs
 				{
-					if(!$section_level)
-					{
-						$ipkgoutput .= '<li><ul class="subsections">';
-					}
-
-					$section_name = str_replace($section_up . '/', '', $item['p_section']);
-					$section_level = TRUE;
+					$sections[ $section_up ][ $section_split[1] ] = array($section_split[2]=>$section_split[2]);
 				}
 			}
-			elseif($section_level)
-			{
-				$section_up = $section_name;
-				$ipkgoutput .= '</ul></li>';
-				$section_level = FALSE;
-			}
-			else
-			{
-				$section_up = $section_name;
-			}
-
-			$ipkgoutput .= sprintf ("<li><a href='?action=section&amp;section=%s' title='%s'>%s</a></li>",
-				urlencode($item['p_section']),
-				urlencode($item['p_section']),
-				$section_name);
 		}
 
-		if($section_level)
+		$output = "<ul id='sections'>\n";
+
+		foreach($sections as $section_name1=>$item)
 		{
-		    $ipkgoutput .= '</ul></li>';
+			$output .= sprintf ("<li><a href='?action=section&amp;section=%s' title='%s'>%s</a>",
+				urlencode($section_name1),
+				urlencode($section_name1),
+				$section_name1);
+
+			if(is_array($item))
+			{
+				$output .= '<ul class="subsections">';
+
+				foreach($item as $section_name2=>$subitem)
+				{
+					$section_name = "{$section_name1}/{$section_name2}";
+					$output .= sprintf ("<li><a href='?action=section&amp;section=%s' title='%s'>%s</a>",
+						urlencode($section_name),
+						urlencode($section_name),
+						$section_name2);
+
+					if(is_array($subitem))
+					{
+						$output .= '<ul class="subsections">';
+
+						foreach($subitem as $section_name3=>$subitem2)
+						{
+							$section_name = "{$section_name1}/{$section_name2}/{$section_name3}";
+							$output .= sprintf ("<li><a href='?action=section&amp;section=%s' title='%s'>%s</a></li>",
+								urlencode($section_name),
+								urlencode($section_name),
+								$section_name3);
+						}
+
+						$output .= '</ul>';
+					}
+
+					$output .= '</li>';
+				}
+
+				$output .= '</ul>';
+			}
+
+			$output .= '</li>';
 		}
 
-		$ipkgoutput .= "</ul>\n";
+		$output .= "</ul>\n";
 	}
 
-	return $ipkgoutput;
+	return $output;
 }
 
 function check_database()
@@ -488,11 +439,13 @@ function check_database()
 		if (db_table_exists ($db, 'feeds') === FALSE)
 		{  
 			sqlite_query ($db, "CREATE TABLE feeds (
-				f_name         varchar(20),
+				f_id         int(8),
+				f_name       varchar(32),
 				f_uri        varchar(100),
-				f_comments    varchar(500))");
+				f_type		 varchar(16)
+		)");
 
-			test_insert_ipkgs ($db) ;
+			insert_feeds ($db) ;
 		}
 
 		sqlite_close($db);

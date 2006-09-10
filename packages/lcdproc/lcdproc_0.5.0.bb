@@ -3,28 +3,81 @@ shipped with this package can be used to acquire various kinds of system stats."
 HOMEPAGE = "http://lcdproc.org"
 LICENSE = "GPL"
 PRIORITY = "optional"
-MAINTAINER = "Rene Wagner <rw@handhelds.org>"
+MAINTAINER = "Oyvind Repvik <nail@nslu2-linux.org>"
 SECTION = "utils"
+PR="r2"
 
-DEPENDS = "${@((bb.data.getVar('LCDPROC_DRIVERS',d) or 'all').find('curses') != -1) and 'ncurses' or ''}"
+DEPENDS = "libusb ncurses"
 RRECOMMENDS_lcdproc = "lcdd"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/lcdproc/lcdproc-${PV}.tar.gz"
 
 inherit autotools update-rc.d
 
-PACKAGES =+ "lcdd"
+PACKAGES =+ "lcdd lcdd-driver-cfontz lcdd-driver-bayrad lcdd-driver-hd44780nousb \
+		lcdd-driver-hd44780 lcdd-driver-mtxorb lcdd-driver-serialvfd \
+		lcdd-driver-curses lcdd-driver-text \
+		lcdd-driver-sed lcdd-driver-cwlnx lcdd-driver-glk lcdd-driver-icp-a106 \ 
+		lcdd-driver-imon lcdd-driver-joy lcdd-driver-lb216 lcdd-driver-lcdm001 \ 
+		lcdd-driver-lcterm lcdd-driver-ms6931 lcdd-driver-mtc-s16209x \ 
+		lcdd-driver-noritakevfd lcdd-driver-pyramid lcdd-driver-sli \ 
+		lcdd-driver-stv5730 lcdd-driver-t6963 lcdd-driver-tyan"
 
 CONFFILES_lcdd = "${sysconfdir}/LCDd.conf"
 CONFFILES_lcdproc = "${sysconfdir}/lcdproc.conf"
 
 FILES_lcdd = "${CONFFILES_lcdd} \
 	${sbindir}/LCDd \
-	${sysconfdir}/init.d/lcdd \
-	${libdir}/lcdproc/"
+	${sysconfdir}/init.d/lcdd"
+
 FILES_lcdproc = "${CONFFILES_lcdproc} \
 	${bindir}/lcdproc \
 	${sysconfdir}/init.d/lcdproc"
+
+# Driver packages
+
+FILES_lcdd-driver-cfontz 	= "${libdir}/lcdproc/CFontz*.so"
+FILES_lcdd-driver-bayrad 	= "${libdir}/lcdproc/bayrad.so"
+FILES_lcdd-driver-hd44780nousb 	= "${libdir}/lcdproc/hd44780nousb.so"
+FILES_lcdd-driver-hd44780 	= "${libdir}/lcdproc/hd44780.so"
+FILES_lcdd-driver-mtxorb 	= "${libdir}/lcdproc/MtxOrb.so"
+FILES_lcdd-driver-serialvfd 	= "${libdir}/lcdproc/serialVFD.so"
+FILES_lcdd-driver-curses 	= "${libdir}/lcdproc/curses.so"
+FILES_lcdd-driver-text 		= "${libdir}/lcdproc/text.so"
+FILES_lcdd-driver-sed 		= "${libdir}/lcdproc/sed*.so"
+FILES_lcdd-driver-cwlnx 	= "${libdir}/lcdproc/CwLnx.so"
+FILES_lcdd-driver-glk 		= "${libdir}/lcdproc/glk.so"
+FILES_lcdd-driver-icp-a106	= "${libdir}/lcdproc/icp_a106.so"
+FILES_lcdd-driver-imon		= "${libdir}/lcdproc/imon.so"
+FILES_lcdd-driver-joy		= "${libdir}/lcdproc/joy.so"
+FILES_lcdd-driver-lb216		= "${libdir}/lcdproc/lb216.so"
+FILES_lcdd-driver-lcdm001	= "${libdir}/lcdproc/lcdm001.so"
+FILES_lcdd-driver-lcterm	= "${libdir}/lcdproc/lcterm.so"
+FILES_lcdd-driver-ms6931	= "${libdir}/lcdproc/ms6931.so"
+FILES_lcdd-driver-mtc-s16209x	= "${libdir}/lcdproc/mtc_s16209x.so"
+FILES_lcdd-driver-noritakevfd	= "${libdir}/lcdproc/NoritakeVFD.so"
+FILES_lcdd-driver-pyramid	= "${libdir}/lcdproc/pyramid.so"
+FILES_lcdd-driver-sli		= "${libdir}/lcdproc/sli.so"
+FILES_lcdd-driver-stv5730	= "${libdir}/lcdproc/stv5730.so"
+FILES_lcdd-driver-t6963		= "${libdir}/lcdproc/t6963.so"
+FILES_lcdd-driver-tyan		= "${libdir}/lcdproc/tyan.so"
+
+
+# Install-all-drivers-hack:
+
+DEPENDS_lcdd-driver-all = "lcdd-driver-cfontz lcdd-driver-bayrad lcdd-driver-hd44780nousb \
+				lcdd-driver-hd44780 lcdd-driver-mtxorb lcdd-driver-serialvfd \
+				lcdd-driver-curses lcdd-driver-text \
+				lcdd-driver-sed lcdd-driver-cwlnx lcdd-driver-glk lcdd-driver-icp-a106 \
+				lcdd-driver-imon lcdd-driver-joy lcdd-driver-lb216 lcdd-driver-lcdm001 \
+				lcdd-driver-lcterm lcdd-driver-ms6931 lcdd-driver-mtc-s16209x \
+				lcdd-driver-noritakevfd lcdd-driver-pyramid lcdd-driver-sli \
+				lcdd-driver-stv5730 lcdd-driver-t6963 lcdd-driver-tyan"
+
+# USB / no USB trickery
+
+CONFLICTS_lcdd-driver-hd47780nousb = "lcdd-driver-hd44780"
+CONFLICTS_lcdd-driver-hd47780 = "lcdd-driver-hd44780nousb"
 
 INITSCRIPT_PACKAGES = "lcdd lcdproc"
 INITSCRIPT_NAME_lcdd = "lcdd"
@@ -32,7 +85,7 @@ INITSCRIPT_NAME_lcdproc = "lcdproc"
 INITSCRIPT_PARAMS_lcdd = "defaults 70 21"
 INITSCRIPT_PARAMS_lcdproc = "defaults 71 20"
 
-EXTRA_OECONF = "${@'--enable-drivers=' + (bb.data.getVar('LCDPROC_DRIVERS',d) or 'all')}"
+EXTRA_OECONF = "--enable-drivers=all --enable-libusb"
 
 do_install () {
 	# binaries

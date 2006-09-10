@@ -1,12 +1,13 @@
 LICENSE = "GPL"
 SECTION = "x11/gnome/libs"
-PR = "r1"
+PR = "r2"
 
 inherit gnome pkgconfig
 
 FILES_${PN} += "${libdir}/libglade/2.0/*.so"
 FILES_${PN}-dev += "${libdir}/libglade/2.0/* ${datadir}/gnome-2.0/ui \
 	${libdir}/bonobo-2.0/samples"
+FILES_${PN}-dbg += "${libdir}/libglade/2.0/.debug/*.so"
 
 DEPENDS = "libgnomecanvas libbonobo libgnome glib-2.0 gtk-doc gconf libxml2 libglade"
 

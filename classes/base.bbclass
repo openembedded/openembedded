@@ -1,5 +1,4 @@
 BB_DEFAULT_TASK = "build"
-PATCHES_DIR="${S}"
 
 def base_dep_prepend(d):
 	import bb;
@@ -13,9 +12,11 @@ def base_dep_prepend(d):
 	# INHIBIT_DEFAULT_DEPS doesn't apply to the patch command.  Whether or  not
 	# we need that built is the responsibility of the patch function / class, not
 	# the application.
-	patchdeps = bb.data.getVar("PATCH_DEPENDS", d, 1)
-	if patchdeps and not patchdeps in bb.data.getVar("PROVIDES", d, 1):
-		deps = patchdeps
+	patchdeps = bb.data.getVar("PATCHTOOL", d, 1)
+        if patchdeps:
+		patchdeps = "%s-native" % patchdeps
+		if not patchdeps in bb.data.getVar("PROVIDES", d, 1):
+			deps = patchdeps
 
 	if not bb.data.getVar('INHIBIT_DEFAULT_DEPS', d):
 		if (bb.data.getVar('HOST_SYS', d, 1) !=
@@ -40,6 +41,20 @@ def base_conditional(variable, checkvalue, truevalue, falsevalue, d):
 	else:
 		return falsevalue
 
+def base_contains(variable, checkvalue, truevalue, falsevalue, d):
+       import bb
+       if bb.data.getVar(variable,d,1).find(checkvalue) != -1:
+               return truevalue
+       else:
+               return falsevalue
+
+def base_both_contain(variable1, variable2, checkvalue, d):
+       import bb
+       if bb.data.getVar(variable1,d,1).find(checkvalue) != -1 and bb.data.getVar(variable2,d,1).find(checkvalue) != -1:
+               return checkvalue
+       else:
+               return ""
+
 DEPENDS_prepend="${@base_dep_prepend(d)} "
 
 def base_set_filespath(path, d):
@@ -50,7 +65,7 @@ def base_set_filespath(path, d):
 		overrides = overrides + ":"
 		for o in overrides.split(":"):
 			filespath.append(os.path.join(p, o))
-	bb.data.setVar("FILESPATH", ":".join(filespath), d)
+	return ":".join(filespath)
 
 FILESPATH = "${@base_set_filespath([ "${FILE_DIRNAME}/${PF}", "${FILE_DIRNAME}/${P}", "${FILE_DIRNAME}/${PN}", "${FILE_DIRNAME}/files", "${FILE_DIRNAME}" ], d)}"
 
@@ -309,6 +324,16 @@ python base_do_clean() {
 	os.system('rm -f '+ dir)
 }
 
+addtask rebuild
+do_rebuild[dirs] = "${TOPDIR}"
+do_rebuild[nostamp] = "1"
+do_rebuild[bbdepcmd] = ""
+python base_do_rebuild() {
+	"""rebuild a package"""
+	bb.build.exec_task('do_clean', d)
+	bb.build.exec_task('do_' + bb.data.getVar('BB_DEFAULT_TASK', d, 1), d)
+}
+
 addtask mrproper
 do_mrproper[dirs] = "${TOPDIR}"
 do_mrproper[nostamp] = "1"
@@ -437,86 +462,6 @@ python base_do_unpack() {
 			raise bb.build.FuncFailed()
 }
 
-addtask patch after do_unpack
-do_patch[dirs] = "${WORKDIR}"
-python base_do_patch() {
-	import re
-	import bb.fetch
-
-	src_uri = (bb.data.getVar('SRC_URI', d, 1) or '').split()
-	if not src_uri:
-		return
-
-	patchcleancmd = bb.data.getVar('PATCHCLEANCMD', d, 1)
-	if patchcleancmd:
-		bb.data.setVar("do_patchcleancmd", patchcleancmd, d)
-		bb.data.setVarFlag("do_patchcleancmd", "func", 1, d)
-		bb.build.exec_func("do_patchcleancmd", d)
-
-	workdir = bb.data.getVar('WORKDIR', d, 1)
-	for url in src_uri:
-
-		(type, host, path, user, pswd, parm) = bb.decodeurl(url)
-		if not "patch" in parm:
-			continue
-
-		bb.fetch.init([url],d)
-		url = bb.encodeurl((type, host, path, user, pswd, []))
-		local = os.path.join('/', bb.fetch.localpath(url, d))
-
-		# did it need to be unpacked?
-		dots = os.path.basename(local).split(".")
-		if dots[-1] in ['gz', 'bz2', 'Z']:
-			unpacked = os.path.join(bb.data.getVar('WORKDIR', d),'.'.join(dots[0:-1]))
-		else:
-			unpacked = local
-		unpacked = bb.data.expand(unpacked, d)
-
-		if "pnum" in parm:
-			pnum = parm["pnum"]
-		else:
-			pnum = "1"
-
-		if "pname" in parm:
-			pname = parm["pname"]
-		else:
-			pname = os.path.basename(unpacked)
-
-		if "mindate" in parm:
-			mindate = parm["mindate"]
-		else:
-			mindate = 0
-
-		if "maxdate" in parm:
-			maxdate = parm["maxdate"]
-		else:
-			maxdate = "20711226"
-
-		pn = bb.data.getVar('PN', d, 1)
-		srcdate = bb.data.getVar('SRCDATE_%s' % pn, d, 1)
-
-		if not srcdate:
-			srcdate = bb.data.getVar('SRCDATE', d, 1)
-
-		if srcdate == "now": 
-			srcdate = bb.data.getVar('DATE', d, 1)
-
-		if (maxdate < srcdate) or (mindate > srcdate):
-			if (maxdate < srcdate):
-				bb.note("Patch '%s' is outdated" % pname)
-
-			if (mindate > srcdate):
-				bb.note("Patch '%s' is predated" % pname)
-
-			continue
-
-		bb.note("Applying patch '%s'" % pname)
-		bb.data.setVar("do_patchcmd", bb.data.getVar("PATCHCMD", d, 1) % (pnum, pname, unpacked), d)
-		bb.data.setVarFlag("do_patchcmd", "func", 1, d)
-		bb.data.setVarFlag("do_patchcmd", "dirs", "${WORKDIR} ${S}", d)
-		bb.build.exec_func("do_patchcmd", d)
-}
-
 
 addhandler base_eventhandler
 python base_eventhandler() {
@@ -614,13 +559,13 @@ do_populate_staging[dirs] = "${STAGING_DIR}/${TARGET_SYS}/bin ${STAGING_DIR}/${T
 			     ${STAGING_DATADIR} \
 			     ${S} ${B}"
 
-addtask populate_staging after do_compile
+addtask populate_staging after do_package
 
 python do_populate_staging () {
 	bb.build.exec_func('do_stage', d)
 }
 
-addtask install after do_compile
+addtask install after do_compile 
 do_install[dirs] = "${S} ${B}"
 
 base_do_install() {
@@ -747,7 +692,10 @@ python () {
 				return
 }
 
-EXPORT_FUNCTIONS do_clean do_mrproper do_fetch do_unpack do_configure do_compile do_install do_package do_patch do_populate_pkgs do_stage
+# Patch handling
+inherit patch
+
+EXPORT_FUNCTIONS do_clean do_mrproper do_fetch do_unpack do_configure do_compile do_install do_package do_populate_pkgs do_stage do_rebuild
 
 MIRRORS[func] = "0"
 MIRRORS () {

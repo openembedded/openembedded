@@ -1,0 +1,54 @@
+--- archival/unzip.c.orig	2005-03-17 18:42:45.000000000 -0500
++++ archival/unzip.c		2005-03-17 17:46:45.000000000 -0500
+@@ -46,10 +46,28 @@
+ #include "unarchive.h"
+ #include "busybox.h"
+ 
+-#define ZIP_FILEHEADER_MAGIC	0x04034b50
+-#define ZIP_CDS_MAGIC			0x02014b50
+-#define ZIP_CDS_END_MAGIC		0x06054b50
+-#define ZIP_DD_MAGIC			0x08074b50
++#if (BYTE_ORDER == BIG_ENDIAN)
++static inline unsigned short
++__swap16(unsigned short x) {
++	return (((uint16_t)(x) & 0xFF) << 8) | (((uint16_t)(x) & 0xFF00) >> 8);
++}
++
++static inline uint32_t
++__swap32(uint32_t x) {
++	 return (((x & 0xFF) << 24) |
++		((x & 0xFF00) << 8) |
++		((x & 0xFF0000) >> 8) |
++		((x & 0xFF000000) >> 24));
++}
++#else
++#define __swap16(x) (x)
++#define __swap32(x) (x)
++#endif
++
++#define ZIP_FILEHEADER_MAGIC		__swap32(0x04034b50)
++#define ZIP_CDS_MAGIC			__swap32(0x02014b50)
++#define ZIP_CDS_END_MAGIC		__swap32(0x06054b50)
++#define ZIP_DD_MAGIC			__swap32(0x08074b50)
+ 
+ extern unsigned int gunzip_crc;
+ extern unsigned int gunzip_bytes_out;
+@@ -249,6 +267,18 @@
+ 
+ 		/* Read the file header */
+ 		unzip_read(src_fd, zip_header.raw, 26);
++#if (BYTE_ORDER == BIG_ENDIAN)
++		zip_header.formated.version = __swap16(zip_header.formated.version);
++		zip_header.formated.flags = __swap16(zip_header.formated.flags);
++		zip_header.formated.method = __swap16(zip_header.formated.method);
++		zip_header.formated.modtime = __swap16(zip_header.formated.modtime);
++		zip_header.formated.moddate = __swap16(zip_header.formated.moddate);
++		zip_header.formated.crc32 = __swap32(zip_header.formated.crc32);
++		zip_header.formated.cmpsize = __swap32(zip_header.formated.cmpsize);
++		zip_header.formated.ucmpsize = __swap32(zip_header.formated.ucmpsize);
++		zip_header.formated.filename_len = __swap16(zip_header.formated.filename_len);
++		zip_header.formated.extra_len = __swap16(zip_header.formated.extra_len);
++#endif
+ 		if ((zip_header.formated.method != 0) && (zip_header.formated.method != 8)) {
+ 			bb_error_msg_and_die("Unsupported compression method %d", zip_header.formated.method);
+ 		}
