@@ -124,6 +124,9 @@ php_cv_lib_cookie_io_functions_use_off64_t=${php_cv_lib_cookie_io_functions_use_
 # xffm
 jm_cv_func_working_readdir=yes
 
+#sudo
+sudo_cv_uid_t_len=${sudo_cv_uid_t_len=10}
+
 # ipsec-tools
 ac_cv_va_copy=${ac_cv_va_copy=no}
 ac_cv___va_copy=${ac_cv___va_copy=yes}

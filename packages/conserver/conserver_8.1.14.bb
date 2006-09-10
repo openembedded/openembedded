@@ -1,2 +1,3 @@
+PR = "r3"
+
 require conserver.inc
-PR="r2"

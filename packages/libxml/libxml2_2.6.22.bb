@@ -2,7 +2,7 @@ DESCRIPTION = "GNOME XML library"
 SECTION = "libs"
 PRIORITY = "optional"
 LICENSE = "MIT"
-PR = "r2"
+PR = "r3"
 
 SRC_URI = "http://xmlsoft.org/sources/libxml2/libxml2-${PV}.tar.gz \
 		   file://no-testapi.patch;patch=1"
@@ -22,7 +22,7 @@ python populate_packages_prepend () {
 		bb.data.setVar('PKG_libxml2', 'libxml2', d)
 }
 
-PACKAGES = "${PN}-dev ${PN}-utils ${PN} ${PN}-doc ${PN}-locale"
+PACKAGES = "${PN}-dbg ${PN}-dev ${PN}-utils ${PN} ${PN}-doc ${PN}-locale"
 
 FILES_${PN}-dev += "${bindir}/*-config"
-FILES_${PN}-utils += "${bindir}"
+FILES_${PN}-utils += "${bindir}/*"

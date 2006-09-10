@@ -24,6 +24,7 @@ S = "${WORKDIR}/libpng-${PV}"
 inherit pkgconfig binconfig pkgconfig
 
 EXTRA_OEMAKE_append = " ZLIBINC=${STAGING_INCDIR} ZLIBLIB=${STAGING_LIBDIR}"
+CFLAGS += "-DPNG_NO_ASSEMBLER_CODE"
 
 do_compile() {
 	sed < scripts/makefile.linux > makefile -e 's/^ZLIBINC.*//' -e 's/^ZLIBLIB.*//'
