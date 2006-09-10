@@ -1,7 +1,8 @@
 DESCRIPTION = "Horizon is a sketchbook application for tablet devices."
 LICENSE = "GPLv2"
-
+SECTION = "x11/graphics"
 DEPENDS = "glib-2.0 libpng jpeg virtual/libsdl"
+PR = "r1"
 
 SRC_URI = "cvs://anonymous@anoncvs.gnome.org/cvs/gnome;module=horizon \
 	file://makefile.patch;patch=1"
