@@ -1,7 +1,8 @@
 DESCRIPTION = "Qiv is a very small and pretty fast gdk/Imlib image viewer."
 LICENSE = "GPLv2"
-
+SECTION = "x11/graphics"
 DEPENDS = "gtk+-1.2 imlib"
+PR = "r1"
 
 SRC_URI = "http://www.klografx.net/qiv/download/qiv-1.9-src.tgz \
 		file://makefile.patch;patch=1 \
