@@ -1,4 +1,4 @@
-DESCRIPTION = "GNU unit testing framework"
+DESCRIPTION = "GNU unit testing framework, written in Expect and Tcl"
 LICENSE = "GPL"
 SECTION = "devel"
 PR = "r1"
