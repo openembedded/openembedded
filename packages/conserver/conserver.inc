@@ -3,7 +3,6 @@ consoles and logs all data to a central host."
 HOMEPAGE = "http://www.conserver.com/"
 SECTION = "console/network"
 LICENSE = "BSD"
-PR = "r1"
 
 SRC_URI = "http://www.conserver.com/conserver-${PV}.tar.gz \
 	   file://conserver.init \
