@@ -75,7 +75,7 @@ do_install () {
 }
 
 # Split into a main package and seperate per-protocol packages
-PACKAGES = "${PN} \
+PACKAGES = "${PN}-dbg ${PN} \
             ${PN}-ospfd ${PN}-ospf6d ${PN}-bgpd ${PN}-ripd ${PN}-ripngd ${PN}-isisd \
             ${PN}-ospfclient ${PN}-watchquagga ${PN}-dev ${PN}-doc"
 
