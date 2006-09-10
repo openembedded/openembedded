@@ -2,11 +2,11 @@ DESCRIPTION = "A minimal PDF viewer based on gtk and poppler"
 MAINTAINER = "Graeme Gregory <dp@xora.org.uk>"
 HOMEPAGE = "http://www.emma-soft.com/projects/epdfview/"
 LICENSE = "GPLv2"
+SECTION = "x11/applications"
 DEPENDS = "poppler gtk+"
+PR="r2"
 
 SRC_URI = "http://www.emma-soft.com/projects/epdfview/chrome/site/releases/epdfview-${PV}.tar.bz2"
-
-PR="r1"
 
 inherit autotools
 
