@@ -1,6 +1,3 @@
-## Warning: unknown variable/routine "INHIBIT_AUTO_STAGE = "1""
-## Reminder:  Tabs should not be used (use spaces instead)  in : 	install -d ${D}${bindir}
-## Reminder:  Tabs should not be used (use spaces instead)  in : 	install -m 0755 ${WORKDIR}/${PN}-${PV}/wakelan ${D}${bindir}/wakelan
 DESCRIPTION = "Wakelan sends a magic packet to wake up remote PC's"
 MAINTAINER = "Oyvind Repvik <nail@nslu2-linux.org>"
 LICENSE = "GPL"
