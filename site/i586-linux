@@ -107,6 +107,9 @@ ac_cv_have_openpty_ctty_bug=${ac_cv_have_openpty_ctty_bug=yes}
 # samba
 samba_cv_HAVE_GETTIMEOFDAY_TZ=${samba_cv_HAVE_GETTIMEOFDAY_TZ=yes}
 
+# rp-pppoe
+rpppoe_cv_pack_bitfields=${rpppoe_cv_pack_bitfields=rev}
+
 # gettext
 am_cv_func_working_getline=${am_cv_func_working_getline=yes}
 
