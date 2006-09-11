@@ -7,7 +7,7 @@ MAINTAINER = "Bruno Randolf <bruno.randolf@4g-systems.biz>"
 DEPENDS = "gmp flex-native"
 RRECOMMENDS = "kernel-module-ipsec"
 RDEPENDS_nylon = "perl"
-PR = "r4"
+PR = "r5"
 
 SRC_URI = "http://www.openswan.org/download/old/openswan-${PV}.tar.gz \
 	   file://openswan-2.2.0-gentoo.patch;patch=1 \
@@ -32,6 +32,7 @@ do_install () {
 	oe_runmake install
 }
 
-FILES_${PN} += "${libdir}/ipsec/"
+FILES_${PN} = "${sysconfdir} ${libdir}/ipsec/* ${sbindir}/* ${libexecdir}/ipsec/*"
+FILES_${PN}-dbg += "${libdir}/ipsec/.debug ${libexecdir}/ipsec/.debug"
 
 CONFFILES_${PN} = "${sysconfdir}/ipsec/ipsec.conf"
