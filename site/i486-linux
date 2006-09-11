@@ -125,6 +125,9 @@ jm_cv_func_working_readdir=yes
 # cvs
 cvs_cv_func_printf_ptr=${cvs_cv_func_printf_ptr=yes}
 
+# rp-pppoe
+rpppoe_cv_pack_bitfields=${rpppoe_cv_pack_bitfields=rev}
+
 # gettext
 am_cv_func_working_getline=${am_cv_func_working_getline=yes}
 
