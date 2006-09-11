@@ -1,5 +1,5 @@
 DESCRIPTION = "Engage is the E17 icon dock"
-DEPENDS = "evas-x11 ecore-x11 esmart-x11 imlib2-x11 edje ewl e"
+DEPENDS = "evas-x11 ecore-x11 esmart-x11 imlib2-x11 edje ewl"
 LICENSE = "MIT"
 PR = "r2"
 
