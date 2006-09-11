@@ -135,6 +135,11 @@ ac_cv_va_copy=${ac_cv_va_copy=no}
 ac_cv___va_copy=${ac_cv___va_copy=yes}
 racoon_cv_bug_getaddrinfo=${racoon_cv_bug_getaddrinfo=no}
 
+# lftp
+ac_cv_need_trio=${ac_cv_need_trio=no}
+lftp_cv_va_copy=${lftp_cv_va_copy=no}
+lftp_cv___va_copy=${lftp_cv___va_copy=yes}
+
 # slrn
 slrn_cv___va_copy=${slrn_cv___va_copy=yes}
 slrn_cv_va_copy=${slrn_cv_va_copy=no}

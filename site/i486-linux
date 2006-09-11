@@ -160,6 +160,11 @@ screen_cv_sys_sockets_nofs=${screen_cv_sys_sockets_nofs=no}
 screen_cv_sys_sockets_usable=${screen_cv_sys_sockets_usable=yes}
 screen_cv_sys_terminfo_used=${screen_cv_sys_terminfo_used=yes}
 
+# lftp
+ac_cv_need_trio=${ac_cv_need_trio=no}
+lftp_cv_va_copy=${lftp_cv_va_copy=no}
+lftp_cv___va_copy=${lftp_cv___va_copy=yes}
+
 # slrn
 slrn_cv___va_copy=${slrn_cv___va_copy=yes}
 slrn_cv_va_copy=${slrn_cv_va_copy=no}
