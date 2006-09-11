@@ -5,7 +5,7 @@ MAINTAINER = "Florian Boor <florian.boor@kernelconcepts.de>"
 
 inherit autotools gpe
 
-DEPENDS = "dbus libeventdb libschedule libxsettings-client libgpepimc libgpevtype"
+DEPENDS = "dbus-glib libeventdb libschedule libxsettings-client libgpepimc libgpevtype"
 SECTION = "gpe"
 RDEPENDS = "gpe-icons"
 DESCRIPTION = "GPE calendar"
