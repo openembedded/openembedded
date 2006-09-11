@@ -5,3 +5,5 @@ FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/pkgconfig-${PV}"
 S = "${WORKDIR}/pkgconfig-${PV}"
 inherit native
 DEPENDS = ""
+
+PR = "r1"
