@@ -6,7 +6,7 @@ SECTION = "libs"
 PRIORITY = "optional"
 MAINTAINER = "Philip Blundell <pb@handhelds.org>"
 DEPENDS = "glib-2.0 pango atk jpeg libpng xext libxcursor gtk-doc libgcrypt"
-PR = "r5"
+PR = "r6"
 
 RRECOMMENDS_${PN} = "glibc-gconv-iso8859-1" 
 RRECOMMENDS_${PN}_openzaurus = "glibc-gconv-iso8859-1 gdk-pixbuf-loader-png gdk-pixbuf-loader-jpeg gdk-pixbuf-loader-gif gdk-pixbuf-loader-xpm"
@@ -26,7 +26,8 @@ SRC_URI = "ftp://ftp.gtk.org/pub/gtk/v2.6/gtk+-${PV}.tar.bz2 \
 	   file://scroll-timings.patch;patch=1 \
 	   file://small-gtkfilesel.patch;patch=1 \
 	   file://migration.patch;patch=1;pnum=0 \
-	   file://single-click.patch;patch=1"
+	   file://single-click.patch;patch=1 \
+	   file://unbreak-gdkproperty-x11-c.patch;patch=1"
 
 inherit autotools pkgconfig
 
