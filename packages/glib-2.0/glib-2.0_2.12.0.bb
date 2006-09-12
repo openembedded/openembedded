@@ -17,7 +17,7 @@ FILES_glib-2.0-utils = "${bindir}/*"
 
 EXTRA_OECONF = "--disable-debug"
 
-SRC_URI = "ftp://ftp.gtk.org/pub/gtk/v2.12/glib-${PV}.tar.bz2 \
+SRC_URI = "ftp://ftp.gtk.org/pub/glib/2.12/glib-${PV}.tar.bz2 \
            file://glibconfig-sysdefs.h \
            file://configure-libtool.patch;patch=1"
 

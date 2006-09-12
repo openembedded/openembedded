@@ -1,0 +1,12 @@
+--- xserver-common-1.10/X11/Xserver.orig	2006-09-02 13:54:30.000000000 +0200
++++ xserver-common-1.10/X11/Xserver	2006-09-02 14:00:22.000000000 +0200
+@@ -14,6 +14,9 @@
+ if [ -f /usr/bin/Xomap ]; then
+   XSERVER=Xomap
+ fi
++if [ -f /usr/bin/Xw100 ]; then
++  XSERVER=Xw100
++fi
+ 
+ . /etc/profile
+ 

@@ -7,7 +7,7 @@
 
 ntpd=/usr/sbin/ntpd
 test -x "$ntpd" || exit 0
-[ ! -d /var/shared/empty ] && mkdir /var/shared/empty
+[ ! -d /var/shared/empty ] && mkdir -p /var/shared/empty
 
 case "$1" in
   start)

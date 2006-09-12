@@ -9,7 +9,7 @@ DISTRO_NAME = "Angstrom"
 ANGSTROM_URI = "http://www.angstrom-distribution.org"
 
 #Set the default maintainer to angstrom-dev
-MAINTAINER = "Angstrom Developers <angstrom-dev@linuxtogo.org>"
+MAINTAINER = "Angstrom Developers <angstrom-distro-devel@linuxtogo.org>"
 
 #use ipkg package format with debian style naming
 #use multimachine buildrules 
@@ -35,10 +35,8 @@ BUILD_OPTIMIZATION = "-Os"
 CXXFLAGS += "-fvisibility-inlines-hidden"
 
 #ARM EABI is softfloat by default, but let's make sure :)
-TARGET_FPU_arm = "soft"
-
-#Always ship these packages
-BOOTSTRAP_EXTRA_RDEPENDS += "angstrom-version coreutils dropbear sysvinit"
+#make it overridable for platforms with FPU, like ep93xx or i.mx31
+TARGET_FPU_arm ?= "soft"
 
 #Name the generated images in a sane way
 IMAGE_NAME = "${DISTRO_NAME}-${IMAGE_BASENAME}-${DISTRO_VERSION}-${MACHINE}"
@@ -48,4 +46,4 @@ DEPLOY_DIR_IMAGE = ${DEPLOY_DIR}/images/${MACHINE}
 DISTRO_CHECK := "${@bb.data.getVar("DISTRO_VERSION",d,1) or bb.fatal('Remove this line or set a dummy DISTRO_VERSION if you really want to build an unversioned distro')}"
 
 # We want images supporting the following features (for task-base)
-DISTO_FEATURES = "nfs smbfs ipsec wifi ppp alsa bluetooth ext2 irda pcmcia usbgadget usbhost"
+DISTRO_FEATURES = "nfs smbfs wifi ppp alsa bluetooth ext2 irda pcmcia usbgadget usbhost"

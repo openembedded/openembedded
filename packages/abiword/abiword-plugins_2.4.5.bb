@@ -1,14 +1,16 @@
 DESCRIPTION ="AbiWord is free word processing program similar to Microsoft(r) Word""
+SECTION = "gnome/office"
 HOMEPAGE="http://www.abiword.org""
 MAINTAINER="Koen Kooi <koen@dominion.kabel.utwente.nl>"
 LICENSE="GPLv2"
 
-DEPENDS     = "abiword libwpd librsvg goffice poppler"
-PR="r0"
+DEPENDS     = "libwpd librsvg goffice poppler"
+PR="r1"
 
 SRC_URI = "http://www.abiword.org/downloads/abiword/${PV}/source/abiword-${PV}.tar.gz \
            file://abiword-plugin-pdf-poppler.patch;patch=1;pnum=2"
 S = "${WORKDIR}/abiword-${PV}/abiword-plugins"
+RDEPENDS='abiword'
 
 inherit autotools
 

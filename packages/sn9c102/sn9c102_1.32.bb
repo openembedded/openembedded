@@ -1,4 +1,4 @@
-DESRIPTION = "Drivers for sn9c10x webcams"
+DESCRIPTION = "Drivers for sn9c10x webcams"
 LICENSE = "GPL"
 HOMEPAGE = "http://www.linux-projects.org/"
 SRC_URI = "http://www.linux-projects.org/downloads/${P}.tar.gz"

@@ -113,7 +113,7 @@ do_configure() {
 	oe_runmake oldconfig
 }
 
-do_stage() {
+do_install_prepend() {
 	# Install into the cross dir (this MUST be done first because we
 	# will install crt1.o in the install_dev stage and gcc needs it)
 	oe_runmake PREFIX= DEVEL_PREFIX=${UCLIBC_PREFIX}/ \

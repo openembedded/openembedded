@@ -3,10 +3,11 @@ PRIORITY = "optional"
 MAINTAINER = "Ned Ludd <solar@gentoo.org>"
 LICENSE = "GPL"
 SECTION = "console/network"
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/ebtables/ebtables-v${PV}.tar.gz \
            file://gcc34.patch;patch=1 \
+           file://gcc4.patch;patch=1 \
            file://installnonroot.patch;patch=1 \
            file://installcreatedirs.patch;patch=1"
 S = "${WORKDIR}/ebtables-v${PV}"

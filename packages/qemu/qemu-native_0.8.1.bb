@@ -1,5 +1,5 @@
 require qemu_${PV}.bb
 inherit native
+require qemu-native.inc
 S = "${WORKDIR}/qemu-${PV}"
-prefix = "${STAGING_DIR}/${BUILD_SYS}"
 

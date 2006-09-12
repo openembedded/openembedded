@@ -4,8 +4,10 @@ MAINTAINER = "Koen Kooi <koen@linuxtogo.org>"
 
 LICENSE_${PN} = "LGPL"
 
+PR = "r1"
+
 DEPENDS = "fakeroot-native"
-RRECOMMENDS_${PN} = "fuse-module"
+RRECOMMENDS_${PN} = "fuse-module kernel-module-fuse"
 
 #package utils in a sperate package and stop debian.bbclass renaming it to libfuse-utils, we want it to be fuse-utils 
 PACKAGES += "fuse-utils"

@@ -3,12 +3,13 @@ PRIORITY = "optional"
 SECTION = "console/network"
 MAINTAINER = "dyoung <dyoung@thestuffguy.com>"
 LICENSE = "GPL"
-PR = "r6"
+PR = "r7"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/nfs/nfs-utils-${PV}.tar.gz \
 	file://acinclude-lossage.patch;patch=1 \
 	file://rpcgen-lossage.patch;patch=1 \
 	file://stat-include.patch;patch=1 \
+	file://nfs-utils-1.0.6-uclibc.patch;patch=1 \
 	file://nfsserver \
 	file://forgotten-defines"
 
@@ -16,9 +17,10 @@ S = ${WORKDIR}/nfs-utils-${PV}/
 
 PARALLEL_MAKE = ""
 
-# Only kernel-module-nfsd is required here - the nfsd module will
+# Only kernel-module-nfsd is required here (but can be built-in)  - the nfsd module will
 # pull in the remainder of the dependencies.
-RDEPENDS = "portmap kernel-module-nfsd"
+RDEPENDS = "portmap"
+RRECOMMENDS = "kernel-module-nfsd"
 
 INITSCRIPT_NAME = "nfsserver"
 # The server has no dependencies at the user run levels, so just put

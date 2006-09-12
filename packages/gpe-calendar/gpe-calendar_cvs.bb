@@ -1,17 +1,20 @@
-LICENSE = "GPL"
 DEFAULT_PREFERENCE = "-1"
 
-S = "${WORKDIR}/${PN}"
-PV = "0.72+cvs${SRCDATE}"
-PR = "r1"
-
-PARALLEL_MAKE = ""
-inherit autotools gpe
-
-SRC_URI = "${HANDHELDS_CVS};module=gpe/base/${PN}"
+DESCRIPTION = "GPE calendar"
+SECTION = "gpe"
+LICENSE = "GPL"
 
 DEPENDS = "libhandoff libsoup libeventdb libschedule libxsettings libxsettings-client libgpepimc libdisplaymigration libgpevtype"
-SECTION = "gpe"
 RDEPENDS = "gpe-icons"
-DESCRIPTION = "GPE calendar"
+
+PV = "0.73+cvs${SRCDATE}"
+PR = "r0"
+
+SRC_URI = "${HANDHELDS_CVS};module=gpe/base/${PN}"
+S = "${WORKDIR}/${PN}"
+
+inherit autotools gpe
+
+PARALLEL_MAKE = ""
+
 

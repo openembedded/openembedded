@@ -1,7 +1,7 @@
 #
 # Automatically generated make config: don't edit
 # Linux kernel version: 2.6.18-rc1-git9
-# Sat Jul 15 19:58:55 2006
+# Sat Jul 15 20:13:41 2006
 #
 CONFIG_ARM=y
 CONFIG_MMU=y
@@ -170,7 +170,8 @@ CONFIG_ARM_AMBA=y
 # CONFIG_PREEMPT is not set
 # CONFIG_NO_IDLE_HZ is not set
 CONFIG_HZ=100
-# CONFIG_AEABI is not set
+CONFIG_AEABI=y
+CONFIG_OABI_COMPAT=y
 # CONFIG_ARCH_DISCONTIGMEM_ENABLE is not set
 CONFIG_SELECT_MEMORY_MODEL=y
 CONFIG_FLATMEM_MANUAL=y
@@ -188,7 +189,7 @@ CONFIG_ALIGNMENT_TRAP=y
 #
 CONFIG_ZBOOT_ROM_TEXT=0x0
 CONFIG_ZBOOT_ROM_BSS=0x0
-CONFIG_CMDLINE="console=ttyAM0,115200 root=/dev/nfs ip=bootp"
+CONFIG_CMDLINE="console=ttyAM0,57600 root=/dev/nfs ip=bootp"
 # CONFIG_XIP_KERNEL is not set
 
 #
@@ -208,7 +209,6 @@ CONFIG_FPE_NWFPE_XP=y
 CONFIG_BINFMT_ELF=y
 # CONFIG_BINFMT_AOUT is not set
 # CONFIG_BINFMT_MISC is not set
-# CONFIG_ARTHUR is not set
 
 #
 # Power management options
@@ -521,7 +521,7 @@ CONFIG_NETDEVICES=y
 #
 CONFIG_NET_ETHERNET=y
 CONFIG_MII=y
-# CONFIG_EP93XX_ETH is not set
+CONFIG_EP93XX_ETH=y
 # CONFIG_SMC91X is not set
 # CONFIG_DM9000 is not set
 

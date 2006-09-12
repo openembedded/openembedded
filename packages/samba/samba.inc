@@ -1,6 +1,7 @@
 SECTION = "console/network"
 DEPENDS = readline
 LICENSE = "GPL"
+MAINTAINER = "Oyvind Repvik <nail@nslu2-linux.org>"
 
 PACKAGES =+ "libsmbclient libsmbclient-dev cifs cifs-doc"
 FILES_cifs = "${bindir}/mount.cifs"

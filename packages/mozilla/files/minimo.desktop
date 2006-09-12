@@ -1,9 +1,10 @@
 [Desktop Entry]
-Name=Minimo
-Comment=Minimo web browser
-Exec=minimo http://www.mozilla.org/projects/minimo/home.html
-Terminal=0
 Type=Application
+Name=Minimo
+GenericName=Web Browser
+Comment=Browse the web
 Icon=minimo.png
-Categories=Application;Network;
-StartupNotify=True
+Exec=minimo
+Terminal=false
+Categories=Network;WebBrowser;
+StartupNotify=true
