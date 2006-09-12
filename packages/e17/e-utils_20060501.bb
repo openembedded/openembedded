@@ -1,5 +1,5 @@
 DESCRIPTION = "Enlightenment Window Manager Utilities"
-DEPENDS = "virtual/ecore virtual/evas virtual/esmart edje eet ewl engrave virtual/imlib2 e epsilon"
+DEPENDS = "virtual/ecore virtual/evas virtual/esmart edje eet ewl engrave virtual/imlib2 epsilon"
 LICENSE = "MIT"
 PR = "r1"
 

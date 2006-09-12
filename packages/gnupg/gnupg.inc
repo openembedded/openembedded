@@ -70,3 +70,7 @@ do_install () {
 	mv ${D}${datadir}/${PN}/* ${D}/${docdir}/${PN}/ || :
 	mv ${D}${prefix}/doc/* ${D}/${docdir}/${PN}/ || :
 }
+
+# Exclude debug files from the main packages
+FILES_${PN} = "${bindir}/* ${datadir}/${PN} ${libexecdir}/${PN}/*"
+FILES_${PN}-dbg += "${libexecdir}/${PN}/.debug"
