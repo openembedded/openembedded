@@ -193,6 +193,13 @@ oe_libinstall() {
 	__runcmd cd $dir
 
 	lafile=$libname.la
+
+	# If such file doesn't exist, try to cut version suffix
+        if [ ! -f "$lafile" ]; then
+                libname=`echo "$libname" | sed 's/-[0-9.]*$//'`
+                lafile=$libname.la
+        fi
+
 	if [ -f "$lafile" ]; then
 		# libtool archive
 		eval `cat $lafile|grep "^library_names="`
