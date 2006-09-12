@@ -170,6 +170,8 @@ def do_split_packages(d, root, file_regex, output_pattern, description, postinst
 # is necessary for this stuff to work.
 PACKAGE_DEPENDS ?= "file-native"
 DEPENDS_prepend =+ "${PACKAGE_DEPENDS} "
+# file(1) output to match to consider a file an unstripped executable
+FILE_UNSTRIPPED_MATCH ?= "not stripped"
 #FIXME: this should be "" when any errors are gone!
 IGNORE_STRIP_ERRORS ?= "1"
 
@@ -178,9 +180,9 @@ runstrip() {
 	st=0
 	if {	file "$1" || {
 			oewarn "file $1: failed (forced strip)" >&2
-			echo 'not stripped'
+			echo '${FILE_UNSTRIPPED_MATCH}'
 		}
-	   } | grep -q 'not stripped'
+	   } | grep -q '${FILE_UNSTRIPPED_MATCH}'
 	then
 		oenote "${STRIP} $1"
 		ro=
@@ -188,7 +190,7 @@ runstrip() {
 			ro=1
 			chmod +w "$1"
 		}
-		mkdir $(dirname "$1")/.debug
+		mkdir -p $(dirname "$1")/.debug
 		debugfile="$(dirname "$1")/.debug/$(basename "$1")"
 		'${OBJCOPY}' --only-keep-debug "$1" "$debugfile"
 		'${STRIP}' "$1"
