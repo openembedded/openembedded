@@ -362,9 +362,8 @@ if __name__ == "__main__":
             continue
 
         if seen_vars.has_key(var):
-            for c in commentBloc:
-                seen_vars[var].append(c)
-                commentBloc = []
+            for c in commentBloc: seen_vars[var].append(c)
+            commentBloc = []
             seen_vars[var].append(line)
         else:
             for k in OE_vars:
@@ -382,17 +381,15 @@ if __name__ == "__main__":
                 if not in_routine:
                     print "## Warning: unknown variable/routine \"%s\"" % originalLine
                 var = 'others'
-            for c in commentBloc:
-                seen_vars[var].append(c)
-                commentBloc = []
+            for c in commentBloc: seen_vars[var].append(c)
+            commentBloc = []
             seen_vars[var].append(line)
         if not keep and not in_routine: var = ""
 
     # -- dump the sanitized .bb file --
     addEmptyLine = False
     # write comments that are not related to variables nor routines
-    for l in olines: 
-        olines.append(l)
+    for l in commentBloc: olines.append(l)
     # write variables and routines
     previourVarPrefix = "unknown"
     for k in OE_vars:
