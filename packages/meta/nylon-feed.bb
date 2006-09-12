@@ -9,7 +9,6 @@ DEPENDS = "${NYLON_FEED} \
     glib-2.0 \
     glibc \
     gmp \
-    hotplug \
     iproute2 \
     libcgicc \
     libedit \

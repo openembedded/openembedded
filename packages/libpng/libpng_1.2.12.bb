@@ -4,7 +4,7 @@ LICENSE = "libpng"
 SECTION = "libs"
 PRIORITY = "required"
 MAINTAINER = "Chris Larson <kergoth@handhelds.org>"
-PR = "r3"
+PR = "r4"
 
 DEPENDS = "zlib"
 
@@ -21,36 +21,13 @@ FILES_${PN}-dev = ${includedir} ${libdir}/lib*.so ${libdir}/*.la \
 SRC_URI = "${SOURCEFORGE_MIRROR}/libpng/libpng-${PV}.tar.bz2"
 S = "${WORKDIR}/libpng-${PV}"
 
-inherit pkgconfig binconfig pkgconfig
-
-EXTRA_OEMAKE_append = " ZLIBINC=${STAGING_INCDIR} ZLIBLIB=${STAGING_LIBDIR}"
-CFLAGS += "-DPNG_NO_ASSEMBLER_CODE"
-
-do_compile() {
-	sed < scripts/makefile.linux > makefile -e 's/^ZLIBINC.*//' -e 's/^ZLIBLIB.*//'
-	unset LDFLAGS
-	oe_runmake 'CC=${CC}' 'LD=${LD}' 'CFLAGS=${CFLAGS}' \
-		   'ZLIBINC=${STAGING_INCDIR}' \
-		   'ZLIBLIB=${STAGING_LIBDIR}'
-}
-
-# apperently libpng doesn't expand the vars in libpng.pc, so we'll do that with sed
-# pkgconfig.bbclass will use a similar trick to fix them
-
-do_stage_prepend() {
-	sed -i  -e 's:=@libdir@:=${libdir}:;' \
-		-e 's:=@includedir@:=${includedir}:;' \
-		-e 's:=@prefix@:=${prefix}:' \
-		-e 's:=@exec_prefix@:=${exec_prefix}:' \
-            	-e 's:-lpng12:-lpng12\ -lz\ -lm:' \
-		libpng.pc
-
-}
+inherit autotools binconfig pkgconfig
 
 do_stage() {
 	cp libpng.pc libpng12.pc
 	install -m 644 png.h ${STAGING_INCDIR}/png.h
 	install -m 644 pngconf.h ${STAGING_INCDIR}/pngconf.h
+	oe_libinstall -so libpng ${STAGING_LIBDIR}/
 	oe_libinstall -so libpng12 ${STAGING_LIBDIR}/
 	ln -sf libpng12.so ${STAGING_LIBDIR}/libpng.so
 }

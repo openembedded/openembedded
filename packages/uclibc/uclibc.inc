@@ -14,7 +14,7 @@ MAINTAINER = "Gerald Britton <gbritton@doomcom.org>"
 
 python __anonymous () {
     import bb, re
-    uc_os = (re.match('.*uclibc$', bb.data.getVar('TARGET_OS', d, 1)) != None)
+    uc_os = (re.match('.*uclibc*', bb.data.getVar('TARGET_OS', d, 1)) != None)
     if not uc_os:
         raise bb.parse.SkipPackage("incompatible with target %s" %
                                    bb.data.getVar('TARGET_OS', d, 1))

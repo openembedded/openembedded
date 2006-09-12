@@ -24,7 +24,7 @@ import string
 import re
 
 __author__ = "Cyril Romain <cyril.romain@gmail.com>"
-__version__ = "$Revision: 0.4 $"
+__version__ = "$Revision: 0.5 $"
 
 # The standard set of variables often found in .bb files in the preferred order
 OE_vars = [
@@ -72,6 +72,8 @@ OE_vars = [
     'includedir',
     'python',
     'qtopiadir',
+    'pkg_preins',
+    'pkg_prerm',
     'pkg_postins',
     'pkg_postrm',
     'require',
@@ -79,9 +81,9 @@ OE_vars = [
     'basesysconfdir',
     'sysconfdir',
     'ALLOW_EMPTY',
-    'ALTERNATIVE_LINK',
     'ALTERNATIVE_NAME',
     'ALTERNATIVE_PATH',
+    'ALTERNATIVE_LINK',
     'ALTERNATIVE_PRIORITY',
     'ALTNAME',
     'AMD_DRIVER_LABEL',
@@ -104,7 +106,6 @@ OE_vars = [
     'BONOBO_HEADERS',
     'BOOTSCRIPTS',
     'BROKEN',
-    'BUILD_ALL_DEPS',
     'BUILD_CPPFLAGS',
     'CFLAGS',
     'CCFLAGS',
@@ -133,8 +134,8 @@ OE_vars = [
     'GNOME_VFS_HEADERS',
     'HEADERS',
     'INHIBIT_DEFAULT_DEPS',
-    'INITSCRIPT_NAME',
     'INITSCRIPT_PACKAGES',
+    'INITSCRIPT_NAME',
     'INITSCRIPT_PARAMS',
     'IPKG_INSTALL',
     'KERNEL_IMAGETYPE',
@@ -158,13 +159,13 @@ OE_vars = [
     'LIBTOOL',
     'LIBBDB_EXTRA',
     'LIBV',
-    'MACHINE',
     'MACHINE_ESSENTIAL_EXTRA_RDEPENDS',
     'MACHINE_ESSENTIAL_EXTRA_RRECOMMENDS',
     'MACHINE_EXTRA_RDEPENDS',
     'MACHINE_EXTRA_RRECOMMENDS',
     'MACHINE_FEATURES',
     'MACHINE_TASKS',
+    'MACHINE',
     'MACHTYPE',
     'MAKE_TARGETS',
     'MESSAGEUSER',
@@ -178,6 +179,7 @@ OE_vars = [
     'PAKCAGE_ARCH',
     'PCMCIA_MANAGER',
     'PKG_BASENAME',
+    'PKG',
     'QEMU',
     'QMAKE_PROFILES',
     'QPEDIR',
@@ -200,8 +202,8 @@ OE_vars = [
     'others'
 ]
 
-varRegexp = r'^([A-Z_0-9]*)([ \t]*?)([+.:]?=[+.]?)([ \t]*?)("[^"]*["\\]?)'
-routineRegexp = r'^([a-zA-Z0-9_ -]+?)\('
+varRegexp = r'^([a-zA-Z_0-9${}-]*)([ \t]*)([+.:]?=[+.]?)([ \t]*)([^\t]+)'
+routineRegexp = r'^([a-zA-Z0-9_ ${}-]+?)\('
 
 # Variables seen in the processed .bb
 seen_vars = {}
@@ -245,11 +247,17 @@ def conformTo_rule3(line):
     return line.lstrip()
 
 # _Format guideline #4_:
-#   Use quotes on the right hand side of assignments: FOO = "BAR"
+#   Use quotes on the right hand side of assignments FOO = "BAR"
 def respect_rule4(line):
-    return re.match(varRegexp, line) is not None
+    r = re.search(varRegexp, line)
+    if r is not None:
+        r2 = re.search(r'("?)([^"\\]*)(["\\]?)', r.group(5))
+        # do not test for None it because always match
+        return r2.group(1)=='"' and r2.group(3)!=''
+    return False
 def conformTo_rule4(line):
-    return conformTo_rule5_(line)
+    r = re.search(varRegexp, line)
+    return ''.join([r.group(1), ' ', r.group(3), ' "', r.group(5), r.group(5).endswith('"') and '' or '"'])
 
 # _Format guideline #5_:
 #   The correct spacing for a variable is FOO = "BAR".
@@ -279,7 +287,7 @@ rules = (
     (respect_rule1, conformTo_rule1, "No spaces are allowed behind the line continuation symbol '\\'"),
     (respect_rule2, conformTo_rule2, "Tabs should not be used (use spaces instead)"),
     (respect_rule3, conformTo_rule3, "Comments inside bb files are allowed using the '#' character at the beginning of a line"),
-    (respect_rule4, conformTo_rule4, "Use quotes on the right hand side of assignments: FOO = \"BAR\""),
+    (respect_rule4, conformTo_rule4, "Use quotes on the right hand side of assignments FOO = \"BAR\""),
     (respect_rule5, conformTo_rule5, "The correct spacing for a variable is FOO = \"BAR\""),
     (respect_rule6, conformTo_rule6, "Don't use spaces or tabs on empty lines"),
     (respect_rule7, conformTo_rule7, "Indentation of multiline variables such as SRC_URI is desireable"),
@@ -296,7 +304,7 @@ def follow_rule(i, line):
         # if the line still does not respect the rule
         if not rules[i][0](line):
             # this is a rule disgression
-            print "## Disgression: ", rules[i][2], " in:", line
+            print "## Disgression: ", rules[i][2], " in:", oldline
         else:
             # just remind user about his/her errors
             print "## Reminder: ", rules[i][2], " in :", oldline
@@ -327,6 +335,7 @@ if __name__ == "__main__":
     commentBloc = []
     olines = []
     for line in lines: 
+        originalLine = line
         # rstrip line to remove line breaks characters
         line = line.rstrip()
         line = follow_rule(2, line)
@@ -340,7 +349,8 @@ if __name__ == "__main__":
             commentBloc = []
             continue
 
-        if line.startswith('}'): in_routine=False
+        if line.startswith('}'): 
+            in_routine=False
         keep = line.endswith('\\') or in_routine
 
         # handles commented lines
@@ -352,41 +362,46 @@ if __name__ == "__main__":
             continue
 
         if seen_vars.has_key(var):
-            for c in commentBloc: 
+            for c in commentBloc:
                 seen_vars[var].append(c)
                 commentBloc = []
             seen_vars[var].append(line)
         else:
-            varexist = False
             for k in OE_vars:
                 if line.startswith(k):
-                    line = follow_rule(0, line)
-                    varexist = True
-                    if re.match(routineRegexp, line) is not None: 
-                        in_routine=True
-                    elif re.match(varRegexp, line) is not None:
-                        line = follow_rule(4, line)
-                        line = follow_rule(5, line)
-                    for c in commentBloc: 
-                        seen_vars[k].append(c)
-                        commentBloc = []
-                    seen_vars[k].append(line)
-                    var = (keep==True or in_routine==True) and k or ""
+                    var = k
                     break
-            if not varexist:
+            if re.match(routineRegexp, line) is not None: 
+                in_routine=True
+                line = follow_rule(0, line)
+            elif re.match(varRegexp, line) is not None:
+                line = follow_rule(0, line)
+                line = follow_rule(4, line)
+                line = follow_rule(5, line)
+            if var == "":
                 if not in_routine:
-                    print "## Warning: unknown variable/routine \"%s\"" % line
-                    seen_vars['others'].append(line)
+                    print "## Warning: unknown variable/routine \"%s\"" % originalLine
+                var = 'others'
+            for c in commentBloc:
+                seen_vars[var].append(c)
+                commentBloc = []
+            seen_vars[var].append(line)
         if not keep and not in_routine: var = ""
 
     # -- dump the sanitized .bb file --
-    #for k in OE_vars: print k, OE_vars[k]
     addEmptyLine = False
+    # write comments that are not related to variables nor routines
+    for l in olines: 
+        olines.append(l)
+    # write variables and routines
+    previourVarPrefix = "unknown"
     for k in OE_vars:
         if k=='SRC_URI': addEmptyLine = True
         if seen_vars[k] != []: 
-            if addEmptyLine: olines.append("")
+            if addEmptyLine and not k.startswith(previourVarPrefix):
+                olines.append("")
             for l in seen_vars[k]: 
                 olines.append(l)
+            previourVarPrefix = k.split('_')[0]=='' and "unknown" or k.split('_')[0]
     for line in olines: print line
 
