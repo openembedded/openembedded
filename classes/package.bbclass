@@ -259,12 +259,16 @@ python populate_packages () {
 		return (s[stat.ST_MODE] & stat.S_IEXEC)
 
 	# Sanity check PACKAGES for duplicates - should be moved to 
-	# sanity.bbclass once we have he infrastucture
-	pkgs = []
+	# sanity.bbclass once we have the infrastucture
+	package_list = []
 	for pkg in packages.split():
-		if pkg in pkgs:
-			bb.error("%s is listed in PACKAGES mutliple times. Undefined behaviour will result." % pkg)
-		pkgs += pkg
+		if pkg in package_list:
+			bb.error("-------------------")
+			bb.error("%s is listed in PACKAGES mutliple times, this leads to packaging errors." % pkg)
+			bb.error("Please fix the metadata/report this as bug to OE bugtracker.")
+			bb.error("-------------------")
+		else:
+			package_list.append(pkg)
 
 	if (bb.data.getVar('INHIBIT_PACKAGE_STRIP', d, 1) != '1'):
 		stripfunc = ""
@@ -281,7 +285,7 @@ python populate_packages () {
 			bb.data.setVarFlag('RUNSTRIP', 'func', 1, localdata)
 			bb.build.exec_func('RUNSTRIP', localdata)
 
-	for pkg in packages.split():
+	for pkg in package_list:
 		localdata = bb.data.createCopy(d)
 		root = os.path.join(workdir, "install", pkg)
 
@@ -343,7 +347,7 @@ python populate_packages () {
 
 	bb.build.exec_func("package_name_hook", d)
 
-	for pkg in packages.split():
+	for pkg in package_list:
 		pkgname = bb.data.getVar('PKG_%s' % pkg, d, 1)
 		if pkgname is None:
 			bb.data.setVar('PKG_%s' % pkg, pkg, d)
@@ -352,7 +356,7 @@ python populate_packages () {
 
 	dangling_links = {}
 	pkg_files = {}
-	for pkg in packages.split():
+	for pkg in package_list:
 		dangling_links[pkg] = []
 		pkg_files[pkg] = []
 		inst_root = os.path.join(workdir, "install", pkg)
@@ -371,12 +375,12 @@ python populate_packages () {
 						target = os.path.join(root[len(inst_root):], target)
 					dangling_links[pkg].append(os.path.normpath(target))
 
-	for pkg in packages.split():
+	for pkg in package_list:
 		rdepends = explode_deps(bb.data.getVar('RDEPENDS_' + pkg, d, 1) or bb.data.getVar('RDEPENDS', d, 1) or "")
 		for l in dangling_links[pkg]:
 			found = False
 			bb.debug(1, "%s contains dangling link %s" % (pkg, l))
-			for p in packages.split():
+			for p in package_list:
 				for f in pkg_files[p]:
 					if f == l:
 						found = True
@@ -404,7 +408,7 @@ python populate_packages () {
 	data_file = os.path.join(workdir, "install", pn + ".package")
 	f = open(data_file, 'w')
 	f.write("PACKAGES: %s\n" % packages)
-	for pkg in packages.split():
+	for pkg in package_list:
 		write_if_exists(f, pkg, 'DESCRIPTION')
 		write_if_exists(f, pkg, 'RDEPENDS')
 		write_if_exists(f, pkg, 'RPROVIDES')
