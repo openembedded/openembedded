@@ -1,0 +1,26 @@
+DEFAULT_PREFERENCE="-1"
+
+SECTION = "base"
+PR = "r0"
+HOMEPAGE = "http://www.freedesktop.org/Software/dbus"
+DESCRIPTION = "message bus system for applications to talk to one another"
+LICENSE = "GPL"
+
+S = "${WORKDIR}/dbus-${PV}"
+FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/dbus"
+DEPENDS = "glib-2.0-native"
+
+SRC_URI = "http://freedesktop.org/software/dbus/releases/dbus-${PV}.tar.gz \
+	   file://cross.patch;patch=1 \
+	   file://tmpdir.patch;patch=1"
+
+inherit autotools pkgconfig gettext native
+
+EXTRA_OECONF = "--disable-qt  --disable-qt3 --disable-gtk --disable-tests \
+		--disable-checks --disable-xml-docs --disable-doxygen-docs \
+		--with-xml=expat --without-x"
+
+do_stage () {
+	oe_runmake install
+	autotools_stage_all
+}

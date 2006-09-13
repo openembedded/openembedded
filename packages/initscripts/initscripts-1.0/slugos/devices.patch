@@ -8,8 +8,8 @@
  . /etc/default/rcS
  
  # exit without doing anything if udev is active
--if test -e /dev/.udevdb; then
-+if test -e /dev/.udevdb -o -e /dev/.permanent; then
+-if test -e /dev/.udev -o -e /dev/.udevdb; then
++if test -e /dev/.udev -o -e /dev/.udevdb -o -e /dev/.permanent; then
  	exit 0
  fi
  

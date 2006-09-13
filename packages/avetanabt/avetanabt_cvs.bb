@@ -5,10 +5,12 @@ MAINTAINER = "Mustafa Yuecel <yuecelm@ee.ethz.ch>"
 LICENSE = "GPL"
 HOMEPAGE = "http://sourceforge.net/projects/avetanabt/"
 
-PV = "0.0+cvs${SRCDATE}"
-PR = "r3"
+DEFAULT_PREFERENCE = "-1"
 
-SRC_URI = "cvs://anonymous@cvs.sourceforge.net/cvsroot/avetanabt;module=avetanabt"
+PV = "20060413+cvs${SRCDATE}"
+PR = "r5"
+
+SRC_URI = "cvs://anonymous@avetanabt.cvs.sourceforge.net/cvsroot/avetanabt;module=avetanabt"
 
 S = "${WORKDIR}/avetanabt"
 

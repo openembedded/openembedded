@@ -1,6 +1,6 @@
-include xorg-app-common.inc
+require xorg-app-common.inc
 
 #DESCRIPTION = ""
 
-DEPENDS += " libxi libx11"
+DEPENDS += " libxi virtual/libx11"
 

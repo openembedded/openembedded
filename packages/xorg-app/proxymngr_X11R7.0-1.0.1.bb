@@ -1,6 +1,6 @@
-include xorg-app-common.inc
+require xorg-app-common.inc
 
 #DESCRIPTION = ""
 
-DEPENDS += " libice libxt libx11 xproxymngproto"
+DEPENDS += " libice libxt virtual/libx11 xproxymngproto"
 

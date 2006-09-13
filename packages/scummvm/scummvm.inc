@@ -1,4 +1,4 @@
-DESCRIPTION = "Virtual Machine for LucasArts Adventures for Qt/Embedded based palmtop environments w/ SDL."
+DESCRIPTION = "Virtual Machine for LucasArts Adventures"
 SECTION = "games"
 PRIORITY = "optional"
 LICENSE = "GPL"

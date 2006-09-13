@@ -4,5 +4,5 @@
 
 DESCRIPTION="XFCE Calendar"
 SECTION = "x11"
-DEPENDS="x11 libxfcegui4 libxfce4mcs"
+DEPENDS = "virtual/libx11 libxfcegui4 libxfce4mcs"
 inherit xfce

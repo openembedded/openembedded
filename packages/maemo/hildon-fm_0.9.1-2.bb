@@ -1,6 +1,6 @@
 PR 	= 	"r1"
 LICENSE =	"GPL/LGPL"
-MAINTAINER = "Koen Kooi <koen@handhelds.org>"
+MAINTAINER = "Koen Kooi <koen@linuxtogo.org>"
 
 DEPENDS =	"gtk+-2.6.4-1.osso7 outo libxi libxt libpng gconf hildon-lgpl osso-thumbnail osso-gwconnect"
 SRC_URI = 	"http://repository.maemo.org/pool/maemo/ossw/source/h/hildon-fm/hildon-fm_${PV}.tar.gz"

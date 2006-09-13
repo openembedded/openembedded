@@ -107,6 +107,9 @@ ac_cv_have_openpty_ctty_bug=${ac_cv_have_openpty_ctty_bug=yes}
 # samba
 samba_cv_HAVE_GETTIMEOFDAY_TZ=${samba_cv_HAVE_GETTIMEOFDAY_TZ=yes}
 
+# rp-pppoe
+rpppoe_cv_pack_bitfields=${rpppoe_cv_pack_bitfields=rev}
+
 # gettext
 am_cv_func_working_getline=${am_cv_func_working_getline=yes}
 
@@ -123,3 +126,21 @@ php_cv_lib_cookie_io_functions_use_off64_t=${php_cv_lib_cookie_io_functions_use_
 
 # xffm
 jm_cv_func_working_readdir=yes
+
+#sudo
+sudo_cv_uid_t_len=${sudo_cv_uid_t_len=10}
+
+# ipsec-tools
+ac_cv_va_copy=${ac_cv_va_copy=no}
+ac_cv___va_copy=${ac_cv___va_copy=yes}
+racoon_cv_bug_getaddrinfo=${racoon_cv_bug_getaddrinfo=no}
+
+# lftp
+ac_cv_need_trio=${ac_cv_need_trio=no}
+lftp_cv_va_copy=${lftp_cv_va_copy=no}
+lftp_cv___va_copy=${lftp_cv___va_copy=yes}
+
+# slrn
+slrn_cv___va_copy=${slrn_cv___va_copy=yes}
+slrn_cv_va_copy=${slrn_cv_va_copy=no}
+slrn_cv_va_val_copy=${slrn_cv_va_val_copy=yes}

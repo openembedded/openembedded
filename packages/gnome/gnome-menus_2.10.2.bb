@@ -1,7 +1,7 @@
 DEPENDS = "gnome-vfs libxml2 gconf popt gtk+"
 LICENSE = "GPL"
 
-MAINTAINER = "Koen Kooi <koen@handhelds.org>"
+MAINTAINER = "Koen Kooi <koen@linuxtogo.org>"
 
 inherit gnome pkgconfig
 

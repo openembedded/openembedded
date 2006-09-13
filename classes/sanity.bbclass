@@ -97,6 +97,9 @@ def check_sanity(e):
 	if not check_app_exists('svn', e.data):
 		raise_sanity_error('Please install the svn utility')
 
+	if not check_app_exists('bzip2', e.data):
+		raise_sanity_error('Please install the bzip2 utility')
+
 	oes_bb_conf = data.getVar( 'OES_BITBAKE_CONF', e.data, True )
 	if not oes_bb_conf:
 		raise_sanity_error('You do not include OpenEmbeddeds version of conf/bitbake.conf')

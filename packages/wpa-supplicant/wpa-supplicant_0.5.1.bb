@@ -6,7 +6,7 @@ MAINTAINER = "Eric Shattow <lucent@gmail.com>"
 HOMEPAGE = "http://hostap.epitest.fi/wpa_supplicant/"
 DEPENDS = "gnutls madwifi-ng"
 
-PR = "r4"
+PR = "r5"
 DEFAULT_PREFERENCE = "-1"
 
 SRC_URI = "http://hostap.epitest.fi/releases/wpa_supplicant-${PV}.tar.gz \
@@ -40,19 +40,19 @@ do_compile () {
 
 do_install () {
 	install -d ${D}${sbindir}
-	install -m755 wpa_supplicant ${D}${sbindir}
-	install -m755 wpa_passphrase ${D}${sbindir}
-	install -m755 wpa_cli        ${D}${sbindir}
+	install -m 755 wpa_supplicant ${D}${sbindir}
+	install -m 755 wpa_passphrase ${D}${sbindir}
+	install -m 755 wpa_cli        ${D}${sbindir}
 
 	install -d ${D}${localstatedir}/run/wpa_supplicant
 
 	install -d ${D}${docdir}/wpa_supplicant
-	install -m644 README ${WORKDIR}/wpa_supplicant.conf ${D}${docdir}/wpa_supplicant
+	install -m 644 README ${WORKDIR}/wpa_supplicant.conf ${D}${docdir}/wpa_supplicant
 
 	install -d ${D}${sysconfdir}/init.d
-	install -m700 ${WORKDIR}/init.sh ${D}${sysconfdir}/init.d/wpa
+	install -m 700 ${WORKDIR}/init.sh ${D}${sysconfdir}/init.d/wpa
 
 	install -d ${D}${sysconfdir}/default
-	install -m600 ${WORKDIR}/defaults-sane ${D}${sysconfdir}/default/wpa
-	install -m600 ${WORKDIR}/wpa_supplicant.conf-sane ${D}${sysconfdir}/wpa_supplicant.conf
+	install -m 600 ${WORKDIR}/defaults-sane ${D}${sysconfdir}/default/wpa
+	install -m 600 ${WORKDIR}/wpa_supplicant.conf-sane ${D}${sysconfdir}/wpa_supplicant.conf
 }

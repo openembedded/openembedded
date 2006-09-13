@@ -1,4 +1,4 @@
-PR = "r3"
+PR = "r8"
 DESCRIPTION = "GNU C Library"
 HOMEPAGE = "http://www.gnu.org/software/libc/libc.html"
 LICENSE = "LGPL"
@@ -167,4 +167,4 @@ do_stage() {
 	echo 'GROUP ( libc.so.6 libc_nonshared.a )' > ${CROSS_DIR}/${TARGET_SYS}/lib/libc.so
 }
 
-include glibc-package.bbclass
+require glibc-package.bbclass

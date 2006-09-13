@@ -1,4 +1,4 @@
-include changedfiles.inc
+require changedfiles.inc
 
 PR = "r1"
 B = "${WORKDIR}/changedfiles-${PV}/module"

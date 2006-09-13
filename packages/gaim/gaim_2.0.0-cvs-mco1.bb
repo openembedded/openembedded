@@ -23,7 +23,7 @@ SRC_URI = "cvs://anonymous@cvs.sourceforge.net/cvsroot/gaim;module=gaim \
 	file://gaim-OE-branding.patch;patch=1 \
 	"
 
-include gaim.inc
+require gaim.inc
 
 S = "${WORKDIR}/gaim"
 

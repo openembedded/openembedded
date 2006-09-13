@@ -14,7 +14,7 @@ MAINTAINER = "Gerald Britton <gbritton@doomcom.org>"
 
 python __anonymous () {
     import bb, re
-    uc_os = (re.match('.*uclibc$', bb.data.getVar('TARGET_OS', d, 1)) != None)
+    uc_os = (re.match('.*uclibc*', bb.data.getVar('TARGET_OS', d, 1)) != None)
     if not uc_os:
         raise bb.parse.SkipPackage("incompatible with target %s" %
                                    bb.data.getVar('TARGET_OS', d, 1))
@@ -113,7 +113,7 @@ do_configure() {
 	oe_runmake oldconfig
 }
 
-do_stage() {
+do_install_prepend() {
 	# Install into the cross dir (this MUST be done first because we
 	# will install crt1.o in the install_dev stage and gcc needs it)
 	oe_runmake PREFIX= DEVEL_PREFIX=${UCLIBC_PREFIX}/ \

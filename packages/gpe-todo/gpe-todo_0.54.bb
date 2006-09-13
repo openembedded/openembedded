@@ -1,3 +1,3 @@
-include gpe-todo.inc
+require gpe-todo.inc
 
 DEPENDS += "gtk+"

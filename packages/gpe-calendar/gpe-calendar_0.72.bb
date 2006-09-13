@@ -1,15 +1,19 @@
-LICENSE = "GPL"
-PR      = "r0"
-GPE_TARBALL_SUFFIX = "bz2"
+DESCRIPTION = "GPE calendar is the calendar application of the GPE PIM suite."
+SECTION = "gpe"
 MAINTAINER = "Florian Boor <florian.boor@kernelconcepts.de>"
+LICENSE = "GPL"
+
+DEPENDS = "dbus-glib libeventdb libschedule libxsettings-client libgpepimc libgpevtype"
+RDEPENDS = "gpe-icons"
+
+PR = "r0"
+
+GPE_TARBALL_SUFFIX = "bz2"
 
 inherit autotools gpe
 
-DEPENDS = "dbus libeventdb libschedule libxsettings-client libgpepimc libgpevtype"
-SECTION = "gpe"
-RDEPENDS = "gpe-icons"
-DESCRIPTION = "GPE calendar is the calendar application of the GPE PIM suite."
-
 do_configure () {
-	autotools_do_configure
+        autotools_do_configure
 }
+
+

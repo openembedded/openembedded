@@ -1,4 +1,4 @@
-PR = "r14"
+PR = "r15"
 
 SRC_URI = "http://us2.samba.org/samba/ftp/stable/samba-${PV}.tar.gz \
 	   file://configure.patch;patch=1 \
@@ -9,7 +9,7 @@ SRC_URI = "http://us2.samba.org/samba/ftp/stable/samba-${PV}.tar.gz \
 	   "
 S = ${WORKDIR}/${P}/source
 
-include samba.inc
+require samba.inc
 inherit update-rc.d
 
 INITSCRIPT_NAME = "samba"
@@ -49,6 +49,7 @@ PACKAGES =+ "swat"
 
 FILES_swat = "${sbindir}/swat ${datadir}/swat ${libdir}/*.msg"
 FILES_${PN} += "${libdir}/vfs/*.so ${libdir}/charset/*.so ${libdir}/*.dat"
+FILES_${PN}-dbg += "${libdir}/vfs/.debug/*.so ${libdir}/charset/.debug/*.so"
 #
 # bug fix for samba.inc:
 FILES_cifs-doc = "${mandir}/man8/mount.cifs.8"

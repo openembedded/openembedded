@@ -1,9 +1,10 @@
 DESCRIPTION = "Cherokee Web Server fast and secure"
 DESCRIPTION_cget = "Small downloader based in the Cherokee client library"
+SECTION = "network"
 LICENSE = "GPL"
-DEPENDS = "pcre gnutls"
+DEPENDS = "libpcre gnutls"
 HOMEPAGE = "http://www.0x50.org/"
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "http://www.0x50.org/download/0.5/${PV}/cherokee-${PV}.tar.gz \
 	  file://configure.patch;patch=1 \

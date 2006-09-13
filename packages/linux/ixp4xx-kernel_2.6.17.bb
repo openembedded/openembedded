@@ -3,14 +3,14 @@
 # Increment PR_CONFIG for changes to the ixp4xx-kernel specific
 # defconfig (do *NOT* increment anything in here for changes
 # to other kernel configs!)
-PR_CONFIG = "1"
+PR_CONFIG = "4"
 #
 # Increment the number below (i.e. the digits after PR) when
 # making changes within this file or for changes to the patches
 # applied to the kernel.
-PR = "r2.${PR_CONFIG}"
+PR = "r3.${PR_CONFIG}"
 
-include ixp4xx-kernel.inc
+require ixp4xx-kernel.inc
 
 SRC_URI += "http://svn.nslu2-linux.org/svnroot/kernel/trunk/patches/2.6.17/defconfig"
 
@@ -20,6 +20,7 @@ IXP4XX_PATCHES  = ""
 SVN_SRC = "http://svn.nslu2-linux.org/svnroot/kernel/trunk/patches/2.6.17"
 
 # IXP4XX_PATCHES += "file://06-remove-extraversion.patch;patch=1"
+IXP4XX_PATCHES += "${SVN_SRC}/patch-2.6.17-ide1;patch=1"
 IXP4XX_PATCHES += "${SVN_SRC}/01-nas100d-leds.patch;patch=1"
 IXP4XX_PATCHES += "${SVN_SRC}/02-nas100d-mac-addr.patch;patch=1"
 IXP4XX_PATCHES += "${SVN_SRC}/03-nslu2-leds.patch;patch=1"
@@ -33,3 +34,5 @@ IXP4XX_PATCHES += "${SVN_SRC}/20-nslu2-cmdline-fixup.patch;patch=1"
 IXP4XX_PATCHES += "${SVN_SRC}/50-leds-arm-cpu-activity.patch;patch=1"
 IXP4XX_PATCHES += "${SVN_SRC}/75-dsmg600.patch;patch=1"
 IXP4XX_PATCHES += "${SVN_SRC}/76-dsmg600-pwrbtn.patch;patch=1"
+IXP4XX_PATCHES += "${SVN_SRC}/77-velocity-module.patch;patch=1"
+IXP4XX_PATCHES += "${SVN_SRC}/78-velocity-BE.patch;patch=1"

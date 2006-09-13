@@ -1,0 +1,24 @@
+--- fontconfig-2.3.95/src/fcname.c.orig	2006-07-26 15:20:01.469770388 +0200
++++ fontconfig-2.3.95/src/fcname.c	2006-07-26 15:22:38.415239062 +0200
+@@ -305,17 +305,16 @@
+ FcObjectPtrU (FcObjectPtr si)
+ {
+     const FcObjectTypeList  *l;
+-    int i, j;
++    int i;
+ 
+     if (si > 0)
+     {
+         if (si < biggest_known_ntypes)
+             return biggest_known_types[si].object;
+ 
+-        j = 0;
+         for (l = _FcObjectTypes; l; l = l->next)
+-            for (i = 0; i < l->ntypes; i++, j++)
+-                if (j == si)
++            for (i = 0; i < l->ntypes; i++)
++                if (l->basic_offset+i == si)
+                     return l->types[i].object;
+     }
+ 
+

@@ -1,7 +1,7 @@
 DEFAULT_PREFERENCE = "1"
-PR = "r3"
+PR = "r7"
 
-include uclibc.inc
+require uclibc.inc
 
 # This is the correct KERNEL_SOURCE location, if the uClibc
 # fix_includes.sh script is run (see nokernelheader.patch below)
@@ -30,6 +30,9 @@ SRC_URI += " file://thumb-swi-r7.patch;patch=1"
 SRC_URI += " file://thumb-sysnum-h.patch;patch=1"
 SRC_URI += " file://thumb-asm-swi.patch;patch=1"
 SRC_URI += " file://thumb-call-via-rx.patch;patch=1"
+SRC_URI += " file://dl-startup.h.patch;patch=1"
+SRC_URI += " file://dl-string.h.patch;patch=1"
+SRC_URI += " file://dl-sysdep.h.patch;patch=1"
 #
 # This is a core change and is controversial, maybe even wrong
 # on some architectures

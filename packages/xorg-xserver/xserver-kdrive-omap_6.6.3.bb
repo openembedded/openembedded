@@ -1,5 +1,5 @@
 LICENSE = "MIT"
-DEPENDS = "xsp tslib-maemo xproto libxdmcp xextensions xtrans libxau libx11 libxext libxrandr fixesext damageext libxfont resourceext compositeext xcalibrateext recordext"
+DEPENDS = "xsp tslib-maemo xproto libxdmcp xextensions xtrans libxau virtual/libx11 libxext libxrandr fixesext damageext libxfont resourceext compositeext xcalibrateext recordext"
 PROVIDES = "virtual/xserver"
 PACKAGES = "${PN} ${PN}-doc ${PN}-dev ${PN}-locale"
 SECTION = "x11/base"

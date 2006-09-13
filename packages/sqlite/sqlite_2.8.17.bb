@@ -4,7 +4,7 @@ SECTION = "libs"
 PRIORITY = "optional"
 DEPENDS = "readline ncurses"
 LICENSE = "PD"
-PR = "r0"
+PR = "r2"
 
 SRC_URI = "http://www.hwaci.com/sw/sqlite/sqlite-${PV}.tar.gz \
        file://mainmk_build_dynamic.patch;patch=1 \
@@ -56,6 +56,6 @@ do_install() {
 }
 
 PACKAGES += "${PN}-bin"
-FILES_${PN}-bin = "${bindir}"
+FILES_${PN}-bin = "${bindir}/*"
 FILES_${PN} = "${libdir}/*.so.*"
 

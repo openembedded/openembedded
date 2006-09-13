@@ -1,6 +1,6 @@
 PV = "0.0+cvs${SRCDATE}"
 LICENSE= "BSD-X"
-DEPENDS = "libxrandr libx11 libxext"
+DEPENDS = "libxrandr virtual/libx11 libxext"
 DESCRIPTION = "X Resize and Rotate extension command."
 SECTION = "x11/base"
 

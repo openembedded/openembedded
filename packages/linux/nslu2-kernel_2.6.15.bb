@@ -10,7 +10,7 @@ PR_CONFIG = "0"
 # applied to the kernel.
 PR = "r3.${PR_CONFIG}"
 
-include nslu2-kernel.inc
+require nslu2-kernel.inc
 
 # N2K_PATCHES - full list of patches to apply
 N2K_PATCHES = "\

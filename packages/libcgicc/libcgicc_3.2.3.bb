@@ -10,6 +10,6 @@ inherit autotools
 
 do_stage () {
 	install -d ${STAGING_INCDIR}/cgicc
-	cp --dereference -R cgicc/*.h ${STAGING_INCDIR}/cgicc
+	cp -LR cgicc/*.h ${STAGING_INCDIR}/cgicc
 	oe_libinstall -C cgicc libcgicc ${STAGING_LIBDIR}
 }

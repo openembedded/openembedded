@@ -67,9 +67,9 @@ python populate_packages_prepend () {
 	do_split_packages(d, libdir, '(.*)\.(pm|pl)', 'perl-module-%s', 'perl module %s', recursive=True, allow_dirs=False, match_path=True)
 }
 
-PACKAGES = "perl perl-misc perl-lib perl-dev perl-pod"
+PACKAGES = "perl-dbg perl perl-misc perl-lib perl-dev perl-pod"
 FILES_${PN} = "/usr/bin/perl /usr/bin/perl${PV}"
 FILES_${PN}-lib = "/usr/lib/libperl.so*"
 FILES_${PN}-dev = "/usr/lib/perl5/${PV}/${TARGET_ARCH}-${TARGET_OS}/CORE/"
 FILES_${PN}-pod = "/usr/lib/perl5/${PV}/pod"
-FILES_perl-misc = "/usr/bin/"
+FILES_perl-misc = "/usr/bin/*"

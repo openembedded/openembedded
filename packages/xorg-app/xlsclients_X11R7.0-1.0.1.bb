@@ -1,6 +1,6 @@
-include xorg-app-common.inc
+require xorg-app-common.inc
 
 #DESCRIPTION = ""
 
-DEPENDS += " libx11 libxmu"
+DEPENDS += " virtual/libx11 libxmu"
 

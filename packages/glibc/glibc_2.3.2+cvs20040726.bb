@@ -8,7 +8,7 @@ MAINTAINER = "Phil Blundell <pb@handhelds.org>"
 DEFAULT_PREFERENCE_sh3 = "-99"
 
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/glibc-cvs"
-PR = "r18"
+PR = "r22"
 
 GLIBC_ADDONS ?= "linuxthreads"
 GLIBC_EXTRA_OECONF ?= ""
@@ -53,7 +53,6 @@ EXTRA_OECONF = "--enable-kernel=${OLDEST_KERNEL} \
 	        --enable-add-ons=${GLIBC_ADDONS} \
 		--with-headers=${CROSS_DIR}/${TARGET_SYS}/include \
 		${GLIBC_EXTRA_OECONF}"
-
 do_munge() {
 	# http://www.handhelds.org/hypermail/oe/51/5135.html
 	# Some files were moved around between directories on
@@ -145,4 +144,4 @@ do_stage() {
 	echo 'GROUP ( libc.so.6 libc_nonshared.a )' > ${CROSS_DIR}/${TARGET_SYS}/lib/libc.so
 }
 
-include glibc-package.bbclass
+require glibc-package.bbclass

@@ -1,0 +1,11 @@
+--- /tmp/mimedir-attribute.c	2006-08-12 19:55:04.000000000 +0200
++++ libmimedir/mimedir/mimedir-attribute.c	2006-08-12 19:55:49.938306000 +0200
+@@ -1768,7 +1768,7 @@
+ 			}
+ 			break;
+ 		case ',':
+-			g_slist_append (list, g_string_free (string, FALSE));
++			list = g_slist_append (list, g_string_free (string, FALSE));
+ 			string = g_string_new ("");
+ 			break;
+ 		case '\r':

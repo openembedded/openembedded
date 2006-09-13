@@ -1,0 +1,13 @@
+--- enlightenment-0.16.999.032/src/bin/e_config.c~	2006-08-05 10:46:53.000000000 -0700
++++ enlightenment-0.16.999.032/src/bin/e_config.c	2006-08-05 10:43:14.000000000 -0700
+@@ -595,8 +595,8 @@
+    e_config->focus_revert_on_hide_or_close = 1;
+    e_config->use_e_cursor = 1;
+    e_config->cursor_size = 32;
+-   e_config->menu_autoscroll_margin = 0;
+-   e_config->menu_autoscroll_cursor_margin = 1;
++   e_config->menu_autoscroll_margin = 10;
++   e_config->menu_autoscroll_cursor_margin = 10;
+    e_config->transient.move = 1;
+    e_config->transient.resize = 0;
+    e_config->transient.raise = 1;

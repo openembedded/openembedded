@@ -9,7 +9,7 @@ inherit module-base kernel
 PROVIDES = "virtual/kernel"
 RDEPENDS = "mtd-utils"
 
-SRC_URI = "cvs://cvs@ftp.linux-mips.org/home/cvs;module=linux;tag=linux_2_4_27 \
+SRC_URI = "cvs://cvs:cvs@ftp.linux-mips.org/home/cvs;module=linux;tag=linux_2_4_27 \
 	file://01-mtd-2004-01-27.diff;patch=1 \
 	file://02-mtd-mtx-1-map.diff;patch=1 \
 	file://03-mtd-erase-compiler-bug.diff;patch=1 \
@@ -36,9 +36,12 @@ SRC_URI = "cvs://cvs@ftp.linux-mips.org/home/cvs;module=linux;tag=linux_2_4_27 \
 	file://26-usbd-amd-pb1x00-kit-23may2003-update.diff;patch=1 \
 	file://27-usbd-amd-pb1x00-kit-23may2003-usbd.diff;patch=1 \
 	file://29-au1000-pci-config-clear-errors.diff;patch=1 \
+	file://42-usb-ohci-fixes.patch;patch=1 \
 	file://defconfig-mtx-1"
 
 S = "${WORKDIR}/linux"
+
+inherit kernel
 
 COMPATIBLE_HOST = "mipsel.*-linux"
 ARCH = "mips"
@@ -70,10 +73,10 @@ fi
 FILES_kernel += " /tmp"
 
 do_deploy() {
-        install -d ${DEPLOY_DIR_IMAGE}
-	install -m 0644 arch/mips/zboot/images/mtx-1.flash.bin ${DEPLOY_DIR_IMAGE}/${KERNEL_IMAGE_NAME}.flash.bin
-        install -m 0644 arch/mips/zboot/images/mtx-1.flash.srec ${DEPLOY_DIR_IMAGE}/${KERNEL_IMAGE_NAME}.flash.srec
-	install -m 0644 arch/mips/zboot/images/mtx-1.srec ${DEPLOY_DIR_IMAGE}/${KERNEL_IMAGE_NAME}.ram.srec
+        install -d ${DEPLOY_DIR}/images
+	install -m 0644 arch/mips/zboot/images/mtx-1.flash.bin ${DEPLOY_DIR}/images/${KERNEL_IMAGE_NAME}.flash.bin
+        install -m 0644 arch/mips/zboot/images/mtx-1.flash.srec ${DEPLOY_DIR}/images/${KERNEL_IMAGE_NAME}.flash.srec
+	install -m 0644 arch/mips/zboot/images/mtx-1.srec ${DEPLOY_DIR}/images/${KERNEL_IMAGE_NAME}.ram.srec
 }
 
 do_deploy[dirs] = "${S}"

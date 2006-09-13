@@ -1,8 +1,8 @@
-include xorg-lib-common.inc
+require xorg-lib-common.inc
 
 #DESCRIPTION = ""
 
-DEPENDS += " libx11 libxext xextproto fontcacheproto"
+DEPENDS += " virtual/libx11 libxext xextproto fontcacheproto"
 
 XORG_PN = "libXfontcache"
 

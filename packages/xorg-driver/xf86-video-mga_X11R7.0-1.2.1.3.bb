@@ -1,4 +1,4 @@
-include xorg-driver-video.inc
+require xorg-driver-video.inc
 
 #DESCRIPTION = ""
 

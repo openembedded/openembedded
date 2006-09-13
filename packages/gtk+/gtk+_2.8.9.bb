@@ -5,7 +5,7 @@ HOMEPAGE = "http://www.gtk.org"
 SECTION = "libs"
 PRIORITY = "optional"
 DEPENDS = "glib-2.0 pango atk jpeg libpng libxext libxcursor gtk-doc libgcrypt cairo"
-PR = "r3"
+PR = "r4"
 
 SRC_URI = "ftp://ftp.gtk.org/pub/gtk/v2.8/gtk+-${PV}.tar.bz2 \
            file://no-xwc.patch;patch=1 \
@@ -35,8 +35,8 @@ FILES_${PN} = "${bindir}/gdk-pixbuf-query-loaders \
 FILES_${PN}-dev += "${datadir}/gtk-2.0/include ${libdir}/gtk-2.0/include ${bindir}/gdk-pixbuf-csource"
 
 RRECOMMENDS_${PN} = "glibc-gconv-iso8859-1"
-RRECOMMENDS_${PN}_angstrom = "glibc-gconv-iso8859-1 gdk-pixbuf-loader-png gdk-pixbuf-loader-jpg gdk-pixbuf-loader-gif gdk-pixbuf-loader-xpm"
-RRECOMMENDS_${PN}_openzaurus = "glibc-gconv-iso8859-1 gdk-pixbuf-loader-png gdk-pixbuf-loader-jpg gdk-pixbuf-loader-gif gdk-pixbuf-loader-xpm"
+RRECOMMENDS_${PN}_angstrom = "glibc-gconv-iso8859-1 gdk-pixbuf-loader-png gdk-pixbuf-loader-jpeg gdk-pixbuf-loader-gif gdk-pixbuf-loader-xpm"
+RRECOMMENDS_${PN}_openzaurus = "glibc-gconv-iso8859-1 gdk-pixbuf-loader-png gdk-pixbuf-loader-jpeg gdk-pixbuf-loader-gif gdk-pixbuf-loader-xpm"
 
 EXTRA_OECONF = "--without-libtiff --disable-xkb --disable-glibtest --enable-display-migration"
 # --disable-cruft

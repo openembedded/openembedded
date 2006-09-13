@@ -1,6 +1,6 @@
-include xorg-app-common.inc
+require xorg-app-common.inc
 
 #DESCRIPTION = ""
 
-DEPENDS += " zlib libfontenc freetype libx11"
+DEPENDS += " zlib libfontenc freetype virtual/libx11"
 

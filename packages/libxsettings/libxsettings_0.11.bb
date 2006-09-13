@@ -3,7 +3,7 @@ SECTION = "gpe/libs"
 LICENSE = "BSD-X"
 PRIORITY = "optional"
 MAINTAINER = "Philip Blundell <pb@handhelds.org>"
-DEPENDS = "libx11"
+DEPENDS = "virtual/libx11"
 
 inherit gpe
 

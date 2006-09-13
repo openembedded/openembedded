@@ -1,4 +1,4 @@
-include sdcc_${PV}.bb
+require sdcc_${PV}.bb
 
 inherit native
 

@@ -9,7 +9,7 @@ PRIORITY = "optional"
 HOMEPAGE = "http://www.lirc.org"
 MAINTAINER = "Matthias Goebl <matthias.goebl@goebl.net>"
 LICENSE = "GPL"
-DEPENDS = "virtual/kernel libx11 libxau libsm libice"
+DEPENDS = "virtual/kernel virtual/libx11 libxau libsm libice"
 DEPENDS_nslu2 = "virtual/kernel lirc-modules"
 RDEPENDS = "lirc-modules"
 RDEPENDS_lirc-x = "lirc"
@@ -32,7 +32,7 @@ INITSCRIPT_PARAMS = "defaults 20"
 INITSCRIPT_NAME_lirc-exec = "lircexec"
 INITSCRIPT_PARAMS_lirc-exec = "defaults 21"
 
-include lirc-config.inc
+require lirc-config.inc
 
 EXTRA_OEMAKE = 'SUBDIRS="daemons tools"'
 

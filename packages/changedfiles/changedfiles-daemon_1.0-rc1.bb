@@ -1,4 +1,4 @@
-include changedfiles.inc
+require changedfiles.inc
 PR = "r1"
 
 SRC_URI += "file://autofoo.patch;patch=1"

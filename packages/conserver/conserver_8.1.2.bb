@@ -1,2 +1,3 @@
-include conserver.inc
-PR="r3"
+PR = "r4"
+
+require conserver.inc

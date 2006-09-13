@@ -1,5 +1,5 @@
 SECTION = "libs"
-include glibc_${PV}.bb
+require glibc_${PV}.bb
 
 DEPENDS = "linux-libc-headers"
 PROVIDES = "virtual/${TARGET_PREFIX}libc-initial"

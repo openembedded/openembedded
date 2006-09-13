@@ -1,4 +1,4 @@
-include opie-securityplugin-pin.inc
+require opie-securityplugin-pin.inc
 
 PV = "${OPIE_CVS_PV}"
 

@@ -6,7 +6,7 @@ HOMEPAGE = "http://ntp.isc.org/bin/view/Main/WebHome"
 SECTION = "console/network"
 PRIORITY = "optional"
 LICENSE = "ntp"
-PR = "r7"
+PR = "r8"
 
 SRC_URI = "http://www.eecis.udel.edu/~ntp/ntp_spool/ntp4/ntp-4.2/${P}.tar.gz \
 	file://ntpdc.Makefile.am.maybe-layout.patch;patch=1 \
@@ -28,7 +28,7 @@ inherit autotools update-rc.d
 EXTRA_OECONF = "--without-openssl --without-crypto ac_cv_header_readline_history_h=no"
 CFLAGS_append = " -DPTYS_ARE_GETPT -DPTYS_ARE_SEARCHED"
 
-PACKAGES = "ntpdate ntp-bin ntp ntp-tickadj"
+PACKAGES += "ntpdate ntp-bin ntp-tickadj"
 # NOTE: you don't need ntpdate, use "ntpdc -q -g -x"
 PROVIDES = "ntpdate-${PV} ntpdate-${PV}-${PR} ntpdate"
 

@@ -1,4 +1,4 @@
-include opie-securityplugin-dummy.inc
+require opie-securityplugin-dummy.inc
 
 PV = "${OPIE_CVS_PV}"
 

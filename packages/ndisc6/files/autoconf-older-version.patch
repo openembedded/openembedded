@@ -1,0 +1,14 @@
+Patch the required version back to 2.59
+We'll include the missing macros via acinclude.m4
+
+--- ndisc6-0.6.7/configure.ac~	2006-08-14 16:46:06.000000000 +1000
++++ ndisc6-0.6.7/configure.ac	2006-08-14 16:46:06.000000000 +1000
+@@ -21,7 +21,7 @@
+ 
+ AC_COPYRIGHT([Copyright (C) 2005-2006 Remi Denis-Courmont])
+ AC_INIT(ndisc6, 0.6.7, rdenis@simphalempin.com)
+-AC_PREREQ(2.59c)
++AC_PREREQ(2.59)
+ INVOCATION="$0 $*"
+ 
+ AS_MESSAGE(checking system...)

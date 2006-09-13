@@ -12,7 +12,7 @@ PR = "r2"
 #DEFAULT_PREFERENCE is 0 (empty), releases have a preference of 1 so take
 # precedence.
 
-include uclibc.inc
+require uclibc.inc
 
 FILESPATH = "${@base_set_filespath([ '${FILE_DIRNAME}/uclibc-cvs', '${FILE_DIRNAME}/uclibc-${UCLIBC_BASE}', '${FILE_DIRNAME}/files', '${FILE_DIRNAME}' ], d)}"
 
@@ -34,24 +34,4 @@ S = "${WORKDIR}/uClibc"
 # have a 'good' set of kernel header files in the cross directory.
 #UCLIBC_PATCHES += "file://nokernelheadercheck.patch;patch=1"
 #
-# Thumb support
-UCLIBC_PATCHES += " file://thumb-defined-arm-or-thumb.patch;patch=1"
-#
-# Thumb interworking support
-UCLIBC_PATCHES += " file://thumb-mov-pc-bx.patch;patch=1"
-UCLIBC_PATCHES += " file://thumb-swi-r7.patch;patch=1"
-UCLIBC_PATCHES += " file://thumb-sysnum-h.patch;patch=1"
-UCLIBC_PATCHES += " file://thumb-asm-swi.patch;patch=1"
-UCLIBC_PATCHES += " file://thumb-call-via-rx.patch;patch=1"
-#
-# This is a core change and is controversial, maybe even wrong
-# on some architectures
-THUMB_INTERWORK_RESOLVE_PATCH = ""
-THUMB_INTERWORK_RESOLVE_PATCH_thumb-interwork = " file://thumb-resolve.patch;patch=1"
-UCLIBC_PATCHES += " ${THUMB_INTERWORK_RESOLVE_PATCH}"
 
-# Set this for non-head patches (the above list should match the
-# requirements of the SVN head).
-UCLIBC_SVN_PATCHES ?= "${UCLIBC_PATCHES}"
-
-SRC_URI += "${UCLIBC_SVN_PATCHES}"

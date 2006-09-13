@@ -1,0 +1,465 @@
+--- linux-old/arch/mips/au1000/mtx-2/lcd.c	1970-01-01 01:00:00.000000000 +0100
++++ linux/arch/mips/au1000/mtx-2/lcd.c	2006-04-30 19:43:48.070431000 +0200
+@@ -0,0 +1,423 @@
++/*
++ * Driver for the KS0713 LCD controller
++ *
++ * Loading the module will cause DEVFS to create the device file /dev/misc/lcd,
++ * which can be written to to control the display.
++ */
++
++#include <linux/lcd-driver.h>
++
++#include <linux/config.h>
++#include <linux/errno.h>
++#include <linux/init.h>
++#include <linux/irq.h>
++#include <linux/kernel.h>
++#include <linux/miscdevice.h>
++#include <linux/module.h>
++#include <linux/poll.h>
++#include <linux/sched.h>
++#include <linux/slab.h>
++#include <linux/timer.h>
++#include <linux/types.h>
++#include <linux/version.h>
++#include <asm/uaccess.h>
++#include <asm/au1000.h>
++
++#include <asm/au1xxx_psc.h>
++
++/*---------[ declarations ]-----------------*/
++
++#if !defined(LCD_PLATFORM)
++#  define LCD_PLATFORM SURFBOX2
++#endif
++
++#define BLA(X) #X
++#define BLA2(X) BLA(X)
++
++static enum lcd_platform lcd_platform = LCD_PLATFORM;
++MODULE_PARM(lcd_platform, "i");
++MODULE_PARM_DESC(lcd_platform, "The platform we are on (default " BLA2(LCD_PLATFORM) ")");
++
++static enum lcd_mode lcd_mode = COMMAND;
++MODULE_PARM(lcd_mode, "i");
++MODULE_PARM_DESC(lcd_mode, "The intial mode (default COMMAND)");
++
++static char lcd_use_dle = 0;
++MODULE_PARM(lcd_use_dle, "b");
++MODULE_PARM_DESC(lcd_use_dle, "Use DLE escapes (default no)");
++
++#define DLE 0x10
++
++static int lcd_minor = -1;
++static char is_inuse = 0;
++
++#define SBOX1_LCD_BACKLIGHT (1<<27) // GPIO27
++#define SBOX2_LCD_BACKLIGHT (1<<14) // GPIO14
++
++#define KS0713_BITMASK (0x1F << 10) /* GPIOs start at GPIO_10 */
++#define SBOX1_BITMASK ((0x1F << 10) | (3 << 25)) /* two GPIO blocks */
++#define SBOX2_BITMASK1  (1) /* GPIO 1 */
++#define SBOX2_BITMASK2 ((1 << 3) | (0x1F << 6)) /* GPIO 2 */
++
++/*---------[ Internal Functions ]-------------*/
++
++/* Layer 0 */
++
++static void set_backlight(const char on)
++{
++  if (lcd_platform == SURFBOX1)
++    au_writel(SBOX1_LCD_BACKLIGHT, on ? SYS_OUTPUTSET : SYS_OUTPUTCLR);
++  else if (lcd_platform == SURFBOX2)
++    au_writel(SBOX2_LCD_BACKLIGHT, on ? SYS_OUTPUTSET : SYS_OUTPUTCLR);
++}
++
++static inline void write_gpio1(const unsigned int line,
++                               const unsigned int mask)
++{
++	const u32 reg = line & mask;
++	const u32 neg = (~reg) & mask;
++	au_writel(neg, SYS_OUTPUTCLR);
++	au_writel(reg, SYS_OUTPUTSET);
++}
++
++static inline void write_gpio2(const unsigned int line,
++                               const unsigned int mask)
++{
++	au_writel((mask&0xffff) << 16 | (line&0xffff), GPIO2_OUTPUT);
++}
++
++static inline void write_flags(const int reset, const int cs, const int rs,
++															 const int clock, const int data)
++{
++	switch (lcd_platform) {
++	case KS0713:
++		write_gpio1((!reset) << 14 | cs << 13 | rs << 12 |
++		            clock << 11 | data << 10, KS0713_BITMASK);
++		break;
++	case SURFBOX1:
++		write_gpio1(rs << 25 | cs << 14 | !cs << 13 | 1 << 12 |
++		            data << 11 | clock << 10, SBOX1_BITMASK);
++		break;
++	case SURFBOX2:
++		write_gpio1(0, SBOX2_BITMASK1);
++		write_gpio2(rs << 3 | cs << 7 | !cs << 6 | 0 << 8 |
++		            data << 9 | clock << 10, SBOX2_BITMASK2);
++		break;
++	}
++}
++
++/* Layer 1 */
++
++static inline void write_line(unsigned int line)
++{
++	if (lcd_platform == KS0713) {
++		write_gpio1(line << 10, KS0713_BITMASK);
++	} else if (lcd_platform == SURFBOX1) {
++		const int hi = line >> 5;
++		line &= 0x1f;
++		write_gpio1(line << 10 | hi << 25, SBOX1_BITMASK | SBOX1_LCD_BACKLIGHT);
++	} else if (lcd_platform == SURFBOX2) {
++		int bm0 = line&1;
++		int bl =  (line>>1)&1;
++		int cd =  (line>>2)&1;
++		int rest = (line>>3)&0x1f;
++		write_gpio1(bm0 | bl<<14, SBOX2_BITMASK1 | SBOX2_LCD_BACKLIGHT);
++		write_gpio2(rest<<6 | cd<<3, SBOX2_BITMASK2);
++	}
++}
++
++static inline void release(void)
++{
++	return write_flags(0, 0, 0, 0, 0);
++}
++
++static inline void reset(void)
++{
++	return write_flags(1, 0, 0, 0, 0);
++}
++
++static void init_gpios(void)
++{
++	switch (lcd_platform) {
++	case KS0713:
++		// TODO: init lines?
++		release();
++		break;
++	case SURFBOX1:
++		if (lcd_mode == I2C)
++			write_gpio1(1 << 26 | 1 << 12 | 1 << 11 | 1 << 10, SBOX1_BITMASK);
++		else
++			release();
++		break;
++	case SURFBOX2:
++		au_writel(au_readl(GPIO2_DIR) | SBOX2_BITMASK2, GPIO2_DIR);
++		// au_writel(PSC_SEL_PS_DISABLED, PSC2_BASE_ADDR + PSC_CTRL_OFFSET);
++		au_writel(au_readl(SYS_PINFUNC) | SYS_PF_PSC2_GPIO, SYS_PINFUNC);
++		release();
++		break;
++	}
++}
++
++static inline void write_bit(const int rs, const int bit)
++{
++	/* Data is read on the rising edge */
++	write_flags(0, 1, rs, 0, bit);
++	write_flags(0, 1, rs, 1, bit);
++	if (lcd_platform != KS0713 && rs == LCD_RS_DATA) {
++		write_flags(0, 1, rs, 0, bit);
++		write_flags(0, 1, rs, 1, bit);
++	}
++}
++
++/* Layer 2 */
++
++static inline void write_byte(const int rs, const int byte)
++{
++	int i;
++	for (i = 7; i >= 0; i--)
++		write_bit(rs, (byte >> i) & 1);
++}
++
++DECLARE_WAIT_QUEUE_HEAD(lcd_sleep_q);
++
++static inline void sleep (long jiff)
++{
++	const long j = jiffies + jiff;
++	while (jiffies < j)
++		interruptible_sleep_on_timeout(&lcd_sleep_q, j - jiffies);
++}
++
++static inline void ctrl_init(void)
++{
++	switch (lcd_platform) {
++	case KS0713:
++		reset();
++		sleep(1L);
++		release();
++		sleep(1L);
++		// TODO: write_byte (LCD_RS_COMMAND, cmd|arg)
++/* 	do_command(fd, LCD_CMD_DISPSTART, 0, 0); */
++/* 	do_command(fd, LCD_CMD_DISPONOFF, 1, 0); */
++/* 	do_command(fd, LCD_CMD_ENTIREDISP, 0, 0); */
++/* 	do_command(fd, LCD_CMD_SHLSELECT, 0, 0); */
++/* 	do_command(fd, LCD_CMD_ADCSELECT, 1, 0); */
++/* 	do_command(fd, LCD_CMD_REFVOLTMODE, 0, 0); */
++/* 	do_command(fd, 0, 40, 0); */
++/* 	do_command(fd, LCD_CMD_LCDBIAS, 1, 0); */
++/* 	do_command(fd, LCD_CMD_POWERCTRL, 7, 0); */
++/* 	do_command(fd, LCD_CMD_REGRESISTOR, 6, 1); */
++		release();
++		sleep(1L);
++		break;
++	case SURFBOX1:
++	case SURFBOX2:
++		write_byte (LCD_RS_COMMAND, 0xe2); // RESET
++		release();
++		sleep(1L);
++		write_byte (LCD_RS_COMMAND, 0x81); // Vbias potentiometer
++		write_byte (LCD_RS_COMMAND, 0x1c); // set to 28 (conf?)
++		write_byte (LCD_RS_COMMAND, 0xad); // ON, b/w
++		release();
++		set_backlight(1);
++		break;
++	}
++}
++
++/* Layer i */
++
++static int dle = 0;
++
++static inline void handle_input (const unsigned char byte)
++{
++	if (dle) {
++		switch (byte) {
++		case DLE:
++			write_line (DLE);
++			break;
++		case 'B': /* backlight on */
++			set_backlight(1);
++			break;
++		case 'b': /* backlight off */
++			set_backlight(0);
++			break;
++		case 'r': /* reset */
++			reset();
++			break;
++		case 'l': /* release */
++			release();
++			break;
++		case 'i': /* init */
++			ctrl_init();
++			break;
++		case 's': /* serial mode */
++			lcd_mode = SERIAL;
++			break;
++		case 'c': /* command mode */
++			lcd_mode = COMMAND;
++			break;
++		case 'd': /* data mode */
++			lcd_mode = DATA;
++			break;
++		case '3': /* select mode by number */
++		case '2':
++		case '1':
++		case '0':
++			lcd_mode = (enum lcd_mode) (byte - '0');
++			break;
++		case 'e': /* stop dle mode, reversable by ioctl only */
++			lcd_use_dle = 0;
++			break;
++		}
++		dle = 0;
++	} else if (lcd_use_dle && byte == DLE) {
++		dle = 1;
++	} else switch (lcd_mode) {
++	case COMMAND:
++		write_byte (LCD_RS_COMMAND, byte);
++		break;
++	case DATA:
++		write_byte (LCD_RS_DATA, byte);
++		break;
++	case SERIAL:
++	case I2C:
++		write_line (byte);
++		break;
++	}
++}
++
++/*---------[ File Functions ]-----------------*/
++
++static int lcd_open (struct inode *inode, struct file *file)
++{
++	if (MINOR(inode->i_rdev) != lcd_minor)
++		return -ENODEV;
++	if (is_inuse)
++		return -EBUSY;
++	is_inuse = 1;
++	MOD_INC_USE_COUNT;
++	return 0;
++}
++
++static int lcd_release (struct inode *inode, struct file *file)
++{
++	if (MINOR(inode->i_rdev) == lcd_minor) {
++		is_inuse = 0;
++	}
++	MOD_DEC_USE_COUNT;
++	return 0;
++}
++
++static ssize_t lcd_write (struct file *file, const char *buf,
++                          size_t count, loff_t *ppos)
++{
++	unsigned char localbuf;
++	ssize_t bytes_read = 0;
++	while (bytes_read < count) {
++		if (copy_from_user(&localbuf, buf + bytes_read, 1))
++			return -EFAULT;
++		++bytes_read;
++		handle_input(localbuf);
++	}
++	return bytes_read; /* Everything read */
++}
++
++static int lcd_ioctl (struct inode *inode, struct file *file,
++                      unsigned int cmd, unsigned long arg)
++{
++	switch (cmd) {
++	case LCD_IOCRESET:
++		reset();
++		break;
++	case LCD_IOCRELEASE:
++		release ();
++		break;
++	case LCD_IOCSMODE:
++		lcd_mode = (enum lcd_mode) arg;
++		break;
++	case LCD_IOCGMODE:
++		return __put_user(lcd_mode, (enum lcd_mode *) arg);
++	case LCD_IOCSUSEDLE:
++		lcd_use_dle = (char) arg;
++		break;
++	case LCD_IOCGUSEDLE:
++		return __put_user(lcd_use_dle, (char *) arg);
++	case LCD_IOCCOMMAND:
++		write_byte (LCD_RS_COMMAND, arg);
++		break;
++	case LCD_IOCINIT:
++		ctrl_init();
++		break;
++	case LCD_IOCSBACKLIGHT:
++	  set_backlight((char) arg);
++	  break;
++	case LCD_IOCGPLATFORM:
++		return __put_user(lcd_platform, (enum lcd_platform *) arg);
++		break;
++
++	default:
++		return -ENOTTY; /* sic! "inappropiate ioctl for device" */
++	}
++	return 0;
++}
++
++/*---------[ Module stuff ]-----------------*/
++
++static struct file_operations lcd_fops = {
++	.owner = THIS_MODULE,
++	.llseek = NULL,
++	.read = NULL,
++	.write = lcd_write,
++	.readdir = NULL,
++	.poll = NULL,
++	.ioctl = lcd_ioctl,
++	.mmap = NULL,
++	.open = lcd_open,
++	.flush = NULL,
++	.release = lcd_release
++};
++
++static struct miscdevice lcd_miscdev = {
++	MISC_DYNAMIC_MINOR,
++	"lcd",
++	&lcd_fops
++};
++
++int __init lcd_init (void)
++{
++	is_inuse = 1;
++	printk(KERN_INFO "Surfbox2 LCD driver ...");
++
++	init_gpios();
++	//au_writel( 0x12000000 & LCD_BITMASK, SYS_OUTPUTCLR );
++	//au_writel( 0x0c000000, SYS_OUTPUTSET ); /* Magic GPIO to activate LED-driver */
++
++	/* Register device */
++	if (misc_register(&lcd_miscdev) >= 0) {
++		lcd_minor = lcd_miscdev.minor;
++		printk(" successfully loaded (platform=%d,mode=%d,dle=%d).\n",
++					 lcd_platform, lcd_mode, lcd_use_dle);
++		is_inuse = 0;
++		return 0;
++	} else {
++		printk("failed.\n");
++		is_inuse = 0;
++		return 1;
++	}
++}
++
++void __exit lcd_cleanup (void)
++{
++	is_inuse = 1;
++	misc_deregister(&lcd_miscdev);
++	printk(KERN_INFO "Surfbox (%d) LCD driver unloaded (mode=%d,dle=%d).\n",
++				 lcd_platform, lcd_mode, lcd_use_dle);
++	is_inuse = 0;
++}
++
++module_init(lcd_init);
++module_exit(lcd_cleanup);
++
++MODULE_AUTHOR("Simon Krahnke");
++MODULE_DESCRIPTION("Driver for MTX LCD");
++MODULE_LICENSE("GPL");
++EXPORT_NO_SYMBOLS;
+--- linux-old/include/linux/lcd-driver.h	1970-01-01 01:00:00.000000000 +0100
++++ linux/include/linux/lcd-driver.h	2006-04-30 19:44:02.035303750 +0200
+@@ -0,0 +1,26 @@
++#if !defined(LCD_DRIVER_H)
++#define LCD_DRIVER_H
++
++enum lcd_platform { KS0713 = 0, SURFBOX1, SURFBOX2 };
++
++enum lcd_mode { SERIAL = 0, COMMAND, DATA, I2C };
++
++#define LCD_RS_COMMAND 0
++#define LCD_RS_DATA 1
++
++/* We use the available magic L with number 0x40-0x4f */
++
++#define LCD_IOC_MAGIC 'L'
++
++#define LCD_IOCRESET   _IO(LCD_IOC_MAGIC, 0x40)
++#define LCD_IOCRELEASE _IO(LCD_IOC_MAGIC, 0x41)
++#define LCD_IOCSMODE    _IOW(LCD_IOC_MAGIC, 0x42, enum lcd_mode)
++#define LCD_IOCGMODE    _IOR(LCD_IOC_MAGIC, 0x43, enum lcd_mode*)
++#define LCD_IOCSUSEDLE  _IOW(LCD_IOC_MAGIC, 0x44, char)
++#define LCD_IOCGUSEDLE  _IOR(LCD_IOC_MAGIC, 0x45, char*)
++#define LCD_IOCCOMMAND _IOW(LCD_IOC_MAGIC, 0x46, unsigned char)
++#define LCD_IOCINIT    _IO(LCD_IOC_MAGIC, 0x47)
++#define LCD_IOCSBACKLIGHT  _IOW(LCD_IOC_MAGIC, 0x48, char)
++#define LCD_IOCGPLATFORM _IOR(LCD_IOC_MAGIC, 0x49, enum lcd_platform*)
++
++#endif /* LCD_DRIVER_H */
+--- linux/arch/mips/au1000/mtx-2/Makefile.org	2006-05-01 13:36:01.675030000 +0200
++++ linux/arch/mips/au1000/mtx-2/Makefile	2006-05-01 13:36:11.175623750 +0200
+@@ -15,6 +15,6 @@
+ 
+ O_TARGET := mtx-2.o
+ 
+-obj-y := init.o board_setup.o irqmap.o slic.o
++obj-y := init.o board_setup.o irqmap.o slic.o lcd.o
+ 
+ include $(TOPDIR)/Rules.make

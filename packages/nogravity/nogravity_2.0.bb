@@ -1,7 +1,12 @@
+# TODO: port to sdl.bbclass?
+DESCRIPTION = "3D arcade space shooter"
 HOMEPAGE = "http://www.realtech-vr.com/nogravity/"
 LICENSE = "GPL"
+SECTION = "x11/games"
 MAINTAINER = "Koen Kooi <koen@dominion.kabel.utwente.nl>"
 DEPENDS = "libsdl-x11 zlib libpng libsdl-mixer libogg libvorbis"
+PR = "r1"
+
 SRC_URI = "http://zaurus.vivaphp.net/nogravity.tar.bz2 \
 	   ${SOURCEFORGE_MIRROR}/nogravity/rt-nogravity-data.zip"
 

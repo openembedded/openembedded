@@ -2,11 +2,12 @@ SECTION = "kernel"
 DESCRIPTION = "Linux kernel for SH4 based TITAN router appliance"
 LICENSE = "GPL"
 MAINTAINER = "Jamie Lenehan <lenehan@twibble.org>
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "ftp://ftp.kernel.org/pub/linux/kernel/v2.6/linux-${PV}.tar.bz2 \
-	   cvs://anonymous@linuxsh.cvs.sourceforge.net/cvsroot/linuxsh;module=linux;date=20060709 \
+	   cvs://anonymous@linuxsh.cvs.sourceforge.net/cvsroot/linuxsh;module=linux;date=20060726 \
 	   file://titan-flash.patch;patch=1 \
+	   file://titan-pcibios-scan-update.patch;patch=1 \
 	   file://titan-config"
 S = "${WORKDIR}/linux-${PV}"
 

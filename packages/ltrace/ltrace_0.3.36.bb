@@ -3,12 +3,10 @@ HOMEPAGE = "http://packages.debian.org/unstable/utils/ltrace.html"
 SECTION = "devel"
 DEPENDS = "libelf"
 LICENSE = "GPL"
-PR = "r1"
+PR = "r2"
 
-SRC_URI = "ftp://ftp.debian.org/debian/pool/main/l/ltrace/ltrace_0.3.36.orig.tar.gz\
-           ftp://ftp.debian.org/debian/pool/main/l/ltrace/ltrace_0.3.36-2.diff.gz;patch=1\
-	   file://mvc-toolchain.patch;patch=1"
-
+SRC_URI = "ftp://ftp.debian.org/debian/pool/main/l/ltrace/ltrace_0.3.36.orig.tar.gz \
+           ftp://ftp.debian.org/debian/pool/main/l/ltrace/ltrace_0.3.36-2.diff.gz;patch=1"
 inherit autotools
 
 PARALLEL_MAKE = ""
@@ -19,6 +17,10 @@ EXTRA_OEMAKE = "ARCH=${TARGET_ARCH} \
 		INSTALL_DIR='$(INSTALL) -p -d -m 0755' "
 
 export TARGET_CFLAGS = "${SELECTED_OPTIMIZATION} -isystem ${STAGING_DIR}/${TARGET_SYS}/include"
+
+do_configure_prepend() {
+	ln -sf ./linux-gnu sysdeps/linux-gnueabi
+}
 
 do_compile() {
 	oe_runmake LDFLAGS=${TARGET_LDFLAGS} LIBS="-lsupc++ -liberty -Wl,-Bstatic -lelf -Wl,-Bdynamic" ${EXTRA_OEMAKE}

@@ -1,5 +1,5 @@
 DESCRIPTION = "SDK packages for Opie and GPE"
-PR = "r2"
+PR = "r5"
 LICENSE = MIT
 ALLOW_EMPTY = "1"
 
@@ -14,11 +14,14 @@ PACKAGES = "\
 RDEPENDS_task-sdk-bare := "\
     glibc \
     glibc-dev \
+    libgcc1 \
     "	
 
 RDEPENDS_task-sdk-base := "\
     glibc \
     glibc-dev \
+    libgcc1 \
+    alsa-dev \
     audiofile-dev \
     bluez-libs-dev \
     dbus-dev \
@@ -27,24 +30,27 @@ RDEPENDS_task-sdk-base := "\
     freetype-dev \
     glib-2.0-dev \
     gstreamer-dev \
-    ice-dev \
+    libice-dev \
     ipkg-dev \
     jpeg-dev \
     libapm-dev \
+    libasound2 \
     libdisplaymigration-dev \
     libetpan-dev \
     libgcrypt-dev \
     libglade-dev \
+    libgnutls-dev \
     libgpg-error-dev \ 
     libidl-dev \
     libiw-dev \
-    libmimedir-dev \
+    libmimedir-0.4-dev \
     libpcap-dev \
     libpixman-dev \
     libpng-dev \
     libschedule-dev \
     libsm-dev \
     libsoundgen-dev \
+    libsoup-2.2-dev \
     libsvg-dev \
     libtododb-dev \
     libts-dev \
@@ -55,7 +61,7 @@ RDEPENDS_task-sdk-base := "\
     readline-dev \
     sqlite-dev \
     zlib-dev \
-    xmu-dev"
+    libxmu-dev"
 
 RDEPENDS_task-sdk-x11 := "\
     atk-dev \
@@ -101,12 +107,14 @@ RDEPENDS_task-sdk-x11-ext := "\
 #    libxss-dev \
 
 RDEPENDS_task-sdk-gpe := "\
+    libcontactsdb-dev \
     esound-gpe-dev \
     libeventdb-dev \
     libgpepimc-dev \
     libgpevtype-dev \
     libgpelaunch-dev \
-    libgpewidget-dev"
+    libgpewidget-dev \
+    libhandoff-dev"
 
 RDEPENDS_task-sdk-opie := "\
     libopiebluez2 \

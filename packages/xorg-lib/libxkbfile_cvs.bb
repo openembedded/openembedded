@@ -2,7 +2,7 @@ LICENSE = "GPL"
 PV = "0.0+cvs${SRCDATE}"
 SECTION = "libs"
 PRIORITY = "optional"
-DEPENDS = "libx11"
+DEPENDS = "virtual/libx11"
 DESCRIPTION = "X11 keyboard library"
 
 SRC_URI = "${FREEDESKTOP_CVS}/xlibs;module=xkbfile"

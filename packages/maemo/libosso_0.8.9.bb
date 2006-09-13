@@ -1,5 +1,5 @@
 LICENSE = 	"LGPL"
-MAINTAINER =	"Koen Kooi <koen@handhelds.org>"
+MAINTAINER =	"Koen Kooi <koen@linuxtogo.org>"
 PR = "r2"
 
 DEPENDS = 	"glib-2.0 dbus outo"

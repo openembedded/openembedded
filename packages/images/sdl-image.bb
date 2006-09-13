@@ -2,8 +2,8 @@ LICENSE = MIT
 
 export IMAGE_BASENAME = "sdl-image"
 
-DEPENDS = "task-bootstrap task-sdl"
+DEPENDS = "${MACHINE_TASK_PROVIDER} task-sdl"
 
-export IPKG_INSTALL = "task-bootstrap sdl-base"
+export IPKG_INSTALL = "${MACHINE_TASK_PROVIDER} sdl-base"
 
 inherit image_ipk

@@ -3,6 +3,8 @@ HOMEPAGE = "http://www.net-snmp.org/"
 LICENSE = "BSD"
 MAINTAINER = "Bruno Randolf <bruno.randolf@4g-systems.biz>"
 DEPENDS = "openssl"
+PR = "r1"
+
 SRC_URI = "${SOURCEFORGE_MIRROR}/net-snmp/net-snmp-${PV}.tar.gz \
 	file://uclibc-fix.patch;patch=1 \
 	file://init \
@@ -16,15 +18,16 @@ EXTRA_OECONF = "--enable-shared --disable-manuals"
 EXTRA_OEMAKE = "INSTALL_PREFIX=${D}"
 
 do_configure() {
-	# endianness fun.. inspired by openssl.inc
+	# endianness fun... inspired by openssl.inc
 	. ${CONFIG_SITE}
-	if test "x$ac_cv_c_bigendian" = "xyes"; then
+	if [ "x$ac_cv_c_bigendian" = "xyes" -o "x$ac_cv_c_littleendian" = "xno" ]; then
 	    ENDIANESS=" --with-endianness=big"
-	elif test "x$ac_cv_c_littleendian" = "xyes"; then
+	elif [ "x$ac_cv_c_littleendian" = "xyes" -o "x$ac_cv_c_bigendian" = "xno" ]; then
 	    ENDIANESS=" --with-endianness=little"
 	else
 	    oefatal do_configure cannot determine endianess
 	fi
+	oenote Determined endianess as: $ENDIANESS
 	oe_runconf $ENDIANESS
 }
 
@@ -36,11 +39,12 @@ do_install_append() {
 	install -m 644 ${WORKDIR}/snmptrapd.conf ${D}${sysconfdir}/snmp/
 }
 
-PACKAGES = "net-snmp-doc net-snmp-dev net-snmp-libs net-snmp-mibs net-snmp-server net-snmp-client"
-FILES_net-snmp-libs = "${libdir}"
+PACKAGES = "net-snmp-dbg net-snmp-doc net-snmp-dev net-snmp-libs net-snmp-mibs net-snmp-server net-snmp-client"
+FILES_net-snmp-libs = "${libdir}/*"
 FILES_net-snmp-mibs = "${datadir}/snmp/mibs"
-FILES_net-snmp-server = "${sbindir} ${sysconfdir}"
-FILES_net-snmp-client = "${bindir} ${datadir}/snmp/"
+FILES_net-snmp-server = "${sbindir}/* ${sysconfdir}"
+FILES_net-snmp-client = "${bindir}/* ${datadir}/snmp/"
+FILES_net-snmp-dbg += "${libdir}/.debug/ ${sbindir}/.debug/ ${bindir}/.debug/"
 RDEPENDS_net-snmp-server += "net-snmp-mibs"
 RDEPENDS_net-snmp-client += "net-snmp-mibs"
 

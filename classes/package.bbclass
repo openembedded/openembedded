@@ -1,4 +1,15 @@
 def legitimize_package_name(s):
+	import re
+
+	def fixutf(m):
+		cp = m.group(1)
+		if cp:
+			return ('\u%s' % cp).decode('unicode_escape').encode('utf-8')
+
+	# Handle unicode codepoints encoded as <U0123>, as in glibc locale files.
+	s = re.sub('<U([0-9A-Fa-f]{1,4})>', fixutf, s)
+
+	# Remaining package name validity fixes
 	return s.lower().replace('_', '-').replace('@', '+').replace(',', '+').replace('/', '-')
 
 STAGING_PKGMAPS_DIR ?= "${STAGING_DIR}/pkgmaps"
@@ -159,6 +170,8 @@ def do_split_packages(d, root, file_regex, output_pattern, description, postinst
 # is necessary for this stuff to work.
 PACKAGE_DEPENDS ?= "file-native"
 DEPENDS_prepend =+ "${PACKAGE_DEPENDS} "
+# file(1) output to match to consider a file an unstripped executable
+FILE_UNSTRIPPED_MATCH ?= "not stripped"
 #FIXME: this should be "" when any errors are gone!
 IGNORE_STRIP_ERRORS ?= "1"
 
@@ -167,9 +180,9 @@ runstrip() {
 	st=0
 	if {	file "$1" || {
 			oewarn "file $1: failed (forced strip)" >&2
-			echo 'not stripped'
+			echo '${FILE_UNSTRIPPED_MATCH}'
 		}
-	   } | grep -q 'not stripped'
+	   } | grep -q '${FILE_UNSTRIPPED_MATCH}'
 	then
 		oenote "${STRIP} $1"
 		ro=
@@ -177,10 +190,12 @@ runstrip() {
 			ro=1
 			chmod +w "$1"
 		}
-		'${OBJCOPY}' --only-keep-debug "$1" "$1.dbg"
+		mkdir -p $(dirname "$1")/.debug
+		debugfile="$(dirname "$1")/.debug/$(basename "$1")"
+		'${OBJCOPY}' --only-keep-debug "$1" "$debugfile"
 		'${STRIP}' "$1"
 		st=$?
-		'${OBJCOPY}' --add-gnu-debuglink="$1.dbg" "$1"
+		'${OBJCOPY}' --add-gnu-debuglink="$debugfile" "$1"
 		test -n "$ro" && chmod -w "$1"
 		if test $st -ne 0
 		then
@@ -244,12 +259,16 @@ python populate_packages () {
 		return (s[stat.ST_MODE] & stat.S_IEXEC)
 
 	# Sanity check PACKAGES for duplicates - should be moved to 
-	# sanity.bbclass once we have he infrastucture
-	pkgs = []
+	# sanity.bbclass once we have the infrastucture
+	package_list = []
 	for pkg in packages.split():
-		if pkg in pkgs:
-			bb.error("%s is listed in PACKAGES mutliple times. Undefined behaviour will result." % pkg)
-		pkgs += pkg
+		if pkg in package_list:
+			bb.error("-------------------")
+			bb.error("%s is listed in PACKAGES mutliple times, this leads to packaging errors." % pkg)
+			bb.error("Please fix the metadata/report this as bug to OE bugtracker.")
+			bb.error("-------------------")
+		else:
+			package_list.append(pkg)
 
 	if (bb.data.getVar('INHIBIT_PACKAGE_STRIP', d, 1) != '1'):
 		stripfunc = ""
@@ -266,7 +285,7 @@ python populate_packages () {
 			bb.data.setVarFlag('RUNSTRIP', 'func', 1, localdata)
 			bb.build.exec_func('RUNSTRIP', localdata)
 
-	for pkg in packages.split():
+	for pkg in package_list:
 		localdata = bb.data.createCopy(d)
 		root = os.path.join(workdir, "install", pkg)
 
@@ -330,7 +349,7 @@ python populate_packages () {
 
 	bb.build.exec_func("package_name_hook", d)
 
-	for pkg in packages.split():
+	for pkg in package_list:
 		pkgname = bb.data.getVar('PKG_%s' % pkg, d, 1)
 		if pkgname is None:
 			bb.data.setVar('PKG_%s' % pkg, pkg, d)
@@ -339,7 +358,7 @@ python populate_packages () {
 
 	dangling_links = {}
 	pkg_files = {}
-	for pkg in packages.split():
+	for pkg in package_list:
 		dangling_links[pkg] = []
 		pkg_files[pkg] = []
 		inst_root = os.path.join(workdir, "install", pkg)
@@ -358,12 +377,12 @@ python populate_packages () {
 						target = os.path.join(root[len(inst_root):], target)
 					dangling_links[pkg].append(os.path.normpath(target))
 
-	for pkg in packages.split():
+	for pkg in package_list:
 		rdepends = explode_deps(bb.data.getVar('RDEPENDS_' + pkg, d, 1) or bb.data.getVar('RDEPENDS', d, 1) or "")
 		for l in dangling_links[pkg]:
 			found = False
 			bb.debug(1, "%s contains dangling link %s" % (pkg, l))
-			for p in packages.split():
+			for p in package_list:
 				for f in pkg_files[p]:
 					if f == l:
 						found = True
@@ -391,7 +410,7 @@ python populate_packages () {
 	data_file = os.path.join(workdir, "install", pn + ".package")
 	f = open(data_file, 'w')
 	f.write("PACKAGES: %s\n" % packages)
-	for pkg in packages.split():
+	for pkg in package_list:
 		write_if_exists(f, pkg, 'DESCRIPTION')
 		write_if_exists(f, pkg, 'RDEPENDS')
 		write_if_exists(f, pkg, 'RPROVIDES')
@@ -726,7 +745,7 @@ python package_do_split_locales() {
 #	bb.data.setVar('RDEPENDS_%s' % mainpkg, ' '.join(rdep), d)
 }
 
-PACKAGEFUNCS = "do_install package_do_split_locales \
+PACKAGEFUNCS ?= " package_do_split_locales \
 		populate_packages package_do_shlibs \
 		package_do_pkgconfig read_shlibdeps"
 python package_do_package () {
@@ -735,6 +754,8 @@ python package_do_package () {
 }
 
 do_package[dirs] = "${D}"
+# shlibs requires any DEPENDS to have already packaged for the *.list files
+do_package[deptask] = "do_package"
 populate_packages[dirs] = "${D}"
 EXPORT_FUNCTIONS do_package do_shlibs do_split_locales mapping_rename_hook
-addtask package before do_build after do_populate_staging
+addtask package before do_build after do_install

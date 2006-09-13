@@ -3,7 +3,7 @@ HOMEPAGE = "http://www.gnu.org/software/libc/libc.html"
 LICENSE = "LGPL"
 SECTION = "libs"
 PRIORITY = "required"
-PR = "r6"
+PR = "r11"
 
 DEFAULT_PREFERENCE_sh3 = "-99"
 
@@ -222,4 +222,4 @@ do_stage() {
 	echo 'GROUP ( libc.so.6 libc_nonshared.a )' > ${CROSS_DIR}/${TARGET_SYS}/lib/libc.so
 }
 
-include glibc-package.bbclass
+require glibc-package.bbclass

@@ -6,7 +6,7 @@ PRIORITY = "required"
 MAINTAINER = "Phil Blundell <pb@handhelds.org>"
 
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/glibc-cvs-2.3.5"
-PR = "r0"
+PR = "r5"
 PV = "2.3.5+cvs${SRCDATE}"
 
 GLIBC_ADDONS ?= "ports,linuxthreads"
@@ -164,4 +164,4 @@ do_stage() {
 	echo 'GROUP ( libc.so.6 libc_nonshared.a )' > ${CROSS_DIR}/${TARGET_SYS}/lib/libc.so
 }
 
-include glibc-package.bbclass
+require glibc-package.bbclass

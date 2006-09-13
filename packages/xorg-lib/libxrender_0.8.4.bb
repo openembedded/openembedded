@@ -1,5 +1,5 @@
 SECTION = "libs"
-DEPENDS = "renderext libx11"
+DEPENDS = "renderext virtual/libx11"
 DESCRIPTION = "X Render extension library."
 LICENSE = "BSD"
 PR = "r1"

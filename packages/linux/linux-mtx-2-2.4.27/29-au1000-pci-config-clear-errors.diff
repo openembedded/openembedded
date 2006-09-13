@@ -1,0 +1,15 @@
+--- linux/arch/mips/au1000/common/pci_ops.c.orig	2005-08-24 17:36:25.000000000 +0200
++++ linux/arch/mips/au1000/common/pci_ops.c	2005-08-24 17:37:38.000000000 +0200
+@@ -259,7 +259,11 @@
+ 		*data = 0xffffffff;
+ 		error = -1;
+ 	} else if ((status >> 28) & 0xf) {
+-		DBG("PCI ERR detected: status %x\n", status);
++		DBG("PCI ERR detected: device %d, status %x\n", device, ((status >> 28) & 0xf));
++
++		/* clear errors */
++		au_writel(status & 0xf000ffff, Au1500_PCI_STATCMD);
++
+ 		*data = 0xffffffff;
+ 		error = -1;
+ 	} 

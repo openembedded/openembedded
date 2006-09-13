@@ -4,7 +4,7 @@ SECTION = "libs"
 PRIORITY = "optional"
 DEPENDS = "readline ncurses"
 LICENSE = "PD"
-PR = "r1"
+PR = "r3"
 
 SRC_URI = "http://www.hwaci.com/sw/sqlite/sqlite-${PV}.tar.gz \
 	   file://sqlite.pc \
@@ -54,6 +54,6 @@ do_install() {
 }
 
 PACKAGES += "${PN}-bin"
-FILES_${PN}-bin = "${bindir}"
+FILES_${PN}-bin = "${bindir}/*"
 FILES_${PN} = "${libdir}/*.so.*"
 

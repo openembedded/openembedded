@@ -1,0 +1,33 @@
+--- a/configure.in
++++ b/configure.in
+@@ -30,7 +30,7 @@
+ AM_PROG_CC_STDC
+ AC_HEADER_STDC
+ dnl localization tools
+-ifdef([IT_PROG_INTLTOOL],[IT_PROG_INTLTOOL],[AC_PROG_INTLTOOL])
++dnl ifdef([IT_PROG_INTLTOOL],[IT_PROG_INTLTOOL],[AC_PROG_INTLTOOL])
+ dnl Initialize libtool
+ AC_PROG_LIBTOOL
+ AM_PROG_LIBTOOL
+@@ -62,7 +62,7 @@
+   gnome_ui=false
+ fi
+ 
+-CFLAGS="$CFLAGS -I\$(prefix)/include"
++dnl CFLAGS="$CFLAGS -I\$(prefix)/include"
+ 
+ if test "$gnome_ui" = "true" ; then
+ 
+--- a/mediastreamer2/configure.ac
++++ b/mediastreamer2/configure.ac
+@@ -47,8 +47,8 @@
+ [wall_werror=yes]
+ )
+ 
+-CFLAGS="-DORTP_INET6 $CFLAGS -I\$(prefix)/include"
+-LIBS="$LIBS -L\$(prefix)/lib"
++dnl CFLAGS="-DORTP_INET6 $CFLAGS -I\$(prefix)/include"
++dnl LIBS="$LIBS -L\$(prefix)/lib"
+ 
+ dnl enable ipv6 support
+ AC_ARG_ENABLE(ipv6,

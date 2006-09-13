@@ -1,0 +1,115 @@
+--- linux-org/arch/mips/au1000/mtx-2/board_setup.c	2006-05-01 13:23:16.491209000 +0200
++++ linux/arch/mips/au1000/mtx-2/board_setup.c	2006-04-30 20:35:58.000000000 +0200
+@@ -48,14 +48,45 @@
+ 
+ extern struct rtc_ops no_rtc_ops;
+ 
++void board_reset (void)
++{
++	/* Hit BCSR.SYSTEM_CONTROL[SW_RST] */
++	au_writel(0x00000000, 0xAE00001C);
++}
++
++
++#if 0
++static void au1x00_setpinfunc (u32 mask, char setbit)
++{
++  u32   pin_func = au_readl(SYS_PINFUNC);
++  au_sync();
++
++  if (setbit)
++    pin_func |= mask;
++  else
++    pin_func &= (u32)(~mask);
++
++  au_writel(pin_func, SYS_PINFUNC);
++}
++#endif
++
++
+ void __init board_setup(void)
+ {
+ 	rtc_ops = &no_rtc_ops;
+ 
++#if 0
++
++        /* Enable PSC1 SYNC for AC97.  Normaly done in audio driver,
++         * but it is board specific code, so put it here.
++         */
++	au1x00_pinfunc (SYS_PF_MUST_BE_SET | SYS_PF_PSC1_S1, 1);
++
++
+ #if defined (CONFIG_USB_OHCI) || defined (CONFIG_AU1X00_USB_DEVICE)
+ #ifdef CONFIG_AU1X00_USB_DEVICE
+ 	// 2nd USB port is USB device
+-	au_writel(au_readl(SYS_PINFUNC) & (u32)(~0x8000), SYS_PINFUNC);
++	au1x00_setpinfunc (0x8000, 0); // USB On
+ #endif
+ 	// enable USB power switch
+ 	au_writel( au_readl(GPIO2_DIR) | 0x10, GPIO2_DIR );
+@@ -72,8 +103,7 @@
+ 
+ 	// initialize sys_pinfunc:
+ 	// disable second ethernet port (SYS_PF_NI2)
+-	// set U3/GPIO23 to GPIO23 (SYS_PF_U3)
+-	au_writel( SYS_PF_NI2 | SYS_PF_U3, SYS_PINFUNC );
++	au1x00_setpinfunc (SYS_PF_NI2, 0);
+ 
+ 	// initialize GPIO
+ 	au_writel( 0xFFFFFFFF, SYS_TRIOUTCLR );
+@@ -84,6 +114,6 @@
+ 	// enable LED and set it to green
+ 	au_writel( au_readl(GPIO2_DIR) | 0x1800, GPIO2_DIR );
+ 	au_writel( 0x18000800, GPIO2_OUTPUT );
+-
++#endif
+ 	printk("4G Systems MTX-2 Board\n");
+ }
+--- linux-org/arch/mips/au1000/mtx-2/irqmap.c	2006-05-01 13:23:27.219879500 +0200
++++ linux/arch/mips/au1000/mtx-2/irqmap.c	2006-04-30 20:35:58.000000000 +0200
+@@ -50,17 +50,24 @@
+ /* Need to define this.
+ */
+ au1xxx_irq_map_t au1xxx_irq_map[] = {
++
++        // SLIC DET pin
++        { AU1000_GPIO_9, INTC_INT_RISE_AND_FALL_EDGE, 0 },
++
++	// Push-Buttons at GPIO 211-215
++	{ AU1500_GPIO_208_218, INTC_INT_RISE_AND_FALL_EDGE, 0 },
++
+ 	{ 0, 0, 0}
+ };
+ 
+-int au1xxx_nr_irqs = 0;
++int au1xxx_nr_irqs = 2;
+ 
+ #ifdef CONFIG_PCI
+ 
+-#define INTA AU1000_PCI_INTA
+-#define INTB AU1000_PCI_INTB
+-#define INTC AU1000_PCI_INTC
+-#define INTD AU1000_PCI_INTD
++#define INTA AU1550_PCI_INTA
++#define INTB AU1550_PCI_INTB
++#define INTC AU1550_PCI_INTC
++#define INTD AU1550_PCI_INTD
+ #define INTX 0xFF /* not valid */
+ 
+ int __init
+@@ -72,12 +79,10 @@
+ 	 *	A       B       C       D
+ 	 */
+ 	{
+-		{INTA, INTB, INTX, INTX},   /* IDSEL 0 */
+-		{INTB, INTA, INTX, INTX},   /* IDSEL 1 */
+-		{INTC, INTD, INTX, INTX},   /* IDSEL 2 */
+-		{INTD, INTC, INTX, INTX},   /* IDSEL 3 */
++		{INTA, INTX, INTX, INTX},   /* IDSEL 0 */
++		{INTB, INTC, INTX, INTX},   /* IDSEL 1 */
+ 	};
+-	const long min_idsel = 0, max_idsel = 3, irqs_per_slot = 4;
++	const long min_idsel = 0, max_idsel = 1, irqs_per_slot = 4;
+ 	return PCI_IRQ_TABLE_LOOKUP;
+ };
+ #endif

@@ -1,0 +1,67 @@
+--- ebtables-v2.0.6/extensions/ebt_ip.c	2006/09/01 02:27:02	1.1
++++ ebtables-v2.0.6/extensions/ebt_ip.c	2006/09/01 02:27:30
+@@ -313,7 +313,7 @@
+ 			ipinfo->invflags |= EBT_IP_PROTO;
+ 		if (optind > argc)
+ 			print_error("Missing IP protocol argument");
+-		(unsigned char) i = strtoul(argv[optind - 1], &end, 10);
++		i = strtoul(argv[optind - 1], &end, 10);
+ 		if (*end != '\0') {
+ 			struct protoent *pe;
+ 
+--- ebtables-v2.0.6/extensions/ebt_vlan.c	2006/09/01 02:27:38	1.1
++++ ebtables-v2.0.6/extensions/ebt_vlan.c	2006/09/01 02:28:01
+@@ -141,7 +141,7 @@
+ 		check_option(flags, OPT_VLAN_ID);
+ 		CHECK_INV_FLAG(EBT_VLAN_ID);
+ 		CHECK_IF_MISSING_VALUE;
+-		(unsigned short) local.id =
++		local.id =
+ 		    strtoul(argv[optind - 1], &end, 10);
+ 		CHECK_RANGE(local.id > 4094 || *end != '\0');
+ 		vlaninfo->id = local.id;
+@@ -152,7 +152,7 @@
+ 		check_option(flags, OPT_VLAN_PRIO);
+ 		CHECK_INV_FLAG(EBT_VLAN_PRIO);
+ 		CHECK_IF_MISSING_VALUE;
+-		(unsigned char) local.prio =
++		local.prio =
+ 		    strtoul(argv[optind - 1], &end, 10);
+ 		CHECK_RANGE(local.prio >= 8 || *end != '\0');
+ 		vlaninfo->prio = local.prio;
+@@ -163,7 +163,7 @@
+ 		check_option(flags, OPT_VLAN_ENCAP);
+ 		CHECK_INV_FLAG(EBT_VLAN_ENCAP);
+ 		CHECK_IF_MISSING_VALUE;
+-		(unsigned short) local.encap =
++		local.encap =
+ 		    strtoul(argv[optind - 1], &end, 16);
+ 		if (*end != '\0') {
+ 			ethent = getethertypebyname(argv[optind - 1]);
+--- ebtables-v2.0.6/extensions/ebt_limit.c	2006/09/01 02:28:09	1.1
++++ ebtables-v2.0.6/extensions/ebt_limit.c	2006/09/01 02:30:21
+@@ -203,15 +203,15 @@
+ 
+ static struct ebt_u_match limit_match =
+ {
+-	.name		EBT_LIMIT_MATCH,
+-	.size		sizeof(struct ebt_limit_info),
+-	.help		print_help,
+-	.init		init,
+-	.parse		parse,
+-	.final_check	final_check,
+-	.print		print,
+-	.compare	compare,
+-	.extra_ops	opts,
++	.name		= EBT_LIMIT_MATCH,
++	.size		= sizeof(struct ebt_limit_info),
++	.help		= print_help,
++	.init		= init,
++	.parse		= parse,
++	.final_check	= final_check,
++	.print		= print,
++	.compare	= compare,
++	.extra_ops	= opts,
+ };
+ 
+ static void _init(void) __attribute((constructor));

@@ -75,7 +75,7 @@ do_configure() {
 do_compile() {
     export TOPDIR=${TOPDIR}
     mkdir -p programs/Xserver/hw/xqt
-    #cp -r ../xqt-driver/* programs/Xserver/hw/xqt
+    #cp -R ../xqt-driver/* programs/Xserver/hw/xqt
     (cd programs/Xserver/hw/xqt && ln -s ../../../../../xqt2/xfree86/xqt-driver/* .)
 	unset CC
 	make -C config/imake -f Makefile.ini CC="${BUILD_CC}" BOOTSTRAPCFLAGS="${BUILD_CFLAGS}" clean imake

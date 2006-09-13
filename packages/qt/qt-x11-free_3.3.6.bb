@@ -4,7 +4,7 @@ PRIORITY = "optional"
 LICENSE = "GPL QPL"
 HOMEPAGE = "http://www.trolltech.com"
 MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
-DEPENDS = "uicmoc3-native freetype libx11 xft libxext libxrender libxrandr libxcursor mysql"
+DEPENDS = "uicmoc3-native freetype virtual/libx11 xft libxext libxrender libxrandr libxcursor mysql"
 PROVIDES = "qt3x11"
 PR = "r0"
 

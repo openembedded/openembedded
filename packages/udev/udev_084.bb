@@ -11,13 +11,13 @@ SRC_URI = "http://kernel.org/pub/linux/utils/kernel/hotplug/udev-${PV}.tar.gz \
 	   file://mount.blacklist \
 	   file://udev_network_queue.sh"
 	   
-include udev.inc
+require udev.inc
 
 INITSCRIPT_PARAMS = "start 03 S ."
 
-PR = "r13"
+PR = "r14"
 
-FILES_${PN} += "${base_libdir}"
+FILES_${PN} += "${base_libdir}/udev/*"
 UDEV_EXTRAS = "extras/firmware/ extras/scsi_id/ extras/volume_id/ extras/run_directory/"
 EXTRA_OEMAKE += "libudevdir=/lib/udev"
 

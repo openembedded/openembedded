@@ -12,7 +12,7 @@ inherit autotools
 
 FILES_${PN} += "${datadir}/automake* ${datadir}/aclocal*"
 
-include automake.inc
+require automake.inc
 
 do_install () {
 	oe_runmake 'DESTDIR=${D}' install

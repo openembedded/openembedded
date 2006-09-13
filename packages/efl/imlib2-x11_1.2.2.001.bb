@@ -1,5 +1,5 @@
-include imlib2.inc
-DEPENDS += "libx11 libxext"
+require imlib2.inc
+DEPENDS += "virtual/libx11 libxext"
 PR = "r1"
 
 EXTRA_OECONF = "--disable-mmx \

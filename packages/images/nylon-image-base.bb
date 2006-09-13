@@ -1,3 +1,6 @@
+inherit image_ipk nylon-image
+LICENSE = MIT
+
 export IMAGE_BASENAME = "nylon-base"
  
 NYLON_BASE = "base-files base-passwd bash busybox \
@@ -7,8 +10,8 @@ NYLON_BASE = "base-files base-passwd bash busybox \
 	openssh sysvinit \
 	timezones tinylogin"
 
-DEPENDS = "virtual/kernel"
-RDEPENDS = "kernel modutils-depmod modutils-modinfo \
+DEPENDS += "virtual/kernel less nano"
+RDEPENDS = "kernel modutils-depmod modutils-modinfo less nano \
 	${NYLON_BASE} ${BOOTSTRAP_EXTRA_RDEPENDS}"
 
 export IPKG_INSTALL = "${RDEPENDS}" 
@@ -19,4 +22,3 @@ IMAGE_LINGUAS = ""
 ROOTFS_POSTPROCESS_COMMAND = "rm -f ${IMAGE_ROOTFS}/tmp/zImage*"
 
 inherit image_ipk nylon-image
-LICENSE = MIT

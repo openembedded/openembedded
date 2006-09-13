@@ -1,4 +1,4 @@
-include prboom_${PV}.bb
+require prboom_${PV}.bb
 
 PR = "r6"
 

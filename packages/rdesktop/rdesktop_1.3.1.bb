@@ -5,7 +5,7 @@
 DESCRIPTION = "RDesktop is a X11 based RDP client"
 HOMEPAGE = "http://www.rdesktop.org/"
 LICENSE = "GPL"
-DEPENDS = "libx11 openssl"
+DEPENDS = "virtual/libx11 openssl"
 RDEPENDS= "openssl"
 SECTION = "x11/network"
 

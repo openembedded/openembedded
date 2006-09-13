@@ -1,13 +1,13 @@
-PR = "r1"
+PR = "r3"
 DESCRIPTION = "An Embeddable SQL Database Engine"
 SECTION = "libs"
 PRIORITY = "optional"
 DEPENDS = "readline ncurses"
 LICENSE = "PD"
 
-PACKAGES =+ "sqlite-bin"
+PACKAGES += "sqlite-bin"
 
-FILES_sqlite-bin = "${bindir}"
+FILES_sqlite-bin = "${bindir}/*"
 
 SRC_URI = "http://www.hwaci.com/sw/sqlite/sqlite-${PV}.tar.gz \
            file://crosscompile.patch;patch=1"

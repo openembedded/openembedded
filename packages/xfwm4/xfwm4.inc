@@ -8,10 +8,15 @@ inherit xfce
 
 FILES_${PN} += "${datadir}/xfwm4/defaults ${datadir}/xfwm4/themes/default.keys/*"
 
-DEPENDS="startup-notification x11 xpm libxfce4util libxfcegui4 libxfce4mcs xfce-mcs-manager"
+DEPENDS = "startup-notification virtual/libx11 xpm libxfce4util libxfcegui4 libxfce4mcs xfce-mcs-manager"
+RDEPENDS = "xfwm4-theme-default"
 
 
 EXTRA_OECONF += " --enable-startup-notification"
+
+do_configure_append() {
+	sed -i s:/usr/include/xfce4::g mcs-plugin/Makefile
+}
 
 PACKAGES_DYNAMIC = "xfwm4-theme-*"
 

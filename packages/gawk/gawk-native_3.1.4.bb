@@ -1,12 +1,10 @@
 INHIBIT_AUTOTOOLS_DEPS = "1"
-include gawk_${PV}.bb
+require gawk_${PV}.bb
 
 inherit native
 
 DEPENDS = ""
-PATCH_DEPENDS = ""
-PATCHCLEANCMD = ""
-PATCHCMD = "num='%s'; name='%s'; file='%s'; patch -p "$num" -i "$file""
+PATCHTOOL = "patch"
 
 S = "${WORKDIR}/gawk-${PV}"
 

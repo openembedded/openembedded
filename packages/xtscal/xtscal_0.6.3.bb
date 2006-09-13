@@ -3,7 +3,7 @@ DESCRIPTION = "Touchscreen calibration utility"
 MAINTAINER = "Phil Blundell <pb@handhelds.org>"
 SECTION = "x11/base"
 
-DEPENDS = "libx11 libxft libxrandr xcalibrate"
+DEPENDS = "virtual/libx11 libxft libxrandr xcalibrate"
 
 PR = "r1"
 

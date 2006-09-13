@@ -1,2 +1,2 @@
-include ipkg.inc
-PR = "r2"
+require ipkg.inc
+PR = "r3"

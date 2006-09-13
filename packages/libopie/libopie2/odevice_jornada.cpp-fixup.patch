@@ -1,0 +1,57 @@
+--- libopie2/opiecore/device/odevice_jornada.cpp_orig	2006-08-06 14:34:15.000000000 +0000
++++ libopie2/opiecore/device/odevice_jornada.cpp	2006-08-06 14:34:53.000000000 +0000
+@@ -125,9 +125,12 @@
+     if ( model == "HP Jornada 56x" ) {
+         d->m_modelstr = "Jornada 56x";
+         d->m_model = Model_Jornada_56x;
+-    } else if ( model == "HP Jornada 720" ) {
+-        d->m_modelstr = "Jornada 720";
+-	d->m_model = Model_Jornada_720;
++    } else if ( model == "HP Jornada 7xx" ) {
++        d->m_modelstr = "Jornada 7xx";
++	d->m_model = Model_Jornada_7xx;
++    } else if ( model == "HP Jornada 6xx" ) {
++        d->m_modelstr = "Jornada 6xx";
++	d->m_model = Model_Jornada_6xx;
+     }
+ 
+     d->m_rotation = Rot0; //all Jornadas need this rotation
+@@ -162,7 +165,9 @@
+ {
+     if ( d->m_model == Model_Jornada_56x )
+         return 190;
+-    else if (d->m_model == Model_Jornada_720 )
++    else if (d->m_model == Model_Jornada_7xx )
++        return 255;
++    else if (d->m_model == Model_Jornada_6xx )
+         return 255;
+     else
+     	return 0;
+@@ -185,10 +190,11 @@
+     	    cmdline = QString::fromLatin1( "echo 4 > /sys/class/backlight/sa1100fb/power");
+         else
+     	    cmdline = QString::fromLatin1( "echo 0 > /sys/class/backlight/sa1100fb/power; echo %1 > /sys/class/backlight/sa1100fb/brightness" ).arg( bright );
+-    } else if ( d->m_model == Model_Jornada_720 ) {
++    } else if ( d->m_model == Model_Jornada_7xx ) {
+         cmdline = QString::fromLatin1( "echo %1 > /sys/class/backlight/e1356fb/brightness" ).arg( bright );
++    } else if ( d->m_model == Model_Jornada_6xx ) {
++        cmdline = QString::fromLatin1( "echo %1 > /sys/class/backlight/hp680-bl/brightness" ).arg( bright );
+     }
+-
+     // No Global::shellQuote as we gurantee it to be sane
+     res = ( ::system( QFile::encodeName(cmdline) ) == 0 );
+ 
+@@ -204,9 +210,11 @@
+ 
+     if ( d->m_model == Model_Jornada_56x ) {
+         cmdline = QString::fromLatin1( "echo %1 > /sys/class/lcd/sa1100fb/power; echo %2 > /sys/class/backlight/sa1100fb/power").arg( on ? "0" : "4" ).arg( on ? "0" : "4" );
+-    } else if ( d->m_model == Model_Jornada_720 ) {
++    } else if ( d->m_model == Model_Jornada_7xx ) {
+         cmdline = QString::fromLatin1( "echo %1 > /sys/class/lcd/e1356fb/power").arg( on ? "0" : "4" );
+-    }
++    } else if ( d->m_model == Model_Jornada_6xx ) {
++        cmdline = QString::fromLatin1( "echo %1 > /sys/class/lcd/hp680-bl/power").arg( on ? "0" : "4" );
++    }    
+ 
+     res = ( ::system( QFile::encodeName(cmdline) ) == 0 );
+ 

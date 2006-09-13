@@ -1,0 +1,22 @@
+--- /orig-configure.ac	2005-02-15 18:43:40.000000000 +0200
++++ /configure.ac	2006-08-19 13:05:52.000000000 +0300
+@@ -29,16 +29,9 @@
+ 	LDFLAGS="$LDFLAGS -L$with_libesmtp/lib"
+ 	AC_CHECK_HEADER(libesmtp.h, ,[AC_MSG_ERROR([libesmtp.h not found in $with_libesmtp])])
+ fi    
+-AC_MSG_CHECKING(for libESMTP)
+-if libesmtp-config --version > /dev/null 2>&1
+-then
+-	AC_MSG_RESULT(yes)
+-	CFLAGS="$CFLAGS `libesmtp-config --cflags`"
+-	LIBS="$LIBS `libesmtp-config --libs`"
+-else
+-	AC_MSG_RESULT(no)
+-	AC_MSG_ERROR(libESMTP library not found)
+-fi
++
++  CFLAGS="$CFLAGS"
++  LIBS="$LIBS -lesmtp -lssl -lcrypto -ldl"
+ 
+ AC_SUBST( sysconfdir )
+ 

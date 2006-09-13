@@ -1,0 +1,51 @@
+? mimedir/.deps
+? mimedir/.libs
+? mimedir/libmimedir.la
+? mimedir/mimedir-attachment.lo
+? mimedir/mimedir-attendee.lo
+? mimedir/mimedir-attribute.lo
+? mimedir/mimedir-datetime.lo
+? mimedir/mimedir-init.lo
+? mimedir/mimedir-marshal.lo
+? mimedir/mimedir-period.lo
+? mimedir/mimedir-profile.lo
+? mimedir/mimedir-recurrence.lo
+? mimedir/mimedir-utils.lo
+? mimedir/mimedir-valarm.lo
+? mimedir/mimedir-vcal.lo
+? mimedir/mimedir-vcard-address.lo
+? mimedir/mimedir-vcard-email.lo
+? mimedir/mimedir-vcard-phone.lo
+? mimedir/mimedir-vcard.lo
+? mimedir/mimedir-vcomponent.lo
+? mimedir/mimedir-vevent.lo
+? mimedir/mimedir-vfreebusy.lo
+? mimedir/mimedir-vjournal.lo
+? mimedir/mimedir-vtimezone.lo
+? mimedir/mimedir-vtodo.lo
+Index: mimedir/mimedir-vcomponent.c
+===================================================================
+RCS file: /cvs/gnome/libmimedir/mimedir/mimedir-vcomponent.c,v
+retrieving revision 1.28
+diff -B -b -u -r1.28 mimedir-vcomponent.c
+--- mimedir/mimedir-vcomponent.c	26 Nov 2005 15:40:20 -0000	1.28
++++ mimedir/mimedir-vcomponent.c	7 Aug 2006 12:20:01 -0000
+@@ -456,7 +456,7 @@
+ 				   _("Sequence"),
+ 				   _("Sequence number"),
+ 				   0, G_MAXINT, 0,
+-				   G_PARAM_READABLE);
++				   G_PARAM_READWRITE);
+ 	g_object_class_install_property (gobject_class, PROP_SEQ, pspec);
+ }
+ 
+@@ -684,6 +684,9 @@
+ 		g_object_ref (G_OBJECT (priv->last_modified));
+ 		break;
+ 	}
++	case PROP_SEQ:
++		priv->sequence = g_value_get_uint (value);
++	break;
+ 
+ 	default:
+ 		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);

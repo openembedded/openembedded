@@ -3,7 +3,7 @@ FIXEDSRCDATE = "${@bb.data.getVar('FILE', d, 1).split('_')[-1].split('.')[0]}"
 LICENSE = "BSD-X"
 SECTION = "x11/libs"
 PRIORITY = "optional"
-DEPENDS = "libx11 xcalibrateext libxext"
+DEPENDS = "virtual/libx11 xcalibrateext libxext"
 DESCRIPTION = "XCalibrate client-side library"
 
 SRC_URI = "${FREEDESKTOP_CVS}/xlibs;module=XCalibrate \

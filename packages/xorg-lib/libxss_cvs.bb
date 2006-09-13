@@ -4,7 +4,7 @@ PV = "0.0+cvs${SRCDATE}"
 PR = "r2"
 
 SECTION = "libs"
-DEPENDS = "libx11 libxext"
+DEPENDS = "virtual/libx11 libxext"
 DESCRIPTION = "X screen saver extension library."
 
 SRC_URI = "${FREEDESKTOP_CVS}/xlibs;module=Xss"

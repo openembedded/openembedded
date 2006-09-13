@@ -8,6 +8,10 @@ CONFLICTS = "db3-native"
 
 inherit native
 
-include db_${PV}.bb
+require db_${PV}.bb
+
+do_package() {
+:
+}
 
 PACKAGES = ""

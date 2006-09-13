@@ -1,6 +1,6 @@
 LICENSE =	"GPL"
-DESCIPTION =	"Buttonbox for gpe"
-MAINTAINER =	"Koen Kooi <koen@handhelds.org>"
+DESCRIPTION =	"Buttonbox for gpe"
+MAINTAINER =	"Koen Kooi <koen@linuxtogo.org>"
 
 DEPENDS =	"libgpewidget libgpelaunch"
 

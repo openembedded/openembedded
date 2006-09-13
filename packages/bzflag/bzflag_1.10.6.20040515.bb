@@ -1,4 +1,4 @@
-DEPENDS = "adns ncurses libx11"
+DEPENDS = "adns ncurses virtual/libx11"
 SECTION = "x11/games"
 LICENSE = "LGPL"
 SRC_URI = "${SOURCEFORGE_MIRROR}/bzflag/bzflag-${PV}.tar.bz2"

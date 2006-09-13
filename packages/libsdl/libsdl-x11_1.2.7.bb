@@ -2,12 +2,12 @@ DESCRIPTION = "Simple DirectMedia Layer - X11 Edition"
 SECTION = "libs"
 PRIORITY = "optional"
 MAINTAINER = "Phil Blundell <pb@handhelds.org>"
-DEPENDS = "libx11 libxext"
+DEPENDS = "virtual/libx11 libxext"
 PROVIDES = "virtual/libsdl"
 LICENSE = "LGPL"
 
 # NOTE: make sure to keep PR in sync with libsdl-qpe
-PR = "r8"
+PR = "r9"
 
 SRC_URI = "http://www.libsdl.org/release/SDL-${PV}.tar.gz \
 	   file://extra-keys.patch;patch=1 \
@@ -53,4 +53,6 @@ do_stage() {
 	do
 		install -m 0644 $f ${STAGING_INCDIR}/SDL/
 	done
+
+	install -m 0644 *.m4 ${STAGING_DATADIR}/aclocal/
 }

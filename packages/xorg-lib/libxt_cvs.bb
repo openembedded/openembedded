@@ -1,7 +1,7 @@
 PV = "0.0+cvs${SRCDATE}"
 SECTION = "x11/libs"
 PRIORITY = "optional"
-DEPENDS = "libx11 libsm"
+DEPENDS = "virtual/libx11 libsm"
 PROVIDES = "xt"
 DESCRIPTION = "X Toolkit Intrinsics"
 LICENSE =  "X-MIT"

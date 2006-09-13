@@ -3,11 +3,13 @@ LICENSE = "BSD"
 DESCRIPTION = "A library for configuring and customizing font access."
 DEPENDS = "expat freetype freetype-native zlib"
 
-SRC_URI = "http://fontconfig.org/release/fontconfig-${PV}.tar.gz"
+SRC_URI = "http://fontconfig.org/release/fontconfig-${PV}.tar.gz \
+	   file://one-j-too-many.patch;patch=1"
 
-PR = "r0"
+PR = "r2"
 
-PACKAGES =+ "fontconfig-utils "
+PACKAGES =+ "fontconfig-utils-dbg fontconfig-utils "
+FILES_fontconfig-utils-dbg = "${bindir}/*.dbg"
 FILES_fontconfig-utils = "${bindir}/*"
 
 DEFAULT_PREFERENCE = "-1"

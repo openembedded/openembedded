@@ -2,7 +2,7 @@
 # Copyright (C) 2004-2006, Advanced Micro Devices, Inc.  All Rights Reserved
 # Released under the MIT license (see packages/COPYING)
 
-DEPENDS="libx11 libxaw rpm2cpio-native"
+DEPENDS = "virtual/libx11 libxaw rpm2cpio-native"
 
 MAINTAINER = "Raymond Danks <info-linux@geode.amd.com>"
 HOMEPAGE="www.citrix.com/download/"

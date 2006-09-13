@@ -13,7 +13,7 @@ S = "${WORKDIR}/lirc-${PV}"
 
 inherit autotools module
 
-include lirc-config.inc
+require lirc-config.inc
 
 MAKE_TARGETS = "KERNEL_PATH=${STAGING_KERNEL_DIR} MAKE='make -e' -C drivers"
 

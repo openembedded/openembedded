@@ -1,7 +1,7 @@
 PV = "0.0+cvs${SRCDATE}"
 LICENSE= "BSD-X"
 SECTION = "x11/libs"
-DEPENDS = "libx11 compositeext xextensions libxfixes"
+DEPENDS = "virtual/libx11 compositeext xextensions libxfixes"
 PROVIDES = "xcomposite"
 DESCRIPTION = "X Composite extension library."
 

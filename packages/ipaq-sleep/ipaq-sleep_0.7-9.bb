@@ -4,7 +4,7 @@ PR = "r3"
 
 inherit gpe pkgconfig
 
-DEPENDS = "apmd virtual/xserver xextensions libx11 libxau xscrnsaverh libxss"
+DEPENDS = "apmd virtual/xserver xextensions virtual/libx11 libxau xscrnsaverh libxss"
 SECTION = "x11/base"
 RDEPENDS = "apm"
 

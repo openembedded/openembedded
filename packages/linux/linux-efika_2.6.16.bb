@@ -4,6 +4,8 @@ MAINTAINER = "Koen Kooi <koen@dominion.kabel.utwente.nl>"
 LICENSE = "GPL"
 PR = "r0"
 
+COMPATIBLE_MACHINE = "efika"
+
 SRC_URI = "ftp://ftp.kernel.org/pub/linux/kernel/v2.6/linux-2.6.16.tar.bz2 \
            file://defconfig \
 		   "

@@ -1,0 +1,80 @@
+diff -Nur emacs~/Makefile.in emacs/Makefile.in
+--- emacs~/Makefile.in	2006-07-25 09:45:48.000000000 -0700
++++ emacs/Makefile.in	2006-07-26 07:33:43.000000000 -0700
+@@ -782,7 +782,7 @@
+ bootstrap-build: FRC
+ 	(cd lisp; $(MAKE) $(MFLAGS) bootstrap-prepare)
+ 	(cd src; $(MAKE) $(MFLAGS) bootstrap)
+-	(cd lisp; $(MAKE) $(MFLAGS) bootstrap EMACS=../src/bootstrap-emacs${EXEEXT})
++	(cd lisp; $(MAKE) $(MFLAGS) bootstrap EMACS="${QEMU} ../src/bootstrap-emacs${EXEEXT}")
+ 	(cd src; $(MAKE) $(MFLAGS) mostlyclean)
+ 	$(MAKE) $(MFLAGS) all
+ 	(cd lisp; $(MAKE) $(MFLAGS) bootstrap-after)
+diff -Nur emacs~/leim/Makefile.in emacs/leim/Makefile.in
+--- emacs~/leim/Makefile.in	2006-07-25 09:45:53.000000000 -0700
++++ emacs/leim/Makefile.in	2006-07-26 07:30:53.000000000 -0700
+@@ -48,7 +48,7 @@
+ 
+ # How to run Emacs.
+ RUN-EMACS = EMACSLOADPATH=$(buildlisppath) LC_ALL=C\
+-	${BUILT-EMACS} -batch --no-init-file --no-site-file --multibyte
++	${QEMU} ${BUILT-EMACS} -batch --no-init-file --no-site-file --multibyte
+ 
+ # Subdirectories to be made if ${srcdir} is different from the current
+ # directory.
+diff -Nur emacs~/lib-src/Makefile.in emacs/lib-src/Makefile.in
+--- emacs~/lib-src/Makefile.in	2006-07-25 09:45:54.000000000 -0700
++++ emacs/lib-src/Makefile.in	2006-07-26 07:36:29.000000000 -0700
+@@ -380,7 +380,7 @@
+    clobbered too.  */
+ test-distrib${EXEEXT}: ${srcdir}/test-distrib.c
+ 	$(CC) ${ALL_CFLAGS} -o test-distrib ${srcdir}/test-distrib.c
+-	./test-distrib ${srcdir}/testfile
++	${QEMU} ./test-distrib ${srcdir}/testfile
+ 
+ /* We need the following in order to create a <getopt.h> when the system
+    doesn't have one that works with the given compiler.  */
+diff -Nur emacs~/lisp/Makefile.in emacs/lisp/Makefile.in
+--- emacs~/lisp/Makefile.in	2006-07-25 09:45:55.000000000 -0700
++++ emacs/lisp/Makefile.in	2006-07-26 14:09:59.000000000 -0700
+@@ -28,7 +28,7 @@
+ # You can specify a different executable on the make command line,
+ # e.g. "make EMACS=../src/emacs ...".
+ 
+-EMACS = ../src/emacs
++EMACS = ${QEMU} ../src/emacs
+ 
+ # Command line flags for Emacs.  This must include --multibyte,
+ # otherwise some files will not compile.
+diff -Nur emacs~/src/Makefile.in emacs/src/Makefile.in
+--- emacs~/src/Makefile.in	2006-07-25 09:46:16.000000000 -0700
++++ emacs/src/Makefile.in	2006-07-26 07:37:44.000000000 -0700
+@@ -491,7 +491,7 @@
+    this with the shell's `for' construct.
+    Note that some people don't have '.'  in their paths, so we must
+    use ./prefix-args.  */
+-#define YMF_PASS_LDFLAGS(flags) `./prefix-args -Xlinker flags`
++#define YMF_PASS_LDFLAGS(flags) `${QEMU} ./prefix-args -Xlinker flags`
+ #else
+ #define YMF_PASS_LDFLAGS(flags) flags
+ #endif
+@@ -943,7 +943,7 @@
+ #define OBJECTS_MACHINE
+ #endif
+ 
+-RUN_TEMACS = ./temacs
++RUN_TEMACS = ${QEMU} ./temacs
+ 
+ all: emacs${EXEEXT} OTHER_FILES
+ 
+@@ -970,8 +970,8 @@
+    Likewise for ${SOME_MACHINE_LISP}.  */
+ ${etc}DOC: ${libsrc}make-docfile${EXEEXT} ${obj} ${shortlisp} ${SOME_MACHINE_LISP}
+ 	-rm -f ${etc}DOC
+-	${libsrc}make-docfile -d ${srcdir} ${SOME_MACHINE_OBJECTS} ${obj} > ${etc}DOC
+-	${libsrc}make-docfile -a ${etc}DOC -d ${srcdir} ${SOME_MACHINE_LISP} ${shortlisp}
++	${QEMU} ${libsrc}make-docfile -d ${srcdir} ${SOME_MACHINE_OBJECTS} ${obj} > ${etc}DOC
++	${QEMU} ${libsrc}make-docfile -a ${etc}DOC -d ${srcdir} ${SOME_MACHINE_LISP} ${shortlisp}
+ 
+ ${libsrc}make-docfile${EXEEXT}:
+ 	cd ${libsrc}; ${MAKE} ${MFLAGS} make-docfile${EXEEXT}

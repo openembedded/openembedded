@@ -1,0 +1,78 @@
+--- trunk/dbus-daemon/vfs-daemon.c.orig	2006-08-09 10:43:26.000000000 +0100
++++ trunk/dbus-daemon/vfs-daemon.c	2006-08-09 10:45:59.000000000 +0100
+@@ -91,7 +91,7 @@
+ 		g_warning ("Failed to acquire vfs-daemon service: %s", error.message);
+ 		dbus_error_free (&error);
+ 
+-		dbus_connection_disconnect (conn);
++		dbus_connection_close (conn);
+ 		dbus_connection_unref (conn);
+ 		conn = NULL;
+ 
+@@ -101,7 +101,7 @@
+ 	if (ret == DBUS_REQUEST_NAME_REPLY_EXISTS) {
+ 		g_printerr ("VFS daemon already running, exiting.\n");
+ 
+-		dbus_connection_disconnect (conn);
++		dbus_connection_close (conn);
+ 		dbus_connection_unref (conn);
+ 		conn = NULL;
+ 
+@@ -111,7 +111,7 @@
+ 	if (ret != DBUS_REQUEST_NAME_REPLY_PRIMARY_OWNER) {
+ 		g_printerr ("Not primary owner of the service, exiting.\n");
+ 
+-		dbus_connection_disconnect (conn);
++		dbus_connection_close (conn);
+ 		dbus_connection_unref (conn);
+ 		conn = NULL;
+ 
+@@ -124,7 +124,7 @@
+ 						   NULL)) {
+ 		g_printerr ("Failed to register object with D-BUS.\n");
+ 
+-		dbus_connection_disconnect (conn);
++		dbus_connection_close (conn);
+ 		dbus_connection_unref (conn);
+ 		conn = NULL;
+ 
+@@ -152,7 +152,7 @@
+ 		return;
+ 	}
+ 
+-	dbus_connection_disconnect (conn);
++	dbus_connection_close (conn);
+ 	dbus_connection_unref (conn);
+ }
+ 
+--- trunk/dbus-daemon/daemon-connection.c.orig	2006-08-09 10:43:32.000000000 +0100
++++ trunk/dbus-daemon/daemon-connection.c	2006-08-09 10:46:26.000000000 +0100
+@@ -321,7 +321,7 @@
+ 	d(g_print ("Last unref\n"));
+ 
+ 	if (dbus_connection_get_is_connected (conn->conn)) {
+-		dbus_connection_disconnect (conn->conn);
++		dbus_connection_close (conn->conn);
+ 	}
+ 	dbus_connection_unref (conn->conn);
+ 
+--- trunk/dbus-daemon/dbus-method.c.orig	2006-08-09 10:43:38.000000000 +0100
++++ trunk/dbus-daemon/dbus-method.c	2006-08-09 10:46:57.000000000 +0100
+@@ -220,7 +220,7 @@
+ 	if (!dbus_connection_add_filter (dbus_conn, message_handler,
+ 					 NULL, NULL)) {
+ 		g_warning ("Failed to add filter to the connection.");
+-		dbus_connection_disconnect (dbus_conn);
++		dbus_connection_close (dbus_conn);
+ 		dbus_connection_unref (dbus_conn);
+ 
+ 		dbus_conn = NULL;
+@@ -1666,7 +1666,7 @@
+ vfs_module_shutdown (GnomeVFSMethod* method)
+ {
+ 	if (dbus_conn) {
+-		dbus_connection_disconnect (dbus_conn);
++		dbus_connection_close (dbus_conn);
+ 		dbus_connection_unref (dbus_conn);
+ 
+ 		dbus_conn = NULL;

@@ -22,8 +22,11 @@ SRC_URI += "\
 	file://400-mips-ELF_MAXPAGESIZE-4K.patch;patch=1 \
 "
 
+# Zecke's OSX fixes
+SRC_URI += " file://warning-free.patch;patch=1 "
+
 
 S = "${WORKDIR}/binutils-${PV}"
 B = "${S}/build.${HOST_SYS}.${TARGET_SYS}"
 
-include binutils.inc
+require binutils.inc

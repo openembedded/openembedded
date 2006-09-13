@@ -3,8 +3,7 @@ HOMEPAGE = "http://www.gnu.org/software/libc/libc.html"
 LICENSE = "LGPL"
 SECTION = "libs"
 PRIORITY = "required"
-DEFAULT_PREFERENCE = "-1"
-PR = "r5"
+PR = "r10"
 
 # the -isystem in bitbake.conf screws up glibc do_stage
 BUILD_CPPFLAGS = "-I${STAGING_DIR}/${BUILD_SYS}/include"
@@ -16,7 +15,7 @@ FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/glibc-2.4"
 GLIBC_ADDONS ?= "ports,nptl,libidn"
 GLIBC_EXTRA_OECONF ?= ""
 
-GLIBC_BROKEN_LOCALES = "sid_ET tr_TR mn_MN"
+GLIBC_BROKEN_LOCALES = "sid_ET tr_TR mn_MN gez_ET gez_ER bn_BD te_IN"
 
 #
 # For now, we will skip building of a gcc package if it is a uclibc one
@@ -58,6 +57,7 @@ SRC_URI = "ftp://ftp.gnu.org/pub/gnu/glibc/glibc-2.4.tar.bz2 \
            file://nptl-crosscompile.patch;patch=1 \
 	   file://glibc-2.4-compile.patch;patch=1 \
 	   file://fixup-aeabi-syscalls.patch;patch=1 \
+	   file://zecke-sane-readelf.patch;patch=1 \
 	   file://generic-bits_select.h \
 	   file://generic-bits_types.h \
 	   file://generic-bits_typesizes.h \
@@ -121,6 +121,7 @@ do_munge() {
 }
 
 addtask munge before do_patch after do_unpack
+
 
 do_configure () {
 # override this function to avoid the autoconf/automake/aclocal/autoheader
@@ -199,4 +200,4 @@ do_stage() {
 	echo 'GROUP ( libc.so.6 libc_nonshared.a )' > ${CROSS_DIR}/${TARGET_SYS}/lib/libc.so
 }
 
-include glibc-package.bbclass
+require glibc-package.bbclass

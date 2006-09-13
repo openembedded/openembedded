@@ -4,7 +4,7 @@ inherit gpe
 PR          = "r0"
 LICENSE     = "GPL"
 DESCRIPTION = "GPE file manager"
-DEPENDS     = "libgpewidget gnome-vfs dbus"
+DEPENDS     = "libgpewidget gnome-vfs dbus-glib"
 SECTION     = "gpe"
 RDEPENDS    = "gpe-icons"
 RRECOMMENDS = "gnome-vfs-plugin-file"

@@ -1,9 +1,9 @@
-include xorg-lib-common.inc
+require xorg-lib-common.inc
 
 DESCRIPTION = "X Toolkit Intrinsics"
 PRIORITY = "optional"
 
-DEPENDS += " libsm libx11 xproto kbproto"
+DEPENDS += " libsm virtual/libx11 xproto kbproto"
 PROVIDES = "xt"
 
 XORG_PN = "libXt"

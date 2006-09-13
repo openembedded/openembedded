@@ -7,7 +7,7 @@ MAINTAINER = "Phil Blundell <pb@handhelds.org>"
 
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/glibc-cvs-2.3.5"
 SRCDATE = "20050627"
-PR = "r7"
+PR = "r12"
 
 GLIBC_ADDONS ?= "ports,linuxthreads"
 GLIBC_EXTRA_OECONF ?= ""
@@ -54,6 +54,9 @@ SRC_URI = "http://familiar.handhelds.org/source/v0.8.3/stash_libc_sources.redhat
 	   file://ldsocache-varrun.patch;patch=1 \
 	   file://5090_all_stubs-rule-fix.patch;patch=1 \
 	   file://raise.patch;patch=1 \
+       file://zecke-sane-readelf.patch;patch=1 \
+	   file://glibc-2.3.5-fix-weak-alias-arm.patch;patch=1 \
+	   file://glibc-2.3.5-fix-weak-alias-arm-2.patch;patch=1 \
            file://etc/ld.so.conf \
 	   file://generate-supported.mk \
 	   file://fix_mips_rlimit_rtprio.patch;patch=1;pnum=1"
@@ -185,4 +188,4 @@ do_stage() {
 	echo 'GROUP ( libc.so.6 libc_nonshared.a )' > ${CROSS_DIR}/${TARGET_SYS}/lib/libc.so
 }
 
-include glibc-package.bbclass
+require glibc-package.bbclass

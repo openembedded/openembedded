@@ -9,7 +9,7 @@ DEFAULT_PREFERENCE_i586 = "0"
 DEFAULT_PREFERENCE_sh3 = "-99"
 
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/glibc-cvs"
-PR = "r0"
+PR = "r5"
 
 GLIBC_ADDONS ?= "linuxthreads"
 GLIBC_EXTRA_OECONF ?= ""
@@ -136,4 +136,4 @@ do_stage() {
 	echo 'GROUP ( libc.so.6 libc_nonshared.a )' > ${CROSS_DIR}/${TARGET_SYS}/lib/libc.so
 }
 
-include glibc-package.bbclass
+require glibc-package.bbclass

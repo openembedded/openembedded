@@ -1,1 +1,1 @@
-include upslug2.inc
+require upslug2.inc

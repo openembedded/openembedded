@@ -2,7 +2,7 @@ DESCRIPTION = "Alsa sound library"
 HOMEPAGE = "http://www.alsa-project.org"
 SECTION = "libs/multimedia"
 LICENSE = "GPL"
-PR = "r0"
+PR = "r1"
 
 # configure.in sets -D__arm__ on the command line for any arm system
 # (not just those with the ARM instruction set), this should be removed,
@@ -25,7 +25,9 @@ do_stage() {
 	install -m 0644 utils/alsa.m4 ${STAGING_DATADIR}/aclocal/
 }
 
-PACKAGES = "libasound alsa-server alsa-conf alsa-doc alsa-dev"
+PACKAGES =+ "alsa-server libasound alsa-conf alsa-doc alsa-dev"
+PACKAGES_DYNAMIC = "libasound*"
+FILES_${PN}-dbg += "${libdir}/alsa-lib/*/.debu*"
 FILES_libasound = "${libdir}/libasound.so*"
 FILES_alsa-server = "${bindir}"
 FILES_alsa-conf = "${datadir}"

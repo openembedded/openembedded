@@ -1,5 +1,5 @@
 SECTION = "x11/base"
-include libx11_cvs.bb
+require libx11_cvs.bb
 
 EXTRA_OECONF = "--disable-xcms --disable-xlocale --disable-xkb"
 

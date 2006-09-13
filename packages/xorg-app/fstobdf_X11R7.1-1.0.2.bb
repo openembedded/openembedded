@@ -1,6 +1,6 @@
-include xorg-app-common.inc
+require xorg-app-common.inc
 
 #DESCRIPTION = ""
 
-DEPENDS += " libx11 libfs"
+DEPENDS += " virtual/libx11 libfs"
 

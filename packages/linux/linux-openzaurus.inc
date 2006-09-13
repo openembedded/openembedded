@@ -52,6 +52,7 @@ ENABLE_ELPP = ${@bb.data.getVar("OZ_KERNEL_ENABLE_ELPP",d,1) or "no"}
 ###############################################################
 # module configs specific to this kernel
 #
+module_autoload_ohci-hcd_tosa = "ohci-hcd"
 module_autoload_pxaficp_ir = "pxaficp_ir"
 module_autoload_snd-pcm-oss = "snd-pcm-oss"
 module_autoload_snd-soc-corgi_c7x0 = "snd-soc-corgi"
@@ -198,3 +199,7 @@ do_deploy() {
 do_deploy[dirs] = "${S}"
 
 addtask deploy before do_package after do_install
+
+# wlan-ng stuff need compiled kernel sources
+do_rm_work() {
+}

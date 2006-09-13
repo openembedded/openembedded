@@ -3,7 +3,7 @@ HOMEPAGE = "http://www.alsa-project.org"
 SECTION = "console/utils"
 LICENSE = "GPL"
 DEPENDS = "alsa-lib ncurses"
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "ftp://ftp.alsa-project.org/pub/utils/alsa-utils-${PV}.tar.bz2"
 
@@ -40,7 +40,7 @@ FILES_alsa-utils-alsactl     = "${sbindir}/alsactl"
 DESCRIPTION_alsa-utils-aplay        = "play (and record) sound files via ALSA"
 DESCRIPTION_alsa-utils-amixer       = "command-line based control for ALSA mixer and settings"
 DESCRIPTION_alsa-utils-alsamixer    = "ncurses based control for ALSA mixer and settings"
-#DESCRIPTION_alsa-utils-speaker-test= "??"
+DESCRIPTION_alsa-utils-speaker-test = "speaker test tone generator for ALSA"
 DESCRIPTION_alsa-utils-midi         = "miscalleanous MIDI utilities for ALSA"
 DESCRIPTION_alsa-utils-aconnect     = "ALSA sequencer connection manager"
 DESCRIPTION_alsa-utils-aseqnet      = "network client/server on ALSA sequencer"
@@ -49,5 +49,7 @@ DESCRIPTION_alsa-utils-alsaconf     = "a bash script that creates ALSA configura
 
 RDEPENDS_alsa-utils-aplay  += "alsa-conf"
 RDEPENDS_alsa-utils-amixer += "alsa-conf"
+RDEPENDS_alsa-utils-alsamixer += "alsa-conf"
+RDEPENDS_alsa-utils-speaker-test += "alsa-conf"
 
 ALLOW_EMPTY_alsa-utils = "1"

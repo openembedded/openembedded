@@ -179,7 +179,7 @@ PREFERRED_VERSION_ixp-osal ?= "2.1"
 PREFERRED_VERSION_ixp400-eth ?= "1.5"
 
 # Select the smallest provider of x11 libraries
-PREFERRED_PROVIDER_libx11 ?= "diet-x11"
+PREFERRED_PROVIDER_virtual/libx11 ?= "diet-x11"
 SRCDATE_diet-x11 ?= "20060106"
 
 # Latest wpa-supplicant which supports madwifi-ng

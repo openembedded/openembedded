@@ -1,8 +1,8 @@
-include xorg-lib-common.inc
+require xorg-lib-common.inc
 
 #DESCRIPTION = ""
 
-DEPENDS += " libx11 libxext xextproto windowswmproto"
+DEPENDS += " virtual/libx11 libxext xextproto windowswmproto"
 
 XORG_PN = "libWindowsWM"
 

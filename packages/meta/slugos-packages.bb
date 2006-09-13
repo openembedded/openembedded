@@ -6,20 +6,24 @@ DESCRIPTION = "Packages that are compatible with the SlugOS firmware"
 MAINTAINER = "NSLU2 Linux <nslu2-linux@yahoogroups.com>"
 HOMEPAGE = "http://www.nslu2-linux.org"
 LICENSE = "MIT"
-PR = "r6"
+PR = "r14"
 CONFLICTS = "db3"
 PROVIDES += "${SLUGOS_IMAGENAME}-packages"
 
 EXCLUDE_FROM_WORLD = "1"
 INHIBIT_DEFAULT_DEPS = "1"
 ALLOW_EMPTY = 1
-PACKAGES = "${PN}"
 
-# The list of packages to build for the ucslugc DISTRO.
+# The list of packages to build for the slugos DISTRO.
 # KEEP IN ALPHABETICAL ORDER
+# Do *not* simply comment out a line. That will break. Instead
+# remove the package and place it in the corresponding "broken" list
+
 SLUGOS_PACKAGES = "\
 	alsa-lib \
-	apr \
+	alsa-utils \
+	asterisk \
+	asterisk-sounds \
 	atftp \
 	audiofile \
 	aumix \
@@ -32,7 +36,6 @@ SLUGOS_PACKAGES = "\
 	bison \
 	bluez-libs \
 	bluez-utils-nodbus \
-	boost \
 	bridge-utils \
 	bwmon \
 	bzip2 \
@@ -61,6 +64,7 @@ SLUGOS_PACKAGES = "\
 	findutils \
 	flac \
 	flex \
+	flite \
 	ftpd-topfield \
 	gawk \
 	gcc \
@@ -73,10 +77,10 @@ SLUGOS_PACKAGES = "\
 	gtk-doc \
 	gzip \
 	hdparm \
-	icecast \
 	ifupdown \
 	ipkg-utils \
 	iptables \
+	ircp \
 	joe \
 	jpeg \
 	lcdproc \
@@ -92,19 +96,23 @@ SLUGOS_PACKAGES = "\
 	libol \
 	libpng \
 	libtool \
+	libupnp \
 	libusb \
 	libvorbis \
 	libxml2 \
 	lirc \
+	litestream \
 	lrzsz \
 	lsof \
 	lvm2 \
 	m4 \
+	madplay \
 	madwifi-ng \
 	mailx \
 	make \
 	masqmail \
 	mdadm \
+	memtester \
 	mgetty \
 	miau \ 
 	microcom \
@@ -130,7 +138,7 @@ SLUGOS_PACKAGES = "\
 	openvpn \
 	patch \
 	pciutils \
-	pcre \
+	libpcre \
 	perl \
 	pkgconfig \
 	ppp \
@@ -151,7 +159,6 @@ SLUGOS_PACKAGES = "\
 	ssmtp \
 	strace \
 	streamripper \
-	sudo \
 	sysfsutils \
 	syslog-ng \
 	tar \
@@ -176,11 +183,11 @@ SLUGOS_PACKAGES = "\
 # Packages currently broken on all platforms
 SLUGOS_BROKEN_PACKAGES = "\
 	irssi \
-	memtester \
 	obexftp \
 	qc-usb-messenger \
 	unionfs-modules \
 	unionfs-utils \
+	icecast \
 	"
 
 # These packages will never build because uclibc lacks (and always will lack)
@@ -197,11 +204,12 @@ UCLIBC_UNSUPPORTABLE_PACKAGES = "\
 
 # These packages work with glibc, but break on uclibc.
 UCLIBC_BROKEN_PACKAGES = "\
-	alsa-utils \
-	asterisk \
-	asterisk-sounds \
+	apr \
 	bogofilter \
-	ircp \
+	boost \
+	linphone \
+	sudo \
+	ushare \
 	"
 
 # Packages which build only with glibc (some of these use internal

@@ -1,5 +1,7 @@
-include python-scons_${PV}.bb
+require python-scons_${PV}.bb
 inherit native
+DEPENDS = "python-native"
+RDEPENDS = ""
 
 do_stage() {
         BUILD_SYS=${BUILD_SYS} HOST_SYS=${HOST_SYS} \

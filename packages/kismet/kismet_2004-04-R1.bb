@@ -13,6 +13,7 @@ SRC_URI = "http://www.kismetwireless.net/code/kismet-2004-04-R1.tar.gz \
 	file://glibc3.3.2-getopt-throw.diff;patch=1;pnum=0"
 	
 SRC_URI_append_mtx-1 = " file://kismet.conf"
+SRC_URI_append_mtx-2 = " file://kismet.conf"
 
 EXTRA_OECONF = "--with-pcap=linux --disable-setuid"
 

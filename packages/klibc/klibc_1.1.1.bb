@@ -1,1 +1,1 @@
-include klibc.inc
+require klibc.inc

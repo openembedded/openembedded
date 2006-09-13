@@ -3,14 +3,14 @@
 # Increment PR_CONFIG for changes to the ixp4xx-kernel specific
 # defconfig (do *NOT* increment anything in here for changes
 # to other kernel configs!)
-PR_CONFIG = "4"
+PR_CONFIG = "5"
 #
 # Increment the number below (i.e. the digits after PR) when
 # making changes within this file or for changes to the patches
 # applied to the kernel.
 PR = "r7.${PR_CONFIG}"
 
-include ixp4xx-kernel.inc
+require ixp4xx-kernel.inc
 
 SRC_URI += "file://defconfig"
 

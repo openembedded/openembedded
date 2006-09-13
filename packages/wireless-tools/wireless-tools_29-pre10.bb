@@ -4,6 +4,7 @@ SECTION = "base"
 PRIORITY = "optional"
 MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>, Marcin Juszkiewicz <openembedded@hrw.one.pl>"
 LICENSE = "GPL"
+PR = "r1"
 
 SRC_URI = "http://www.hpl.hp.com/personal/Jean_Tourrilhes/Linux/wireless_tools.29.pre10.tar.gz \
            file://man.patch;patch=1 \
@@ -34,7 +35,7 @@ do_install() {
 	install ${WORKDIR}/wireless-tools.if-pre-up ${D}${sysconfdir}/network/if-pre-up.d/wireless-tools
 }
 
-PACKAGES = "libiw libiw-dev libiw-doc ${PN} ${PN}-doc"
+PACKAGES = "libiw libiw-dev libiw-doc ${PN} ${PN}-doc ${PN}-dbg"
 FILES_libiw = "${libdir}/*.so.*"
 FILES_libiw-dev = "${libdir}/*.a ${libdir}/*.so ${includedir}"
 FILES_libiw-doc = "${mandir}/man7"

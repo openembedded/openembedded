@@ -214,7 +214,7 @@ fi
 if [ -n "$D" ]; then
 	${HOST_PREFIX}depmod-${KERNEL_MAJOR_VERSION} -A -b $D -F ${STAGING_KERNEL_DIR}/System.map-${KERNEL_RELEASE} ${KERNEL_VERSION}
 else
-	depmod -A
+	depmod -a
 fi
 }
 
@@ -222,7 +222,7 @@ pkg_postinst_modules () {
 if [ -n "$D" ]; then
 	${HOST_PREFIX}depmod-${KERNEL_MAJOR_VERSION} -A -b $D -F ${STAGING_KERNEL_DIR}/System.map-${KERNEL_RELEASE} ${KERNEL_VERSION}
 else
-	depmod -A
+	depmod -a
 	update-modules || true
 fi
 }

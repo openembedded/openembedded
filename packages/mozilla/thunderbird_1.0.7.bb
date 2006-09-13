@@ -1,7 +1,7 @@
 SECTION = "x11/utils"
 DEPENDS += "gnupg"
 RRECOMMENDS += "gnupg"
-PR = "r0"
+PR = "r1"
 
 EMVER="0.92.0"
 IPCVER="1.1.3"
@@ -15,7 +15,8 @@ http://downloads.mozdev.org/enigmail/src/ipc-${IPCVER}.tar.gz \
 	file://mozilla-thunderbird.png file://mozilla-thunderbird.desktop"
 S = "${WORKDIR}/mozilla"
 
-FILES_${PN} += "${libdir}/thunderbird-${PV} ${datadir}/idl"
+FILES_${PN} += "${libdir}/thunderbird-${PV}/* ${datadir}/idl"
+FILES_${PN}-dbg += "${libdir}/thunderbird-${PV}/.debug*"
 
 inherit mozilla
 

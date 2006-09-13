@@ -2,7 +2,9 @@ SRC_URI = "http://www.kaffe.org/ftp/pub/kaffe/v1.1.x-development/kaffe-${PV}.tar
 S = "${WORKDIR}/kaffe-${PV}"
 PR = "r3"
 
-include kaffe.inc
+require kaffe.inc
+
+RDEPENDS_${PN} = ""
 
 inherit native
 

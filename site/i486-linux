@@ -125,6 +125,9 @@ jm_cv_func_working_readdir=yes
 # cvs
 cvs_cv_func_printf_ptr=${cvs_cv_func_printf_ptr=yes}
 
+# rp-pppoe
+rpppoe_cv_pack_bitfields=${rpppoe_cv_pack_bitfields=rev}
+
 # gettext
 am_cv_func_working_getline=${am_cv_func_working_getline=yes}
 
@@ -140,3 +143,29 @@ ac_cv_file_lib_src_libmad_frame_h=${ac_cv_file_lib_src_libmad_frame_h=no}
 # xorg X11R7
 ac_cv_sys_linker_h=${ac_cv_sys_linker_h=no}
 ac_cv_file__usr_share_X11_sgml_defs_ent=${ac_cv_file__usr_share_X11_sgml_defs_ent=no}
+
+# ipsec-tools
+ac_cv_va_copy=${ac_cv_va_copy=no}
+ac_cv___va_copy=${ac_cv___va_copy=yes}
+racoon_cv_bug_getaddrinfo=${racoon_cv_bug_getaddrinfo=no}
+
+# screen
+screen_cv_sys_bcopy_overlap=${screen_cv_sys_bcopy_overlap=no}
+screen_cv_sys_memcpy_overlap=${screen_cv_sys_memcpy_overlap=no}
+screen_cv_sys_memmove_overlap=${screen_cv_sys_memmove_overlap=no}
+screen_cv_sys_fifo_broken_impl=${screen_cv_sys_fifo_broken_impl=yes}
+screen_cv_sys_fifo_usable=${screen_cv_sys_fifo_usable=yes}
+screen_cv_sys_select_broken_retval=${screen_cv_sys_select_broken_retval=no}
+screen_cv_sys_sockets_nofs=${screen_cv_sys_sockets_nofs=no}
+screen_cv_sys_sockets_usable=${screen_cv_sys_sockets_usable=yes}
+screen_cv_sys_terminfo_used=${screen_cv_sys_terminfo_used=yes}
+
+# lftp
+ac_cv_need_trio=${ac_cv_need_trio=no}
+lftp_cv_va_copy=${lftp_cv_va_copy=no}
+lftp_cv___va_copy=${lftp_cv___va_copy=yes}
+
+# slrn
+slrn_cv___va_copy=${slrn_cv___va_copy=yes}
+slrn_cv_va_copy=${slrn_cv_va_copy=no}
+slrn_cv_va_val_copy=${slrn_cv_va_val_copy=yes}

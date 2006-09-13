@@ -1,6 +1,6 @@
-include linux-openzaurus.inc
+require linux-openzaurus.inc
 
-PR = "r7"
+PR = "r10"
 
 DEFAULT_PREFERENCE = "-1"
 
@@ -15,15 +15,19 @@ DEFAULT_PREFERENCE = "-1"
 # Patches submitted upstream are towards top of this list 
 # Hacks should clearly named and at the bottom
 #           ftp://ftp.kernel.org/pub/linux/kernel/people/akpm/patches/2.6/2.6.14-rc2/2.6.14-rc2-mm1/2.6.14-rc2-mm1.bz2;patch=1 \	   
-SRC_URI = "git://rsync.kernel.org/pub/scm/linux/kernel/git/torvalds/linux-2.6.git;tag=ab36ce8c77403da4362de0447d188cd049d52d81 \
-           ${RPSRC}/alsa/asoc-v0.11pre2.patch;patch=1 \
-           ${RPSRC}/asoc_updates-r1.patch;patch=1 \
-           ${RPSRC}/hx2750_base-r25.patch;patch=1 \
+SRC_URI = "git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux-2.6.git;protocol=git;tag=ef7d1b244fa6c94fb76d5f787b8629df64ea4046 \
+           ${RPSRC}/mtd_fix_chipops_locking-r0.patch;patch=1 \
+           ${RPSRC}/spectrumcs_fix-r0.patch;patch=1 \
+           ${RPSRC}/alsa/asoc-v0.11pre12.patch;patch=1 \
+           ${RPSRC}/asoc_makefile-r1.patch;patch=1 \
+           ${RPSRC}/alsa/asoc_platform_dev_fix-r0.patch;patch=1 \
+           ${RPSRC}/asoc_poodle_morehack-r0.patch;patch=1 \
+           ${RPSRC}/hx2750_base-r27.patch;patch=1 \
            ${RPSRC}/hx2750_bl-r7.patch;patch=1 \
            ${RPSRC}/hx2750_pcmcia-r2.patch;patch=1 \
            ${RPSRC}/pxa_keys-r5.patch;patch=1 \
            ${RPSRC}/tsc2101-r12.patch;patch=1 \
-           ${RPSRC}/hx2750_test1-r3.patch;patch=1 \
+           ${RPSRC}/hx2750_test1-r4.patch;patch=1 \
            ${RPSRC}/pxa_timerfix-r0.patch;patch=1 \
            ${RPSRC}/input_power-r5.patch;patch=1 \
            ${RPSRC}/pxa25x_cpufreq-r1.patch;patch=1 \
@@ -35,10 +39,10 @@ SRC_URI = "git://rsync.kernel.org/pub/scm/linux/kernel/git/torvalds/linux-2.6.gi
            ${RPSRC}/locomo_kbd_tweak-r0.patch;patch=1 \
            ${RPSRC}/poodle_pm-r1.patch;patch=1 \
            ${RPSRC}/pxafb_changeres-r1.patch;patch=1 \
-           ${RPSRC}/poodle_audio-r0.patch;patch=1 \
+           ${RPSRC}/poodle_audio-r1.patch;patch=1 \
            ${RPSRC}/nand_sharpsl_fix-r0.patch;patch=1 \
            file://serial-add-support-for-non-standard-xtals-to-16c950-driver.patch;patch=1 \
-           file://hrw-pcmcia-ids-r3.patch;patch=1 \
+           file://hrw-pcmcia-ids-r4.patch;patch=1 \
            ${RPSRC}/logo_oh-r0.patch.bz2;patch=1;status=unmergable \
            ${RPSRC}/logo_oz-r2.patch.bz2;patch=1;status=unmergable \
            ${RPSRC}/pxa-linking-bug.patch;patch=1;status=unmergable \
@@ -72,27 +76,39 @@ SRC_URI = "git://rsync.kernel.org/pub/scm/linux/kernel/git/torvalds/linux-2.6.gi
 # (Pavel Machek's git tree has updated versions of this?)
 #  ${JLSRC}/zaurus-lcd-2.6.11.diff.gz;patch=1 
 
+# These patches are extracted from Pavel Machek's git tree
+# (diff against vanilla kernel)
+SRC_URI_append_collie = "\
+	   ${DOSRC}/collie/mtd-sharp-flash-hack-r0.patch;patch=1 \
+	   ${DOSRC}/collie/collie-r0.patch;patch=1 \
+	   ${DOSRC}/collie/locomolcd-backlight-r0.patch;patch=1 \
+	   ${DOSRC}/collie/ucb1x00-touch-audio-r0.patch;patch=1 \
+	   ${DOSRC}/collie/collie-mcp-r0.patch;patch=1 \
+	   ${DOSRC}/collie/sa1100-udc-r0.patch;patch=1 \
+#	   ${DOSRC}/collie/collie-pm-r1.patch;patch=1 \
+	   "
+
 
 SRC_URI_append_tosa = "\
 	   ${CHSRC}/usb-ohci-hooks-r1.patch;patch=1 \
 	   ${CHSRC}/tmio-core-r4.patch;patch=1 \
-	   ${CHSRC}/tmio-tc6393-r5.patch;patch=1 \
+	   ${DOSRC}/temp/tmio-tc6393-r6.patch;patch=1 \
 	   ${CHSRC}/tmio-nand-r5.patch;patch=1 \
-	   ${CHSRC}/tmio-ohci-r3.patch;patch=1 \
+	   ${DOSRC}/temp/tmio-ohci-r4.patch;patch=1 \
 	   ${CHSRC}/tmio-fb-r6.patch;patch=1 \
-	   ${DOSRC}/tosa-keyboard-r14.patch;patch=1 \
+	   ${DOSRC}/tosa-keyboard-r17.patch;patch=1 \
 	   ${DOSRC}/tosa-pxaac97-r6.patch;patch=1 \
 	   ${DOSRC}/tosa-tmio-r6.patch;patch=1 \
-	   ${DOSRC}/tosa-power-r15.patch;patch=1 \
-	   ${DOSRC}/tosa-tmio-lcd-r7.patch;patch=1 \
-	   ${DOSRC}/tosa-bluetooth-r6.patch;patch=1 \
+	   ${DOSRC}/tosa-power-r17.patch;patch=1 \
+	   ${DOSRC}/tosa-tmio-lcd-r8.patch;patch=1 \
+	   ${DOSRC}/tosa-bluetooth-r8.patch;patch=1 \
 	   ${DOSRC}/wm97xx-lg7-r0.patch;patch=1 \
-	   ${DOSRC}/wm9712-suspend-cold-res-r0.patch;patch=1 \
+	   ${DOSRC}/wm9712-suspend-cold-res-r1.patch;patch=1 \
 	   ${DOSRC}/sharpsl-pm-postresume-r0.patch;patch=1 \
 	   ${DOSRC}/wm97xx-dig-restore-r0.patch;patch=1 \
 	   ${DOSRC}/wm97xx-miscdevs-resume-r0.patch;patch=1 \
-	   ${DOSRC}/wm9712-reset-loop-r0.patch;patch=1 \
-	   ${DOSRC}/tosa-asoc-r1.patch;patch=1 "
+	   ${DOSRC}/wm9712-reset-loop-r1.patch;patch=1"
+#	   ${DOSRC}/tosa-asoc-r1.patch;patch=1 "
 
 S = "${WORKDIR}/git"
 

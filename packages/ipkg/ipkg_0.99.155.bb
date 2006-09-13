@@ -1,3 +1,3 @@
-include ipkg.inc
-PR = "r1"
+require ipkg.inc
+PR = "r2"
 SRC_URI += "file://upgrade-message-garbage.patch;patch=1"

@@ -1,6 +1,6 @@
 SECTION = "base"
 PR = "r0"
-include fakechroot_${PV}.bb
+require fakechroot_${PV}.bb
 inherit native
 
 S = "${WORKDIR}/fakechroot-${PV}"

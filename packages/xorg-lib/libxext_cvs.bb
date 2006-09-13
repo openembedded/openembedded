@@ -4,7 +4,7 @@ LICENSE= "MIT"
 DESCRIPTION = "X Server Extension library"
 SECTION = "x11/libs"
 PRIORITY = "optional"
-DEPENDS = "xproto libx11 xextensions"
+DEPENDS = "xproto virtual/libx11 xextensions"
 PROVIDES = "xext"
 
 SRC_URI = "${FREEDESKTOP_CVS}/xlibs;module=Xext"

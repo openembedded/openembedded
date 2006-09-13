@@ -1,2 +1,2 @@
-include psmisc.inc
+require psmisc.inc
 PR = "r0"

@@ -1,0 +1,13 @@
+--- libopie2/opiecore/device/odevice.h_orig	2006-08-06 14:22:16.000000000 +0000
++++ libopie2/opiecore/device/odevice.h	2006-08-06 14:22:58.000000000 +0000
+@@ -73,7 +73,9 @@
+     Model_iPAQ_HX4700   = ( Model_iPAQ | 0x000A ),
+     Model_Jornada       = ( 6 << 16 ),
+     Model_Jornada_56x   = ( Model_Jornada | 0x0001 ),
+-    Model_Jornada_720   = ( Model_Jornada | 0x0002 ),
++    Model_Jornada_6xx   = ( Model_Jornada | 0x0003 ),
++    Model_Jornada_7xx   = ( Model_Jornada | 0x0002 ),
++    
+ 
+     Model_Zaurus        = ( 2 << 16 ),
+ 

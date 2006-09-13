@@ -4,7 +4,7 @@ MAINTAINER = "Alex Lange <chicken@handhelds.org>"
 LICENSE = "GPL"
 #
 COMPATIBLE_HOST = "arm.*-linux"
-COMPATIBLE_MACHINE = '(h3600|simpad)'
+COMPATIBLE_MACHINE = '(h3600|simpad|jornada56x)'
 
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/handhelds-sa-${PV}"
 

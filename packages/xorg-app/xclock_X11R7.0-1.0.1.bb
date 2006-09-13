@@ -1,6 +1,6 @@
-include xorg-app-common.inc
+require xorg-app-common.inc
 
 #DESCRIPTION = ""
 
-DEPENDS += " libx11 libxaw libxrender libxft libxkbfile libxt"
+DEPENDS += " virtual/libx11 libxaw libxrender libxft libxkbfile libxt"
 

@@ -1,5 +1,5 @@
 LICENSE = MIT
-PR = "r17"
+PR = "r20"
 
 IMAGE_BASENAME = "unslung"
 
@@ -34,9 +34,14 @@ unslung_clean_image () {
 
 	# Remove the kernel image
 	rm -rf ${IMAGE_ROOTFS}/boot
+	rm -f ${IMAGE_ROOTFS}${libdir}/ipkg/alternatives/zImage
 	# And remove the post and pre scripts for the kernel; saves flash space
 	rm -f ${IMAGE_ROOTFS}${libdir}/ipkg/info/kernel.postinst
 	rm -f ${IMAGE_ROOTFS}${libdir}/ipkg/info/kernel.postrm
+
+	# Remove all the postinst scripts; don't need them.  But keep the
+	# postrm scripts just in case we need to remove something.
+	rm -f ${IMAGE_ROOTFS}${libdir}/ipkg/info/*.postinst
 
 	# Remove info from the local feed used to build the image
 	rm -f ${IMAGE_ROOTFS}${libdir}/ipkg/lists/*
@@ -67,19 +72,40 @@ unslung_clean_image () {
 	${STRIP} ${IMAGE_ROOTFS}/lib/libgcc_s.so.1
 	chmod ugo+x ${IMAGE_ROOTFS}/lib/libgcc_s.so.1
 
-	# We need cpio and find, but we don't need any of the other stuff in the
-	# packages (users can install the full package with ipkg after unsling).
-	# (make sure that if the package is not included (i.e. using slingbox
-	# instead) that the files are not deleted; they might be part of slingbox)
+	# We need cpio and find, but we don't need any of the other stuff in
+	# the packages (users can install the full package with ipkg after
+	# unsling).  Remove the extra files and executables, and clean up
+	# the entries from the ipkg database manually.
 
 	#-- these are for cpio:
 	rm -f ${IMAGE_ROOTFS}/usr/bin/mt
 	rm -rf ${IMAGE_ROOTFS}/usr/libexec
+	rm -f ${IMAGE_ROOTFS}${libdir}/ipkg/info/cpio.*
+	rm -f ${IMAGE_ROOTFS}${libdir}/ipkg/alternatives/rmt
+	sed -i -e '/^Package: cpio/,/^$/d' ${IMAGE_ROOTFS}${libdir}/ipkg/status
 
 	#-- and these for find:
 	rm -f ${IMAGE_ROOTFS}/usr/bin/locate
 	rm -f ${IMAGE_ROOTFS}/usr/bin/updatedb
 	rm -f ${IMAGE_ROOTFS}/usr/bin/xargs
+	rm -f ${IMAGE_ROOTFS}${libdir}/ipkg/info/findutils.*
+	sed -i -e '/^Package: findutils/,/^$/d' ${IMAGE_ROOTFS}${libdir}/ipkg/status
+
+	# FIXME: change made 24 Jul 2006 by the OE folks changes the "strip"
+	# behavior to create an extra file named .debug/<filename> containing
+	# the stripped symbols.  These files are supposed to be packaged
+	# separately by the standard bb routines, but for some reason this
+	# does not alway occur.  This extremely ugly step is to remove the
+	# debug cruft from the rootfs if any are left in the obvious locations.
+	# Once someone figures out why and what the right way is to fix this,
+	# this code should be removed.
+
+	rm -rf ${IMAGE_ROOTFS}/bin/.debug
+	rm -rf ${IMAGE_ROOTFS}/sbin/.debug
+	rm -rf ${IMAGE_ROOTFS}/lib/.debug
+	rm -rf ${IMAGE_ROOTFS}/usr/bin/.debug
+	rm -rf ${IMAGE_ROOTFS}/usr/sbin/.debug
+	rm -rf ${IMAGE_ROOTFS}/usr/lib/.debug
 }
 
 python () {

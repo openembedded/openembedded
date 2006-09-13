@@ -3,42 +3,49 @@ HOMEPAGE = "http://www.gnu.org/software/emacs/"
 LICENSE = "GPLv2"
 MAINTAINER = "Justin Patrin <papercrane@reversefold.com>"
 SECTION = "editor"
-# full X (non-diet) is needed for X support
-DEPENDS = "libx11"
 # and it needs to run some generated binaries..
 DEPENDS += "qemu-native"
-PR = "r1"
+#NOTE: I have found that this only works with qemu-0.8.0. If I use 0.8.1 or 0.8.2
+# the build gets hung up on compiling certain .el files
 
-SRC_URI = "cvs://anoncvs:anonymous@cvs.savannah.gnu.org/sources/emacs;module=emacs"
-#           http://fabrice.bellard.free.fr/qemu/qemu-gnemul-0.5.3.tar.gz"
+PR = "r7"
+
+DEFAULT_PREFERENCE = "-1"
+
+SRC_URI = "cvs://anoncvs:anonymous@cvs.savannah.gnu.org/sources/emacs;module=emacs \
+           file://use-qemu.patch;patch=1"
 S = "${WORKDIR}/emacs"
 
 inherit autotools
 
-EXTRA_OECONF = "--with-x"
+PACKAGES = "${PN}-el ${PN}-dbg ${PN} ${PN}-doc ${PN}-dev ${PN}-locale"
 
-#QEMU = "/usr/bin/qemu-arm -L ${WORKDIR}/usr/local/gnemul/qemu-arm -L ${STAGING_DIR}/${TARGET_SYS}"
+FILES_${PN}-el = "${datadir}/emacs/22.0.50/*/*.el.gz \
+                  ${datadir}/emacs/22.0.50/*/*/*.el.gz"
+
+FILES_${PN} += "${datadir}/emacs"
+
 QEMU = "qemu-arm -L ${STAGING_DIR}/${TARGET_SYS}"
-
 LDFLAGS += "-L${CROSS_DIR}/${TARGET_SYS}/lib"
 
-do_compile_prepend() {
+EXTRA_OECONF = "--without-sound --without-x"
+
+do_bootstrap() {
+    cp "${CROSS_DIR}/${TARGET_SYS}/lib/libgcc_s.so.1" "${S}"
+    export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:${S}"
+    export QEMU="${QEMU}"
+
     sed -i 's:/usr/lib:${STAGING_LIBDIR}:g' ${S}/src/s/gnu-linux.h
-
-    find "${S}" -name Makefile | xargs sed -i 's:^RUN_TEMACS = ./temacs$:RUN_TEMACS = ${QEMU} ./temacs:'
-    find "${S}" -name Makefile | xargs sed -i 's:EMACS=../src/bootstrap-emacs:EMACS="${QEMU} ../src/bootstrap-emacs":'
-
-    # src-lib/Makefile
-    find "${S}" -name Makefile | xargs sed -i 's:./test-distrib :${QEMU} ./test-distrib :'
-
-    # src/Makefile
-    find "${S}" -name Makefile | xargs sed -i 's:./prefix-args :${QEMU} ./prefix-args :'
-    find "${S}" -name Makefile | xargs sed -i 's:$''{libsrc}make-docfile :${QEMU} $''{libsrc}make-docfile :'
-
-    # leim/Makefile
-    find "${S}" -name Makefile | xargs sed -i 's:BUILD-EMACS = :BUILT-EMACS = ${QEMU} :'
-
     find "${S}" -name Makefile | xargs sed -i 's:/usr/lib:${STAGING_LIBDIR}:g'
-    cd ${S}
+
+    cd "${S}"
     make bootstrap
+}
+
+addtask bootstrap before do_compile after do_configure
+
+do_compile_prepend() {
+    cp "${CROSS_DIR}/${TARGET_SYS}/lib/libgcc_s.so.1" "${S}"
+    export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:${S}"
+    export QEMU="${QEMU}"
 }

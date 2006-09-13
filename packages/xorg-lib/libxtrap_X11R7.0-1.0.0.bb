@@ -1,8 +1,8 @@
-include xorg-lib-common.inc
+require xorg-lib-common.inc
 
 #DESCRIPTION = ""
 
-DEPENDS += " libx11 libxt trapproto libxext xextproto"
+DEPENDS += " virtual/libx11 libxt trapproto libxext xextproto"
 
 XORG_PN = "libXTrap"
 

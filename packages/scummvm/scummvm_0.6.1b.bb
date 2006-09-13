@@ -1,4 +1,4 @@
-include scummvm.inc
+require scummvm.inc
 DEPENDS = "virtual/libsdl libmad tremor libogg zlib libmpeg2"
 SRC_URI += " file://mouse.patch;patch=1 \
              file://gcc-4.x.x-accept.patch;patch=1 \

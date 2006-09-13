@@ -1,4 +1,4 @@
-include libmatchbox.inc
+require libmatchbox.inc
 
 PR = "r2"
 

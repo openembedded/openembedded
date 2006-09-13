@@ -1,8 +1,8 @@
-include xorg-lib-common.inc
+require xorg-lib-common.inc
 
 DESCRIPTION = "X11 lbxkbui library"
 LICENSE= "GPL"
 PRIORITY = "optional"
 
-DEPENDS += " libx11 libxt libxkbfile"
+DEPENDS += " virtual/libx11 libxt libxkbfile"
 PROVIDES = "xkbui"

@@ -3,7 +3,7 @@ SECTION = "base"
 LICENSE = "GPL"
 MAINTAINER = "Chris Larson <kergoth@handhelds.org>"
 HOMEPAGE = "http://freshmeat.net/projects/sysvinit/"
-PR = "r19"
+PR = "r28"
 
 # USE_VT and SERIAL_CONSOLE are generally defined by the MACHINE .conf.
 # Set PACKAGE_ARCH appropriately.

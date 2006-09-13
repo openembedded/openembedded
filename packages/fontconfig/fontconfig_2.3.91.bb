@@ -6,11 +6,13 @@ DEPENDS = "expat freetype freetype-native zlib fontconfig-native"
 SRC_URI = "http://fontconfig.org/release/fontconfig-${PV}.tar.gz \
            file://fc-glyphname.patch;patch=1 \
            file://fc-lang.patch;patch=1 \
-	   file://local.conf"
+           file://one-j-too-many.patch;patch=1 \
+           file://local.conf"
 
-PR = "r1"
+PR = "r3"
 
-PACKAGES =+ "fontconfig-utils "
+PACKAGES =+ "fontconfig-utils-dbg fontconfig-utils "
+FILES_fontconfig-utils-dbg = "${bindir}/*.dbg"
 FILES_fontconfig-utils = "${bindir}/*"
 
 # Work around past breakage in debian.bbclass

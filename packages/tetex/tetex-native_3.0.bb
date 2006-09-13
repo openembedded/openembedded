@@ -1,4 +1,4 @@
-include tetex_${PV}.bb
+require tetex_${PV}.bb
 inherit native
 DEPENDS = ""
 PR = "r1"

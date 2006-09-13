@@ -148,7 +148,12 @@ fi
 #	remount the rootfs rw but do not try to change mtab because it
 #	is on a ro fs until the remount succeeded. Then clean up old mtabs
 #	and finally write the new mtab.
+#	This part is only needed if the rootfs was mounted ro.
 #
+if [ $(grep rootfs /proc/mounts | awk '{print $4}') = rw ]; then
+	exit 0
+fi
+echo "Remounting root file system..."
 mount -n -o remount,$rootmode /
 if test "$rootmode" = rw
 then

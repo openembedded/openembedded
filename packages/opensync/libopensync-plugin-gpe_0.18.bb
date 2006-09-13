@@ -5,7 +5,7 @@ LICENSE = "LGPL"
 DEPENDS = "libopensync"
 RRECOMMENDS = "multisync"
 HOMEPAGE = "http://www.opensync.org/"
-MAINTAINER = "Koen Kooi <koen@handhelds.org>"
+MAINTAINER = "Koen Kooi <koen@linuxtogo.org>"
 
 inherit autotools pkgconfig
 

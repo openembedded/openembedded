@@ -1,10 +1,10 @@
-include xorg-lib-common.inc
+require xorg-lib-common.inc
 
 DESCRIPTION = "X Pixmap library."
 PRIORITY = "optional"
 LICENSE = "X-BSD"
 
-DEPENDS += " xproto libx11 libxt libxext xextproto"
+DEPENDS += " xproto virtual/libx11 libxt libxext xextproto"
 
 XORG_PN = "libXpm"
 

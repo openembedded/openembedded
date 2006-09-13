@@ -5,6 +5,8 @@ DEPENDS = "gtk+ libcroco libart-lgpl libxml2 popt"
 LICENSE = "LGPL"
 PR = "r1"
 
+EXTRA_OECONF = "--disable-mozilla-plugin"
+
 inherit autotools pkgconfig gnome
 
 PACKAGES =+ "librsvg-gtk librsvg-gtk-dev rsvg"

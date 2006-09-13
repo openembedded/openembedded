@@ -2,7 +2,7 @@ LICENSE = 	"LGPL"
 DESCRIPTION = 	"Data interchange library for GPE"
 SECTION = 	"gpe/libs"
 PRIORITY = 	"optional"
-MAINTAINER = 	"Koen Kooi <koen@handhelds.org>"
+MAINTAINER = 	"Koen Kooi <koen@linuxtogo.org>"
 DEPENDS = 	"libmimedir"
 
 DEFAULT_PREFERENCE = "-1"

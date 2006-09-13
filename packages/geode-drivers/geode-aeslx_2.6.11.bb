@@ -10,7 +10,7 @@ PR = "r0"
 AMD_DRIVER_VERSION = "02.01.0100"
 AMD_DRIVER_LABEL = "AES_Linux_LX_${AMD_DRIVER_VERSION}"
 
-include geode-modules.inc
+require geode-modules.inc
 
 FILES_${PN} += " /etc"
 

@@ -2,7 +2,7 @@ PV = "0.0+cvs${SRCDATE}"
 LICENSE = "XFree86"
 
 SECTION = "x11/libs"
-DEPENDS = "libx11 libxext xxf86dgaext"
+DEPENDS = "virtual/libx11 libxext xxf86dgaext"
 DESCRIPTION = "Xxf86dga extension library."
 
 SRC_URI = "${FREEDESKTOP_CVS}/xlibs;module=Xxf86dga"

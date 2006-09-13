@@ -1,8 +1,8 @@
-include xorg-lib-common.inc
+require xorg-lib-common.inc
 
 #DESCRIPTION = ""
 
-DEPENDS += " libx11"
+DEPENDS += " virtual/libx11"
 
 XORG_PN = "liboldX"
 

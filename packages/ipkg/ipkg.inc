@@ -6,7 +6,7 @@ PROVIDES = "virtual/ipkg libipkg"
 
 PACKAGES =+ "libipkg-dev libipkg"
 FILES_libipkg-dev = "${libdir}/*.a ${libdir}/*.la ${libdir}/*.so"
-FILES_libipkg = "${libdir}"
+FILES_libipkg = "${libdir}/*.so.*"
 AUTO_LIBNAME_PKGS = "libipkg"
 
 SRC_URI = "${HANDHELDS_CVS};module=familiar/dist/ipkg;tag=${@'V' + bb.data.getVar('PV',d,1).replace('.', '-')} \
