@@ -1,6 +1,6 @@
 require linux-openzaurus.inc
 
-PR = "r26"
+PR = "r27"
 
 # Handy URLs
 # git://rsync.kernel.org/pub/scm/linux/kernel/git/torvalds/linux-2.6.git \
@@ -28,8 +28,7 @@ SRC_URI = "http://www.kernel.org/pub/linux/kernel/v2.6/linux-2.6.17.tar.bz2 \
            ${RPSRC}/spectrumcs_fix-r0.patch;patch=1 \
            file://00-hostap.patch;patch=1;status=merged \
            file://10-pcnet.patch;patch=1;status=merged \
-           ${RPSRC}/alsa/asoc-v0.11.3.patch;patch=1 \
-           ${RPSRC}/alsa/asoc_zaurus_fixups-r0.patch;patch=1 \
+           ${RPSRC}/alsa/asoc-v0.11.5.patch;patch=1 \
            ${RPSRC}/asoc_makefile-r0.patch;patch=1 \
            ${RPSRC}/hx2750_base-r27.patch;patch=1 \
            ${RPSRC}/hx2750_bl-r7.patch;patch=1 \
