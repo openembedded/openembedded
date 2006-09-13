@@ -169,3 +169,9 @@ lftp_cv___va_copy=${lftp_cv___va_copy=yes}
 slrn_cv___va_copy=${slrn_cv___va_copy=yes}
 slrn_cv_va_copy=${slrn_cv_va_copy=no}
 slrn_cv_va_val_copy=${slrn_cv_va_val_copy=yes}
+
+# clamav
+clamav_av_func_working_snprintf_long=${clamav_av_func_working_snprintf_long=yes}
+clamav_av_have_in_port_t=${clamav_av_have_in_port_t=yes}
+clamav_av_have_in_addr_t=${clamav_av_have_in_addr_t=yes}
+ac_cv_func_mmap_fixed_mapped=${ac_cv_func_mmap_fixed_mapped=yes}
