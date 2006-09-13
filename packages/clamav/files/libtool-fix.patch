@@ -1,0 +1,23 @@
+Use our own libtool that knows about cross compiling, not the libtool
+that is included.
+
+--- clamav-0.88.4/acinclude.m4	2006/09/12 08:07:27	1.1
++++ clamav-0.88.4/acinclude.m4	2006/09/12 08:16:31
+@@ -520,7 +520,7 @@
+ LIBTOOL_DEPS="$ac_aux_dir/ltmain.sh"
+ 
+ # Always use our own libtool.
+-LIBTOOL='$(SHELL) $(top_builddir)/libtool'
++LIBTOOL="$host_alias-libtool"
+ AC_SUBST(LIBTOOL)dnl
+ 
+ # Prevent multiple expansion
+@@ -1238,7 +1238,7 @@
+ rm="rm -f"
+ 
+ # Global variables:
+-default_ofile=libtool
++default_ofile=${host_alias}-libtool
+ can_build_shared=yes
+ 
+ # All known linkers require a `.a' archive for static linking (except M$VC,

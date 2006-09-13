@@ -1,0 +1,74 @@
+Add some caching of values which can't be determined when
+cross-compiling. This lets us define the values via the site files.
+
+--- clamav-0.88.4/configure.in	2006/09/12 05:49:09	1.1
++++ clamav-0.88.4/configure.in	2006/09/12 06:24:27
+@@ -56,19 +56,18 @@
+ 
+ dnl Check for broken snprintf (code by Phil Oleson <oz*nixil.net>)
+ if test "x$ac_cv_func_snprintf" = "xyes" ; then
+-        AC_MSG_CHECKING([whether snprintf correctly terminates long strings])
+-        AC_TRY_RUN(
+-                [
++	AC_CACHE_CHECK([whether snprintf correctly terminates long strings],
++		[clamav_av_func_working_snprintf_long], [
++	        AC_TRY_RUN(
++        	        [
+ #include <stdio.h>
+ int main(void){char b[5];snprintf(b,5,"123456789");return(b[4]!='\0');}
+-                ],
+-                [AC_MSG_RESULT(yes)],
+-                [
+-                        AC_MSG_RESULT(no)
+-                        AC_DEFINE(BROKEN_SNPRINTF,1,[Define if your snprintf is busted])
+-                        AC_MSG_WARN([****** Your snprintf() function is broken, complain to your vendor])
+-                ]
+-        )
++	                ])
++	])
++	if test "x$clamav_av_func_working_snprintf_long" = "xno"; then
++		AC_DEFINE(BROKEN_SNPRINTF,1,[Define if your snprintf is busted])
++                AC_MSG_WARN([****** Your snprintf() function is broken, complain to your vendor])
++	fi
+ fi
+ 
+ have_pthreads=no
+@@ -331,18 +330,28 @@
+ AC_DEFINE_UNQUOTED(CONFDIR,"$cfg_dir",[where to look for the config file])
+ 
+ dnl check for in_port_t definition
+-AC_TRY_RUN([
+-#include <sys/types.h>
+-#include <netinet/in.h>
+-int main(int argc, char **argv) { in_port_t pt; pt = 0; return pt; }
+-], AC_DEFINE(HAVE_IN_PORT_T,1,[in_port_t is defined]), AC_MSG_RESULT(in_port_t is not defined))
++AC_CACHE_CHECK([for in_port_t], [clamav_av_have_in_port_t], [
++    AC_TRY_RUN([
++	#include <sys/types.h>
++	#include <netinet/in.h>
++	int main(int argc, char **argv) { in_port_t pt; pt = 0; return pt; }
++	])
++    ])
++if test "$clamav_av_have_in_port_t" = "yes"; then
++    AC_DEFINE(HAVE_IN_PORT_T,1,[in_port_t is defined])
++fi
+ 
+ dnl check for in_addr_t definition
+-AC_TRY_RUN([
+-#include <sys/types.h>
+-#include <netinet/in.h>
+-int main(int argc, char **argv) { in_addr_t pt; pt = 0; return pt; }
+-], AC_DEFINE(HAVE_IN_ADDR_T,1,[in_addr_t is defined]), AC_MSG_RESULT(in_addr_t is not defined))
++AC_CACHE_CHECK([for in_addr_t], [clamav_av_have_in_addr_t], [
++    AC_TRY_RUN([
++	#include <sys/types.h>
++	#include <netinet/in.h>
++	int main(int argc, char **argv) { in_addr_t pt; pt = 0; return pt; }
++	])
++    ])
++if test "$clamav_av_have_in_addr_t" = "yes"; then
++    AC_DEFINE(HAVE_IN_ADDR_T,1,[in_addr_t is defined])
++fi
+ 
+ case "$target_os" in
+ linux*)

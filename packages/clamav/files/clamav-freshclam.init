@@ -1,0 +1,145 @@
+#!/bin/sh
+# This is a modified version of the debian clamav-freshclam init script
+set -e
+DAEMON=/usr/bin/freshclam
+NAME=freshclam
+DESC="ClamAV virus database updater"
+
+[ -x $DAEMON ] || exit 0
+
+CLAMAV_CONF_FILE=/etc/clamd.conf
+FRESHCLAM_CONF_FILE=/etc/freshclam.conf
+PIDFILE=/var/run/clamav/freshclam.pid
+
+slurp_config()
+{
+  CLAMAVCONF="$1"
+
+  if [ -e "$CLAMAVCONF" ]; then
+    for variable in `egrep -v '^[[:space:]]*(#|$)' "$CLAMAVCONF" | awk '{print $1}'`; do
+      if [ "$variable" = 'DatabaseMirror' ]; then
+        if [ -z "$DatabaseMirror" ]; then
+          for i in `grep ^$variable $CLAMAVCONF | awk '{print $2}'`; do
+            value="$i $value"
+          done
+        else
+          continue
+        fi
+      elif [ "$variable" = 'VirusEvent' -o "$variable" = 'OnUpdateExecute' -o "$variable" = 'OnErrorExecute' ]; then
+        value=`grep ^$variable $CLAMAVCONF | head -n1 | sed -e s/$variable\ //`
+      else
+        value=`grep ^$variable $CLAMAVCONF | head -n1 | awk '{print $2}'`
+      fi
+      if ! [ "$value" = "$variable" -o "$value" = "" ]; then
+        export "$variable"="$value"
+      else
+        export "$variable"="true"
+      fi
+      unset value
+    done
+  fi
+}
+
+
+slurp_config "$FRESHCLAM_CONF_FILE"
+
+for inet in $INTERFACE; do
+  if route | grep -q "$inet"; then
+    IS_UP=true
+    break
+  else
+    IS_UP=false
+  fi
+done
+for inet in $INTERFACE; do
+  if [ "$inet" = "$IFACE" ]; then
+    match=true
+    break
+  else
+    match=false
+  fi
+done
+
+# We don't want to always start/stop if running from if-up/down.d
+if ! [ "$1" = "start" -o "$1" = "stop" ]; then     # Exempt restart/reload/etc from checks
+  if [ -n "$INTERFACE" ]; then                     # Want it only run from if-up.d
+    if [ -z "$IFACE" ]; then                       # Is not called by if-up.d
+      if [ "$IS_UP" = false ]; then                # And route isn't up (e.g., upgrade)
+        echo "Interface not up.  Exiting."
+        exit 0
+      fi
+    elif [ "$match" != 'true' ]; then              # IFACE coming up is not the one selected
+      echo "Interface not up.  Exiting."
+      exit 0
+    fi
+  fi
+fi
+
+# If user wants it run from cron, we only accept no-daemon and stop
+if [ -f /etc/cron.d/clamav-freshclam ]; then
+  if ! [ "$1" = "no-daemon" -o "$1" = "stop" ]; then
+    echo "Cron option has been selected for running freshclam"
+    echo "Please either run freshclam directly, or run the init"
+    echo "script with the 'no-daemon' option"
+    exit 0
+  fi
+fi
+
+[ -z "$UpdateLogFile" ] && UpdateLogFile=/var/log/clamav/freshclam.log
+
+if [ -z "$DatabaseDirectory" ]; then
+  [ -r "$CLAMAV_CONF_FILE" ] && DatabaseDirectory=$(grep 'DataDirectory' "$CLAMAV_CONF_FILE" | awk '{print $2}')
+  [ -z "$DatabaseDirectory" ] && DatabaseDirectory=/var/lib/clamav/
+fi
+
+[ -e "$PIDFILE" ] && PID=`cat $PIDFILE`
+[ "$PID" = '1' ] && unset PID
+
+# Make sure dirs exist and are correct
+for i in /var/run/clamav /var/log/clamav $DatabaseDirectory
+do
+  [ ! -d $i ] && mkdir -p $i && chown clamav:clamav $i
+done
+
+case "$1" in
+  no-daemon)
+  echo "It takes freshclam ~3min to timeout and try the next mirror in the list"
+  freshclam -l "$UpdateLogFile" --datadir "$DatabaseDirectory"
+  ;;
+  start)
+  echo -n "Starting $DESC: "
+  start-stop-daemon -S -x $DAEMON -- -d --quiet -p $PIDFILE
+  echo "$NAME"
+  ;;
+  stop)
+  echo -n "Stopping $DESC: "
+  start-stop-daemon -o -K -q -p $PIDFILE $DAEMON
+  if [ -n "$PID" ]; then
+    sleep 1
+    if kill -0 "$PID" 2>/dev/null; then
+      echo -n "Waiting . "
+      cnt=0
+      while kill -0 "$PID" 2>/dev/null; do
+        cnt=`expr "$cnt" + 1`
+        if [ "$cnt" -gt 60 ]; then
+          echo -n " Failed.. "
+          break
+        fi
+        sleep 2
+        echo -n ". "
+      done
+    fi
+  fi
+  echo "$NAME"
+  ;;
+  restart|force-reload)
+  $0 stop
+  $0 start
+  ;;
+  *)
+  echo "Usage: $0 {no-daemon|start|stop|restart|force-reload}" >&2
+  exit 1
+  ;;
+esac
+
+exit 0

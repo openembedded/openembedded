@@ -1,0 +1,75 @@
+#! /bin/sh
+# This is a modified version of the debian clamav-daemon init script
+set -e
+PATH=/sbin:/bin:/usr/sbin:/usr/bin
+DAEMON=/usr/sbin/clamd
+NAME="clamd"
+DESC="ClamAV daemon"
+CLAMAVCONF=/etc/clamd.conf
+
+[ -x "$DAEMON" ] || exit 0
+[ -r /etc/default/clamav-daemon ] && . /etc/default/clamav-daemon
+
+if [ ! -f "$CLAMAVCONF" ]; then
+  echo "There is no configuration file for $DESC."
+  exit 0;
+fi
+if grep -q "^Example" $CLAMAVCONF; then
+  echo "$DESC is not configured. Please edit $CLAMAVCONF"
+  exit 0
+fi
+
+THEPIDFILE="`grep ^PidFile $CLAMAVCONF | awk '{print $2}'`"
+[ -e "$THEPIDFILE" ] && PID=`cat $THEPIDFILE`
+[ "$PID" = '1' ] && unset PID
+
+# Make sure dirs exist and are correct
+for i in /var/run/clamav /var/log/clamav /var/lib/clamav
+do
+  [ ! -d $i ] && mkdir -p $i && chown clamav:clamav $i
+done
+
+case "$1" in
+  start)
+    echo -n "Starting $DESC: "
+    start-stop-daemon --oknodo -S -x $DAEMON
+    echo "$NAME"
+    ;;
+
+  stop)
+    echo -n "Stopping $DESC: "
+    if [ -n "$PID" ]; then
+      kill -15 -"$PID"
+      sleep 1
+      if kill -0 "$PID" 2>/dev/null; then
+        echo -n "Waiting . "
+        cnt=0
+        while kill -0 "$PID" 2>/dev/null; do
+          cnt=`expr "$cnt" + 1`
+          if [ "$cnt" -gt 60 ]; then
+            echo -n " Failed.. "
+            kill -9 -"$PID"
+            break
+          fi
+          sleep 2
+          echo -n ". "
+        done
+      fi
+    else
+      start-stop-daemon -o -K -q -p $THEPIDFILE
+    fi
+    echo "$NAME"
+    ;;
+
+    restart|force-reload)
+    $0 stop
+    $0 start
+    ;;
+
+    *)
+    echo "Usage: $0 {start|stop|restart|force-reload}" >&2
+    exit 1
+    ;;
+esac
+
+exit 0
