@@ -5,6 +5,8 @@
 DISTRO = "angstrom"
 DISTRO_NAME = "Angstrom"
 
+TARGET_VENDOR = "-angstrom"
+
 # Can be "glibc" and "uclibc"
 ANGSTROM_MODE ?= "glibc"
 
