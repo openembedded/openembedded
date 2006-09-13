@@ -1,0 +1,44 @@
+
+#! /bin/sh
+#
+# This is an init script for Tor on Openzaurus
+#
+
+
+test -f /usr/bin/tor || exit 0
+test -f /etc/tor/tor-tsocks.conf || exit 0
+
+case "$1" in
+  start)
+    echo -n "Starting tor daemon"
+    start-stop-daemon --start --quiet --exec /usr/bin/tor &
+    echo "."
+    ;;
+  stop)
+    echo -n "Stopping tor daemon"
+    start-stop-daemon --stop --quiet --exec /usr/bin/tor &
+    echo "."
+    ;;
+  restart)
+    echo -n "Stopping tor daemon"
+    start-stop-daemon --stop --quiet --exec /usr/bin/tor &
+    sleep 1
+    echo -n "Starting tor daemon"
+    start-stop-daemon --start --quiet --exec /usr/bin/tor &
+    echo "."
+    ;;
+  start_socats)
+    echo "Starting socats"
+    # EXAMPLE 
+    socat TCP4-LISTEN:6667,fork SOCKS4A:localhost:irc.freenode.net:6667,socksport=9050 &
+    ;;
+  stop_socats)
+    echo "Stopping all socat processes!"
+    killall socat
+    ;;
+  *)
+    echo "Usage: /etc/init.d/tor {start|stop|restart|start_socats|stop_socats}"
+    exit 1
+esac
+
+exit 0

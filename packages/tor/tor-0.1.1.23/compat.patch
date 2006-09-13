@@ -1,0 +1,14 @@
+diff -Naur tor-0.1.1.23/src/common/compat.h tor-0.1.1.23_patched/src/common/compat.h
+--- tor-0.1.1.23/src/common/compat.h	2006-07-25 05:52:47.000000000 +0200
++++ tor-0.1.1.23_patched/src/common/compat.h	2006-09-04 22:26:42.000000000 +0200
+@@ -31,10 +31,6 @@
+ #endif
+ #include <stdarg.h>
+ 
+-#ifndef NULL_REP_IS_ZERO_BYTES
+-#error "It seems your platform does not represent NULL as zero. We can't cope."
+-#endif
+-
+ /* ===== Compiler compatibility */
+ 
+ /* GCC can check printf types on arbitrary functions. */

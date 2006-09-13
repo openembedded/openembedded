@@ -1,0 +1,11 @@
+diff -Naur tor-0.1.1.23/Makefile.in tor-0.1.1.23_patched/Makefile.in
+--- tor-0.1.1.23/Makefile.in	2006-07-30 06:42:20.000000000 +0200
++++ tor-0.1.1.23_patched/Makefile.in	2006-09-04 20:13:51.000000000 +0200
+@@ -65,7 +65,6 @@
+ host_alias = @host_alias@
+ host_triplet = @host@
+ BINDIR = @BINDIR@
+-CC = @CC@
+ CONFDIR = @CONFDIR@
+ HAVE_LIB = @HAVE_LIB@
+ LIB = @LIB@
