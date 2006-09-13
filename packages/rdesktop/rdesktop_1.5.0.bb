@@ -4,13 +4,11 @@ HOMEPAGE = "http://www.rdesktop.org"
 SECTION = "x11/network"
 MAINTAINER = "Adrian Davey <ade@beth2.org>"
 LICENSE = "GPL"
-PV = "1.5.0+cvs${SRCDATE}"
-PR = "r2"
+PV = "1.5.0"
+PR = "r0"
 
-SRC_URI = "cvs://anonymous@cvs.sourceforge.net/cvsroot/rdesktop;module=rdesktop"
-S = "${WORKDIR}/rdesktop"
+SRC_URI = "${SOURCEFORGE_MIRROR}/rdesktop/rdesktop-${PV}.tar.gz"
 
 inherit autotools
 
 EXTRA_OECONF = "--with-openssl=${STAGING_LIBDIR}/.. "
-
