@@ -79,7 +79,7 @@ do_install () {
 	install -d ${D}${base_bindir}
 	mv ${D}/busybox${base_bindir}/busybox ${D}${base_bindir}/
 	# Move back the sh symlink
-	mv ${D}/busybox${base_bindir}/sh ${D}${base_bindir}/
+	test -h ${D}/busybox${base_bindir}/sh && mv ${D}/busybox${base_bindir}/sh ${D}${base_bindir}/
 
 	install -m 0755 ${WORKDIR}/syslog ${D}${sysconfdir}/init.d/
 	install -m 644 ${WORKDIR}/syslog.conf ${D}${sysconfdir}/
