@@ -26,7 +26,8 @@ SRC_URI = "http://www.busybox.net/downloads/busybox-${PV}.tar.gz \
 	   file://default.script \
 	   file://syslog.conf \
 	   file://mount.busybox \
-	   file://umount.busybox"
+	   file://umount.busybox \
+	   file://keymap_endianess.patch;patch=1"
 
 export EXTRA_CFLAGS = "${CFLAGS}"
 EXTRA_OEMAKE_append = " CROSS=${HOST_PREFIX}"
