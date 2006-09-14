@@ -107,7 +107,7 @@ def do_split_packages(d, root, file_regex, output_pattern, description, postinst
 					objs.append(relpath)
 
 	if extra_depends == None:
-		extra_depends = bb.data.getVar('PKG_' + packages[0], d, 1) or packages[0]
+		extra_depends = bb.data.getVar('PKG_' + packages[1], d, 1) or packages[1]
 
 	for o in objs:
 		import re, stat
