@@ -25,20 +25,22 @@ PR = "r2"
 
 SRC_URI = "http://downloadmirror.intel.com/df-support/11190/eng/BSD_ixp400AccessLibrary-2_3.zip \
            http://www.intel.com/Please-Read-The-BB-File/IPL_ixp400NpeLibrary-2_3.zip \
-	   http://www.hohnstaedt.de/ixp_npe/mc_grab.c"
+	   http://www.hohnstaedt.de/ixp_npe/IxNpeMicrocode.h"
 
 inherit native
 
 S = ${WORKDIR}/ixp400_xscale_sw/src/npeDl
 
 do_compile() {
-	${CC} -Wall -fno-builtin -I../include ${S}/ixNpeDlImageConverter.c -o ${S}/ixNpeDlImageConverter
-	${S}/ixNpeDlImageConverter
-	${CC} -Wall ${S}/../../../mc_grab.c -o ${S}/mc_grab
-	${S}/mc_grab 010c0200 < ${S}/IxNpeMicrocode.dat > ${S}/NPE-B.010c0200
+	cp ${S}/../../../IxNpeMicrocode.h ${S}/IxNpeMicrocode.h
+	${CC} -Wall ${S}/IxNpeMicrocode.c -o ${S}/IxNpeMicrocode
+	${S}/IxNpeMicrocode
 }
 
 do_install() {
 	install -d ${D}/lib/firmware
 	install ${S}/NPE-B.010c0200 ${D}/lib/firmware/
+}
+
+do_stage() {
 }
