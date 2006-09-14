@@ -401,21 +401,25 @@ python populate_packages () {
 		if val:
 			f.write('%s_%s: %s\n' % (var, pkg, encode(val)))
 
-	data_file = os.path.join(workdir, "install", pn + ".package")
+	data_file = bb.data.expand("${STAGING_DIR}/pkgdata/${PN}", d)
 	f = open(data_file, 'w')
 	f.write("PACKAGES: %s\n" % packages)
-	for pkg in package_list:
-		write_if_exists(f, pkg, 'DESCRIPTION')
-		write_if_exists(f, pkg, 'RDEPENDS')
-		write_if_exists(f, pkg, 'RPROVIDES')
-		write_if_exists(f, pkg, 'PKG')
-		write_if_exists(f, pkg, 'ALLOW_EMPTY')
-		write_if_exists(f, pkg, 'FILES')
-		write_if_exists(f, pkg, 'pkg_postinst')
-		write_if_exists(f, pkg, 'pkg_postrm')
-		write_if_exists(f, pkg, 'pkg_preinst')
-		write_if_exists(f, pkg, 'pkg_prerm')
 	f.close()
+
+	for pkg in package_list:
+		subdata_file = bb.data.expand("${STAGING_DIR}/pkgdata/runtime/%s" % pkg, d)
+		sf = open(subdata_file, 'w')
+		write_if_exists(sf, pkg, 'DESCRIPTION')
+		write_if_exists(sf, pkg, 'RDEPENDS')
+		write_if_exists(sf, pkg, 'RPROVIDES')
+		write_if_exists(sf, pkg, 'PKG')
+		write_if_exists(sf, pkg, 'ALLOW_EMPTY')
+		write_if_exists(sf, pkg, 'FILES')
+		write_if_exists(sf, pkg, 'pkg_postinst')
+		write_if_exists(sf, pkg, 'pkg_postrm')
+		write_if_exists(sf, pkg, 'pkg_preinst')
+		write_if_exists(sf, pkg, 'pkg_prerm')
+		sf.close()
 	bb.build.exec_func("read_subpackage_metadata", d)
 }
 
@@ -741,6 +745,6 @@ python package_do_package () {
 do_package[dirs] = "${D}"
 # shlibs requires any DEPENDS to have already packaged for the *.list files
 do_package[deptask] = "do_package"
-populate_packages[dirs] = "${D}"
+populate_packages[dirs] = "${STAGING_DIR}/pkgdata/runtime ${D}"
 EXPORT_FUNCTIONS do_package do_shlibs do_split_locales mapping_rename_hook
 addtask package before do_build after do_install
