@@ -107,7 +107,7 @@ def do_split_packages(d, root, file_regex, output_pattern, description, postinst
 					objs.append(relpath)
 
 	if extra_depends == None:
-		extra_depends = bb.data.getVar('PKG_' + packages[0], d, 1) or packages[0]
+		extra_depends = packages[0]
 
 	for o in objs:
 		import re, stat
@@ -293,10 +293,7 @@ python populate_packages () {
 
 		bb.data.setVar('ROOT', '', localdata)
 		bb.data.setVar('ROOT_%s' % pkg, root, localdata)
-		pkgname = bb.data.getVar('PKG_%s' % pkg, localdata, 1)
-		if not pkgname:
-			pkgname = pkg
-		bb.data.setVar('PKG', pkgname, localdata)
+		bb.data.setVar('PKG', pkg, localdata)
 
 		overrides = bb.data.getVar('OVERRIDES', localdata, 1)
 		if not overrides:
@@ -387,14 +384,17 @@ python populate_packages () {
 						bb.debug(1, "target found in %s" % p)
 						if p == pkg:
 							break
-						dp = bb.data.getVar('PKG_' + p, d, 1) or p
-						if not dp in rdepends:
-							rdepends.append(dp)
+						if not p in rdepends:
+							rdepends.append(p)
 						break
 			if found == False:
 				bb.note("%s contains dangling symlink to %s" % (pkg, l))
 		bb.data.setVar('RDEPENDS_' + pkg, " " + " ".join(rdepends), d)
 
+	bb.build.exec_func('emit_pkgdata', d)
+}
+
+python emit_pkgdata() {
 	def write_if_exists(f, pkg, var):
 		def encode(str):
 			import codecs
@@ -474,10 +474,6 @@ python package_do_shlibs() {
 		needs_ldconfig = False
 		bb.debug(2, "calculating shlib provides for %s" % pkg)
 
-		pkgname = bb.data.getVar('PKG_%s' % pkg, d, 1)
-		if not pkgname:
-			pkgname = pkg
-
 		needed[pkg] = []
 		sonames = list()
 		top = os.path.join(workdir, "install", pkg)
@@ -499,10 +495,10 @@ python package_do_shlibs() {
 							sonames.append(m.group(1))
 						if m and libdir_re.match(root):
 							needs_ldconfig = True
-		shlibs_file = os.path.join(shlibs_dir, pkgname + ".list")
+		shlibs_file = os.path.join(shlibs_dir, pkg + ".list")
 		if os.path.exists(shlibs_file):
 			os.remove(shlibs_file)
-		shver_file = os.path.join(shlibs_dir, pkgname + ".ver")
+		shver_file = os.path.join(shlibs_dir, pkg + ".ver")
 		if os.path.exists(shver_file):
 			os.remove(shver_file)
 		if len(sonames):
@@ -546,14 +542,12 @@ python package_do_shlibs() {
 	for pkg in packages.split():
 		bb.debug(2, "calculating shlib requirements for %s" % pkg)
 
-		p_pkg = bb.data.getVar("PKG_%s" % pkg, d, 1) or pkg
-
 		deps = list()
 		for n in needed[pkg]:
 			if n in shlib_provider.keys():
 				(dep_pkg, ver_needed) = shlib_provider[n]
 
-				if dep_pkg == p_pkg:
+				if dep_pkg == pkg:
 					continue
 
 				if ver_needed:
@@ -564,7 +558,6 @@ python package_do_shlibs() {
 					deps.append(dep)
 			else:
 				bb.note("Couldn't find shared library provider for %s" % n)
-
 
 		deps_file = os.path.join(workdir, "install", pkg + ".shlibdeps")
 		if os.path.exists(deps_file):
@@ -641,8 +634,7 @@ python package_do_pkgconfig () {
 								pkgconfig_needed[pkg] += exp.replace(',', ' ').split()
 
 	for pkg in packages.split():
-		ppkg = bb.data.getVar("PKG_" + pkg, d, 1) or pkg
-		pkgs_file = os.path.join(shlibs_dir, ppkg + ".pclist")
+		pkgs_file = os.path.join(shlibs_dir, pkg + ".pclist")
 		if os.path.exists(pkgs_file):
 			os.remove(pkgs_file)
 		if pkgconfig_provided[pkg] != []:
@@ -731,7 +723,7 @@ python package_do_split_locales() {
 		pkg = pn + '-locale-' + ln
 		packages.append(pkg)
 		bb.data.setVar('FILES_' + pkg, os.path.join(datadir, 'locale', l), d)
-		bb.data.setVar('RDEPENDS_' + pkg, '${PKG_%s} virtual-locale-%s' % (mainpkg, ln), d)
+		bb.data.setVar('RDEPENDS_' + pkg, '%s virtual-locale-%s' % (mainpkg, ln), d)
 		bb.data.setVar('RPROVIDES_' + pkg, '%s-locale %s-translation' % (pn, ln), d)
 		bb.data.setVar('DESCRIPTION_' + pkg, '%s translation for %s' % (l, pn), d)
 
