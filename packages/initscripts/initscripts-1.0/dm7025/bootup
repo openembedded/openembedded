@@ -41,10 +41,7 @@ echo 50 > /proc/progress
 modprobe rfmod
 
 echo 54 > /proc/progress
-[ -e /etc/dropbear/dropbear_rsa_host_key ] && /usr/bin/showiframe
-
-echo 58 > /proc/progress
-/boot/bootlogo.mvi || /usr/bin/showiframe /boot/bootlogo_wait.mvi
+[ -e /etc/dropbear/dropbear_rsa_host_key ] && /usr/bin/showiframe /boot/bootlogo.mvi || /usr/bin/showiframe /boot/bootlogo_wait.mvi
 
 echo 62 > /proc/progress
 hostname -F /etc/hostname
