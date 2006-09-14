@@ -4,7 +4,7 @@ LICENSE = "libpng"
 SECTION = "libs"
 PRIORITY = "required"
 MAINTAINER = "Chris Larson <kergoth@handhelds.org>"
-PR = "r4"
+PR = "r5"
 
 DEPENDS = "zlib"
 
