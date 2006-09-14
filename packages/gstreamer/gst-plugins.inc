@@ -5,7 +5,7 @@ MAINTAINER = "Felix Domke <tmbinc@openembedded.org>"
 DEPENDS = "gstreamer libmikmod libmad libogg tremor libvorbis libid3tag liboil alsa-lib"
 PR = "r0"
 
-inherit autotools pkgconfig gconf
+inherit autotools pkgconfig
 
 SRC_URI = "http://gstreamer.freedesktop.org/src/${PN}/${PN}-${PV}.tar.bz2"
 
