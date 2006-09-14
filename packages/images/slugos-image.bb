@@ -7,7 +7,7 @@ DESCRIPTION = "Generic SlugOS image"
 MAINTAINER = "NSLU2 Linux <nslu2-linux@yahoogroups.com>"
 HOMEPAGE = "http://www.nslu2-linux.org"
 LICENSE = "MIT"
-PR = "r31"
+PR = "r32"
 
 # SLUGOS_IMAGENAME defines the name of the image to be build, if it
 # is not set this package will be skipped!
@@ -71,16 +71,9 @@ SLUGOS_SUPPORT ?= "diffutils cpio findutils udev"
 # kernel-module-netconsole is here because it is small and is
 # highly useful on minimal systems (which really don't have anywhere
 # other than the network to output error messages!)
-SLUGOS_KERNEL ?= "kernel-module-af-packet kernel-module-netconsole \
-		kernel-module-ixp4xx-qmgr kernel-module-ixp4xx-npe \
-		kernel-module-ixp4xx-mac kernel-module-ixp4xx-rng \
-		kernel-module-mii kernel-module-jbd \
-		kernel-module-ext2 kernel-module-ext3 \
-		kernel-module-scsi-mod kernel-module-usbcore \
-		kernel-module-ehci-hcd kernel-module-ohci-hcd \
-		kernel-module-uhci-hcd kernel-module-usb-storage"
-
-RDEPENDS = "kernel ixp4xx-npe \
+SLUGOS_KERNEL ?= "kernel-module-af-packet kernel-module-netconsole"
+       
+RDEPENDS = "kernel ixp-eth \
 	base-files base-passwd netbase \
         busybox hotplug-ng initscripts-slugos slugos-init \
         update-modules sysvinit tinylogin \
