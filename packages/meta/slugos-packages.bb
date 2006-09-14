@@ -6,7 +6,7 @@ DESCRIPTION = "Packages that are compatible with the SlugOS firmware"
 MAINTAINER = "NSLU2 Linux <nslu2-linux@yahoogroups.com>"
 HOMEPAGE = "http://www.nslu2-linux.org"
 LICENSE = "MIT"
-PR = "r14"
+PR = "r15"
 CONFLICTS = "db3"
 PROVIDES += "${SLUGOS_IMAGENAME}-packages"
 
@@ -37,7 +37,6 @@ SLUGOS_PACKAGES = "\
 	bluez-libs \
 	bluez-utils-nodbus \
 	bridge-utils \
-	bwmon \
 	bzip2 \
 	ccxstream \
 	cdparanoia \
@@ -207,6 +206,7 @@ UCLIBC_BROKEN_PACKAGES = "\
 	apr \
 	bogofilter \
 	boost \
+	bwmon \
 	linphone \
 	sudo \
 	ushare \
