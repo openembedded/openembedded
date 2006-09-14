@@ -5,8 +5,8 @@ DESCRIPTION_${PN}-lib = "The dynamic library that is shared between all of \
 the Clam AntiVirus components"
 DESCRIPTION_${PN}-freshclam = "An automatic virus signature update \
 application for Clam AntiVirus"
-DESCRIPTION_${PN}-data = "Static anti virus signature database for Clam AntiVirus"
-DESCRIPTION_${PN}-daemon = "A on-demand file scanning service for Clam AntiVirus"
+DESCRIPTION_${PN}-data = "Static antivirus signature database for Clam AntiVirus"
+DESCRIPTION_${PN}-daemon = "An on-demand file scanning service for Clam AntiVirus"
 HOMEPAGE = "http://www.clamav.net/"
 SECTION = "network"
 MAINTAINER = "Jamie Lenehan <lenehan@twibble.org>"
@@ -16,6 +16,7 @@ RDEPENDS_${PN} = "${PN}-data"
 RDEPENDS_${PN}-daemon = "${PN}-data"
 RRECOMMENDS_${PN} = "${PN}-freshclam"
 RRECOMMENDS_${PN}-daemon = "${PN}-freshclam"
+PR = "r1"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/clamav/clamav-${PV}.tar.gz \
           file://cross-compile-fix.patch;patch=1 \
@@ -26,7 +27,7 @@ SRC_URI = "${SOURCEFORGE_MIRROR}/clamav/clamav-${PV}.tar.gz \
           file://clamd.conf \
           file://freshclam.conf"
 
-inherit autotools update-rc.d
+inherit autotools update-rc.d binconfig
 
 # Don't check for clamav uid/gid - they don't exist on the host
 # Put virus definitions in /var/lib not /usr/lib
