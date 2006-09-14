@@ -13,7 +13,7 @@ echo 16 > /proc/progress
 swapon -a
 echo 20 > /proc/progress
 
-mount -at nonfs,nosmbfs,noncpfs 2>/dev/null
+mount -a
 echo 24 > /proc/progress
 
 tar xzf /etc/var.tar.gz -C /
@@ -56,7 +56,7 @@ echo 70 > /proc/progress
 ifup -a
 
 echo 78 > /proc/progress
-mount -at nfs,smbfs,cpfs 2>/dev/null
+# network mounts should be done here.
 
 echo 82 > /proc/progress
 [ -e "/etc/sysctl.conf" ] && /sbin/sysctl -p "/etc/sysctl.conf"
