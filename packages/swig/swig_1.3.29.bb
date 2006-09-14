@@ -3,7 +3,8 @@ HOMEPAGE = "http://swig.sourceforge.net/"
 LICENSE = "BSD"
 SECTION = "devel"
 
-SRC_URI = "${SOURCEFORGE_MIRROR}/swig/swig-${PV}.tar.gz"
+SRC_URI = "${SOURCEFORGE_MIRROR}/swig/swig-${PV}.tar.gz \
+	file://disable_exceptions.diff;patch=1;pnum=1"
 S = "${WORKDIR}/swig-${PV}"
 
 inherit autotools
