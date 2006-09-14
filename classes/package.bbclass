@@ -391,10 +391,6 @@ python populate_packages () {
 				bb.note("%s contains dangling symlink to %s" % (pkg, l))
 		bb.data.setVar('RDEPENDS_' + pkg, " " + " ".join(rdepends), d)
 
-	bb.build.exec_func('emit_pkgdata', d)
-}
-
-python emit_pkgdata() {
 	def write_if_exists(f, pkg, var):
 		def encode(str):
 			import codecs
