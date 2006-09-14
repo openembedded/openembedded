@@ -2,6 +2,7 @@ LICENSE = MIT
 
 include nylon-feed.inc
 DEPENDS = "${NYLON_FEED} \
+    boost \
     db3 \
     dhcp \
     dhcp-forwarder \
@@ -14,16 +15,16 @@ DEPENDS = "${NYLON_FEED} \
     libedit \
     libmail-sendmail-perl \
     libnetserver-generic-perl \
+    libpcre \
     lzo \
     make \
     mystun-server \
     mc \
     net-snmp \
-    ntp \
     openssl \
     openswan \
     openvpn \
-    libpcre \
+    python \
     ppp-dsl \
     rp-pppoe \
     simple-firewall \

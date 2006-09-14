@@ -13,7 +13,6 @@ gnupg \
 hostap-modules \
 hostap-utils \
 hostap-daemon \
-hotplug-ng \
 htb-init \
 ifplugd \
 initscripts \
@@ -23,6 +22,7 @@ iptables \
 kismet \
 ksymoops \
 less \
+linux-hotplug \
 lsof \
 madwifi-modules \
 maradns \
@@ -35,6 +35,7 @@ nano \
 ncurses \
 netbase \
 netperf \
+ntp \
 nylon-scripts \
 nylon-statistics \
 olsrd \
