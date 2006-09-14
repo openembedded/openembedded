@@ -15,7 +15,7 @@ PACKAGES_DYNAMIC = "enigma2-plugin-*"
 
 PN = "enigma2"
 PR = "r0"
-SRCDATE = "20060810"
+SRCDATE = "20060911"
 PV = "1.0cvs${SRCDATE}"
 
 SRC_URI = "cvs://anonymous@dreamboxupdate.com/cvs;module=enigma2;method=pserver \
