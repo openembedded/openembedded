@@ -1,7 +1,8 @@
 # uclibc:
 #fix some iconv issues, needs to be adjusted when doing uclibc builds
+PREFERRED_PROVIDER_virtual/libc = "uclibc"
 PREFERRED_PROVIDER_virtual/libiconv ?= "libiconv"
-PREFERRED_PROVIDER_virtual/libintl ?= "libintl"
+PREFERRED_PROVIDER_virtual/libintl ?= "gettext"
 
 TARGET_OS = "linux${@['-uclibc','-uclibcgnueabi'][bb.data.getVar('TARGET_ARCH',d,1)=='arm']}"
 
