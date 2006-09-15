@@ -40,7 +40,7 @@ do_stage() {
 	install -m 0644 net80211/*.h ${STAGING_INCDIR}/madwifi/net80211/
 	install -m 0644 include/compat.h ${STAGING_INCDIR}/madwifi/include/
 	cd ${STAGING_INCDIR}/madwifi/net80211/
-	ln -s ../include/compat.h .
+	rm -f compat.h; ln -s ../include/compat.h .
 }
 
 pkg_postinst() {
