@@ -429,6 +429,58 @@ if [ x"$D" = "x" ]; then
 fi
 }
 
+python package_depchains() {
+	"""
+	For a given set of prefix and postfix modifiers, make those packages
+	RRECOMMENDS on the corresponding packages for its DEPENDS.
+
+	Example:  If package A depends upon package B, and A's .bb emits an
+	A-dev package, this would make A-dev Recommends: B-dev.
+	"""
+
+	packages  = bb.data.getVar('PACKAGES', d, 1)
+	postfixes = (bb.data.getVar('DEPCHAIN_POST', d, 1) or '').split()
+	prefixes  = (bb.data.getVar('DEPCHAIN_PRE', d, 1) or '').split()
+
+	def pkg_addrrecs(pkg, base, func, d):
+		rdepends = explode_deps(bb.data.getVar('RDEPENDS_' + base, d, 1) or bb.data.getVar('RDEPENDS', d, 1) or "")
+		# bb.note('rdepends for %s is %s' % (base, rdepends))
+		rreclist = []
+
+		for depend in rdepends:
+			split_depend = depend.split(' (')
+			name = split_depend[0].strip()
+			func(rreclist, name)
+
+		oldrrec = bb.data.getVar('RRECOMMENDS_%s', d) or ''
+		bb.data.setVar('RRECOMMENDS_%s' % pkg, oldrrec + ' '.join(rreclist), d)
+
+	def packaged(pkg, d):
+		return os.access(bb.data.expand('${STAGING_DIR}/pkgdata/runtime/%s.packaged' % pkg, d), os.R_OK)
+
+	for pkg in packages.split():
+		for postfix in postfixes:
+			def func(list, name):
+				pkg = '%s%s' % (name, postfix)
+				if packaged(pkg, d):
+					list.append(pkg)
+
+			base = pkg[:-len(postfix)]
+			if pkg.endswith(postfix):
+				pkg_addrrecs(pkg, base, func, d)
+				continue
+
+		for prefix in prefixes:
+			def func(list, name):
+				pkg = '%s%s' % (prefix, name)
+				if packaged(pkg, d):
+					list.append(pkg)
+
+			base = pkg[len(prefix):]
+			if pkg.startswith(prefix):
+				pkg_addrrecs(pkg, base, func, d)
+}
+
 python package_do_shlibs() {
 	import os, re, os.path
 
@@ -734,9 +786,10 @@ python package_do_split_locales() {
 	bb.data.setVar('RDEPENDS_%s' % mainpkg, ' '.join(rdep), d)
 }
 
-PACKAGEFUNCS ?= " package_do_split_locales \
+PACKAGEFUNCS = "do_install package_do_split_locales \
 		populate_packages package_do_shlibs \
-		package_do_pkgconfig read_shlibdeps"
+		package_do_pkgconfig read_shlibdeps \
+		package_depchains"
 python package_do_package () {
 	for f in (bb.data.getVar('PACKAGEFUNCS', d, 1) or '').split():
 		bb.build.exec_func(f, d)
