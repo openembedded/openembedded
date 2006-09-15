@@ -1,0 +1,196 @@
+diff -Nur ppp-2.4.3/pppd/Makefile.linux myppp/ppp-2.4.3/pppd/Makefile.linux
+--- ppp-2.4.3/pppd/Makefile.linux	2006-09-14 14:52:54.000000000 +0200
++++ ppp-2.4.3/pppd/Makefile.linux	2006-09-14 14:55:44.000000000 +0200
+@@ -9,7 +9,7 @@
+ MANDIR = $(DESTDIR)/share/man/man8
+ INCDIR = $(DESTDIR)/include
+ 
+-TARGETS = pppd
++TARGETS = pppd tdbread
+ 
+ PPPDSRCS = main.c magic.c fsm.c lcp.c ipcp.c upap.c chap-new.c md5.c ccp.c \
+ 	   ecp.c ipxcp.c auth.c options.c sys-linux.c md4.c chap_ms.c \
+@@ -199,10 +199,11 @@
+ 
+ all: $(TARGETS)
+ 
+-install: pppd
++install: pppd tdbread
+ 	mkdir -p $(BINDIR) $(MANDIR)
+ 	$(EXTRAINSTALL)
+ 	$(INSTALL) -c -m 555 pppd $(BINDIR)/pppd
++	$(INSTALL) -c -m 555 tdbread $(BINDIR)/tdbread
+ 	if chgrp pppusers $(BINDIR)/pppd 2>/dev/null; then \
+ 	  chmod o-rx,u+s $(BINDIR)/pppd; fi
+ 	$(INSTALL) -c -m 444 pppd.8 $(MANDIR)
+@@ -217,8 +218,12 @@
+ 	mkdir -p $(INCDIR)/pppd
+ 	$(INSTALL) -c -m 644 $(HEADERS) $(INCDIR)/pppd
+ 
+-clean:
+-	rm -f $(PPPDOBJS) $(EXTRACLEAN) $(TARGETS) *~ #* core
++tdbread: tdbread.o tdb.o spinlock.o
++	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $^ 
+ 
++ clean:
++	rm -f $(PPPDOBJS) tdbread.o tdbread pppd *~ #* core
++	rm -f $(PPPDOBJS) $(EXTRACLEAN) $(TARGETS) *~ #* core
++ 
+ depend:
+ 	$(CPP) -M $(CFLAGS) $(PPPDSRCS) >.depend
+--- ppp-2.4.3/pppd/tdbread.c	1970-01-01 01:00:00.000000000 +0100
++++ ppp-2.4.3/pppd/tdbread.c	2006-09-14 14:52:32.000000000 +0200
+@@ -0,0 +1,153 @@
++/**
++ * @file    tdbread.c
++ * @author  Thomas Geffert <geffert@4g-systems.com>
++ * @date    Thu Sep 14 10:28:31 2006
++ *
++ * @brief  Small program to extract information from pppd.tbd database.
++ *         You can get information about a specific ppp process with its pid
++ *         or view all keys available in the database.
++ */
++
++/*
++ * (c) COPYRIGHT 2006 by 4G Systems GmbH Germany
++ *
++ * Redistribution and use in source and binary forms are permitted
++ * provided that the above copyright notice and this paragraph are
++ * duplicated in all such forms AND provided that this software or
++ * any derived work is only used as part of the PPP daemon (pppd)
++ * and related utilities.
++ * The name of the author may not be used to endorse or promote products
++ * derived from this software without specific prior written permission.
++ * THIS SOFTWARE IS PROVIDED ``AS IS'' AND WITHOUT ANY EXPRESS OR
++ * IMPLIED WARRANTIES, INCLUDING, WITHOUT LIMITATION, THE IMPLIED
++ * WARRANTIES OF MERCHANTIBILITY AND FITNESS FOR A PARTICULAR PURPOSE.
++ *
++ * Note: this software is also available under the Gnu Public License
++ * version 2 or later.
++ */
++
++#include <stdio.h>
++#include <stdlib.h>
++#include <string.h>
++#include <fcntl.h>
++#include <getopt.h>
++#include <signal.h>				/* needed for tdb.h starting with ppp-2.4.3 */
++
++#include "tdb.h"
++#include "pppd.h"
++#include "pathnames.h"
++
++/**
++ * Callback function for tdb_traverse: show a key and its associated data
++ *
++ * @param tdb pointer to database
++ * @param key hash key
++ * @param dbuf data belonging to key
++ * @param state unused data pointer
++ *
++ * @return 0 if success, 1 to stop calling function
++ */
++static int show(TDB_CONTEXT *tdb, TDB_DATA key, TDB_DATA dbuf, void *state)
++{
++	printf("%.*s: \"%.*s\"\n", key.dsize, key.dptr, dbuf.dsize, dbuf.dptr);
++	return 0;
++}
++
++/**
++ * Parse command line option. Option is used to sepcify for which ppp process
++ * information should be shown.
++ *
++ * @param argc  number of options
++ * @param argv  pointer to array with options
++ *
++ * @return empty key if no valid option found, or key selected by config option
++ */
++TDB_DATA parse_options(int argc, char **argv)
++{
++	TDB_DATA key = { NULL, 0 };
++	static char keyname[32] = { 0 };
++	int c;
++	while (1) {
++		int option_index = 0;
++		static struct option long_options[] = {
++			{"pid", 1, 0, 'p'}, {"device", 1, 0, 'd'}, {"ifname", 1, 0, 'i'},
++			{"ipremote", 1, 0, 'r'}, {"help", 0, 0, 'h'}, {0, 0, 0, 0}
++		};
++
++		c = getopt_long (argc, argv, "p:d:i:r:h", long_options, &option_index);
++		if (c == -1) {
++			if ( optind<argc ) {
++				c = '?'; // force display of usage
++			} else {
++				break;
++			}
++		}
++
++		switch (c) {
++		case 'p':
++			snprintf(keyname, sizeof(keyname), "PPPD_PID=%s", optarg);
++			break;
++		case 'i':
++			snprintf(keyname, sizeof(keyname), "IFNAME=%s", optarg);
++			break;
++		case 'd':
++			snprintf(keyname, sizeof(keyname), "DEVICE=%s", optarg);
++			break;
++		case 'r':
++			snprintf(keyname, sizeof(keyname), "IPREMOTE=%s", optarg);
++			break;
++		case '?':
++		case 'h':
++			fprintf(stderr, "Usage: tdbread [--pid pid|--device devname|--ifname ifname|--ipremote ipremote]\n"
++					" If several options are given, only the last one is used.\n");
++			exit(1);
++			break;
++		}
++	}
++
++	if ( *keyname != 0 ) {
++		key.dptr = (char *) keyname;
++		key.dsize = strlen(keyname);
++	}
++
++	return key;
++}
++
++
++int main(int argc, char **argv) {
++	TDB_CONTEXT *pppdb;
++	int rc=1;
++
++	/* open database */
++	pppdb = tdb_open(_PATH_PPPDB, 0, 0, O_RDWR, 0644);
++	if (pppdb == NULL) {
++		fprintf(stderr, "Cannot open DB %s\n", _PATH_PPPDB);
++		return 1;
++	}
++
++	TDB_DATA key = parse_options(argc, argv);
++
++	if (key.dsize==0) {
++		tdb_traverse(pppdb, show, NULL);
++	} else {
++		if (tdb_exists(pppdb, key)) {
++			TDB_DATA key2;
++			/* value of pppd_pid entry points to entry with real info */
++			key2 = tdb_fetch(pppdb, key);
++			if (tdb_exists(pppdb, key2)) {
++				TDB_DATA data;
++				data = tdb_fetch(pppdb, key2);
++				printf("%.*s\n", data.dsize, data.dptr);
++				rc=0;
++			} else {
++				fprintf(stderr, "No data found for %.*s\n", key2.dsize, key2.dptr);
++			}
++		} else {
++			fprintf(stderr, "Key %.*s not found\n", key.dsize, key.dptr);
++		}
++	}
++
++	tdb_close(pppdb);
++
++	return rc;
++}

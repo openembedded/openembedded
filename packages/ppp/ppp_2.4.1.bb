@@ -16,7 +16,9 @@ SRC_URI = "ftp://ftp.samba.org/pub/ppp/ppp-2.4.1.tar.gz \
 	file://ip-down \
 	file://08setupdns \
 	file://92removedns"
-	
+
+SRC_URI_append_nylon = " file://ppp-tdbread.patch;patch=1"
+
 inherit autotools
 
 EXTRA_OEMAKE = "STRIPPROG=${STRIP}"
