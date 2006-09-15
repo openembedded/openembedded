@@ -214,7 +214,7 @@ md5sum OE.mtn.bz2
 bunzip OE.mtn.bz2
 
 #check the development branch
-mtn --mtn=OE.mtn co -b org.openembedded.dev
+mtn --db=OE.mtn co -b org.openembedded.dev
 </screen>
 
            </para>
