@@ -51,7 +51,7 @@ checklink() {
 		value="$(readlink "$link")"
 		if test "$value" = "$targ"
 		then
-			rm "$link"
+			rm "$link$ext"
 			ln -s "$targ"."${PN}" "$link$ext"
 			return 0
 		else
