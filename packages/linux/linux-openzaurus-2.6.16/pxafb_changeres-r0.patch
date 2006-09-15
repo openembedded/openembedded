@@ -1,0 +1,526 @@
+Index: linux-2.6.17/arch/arm/mach-pxa/corgi_lcd.c
+===================================================================
+--- linux-2.6.17.orig/arch/arm/mach-pxa/corgi_lcd.c	2006-06-18 02:49:35.000000000 +0100
++++ linux-2.6.17/arch/arm/mach-pxa/corgi_lcd.c	2006-06-20 13:25:10.000000000 +0100
+@@ -431,10 +431,10 @@
+ 
+ #include <asm/arch/pxafb.h>
+ 
+-void spitz_lcd_power(int on)
++void spitz_lcd_power(int on, struct fb_var_screeninfo *var)
+ {
+ 	if (on)
+-		lcdtg_hw_init(480);
++		lcdtg_hw_init(var->xres);
+ 	else
+ 		lcdtg_suspend();
+ }
+Index: linux-2.6.17/arch/arm/mach-pxa/generic.c
+===================================================================
+--- linux-2.6.17.orig/arch/arm/mach-pxa/generic.c	2006-06-18 02:49:35.000000000 +0100
++++ linux-2.6.17/arch/arm/mach-pxa/generic.c	2006-06-20 13:16:03.000000000 +0100
+@@ -204,13 +204,6 @@
+ 	}
+ };
+ 
+-static struct pxafb_mach_info pxa_fb_info;
+-
+-void __init set_pxa_fb_info(struct pxafb_mach_info *hard_pxa_fb_info)
+-{
+-	memcpy(&pxa_fb_info,hard_pxa_fb_info,sizeof(struct pxafb_mach_info));
+-}
+-
+ static struct resource pxafb_resources[] = {
+ 	[0] = {
+ 		.start	= 0x44000000,
+@@ -230,7 +223,6 @@
+ 	.name		= "pxa2xx-fb",
+ 	.id		= -1,
+ 	.dev		= {
+- 		.platform_data	= &pxa_fb_info,
+ 		.dma_mask	= &fb_dma_mask,
+ 		.coherent_dma_mask = 0xffffffff,
+ 	},
+@@ -238,6 +230,11 @@
+ 	.resource	= pxafb_resources,
+ };
+ 
++void __init set_pxa_fb_info(struct pxafb_mach_info *info)
++{
++	pxafb_device.dev.platform_data = info;
++}
++
+ void __init set_pxa_fb_parent(struct device *parent_dev)
+ {
+ 	pxafb_device.dev.parent = parent_dev;
+Index: linux-2.6.17/arch/arm/mach-pxa/spitz.c
+===================================================================
+--- linux-2.6.17.orig/arch/arm/mach-pxa/spitz.c	2006-06-19 20:06:11.000000000 +0100
++++ linux-2.6.17/arch/arm/mach-pxa/spitz.c	2006-06-20 20:58:24.000000000 +0100
+@@ -433,21 +433,42 @@
+ /*
+  * Spitz PXA Framebuffer
+  */
+-static struct pxafb_mach_info spitz_pxafb_info __initdata = {
+-        .pixclock       = 19231,
+-        .xres           = 480,
+-        .yres           = 640,
+-        .bpp            = 16,
+-        .hsync_len      = 40,
+-        .left_margin    = 46,
+-        .right_margin   = 125,
+-        .vsync_len      = 3,
+-        .upper_margin   = 1,
+-        .lower_margin   = 0,
+-        .sync           = 0,
+-        .lccr0          = LCCR0_Color | LCCR0_Sngl | LCCR0_Act | LCCR0_LDDALT | LCCR0_OUC | LCCR0_CMDIM | LCCR0_RDSTM,
+-        .lccr3          = LCCR3_PixRsEdg | LCCR3_OutEnH,
+-        .pxafb_lcd_power = spitz_lcd_power,
++
++static struct pxafb_mode_info spitz_pxafb_modes[] = {
++{
++	.pixclock       = 19231,
++	.xres           = 480,
++	.yres           = 640,
++	.bpp            = 16,
++	.hsync_len      = 40,
++	.left_margin    = 46,
++	.right_margin   = 125,
++	.vsync_len      = 3,
++	.upper_margin   = 1,
++	.lower_margin   = 0,
++	.sync           = 0,
++},{
++	.pixclock       = 134617,
++	.xres           = 240,
++	.yres           = 320,
++	.bpp            = 16,
++	.hsync_len      = 20,
++	.left_margin    = 20,
++	.right_margin   = 46,
++	.vsync_len      = 2,
++	.upper_margin   = 1,
++	.lower_margin   = 0,
++	.sync           = 0,
++},
++};
++
++static struct pxafb_mach_info spitz_pxafb_info = {
++	.modes          = &spitz_pxafb_modes[0],
++	.num_modes      = 2,
++	.fixed_modes    = 1,
++	.lccr0          = LCCR0_Color | LCCR0_Sngl | LCCR0_Act | LCCR0_LDDALT | LCCR0_OUC | LCCR0_CMDIM | LCCR0_RDSTM,
++	.lccr3          = LCCR3_PixRsEdg | LCCR3_OutEnH,
++	.pxafb_lcd_power = spitz_lcd_power,
+ };
+ 
+ 
+Index: linux-2.6.17/drivers/video/pxafb.c
+===================================================================
+--- linux-2.6.17.orig/drivers/video/pxafb.c	2006-06-18 02:49:35.000000000 +0100
++++ linux-2.6.17/drivers/video/pxafb.c	2006-06-20 21:04:17.000000000 +0100
+@@ -60,7 +60,7 @@
+ #define LCCR3_INVALID_CONFIG_MASK (LCCR3_HSP|LCCR3_VSP|LCCR3_PCD|LCCR3_BPP)
+ 
+ static void (*pxafb_backlight_power)(int);
+-static void (*pxafb_lcd_power)(int);
++static void (*pxafb_lcd_power)(int, struct fb_var_screeninfo *);
+ 
+ static int pxafb_activate_var(struct fb_var_screeninfo *var, struct pxafb_info *);
+ static void set_ctrlr_state(struct pxafb_info *fbi, u_int state);
+@@ -215,6 +215,48 @@
+ #endif
+ 
+ /*
++ * Select the smallest mode that allows the desired resolution to be
++ * displayed. If desired parameters can be rounded up.
++ */
++static struct pxafb_mode_info *pxafb_getmode(struct pxafb_mach_info *mach, struct fb_var_screeninfo *var)
++{
++	struct pxafb_mode_info *mode = NULL;
++	struct pxafb_mode_info *modelist = mach->modes;
++	unsigned int best_x = 0xffffffff, best_y = 0xffffffff;
++	unsigned int i;
++
++	for (i = 0 ; i < mach->num_modes ; i++) {
++		if (modelist[i].xres >= var->xres && modelist[i].yres >= var->yres &&
++				modelist[i].xres < best_x && modelist[i].yres < best_y &&
++				modelist[i].bpp >= var->bits_per_pixel ) {
++			best_x = modelist[i].xres;
++			best_y = modelist[i].yres;
++			mode = &modelist[i];
++		}
++	}
++
++	return mode;
++}
++
++static void pxafb_setmode(struct fb_var_screeninfo *var, struct pxafb_mode_info *mode)
++{
++	var->xres		= mode->xres;
++	var->yres		= mode->yres;
++	var->bits_per_pixel	= mode->bpp;
++	var->pixclock		= mode->pixclock;
++	var->hsync_len		= mode->hsync_len;
++	var->left_margin	= mode->left_margin;
++	var->right_margin	= mode->right_margin;
++	var->vsync_len		= mode->vsync_len;
++	var->upper_margin	= mode->upper_margin;
++	var->lower_margin	= mode->lower_margin;
++	var->sync		= mode->sync;
++	var->grayscale		= mode->cmap_greyscale;
++	var->xres_virtual 	= var->xres;
++	var->yres_virtual	= var->yres;
++}
++
++/*
+  *  pxafb_check_var():
+  *    Get the video params out of 'var'. If a value doesn't fit, round it up,
+  *    if it's too big, return -EINVAL.
+@@ -226,15 +268,29 @@
+ static int pxafb_check_var(struct fb_var_screeninfo *var, struct fb_info *info)
+ {
+ 	struct pxafb_info *fbi = (struct pxafb_info *)info;
++	struct pxafb_mach_info *inf = fbi->dev->platform_data;
+ 
+ 	if (var->xres < MIN_XRES)
+ 		var->xres = MIN_XRES;
+ 	if (var->yres < MIN_YRES)
+ 		var->yres = MIN_YRES;
+-	if (var->xres > fbi->max_xres)
+-		return -EINVAL;
+-	if (var->yres > fbi->max_yres)
+-		return -EINVAL;
++
++	if (inf->fixed_modes) {
++		struct pxafb_mode_info *mode;
++
++		mode = pxafb_getmode(inf, var);
++		if (!mode)
++			return -EINVAL;
++		pxafb_setmode(var, mode);
++	} else {
++		if (var->xres > inf->modes->xres)
++			return -EINVAL;
++		if (var->yres > inf->modes->yres)
++			return -EINVAL;
++		if (var->bits_per_pixel > inf->modes->bpp)
++			return -EINVAL;
++	}
++
+ 	var->xres_virtual =
+ 		max(var->xres_virtual, var->xres);
+ 	var->yres_virtual =
+@@ -694,7 +750,7 @@
+ 	pr_debug("pxafb: LCD power o%s\n", on ? "n" : "ff");
+ 
+ 	if (pxafb_lcd_power)
+-		pxafb_lcd_power(on);
++		pxafb_lcd_power(on, &fbi->fb.var);
+ }
+ 
+ static void pxafb_setup_gpio(struct pxafb_info *fbi)
+@@ -870,9 +926,11 @@
+ 		 * registers.
+ 		 */
+ 		if (old_state == C_ENABLE) {
++			__pxafb_lcd_power(fbi, 0);
+ 			pxafb_disable_controller(fbi);
+ 			pxafb_setup_gpio(fbi);
+ 			pxafb_enable_controller(fbi);
++			__pxafb_lcd_power(fbi, 1);
+ 		}
+ 		break;
+ 
+@@ -1050,6 +1108,8 @@
+ 	struct pxafb_info *fbi;
+ 	void *addr;
+ 	struct pxafb_mach_info *inf = dev->platform_data;
++	struct pxafb_mode_info *mode = inf->modes;
++	int i, smemlen;
+ 
+ 	/* Alloc the pxafb_info and pseudo_palette in one step */
+ 	fbi = kmalloc(sizeof(struct pxafb_info) + sizeof(u32) * 16, GFP_KERNEL);
+@@ -1083,31 +1143,21 @@
+ 	addr = addr + sizeof(struct pxafb_info);
+ 	fbi->fb.pseudo_palette	= addr;
+ 
+-	fbi->max_xres			= inf->xres;
+-	fbi->fb.var.xres		= inf->xres;
+-	fbi->fb.var.xres_virtual	= inf->xres;
+-	fbi->max_yres			= inf->yres;
+-	fbi->fb.var.yres		= inf->yres;
+-	fbi->fb.var.yres_virtual	= inf->yres;
+-	fbi->max_bpp			= inf->bpp;
+-	fbi->fb.var.bits_per_pixel	= inf->bpp;
+-	fbi->fb.var.pixclock		= inf->pixclock;
+-	fbi->fb.var.hsync_len		= inf->hsync_len;
+-	fbi->fb.var.left_margin		= inf->left_margin;
+-	fbi->fb.var.right_margin	= inf->right_margin;
+-	fbi->fb.var.vsync_len		= inf->vsync_len;
+-	fbi->fb.var.upper_margin	= inf->upper_margin;
+-	fbi->fb.var.lower_margin	= inf->lower_margin;
+-	fbi->fb.var.sync		= inf->sync;
+-	fbi->fb.var.grayscale		= inf->cmap_greyscale;
++	pxafb_setmode(&fbi->fb.var, mode);
++
+ 	fbi->cmap_inverse		= inf->cmap_inverse;
+ 	fbi->cmap_static		= inf->cmap_static;
++
+ 	fbi->lccr0			= inf->lccr0;
+ 	fbi->lccr3			= inf->lccr3;
+ 	fbi->state			= C_STARTUP;
+ 	fbi->task_state			= (u_char)-1;
+-	fbi->fb.fix.smem_len		= fbi->max_xres * fbi->max_yres *
+-					  fbi->max_bpp / 8;
++
++	for (i = 0; i < inf->num_modes; i++) {
++		smemlen = mode[i].xres * mode[i].yres * mode[i].bpp / 8;
++		if (smemlen > fbi->fb.fix.smem_len)
++			fbi->fb.fix.smem_len = smemlen;
++	}
+ 
+ 	init_waitqueue_head(&fbi->ctrlr_wait);
+ 	INIT_WORK(&fbi->task, pxafb_task, fbi);
+@@ -1308,12 +1358,12 @@
+ 	    (inf->lccr0 & LCCR0_SDS) == LCCR0_Dual)
+                 dev_warn(&dev->dev, "Dual panel only valid in passive mode\n");
+         if ((inf->lccr0 & LCCR0_PAS) == LCCR0_Pas &&
+-             (inf->upper_margin || inf->lower_margin))
++             (inf->modes->upper_margin || inf->modes->lower_margin))
+                 dev_warn(&dev->dev, "Upper and lower margins must be 0 in passive mode\n");
+ #endif
+ 
+-	dev_dbg(&dev->dev, "got a %dx%dx%d LCD\n",inf->xres, inf->yres, inf->bpp);
+-	if (inf->xres == 0 || inf->yres == 0 || inf->bpp == 0) {
++	dev_dbg(&dev->dev, "got a %dx%dx%d LCD\n",inf->modes->xres, inf->modes->yres, inf->modes->bpp);
++	if (inf->modes->xres == 0 || inf->modes->yres == 0 || inf->modes->bpp == 0) {
+ 		dev_err(&dev->dev, "Invalid resolution or bit depth\n");
+ 		ret = -EINVAL;
+ 		goto failed;
+Index: linux-2.6.17/drivers/video/pxafb.h
+===================================================================
+--- linux-2.6.17.orig/drivers/video/pxafb.h	2006-06-18 02:49:35.000000000 +0100
++++ linux-2.6.17/drivers/video/pxafb.h	2006-06-20 11:59:44.000000000 +0100
+@@ -41,10 +41,6 @@
+ 	struct fb_info		fb;
+ 	struct device		*dev;
+ 
+-	u_int			max_bpp;
+-	u_int			max_xres;
+-	u_int			max_yres;
+-
+ 	/*
+ 	 * These are the addresses we mapped
+ 	 * the framebuffer memory region to.
+Index: linux-2.6.17/include/asm-arm/arch-pxa/pxafb.h
+===================================================================
+--- linux-2.6.17.orig/include/asm-arm/arch-pxa/pxafb.h	2006-06-18 02:49:35.000000000 +0100
++++ linux-2.6.17/include/asm-arm/arch-pxa/pxafb.h	2006-06-20 13:37:48.000000000 +0100
+@@ -12,12 +12,14 @@
+  *  published by the Free Software Foundation.
+  */
+ 
++#include <linux/fb.h>
++
+ /*
+  * This structure describes the machine which we are running on.
+  * It is set in linux/arch/arm/mach-pxa/machine_name.c and used in the probe routine
+  * of linux/drivers/video/pxafb.c
+  */
+-struct pxafb_mach_info {
++struct pxafb_mode_info {
+ 	u_long		pixclock;
+ 
+ 	u_short		xres;
+@@ -34,6 +36,14 @@
+ 	u_char		sync;
+ 
+ 	u_int		cmap_greyscale:1,
++			unused:31;
++};
++
++struct pxafb_mach_info {
++	struct pxafb_mode_info *modes;
++	unsigned int num_modes;
++
++	u_int		fixed_modes:1,
+ 			cmap_inverse:1,
+ 			cmap_static:1,
+ 			unused:29;
+@@ -62,7 +72,7 @@
+ 	u_int		lccr3;
+ 
+ 	void (*pxafb_backlight_power)(int);
+-	void (*pxafb_lcd_power)(int);
++	void (*pxafb_lcd_power)(int, struct fb_var_screeninfo *);
+ 
+ };
+ void set_pxa_fb_info(struct pxafb_mach_info *hard_pxa_fb_info);
+Index: linux-2.6.17/include/asm-arm/arch-pxa/spitz.h
+===================================================================
+--- linux-2.6.17.orig/include/asm-arm/arch-pxa/spitz.h	2006-06-18 02:49:35.000000000 +0100
++++ linux-2.6.17/include/asm-arm/arch-pxa/spitz.h	2006-06-20 13:27:51.000000000 +0100
+@@ -15,6 +15,8 @@
+ #define __ASM_ARCH_SPITZ_H  1
+ #endif
+ 
++#include <linux/fb.h>
++
+ /* Spitz/Akita GPIOs */
+ 
+ #define SPITZ_GPIO_KEY_INT         (0) /* Key Interrupt */
+@@ -155,4 +157,4 @@
+ extern struct platform_device spitzssp_device;
+ extern struct sharpsl_charger_machinfo spitz_pm_machinfo;
+ 
+-extern void spitz_lcd_power(int on);
++extern void spitz_lcd_power(int on, struct fb_var_screeninfo *var);
+Index: linux-2.6.17/arch/arm/mach-pxa/idp.c
+===================================================================
+--- linux-2.6.17.orig/arch/arm/mach-pxa/idp.c	2006-06-18 02:49:35.000000000 +0100
++++ linux-2.6.17/arch/arm/mach-pxa/idp.c	2006-06-20 21:20:35.000000000 +0100
+@@ -81,7 +81,7 @@
+ 	}
+ }
+ 
+-static void idp_lcd_power(int on)
++static void idp_lcd_power(int on, struct fb_var_screeninfo *var)
+ {
+ 	if (on) {
+ 		IDP_CPLD_LCD |= (1<<0);
+@@ -98,7 +98,7 @@
+ 	idp_vlcd(on);
+ }
+ 
+-static struct pxafb_mach_info sharp_lm8v31 __initdata = {
++static struct pxafb_mode_info sharp_lm8v31_mode = {
+ 	.pixclock	= 270000,
+ 	.xres		= 640,
+ 	.yres		= 480,
+@@ -111,6 +111,11 @@
+ 	.lower_margin	= 0,
+ 	.sync		= FB_SYNC_HOR_HIGH_ACT | FB_SYNC_VERT_HIGH_ACT,
+ 	.cmap_greyscale	= 0,
++};
++
++static struct pxafb_mach_info sharp_lm8v31 = {
++	.modes          = &sharp_lm8v31_mode,
++	.num_modes      = 1,
+ 	.cmap_inverse	= 0,
+ 	.cmap_static	= 0,
+ 	.lccr0		= LCCR0_SDS,
+Index: linux-2.6.17/arch/arm/mach-pxa/lubbock.c
+===================================================================
+--- linux-2.6.17.orig/arch/arm/mach-pxa/lubbock.c	2006-06-18 02:49:35.000000000 +0100
++++ linux-2.6.17/arch/arm/mach-pxa/lubbock.c	2006-06-20 21:21:37.000000000 +0100
+@@ -274,7 +274,7 @@
+ 	&lubbock_flash_device[1],
+ };
+ 
+-static struct pxafb_mach_info sharp_lm8v31 __initdata = {
++static struct pxafb_mode_info sharp_lm8v31_mode = {
+ 	.pixclock	= 270000,
+ 	.xres		= 640,
+ 	.yres		= 480,
+@@ -287,6 +287,11 @@
+ 	.lower_margin	= 0,
+ 	.sync		= FB_SYNC_HOR_HIGH_ACT | FB_SYNC_VERT_HIGH_ACT,
+ 	.cmap_greyscale	= 0,
++};
++
++static struct pxafb_mach_info sharp_lm8v31 = {
++	.modes		= &sharp_lm8v31_mode,
++	.num_modes	= 1,
+ 	.cmap_inverse	= 0,
+ 	.cmap_static	= 0,
+ 	.lccr0		= LCCR0_SDS,
+Index: linux-2.6.17/arch/arm/mach-pxa/mainstone.c
+===================================================================
+--- linux-2.6.17.orig/arch/arm/mach-pxa/mainstone.c	2006-06-18 02:49:35.000000000 +0100
++++ linux-2.6.17/arch/arm/mach-pxa/mainstone.c	2006-06-20 21:26:31.000000000 +0100
+@@ -278,7 +278,7 @@
+ 	}
+ }
+ 
+-static struct pxafb_mach_info toshiba_ltm04c380k __initdata = {
++static struct pxafb_mode_info toshiba_ltm04c380k_mode = {
+ 	.pixclock		= 50000,
+ 	.xres			= 640,
+ 	.yres			= 480,
+@@ -290,12 +290,9 @@
+ 	.upper_margin		= 0,
+ 	.lower_margin		= 0,
+ 	.sync			= FB_SYNC_HOR_HIGH_ACT|FB_SYNC_VERT_HIGH_ACT,
+-	.lccr0			= LCCR0_Act,
+-	.lccr3			= LCCR3_PCP,
+-	.pxafb_backlight_power	= mainstone_backlight_power,
+ };
+ 
+-static struct pxafb_mach_info toshiba_ltm035a776c __initdata = {
++static struct pxafb_mode_info toshiba_ltm035a776c_mode = {
+ 	.pixclock		= 110000,
+ 	.xres			= 240,
+ 	.yres			= 320,
+@@ -307,6 +304,10 @@
+ 	.upper_margin		= 1,
+ 	.lower_margin		= 10,
+ 	.sync			= FB_SYNC_HOR_HIGH_ACT|FB_SYNC_VERT_HIGH_ACT,
++};
++
++static struct pxafb_mach_info mainstone_pxafb_info = {
++	.num_modes      	= 1,
+ 	.lccr0			= LCCR0_Act,
+ 	.lccr3			= LCCR3_PCP,
+ 	.pxafb_backlight_power	= mainstone_backlight_power,
+@@ -447,9 +448,11 @@
+ 	/* reading Mainstone's "Virtual Configuration Register"
+ 	   might be handy to select LCD type here */
+ 	if (0)
+-		set_pxa_fb_info(&toshiba_ltm04c380k);
++		mainstone_pxafb_info.modes = &toshiba_ltm04c380k_mode;
+ 	else
+-		set_pxa_fb_info(&toshiba_ltm035a776c);
++		mainstone_pxafb_info.modes = &toshiba_ltm035a776c_mode;
++
++	set_pxa_fb_info(&mainstone_pxafb_info);
+ 
+ 	pxa_set_mci_info(&mainstone_mci_platform_data);
+ 	pxa_set_ficp_info(&mainstone_ficp_platform_data);
+Index: linux-2.6.17/arch/arm/mach-pxa/poodle.c
+===================================================================
+--- linux-2.6.17.orig/arch/arm/mach-pxa/poodle.c	2006-06-19 20:06:05.000000000 +0100
++++ linux-2.6.17/arch/arm/mach-pxa/poodle.c	2006-06-20 21:27:53.000000000 +0100
+@@ -297,27 +297,25 @@
+ 
+ 
+ /* PXAFB device */
+-static struct pxafb_mach_info poodle_fb_info __initdata = {
++static struct pxafb_mode_info poodle_fb_mode = {
+ 	.pixclock	= 144700,
+-
+ 	.xres		= 320,
+ 	.yres		= 240,
+ 	.bpp		= 16,
+-
+ 	.hsync_len	= 7,
+ 	.left_margin	= 11,
+ 	.right_margin	= 30,
+-
+ 	.vsync_len	= 2,
+ 	.upper_margin	= 2,
+ 	.lower_margin	= 0,
+ 	.sync		= FB_SYNC_HOR_HIGH_ACT | FB_SYNC_VERT_HIGH_ACT,
++};
+ 
++static struct pxafb_mach_info poodle_fb_info = {
++	.modes		= &poodle_fb_mode,
++	.num_modes	= 1,
+ 	.lccr0		= LCCR0_Act | LCCR0_Sngl | LCCR0_Color,
+ 	.lccr3		= 0,
+-
+-	.pxafb_backlight_power	= NULL,
+-	.pxafb_lcd_power	= NULL,
+ };
+ 
+ static struct platform_device *devices[] __initdata = {
