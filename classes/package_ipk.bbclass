@@ -129,6 +129,7 @@ python do_package_ipk () {
 			from bb import note
 			note("Not creating empty archive for %s-%s-%s" % (pkg, bb.data.getVar('PV', localdata, 1), bb.data.getVar('PR', localdata, 1)))
 			continue
+
 		controldir = os.path.join(root, 'CONTROL')
 		bb.mkdirhier(controldir)
 		try:
@@ -219,6 +220,8 @@ python do_package_ipk () {
                                                           bb.data.getVar("IPKGBUILDCMD",d,1), pkg, pkgoutdir))
 		if ret != 0:
 			raise bb.build.FuncFailed("ipkg-build execution failed")
+
+		file(bb.data.expand('${STAGING_DIR}/pkgdata/runtime/%s.packaged' % pkg, d), 'w').close()
 
 		for script in ["preinst", "postinst", "prerm", "postrm", "control" ]:
 			scriptfile = os.path.join(controldir, script)
