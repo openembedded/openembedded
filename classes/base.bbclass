@@ -1,3 +1,4 @@
+BB_DEFAULT_TASK = "build"
 PATCHES_DIR="${S}"
 
 def base_dep_prepend(d):
@@ -310,6 +311,16 @@ python base_do_clean() {
 	os.system('rm -f '+ dir)
 }
 
+addtask rebuild
+do_rebuild[dirs] = "${TOPDIR}"
+do_rebuild[nostamp] = "1"
+do_rebuild[bbdepcmd] = ""
+python base_do_rebuild() {
+	"""rebuild a package"""
+	bb.build.exec_task('do_clean', d)
+	bb.build.exec_task('do_' + bb.data.getVar('BB_DEFAULT_TASK', d, 1), d)
+}
+
 addtask mrproper
 do_mrproper[dirs] = "${TOPDIR}"
 do_mrproper[nostamp] = "1"
@@ -506,7 +517,8 @@ python base_eventhandler() {
 		msg += messages.get(name[5:]) or name[5:]
 	elif name == "UnsatisfiedDep":
 		msg += "package %s: dependency %s %s" % (e.pkg, e.dep, name[:-3].lower())
-	note(msg)
+	if msg:
+		note(msg)
 
 	if name.startswith("BuildStarted"):
 		bb.data.setVar( 'BB_VERSION', bb.__version__, e.data )
@@ -721,6 +733,14 @@ python __anonymous () {
 		this_host = bb.data.getVar('HOST_SYS', d, 1)
 		if not re.match(need_host, this_host):
 			raise bb.parse.SkipPackage("incompatible with host %s" % this_host)
+
+	need_machine = bb.data.getVar('COMPATIBLE_MACHINE', d, 1)
+	if need_machine:
+		import re
+		this_machine = bb.data.getVar('MACHINE', d, 1)
+		if this_machine and not re.match(need_machine, this_machine):
+			raise bb.parse.SkipPackage("incompatible with machine %s" % this_machine)
+
 	
 	pn = bb.data.getVar('PN', d, 1)
 
@@ -783,7 +803,7 @@ python do_emit_manifest () {
 	bb.build.exec_func('parse_manifest', d)
 }
 
-EXPORT_FUNCTIONS do_clean do_mrproper do_fetch do_unpack do_configure do_compile do_install do_package do_patch do_populate_pkgs do_stage
+EXPORT_FUNCTIONS do_clean do_mrproper do_fetch do_unpack do_configure do_compile do_install do_package do_patch do_populate_pkgs do_stage do_rebuild
 
 MIRRORS[func] = "0"
 MIRRORS () {
@@ -830,8 +850,5 @@ ftp://ftp.gnutls.org/pub/gnutls http://josefsson.org/gnutls/releases/
 
 ftp://.*/.*/	http://ewi546.ewi.utwente.nl/mirror/www.openzaurus.org/official/unstable/3.5.4/sources/
 http://.*/.*/	http://ewi546.ewi.utwente.nl/mirror/www.openzaurus.org/official/unstable/3.5.4/sources/
-
-ftp://.*/.*/	http://www.oesources.org/source/current/
-http://.*/.*/	http://www.oesources.org/source/current/
 }
 
