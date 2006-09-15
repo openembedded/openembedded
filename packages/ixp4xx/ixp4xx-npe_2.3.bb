@@ -39,7 +39,7 @@ do_compile() {
 
 do_install() {
 	install -d ${D}/lib/firmware
-	install ${S}/NPE-B.010c0200 ${D}/lib/firmware/
+	install ${S}/NPE-B ${D}/lib/firmware/
 }
 
 do_stage() {
