@@ -401,21 +401,25 @@ python populate_packages () {
 		if val:
 			f.write('%s_%s: %s\n' % (var, pkg, encode(val)))
 
-	data_file = os.path.join(workdir, "install", pn + ".package")
+	data_file = bb.data.expand("${STAGING_DIR}/pkgdata/${PN}", d)
 	f = open(data_file, 'w')
 	f.write("PACKAGES: %s\n" % packages)
-	for pkg in package_list:
-		write_if_exists(f, pkg, 'DESCRIPTION')
-		write_if_exists(f, pkg, 'RDEPENDS')
-		write_if_exists(f, pkg, 'RPROVIDES')
-		write_if_exists(f, pkg, 'PKG')
-		write_if_exists(f, pkg, 'ALLOW_EMPTY')
-		write_if_exists(f, pkg, 'FILES')
-		write_if_exists(f, pkg, 'pkg_postinst')
-		write_if_exists(f, pkg, 'pkg_postrm')
-		write_if_exists(f, pkg, 'pkg_preinst')
-		write_if_exists(f, pkg, 'pkg_prerm')
 	f.close()
+
+	for pkg in package_list:
+		subdata_file = bb.data.expand("${STAGING_DIR}/pkgdata/runtime/%s" % pkg, d)
+		sf = open(subdata_file, 'w')
+		write_if_exists(sf, pkg, 'DESCRIPTION')
+		write_if_exists(sf, pkg, 'RDEPENDS')
+		write_if_exists(sf, pkg, 'RPROVIDES')
+		write_if_exists(sf, pkg, 'PKG')
+		write_if_exists(sf, pkg, 'ALLOW_EMPTY')
+		write_if_exists(sf, pkg, 'FILES')
+		write_if_exists(sf, pkg, 'pkg_postinst')
+		write_if_exists(sf, pkg, 'pkg_postrm')
+		write_if_exists(sf, pkg, 'pkg_preinst')
+		write_if_exists(sf, pkg, 'pkg_prerm')
+		sf.close()
 	bb.build.exec_func("read_subpackage_metadata", d)
 }
 
@@ -423,6 +427,58 @@ ldconfig_postinst_fragment() {
 if [ x"$D" = "x" ]; then
 	ldconfig
 fi
+}
+
+python package_depchains() {
+	"""
+	For a given set of prefix and postfix modifiers, make those packages
+	RRECOMMENDS on the corresponding packages for its DEPENDS.
+
+	Example:  If package A depends upon package B, and A's .bb emits an
+	A-dev package, this would make A-dev Recommends: B-dev.
+	"""
+
+	packages  = bb.data.getVar('PACKAGES', d, 1)
+	postfixes = (bb.data.getVar('DEPCHAIN_POST', d, 1) or '').split()
+	prefixes  = (bb.data.getVar('DEPCHAIN_PRE', d, 1) or '').split()
+
+	def pkg_addrrecs(pkg, base, func, d):
+		rdepends = explode_deps(bb.data.getVar('RDEPENDS_' + base, d, 1) or bb.data.getVar('RDEPENDS', d, 1) or "")
+		# bb.note('rdepends for %s is %s' % (base, rdepends))
+		rreclist = []
+
+		for depend in rdepends:
+			split_depend = depend.split(' (')
+			name = split_depend[0].strip()
+			func(rreclist, name)
+
+		oldrrec = bb.data.getVar('RRECOMMENDS_%s', d) or ''
+		bb.data.setVar('RRECOMMENDS_%s' % pkg, oldrrec + ' '.join(rreclist), d)
+
+	def packaged(pkg, d):
+		return os.access(bb.data.expand('${STAGING_DIR}/pkgdata/runtime/%s.packaged' % pkg, d), os.R_OK)
+
+	for pkg in packages.split():
+		for postfix in postfixes:
+			def func(list, name):
+				pkg = '%s%s' % (name, postfix)
+				if packaged(pkg, d):
+					list.append(pkg)
+
+			base = pkg[:-len(postfix)]
+			if pkg.endswith(postfix):
+				pkg_addrrecs(pkg, base, func, d)
+				continue
+
+		for prefix in prefixes:
+			def func(list, name):
+				pkg = '%s%s' % (prefix, name)
+				if packaged(pkg, d):
+					list.append(pkg)
+
+			base = pkg[len(prefix):]
+			if pkg.startswith(prefix):
+				pkg_addrrecs(pkg, base, func, d)
 }
 
 python package_do_shlibs() {
@@ -730,9 +786,10 @@ python package_do_split_locales() {
 	bb.data.setVar('RDEPENDS_%s' % mainpkg, ' '.join(rdep), d)
 }
 
-PACKAGEFUNCS ?= " package_do_split_locales \
+PACKAGEFUNCS = "do_install package_do_split_locales \
 		populate_packages package_do_shlibs \
-		package_do_pkgconfig read_shlibdeps"
+		package_do_pkgconfig read_shlibdeps \
+		package_depchains"
 python package_do_package () {
 	for f in (bb.data.getVar('PACKAGEFUNCS', d, 1) or '').split():
 		bb.build.exec_func(f, d)
@@ -741,6 +798,6 @@ python package_do_package () {
 do_package[dirs] = "${D}"
 # shlibs requires any DEPENDS to have already packaged for the *.list files
 do_package[deptask] = "do_package"
-populate_packages[dirs] = "${D}"
+populate_packages[dirs] = "${STAGING_DIR}/pkgdata/runtime ${D}"
 EXPORT_FUNCTIONS do_package do_shlibs do_split_locales mapping_rename_hook
 addtask package before do_build after do_install

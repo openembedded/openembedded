@@ -10,6 +10,7 @@ TARGET_VENDOR = "-angstrom"
 # Can be "glibc" and "uclibc"
 ANGSTROM_MODE ?= "glibc"
 
+DEPLOY_DIR = "${TMPDIR}/deploy/${ANGSTROM_MODE}"
 require conf/distro/include/angstrom-${ANGSTROM_MODE}.inc
 
 #Use this variable in feeds and other parts that need a URI
