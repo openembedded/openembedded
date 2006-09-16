@@ -786,7 +786,7 @@ python package_do_split_locales() {
 	bb.data.setVar('RDEPENDS_%s' % mainpkg, ' '.join(rdep), d)
 }
 
-PACKAGEFUNCS = "do_install package_do_split_locales \
+PACKAGEFUNCS = "package_do_split_locales \
 		populate_packages package_do_shlibs \
 		package_do_pkgconfig read_shlibdeps \
 		package_depchains"
