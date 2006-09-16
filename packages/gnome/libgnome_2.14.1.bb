@@ -5,7 +5,7 @@ PR = "r0"
 
 inherit gnome
 
-DEPENDS = "gconf-native gnome-vfs libbonobo"
+DEPENDS = "gconf-native gnome-vfs libbonobo esound"
 
 EXTRA_OECONF = "--disable-gtk-doc"
 
