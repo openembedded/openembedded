@@ -3,7 +3,7 @@ SECTION = "x11/libs"
 PRIORITY = "optional"
 LICENSE = "BSD-X"
 
-PV = "0.0+git${DATE}"
+PV = "0.0+git${SRCDATE}"
 
 DEPENDS = "virtual/libx11 calibrateproto libxext"
 
