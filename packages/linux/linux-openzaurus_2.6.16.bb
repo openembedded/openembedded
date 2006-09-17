@@ -1,6 +1,6 @@
 require linux-openzaurus.inc
 
-PR = "r46"
+PR = "r47"
 
 # Handy URLs
 # git://rsync.kernel.org/pub/scm/linux/kernel/git/torvalds/linux-2.6.git \
@@ -105,6 +105,7 @@ SRC_URI = "http://www.kernel.org/pub/linux/kernel/v2.6/linux-2.6.16.tar.bz2 \
            ${RPSRC}/poodle_ts_hack-r0.patch;patch=1;status=hack \
            file://pxa-serial-hack.patch;patch=1;status=hack \
            file://connectplus-remove-ide-HACK.patch;patch=1;status=hack \
+           file://orinoco-remove-all-which-are-in-hostap-HACK.patch;patch=1;status=unmergable-hack \
            file://squashfs3.0-2.6.15.patch;patch=1;status=external \
            file://defconfig-c7x0 \
            file://defconfig-ipaq-pxa270 \
