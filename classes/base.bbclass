@@ -573,7 +573,7 @@ python do_populate_staging () {
 }
 
 addtask install after do_compile 
-do_install[dirs] = "${S} ${B}"
+do_install[dirs] = "${S} ${B} ${D}"
 
 base_do_install() {
 	:
