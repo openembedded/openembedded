@@ -1,0 +1,31 @@
+--- linux-2.6.17/include/asm-sh/io.h_orig	2006-09-17 22:52:10.000000000 +0000
++++ linux-2.6.17/include/asm-sh/io.h	2006-09-17 22:54:01.000000000 +0000
+@@ -138,17 +138,17 @@
+ #define readl_relaxed(a) readl(a)
+ 
+ /* Simple MMIO */
+-#define ioread8(a)		readb(a)
+-#define ioread16(a)		readw(a)
+-#define ioread16be(a)		be16_to_cpu(__raw_readw((a)))
+-#define ioread32(a)		readl(a)
+-#define ioread32be(a)		be32_to_cpu(__raw_readl((a)))
+-
+-#define iowrite8(v,a)		writeb((v),(a))
+-#define iowrite16(v,a)		writew((v),(a))
+-#define iowrite16be(v,a)	__raw_writew(cpu_to_be16((v)),(a))
+-#define iowrite32(v,a)		writel((v),(a))
+-#define iowrite32be(v,a)	__raw_writel(cpu_to_be32((v)),(a))
++#define ioread8(a)              inb(a)
++#define ioread16(a)             inw(a)
++#define ioread16be(a)           be16_to_cpu(inw((a)))
++#define ioread32(a)             inl(a)
++#define ioread32be(a)           be32_to_cpu(inl((a)))
++
++#define iowrite8(v,a)           outb((v),(a))
++#define iowrite16(v,a)          outw((v),(a))
++#define iowrite16be(v,a)        outw(cpu_to_be16((v)),(a))
++#define iowrite32(v,a)          outl((v),(a))
++#define iowrite32be(v,a)        outl(cpu_to_be32((v)),(a))
+ 
+ #define ioread8_rep(a,d,c)	insb((a),(d),(c))
+ #define ioread16_rep(a,d,c)	insw((a),(d),(c))
