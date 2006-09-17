@@ -14,3 +14,8 @@ EXTRA_OECONF = "--disable-nls"
 do_configure () {
 	oe_runconf
 }
+
+do_test() {
+    oe_runmake check
+}
+
