@@ -1,5 +1,6 @@
 require git.bb
 inherit native
+DEPENDS = "expat-native openssl-native curl-native"
 
 do_stage () {
 	oe_runmake install bindir=${STAGING_BINDIR} \
