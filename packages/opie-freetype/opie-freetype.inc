@@ -12,3 +12,10 @@ S = "${WORKDIR}/freetype"
 inherit opie
 
 EXTRA_QMAKEVARS_POST += "INCLUDEPATH+=${STAGING_INCDIR}/freetype2"
+
+do_install () {
+       install -d ${D}${palmtopdir}/bin/
+       install -d ${D}${palmtopdir}/lib/
+       oe_libinstall -so libfreetypefactory ${D}${palmtopdir}/lib
+}
+DEBIAN_NOAUTONAME_opie-freetype = "1"
