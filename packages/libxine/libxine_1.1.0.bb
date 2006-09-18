@@ -5,7 +5,7 @@ PRIORITY = "optional"
 LICENSE = "GPL"
 DEPENDS = "zlib libogg libvorbis tremor libmad libmodplug esound-gpe virtual/libx11 libxext libpng"
 PROVIDES = "virtual/libxine"
-PR = "r0"
+PR = "r1"
 
 inherit autotools pkgconfig gettext binconfig
 
@@ -22,6 +22,7 @@ SRC_URI = "${SOURCEFORGE_MIRROR}/xine/xine-lib-${PV}.tar.gz \
     file://mpegvideo-static-inlinine.patch;patch=1 \
     file://no-caca.patch;patch=1 \
     file://dont-have-xv.patch;patch=1 \
+    file://gcc41.patch;patch=1"
 "
 
 DEFAULT_PREFERENCE = "-1"
