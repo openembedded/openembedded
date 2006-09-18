@@ -1,0 +1,47 @@
+--- osb-jscore-0.5.0/kjs/ustring.cpp_orig	2006-09-18 01:29:11.000000000 +0000
++++ osb-jscore-0.5.0/kjs/ustring.cpp	2006-09-18 01:29:46.000000000 +0000
+@@ -132,7 +132,7 @@
+   return *this;
+ }
+ 
+-bool KJS::operator==(const KJS::CString& c1, const KJS::CString& c2)
++bool operator==(const KJS::CString& c1, const KJS::CString& c2)
+ {
+   int len = c1.size();
+   return len == c2.size() && (len == 0 || memcmp(c1.c_str(), c2.c_str(), len) == 0);
+@@ -1094,7 +1094,7 @@
+   rep->deref();
+ }
+ 
+-bool KJS::operator==(const UString& s1, const UString& s2)
++bool operator==(const UString& s1, const UString& s2)
+ {
+   if (s1.rep->len != s2.rep->len)
+     return false;
+@@ -1103,7 +1103,7 @@
+ 		 s1.rep->len * sizeof(UChar)) == 0);
+ }
+ 
+-bool KJS::operator==(const UString& s1, const char *s2)
++bool operator==(const UString& s1, const char *s2)
+ {
+   if (s2 == 0) {
+     return s1.isEmpty();
+@@ -1121,7 +1121,7 @@
+   return u == uend && *s2 == 0;
+ }
+ 
+-bool KJS::operator<(const UString& s1, const UString& s2)
++bool operator<(const UString& s1, const UString& s2)
+ {
+   const int l1 = s1.size();
+   const int l2 = s2.size();
+@@ -1140,7 +1140,7 @@
+   return (l1 < l2);
+ }
+ 
+-int KJS::compare(const UString& s1, const UString& s2)
++int compare(const UString& s1, const UString& s2)
+ {
+   const int l1 = s1.size();
+   const int l2 = s2.size();

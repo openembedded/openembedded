@@ -11,7 +11,8 @@ SRC_URI = "${SOURCEFORGE_MIRROR}/gtk-webcore/osb-jscore-${PV}.tar.gz \
            file://libm.patch;patch=1"
 
 SRC_URI_append_sh3 = " file://superh-aclocal.patch;patch=1 \
-                       file://gcc4-fno-threadsafe-statics.patch;patch=1"
+                       file://gcc4-fno-threadsafe-statics.patch;patch=1 \
+		       file://superh-ustring-declaration-error.patch;patch=1"
 
 inherit autotools pkgconfig
 
