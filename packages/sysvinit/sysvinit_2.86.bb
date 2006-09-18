@@ -91,7 +91,7 @@ EOF
 	ln -sf ../init.d/bootlogd ${D}${sysconfdir}/rcS.d/S07bootlogd
 	for level in 2 3 4 5; do
 		install -d ${D}${sysconfdir}/rc$level.d
-		ln -s ../init.d/stop-bootlogd ${D}${sysconfdir}/rc$level.d/S99stop-bootlogd
+		ln -sf ../init.d/stop-bootlogd ${D}${sysconfdir}/rc$level.d/S99stop-bootlogd
 	done
 	mv                 ${D}${base_sbindir}/init               ${D}${base_sbindir}/init.${PN}
 	mv ${D}${base_bindir}/pidof ${D}${base_bindir}/pidof.${PN}
