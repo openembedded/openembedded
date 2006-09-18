@@ -1,0 +1,11 @@
+--- osb-jscore-0.5.0/configure.in_orig	2006-09-18 00:37:27.000000000 +0000
++++ osb-jscore-0.5.0/configure.in	2006-09-18 00:37:51.000000000 +0000
+@@ -61,7 +61,7 @@
+ fi
+ changequote([,])dnl
+ 
+-CXXFLAGS="$CXXFLAGS -fno-exceptions -fno-rtti -nostdinc++"
++CXXFLAGS="$CXXFLAGS -fno-exceptions -fno-rtti -nostdinc++ -fno-threadsafe-statics"
+ LDFLAGS="$LDFLAGS -nodefaultlibs -lgcc -lc -lm"
+ 
+ CPPFLAGS="$CPPFLAGS -I\$(top_srcdir)/kjs -I\$(top_srcdir)/pcre -I\$(top_srcdir)/" 

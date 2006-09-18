@@ -1,0 +1,11 @@
+--- osb-jscore-0.5.0/aclocal.m4_orig	2006-09-18 00:49:32.000000000 +0000
++++ osb-jscore-0.5.0/aclocal.m4	2006-09-18 00:49:52.000000000 +0000
+@@ -4299,7 +4299,7 @@
+ # This must be Linux ELF.
+ linux-gnu*)
+   case $host_cpu in
+-  alpha* | hppa* | i*86 | mips | mipsel | powerpc* | sparc* | ia64* | s390* | x86_64*)
++  alpha* | hppa* | i*86 | mips | mipsel | powerpc* | sparc* | ia64* | s390* | sh* | x86_64*)
+     lt_cv_deplibs_check_method=pass_all ;;
+   *)
+     # glibc up to 2.1.1 does not perform some relocations on ARM
