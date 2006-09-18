@@ -22,7 +22,7 @@ SRC_URI = "${SOURCEFORGE_MIRROR}/xine/xine-lib-${PV}.tar.gz \
     file://mpegvideo-static-inlinine.patch;patch=1 \
     file://no-caca.patch;patch=1 \
     file://dont-have-xv.patch;patch=1 \
-    file://gcc41.patch;patch=1"
+    file://gcc41.patch;patch=1 \
 "
 
 DEFAULT_PREFERENCE = "-1"
