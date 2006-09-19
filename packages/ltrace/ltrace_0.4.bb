@@ -3,10 +3,10 @@ HOMEPAGE = "http://packages.debian.org/unstable/utils/ltrace.html"
 SECTION = "devel"
 DEPENDS = "libelf"
 LICENSE = "GPL"
-PR = "r2"
+PR = "r0"
 
-SRC_URI = "ftp://ftp.debian.org/debian/pool/main/l/ltrace/ltrace_0.3.36.orig.tar.gz \
-           ftp://ftp.debian.org/debian/pool/main/l/ltrace/ltrace_0.3.36-2.diff.gz;patch=1"
+SRC_URI = "ftp://ftp.debian.org/debian/pool/main/l/ltrace/ltrace_0.4.orig.tar.gz \
+           ftp://ftp.debian.org/debian/pool/main/l/ltrace/ltrace_0.4-1.diff.gz;patch=1"
 inherit autotools
 
 PARALLEL_MAKE = ""
@@ -19,8 +19,7 @@ EXTRA_OEMAKE = "ARCH=${LTRACE_ARCH} \
 export TARGET_CFLAGS = "${SELECTED_OPTIMIZATION} -isystem ${STAGING_DIR}/${TARGET_SYS}/include"
 
 LTRACE_ARCH = ${TARGET_ARCH}
-LTRACE_ARCH_i686 = "i386"
-LTRACE_ARCH_i586 = "i386"
+LTRACE_ARCH_x86 = "i386"
 
 do_configure_prepend() {
 	ln -sf ./linux-gnu sysdeps/linux-gnueabi
