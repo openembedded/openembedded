@@ -1,12 +1,10 @@
-LICENSE = "LGPL"
-DEPENDS = "glib-2.0 gtk+ gconf dbus db gnome-common libglade virtual/libiconv"
-MAINTAINER = "Richard Purdie <richard@openedhand.com>"
 DESCRIPTION = "Evolution database backend server"
-
-SRCDATE = "20060126"
+HOMEPAGE = "http://projects.o-hand.com/eds"
+LICENSE = "LGPL"
+MAINTAINER = "Richard Purdie <richard@openedhand.com>"
+DEPENDS = "glib-2.0 gtk+ gconf dbus db gnome-common libglade virtual/libiconv zlib"
 
 PV = "1.4.0+svn${SRCDATE}"
-#PV = "1.4.0+svn20060126"
 PR = "r16"
 
 SRC_URI = "svn://svn.o-hand.com/repos/${PN};module=trunk;proto=http \
@@ -20,7 +18,9 @@ S = "${WORKDIR}/trunk"
 
 inherit autotools pkgconfig
 
-#EXTRA_OECONF = "--without-openldap --with-dbus --without-bug-buddy --without-soup --with-libdb=${STAGING_DIR}/${HOST_SYS} --disable-smime --disable-nss --disable-camel --disable-nntp --disable-gtk-doc"
+# -ldb needs this on some platforms
+export LDFLAGS += "-lpthread"
+
 EXTRA_OECONF = "--without-openldap --with-dbus --without-bug-buddy --without-soup --with-libdb=${STAGING_DIR}/${HOST_SYS} --disable-smime --disable-nss --disable-nntp --disable-gtk-doc"
 
 acpaths = " -I ${STAGING_DATADIR}/aclocal/gnome-macros "
