@@ -6,7 +6,7 @@ MAINTAINER = "Michael 'Mickey' Lauer <mickey@vanille.de>"
 LICENSE = "GPL"
 DEPENDS += "quilt-native"
 EZX = "ezx7"
-PR = "${EZX}-r0"
+PR = "${EZX}-r1"
 
 inherit kernel
 

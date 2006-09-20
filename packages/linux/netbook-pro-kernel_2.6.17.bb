@@ -2,7 +2,7 @@ DESCRIPTION = "Linux Kernel for Psion/Teklogix netbookpro  compatible machines"
 SECTION = "kernel"
 MAINTAINER = "Koen Kooi <koen@dominion.kabel.utwente.nl>"
 LICENSE = "GPL"
-PR = "r1"
+PR = "r2"
 
 COMPATIBLE_MACHINE = "netbook-pro"
 

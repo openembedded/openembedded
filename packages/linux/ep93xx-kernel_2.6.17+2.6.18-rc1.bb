@@ -2,7 +2,7 @@ DESCRIPTION = "Linux Kernel for Cirrus Logic ep39xx compatible machines"
 SECTION = "kernel"
 MAINTAINER = "Koen Kooi <koen@dominion.kabel.utwente.nl>"
 LICENSE = "GPL"
-PR = "r0"
+PR = "r1"
 
 COMPATIBLE_MACHINE = "ep93xx"
 
