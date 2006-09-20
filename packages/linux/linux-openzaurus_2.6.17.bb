@@ -12,7 +12,6 @@ PR = "r27"
 
 # Patches submitted upstream are towards top of this list 
 # Hacks should clearly named and at the bottom
-#           ftp://ftp.kernel.org/pub/linux/kernel/people/akpm/patches/2.6/2.6.14-rc2/2.6.14-rc2-mm1/2.6.14-rc2-mm1.bz2;patch=1 \	   
 SRC_URI = "http://www.kernel.org/pub/linux/kernel/v2.6/linux-2.6.17.tar.bz2 \
            ${RPSRC}/poodle_partsize-r0.patch;patch=1;status=merged \
            ${RPSRC}/jffs2_longfilename-r1.patch;patch=1;status=merged \

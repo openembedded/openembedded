@@ -3,12 +3,12 @@ require linux-openzaurus.inc
 PR = "r0"
 
 # Handy URLs
-# git://rsync.kernel.org/pub/scm/linux/kernel/git/torvalds/linux-2.6.git
-# http://www.kernel.org/pub/linux/kernel/v2.6/
-# http://www.kernel.org/pub/linux/kernel/v2.6/testing/
-# http://www.kernel.org/pub/linux/kernel/v2.6/snapshots/
-# http://www.kernel.org/pub/linux/kernel/people/alan/linux-2.6/
-# http://www.kernel.org/pub/linux/kernel/people/akpm/patches/2.6/
+# git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux-2.6.git;protocol=git;tag=ef7d1b244fa6c94fb76d5f787b8629df64ea4046
+# http://www.kernel.org/pub/linux/kernel/v2.6/linux-2.6.18.tar.gz
+# http://www.kernel.org/pub/linux/kernel/v2.6/testing/patch-2.6.18-rc6.bz2;patch=1
+# http://www.kernel.org/pub/linux/kernel/v2.6/snapshots/patch-2.6.18-rc2-git1.bz2;patch=1
+# http://www.kernel.org/pub/linux/kernel/people/alan/linux-2.6/2.6.10/patch-2.6.10-ac8.gz;patch=1
+# http://www.kernel.org/pub/linux/kernel/people/akpm/patches/2.6/2.6.14-rc2/2.6.14-rc2-mm1/2.6.14-rc2-mm1.bz2;patch=1
 
 # Patches submitted upstream are towards top of this list 
 # Hacks should clearly named and at the bottom
@@ -43,7 +43,7 @@ SRC_URI = "http://www.kernel.org/pub/linux/kernel/v2.6/linux-2.6.18.tar.bz2 \
            file://add-oz-release-string.patch;patch=1;status=unmergable \
            ${RPSRC}/mmcsd_large_cards-r0.patch;patch=1;status=hack \
            ${RPSRC}/mmcsd_no_scr_check-r0.patch;patch=1;status=hack \
-           ${RPSRC}/integrator_rgb-r0.patch;patch=1;status=hack \
+           ${RPSRC}/integrator_rgb-r1.patch;patch=1;status=hack \
            ${RPSRC}/pxa_cf_initorder_hack-r1.patch;patch=1;status=hack \
            file://pxa-serial-hack.patch;patch=1;status=hack \
            file://connectplus-remove-ide-HACK.patch;patch=1;status=hack \
