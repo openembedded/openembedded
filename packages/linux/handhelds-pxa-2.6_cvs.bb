@@ -3,7 +3,7 @@ DESCRIPTION = "handhelds.org Linux kernel for PXA based devices."
 MAINTAINER = "Greg Gilbert <greg@treke.net>"
 LICENSE = "GPL"
 PV = "${K_MAJOR}.${K_MINOR}.${K_MICRO}-hh${HHV}+cvs${SRCDATE}"
-PR = "r3"
+PR = "r4"
 #
 COMPATIBLE_HOST = "arm.*-linux"
 COMPATIBLE_MACHINE = '(h3900|h5xxx|h2200|h4000|ipaq-pxa270|htcuniversal)'
@@ -45,7 +45,7 @@ do_configure() {
         fi
 
 
-        if [ "${TARGET_OS}" == "linux-gnueabi" ]; then
+        if [ "${TARGET_OS}" == "linux-gnueabi" -o  "${TARGET_OS}" == "linux-uclibcgnueabi" ]; then
                 echo "CONFIG_AEABI=y"                   >> ${S}/.config
                 echo "CONFIG_OABI_COMPAT=y"             >> ${S}/.config
         else
