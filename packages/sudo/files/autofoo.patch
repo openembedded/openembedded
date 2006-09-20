@@ -181,13 +181,13 @@ Index: sudo-1.6.8p6/aclocal.m4
 -AC_MSG_RESULT(yes), AC_MSG_RESULT(no))])
 +
 +AC_DEFUN([SUDO_LONG_LONG], [AC_MSG_CHECKING(for long long support)
-+AC_LINK_IFELSE([long long foo = 1000; foo /= 10;],
-+	AC_DEFINE(HAVE_LONG_LONG, 1, [Define if your compiler supports the "long long" type.])
++AC_LINK_IFELSE([AC_LANG_PROGRAM([long long foo = 1000; foo /= 10;]),]
++	[AC_DEFINE(HAVE_LONG_LONG, 1, [Define if your compiler supports the "long long" type.])
 +	AC_CHECK_SIZEOF([long])
 +	AC_CHECK_SIZEOF([long long])
 +	if x"$ac_cv_sizeof_long" = x"$ac_cv_sizeof_long_long"; then
 +	    AC_DEFINE(LONG_IS_QUAD, 1, [Define if sizeof(long) == sizeof(long long).])
-+	fi
++	fi]
 +, AC_MSG_RESULT(yes), AC_MSG_RESULT(no))])
  
  dnl
