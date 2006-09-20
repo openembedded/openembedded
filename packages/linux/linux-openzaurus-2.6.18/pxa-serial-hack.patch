@@ -1,0 +1,73 @@
+Index: git/drivers/serial/8250.c
+===================================================================
+--- git.orig/drivers/serial/8250.c	2006-07-05 10:06:08.000000000 +0100
++++ git/drivers/serial/8250.c	2006-07-05 10:06:20.000000000 +0100
+@@ -2401,7 +2401,12 @@
+ 	.driver_name		= "serial",
+ 	.dev_name		= "ttyS",
+ 	.major			= TTY_MAJOR,
++#ifdef CONFIG_SERIAL_PXA
++	.minor			= 64 + 3,
++	.name_base		= 3,
++#else
+ 	.minor			= 64,
++#endif
+ 	.nr			= UART_NR,
+ 	.cons			= SERIAL8250_CONSOLE,
+ };
+Index: git/drivers/serial/serial_core.c
+===================================================================
+--- git.orig/drivers/serial/serial_core.c	2006-07-04 21:49:08.000000000 +0100
++++ git/drivers/serial/serial_core.c	2006-07-05 10:06:20.000000000 +0100
+@@ -2162,6 +2162,7 @@
+ 	normal->owner		= drv->owner;
+ 	normal->driver_name	= drv->driver_name;
+ 	normal->name		= drv->dev_name;
++	normal->name_base	= drv->name_base;
+ 	normal->major		= drv->major;
+ 	normal->minor_start	= drv->minor;
+ 	normal->type		= TTY_DRIVER_TYPE_SERIAL;
+Index: git/include/linux/serial_core.h
+===================================================================
+--- git.orig/include/linux/serial_core.h	2006-07-04 21:49:14.000000000 +0100
++++ git/include/linux/serial_core.h	2006-07-05 10:07:10.000000000 +0100
+@@ -337,6 +337,7 @@
+ 	struct module		*owner;
+ 	const char		*driver_name;
+ 	const char		*dev_name;
++	int			 name_base;
+ 	int			 major;
+ 	int			 minor;
+ 	int			 nr;
+Index: git/drivers/serial/serial_cs.c
+===================================================================
+--- git.orig/drivers/serial/serial_cs.c	2006-07-04 21:49:08.000000000 +0100
++++ git/drivers/serial/serial_cs.c	2006-07-05 10:06:20.000000000 +0100
+@@ -268,7 +268,7 @@
+ 			kio_addr_t iobase, int irq)
+ {
+ 	struct uart_port port;
+-	int line;
++	int line, linestart;
+ 
+ 	memset(&port, 0, sizeof (struct uart_port));
+ 	port.iobase = iobase;
+@@ -285,10 +285,16 @@
+ 		return -EINVAL;
+ 	}
+ 
++#if CONFIG_SERIAL_PXA
++	linestart = 3;
++#else
++	linestart = 0;
++#endif
++
+ 	info->line[info->ndev] = line;
+-	sprintf(info->node[info->ndev].dev_name, "ttyS%d", line);
++	sprintf(info->node[info->ndev].dev_name, "ttyS%d", line+linestart);
+ 	info->node[info->ndev].major = TTY_MAJOR;
+-	info->node[info->ndev].minor = 0x40 + line;
++	info->node[info->ndev].minor = 0x40 + line + linestart;
+ 	if (info->ndev > 0)
+ 		info->node[info->ndev - 1].next = &info->node[info->ndev];
+ 	info->ndev++;

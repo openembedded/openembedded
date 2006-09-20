@@ -1,0 +1,112 @@
+require linux-openzaurus.inc
+
+PR = "r0"
+
+# Handy URLs
+# git://rsync.kernel.org/pub/scm/linux/kernel/git/torvalds/linux-2.6.git
+# http://www.kernel.org/pub/linux/kernel/v2.6/
+# http://www.kernel.org/pub/linux/kernel/v2.6/testing/
+# http://www.kernel.org/pub/linux/kernel/v2.6/snapshots/
+# http://www.kernel.org/pub/linux/kernel/people/alan/linux-2.6/
+# http://www.kernel.org/pub/linux/kernel/people/akpm/patches/2.6/
+
+# Patches submitted upstream are towards top of this list 
+# Hacks should clearly named and at the bottom
+SRC_URI = "http://www.kernel.org/pub/linux/kernel/v2.6/linux-2.6.18.tar.bz2 \
+           ${RPSRC}/alsa/asoc-v0.11pre12.patch;patch=1 \
+           ${RPSRC}/asoc_makefile-r1.patch;patch=1 \
+           ${RPSRC}/alsa/asoc_platform_dev_fix-r0.patch;patch=1 \
+           ${RPSRC}/asoc_poodle_morehack-r0.patch;patch=1 \
+           ${RPSRC}/hx2750_base-r27.patch;patch=1 \
+           ${RPSRC}/hx2750_bl-r7.patch;patch=1 \
+           ${RPSRC}/hx2750_pcmcia-r2.patch;patch=1 \
+           ${RPSRC}/pxa_keys-r5.patch;patch=1 \
+           ${RPSRC}/tsc2101-r12.patch;patch=1 \
+           ${RPSRC}/hx2750_test1-r4.patch;patch=1 \
+           ${RPSRC}/pxa_timerfix-r0.patch;patch=1 \
+           ${RPSRC}/input_power-r5.patch;patch=1 \
+           ${RPSRC}/pxa25x_cpufreq-r1.patch;patch=1 \
+           ${RPSRC}/sharpsl_pm_fixes1-r0.patch;patch=1 \
+           ${RPSRC}/pm_changes-r1.patch;patch=1 \
+           ${RPSRC}/usb_pxa27x_udc-r0.patch;patch=1 \
+           ${RPSRC}/usb_add_epalloc-r3.patch;patch=1 \
+           ${DOSRC}/kexec-arm-r2.patch;patch=1 \
+           ${RPSRC}/locomo_kbd_tweak-r0.patch;patch=1 \
+           ${RPSRC}/poodle_pm-r1.patch;patch=1 \
+           ${RPSRC}/pxafb_changeres-r1.patch;patch=1 \
+           ${RPSRC}/poodle_audio-r1.patch;patch=1 \
+           file://serial-add-support-for-non-standard-xtals-to-16c950-driver.patch;patch=1 \
+           file://hrw-pcmcia-ids-r4.patch;patch=1 \
+           ${RPSRC}/logo_oh-r0.patch.bz2;patch=1;status=unmergable \
+           ${RPSRC}/logo_oz-r2.patch.bz2;patch=1;status=unmergable \
+           ${RPSRC}/pxa-linking-bug.patch;patch=1;status=unmergable \
+           file://add-oz-release-string.patch;patch=1;status=unmergable \
+           ${RPSRC}/mmcsd_large_cards-r0.patch;patch=1;status=hack \
+           ${RPSRC}/mmcsd_no_scr_check-r0.patch;patch=1;status=hack \
+           ${RPSRC}/integrator_rgb-r0.patch;patch=1;status=hack \
+           ${RPSRC}/pxa_cf_initorder_hack-r1.patch;patch=1;status=hack \
+           file://pxa-serial-hack.patch;patch=1;status=hack \
+           file://connectplus-remove-ide-HACK.patch;patch=1;status=hack \
+           file://orinoco-remove-all-which-are-in-hostap-HACK.patch;patch=1;status=unmergable-hack \
+           file://squashfs3.0-2.6.15.patch;patch=1;status=external \
+           file://defconfig-c7x0 \
+           file://defconfig-ipaq-pxa270 \
+           file://defconfig-collie \
+           file://defconfig-poodle \
+           file://defconfig-akita \
+           file://defconfig-spitz \
+           file://defconfig-qemuarm \
+           file://defconfig-qemux86 \
+           file://defconfig-tosa "
+
+# Add this to enable pm debug code (useful with a serial lead)
+#  ${RPSRC}/sharpsl_pm_debug-r0.patch;patch=1
+
+# Disabled until I find the reason this gives issues with cdc_subset
+#            ${RPSRC}/usb_rndis_tweaks-r0.patch;patch=1 \
+
+#           ${RPSRC}/../pxa27x_overlay-r0.patch;patch=1 \
+
+# Is anything out of this still needed? Parts were commited to mainline by rmk (drivers/mfd/)
+# (Pavel Machek's git tree has updated versions of this?)
+#  ${JLSRC}/zaurus-lcd-2.6.11.diff.gz;patch=1 
+
+# These patches are extracted from Pavel Machek's git tree
+# (diff against vanilla kernel)
+SRC_URI_append_collie = "\
+           ${DOSRC}/collie/mtd-sharp-flash-hack-r0.patch;patch=1 \
+           ${DOSRC}/collie/collie-r0.patch;patch=1 \
+           ${DOSRC}/collie/locomolcd-backlight-r0.patch;patch=1 \
+           ${DOSRC}/collie/ucb1x00-touch-audio-r0.patch;patch=1 \
+           file://collie-mcp-r1.patch;patch=1 \
+           ${DOSRC}/collie/sa1100-udc-r0.patch;patch=1 \
+#          ${DOSRC}/collie/collie-pm-r1.patch;patch=1 \
+"
+
+SRC_URI_append_tosa = "\
+           ${CHSRC}/usb-ohci-hooks-r1.patch;patch=1 \
+           ${CHSRC}/tmio-core-r4.patch;patch=1 \
+           file://tmio-tc6393-r7.patch;patch=1 \
+           file://tmio-nand-r6.patch;patch=1 \
+           file://tmio-ohci-r5.patch;patch=1 \
+           ${CHSRC}/tmio-fb-r6.patch;patch=1 \
+           ${DOSRC}/tosa-keyboard-r17.patch;patch=1 \
+           ${DOSRC}/tosa-pxaac97-r6.patch;patch=1 \
+           ${DOSRC}/tosa-tmio-r6.patch;patch=1 \
+           ${DOSRC}/tosa-power-r17.patch;patch=1 \
+           file://tosa-tmio-lcd-r9.patch;patch=1 \
+           ${DOSRC}/tosa-bluetooth-r8.patch;patch=1 \
+           ${DOSRC}/wm97xx-lg7-r0.patch;patch=1 \
+           ${DOSRC}/wm9712-suspend-cold-res-r1.patch;patch=1 \
+           ${DOSRC}/sharpsl-pm-postresume-r0.patch;patch=1 \
+           ${DOSRC}/wm97xx-dig-restore-r0.patch;patch=1 \
+           ${DOSRC}/wm97xx-miscdevs-resume-r0.patch;patch=1 \
+           ${DOSRC}/wm9712-reset-loop-r1.patch;patch=1 \
+           file://tosa-lcdnoise-r1.patch;patch=1 \
+           file://wm97xx-lcdnoise-r0.patch;patch=1 "
+#          ${DOSRC}/tosa-asoc-r1.patch;patch=1 "
+
+S = "${WORKDIR}/linux-2.6.18"
+
+# to get module dependencies working
+KERNEL_RELEASE = "2.6.18"

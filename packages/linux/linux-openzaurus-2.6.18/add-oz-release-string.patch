@@ -1,0 +1,23 @@
+Index: git/init/version.c
+===================================================================
+--- git.orig/init/version.c	2006-07-04 21:49:14.000000000 +0100
++++ git/init/version.c	2006-07-05 10:02:57.000000000 +0100
+@@ -30,5 +30,5 @@
+ EXPORT_SYMBOL(system_utsname);
+ 
+ const char linux_banner[] =
+-	"Linux version " UTS_RELEASE " (" LINUX_COMPILE_BY "@"
++	"Linux version " UTS_RELEASE OPENZAURUS_RELEASE " (" LINUX_COMPILE_BY "@"
+ 	LINUX_COMPILE_HOST ") (" LINUX_COMPILER ") " UTS_VERSION "\n";
+Index: git/Makefile
+===================================================================
+--- git.orig/Makefile	2006-07-04 21:48:58.000000000 +0100
++++ git/Makefile	2006-07-05 10:05:03.000000000 +0100
+@@ -859,6 +859,7 @@
+ define filechk_version.h
+ 	(echo \#define LINUX_VERSION_CODE $(shell                             \
+ 	expr $(VERSION) \* 65536 + $(PATCHLEVEL) \* 256 + $(SUBLEVEL));     \
++	echo \#define OPENZAURUS_RELEASE \"$(OPENZAURUS_RELEASE)\"; \
+ 	echo '#define KERNEL_VERSION(a,b,c) (((a) << 16) + ((b) << 8) + (c))';)
+ endef
+ 

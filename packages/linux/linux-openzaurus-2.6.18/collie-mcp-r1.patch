@@ -1,0 +1,16 @@
+Index: linux-2.6.18/arch/arm/mach-sa1100/collie.c
+===================================================================
+--- linux-2.6.18.orig/arch/arm/mach-sa1100/collie.c	2006-09-20 16:23:37.000000000 +0200
++++ linux-2.6.18/arch/arm/mach-sa1100/collie.c	2006-09-20 16:23:38.000000000 +0200
+@@ -259,6 +259,11 @@
+ 	GAFR |= GPIO_MCP_CLK;
+ 	GPDR &= ~GPIO_MCP_CLK;
+ 
++	// Reset Codec
++	GAFR &= ~COLLIE_GPIO_UCB1x00_RESET;
++	GPDR |= COLLIE_GPIO_UCB1x00_RESET;
++	GPSR |= COLLIE_GPIO_UCB1x00_RESET;
++
+ #ifdef CONFIG_PCMCIA_SA1100
+ 	platform_scoop_config = &collie_pcmcia_config;
+ #endif
