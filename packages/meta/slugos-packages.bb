@@ -46,7 +46,6 @@ SLUGOS_PACKAGES = "\
 	cron \
 	ctorrent \
 	cvs \
-	cyrus-imapd \
 	cyrus-sasl \
 	db \
 	devlabel \
@@ -56,6 +55,7 @@ SLUGOS_PACKAGES = "\
 	e2fsprogs \
 	e2fsprogs-libs \
 	eciadsl \
+	erlang \
 	expat \
 	ez-ipupdate \
 	fetchmail \
@@ -187,6 +187,7 @@ SLUGOS_BROKEN_PACKAGES = "\
 	unionfs-modules \
 	unionfs-utils \
 	icecast \
+	cyrus-imapd \
 	"
 
 # These packages will never build because uclibc lacks (and always will lack)
