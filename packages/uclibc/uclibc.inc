@@ -110,6 +110,15 @@ do_configure() {
 	perl -i -p -e 's,^CROSS=.*,TARGET_ARCH=${TARGET_ARCH}\nCROSS=${TARGET_PREFIX},g' ${S}/Rules.mak
 	perl -i -p -e '${configmangle}' ${S}/.config
 
+
+   	sed -i -e '/CONFIG_ARM_EABI/d' ${S}/.config
+
+        if [ "${TARGET_OS}" == "linux-gnueabi" -o  "${TARGET_OS}" == "linux-uclibcgnueabi" ]; then
+       		echo "CONFIG_ARM_EABI=y"                >> ${S}/.config
+	else
+		echo "# CONFIG_ARM_EABI is not set"     >> ${S}/.config
+	fi
+
 	oe_runmake oldconfig
 }
 
