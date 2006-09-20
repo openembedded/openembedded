@@ -103,7 +103,7 @@ do_configure() {
 	#	echo "# CONFIG_FB_ELPP is not set"	>> ${S}/.config
 	#fi
 
-	if [ "${TARGET_OS}" == "linux-gnueabi" ]; then
+	if [ "${TARGET_OS}" == "linux-gnueabi" -o  "${TARGET_OS}" == "linux-uclibcgnueabi" ]; then
 		echo "CONFIG_AEABI=y"                   >> ${S}/.config
 		echo "CONFIG_OABI_COMPAT=y"             >> ${S}/.config
 	else 

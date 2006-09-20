@@ -2,6 +2,8 @@ SECTION = "kernel"
 DESCRIPTION = "handhelds.org Linux kernel for PXA based devices."
 LICENSE = "GPL"
 
+DEFAULT_PREFERENCE ="-1"
+
 COMPATIBLE_HOST = "arm.*-linux"
 COMPATIBLE_MACHINE = '(h3900|h2200|h4000|h5xxx|htcuniversal|ipaq-pxa270)'
 
@@ -43,7 +45,7 @@ do_configure() {
 	fi
 
 
-	if [ "${TARGET_OS}" == "linux-gnueabi" ]; then
+	if [ "${TARGET_OS}" == "linux-gnueabi" -o  "${TARGET_OS}" == "linux-uclibcgnueabi" ]; then
 		echo "CONFIG_AEABI=y"                   >> ${S}/.config
 		echo "CONFIG_OABI_COMPAT=y"             >> ${S}/.config
 	else
