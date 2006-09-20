@@ -8,7 +8,7 @@
 #
 UCLIBC_BASE ?= "0.9.28"
 PV = "${UCLIBC_BASE}+svn${SRCDATE}"
-PR = "r2"
+PR = "r3"
 
 #DEFAULT_PREFERENCE is 0 (empty), releases have a preference of 1 so take
 # precedence.
