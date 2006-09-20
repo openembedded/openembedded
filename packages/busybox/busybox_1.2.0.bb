@@ -21,7 +21,6 @@ SRC_URI = "http://www.busybox.net/downloads/busybox-${PV}.tar.gz \
 #	   file://hdparm_M.patch;patch=1 \
 	   file://ifupdown-spurious-environ.patch;patch=1 \
 #	   file://mount-all-type.patch;patch=1 \
-#	   file://readlink.patch;patch=1 \
 #	   file://rmmod.patch;patch=1 \
 	   file://udhcpscript.patch;patch=1 \
            file://defconfig \
@@ -34,6 +33,9 @@ SRC_URI = "http://www.busybox.net/downloads/busybox-${PV}.tar.gz \
 	   file://syslog.conf \
 	   file://mount.busybox \
 	   file://umount.busybox"
+
+SRC_URI_append_nylon = " file://xargs-double-size.patch;patch=1"
+
 S = "${WORKDIR}/busybox-1.2.0"
 
 export EXTRA_CFLAGS = "${CFLAGS}"

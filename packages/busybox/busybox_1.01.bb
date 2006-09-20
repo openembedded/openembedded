@@ -40,7 +40,9 @@ SRC_URI = "http://www.busybox.net/downloads/busybox-${PV}.tar.gz \
 	   file://syslog.conf \
 	   file://mount.busybox \
 	   file://umount.busybox"
+
 SRC_URI_append_slugos += " file://sysctl.conf "
+SRC_URI_append_nylon = " file://xargs-double-size.patch;patch=1"
 
 S = "${WORKDIR}/busybox-${PV}"
 

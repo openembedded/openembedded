@@ -44,6 +44,10 @@ SRC_URI = "http://www.busybox.net/downloads/busybox-${PV}.tar.gz \
 	   file://mount.busybox \
 	   file://umount.busybox"
 
+SRC_URI_append_nylon = " file://xargs-double-size.patch;patch=1"
+SRC_URI_append_mtx-1 = " file://linux-types.patch;patch=1"
+SRC_URI_append_mtx-2 = " file://linux-types.patch;patch=1"
+
 S = "${WORKDIR}/busybox-${PV}"
 
 export EXTRA_CFLAGS = "${CFLAGS}"

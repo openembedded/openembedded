@@ -28,6 +28,8 @@ SRC_URI = "http://www.busybox.net/downloads/busybox-${PV}.tar.gz \
 	   file://mount.busybox \
 	   file://umount.busybox"
 
+SRC_URI_append_nylon = " file://xargs-double-size.patch;patch=1"
+
 export EXTRA_CFLAGS = "${CFLAGS}"
 EXTRA_OEMAKE_append = " CROSS=${HOST_PREFIX}"
 PACKAGES =+ "${PN}-httpd ${PN}-udhcpd"
