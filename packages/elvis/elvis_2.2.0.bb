@@ -45,6 +45,14 @@ do_install() {
 	rm -rf ${D}/usr/share/elvis/icons
 }
 
+pkg_postinst_${PN}() {
+	update-alternatives --install /bin/vi vi /usr/bin/elvis 100
+}
+
+pkg_prerm_${PN} () {
+	update-alternatives --remove vi /usr/bin/elvis
+}
+
 PACKAGES = "${PN} ${PN}-doc ${PN}-tools"
 FILES_${PN}-doc = "/usr/share/elvis/manual /usr/share/elvis/README"
 FILES_${PN}-tools = "/usr/bin/elvfmt /usr/bin/elvtags /usr/bin/ref"

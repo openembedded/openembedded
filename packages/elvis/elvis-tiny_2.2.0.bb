@@ -12,7 +12,8 @@ do_configure_append() {
 }
 
 do_install_append() {
-	mv ${D}/etc/elvis/elvis.clr ${D}/etc/elvis/elvis.clr-orig
+	sed -i -e "s/^source\(.* .*elvis.clr.*\)/\"source\1/" ${D}/etc/elvis/elvis.ini
+	sed -i -e "s/^set\(.*lptype.*\)/\"set\1/" ${D}/etc/elvis/elvis.ini
 }
 
 PACKAGES = "${PN}"
