@@ -55,7 +55,6 @@ SLUGOS_PACKAGES = "\
 	e2fsprogs \
 	e2fsprogs-libs \
 	eciadsl \
-	erlang \
 	expat \
 	ez-ipupdate \
 	fetchmail \
@@ -208,6 +207,7 @@ UCLIBC_BROKEN_PACKAGES = "\
 	bogofilter \
 	boost \
 	bwmon \
+	erlang \
 	linphone \
 	sudo \
 	ushare \
