@@ -112,7 +112,7 @@ do_configure() {
 		echo "# CONFIG_OABI_COMPAT is not set"  >> ${S}/.config
 	fi
 
-	if [ "${DISTRO}" == "openzaurus" ]; then
+	if [ "${DISTRO}" == "openzaurus" -a "${MACHINE}" != "collie" ]; then
 		case ${MACHINE} in
 			c7x0 | akita | spitz )
 				echo "CONFIG_LOGO_OZ640_CLUT224=y"            >> ${S}/.config
@@ -133,7 +133,7 @@ do_configure() {
 		echo "CONFIG_LOGO=y"                          >> ${S}/.config
 		echo "# CONFIG_LOGO_LINUX_CLUT224 is not set" >> ${S}/.config
 		echo "# CONFIG_LOGO_OHAND_CLUT224 is not set" >> ${S}/.config
-	elif [ "${DISTRO}" == "poky" ]; then
+	elif [ "${DISTRO}" == "poky" -a "${MACHINE}" != "collie" ]; then
 		echo "CONFIG_LOGO=y"                          >> ${S}/.config
 		echo "CONFIG_LOGO_OHAND_CLUT224=y"            >> ${S}/.config
 		echo "# CONFIG_LOGO_OZ240_CLUT224 is not set" >> ${S}/.config

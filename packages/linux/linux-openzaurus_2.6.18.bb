@@ -1,6 +1,6 @@
 require linux-openzaurus.inc
 
-PR = "r1"
+PR = "r2"
 
 # Handy URLs
 # git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux-2.6.git;protocol=git;tag=ef7d1b244fa6c94fb76d5f787b8629df64ea4046
@@ -31,8 +31,8 @@ SRC_URI = "http://www.kernel.org/pub/linux/kernel/v2.6/linux-2.6.18.tar.bz2 \
            ${DOSRC}/kexec-arm-r3.patch;patch=1 \
            ${RPSRC}/locomo_kbd_tweak-r1.patch;patch=1 \
            ${RPSRC}/poodle_pm-r3.patch;patch=1 \
-           ${RPSRC}/pxafb_changeres-r1.patch;patch=1 \
-           ${RPSRC}/poodle_audio-r4.patch;patch=1 \
+           ${RPSRC}/pxafb_changeres-r2.patch;patch=1 \
+           ${RPSRC}/poodle_audio-r5.patch;patch=1 \
            ${RPSRC}/pxa27x_overlay-r2.patch;patch=1 \
            file://serial-add-support-for-non-standard-xtals-to-16c950-driver.patch;patch=1 \
            file://hrw-pcmcia-ids-r4.patch;patch=1 \
@@ -63,8 +63,6 @@ SRC_URI = "http://www.kernel.org/pub/linux/kernel/v2.6/linux-2.6.18.tar.bz2 \
 
 # Disabled until I find the reason this gives issues with cdc_subset
 #            ${RPSRC}/usb_rndis_tweaks-r0.patch;patch=1 \
-
-#           ${RPSRC}/../pxa27x_overlay-r0.patch;patch=1 \
 
 # Is anything out of this still needed? Parts were commited to mainline by rmk (drivers/mfd/)
 # (Pavel Machek's git tree has updated versions of this?)
