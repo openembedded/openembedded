@@ -3,7 +3,9 @@ MAINTAINER = "Richard Purdie <richard@openedhand.com>"
 PR = "r0"
 
 PACKAGES = "task-base \
-            task-base-oh-minimal"
+            task-base-minimal \
+            task-base-oh-minimal \
+            task-base-core-default"
 
 ALLOW_EMPTY = "1"
 
@@ -37,6 +39,7 @@ PACKAGE_ARCH = "${MACHINE_ARCH}"
 
 MACHINE_FEATURES ?= "kernel26"
 DISTRO_FEATURES ?= ""
+DISTRO_CORE_PACKAGE ?= "task-base-core-default"
 
 DISTRO_EXTRA_RDEPENDS ?= ""
 DISTRO_EXTRA_RRECOMMENDS ?= ""
@@ -60,6 +63,7 @@ COMBINED_FEATURES = "\
 # task-base 
 #
 RDEPENDS_task-base = "\
+    ${DISTRO_CORE_PACKAGE} \
     kernel \
     ${@base_contains("MACHINE_FEATURES", "kernel26", "${task-base-kernel26-rdepends}", "",d)} \
     ${@base_contains("MACHINE_FEATURES", "apm", "${task-base-apm-rdepends}", "",d)} \
@@ -104,6 +108,33 @@ RDEPENDS_task-base-oh-minimal = "\
 
 RRECOMMENDS_task-base-minimal = "\
     ${MACHINE_ESSENTIAL_EXTRA_RRECOMMENDS}"
+
+
+
+HOTPLUG ?= "linux-hotplug"
+
+RDEPENDS_task-base-core-default = '\
+    base-files \
+    base-passwd \
+    busybox \
+    initscripts \
+    netbase \
+    sysvinit \
+    sysvinit-pidof \
+    tinylogin \
+    modutils-initscripts 
+    fuser 
+    setserial'
+# Lets see if we can kill off hotplug...
+#    ${HOTPLUG} 
+#    ${@bootstrap_modutils_rdepends(d)}
+
+
+RRECOMMENDS_task-base-core-default = '\
+    dropbear \
+    portmap'
+
+
 
 task-base-kernel26-rdepends = "\
     udev \
@@ -253,3 +284,4 @@ task-distro-nfs-rrecommends = "\
 # kernel-module-md5
 # kernel-module-8250
 # Should be DISTRO_EXTRA_RRECOMMENDS: lrzsz 
+
