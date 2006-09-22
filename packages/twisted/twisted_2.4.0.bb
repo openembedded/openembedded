@@ -14,6 +14,19 @@ S = "${WORKDIR}/Twisted-${PV}"
 
 inherit distutils
 
+SP = "${libdir}/${PYTHON_DIR}/site-packages/twisted"
+
+FILES_twisted-conch = "${SP}/conch/"
+FILES_twisted-lore = "${SP}/lore/"
+FILES_twisted-mail = "${SP}/mail/"
+FILES_twisted-names = "${SP}/names/"
+FILES_twisted-news = "${SP}/news/"
+FILES_twisted-runner = "${SP}/runner/"
+FILES_twisted-web = "${SP}/web/"
+FILES_twisted-words = "${SP}/words/"
+FILES_twisted-trial = "${SP}/trial/ ${SP}/test/"
+PACKAGES = "twisted-conch twisted-lore twisted-mail twisted-names twisted-news twisted-runner twisted-web twisted-words twisted-trial twisted"
+
 do_compile_prepend() {
 	export PYTHONPATH=${S}/TwistedCore-${PV}
 }
