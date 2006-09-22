@@ -20,13 +20,13 @@ tar xzf /etc/var.tar.gz -C /
 echo 28 > /proc/progress
 
 # sleep after 10min
-hdparm -S 120 /dev/ide/host0/bus0/target0/lun0/disc
+hdparm -S120 /dev/ide/host0/bus0/target0/lun0/disc
 echo 32 > /proc/progress
 # set UDMA66
 hdparm -X66 /dev/ide/host0/bus0/target0/lun0/disc
 echo 34 > /proc/progress
 # accustic management
-hdparm -M 128 /dev/ide/host0/bus0/target0/lun0/disc
+hdparm -M128 /dev/ide/host0/bus0/target0/lun0/disc
 
 echo 38 > /proc/progress
 modprobe head

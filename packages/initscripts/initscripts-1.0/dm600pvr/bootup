@@ -6,11 +6,11 @@ swapon -a
 mount -at nonfs,nosmbfs,noncpfs 2>/dev/null
 tar xzf /etc/var.tar.gz -C /
 # sleep after 10min
-hdparm -S 120 /dev/ide/host0/bus0/target0/lun0/disc
+hdparm -S120 /dev/ide/host0/bus0/target0/lun0/disc
 # CHECKME: mode to set, no UDMA on vulcan!
 # hdparm -X66 /dev/ide/host0/bus0/target0/lun0/disc
 # accustic management
-hdparm -M 128 /dev/ide/host0/bus0/target0/lun0/disc
+hdparm -M128 /dev/ide/host0/bus0/target0/lun0/disc
 modprobe head
 modprobe dreambox_keyboard
 [ -e /etc/dropbear/dropbear_rsa_host_key ] && /usr/bin/showiframe /boot/bootlogo.mvi || /usr/bin/showiframe /boot/bootlogo_wait.mvi
