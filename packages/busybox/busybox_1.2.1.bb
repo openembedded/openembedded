@@ -27,6 +27,7 @@ SRC_URI = "http://www.busybox.net/downloads/busybox-${PV}.tar.gz \
 	   file://syslog.conf \
 	   file://mount.busybox \
 	   file://umount.busybox \
+	   file://hdparm_M.patch;patch=1 \
 	   file://keymap_endianess.patch;patch=1"
 
 export EXTRA_CFLAGS = "${CFLAGS}"
