@@ -122,8 +122,8 @@ RDEPENDS_task-base-core-default = '\
     sysvinit \
     sysvinit-pidof \
     tinylogin \
-    modutils-initscripts 
-    fuser 
+    modutils-initscripts \
+    fuser \
     setserial'
 # Lets see if we can kill off hotplug...
 #    ${HOTPLUG} 
