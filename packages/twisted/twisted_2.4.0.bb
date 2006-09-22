@@ -8,7 +8,7 @@ LICENSE = "LGPL"
 DEPENDS = "zope-interface-native zope-interface python-crypto"
 RDEPENDS = "python-core zope-interface python-pickle python-fcntl python-crypto"
 
-SRC_URI = "http://tmrc.mit.edu/mirror/twisted/Twisted/2.1/Twisted-${PV}.tar.bz2"
+SRC_URI = "http://tmrc.mit.edu/mirror/twisted/Twisted/2.4/Twisted-${PV}.tar.bz2"
 
 S = "${WORKDIR}/Twisted-${PV}"
 
