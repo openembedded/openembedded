@@ -45,11 +45,18 @@ export CMDLINE_CONSOLE = "console=${@bb.data.getVar("KERNEL_CONSOLE",d,1) or "tt
 
 # parse kernel ABI version out of <linux/version.h>
 def get_kernelversion(p):
+	import re, os
+
+	fn = p + '/include/linux/utsrelease.h'
+	if not os.path.isfile(fn):
+		fn = p + '/include/linux/version.h'
+	
 	import re
 	try:
-		f = open(p, 'r')
+		f = open(fn, 'r')
 	except IOError:
 		return None
+
 	l = f.readlines()
 	f.close()
 	r = re.compile("#define UTS_RELEASE \"(.*)\"")
@@ -67,7 +74,7 @@ def get_kernelmajorversion(p):
 		return m.group(1)
 	return None
 
-KERNEL_VERSION = "${@get_kernelversion('${S}/include/linux/version.h')}"
+KERNEL_VERSION = "${@get_kernelversion('${S}')}"
 KERNEL_MAJOR_VERSION = "${@get_kernelmajorversion('${KERNEL_VERSION}')}"
 
 KERNEL_LOCALVERSION ?= ""

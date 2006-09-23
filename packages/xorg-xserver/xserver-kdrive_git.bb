@@ -62,19 +62,10 @@ EXTRA_OECONF = "--enable-composite --enable-sdl --enable-kdrive \
 		--disable-xorg --disable-xorgcfg \
 		--disable-xkb --disable-xnest --disable-xvfb \
 		--disable-xevie --disable-xprint --disable-xtrap \
-		--disable-dmx --enable-w100 \
+		--disable-dmx \
 		--with-default-font-path=built-ins \
 		--enable-tslib --enable-xcalibrate \
 		ac_cv_file__usr_share_X11_sgml_defs_ent=no"
 
-# w100 doesn't build for x86
-EXTRA_OECONF_x86 = "--enable-composite --enable-sdl --enable-kdrive \
-                --disable-dga --disable-dri --disable-xinerama \
-                --disable-xf86misc --disable-xf86vidmode \
-                --disable-xorg --disable-xorgcfg \
-                --disable-xkb --disable-xnest --disable-xvfb \
-                --disable-xevie --disable-xprint --disable-xtrap \
-                --disable-dmx --disable-w100 \
-                --with-default-font-path=built-ins \
-                --enable-tslib --enable-xcalibrate \
-                ac_cv_file__usr_share_X11_sgml_defs_ent=no"
+EXTRA_OECONF_append_arm = " --enable-w100"
+EXTRA_OECONF_append_x86 = " --disable-w100"
