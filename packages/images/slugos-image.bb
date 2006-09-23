@@ -71,9 +71,12 @@ SLUGOS_SUPPORT ?= "diffutils cpio findutils busybox-mdev"
 # kernel-module-netconsole is here because it is small and is
 # highly useful on minimal systems (which really don't have anywhere
 # other than the network to output error messages!)
-SLUGOS_KERNEL ?= "kernel-module-af-packet kernel-module-netconsole"
-       
-RDEPENDS = "kernel \
+SLUGOS_KERNEL ?= "kernel-module-af-packet kernel-module-netconsole \
+		kernel-module-ixp4xx-qmgr kernel-module-ixp4xx-npe \
+		kernel-module-ixp4xx-mac kernel-module-mii \
+		"
+
+RDEPENDS = "kernel ixp4xx-npe \
 	base-files base-passwd netbase \
         busybox initscripts-slugos slugos-init \
         update-modules sysvinit tinylogin \
