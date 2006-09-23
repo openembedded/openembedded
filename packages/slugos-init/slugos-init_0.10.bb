@@ -4,7 +4,7 @@ PRIORITY = "required"
 LICENSE = "GPL"
 DEPENDS = "base-files devio"
 RDEPENDS = "busybox devio"
-PR = "r62"
+PR = "r63"
 
 SRC_URI = "file://boot/flash \
 	   file://boot/disk \
@@ -21,6 +21,9 @@ SRC_URI = "file://boot/flash \
 	   file://initscripts/rmrecovery \
 	   file://initscripts/sysconfsetup \
 	   file://initscripts/umountinitrd.sh \
+	   file://initscripts/loadusbmod.sh \
+	   file://initscripts/loadnetmod.sh \
+	   file://initscripts/loadmiscmod.sh \
 	   file://functions \
 	   file://conffiles \
 	   file://sysconf \
@@ -37,7 +40,7 @@ SCRIPTS = "turnup reflash leds sysconf"
 BOOTSCRIPTS = "flash disk nfs ram network udhcpc.script"
 INITSCRIPTS = "syslog.buffer syslog.file syslog.network zleds\
 	leds_startup rmrecovery sysconfsetup umountinitrd.sh\
-	fixfstab"
+	fixfstab loadusbmod.sh loadnetmod.sh loadmiscmod.sh"
 
 # This just makes things easier...
 S="${WORKDIR}"
@@ -120,11 +123,14 @@ do_install() {
 pkg_postinst_slugos-init() {
 	opt=
 	test -n "$D" && opt="-r $D"
+	update-rc.d $opt loadusbmod.sh		start 6 S .
 	update-rc.d $opt hwclock.sh		start  8 S . start 45 0 6 .
 	update-rc.d $opt umountinitrd.sh	start  9 S .
 	update-rc.d $opt fixfstab		start 10 S .
 	update-rc.d $opt syslog.buffer		start 11 S . start 49 0 6 .
 	update-rc.d $opt sysconfsetup		start 12 S .
+	update-rc.d $opt loadnetmod.sh		start 21 S .
+	update-rc.d $opt loadmiscmod.sh		start 22 S .
 	update-rc.d $opt syslog.file		start 39 S . start 47 0 6 .
 	update-rc.d $opt syslog.network		start 44 S . start 39 0 6 .
 	update-rc.d $opt zleds			start 99 S 1 2 3 4 5 . start 89 0 6 . stop  5 0 1 2 3 4 5 6 .
