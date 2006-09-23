@@ -7,7 +7,7 @@ DESCRIPTION = "Generic SlugOS image"
 MAINTAINER = "NSLU2 Linux <nslu2-linux@yahoogroups.com>"
 HOMEPAGE = "http://www.nslu2-linux.org"
 LICENSE = "MIT"
-PR = "r32"
+PR = "r34"
 
 # SLUGOS_IMAGENAME defines the name of the image to be build, if it
 # is not set this package will be skipped!
@@ -65,7 +65,7 @@ EXTRA_IMAGEDEPENDS += "${IMAGE_TOOLS}"
 # udev is the default way of handling devices, there is no guarantee
 # that the static device table is completely correct (it is just
 # known to be sufficient for boot.)
-SLUGOS_SUPPORT ?= "diffutils cpio findutils udev"
+SLUGOS_SUPPORT ?= "diffutils cpio findutils busybox-mdev"
 
 # kernel-module-af-packet must be in the image for DHCP to work
 # kernel-module-netconsole is here because it is small and is
@@ -73,9 +73,9 @@ SLUGOS_SUPPORT ?= "diffutils cpio findutils udev"
 # other than the network to output error messages!)
 SLUGOS_KERNEL ?= "kernel-module-af-packet kernel-module-netconsole"
        
-RDEPENDS = "kernel ixp-eth \
+RDEPENDS = "kernel \
 	base-files base-passwd netbase \
-        busybox hotplug-ng initscripts-slugos slugos-init \
+        busybox initscripts-slugos slugos-init \
         update-modules sysvinit tinylogin \
 	module-init-tools modutils-initscripts \
         ipkg-collateral ipkg ipkg-link \
