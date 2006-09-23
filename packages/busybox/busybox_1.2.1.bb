@@ -10,7 +10,7 @@ HOMEPAGE = "http://www.busybox.net"
 LICENSE = "GPL"
 SECTION = "base"
 PRIORITY = "required"
-PR = "r1.3"
+PR = "r1.5"
 
 SRC_URI = "http://www.busybox.net/downloads/busybox-${PV}.tar.gz \
 	   file://dhcp-hostname.patch;patch=1 \
@@ -26,29 +26,35 @@ SRC_URI = "http://www.busybox.net/downloads/busybox-${PV}.tar.gz \
 	   file://default.script \
 	   file://syslog.conf \
 	   file://mount.busybox \
-	   file://umount.busybox"
+	   file://umount.busybox \
+	   file://busybox-mdev.sh \
+	   file://mdev.conf \
+	   "
 
 SRC_URI_append_nylon = " file://xargs-double-size.patch;patch=1"
 
 export EXTRA_CFLAGS = "${CFLAGS}"
 EXTRA_OEMAKE_append = " CROSS=${HOST_PREFIX}"
-PACKAGES =+ "${PN}-httpd ${PN}-udhcpd"
+PACKAGES =+ "${PN}-httpd ${PN}-udhcpd ${PN}-mdev"
 
 FILES_${PN}-httpd = "${sysconfdir}/init.d/busybox-httpd /srv/www"
 FILES_${PN}-udhcpd = "${sysconfdir}/init.d/busybox-udhcpd"
+FILES_${PN}-mdev = "${sysconfdir}/init.d/busybox-mdev.sh ${sysconfdir}/mdev.conf"
 
 FILES_${PN} += " ${datadir}/udhcpc"
 
-INITSCRIPT_PACKAGES = "${PN} ${PN}-httpd ${PN}-udhcpd"
+INITSCRIPT_PACKAGES = "${PN} ${PN}-httpd ${PN}-udhcpd ${PN}-mdev"
 INITSCRIPT_NAME_${PN}-httpd = "busybox-httpd"
 INITSCRIPT_NAME_${PN}-udhcpd = "busybox-udhcpd" 
+INITSCRIPT_NAME_${PN}-mdev = "busybox-mdev.sh"
+INITSCRIPT_PARAMS_${PN}-mdev = "start 04 S ."
 INITSCRIPT_NAME_${PN} = "syslog"
 CONFFILES_${PN} = "${sysconfdir}/syslog.conf"
 
-# This disables the syslog startup links in openslug (see openslug-init)
-INITSCRIPT_PARAMS_${PN}_openslug = "start 20 ."
+inherit cml1 update-rc.d  
 
-inherit cml1 update-rc.d
+# This disables the syslog startup links in openslug (see openslug-init)
+# INITSCRIPT_PARAMS_${PN}_openslug = "start 20 ." #out-of-date?
 
 do_configure () {
 	install -m 0644 ${WORKDIR}/defconfig ${S}/.config.oe
@@ -115,7 +121,7 @@ do_install () {
 		install -m 0755 ${WORKDIR}/hwclock.sh ${D}${sysconfdir}/init.d/
 	fi
 	if grep "CONFIG_APP_UDHCPC=y" ${WORKDIR}/defconfig; then 
-		# Move dhcpc back to /usr/sbin/udhcpc
+		# Move dhcpc back to /sbin/udhcpc
 		install -d ${D}${base_sbindir}
 		mv ${D}/busybox${base_sbindir}/udhcpc ${D}${base_sbindir}/
 
@@ -123,6 +129,15 @@ do_install () {
 		install -d ${D}${datadir}/udhcpc
 		install -m 0755 ${S}/examples/udhcp/simple.script ${D}${sysconfdir}/udhcpc.d/50default
 		install -m 0755 ${WORKDIR}/default.script ${D}${datadir}/udhcpc/default.script
+	fi
+
+	if grep "CONFIG_MDEV=y" ${WORKDIR}/defconfig; then
+		# Move mdev back to /sbin/mdev
+		install -d ${D}${base_sbindir}
+		mv ${D}/busybox${base_sbindir}/mdev ${D}${base_sbindir}/
+
+		install -m 644 ${WORKDIR}/mdev.conf ${D}${sysconfdir}/
+		install -m 0755 ${WORKDIR}/busybox-mdev.sh ${D}${sysconfdir}/init.d/
 	fi
 
 	install -m 0644 ${S}/busybox.links ${D}${sysconfdir}
