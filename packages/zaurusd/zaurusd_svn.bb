@@ -3,8 +3,9 @@ SECTION = "base"
 MAINTAINER = "Richard Purdie <rpurdie@openedhand.com>"
 LICENSE = "GPL"
 DEPENDS = "tslib"
+RDEPENDS = "procps"
 PV = "0.0+svn${SRCDATE}"
-PR = "r6"
+PR = "r7"
 
 SRC_URI = "svn://svn.o-hand.com/repos/misc/trunk;module=zaurusd;proto=http \
            file://zaurus-hinge.in \
