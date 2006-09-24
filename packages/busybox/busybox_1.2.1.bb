@@ -10,13 +10,14 @@ HOMEPAGE = "http://www.busybox.net"
 LICENSE = "GPL"
 SECTION = "base"
 PRIORITY = "required"
-PR = "r1.5"
+PR = "r1.6"
 
 SRC_URI = "http://www.busybox.net/downloads/busybox-${PV}.tar.gz \
 	   file://dhcp-hostname.patch;patch=1 \
 	   file://ifupdown-spurious-environ.patch;patch=1 \
 	   file://udhcpscript.patch;patch=1 \
 	   file://wget-long-options.patch;patch=1 \
+	   file://mdevdelnodes.patch;patch=1 \
            file://defconfig \
            file://busybox-cron \
 	   file://busybox-httpd \
