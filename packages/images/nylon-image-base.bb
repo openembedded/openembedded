@@ -11,7 +11,7 @@ NYLON_BASE = "base-files base-passwd bash busybox \
 	timezones tinylogin"
 
 DEPENDS += "virtual/kernel less nano"
-RDEPENDS = "kernel modutils-depmod modutils-modinfo less nano \
+RDEPENDS = "kernel modutils-depmod modutils-modinfo less nano elvis-tiny \
 	${NYLON_BASE} ${BOOTSTRAP_EXTRA_RDEPENDS}"
 
 export IPKG_INSTALL = "${RDEPENDS}" 
