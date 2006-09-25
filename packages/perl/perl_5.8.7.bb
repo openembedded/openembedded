@@ -10,9 +10,16 @@ SRC_URI += "file://config.sh-armeb-linux \
 	    file://config.sh-sh3-linux \
 	    file://config.sh-sh4-linux"
 
+# Patches for sh3/sh4, use gcc to link and override generaet.sh to
+# use PIC mode for compiling shared library objects.
+SRC_URI_append_sh4 += "file://override-generate-sh.patch;patch=1"
+SRC_URI_append_sh4 += "file://makefile-usegcc-to-link.patch;patch=1"
+SRC_URI_append_sh3 += "file://override-generate-sh.patch;patch=1"
+SRC_URI_append_sh3 += "file://makefile-usegcc-to-link.patch;patch=1"
+
 PARALLEL_MAKE = ""
 
-PR = "r17"
+PR = "r18"
 
 do_configure() {
 	ln -sf ${HOSTPERL} ${STAGING_BINDIR}/hostperl
@@ -57,9 +64,7 @@ do_configure() {
 }
 
 do_install_append() {
-	# Make sure the shared library is configured before trying to symlink it
-	grep -q "useshrplib='false'" ${S}/config.sh ||
-		ln -s libperl.so.${PV} ${D}/${libdir}/libperl.so.5
+	ln -s libperl.so.${PV} ${D}/${libdir}/libperl.so.5
 	sed -i -e "s,${D},,g" ${D}/${libdir}/perl5/${PV}/${TARGET_ARCH}-${TARGET_OS}/Config_heavy.pl
 }
 
