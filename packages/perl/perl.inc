@@ -46,9 +46,7 @@ do_compile() {
 
 do_install() {
 	oe_runmake install
-	# Make sure the shared library is configured before trying to move it
-	grep -q "useshrplib='false'" ${S}/config.sh ||
-		mv ${D}/${libdir}/perl5/${PV}/${TARGET_ARCH}-${TARGET_OS}/CORE/libperl.so ${D}/${libdir}/libperl.so.${PV}
+	mv ${D}/${libdir}/perl5/${PV}/${TARGET_ARCH}-${TARGET_OS}/CORE/libperl.so ${D}/${libdir}/libperl.so.${PV}
 	( cd ${D}/usr/bin/; rm perl; ln -s perl${PV} perl )
 }
 
