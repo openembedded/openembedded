@@ -1,8 +1,9 @@
-SECTION = "devel"
 DESCRIPTION = "Sanitized set of 2.6 kernel headers for the C library's use."
+SECTION = "devel"
 LICENSE = "GPL"
 DEFAULT_PREFERENCE = "-1"
 INHIBIT_DEFAULT_DEPS = "1"
+DEPENDS = "unifdef-native"
 PR = "r0"
 
 SRC_URI = "http://www.kernel.org/pub/linux/kernel/v2.6/linux-2.6.18.tar.bz2"
