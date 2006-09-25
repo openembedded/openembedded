@@ -3,6 +3,7 @@ SECTION = "base"
 PRIORITY = "optional"
 MAINTAINER = "Martin Dietze <herbert@spamcop.net>"
 LICENSE = "Perl Clarified Artistic License"
+DEPENDS = "ncurses"
 
 SRC_URI = "ftp://ftp.cs.pdx.edu/pub/elvis/elvis-2.2_0.tar.gz"
 S = "${WORKDIR}/elvis-2.2_0"

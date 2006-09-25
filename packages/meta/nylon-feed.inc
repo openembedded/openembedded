@@ -8,6 +8,7 @@ chillispot \
 dash \
 ddclient \
 dnsmasq \
+elvis \
 gdb \
 gnupg \
 hostap-modules \
