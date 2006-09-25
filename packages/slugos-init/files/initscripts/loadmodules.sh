@@ -5,12 +5,13 @@
 
 . /etc/default/functions # Load $(machine) function required
 
+echo "Starting Network Processing Engines"
+modprobe ixp4xx_npe
+sleep 1 # Wait for firmware load
+
 echo "Loading networking modules"
 
 modprobe af_packet # Required for DHCP
-
-modprobe ixp4xx_npe
-sleep 1 # Allow firmware load to occur
 
 # Add nas100d/loft below when mac definition is added to kernel
 case "$(machine)" in
