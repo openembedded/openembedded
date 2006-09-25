@@ -12,12 +12,12 @@ PR = "r3.${PR_CONFIG}"
 
 require ixp4xx-kernel.inc
 
-SRC_URI += "http://svn.nslu2-linux.org/svnroot/kernel/trunk/patches/2.6.17/defconfig"
+SRC_URI += "http://svn.nslu2-linux.org/svnroot/kernel/archived/intel_eth/patches/2.6.17/defconfig"
 
 # IXP4XX_PATCHES - full list of patches to apply
 IXP4XX_PATCHES  = ""
 
-SVN_SRC = "http://svn.nslu2-linux.org/svnroot/kernel/trunk/patches/2.6.17"
+SVN_SRC = "http://svn.nslu2-linux.org/svnroot/kernel/archived/intel_eth/patches/2.6.17"
 
 # IXP4XX_PATCHES += "file://06-remove-extraversion.patch;patch=1"
 IXP4XX_PATCHES += "${SVN_SRC}/patch-2.6.17-ide1;patch=1"
