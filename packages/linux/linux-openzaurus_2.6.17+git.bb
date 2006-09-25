@@ -1,6 +1,6 @@
 require linux-openzaurus.inc
 
-PR = "r10"
+PR = "r11"
 
 DEFAULT_PREFERENCE = "-1"
 
