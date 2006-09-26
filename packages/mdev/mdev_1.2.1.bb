@@ -4,22 +4,23 @@ busybox. This adds a very small extra overhead in rootfs size      \
 (approx 4kB) but allows greater flexibility."
 HOMEPAGE = "http://www.busybox.net"
 LICENSE = "GPL"
-PR = "r4"
+PR = "r5"
 
 S = ${WORKDIR}/busybox-${PV}
 
 SRC_URI = "http://www.busybox.net/downloads/busybox-${PV}.tar.gz \
 	   file://mdevdelnodes.patch;patch=1 \
-       file://defconfig \
+	   file://mdevfirmware.patch;patch=1 \
+           file://defconfig \
 	   file://mdev.sh \
 	   file://mdev.conf \
+	   file://firmware \
 	   "
-SRC_URI_append_slugos = "file://loadmicrocode.sh"
 
 export EXTRA_CFLAGS = "${CFLAGS}"
 EXTRA_OEMAKE_append = " CROSS=${HOST_PREFIX}"
 
-FILES_${PN} = "${sysconfdir}/init.d/mdev.sh ${sysconfdir}/mdev.conf ${base_sbindir}/mdev ${base_libdir}/mdev/loadmicrocode.sh"
+FILES_${PN} = "${sysconfdir}/init.d/mdev.sh ${sysconfdir}/mdev.conf ${base_sbindir}/mdev ${base_libdir}/mdev/firmware"
 
 INITSCRIPT_PACKAGES = "${PN}"
 INITSCRIPT_NAME_${PN} = "mdev.sh"
@@ -56,5 +57,5 @@ do_install () {
 	install -m 0755 ${WORKDIR}/mdev.sh ${D}${sysconfdir}/init.d/
 	
 	install -d ${D}${base_libdir}/mdev
-	install -m 0755 ${WORKDIR}/loadmicrocode.sh ${D}${base_libdir}/mdev/loadmicrocode.sh
+	install -m 0755 ${WORKDIR}/firmware ${D}${base_libdir}/mdev/firmware
 }

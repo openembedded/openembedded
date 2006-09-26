@@ -1,0 +1,14 @@
+#!/bin/sh
+
+firmwaredir=/lib/firmware
+
+if test "$SUBSYSTEM" = "firmware" -a "$ACTION" = "add"; then
+ if test -f $firmwaredir/$FIRMWARE; then
+   echo 1 > /sys/$DEVPATH/loading
+   cat $firmwaredir/$FIRMWARE > /sys/$DEVPATH/data
+   echo 0 > /sys/$DEVPATH/loading
+ else
+   echo -1 > /sys/$DEVPATH/loading
+ fi
+fi
+
