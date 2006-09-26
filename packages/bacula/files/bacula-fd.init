@@ -1,0 +1,43 @@
+#! /bin/sh
+#
+# bacula-fd init script for OpenZaurus
+#
+
+BACFDBIN=/usr/sbin
+BACFDCFG=/etc/bacula
+PIDDIR=/var/run
+SUBSYSDIR=/var/run/
+
+FD_PORT=9102
+
+FD_USER=root
+FD_GROUP=bacula
+
+case "$1" in
+   start)
+      [ -x ${BACFDBIN}/bacula-fd ] && {
+	 echo "Starting the Bacula File daemon"
+	 ${BACFDBIN}/bacula-fd $2 -u ${FD_USER} -g ${FD_GROUP} -v -c ${BACFDCFG}/bacula-fd.conf
+      }
+      ;;
+
+   stop)
+      # Stop the FD first so that SD will fail jobs and update catalog
+      [ -x ${BACFDBIN}/bacula-fd ] && {
+	 echo "Stopping the Bacula File daemon"
+	 killall bacula-fd
+      }
+      ;;
+
+   restart)
+      $0 stop
+      sleep 5
+      $0 start
+      ;;
+
+   *)
+      echo "Usage: $0 {start|stop|restart}"
+      exit 1
+      ;;
+esac
+exit 0

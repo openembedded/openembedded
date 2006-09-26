@@ -1,0 +1,50 @@
+diff -Naur bacula-1.38.11/src/findlib/attribs.c bacula-1.38.11_patched/src/findlib/attribs.c
+--- bacula-1.38.11/src/findlib/attribs.c	2005-09-24 15:11:31.000000000 +0200
++++ bacula-1.38.11_patched/src/findlib/attribs.c	2006-09-16 21:41:45.000000000 +0200
+@@ -135,12 +135,7 @@
+    p += to_base64((int64_t)ff_pkt->LinkFI, p);
+    *p++ = ' ';
+ 
+-#ifdef HAVE_CHFLAGS
+-   /* FreeBSD function */
+-   p += to_base64((int64_t)statp->st_flags, p);  /* output st_flags */
+-#else
+    p += to_base64((int64_t)0, p);     /* output place holder */
+-#endif
+    *p++ = ' ';
+    p += to_base64((int64_t)data_stream, p);
+    *p = 0;
+@@ -225,11 +220,6 @@
+    if (*p == ' ' || (*p != 0 && *(p+1) == ' ')) {
+       p++;
+       p += from_base64(&val, p);
+-#ifdef HAVE_CHFLAGS
+-      plug(statp->st_flags, val);
+-   } else {
+-      statp->st_flags  = 0;
+-#endif
+    }
+ 
+    /* Look for data stream id */
+@@ -377,21 +367,6 @@
+             attr->ofname, be.strerror());
+          ok = false;
+       }
+-#ifdef HAVE_CHFLAGS
+-      /*
+-       * FreeBSD user flags
+-       *
+-       * Note, this should really be done before the utime() above,
+-       *  but if the immutable bit is set, it will make the utimes()
+-       *  fail.
+-       */
+-      if (chflags(attr->ofname, attr->statp.st_flags) < 0) {
+-         berrno be;
+-         Jmsg2(jcr, M_ERROR, 0, _("Unable to set file flags %s: ERR=%s\n"),
+-            attr->ofname, be.strerror());
+-         ok = false;
+-      }
+-#endif
+    }
+    pm_strcpy(attr->ofname, "*none*");
+    umask(old_mask);
