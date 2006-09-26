@@ -1,0 +1,49 @@
+
+#! /bin/sh
+#
+# This is an init script for Privoxy on Openzaurus
+#
+
+PRIVOXY_PRG="privoxy"
+PRIVOXY_BIN="/usr/sbin/$PRIVOXY_PRG"
+PRIVOXY_CONF="/etc/$PRIVOXY_PRG/config"
+PRIVOXY_USER="privoxy"
+PRIVOXY_PID=/var/run/$PRIVOXY_PRG.pid
+PRIVOXY_LOCK=/var/lock/subsys/$PRIVOXY_PRG
+PRIVOXY="$PRIVOXY_BIN --user $PRIVOXY_USER --pidfile $PRIVOXY_PID $PRIVOXY_CONF"
+
+test -f $PRIVOXY_BIN || exit 0
+test -f $PRIVOXY_CONF || exit 0
+test -d /var/log/privoxy || mkdir /var/log/privoxy && chown privoxy:privoxy /var/log/privoxy
+
+case "$1" in
+  start)
+    echo -n "Starting privoxy daemon"
+
+     if [ -f $PRIVOXY_PID ]; then 
+        killall privoxy && rm -f $PRIVOXY_LOCK $PRIVOXY_PID
+     fi
+
+    start-stop-daemon --start --quiet --exec $PRIVOXY
+    echo "."
+    ;;
+  stop)
+    echo -n "Stopping privoxy daemon"
+    killall $PRIVOXY_PRG
+    echo "."
+    ;;
+  restart)
+    echo -n "Stopping privoxy daemon"
+    killall $PRIVOXY_PRG
+    echo "."
+
+    echo -n "Starting privoxy daemon"
+    start-stop-daemon --start --quiet --exec $PRIVOXY
+    echo "."
+    ;;
+  *)
+    echo "Usage: /etc/init.d/tor {start|stop|restart|start_socats|stop_socats}"
+    exit 1
+esac
+
+exit 0
