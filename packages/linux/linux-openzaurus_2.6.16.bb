@@ -67,9 +67,9 @@ SRC_URI = "http://www.kernel.org/pub/linux/kernel/v2.6/linux-2.6.16.tar.bz2 \
            ${RPSRC}/jffs2_longfilename-r1.patch;patch=1;status=merged \
            file://00-hostap.patch;patch=1;status=merged \
            file://10-pcnet.patch;patch=1;status=merged \
-           ${RPSRC}/alsa/asoc-v0.10rc4.patch;patch=1 \
+           ${RPSRC}/alsa/asoc-v0.11.5.patch;patch=1 \
+           ${RPSRC}/asoc_makefile-r0.patch;patch=1 \
            file://maxpower-message.patch;patch=1;status=backported \
-           ${RPSRC}/asoc_fixups-r0.patch;patch=1 \
            ${RPSRC}/hx2750_base-r24.patch;patch=1 \
            ${RPSRC}/hx2750_bl-r5.patch;patch=1 \
            ${RPSRC}/hx2750_pcmcia-r2.patch;patch=1 \
