@@ -99,7 +99,7 @@
     </varlistentry>
 
     <varlistentry>
-      <term>.tgz, .tar.gz</term>
+      <term>.tgz, .tar.gz, tar.Z</term>
 
       <listitem>
         <para>Gzip compressed tar archives which will be extracted with
