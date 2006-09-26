@@ -1,4 +1,3 @@
-SECTION = "libs"
 require glibc_${PV}.bb
 
 DEPENDS = "linux-libc-headers"

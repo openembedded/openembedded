@@ -1,0 +1,37 @@
+--- glibc-2.4/sysdeps/unix/sysv/linux/openat.orig	2006-03-01 07:32:42.000000000 +0200
++++ glibc-2.4/sysdeps/unix/sysv/linux/openat.c	2006-04-30 19:15:52.000000000 +0300
+@@ -27,6 +27,9 @@
+ #include <sysdep-cancel.h>
+ #include <not-cancel.h>
+ 
++#if !defined OPENAT
++# define OPENAT openat
++#endif
+ 
+ #if !defined OPENAT && !defined __ASSUME_ATFCTS
+ # define OPENAT openat
+@@ -70,11 +73,7 @@ int __have_atfcts;
+ 
+ 
+ int
+-OPENAT_NOT_CANCEL (fd, file, oflag, mode)
+-     int fd;
+-     const char *file;
+-     int oflag;
+-     mode_t mode;
++OPENAT_NOT_CANCEL (int fd, const char *file, int oflag, mode_t mode)
+ {
+ 
+   /* We have to add the O_LARGEFILE flag for openat64.  */
+@@ -144,10 +143,7 @@ OPENAT_NOT_CANCEL (fd, file, oflag, mode
+    the directory associated with FD.  If OFLAG includes O_CREAT, a
+    third argument is the file protection.  */
+ int
+-__OPENAT (fd, file, oflag)
+-     int fd;
+-     const char *file;
+-     int oflag;
++__OPENAT (int fd, const char *file, int oflag, ...)
+ {
+   mode_t mode = 0;
+   if (oflag & O_CREAT)
