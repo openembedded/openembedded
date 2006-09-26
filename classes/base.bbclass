@@ -394,7 +394,7 @@ def oe_unpack_file(file, data, url = None):
 	cmd = None
 	if file.endswith('.tar'):
 		cmd = 'tar x --no-same-owner -f %s' % file
-	elif file.endswith('.tgz') or file.endswith('.tar.gz'):
+	elif file.endswith('.tgz') or file.endswith('.tar.gz') or file.endswith('.tar.Z'):
 		cmd = 'tar xz --no-same-owner -f %s' % file
 	elif file.endswith('.tbz') or file.endswith('.tar.bz2'):
 		cmd = 'bzip2 -dc %s | tar x --no-same-owner -f -' % file
