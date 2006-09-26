@@ -1,6 +1,6 @@
 require linux-openzaurus.inc
 
-PR = "r3"
+PR = "r4"
 
 # Handy URLs
 # git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux-2.6.git;protocol=git;tag=ef7d1b244fa6c94fb76d5f787b8629df64ea4046
@@ -13,8 +13,9 @@ PR = "r3"
 # Patches submitted upstream are towards top of this list 
 # Hacks should clearly named and at the bottom
 SRC_URI = "http://www.kernel.org/pub/linux/kernel/v2.6/linux-2.6.18.tar.bz2 \
-           ${RPSRC}/alsa/asoc-v0.11.5.patch;patch=1 \
+           ${RPSRC}/alsa/asoc-v0.11.7.patch;patch=1 \
            ${RPSRC}/asoc_makefile-r1.patch;patch=1 \
+           ${RPSRC}/poodle_audio-r6.patch;patch=1 \
            ${RPSRC}/hx2750_base-r27.patch;patch=1 \
            ${RPSRC}/hx2750_bl-r7.patch;patch=1 \
            ${RPSRC}/hx2750_pcmcia-r2.patch;patch=1 \
@@ -32,10 +33,9 @@ SRC_URI = "http://www.kernel.org/pub/linux/kernel/v2.6/linux-2.6.18.tar.bz2 \
            ${RPSRC}/locomo_kbd_tweak-r1.patch;patch=1 \
            ${RPSRC}/poodle_pm-r3.patch;patch=1 \
            ${RPSRC}/pxafb_changeres-r2.patch;patch=1 \
-           ${RPSRC}/poodle_audio-r5.patch;patch=1 \
            ${RPSRC}/pxa27x_overlay-r2.patch;patch=1 \
            file://serial-add-support-for-non-standard-xtals-to-16c950-driver.patch;patch=1 \
-           file://hrw-pcmcia-ids-r4.patch;patch=1 \
+           file://hrw-pcmcia-ids-r5.patch;patch=1 \
            ${RPSRC}/logo_oh-r0.patch.bz2;patch=1;status=unmergable \
            ${RPSRC}/logo_oz-r2.patch.bz2;patch=1;status=unmergable \
            ${RPSRC}/pxa-linking-bug.patch;patch=1;status=unmergable \
