@@ -10,7 +10,7 @@ PACKAGES_DYNAMIC += "kernel-image-*"
 
 export OS = "${TARGET_OS}"
 export CROSS_COMPILE = "${TARGET_PREFIX}"
-KERNEL_IMAGETYPE = "zImage"
+KERNEL_IMAGETYPE ?= "zImage"
 
 KERNEL_PRIORITY = "${@bb.data.getVar('PV',d,1).split('-')[0].split('.')[-1]}"
 
