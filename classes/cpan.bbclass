@@ -1,5 +1,11 @@
+#
+# This is for perl modules that use the old Makefile.PL build system
+#
 FILES_${PN} += '${libdir}/perl5'
 EXTRA_CPANFLAGS = ""
+
+DEPENDS  += "perl-native"
+RDEPENDS += "perl"
 
 cpan_do_configure () {
 	perl Makefile.PL ${EXTRA_CPANFLAGS}

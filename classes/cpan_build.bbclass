@@ -1,5 +1,11 @@
+#
+# This is for perl modules that use the new Build.PL build system
+#
 INHIBIT_NATIVE_STAGE_INSTALL = "1"
 FILES_${PN} += '${libdir}/perl5'
+
+DEPENDS  += "perl-native"
+RDEPENDS += "perl"
 
 def is_crosscompiling(d):
     import bb
