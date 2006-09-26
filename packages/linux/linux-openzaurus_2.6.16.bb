@@ -1,6 +1,6 @@
 require linux-openzaurus.inc
 
-PR = "r48"
+PR = "r49"
 
 COMPATIBLE_MACHINE = '(c7x0|akita|spitz)'
 
