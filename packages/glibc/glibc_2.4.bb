@@ -58,6 +58,8 @@ SRC_URI = "ftp://ftp.gnu.org/pub/gnu/glibc/glibc-2.4.tar.bz2 \
 	   file://glibc-2.4-compile.patch;patch=1 \
 	   file://fixup-aeabi-syscalls.patch;patch=1 \
 	   file://zecke-sane-readelf.patch;patch=1 \
+	   file://openat-bugzilla-fix-1220.patch;patch=1 \
+	   file://fix-fchownat-20060808.patch;patch=1 \
 	   file://generic-bits_select.h \
 	   file://generic-bits_types.h \
 	   file://generic-bits_typesizes.h \
