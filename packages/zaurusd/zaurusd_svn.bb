@@ -4,18 +4,17 @@ MAINTAINER = "Richard Purdie <rpurdie@openedhand.com>"
 LICENSE = "GPL"
 DEPENDS = "tslib"
 PV = "0.0+svn${CVSDATE}"
-PR = "r7"
+PR = "r8"
 
 SRC_URI = "svn://svn.o-hand.com/repos/misc/trunk;module=zaurusd;proto=http \
            file://zaurus-hinge.in \
-	   file://add-poodle.patch;patch=1\
 	   file://zaurus-hinge.matchbox-portrait \
-	   file://zaurus-hinge.matchbox-landscape" 
+	   file://zaurus-hinge.matchbox-landscape"
 
 S = "${WORKDIR}/${PN}"
 
 PACKAGE_ARCH = "${MACHINE_ARCH}"
- 
+
 do_configure_prepend () {
 	cp ${WORKDIR}/zaurus-hinge.in ${S}/scripts
 }
