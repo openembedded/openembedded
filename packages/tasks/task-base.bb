@@ -195,6 +195,7 @@ task-base-bluetooth-rrecommends = "\
     kernel-module-hidp \
     kernel-module-hci-uart \
     kernel-module-sco \
+    ${@base_contains("COMBINED_FEATURES", "usbhost", "kernel-module-hci-usb", "",d)} \
     ${@base_contains("COMBINED_FEATURES", "pcmcia", "kernel-module-bluetooth3c-cs", "",d)} \
     ${@base_contains("COMBINED_FEATURES", "pcmcia", "kernel-module-bluecard-cs", "",d)} \
     ${@base_contains("COMBINED_FEATURES", "pcmcia", "kernel-module-bluetoothuart-cs", "",d)} \
