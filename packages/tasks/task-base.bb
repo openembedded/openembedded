@@ -213,7 +213,7 @@ task-base-irda-rrecommends = "\
     kernel-module-irnet \
     kernel-module-irport \
     kernel-module-irtty \
-    kernel-module-ir-usb"
+    ${@base_contains("COMBINED_FEATURES", "usbhost", "kernel-module-ir-usb", "",d)} "
 
 task-base-usbgadget-rrecommends = "\
     kernel-module-gadgetfs \
