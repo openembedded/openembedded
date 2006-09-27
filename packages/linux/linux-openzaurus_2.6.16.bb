@@ -110,53 +110,14 @@ SRC_URI = "http://www.kernel.org/pub/linux/kernel/v2.6/linux-2.6.16.tar.bz2 \
            file://orinoco-remove-all-which-are-in-hostap-HACK.patch;patch=1;status=unmergable-hack \
            file://squashfs3.0-2.6.15.patch;patch=1;status=external \
            file://defconfig-c7x0 \
-           file://defconfig-ipaq-pxa270 \
-           file://defconfig-collie \
-           file://defconfig-poodle \
            file://defconfig-akita \
-           file://defconfig-spitz \
-           file://defconfig-qemuarm \
-           file://defconfig-tosa "
+           file://defconfig-spitz"
 
 # Add this to enable pm debug code (useful with a serial lead)
 #  ${RPSRC}/sharpsl_pm_debug-r0.patch;patch=1
 
 # Disabled until I find the reason this gives issues with cdc_subset
 #            ${RPSRC}/usb_rndis_tweaks-r0.patch;patch=1 \
-
-# These patches would really help collie/poodle but we 
-# need someone to maintain them
-# ${JLSRC}/zaurus-lcd-2.6.11.diff.gz;patch=1 
-#   (Pavel Machek's git tree has updated versions of this?)
-#   Also parts were recently committed to mainline by rmk (drivers/mfd/)
-# ${JLSRC}/zaurus-base-2.6.11.diff.gz;patch=1 
-#   (This is mostly in mainline now?)
-# ${JLSRC}/zaurus-local-2.6.11.diff.gz;patch=1 \
-# ${JLSRC}/zaurus-leds-2.6.11.diff.gz;patch=1 \
-
-SRC_URI_append_tosa = "\
-	   ${CHSRC}/usb-ohci-hooks-r1.patch;patch=1 \
-	   ${CHSRC}/tmio-core-r4.patch;patch=1 \
-	   ${CHSRC}/tmio-tc6393-r5.patch;patch=1 \
-	   ${CHSRC}/tmio-nand-r5.patch;patch=1 \
-	   ${CHSRC}/tmio-ohci-r3.patch;patch=1 \
-	   ${CHSRC}/tmio-fb-r6.patch;patch=1 \
-	   ${DOSRC}/tosa-keyboard-r14.patch;patch=1 \
-	   ${DOSRC}/tosa-pxaac97-r6.patch;patch=1 \
-	   ${DOSRC}/tosa-tmio-r6.patch;patch=1 \
-	   ${DOSRC}/tosa-power-r15.patch;patch=1 \
-	   ${DOSRC}/tosa-tmio-lcd-r7.patch;patch=1 \
-	   ${DOSRC}/tosa-bluetooth-r6.patch;patch=1 \
-	   ${DOSRC}/wm97xx-lg7-r0.patch;patch=1 \
-	   ${DOSRC}/wm9712-suspend-cold-res-r0.patch;patch=1 \
-	   ${DOSRC}/sharpsl-pm-postresume-r0.patch;patch=1 \
-	   ${DOSRC}/wm97xx-dig-restore-r0.patch;patch=1 \
-	   ${DOSRC}/wm97xx-miscdevs-resume-r0.patch;patch=1 \
-	   ${DOSRC}/wm9712-reset-loop-r0.patch;patch=1 \
-	   ${DOSRC}/tosa-asoc-r1.patch;patch=1 "
-
-SRC_URI_append_poodle = "\
-	   ${RPSRC}/rp_poodle_hacks-r0.patch;patch=1"
 
 S = "${WORKDIR}/linux-2.6.16"
 
