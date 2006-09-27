@@ -24,6 +24,7 @@ esac
 
 echo "Loading usb storage modules"
 modprobe scsi_mod
+modprobe sd_mod
 modprobe usbcore
 
 # Add more entries as appropriate
