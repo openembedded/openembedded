@@ -230,10 +230,8 @@ task-base-usbhost-rrecommends = "\
     kernel-module-scsi-mod \
     kernel-module-usbmouse \
     kernel-module-mousedev \
-    kernel-module-hci-usb \
     kernel-module-usbserial \
-    kernel-module-usb-storage \
-    kernel-module-ir-usb"
+    kernel-module-usb-storage "
 
 task-distro-ppp-rdepends = "\
     ppp \
