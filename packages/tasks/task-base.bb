@@ -181,8 +181,8 @@ task-base-pcmcia-rrecommends = "\
     kernel-module-airo-cs \
     kernel-module-pcnet-cs \
     kernel-module-serial-cs \
-    kernel-module-hostap-cs \
     kernel-module-ide-cs \
+    ${@base_contains("DISTRO_FEATURES", "wifi", "kernel-module-hostap-cs", "",d)} \
     ${@base_contains("DISTRO_FEATURES", "wifi", "kernel-module-orinoco-cs", "",d)} \
     ${@base_contains("DISTRO_FEATURES", "wifi", "kernel-module-spectrum-cs", "",d)}"
 
