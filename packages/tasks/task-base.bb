@@ -1,6 +1,6 @@
 DESCRIPTION = "Merge machine and distro options to create a basic machine task/package"
 MAINTAINER = "Richard Purdie <richard@openedhand.com>"
-PR = "r0"
+PR = "r5"
 
 PACKAGES = "task-base \
             task-base-minimal \
@@ -16,8 +16,10 @@ PACKAGE_ARCH = "${MACHINE_ARCH}"
 # kernel24
 # kernel26
 # apm
+# keyboard
+# touchscreen
 
-# Valid only in DISTO_FEATURES:
+# Valid only in DISTRO_FEATURES:
 #
 # nfs
 # smbfs
@@ -67,10 +69,12 @@ RDEPENDS_task-base = "\
     kernel \
     ${@base_contains("MACHINE_FEATURES", "kernel26", "${task-base-kernel26-rdepends}", "",d)} \
     ${@base_contains("MACHINE_FEATURES", "apm", "${task-base-apm-rdepends}", "",d)} \
+    ${@base_contains("MACHINE_FEATURES", "keyboard", "${task-base-keyboard-rdepends}", "",d)} \
     ${@base_contains("COMBINED_FEATURES", "alsa", "${task-base-alsa-rdepends}", "",d)} \
     ${@base_contains("COMBINED_FEATURES", "ext2", "${task-base-ext2-rdepends}", "",d)} \
     ${@base_contains("COMBINED_FEATURES", "irda", "${task-base-irda-rdepends}", "",d)} \
     ${@base_contains("COMBINED_FEATURES", "pcmcia", "${task-base-pcmcia-rdepends}", "",d)} \
+    ${@base_contains("DISTRO_FEATURES", "nfs", "${task-distro-nfs-rdepends}", "",d)} \
     ${@base_contains("DISTRO_FEATURES", "ipsec", "${task-distro-ipsec-rdepends}", "",d)} \
     ${@base_contains("DISTRO_FEATURES", "ppp", "${task-distro-ppp-rdepends}", "",d)} \
     ${@base_contains("DISTRO_FEATURES", "wifi", "${task-distro-wifi-rdepends}", "",d)} \
@@ -89,6 +93,7 @@ RRECOMMENDS_task-base = "\
     ${@base_contains("DISTRO_FEATURES", "ppp", "${task-distro-ppp-rrecommends}", "",d)} \
     ${@base_contains("DISTRO_FEATURES", "nfs", "${task-distro-nfs-rrecommends}", "",d)} \
     ${@base_contains("DISTRO_FEATURES", "ipsec", "${task-distro-ipsec-rrecommends}", "",d)} \
+    ${@base_contains("DISTRO_FEATURES", "wifi", "${task-distro-wifi-rrecommends}", "",d)} \
     ${@base_contains("DISTRO_FEATURES", "cramfs", "${task-distro-cramfs-rrecommends}", "",d)} \
     ${MACHINE_ESSENTIAL_EXTRA_RRECOMMENDS} \
     ${MACHINE_EXTRA_RRECOMMENDS} \
@@ -131,16 +136,16 @@ RDEPENDS_task-base-core-default = '\
 
 
 RRECOMMENDS_task-base-core-default = '\
-    dropbear \
-    portmap'
-
+    dropbear '
 
 
 task-base-kernel26-rdepends = "\
     udev \
-    keymaps \
     sysfsutils \
     module-init-tools"
+
+task-base-keyboard-rdepends = "\
+    keymaps"
 
 task-base-kernel26-extras-rrecommends = "\
     kernel-module-input \
@@ -178,8 +183,8 @@ task-base-pcmcia-rrecommends = "\
     kernel-module-airo-cs \
     kernel-module-pcnet-cs \
     kernel-module-serial-cs \
-    kernel-module-hostap-cs \
     kernel-module-ide-cs \
+    ${@base_contains("DISTRO_FEATURES", "wifi", "kernel-module-hostap-cs", "",d)} \
     ${@base_contains("DISTRO_FEATURES", "wifi", "kernel-module-orinoco-cs", "",d)} \
     ${@base_contains("DISTRO_FEATURES", "wifi", "kernel-module-spectrum-cs", "",d)}"
 
@@ -192,6 +197,7 @@ task-base-bluetooth-rrecommends = "\
     kernel-module-hidp \
     kernel-module-hci-uart \
     kernel-module-sco \
+    ${@base_contains("COMBINED_FEATURES", "usbhost", "kernel-module-hci-usb", "",d)} \
     ${@base_contains("COMBINED_FEATURES", "pcmcia", "kernel-module-bluetooth3c-cs", "",d)} \
     ${@base_contains("COMBINED_FEATURES", "pcmcia", "kernel-module-bluecard-cs", "",d)} \
     ${@base_contains("COMBINED_FEATURES", "pcmcia", "kernel-module-bluetoothuart-cs", "",d)} \
@@ -209,7 +215,7 @@ task-base-irda-rrecommends = "\
     kernel-module-irnet \
     kernel-module-irport \
     kernel-module-irtty \
-    kernel-module-ir-usb"
+    ${@base_contains("COMBINED_FEATURES", "usbhost", "kernel-module-ir-usb", "",d)} "
 
 task-base-usbgadget-rrecommends = "\
     kernel-module-gadgetfs \
@@ -226,10 +232,8 @@ task-base-usbhost-rrecommends = "\
     kernel-module-scsi-mod \
     kernel-module-usbmouse \
     kernel-module-mousedev \
-    kernel-module-hci-usb \
     kernel-module-usbserial \
-    kernel-module-usb-storage \
-    kernel-module-ir-usb"
+    kernel-module-usb-storage "
 
 task-distro-ppp-rdepends = "\
     ppp \
@@ -251,11 +255,24 @@ task-distro-wifi-rdepends = "\
     hostap-utils \
     wpa-supplicant-nossl"
 
+task-distro-wifi-rrecommends = "\
+    kernel-module-ieee80211-crypt \
+    kernel-module-ieee80211-crypt-ccmp \
+    kernel-module-ieee80211-crypt-tkip \
+    kernel-module-ieee80211-crypt-wep \
+    kernel-module-arc4 \
+    kernel-module-michael-mic \
+    kernel-module-aes"
+
 task-distro-smbfs-rrecommends = "\
+    kernel-module-cifs \
     kernel-module-smbfs"
 
 task-distro-cramfs-rrecommends = "\
     kernel-module-cramfs"
+
+task-distro-nfs-rdepends = "\
+    portmap"
 
 task-distro-nfs-rrecommends = "\
     kernel-module-nfs \
@@ -265,7 +282,6 @@ task-distro-nfs-rrecommends = "\
 
 # Tosort
 # kernel-module-ipv6 
-# kernel-module-ipsec
 # kernel-module-nvrd
 # kernel-module-mip6-mn
 # kernel-module-tun
@@ -274,7 +290,6 @@ task-distro-nfs-rrecommends = "\
 # kernel-module-loop
 # kernel-module-vfat 
 # kernel-module-ext2
-# kernel-module-nfs
 # kernel-module-sco 
 # kernel-module-af_packet
 # kernel-module-ip-gre 
