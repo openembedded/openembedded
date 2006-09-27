@@ -1,6 +1,6 @@
 DESCRIPTION = "Merge machine and distro options to create a basic machine task/package"
 MAINTAINER = "Richard Purdie <richard@openedhand.com>"
-PR = "r3"
+PR = "r5"
 
 PACKAGES = "task-base \
             task-base-minimal \
@@ -93,6 +93,7 @@ RRECOMMENDS_task-base = "\
     ${@base_contains("DISTRO_FEATURES", "ppp", "${task-distro-ppp-rrecommends}", "",d)} \
     ${@base_contains("DISTRO_FEATURES", "nfs", "${task-distro-nfs-rrecommends}", "",d)} \
     ${@base_contains("DISTRO_FEATURES", "ipsec", "${task-distro-ipsec-rrecommends}", "",d)} \
+    ${@base_contains("DISTRO_FEATURES", "wifi", "${task-distro-wifi-rrecommends}", "",d)} \
     ${@base_contains("DISTRO_FEATURES", "cramfs", "${task-distro-cramfs-rrecommends}", "",d)} \
     ${MACHINE_ESSENTIAL_EXTRA_RRECOMMENDS} \
     ${MACHINE_EXTRA_RRECOMMENDS} \
@@ -253,6 +254,15 @@ task-distro-wifi-rdepends = "\
     wireless-tools \
     hostap-utils \
     wpa-supplicant-nossl"
+
+task-distro-wifi-rrecommends = "\
+    kernel-module-ieee80211-crypt \
+    kernel-module-ieee80211-crypt-ccmp \
+    kernel-module-ieee80211-crypt-tkip \
+    kernel-module-ieee80211-crypt-wep \
+    kernel-module-arc4 \
+    kernel-module-michael-mic \
+    kernel-module-aes"
 
 task-distro-smbfs-rrecommends = "\
     kernel-module-cifs \
