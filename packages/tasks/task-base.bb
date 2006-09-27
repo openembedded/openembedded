@@ -74,6 +74,7 @@ RDEPENDS_task-base = "\
     ${@base_contains("COMBINED_FEATURES", "ext2", "${task-base-ext2-rdepends}", "",d)} \
     ${@base_contains("COMBINED_FEATURES", "irda", "${task-base-irda-rdepends}", "",d)} \
     ${@base_contains("COMBINED_FEATURES", "pcmcia", "${task-base-pcmcia-rdepends}", "",d)} \
+    ${@base_contains("DISTRO_FEATURES", "nfs", "${task-distro-nfs-rdepends}", "",d)} \
     ${@base_contains("DISTRO_FEATURES", "ipsec", "${task-distro-ipsec-rdepends}", "",d)} \
     ${@base_contains("DISTRO_FEATURES", "ppp", "${task-distro-ppp-rdepends}", "",d)} \
     ${@base_contains("DISTRO_FEATURES", "wifi", "${task-distro-wifi-rdepends}", "",d)} \
@@ -254,10 +255,14 @@ task-distro-wifi-rdepends = "\
     wpa-supplicant-nossl"
 
 task-distro-smbfs-rrecommends = "\
+    kernel-module-cifs \
     kernel-module-smbfs"
 
 task-distro-cramfs-rrecommends = "\
     kernel-module-cramfs"
+
+task-distro-nfs-rdepends = "\
+    portmap"
 
 task-distro-nfs-rrecommends = "\
     kernel-module-nfs \
@@ -267,7 +272,6 @@ task-distro-nfs-rrecommends = "\
 
 # Tosort
 # kernel-module-ipv6 
-# kernel-module-ipsec
 # kernel-module-nvrd
 # kernel-module-mip6-mn
 # kernel-module-tun
@@ -276,7 +280,6 @@ task-distro-nfs-rrecommends = "\
 # kernel-module-loop
 # kernel-module-vfat 
 # kernel-module-ext2
-# kernel-module-nfs
 # kernel-module-sco 
 # kernel-module-af_packet
 # kernel-module-ip-gre 
