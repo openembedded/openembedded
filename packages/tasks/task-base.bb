@@ -1,6 +1,6 @@
 DESCRIPTION = "Merge machine and distro options to create a basic machine task/package"
 MAINTAINER = "Richard Purdie <richard@openedhand.com>"
-PR = "r4"
+PR = "r5"
 
 PACKAGES = "task-base \
             task-base-minimal \
@@ -70,7 +70,6 @@ RDEPENDS_task-base = "\
     ${@base_contains("MACHINE_FEATURES", "kernel26", "${task-base-kernel26-rdepends}", "",d)} \
     ${@base_contains("MACHINE_FEATURES", "apm", "${task-base-apm-rdepends}", "",d)} \
     ${@base_contains("MACHINE_FEATURES", "keyboard", "${task-base-keyboard-rdepends}", "",d)} \
-    ${@base_contains("MACHINE_FEATURES", "touchscreen", "${task-base-touchscreen-rdepends}", "",d)} \
     ${@base_contains("COMBINED_FEATURES", "alsa", "${task-base-alsa-rdepends}", "",d)} \
     ${@base_contains("COMBINED_FEATURES", "ext2", "${task-base-ext2-rdepends}", "",d)} \
     ${@base_contains("COMBINED_FEATURES", "irda", "${task-base-irda-rdepends}", "",d)} \
@@ -94,6 +93,7 @@ RRECOMMENDS_task-base = "\
     ${@base_contains("DISTRO_FEATURES", "ppp", "${task-distro-ppp-rrecommends}", "",d)} \
     ${@base_contains("DISTRO_FEATURES", "nfs", "${task-distro-nfs-rrecommends}", "",d)} \
     ${@base_contains("DISTRO_FEATURES", "ipsec", "${task-distro-ipsec-rrecommends}", "",d)} \
+    ${@base_contains("DISTRO_FEATURES", "wifi", "${task-distro-wifi-rrecommends}", "",d)} \
     ${@base_contains("DISTRO_FEATURES", "cramfs", "${task-distro-cramfs-rrecommends}", "",d)} \
     ${MACHINE_ESSENTIAL_EXTRA_RRECOMMENDS} \
     ${MACHINE_EXTRA_RRECOMMENDS} \
@@ -146,11 +146,6 @@ task-base-kernel26-rdepends = "\
 
 task-base-keyboard-rdepends = "\
     keymaps"
-
-task-base-touchscreen-rdepends = "\
-    tslib \
-    tslib-conf"
-
 
 task-base-kernel26-extras-rrecommends = "\
     kernel-module-input \
@@ -259,6 +254,15 @@ task-distro-wifi-rdepends = "\
     wireless-tools \
     hostap-utils \
     wpa-supplicant-nossl"
+
+task-distro-wifi-rrecommends = "\
+    kernel-module-ieee80211-crypt \
+    kernel-module-ieee80211-crypt-ccmp \
+    kernel-module-ieee80211-crypt-tkip \
+    kernel-module-ieee80211-crypt-wep \
+    kernel-module-arc4 \
+    kernel-module-michael-mic \
+    kernel-module-aes"
 
 task-distro-smbfs-rrecommends = "\
     kernel-module-cifs \
