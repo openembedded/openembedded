@@ -67,6 +67,7 @@ RDEPENDS_task-base = "\
     kernel \
     ${@base_contains("MACHINE_FEATURES", "kernel26", "${task-base-kernel26-rdepends}", "",d)} \
     ${@base_contains("MACHINE_FEATURES", "apm", "${task-base-apm-rdepends}", "",d)} \
+    ${@base_contains("MACHINE_FEATURES", "keyboard", "${task-base-keyboard-rdepends}", "",d)} \
     ${@base_contains("COMBINED_FEATURES", "alsa", "${task-base-alsa-rdepends}", "",d)} \
     ${@base_contains("COMBINED_FEATURES", "ext2", "${task-base-ext2-rdepends}", "",d)} \
     ${@base_contains("COMBINED_FEATURES", "irda", "${task-base-irda-rdepends}", "",d)} \
@@ -138,9 +139,11 @@ RRECOMMENDS_task-base-core-default = '\
 
 task-base-kernel26-rdepends = "\
     udev \
-    keymaps \
     sysfsutils \
     module-init-tools"
+
+task-base-keyboard-rdepends = "\
+    keymaps"
 
 task-base-kernel26-extras-rrecommends = "\
     kernel-module-input \
