@@ -1,6 +1,6 @@
 DESCRIPTION = "Merge machine and distro options to create a basic machine task/package"
 MAINTAINER = "Richard Purdie <richard@openedhand.com>"
-PR = "r1"
+PR = "r2"
 
 PACKAGES = "task-base \
             task-base-minimal \
@@ -16,8 +16,10 @@ PACKAGE_ARCH = "${MACHINE_ARCH}"
 # kernel24
 # kernel26
 # apm
+# keyboard
+# touchscreen
 
-# Valid only in DISTO_FEATURES:
+# Valid only in DISTRO_FEATURES:
 #
 # nfs
 # smbfs
@@ -132,9 +134,7 @@ RDEPENDS_task-base-core-default = '\
 
 
 RRECOMMENDS_task-base-core-default = '\
-    dropbear \
-    portmap'
-
+    dropbear '
 
 
 task-base-kernel26-rdepends = "\
