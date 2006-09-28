@@ -38,7 +38,7 @@ do_install_append() {
 	install -d ${D}${sysconfdir}/profile.d/
 	install -m 0755 ${WORKDIR}/tslib.sh ${D}${sysconfdir}/profile.d/
 	case ${MACHINE} in
-	a780 | e680 | h3600 | h3900 | h1940 | h6300 | h2200 | ipaq-pxa270 | blueangel | h4000)
+	a780 | e680 | h3600 | h3900 | h5xxx | h1940 | h6300 | h2200 | ipaq-pxa270 | blueangel | h4000)
 		install -d ${D}${datadir}/tslib
 		for f in ts-2.6.conf ts.conf-h3600-2.4; do
 			install -m 0644 ${WORKDIR}/$f ${D}${datadir}/tslib/
@@ -79,6 +79,7 @@ RDEPENDS_tslib-conf_h1940 = "detect-stylus"
 RDEPENDS_tslib-conf_h2200 = "detect-stylus"
 RDEPENDS_tslib-conf_h3600 = "detect-stylus"
 RDEPENDS_tslib-conf_h3900 = "detect-stylus"
+RDEPENDS_tslib-conf_h5xxx = "detect-stylus"
 RDEPENDS_tslib-conf_h6300 = "detect-stylus"
 RDEPENDS_tslib-conf_blueangel = "detect-stylus"
 RDEPENDS_tslib-conf_htcuniversal = "detect-stylus"
