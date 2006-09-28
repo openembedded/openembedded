@@ -1,8 +1,8 @@
 DESCRIPTION = "Params::Validate - Validate method/function parameters"
 SECTION = "libs"
 MAINTAINER = "Jamie Lenehan <lenehan@twibble.org>"
-LICENSE = "Artistic"
-PR = "r5"
+LICENSE = "Artistic|GPL"
+PR = "r6"
 
 SRC_URI = "http://search.cpan.org/CPAN/authors/id/D/DR/DROLSKY/Params-Validate-0.86.tar.gz"
 
