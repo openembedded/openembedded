@@ -65,7 +65,7 @@ SRC_URI = "ftp://ftp.gnu.org/pub/gnu/glibc/glibc-2.4.tar.bz2 \
            file://etc/ld.so.conf \
            file://generate-supported.mk"
 
-# Build fails of x86 without additional patches, but these break arm
+# Build fails on x86 without additional patches, but these break arm
 SRC_URI_append_x86 = " file://openat-bugzilla-fix-1220.patch;patch=1 \
            file://fix-fchownat-20060808.patch;patch=1"
 
