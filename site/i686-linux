@@ -52,6 +52,7 @@ glib_cv_uscore=${glib_cv_uscore=no}
 glib_cv___va_copy=${glib_cv___va_copy=yes}
 glib_cv_va_copy=${glib_cv_va_copy=yes}
 glib_cv_va_val_copy=${glib_cv_va_val_copy=yes}
+glib_cv_rtldglobal_broken=${glib_cv_rtldglobal_broken=yes}
 utils_cv_sys_open_max=${utils_cv_sys_open_max=1015}
 
 # glib-2.0
@@ -197,3 +198,12 @@ with_broken_putenv=${with_broken_putenv=no}
 
 # xffm
 jm_cv_func_working_readdir=yes
+
+#xserver-xorg
+ac_cv_sys_linker_h=${ac_cv_sys_linker_h=no}
+ac_cv_file__usr_share_X11_sgml_defs_ent=${ac_cv_file__usr_share_X11_sgml_defs_ent=no}
+
+# slrn
+slrn_cv___va_copy=${slrn_cv___va_copy=yes}
+slrn_cv_va_copy=${slrn_cv_va_copy=no}
+slrn_cv_va_val_copy=${slrn_cv_va_val_copy=yes}
