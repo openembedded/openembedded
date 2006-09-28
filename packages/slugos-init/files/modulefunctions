@@ -1,0 +1,37 @@
+#!/bin/sh
+# . this file to load the functions for automatically loading modules
+
+. /etc/default/functions
+
+loaddiskmods(){
+	modprobe scsi_mod
+	modprobe sd_mod 
+	modprobe usbcore 
+	case "$(machine)" in
+	    nslu2)                     
+	        modprobe ehci-hcd
+	        modprobe ohci-hcd
+		;;
+            nas100d)
+                modprobe ehci-hcd
+                modprobe uhci-hcd
+                ;;
+
+	esac
+	modprobe usb-storage
+}
+
+loadnetmods(){
+	modprobe af_packet
+	case "$(machine)" in
+	    ixdp425|nslu2|nas100d)
+	        modprobe ixp4xx_mac
+	        ;;                     
+	esac
+}
+
+loadmiscmods(){
+	modprobe ixp4xx_rng
+	modprobe i2c_dev
+}
+
