@@ -26,7 +26,7 @@ then
 	#
 	# load USB & SCSI storage modules (/proc required!)
 	echo "boot: loading modules required for boot"
-	loadusbmods
+	loaddiskmods
 	#
 	# Mount read-write because before exec'ing init
 	# If a UUID is given (in the environment) this

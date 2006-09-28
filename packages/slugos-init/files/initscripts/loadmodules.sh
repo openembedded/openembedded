@@ -1,18 +1,15 @@
 #!/bin/sh
 
 # This script is used for loading modules required by SlugOS
-# Currently, this script only supports the NSLU2
+# This script may not be necessary if udev is present, but is included
+# for 'backup' purposes in case udev is playing silly buggers
 
-. /etc/default/functions # Load $(machine) function required
-. /etc/default/modulefunctions
+. /etc/default/modulefunctions # Load module loading logic
 
-echo "Loading networking modules"
 loadnetmods
 
-echo "Loading usb storage modules"
-loadusbmods
+loaddiskmods
 
-echo "Loading other modules"
 loadmiscmods
 
 exit 0
