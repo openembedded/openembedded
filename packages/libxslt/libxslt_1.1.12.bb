@@ -3,7 +3,7 @@ SECTION = "libs"
 PRIORITY = "optional"
 DEPENDS = "libxml2"
 LICENSE = "MIT"
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "ftp://xmlsoft.org/libxml2/libxslt-${PV}.tar.gz"
 S = "${WORKDIR}/libxslt-${PV}"
@@ -39,7 +39,7 @@ do_stage () {
 	install -m 0644 libxslt.m4 ${STAGING_DATADIR}/aclocal/
 }
 
-PACKAGES = "${PN}-dev ${PN}-utils ${PN} ${PN}-doc ${PN}-locale"
+PACKAGES = "${PN}-dbg ${PN}-dev ${PN}-utils ${PN} ${PN}-doc ${PN}-locale"
 
 FILES_${PN}-dev += "${bindir}/xslt-config"
 FILES_${PN}-utils += "${bindir}"
