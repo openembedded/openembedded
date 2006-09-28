@@ -15,14 +15,15 @@
   <orderedlist>
     <listitem>
       <para>Inherits the <xref linkend="rootfs_ipkg_class" /> in order to
-      bring in the functionality required to generate a root filesystem image
-      from a set of ipkg's that will be suitable for included in the
-      image(s);</para>
+      bring in the functionality required to generate a root filesystem image.
+      The root filesystem image is generate from a set of ipkg packages, and
+      then the required images are generated using the contents of the root
+      filesystem;</para>
     </listitem>
 
     <listitem>
-      <para>Sets <command>BUILD_ALL_DEPS = "1"</command> to force dependency
-      system to build all packages that are listed in the
+      <para>Sets <command>BUILD_ALL_DEPS = "1"</command> to force the
+      dependency system to build all packages that are listed in the
       <command>RDEPENDS</command> and/or <command>RRECOMENDS</command> of the
       packages to be installed;</para>
     </listitem>
@@ -30,7 +31,7 @@
     <listitem>
       <para>Determines the name of the image device tables or table
       (<command>IMAGE_DEVICE_TABLES/IMAGE_DEVICE_TABLE</command>) which will
-      be used to determine the device nodes to create in
+      be used to describe the device nodes to create in
       <command>/dev</command> directory in the root filesystem;</para>
     </listitem>
 
@@ -49,7 +50,7 @@
 
     <listitem>
       <para>Calls into <xref linkend="rootfs_ipkg_class" /> to install all of
-      the required components into the root filesystem;</para>
+      the required packages into the root filesystem;</para>
     </listitem>
 
     <listitem>
@@ -163,8 +164,11 @@
       <listitem>
         <para>Specifies the type of image files to create. The supported image
         types, and details on modifying existing types and on creating new
-        types, are described in the <xref linkend="image_types" />
-        section.</para>
+        types, are described in the <xref linkend="image_types" /> section.
+        This variable is set to a space seperated list of image types to
+        generate.</para>
+
+        <para>Example: <command>"jffs2 tar.gz"</command></para>
 
         <para>Default: <command>"jffs2"</command></para>
       </listitem>
