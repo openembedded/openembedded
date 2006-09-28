@@ -12,19 +12,6 @@ export PATH=/sbin:/bin:/usr/sbin:/usr/bin
 leds beep -r 2
 leds boot system
 #
-# Load the required SCSI and USB modules 'by hand'
-insmod /lib/modules/`uname -r`/kernel/drivers/scsi/scsi_mod.ko
-insmod /lib/modules/`uname -r`/kernel/drivers/scsi/sd_mod.ko
-insmod /lib/modules/`uname -r`/kernel/drivers/usb/core/usbcore.ko
-# Add more cases here for different boards
-case "$(machine)" in
-    nslu2)
-        insmod /lib/modules/`uname -r`/kernel/drivers/usb/host/ehci-hcd.ko
-        insmod /lib/modules/`uname -r`/kernel/drivers/usb/host/ohci-hcd.ko
-        ;;
-esac
-insmod /lib/modules/`uname -r`/kernel/drivers/usb/storage/usb-storage.ko
-#
 if test -n "$1"
 then
 	device="$1"
