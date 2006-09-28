@@ -1,5 +1,5 @@
 SECTION = "libs"
-include glibc_${PV}.bb
+require glibc_${PV}.bb
 
 EXCLUDE_FROM_SHLIBS = "1"
 
