@@ -6,7 +6,7 @@ LICENSE = "GPL"
 
 S = "${WORKDIR}/dbus-${PV}"
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/dbus"
-DEPENDS = "glib-2.0-native"
+DEPENDS = "glib-2.0-native libxml2-native expat-native"
 
 SRC_URI = "http://freedesktop.org/software/dbus/releases/dbus-${PV}.tar.gz \
 	   file://cross.patch;patch=1 \
