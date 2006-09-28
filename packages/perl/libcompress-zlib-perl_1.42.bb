@@ -9,6 +9,3 @@ SRC_URI = "http://search.cpan.org/CPAN/authors/id/P/PM/PMQS/Compress-Zlib-1.42.t
 S = "${WORKDIR}/Compress-Zlib-${PV}"
 
 inherit cpan
-
-# Stop from searching /include - should put this in cpan class?
-export CCFLAGS = "${CFLAGS}"
