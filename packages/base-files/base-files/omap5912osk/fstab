@@ -1,0 +1,9 @@
+# fstab for omap5912osk
+
+rootfs               /                    auto       defaults              1  1
+proc                 /proc                proc       defaults              0  0
+sysfs                /sysfs               sysfs      defaults              0  0
+tmpfs                /dev                 tmpfs      defaults              0  0
+tmpfs                /var                 tmpfs      defaults              0  0
+tmpfs                /media/ram           tmpfs      defaults              0  0
+

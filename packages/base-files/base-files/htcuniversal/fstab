@@ -3,7 +3,7 @@
 rootfs               /                    auto       defaults              1  1
 proc                 /proc                proc       defaults              0  0
 devpts               /dev/pts             devpts     mode=0620,gid=5       0  0
-usbdevfs             /proc/bus/usb        usbdevfs   noauto                0  0
+#usbfs               /proc/bus/usb        usbfs   noauto                0  0
 tmpfs                /var                 tmpfs      defaults              0  0
 tmpfs                /media/ram           tmpfs      defaults              0  0
 
