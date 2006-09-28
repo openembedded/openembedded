@@ -5,11 +5,12 @@ def get_binconfig_mangle(d):
 	import bb.data
 	s = "-e ''"
 	if not bb.data.inherits_class('native', d):
-		s += " -e 's:=${libdir}:=OELIBDIR:;'"
-		s += " -e 's:=${includedir}:=OEINCDIR:;'"
-		s += " -e 's:=${datadir}:=OEDATADIR:'"
-		s += " -e 's:=${prefix}:=OEPREFIX:'"
-		s += " -e 's:=${exec_prefix}:=OEEXECPREFIX:'"
+		optional_quote = r"\(\"\?\)"
+		s += " -e 's:=%s${libdir}:=\\1OELIBDIR:;'" % optional_quote
+		s += " -e 's:=%s${includedir}:=\\1OEINCDIR:;'" % optional_quote
+		s += " -e 's:=%s${datadir}:=\\1OEDATADIR:'" % optional_quote
+		s += " -e 's:=%s${prefix}:=\\1OEPREFIX:'" % optional_quote
+		s += " -e 's:=%s${exec_prefix}:=\\1OEEXECPREFIX:'" % optional_quote
 		s += " -e 's:-L${libdir}:-LOELIBDIR:;'"
 		s += " -e 's:-I${includedir}:-IOEINCDIR:;'"
 		s += " -e 's:OELIBDIR:${STAGING_LIBDIR}:;'"

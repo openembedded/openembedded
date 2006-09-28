@@ -1,7 +1,8 @@
 inherit rootfs_ipk
 
-# We need to follow RDEPENDS and RRECOMMENDS for images
+# We need to recursively follow RDEPENDS and RRECOMMENDS for images
 BUILD_ALL_DEPS = "1"
+do_rootfs[recrdeptask] = "do_package"
 
 # Images are generally built explicitly, do not need to be part of world.
 EXCLUDE_FROM_WORLD = "1"
@@ -22,7 +23,27 @@ def get_image_deps(d):
 
 DEPENDS += "${@get_image_deps(d)}"
 
-IMAGE_DEVICE_TABLE ?= "${@bb.which(bb.data.getVar('BBPATH', d, 1), 'files/device_table-minimal.txt')}"
+#
+# Get a list of files containing device tables to create.
+# * IMAGE_DEVICE_TABLE is the old name to an absolute path to a device table file
+# * IMAGE_DEVICE_TABLES is a new name for a file, or list of files, seached
+#   for in the BBPATH
+# If neither are specified then the default name of files/device_table-minimal.txt
+# is searched for in the BBPATH (same as the old version.)
+#
+def get_devtable_list(d):
+	import bb
+	devtable = bb.data.getVar('IMAGE_DEVICE_TABLE', d, 1)
+	if devtable != None:
+		return devtable
+	str = ""
+	devtables = bb.data.getVar('IMAGE_DEVICE_TABLES', d, 1)
+	if devtables == None:
+		devtables = 'files/device_table-minimal.txt'
+	for devtable in devtables.split():
+		str += " %s" % bb.which(bb.data.getVar('BBPATH', d, 1), devtable)
+	return str
+
 IMAGE_POSTPROCESS_COMMAND ?= ""
 
 # Must call real_do_rootfs() from inside here, rather than as a separate
@@ -33,7 +54,9 @@ fakeroot do_rootfs () {
 
 	if [ "${USE_DEVFS}" != "1" ]; then
 		mkdir -p ${IMAGE_ROOTFS}/dev
-		makedevs -r ${IMAGE_ROOTFS} -D ${IMAGE_DEVICE_TABLE}
+		for devtable in ${@get_devtable_list(d)}; do
+			makedevs -r ${IMAGE_ROOTFS} -D $devtable
+		done
 	fi
 
 	real_do_rootfs

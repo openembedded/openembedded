@@ -31,13 +31,12 @@ real_do_rootfs () {
 	mkdir -p ${IMAGE_ROOTFS}/dev
 
 	if [ -z "${DEPLOY_KEEP_PACKAGES}" ]; then
-		rm -f ${DEPLOY_DIR_IPK}/Packages
 		touch ${DEPLOY_DIR_IPK}/Packages
 		ipkg-make-index -r ${DEPLOY_DIR_IPK}/Packages -p ${DEPLOY_DIR_IPK}/Packages -l ${DEPLOY_DIR_IPK}/Packages.filelist -m ${DEPLOY_DIR_IPK}
 	fi
 	mkdir -p ${T}
 	echo "src oe file:${DEPLOY_DIR_IPK}" > ${T}/ipkg.conf
-	ipkgarchs="all any noarch ${TARGET_ARCH} ${IPKG_ARCHS} ${MACHINE}"
+	ipkgarchs="${IPKG_ARCHS}"
 	priority=1
 	for arch in $ipkgarchs; do
 		echo "arch $arch $priority" >> ${T}/ipkg.conf
@@ -97,7 +96,7 @@ log_check() {
 				then
 					echo "log_check: There were error messages in the logfile"
 					echo -e "log_check: Matched keyword: [$keyword_die]\n"
-					echo "$lf_txt" | grep -v log_check | grep -i "$keyword_die"
+					echo "$lf_txt" | grep -v log_check | grep -i "$keyword_die" -C1
 					echo ""
 					do_exit=1				
 				fi
@@ -139,7 +138,14 @@ remove_init_link () {
 	fi
 }
 
+make_zimage_symlink_relative () {
+	if [ -L ${IMAGE_ROOTFS}/boot/zImage ]; then
+		(cd ${IMAGE_ROOTFS}/boot/ && for i in `ls zImage-* | sort`; do ln -sf $i zImage; done)
+	fi
+}
+
 # export the zap_root_password, create_etc_timestamp and remote_init_link
-EXPORT_FUNCTIONS zap_root_password create_etc_timestamp remove_init_link
+EXPORT_FUNCTIONS zap_root_password create_etc_timestamp remove_init_link make_zimage_symlink_relative
+ 
 
 addtask rootfs before do_build after do_install

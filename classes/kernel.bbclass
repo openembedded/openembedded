@@ -10,7 +10,7 @@ PACKAGES_DYNAMIC += "kernel-image-*"
 
 export OS = "${TARGET_OS}"
 export CROSS_COMPILE = "${TARGET_PREFIX}"
-KERNEL_IMAGETYPE = "zImage"
+KERNEL_IMAGETYPE ?= "zImage"
 
 KERNEL_PRIORITY = "${@bb.data.getVar('PV',d,1).split('-')[0].split('.')[-1]}"
 
@@ -45,11 +45,18 @@ export CMDLINE_CONSOLE = "console=${@bb.data.getVar("KERNEL_CONSOLE",d,1) or "tt
 
 # parse kernel ABI version out of <linux/version.h>
 def get_kernelversion(p):
+	import re, os
+
+	fn = p + '/include/linux/utsrelease.h'
+	if not os.path.isfile(fn):
+		fn = p + '/include/linux/version.h'
+	
 	import re
 	try:
-		f = open(p, 'r')
+		f = open(fn, 'r')
 	except IOError:
 		return None
+
 	l = f.readlines()
 	f.close()
 	r = re.compile("#define UTS_RELEASE \"(.*)\"")
@@ -67,7 +74,7 @@ def get_kernelmajorversion(p):
 		return m.group(1)
 	return None
 
-KERNEL_VERSION = "${@get_kernelversion('${S}/include/linux/version.h')}"
+KERNEL_VERSION = "${@get_kernelversion('${S}')}"
 KERNEL_MAJOR_VERSION = "${@get_kernelmajorversion('${KERNEL_VERSION}')}"
 
 KERNEL_LOCALVERSION ?= ""
@@ -109,6 +116,21 @@ kernel_do_stage() {
 	mkdir -p ${STAGING_KERNEL_DIR}/include/pcmcia
 	cp -fR include/pcmcia/* ${STAGING_KERNEL_DIR}/include/pcmcia/
 
+	if [ -d drivers/crypto ]; then
+		mkdir -p ${STAGING_KERNEL_DIR}/drivers/crypto
+		cp -fR drivers/crypto/* ${STAGING_KERNEL_DIR}/drivers/crypto/
+	fi
+
+        if [ -d include/media ]; then
+                mkdir -p ${STAGING_KERNEL_DIR}/include/media
+                cp -fR include/media/* ${STAGING_KERNEL_DIR}/include/media/
+        fi
+
+	if [ -d include/acpi ]; then
+		mkdir -p ${STAGING_KERNEL_DIR}/include/acpi
+		cp -fR include/acpi/* ${STAGING_KERNEL_DIR}/include/acpi/
+	fi
+
 	if [ -d include/sound ]; then
 		mkdir -p ${STAGING_KERNEL_DIR}/include/sound
 		cp -fR include/sound/* ${STAGING_KERNEL_DIR}/include/sound/
@@ -133,7 +155,7 @@ kernel_do_stage() {
 	# Check if arch/${ARCH}/Makefile exists and install it
 	if [ -e arch/${ARCH}/Makefile ]; then
 		install -d ${STAGING_KERNEL_DIR}/arch/${ARCH}
-		install -m 0644 arch/${ARCH}/Makefile ${STAGING_KERNEL_DIR}/arch/${ARCH}
+		install -m 0644 arch/${ARCH}/Makefile* ${STAGING_KERNEL_DIR}/arch/${ARCH}
 	fi
 	cp -fR include/config* ${STAGING_KERNEL_DIR}/include/	
 	install -m 0644 ${KERNEL_OUTPUT} ${STAGING_KERNEL_DIR}/${KERNEL_IMAGETYPE}
@@ -192,11 +214,22 @@ PKG_kernel-image = "kernel-image-${KERNEL_VERSION}"
 ALLOW_EMPTY_kernel = "1"
 ALLOW_EMPTY_kernel-image = "1"
 
+pkg_postinst_kernel-image () {
+if [ ! -e "$D/lib/modules/${KERNEL_RELEASE}" ]; then
+	mkdir -p $D/lib/modules/${KERNEL_RELEASE}
+fi
+if [ -n "$D" ]; then
+	${HOST_PREFIX}depmod-${KERNEL_MAJOR_VERSION} -A -b $D -F ${STAGING_KERNEL_DIR}/System.map-${KERNEL_RELEASE} ${KERNEL_VERSION}
+else
+	depmod -a
+fi
+}
+
 pkg_postinst_modules () {
 if [ -n "$D" ]; then
 	${HOST_PREFIX}depmod-${KERNEL_MAJOR_VERSION} -A -b $D -F ${STAGING_KERNEL_DIR}/System.map-${KERNEL_RELEASE} ${KERNEL_VERSION}
 else
-	depmod -A
+	depmod -a
 	update-modules || true
 fi
 }

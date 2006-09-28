@@ -18,7 +18,7 @@ inherit palmtop
 # Note that when CVS changes to 1.2.2, the dash
 # should be removed from OPIE_CVS_PV to convert
 # to the standardised version format
-OPIE_CVS_PV = "1.2.1+cvs-${SRCDATE}"
+OPIE_CVS_PV = "1.2.2+cvs-${SRCDATE}"
 
 DEPENDS_prepend = "${@["libopie2 ", ""][(bb.data.getVar('PN', d, 1) == 'libopie2')]}"
 
@@ -102,4 +102,4 @@ python opie_do_opie_install() {
 }
 
 EXPORT_FUNCTIONS do_opie_install
-addtask opie_install after do_compile before do_populate_staging
+addtask opie_install after do_compile before do_package
