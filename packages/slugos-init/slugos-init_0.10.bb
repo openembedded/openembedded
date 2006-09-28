@@ -4,7 +4,7 @@ PRIORITY = "required"
 LICENSE = "GPL"
 DEPENDS = "base-files devio"
 RDEPENDS = "busybox devio"
-PR = "r67"
+PR = "r69"
 
 SRC_URI = "file://boot/flash \
 	   file://boot/disk \
@@ -23,6 +23,7 @@ SRC_URI = "file://boot/flash \
 	   file://initscripts/umountinitrd.sh \
 	   file://initscripts/loadmodules.sh \
 	   file://functions \
+	   file://modulefunctions \
 	   file://conffiles \
 	   file://sysconf \
 	   file://leds \
@@ -89,6 +90,7 @@ do_install() {
 	#
 	# Init scripts
 	install -m 0644 functions ${D}${sysconfdir}/default
+	install -m 0644 modulefunctions ${D}${sysconfdir}/default	
 	for s in ${INITSCRIPTS}
 	do
 		install -m 0755 initscripts/$s ${D}${sysconfdir}/init.d/
