@@ -1,4 +1,4 @@
-PATCHES_DIR="${S}"
+BB_DEFAULT_TASK = "build"
 
 def base_dep_prepend(d):
 	import bb;
@@ -12,9 +12,11 @@ def base_dep_prepend(d):
 	# INHIBIT_DEFAULT_DEPS doesn't apply to the patch command.  Whether or  not
 	# we need that built is the responsibility of the patch function / class, not
 	# the application.
-	patchdeps = bb.data.getVar("PATCH_DEPENDS", d, 1)
-	if patchdeps and not patchdeps in bb.data.getVar("PROVIDES", d, 1):
-		deps = patchdeps
+	patchdeps = bb.data.getVar("PATCHTOOL", d, 1)
+        if patchdeps:
+		patchdeps = "%s-native" % patchdeps
+		if not patchdeps in bb.data.getVar("PROVIDES", d, 1):
+			deps = patchdeps
 
 	if not bb.data.getVar('INHIBIT_DEFAULT_DEPS', d):
 		if (bb.data.getVar('HOST_SYS', d, 1) !=
@@ -39,6 +41,20 @@ def base_conditional(variable, checkvalue, truevalue, falsevalue, d):
 	else:
 		return falsevalue
 
+def base_contains(variable, checkvalue, truevalue, falsevalue, d):
+       import bb
+       if bb.data.getVar(variable,d,1).find(checkvalue) != -1:
+               return truevalue
+       else:
+               return falsevalue
+
+def base_both_contain(variable1, variable2, checkvalue, d):
+       import bb
+       if bb.data.getVar(variable1,d,1).find(checkvalue) != -1 and bb.data.getVar(variable2,d,1).find(checkvalue) != -1:
+               return checkvalue
+       else:
+               return ""
+
 DEPENDS_prepend="${@base_dep_prepend(d)} "
 
 def base_set_filespath(path, d):
@@ -49,7 +65,7 @@ def base_set_filespath(path, d):
 		overrides = overrides + ":"
 		for o in overrides.split(":"):
 			filespath.append(os.path.join(p, o))
-	bb.data.setVar("FILESPATH", ":".join(filespath), d)
+	return ":".join(filespath)
 
 FILESPATH = "${@base_set_filespath([ "${FILE_DIRNAME}/${PF}", "${FILE_DIRNAME}/${P}", "${FILE_DIRNAME}/${PN}", "${FILE_DIRNAME}/files", "${FILE_DIRNAME}" ], d)}"
 
@@ -172,7 +188,7 @@ oe_libinstall() {
 		dir=`pwd`
 	fi
 	dotlai=$libname.lai
-	dir=$dir`(cd $dir; find -name "$dotlai") | sed "s/^\.//;s/\/$dotlai\$//;q"`
+	dir=$dir`(cd $dir;find . -name "$dotlai") | sed "s/^\.//;s/\/$dotlai\$//;q"`
 	olddir=`pwd`
 	__runcmd cd $dir
 
@@ -308,6 +324,16 @@ python base_do_clean() {
 	os.system('rm -f '+ dir)
 }
 
+addtask rebuild
+do_rebuild[dirs] = "${TOPDIR}"
+do_rebuild[nostamp] = "1"
+do_rebuild[bbdepcmd] = ""
+python base_do_rebuild() {
+	"""rebuild a package"""
+	bb.build.exec_task('do_clean', d)
+	bb.build.exec_task('do_' + bb.data.getVar('BB_DEFAULT_TASK', d, 1), d)
+}
+
 addtask mrproper
 do_mrproper[dirs] = "${TOPDIR}"
 do_mrproper[nostamp] = "1"
@@ -323,7 +349,6 @@ python base_do_mrproper() {
 
 addtask fetch
 do_fetch[dirs] = "${DL_DIR}"
-do_fetch[nostamp] = "1"
 python base_do_fetch() {
 	import sys
 
@@ -430,87 +455,6 @@ python base_do_unpack() {
 			raise bb.build.FuncFailed()
 }
 
-addtask patch after do_unpack
-do_patch[dirs] = "${WORKDIR}"
-python base_do_patch() {
-	import re
-	import bb.fetch
-
-	src_uri = (bb.data.getVar('SRC_URI', d, 1) or '').split()
-	if not src_uri:
-		return
-
-	patchcleancmd = bb.data.getVar('PATCHCLEANCMD', d, 1)
-	if patchcleancmd:
-		bb.data.setVar("do_patchcleancmd", patchcleancmd, d)
-		bb.data.setVarFlag("do_patchcleancmd", "func", 1, d)
-		bb.build.exec_func("do_patchcleancmd", d)
-
-	workdir = bb.data.getVar('WORKDIR', d, 1)
-	for url in src_uri:
-
-		(type, host, path, user, pswd, parm) = bb.decodeurl(url)
-		if not "patch" in parm:
-			continue
-
-		bb.fetch.init([url],d)
-		url = bb.encodeurl((type, host, path, user, pswd, []))
-		local = os.path.join('/', bb.fetch.localpath(url, d))
-
-		# did it need to be unpacked?
-		dots = os.path.basename(local).split(".")
-		if dots[-1] in ['gz', 'bz2', 'Z']:
-			unpacked = os.path.join(bb.data.getVar('WORKDIR', d),'.'.join(dots[0:-1]))
-		else:
-			unpacked = local
-		unpacked = bb.data.expand(unpacked, d)
-
-		if "pnum" in parm:
-			pnum = parm["pnum"]
-		else:
-			pnum = "1"
-
-		if "pname" in parm:
-			pname = parm["pname"]
-		else:
-			pname = os.path.basename(unpacked)
-
-		if "mindate" in parm:
-			mindate = parm["mindate"]
-		else:
-			mindate = 0
-
-		if "maxdate" in parm:
-			maxdate = parm["maxdate"]
-		else:
-			maxdate = "20711226"
-
-		pn = bb.data.getVar('PN', d, 1)
-		srcdate = bb.data.getVar('SRCDATE_%s' % pn, d, 1)
-
-		if not srcdate:
-			srcdate = bb.data.getVar('SRCDATE', d, 1)
-
-		if srcdate == "now": 
-			srcdate = bb.data.getVar('DATE', d, 1)
-
-		if (maxdate < srcdate) or (mindate > srcdate):
-			if (maxdate < srcdate):
-				bb.note("Patch '%s' is outdated" % pname)
-
-			if (mindate > srcdate):
-				bb.note("Patch '%s' is predated" % pname)
-
-			continue
-
-		bb.note("Applying patch '%s'" % pname)
-		bb.data.setVar("do_patchcmd", bb.data.getVar("PATCHCMD", d, 1) % (pnum, pname, unpacked), d)
-		bb.data.setVarFlag("do_patchcmd", "func", 1, d)
-		bb.data.setVarFlag("do_patchcmd", "dirs", "${WORKDIR} ${S}", d)
-		bb.build.exec_func("do_patchcmd", d)
-}
-
-
 addhandler base_eventhandler
 python base_eventhandler() {
 	from bb import note, error, data
@@ -536,7 +480,8 @@ python base_eventhandler() {
 		msg += messages.get(name[5:]) or name[5:]
 	elif name == "UnsatisfiedDep":
 		msg += "package %s: dependency %s %s" % (e.pkg, e.dep, name[:-3].lower())
-	note(msg)
+	if msg:
+		note(msg)
 
 	if name.startswith("BuildStarted"):
 		bb.data.setVar( 'BB_VERSION', bb.__version__, e.data )
@@ -577,6 +522,7 @@ python base_eventhandler() {
 addtask configure after do_unpack do_patch
 do_configure[dirs] = "${S} ${B}"
 do_configure[bbdepcmd] = "do_populate_staging"
+do_configure[deptask] = "do_populate_staging"
 base_do_configure() {
 	:
 }
@@ -607,15 +553,6 @@ do_populate_staging[dirs] = "${STAGING_DIR}/${TARGET_SYS}/bin ${STAGING_DIR}/${T
 
 addtask populate_staging after do_package
 
-#python do_populate_staging () {
-#	if not bb.data.getVar('manifest', d):
-#		bb.build.exec_func('do_emit_manifest', d)
-#	if bb.data.getVar('do_stage', d):
-#		bb.build.exec_func('do_stage', d)
-#	else:
-#		bb.build.exec_func('manifest_do_populate_staging', d)
-#}
-
 python do_populate_staging () {
 	if bb.data.getVar('manifest_do_populate_staging', d):
 		bb.build.exec_func('manifest_do_populate_staging', d)
@@ -631,14 +568,6 @@ base_do_install() {
 	:
 }
 
-#addtask populate_pkgs after do_compile
-#python do_populate_pkgs () {
-#	if not bb.data.getVar('manifest', d):
-#		bb.build.exec_func('do_emit_manifest', d)
-#	bb.build.exec_func('manifest_do_populate_pkgs', d)
-#	bb.build.exec_func('package_do_shlibs', d)
-#}
-
 base_do_package() {
 	:
 }
@@ -652,38 +581,6 @@ do_build[func] = "1"
 
 SHLIBS = ""
 RDEPENDS_prepend = " ${SHLIBS}"
-
-python read_manifest () {
-	import sys
-	mfn = bb.data.getVar("MANIFEST", d, 1)
-	if os.access(mfn, os.R_OK):
-		# we have a manifest, so emit do_stage and do_populate_pkgs,
-		# and stuff some additional bits of data into the metadata store
-		mfile = file(mfn, "r")
-		manifest = bb.manifest.parse(mfile, d)
-		if not manifest:
-			return
-
-		bb.data.setVar('manifest', manifest, d)
-}
-
-python parse_manifest () {
-		manifest = bb.data.getVar("manifest", d)
-		if not manifest:
-			return
-		for func in ("do_populate_staging", "do_populate_pkgs"):
-			value = bb.manifest.emit(func, manifest, d)
-			if value:
-				bb.data.setVar("manifest_" + func, value, d)
-				bb.data.delVarFlag("manifest_" + func, "python", d)
-				bb.data.delVarFlag("manifest_" + func, "fakeroot", d)
-				bb.data.setVarFlag("manifest_" + func, "func", 1, d)
-		packages = []
-		for l in manifest:
-			if "pkg" in l and l["pkg"] is not None:
-				packages.append(l["pkg"])
-		bb.data.setVar("PACKAGES", " ".join(packages), d)
-}
 
 def explode_deps(s):
 	r = []
@@ -800,27 +697,10 @@ python () {
 				return
 }
 
+# Patch handling
+inherit patch
 
-addtask emit_manifest
-python do_emit_manifest () {
-#	FIXME: emit a manifest here
-#	1) adjust PATH to hit the wrapper scripts
-	wrappers = bb.which(bb.data.getVar("BBPATH", d, 1), 'build/install', 0)
-	path = (bb.data.getVar('PATH', d, 1) or '').split(':')
-	path.insert(0, os.path.dirname(wrappers))
-	bb.data.setVar('PATH', ':'.join(path), d)
-#	2) exec_func("do_install", d)
-	bb.build.exec_func('do_install', d)
-#	3) read in data collected by the wrappers
-	bb.build.exec_func('read_manifest', d)
-#	4) mangle the manifest we just generated, get paths back into
-#	   our variable form
-#	5) write it back out
-#	6) re-parse it to ensure the generated functions are proper
-	bb.build.exec_func('parse_manifest', d)
-}
-
-EXPORT_FUNCTIONS do_clean do_mrproper do_fetch do_unpack do_configure do_compile do_install do_package do_patch do_populate_pkgs do_stage
+EXPORT_FUNCTIONS do_clean do_mrproper do_fetch do_unpack do_configure do_compile do_install do_package do_populate_pkgs do_stage do_rebuild
 
 MIRRORS[func] = "0"
 MIRRORS () {
@@ -853,6 +733,20 @@ ftp://ftp.kernel.org/pub	ftp://ftp.uk.kernel.org/pub
 ftp://ftp.kernel.org/pub	ftp://ftp.hk.kernel.org/pub
 ftp://ftp.kernel.org/pub	ftp://ftp.au.kernel.org/pub
 ftp://ftp.kernel.org/pub	ftp://ftp.jp.kernel.org/pub
+ftp://ftp.gnupg.org/gcrypt/     ftp://ftp.franken.de/pub/crypt/mirror/ftp.gnupg.org/gcrypt/
+ftp://ftp.gnupg.org/gcrypt/     ftp://ftp.surfnet.nl/pub/security/gnupg/
+ftp://ftp.gnupg.org/gcrypt/     http://gulus.USherbrooke.ca/pub/appl/GnuPG/
+ftp://dante.ctan.org/tex-archive ftp://ftp.fu-berlin.de/tex/CTAN
+ftp://dante.ctan.org/tex-archive http://sunsite.sut.ac.jp/pub/archives/ctan/
+ftp://dante.ctan.org/tex-archive http://ctan.unsw.edu.au/
+ftp://ftp.gnutls.org/pub/gnutls ftp://ftp.gnutls.org/pub/gnutls/
+ftp://ftp.gnutls.org/pub/gnutls ftp://ftp.gnupg.org/gcrypt/gnutls/
+ftp://ftp.gnutls.org/pub/gnutls http://www.mirrors.wiretapped.net/security/network-security/gnutls/
+ftp://ftp.gnutls.org/pub/gnutls ftp://ftp.mirrors.wiretapped.net/pub/security/network-security/gnutls/
+ftp://ftp.gnutls.org/pub/gnutls http://josefsson.org/gnutls/releases/
+
+
+
 ftp://.*/.*/	http://www.oesources.org/source/current/
 http://.*/.*/	http://www.oesources.org/source/current/
 }
