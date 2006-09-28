@@ -15,7 +15,7 @@ PR = "r12"
 SRC_URI = "http://www.busybox.net/downloads/busybox-${PV}.tar.gz \
 	   file://udhcppidfile.patch;patch=1 \
 	   file://udhcppidfile-breakage.patch;patch=1 \
-	   file://add-getkey-applet.patch;patch=1 \
+           file://add-getkey-applet.patch;patch=1 \
 	   file://below.patch;patch=1 \
 	   file://dhcp-hostname.patch;patch=1 \
 	   file://dhcpretrytime.patch;patch=1 \
@@ -29,19 +29,20 @@ SRC_URI = "http://www.busybox.net/downloads/busybox-${PV}.tar.gz \
 	   file://udhcpscript.patch;patch=1 \
 	   file://thumb-bsdlabel.patch;patch=1 \
 	   file://glibc2.4-icmp6.patch;patch=1 \
-	   file://uclibc_posix.patch;patch=1 \
-	   \
-	   file://defconfig \
-	   file://busybox-cron \
+           file://uclibc_posix.patch;patch=1 \
+           file://defconfig \
+           file://busybox-cron \
 	   file://busybox-httpd \
 	   file://busybox-udhcpd \
 	   file://syslog \
-	   file://hwclock.sh \
+           file://hwclock.sh \
 	   file://default.script \
 	   file://syslog.conf \
 	   file://mount.busybox \
 	   file://umount.busybox"
+
 SRC_URI_append_slugos += " file://sysctl.conf "
+SRC_URI_append_nylon = " file://xargs-double-size.patch;patch=1"
 
 S = "${WORKDIR}/busybox-${PV}"
 
@@ -86,7 +87,7 @@ do_install () {
 	install -d ${D}${base_bindir}
 	mv ${D}/busybox${base_bindir}/busybox ${D}${base_bindir}/
 	# Move back the sh symlink
-	mv ${D}/busybox${base_bindir}/sh ${D}${base_bindir}/
+	test -h ${D}/busybox${base_bindir}/sh && mv ${D}/busybox${base_bindir}/sh ${D}${base_bindir}/
 
 	install -m 0755 ${WORKDIR}/syslog ${D}${sysconfdir}/init.d/
 	install -m 644 ${WORKDIR}/syslog.conf ${D}${sysconfdir}/

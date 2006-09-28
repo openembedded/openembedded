@@ -10,7 +10,7 @@ HOMEPAGE = "http://www.busybox.net"
 LICENSE = "GPL"
 SECTION = "base"
 PRIORITY = "required"
-PR = "r32"
+PR = "r37"
 
 SRC_URI = "http://www.busybox.net/downloads/busybox-${PV}.tar.gz \
            file://add-getkey-applet.patch;patch=1 \
@@ -22,6 +22,7 @@ SRC_URI = "http://www.busybox.net/downloads/busybox-${PV}.tar.gz \
 	   file://readlink.patch;patch=1 \
 	   file://iproute-flush-cache.patch;patch=1;pnum=0 \
 	   file://rmmod.patch;patch=1 \
+	   file://df.patch;patch=1 \
 	   file://below.patch;patch=1 \
 	   file://fbset.patch;patch=1 \
 	   file://mount-all-type.patch;patch=1 \
@@ -29,6 +30,9 @@ SRC_URI = "http://www.busybox.net/downloads/busybox-${PV}.tar.gz \
 	   file://gzip-spurious-const.patch;patch=1 \
 	   file://ifupdown-spurious-environ.patch;patch=1 \
            file://uclibc_posix.patch;patch=1 \
+	   file://unzip-enhancement-and-fixes.patch;patch=1;pnum=0 \
+	   file://unzip-endian-fixes.patch;patch=1;pnum=0 \
+	   file://start-stop-daemon-oknodo-support.patch;patch=1 \
            file://defconfig \
            file://busybox-cron \
 	   file://busybox-httpd \
@@ -39,6 +43,10 @@ SRC_URI = "http://www.busybox.net/downloads/busybox-${PV}.tar.gz \
 	   file://syslog.conf \
 	   file://mount.busybox \
 	   file://umount.busybox"
+
+SRC_URI_append_nylon = " file://xargs-double-size.patch;patch=1"
+SRC_URI_append_mtx-1 = " file://linux-types.patch;patch=1"
+SRC_URI_append_mtx-2 = " file://linux-types.patch;patch=1"
 
 S = "${WORKDIR}/busybox-${PV}"
 
@@ -83,7 +91,7 @@ do_install () {
 	install -d ${D}${base_bindir}
 	mv ${D}/busybox${base_bindir}/busybox ${D}${base_bindir}/
 	# Move back the sh symlink
-	mv ${D}/busybox${base_bindir}/sh ${D}${base_bindir}/
+	test -h ${D}/busybox${base_bindir}/sh && mv ${D}/busybox${base_bindir}/sh ${D}${base_bindir}/
 
 	install -m 0755 ${WORKDIR}/syslog ${D}${sysconfdir}/init.d/
 	install -m 644 ${WORKDIR}/syslog.conf ${D}${sysconfdir}/
@@ -146,6 +154,7 @@ pkg_prerm_${PN} () {
 	# providing its files, this will make update-alternatives work, but the update-rc.d part
 	# for syslog, httpd and/or udhcpd will fail if there is no other package providing sh
 	tmpdir=`mktemp -d /tmp/busyboxrm-XXXXXX`
+	cp -a /bin/busybox $tmpdir/
 	ln -s /bin/busybox $tmpdir/[
 	ln -s /bin/busybox $tmpdir/test
 	ln -s /bin/busybox $tmpdir/head
