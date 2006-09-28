@@ -7,7 +7,7 @@ PR = "r2"
 
 inherit autotools gettext
 
-include gcc-package.inc
+require gcc-package.inc
 
 SRC_URI = "${GNU_MIRROR}/gcc/gcc-${PV}/gcc-${PV}.tar.bz2 \
 	file://arm-nolibfloat.patch;patch=1 \
@@ -26,7 +26,7 @@ SRC_URI_append = " file://100-uclibc-conf.patch;patch=1   \
 SRC_URI_append_fail-fast = " file://zecke-no-host-includes.patch;patch=1 "
 
 
-include gcc4-build.inc
+require gcc4-build.inc
 
 EXTRA_OECONF += "--disable-libssp"
 

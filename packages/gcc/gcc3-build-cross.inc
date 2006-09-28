@@ -21,10 +21,6 @@ do_stage_append () {
 		rm -rf ${CROSS_DIR}/$d
 	done
 
-	# These aren't useful on the cross toolchain
-	rm -f ${CROSS_DIR}/bin/*gcov
-	rm -f ${CROSS_DIR}/bin/*gccbug
-
 	# Fix a few include links so cross builds are happier
 	if [ ! -e ${STAGING_INCDIR}/c++ ]; then
 		mkdir -p ${STAGING_INCDIR}
