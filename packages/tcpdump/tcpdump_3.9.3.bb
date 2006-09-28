@@ -3,8 +3,8 @@ HOMEPAGE = "http://www.tcpdump.org/"
 LICENSE = "BSD"
 SECTION = "console/network"
 PRIORITY = "optional"
-DEPENDS = "libpcap-0.9.3 openssl"
-PR = "r1"
+DEPENDS = "libpcap-0.9.3"
+PR = "r2"
 
 SRC_URI = "http://www.tcpdump.org/release/tcpdump-${PV}.tar.gz \
            file://tcpdump_configure_no_-O2.patch;patch=1"
