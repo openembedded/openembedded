@@ -22,7 +22,7 @@ then
         echo "boot: loading modules required for disk boot"
         loaddiskmods
 	# waiting for disk (FIXME)
-	sleep=5
+	sleep=6
 	test "$sleep" -gt 0 && sleep "$sleep"
 	#
 	# fire the boot
