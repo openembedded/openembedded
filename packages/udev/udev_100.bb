@@ -1,4 +1,5 @@
 DEFAULT_PREFERENCE = "-1"
+DEFAULT_PREFERENCE_slugos = "1"
 
 DESCRIPTION = "udev is a daemon which dynamically creates and removes device nodes from \
 /dev/, handles hotplug events and loads drivers at boot time. It replaces \

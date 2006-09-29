@@ -13,7 +13,7 @@ SRC_URI = "http://artsoft.org/RELEASES/unix/rocksndiamonds/rocksndiamonds-${PV}.
 DEPENDS += "libsdl-net smpeg"
 
 APPIMAGE = "../rocksndiamonds.png"
-EXTRA_OEMAKE = "CC='${CC}' RO_GAME_DIR='${datadir}/${PN}' RW_GAME_DIR='${datadir}/${PN}'"
+EXTRA_OEMAKE = "CC='${CC}' AR='${AR}' RANLIB='${RANLIB}' RO_GAME_DIR='${datadir}/${PN}' RW_GAME_DIR='${datadir}/${PN}'"
 
 inherit sdl
 

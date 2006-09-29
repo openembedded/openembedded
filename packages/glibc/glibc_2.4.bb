@@ -66,6 +66,7 @@ SRC_URI = "ftp://ftp.gnu.org/pub/gnu/glibc/glibc-2.4.tar.bz2 \
            file://etc/ld.so.conf \
            file://generate-supported.mk"
 
+
 # Build fails on sh3 and sh4 without additional patches
 SRC_URI_append_sh3 = " file://no-z-defs.patch;patch=1"
 SRC_URI_append_sh4 = " file://no-z-defs.patch;patch=1"

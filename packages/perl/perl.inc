@@ -41,7 +41,12 @@ do_configure() {
 do_compile() {
 	sed -i -e 's|/usr/include|${STAGING_INCDIR}|g' ext/Errno/Errno_pm.PL
 	cd Cross
-	oe_runmake perl
+	# You must use gcc to link on sh
+	OPTIONS=""
+	if test ${TARGET_ARCH} = "sh3" -o ${TARGET_ARCH} = "sh4"; then
+		OPTIONS="LD=${TARGET_ARCH}-${TARGET_OS}-gcc"
+	fi
+	oe_runmake perl $OPTIONS
 }
 
 do_install() {

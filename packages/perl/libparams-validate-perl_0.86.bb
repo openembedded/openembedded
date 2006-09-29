@@ -1,8 +1,8 @@
 DESCRIPTION = "Params::Validate - Validate method/function parameters"
 SECTION = "libs"
 MAINTAINER = "Jamie Lenehan <lenehan@twibble.org>"
-LICENSE = "Artistic"
-PR = "r4"
+LICENSE = "Artistic|GPL"
+PR = "r6"
 
 SRC_URI = "http://search.cpan.org/CPAN/authors/id/D/DR/DROLSKY/Params-Validate-0.86.tar.gz"
 
@@ -15,6 +15,3 @@ FILES_${PN} = "${libdir}/perl5/*/*/auto/Params/Validate/* \
                 ${libdir}/perl5/*/*/Params \
                 ${libdir}/perl5/*/*/Attribute"
 FILES_${PN}-dbg += "${libdir}/perl5/*/*/auto/Params/Validate/.debug"
-
-# Stop from searching /include - should put this in cpan class?
-export CCFLAGS = "${CFLAGS}"

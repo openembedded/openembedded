@@ -16,17 +16,17 @@ if test -n "$1"
 then
 	device="$1"
 	shift
-	echo "boot: rootfs: mount $* $device [$UUID]"
-	#
-	# wait if required
+        # proc is needed for UUID mount and module load
+        mount -t proc proc /proc
+        # load USB & SCSI storage modules (/proc required!)
+        echo "boot: loading modules required for disk boot"
+        loaddiskmods
+	# waiting for disk (FIXME)
+	sleep=6
 	test "$sleep" -gt 0 && sleep "$sleep"
 	#
-	# proc is needed for UUID mount
-	mount -t proc proc /proc 
-	#
-	# load USB & SCSI storage modules (/proc required!)
-	echo "boot: loading modules required for boot"
-	loadusbmods
+	# fire the boot
+	echo "boot: rootfs: mount $* $device [$UUID]"
 	#
 	# Mount read-write because before exec'ing init
 	# If a UUID is given (in the environment) this

@@ -3,13 +3,14 @@ SECTION = "libs"
 PRIORITY = "optional"
 DEPENDS = "libxml2"
 LICENSE = "MIT"
+PR = "r2"
 
 SRC_URI = "ftp://xmlsoft.org/libxml2/libxslt-${PV}.tar.gz"
 S = "${WORKDIR}/libxslt-${PV}"
 
 inherit autotools pkgconfig 
 
-EXTRA_OECONF = "--without-python --without-debug --without-mem-debug"
+EXTRA_OECONF = "--without-python --without-debug --without-mem-debug --without-crypto"
 
 xsltheaders = "attributes.h documents.h extensions.h extra.h functions.h imports.h \
                keys.h namespaces.h numbersInternals.h pattern.h preproc.h security.h \
@@ -38,7 +39,7 @@ do_stage () {
 	install -m 0644 libxslt.m4 ${STAGING_DATADIR}/aclocal/
 }
 
-PACKAGES = "${PN}-dev ${PN}-utils ${PN} ${PN}-doc ${PN}-locale"
+PACKAGES = "${PN}-dbg ${PN}-dev ${PN}-utils ${PN} ${PN}-doc ${PN}-locale"
 
 FILES_${PN}-dev += "${bindir}/xslt-config"
 FILES_${PN}-utils += "${bindir}"
