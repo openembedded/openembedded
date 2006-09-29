@@ -1,0 +1,11 @@
+--- cyrus-imapd-2.2.12/lib/imapopts.c.orig	2006-08-10 14:43:19.000000000 +0200
++++ cyrus-imapd-2.2.12/lib/imapopts.c	2006-08-10 14:43:48.000000000 +0200
+@@ -24,7 +24,7 @@
+ 
+ 
+ 
+-struct imapopt_s imapopts[] =
++struct imapopt_s * imapopts =
+ 
+ {
+ 

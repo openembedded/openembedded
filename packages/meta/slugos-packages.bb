@@ -34,7 +34,6 @@ SLUGOS_PACKAGES = "\
 	bind \
 	binutils \
 	bison \
-	bluez-libs \
 	bluez-utils-nodbus \
 	bridge-utils \
 	bzip2 \

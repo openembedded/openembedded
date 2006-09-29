@@ -7,6 +7,23 @@ FILES_${PN} += '${libdir}/perl5'
 DEPENDS  += "perl-native"
 RDEPENDS += "perl"
 
+#
+# We also need to have built libmodule-build-perl-native for
+# everything except libmodule-build-perl-native itself (which uses
+# this class, but uses itself as the probider of
+# libmodule-build-perl)
+#
+def cpan_build_dep_prepend(d):
+	import bb;
+	if bb.data.getVar('CPAN_BUILD_DEPS', d, 1):
+		return ''
+	pn = bb.data.getVar('PN', d, 1)
+	if pn in ['libmodule-build-perl', 'libmodule-build-perl-native']:
+		return ''
+	return 'libmodule-build-perl-native '
+
+DEPENDS_prepend = "${@cpan_build_dep_prepend(d)}"
+
 def is_crosscompiling(d):
     import bb
     if not bb.data.inherits_class('native', d):

@@ -1,0 +1,11 @@
+--- cyrus-imapd-2.2.12/lib/imapopts.h.orig	2006-08-10 14:43:26.000000000 +0200
++++ cyrus-imapd-2.2.12/lib/imapopts.h	2006-08-10 14:44:58.000000000 +0200
+@@ -178,7 +178,7 @@
+ 
+ };
+ 
+-extern struct imapopt_s imapopts[];
++extern struct imapopt_s * imapopts;
+ 
+ 
+ 
