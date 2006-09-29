@@ -6,7 +6,7 @@
 # http://trac.nslu2-linux.org/kernel/
 #
 # The revision that is pulled from SVN is specified below
-IXP4XX_KERNEL_SVN_REV = "435"
+IXP4XX_KERNEL_SVN_REV = "438"
 #
 # Increment the number below (i.e. the digits after PR) when
 # the changes in SVN between revisions include changes in the
