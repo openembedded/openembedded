@@ -37,7 +37,7 @@
 +AM_CONDITIONAL(XCALIBRATE, [test "x$XCALIBRATE" = xyes])
 +if test "x$XCALIBRATE" = xyes; then
 +	AC_DEFINE(XCALIBRATE, 1, [Build XCalibrate extension])
-+	REQUIRED_MODULES="$REQUIRED_MODULES xcalibrateext"
++	REQUIRED_MODULES="$REQUIRED_MODULES xcalibrateproto"
 +fi
 +
  AM_CONDITIONAL(XEVIE, [test "x$XEVIE" = xyes])
