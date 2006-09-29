@@ -19,7 +19,7 @@ SRC_URI_append_sh3 += "file://makefile-usegcc-to-link.patch;patch=1"
 
 PARALLEL_MAKE = ""
 
-PR = "r18"
+PR = "r19"
 
 do_configure() {
 	ln -sf ${HOSTPERL} ${STAGING_BINDIR}/hostperl
