@@ -1,0 +1,18 @@
+--- scummvm-0.9.0/configure_orig	2006-07-01 18:16:04.000000000 +0000
++++ scummvm-0.9.0/configure	2006-07-01 18:19:09.000000000 +0000
+@@ -762,6 +762,15 @@
+ 			type_2_byte='short'
+ 			type_4_byte='int'
+ 			;;
++		sh3-linux)
++		        echo "Cross-compiling to $_host, forcing endianness, aligment and type sizes"
++                        DEFINES="$DEFINES -DUNIX"
++			_def_endianness='#define SCUMM_LITTLE_ENDIAN'
++			_def_align='#define SCUMM_NEED_ALIGMENT'
++			type_1_byte='char'
++			type_2_byte='short'
++			type_4_byte='int'
++			;;		
+ 		ppc-amigaos)
+ 			echo "Cross-compiling to $_host, forcing endianness, alignment and type sizes"
+ 			_def_endianness='#define SCUMM_BIG_ENDIAN'
