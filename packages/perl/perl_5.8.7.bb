@@ -53,7 +53,7 @@ do_configure() {
 	sed -i -e "s%/usr/include/%${STAGING_INCDIR}/%g" config.sh-${TARGET_ARCH}-${TARGET_OS}
 
 	#These are strewn all over the source tree
-	for foo in `grep -m1 \/usr\/include\/.*\\.h ${WORKDIR}/* -r | cut -f 1 -d ":"` ; do
+	for foo in `grep -m1 \/usr\/include\/.*\\.h ${WORKDIR}/* -r | grep -v "^Binary file .* matches$" | cut -f 1 -d ":"` ; do
 		echo Fixing: $foo
 		sed -e "s%/usr/include/%${STAGING_INCDIR}/%g" -i $foo
 	done
