@@ -1,0 +1,30 @@
+# adapt these to match your directory layout
+DL_DIR   = "/home/hrw/devel/sources/dl_dir/"
+BBFILES := "/home/hrw/devel/oe/org.openembedded.oz354x/packages/*/*.bb"
+
+# set distro and version
+DISTRO = "openzaurus-3.5.4.1"
+
+# what kind of images do we want?
+IMAGE_FSTYPE="jffs2 tar"
+
+# make use of SMP box
+PARALLEL_MAKE="-j2"
+
+# multimachine build stuff
+KERNEL_STAGING = "${STAGING_DIR}/${PACKAGE_ARCH}-${HOST_OS}/kernel"
+STAGING_KERNEL_DIR = "${STAGING_DIR}/${PACKAGE_ARCH}-${HOST_OS}/kernel"
+STAMP = "${TMPDIR}/stamps/${PACKAGE_ARCH}-${HOST_OS}/${PF}"
+WORKDIR = "${TMPDIR}/work/${PACKAGE_ARCH}-${HOST_OS}/${PF}"
+
+# add verbosity to make fixing easier
+BBINCLUDELOGS = "yes"
+
+# those machines were not part of OZ 3.5.4.1
+# but if you want to build for them then 2.4.18 kernel has to be used
+# they are set once more in distro config but machine config is read
+# before distro so you have to set them here - otherwise 2.6 kernel 
+# will get used
+MACHINE_KERNEL_VERSION_collie = "2.4"
+MACHINE_KERNEL_VERSION_poodle = "2.4"
+MACHINE_KERNEL_VERSION_tosa   = "2.4"
