@@ -7,6 +7,8 @@ DEPENDS += "install-native"
 SRC_URI = "ftp://ftp.andrew.cmu.edu/pub/cyrus-mail/cyrus-imapd-${PV}.tar.gz \
            file://autotools.patch;patch=1 \
            file://tail.patch;patch=1 \
+           file://imapopts.c.gcc4.patch;patch=1 \
+           file://imapopts.h.gcc4.patch;patch=1 \
 	   file://cyrus \
 	   file://cyrus.conf_2.2 \
 	   file://imapd.conf_2.2 \
