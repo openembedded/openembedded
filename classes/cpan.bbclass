@@ -17,7 +17,7 @@ cpan_do_configure () {
 }
 
 cpan_do_compile () {
-        oe_runmake PASTHRU_INC="${CFLAGS}"
+        oe_runmake PASTHRU_INC="${CFLAGS}" CCFLAGS="${CFLAGS}"
 }
 
 cpan_do_install () {
