@@ -185,5 +185,16 @@ PREFERRED_VERSION_wpa-supplicant ?= "0.5.1"
 PREFERRED_PROVIDER_virtual/db = "db"
 PREFERRED_PROVIDER_virtual/db-native = "db-native"
 
+SRCDATE_ipkg-utils ?= "20060106"
+SRCDATE_ipkg-utils-native ?= "20060106"
+SRCDATE_ipkg-link ?= "20060106"
+SRCDATE_irssi ?= "20050930"
+
+CVS_TARBALL_STASH = "http://sources.nslu2-linux.org/sources/"
+INHERIT += "nslu2-mirrors"
+
+PREFERRED_VERSION_ipkg ?= "0.99.154"
+PREFERRED_VERSION_ipkg-native ?= "0.99.154"
+
 #FIXME: HACK: REMOVE THIS
 IGNORE_STRIP_ERRORS = ""
