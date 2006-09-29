@@ -4,12 +4,13 @@ SECTION = "devel/tcltk"
 HOMEPAGE = "http://tcl.sourceforge.net"
 DEPENDS = "tcl virtual/libx11 libxt"
 RDEPENDS = "tcl"
-PR = "r4"
+PR = "r5"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/tcl/tk${PV}-src.tar.gz \
            file://disable-xim.patch;patch=1;pnum=0 \
            file://tk-add-soname.patch;patch=1 \
            file://fix-configure.patch;patch=1;pnum=2"
+
 S = "${WORKDIR}/tk${PV}/unix"
 
 inherit autotools
@@ -25,6 +26,7 @@ do_configure() {
 do_stage() {
         oe_libinstall -a libtkstub8.4 ${STAGING_LIBDIR}
         oe_libinstall -so libtk8.4 ${STAGING_LIBDIR}
+        sed -i "s+${WORKDIR}+${STAGING_INCDIR}+g" tkConfig.sh
         install -m 0755 tkConfig.sh ${STAGING_BINDIR}
 	cd ..
 	#for dir in compat generic unix

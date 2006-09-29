@@ -2,11 +2,12 @@ DESCRIPTION = "Tool Command Language"
 LICENSE = "tcl"
 SECTION = "devel/tcltk"
 HOMEPAGE = "http://tcl.sourceforge.net"
-PR = "r3"
+PR = "r4"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/tcl/tcl${PV}-src.tar.gz \
            file://tcl-add-soname.patch;patch=1 \
            file://fix-configure.patch;patch=1;pnum=2"
+
 S = "${WORKDIR}/tcl${PV}/unix"
 
 inherit autotools
@@ -25,6 +26,7 @@ do_compile_prepend() {
 do_stage() {
 	oe_libinstall -a libtclstub8.4 ${STAGING_LIBDIR}
 	oe_libinstall -so libtcl8.4 ${STAGING_LIBDIR}
+	sed -i "s+${WORKDIR}+${STAGING_INCDIR}+g" tclConfig.sh
 	install -m 0755 tclConfig.sh ${STAGING_BINDIR}
 	cd ..
 	for dir in compat generic unix
