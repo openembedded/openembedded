@@ -1,9 +1,9 @@
-DESCRIPTION = "GNOME XML library"
+DESCRIPTION = "GNOME XML Parser library"
 SECTION = "libs"
 PRIORITY = "optional"
 LICENSE = "MIT"
 
-SRC_URI = "http://xmlsoft.org/sources/libxml2/libxml2-${PV}.tar.gz"
+SRC_URI = "ftp://xmlsoft.org/libxml2/libxml2-${PV}.tar.gz"
 
 inherit autotools pkgconfig binconfig
 
