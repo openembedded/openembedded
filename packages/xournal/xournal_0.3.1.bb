@@ -4,9 +4,9 @@ MAINTAINER = "Koen Kooi <koen@dominion.kabel.utwente.nl>"
 DEPENDS = "gtk+ libgnomecanvas"
 SECTION = "x11"
 LICENSE = "GPL"
-PR = "r1"
+PR = "r0"
 
-SRC_URI = "http://xournal.sourceforge.net/xournal-0.2.tar.gz \
-        file://no-printing.diff;patch=1"
+SRC_URI = "http://xournal.sourceforge.net/xournal-0.3.1.tar.gz \
+	"
 
 inherit autotools pkgconfig

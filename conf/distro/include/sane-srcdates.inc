@@ -5,7 +5,6 @@ SRCDATE_at76c503a-modules ?= "20060814"
 SRCDATE_prism54-module ?= "20060814"
 
 # X11 libs, extentions and protos
-SRCDATE_xcalibrate ?= "20060804"
 SRCDATE_compositeext ?= "20060814"
 SRCDATE_drm ?= "20060814"
 SRCDATE_drm-kernel ?= "20060814"
