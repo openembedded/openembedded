@@ -80,7 +80,7 @@ SLUGOS_NATIVE = "\
 # however even this doesn't work for very large programs at present
 # (only monotone!)
 SLUGOS_NATIVE_THUMB_BROKEN = "\
-	monotone-5 \
+	monotone-6 \
 	"
 
 SLUGOS_NATIVE_THUMB_BROKEN_thumb = ""
