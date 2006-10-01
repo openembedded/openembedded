@@ -5,39 +5,31 @@
 DISTRO = "angstrom"
 DISTRO_NAME = "Angstrom"
 
+TARGET_VENDOR = "-angstrom"
+
+# Can be "glibc" and "uclibc"
+ANGSTROM_MODE ?= "glibc"
+
+DEPLOY_DIR = "${TMPDIR}/deploy/${ANGSTROM_MODE}"
+require conf/distro/include/angstrom-${ANGSTROM_MODE}.inc
+
 #Use this variable in feeds and other parts that need a URI
-ANGSTROM_URI = "http://www.angstrom-distribution.org/"
+ANGSTROM_URI = "http://www.angstrom-distribution.org"
 
 #Set the default maintainer to angstrom-dev
-MAINTAINER = "Angstrom Developers <angstrom-dev@handhelds.org>"
+MAINTAINER = "Angstrom Developers <angstrom-distro-devel@linuxtogo.org>"
 
 #use ipkg package format with debian style naming
-INHERIT += "package_ipk debian"
-
 #use multimachine buildrules 
-include conf/distro/include/multimachine.conf
+INHERIT += "package_ipk debian multimachine"
 
 #Generate locales on the buildsystem instead of on the target. Speeds up first boot, set to "1" to enable
-PREFERRED_PROVIDER_qemu-native = "qemu-qop-nogfx-native"
-ENABLE_BINARY_LOCALE_GENERATION ?= ""
-
-
-#Use the ARM EABI when building for an ARM cpu. We can't use overrides
-#here because this breaks all places where ":=" is used.
-TARGET_VENDOR = "${@['','-angstrom'][bb.data.getVar('TARGET_ARCH',d,1)=='arm']}"
-TARGET_OS = "linux${@['','-gnueabi'][bb.data.getVar('TARGET_ARCH',d,1)=='arm']}"
-
-#mess with compiler flags to use -Os instead of -O2
-#Please see http://free-electrons.com/doc/embedded_linux_optimizations/img47.html for some more info
-FULL_OPTIMIZATION = "-fexpensive-optimizations -fomit-frame-pointer -frename-registers -Os"
-BUILD_OPTIMIZATION = "-Os"
+PREFERRED_PROVIDER_qemu-native = "qemu-native"
+ENABLE_BINARY_LOCALE_GENERATION ?= "1"
 
 #ARM EABI is softfloat by default, but let's make sure :)
-TARGET_FPU_arm = "soft"
-
-#Always ship these packages
-BOOTSTRAP_EXTRA_DEPENDS += "angstrom-version coreutils dropbear sysvinit"
-BOOTSTRAP_EXTRA_RDEPENDS += "angstrom-version coreutils dropbear sysvinit"
+#make it overridable for platforms with FPU, like ep93xx or i.mx31
+TARGET_FPU_arm ?= "soft"
 
 #Name the generated images in a sane way
 IMAGE_NAME = "${DISTRO_NAME}-${IMAGE_BASENAME}-${DISTRO_VERSION}-${MACHINE}"
@@ -45,3 +37,6 @@ DEPLOY_DIR_IMAGE = ${DEPLOY_DIR}/images/${MACHINE}
 
 # Angstrom *always* has some form of release config, so error out if someone thinks he knows better 
 DISTRO_CHECK := "${@bb.data.getVar("DISTRO_VERSION",d,1) or bb.fatal('Remove this line or set a dummy DISTRO_VERSION if you really want to build an unversioned distro')}"
+
+# We want images supporting the following features (for task-base)
+DISTRO_FEATURES = "nfs smbfs wifi ppp alsa bluetooth ext2 irda pcmcia usbgadget usbhost"
