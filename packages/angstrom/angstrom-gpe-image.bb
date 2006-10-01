@@ -14,9 +14,10 @@ XSERVER ?= "xserver-kdrive-fbdev"
 
 export IMAGE_BASENAME = "gpe-image"
 
-DEPENDS = "task-angstrom"
+DEPENDS = "task-angstrom task-base"
 RDEPENDS = "\
     ${XSERVER} \
+    task-base-core-default \
     angstrom-base-depends \
     angstrom-x11-base-depends \
     angstrom-gpe-task-base \

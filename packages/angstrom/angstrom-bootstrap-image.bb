@@ -3,8 +3,8 @@ LICENSE = MIT
 MAINTAINER = "Koen Kooi <koen@dominion.kabel.utwente.nl>"
 PR = "r2"
 
-DEPENDS = "task-angstrom"
-RDEPENDS = "angstrom-base-depends"
+DEPENDS = "task-angstrom task-base"
+RDEPENDS = "task-base-core-default angstrom-base-depends"
 
 export IMAGE_BASENAME = "bootstrap-image"
 export IMAGE_LINGUAS = ""
