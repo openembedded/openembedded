@@ -193,6 +193,13 @@ oe_libinstall() {
 	__runcmd cd $dir
 
 	lafile=$libname.la
+
+	# If such file doesn't exist, try to cut version suffix
+        if [ ! -f "$lafile" ]; then
+                libname=`echo "$libname" | sed 's/-[0-9.]*$//'`
+                lafile=$libname.la
+        fi
+
 	if [ -f "$lafile" ]; then
 		# libtool archive
 		eval `cat $lafile|grep "^library_names="`
@@ -387,7 +394,7 @@ def oe_unpack_file(file, data, url = None):
 	cmd = None
 	if file.endswith('.tar'):
 		cmd = 'tar x --no-same-owner -f %s' % file
-	elif file.endswith('.tgz') or file.endswith('.tar.gz'):
+	elif file.endswith('.tgz') or file.endswith('.tar.gz') or file.endswith('.tar.Z'):
 		cmd = 'tar xz --no-same-owner -f %s' % file
 	elif file.endswith('.tbz') or file.endswith('.tar.bz2'):
 		cmd = 'bzip2 -dc %s | tar x --no-same-owner -f -' % file
@@ -423,8 +430,15 @@ def oe_unpack_file(file, data, url = None):
 				destdir = "."
 			bb.mkdirhier("%s/%s" % (os.getcwd(), destdir))
 			cmd = 'cp %s %s/%s/' % (file, os.getcwd(), destdir)
+
 	if not cmd:
 		return True
+
+	dest = os.path.join(os.getcwd(), os.path.basename(file))
+	if os.path.exists(dest):
+		if os.path.samefile(file, dest):
+			return True
+
 	cmd = "PATH=\"%s\" %s" % (bb.data.getVar('PATH', data, 1), cmd)
 	bb.note("Unpacking %s to %s/" % (file, os.getcwd()))
 	ret = os.system(cmd)
@@ -454,6 +468,7 @@ python base_do_unpack() {
 		if not ret:
 			raise bb.build.FuncFailed()
 }
+
 
 addhandler base_eventhandler
 python base_eventhandler() {
@@ -539,7 +554,7 @@ base_do_compile() {
 }
 
 
-#addtask stage after do_install
+addtask stage after do_compile
 base_do_stage () {
 	:
 }
@@ -554,15 +569,11 @@ do_populate_staging[dirs] = "${STAGING_DIR}/${TARGET_SYS}/bin ${STAGING_DIR}/${T
 addtask populate_staging after do_package
 
 python do_populate_staging () {
-	if bb.data.getVar('manifest_do_populate_staging', d):
-		bb.build.exec_func('manifest_do_populate_staging', d)
-	else:
-		bb.build.exec_func('do_stage', d)
+	bb.build.exec_func('do_stage', d)
 }
 
-#addtask install
-addtask install after do_compile
-do_install[dirs] = "${S} ${B}"
+addtask install after do_compile 
+do_install[dirs] = "${D} ${S} ${B}"
 
 base_do_install() {
 	:
@@ -620,24 +631,60 @@ python read_shlibdeps () {
 		bb.data.setVar('RDEPENDS_' + pkg, " " + " ".join(rdepends), d)
 }
 
-python read_subpackage_metadata () {
-	import re
+def read_pkgdatafile(fn):
+	pkgdata = {}
 
 	def decode(str):
 		import codecs
 		c = codecs.getdecoder("string_escape")
 		return c(str)[0]
 
-	data_file = bb.data.expand("${WORKDIR}/install/${PN}.package", d)
-	if os.access(data_file, os.R_OK):
-		f = file(data_file, 'r')
+	import os
+	if os.access(fn, os.R_OK):
+		import re
+		f = file(fn, 'r')
 		lines = f.readlines()
 		f.close()
 		r = re.compile("([^:]+):\s*(.*)")
 		for l in lines:
 			m = r.match(l)
 			if m:
-				bb.data.setVar(m.group(1), decode(m.group(2)), d)
+				pkgdata[m.group(1)] = decode(m.group(2))
+
+	return pkgdata
+
+def has_subpkgdata(pkg, d):
+	import bb, os
+	fn = bb.data.expand('${STAGING_DIR}/pkgdata/runtime/%s' % pkg, d)
+	return os.access(fn, os.R_OK)
+
+def read_subpkgdata(pkg, d):
+	import bb, os
+	fn = bb.data.expand('${STAGING_DIR}/pkgdata/runtime/%s' % pkg, d)
+	return read_pkgdatafile(fn)
+
+
+def has_pkgdata(pn, d):
+	import bb, os
+	fn = bb.data.expand('${STAGING_DIR}/pkgdata/%s' % pn, d)
+	return os.access(fn, os.R_OK)
+
+def read_pkgdata(pn, d):
+	import bb, os
+	fn = bb.data.expand('${STAGING_DIR}/pkgdata/%s' % pn, d)
+	return read_pkgdatafile(fn)
+
+python read_subpackage_metadata () {
+	import bb
+	data = read_pkgdata(bb.data.getVar('PN', d, 1), d)
+
+	for key in data.keys():
+		bb.data.setVar(key, data[key], d)
+
+	for pkg in bb.data.getVar('PACKAGES', d, 1).split():
+		sdata = read_subpkgdata(pkg, d)
+		for key in sdata.keys():
+			bb.data.setVar(key, sdata[key], d)
 }
 
 python __anonymous () {
@@ -653,7 +700,7 @@ python __anonymous () {
 	if need_machine:
 		import re
 		this_machine = bb.data.getVar('MACHINE', d, 1)
-		if not re.match(need_machine, this_machine):
+		if this_machine and not re.match(need_machine, this_machine):
 			raise bb.parse.SkipPackage("incompatible with machine %s" % this_machine)
 
 	pn = bb.data.getVar('PN', d, 1)
@@ -665,15 +712,6 @@ python __anonymous () {
 	use_nls = bb.data.getVar('USE_NLS_%s' % pn, d, 1)
 	if use_nls != None:
 		bb.data.setVar('USE_NLS', use_nls, d)
-
-	try:
-		bb.build.exec_func('read_manifest', d)
-		bb.build.exec_func('parse_manifest', d)
-	except exceptions.KeyboardInterrupt:
-		raise
-	except Exception, e:
-		bb.error("anonymous function: %s" % e)
-		pass
 }
 
 python () {
