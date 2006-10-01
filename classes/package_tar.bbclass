@@ -94,6 +94,9 @@ python do_package_tar () {
 		ret = os.system("tar -czvf %s %s" % (tarfn, '.'))
 		if ret != 0:
 			bb.error("Creation of tar %s failed." % tarfn)
+
+		file(bb.data.expand('${STAGING_DIR}/pkgdata/runtime/%s.packaged' % pkg, d), 'w').close()
+
 # end stuff
 		del localdata
 }
