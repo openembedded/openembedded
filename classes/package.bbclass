@@ -1,4 +1,15 @@
 def legitimize_package_name(s):
+	import re
+
+	def fixutf(m):
+		cp = m.group(1)
+		if cp:
+			return ('\u%s' % cp).decode('unicode_escape').encode('utf-8')
+
+	# Handle unicode codepoints encoded as <U0123>, as in glibc locale files.
+	s = re.sub('<U([0-9A-Fa-f]{1,4})>', fixutf, s)
+
+	# Remaining package name validity fixes
 	return s.lower().replace('_', '-').replace('@', '+').replace(',', '+').replace('/', '-')
 
 STAGING_PKGMAPS_DIR ?= "${STAGING_DIR}/pkgmaps"
@@ -159,6 +170,8 @@ def do_split_packages(d, root, file_regex, output_pattern, description, postinst
 # is necessary for this stuff to work.
 PACKAGE_DEPENDS ?= "file-native"
 DEPENDS_prepend =+ "${PACKAGE_DEPENDS} "
+# file(1) output to match to consider a file an unstripped executable
+FILE_UNSTRIPPED_MATCH ?= "not stripped"
 #FIXME: this should be "" when any errors are gone!
 IGNORE_STRIP_ERRORS ?= "1"
 
@@ -167,9 +180,9 @@ runstrip() {
 	st=0
 	if {	file "$1" || {
 			oewarn "file $1: failed (forced strip)" >&2
-			echo 'not stripped'
+			echo '${FILE_UNSTRIPPED_MATCH}'
 		}
-	   } | grep -q 'not stripped'
+	   } | grep -q '${FILE_UNSTRIPPED_MATCH}'
 	then
 		oenote "${STRIP} $1"
 		ro=
@@ -177,8 +190,12 @@ runstrip() {
 			ro=1
 			chmod +w "$1"
 		}
+		mkdir -p $(dirname "$1")/.debug
+		debugfile="$(dirname "$1")/.debug/$(basename "$1")"
+		'${OBJCOPY}' --only-keep-debug "$1" "$debugfile"
 		'${STRIP}' "$1"
 		st=$?
+		'${OBJCOPY}' --add-gnu-debuglink="$debugfile" "$1"
 		test -n "$ro" && chmod -w "$1"
 		if test $st -ne 0
 		then
@@ -242,14 +259,33 @@ python populate_packages () {
 		return (s[stat.ST_MODE] & stat.S_IEXEC)
 
 	# Sanity check PACKAGES for duplicates - should be moved to 
-	# sanity.bbclass once we have he infrastucture
-	pkgs = []
+	# sanity.bbclass once we have the infrastucture
+	package_list = []
 	for pkg in packages.split():
-		if pkg in pkgs:
-			bb.error("%s is listed in PACKAGES mutliple times. Undefined behaviour will result." % pkg)
-		pkgs += pkg
+		if pkg in package_list:
+			bb.error("-------------------")
+			bb.error("%s is listed in PACKAGES mutliple times, this leads to packaging errors." % pkg)
+			bb.error("Please fix the metadata/report this as bug to OE bugtracker.")
+			bb.error("-------------------")
+		else:
+			package_list.append(pkg)
 
-	for pkg in packages.split():
+	if (bb.data.getVar('INHIBIT_PACKAGE_STRIP', d, 1) != '1'):
+		stripfunc = ""
+		for root, dirs, files in os.walk(dvar):
+			for f in files:
+				file = os.path.join(root, f)
+				if not os.path.islink(file) and isexec(file):
+					stripfunc += "\trunstrip %s || st=1\n" % (file)
+		if not stripfunc == "":
+			from bb import build
+			localdata = bb.data.createCopy(d)
+			# strip
+			bb.data.setVar('RUNSTRIP', '\tlocal st\n\tst=0\n%s\treturn $st' % stripfunc, localdata)
+			bb.data.setVarFlag('RUNSTRIP', 'func', 1, localdata)
+			bb.build.exec_func('RUNSTRIP', localdata)
+
+	for pkg in package_list:
 		localdata = bb.data.createCopy(d)
 		root = os.path.join(workdir, "install", pkg)
 
@@ -273,7 +309,6 @@ python populate_packages () {
 		bb.mkdirhier(root)
 		filesvar = bb.data.getVar('FILES', localdata, 1) or ""
 		files = filesvar.split()
-		stripfunc = ""
 		for file in files:
 			if os.path.isabs(file):
 				file = '.' + file
@@ -293,17 +328,9 @@ python populate_packages () {
 			fpath = os.path.join(root,file)
 			dpath = os.path.dirname(fpath)
 			bb.mkdirhier(dpath)
-			if (bb.data.getVar('INHIBIT_PACKAGE_STRIP', d, 1) != '1') and not os.path.islink(file) and isexec(file):
-				stripfunc += "\trunstrip %s || st=1\n" % fpath
 			ret = bb.movefile(file,fpath)
 			if ret is None or ret == 0:
 				raise bb.build.FuncFailed("File population failed")
-		if not stripfunc == "":
-			from bb import build
-			# strip
-			bb.data.setVar('RUNSTRIP', '\tlocal st\n\tst=0\n%s\treturn $st' % stripfunc, localdata)
-			bb.data.setVarFlag('RUNSTRIP', 'func', 1, localdata)
-			bb.build.exec_func('RUNSTRIP', localdata)
 		del localdata
 	os.chdir(workdir)
 
@@ -320,7 +347,7 @@ python populate_packages () {
 
 	bb.build.exec_func("package_name_hook", d)
 
-	for pkg in packages.split():
+	for pkg in package_list:
 		pkgname = bb.data.getVar('PKG_%s' % pkg, d, 1)
 		if pkgname is None:
 			bb.data.setVar('PKG_%s' % pkg, pkg, d)
@@ -329,7 +356,7 @@ python populate_packages () {
 
 	dangling_links = {}
 	pkg_files = {}
-	for pkg in packages.split():
+	for pkg in package_list:
 		dangling_links[pkg] = []
 		pkg_files[pkg] = []
 		inst_root = os.path.join(workdir, "install", pkg)
@@ -348,12 +375,12 @@ python populate_packages () {
 						target = os.path.join(root[len(inst_root):], target)
 					dangling_links[pkg].append(os.path.normpath(target))
 
-	for pkg in packages.split():
+	for pkg in package_list:
 		rdepends = explode_deps(bb.data.getVar('RDEPENDS_' + pkg, d, 1) or bb.data.getVar('RDEPENDS', d, 1) or "")
 		for l in dangling_links[pkg]:
 			found = False
 			bb.debug(1, "%s contains dangling link %s" % (pkg, l))
-			for p in packages.split():
+			for p in package_list:
 				for f in pkg_files[p]:
 					if f == l:
 						found = True
@@ -381,7 +408,7 @@ python populate_packages () {
 	data_file = os.path.join(workdir, "install", pn + ".package")
 	f = open(data_file, 'w')
 	f.write("PACKAGES: %s\n" % packages)
-	for pkg in packages.split():
+	for pkg in package_list:
 		write_if_exists(f, pkg, 'DESCRIPTION')
 		write_if_exists(f, pkg, 'RDEPENDS')
 		write_if_exists(f, pkg, 'RPROVIDES')
@@ -400,6 +427,58 @@ ldconfig_postinst_fragment() {
 if [ x"$D" = "x" ]; then
 	ldconfig
 fi
+}
+
+python package_depchains() {
+	"""
+	For a given set of prefix and postfix modifiers, make those packages
+	RRECOMMENDS on the corresponding packages for its DEPENDS.
+
+	Example:  If package A depends upon package B, and A's .bb emits an
+	A-dev package, this would make A-dev Recommends: B-dev.
+	"""
+
+	packages  = bb.data.getVar('PACKAGES', d, 1)
+	postfixes = (bb.data.getVar('DEPCHAIN_POST', d, 1) or '').split()
+	prefixes  = (bb.data.getVar('DEPCHAIN_PRE', d, 1) or '').split()
+
+	def pkg_addrrecs(pkg, base, func, d):
+		rdepends = explode_deps(bb.data.getVar('RDEPENDS_' + base, d, 1) or bb.data.getVar('RDEPENDS', d, 1) or "")
+		# bb.note('rdepends for %s is %s' % (base, rdepends))
+		rreclist = []
+
+		for depend in rdepends:
+			split_depend = depend.split(' (')
+			name = split_depend[0].strip()
+			func(rreclist, name)
+
+		oldrrec = bb.data.getVar('RRECOMMENDS_%s', d) or ''
+		bb.data.setVar('RRECOMMENDS_%s' % pkg, oldrrec + ' '.join(rreclist), d)
+
+	def packaged(pkg, d):
+		return os.access(bb.data.expand('${STAGING_DIR}/pkgdata/runtime/%s.packaged' % pkg, d), os.R_OK)
+
+	for pkg in packages.split():
+		for postfix in postfixes:
+			def func(list, name):
+				pkg = '%s%s' % (name, postfix)
+				if packaged(pkg, d):
+					list.append(pkg)
+
+			base = pkg[:-len(postfix)]
+			if pkg.endswith(postfix):
+				pkg_addrrecs(pkg, base, func, d)
+				continue
+
+		for prefix in prefixes:
+			def func(list, name):
+				pkg = '%s%s' % (prefix, name)
+				if packaged(pkg, d):
+					list.append(pkg)
+
+			base = pkg[len(prefix):]
+			if pkg.startswith(prefix):
+				pkg_addrrecs(pkg, base, func, d)
 }
 
 python package_do_shlibs() {
@@ -724,6 +803,8 @@ python package_do_package () {
 }
 
 do_package[dirs] = "${D}"
-populate_packages[dirs] = "${D}"
+# shlibs requires any DEPENDS to have already packaged for the *.list files
+do_package[deptask] = "do_package"
+populate_packages[dirs] = "${STAGING_DIR}/pkgdata/runtime ${D}"
 EXPORT_FUNCTIONS do_package do_shlibs do_split_locales mapping_rename_hook
-addtask package before do_stage after do_install
+addtask package before do_build after do_install
