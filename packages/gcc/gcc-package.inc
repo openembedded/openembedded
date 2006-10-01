@@ -67,34 +67,33 @@ do_install () {
 	rm -r ${D}${libexecdir}/gcc/${TARGET_SYS}/${BINV}/install-tools
 
 	# Hack around specs file assumptions
-	sed -i -e '/^*cross_compile:$/ { n; s/1/0/; }' ${D}${libdir}/gcc/${TARGET_SYS}/${BINV}/specs &>/dev/null || true
+	test -f ${D}${libdir}/gcc/${TARGET_SYS}/${BINV}/specs && sed -i -e '/^*cross_compile:$/ { n; s/1/0/; }' ${D}${libdir}/gcc/${TARGET_SYS}/${BINV}/specs
 
 	# Move libgcc_s into /lib
 	mkdir -p ${D}${base_libdir}
 	mv ${D}${libdir}/libgcc_s.so.* ${D}${base_libdir}
-	rm ${D}${libdir}/libgcc_s.so
+	rm -f ${D}${libdir}/libgcc_s.so
 	ln -sf `echo ${libdir}/gcc/${TARGET_SYS}/${BINV} \
 		| tr -s / \
 		| sed -e 's,^/,,' -e 's,[^/]*,..,g'`/lib/libgcc_s.so.1 \
 		      ${D}${libdir}/gcc/${TARGET_SYS}/${BINV}/libgcc_s.so
 
 	# We don't need libtool libraries
-	rm ${D}${libdir}/libg2c.la &>/dev/null || true
-
+	rm -f ${D}${libdir}/libg2c.la &>/dev/null || true
 
 	# Cleanup manpages..
-	rm -r ${D}${mandir}/man7
+	rm -rf ${D}${mandir}/man7
 
 	# We use libiberty from binutils
-	rm ${D}${libdir}/libiberty.a
+	rm -f ${D}${libdir}/libiberty.a
 
 	cd ${D}${bindir}
 
 	# We care about g++ not c++
-	rm *c++
+	rm -f *c++
 
 	# We don't care about the gcc-<version> ones for this
-	rm *gcc-?.?*
+	rm -f *gcc-?.?*
 
 	# These sometimes show up, they are strange, we remove them
 	rm -f ${TARGET_ARCH}-*${TARGET_ARCH}-*

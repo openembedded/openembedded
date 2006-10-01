@@ -1,15 +1,20 @@
---- gcc-4.0-20050305/gcc/config/arm/linux-elf.h.orig	2005-03-23 18:44:54.822707377 +0100
-+++ gcc-4.0-20050305/gcc/config/arm/linux-elf.h	2005-03-23 18:46:18.228560206 +0100
-@@ -31,19 +31,33 @@
- /* Do not assume anything about header files.  */
- #define NO_IMPLICIT_EXTERN_C
+By Lennert Buytenhek <buytenh@wantstofly.org>
+Adds support for arm*b-linux* big-endian ARM targets
+
+See http://gcc.gnu.org/PR16350
+
+--- gcc-4.1.0/gcc/config/arm/linux-elf.h
++++ gcc-4.1.0/gcc/config/arm/linux-elf.h
+@@ -28,19 +28,33 @@
+ #undef  TARGET_VERSION
+ #define TARGET_VERSION  fputs (" (ARM GNU/Linux with ELF)", stderr);
  
 +/*
-+ * 'config.gcc' defines TARGET_BIG_ENDIAN_DEFAULT as 1 for
-+ * arm*b-*-linux* (big endian) configurations.
++ * 'config.gcc' defines TARGET_BIG_ENDIAN_DEFAULT as 1 for arm*b-*
++ * (big endian) configurations.
 + */
 +#if TARGET_BIG_ENDIAN_DEFAULT
-+#define TARGET_ENDIAN_DEFAULT ARM_FLAG_BIG_END
++#define TARGET_ENDIAN_DEFAULT MASK_BIG_END
 +#define TARGET_ENDIAN_OPTION "mbig-endian"
 +#define TARGET_LINKER_EMULATION "armelfb_linux"
 +#else
@@ -35,28 +40,28 @@
 -	{ "marm", "mlittle-endian", "mhard-float", "mno-thumb-interwork" }
 +	{ "marm", TARGET_ENDIAN_OPTION, "mhard-float", "mno-thumb-interwork" }
  
- /* The GNU C++ standard library requires that these macros be defined.  */
- #undef CPLUSPLUS_CPP_SPEC
-@@ -90,7 +104,7 @@
+ /* Now we define the strings used to build the spec file.  */
+ #undef  LIB_SPEC
+@@ -61,7 +75,7 @@
     %{rdynamic:-export-dynamic} \
-    %{!dynamic-linker:-dynamic-linker /lib/ld-linux.so.2} \
+    %{!dynamic-linker:-dynamic-linker " LINUX_TARGET_INTERPRETER "} \
     -X \
 -   %{mbig-endian:-EB}" \
 +   %{mbig-endian:-EB} %{mlittle-endian:-EL}" \
     SUBTARGET_EXTRA_LINK_SPEC
  
- #define TARGET_OS_CPP_BUILTINS()		\
---- gcc-4.0-20050305/gcc/config.gcc.orig	2005-03-23 18:46:23.318105335 +0100
-+++ gcc-4.0-20050305/gcc/config.gcc	2005-03-23 18:47:41.592546386 +0100
-@@ -650,6 +650,11 @@
+ #undef  LINK_SPEC
+--- gcc-4.1.0/gcc/config.gcc
++++ gcc-4.1.0/gcc/config.gcc
+@@ -672,6 +672,11 @@
  	;;
  arm*-*-linux*)			# ARM GNU/Linux with ELF
- 	tm_file="dbxelf.h elfos.h linux.h arm/elf.h  arm/linux-gas.h arm/linux-elf.h arm/aout.h arm/arm.h"
+ 	tm_file="dbxelf.h elfos.h linux.h arm/elf.h arm/linux-gas.h arm/linux-elf.h" 
 +	case $target in
-+	arm*b-*-linux*)
++	arm*b-*)
 +		tm_defines="${tm_defines} TARGET_BIG_ENDIAN_DEFAULT=1"
 +		;;
 +	esac
- 	tmake_file="${tmake_file} arm/t-arm arm/t-linux"
- 	extra_parts="crtbegin.o crtbeginS.o crtend.o crtendS.o"
- 	gnu_ld=yes
+ 	tmake_file="${tmake_file} t-linux arm/t-arm"
+ 	case ${target} in
+ 	arm*-*-linux-gnueabi)
