@@ -194,9 +194,12 @@ SLUGOS_BROKEN_PACKAGES = "\
 # normal cause is that the package uses the "NIS" interfaces (once known as
 # YP - a trademark of BT which SUN used without license - the missing function
 # calls often still have 'yp' in the name).
+
+# NOTE: rng-tools is only here until argp-standalone can be built!
 UCLIBC_UNSUPPORTABLE_PACKAGES = "\
 	libpam \
 	nfs-utils \
+	rng-tools \
 	postfix \
 	yp-tools ypbind ypserv \
 	"
