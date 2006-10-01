@@ -225,14 +225,14 @@ if [ ${PN} != "glibc-intermediate" ] ; then
 	
 		${PSTAGE_BUILD_CMD} ${CROSS_DIR} ${DEPLOY_DIR_PSTAGE}
 
-		if [ -e ${TMPDIR}/pcross ] ; then  
-			rm -rf ${CROSS_DIR}
-		        mv ${TMPDIR}/pcross ${CROSS_DIR}
-			rm ${TMPDIR}/moved-cross
-		fi
-
 		${PSTAGE_INSTALL_CMD} ${CROSS_DIR}  ${DEPLOY_DIR_PSTAGE}/${PCROSS_PKGNAME}
 	fi # if -e CROSS_DIR
+
+	if [ -e ${TMPDIR}/moved-cross ] ; then  
+		rm -rf ${CROSS_DIR}
+	        mv ${TMPDIR}/pcross ${CROSS_DIR}
+		rm ${TMPDIR}/moved-cross
+	fi
 
 	#move back stagingdir so we can install packages   
 	mv ${TMPDIR}/pstage ${STAGING_DIR}
