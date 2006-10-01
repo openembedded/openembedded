@@ -146,6 +146,7 @@ SLUGOS_PACKAGES = "\
 	python \
 	quilt \
 	reiserfsprogs reiser4progs \
+	rng-tools \
 	rsync \
 	samba \
 	sane-backends \
