@@ -19,6 +19,8 @@
 # PSTAGE_MODE = 'repopulate': repopulated staging from scratch for each packages
 # PSTAGE_MODE = 'append': append each package to staging (current behaviour)
 
+inherit package
+
 DEPLOY_DIR_PSTAGE 	= "${DEPLOY_DIR}/pstage" 
 
 PSTAGE_BUILD_CMD        = "${IPKGBUILDCMD}"
