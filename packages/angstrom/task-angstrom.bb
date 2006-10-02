@@ -1,5 +1,5 @@
 DESCRIPTION = "Task packages for the Angstrom distribution"
-PR = "r19"
+PR = "r20"
 ALLOW_EMPTY = "1"
 
 PACKAGE_ARCH = "${MACHINE_ARCH}"
@@ -29,7 +29,6 @@ RDEPENDS_angstrom-base-depends = "\
     ${EXTRA_STUFF} \
     ${DEBUG_APPS} \
     ${PCMCIA_MANAGER} \
-    angstrom-base-wifi \
 "
 
 RDEPENDS_angstrom-base-depends_append_ipaq-pxa270 = " tiinit acx-firmware "
@@ -44,24 +43,3 @@ RRECOMMENDS_angstrom-base-depends = "\
     kernel-module-af-packet \
 "
 
-RDEPENDS_angstrom-base-wifi = "\
-    hostap-utils \
-    hostap-conf \
-    prism3-support \
-    prism3-firmware \
-    wireless-tools \
-    wpa-supplicant \
-"
-
-RRECOMMENDS_angstrom-base-wifi = "\
-    kernel-module-hostap-cs \
-    kernel-module-orinoco-cs \
-    kernel-module-spectrum-cs \
-    kernel-module-arc4 \
-    kernel-module-michael-mic \
-    kernel-module-aes \
-    kernel-module-ieee80211-crypt-tkip \
-    kernel-module-ieee80211-crypt-wep \
-    kernel-module-ieee80211-crypt \
-    kernel-module-ieee80211-crypt-ccmp \
-"

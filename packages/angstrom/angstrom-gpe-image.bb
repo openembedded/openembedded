@@ -18,6 +18,7 @@ DEPENDS = "task-angstrom task-base"
 RDEPENDS = "\
     ${XSERVER} \
     task-base-core-default \
+    task-base \
     angstrom-base-depends \
     angstrom-x11-base-depends \
     angstrom-gpe-task-base \
