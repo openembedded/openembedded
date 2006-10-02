@@ -96,7 +96,7 @@
 -			done
 +deconfig)
 +	# Bring the interface up (without inet at this point)
-+	ifconfig "$interface" up;;
++	ifconfig "$interface" 0.0.0.0;;
 +
 +renew|bound)
 +	bind;;
