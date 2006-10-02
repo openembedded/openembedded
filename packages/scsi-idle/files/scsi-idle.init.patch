@@ -1,0 +1,12 @@
+diff -ur scsi-idle-2.4.23/debian/scsi-idle.init scsi-idle-2.4.23~patched/debian/scsi-idle.init
+--- scsi-idle-2.4.23/debian/scsi-idle.init	2004-01-31 11:47:02.000000000 +0100
++++ scsi-idle-2.4.23~patched/debian/scsi-idle.init	2005-08-31 18:56:46.000000000 +0200
+@@ -21,7 +21,7 @@
+   export BEQUIET
+   if [ "$PAIRS" ] ; then
+      set -- $PAIRS
+-     while [ "$#" !=0 ] ; do
++     while [ "$#" != 0 ] ; do
+         PIDFILE=/var/run/$NAME`echo $1 | tr / _`.pid
+         export PIDFILE
+         echo -n " $1"
