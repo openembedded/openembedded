@@ -9,6 +9,7 @@ SRC_URI = "${DEBIAN_MIRROR}/main/s/ssmtp/ssmtp_${PV}.orig.tar.gz \
            file://ldflags.patch;patch=1 \
            file://configure.patch;patch=1 \
            file://libs-lcrypto.patch;patch=1 \
+           file://dont-strip.patch;patch=1 \
            file://ssmtp.conf"
 S = "${WORKDIR}/${PN}-${PV}"
 
