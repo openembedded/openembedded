@@ -123,13 +123,19 @@ do_stage_prepend() {
 	#check for generated packages
 	if [ -e ${SPAWNFILE} ]; then
         	oenote "List of spawned packages found: ${P}.spawn"
-        	for spawn in `cat ${SPAWNFILE} | grep -v locale` ; do \
+        	for spawn in `cat ${SPAWNFILE} | grep -v locale | grep -v dbg | grep -v gconv | grep -v charmap` ; do \
 			if [ -e ${DEPLOY_DIR_IPK}/${spawn}_* ]; then
                	 		${PSTAGE_INSTALL_CMD} ${STAGING_BASEDIR} ${spawn}          
 				# clean up .la files to avoid having references to the builddirs in the binaries
 				for lafile in ${STAGING_LIBDIR}/*.la ; do \
 					sed -i s:installed=yes:installed=no:g ${lafile} || true
 				done
+
+				#fix up linker script to poin to staging
+				if [ -e ${STAGING_LIBDIR}/libc.so ]; then
+					sed -i s:\ /lib:\ ${STAGING_LIBDIR}:g ${STAGING_LIBDIR}/libc.so
+					sed -i s:\ /usr/lib:\ ${STAGING_LIBDIR}:g ${STAGING_LIBDIR}/libc.so
+				fi
 			else
 				oenote "${spawn} not found, probably empty package"
 			fi
