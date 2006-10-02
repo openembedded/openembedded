@@ -5,8 +5,8 @@ SECTION = "x11/network"
 MAINTAINER = "Adrian Davey <ade@beth2.org>"
 LICENSE = "GPL"
 PV = "1.5.0+cvs${SRCDATE}"
-PR = "r2"
-
+PR = "r3"
+DEFAULT_PREFERENCE = "-1"
 SRC_URI = "cvs://anonymous@cvs.sourceforge.net/cvsroot/rdesktop;module=rdesktop"
 S = "${WORKDIR}/rdesktop"
 
