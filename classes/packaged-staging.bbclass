@@ -36,6 +36,9 @@ PCROSS_PKGNAME		= "cross-${PN}_${PV}-${PR}_${BUILD_ARCH}.ipk"
 SPAWNFILE 		= "${STAGING_DIR}/pkgmaps/${P}-${PR}.spawn"
 SPAWNIPK                = ${spawn}
 
+PSTAGE_TMPDIR_STAGE     = ${TMPDIR}/tmp-staging
+PSTAGE_TMPDIR_CROSS     = ${TMPDIR}/tmp-cross
+
 STAGING_BASEDIR		= "${STAGING_LIBDIR}/.."
 
 PACKAGEFUNCS += "do_write_ipk_list"
@@ -85,19 +88,9 @@ do_clean_append() {
 
 do_stage_prepend() {
 
-#detect aborted staging attempts
-if [ -e ${TMPDIR}/moved-staging ]; then
-        oenote "Detected a moved staging, moving it back"
-	rm -rf ${STAGING_DIR} && mv ${TMPDIR}/pstage ${STAGING_DIR} && rm ${TMPDIR}/moved-staging
-fi
+stage-manager -p ${STAGING_DIR} -c ${DEPLOY_DIR_PSTAGE}/staging-stamp-cache -u
 
-#detect aborted staging attempts into cross/
-if [ -e ${TMPDIR}/moved-cross ]; then
-        oenote "Detected a moved cross/, moving it back"
-        rm -rf ${CROSS_DIR} && mv ${TMPDIR}/pcross ${CROSS_DIR} && rm ${TMPDIR}/moved-cross
-fi
-
-
+stage-manager -p ${CROSS_DIR} -c ${DEPLOY_DIR_PSTAGE}/cross-stamp-cache -u
 
 if [ ! -e ${STAGING_BASEDIR} ]; then
 	mkdir -p ${STAGING_BASEDIR}
@@ -166,13 +159,6 @@ if [ ${PN} != "glibc-intermediate" ] ; then
 		exit 0      
 	fi
 
-	touch ${TMPDIR}/moved-staging
-	mv ${STAGING_DIR} ${TMPDIR}/pstage
-
-	if [ -e ${CROSS_DIR} ]; then
-		mv ${CROSS_DIR} ${TMPDIR}/pcross
-		touch ${TMPDIR}/moved-cross
-	fi
 
 	mkdir -p ${STAGING_BINDIR}
 	mkdir -p ${STAGING_LIBDIR}
@@ -189,56 +175,62 @@ mkdir -p ${DEPLOY_DIR_PSTAGE}
 
 # list the packages currently installed in staging
 ${PSTAGE_LIST_CMD} ${STAGING_BASEDIR} | awk '{print $1}' > ${DEPLOY_DIR_PSTAGE}/installed-staging_list         
-${PSTAGE_LIST_CMD} ${CROSSDIR} | awk '{print $1}' > ${DEPLOY_DIR_PSTAGE}/installed-cross_list
-
+${PSTAGE_LIST_CMD} ${CROSS_DIR} | awk '{print $1}' > ${DEPLOY_DIR_PSTAGE}/installed-cross_list
 
 if [ ${PN} != "glibc-intermediate" ] ; then
 
-	#make a package for staging
-	mkdir -p ${STAGING_DIR}/CONTROL
+	set +e
+	rm -rf ${PSTAGE_TMPDIR_STAGE}
+	stage-manager -p ${STAGING_DIR} -c ${DEPLOY_DIR_PSTAGE}/staging-stamp-cache -u -d ${PSTAGE_TMPDIR_STAGE}
+	rc=$?
+	set -e
 
-	echo "Package: staging-${PN}"           >  ${STAGING_DIR}/CONTROL/control
-	echo "Version: ${PV}-${PR}"             >> ${STAGING_DIR}/CONTROL/control
-	echo "Description: ${DESCRIPTION}"      >> ${STAGING_DIR}/CONTROL/control
-	echo "Section: ${SECTION}"              >> ${STAGING_DIR}/CONTROL/control
-	echo "Priority: Optional"               >> ${STAGING_DIR}/CONTROL/control
-	echo "Maintainer: ${MAINTAINER}"        >> ${STAGING_DIR}/CONTROL/control
-	echo "Architecture: ${PACKAGE_ARCH}"    >> ${STAGING_DIR}/CONTROL/control
-	echo "Source: ${SRC_URI}"               >> ${STAGING_DIR}/CONTROL/control
+	if [ $rc == 5 ]; then
 
-        ${PSTAGE_BUILD_CMD} ${STAGING_DIR} ${DEPLOY_DIR_PSTAGE}
-        rm -rf ${STAGING_DIR}
+                echo $?
+                echo "Trying Cross" 
+		#make a package for staging
+		mkdir -p ${PSTAGE_TMPDIR_STAGE}/CONTROL
 
+		echo "Package: staging-${PN}"           >  ${PSTAGE_TMPDIR_STAGE}/CONTROL/control
+		echo "Version: ${PV}-${PR}"             >> ${PSTAGE_TMPDIR_STAGE}/CONTROL/control
+		echo "Description: ${DESCRIPTION}"      >> ${PSTAGE_TMPDIR_STAGE}/CONTROL/control
+		echo "Section: ${SECTION}"              >> ${PSTAGE_TMPDIR_STAGE}/CONTROL/control
+		echo "Priority: Optional"               >> ${PSTAGE_TMPDIR_STAGE}/CONTROL/control
+		echo "Maintainer: ${MAINTAINER}"        >> ${PSTAGE_TMPDIR_STAGE}/CONTROL/control
+		echo "Architecture: ${PACKAGE_ARCH}"    >> ${PSTAGE_TMPDIR_STAGE}/CONTROL/control
+		echo "Source: ${SRC_URI}"               >> ${PSTAGE_TMPDIR_STAGE}/CONTROL/control
 
-	#make a package for cross
-	if [ -e ${CROSS_DIR} ] ; then
-	        mkdir -p ${CROSS_DIR}/CONTROL
+	        ${PSTAGE_BUILD_CMD} ${PSTAGE_TMPDIR_STAGE} ${DEPLOY_DIR_PSTAGE}
 
-	        echo "Package: cross-${PN}"           	>  ${CROSS_DIR}/CONTROL/control
-	        echo "Version: ${PV}-${PR}"             >> ${CROSS_DIR}/CONTROL/control
-	        echo "Description: ${DESCRIPTION}"      >> ${CROSS_DIR}/CONTROL/control
-	        echo "Section: ${SECTION}"              >> ${CROSS_DIR}/CONTROL/control
-	        echo "Priority: Optional"               >> ${CROSS_DIR}/CONTROL/control
-	        echo "Maintainer: ${MAINTAINER}"        >> ${CROSS_DIR}/CONTROL/control
-	        echo "Architecture: ${BUILD_ARCH}"    	>> ${CROSS_DIR}/CONTROL/control
-	        echo "Source: ${SRC_URI}"               >> ${CROSS_DIR}/CONTROL/control
-	
-		${PSTAGE_BUILD_CMD} ${CROSS_DIR} ${DEPLOY_DIR_PSTAGE}
-
-		${PSTAGE_INSTALL_CMD} ${CROSS_DIR}  ${DEPLOY_DIR_PSTAGE}/${PCROSS_PKGNAME}
-	fi # if -e CROSS_DIR
-
-	if [ -e ${TMPDIR}/moved-cross ] ; then  
-		rm -rf ${CROSS_DIR}
-	        mv ${TMPDIR}/pcross ${CROSS_DIR}
-		rm ${TMPDIR}/moved-cross
+		${PSTAGE_INSTALL_CMD} ${STAGING_DIR} ${DEPLOY_DIR_PSTAGE}/${PSTAGE_PKGNAME}
 	fi
 
-	#move back stagingdir so we can install packages   
-	mv ${TMPDIR}/pstage ${STAGING_DIR}
-	rm ${TMPDIR}/moved-staging
+	set +e
+	rm -rf ${PSTAGE_TMPDIR_CROSS}
+	stage-manager -p ${CROSS_DIR} -c ${DEPLOY_DIR_PSTAGE}/cross-stamp-cache -u -d ${PSTAGE_TMPDIR_CROSS}
+	rc=$?
+	set -e
 
-	${PSTAGE_INSTALL_CMD} ${STAGING_DIR}  ${DEPLOY_DIR_PSTAGE}/${PSTAGE_PKGNAME}
+	if [ $rc == 5 ]; then
+
+		#make a package for cross
+	        mkdir -p ${PSTAGE_TMPDIR_CROSS}/CONTROL
+
+	        echo "Package: cross-${PN}"           	>  ${PSTAGE_TMPDIR_CROSS}/CONTROL/control
+	        echo "Version: ${PV}-${PR}"             >> ${PSTAGE_TMPDIR_CROSS}/CONTROL/control
+	        echo "Description: ${DESCRIPTION}"      >> ${PSTAGE_TMPDIR_CROSS}/CONTROL/control
+	        echo "Section: ${SECTION}"              >> ${PSTAGE_TMPDIR_CROSS}/CONTROL/control
+	        echo "Priority: Optional"               >> ${PSTAGE_TMPDIR_CROSS}/CONTROL/control
+	        echo "Maintainer: ${MAINTAINER}"        >> ${PSTAGE_TMPDIR_CROSS}/CONTROL/control
+	        echo "Architecture: ${BUILD_ARCH}"    	>> ${PSTAGE_TMPDIR_CROSS}/CONTROL/control
+	        echo "Source: ${SRC_URI}"               >> ${PSTAGE_TMPDIR_CROSS}/CONTROL/control
+	
+		${PSTAGE_BUILD_CMD} ${PSTAGE_TMPDIR_CROSS} ${DEPLOY_DIR_PSTAGE}
+
+		${PSTAGE_INSTALL_CMD} ${CROSS_DIR} ${DEPLOY_DIR_PSTAGE}/${PCROSS_PKGNAME}
+	fi
+
 else
 	oenote "Glibc-intermediate detected (again)"
 fi #if !glibc-intermediate
