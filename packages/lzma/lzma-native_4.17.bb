@@ -3,6 +3,8 @@ HOMEPAGE = "http://www.7-zip.org/"
 LICENSE = "LGPL"
 PR = "r2"
 
+DEPENDS = "zlib-native"
+
 SRC_URI = "http://www.7-zip.org/dl/lzma417.tar.bz2 \
 	   file://lzma-406-zlib-stream.patch;patch=1;pnum=2"
 S = "${WORKDIR}/SRC"
