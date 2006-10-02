@@ -160,7 +160,7 @@ do_stage_append() {
 	mkdir -p ${DEPLOY_DIR_PSTAGE}
 
 	# list the packages currently installed in staging
-	${PSTAGE_LIST_CMD} ${STAGING_BASEDIR} | awk '{print $1}' > ${DEPLOY_DIR_PSTAGE}/installed-staging_list         
+	${PSTAGE_LIST_CMD} ${STAGING_DIR} | awk '{print $1}' > ${DEPLOY_DIR_PSTAGE}/installed-staging_list         
 	${PSTAGE_LIST_CMD} ${CROSS_DIR} | awk '{print $1}' > ${DEPLOY_DIR_PSTAGE}/installed-cross_list
 
 	set +e
@@ -171,8 +171,6 @@ do_stage_append() {
 
 	if [ $rc == 5 ]; then
 
-                echo $?
-                echo "Trying Cross" 
 		#make a package for staging
 		mkdir -p ${PSTAGE_TMPDIR_STAGE}/CONTROL
 
