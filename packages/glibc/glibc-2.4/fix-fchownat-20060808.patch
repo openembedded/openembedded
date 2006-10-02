@@ -1,0 +1,415 @@
+From libc-hacker-return-8994-listarch-libc-hacker=sources dot redhat dot com at sourceware dot org Tue Aug 08 11:49:18 2006
+Return-Path: <libc-hacker-return-8994-listarch-libc-hacker=sources dot redhat dot com at sourceware dot org>
+Delivered-To: listarch-libc-hacker at sources dot redhat dot com
+Received: (qmail 21223 invoked by alias); 8 Aug 2006 11:49:17 -0000
+Received: (qmail 21202 invoked by uid 22791); 8 Aug 2006 11:49:15 -0000
+X-Spam-Check-By: sourceware.org
+Received: from sunsite.ms.mff.cuni.cz (HELO sunsite.mff.cuni.cz) (195.113.15.26)
+    by sourceware dot org (qpsmtpd/0 dot 31) with ESMTP; Tue, 08 Aug 2006 11:49:13 +0000
+Received: from sunsite.mff.cuni.cz (sunsite.mff.cuni.cz [127.0.0.1])
+	by sunsite dot mff dot cuni dot cz (8 dot 13 dot 1/8 dot 13 dot 1) with ESMTP id k78Bn8f9003038;
+	Tue, 8 Aug 2006 13:49:08 +0200
+Received: (from jj@localhost)
+	by sunsite dot mff dot cuni dot cz (8 dot 13 dot 1/8 dot 13 dot 1/Submit) id k78Bn82P003037;
+	Tue, 8 Aug 2006 13:49:08 +0200
+Date: Tue, 8 Aug 2006 13:49:07 +0200
+From: Jakub Jelinek <jakub at redhat dot com>
+To: Ulrich Drepper <drepper at redhat dot com>
+Cc: Glibc hackers <libc-hacker at sources dot redhat dot com>
+Subject: [PATCH] Fix fchownat
+Message-ID: <20060808114907.GA4556@sunsite.mff.cuni.cz>
+Reply-To: Jakub Jelinek <jakub at redhat dot com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.4.1i
+Mailing-List: contact libc-hacker-help at sourceware dot org; run by ezmlm
+Precedence: bulk
+List-Subscribe: <mailto:libc-hacker-subscribe at sourceware dot org>
+List-Archive: <http://sourceware.org/ml/libc-hacker/>
+List-Post: <mailto:libc-hacker at sourceware dot org>
+List-Help: <mailto:libc-hacker-help at sourceware dot org>, <http://sourceware dot org/ml/#faqs>
+Sender: libc-hacker-owner at sourceware dot org
+Delivered-To: mailing list libc-hacker at sourceware dot org
+
+Hi!
+
+Apparently fchownat was only changed to use the direct syscall if available
+in the generic linux version, not in the various arch specializations.
+
+2006-08-08  Jakub Jelinek  <jakub@redhat.com>
+
+	* sysdeps/unix/sysv/linux/s390/s390-32/fchownat.c (fchownat): Use
+	fchownat syscall if available.
+	* sysdeps/unix/sysv/linux/powerpc/fchownat.c (fchownat): Likewise.
+	* sysdeps/unix/sysv/linux/sh/fchownat.c (fchownat): Likewise.
+	* sysdeps/unix/sysv/linux/i386/fchownat.c (fchownat): Likewise.
+
+--- libc/sysdeps/unix/sysv/linux/s390/s390-32/fchownat.c.jj	2006-01-11 16:55:32.000000000 +0100
++++ libc/sysdeps/unix/sysv/linux/s390/s390-32/fchownat.c	2006-08-08 11:11:23.000000000 +0200
+@@ -53,6 +53,24 @@ extern int __libc_missing_32bit_uids;
+ int
+ fchownat (int fd, const char *file, uid_t owner, gid_t group, int flag)
+ {
++  int result;
++
++#ifdef __NR_fchownat
++# ifndef __ASSUME_ATFCTS
++  if (__have_atfcts >= 0)
++# endif
++    {
++      result = INLINE_SYSCALL (fchownat, 5, fd, file, owner, group, flag);
++# ifndef __ASSUME_ATFCTS
++      if (result == -1 && errno == ENOSYS)
++	__have_atfcts = -1;
++      else
++# endif
++	return result;
++    }
++#endif
++
++#ifndef __ASSUME_ATFCTS
+   if (flag & ~AT_SYMLINK_NOFOLLOW)
+     {
+       __set_errno (EINVAL);
+@@ -79,16 +97,15 @@ fchownat (int fd, const char *file, uid_
+       file = buf;
+     }
+ 
+-  int result;
+   INTERNAL_SYSCALL_DECL (err);
+ 
+-#if __ASSUME_32BITUIDS > 0
++# if __ASSUME_32BITUIDS > 0
+   result = INTERNAL_SYSCALL (chown32, err, 3, CHECK_STRING (file), owner,
+ 			     group);
+-#else
++# else
+   static int __libc_old_chown;
+ 
+-# ifdef __NR_chown32
++#  ifdef __NR_chown32
+   if (__libc_missing_32bit_uids <= 0)
+     {
+       if (flag & AT_SYMLINK_NOFOLLOW)
+@@ -105,7 +122,7 @@ fchownat (int fd, const char *file, uid_
+ 
+       __libc_missing_32bit_uids = 1;
+     }
+-# endif /* __NR_chown32 */
++#  endif /* __NR_chown32 */
+   if (((owner + 1) > (uid_t) ((__kernel_uid_t) -1U))
+       || ((group + 1) > (gid_t) ((__kernel_gid_t) -1U)))
+     {
+@@ -128,7 +145,7 @@ fchownat (int fd, const char *file, uid_
+ 
+   result = INTERNAL_SYSCALL (lchown, err, 3, CHECK_STRING (file), owner,
+ 			     group);
+-#endif
++# endif
+ 
+   if (__builtin_expect (INTERNAL_SYSCALL_ERROR_P (result, err), 0))
+     {
+@@ -138,4 +155,5 @@ fchownat (int fd, const char *file, uid_
+     }
+ 
+   return result;
++#endif
+ }
+--- libc/sysdeps/unix/sysv/linux/powerpc/fchownat.c.jj	2005-11-11 20:43:35.000000000 +0100
++++ libc/sysdeps/unix/sysv/linux/powerpc/fchownat.c	2006-08-08 11:14:52.000000000 +0200
+@@ -37,6 +37,24 @@
+ int
+ fchownat (int fd, const char *file, uid_t owner, gid_t group, int flag)
+ {
++  int result;
++
++#ifdef __NR_fchownat
++# ifndef __ASSUME_ATFCTS
++  if (__have_atfcts >= 0)
++# endif
++    {
++      result = INLINE_SYSCALL (fchownat, 5, fd, file, owner, group, flag);
++# ifndef __ASSUME_ATFCTS
++      if (result == -1 && errno == ENOSYS)
++	__have_atfcts = -1;
++      else
++# endif
++	return result;
++    }
++#endif
++
++#ifndef __ASSUME_ATFCTS
+   if (flag & ~AT_SYMLINK_NOFOLLOW)
+     {
+       __set_errno (EINVAL);
+@@ -63,15 +81,14 @@ fchownat (int fd, const char *file, uid_
+       file = buf;
+     }
+ 
+-  int result;
+   INTERNAL_SYSCALL_DECL (err);
+ 
+-#if __ASSUME_LCHOWN_SYSCALL
++# if __ASSUME_LCHOWN_SYSCALL
+   if (flag & AT_SYMLINK_NOFOLLOW)
+     result = INTERNAL_SYSCALL (lchown, err, 3, file, owner, group);
+   else
+     result = INTERNAL_SYSCALL (chown, err, 3, file, owner, group);
+-#else
++# else
+   char link[PATH_MAX + 2];
+   char path[2 * PATH_MAX + 4];
+   int loopct;
+@@ -89,7 +106,7 @@ fchownat (int fd, const char *file, uid_
+       goto out;
+     }
+ 
+-# ifdef __NR_lchown
++#  ifdef __NR_lchown
+   if (flag & AT_SYMLINK_NOFOLLOW)
+     {
+       result = INTERNAL_SYSCALL (lchown, err, 3, __ptrvalue (file), owner,
+@@ -110,25 +127,25 @@ fchownat (int fd, const char *file, uid_
+ 	}
+       libc_old_chown = -1;
+     }
+-# else
++#  else
+   if (flag & AT_SYMLINK_NOFOLLOW)
+     {
+       result = INTERNAL_SYSCALL (chown, err, 3, __ptrvalue (file), owner,
+ 				 group);
+       goto out;
+     }
+-# endif
++#  endif
+ 
+   result = __readlink (file, link, PATH_MAX + 1);
+   if (result == -1)
+     {
+-# ifdef __NR_lchown
++#  ifdef __NR_lchown
+       result = INTERNAL_SYSCALL (lchown, err, 3, __ptrvalue (file), owner,
+ 				 group);
+-# else
++#  else
+       result = INTERNAL_SYSCALL (chown, err, 3, __ptrvalue (file), owner,
+ 				 group);
+-# endif
++#  endif
+       goto out;
+     }
+ 
+@@ -178,11 +195,11 @@ fchownat (int fd, const char *file, uid_
+ 
+       if (result == -1)
+ 	{
+-# ifdef __NR_lchown
++#  ifdef __NR_lchown
+ 	  result = INTERNAL_SYSCALL (lchown, err, 3, path, owner, group);
+-# else
++#  else
+ 	  result = INTERNAL_SYSCALL (chown, err, 3, path, owner, group);
+-# endif
++#  endif
+ 	  goto out;
+ 	}
+     }
+@@ -190,16 +207,17 @@ fchownat (int fd, const char *file, uid_
+   return -1;
+ 
+  out:
+-#endif
++# endif
+ 
+   if (__builtin_expect (INTERNAL_SYSCALL_ERROR_P (result, err), 0))
+     {
+-#if !__ASSUME_LCHOWN_SYSCALL
++# if !__ASSUME_LCHOWN_SYSCALL
+     fail:
+-#endif
++# endif
+       __atfct_seterrno (INTERNAL_SYSCALL_ERRNO (result, err), fd, buf);
+       result = -1;
+     }
+ 
+   return result;
++#endif
+ }
+--- libc/sysdeps/unix/sysv/linux/sh/fchownat.c.jj	2006-03-05 14:32:42.000000000 +0100
++++ libc/sysdeps/unix/sysv/linux/sh/fchownat.c	2006-08-08 11:19:28.000000000 +0200
+@@ -40,6 +40,24 @@ extern int __libc_missing_32bit_uids;
+ int
+ fchownat (int fd, const char *file, uid_t owner, gid_t group, int flag)
+ {
++  int result;
++
++#ifdef __NR_fchownat
++# ifndef __ASSUME_ATFCTS
++  if (__have_atfcts >= 0)
++# endif
++    {
++      result = INLINE_SYSCALL (fchownat, 5, fd, file, owner, group, flag);
++# ifndef __ASSUME_ATFCTS
++      if (result == -1 && errno == ENOSYS)
++	__have_atfcts = -1;
++      else
++# endif
++	return result;
++    }
++#endif
++
++#ifndef __ASSUME_ATFCTS
+   if (flag & ~AT_SYMLINK_NOFOLLOW)
+     {
+       __set_errno (EINVAL);
+@@ -66,18 +84,17 @@ fchownat (int fd, const char *file, uid_
+       file = buf;
+     }
+ 
+-  int result;
+   INTERNAL_SYSCALL_DECL (err);
+ 
+-#if __ASSUME_32BITUIDS > 0
++# if __ASSUME_32BITUIDS > 0
+   if (flag & AT_SYMLINK_NOFOLLOW)
+     result = INTERNAL_SYSCALL (lchown32, err, 3, CHECK_STRING (file), owner,
+ 			       group);
+   else
+     result = INTERNAL_SYSCALL (chown32, err, 3, CHECK_STRING (file), owner,
+ 			       group);
+-#else
+-# ifdef __NR_chown32
++# else
++#  ifdef __NR_chown32
+   if (__libc_missing_32bit_uids <= 0)
+     {
+       if (flag & AT_SYMLINK_NOFOLLOW)
+@@ -94,7 +111,7 @@ fchownat (int fd, const char *file, uid_
+ 
+       __libc_missing_32bit_uids = 1;
+     }
+-# endif /* __NR_chown32 */
++#  endif /* __NR_chown32 */
+ 
+   if (((owner + 1) > (gid_t) ((__kernel_uid_t) -1U))
+       || ((group + 1) > (gid_t) ((__kernel_gid_t) -1U)))
+@@ -109,7 +126,7 @@ fchownat (int fd, const char *file, uid_
+   else
+     result = INTERNAL_SYSCALL (chown, err, 3, CHECK_STRING (file), owner,
+ 			       group);
+-#endif
++# endif
+ 
+   if (__builtin_expect (INTERNAL_SYSCALL_ERROR_P (result, err), 0))
+     {
+@@ -119,4 +136,5 @@ fchownat (int fd, const char *file, uid_
+     }
+ 
+   return result;
++#endif
+ }
+--- libc/sysdeps/unix/sysv/linux/i386/fchownat.c.jj	2006-02-27 18:31:00.000000000 +0100
++++ libc/sysdeps/unix/sysv/linux/i386/fchownat.c	2006-08-08 11:20:49.000000000 +0200
+@@ -61,6 +61,24 @@ extern int __libc_missing_32bit_uids;
+ int
+ fchownat (int fd, const char *file, uid_t owner, gid_t group, int flag)
+ {
++  int result;
++
++#ifdef __NR_fchownat
++# ifndef __ASSUME_ATFCTS
++  if (__have_atfcts >= 0)
++# endif
++    {
++      result = INLINE_SYSCALL (fchownat, 5, fd, file, owner, group, flag);
++# ifndef __ASSUME_ATFCTS
++      if (result == -1 && errno == ENOSYS)
++	__have_atfcts = -1;
++      else
++# endif
++	return result;
++    }
++#endif
++
++#ifndef __ASSUME_ATFCTS
+   if (flag & ~AT_SYMLINK_NOFOLLOW)
+     {
+       __set_errno (EINVAL);
+@@ -87,14 +105,13 @@ fchownat (int fd, const char *file, uid_
+       file = buf;
+     }
+ 
+-  int result;
+   INTERNAL_SYSCALL_DECL (err);
+ 
+-#if defined __NR_lchown || __ASSUME_LCHOWN_SYSCALL > 0
+-# if __ASSUME_LCHOWN_SYSCALL == 0
++# if defined __NR_lchown || __ASSUME_LCHOWN_SYSCALL > 0
++#  if __ASSUME_LCHOWN_SYSCALL == 0
+   static int __libc_old_chown;
+ 
+-#  ifdef __NR_chown32
++#   ifdef __NR_chown32
+   if (__libc_missing_32bit_uids <= 0)
+     {
+       if (flag & AT_SYMLINK_NOFOLLOW)
+@@ -111,7 +128,7 @@ fchownat (int fd, const char *file, uid_
+ 
+       __libc_missing_32bit_uids = 1;
+     }
+-#  endif /* __NR_chown32 */
++#   endif /* __NR_chown32 */
+ 
+   if (((owner + 1) > (uid_t) ((__kernel_uid_t) -1U))
+       || ((group + 1) > (gid_t) ((__kernel_gid_t) -1U)))
+@@ -135,13 +152,13 @@ fchownat (int fd, const char *file, uid_
+ 
+   result = INTERNAL_SYSCALL (lchown, err, 3, CHECK_STRING (file), owner,
+ 			     group);
+-# elif __ASSUME_32BITUIDS
++#  elif __ASSUME_32BITUIDS
+   /* This implies __ASSUME_LCHOWN_SYSCALL.  */
+   result = INTERNAL_SYSCALL (chown32, err, 3, CHECK_STRING (file), owner,
+ 			     group);
+-# else
++#  else
+   /* !__ASSUME_32BITUIDS && ASSUME_LCHOWN_SYSCALL  */
+-#  ifdef __NR_chown32
++#   ifdef __NR_chown32
+   if (__libc_missing_32bit_uids <= 0)
+     {
+       result = INTERNAL_SYSCALL (chown32, err, 3, CHECK_STRING (file), owner,
+@@ -153,7 +170,7 @@ fchownat (int fd, const char *file, uid_
+ 
+       __libc_missing_32bit_uids = 1;
+     }
+-#  endif /* __NR_chown32 */
++#   endif /* __NR_chown32 */
+   if (((owner + 1) > (uid_t) ((__kernel_uid_t) -1U))
+       || ((group + 1) > (gid_t) ((__kernel_gid_t) -1U)))
+     {
+@@ -162,10 +179,10 @@ fchownat (int fd, const char *file, uid_
+     }
+ 
+   result = INTERNAL_SYSCALL (chown, err, 3, CHECK_STRING (file), owner, group);
+-# endif
+-#else
++#  endif
++# else
+   result = INTERNAL_SYSCALL (chown, err, 3, CHECK_STRING (file), owner, group);
+-#endif
++# endif
+ 
+   if (__builtin_expect (INTERNAL_SYSCALL_ERROR_P (result, err), 0))
+     goto fail;
+@@ -175,4 +192,5 @@ fchownat (int fd, const char *file, uid_
+  fail:
+   __atfct_seterrno (INTERNAL_SYSCALL_ERRNO (result, err), fd, buf);
+   return -1;
++#endif
+ }
+
+	Jakub
+

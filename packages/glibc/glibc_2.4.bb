@@ -3,15 +3,19 @@ HOMEPAGE = "http://www.gnu.org/software/libc/libc.html"
 LICENSE = "LGPL"
 SECTION = "libs"
 PRIORITY = "required"
-DEFAULT_PREFERENCE = "-1"
-PR = "r5"
+PR = "r10"
+
+# the -isystem in bitbake.conf screws up glibc do_stage
+BUILD_CPPFLAGS = "-I${STAGING_DIR}/${BUILD_SYS}/include"
+TARGET_CPPFLAGS = "-I${STAGING_DIR}/${TARGET_SYS}/include"
+
 
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/glibc-2.4"
 
 GLIBC_ADDONS ?= "ports,nptl,libidn"
 GLIBC_EXTRA_OECONF ?= ""
 
-GLIBC_BROKEN_LOCALES = "sid_ET tr_TR mn_MN"
+GLIBC_BROKEN_LOCALES = "sid_ET tr_TR mn_MN gez_ET gez_ER bn_BD te_IN"
 
 #
 # For now, we will skip building of a gcc package if it is a uclibc one
@@ -53,12 +57,21 @@ SRC_URI = "ftp://ftp.gnu.org/pub/gnu/glibc/glibc-2.4.tar.bz2 \
            file://nptl-crosscompile.patch;patch=1 \
 	   file://glibc-2.4-compile.patch;patch=1 \
 	   file://fixup-aeabi-syscalls.patch;patch=1 \
+	   file://zecke-sane-readelf.patch;patch=1 \
 	   file://generic-bits_select.h \
 	   file://generic-bits_types.h \
 	   file://generic-bits_typesizes.h \
 	   file://generic-bits_time.h \
            file://etc/ld.so.conf \
            file://generate-supported.mk"
+
+# Build fails on x86 without additional patches, but these break arm
+SRC_URI_append_x86 = " file://openat-bugzilla-fix-1220.patch;patch=1 \
+           file://fix-fchownat-20060808.patch;patch=1"
+
+# Build fails on sh3 and sh4 without additional patches
+SRC_URI_append_sh3 = " file://no-z-defs.patch;patch=1"
+SRC_URI_append_sh4 = " file://no-z-defs.patch;patch=1"
 
 S = "${WORKDIR}/glibc-2.4"
 B = "${WORKDIR}/build-${TARGET_SYS}"
@@ -109,17 +122,10 @@ do_munge() {
 	rm -f ${S}/ports/sysdeps/unix/sysv/linux/arm/bits/fenv.h
 	# Obsoleted by sysdeps/gnu/bits/utmp.h
 	rm -f ${S}/ports/sysdeps/unix/sysv/linux/arm/bits/utmp.h
-
-	# http://www.handhelds.org/hypermail/oe/51/5135.html
-	# Some files were moved around between directories on
-	# 2005-12-21, which means that any attempt to check out
-	# from CVS using a datestamp older than that will be doomed.
-	#
-	# This is a workaround for that problem.
-	rm -rf ${S}/bits
 }
 
 addtask munge before do_patch after do_unpack
+
 
 do_configure () {
 # override this function to avoid the autoconf/automake/aclocal/autoheader
