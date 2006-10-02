@@ -128,7 +128,7 @@ do_stage_prepend() {
                	 		${PSTAGE_INSTALL_CMD} ${STAGING_BASEDIR} ${spawn}          
 				# clean up .la files to avoid having references to the builddirs in the binaries
 				for lafile in ${STAGING_LIBDIR}/*.la ; do \
-					sed -i s:installed=yes:installed=no:g ${lafile}
+					sed -i s:installed=yes:installed=no:g ${lafile} || true
 				done
 			else
 				oenote "${spawn} not found, probably empty package"
