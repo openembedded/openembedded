@@ -180,6 +180,7 @@ task-base-pcmcia-rdepends = "\
     ${@base_contains("DISTRO_FEATURES", "wifi", "orinoco-conf", "",d)}"
 
 task-base-pcmcia-rrecommends = "\
+    kernel-module-pcmcia \
     kernel-module-airo-cs \
     kernel-module-pcnet-cs \
     kernel-module-serial-cs \
@@ -218,6 +219,7 @@ task-base-irda-rrecommends = "\
     ${@base_contains("COMBINED_FEATURES", "usbhost", "kernel-module-ir-usb", "",d)} "
 
 task-base-usbgadget-rrecommends = "\
+    kernel-module-pxa27x_udc \
     kernel-module-gadgetfs \
     kernel-module-g-file-storage \
     kernel-module-g-serial \
