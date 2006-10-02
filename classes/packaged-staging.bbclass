@@ -6,15 +6,10 @@
 # INHERIT += "packaged-staging"
 #
 
-
 # BUGS:
 # * does not distinguish between -native, -cross and other packages
-# * is oblivious to CROSSDIR  
-# * breaks when a recipe needs stuff from STAGING_DIR to be present during do_stage, broken behaviour IMO
-# * same goes for CROSS_DIR
 
 # TODO:
-# * also make packages for CROSSDIR
 # * also build a feed for native and cross packages 
 # * make package detection a bit smarter (search for compatible archs)
 # * make do_clean clean staging as well
