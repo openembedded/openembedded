@@ -88,40 +88,40 @@ do_clean_append() {
 
 do_stage_prepend() {
 
-stage-manager -p ${STAGING_DIR} -c ${DEPLOY_DIR_PSTAGE}/staging-stamp-cache -u
+	stage-manager -p ${STAGING_DIR} -c ${DEPLOY_DIR_PSTAGE}/staging-stamp-cache -u
 
-stage-manager -p ${CROSS_DIR} -c ${DEPLOY_DIR_PSTAGE}/cross-stamp-cache -u
+	stage-manager -p ${CROSS_DIR} -c ${DEPLOY_DIR_PSTAGE}/cross-stamp-cache -u
 
-if [ ! -e ${STAGING_BASEDIR} ]; then
-	mkdir -p ${STAGING_BASEDIR}
-fi
+	if [ ! -e ${STAGING_BASEDIR} ]; then
+		mkdir -p ${STAGING_BASEDIR}
+	fi
 
-if [ ! -e ${DEPLOY_DIR_PSTAGE} ]; then
-	mkdir -p ${DEPLOY_DIR_PSTAGE}
-fi
+	if [ ! -e ${DEPLOY_DIR_PSTAGE} ]; then
+		mkdir -p ${DEPLOY_DIR_PSTAGE}
+	fi
 
-if [ -e ${STAGING_BASEDIR}/usr ]; then
-        oenote "${STAGING_BASEDIR}/usr already present, leaving it alone"
-else
-	oenote "${STAGING_BASEDIR}/usr not present, symlinking it"
-	ln -s ${STAGING_BASEDIR}/ ${STAGING_BASEDIR}/usr
-fi
+	if [ -e ${STAGING_BASEDIR}/usr ]; then
+	        oenote "${STAGING_BASEDIR}/usr already present, leaving it alone"
+	else
+		oenote "${STAGING_BASEDIR}/usr not present, symlinking it"
+		ln -s ${STAGING_BASEDIR}/ ${STAGING_BASEDIR}/usr
+	fi
 
-#assemble appropriate ipkg.conf
-if [ -e ${DEPLOY_DIR_PSTAGE}/ipkg.conf ]; then
-        rm ${DEPLOY_DIR_PSTAGE}/ipkg.conf
-fi
+	#assemble appropriate ipkg.conf
+	if [ -e ${DEPLOY_DIR_PSTAGE}/ipkg.conf ]; then
+	        rm ${DEPLOY_DIR_PSTAGE}/ipkg.conf
+	fi
 
-ipkgarchs="${BUILD_ARCH} all any noarch ${TARGET_ARCH} ${IPKG_ARCHS} ${IPKG_EXTRA_ARCHS} ${MACHINE}"
-    priority=1
-    for arch in $ipkgarchs; do
-      echo "arch $arch $priority" >> ${DEPLOY_DIR_PSTAGE}/ipkg.conf
-      priority=$(expr $priority + 5)
-    done
-echo "src oe file:${DEPLOY_DIR_IPK}" >> ${DEPLOY_DIR_PSTAGE}/ipkg.conf 
-export OLD_PWD=`pwd`
-cd ${DEPLOY_DIR_IPK} && rm *${BUILD_ARCH}.ipk -f ; ipkg-make-index -p Packages . ; cd ${OLD_PWD}
-${PSTAGE_UPDATE_CMD} ${STAGING_BASEDIR}
+	ipkgarchs="${BUILD_ARCH} all any noarch ${TARGET_ARCH} ${IPKG_ARCHS} ${IPKG_EXTRA_ARCHS} ${MACHINE}"
+	priority=1
+	for arch in $ipkgarchs; do
+		echo "arch $arch $priority" >> ${DEPLOY_DIR_PSTAGE}/ipkg.conf
+		priority=$(expr $priority + 5)
+	done
+	echo "src oe file:${DEPLOY_DIR_IPK}" >> ${DEPLOY_DIR_PSTAGE}/ipkg.conf 
+	export OLD_PWD=`pwd`
+	cd ${DEPLOY_DIR_IPK} && rm *${BUILD_ARCH}.ipk -f ; ipkg-make-index -p Packages . ; cd ${OLD_PWD}
+	${PSTAGE_UPDATE_CMD} ${STAGING_BASEDIR}
 
 	#check for generated packages
 	if [ -e ${SPAWNFILE} ]; then
@@ -167,8 +167,6 @@ do_stage_append() {
 	# list the packages currently installed in staging
 	${PSTAGE_LIST_CMD} ${STAGING_BASEDIR} | awk '{print $1}' > ${DEPLOY_DIR_PSTAGE}/installed-staging_list         
 	${PSTAGE_LIST_CMD} ${CROSS_DIR} | awk '{print $1}' > ${DEPLOY_DIR_PSTAGE}/installed-cross_list
-
-if [ ${PN} != "glibc-intermediate" ] ; then
 
 	set +e
 	rm -rf ${PSTAGE_TMPDIR_STAGE}
