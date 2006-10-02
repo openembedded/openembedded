@@ -16,8 +16,8 @@
 
 # Summary:
 # This class will have two modes of operation:
-# LEETVARNAME1: repopulated staging from scratch for each packages
-# LEETVARNAME2: append each package to staging (current behaviour)
+# PSTAGE_MODE = 'repopulate': repopulated staging from scratch for each packages
+# PSTAGE_MODE = 'append': append each package to staging (current behaviour)
 
 DEPLOY_DIR_PSTAGE 	= "${DEPLOY_DIR}/pstage" 
 
