@@ -1,0 +1,9 @@
+diff -ur scsi-idle-2.4.23/Makefile scsi-idle-2.4.23~patched/Makefile
+--- scsi-idle-2.4.23/Makefile	2004-01-31 11:34:30.000000000 +0100
++++ scsi-idle-2.4.23~patched/Makefile	2005-08-29 19:21:29.116560624 +0200
+@@ -1,4 +1,4 @@
+-KSRC ?= /usr/src/linux
++KSRC ?= ${QPEDIR}
+ CFLAGS=-Wall -O2 -fomit-frame-pointer -pipe -s -include $(KSRC)/include/scsi/scsi_ioctl.h -include $(KSRC)/include/linux/major.h
+ 
+ TARGETS = scsi-start scsi-stop scsi-idle
