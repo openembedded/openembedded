@@ -22,7 +22,7 @@
 # Summary:
 # This class will have two modes of operation:
 # LEETVARNAME1: repopulated staging from scratch for each packages
-# LEETVARNAME2: append each package to staging
+# LEETVARNAME2: append each package to staging (current behaviour)
 
 DEPLOY_DIR_PSTAGE 	= "${DEPLOY_DIR}/pstage" 
 
@@ -123,8 +123,6 @@ export OLD_PWD=`pwd`
 cd ${DEPLOY_DIR_IPK} && rm *${BUILD_ARCH}.ipk -f ; ipkg-make-index -p Packages . ; cd ${OLD_PWD}
 ${PSTAGE_UPDATE_CMD} ${STAGING_BASEDIR}
 
-#blacklist packages poking in staging *and* cross
-if [ ${PN} != "linux-libc-headers" ] ; then
 	#check for generated packages
 	if [ -e ${SPAWNFILE} ]; then
         	oenote "List of spawned packages found: ${P}.spawn"
@@ -143,10 +141,6 @@ if [ ${PN} != "linux-libc-headers" ] ; then
 	else
 		oenote "Spawn file not found!"
 	fi
-fi #if ${PN}
-
-
-if [ ${PN} != "glibc-intermediate" ] ; then
 
         if [ -e ${DEPLOY_DIR_PSTAGE}/${PCROSS_PKGNAME} ]; then
                 oenote "Cross stuff already packaged, using that instead"
@@ -164,18 +158,15 @@ if [ ${PN} != "glibc-intermediate" ] ; then
 	mkdir -p ${STAGING_LIBDIR}
 	mkdir -p ${STAGING_INCDIR}
 	mkdir -p ${STAGING_DATADIR}/aclocal
-else	
-	oenote "Glibc-intermediate detected!"
-fi #if !glibc intermediate
 }
 
 do_stage_append() {
 
-mkdir -p ${DEPLOY_DIR_PSTAGE}
+	mkdir -p ${DEPLOY_DIR_PSTAGE}
 
-# list the packages currently installed in staging
-${PSTAGE_LIST_CMD} ${STAGING_BASEDIR} | awk '{print $1}' > ${DEPLOY_DIR_PSTAGE}/installed-staging_list         
-${PSTAGE_LIST_CMD} ${CROSS_DIR} | awk '{print $1}' > ${DEPLOY_DIR_PSTAGE}/installed-cross_list
+	# list the packages currently installed in staging
+	${PSTAGE_LIST_CMD} ${STAGING_BASEDIR} | awk '{print $1}' > ${DEPLOY_DIR_PSTAGE}/installed-staging_list         
+	${PSTAGE_LIST_CMD} ${CROSS_DIR} | awk '{print $1}' > ${DEPLOY_DIR_PSTAGE}/installed-cross_list
 
 if [ ${PN} != "glibc-intermediate" ] ; then
 
@@ -230,9 +221,5 @@ if [ ${PN} != "glibc-intermediate" ] ; then
 
 		${PSTAGE_INSTALL_CMD} ${CROSS_DIR} ${DEPLOY_DIR_PSTAGE}/${PCROSS_PKGNAME}
 	fi
-
-else
-	oenote "Glibc-intermediate detected (again)"
-fi #if !glibc-intermediate
 }
 
