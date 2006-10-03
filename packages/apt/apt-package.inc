@@ -36,7 +36,7 @@ apt-utils-manpages="doc/apt-extracttemplates.1 \
 def get_files_apt_doc(d, bb, manpages):
 	import re
 	manpages = re.sub(r'\bdoc/(\S+)/(\S+)\.\1\.(.)\b', r'${mandir}/\1/man\3/\2.\3', manpages)
-	manpages = re.sub(r'\bdoc/(\S+)\.(.)\b', r'${mandir}/man\3/\1.\3', manpages)
+	manpages = re.sub(r'\bdoc/(\S+)\.(.)\b', r'${mandir}/man\2/\1.\2', manpages)
 	return manpages
 
 def get_commands_apt_doc(d, bb, manpages):
@@ -65,6 +65,7 @@ FILES_${PN}-utils-doc = "${@get_files_apt_doc(d, bb, bb.data.getVar('apt-utils-m
 FILES_${PN}-dev = "${libdir}/libapt*.so"
 
 do_install () {
+	set -x
 	${@get_commands_apt_doc(d, bb, bb.data.getVar('apt-manpages', d, 1))}
 	${@get_commands_apt_doc(d, bb, bb.data.getVar('apt-utils-manpages', d, 1))}
 	install -d ${D}${bindir}
@@ -76,10 +77,11 @@ do_install () {
 	install -m 0755 bin/apt-sortpkgs ${D}${bindir}/
 	install -m 0755 bin/apt-extracttemplates ${D}${bindir}/
 
-	oe_libinstall -so -C bin libapt-pkg--6 ${D}${libdir}/
-	ln -sf libapt-pkg--6.so ${D}${libdir}/libapt-pkg.so
-	oe_libinstall -so -C bin libapt-inst--6 ${D}${libdir}/
-	ln -sf libapt-inst--6.so ${D}${libdir}/libapt-inst.so
+	eval `cat environment.mak | grep ^GLIBC_VER | sed -e's, = ,=,'`
+	oe_libinstall -so -C bin libapt-pkg$GLIBC_VER-6 ${D}${libdir}/
+	ln -sf libapt-pkg$GLIBC_VER-6.so ${D}${libdir}/libapt-pkg.so
+	oe_libinstall -so -C bin libapt-inst$GLIBC_VER-6 ${D}${libdir}/
+	ln -sf libapt-inst$GLIBC_VER-6.so ${D}${libdir}/libapt-inst.so
 
 	install -d ${D}${libdir}/apt/methods
 	install -m 0755 bin/methods/* ${D}${libdir}/apt/methods/
