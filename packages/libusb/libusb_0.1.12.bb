@@ -3,9 +3,10 @@ access to USB devices."
 HOMEPAGE = "http://libusb.sf.net"
 SECTION = "libs"
 LICENSE = "LGPL"
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/libusb/libusb-${PV}.tar.gz"
+
 S = "${WORKDIR}/libusb-${PV}"
 
 inherit autotools pkgconfig
@@ -28,3 +29,6 @@ do_stage() {
         done
 }
 
+PACKAGES =+ "libusbpp"
+
+FILES_libusbpp = "${libdir}/libusbpp*.so.*"
