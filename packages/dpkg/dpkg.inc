@@ -2,9 +2,33 @@ DESCRIPTION = "Package maintenance system for Debian."
 LICENSE = "GPL"
 SECTION = "base"
 DEPENDS = "ncurses zlib"
+DEPENDS_${PN} += "update-alternatives"
+
 MAINTAINER = "Chris Larson <kergoth@handhelds.org>"
 
 SRC_URI = "${DEBIAN_MIRROR}/main/d/dpkg/dpkg_${PV}.tar.gz"
 S = "${WORKDIR}/dpkg-${PV}"
 
 PARALLEL_MAKE = ""
+
+inherit autotools gettext
+
+DPKG_INIT_POSITION = "98"
+DPKG_INIT_POSITION_slugos = "41"
+
+pkg_postinst_dpkg () {
+#!/bin/sh
+if [ "x$D" != "x" ]; then
+	install -d ${IMAGE_ROOTFS}/${sysconfdir}/rcS.d
+	# this happens at S98 where our good 'ole packages script used to run
+	echo -e "#!/bin/sh
+	dpkg --configure -a
+" > ${IMAGE_ROOTFS}/${sysconfdir}/rcS.d/S${DPKG_INIT_POSITION}configure
+	chmod 0755 ${IMAGE_ROOTFS}/${sysconfdir}/rcS.d/S${DPKG_INIT_POSITION}configure
+fi
+}
+
+do_configure () {
+    echo >> m4/compiler.m4
+    autotools_do_configure
+}
