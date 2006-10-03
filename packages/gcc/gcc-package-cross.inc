@@ -6,7 +6,7 @@ HAS_GFORTRAN ?= "no"
 OLD_INHIBIT_PACKAGE_STRIP := "${INHIBIT_PACKAGE_STRIP}"
 INHIBIT_PACKAGE_STRIP = "1"
 
-PACKAGES = "libgcc libstdc++ libg2c libg2c-dev libgfortran libgfortran-dev"
+PACKAGES = "libgcc libgcc-dev libstdc++ libg2c libg2c-dev libgfortran libgfortran-dev"
 PACKAGES_DYNAMIC = "libgcc* libstdc* libg2c* libgfortran*"
 
 PACKAGE_ARCH_libg2c = "${TARGET_ARCH}"
@@ -26,7 +26,9 @@ FILES_libgfortran-dev = "${target_libdir}/libgfortran.a \
 			 ${target_libdir}/libgfortranbegin.a"
 
 PACKAGE_ARCH_libgcc = "${TARGET_ARCH}"
+PACKAGE_ARCH_libgcc-dev = "${TARGET_ARCH}"
 FILES_libgcc = "${target_base_libdir}/libgcc_s.so.1"
+FILES_libgcc-dev = "${target_base_libdir}/libgcc_s.so"
 
 PACKAGE_ARCH_libstdc++ = "${TARGET_ARCH}"
 PACKAGE_ARCH_libstdc++-dev = "${TARGET_ARCH}"
@@ -53,9 +55,9 @@ do_install () {
 		# Already in the right location
 		:
 	elif [ -f ${D}${prefix}/lib/libgcc_s.so.? ]; then
-		mv -f ${D}${prefix}/lib/libgcc_s.so.* ${D}${target_base_libdir}
+		mv -f ${D}${prefix}/lib/libgcc_s.so* ${D}${target_base_libdir}
 	else
-		mv -f ${D}${prefix}/*/lib/libgcc_s.so.* ${D}${target_base_libdir}
+		mv -f ${D}${prefix}/*/lib/libgcc_s.so* ${D}${target_base_libdir}
 	fi
 
 	# Move libstdc++ and libg2c into libdir (resetting our prefix to /usr
