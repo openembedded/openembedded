@@ -1,6 +1,6 @@
 DESCRIPTION = "Merge machine and distro options to create a basic machine task/package"
 MAINTAINER = "Richard Purdie <richard@openedhand.com>"
-PR = "r5"
+PR = "r6"
 
 PACKAGES = "task-base \
             task-base-minimal \
@@ -74,6 +74,7 @@ RDEPENDS_task-base = "\
     ${@base_contains("COMBINED_FEATURES", "ext2", "${task-base-ext2-rdepends}", "",d)} \
     ${@base_contains("COMBINED_FEATURES", "irda", "${task-base-irda-rdepends}", "",d)} \
     ${@base_contains("COMBINED_FEATURES", "pcmcia", "${task-base-pcmcia-rdepends}", "",d)} \
+    ${@base_contains("COMBINED_FEATURES", "usbhost", "${task-base-usbhost-rdepends}", "",d)} \
     ${@base_contains("DISTRO_FEATURES", "nfs", "${task-distro-nfs-rdepends}", "",d)} \
     ${@base_contains("DISTRO_FEATURES", "ipsec", "${task-distro-ipsec-rdepends}", "",d)} \
     ${@base_contains("DISTRO_FEATURES", "ppp", "${task-distro-ppp-rdepends}", "",d)} \
@@ -224,6 +225,9 @@ task-base-usbgadget-rrecommends = "\
     kernel-module-g-file-storage \
     kernel-module-g-serial \
     kernel-module-g-ether"
+
+task-base-usbhost-rdepends = "\
+    usbutils "
 
 task-base-usbhost-rrecommends = "\
     kernel-module-ohci-hcd \
