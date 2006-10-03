@@ -17,7 +17,12 @@ cpan_do_configure () {
 }
 
 cpan_do_compile () {
-        oe_runmake PASTHRU_INC="${CFLAGS}" CCFLAGS="${CFLAGS}"
+	# You must use gcc to link on sh
+	OPTIONS=""
+	if test ${TARGET_ARCH} = "sh3" -o ${TARGET_ARCH} = "sh4"; then
+		OPTIONS="LD=${TARGET_ARCH}-${TARGET_OS}-gcc"
+	fi
+        oe_runmake PASTHRU_INC="${CFLAGS}" CCFLAGS="${CFLAGS}" $OPTIONS
 }
 
 cpan_do_install () {
