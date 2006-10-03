@@ -22,7 +22,7 @@ SRC_URI_append_sh3 += "file://makefile-usegcc-to-link.patch;patch=1"
 
 PARALLEL_MAKE = ""
 
-PR = "r19"
+PR = "r20"
 
 do_configure() {
 	ln -sf ${HOSTPERL} ${STAGING_BINDIR}/hostperl
@@ -83,6 +83,10 @@ require perl-rdepends_${PV}.inc
 
 # To create/update the perl-rdepends_${PV}.inc use this piece of ugly script (modified for your arch/paths etc):
 # daka@DaKa2:/home/slug/slugos/tmp/work/perl-5.8.7-r14/install$ egrep -r "use|require" * | grep ";$" | egrep ".pm:use |.pm:require " | grep -v v5.6.0 | grep -v 5.00 | grep -v \$module | sed -e "s, \+, ,g" | cut -f1,2 -d" " | sed -e "s,;, ,g" | sed -e "s,(), ,g" | sed -e "s,::,-,g" | sort | uniq | tr [:upper:] [:lower:] | sed -e "s,/[^ ]\+ , += \"perl-module-,g" | sed -e "s, \?$, \",g" | sed -e "s,_,-,g" | sed -e "s,^,RDEPENDS_,g" | sed -e "s,armeb-linux,\$\{TARGET_ARCH\}-\$\{TARGET_OS\},g" | egrep -v "perl-module-5|perl-module-tk|perl-module-mac-internetconfig|perl-module-ndbm-file|perl-module-html-treebuilder|perl-module-lwp-simple|perl-module-vms-filespec|perl-module-fcgi|perl-module-vms-stdio|perl-module-mac-buildtools" > /home/slug/openembedded/packages/perl/perl-rdepends_5.8.7.inc
+
+# Some additional dependencies that the above doesn't manage to figure out
+DEPENDS_perl-module-math-bigint += "perl-module-math-bigint-calc "
+DEPENDS_perl-module-math-bigint-calc += "perl-module-integer "
 
 # Some packages changed names in 5.8.7-r14, RPROVIDE them
 RPROVIDES_perl-module-b-asmdata = "perl-module-${TARGET_SYS}-b-asmdata"
