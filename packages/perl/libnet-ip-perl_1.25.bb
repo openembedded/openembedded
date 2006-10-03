@@ -3,8 +3,8 @@ SECTION = "libs"
 MAINTAINER = "Jamie Lenehan <lenehan@twibble.org>"
 LICENSE = "Artistic|GPL"
 DEPENDS += "libio-zlib-perl-native"
-RDEPENDS += "libio-zlib-perl"
-PR = "r1"
+RDEPENDS += "libio-zlib-perl perl-module-math-bigint"
+PR = "r2"
 
 SRC_URI = "http://search.cpan.org/CPAN/authors/id/M/MA/MANU/Net-IP-1.25.tar.gz"
 
