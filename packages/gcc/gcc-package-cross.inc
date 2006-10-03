@@ -62,12 +62,12 @@ do_install () {
 
 	# Move libstdc++ and libg2c into libdir (resetting our prefix to /usr
 	mkdir -p ${D}${target_libdir}
-	mv -f ${D}${prefix}/*/lib/libstdc++.so.* ${D}${target_libdir}
+	mv -f ${D}${prefix}/*/lib/libstdc++.so* ${D}${target_libdir}
 	if [ "${HAS_G2C}" = "yes" ]; then
-	  mv -f ${D}${prefix}/*/lib/libg2c.so.* ${D}${target_libdir}
+	  mv -f ${D}${prefix}/*/lib/libg2c.so* ${D}${target_libdir}
 	fi
 	if [ "${HAS_GFORTRAN}" = "yes" ]; then
-	  mv -f ${D}${prefix}/*/lib/libgfortran*.so.* ${D}${target_libdir}
+	  mv -f ${D}${prefix}/*/lib/libgfortran*.so* ${D}${target_libdir}
 	fi
 
        # Manually run the target stripper since we won't get it run by
