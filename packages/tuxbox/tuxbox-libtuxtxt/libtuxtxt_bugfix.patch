@@ -1,0 +1,15 @@
+diff -Naur libs/libtuxtxt/tuxtxt_common.h libs_patched/libtuxtxt/tuxtxt_common.h
+--- libs_org/libtuxtxt/tuxtxt_common.h	2005-09-11 15:34:56.000000000 +0200
++++ libs/libtuxtxt/tuxtxt_common.h	2006-10-04 11:41:01.000000000 +0200
+@@ -888,6 +888,11 @@
+ 								p->subpage = d2 >> 2;
+ 								if ((p->page & 0xff) == 0xff)
+ 									p->page = 0;
++								else if (p->page > 0x899)
++								{
++									printf("[TuxTxt] page > 0x899 ... ignore!!!!!!\n");
++									continue;
++								}
+ 								else if (tuxtxt_cache.astCachetable[p->page][0])	/* link valid && linked page cached */
+ 								{
+ 									tstPageinfo *pageinfo_link = &(tuxtxt_cache.astCachetable[p->page][0]->pageinfo);

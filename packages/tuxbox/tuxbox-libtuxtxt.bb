@@ -4,12 +4,15 @@ MAINTAINER = "Felix Domke <tmbinc@elitdvb.net>"
 SRC_URI = "cvs://anoncvs@cvs.tuxbox.org/cvs/tuxbox;module=apps/tuxbox/libs;method=ext \
            file://acinclude.m4"
 
+SRC_URI_append_dm7025 = " file://libtuxtxt_bugfix.patch;patch=1"
+
 SRCDATE_dm600pvr = "20060301"
 SRCDATE_dm7025 = "20050912"
 SRCDATE_dm7020 = "20060301"
 
 PN = "libtuxtxt"
-PR = "r0"
+PR = "r1"
+
 PV = "0.0+cvs${SRCDATE}"
 S = "${WORKDIR}/libs"
 EXTRA_OECONF = "--with-target=native"
