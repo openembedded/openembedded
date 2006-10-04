@@ -1,0 +1,13 @@
+DESCRIPTION = "Params::Util - Simple, compact and correct param-checking functions"
+SECTION = "libs"
+MAINTAINER = "Jamie Lenehan <lenehan@twibble.org>"
+LICENSE = "Artistic|GPL"
+RDEPENDS += "perl-module-exporter perl-module-overload \
+             perl-module-scalar-util perl-module-strict perl-module-vars"
+PR = "r0"
+
+SRC_URI = "http://search.cpan.org/CPAN/authors/id/A/AD/ADAMK/Params-Util-${PV}.tar.gz"
+
+S = "${WORKDIR}/Params-Util-${PV}"
+
+inherit cpan
