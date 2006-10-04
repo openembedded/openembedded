@@ -6,7 +6,7 @@ DEPENDS += "gmp-native"
 RDEPENDS += "gmp"
 PR = "r0"
 
-SRC_URI = "http://search.cpan.org/CPAN/authors/id/T/TE/TELS/math/Math-BigInt-GMP-1.18.tar.gz"
+SRC_URI = "http://search.cpan.org/CPAN/authors/id/T/TE/TELS/math/Math-BigInt-GMP-${PV}.tar.gz"
 
 S = "${WORKDIR}/Math-BigInt-GMP-${PV}"
 

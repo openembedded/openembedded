@@ -6,7 +6,7 @@ DEPENDS += "libio-zlib-perl-native"
 RDEPENDS += "libio-zlib-perl perl-module-math-bigint"
 PR = "r2"
 
-SRC_URI = "http://search.cpan.org/CPAN/authors/id/M/MA/MANU/Net-IP-1.25.tar.gz"
+SRC_URI = "http://search.cpan.org/CPAN/authors/id/M/MA/MANU/Net-IP-${PV}.tar.gz"
 
 S = "${WORKDIR}/Net-IP-${PV}"
 

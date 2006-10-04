@@ -5,7 +5,7 @@ LICENSE = "Artistic|GPL"
 DEPENDS = "virtual/libintl"
 PR = "r2"
 
-SRC_URI = "http://search.cpan.org/CPAN/authors/id/P/PV/PVANDRY/gettext-1.05.tar.gz"
+SRC_URI = "http://search.cpan.org/CPAN/authors/id/P/PV/PVANDRY/gettext-${PV}.tar.gz"
 
 S = "${WORKDIR}/gettext-${PV}"
 

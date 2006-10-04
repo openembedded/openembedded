@@ -6,7 +6,7 @@ DEPENDS = "libcompress-zlib-perl-native"
 RDEPENDS += "libcompress-zlib-perl"
 PR = "r1"
 
-SRC_URI = "http://search.cpan.org/CPAN/authors/id/T/TO/TOMHUGHES/IO-Zlib-1.04.tar.gz"
+SRC_URI = "http://search.cpan.org/CPAN/authors/id/T/TO/TOMHUGHES/IO-Zlib-${PV}.tar.gz"
 
 S = "${WORKDIR}/IO-Zlib-${PV}"
 
