@@ -1,12 +1,12 @@
 DESCRIPTION = "Task packages for the Angstrom distribution"
-PR = "r21"
+PR = "r22"
 ALLOW_EMPTY = "1"
 
 PACKAGE_ARCH = "${MACHINE_ARCH}"
 
 BOOTMODULES_RRECOMMENDS ?= ""
 DEBUG_APPS ?= ""
-DEBUG_APPS += '${@base_conditional("DISTRO_TYPE", "release", "", "strace gdb procps",d)}'
+DEBUG_APPS += '${@base_conditional("DISTRO_TYPE", "release", "", "tslib-tests tslib-calibrate strace gdb procps",d)}'
 EXTRA_STUFF ?= ""
 PCMCIA_MANAGER ?= "pcmciautils"
 
@@ -20,7 +20,6 @@ RDEPENDS_angstrom-base-depends = "\
     netbase dropbear \
     angstrom-version \
     ipkg ipkg-collateral \
-    tslib-tests tslib-calibrate \
     util-linux-mount util-linux-umount \
     procps \
     ${EXTRA_STUFF} \
