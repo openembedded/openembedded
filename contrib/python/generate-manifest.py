@@ -226,7 +226,7 @@ if __name__ == "__main__":
     m.addPackage( 0, "python-html", "Python HTML Processing", "python-core",
     "formatter.* htmlentitydefs.* htmllib.* markupbase.* sgmllib.* " )
 
-    m.addPackage( 0, "python-gdbm", "Python GNU Database Support", "python-core, libgdbm3",
+    m.addPackage( 0, "python-gdbm", "Python GNU Database Support", "python-core",
     "lib-dynload/gdbm.so" )
 
     m.addPackage( 0, "python-image", "Python Graphical Image Handling", "python-core",
@@ -281,7 +281,7 @@ if __name__ == "__main__":
     m.addPackage( 0, "python-re", "Python Regular Expression APIs", "python-core",
     "re.* sre.* sre_compile.* sre_constants* sre_parse.*" ) # _sre is builtin
 
-    m.addPackage( 0, "python-readline", "Python Readline Support", "python-core, libreadline4",
+    m.addPackage( 0, "python-readline", "Python Readline Support", "python-core",
     "lib-dynload/readline.so rlcompleter.*" )
 
     m.addPackage( 0, "python-resource", "Python Resource Control Interface", "python-core",
