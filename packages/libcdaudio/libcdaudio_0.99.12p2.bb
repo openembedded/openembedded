@@ -4,8 +4,10 @@
 
 HOMEPAGE = "http://libcdaudio.sourceforge.net/"
 DESCRIPTION = "Portable library for controlling audio CDs"
+SECTION = "libs"
 MAINTAINER = "Raymond Danks <info-linux@geode.amd.com>"
 LICENSE = "GPL"
+PR = "r1"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/${PN}/${PN}-${PV}.tar.gz"
 
