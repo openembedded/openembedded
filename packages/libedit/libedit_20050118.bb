@@ -1,8 +1,10 @@
 DESCRIPTION = "BSD replacement for libreadline"
 HOMEPAGE = "http://cvsweb.netbsd.org/bsdweb.cgi/src/lib/libedit/"
+SECTION = "libs"
 MAINTAINER = "Bruno Randolf <bruno.randolf@4g-systems.biz>"
 LICENSE="BSD"
 DEPENDS = "ncurses"
+PR = "r1"
 
 SRC_URI = "ftp://ftp.linux.ee/pub/gentoo/distfiles/distfiles/libedit-${PV}.tar.bz2 \
 	file://20031222-debian-to-gentoo.patch;patch=1;pnum=1 \

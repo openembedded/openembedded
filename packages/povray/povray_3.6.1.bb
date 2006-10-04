@@ -1,5 +1,6 @@
 DESCRIPTION = "The Persistence of Vision Raytracer is a high-quality, totally free tool for creating stunning three-dimensional graphics. "
 HOMEPAGE = "http://www.povray.org"
+SECTION = "console/graphics"
 #Make this a weak assigment to allow branding of the povray binary 
 MAINTAINER ?= "Koen Kooi <koen@openembedded.org>"
 LICENSE = "povray"
@@ -7,7 +8,7 @@ LICENSE = "povray"
 DEPENDS = "virtual/libx11 libz jpeg libpng tiff"
 RDEPENDS = ""
 
-PR = "r0" 
+PR = "r1"
 
 #We apply a patch that subverts the checks for jpeg, zlib, png and tiff because we know OE has the required versions, but it is still a hack.
 SRC_URI = "http://www.povray.org/redirect/www.povray.org/ftp/pub/povray/Official/Unix/${P}.tar.bz2 \
