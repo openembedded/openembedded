@@ -237,7 +237,7 @@ python package_do_split_gconvs () {
 
 	def output_locale_binary(name, locale, encoding):
 		target_arch = bb.data.getVar("TARGET_ARCH", d, 1)
-		qemu = "qemu-%s" % target_arch
+		qemu = "qemu-%s -r 2.6.16" % target_arch
 		pkgname = 'locale-base-' + legitimize_package_name(name)
 		m = re.match("(.*)\.(.*)", name)
 		if m:

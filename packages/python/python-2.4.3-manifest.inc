@@ -124,7 +124,7 @@ FILES_python-tkinter="${libdir}/python2.4/lib-dynload/_tkinter.so ${libdir}/pyth
 
 DESCRIPTION_python-gdbm="Python GNU Database Support"
 PR_python-gdbm="ml0"
-RDEPENDS_python-gdbm="python-core libgdbm3"
+RDEPENDS_python-gdbm="python-core"
 FILES_python-gdbm="${libdir}/python2.4/lib-dynload/gdbm.so "
 
 DESCRIPTION_python-fcntl="Python's fcntl Interface"
@@ -164,7 +164,7 @@ FILES_python-html="${libdir}/python2.4/formatter.* ${libdir}/python2.4/htmlentit
 
 DESCRIPTION_python-readline="Python Readline Support"
 PR_python-readline="ml0"
-RDEPENDS_python-readline="python-core libreadline4"
+RDEPENDS_python-readline="python-core"
 FILES_python-readline="${libdir}/python2.4/lib-dynload/readline.so ${libdir}/python2.4/rlcompleter.* "
 
 DESCRIPTION_python-subprocess="Python Subprocess Support"
