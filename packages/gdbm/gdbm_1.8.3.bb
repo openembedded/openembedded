@@ -6,8 +6,6 @@ LICENSE = "GPL"
 
 PR = "r2"
 
-PACKAGES_DYNAMIC = "libgdbm*"
-
 SRC_URI = "${GNU_MIRROR}/gdbm/gdbm-${PV}.tar.gz \
 	   file://makefile.patch;patch=1 \
            file://libtool-mode.patch;patch=1"
