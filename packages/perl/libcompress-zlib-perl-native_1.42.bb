@@ -2,6 +2,4 @@ SECTION = "libs"
 
 inherit native
 
-EXTRA_CPANFLAGS += " EXPATINCPATH='${STAGING_INCDIR}' EXPATLIBPATH='${STAGING_LIBDIR}'"
-
-require libcompress-zlib-perl_${PV}.bb
+require ${@bb.data.getVar('P', d , 1).replace('-native-', '_')}.bb

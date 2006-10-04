@@ -1,5 +1,5 @@
 SECTION = "libs"
 
-include libintl-perl_1.11.bb
-
 inherit native
+
+require ${@bb.data.getVar('P', d , 1).replace('-native-', '_')}.bb
