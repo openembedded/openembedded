@@ -80,6 +80,8 @@ do_install () {
 	mv ${D}${base_sbindir}/pivot_root ${D}${base_sbindir}/pivot_root.${PN}
 	mv ${D}${base_sbindir}/shutdown ${D}${base_sbindir}/shutdown.${PN}
 	mv ${D}${base_sbindir}/sln ${D}${base_sbindir}/sln.${PN}
+	mv ${D}${base_sbindir}/mkfs.minix ${D}${base_sbindir}/mkfs.minix.${PN}
+	mv ${D}${base_sbindir}/fsck.minix ${D}${base_sbindir}/fsck.minix.${PN}
 	mv ${D}${bindir}/hexdump ${D}${bindir}/hexdump.${PN}
 	mv ${D}${bindir}/last ${D}${bindir}/last.${PN}
 	mv ${D}${bindir}/logger ${D}${bindir}/logger.${PN}
@@ -107,6 +109,8 @@ pkg_postinst_${PN} () {
 	update-alternatives --install ${base_sbindir}/mkswap mkswap mkswap.${PN} 100
 	update-alternatives --install ${base_sbindir}/pivot_root pivot_root pivot_root.${PN} 100
 	update-alternatives --install ${base_sbindir}/sln sln sln.${PN} 100
+	update-alternatives --install ${base_sbindir}/mkfs.minix mkfs.minix mkfs.minix.${PN} 100
+	update-alternatives --install ${base_sbindir}/fsck.minix fsck.minix fsck.minix.${PN} 100
 	update-alternatives --install ${bindir}/hexdump hexdump hexdump.${PN} 100
 	update-alternatives --install ${bindir}/last last last.${PN} 100
 	update-alternatives --install ${bindir}/logger logger logger.${PN} 100
@@ -133,6 +137,8 @@ pkg_prerm_${PN} () {
 	update-alternatives --remove reboot reboot.${PN}
 	update-alternatives --remove shutdown shutdown.${PN}
 	update-alternatives --remove sln sln.${PN}
+	update-alternatives --remove mkfs.minix mkfs.minix.${PN}
+	update-alternatives --remove fsck.minix fsck.minix.${PN}
 	update-alternatives --remove hexdump hexdump.${PN}
 	update-alternatives --remove last last.${PN}
 	update-alternatives --remove logger logger.${PN}
