@@ -10,7 +10,7 @@ HOMEPAGE = "http://www.busybox.net"
 LICENSE = "GPL"
 SECTION = "base"
 PRIORITY = "required"
-PR = "r1.3"
+PR = "r1.4"
 
 SRC_URI = "http://www.busybox.net/downloads/busybox-${PV}.tar.gz \
 	   file://dhcp-hostname.patch;patch=1 \
@@ -28,6 +28,7 @@ SRC_URI = "http://www.busybox.net/downloads/busybox-${PV}.tar.gz \
 	   file://mount.busybox \
 	   file://umount.busybox \
 	   file://hdparm_M.patch;patch=1 \
+	   file://nptl_task.patch;patch=1 \
 	   file://keymap_endianess.patch;patch=1"
 
 export EXTRA_CFLAGS = "${CFLAGS}"

@@ -1,40 +1,27 @@
-diff -Naur busybox-1.00/libbb/procps.c busybox-1.00-patched/libbb/procps.c
---- busybox-1.00/libbb/procps.c	2004-08-27 00:18:58.000000000 +0200
-+++ busybox-1.00-patched/libbb/procps.c	2005-02-05 20:19:11.000000000 +0100
-@@ -22,7 +22,7 @@
- #endif
- 	)
+diff -Naur busybox-1.2.1/libbb/procps.c busybox_patched/libbb/procps.c
+--- busybox-1.2.1/libbb/procps.c	2006-07-01 00:42:08.000000000 +0200
++++ busybox_patched/libbb/procps.c	2006-10-02 13:15:49.000000000 +0200
+@@ -37,7 +37,7 @@
+ 
+ procps_status_t * procps_scan(int save_user_arg0)
  {
 -	static DIR *dir;
 +	static DIR *dir, *taskdir;
  	struct dirent *entry;
  	static procps_status_t ret_status;
  	char *name;
-@@ -32,6 +32,7 @@
- 	FILE *fp;
+@@ -47,12 +47,113 @@
+ 	char buf[PROCPS_BUFSIZE];
  	procps_status_t curstatus;
  	int pid;
 +	static int parentpid;
  	long tasknice;
  	struct stat sb;
  
-@@ -40,111 +41,150 @@
- 		if(!dir)
- 			bb_error_msg_and_die("Can't open /proc");
+ 	if (!dir) {
+ 		dir = bb_xopendir("/proc");
  	}
--	for(;;) {
--		if((entry = readdir(dir)) == NULL) {
--			closedir(dir);
--			dir = 0;
--			return 0;
--		}
--		name = entry->d_name;
--		if (!(*name >= '0' && *name <= '9'))
--			continue;
- 
--		memset(&curstatus, 0, sizeof(procps_status_t));
--		pid = atoi(name);
--		curstatus.pid = pid;
++
 +	if (taskdir) {
 +		for(;;) {
 +			if((entry = readdir(taskdir)) == NULL) {
@@ -45,56 +32,20 @@ diff -Naur busybox-1.00/libbb/procps.c busybox-1.00-patched/libbb/procps.c
 +			name = entry->d_name;
 +			if (!(*name >= '0' && *name <= '9'))
 +				continue;
- 
--		sprintf(status, "/proc/%d", pid);
--		if(stat(status, &sb))
--			continue;
--		my_getpwuid(curstatus.user, sb.st_uid, sizeof(curstatus.user));
++
 +			memset(&curstatus, 0, sizeof(procps_status_t));
 +			pid = atoi(name);
 +			curstatus.pid = pid;
- 
--		sprintf(status, "/proc/%d/stat", pid);
--		if((fp = fopen(status, "r")) == NULL)
--			continue;
--#ifdef CONFIG_SELINUX
--		if(use_selinux)
--		{
--			if(fstat_secure(fileno(fp), &sb, sid))
-+			sprintf(status, "/proc/%d/task/%d", parentpid, pid);
-+			if(stat(status, &sb))
- 				continue;
--		}
--		else
-+			my_getpwuid(curstatus.user, sb.st_uid, sizeof(curstatus.user));
 +
-+			sprintf(status, "/proc/%d/task/%d/stat", parentpid, pid);
-+			if((fp = fopen(status, "r")) == NULL)
++			status_tail = status + sprintf(status, "/proc/%d/task/%d", parentpid, pid);
++			if(stat(status, &sb))
 +				continue;
-+#ifdef CONFIG_SELINUX
-+			if(use_selinux)
-+			{
-+				if(fstat_secure(fileno(fp), &sb, sid))
-+					continue;
-+			}
-+			else
- #endif
--		name = fgets(buf, sizeof(buf), fp);
--		fclose(fp);
--		if(name == NULL)
--			continue;
--		name = strrchr(buf, ')'); /* split into "PID (cmd" and "<rest>" */
--		if(name == 0 || name[1] != ' ')
--			continue;
--		*name = 0;
--		sscanf(buf, "%*s (%15c", curstatus.short_cmd);
--		n = sscanf(name+2,
--		"%c %d "
--		"%*s %*s %*s %*s "     /* pgrp, session, tty, tpgid */
--		"%*s %*s %*s %*s %*s " /* flags, min_flt, cmin_flt, maj_flt, cmaj_flt */
-+			name = fgets(buf, sizeof(buf), fp);
-+			fclose(fp);
-+			if(name == NULL)
++			bb_getpwuid(curstatus.user, sb.st_uid, sizeof(curstatus.user));
++
++			/* see proc(5) for some details on this */
++			strcpy(status_tail, "/stat");
++			n = read_to_buf(status, buf);
++			if(n < 0)
 +				continue;
 +			name = strrchr(buf, ')'); /* split into "PID (cmd" and "<rest>" */
 +			if(name == 0 || name[1] != ' ')
@@ -105,55 +56,29 @@ diff -Naur busybox-1.00/libbb/procps.c busybox-1.00-patched/libbb/procps.c
 +			"%c %d "
 +			"%*s %*s %*s %*s "     /* pgrp, session, tty, tpgid */
 +			"%*s %*s %*s %*s %*s " /* flags, min_flt, cmin_flt, maj_flt, cmaj_flt */
- #ifdef FEATURE_CPU_USAGE_PERCENTAGE
--		"%lu %lu "
-+			"%lu %lu "
- #else
--		"%*s %*s "
-+			"%*s %*s "
- #endif
--		"%*s %*s %*s "         /* cutime, cstime, priority */
--		"%ld "
--		"%*s %*s %*s "         /* timeout, it_real_value, start_time */
--		"%*s "                 /* vsize */
--		"%ld",
--		curstatus.state, &curstatus.ppid,
++#ifdef CONFIG_FEATURE_TOP_CPU_USAGE_PERCENTAGE
++			"%lu %lu "             /* utime, stime */
++#else
++			"%*s %*s "             /* utime, stime */
++#endif
 +			"%*s %*s %*s "         /* cutime, cstime, priority */
-+			"%ld "
++			"%ld "                 /* nice */
 +			"%*s %*s %*s "         /* timeout, it_real_value, start_time */
 +			"%*s "                 /* vsize */
-+			"%ld",
++			"%ld",                 /* rss */
 +			curstatus.state, &curstatus.ppid,
- #ifdef FEATURE_CPU_USAGE_PERCENTAGE
--		&curstatus.utime, &curstatus.stime,
++#ifdef CONFIG_FEATURE_TOP_CPU_USAGE_PERCENTAGE
 +			&curstatus.utime, &curstatus.stime,
- #endif
--		&tasknice,
--		&curstatus.rss);
++#endif
 +			&tasknice,
 +			&curstatus.rss);
-+			if ( pid != parentpid )
-+				curstatus.ppid = parentpid;
- #ifdef FEATURE_CPU_USAGE_PERCENTAGE
--		if(n != 6)
++#ifdef CONFIG_FEATURE_TOP_CPU_USAGE_PERCENTAGE
 +			if(n != 6)
- #else
--		if(n != 4)
++#else
 +			if(n != 4)
- #endif
--			continue;
++#endif
 +				continue;
- 
--		if (curstatus.rss == 0 && curstatus.state[0] != 'Z')
--			curstatus.state[1] = 'W';
--		else
--			curstatus.state[1] = ' ';
--		if (tasknice < 0)
--			curstatus.state[2] = '<';
--		else if (tasknice > 0)
--			curstatus.state[2] = 'N';
--		else
--			curstatus.state[2] = ' ';
++
 +			if (curstatus.rss == 0 && curstatus.state[0] != 'Z')
 +				curstatus.state[1] = 'W';
 +			else
@@ -164,33 +89,17 @@ diff -Naur busybox-1.00/libbb/procps.c busybox-1.00-patched/libbb/procps.c
 +				curstatus.state[2] = 'N';
 +			else
 +				curstatus.state[2] = ' ';
- 
- #ifdef PAGE_SHIFT
--		curstatus.rss <<= (PAGE_SHIFT - 10);     /* 2**10 = 1kb */
++
++#ifdef PAGE_SHIFT
 +			curstatus.rss <<= (PAGE_SHIFT - 10);     /* 2**10 = 1kb */
- #else
--		curstatus.rss *= (getpagesize() >> 10);     /* 2**10 = 1kb */
++#else
 +			curstatus.rss *= (getpagesize() >> 10);     /* 2**10 = 1kb */
- #endif
- 
--		if(save_user_arg0) {
--			sprintf(status, "/proc/%d/cmdline", pid);
--			if((fp = fopen(status, "r")) == NULL)
--				continue;
--			if((n=fread(buf, 1, sizeof(buf)-1, fp)) > 0) {
--				if(buf[n-1]=='\n')
--					buf[--n] = 0;
--				name = buf;
--				while(n) {
--					if(((unsigned char)*name) < ' ')
--						*name = ' ';
--					name++;
--					n--;
++#endif
++
 +			if(save_user_arg0) {
-+				sprintf(status, "/proc/%d/task/%d/cmdline", parentpid, pid);
-+				if((fp = fopen(status, "r")) == NULL)
-+					continue;
-+				if((n=fread(buf, 1, sizeof(buf)-1, fp)) > 0) {
++				strcpy(status_tail, "/cmdline");
++				n = read_to_buf(status, buf);
++				if(n > 0) {
 +					if(buf[n-1]=='\n')
 +						buf[--n] = 0;
 +					name = buf;
@@ -204,51 +113,102 @@ diff -Naur busybox-1.00/libbb/procps.c busybox-1.00-patched/libbb/procps.c
 +					if(buf[0])
 +						curstatus.cmd = strdup(buf);
 +					/* if NULL it work true also */
- 				}
--				*name = 0;
--				if(buf[0])
--					curstatus.cmd = strdup(buf);
--				/* if NULL it work true also */
-+				fclose(fp);
- 			}
--			fclose(fp);
++				}
++				else
++					continue;
++			}
 +			return memcpy(&ret_status, &curstatus, sizeof(procps_status_t));
 +		}
 +	}
 +
-+	for(;;) {
-+		if((entry = readdir(dir)) == NULL) {
-+			closedir(dir);
-+			dir = 0;
-+			return 0;
-+		}
-+		name = entry->d_name;
-+		if (!(*name >= '0' && *name <= '9'))
-+			continue;
-+
-+		memset(&curstatus, 0, sizeof(procps_status_t));
-+		pid = atoi(name);
-+		curstatus.pid = pid;
-+
-+		sprintf(status, "/proc/%d", pid);
-+		if(stat(status, &sb))
-+			continue;
-+		my_getpwuid(curstatus.user, sb.st_uid, sizeof(curstatus.user));
-+
+ 	for(;;) {
+ 		if((entry = readdir(dir)) == NULL) {
+ 			closedir(dir);
+@@ -72,79 +173,14 @@
+ 			continue;
+ 		bb_getpwuid(curstatus.user, sb.st_uid, sizeof(curstatus.user));
+ 
+-		/* see proc(5) for some details on this */
+-		strcpy(status_tail, "/stat");
+-		n = read_to_buf(status, buf);
+-		if(n < 0)
+-			continue;
+-		name = strrchr(buf, ')'); /* split into "PID (cmd" and "<rest>" */
+-		if(name == 0 || name[1] != ' ')
+-			continue;
+-		*name = 0;
+-		sscanf(buf, "%*s (%15c", curstatus.short_cmd);
+-		n = sscanf(name+2,
+-		"%c %d "
+-		"%*s %*s %*s %*s "     /* pgrp, session, tty, tpgid */
+-		"%*s %*s %*s %*s %*s " /* flags, min_flt, cmin_flt, maj_flt, cmaj_flt */
+-#ifdef CONFIG_FEATURE_TOP_CPU_USAGE_PERCENTAGE
+-		"%lu %lu "             /* utime, stime */
+-#else
+-		"%*s %*s "             /* utime, stime */
+-#endif
+-		"%*s %*s %*s "         /* cutime, cstime, priority */
+-		"%ld "                 /* nice */
+-		"%*s %*s %*s "         /* timeout, it_real_value, start_time */
+-		"%*s "                 /* vsize */
+-		"%ld",                 /* rss */
+-		curstatus.state, &curstatus.ppid,
+-#ifdef CONFIG_FEATURE_TOP_CPU_USAGE_PERCENTAGE
+-		&curstatus.utime, &curstatus.stime,
+-#endif
+-		&tasknice,
+-		&curstatus.rss);
+-#ifdef CONFIG_FEATURE_TOP_CPU_USAGE_PERCENTAGE
+-		if(n != 6)
+-#else
+-		if(n != 4)
+-#endif
+-			continue;
+-
+-		if (curstatus.rss == 0 && curstatus.state[0] != 'Z')
+-			curstatus.state[1] = 'W';
+-		else
+-			curstatus.state[1] = ' ';
+-		if (tasknice < 0)
+-			curstatus.state[2] = '<';
+-		else if (tasknice > 0)
+-			curstatus.state[2] = 'N';
+-		else
+-			curstatus.state[2] = ' ';
+-
+-#ifdef PAGE_SHIFT
+-		curstatus.rss <<= (PAGE_SHIFT - 10);     /* 2**10 = 1kb */
+-#else
+-		curstatus.rss *= (getpagesize() >> 10);     /* 2**10 = 1kb */
+-#endif
+-
+-		if(save_user_arg0) {
+-			strcpy(status_tail, "/cmdline");
+-			n = read_to_buf(status, buf);
+-			if(n > 0) {
+-				if(buf[n-1]=='\n')
+-					buf[--n] = 0;
+-				name = buf;
+-				while(n) {
+-					if(((unsigned char)*name) < ' ')
+-						*name = ' ';
+-					name++;
+-					n--;
+-				}
+-				*name = 0;
+-				if(buf[0])
+-					curstatus.cmd = strdup(buf);
+-				/* if NULL it work true also */
+-			}
 +		if (!taskdir) {
-+			sprintf(status, "/proc/%d/task", pid);
-+			taskdir = opendir(status);
++			strcpy(status_tail, "/task");
++			taskdir = bb_xopendir(status);
 +			if(!taskdir)
 +					// ignore processes without taskdir
 +				continue;
 +			parentpid = pid;
-+			return procps_scan(save_user_arg0
-+#ifdef CONFIG_SELINUX
-+						,use_selinux, sid
-+#endif
-+				);
++			return procps_scan(save_user_arg0);
  		}
 -		return memcpy(&ret_status, &curstatus, sizeof(procps_status_t));
  	}
  }
- 
