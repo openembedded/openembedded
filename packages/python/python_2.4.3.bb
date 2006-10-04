@@ -8,9 +8,6 @@ DEPENDS = "python-native readline zlib gdbm openssl tcl tk"
 DEPENDS_sharprom = "python-native readline zlib gdbm openssl"
 PR = "ml5"
 
-#hack!!
-PACKAGES_DYNAMIC = "python-*"
-
 PYTHON_MAJMIN = "2.4"
 
 SRC_URI = "http://www.python.org/ftp/python/${PV}/Python-${PV}.tar.bz2 \
