@@ -16,7 +16,7 @@ RDEPENDS_${PN} = "${PN}-data"
 RDEPENDS_${PN}-daemon = "${PN}-data"
 RRECOMMENDS_${PN} = "${PN}-freshclam"
 RRECOMMENDS_${PN}-daemon = "${PN}-freshclam"
-PR = "r4"
+PR = "r5"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/clamav/clamav-${PV}.tar.gz \
           file://cross-compile-fix.patch;patch=1 \
