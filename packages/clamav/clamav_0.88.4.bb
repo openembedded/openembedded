@@ -16,7 +16,7 @@ RDEPENDS_${PN} = "${PN}-data"
 RDEPENDS_${PN}-daemon = "${PN}-data"
 RRECOMMENDS_${PN} = "${PN}-freshclam"
 RRECOMMENDS_${PN}-daemon = "${PN}-freshclam"
-PR = "r3"
+PR = "r4"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/clamav/clamav-${PV}.tar.gz \
           file://cross-compile-fix.patch;patch=1 \
@@ -91,20 +91,23 @@ FILES_${PN}-dev += "${bindir}/clamav-config"
 # Add clamav's user and groups
 pkg_postinst_${PN}-freshclam () {
         grep -q clamav: /etc/group || addgroup clamav
-        grep -q clamav: /etc/passwd || adduser --disabled-password --home=/var/lib/clamav/ \
-                                               --ingroup clamav -g "ClamAV" clamav
+        grep -q clamav: /etc/passwd || \
+            adduser --disabled-password --home=/var/lib/clamav/ --system \
+                    --ingroup clamav --no-create-home -g "ClamAV" clamav
         /etc/init.d/populate-volatile.sh
 }
 pkg_postinst_${PN}-daemon () {
         grep -q clamav: /etc/group || addgroup clamav
-        grep -q clamav: /etc/passwd || adduser --disabled-password --home=/var/lib/clamav/ \
-                                               --ingroup clamav -g "ClamAV" clamav
+        grep -q clamav: /etc/passwd || \
+            adduser --disabled-password --home=/var/lib/clamav/ --system \
+                    --ingroup clamav --no-create-home -g "ClamAV" clamav
         /etc/init.d/populate-volatile.sh
 }
 pkg_postinst_${PN}-data () {
         grep -q clamav: /etc/group || addgroup clamav
-        grep -q clamav: /etc/passwd || adduser --disabled-password --home=/var/lib/clamav/ \
-                                               --ingroup clamav --no-create-home -g "ClamAV" clamav
+        grep -q clamav: /etc/passwd || \
+            adduser --disabled-password --home=/var/lib/clamav/ --system \
+                    --ingroup clamav --no-create-home -g "ClamAV" clamav
         /etc/init.d/populate-volatile.sh
 }
 
