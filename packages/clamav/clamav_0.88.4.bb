@@ -16,7 +16,7 @@ RDEPENDS_${PN} = "${PN}-data"
 RDEPENDS_${PN}-daemon = "${PN}-data"
 RRECOMMENDS_${PN} = "${PN}-freshclam"
 RRECOMMENDS_${PN}-daemon = "${PN}-freshclam"
-PR = "r2"
+PR = "r3"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/clamav/clamav-${PV}.tar.gz \
           file://cross-compile-fix.patch;patch=1 \
@@ -25,7 +25,10 @@ SRC_URI = "${SOURCEFORGE_MIRROR}/clamav/clamav-${PV}.tar.gz \
           file://clamav-freshclam.init \
           file://clamav-daemon.default \
           file://clamd.conf \
-          file://freshclam.conf"
+          file://freshclam.conf \
+          file://volatiles.02_clamav-data \
+          file://volatiles.03_clamav-daemon \
+          file://volatiles.03_clamav-freshclam"
 
 inherit autotools update-rc.d binconfig
 
@@ -35,22 +38,36 @@ EXTRA_OECONF = "--disable-clamav \
                 --with-dbdir=${localstatedir}/lib/clamav"
 
 do_install_append() {
-        install -m 0755 -d ${D}${sysconfdir}/default ${D}${sysconfdir}/init.d \
-                           ${D}${docdir}/clamav
+        install -m 0755 -d ${D}${sysconfdir}/default/volatiles \
+                           ${D}${sysconfdir}/init.d ${D}${docdir}/clamav
+
         # Save the installed clamd.conf in the doc dir and then install our new one
         install -m 0755 ${D}${sysconfdir}/clamd.conf ${D}${docdir}/clamav/clamd.conf.example
         install -m 0755 ${WORKDIR}/clamd.conf ${D}${sysconfdir}/clamd.conf
+
         # Save the installed freshclam.conf in the doc dir and then install our new one
         install -m 0755 ${D}${sysconfdir}/freshclam.conf ${D}${docdir}/clamav/freshclam.conf.example
+
         # Install our config files and init scripts
         install -m 0755 ${WORKDIR}/freshclam.conf ${D}${sysconfdir}/freshclam.conf
         install -m 0755 ${WORKDIR}/clamav-daemon.default ${D}${sysconfdir}/default/clamav-daemon
         install -m 0755 ${WORKDIR}/clamav-daemon.init ${D}${sysconfdir}/init.d/clamav-daemon
         install -m 0755 ${WORKDIR}/clamav-freshclam.init ${D}${sysconfdir}/init.d/clamav-freshclam
+
+        # We need some /var directories
+        for i in 02_clamav-data 03_clamav-daemon 03_clamav-freshclam; do
+          install -m 0644 ${WORKDIR}/volatiles.$i ${D}${sysconfdir}/default/volatiles/$i
+        done
+
+        # Move the clamav data to a non-volatile location, we'll symlink back
+        # If freshclam is running it'll break the link to this static data
+        # once it has succesfully downloaded an update
+        install -m 0755 -d ${D}${libdir}
+        mv ${D}${localstatedir}/lib/clamav ${D}${libdir}
 }
 do_stage () {
-	oe_libinstall -a -so libclamav ${STAGING_LIBDIR}
-	install -m 0644 libclamav/clamav.h ${STAGING_INCDIR}
+        oe_libinstall -a -so libclamav ${STAGING_LIBDIR}
+        install -m 0644 libclamav/clamav.h ${STAGING_INCDIR}
 }
 
 PACKAGES += "${PN}-freshclam ${PN}-daemon ${PN}-data ${PN}-lib"
@@ -59,13 +76,16 @@ FILES_${PN} = "${bindir}/clamscan ${bindir}/sigtool ${bindir}/clamdscan"
 FILES_${PN}-lib = "${libdir}/libclamav.so.*"
 FILES_${PN}-freshclam = "${bindir}/freshclam \
                          ${sysconfdir}/freshclam.conf \
-                         ${sysconfdir}/init.d/clamav-freshclam"
+                         ${sysconfdir}/init.d/clamav-freshclam \
+                         ${sysconfdir}/default/volatiles/03_clamav-freshclam"
 FILES_${PN}-daemon = "${sysconfdir}/clamd.conf \
                       ${sbindir}/clamd \
                       ${sysconfdir}/init.d/clamav-daemon \
-                      ${sysconfdir}/default/clamav-daemon"
-FILES_${PN}-data = "${localstatedir}/lib/clamav/main.cvd \
-                    ${localstatedir}/lib/clamav/daily.cvd"
+                      ${sysconfdir}/default/clamav-daemon \
+                      ${sysconfdir}/default/volatiles/03_clamav-daemon"
+FILES_${PN}-data = "${libdir}/clamav/main.cvd \
+                    ${libdir}/clamav/daily.cvd \
+                    ${sysconfdir}/default/volatiles/02_clamav-data"
 FILES_${PN}-dev += "${bindir}/clamav-config"
 
 # Add clamav's user and groups
@@ -73,30 +93,25 @@ pkg_postinst_${PN}-freshclam () {
         grep -q clamav: /etc/group || addgroup clamav
         grep -q clamav: /etc/passwd || adduser --disabled-password --home=/var/lib/clamav/ \
                                                --ingroup clamav -g "ClamAV" clamav
+        /etc/init.d/populate-volatile.sh
 }
 pkg_postinst_${PN}-daemon () {
         grep -q clamav: /etc/group || addgroup clamav
         grep -q clamav: /etc/passwd || adduser --disabled-password --home=/var/lib/clamav/ \
                                                --ingroup clamav -g "ClamAV" clamav
+        /etc/init.d/populate-volatile.sh
 }
 pkg_postinst_${PN}-data () {
         grep -q clamav: /etc/group || addgroup clamav
         grep -q clamav: /etc/passwd || adduser --disabled-password --home=/var/lib/clamav/ \
                                                --ingroup clamav --no-create-home -g "ClamAV" clamav
-        chown clamav:clamav \
-            ${localstatedir}/lib/clamav \
-            ${localstatedir}/lib/clamav/main.cvd \
-            ${localstatedir}/lib/clamav/daily.cvd
+        /etc/init.d/populate-volatile.sh
 }
 
 # Indicate that the default files are configuration files
 CONFFILES_${PN}-daemon = "${sysconfdir}/clamd.conf \
                           ${sysconfdir}/default/clamav-daemon"
 CONFFILES_${PN}-freshclam = "${sysconfdir}/freshclam.conf"
-# Mark the database as conffiles so that newer data file won't replace
-# updates generated by freshclam
-CONFFILES_${PN}-data = "${localstatedir}/lib/clamav/main.cvd \
-                        ${localstatedir}/lib/clamav/daily.cvd"
 
 INITSCRIPT_PACKAGES = "${PN}-daemon ${PN}-freshclam"
 INITSCRIPT_NAME_${PN}-daemon = "clamav-daemon"
