@@ -1,0 +1,21 @@
+The following items needs to be considered when using havp:
+
+1. Madatory locking
+
+   The filesystem on which SCANTEMPFILE lives must have madatory
+   locking enabled (mand option to mount). Note that nfs does not
+   support madatory locking.
+
+2. Scanning directory size
+
+   If you have limited space on the SCANTEMPFILE then you will need
+   to set MAXSCANSIZE.
+
+3. Transparent proxy
+
+   For transparent proxying you need an IP tables rule such as:
+
+     iptables -t nat -A PREROUTING -i eth0 -p tcp -m tcp --dport 80 -j REDIRECT --to-ports 8080
+
+   where eth0 is the incomming port, and 8080 is the port that havp
+   is running on.

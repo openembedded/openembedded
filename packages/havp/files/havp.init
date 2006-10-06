@@ -1,0 +1,33 @@
+#!/bin/sh
+DAEMON=/usr/sbin/havp
+HAVP_CONFIG=/etc/havp/havp.config
+PIDFILE=/var/run/havp/havp.pid
+NAME="havp"
+DESC="HAVP"
+
+test -r /etc/default/havp && . /etc/default/havp
+test -x "$DAEMON" || exit 0
+test ! -r "$HAVP_CONFIG" && exit 0
+        
+case "$1" in
+  start)
+    echo "Starting $DESC: "
+    start-stop-daemon --oknodo -S -x $DAEMON -- -c $HAVP_CONFIG
+    echo "$NAME."
+    ;;
+
+  stop)
+    echo "Stopping $DESC:"
+    start-stop-daemon -K -p $PIDFILE
+    ;;
+
+  restart)
+    $0 stop >/dev/null 2>&1
+    $0 start
+    ;;
+
+  *)
+    echo "Usage: $0 {start|stop|restart}"
+    exit 0
+    ;;
+esac

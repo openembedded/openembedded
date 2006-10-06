@@ -1,0 +1,5 @@
+# <type> <owner> <group> <mode> <path> <linksource>
+d havp havp 0775 /var/log/havp none
+d havp havp 0755 /var/lib/havp none
+d havp havp 0755 /var/run/havp none
+d havp havp 0755 /var/tmp/havp none
