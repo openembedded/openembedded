@@ -20,7 +20,7 @@ PACKAGES = "${PN} fuser fuser-doc \
 FILES_${PN} = ""
 RDEPENDS_${PN} = "fuser killall pstree"
 
-FILES_fuser = "${bindir}/fuser"
+FILES_fuser = "${bindir}/fuser.${PN}"
 FILES_fuser-doc = "${mandir}/man1/fuser*"
 
 FILES_killall = "${bindir}/killall.${PN}"
@@ -31,6 +31,7 @@ FILES_pstree-doc = "${mandir}/man1/pstree*"
 
 do_install_append() {
 	mv ${D}${bindir}/killall ${D}${bindir}/killall.${PN}
+	mv ${D}${bindir}/fuser ${D}${bindir}/fuser.${PN}
 }
 
 pkg_postinst_killall() {
@@ -40,3 +41,12 @@ pkg_postinst_killall() {
 pkg_postrm_killall() {
 	update-alternatives --remove ${bindir}/killall killall.${PN}
 }
+
+pkg_postinst_fuser() {
+	update-alternatives --install ${bindir}/fuser fuser fuser.${PN} 90
+}
+
+pkg_postrm_fuser() {
+        update-alternatives --remove ${bindir}/fuser fuser.${PN}
+}
+
