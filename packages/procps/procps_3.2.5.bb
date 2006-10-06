@@ -7,7 +7,7 @@ SECTION = "base"
 PRIORITY = "optional"
 MAINTAINER = "Inge Arnesen <inge.arnesen@gmail.com>"
 DEPENDS = "ncurses"
-PR = "r4"
+PR = "r5"
 
 SRC_URI = "http://procps.sourceforge.net/procps-${PV}.tar.gz \
            file://install.patch;patch=1 \
@@ -20,7 +20,7 @@ inherit autotools
 FILES = "${bindir}/top.${PN} ${base_bindir}/ps.${PN} ${bindir}/uptime.${PN} ${base_bindir}/kill.${PN} \
 	 ${bindir}/free.${PN} ${bindir}/w ${bindir}/watch ${bindir}/pgrep ${bindir}/pmap ${bindir}/pwdx \
 	 ${bindir}/snice ${bindir}/vmstat ${bindir}/slabtop ${bindir}/pkill ${bindir}/skill ${bindir}/tload \
-	 ${base_sbindir}/sysctl"
+	 ${base_sbindir}/sysctl.${PN}"
 
 EXTRA_OEMAKE = "CFLAGS=-I${STAGING_INCDIR} \
 		CPPFLAGS=-I${STAGING_INCDIR} \
@@ -35,6 +35,7 @@ do_install_append () {
 	mv ${D}${base_bindir}/kill ${D}${base_bindir}/kill.${PN}
 	mv ${D}${base_bindir}/ps ${D}${base_bindir}/ps.${PN}
 	mv ${D}${bindir}/free ${D}${bindir}/free.${PN}
+	mv ${D}${base_sbindir}/sysctl ${D}${base_sbindir}/sysctl.${PN}
 }	
 
 pkg_postinst() {
@@ -43,6 +44,7 @@ pkg_postinst() {
 	update-alternatives --install ${base_bindir}/ps ps ps.${PN} 90
 	update-alternatives --install ${base_bindir}/kill kill kill.${PN} 90
 	update-alternatives --install ${bindir}/free free free.${PN} 90
+	update-alternatives --install ${base_sbindir}/sysctl sysctl sysctl.${PN} 90
 }
 
 pkg_postrm() {
@@ -51,4 +53,5 @@ pkg_postrm() {
 	update-alternatives --remove uptime uptime.${PN}
 	update-alternatives --remove kill kill.${PN}
 	update-alternatives --remove free free.${PN}
+	update-alternatives --remove sysctl sysctl.${PN}
 }
