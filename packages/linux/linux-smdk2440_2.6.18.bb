@@ -7,6 +7,7 @@ GGSRC = "http://www.xora.org.uk/oe/patches/"
 
 SRC_URI = "ftp://ftp.kernel.org/pub/linux/kernel/v2.6/linux-${PV}.tar.bz2 \
            ${GGSRC}smdk2440-cs89x0-r1.patch;patch=1 \
+           ${GGSRC}smdk2440-touchscreen-r1.patch;patch=1 \
            file://defconfig-smdk2440"
 
 S = "${WORKDIR}/linux-${PV}"
