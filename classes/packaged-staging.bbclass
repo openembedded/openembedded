@@ -5,6 +5,8 @@
 #
 # INHERIT += "packaged-staging"
 #
+# You also need ipkg-cl and ipkg-make-index installed on your host
+# put stage-manager and ipkg-build from org.openembedded.packaged-staging/contrib/ in your $PATH
 
 # BUGS:
 # * does not distinguish between -native, -cross and other packages
