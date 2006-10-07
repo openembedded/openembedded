@@ -6,6 +6,7 @@ DISTRO = "angstrom"
 DISTRO_NAME = "Angstrom"
 
 TARGET_VENDOR = "-angstrom"
+MACHINE_TASK_PROVIDER = "task-base"
 
 # Can be "glibc" and "uclibc"
 ANGSTROM_MODE ?= "glibc"
