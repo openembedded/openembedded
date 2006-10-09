@@ -67,7 +67,7 @@ python do_lint() {
 	# Test for valid MAINTAINER
 	#
 	s = testVar("MAINTAINER")
-	if s=="OpenEmbedded Team <oe@handhelds.org>":
+	if s=="OpenEmbedded Team <openembedded-devel@openembedded.org>":
 		bb.error("explicit MAINTAINER is missing, using default")
 	elif s and s.find("@") == -1:
 		bb.error("You forgot to put an e-mail address into MAINTAINER")
