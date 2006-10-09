@@ -66,5 +66,4 @@ ldconfig
 
 echo 90 > /proc/progress
 
-ipkg-cl configure
 echo 94 > /proc/progress

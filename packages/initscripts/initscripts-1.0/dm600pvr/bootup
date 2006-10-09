@@ -15,11 +15,11 @@ modprobe head
 modprobe dreambox_keyboard
 [ -e /etc/dropbear/dropbear_rsa_host_key ] && /usr/bin/showiframe /boot/bootlogo.mvi || /usr/bin/showiframe /boot/bootlogo_wait.mvi
 hostname -F /etc/hostname
-#/usr/bin/wdog /usr/bin/dccamd -
+/usr/bin/wdog /usr/bin/dccamd -
 ifup -a
 mount -at nfs,smbfs,cpfs 2>/dev/null
 [ -e "/etc/sysctl.conf" ] && /sbin/sysctl -p "/etc/sysctl.conf"
 ldconfig
-ipkg-cl configure
 ln -s demux0 /dev/dvb/card0/demux1
-ln -s dvr2 /dev/dvb/card0/dvr1
+ln -s dvr0 /dev/dvb/card0/dvr1
+ln -s fb/0 /dev/fb0
