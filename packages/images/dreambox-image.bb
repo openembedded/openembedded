@@ -3,7 +3,7 @@ export IMAGE_BASENAME = "dreambox-image"
 OPENDREAMBOX_COMMON = "base-files busybox \
 	ipkg initscripts-opendreambox sysvinit netbase dropbear \
 	base-passwd ncurses joe mc vsftpd timezones-alternative \
-	netkit-base fakelocale dreambox-bootlogo  \
+	netkit-base fakelocale less dreambox-bootlogo  \
 	dreambox-dccamd dreambox-keymaps tuxbox-image-info dvbsnoop \
 	dreambox-compat tuxbox-common mrouted smartmontools hddtemp"
 
