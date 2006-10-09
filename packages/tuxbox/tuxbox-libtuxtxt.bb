@@ -6,9 +6,9 @@ SRC_URI = "cvs://anoncvs@cvs.tuxbox.org/cvs/tuxbox;module=apps/tuxbox/libs;metho
 
 SRC_URI_append_dm7025 = " file://libtuxtxt_bugfix.patch;patch=1"
 
-SRCDATE_dm600pvr = "20060301"
+SRCDATE_dm600pvr = "20061005"
 SRCDATE_dm7025 = "20050912"
-SRCDATE_dm7020 = "20060301"
+SRCDATE_dm7020 = "20061005"
 
 PN = "libtuxtxt"
 PR = "r1"
