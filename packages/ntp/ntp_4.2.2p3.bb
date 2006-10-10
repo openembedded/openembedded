@@ -25,22 +25,19 @@ inherit autotools update-rc.d
 EXTRA_OECONF = "--without-openssl --without-crypto ac_cv_header_readline_history_h=no"
 CFLAGS_append = " -DPTYS_ARE_GETPT -DPTYS_ARE_SEARCHED"
 
-PACKAGES = "ntpdate ntp-bin ntp ntp-tickadj"
+PACKAGES += "ntpdate ntp-bin ntp-tickadj ntp-utils"
 # NOTE: you don't need ntpdate, use "ntpdc -q -g -x"
-PROVIDES = "ntpdate-${PV} ntpdate-${PV}-${PR} ntpdate"
 
 # This should use rc.update
 FILES_ntpdate = "${bindir}/ntpdate ${sysconfdir}/init.d/ntpdate"
-#This is too painful - perl is only needed for ntp-wait and ntptrace, which are
-#perl scripts, and installing perl is an enormous overhead for a user who only
-#needs ntpq
-#RDEPENDS_ntp-bin = perl
+
 # ntp originally includes tickadj. It's split off for inclusion in small firmware images on platforms 
 # with wonky clocks (e.g. OpenSlug)
 RDEPENDS_${PN} = ${PN}-tickadj
 FILES_${PN}-bin = "${bindir}/ntp-wait ${bindir}/ntpdc ${bindir}/ntpq ${bindir}/ntptime ${bindir}/ntptrace"
 FILES_${PN} = "${bindir}/ntpd ${sysconfdir}/ntp.conf ${sysconfdir}/init.d/ntpd"
 FILES_${PN}-tickadj = "${bindir}/tickadj"
+FILES_ntp-utils = "${bindir}/*"
 
 do_install_append() {
 	install -d ${D}/${sysconfdir}/init.d
@@ -49,7 +46,7 @@ do_install_append() {
 	install -m 755 ${WORKDIR}/ntpd ${D}/${sysconfdir}/init.d
 }
 
-pkg_postinst_ntpdate_nylon() {
+pkg_postinst_ntpdate() {
 if test "x$D" != "x"; then
 	exit 1
 else
