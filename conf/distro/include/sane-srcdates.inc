@@ -34,6 +34,7 @@ SRCDATE_matchbox-themes-extra ?= "20060612"
 SRCDATE_matchbox-wm ?= "20060612"
 SRCDATE_libmatchbox ?= "20060612"
 SRCDATE_libfakekey ?= "20051101"
+SRCDATE_psplash ?= "20061011"
 SRCDATE_zaurusd ?= "20060628"
 
 # GPE
