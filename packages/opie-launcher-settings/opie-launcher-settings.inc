@@ -1,7 +1,6 @@
 DESCRIPTION = "Launcher settings dialog"
 SECTION = "opie/settings"
 PRIORITY = "optional"
-MAINTAINER = "Team Opie <opie@handhelds.org>"
 LICENSE = "GPL"
 DEPENDS = "libqtaux2"
 APPNAME = "launchersettings"

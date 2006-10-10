@@ -1,7 +1,6 @@
 DESCRIPTION = "StreamRipper lets you record streaming mp3 to your hard drive."
 SECTION = "console/multimedia"
 LICENSE = "GPL"
-STREAMRIPPER_MAINTAINER= "Inge Arnesen <inge.arnesen@gmail.com>"
 DEPENDS= "libogg libvorbis"
 RDEPENDS= "libogg libvorbis"
 

@@ -2,7 +2,6 @@ DESCRIPTION = "This collection of code replaces the existing linux-hotplug \
 package with very tiny, compiled executable programs, instead of the \
 existing bash scripts."
 LICENSE = "GPL"
-MAINTAINER = "Chris Larson <kergoth@handhelds.org>"
 RPROVIDES = "hotplug"
 RCONFLICTS = "hotplug"
 RREPLACES = "hotplug"

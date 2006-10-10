@@ -1,6 +1,5 @@
 PACKAGES = task-dvb
 DESCRIPTION = "Meta-package for DVB application"
-MAINTAINER = "Phil Blundell <pb@handhelds.org>"
 ALLOW_EMPTY = 1
 PR = "r5"
 

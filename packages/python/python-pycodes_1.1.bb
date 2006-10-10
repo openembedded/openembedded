@@ -5,7 +5,6 @@ the Internet; and even data compression. A variety of decoding/quantization algo
 things like sum-product as well as linear programming relaxations."
 SECTION = "devel/python"
 PRIORITY = "optional"
-MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 LICENSE = "PYCODES"
 SRCNAME = "pycodes"
 

@@ -1,7 +1,6 @@
 DESCRIPTION = "a small and fast cgi program to retrieve images from a V4L device."
 SECTION = "console/network"
 PRIORITY = "optional"
-MAINTAINER = "NSLU2 Linux <nslu2-linux@yahoogroups.com>"
 DEPENDS="jpeg"
 LICENSE = "GPLV2"
 PR = "r0"

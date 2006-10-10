@@ -1,6 +1,5 @@
 DESCRIPTION = "Bootloader firmware extractor for the h2200 iPAQ"
 ALLOW_EMPTY = "1"
-MAINTAINER = "Koen Kooi <koen@linuxtogo.org>"
 PR="r2"
 
 COMPATIBLE_MACHINE = "h2200"

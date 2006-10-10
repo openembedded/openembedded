@@ -1,6 +1,5 @@
 DESCRIPTION = "Compress::Zlib - Interface to zlib compression library"
 SECTION = "libs"
-MAINTAINER = "Jamie Lenehan <lenehan@twibble.org>"
 LICENSE = "Artistic|GPL"
 PR = "r3"
 

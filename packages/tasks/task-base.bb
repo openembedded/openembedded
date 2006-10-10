@@ -1,5 +1,4 @@
 DESCRIPTION = "Merge machine and distro options to create a basic machine task/package"
-MAINTAINER = "Richard Purdie <richard@openedhand.com>"
 PR = "r6"
 
 PACKAGES = "task-base \

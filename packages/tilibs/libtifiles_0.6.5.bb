@@ -1,5 +1,4 @@
 LICENSE = "GPLv2"
-MAINTAINER = "Koen Kooi <koen@linuxtogo.org>"
 HOMEPAGE = "http://lpg.ticalc.org/prj_tilp/index.html"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/tilp/${P}.tar.gz"

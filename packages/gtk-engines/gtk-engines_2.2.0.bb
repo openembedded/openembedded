@@ -1,7 +1,6 @@
 LICENSE = "GPL"
 SECTION = "x11/base"
 DESCRIPTION = "GTK theme engines"
-MAINTAINER = "Phil Blundell <pb@handhelds.org>"
 DEPENDS = "gtk+"
 
 PACKAGES += " gtk-engine-pixmap gtk-engine-redmond95 gtk-engine-metal gtk-theme-metal gtk-theme-redmond95"

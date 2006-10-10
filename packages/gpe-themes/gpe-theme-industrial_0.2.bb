@@ -1,5 +1,4 @@
 DESCRIPTION =	"GTK+ industrial theme adjusted for GPE"
-MAINTAINER =	"Koen Kooi <koen@dominion.kabel.utwente.nl>"
 LICENSE =       "GPL"
 
 PR=		"r0"

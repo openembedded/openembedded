@@ -1,7 +1,6 @@
 DESCRIPTION = "A Bible study program utilizing the Sword library."
 SECTION = "opie/applications"
 PRIORITY = "optional"
-MAINTAINER = "Team Opie <opie@handhelds.org>"
 LICENSE = "GPL"
 DEPENDS = "libopiecore2 libopieui2 sword"
 APPNAME = "dagger"

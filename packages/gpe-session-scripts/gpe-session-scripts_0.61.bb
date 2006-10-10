@@ -6,7 +6,6 @@ inherit gpe
 DESCRIPTION = "GPE session startup scripts"
 SECTION = "gpe"
 PRIORITY = "optional"
-MAINTAINER = "Philip Blundell <pb@handhelds.org>"
 RDEPENDS = "matchbox gpe-session-starter gpe-bluetooth xstroke xtscal gpe-question gpe-clock matchbox-applet-inputmanager xrandr"
 # more rdepends: keylaunch ipaq-sleep apmd blueprobe
 DEPENDS = "matchbox-wm matchbox-panel gpe-bluetooth xstroke xtscal gpe-question matchbox-applet-inputmanager gpe-clock xrandr"

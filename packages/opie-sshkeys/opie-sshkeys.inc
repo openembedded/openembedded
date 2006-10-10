@@ -1,7 +1,6 @@
 DESCRIPTION = "Utility for managing ssh-agent keys"
 SECTION = "opie/settings"
 PRIORITY = "optional"
-MAINTAINER = "Team Opie <opie@handhelds.org>"
 LICENSE = "GPL"
 RDEPENDS = "ssh opie-sh-ssh-askpass"
 APPNAME = "sshkeys"

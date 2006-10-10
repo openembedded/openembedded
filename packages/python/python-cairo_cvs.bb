@@ -1,7 +1,6 @@
 DESCRIPTION = "Python Cairo Bindings"
 SECTION = "devel/python"
 PRIORITY = "optional"
-MAINTAINER = "Sandino 'Tigrux' Flores <tigrux@ximian.com>"
 DEPENDS = "python-pygtk cairo"
 SRCNAME = "pycairo"
 PV = "0.0+cvs${SRCDATE}"

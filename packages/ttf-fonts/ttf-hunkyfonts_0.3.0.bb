@@ -1,5 +1,4 @@
 DESCRIPTION = "Hunky fonts - TTF Version"
-MAINTAINER = "Marcin Juszkiewicz <openembedded@hrw.one.pl>"
 LICENSE = "LGPL"
 HOMEPAGE = "http://sourceforge.net/projects/hunkyfonts"
 PR = "r0"

@@ -3,7 +3,6 @@ HOMEPAGE = "http://www.pulseaudio.org"
 AUTHOR = "Lennart Poettering"
 SECTION = "libs/multimedia"
 LICENSE = "LGPL"
-MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 DEPENDS = "liboil libsamplerate0 libsndfile1 libtool"
 # optional
 DEPENDS += "alsa-lib"

@@ -1,7 +1,6 @@
 DESCRIPTION = "Fish Amusement"
 SECTION = "opie/games"
 PRIORITY = "optional"
-MAINTAINER = "Team Opie <opie@handhelds.org>"
 LICENSE = "GPL"
 AUTHOR = "Robert Ernst"
 HOMEPAGE = "http://www.linux-solutions.at/projects/zaurus/games-Fish.html"

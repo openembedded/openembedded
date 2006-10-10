@@ -2,7 +2,6 @@ DEFAULT_PREFERENCE = "-1"
 # This is the Intel GPL IXP4XX ethernet driver (Linux) plus patches
 # to make it work on 2.6 kernels.
 #
-MAINTAINER = "NSLU2 Linux <nslu2-linux@yahoogroups.com>"
 HOMEPAGE = "http://www.intel.com/design/network/products/npfamily/ixp420.htm"
 LICENSE = "GPL"
 PR = "r0"

@@ -1,5 +1,4 @@
 DESCRIPTION = "Random number generator daemon"
-MAINTAINER = "Oyvind Repvik <nail@nslu2-linux.org>"
 LICENSE = "GPL"
 PR = "1"
 

@@ -1,7 +1,6 @@
 DEPENDS += "gettext-native virtual/libintl"
 DESCRIPTION = "whois is an improved whois client"
 LICENSE = "GPL"
-MAINTAINER = "Chris Larson <kergoth@handhelds.org>"
 HOMEPAGE = "http://www.linux.it/~md/software/"
 SECTION = "network"
 

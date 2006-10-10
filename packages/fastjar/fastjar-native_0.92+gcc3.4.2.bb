@@ -3,7 +3,6 @@ HOMEPAGE = "http://sourceforge.net/projects/fastjar/"
 SECTION = "devel"
 PRIORITY = "optional"
 LICENSE = "GPL"
-MAINTAINER = "Rene Wagner <rw@handhelds.org>"
 
 DEPENDS = "zlib"
 

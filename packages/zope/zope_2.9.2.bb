@@ -1,7 +1,6 @@
 DESCRIPTION = "A full fledged pluggable content management system with integrated web server and much more."
 SECTION = "console/network"
 PRIORITY = "optional"
-MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 DEPENDS = "python"
 RDEPENDS = "python-core python-shell"
 LICENSE = "ZPL"

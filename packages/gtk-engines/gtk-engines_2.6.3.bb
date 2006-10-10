@@ -1,7 +1,6 @@
 LICENSE = "GPL"
 SECTION = "x11/base"
 DESCRIPTION = "GTK theme engines"
-MAINTAINER = "Phil Blundell <pb@handhelds.org>"
 DEPENDS = "gtk+"
 
 RDEPENDS_gtk-theme-redmond = "gtk-engine-redmond95"

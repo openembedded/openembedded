@@ -1,7 +1,6 @@
 DESCRIPTION = "Notes"
 SECTION = "opie/pim"
 PRIORITY = "optional"
-MAINTAINER = "Marcin Juszkiewicz <openembedded@hrw.one.pl>"
 LICENSE = "GPL"
 APPNAME = "opie-notes"
 APPTYPE = "binary"

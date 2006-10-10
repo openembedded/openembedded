@@ -2,7 +2,6 @@
 # configuration fails empty (they just contain a comment).
 #
 DESCRIPTION = "Unfreeze the bitbake files in the build"
-MAINTAINER = "John Bowler <jbowler@acm.org>"
 SECTION = "console/networking"
 PRIORITY = "optional"
 LICENSE = "MIT"

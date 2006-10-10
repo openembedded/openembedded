@@ -1,7 +1,6 @@
 DESCRIPTION = "SIP - A Python Wrapper Generator"
 SECTION = "base"
 PRIORITY = "optional"
-MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 LICENSE = "GPL"
 
 SRC_URI = "http://www.vanille.de/mirror/sip-${PV}.tar.gz"

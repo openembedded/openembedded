@@ -3,7 +3,6 @@
 # Released under the MIT license (see packages/COPYING)
 
 DESCRIPTION="CPU testing utilities in optimized assembler for maximum loading P6, K7, K6, P5 chips"
-MAINTAINER = "Raymond Danks <info-linux@geode.amd.com>"
 HOMEPAGE="http://pages.sbcglobal.net/redelm/"
 LICENSE="GPL"
 

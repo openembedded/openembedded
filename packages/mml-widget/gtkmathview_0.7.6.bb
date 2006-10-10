@@ -1,7 +1,6 @@
 LICENSE = "GPL"
 HOMEPAGE = "http://helm.cs.unibo.it/mml-widget/"
 DEPENDS = "gtk+ popt libxslt libxml2"
-MAINTAINER = "Koen Kooi <koen@dominion.kabel.utwente.nl>"
 
 SRC_URI = "http://helm.cs.unibo.it/mml-widget/sources/${P}.tar.gz"
 

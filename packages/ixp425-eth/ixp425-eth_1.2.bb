@@ -2,7 +2,6 @@
 # to make it work on 2.6 kernels.
 #
 LICENSE = "GPL"
-MAINTAINER = "Chris Larson <kergoth@handhelds.org>"
 SRC_URI = "ftp://download.intel.com/design/network/swsup/ixp400linuxethernetdriverpatch-1_2.zip"
 SRC_URI += "file://ixp400linuxethernetdriver-1_2-kernel26_hr_20050929.patch;patch=1"
 SRC_URI += "file://makefile.patch;patch=1"

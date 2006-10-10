@@ -1,6 +1,5 @@
 SECTION = "console/network"
 DESCRIPTION = "A server-side, HTML-embedded scripting language. This package provides the CGI."
-MAINTAINER = "Shane Volpe <shanevolpe@gmail.com>"
 LICENSE = "PHP"
 DEPENDS = "zlib libxml2 mysql libiconv"
 SRC_URI = "http://us2.php.net/distributions/php-${PV}.tar.bz2\

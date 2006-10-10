@@ -1,7 +1,6 @@
 DESCRIPTION = "Philips USB Webcam driver for Linux that supports VGA resolution"
 PRIORITY = "optional"
 SECTION = "kernel/modules"
-MAINTAINER = "dyoung <dyoung8888@yahoo.com>"
 LICENSE = "GPL"
 PR = "r1"
 

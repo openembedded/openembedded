@@ -7,7 +7,6 @@ PROVIDES = "galculator"
 DESCRIPTION = "GTK Advanced Calculator"
 DEPENDS = "virtual/libc gtk+ libglade gnome-desktop"
 RDEPENDS = "gnome-desktop"
-MAINTAINER = "Florian Boor <florian.boor@kernelconcepts.de>"
 SECTION = "gpe"
 PRIORITY = "optional"
 

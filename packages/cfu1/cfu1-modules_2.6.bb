@@ -1,5 +1,4 @@
 DESCRIPTION = "PCMCIA driver for the RATOC REX-CFU1 USB host controller CF card."
-MAINTAINER = "Botond Botyanszki <openembedded@siliconium.net>"
 SECTION = "kernel/modules"
 PRIORITY = "optional"
 DEPENDS = "virtual/kernel"

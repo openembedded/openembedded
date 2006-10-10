@@ -2,7 +2,6 @@ DESCRIPTION = "Qtopia/Opie Input helper for USB devices"
 SECTION = "opie/inputmethods"
 HOMEPAGE = "http://tbox.jpn.org/wiki/linuzau/wiki.cgi"
 LICENSE = "GPL"
-MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 PR = "r0"
 APPNAME = "qpeinputhelper"
 

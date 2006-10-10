@@ -1,0 +1,8 @@
+OpenEmbedded Maintainers file. Please put you full name and email-address here for the areas of OE you want to support.
+
+
+Koen Kooi <koen@openembedded.org>
+	MACHINE: h2200, ipaq-pxa270, efika, ep93xx, netbook-pro machines
+	DISTRO: Angstrom distribution
+	recipes: abiword, bootchart, dia, farsight, freeciv, fuse, galago, geda, gimp, gnome stuff, gnumeric, (g)obby, gpe stuff, imposter, inkscape, matchbox stuff, opensync stuff, telepathy, tilibs, xchat, xournal. 
+

@@ -1,7 +1,6 @@
 DESCRIPTION = "A Linux file system driver that allows you to mount a WebDAV server as a disk drive."
 SECTION = "network"
 PRIORITY = "optional"
-MAINTAINER = "Mustafa Yuecel <yuecelm@ee.ethz.ch>"
 HOMEPAGE = "http://dav.sourceforge.net"
 DEPENDS = "neon-0.25.5"
 RDEPENDS_${PN} = "kernel-module-coda"

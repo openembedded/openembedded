@@ -4,7 +4,6 @@ inherit gpe pkgconfig
 
 DEPENDS = "libgpewidget"
 SECTION = "gpe"
-MAINTAINER = "Florian Boor <florian.boor@kernelconcepts.de>"
 SECTION = "gpe"
 PRIORITY = "optional"
 DESCRIPTION = "A GPE notebook to sketch your notes"

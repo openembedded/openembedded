@@ -2,7 +2,6 @@ DESCRIPTION = "LBreakout2 is an award winning breakout-style arcade game in the 
 HOMEPAGE = "http://lgames.sourceforge.net/index.php?project=LBreakout2"
 SECTION = "games/arcade"
 LICENSE = "GPL"
-MAINTAINER = "Michael 'Mickey' Lauer"
 DEPENDS = "virtual/libsdl libsdl-mixer libsdl-net"
 PR = "r1"
 

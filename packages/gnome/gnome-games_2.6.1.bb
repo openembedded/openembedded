@@ -1,5 +1,4 @@
 LICENSE = "GPL"
-MAINTAINER = "Phil Blundell <pb@handhelds.org>"
 DEPENDS = "guile gtk+ libgnome libgnomeui librsvg gnome-vfs gconf libglade gnome-common"
 PR = "r2"
 

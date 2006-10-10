@@ -1,7 +1,6 @@
 ############## /home/jrs/cvs/oe/org.openembedded.dev/packages/linux/xanadux-un-2.6_2.6.12.bb ###############
 
 DESCRIPTION = "Xanadux HTC-Universal kernel based on the hh 2.6.12"
-MAINTAINER = "goxboxlive <goxboxlive@gmail.com>"
 LICENSE = "GPL"
 PR="r2"
 

@@ -1,5 +1,4 @@
 DESCRIPTION = "Core packages required for a basic installation"
-MAINTAINER = "Phil Blundell <pb@handhelds.org>"
 PR = "r25"
 
 # The BOOTSTRAP_EXTRA_ variables are often manipulated by the

@@ -2,7 +2,6 @@
 BROKEN = "1"
 
 DESCRIPTION = "Alsa Drivers"
-MAINTAINER = "Pigi"
 SECTION = "base"
 LICENSE = "GPL"
 PR = "r6"

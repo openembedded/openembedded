@@ -1,7 +1,6 @@
 DESCRIPTION = "IP/Subnet calculator for Qt/Embedded based Palmtop Environments"
 SECTION = "opie/applications"
 PRIORITY = "optional"
-MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 LICENSE = "GPL"
 HOMEPAGE = "http://www.warmi.net/zaurus/zipsc.shtml"
 PR = "r1"

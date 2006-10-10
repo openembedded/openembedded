@@ -2,7 +2,6 @@ DESCRIPTION = "Quake 1"
 SECTION = "x11/games"
 PRIORITY = "optional"
 DEPENDS = "libsdl-x11 libsdl-mixer libsdl-net zlib libxau"
-MAINTAINER = "Simon Pickering <S.G.Pickering@bath.ac.uk>"
 LICENSE = "GPL"
 PR = "r2"
 

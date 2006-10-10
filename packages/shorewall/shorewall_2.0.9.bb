@@ -1,6 +1,5 @@
 DESCRIPTION = "Shorewall is a high-level tool for configuring Netfilter."
 HOMEPAGE = "http://www.shorewall.net/"
-MAINTAINER = "Bruno Randolf <bruno.randolf@4g-systems.biz>"
 LICENSE = "GPL"
 SECTION = "network"
 PRIORITY = "optional"

@@ -2,7 +2,6 @@ DESCRIPTION = "Helvetica fonts - QPF Edition"
 LICENSE = "GPL QPL"
 SECTION = "opie/fonts"
 PRIORITY = "optional"
-MAINTAINER = "Marcin Juszkiewicz <openembedded@hrw.one.pl>"
 HOMEPAGE = "http://www.pobox.sk/~mico/zaurus.html"
 PR = "r1"
 

@@ -1,6 +1,5 @@
 SECTION = "x11/utils"
 DESCRIPTION = "feh is a fast, lightweight image viewer which uses imlib2."
-MAINTAINER = "Chris Larson <kergoth@handhelds.org>"
 LICENSE = "MIT"
 DEPENDS = "virtual/imlib2 giblib jpeg virtual/libx11 libxext libxt"
 

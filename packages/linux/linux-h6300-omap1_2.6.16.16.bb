@@ -1,5 +1,4 @@
 DESCRIPTION = "Linux kernel for HP iPAQ h6300 series OMAP1510 based phones."
-MAINTAINER = "Mika Laitio <lamikr@cc.jyu.fi>"
 SECTION = "kernel"
 LICENSE = "GPL"
 

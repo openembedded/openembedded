@@ -2,7 +2,6 @@ LICENSE = "GPL"
 DESCRIPTION = "Plugins for GStreamer"
 SECTION = "x11/libs"
 PRIORITY = "optional"
-MAINTAINER = "Phil Blundell <pb@handhelds.org>"
 PR = "r0"
 
 DEFAULT_PREFERENCE = "-1"

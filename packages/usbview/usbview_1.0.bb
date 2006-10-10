@@ -5,7 +5,6 @@
 DESCRIPTION="USBView is a GTK program that displays the topography of the \
 	devices that are plugged into the USB bus on a Linux machine."
 HOMEPAGE="http://www.kroah.com/linux-usb/"
-MAINTAINER = "Raymond Danks <info-linux@geode.amd.com>"
 LICENSE="GPL"
 
 SRC_URI="http://www.kroah.com/linux-usb/${PN}-${PV}.tar.gz \

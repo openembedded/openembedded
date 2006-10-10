@@ -1,7 +1,6 @@
 DESCRIPTION = "BSD replacement for libreadline"
 HOMEPAGE = "http://cvsweb.netbsd.org/bsdweb.cgi/src/lib/libedit/"
 SECTION = "libs"
-MAINTAINER = "Bruno Randolf <bruno.randolf@4g-systems.biz>"
 LICENSE="BSD"
 DEPENDS = "ncurses"
 PR = "r1"

@@ -1,7 +1,6 @@
 SECTION = "libs"
 LICENSE = "GD"
 DESCRIPTION = "gd is a library used to create PNG, JPEG, or WBMP images."
-MAINTAINER = "Chris Larson <kergoth@handhelds.org>"
 DEPENDS = "libpng jpeg zlib"
 PR = "r1"
 

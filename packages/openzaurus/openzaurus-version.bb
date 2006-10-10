@@ -1,4 +1,3 @@
-MAINTAINER = "Marcin Juszkiewicz <openembedded@hrw.one.pl>"
 PV = ${DISTRO_VERSION}
 
 do_compile() {

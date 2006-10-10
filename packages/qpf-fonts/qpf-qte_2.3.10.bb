@@ -1,7 +1,6 @@
 DESCRIPTION = "Qt/Embedded Fonts Version ${PV}"
 SECTION = "opie/fonts"
 PRIORITY = "optional"
-MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 LICENSE = "GPL QPL"
 HOMEPAGE = "http://www.trolltech.com"
 PR = "r1"

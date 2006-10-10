@@ -1,6 +1,5 @@
 DESCRIPTION = "Rise of the Triad - an SDL based Doom clone - QtE based Palmtop Environments Edition"
 HOMEPAGE = "http://www.icculus.org/root"
-MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 LICENSE = "GPL"
 PR = "r2"
 

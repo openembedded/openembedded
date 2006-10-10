@@ -1,6 +1,5 @@
 DESCRIPTION = "A console URL download utility featuring HTTP, FTP, and more."
 SECTION = "console/network"
-MAINTAINER = "Chris Larson <kergoth@handhelds.org>"
 DEPENDS = ""
 PR = "r6"
 LICENSE = "GPL"

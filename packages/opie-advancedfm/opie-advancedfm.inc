@@ -1,7 +1,6 @@
 DESCRIPTION = "Opie Advanced Filemanager"
 SECTION = "opie/applications"
 PRIORITY = "optional"
-MAINTAINER = "Team Opie <opie@handhelds.org>"
 LICENSE = "GPL"
 APPNAME = "advancedfm"
 RDEPENDS = "opie-advancedfm-pics"

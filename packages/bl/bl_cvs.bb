@@ -2,7 +2,6 @@ SECTION = "base"
 LICENSE= "GPL"
 PV = "0.0+cvs${SRCDATE}"
 DESCRIPTION = "Command line tool for iPaq backlight control"
-MAINTAINER = "Florian Boor <florian@kernelconcepts.de>"
 
 SRC_URI = "${HANDHELDS_CVS};module=apps/h3600_test \
            file://nokernelheader.patch;patch=1;pnum=0 \

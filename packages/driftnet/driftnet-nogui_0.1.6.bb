@@ -2,7 +2,6 @@ DESCRIPTION = "Driftnet watches network traffic, and picks out and displays JPEG
 images for display. It is an horrific invasion of privacy and shouldn't be used \
 by anyone anywhere. It can also extract MPEG audio data from the network and \
 play it."
-MAINTAINER = "Simon Pickering <S.G.Pickering@bath.ac.uk>"
 SECTION = "net"
 PRIORITY = "optional"
 

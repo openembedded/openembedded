@@ -1,7 +1,6 @@
 SECTION = "kernel"
 DESCRIPTION = "2.6 Linux kernel for the Amstrad Delta (E3)"
 LICENSE = "GPL"
-MAINTAINER = "Jonathan McDowell <noodles@earth.li>"
 
 COMPATIBLE_MACHINE = "amsdelta"
 

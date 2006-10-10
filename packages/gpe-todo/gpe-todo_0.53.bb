@@ -3,7 +3,6 @@ inherit gpe autotools pkgconfig
 
 DESCRIPTION = "GPE to-do list"
 DEPENDS = "gtk+ libgpewidget libgpepimc libtododb"
-MAINTAINER = "Phil Blundell <pb@handhelds.org>"
 SECTION = "gpe"
 PRIORITY = "optional"
 

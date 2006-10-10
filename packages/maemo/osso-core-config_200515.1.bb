@@ -1,5 +1,4 @@
 LICENSE    = "unknown"
-MAINTAINER = "Florian Boor <florian@kernelconcepts.de"
 PR         = "r6"
 
 DEPENDS =	"base-passwd osso-af-startup"

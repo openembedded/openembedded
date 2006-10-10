@@ -1584,7 +1584,6 @@ diff -ruN linux-2.4.29.orig/include/linux/ppp-comp.h linux-2.4.29/include/linux/
 - *  ==FILEVERSION 980319==
 + *  ==FILEVERSION 20040509==
   *
-  *  NOTE TO MAINTAINERS:
   *     If you modify this file at all, please set the above date.
 @@ -78,7 +78,7 @@
  

@@ -1,6 +1,5 @@
 PR         = "r0"
 LICENSE    = "GPL"
-MAINTAINER = "Florian Boor <florian@kernelconcepts.de>"
 PROVIDES   = "esd"
 RPROVIDES_${PN}  = "esd"
 

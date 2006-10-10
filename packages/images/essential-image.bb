@@ -6,7 +6,6 @@
 # Date: 23-Apr-06
 
 DESCRIPTION = "<description>"
-MAINTAINER = "Matthias 'CoreDump' Hentges <oe@hentges.net>"
 HOMEPAGE = "http://www.hentges.net/misc/openzaurus/index.shtml"
 
 ######################################################################################

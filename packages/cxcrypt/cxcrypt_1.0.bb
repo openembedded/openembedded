@@ -1,7 +1,6 @@
 DESCRIPTION = "A simple, xor-based encryption tool"
 SECTION = "base"
 PRIORITY = "optional"
-MAINTAINER = "Martin Dietze <herbert@spamcop.net>"
 PV = 1.0
 LICENSE = LGPL
 

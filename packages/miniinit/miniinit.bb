@@ -1,7 +1,6 @@
 DESCRIPTION = "minimal init."
 SECTION = "base"
 LICENSE = "GPL"
-MAINTAINER = "Bruno Randolf <bruno.randolf@4g-systems.biz>"
 
 # SERIAL_CONSOLE is generally defined by the MACHINE .conf.
 # Set PACKAGE_ARCH appropriately.

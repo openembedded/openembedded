@@ -1,5 +1,4 @@
 PR = "r0"
-MAINTAINER = "Florian Boor <florian.boor@kernelconcepts.de>
 LICENSE = "LGPL"
 DEPENDS = "glibc "
 DESCRIPTION = "An LGPL implementation of RTP - RFC3550"

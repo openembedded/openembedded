@@ -1,6 +1,5 @@
 DESCRIPTION = "Test::MockModule - Override subroutines in a module for unit testing"
 SECTION = "libs"
-MAINTAINER = "Jamie Lenehan <lenehan@twibble.org>"
 LICENSE = "Artistic|GPL"
 RDEPENDS += "perl-module-carp perl-module-scalar-util perl-module-strict \
              perl-module-vars "

@@ -1,5 +1,4 @@
 SECTION = "x11/base"
-MAINTAINER = "Phil Blundell <pb@handhelds.org>"
 LICENSE = "LGPL"
 DESCRIPTION = "GNOME themes"
 

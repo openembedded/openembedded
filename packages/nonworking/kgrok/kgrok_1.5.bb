@@ -4,7 +4,6 @@ scripts turn it into a phone list, todo list, notepad, and others. Encryption \
 optionally secures personal data."
 SECTION = "opie/applications"
 PRIORITY = "optional"
-MAINTAINER = "Marcin Juszkiewicz <openembedded@hrw.one.pl>"
 LICENSE = "GPL"
 AUTHOR = "Thomas Driemeyer <thomas@bitrot.de>"
 HOMEPAGE = "http://www.bitrot.de/pda_kgrok.html"

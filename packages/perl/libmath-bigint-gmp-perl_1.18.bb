@@ -1,6 +1,5 @@
 DESCRIPTION = "Math::BigInt::GMP - Use the GMP library for Math::BigInt routines"
 SECTION = "libs"
-MAINTAINER = "Jamie Lenehan <lenehan@twibble.org>"
 LICENSE = "Artistic|GPL"
 DEPENDS += "gmp-native"
 RDEPENDS += "gmp"

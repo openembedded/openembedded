@@ -1,7 +1,6 @@
 DESCRIPTION = "The Opie IRC client lets you chat on your favorite IRC server using your handheld computer"
 SECTION = "opie/applications"
 PRIORITY = "optional"
-MAINTAINER = "Team Opie <opie@handhelds.org>"
 LICENSE = "GPL"
 I18N_FILES = "opieirc.ts"
 DEPENDS = "libqtaux2"

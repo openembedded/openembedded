@@ -1,4 +1,3 @@
-MAINTAINER="David Karlstrom <daka@thg.se>"
 
 # We need gnugrep (for -I)
 DEPENDS_append += " grep-native"

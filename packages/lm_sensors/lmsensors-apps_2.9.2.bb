@@ -4,7 +4,6 @@
 
 DESCRIPTION = "Hardware health monitoring applications"
 HOMEPAGE = "http://secure.netroedge.com/~lm78/"
-MAINTAINER = "Raymond Danks <info-linux@geode.amd.com>"
 LICENSE = "GPL"
 
 SRC_URI = "http://secure.netroedge.com/~lm78/archive/lm_sensors-${PV}.tar.gz"

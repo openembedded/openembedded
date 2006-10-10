@@ -1,6 +1,5 @@
 PR 	= 	"r1"
 LICENSE = 	"LGPL"
-MAINTAINER = "Koen Kooi <koen@linuxtogo.org>"
 
 DEPENDS =	"dbus hildon-lgpl hildon-fm outo gtk+-2.6.4-1.osso7"
 SRC_URI =	"http://repository.maemo.org/pool/maemo/ossw/source/h/${PN}/${PN}_${PV}.tar.gz \

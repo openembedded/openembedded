@@ -5,7 +5,6 @@ easy to use, and is small simple and free. Written by Irmen de Jong."
 HOMEPAGE = "http://pyro.sourceforge.net"
 SECTION = "devel/python"
 PRIORITY = "optional"
-MAINTAINER = "JStauft <wikimail@telus.net>"
 LICENSE = "MIT"
 RDEPENDS = "python-core python-crypt python-io python-lang python-math \
 python-netserver python-pickle python-re python-shell python-stringold \

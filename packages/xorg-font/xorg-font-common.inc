@@ -1,6 +1,5 @@
 HOMEPAGE = "http://www.x.org"
 SECTION = "x11/fonts"
-#MAINTAINER = ""
 LICENSE = "MIT-X"
 
 DEPENDS = " encodings font-alias font-util-native mkfontdir-native mkfontscale-native"

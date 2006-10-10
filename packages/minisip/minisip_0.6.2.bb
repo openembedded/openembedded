@@ -1,7 +1,6 @@
 LICENSE = "GPL"
 SECTION = "x11/utils"
 PR = "r0"
-MAINTAINER = "Johan Bilien <jobi@via.ecp.fr>"
 
 DESCRIPTION = "SIP user agent, with focus on security"
 DEPENDS = "libglademm libmsip0 libmikey0"

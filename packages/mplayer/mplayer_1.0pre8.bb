@@ -18,7 +18,6 @@ SRC_URI = "http://www1.mplayerhq.hu/MPlayer/releases/MPlayer-${PV}.tar.bz2 \
            file://libmpcodecs-ogg-include.patch;patch=1 \
            file://pld-onlyarm5.patch;patch=1"
 
-MAINTAINER="Graeme Gregory <dp@xora.org.uk>"
 RCONFLICTS_${PN} = "mplayer-atty"
 RREPLACES_${PN} = "mplayer-atty"
 PR = "r2"

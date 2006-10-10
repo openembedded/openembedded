@@ -1,7 +1,6 @@
 DESCRIPTION=GNU Scientific Library Python Bindings
 SECTION=base
 PRIORITY=optional
-MAINTAINER="Michael Lauer <mickey@Vanille.de>"
 RDEPENDS=python-core gsl
 DEPENDS=gsl
 SRCNAME=pygsl

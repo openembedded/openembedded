@@ -1,7 +1,6 @@
 DESCRIPTION = "Utopia fonts - QPF Edition"
 SECTION = "opie/fonts"
 PRIORITY = "optional"
-MAINTAINER = "Marcin Juszkiewicz <openembedded@hrw.one.pl>"
 LICENSE = "GPL QPL"
 HOMEPAGE = "http://www.pobox.sk/~mico/zaurus.html"
 PACKAGE_ARCH = "all"

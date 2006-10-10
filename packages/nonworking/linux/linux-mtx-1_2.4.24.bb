@@ -1,6 +1,5 @@
 SECTION = "kernel"
 DESCRIPTION = "Linux kernel for MTX-1 (MeshCube)"
-MAINTAINER = "Bruno Randolf <bruno.randolf@4g-systems.biz>"
 LICENSE = "GPL"
 KV = "${PV}"
 RDEPENDS = "mtd-utils"

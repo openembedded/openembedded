@@ -4,7 +4,6 @@ inherit autotools gettext
 DESCRIPTION = "A GNU collection of binary utilities"
 HOMEPAGE = "http://www.gnu.org/software/binutils/"
 LICENSE = "GPL"
-MAINTAINER = "Gerald Britton <gbritton@doomcom.org>"
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/binutils-cvs"
 PV = "2.15.99+csl-arm+cvs20050416"
 PR = "r1"

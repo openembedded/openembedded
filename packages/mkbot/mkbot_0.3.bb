@@ -4,7 +4,6 @@ HOMEPAGE = "http://fredemmott.co.uk/index.php?page=mkbot"
 AUTHOR = "Fred Emmott"
 LICENSE = "GPL"
 SECTION = "network"
-MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 
 SRC_URI = "http://files.fredemmott.co.uk/mkbot-${PV}.tar.bz2"
 S = "${WORKDIR}/MKbot-0.3"

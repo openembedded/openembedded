@@ -1,7 +1,6 @@
 DESCRIPTION = "Qt/Embedded Fonts Common Files"
 SECTION = "opie/fonts"
 PRIORITY = "optional"
-MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 LICENSE = "GPL QPL"
 PR = "r2"
 

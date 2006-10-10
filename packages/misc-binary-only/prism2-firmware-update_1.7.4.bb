@@ -2,7 +2,6 @@ DESCRIPTION = "one-time install package to upgrade the firmware of all installed
 RDEPENDS = "hostap-modules-pci hostap-utils"
 SECTION = "base"
 PRIORITY = "optional"
-MAINTAINER = "Bruno Randolf <bruno.randolf@4g-systems.biz>"
 LICENSE = "unknown"
 
 SRC_URI = "http://www.red-bean.com/~proski/firmware/${PV}.tar.bz2"

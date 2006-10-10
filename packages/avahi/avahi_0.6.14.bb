@@ -3,7 +3,6 @@ AUTHOR = "Lennart Poettering <lennart@poettering.net>"
 HOMEPAGE = "http://avahi.org"
 SECTION = "network"
 PRIORITY = "optional"
-MAINTAINER = "Philipp Zabel <philipp.zabel@gmail.com>"
 LICENSE = "GPL"
 
 DEPENDS = "expat libdaemon dbus"

@@ -1,7 +1,6 @@
 DESCRIPTION = "Linux kernel for Micrel KS8695(P) based devices"
 SECTION = "kernel"
 LICENSE = "GPL"
-MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 PR = "r0"
 
 SRC_URI = "ftp://ftp.kernel.org/pub/linux/kernel/v2.6/linux-${PV}.tar.bz2 \

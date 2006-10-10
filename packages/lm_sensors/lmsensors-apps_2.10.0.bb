@@ -4,7 +4,6 @@
 
 DESCRIPTION = "Hardware health monitoring applications"
 HOMEPAGE = "http://secure.netroedge.com/~lm78/"
-MAINTAINER = "Raymond Danks <info-linux@geode.amd.com>"
 DEPENDS = "libsysfs"
 LICENSE = "GPL"
 

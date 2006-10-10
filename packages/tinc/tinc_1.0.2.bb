@@ -2,7 +2,6 @@ SECTION = "console/network"
 DESCRIPTION ="tinc is a Virtual Private Network (VPN) daemon"
 HOMEPAGE = "http://www.tinc-vpn.org/"
 LICENSE = "GPLv2"
-MAINTAINER = "Bruno Randolf <bruno.randolf@4g-systems.biz>"
 PR = "r1"
 
 SRC_URI="http://www.tinc-vpn.org/packages/tinc-1.0.2.tar.gz \

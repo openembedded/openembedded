@@ -1,7 +1,6 @@
 DESCRIPTION = "Zaurus Golf Score Application for Qt/Embedded based Palmtop Environments"
 SECTION = "opie/applications"
 PRIORITY = "optional"
-MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 LICENSE = "GPL"
 HOMEPAGE = "http://nuke.cinlug.org/modules/Static_Docs/data/db/zgs/"
 PR = "r0"

@@ -1,5 +1,4 @@
 LICENSE = "GPL"
-MAINTAINER = "Oyvind Repvik <nail@nslu2-linux.org>"
 DESCRIPTION = "ShoutCast-compatible streamer"
 PR = "r0"
 

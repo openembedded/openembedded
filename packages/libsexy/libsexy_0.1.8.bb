@@ -2,7 +2,6 @@ DESCRIPTION = "Libsexy is a collection of GTK+ widgets that extend the functiona
 HOMEPAGE = "http://wiki.chipx86.com/wiki/Libsexy"
 AUTHOR = "Christian Hammond <chipx86@chipx86.com>"
 SECTION = "x11/libs"
-MAINTAINER = "Koen Kooi <koen@linuxtogo.org>""
 PR = "r1"
 
 DEPENDS = "gtk+ enchant libxml2"

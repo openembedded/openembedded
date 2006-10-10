@@ -1,7 +1,6 @@
 DESCRIPTION = "Apache Portable Runtime (APR) companion library"
 SECTION = "libs"
 DEPENDS = "apr expat gdbm"
-MAINTAINER = "Mustafa Yuecel <yuecelm@ee.ethz.ch>"
 LICENSE = "Apache"
 HOMEPAGE = "http://apr.apache.org"
 PR = "r0"

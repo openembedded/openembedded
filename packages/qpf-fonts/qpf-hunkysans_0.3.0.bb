@@ -1,7 +1,6 @@
 DESCRIPTION = "Hunky Sans font - QPF Edition"
 SECTION = "opie/fonts"
 PRIORITY = "optional"
-MAINTAINER = "Marcin Juszkiewicz <openembedded@hrw.one.pl>"
 LICENSE = "LGPL"
 HOMEPAGE = "http://www.yoper.com/ariszlo/hunky.html http://sourceforge.net/projects/hunkyfonts"
 PACKAGE_ARCH = "all"

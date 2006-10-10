@@ -1,7 +1,6 @@
 DESCRIPTION = "Simple DirectMedia Layer mixer library."
 SECTION = "libs"
 PRIORITY = "optional"
-MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 DEPENDS = "virtual/libsdl"
 LICENSE = "LGPL"
 PR = "r1"

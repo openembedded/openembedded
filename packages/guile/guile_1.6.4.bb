@@ -3,7 +3,6 @@ packaged as a library which can be incorporated into your programs."
 HOMEPAGE = "http://www.gnu.org/software/guile/guile.html"
 SECTION = "devel/scheme"
 DEPENDS = "guile-native"
-MAINTAINER = "Phil Blundell <pb@handhelds.org>"
 LICENSE = "GPL"
 PR = "r1"
 

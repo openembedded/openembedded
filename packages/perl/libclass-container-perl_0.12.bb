@@ -1,6 +1,5 @@
 DESCRIPTION = "Class::Container - Glues object frameworks together transparently"
 SECTION = "libs"
-MAINTAINER = "Jamie Lenehan <lenehan@twibble.org>"
 LICENSE = "Artistic|GPL"
 DEPENDS = "libparams-validate-perl-native"
 RDEPENDS = "libparams-validate-perl"

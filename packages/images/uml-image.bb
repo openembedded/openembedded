@@ -1,5 +1,4 @@
 DESCRIPTION = "A rootfs for User-Mode-Linux"
-MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 
 export IMAGE_BASENAME = "uml-image"
 

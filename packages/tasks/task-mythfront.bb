@@ -1,6 +1,5 @@
 PACKAGES = "${PN}"
 DESCRIPTION = "Meta-package for MythTV diskless frontend"
-MAINTAINER = "Phil Blundell <pb@handhelds.org>"
 ALLOW_EMPTY = 1
 PR = "r6"
 

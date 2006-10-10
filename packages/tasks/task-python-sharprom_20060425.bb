@@ -1,5 +1,4 @@
 DESCRIPTION = "Everything Python for SharpROM"
-MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 HOMEPAGE = "http://www.vanille.de/projects/python.spy"
 LICENSE = "MIT"
 PR = "ml6"

@@ -6,7 +6,6 @@
 # Date: 28-May-06
 
 DESCRIPTION = "The fbset console tool"
-MAINTAINER = "Matthias 'CoreDump' Hentges <oe@hentges.net>"
 HOMEPAGE = ""
 LICENSE = "GPL"
 

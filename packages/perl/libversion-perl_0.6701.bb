@@ -1,6 +1,5 @@
 DESCRIPTION = "version - Perl extension for Version Objects"
 SECTION = "libs"
-MAINTAINER = "Jamie Lenehan <lenehan@twibble.org>"
 LICENSE = "Artistic|GPL"
 PR = "r2"
 

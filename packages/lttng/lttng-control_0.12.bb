@@ -3,7 +3,6 @@ DESCRIPTION = "The Linux trace toolkit is a suite of tools designed to \
 extract program execution details from the Linux operating system and  \
 interpret them."
 LICENSE = "GPL"
-MAINTAINER = "Richard Purdie <richard@openedhand.com>"
 
 SRC_URI = "http://ltt.polymtl.ca/lttng/ltt-control-${PV}-21062006.tar.gz"
 

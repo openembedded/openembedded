@@ -15,7 +15,6 @@ how individual applications authenticate users. For an \
 overview of the Linux-PAM library see the Linux-PAM System \
 Administrators' Guide."
 HOMEPAGE = "http://www.kernel.org/pub/linux/libs/pam"
-MAINTAINER = "John Bowler <jbowler@acm.org>"
 SECTION = "libs"
 PRIORITY = "optional"
 LICENSE = "GPL-2"

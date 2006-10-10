@@ -2,7 +2,6 @@ DESCRIPTION = "QSvn is a graphical Subversion client for Linux, UNIX, Mac OS X a
 It is written in C++ using the Qt4 toolkit from Trolltech."
 HOMEPAGE = "http://ar.oszine.de/projects/qsvn/"
 AUTHOR = "Andreas Richter, Rajko Albrecht"
-MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 LICENSE = "GPL"
 SECTION = "network"
 DEPENDS = "apr-util subversion"

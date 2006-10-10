@@ -1,6 +1,5 @@
 DESCRIPTION = "Classic arcade puzzle game - SDL edition."
 PRIORITY = "optional"
-MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 LICENSE = "GPL"
 HOMEPAGE = "http://www.newbreedsoftware.com/gemdropx/"
 PR = "r4"

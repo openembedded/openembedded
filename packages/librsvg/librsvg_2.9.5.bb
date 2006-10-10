@@ -1,6 +1,5 @@
 DESCRIPTION = "Library for rendering SVG files"
 SECTION = "x11/utils"
-MAINTAINER = "Phil Blundell <pb@handhelds.org>"
 DEPENDS = "gtk+ libcroco libart-lgpl libxml2 popt"
 LICENSE = "LGPL"
 PR = "r3"

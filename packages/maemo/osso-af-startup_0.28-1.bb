@@ -1,5 +1,4 @@
 LICENSE =	"unknown"
-MAINTAINER=	"Florian Boor <florian@kernelconcepts.de"
 PR 	= "r4"
 
 PACKAGES=	"${PN} osso-af-services osso-af-base-apps"

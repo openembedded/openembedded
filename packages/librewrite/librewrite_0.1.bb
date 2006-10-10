@@ -1,7 +1,6 @@
 LICENSE = "LGPL"
 DESCRIPTION = "Application relocator library"
 SECTION = "libs"
-MAINTAINER = "Philip Blundell <pb@handhelds.org>"
 
 inherit autotools
 

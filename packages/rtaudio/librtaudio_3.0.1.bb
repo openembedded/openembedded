@@ -4,7 +4,6 @@ Macintosh OS X, SGI, and Windows (DirectSound and ASIO) operating systems."
 SECTION = "libs"
 LICENSE = "rtaudio"
 HOMEPAGE = "http://www.music.mcgill.ca/~gary/rtaudio"
-MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 DEPENDS = "alsa-lib"
 PR = "r0"
 

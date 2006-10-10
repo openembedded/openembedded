@@ -5,7 +5,6 @@ about processes using the /proc filesystem. The package \
 includes the programs ps, top, vmstat, w, kill, and skill."
 SECTION = "base"
 PRIORITY = "optional"
-MAINTAINER = "Inge Arnesen <inge.arnesen@gmail.com>"
 DEPENDS = "ncurses"
 PR = "r5"
 

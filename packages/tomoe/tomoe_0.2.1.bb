@@ -1,7 +1,6 @@
 DESCRIPTION = "A handwriting recognition engine"
 HOMEPAGE = "http://tomoe.sourceforge.net"
 SECTION = "libs"
-MAINTAINER = "Philipp Zabel <philipp.zabel@gmail.com>"
 LICENSE = "LGPL"
 
 inherit autotools pkgconfig

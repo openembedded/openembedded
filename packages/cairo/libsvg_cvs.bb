@@ -1,7 +1,6 @@
 PV = "0.0+cvs${SRCDATE}"
 SECTION = "libs"
 PRIORITY = "optional"
-MAINTAINER = "Phil Blundell <pb@debian.org>"
 DEPENDS = "expat jpeg zlib libpng"
 DESCRIPTION = "SVG parser library"
 LICENSE = "LGPL"

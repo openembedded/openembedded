@@ -1,6 +1,5 @@
 PR         = "r0"
 LICENSE    = "GPL"
-MAINTAINER = "Florian Boor <florian@kernelconcepts.de>"
 
 DEPENDS = "hildon-lgpl hildon-base-lib libosso hildon-libs hildon-control-panel shared-mime-info"
 RDEPENDS = "shared-mime-info"

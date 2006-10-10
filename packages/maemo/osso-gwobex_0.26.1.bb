@@ -1,5 +1,4 @@
 LICENSE =	"LGPL"
-MAINTAINER = "Koen Kooi <koen@linuxtogo.org>"
 
 DEPENDS = 	"glib-2.0 openobex dbus libxml2 osso-gwconnect"
 

@@ -1,7 +1,6 @@
 DESCRIPTION = "Set the system time - utilizing ntpdate, if available."
 SECTION = "opie/settings"
 PRIORITY = "optional"
-MAINTAINER = "Team Opie <opie@handhelds.org>"
 LICENSE = "GPL"
 RRECOMMENDS = "ntpdate"
 

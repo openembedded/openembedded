@@ -1,7 +1,6 @@
 SECTION = "apps"
 LICENSE = "GPL"
 DESCRIPTION = "wview is a weather site generator and more for a variety of weather stations"
-MAINTAINER = "Mark Teel (mark@teel.ws)"
 HOMEPAGE = "http://www.wviewweather.com/"
 DEPENDS += " bash util-linux gd openssl curl update-rc.d"
 

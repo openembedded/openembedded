@@ -1,7 +1,6 @@
 DESCRIPTION = "Squeak VM for QtEmbedded"
 SECTION = "devel"
 PRIORITY = "optional"
-MAINTAINER = "Torsten Sadowski <tsadowski@gmx.net>"
 LICENSE = "Squeak License"
 HOMEPAGE = "http://www.squeak.org"
 DEPENDS = "virtual/libqpe"

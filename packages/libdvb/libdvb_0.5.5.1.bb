@@ -3,7 +3,6 @@ DESCRIPTION_libdvb-dev = "Headers for libdvb development"
 HOMEPAGE = "http://www.metzlerbros.org/dvb/index.html"
 SECTION = "libs"
 PRIORITY = "optional"
-MAINTAINER = "Oyvind Repvik <nail@nslu2-linux.org"
 LICENSE = "GPL"
 PR = "r2"
 

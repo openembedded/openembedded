@@ -1,7 +1,6 @@
 DESCRIPTION = "GSM Audio Library"
 SECTION = "libs"
 PRIORITY = "optional"
-MAINTAINER = "Luca De Cicco <ldecicco@gmx.net>"
 #DEPENDS = ""
 LICENSE = "libgsm"
 inherit pkgconfig gpe

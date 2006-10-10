@@ -1,5 +1,4 @@
 DESCRIPTION = "Utilities for twin. Currently contains 'twkalc', a calculator derived from kcalc."
-MAINTAINER = "Chris Lord <cwiiis@blueyonder.co.uk>"
 DEPENDS = "twin"
 
 SECTION = "console/utils"

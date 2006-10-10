@@ -2,7 +2,6 @@ DESCRIPTION = "ZRally is a top view race game which offers the player mulitple \
 tracks and multiple skill levels."
 SECTION = "opie/games"
 PRIORITY = "optional"
-MAINTAINER = "Marcin Juszkiewicz <openembedded@hrw.one.pl>"
 LICENSE = "GPL"
 AUTHOR = "Kevin Greenhaw <kevin_greenhaw@email.com>"
 HOMEPAGE = "http://zrally.sourceforge.net/zrally.html"

@@ -2,7 +2,6 @@ DESCRIPTION = "Program that allows you to set the CCCR registers on PXA Zauruses
 SECTION = "opie/settings"
 PRIORITY = "optional"
 LICENSE = "GPL"
-MAINTAINER = "Dylan Taft <soundmanok@yahoo.com>"
 AUTHOR = "piro <piro400@occn.zaq.ne.jp>"
 HOMEPAGE = "http://www.piro.hopto.org/~piro/pukiwiki/pukiwiki.php?%5B%5B%A5%AB%A1%BC%A5%CD%A5%EB%A5%D1%A5%C3%A5%C1%A4%F2%A4%DE%A4%C8%A4%E1%A4%EB%5D%5D"
 APPTYPE="binary"

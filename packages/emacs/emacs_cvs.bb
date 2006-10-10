@@ -1,7 +1,6 @@
 DESCRIPTION = "Emacs"
 HOMEPAGE = "http://www.gnu.org/software/emacs/"
 LICENSE = "GPLv2"
-MAINTAINER = "Justin Patrin <papercrane@reversefold.com>"
 SECTION = "editor"
 # and it needs to run some generated binaries..
 DEPENDS += "qemu-native"

@@ -1,6 +1,5 @@
 DEPENDS = "ixp4xx-csr patcher-native"
 LICENSE = "GPL"
-MAINTAINER = "Chris Larson <kergoth@handhelds.org>"
 SRC_URI = "http://www.intel.com/design/network/swsup/ixp400LinuxEthernetDriverPatch-1_1.zip \
 	   http://nslu.sourceforge.net/downloads/ixp425_eth.c.patch \
 	   file://makefile.patch;patch=1 \

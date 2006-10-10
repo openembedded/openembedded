@@ -13,7 +13,6 @@
 # as appropriate, directory is the sub-directory of 'packages'.
 #
 DESCRIPTION = "Freeze the bitbake files in the build"
-MAINTAINER = "John Bowler <jbowler@acm.org>"
 SECTION = "console/networking"
 PRIORITY = "optional"
 LICENSE = "MIT"

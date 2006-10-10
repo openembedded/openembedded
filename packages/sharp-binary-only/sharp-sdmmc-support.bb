@@ -1,7 +1,6 @@
 DESCRIPTION = "Driver for the SHARP Zaurus SD/MMC Slot for linux ${PV}"
 SECTION = "kernel/modules"
 PRIORITY = "optional"
-MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 LICENSE = "CLOSED"
 RDEPENDS = "kernel (${PV})"
 PR = "r23"

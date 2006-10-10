@@ -5,7 +5,6 @@ printing source line number information and demangled type names."
 SECTION = "devel/libs"
 LICENSE = "QPL"
 HOMEPAGE = "http://libcwd.sourceforge.net"
-MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 PR = "r0"
 
 SRC_URI = "http://puzzle.dl.sourceforge.net/sourceforge/libcwd/libcwd-${PV}.tar.gz"

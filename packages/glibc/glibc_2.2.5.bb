@@ -5,7 +5,6 @@ HOMEPAGE = "http://www.gnu.org/software/libc/libc.html"
 LICENSE = "LGPL"
 SECTION = "libs"
 PRIORITY = "required"
-MAINTAINER = "Phil Blundell <pb@handhelds.org>"
 
 DEFAULT_PREFERENCE_sh3 = "-99"
 
@@ -252,7 +251,6 @@ require glibc-package.bbclass
 
 PACKAGES_unslung = "libc6-unslung"
 PACKAGE_ARCH_unslung = "nslu2"
-MAINTAINER_libc6-unslung = "NSLU2 Linux <www.nslu2-linux.org>"
 RDEPENDS_libc6-unslung = "nslu2-linksys-libs"
 RPROVIDES_libc6-unslung = "libc6"
 

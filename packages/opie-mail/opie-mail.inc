@@ -1,7 +1,6 @@
 DESCRIPTION = "Opie's mail and news client featuring POP3, IMAP and NNTP - with and without SSL."
 SECTION = "opie/pim"
 PRIORITY = "optional"
-MAINTAINER = "Team Opie <opie@handhelds.org>"
 LICENSE = "GPL"
 DEPENDS = "libmailwrapper libetpan"
 RDEPENDS = "opie-pics"

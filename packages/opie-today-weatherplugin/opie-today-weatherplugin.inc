@@ -1,7 +1,6 @@
 DESCRIPTION = "Weather plugin for Today"
 SECTION = "opie/today"
 PRIORITY = "optional"
-MAINTAINER = "Team Opie <opie@handhelds.org>"
 LICENSE = "GPL"
 DEPENDS = "libopiecore2 libopiepim2"
 RDEPENDS = "opie-today"

@@ -1,7 +1,6 @@
 PV = "0.0+cvs${SRCDATE}"
 SECTION = "libs"
 PRIORITY = "optional"
-MAINTAINER = "Phil Blundell <pb@debian.org>"
 # DEPENDS = "virtual/libx11 libpixman libpng fontconfig libxrender xcb glitz"
 DEPENDS = "virtual/libx11 libpixman libpng fontconfig libxrender"
 DESCRIPTION = "Cairo graphics library"

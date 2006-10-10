@@ -1,7 +1,6 @@
 DESCRIPTION = "Opie Network Settings"
 SECTION = "opie/settings"
 PRIORITY = "optional"
-MAINTAINER = "Team Opie <opie@handhelds.org>"
 LICENSE = "GPL"
 PROVIDES = "opie-networksettings-pppplugin opie-networksettings-wlanplugin"
 APPNAME = "networksettings"

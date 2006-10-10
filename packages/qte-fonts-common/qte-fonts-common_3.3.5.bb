@@ -1,5 +1,4 @@
 DESCRIPTION= "Tools to update the Qt fontdir"
-MAINTAINER = "M&N Solutions <info@mn-solutions.de>"
 SECTION = "opie/base"
 LICENSE = "GPL QPL"
 PACKAGE_ARCH = "all"

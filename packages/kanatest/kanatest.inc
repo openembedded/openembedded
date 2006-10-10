@@ -1,6 +1,5 @@
 SECTION = "gpe/games"
 DESCRIPTION = "Hiragana and Katakana drill tool"
-MAINTAINER = "Robert Marcano <robert@marcanoonline.com>"
 LICENSE = "GPL"
 
 DEPENDS = "gtk+"

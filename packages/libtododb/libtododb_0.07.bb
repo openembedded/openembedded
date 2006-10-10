@@ -2,7 +2,6 @@ LICENSE = "LGPL"
 DESCRIPTION = "Database access for GPE to-do list"
 SECTION = "gpe/libs"
 PRIORITY = "optional"
-MAINTAINER = "Philip Blundell <pb@handhelds.org>"
 DEPENDS = "libgpewidget libgpepimc sqlite"
 
 inherit pkgconfig gpe

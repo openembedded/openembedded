@@ -5,7 +5,6 @@
 # thousands of programmers across a broad spectrum of applications.
 DESCRIPTION = "Free peer-reviewed portable C++ source libraries"
 HOMEPAGE = "http://www.boost.org/"
-MAINTAINER = "John Bowler <jbowler@acm.org>"
 SECTION = "libs"
 DEPENDS = "boost-jam-native zlib"
 PRIORITY = "optional"

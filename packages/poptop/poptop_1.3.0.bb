@@ -4,7 +4,6 @@ This enables administrators to leverage the considerable benefits of both Micros
 The current release version supports Windows 95/98/Me/NT/2000/XP PPTP clients and Linux PPTP clients \
 For more info visit http://www.poptop.org/"
 
-MAINTAINER  = "Stelios Koroneos <skoroneos@digital-opsis.com> "
 HOMEPAGE    = "http://www.poptop.org/"	
 LICENSE     = "GPL"
 SECTION     = "network"

@@ -4,7 +4,6 @@ DESCRIPTION_slbl = "A command-line utility to control the BackLight on Linux 2.4
 DESCRIPTION_sltime = "A ustility to save and restore the time on Sharp Linux based Zaurii"
 SECTION = "console/utils"
 PRIORITY = "optional"
-MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 LICENSE = "GPL"
 PR = "r4"
 

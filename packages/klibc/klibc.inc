@@ -3,7 +3,6 @@ SECTION = "libs"
 DESCRIPTION = "klibc is intended to be a minimalistic libc subset for \
 use with initramfs.  It is deliberately written for small size, \
 minimal entaglement, and portability, not speed."
-MAINTAINER = "Chris Larson <kergoth@handhelds.org>"
 LICENSE = "BSD-ADV"
 SRC_URI = "http://www.kernel.org/pub/linux/libs/klibc/Stable/klibc-${PV}.tar.bz2"
 SRC_URI += "file://install.patch;patch=1"

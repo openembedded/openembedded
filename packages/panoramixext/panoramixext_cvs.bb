@@ -2,7 +2,6 @@ PV = "0.0+cvs${SRCDATE}"
 LICENSE= "MIT"
 SECTION = "libs"
 PRIORITY = "optional"
-MAINTAINER = "Phil Blundell <pb@handhelds.org>"
 DESCRIPTION = "PanoramiX extension headers"
 
 SRC_URI = "${FREEDESKTOP_CVS}/xlibs;module=PanoramiXExt"

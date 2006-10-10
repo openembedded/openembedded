@@ -3,7 +3,6 @@ tools which enhance Python's usability in many important areas such as ODBC data
 processing, date/time processing and web site programming."
 SECTION = "devel/python"
 PRIORITY = "optional"
-MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 LICENSE = "EGENIX"
 SRCNAME = "egenix-mx-base"
 PR = "r1"

@@ -1,7 +1,6 @@
 DESCRIPTION = "The Lemon Parser Generator"
 HOMEPAGE = "http://www.hwaci.com/sw/lemon/"
 LICENSE = "PD"
-MAINTAINER = "Chris Larson <kergoth@handhelds.org>"
 PRIORITY = "optional"
 SECTION = "devel"
 

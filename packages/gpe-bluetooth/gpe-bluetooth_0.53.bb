@@ -2,7 +2,6 @@ LICENSE     = "GPL"
 DESCRIPTION = "GPE bluetooth support user interface tool."
 SECTION     = "gpe"
 PRIORITY    = "optional"
-MAINTAINER  = "Florian Boor <florian.boor@kernelconcepts.de>"
 PR          = "r0"
 
 DEPENDS = "gtk+ libcontactsdb libdisplaymigration libgpewidget openobex libgpevtype bluez-libs sqlite dbus-glib libglade blueprobe bluez-utils-dbus"

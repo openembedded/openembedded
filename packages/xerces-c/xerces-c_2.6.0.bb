@@ -2,7 +2,6 @@ PR = "r0"
 DESCRIPTION = "Xerces-c xml"
 SECTION =  "libs"
 PRIORITY = "optional"
-MAINTAINER = "Philip Balister philip@balister.org"
 LICENSE = "MIT"
 
 

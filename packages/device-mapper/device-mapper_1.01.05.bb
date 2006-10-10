@@ -2,7 +2,6 @@ SECTION = "libs"
 DESCRIPTION = "The Device-mapper is a new component of the linux kernel \
 that supports logical volume management. It is required by LVM2 and EVMS. \
 The original LVM (included in stock 2.4 kernels) does not use it."
-MAINTAINER = "Dan Williams <dan.j.williams@gmail.com>"
 LICENSE = "GPL"
 PR = "r2"
 

@@ -1,6 +1,5 @@
 DESCRIPTION = "RSS aggregator for Qtopia"
 SECTION = "opie/applications"
-MAINTAINER = "Marcin Juszkiewicz <openembedded@hrw.one.pl>"
 LICENSE = "GPL"
 AUTHOR = "Joe Rumsey <joe@rumsey.org>"
 HOMEPAGE = "http://corsair.sf.net/"

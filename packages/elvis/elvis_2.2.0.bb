@@ -1,7 +1,6 @@
 DESCRIPTION = "A vi clone"
 SECTION = "base"
 PRIORITY = "optional"
-MAINTAINER = "Martin Dietze <herbert@spamcop.net>"
 LICENSE = "Perl Clarified Artistic License"
 DEPENDS = "ncurses"
 

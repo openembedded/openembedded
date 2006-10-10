@@ -1,6 +1,5 @@
 DESCRIPTION = "The Bitstream Vera fonts - QPF Edition"
 SECTION = "opie/fonts"
-MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 PRIORITY = "optional"
 LICENSE = "Bitstream Vera"
 PACKAGE_ARCH = "all"

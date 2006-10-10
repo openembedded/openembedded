@@ -2,7 +2,6 @@ PV = "0.6.2+svn${SRCDATE}"
 LICENSE = "GPL"
 SECTION = "x11/utils"
 PR = "r0"
-MAINTAINER = "Johan Bilien <jobi@via.ecp.fr>"
 CONFLICTS = "minisip"
 
 DESCRIPTION = "SIP user agent, with focus on security - video support"

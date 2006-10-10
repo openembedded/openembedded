@@ -1,5 +1,4 @@
 LICENSE = 	"LGPL"
-MAINTAINER =	"Florian Boor <florian@kernelconcepts.de>"
 PR = "r0"
 
 DEPENDS = 	"libosso hildon-lgpl hildon-base-lib hildon-libs"

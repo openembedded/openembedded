@@ -1,7 +1,6 @@
 DESCRIPTION = "The Kate Text Editor for Opie"
 SECTION = "opie/applications"
 PRIORITY = "optional"
-MAINTAINER = "Team Opie <opie@handhelds.org>"
 LICENSE = "GPL"
 DEPENDS = "libqtaux2"
 APPNAME = "tinykate"

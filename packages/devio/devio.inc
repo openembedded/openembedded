@@ -1,7 +1,6 @@
 # This package builds the devio program
 DESCRIPTION = "devio - block devio io"
 HOMEPAGE = "http://devio.sourceforge.net/"
-MAINTAINER = "John Bowler <jbowler@acm.org>"
 SECTION = "base"
 LICENSE = "MIT"
 

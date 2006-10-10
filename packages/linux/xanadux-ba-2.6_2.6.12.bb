@@ -1,5 +1,4 @@
 DESCRIPTION = "Xanadux Blueangel kernel based on the hh 2.6.12"
-MAINTAINER = "Ian Jordan <immolo@lycos.co.uk>"
 LICENSE = "GPL"
 PR="r0"
 

@@ -1,7 +1,6 @@
 DESCRIPTION = "Library for interacting with ID3 tags."
 SECTION = "libs"
 PRIORITY = "optional"
-MAINTAINER = "jason haslup <openembedded@haslup.com>"
 DEPENDS = "zlib"
 DESCRIPTION = "Library for interacting with ID3 tags."
 LICENSE = "GPL"

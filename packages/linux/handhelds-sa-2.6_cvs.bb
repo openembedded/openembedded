@@ -1,6 +1,5 @@
 SECTION = "kernel"
 DESCRIPTION = "handhelds.org Linux kernel for StrongArm processor based devices."
-MAINTAINER = "Alex Lange <chicken@handhelds.org>"
 LICENSE = "GPL"
 #
 COMPATIBLE_HOST = "arm.*-linux"

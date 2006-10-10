@@ -1,5 +1,4 @@
 SECTION = "libs"
-MAINTAINER = "Chris Larson <kergoth@handhelds.org>"
 DESCRIPTION = "an ELF object file access library \
 The elf library provides routines to access, and manipulate, Elf object \
 files. It is still not complete, but is required for a number of programs, \

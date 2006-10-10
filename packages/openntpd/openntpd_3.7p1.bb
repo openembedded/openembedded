@@ -2,7 +2,6 @@ DESCRIPTION = "OpenNTPD is a FREE, easy to use implementation of the \
 Network Time Protocol."
 HOMEPAGE = "http://www.openntpd.org/"
 SECTION = "console/network"
-MAINTAINER = "Oyvind Repvik <nail@nslu2-linux.org>"
 LICENSE = "BSD"
 DEPENDS += "openssl"
 DEPENDS = "timezones"

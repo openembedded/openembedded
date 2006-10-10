@@ -1,7 +1,6 @@
 DESCRIPTION = "Python bindings for DBus, a socket-based message bus system for interprocess communication"
 SECTION = "devel/python"
 HOMEPAGE = "http://www.freedesktop.org/Software/dbus"
-MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 LICENSE = "GPL"
 DEPENDS = "expat glib-2.0 virtual/libintl python-pyrex-native python"
 RDEPENDS = "dbus"

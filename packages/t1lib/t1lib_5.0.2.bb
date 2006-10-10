@@ -1,7 +1,6 @@
 DESCRIPTION = "A Type1 Font Rastering Library"
 SECTION = "libs"
 PRIORITY = "optional"
-MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 PR = "r3"
 LICENSE = "LGPL GPL"
 SRC_URI = "${DEBIAN_MIRROR}/main/t/t1lib/t1lib_${PV}.orig.tar.gz \

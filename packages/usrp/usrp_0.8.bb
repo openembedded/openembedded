@@ -1,6 +1,5 @@
 DESCRIPTION = "Support software for the Universal Software Radio Peripheral (USRP)"
 LICENSE = "GPL"
-MAINTAINER = "Philip Balister philip@balister.org"
 HOMEPAGE = "http://comsec.com/wiki?UniversalSoftwareRadioPeripheral"
 SECTION = "devel"
 DEPENDS = "swig-native sdcc-native libusb"

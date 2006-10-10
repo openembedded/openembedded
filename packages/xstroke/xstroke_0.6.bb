@@ -2,7 +2,6 @@ DESCRIPTION = "Gesture recognition input method for X11"
 LICENSE = "GPL"
 SECTION = "x11"
 PRIORITY = "optional"
-MAINTAINER = "Phil Blundell <pb@handhelds.org>"
 DEPENDS = "virtual/libx11 xft libxtst libxpm"
 PR = "r2"
 

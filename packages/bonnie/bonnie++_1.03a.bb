@@ -4,7 +4,6 @@
 
 DESCRIPTION="Tests large file IO and creation/deletion of small files."
 LICENSE="GPL"
-MAINTAINER = "Raymond Danks <info-linux@geode.amd.com>"
 
 
 SRC_URI="${SOURCEFORGE_MIRROR}/bonnie/${PN}-${PV}.tgz"

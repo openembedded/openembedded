@@ -3,7 +3,6 @@ inherit gpe
 
 DEPENDS = "gtk+ libgpewidget gpe-icons"
 RDEPENDS = "gpe-icons"
-MAINTAINER = "Florian Boor <florian.boor@kernelconcepts.de>"
 SECTION = "gpe"
 DESCRIPTION = "This is a small GTK based multi-tab text editor."
 AUTHOR = "Vladimir Martinek <vm@sykora.cz>"

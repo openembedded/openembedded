@@ -1,7 +1,6 @@
 DESCRIPTION = "Opie Text Editor"
 SECTION = "opie/pim"
 PRIORITY = "optional"
-MAINTAINER = "Team Opie <opie@handhelds.org>"
 LICENSE = "GPL"
 APPNAME = "textedit"
 

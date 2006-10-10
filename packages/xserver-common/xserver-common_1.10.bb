@@ -1,4 +1,3 @@
-MAINTAINER  = "Florian Boor <florian@kernelconcepts.de>"
 DESCRIPTION = "Common X11 scripts and support files"
 LICENSE = "GPL"
 SECTION = "x11"

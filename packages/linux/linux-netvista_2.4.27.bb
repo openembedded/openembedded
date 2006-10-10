@@ -1,6 +1,5 @@
 DESCRIPTION = "Linux kernel x86 for IBM Netvista"
 LICENSE     = "GPL"
-MAINTAINER  = "Florian Boor <florian@kernelconcepts.de>
 PR          = "r4"
 
 SRC_URI = "ftp://ftp.kernel.org/pub/linux/kernel/v2.4/linux-${PV}.tar.bz2 \

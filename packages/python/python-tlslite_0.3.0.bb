@@ -3,7 +3,6 @@ authentication methods such as SRP, shared keys, and cryptoIDs, in addition to X
 Python, however it can access OpenSSL or cryptlib for faster crypto operations."
 SECTION = "devel/python"
 PRIORITY = "optional"
-MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 LICENSE = "PD"
 SRCNAME = "tlslite"
 

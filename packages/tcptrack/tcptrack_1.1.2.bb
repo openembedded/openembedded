@@ -2,7 +2,6 @@ SECTION = "console/network"
 DESCRIPTION = "tcptrack is a packet sniffer, which passively watches for \
 connections on a specified network interface, tracks their states, and lists \
 them in a manner similar to the Unix 'top' command."
-MAINTAINER = "Chris Larson <kergoth@handhelds.org>"
 LICENSE = "LGPL"
 DEPENDS = "ncurses libpcap"
 

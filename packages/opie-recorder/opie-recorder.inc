@@ -1,7 +1,6 @@
 DESCRIPTION = "Audio sampling recorder"
 SECTION = "opie/multimedia"
 PRIORITY = "optional"
-MAINTAINER = "Team Opie <opie@handhelds.org>"
 LICENSE = "GPL"
 APPNAME = "opierec"
 

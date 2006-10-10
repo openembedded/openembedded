@@ -1,6 +1,5 @@
 PR = "r0"
 LICENSE = 	"LGPL"
-MAINTAINER = "Florian Boor <florian@kernelconcepts.de>"
 
 DEPENDS = "gtk+-2.6.4-1.osso7 outo"
 

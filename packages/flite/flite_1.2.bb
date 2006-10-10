@@ -3,7 +3,6 @@ PRIORITY = "optional"
 HOMEPAGE = "http://fife.speech.cs.cmu.edu/flite/"
 SECTION = "console/utils"
 LICENSE = "flite"
-MAINTAINER = "Patrick Ohly <Patrick.Ohly@gmx.de>"
 PR = "r2"
 
 PARALLEL_MAKE = ""

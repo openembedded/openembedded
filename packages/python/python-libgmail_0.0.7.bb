@@ -1,7 +1,6 @@
 DESCRIPTION = "Python Bindings for Google's Gmail Service"
 SECTION = "devel/python"
 PRIORITY = "optional"
-MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 LICENSE = "GPL"
 RDEPENDS = "python-core python-netclient python-email"
 SRCNAME = "libgmail"

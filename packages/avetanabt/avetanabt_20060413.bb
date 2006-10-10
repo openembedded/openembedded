@@ -1,7 +1,6 @@
 DESCRIPTION = "avetanaBT: Bluetooth API implementation for Java (JSR-82)"
 SECTION = "devel"
 DEPENDS = "findutils-native jikes-native kaffeh-native fastjar-native bluez-libs classpath"
-MAINTAINER = "Mustafa Yuecel <yuecelm@ee.ethz.ch>"
 LICENSE = "GPL"
 HOMEPAGE = "http://sourceforge.net/projects/avetanabt/"
 

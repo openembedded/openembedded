@@ -4,7 +4,6 @@ in the normal taskbar."
 SECTION = "opie/applets"
 PRIORITY = "optional"
 LICENSE = "GPL"
-MAINTAINER = "Marcin Juszkiewicz <openembedded@hrw.one.pl>"
 HOMEPAGE = "http://sourceforge.net/projects/subapplet/"
 PR = "r5"
 

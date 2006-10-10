@@ -1,5 +1,4 @@
 DESCRIPTION = "Linux kernel for OpenZaurus PXA processor based devices."
-MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 SECTION = "kernel"
 LICENSE = "GPL"
 PV = "2.4.18-rmk7-pxa3-embedix"

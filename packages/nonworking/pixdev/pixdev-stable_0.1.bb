@@ -1,7 +1,6 @@
 DESCRIPTION="Pixil Operating Environment"
 SECTION="gui"
 PRIORITY="optional"
-MAINTAINER="Jordan Crouse <jordan@cosmicpenguin.net>"
 RDEPENDS="microwindows"
 DEPENDS="microwindows"
 

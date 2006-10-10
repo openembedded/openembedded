@@ -1,6 +1,5 @@
 SECTION = "kernel"
 DESCRIPTION = "Linux kernel for MNCI device"
-MAINTAINER = "M&N Solutions <info@mn-solutions.de>"
 LICENSE = "GPL"
 DEPENDS = "modutils-cross virtual/${TARGET_PREFIX}gcc${KERNEL_CCSUFFIX}"
 COMPATIBLE_HOST = "arm.*-linux"

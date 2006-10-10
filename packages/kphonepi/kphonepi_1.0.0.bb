@@ -1,7 +1,6 @@
 DESCRIPTION = "Kphone/Pi is a 'Voice Over Internet' phone which uses the Session Initiation Protocol (SIP)."
 SECTION = "opie/applications"
 PRIORITY = "optional"
-MAINTAINER = "Marcin Juszkiewicz <openembedded@hrw.one.pl>"
 LICENSE = "GPL"
 HOMEPAGE = "http://www.pi-sync.net/html/kp_pi.html"
 DEPENDS ="openssl"

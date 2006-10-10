@@ -3,7 +3,6 @@ DESCRIPTION = "GPS data converter"
 DEPENDS = "expat"
 HOMEPAGE = "http://gpsbabel.sf.net"
 LICENSE = "GPL"
-MAINTAINER = "Patrick Ohly <patrick.ohly@gmx.de>"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/gpsbabel/gpsbabel-${PV}.tar.gz"
 

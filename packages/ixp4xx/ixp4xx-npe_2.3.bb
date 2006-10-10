@@ -1,5 +1,4 @@
 DESCRIPTION = "NPE firmware for the IXP4xx line of devices"
-MAINTAINER = "Oyvind Repvik <nail@nslu2-linux.org>"
 LICENSE = "Intel Public Licence"
 PR = "r6"
 DEPENDS = "ixp4xx-npe-native"

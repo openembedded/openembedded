@@ -1,7 +1,6 @@
 DESCRIPTION = "Interface software for the TopField TF5000PVRt"
 SECTION = "network"
 PRIORITY = "optional"
-MAINTAINER = "NSLU2 Linux <www.nslu2-linux.org>"
 HOMEPAGE = "http://sf.net/projects/puppy/"
 LICENSE = "GPL"
 PR = "r2"

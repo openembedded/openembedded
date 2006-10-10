@@ -4,7 +4,6 @@ DESCRIPTION = "The Freedoom project aims at collaboratively creating a Free IWAD
 	       based on the Doom engine which is Free Software."
 HOMEPAGE = "http://freedoom.sourceforge.net/"
 PRIORITY = "optional"
-MAINTAINER = "Matthias 'CoreDump' Hentges  <oe@hentges.net>"
 LICENSE = "GPL"
 
 SRC_URI = "http://ovh.dl.sourceforge.net/sourceforge/freedoom/freedoom-iwad-0.3.zip"

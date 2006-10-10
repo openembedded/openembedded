@@ -1,6 +1,5 @@
 DESCRIPTION = "GPE calendar is the calendar application of the GPE PIM suite."
 SECTION = "gpe"
-MAINTAINER = "Florian Boor <florian.boor@kernelconcepts.de>"
 LICENSE = "GPL"
 
 DEPENDS = "dbus-glib libeventdb libschedule libxsettings-client libgpepimc libgpevtype"

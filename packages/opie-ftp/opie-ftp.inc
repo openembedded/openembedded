@@ -1,7 +1,6 @@
 DESCRIPTION = "Opie-Ftp"
 SECTION = "opie/applications"
 PRIORITY = "optional"
-MAINTAINER = "Team Opie <opie@handhelds.org>"
 LICENSE = "GPL"
 DEPENDS = "libopiecore2 opie-ftplib"
 APPNAME = "opieftp"

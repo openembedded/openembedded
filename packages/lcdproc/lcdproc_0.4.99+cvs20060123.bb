@@ -4,7 +4,6 @@ DESCRIPTION_append_lcdd = " This package contains the LCDd server."
 HOMEPAGE = "http://lcdproc.org"
 LICENSE = "GPL"
 PRIORITY = "optional"
-MAINTAINER = "Rene Wagner <rw@handhelds.org>"
 SECTION = "utils"
 
 DEPENDS = "${@((bb.data.getVar('LCDPROC_DRIVERS',d) or 'curses,text').find('curses') != -1) and 'ncurses' or ''}"

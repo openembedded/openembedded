@@ -1,6 +1,5 @@
 SECTION = "x11/utils"
 DESCRIPTION = "gtk2 outliner written by Matthew Allum"
-MAINTAINER = "Chris Larson <kergoth@handhelds.org>"
 LICENSE = "GPLv2"
 DEPENDS = "gtk+ libxml2"
 PR = "r1"

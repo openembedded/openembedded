@@ -1,6 +1,5 @@
 DESCRIPTION = "STUN server used to determine IP behind NAT firewall"
 HOMEPAGE = "http://developer.berlios.de/projects/mystun/"
-MAINTAINER = "Sven-Ola Tuecke <sven-ola@gmx.de>"
 SECTION = "console/telephony"
 PRIORITY = "optional"
 LICENSE = "GPL"

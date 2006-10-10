@@ -1,5 +1,4 @@
 PR = "r4"
-MAINTAINER = "Oyvind Repvik <nail@nslu2-linux.org"
 LICENSE = "GPL-2"
 
 DEPENDS = "libvorbis libogg libxslt"

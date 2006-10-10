@@ -1,5 +1,4 @@
 LICENSE = "GPL"
-MAINTAINER = "Phil Blundell <pb@debian.org>"
 
 inherit cross
 

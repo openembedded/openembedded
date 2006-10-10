@@ -1,7 +1,6 @@
 DESCRIPTION = "Linux driver for 802.11a/b/g universal NIC cards using Atheros chip sets"
 SECTION = "base"
 PRIORITY = "optional"
-MAINTAINER = "NSLU2 Linux <nslu2-linux@yahoogroups.com>"
 LICENSE = "GPL"
 RDEPENDS = "kernel (${KERNEL_VERSION})"
 DEPENDS = "virtual/kernel"

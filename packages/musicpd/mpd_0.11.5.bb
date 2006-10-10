@@ -1,7 +1,6 @@
 DESCRIPTION = "Music Player Daemon (mpd)"
 HOMEPAGE = "http://www.musicpd.org"
 LICENSE = "GPLv2"
-MAINTAINER = "Chris Larson <kergoth@handhelds.org>"
 SECTION = "console/multimedia"
 DEPENDS = "libvorbis libogg libid3tag libao zlib libmikmod libmad flac audiofile virtual/libiconv"
 PR = "r7"

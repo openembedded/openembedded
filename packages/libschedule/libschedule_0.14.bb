@@ -3,7 +3,6 @@ PR = "r1"
 DESCRIPTION = "RTC alarm handling library for GPE"
 SECTION = "gpe/libs"
 PRIORITY = "optional"
-MAINTAINER = "Philip Blundell <pb@handhelds.org>"
 DEPENDS = "glib-2.0"
 
 inherit pkgconfig gpe

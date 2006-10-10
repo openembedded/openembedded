@@ -1,6 +1,5 @@
 SECTION = "libs"
 LICENSE= "BSD-X"
-MAINTAINER = "Greg Gilbert <greg@treke.net>"
 DEPENDS = "xextensions fixesext"
 DESCRIPTION = "X Composite extension headers and specification"
 

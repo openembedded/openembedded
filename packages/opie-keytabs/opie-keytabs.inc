@@ -2,7 +2,6 @@ DESCRIPTION = "Opie keytabs for terminal applications"
 SECTION = "opie/base"
 PRIORITY = "optional"
 LICENSE = "GPL"
-MAINTAINER = "Team Opie <opie-devel@handhelds.org>"
 
 do_install() {
         install -d ${D}${palmtopdir}/etc/keytabs/

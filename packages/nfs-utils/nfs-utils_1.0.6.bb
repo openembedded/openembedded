@@ -1,7 +1,6 @@
 DESCRIPTION = "userspace utilities for kernel nfs"
 PRIORITY = "optional"
 SECTION = "console/network"
-MAINTAINER = "dyoung <dyoung@thestuffguy.com>"
 LICENSE = "GPL"
 PR = "r7"
 

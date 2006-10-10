@@ -3,7 +3,6 @@ provide support for old glib 1.2 based applications"
 SECTION = "libs"
 PRIORITY = "optional"
 LICENSE = "LGPL"
-MAINTAINER = "Philip Blundell <pb@handhelds.org>"
 DEPENDS = "glib-1.2-native"
 PR = "r2"
 

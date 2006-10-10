@@ -3,7 +3,6 @@ tunneling each and every TCP network connection from a Linux (2.4 and above, \
 with netfilter) computer through an http CONNECT proxy."
 HOMEPAGE = "http://www.reitwiessner.de/programs/u2nl.html"
 LICENSE = "GPL"
-MAINTAINER = "Chris Larson <kergoth@handhelds.org>"
 SECTION = "console/network"
 PRIORITY = "optional"
 

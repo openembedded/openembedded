@@ -2,7 +2,6 @@ DESCRIPTION = "Chess Game for Qt/Embedded based palmtop environments. \
 Uses the Phalanx chess engine."
 SECTION = "opie/games"
 PRIORITY = "optional"
-MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 LICENSE = "GPL"
 DEPENDS = "phalanx"
 RDEPENDS = "phalanx"

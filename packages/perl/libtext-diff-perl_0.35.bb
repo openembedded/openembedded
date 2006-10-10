@@ -1,6 +1,5 @@
 DESCRIPTION = "Text::Diff - Perform diffs on files and record sets"
 SECTION = "libs"
-MAINTAINER = "Jamie Lenehan <lenehan@twibble.org>"
 LICENSE = "Artistic|GPL"
 DEPENDS += "libalgorithm-diff-perl-native"
 RDEPENDS += "libalgorithm-diff-perl perl-module-carp perl-module-constant \

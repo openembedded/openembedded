@@ -5,7 +5,6 @@ PR = "r0"
 LICENSE = "GPL"
 DEPENDS = "jpeg"
 PRIORITY = "optional"
-MAINTAINER = "eFfeM <fransmeulenbroeks at yahoo dot com>"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/motion/motion-3.2.6.tar.gz"
 

@@ -2,7 +2,6 @@ DESCRIPTION = "A driver from Agera (a card manufacturer) for wireless LAN cards 
 HOMEPAGE = "http://www.agere.com/mobility/wireless_lan_drivers.html"
 SECTION = "kernel/modules"
 PRIORITY = "optional"
-MAINTAINER = "Holger Schurig"
 DEPENDS = "virtual/kernel"
 LICENSE = "BSD"
 PR = "r1"

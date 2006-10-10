@@ -1,6 +1,5 @@
 #Angstrom GPE image
 LICENSE = MIT
-MAINTAINER = "Koen Kooi <koen@dominion.kabel.utwente.nl>"
 PR = "r3"
 
 PREFERRED_PROVIDER_libgpewidget 	?= "libgpewidget"

@@ -1,7 +1,6 @@
 DESCRIPTION = "Bartender drink receipe database"
 SECTION = "opie/applications"
 PRIORITY = "optional"
-MAINTAINER = "Team Opie <opie@handhelds.org>"
 LICENSE = "GPL"
 APPNAME = "bartender"
 

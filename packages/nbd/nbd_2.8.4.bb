@@ -1,7 +1,6 @@
 DESCRIPTION = "Network Block Device"
 LICENSE = "GPLv2"
 HOMEPAGE = "http://nbd.sourceforge.net"
-MAINTAINER = "Holger Freyther <freyther@handhelds.org>"
 
 DEPENDS = "glib-2.0"
 

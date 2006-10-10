@@ -1,7 +1,6 @@
 DESCRIPTION = "A sophisticated Numeric Processing Package for Python"
 SECTION = "devel/python"
 PRIORITY = "optional"
-MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 LICENSE = "PSF"
 PR = "ml0"
 

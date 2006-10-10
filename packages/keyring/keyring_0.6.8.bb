@@ -1,7 +1,6 @@
 DESCRIPTION = "Stores accounts and passwords in an encrypted file."
 SECTION = "opie/applications"
 PRIORITY = "optional"
-MAINTAINER = "Robert Anderson <rea@sr.unh.edu>"
 LICENSE = "GPL"
 DEPENDS = "gdbm"
 PR = "r2"

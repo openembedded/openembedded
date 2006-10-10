@@ -1,5 +1,4 @@
 DESCRIPTION = "A minimal PDF viewer based on gtk and poppler"
-MAINTAINER = "Graeme Gregory <dp@xora.org.uk>"
 HOMEPAGE = "http://www.emma-soft.com/projects/epdfview/"
 LICENSE = "GPLv2"
 SECTION = "x11/applications"

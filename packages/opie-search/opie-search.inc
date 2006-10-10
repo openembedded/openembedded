@@ -1,7 +1,6 @@
 DESCRIPTION = "Search through all PIM data"
 SECTION = "opie/pim"
 PRIORITY = "optional"
-MAINTAINER = "Team Opie <opie@handhelds.org>"
 LICENSE = "GPL"
 APPNAME = "osearch"
 

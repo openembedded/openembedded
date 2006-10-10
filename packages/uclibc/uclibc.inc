@@ -2,7 +2,6 @@ DESCRIPTION = "C library for embedded systems"
 LICENSE = "LGPL"
 SECTION = "libs"
 PRIORITY = "required"
-MAINTAINER = "Gerald Britton <gbritton@doomcom.org>"
 
 #
 # For now, we will skip building of a gcc package if it is a uclibc one

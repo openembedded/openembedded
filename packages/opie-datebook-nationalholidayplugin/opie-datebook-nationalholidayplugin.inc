@@ -4,7 +4,6 @@ PRIORITY = "optional"
 LICENSE = "GPL"
 RDEPENDS = "opie-datebook"
 APPNAME = "nationaldayplugin"
-MAINTAINER = "Team Opie <opie@handhelds.org>"
 
 S = "${WORKDIR}/national"
 

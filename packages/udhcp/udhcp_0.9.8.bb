@@ -1,7 +1,6 @@
 SECTION = "console/network"
 DESCRIPTION = "Small dhcp client and dhcp server.  Designed for embedded use."
 HOMEPAGE = "http://udhcp.busybox.net/"
-MAINTAINER = "Chris Larson <kergoth@handhelds.org>"
 LICENSE = "GPL"
 
 SRC_URI = "http://udhcp.busybox.net/source/udhcp-${PV}.tar.gz \

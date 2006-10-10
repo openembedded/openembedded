@@ -1,7 +1,6 @@
 DESCRIPTION = "PyRAF is a Python-based interface to IRAF."
 HOMEPAGE = "http://www.stsci.edu/resources/software_hardware/pyfits"
 AUTHOR = "Space Telescope Science Institute"
-MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de"
 RDEPENDS = "python-numarray"
 SECTION = "devel/python"
 LICENSE = "AURA"

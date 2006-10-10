@@ -4,7 +4,6 @@
 
 LICENSE="GPL"
 DESCRIPTION="A set of tools for CD recording, including cdrecord"
-MAINTAINER = "Raymond Danks <info-linux@geode.amd.com>"
 HOMEPAGE="http://cdrecord.berlios.de/old/private/cdrecord.html"
 
 SRC_URI="ftp://ftp.berlios.de/pub/cdrecord/cdrtools-${PV}.tar.bz2"

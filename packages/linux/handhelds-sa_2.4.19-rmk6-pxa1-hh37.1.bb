@@ -1,6 +1,5 @@
 SECTION = "kernel"
 DESCRIPTION = "handhelds.org Linux kernel for StrongArm processor based devices."
-MAINTAINER = "Rene Wagner <rw@handhelds.org>"
 LICENSE = "GPL"
 PR = "r3"
 

@@ -1,7 +1,6 @@
 DESCRIPTION = "Etext reader for the Project Gutenberg."
 SECTION = "opie/applications"
 PRIORITY = "optional"
-MAINTAINER = "Team Opie <opie@handhelds.org>"
 LICENSE = "GPL"
 DEPENDS = "opie-ftplib"
 APPNAME = "gutenbrowser"

@@ -2,7 +2,6 @@ DESCRIPTION = "A Python package with bindings to the 'Virtual Instrument Softwar
 (VISA) library, in order to control measurement devices and test equipment via GPIB, RS232, or USB."
 SECTION = "devel/python"
 PRIORITY = "optional"
-MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 LICENSE = "BSD"
 SRCNAME = "PyVISA"
 

@@ -9,7 +9,6 @@ DESCRIPTION_${PN}-data = "Static antivirus signature database for Clam AntiVirus
 DESCRIPTION_${PN}-daemon = "An on-demand file scanning service for Clam AntiVirus"
 HOMEPAGE = "http://www.clamav.net/"
 SECTION = "network"
-MAINTAINER = "Jamie Lenehan <lenehan@twibble.org>"
 LICENSE = "GPL"
 DEPENDS = "zlib bzip2 gmp"
 RDEPENDS_${PN} = "${PN}-data"

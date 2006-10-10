@@ -2,7 +2,6 @@ DESCRIPTION = "Lock Opie now Button to lock Opie (as configured in the Security 
 SECTION = "opie/applets"
 PRIORITY = "optional"
 LICENSE = "GPL"
-MAINTAINER = "Team Opie <opie@handhelds.org>"
 APPNAME = "lockapplet"
 DEPENDS = "opie-security"
 RDEPENDS = "opie-security"

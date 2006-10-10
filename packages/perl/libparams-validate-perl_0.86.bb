@@ -1,6 +1,5 @@
 DESCRIPTION = "Params::Validate - Validate method/function parameters"
 SECTION = "libs"
-MAINTAINER = "Jamie Lenehan <lenehan@twibble.org>"
 LICENSE = "Artistic|GPL"
 PR = "r7"
 

@@ -1,7 +1,6 @@
 DEPENDS = "python gnome-vfs libxml2 gconf popt gtk+"
 LICENSE = "GPL"
 
-MAINTAINER = "Koen Kooi <koen@linuxtogo.org>"
 
 inherit gnome pkgconfig
 

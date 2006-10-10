@@ -1,7 +1,6 @@
 DESCRIPTION = "Tx Image Viewer"
 SECTION = "opie/applications"
 PRIORITY = "optional"
-MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 LICENSE = "GPL"
 HOMEPAGE = "http://community.zaurus.com/projects/tximage/"
 PR = "r2"

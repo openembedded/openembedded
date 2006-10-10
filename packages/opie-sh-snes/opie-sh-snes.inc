@@ -1,4 +1,3 @@
-MAINTAINER = "Matthias 'CoreDump' Hentges <coredump@handhelds.org>"
 DESCRIPTION = "Displays a list of available ROMs for use with snes9x."
 SECTION = "opie/shell"
 PRIORITY = "optional"

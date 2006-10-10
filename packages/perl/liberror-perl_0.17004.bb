@@ -1,6 +1,5 @@
 DESCRIPTION = "Error - Error/exception handling in an OO-ish way"
 SECTION = "libs"
-MAINTAINER = "Jamie Lenehan <lenehan@twibble.org>"
 LICENSE = "Artistic|GPL"
 PR = "r4"
 

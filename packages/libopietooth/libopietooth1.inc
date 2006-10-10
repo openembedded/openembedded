@@ -2,7 +2,6 @@ DESCRIPTION = "Opie Bluetooth library"
 SECTION = "opie/libs"
 PRIORITY = "optional"
 DEPENDS = "libopie2"
-MAINTAINER = "Team Opie <opie@handhelds.org>"
 LICENSE = "LGPL"
 
 

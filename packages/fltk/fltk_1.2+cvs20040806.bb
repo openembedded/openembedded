@@ -3,7 +3,6 @@ LICENSE ="LGPL"
 HOMEPAGE = "http://www.fltk.org"
 SECTION = "libs"
 PRIORITY = "optional"
-MAINTAINER = "Rene Wagner <rw@handhelds.org>"
 DEPENDS = "jpeg libpng zlib"
 PR = "r2"
 

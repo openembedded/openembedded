@@ -1,7 +1,6 @@
 DESCRIPTION = "E-Book reader"
 SECTION = "opie/applications"
 PRIORITY = "optional"
-MAINTAINER = "Team Opie <opie@handhelds.org>"
 LICENSE = "GPL"
 APPNAME = "opie-reader"
 APPTYPE = "binary"

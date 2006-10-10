@@ -1,7 +1,6 @@
 DESCRIPTION = "Opie Login Manager (similar to gdm, xdm or kdm)"
 SECTION = "opie/base"
 PRIORITY = "optional"
-MAINTAINER = "Team Opie <opie@handhelds.org>"
 LICENSE = "GPL"
 RRECOMMENDS = "opie-logoutapplet"
 APPNAME = "opie-login"

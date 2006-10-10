@@ -1,7 +1,6 @@
 LICENSE = "LGPL"
 DESCRIPTION = "Gtk+ display migration library"
 DEPENDS = "gtk+ libgcrypt"
-MAINTAINER = "Phil Blundell <pb@handhelds.org>"
 SECTION = "gpe"
 PRIORITY = "optional"
 PR = "r1"

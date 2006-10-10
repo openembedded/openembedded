@@ -1,7 +1,6 @@
 DESCRIPTION = "Localized key mappings"
 SECTION = "base"
 PRIORITY = "optional"
-MAINTAINER = "Matthias 'CoreDump' Hentges  <oe@hentges.net>"
 LICENSE = "GPL"
 
 PR = "r6"

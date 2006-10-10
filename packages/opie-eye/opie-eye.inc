@@ -1,7 +1,6 @@
 DESCRIPTION = "A image viewer"
 SECTION = "opie/applications"
 PRIORITY = "optional"
-MAINTAINER = "Team Opie <opie@handhelds.org>"
 LICENSE = "GPL"
 DEPENDS = "libopiecore2 libopieui2 libopiemm2"
 RDEPENDS = "opie-advancedfm-pics"

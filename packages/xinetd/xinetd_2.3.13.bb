@@ -1,6 +1,5 @@
 DEPENDS = ""
 DESCRIPTION = "Highly configurable, modular and secure inetd"
-MAINTAINER = "NSLU2 Linux <nslu2-linux@yahoogroups.com>"
 PR="r4"
 
 SRC_URI = "http://www.xinetd.org/xinetd-${PV}.tar.gz \

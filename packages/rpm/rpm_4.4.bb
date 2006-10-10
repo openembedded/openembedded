@@ -1,7 +1,6 @@
 DESCRIPTION = "The RPM Package Manager."
 HOMEPAGE = "http://rpm.org/"
 LICENSE = "LGPL GPL"
-MAINTAINER = "Chris Larson <kergoth@handhelds.org>"
 # NOTE: currently rpm doesn't support using an external popt,
 # file, or virtual/db.  FIXME: patch it to support that.
 # DEPENDS = "virtual/db popt file zlib"

@@ -1,7 +1,6 @@
 DESCRIPTION = "A Python Widget library based on python-curses."
 SECTION = "devel/python"
 PRIORITY = "optional"
-MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 LICENSE = "LGPL"
 RDEPENDS = "python-core python-curses"
 SRCNAME = "urwid"

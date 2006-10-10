@@ -2,7 +2,6 @@ DESCRIPTION = "PyODE is a set of open-source Python bindings for The Open Dynami
 an open-source physics engine. PyODE also includes an XODE parser."
 SECTION = "devel/python"
 PRIORITY = "optional"
-MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 LICENSE = "LGPL"
 SRCNAME = "PyODE"
 

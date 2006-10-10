@@ -3,7 +3,6 @@ DEPENDS = "edje-utils e-wm"
 RDEPENDS += "edje-utils e-wm"
 LICENSE = "MIT"
 SECTION = "e/apps"
-MAINTAINER = "Justin Patrin <papercrane@reversefold.com>"
 PR = "r4"
 
 #this is a shell script

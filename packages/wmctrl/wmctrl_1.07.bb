@@ -6,7 +6,6 @@
 # Date: 07-Jul-06
 
 DESCRIPTION = "A UNIX/Linux command line tool to interact with an EWMH/NetWM compatible X Window Manager"
-MAINTAINER = "Matthias 'CoreDump' Hentges <oe@hentges.net>"
 HOMEPAGE = "http://sweb.cz/tripie/utils/wmctrl/"
 LICENSE = "GPL"
 PR = "r0"

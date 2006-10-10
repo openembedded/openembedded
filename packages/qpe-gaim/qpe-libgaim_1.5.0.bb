@@ -1,6 +1,5 @@
 DESCRIPTION = "A multi protocol instant messager library, Qt/Embedded based Palmtop Environments Edition"
 SECTION = "opie/applications"
-MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 DEPENDS = "glib-2.0 gnutls"
 RDEPENDS = "libgaim-plugins"
 LICENSE = "GPL"

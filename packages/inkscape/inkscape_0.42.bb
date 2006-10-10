@@ -4,7 +4,6 @@ SECTION = "x11/utils"
 DESCRIPTION = "Inkscape is an SVG-based graphics editor featuring alpha \
 blending, node editing, SVG to PNG export, and more. Its goal is for features \
 similar to Illustrator, CorelDraw, Visio, etc."
-MAINTAINER = "Koen Kooi <koen@linuxtogo.org>"
 DEPENDS = "libgc intltool-native gtk+ gtkmm glibmm libart-lgpl libxslt librsvg libxml2 libsigc++-1.2 popt"
 LICENSE = "GPL"
 

@@ -1,7 +1,6 @@
 DESCRIPTION = "Multiple language keyboard"
 SECTION = "opie/inputmethods"
 PRIORITY = "optional"
-MAINTAINER = "Team Opie <opie@handhelds.org>"
 LICENSE = "GPL"
 DEPENDS = "libqtaux2 opie-pickboard"
 RDEPENDS = "opie-pics opie-pickboard"

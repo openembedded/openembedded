@@ -1,7 +1,6 @@
 # Angus Mackay's ez-ipupdate from www.ez-ipupdate.com
 DESCRIPTION = "A client for automatically updating your EZ-IP.net, justlinux.com, dhs.org, dyndns.org, ods.org, gnudip.cheapnet.net, tzo.com, easydns.com dynamic hostname parameters. Includes daemon support that only sends updates if your IP address changes."
 HOMEPAGE = "http://www.ez-ipupdate.com/"
-MAINTAINER = "John Bowler <jbowler@acm.org>"
 SECTION = "console/network"
 PRIORITY = "optional"
 LICENSE = "GPL"

@@ -1,5 +1,4 @@
 PR = "r0"
-MAINTAINER = "Florian Boor <florian.boor@kernelconcepts.de>
 LICENSE  = "BERKLEY"
 DEPENDS  = "openssl ortp speex expat"
 PROVIDES = "libjingle"

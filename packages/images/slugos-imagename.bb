@@ -1,6 +1,5 @@
 # This is an inglorious hack to provide a package to match
 # ${SLUGOS_IMAGENAME}-image
-MAINTAINER = "John Bowler <jbowler@acm.org>
 LICENSE = "MIT"
 PN = "${SLUGOS_IMAGENAME}-image"
 PV = "0"

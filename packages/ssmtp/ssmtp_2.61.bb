@@ -1,5 +1,4 @@
 SECTION = "console/network"
-MAINTAINER = "Oyvind Repvik <nail@nslu2-linux.org>"
 DEPENDS = "openssl"
 DESCRIPTION = "Extremely simple MTA to get mail off the system to a mail hub."
 LICENSE = "GPL"

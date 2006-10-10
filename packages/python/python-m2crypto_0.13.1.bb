@@ -1,7 +1,6 @@
 DESCRIPTION = "A Python crypto and SSL toolkit"
 SECTION = "devel/python"
 PRIORITY = "optional"
-MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 DEPENDS = "openssl swig-native"
 LICENSE = "BSD"
 SRCNAME = "M2Crypto"

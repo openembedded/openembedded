@@ -1,7 +1,6 @@
 SECTION = "unknown"
 DESCRIPTION = "Slugtool is a small app to disassemble and reassemble \
 flash images for the Linksys NSLU2 device."
-MAINTAINER = "Chris Larson <kergoth@handhelds.org>"
 PR = "r1"
 LICENSE = "GPL"
 SRC_URI = "http://www.lantz.com/filemgmt_data/files/slugtool.tar.gz \

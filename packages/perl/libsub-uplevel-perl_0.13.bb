@@ -1,6 +1,5 @@
 DESCRIPTION = "Sub::Uplevel - apparently run a function in a higher stack frame"
 SECTION = "libs"
-MAINTAINER = "Jamie Lenehan <lenehan@twibble.org>"
 LICENSE = "Artistic|GPL"
 RDEPENDS += "perl-module-exporter perl-module-strict perl-module-vars"
 PR = "r0"

@@ -3,7 +3,6 @@ DESCRIPTION = "GTK+1.2 is a deprecated library provided for running programs not
 HOMEPAGE = "http://www.gtk.org"
 SECTION = "libs"
 PRIORITY = "optional"
-MAINTAINER = "Rob Taylor <robtaylor@fastmail.fm>"
 DEPENDS = "glib-1.2 jpeg libpng libxext"
 PR = "r2"
 

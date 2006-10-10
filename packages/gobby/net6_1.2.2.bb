@@ -1,6 +1,5 @@
 LICENSE = "LGPL"
 HOMEPAGE = "http://darcs.0x539.de/trac/obby/cgi-bin/trac.cgi/wiki/"
-MAINTAINER = "Koen Kooi <koen@linuxtogo.org>"
 
 DEPENDS = "libsigc++-2.0"
 inherit autotools pkgconfig

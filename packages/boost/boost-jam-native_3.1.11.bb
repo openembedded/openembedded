@@ -5,7 +5,6 @@
 # thousands of programmers across a broad spectrum of applications.
 DESCRIPTION = "Make system for boost (native)"
 HOMEPAGE = "http://www.boost.org/"
-MAINTAINER = "John Bowler <jbowler@acm.org>"
 SECTION = "devel"
 PRIORITY = "optional"
 LICENSE = "Boost Software License"

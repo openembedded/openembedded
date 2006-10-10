@@ -1,6 +1,5 @@
 DESCRIPTION = "Params::Util - Simple, compact and correct param-checking functions"
 SECTION = "libs"
-MAINTAINER = "Jamie Lenehan <lenehan@twibble.org>"
 LICENSE = "Artistic|GPL"
 RDEPENDS += "perl-module-exporter perl-module-overload \
              perl-module-scalar-util perl-module-strict perl-module-vars"

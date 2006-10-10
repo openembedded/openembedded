@@ -1,5 +1,4 @@
 DESCRIPTION = "OPIE Mediaplayer1 OGG+MP3 pseudo package."
-MAINTAINER = "Werner Schulte <w1@schulte-ac.de>"
 LICENSE = "GPL"
 ALLOW_EMPTY = "1"
 PACKAGES = "${PN}"

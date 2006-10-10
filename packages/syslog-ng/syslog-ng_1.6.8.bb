@@ -1,5 +1,4 @@
 PR = "r9"
-MAINTAINER = "Oyvind Repvik <nail@nslu2-linux.org"
 DESCRIPTION = "Alternative system logger daemon"
 DEPENDS = "libol flex"
 

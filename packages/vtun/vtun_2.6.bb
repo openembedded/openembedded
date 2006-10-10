@@ -1,6 +1,5 @@
 DESCRIPTION = "Virtual Tunnels over TCP/IP networks with traffic shaping, compression and encryption."
 HOMEPAGE = "http://vtun.sourceforge.net/"
-MAINTAINER = "Bruno Randolf <bruno.randolf@4g-systems.biz>"
 SECTION = "console/network"
 PRIORITY = "optional"
 LICENSE = "GPL"

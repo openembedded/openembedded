@@ -2,7 +2,6 @@ DESCRIPTION = "lineakd"
 SECTION = "gpe/multimedia"
 HOMEPAGE = "http://lineak.sourceforge.net"
 LICENSE = "GPLv2"
-MAINTAINER = "Justin Patrin <papercrane@reversefold.com>"
 DEPENDS = "virtual/libx11 libxext"
 PR = "r0"
 

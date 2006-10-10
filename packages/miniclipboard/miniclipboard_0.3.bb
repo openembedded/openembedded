@@ -4,7 +4,6 @@ LICENSE = "LGPL"
 DESCRIPTION = "Clipboard management application"
 DEPENDS = "virtual/libx11"
 RDEPENDS = "gdk-pixbuf-loader-xpm"
-MAINTAINER = "Phil Blundell <pb@handhelds.org>"
 PR = "r1"
 
 SRC_URI += "file://miniclipboard.desktop"

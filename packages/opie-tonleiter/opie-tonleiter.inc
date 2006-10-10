@@ -1,7 +1,6 @@
 DESCRIPTION = "Music scales for string instruments"
 SECTION = "opie/multimedia"
 PRIORITY = "optional"
-MAINTAINER = "Team Opie <opie@handhelds.org>"
 LICENSE = "GPL"
 APPNAME = "tonleiter"
 

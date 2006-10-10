@@ -4,7 +4,6 @@ SECTION = "gpe"
 
 RDEPENDS = "gdk-pixbuf-loader-png"
 
-MAINTAINER = "Phil Blundell <pb@handhelds.org>"
 
 inherit gpe
 

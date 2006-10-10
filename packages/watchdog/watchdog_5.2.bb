@@ -1,6 +1,5 @@
 #CONFFILES = "${sysconfdir}/watchdog.conf"
 DESCRIPTION = "Software watchdog"
-MAINTAINER = "Oyvind Repvik <nail@nslu2-linux.org>"
 LICENSE = "GPL"
 PR = "r3"
 

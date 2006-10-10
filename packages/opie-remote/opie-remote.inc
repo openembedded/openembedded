@@ -1,7 +1,6 @@
 DESCRIPTION = "A remote control"
 SECTION = "opie/applications"
 PRIORITY = "optional"
-MAINTAINER = "Team Opie <opie@handhelds.org>"
 LICENSE = "GPL"
 RDEPENDS = "lirc"
 APPNAME = "remote"

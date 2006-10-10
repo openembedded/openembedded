@@ -4,7 +4,6 @@ SECTION = "base"
 DEPENDS = "ncurses zlib"
 DEPENDS_${PN} += "update-alternatives"
 
-MAINTAINER = "Chris Larson <kergoth@handhelds.org>"
 
 SRC_URI = "${DEBIAN_MIRROR}/main/d/dpkg/dpkg_${PV}.tar.gz"
 S = "${WORKDIR}/dpkg-${PV}"

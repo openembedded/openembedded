@@ -4,7 +4,6 @@ Furthermore, libevent also support callbacks due to signals or regular timeouts.
 HOMEPAGE = "http://www.monkey.org/~provos/libevent/"
 SECTION = "libs"
 AUTHOR = "Niels Provos <provos@citi.umich.edu>"
-MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 LICENSE = "BSD"
 
 SRC_URI = "http://monkey.org/~provos/libevent-${PV}.tar.gz"

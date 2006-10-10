@@ -1,5 +1,4 @@
 DESCRIPTION = "MOC is a ncurses based music player"
-MAINTAINER = "Kristoffer Ericson <kristoffer@jlime.com>"
 SECTION = "console/multimedia"
 DEPENDS = "ncurses"
 LICENSE = "GPL"

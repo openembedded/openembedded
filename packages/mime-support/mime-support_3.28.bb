@@ -1,6 +1,5 @@
 SECTION = "base"
 DESCRIPTION = "MIME files 'mime.types' & 'mailcap', and support programs"
-MAINTAINER = "Rene Wagner <rw@handhelds.org>"
 
 DEPENDS = "file"
 RRECOMMENDS = "file"

@@ -5,7 +5,6 @@
 # the rpcsvc functionality is not present in uclibc
 DESCRIPTION ?= "NIS Server and Tools"
 HOMEPAGE ?= "http://www.linux-nis.org/nis/"
-MAINTAINER ?= "John Bowler <jbowler@acm.org>"
 SECTION ?= "console/networking"
 PRIORITY ?= "optional"
 LICENSE ?= "GPL-2"

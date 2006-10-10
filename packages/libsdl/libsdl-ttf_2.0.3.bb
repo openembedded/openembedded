@@ -1,7 +1,6 @@
 DESCRIPTION = "Simple DirectMedia Layer truetype font library."
 SECTION = "libs"
 PRIORITY = "optional"
-MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 DEPENDS = "virtual/libsdl freetype"
 LICENSE = "LGPL"
 

@@ -3,7 +3,6 @@
 # All packages in here must build with the slugos-???.conf distros,
 # they do not necessarily work.
 DESCRIPTION = "Packages that are compatible with the SlugOS firmware"
-MAINTAINER = "NSLU2 Linux <nslu2-linux@yahoogroups.com>"
 HOMEPAGE = "http://www.nslu2-linux.org"
 LICENSE = "MIT"
 PR = "r15"

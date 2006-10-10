@@ -2,7 +2,6 @@ SECTION = "console/network"
 DESCRIPTION = "Kismet is an 802.11 layer2 wireless network detector, sniffer, and intrusion detection system"
 HOMEPAGE = "http://www.kismetwireless.net/"
 LICENSE = "GPLv2"
-MAINTAINER = "Graeme Gregory <dp@xora.org.uk>"
 DEPENDS = "expat gmp"
 
 SRC_URI = "http://www.kismetwireless.net/code/kismet-2004-04-R1.tar.gz \

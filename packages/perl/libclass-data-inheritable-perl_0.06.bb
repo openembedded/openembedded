@@ -1,6 +1,5 @@
 DESCRIPTION = "Class::Data::Inheritable - Inheritable, overridable class data"
 SECTION = "libs"
-MAINTAINER = "Jamie Lenehan <lenehan@twibble.org>"
 LICENSE = "Artistic|GPL"
 PR = "r3"
 

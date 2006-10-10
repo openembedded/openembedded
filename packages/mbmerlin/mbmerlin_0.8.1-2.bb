@@ -7,7 +7,6 @@ DEPENDS = "virtual/xserver libxft startup-notification"
 
 SECTION = "x11"
 PRIORITY = "optional"
-MAINTAINER = "Florian Boor <florian.boor@kernelconcepts.de>"
 FILES_${PN} = "${sysconfdir} ${bindir} ${datadir}/mbmerlin ${datadir}/applications"
 FILES_${PN} += " ${datadir}/pixmaps"
 

@@ -6,7 +6,6 @@ DESCRIPTION = "Database Drivers for libdbi"
 HOMEPAGE = "http://libdbi-drivers.sourceforge.net/"
 LICENSE = "GPLv2"
 SECTION = "libs"
-MAINTAINER = "Eddy Pronk <epronk@muftor.com>"
 
 PROVIDES = "libdbd-sqlite"
 DEPENDS = "libdbi sqlite"

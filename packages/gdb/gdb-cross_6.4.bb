@@ -2,7 +2,6 @@ LICENSE = "GPL"
 DESCRIPTION = "gdb - GNU debugger"
 SECTION = "base"
 PRIORITY = "optional"
-MAINTAINER = "Shane Volpe <shanevolpe@gmail.com>"
 LICENSE = "GPL"
 DEPENDS = "ncurses-native"
 

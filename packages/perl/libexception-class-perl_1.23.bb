@@ -1,6 +1,5 @@
 DESCRIPTION = "Exception::Class - A module that allows you to declare real exception classes in Perl"
 SECTION = "libs"
-MAINTAINER = "Jamie Lenehan <lenehan@twibble.org>"
 LICENSE = "Artistic|GPL"
 DEPENDS = "libclass-data-inheritable-perl-native libdevel-stacktrace-perl-native"
 RDEPENDS = "libclass-data-inheritable-perl libdevel-stacktrace-perl"

@@ -5,7 +5,6 @@ DEPENDS = "ipkg-collateral unionroot busybox"
 RDEPENDS = "ipkg-collateral unionroot busybox"
 SECTION = "base"
 PRIORITY = "optional"
-MAINTAINER = "Chris Lord <cwiiis@handhelds.org>"
 
 PR = "2"
 

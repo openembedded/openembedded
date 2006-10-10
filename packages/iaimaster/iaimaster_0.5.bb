@@ -1,6 +1,5 @@
 DESCRIPTION = "Pen action mini game. You fight evil Iai-Master and must survive. \
 (Iai is a kind of the samurai fighting style)"
-MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 SECTION = "opie/games"
 LICENSE = "GPL"
 APPNAME = "${PN}"

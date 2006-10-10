@@ -1,7 +1,6 @@
 DESCRIPTION = "Tx Drug Database"
 SECTION = "opie/applications"
 PRIORITY = "optional"
-MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 LICENSE = "GPL"
 DEPENDS = "sqlite"
 PR = "r2"

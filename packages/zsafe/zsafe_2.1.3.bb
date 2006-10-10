@@ -1,7 +1,6 @@
 DESCRIPTION = "Password manager"
 SECTION     = "opie/applications"
 PRIORITY    = "optional"
-MAINTAINER  = "Carsten Schneider <zcarsten@gmx.net>"
 LICENSE     = "GPL"
 RCONFLICTS  = "opie-zsafe"
 APPNAME     = "zsafe"

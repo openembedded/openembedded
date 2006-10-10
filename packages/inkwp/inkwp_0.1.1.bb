@@ -1,7 +1,6 @@
 DESCRIPTION = "Inkwp - a handwriting note take application for Qt/Embedded based palmtop environments."
 SECTION = "opie/applications"
 PRIORITY = "optional"
-MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 LICENSE = "GPL"
 HOMEPAGE = "http://www.geocities.co.jp/SiliconValley-Oakland/4550/inkwp.html"
 

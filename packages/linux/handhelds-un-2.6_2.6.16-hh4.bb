@@ -1,5 +1,4 @@
 DESCRIPTION = "Handhelds HTC-PXA phones kernel based on the hh 2.6.16"
-MAINTAINER = "goxboxlive <goxboxlive@gmail.com>"
 LICENSE = "GPL"
 PR="r0"
 

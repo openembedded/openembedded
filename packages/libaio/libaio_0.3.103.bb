@@ -4,7 +4,6 @@
 
 DESCRIPTION="Asynchronous input/output library that uses the kernels native interface"
 HOMEPAGE="https://rhn.redhat.com/errata/RHBA-2005-085.html"
-MAINTAINER = "Raymond Danks <info-linux@geode.amd.com>"
 LICENSE="GPL"
 
 SRC_URI="http://search.belnet.be/packages/lineox/4.0/updates/SRPMS/${P}-3.src.rpm \

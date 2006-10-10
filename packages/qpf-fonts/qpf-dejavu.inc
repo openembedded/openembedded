@@ -1,6 +1,5 @@
 SECTION = "opie/fonts"
 PRIORITY = "optional"
-MAINTAINER = "Marcin Juszkiewicz <openembedded@hrw.one.pl>"
 LICENSE = "Bitstream Vera"
 HOMEPAGE = "http://dejavu.sourceforge.net/wiki/index.php/Main_Page"
 PACKAGE_ARCH = "all"

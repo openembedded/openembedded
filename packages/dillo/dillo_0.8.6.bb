@@ -8,7 +8,6 @@ SRC_URI="http://www.dillo.org/download/dillo-${PV}.tar.bz2 \
 	 file://dillo.png"
 	 
 
-MAINTAINER = "Graeme Gregory <dp@xora.org.uk>"
 PRIORITY = "optional"
 
 RCONFLICTS = "dillo2"

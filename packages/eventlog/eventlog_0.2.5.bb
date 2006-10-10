@@ -1,5 +1,4 @@
 DESCRIPTION = "Replacement syslog API"
-MAINTAINER = "Oyvind Repvik <nail@nslu2-linux.org>"
 LICENSE = "BSD"
 PR = "r0"
 

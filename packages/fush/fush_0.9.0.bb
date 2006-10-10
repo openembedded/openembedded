@@ -1,7 +1,6 @@
 DESCRIPTION = "Fush is a shell replacement for security conscious admins."
 HOMEPAGE = "http://sourceforge.net/projects/foosh/"
 LICENSE = "GPL"
-MAINTAINER = "Chris Larson <kergoth@handhelds.org>"
 DEPENDS = "readline"
 PRIORITY = "optional"
 SECTION = "console/shells"

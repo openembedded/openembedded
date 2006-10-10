@@ -1,7 +1,6 @@
 DESCRIPTION = "FreeSerif font - QPF Edition"
 SECTION = "opie/fonts"
 PRIORITY = "optional"
-MAINTAINER = "Marcin Juszkiewicz <openembedded@hrw.one.pl>"
 LICENSE = "GPL"
 HOMEPAGE = "http://savannah.nongnu.org/projects/freefont/"
 PACKAGE_ARCH = "all"

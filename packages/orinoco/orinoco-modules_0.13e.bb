@@ -2,7 +2,6 @@ DESCRIPTION = "A driver for wireless LAN cards based on Hermes(Orinoco) cards. \
 Also contains support for cards using downloadable firmware, i.e. the Symbol/Socket family."
 SECTION = "kernel/modules"
 PRIORITY = "optional"
-MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 LICENSE = "GPL"
 PR = "r4"
 

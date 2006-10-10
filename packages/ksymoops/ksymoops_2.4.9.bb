@@ -1,6 +1,5 @@
 SECTION = "console/utils"
 DESCRIPTION = "Kernel oops and error message decoder."
-MAINTAINER = "Chris Larson <kergoth@handhelds.org>"
 LICENSE = "GPLv2"
 DEPENDS = "binutils"
 

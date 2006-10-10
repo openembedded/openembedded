@@ -1,7 +1,6 @@
 DESCRIPTION = "CF/PCMCIA Card Monitor applet"
 SECTION = "opie/applets"
 PRIORITY = "optional"
-MAINTAINER = "Team Opie <opie@handhelds.org>"
 LICENSE = "GPL"
 APPNAME = "cardmonapplet"
 I18N_FILES = "libcardmonapplet.ts"

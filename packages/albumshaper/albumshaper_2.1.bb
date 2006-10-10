@@ -4,7 +4,6 @@ Album Shaper embraces open formats like XML, JPEG, and XSLT, while supporting Wi
 users who speak a multitude of languages around the world."
 HOMEPAGE = "http://albumshaper.sourceforge.net"
 AUTHOR = "Will Stokes"
-MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 LICENSE = "GPL"
 DEPENDS = "libxml2 libxslt jpeg"
 

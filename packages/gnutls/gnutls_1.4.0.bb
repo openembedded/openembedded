@@ -1,6 +1,5 @@
 DESCRIPTION = "GNU Transport Layer Security Library"
 DEPENDS = "zlib libgcrypt lzo"
-MAINTAINER = "Eric Shattow <lucent@gmail.com>"
 HOMEPAGE = "http://www.gnu.org/software/gnutls/"
 LICENSE = "LGPL"
 PR = "r1"

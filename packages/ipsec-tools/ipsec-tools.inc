@@ -2,7 +2,6 @@ DESCRIPTION = "IPsec-Tools is a port of KAME's IPsec utilities to the \
 Linux-2.6 IPsec implementation."
 DEPENDS = "virtual/kernel openssl readline flex"
 LICENSE = "BSD"
-MAINTAINER = "Chris Larson <kergoth@handhelds.org>"
 SECTION = "console/network"
 PR = "r1"
 

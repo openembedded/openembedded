@@ -1,7 +1,6 @@
 DESCRIPTION = "Python bindings for the sword library"
 SECTION = "devel/python"
 PRIORITY = "optional"
-MAINTAINER = "Matt Reimer <mreimer@vpop.net>"
 LICENSE = "GPL"
 RDEPENDS = "python-core sword"
 DEPENDS = "sword-${PV} swig-native"

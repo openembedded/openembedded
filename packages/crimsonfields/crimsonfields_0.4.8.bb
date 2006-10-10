@@ -1,7 +1,6 @@
 DESCRIPTION = "Crimson Fields is a tactical war game in the tradition of Battle Isle."
 SECTION = "games"
 DEPENDS = "crimsonfields-native virtual/libsdl libsdl-mixer libsdl-ttf"
-MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 LICENSE = "GPL"
 PR = "r0"
 

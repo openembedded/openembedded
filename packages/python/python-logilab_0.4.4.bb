@@ -5,7 +5,6 @@ command line argument parsing, logging, and process \
 daemonization."
 SECTION = "devel/python"
 PRIORITY = "optional"
-MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 LICENSE = "GPL"
 SRCNAME = "common"
 

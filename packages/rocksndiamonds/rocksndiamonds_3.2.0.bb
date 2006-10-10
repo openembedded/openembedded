@@ -3,7 +3,6 @@ SECTION = "games"
 LICENSE = "GPL"
 HOMEPAGE = "http://www.artsoft.org/rocksndiamonds/"
 AUTHOR = "Holger Schemel <info@artsoft.org>"
-MAINTAINER = "Paul Sokolovsky <pmiscml@gmail.com>"
 
 DEFAULT_PREFERENCE = "-1"
 

@@ -1,7 +1,6 @@
 DESCRIPTION = "Game: shoot the parachutists"
 SECTION = "opie/games"
 PRIORITY = "optional"
-MAINTAINER = "Team Opie <opie@handhelds.org>"
 LICENSE = "GPL"
 APPNAME = "parashoot"
 

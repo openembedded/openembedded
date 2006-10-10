@@ -2,7 +2,6 @@
 #
 DESCRIPTION = "OpenLDAP Software is an open source implementation of the Lightweight Directory Access Protocol."
 HOMEPAGE = "http://www.OpenLDAP.org/license.html"
-MAINTAINER = "John Bowler <jbowler@acm.org>"
 PRIORITY = "optional"
 # The OpenLDAP Public License - see the HOMEPAGE - defines
 # the license.  www.openldap.org claims this is Open Source

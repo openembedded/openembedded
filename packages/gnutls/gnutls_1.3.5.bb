@@ -1,6 +1,5 @@
 DESCRIPTION = "GNU Transport Layer Security Library"
 DEPENDS = "zlib libgcrypt lzo"
-MAINTAINER = "Eric Shattow <lucent@gmail.com>"
 
 LICENSE = "LGPL"
 PR = "r4"

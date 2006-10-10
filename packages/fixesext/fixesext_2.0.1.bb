@@ -1,6 +1,5 @@
 SECTION = "libs"
 LICENSE= "BSD-X"
-MAINTAINER = "Greg Gilbert <greg@treke.net>"
 DEPENDS = "xextensions"
 DESCRIPTION = "X Fixes extension headers and specification."
 

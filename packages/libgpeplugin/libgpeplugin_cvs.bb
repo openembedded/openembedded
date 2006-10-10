@@ -1,6 +1,5 @@
 DESCRIPTION = "Plugin system for GPE applications"
 AUTHOR = "Luce DeCicco <ldecicco@gmail.com>"
-MAINTAINER = "Koen Kooi <koen@linuxtogo.org>"
 
 DEPENDS = "gtk+ libgpewidget"
 PV = "0.0+cvs${SRCDATE}"

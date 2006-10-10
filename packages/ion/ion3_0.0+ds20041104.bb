@@ -6,7 +6,6 @@ DESCRIPTION = "Ion is a tiling tabbed window manager designed with keyboard \
 users in mind."
 HOMEPAGE = "http://modeemi.fi/~tuomov/ion/"
 LICENSE = "LGPL"
-MAINTAINER = "Chris Larson <kergoth@handhelds.org>"
 PROVIDES += "ion"
 SECTION = "x11/wm"
 SNAPDATE = "${@(bb.data.getVar('PV', d, 1) or '')[-8:]}"

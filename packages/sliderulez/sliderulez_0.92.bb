@@ -3,7 +3,6 @@ HOMEPAGE = "http://www.gelhaus.net/cgi-bin/showpage.py?zaurus/+sliderulez.html"
 AUTHOR = "Matthew Gelhaus"
 SECTION = "opie/applications"
 LICENSE = "GPL"
-MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 PR = "r0"
 
 APPTYPE = "binary"

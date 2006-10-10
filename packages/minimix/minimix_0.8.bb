@@ -1,6 +1,5 @@
 DESCRIPTION = "Volume Control Applet for GPE"
 LICENSE = "GPL"
-MAINTAINER = "Rene Wagner <rw@handhelds.org>"
 SECTION = "gpe"
 
 DEPENDS = "libgpewidget"

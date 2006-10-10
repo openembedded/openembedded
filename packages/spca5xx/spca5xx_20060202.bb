@@ -2,7 +2,6 @@ DESCRIPTION = "USB Webcam driver for spca5xx chipset family supporting \
 over 100 models of camera""
 PRIORITY = "optional"
 SECTION = "kernel/modules"
-MAINTAINER = "dyoung <dyoung8888@yahoo.com>"
 LICENSE = "GPL"
 PR = "r0"
 

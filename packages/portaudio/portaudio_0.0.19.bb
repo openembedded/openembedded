@@ -1,7 +1,6 @@
 DESCRIPTION = "A portable audio library"
 SECTION = "libs"
 PRIORITY = "optional"
-MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 LICENSE = "GPL"
 PV = "1:0.0.19+cvs${SRCDATE}"
 PR = "r1"

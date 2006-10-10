@@ -1,7 +1,6 @@
 DESCRIPTION = "Voice Memo Recorder Applet"
 SECTION = "opie/applets"
 PRIORITY = "optional"
-MAINTAINER = "Team Opie <opie@handhelds.org>"
 LICENSE = "GPL"
 RDEPENDS = "opie-vmemo-settings"
 I18N_FILES = "libvmemoapplet.ts"

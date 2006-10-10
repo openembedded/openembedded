@@ -1,7 +1,6 @@
 LICENSE = "GPL"
 SECTION = "console/utils"
 DESCRIPTION = "grep GNU utility"
-MAINTAINER = "Pawel Osiczko <p.osiczko@tetrapyloctomy.org>"
 PR = "r1"
 
 SRC_URI = "${GNU_MIRROR}/grep/grep-${PV}.tar.bz2"

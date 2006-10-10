@@ -2,7 +2,6 @@ DESCRIPTION = "QT Gnuplot is a front end for Gnuplot. Install Opie-Embedded \
 console to enable the Launch Gnuplot menu option."
 SECTION    = "opie/applications"
 PRIORITY   = "optional"
-MAINTAINER = "Philip Frampton"
 LICENSE    = "GPL"
 PRIORITY   = "optional"
 

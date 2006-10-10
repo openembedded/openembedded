@@ -1,4 +1,3 @@
-MAINTAINER = "Rene Wagner <rw@handhelds.org>"
 
 PV = "1.1.5+cvs${SRCDATE}"
 DEFAULT_PREFERENCE = "-1"

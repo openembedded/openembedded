@@ -1,4 +1,3 @@
-MAINTAINER = "Bob Davies  <tyggerbob@rogers.com>"
 LICENSE = MIT
 PR = "r6"
 

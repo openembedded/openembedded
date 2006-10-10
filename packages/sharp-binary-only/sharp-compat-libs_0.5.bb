@@ -7,7 +7,6 @@ DEPENDS = "opie-sh"
 RDEPENDS = "opie-sh"
 RPROVIDES = "oz-compat"
 RCONFLICTS = "oz-compat"
-MAINTAINER = "Tim Ansell <mithro AT mithis.net>"
 LICENSE = "GPL"
 PR = "r2"
 

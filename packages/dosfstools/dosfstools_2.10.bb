@@ -3,7 +3,6 @@
 # Released under the MIT license (see packages/COPYING)
 
 DESCRIPTION = "DOS FAT Filesystem Utilities"
-MAINTAINER = "Raymond Danks <info-linux@geode.amd.com>"
 
 SECTION = "base"
 PRIORITY = "optional"

@@ -1,7 +1,6 @@
 DESCRIPTION = "Atomic"
 SECTION = "opie/games"
 PRIORITY = "optional"
-MAINTAINER = "Team Opie <opie@handhelds.org>"
 
 LICENSE = "GPL"
 AUTHOR = "Andre Wuest"

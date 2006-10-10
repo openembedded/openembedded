@@ -1,6 +1,5 @@
 SECTION = "net/misc"
 DESCRIPTION = "Bluetooth cellphone information gatherer"
-MAINTAINER = "Bob Davies (tyggerbob@gmail.com)"
 PV = "0.1"
 SRC_URI = "http://www.remote-exploit.org/images/a/a0/Bluesnarfer.tar.gz"
 

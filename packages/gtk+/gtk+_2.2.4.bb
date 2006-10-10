@@ -4,7 +4,6 @@ set of widgets, GTK+ is suitable for projects ranging from small one-off project
 HOMEPAGE = "http://www.gtk.org"
 SECTION = "libs"
 PRIORITY = "optional"
-MAINTAINER = "Philip Blundell <pb@handhelds.org>"
 DEPENDS = "pango atk jpeg libpng libxext"
 
 SRC_URI = "http://ftp.gnome.org/pub/gnome/sources/gtk+/2.2/gtk+-${PV}.tar.bz2 \

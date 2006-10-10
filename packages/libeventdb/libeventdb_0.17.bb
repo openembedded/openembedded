@@ -2,7 +2,6 @@ LICENSE = "LGPL"
 DESCRIPTION = "Database access library for GPE calendar"
 SECTION = "gpe/libs"
 PRIORITY = "optional"
-MAINTAINER = "Philip Blundell <pb@handhelds.org>"
 DEPENDS = "libgpewidget libgpepimc sqlite"
 
 GPE_TARBALL_SUFFIX = "bz2"

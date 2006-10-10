@@ -1,7 +1,6 @@
 DESCRIPTION = "Simple DirectMedia Layer networking library."
 SECTION = "libs/network"
 PRIORITY = "optional"
-MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 DEPENDS = "virtual/libsdl"
 LICENSE = "LGPL"
 

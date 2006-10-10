@@ -1,7 +1,6 @@
 DESCRIPTION = "A Client for Wi-Fi Protected Access (WPA)."
 SECTION = "network"
 LICENSE = "GPL"
-MAINTAINER = "Holger Schurig"
 HOMEPAGE = "http://hostap.epitest.fi/wpa_supplicant/"
 DEPENDS = "openssl"
 DEPENDS_append_mtx-1 = " madwifi-modules"

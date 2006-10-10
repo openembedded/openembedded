@@ -1,6 +1,5 @@
 DESCRIPTION = "Archive::Tar - module for manipulations of tar archives"
 SECTION = "libs"
-MAINTAINER = "Jamie Lenehan <lenehan@twibble.org>"
 LICENSE = "Artistic|GPL"
 DEPENDS += "libio-zlib-perl-native"
 RDEPENDS += "libio-zlib-perl"

@@ -4,7 +4,6 @@
 
 HOMEPAGE = "http://www.perforce.com"
 DESCRIPTION = "Perforce client and server binaries"
-MAINTAINER = "Raymond Danks <info-linux@geode.amd.com>"
 LICENSE = "Perforce"
 
 def get_kernelmajorversion(p):

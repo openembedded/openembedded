@@ -2,7 +2,6 @@ DESCRIPTION = "simple logrotate bash script"
 RDEPENDS = "busybox"
 SECTION = "admin"
 PRIORITY = "optional"
-MAINTAINER = "Bruno Randolf <bruno.randolf@4g-systems.biz>"
 LICENSE = "GPL"
 
 SRC_URI = "http://meshcube.org/download/logrotate_${SRCDATE}.tgz"

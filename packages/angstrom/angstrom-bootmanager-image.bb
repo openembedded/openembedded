@@ -1,6 +1,5 @@
 #Angstrom bootmanager image
 LICENSE = MIT
-MAINTAINER = "Koen Kooi <koen@dominion.kabel.utwente.nl>"
 PR = "r0"
 
 DEPENDS = "task-angstrom"

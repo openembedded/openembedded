@@ -3,7 +3,6 @@ HOMEPAGE = "http://www.ethereal.com"
 SECTION = "x11/network"
 LICENSE = "GPL"
 DEPENDS = "perl-native gtk+ gnutls libpcap"
-MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 PR = "r2"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/ethereal/ethereal-${PV}.tar.bz2 \

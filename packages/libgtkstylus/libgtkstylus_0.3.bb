@@ -1,6 +1,5 @@
 DESCRIPTION = "GTK plugin for stylus based systems"
 SECTION = "libs"
-MAINTAINER = "Florian Boor <florian.boor@kernelconcepts.de>"
 DEPENDS = "gtk+"
 LICENSE = "LGPL"
 FILES_${PN} = "/etc ${libdir}/gtk-2.0/2.4.0/modules/*.so*"

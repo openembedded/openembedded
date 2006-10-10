@@ -1,6 +1,5 @@
 SECTION = "libs"
 LICENSE = "MIT-X"
-MAINTAINER = "Greg Gilbert <greg@treke.net>"
 DEPENDS = "xextensions fixesext"
 DESCRIPTION = "X Damage extension headers and specification"
 PR = "r1"

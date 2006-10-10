@@ -1,7 +1,6 @@
 DESCRIPTION = "GNU roff"
 SECTION = "base"
 LICENSE = "GPL"
-MAINTAINER = "Inge Arnesen <inge.arnesen@gmail.com>"
 PR = "r3"
 
 SRC_URI = "http://ftp.gnu.org/gnu/groff/groff-${PV}.tar.gz \

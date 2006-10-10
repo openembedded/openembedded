@@ -28,7 +28,6 @@
 SECTION = "kernel"
 DESCRIPTION = "Linux kernel for the Linksys NSLU2 device"
 LICENSE = "GPL"
-MAINTAINER = "John Bowler <jbowler@acm.org>"
 
 DEPENDS += "devio-native"
 

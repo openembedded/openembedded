@@ -1,7 +1,6 @@
 DESCRIPTION = "Today screen application"
 SECTION = "opie/pim"
 PRIORITY = "optional"
-MAINTAINER = "Team Opie <opie@handhelds.org>"
 LICENSE = "GPL"
 APPNAME = "today"
 

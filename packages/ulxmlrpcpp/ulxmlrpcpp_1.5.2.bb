@@ -2,7 +2,6 @@ DESCRIPTION = "A lightweight C++ based library for XMLRPC applications"
 HOMEPAGE = "http://ulxmlrpcpp.sf.net"
 LICENSE = "LGPL"
 SECTION = "libs"
-MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 DEPENDS = "expat"
 PR = "r0"
 

@@ -1,7 +1,6 @@
 DESCRIPTION = "gnuZ is a Lemmings style game"
 SECTION = "opie/games"
 PRIORITY = "optional"
-MAINTAINER = "Marcin Juszkiewicz <openembedded@hrw.one.pl>"
 LICENSE = "GPL"
 AUTHOR = "Lukas Fraser"
 HOMEPAGE = "http://gnuz.4cows.net/eraser/gnuz/"

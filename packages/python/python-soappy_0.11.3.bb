@@ -1,7 +1,6 @@
 DESCRIPTION = "Python SOAP Bindings"
 SECTION = "devel/python"
 PRIORITY = "optional"
-MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 LICENSE = "BSD"
 RDEPENDS = "python-core python-xml python-fpconst"
 SRCNAME = "SOAPpy"

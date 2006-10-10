@@ -1,7 +1,6 @@
 DESCRIPTION = "Sazanami Gothic/Mincho Japanese TrueType fonts"
 DESCRIPTION_ttf-sazanami-gothic = "Sazanami Gothic Japanese TrueType font"
 DESCRIPTION_ttf-sazanami-mincho = "Sazanami Mincho Japanese TrueType font"
-MAINTAINER = "Philipp Zabel <philipp.zabel@gmail.com>"
 LICENSE = "${PN}"
 SRC_DISTRIBUTE_LICENSES += "${PN}"
 AUTHOR = "Electronic Font Open Laboratory (/efont/)"

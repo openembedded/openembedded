@@ -1,5 +1,4 @@
 DESCRIPTION = "Meta-package for GPE Security Testing Image"
-MAINTAINER = "Bob Davies tyggerbob@rogers.com>"
 LICENSE = "MIT"
 PR = "r6"
 

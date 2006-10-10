@@ -1,4 +1,3 @@
-MAINTAINER = "Oyvind Repvik <nail@nslu2-linux.org>"
 DESCRIPTION = "Scanner drivers for SANE"
 PR = "r4"
 DEPENDS = "gphoto2 jpeg libusb"

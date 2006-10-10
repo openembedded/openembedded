@@ -1,6 +1,5 @@
 DESCRIPTION = "Bitstream Vera Monospaced Font, QPF for Qt/Embedded"
 SECTION = "opie/fonts"
-MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 LICENSE = "Bitstream Vera"
 PACKAGE_ARCH = "all"
 PR = "r3"

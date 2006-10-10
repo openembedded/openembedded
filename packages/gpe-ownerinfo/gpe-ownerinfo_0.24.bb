@@ -3,7 +3,6 @@ inherit gpe
 DESCRIPTION = "GPE owner information dialog"
 SECTION = "gpe"
 PRIORITY = "optional"
-MAINTAINER = "Philip Blundell <pb@handhelds.org>"
 DEPENDS = "gtk+ libgpewidget"
 PR = "r2"
 LICENSE = "GPL"

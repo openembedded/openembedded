@@ -1,7 +1,6 @@
 DESCRIPTION = "Opie PIM database converter"
 SECTION = "opie/pim"
 PRIORITY = "optional"
-MAINTAINER = "Team Opie <opie@handhelds.org>"
 LICENSE = "GPL"
 DEPENDS = "sqlite3 sqlite" 
 RDEPENDS = "sqlite3 sqlite-bin" 

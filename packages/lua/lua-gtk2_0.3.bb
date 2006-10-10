@@ -3,7 +3,6 @@ LICENSE = "GPL2"
 PRIORITY = "optional"
 DEPENDS = "gtk+ lua-native perl-native readline libffi"
 RDEPENDS = "lua"
-MAINTAINER = "Florian Boor <florian@kernelconcepts.de>"
 SECTION = "libs"
 
 inherit gpe

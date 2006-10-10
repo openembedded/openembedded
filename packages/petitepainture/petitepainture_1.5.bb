@@ -6,7 +6,6 @@ LICENSE = "GPL"
 APPTYPE = "binary"
 APPNAME = "petitpeintu"
 APPDESKTOP = "${WORKDIR}"
-MAINTAINER = "Frederic Devernay <frederic.devernay@m4x.org>"
 
 SRC_URI = "http://sun.dhis.portside.net/~sakira/archive/SPainter_1.5_src.tar.gz \
            file://dialogs.patch;patch=1 \

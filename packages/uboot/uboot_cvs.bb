@@ -1,6 +1,5 @@
 DESCRIPTION = "U-boot bootloader"
 SECTION = "bootloader"
-MAINTAINER = "Cliff Brake <cliff.brake@gmail.com>"
 PRIORITY = "optional"
 LICENSE = "GPL"
 PV = "0.0+cvs${SRCDATE}"

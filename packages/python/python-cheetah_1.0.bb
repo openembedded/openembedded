@@ -1,7 +1,6 @@
 DESCRIPTION = "template engine and code generation tool"
 SECTION = "devel/python"
 PRIORITY = "optional"
-MAINTAINER = "Cliff Brake <cbrake@bec-systems.com>"
 LICENSE = "MIT-like"
 RDEPENDS = ""
 SRCNAME = "Cheetah"

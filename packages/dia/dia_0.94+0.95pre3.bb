@@ -2,7 +2,6 @@ DESCRIPTION = "Dia is a gtk+ based diagram creation program released under the G
 LICENSE = "GPL"
 SECTION = "x11/graphics"
 DEPENDS = "libart-lgpl libpng cairo zlib gtk+ libxml2"
-MAINTAINER = "Koen Kooi <koen@linuxtogo.org>"
 PR = "r2"
 
 inherit autotools pkgconfig

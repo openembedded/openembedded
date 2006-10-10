@@ -6,7 +6,6 @@ comets, or earth satellites whose orbital elements the user can provide."
 HOMEPAGE = "http://www.rhodesmill.org/brandon/projects/pyephem.html"
 LICENSE = "PSF"
 AUTHOR = "Brandon Craig Rhodes"
-MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 PR = "ml0"
 
 SRC_URI = "http://www.rhodesmill.org/brandon/projects/pyephem-${PV}.tar.gz"

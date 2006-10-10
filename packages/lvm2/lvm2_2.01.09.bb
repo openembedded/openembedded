@@ -1,6 +1,5 @@
 SECTION = "utils"
 DESCRIPTION = "LVM2 is a set of utilities to manage logical volumes in Linux."
-MAINTAINER = "Dan Williams <dan.j.williams@gmail.com>"
 LICENSE = "GPL"
 PR = "r1"
 DEPENDS = "device-mapper"

@@ -2,7 +2,6 @@ DESCRIPTION = "A compact Java Virtual Machine which conforms to the JVM specific
 HOMEPAGE = "http://jamvm.sourceforge.net/"
 LICENSE = "GPL"
 PRIORITY = "optional"
-MAINTAINER = "Rene Wagner <rw@handhelds.org>"
 SECTION = "interpreters"
 
 DEPENDS = "zlib classpath"

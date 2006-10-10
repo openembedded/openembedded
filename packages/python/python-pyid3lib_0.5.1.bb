@@ -1,7 +1,6 @@
 DESCRIPTION = "A Python Wrapper for libid3."
 SECTION = "devel/python"
 PRIORITY = "optional"
-MAINTAINER = "Jason Haslup <openembedded@haslup.com>"
 LICENSE = "LGPL"
 DEPENDS = "id3lib"
 SRCNAME = "pyid3lib"

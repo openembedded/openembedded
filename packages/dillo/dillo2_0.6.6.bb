@@ -10,7 +10,6 @@ SRC_URI="http://www.dillo.org/download/dillo-${PV}.tar.gz \
 	 file://dillo.png \
 	 file://dillorc"
 
-MAINTAINER = "Chris Lord <cwiiis@handhelds.org>"
 PRIORITY = "optional"
 
 S = "${WORKDIR}/dillo-${PV}/"

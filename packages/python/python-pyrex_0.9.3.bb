@@ -3,7 +3,6 @@ It's designed to bridge the gap between the nice, high-level, easy-to-use world 
 and the messy, low-level world of C."
 SECTION = "devel/python"
 PRIORITY = "optional"
-MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 LICENSE = "GPL"
 SRCNAME = "Pyrex"
 PR = "ml0"

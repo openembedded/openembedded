@@ -1,7 +1,6 @@
 DESCRIPTION = "Lightweight and High Performance WebServer"
 SECTION = "console/network"
 RPROVIDES = "httpd"
-MAINTAINER = "Rene Wagner <rw@handhelds.org>"
 LICENSE = "GPL"
 PR = "r2"
 

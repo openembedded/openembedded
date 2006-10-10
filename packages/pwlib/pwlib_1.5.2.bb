@@ -4,7 +4,6 @@
 
 HOMEPAGE="http://www.openh323.org/docs/PWLib/"
 DESCRIPTION="Portable Text and GUI C/C++ Class Libarary."
-MAINTAINER = "Raymond Danks <info-linux@geode.amd.com>"
 LICENSE = "GPL"
 
 SRC_URI="http://www.openh323.org/bin/${PN}_${PV}.tar.gz"
