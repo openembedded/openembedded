@@ -1,5 +1,5 @@
 DESCRIPTION = "Task packages for the Angstrom distribution"
-PR = "r22"
+PR = "r23"
 ALLOW_EMPTY = "1"
 
 PACKAGE_ARCH = "${MACHINE_ARCH}"
@@ -17,6 +17,7 @@ PACKAGES = "\
 RDEPENDS_angstrom-base-depends = "\
     update-modules module-init-tools modutils-initscripts \
     sysvinit initscripts sysvinit-pidof \
+    psplash \
     netbase dropbear \
     angstrom-version \
     ipkg ipkg-collateral \
