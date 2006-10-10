@@ -173,6 +173,12 @@ do_configure() {
 	cp ${WORKDIR}/vo_w100.c ${S}/libvo
 	cp ${WORKDIR}/vo_w100_api.h ${S}/libvo
 	cp ${WORKDIR}/vo_w100_fb.h ${S}/libvo
+
+	sed -i 's|/usr/include|${STAGING_INCDIR}|g' ${S}/configure
+	sed -i 's|/usr/lib|${STAGING_LIBDIR}|g' ${S}/configure
+	sed -i 's|/usr/\S*include[\w/]*||g' ${S}/configure
+	sed -i 's|/usr/\S*lib[\w/]*||g' ${S}/configure
+
         ./configure ${EXTRA_OECONF}
 }
 
