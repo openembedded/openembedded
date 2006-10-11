@@ -1,0 +1,33 @@
+#!/bin/sh
+DAEMON=/usr/sbin/clamsmtpd
+CLAMSMTPD_CONFIG=/etc/clamsmtpd.conf
+PIDFILE=/var/run/clamav/clamsmtpd.pid
+NAME="clamsmtpd"
+DESC="ClamSMTPD"
+
+test -r /etc/default/$NAME && . /etc/default/$NAME
+test -x "$DAEMON" || exit 0
+test ! -r "$CLAMSMTPD_CONFIG" && exit 0
+        
+case "$1" in
+  start)
+    echo "Starting $DESC: "
+    start-stop-daemon --oknodo -S -x $DAEMON -- -p $PIDFILE -f $CLAMSMTPD_CONFIG
+    echo "$NAME."
+    ;;
+
+  stop)
+    echo "Stopping $DESC:"
+    start-stop-daemon -K -p $PIDFILE
+    ;;
+
+  restart)
+    $0 stop >/dev/null 2>&1
+    $0 start
+    ;;
+
+  *)
+    echo "Usage: $0 {start|stop|restart}"
+    exit 0
+    ;;
+esac
