@@ -9,7 +9,7 @@ do_stage() {
 	autotools_stage_all
 }
 
-inherit autotools pkconfig
+inherit autotools pkgconfig
 
 PACKAGES = "uim-xim uim-utils uim-skk uim-gtk2.0 uim-fep uim-common uim-anthy libuim0 libuim-dev"
 
