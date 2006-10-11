@@ -7,6 +7,7 @@
 
 DEPENDS_prepend="ipkg-native ipkg-utils-native fakeroot-native "
 DEPENDS_append=" ${EXTRA_IMAGEDEPENDS}"
+RDEPENDS += "ipkg ipkg-link ipkg-collateral"
 
 PACKAGES = ""
 
