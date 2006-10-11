@@ -48,9 +48,9 @@ INHIBIT_DEFAULT_DEPS = "1"
 #	   \
 #	   file://arm-ioperm.patch;patch=1;pnum=0 \
 #	   file://ldd.patch;patch=1;pnum=0 \
-SRC_URI = "ftp://ftp.gnu.org/pub/gnu/glibc/glibc-2.5.tar.bz2 \
-	   ftp://ftp.gnu.org/pub/gnu/glibc/glibc-ports-2.5.tar.bz2 \
-	   ftp://ftp.gnu.org/pub/gnu/glibc/glibc-libidn-2.5.tar.bz2 \
+SRC_URI = "ftp://ftp.gnu.org/pub/gnu/glibc/glibc-${PV}.tar.bz2 \
+	   ftp://ftp.gnu.org/pub/gnu/glibc/glibc-ports-${PV}.tar.bz2 \
+	   ftp://ftp.gnu.org/pub/gnu/glibc/glibc-libidn-${PV}.tar.bz2 \
            file://arm-memcpy.patch;patch=1 \
            file://arm-longlong.patch;patch=1 \
            file://fhs-linux-paths.patch;patch=1 \
@@ -73,7 +73,7 @@ SRC_URI = "ftp://ftp.gnu.org/pub/gnu/glibc/glibc-2.5.tar.bz2 \
 SRC_URI_append_sh3 = " file://no-z-defs.patch;patch=1"
 SRC_URI_append_sh4 = " file://no-z-defs.patch;patch=1"
 
-S = "${WORKDIR}/glibc-2.5"
+S = "${WORKDIR}/glibc-${PV}"
 B = "${WORKDIR}/build-${TARGET_SYS}"
 
 inherit autotools
