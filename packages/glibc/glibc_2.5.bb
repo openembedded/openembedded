@@ -3,7 +3,7 @@ HOMEPAGE = "http://www.gnu.org/software/libc/libc.html"
 LICENSE = "LGPL"
 SECTION = "libs"
 PRIORITY = "required"
-PR = "r0"
+PR = "r1"
 
 DEFAULT_PREFERENCE = "-1"
 
@@ -60,7 +60,7 @@ SRC_URI = "ftp://ftp.gnu.org/pub/gnu/glibc/glibc-2.5.tar.bz2 \
 #	   file://glibc-2.4-compile.patch;patch=1 \
 #	   file://glibc-2.4-openat-3.patch;patch=1 \
 #	   file://fixup-aeabi-syscalls.patch;patch=1 \
-#	   file://zecke-sane-readelf.patch;patch=1 \
+	   file://zecke-sane-readelf.patch;patch=1 \
 	   file://generic-bits_select.h \
 	   file://generic-bits_types.h \
 	   file://generic-bits_typesizes.h \
