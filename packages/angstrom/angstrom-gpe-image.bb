@@ -1,6 +1,6 @@
 #Angstrom GPE image
 LICENSE = MIT
-PR = "r3"
+PR = "r4"
 
 PREFERRED_PROVIDER_libgpewidget 	?= "libgpewidget"
 PREFERRED_PROVIDER_tslib 		?= "tslib"
@@ -13,12 +13,11 @@ XSERVER ?= "xserver-kdrive-fbdev"
 
 export IMAGE_BASENAME = "gpe-image"
 
-DEPENDS = "task-angstrom task-base"
+DEPENDS = "task-base"
 RDEPENDS = "\
     ${XSERVER} \
     task-base-core-default \
     task-base \
-    angstrom-base-depends \
     angstrom-x11-base-depends \
     angstrom-gpe-task-base \
     angstrom-gpe-task-settings \
