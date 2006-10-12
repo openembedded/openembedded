@@ -1,0 +1,14 @@
+--- /tmp/gpe-login.gtkrc	2005-11-08 17:15:50.363302568 +0100
++++ gpe-login-0.83/X11/gpe-login.gtkrc	2005-11-08 17:16:22.659392816 +0100
+@@ -1,9 +1,2 @@
+-gtk-font-name = "Sans 8"
+-include "/usr/share/themes/Angelistic/gtk-2.0/gtkrc"
+-
+-style "default"
+-{
+-  bg[NORMAL] = "#90d8ff"
+-}
+-
+-widget "*" style "default"
++gtk-font-name = "Sans 5"
++include "/usr/share/themes/Industrial/gtk-2.0/gtkrc"
