@@ -3,7 +3,7 @@ DESCRIPTION = "Software watchdog"
 LICENSE = "GPL"
 PR = "r3"
 
-SRC_URI = "http://www.ibiblio.org/pub/Linux/system/daemons/watchdog/${PN}-${PV}.tar.gz"
+SRC_URI = "http://www.ibiblio.org/pub/Linux/system/daemons/watchdog/${P}.tar.gz"
 SRC_URI += "file://mkinstalldirs.patch;patch=1"
 
 inherit autotools

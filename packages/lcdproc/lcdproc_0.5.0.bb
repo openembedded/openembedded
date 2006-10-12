@@ -9,7 +9,7 @@ PR="r2"
 DEPENDS = "libusb ncurses"
 RRECOMMENDS_lcdproc = "lcdd"
 
-SRC_URI = "${SOURCEFORGE_MIRROR}/lcdproc/lcdproc-${PV}.tar.gz"
+SRC_URI = "${SOURCEFORGE_MIRROR}/lcdproc/${P}.tar.gz"
 
 inherit autotools update-rc.d
 
