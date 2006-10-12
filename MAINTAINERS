@@ -15,6 +15,13 @@ Recipes:    Maintained recipes (subsystems first, then single ones)
 
 -----------------------------------------------------------------------------
 
+Person:     Philip Balister
+Mail:       Crofton@balister.org
+Website:    http://www.balister.org
+Machines:   omap5912osk
+Distros:    openomap
+Recipes:    xerces-c, omniorb
+
 Person:     Koen Kooi 
 Mail:       koen@openembedded.org
 Website:    http://dominion.kabel.utwente.nl/koen/cms
