@@ -1,4 +1,4 @@
-inherit module_strip
+inherit linux-kernel-base module_strip
 
 PROVIDES += "virtual/kernel"
 DEPENDS += "virtual/${TARGET_PREFIX}depmod-${@get_kernelmajorversion('${PV}')} virtual/${TARGET_PREFIX}gcc${KERNEL_CCSUFFIX} update-modules"
@@ -42,37 +42,6 @@ KERNEL_IMAGEDEST = "boot"
 # configuration
 #
 export CMDLINE_CONSOLE = "console=${@bb.data.getVar("KERNEL_CONSOLE",d,1) or "ttyS0"}"
-
-# parse kernel ABI version out of <linux/version.h>
-def get_kernelversion(p):
-	import re, os
-
-	fn = p + '/include/linux/utsrelease.h'
-	if not os.path.isfile(fn):
-		fn = p + '/include/linux/version.h'
-	
-	import re
-	try:
-		f = open(fn, 'r')
-	except IOError:
-		return None
-
-	l = f.readlines()
-	f.close()
-	r = re.compile("#define UTS_RELEASE \"(.*)\"")
-	for s in l:
-		m = r.match(s)
-		if m:
-			return m.group(1)
-	return None
-
-def get_kernelmajorversion(p):
-	import re
-	r = re.compile("([0-9]+\.[0-9]+).*")
-	m = r.match(p);
-	if m:
-		return m.group(1)
-	return None
 
 KERNEL_VERSION = "${@get_kernelversion('${S}')}"
 KERNEL_MAJOR_VERSION = "${@get_kernelmajorversion('${KERNEL_VERSION}')}"
