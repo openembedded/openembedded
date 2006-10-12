@@ -1,8 +1,7 @@
 LICENSE =	"GPL"
 DESCRIPTION =	"Sync daemon for GPE and OpenSync"
 
-
-SRC_URI =	"svn://projects.linuxtogo.org/svn/gpe/trunk/base;module=gpesyncd"
+SRC_URI =	"${GPE_SVN}"
 
 DEPENDS =	"libgpevtype sqlite libmimedir glib-2.0"
 
