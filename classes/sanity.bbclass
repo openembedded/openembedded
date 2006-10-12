@@ -82,23 +82,11 @@ def check_sanity(e):
 	if not check_app_exists('${BUILD_PREFIX}g++', e.data):
 		raise_sanity_error('C++ Host-Compiler is missing, please install one' )
 
-	if not check_app_exists('patch', e.data):
-		raise_sanity_error('Please install the patch utility, preferable GNU patch.')
+	required_utilities = "patch diffstat texi2html makeinfo cvs svn git bzip2 tar gzip"
 
-	if not check_app_exists('diffstat', e.data):
-		raise_sanity_error('Please install the diffstat utility')
-
-	if not check_app_exists('texi2html', e.data):
-		raise_sanity_error('Please install the texi2html binary')
-
-	if not check_app_exists('cvs', e.data):
-		raise_sanity_error('Please install the cvs utility')
-
-	if not check_app_exists('svn', e.data):
-		raise_sanity_error('Please install the svn utility')
-
-	if not check_app_exists('bzip2', e.data):
-		raise_sanity_error('Please install the bzip2 utility')
+	for util in required_utilities.split():
+		if not check_app_exists( util, e.data ):
+			raise_sanity_error( "Please install the %s utility." )
 
 	oes_bb_conf = data.getVar( 'OES_BITBAKE_CONF', e.data, True )
 	if not oes_bb_conf:
