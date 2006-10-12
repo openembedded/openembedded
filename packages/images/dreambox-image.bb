@@ -15,13 +15,17 @@ OPENDREAMBOX_COMMON_R = "util-linux-sfdisk util-linux-fdisk e2fsprogs-mke2fs \
 	base-files-doc sambaserver"
 
 # experimental packages
-OPENDREAMBOX_EXPERIMENTAL = "enigma2 tuxbox-tuxtxt-32bpp"
+OPENDREAMBOX_EXPERIMENTAL = "enigma2 tuxbox-tuxtxt-32bpp twisted twisted-web2"
 OPENDREAMBOX_EXPERIMENTAL_R = "enigma2-plugin-systemplugins-frontprocessorupgrade \
 	enigma2-plugin-systemplugins-softwareupdate \
 	enigma2-plugin-systemplugins-positionersetup \
 	enigma2-plugin-extensions-cutlisteditor \
 	enigma2-plugin-systemplugins-configurationbackup \
-	enigma2-plugin-systemplugins-satfinder"
+	enigma2-plugin-systemplugins-satfinder \
+	enigma2-plugin-extensions-webinterface \
+	enigma2-plugin-systemplugins-skinselector \
+	twisted-web2 twisted python-crypt python-crypto \
+	python-netserver python-pickle"
 
 # legacy tuxbox stuff (enigma, plugins, ...)
 OPENDREAMBOX_TUXBOX = "enigma ipkgpl enigma-modem"
