@@ -3,15 +3,25 @@ SECTION = "base"
 LICENSE = "GPL"
 
 PV = "0.0+svn${SRCDATE}"
+PR = "r1"
+
+# You can create your own pslash-hand-img.h by doing
+# ./make-image-header.sh <file>.png HAND
+# and rename the resulting .h to pslash-hand-img.h
 
 SRC_URI = "svn://svn.o-hand.com/repos/misc/trunk;module=psplash;proto=http \
-           file://psplash-init"
+	   file://psplash-hand-img.h \
+	   file://psplash-init"
 
 S = "${WORKDIR}/psplash"
 
 inherit autotools pkgconfig update-rc.d
 
 FILES_${PN} += "/mnt/.psplash"
+
+do_configure_append() {
+	cp ${WORKDIR}/psplash-hand-img.h ${S}/
+}
 
 do_install_prepend() {
 	install -d ${D}/mnt/.psplash/
