@@ -6,6 +6,8 @@ LICENSE = "GPL"
 
 KERNEL_CCSUFFIX = "-3.3.4"
 COMPATIBLE_HOST = "arm.*-linux"
+COMPATIBLE_MACHINE = '(h3900|h5xxx)'
+
 
 SRC_URI = "${HANDHELDS_CVS};module=linux/kernel;tag=${@'K' + bb.data.getVar('PV',d,1).replace('.', '-')} \
 	   file://defconfig-${PACKAGE_ARCH} \

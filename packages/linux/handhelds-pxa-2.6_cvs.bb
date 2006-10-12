@@ -5,7 +5,7 @@ PV = "${K_MAJOR}.${K_MINOR}.${K_MICRO}-hh${HHV}+cvs${SRCDATE}"
 PR = "r4"
 #
 COMPATIBLE_HOST = "arm.*-linux"
-COMPATIBLE_MACHINE = '(h3900|h5xxx|h2200|h4000|ipaq-pxa270|hx4700|htcuniversal)'
+COMPATIBLE_MACHINE = '(h3900|h5xxx|h2200|h4000|hx4700|htcuniversal)'
 
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/handhelds-pxa-${PV}"
 
@@ -19,8 +19,8 @@ S = "${WORKDIR}/kernel26"
 
 inherit kernel
 
-FILES_kernel-image_ipaq-pxa270 = ""
-ALLOW_EMPTY_ipaq_pxa270 = 1
+FILES_kernel-image_hx4700 = ""
+ALLOW_EMPTY_hx4700 = 1
 FILES_kernel-image_htcuniversal = ""
 ALLOW_EMPTY_htcuniversal = 1
 
