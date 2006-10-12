@@ -37,3 +37,7 @@ Recipes:    kdepimpi, subapplet, corsair, gammu, iqnotes, zbedic
 Person:     Leon Woestenberg
 Mail:       leonw@mailcan.com
 Recipes:    SquashFS, LZMA
+
+Person:     Joaquim Duran
+Mail:       joaquinduran@adtelecom.es
+Recipes:    fltk

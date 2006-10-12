@@ -1,0 +1,43 @@
+DESCRIPTION = "FLTK is a cross-platform C++ GUI toolkit"
+HOMEPAGE = "http://www.fltk.org"
+SECTION = "libs"
+PRIORITY = "optional"
+LICENSE = "LGPL"
+DEPENDS = "jpeg libpng zlib"
+
+SRC_URI = "ftp://ftp.rz.tu-bs.de/pub/mirror/ftp.easysw.com/ftp/pub/fltk/${PV}/fltk-${PV}-source.tar.bz2"
+
+S = "${WORKDIR}/fltk-${PV}"
+
+inherit autotools binconfig
+
+EXTRA_OECONF = "--enable-shared --disable-gl --x-includes=${STAGING_INCDIR} --x-libraries=${STAGING_LIBDIR}"
+
+do_configure() {
+        oe_runconf
+}
+
+do_install () {
+        oe_runmake prefix="${D}${prefix}" \
+                bindir="${D}${bindir}" \
+                libdir="${D}${libdir}" \
+                includedir="${D}${includedir}" \
+                install
+}
+
+do_stage() {
+        oe_runmake install prefix=${STAGING_DIR} \
+               bindir=${STAGING_BINDIR} \
+               includedir=${STAGING_INCDIR} \
+               libdir=${STAGING_LIBDIR} \
+               datadir=${STAGING_DATADIR}
+}
+
+python populate_packages_prepend () {
+        if (bb.data.getVar('DEBIAN_NAMES', d, 1)):
+                bb.data.setVar('PKG_${PN}', 'libfltk${PV}', d)
+}
+
+LEAD_SONAME = "libfltk.so"
+FILES_${PN} = "${libdir}/lib*.so.*"
+FILES_${PN}-dev += " ${bindir}/fltk-config"
