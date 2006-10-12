@@ -3,7 +3,7 @@ LICENSE = "GPL"
 MAINTAINER = "Felix Domke <tmbinc@elitdvb.net>"
 
 PN = "tuxbox-common"
-PR = "r7"
+PR = "r8"
 SRCDATE = "20060628"
 PV = "cvs${SRCDATE}"
 
@@ -21,7 +21,7 @@ do_install() {
 	install -d ${D}/etc/tuxbox/
 	install -m 0644 ${S}/scart.conf ${D}/etc/tuxbox/scart.conf
 	install -m 0644 ${WORKDIR}/tuxbox/satellites.xml ${D}/etc/tuxbox/satellites.xml
-	install -m 0644 ${WORKDIR}/tuxbox/cables.xml ${D}/etc/tuxbox/cables.xml
+	install -m 0644 ${S}/cables.xml ${D}/etc/tuxbox/cables.xml
 	install -m 0644 ${WORKDIR}/tuxbox/terrestrial.xml ${D}/etc/tuxbox/terrestrial.xml
 	install -m 0644 ${S}/timezone.xml ${D}/etc/tuxbox/timezone.xml
 
