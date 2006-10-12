@@ -505,6 +505,9 @@ python base_eventhandler() {
 		monotone_revision = "<unknown>"
 		try:
 			monotone_revision = file( "%s/_MTN/revision" % path_to_packages ).read().strip()
+			if monotone_revision.startswith( "format_version" ):
+				monotone_revision_words = monotone_revision.split()
+				monotone_revision = monotone_revision_words[ monotone_revision_words.index( "old_revision" )+1][1:-1]
 		except IOError:
 			pass
 		bb.data.setVar( 'OE_REVISION', monotone_revision, e.data )
