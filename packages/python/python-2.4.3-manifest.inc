@@ -43,7 +43,7 @@ FILES_python-datetime="${libdir}/python2.4/_strptime.* ${libdir}/python2.4/calen
 DESCRIPTION_python-core="Python Interpreter and core modules (needed!)"
 PR_python-core="ml0"
 RDEPENDS_python-core=""
-FILES_python-core="/usr/lib/python2.4/__future__.* /usr/lib/python2.4/copy.* /usr/lib/python2.4/copy_reg.* /usr/lib/python2.4/ConfigParser.py /usr/lib/python2.4/getopt.* /usr/lib/python2.4/linecache.* /usr/lib/python2.4/new.* /usr/lib/python2.4/os.* /usr/lib/python2.4/posixpath.* /usr/lib/python2.4/warnings.* /usr/lib/python2.4/site.* /usr/lib/python2.4/stat.* /usr/lib/python2.4/UserDict.* /usr/lib/python2.4/lib-dynload/binascii.so /usr/lib/python2.4/lib-dynload/struct.so /usr/lib/python2.4/lib-dynload/time.so /usr/lib/python2.4/lib-dynload/xreadlines.so /usr/lib/python2.4/types.* /usr/bin/python "
+FILES_python-core="/usr/lib/python2.4/__future__.* /usr/lib/python2.4/copy.* /usr/lib/python2.4/copy_reg.* /usr/lib/python2.4/ConfigParser.py /usr/lib/python2.4/getopt.* /usr/lib/python2.4/heapq.* /usr/lib/python2.4/linecache.* /usr/lib/python2.4/new.* /usr/lib/python2.4/os.* /usr/lib/python2.4/posixpath.* /usr/lib/python2.4/warnings.* /usr/lib/python2.4/site.* /usr/lib/python2.4/stat.* /usr/lib/python2.4/UserDict.* /usr/lib/python2.4/lib-dynload/binascii.so /usr/lib/python2.4/lib-dynload/struct.so /usr/lib/python2.4/lib-dynload/time.so /usr/lib/python2.4/lib-dynload/xreadlines.so /usr/lib/python2.4/types.* /usr/bin/python "
 
 DESCRIPTION_python-io="Python Low-Level I/O"
 PR_python-io="ml0"
