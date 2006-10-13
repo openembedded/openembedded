@@ -51,16 +51,6 @@ Machines:   poodle, c7x0, spitz, nokia770, x86, qemuarm, qemux86
 Interests:  Core OE infrastructure, Python, GUI-Toolkits
 Recipes:    python*, qt*, qte*, sip*
 
-Person:     Øyvind Repvik
-Mail:       nail@nslu2-linux.org
-Machines:   nslu2, fsg3, ixp4xx, n2100
-Distros:    debianslug, openslug, slugos
-Recipes:    bwmon, watchdog, wakelan, libdvb, sane-backends, samba
-Recipes:    ccxstream, eciadsl, ssmtp, gstreamer, ixp4xx-npe, joe
-Recipes:    lcdproc, libol, mailx, mysql, musicpd, openntpd, qc-usb
-Recipes:    radlib, scsi-idle, rng-tools, slugos-init, syslog-ng
-Recipes:    vsftpd, zd1211, wpa-supplicant
-
 Person:     Philip Balister
 Mail:       Crofton@balister.org
 Website:    http://www.balister.org
@@ -74,3 +64,13 @@ Distros:    poky, openzaurus, Ångström
 Machines:   poodle, c7x0, spitz, nokia770, qemuarm, qemux86, hx2xxx
 Interests:  Kernels, Bitbake, Core OE infrastructure, Zaurus 2.6
 Recipes:    linux-openzaurus, udev, zaurusd, task-base
+
+Person:     Øyvind Repvik
+Mail:       nail@nslu2-linux.org
+Machines:   nslu2, fsg3, ixp4xx, n2100
+Distros:    debianslug, openslug, slugos
+Recipes:    bwmon, watchdog, wakelan, libdvb, sane-backends, samba
+Recipes:    ccxstream, eciadsl, ssmtp, gstreamer, ixp4xx-npe, joe
+Recipes:    lcdproc, libol, mailx, mysql, musicpd, openntpd, qc-usb
+Recipes:    radlib, scsi-idle, rng-tools, slugos-init, syslog-ng
+Recipes:    vsftpd, zd1211, wpa-supplicant
