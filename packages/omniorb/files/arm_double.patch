@@ -1,0 +1,266 @@
+--- include/omniORB4/CORBA_sysdep.h	30 Dec 2005 17:40:22 -0000	1.2.2.32
++++ include/omniORB4/CORBA_sysdep.h	12 Apr 2006 16:55:41 -0000
+@@ -125,6 +125,15 @@
+ #endif
+ 
+ //
++// Processor dependencies
++//
++
++#if defined(__arm__)
++#  define OMNI_MIXED_ENDIAN_DOUBLE
++#endif
++
++
++//
+ // Macro to provide const_cast functionality on all platforms.
+ //
+ #ifdef HAS_Cplusplus_const_cast
+--- include/omniORB4/cdrStream.h	22 Jul 2005 16:57:17 -0000	1.1.2.23
++++ include/omniORB4/cdrStream.h	12 Apr 2006 16:55:41 -0000
+@@ -428,6 +428,13 @@
+       m.l[1] = Swap32(l.l[0]);
+       l = m;
+     }
++#ifdef OMNI_MIXED_ENDIAN_DOUBLE
++    {
++      _CORBA_ULong v = l.l[0];
++      l.l[0] = l.l[1];
++      l.l[1] = v;
++    }
++#endif
+     CdrMarshal(s,LongArray2,omni::ALIGN_8,l);
+   }
+ 
+@@ -440,6 +447,13 @@
+       m.l[1] = Swap32(l.l[0]);
+       l = m;
+     }
++#ifdef OMNI_MIXED_ENDIAN_DOUBLE
++    {
++      _CORBA_ULong v = l.l[0];
++      l.l[0] = l.l[1];
++      l.l[1] = v;
++    }
++#endif
+     convertToFloat(_CORBA_Double, LongArray2);
+   }
+ #else
+@@ -791,6 +805,19 @@
+         p[i] = l;
+       }
+     }
++#ifdef OMNI_MIXED_ENDIAN_DOUBLE
++    {
++      struct LongArray2 {
++        _CORBA_ULong l[2];
++      };
++      LongArray2* p=(LongArray2*)a;
++      for( int i = 0; i < length; i++ ) {
++        _CORBA_ULong v = p[i].l[0];
++	p[i].l[0] = p[i].l[1];
++	p[i].l[1] = v;
++      }
++    }
++#endif
+   }
+ #endif
+ 
+@@ -957,6 +984,13 @@
+     m.l[1] = Swap32(l.l[0]);
+     l = m;
+   }
++#ifdef OMNI_MIXED_ENDIAN_DOUBLE
++  {
++    _CORBA_ULong v = l.l[0];
++    l.l[0] = l.l[1];
++    l.l[1] = v;
++  }
++#endif
+   CdrMarshal(s,LongArray2,omni::ALIGN_8,l);
+ }
+ 
+@@ -969,6 +1003,13 @@
+     m.l[1] = Swap32(l.l[0]);
+     l = m;
+   }
++#ifdef OMNI_MIXED_ENDIAN_DOUBLE
++  {
++    _CORBA_ULong v = l.l[0];
++    l.l[0] = l.l[1];
++    l.l[1] = v;
++  }
++#endif
+   convertToFloat(_CORBA_Double, LongArray2);
+ }
+ 
+--- include/omniORB4/seqTemplatedecls.h	11 Oct 2005 13:17:01 -0000	1.1.2.10
++++ include/omniORB4/seqTemplatedecls.h	12 Apr 2006 16:55:42 -0000
+@@ -544,43 +544,6 @@
+ };
+ 
+ 
+-
+-//////////////////////////////////////////////////////////////////////
+-///////////// _CORBA_Sequence_w_FixSizeElement           /////////////
+-//////////////////////////////////////////////////////////////////////
+-template <class T,int elmSize,int elmAlignment>
+-class _CORBA_Sequence_w_FixSizeElement : public _CORBA_Sequence<T> {
+-protected:
+-  typedef _CORBA_Sequence_w_FixSizeElement<T,elmSize,elmAlignment>  T_seq;
+-  typedef _CORBA_Sequence<T> Base_T_seq ;
+-
+-
+-  inline _CORBA_Sequence_w_FixSizeElement() {}
+-
+-  inline _CORBA_Sequence_w_FixSizeElement(_CORBA_ULong max,
+-					  _CORBA_Boolean bounded=0) :
+-    Base_T_seq(max,bounded) {}
+-
+-  inline _CORBA_Sequence_w_FixSizeElement(const T_seq& s) : Base_T_seq(s) {}
+-
+-  inline _CORBA_Sequence_w_FixSizeElement(_CORBA_ULong max,
+-					  _CORBA_ULong len,
+-					  T           *value,
+-					  _CORBA_Boolean release_ = 0,
+-					  _CORBA_Boolean bounded = 0
+-	       )  : Base_T_seq(max,len,value,release_,bounded) {}
+-
+-  inline T_seq &operator= (const T_seq &s) {
+-    Base_T_seq::operator= (s);
+-    return *this;
+-  }
+-
+-public:
+-  inline void operator>>= (cdrStream &s) const;
+-  inline void operator<<= (cdrStream &s);
+-};
+-
+-
+ //////////////////////////////////////////////////////////////////////
+ ///////////// _CORBA_Unbounded_Sequence_w_FixSizeElement /////////////
+ //////////////////////////////////////////////////////////////////////
+@@ -663,6 +626,46 @@
+ };
+ 
+ 
++#ifdef OMNI_MIXED_ENDIAN_DOUBLE
++
++template <int max>
++class _CORBA_Bounded_Sequence_w_FixSizeElement<_CORBA_Double,max,8,8> : 
++  public _CORBA_Bounded_Sequence<_CORBA_Double,max> {
++public:
++  typedef _CORBA_Bounded_Sequence_w_FixSizeElement<_CORBA_Double,max,8,8> T_seq;
++  typedef _CORBA_Bounded_Sequence<_CORBA_Double,max> Base_T_seq;
++
++
++  inline _CORBA_Bounded_Sequence_w_FixSizeElement() {}
++  inline _CORBA_Bounded_Sequence_w_FixSizeElement(_CORBA_ULong   len,
++						  _CORBA_Double  *value,
++						  _CORBA_Boolean rel = 0) : 
++    Base_T_seq(len,value,rel) {}
++
++  inline _CORBA_Bounded_Sequence_w_FixSizeElement(const T_seq& s) : 
++    Base_T_seq(s) {}
++
++  inline ~_CORBA_Bounded_Sequence_w_FixSizeElement() {}
++
++  inline T_seq& operator=(const T_seq& s) {
++    Base_T_seq::operator= (s);
++    return *this;
++  }
++
++  // CORBA 2.3 additions
++
++  inline void replace(_CORBA_ULong len, _CORBA_Double* data,_CORBA_Boolean release_ = 0) {
++    Base_T_seq::replace(len,data,release_);
++  }
++
++  inline void operator>>= (cdrStream &s) const;
++  inline void operator<<= (cdrStream &s);
++};
++
++#endif
++
++
++
+ //////////////////////////////////////////////////////////////////////
+ ////////////////// _CORBA_Sequence_Char  /////////////////////////////
+ //////////////////////////////////////////////////////////////////////
+--- include/omniORB4/seqTemplatedefns.h	22 May 2003 13:41:39 -0000	1.1.2.11
++++ include/omniORB4/seqTemplatedefns.h	12 Apr 2006 16:55:42 -0000
+@@ -266,6 +266,48 @@
+ }
+ 
+ //////////////////////////////////////////////////////////////////////
++#ifdef OMNI_MIXED_ENDIAN_DOUBLE
++
++// Template member function specializations to use the base
++// marshalling functions for double, so the doubles are properly
++// word-swapped.
++
++template<>
++inline
++void
++_CORBA_Unbounded_Sequence_w_FixSizeElement<_CORBA_Double,8,8>::operator>>= (cdrStream& s) const
++{
++  Base_T_seq::operator>>=(s);
++}
++
++template<>
++inline
++void
++_CORBA_Unbounded_Sequence_w_FixSizeElement<_CORBA_Double,8,8>::operator<<= (cdrStream& s)
++{
++  Base_T_seq::operator<<=(s);
++}
++
++template<int max>
++inline
++void
++_CORBA_Bounded_Sequence_w_FixSizeElement<_CORBA_Double,max,8,8>::operator>>= (cdrStream& s) const
++{
++  Base_T_seq::operator>>=(s);
++}
++
++template<int max>
++inline
++void
++_CORBA_Bounded_Sequence_w_FixSizeElement<_CORBA_Double,max,8,8>::operator<<= (cdrStream& s)
++{
++  Base_T_seq::operator<<=(s);
++}
++
++#endif
++
++
++//////////////////////////////////////////////////////////////////////
+ inline
+ void
+ _CORBA_Sequence_Char::operator>>= (cdrStream& s) const
+--- src/lib/omniORB/omniidl_be/cxx/skutil.py	27 Jul 2003 19:24:32 -0000	1.17.2.10
++++ src/lib/omniORB/omniidl_be/cxx/skutil.py	12 Apr 2006 16:55:42 -0000
+@@ -197,6 +197,11 @@
+         if array_marshal_helpers.has_key(d_type.type().kind()):
+             (alignment,elmsize) = array_marshal_helpers[d_type.type().kind()]
+             if alignment != "omni::ALIGN_1":
++                is_double = d_type.type().kind() == idltype.tk_double
++                if is_double:
++                    to.out("""
++#ifndef OMNI_MIXED_ENDIAN_DOUBLE""")
++
+                 to.out("""\
+ if (! @where@.marshal_byte_swap()) {
+   @where@.put_octet_array((CORBA::Octet*)(@slice_cast@@name@),@num@,@align@);
+@@ -207,6 +212,11 @@
+                        slice_cast = slice_cast,
+                        num = str(n_elements * elmsize),
+                        align = alignment)
++
++                if is_double:
++                    to.out("""\
++#endif""")
++
+                 # Do not return here.
+                 # let the code below to deal with the else block.
+             else:
