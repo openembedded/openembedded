@@ -37,11 +37,12 @@ Interests:  SquashFS, LZMA
 Person:     Marcin Juszkiewicz
 Mail:       hrw@openembedded.org
 Website:    http://www.hrw.one.pl/
-Machines:   collie, spitz
+Machines:   collie, spitz, tosa
 Distros:    OpenZaurus
-Interests:  Opie, Qtopia fonts, Native SDK
-Recipes:    hostap*, orinoco*, wpa-supplicant*, wireless-tools, keymaps, qpf-dejavu*
-Recipes:    kdepimpi, subapplet, corsair, gammu, iqnotes, zbedic, linux-openzaurus
+Interests:  WiFi, Opie, Qtopia fonts, Native SDK
+Recipes:    hostap*, orinoco*, wpa-supplicant*, wireless-tools, keymaps
+Recipes:    linux-openzaurus, kdepimpi, subapplet, corsair, gammu, iqnotes, zbedic
+Recipes:    ttf-fonts/* qpf-fonts/*
 
 Person:     Michael 'Mickey' Lauer
 Mail:       mlauer@vanille-media.de
