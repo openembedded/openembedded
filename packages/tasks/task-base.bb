@@ -1,5 +1,5 @@
 DESCRIPTION = "Merge machine and distro options to create a basic machine task/package"
-PR = "r8"
+PR = "r9"
 
 PACKAGES = "task-base \
             task-base-minimal \
@@ -33,6 +33,7 @@ PACKAGE_ARCH = "${MACHINE_ARCH}"
 # bluetooth
 # ext2
 # irda
+# pci
 # pcmcia
 # usbgadget
 # usbhost
@@ -56,6 +57,7 @@ COMBINED_FEATURES = "\
     ${@base_both_contain("DISTRO_FEATURES", "MACHINE_FEATURES", "ext2", d)} \
     ${@base_both_contain("DISTRO_FEATURES", "MACHINE_FEATURES", "irda", d)} \
     ${@base_both_contain("DISTRO_FEATURES", "MACHINE_FEATURES", "pcmcia", d)} \
+    ${@base_both_contain("DISTRO_FEATURES", "MACHINE_FEATURES", "pci", d)} \
     ${@base_both_contain("DISTRO_FEATURES", "MACHINE_FEATURES", "usbgadget", d)} \
     ${@base_both_contain("DISTRO_FEATURES", "MACHINE_FEATURES", "usbhost", d)}"
 
@@ -257,7 +259,8 @@ task-distro-ipsec-rrecommends = "\
 
 task-distro-wifi-rdepends = "\
     wireless-tools \
-    hostap-utils \
+    ${@base_contains("COMBINED_FEATURES", "pcmcia", "hostap-utils", "",d)} \
+    ${@base_contains("COMBINED_FEATURES", "pci", "hostap-utils", "",d)} \
     wpa-supplicant"
 
 task-distro-wifi-rrecommends = "\
