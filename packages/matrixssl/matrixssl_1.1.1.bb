@@ -1,14 +1,12 @@
-SECTION = "unknown"
+DESCRIPTION = "A secure sockets library"
+SECTION = "libs"
+LICENSE = "GPL"
+
 SRC_URI = "http://openembedded.org/dl/matrixssl-1-1-1.tar.gz \
 	   file://cross.patch;patch=1"
 S = "${WORKDIR}/matrixssl/src"
-LICENSE = "GPL"
-def define_os (d):
-	import bb
-	if bb.data.getVar('TARGET_OS', d).startswith('linux'):
-		return "-DLINUX"
-	return ""
 
+require matrixssl.inc
 CFLAGS += " ${@define_os(d)}"
 
 do_install () {

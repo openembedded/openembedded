@@ -1,0 +1,4 @@
+# <type> <owner> <group> <mode> <path> <linksource>
+d mail mail 0755 /var/run/p3scan none
+d mail mail 0755 /var/spool/p3scan/children none
+d mail mail 0755 /var/spool/p3scan/notify none
