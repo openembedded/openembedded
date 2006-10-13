@@ -1,76 +1,1 @@
-OpenEmbedded Maintainers List 
-
-Please put you full name and email-address here for the areas of OE you want to support.
-
-Note: For the hard of thinking, this list is meant to remain in alphabetical
-order. If you could add yourselves to it in alphabetical order that would be
-so much easier (sort by firstname).
-
-Person:     Real name
-Mail:       Mail patches to
-Website:    Web-page
-Interests:  Areas of interest (e.g. subsystems)
-Distros:    Maintained distros
-Machines:   Maintained machines
-Recipes:    Maintained recipes (should match package names, can include wildcards)
-
------------------------------------------------------------------------------
-
-Person:     Joaquim Duran
-Mail:       joaquinduran@adtelecom.es
-Recipes:    fltk
-
-Person:     Koen Kooi
-Mail:       koen@openembedded.org
-Website:    http://dominion.kabel.utwente.nl/koen/cms
-Machines:   h2200, ipaq-pxa270, efika, ep93xx, netbook-pro
-Distros:    Ångström
-Interests:  OpenSync, GNOME, GPE, Matchbox
-Recipes:    abiword, bootchart, dia, farsight, freeciv, fuse, galago, geda, gimp,
-Recipes:    gnumeric, gobby, obby, imposter, inkscape
-Recipes:    telepathy, tilibs, xchat, xournal.
-
-Person:     Leon Woestenberg
-Mail:       leonw@mailcan.com
-Interests:  SquashFS, LZMA
-
-Person:     Marcin Juszkiewicz
-Mail:       hrw@openembedded.org
-Website:    http://www.hrw.one.pl/
-Machines:   collie, spitz, tosa
-Distros:    OpenZaurus
-Interests:  WiFi, Opie, Qtopia fonts, Native SDK
-Recipes:    hostap*, orinoco*, wpa-supplicant*, wireless-tools, keymaps
-Recipes:    linux-openzaurus, kdepimpi, subapplet, corsair, gammu, iqnotes, zbedic
-Recipes:    ttf-fonts/* qpf-fonts/*
-
-Person:     Michael 'Mickey' Lauer
-Mail:       mlauer@vanille-media.de
-Distros:    Ångström, generic
-Machines:   poodle, c7x0, spitz, nokia770, x86, qemuarm, qemux86
-Interests:  Core OE infrastructure, Python, GUI-Toolkits
-Recipes:    python*, qt*, qte*, sip*
-
-Person:     Philip Balister
-Mail:       Crofton@balister.org
-Website:    http://www.balister.org
-Machines:   omap5912osk
-Distros:    openomap
-Recipes:    xerces-c, omniorb
-
-Person:     Richard Purdie
-Mail:       rpurdie@rpsys.net
-Distros:    poky, openzaurus, Ångström
-Machines:   poodle, c7x0, spitz, nokia770, qemuarm, qemux86, hx2xxx
-Interests:  Kernels, Bitbake, Core OE infrastructure, Zaurus 2.6
-Recipes:    linux-openzaurus, udev, zaurusd, task-base
-
-Person:     Øyvind Repvik
-Mail:       nail@nslu2-linux.org
-Machines:   nslu2, fsg3, ixp4xx, n2100
-Distros:    debianslug, openslug, slugos
-Recipes:    bwmon, watchdog, wakelan, libdvb, sane-backends, samba
-Recipes:    ccxstream, eciadsl, ssmtp, gstreamer, ixp4xx-npe, joe
-Recipes:    lcdproc, libol, mailx, mysql, musicpd, openntpd, qc-usb
-Recipes:    radlib, scsi-idle, rng-tools, slugos-init, syslog-ng
-Recipes:    vsftpd, zd1211, wpa-supplicant
+OpenEmbedded Maintainers List Please put you full name and email-address here for the areas of OE you want to support.Note: For the hard of thinking, this list is meant to remain in alphabeticalorder. If you could add yourselves to it in alphabetical order that would beso much easier (sort by firstname).Person:     Real nameMail:       Mail patches toWebsite:    Web-pageInterests:  Areas of interest (e.g. subsystems)Distros:    Maintained distrosMachines:   Maintained machinesRecipes:    Maintained recipes (should match package names, can include wildcards)-----------------------------------------------------------------------------Person:     Joaquim DuranMail:       joaquinduran@adtelecom.esRecipes:    fltkPerson:     Koen KooiMail:       koen@openembedded.orgWebsite:    http://dominion.kabel.utwente.nl/koen/cmsMachines:   h2200, ipaq-pxa270, efika, ep93xx, netbook-proDistros:    Ã…ngstrÃ¶mInterests:  OpenSync, GNOME, GPE, MatchboxRecipes:    abiword, bootchart, dia, farsight, freeciv, fuse, galago, geda, gimp,Recipes:    gnumeric, gobby, obby, imposter, inkscapeRecipes:    telepathy, tilibs, xchat, xournal.Person:     Leon WoestenbergMail:       leonw@mailcan.comInterests:  SquashFS, LZMAPerson:     Marcin JuszkiewiczMail:       hrw@openembedded.orgWebsite:    http://www.hrw.one.pl/Machines:   collie, spitz, tosaDistros:    OpenZaurusInterests:  WiFi, Opie, Qtopia fonts, Native SDKRecipes:    hostap*, orinoco*, wpa-supplicant*, wireless-tools, keymapsRecipes:    linux-openzaurus, kdepimpi, subapplet, corsair, gammu, iqnotes, zbedicRecipes:    ttf-fonts/* qpf-fonts/*Person:     Michael 'Mickey' LauerMail:       mlauer@vanille-media.deDistros:    Ã…ngstrÃ¶m, genericMachines:   poodle, c7x0, spitz, nokia770, x86, qemuarm, qemux86Interests:  Core OE infrastructure, Python, GUI-ToolkitsRecipes:    python*, qt*, qte*, sip*Person:     Philip BalisterMail:       Crofton@balister.orgWebsite:    http://www.balister.orgMachines:   omap5912oskDistros:    openomapRecipes:    xerces-c, omniorbPerson:     Richard PurdieMail:       rpurdie@rpsys.netDistros:    poky, openzaurus, â‰ˆngstrË†mMachines:   poodle, c7x0, spitz, nokia770, qemuarm, qemux86, hx2xxxInterests:  Kernels, Bitbake, Core OE infrastructure, Zaurus 2.6Recipes:    linux-openzaurus, udev, zaurusd, task-basePerson:     Ã˜yvind RepvikMail:       nail@nslu2-linux.orgMachines:   nslu2, fsg3, ixp4xx, n2100Distros:    debianslug, openslug, slugosRecipes:    bwmon, watchdog, wakelan, libdvb, sane-backends, sambaRecipes:    ccxstream, eciadsl, ssmtp, gstreamer, ixp4xx-npe, joeRecipes:    lcdproc, libol, mailx, mysql, musicpd, openntpd, qc-usbRecipes:    radlib, scsi-idle, rng-tools, slugos-init, syslog-ngRecipes:    vsftpd, zd1211, wpa-supplicant
