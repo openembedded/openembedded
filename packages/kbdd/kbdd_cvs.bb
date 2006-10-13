@@ -1,21 +1,20 @@
-SECTION = "console/utils"
 DESCRIPTION = "User-space keyboard daemon for external keyboards"
 HOMEPAGE = "http://handhelds.org/moin/moin.cgi/kbdd"
+SECTION = "console/utils"
 LICENSE = "GPLv2"
 DEPENDS = "virtual/kernel"
 RRECOMMENDS_${PN} = "${@linux_module_packages('keybdev uinput', d)}"
+PV = "0.10+cvs${SRCDATE}"
+PR = "r5"
+
 SRC_URI = "${HANDHELDS_CVS};module=apps/kbdd;date=${SRCDATE} \
            file://kbdd.init \
            file://kbdd.conf \
            file://kbdd-modules"
-
-#Remove the dash below when 0.8 changes in PV
-PV="0.10+cvs${SRCDATE}"
-PR="r5"
-
-inherit update-rc.d linux_modules
-
 S = "${WORKDIR}/kbdd"
+
+inherit update-rc.d linux-kernel-base
+
 INITSCRIPT_NAME = "kbdd"
 INITSCRIPT_PARAMS = "defaults"
 

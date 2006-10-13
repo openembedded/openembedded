@@ -10,10 +10,7 @@ S = "${WORKDIR}/appWeb-${PV}"
 APPWEB_HOST = "${@get_appweb_host(d, bb)}"
 APPWEB_BUILD = "${BUILD_SYS}"
 
-def get_appweb_host(d, bb):
-    host = bb.data.getVar('HOST_SYS', d, 1)
-    return host.replace('-linux-uclibc', '-linux')
-    
+require appweb.inc
 
 #  --buildNumber=NUMBER     Set the build number part of the version (1.0.0.X).
 #  --name=NAME              Set the full product name (BLD_NAME define).
