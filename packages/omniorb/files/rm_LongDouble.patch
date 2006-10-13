@@ -1,0 +1,14 @@
+*** omniORB-4.0.7/idl/corbaidl.idl.orig	2006-10-13 09:21:35.000000000 -0400
+--- omniORB-4.0.7/idl/corbaidl.idl	2006-10-13 09:22:38.000000000 -0400
+***************
+*** 48,56 ****
+  #endif
+    typedef sequence<float>              FloatSeq;
+    typedef sequence<double>             DoubleSeq;
+- #ifdef HAS_LongDouble
+-   typedef sequence<long double>        LongDoubleSeq;
+- #endif
+    typedef sequence<string>             StringSeq;
+    typedef sequence<wstring>            WStringSeq;
+  
+--- 48,53 ----
