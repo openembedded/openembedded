@@ -86,7 +86,7 @@ def check_sanity(e):
 
 	for util in required_utilities.split():
 		if not check_app_exists( util, e.data ):
-			raise_sanity_error( "Please install the %s utility." )
+			raise_sanity_error( "Please install the %s utility." % util )
 
 	oes_bb_conf = data.getVar( 'OES_BITBAKE_CONF', e.data, True )
 	if not oes_bb_conf:
