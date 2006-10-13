@@ -4,14 +4,15 @@ Please put you full name and email-address here for the areas of OE you want to 
 
 Note: For the hard of thinking, this list is meant to remain in alphabetical
 order. If you could add yourselves to it in alphabetical order that would be
-so much easier.
+so much easier (sort by firstname).
 
 Person:     Real name
 Mail:       Mail patches to
 Website:    Web-page
+Interests:  Areas of interest (e.g. subsystems)
 Distros:    Maintained distros
 Machines:   Maintained machines
-Recipes:    Maintained recipes (subsystems first, then single ones)
+Recipes:    Maintained recipes (should match package names, can include wildcards)
 
 -----------------------------------------------------------------------------
 
@@ -27,9 +28,9 @@ Mail:       koen@openembedded.org
 Website:    http://dominion.kabel.utwente.nl/koen/cms
 Machines:   h2200, ipaq-pxa270, efika, ep93xx, netbook-pro
 Distros:    Ångström
-Recipes:    OpenSync,, GNOME, GPE, Matchbox
+Interests:  OpenSync, GNOME, GPE, Matchbox
 Recipes:    abiword, bootchart, dia, farsight, freeciv, fuse, galago, geda, gimp, 
-Recipes:    gnumeric, (g)obby, imposter, inkscape
+Recipes:    gnumeric, gobby, obby, imposter, inkscape
 Recipes:    telepathy, tilibs, xchat, xournal. 
 
 Person:     Marcin Juszkiewicz
@@ -37,13 +38,13 @@ Mail:       hrw@openembedded.org
 Website:    http://www.hrw.one.pl/
 Machines:   collie, spitz
 Distros:    OpenZaurus
-Recipes:    OPIE, HostAP, Orinoco, WPA-Supplicant, Wireless tools, Keymaps, OpenZaurus 2.6 kernels
-Recipes:    Qtopia fonts, DejaVu fonts, Native SDK
-Recipes:    kdepimpi, subapplet, corsair, gammu, iqnotes, zbedic
+Interests:  OPIE, Qtopia fonts, Native SDK
+Recipes:    hostap*, orinoco*, wpa-supplicant*, wireless-tools, keymaps, qpf-dejavu*
+Recipes:    kdepimpi, subapplet, corsair, gammu, iqnotes, zbedic, linux-openzaurus 
 
 Person:     Leon Woestenberg
 Mail:       leonw@mailcan.com
-Recipes:    SquashFS, LZMA
+Interests:  SquashFS, LZMA
 
 Person:     Joaquim Duran
 Mail:       joaquinduran@adtelecom.es
@@ -58,3 +59,10 @@ Recipes:    ccxstream, eciadsl, ssmtp, gstreamer, ixp4xx-npe, joe
 Recipes:    lcdproc, libol, mailx, mysql, musicpd, openntpd, qc-usb
 Recipes:    radlib, scsi-idle, rng-tools, slugos-init, syslog-ng
 Recipes:    vsftpd, zd1211, wpa-supplicant
+
+Person:     Richard Purdie
+Mail:       rpurdie@rpsys.net
+Distros:    poky, openzaurus, Ångström
+Machines:   poodle, c7x0, spitz, nokia770, qemuarm, qemux86, hx2xxx
+Interests:  Kernels, Bitbake, Core OE infrastructure, Zaurus 2.6
+Recipes:    linux-openzaurus, udev, zaurusd, task-base
