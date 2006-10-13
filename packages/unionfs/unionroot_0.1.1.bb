@@ -5,7 +5,6 @@ DEPENDS = "busybox base-files"
 RDEPENDS = "busybox base-files"
 SECTION = "base"
 PRIORITY = "optional"
-MAINTAINER = "Chris Lord <cwiiis@handhelds.org>"
 
 SRC_URI = "file://init.unionroot"
 

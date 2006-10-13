@@ -1,7 +1,6 @@
 DESCRIPTION = "LIRC is a package that allows you to decode and send infra-red signals of many commonly used remote controls. This package contains the lirc kernel modules."
 SECTION = "base"
 PRIORITY = "optional"
-MAINTAINER = "Matthias Goebl <matthias.goebl@goebl.net>"
 HOMEPAGE = "http://www.lirc.org"
 LICENSE = "GPL"
 DEPENDS = "virtual/kernel fakeroot-native setserial"

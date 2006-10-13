@@ -4,7 +4,6 @@
 # conf/distro/slugos.conf to get the standard settings).
 #
 DESCRIPTION = "Generic SlugOS image"
-MAINTAINER = "NSLU2 Linux <nslu2-linux@yahoogroups.com>"
 HOMEPAGE = "http://www.nslu2-linux.org"
 LICENSE = "MIT"
 PR = "r36"

@@ -1,6 +1,5 @@
 DESCRIPTION = "Qt/Embedded bindings for the Scintilla source code editor component"
 SECTION = "opie/libs"
-MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 LICENSE = "GPL"
 PR = "r0"
 

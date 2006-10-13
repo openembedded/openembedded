@@ -1,7 +1,6 @@
 DESCRIPTION = "Zlib Compression Library"
 SECTION = "libs"
 PRIORITY = "required"
-MAINTAINER = "Henning Heinold <heinold@inf.fu-berlin.de>"
 HOMEPAGE = "http://www.gzip.org/zlib/"
 LICENSE = "zlib"
 PR="r1"

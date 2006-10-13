@@ -1,6 +1,5 @@
 PR         = "r2"
 LICENSE    = "GPL"
-MAINTAINER = "Florian Boor <florian@kernelconcepts.de>"
 
 DEPENDS = "gtk+-2.6.4-1.osso7 matchbox-wm dbus osso-esd"
 

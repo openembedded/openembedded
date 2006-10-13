@@ -4,7 +4,6 @@
 
 DESCRIPTION="Hibernate script supporting multiple suspend methods"
 LICENSE="GPL"
-MAINTAINER = "Raymond Danks <info-linux@geode.amd.com>"
 HOMEPAGE="http://www.suspend2.net"
 
 SRC_URI="http://www.suspend2.net/downloads/all/${PN}-${PV}.tar.gz \

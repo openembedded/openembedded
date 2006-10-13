@@ -4,7 +4,6 @@
 
 DESCRIPTION="emelFM2 is a GTK2+ file manager that implements the popular \
 	two-pane design."
-MAINTAINER = "Raymond Danks <info-linux@geode.amd.com>"
 HOMEPAGE="http://dasui.prima.de/e2wiki/"
 SRC_URI="http://dasui.prima.de/~tooar/emelfm2-${PV}.tar.gz \
 	file://makefile.patch;patch=1"

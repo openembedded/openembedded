@@ -1,7 +1,6 @@
 DESCRIPTION = "Lightweight Japanese font in 10 point suitable for 320x240 display"
 SECTION = "opie/fonts"
 PRIORITY = "optional"
-MAINTAINER = "Rolf Leggewie <openembedded-unismall@rolf.leggewie.biz>"
 LICENSE = "GPL"
 HOMEPAGE = "http://sourceforge.jp/projects/zaurus-ja/"
 RPROVIDES = "virtual/japanese-font"

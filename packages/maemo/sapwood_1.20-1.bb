@@ -2,7 +2,6 @@ PR = "r1"
 LICENSE = "GPL"
 SECTION = "x11/base"
 DESCRIPTION = "GTK theme engine Sapwood"
-MAINTAINER = "Florian Boor <florian@kernelconcepts.de>"
 DEPENDS = "gtk+-2.6.4-1.osso7"
 
 FILES_${PN} += "${libdir}/gtk-2.0/2.4.0/engines/"

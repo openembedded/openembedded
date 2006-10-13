@@ -1,0 +1,40 @@
+Modifies the Makefile so that it builds {mk,un}squashfs-lzma instead
+of {mk,un}squashfs. This requires the common (non-lzma) patch called
+Makefile-3.1 to be applied first.
+
+Leon Woestenberg <leonw@mailcan.com>
+
+--- squashfs-tools/Makefile	2006-10-10 16:07:43.000000000 +0200
++++ squashfs-lzma-tools/Makefile	2006-10-10 15:44:57.000000000 +0200
+@@ -1,13 +1,15 @@
+ INCLUDEDIR = .
+ CFLAGS_R = -I$(INCLUDEDIR) -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE
+-LIBS = -lz -lpthread
++#LZMAPATH = ./lzma/C/7zip/Compress/LZMA_Lib
++LIBS = -llzma -lz -lpthread
+ 
+ CFLAGS := -I$(INCLUDEDIR) -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -O2
+ 
+ all: mksquashfs unsquashfs
+ 
+-mksquashfs: mksquashfs.o read_fs.o sort.o
+-	$(CC) $(LDFLAGS) mksquashfs.o read_fs.o sort.o $(LIBS) -o $@
++mksquashfs-lzma: mksquashfs.o read_fs.o sort.o
++#	make -C $(LZMAPATH)
++	$(CXX) $(LDFLAGS) mksquashfs.o read_fs.o sort.o $(LIBS) -o $@
+ 
+ mksquashfs.o: mksquashfs.c squashfs_fs.h mksquashfs.h global.h sort.h
+ 	$(CC) $(CFLAGS_R) $(CFLAGS) -c -o mksquashfs.o mksquashfs.c
+@@ -18,7 +20,10 @@
+ sort.o: sort.c squashfs_fs.h global.h sort.h
+ 	$(CC) $(CFLAGS_R) $(CFLAGS) -c -o sort.o sort.c
+ 
+-unsquashfs: unsquashfs.o
+-	$(CC) unsquashfs.o -lz -o $@
++unsquashfs-lzma: unsquashfs.o
++#	make -C $(LZMAPATH)
++	$(CXX) unsquashfs.o $(LIBS) -o $@
+ 
+ unsquashfs.o: unsquashfs.c squashfs_fs.h read_fs.h global.h
++
++clean:

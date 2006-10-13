@@ -1,7 +1,6 @@
 DESCRIPTION = "Python Vorbis Bindings"
 SECTION = "devel/python"
 PRIORITY = "optional"
-MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 LICENSE = "LGPL"
 RDEPENDS = "python-core libvorbis python-ogg"
 DEPENDS = "libvorbis python-ogg"

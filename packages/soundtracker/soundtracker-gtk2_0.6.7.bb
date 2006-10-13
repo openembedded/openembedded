@@ -2,7 +2,6 @@ DESCRIPTION = "Music composition program in the style of AMIGA Impulse Tracker"
 DEPENDS = "gtk+ libgnomeui audiofile esound-gpe alsa-lib"
 LICENSE = "GPL"
 SECTION = "x11/multimedia"
-MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 PR = "r1"
 
 SRC_URI = "http://mutab0r.chat.ru/soundtracker-0.6.7.gtk2.tar.bz2"

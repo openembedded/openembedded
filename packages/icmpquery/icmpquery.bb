@@ -1,6 +1,5 @@
 SECTION = "network/misc"
 DESCRIPTION = "IMCP query generator"
-MAINTAINER = "Bob Davies (tyggerbob@gmail.com)"
 SRC_URI = "file://icmpquery.c \
 	   file://Makefile"
 PV = "1.03"

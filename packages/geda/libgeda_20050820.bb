@@ -1,4 +1,3 @@
-MAINTAINER = "Koen Kooi <koen@linuxtogo.org>"
 LICENSE = "GPLv2"
 HOMEPAGE = "http://geda.seul.org"
 PR = "r1"

@@ -3,7 +3,6 @@ LICENSE = "LGPL"
 SECTION = "gpe/libs"
 PRIORITY = "optional"
 DEPENDS = "libgpewidget libgpepimc sqlite"
-MAINTAINER = "Florian Boor <florian.boor@kernelconcepts.de>"
 
 GPE_TARBALL_SUFFIX = "bz2"
 

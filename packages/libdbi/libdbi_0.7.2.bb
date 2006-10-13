@@ -6,7 +6,6 @@ DESCRIPTION = "Database Independent Abstraction Layer for C"
 HOMEPAGE = "http://libdbi.sourceforge.net/"
 LICENSE = "LGPL"
 SECTION = "libs"
-MAINTAINER = "Eddy Pronk <epronk@muftor.com>"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/libdbi/libdbi-${PV}.tar.gz"
 

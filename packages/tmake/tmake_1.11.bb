@@ -4,7 +4,6 @@ LICENSE = "Unknown"
 DEPENDS = ""
 SECTION = "devel"
 PRIORITY = "optional"
-MAINTAINER = "Chris Larson <kergoth@handhelds.org>"
 
 S = "${WORKDIR}/tmake-${PV}"
 

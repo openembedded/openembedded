@@ -6,7 +6,6 @@
 # Date: 23-Apr-06
 
 DESCRIPTION = "Creates all task-essential-* tasks"
-MAINTAINER = "Matthias 'CoreDump' Hentges <oe@hentges.net>"
 HOMEPAGE = "http://www.hentges.net/misc/openzaurus/index.shtml"
 
 ######################################################################################

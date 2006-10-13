@@ -1,6 +1,5 @@
 DESCRIPTION = "Opie FTP Library"
 SECTION = "opie/libs"
-MAINTAINER = "Team Opie <opie@handhelds.org>"
 PRIORITY = "optional"
 LICENSE = "GPL"
 PROVIDES = "libftplib1"

@@ -6,7 +6,6 @@
 # Date: 01-Jul-06
 
 DESCRIPTION = "The Fluxbox WindowManager"
-MAINTAINER = "Matthias 'CoreDump' Hentges <oe@hentges.net>"
 HOMEPAGE = "http://fluxbox.sourceforge.net"
 LICENSE = "MIT"
 REALPV = "1.0rc"

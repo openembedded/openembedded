@@ -4,7 +4,6 @@
 
 DEPENDS = "virtual/libx11 libxaw rpm2cpio-native"
 
-MAINTAINER = "Raymond Danks <info-linux@geode.amd.com>"
 HOMEPAGE="www.citrix.com/download/"
 
 SRC_URI="file://${DL_DIR}/ICAClient-8.0-1.i386.rpm" 

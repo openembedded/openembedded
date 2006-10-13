@@ -1,6 +1,5 @@
 DESCRIPTION = "Sub::Exporter - a sophisticated exporter for custom-built routines"
 SECTION = "libs"
-MAINTAINER = "Jamie Lenehan <lenehan@twibble.org>"
 LICENSE = "Artistic|GPL"
 DEPENDS += "libdata-optlist-perl-native libsub-install-perl-native \
             libparams-util-perl-native"

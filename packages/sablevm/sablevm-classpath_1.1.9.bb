@@ -2,7 +2,6 @@ DESCRIPTION = "GNU Classpath modified to work with SableVM"
 HOMEPAGE = "http://sablevm.org"
 LICENSE = "Classpath"
 PRIORITY = "optional"
-MAINTAINER = "Rene Wagner <rw@handhelds.org>"
 SECTION = "libs"
 PR = "r1"
 

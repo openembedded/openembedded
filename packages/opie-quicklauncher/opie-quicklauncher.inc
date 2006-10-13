@@ -1,7 +1,6 @@
 DESCRIPTION = "The Opie Quick Launcher Loader"
 SECTION = "opie/base"
 PRIORITY = "optional"
-MAINTAINER = "Team Opie <opie@handhelds.org>"
 LICENSE = "GPL"
 
 S = "${WORKDIR}/quicklauncher"

@@ -1,7 +1,6 @@
 SECTION = "kernel"
 DESCRIPTION = "Linux kernel for SH4 based TITAN router appliance"
 LICENSE = "GPL"
-MAINTAINER = "Jamie Lenehan <lenehan@twibble.org>
 PR = "r2"
 
 SRC_URI = "ftp://ftp.kernel.org/pub/linux/kernel/v2.6/linux-${PV}.tar.bz2 \
@@ -12,6 +11,7 @@ SRC_URI = "ftp://ftp.kernel.org/pub/linux/kernel/v2.6/linux-${PV}.tar.bz2 \
 S = "${WORKDIR}/linux-${PV}"
 
 COMPATIBLE_HOST = 'sh4.*-linux'
+COMPATIBLE_MACHINE = "titan"
 
 inherit kernel
 

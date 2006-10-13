@@ -1,7 +1,6 @@
 SECTION = "x11/network"
 DESCRIPTION = "Mail user agent"
 DEPENDS = "gtk+ gpgme gnutls"
-MAINTAINER = "Graeme Gregory <dp@xora.org.uk>"
 LICENSE = "GPL"
 PR = "r0"
 

@@ -3,7 +3,6 @@ SECTION = "x11"
 LICENSE = "GPL"
 DEPENDS = "gtk+ libxmu libxpm"
 HOMEPAGE = "http://fbpanel.sourceforge.net/"
-MAINTAINER = "Graeme Gregory <dp@xora.org.uk>"
 SRC_URI = "${SOURCEFORGE_MIRROR}/fbpanel/fbpanel-${PV}.tgz \
            file://makefile.common.patch;patch=1 "
 

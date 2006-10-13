@@ -7,7 +7,6 @@ DEFAULT_PREFERENCE = "-1"
 
 HOMEPAGE="http://www.openh323.org/docs/PWLib/"
 DESCRIPTION="Portable Text and GUI C/C++ Class Libarary."
-MAINTAINER = "Raymond Danks <info-linux@geode.amd.com>"
 LICENSE = "GPL"
 
 SRC_URI="${DEBIAN_MIRROR}/main/p/${PN}/${PN}_${PV}.orig.tar.gz"

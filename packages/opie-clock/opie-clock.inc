@@ -1,7 +1,6 @@
 DESCRIPTION = "Clock and stop-watch"
 SECTION = "opie/applications"
 PRIORITY = "optional"
-MAINTAINER = "Team Opie <opie@handhelds.org>"
 LICENSE = "GPL"
 APPNAME = "clock"
 

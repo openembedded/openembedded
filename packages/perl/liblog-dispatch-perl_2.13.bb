@@ -1,6 +1,5 @@
 DESCRIPTION = "Log::Dispatch - Dispatches messages to one or more outputs"
 SECTION = "libs"
-MAINTAINER = "Jamie Lenehan <lenehan@twibble.org>"
 LICENSE = "Artistic|GPL"
 PR = "r2"
 

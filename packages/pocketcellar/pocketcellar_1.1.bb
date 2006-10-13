@@ -3,7 +3,6 @@ those you have in your cellar. The Food Assistant will make suggestions of wines
 suitable for your meal, and indicate those in your cellar that match."
 SECTION = "opie/applications"
 PRIORITY = "optional"
-MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 LICENSE = "GPL"
 PR = "r3"
 

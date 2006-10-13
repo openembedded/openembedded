@@ -1,7 +1,6 @@
 DESCRIPTION = "Driver for the Hauppauge WinTV PVR USB2"
 PRIORITY = "optional"
 SECTION = "kernel/modules"
-MAINTAINER = "dyoung <dyoung@thestuffguy.com>"
 LICENSE = "GPL"
 PR = "r0"
 RDEPENDS = "kernel-module-tveeprom kernel-module-tuner kernel-module-msp3400

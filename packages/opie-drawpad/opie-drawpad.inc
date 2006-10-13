@@ -1,7 +1,6 @@
 DESCRIPTION = "A note taking program with basic draw tools"
 SECTION = "opie/pim"
 PRIORITY = "optional"
-MAINTAINER = "Team Opie <opie@handhelds.org>"
 LICENSE = "GPL"
 DEPENDS = "libopiecore2 libopieui2 libqtaux2"
 APPNAME = "drawpad"

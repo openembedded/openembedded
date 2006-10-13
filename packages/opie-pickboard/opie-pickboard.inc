@@ -1,7 +1,6 @@
 DESCRIPTION = "Pickboard input method"
 SECTION = "opie/inputmethods"
 PRIORITY = "optional"
-MAINTAINER = "Team Opie <opie@handhelds.org>"
 LICENSE = "GPL"
 APPNAME = "qpickboard"
 

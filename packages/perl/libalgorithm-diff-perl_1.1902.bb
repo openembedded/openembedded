@@ -1,6 +1,5 @@
 DESCRIPTION = "Algorithm::Diff - Compute intelligent differences between two files / lists"
 SECTION = "libs"
-MAINTAINER = "Jamie Lenehan <lenehan@twibble.org>"
 LICENSE = "Artistic|GPL"
 RDEPENDS += "perl-module-exporter perl-module-strict perl-module-vars \
 	     perl-module-strict perl-module-vars"

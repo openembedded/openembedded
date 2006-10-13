@@ -3,7 +3,6 @@ HOMEPAGE = "http://www.gtk.org"
 SECTION = "libs"
 LICENSE = "LGPL"
 PRIORITY = "optional"
-MAINTAINER = "Rob Taylor <robtaylor@fastmail.fm>"
 DEPENDS = "glib-1.2 jpeg libpng libxext"
 PR = "r0"
 

@@ -4,7 +4,6 @@ PRIORITY = "optional"
 DEPENDS = "libxsettings virtual/libx11 libxt"
 # libxt is required to stop configure breaking builds by 
 # including system paths to find it if it isn't present.
-MAINTAINER = "Florian Boor <florian@kernelconcepts.de>"
 PR="r1"
 
 inherit autotools pkgconfig gpe

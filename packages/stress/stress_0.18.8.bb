@@ -4,7 +4,6 @@
 
 HOMEPAGE="http://weather.ou.edu/~apw/projects/stress/"
 DESCRIPTION = "a simple tool that imposes certain types of compute stress on UNIX-like operating systems."
-MAINTAINER = "Raymond Danks <info-linux@geode.amd.com>"
 LICENSE = "GPL"
 
 inherit autotools

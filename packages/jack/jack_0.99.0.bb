@@ -4,7 +4,6 @@ device, as well as allowing them to share audio between \
 themselves."
 SECTION = "libs/multimedia"
 PRIORITY = "optional"
-MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 LICENSE = "GPL LGPL" 
 PR = "r0"
 

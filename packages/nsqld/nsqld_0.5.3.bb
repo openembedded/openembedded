@@ -1,7 +1,6 @@
 DESCRIPTION = "Server process for syncing"
 SECTION = "gpe"
 PRIORITY = "optional"
-MAINTAINER = "Tim Teulings <tim@teulings.org>"
 LICENSE = "GPL"
 
 SRC_URI = "${GPE_MIRROR}/nsqld-${PV}.tar.gz"

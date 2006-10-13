@@ -1,7 +1,6 @@
 DESCRIPTION="EXT2 Filesystem Utilities"
 SECTION="base"
 PRIORITY="optional"
-MAINTAINER="Greg Gilbert <greg@treke.net>"
 RDEPENDS="libc6"
 DEPENDS=virtual/libc 
 

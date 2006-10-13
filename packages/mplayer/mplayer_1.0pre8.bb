@@ -18,7 +18,6 @@ SRC_URI = "http://www1.mplayerhq.hu/MPlayer/releases/MPlayer-${PV}.tar.bz2 \
            file://libmpcodecs-ogg-include.patch;patch=1 \
            file://pld-onlyarm5.patch;patch=1"
 
-MAINTAINER="Graeme Gregory <dp@xora.org.uk>"
 RCONFLICTS_${PN} = "mplayer-atty"
 RREPLACES_${PN} = "mplayer-atty"
 PR = "r2"
@@ -173,6 +172,12 @@ do_configure() {
 	cp ${WORKDIR}/vo_w100.c ${S}/libvo
 	cp ${WORKDIR}/vo_w100_api.h ${S}/libvo
 	cp ${WORKDIR}/vo_w100_fb.h ${S}/libvo
+
+	sed -i 's|/usr/include|${STAGING_INCDIR}|g' ${S}/configure
+	sed -i 's|/usr/lib|${STAGING_LIBDIR}|g' ${S}/configure
+	sed -i 's|/usr/\S*include[\w/]*||g' ${S}/configure
+	sed -i 's|/usr/\S*lib[\w/]*||g' ${S}/configure
+
         ./configure ${EXTRA_OECONF}
 }
 

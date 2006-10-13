@@ -1,7 +1,6 @@
 DESCRIPTION = "ctrlproxy is an IRC server with multiserver support."
 SECTION = "console/network"
 PRIORITY = "optional"
-MAINTAINER = "NSLU2 Linux <nslu2-linux@yahoogroups.com>"
 DEPENDS = "glib-2.0 libxml2 popt libpcre openssl"
 PR = "r1"
 LICENSE = "GPL"

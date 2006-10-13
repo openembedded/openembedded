@@ -1,4 +1,3 @@
-MAINTAINER = "Koen Kooi <koen@linuxtogo.org>"
 PV = ${DISTRO_VERSION}
 
 do_compile() {

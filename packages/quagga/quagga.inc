@@ -6,7 +6,6 @@ Ishiguro. The Quagga tree aims to build a more involved community \
 around Quagga than the current centralised model of GNU Zebra."
 HOMEPAGE = "http://www.quagga.net/"
 SECTION = "network"
-MAINTAINER = "Jamie Lenehan <lenehan@twibble.org>"
 LICENSE = "GPL"
 DEPENDS = "readline ncurses perl-native"
 # Each of the per-protocol packages depends on the main package

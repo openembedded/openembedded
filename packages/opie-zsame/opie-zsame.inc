@@ -1,7 +1,6 @@
 DESCRIPTION = "ZSame"
 SECTION = "opie/games"
 PRIORITY = "optional"
-MAINTAINER = "Team Opie <opie@handhelds.org>"
 LICENSE = "GPL"
 APPNAME = "zsame"
 

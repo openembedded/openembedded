@@ -1,6 +1,5 @@
 HOMEPAGE = "http://www.muppetlabs.com/~breadbox/software/elfkickers.html"
 LICENSE = "GPL"
-MAINTAINER = "Chris Larson <kergoth@handhelds.org>"
 PRIORITY = "optional"
 SECTION = "devel"
 

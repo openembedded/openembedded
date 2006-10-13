@@ -1,7 +1,6 @@
 DESCRIPTION = "Qt-based class wrapper of libetpan"
 SECTION = "opie/libs"
 PRIORITY = "optional"
-MAINTAINER = "Team Opie <opie@handhelds.org>"
 LICENSE = "LGPL"
 DEPENDS = "libetpan"
 

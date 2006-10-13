@@ -4,7 +4,6 @@
 
 DESCRIPTION="Beecrypt is a general-purpose cryptography library."
 HOMEPAGE="http://sourceforge.net/projects/beecrypt"
-MAINTAINER = "Raymond Danks <info-linux@geode.amd.com>"
 SRC_URI="${SOURCEFORGE_MIRROR}/beecrypt/beecrypt-${PV}.tar.gz"
 
 inherit autotools

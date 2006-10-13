@@ -3,7 +3,6 @@ DESCRIPTION = "Runtime support for GTK interface builder"
 SECTION = "libs"
 PRIORITY = "optional"
 DEPENDS = "libxml2 gtk+"
-MAINTAINER = "Phil Blundell <pb@handhelds.org>"
 
 SRC_URI = "ftp://ftp.gnome.org/pub/GNOME/sources/libglade/2.0/libglade-${PV}.tar.bz2 \
            file://glade-cruft.patch;patch=1;pnum=0 \

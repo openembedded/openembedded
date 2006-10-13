@@ -1,7 +1,6 @@
 SECTION = "console/network"
 DESCRIPTION = "IPAC-NG is the iptables/ipchains based IP accounting package for Linux"
 HOMEPAGE = "http://ipac-ng.sourceforge.net/"
-MAINTAINER = "Bruno Randolf <bruno.randolf@4g-systems.biz>"
 SRC_URI = "${SOURCEFORGE_MIRROR}/ipac-ng/ipac-ng-${PV}.tar.bz2 \
 	file://makefile-build-cc.diff;patch=1;pnum=0"
 RDEPENDS = "perl libgd-perl"

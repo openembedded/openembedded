@@ -1,7 +1,6 @@
 DESCRIPTION = "4 wins"
 SECTION = "opie/games"
 PRIORITY = "optional"
-MAINTAINER = "Team Opie <opie@handhelds.org>"
 LICENSE = "GPL"
 AUTHOR = "Anders Widell, Steve Dunham, Robert Ernst"
 HOMEPAGE = "http://www.linux-solutions.at/projects/zaurus/games-Win4.html"

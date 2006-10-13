@@ -3,7 +3,6 @@ language tool that provides a framework for constructing recognizers, \
 compilers, and translators from grammatical descriptions containing \
 Java, C#, C++, or Python actions."
 LICENSE = "PD"
-MAINTAINER = "Chris Larson <kergoth@handhelds.org>"
 PRIORITY = "optional"
 SECTION = "devel"
 # DEPENDS += "virtual/java"

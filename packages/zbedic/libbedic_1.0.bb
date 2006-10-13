@@ -1,7 +1,6 @@
 DESCRIPTION = "A dictionary application for Qt/E based Palmtop Environments"
 SECTION = "opie/applications"
 PRIORITY = "optional"
-MAINTAINER = "Marcin Juszkiewicz <openembedded@hrw.one.pl>"
 LICENSE = "GPL"
 APPTYPE = "binary"
 APPDESKTOP = "${WORKDIR}/zbedic/misc"

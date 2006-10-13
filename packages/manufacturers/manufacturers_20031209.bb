@@ -1,7 +1,6 @@
 SECTION = "base"
 DESCRIPTION = "Ethernet manufacturer database"
 LICENSE = "PD"
-MAINTAINER = "Michael 'Mickey' Lauer <mickey@vanille.de>"
 SRCDATE = "${PV}"
 
 SRC_URI = "${HANDHELDS_CVS};module=opie/etc"

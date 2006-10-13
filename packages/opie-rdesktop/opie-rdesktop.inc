@@ -1,7 +1,6 @@
 DESCRIPTION = "Remote Desktop Protocol (RDP) Client"
 SECTION = "opie/applications"
 PRIORITY = "optional"
-MAINTAINER = "Team Opie <opie@handhelds.org>"
 LICENSE = "GPL"
 DEPENDS = "openssl"
 I18N_FILES = "ordesktop.ts"

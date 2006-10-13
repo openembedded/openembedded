@@ -1,6 +1,5 @@
 SECTION = "kernel"
 DESCRIPTION = "Liux As Bootloader kernelm"
-MAINTAINER = "Koen Kooi <koen@linuxtogo.org>"
 LICENSE = "GPL"
 PV = "${K_MAJOR}.${K_MINOR}.${K_MICRO}-hh${HHV}+cvs${SRCDATE}"
 

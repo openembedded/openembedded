@@ -1,7 +1,6 @@
 DESCRIPTION = "X data files"
 HOMEPAGE = "http://www.x.org"
 SECTION = "x11/datas"
-#MAINTAINER = ""
 LICENSE = "MIT-X"
 
 #DEPENDS = ""

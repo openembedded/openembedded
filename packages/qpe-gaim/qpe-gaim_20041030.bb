@@ -1,6 +1,5 @@
 DESCRIPTION = "A multi protocol instant messager application, Qt/Embedded based Palmtop Environments Edition"
 SECTION = "opie/applications"
-MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 DEPENDS = "qpe-libgaim glib-2.0"
 RDEPENDS = "libgaim-plugins glibc-gconv-iso8859-1"
 LICENSE = "GPL"

@@ -3,7 +3,6 @@
 DESCRIPTION = "A console utility to make a beep noise"
 SECTION = "console/utils"
 LICENSE = "GPL"
-MAINTAINER = "John Bowler <jbowler@nslu2-linux.org>"
 PR = "r2"
 DEPENDS = "install-native"
 

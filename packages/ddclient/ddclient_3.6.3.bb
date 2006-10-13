@@ -1,7 +1,6 @@
 SECTION = "console/network"
 DESCRIPTION = "Ddclient is a Perl client used to update dynamic DNS entries for accounts on Dynamic DNS Network Services"
 HOMEPAGE = "http://ddclient.sourceforge.net/"
-MAINTAINER = "Bruno Randolf <bruno.randolf@4g-systems.biz>"
 LICENSE = "GPL"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/ddclient/ddclient-${PV}.tar.bz2 \

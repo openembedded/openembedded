@@ -1,7 +1,6 @@
 DESCRIPTION = "MPEG Video Decoder Library"
 SECTION = "libs"
 PRIORITY = "optional"
-MAINTAINER = "Tim Ansell <ipks@mithis.net>"
 DEPENDS = "virtual/libsdl"
 LICENSE = "GPL"
 

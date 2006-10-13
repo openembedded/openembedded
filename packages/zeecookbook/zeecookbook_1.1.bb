@@ -6,7 +6,6 @@ SECTION = "opie/applications"
 DEPENDS = "sqlite"
 PRIORITY = "optional"
 LICENSE = "GPL"
-MAINTAINER = "Philip Frampton"
 PR = "r0"
 
 SRC_URI = "http://sf.gds.tuwien.ac.at/z/ze/zeecookbook/zeecookbook-1.1.zip \

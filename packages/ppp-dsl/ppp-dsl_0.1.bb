@@ -1,6 +1,5 @@
 SECTION = "console/network"
 DESCRIPTION = "Enables PPP dial-in through a DSL connection"
-MAINTAINER = "Bruno Randolf <bruno.randolf@4g-systems.biz>"
 LICENSE = "PD"
 DEPENDS = "ppp rp-pppoe"
 RDEPENDS = "ppp rp-pppoe"

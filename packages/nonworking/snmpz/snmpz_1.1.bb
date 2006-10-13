@@ -1,7 +1,6 @@
 DESCRIPTION="A MIB Browser for Opie/Qtopia"
 SECTION="base"
 PRIORITY="optional"
-MAINTAINER="Michael Lauer <mickey@Vanille.de>"
 LICENSE="GPL"
 DEPENDS=virtual/libqpe snmp++
 

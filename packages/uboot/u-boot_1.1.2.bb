@@ -1,7 +1,6 @@
 DESCRIPTION = "U-boot bootloader"
 PROVIDES = "virtual/bootloader"
 SECTION = "bootloader"
-MAINTAINER = "Holger Schurig"
 PRIORITY = "optional"
 LICENSE = "GPL"
 

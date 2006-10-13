@@ -2,7 +2,6 @@ DESCRIPTION = "Psyco lets you run your existing Python software much faster, wit
 HOMEPAGE = "http://psyco.sourceforge.net"
 SECTION = "devel/python"
 PRIORITY = "optional"
-MAINTAINER = "dkm@kataplop.net"
 LICENSE = "PSF"
 RDEPENDS = "python-core"
 SRCNAME = "psyco"

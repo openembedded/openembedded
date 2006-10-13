@@ -7,7 +7,6 @@ SRC_URI += "file://makefile-fix.patch;patch=1"
 
 DEPENDS = "libgpewidget"
 SECTION = "gpe"
-MAINTAINER = "Florian Boor <florian.boor@kernelconcepts.de>"
 
 FILES_${PN} += "${datadir}/gpe/pixmaps"
 FILES_${PN} += "${datadir}/application-registry"

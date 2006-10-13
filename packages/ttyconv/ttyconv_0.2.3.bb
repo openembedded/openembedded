@@ -5,7 +5,6 @@
 DESCRIPTION = "Small app to convert terminal sessions from one encoding to another."
 HOMEPAGE = "http://www.bedroomlan.org/~alexios/coding_ttyconv.html"
 LICENSE = "GPL"
-MAINTAINER = "Chris Larson <kergoth@handhelds.org>"
 PRIORITY = "optional"
 SECTION = "console/utils"
 PR = "r1"

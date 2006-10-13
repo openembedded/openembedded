@@ -1,5 +1,4 @@
 DESCRIPTION = "Squashfs is a highly compressed read-only filesystem for Linux."
-MAINTAINER = "Chris Larson <kergoth@handhelds.org>"
 DEPENDS = "lzma"
 SECTION = "base"
 LICENSE = "GPLv2"

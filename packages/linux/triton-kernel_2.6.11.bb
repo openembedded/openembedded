@@ -1,7 +1,6 @@
 SECTION = "kernel"
 DESCRIPTION = "Linux kernel for the KARO TRITON XScale Board"
 LICENSE = "GPL"
-MAINTAINER = "Justin Huff <jjhuff@mspin.net"
 PR = "r0"
 
 KERNEL_SUFFIX = "triton"

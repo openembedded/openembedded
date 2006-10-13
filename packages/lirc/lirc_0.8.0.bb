@@ -7,7 +7,6 @@ DESCRIPTION_append_lirc-nslu2example = " This package contains a working config 
 SECTION = "console/network"
 PRIORITY = "optional"
 HOMEPAGE = "http://www.lirc.org"
-MAINTAINER = "Matthias Goebl <matthias.goebl@goebl.net>"
 LICENSE = "GPL"
 DEPENDS = "virtual/kernel virtual/libx11 libxau libsm libice"
 DEPENDS_nslu2 = "virtual/kernel lirc-modules"

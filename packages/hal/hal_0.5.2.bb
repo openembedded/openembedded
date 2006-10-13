@@ -1,6 +1,5 @@
 SECTION = "unknown"
 DESCRIPTION = "Hardware Abstraction Layer"
-MAINTAINER = "Chris Larson <kergoth@handhelds.org>"
 DEPENDS = "dbus expat"
 RDEPENDS += "hotplug"
 RRECOMMENDS = "udev-utils"

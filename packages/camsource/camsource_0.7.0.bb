@@ -1,6 +1,5 @@
 DESCRIPTION = "camsource grabs images from a video4linux device and makes them \
 available to various plugins for processing or handling."
-MAINTAINER = "Chris Larson <kergoth@handhelds.org>"
 SECTION = "console/utils"
 LICENSE = "GPL"
 DEPENDS = "jpeg libxml2"

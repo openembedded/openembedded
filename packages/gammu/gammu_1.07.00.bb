@@ -4,7 +4,6 @@ DEPENDS = "bluez-libs"
 LICENSE = "GPL"
 HOMEPAGE = "http://mwiacek.com/gsm/soft/gammu.html"
 AUTHOR = "Marcin Wiacek <marcin@mwiacek.com>"
-MAINTAINER = "Marcin Juszkiewicz <openembedded@hrw.one.pl>"
 
 SRC_URI = "http://www.mwiacek.com/zips/gsm/gammu/stable/1_0x/gammu-${PV}.tar.gz "
 

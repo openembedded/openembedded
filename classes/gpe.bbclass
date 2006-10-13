@@ -3,7 +3,6 @@ GPE_TARBALL_SUFFIX ?= "gz"
 SRC_URI = "${GPE_MIRROR}/${PN}-${PV}.tar.${GPE_TARBALL_SUFFIX}"
 FILES_${PN} += "${datadir}/gpe ${datadir}/application-registry"
 SECTION ?= "gpe"
-MAINTAINER ?= "GPE Team <gpe@handhelds.org>"
 
 inherit gettext
 

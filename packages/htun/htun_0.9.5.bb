@@ -1,6 +1,5 @@
 DESCRIPTION = "Http tunnelling daemon"
 SECTION = "network"
-MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 HOMEPAGE = "http://htun.runslinux.net"
 LICENSE = "GPL"
 PR = "r0"

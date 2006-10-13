@@ -2,7 +2,6 @@ SECTION = "console/network"
 DESCRIPTION = "This package includes some useful diagnostics tools for \
 IPv6 networks, including ndisc6, rdisc6, tcptraceroute6 and traceroute6."
 SECTION = "console/network"
-MAINTAINER = "Jamie Lenehan <lenehan@twibble.org>"
 HOMEPAGE = "http://www.simphalempin.com/dev/ndisc6/"
 LICENSE = "GPL"
 PR = "r0"

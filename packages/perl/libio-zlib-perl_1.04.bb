@@ -1,6 +1,5 @@
 DESCRIPTION = "IO::Zlib - IO:: style interface to Compress::Zlib"
 SECTION = "libs"
-MAINTAINER = "Jamie Lenehan <lenehan@twibble.org>"
 LICENSE = "Artistic|GPL"
 DEPENDS = "libcompress-zlib-perl-native"
 RDEPENDS += "libcompress-zlib-perl"

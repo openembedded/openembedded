@@ -1,7 +1,6 @@
 DESCRIPTION = "Powermanga is an arcade 2D shoot-em-up game with 41 levels and more than 200 sprites."
 SECTION = "opie/games"
 PRIORITY = "optional"
-MAINTAINER = "Chris Lord <cwiiis@handhelds.org>"
 LICENSE = "GPL"
 DEPENDS = "libsdl-qpe libsdl-mixer"
 PR = "r1"

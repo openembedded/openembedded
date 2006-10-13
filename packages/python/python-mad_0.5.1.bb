@@ -1,7 +1,6 @@
 DESCRIPTION = "Python libmad Bindings"
 SECTION = "devel/python"
 PRIORITY = "optional"
-MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 LICENSE = "LGPL"
 RDEPENDS = "python-core libmad"
 DEPENDS = "libmad"

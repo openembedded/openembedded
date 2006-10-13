@@ -1,7 +1,6 @@
 DESCRIPTION = "The Subversion (svn) client"
 SECTION = "console/network"
 DEPENDS = "apr-util-0.9.12 neon"
-MAINTAINER = "Mustafa Yuecel <yuecelm@ee.ethz.ch>"
 LICENSE = "Apache/BSD"
 HOMEPAGE = "http://subversion.tigris.org"
 PR = "r1"

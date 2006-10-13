@@ -5,7 +5,6 @@ DEPENDS += "antlr-native"
 
 DESCRIPTION = "C and C++ Code Counter, a software metrics tool"
 LICENSE = "PD"
-MAINTAINER = "Chris Larson <kergoth@handhelds.org>"
 PRIORITY = "optional"
 SECTION = "devel"
 HOMEPAGE = "http://cccc.sourceforge.net/"

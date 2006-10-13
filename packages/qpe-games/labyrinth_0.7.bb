@@ -1,7 +1,6 @@
 DESCRIPTION = "A traditional (german?) boardgame"
 SECTION     = "opie/games"
 PRIORITY    = "optional"
-MAINTAINER  = "none"
 LICENSE     = "GPL"
 AUTHOR      = "Helge Plehn"
 HOMEPAGE    = "http://hexatrolic.i-networx.de/"

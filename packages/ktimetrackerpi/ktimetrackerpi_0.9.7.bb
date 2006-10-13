@@ -2,7 +2,6 @@ DESCRIPTION = "Time tracking program"
 SECTION = "opie/applications"
 PRIORITY = "optional"
 LICENSE = "GPL"
-MAINTAINER = "Marcin Juszkiewicz <openembedded@hrw.one.pl>"
 HOMEPAGE = "http://www.pi-sync.net"
 PR = "r1"
 

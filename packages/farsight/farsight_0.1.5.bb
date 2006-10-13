@@ -2,7 +2,6 @@ DESCRIPTION = "FarSight is an audio/video conferencing framework specifically de
 HOMEPAGE = "http://farsight.sf.net"
 SRC_URI = "http://telepathy.freedesktop.org/releases/farsight/${P}.tar.gz"
 
-MAINTAINER = "Koen Kooi <koen@dominion.kabel.utwente.nl>"
 
 DEPENDS = "glib-2.0 libxml2 zlib dbus libjingle gstreamer gst-plugins-base"
 

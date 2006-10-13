@@ -1,7 +1,6 @@
 DESCRIPTION = "Python examples for Opie"
 SECTION = "opie/base"
 PRIORITY = "optional"
-MAINTAINER = "Team Opie <opie@handhelds.org>"
 LICENSE = "GPL"
 RDEPENDS = "python-pyqt opie-pyquicklaunchapplet"
 APPNAME = "python"

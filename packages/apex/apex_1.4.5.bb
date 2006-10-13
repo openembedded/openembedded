@@ -1,7 +1,6 @@
 DESCRIPTION = "APEX Boot Loader"
 SECTION = ""
 PRIORITY = "optional"
-MAINTAINER = "NSLU2 Linux <www.nslu2-linux.org>"
 HOMEPAGE = "http://wiki.buici.com/twiki/bin/view/Main/ApexBootloader"
 LICENSE = "GPL"
 PR = "r0"

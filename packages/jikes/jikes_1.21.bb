@@ -1,7 +1,6 @@
 DESCRIPTION = "Java compiler adhering to language and VM specifications"
 HOMEPAGE = "http://jikes.sourceforge.net/"
 PRIORITY = "optional"
-MAINTAINER = "Rene Wagner <rw@handhelds.org>"
 SECTION = "devel"
 LICENSE = "IBM"
 PR = "r2"

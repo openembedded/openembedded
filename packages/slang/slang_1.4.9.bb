@@ -1,7 +1,6 @@
 DESCRIPTION = "slang is a library of text functions used in editors like slrn etc."
 SECTION = "libs"
 PRIORITY = "optional"
-MAINTAINER = "Graeme Gregory <xora@lordpain.uklinux.net>"
 PR = "r1"
 LICENSE = "GPL Artistic"
 SRC_URI = "ftp://space.mit.edu/pub/davis/slang/v1.4/slang-${PV}.tar.bz2 \

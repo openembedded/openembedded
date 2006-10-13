@@ -1,7 +1,6 @@
 DESCRIPTION = "U-boot bootloader"
 PROVIDES = "virtual/bootloader"
 SECTION = "bootloader"
-MAINTAINER = "philip@balister.org"
 PRIORITY = "optional"
 LICENSE = "GPL"
 

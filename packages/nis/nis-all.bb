@@ -4,7 +4,6 @@
 PR = "r0"
 DESCRIPTION="NIS services"
 HOMEPAGE="http://www.linux-nis.org/nis/"
-MAINTAINER = "John Bowler <jbowler@acm.org>"
 SECTION = "console/networking"
 PRIORITY = "optional"
 LICENSE = "GPL-2"

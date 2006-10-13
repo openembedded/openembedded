@@ -2,7 +2,6 @@ LICENSE = "GPL"
 DESCRIPTION = "Gtk+ WebCore - JavaScriptCore"
 HOMEPAGE = "http://gtk-webcore.sourceforge.net/"
 PRIORITY = "optional"
-MAINTAINER = "Rene Wagner <rw@handhelds.org>"
 SECTION = "gpe"
 PR = "r3"
 

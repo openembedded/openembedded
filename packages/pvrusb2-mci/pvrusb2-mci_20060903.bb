@@ -3,7 +3,6 @@ AUTHOR = Mike Isely
 HOMEPAGE = "http://www.isely.net/pvrusb2.html"
 SECTION = "kernel/modules"
 PRIORITY = "optional"
-MAINTAINER = "Frans Meulenbroeks <fransmeulenbroeks at yahoo dot com>"
 LICENSE = "GPL"
 RRECOMMENDS = "kernel-module-tveeprom \
 	kernel-module-firmware-class \

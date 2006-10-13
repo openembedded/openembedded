@@ -2,7 +2,6 @@ DESCRIPTION = "A Unix VNC client"
 HOMEPAGE = "http://www.tightvnc.com/"
 DEPENDS = "virtual/libx11 zlib libxmu libxaw"
 LICENSE = "GPL"
-MAINTAINER = "Graeme Gregory <dp@xora.org.uk>"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/vnc-tight/tightvnc-1.3dev7_unixsrc.tar.gz \
            file://Makefile"

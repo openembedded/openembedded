@@ -1,7 +1,6 @@
 # MasqMail from http://innominate.org/kurth/masqmail/
 DESCRIPTION = "MasqMail is a mail server designed for hosts that do not have a permanent internet connection eg. a home network or a single host at home. It has special support for connections to different ISPs. It replaces sendmail or other MTAs such as qmail or exim."
 HOMEPAGE = "http://innominate.org/kurth/masqmail/"
-MAINTAINER = "John Bowler <jbowler@acm.org>"
 SECTION = "console/network"
 PRIORITY = "optional"
 LICENSE = "GPL"

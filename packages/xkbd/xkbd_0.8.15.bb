@@ -6,7 +6,6 @@ SRC_URI = "http://handhelds.org/~mallum/xkbd/xkbd-${PV}-CVS.tar.gz \
 LICENSE = "GPL"
 PR = "r2"
 
-MAINTAINER = "Phil Blundell <pb@handhelds.org>"
 SECTION = "x11"
 DEPENDS = "libxpm libxtst libxft"
 

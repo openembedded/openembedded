@@ -1,6 +1,5 @@
 PR 	= "r2"
 LICENSE =	""
-MAINTAINER = "Koen Kooi <koen@linuxtogo.org>"
 
 DEPENDS = "gtk+-2.6.4-1.osso7 osso-gnome-vfs2"
 SRC_URI = "http://repository.maemo.org/pool/maemo/ossw/source/o/osso-thumbnail/osso-thumbnail_${PV}.tar.gz"

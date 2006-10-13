@@ -2,7 +2,6 @@ DESCRIPTION = "Links is graphics and text mode WWW \
 browser, similar to Lynx."
 HOMEPAGE = "http://links.twibright.com/"
 SECTION = "console/network"
-MAINTAINER = "Graeme Gregory <dp@xora.org.uk>"
 LICENSE = "GPL"
 DEPENDS = "jpeg libpng flex openssl zlib virtual/libx11"
 RCONFLICTS = "links"

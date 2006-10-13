@@ -1,7 +1,6 @@
 DESCRIPTION = "Qanava is a gtaph library based on the Qt4 Arthur framework."
 SECTION = "x11/libs"
 HOMEPAGE = "http://www.libqanava.org/"
-MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 # LGPL after 0.0.7
 LICENSE = "GPL"
 PR = "r0"

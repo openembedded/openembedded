@@ -1,6 +1,5 @@
 DESCRIPTION = "ExtUtils::CBuilder - Compile and link C code for Perl modules"
 SECTION = "libs"
-MAINTAINER = "Jamie Lenehan <lenehan@twibble.org>"
 LICENSE = "Artistic|GPL"
 PR = "r1"
 

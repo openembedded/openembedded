@@ -2,7 +2,6 @@ DESCRIPTION = "2.6 Linux Development Kernel for the Motorola GSM phones A780 and
 SECTION = "kernel"
 AUTHOR = "Harald Welte and the OpenEZX Team <openezx-devel@lists.openezx.org>"
 HOMEPAGE = "http://www.openezx.org"
-MAINTAINER = "Michael 'Mickey' Lauer <mickey@vanille.de>"
 LICENSE = "GPL"
 DEPENDS += "quilt-native"
 EZX = "ezx7"

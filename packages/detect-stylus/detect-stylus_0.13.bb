@@ -8,7 +8,6 @@ SECTION = "gpe"
 RDEPENDS = "xrdb"
 
 DESCRIPTION = "Touchscreen detection utility"
-MAINTAINER = "Florian Boor <florian.boor@kernelconcepts.de>"
 
 SRC_URI = "${GPE_MIRROR}/${PN}-${PV}.tar.gz \
            file://access.patch;patch=1;pnum=0 \

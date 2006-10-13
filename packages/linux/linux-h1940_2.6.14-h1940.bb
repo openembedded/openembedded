@@ -1,5 +1,4 @@
 DESCRIPTION = "Linux kernel for h1940 devices."
-MAINTAINER = "Arjan Schrijver <arjan@anymore.nl>"
 SECTION = "kernel"
 LICENSE = "GPL"
 

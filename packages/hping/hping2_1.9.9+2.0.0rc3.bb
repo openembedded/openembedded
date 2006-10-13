@@ -6,7 +6,6 @@ mode, the ability to send files between a covered channel, and many \
 other features."
 HOMEPAGE = "http://www.hping.org/"
 SECTION = "console/network"
-MAINTAINER = "Jamie Lenehan <lenehan@twibble.org>"
 LICENSE = "GPL"
 PR = "r0"
 

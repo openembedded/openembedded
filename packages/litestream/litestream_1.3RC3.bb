@@ -1,9 +1,8 @@
 LICENSE = "GPL"
-MAINTAINER = "Oyvind Repvik <nail@nslu2-linux.org>"
 DESCRIPTION = "ShoutCast-compatible streamer"
 PR = "r0"
 
-SRC_URI = "http://www.litestream.org/litestream/${PN}-${PV}.tar.gz"
+SRC_URI = "http://www.litestream.org/litestream/${P}.tar.gz"
 
 inherit autotools
 

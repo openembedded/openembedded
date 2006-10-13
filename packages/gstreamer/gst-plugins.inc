@@ -1,7 +1,6 @@
 DESCRIPTION = "Plugins for GStreamer"
 SECTION = "multimedia"
 PRIORITY = "optional"
-MAINTAINER = "Felix Domke <tmbinc@elitedvb.net>"
 DEPENDS = "gstreamer libmikmod libmad liboil libogg tremor libvorbis libid3tag esound-gpe"
 PR = "r1"
 

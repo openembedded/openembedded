@@ -3,7 +3,6 @@ inherit autotools pkgconfig gconf
 DESCRIPTION = "GTK PPP dialing tool"
 DEPENDS = "gconf-dbus gtk+ libglade gettext ppp gpe-su"
 RDEPENDS = "ppp gconf-dbus gpe-su"
-MAINTAINER = "Florian Boor <florian@kernelconcepts.de>"
 SECTION = "gpe"
 PRIORITY = "optional"
 

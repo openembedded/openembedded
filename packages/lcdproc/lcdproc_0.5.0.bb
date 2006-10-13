@@ -3,14 +3,13 @@ shipped with this package can be used to acquire various kinds of system stats."
 HOMEPAGE = "http://lcdproc.org"
 LICENSE = "GPL"
 PRIORITY = "optional"
-MAINTAINER = "Oyvind Repvik <nail@nslu2-linux.org>"
 SECTION = "utils"
 PR="r2"
 
 DEPENDS = "libusb ncurses"
 RRECOMMENDS_lcdproc = "lcdd"
 
-SRC_URI = "${SOURCEFORGE_MIRROR}/lcdproc/lcdproc-${PV}.tar.gz"
+SRC_URI = "${SOURCEFORGE_MIRROR}/lcdproc/${P}.tar.gz"
 
 inherit autotools update-rc.d
 

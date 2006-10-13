@@ -1,7 +1,6 @@
 DESCRIPTION = "The filesystem formatting and mountpoint app for the Opie environment."
 SECTION = "opie/applications"
 PRIORITY = "optional"
-MAINTAINER = "Team Opie <opie@handhelds.org>"
 LICENSE = "GPL"
 APPNAME = "formatter"
 

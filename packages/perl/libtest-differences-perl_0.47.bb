@@ -1,6 +1,5 @@
 DESCRIPTION = "Test::Differences - Test strings and data structures and show differences if not ok"
 SECTION = "libs"
-MAINTAINER = "Jamie Lenehan <lenehan@twibble.org>"
 LICENSE = "Artistic|GPL"
 DEPENDS += "libtext-diff-perl-native"
 RDEPENDS += "perl-module-carp perl-module-constant perl-module-exporter \

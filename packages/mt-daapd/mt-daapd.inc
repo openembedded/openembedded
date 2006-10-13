@@ -1,7 +1,6 @@
 DESCRIPTION = "multi threaded daap server for POSIX Systems: iTunes Server."
 SECTION = "console/network"
 PRIORITY = "optional"
-MAINTAINER = "NSLU2 Linux <nslu2-linux@yahoogroups.com>"
 DEPENDS = "zlib gdbm libid3tag"
 LICENSE = "GPL"
 

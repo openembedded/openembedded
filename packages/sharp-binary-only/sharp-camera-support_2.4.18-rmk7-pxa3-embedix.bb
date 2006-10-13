@@ -1,7 +1,6 @@
 DESCRIPTION = "Driver for the SHARP CG-AG06 digital compact flash camera for linux ${PV}"
 SECTION = "kernel/modules"
 PRIORITY = "optional"
-MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 LICENSE = "CLOSED"
 RDEPENDS = "kernel (${KERNEL_VERSION})"
 PR = "r4"

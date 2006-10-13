@@ -2,7 +2,6 @@ SECTION = "console/network"
 DESCRIPTION = "Utilities for the IP protocol, including traceroute6, \
 tracepath, tracepath6, ping, ping6 and arping."
 SECTION = "console/network"
-MAINTAINER = "Jamie Lenehan <lenehan@twibble.org>"
 LICENSE ="BSD"
 PR = "r4"
 

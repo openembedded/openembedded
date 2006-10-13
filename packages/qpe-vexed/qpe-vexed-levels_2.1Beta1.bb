@@ -1,7 +1,6 @@
 DESCRIPTION = "Vexed levels for qpe-vexed"
 SECTION = "opie/games"
 PRIORITY = "optional"
-MAINTAINER = "Marcin Juszkiewicz <openembedded@hrw.one.pl>"
 LICENSE = "GPL"
 AUTHOR = "The Vexed Development Team"
 HOMEPAGE = "http://vexed.sourceforge.net/"

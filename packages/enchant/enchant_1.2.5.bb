@@ -1,5 +1,4 @@
 DESCRIPTION = "Enchant Spell checker API Library"
-MAINTAINER  = "AbiWord Team"
 PRIORITY    = "optional"
 SECTION     = "libs"
 LICENSE     = "LGPL"

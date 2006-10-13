@@ -1,7 +1,6 @@
 SECTION = "libs"
 LICENSE = "LGPL"
 PRIORITY = "optional"
-MAINTAINER = "Phil Blundell <pb@debian.org>"
 DEPENDS = "libsvg cairo"
 DESCRIPTION = "SVG rendering library"
 

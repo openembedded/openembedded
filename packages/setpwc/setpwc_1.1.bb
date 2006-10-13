@@ -1,7 +1,6 @@
 DESCRIPTION = "Set various aspects of Philips (and compatible) WebCams."
 SECTION = "console"
 PRIORITY = "optional"
-MAINTAINER = "NSLU2 Linux <www.nslu2-linux.org>"
 HOMEPAGE = "http://www.vanheusden.com/setpwc/"
 LICENSE = "GPL"
 PR = "r0"

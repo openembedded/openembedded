@@ -1,7 +1,6 @@
 SECTION = "console/utils"
 DESCRIPTION = "Display all information about a file that the stat() call provides and all information a filesystem that statfs() provides."
 LICENSE = "GPL"
-MAINTAINER = "Holger Schurig <hs4388@mn-solutions.de>"
 
 SRC_URI = "ftp://metalab.unc.edu/pub/Linux/utils/file/stat-3.3.tar.gz"
 

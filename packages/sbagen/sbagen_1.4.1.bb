@@ -1,6 +1,5 @@
 DESCRIPTION = "Binaural tone generation tool."
 HOMEPAGE = "http://uazu.net/sbagen/"
-MAINTAINER = "Chris Larson <kergoth@handhelds.org>"
 LICENSE = "GPL"
 DEPENDS = "tremor"
 

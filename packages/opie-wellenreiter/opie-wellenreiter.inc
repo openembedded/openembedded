@@ -1,7 +1,6 @@
 DESCRIPTION = "A Wireless Network Monitor"
 SECTION = "opie/applications"
 PRIORITY = "optional"
-MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 LICENSE = "GPL"
 RRECOMMENDS = "manufacturers"
 APPNAME = "wellenreiter"

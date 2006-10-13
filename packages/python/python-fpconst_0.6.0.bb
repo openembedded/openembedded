@@ -5,7 +5,6 @@ It provides constants for Not-a-Number (NaN), Positive Infinity \
 to test for these values."
 SECTION = "devel/python"
 PRIORITY = "optional"
-MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 LICENSE = "GPL"
 SRCNAME = "fpconst"
 

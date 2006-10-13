@@ -1,7 +1,6 @@
 DESCRIPTION = "Dvorak keyboard input method"
 SECTION = "opie/inputmethods"
 PRIORITY = "optional"
-MAINTAINER = "Team Opie <opie@handhelds.org>"
 LICENSE = "GPL"
 DEPENDS = "opie-pickboard"
 RDEPENDS = "opie-pickboard"

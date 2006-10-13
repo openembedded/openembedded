@@ -3,7 +3,7 @@ DESCRIPTION = "handhelds.org Linux kernel for PXA based devices."
 LICENSE = "GPL"
 
 COMPATIBLE_HOST = "arm.*-linux"
-COMPATIBLE_MACHINE ?= '(h1910|h2200|h3900|h4000|h5xxx|htcuniversal|ipaq-pxa270)'
+COMPATIBLE_MACHINE ?= '(h1910|h2200|h3900|h4000|h5xxx|htcuniversal|hx4700)'
 
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/handhelds-pxa-${PV}"
 
@@ -16,8 +16,8 @@ S = "${WORKDIR}/kernel26"
 
 inherit kernel
 
-FILES_kernel-image_ipaq-pxa270 = ""
-ALLOW_EMPTY_ipaq_pxa270 = 1
+FILES_kernel-image_hx4700 = ""
+ALLOW_EMPTY_ipaq_hx4700 = 1
 FILES_kernel-image_htcuniversal = ""
 ALLOW_EMPTY_htcuniversal = 1
 

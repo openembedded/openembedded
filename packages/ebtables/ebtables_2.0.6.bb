@@ -1,6 +1,5 @@
 DESCRIPTION = "Utility that enables basic Ethernet frame filtering on a Linux bridge, MAC NAT and brouting."
 PRIORITY = "optional"
-MAINTAINER = "Ned Ludd <solar@gentoo.org>"
 LICENSE = "GPL"
 SECTION = "console/network"
 PR = "r2"

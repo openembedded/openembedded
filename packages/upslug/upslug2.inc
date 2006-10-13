@@ -3,7 +3,6 @@
 PR = "r0"
 DESCRIPTION = "NSLU2 binary upload tool (version 2)"
 HOMEPAGE = "http://www.nslu2-linux.org/wiki/Main/UpSlug2"
-MAINTAINER = "NSLU2 Linux <nslu2-linux@yahoogroups.com>"
 SECTION = "console/network"
 PRIORITY = "optional"
 LICENSE = "MIT"

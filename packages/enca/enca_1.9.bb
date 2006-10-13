@@ -3,7 +3,6 @@ LICENSE = "GPL2"
 SECTION = "libs"
 PRIORITY = "optional"
 HOMEPAGE = "http://trific.ath.cx/software/enca/"
-MAINTAINER = "John Bloom <johnxx@gmail.com>"
 PR = "r1"
 
 SRC_URI = "http://trific.ath.cx/Ftp//enca/enca-${PV}.tar.bz2 \

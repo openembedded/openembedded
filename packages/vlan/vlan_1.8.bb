@@ -1,6 +1,5 @@
 DESCRIPTION = "802.1q vlan support program"
 RRECOMMENDS = "kernel-module-8021q"
-MAINTAINER = "NSLU2 Linux <nslu2-linux@yahoogroups.com>"
 PR = "r2"
 
 S = "${WORKDIR}/vlan/"

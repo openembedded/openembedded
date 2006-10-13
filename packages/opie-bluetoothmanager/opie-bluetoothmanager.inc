@@ -3,7 +3,6 @@ SECTION = "opie/settings"
 PRIORITY = "optional"
 DEPENDS = "libopietooth1 obexftp"
 RDEPENDS = "opie-bluepin"
-MAINTAINER = "Team Opie <opie@handhelds.org>"
 LICENSE = "GPL"
 APPNAME = "bluetooth-manager"
 

@@ -3,7 +3,6 @@ DEFAULT_PREFERENCE = "-1"
 DESCRIPTION = "Configuration applets for GPE"
 SECTION = "gpe"
 PRIORITY = "optional"
-MAINTAINER = "Florian Boor <florian.boor@kernelconcepts.de>"
 LICENSE = "GPL"
 
 DEPENDS = "gtk+ libgpewidget libxsettings libxsettings-client pcmcia-cs xst xset ipaq-sleep ntp gpe-login gpe-icons"

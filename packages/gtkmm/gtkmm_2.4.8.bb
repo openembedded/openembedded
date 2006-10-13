@@ -3,7 +3,6 @@ DESCRIPTION = "C++ bindings for the GTK+ toolkit."
 HOMEPAGE = "http://www.gtkmm.org/"
 SECTION = "libs"
 PRIORITY = "optional"
-MAINTAINER = "Johan Bilien <jobi@via.ecp.fr>"
 DEPENDS = "glibmm"
 PR = "r0"
 

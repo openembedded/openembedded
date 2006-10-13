@@ -5,7 +5,6 @@
 HOMEPAGE="http://dvd.sourceforge.net/"
 DESCRIPTION="DVD navigation multimeda library"
 SECTION = "libs"
-MAINTAINER = "Raymond Danks <info-linux@geode.amd.com>"
 LICENSE = "GPL"
 PR = "r1"
 

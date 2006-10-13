@@ -1,7 +1,6 @@
 DESCRIPTION = "R is GNU S, a freely available language and environment for statistical computing \
 and graphics which provides a wide variety of statistical and graphical techniques: \
 linear and nonlinear modelling, statistical tests, time series analysis, classification, clustering, etc."
-MAINTAINER = "Simon Pickering <S.G.Pickering@bath.ac.uk>"
 SECTION = "console/scientific"
 PRIORITY = "optional"
 DEPENDS = "ncurses readline less perl-native r-native"

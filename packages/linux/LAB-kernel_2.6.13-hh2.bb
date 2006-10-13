@@ -1,6 +1,5 @@
 SECTION = "kernel"
 DESCRIPTION = "Liux As Bootloader kernelm"
-MAINTAINER = "Koen Kooi <koen@linuxtogo.org>"
 LICENSE = "GPL"
 
 COMPATIBLE_HOST = "arm.*-linux"

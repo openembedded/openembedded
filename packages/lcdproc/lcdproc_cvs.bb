@@ -4,7 +4,6 @@ DESCRIPTION_append_lcdd = " This package contains the LCDd server."
 HOMEPAGE = "http://lcdproc.org"
 LICENSE = "GPL"
 PRIORITY = "optional"
-MAINTAINER = "Rene Wagner <rw@handhelds.org>"
 SECTION = "utils"
 PV = "0.4.99+cvs${SRCDATE}"
 

@@ -1,7 +1,6 @@
 SECTION = "console/utils"
 DESCRIPTION = "Tools for performance analysis."
 LICENSE = "GPL"
-MAINTAINER = "Chris Larson <kergoth@handhelds.org>"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/lmbench/lmbench-${PV}.tgz \
 	   file://debian.patch;patch=1 \

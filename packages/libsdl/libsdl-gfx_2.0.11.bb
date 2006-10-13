@@ -1,7 +1,6 @@
 DESCRIPTION = "Simple DirectMedia Layer graphic primitives library."
 SECTION = "libs"
 PRIORITY = "optional"
-MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 DEPENDS = "zlib libpng jpeg virtual/libsdl"
 LICENSE = "LGPL"
 

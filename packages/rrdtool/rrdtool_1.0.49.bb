@@ -1,5 +1,4 @@
 DESCRIPTION = "RRD is the Acronym for Round Robin Database. RRD is a system to store and display time-series data (i.e. network bandwidth, machine-room temperature, server load average)."
-MAINTAINER = "Bruno Randolf <bruno.randolf@4g-systems.biz>"
 HOMEPAGE = "http://people.ee.ethz.ch/~oetiker/webtools/rrdtool"
 LICENSE = "GPLv2"
 DEPENDS = "libpng zlib"

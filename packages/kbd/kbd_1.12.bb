@@ -2,7 +2,6 @@
 # Copyright (C) 2004-2006, Advanced Micro Devices, Inc.  All Rights Reserved
 # Released under the MIT license (see packages/COPYING)
 
-MAINTAINER = "Raymond Danks <info-linux@geode.amd.com>"
 
 SRC_URI="http://ftp.debian.org/debian/pool/main/k/kbd/kbd_1.12.orig.tar.gz"
 

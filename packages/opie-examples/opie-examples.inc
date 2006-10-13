@@ -1,7 +1,6 @@
 DESCRIPTION = "Developer Examples for Opie"
 SECTION = "opie/base"
 PRIORITY = "optional"
-MAINTAINER = "Team Opie <opie@handhelds.org>"
 DEPENDS = "opie-networksettings"
 LICENSE = "GPL"
 APPTYPE = "binary"

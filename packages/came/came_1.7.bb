@@ -1,6 +1,5 @@
 DESCRIPTION = "camE is a rewrite of the xawtv webcam app, which adds imlib2 \
 support and additional features."
-MAINTAINER = "Chris Larson <kergoth@handhelds.org>"
 DEPENDS = "curl giblib"
 SECTION = "x11/utils"
 LICENSE = "GPLv2"

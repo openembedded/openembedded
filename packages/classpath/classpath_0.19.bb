@@ -2,7 +2,6 @@ DESCRIPTION = "GNU Classpath standard Java libraries"
 HOMEPAGE = "http://www.gnu.org/software/classpath/"
 LICENSE = "Classpath"
 PRIORITY = "optional"
-MAINTAINER = "Rene Wagner <rw@handhelds.org>"
 SECTION = "libs"
 
 DEPENDS = "glib-2.0 gtk+ libart-lgpl pango libxtst jikes-native zip-native"

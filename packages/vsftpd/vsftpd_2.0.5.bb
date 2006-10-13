@@ -1,6 +1,5 @@
 DESCRIPTION = "Secure ftp daemon"
 SECTION = "console/network"
-MAINTAINER = "Oyvind Repvik <nail@nslu2-linux.org>"
 LICENSE = "GPL"
 DEPENDS = "openssl"
 PR = "r0"

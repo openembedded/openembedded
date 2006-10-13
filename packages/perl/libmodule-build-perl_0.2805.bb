@@ -2,7 +2,6 @@ DESCRIPTION = "Module::Build - Build and install Perl modules"
 SECTION = "libs"
 SRC_URI = "http://search.cpan.org/CPAN/authors/id/K/KW/KWILLIAMS/Module-Build-0.2805.tar.gz"
 LICENSE = "Artistic|GPL"
-MAINTAINER = "Jamie Lenehan <lenehan@twibble.org>"
 DEPENDS = "libyaml-perl-native libversion-perl-native \
            libextutils-cbuilder-perl-native \
            libextutils-parsexs-perl-native \

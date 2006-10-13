@@ -6,7 +6,6 @@
 # in.
 include initscripts_${PV}.bb
 
-MAINTAINER = "John Bowler <jbowler@acm.org>"
 RCONFLICTS = "initscripts"
 # All other standard definitions inherited from initscripts
 # Except the PR which is hacked here.  The format used is

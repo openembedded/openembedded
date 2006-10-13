@@ -1,6 +1,5 @@
 DEPENDS = "glib-2.0-native qt-x11-free-native"
 DESCRIPTION = "Analog Real Time Synthesizer... (ARTS)"
-MAINTAINER = "Holger Freyther <zecke@handhelds.org>"
 LICENSE = "GPL"
 PRIOTITY = "optional"
 SECTION = "kde"

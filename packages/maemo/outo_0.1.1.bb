@@ -1,6 +1,5 @@
 DESCRIPTION = "Outo Unit Tester by Otso"
 LICENSE	=	"LGPL"
-MAINTAINER = "Koen Kooi <koen@linuxtogo.org>"
 
 SRC_URI =	"http://repository.maemo.org/pool/maemo/ossw/source/o/outo/outo_${PV}.orig.tar.gz \
 			http://repository.maemo.org/pool/maemo/ossw/source/o/outo/outo_0.1.1-2.diff.gz;patch=1;pnum=1"

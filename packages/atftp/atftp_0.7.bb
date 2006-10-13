@@ -1,7 +1,6 @@
 DESCRIPTION = "Advanced TFTP server and client"
 SECTION = "network"
 PRIORITY = "optional"
-MAINTAINER = "NSLU2 Linux <www.nslu2-linux.org>"
 HOMEPAGE = "http://packages.debian.org/atftp"
 LICENSE = "GPL"
 PR = "r2"

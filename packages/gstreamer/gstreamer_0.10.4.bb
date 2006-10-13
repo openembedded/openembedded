@@ -4,7 +4,6 @@ SECTION = "multimedia"
 PRIORITY = "optional"
 LICENSE = "LGPL"
 HOMEPAGE = "http://www.gstreamer.net/"
-MAINTAINER = "Felix Domke <tmbinc@elitedvb.net>"
 DEPENDS = "glib-2.0 gettext-native popt"
 
 PR = "r0"

@@ -3,7 +3,6 @@ Model and associated algorithms (Viterbi and Baum-Welsh). It uses Numeric \
 Python to speed up the computations."
 SECTION = "devel/python"
 PRIORITY = "optional"
-MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 LICENSE = "GPL"
 RDEPENDS = "python-numeric"
 DEPENDS = "python-numeric"

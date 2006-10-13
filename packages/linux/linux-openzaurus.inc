@@ -1,8 +1,5 @@
 DESCRIPTION = "2.6 Linux Development Kernel for Zaurus devices and iPAQ hx2750."
 SECTION = "kernel"
-MAINTAINER = "Richard Purdie <rpurdie@rpsys.net>, \
-              Michael 'Mickey' Lauer <mickey@vanille.de>, \
-              Marcin 'Hrw' Juszkiewicz <openembedded@hrw.one.pl>"
 LICENSE = "GPL"
 
 inherit kernel
@@ -23,7 +20,7 @@ ALLOW_EMPTY = 1
 
 EXTRA_OEMAKE = "OPENZAURUS_RELEASE=-${DISTRO_VERSION}"
 COMPATIBLE_HOST = "(arm|i.86).*-linux"
-COMPATIBLE_MACHINE = '(collie|poodle|c7x0|akita|spitz|tosa|ipaq-pxa270|qemuarm|qemux86)'
+COMPATIBLE_MACHINE = '(collie|poodle|c7x0|akita|spitz|tosa|hx2000|qemuarm|qemux86)'
 KERNEL_IMAGETYPE_qemux86 = "bzImage"
 
 CMDLINE_CON = "console=ttyS0,115200n8 console=tty1 noinitrd"

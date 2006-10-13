@@ -1,5 +1,4 @@
 DESCRIPTION = "A very fast network logon cracker which support many different services"
-MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 SECTION = "console/network"
 DEPENDS = "openssl"
 LICENSE = "GPL"

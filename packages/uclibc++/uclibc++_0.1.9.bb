@@ -2,7 +2,6 @@ DESCRIPTION = "A C++ standard library targeted towards the embedded \
 systems/software market."
 HOMEPAGE = "http://cxx.uclibc.org/"
 LICENSE = "LGPL"
-MAINTAINER = "Chris Larson <kergoth@handhelds.org>"
 PRIORITY = "optional"
 SECTION = "libs"
 

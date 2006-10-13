@@ -1,6 +1,5 @@
 DESCRIPTION = "Monotone is a distributed Source Control System"
 HOMEPAGE = "http://www.venge.net/"
-MAINTAINER = "John Bowler <jbowler@acm.org>"
 SECTION = "devel"
 PRIORITY = "optional"
 LICENSE = "MIT"

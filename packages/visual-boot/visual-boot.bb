@@ -6,7 +6,6 @@
 # Date: 25-Jun-06
 
 DESCRIPTION = "A simple visual boot progress for OpenZaurus"
-MAINTAINER = "Matthias 'CoreDump' Hentges <oe@hentges.net>"
 HOMEPAGE = "http://www.hentges.net/misc/openzaurus/index.shtml"
 LICENSE = "GPL"
 

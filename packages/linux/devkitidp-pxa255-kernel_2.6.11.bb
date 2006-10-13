@@ -1,7 +1,6 @@
 SECTION = "kernel"
 DESCRIPTION = "Linux kernel for the BSQUARE PXA255 DevKitIDP"
 LICENSE = "GPL"
-MAINTAINER = "<support@bsquare.com>"
 PR = "r2"
 
 SRC_URI = "ftp://ftp.kernel.org/pub/linux/kernel/v2.6/linux-2.6.11.tar.bz2 \

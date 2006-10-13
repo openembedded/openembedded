@@ -2,7 +2,6 @@ DESCRIPTION = "A Wireless Network Scanner"
 SECTION = "opie/applications"
 PRIORITY = "optional"
 LICENSE = "GPL"
-MAINTAINER = "Team Opie <opie@handhelds.org>"
 RRECOMMENDS = "manufacturers"
 APPNAME = "opiestumbler"
 

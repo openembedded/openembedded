@@ -1,7 +1,6 @@
 SECTION = "libs"
 LICENSE= "MIT"
 PRIORITY = "optional"
-MAINTAINER = "Phil Blundell <pb@handhelds.org>"
 DESCRIPTION = "PanoramiX extension headers"
 
 SRC_URI = "${XLIBS_MIRROR}/panoramixext-${PV}.tar.bz2"

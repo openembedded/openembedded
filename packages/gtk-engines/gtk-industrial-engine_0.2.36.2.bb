@@ -1,6 +1,5 @@
 SECTION = "x11/base"
 DESCRIPTION = "Industrial theme engine for GTK"
-MAINTAINER = "Phil Blundell <pb@handhelds.org>"
 LICENSE = "GPL2"
 DEPENDS = "gtk+"
 

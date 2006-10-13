@@ -7,7 +7,6 @@ direction, speed, etc..). Voice messages are generated that duplicate some of th
 SECTION = "opie/applications"
 PRIORITY = "optional"
 AUTHOR = "Pascal Martin <pascal.martin@iname.com>"
-MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 HOMEPAGE = "http://roadmap.digitalomaha.net/maps.html"
 LICENSE = "GPL"
 PR = "r0"

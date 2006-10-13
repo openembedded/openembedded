@@ -1,7 +1,6 @@
 DESCRIPTION = "Phalanx is a chess playing engine."
 SECTION = "opie/libs"
 PRIORITY = "optional"
-MAINTAINER = "Michael 'Mickey' Lauer"
 PR = "r3"
 LICENSE = "GPL"
 SRC_URI = "http://dusan.freeshell.org/phalanx/phalanx-${PV}.tar.gz \

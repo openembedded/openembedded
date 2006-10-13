@@ -4,7 +4,6 @@
 
 DESCRIPTION = "Linux kernel for the AMD Geode GX5535/LX5536"
 HOMEPAGE = "http://www.amd.com/embedded"
-MAINTAINER = "Raymond Danks <info-linux@geode.amd.com>"
 LICENSE = "GPL"
 
 PR = "r0"

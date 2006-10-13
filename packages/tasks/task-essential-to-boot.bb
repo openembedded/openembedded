@@ -6,7 +6,6 @@
 # Date: 23-Apr-06
 
 DESCRIPTION = "This task includes everything to make a bootable image. And not a bit more."
-MAINTAINER = "Matthias 'CoreDump' Hentges <oe@hentges.net>"
 HOMEPAGE = "http://www.hentges.net/misc/openzaurus/index.shtml"
 
 ######################################################################################

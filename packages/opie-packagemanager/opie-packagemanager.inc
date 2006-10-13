@@ -1,7 +1,6 @@
 DESCRIPTION = "Opie Package Manager"
 SECTION = "opie/settings"
 PRIORITY = "optional"
-MAINTAINER = "Team Opie <opie@handhelds.org>"
 LICENSE = "GPL"
 DEPENDS = "libipkg"
 APPNAME = "packagemanager"

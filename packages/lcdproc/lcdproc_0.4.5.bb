@@ -3,7 +3,6 @@ shipped with this package can be used to acquire various kinds of system stats."
 HOMEPAGE = "http://lcdproc.org"
 LICENSE ="GPL"
 PRIORITY = "optional"
-MAINTAINER = "Rene Wagner <rw@handhelds.org>"
 SECTION = "utils"
 
 DEPENDS = "${@((bb.data.getVar('LCDPROC_DRIVERS',d) or 'curses,text').find('curses') != -1) and 'ncurses' or ''}"

@@ -1,7 +1,6 @@
 DESCRIPTION = "Python Implementation of Linda Tuple Space"
 SECTION = "devel/python"
 PRIORITY = "optional"
-MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 LICENSE = "LGPL"
 SRCNAME = "linda"
 

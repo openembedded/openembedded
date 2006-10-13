@@ -2,7 +2,6 @@ DESCRIPTION = "Video player and streamer - GPE edition"
 HOMEPAGE = "http://www.videolan.org"
 LICENSE = "GPL"
 PRIORITY = "optional"
-MAINTAINER = "Rene Wagner <rw@handhelds.org>"
 SECTION = "gpe"
 PR = "r1"
 

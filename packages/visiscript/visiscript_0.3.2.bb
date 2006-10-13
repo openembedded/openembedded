@@ -2,7 +2,6 @@ DESCRIPTION = "VisiScript is a simple graphical frontend for \
 scripting languages like minscript, Python,Ruby, Perl or others. \
 VisiScript runs on the Qtopia desktop environment of the Zaurus."
 SECTION = "opie/applications"
-MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 DEPENDS = "qscintilla"
 LICENSE = "GPL"
 PR = "r1"

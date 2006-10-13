@@ -6,7 +6,6 @@
 # Date: 26-Mar-06
 
 DESCRIPTION = "Preconfigured mplayer preferences"
-MAINTAINER = "Matthias 'CoreDump' Hentges <oe@hentges.net>"
 HOMEPAGE = "http://www.hentges.net/misc/openzaurus/index.shtml"
 
 ######################################################################################

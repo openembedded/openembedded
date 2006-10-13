@@ -1,7 +1,6 @@
 DESCRIPTION = "Militaryalphabet"
 SECTION = "opie/applications"
 PRIORITY = "optional"
-MAINTAINER = "Patrick Steiner <patrick.steiner@a1.net>"
 LICENSE = "GPL"
 APPNAME = "militaryalphabet"
 APPTYPE = "binary"

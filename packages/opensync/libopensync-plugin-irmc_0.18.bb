@@ -5,7 +5,6 @@ LICENSE = "LGPL"
 DEPENDS = "libopensync openobex bluez-libs"
 RRECOMMENDS = "multisync"
 HOMEPAGE = "http://www.opensync.org/"
-MAINTAINER = "Koen Kooi <koen@linuxtogo.org>"
 
 inherit autotools pkgconfig
 

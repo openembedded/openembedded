@@ -1,6 +1,5 @@
 DESCRIPTION = "Test::Output - Utilities to test STDOUT and STDERR messages"
 SECTION = "libs"
-MAINTAINER = "Jamie Lenehan <lenehan@twibble.org>"
 LICENSE = "Artistic|GPL"
 DEPENDS += "libsub-exporter-perl-native"
 RDEPENDS += "libsub-exporter-perl"

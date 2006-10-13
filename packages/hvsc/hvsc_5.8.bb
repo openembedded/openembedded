@@ -2,7 +2,6 @@ DESCRIPTION = "The High Voltage SID Collection (HVSC) \
 Commodore 64 music for the masses"
 LICENSE = "PD"
 SECTION = "multimedia"
-MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 
 SRC_URI = "http://gallium.prg.dtu.dk/HVSC/random/HVSC_${PV}-all-of-them.zip"
 S = "${WORKDIR}"

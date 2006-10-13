@@ -1,7 +1,6 @@
 LICENSE = "LGPL"
 DESCRIPTION = "Gtk+ display migration library (dummy version)"
 DEPENDS = "gtk+"
-MAINTAINER = "Phil Blundell <pb@handhelds.org>"
 SECTION = "gpe"
 PRIORITY = "optional"
 PR = "r0"

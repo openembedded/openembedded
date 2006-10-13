@@ -2,7 +2,6 @@ LICENSE = "GPL"
 DESCRIPTION = "The Useful Sound Daemon"
 SECTION = "libs"
 PRIORITY = "optional"
-MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 DEPENDS = "pth"
 
 SRC_URI = "http://mattcamp.paunix.org/usound/usound-${PV}.tar.gz"

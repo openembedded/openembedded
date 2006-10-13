@@ -2,7 +2,6 @@ LICENSE = "GPL"
 DESCRIPTION = "gdb - GNU debugger"
 SECTION = "devel"
 PRIORITY = "optional"
-MAINTAINER = "Pawel Osiczko <p.osiczko@tetrapyloctomy.org>"
 DEPENDS = "ncurses readline"
 
 PACKAGES =+ 'gdbserver '

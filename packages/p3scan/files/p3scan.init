@@ -1,0 +1,33 @@
+#!/bin/sh
+DAEMON=/usr/sbin/p3scan
+P3SCAN_CONFIG=/etc/p3scan/p3scan.conf
+PIDFILE=/var/run/p3scan/p3scan.pid
+NAME="p3scan"
+DESC="P3SCAN"
+
+test -r /etc/default/p3scan && . /etc/default/p3scan
+test -x "$DAEMON" || exit 0
+test ! -r "$P3SCAN_CONFIG" && exit 0
+        
+case "$1" in
+  start)
+    echo "Starting $DESC: "
+    start-stop-daemon --oknodo -S -x $DAEMON -- -c $P3SCAN_CONFIG
+    echo "$NAME."
+    ;;
+
+  stop)
+    echo "Stopping $DESC:"
+    start-stop-daemon -K -p $PIDFILE
+    ;;
+
+  restart)
+    $0 stop >/dev/null 2>&1
+    $0 start
+    ;;
+
+  *)
+    echo "Usage: $0 {start|stop|restart}"
+    exit 0
+    ;;
+esac

@@ -1,7 +1,6 @@
 DESCRIPTION = "Kpacman, the classical arcade game of Pacman"
 SECTION = "opie/games"
 PRIORITY = "optional"
-MAINTAINER = "Team Opie <opie@handhelds.org>"
 LICENSE = "GPL"
 APPNAME = "kpacman"
 

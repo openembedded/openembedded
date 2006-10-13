@@ -3,7 +3,6 @@ SECTION = "devel"
 LICENSE = "GPL"
 HOMEPAGE = "http://www.openezx.org"
 AUTHOR = "Harald Welte"
-MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 PR = "r0"
 
 SRC_URI = "svn://svn.openezx.org/trunk/src/userspace;module=gpiotool;proto=http;rev=${PV}"

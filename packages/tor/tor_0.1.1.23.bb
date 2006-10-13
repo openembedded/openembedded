@@ -2,7 +2,6 @@ DESCRIPTION = "Tor is a network of virtual tunnels that allows people and groups
               to improve their privacy and security on the Internet."
 SECTION = "console/network"
 PRIORITY = "optional"
-MAINTAINER = "Bastian Ballmann <balle@chaostal.de>"
 HOMEPAGE = "http://tor.eff.org"
 LICENSE = "BSD"
 PR="r0"

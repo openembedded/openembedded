@@ -2,7 +2,6 @@ DESCRIPTION = "TaskList Applet"
 SECTION = "opie/applets"
 PRIORITY = "optional"
 LICENSE = "GPL"
-MAINTAINER = "Marcin Juszkiewicz <openembedded@hrw.one.pl>"
 HOMEPAGE = "http://sourceforge.net/projects/subapplet/"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/subapplet/tasklist-105.tar.gz"

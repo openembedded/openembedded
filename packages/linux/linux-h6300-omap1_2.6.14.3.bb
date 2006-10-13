@@ -1,5 +1,4 @@
 DESCRIPTION = "Linux kernel for h6300 devices."
-MAINTAINER = "Mika Laitio <lamikr@cc.jyu.fi>"
 SECTION = "kernel"
 LICENSE = "GPL"
 

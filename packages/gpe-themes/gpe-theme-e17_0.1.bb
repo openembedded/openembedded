@@ -1,5 +1,4 @@
 DESCRIPTION =	"GTK+ enlightenment theme adjusted for GPE"
-MAINTAINER =	"Koen Kooi <koen@linuxtogo.org>"
 LICENSE = 	"MIT + GPL"
 PR=		"r0"
 

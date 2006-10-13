@@ -11,7 +11,6 @@ a hard drive, boots the kernel, and passes control of the system to \
 the kernel. LILO can also boot other operating systems. LILO-sh is a \
 port of LILO to the SH processor."
 SECTION = "bootloaders"
-MAINTAINER = "Jamie Lenehan <lenehan@twibble.org>"
 LICENSE = "MIT"
 PR = "r0"
 

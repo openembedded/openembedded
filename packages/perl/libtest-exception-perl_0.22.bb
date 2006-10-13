@@ -1,6 +1,5 @@
 DESCRIPTION = "Test::Exception - Test exception based code"
 SECTION = "libs"
-MAINTAINER = "Jamie Lenehan <lenehan@twibble.org>"
 LICENSE = "Artistic|GPL"
 DEPENDS += "libsub-uplevel-perl-native"
 RDEPENDS += "perl-module-base perl-module-carp perl-module-strict \

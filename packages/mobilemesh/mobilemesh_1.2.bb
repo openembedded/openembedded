@@ -1,7 +1,6 @@
 SECTION = "console/network"
 DESCRIPTION = "MobileMesh mobile ad-hoc routing protocol"
 HOMEPAGE = "http://www.mitre.org/work/tech_transfer/mobilemesh/"
-MAINTAINER = "Bruno Randolf <bruno.randolf@4g-systems.biz>"
 LICENSE = "GPL"
 DEPENDS = "openssl"
 SRC_URI = "http://meshcube.org/download/mobilemesh_1.2.tgz"

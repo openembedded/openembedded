@@ -4,7 +4,6 @@
 
 HOMEPAGE="http://www.nvidia.com/object/unix.html"
 DESCRIPTION="NVidia Graphics Driver Binary"
-MAINTAINER = "Raymond Danks <info-linux@geode.amd.com>"
 LICENSE = "NVIDIA"
 
 inherit module

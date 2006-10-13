@@ -1,5 +1,4 @@
 DESCRIPTION = "Tasks for OPIE stuff"
-MAINTAINER = "Marcin Juszkiewicz <openembedded@hrw.one.pl>"
 SECTION = "opie/base"
 ALLOW_EMPTY = 1
 PACKAGE_ARCH = "all"

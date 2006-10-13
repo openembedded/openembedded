@@ -1,6 +1,5 @@
 LICENSE = "GPL"
 SECTION = "base"
-MAINTAINER = "Inge Arnesen <inge.arnesen@gmail.com>"
 DESCRIPTION = "The man page suite, including man, apropos, \
 and whatis consists of programs that are used to read most \
 of the documentation available on a Linux system."

@@ -3,7 +3,6 @@ SECTION = "console/pim"
 HOMEPAGE = "http://hnb.sf.net"
 LICENSE = "GPL"
 DEPENDS = "ncurses"
-MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 
 SRC_URI = "http://hnb.sourceforge.net/.files/hnb-1.9.18.pre7.tar.gz"
 S = "${WORKDIR}/hnb-1.9.18.pre7"

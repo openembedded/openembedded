@@ -1,6 +1,5 @@
 PR         = "r1"
 LICENSE    = "GPL"
-MAINTAINER = "Florian Boor <florian@kernelconcepts.de>"
 
 DEPENDS = "hildon-lgpl libosso hildon-libs"
 

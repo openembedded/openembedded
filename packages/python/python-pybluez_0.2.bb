@@ -1,5 +1,4 @@
 DESCRIPTION = "Python bindings for the Linux Bluetooth stack"
-MAINTAINER = "Michael 'Mickey' Lauer"
 SECTION = "devel/python"
 DEPENDS = "bluez-libs"
 LICENSE = "GPL"

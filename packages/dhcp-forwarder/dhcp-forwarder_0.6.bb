@@ -4,7 +4,6 @@ DESCRIPTION = "This program is used to forward DHCP and BOOTP messages between t
  It works better with ppp - and especially with ipsec over ppp - than \
  dhcp-relay from ISC and has a smaller foot print."
 HOMEPAGE = "http://www.nongnu.org/dhcp-fwd/"
-MAINTAINER = "Bruno Randolf <bruno.randolf@4g-systems.biz>"
 LICENSE = "GPLv2"
  
 SRC_URI = "http://savannah.nongnu.org/download/dhcp-fwd/dhcp-forwarder-${PV}.tar.bz2 \

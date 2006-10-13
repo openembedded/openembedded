@@ -1,7 +1,6 @@
 DESCRIPTION = "A QDialog shell frontend"
 SECTION = "opie/Shell"
 PRIORITY = "optional"
-MAINTAINER = "Team Opie <opie@handhelds.org>"
 LICENSE = "GPL"
 APPNAME = "opie-sh"
 APPTYPE = "binary"

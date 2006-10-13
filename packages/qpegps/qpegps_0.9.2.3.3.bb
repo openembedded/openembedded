@@ -1,7 +1,6 @@
 DESCRIPTION = "A GPS navigation application for the Opie environment."
 SECTION = "opie/applications"
 PRIORITY = "optional"
-MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 RRECOMMENDS = "gpsd"
 LICENSE = "GPL"
 HOMEPAGE = "http://qpegps.sourceforge.net/"

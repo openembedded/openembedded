@@ -1,7 +1,6 @@
 DESCRIPTION = "microcom is a small minicom-like serial terminal emulator with \
 scripting support."
 LICENSE = "GPL"
-MAINTAINER = "Chris Larson <kergoth@handhelds.org>"
 
 # http://microcom.port5.com/m102.tar.gz is no longer available
 #NOTE: this should probably be converted to pull from sourceforge

@@ -1,6 +1,5 @@
 SECTION = "libs"
 PRIORITY = "optional"
-MAINTAINER = "Phil Blundell <pb@debian.org>"
 DEPENDS = "virtual/libx11"
 DESCRIPTION = "Cairo support library"
 LICENSE = "X11"

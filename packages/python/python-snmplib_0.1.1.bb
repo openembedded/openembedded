@@ -1,7 +1,6 @@
 DESCRIPTION = "A Pure Python SNMP Package"
 SECTION = "devel/python"
 PRIORITY = "optional"
-MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 RDEPENDS = "python-core"
 SRCNAME = "libsnmp"
 LICENSE = "LGPL"

@@ -1,7 +1,6 @@
 DESCRIPTION = "Firmware for the Prism54 driver"
 SECTION = "base"
 PRIORITY = "optional"
-MAINTAINER = "Bruno Randolf <bruno.randolf@4g-systems.biz>"
 LICENSE = "GPL"
 
 SRC_URI = "http://prism54.org/~mcgrof/firmware/${PV}.arm"

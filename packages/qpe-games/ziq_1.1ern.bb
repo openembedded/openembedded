@@ -1,7 +1,6 @@
 DESCRIPTION = "ZIQ"
 SECTION = "opie/games"
 PRIORITY = "optional"
-MAINTAINER = "Team Opie <opie@handhelds.org>"
 LICENSE = "GPL"
 AUTHOR = "Bill Wetter"
 HOMEPAGE = "http://www.linux-solutions.at/projects/zaurus/games-ZIQ.html"

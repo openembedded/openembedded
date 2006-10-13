@@ -4,7 +4,6 @@ constraint propagation algorithms. So far, facilities are \
 provided to work with finite domains only."
 SECTION = "devel/python"
 PRIORITY = "optional"
-MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 LICENSE = "GPL"
 SRCNAME = "constraint"
 

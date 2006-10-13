@@ -1,6 +1,5 @@
 require gpe-image.bb
 
-MAINTAINER = "Rob Taylor <rjt@cambridgebroadband.com"
 
 PR = "r5"
 

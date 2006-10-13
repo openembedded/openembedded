@@ -3,7 +3,6 @@ in a style similar to the original SuperMario games."
 SECTION = "games"
 PRIORITY = "optional"
 DEPENDS = "virtual/libsdl libsdl-mixer libsdl-image"
-MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 LICENSE = "GPL"
 PR = "r1"
 

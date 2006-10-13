@@ -1,7 +1,6 @@
 DESCRIPTION = "An Enlightenment theme for gpe-bootsplash"
 SECTION = "base"
 PRIORITY = "optional"
-MAINTAINER = "Matthias 'CoreDump' Hentges  <oe@hentges.net>"
 LICENSE = "GPL"
 DEPENDS = "gpe-bootsplash"
 RDEPENDS = "gpe-bootsplash"

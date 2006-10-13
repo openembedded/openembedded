@@ -3,7 +3,6 @@ DESCRIPTION = "libgpewidget contains a collection of widgets and other common co
 SECTION     = "gpe/libs"
 PRIORITY    = "optional"
 DEPENDS     = "gtk+ cairo libxrender gtk-doc"
-MAINTAINER  = "Florian Boor <florian.boor@kernelconcepts.de>"
 PR          = "r0"
 
 GPE_TARBALL_SUFFIX = "bz2"

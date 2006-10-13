@@ -1,5 +1,4 @@
 DESCRIPTION = "GNOME XML library"
-MAINTAINER = "Phil Blundell <pb@handhelds.org>"
 
 SRC_URI = "http://xmlsoft.org/sources/libxml2-${PV}.tar.gz"
 

@@ -1,6 +1,5 @@
 SECTION = "unknown"
 DESCRIPTION = "Hardware Abstraction Layer"
-MAINTAINER = "Koen Kooi <koen@linuxtogo.org>"
 DEPENDS = "dbus expat libusb"
 RDEPENDS += "hotplug"
 RDEPENDS_hal-device-manager = "python hal python-pygnome"

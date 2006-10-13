@@ -1,7 +1,6 @@
 DESCRIPTION = "Shopping list manager"
 SECTION = "opie/applications"
 PRIORITY = "optional"
-MAINTAINER = "David Greaves <arbor@users.sourceforge.net>"
 LICENSE = "GPL"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/zaurus-shopper/Shopper-${PV}.tar.gz \

@@ -1,7 +1,6 @@
 inherit gpe
 
 DEPENDS = "gtk+ libsvg-cairo"
-MAINTAINER = "Phil Blundell <pb@handhelds.org>"
 SECTION = "gpe"
 PRIORITY = "optional"
 LICENSE = "GPL"

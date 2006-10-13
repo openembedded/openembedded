@@ -1,6 +1,5 @@
 SECTION = "devel"
 DESCRIPTION = "Sanitized set of 2.6 kernel headers for the C library's use."
-MAINTAINER = "Chris Larson <kergoth@handhelds.org>"
 INHIBIT_DEFAULT_DEPS = "1"
 PR = "r3"
 LICENSE = "GPL"

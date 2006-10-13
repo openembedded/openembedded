@@ -1,7 +1,6 @@
 DESCRIPTION = "Game: control the snake"
 SECTION = "opie/games"
 PRIORITY = "optional"
-MAINTAINER = "Team Opie <opie@handhelds.org>"
 LICENSE = "GPL"
 APPNAME = "snake"
 

@@ -1,5 +1,4 @@
 DESCRIPTION = "A Game with fishes, Qt/Embedded based Palmtop Environments Edition"
-MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 SECTION = "opie/games"
 LICENSE = "GPL"
 PRIORITY = "optional"

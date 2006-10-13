@@ -6,7 +6,6 @@ PR="r1"
 
 DESCRIPTION="Terminal Server Client (tsclient) is a frontend for rdesktop and other remote desktop tools"
 HOMEPAGE="http://www.gnomepro.com/tsclient/"
-MAINTAINER = "Raymond Danks <info-linux@geode.amd.com>"
 LICENSE="GPL"
 
 SRC_URI="http://www.gnomepro.com/tsclient/tsclient-${PV}.tar.gz \

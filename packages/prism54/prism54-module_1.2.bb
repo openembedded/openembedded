@@ -1,7 +1,6 @@
 DESCRIPTION = "Linux Driver for the 802.11g Prism GT / Prism Duette / Prism Indigo Chipsets"
 SECTION = "base"
 PRIORITY = "optional"
-MAINTAINER = "Bruno Randolf <bruno.randolf@4g-systems.biz>"
 HOMEPAGE = "http://prism54.org"
 LICENSE = "GPL"
 RDEPENDS = "kernel (${KERNEL_VERSION}) prism54-firmware (1.0.3.0) hotplug"

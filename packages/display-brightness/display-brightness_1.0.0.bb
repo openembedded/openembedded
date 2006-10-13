@@ -1,6 +1,5 @@
 DESCRIPTION = "display brightness utility"
 AUTHOR = "Patrick Steiner <patrick.steiner@a1.net>"
-MAINTAINER = "Patrick Steiner <patrick.steiner@a1.net>"
 DEPENDS = ""
 PRIORITY = "optional"
 PR = "r2"

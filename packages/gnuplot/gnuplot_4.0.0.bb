@@ -3,7 +3,6 @@ DESCRIPTION = "Gnuplot is a portable command-line driven interactive datafile \
 SECTION = "console/scientific"
 LICENSE = "BSD-4"
 PRIORITY = "optional"
-MAINTAINER = "Philip Frampton"
 DEPENDS = "virtual/libx11 libpng gd readline"
 PR = "r3"
 

@@ -4,7 +4,6 @@
 PR = "r1"
 DESCRIPTION = "User-level tools for Reiser4 filesystems"
 HOMEPAGE = "http://www.namesys.com"
-MAINTAINER = "John Bowler <jbowler@acm.org>"
 SECTION = "base"
 LICENSE = "GPL-2"
 

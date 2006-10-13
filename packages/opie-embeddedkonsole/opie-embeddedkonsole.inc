@@ -1,7 +1,6 @@
 DESCRIPTION = "Opie embedded konsole"
 SECTION = "opie/applications"
 PRIORITY = "optional"
-MAINTAINER = "Team Opie <opie@handhelds.org>"
 LICENSE = "GPL"
 DEPENDS = "libqtaux2 opie-keytabs"
 RDEPENDS = "opie-keytabs"

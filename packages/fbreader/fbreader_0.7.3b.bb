@@ -4,7 +4,6 @@ HOMEPAGE = "http://only.mawhrin.net/fbreader/"
 SECTION = "x11/utils"
 PRIORITY = "optional"
 DEPENDS = "gtk+ enca expat"
-MAINTAINER = "John Bloom <johnxx@gmail.com>"
 
 SRC_URI = "http://only.mawhrin.net/fbreader/fbreader-sources-${PV}.tgz \
 	file://hack-makefile.patch;patch=1 \

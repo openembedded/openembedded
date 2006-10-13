@@ -4,7 +4,6 @@ DESCRIPTION = "GLib 1.2 is a deprecated libray to \
 provide support for old glib 1.2 based applications"
 SECTION = "libs"
 PRIORITY = "optional"
-MAINTAINER = "Philip Blundell <pb@handhelds.org>"
 DEPENDS = ""
 
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/glib-1.2-${PV}"

@@ -1,5 +1,4 @@
 DESCRIPTION = "User-space keyboard daemon for external keyboards"
-MAINTAINER = "Paul Eggleton <paule@handhelds.org>"
 HOMEPAGE = "http://handhelds.org/moin/moin.cgi/kbdd"
 SECTION = "console/utils"
 LICENSE = "GPLv2"

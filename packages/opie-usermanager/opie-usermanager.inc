@@ -1,7 +1,6 @@
 DESCRIPTION = "User/Group manager for Opie"
 SECTION = "opie/settings"
 PRIORITY = "optional"
-MAINTAINER = "Team Opie <opie@handhelds.org>"
 LICENSE = "GPL"
 APPNAME = "usermanager"
 

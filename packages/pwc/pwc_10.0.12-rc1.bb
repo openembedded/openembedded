@@ -2,7 +2,6 @@ DESCRIPTION = "Philips USB Webcam driver for Linux that supports VGA resolution"
 HOMEPAGE = "http://www.saillard.org/linux/pwc"
 PRIORITY = "optional"
 SECTION = "kernel/modules"
-MAINTAINER = "eFfeM <fransmeulenbroeks at yahoo dot com>"
 LICENSE = "GPL"
 PR = "r0"
 

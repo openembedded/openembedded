@@ -1,7 +1,6 @@
 DESCRIPTION = "A Lightweight Web Application Framework"
 SECTION = "devel/python"
 PRIORITY = "optional"
-MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 LICENSE = "PSF"
 RDEPENDS = "python-netserver python-netclient python-pprint"
 

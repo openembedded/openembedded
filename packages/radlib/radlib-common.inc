@@ -1,7 +1,6 @@
 SECTION = "libs"
 LICENSE = "BSD"
 DESCRIPTION = "radlib is a rapid application development library for unix interprocess communications, sockets, SHA utilities, CRC utilities and much more."
-MAINTAINER = "Mark Teel (mark@teel.ws)"
 HOMEPAGE = "http://www.radlib.teel.ws/"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/radlib/radlib-${PV}.tar.gz \

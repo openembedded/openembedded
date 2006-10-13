@@ -1,7 +1,6 @@
 DESCRIPTION = "Evolution database backend server"
 HOMEPAGE = "http://projects.o-hand.com/eds"
 LICENSE = "LGPL"
-MAINTAINER = "Richard Purdie <richard@openedhand.com>"
 DEPENDS = "glib-2.0 gtk+ gconf dbus db gnome-common libglade virtual/libiconv zlib"
 
 PV = "1.4.0+svn${SRCDATE}"

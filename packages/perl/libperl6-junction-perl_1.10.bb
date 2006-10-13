@@ -1,6 +1,5 @@
 DESCRIPTION = "Perl6::Junction - Perl6 style Junction operators in Perl5."
 SECTION = "libs"
-MAINTAINER = "Jamie Lenehan <lenehan@twibble.org>"
 LICENSE = "Artistic|GPL"
 PR = "r0"
 

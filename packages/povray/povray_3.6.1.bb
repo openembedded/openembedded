@@ -2,7 +2,6 @@ DESCRIPTION = "The Persistence of Vision Raytracer is a high-quality, totally fr
 HOMEPAGE = "http://www.povray.org"
 SECTION = "console/graphics"
 #Make this a weak assigment to allow branding of the povray binary 
-MAINTAINER ?= "Koen Kooi <koen@openembedded.org>"
 LICENSE = "povray"
 
 DEPENDS = "virtual/libx11 libz jpeg libpng tiff"
@@ -16,7 +15,6 @@ SRC_URI = "http://www.povray.org/redirect/www.povray.org/ftp/pub/povray/Official
 
 inherit autotools pkgconfig
 
-EXTRA_OECONF = "--with-x COMPILED_BY=${MAINTAINER}" 
 PARALLEL_MAKE = ""
 
 #autoreconf breaks, so we'll skip that. The added advantage is that the patch to ./configure actually has effect

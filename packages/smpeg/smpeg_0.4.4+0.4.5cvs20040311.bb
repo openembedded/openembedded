@@ -2,7 +2,6 @@ DESCRIPTION = "SMPEG is a general purpose MPEG video/audio \
 player for Linux based on the mpeg_play and SPLAY MPEG decoders."
 LICENSE = "LGPL"
 SECTION = "libs/multimedia"
-MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 DEPENDS = "virtual/libsdl"
 PROVIDES = "smpeg"
 

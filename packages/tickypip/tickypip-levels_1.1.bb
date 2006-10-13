@@ -1,7 +1,6 @@
 DESCRIPTION = "Tickypip levels from NetWalk Group"
 SECTION = "opie/games"
 PRIORITY = "optional"
-MAINTAINER = "Marcin Juszkiewicz <openembedded@hrw.one.pl>"
 LICENSE = "${PN}"
 SRC_DISTRIBUTE_LICENSES += "${PN}"
 AUTHOR = "NetWalk Group <netwalkgroup@hotmail.com>"

@@ -2,7 +2,6 @@ DESCRIPTION = "Gtk+ WebCore - NRCit embeddable browser component"
 HOMEPAGE = "http://gtk-webcore.sourceforge.net/"
 LICENSE = "nokia"
 PRIORITY = "optional"
-MAINTAINER = "Rene Wagner <rw@handhelds.org>"
 SECTION = "gpe"
 
 FIXEDSRCDATE = "${@bb.data.getVar('FILE', d, 1).split('_')[-1].split('.')[0]}"

@@ -1,7 +1,6 @@
 DESCRIPTION = "simple firewall configuratiopn script"
 SECTION = "base"
 PRIORITY = "optional"
-MAINTAINER = "Bruno Randolf <bruno.randolf@4g-systems.biz>"
 LICENSE = "GPL"
 DEPENDS = "virtual/kernel"
 SRCDATE = "20060810"

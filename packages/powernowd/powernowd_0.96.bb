@@ -1,7 +1,6 @@
 DESCRIPTION = "A daemon to manage CPUfreq states"
 HOMEPAGE = "http://www.deater.net/john/powernowd.html"
 LICENSE = "GPLv2"
-MAINTAINER = "Koen Kooi <koen@linuxtogo.org>"
 
 
 SRC_URI = "http://www.deater.net/john/${P}.tar.gz \

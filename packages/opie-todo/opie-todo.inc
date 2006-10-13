@@ -1,7 +1,6 @@
 DESCRIPTION = "Todo list manager"
 SECTION = "opie/pim"
 PRIORITY = "optional"
-MAINTAINER = "Team Opie <opie@handhelds.org>"
 LICENSE = "GPL"
 RDEPENDS = "opie-pics"
 APPNAME = "todolist"

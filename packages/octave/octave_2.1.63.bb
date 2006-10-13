@@ -5,7 +5,6 @@ and for performing other numerical experiments using a language that is mostly c
 It may also be used as a batch-oriented language." 
 SECTION = "console/util"
 DEPENDS = "readline ncurses"
-MAINTAINER = "Simon Pickering <S.G.Pickering@bath.ac.uk>"
 SRC_URI = "ftp://ftp.octave.org/pub/octave/bleeding-edge/octave-${PV}.tar.gz"
 
 inherit autotools

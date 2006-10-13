@@ -1,7 +1,6 @@
 SECTION = "libs"
 DESCRIPTION = "giblib is a utility library that incorporates doubly linked \
 lists, some string functions, and a wrapper for imlib2."
-MAINTAINER = "Chris Larson <kergoth@handhelds.org>"
 LICENSE = "BSD"
 DEPENDS = "virtual/imlib2"
 

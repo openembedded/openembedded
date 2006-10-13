@@ -1,6 +1,5 @@
 SECTION = "console/network"
 DESCRIPTION = "A server-side, HTML-embedded scripting language. This package provides the CGI."
-MAINTAINER = "Chris Larson <kergoth@handhelds.org>"
 LICENSE = "PHP"
 SRC_URI = "http://de3.php.net/distributions/php-${PV}.tar.bz2 \
            file://${FILESDIR}/autotools.patch;patch=1 \

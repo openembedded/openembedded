@@ -1,7 +1,6 @@
 DESCRIPTION = "A PyQt-optimized Python Quicklauncher for Qt/Embedded based Palmtop Environments"
 SECTION = "devel/python"
 PRIORITY = "optional"
-MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 RDEPENDS = "python-pyqt"
 PR = "ml1"
 SRC_URI = "${HANDHELDS_CVS};module=opie/noncore/tools/pyquicklauncher"

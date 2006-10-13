@@ -33,7 +33,6 @@ OE_vars = [
     'HOMEPAGE',
     'SECTION',
     'PRIORITY',
-    'MAINTAINER',
     'LICENSE',
     'DEPENDS',
     'RDEPENDS',

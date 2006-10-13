@@ -18,7 +18,6 @@ SRC_URI = "svn://svn.mplayerhq.hu/;module=mplayer \
            file://libmpcodecs-ogg-include.patch;patch=1 \
            file://pld-onlyarm5.patch;patch=1"
 
-MAINTAINER="Graeme Gregory <dp@xora.org.uk>"
 RCONFLICTS_${PN} = "mplayer-atty"
 RREPLACES_${PN} = "mplayer-atty"
 

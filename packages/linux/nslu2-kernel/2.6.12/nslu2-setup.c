@@ -134,7 +134,6 @@ static void __init nslu2_init(void)
 }
 
 MACHINE_START(NSLU2, "Linksys NSLU2")
-        MAINTAINER("www.nslu2-linux.org")
 	        BOOT_MEM(PHYS_OFFSET, IXP4XX_PERIPHERAL_BASE_PHYS, 
 			IXP4XX_PERIPHERAL_BASE_VIRT)
 	        MAPIO(nslu2_map_io)

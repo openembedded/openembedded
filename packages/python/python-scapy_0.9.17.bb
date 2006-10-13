@@ -5,7 +5,6 @@ It can for the moment replace hping, 85% of nmap, arpspoof, arp-sk, arping, \
 tcpdump, tethereal, p0f, ...."
 SECTION = "devel/python"
 PRIORITY = "optional"
-MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 RDEPENDS = "python-core python-netclient python-netserver"
 SRCNAME = "scapy"
 

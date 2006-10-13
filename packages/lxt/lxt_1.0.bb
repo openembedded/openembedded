@@ -2,7 +2,6 @@ LICENSE = "GPL"
 SECTION = "console/utils"
 DESCRIPTION = "lxt ncurses filemanager xtree clone"
 PRIORITY = "optional"
-MAINTAINER = "Lorn Potter <lpotter@trolltech.com>"
 DEPENDS = "ncurses"
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/lxt-1.0"
 

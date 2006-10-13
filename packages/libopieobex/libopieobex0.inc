@@ -1,7 +1,6 @@
 DESCRIPTION = "IrDA obex support library"
 SECTION = "opie/libs"
 PRIORITY = "optional"
-MAINTAINER = "Team Opie <opie@handhelds.org>"
 LICENSE = "LGPL"
 DEPENDS = "libopietooth1 opie-taskbar openobex-apps"
 RDEPENDS = "openobex-apps"

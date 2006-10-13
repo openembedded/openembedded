@@ -25,7 +25,6 @@
 SECTION = "kernel"
 DESCRIPTION = "Linux kernel for the Intel IXP4xx device"
 LICENSE = "GPL"
-MAINTAINER = "NSLU2-Linux <www.nslu2-linux.org>"
 
 # Linux kernel source has the general form linux-X.Y.Z-patchP,
 # X.Y is the major version number, Z (which may have multiple

@@ -6,7 +6,6 @@ loop abstraction, and so on. It works on many \
 UNIX-like platforms, Windows, OS/2 and BeOS."
 SECTION = "libs"
 PRIORITY = "optional"
-MAINTAINER = "Philip Blundell <pb@handhelds.org>"
 DEPENDS = "glib-2.0-native"
 DEPENDS += "virtual/libiconv virtual/libintl"
 

@@ -2,7 +2,6 @@ DESCRIPTION = "Lua is a powerful light-weight programming language designed \
 for extending applications."
 LICENSE = "MIT"
 HOMEPAGE = "http://www.lua.org/"
-MAINTAINER = "Chris Larson <kergoth@handhelds.org>"
 
 PACKAGES = "${PN} liblua ${PN}-doc liblua-dev \
 	    liblualib liblualib-dev"

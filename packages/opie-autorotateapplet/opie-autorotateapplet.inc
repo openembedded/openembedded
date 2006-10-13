@@ -1,7 +1,6 @@
 DESCRIPTION = "Applet to disable the automatic screen rotation on Zaurus C-models"
 SECTION = "opie/applets"
 PRIORITY = "optional"
-MAINTAINER = "Team Opie <opie@handhelds.org>"
 LICENSE = "GPL"
 APPNAME = "autorotateapplet"
 

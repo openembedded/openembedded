@@ -1,0 +1,62 @@
+--- kdenox/devscripts/acinclude.m4.in.qt2_orig	2006-10-09 23:45:34.000000000 +0000
++++ kdenox/devscripts/acinclude.m4.in.qt2	2006-10-09 23:47:51.000000000 +0000
+@@ -4937,31 +4937,31 @@
+   AC_PREFIX_DEFAULT(${KDEDIR:-the kde prefix})
+ 
+   KDE_SET_DEFAULT_BINDIRS
+-  if test "x$prefix" = "xNONE"; then
++  dnl if test "x$prefix" = "xNONE"; then
+     dnl no prefix given: look for kde-config in the PATH and deduce the prefix from it
+-    KDE_FIND_PATH(kde-config, KDECONFIG, [$kde_default_bindirs], [KDE_MISSING_PROG_ERROR(kde-config)], [], prepend)
+-  else
++    dnl KDE_FIND_PATH(kde-config, KDECONFIG, [$kde_default_bindirs], [KDE_MISSING_PROG_ERROR(kde-config)], [], prepend)
++  dnl else
+     dnl prefix given: look for kde-config, preferrably in prefix, otherwise in PATH
+-    kde_save_PATH="$PATH"
+-    PATH="$exec_prefix/bin:$prefix/bin:$PATH"
+-    KDE_FIND_PATH(kde-config, KDECONFIG, [$kde_default_bindirs], [KDE_MISSING_PROG_ERROR(kde-config)], [], prepend)
+-    PATH="$kde_save_PATH"
+-  fi
+-
+-  kde_libs_prefix=`$KDECONFIG --prefix`
+-  if test -z "$kde_libs_prefix" || test ! -x "$kde_libs_prefix"; then
+-       AC_MSG_ERROR([$KDECONFIG --prefix outputed the non existant prefix '$kde_libs_prefix' for kdelibs.
+-                    This means it has been moved since you installed it.
+-                    This won't work. Please recompile kdelibs for the new prefix.
+-                    ])
+-  fi
+-  kde_libs_htmldir=`$KDECONFIG --install html --expandvars`
+-  kde_libs_suffix=`$KDECONFIG --libsuffix`
++    dnl kde_save_PATH="$PATH"
++    dnl PATH="$exec_prefix/bin:$prefix/bin:$PATH"
++    dnl KDE_FIND_PATH(kde-config, KDECONFIG, [$kde_default_bindirs], [KDE_MISSING_PROG_ERROR(kde-config)], [], prepend)
++    dnl PATH="$kde_save_PATH"
++  dnl fi
++
++  dnl kde_libs_prefix=`$KDECONFIG --prefix`
++  dnl if test -z "$kde_libs_prefix" || test ! -x "$kde_libs_prefix"; then
++  dnl AC_MSG_ERROR([$KDECONFIG --prefix outputed the non existant prefix '$kde_libs_prefix' for kdelibs.
++  dnl                    This means it has been moved since you installed it.
++  dnl                    This won't work. Please recompile kdelibs for the new prefix.
++  dnl                    ])
++  dnl fi
++  dnl kde_libs_htmldir=`$KDECONFIG --install html --expandvars`
++  dnl kde_libs_suffix=`$KDECONFIG --libsuffix`
+ 
+   AC_MSG_CHECKING([where to install])
+   if test "x$prefix" = "xNONE"; then
+     prefix=$kde_libs_prefix
+-    AC_MSG_RESULT([$prefix (as returned by kde-config)])
++dnl    AC_MSG_RESULT([$prefix (as returned by kde-config)])
+   else
+     dnl --prefix was given. Compare prefixes and warn (in configure.in.bot.end) if different
+     given_prefix=$prefix
+@@ -4973,7 +4973,7 @@
+   exec_prefix=`echo "$exec_prefix" | sed 's,//*,/,g' | sed -e 's,/$,,'`
+   given_prefix=`echo "$given_prefix" | sed 's,//*,/,g' | sed -e 's,/$,,'`
+ 
+-  AC_SUBST(KDECONFIG)
++  dnl AC_SUBST(KDECONFIG)
+   AC_SUBST(kde_libs_prefix)
+   AC_SUBST(kde_libs_htmldir)
+ 

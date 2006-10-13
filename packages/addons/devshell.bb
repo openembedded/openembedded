@@ -1,6 +1,5 @@
 DESCRIPTION = "Runs a shell in an environment as emitted by BitBake to execute tasks"
 LICENSE = "GPL"
-MAINTAINER = "Rene Wagner <rw@handhelds.org>"
 PR = "r1"
 
 inherit autotools pkgconfig

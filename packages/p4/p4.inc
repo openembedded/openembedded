@@ -4,7 +4,6 @@
 
 DESCRIPTION = "Perforce client and server binaries"
 HOMEPAGE = "http://www.perforce.com"
-MAINTAINER = "Raymond Danks <info-linux@geode.amd.com>"
 LICENSE = "Perforce"
 
 def p4_arch(d):

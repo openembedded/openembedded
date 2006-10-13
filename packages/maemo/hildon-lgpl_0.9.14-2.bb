@@ -1,5 +1,4 @@
 LICENSE = 	"LGPL"
-MAINTAINER = "Koen Kooi <koen@linuxtogo.org>"
 
 DEPENDS = "gtk+-2.6.4-1.osso7 outo libxtst libmatchbox libxi libxt libpng gconf"
 

@@ -1,7 +1,6 @@
 DESCRIPTION = "IRC (Internet Relay Chat) Support Library"
 SECTION = "devel/python"
 PRIORITY = "optional"
-MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 LICENSE = "LGPL"
 SRCNAME = "pyirclib"
 

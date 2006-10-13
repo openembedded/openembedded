@@ -1,7 +1,6 @@
 DESCRIPTION = "A module player based on libmikmod."
 SECTION = "console/multimedia"
 HOMEPAGE = "http://mikmod.raphnet.net"
-MAINTAINER = "Michael 'Mickey' Lauer"
 DEPENDS = "ncurses libmikmod"
 PR = "r1"
 LICENSE = "GPL"

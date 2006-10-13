@@ -1,7 +1,6 @@
 DESCRIPTION = "Mini-version of emacs, from http://www.jasspa.com"
 SECTION = "console/utils"
 PRIORITY = "optional"
-MAINTAINER = "Jason Haslup <openembedded@haslup.com>"
 LICENSE = "GPL"
 DEPENDS = "ncurses"
 

@@ -4,7 +4,6 @@ http://www.rahul.net/dholmes/ctorrent/ (dnh2 + vfat patch)"
 DEPENDS = "openssl"
 LICENSE = "GPL"
 SECTION = "network"
-MAINTAINER = "Chris Larson <kergoth@handhelds.org>"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/ctorrent/ctorrent-${PV}.tar.bz2"
 S = "${WORKDIR}/ctorrent-${PV}"

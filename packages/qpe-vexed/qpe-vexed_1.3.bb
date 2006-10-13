@@ -1,7 +1,6 @@
 DESCRIPTION = "Vexed clone"
 SECTION = "opie/games"
 PRIORITY = "optional"
-MAINTAINER = "Marcin Juszkiewicz <openembedded@hrw.one.pl>"
 LICENSE = "GPL"
 AUTHOR = "Alexander Hausner <Alexander.Hausner@web.de>"
 HOMEPAGE = "http://wwwcip.informatik.uni-erlangen.de/~sialhaus/qpe-vexed.html"

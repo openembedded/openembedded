@@ -2,7 +2,6 @@ LICENSE = "GPL"
 SECTION = "gpe/multimedia"
 PRIORITY = "optional"
 PR = "r1"
-MAINTAINER = "Florian Boor <fb@kernelconcepts.de>
 
 inherit gpe autotools
 

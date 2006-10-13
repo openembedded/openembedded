@@ -1,6 +1,5 @@
 DESCRIPTION = "HotPlug -> QCOP Event Bridge"
 SECTION = "opie/base"
-MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 RDEPENDS = "opie-qcop hotplug"
 LICENSE = "GPL"
 PR = "r0"

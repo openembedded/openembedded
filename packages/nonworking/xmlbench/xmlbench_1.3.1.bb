@@ -1,4 +1,3 @@
-MAINTAINER = "Chris Larson <kergoth@handhelds.org>"
 LICENSE = "GPLv2"
 DEPENDS = "libxml2 expat"
 

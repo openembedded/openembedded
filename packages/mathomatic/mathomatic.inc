@@ -3,7 +3,6 @@ HOMEPAGE = "http://mathomatic.orgserve.de/math/"
 SECTION = "console/utils"
 PRIORITY = "optional"
 LICENSE = "GPL"
-MAINTAINER = "S.G.Pickering@bath.ac.uk"
 DEPENDS = "readline"
 
 inherit autotools

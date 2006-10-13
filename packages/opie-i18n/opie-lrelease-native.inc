@@ -1,7 +1,6 @@
 DESCRIPTION = "Opie native i18n tool lrelease"
 SECTION = "opie/base"
 PRIORITY = "optional"
-MAINTAINER = "Holger Freyther <zecke@handhelds.org>"
 LICENSE = "GPL"
 DEPENDS = "uicmoc3-native"
 

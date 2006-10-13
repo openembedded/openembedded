@@ -5,7 +5,6 @@
 HOMEPAGE="http://hinterhof.net/cdtool/"
 DESCRIPTION="cdtool is a free software package to control the audio functions \
 of an attached CDROM drive from the command line in a quick and scriptable way."
-MAINTAINER = "Raymond Danks <info-linux@geode.amd.com>"
 LICENSE = "GPL"
 
 SRC_URI="http://hinterhof.net/${PN}/dist/${PN}-${PV}.tar.gz \

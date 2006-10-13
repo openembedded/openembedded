@@ -1,7 +1,6 @@
 DESCRIPTION = "Microwindows Graphical Engine"
 SECTION = "x11/wm"
 PRIORITY = "optional"
-MAINTAINER = "Jordan Crouse <jordan@cosmicpenguin.net>"
 DEPENDS = "libpng jpeg"
 LICENSE = "GPL"
 SRC_URI = "ftp://ftp.microwindows.org/pub/microwindows/microwindows-${PV}.tar.gz"

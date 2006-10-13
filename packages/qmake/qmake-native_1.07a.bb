@@ -1,7 +1,6 @@
 DESCRIPTION = "TrollTech Makefile Generator"
 PRIORITY = "optional"
 HOMEPAGE = "http://www.trolltech.com"
-MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 SECTION = "devel"
 LICENSE = "GPL QPL"
 PR = "r3"

@@ -2,7 +2,6 @@ LICENSE = "LGPL"
 DESCRIPTION = "Common code for GPE PIMs"
 SECTION = "gpe/libs"
 PRIORITY = "optional"
-MAINTAINER = "Philip Blundell <pb@handhelds.org>"
 DEPENDS = "libgpewidget libdisplaymigration gtk+ sqlite"
 
 inherit pkgconfig gpe

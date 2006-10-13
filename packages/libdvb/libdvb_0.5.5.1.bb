@@ -3,11 +3,10 @@ DESCRIPTION_libdvb-dev = "Headers for libdvb development"
 HOMEPAGE = "http://www.metzlerbros.org/dvb/index.html"
 SECTION = "libs"
 PRIORITY = "optional"
-MAINTAINER = "Oyvind Repvik <nail@nslu2-linux.org"
 LICENSE = "GPL"
 PR = "r2"
 
-SRC_URI = "http://www.metzlerbros.org/dvb/${PN}-${PV}.tar.gz \
+SRC_URI = "http://www.metzlerbros.org/dvb/${P}.tar.gz \
           file://topf2ps.patch;patch=1"
 
 S = "${WORKDIR}/${PN}-${PV}"

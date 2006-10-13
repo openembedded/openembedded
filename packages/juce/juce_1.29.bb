@@ -1,7 +1,6 @@
 DESCRIPTION = "JUCE is a cross-platform application framework"
 HOMEPAGE = "http://www.rawmaterialsoftware.com/juce"
 AUTHOR = "Julian Stoerer"
-MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 LICENSE = "GPL"
 DEPENDS = "alsa-lib freetype virtual/libx11"
 PR = "r0"

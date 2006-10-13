@@ -1,7 +1,6 @@
 DESCRIPTION = "SFCave for the Zaurus. Fly the dot though the cave avoiding the walls."
 SECTION = "opie/games"
 PRIORITY = "optional"
-MAINTAINER = "Team Opie <opie@handhelds.org>"
 LICENSE = "GPL"
 APPNAME = "sfcave"
 

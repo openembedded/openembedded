@@ -4,7 +4,6 @@ inherit update-rc.d
 DESCRIPTION = "Initscript for login-managers"
 SECTION = "base"
 PRIORITY = "optional"
-MAINTAINER = "Matthias 'CoreDump' Hentges <oe@hentges.net>"
 PR = "r1"
 
 INITSCRIPT_NAME = "login-manager"

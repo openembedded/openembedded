@@ -1,7 +1,6 @@
 SECTION = "base"
 PRIORITY = "optional"
 DESCRIPTION = "Inputpipe is a network transparency layer for linux input devices"
-MAINTAINER = "Micah Dowty <micah@navi.cx>"
 LICENSE = "GPL"
 #Remove the dash below when 0.5 changes in PV
 PV = "0.5+svn-${SRCDATE}"

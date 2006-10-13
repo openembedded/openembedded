@@ -1,6 +1,5 @@
 SECTION = "console/utils"
 DESCRIPTION = "Utility to test for faulty memory subsystem"
-MAINTAINER = "Chris Larson <kergoth@handhelds.org>"
 LICENSE = "GPLv2"
 PR = "r1"
 

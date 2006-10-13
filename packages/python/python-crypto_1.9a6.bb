@@ -1,7 +1,6 @@
 DESCRIPTION = "A collection of cryptographic algorithms and protocols"
 SECTION = "devel/python"
 PRIORITY = "optional"
-MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 DEPENDS = "gmp"
 SRCNAME = "pycrypto"
 LICENSE = "python-crypto"

@@ -2,7 +2,6 @@ DESCRIPTION = "libnl is a library for applications dealing with netlink sockets"
 SECTION = "libs/network"
 LICENSE = "LGPL"
 HOMEPAGE = "http://people.suug.ch/~tgr/libnl/"
-MAINTAINER = "Milan Plzik <mmp@handhelds.org>"
 PRIORITY = "optional"
 PV = "0.99+1.0-pre6"
 

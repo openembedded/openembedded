@@ -1,7 +1,6 @@
 DESCRIPTION = "Puzzle Game for Qt/Embedded based palmtop environments."
 SECTION = "opie/games"
 PRIORITY = "optional"
-MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 LICENSE = "GPL"
 PR = "r1"
 

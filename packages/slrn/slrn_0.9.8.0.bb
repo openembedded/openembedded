@@ -2,7 +2,6 @@ LICENSE = "GPL"
 DESCRIPTION = "slrn - console news reader"
 SECTION = "console/network"
 PRIORITY = "optional"
-MAINTAINER = "Graeme Gregory <xora@lordpain.uklinux.net>"
 DEPENDS = "slang"
 PR = "r1"
 

@@ -1,7 +1,6 @@
 DESCRIPTION = "A C++ Wrapper for the directfb framebuffer library."
 HOMEPAGE = "http://directfb.org"
 SECTION = "libs"
-MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 DEPENDS = "directfb"
 LICENSE = "LGPL"
 

@@ -1,5 +1,4 @@
 DESCRIPTION = "Meta-package of extra applications for the GPE Palmtop Environment"
-MAINTAINER = "Phil Blundell <pb@handhelds.org>"
 LICENSE = MIT
 PR="r2"
 

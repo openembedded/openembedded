@@ -1,6 +1,5 @@
 PR         = "r0"
 LICENSE    = "GPL"
-MAINTAINER = "Florian Boor <florian@kernelconcepts.de>"
 DEPENDS    = "virtual/xserver tslib"
 
 SRC_URI = "http://repository.maemo.org/pool/maemo/ossw/source/t/${PN}/${PN}_${PV}.tar.gz \

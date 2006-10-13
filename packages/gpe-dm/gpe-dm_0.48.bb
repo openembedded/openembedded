@@ -4,7 +4,6 @@ inherit gpe update-rc.d
 DESCRIPTION = "GPE Display Manager"
 SECTION = "gpe"
 PRIORITY = "optional"
-MAINTAINER = "Phil Blundell <pb@handhelds.org>"
 DEPENDS = "glib-2.0 xserver-common"
 RDEPENDS_${PN} += "procps xserver-common"
 PR = "r3"

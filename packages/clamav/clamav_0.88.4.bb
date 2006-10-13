@@ -9,14 +9,13 @@ DESCRIPTION_${PN}-data = "Static antivirus signature database for Clam AntiVirus
 DESCRIPTION_${PN}-daemon = "An on-demand file scanning service for Clam AntiVirus"
 HOMEPAGE = "http://www.clamav.net/"
 SECTION = "network"
-MAINTAINER = "Jamie Lenehan <lenehan@twibble.org>"
 LICENSE = "GPL"
 DEPENDS = "zlib bzip2 gmp"
 RDEPENDS_${PN} = "${PN}-data"
 RDEPENDS_${PN}-daemon = "${PN}-data"
 RRECOMMENDS_${PN} = "${PN}-freshclam"
 RRECOMMENDS_${PN}-daemon = "${PN}-freshclam"
-PR = "r5"
+PR = "r6"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/clamav/clamav-${PV}.tar.gz \
           file://cross-compile-fix.patch;patch=1 \
@@ -67,6 +66,7 @@ do_install_append() {
 }
 do_stage () {
         oe_libinstall -a -so libclamav ${STAGING_LIBDIR}
+        rm -f ${STAGING_LIBDIR}/libclamav.la
         install -m 0644 libclamav/clamav.h ${STAGING_INCDIR}
 }
 

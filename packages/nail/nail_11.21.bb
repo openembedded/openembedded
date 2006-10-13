@@ -1,7 +1,6 @@
 DESCRIPTION = "Enhanced mailx client."
 SECTION = "console/network"
 PRIORITY = "optional"
-MAINTAINER = "NSLU2 Linux <nslu2-linux@yahoogroups.com>"
 DEPENDS = "openssl"
 PR = "r2"
 LICENSE = "GPL"

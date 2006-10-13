@@ -1,7 +1,6 @@
 SECTION = "console/network"
 DESCRIPTION="A user-mode PPPoE client and server suite for Linux"
 HOMEPAGE="http://www.roaringpenguin.com/"
-MAINTAINER = "Bruno Randolf <bruno.randolf@4g-systems.biz>"
 LICENSE="GPLv2"
 
 SRC_URI="http://www.roaringpenguin.com/penguin/pppoe/${P}.tar.gz \

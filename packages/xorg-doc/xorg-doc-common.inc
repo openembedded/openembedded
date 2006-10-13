@@ -1,7 +1,6 @@
 DESCRIPTION = "X documentation"
 HOMEPAGE = "http://www.x.org"
 SECTION = "x11/docs"
-#MAINTAINER = ""
 LICENSE = "MIT-X"
 
 #DEPENDS = ""

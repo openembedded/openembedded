@@ -3,7 +3,6 @@ DESCRIPTION = "C++ bindings for the libglade library."
 HOMEPAGE = "http://www.gtkmm.org/"
 SECTION = "libs"
 PRIORITY = "optional"
-MAINTAINER = "Johan Bilien <jobi@via.ecp.fr>"
 DEPENDS = "gtkmm libglade"
 PR = "r0"
 

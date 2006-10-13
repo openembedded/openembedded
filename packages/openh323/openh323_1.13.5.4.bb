@@ -4,7 +4,6 @@
 
 HOMEPAGE="http://www.openh323.org/"
 DESCRIPTION="Open Soure ITU-T H.323 teleconferencing protocol implementation."
-MAINTAINER = "Raymond Danks <info-linux@geode.amd.com>"
 LICENSE = "GPL"
 
 SRC_URI="http://http.us.debian.org/debian/pool/main/o/${PN}/${PN}_${PV}.orig.tar.gz \

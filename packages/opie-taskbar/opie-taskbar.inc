@@ -2,7 +2,6 @@ DESCRIPTION = "Opie Launcher and Taskbar"
 SECTION = "opie/base"
 PRIORITY = "optional"
 LICENSE = "GPL"
-MAINTAINER = "Team Opie <opie@handhelds.org>"
 DEPENDS = "opie-libqrsync opie-qss"
 APPNAME = "qpe"
 

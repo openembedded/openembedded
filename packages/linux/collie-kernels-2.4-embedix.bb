@@ -1,6 +1,5 @@
 DESCRIPTION = "Build all collie kernels in one go"
 SECTION = "kernel"
-MAINTAINER = "Matthias 'CoreDump' Hentges <oe@hentges.net>"
 LICENSE = "GPL"
 PROVIDES = "virtual/kernel"
 PR = "r2"

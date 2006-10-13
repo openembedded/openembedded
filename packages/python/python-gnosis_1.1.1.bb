@@ -1,7 +1,6 @@
 DESCRIPTION = "Gnosis Utils contains several Python modules for XML processing, plus other generally useful tools"
 SECTION = "devel/python"
 PRIORITY = "optional"
-MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 LICENSE = "GPLv2"
 SRCNAME = "Gnosis_Utils"
 

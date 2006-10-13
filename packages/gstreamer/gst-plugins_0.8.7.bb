@@ -2,7 +2,6 @@ LICENSE = "GPL"
 DESCRIPTION = "Plugins for GStreamer"
 SECTION = "x11/libs"
 PRIORITY = "optional"
-MAINTAINER = "Phil Blundell <pb@handhelds.org>"
 PR = "r3"
 
 DEPENDS = "gstreamer libmikmod libmad libogg tremor libvorbis libid3tag gpe-soundserver gconf"

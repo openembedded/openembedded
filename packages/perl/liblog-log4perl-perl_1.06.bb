@@ -1,6 +1,5 @@
 DESCRIPTION = "Log::Log4perl - Log4j implementation for Perl"
 SECTION = "libs"
-MAINTAINER = "Jamie Lenehan <lenehan@twibble.org>"
 LICENSE = "Artistic|GPL"
 PR = "r1"
 

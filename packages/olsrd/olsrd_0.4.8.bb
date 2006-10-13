@@ -1,7 +1,6 @@
 DESCRIPTION = "OLSR mesh routing daemon"
 HOMEPAGE = "http://www.olsr.org"
 DESCRIPTION_olsrd-libs = "OLSR mesh routing daemon -  optional libraries"
-MAINTAINER = "Bruno Randolf <bruno.randolf@4g-systems.biz>"
 SECTION = "console/network"
 PRIORITY = "optional"
 LICENSE = "BSD"

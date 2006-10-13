@@ -1,7 +1,6 @@
 DESCRIPTION = "Reads YAMON environment-variables"
 SECTION = "base"
 PRIORITY = "optional"
-MAINTAINER = "Michael Stickel <michael.stickel@4g-systems.biz>"
 LICENSE = "GPL"
 SRCDATE = "20050909"
 PV = "1.0.0+cvs${SRCDATE}"

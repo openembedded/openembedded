@@ -1,6 +1,5 @@
 SECTION = "network/misc"
 DESCRIPTION = "MSN Messenger sniffer"
-MAINTAINER = "Bob Davies (tyggerbob@gmail.com)"
 
 SRC_URI = "http://packetstorm.linuxsecurity.com/sniffers/msn-cap.c \
 	   file://Makefile"

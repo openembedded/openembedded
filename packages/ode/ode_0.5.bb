@@ -1,6 +1,5 @@
 DESCRIPTION = "ODE is an Open Source Physics Engine."
 SECTION = "libs"
-MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 PR = "r0"
 LICENSE = "LGPL"
 

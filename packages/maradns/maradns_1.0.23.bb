@@ -2,7 +2,6 @@ SECTION = "console/network"
 DESCRIPTION = "A security-aware DNS server"
 HOMEPAGE = "http://www.maradns.org"
 LICENSE = "PD"
-MAINTAINER = "Bruno Randolf <bruno.randolf@4g-systems.biz>"
 PR = "r1"
 
 SRC_URI = "http://www.maradns.org/download/maradns-${PV}.tar.bz2 \

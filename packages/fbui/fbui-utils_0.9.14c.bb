@@ -1,5 +1,4 @@
 DESCRIPTION = "Userland utilities for the FBUI in kernel GUI"
-MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 LICENSE = "GPL"
 SECTION = "base"
 

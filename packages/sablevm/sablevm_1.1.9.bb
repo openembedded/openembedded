@@ -2,7 +2,6 @@ DESCRIPTION = "A highly-portable Java virtual machine implementing the Java virt
 HOMEPAGE = "http://sablevm.org"
 LICENSE = "LGPL"
 PRIORITY = "optional"
-MAINTAINER = "Rene Wagner <rw@handhelds.org>"
 SECTION = "interpreters"
 PR = "r1"
 

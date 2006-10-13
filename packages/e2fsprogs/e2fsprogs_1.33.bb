@@ -2,7 +2,6 @@ DESCRIPTION = "EXT2 Filesystem Utilities"
 SECTION = "base"
 LICENSE = "GPL"
 PRIORITY = "optional"
-MAINTAINER = "Greg Gilbert <greg@treke.net>"
 DEPENDS = ""
 PR = "r1"
 

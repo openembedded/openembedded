@@ -2,7 +2,6 @@ PR = "r0"
 DESCRIPTION = "OmniORB High Performance ORB"
 SECTION = "devel"
 PRIORITY = "optional"
-MAINTAINER = "Philip Balister <philip@balister.org>"
 LICENSE = "LGPL"
 
 DEPENDS = omniorb-native

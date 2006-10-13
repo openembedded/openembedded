@@ -3,7 +3,6 @@ DESCRIPTION = "Privoxy is a web proxy with advanced filtering capabilities for p
                removing ads, banners, pop-ups and other obnoxious Internet junk."
 SECTION = "console/network"
 PRIORITY = "optional"
-MAINTAINER = "Bastian Ballmann <balle@chaostal.de>"
 LICENSE = "GPL"
 DEPENDS = "pcre"
 PR = "r0"

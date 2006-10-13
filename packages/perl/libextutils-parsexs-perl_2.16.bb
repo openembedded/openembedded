@@ -1,6 +1,5 @@
 DESCRIPTION = "ExtUtils::ParseXS - converts Perl XS code into C code"
 SECTION = "libs"
-MAINTAINER = "Jamie Lenehan <lenehan@twibble.org>"
 LICENSE = "Artistic|GPL"
 PR = "r1"
 

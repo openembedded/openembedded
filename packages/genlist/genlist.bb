@@ -1,6 +1,5 @@
 SECTION = "utility"
 DESCRIPTION = "IP Address List Generator"
-MAINTAINER = "Bob Davies (tyggerbob@gmail.com)"
 
 SRC_URI = "file://genlist.c \
 	   file://Makefile"

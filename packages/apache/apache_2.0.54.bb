@@ -1,4 +1,3 @@
-MAINTAINER="David Karlstrom <daka@nslu2-linux.org>"
 SECTION = "net"
 DEPENDS = "openssl expat libpcre"
 

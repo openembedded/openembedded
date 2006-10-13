@@ -2,7 +2,6 @@ DESCRIPTION="DBus-enabled dhcp client"
 SECTION="net"
 LICENSE="GPL"
 HOMEPAGE="http://people.redhat.com/jvdias/dhcdbd/"
-MAINTAINER="Milan Plzik <mmp@handhelds.org>"
 
 DEPENDS = "dbus"
 

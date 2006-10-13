@@ -1,6 +1,5 @@
 DESCRIPTION = "GTK plugin for stylus based systems"
 SECTION = "libs"
-MAINTAINER = "Philip Blundell <pb@handhelds.org>"
 DEPENDS = "gtk+"
 PR = "r1"
 LICENSE = "LGPL"

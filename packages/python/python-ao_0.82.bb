@@ -2,7 +2,6 @@ LICENSE = "GPL"
 DESCRIPTION = "Python AO Bindings"
 SECTION = "devel/python"
 PRIORITY = "optional"
-MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 DEPENDS = "libao"
 SRCNAME = "pyao"
 

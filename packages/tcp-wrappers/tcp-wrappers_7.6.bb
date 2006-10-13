@@ -1,7 +1,6 @@
 DESCRIPTION = "Tools for monitoring and filtering incoming requests for tcp \
 	      services."
 LICENSE = "tcp-wrappers"
-MAINTAINER = "Chris Larson <kergoth@handhelds.org>"
 PRIORITY = "optional"
 SECTION = "console/network"
 PR="r1"

@@ -3,7 +3,6 @@ SECTION = "x11/graphics"
 DEPENDS = "gtk+"
 LICENSE = "GPL"
 HOMEPAGE = "http://gqview.sourceforge.net/"
-MAINTAINER = "Graeme Gregory <dp@xora.org.uk>"
 RRECOMMENDS = "gdk-pixbuf-loader-jpeg gdk-pixbuf-loader-png gdk-pixbuf-loader-gif"
 PR = "r1"
 

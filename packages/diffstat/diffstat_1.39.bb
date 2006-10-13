@@ -2,7 +2,6 @@ DESCRIPTION = "diffstat reads the output of diff and displays a histogram of \
 the insertions, deletions, and modifications per-file. It is useful for \
 reviewing large, complex patch files."
 HOMEPAGE = "http://invisible-island.net/diffstat/"
-MAINTAINER = "Chris Larson <kergoth@handhelds.org>"
 PRIORITY = "optional"
 SECTION = "devel"
 

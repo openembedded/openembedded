@@ -1,7 +1,6 @@
 DESCRIPTION = "Koreanized JumpX input method"
 SECTION = "opie/inputmethods"
 PRIORITY = "optional"
-MAINTAINER = "Team Opie <opie@handhelds.org>"
 LICENSE = "GPL"
 RDEPENDS = "opie-pics"
 APPNAME = "qkjumpx"

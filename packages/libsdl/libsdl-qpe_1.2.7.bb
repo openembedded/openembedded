@@ -1,7 +1,6 @@
 DESCRIPTION = "Simple DirectMedia Layer - QtE-based Palmtop Environments Edition"
 SECTION = "opie/libs"
 PRIORITY = "optional"
-MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 DEPENDS = "virtual/libqpe1 libopie2"
 PROVIDES = "virtual/libsdl"
 LICENSE = "LGPL"

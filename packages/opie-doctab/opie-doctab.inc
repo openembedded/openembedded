@@ -1,7 +1,6 @@
 DESCRIPTION = "DocTab settings dialog for the Opie environment."
 SECTION = "opie/settings"
 PRIORITY = "optional"
-MAINTAINER = "Team Opie <opie@handhelds.org>"
 LICENSE = "GPL"
 APPNAME = "doctab"
 

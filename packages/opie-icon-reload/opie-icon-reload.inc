@@ -1,7 +1,6 @@
 SECTION = "opie/settings"
 DESCRIPTION = "Reload .desktop files on the fly"
 PRIORITY = "optional"
-MAINTAINER = "Matthias 'CoreDump' Hentges <coredump@handhelds.org>"
 LICENSE = "GPL"
 
 SRC_URI = "file://icon-reload.desktop \

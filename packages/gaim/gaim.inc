@@ -1,6 +1,5 @@
 SECTION = "x11/network"
 DESCRIPTION = "multi-protocol instant messaging client"
-MAINTAINER = "Mads Chr. Olesen <gaim@shiyee.dk>"
 LICENSE = "GPL"
 
 DEPENDS = "gtk+ gnutls virtual/libintl"

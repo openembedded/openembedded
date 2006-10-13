@@ -2,7 +2,6 @@ DESCRIPTION = "Qt/Embedded 2 Auxilliary libraries"
 HOMEPAGE = "http://opie.handhelds.org"
 SECTION = "opie/libs"
 PRIORITY = "optional"
-MAINTAINER = "Team Opie <opie@handhelds.org>"
 LICENSE = "GPL"
 
 S = "${WORKDIR}/libqtaux"

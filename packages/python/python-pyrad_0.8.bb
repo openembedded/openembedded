@@ -1,7 +1,6 @@
 DESCRIPTION = "Python Radius Client and Server"
 SECTION = "devel/python"
 PRIORITY = "optional"
-MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 LICENSE = "BSD"
 SRCNAME = "pyrad"
 

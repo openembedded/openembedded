@@ -1,7 +1,6 @@
 DESCRIPTION = "Bacula filedaemon is the client to backup your device using Bacula a network based backup program"
 SECTION = "console/network"
 PRIORITY = "optional"
-MAINTAINER = "Bastian Ballmann <balle@chaostal.de>"
 HOMEPAGE = "http://www.bacula.org"
 LICENSE = "GPL"
 PR="r0"

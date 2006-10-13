@@ -2,7 +2,6 @@ SECTION = "console/network"
 DESCRIPTION = "Dnsmasq is a lightweight, easy to configure DNS forwarder and DHCP server."
 HOMEPAGE = "http://www.thekelleys.org.uk/dnsmasq/doc.html"
 LICENSE = "GPL"
-MAINTAINER = "Chris Larson <kergoth@handhelds.org>"
 
 SRC_URI = "http://www.thekelleys.org.uk/dnsmasq/dnsmasq-${PV}.tar.gz \
            file://init \

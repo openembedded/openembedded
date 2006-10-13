@@ -1,7 +1,6 @@
-MAINTAINER = "Oyvind Repvik <nail@nslu2-linux.org"
 PR = "r5"
 
-SRC_URI = "http://www.balabit.com/downloads/libol/0.3/${PN}-${PV}.tar.gz"
+SRC_URI = "http://www.balabit.com/downloads/libol/0.3/${P}.tar.gz"
 
 S = "${WORKDIR}/${PN}-${PV}"
 

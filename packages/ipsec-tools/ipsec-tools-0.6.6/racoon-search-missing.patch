@@ -1,0 +1,17 @@
+Older versions of openssl don't provide all the required crypto code.
+To handle this case ipsec-tools includes it's own version of the
+required crypto code but it fails to add it the search path so
+compilation fails. Fix it here since OE currently have an older
+version of openssl.
+
+--- ipsec-tools-0.6.6/src/racoon/Makefile.am	2006/08/17 05:10:57	1.1
++++ ipsec-tools-0.6.6/src/racoon/Makefile.am	2006/08/17 05:12:08
+@@ -9,7 +9,7 @@
+ 
+ adminsockdir=${localstatedir}/racoon
+ 
+-INCLUDES = -I${srcdir}/../libipsec 
++INCLUDES = -I${srcdir}/../libipsec -I${srcdir}/missing
+ AM_CFLAGS = -D_GNU_SOURCE @GLIBC_BUGS@ -DSYSCONFDIR=\"${sysconfdir}\" \
+ 	-DADMINPORTDIR=\"${adminsockdir}\"
+ AM_LDFLAGS = @EXTRA_CRYPTO@ -lcrypto

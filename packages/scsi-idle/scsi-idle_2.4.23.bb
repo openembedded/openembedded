@@ -6,7 +6,6 @@ commands to the SCSI hardware."
 SECTION = "console/utils"
 LICENSE = "GPLv2"
 HOMEPAGE = "http://packages.debian.org/unstable/admin/scsi-idle"
-MAINTAINER = "Robert Demski <Robert.Demski@wp.pl>"
 AUTHOR = "Eduard Bloch <blade@debian.org>"
 PR = "r1"
 

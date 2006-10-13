@@ -1,6 +1,5 @@
 DESCRIPTION = "Locale::gettext - message handling functions"
 SECTION = "libs"
-MAINTAINER = "Jamie Lenehan <lenehan@twibble.org>"
 LICENSE = "Artistic|GPL"
 DEPENDS = "virtual/libintl"
 PR = "r3"

@@ -3,7 +3,6 @@ DESCRIPTION = "A free computer algebra system"
 HOMEPAGE = "http://www-fourier.ujf-grenoble.fr/~parisse/giac.html"
 PRIORITY = "optional"
 LICENSE = "GPL"
-MAINTAINER = "Rene Wagner <rw@handhelds.org>"
 DEPENDS = "fltk gmp mpfr gsl"
 #          ntl pari"
 

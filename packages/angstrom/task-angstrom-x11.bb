@@ -1,10 +1,8 @@
 DESCRIPTION = "Task packages for the Angstrom distribution"
-PR = "r19"
+PR = "r20"
 ALLOW_EMPTY = "1"
 
 PACKAGE_ARCH = "${MACHINE_ARCH}"
-
-DEPENDS = "task-angstrom"
 
 PACKAGES = "\
     angstrom-x11-base-depends \

@@ -3,7 +3,6 @@ LICENSE="GPL"
 SECTION = "devel"
 PRIORITY = "optional"
 PR = "r1"
-MAINTAINER = "Pawel Osiczko <p.osiczko@tetrapyloctomy.org>"
 DEPENDS = "ncurses readline"
 
 PACKAGES =+ 'gdbserver '

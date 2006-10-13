@@ -1,5 +1,4 @@
 DESCRIPTION = "Linux kernel for the SIEMENS SIMpad family of devices."
-MAINTAINER = "Frederic Devernay <frederic.devernay@m4x.org>"
 SECTION = "kernel"
 LICENSE = "GPL"
 KV = "${@bb.data.getVar('PV',d,True).split('-')[0]}"

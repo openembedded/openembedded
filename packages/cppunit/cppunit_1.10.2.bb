@@ -6,7 +6,6 @@ DESCRIPTION = "Unit Testing Library for C++"
 HOMEPAGE = "http://cppunit.sourceforge.net/"
 LICENSE = "LGPL"
 SECTION = "devel"
-MAINTAINER = "Eddy Pronk <epronk@muftor.com>"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/cppunit/cppunit-${PV}.tar.gz"
 

@@ -4,7 +4,6 @@ PRIORITY = "optional"
 DEPENDS = "virtual/libsdl libsdl-image libsdl-net libvorbis libogg zlib"
 SECTION = "opie/games"
 PRIORITY = "optional"
-MAINTAINER = "Paul Eggleton <paule@handhelds.org>"
 LICENSE = "GPL"
 
 PR = "r1"

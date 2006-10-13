@@ -1,7 +1,6 @@
 LICENSE = "GPL"
 SECTION = "x11/base"
 DESCRIPTION = "GTK theme engines"
-MAINTAINER = "Koen Kooi <koen@dominion.kabel.utwente.nl>"
 DEPENDS = "gtk+ cairo"
 
 RDEPENDS_gtk-theme-redmond = "gtk-engine-redmond95"

@@ -1,5 +1,4 @@
 LICENSE = "GPL"
-MAINTAINER = "Patrick Steiner <patrick.steiner@a1.net>"
 
 DEPENDS = "gtk+ libgnomeprint"
 

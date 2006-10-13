@@ -1,7 +1,6 @@
 DESCRIPTION = "Configuration applets for GPE"
 SECTION = "gpe"
 PRIORITY = "optional"
-MAINTAINER = "Florian Boor <florian.boor@kernelconcepts.de>"
 LICENSE = "GPL"
 
 DEPENDS = "gtk+ esound audiofile libgpewidget libxsettings libxsettings-client"

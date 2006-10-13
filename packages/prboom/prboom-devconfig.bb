@@ -1,7 +1,6 @@
 DESCRIPTION = "Device specific configuration for prboom"
 SECTION = "games"
 PRIORITY = "optional"
-MAINTAINER = "coredump@handhelds.org"
 LICENSE = "GPL"
 PR = "r1"
 

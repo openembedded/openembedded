@@ -8,7 +8,7 @@ SECTION = "network"
 LICENSE = "GPLv2"
 DEPENDS = "clamav"
 RDEPENDS_${PN} += "${PN}-templates-css2 ${PN}-templates-en"
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "http://www.server-side.de/download/havp-${PV}.tar.gz \
            file://sysconfdir-is-etc.patch;patch=1 \
@@ -16,7 +16,7 @@ SRC_URI = "http://www.server-side.de/download/havp-${PV}.tar.gz \
            file://doc.configure.txt \
            file://volatiles.05_havp"
 
-inherit autotools
+inherit autotools update-rc.d
 
 EXTRA_OECONF = "--with-scanner=libclamav"
 
@@ -85,5 +85,5 @@ pkg_postinst_${PN} () {
 CONFFILES_${PN} = "${sysconfdir}/havp/havp.config \
                    ${sysconfdir}/havp/blacklist ${sysconfdir}/havp/whitelist"
 
-INITSCRIPT_NAME_${PN} = "havp"
-INITSCRIPT_PARAMS_${PN} = "defaults 55 45"
+INITSCRIPT_NAME = "havp"
+INITSCRIPT_PARAMS = "defaults 55 45"

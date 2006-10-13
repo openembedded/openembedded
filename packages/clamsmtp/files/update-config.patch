@@ -1,0 +1,23 @@
+Run as the clamav user.
+Use the sock that clamd actually creates.
+
+--- clamsmtp-1.8/doc/clamsmtpd.conf	2006/10/11 06:43:31	1.1
++++ clamsmtp-1.8/doc/clamsmtpd.conf	2006/10/11 06:44:04
+@@ -29,7 +29,7 @@
+ #Listen: 0.0.0.0:10025
+ 
+ # The address clamd is listening on
+-#ClamAddress: /var/run/clamav/clamd
++ClamAddress: /var/run/clamav/clamd.ctl
+ 
+ # A header to add to all scanned email
+ #Header: X-Virus-Scanned: ClamAV using ClamSMTP
+@@ -47,7 +47,7 @@
+ #TransparentProxy: off
+ 
+ # User to switch to
+-#User: clamav
++User: clamav
+ 
+ # Virus actions: There's an option to run a script every time a virus is found. 
+ # !IMPORTANT! This can open a hole in your server's security big enough to drive

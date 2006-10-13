@@ -1,5 +1,4 @@
 DESCRIPTION = "Basic packages required for a pivot root image"
-MAINTAINER = "Jonathan McDowell <noodles@earth.li>"
 PR = "r0"
 
 # The PIVOTBOOT_EXTRA_ variables are often manipulated by the

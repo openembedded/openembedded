@@ -1,7 +1,6 @@
 DESCRIPTION = "Arabic fonts from Arabeyes.org"
 SECTION = "opie/fonts"
 PRIORITY = "optional"
-MAINTAINER = "Abdulhaq <abdulhaq@users.sourceforge.net>"
 LICENSE = "GPL"
 HOMEPAGE = "http://www.arabeyes.org"
 PR = "r0"

@@ -1,7 +1,6 @@
 DESCRIPTION = "MIAU IRC Bouncer"
 SECTION = "network"
 PRIORITY = "optional"
-MAINTAINER = "NSLU2 Linux <www.nslu2-linux.org>"
 HOMEPAGE = "http://sf.net/project/miau/"
 LICENSE = "GPL"
 PR = "r2"

@@ -1,0 +1,15 @@
+The following items needs to be considered when using clamsmtp:
+
+1. Scanning is done via clamd (clamav-daemon)
+
+   The clamd daemon must be running for scanning to take place.
+
+2. Transparent proxy
+
+   For transparent proxying you need an IP tables rule such as:
+
+     iptables -t nat -A PREROUTING -i eth0 -p tcp -m tcp --dport 25 -j REDIRECT --to-ports 10025
+
+   where eth0 is the incomming port, and 10025 is the port that clamsmtpd
+   is running on. Also remember to enable transparent proxy support in the
+   configuration file.

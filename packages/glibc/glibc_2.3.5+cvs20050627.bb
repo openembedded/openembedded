@@ -3,7 +3,6 @@ HOMEPAGE = "http://www.gnu.org/software/libc/libc.html"
 LICENSE = "LGPL"
 SECTION = "libs"
 PRIORITY = "required"
-MAINTAINER = "Phil Blundell <pb@handhelds.org>"
 
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/glibc-cvs-2.3.5"
 SRCDATE = "20050627"
@@ -55,7 +54,7 @@ SRC_URI = "http://familiar.handhelds.org/source/v0.8.3/stash_libc_sources.redhat
 	   file://ldsocache-varrun.patch;patch=1 \
 	   file://5090_all_stubs-rule-fix.patch;patch=1 \
 	   file://raise.patch;patch=1 \
-       file://zecke-sane-readelf.patch;patch=1 \
+	   file://zecke-sane-readelf.patch;patch=1 \
 	   file://glibc-2.3.5-fix-weak-alias-arm.patch;patch=1 \
 	   file://glibc-2.3.5-fix-weak-alias-arm-2.patch;patch=1 \
            file://etc/ld.so.conf \

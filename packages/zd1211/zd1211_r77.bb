@@ -1,7 +1,6 @@
 DESCRIPTION = "Driver for zd1211 family of wireless USB Dongles"
 PRIORITY = "optional"
 SECTION = "kernel/modules"
-MAINTAINER = "Oyvind Repvik <nail@nslu2-linux.org>"
 LICENSE = "GPL"
 PR = "r3"
 RDEPENDS = "wireless-tools"
