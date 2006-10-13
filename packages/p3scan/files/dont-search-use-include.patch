@@ -1,0 +1,11 @@
+--- p3scan-2.9.05d/configure.in	2006/10/12 00:49:31	1.1
++++ p3scan-2.9.05d/configure.in	2006/10/12 00:49:41
+@@ -34,8 +34,6 @@
+ # Checks for libraries.
+ 
+ AC_CHECK_LIB(pthread, pthread_create,  [], [AC_MSG_ERROR([library 'pthread' is required!])])
+-LDFLAGS="$LDFLAGS -L/usr/lib/pthread"
+-CPPFLAGS="$CPPFLAGS -I/usr/include/pthread"
+ 
+ # Checks for header files.
+ AC_HEADER_DIRENT
