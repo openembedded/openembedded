@@ -16,9 +16,23 @@ Recipes:    Maintained recipes (should match package names, can include wildcard
 
 -----------------------------------------------------------------------------
 
+Person:     Erik Hovland
+Mail:       erik@hovland.org
+Distros:    familiar
+Machines:   h3600, h5400
+Interests:  Kernels, Porting, Distro refinement
+Recipes:    at76c503a, dropbear, handhelds-sa, handhelds-pxa
+
 Person:     Joaquim Duran
 Mail:       joaquinduran@adtelecom.es
 Recipes:    fltk
+
+Person:     Justin Patrin
+Mail:       papercrane@reversefold.com
+Website:    http://www.reversefold.com
+Interests:  OpenZaurus, E17, PHP
+Recipes:    efl/*, e17/*, musicpd/*, parted, netcat, emacs
+Recipes:    elitaire, synergy, lineak
 
 Person:     Koen Kooi
 Mail:       koen@openembedded.org
@@ -51,13 +65,6 @@ Machines:   poodle, c7x0, spitz, nokia770, x86, qemuarm, qemux86
 Interests:  Core OE infrastructure, Python, GUI-Toolkits
 Recipes:    python*, qt*, qte*, sip*
 
-Person:     Justin Patrin
-Mail:       papercrane@reversefold.com
-Website:    http://www.reversefold.com
-Interests:  OpenZaurus, E17, PHP
-Recipes:    efl/*, e17/*, musicpd/*, parted, netcat, emacs
-Recipes:    elitaire, synergy, lineak
-
 Person:     Paul Sokolovsky
 Mail:       pmiscml@gmail.com
 Machines:   h4000
@@ -86,11 +93,3 @@ Recipes:    ccxstream, eciadsl, ssmtp, gstreamer, ixp4xx-npe, joe
 Recipes:    lcdproc, libol, mailx, mysql, musicpd, openntpd, qc-usb
 Recipes:    radlib, scsi-idle, rng-tools, slugos-init, syslog-ng
 Recipes:    vsftpd, zd1211, wpa-supplicant
-
-Person:     Erik Hovland
-Mail:       erik@hovland.org
-Distros:    familiar
-Machines:   h3600, h5400
-Interests:  Kernels, Porting, Distro refinement
-Recipes:    at76c503a, dropbear, handhelds-sa, handhelds-pxa
-
