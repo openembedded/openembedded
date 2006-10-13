@@ -1,7 +1,7 @@
 DESCRIPTION = "Linux Kernel for x86 compatible machines"
 SECTION = "kernel"
 LICENSE = "GPL"
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "ftp://ftp.kernel.org/pub/linux/kernel/v2.6/linux-${PV}.tar.bz2 \
            file://defconfig"
