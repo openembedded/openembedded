@@ -16,41 +16,41 @@ Recipes:    Maintained recipes (should match package names, can include wildcard
 
 -----------------------------------------------------------------------------
 
-Person:     Philip Balister
-Mail:       Crofton@balister.org
-Website:    http://www.balister.org
-Machines:   omap5912osk
-Distros:    openomap
-Recipes:    xerces-c, omniorb
+Person:     Joaquim Duran
+Mail:       joaquinduran@adtelecom.es
+Recipes:    fltk
 
-Person:     Koen Kooi 
+Person:     Koen Kooi
 Mail:       koen@openembedded.org
 Website:    http://dominion.kabel.utwente.nl/koen/cms
 Machines:   h2200, ipaq-pxa270, efika, ep93xx, netbook-pro
-Distros:    Ã…ngstrÃ¶m
+Distros:    Ångström
 Interests:  OpenSync, GNOME, GPE, Matchbox
-Recipes:    abiword, bootchart, dia, farsight, freeciv, fuse, galago, geda, gimp, 
+Recipes:    abiword, bootchart, dia, farsight, freeciv, fuse, galago, geda, gimp,
 Recipes:    gnumeric, gobby, obby, imposter, inkscape
-Recipes:    telepathy, tilibs, xchat, xournal. 
+Recipes:    telepathy, tilibs, xchat, xournal.
+
+Person:     Leon Woestenberg
+Mail:       leonw@mailcan.com
+Interests:  SquashFS, LZMA
 
 Person:     Marcin Juszkiewicz
 Mail:       hrw@openembedded.org
 Website:    http://www.hrw.one.pl/
 Machines:   collie, spitz
 Distros:    OpenZaurus
-Interests:  OPIE, Qtopia fonts, Native SDK
+Interests:  Opie, Qtopia fonts, Native SDK
 Recipes:    hostap*, orinoco*, wpa-supplicant*, wireless-tools, keymaps, qpf-dejavu*
-Recipes:    kdepimpi, subapplet, corsair, gammu, iqnotes, zbedic, linux-openzaurus 
+Recipes:    kdepimpi, subapplet, corsair, gammu, iqnotes, zbedic, linux-openzaurus
 
-Person:     Leon Woestenberg
-Mail:       leonw@mailcan.com
-Interests:  SquashFS, LZMA
+Person:     Michael 'Mickey' Lauer
+Mail:       mlauer@vanille-media.de
+Distros:    Ångström, generic
+Machines:   poodle, c7x0, spitz, nokia770, x86, qemuarm, qemux86
+Interests:  Core OE infrastructure, Python, GUI-Toolkits
+Recipes:    python*, qt*, qte*, sip*
 
-Person:     Joaquim Duran
-Mail:       joaquinduran@adtelecom.es
-Recipes:    fltk
-
-Person:     Ã˜yvind Repvik
+Person:     Øyvind Repvik
 Mail:       nail@nslu2-linux.org
 Machines:   nslu2, fsg3, ixp4xx, n2100
 Distros:    debianslug, openslug, slugos
@@ -60,9 +60,16 @@ Recipes:    lcdproc, libol, mailx, mysql, musicpd, openntpd, qc-usb
 Recipes:    radlib, scsi-idle, rng-tools, slugos-init, syslog-ng
 Recipes:    vsftpd, zd1211, wpa-supplicant
 
+Person:     Philip Balister
+Mail:       Crofton@balister.org
+Website:    http://www.balister.org
+Machines:   omap5912osk
+Distros:    openomap
+Recipes:    xerces-c, omniorb
+
 Person:     Richard Purdie
 Mail:       rpurdie@rpsys.net
-Distros:    poky, openzaurus, Ã…ngstrÃ¶m
+Distros:    poky, openzaurus, Ångström
 Machines:   poodle, c7x0, spitz, nokia770, qemuarm, qemux86, hx2xxx
 Interests:  Kernels, Bitbake, Core OE infrastructure, Zaurus 2.6
 Recipes:    linux-openzaurus, udev, zaurusd, task-base
