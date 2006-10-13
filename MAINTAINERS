@@ -51,6 +51,11 @@ Machines:   poodle, c7x0, spitz, nokia770, x86, qemuarm, qemux86
 Interests:  Core OE infrastructure, Python, GUI-Toolkits
 Recipes:    python*, qt*, qte*, sip*
 
+Person:     Paul Sokolovsky
+Mail:       pmiscml@gmail.com
+Machines:   h4000
+Interests:  handelds-pxa-2.6, PocketPC and Palm devices support
+
 Person:     Philip Balister
 Mail:       Crofton@balister.org
 Website:    http://www.balister.org
