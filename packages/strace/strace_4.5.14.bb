@@ -5,6 +5,7 @@ PR = "r3"
 DESCRIPTION = "strace is a system call tracing tool."
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/strace/strace-${PV}.tar.bz2 \
+           file://glibc-2.5.patch;patch=1 \
 	   file://arm-eabi.patch;patch=1 \
 	   file://drop-ctl-proc.patch;patch=1 \
 	   file://sh-arch-update.patch;patch=1 \
