@@ -23,6 +23,16 @@ Machines:   h3600, h5400
 Interests:  Kernels, Porting, Distro refinement
 Recipes:    at76c503a, dropbear, handhelds-sa, handhelds-pxa
 
+Person:     Jamie Lenehan
+Mail:       lenehan@twibble.org
+Website:    http://twibble.org/
+Interests:  sh4, router/firewall/networking
+Distros:    eRouter
+Machines:   titan, wrap
+Recipes:    quagga, iputils, ndic6, hping2, lilo-sh, conserver, ipsec-tools,
+Recipes:    lilo-sh, clamav, havp, p3scan, clamsmtp, librsync, rdiff-backup,
+Recipes:    net-snmp, ebtables, ethtool, arpwatch, lib*-perl
+
 Person:     Joaquim Duran
 Mail:       joaquinduran@adtelecom.es
 Recipes:    fltk
