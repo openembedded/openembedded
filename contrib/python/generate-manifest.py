@@ -236,10 +236,11 @@ if __name__ == "__main__":
     "lib-dynload/_socket.so lib-dynload/_ssl.so lib-dynload/select.so lib-dynload/termios.so lib-dynload/cStringIO.so "
     "pipes.* socket.* tempfile.* StringIO.* " )
 
-    m.addPackage( 0, "python-lang", "Python Low-Level Language Support", "python-core",
+    m.addPackage( 1, "python-lang", "Python Low-Level Language Support", "python-core",
     "lib-dynload/array.so lib-dynload/parser.so lib-dynload/operator.so lib-dynload/_weakref.so " +
-    "lib-dynload/itertools.so lib-dynload/collections.so " +
-    "atexit.* code.* codeop.* dis.* inspect.* keyword.* opcode.* repr.* token.* tokenize.* traceback.* linecache.* weakref.*" )
+    "lib-dynload/itertools.so lib-dynload/collections.so lib-dynload/_bisect.so lib-dynload/_heapq.so " +
+    "atexit.* bisect.* code.* codeop.* dis.* heapq.* inspect.* keyword.* opcode.* repr.* token.* tokenize.* " + 
+    "traceback.* linecache.* weakref.*" )
 
     m.addPackage( 0, "python-logging", "Python Logging Support", "python-core",
     "logging" ) # package
@@ -305,8 +306,8 @@ if __name__ == "__main__":
     m.addPackage( 0, "python-tests", "Python Tests", "python-core",
     "test" ) # package
 
-    m.addPackage( 0, "python-threading", "Python Threading & Synchronization Support", "python-core, python-lang",
-    "_threading_local.* bisect.* dummy_thread.* dummy_threading.* mutex.* threading.* Queue.*" )
+    m.addPackage( 1, "python-threading", "Python Threading & Synchronization Support", "python-core, python-lang",
+    "_threading_local.* dummy_thread.* dummy_threading.* mutex.* threading.* Queue.*" )
 
     m.addPackage( 0, "python-unittest", "Python Unit Testing Framework", "python-core, python-stringold, python-lang",
     "unittest.*" )
