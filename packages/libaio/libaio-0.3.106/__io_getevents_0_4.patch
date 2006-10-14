@@ -1,0 +1,29 @@
+From: Marcin Juszkiewicz <hrw@openembedded.org>
+
+Fast hack to get applications which use libaio linked.
+
+Get rid of:
+/home/hrw/devel/build/dev/tmp/staging/arm-linux/lib/libaio.so: undefined reference to `__io_getevents_0_4'
+
+Index: libaio-0.3.106/src/io_getevents.c
+===================================================================
+--- libaio-0.3.106.orig/src/io_getevents.c	2003-06-18 21:58:21.000000000 +0200
++++ libaio-0.3.106/src/io_getevents.c	2006-10-14 19:42:49.000000000 +0200
+@@ -22,7 +22,7 @@
+ #include <time.h>
+ #include "syscall.h"
+ 
+-io_syscall5(int, __io_getevents_0_4, io_getevents, io_context_t, ctx, long, min_nr, long, nr, struct io_event *, events, struct timespec *, timeout)
++io_syscall5(int, io_getevents_0_4, io_getevents, io_context_t, ctx, long, min_nr, long, nr, struct io_event *, events, struct timespec *, timeout)
+ 
+ #define AIO_RING_MAGIC                  0xa10a10a1
+ 
+@@ -51,7 +51,7 @@
+ 	}
+ 	
+ do_syscall:	
+-	return __io_getevents_0_4(ctx, min_nr, nr, events, timeout);
++	return io_getevents_0_4(ctx, min_nr, nr, events, timeout);
+ }
+ 
+ DEFSYMVER(io_getevents_0_4, io_getevents, 0.4)
