@@ -10,7 +10,7 @@ IXP4XX_KERNEL_SVN_REV = "473"
 #
 # The directory containing the patches to be applied is
 # specified below
-IXP4XX_KERNEL_PATCH_DIR = "2.6.18"
+IXP4XX_KERNEL_PATCH_DIR = "2.6.19"
 #
 # Increment the number below (i.e. the digits after PR) when
 # the changes in SVN between revisions include changes in the
