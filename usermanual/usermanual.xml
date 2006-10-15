@@ -308,7 +308,51 @@ and the resulting <command>task-base</command> would support pcmcia but not usbh
 
         <section>
             <title>Creating a new Distribution</title>
-            <para>This section is a stub, help us by expanding it</para>
+<para>
+Creating a new distribution is not complicated. Config need to be created
+in /conf/distro directory. What has to be inside?
+<itemizedlist>
+    <listitem><para><command>DISTRO_VERSION</command> so users will know which version of distribution they use.</para></listitem>
+    <listitem><para><command>DISTRO_TYPE</command> (release/debug) variable is used in some recipes to enable/disable some features - for example kernel output on screen for "debug" builds.</para></listitem>
+    <listitem><para>Type of libc used: will it be glibc (<command>TARGET_OS</command> = "linux") or uclibc (<command>TARGET_OS</command> = "linux-uclibc")?</para></listitem>
+    <listitem><para>Toolchain versions - for example gcc 3.4.4 based distro will have:
+            <screen>
+PREFERRED_PROVIDERS += " virtual/${TARGET_PREFIX}gcc-initial:gcc-cross-initial"
+PREFERRED_PROVIDERS += " virtual/${TARGET_PREFIX}gcc:gcc-cross"
+PREFERRED_PROVIDERS += " virtual/${TARGET_PREFIX}g++:gcc-cross"
+
+PREFERRED_VERSION_binutils = "2.16"
+PREFERRED_VERSION_binutils-cross = "2.16"
+
+PREFERRED_VERSION_gcc = "3.4.4"
+PREFERRED_VERSION_gcc-cross = "3.4.4"
+PREFERRED_VERSION_gcc-initial-cross = "3.4.4"
+            </screen>
+    </para></listitem>
+    <listitem><para> <command>DISTRO_FEATURES</command> which describe which features distro has. More about it in <link linkend="task-base">task-base</link> section.</para></listitem>
+    <listitem><para>Versions of kernels used for supported devices:
+            <screen>
+PREFERRED_VERSION_linux-omap1_omap5912osk ?= "2.6.18+git"
+PREFERRED_VERSION_linux-openzaurus ?= "2.6.17"
+            </screen>
+    </para></listitem>
+    <listitem><para>To get more stable build it is good to make use of sane-srcdates.inc file which contain working SRCDATE for many of floating recipes.
+            <screen>
+require conf/distro/include/sane-srcdates.inc
+            </screen>
+            It also should have global <command>SRCDATE</command> value set (format is ISO date: YYYYMMDD):
+            <screen>
+SRCDATE = "20061014"
+            </screen>
+    </para></listitem>
+</itemizedlist>
+
+</para>
+
+<para>
+
+</para>
+
         </section>
 
         <section>
