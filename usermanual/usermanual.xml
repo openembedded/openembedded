@@ -277,6 +277,27 @@ BBFILE_PRIORITY_local = "10"
         </section>
 
         <section>
+            <title>Task-base <anchor id="task-base" /></title>
+
+<para>Task-base is new way of creating basic root filesystems. Instead of having each machine setting a ton of duplicate variables, this allow a machine to specify its features and <command>task-base</command> builds it a customised package based on what the machine needs along with what the distro supports.</para>
+
+<para> To illustrate, the distro.conf file can say:
+
+<screen>
+DISTRO_FEATURES = "nfs smbfs ipsec wifi ppp alsa bluetooth ext2 irda pcmcia usbgadget usbhost"
+</screen>
+
+and the machine.conf:
+
+<screen>
+MACHINE_FEATURES = "kernel26 apm alsa pcmcia bluetooth irda usbgadget"
+</screen>
+
+and the resulting <command>task-base</command> would support pcmcia but not usbhost.</para>
+
+<para>Task-base details exactly which options are either machine or distro settings (or need to be in both). Machine options are meant to reflect capabilities of the machine, distro options, things distribution maintainers might want to add or remove from their distros images.</para>
+        </section>
+        <section>
             <title>Overrides <anchor id="overrides" /></title>
             <para>This section is a stub, help us by expanding it</para>
         </section>
