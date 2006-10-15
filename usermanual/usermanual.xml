@@ -313,7 +313,19 @@ and the resulting <command>task-base</command> would support pcmcia but not usbh
 
         <section>
             <title>Adding a new Machine</title>
-            <para>This section is a stub, help us by expanding it</para>
+<para>To be able to build for device OpenEmbedded have to know it, so machine config file need to be written. All those configs are stored in /conf/machine/ directory.</para>
+
+<para>As usual some variables are required:
+      <itemizedlist>
+          <listitem><para><command>TARGET_ARCH</command> which describe which CPU architecture does machine use.</para></listitem>
+          <listitem><para><command>MACHINE_FEATURES</command> which describe which features device has. More about it in <link linkend="task-base">task-base</link> section.</para></listitem>
+          <listitem><para><command>PREFERRED_PROVIDER_virtual/kernel</command> has to point into proper kernel recipe for this machine.</para></listitem>
+      </itemizedlist>
+</para>
+
+<para>
+Next kernel recipe needs to be added.
+</para>
         </section>
 
         <section>
