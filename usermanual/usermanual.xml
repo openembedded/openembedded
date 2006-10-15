@@ -295,7 +295,7 @@ MACHINE_FEATURES = "kernel26 apm alsa pcmcia bluetooth irda usbgadget"
 
 and the resulting <command>task-base</command> would support pcmcia but not usbhost.</para>
 
-<para>Task-base details exactly which options are either machine or distro settings (or need to be in both). Machine options are meant to reflect capabilities of the machine, distro options, things distribution maintainers might want to add or remove from their distros images.</para>
+<para>Task-base details exactly which options are either machine or distro settings (or need to be in both). Machine options are meant to reflect capabilities of the machine, distro options list things distribution maintainers might want to add or remove from their distros images.</para>
         </section>
         <section>
             <title>Overrides <anchor id="overrides" /></title>
