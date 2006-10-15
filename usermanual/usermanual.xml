@@ -61,11 +61,7 @@
 
        <section>
             <title>History</title>
-            <para>OpenEmbedded was invented and founded by the creators of the OpenZaurus project. 
-At this time the project had pushed <emphasis>buildroot</emphasis> to its limits. It supported the creation of
-<emphasis>ipk</emphasis> packages, feeds and images and had support for more than one machine. But it was impossible
-to use different patches, files for different architectures, machines or distributions. To overcome this shortcoming
-OpenEmbedded was created.</para>
+            <para>OpenEmbedded was invented and founded by the creators of the OpenZaurus project.  At this time the project had pushed <emphasis>buildroot</emphasis> to its limits. It supported the creation of <emphasis>ipk</emphasis> packages, feeds and images and had support for more than one machine. But it was impossible to use different patches, files for different architectures, machines or distributions. To overcome this shortcoming OpenEmbedded was created.</para>
             <para>After a few months other projects started using OpenEmbedded and contributing back. On 7 December 2004 Chris Larson split the project into two parts: BitBake, a generic task executor and OpenEmbedded, the metadata for BitBake.</para>   
        </section>
     </chapter>
