@@ -191,7 +191,7 @@ A   bitbake-1.6/classes/base.bbclass
 U   bitbake-1.6
 Ausgecheckt, Revision 570.
             </screen>
-            <application>BitBake</application> is checked out now; this completes the first and most critical dependency of OpenEmbedded. Issuing <command>svn</command> <command>up</command> in the <emphasis>bitbake-1.4</emphasis> directory will update <application>BitBake</application> to the latest stable version, but generally it is a good idea to stick with a specific known working version of <application>BitBake</application> until OpenEmbedded asks you to upgrade.
+            <application>BitBake</application> is checked out now; this completes the first and most critical dependency of OpenEmbedded. Issuing <command>svn</command> <command>up</command> in the <emphasis>bitbake-1.6</emphasis> directory will update <application>BitBake</application> to the latest stable version, but generally it is a good idea to stick with a specific known working version of <application>BitBake</application> until OpenEmbedded asks you to upgrade.
             </para>
         </section>
 
