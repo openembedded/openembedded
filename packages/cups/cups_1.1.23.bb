@@ -1,10 +1,8 @@
 DESCRIPTION = "An Internet printing system for Unix."
 SECTION = "console/utils"
 LICENSE = "GPL LGPL"
-
-DEPENDS = "openssl jpeg libpng zlib install-native"
-
-PR = "r4"
+DEPENDS = "openssl jpeg libpng zlib install-native fakeroot-native"
+PR = "r5"
 
 SRC_URI = "ftp://ftp.easysw.com/pub/cups/${PV}/cups-${PV}-source.tar.bz2 \
            file://strftime_fix.patch;patch=1"
