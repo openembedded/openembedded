@@ -105,7 +105,7 @@ LICENSE = "GPLv2"
 HOMEPAGE = "http://www.host.com/foo/"
                 </screen>
 
-The maintainer field needs to have a real name and a working email-address to be useful, the description and license fields are mandatory, so better check them twice.
+The description and license fields are mandatory, so better check them twice.
             </para>
 
             <para>The next step is to specify what the package needs to build and run, the so called <emphasis>dependencies</emphasis>:
