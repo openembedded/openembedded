@@ -252,18 +252,12 @@ mtn --db=OE.mtn co -b org.openembedded.dev
         <section>
             <title>Debian package naming <anchor id="debian" /></title>
             <screen>INHERIT += "debian"</screen>
-            <para>Placing the above line into your <emphasis>${DISTRO}.conf</emphasis> or <emphasis>local.conf</emphasis> will
-trigger renaming of packages if they only ship one library. Imagine a package where the package name (<command>PN</command>) is foo and
-this packages ships a file named <command>libfoo.so.1.2.3</command>. Now this package will be renamed to <command>libfoo1</command> to
-follow the Debian package naming policy.</para>
+            <para>Placing the above line into your <emphasis>${DISTRO}.conf</emphasis> or <emphasis>local.conf</emphasis> will trigger renaming of packages if they only ship one library. Imagine a package where the package name (<command>PN</command>) is foo and this packages ships a file named <command>libfoo.so.1.2.3</command>. Now this package will be renamed to <command>libfoo1</command> to follow the Debian package naming policy.</para>
         </section>
 
         <section>
             <title>Shared Library handling (shlibs) <anchor id="shlibs" /></title>
-            <para>Run-time Dependencies (<command>RDEPENDS</command>) will be added when packaging the software. They should only contain
-the minimal dependencies to run the program. OpenEmbedded will analyze each packaged binary and search for <command>SO_NEEDED</command> libraries. The libraries are absolutely required by the program then OpenEmbedded is searching for packages that installs these libraries. these
-packages are automatically added to the <command>RDEPENDS</command>. As a packager you don't need to worry about shared libraries anymore
-they will be added automatically.</para>
+            <para>Run-time Dependencies (<command>RDEPENDS</command>) will be added when packaging the software. They should only contain the minimal dependencies to run the program. OpenEmbedded will analyze each packaged binary and search for <command>SO_NEEDED</command> libraries. The libraries are absolutely required by the program then OpenEmbedded is searching for packages that installs these libraries. these packages are automatically added to the <command>RDEPENDS</command>. As a packager you don't need to worry about shared libraries anymore they will be added automatically.</para>
             <remark>NOTE: This does not apply to plug-ins used by the program.</remark>
         </section>
 
@@ -318,8 +312,7 @@ OpenEmbedded to build packages. One of many approaches is shown and discussed he
 
             <section>
                 <title>The toolchain</title>
-                <para>We assume the toolchain provides a C and C++ compiler, an assembler and other tools to build packages.
-The list below shows a gcc 3.4.4 toolchain for ARM architectures using glibc. We assume that the toolchain is in your <command>PATH</command>.</para>
+                <para>We assume the toolchain provides a C and C++ compiler, an assembler and other tools to build packages.  The list below shows a gcc 3.4.4 toolchain for ARM architectures using glibc. We assume that the toolchain is in your <command>PATH</command>.</para>
 <screen>
 <command>ls</command> pre-built/cross/bin
 
@@ -346,9 +339,7 @@ arm-linux-objdump
             <section>
                 <title>The prebuilt libraries</title>
                 <para>We need the header files and the libraries itself. The following directory layout is assume.
-<command>PRE_BUILT</command> has two subdirectories one is called <emphasis>include</emphasis> and holds the header files and
-the other directory is called <emphasis>lib</emphasis> and holds the shared and static libraries. Additionally a Qt2 directory
-is present having a <emphasis>include</emphasis> and <emphasis>lib</emphasis> sub-directory.</para>
+<command>PRE_BUILT</command> has two subdirectories one is called <emphasis>include</emphasis> and holds the header files and the other directory is called <emphasis>lib</emphasis> and holds the shared and static libraries. Additionally a Qt2 directory is present having a <emphasis>include</emphasis> and <emphasis>lib</emphasis> sub-directory.</para>
                 <screen>
 <command>ls</command> $PRE_BUILT
 include
@@ -366,8 +357,7 @@ of OpenEmbedded and they will be created ad-hoc in the <emphasis>local.conf</emp
 
                 <section>
                     <title>Sourcable script</title>
-                    <para>To ease the usage of OpenEmbedded we start by creating a source-able script. This is actually a small
-variation from the already seen script. We will name it <emphasis>build_source</emphasis> and you will need to source it.</para>
+                    <para>To ease the usage of OpenEmbedded we start by creating a source-able script. This is actually a small variation from the already seen script. We will name it <emphasis>build_source</emphasis> and you will need to source it.</para>
                     <screen>
 BITBAKE_PATH=/where/is/bitbake/bin
 TOOLCHAIN=/where/is/toolchain/bin
@@ -378,8 +368,7 @@ export PATH=$BITBAKE_PATH:$TOOLCHAIN:$HOST_TOOLS:$PATH
 export OEDIR=$PWD
 export LOCALDIR=$PWD/secret-isv
                     </screen>
-                    <para>Use <command>source build_source</command> to source the script, use <command>env</command> to check
-that the variable where exported.</para>
+                    <para>Use <command>source build_source</command> to source the script, use <command>env</command> to check that the variable where exported.</para>
                 </section>
 
                 <section>
@@ -396,8 +385,7 @@ BBFILE_PRIORITY_upstream = "5"
 BBFILE_PRIORITY_local = "10"
 BBMASK = ""
                     </screen>
-                    <para>${OEDIR}/openembedded will be a upstream release of OpenEmbedded. Above we have assumed it is in the
-current working directory. Additionally we have a ${LOCALDIR}, we combine these two directories as a special <link linkend="collections">BitBake Collection</link>.</para>
+                    <para>${OEDIR}/openembedded will be a upstream release of OpenEmbedded. Above we have assumed it is in the current working directory. Additionally we have a ${LOCALDIR}, we combine these two directories as a special <link linkend="collections">BitBake Collection</link>.</para>
 
                 <screen>
 #
@@ -420,8 +408,7 @@ DISTRO_NAME = "secret-distro"
 DISTRO_VERSION = "x.y.z"
 DISTRO_TYPE = "release"
                 </screen>
-                <para>Create a distribution ad-hoc as well. We tell OpenEmbedded that we build for linux and glibc using
-soft float as fpu. If your toolchain is a uclibc toolchain you will need to set <command>TARGET_OS</command> to linux-uclibc.</para>
+                <para>Create a distribution ad-hoc as well. We tell OpenEmbedded that we build for linux and glibc using soft float as fpu. If your toolchain is a uclibc toolchain you will need to set <command>TARGET_OS</command> to linux-uclibc.</para>
 
                 <screen>
 export CC  = "${CCACHE}arm-linux-gcc-3.4.4 ${HOST_CC_ARCH}"
@@ -433,8 +420,7 @@ export AS  = "arm-linux-as"
 export RANLIB  = "arm-linux-ranlib"
 export STRIP  = "arm-linux-strip"
                 </screen>
-                <para>The above variables replace the ones from <emphasis>bitbake.conf</emphasis>. This will make OpenEmbedded
-use the prebuilt toolchain.</para>
+                <para>The above variables replace the ones from <emphasis>bitbake.conf</emphasis>. This will make OpenEmbedded use the prebuilt toolchain.</para>
 
                 <screen>
 #
@@ -459,8 +445,7 @@ ASSUME_PROVIDED += " virtual/qte "
 ASSUME_PROVIDED += " virtual/libqpe "
 ASSUME_PROVIDED += " libqpe-opie "
                 </screen>
-                <para>Now we have told <application>BitBake</application> that the C library, compiler and Qtopia is already provided.
-These lines will avoid building binutils, gcc initial, glibc, gcc.</para>
+                <para>Now we have told <application>BitBake</application> that the C library, compiler and Qtopia is already provided.  These lines will avoid building binutils, gcc initial, glibc, gcc.</para>
 
 
                 <screen>
@@ -475,8 +460,7 @@ These lines will avoid building binutils, gcc initial, glibc, gcc.</para>
             <section>
                 <title>Useful hints</title>
                 <para>If you have more prebuilt libraries you need to add additional <command>ASSUME_PROVIDED</command>
-lines to your <emphasis>local.conf</emphasis>. Using <command>bitbake -vvv PACKAGE</command> you can easily see the package names
-you could <command>ASSUME_PROVIDED</command> if you have some prebuilt.</para> 
+lines to your <emphasis>local.conf</emphasis>. Using <command>bitbake -vvv PACKAGE</command> you can easily see the package names you could <command>ASSUME_PROVIDED</command> if you have some prebuilt.</para> 
             </section>
 
             <section>
@@ -492,12 +476,7 @@ NOTE: Couldn't find shared library provider for libgcc_s.so.1
 NOTE: Couldn't find shared library provider for libc.so.6
 NOTE: Couldn't find shared library provider for libm.so.6
 </screen>
-                <para>OpenEmbedded tries to automatically add run-time dependencies (RDEPENDS) to the package. It uses the
-<emphasis><link linkend="shlibs">shlibs</link></emphasis> system to do add them, in this case it was not able 
-to find packages providing these libraries as they are prebuilt. This means they will not be added to the RDEPENDS of the just
-created package. The result can be fatal. If you use OpenEmbedded to create images you will end up with a image without a libc being
-installed. This will lead to a fatal failure. To workaround this issue you could create a package for the metadata to install every
-needed library and use ${BOOTSTRAP_EXTRA_RDEPENDS} to make sure this package is installed when creating images.</para>
+                <para>OpenEmbedded tries to automatically add run-time dependencies (RDEPENDS) to the package. It uses the <emphasis><link linkend="shlibs">shlibs</link></emphasis> system to do add them, in this case it was not able to find packages providing these libraries as they are prebuilt. This means they will not be added to the RDEPENDS of the just created package. The result can be fatal. If you use OpenEmbedded to create images you will end up with a image without a libc being installed. This will lead to a fatal failure. To workaround this issue you could create a package for the metadata to install every needed library and use ${BOOTSTRAP_EXTRA_RDEPENDS} to make sure this package is installed when creating images.</para>
             </section>
 
         </section>
@@ -523,11 +502,7 @@ needed library and use ${BOOTSTRAP_EXTRA_RDEPENDS} to make sure this package is 
 
         <section>
             <title>handmade</title>
-            <para>Cross-compilation is a tough business. It is not that cross-compiling is hard itself but many people misuse
-the buildsystem they use to build their software. This will lead to a variety of issues you can run into. This can be failing
-tests on configuration because of executing cross compiled binaries or crashes at run-time due wrong sizes of basic types. 
-When utilizing OpenEmbedded you avoid searching for patches at many different places and will be able to get things done more quickly.
-<application>OpenEmbedded</application> allows you to choose from a pool of ready to use software packages.</para>
+            <para>Cross-compilation is a tough business. It is not that cross-compiling is hard itself but many people misuse the buildsystem they use to build their software. This will lead to a variety of issues you can run into. This can be failing tests on configuration because of executing cross compiled binaries or crashes at run-time due wrong sizes of basic types.  When utilizing OpenEmbedded you avoid searching for patches at many different places and will be able to get things done more quickly.  <application>OpenEmbedded</application> allows you to choose from a pool of ready to use software packages.</para>
             <para>OpenEmbedded will create complete flashable images using different output formats and filesystems. This allows you to create complete and specialized distributions easily.</para>
         </section>
     </chapter>
