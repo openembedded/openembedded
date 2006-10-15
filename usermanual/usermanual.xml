@@ -182,7 +182,7 @@ It's important to use <emphasis>+=</emphasis> so it will get appended to the sta
         <title>Getting OpenEmbedded</title>
         <section>
             <title>Getting <application>BitBake</application></title>
-            <para>The required version of <application>BitBake</application> is changing rapidly. At the time of writing (16th of May 2006) <application>BitBake</application> 1.4.2 was required.</para>
+            <para>The required version of <application>BitBake</application> is changing rapidly. At the time of writing (15th of October 2006) <application>BitBake</application> 1.6.0 was required.</para>
             <para>A safe method is to get <application>BitBake</application> from a stable (even mior number) Subversion branch.
             <screen>
 <command>svn</command> co http://svn.berlios.de/svnroot/repos/bitbake/branches/bitbake-1.6
