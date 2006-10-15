@@ -199,9 +199,8 @@ Ausgecheckt, Revision 570.
             <title>Getting OpenEmbedded</title>
             <para>
 The OpenEmbedded metadata has a high rate of development, so it's a good idea to stay up to date.
-You'll need monotone 0.28 to get the metadata and stay up to date. Monotone is available in most distributions and has binaries at <ulink url="http://venge.net/monotone/">Monotone homepage</ulink>.
-
-Next step is getting snapshot of database.
+You'll need monotone 0.28 to get the metadata and stay up to date. Monotone is available in most distributions and has binaries at <ulink url="http://venge.net/monotone/">Monotone homepage</ulink>.</para>
+<para> Next step is getting snapshot of database.
 
 <screen>
 wget http://openembedded.org/snapshots/OE.mtn.bz2 http://openembedded.org/snapshots/OE.mtn.bz2.md5
