@@ -115,7 +115,7 @@ DEPENDS = "gtk+"
 RDEPENDS = "cool-ttf-fonts"
                 </screen>
 
-The package needs gtk+ to build ('DEPENDS') and requires the 'cool-ttf-fonts' package to run ('RDEPENDS'). OE will add run-time dependencies on libraries on its own via the so called <emphasis>shlibs</emphasis>-code, but you need to specify everything by yourself, which in this case is the 'cool-ttf-fonts' package.
+The package needs gtk+ to build ('DEPENDS') and requires the 'cool-ttf-fonts' package to run ('RDEPENDS'). OE will add run-time dependencies on libraries on its own via the so called <emphasis>shlibs</emphasis>-code, but you need to specify everything other by yourself, which in this case is the 'cool-ttf-fonts' package.
             </para>
 
             <para>After entering all this OE will know what to build before trying to build your application, but it doesn't know where to get it yet. So let's add the source location:
