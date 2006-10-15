@@ -1,11 +1,11 @@
 DESCRIPTION = "Python GTK+ Bindings"
 SECTION = "devel/python"
-PRIORITY = "optional"
+# needs gtk+-2.8.x
 DEPENDS = "gtk+ libglade"
 RDEPENDS = "python-shell"
 SRCNAME = "pygtk"
 LICENSE = "LGPL"
-PR = "r0"
+PR = "ml0"
 
 SRC_URI = "ftp://ftp.gnome.org/pub/gnome/sources/pygtk/2.8/${SRCNAME}-${PV}.tar.bz2 \
            file://acinclude.m4"
