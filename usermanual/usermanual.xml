@@ -281,13 +281,13 @@ BBFILE_PRIORITY_local = "10"
 
 <para>Task-base is new way of creating basic root filesystems. Instead of having each machine setting a ton of duplicate variables, this allow a machine to specify its features and <command>task-base</command> builds it a customised package based on what the machine needs along with what the distro supports.</para>
 
-<para> To illustrate, the distro.conf file can say:
+<para> To illustrate, the distro config file can say:
 
 <screen>
 DISTRO_FEATURES = "nfs smbfs ipsec wifi ppp alsa bluetooth ext2 irda pcmcia usbgadget usbhost"
 </screen>
 
-and the machine.conf:
+and the machine config:
 
 <screen>
 MACHINE_FEATURES = "kernel26 apm alsa pcmcia bluetooth irda usbgadget"
