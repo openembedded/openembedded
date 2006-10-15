@@ -751,7 +751,7 @@
 +}
 +
 +#define io_syscall5(type,fname,sname,type1,arg1,type2,arg2,type3,arg3,type4,arg4,type5,arg5)	\
-+type ffname(type1 arg1, type2 arg2, type3 arg3, type4 arg4, type5 arg5) {\
++type fname(type1 arg1, type2 arg2, type3 arg3, type4 arg4, type5 arg5) {\
 +  __SYS_REG(sname)							\
 +  register long __r0 __asm__("r0") = (long)arg1;			\
 +  register long __r1 __asm__("r1") = (long)arg2;			\
