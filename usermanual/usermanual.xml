@@ -369,7 +369,22 @@ Next kernel recipe needs to be added.
 
         <section>
             <title>Creating your own image</title>
-            <para>This section is a stub, help us by expanding it</para>
+<para>
+    Creating own image is easy - only few variables needs to be set:
+    <itemizedlist>
+        <listitem><para><command>IMAGE_BASENAME</command> to give name for own image</para></listitem>
+        <listitem><para><command>IPKG_INSTALL</command> to give list of packages to install into image</para></listitem>
+        <listitem><para><command>RDEPENDS</command> to give list of packages which are needed to be build to create image</para></listitem>
+        <listitem><para><command>IMAGE_LINGUAS</command> is optional list of languages which has to be installed into image</para></listitem>
+    </itemizedlist>
+
+    Then adding of <emphasis>image_ipk</emphasis> class use:
+    <screen>
+inherit image_ipk
+</screen>
+
+And image recipe is ready for usage.
+</para>
         </section>
 
         <section>
