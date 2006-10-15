@@ -1,5 +1,5 @@
 DESCRIPTION = "Merge machine and distro options to create a basic machine task/package"
-PR = "r9"
+PR = "r10"
 
 PACKAGES = "task-base \
             task-base-minimal \
@@ -74,6 +74,7 @@ RDEPENDS_task-base = "\
     ${@base_contains("COMBINED_FEATURES", "alsa", "${task-base-alsa-rdepends}", "",d)} \
     ${@base_contains("COMBINED_FEATURES", "ext2", "${task-base-ext2-rdepends}", "",d)} \
     ${@base_contains("COMBINED_FEATURES", "irda", "${task-base-irda-rdepends}", "",d)} \
+    ${@base_contains("COMBINED_FEATURES", "pci", "${task-base-pci-rdepends}", "",d)} \
     ${@base_contains("COMBINED_FEATURES", "pcmcia", "${task-base-pcmcia-rdepends}", "",d)} \
     ${@base_contains("COMBINED_FEATURES", "usbhost", "${task-base-usbhost-rdepends}", "",d)} \
     ${@base_contains("DISTRO_FEATURES", "nfs", "${task-distro-nfs-rdepends}", "",d)} \
@@ -148,6 +149,9 @@ task-base-kernel26-rdepends = "\
 
 task-base-keyboard-rdepends = "\
     keymaps"
+
+task-base-pci-rdepends = "\
+    pciutils"
 
 task-base-kernel26-extras-rrecommends = "\
     kernel-module-input \
