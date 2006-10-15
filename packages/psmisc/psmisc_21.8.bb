@@ -1,3 +1,3 @@
 require psmisc.inc
-PR = "r1"
+PR = "r2"
 SRC_URI += "file://signames-header-fix.patch;patch=1"
