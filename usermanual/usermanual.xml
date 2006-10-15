@@ -103,7 +103,6 @@ described in the <ulink url="http://bitbake.berlios.de/manual"><application>BitB
 DESCRIPTION = "My first application, a really cool app containing lots of foo and bar"
 LICENSE = "GPLv2"
 HOMEPAGE = "http://www.host.com/foo/"
-MAINTAINER = "Joe N. User &lt;joe@user.net&gt;"
                 </screen>
 
 The maintainer field needs to have a real name and a working email-address to be useful, the description and license fields are mandatory, so better check them twice.
