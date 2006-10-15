@@ -43,7 +43,7 @@
         <section>
             <title>Overview</title>
                 <para> Like any build tool (make, ant, jam), the OpenEmbedded build tool BitBake controls how to build things and the build dependencies. But unlike single project tools like <command>make</command> it is not based on one makefile or a closed set of inter-dependent makefiles, but collects and manages an open set of largely independent build descriptions (package recipes) and builds them in proper order. </para>
-            <para>To be more precise:<ulink url="http://www.openembedded.org"><application>OpenEmbedded</application></ulink> is a set of metadata used to cross-compile, package and install software packages. <application>OpenEmbedded</application> is being used to build and maintain a number of embedded Linux distributions, including OpenZaurus, Angström, Familiar and SlugOS.</para>
+            <para>To be more precise: <ulink url="http://www.openembedded.org"><application>OpenEmbedded</application></ulink> is a set of metadata used to cross-compile, package and install software packages. <application>OpenEmbedded</application> is being used to build and maintain a number of embedded Linux distributions, including OpenZaurus, Angström, Familiar and SlugOS.</para>
         <para>The primary use-case of <application>OpenEmbedded</application> are:
             <itemizedlist>
                 <listitem><para>Handle cross-compilation.</para></listitem>
