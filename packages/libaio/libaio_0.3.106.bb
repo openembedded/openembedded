@@ -1,10 +1,9 @@
 DESCRIPTION="Asynchronous input/output library that uses the kernels native interface"
 LICENSE = "LGPL"
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "${DEBIAN_MIRROR}/main/liba/libaio/libaio_${PV}.orig.tar.gz \
            file://00_arches.patch;patch=1 \
-           file://__io_getevents_0_4.patch;patch=1 \
            file://destdir.patch;patch=1"
 
 do_stage() {
