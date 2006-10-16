@@ -1,0 +1,13 @@
+Index: pycairo-1.2.2/setup.py
+===================================================================
+--- pycairo-1.2.2.orig/setup.py
++++ pycairo-1.2.2/setup.py
+@@ -57,7 +57,7 @@ dic.setup(
+     )
+ 
+ pkgconfig_dir  = os.path.join (sys.prefix, 'lib', 'pkgconfig')
+-pkgconfig_file = os.path.join (pkgconfig_dir, 'pycairo.pc')
++pkgconfig_file = os.path.join ('.', 'pycairo.pc')
+ print 'creating %s' % pkgconfig_file
+ fo = file (pkgconfig_file, 'w')
+ fo.write ("""\
