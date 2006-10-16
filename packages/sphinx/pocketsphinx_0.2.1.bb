@@ -3,7 +3,7 @@ HOMEPAGE = "http://www.speech.cs.cmu.edu/pocketsphinx/"
 LICENSE = "BSD"
 DEPENDS = "sphinxbase"
 
-SRC_URI = "${SOURCEFORGE_MIRROR}/cmusphinx/pocketsphinx-0.2.tar.bz2 \
+SRC_URI = "${SOURCEFORGE_MIRROR}/cmusphinx/${PN}-${PV}.tar.bz2 \
            file://cross-compile.patch;patch=1"
 
 inherit autotools
