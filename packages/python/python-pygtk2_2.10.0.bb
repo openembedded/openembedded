@@ -1,15 +1,17 @@
 DESCRIPTION = "Python GTK+ Bindings"
 SECTION = "devel/python"
-# needs gtk+-2.8.x
-DEPENDS = "gtk+ libglade"
+# needs gtk+ 2.10.x
+DEPENDS = "gtk+ libglade python-pygobject-native"
 RDEPENDS = "python-shell"
 SRCNAME = "pygtk"
 LICENSE = "LGPL"
-PR = "ml0"
+PR = "r0"
 
-SRC_URI = "ftp://ftp.gnome.org/pub/gnome/sources/pygtk/2.8/${SRCNAME}-${PV}.tar.bz2 \
+SRC_URI = "ftp://ftp.gnome.org/pub/gnome/sources/pygtk/2.10/${SRCNAME}-${PV}.tar.bz2 \
            file://acinclude.m4"
 S = "${WORKDIR}/${SRCNAME}-${PV}"
+
+EXTRA_OECONF = "--disable-docs"
 
 inherit autotools pkgconfig distutils-base
 
