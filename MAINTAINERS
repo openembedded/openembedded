@@ -75,7 +75,7 @@ Person:     Marcin Juszkiewicz
 Mail:       hrw@openembedded.org
 Website:    http://www.hrw.one.pl/
 Machines:   collie, spitz, tosa
-Distros:    OpenZaurus
+Distros:    OpenZaurus, celinux-test
 Interests:  WiFi, Opie, Qtopia fonts, Native SDK
 Recipes:    hostap*, orinoco*, wpa-supplicant*, wireless-tools, keymaps
 Recipes:    linux-openzaurus, kdepimpi, subapplet, corsair, gammu, iqnotes, zbedic
