@@ -1,10 +1,9 @@
-DESCRIPTION = "object-oriented C++ networking library based on Adaptive Communication Patterns."
+DESCRIPTION = "Object-oriented C++ networking library based on Adaptive Communication Patterns."
 AUTHOR = "Vladislav Grinchenko <vlg@users.sourceforge.net>"
 HOMEPAGE = "http://libassa.sf.net"
-#SECTION = ?
-#PRIORITY = ?
+SECTION = "libs"
+PRIORITY = "optional"
 LICENSE = "LGPL"
-#DEPENDS = ""
 PR = "r0"
 
 
