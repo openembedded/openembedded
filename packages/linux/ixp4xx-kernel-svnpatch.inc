@@ -1,6 +1,6 @@
 addtask svnpatch before do_configure after do_patch
 
-IXP4XX_KERNEL_SVN_REPO = http://svn.nslu2-linux.org/svnroot/kernel/trunk
+IXP4XX_KERNEL_SVN_REPO ?= http://svn.nslu2-linux.org/svnroot/kernel/trunk
 
 do_svnpatch() {
 	svn co ${IXP4XX_KERNEL_SVN_REPO}/patches/${IXP4XX_KERNEL_PATCH_DIR} --revision ${IXP4XX_KERNEL_SVN_REV} ${WORKDIR}/patches-${PV}
