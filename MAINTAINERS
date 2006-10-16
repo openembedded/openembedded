@@ -23,6 +23,12 @@ Machines:   h3600, h5400
 Interests:  Kernels, Porting, Distro refinement
 Recipes:    at76c503a, dropbear, handhelds-sa, handhelds-pxa
 
+Person:     Holger Hans Peter Freyther
+Mail:       zecke@selfish.org
+Website:    http://www.openembedded.org/~zecke
+Interests:  icecream, insanity, QA
+Recipes:    sqlite3, xine
+
 Person:     Jamie Lenehan
 Mail:       lenehan@twibble.org
 Website:    http://twibble.org/
@@ -103,3 +109,4 @@ Recipes:    ccxstream, eciadsl, ssmtp, gstreamer, ixp4xx-npe, joe
 Recipes:    lcdproc, libol, mailx, mysql, musicpd, openntpd, qc-usb
 Recipes:    radlib, scsi-idle, rng-tools, slugos-init, syslog-ng
 Recipes:    vsftpd, zd1211, wpa-supplicant
+
