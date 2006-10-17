@@ -5,7 +5,7 @@ LICENSE = "GPLv2"
 
 PACKAGE_ARCH = "all"
 
-inerhit native
+inherit native
 
 INHIBIT_DEFAULT_DEPS = "1"
 
