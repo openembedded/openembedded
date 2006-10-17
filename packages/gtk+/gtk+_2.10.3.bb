@@ -5,7 +5,7 @@ HOMEPAGE = "http://www.gtk.org"
 SECTION = "libs"
 PRIORITY = "optional"
 DEPENDS = "glib-2.0 pango atk jpeg libpng libxext libxcursor gtk-doc libgcrypt cairo cups"
-PR = "r0"
+PR = "r1"
 
 # disable per default - untested and not all patches included.
 DEFAULT_PREFERENCE = "-1" 
@@ -37,9 +37,9 @@ FILES_${PN} = "${bindir}/gdk-pixbuf-query-loaders \
 	${libdir}/gtk-2.0/${LIBV}/engines/libpixmap.so"
 FILES_${PN}-dev += "${datadir}/gtk-2.0/include ${libdir}/gtk-2.0/include ${bindir}/gdk-pixbuf-csource"
 
-RRECOMMENDS_${PN} = "glibc-gconv-iso8859-1"
-RRECOMMENDS_${PN}_angstrom = "glibc-gconv-iso8859-1 gdk-pixbuf-loader-png gdk-pixbuf-loader-jpeg gdk-pixbuf-loader-gif gdk-pixbuf-loader-xpm"
-RRECOMMENDS_${PN}_openzaurus = "glibc-gconv-iso8859-1 gdk-pixbuf-loader-png gdk-pixbuf-loader-jpeg gdk-pixbuf-loader-gif gdk-pixbuf-loader-xpm"
+RRECOMMENDS_${PN} = "glibc-gconv-iso8859-1 ttf-dejavu-sans"
+RRECOMMENDS_${PN}_angstrom = "glibc-gconv-iso8859-1 ttf-dejavu-sans gdk-pixbuf-loader-png gdk-pixbuf-loader-jpeg gdk-pixbuf-loader-gif gdk-pixbuf-loader-xpm"
+RRECOMMENDS_${PN}_openzaurus = "glibc-gconv-iso8859-1 ttf-dejavu-sans gdk-pixbuf-loader-png gdk-pixbuf-loader-jpeg gdk-pixbuf-loader-gif gdk-pixbuf-loader-xpm"
 
 EXTRA_OECONF = "--without-libtiff --disable-xkb --disable-glibtest --enable-display-migration"
 

@@ -5,7 +5,7 @@ HOMEPAGE = "http://www.gtk.org"
 SECTION = "libs"
 PRIORITY = "optional"
 DEPENDS = "glib-2.0 pango atk jpeg libpng libxext libxcursor gtk-doc libgcrypt cairo"
-PR = "r2"
+PR = "r3"
 
 DEFAULT_PREFERENCE = "-1"
 
@@ -28,6 +28,8 @@ SRC_URI = "ftp://ftp.gtk.org/pub/gtk/v2.8/gtk+-${PV}.tar.bz2 \
 
 inherit autotools pkgconfig
 
+CFLAGS += " -lz "
+
 FILES_${PN} = "${bindir}/gdk-pixbuf-query-loaders \
 	${bindir}/gtk-query-immodules-2.0 \
 	${bindir}/gtk-update-icon-cache \
@@ -36,7 +38,7 @@ FILES_${PN} = "${bindir}/gdk-pixbuf-query-loaders \
 	${libdir}/gtk-2.0/${LIBV}/engines/libpixmap.so"
 FILES_${PN}-dev += "${datadir}/gtk-2.0/include ${libdir}/gtk-2.0/include ${bindir}/gdk-pixbuf-csource"
 
-RRECOMMENDS_${PN} = "glibc-gconv-iso8859-1"
+RRECOMMENDS_${PN} = "glibc-gconv-iso8859-1 ttf-dejavu-sans"
 
 EXTRA_OECONF = "--without-libtiff --disable-xkb --disable-glibtest --enable-display-migration"
 # --disable-cruft
