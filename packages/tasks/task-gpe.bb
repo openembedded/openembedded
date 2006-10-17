@@ -88,7 +88,7 @@ RDEPENDS_gpe-task-apps := "\
     gpe-aerial \
     gpe-soundbite \
     rosetta \
-    gpe-screenshot \
+    gpe-scap \
     gpe-windowlist"
 
 RDEPENDS_gpe-task-games := "\
