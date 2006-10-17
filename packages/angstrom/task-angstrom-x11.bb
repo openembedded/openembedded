@@ -25,7 +25,7 @@ RDEPENDS_angstrom-x11-base-depends := "\
 RDEPENDS_angstrom-gpe-task-base := "\
     matchbox \
     xcursor-transparent-theme \
-    rxvt-unicode \
+#    rxvt-unicode \
     matchbox-themes-gtk \
     xst \
     xhost \
@@ -36,7 +36,7 @@ RDEPENDS_angstrom-gpe-task-base := "\
     gpe-session-scripts \
     gpe-icons \
     gpe-confd \
-    gpe-autostarter \
+#    gpe-autostarter \
     libgtkstylus \
     libgtkinput \
     suspend-desktop \
@@ -79,7 +79,7 @@ RDEPENDS_angstrom-gpe-task-apps := "\
     gpe-aerial \
     gpe-soundbite \
     rosetta \
-    gpe-screenshot \
+    gpe-scap \
     gpe-windowlist"
 
 RDEPENDS_angstrom-gpe-task-games := "\
