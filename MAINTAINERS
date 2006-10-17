@@ -107,6 +107,15 @@ Machines:   poodle, c7x0, spitz, nokia770, qemuarm, qemux86, hx2xxx
 Interests:  Kernels, Bitbake, Core OE infrastructure, Zaurus 2.6
 Recipes:    linux-openzaurus, udev, zaurusd, task-base
 
+Person:	    Rolf 'Laibsch' Leggewie
+Mail:       OE-recipes@rolf.leggewie.biz
+Website:    http://oz.leggewie.org
+Interests:  Japanese on the Zaurus
+Distros:    openzaurus
+Machines:   collie
+Recipes:    anthy, nunome, uim*, granule, qpobox*, qte-font-unifont*
+Recipes:    qpf-unismall, poboxserver, imkit*
+
 Person:     Øyvind Repvik
 Mail:       nail@nslu2-linux.org
 Machines:   nslu2, fsg3, ixp4xx, n2100
