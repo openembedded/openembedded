@@ -1,6 +1,11 @@
 DESCRIPTION = "Helper script for packaged-staging.bbclass"
 
 SRC_URI = "file://stage-manager"
+LICENSE = "GPLv2"
+
+PACKAGE_ARCH = "all"
+
+inerhit native
 
 INHIBIT_DEFAULT_DEPS = "1"
 
