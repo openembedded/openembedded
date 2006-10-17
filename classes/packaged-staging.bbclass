@@ -23,6 +23,8 @@
 
 inherit package
 
+DEPENDS = "stagemanager-native"
+
 DEPLOY_DIR_PSTAGE 	= "${DEPLOY_DIR}/pstage" 
 
 PSTAGE_BUILD_CMD        = "${IPKGBUILDCMD}"
