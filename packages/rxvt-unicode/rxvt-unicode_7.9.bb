@@ -15,8 +15,6 @@ SRC_URI = "http://dist.schmorp.de/rxvt-unicode/rxvt-unicode-${PV}.tar.bz2 \
            file://signedchar.patch;patch=1" 
 PR = "r0"
 
-DEFAULT_PREFERENCE = "-1"
-
 inherit autotools update-alternatives
 
 PROVIDES = "virtual/x-terminal-emulator"
