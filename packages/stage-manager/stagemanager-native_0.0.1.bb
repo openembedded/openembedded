@@ -14,4 +14,6 @@ do_install() {
 	install -m 0755 ${WORKDIR}/stage-manager ${STAGING_BINDIR}
 }
 
-
+do_stage() {
+:
+}
