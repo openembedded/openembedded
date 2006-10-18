@@ -1,5 +1,5 @@
 DESCRIPTION = "Merge machine and distro options to create a basic machine task/package"
-PR = "r10"
+PR = "r11"
 
 PACKAGES = "task-base \
             task-base-minimal \
