@@ -1,5 +1,5 @@
 DESCRIPTION = "Task packages for the Angstrom distribution"
-PR = "r21"
+PR = "r22"
 ALLOW_EMPTY = "1"
 
 PACKAGE_ARCH = "${MACHINE_ARCH}"
@@ -26,6 +26,7 @@ RDEPENDS_angstrom-gpe-task-base := "\
     matchbox \
     xcursor-transparent-theme \
     rxvt-unicode \
+    matchbox-keyboard \
     gpe-theme-clearlooks \
     xst \
     xhost \
