@@ -3,12 +3,13 @@ SECTION = "python-devel"
 HOMEPAGE = "http://cairographics.org/pycairo"
 LICENSE = "LGPL MPL"
 DEPENDS = "cairo"
+PR = "ml1"
 
 SRC_URI = "http://cairographics.org/releases/pycairo-${PV}.tar.gz \
            file://fix-pkgconfig-dir.patch;patch=1"
 S = "${WORKDIR}/pycairo-${PV}"
 
-inherit distutils
+inherit distutils pkgconfig
 
 do_stage() {
 	install -d ${STAGING_INCDIR}
