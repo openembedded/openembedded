@@ -4,7 +4,7 @@ SECTION =  "libs"
 PRIORITY = "optional"
 LICENSE = "LGPL"
 
-DEPENDS = "xerces-c omniorb"
+DEPENDS = "xerces-c omniorb libtool-cross"
 
 S="${WORKDIR}/ossie"
 
