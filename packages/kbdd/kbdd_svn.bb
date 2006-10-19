@@ -1,19 +1,19 @@
 DESCRIPTION = "User-space keyboard daemon for external keyboards"
-HOMEPAGE = "http://handhelds.org/moin/moin.cgi/kbdd"
+HOMEPAGE = "http://project.linuxtogo.org/projects/kbdd"
 SECTION = "console/utils"
 LICENSE = "GPLv2"
 DEPENDS = "virtual/kernel"
-RRECOMMENDS_${PN} = "${@linux_module_packages('keybdev uinput', d)}"
-PV = "0.10+cvs${SRCDATE}"
-PR = "r5"
+RRECOMMENDS_${PN} = "kernel-module-keybdev kernel-module-uinput"
+PV = "0.12+svn${SRCDATE}"
+PR = "r0"
 
-SRC_URI = "${HANDHELDS_CVS};module=apps/kbdd;date=${SRCDATE} \
+SRC_URI = "svn://projects.linuxtogo.org/svn/kbdd;module=trunk;proto=svn \
            file://kbdd.init \
            file://kbdd.conf \
            file://kbdd-modules"
-S = "${WORKDIR}/kbdd"
+S = "${WORKDIR}/trunk"
 
-inherit update-rc.d linux-kernel-base
+inherit update-rc.d 
 
 INITSCRIPT_NAME = "kbdd"
 INITSCRIPT_PARAMS = "defaults"
