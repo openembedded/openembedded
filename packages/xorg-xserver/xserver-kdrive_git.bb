@@ -1,7 +1,7 @@
 PV = "1.1.0+git${SRCDATE}"
 DEFAULT_PREFERENCE = "-2"
 
-PR = "r6"
+PR = "r7"
 
 LICENSE = "MIT"
 DEPENDS = "tslib virtual/libsdl libxkbfile xproto libxdmcp xextproto xtrans libxau virtual/libx11 libxext libxrandr fixesproto damageproto libxfont resourceproto compositeproto libxcalibrate recordproto videoproto scrnsaverproto"
@@ -56,16 +56,16 @@ S = "${WORKDIR}/git"
 
 inherit autotools pkgconfig 
 
-EXTRA_OECONF = "--enable-composite --enable-sdl --enable-kdrive \
-		--disable-dga --disable-dri --disable-xinerama \
-		--disable-xf86misc --disable-xf86vidmode \
-		--disable-xorg --disable-xorgcfg \
-		--disable-xkb --disable-xnest --disable-xvfb \
-		--disable-xevie --disable-xprint --disable-xtrap \
-		--disable-dmx \
-		--with-default-font-path=built-ins \
-		--enable-tslib --enable-xcalibrate \
-		ac_cv_file__usr_share_X11_sgml_defs_ent=no"
+W100_OECONF = "--disable-w100"
+W100_OECONF_arm = "--enable-w100"
 
-EXTRA_OECONF_append_arm = " --enable-w100"
-EXTRA_OECONF_append_x86 = " --disable-w100"
+EXTRA_OECONF = "--enable-composite --enable-kdrive \       
+                --disable-dga --disable-dri --disable-xinerama \
+                --disable-xf86misc --disable-xf86vidmode \
+                --disable-xorg --disable-xorgcfg \
+                --disable-xkb --disable-xnest --disable-xvfb \
+                --disable-xevie --disable-xprint --disable-xtrap \
+                --disable-dmx ${W100_OECONF} \
+                --with-default-font-path=built-ins \
+                --enable-tslib --enable-xcalibrate \
+                ac_cv_file__usr_share_X11_sgml_defs_ent=no"
