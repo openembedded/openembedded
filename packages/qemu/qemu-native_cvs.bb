@@ -1,3 +1,4 @@
 require qemu_cvs.bb
 inherit native
-require qemu-native.inc
+# prefix = "${STAGING_DIR}/${BUILD_SYS}"
+inherit qemu-native.inc
