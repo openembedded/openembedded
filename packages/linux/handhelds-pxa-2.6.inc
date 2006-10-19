@@ -17,7 +17,7 @@ S = "${WORKDIR}/kernel26"
 inherit kernel
 
 FILES_kernel-image_hx4700 = ""
-ALLOW_EMPTY_ipaq_hx4700 = 1
+ALLOW_EMPTY_hx4700 = 1
 FILES_kernel-image_htcuniversal = ""
 ALLOW_EMPTY_htcuniversal = 1
 
