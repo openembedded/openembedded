@@ -7,6 +7,7 @@ LICENSE = "LGPL"
 DEPENDS = omniorb-native
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/omniorb/omniORB-${PV}.tar.gz \
+file://omniORB.cfg \
 file://omniORB-cross.patch;patch=1 \
 file://omniORB_embedded_appl.patch;patch=1" \
 file://rm_LongDouble.patch;patch=1 \
@@ -31,4 +32,6 @@ do_stage () {
 do_install () {
 	export EmbeddedSystem=1
 	make DESTDIR=${D} install
+	install -d ${D}${sysconfdir}
+	install -m 0644 ${WORKDIR}/omniORB.cfg ${D}${sysconfdir}
 }
