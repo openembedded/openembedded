@@ -1,10 +1,15 @@
 require sdcc_${PV}.bb
-
 inherit native
+DEPENDS = ""
 
-# yes, we usually don't want to do this in order to prevent staging pollution,
-# however sdcc behaves pretty nice here, so we can do an exception here (ML).
+# don't need native-tools patch here
+SRC_URI = "${SOURCEFORGE_MIRROR}/sdcc/sdcc-${PV}.tar.gz \
+           file://gcc4.patch;patch=1"
+
 do_stage() {
-	oe_runmake install 
+	autotools_stage_all
+	for i in bin/as-*; do
+		install -m 0755 $i ${STAGING_BINDIR}
+	done
 }
 
