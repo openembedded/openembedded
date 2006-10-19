@@ -7,7 +7,7 @@ SECTION = "console/network"
 PRIORITY = "optional"
 LICENSE = "ntp"
 
-SRC_URI = "http://www.eecis.udel.edu/~ntp/ntp_spool/ntp4/${P}.tar.gz \
+SRC_URI = "http://www.eecis.udel.edu/~ntp/ntp_spool/ntp4/ntp-4.2/${P}.tar.gz \
 	file://ipv6only-workaround.patch;patch=1 \
 	file://ntpd \
 	file://ntp.conf \
