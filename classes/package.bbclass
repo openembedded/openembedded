@@ -275,7 +275,7 @@ python populate_packages () {
 		for root, dirs, files in os.walk(dvar):
 			for f in files:
 				file = os.path.join(root, f)
-				if not os.path.islink(file) and isexec(file):
+				if not os.path.islink(file) and not os.path.isdir(file) and isexec(file):
 					stripfunc += "\trunstrip %s || st=1\n" % (file)
 		if not stripfunc == "":
 			from bb import build
