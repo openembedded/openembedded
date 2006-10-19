@@ -2,14 +2,17 @@ DESCRIPTION = "Support software for the Universal Software Radio Peripheral (USR
 LICENSE = "GPL"
 HOMEPAGE = "http://comsec.com/wiki?UniversalSoftwareRadioPeripheral"
 SECTION = "devel"
-DEPENDS = "swig-native sdcc-native libusb"
+DEPENDS = "swig-native sdcc-native libusb python python-native"
 PR = "r0"
 
 SRC_URI = "ftp://ftp.gnu.org/gnu/gnuradio/usrp-${PV}.tar.gz \
            file://usb11.patch;patch=1"
 S = "${WORKDIR}/usrp-${PV}"
 
-inherit autotools
+inherit autotools pkgconfig
+
+export BUILD_SYS := "${BUILD_SYS}"
+export HOST_SYS := "${HOST_SYS}"
 
 do_stage () {
      oe_libinstall -so -C host/lib/.libs/ libusrp ${STAGING_LIBDIR}
