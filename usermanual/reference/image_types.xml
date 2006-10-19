@@ -5,7 +5,7 @@
   <para>One of the most commonly used outputs from a build is a filesystem
   image containing the root filesystem for the target device. There are
   several variables which can be used to control the type of output images and
-  the settings for those images such as endianess or compression ratios. This
+  the settings for those images, such as endianess or compression ratios. This
   section details the available images and the variables that effect them. See
   the <xref linkend="image_ipkg_class" /> section for details on how image
   generation is configured.</para>
@@ -186,6 +186,8 @@ rmdir ${DEPLOY_DIR_IMAGE}/tmp.gz"</screen></para>
           big and little endian filesystems can be mounted on any
           platform.</para>
 
+          <para>Squashfs uses gzip as its compression method.</para>
+
           <para><screen>IMAGE_CMD_squashfs = "mksquashfs ${IMAGE_ROOTFS} \
   ${DEPLOY_DIR_IMAGE}/${IMAGE_NAME}.rootfs.squashfs \
   ${EXTRA_IMAGECMD} -noappend"</screen></para>
@@ -195,6 +197,33 @@ rmdir ${DEPLOY_DIR_IMAGE}/tmp.gz"</screen></para>
           specify the endianess and block size of the filesystem:</para>
 
           <para><screen>EXTRA_IMAGECMD_squashfs = "-le -b 16384"</screen></para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>squashfs-lzma</term>
+
+        <listitem>
+          <para>Creates a squashfs image using lzma compression instead of
+          gzip which is the standard squashfs compression type. This is a read
+          only compressed filesystem which is used directly with files
+          uncompressed into RAM as they are accessed. Files and filesystems
+          may be up to 2^64 bytes in size, full 32-bit uids and gids are
+          stored, it detects duplicate files and stores only a single copy,
+          all meta-data is compressed and big and little endian filesystems
+          can be mounted on any platform.</para>
+
+          <para>Squashfs-lzma uses lzma as its compression method.</para>
+
+          <para><screen>IMAGE_CMD_squashfs-lzma = "mksquashfs-lzma ${IMAGE_ROOTFS} \
+  ${DEPLOY_DIR_IMAGE}/${IMAGE_NAME}.rootfs.squashfs \
+  ${EXTRA_IMAGECMD} -noappend"</screen></para>
+
+          <para>The <command>EXTRA_IMAGECMD</command> variable for squashfs is
+          passed to <command>mksquashfs-lzma</command> and by default is used
+          specify the endianess and block size of the filesystem:</para>
+
+          <para><screen>EXTRA_IMAGECMD_squashfs-lzma = "-le -b 16384"</screen></para>
         </listitem>
       </varlistentry>
 
@@ -261,7 +290,9 @@ rmdir ${DEPLOY_DIR_IMAGE}/tmp.gz"</screen></para>
     <para>An example can be found in
     <command>conf/machine/wrt54.conf</command> where it defines a new image
     type, <emphasis>squashfs-lzma</emphasis>, for a squashfs filesystem using
-    lzma compression instead of the standard gzip compression:<screen>IMAGE_DEPENDS_squashfs-lzma = "squashfs-tools-native"
+    lzma compression instead of the standard gzip compression (squashfs-lzma
+    is now a standard type, but the example still serves to show the
+    concept):<screen>IMAGE_DEPENDS_squashfs-lzma = "squashfs-tools-native"
 IMAGE_CMD_squashfs-lzma = "mksquashfs-lzma ${IMAGE_ROOTFS} \
   ${DEPLOY_DIR_IMAGE}/${IMAGE_NAME}.rootfs.squashfs-lzma \
   ${EXTRA_IMAGECMD} -noappend"

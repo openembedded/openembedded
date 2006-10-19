@@ -3,13 +3,14 @@
   <title>pkgconfig class</title>
 
   <para>The pkgconfig class is for packages that install
-  <command>&lt;pkg&gt;.pc</command> files that provide information about the
-  build settings for the package via the use of the
-  <command>pkg-config</command> command.</para>
+  <command>&lt;pkg&gt;.pc</command> files. These files provide information
+  about the build settings for the package vwhich are then made available by
+  the <command>pkg-config</command> command.</para>
 
-  <para>Since the contents of the file is used at build time it is required to
-  be copied into the staging area. All the actions performed by the class are
-  appended to the <emphasis>stage</emphasis> task.</para>
+  <para>Since the contents of the <command>.pc</command> files are used at
+  build time they need to be installed into the staging area. All the actions
+  performed by this class are appended to the <emphasis>stage</emphasis>
+  task.</para>
 
   <para>The actions performed by the pkgconfig class are:</para>
 
@@ -30,7 +31,7 @@
   <para>A package is considered to be native if it also inherits the native
   class.</para>
 
-  <para>The class will search in source directory, <command>${S}</command>,
+  <para>The class will search the source directory, <command>${S}</command>,
   and all it's subdirectories, for files that end in <command>.pc</command>
   (it will ignore those that end in <command>-uninstalled.pc)</command> and
   process them as described above. All that is required to use the class is

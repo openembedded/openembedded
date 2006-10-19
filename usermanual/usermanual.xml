@@ -17,6 +17,7 @@
 <!ENTITY var-src-uri               SYSTEM "reference/var_src_uri.xml">
 <!ENTITY class-update-alternatives SYSTEM "reference/class_update-alternatives.xml">
 <!ENTITY class-update-rcd          SYSTEM "reference/class_update-rc.d.xml">
+<!ENTITY chapter-recipes	   SYSTEM "chapters/recipes.xml">
 ]>
 <book>
     <bookinfo>
@@ -588,6 +589,9 @@ NOTE: Couldn't find shared library provider for libm.so.6
             <para>OpenEmbedded will create complete flashable images using different output formats and filesystems. This allows you to create complete and specialized distributions easily.</para>
         </section>
     </chapter>
+
+<!-- Bitbake recipies chapter -->
+    &chapter-recipes;
 
 <!-- Reference manual. Sorted alphabetically. All entries are pulled in from external files -->
     <chapter>
