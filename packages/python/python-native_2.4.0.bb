@@ -4,7 +4,7 @@ LICENSE = "PSF"
 SECTION = "devel/python"
 PRIORITY = "optional"
 DEPENDS = ""
-PR = "r1"
+PR = "r2"
 
 EXCLUDE_FROM_WORLD = "1"
 
@@ -17,7 +17,7 @@ S = "${WORKDIR}/Python-2.4"
 inherit autotools native
 
 EXTRA_OECONF = "--with-threads --with-pymalloc --with-cyclic-gc --without-cxx --with-signal-module --with-wctype-functions \
-		--with-prefix=${STAGING_DIR} --with-exec-prefix=${STAGING_DIR}/${BUILD_SYS}"
+		--with-prefix=${STAGING_DIR}/${BUILD_SYS} --with-exec-prefix=${STAGING_DIR}/${BUILD_SYS}"
 EXTRA_OEMAKE = 'BUILD_SYS="" HOST_SYS=""'
 
 do_configure() {
