@@ -243,7 +243,7 @@ CONFIG_CMDLINE="console=ttyS0,115200n8 root=/dev/mmcblk0p1"
 #
 # CPU Frequency scaling
 #
-CONFIG_CPU_FREQ=y
+CONFIG_CPU_FREQ=m
 CONFIG_CPU_FREQ_TABLE=y
 # CONFIG_CPU_FREQ_DEBUG is not set
 CONFIG_CPU_FREQ_STAT=y
