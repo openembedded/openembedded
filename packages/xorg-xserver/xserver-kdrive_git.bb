@@ -8,7 +8,7 @@ DEPENDS = "tslib virtual/libsdl libxkbfile xproto libxdmcp xextproto xtrans libx
 
 PROVIDES = "virtual/xserver"
 RPROVIDES = "virtual/xserver"
-PACKAGES =+ "xserver-kdrive-fbdev xserver-kdrive-sdl xserver-kdrive-fake xserver-kdrive-xephyr xserver-kdrive-epson xserver-kdrive-w100 ${PN}-doc ${PN}-dev ${PN}-locale"
+PACKAGES =+ "xserver-kdrive-fbdev xserver-kdrive-sdl xserver-kdrive-fake xserver-kdrive-xephyr xserver-kdrive-epson xserver-kdrive-w100"
 SECTION = "x11/base"
 DESCRIPTION = "X server from freedesktop.org"
 DESCRIPTION_xserver-kdrive-fbdev = "X server from freedesktop.org, supporting generic framebuffer devices"

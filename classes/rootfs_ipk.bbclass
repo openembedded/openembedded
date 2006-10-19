@@ -17,7 +17,7 @@ do_build[nostamp] = 1
 
 IPKG_ARGS = "-f ${T}/ipkg.conf -o ${IMAGE_ROOTFS}"
 
-IPKG_INSTALL += "ipkg ipkg-link ipkg-collateral"
+IPKG_INSTALL += "ipkg ipkg-collateral"
 
 ROOTFS_POSTPROCESS_COMMAND ?= ""
 
