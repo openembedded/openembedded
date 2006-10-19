@@ -1,6 +1,6 @@
 require bluez-utils.inc
 
-PR = "r2"
+PR = "r3"
 
 DEPENDS += "dbus"
 SRC_URI += "file://dbus-2.24.patch;patch=1"

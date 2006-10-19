@@ -6,7 +6,7 @@ RPROVIDES_${PN} = "bluez-pan bluez-sdp bluez-utils-dbus"
 RREPLACES = "bluez-utils-dbus"
 RCONFLICTS = "bluez-utils-dbus bluez-utils-nodbus"
 LICENSE = "GPL"
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "http://bluez.sourceforge.net/download/bluez-utils-${PV}.tar.gz \
 	file://hcid.conf \
@@ -19,7 +19,7 @@ SRC_URI += " file://default-manfid-0x0-to-bcps.patch;patch=1"
 
 S = "${WORKDIR}/bluez-utils-${PV}"
 
-EXTRA_OECONF = "--enable-initscripts --enable-bcm203x"
+EXTRA_OECONF = "--enable-initscripts --enable-bcm203x --enable-hid2hci"
 #  --enable-obex           enable OBEX support
 #  --enable-alsa           enable ALSA support
 #  --enable-cups           install CUPS backend support
