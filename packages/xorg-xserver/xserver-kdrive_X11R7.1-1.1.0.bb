@@ -1,7 +1,7 @@
 LICENSE = "MIT"
 DEPENDS = "tslib virtual/libsdl xproto libxdmcp xextproto xtrans libxau virtual/libx11 libxext libxrandr fixesproto damageproto libxfont resourceproto compositeproto xcalibrateext recordproto videoproto scrnsaverproto"
 
-PR = "r4"
+PR = "r5"
 
 PROVIDES = "virtual/xserver"
 RPROVIDES = "virtual/xserver"
@@ -54,14 +54,16 @@ S = "${WORKDIR}/xorg-server-X11R7.1-1.1.0"
 
 inherit autotools pkgconfig 
 
-EXTRA_OECONF = "--enable-composite --enable-kdrive \
-		--disable-dga --disable-dri --disable-xinerama \
-		--disable-xf86misc --disable-xf86vidmode \
-		--disable-xorg --disable-xorgcfg \
-		--disable-xkb --disable-xnest --disable-xvfb \
-		--disable-xevie --disable-xprint --disable-xtrap \
-		--disable-dmx --enable-w100 \
-		--with-default-font-path=built-ins \
-		--enable-tslib --enable-xcalibrate \
-		ac_cv_file__usr_share_X11_sgml_defs_ent=no"
+W100_OECONF = "--disable-w100"
+W100_OECONF_arm = "--enable-w100"
 
+EXTRA_OECONF = "--enable-composite --enable-kdrive \       
+                --disable-dga --disable-dri --disable-xinerama \
+                --disable-xf86misc --disable-xf86vidmode \
+                --disable-xorg --disable-xorgcfg \
+                --disable-xkb --disable-xnest --disable-xvfb \
+                --disable-xevie --disable-xprint --disable-xtrap \
+                --disable-dmx ${W100_OECONF} \
+                --with-default-font-path=built-ins \
+                --enable-tslib --enable-xcalibrate \
+                ac_cv_file__usr_share_X11_sgml_defs_ent=no"
