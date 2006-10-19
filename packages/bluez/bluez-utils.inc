@@ -21,7 +21,7 @@ SRC_URI += " file://default-manfid-0x0-to-bcps.patch;patch=1"
 S = "${WORKDIR}/bluez-utils-${PV}"
 
 EXTRA_OECONF = "--with-bluez-libs=${STAGING_LIBDIR} --with-bluez-includes=${STAGING_INCDIR} \
-                --enable-pcmcia --enable-initscripts --enable-bcm203x"
+                --enable-pcmcia --enable-initscripts --enable-bcm203x --enable-hid2hci"
 
 inherit autotools update-rc.d
 
