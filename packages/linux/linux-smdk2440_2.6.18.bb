@@ -15,6 +15,7 @@ S = "${WORKDIR}/linux-${PV}"
 inherit kernel
 
 COMPATIBLE_HOST = "arm.*-linux"
+COMPATIBLE_MACHINE = "smdk2440"
 KERNEL_IMAGETYPE = "zImage"
 
 do_configure() {
