@@ -2,7 +2,7 @@ DESCRIPTION = "Support software for the Universal Software Radio Peripheral (USR
 LICENSE = "GPL"
 HOMEPAGE = "http://comsec.com/wiki?UniversalSoftwareRadioPeripheral"
 SECTION = "devel"
-DEPENDS = "swig-native sdcc-native libusb python python-native"
+DEPENDS = "swig-native sdcc-native libusb python boost"
 PR = "r0"
 
 SRC_URI = "ftp://ftp.gnu.org/gnu/gnuradio/usrp-${PV}.tar.gz \
