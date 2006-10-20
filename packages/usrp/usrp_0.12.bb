@@ -3,6 +3,7 @@ LICENSE = "GPL"
 HOMEPAGE = "http://comsec.com/wiki?UniversalSoftwareRadioPeripheral"
 SECTION = "devel"
 DEPENDS = "swig-native sdcc-native libusb python boost"
+RDEPENDS = "python-core"
 PR = "r0"
 
 SRC_URI = "ftp://ftp.gnu.org/gnu/gnuradio/usrp-${PV}.tar.gz \
@@ -17,16 +18,16 @@ export HOST_SYS := "${HOST_SYS}"
 do_stage () {
      oe_libinstall -so -C host/lib/.libs/ libusrp ${STAGING_LIBDIR}
 
-     install -m 644 host/lib/usrp0.h ${STAGING_INCDIR}
      install -m 644 host/lib/usrp_basic.h ${STAGING_INCDIR}
      install -m 644 host/lib/usrp_bytesex.h ${STAGING_INCDIR}
      install -m 644 host/lib/usrp_config.h ${STAGING_INCDIR}
-     install -m 644 host/lib/usrp_daughterboards.h ${STAGING_INCDIR}
+     install -m 644 host/lib/usrp_dbid.h ${STAGING_INCDIR}
      install -m 644 host/lib/usrp_prims.h ${STAGING_INCDIR}
      install -m 644 host/lib/usrp_slots.h ${STAGING_INCDIR}
      install -m 644 host/lib/usrp_standard.h ${STAGING_INCDIR}
 
      install -m 644 firmware/include/usrp_i2c_addr.h ${STAGING_INCDIR}
+     install -m 644 firmware/include/usrp_spi_defs.h ${STAGING_INCDIR}
 }
 
 PACKAGES += "python-pyursp"
