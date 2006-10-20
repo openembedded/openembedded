@@ -7,9 +7,6 @@ SRC_URI = "${SOURCEFORGE_MIRROR}/sdcc/sdcc-${PV}.tar.gz \
            file://gcc4.patch;patch=1"
 
 do_stage() {
-	autotools_stage_all
-	for i in bin/as-*; do
-		install -m 0755 $i ${STAGING_BINDIR}
-	done
+	find bin -type f -perm 0755 -exec install -m 0755 {} ${STAGING_BINDIR} \;
 }
 
