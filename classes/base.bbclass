@@ -619,27 +619,6 @@ def explode_deps(s):
 			r.append(i)
 	return r
 
-python read_shlibdeps () {
-	packages = (bb.data.getVar('PACKAGES', d, 1) or "").split()
-	for pkg in packages:
-		rdepends = explode_deps(bb.data.getVar('RDEPENDS_' + pkg, d, 0) or bb.data.getVar('RDEPENDS', d, 0) or "")
-		shlibsfile = bb.data.expand("${WORKDIR}/install/" + pkg + ".shlibdeps", d)
-		if os.access(shlibsfile, os.R_OK):
-			fd = file(shlibsfile)
-			lines = fd.readlines()
-			fd.close()
-			for l in lines:
-				rdepends.append(l.rstrip())
-		pcfile = bb.data.expand("${WORKDIR}/install/" + pkg + ".pcdeps", d)
-		if os.access(pcfile, os.R_OK):
-			fd = file(pcfile)
-			lines = fd.readlines()
-			fd.close()
-			for l in lines:
-				rdepends.append(l.rstrip())
-		bb.data.setVar('RDEPENDS_' + pkg, " " + " ".join(rdepends), d)
-}
-
 def read_pkgdatafile(fn):
 	pkgdata = {}
 
