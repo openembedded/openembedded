@@ -599,9 +599,6 @@ do_build[func] = "1"
 # Functions that update metadata based on files outputted
 # during the build process.
 
-SHLIBS = ""
-RDEPENDS_prepend = " ${SHLIBS}"
-
 def explode_deps(s):
 	r = []
 	l = s.split()
