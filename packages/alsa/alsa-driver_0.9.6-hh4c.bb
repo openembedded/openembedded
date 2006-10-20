@@ -1,6 +1,8 @@
 # needs a gcc4 fix
 BROKEN = "1"
 
+COMPATIBLE_MACHINE = "(h3600|h3900)"
+
 DESCRIPTION = "Alsa Drivers"
 SECTION = "base"
 LICENSE = "GPL"
