@@ -16,8 +16,11 @@ S = "${WORKDIR}/Python-2.4"
 
 inherit autotools native
 
-EXTRA_OECONF = "--with-threads --with-pymalloc --with-cyclic-gc --without-cxx --with-signal-module --with-wctype-functions \
-		--with-prefix=${STAGING_DIR}/${BUILD_SYS} --with-exec-prefix=${STAGING_DIR}/${BUILD_SYS}"
+prefix = ${STAGING_DIR}/${BUILD_SYS}
+exec_prefix = ${STAGING_DIR}/${BUILD_SYS}
+
+EXTRA_OECONF = "--with-threads --with-pymalloc --with-cyclic-gc \
+                --without-cxx --with-signal-module --with-wctype-functions"
 EXTRA_OEMAKE = 'BUILD_SYS="" HOST_SYS=""'
 
 do_configure() {
