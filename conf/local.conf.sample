@@ -133,7 +133,7 @@ BBINCLUDELOGS = "yes"
 
 # Specifies a location to search for pre-generated tarballs when fetching
 # a cvs:// URI. Outcomment this, if you always want to pull directly from CVS.
-CVS_TARBALL_STASH = "http://www.oesources.org/source/current/"
+#CVS_TARBALL_STASH = ""
 
 # EDIT THIS FILE and then remove the line below before using!
 REMOVE_THIS_LINE:="${@oe.fatal('Read the comments in your conf/local.conf')}"
