@@ -4,7 +4,7 @@ LICENSE = "GPL"
 PRIORITY = "optional"
 HOMEPAGE = "http://www.trolltech.com"
 DEPENDS = "glib-2.0 dbus-glib tslib"
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "ftp://ftp.trolltech.com/qt/source/qtopia-core-opensource-src-${PV}.tar.gz \
            file://linux-oe-qmake.conf"
@@ -55,11 +55,10 @@ export OE_QMAKE_LIBDIR_QT="${QTDIR}/lib"
 export OE_QMAKE_INCDIR_QTOPIA="${QTOPIADIR}/include"
 export OE_QMAKE_LIBDIR_QTOPIA="${QTOPIADIR}/lib"
 
+require qte-functions.inc
+QT_ARCH := "${@qte_arch(d)}"
 
-# FIXME
-# We should have architecture detection here and translate it to the correct
-# Qtopia -embedded switch
-QT_ARCH = "arm"
+# FIXME use info.bbclass once it has been commited
 QT_ENDIAN = "-little-endian"
 
 # We don't build the examples and demos atm. They're quite big and not used
@@ -69,7 +68,6 @@ QT_CONFIG_FLAGS = "-release \
 	-no-cups -no-accessibility -no-freetype \
 	-nomake demos -nomake examples -nomake tools \
 	-qt-mouse-tslib"
-
 
 # We might want to package all the libraries separately, so you can really
 # fine-tune what to install. This is e.g. done in qt4-x11-free_4.1.2.bb.

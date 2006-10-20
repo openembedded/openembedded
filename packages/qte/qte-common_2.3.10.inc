@@ -69,17 +69,7 @@ SRC_URI_append_h1910        = "file://ipaq-keyboard.patch;patch=1 file://ipaq_so
 S = "${WORKDIR}/qt-${PV}"
 export QTDIR = "${S}"
 
-def qte_arch(d):
-	import bb, re
-	arch = bb.data.getVar('TARGET_ARCH', d, 1)
-	if re.match("^i.86$", arch):
-		arch = "x86"
-	elif arch == "x86_64":
-		arch = "x86"
-	elif arch == "mipsel":
-		arch = "mips"
-	return arch
-
+require qte-functions.inc
 QTE_ARCH := "${@qte_arch(d)}"
 
 #
