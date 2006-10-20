@@ -15,3 +15,7 @@ python __anonymous() {
     elif len(which(path, 'gcc-3.3.6')) != 0:
         data.setVar('EXTRA_OECONF', oldOeConf + " --cc=gcc-3.3.6", d)
 }
+
+do_stage() {
+	find . -name "qemu-*" -type f -perm 0755 -exec install -m 0755 {} ${STAGING_BINDIR} \;
+}
