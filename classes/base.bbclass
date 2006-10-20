@@ -575,7 +575,7 @@ do_populate_staging[dirs] = "${STAGING_DIR}/${TARGET_SYS}/bin ${STAGING_DIR}/${T
 			     ${STAGING_DATADIR} \
 			     ${S} ${B}"
 
-addtask populate_staging after do_package
+addtask populate_staging after do_package_write
 
 python do_populate_staging () {
 	bb.build.exec_func('do_stage', d)
@@ -599,9 +599,6 @@ do_build[func] = "1"
 # Functions that update metadata based on files outputted
 # during the build process.
 
-SHLIBS = ""
-RDEPENDS_prepend = " ${SHLIBS}"
-
 def explode_deps(s):
 	r = []
 	l = s.split()
@@ -618,27 +615,6 @@ def explode_deps(s):
 		else:
 			r.append(i)
 	return r
-
-python read_shlibdeps () {
-	packages = (bb.data.getVar('PACKAGES', d, 1) or "").split()
-	for pkg in packages:
-		rdepends = explode_deps(bb.data.getVar('RDEPENDS_' + pkg, d, 0) or bb.data.getVar('RDEPENDS', d, 0) or "")
-		shlibsfile = bb.data.expand("${WORKDIR}/install/" + pkg + ".shlibdeps", d)
-		if os.access(shlibsfile, os.R_OK):
-			fd = file(shlibsfile)
-			lines = fd.readlines()
-			fd.close()
-			for l in lines:
-				rdepends.append(l.rstrip())
-		pcfile = bb.data.expand("${WORKDIR}/install/" + pkg + ".pcdeps", d)
-		if os.access(pcfile, os.R_OK):
-			fd = file(pcfile)
-			lines = fd.readlines()
-			fd.close()
-			for l in lines:
-				rdepends.append(l.rstrip())
-		bb.data.setVar('RDEPENDS_' + pkg, " " + " ".join(rdepends), d)
-}
 
 def read_pkgdatafile(fn):
 	pkgdata = {}
