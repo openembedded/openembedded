@@ -54,6 +54,7 @@ SRC_URI_append_poodle       = "file://kernel-keymap.patch;patch=1;pnum=0 "
 SRC_URI_append_a780         = "file://kernel-keymap.patch;patch=1;pnum=0 "
 SRC_URI_append_e680         = "file://kernel-keymap.patch;patch=1;pnum=0 "
 SRC_URI_append_tosa         = "file://kernel-keymap.patch;patch=1;pnum=0 file://kernel-keymap-tosa.patch;patch=1 "
+SRC_URI_append_jornada6xx   = "file://kernel-keymap.patch;patch=1;pnum=0 "
 SRC_URI_append_jornada7xx   = "file://kernel-keymap.patch;patch=1;pnum=0 file://ipaq_sound_fix.patch;patch=1 "
 SRC_URI_append_jornada56x   = "file://kernel-keymap.patch;patch=1;pnum=0 file://ipaq_sound_fix.patch;patch=1 "
 SRC_URI_append_mnci         = "file://devfs.patch;patch=1 \
