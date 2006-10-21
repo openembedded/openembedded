@@ -5,7 +5,7 @@ PV = "${K_MAJOR}.${K_MINOR}.${K_MICRO}-hh${HHV}+cvs${SRCDATE}"
 PR = "r4"
 #
 COMPATIBLE_HOST = "arm.*-linux"
-COMPATIBLE_MACHINE = '(h3900|h5xxx|h2200|h4000|hx4700|htcuniversal)'
+COMPATIBLE_MACHINE = '(h3900|h5xxx|h2200|h4000|hx4700|htcuniversal|magician)'
 
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/handhelds-pxa-${PV}"
 
