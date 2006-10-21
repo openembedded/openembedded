@@ -1,5 +1,5 @@
 SECTION = "kernel"
-DESCRIPTION = "handhelds.org Linux kernel for PXA based devices."
+DESCRIPTION = "handhelds.org Linux kernel 2.6 for PocketPCs and other consumer handheld devices."
 LICENSE = "GPL"
 
 COMPATIBLE_HOST = "arm.*-linux"
