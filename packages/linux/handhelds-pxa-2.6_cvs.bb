@@ -12,7 +12,6 @@ FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/handhelds-pxa-${PV}"
 SRC_URI = "${HANDHELDS_CVS};module=linux/kernel26  \
            file://24-hostap_cs_id.diff;patch=1 \
            file://hrw-pcmcia-ids-r2.patch;patch=1 \
-           file://hx-iwmmxt.patch;patch=1;maxdate=20060807 \
 	   file://defconfig"
 
 S = "${WORKDIR}/kernel26"

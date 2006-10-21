@@ -9,13 +9,14 @@ DEPENDS = "gtk+ libgpewidget libxsettings libxsettings-client pcmcia-cs xst xset
 RDEPENDS_${PN} = "xst xset ipaq-sleep ntpdate gpe-login gpe-icons"
 RDEPENDS_gpe-conf-panel = "gpe-conf"
 
-PV = "0.2.2+cvs${SRCDATE}"
+inherit autotools gpe
+
+PV = "0.2.2+svn${SRCDATE}"
 PR = "r0"
 
-SRC_URI = "${HANDHELDS_CVS};module=gpe/base/${PN}"
+SRC_URI = "${GPE_SVN}"
 S = "${WORKDIR}/${PN}"
 
-inherit autotools gpe
 
 PACKAGES = "gpe-conf gpe-conf-panel"
 
