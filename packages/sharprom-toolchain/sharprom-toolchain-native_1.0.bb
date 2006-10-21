@@ -1,11 +1,21 @@
 DESCRIPTION = "Precompiled SharpROM toolchain glue package"
 LICENSE = "GPL"
 SECTION = "base"
+PROVIDES = "\
+virtual/arm-linux-gcc-2.95 \
+virtual/arm-linux-libc-for-gcc \
+virtual/arm-linux-binutils \
+virtual/libc \
+virtual/arm-linux-gcc \
+virtual/linux-libc-headers \
+virtual/arm-linux-gcc-initial "
+DEFAULT_PREFERENCE = "-1"
+DEFAULT_PREFERENCE_sharprom-compatible = "1"
+
 # This needs to be extracted to /usr/local/arm :
 # SRC_URI = "http://handhelds.org/download/projects/toolchain/archive/cross-2.95.3.tar.bz2"
 
 inherit native
-DEPENDS = ""
 
 COMPATIBLE_HOST = 'i.86.*-linux'
 
