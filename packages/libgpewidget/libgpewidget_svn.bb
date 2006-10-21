@@ -8,12 +8,12 @@ LICENSE = "LGPL"
 DEFAULT_PREFERENCE = "-1"
 
 S =  "${WORKDIR}/${PN}"
-PV = "0.109+cvs${SRCDATE}"
+PV = "0.114+svn${SRCDATE}"
 PR = "r0"
 
 inherit gpe autotools pkgconfig
 
-SRC_URI = "${HANDHELDS_CVS};module=gpe/base/${PN}"
+SRC_URI = "${GPE_SVN}"
 
 EXTRA_OECONF = "--enable-cairo"
 
