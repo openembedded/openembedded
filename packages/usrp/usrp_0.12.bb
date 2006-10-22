@@ -7,7 +7,9 @@ RDEPENDS = "python-core"
 PR = "r0"
 
 SRC_URI = "ftp://ftp.gnu.org/gnu/gnuradio/usrp-${PV}.tar.gz \
-           file://usb11.patch;patch=1"
+           file://usb11.patch;patch=1" \
+           file://install_test.patch;patch=1"
+
 S = "${WORKDIR}/usrp-${PV}"
 
 inherit autotools pkgconfig
