@@ -1,7 +1,7 @@
 #
 # Automatically generated make config: don't edit
 # Linux kernel version: 2.6.18-omap1
-# Fri Oct 20 12:49:51 2006
+# Fri Oct 20 16:31:35 2006
 #
 CONFIG_ARM=y
 CONFIG_MMU=y
@@ -740,7 +740,7 @@ CONFIG_I2C_OMAP=y
 # CONFIG_SENSORS_PCF8591 is not set
 # CONFIG_ISP1301_OMAP is not set
 CONFIG_TPS65010=y
-# CONFIG_SENSORS_TLV320AIC23 is not set
+CONFIG_SENSORS_TLV320AIC23=y
 # CONFIG_GPIOEXPANDER_OMAP is not set
 # CONFIG_SENSORS_MAX6875 is not set
 # CONFIG_I2C_DEBUG_CORE is not set
@@ -882,7 +882,55 @@ CONFIG_LOGO_LINUX_CLUT224=y
 #
 # Sound
 #
-# CONFIG_SOUND is not set
+CONFIG_SOUND=y
+
+#
+# Advanced Linux Sound Architecture
+#
+CONFIG_SND=y
+CONFIG_SND_TIMER=y
+CONFIG_SND_PCM=y
+CONFIG_SND_SEQUENCER=y
+# CONFIG_SND_SEQ_DUMMY is not set
+# CONFIG_SND_MIXER_OSS is not set
+# CONFIG_SND_PCM_OSS is not set
+# CONFIG_SND_SEQUENCER_OSS is not set
+# CONFIG_SND_DYNAMIC_MINORS is not set
+CONFIG_SND_SUPPORT_OLD_API=y
+CONFIG_SND_VERBOSE_PROCFS=y
+# CONFIG_SND_VERBOSE_PRINTK is not set
+# CONFIG_SND_DEBUG is not set
+
+#
+# Generic devices
+#
+# CONFIG_SND_DUMMY is not set
+# CONFIG_SND_VIRMIDI is not set
+# CONFIG_SND_MTPAV is not set
+# CONFIG_SND_SERIAL_U16550 is not set
+# CONFIG_SND_MPU401 is not set
+
+#
+# ALSA ARM devices
+#
+CONFIG_SND_OMAP_AIC23=y
+# CONFIG_SND_OMAP_TSC2101 is not set
+
+#
+# USB devices
+#
+# CONFIG_SND_USB_AUDIO is not set
+
+#
+# PCMCIA devices
+#
+# CONFIG_SND_VXPOCKET is not set
+# CONFIG_SND_PDAUDIOCF is not set
+
+#
+# Open Sound System
+#
+# CONFIG_SOUND_PRIME is not set
 
 #
 # USB support
