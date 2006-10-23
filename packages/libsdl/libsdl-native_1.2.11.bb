@@ -2,13 +2,13 @@ DESCRIPTION = "Simple DirectMedia Layer - native Edition"
 HOMEPAGE = "http://www.libsdl.org"
 SECTION = "libs"
 LICENSE = "LGPL"
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "http://www.libsdl.org/release/SDL-${PV}.tar.gz \
 	   file://acinclude.m4"
 S = "${WORKDIR}/SDL-${PV}"
 
-inherit autotools pkgconfig native
+inherit autotools binconfig pkgconfig native
 
 EXTRA_OECONF = "--disable-debug --disable-cdrom --enable-threads --enable-timers --enable-endian \
                 --enable-file --disable-oss --disable-alsa --disable-esd --disable-arts \
