@@ -2,6 +2,10 @@ FILESPATH =. "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/qemu-${PV}:"
 # prefix = "${STAGING_DIR}/${BUILD_SYS}"
 DEPENDS = "libsdl-native"
 
+do_configure_prepend() {
+	sed -i -e s,sdl-config,sdl-config-native, configure
+}
+
 python __anonymous() {
     from bb import which, data
 	
