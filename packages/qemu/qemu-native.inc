@@ -21,5 +21,5 @@ python __anonymous() {
 }
 
 do_stage() {
-	find . -name "qemu-*" -type f -perm 0755 -exec install -m 0755 {} ${STAGING_BINDIR} \;
+	find . -name "qemu-*" -type f -perm -755 -exec install -m 0755 {} ${STAGING_BINDIR} \;
 }
