@@ -3,7 +3,7 @@ SECTION = "libs"
 PRIORITY = "optional"
 LICENSE = "MIT"
 
-SRC_URI = "ftp://xmlsoft.org/libxml2/libxml2-${PV}.tar.bz2"
+SRC_URI = "ftp://xmlsoft.org/libxml2/libxml2-${PV}.tar.gz"
 
 inherit autotools pkgconfig binconfig
 
