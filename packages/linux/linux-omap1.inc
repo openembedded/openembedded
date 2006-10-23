@@ -18,10 +18,10 @@ do_configure_prepend() {
 do_deploy() {
         if [ "${MACHINE}" == "omap5912osk" ]; then
                 install -d ${DEPLOY_DIR_IMAGE}
-                arm-linux-objcopy -O binary -R .note -R .comment -S ${KERNEL_OUTPUT} ${DEPLOY_DIR_IMAGE}/linux.bin
-                gzip -f -9 ${DEPLOY_DIR_IMAGE}/linux.bin
-                mkimage -A arm -O linux -T kernel -C gzip -a 0x10008000 -e 0x10008000 -n "OE" -d ${DEPLOY_DIR_IMAGE}/linux.bin.gz ${DEPLOY_DIR_IMAGE}/${KERNEL_IMAGETYPE}-${MACHINE}-${DATETIME}.bin
-                rm ${DEPLOY_DIR_IMAGE}/linux.bin.gz
+                ${OBJCOPY} -O binary -R .note -R .comment -S ${KERNEL_OUTPUT} ${S}/linux.bin
+                gzip -f -9 ${S}/linux.bin
+                mkimage -A arm -O linux -T kernel -C gzip -a 0x10008000 -e 0x10008000 -n "OE" -d ${S}/linux.bin.gz ${DEPLOY_DIR_IMAGE}/${KERNEL_IMAGETYPE}-${KERNEL_RELEASE}-${MACHINE}-${DATETIME}.bin
+                rm ${S}/linux.bin.gz
         fi
 }
 
