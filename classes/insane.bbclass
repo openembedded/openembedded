@@ -50,11 +50,11 @@ def package_qa_check_devdbg(path, name,d):
     import bb
     if not "-dev" in name:
         if path[-3:] == ".so":
-            bb.error("QA Issue: non dev package contains .so")
+            bb.error("QA Issue: non dev package contains .so: %s" % name)
 
     if not "-dbg" in name:
-        if path.contains('.debug'):
-            bb.error("QA Issue: non debug package contains .dbg file")
+        if '.debug' in path:
+            bb.error("QA Issue: non debug package contains .dbg file: %s" % name)
 
 def package_qa_check_perm(path,name,d):
     """
