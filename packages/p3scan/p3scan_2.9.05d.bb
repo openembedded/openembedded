@@ -6,7 +6,7 @@ SECTION = "network"
 LICENSE = "GPLv2"
 DEPENDS = "gmp bzip2 zlib clamav openssl"
 RDEPENDS_${PN} = "${PN}-templates-en"
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/p3scan/p3scan-2.9.05d.tar.gz \
            file://libtool-fix.patch;patch=1 \
@@ -59,7 +59,7 @@ PACKAGES = "${PN}-dbg ${PN}-doc \
             ${PN}"
 
 FILES_${PN} = "${sysconfdir}/p3scan/* \
-               ${sysconfdir}/init.d ${sysconfdir}/default ${sbindir}"
+               ${sysconfdir}/init.d ${sysconfdir}/default ${sbindir}/*"
 FILES_${PN}-templates-ru = "${sysconfdir}/p3scan/p3scan-ru.mail"
 FILES_${PN}-templates-en = "${sysconfdir}/p3scan/p3scan-en.mail"
 FILES_${PN}-templates-pt-br = "${sysconfdir}/p3scan/p3scan-pt-br.mail"
