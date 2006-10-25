@@ -3,7 +3,7 @@ DESCRIPTION = "handhelds.org Linux kernel 2.6 for PocketPCs and other consumer h
 LICENSE = "GPL"
 
 COMPATIBLE_HOST = "arm.*-linux"
-COMPATIBLE_MACHINE ?= '(h1910|h2200|h3900|h4000|h5xxx|htcuniversal|hx4700)'
+COMPATIBLE_MACHINE ?= '(h1910|h2200|h3600|h3900|h4000|h5xxx|htcuniversal|hx4700|jornada56x|simpad)'
 
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/handhelds-pxa-${PV}"
 
