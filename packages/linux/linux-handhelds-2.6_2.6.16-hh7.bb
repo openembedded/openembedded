@@ -5,4 +5,4 @@ PR = "r1"
 
 DEFAULT_PREFERENCE = "-1"
 
-require handhelds-pxa-2.6.inc
+require linux-handhelds-2.6.inc
