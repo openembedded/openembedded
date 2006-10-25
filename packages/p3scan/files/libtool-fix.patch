@@ -1,0 +1,24 @@
+Use our own libtool that knows about cross compiling, not the libtool
+that is included.
+
+--- p3scan-2.9.05d/aclocal.m4	2006/10/12 04:17:35	1.1
++++ p3scan-2.9.05d/aclocal.m4	2006/10/12 04:18:28
+@@ -73,8 +73,7 @@
+ LIBTOOL_DEPS="$ac_aux_dir/ltmain.sh"
+ 
+ # Always use our own libtool.
+-LIBTOOL='$(SHELL) $(top_builddir)/libtool'
+-AC_SUBST(LIBTOOL)dnl
++LIBTOOL="$host_alias-libtool"
+ 
+ # Prevent multiple expansion
+ define([AC_PROG_LIBTOOL], [])
+@@ -140,7 +139,7 @@
+ rm="rm -f"
+ 
+ # Global variables:
+-default_ofile=libtool
++default_ofile==${host_alias}-libtool
+ can_build_shared=yes
+ 
+ # All known linkers require a `.a' archive for static linking (except MSVC,

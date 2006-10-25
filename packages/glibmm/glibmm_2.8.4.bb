@@ -1,4 +1,3 @@
-DEFAULT_PREFERENCE = "-1"
 DESCRIPTION = "C++ bindings for the glib library."
 HOMEPAGE = "http://www.gtkmm.org/"
 SECTION = "libs"

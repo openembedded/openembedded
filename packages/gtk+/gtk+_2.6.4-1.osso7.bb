@@ -5,7 +5,7 @@ HOMEPAGE = "http://www.gtk.org"
 SECTION = "libs"
 PRIORITY = "optional"
 DEPENDS = "glib-2.0 pango atk jpeg libpng libxext libxcursor gtk-doc libgcrypt"
-PR = "r1"
+PR = "r2"
 
 S = "${WORKDIR}/gtk+2.0-2.6.4/upstream/tarballs/gtk+-2.6.4/"
 
@@ -124,7 +124,7 @@ FILES_${PN} = "${bindir}/gdk-pixbuf-query-loaders \
 	${libdir}/gtk-2.0/${LIBV}/engines/libpixmap.so"
 FILES_${PN}-dev += "${datadir}/gtk-2.0/include ${libdir}/gtk-2.0/include ${bindir}/gdk-pixbuf-csource"
 
-RRECOMMENDS_${PN} = "glibc-gconv-iso8859-1"
+RRECOMMENDS_${PN} = "glibc-gconv-iso8859-1 ttf-dejavu-sans"
 
 EXTRA_OECONF = "--without-libtiff --disable-xkb --disable-glibtest --enable-display-migration"
 # --disable-cruft

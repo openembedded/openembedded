@@ -153,6 +153,13 @@ fi
 if [ $(grep rootfs /proc/mounts | awk '{print $4}') = rw ]; then
 	exit 0
 fi
+
+#       Add a second check, which seems to be needed for some kernel versions
+if [ $(grep "/dev/root" /proc/mounts | awk '{print $4}') = rw ]; then
+        exit 0
+fi
+
+
 echo "Remounting root file system..."
 mount -n -o remount,$rootmode /
 if test "$rootmode" = rw

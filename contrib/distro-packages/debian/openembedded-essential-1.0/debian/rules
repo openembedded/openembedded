@@ -1,0 +1,19 @@
+#!/usr/bin/make -f
+
+build:
+
+clean:
+
+binary-indep:
+	dh_testdir
+	dh_testroot
+	dh_installchangelogs 
+	dh_compress
+	dh_fixperms
+	dh_installdeb
+	dh_gencontrol
+	dh_md5sums
+	dh_builddeb
+
+binary: binary-indep
+.PHONY: build clean binary-indep binary

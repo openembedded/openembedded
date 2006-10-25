@@ -1,4 +1,11 @@
+#
+# General packaging help functions
+#
+
 def legitimize_package_name(s):
+	"""
+	Make sure package names are legitimate strings
+	"""
 	import re
 
 	def fixutf(m):
@@ -11,6 +18,163 @@ def legitimize_package_name(s):
 
 	# Remaining package name validity fixes
 	return s.lower().replace('_', '-').replace('@', '+').replace(',', '+').replace('/', '-')
+
+def do_split_packages(d, root, file_regex, output_pattern, description, postinst=None, recursive=False, hook=None, extra_depends=None, aux_files_pattern=None, postrm=None, allow_dirs=False, prepend=False, match_path=False, aux_files_pattern_verbatim=None):
+	"""
+	Used in .bb files to split up dynamically generated subpackages of a 
+	given package, usually plugins or modules.
+	"""
+	import os, os.path, bb
+
+	dvar = bb.data.getVar('D', d, 1)
+	if not dvar:
+		bb.error("D not defined")
+		return
+
+	packages = bb.data.getVar('PACKAGES', d, 1).split()
+	if not packages:
+		# nothing to do
+		return
+
+	if postinst:
+		postinst = '#!/bin/sh\n' + postinst + '\n'
+	if postrm:
+		postrm = '#!/bin/sh\n' + postrm + '\n'
+	if not recursive:
+		objs = os.listdir(dvar + root)
+	else:
+		objs = []
+		for walkroot, dirs, files in os.walk(dvar + root):
+			for file in files:
+				relpath = os.path.join(walkroot, file).replace(dvar + root + '/', '', 1)
+				if relpath:
+					objs.append(relpath)
+
+	if extra_depends == None:
+		# This is *really* broken
+		mainpkg = packages[0]
+		# At least try and patch it up I guess...
+		if mainpkg.find('-dbg'):
+			mainpkg = mainpkg.replace('-dbg', '')
+		if mainpkg.find('-dev'):
+			mainpkg = mainpkg.replace('-dev', '')
+		extra_depends = mainpkg
+
+	for o in objs:
+		import re, stat
+		if match_path:
+			m = re.match(file_regex, o)
+		else:
+			m = re.match(file_regex, os.path.basename(o))
+		
+		if not m:
+			continue
+		f = os.path.join(dvar + root, o)
+		mode = os.lstat(f).st_mode
+		if not (stat.S_ISREG(mode) or (allow_dirs and stat.S_ISDIR(mode))):
+			continue
+		on = legitimize_package_name(m.group(1))
+		pkg = output_pattern % on
+		if not pkg in packages:
+			if prepend:
+				packages = [pkg] + packages
+			else:
+				packages.append(pkg)
+			the_files = [os.path.join(root, o)]
+			if aux_files_pattern:
+				if type(aux_files_pattern) is list:
+					for fp in aux_files_pattern:
+						the_files.append(fp % on)	
+				else:
+					the_files.append(aux_files_pattern % on)
+			if aux_files_pattern_verbatim:
+				if type(aux_files_pattern_verbatim) is list:
+					for fp in aux_files_pattern_verbatim:
+						the_files.append(fp % m.group(1))	
+				else:
+					the_files.append(aux_files_pattern_verbatim % m.group(1))
+			bb.data.setVar('FILES_' + pkg, " ".join(the_files), d)
+			if extra_depends != '':
+				the_depends = bb.data.getVar('RDEPENDS_' + pkg, d, 1)
+				if the_depends:
+					the_depends = '%s %s' % (the_depends, extra_depends)
+				else:
+					the_depends = extra_depends
+				bb.data.setVar('RDEPENDS_' + pkg, the_depends, d)
+			bb.data.setVar('DESCRIPTION_' + pkg, description % on, d)
+			if postinst:
+				bb.data.setVar('pkg_postinst_' + pkg, postinst, d)
+			if postrm:
+				bb.data.setVar('pkg_postrm_' + pkg, postrm, d)
+		else:
+			oldfiles = bb.data.getVar('FILES_' + pkg, d, 1)
+			if not oldfiles:
+				bb.fatal("Package '%s' exists but has no files" % pkg)
+			bb.data.setVar('FILES_' + pkg, oldfiles + " " + os.path.join(root, o), d)
+		if callable(hook):
+			hook(f, pkg, file_regex, output_pattern, m.group(1))
+
+	bb.data.setVar('PACKAGES', ' '.join(packages), d)
+
+PACKAGE_DEPENDS ?= "file-native"
+DEPENDS_prepend =+ "${PACKAGE_DEPENDS} "
+# file(1) output to match to consider a file an unstripped executable
+FILE_UNSTRIPPED_MATCH ?= "not stripped"
+#FIXME: this should be "" when any errors are gone!
+IGNORE_STRIP_ERRORS ?= "1"
+
+runstrip() {
+	# Function to strip a single file, called from RUNSTRIP in populate_packages below
+	# A working 'file' (one which works on the target architecture)
+	# is necessary for this stuff to work, hence the addition to PACKAGES_DEPENDS
+
+	local ro st
+
+	st=0
+	if {	file "$1" || {
+			oewarn "file $1: failed (forced strip)" >&2
+			echo '${FILE_UNSTRIPPED_MATCH}'
+		}
+	   } | grep -q '${FILE_UNSTRIPPED_MATCH}'
+	then
+		oenote "${STRIP} $1"
+		ro=
+		test -w "$1" || {
+			ro=1
+			chmod +w "$1"
+		}
+		mkdir -p $(dirname "$1")/.debug
+		debugfile="$(dirname "$1")/.debug/$(basename "$1")"
+		'${OBJCOPY}' --only-keep-debug "$1" "$debugfile"
+		'${STRIP}' "$1"
+		st=$?
+		'${OBJCOPY}' --add-gnu-debuglink="$debugfile" "$1"
+		test -n "$ro" && chmod -w "$1"
+		if test $st -ne 0
+		then
+			oewarn "runstrip: ${STRIP} $1: strip failed" >&2
+			if [ x${IGNORE_STRIP_ERRORS} == x1 ]
+			then
+				#FIXME: remove this, it's for error detection
+				if file "$1" 2>/dev/null >&2
+				then
+					(oefatal "${STRIP} $1: command failed" >/dev/tty)
+				else
+					(oefatal "file $1: command failed" >/dev/tty)
+				fi
+				st=0
+			fi
+		fi
+	else
+		oenote "runstrip: skip $1"
+	fi
+	return $st
+}
+
+
+#
+# Package data handling routines
+#
 
 STAGING_PKGMAPS_DIR ?= "${STAGING_DIR}/pkgmaps"
 
@@ -69,153 +233,70 @@ def runtime_mapping_rename (varname, d):
 
 	#bb.note("%s after: %s" % (varname, bb.data.getVar(varname, d, 1)))
 
-python package_mapping_rename_hook () {
-	runtime_mapping_rename("RDEPENDS", d)
-	runtime_mapping_rename("RRECOMMENDS", d)
-	runtime_mapping_rename("RSUGGESTS", d)
-	runtime_mapping_rename("RPROVIDES", d)
-	runtime_mapping_rename("RREPLACES", d)
-	runtime_mapping_rename("RCONFLICTS", d)
-}
+#
+# Package functions suitable for inclusion in PACKAGEFUNCS
+#
 
+python package_do_split_locales() {
+	import os
 
-def do_split_packages(d, root, file_regex, output_pattern, description, postinst=None, recursive=False, hook=None, extra_depends=None, aux_files_pattern=None, postrm=None, allow_dirs=False, prepend=False, match_path=False, aux_files_pattern_verbatim=None):
-	import os, os.path, bb
+	if (bb.data.getVar('PACKAGE_NO_LOCALE', d, 1) == '1'):
+		bb.debug(1, "package requested not splitting locales")
+		return
+
+	packages = (bb.data.getVar('PACKAGES', d, 1) or "").split()
+	if not packages:
+		bb.debug(1, "no packages to build; not splitting locales")
+		return
+
+	datadir = bb.data.getVar('datadir', d, 1)
+	if not datadir:
+		bb.note("datadir not defined")
+		return
 
 	dvar = bb.data.getVar('D', d, 1)
 	if not dvar:
 		bb.error("D not defined")
 		return
 
-	packages = bb.data.getVar('PACKAGES', d, 1).split()
-	if not packages:
-		# nothing to do
+	pn = bb.data.getVar('PN', d, 1)
+	if not pn:
+		bb.error("PN not defined")
 		return
 
-	if postinst:
-		postinst = '#!/bin/sh\n' + postinst + '\n'
-	if postrm:
-		postrm = '#!/bin/sh\n' + postrm + '\n'
-	if not recursive:
-		objs = os.listdir(dvar + root)
-	else:
-		objs = []
-		for walkroot, dirs, files in os.walk(dvar + root):
-			for file in files:
-				relpath = os.path.join(walkroot, file).replace(dvar + root + '/', '', 1)
-				if relpath:
-					objs.append(relpath)
+	if pn + '-locale' in packages:
+		packages.remove(pn + '-locale')
 
-	if extra_depends == None:
-		extra_depends = packages[0]
+	localedir = os.path.join(dvar + datadir, 'locale')
 
-	for o in objs:
-		import re, stat
-		if match_path:
-			m = re.match(file_regex, o)
-		else:
-			m = re.match(file_regex, os.path.basename(o))
-		
-		if not m:
-			continue
-		f = os.path.join(dvar + root, o)
-		mode = os.lstat(f).st_mode
-		if not (stat.S_ISREG(mode) or (allow_dirs and stat.S_ISDIR(mode))):
-			continue
-		on = legitimize_package_name(m.group(1))
-		pkg = output_pattern % on
-		if not pkg in packages:
-			if prepend:
-				packages = [pkg] + packages
-			else:
-				packages.append(pkg)
-			the_files = [os.path.join(root, o)]
-			if aux_files_pattern:
-				if type(aux_files_pattern) is list:
-					for fp in aux_files_pattern:
-						the_files.append(fp % on)	
-				else:
-					the_files.append(aux_files_pattern % on)
-			if aux_files_pattern_verbatim:
-				if type(aux_files_pattern_verbatim) is list:
-					for fp in aux_files_pattern_verbatim:
-						the_files.append(fp % m.group(1))	
-				else:
-					the_files.append(aux_files_pattern_verbatim % m.group(1))
-			bb.data.setVar('FILES_' + pkg, " ".join(the_files), d)
-			if extra_depends != '':
-				the_depends = bb.data.getVar('RDEPENDS_' + pkg, d, 1)
-				if the_depends:
-					the_depends = '%s %s' % (the_depends, extra_depends)
-				else:
-					the_depends = extra_depends
-				bb.data.setVar('RDEPENDS_' + pkg, the_depends, d)
-			bb.data.setVar('DESCRIPTION_' + pkg, description % on, d)
-			if postinst:
-				bb.data.setVar('pkg_postinst_' + pkg, postinst, d)
-			if postrm:
-				bb.data.setVar('pkg_postrm_' + pkg, postrm, d)
-		else:
-			oldfiles = bb.data.getVar('FILES_' + pkg, d, 1)
-			if not oldfiles:
-				bb.fatal("Package '%s' exists but has no files" % pkg)
-			bb.data.setVar('FILES_' + pkg, oldfiles + " " + os.path.join(root, o), d)
-		if callable(hook):
-			hook(f, pkg, file_regex, output_pattern, m.group(1))
+	if not os.path.isdir(localedir):
+		bb.debug(1, "No locale files in this package")
+		return
+
+	locales = os.listdir(localedir)
+
+	# This is *really* broken
+	mainpkg = packages[0]
+	# At least try and patch it up I guess...
+	if mainpkg.find('-dbg'):
+		mainpkg = mainpkg.replace('-dbg', '')
+	if mainpkg.find('-dev'):
+		mainpkg = mainpkg.replace('-dev', '')
+
+	for l in locales:
+		ln = legitimize_package_name(l)
+		pkg = pn + '-locale-' + ln
+		packages.append(pkg)
+		bb.data.setVar('FILES_' + pkg, os.path.join(datadir, 'locale', l), d)
+		bb.data.setVar('RDEPENDS_' + pkg, '%s virtual-locale-%s' % (mainpkg, ln), d)
+		bb.data.setVar('RPROVIDES_' + pkg, '%s-locale %s-translation' % (pn, ln), d)
+		bb.data.setVar('DESCRIPTION_' + pkg, '%s translation for %s' % (l, pn), d)
 
 	bb.data.setVar('PACKAGES', ' '.join(packages), d)
 
-# Function to strip a single file, called from RUNSTRIP below
-# A working 'file' (one which works on the target architecture)
-# is necessary for this stuff to work.
-PACKAGE_DEPENDS ?= "file-native"
-DEPENDS_prepend =+ "${PACKAGE_DEPENDS} "
-# file(1) output to match to consider a file an unstripped executable
-FILE_UNSTRIPPED_MATCH ?= "not stripped"
-#FIXME: this should be "" when any errors are gone!
-IGNORE_STRIP_ERRORS ?= "1"
-
-runstrip() {
-	local ro st
-	st=0
-	if {	file "$1" || {
-			oewarn "file $1: failed (forced strip)" >&2
-			echo '${FILE_UNSTRIPPED_MATCH}'
-		}
-	   } | grep -q '${FILE_UNSTRIPPED_MATCH}'
-	then
-		oenote "${STRIP} $1"
-		ro=
-		test -w "$1" || {
-			ro=1
-			chmod +w "$1"
-		}
-		mkdir -p $(dirname "$1")/.debug
-		debugfile="$(dirname "$1")/.debug/$(basename "$1")"
-		'${OBJCOPY}' --only-keep-debug "$1" "$debugfile"
-		'${STRIP}' "$1"
-		st=$?
-		'${OBJCOPY}' --add-gnu-debuglink="$debugfile" "$1"
-		test -n "$ro" && chmod -w "$1"
-		if test $st -ne 0
-		then
-			oewarn "runstrip: ${STRIP} $1: strip failed" >&2
-			if [ x${IGNORE_STRIP_ERRORS} == x1 ]
-			then
-				#FIXME: remove this, it's for error detection
-				if file "$1" 2>/dev/null >&2
-				then
-					(oefatal "${STRIP} $1: command failed" >/dev/tty)
-				else
-					(oefatal "file $1: command failed" >/dev/tty)
-				fi
-				st=0
-			fi
-		fi
-	else
-		oenote "runstrip: skip $1"
-	fi
-	return $st
+	rdep = (bb.data.getVar('RDEPENDS_%s' % mainpkg, d, 1) or bb.data.getVar('RDEPENDS', d, 1) or "").split()
+	rdep.append('%s-locale*' % pn)
+	bb.data.setVar('RDEPENDS_%s' % mainpkg, ' '.join(rdep), d)
 }
 
 python populate_packages () {
@@ -275,7 +356,7 @@ python populate_packages () {
 		for root, dirs, files in os.walk(dvar):
 			for f in files:
 				file = os.path.join(root, f)
-				if not os.path.islink(file) and isexec(file):
+				if not os.path.islink(file) and not os.path.isdir(file) and isexec(file):
 					stripfunc += "\trunstrip %s || st=1\n" % (file)
 		if not stripfunc == "":
 			from bb import build
@@ -390,7 +471,10 @@ python populate_packages () {
 			if found == False:
 				bb.note("%s contains dangling symlink to %s" % (pkg, l))
 		bb.data.setVar('RDEPENDS_' + pkg, " " + " ".join(rdepends), d)
+}
+populate_packages[dirs] = "${D}"
 
+python emit_pkgdata() {
 	def write_if_exists(f, pkg, var):
 		def encode(str):
 			import codecs
@@ -401,17 +485,26 @@ python populate_packages () {
 		if val:
 			f.write('%s_%s: %s\n' % (var, pkg, encode(val)))
 
+	packages = bb.data.getVar('PACKAGES', d, 1)
+	if not packages:
+		return
+
 	data_file = bb.data.expand("${STAGING_DIR}/pkgdata/${PN}", d)
 	f = open(data_file, 'w')
 	f.write("PACKAGES: %s\n" % packages)
 	f.close()
 
-	for pkg in package_list:
+	for pkg in packages.split():
 		subdata_file = bb.data.expand("${STAGING_DIR}/pkgdata/runtime/%s" % pkg, d)
 		sf = open(subdata_file, 'w')
 		write_if_exists(sf, pkg, 'DESCRIPTION')
 		write_if_exists(sf, pkg, 'RDEPENDS')
 		write_if_exists(sf, pkg, 'RPROVIDES')
+		write_if_exists(sf, pkg, 'RRECOMMENDS')
+		write_if_exists(sf, pkg, 'RSUGGESTS')
+		write_if_exists(sf, pkg, 'RPROVIDES')
+		write_if_exists(sf, pkg, 'RREPLACES')
+		write_if_exists(sf, pkg, 'RCONFLICTS')
 		write_if_exists(sf, pkg, 'PKG')
 		write_if_exists(sf, pkg, 'ALLOW_EMPTY')
 		write_if_exists(sf, pkg, 'FILES')
@@ -420,65 +513,13 @@ python populate_packages () {
 		write_if_exists(sf, pkg, 'pkg_preinst')
 		write_if_exists(sf, pkg, 'pkg_prerm')
 		sf.close()
-	bb.build.exec_func("read_subpackage_metadata", d)
 }
+emit_pkgdata[dirs] = "${STAGING_DIR}/pkgdata/runtime"
 
 ldconfig_postinst_fragment() {
 if [ x"$D" = "x" ]; then
 	ldconfig
 fi
-}
-
-python package_depchains() {
-	"""
-	For a given set of prefix and postfix modifiers, make those packages
-	RRECOMMENDS on the corresponding packages for its DEPENDS.
-
-	Example:  If package A depends upon package B, and A's .bb emits an
-	A-dev package, this would make A-dev Recommends: B-dev.
-	"""
-
-	packages  = bb.data.getVar('PACKAGES', d, 1)
-	postfixes = (bb.data.getVar('DEPCHAIN_POST', d, 1) or '').split()
-	prefixes  = (bb.data.getVar('DEPCHAIN_PRE', d, 1) or '').split()
-
-	def pkg_addrrecs(pkg, base, func, d):
-		rdepends = explode_deps(bb.data.getVar('RDEPENDS_' + base, d, 1) or bb.data.getVar('RDEPENDS', d, 1) or "")
-		# bb.note('rdepends for %s is %s' % (base, rdepends))
-		rreclist = []
-
-		for depend in rdepends:
-			split_depend = depend.split(' (')
-			name = split_depend[0].strip()
-			func(rreclist, name)
-
-		oldrrec = bb.data.getVar('RRECOMMENDS_%s', d) or ''
-		bb.data.setVar('RRECOMMENDS_%s' % pkg, oldrrec + ' '.join(rreclist), d)
-
-	def packaged(pkg, d):
-		return os.access(bb.data.expand('${STAGING_DIR}/pkgdata/runtime/%s.packaged' % pkg, d), os.R_OK)
-
-	for pkg in packages.split():
-		for postfix in postfixes:
-			def func(list, name):
-				pkg = '%s%s' % (name, postfix)
-				if packaged(pkg, d):
-					list.append(pkg)
-
-			base = pkg[:-len(postfix)]
-			if pkg.endswith(postfix):
-				pkg_addrrecs(pkg, base, func, d)
-				continue
-
-		for prefix in prefixes:
-			def func(list, name):
-				pkg = '%s%s' % (prefix, name)
-				if packaged(pkg, d):
-					list.append(pkg)
-
-			base = pkg[len(prefix):]
-			if pkg.startswith(prefix):
-				pkg_addrrecs(pkg, base, func, d)
 }
 
 python package_do_shlibs() {
@@ -730,74 +771,126 @@ python package_do_pkgconfig () {
 			fd.close()
 }
 
-python package_do_split_locales() {
-	import os
-
-	if (bb.data.getVar('PACKAGE_NO_LOCALE', d, 1) == '1'):
-		bb.debug(1, "package requested not splitting locales")
-		return
-
+python read_shlibdeps () {
 	packages = (bb.data.getVar('PACKAGES', d, 1) or "").split()
-	if not packages:
-		bb.debug(1, "no packages to build; not splitting locales")
-		return
-
-	datadir = bb.data.getVar('datadir', d, 1)
-	if not datadir:
-		bb.note("datadir not defined")
-		return
-
-	dvar = bb.data.getVar('D', d, 1)
-	if not dvar:
-		bb.error("D not defined")
-		return
-
-	pn = bb.data.getVar('PN', d, 1)
-	if not pn:
-		bb.error("PN not defined")
-		return
-
-	if pn + '-locale' in packages:
-		packages.remove(pn + '-locale')
-
-	localedir = os.path.join(dvar + datadir, 'locale')
-
-	if not os.path.isdir(localedir):
-		bb.debug(1, "No locale files in this package")
-		return
-
-	locales = os.listdir(localedir)
-
-	mainpkg = packages[0]
-
-	for l in locales:
-		ln = legitimize_package_name(l)
-		pkg = pn + '-locale-' + ln
-		packages.append(pkg)
-		bb.data.setVar('FILES_' + pkg, os.path.join(datadir, 'locale', l), d)
-		bb.data.setVar('RDEPENDS_' + pkg, '%s virtual-locale-%s' % (mainpkg, ln), d)
-		bb.data.setVar('RPROVIDES_' + pkg, '%s-locale %s-translation' % (pn, ln), d)
-		bb.data.setVar('DESCRIPTION_' + pkg, '%s translation for %s' % (l, pn), d)
-
-	bb.data.setVar('PACKAGES', ' '.join(packages), d)
-
-	rdep = (bb.data.getVar('RDEPENDS_%s' % mainpkg, d, 1) or bb.data.getVar('RDEPENDS', d, 1) or "").split()
-	rdep.append('%s-locale*' % pn)
-	bb.data.setVar('RDEPENDS_%s' % mainpkg, ' '.join(rdep), d)
+	for pkg in packages:
+		rdepends = explode_deps(bb.data.getVar('RDEPENDS_' + pkg, d, 0) or bb.data.getVar('RDEPENDS', d, 0) or "")
+		shlibsfile = bb.data.expand("${WORKDIR}/install/" + pkg + ".shlibdeps", d)
+		if os.access(shlibsfile, os.R_OK):
+			fd = file(shlibsfile)
+			lines = fd.readlines()
+			fd.close()
+			for l in lines:
+				rdepends.append(l.rstrip())
+		pcfile = bb.data.expand("${WORKDIR}/install/" + pkg + ".pcdeps", d)
+		if os.access(pcfile, os.R_OK):
+			fd = file(pcfile)
+			lines = fd.readlines()
+			fd.close()
+			for l in lines:
+				rdepends.append(l.rstrip())
+		bb.data.setVar('RDEPENDS_' + pkg, " " + " ".join(rdepends), d)
 }
 
+python package_depchains() {
+	"""
+	For a given set of prefix and postfix modifiers, make those packages
+	RRECOMMENDS on the corresponding packages for its DEPENDS.
+
+	Example:  If package A depends upon package B, and A's .bb emits an
+	A-dev package, this would make A-dev Recommends: B-dev.
+	"""
+
+	packages  = bb.data.getVar('PACKAGES', d, 1)
+	postfixes = (bb.data.getVar('DEPCHAIN_POST', d, 1) or '').split()
+	prefixes  = (bb.data.getVar('DEPCHAIN_PRE', d, 1) or '').split()
+
+	def pkg_addrrecs(pkg, base, func, d):
+		rdepends = explode_deps(bb.data.getVar('RDEPENDS_' + base, d, 1) or bb.data.getVar('RDEPENDS', d, 1) or "")
+		# bb.note('rdepends for %s is %s' % (base, rdepends))
+		rreclist = []
+
+		for depend in rdepends:
+			split_depend = depend.split(' (')
+			name = split_depend[0].strip()
+			func(rreclist, name)
+
+		bb.data.setVar('RRECOMMENDS_%s' % pkg, ' '.join(rreclist), d)
+
+	def packaged(pkg, d):
+		return os.access(bb.data.expand('${STAGING_DIR}/pkgdata/runtime/%s.packaged' % pkg, d), os.R_OK)
+
+	for pkg in packages.split():
+		for postfix in postfixes:
+			def func(list, name):
+				pkg = '%s%s' % (name, postfix)
+				if packaged(pkg, d):
+					list.append(pkg)
+
+			base = pkg[:-len(postfix)]
+			if pkg.endswith(postfix):
+				pkg_addrrecs(pkg, base, func, d)
+				continue
+
+		for prefix in prefixes:
+			def func(list, name):
+				pkg = '%s%s' % (prefix, name)
+				if packaged(pkg, d):
+					list.append(pkg)
+
+			base = pkg[len(prefix):]
+			if pkg.startswith(prefix):
+				pkg_addrrecs(pkg, base, func, d)
+}
+
+
 PACKAGEFUNCS ?= "package_do_split_locales \
-		populate_packages package_do_shlibs \
-		package_do_pkgconfig read_shlibdeps \
-		package_depchains"
+		populate_packages \
+		package_do_shlibs \
+		package_do_pkgconfig \
+		read_shlibdeps \
+		package_depchains \
+		emit_pkgdata"
+
 python package_do_package () {
 	for f in (bb.data.getVar('PACKAGEFUNCS', d, 1) or '').split():
 		bb.build.exec_func(f, d)
 }
-
-do_package[dirs] = "${D}"
 # shlibs requires any DEPENDS to have already packaged for the *.list files
 do_package[deptask] = "do_package"
-populate_packages[dirs] = "${STAGING_DIR}/pkgdata/runtime ${D}"
-EXPORT_FUNCTIONS do_package do_shlibs do_split_locales mapping_rename_hook
+do_package[dirs] = "${D}"
 addtask package before do_build after do_install
+
+
+
+PACKAGE_WRITE_FUNCS ?= "read_subpackage_metadata"
+
+python package_do_package_write () {
+	for f in (bb.data.getVar('PACKAGE_WRITE_FUNCS', d, 1) or '').split():
+		bb.build.exec_func(f, d)
+}
+do_package_write[dirs] = "${D}"
+addtask package_write before do_build after do_package
+
+
+EXPORT_FUNCTIONS do_package do_package_write
+
+
+#
+# Helper functions for the package writing classes
+#
+
+python package_mapping_rename_hook () {
+	"""
+	Rewrite variables to account for package renaming in things
+	like debian.bbclass or manual PKG variable name changes
+	"""
+	runtime_mapping_rename("RDEPENDS", d)
+	runtime_mapping_rename("RRECOMMENDS", d)
+	runtime_mapping_rename("RSUGGESTS", d)
+	runtime_mapping_rename("RPROVIDES", d)
+	runtime_mapping_rename("RREPLACES", d)
+	runtime_mapping_rename("RCONFLICTS", d)
+}
+
+EXPORT_FUNCTIONS mapping_rename_hook

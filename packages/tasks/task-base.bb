@@ -1,5 +1,5 @@
 DESCRIPTION = "Merge machine and distro options to create a basic machine task/package"
-PR = "r6"
+PR = "r11"
 
 PACKAGES = "task-base \
             task-base-minimal \
@@ -33,6 +33,7 @@ PACKAGE_ARCH = "${MACHINE_ARCH}"
 # bluetooth
 # ext2
 # irda
+# pci
 # pcmcia
 # usbgadget
 # usbhost
@@ -56,6 +57,7 @@ COMBINED_FEATURES = "\
     ${@base_both_contain("DISTRO_FEATURES", "MACHINE_FEATURES", "ext2", d)} \
     ${@base_both_contain("DISTRO_FEATURES", "MACHINE_FEATURES", "irda", d)} \
     ${@base_both_contain("DISTRO_FEATURES", "MACHINE_FEATURES", "pcmcia", d)} \
+    ${@base_both_contain("DISTRO_FEATURES", "MACHINE_FEATURES", "pci", d)} \
     ${@base_both_contain("DISTRO_FEATURES", "MACHINE_FEATURES", "usbgadget", d)} \
     ${@base_both_contain("DISTRO_FEATURES", "MACHINE_FEATURES", "usbhost", d)}"
 
@@ -72,6 +74,7 @@ RDEPENDS_task-base = "\
     ${@base_contains("COMBINED_FEATURES", "alsa", "${task-base-alsa-rdepends}", "",d)} \
     ${@base_contains("COMBINED_FEATURES", "ext2", "${task-base-ext2-rdepends}", "",d)} \
     ${@base_contains("COMBINED_FEATURES", "irda", "${task-base-irda-rdepends}", "",d)} \
+    ${@base_contains("COMBINED_FEATURES", "pci", "${task-base-pci-rdepends}", "",d)} \
     ${@base_contains("COMBINED_FEATURES", "pcmcia", "${task-base-pcmcia-rdepends}", "",d)} \
     ${@base_contains("COMBINED_FEATURES", "usbhost", "${task-base-usbhost-rdepends}", "",d)} \
     ${@base_contains("DISTRO_FEATURES", "nfs", "${task-distro-nfs-rdepends}", "",d)} \
@@ -146,6 +149,9 @@ task-base-kernel26-rdepends = "\
 
 task-base-keyboard-rdepends = "\
     keymaps"
+
+task-base-pci-rdepends = "\
+    pciutils"
 
 task-base-kernel26-extras-rrecommends = "\
     kernel-module-input \
@@ -257,8 +263,9 @@ task-distro-ipsec-rrecommends = "\
 
 task-distro-wifi-rdepends = "\
     wireless-tools \
-    hostap-utils \
-    wpa-supplicant-nossl"
+    ${@base_contains("COMBINED_FEATURES", "pcmcia", "hostap-utils", "",d)} \
+    ${@base_contains("COMBINED_FEATURES", "pci", "hostap-utils", "",d)} \
+    wpa-supplicant"
 
 task-distro-wifi-rrecommends = "\
     kernel-module-ieee80211-crypt \

@@ -1,0 +1,14 @@
+Index: git/examples/Makefile
+===================================================================
+--- git.orig/examples/Makefile	2006-10-20 09:53:20.000000000 +0200
++++ git/examples/Makefile	2006-10-20 10:17:55.658554000 +0200
+@@ -59,9 +59,6 @@
+ 
+ include $(TOPDIR)/config.mk
+ 
+-SREC	= hello_world.srec
+-BIN	= hello_world.bin hello_world
+-
+ ifeq ($(CPU),mpc8xx)
+ SREC	= test_burst.srec
+ BIN	= test_burst.bin test_burst

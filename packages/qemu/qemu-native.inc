@@ -1,5 +1,10 @@
 FILESPATH =. "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/qemu-${PV}:"
-prefix = "${STAGING_DIR}/${BUILD_SYS}"
+# prefix = "${STAGING_DIR}/${BUILD_SYS}"
+DEPENDS = "libsdl-native"
+
+do_configure_prepend() {
+	sed -i -e s,sdl-config,sdl-config-native, configure
+}
 
 python __anonymous() {
     from bb import which, data
@@ -11,5 +16,10 @@ python __anonymous() {
         data.setVar('EXTRA_OECONF', oldOeConf + " --cc=gcc-3.4", d)
     elif len(which(path, 'gcc-3.3')) != 0:
         data.setVar('EXTRA_OECONF', oldOeConf + " --cc=gcc-3.3", d)
+    elif len(which(path, 'gcc-3.3.6')) != 0:
+        data.setVar('EXTRA_OECONF', oldOeConf + " --cc=gcc-3.3.6", d)
+}
 
+do_stage() {
+	find . -name "qemu-*" -type f -perm -755 -exec install -m 0755 {} ${STAGING_BINDIR} \;
 }

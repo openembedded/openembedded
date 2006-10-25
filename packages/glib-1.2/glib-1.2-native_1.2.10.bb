@@ -32,8 +32,8 @@ do_configure_prepend () {
 
 do_stage () {
 	oe_libinstall -so libglib ${STAGING_LIBDIR}
-	oe_libinstall -so -C gmodule libgmodule-1.2 ${STAGING_LIBDIR}
-	oe_libinstall -so -C gthread libgthread-1.2 ${STAGING_LIBDIR}
+	oe_libinstall -so -C gmodule libgmodule ${STAGING_LIBDIR}
+	oe_libinstall -so -C gthread libgthread ${STAGING_LIBDIR}
 	autotools_stage_includes
 	install -d ${STAGING_INCDIR}/glib-1.2
 	install -m 0755 ${S}/glibconfig.h ${STAGING_INCDIR}/glib-1.2/glibconfig.h

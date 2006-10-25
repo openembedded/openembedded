@@ -7,17 +7,16 @@ LICENSE = "LGPL"
 DEPENDS = omniorb-native
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/omniorb/omniORB-${PV}.tar.gz \
+file://omniORB.cfg \
 file://omniORB-cross.patch;patch=1 \
 file://omniORB_embedded_appl.patch;patch=1" \
-file://long_double.patch;patch=1"
+file://rm_LongDouble.patch;patch=1 \
+file://arm_double.patch;patch=1;pnum=0 \
+file://dynskel.patch;patch=1;pnum=0"
 
 S = "${WORKDIR}/omniORB-${PV}"
 
 inherit autotools pkgconfig
-
-#do_configure () {
-#	oe_runconf
-#}
 
 do_compile () {
 	export EmbeddedSystem=1
@@ -27,10 +26,12 @@ do_compile () {
 
 do_stage () {
 	export EmbeddedSystem=1
-	make DESTDIR=${STAGING_DIR}/${TARGET_SYS} install
+	autotools_stage_all
 }
 
 do_install () {
 	export EmbeddedSystem=1
 	make DESTDIR=${D} install
+	install -d ${D}${sysconfdir}
+	install -m 0644 ${WORKDIR}/omniORB.cfg ${D}${sysconfdir}
 }

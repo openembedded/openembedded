@@ -2,7 +2,7 @@ DESCRIPTION = "Jim Clarkes XML parser library."
 HOMEPAGE = "http://expat.sourceforge.net/"
 SECTION = "libs"
 LICENSE = "MIT"
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/expat/expat-${PV}.tar.gz \
 	   file://autotools.patch;patch=1"

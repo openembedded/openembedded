@@ -7,7 +7,7 @@ DEPENDS += "openssl"
 DEPENDS = "timezones"
 PR = "r0"
 
-SRC_URI = "http://www.zip.com.au/~dtucker/openntpd/release/openntpd-${PV}.tar.gz \
+SRC_URI = "http://www.zip.com.au/~dtucker/openntpd/release/${P}.tar.gz \
            file://adjtimex-${PV}.patch;patch=1 \
            file://init"
 

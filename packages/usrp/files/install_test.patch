@@ -1,0 +1,20 @@
+--- usrp-0.12.orig/host/apps/Makefile.am	2006-04-03 18:52:05.000000000 -0400
++++ usrp-0.12/host/apps/Makefile.am	2006-10-20 16:15:02.000000000 -0400
+@@ -23,13 +23,13 @@
+ 
+ bin_PROGRAMS =				\
+ 	usrper				\
+-	usrp_cal_dc_offset		
+-
+-noinst_PROGRAMS =			\
+-	check_order_quickly		\
++	usrp_cal_dc_offset		\
+ 	test_usrp_standard_rx		\
+ 	test_usrp_standard_tx		
+ 
++noinst_PROGRAMS =			\
++	check_order_quickly		
++
+ noinst_HEADERS =			\
+ 	time_stuff.h
+ 

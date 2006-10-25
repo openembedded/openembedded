@@ -382,6 +382,12 @@ python base_do_fetch() {
 		raise bb.build.FuncFailed("Fetch failed: %s" % value)
 }
 
+addtask fetchall
+do_fetchall[recrdeptask] = "do_fetch"
+python base_do_fetchall() {
+	bb.build.exec_task('do_fetch', d)
+}
+
 def oe_unpack_file(file, data, url = None):
 	import bb, os
 	if not url:
@@ -505,6 +511,9 @@ python base_eventhandler() {
 		monotone_revision = "<unknown>"
 		try:
 			monotone_revision = file( "%s/_MTN/revision" % path_to_packages ).read().strip()
+			if monotone_revision.startswith( "format_version" ):
+				monotone_revision_words = monotone_revision.split()
+				monotone_revision = monotone_revision_words[ monotone_revision_words.index( "old_revision" )+1][1:-1]
 		except IOError:
 			pass
 		bb.data.setVar( 'OE_REVISION', monotone_revision, e.data )
@@ -566,7 +575,7 @@ do_populate_staging[dirs] = "${STAGING_DIR}/${TARGET_SYS}/bin ${STAGING_DIR}/${T
 			     ${STAGING_DATADIR} \
 			     ${S} ${B}"
 
-addtask populate_staging after do_package
+addtask populate_staging after do_package_write
 
 python do_populate_staging () {
 	bb.build.exec_func('do_stage', d)
@@ -590,9 +599,6 @@ do_build[func] = "1"
 # Functions that update metadata based on files outputted
 # during the build process.
 
-SHLIBS = ""
-RDEPENDS_prepend = " ${SHLIBS}"
-
 def explode_deps(s):
 	r = []
 	l = s.split()
@@ -609,27 +615,6 @@ def explode_deps(s):
 		else:
 			r.append(i)
 	return r
-
-python read_shlibdeps () {
-	packages = (bb.data.getVar('PACKAGES', d, 1) or "").split()
-	for pkg in packages:
-		rdepends = explode_deps(bb.data.getVar('RDEPENDS_' + pkg, d, 0) or bb.data.getVar('RDEPENDS', d, 0) or "")
-		shlibsfile = bb.data.expand("${WORKDIR}/install/" + pkg + ".shlibdeps", d)
-		if os.access(shlibsfile, os.R_OK):
-			fd = file(shlibsfile)
-			lines = fd.readlines()
-			fd.close()
-			for l in lines:
-				rdepends.append(l.rstrip())
-		pcfile = bb.data.expand("${WORKDIR}/install/" + pkg + ".pcdeps", d)
-		if os.access(pcfile, os.R_OK):
-			fd = file(pcfile)
-			lines = fd.readlines()
-			fd.close()
-			for l in lines:
-				rdepends.append(l.rstrip())
-		bb.data.setVar('RDEPENDS_' + pkg, " " + " ".join(rdepends), d)
-}
 
 def read_pkgdatafile(fn):
 	pkgdata = {}
@@ -738,7 +723,7 @@ python () {
 # Patch handling
 inherit patch
 
-EXPORT_FUNCTIONS do_clean do_mrproper do_fetch do_unpack do_configure do_compile do_install do_package do_populate_pkgs do_stage do_rebuild
+EXPORT_FUNCTIONS do_clean do_mrproper do_fetch do_unpack do_configure do_compile do_install do_package do_populate_pkgs do_stage do_rebuild do_fetchall
 
 MIRRORS[func] = "0"
 MIRRORS () {
@@ -782,10 +767,5 @@ ftp://ftp.gnutls.org/pub/gnutls ftp://ftp.gnupg.org/gcrypt/gnutls/
 ftp://ftp.gnutls.org/pub/gnutls http://www.mirrors.wiretapped.net/security/network-security/gnutls/
 ftp://ftp.gnutls.org/pub/gnutls ftp://ftp.mirrors.wiretapped.net/pub/security/network-security/gnutls/
 ftp://ftp.gnutls.org/pub/gnutls http://josefsson.org/gnutls/releases/
-
-
-
-ftp://.*/.*/	http://www.oesources.org/source/current/
-http://.*/.*/	http://www.oesources.org/source/current/
 }
 

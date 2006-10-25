@@ -1,0 +1,23 @@
+From: Marcin Juszkiewicz <hrw@openembedded.org>
+
+1. Link with libaio
+2. Do not show instructions during do_install or bitbake will break
+
+Index: osdl-aim-7/src/Makefile.am
+===================================================================
+--- osdl-aim-7.orig/src/Makefile.am	2004-10-21 01:31:33.000000000 +0200
++++ osdl-aim-7/src/Makefile.am	2006-10-14 19:57:28.000000000 +0200
+@@ -8,7 +8,7 @@
+ LIBADD_READLINE =
+ # endif
+ 
+-reaim_LDADD = $(top_builddir)/lib/libltp.a $(LIBADD_READLINE)
++reaim_LDADD = $(top_builddir)/lib/libltp.a $(LIBADD_READLINE) -laio
+ reaim_SOURCES = driver.c suite.h files.h ram.c aimlist.h \
+ 	rand.c times_ms.c testerr.h add.c creat_clo.c drv_funcs.c \
+ 	div.c disk_funcs.c pipe_test.c mul.c num_fcns.c int_fcns.c \
+@@ -42,4 +42,3 @@
+ 	if test -f $(srcdir)/README; then \
+ 	  $(INSTALL_DATA) $(srcdir)/README $(DESTDIR)$(datadir)/reaim; \
+ 	fi
+-	@/bin/sh $(top_srcdir)/scripts/instruct.sh

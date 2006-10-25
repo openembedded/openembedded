@@ -1,7 +1,7 @@
 # glibc:
-#fix some iconv issues, needs to be adjusted when doing uclibc builds
 PREFERRED_PROVIDER_virtual/libiconv ?= "glibc"
 PREFERRED_PROVIDER_virtual/libintl ?= "glibc"
+PREFERRED_PROVIDER_virtual/libc ?= "glibc"
 
 TARGET_OS = "linux${@['','-gnueabi'][bb.data.getVar('TARGET_ARCH',d,1)=='arm']}"
 

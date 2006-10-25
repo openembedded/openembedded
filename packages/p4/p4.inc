@@ -2,17 +2,9 @@
 # Copyright (C) 2006, Advanced Micro Devices, Inc.  All Rights Reserved
 # Released under the MIT license (see /COPYING)
 
-HOMEPAGE = "http://www.perforce.com"
 DESCRIPTION = "Perforce client and server binaries"
+HOMEPAGE = "http://www.perforce.com"
 LICENSE = "Perforce"
-
-def get_kernelmajorversion(p):
-	import re
-	r = re.compile("([0-9]+\.[0-9]+).*")
-	m = r.match(p);
-	if m:
-		return m.group(1)
-	return None
 
 def p4_arch(d):
 	import bb, re
@@ -35,9 +27,8 @@ def p4_arch(d):
 
 	return "%s%s" % (os, arch)
 
-P4ARCH="${@p4_arch(d)}"
-P4BASEURL="http://filehost.perforce.com/perforce/r${PV}/bin.${P4ARCH}"
-S="${WORKDIR}"
+P4ARCH = "${@p4_arch(d)}"
+P4BASEURL = "http://filehost.perforce.com/perforce/r${PV}/bin.${P4ARCH}"
 
 #Because these files are all named the same thing, regardless of version or arch
 PREMIRRORS=""
@@ -50,6 +41,7 @@ SRC_URI="\
 	${P4BASEURL}/p4ftpd \
 	${P4BASEURL}/p4p \
 	${P4BASEURL}/p4web"
+S = "${WORKDIR}"
 
 PACKAGES += " ${PN}-server"
 FILES_${PN} = " ${bindir}/p4"

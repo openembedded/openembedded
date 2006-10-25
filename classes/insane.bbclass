@@ -50,11 +50,11 @@ def package_qa_check_devdbg(path, name,d):
     import bb
     if not "-dev" in name:
         if path[-3:] == ".so":
-            bb.error("QA Issue: non dev package contains .so")
+            bb.error("QA Issue: non dev package contains .so: %s" % name)
 
     if not "-dbg" in name:
-        if path[-4:] == ".dbg":
-            bb.error("QA Issue: non debug package contains .dbg file")
+        if '.debug' in path:
+            bb.error("QA Issue: non debug package contains .dbg file: %s" % name)
 
 def package_qa_check_perm(path,name,d):
     """
@@ -90,6 +90,37 @@ def package_qa_walk(path, funcs, package,d):
                 func(path, package,d)
 
 
+def package_qa_check_rdepends(pkg, d):
+    if not "-dbg" in pkg and not "task-" in pkg and not "-image" in pkg:
+        # Copied from package_ipk.bbclass
+        # boiler plate to update the data
+        localdata = bb.data.createCopy(d)
+        root = "%s/install/%s" % (workdir, pkg)
+        
+        bb.data.setVar('ROOT', '', localdata) 
+        bb.data.setVar('ROOT_%s' % pkg, root, localdata)
+        pkgname = bb.data.getVar('PKG_%s' % pkg, localdata, 1)
+        if not pkgname:
+            pkgname = pkg
+        bb.data.setVar('PKG', pkgname, localdata)
+        
+        overrides = bb.data.getVar('OVERRIDES', localdata)
+        if not overrides:
+            raise bb.build.FuncFailed('OVERRIDES not defined')
+        overrides = bb.data.expand(overrides, localdata)
+        bb.data.setVar('OVERRIDES', overrides + ':' + pkg, localdata)
+        
+        bb.data.update_data(localdata)
+
+        # Now check the RDEPENDS
+        rdepends = explode_deps(bb.data.getVar('RDEPENDS', localdata, True) or "")
+
+
+        # Now do the sanity check!!!
+        for rdepend in rdepends:
+            if "-dbg" in rdepend:
+                bb.error("QA issue, koen give us a better msg!!!")
+
 # The PACKAGE FUNC to scan each package
 python do_package_qa () {
     bb.note("DO PACKAGE QA")
@@ -104,6 +135,8 @@ python do_package_qa () {
         bb.note("Package: %s" % package)
         path = "%s/install/%s" % (workdir, package)
         package_qa_walk(path, [package_qa_check_rpath, package_qa_check_devdbg, package_qa_check_perm, package_qa_check_arch], package, d)
+        package_qa_check_rdepends(package, d)
+
 }
 
 

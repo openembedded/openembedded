@@ -1,5 +1,5 @@
 DESCRIPTION = "Task packages for the Angstrom distribution"
-PR = "r20"
+PR = "r22"
 ALLOW_EMPTY = "1"
 
 PACKAGE_ARCH = "${MACHINE_ARCH}"
@@ -26,7 +26,8 @@ RDEPENDS_angstrom-gpe-task-base := "\
     matchbox \
     xcursor-transparent-theme \
     rxvt-unicode \
-    matchbox-themes-gtk \
+    matchbox-keyboard \
+    gpe-theme-clearlooks \
     xst \
     xhost \
     xrdb \
@@ -38,7 +39,6 @@ RDEPENDS_angstrom-gpe-task-base := "\
     gpe-confd \
     gpe-autostarter \
     libgtkstylus \
-    libgtkinput \
     suspend-desktop \
     teleport \
     xauth \
@@ -79,7 +79,7 @@ RDEPENDS_angstrom-gpe-task-apps := "\
     gpe-aerial \
     gpe-soundbite \
     rosetta \
-    gpe-screenshot \
+    gpe-scap \
     gpe-windowlist"
 
 RDEPENDS_angstrom-gpe-task-games := "\

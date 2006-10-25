@@ -1,0 +1,11 @@
+--- foo/configure.in.org	2006-08-05 15:42:56.000000000 +0000
++++ foo/configure.in	2006-10-11 22:53:44.000000000 +0000
+@@ -59,7 +59,7 @@
+ dnl FIXME: How do we find the installed headers robustly?
+ dnl
+ AC_CHECK_HEADER(sphinxbase/sphinx_config.h,
+-CPPFLAGS="-I/usr/include/sphinxbase -I/usr/local/include/sphinxbase",[
++CPPFLAGS="$CPPFLAGS",[
+ if test x$sphinxbase = x; then
+    # Look for sphinxbase in the parent directory
+    for sb in ../sphinxbase*; do

@@ -6,7 +6,7 @@ PRIORITY = "optional"
 LICENSE = "GPL"
 PR = "r2"
 
-SRC_URI = "http://www.metzlerbros.org/dvb/${PN}-${PV}.tar.gz \
+SRC_URI = "http://www.metzlerbros.org/dvb/${P}.tar.gz \
           file://topf2ps.patch;patch=1"
 
 S = "${WORKDIR}/${PN}-${PV}"

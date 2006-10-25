@@ -480,15 +480,17 @@ diff -Naur zlib-1.2.3/configure.ac zlib-1.2.3new/configure.ac
 +
 +AC_OUTPUT
 diff -Naur zlib-1.2.3/Makefile.am zlib-1.2.3new/Makefile.am
---- zlib-1.2.3/Makefile.am	1970-01-01 01:00:00.000000000 +0100
-+++ zlib-1.2.3new/Makefile.am	2006-08-07 19:57:26.522344250 +0200
-@@ -0,0 +1,6 @@
+--- zlib-1.2.3/Makefile.am	2006/10/14 05:35:40	1.1
++++ zlib-1.2.3new/Makefile.am	2006/10/14 05:36:49
+@@ -0,0 +1,8 @@
 +lib_LTLIBRARIES = libz.la
 +
 +libz_la_SOURCES = adler32.c compress.c crc32.c gzio.c uncompr.c deflate.c \
 +		  trees.c zutil.c inflate.c infback.c inftrees.c inffast.c
 +
 +libz_la_LDFLAGS = -version-number 1:2:3
++
++include_HEADERS = zconf.h zlib.h
 diff -Naur zlib-1.2.3/Makefile.in zlib-1.2.3new/Makefile.in
 --- zlib-1.2.3/Makefile.in	2005-07-18 04:25:21.000000000 +0200
 +++ zlib-1.2.3new/Makefile.in	1970-01-01 01:00:00.000000000 +0100

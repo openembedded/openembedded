@@ -3,7 +3,7 @@ SECTION = "net"
 DESCRIPTION = "Clearsilver is a fast, powerful, and language-neutral HTML template system"
 LICENSE = "Neotonic ClearSilver License"
 DEPENDS = "python"
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "http://www.clearsilver.net/downloads/${P}.tar.gz \
            file://crosscompile.patch;patch=1"
@@ -23,4 +23,9 @@ do_configure() {
 	oe_runconf
 }
 
-
+do_stage() {
+        autotools_stage_includes
+        for i in libs/libneo_cgi.a libs/libneo_cs.a libs/libneo_utl.a; do
+            install -m 644 $i ${STAGING_LIBDIR}
+        done
+}

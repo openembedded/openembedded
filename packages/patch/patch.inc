@@ -8,4 +8,12 @@ SECTION = "utils"
 SRC_URI = "${GNU_MIRROR}/patch/patch-${PV}.tar.gz"
 S = "${WORKDIR}/patch-${PV}"
 
-inherit autotools
+inherit autotools update-alternatives
+
+do_install_append () {
+        mv ${D}${bindir}/patch ${D}${bindir}/patch.${PN}
+}
+
+ALTERNATIVE_NAME = "patch"
+ALTERNATIVE_PATH = "patch.${PN}"
+ALTERNATIVE_PRIORITY = "100"

@@ -5,7 +5,7 @@ HOMEPAGE = "http://www.gtk.org"
 SECTION = "libs"
 PRIORITY = "optional"
 DEPENDS = "glib-2.0 pango atk jpeg libpng libxext libxcursor"
-PR = "r6"
+PR = "r7"
 
 SRC_URI = "ftp://ftp.gtk.org/pub/gtk/v2.4/gtk+-${PV}.tar.bz2 \
            file://no-demos.patch;patch=1 \
@@ -36,7 +36,7 @@ FILES_${PN} = "${bindir}/gdk-pixbuf-query-loaders \
 	${datadir}/themes ${sysconfdir}"
 FILES_${PN}-dev += "${datadir}/gtk-2.0/include ${libdir}/gtk-2.0/include ${bindir}/gdk-pixbuf-csource"
 
-RRECOMMENDS_${PN} = "glibc-gconv-iso8859-1"
+RRECOMMENDS_${PN} = "glibc-gconv-iso8859-1 ttf-dejavu-sans"
 
 EXTRA_OECONF = "--without-libtiff --disable-xkb"
 # --disable-cruft

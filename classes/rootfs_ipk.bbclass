@@ -7,6 +7,7 @@
 
 DEPENDS_prepend="ipkg-native ipkg-utils-native fakeroot-native "
 DEPENDS_append=" ${EXTRA_IMAGEDEPENDS}"
+RDEPENDS += "ipkg ipkg-collateral"
 
 PACKAGES = ""
 
@@ -15,6 +16,8 @@ do_rootfs[dirs] = ${TOPDIR}
 do_build[nostamp] = 1
 
 IPKG_ARGS = "-f ${T}/ipkg.conf -o ${IMAGE_ROOTFS}"
+
+IPKG_INSTALL += "ipkg ipkg-collateral"
 
 ROOTFS_POSTPROCESS_COMMAND ?= ""
 
@@ -29,6 +32,9 @@ real_do_rootfs () {
 	set -x
 		
 	mkdir -p ${IMAGE_ROOTFS}/dev
+
+	#work around a build in ipkg-make-index
+	touch ${DEPLOY_DIR_IPK}/Packages
 
 	if [ -z "${DEPLOY_KEEP_PACKAGES}" ]; then
 		touch ${DEPLOY_DIR_IPK}/Packages

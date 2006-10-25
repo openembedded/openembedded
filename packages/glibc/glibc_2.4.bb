@@ -5,6 +5,10 @@ SECTION = "libs"
 PRIORITY = "required"
 PR = "r10"
 
+#add the hosts that are confirmed to be working to COMPATIBLE_HOSTi
+COMPATIBLE_HOST = '(i.86.*-linux|sh.*-linux)'
+DEFAULT_PREFERENCE_arm = "-1"
+
 # the -isystem in bitbake.conf screws up glibc do_stage
 BUILD_CPPFLAGS = "-I${STAGING_DIR}/${BUILD_SYS}/include"
 TARGET_CPPFLAGS = "-I${STAGING_DIR}/${TARGET_SYS}/include"

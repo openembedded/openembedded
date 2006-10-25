@@ -1,0 +1,80 @@
+Index: sdcc/device/lib/Makefile.in
+===================================================================
+--- sdcc.orig/device/lib/Makefile.in
++++ sdcc/device/lib/Makefile.in
+@@ -18,8 +18,8 @@ ifndef PORTINCDIR
+ PORTINCDIR	= $(INCDIR)/mcs51
+ endif
+ 
+-CC		= $(PRJDIR)/bin/sdcc
+-CPP		= $(PRJDIR)/bin/sdcpp
++CC		= sdcc
++CPP		= sdcpp
+ 
+ prefix          = @prefix@
+ exec_prefix     = @exec_prefix@
+Index: sdcc/device/lib/mcs51/Makefile
+===================================================================
+--- sdcc.orig/device/lib/mcs51/Makefile
++++ sdcc/device/lib/mcs51/Makefile
+@@ -1,8 +1,8 @@
+ 
+ TOPDIR = ../../..
+ 
+-SAS = $(TOPDIR)/bin/asx8051
+-SCC = $(TOPDIR)/bin/sdcc
++SAS = asx8051
++SCC = sdcc
+ 
+ OBJ = crtstart.rel crtxinit.rel crtxclear.rel crtclear.rel crtxstack.rel \
+       crtpagesfr.rel
+Index: sdcc/device/lib/ds390/Makefile
+===================================================================
+--- sdcc.orig/device/lib/ds390/Makefile
++++ sdcc/device/lib/ds390/Makefile
+@@ -1,4 +1,4 @@
+-CC = ../../../bin/sdcc
++CC = sdcc
+ 
+ #VERBOSE = --verbose
+ 
+Index: sdcc/device/lib/ds400/Makefile
+===================================================================
+--- sdcc.orig/device/lib/ds400/Makefile
++++ sdcc/device/lib/ds400/Makefile
+@@ -1,4 +1,4 @@
+-CC = ../../../bin/sdcc
++CC = sdcc
+ 
+ #VERBOSE = --verbose
+ 
+Index: sdcc/device/lib/z80/Makefile
+===================================================================
+--- sdcc.orig/device/lib/z80/Makefile
++++ sdcc/device/lib/z80/Makefile
+@@ -2,8 +2,8 @@
+ 
+ TOPDIR = ../../..
+ 
+-SCC = $(TOPDIR)/bin/sdcc -mz80
+-SAS = $(TOPDIR)/bin/as-z80
++SCC = sdcc -mz80
++SAS = as-z80
+ 
+ OBJ = div.o mul.o putchar.o shift.o stubs.o crt0_rle.o heap.o fstubs.o
+ 
+Index: sdcc/device/lib/gbz80/Makefile
+===================================================================
+--- sdcc.orig/device/lib/gbz80/Makefile
++++ sdcc/device/lib/gbz80/Makefile
+@@ -2,8 +2,8 @@
+ 
+ TOPDIR = ../../..
+ 
+-SCC = $(TOPDIR)/bin/sdcc -mgbz80
+-SAS = $(TOPDIR)/bin/as-gbz80
++SCC = sdcc -mgbz80
++SAS = as-gbz80
+ 
+ OBJ = div.o mul.o putchar.o printf.o shift.o stubs.o crt0_rle.o heap.o fstubs.o
+ 

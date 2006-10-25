@@ -8,7 +8,7 @@ SECTION = "network"
 LICENSE = "GPLv2"
 DEPENDS = "clamav"
 RDEPENDS_${PN} += "${PN}-templates-css2 ${PN}-templates-en"
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "http://www.server-side.de/download/havp-${PV}.tar.gz \
            file://sysconfdir-is-etc.patch;patch=1 \
@@ -59,7 +59,7 @@ PACKAGES = "${PN}-dbg ${PN}-doc \
 
 FILES_${PN} = "${sysconfdir}/havp/blacklist ${sysconfdir}/havp/whitelist \
                ${sysconfdir}/havp/havp.config* \
-               ${sysconfdir}/init.d ${sysconfdir}/default ${sbindir}"
+               ${sysconfdir}/init.d ${sysconfdir}/default ${sbindir}/*"
 FILES_${PN}-templates-br = "${sysconfdir}/havp/templates/br"
 FILES_${PN}-templates-css2 = "${sysconfdir}/havp/templates/css2"
 FILES_${PN}-templates-de = "${sysconfdir}/havp/templates/de"

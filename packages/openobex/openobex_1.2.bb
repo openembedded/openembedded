@@ -5,7 +5,7 @@ SECTION = "libs"
 PROVIDES = "openobex-apps"
 DEPENDS = "libusb bluez-libs"
 LICENSE = "GPL"
-PR = "r2"
+PR = "r3"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/openobex/openobex-${PV}.tar.gz \
            file://disable-cable-test.patch;patch=1" \
@@ -26,7 +26,7 @@ do_stage() {
 }
 
 # how to stop shlibrename from renaming -apps?
-PACKAGES = "${PN} ${PN}-dev openobex-apps"
+PACKAGES += "openobex-apps"
 FILES_${PN} = "${libdir}/lib*.so.*"
 FILES_${PN}-dev += "${bindir}/openobex-config"
-FILES_${PN}-apps = "${bindir}"
+FILES_${PN}-apps = "${bindir}/*"
