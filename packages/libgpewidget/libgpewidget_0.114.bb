@@ -3,7 +3,7 @@ DESCRIPTION = "libgpewidget contains a collection of widgets and other common co
 SECTION     = "gpe/libs"
 PRIORITY    = "optional"
 DEPENDS     = "gtk+ cairo libxrender gtk-doc"
-PR          = "r0"
+PR          = "r1"
 
 GPE_TARBALL_SUFFIX = "bz2"
 inherit gpe pkgconfig autotools
@@ -11,7 +11,7 @@ inherit gpe pkgconfig autotools
 SRC_URI += "file://pkgconfig.patch;patch=1;pnum=0"
 
 PACKAGES =+ "libgpewidget-bin"
-FILES_libgpewidget-bin = "${bindir}"
+FILES_libgpewidget-bin = "${bindir}/*"
 
 EXTRA_OECONF = "--enable-cairo"
 
