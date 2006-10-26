@@ -1,6 +1,5 @@
 SUMMARY="Basic networking tools"
 LICENSE="GPL"
-MAINTAINER="Freyther <freyther@handhelds.org>"
 
 
 #
