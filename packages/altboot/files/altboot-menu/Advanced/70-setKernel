@@ -1,7 +1,8 @@
 # !/bin/sh
 M_TITLE="Choose kernel for next boot"
 
-
+# Deprecated due to altbootctl
+exit 0
 
 # Only kernel 2.6 offers kexec support
 uname -r | grep -q "^2.6" || exit 0
