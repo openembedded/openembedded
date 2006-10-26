@@ -309,6 +309,20 @@ pkg_postrm_kernel-image-dsmg600 () {
 	update-alternatives --remove ${KERNEL_IMAGETYPE} /${KERNEL_IMAGEDEST}/${KERNEL_IMAGETYPE}-dsmg600${ARCH_BYTE_SEX}-${KERNEL_RELEASE} || true
 }
 
+# The correct settings for the FSG-3 board:
+fsg3_MACHID = "1091"
+PACKAGES += "kernel-image-fsg3"
+PKG_kernel-image-fsg3 = "kernel-image-${KERNEL_VERSION}"
+PACKAGE_ARCH_kernel-image-fsg3 = "fsg3${ARCH_BYTE_SEX}"
+DESCRIPTION_kernel-image-fsg3 = "Linux kernel for the Freecom FSG-3"
+FILES_kernel-image-fsg3 = "/${KERNEL_IMAGEDEST}/${KERNEL_IMAGETYPE}-fsg3${ARCH_BYTE_SEX}-${KERNEL_RELEASE}"
+pkg_postinst_kernel-image-fsg3 () {
+	update-alternatives --install /${KERNEL_IMAGEDEST}/${KERNEL_IMAGETYPE} ${KERNEL_IMAGETYPE} /${KERNEL_IMAGEDEST}/${KERNEL_IMAGETYPE}-fsg3${ARCH_BYTE_SEX}-${KERNEL_RELEASE} ${KERNEL_PRIORITY} || true
+}
+pkg_postrm_kernel-image-fsg3 () {
+	update-alternatives --remove ${KERNEL_IMAGETYPE} /${KERNEL_IMAGEDEST}/${KERNEL_IMAGETYPE}-fsg3${ARCH_BYTE_SEX}-${KERNEL_RELEASE} || true
+}
+
 #FIXUP: the correct instructions to copy the kernel prepended with the le fixup
 #FIXME: do a fixup for BE too...
 FIXUP_armeb = "cp$"
@@ -358,6 +372,7 @@ do_install_append() {
 	install_image 'loft${ARCH_BYTE_SEX}' '${loft_MACHID}'
 	install_image 'nas100d${ARCH_BYTE_SEX}' '${nas100d_MACHID}'
 	install_image 'dsmg600${ARCH_BYTE_SEX}' '${dsmg600_MACHID}'
+	install_image 'fsg3${ARCH_BYTE_SEX}' '${fsg3_MACHID}'
 }
 
 do_deploy[dirs] = "${S}"
@@ -376,6 +391,7 @@ do_deploy() {
 	deploy_image 'loft${ARCH_BYTE_SEX}' '${loft_MACHID}'
 	deploy_image 'nas100d${ARCH_BYTE_SEX}' '${nas100d_MACHID}'
 	deploy_image 'dsmg600${ARCH_BYTE_SEX}' '${dsmg600_MACHID}'
+	deploy_image 'fsg3${ARCH_BYTE_SEX}' '${fsg3_MACHID}'
 }
 
 addtask deploy before do_build after do_compile
