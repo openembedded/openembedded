@@ -1,0 +1,80 @@
+--- net-tools-1.60/lib/interface.c.siunits	2004-03-14 12:11:22.000000000 -0600
++++ net-tools-1.60/lib/interface.c	2004-03-14 12:27:31.990679464 -0600
+@@ -262,7 +262,7 @@
+ 	       &ife->stats.tx_compressed);
+ 	break;
+     case 2:
+-	sscanf(bp, "%llu %llu %lu %lu %lu %lu %llu %llu %lu %lu %lu %lu %lu",
++	sscanf(bp, "%Lu %llu %lu %lu %lu %lu %Lu %Lu %lu %lu %lu %lu %lu",
+ 	       &ife->stats.rx_bytes,
+ 	       &ife->stats.rx_packets,
+ 	       &ife->stats.rx_errors,
+@@ -280,7 +280,7 @@
+ 	ife->stats.rx_multicast = 0;
+ 	break;
+     case 1:
+-	sscanf(bp, "%llu %lu %lu %lu %lu %llu %lu %lu %lu %lu %lu",
++	sscanf(bp, "%Lu %lu %lu %lu %lu %Lu %lu %lu %lu %lu %lu",
+ 	       &ife->stats.rx_packets,
+ 	       &ife->stats.rx_errors,
+ 	       &ife->stats.rx_dropped,
+@@ -675,8 +675,8 @@
+     int hf;
+     int can_compress = 0;
+     unsigned long long rx, tx, short_rx, short_tx;
+-    char Rext[5]="b";
+-    char Text[5]="b";
++    const char *Rext = "b";
++    const char *Text = "b";
+ 
+ #if HAVE_AFIPX
+     static struct aftype *ipxtype = NULL;
+@@ -882,10 +882,44 @@
+ 	tx = ptr->stats.tx_bytes;
+ 	short_rx = rx * 10;  
+ 	short_tx = tx * 10;
+-	if (rx > 1048576) { short_rx /= 1048576;  strcpy(Rext, "Mb"); }
+-	else if (rx > 1024) { short_rx /= 1024;  strcpy(Rext, "Kb"); }
+-	if (tx > 1048576) { short_tx /= 1048576;  strcpy(Text, "Mb"); }
+-	else if (tx > 1024) { short_tx /= 1024;  strcpy(Text, "Kb"); }
++	if (rx > 1152921504606846976ull) {
++	    short_rx /= 1152921504606846976ull;
++	    Rext = "EiB";
++	} else if (rx > 1125899906842624ull) {
++	    short_rx /= 1125899906842624ull;
++	    Rext = "PiB";
++	} else if (rx > 1099511627776ull) {
++	    short_rx /= 1099511627776ull;
++	    Rext = "TiB";
++	} else if (rx > 1073741824ull) {
++	    short_rx /= 1073741824ull;
++	    Rext = "GiB";
++	} else if (rx > 1048576) {
++	    short_rx /= 1048576;
++	    Rext = "MiB";
++	} else if (rx > 1024) {
++	    short_rx /= 1024;
++	    Rext = "KiB";
++	}
++	if (tx > 1152921504606846976ull) {
++	    short_tx /= 1152921504606846976ull;
++	    Text = "EiB";
++	} else if (tx > 1125899906842624ull) {
++	    short_tx /= 1125899906842624ull;
++	    Text = "PiB";
++	} else if (tx > 1099511627776ull) {
++	    short_tx /= 1099511627776ull;
++	    Text = "TiB";
++	} else if (tx > 1073741824ull) {
++	    short_tx /= 1073741824ull;
++	    Text = "GiB";
++	} else if (tx > 1048576) {
++	    short_tx /= 1048576;
++	    Text = "MiB";
++	} else if (tx > 1024) {
++	    short_tx /= 1024;
++	    Text = "KiB";
++	}
+ 
+ 	printf("          ");
+ 	printf(_("TX packets:%llu errors:%lu dropped:%lu overruns:%lu carrier:%lu\n"),

@@ -1,0 +1,61 @@
+--- net-tools-1.60/ifconfig.c.netmask	2001-04-13 20:25:18.000000000 +0200
++++ net-tools-1.60/ifconfig.c	2004-11-02 15:31:56.454594456 +0100
+@@ -23,6 +23,7 @@
+  *	    20001008 - Bernd Eckenfels, Patch from RH for setting mtu 
+  *			(default AF was wrong)
+  *          20010404 - Arnaldo Carvalho de Melo, use setlocale
++ *          20040831 - Florin Malita <fmalita@glenayre.com> delayed CIDR netmask
+  */
+ 
+ #define DFLT_AF "inet"
+@@ -227,13 +228,13 @@
+ 
+ int main(int argc, char **argv)
+ {
+-    struct sockaddr sa;
++    struct sockaddr sa, sa_netmask;
+     struct sockaddr_in sin;
+     char host[128];
+     struct aftype *ap;
+     struct hwtype *hw;
+     struct ifreq ifr;
+-    int goterr = 0, didnetmask = 0;
++    int goterr = 0, didnetmask = 0, donetmask = 0;
+     char **spp;
+     int fd;
+ #if HAVE_AFINET6
+@@ -903,16 +904,16 @@
+ 	/* FIXME: sa is too small for INET6 addresses, inet6 should use that too, 
+ 	   broadcast is unexpected */
+ 	if (ap->getmask) {
+-	    switch (ap->getmask(host, &sa, NULL)) {
++	    switch (ap->getmask(host, &sa_netmask, NULL)) {
+ 	    case -1:
+ 		usage();
+ 		break;
+ 	    case 1:
+ 		if (didnetmask)
+ 		    usage();
+-
+-		goterr = set_netmask(skfd, &ifr, &sa);
+-		didnetmask++;
++		
++		/* delay setting the CIDR netmask till after setting the addr */
++		donetmask = 1;
+ 		break;
+ 	    }
+ 	}
+@@ -960,6 +961,13 @@
+ 	    }
+ 	}
+ 
++	/* set CIDR netmask */
++	if (donetmask) {
++		donetmask = 0;
++		goterr = set_netmask(skfd, &ifr, &sa_netmask);
++		didnetmask++;
++	}
++
+        /*
+         * Don't do the set_flag() if the address is an alias with a - at the
+         * end, since it's deleted already! - Roman

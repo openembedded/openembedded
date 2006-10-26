@@ -1,0 +1,42 @@
+--- net-tools-1.60/netstat.c.trunc	2004-08-31 12:42:08.595426960 +0200
++++ net-tools-1.60/netstat.c	2004-08-31 12:59:55.766192344 +0200
+@@ -773,8 +773,8 @@
+ 		 get_sname(htons(local_port), "tcp",
+ 			   flag_not & FLAG_NUM_PORT));
+ 
+-	if ((strlen(local_addr) + strlen(buffer)) > 22)
+-	    local_addr[22 - strlen(buffer)] = '\0';
++	if ((strlen(local_addr) + strlen(buffer)) >= 27)
++	    local_addr[27 - strlen(buffer) - 1] = '\0';
+ 
+ 	strcat(local_addr, ":");
+ 	strncat(local_addr, buffer, sizeof(local_addr));
+@@ -782,8 +782,8 @@
+ 	snprintf(buffer, sizeof(buffer), "%s",
+ 		 get_sname(htons(rem_port), "tcp", flag_not & FLAG_NUM_PORT));
+ 
+-	if ((strlen(rem_addr) + strlen(buffer)) > 22)
+-	    rem_addr[22 - strlen(buffer)] = '\0';
++	if ((strlen(rem_addr) + strlen(buffer)) >= 27)
++	    rem_addr[27 - strlen(buffer) - 1] = '\0';
+ 
+ 	strcat(rem_addr, ":");
+ 	strncat(rem_addr, buffer, sizeof(rem_addr));
+@@ -816,7 +816,7 @@
+ 			 timer_run, (double) time_len / HZ, retr, timeout);
+ 		break;
+ 	    }
+-	printf("tcp   %6ld %6ld %-23s %-23s %-12s",
++	printf("tcp   %6ld %6ld %-27s %-27s %-12s",
+ 	       rxq, txq, local_addr, rem_addr, _(tcp_state[state]));
+ 
+ 	finish_this_one(uid,inode,timers);
+@@ -1770,7 +1770,7 @@
+ 	      else
+ 		printf(_("(w/o servers)"));
+ 	    }
+-	    printf(_("\nProto Recv-Q Send-Q Local Address           Foreign Address         State      "));	/* xxx */
++	    printf(_("\nProto Recv-Q Send-Q Local Address               Foreign Address             State      "));	/* xxx */
+ 	    if (flag_exp > 1)
+ 		printf(_(" User       Inode     "));
+ 	    print_progname_banner();

@@ -1,0 +1,78 @@
+--- net-tools-1.60/netstat.c.num-ports	2004-11-24 12:19:24.000000000 +0100
++++ net-tools-1.60/netstat.c	2004-11-25 16:00:45.208367104 +0100
+@@ -765,8 +765,8 @@
+ 	txq = 0L;
+     }
+     safe_strncpy(local_addr, ap->sprint((struct sockaddr *) &localaddr, 
+-					flag_not), sizeof(local_addr));
+-    safe_strncpy(rem_addr, ap->sprint((struct sockaddr *) &remaddr, flag_not),
++					flag_not & FLAG_NUM_HOST), sizeof(local_addr));
++    safe_strncpy(rem_addr, ap->sprint((struct sockaddr *) &remaddr, flag_not & FLAG_NUM_HOST),
+ 		 sizeof(rem_addr));
+     if (flag_all || (flag_lst && !rem_port) || (!flag_lst && rem_port)) {
+ 	snprintf(buffer, sizeof(buffer), "%s",
+@@ -921,11 +921,11 @@
+     if (flag_all || (notnull(remaddr) && !flag_lst) || (!notnull(remaddr) && flag_lst))
+     {
+         safe_strncpy(local_addr, ap->sprint((struct sockaddr *) &localaddr, 
+-					    flag_not), sizeof(local_addr));
++					    flag_not & FLAG_NUM_HOST), sizeof(local_addr));
+ 	snprintf(buffer, sizeof(buffer), "%s",
+ 		 get_sname(htons(local_port), "udp",
+ 			   flag_not & FLAG_NUM_PORT));
+-	if ((strlen(local_addr) + strlen(buffer)) > 22)
++	if ((strlen(local_addr) + strlen(buffer)) >= 27)
+ 	    local_addr[22 - strlen(buffer)] = '\0';
+ 	strcat(local_addr, ":");
+ 	strncat(local_addr, buffer, sizeof(local_addr));
+@@ -934,8 +934,8 @@
+ 	snprintf(buffer, sizeof(buffer), "%s",
+ 		 get_sname(htons(rem_port), "udp", flag_not & FLAG_NUM_PORT));
+         safe_strncpy(rem_addr, ap->sprint((struct sockaddr *) &remaddr, 
+-					  flag_not), sizeof(rem_addr));
+-	if ((strlen(rem_addr) + strlen(buffer)) > 22)
++					  flag_not & FLAG_NUM_HOST), sizeof(rem_addr));
++	if ((strlen(rem_addr) + strlen(buffer)) >= 27)
+ 	    rem_addr[22 - strlen(buffer)] = '\0';
+ 	strcat(rem_addr, ":");
+ 	strncat(rem_addr, buffer, sizeof(rem_addr));
+@@ -958,7 +958,7 @@
+ 			 retr, timeout);
+ 		break;
+ 	    }
+-	printf("udp   %6ld %6ld %-23s %-23s %-12s",
++	printf("udp   %6ld %6ld %-27s %-27s %-12s",
+ 	       rxq, txq, local_addr, rem_addr, udp_state);
+ 
+ 	finish_this_one(uid,inode,timers);
+@@ -1045,8 +1045,8 @@
+ 		 get_sname(htons(local_port), "raw",
+ 			   flag_not & FLAG_NUM_PORT));
+         safe_strncpy(local_addr, ap->sprint((struct sockaddr *) &localaddr, 
+-					    flag_not), sizeof(local_addr));
+-	if ((strlen(local_addr) + strlen(buffer)) > 22)
++					    flag_not & FLAG_NUM_HOST), sizeof(local_addr));
++	if ((strlen(local_addr) + strlen(buffer)) >= 27)
+ 	    local_addr[22 - strlen(buffer)] = '\0';
+ 	strcat(local_addr, ":");
+ 	strncat(local_addr, buffer, sizeof(local_addr));
+@@ -1055,8 +1055,8 @@
+ 	snprintf(buffer, sizeof(buffer), "%s",
+ 		 get_sname(htons(rem_port), "raw", flag_not & FLAG_NUM_PORT));
+         safe_strncpy(rem_addr, ap->sprint((struct sockaddr *) &remaddr, 
+-					  flag_not), sizeof(rem_addr));
+-	if ((strlen(rem_addr) + strlen(buffer)) > 22)
++					  flag_not & FLAG_NUM_HOST), sizeof(rem_addr));
++	if ((strlen(rem_addr) + strlen(buffer)) >= 27)
+ 	    rem_addr[22 - strlen(buffer)] = '\0';
+ 	strcat(rem_addr, ":");
+ 	strncat(rem_addr, buffer, sizeof(rem_addr));
+@@ -1081,7 +1081,7 @@
+ 			 retr, timeout);
+ 		break;
+ 	    }
+-	printf("raw   %6ld %6ld %-23s %-23s %-12d",
++	printf("raw   %6ld %6ld %-27s %-27s %-12d",
+ 	       rxq, txq, local_addr, rem_addr, state);
+ 
+ 	finish_this_one(uid,inode,timers);

@@ -1,0 +1,52 @@
+--- net-tools-1.60/netstat.c.ifaceopt	2005-03-01 12:11:43.695661632 +0100
++++ net-tools-1.60/netstat.c	2005-03-01 12:16:37.601981080 +0100
+@@ -1658,10 +1658,11 @@
+ {
+     fprintf(stderr, _("usage: netstat [-veenNcCF] [<Af>] -r         netstat {-V|--version|-h|--help}\n"));
+     fprintf(stderr, _("       netstat [-vnNcaeol] [<Socket> ...]\n"));
+-    fprintf(stderr, _("       netstat { [-veenNac] -i[<Iface>] | [-cnNe] -M | -s } [delay]\n\n"));
++    fprintf(stderr, _("       netstat { [-veenNac] -I[<Iface>] | [-veenNac] -i | [-cnNe] -M | -s } [delay]\n\n"));
+ 
+     fprintf(stderr, _("        -r, --route                display routing table\n"));
+-    fprintf(stderr, _("        -i, --interfaces=[<Iface>] display interface table\n"));
++    fprintf(stderr, _("        -I, --interfaces=[<Iface>] display interface table for <Iface>\n"));
++    fprintf(stderr, _("        -i, --interfaces           display interface table\n"));
+     fprintf(stderr, _("        -g, --groups               display multicast group memberships\n"));
+     fprintf(stderr, _("        -s, --statistics           display networking statistics (like SNMP)\n"));
+ #if HAVE_FW_MASQUERADE
+@@ -1700,7 +1701,8 @@
+     {
+ 	AFTRANS_OPTS,
+ 	{"version", 0, 0, 'V'},
+-	{"interfaces", 2, 0, 'i'},
++	{"interfaces", 2, 0, 'I'},
++	{"interfaces", 0, 0, 'i'},
+ 	{"help", 0, 0, 'h'},
+ 	{"route", 0, 0, 'r'},
+ #if HAVE_FW_MASQUERADE
+@@ -1738,7 +1740,8 @@
+     getroute_init();		/* Set up AF routing support */
+ 
+     afname[0] = '\0';
+-    while ((i = getopt_long(argc, argv, "MCFA:acdegphi::nNorstuVv?wxl", longopts, &lop)) != EOF)
++
++    while ((i = getopt_long(argc, argv, "MCFA:acdegphiI::nNorstuVv?wxl", longopts, &lop)) != EOF)
+ 	switch (i) {
+ 	case -1:
+ 	    break;
+@@ -1779,11 +1782,14 @@
+ 	case 'p':
+ 	    flag_prg++;
+ 	    break;
+-	case 'i':
++	case 'I':
+             if (optarg && strcmp(optarg, "(null)"))
+                 flag_int_name = strdup(optarg);
+ 	    flag_int++;
+ 	    break;
++	case 'i':
++       	flag_int++;
++	    break;
+ 	case 'n':
+ 	    flag_not |= FLAG_NUM;
+ 	    break;

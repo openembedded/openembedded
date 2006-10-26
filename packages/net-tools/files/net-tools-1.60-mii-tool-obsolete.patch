@@ -1,0 +1,25 @@
+--- net-tools-1.60/man/en_US/mii-tool.8.obsolete	2000-05-21 16:21:38.000000000 +0200
++++ net-tools-1.60/man/en_US/mii-tool.8	2004-11-11 10:45:51.155113000 +0100
+@@ -18,6 +18,12 @@
+ [\fB\-F\fR, \fB\-\-force=\fImedia\fR]
+ .RI [ "interface\ ..." ]
+ 
++.SH NOTE
++.P 
++This program is obsolete. Valid media are only \fB100baseT4\fR, 
++\fB100baseTx-FD\fR,\fB100baseTx-HD\fR, \fB10baseT-FD\fR and 
++\fB10baseT-HD\fR ethernet cards. For replacement check \fBethtool\fB.
++
+ .SH DESCRIPTION
+ This utility checks or sets the status of a network interface's Media
+ Independent Interface (MII) unit.  Most fast ethernet adapters use an
+@@ -72,6 +78,9 @@
+ commas.  Valid media are \fB100baseT4\fR, \fB100baseTx-FD\fR,
+ \fB100baseTx-HD\fR, \fB10baseT-FD\fR, and \fB10baseT-HD\fR.
+ 
++.SH SEE ALSO
++ethtool(8)
++
+ .SH AUTHORS
+ David Hinds \- dhinds@pcmcia.sourceforge.org
+ .br

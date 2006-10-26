@@ -1,0 +1,13 @@
+--- net-tools-1.60/man/en_US/hostname.1.note	2004-11-24 12:09:28.000000000 +0100
++++ net-tools-1.60/man/en_US/hostname.1	2004-11-24 12:16:41.121050760 +0100
+@@ -191,6 +191,10 @@
+ ) then root can also set a new NIS domain.
+ .SH FILES
+ .B /etc/hosts
++.B /etc/sysconfig/network
++.SH NOTE
++Note that hostname doesn't change anything permanently. After reboot
++original names from \fI/etc/hosts\fR are used again. 
+ .SH AUTHOR
+ Peter Tobias, <tobias@et-inf.fho-emden.de>
+ .br

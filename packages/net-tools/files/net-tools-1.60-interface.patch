@@ -1,0 +1,110 @@
+--- net-tools-1.60/netstat.c.interface	2003-08-25 17:06:30.000000000 +0200
++++ net-tools-1.60/netstat.c	2003-08-25 17:08:41.000000000 +0200
+@@ -129,6 +129,7 @@
+ #define E_IOCTL -3
+ 
+ int flag_int = 0;
++char *flag_int_name = NULL;
+ int flag_rou = 0;
+ int flag_mas = 0;
+ int flag_sta = 0;
+@@ -1441,6 +1442,7 @@
+ static int iface_info(void)
+ {
+     static int count=0;
++    struct interface *ife = NULL;
+ 
+     if (skfd < 0) {
+ 	if ((skfd = sockets_open(0)) < 0) {
+@@ -1455,7 +1457,11 @@
+ 	    printf(_("Iface       MTU Met    RX-OK RX-ERR RX-DRP RX-OVR    TX-OK TX-ERR TX-DRP TX-OVR Flg\n"));
+     }
+ 
+-    if (for_all_interfaces(do_if_print, &flag_all) < 0) {
++    if (flag_int_name) {
++        ife = lookup_interface(flag_int_name);
++        do_if_print(ife, &flag_all);
++    }
++    else if (for_all_interfaces(do_if_print, &flag_all) < 0) {
+ 	perror(_("missing interface information"));
+ 	exit(1);
+     }
+@@ -1481,30 +1487,31 @@
+ {
+     fprintf(stderr, _("usage: netstat [-veenNcCF] [<Af>] -r         netstat {-V|--version|-h|--help}\n"));
+     fprintf(stderr, _("       netstat [-vnNcaeol] [<Socket> ...]\n"));
+-    fprintf(stderr, _("       netstat { [-veenNac] -i | [-cnNe] -M | -s } [delay]\n\n"));
++    fprintf(stderr, _("       netstat { [-veenNac] -i[<Iface>] | [-cnNe] -M | -s } [delay]\n\n"));
+ 
+-    fprintf(stderr, _("        -r, --route              display routing table\n"));
+-    fprintf(stderr, _("        -i, --interfaces         display interface table\n"));
+-    fprintf(stderr, _("        -g, --groups             display multicast group memberships\n"));
+-    fprintf(stderr, _("        -s, --statistics         display networking statistics (like SNMP)\n"));
++    fprintf(stderr, _("        -r, --route                display routing table\n"));
++    fprintf(stderr, _("        -i, --interfaces=[<Iface>] display interface table\n"));
++    fprintf(stderr, _("        -g, --groups               display multicast group memberships\n"));
++    fprintf(stderr, _("        -s, --statistics           display networking statistics (like SNMP)\n"));
+ #if HAVE_FW_MASQUERADE
+-    fprintf(stderr, _("        -M, --masquerade         display masqueraded connections\n\n"));
++    fprintf(stderr, _("        -M, --masquerade           display masqueraded connections\n\n"));
+ #endif
+-    fprintf(stderr, _("        -v, --verbose            be verbose\n"));
+-    fprintf(stderr, _("        -n, --numeric            don't resolve names\n"));
+-    fprintf(stderr, _("        --numeric-hosts          don't resolve host names\n"));
+-    fprintf(stderr, _("        --numeric-ports          don't resolve port names\n"));
+-    fprintf(stderr, _("        --numeric-users          don't resolve user names\n"));
+-    fprintf(stderr, _("        -N, --symbolic           resolve hardware names\n"));
+-    fprintf(stderr, _("        -e, --extend             display other/more information\n"));
+-    fprintf(stderr, _("        -p, --programs           display PID/Program name for sockets\n"));
+-    fprintf(stderr, _("        -c, --continuous         continuous listing\n\n"));
+-    fprintf(stderr, _("        -l, --listening          display listening server sockets\n"));
+-    fprintf(stderr, _("        -a, --all, --listening   display all sockets (default: connected)\n"));
+-    fprintf(stderr, _("        -o, --timers             display timers\n"));
+-    fprintf(stderr, _("        -F, --fib                display Forwarding Information Base (default)\n"));
+-    fprintf(stderr, _("        -C, --cache              display routing cache instead of FIB\n\n"));
++    fprintf(stderr, _("        -v, --verbose              be verbose\n"));
++    fprintf(stderr, _("        -n, --numeric              don't resolve names\n"));
++    fprintf(stderr, _("        --numeric-hosts            don't resolve host names\n"));
++    fprintf(stderr, _("        --numeric-ports            don't resolve port names\n"));
++    fprintf(stderr, _("        --numeric-users            don't resolve user names\n"));
++    fprintf(stderr, _("        -N, --symbolic             resolve hardware names\n"));
++    fprintf(stderr, _("        -e, --extend               display other/more information\n"));
++    fprintf(stderr, _("        -p, --programs             display PID/Program name for sockets\n"));
++    fprintf(stderr, _("        -c, --continuous           continuous listing\n\n"));
++    fprintf(stderr, _("        -l, --listening            display listening server sockets\n"));
++    fprintf(stderr, _("        -a, --all, --listening     display all sockets (default: connected)\n"));
++    fprintf(stderr, _("        -o, --timers               display timers\n"));
++    fprintf(stderr, _("        -F, --fib                  display Forwarding Information Base (default)\n"));
++    fprintf(stderr, _("        -C, --cache                display routing cache instead of FIB\n\n"));
+ 
++    fprintf(stderr, _("  <Iface>: Name of interface to monitor/list.\n"));
+     fprintf(stderr, _("  <Socket>={-t|--tcp} {-u|--udp} {-w|--raw} {-x|--unix} --ax25 --ipx --netrom\n"));
+     fprintf(stderr, _("  <AF>=Use '-A <af>' or '--<af>'; default: %s\n"), DFLT_AF);
+     fprintf(stderr, _("  List of possible address families (which support routing):\n"));
+@@ -1522,7 +1529,7 @@
+     {
+ 	AFTRANS_OPTS,
+ 	{"version", 0, 0, 'V'},
+-	{"interfaces", 0, 0, 'i'},
++	{"interfaces", 2, 0, 'i'},
+ 	{"help", 0, 0, 'h'},
+ 	{"route", 0, 0, 'r'},
+ #if HAVE_FW_MASQUERADE
+@@ -1560,7 +1567,7 @@
+     getroute_init();		/* Set up AF routing support */
+ 
+     afname[0] = '\0';
+-    while ((i = getopt_long(argc, argv, "MCFA:acdegphinNorstuVv?wxl", longopts, &lop)) != EOF)
++    while ((i = getopt_long(argc, argv, "MCFA:acdegphi::nNorstuVv?wxl", longopts, &lop)) != EOF)
+ 	switch (i) {
+ 	case -1:
+ 	    break;
+@@ -1602,6 +1609,8 @@
+ 	    flag_prg++;
+ 	    break;
+ 	case 'i':
++            if (optarg && strcmp(optarg, "(null)"))
++                flag_int_name = strdup(optarg);
+ 	    flag_int++;
+ 	    break;
+ 	case 'n':

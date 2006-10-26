@@ -1,0 +1,205 @@
+--- net-tools-1.60/Makefile~	2005-12-24 06:56:57.000000000 -0500
++++ net-tools-1.60/Makefile	2005-12-29 16:54:06.000000000 -0500
+@@ -113,6 +113,12 @@
+ 
+ NET_LIB = $(NET_LIB_PATH)/lib$(NET_LIB_NAME).a
+ 
++ifeq ($(HAVE_SELINUX),1)
++LDFLAGS += -lselinux
++CFLAGS += -DHAVE_SELINUX
++else
++endif
++
+ CFLAGS	+= $(COPTS) -I. -idirafter ./include/ -I$(NET_LIB_PATH)
+ LDFLAGS	+= $(LOPTS) -L$(NET_LIB_PATH)
+ 
+--- net-tools-1.60/netstat.c~	2005-12-24 06:56:57.000000000 -0500
++++ net-tools-1.60/netstat.c	2005-12-29 16:54:07.000000000 -0500
+@@ -86,6 +86,11 @@
+ #include <net/if.h>
+ #include <dirent.h>
+ 
++#if HAVE_SELINUX
++#include <selinux/selinux.h>
++#else
++#define security_context_t char*
++#endif
+ #include "net-support.h"
+ #include "pathnames.h"
+ #include "version.h"
+@@ -96,6 +101,7 @@
+ #include "util.h"
+ 
+ #define PROGNAME_WIDTH 20
++#define SELINUX_WIDTH 50
+ 
+ #if !defined(s6_addr32) && defined(in6a_words)
+ #define s6_addr32 in6a_words	/* libinet6			*/
+@@ -150,6 +156,7 @@
+ int flag_prg = 0;
+ int flag_arg = 0;
+ int flag_ver = 0;
++int flag_selinux = 0;
+ 
+ FILE *procinfo;
+ 
+@@ -213,12 +220,17 @@
+ #define PROGNAME_WIDTH1(s) PROGNAME_WIDTH2(s)
+ #define PROGNAME_WIDTH2(s) #s
+ 
++#define SELINUX_WIDTHs SELINUX_WIDTH1(SELINUX_WIDTH)
++#define SELINUX_WIDTH1(s) SELINUX_WIDTH2(s)
++#define SELINUX_WIDTH2(s) #s
++
+ #define PRG_HASH_SIZE 211
+ 
+ static struct prg_node {
+     struct prg_node *next;
+     int inode;
+     char name[PROGNAME_WIDTH];
++    char scon[SELINUX_WIDTH];
+ } *prg_hash[PRG_HASH_SIZE];
+ 
+ static char prg_cache_loaded = 0;
+@@ -226,9 +238,12 @@
+ #define PRG_HASHIT(x) ((x) % PRG_HASH_SIZE)
+ 
+ #define PROGNAME_BANNER "PID/Program name"
++#define SELINUX_BANNER "Security Context"
+ 
+ #define print_progname_banner() do { if (flag_prg) printf("%-" PROGNAME_WIDTHs "s"," " PROGNAME_BANNER); } while (0)
+ 
++#define print_selinux_banner() do { if (flag_selinux) printf("%-" SELINUX_WIDTHs "s"," " SELINUX_BANNER); } while (0)
++
+ #define PRG_LOCAL_ADDRESS "local_address"
+ #define PRG_INODE	 "inode"
+ #define PRG_SOCKET_PFX    "socket:["
+@@ -250,7 +265,7 @@
+ /* NOT working as of glibc-2.0.7: */
+ #undef  DIRENT_HAVE_D_TYPE_WORKS
+ 
+-static void prg_cache_add(int inode, char *name)
++static void prg_cache_add(int inode, char *name, char *scon)
+ {
+     unsigned hi = PRG_HASHIT(inode);
+     struct prg_node **pnp,*pn;
+@@ -271,6 +286,14 @@
+     if (strlen(name)>sizeof(pn->name)-1) 
+ 	name[sizeof(pn->name)-1]='\0';
+     strcpy(pn->name,name);
++
++    {
++       int len=(strlen(scon)-sizeof(pn->scon))+1;
++       if (len > 0) 
++           strcpy(pn->scon,&scon[len+1]);
++       else
++	   strcpy(pn->scon,scon);
++    }
+ }
+ 
+ static const char *prg_cache_get(unsigned long inode)
+@@ -283,6 +306,16 @@
+     return("-");
+ }
+ 
++static const char *prg_cache_get_con(unsigned long inode)
++{
++    unsigned hi=PRG_HASHIT(inode);
++    struct prg_node *pn;
++
++    for (pn=prg_hash[hi];pn;pn=pn->next)
++	    if (pn->inode==inode) return(pn->scon);
++    return("-");
++}
++
+ static void prg_cache_clear(void)
+ {
+     struct prg_node **pnp,*pn;
+@@ -348,6 +381,7 @@
+     const char *cs,*cmdlp;
+     DIR *dirproc=NULL,*dirfd=NULL;
+     struct dirent *direproc,*direfd;
++    security_context_t scon=NULL;
+ 
+     if (prg_cache_loaded || !flag_prg) return;
+     prg_cache_loaded=1;
+@@ -415,7 +449,15 @@
+ 	    }
+ 
+ 	    snprintf(finbuf, sizeof(finbuf), "%s/%s", direproc->d_name, cmdlp);
+-	    prg_cache_add(inode, finbuf);
++#if HAVE_SELINUX
++	    if (getpidcon(atoi(direproc->d_name), &scon) == -1) {
++		    scon=strdup("-");
++	    }
++	    prg_cache_add(inode, finbuf, scon);
++	    freecon(scon);
++#else
++	    prg_cache_add(inode, finbuf, "-");
++#endif
+ 	}
+ 	closedir(dirfd); 
+ 	dirfd = NULL;
+@@ -1385,6 +1428,8 @@
+ 	printf("-      ");
+     if (flag_prg)
+ 	printf("%-" PROGNAME_WIDTHs "s",(has & HAS_INODE?prg_cache_get(inode):"-"));
++    if (flag_selinux)
++	printf("%-" SELINUX_WIDTHs "s",(has & HAS_INODE?prg_cache_get_con(inode):"-"));
+     puts(path);
+ }
+ 
+@@ -1403,6 +1448,7 @@
+ 
+     printf(_("\nProto RefCnt Flags       Type       State         I-Node"));
+     print_progname_banner();
++    print_selinux_banner();
+     printf(_(" Path\n"));	/* xxx */
+ 
+     {
+@@ -1682,6 +1728,7 @@
+     fprintf(stderr, _("        -o, --timers               display timers\n"));
+     fprintf(stderr, _("        -F, --fib                  display Forwarding Information Base (default)\n"));
+     fprintf(stderr, _("        -C, --cache                display routing cache instead of FIB\n\n"));
++    fprintf(stderr, _("        -Z, --context              display SELinux security context for sockets\n\n"));
+ 
+     fprintf(stderr, _("  <Iface>: Name of interface to monitor/list.\n"));
+     fprintf(stderr, _("  <Socket>={-t|--tcp} {-u|--udp} {-w|--raw} {-x|--unix} --ax25 --ipx --netrom\n"));
+@@ -1729,6 +1776,7 @@
+ 	{"cache", 0, 0, 'C'},
+ 	{"fib", 0, 0, 'F'},
+ 	{"groups", 0, 0, 'g'},
++	{"context", 0, 0, 'Z'},
+ 	{NULL, 0, 0, 0}
+     };
+ 
+@@ -1741,7 +1789,7 @@
+ 
+     afname[0] = '\0';
+ 
+-    while ((i = getopt_long(argc, argv, "MCFA:acdegphiI::nNorstuVv?wxl", longopts, &lop)) != EOF)
++    while ((i = getopt_long(argc, argv, "MCFA:acdegphiI::nNorstuVv?wxlZ", longopts, &lop)) != EOF)
+ 	switch (i) {
+ 	case -1:
+ 	    break;
+@@ -1838,6 +1886,20 @@
+ 	    if (aftrans_opt("unix"))
+ 		exit(1);
+ 	    break;
++	case 'Z':
++#if HAVE_SELINUX
++	    if (is_selinux_enabled() <= 0) {
++		fprintf(stderr, _("SELinux is not enabled on this machine.\n"));
++		exit(1);
++	    }
++	    flag_prg++;
++	    flag_selinux++;
++#else
++            fprintf(stderr, _("SELinux is not enabled for this application.\n"));
++	    exit(1);
++#endif
++
++	    break;
+ 	case '?':
+ 	case 'h':
+ 	    usage();

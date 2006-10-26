@@ -1,0 +1,63 @@
+diff -ur net-tools-1.60.orig/netstat.c net-tools-1.60/netstat.c
+--- net-tools-1.60.orig/netstat.c	2004-04-07 11:47:05.000000000 -0400
++++ net-tools-1.60/netstat.c	2004-04-07 16:47:15.000000000 -0400
+@@ -777,7 +777,8 @@
+ 	    local_addr[22 - strlen(buffer)] = '\0';
+ 
+ 	strcat(local_addr, ":");
+-	strcat(local_addr, buffer);
++	strncat(local_addr, buffer, sizeof(local_addr));
++	local_addr[sizeof(local_addr)-1] = 0;
+ 	snprintf(buffer, sizeof(buffer), "%s",
+ 		 get_sname(htons(rem_port), "tcp", flag_not & FLAG_NUM_PORT));
+ 
+@@ -785,7 +786,8 @@
+ 	    rem_addr[22 - strlen(buffer)] = '\0';
+ 
+ 	strcat(rem_addr, ":");
+-	strcat(rem_addr, buffer);
++	strncat(rem_addr, buffer, sizeof(rem_addr));
++	rem_addr[sizeof(rem_addr)-1] = 0;
+ 	timers[0] = '\0';
+ 
+ 	if (flag_opt)
+@@ -926,7 +928,8 @@
+ 	if ((strlen(local_addr) + strlen(buffer)) > 22)
+ 	    local_addr[22 - strlen(buffer)] = '\0';
+ 	strcat(local_addr, ":");
+-	strcat(local_addr, buffer);
++	strncat(local_addr, buffer, sizeof(local_addr));
++	local_addr[sizeof(local_addr)-1] = 0;
+ 
+ 	snprintf(buffer, sizeof(buffer), "%s",
+ 		 get_sname(htons(rem_port), "udp", flag_not & FLAG_NUM_PORT));
+@@ -935,7 +938,8 @@
+ 	if ((strlen(rem_addr) + strlen(buffer)) > 22)
+ 	    rem_addr[22 - strlen(buffer)] = '\0';
+ 	strcat(rem_addr, ":");
+-	strcat(rem_addr, buffer);
++	strncat(rem_addr, buffer, sizeof(rem_addr));
++	rem_addr[sizeof(rem_addr)-1] = 0;
+ 
+ 	timers[0] = '\0';
+ 	if (flag_opt)
+@@ -1045,7 +1049,8 @@
+ 	if ((strlen(local_addr) + strlen(buffer)) > 22)
+ 	    local_addr[22 - strlen(buffer)] = '\0';
+ 	strcat(local_addr, ":");
+-	strcat(local_addr, buffer);
++	strncat(local_addr, buffer, sizeof(local_addr));
++	local_addr[sizeof(local_addr)-1] = 0;
+ 
+ 	snprintf(buffer, sizeof(buffer), "%s",
+ 		 get_sname(htons(rem_port), "raw", flag_not & FLAG_NUM_PORT));
+@@ -1054,7 +1059,8 @@
+ 	if ((strlen(rem_addr) + strlen(buffer)) > 22)
+ 	    rem_addr[22 - strlen(buffer)] = '\0';
+ 	strcat(rem_addr, ":");
+-	strcat(rem_addr, buffer);
++	strncat(rem_addr, buffer, sizeof(rem_addr));
++	rem_addr[sizeof(rem_addr)-1] = 0;
+ 
+ 	timers[0] = '\0';
+ 	if (flag_opt)
