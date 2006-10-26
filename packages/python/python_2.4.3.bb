@@ -67,5 +67,4 @@ require python-${PV}-manifest.inc
 RPROVIDES_python-core = "python"
 RPROVIDES_python-curses = "python"
 PACKAGES =+ "libpython2"
-PACKAGES_DYNAMIC = "libpython2"
 FILES_libpython2 = "${libdir}/libpython*"
