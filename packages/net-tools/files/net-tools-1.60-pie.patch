@@ -1,0 +1,13 @@
+--- net-tools-1.60/Makefile.pie	2001-04-15 16:34:31.000000000 +0200
++++ net-tools-1.60/Makefile	2005-02-28 12:41:15.337127680 +0100
+@@ -113,8 +113,8 @@
+ 
+ NET_LIB = $(NET_LIB_PATH)/lib$(NET_LIB_NAME).a
+ 
+-CFLAGS	= $(COPTS) -I. -idirafter ./include/ -I$(NET_LIB_PATH)
+-LDFLAGS	= $(LOPTS) -L$(NET_LIB_PATH)
++CFLAGS	+= $(COPTS) -I. -idirafter ./include/ -I$(NET_LIB_PATH)
++LDFLAGS	+= $(LOPTS) -L$(NET_LIB_PATH)
+ 
+ SUBDIRS	= man/ $(NET_LIB_PATH)/
+ 

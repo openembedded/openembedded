@@ -7,7 +7,7 @@
 #
 
 
-addtask test after do_compile
+addtask test after do_compile before do_build
 test_do_test () {
     :
 }

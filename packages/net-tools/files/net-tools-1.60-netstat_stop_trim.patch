@@ -1,0 +1,80 @@
+--- net-tools-1.60/man/en_US/netstat.8.old	2006-02-10 11:18:11.000000000 +0100
++++ net-tools-1.60/man/en_US/netstat.8	2006-02-10 11:22:19.000000000 +0100
+@@ -176,6 +176,10 @@
+ Print routing information from the FIB.  (This is the default.)
+ .SS "\-C"
+ Print routing information from the route cache.
++.SS "\-Z \-\-context"
++If SELinux enabled print SELinux context.
++.SS "\-T \-\-trim"
++Stop trimming long addresses.
+ .SS delay
+ Netstat will cycle printing through statistics every 
+ .B delay 
+--- net-tools-1.60/netstat.c.old	2006-02-10 11:18:12.000000000 +0100
++++ net-tools-1.60/netstat.c	2006-02-10 11:13:50.000000000 +0100
+@@ -157,6 +157,9 @@
+ int flag_arg = 0;
+ int flag_ver = 0;
+ int flag_selinux = 0;
++int flag_trim = 0;
++
++
+ 
+ FILE *procinfo;
+ 
+@@ -980,17 +983,21 @@
+ 		 get_sname(htons(local_port), "tcp",
+ 			   flag_not & FLAG_NUM_PORT));
+ 
+-	if ((strlen(local_addr) + strlen(buffer)) >= 27)
+-	    local_addr[27 - strlen(buffer) - 1] = '\0';
++	if (!flag_trim) {
++	    if ((strlen(local_addr) + strlen(buffer)) >= 27)
++		local_addr[27 - strlen(buffer) - 1] = '\0';
++	}
+ 
+ 	strcat(local_addr, ":");
+ 	strncat(local_addr, buffer, sizeof(local_addr));
+ 	local_addr[sizeof(local_addr)-1] = 0;
+ 	snprintf(buffer, sizeof(buffer), "%s",
+ 		 get_sname(htons(rem_port), "tcp", flag_not & FLAG_NUM_PORT));
+-
+-	if ((strlen(rem_addr) + strlen(buffer)) >= 27)
+-	    rem_addr[27 - strlen(buffer) - 1] = '\0';
++	
++	if (!flag_trim) {
++	    if ((strlen(rem_addr) + strlen(buffer)) >= 27)
++		rem_addr[27 - strlen(buffer) - 1] = '\0';
++	}
+ 
+ 	strcat(rem_addr, ":");
+ 	strncat(rem_addr, buffer, sizeof(rem_addr));
+@@ -1776,6 +1783,7 @@
+ 	{"fib", 0, 0, 'F'},
+ 	{"groups", 0, 0, 'g'},
+ 	{"context", 0, 0, 'Z'},
++	{"trim", 0, 0, 'T'},
+ 	{NULL, 0, 0, 0}
+     };
+ 
+@@ -1788,7 +1796,7 @@
+ 
+     afname[0] = '\0';
+ 
+-    while ((i = getopt_long(argc, argv, "MCFA:acdegphiI::nNorstuVv?wxlZ", longopts, &lop)) != EOF)
++    while ((i = getopt_long(argc, argv, "MCFA:acdegphiI::nNorstuVv?wxlZT", longopts, &lop)) != EOF)
+ 	switch (i) {
+ 	case -1:
+ 	    break;
+@@ -1904,6 +1912,10 @@
+ 	    usage();
+ 	case 's':
+ 	    flag_sta++;
++	    break;
++	case 'T':
++	    flag_trim++;
++	    break;
+ 	}
+ 
+     if(argc == optind + 1) {

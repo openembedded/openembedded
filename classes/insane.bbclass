@@ -17,6 +17,7 @@
 # possible and this is contained within the pax-utils-native
 #
 
+
 # We play a special package function
 inherit package
 PACKAGE_DEPENDS += "pax-utils-native"
@@ -90,26 +91,27 @@ def package_qa_walk(path, funcs, package,d):
                 func(path, package,d)
 
 
-def package_qa_check_rdepends(pkg, d):
+def package_qa_check_rdepends(pkg, workdir, d):
+    import bb	
     if not "-dbg" in pkg and not "task-" in pkg and not "-image" in pkg:
         # Copied from package_ipk.bbclass
         # boiler plate to update the data
         localdata = bb.data.createCopy(d)
         root = "%s/install/%s" % (workdir, pkg)
-        
+
         bb.data.setVar('ROOT', '', localdata) 
         bb.data.setVar('ROOT_%s' % pkg, root, localdata)
         pkgname = bb.data.getVar('PKG_%s' % pkg, localdata, 1)
         if not pkgname:
             pkgname = pkg
         bb.data.setVar('PKG', pkgname, localdata)
-        
+
         overrides = bb.data.getVar('OVERRIDES', localdata)
         if not overrides:
             raise bb.build.FuncFailed('OVERRIDES not defined')
         overrides = bb.data.expand(overrides, localdata)
         bb.data.setVar('OVERRIDES', overrides + ':' + pkg, localdata)
-        
+
         bb.data.update_data(localdata)
 
         # Now check the RDEPENDS
@@ -135,7 +137,7 @@ python do_package_qa () {
         bb.note("Package: %s" % package)
         path = "%s/install/%s" % (workdir, package)
         package_qa_walk(path, [package_qa_check_rpath, package_qa_check_devdbg, package_qa_check_perm, package_qa_check_arch], package, d)
-        package_qa_check_rdepends(package, d)
+        package_qa_check_rdepends(package, workdir, d)
 
 }
 

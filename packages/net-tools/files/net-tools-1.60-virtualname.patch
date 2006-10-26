@@ -1,0 +1,36 @@
+--- net-tools-1.60/lib/interface.c.virtualname	2001-02-10 20:31:15.000000000 +0100
++++ net-tools-1.60/lib/interface.c	2003-08-19 13:18:01.000000000 +0200
+@@ -579,18 +579,18 @@
+ 
+ void ife_print_short(struct interface *ptr)
+ {
+-    printf("%-5.5s ", ptr->name);
+-    printf("%5d %3d", ptr->mtu, ptr->metric);
++    printf("%-9.9s ", ptr->name);
++    printf("%5d %3d ", ptr->mtu, ptr->metric);
+     /* If needed, display the interface statistics. */
+     if (ptr->statistics_valid) {
+-	printf("%8llu %6lu %6lu %6lu",
++	printf("%8llu %6lu %6lu %6lu ",
+ 	       ptr->stats.rx_packets, ptr->stats.rx_errors,
+ 	       ptr->stats.rx_dropped, ptr->stats.rx_fifo_errors);
+ 	printf("%8llu %6lu %6lu %6lu ",
+ 	       ptr->stats.tx_packets, ptr->stats.tx_errors,
+ 	       ptr->stats.tx_dropped, ptr->stats.tx_fifo_errors);
+     } else {
+-	printf("%-56s", _("     - no statistics available -"));
++	printf("%-60s", _("     - no statistics available -"));
+     }
+     /* DONT FORGET TO ADD THE FLAGS IN ife_print_long, too */
+     if (ptr->flags == 0)
+--- net-tools-1.60/netstat.c.virtualname	2001-04-15 16:41:17.000000000 +0200
++++ net-tools-1.60/netstat.c	2003-08-19 13:18:34.000000000 +0200
+@@ -1449,7 +1449,7 @@
+     }
+     if (flag_exp < 2) {
+ 	ife_short = 1;
+-	printf(_("Iface   MTU Met   RX-OK RX-ERR RX-DRP RX-OVR   TX-OK TX-ERR TX-DRP TX-OVR Flg\n"));
++	printf(_("Iface       MTU Met    RX-OK RX-ERR RX-DRP RX-OVR    TX-OK TX-ERR TX-DRP TX-OVR Flg\n"));
+     }
+ 
+     if (for_all_interfaces(do_if_print, &flag_all) < 0) {

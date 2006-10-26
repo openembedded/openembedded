@@ -1,0 +1,11 @@
+--- net-tools-1.60/arp.c.old	2005-08-03 08:23:46.000000000 +0200
++++ net-tools-1.60/arp.c	2005-08-03 11:02:10.000000000 +0200
+@@ -235,7 +235,7 @@
+     struct ifreq ifr;
+     struct hwtype *xhw;
+ 
+-    strcpy(ifr.ifr_name, ifname);
++    strncpy(ifr.ifr_name, ifname, IFNAMSIZ);
+     if (ioctl(sockfd, SIOCGIFHWADDR, &ifr) < 0) {
+ 	fprintf(stderr, _("arp: cant get HW-Address for `%s': %s.\n"), ifname, strerror(errno));
+ 	return (-1);

@@ -1,0 +1,28 @@
+--- net-tools-1.60/nameif.c.return	2004-08-03 18:01:37.000000000 +0900
++++ net-tools-1.60/nameif.c	2004-08-03 18:03:37.000000000 +0900
+@@ -27,6 +27,7 @@
+ const char *fname = default_conf; 
+ int use_syslog; 
+ int ctl_sk = -1; 
++int frag = 0;
+ 
+ void err(char *msg) 
+ { 
+@@ -288,13 +289,15 @@
+ 	while (clist) { 
+ 		struct change *ch = clist;
+ 		clist = clist->next;
+-		if (!ch->found)
++		if (!ch->found){
+ 			warning(_("interface '%s' not found"), ch->ifname); 
++			frag = 1;
++		}
+ 		free(ch); 
+ 	}
+ 
+ 	if (use_syslog)
+ 		closelog();
+-	return 0;
++	return frag;
+ } 
+ 

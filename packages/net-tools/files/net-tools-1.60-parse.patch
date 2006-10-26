@@ -1,0 +1,70 @@
+--- net-tools-1.60/statistics.c.parse	2004-09-06 10:45:35.595130240 +0200
++++ net-tools-1.60/statistics.c	2004-09-06 10:43:11.000000000 +0200
+@@ -289,7 +289,7 @@
+ 	return &dummytab;
+ }
+ 
+-void process_fd(FILE *f)
++void process_fd(FILE *f,int file_desc)   // added file_desc to show propriate error mesg
+ {
+     char buf1[1024], buf2[1024];
+     char *sp, *np, *p;
+@@ -297,12 +297,16 @@
+ 	int endflag;
+ 	struct tabtab *tab;
+ 
++	if (strcmp(buf1,"\n") == 0)  // cut leading break
++	    if (!fgets(buf1, sizeof buf1, f))
++	    break;
+ 	if (!fgets(buf2, sizeof buf2, f))
+ 	    break;
++
+ 	sp = strchr(buf1, ':');
+-	np = strchr(buf2, ':');
+-	if (!np || !sp)
+-	    goto formaterr;
++	np = strchr(buf2, ':'); 
++	if (!np || !sp) 
++	    goto formaterr; 
+ 	*sp = '\0';
+ 
+ 	tab = newtable(snmptabs, buf1);
+@@ -333,7 +337,12 @@
+   return;
+   
+ formaterr:
+-  perror(_("error parsing /proc/net/snmp"));
++ switch(file_desc) {
++    case 0: perror(_("error parsing /proc/net/snmp"));
++	break;
++    case 1: perror(_("error parsing /proc/net/netstat"));
++	break;
++  }
+   return;
+ }
+ 
+@@ -343,13 +352,13 @@
+     FILE *f;
+ 
+     f_raw = flag_raw; f_tcp = flag_tcp; f_udp = flag_udp;
+-    
++
+     f = fopen("/proc/net/snmp", "r");
+     if (!f) {
+ 	perror(_("cannot open /proc/net/snmp"));
+ 	return(1);
+     }
+-    process_fd(f);
++    process_fd(f,0);
+ 
+     if (ferror(f)) {
+ 	perror("/proc/net/snmp");
+@@ -361,7 +370,7 @@
+     f = fopen("/proc/net/netstat", "r");
+ 
+     if (f) {
+-    	process_fd(f);
++    	process_fd(f,1);
+ 
+         if (ferror(f)) {
+ 	  perror("/proc/net/netstat");

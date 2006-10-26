@@ -1,0 +1,11 @@
+--- net-tools-1.60/netstat.c.netstat_ulong	2004-11-11 14:28:44.000000000 +0100
++++ net-tools-1.60/netstat.c	2004-11-11 14:31:14.099313000 +0100
+@@ -273,7 +273,7 @@
+     strcpy(pn->name,name);
+ }
+ 
+-static const char *prg_cache_get(int inode)
++static const char *prg_cache_get(unsigned long inode)
+ {
+     unsigned hi=PRG_HASHIT(inode);
+     struct prg_node *pn;

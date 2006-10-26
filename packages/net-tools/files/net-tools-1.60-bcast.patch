@@ -1,0 +1,99 @@
+--- net-tools-1.60/ifconfig.c.broadcast	2004-11-03 12:05:30.000000000 +0100
++++ net-tools-1.60/ifconfig.c	2004-11-04 15:39:32.817077232 +0100
+@@ -36,6 +36,7 @@
+ #include <sys/ioctl.h>
+ #include <netinet/in.h>
+ #include <net/if.h>
++#include <netinet/ip.h>
+ #include <net/if_arp.h>
+ #include <stdio.h>
+ #include <errno.h>
+@@ -138,6 +139,7 @@
+ 	perror("SIOCSIFFLAGS");
+ 	return -1;
+     }
++    
+     return (0);
+ }
+ 
+@@ -212,17 +214,41 @@
+     exit(0);
+ }
+ 
+-static int set_netmask(int skfd, struct ifreq *ifr, struct sockaddr *sa)
++static int set_netmask(int skfd, struct ifreq *ifr, struct sockaddr *sa, int new_bcast)
+ {
+     int err = 0;
+-
+-    memcpy((char *) &ifr->ifr_netmask, (char *) sa,
+-	   sizeof(struct sockaddr));
++	struct sockaddr_in * ip_addr, * netmask, *bcast;
++    struct ifreq ifraddr;
++	struct ifreq ifrbcast;
++		
++	memcpy((char *) &ifr->ifr_netmask, (char *) sa,
++	   sizeof(struct sockaddr)); 
+     if (ioctl(skfd, SIOCSIFNETMASK, ifr) < 0) {
+ 	fprintf(stderr, "SIOCSIFNETMASK: %s\n",
+ 		strerror(errno));
+ 	err = 1;
+     }
++	
++	if (new_bcast) {
++		memcpy(&ifraddr,ifr,sizeof(struct ifreq));
++		memcpy(&ifrbcast,ifr,sizeof(struct ifreq));
++	
++		if (ioctl(skfd, SIOCGIFADDR, &ifraddr) < 0) {
++			fprintf(stderr, "SIOCGIFADDR: %s\n", strerror(errno));
++			err = 1;
++    	}
++	
++		ip_addr = (struct sockaddr_in *)&ifraddr.ifr_addr;
++		netmask = (struct sockaddr_in *)&ifr->ifr_netmask;
++		bcast = (struct sockaddr_in *)&ifrbcast.ifr_broadaddr;
++		/* calculate new broadcast adress */
++		bcast->sin_addr.s_addr = ip_addr->sin_addr.s_addr | ~netmask->sin_addr.s_addr;
++		/* set new broadcast adress   */
++    	if (ioctl(skfd, SIOCSIFBRDADDR, &ifrbcast) < 0) {
++			fprintf(stderr, "SIOCSIFBROADCAST: %s\n", strerror(errno));
++			err = 1;
++    	}
++    }
+     return 0;
+ }
+ 
+@@ -234,7 +260,7 @@
+     struct aftype *ap;
+     struct hwtype *hw;
+     struct ifreq ifr;
+-    int goterr = 0, didnetmask = 0, donetmask = 0;
++    int goterr = 0, didnetmask = 0, donetmask = 0, dobcast = 1;
+     char **spp;
+     int fd;
+ #if HAVE_AFINET6
+@@ -506,6 +532,7 @@
+ 			    strerror(errno));
+ 		    goterr = 1;
+ 		}
++		dobcast = 0;
+ 		spp++;
+ 	    }
+ 	    goterr |= set_flag(ifr.ifr_name, IFF_BROADCAST);
+@@ -542,7 +569,7 @@
+ 		continue;
+ 	    }
+ 	    didnetmask++;
+-	    goterr = set_netmask(ap->fd, &ifr, &sa);
++	    goterr = set_netmask(ap->fd, &ifr, &sa, dobcast);
+ 	    spp++;
+ 	    continue;
+ 	}
+@@ -964,7 +991,7 @@
+ 	/* set CIDR netmask */
+ 	if (donetmask) {
+ 		donetmask = 0;
+-		goterr = set_netmask(skfd, &ifr, &sa_netmask);
++		goterr = set_netmask(skfd, &ifr, &sa_netmask, dobcast);
+ 		didnetmask++;
+ 	}
+ 

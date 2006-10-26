@@ -1,0 +1,311 @@
+--- net-tools-1.60/lib/interface.c.cycle	2003-02-11 14:29:29.000000000 +0100
++++ net-tools-1.60/lib/interface.c	2003-02-11 14:29:29.000000000 +0100
+@@ -90,6 +90,7 @@
+ static struct interface *int_list, *int_last;
+ 
+ static int if_readlist_proc(char *);
++static int if_readlist_rep(char *, struct interface *);
+ 
+ static struct interface *add_interface(char *name)
+ {
+@@ -128,11 +129,13 @@
+ int for_all_interfaces(int (*doit) (struct interface *, void *), void *cookie)
+ {
+     struct interface *ife;
++    int err;
+ 
+     if (!int_list && (if_readlist() < 0))
+ 	return -1;
+     for (ife = int_list; ife; ife = ife->next) {
+-	int err = doit(ife, cookie);
++        if_readlist_rep(ife->name, ife);
++	err = doit(ife, cookie);
+ 	if (err)
+ 	    return err;
+     }
+@@ -369,6 +372,42 @@
+     return err;
+ }
+ 
++
++static int if_readlist_rep(char *target, struct interface *ife)
++{
++    FILE *fh;
++    char buf[512];
++    int err;
++
++    fh = fopen(_PATH_PROCNET_DEV, "r");
++    if (!fh) {
++		fprintf(stderr, _("Warning: cannot open %s (%s). Limited output.\n"),
++			_PATH_PROCNET_DEV, strerror(errno)); 
++		return if_readconf();
++	}	
++    fgets(buf, sizeof buf, fh);	/* eat line */
++    fgets(buf, sizeof buf, fh);
++
++    procnetdev_vsn = procnetdev_version(buf);
++
++    err = 0;
++    while (fgets(buf, sizeof buf, fh)) {
++	char *s, name[IFNAMSIZ];
++	s = get_name(name, buf);    
++	get_dev_fields(s, ife);
++	ife->statistics_valid = 1;
++	if (target && !strcmp(target,name))
++		break;
++    }
++    if (ferror(fh)) {
++	perror(_PATH_PROCNET_DEV);
++	err = -1;
++    }
++
++    fclose(fh);
++    return err;
++}
++
+ int if_readlist(void) 
+ { 
+     int err = if_readlist_proc(NULL); 
+--- net-tools-1.60/man/en_US/netstat.8.cycle	2001-01-07 13:43:57.000000000 +0100
++++ net-tools-1.60/man/en_US/netstat.8	2003-02-11 14:29:29.000000000 +0100
+@@ -30,6 +30,7 @@
+ .RB [ \-\-program | \-p ]
+ .RB [ \-\-verbose | \-v ]
+ .RB [ \-\-continuous | \-c]
++.RB [delay]
+ .P
+ .B netstat 
+ .RB { \-\-route | \-r }
+@@ -39,6 +40,7 @@
+ .RB [ \-\-numeric | \-n ]
+ .RB [ \-\-numeric-hosts ] [ \-\-numeric-ports ] [ \-\-numeric-ports ]
+ .RB [ \-\-continuous | \-c]
++.RB [delay]
+ .P
+ .B netstat
+ .RB { \-\-interfaces | \-i }
+@@ -50,12 +52,14 @@
+ .RB [ \-\-numeric | \-n ]
+ .RB [ \-\-numeric-hosts ] [ \-\-numeric-ports ] [ \-\-numeric-ports ]
+ .RB [ \-\-continuous | \-c]
++.RB [delay]
+ .P
+ .B netstat
+ .RB { \-\-groups | \-g }
+ .RB [ \-\-numeric | \-n ]
+ .RB [ \-\-numeric-hosts ] [ \-\-numeric-ports ] [ \-\-numeric-ports ]
+ .RB [ \-\-continuous | \-c]
++.RB [delay]
+ .P
+ .B netstat
+ .RB { \-\-masquerade | \-M }
+@@ -63,12 +67,14 @@
+ .RB [ \-\-numeric | \-n ]
+ .RB [ \-\-numeric-hosts ] [ \-\-numeric-ports ] [ \-\-numeric-ports ]
+ .RB [ \-\-continuous | \-c]
++.RB [delay]
+ .P
+ .B netstat
+ .RB { \-\-statistics | -s }
+ .RB [ \-\-tcp | \-t ]
+ .RB [ \-\-udp | \-u ]
+ .RB [ \-\-raw | \-w ]
++.RB [delay]
+ .P
+ .B netstat 
+ .RB { \-\-version | \-V }
+@@ -170,6 +176,10 @@
+ Print routing information from the FIB.  (This is the default.)
+ .SS "\-C"
+ Print routing information from the route cache.
++.SS delay
++Netstat will cycle printing through statistics every 
++.B delay 
++seconds.
+ .IR UP .
+ .P
+ .SH OUTPUT
+--- net-tools-1.60/netstat.c.cycle	2003-02-11 14:29:29.000000000 +0100
++++ net-tools-1.60/netstat.c	2003-02-11 15:07:26.000000000 +0100
+@@ -102,7 +102,7 @@
+ #endif
+ 
+ /* prototypes for statistics.c */
+-void parsesnmp(int, int, int);
++int parsesnmp(int, int, int);
+ void inittab(void);
+ 
+ typedef enum {
+@@ -1440,6 +1440,8 @@
+ 
+ static int iface_info(void)
+ {
++    static int count=0;
++
+     if (skfd < 0) {
+ 	if ((skfd = sockets_open(0)) < 0) {
+ 	    perror("socket");
+@@ -1449,20 +1451,21 @@
+     }
+     if (flag_exp < 2) {
+ 	ife_short = 1;
+-	printf(_("Iface       MTU Met    RX-OK RX-ERR RX-DRP RX-OVR    TX-OK TX-ERR TX-DRP TX-OVR Flg\n"));
++	if(!(count % 8))
++	    printf(_("Iface       MTU Met    RX-OK RX-ERR RX-DRP RX-OVR    TX-OK TX-ERR TX-DRP TX-OVR Flg\n"));
+     }
+ 
+     if (for_all_interfaces(do_if_print, &flag_all) < 0) {
+ 	perror(_("missing interface information"));
+ 	exit(1);
+     }
+-    if (flag_cnt)
++    if (!flag_cnt) {
+ 	free_interface_list();
+-    else {
+ 	close(skfd);
+ 	skfd = -1;
+     }
+ 
++    count++;
+     return 0;
+ }
+ 
+@@ -1478,7 +1481,7 @@
+ {
+     fprintf(stderr, _("usage: netstat [-veenNcCF] [<Af>] -r         netstat {-V|--version|-h|--help}\n"));
+     fprintf(stderr, _("       netstat [-vnNcaeol] [<Socket> ...]\n"));
+-    fprintf(stderr, _("       netstat { [-veenNac] -i | [-cnNe] -M | -s }\n\n"));
++    fprintf(stderr, _("       netstat { [-veenNac] -i | [-cnNe] -M | -s } [delay]\n\n"));
+ 
+     fprintf(stderr, _("        -r, --route              display routing table\n"));
+     fprintf(stderr, _("        -i, --interfaces         display interface table\n"));
+@@ -1514,6 +1517,7 @@
+  (int argc, char *argv[]) {
+     int i;
+     int lop;
++    int reptimer = 1;
+     struct option longopts[] =
+     {
+ 	AFTRANS_OPTS,
+@@ -1655,6 +1659,12 @@
+ 	    flag_sta++;
+ 	}
+ 
++    if(argc == optind + 1) {
++      if((reptimer = atoi(argv[optind])) <= 0)
++	usage();
++      flag_cnt++;
++    }
++    
+     if (flag_int + flag_rou + flag_mas + flag_sta > 1)
+ 	usage();
+ 
+@@ -1666,7 +1676,7 @@
+ 
+     flag_arg = flag_tcp + flag_udp + flag_raw + flag_unx + flag_ipx
+ 	+ flag_ax25 + flag_netrom + flag_igmp + flag_x25;
+-
++    
+     if (flag_mas) {
+ #if HAVE_FW_MASQUERADE && HAVE_AFINET
+ #if MORE_THAN_ONE_MASQ_AF
+@@ -1678,7 +1688,7 @@
+ 			     flag_not & FLAG_NUM_PORT, flag_exp);
+ 	    if (i || !flag_cnt)
+ 		break;
+-	    sleep(1);
++	    sleep(reptimer);
+ 	}
+ #else
+ 	ENOSUPP("netstat.c", "FW_MASQUERADE");
+@@ -1688,9 +1698,15 @@
+     }
+ 
+     if (flag_sta) {
++      for(;;) {
+         inittab();
+-	parsesnmp(flag_raw, flag_tcp, flag_udp);
+-	exit(0);
++	i = parsesnmp(flag_raw, flag_tcp, flag_udp);
++	
++	if(i || !flag_cnt)
++	  break;
++	sleep(reptimer);
++      }
++      return(i);
+     }
+     
+     if (flag_rou) {
+@@ -1712,7 +1728,7 @@
+ 	    i = route_info(afname, options);
+ 	    if (i || !flag_cnt)
+ 		break;
+-	    sleep(1);
++	    sleep(reptimer);
+ 	}
+ 	return (i);
+     }
+@@ -1721,7 +1737,7 @@
+ 	    i = iface_info();
+ 	    if (!flag_cnt || i)
+ 		break;
+-	    sleep(1);
++	    sleep(reptimer);
+ 	}
+ 	return (i);
+     }
+@@ -1847,7 +1863,7 @@
+ 	}
+ 	if (!flag_cnt || i)
+ 	    break;
+-	sleep(1);
++	sleep(reptimer);
+ 	prg_cache_clear();
+     }
+     return (i);
+--- net-tools-1.60/statistics.c.cycle	2001-02-02 19:01:23.000000000 +0100
++++ net-tools-1.60/statistics.c	2003-02-11 14:29:29.000000000 +0100
+@@ -338,7 +338,7 @@
+ }
+ 
+ 
+-void parsesnmp(int flag_raw, int flag_tcp, int flag_udp)
++int parsesnmp(int flag_raw, int flag_tcp, int flag_udp)
+ {
+     FILE *f;
+ 
+@@ -347,12 +347,14 @@
+     f = fopen("/proc/net/snmp", "r");
+     if (!f) {
+ 	perror(_("cannot open /proc/net/snmp"));
+-	return;
++	return(1);
+     }
+     process_fd(f);
+ 
+-    if (ferror(f))
++    if (ferror(f)) {
+ 	perror("/proc/net/snmp");
++	return(1);
++    }
+ 
+     fclose(f);
+ 
+@@ -361,12 +363,14 @@
+     if (f) {
+     	process_fd(f);
+ 
+-        if (ferror(f))
+-	    perror("/proc/net/netstat");
++        if (ferror(f)) {
++	  perror("/proc/net/netstat");
++	  return(1);
++	}
+     
+         fclose(f);
+     }
+-    return;
++    return(0);
+ }
+     
+ 

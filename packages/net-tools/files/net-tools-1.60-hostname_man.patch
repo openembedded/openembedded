@@ -1,0 +1,35 @@
+--- net-tools-1.60/man/en_US/hostname.1.gethostbyname	2005-10-14 11:33:41.000000000 +0200
++++ net-tools-1.60/man/en_US/hostname.1	2005-10-15 11:46:14.646697600 +0200
+@@ -99,6 +99,32 @@
+ complete FQDN of the system is returned with
+ .BR "hostname \-\-fqdn" .
+ 
++.LP
++The function 
++.BR gethostname(2)
++is used to get the hostname.  Only when the 
++.BR "hostname \-s" 
++is called will 
++.BR gethostbyname(3)
++be called.  The difference in 
++.BR gethostname(2)
++and
++.BR gethostbyname(3)
++is that
++.BR gethostbyname(3)
++is network aware, so it consults 
++.IR /etc/nsswitch.conf
++and
++.IR /etc/host.conf
++to decide whether to read information in
++.IR /etc/sysconfig/network
++or
++.IR /etc/hosts
++. To add another dimension to this,
++the 
++.B hostname 
++is also set when the network interface is brought up.
++
+ .SS "SET NAME"
+ When called with one argument or with the 
+ .B \-\-file

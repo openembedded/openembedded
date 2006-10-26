@@ -1,0 +1,31 @@
+--- net-tools-1.60/ifconfig.c.old	2005-03-30 10:14:03.000000000 +0200
++++ net-tools-1.60/ifconfig.c	2005-03-30 10:40:50.000000000 +0200
+@@ -177,7 +177,7 @@
+ 
+ static void usage(void)
+ {
+-    fprintf(stderr, _("Usage:\n  ifconfig [-a] [-i] [-v] [-s] <interface> [[<AF>] <address>]\n"));
++    fprintf(stderr, _("Usage:\n  ifconfig [-a] [-v] [-s] <interface> [[<AF>] <address>]\n"));
+ #if HAVE_AFINET
+     fprintf(stderr, _("  [add <address>[/<prefixlen>]]\n"));
+     fprintf(stderr, _("  [del <address>[/<prefixlen>]]\n"));
+--- net-tools-1.60/lib/interface.c.old	2005-03-30 10:14:03.000000000 +0200
++++ net-tools-1.60/lib/interface.c	2005-03-30 11:05:38.000000000 +0200
+@@ -620,7 +620,7 @@
+ 
+ void ife_print_short(struct interface *ptr)
+ {
+-    printf("%-9.9s ", ptr->name);
++    printf("%-9s ", ptr->name);
+     printf("%5d %3d ", ptr->mtu, ptr->metric);
+     /* If needed, display the interface statistics. */
+     if (ptr->statistics_valid) {
+@@ -711,7 +711,7 @@
+     if (hw == NULL)
+ 	hw = get_hwntype(-1);
+ 
+-    printf(_("%-9.9s Link encap:%s  "), ptr->name, hw->title);
++    printf(_("%-9s Link encap:%s  "), ptr->name, hw->title);
+     /* For some hardware types (eg Ash, ATM) we don't print the 
+        hardware address if it's null.  */
+     if (hw->print != NULL && (! (hw_null_address(hw, ptr->hwaddr) &&
