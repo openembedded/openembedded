@@ -1,6 +1,6 @@
 #!/bin/sh
-
 M_TITLE="Install RootFS from tar.gz"
+M_FLAGS="noRemember"
 
 run_module(){
 	test -e /etc/altboot.func && . /etc/altboot.func || die "ERROR: /etc/altboot.func not found. Check your installation!"	
@@ -259,5 +259,6 @@ install_rootfs_image(){
 
 case "$1" in
 title)	echo "$M_TITLE";;
+flags)	echo "$M_FLAGS";;
 run)	run_module "$2";;
 esac

@@ -20,7 +20,7 @@ RDEPENDS_${PN} = "${PN}-conf"
 
 ######################################################################################
 
-PR = "r45"
+PR = "r46"
 
 ######################################################################################
 
@@ -35,6 +35,8 @@ SRC_URI = "file://altboot-menu \
 	   file://altboot.func \	 
 	   file://init.altboot \
 	   file://altboot*.cfg \
+	   file://altbootctl.conf \
+	   file://altbootctl \
 	   file://beep.raw"
 
 # S = "${WORKDIR}/altboot/"
@@ -56,7 +58,9 @@ do_install() {
 	install -m 0644 ${WORKDIR}/beep.raw ${D}/usr/share/sounds
 	install -m 0644 ${WORKDIR}/altboot*.cfg ${D}/etc
 	install -m 0644 ${WORKDIR}/altboot.func ${D}/etc
+	install -m 0644 ${WORKDIR}/altbootctl.conf ${D}/etc
 	install -m 0755 ${WORKDIR}/init.altboot ${D}/sbin
+	install -m 0755 ${WORKDIR}/altbootctl ${D}/sbin
 	
 	install -m 0755 ${WORKDIR}/altboot-menu/*-* ${D}/etc/altboot-menu
 
