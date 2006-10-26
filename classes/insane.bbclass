@@ -17,6 +17,7 @@
 # possible and this is contained within the pax-utils-native
 #
 
+
 # We play a special package function
 inherit package
 PACKAGE_DEPENDS += "pax-utils-native"
@@ -91,6 +92,7 @@ def package_qa_walk(path, funcs, package,d):
 
 
 def package_qa_check_rdepends(pkg, d):
+    import bb	
     if not "-dbg" in pkg and not "task-" in pkg and not "-image" in pkg:
         # Copied from package_ipk.bbclass
         # boiler plate to update the data
