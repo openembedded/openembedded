@@ -1,5 +1,6 @@
 # !/bin/sh
 M_TITLE="Copy rootfs to SD/CF"
+M_FLAGS="noRemember"
 
 # Unfinished script.
 exit 0
@@ -317,5 +318,6 @@ run_module() {
 
 case "$1" in
 title)	echo "$M_TITLE";;
+flags)	echo "$M_FLAGS";;
 run)	run_module;;
 esac

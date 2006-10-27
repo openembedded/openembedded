@@ -28,6 +28,12 @@ esac
 
 test -e "$ALTBOOT_CFG_FILE" && . "$ALTBOOT_CFG_FILE" || echo "WARNING: No $ALTBOOT_CFG_FILE found! Check your installation of Altboot!" > "$OUT_TTY"
 
+if test -e "${ALTBOOT_CFG_FILE}.next-reboot"
+then
+	. "${ALTBOOT_CFG_FILE}.next-reboot"
+	rm "${ALTBOOT_CFG_FILE}.next-reboot"
+fi
+
 C_RED="\033[31m"
 C_YELLOW="\033[33m"
 C_BLUE="\033[34m"
@@ -66,7 +72,7 @@ show_menu() {
 
 	
 	m_entry=""
-	# Build "m_entry" for scripts in /etc/altboot-menu
+
 	cd $1
 
 	cnt=0 ; reset_pref "menu_filelist"
@@ -75,6 +81,8 @@ show_menu() {
 		if ! test -d "$1/$file"
 		then			
 			M_TITLE="`$1/$file title`"
+			FLAGS="`$1/$file flags`"
+			
 			if ! test -z "$M_TITLE"
 			then
 				let cnt=$cnt+1
@@ -83,6 +91,7 @@ show_menu() {
 				#m_entry="`echo -e "$m_entry\n$cnt:$file\n"`"
 				
 				set_pref "menu_filelist" "$cnt" "$file"
+				test -n "$FLAGS" && set_pref "menu_fileflags" "$cnt" "$FLAGS"
 				echo -e "\t\t[$cnt] $M_TITLE"					
 			fi
 			M_TITLE=""
@@ -101,9 +110,12 @@ show_menu() {
 				let cnt=$cnt+1
 				# Keep a list of existing "modules" together with an index number
 				# This sure is ugly, but Busybox sh doesn't do arrays....
-				#m_entry="`echo -e "$m_entry\n$cnt:$dir:DIR\n"`"
 				
 				set_pref "menu_filelist" "$cnt" "$dir:DIR"
+				
+				# Set noRemember flag for directories
+				set_pref "menu_fileflags" "$cnt" "noRemember"				
+						
 				echo -e "\t\t[$cnt] $M_TITLE"					
 
 				OLD_PWD="$PWD"
@@ -113,15 +125,16 @@ show_menu() {
 					if ! test -d "$1/$dir/$file"
 					then			
 						M_TITLE="`$1/$dir/$file title`"
+						FLAGS="`$1/$dir/$file flags`"
+						
 						if ! test -z "$M_TITLE"
 						then
 							let cnt=$cnt+1
 							# Keep a list of existing "modules" together with an index number
 							# This sure is ugly, but Busybox sh doesn't do arrays....
-							#m_entry="`echo -e "$m_entry\n$cnt:$dir/$file\n"`"
 							
 							set_pref "menu_filelist" "$cnt" "$dir/$file"
-							#echo -e "\t\t[$cnt] $M_TITLE"					
+							test -n "$FLAGS" && set_pref "menu_fileflags" "$cnt" "$FLAGS"				
 						fi
 						M_TITLE=""
 					fi
@@ -133,8 +146,10 @@ show_menu() {
 		fi
 	done
 
-	#echo_pref "menu_filelist"
 	echo ""
+	
+# 	export_pref "$menu_filelist" /tmp/menu_filelist.cache
+# 	export_pref "$menu_fileflags" /tmp/menu_fileflags.cache
 	
 }
 
@@ -167,6 +182,33 @@ show_sub_menu() {
 	
 }
 
+get_kbd_ints(){
+	if ( uname -r | grep -q ^2.6 )
+	then				
+		if test -z "$KBD_INT"
+		then		
+			# find out how the keyboard is called
+			for kbd in Spitzkbd corgikbd locomokbd tosakbd
+			do
+				if ( cat /proc/interrupts | grep -q "$kbd" )
+				then
+					debug_echo "run_timer(): Using [$kbd] as keyboard interrupt"
+					KBD_INT="$kbd"	
+					break				
+				fi
+			done				
+		fi
+		key_ints="`cat /proc/interrupts | grep "$KBD_INT"`"
+		#debug_echo "run_timer(): key_ints = [$key_ints]"
+	else
+		KBD_INT="$kbd"
+		debug_echo "\nrun_timer(): Using [keyboard] as keyboard interrupt in kernel-2.4 mode"
+		key_ints="`cat /proc/interrupts | grep keyboard | awk '{print $2}'`"
+	fi
+	
+	test -z "$KBD_INT" && debug_echo "Couldn't read keyboard ints!"	
+}
+
 # Shows the timer and sets $launch_altboot to yes if a keypress was detected
 run_timer() {
 	if test "$TIMEOUT" != 0
@@ -174,15 +216,10 @@ run_timer() {
 			
 		mount -t proc proc /proc >/dev/null 2>&1
 		
-		case "`uname -r`" in
-		2.4*)	key_ints="`cat /proc/interrupts | grep keyboard | awk '{print $2}'`";;
-		2.6*)	key_ints="`cat /proc/interrupts | grep Spitzkbd`"
-			test -z "$key_ints" && key_ints="`cat /proc/interrupts | grep -i corgikbd`"
-			test -z "$key_ints" && key_ints="`cat /proc/interrupts | grep -i locomokbd`"
-			test -z "$key_ints" && key_ints="`cat /proc/interrupts | grep -i tosakbd`";;	
-		esac		
-	
-		test -z "$key_ints" && debug_echo "Couldn't read keyboard ints!"
+		get_kbd_ints			
+		kbd_ints_old="$key_ints"				
+		
+		#debug_echo "run_timer() old:`echo $key_ints | md5sum`"
 		
 		stty -echo  <"$OUT_TTY" >"$OUT_TTY" 2>&1
 		echo -en "\n\nPlease press any key to launch altboot." > "$OUT_TTY"
@@ -193,15 +230,11 @@ run_timer() {
 		while test "$cnt" != "$TIMEOUT"
 		do		
 			sleep 1
-			case "`uname -r`" in
-			2.4*)	key_ints_now="`cat /proc/interrupts | grep keyboard | awk '{print $2}'`";;
-			2.6*)	key_ints_now="`cat /proc/interrupts | grep Spitzkbd`"
-				test -z "$key_ints_now" && key_ints_now="`cat /proc/interrupts | grep -i corgikbd`"
-				test -z "$key_ints_now" && key_ints_now="`cat /proc/interrupts | grep -i locomokbd`"
-				test -z "$key_ints_now" && key_ints_now="`cat /proc/interrupts | grep -i tosakbd`";;	
-			esac		
 			
-			if test "$key_ints_now" != "$key_ints" -o -z "$key_ints_now"
+			get_kbd_ints			
+			kbd_ints_new="$key_ints"				
+
+			if test "$kbd_ints_new" != "$kbd_ints_old" -o -z "$kbd_ints_new"
 			then				
 				launch_altboot=yes				
 				stty echo <"$OUT_TTY" >"$OUT_TTY" 2>&1
@@ -223,6 +256,26 @@ run_timer() {
 	fi
 } 
 
+# $1 = ID
+parse_module_flags() {
+	if test -n "$1"
+	then		
+		# Each module can set "flags" to influence handling of the module
+		get_pref "menu_fileflags" "$1" flags
+		
+		test -n "$flags" && debug_echo "parse_module_flags(): [$1] has flags [$flags]"
+		
+		for flag in $flags
+		do
+			case "$flag" in
+			noRemember)	REMEMBER_LAST_SELECTION=no;;
+			esac
+		done
+	else 
+		debug_echo "parse_module_flags(): Empty \$1"
+	fi
+}
+
 # This function launches the selected menu item / script
 # $1: Directory containing the scripts for the menu-items
 launch_selection() {
@@ -235,8 +288,8 @@ launch_selection() {
 		type="`echo "$file_" | sed -n "s/\(.*\)\:\(.*\)/\2/p"`"
 		file="`echo "$file_" | sed -n "s/\(.*\)\:\(.*\)/\1/p"`"
 		test -z "$file" && file="$file_"
-		
-		#echo "[$file_]: [$type] / [$file] ($junk)"
+				
+		#echo "[$file_]: [$type] : [$flags] / [$file] ($junk)"
 		
 		# The selected menu-item points to a directory
 		if test "$type" = DIR
@@ -291,26 +344,30 @@ wait_for_input() {
 		
 		# This filters other chars the user may have used
 		
-		#echo "junk: [$junk]"
-		junk="`echo "$junk" | sed "s/[a-zA-Z]//g"`"
-		#echo "junk: [$junk]"
+		junk="`echo "$junk" | sed "s/[a-zA-Z]//g"`"	
 				
 		if test "$junk" -lt "$cnt" -o "$junk" -eq "$cnt" 
-		then
-			if test ! -z "$junk"
+		then			
+			if test ! -z "$junk" 
 			then
-				# Don't remount rw if the drive is already mounted rw
-				# Only helpful for testing / debugging
-				if test "`mount|sed -n "/\/dev\/root/s/.*(\(.*\))/\1/p"`" != "rw"
-				then					
-					mount -o remount,rw / >/dev/null 2>&1
-					echo "$junk" > /etc/altboot.conf
-					mount -o remount,ro / >/dev/null 2>&1	
-				else
-					echo "$junk" > /etc/altboot.conf
+				parse_module_flags "$junk"				
+	
+				if test "$REMEMBER_LAST_SELECTION" != no
+				then								
+					# Don't remount rw if the drive is already mounted rw
+					# Only helpful for testing / debugging
+					if test "`mount|sed -n "/\/dev\/root/s/.*(\(.*\))/\1/p"`" != "rw" 
+					then					
+						mount -o remount,rw / >/dev/null 2>&1
+						echo "$junk" > /etc/altboot.conf
+						mount -o remount,ro / >/dev/null 2>&1	
+					else
+						echo "$junk" > /etc/altboot.conf
+					fi
 				fi
 			else
 				junk="$last_selection"
+				parse_module_flags "$junk"				
 				break
 			fi
 			break
@@ -367,7 +424,7 @@ else
 		
 	echo "" >"$OUT_TTY"
 	
-	
+	# launch_altboot is set to "yes" by run_timer when the user presses the button during the timeout
 	if test "$launch_altboot" != yes
 	then
 		# last_selection is the previously selected menu item by the user
@@ -380,7 +437,6 @@ else
 		show_menu /etc/altboot-menu >/dev/null
 		junk="$last_selection"
 		launch_selection /etc/altboot-menu >"$OUT_TTY"
-
 	fi
 
 	# Anything after this point will never be reached if $launch_altboot != yes	

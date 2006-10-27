@@ -580,11 +580,15 @@ set_pref() {
 	data_id="$2"
 	data_value="$3"
 	
-	#echo "[$1] [$2] [$3]"
+	#debug_echo "[$1] [$2] [$3]"
 	#export "${data_name}"="`eval echo -e \\$${data_name} | sed "s/\#\#\#/\#\#\#\\n/g"|sed s/^\ // | sed s/^$data_id.*//`"
 
-	export "${data_name}"="`eval echo -e \\$${data_name} `$data_id##$data_value###"
-	
+	if test -z "$3"
+	then
+		debug_echo "set_pref(): WARNING, writing empty value to $data_name / $data_id! THIS WILL BREAK THINGS"
+		#data_value=" "
+	fi
+	export "${data_name}"="`eval echo -e \\$${data_name} `$data_id##$data_value###"		
 }
 
 # $1: uniq name
@@ -602,7 +606,32 @@ echo_pref() {
 
 dump_pref() {
 	data_name="$1"	
-	echo "`eval echo -e \\$${data_name} | sed "s/\#\#\#/\#\#\#\\n/g"|sed s/^\ // `"
+	echo "`eval echo -e ${data_name} | sed "s/\#\#\#/\#\#\#\\n/g"|sed s/^\ // `"
+	
+	#echo "-- `eval echo ${data_name}` --" 
+	#debug_echo "[$menu_fileflags]"
+}
+
+# $1 = name, $2 = cache_file
+export_pref() {
+	data_name="$1"
+	echo "`eval echo -e ${data_name}`" > "$2"
+}
+
+# $1 = name, $2 = cache_file
+import_pref() {
+	data_name="$1"
+	data_id="$2"
+	
+	#debug_echo "[$1] [$2] [$3]"
+
+	if test -z "$3"
+	then
+		debug_echo "set_pref(): WARNING, writing empty value to $data_name / $data_id! THIS WILL BREAK THINGS"
+		#data_value=" "
+	fi
+	export "${data_name}"="`cat "$2"`"		
+
 }
 
 # $1: uniq name, $2 identifier, $3 out var
@@ -612,10 +641,11 @@ get_pref() {
 	data_out="$3"
 	data_list="`eval echo -e \\$${data_name}`"
 	
+	#echo "data_list: [$data_list]"
 	#data_value="`echo "$data_list"| sed "s/\#\#\#/\\n/g"|sed s/^\ // | grep "^$data_id##" | sed -n "s/.*\#\(.*\)$/\1/p"`"
 	#data_value="`echo "$data_list"| sed "s/\#\#\#/\\n/g"|sed s/^\ // |  sed -n "/^$data_id/s/.*\#\(.*\)$/\1/p"`"
 	data_value="`echo "$data_list"| sed "s/\#\#\#/\\n/g" | sed -n "s/^\ //;/^$data_id\#/s/.*\#\(.*\)$/\1/p"`"
-	# echo "WERT: [$data_value]"
+	#echo "WERT: [$data_value]"
 	
 	export "${data_out}"="$data_value"
 	test -n "$data_value" && return 0

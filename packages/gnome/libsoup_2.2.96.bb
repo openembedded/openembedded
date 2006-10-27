@@ -6,7 +6,6 @@ DEPENDS = "glib-2.0 gnutls libxml2"
 
 inherit autotools pkgconfig
 
-PACKAGES_DYNAMIC = "libsoup-2.2*"
 FILES_${PN} = "${libdir}/lib*.so.*"
 FILES_${PN}-dev = "${includedir}/ ${libdir}/"
 FILES_${PN}-doc = "${datadir}/"

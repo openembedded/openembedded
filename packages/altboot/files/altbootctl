@@ -1,0 +1,309 @@
+#! /bin/sh
+#
+# Copyright Matthias Hentges <devel@hentges.net> (c) 2006
+# License: GPL (see http://www.gnu.org/licenses/gpl.txt for a copy of the license)
+#
+# Filename: hentges-setup.sh
+# Date: 03-Jun-06
+
+die() {
+	echo -e "$*"
+	exit 1
+}
+
+
+PERMANENT_CFG="/etc/altboot-`uname -r | cut -c1-3`.cfg"
+TEMPORARY_CFG="/etc/altboot-`uname -r | cut -c1-3`.cfg.next-reboot"
+
+CFG="$PERMANENT_CFG"
+SCRIPT_CONFIG="/etc/altbootctl.conf"
+
+test -e "$SCRIPT_CONFIG" && . "$SCRIPT_CONFIG" || die "$SCRIPT_CONFIG not found"
+
+# $1= Setting, $2 = new value
+set_pref() {
+	
+	if ( cat "$CFG" | grep -q "$1" )
+	then
+		cat "$CFG" | sed "/^$1/s/\(.*\)\=\(.*\)/\1\=\"$2\"/" > ${CFG}_
+		mv ${CFG}_  ${CFG}
+	else
+		echo "$1=\"$2\"" >> "${CFG}"
+	fi
+}
+
+# $1= Setting
+get_pref() {
+	n="$1"
+	value="`cat "${CFG}" | sed -n "/^$n/s/\(.*\)\=\\"\(.*\)\\"/\2/p"`"
+	#echo "cat "${CFG}" | sed -n "/^$n/s/\(.*\)\=\"\(.*\)\"/\2/p""
+	test -z "$value" && die "Couldn't get value for [$n]"
+	echo "$value"
+}
+
+ask_pref() {
+	SETTING_NAME="$1"
+	
+	SETTING_TEXT_="${SETTING_NAME}_TEXT"
+	SETTING_TEXT="`eval echo -e \\$${SETTING_TEXT_}`"	
+
+	SETTING_VALUES_="${SETTING_NAME}_VALUES"
+	SETTING_VALUES="`eval echo -e \\$${SETTING_VALUES_}`"	
+	
+	SETTING_OLD_VALUE="`get_pref "$SETTING_NAME"`"
+	test -z "$SETTING_TEXT" -o -z "$SETTING_VALUES" && die "ask_pref: [$1] -> [$SETTING_TEXT] [$SETTING_VALUES]"
+	
+	#echo "[$1] -> $SETTING_OLD_VALUE"
+	#echo -e "$SETTING_TEXT"
+
+
+	if test "$SETTING_VALUES" = "<STRING>"
+	then				
+		while true
+		do
+			echo -e "\nPlease enter a new value [$SETTING_OLD_VALUE]"
+			echo -en "Your Choice: "
+			read junk
+			
+			echo ""
+						
+			while true
+			do
+				echo -n "Is the new value of [$junk] correct? [Y|n] "
+				read junk2
+				
+				case "$junk2" in
+				y|Y|"")		END_LOOP=true
+						break ;;
+				*)		END_LOOP=false
+						break ;;
+				esac
+			done
+			
+			if test "$END_LOOP" = "true"
+			then
+				SETTING_NEW_VALUE="$junk"
+				break
+			fi
+		
+		done
+		
+	else	
+		# If it's not a string, it's a fixed list of possible settings
+		echo -e "\nSelect one of the following:\n"	
+		cnt=1	
+		for val in $SETTING_VALUES
+		do
+			if test "$val" != "$SETTING_OLD_VALUE"
+			then
+				echo -e "\t[$cnt] $val"
+			else
+				echo -e "\t[$cnt] $val *"
+				SETTING_OLD_VALUE_NUM="$cnt"
+			fi
+			let cnt=$cnt+1
+		done
+
+		echo ""
+		while true
+		do
+			echo -en "Your choice [$SETTING_OLD_VALUE_NUM]: "
+			read junk		
+
+			if test -n "$junk"
+			then
+				cnt=1 ; SETTING_NEW_VALUE=""
+				for val in $SETTING_VALUES
+				do
+					if test "$junk" = "$cnt"
+					then
+						SETTING_NEW_VALUE="$val"
+						break
+					fi
+
+					let cnt=$cnt+1
+				done
+			else
+				SETTING_NEW_VALUE="$SETTING_OLD_VALUE"
+			fi
+
+			test -n "$SETTING_NEW_VALUE" && break
+		done
+		
+	fi
+		
+	
+	if test "$SETTING_NEW_VALUE" != "$SETTING_OLD_VALUE"
+	then
+		set_pref "$SETTING_NAME" "$SETTING_NEW_VALUE"
+		echo "Changed $SETTING_NAME to $SETTING_NEW_VALUE"
+	else
+		echo "$SETTING_NAME remains unchanged"
+	fi
+	echo -e "\n"
+}
+
+build_menu() {
+	for setting in $TARGETS
+	do	
+		# SETTING_MENUPOS contains $setting_MENUPOS
+		SETTING_MENUPOS_="${setting}_MENUPOS"
+		SETTING_MENUPOS="`eval echo -e \\$${SETTING_MENUPOS_}`"	
+
+		# Store all entries in variables named after the menu name
+		MENU_NAME="SUBMENU_${SETTING_MENUPOS}"
+		export "${MENU_NAME}"="`eval echo -e \\$${MENU_NAME} ` $setting"
+		
+		
+		echo "$AVAILABLE_MENUES" | grep -q "$SETTING_MENUPOS" || AVAILABLE_MENUES="$SETTING_MENUPOS $AVAILABLE_MENUES"
+						
+	done	
+	
+	#echo "[$AVAILABLE_MENUES]"
+	
+	while true
+	do
+		echo -e "\nSelect a menu:\n"
+		cnt=1
+		for menu in $AVAILABLE_MENUES Exit
+		do
+			MENU_NAME="SUBMENU_$menu"
+			echo -e "\t[$cnt] $menu"
+			let cnt=$cnt+1
+		done
+		
+		echo ""
+		
+		while true
+		do
+			echo -n "Your Choice: "
+			read junk
+
+			cnt=1 ; GET_MENU=""
+			for menu in $AVAILABLE_MENUES Exit
+			do
+				if test "$cnt" = "$junk"
+				then
+					GET_MENU="$menu"
+					break
+				fi
+				let cnt=$cnt+1
+			done
+
+			if test "$GET_MENU" = "Exit"
+			then
+				EXIT_PROG=true
+				break
+			else
+				EXIT_PROG=false
+			fi
+			
+			if test -n "$GET_MENU"
+			then
+				show_menu "$menu"
+				break
+			fi
+		done		
+		test "$EXIT_PROG" = true && break
+	done
+}
+
+show_menu() {
+	MENU_NAME="SUBMENU_$1"
+
+	
+	while true
+	do
+		echo -e "\nEntries in this menu:\n"
+		cnt=1
+		for entry in `eval echo -e \\$${MENU_NAME}` Back
+		do
+			MENU_NAME_TEXT="${entry}_TEXT" || MENU_NAME_TEXT="${entry}"
+			
+			test "$entry" != Back && tmp_="`eval echo -e \\$${MENU_NAME_TEXT}`" || tmp_="Back"
+			
+			echo -e "\t[$cnt] $tmp_"
+			let cnt=$cnt+1
+		done	
+
+		echo ""
+	
+		while true
+		do
+			echo -en "Your Choice: "
+			read junk
+
+			cnt=1 ; GET_ENTRY=""
+			for entry in `eval echo -e \\$${MENU_NAME}` Back
+			do
+				if test "$cnt" = "$junk"
+				then
+					GET_ENTRY="$entry"
+					break
+				fi
+				let cnt=$cnt+1
+			done
+
+			if test "$GET_ENTRY" = "Back"
+			then
+				EXIT_MENU=true
+				break
+			else
+				EXIT_MENU=false
+			fi
+			
+			
+			# At this point the user has selected a menuitem != "Back"
+			if test -n "$GET_ENTRY"
+			then
+				select_config
+				ask_pref "$GET_ENTRY"
+				break
+			fi
+		done	
+		
+		test "$EXIT_MENU" = true && break		
+	done
+}
+
+select_config() {
+	echo -e "\nChange this setting only for the next reboot or permanently?\n"
+
+	echo -e "Select one of the following:\n"
+
+	echo -e "\t[1] Only for the next reboot"
+	echo -e "\t[2] Permanently"
+	echo ""
+	
+	while true
+	do
+		echo -en "Your Choice: "
+		read junk
+		
+		case "$junk" in
+		2)	CFG="$PERMANENT_CFG"
+			break ;;
+		1)	CFG="$TEMPORARY_CFG"
+			break ;;
+		esac		
+	done
+	
+	# Supress error message about missing config
+	! test -e "$CFG" && touch "$CFG"
+	
+}
+
+go() {
+	build_menu
+	
+	exit 0
+	for setting in $TARGETS
+	do
+		ask_pref "$setting"
+	done
+	
+}
+
+
+! test -e "$CFG" && die "[$CFG] not found, exiting"
+go

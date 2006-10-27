@@ -26,7 +26,6 @@ do_stage() {
 }
 
 PACKAGES =+ "alsa-server libasound alsa-conf alsa-doc alsa-dev"
-PACKAGES_DYNAMIC = "libasound*"
 FILES_${PN}-dbg += "${libdir}/alsa-lib/*/.debu*"
 FILES_libasound = "${libdir}/libasound.so*"
 FILES_alsa-server = "${bindir}"
