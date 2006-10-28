@@ -606,7 +606,7 @@ echo_pref() {
 
 dump_pref() {
 	data_name="$1"	
-	echo "`eval echo -e ${data_name} | sed "s/\#\#\#/\#\#\#\\n/g"|sed s/^\ // `"
+	echo "`eval echo -e \\$${data_name} | sed "s/\#\#\#/\#\#\#\\n/g"|sed s/^\ // `"
 	
 	#echo "-- `eval echo ${data_name}` --" 
 	#debug_echo "[$menu_fileflags]"

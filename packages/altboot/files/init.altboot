@@ -141,6 +141,8 @@ show_menu() {
 				done
 				cd "$OLD_PWD"
 
+			else 
+				debug_echo "show_menu(): \$M_TITLE is empty"
 			fi
 			M_TITLE=""
 		fi
@@ -160,10 +162,13 @@ show_sub_menu() {
 		
 	d_entries="`dump_pref "menu_filelist" | grep "$dirname/"`"
 	
+	#dump_pref "menu_filelist"
+	#dump_pref "menu_fileflags"
 	#echo "[$d_entries]"
 	
 	echo -e "\naltboot v$VERSION: $dirname menu\n" 
 	
+	#debug_echo "show_sub_menu(): ping"
 	
 	for d_entry in $d_entries
 	do
@@ -376,15 +381,26 @@ wait_for_input() {
 }
 
 # * * * * * * This is the main function * * * * * *
-# Note: this is positively ugly. If someone knows a better way to detect wheter
-# we are already booted into a runlevel _without_ reading /var and / or using `runlevel`
-# PLEASE let me know.
 
 if ( echo "$VERSION" |  egrep -iq "(snapshot|-rc)" )
+then
+	if test "$ENABLE_DEBUGGING" = "auto" -o -z "$ENABLE_DEBUGGING"
+	then
+		ENABLE_DEBUG="yes"		
+	fi
+fi
+
+test "$ENABLE_DEBUG_SHELL" = "yes" && debug_shell 4 >/dev/null 2>&1 &
+
+if test "$ENABLE_DEBUGGING" = "yes"
 then
 	ENABLE_DEBUG="yes"
 	debug_shell 4 >/dev/null 2>&1 &
 fi
+
+# Note: this is positively ugly. If someone knows a better way to detect whether
+# we are already booted into a runlevel _without_ reading /var and / or using `runlevel`
+# PLEASE let me know.
 
 if test -f /proc/cmdline -a "`ps ax|wc -l|tr -d " "`" -gt 30 -a "$1" != "-force" -a "$1" != "+force"
 then
