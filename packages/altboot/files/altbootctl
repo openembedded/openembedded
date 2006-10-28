@@ -55,7 +55,7 @@ ask_pref() {
 	
 	#echo "[$1] -> $SETTING_OLD_VALUE"
 	#echo -e "$SETTING_TEXT"
-
+	
 
 	if test "$SETTING_VALUES" = "<STRING>"
 	then				
@@ -92,6 +92,8 @@ ask_pref() {
 		# If it's not a string, it's a fixed list of possible settings
 		echo -e "\nSelect one of the following:\n"	
 		cnt=1	
+		
+		echo " $SETTING_VALUES"
 		for val in $SETTING_VALUES
 		do
 			if test "$val" != "$SETTING_OLD_VALUE"
