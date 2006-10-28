@@ -49,6 +49,7 @@ SLUGOS_PACKAGES = "\
 	devlabel \
 	diffstat \
 	diffutils \
+	dircproxy \
 	dnsmasq \
 	e2fsprogs \
 	e2fsprogs-libs \
@@ -152,6 +153,7 @@ SLUGOS_PACKAGES = "\
 	sed \
 	setpwc \
 	setserial \
+	sipsak \
 	smartmontools \
 	ssmtp \
 	strace \
