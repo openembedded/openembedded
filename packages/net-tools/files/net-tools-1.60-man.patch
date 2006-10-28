@@ -1,0 +1,132 @@
+--- net-tools-1.60/man/en_US/ifconfig.8.man	2000-10-28 12:59:42.000000000 +0200
++++ net-tools-1.60/man/en_US/ifconfig.8	2003-05-22 16:58:41.000000000 +0200
+@@ -177,7 +177,7 @@
+ command.
+ .LP
+ Interrupt problems with Ethernet device drivers fail with EAGAIN. See
+-.I http://cesdis.gsfc.nasa.gov/linux/misc/irq-conflict.html
++.I http://www.scyld.com/expert/irq-conflict.html
+ for more information.
+ .SH FILES
+ .I /proc/net/socket 
+--- net-tools-1.60/man/en_US/hostname.1.man	1999-02-27 13:11:14.000000000 +0100
++++ net-tools-1.60/man/en_US/hostname.1	2003-05-22 17:04:30.000000000 +0200
+@@ -10,8 +10,6 @@
+ nisdomainname \- show or set system's NIS/YP domain name
+ .br
+ ypdomainname \- show or set the system's NIS/YP domain name
+-.br
+-nodename \- show or set the system's DECnet node name
+ 
+ .SH SYNOPSIS
+ .B hostname
+@@ -96,12 +94,6 @@
+ function. This is also known as the YP/NIS domain name of the system.
+ 
+ .LP
+-.B nodename
+-will print the DECnet node name of the system as returned by the
+-.BR getnodename (2)
+-function.
+-
+-.LP
+ .B dnsdomainname
+ will print the domain part of the FQDN (Fully Qualified Domain Name). The
+ complete FQDN of the system is returned with
+@@ -184,11 +176,6 @@
+ .I "\-i, \-\-ip-address"
+ Display the IP address(es) of the host.
+ .TP
+-.I "\-n, \-\-node"
+-Display the DECnet node name. If a parameter is given (or
+-.B \-\-file name
+-) the root can also set a new node name.
+-.TP
+ .I "\-s, \-\-short"
+ Display the short host name. This is the host name cut at the first dot.
+ .TP
+--- net-tools-1.60/man/fr_FR/hostname.1.man	1999-04-18 21:23:46.000000000 +0200
++++ net-tools-1.60/man/fr_FR/hostname.1	2003-05-22 17:05:04.000000000 +0200
+@@ -9,8 +9,6 @@
+ nisdomainname \- affiche ou définit le nom de domaine NIS/YP du système
+ .br
+ ypdomainname \- affiche ou définit le nom de domaine NIS/YP du système
+-.br
+-nodename \- affiche ou définit le nom de domaine DECnet du système
+ 
+ .SH SYNOPSIS
+ .B hostname
+@@ -87,14 +85,6 @@
+ .BR getdomainname (2)
+ . Ceci est connu comme nom de domaine YP/NIS du système.
+ 
+-
+-.LP
+-.B nodename
+-fournit le nom de noeud DECnet du système tel qu'il est retourné par la
+-fonction
+-.BR getnodename (2)
+-.
+-
+ .LP
+ .B dnsdomainname
+ fournit la partie domaine du nom complètement qualifié - FQDN (Fully
+@@ -180,11 +170,6 @@
+ .I "\-i, \-\-ip-address"
+ Affiche la (les) adresse(s) IP de l'hôte.
+ .TP
+-.I "\-n, \-\-node"
+-Affiche le nom de noeud DECnet. Si un paramètre est fourni (ou
+-.B \-\-file nom_fichier
+-) le super-utilisateur peut également définir un nouveau nom de neud.
+-.TP
+ .I "\-s, \-\-short"
+ Affiche le nom d'hôte en format court. Il s'agit du nom d'hôte coupé au
+ premier point.
+--- net-tools-1.60/man/de_DE/hostname.1.man	1999-03-15 21:31:16.000000000 +0100
++++ net-tools-1.60/man/de_DE/hostname.1	2003-05-22 17:06:01.000000000 +0200
+@@ -15,8 +15,6 @@
+ nisdomainname \- den NIS/YP Domainnamen anzeigen oder setzen
+ .br
+ ypdomainname \- den NIS/YP Domainnamen anzeigen oder setzen
+-.br
+-nodename \- den DECnet-Knotennamen anzeigen oder setzen
+ 
+ .SH SYNOPSIS
+ .B hostname
+@@ -101,12 +99,6 @@
+ des Systems genannt.
+ 
+ .LP
+-.B nodename
+-druckt den DECnet-Knotennamen des Systems, wie er von der
+-.BR getnodename (2)
+-Function ermittelt wird, aus.
+-
+-.LP
+ .B dnsdomainname
+ druckt den Domainteil des FQDN (Fully Qualified Domain Name oder zu deutsch
+ vollst\(:andig spezifizierter Domainname) aus.  Der vollst\(:andige FQDN
+@@ -117,8 +109,8 @@
+ .SS "NAME SETZEN"
+ Wenn mit nur einem Argument oder mit der
+ .B \-\-file
+-Option aufgerufen, dann setzen diese Kommandos den Rechnernamen, den NIS/YP
+-Domainnamen oder den DECnet-Knotennamen.
++Option aufgerufen, dann setzen diese Kommandos den Rechnernamen oder den NIS/YP
++Domainnamen.
+ 
+ .LP
+ Nur der Superuser darf den Namen \(:andern.
+@@ -198,11 +190,6 @@
+ .I "\-i, \-\-ip-address"
+ Die IP-Adresse(n) des Rechners anzeigen und beenden.
+ .TP
+-.I "\-n, \-\-node"
+-Den DECnet-Knotennamen anzeigen.  Wenn ein Argument oder die
+-.B \-\-file name
+-Option angegeben wird, dann kann Root auch einen neuen Knotennamen setzen.
+-.TP
+ .I "\-s, \-\-short"
+ Den Kurznamen anzeigen.  Dies ist der ab dem ersten Punkt abgeschnittene
+ Rechnername.

@@ -1,0 +1,11 @@
+diff -urN net-tools-1.60/mii-tool.c net-tools-1.60.new/mii-tool.c
+--- net-tools-1.60/mii-tool.c	2000-05-21 16:31:17.000000000 +0200
++++ net-tools-1.60.new/mii-tool.c	2005-03-29 13:00:18.000000000 +0200
+@@ -302,6 +302,7 @@
+ 	    printf("\n  link partner:%s", media_list(lkpar, 0));
+ 	printf("\n");
+     }
++    fflush(stdout);
+     return 0;
+ }
+ 

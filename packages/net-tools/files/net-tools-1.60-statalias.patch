@@ -1,0 +1,15 @@
+--- net-tools-1.60/lib/interface.c.statalias	2005-01-07 12:49:14.084104032 +0100
++++ net-tools-1.60/lib/interface.c	2005-01-07 12:49:38.527388088 +0100
+@@ -395,9 +395,11 @@
+ 	char *s, name[IFNAMSIZ];
+ 	s = get_name(name, buf);    
+ 	get_dev_fields(s, ife);
+-	ife->statistics_valid = 1;
+ 	if (target && !strcmp(target,name))
++	{
++		ife->statistics_valid = 1;
+ 		break;
++	}
+     }
+     if (ferror(fh)) {
+ 	perror(_PATH_PROCNET_DEV);

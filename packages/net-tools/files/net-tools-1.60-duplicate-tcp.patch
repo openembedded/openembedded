@@ -1,0 +1,194 @@
+--- net-tools-1.60/netstat.c.foo	Mon Apr 22 14:25:20 2002
++++ net-tools-1.60/netstat.c	Mon Apr 22 14:25:22 2002
+@@ -435,6 +435,162 @@
+ 			 " will not be shown, you would have to be root to see it all.)\n"));
+ }
+ 
++#define TCP_HASH_SIZE 1009
++
++static struct tcp_node {
++  struct tcp_node *next;
++  char            *socket_pair;
++} *tcp_node_hash[TCP_HASH_SIZE];
++
++static unsigned int tcp_node_compute_string_hash(const char *p)
++{
++  unsigned int h = *p;
++
++  if (h)
++    for (p += 1; *p != '\0'; p++)
++      h = (h << 5) - h + *p;
++
++  return h;
++}
++
++#define TCP_NODE_HASH_STRING(x) \
++  (tcp_node_compute_string_hash(x) % TCP_HASH_SIZE)
++
++static void tcp_node_hash_clear(void)
++{
++  int i;
++  struct tcp_node *next_node;
++  struct tcp_node *tmp_node;
++  for (i=0; i < TCP_HASH_SIZE; i++) {
++    if (tcp_node_hash[i]) {
++      /* free the children of this hash bucket */
++      next_node = tcp_node_hash[i]->next;
++      while (next_node) {
++	tmp_node = next_node;
++	next_node = next_node->next;
++	free(tmp_node->socket_pair);
++	free(tmp_node);
++      }
++
++      /* free the bucket itself */
++      free(tcp_node_hash[i]);
++      tcp_node_hash[i] = NULL;
++    }
++  }
++}
++
++/* This function takes a socket pair string.  If it already exists in
++   the hash it returns -1, otherwise it returns 0. */
++
++static int tcp_node_hash_check_and_append(const char *local_addr,
++					  int local_port,
++					  const char *rem_addr,
++					  int rem_port)
++{
++  unsigned int hash_val;
++  struct tcp_node *tmp_node;
++  int   tmp_string_len;
++  char *tmp_string;;
++
++  /* Size of the string is the size of the two lengths of the address
++     strings plus enough sizes for the colons and the ports. */
++  tmp_string_len = strlen(local_addr) + strlen(rem_addr) + 32;
++  tmp_string = malloc(tmp_string_len);
++  if (!tmp_string)
++    return 0;
++
++  if (snprintf(tmp_string, tmp_string_len - 1, "%s:%d:%s:%d",
++	       local_addr, local_port, rem_addr, rem_port) < 0) {
++    free(tmp_string);
++    return 0;
++  }
++
++  hash_val = TCP_NODE_HASH_STRING(tmp_string);
++
++  /* See if we have to allocate this node */
++  if (!tcp_node_hash[hash_val]) {
++    tcp_node_hash[hash_val] = malloc(sizeof(struct tcp_node));
++    if (!tcp_node_hash[hash_val]) {
++      free(tmp_string);
++      return 0;
++    }
++
++    memset(tcp_node_hash[hash_val], 0, sizeof(struct tcp_node));
++
++    /* Stuff this new value into the hash bucket and return early */
++    tcp_node_hash[hash_val]->socket_pair = tmp_string;
++    return 0;
++  }
++
++  /* Try to find the value in the hash bucket. */
++  tmp_node = tcp_node_hash[hash_val];
++  while (tmp_node) {
++    if (!strcmp(tmp_node->socket_pair, tmp_string)) {
++      free(tmp_string);
++      return -1;
++    }
++    tmp_node = tmp_node->next;
++  }
++
++  /* If we got this far it means that it isn't in the hash bucket.
++     Add it to the front since it's faster that way. */
++  tmp_node = tcp_node_hash[hash_val];
++
++  tcp_node_hash[hash_val] = malloc(sizeof(struct tcp_node));
++  if (!tcp_node_hash[hash_val]) {
++    free(tmp_string);
++    tcp_node_hash[hash_val] = tmp_node;
++    return 0;
++  }
++
++  tcp_node_hash[hash_val]->socket_pair = tmp_string;
++  tcp_node_hash[hash_val]->next = tmp_node;
++
++  return 0;
++}
++
++#if 0
++static void tcp_node_hash_report_bucket_size(void)
++{
++  int max = 0;
++  int min = 0;
++  int num = 0;
++  int total = 0;
++  struct tcp_node *tmp_node;
++  int tmp, i;
++  float avg;
++
++  for (i=0; i < TCP_HASH_SIZE; i++) {
++    tmp_node = tcp_node_hash[i];
++    if (!tmp_node)
++      continue;
++
++    tmp = 0;
++
++    num++;
++    tmp = 1;
++
++    while (tmp_node) {
++      tmp++;
++      tmp_node = tmp_node->next;
++    }
++    
++    total += tmp;
++    if (tmp > max)
++      max = tmp;
++    
++    if (min == 0 || tmp < min)
++      min = tmp;
++  }
++
++  avg = (float)total/(float)num;
++
++  printf("%d nodes in %d buckets min/max/avg %d/%d/%.2f\n",
++	 total, num, min, max, avg);
++
++}
++#endif
++
+ #if HAVE_AFNETROM
+ static const char *netrom_state[] =
+ {
+@@ -752,11 +908,20 @@
+ 	fprintf(stderr, _("warning, got bogus tcp line.\n"));
+ 	return;
+     }
++
+     if ((ap = get_afntype(((struct sockaddr *) &localaddr)->sa_family)) == NULL) {
+ 	fprintf(stderr, _("netstat: unsupported address family %d !\n"),
+ 		((struct sockaddr *) &localaddr)->sa_family);
+ 	return;
+     }
++
++    /* make sure that we haven't seen this socket pair before */
++    if (tcp_node_hash_check_and_append(local_addr, local_port,
++				       rem_addr, rem_port) < 0) {
++  /*  fprintf(stderr, _("warning, got duplicate tcp line.\n")); */
++      return;
++    }
++
+     if (state == TCP_LISTEN) {
+ 	time_len = 0;
+ 	retr = 0L;
+@@ -1849,6 +2014,7 @@
+ 	    break;
+ 	sleep(1);
+ 	prg_cache_clear();
++	tcp_node_hash_clear();
+     }
+     return (i);
+ }

@@ -1,9 +1,9 @@
-LICENSE = "GPL"
 DESCRIPTION = "GNU Octave is a high-level language, primarily intended for numerical computations. \
 It provides a convenient command line interface for solving linear and nonlinear problems numerically, \
 and for performing other numerical experiments using a language that is mostly compatible with Matlab. \
 It may also be used as a batch-oriented language." 
-SECTION = "console/util"
+SECTION = "console/utils"
+LICENSE = "GPL"
 DEPENDS = "readline ncurses"
 SRC_URI = "ftp://ftp.octave.org/pub/octave/bleeding-edge/octave-${PV}.tar.gz"
 

@@ -1,6 +1,8 @@
 # !/bin/sh
 M_TITLE="Configure kexec CMDLINE"
 
+# Deprecated due to altbootctl
+exit 0
 
 
 # Only kernel 2.6 offers kexec support

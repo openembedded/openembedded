@@ -1,0 +1,26 @@
+--- net-tools-1.60/hostname.c.trailingblank	2001-04-08 19:04:23.000000000 +0200
++++ net-tools-1.60/hostname.c	2003-08-19 14:21:17.000000000 +0200
+@@ -153,13 +153,19 @@
+ 
+     switch (c) {
+     case 'a':
+-	while (hp->h_aliases[0])
+-	    printf("%s ", *hp->h_aliases++);
++	while (hp->h_aliases[0]) {
++	    printf("%s", *hp->h_aliases++);
++	    if (hp->h_aliases[0])
++                printf(" ");
++	}
+ 	printf("\n");
+ 	break;
+     case 'i':
+-	while (hp->h_addr_list[0])
+-	    printf("%s ", inet_ntoa(*(struct in_addr *) *hp->h_addr_list++));
++	while (hp->h_addr_list[0]) {
++	    printf("%s", inet_ntoa(*(struct in_addr *) *hp->h_addr_list++));
++	    if (hp->h_addr_list[0])
++                printf(" ");
++	}
+ 	printf("\n");
+ 	break;
+     case 'd':

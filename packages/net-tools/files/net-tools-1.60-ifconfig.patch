@@ -1,0 +1,107 @@
+--- net-tools-1.60/ifconfig.c.new	2005-07-20 12:47:29.000000000 +0200
++++ net-tools-1.60/ifconfig.c	2005-07-20 12:54:57.000000000 +0200
+@@ -175,6 +175,32 @@
+     return (0);
+ }
+ 
++/** test is a specified flag is set */
++static int test_flag(char *ifname, short flags)
++{
++    struct ifreq ifr;
++    int fd;
++
++    if (strchr(ifname, ':')) {
++        /* This is a v4 alias interface.  Downing it via a socket for
++	   another AF may have bad consequences. */
++        fd = get_socket_for_af(AF_INET);
++	if (fd < 0) {
++	    fprintf(stderr, _("No support for INET on this system.\n"));
++	    return -1;
++	}
++    } else
++        fd = skfd;
++
++    safe_strncpy(ifr.ifr_name, ifname, IFNAMSIZ);
++    if (ioctl(fd, SIOCGIFFLAGS, &ifr) < 0) {
++	fprintf(stderr, _("%s: ERROR while testing interface flags: %s\n"), 
++		ifname, strerror(errno));
++	return -1;
++    }
++    return (ifr.ifr_flags & flags);
++}
++
+ static void usage(void)
+ {
+     fprintf(stderr, _("Usage:\n  ifconfig [-a] [-v] [-s] <interface> [[<AF>] <address>]\n"));
+@@ -249,7 +275,7 @@
+ 			err = 1;
+     	}
+     }
+-    return 0;
++    return err;
+ }
+ 
+ int main(int argc, char **argv)
+@@ -415,6 +441,8 @@
+ 	}
+ 	if (!strcmp(*spp, "-promisc")) {
+ 	    goterr |= clr_flag(ifr.ifr_name, IFF_PROMISC);
++	    if (test_flag(ifr.ifr_name, IFF_PROMISC) > 0)
++	    	fprintf(stderr, _("Warning: Interface %s still in promisc mode... maybe other application is running?\n"), ifr.ifr_name);
+ 	    spp++;
+ 	    continue;
+ 	}
+@@ -425,6 +453,8 @@
+ 	}
+ 	if (!strcmp(*spp, "-multicast")) {
+ 	    goterr |= clr_flag(ifr.ifr_name, IFF_MULTICAST);
++	    if (test_flag(ifr.ifr_name, IFF_MULTICAST) > 0)
++	    	fprintf(stderr, _("Warning: Interface %s still in MULTICAST mode.\n"), ifr.ifr_name);
+ 	    spp++;
+ 	    continue;
+ 	}
+@@ -435,6 +465,8 @@
+ 	}
+ 	if (!strcmp(*spp, "-allmulti")) {
+ 	    goterr |= clr_flag(ifr.ifr_name, IFF_ALLMULTI);
++	    if (test_flag(ifr.ifr_name, IFF_MULTICAST) > 0)
++	    	fprintf(stderr, _("Warning: Interface %s still in ALLMULTI mode.\n"), ifr.ifr_name);
+ 	    spp++;
+ 	    continue;
+ 	}
+@@ -456,6 +488,8 @@
+ 	}
+ 	if (!strcmp(*spp, "-dynamic")) {
+ 	    goterr |= clr_flag(ifr.ifr_name, IFF_DYNAMIC);
++	    if (test_flag(ifr.ifr_name, IFF_MULTICAST) > 0)
++	    	fprintf(stderr, _("Warning: Interface %s still in DYNAMIC mode.\n"), ifr.ifr_name);
+ 	    spp++;
+ 	    continue;
+ 	}
+@@ -513,6 +547,8 @@
+ 
+ 	if (!strcmp(*spp, "-broadcast")) {
+ 	    goterr |= clr_flag(ifr.ifr_name, IFF_BROADCAST);
++	    if (test_flag(ifr.ifr_name, IFF_MULTICAST) > 0)
++	    	fprintf(stderr, _("Warning: Interface %s still in BROADCAST mode.\n"), ifr.ifr_name);
+ 	    spp++;
+ 	    continue;
+ 	}
+@@ -569,7 +605,7 @@
+ 		continue;
+ 	    }
+ 	    didnetmask++;
+-	    goterr = set_netmask(ap->fd, &ifr, &sa, dobcast);
++	    goterr |= set_netmask(ap->fd, &ifr, &sa, dobcast);
+ 	    spp++;
+ 	    continue;
+ 	}
+@@ -640,6 +676,8 @@
+ 	}
+ 	if (!strcmp(*spp, "-pointopoint")) {
+ 	    goterr |= clr_flag(ifr.ifr_name, IFF_POINTOPOINT);
++	    if (test_flag(ifr.ifr_name, IFF_MULTICAST) > 0)
++	    	fprintf(stderr, _("Warning: Interface %s still in POINTOPOINT mode.\n"), ifr.ifr_name);
+ 	    spp++;
+ 	    continue;
+ 	}

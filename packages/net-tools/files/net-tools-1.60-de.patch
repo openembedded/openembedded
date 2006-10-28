@@ -1,0 +1,11 @@
+--- net-tools-1.60/po/de.po.old	2005-02-16 16:46:02.000000000 +0100
++++ net-tools-1.60/po/de.po	2005-02-16 16:54:07.886323928 +0100
+@@ -64,7 +64,7 @@
+ 
+ #: ../arp.c:467
+ msgid "(incomplete)"
+-msgstr "(unvollsändig)"
++msgstr "(unvollständig)"
+ 
+ #: ../arp.c:484
+ #, c-format

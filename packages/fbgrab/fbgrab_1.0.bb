@@ -2,6 +2,8 @@ SECTION = "console/network"
 DESCRIPTION = "framebuffer screenshot program"
 LICENSE = "GPL"
 
+DEPENDS = " zlib libpng "
+
 SRC_URI = "http://hem.bredband.net/gmogmo/fbgrab/fbgrab-${PV}.tar.gz \
            file://makefile.patch;patch=1"
 

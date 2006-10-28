@@ -3,9 +3,7 @@ DESCRIPTION = "handhelds.org Linux kernel 2.6 for PocketPCs and other consumer h
 LICENSE = "GPL"
 
 COMPATIBLE_HOST = "arm.*-linux"
-COMPATIBLE_MACHINE ?= '(h1910|h2200|h3900|h4000|h5xxx|htcuniversal|hx4700)'
-
-FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/handhelds-pxa-${PV}"
+COMPATIBLE_MACHINE ?= '(h1910|h2200|h3600|h3900|h4000|h5xxx|htcuniversal|hx4700|jornada56x|simpad)'
 
 SRC_URI = "${HANDHELDS_CVS};module=linux/kernel26;tag=${@'K' + bb.data.getVar('PV',d,1).replace('.', '-')} \
            file://24-hostap_cs_id.diff;patch=1 \
