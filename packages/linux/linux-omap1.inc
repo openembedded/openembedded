@@ -11,7 +11,13 @@ KERNEL_IMAGETYPE = "vmlinux"
 KERNEL_OUTPUT = "${KERNEL_IMAGETYPE}"
 
 do_configure_prepend() {
-	install -m 0644 ${WORKDIR}/defconfig ${S}/.config
+
+        if [ "${TARGET_OS}" == "linux-gnueabi" -o  "${TARGET_OS}" == "linux-uclibcgnueabi" ]; then
+	       install -m 0644 ${WORKDIR}/defconfig.eabi ${S}/.config
+        else
+	       install -m 0644 ${WORKDIR}/defconfig ${S}/.config
+        fi
+
         oe_runmake oldconfig
 }
 
