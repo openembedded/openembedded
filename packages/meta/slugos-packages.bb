@@ -97,7 +97,6 @@ SLUGOS_PACKAGES = "\
 	libusb \
 	libvorbis \
 	libxml2 \
-	lirc \
 	litestream \
 	lrzsz \
 	lsof \
@@ -188,6 +187,7 @@ SLUGOS_BROKEN_PACKAGES = "\
 	unionfs-utils \
 	icecast \
 	cyrus-imapd \
+	lirc \
 	"
 
 # These packages will never build because uclibc lacks (and always will lack)
