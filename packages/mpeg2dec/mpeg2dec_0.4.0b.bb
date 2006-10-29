@@ -3,7 +3,7 @@ HOMEPAGE = "http://libmpeg2.sourceforge.net/"
 LICENSE = "GPL"
 PRIORITY = "optional"
 SECTION = "libs"
-PR = "r1"
+PR = "r2"
 
 DEPENDS = "virtual/libsdl"
 
@@ -16,7 +16,7 @@ EXTRA_OECONF = "--enable-shared"
 
 PACKAGES = "mpeg2dec mpeg2dec-doc libmpeg2 libmpeg2-dev libmpeg2convert libmpeg2convert-dev"
 
-FILES_${PN} = "${bindir}"
+FILES_${PN} = "${bindir}/*"
 FILES_libmpeg2 = "${libdir}/libmpeg2.so.*"
 FILES_libmpeg2convert = "${libdir}/libmpeg2convert.so.*"
 FILES_libmpeg2-dev = "${libdir}/libmpeg2.so \

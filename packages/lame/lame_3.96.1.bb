@@ -1,7 +1,7 @@
 SECTION = "console/utils"
 DESCRIPTION = "Not an MP3 encoder"
 LICENSE = "LGPL"
-PR = "r2"
+PR = "r3"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/lame/lame-${PV}.tar.gz \
 	file://no-gtk1.patch;patch=1"
@@ -11,7 +11,7 @@ inherit autotools
 PACKAGES += "libmp3lame libmp3lame-dev"
 FILES_${PN} = "${bindir}/lame"
 FILES_libmp3lame = "${libdir}/libmp3lame.so.*"
-FILES_libmp3lame-dev = "${includedir} ${libdir}"
+FILES_libmp3lame-dev = "${includedir} ${libdir}/*"
 FILES_${PN}-dev = ""
 
 do_configure() {
