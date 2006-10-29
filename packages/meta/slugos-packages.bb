@@ -49,7 +49,6 @@ SLUGOS_PACKAGES = "\
 	devlabel \
 	diffstat \
 	diffutils \
-	dircproxy \
 	dnsmasq \
 	e2fsprogs \
 	e2fsprogs-libs \
@@ -141,7 +140,6 @@ SLUGOS_PACKAGES = "\
 	procps \
 	puppy \
 	pvrusb2-mci \
-	pwc \
 	python \
 	quilt \
 	reiserfsprogs reiser4progs \
@@ -185,9 +183,9 @@ SLUGOS_BROKEN_PACKAGES = "\
 	qc-usb-messenger \
 	unionfs-modules \
 	unionfs-utils \
-	icecast \
 	cyrus-imapd \
 	lirc \
+	pwc \
 	"
 
 # These packages will never build because uclibc lacks (and always will lack)
