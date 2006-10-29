@@ -166,7 +166,11 @@ do_stage() {
 
 do_install() {
 	oe_libinstall -so -C lib lib${PN} ${D}${palmqtdir}/lib/
+
+	install -d ${D}/${includedir}/qte
+	install -m 0644 include/*.h ${D}/${includedir}/qte/
 }
 
-PACKAGE_ARCH = "${MACHINE_ARCH}"
-FILES_${PN} = "${palmqtdir}"
+FILES_${PN} = "${palmqtdir}/lib/lib${PN}.so.*"
+FILES_${PN}-dev = "${includedir}/* ${palmqtdir}/lib/lib${PN}.so"
+FILES_${PN}-dbg = "${palmtopdir}/lib/.debug/"
