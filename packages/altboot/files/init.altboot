@@ -6,7 +6,7 @@
 #
 
 test -e /etc/altboot.func && . /etc/altboot.func || die "ERROR: /etc/altboot.func not found. Check your installation!"
-
+ 
 CURRENT_ENV="`set`"
 VERSION="DEVELOPER SNAPSHOT"
 
@@ -17,7 +17,20 @@ REAL_INIT="/sbin/init.sysvinit"
 INIT_RUNLEVEL="`cat /etc/inittab | sed -n "/^id\:/s/id\:\([0-9]\)\:.*$/\1/p"`"
 test -z "$INIT_RUNLEVEL" && INIT_RUNLEVEL=5
 
+# If this step fails the results are fatal. Seen on Collie / kernel 2.4 (where else...)
 OUT_TTY="`tty`" ; test -z "$OUT_TTY" && OUT_TTY="/dev/tty1"
+
+if test -z "$OUT_TTY"
+then
+	OUT_TTY="/dev/tty1"
+	echo "WARNING: Assgnment of OUT_TTY failed!" > "$OUT_TTY"
+fi
+
+if ( echo "$OUT_TTY" | grep -q "not" )
+then
+	OUT_TTY="/dev/tty1"
+	echo "WARNING: Assignment of OUT_TTY failed (2)!" > "$OUT_TTY"
+fi
 
 case "`uname -r`" in
 2.6*)	ALTBOOT_CFG_FILE="/etc/altboot-2.6.cfg";;
@@ -33,6 +46,8 @@ then
 	. "${ALTBOOT_CFG_FILE}.next-reboot"
 	rm "${ALTBOOT_CFG_FILE}.next-reboot"
 fi
+
+test "$ENABLE_DEBUGGING" = "yes" && ENABLE_DEBUG="yes"
 
 C_RED="\033[31m"
 C_YELLOW="\033[33m"
@@ -167,9 +182,7 @@ show_sub_menu() {
 	#echo "[$d_entries]"
 	
 	echo -e "\naltboot v$VERSION: $dirname menu\n" 
-	
-	#debug_echo "show_sub_menu(): ping"
-	
+		
 	for d_entry in $d_entries
 	do
 		d_entry_number="`echo "$d_entry"| sed -n "s/\(.*\)\#\#\(.*\)\#\#\#/\1/p"`"
@@ -416,7 +429,7 @@ else
 		exec $REAL_INIT $INIT_RUNLEVEL
 		exit 0
 	fi
-
+	
 	# Execute scripts in /etc/altboot.rc before doing anything else.
 	# Required in special situations, like booting spitz
 	RC_FILES=`ls /etc/altboot.rc | grep \.sh$`
