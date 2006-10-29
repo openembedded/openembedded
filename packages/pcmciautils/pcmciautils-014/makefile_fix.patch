@@ -1,0 +1,15 @@
+Hardcoded paths are bad...
+
+Index: pcmciautils-014/Makefile
+===================================================================
+--- pcmciautils-014.orig/Makefile	2006-06-01 11:07:52.000000000 +0200
++++ pcmciautils-014/Makefile	2006-10-29 13:50:25.000000000 +0100
+@@ -69,7 +69,7 @@
+ mandir =	${prefix}/usr/share/man
+ srcdir = .
+ 
+-INSTALL = /usr/bin/install -c
++INSTALL = install -c
+ INSTALL_PROGRAM = ${INSTALL}
+ INSTALL_DATA  = ${INSTALL} -m 644
+ INSTALL_SCRIPT = ${INSTALL_PROGRAM}
