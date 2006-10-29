@@ -3,7 +3,8 @@ DESCRIPTION = "Matchbox window manager"
 LICENSE = "GPL"
 DEPENDS = "libmatchbox virtual/libx11 libxext libxcomposite libxfixes libxdamage libxrender startup-notification expat gconf matchbox-common"
 RDEPENDS = "matchbox-common"
-PR="r0"
+
+PR="r1"
 
 
 SRC_URI = "http://projects.o-hand.com/matchbox/sources/matchbox-window-manager/1.1/matchbox-window-manager-${PV}.tar.gz \
@@ -13,7 +14,7 @@ S = "${WORKDIR}/matchbox-window-manager-${PV}"
 
 inherit autotools pkgconfig update-alternatives
 
-FILES_${PN} = "${bindir} \
+FILES_${PN} = "${bindir}/* \
 	       ${datadir}/matchbox \
 	       ${sysconfdir}/matchbox \
 	       ${datadir}/themes/blondie/matchbox \
