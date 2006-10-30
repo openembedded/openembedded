@@ -1,3 +1,18 @@
+http://mail.gnome.org/archives/performance-list/2006-October/msg00063.html
+
+From: Xan Lópe
+To: ext Matt Hoosier
+Cc: performance-list gnome org
+Subject: Re: [patch] Remove pangocairo from Gtk+ 2.8.20
+Date: Mon, 30 Oct 2006 14:31:56 +0200
+Hi,
+
+I've upgraded your patch against GTK+ 2.10.6, and we are getting great
+performance figures compared to GTK+ 2.10.6 with pangocairo too
+(basically at the level of GTK+ 2.6.10 again). Right now I'm working on
+a python/cairo script to get some nice graphics from a torture test
+session with several GTK+s, hope to get it ready soon.
+
 Index: gtk+-2.10.6/configure.in
 ===================================================================
 --- gtk+-2.10.6.orig/configure.in	2006-10-30 12:59:28.000000000 +0000
