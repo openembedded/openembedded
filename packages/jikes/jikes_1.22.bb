@@ -3,7 +3,7 @@ HOMEPAGE = "http://jikes.sourceforge.net/"
 PRIORITY = "optional"
 SECTION = "devel"
 LICENSE = "IBM"
-PR = "r0"
+PR = "r1"
 
 RDEPENDS = "classpath"
 
@@ -18,7 +18,7 @@ CXXFLAGS_append_arm += "-UHAVE_64BIT_TYPES -DWORDS_BIGENDIAN=1"
 
 do_install() {
 	oe_runmake 'DESTDIR=${D}' install
-	install -m 0755 ${WORKDIR}/javac.jikes ${D}${bindir}/
+    ln -s ${bindir}/jikes ${D}${bindir}/javac.jikes
 }
 
 PROVIDES = "virtual/javac"
