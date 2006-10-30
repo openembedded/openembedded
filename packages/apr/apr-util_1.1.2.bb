@@ -7,7 +7,7 @@ LICENSE = "Apache License, Version 2.0"
 PR = "r0"
 
 # apache mirrors?
-SRC_URI = "http://mirror.switch.ch/mirror/apache/dist/apr/${P}.tar.gz"
+SRC_URI = "http://archive.apache.org/dist/apr/${P}.tar.gz"
 
 EXTRA_OECONF = "--with-apr=${STAGING_BINDIR} --with-dbm=gdbm --with-gdbm=${STAGING_DIR}/${HOST_SYS} --with-expat=${STAGING_DIR}/${HOST_SYS}"
 
