@@ -41,5 +41,5 @@ do_stage() {
 
 do_install_append () {
 	install -d ${D}/etc/X11
-	install -m0644 ${WORKDIR}/xorg.conf ${D}/etc/X11/
+	install -m 0644 ${WORKDIR}/xorg.conf ${D}/etc/X11/
 }
