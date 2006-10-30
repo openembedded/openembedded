@@ -6,7 +6,7 @@ LICENSE = "Apache License, Version 2.0"
 PR = "r0"
 
 # apache mirrors?
-SRC_URI = "http://mirror.switch.ch/mirror/apache/dist/apr/${P}.tar.bz2"
+SRC_URI = "http://archive.apache.org/dist/apr/${P}.tar.bz2"
 
 inherit autotools lib_package binconfig
 
