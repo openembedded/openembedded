@@ -27,8 +27,10 @@ Person:     Graeme Gregory
 Mail:       dp@xora.org.uk
 Website:    http://www.xora.org.uk
 Interests:  Multimedia in gpe and on fbdev, and gtk+ apps on PDA devices.
+Interests:	GNOME on PDA
 Recipes:    mplayer, xmms, xmms-mad, xmms-tremor, dillo, links, links-x11
-Recipes:    epdfview
+Recipes:    epdfview, kismet, sylpheed-claws, sylpheed, gqview, tightvnc
+Recipes:	epdfview, gtk+_2.10.*
 
 Person:     Holger Hans Peter Freyther
 Mail:       zecke@selfish.org
