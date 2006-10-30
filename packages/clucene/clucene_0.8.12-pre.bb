@@ -3,7 +3,7 @@ SECTION = "libs"
 LICENSE = "LGPL"
 PRIORITY = "optional"
 SRCDATE = "20040704"
-SRC_URI = "cvs://anonymous@cvs.sourceforge.net/cvsroot/clucene;module=. \
+SRC_URI = "cvs://anonymous@clucene.cvs.sourceforge.net/cvsroot/clucene;module=. \
 	   file://compile-fix.patch;patch=1"
 S = "${WORKDIR}"
 
