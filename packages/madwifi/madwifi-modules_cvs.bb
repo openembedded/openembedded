@@ -7,7 +7,7 @@ DEPENDS = "virtual/kernel"
 SRCDATE = "20050803"
 PV = "1.0.0+cvs${SRCDATE}"
 
-SRC_URI = "cvs://anonymous@cvs.sourceforge.net/cvsroot/madwifi;module=madwifi;date=${SRCDATE}"
+SRC_URI = "cvs://anonymous@madwifi.cvs.sourceforge.net/cvsroot/madwifi;module=madwifi;date=${SRCDATE}"
 
 S = "${WORKDIR}/madwifi"
 

@@ -10,7 +10,7 @@ LICENSE = "GPL-2"
 # Use releases in preference
 DEFAULT_PREFERENCE = "-1"
 
-SRC_URI = "cvs://anonymous@cvs.sourceforge.net/cvsroot/nslu;method=pserver;module=upslug"
+SRC_URI = "cvs://anonymous@nslu.cvs.sourceforge.net/cvsroot/nslu;method=pserver;module=upslug"
 
 inherit native
 

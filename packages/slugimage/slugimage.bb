@@ -7,7 +7,7 @@ PR = "r4"
 
 RDEPENDS = "perl"
 
-SRC_URI = "cvs://anonymous:@cvs.sourceforge.net/cvsroot/nslu;module=slugimage;tag=SLUGIMAGE_3_2"
+SRC_URI = "cvs://anonymous:@nslu.cvs.sourceforge.net/cvsroot/nslu;module=slugimage;tag=SLUGIMAGE_3_2"
 S = "${WORKDIR}"
 
 do_install () {

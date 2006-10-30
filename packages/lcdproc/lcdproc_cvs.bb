@@ -12,7 +12,7 @@ DEFAULT_PREFERENCE = "-1"
 DEPENDS = "${@((bb.data.getVar('LCDPROC_DRIVERS',d) or 'curses,text').find('curses') != -1) and 'ncurses' or ''}"
 RRECOMMENDS_lcdproc = "lcdd"
 
-SRC_URI = "cvs://anonymous@cvs.sourceforge.net/cvsroot/lcdproc;module=lcdproc"
+SRC_URI = "cvs://anonymous@lcdproc.cvs.sourceforge.net/cvsroot/lcdproc;module=lcdproc"
 S = "${WORKDIR}/lcdproc"
 
 inherit autotools update-rc.d

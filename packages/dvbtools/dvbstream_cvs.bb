@@ -1,9 +1,10 @@
-PV = "0.0+cvs${SRCDATE}"
 SECTION = "console/multimedia"
 PRIORITY = "optional"
 LICENSE = "GPLV2"
 DEPENDS = "libxml2"
-SRC_URI = "cvs://anonymous@cvs.sourceforge.net/cvsroot/dvbtools;module=dvbstream"
+PV = "0.0+cvs${SRCDATE}"
+
+SRC_URI = "cvs://anonymous@dvbtools.cvs.sourceforge.net/cvsroot/dvbtools;module=dvbstream"
 S = "${WORKDIR}/dvbstream"
 
 CFLAGS_append = " -D_GNU_SOURCE"

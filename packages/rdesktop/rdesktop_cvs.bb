@@ -6,7 +6,7 @@ LICENSE = "GPL"
 PV = "1.5.0+cvs${SRCDATE}"
 PR = "r3"
 DEFAULT_PREFERENCE = "-1"
-SRC_URI = "cvs://anonymous@cvs.sourceforge.net/cvsroot/rdesktop;module=rdesktop"
+SRC_URI = "cvs://anonymous@rdesktop.cvs.sourceforge.net/cvsroot/rdesktop;module=rdesktop"
 S = "${WORKDIR}/rdesktop"
 
 inherit autotools
