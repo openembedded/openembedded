@@ -105,7 +105,7 @@ SRC_URI = "http://www.kernel.org/pub/linux/kernel/v2.6/linux-2.6.16.tar.bz2 \
            file://connectplus-remove-ide-HACK.patch;patch=1;status=hack \
            file://squashfs3.0-2.6.15.patch;patch=1;status=external \
            file://defconfig-c7x0 \
-           file://defconfig-ipaq-pxa270 \
+           file://defconfig-hx2000 \
            file://defconfig-collie \
            file://defconfig-poodle \
            file://defconfig-akita \

@@ -1,6 +1,6 @@
 require linux-openzaurus.inc
 
-PR = "r28"
+PR = "r29"
 
 # Handy URLs
 # git://rsync.kernel.org/pub/scm/linux/kernel/git/torvalds/linux-2.6.git \
@@ -27,7 +27,7 @@ SRC_URI = "http://www.kernel.org/pub/linux/kernel/v2.6/linux-2.6.17.tar.bz2 \
            ${RPSRC}/spectrumcs_fix-r0.patch;patch=1 \
            file://00-hostap.patch;patch=1;status=merged \
            file://10-pcnet.patch;patch=1;status=merged \
-           ${RPSRC}/alsa/asoc-v0.11.5.patch;patch=1 \
+           ${RPSRC}/alsa/asoc-v0.12.patch;patch=1 \
            ${RPSRC}/asoc_makefile-r0.patch;patch=1 \
            ${RPSRC}/hx2750_base-r27.patch;patch=1 \
            ${RPSRC}/hx2750_bl-r7.patch;patch=1 \
@@ -46,7 +46,7 @@ SRC_URI = "http://www.kernel.org/pub/linux/kernel/v2.6/linux-2.6.17.tar.bz2 \
            ${RPSRC}/locomo_kbd_tweak-r1.patch;patch=1 \
            ${RPSRC}/poodle_pm-r3.patch;patch=1 \
            ${RPSRC}/pxafb_changeres-r0.patch;patch=1 \
-           ${RPSRC}/poodle_audio-r4.patch;patch=1 \
+           ${RPSRC}/poodle_audio-r6.patch;patch=1 \
            ${RPSRC}/pxa27x_overlay-r2.patch;patch=1 \
            file://serial-add-support-for-non-standard-xtals-to-16c950-driver.patch;patch=1 \
            file://hrw-pcmcia-ids-r5.patch;patch=1 \
@@ -62,6 +62,7 @@ SRC_URI = "http://www.kernel.org/pub/linux/kernel/v2.6/linux-2.6.17.tar.bz2 \
            file://connectplus-remove-ide-HACK.patch;patch=1;status=hack \
            file://orinoco-remove-all-which-are-in-hostap-HACK.patch;patch=1;status=unmergable-hack \
            file://squashfs3.0-2.6.15.patch;patch=1;status=external \
+           file://vesafb-tng-1.0-rc2-git-20060629.patch;patch=1;status=external \
            file://defconfig-c7x0 \
            file://defconfig-ipaq-pxa270 \
            file://defconfig-collie \
