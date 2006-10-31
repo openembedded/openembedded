@@ -1,6 +1,6 @@
 DESCRIPTION = "Runs a shell in an environment as emitted by BitBake to execute tasks"
 LICENSE = "GPL"
-PR = "r1"
+PR = "r2"
 
 inherit autotools pkgconfig
 
@@ -55,7 +55,7 @@ do_stage() {
 	:
 }
 
-do_package() {
+do_deploy() {
 	shellfile="${TARGET_PREFIX}${DISTRO}-${MACHINE}-devshell"
 
 	cd ${WORKDIR}
@@ -71,3 +71,5 @@ do_package() {
 	mkdir -p ${DEPLOY_DIR}/addons
 	install -m 755 $shellfile ${DEPLOY_DIR}/addons
 }
+
+addtask do_deploy after do_install 
