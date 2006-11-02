@@ -1,0 +1,1241 @@
+diff -uNr RCF-0.4-orig/Makefile RCF-0.4/Makefile
+--- RCF-0.4-orig/Makefile	1970-01-01 01:00:00.000000000 +0100
++++ RCF-0.4/Makefile	2006-10-24 16:08:00.799705810 +0200
+@@ -0,0 +1,32 @@
++#
++# Top level Makefile for RCF library and test programs
++#
++# Martin Dietze <dietze@4g-systems.com>
++#
++
++SUBDIRS = src test
++DESTDIR =
++prefix = /usr/local
++
++.PHONY: all clean test syntax shared install uninstall
++
++all:
++	@for i in $(SUBDIRS); do $(MAKE) -C $$i $@ || exit 1; done
++
++shared:
++	@for i in $(SUBDIRS); do $(MAKE) -C $$i $@ || exit 1; done
++
++install:
++	$(MAKE) -C src $@
++
++uninstall:
++	$(MAKE) -C src $@
++
++syntax:
++	@for i in $(SUBDIRS); do $(MAKE) -C $$i $@ || exit 1; done
++
++test:
++	$(MAKE) -C $@ $@
++
++clean:
++	@for i in $(SUBDIRS); do $(MAKE) -C $$i $@ || exit 1; done
+diff -uNr RCF-0.4-orig/include/RCF/CheckRtti.hpp RCF-0.4/include/RCF/CheckRtti.hpp
+--- RCF-0.4-orig/include/RCF/CheckRtti.hpp	2006-01-11 01:06:52.000000000 +0100
++++ RCF-0.4/include/RCF/CheckRtti.hpp	2006-10-19 10:03:09.000000000 +0200
+@@ -24,7 +24,7 @@
+             {}
+         };
+ 
+-        struct B
++        struct B : public A
+         {
+             virtual ~B()
+             {}
+@@ -35,7 +35,7 @@
+             B b;
+             // RTTI support not detected!
+             // If you're using Visual C++, set "Enable Run-Time Type Info" to true, in the Project Properties | C/C++ | Language options,
+-            dynamic_cast<A &>(b);
++            (void)dynamic_cast<A &>(b);
+         }
+     };
+ 
+diff -uNr RCF-0.4-orig/include/RCF/EndpointBrokerService.hpp RCF-0.4/include/RCF/EndpointBrokerService.hpp
+--- RCF-0.4-orig/include/RCF/EndpointBrokerService.hpp	2006-01-11 01:06:52.000000000 +0100
++++ RCF-0.4/include/RCF/EndpointBrokerService.hpp	2006-10-19 10:16:40.000000000 +0200
+@@ -49,12 +49,12 @@
+         friend class EndpointBrokerService;
+         typedef RcfClient<I_EndpointServer> Client;
+         typedef boost::shared_ptr<Client> ClientPtr;
++        ServerTransportPtr mServerTransportPtr;
+         std::string mEndpointName;
+-        std::string mEndpointServerPassword;
+         std::string mEndpointClientPassword;
++        std::string mEndpointServerPassword;
+         std::vector<SessionPtr> mConnections;
+         ClientPtr mMasterConnection;
+-        ServerTransportPtr mServerTransportPtr;
+     };
+ 
+     class EndpointBrokerService : 
+diff -uNr RCF-0.4-orig/include/RCF/IpServerTransport.hpp RCF-0.4/include/RCF/IpServerTransport.hpp
+--- RCF-0.4-orig/include/RCF/IpServerTransport.hpp	2006-02-04 01:01:22.000000000 +0100
++++ RCF-0.4/include/RCF/IpServerTransport.hpp	2006-10-19 10:17:56.000000000 +0200
+@@ -87,10 +87,10 @@
+         }
+ 
+     private:
++        mutable ReadWriteMutex mReadWriteMutex;
+         std::string mNetworkInterface;
+         std::vector<std::string> mAllowedIps;
+         std::vector<u_long> mAllowedAddrs;
+-        mutable ReadWriteMutex mReadWriteMutex;
+     };
+ 
+ } // namespace RCF
+diff -uNr RCF-0.4-orig/include/RCF/OpenSslEncryptionFilter.hpp RCF-0.4/include/RCF/OpenSslEncryptionFilter.hpp
+--- RCF-0.4-orig/include/RCF/OpenSslEncryptionFilter.hpp	2006-01-11 01:06:54.000000000 +0100
++++ RCF-0.4/include/RCF/OpenSslEncryptionFilter.hpp	2006-10-19 10:44:20.000000000 +0200
+@@ -28,6 +28,8 @@
+         SslClient
+     };
+ 
++    class OpenSslEncryptionFilterImpl;
++
+     /// Filter implementing the SSL encryption protocol, through the OpenSSL library.
+     class OpenSslEncryptionFilter : public IdentityFilter, boost::noncopyable
+     {
+diff -uNr RCF-0.4-orig/include/RCF/PublishingService.hpp RCF-0.4/include/RCF/PublishingService.hpp
+--- RCF-0.4-orig/include/RCF/PublishingService.hpp	2006-07-27 23:30:10.000000000 +0200
++++ RCF-0.4/include/RCF/PublishingService.hpp	2006-10-19 16:24:36.000000000 +0200
+@@ -15,6 +15,7 @@
+ #include <boost/shared_ptr.hpp>
+ #include <boost/utility.hpp>
+ 
++#include <RCF/ClientStub.hpp>
+ #include <RCF/GetInterfaceName.hpp>
+ #include <RCF/Service.hpp>
+ #include <RCF/ThreadLibrary.hpp>
+diff -uNr RCF-0.4-orig/include/RCF/RcfServer.hpp RCF-0.4/include/RCF/RcfServer.hpp
+--- RCF-0.4-orig/include/RCF/RcfServer.hpp	2006-04-02 21:39:32.000000000 +0200
++++ RCF-0.4/include/RCF/RcfServer.hpp	2006-10-19 16:26:26.000000000 +0200
+@@ -214,12 +214,12 @@
+         ThreadSpecificSessionQueuePtr mThreadSpecificSessionQueuePtr;
+         // eventually other specialized session queues...
+ 
+-        volatile bool mServerThreadsStopFlag;
+         Mutex mOpenedMutex;
+         bool mOpened;
+         
+         Mutex mStartedMutex;
+         bool mStarted;
++        volatile bool mServerThreadsStopFlag;
+ 
+     public:
+         
+diff -uNr RCF-0.4-orig/include/RCF/StubFactory.hpp RCF-0.4/include/RCF/StubFactory.hpp
+--- RCF-0.4-orig/include/RCF/StubFactory.hpp	2006-01-11 01:06:54.000000000 +0100
++++ RCF-0.4/include/RCF/StubFactory.hpp	2006-10-19 10:28:45.000000000 +0200
+@@ -9,6 +9,7 @@
+ #ifndef INCLUDE_RCF_STUBFACTORY_HPP
+ #define INCLUDE_RCF_STUBFACTORY_HPP
+ 
++#include <RCF/ServerStub.hpp>
+ #include <boost/shared_ptr.hpp>
+ 
+ namespace RCF {
+diff -uNr RCF-0.4-orig/include/RCF/SubscriptionService.hpp RCF-0.4/include/RCF/SubscriptionService.hpp
+--- RCF-0.4-orig/include/RCF/SubscriptionService.hpp	2006-07-27 23:30:10.000000000 +0200
++++ RCF-0.4/include/RCF/SubscriptionService.hpp	2006-10-23 11:43:31.826971900 +0200
+@@ -19,6 +19,7 @@
+ 
+ #include <RCF/GetInterfaceName.hpp>
+ #include <RCF/Service.hpp>
++#include <RCF/ServerStub.hpp>
+ 
+ namespace RCF {
+ 
+diff -uNr RCF-0.4-orig/include/RCF/TcpClientTransport.hpp RCF-0.4/include/RCF/TcpClientTransport.hpp
+--- RCF-0.4-orig/include/RCF/TcpClientTransport.hpp	2006-02-05 05:52:38.000000000 +0100
++++ RCF-0.4/include/RCF/TcpClientTransport.hpp	2006-10-20 16:59:45.000000000 +0200
+@@ -93,7 +93,7 @@
+     class TcpClientTransport : public I_ClientTransport
+     {
+     public:
+-        TcpClientTransport::TcpClientTransport(const TcpClientTransport &rhs);
++        TcpClientTransport(const TcpClientTransport &rhs);
+         TcpClientTransport(const std::string &ip, int port);
+         TcpClientTransport(sockaddr_in remoteAddr);
+         TcpClientTransport(int fd);
+@@ -131,8 +131,8 @@
+         int fd;
+         bool own;
+ 
+-        std::size_t mBytesTransferred;
+         int mError;
++        std::size_t mBytesTransferred;
+ 
+         boost::shared_ptr< CloseFunctor > mCloseFunctor;
+         std::vector<FilterPtr> mTransportFilters;
+diff -uNr RCF-0.4-orig/include/RCF/TcpServerTransport.hpp RCF-0.4/include/RCF/TcpServerTransport.hpp
+--- RCF-0.4-orig/include/RCF/TcpServerTransport.hpp	2006-02-07 21:37:16.000000000 +0100
++++ RCF-0.4/include/RCF/TcpServerTransport.hpp	2006-10-20 17:27:25.000000000 +0200
+@@ -59,12 +59,12 @@
+                 WritingData,
+             };
+ 
++            Fd                  fd;
+             State               state;
+             std::vector<char>   readBuffer;
+             std::size_t         readBufferRemaining;
+             std::vector<char>   writeBuffer;
+             std::size_t         writeBufferRemaining;
+-            Fd                  fd;
+         };
+ 
+         typedef boost::shared_ptr<I_Session>        SessionPtr;
+diff -uNr RCF-0.4-orig/include/RCF/ZlibCompressionFilter.hpp RCF-0.4/include/RCF/ZlibCompressionFilter.hpp
+--- RCF-0.4-orig/include/RCF/ZlibCompressionFilter.hpp	2006-01-11 01:06:54.000000000 +0100
++++ RCF-0.4/include/RCF/ZlibCompressionFilter.hpp	2006-10-23 16:29:58.698611358 +0200
+@@ -21,6 +21,9 @@
+     static const int RCF_FILTER_ZLIB_COMPRESSION_STATELESS = 3;
+ 
+     static const int RCF_FILTER_ZLIB_COMPRESSION_STATEFUL = 4;
++    
++    class ZlibCompressionReadFilter;
++    class ZlibCompressionWriteFilter;
+ 
+     class ZlibCompressionFilter : public IdentityFilter, boost::noncopyable
+     {
+diff -uNr RCF-0.4-orig/include/RCF/util/Platform/Machine/ByteOrder.hpp RCF-0.4/include/RCF/util/Platform/Machine/ByteOrder.hpp
+--- RCF-0.4-orig/include/RCF/util/Platform/Machine/ByteOrder.hpp	2006-09-13 17:02:32.000000000 +0200
++++ RCF-0.4/include/RCF/util/Platform/Machine/ByteOrder.hpp	2006-10-24 17:40:39.917363264 +0200
+@@ -14,6 +14,8 @@
+ #include "x86/ByteOrder.hpp"
+ #elif defined(_M_IA64) || defined(_M_AMD64) || defined(_M_X64)
+ #include "x86/ByteOrder.hpp"
++#elif defined(_MIPSEL) && _MIPSEL == 1
++#include "x86/ByteOrder.hpp"
+ #else
+ #include "UnknownMachine/ByteOrder.hpp"
+ #endif
+diff -uNr RCF-0.4-orig/include/RCF/util/UnusedVariable.hpp RCF-0.4/include/RCF/util/UnusedVariable.hpp
+--- RCF-0.4-orig/include/RCF/util/UnusedVariable.hpp	2006-01-11 01:06:56.000000000 +0100
++++ RCF-0.4/include/RCF/util/UnusedVariable.hpp	2006-10-20 17:40:00.000000000 +0200
+@@ -9,6 +9,10 @@
+ #define INCLUDE_UTIL_UNUSEDVARIABLE_HPP
+ 
+ // Eliminate unused variable warnings, eg for scoped lock objects
++#ifndef __GNUC__
+ #define RCF_UNUSED_VARIABLE(x) ((void) x)
++#else
++#define RCF_UNUSED_VARIABLE(x)
++#endif
+ 
+ #endif // ! INCLUDE_UTIL_UNUSEDVARIABLE_HPP
+diff -uNr RCF-0.4-orig/include/SF/I_Stream.hpp RCF-0.4/include/SF/I_Stream.hpp
+--- RCF-0.4-orig/include/SF/I_Stream.hpp	2006-01-11 01:07:00.000000000 +0100
++++ RCF-0.4/include/SF/I_Stream.hpp	2006-10-19 10:12:54.000000000 +0200
+@@ -19,6 +19,7 @@
+     class I_ContextRead
+     {
+     public:
++        virtual ~I_ContextRead(void) {}
+         virtual void add(SF::UInt32 nid, const ObjectId &id) = 0;
+         virtual void add(void *ptr, const std::type_info &objType, void *pObj ) = 0;
+         virtual bool query(SF::UInt32 nid, ObjectId &id) = 0;
+@@ -29,6 +30,7 @@
+     class I_ContextWrite
+     {
+     public:
++        virtual ~I_ContextWrite(void) {}
+         virtual void setEnabled(bool enable) = 0;
+         virtual bool getEnabled() = 0;
+         virtual void add(const ObjectId &id, SF::UInt32 &nid) = 0;
+@@ -38,28 +40,33 @@
+ 
+     class I_WithContextRead {
+     public:
++        virtual ~I_WithContextRead(void) {}
+         virtual I_ContextRead &getContext() = 0;
+     };
+ 
+     class I_WithContextWrite {
+     public:
++        virtual ~I_WithContextWrite(void) {}
+         virtual I_ContextWrite &getContext() = 0;
+     };
+ 
+     class I_LocalStorage {
+     public:
++        virtual ~I_LocalStorage(void) {}
+         virtual void set(const std::type_info &objType, void *) = 0;
+         virtual void *get(const std::type_info &objType) = 0;
+     };
+ 
+     class I_WithLocalStorage {
+     public:
++        virtual ~I_WithLocalStorage(void) {}
+         virtual I_LocalStorage &getLocalStorage() = 0;
+     };
+ 
+     class I_Encoding
+     {
+     public:
++        virtual ~I_Encoding(void) {}
+         virtual UInt32 getCount(DataPtr &data, const std::type_info &type) = 0;
+         virtual void toData(DataPtr &data, void *pvObject, const std::type_info &type, int nCount) = 0;
+         virtual void toObject(DataPtr &data, void *pvObject, const std::type_info &type, int nCount) = 0;
+@@ -68,6 +75,7 @@
+     class I_WithEncoding
+     {
+     public:
++        virtual ~I_WithEncoding(void) {}
+         virtual I_Encoding &getEncoding() = 0;
+     };
+ 
+@@ -80,6 +88,7 @@
+     class WithFormatWrite
+     {
+     public:
++        virtual ~WithFormatWrite(void) {}
+         virtual void begin(const Node &) = 0;
+         virtual void put(const DataPtr &) = 0;
+         virtual void end() = 0;
+@@ -88,6 +97,7 @@
+     class WithFormatRead
+     {
+     public:
++        virtual ~WithFormatRead(void) {}
+         virtual bool begin(Node &) = 0;
+         virtual bool get(DataPtr &) = 0;
+         virtual void end() = 0;
+diff -uNr RCF-0.4-orig/include/SF/SerializeSmartPtr.hpp RCF-0.4/include/SF/SerializeSmartPtr.hpp
+--- RCF-0.4-orig/include/SF/SerializeSmartPtr.hpp	2006-01-19 07:44:30.000000000 +0100
++++ RCF-0.4/include/SF/SerializeSmartPtr.hpp	2006-10-24 12:50:50.039809323 +0200
+@@ -20,7 +20,6 @@
+     template< template<typename> class SmartPtr, typename T >
+     inline bool serializeSimpleSmartPtr(SmartPtr<T> **pps, SF::Archive &ar)
+     {
+-        bool bRet = false;
+         if (ar.isRead()) {
+             if (ar.isFlagSet(Archive::POINTER)) *pps = new SmartPtr<T>;
+             T *pt = NULL;
+diff -uNr RCF-0.4-orig/include/SF/SerializeStaticArray.hpp RCF-0.4/include/SF/SerializeStaticArray.hpp
+--- RCF-0.4-orig/include/SF/SerializeStaticArray.hpp	2006-01-11 01:07:00.000000000 +0100
++++ RCF-0.4/include/SF/SerializeStaticArray.hpp	2006-10-23 17:02:39.489476120 +0200
+@@ -2,6 +2,8 @@
+ #ifndef INCLUDE_SF_SERIALIZESTATICARRAY_HPP
+ #define INCLUDE_SF_SERIALIZESTATICARRAY_HPP
+ 
++#include <boost/type_traits.hpp>
++
+ #include <SF/Archive.hpp>
+ 
+ namespace SF {
+diff -uNr RCF-0.4-orig/include/SF/Stream.hpp RCF-0.4/include/SF/Stream.hpp
+--- RCF-0.4-orig/include/SF/Stream.hpp	2006-09-19 11:53:44.000000000 +0200
++++ RCF-0.4/include/SF/Stream.hpp	2006-10-19 10:14:35.000000000 +0200
+@@ -221,7 +221,7 @@
+     {
+     public:
+         OStream(std::ostream &os);
+-        UInt32 OStream::writeRaw(const Byte8 *pBytes, UInt32 nLength);
++        UInt32 writeRaw(const Byte8 *pBytes, UInt32 nLength);
+         
+     private:
+         void begin(const Node &node);
+diff -uNr RCF-0.4-orig/include/SF/vector.hpp RCF-0.4/include/SF/vector.hpp
+--- RCF-0.4-orig/include/SF/vector.hpp	2006-09-19 11:53:46.000000000 +0200
++++ RCF-0.4/include/SF/vector.hpp	2006-10-23 17:05:37.129355307 +0200
+@@ -7,6 +7,7 @@
+ #include <SF/SerializeDynamicArray.hpp>
+ #include <SF/SerializeStl.hpp>
+ #include <SF/Tools.hpp>
++#include <SF/Stream.hpp>
+ 
+ namespace SF {
+ 
+diff -uNr RCF-0.4-orig/src/Makefile RCF-0.4/src/Makefile
+--- RCF-0.4-orig/src/Makefile	1970-01-01 01:00:00.000000000 +0100
++++ RCF-0.4/src/Makefile	2006-10-24 16:08:09.684099349 +0200
+@@ -0,0 +1,29 @@
++#
++# Makefile for RCF library
++#
++# Martin Dietze <dietze@4g-systems.com>
++#
++
++SUBDIRS = SF RCF
++DESTDIR =
++prefix = /usr/local
++
++.PHONY: all clean syntax shared install uninstall
++
++all:
++	$(MAKE) -C RCF $@
++
++shared:
++	$(MAKE) -C RCF $@
++
++install:
++	$(MAKE) -C RCF $@
++
++uninstall:
++	$(MAKE) -C RCF $@
++
++syntax:
++	@for i in $(SUBDIRS); do $(MAKE) -C $$i $@ || exit 1; done
++
++clean:
++	@for i in $(SUBDIRS); do $(MAKE) -C $$i $@ || exit 1; done
+diff -uNr RCF-0.4-orig/src/RCF/AsyncFilter.cpp RCF-0.4/src/RCF/AsyncFilter.cpp
+--- RCF-0.4-orig/src/RCF/AsyncFilter.cpp	2006-01-11 01:07:02.000000000 +0100
++++ RCF-0.4/src/RCF/AsyncFilter.cpp	2006-10-19 10:00:18.000000000 +0200
+@@ -149,8 +149,8 @@
+         ReadProxy(const std::string &buffer, FilterPtr filterPtr) : 
+             mBuffer(buffer), 
+             mchBuffer(mBuffer.c_str()),
+-            mchBufferLength( static_cast<int>(mBuffer.length()) ),
+             mchBufferPos(), 
++            mchBufferLength( static_cast<int>(mBuffer.length()) ),
+             mFilterPtr(filterPtr)
+         {}
+ 
+diff -uNr RCF-0.4-orig/src/RCF/Makefile RCF-0.4/src/RCF/Makefile
+--- RCF-0.4-orig/src/RCF/Makefile	1970-01-01 01:00:00.000000000 +0100
++++ RCF-0.4/src/RCF/Makefile	2006-10-26 16:22:54.175209260 +0200
+@@ -0,0 +1,123 @@
++#
++# Makefile for RCF library
++#
++# Martin Dietze <dietze@4g-systems.com>
++#
++
++MAJOR = 0
++VERSION = $(MAJOR).4
++
++O = .o
++A = .a
++D = .so
++
++.PHONY: all clean shared install uninstall mt st shared-st shared-mt
++
++CXX = g++
++#HAS_MM = yes
++AR = ar
++CDEFINES = -DRCF_USE_OPENSSL -DRCF_USE_ZLIB -DRCF_USE_SF_SERIALIZATION \
++	-DRCF_USE_BOOST_ASIO
++CPPFLAGS = -I../../include
++CXXTHREADS = -DRCF_USE_BOOST_THREADS
++CSHARED =
++CXXFLAGS = -ansi -Wall -Werror -O3
++DESTDIR =
++prefix = /usr/local
++
++OBJS = AsyncFilter.o ByteOrdering.o CheckRtti.o ClientInfo.o ClientStub.o \
++	ClientTransport.o CurrentSession.o EncodeMessage.o Endpoint.o \
++	EndpointBrokerService.o EndpointServerService.o Exception.o \
++	FilterService.o Idl.o InitDeinit.o IpAddress.o IpServerTransport.o \
++	Marshal.o MethodInvocation.o MulticastClientTransport.o \
++	ObjectFactoryService.o OpenSslEncryptionFilter.o Protocol/Protocol.o \
++	PublishingService.o Random.o RcfClient.o RcfServer.o \
++	SerializationProtocol.o ServerInterfaces.o ServerStub.o ServerTask.o \
++	ServerTransport.o Service.o Session.o StubEntry.o StubFactory.o \
++	SubscriptionService.o TcpAsioClientTransport.o \
++	TcpAsioServerTransport.o TcpAsioSynchronizedSocket.o \
++	TcpClientTransport.o TcpEndpoint.o \
++	TcpServerTransport.o ThreadLibrary.o TimedBsdSockets.o Token.o \
++	Tools.o UdpClientTransport.o UdpEndpoint.o UdpServerTransport.o \
++	UsingBsdSockets.o UsingOpenSsl.o ZlibCompressionFilter.o
++SOURCES = $(OBJS:%.o=%.cpp) RCF.cpp
++NAME = libRCF
++LIBMT = $(NAME)mt$A
++LIBST = $(NAME)st$A
++
++all:
++	$(MAKE) mt
++	$(MAKE) st
++
++mt: $(LIBMT)
++
++st: $(LIBST)
++
++shared:
++	$(MAKE) shared-mt
++	$(MAKE) shared-st
++
++shared-mt:
++	$(MAKE) -e LIBMT=$(NAME)mt$D CSHARED=-fPIC $(NAME)mt$D
++
++shared-st:
++	$(MAKE) -e LIBST=$(NAME)st$D CSHARED=-fPIC $(NAME)st$D
++
++syntax: $(OBJS)
++
++install: $(LIBMT) $(LIBST)
++	install -d -m 775 $(DESTDIR)$(prefix)/lib
++	if [ -f $(NAME)mt$(A) ]; then \
++	  install -m 664 $(NAME)mt$(A) $(DESTDIR)$(prefix)/lib; \
++	fi
++	if [ -f $(NAME)st$(A) ]; then \
++	  install -m 664 $(NAME)st$(A) $(DESTDIR)$(prefix)/lib; \
++	fi
++	if [ -f $(NAME)mt$(D).$(VERSION) ]; then \
++	  install -m 775 $(NAME)mt$(D).$(VERSION) $(DESTDIR)$(prefix)/lib; \
++	  ln -sf $(NAME)mt$(D).$(VERSION) $(DESTDIR)$(prefix)/lib/$(NAME)mt$(D).$(MAJOR); \
++	  ln -sf $(NAME)mt$(D).$(MAJOR) $(DESTDIR)$(prefix)/lib/$(NAME)mt$(D); \
++	fi
++	if [ -f $(NAME)st$(D).$(VERSION) ]; then \
++	  install -m 775 $(NAME)st$(D).$(VERSION) $(DESTDIR)$(prefix)/lib; \
++	  ln -sf $(NAME)st$(D).$(VERSION) $(DESTDIR)$(prefix)/lib/$(NAME)st$(D).$(MAJOR); \
++	  ln -sf $(NAME)st$(D).$(MAJOR) $(DESTDIR)$(prefix)/lib/$(NAME)st$(D); \
++	fi
++	install -d -m 775 $(DESTDIR)$(prefix)/include
++	cp -dpR ../../include/RCF $(DESTDIR)$(prefix)/include
++	cp -dpR ../../include/SF $(DESTDIR)$(prefix)/include
++
++uninstall: $(PROGRAM)
++	rm -f $(DESTDIR)$(prefix)/lib/$(NAME)[ms]t$A
++	rm -f $(DESTDIR)$(prefix)/lib/$(NAME)[ms]t$D
++	rm -f $(DESTDIR)$(prefix)/lib/$(NAME)[ms]t$D.$(MAJOR)
++	rm -f $(DESTDIR)$(prefix)/lib/$(NAME)[ms]t$D.$(VERSION)
++	rm -rf $(DESTDIR)$(prefix)/include/RCF
++	rm -rf $(DESTDIR)$(prefix)/include/SF
++
++lib%$(A): %.o
++	$(AR) cr $@ $^
++
++lib%$(D): %.o
++	$(CXX) $^ -shared -Wl,-soname,$@.$(MAJOR) -o $@.$(VERSION)
++	ln -sf $@.$(VERSION) $@.$(MAJOR)
++	ln -sf $@.$(MAJOR) $@
++
++clean:
++	rm -f $(NAME)[ms]t$(A) $(NAME)[ms]t$(D)* $(OBJS) RCF[ms]t.o *~ .depend
++
++%st.o: %.cpp
++	$(CXX) -c $(CSHARED) $(CPPFLAGS) $(CDEFINES) $(CXXFLAGS) $< -o $@
++
++%mt.o: %.cpp
++	$(CXX) -c $(CSHARED) $(CPPFLAGS) $(CDEFINES) $(CXXTHREADS) $(CXXFLAGS) $< -o $@
++
++%.o: %.cpp
++	$(CXX) -c $(CSHARED) $(CPPFLAGS) $(CDEFINES) $(CXXTHREADS) $(CXXFLAGS) $< -o $@
++
++.depend: $(SOURCES)
++	$(CXX) $(CPPFLAGS) $(CDEFINES) -MM $(SOURCES) >$@
++
++ifeq (yes,$(HAS_MM))
++sinclude .depend
++endif
+diff -uNr RCF-0.4-orig/src/RCF/MulticastClientTransport.cpp RCF-0.4/src/RCF/MulticastClientTransport.cpp
+--- RCF-0.4-orig/src/RCF/MulticastClientTransport.cpp	2006-01-18 08:32:18.000000000 +0100
++++ RCF-0.4/src/RCF/MulticastClientTransport.cpp	2006-10-19 10:24:44.000000000 +0200
+@@ -25,11 +25,13 @@
+     std::auto_ptr<I_ClientTransport> MulticastClientTransport::clone() const
+     {
+         RCF_THROW( ClientTransportException, "clone() not supported for MulticastClientTransport" );
++        return std::auto_ptr<I_ClientTransport>(NULL); /* keep the compiler happy */
+     }
+ 
+     EndpointPtr MulticastClientTransport::getEndpointPtr() const
+     {
+         RCF_THROW( ClientTransportException, "getEndpointPtr() not supported for MulticastClientTransport" );
++        return EndpointPtr(); /* keep the compiler happy */
+     }
+   
+     int MulticastClientTransport::send(const std::string &data, unsigned int timeoutMs)
+@@ -70,6 +72,7 @@
+     int MulticastClientTransport::receive(std::string &, unsigned int)
+     {
+         RCF_THROW( ClientTransportException, "receive() not supported for MulticastClientTransport" );
++        return -1; /* keep the compiler happy */
+     }
+ 
+     bool MulticastClientTransport::isConnected()
+diff -uNr RCF-0.4-orig/src/RCF/ObjectFactoryService.cpp RCF-0.4/src/RCF/ObjectFactoryService.cpp
+--- RCF-0.4-orig/src/RCF/ObjectFactoryService.cpp	2006-04-03 14:49:40.000000000 +0200
++++ RCF-0.4/src/RCF/ObjectFactoryService.cpp	2006-10-19 10:30:26.000000000 +0200
+@@ -69,8 +69,8 @@
+     }
+ 
+     ObjectFactoryService::ObjectFactoryService(unsigned int numberOfTokens, unsigned int clientStubTimeoutS) :
+-        mClientStubTimeoutS(clientStubTimeoutS),
+         mTokenFactory(numberOfTokens),
++        mClientStubTimeoutS(clientStubTimeoutS),
+         mStubFactoryMapMutex(WriterPriority),
+         mStopFlag()
+     {
+@@ -260,6 +260,7 @@
+             RcfClient<I_ObjectFactory> factory(clientStub.releaseTransport());
+             //ScopeGuard guard( boost::bind(&reinstateClientTransport, boost::ref(clientStub), boost::ref(factory)) );
+             ScopeGuard guard = MakeGuard(reinstateClientTransport, boost::ref(clientStub), boost::ref(factory));
++            (void)guard; /* suppress unused var warning */
+             RCF::Token token;
+             bool ok = factory.createObject(RCF::Twoway, objectName, token);
+             if (ok)
+diff -uNr RCF-0.4-orig/src/RCF/OpenSslEncryptionFilter.cpp RCF-0.4/src/RCF/OpenSslEncryptionFilter.cpp
+--- RCF-0.4-orig/src/RCF/OpenSslEncryptionFilter.cpp	2006-01-11 01:07:02.000000000 +0100
++++ RCF-0.4/src/RCF/OpenSslEncryptionFilter.cpp	2006-10-19 10:47:36.000000000 +0200
+@@ -145,6 +145,9 @@
+             sslRole(sslRole),
+             certificateFile(certificateFile),
+             certificateFilePassword(certificateFilePassword),
++            preState(Ready),
++            postState(Ready),
++            retry(),
+             preBuffer(),
+             preBufferOrig(),
+             preBufferLen(),
+@@ -152,11 +155,8 @@
+             postBuffer(),
+             postBufferLen(),
+             postBufferRequested(),
+-            preState(Ready),
+-            postState(Ready),
+-            bioBufferSize(bioBufferSize),
+-            retry(),
+             err(),
++            bioBufferSize(bioBufferSize),
+             openSslEncryptionFilter(openSslEncryptionFilter)
+     {
+         init();
+diff -uNr RCF-0.4-orig/src/RCF/TcpAsioServerTransport.cpp RCF-0.4/src/RCF/TcpAsioServerTransport.cpp
+--- RCF-0.4-orig/src/RCF/TcpAsioServerTransport.cpp	2006-07-28 23:10:12.000000000 +0200
++++ RCF-0.4/src/RCF/TcpAsioServerTransport.cpp	2006-10-20 17:43:44.000000000 +0200
+@@ -20,10 +20,10 @@
+ namespace RCF {
+ 
+     TcpAsioServerTransport::SessionState::SessionState(TcpAsioServerTransport &transport, DemuxerPtr demuxerPtr, ReadWriteMutexPtr readWriteMutexPtr) : 
+-        mSynchronizedSocketPtr( new TcpAsioSynchronizedSocket(demuxerPtr, readWriteMutexPtr) ),
+         mState(Ready),
+         mReadBufferRemaining(),
+         mWriteBufferRemaining(),
++        mSynchronizedSocketPtr( new TcpAsioSynchronizedSocket(demuxerPtr, readWriteMutexPtr) ),
+         mReflecting(),
+         mTransport(transport)
+     {
+@@ -596,11 +596,11 @@
+ 
+     TcpAsioServerTransport::TcpAsioServerTransport(int port) :
+         mDemuxerPtr(),
+-        mCycleTimerPtr(),
+-        mInterrupt(),
+         mReadWriteMutexPtr( new ReadWriteMutex(ReaderPriority) ),
+         mPort(port),
+         mAcceptorPtr(),
++        mCycleTimerPtr(),
++        mInterrupt(),
+         mStopFlag(),
+         pServer()
+     {}
+diff -uNr RCF-0.4-orig/src/RCF/TcpClientTransport.cpp RCF-0.4/src/RCF/TcpClientTransport.cpp
+--- RCF-0.4-orig/src/RCF/TcpClientTransport.cpp	2006-07-27 23:30:14.000000000 +0200
++++ RCF-0.4/src/RCF/TcpClientTransport.cpp	2006-10-20 17:05:35.000000000 +0200
+@@ -336,7 +336,7 @@
+             bufferLen = static_cast<int>(vec.size());
+             ret = timedReceive(buffer, bufferLen);
+ 
+-            if (ret == length)
++            if (ret == (int)length)
+             {
+                 data.clear();
+                 data.append(&vec[0], length);
+diff -uNr RCF-0.4-orig/src/RCF/TcpServerTransport.cpp RCF-0.4/src/RCF/TcpServerTransport.cpp
+--- RCF-0.4-orig/src/RCF/TcpServerTransport.cpp	2006-01-11 01:07:02.000000000 +0100
++++ RCF-0.4/src/RCF/TcpServerTransport.cpp	2006-10-20 17:38:55.000000000 +0200
+@@ -81,15 +81,15 @@
+     }
+ 
+     TcpServerTransport::TcpServerTransport(int port /*= 0*/) :
+-        allowedIpsMutex(WriterPriority),
+         FdPartitionCount(10),
+         pSessionManager(),
+-        networkInterface("0.0.0.0"),
+-        maxPendingConnectionCount(100),
+-        port(port),
+-        selecting(),
++        acceptorFd(-1),
+         mStopFlag(),
+-        acceptorFd(-1)
++        selecting(),
++        allowedIpsMutex(WriterPriority),
++        port(port),
++        networkInterface("0.0.0.0"),
++        maxPendingConnectionCount(100)
+     {}
+ 
+     void TcpServerTransport::setSessionManager(I_SessionManager &sessionManager)
+@@ -256,7 +256,7 @@
+             readBufferRemaining -= ret;
+             return 0;
+         }
+-        else if (ret == readBufferRemaining)
++        else if (ret == (int)readBufferRemaining)
+         {
+             // full packet has now been read
+             if (sessionState.state == SessionState::ReadingDataCount)
+diff -uNr RCF-0.4-orig/src/RCF/TimedBsdSockets.cpp RCF-0.4/src/RCF/TimedBsdSockets.cpp
+--- RCF-0.4-orig/src/RCF/TimedBsdSockets.cpp	2006-01-27 21:42:30.000000000 +0100
++++ RCF-0.4/src/RCF/TimedBsdSockets.cpp	2006-10-20 17:37:39.000000000 +0200
+@@ -81,7 +81,7 @@
+             RCF_ASSERT(ret != 0);
+             if (ret > 0)
+             {
+-                RCF_ASSERT(0 < ret && ret <= bytesRemaining);
++                RCF_ASSERT(0 < ret && ret <= (int)bytesRemaining);
+                 bytesRemaining -= ret;
+                 bytesSent += ret;
+                 if (bytesRemaining == 0)
+diff -uNr RCF-0.4-orig/src/RCF/UdpServerTransport.cpp RCF-0.4/src/RCF/UdpServerTransport.cpp
+--- RCF-0.4-orig/src/RCF/UdpServerTransport.cpp	2006-02-14 15:23:26.000000000 +0100
++++ RCF-0.4/src/RCF/UdpServerTransport.cpp	2006-10-20 17:40:22.000000000 +0200
+@@ -18,8 +18,8 @@
+         pSessionManager(),
+         port(port),
+         fd(-1),
+-        pollingDelayMs(),
+-        mStopFlag()
++        mStopFlag(),
++        pollingDelayMs()
+     {
+     }
+ 
+@@ -193,7 +193,7 @@
+         *(int *)(&writeBuffer[0]) = dataLength;
+         const sockaddr_in &remoteAddr = sessionStatePtr->remoteAddress.getSockAddr();
+         int len = sendto(fd, &writeBuffer[0], static_cast<int>(writeBuffer.size()), 0, (const sockaddr *) &remoteAddr, sizeof(remoteAddr));
+-        if (len != writeBuffer.size())
++        if (len != (int)writeBuffer.size())
+         {
+             RCF_THROW(ServerTransportException, "sendto() failed")(fd)(len)(writeBuffer.size());
+         }
+diff -uNr RCF-0.4-orig/src/RCF/ZlibCompressionFilter.cpp RCF-0.4/src/RCF/ZlibCompressionFilter.cpp
+--- RCF-0.4-orig/src/RCF/ZlibCompressionFilter.cpp	2006-01-11 01:07:02.000000000 +0100
++++ RCF-0.4/src/RCF/ZlibCompressionFilter.cpp	2006-10-23 16:46:50.059387129 +0200
+@@ -67,14 +67,14 @@
+ 
+     ZlibCompressionReadFilter::ZlibCompressionReadFilter(ZlibCompressionFilter &filter, int bufferSize) :
+         filter(filter),
++        d_stream_(),
++        mBuffer(bufferSize),
+         preBuffer(),
+         preBufferLen(),
+         preBufferOrig(),
+         preBufferLenOrig(),
+         postBuffer(),
+         postBufferLen(),
+-        mBuffer(bufferSize),
+-        d_stream_(),
+         zerr_(Z_OK),
+         err(),
+         decompressionStateInited()
+@@ -170,14 +170,14 @@
+ 
+     ZlibCompressionWriteFilter::ZlibCompressionWriteFilter(ZlibCompressionFilter &filter, int bufferSize, bool stateful) :
+         filter(filter),
++        c_stream_(),
++        mBuffer(bufferSize),
+         preBuffer(),
+         preBufferLen(),
+         preBufferOrig(),
+         preBufferLenOrig(),
+         postBuffer(),
+         postBufferLen(),
+-        mBuffer(bufferSize),
+-        c_stream_(),
+         zerr_(Z_OK),
+         err(),
+         compressionStateInited(),
+diff -uNr RCF-0.4-orig/src/SF/Makefile RCF-0.4/src/SF/Makefile
+--- RCF-0.4-orig/src/SF/Makefile	1970-01-01 01:00:00.000000000 +0100
++++ RCF-0.4/src/SF/Makefile	2006-10-24 17:43:53.113922445 +0200
+@@ -0,0 +1,54 @@
++#
++# Makefile for SF source files
++# (for syntax check, i.e. to compile all sources separately)
++#
++# Martin Dietze <dietze@4g-systems.com>
++#
++
++O = .o
++A = .a
++D = .so
++
++.PHONY: all clean shared syntax
++
++CXX = g++
++#HAS_MM = yes
++AR = ar
++CDEFINES = -DRCF_USE_OPENSSL -DRCF_USE_ZLIB -DRCF_USE_SF_SERIALIZATION \
++	-DRCF_USE_BOOST_ASIO
++CPPFLAGS = -I../../include
++CXXTHREADS = -DRCF_USE_BOOST_THREADS
++CSHARED =
++CXXFLAGS = -ansi -Wall -Werror -O3
++prefix = /usr/local
++
++OBJS = Archive.o DataPtr.o deque.o Encoding.o Exception.o IBinaryStream.o \
++	INativeBinaryStream.o ITextStream.o I_Stream.o list.o map.o memory.o \
++	Node.o OBinaryStream.o ONativeBinaryStream.o OTextStream.o \
++	PortableTypes.o Registry.o scoped_ptr.o SerializeDynamicArray.o \
++	SerializeFundamental.o SerializePolymorphic.o Serializer.o \
++	SerializeSmartPtr.o SerializeStaticArray.o SerializeStl.o set.o \
++	SfNew.o shared_ptr.o Stream.o string.o Tools.o vector.o
++SOURCES = $(OBJS:%.o=%.cpp)
++
++all:
++	@echo "Nothing do be done for $@ in SF. Run $(MAKE) in the ../RCF directory."
++
++
++shared:
++	@echo "Nothing do be done for $@ in SF. Run $(MAKE) in the ../RCF directory."
++
++syntax: $(OBJS)
++
++clean:
++	rm -f $(OBJS) *~ .depend
++
++%.o: %.cpp
++	$(CXX) -c $(CSHARED) $(CPPFLAGS) $(CDEFINES) $(CXXTHREADS) $(CXXFLAGS) $< -o $@
++
++.depend: $(SOURCES)
++	$(CXX) $(CPPFLAGS) $(CDEFINES) -MM $(SOURCES) >$@
++
++ifeq (yes,$(HAS_MM))
++sinclude .depend
++endif
+Binary files RCF-0.4-orig/src/SF/libSF.a and RCF-0.4/src/SF/libSF.a differ
+diff -uNr RCF-0.4-orig/test/Makefile RCF-0.4/test/Makefile
+--- RCF-0.4-orig/test/Makefile	1970-01-01 01:00:00.000000000 +0100
++++ RCF-0.4/test/Makefile	2006-10-24 17:44:01.690302364 +0200
+@@ -0,0 +1,163 @@
++#
++# Makefile for RCF test programs
++#
++# Martin Dietze <dietze@4g-systems.com>
++#
++
++O = .o
++A = .a
++D = .so
++
++.PHONY: all clean syntax test test-rcs-multi test-rcs-single test-rcs-filters
++
++CXX = g++
++#HAS_MM = yes
++AR = ar
++CDEFINES = -DRCF_USE_OPENSSL -DRCF_USE_ZLIB -DRCF_USE_SF_SERIALIZATION \
++	-DRCF_USE_BOOST_ASIO
++CPPFLAGS = -I../include
++CXXTHREADS = -DRCF_USE_BOOST_THREADS
++CXXFLAGS = -ansi -Wall -Wno-unused-function -Werror -O3
++LDFLAGS = -L../src/RCF
++LIBSMT = -lRCFmt -lboost_thread -lz -lssl
++LIBSST = -lRCFst -lboost_thread -lz -lssl
++
++PROGRAMS = Test_Binding Test_ClientConnectionDrop Test_ClientInfo \
++	Test_ClientTimeout Test_Client_Minimal Test_Client_Performance \
++	Test_CycleServer_St Test_CycleServer_Mt Test_Endpoint \
++	Test_FilterPerformance Test_Filters Test_General Test_Inheritance \
++	Test_InitDeinit Test_IpRestriction Test_Minimal \
++	Test_MultiThreadedServer Test_MultipleClient Test_NetworkPerformance \
++	Test_Notification Test_ObjectFactoryService Test_Performance \
++	Test_Polymorphic Test_Serialization Test_Server_Minimal \
++	Test_Server_Performance Test_SingleThreadedServer Test_StubSerialization
++OBJS = $(PROGRAMS:%=%.o) Test_SingleThreadedServer_St.o
++SOURCES = $(OBJS:%.o=%.cpp)
++NAME = libRCF
++LIB = $(NAME)$A
++
++test: all
++	@echo "From ze test its beginnink:"
++	$(MAKE) test-rcs-multi test-rcs-single
++	@if [ -f client.pem ] && [ -f server.pem ]; then \
++		echo $(MAKE) test-rcs-filters; \
++		$(MAKE) test-rcs-filters; \
++	else \
++		echo "client.pem and/or server.pem not found, skipping filter tests."; \
++	fi
++	@echo "Not run automatically:"
++	@echo "./Test_Client_Minimal"
++	@echo "./Test_Server_Minimal"
++	@echo "./Test_Client_Performance"
++	@echo "./Test_Server_Performance"
++	@echo "./Test_NetworkPerformance"
++	@echo "From ze test its end."
++
++
++test-rcs-multi:
++	./Test_Binding
++	./Test_ClientConnectionDrop
++	./Test_ClientInfo
++	./Test_ClientTimeout
++	./Test_CycleServer_Mt
++	./Test_Endpoint
++	./Test_General
++	./Test_Inheritance
++	./Test_InitDeinit
++	./Test_IpRestriction
++	./Test_Minimal
++	./Test_MultipleClient
++	./Test_MultiThreadedServer
++	./Test_Notification
++	./Test_ObjectFactoryService
++	./Test_Performance
++	./Test_Polymorphic
++	./Test_Serialization
++	./Test_StubSerialization
++
++test-rcs-single:
++	./Test_SingleThreadedServer
++	./Test_CycleServer_St
++
++test-rcs-filters:
++	./Test_FilterPerformance
++	./Test_Filters
++
++all: $(PROGRAMS)
++
++Test_Binding: Test_Binding.o
++	$(CXX) $(CXXFLAGS) $^ -o $@ $(LDFLAGS) $(LIBSMT)
++Test_ClientConnectionDrop: Test_ClientConnectionDrop.o
++	$(CXX) $(CXXFLAGS) $^ -o $@ $(LDFLAGS) $(LIBSMT)
++Test_ClientInfo: Test_ClientInfo.o
++	$(CXX) $(CXXFLAGS) $^ -o $@ $(LDFLAGS) $(LIBSMT)
++Test_ClientTimeout: Test_ClientTimeout.o
++	$(CXX) $(CXXFLAGS) $^ -o $@ $(LDFLAGS) $(LIBSMT)
++Test_Client_Minimal: Test_Client_Minimal.o
++	$(CXX) $(CXXFLAGS) $^ -o $@ $(LDFLAGS) $(LIBSMT)
++Test_Client_Performance: Test_Client_Performance.o
++	$(CXX) $(CXXFLAGS) $^ -o $@ $(LDFLAGS) $(LIBSMT)
++Test_CycleServer_Mt: Test_CycleServer_Mt.o
++	$(CXX) $(CXXFLAGS) $^ -o $@ $(LDFLAGS) $(LIBSMT)
++Test_Endpoint: Test_Endpoint.o
++	$(CXX) $(CXXFLAGS) $^ -o $@ $(LDFLAGS) $(LIBSMT)
++Test_FilterPerformance: Test_FilterPerformance.o
++	$(CXX) $(CXXFLAGS) $^ -o $@ $(LDFLAGS) $(LIBSMT)
++Test_Filters: Test_Filters.o
++	$(CXX) $(CXXFLAGS) $^ -o $@ $(LDFLAGS) $(LIBSMT)
++Test_General: Test_General.o
++	$(CXX) $(CXXFLAGS) $^ -o $@ $(LDFLAGS) $(LIBSMT)
++Test_Inheritance: Test_Inheritance.o
++	$(CXX) $(CXXFLAGS) $^ -o $@ $(LDFLAGS) $(LIBSMT)
++Test_InitDeinit: Test_InitDeinit.o
++	$(CXX) $(CXXFLAGS) $^ -o $@ $(LDFLAGS) $(LIBSMT)
++Test_IpRestriction: Test_IpRestriction.o
++	$(CXX) $(CXXFLAGS) $^ -o $@ $(LDFLAGS) $(LIBSMT)
++Test_Minimal: Test_Minimal.o
++	$(CXX) $(CXXFLAGS) $^ -o $@ $(LDFLAGS) $(LIBSMT)
++Test_MultiThreadedServer: Test_MultiThreadedServer.o
++	$(CXX) $(CXXFLAGS) $^ -o $@ $(LDFLAGS) $(LIBSMT)
++Test_MultipleClient: Test_MultipleClient.o
++	$(CXX) $(CXXFLAGS) $^ -o $@ $(LDFLAGS) $(LIBSMT)
++Test_NetworkPerformance: Test_NetworkPerformance.o
++	$(CXX) $(CXXFLAGS) $^ -o $@ $(LDFLAGS) $(LIBSMT)
++Test_Notification: Test_Notification.o
++	$(CXX) $(CXXFLAGS) $^ -o $@ $(LDFLAGS) $(LIBSMT)
++Test_ObjectFactoryService: Test_ObjectFactoryService.o
++	$(CXX) $(CXXFLAGS) $^ -o $@ $(LDFLAGS) $(LIBSMT)
++Test_Performance: Test_Performance.o
++	$(CXX) $(CXXFLAGS) $^ -o $@ $(LDFLAGS) $(LIBSMT)
++Test_Polymorphic: Test_Polymorphic.o
++	$(CXX) $(CXXFLAGS) $^ -o $@ $(LDFLAGS) $(LIBSMT)
++Test_Serialization: Test_Serialization.o
++	$(CXX) $(CXXFLAGS) $^ -o $@ $(LDFLAGS) $(LIBSMT)
++Test_Server_Minimal: Test_Server_Minimal.o
++	$(CXX) $(CXXFLAGS) $^ -o $@ $(LDFLAGS) $(LIBSMT)
++Test_Server_Performance: Test_Server_Performance.o
++	$(CXX) $(CXXFLAGS) $^ -o $@ $(LDFLAGS) $(LIBSMT)
++Test_StubSerialization: Test_StubSerialization.o
++	$(CXX) $(CXXFLAGS) $^ -o $@ $(LDFLAGS) $(LIBSMT)
++
++Test_SingleThreadedServer: Test_SingleThreadedServer_St.o
++	$(CXX) $(CXXFLAGS) $^ -o $@ $(LDFLAGSST) $(LIBSST)
++Test_CycleServer_St: Test_CycleServer_St.o
++	$(CXX) $(CXXFLAGS) $^ -o $@ $(LDFLAGSST) $(LIBSST)
++
++clean:
++	rm -f $(PROGRAMS) $(OBJS) *~ .depend
++
++%_St.o: %.cpp
++	$(CXX) -c $(CPPFLAGS) $(CDEFINES) $(CXXFLAGS) $< -o $@
++
++%_Mt.o: %.cpp
++	$(CXX) -c $(CPPFLAGS) $(CDEFINES) $(CXXFLAGS) $(CXXTHREADS) $< -o $@
++
++%.o: %.cpp
++	$(CXX) -c $(CPPFLAGS) $(CDEFINES) $(CXXFLAGS) $(CXXTHREADS) $< -o $@
++
++.depend: $(SOURCES)
++	$(CXX) $(CPPFLAGS) $(CDEFINES) -MM $(SOURCES) >$@
++
++ifeq (yes,$(HAS_MM))
++sinclude .depend
++endif
+diff -uNr RCF-0.4-orig/test/Test_Binding.cpp RCF-0.4/test/Test_Binding.cpp
+--- RCF-0.4-orig/test/Test_Binding.cpp	2006-02-07 21:37:18.000000000 +0100
++++ RCF-0.4/test/Test_Binding.cpp	2006-10-24 10:43:51.099624209 +0200
+@@ -25,7 +25,7 @@
+ 
+     util::CommandLine::getSingleton().parse(argc, argv);
+ 
+-    for (int i=0; i<RCF::getTransportFactories().size(); ++i)
++    for (int i=0; i<(int)RCF::getTransportFactories().size(); ++i)
+     {
+         RCF::TransportFactoryPtr transportFactoryPtr = RCF::getTransportFactories()[i];
+         std::pair<RCF::ServerTransportPtr, RCF::ClientTransportAutoPtrPtr> transports = transportFactoryPtr->createTransports();
+diff -uNr RCF-0.4-orig/test/Test_ClientConnectionDrop.cpp RCF-0.4/test/Test_ClientConnectionDrop.cpp
+--- RCF-0.4-orig/test/Test_ClientConnectionDrop.cpp	2006-07-30 12:03:52.000000000 +0200
++++ RCF-0.4/test/Test_ClientConnectionDrop.cpp	2006-10-24 11:08:26.273040553 +0200
+@@ -29,7 +29,7 @@
+ 
+     util::CommandLine::getSingleton().parse(argc, argv);
+ 
+-    for (int i=0; i<RCF::getTransportFactories().size(); ++i)
++    for (int i=0; i<(int)RCF::getTransportFactories().size(); ++i)
+     {
+         RCF::TransportFactoryPtr transportFactoryPtr = RCF::getTransportFactories()[i];
+         std::pair<RCF::ServerTransportPtr, RCF::ClientTransportAutoPtrPtr> transports = transportFactoryPtr->createTransports();
+diff -uNr RCF-0.4-orig/test/Test_ClientInfo.cpp RCF-0.4/test/Test_ClientInfo.cpp
+--- RCF-0.4-orig/test/Test_ClientInfo.cpp	2006-01-10 19:56:54.000000000 +0100
++++ RCF-0.4/test/Test_ClientInfo.cpp	2006-10-24 11:23:39.441333027 +0200
+@@ -35,7 +35,7 @@
+ 
+     util::CommandLine::getSingleton().parse(argc, argv);
+ 
+-    for (int i=0; i<RCF::getIpTransportFactories().size(); ++i)
++    for (int i=0; i<(int)RCF::getIpTransportFactories().size(); ++i)
+     {
+         RCF::TransportFactoryPtr transportFactoryPtr = RCF::getTransportFactories()[i];
+         std::pair<RCF::ServerTransportPtr, RCF::ClientTransportAutoPtrPtr> transports = transportFactoryPtr->createTransports();
+diff -uNr RCF-0.4-orig/test/Test_ClientTimeout.cpp RCF-0.4/test/Test_ClientTimeout.cpp
+--- RCF-0.4-orig/test/Test_ClientTimeout.cpp	2006-03-25 23:37:02.000000000 +0100
++++ RCF-0.4/test/Test_ClientTimeout.cpp	2006-10-24 11:25:10.069308213 +0200
+@@ -44,7 +44,7 @@
+ {
+     util::CommandLine::getSingleton().parse(argc, argv);
+ 
+-    for (int i=0; i<RCF::getTransportFactories().size(); ++i)
++    for (int i=0; i<(int)RCF::getTransportFactories().size(); ++i)
+     {
+         RCF::TransportFactoryPtr transportFactoryPtr = RCF::getTransportFactories()[i];
+         std::pair<RCF::ServerTransportPtr, RCF::ClientTransportAutoPtrPtr> transports = transportFactoryPtr->createTransports();
+diff -uNr RCF-0.4-orig/test/Test_CycleServer.cpp RCF-0.4/test/Test_CycleServer.cpp
+--- RCF-0.4-orig/test/Test_CycleServer.cpp	2006-01-04 08:55:06.000000000 +0100
++++ RCF-0.4/test/Test_CycleServer.cpp	2006-10-24 11:36:36.003409416 +0200
+@@ -46,7 +46,7 @@
+ {
+     util::CommandLine::getSingleton().parse(argc, argv);
+ 
+-    for (int i=0; i<RCF::getTransportFactories().size(); ++i)
++    for (int i=0; i<(int)RCF::getTransportFactories().size(); ++i)
+     {
+ 
+         RCF::TransportFactoryPtr transportFactoryPtr = RCF::getTransportFactories()[i];
+@@ -107,7 +107,7 @@
+             serverThread.reset( new boost::thread( boost::bind(serverThreadTask, boost::ref(server)) ) );
+             server.addJoinFunctor(joinServerThread);
+ 
+-            for (int i=0; i<numberOfTokens; ++i)
++            for (int i=0; i<(int)numberOfTokens; ++i)
+             {
+                 bool ok = RCF::createRemoteObject<I_Echo>(myClient);
+                 BOOST_CHECK(ok);
+@@ -118,7 +118,7 @@
+ 
+             Platform::OS::Sleep(5);
+ 
+-            for (int i=0; i<numberOfTokens; ++i)
++            for (int i=0; i<(int)numberOfTokens; ++i)
+             {
+                 bool ok = RCF::createRemoteObject<I_Echo>(myClient);
+                 BOOST_CHECK(ok);
+diff -uNr RCF-0.4-orig/test/Test_Endpoint.cpp RCF-0.4/test/Test_Endpoint.cpp
+--- RCF-0.4-orig/test/Test_Endpoint.cpp	2006-02-07 21:37:18.000000000 +0100
++++ RCF-0.4/test/Test_Endpoint.cpp	2006-10-24 11:25:06.821165733 +0200
+@@ -52,7 +52,7 @@
+ 
+     util::CommandLine::getSingleton().parse(argc, argv);
+ 
+-    for (int i=0; i<RCF::getTransportFactories().size(); ++i)
++    for (int i=0; i<(int)RCF::getTransportFactories().size(); ++i)
+     {
+         RCF::TransportFactoryPtr transportFactoryPtr = RCF::getTransportFactories()[i];
+         std::pair<RCF::ServerTransportPtr, RCF::ClientTransportAutoPtrPtr> transports;
+diff -uNr RCF-0.4-orig/test/Test_Filters.cpp RCF-0.4/test/Test_Filters.cpp
+--- RCF-0.4-orig/test/Test_Filters.cpp	2006-04-03 20:33:04.000000000 +0200
++++ RCF-0.4/test/Test_Filters.cpp	2006-10-24 11:53:08.334995214 +0200
+@@ -65,21 +65,21 @@
+     {
+         RcfClient<X> client(clientTransportAutoPtr->clone());
+ 
+-        ret = client.func(RCF::Twoway); BOOST_CHECK( ret == 6*i+1 );
+-        ret = client.func(RCF::Twoway); BOOST_CHECK( ret == 6*i+2 );
++        ret = client.func(RCF::Twoway); BOOST_CHECK( ret == 6*(int)i+1 );
++        ret = client.func(RCF::Twoway); BOOST_CHECK( ret == 6*(int)i+2 );
+ 
+         client.getClientStub().setTransportFilters(filterChains[i]);
+ 
+-        ret = client.func(RCF::Twoway); BOOST_CHECK( ret == 6*i+3 );
+-        ret = client.func(RCF::Twoway); BOOST_CHECK( ret == 6*i+4 );
++        ret = client.func(RCF::Twoway); BOOST_CHECK( ret == 6*(int)i+3 );
++        ret = client.func(RCF::Twoway); BOOST_CHECK( ret == 6*(int)i+4 );
+ 
+         if (removable)
+         {
+             client.getClientStub().setTransportFilters(std::vector<RCF::FilterPtr>());
+         }
+ 
+-        ret = client.func(RCF::Twoway); BOOST_CHECK( ret == 6*i+5 );
+-        ret = client.func(RCF::Twoway); BOOST_CHECK( ret == 6*i+6 );
++        ret = client.func(RCF::Twoway); BOOST_CHECK( ret == 6*(int)i+5 );
++        ret = client.func(RCF::Twoway); BOOST_CHECK( ret == 6*(int)i+6 );
+     }
+     
+ }
+@@ -133,18 +133,18 @@
+         const std::vector<RCF::FilterPtr> &filterChain = filterChains[i];
+ 
+         RcfClient<X> client(clientEndpoint);
+-        ret = client.func(RCF::Twoway); BOOST_CHECK( ret == 6*i+1 );
++        ret = client.func(RCF::Twoway); BOOST_CHECK( ret == 6*(int)i+1 );
+ 
+         client.getClientStub().setPayloadFilters(filterChain);
+-        ret = client.func(RCF::Twoway); BOOST_CHECK( ret == 6*i+2 );
+-        ret = client.func(RCF::Twoway); BOOST_CHECK( ret == 6*i+3 );
++        ret = client.func(RCF::Twoway); BOOST_CHECK( ret == 6*(int)i+2 );
++        ret = client.func(RCF::Twoway); BOOST_CHECK( ret == 6*(int)i+3 );
+ 
+         client.getClientStub().setPayloadFilters(std::vector<RCF::FilterPtr>());
+-        ret = client.func(RCF::Twoway); BOOST_CHECK( ret == 6*i+4 );
++        ret = client.func(RCF::Twoway); BOOST_CHECK( ret == 6*(int)i+4 );
+ 
+         client.getClientStub().setPayloadFilters(filterChain);
+-        ret = client.func(RCF::Twoway); BOOST_CHECK( ret == 6*i+5 );
+-        ret = client.func(RCF::Twoway); BOOST_CHECK( ret == 6*i+6 );
++        ret = client.func(RCF::Twoway); BOOST_CHECK( ret == 6*(int)i+5 );
++        ret = client.func(RCF::Twoway); BOOST_CHECK( ret == 6*(int)i+6 );
+     }
+ 
+ }
+@@ -186,18 +186,18 @@
+         const std::vector<RCF::FilterPtr> &filterChain = filterChains[i];
+ 
+         RcfClient<X> client(clientEndpoint);
+-        ret = client.func(RCF::Twoway); BOOST_CHECK( ret == 6*i+1 );
++        ret = client.func(RCF::Twoway); BOOST_CHECK( ret == 6*(int)i+1 );
+ 
+         client.getClientStub().setPayloadFilters(filterChain);
+-        ret = client.func(RCF::Twoway); BOOST_CHECK( ret == 6*i+2 );
+-        ret = client.func(RCF::Twoway); BOOST_CHECK( ret == 6*i+3 );
++        ret = client.func(RCF::Twoway); BOOST_CHECK( ret == 6*(int)i+2 );
++        ret = client.func(RCF::Twoway); BOOST_CHECK( ret == 6*(int)i+3 );
+ 
+         client.getClientStub().setPayloadFilters(std::vector<RCF::FilterPtr>());
+-        ret = client.func(RCF::Twoway); BOOST_CHECK( ret == 6*i+4 );
++        ret = client.func(RCF::Twoway); BOOST_CHECK( ret == 6*(int)i+4 );
+ 
+         client.getClientStub().setPayloadFilters(filterChain);
+-        ret = client.func(RCF::Twoway); BOOST_CHECK( ret == 6*i+5 );
+-        ret = client.func(RCF::Twoway); BOOST_CHECK( ret == 6*i+6 );
++        ret = client.func(RCF::Twoway); BOOST_CHECK( ret == 6*(int)i+5 );
++        ret = client.func(RCF::Twoway); BOOST_CHECK( ret == 6*(int)i+6 );
+     }
+ 
+ }
+diff -uNr RCF-0.4-orig/test/Test_Inheritance.cpp RCF-0.4/test/Test_Inheritance.cpp
+--- RCF-0.4-orig/test/Test_Inheritance.cpp	2006-01-27 21:42:32.000000000 +0100
++++ RCF-0.4/test/Test_Inheritance.cpp	2006-10-24 12:20:07.734199170 +0200
+@@ -8,6 +8,7 @@
+ #include <RCF/util/CommandLine.hpp>
+ #include <RCF/util/PortNumbers.hpp>
+ 
++/*
+ // interface inheritance hierarchies
+ //
+ //A1 <- B1 <- C1 <-
+@@ -23,6 +24,7 @@
+ //A1 <- Y <-
+ //
+ // I_E <- E
++*/
+ 
+ RCF_BEGIN(A1, "A1")
+     RCF_METHOD_R0(std::string, funcA1)
+diff -uNr RCF-0.4-orig/test/Test_IpRestriction.cpp RCF-0.4/test/Test_IpRestriction.cpp
+--- RCF-0.4-orig/test/Test_IpRestriction.cpp	2006-02-07 21:37:18.000000000 +0100
++++ RCF-0.4/test/Test_IpRestriction.cpp	2006-10-24 12:27:45.390368243 +0200
+@@ -33,7 +33,6 @@
+     util::CommandLine::getSingleton().parse(argc, argv);
+ 
+     std::string localIp = "localhost";
+-    int localPort = 0;
+ 
+     for (unsigned int i=0; i<RCF::getIpTransportFactories().size(); ++i)
+     {
+diff -uNr RCF-0.4-orig/test/Test_NetworkPerformance.cpp RCF-0.4/test/Test_NetworkPerformance.cpp
+--- RCF-0.4-orig/test/Test_NetworkPerformance.cpp	2006-03-20 15:48:54.000000000 +0100
++++ RCF-0.4/test/Test_NetworkPerformance.cpp	2006-10-24 12:33:16.053031974 +0200
+@@ -222,4 +222,5 @@
+         RCF_VERIFY(0, "no protocol specified");
+     }
+ 
+-}
+\ No newline at end of file
++}
++
+diff -uNr RCF-0.4-orig/test/Test_Notification.cpp RCF-0.4/test/Test_Notification.cpp
+--- RCF-0.4-orig/test/Test_Notification.cpp	2006-03-19 13:20:04.000000000 +0100
++++ RCF-0.4/test/Test_Notification.cpp	2006-10-24 12:34:35.896571773 +0200
+@@ -127,9 +127,9 @@
+ 
+             for (unsigned int k=0; k<events.size(); ++k)
+             {
+-                BOOST_CHECK(events[k].nA == k);
+-                BOOST_CHECK(events[k].nB == k);
+-                BOOST_CHECK(events[k].nC == k);
++                BOOST_CHECK(events[k].nA == (int)k);
++                BOOST_CHECK(events[k].nB == (int)k);
++                BOOST_CHECK(events[k].nC == (int)k);
+             }
+         }
+ 
+diff -uNr RCF-0.4-orig/test/Test_ObjectFactoryService.cpp RCF-0.4/test/Test_ObjectFactoryService.cpp
+--- RCF-0.4-orig/test/Test_ObjectFactoryService.cpp	2006-04-02 22:29:52.000000000 +0200
++++ RCF-0.4/test/Test_ObjectFactoryService.cpp	2006-10-24 12:37:14.587606124 +0200
+@@ -78,7 +78,7 @@
+         BOOST_CHECK( s == s0 );
+         BOOST_CHECK(token != RCF::Token());
+ 
+-        for (int j=0; j<numberOfTokens-1;++j)
++        for (int j=0; j<(int)numberOfTokens-1;++j)
+         {
+             ok = RCF::createRemoteObject<I_Echo>(client);
+             BOOST_CHECK(ok);
+diff -uNr RCF-0.4-orig/test/Test_Polymorphic.cpp RCF-0.4/test/Test_Polymorphic.cpp
+--- RCF-0.4-orig/test/Test_Polymorphic.cpp	2006-04-03 14:33:42.000000000 +0200
++++ RCF-0.4/test/Test_Polymorphic.cpp	2006-10-24 12:45:11.860774284 +0200
+@@ -288,7 +288,7 @@
+                 spa = zClient.f2( typeid(C).name() ); BOOST_CHECK( dynamic_cast<C *>(spa.get()) != NULL );
+             }
+             {
+-                A *pa = NULL;
++                //A *pa = NULL;
+                 //xClient.f3(typeid(B).name(), pa); BOOST_CHECK( dynamic_cast<B *>(pa) != NULL );
+                 //xClient.f3(typeid(C).name(), pa); BOOST_CHECK( dynamic_cast<C *>(pa) != NULL );
+ 
+diff -uNr RCF-0.4-orig/test/Test_Serialization.cpp RCF-0.4/test/Test_Serialization.cpp
+--- RCF-0.4-orig/test/Test_Serialization.cpp	2006-04-03 15:33:56.000000000 +0200
++++ RCF-0.4/test/Test_Serialization.cpp	2006-10-24 12:49:32.708372131 +0200
+@@ -507,7 +507,7 @@
+ 
+     // Single dimensional static array
+     int pn1[SIZE];
+-    for (int i=0;i<SIZE;i++)
++    for (int i=0;i<(int)SIZE;i++)
+         pn1[i] = i-20;
+ 
+     int pn2[SIZE];
+diff -uNr RCF-0.4-orig/test/port.txt RCF-0.4/test/port.txt
+--- RCF-0.4-orig/test/port.txt	1970-01-01 01:00:00.000000000 +0100
++++ RCF-0.4/test/port.txt	2006-10-24 15:51:18.531284783 +0200
+@@ -0,0 +1 @@
++50271
+\ No newline at end of file
