@@ -1,6 +1,8 @@
 require linux-openzaurus.inc
 
-PR = "r4"
+PR = "r0"
+
+DEFAULT_PREFERENCE = "-1"
 
 # Handy URLs
 # git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux-2.6.git;protocol=git;tag=ef7d1b244fa6c94fb76d5f787b8629df64ea4046
@@ -12,30 +14,28 @@ PR = "r4"
 
 # Patches submitted upstream are towards top of this list 
 # Hacks should clearly named and at the bottom
-SRC_URI = "http://www.kernel.org/pub/linux/kernel/v2.6/linux-2.6.18.tar.bz2 \
+#           ftp://ftp.kernel.org/pub/linux/kernel/people/akpm/patches/2.6/2.6.14-rc2/2.6.14-rc2-mm1/2.6.14-rc2-mm1.bz2;patch=1 \	   
+SRC_URI = "git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux-2.6.git;protocol=git;tag=ae99a78af33f00565a05dbbc6ca9b247fed002c5 \
            ${RPSRC}/alsa/asoc-v0.12.patch;patch=1 \
            ${RPSRC}/asoc_makefile-r1.patch;patch=1 \
-           ${RPSRC}/poodle_audio-r6.patch;patch=1 \
            ${RPSRC}/hx2750_base-r27.patch;patch=1 \
            ${RPSRC}/hx2750_bl-r7.patch;patch=1 \
            ${RPSRC}/hx2750_pcmcia-r2.patch;patch=1 \
            ${RPSRC}/pxa_keys-r5.patch;patch=1 \
-           ${RPSRC}/tsc2101-r12.patch;patch=1 \
+           ${RPSRC}/tsc2101-r14.patch;patch=1 \
            ${RPSRC}/hx2750_test1-r4.patch;patch=1 \
            ${RPSRC}/pxa_timerfix-r0.patch;patch=1 \
-           ${RPSRC}/input_power-r5.patch;patch=1 \
+           ${RPSRC}/input_power-r6.patch;patch=1 \
            ${RPSRC}/pxa25x_cpufreq-r1.patch;patch=1 \
            ${RPSRC}/sharpsl_pm_fixes1-r0.patch;patch=1 \
            ${RPSRC}/pm_changes-r1.patch;patch=1 \
-           ${RPSRC}/usb_pxa27x_udc-r0.patch;patch=1 \
+           ${RPSRC}/usb_pxa27x_udc-r1.patch;patch=1 \
            ${RPSRC}/usb_add_epalloc-r3.patch;patch=1 \
            ${DOSRC}/kexec-arm-r3.patch;patch=1 \
            ${RPSRC}/locomo_kbd_tweak-r1.patch;patch=1 \
            ${RPSRC}/poodle_pm-r3.patch;patch=1 \
-           ${RPSRC}/pxafb_changeres-r2.patch;patch=1 \
-           ${RPSRC}/pxa27x_overlay-r2.patch;patch=1 \
+           ${RPSRC}/pxa27x_overlay-r3.patch;patch=1 \
            file://serial-add-support-for-non-standard-xtals-to-16c950-driver.patch;patch=1 \
-           file://hrw-pcmcia-ids-r5.patch;patch=1 \
            ${RPSRC}/logo_oh-r0.patch.bz2;patch=1;status=unmergable \
            ${RPSRC}/logo_oz-r2.patch.bz2;patch=1;status=unmergable \
            ${RPSRC}/pxa-linking-bug.patch;patch=1;status=unmergable \
@@ -46,7 +46,6 @@ SRC_URI = "http://www.kernel.org/pub/linux/kernel/v2.6/linux-2.6.18.tar.bz2 \
            ${RPSRC}/pxa_cf_initorder_hack-r1.patch;patch=1;status=hack \
            file://pxa-serial-hack.patch;patch=1;status=hack \
            file://connectplus-remove-ide-HACK.patch;patch=1;status=hack \
-           file://orinoco-remove-all-which-are-in-hostap-HACK.patch;patch=1;status=unmergable-hack \
            file://squashfs3.0-2.6.15.patch;patch=1;status=external \
            file://defconfig-c7x0 \
            file://defconfig-hx2000 \
@@ -103,7 +102,7 @@ SRC_URI_append_tosa = "\
            file://wm97xx-lcdnoise-r0.patch;patch=1 "
 #          ${DOSRC}/tosa-asoc-r1.patch;patch=1 "
 
-S = "${WORKDIR}/linux-2.6.18"
+S = "${WORKDIR}/git"
 
 # to get module dependencies working
-KERNEL_RELEASE = "2.6.18"
+KERNEL_RELEASE = "2.6.19-rc4"

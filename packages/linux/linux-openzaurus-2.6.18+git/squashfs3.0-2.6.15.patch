@@ -1,7 +1,20 @@
-diff --new-file -urp linux-2.6.15/fs/Kconfig linux-2.6.15-squashfs3.0/fs/Kconfig
---- linux-2.6.15/fs/Kconfig	2006-03-01 22:37:27.000000000 +0000
-+++ linux-2.6.15-squashfs3.0/fs/Kconfig	2006-03-07 21:12:37.000000000 +0000
-@@ -1151,6 +1151,71 @@ config CRAMFS
+ fs/Kconfig                     |   65 +
+ fs/Makefile                    |    1 
+ fs/squashfs/Makefile           |    7 
+ fs/squashfs/inode.c            | 2124 +++++++++++++++++++++++++++++++++++++++++
+ fs/squashfs/squashfs.h         |   86 +
+ fs/squashfs/squashfs2_0.c      |  757 ++++++++++++++
+ include/linux/squashfs_fs.h    |  911 +++++++++++++++++
+ include/linux/squashfs_fs_i.h  |   45 
+ include/linux/squashfs_fs_sb.h |   74 +
+ init/do_mounts_rd.c            |   13 
+ 10 files changed, 4083 insertions(+)
+
+Index: git/fs/Kconfig
+===================================================================
+--- git.orig/fs/Kconfig	2006-10-31 16:09:22.000000000 +0000
++++ git/fs/Kconfig	2006-10-31 21:26:45.000000000 +0000
+@@ -1407,6 +1407,71 @@ config CRAMFS
  
  	  If unsure, say N.
  
@@ -72,22 +85,24 @@ diff --new-file -urp linux-2.6.15/fs/Kconfig linux-2.6.15-squashfs3.0/fs/Kconfig
 +
  config VXFS_FS
  	tristate "FreeVxFS file system support (VERITAS VxFS(TM) compatible)"
- 	help
-diff --new-file -urp linux-2.6.15/fs/Makefile linux-2.6.15-squashfs3.0/fs/Makefile
---- linux-2.6.15/fs/Makefile	2006-03-01 22:37:27.000000000 +0000
-+++ linux-2.6.15-squashfs3.0/fs/Makefile	2006-03-07 21:12:37.000000000 +0000
-@@ -55,6 +55,7 @@ obj-$(CONFIG_EXT3_FS)		+= ext3/ # Before
- obj-$(CONFIG_JBD)		+= jbd/
+ 	depends on BLOCK
+Index: git/fs/Makefile
+===================================================================
+--- git.orig/fs/Makefile	2006-10-31 16:09:22.000000000 +0000
++++ git/fs/Makefile	2006-10-31 21:26:45.000000000 +0000
+@@ -67,6 +67,7 @@ obj-$(CONFIG_JBD)		+= jbd/
+ obj-$(CONFIG_JBD2)		+= jbd2/
  obj-$(CONFIG_EXT2_FS)		+= ext2/
  obj-$(CONFIG_CRAMFS)		+= cramfs/
 +obj-$(CONFIG_SQUASHFS)		+= squashfs/
  obj-$(CONFIG_RAMFS)		+= ramfs/
  obj-$(CONFIG_HUGETLBFS)		+= hugetlbfs/
  obj-$(CONFIG_CODA_FS)		+= coda/
-diff --new-file -urp linux-2.6.15/fs/squashfs/inode.c linux-2.6.15-squashfs3.0/fs/squashfs/inode.c
---- linux-2.6.15/fs/squashfs/inode.c	1970-01-01 01:00:00.000000000 +0100
-+++ linux-2.6.15-squashfs3.0/fs/squashfs/inode.c	2006-03-07 21:12:37.000000000 +0000
-@@ -0,0 +1,2127 @@
+Index: git/fs/squashfs/inode.c
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ git/fs/squashfs/inode.c	2006-11-01 18:01:32.000000000 +0000
+@@ -0,0 +1,2124 @@
 +/*
 + * Squashfs - a compressed read only filesystem for Linux
 + *
@@ -135,7 +150,7 @@ diff --new-file -urp linux-2.6.15/fs/squashfs/inode.c linux-2.6.15-squashfs3.0/f
 +#include "squashfs.h"
 +
 +static void squashfs_put_super(struct super_block *);
-+static int squashfs_statfs(struct super_block *, struct kstatfs *);
++static int squashfs_statfs(struct dentry *, struct kstatfs *);
 +static int squashfs_symlink_readpage(struct file *file, struct page *page);
 +static int squashfs_readpage(struct file *file, struct page *page);
 +static int squashfs_readpage4K(struct file *file, struct page *page);
@@ -150,8 +165,8 @@ diff --new-file -urp linux-2.6.15/fs/squashfs/inode.c linux-2.6.15-squashfs3.0/f
 +static long long read_blocklist(struct inode *inode, int index,
 +				int readahead_blks, char *block_list,
 +				unsigned short **block_p, unsigned int *bsize);
-+static struct super_block *squashfs_get_sb(struct file_system_type *, int,
-+				const char *, void *);
++static int squashfs_get_sb(struct file_system_type *, int,
++				const char *, void *, struct vfsmount *);
 +
 +
 +static z_stream stream;
@@ -698,7 +713,6 @@ diff --new-file -urp linux-2.6.15/fs/squashfs/inode.c linux-2.6.15-squashfs3.0/f
 +			i->i_fop = &generic_ro_fops;
 +			i->i_mode |= S_IFREG;
 +			i->i_blocks = ((i->i_size - 1) >> 9) + 1;
-+			i->i_blksize = PAGE_CACHE_SIZE;
 +			SQUASHFS_I(i)->u.s1.fragment_start_block = frag_blk;
 +			SQUASHFS_I(i)->u.s1.fragment_size = frag_size;
 +			SQUASHFS_I(i)->u.s1.fragment_offset = inodep->offset;
@@ -751,7 +765,6 @@ diff --new-file -urp linux-2.6.15/fs/squashfs/inode.c linux-2.6.15-squashfs3.0/f
 +			i->i_fop = &generic_ro_fops;
 +			i->i_mode |= S_IFREG;
 +			i->i_blocks = ((i->i_size - 1) >> 9) + 1;
-+			i->i_blksize = PAGE_CACHE_SIZE;
 +			SQUASHFS_I(i)->u.s1.fragment_start_block = frag_blk;
 +			SQUASHFS_I(i)->u.s1.fragment_size = frag_size;
 +			SQUASHFS_I(i)->u.s1.fragment_offset = inodep->offset;
@@ -1239,8 +1252,9 @@ diff --new-file -urp linux-2.6.15/fs/squashfs/inode.c linux-2.6.15-squashfs3.0/f
 +}
 +
 +
-+static int squashfs_statfs(struct super_block *s, struct kstatfs *buf)
++static int squashfs_statfs(struct dentry *dentry, struct kstatfs *buf)
 +{
++	struct super_block *s = dentry->d_sb;
 +	struct squashfs_sb_info *msblk = s->s_fs_info;
 +	struct squashfs_super_block *sblk = &msblk->sblk;
 +
@@ -2121,10 +2135,10 @@ diff --new-file -urp linux-2.6.15/fs/squashfs/inode.c linux-2.6.15-squashfs3.0/f
 +}
 +
 +
-+static struct super_block *squashfs_get_sb(struct file_system_type *fs_type,
-+				int flags, const char *dev_name, void *data)
++static int squashfs_get_sb(struct file_system_type *fs_type,
++				int flags, const char *dev_name, void *data, struct vfsmount *mnt)
 +{
-+	return get_sb_bdev(fs_type, flags, dev_name, data, squashfs_fill_super);
++	return get_sb_bdev(fs_type, flags, dev_name, data, squashfs_fill_super, mnt);
 +}
 +
 +
@@ -2205,9 +2219,7 @@ diff --new-file -urp linux-2.6.15/fs/squashfs/inode.c linux-2.6.15-squashfs3.0/f
 +
 +static void destroy_inodecache(void)
 +{
-+	if (kmem_cache_destroy(squashfs_inode_cachep))
-+		printk(KERN_INFO "squashfs_inode_cache: not all structures "
-+			"were freed\n");
++	kmem_cache_destroy(squashfs_inode_cachep);
 +}
 +
 +
@@ -2215,10 +2227,10 @@ diff --new-file -urp linux-2.6.15/fs/squashfs/inode.c linux-2.6.15-squashfs3.0/f
 +module_exit(exit_squashfs_fs);
 +MODULE_DESCRIPTION("squashfs, a compressed read-only filesystem");
 +MODULE_AUTHOR("Phillip Lougher <phillip@lougher.org.uk>");
-+MODULE_LICENSE("GPL");
-diff --new-file -urp linux-2.6.15/fs/squashfs/Makefile linux-2.6.15-squashfs3.0/fs/squashfs/Makefile
---- linux-2.6.15/fs/squashfs/Makefile	1970-01-01 01:00:00.000000000 +0100
-+++ linux-2.6.15-squashfs3.0/fs/squashfs/Makefile	2006-03-07 21:12:37.000000000 +0000
+Index: git/fs/squashfs/Makefile
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ git/fs/squashfs/Makefile	2006-10-31 21:26:45.000000000 +0000
 @@ -0,0 +1,7 @@
 +#
 +# Makefile for the linux squashfs routines.
@@ -2227,10 +2239,11 @@ diff --new-file -urp linux-2.6.15/fs/squashfs/Makefile linux-2.6.15-squashfs3.0/
 +obj-$(CONFIG_SQUASHFS) += squashfs.o
 +squashfs-y += inode.o
 +squashfs-y += squashfs2_0.o
-diff --new-file -urp linux-2.6.15/fs/squashfs/squashfs2_0.c linux-2.6.15-squashfs3.0/fs/squashfs/squashfs2_0.c
---- linux-2.6.15/fs/squashfs/squashfs2_0.c	1970-01-01 01:00:00.000000000 +0100
-+++ linux-2.6.15-squashfs3.0/fs/squashfs/squashfs2_0.c	2006-03-07 21:12:37.000000000 +0000
-@@ -0,0 +1,758 @@
+Index: git/fs/squashfs/squashfs2_0.c
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ git/fs/squashfs/squashfs2_0.c	2006-11-01 18:01:49.000000000 +0000
+@@ -0,0 +1,757 @@
 +/*
 + * Squashfs - a compressed read only filesystem for Linux
 + *
@@ -2461,7 +2474,6 @@ diff --new-file -urp linux-2.6.15/fs/squashfs/squashfs2_0.c linux-2.6.15-squashf
 +			i->i_atime.tv_sec = inodep->mtime;
 +			i->i_ctime.tv_sec = inodep->mtime;
 +			i->i_blocks = ((i->i_size - 1) >> 9) + 1;
-+			i->i_blksize = PAGE_CACHE_SIZE;
 +			SQUASHFS_I(i)->u.s1.fragment_start_block = frag_blk;
 +			SQUASHFS_I(i)->u.s1.fragment_size = frag_size;
 +			SQUASHFS_I(i)->u.s1.fragment_offset = inodep->offset;
@@ -2989,9 +3001,10 @@ diff --new-file -urp linux-2.6.15/fs/squashfs/squashfs2_0.c linux-2.6.15-squashf
 +
 +	return 1;
 +}
-diff --new-file -urp linux-2.6.15/fs/squashfs/squashfs.h linux-2.6.15-squashfs3.0/fs/squashfs/squashfs.h
---- linux-2.6.15/fs/squashfs/squashfs.h	1970-01-01 01:00:00.000000000 +0100
-+++ linux-2.6.15-squashfs3.0/fs/squashfs/squashfs.h	2006-03-07 21:12:37.000000000 +0000
+Index: git/fs/squashfs/squashfs.h
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ git/fs/squashfs/squashfs.h	2006-10-31 21:26:45.000000000 +0000
 @@ -0,0 +1,86 @@
 +/*
 + * Squashfs - a compressed read only filesystem for Linux
@@ -3079,9 +3092,10 @@ diff --new-file -urp linux-2.6.15/fs/squashfs/squashfs.h linux-2.6.15-squashfs3.
 +	return 0;
 +}
 +#endif
-diff --new-file -urp linux-2.6.15/include/linux/squashfs_fs.h linux-2.6.15-squashfs3.0/include/linux/squashfs_fs.h
---- linux-2.6.15/include/linux/squashfs_fs.h	1970-01-01 01:00:00.000000000 +0100
-+++ linux-2.6.15-squashfs3.0/include/linux/squashfs_fs.h	2006-03-07 21:12:37.000000000 +0000
+Index: git/include/linux/squashfs_fs.h
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ git/include/linux/squashfs_fs.h	2006-10-31 21:26:45.000000000 +0000
 @@ -0,0 +1,911 @@
 +#ifndef SQUASHFS_FS
 +#define SQUASHFS_FS
@@ -3994,9 +4008,10 @@ diff --new-file -urp linux-2.6.15/include/linux/squashfs_fs.h linux-2.6.15-squas
 +
 +#endif
 +#endif
-diff --new-file -urp linux-2.6.15/include/linux/squashfs_fs_i.h linux-2.6.15-squashfs3.0/include/linux/squashfs_fs_i.h
---- linux-2.6.15/include/linux/squashfs_fs_i.h	1970-01-01 01:00:00.000000000 +0100
-+++ linux-2.6.15-squashfs3.0/include/linux/squashfs_fs_i.h	2006-03-07 21:12:37.000000000 +0000
+Index: git/include/linux/squashfs_fs_i.h
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ git/include/linux/squashfs_fs_i.h	2006-10-31 21:26:45.000000000 +0000
 @@ -0,0 +1,45 @@
 +#ifndef SQUASHFS_FS_I
 +#define SQUASHFS_FS_I
@@ -4043,9 +4058,10 @@ diff --new-file -urp linux-2.6.15/include/linux/squashfs_fs_i.h linux-2.6.15-squ
 +	struct inode	vfs_inode;
 +};
 +#endif
-diff --new-file -urp linux-2.6.15/include/linux/squashfs_fs_sb.h linux-2.6.15-squashfs3.0/include/linux/squashfs_fs_sb.h
---- linux-2.6.15/include/linux/squashfs_fs_sb.h	1970-01-01 01:00:00.000000000 +0100
-+++ linux-2.6.15-squashfs3.0/include/linux/squashfs_fs_sb.h	2006-03-07 21:12:37.000000000 +0000
+Index: git/include/linux/squashfs_fs_sb.h
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ git/include/linux/squashfs_fs_sb.h	2006-10-31 21:26:45.000000000 +0000
 @@ -0,0 +1,74 @@
 +#ifndef SQUASHFS_FS_SB
 +#define SQUASHFS_FS_SB
@@ -4121,9 +4137,10 @@ diff --new-file -urp linux-2.6.15/include/linux/squashfs_fs_sb.h linux-2.6.15-sq
 +	int			(*read_fragment_index_table)(struct super_block *s);
 +};
 +#endif
-diff --new-file -urp linux-2.6.15/init/do_mounts_rd.c linux-2.6.15-squashfs3.0/init/do_mounts_rd.c
---- linux-2.6.15/init/do_mounts_rd.c	2006-03-01 22:37:27.000000000 +0000
-+++ linux-2.6.15-squashfs3.0/init/do_mounts_rd.c	2006-03-07 21:12:37.000000000 +0000
+Index: git/init/do_mounts_rd.c
+===================================================================
+--- git.orig/init/do_mounts_rd.c	2006-10-31 16:09:47.000000000 +0000
++++ git/init/do_mounts_rd.c	2006-10-31 21:26:45.000000000 +0000
 @@ -5,6 +5,7 @@
  #include <linux/ext2_fs.h>
  #include <linux/romfs_fs.h>
