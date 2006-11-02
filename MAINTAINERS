@@ -69,6 +69,14 @@ Recipes:    abiword, bootchart, dia, farsight, freeciv, fuse, galago, geda, gimp
 Recipes:    gnumeric, gobby, obby, imposter, inkscape
 Recipes:    telepathy, tilibs, xchat, xournal.
 
+Person:     Kristoffer Ericson
+Mail:       Kristoffer_e1@hotmail.com
+Website:    www.jlime.com
+Machines:   spitz, jornada 680, jornada 720
+Distros:    JLime, Openzaurus
+Interests:  wifi, kernels, emulation, qemu, git
+Recipes:    linux-jlime*, scummvm, blackbox
+
 Person:     Leon Woestenberg
 Mail:       leonw@mailcan.com
 Interests:  SquashFS, LZMA
