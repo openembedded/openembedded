@@ -40,6 +40,9 @@ SRC_URI += "cvs://cvs:cvs@ftp.linux-mips.org/home/cvs;module=linux;tag=linux_2_4
 	file://43-usbserial-27-32-backport.diff;patch=1 \
 	file://44-dbdma-and-au1550_psc.diff;patch=1 \
 	file://45-acm-tty.patch;patch=1 \
+	file://46-otg.patch;patch=1 \
+	file://47-au1000_eth.patch;patch=1 \
+	file://48-pptp.patch;patch=1 \
 	file://defconfig-mtx-2"
 
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/linux-mtx-2-${PV}"
