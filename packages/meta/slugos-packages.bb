@@ -180,6 +180,7 @@ SLUGOS_PACKAGES = "\
 # Packages currently broken on all platforms
 SLUGOS_BROKEN_PACKAGES = "\
 	irssi \
+	bwmon \
 	obexftp \
 	qc-usb-messenger \
 	unionfs-modules \
@@ -209,7 +210,6 @@ UCLIBC_BROKEN_PACKAGES = "\
 	apr \
 	bogofilter \
 	boost \
-	bwmon \
 	erlang \
 	linphone \
 	sudo \
