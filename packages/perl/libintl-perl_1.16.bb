@@ -9,3 +9,7 @@ SRC_URI = "http://www.cpan.org/authors/id/G/GU/GUIDO/libintl-perl-${PV}.tar.gz"
 S = "${WORKDIR}/libintl-perl-${PV}"
 
 inherit cpan
+
+do_compile() {
+	make CC="${CC}" LD="${LD}"
+}

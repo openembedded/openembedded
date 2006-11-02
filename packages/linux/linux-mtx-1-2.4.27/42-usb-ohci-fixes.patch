@@ -11,6 +11,15 @@
  /*-------------------------------------------------------------------------*/
  
  /* AMD-756 (D2 rev) reports corrupt register contents in some cases.
+@@ -147,7 +151,7 @@
+ 		ohci->complete_head = urb;
+ 		ohci->complete_tail = urb;
+ 	} else {
+-		ohci->complete_head->hcpriv = urb;
++		ohci->complete_tail->hcpriv = urb;
+ 		ohci->complete_tail = urb;
+ 	}
+ }
 @@ -2587,12 +2591,12 @@
  		hc_release_ohci (ohci);
  		return -ENODEV;
