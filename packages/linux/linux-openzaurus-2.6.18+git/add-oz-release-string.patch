@@ -1,9 +1,14 @@
+---
+ Makefile       |    1 +
+ init/version.c |    2 +-
+ 2 files changed, 2 insertions(+), 1 deletion(-)
+
 Index: git/init/version.c
 ===================================================================
---- git.orig/init/version.c	2006-07-04 21:49:14.000000000 +0100
-+++ git/init/version.c	2006-07-05 10:02:57.000000000 +0100
-@@ -30,5 +30,5 @@
- EXPORT_SYMBOL(system_utsname);
+--- git.orig/init/version.c	2006-10-31 16:09:47.000000000 +0000
++++ git/init/version.c	2006-10-31 16:24:54.000000000 +0000
+@@ -35,5 +35,5 @@ struct uts_namespace init_uts_ns = {
+ EXPORT_SYMBOL_GPL(init_uts_ns);
  
  const char linux_banner[] =
 -	"Linux version " UTS_RELEASE " (" LINUX_COMPILE_BY "@"
@@ -11,9 +16,9 @@ Index: git/init/version.c
  	LINUX_COMPILE_HOST ") (" LINUX_COMPILER ") " UTS_VERSION "\n";
 Index: git/Makefile
 ===================================================================
---- git.orig/Makefile	2006-07-04 21:48:58.000000000 +0100
-+++ git/Makefile	2006-07-05 10:05:03.000000000 +0100
-@@ -859,6 +859,7 @@
+--- git.orig/Makefile	2006-10-31 16:08:28.000000000 +0000
++++ git/Makefile	2006-10-31 16:27:02.000000000 +0000
+@@ -905,6 +905,7 @@ endef
  define filechk_version.h
  	(echo \#define LINUX_VERSION_CODE $(shell                             \
  	expr $(VERSION) \* 65536 + $(PATCHLEVEL) \* 256 + $(SUBLEVEL));     \
