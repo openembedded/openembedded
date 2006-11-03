@@ -1,0 +1,16 @@
+--- linux-2.6.15.4.orig/scripts/mkuboot.sh	2006-10-05 13:56:39.000000000 +0200
++++ linux-2.6.15.4/scripts/mkuboot.sh	2006-10-05 14:03:25.000000000 +0200
+@@ -6,10 +6,12 @@
+ 
+ MKIMAGE=$(type -path mkimage)
+ 
++echo "${MKIMAGE} $@"
++
+ if [ -z "${MKIMAGE}" ]; then
+ 	# Doesn't exist
+ 	echo '"mkimage" command not found - U-Boot images will not be built' >&2
+-	exit 0;
++	exit 1;
+ fi
+ 
+ # Call "mkimage" to create U-Boot image

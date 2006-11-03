@@ -72,12 +72,13 @@ do_install () {
 		'OPT=${CFLAGS}' 'CC=${CC}' 'LD=${LD}' \
 		'LDFLAGS=${LDFLAGS}' 'DESTDIR=${D}' install
 
+	test -f ${D}${base_sbindir}/pivot_root && \
+	mv ${D}${base_sbindir}/pivot_root ${D}${base_sbindir}/pivot_root.${PN}
 	mv ${D}${base_bindir}/dmesg ${D}${base_bindir}/dmesg.${PN}
 	mv ${D}${base_bindir}/kill ${D}${base_bindir}/kill.${PN}
 	mv ${D}${base_bindir}/more ${D}${base_bindir}/more.${PN}
 	mv ${D}${base_sbindir}/hwclock ${D}${base_sbindir}/hwclock.${PN}
 	mv ${D}${base_sbindir}/mkswap ${D}${base_sbindir}/mkswap.${PN}
-	mv ${D}${base_sbindir}/pivot_root ${D}${base_sbindir}/pivot_root.${PN}
 	mv ${D}${base_sbindir}/shutdown ${D}${base_sbindir}/shutdown.${PN}
 	mv ${D}${base_sbindir}/sln ${D}${base_sbindir}/sln.${PN}
 	mv ${D}${base_sbindir}/mkfs.minix ${D}${base_sbindir}/mkfs.minix.${PN}
@@ -107,6 +108,7 @@ pkg_postinst_${PN} () {
 	update-alternatives --install ${base_bindir}/kill kill kill.${PN} 100
 	update-alternatives --install ${base_bindir}/more more more.${PN} 100
 	update-alternatives --install ${base_sbindir}/mkswap mkswap mkswap.${PN} 100
+	test -x ${base_sbindir}/pivot_root.${PN} && \
 	update-alternatives --install ${base_sbindir}/pivot_root pivot_root pivot_root.${PN} 100
 	update-alternatives --install ${base_sbindir}/sln sln sln.${PN} 100
 	update-alternatives --install ${base_sbindir}/mkfs.minix mkfs.minix mkfs.minix.${PN} 100
@@ -127,13 +129,14 @@ pkg_postinst_${PN} () {
 }
 
 pkg_prerm_${PN} () {
+	test -x ${base_sbindir}/pivot_root.${PN} && \
+	update-alternatives --remove pivot_root pivot_root.${PN}
 	update-alternatives --remove dmesg dmesg.${PN}
 	update-alternatives --remove kill kill.${PN}
 	update-alternatives --remove more more.${PN}
 	update-alternatives --remove halt halt.${PN}
 	update-alternatives --remove hwclock hwclock.${PN}
 	update-alternatives --remove mkswap mkswap.${PN}
-	update-alternatives --remove pivot_root pivot_root.${PN}
 	update-alternatives --remove reboot reboot.${PN}
 	update-alternatives --remove shutdown shutdown.${PN}
 	update-alternatives --remove sln sln.${PN}
