@@ -1,12 +1,13 @@
 DESCRIPTION = "Package maintenance system for Debian."
 LICENSE = "GPL"
 SECTION = "base"
-DEPENDS = "ncurses zlib"
-DEPENDS_${PN} += "update-alternatives"
 
+SRC_URI = "${DEBIAN_MIRROR}/main/d/dpkg/dpkg_${PV}.tar.gz \
+           file://noupdalt.patch;patch=1"
 
-SRC_URI = "${DEBIAN_MIRROR}/main/d/dpkg/dpkg_${PV}.tar.gz"
 S = "${WORKDIR}/dpkg-${PV}"
+
+RDEPENDS_${PN} += "update-alternatives"
 
 PARALLEL_MAKE = ""
 
