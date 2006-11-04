@@ -10,8 +10,8 @@ K_MICRO = "17"
 HHV     = "2"
 
 SRC_URI = "${HANDHELDS_CVS};module=linux/kernel26  \
-           file://24-hostap_cs_id.diff;patch=1 \
-           file://hrw-pcmcia-ids-r2.patch;patch=1 \
+           file://24-hostap_cs_id.diff;patch=1;maxdate=20061104 \
+           file://hrw-pcmcia-ids-r2.patch;patch=1;maxdate=20061104 \
            file://defconfig"
 
 require linux-handhelds-2.6.inc
