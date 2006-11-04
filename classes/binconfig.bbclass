@@ -27,6 +27,27 @@ def is_native(d):
 
 BINCONFIG_GLOB ?= "*-config"
 
+do_install_append() {
+
+        for config in `find ${S} -name '${BINCONFIG_GLOB}'`; do
+                cat $config | sed \
+		-e 's:${STAGING_LIBDIR}:${libdir}:g;' \ 
+		-e 's:${STAGING_INCDIR}:${includedir}:g;' \
+		-e 's:${STAGING_DATADIR}:${datadir}:' \
+		-e 's:${STAGING_LIBDIR}/..:${prefix}:' > ${D}${bindir}/`basename $config`
+        done
+
+	for lafile in `find ${D} -name *.la` ; do
+		sed -i \
+		    -e 's:${STAGING_LIBDIR}:${libdir}:g;' \
+		    -e 's:${STAGING_INCDIR}:${includedir}:g;' \
+		    -e 's:${STAGING_DATADIR}:${datadir}:' \
+		    -e 's:${STAGING_LIBDIR}/..:${prefix}:' \
+		    $lafile
+	done	    
+
+}
+
 do_stage_append() {
 	for config in `find ${S} -name '${BINCONFIG_GLOB}'`; do
 		configname=`basename $config`${@is_native(d)}
