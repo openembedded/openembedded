@@ -25,7 +25,7 @@ S = "${WORKDIR}/bluez-utils-${PV}"
 # Ideally acinclude.m4 needs fixing
 EXTRA_OECONF = "--with-bluez-libs=${STAGING_LIBDIR} --with-bluez-includes=${STAGING_INCDIR} \
                 --enable-pcmcia --enable-initscripts --enable-bcm203x --enable-hid2hci \
-		--disable-obex --disable-alsa --disable-alsa \
+		--disable-obex --disable-alsa \
 		--with-openobex=${STAGING_DIR}/${HOST_SYS} --with-fuse=${STAGING_DIR}/${HOST_SYS} \
 		--with-alsa=${STAGING_DIR}/${HOST_SYS} --with-usb=${STAGING_DIR}/${HOST_SYS} \
 		--with-bluez=${STAGING_LIBDIR}/${HOST_SYS}"
