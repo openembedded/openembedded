@@ -253,20 +253,6 @@ pkg_postrm_kernel-image-nslu2 () {
 	update-alternatives --remove ${KERNEL_IMAGETYPE} /${KERNEL_IMAGEDEST}/${KERNEL_IMAGETYPE}-nslu2${ARCH_BYTE_SEX}-${KERNEL_RELEASE} || true
 }
 
-# The correct settings for the DS101 board:
-ds101_MACHID = "833"
-PACKAGES += "kernel-image-ds101"
-PKG_kernel-image-ds101 = "kernel-image-${KERNEL_VERSION}"
-PACKAGE_ARCH_kernel-image-ds101 = "ds101${ARCH_BYTE_SEX}"
-DESCRIPTION_kernel-image-ds101 = "Linux kernel for the Synology DS101"
-FILES_kernel-image-ds101 = "/${KERNEL_IMAGEDEST}/${KERNEL_IMAGETYPE}-ds101${ARCH_BYTE_SEX}-${KERNEL_RELEASE}"
-pkg_postinst_kernel-image-ds101 () {
-	update-alternatives --install /${KERNEL_IMAGEDEST}/${KERNEL_IMAGETYPE} ${KERNEL_IMAGETYPE} /${KERNEL_IMAGEDEST}/${KERNEL_IMAGETYPE}-ds101${ARCH_BYTE_SEX}-${KERNEL_RELEASE} ${KERNEL_PRIORITY} || true
-}
-pkg_postrm_kernel-image-ds101 () {
-	update-alternatives --remove ${KERNEL_IMAGETYPE} /${KERNEL_IMAGEDEST}/${KERNEL_IMAGETYPE}-ds101${ARCH_BYTE_SEX}-${KERNEL_RELEASE} || true
-}
-
 # The correct settings for Loft:
 loft_MACHID = "849"
 PACKAGES += "kernel-image-loft"
@@ -368,7 +354,6 @@ do_install_append() {
 
 	# Add the machine specific images, with appropriate suffixes
 	install_image 'nslu2${ARCH_BYTE_SEX}' '${nslu2_MACHID}'
-	install_image 'ds101${ARCH_BYTE_SEX}' '${ds101_MACHID}'
 	install_image 'loft${ARCH_BYTE_SEX}' '${loft_MACHID}'
 	install_image 'nas100d${ARCH_BYTE_SEX}' '${nas100d_MACHID}'
 	install_image 'dsmg600${ARCH_BYTE_SEX}' '${dsmg600_MACHID}'
@@ -387,7 +372,6 @@ do_deploy() {
 
 	# And the machine specific images
 	deploy_image 'nslu2${ARCH_BYTE_SEX}' '${nslu2_MACHID}'
-	deploy_image 'ds101${ARCH_BYTE_SEX}' '${ds101_MACHID}'
 	deploy_image 'loft${ARCH_BYTE_SEX}' '${loft_MACHID}'
 	deploy_image 'nas100d${ARCH_BYTE_SEX}' '${nas100d_MACHID}'
 	deploy_image 'dsmg600${ARCH_BYTE_SEX}' '${dsmg600_MACHID}'
