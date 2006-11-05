@@ -20,8 +20,15 @@ SRC_URI += " file://default-manfid-0x0-to-bcps.patch;patch=1"
 
 S = "${WORKDIR}/bluez-utils-${PV}"
 
+# We don't depend on openobex, fuse, alsa or usb but we set paths into staging
+# otherwise /usr/lib and /usr/include make it onto command lines with unpredictable results
+# Ideally acinclude.m4 needs fixing
 EXTRA_OECONF = "--with-bluez-libs=${STAGING_LIBDIR} --with-bluez-includes=${STAGING_INCDIR} \
-                --enable-pcmcia --enable-initscripts --enable-bcm203x --enable-hid2hci"
+                --enable-pcmcia --enable-initscripts --enable-bcm203x --enable-hid2hci \
+		--disable-obex --disable-alsa --disable-alsa \
+		--with-openobex=${STAGING_DIR}/${HOST_SYS} --with-fuse=${STAGING_DIR}/${HOST_SYS} \
+		--with-alsa=${STAGING_DIR}/${HOST_SYS} --with-usb=${STAGING_DIR}/${HOST_SYS} \
+		--with-bluez=${STAGING_LIBDIR}/${HOST_SYS}"
 
 inherit autotools update-rc.d
 
