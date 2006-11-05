@@ -1,5 +1,5 @@
 LICENSE = MIT
-PR = "r20"
+PR = "r21"
 
 IMAGE_BASENAME = "unslung"
 
@@ -88,6 +88,7 @@ unslung_clean_image () {
 	rm -f ${IMAGE_ROOTFS}/usr/bin/locate
 	rm -f ${IMAGE_ROOTFS}/usr/bin/updatedb
 	rm -f ${IMAGE_ROOTFS}/usr/bin/xargs
+	rm -f ${IMAGE_ROOTFS}/usr/bin/xargs.findutils
 	rm -f ${IMAGE_ROOTFS}${libdir}/ipkg/info/findutils.*
 	sed -i -e '/^Package: findutils/,/^$/d' ${IMAGE_ROOTFS}${libdir}/ipkg/status
 
