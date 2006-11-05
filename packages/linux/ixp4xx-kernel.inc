@@ -145,7 +145,8 @@ IXP4XX_PATCHES ?= ""
 SRC_URI  = "${IXP4XX_SRCURI}"
 SRC_URI += "${IXP4XX_PATCHES}"
 
-COMPATIBLE_HOST = 'arm.*-linux'
+COMPATIBLE_HOST = 'arm.*-linux.*'
+COMPATIBLE_MACHINE = '(ixp4xx|loft|nslu2|nas100d|dsmg600|fsg3)'
 
 inherit kernel
 
@@ -197,13 +198,26 @@ do_configure_prepend() {
 	then
 		echo 'CONFIG_JFFS2_LITTLE_ENDIAN=y' >>'${S}/.config'
 	fi
-	sed -e '/CONFIG_CPU_BIG_ENDIAN/d' -e '/CONFIG_CMDLINE=/d' \
+
+        if [ "${TARGET_OS}" == "linux-gnueabi" -o  "${TARGET_OS}" == "linux-uclibcgnueabi" ]; then               
+                echo "CONFIG_AEABI=y"                   >> ${S}/.config               
+                echo "CONFIG_OABI_COMPAT=y"             >> ${S}/.config       
+        else
+                echo "# CONFIG_AEABI is not set"        >> ${S}/.config
+                echo "# CONFIG_OABI_COMPAT is not set"  >> ${S}/.config
+        fi      
+
+        sed     -e '/CONFIG_CPU_BIG_ENDIAN/d' \
+	        -e '/CONFIG_CMDLINE=/d' \
 		-e '/CONFIG_JFFS2_NATIVE_ENDIAN=/d' \
 		-e '/CONFIG_JFFS2_BIG_ENDIAN=/d' \
 		-e '/CONFIG_JFFS2_LITTLE_ENDIAN=/d' \
+		-e '/CONFIG_AEABI/d' \
+		-e '/CONFIG_OABI_COMPAT=/d' \
 		'${WORKDIR}/defconfig' >>'${S}/.config'
 	rm -rf ${S}/include/asm-arm/arch ${S}/include/asm-arm/proc \
 	       ${S}/include/asm-arm/.proc ${S}/include/asm-arm/.arch
+
 }
 
 # MACHID and LE handling
