@@ -4,15 +4,14 @@ HOMEPAGE = "http://www.packetfactory.net/libnet/"
 LICENSE = "BSD"
 PRIORITY = "optional"
 DEPENDS = "libpcap"
-PR = "r0"
+PR = "r1"
 
 # There are major API changes beween libnet v1.0 and libnet v1.1
 PROVIDES = "libnet-1.1"
 
 SRC_URI = "http://www.packetfactory.net/libnet/dist/libnet-${PV}.tar.gz \
 	   file://support-uclibc.patch;patch=1 \
-	   file://fix-endianess-test.patch;patch=1 \
-	   file://configure.patch;patch=1"
+	   file://fix-endianess-test.patch;patch=1"
 
 S = "${WORKDIR}/libnet"
 
@@ -20,8 +19,8 @@ inherit autotools binconfig
 
 CPPFLAGS_prepend = "-I${S}/libnet/include "
 
-do_configure() {
-	oe_runconf
+do_configure_prepend() {
+        rm -f aclocal.m4 Makefile.am ltmain.sh
 }
 
 do_stage () {
