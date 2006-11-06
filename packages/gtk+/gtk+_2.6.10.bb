@@ -1,11 +1,11 @@
-LICENSE = "LGPL"
 DESCRIPTION = "GTK+ is a multi-platform toolkit for creating graphical user interfaces. Offering a complete \
 set of widgets, GTK+ is suitable for projects ranging from small one-off projects to complete application suites."
 HOMEPAGE = "http://www.gtk.org"
 SECTION = "libs"
+LICENSE = "LGPL"
 PRIORITY = "optional"
 DEPENDS = "glib-2.0 pango atk jpeg libpng libxext libxcursor gtk-doc libgcrypt"
-PR = "r3"
+PR = "r4"
 
 SRC_URI = "ftp://ftp.gtk.org/pub/gtk/v2.6/gtk+-${PV}.tar.bz2 \
            file://help.patch;patch=1 \
@@ -22,7 +22,8 @@ SRC_URI = "ftp://ftp.gtk.org/pub/gtk/v2.6/gtk+-${PV}.tar.bz2 \
 	   file://scroll-timings.patch;patch=1 \
 	   file://small-gtkfilesel.patch;patch=1 \
 	   file://migration.patch;patch=1;pnum=0 \
-	   file://single-click.patch;patch=1"
+	   file://single-click.patch;patch=1 \
+	   file://menu-styling.patch;patch=1"
 
 inherit autotools pkgconfig
 
