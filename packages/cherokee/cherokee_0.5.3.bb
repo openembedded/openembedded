@@ -3,7 +3,7 @@ DESCRIPTION_cget = "Small downloader based in the Cherokee client library"
 SECTION = "network"
 LICENSE = "GPL"
 DEPENDS = "libpcre gnutls"
-HOMEPAGE = "http://www.0x50.org/"
+HOMEPAGE = "http://www.cherokee-project.com/"
 PR = "r2"
 
 SRC_URI = "http://www.cherokee-project.com/download/0.5/${PV}/cherokee-${PV}.tar.gz \

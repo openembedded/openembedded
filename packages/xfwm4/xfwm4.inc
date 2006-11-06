@@ -8,7 +8,7 @@ inherit xfce
 
 FILES_${PN} += "${datadir}/xfwm4/defaults ${datadir}/xfwm4/themes/default.keys/*"
 
-DEPENDS = "startup-notification virtual/libx11 xpm libxfce4util libxfcegui4 libxfce4mcs xfce-mcs-manager"
+DEPENDS = "startup-notification virtual/libx11 libxpm libxfce4util libxfcegui4 libxfce4mcs xfce-mcs-manager"
 RDEPENDS = "xfwm4-theme-default"
 
 

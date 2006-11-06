@@ -1,6 +1,6 @@
 require linux-openzaurus.inc
 
-PR = "r4"
+PR = "r5"
 
 # Handy URLs
 # git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux-2.6.git;protocol=git;tag=ef7d1b244fa6c94fb76d5f787b8629df64ea4046
@@ -13,7 +13,7 @@ PR = "r4"
 # Patches submitted upstream are towards top of this list 
 # Hacks should clearly named and at the bottom
 SRC_URI = "http://www.kernel.org/pub/linux/kernel/v2.6/linux-2.6.18.tar.bz2 \
-           ${RPSRC}/alsa/asoc-v0.11.7.patch;patch=1 \
+           ${RPSRC}/alsa/asoc-v0.12.patch;patch=1 \
            ${RPSRC}/asoc_makefile-r1.patch;patch=1 \
            ${RPSRC}/poodle_audio-r6.patch;patch=1 \
            ${RPSRC}/hx2750_base-r27.patch;patch=1 \
@@ -49,7 +49,7 @@ SRC_URI = "http://www.kernel.org/pub/linux/kernel/v2.6/linux-2.6.18.tar.bz2 \
            file://orinoco-remove-all-which-are-in-hostap-HACK.patch;patch=1;status=unmergable-hack \
            file://squashfs3.0-2.6.15.patch;patch=1;status=external \
            file://defconfig-c7x0 \
-           file://defconfig-ipaq-pxa270 \
+           file://defconfig-hx2000 \
            file://defconfig-collie \
            file://defconfig-poodle \
            file://defconfig-akita \

@@ -1,5 +1,5 @@
 LICENSE = MIT
-PR = "r20"
+PR = "r22"
 
 IMAGE_BASENAME = "unslung"
 
@@ -10,13 +10,13 @@ DEPENDS  = "virtual/kernel \
 	${UNSLUNG_EXTRA_DEPENDS}"
 
 RDEPENDS  = "kernel update-modules unslung-rootfs \
-	libc6-unslung slingbox ipkg \
+	libc6-unslung slingbox ipkg libipkg \
 	cpio \
 	findutils \
 	${UNSLUNG_EXTRA_RDEPENDS}"
 
 IPKG_INSTALL = "kernel update-modules unslung-rootfs \
-	libc6-unslung slingbox ipkg \
+	libc6-unslung slingbox ipkg libipkg \
 	cpio \
 	findutils \
 	kernel-module-netconsole \
@@ -88,6 +88,7 @@ unslung_clean_image () {
 	rm -f ${IMAGE_ROOTFS}/usr/bin/locate
 	rm -f ${IMAGE_ROOTFS}/usr/bin/updatedb
 	rm -f ${IMAGE_ROOTFS}/usr/bin/xargs
+	rm -f ${IMAGE_ROOTFS}/usr/bin/xargs.findutils
 	rm -f ${IMAGE_ROOTFS}${libdir}/ipkg/info/findutils.*
 	sed -i -e '/^Package: findutils/,/^$/d' ${IMAGE_ROOTFS}${libdir}/ipkg/status
 

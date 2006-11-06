@@ -8,7 +8,7 @@ PRIORITY = "optional"
 LICENSE = "PYCODES"
 SRCNAME = "pycodes"
 
-SRC_URI = "http://www.csua.berkeley.edu/~emin/source_code/pycodes/pycodes-1-1.tar.gz \
+SRC_URI = "http://web.mit.edu/~emin/www/source_code/pycodes/pycodes-1-1.tar.gz \
            file://no-docs.patch;patch=1"
 S = "${WORKDIR}/${SRCNAME}"
 

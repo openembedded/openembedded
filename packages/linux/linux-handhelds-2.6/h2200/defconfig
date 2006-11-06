@@ -1,7 +1,7 @@
 #
 # Automatically generated make config: don't edit
 # Linux kernel version: 2.6.17-hh2
-# Fri Oct 27 01:17:24 2006
+# Wed Nov  1 20:06:18 2006
 #
 CONFIG_ARM=y
 CONFIG_MMU=y
@@ -1022,22 +1022,27 @@ CONFIG_H2200_BATTERY=y
 #
 # LED devices
 #
-# CONFIG_NEW_LEDS is not set
+CONFIG_NEW_LEDS=y
+CONFIG_LEDS_CLASS=y
 
 #
 # LED drivers
 #
+# CONFIG_LEDS_H2200 is not set
 
 #
 # LED Triggers
 #
+CONFIG_LEDS_TRIGGERS=y
+CONFIG_LEDS_TRIGGER_TIMER=y
+CONFIG_LEDS_TRIGGER_IDE_DISK=y
 
 #
 # Multimedia devices
 #
 CONFIG_VIDEO_DEV=m
-CONFIG_VIDEO_V4L1=y
-CONFIG_VIDEO_V4L1_COMPAT=y
+# CONFIG_VIDEO_V4L1 is not set
+# CONFIG_VIDEO_V4L1_COMPAT is not set
 CONFIG_VIDEO_V4L2=y
 
 #
@@ -1049,13 +1054,9 @@ CONFIG_VIDEO_V4L2=y
 #
 # CONFIG_VIDEO_ADV_DEBUG is not set
 # CONFIG_VIDEO_VIVI is not set
-CONFIG_VIDEO_CPIA=m
-# CONFIG_VIDEO_CPIA_USB is not set
 # CONFIG_VIDEO_CPIA2 is not set
-# CONFIG_VIDEO_SAA5246A is not set
 # CONFIG_VIDEO_SAA5249 is not set
 # CONFIG_TUNER_3036 is not set
-# CONFIG_VIDEO_OVCAMCHIP is not set
 
 #
 # Encoders and Decoders
@@ -1073,24 +1074,10 @@ CONFIG_VIDEO_CPIA=m
 #
 # V4L USB devices
 #
-# CONFIG_VIDEO_EM28XX is not set
-# CONFIG_USB_DSBR is not set
-# CONFIG_USB_VICAM is not set
-# CONFIG_USB_IBMCAM is not set
-# CONFIG_USB_KONICAWC is not set
-# CONFIG_USB_ET61X251 is not set
-# CONFIG_USB_OV511 is not set
-# CONFIG_USB_SE401 is not set
-CONFIG_USB_SN9C102=m
-# CONFIG_USB_STV680 is not set
-# CONFIG_USB_W9968CF is not set
-# CONFIG_USB_ZC0301 is not set
-CONFIG_USB_PWC=m
 
 #
 # Radio Adapters
 #
-# CONFIG_RADIO_MAESTRO is not set
 
 #
 # Digital Video Broadcasting Devices
@@ -1382,27 +1369,7 @@ CONFIG_MMC_SAMCOP=y
 # Real Time Clock
 #
 CONFIG_RTC_LIB=y
-CONFIG_RTC_CLASS=y
-CONFIG_RTC_HCTOSYS=y
-CONFIG_RTC_HCTOSYS_DEVICE="rtc0"
-
-#
-# RTC interfaces
-#
-CONFIG_RTC_INTF_SYSFS=y
-CONFIG_RTC_INTF_PROC=y
-CONFIG_RTC_INTF_DEV=y
-
-#
-# RTC drivers
-#
-# CONFIG_RTC_DRV_X1205 is not set
-# CONFIG_RTC_DRV_DS1672 is not set
-# CONFIG_RTC_DRV_PCF8563 is not set
-# CONFIG_RTC_DRV_RS5C372 is not set
-# CONFIG_RTC_DRV_M48T86 is not set
-CONFIG_RTC_DRV_SA1100=y
-# CONFIG_RTC_DRV_TEST is not set
+# CONFIG_RTC_CLASS is not set
 
 #
 # File systems
