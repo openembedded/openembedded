@@ -1,3 +1,3 @@
 require clamav.inc
 
-PR = "r6"
+PR = "r0"
