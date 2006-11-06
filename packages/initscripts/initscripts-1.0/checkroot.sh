@@ -24,7 +24,7 @@ test -x /sbin/update && update
 exec 9>&0 </etc/fstab
 rootmode=rw
 rootopts=rw
-rootcheck=no
+test "$ENABLE_ROOTFS_FSCK" = yes && rootcheck="yes" || rootcheck="no"
 swap_on_md=no
 devfs=
 while read fs mnt type opts dump pass junk
@@ -44,15 +44,20 @@ do
 			test "$type" = swap && swap_on_md=yes
 			;;
 	esac
+	
 	test "$type" = devfs && devfs="$fs"
-	test "$mnt" != / && continue
-	rootopts="$opts"
-	test "$pass" = 0 -o "$pass" = "" && rootcheck=no
-	case "$opts" in
-		ro|ro,*|*,ro|*,ro,*)
-			rootmode=ro
-			;;
-	esac
+
+	if test "$mnt" = "/"
+	then
+#		echo "[$fs] [$mnt] [$type] [$opts] [$dump] [$pass] [$junk]"
+		rootopts="$opts"
+		test "$pass" = 0 -o "$pass" = "" && rootcheck=no
+		case "$opts" in
+			ro|ro,*|*,ro|*,ro,*)
+				rootmode=ro
+				;;
+		esac
+	fi
 done
 exec 0>&9 9>&-
 
