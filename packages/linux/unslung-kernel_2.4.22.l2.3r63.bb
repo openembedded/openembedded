@@ -3,7 +3,7 @@ SECTION = "kernel"
 require nslu2-linksys-kernel_2.4.22.bb
 
 DESCRIPTION = "Unslung kernel for the Linksys NSLU2 device"
-PR = "r14"
+PR = "r15"
 
 KERNEL_SUFFIX = "unslung"
 
