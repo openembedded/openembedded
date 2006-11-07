@@ -47,11 +47,31 @@ do
 	
 	test "$type" = devfs && devfs="$fs"
 
+	# Currently we do not care about the other entries
 	if test "$mnt" = "/"
 	then
-#		echo "[$fs] [$mnt] [$type] [$opts] [$dump] [$pass] [$junk]"
-		rootopts="$opts"
+		#echo "[$fs] [$mnt] [$type] [$opts] [$dump] [$pass] [$junk]"
+
+		rootopts="$opts"		
+		roottype="$type"
+		
 		test "$pass" = 0 -o "$pass" = "" && rootcheck=no
+		
+		# Enable fsck for ext2 and ext3 rootfs, disable for everything else				
+		case "$type" in
+		ext2|ext3)	rootcheck=yes;;
+		*)		rootcheck=no;;
+		esac
+		
+		if test "$rootcheck" = yes
+		then
+			if ! test -x "/sbin/fsck.${roottype}"
+			then
+				echo -e "\n * * * WARNING: /sbin/fsck.${roottype} is missing! * * *\n"
+				rootcheck=no
+			fi
+		fi
+		
 		case "$opts" in
 			ro|ro,*|*,ro|*,ro,*)
 				rootmode=ro
