@@ -50,6 +50,11 @@ if [ "$ACTION" = "add" ] && [ -n "$DEVNAME" ]; then
 	fi
 	
 	# If the device isn't mounted at this point, it isn't configured in fstab
+	# 20061107: Small correction: The rootfs partition may be called just "rootfs" and not by
+	# 	    its true device name so this would break. If the rootfs is mounted on two places
+	#	    during boot, it confuses the heck out of fsck. So Im auto-adding the root-partition
+	#	    to /etc/udev/mount.blacklist via postinst 
+
 	cat /proc/mounts | awk '{print $1}' | grep -q "^$DEVNAME$" || automount 
 	
 fi
