@@ -6,7 +6,7 @@ MAINTAINER = "Luca De Cicco <ldecicco@gmx.net>"
 LICENSE = "libgsm"
 inherit pkgconfig gpe
 
-SRC_URI = "ftp://ftp.cs.tu-berlin.de/pub/local/kbs/tubmik/gsm/gsm-${PV}.tar.gz \
+SRC_URI = "http://www.netsw.org/audio/convert/gsm-${PV}.tar.gz \
  file://${FILESDIR}/libgsm_patch;patch=1;pnum=0"
 
 S = "${WORKDIR}/gsm-1.0-pl10/"
