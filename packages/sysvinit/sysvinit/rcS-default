@@ -22,4 +22,4 @@ FSCKFIX=yes
 # Enable caching in populate-volatile.sh
 VOLATILE_ENABLE_CACHE=yes
 # Enable fsck of / on boot (if rootfs != flash!)                 
-ENABLE_ROOTFS_FSCK=no                          
+ENABLE_ROOTFS_FSCK=yes                          
