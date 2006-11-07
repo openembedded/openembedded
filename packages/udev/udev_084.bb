@@ -16,7 +16,7 @@ include udev.inc
 
 INITSCRIPT_PARAMS = "start 03 S . start 55 0 6 ."
 
-PR = "r12"
+PR = "r13"
 
 FILES_${PN} += "${base_libdir}"
 UDEV_EXTRAS = "extras/firmware/ extras/scsi_id/ extras/volume_id/ extras/run_directory/"
@@ -55,6 +55,19 @@ do_install () {
 
 pkg_postinst_append() {
 	update-rc.d -s udev_network_queue.sh start 41 S . start 55 0 6 .
+	
+	# Add the root partition to mount.blacklist to avoid a bug in the auto-mounter,
+	# causing confusion with fsck on boot
+	
+        while read dev mp fs junk
+        do
+                if test "$mp" = "/"
+                then
+                        root_partition="$dev"
+                        echo "$root_partition" >> /etc/udev/mount.blacklist
+                fi
+        done < /etc/fstab
+	
 }
 
 
