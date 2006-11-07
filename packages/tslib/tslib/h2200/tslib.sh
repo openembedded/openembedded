@@ -1,6 +1,6 @@
 #!/bin/sh
 
-TSLIB_TSDEVICE=/dev/input/touchsreen0
+TSLIB_TSDEVICE=/dev/input/touchscreen0
 TSLIB_CONFFILE=/etc/ts.conf
 
 case `uname -r` in
