@@ -4,7 +4,7 @@ MAINTAINER = "Felix Domke <tmbinc@elitdvb.net>"
 
 PN = "tuxbox-common"
 PR = "r8"
-SRCDATE = "20060628"
+SRCDATE = "20061106"
 PV = "cvs${SRCDATE}"
 
 SRC_URI = "cvs://anoncvs@cvs.tuxbox.org/cvs/tuxbox/;module=cdk/root/share/tuxbox;method=ext;tag=dreambox;date=${SRCDATE} \
