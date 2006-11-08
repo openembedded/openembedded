@@ -19,7 +19,7 @@ RREPLACES = "gpe-bootsplash"
 ######################################################################################
 
 PV = "0.0.1" 
-PR = "r5"
+PR = "r6"
 
 ######################################################################################
 
@@ -40,7 +40,7 @@ do_install() {
 	install -m 0755 ${WORKDIR}/oz-bootsplash.init ${D}/etc/init.d/oz-bootsplash
 	install -m 0755 ${WORKDIR}/chvt.init ${D}/etc/init.d/chvt
 	
-	ln -sf ../init.d/oz-bootsplash ${D}/etc/rcS.d/S07oz-bootsplash	
+	ln -sf ../init.d/oz-bootsplash ${D}/etc/rcS.d/S11oz-bootsplash	
 	ln -sf ../init.d/chvt ${D}/etc/rc2.d/S99chvt
 	ln -sf ../init.d/chvt ${D}/etc/rc5.d/S99chvt
 
