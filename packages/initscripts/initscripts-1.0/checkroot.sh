@@ -54,7 +54,10 @@ do
 
 		rootopts="$opts"		
 		roottype="$type"
-		
+
+		#The "spinner" is broken on busybox sh	
+		TERM=dumb
+			
 		test "$pass" = 0 -o "$pass" = "" && rootcheck=no
 		
 		# Enable fsck for ext2 and ext3 rootfs, disable for everything else				
