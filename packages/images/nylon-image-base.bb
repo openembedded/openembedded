@@ -1,5 +1,5 @@
 inherit image_ipk 
-inherit nylon_image
+inherit nylon-image
 LICENSE = MIT
 
 export IMAGE_BASENAME = "nylon-base"
