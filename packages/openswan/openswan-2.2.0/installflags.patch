@@ -1,0 +1,17 @@
+---
+ Makefile.inc |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+Index: openswan-2.2.0/Makefile.inc
+===================================================================
+--- openswan-2.2.0.orig/Makefile.inc	2006-11-06 23:06:33.000000000 +0000
++++ openswan-2.2.0/Makefile.inc	2006-11-08 20:16:26.000000000 +0000
+@@ -170,7 +170,7 @@ INSTALL=install
+ # how backup names are composed.
+ # Note that the install procedures will never overwrite an existing config
+ # file, which is why -b is not specified for them.
+-INSTBINFLAGS=-b --suffix=.old
++INSTBINFLAGS=
+ INSTMANFLAGS=
+ INSTCONFFLAGS=
+ 
