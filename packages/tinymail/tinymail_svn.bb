@@ -1,6 +1,6 @@
 SECTION = "x11/utils"
-DEPENDS = "gtk+ glib-2.0 gnome-vfs-dbus libgnomeui eds-dbus"
-DESCRIPTION = "TinyMail is an attempt to create an E-mail client for mobile devices"
+DEPENDS = "gtk+ glib-2.0 gnome-vfs-dbus libgnomeui eds-dbus libiconv"
+DESCRIPTION = "TinyMail is an attempt to create an E-mail framework for mobile devices"
 LICENSE = "GPL"
 
 PV = "0.0+svn${SRCDATE}"
@@ -20,4 +20,8 @@ do_configure_prepend() {
         install ${WORKDIR}/gtk-doc.m4 ./m4/
         install ${WORKDIR}/gtk-doc.make ./
 }
+
+PARALLEL_MAKE = ""
+LDFLAGS += "-liconv"
+
 
