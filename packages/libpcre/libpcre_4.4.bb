@@ -10,6 +10,8 @@ LICENSE = "BSD"
 SRC_URI = "ftp://ftp.csx.cam.ac.uk/pub/software/programming/pcre/pcre-${PV}.tar.bz2"
 S = "${WORKDIR}/pcre-${PV}"
 
+PROVIDES = "pcre"
+
 inherit autotools binconfig
 
 PARALLEL_MAKE = ""
