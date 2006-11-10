@@ -4,13 +4,13 @@ LICENSE = "LGPL"
 DEPENDS = "glib-2.0 gtk+ gconf dbus db gnome-common libglade virtual/libiconv zlib"
 
 PV = "1.4.0+svn${SRCDATE}"
-PR = "r16"
+PR = "r17"
 
 SRC_URI = "svn://svn.o-hand.com/repos/${PN};module=trunk;proto=http \
            file://no_libdb.patch;patch=1 \
            file://no_iconv_test.patch;patch=1 \
            file://no_libedataserverui.patch;patch=1 \
-           file://disable_orbit.patch;patch=1 \
+           file://disable_orbit.patch;patch=1;maxdate=20060126 \
            file://iconv-detect.h"
 
 S = "${WORKDIR}/trunk"
@@ -38,24 +38,7 @@ FILES_${PN}-dev += "${libdir}/evolution-data-server-1.2/extensions/*.la \
 do_configure_append = " cp ${WORKDIR}/iconv-detect.h ${S} "
 
 do_stage () {
-	oe_libinstall -so -C addressbook/libebook-dbus libebook-1.2 ${STAGING_LIBDIR}
-	oe_libinstall -so -C addressbook/libedata-book-dbus libedata-book-1.2 ${STAGING_LIBDIR}
-	oe_libinstall -so -C calendar/libecal-dbus libecal-1.2 ${STAGING_LIBDIR}
-	oe_libinstall -so -C calendar/libedata-cal-dbus libedata-cal-1.2 ${STAGING_LIBDIR}
-	oe_libinstall -so -C libedataserver libedataserver-1.2 ${STAGING_LIBDIR}
-	oe_libinstall -so -C camel libcamel-1.2 ${STAGING_LIBDIR}
-	oe_libinstall -so -C camel libcamel-provider-1.2 ${STAGING_LIBDIR}
-
-	install -d ${STAGING_INCDIR}/camel-1.2 ${STAGING_INCDIR}/libebook \
-		${STAGING_INCDIR}/libecal ${STAGING_INCDIR}/libedataserver \
-		${STAGING_INCDIR}/libical
-	install -m 0644 ${S}/camel/*.h ${STAGING_INCDIR}/camel-1.2
-	install -m 0644 ${S}/camel/*.def ${STAGING_INCDIR}/camel-1.2
-	ln -sf ${STAGING_INCDIR}/camel-1.2 ${STAGING_INCDIR}/camel
-	install -m 0644 ${S}/addressbook/libebook-dbus/*.h ${STAGING_INCDIR}/libebook
-	install -m 0644 ${S}/calendar/libecal-dbus/*.h ${STAGING_INCDIR}/libecal
-	install -m 0644 ${S}/libedataserver/*.h ${STAGING_INCDIR}/libedataserver
-	install -m 0644 ${S}/calendar/libical/src/libical/*.h ${STAGING_INCDIR}/libical
+	autotools_stage_all
 }
 
 
