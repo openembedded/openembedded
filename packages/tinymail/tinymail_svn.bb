@@ -4,12 +4,13 @@ DESCRIPTION = "TinyMail is an attempt to create an E-mail framework for mobile d
 LICENSE = "GPL"
 
 PV = "0.0+svn${SRCDATE}"
-PR = "r1"
+PR = "r2"
 
 EXTRA_OECONF=" --disable-gnome --with-platform=gpe --with-html-component=none"
 
 SRC_URI = "svn://svn.tinymail.org/svn/tinymail/;module=trunk;proto=https \
-           file://gtk-doc.m4 \
+	   file://camel-lite-configure-hack.patch;patch=1 \
+	   file://gtk-doc.m4 \
            file://gtk-doc.make"
 
 inherit pkgconfig autotools
