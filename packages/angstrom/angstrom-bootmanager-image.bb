@@ -1,5 +1,5 @@
 #Angstrom bootmanager image
-LICENSE = MIT
+LICENSE = "MIT"
 PR = "r0"
 
 DEPENDS = "task-angstrom"
