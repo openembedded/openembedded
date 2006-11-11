@@ -28,10 +28,17 @@ INHERIT += "package_ipk debian multimachine sanity"
 PREFERRED_PROVIDER_qemu-native = "qemu-native"
 ENABLE_BINARY_LOCALE_GENERATION ?= "1"
 
+#qemu doesn't like armv6/eabi/vfp
+ENABLE_BINARY_LOCALE_GENERATION_mx31ads = "0"
+
 #ARM EABI is softfloat by default, but let's make sure :)
 #make it overridable for platforms with FPU, like ep93xx or i.mx31
 TARGET_FPU_arm ?= "soft"
 TARGET_FPU_ixp4xx ?= "soft"
+
+
+#Make a LE jffs2 image
+SLUGOS_IMAGESEX = "little-endian"
 
 #Name the generated images in a sane way
 IMAGE_NAME = "${DISTRO_NAME}-${IMAGE_BASENAME}-${DISTRO_VERSION}-${MACHINE}"

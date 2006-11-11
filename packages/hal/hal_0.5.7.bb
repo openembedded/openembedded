@@ -8,7 +8,8 @@ HOMEPAGE = "http://freedesktop.org/Software/hal"
 LICENSE = "GPL LGPL AFL"
 PR = "r0"
 
-SRC_URI = "http://freedesktop.org/~david/dist/hal-${PV}.tar.gz"
+SRC_URI = "http://freedesktop.org/~david/dist/hal-${PV}.tar.gz \
+           file://dbus-fix-api.patch;patch=1"
 S = "${WORKDIR}/hal-${PV}"
 
 inherit autotools pkgconfig

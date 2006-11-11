@@ -3,7 +3,7 @@ DESCRIPTION = "udev is a daemon which dynamically creates and removes device nod
 the hotplug package and requires a kernel not older than 2.6.12."
 RPROVIDES = "hotplug"
 
-PR = "r12"
+PR = "r13"
 
 SRC_URI = "http://kernel.org/pub/linux/utils/kernel/hotplug/udev-${PV}.tar.gz \
 	   file://noasmlinkage.patch;patch=1 \
@@ -57,3 +57,20 @@ do_install () {
 do_install_append_h2200() {
 	install -m 0644 ${WORKDIR}/50-hostap_cs.rules         ${D}${sysconfdir}/udev/rules.d/50-hostap_cs.rules
 }
+
+pkg_postinst_append() {
+	
+	# Add the root partition to mount.blacklist to avoid a bug in the auto-mounter,
+	# causing confusion with fsck on boot
+	
+        while read dev mp fs junk
+        do
+                if test "$mp" = "/"
+                then
+                        root_partition="$dev"
+                        echo "$root_partition" >> /etc/udev/mount.blacklist
+                fi
+        done < /etc/fstab
+	
+}
+

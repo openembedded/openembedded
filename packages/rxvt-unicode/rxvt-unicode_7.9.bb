@@ -10,7 +10,7 @@ PACKAGES =+ "${PN}-daemon ${PN}-control"
 FILES_${PN}-daemon = "${bindir}/rxvtd"
 FILES_${PN}-control = "${bindir}/rxvtc"
 
-SRC_URI = "http://dist.schmorp.de/rxvt-unicode/rxvt-unicode-${PV}.tar.bz2 \
+SRC_URI = "http://dist.schmorp.de/rxvt-unicode/Attic/rxvt-unicode-${PV}.tar.bz2 \
            file://xwc.patch;patch=1 \
            file://signedchar.patch;patch=1" 
 PR = "r0"

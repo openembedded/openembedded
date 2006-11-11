@@ -129,11 +129,6 @@ EXTRA_OECONF = "--enable-kernel=${OLDEST_KERNEL} \
 
 EXTRA_OECONF += "${@get_glibc_fpu_setting(bb, d)}"
 
-def get_glibc_fpu_setting(bb, d):
-	if bb.data.getVar('TARGET_FPU', d, 1) in [ 'soft' ]:
-		return "--without-fp"
-	return ""
-
 glibc_do_unpack () {
 	mv ${WORKDIR}/linuxthreads ${WORKDIR}/linuxthreads_db ${S}/
 }

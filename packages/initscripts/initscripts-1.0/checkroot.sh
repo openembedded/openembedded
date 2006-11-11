@@ -24,7 +24,7 @@ test -x /sbin/update && update
 exec 9>&0 </etc/fstab
 rootmode=rw
 rootopts=rw
-rootcheck=no
+test "$ENABLE_ROOTFS_FSCK" = yes && rootcheck="yes" || rootcheck="no"
 swap_on_md=no
 devfs=
 while read fs mnt type opts dump pass junk
@@ -44,15 +44,43 @@ do
 			test "$type" = swap && swap_on_md=yes
 			;;
 	esac
+	
 	test "$type" = devfs && devfs="$fs"
-	test "$mnt" != / && continue
-	rootopts="$opts"
-	test "$pass" = 0 -o "$pass" = "" && rootcheck=no
-	case "$opts" in
-		ro|ro,*|*,ro|*,ro,*)
-			rootmode=ro
-			;;
-	esac
+
+	# Currently we do not care about the other entries
+	if test "$mnt" = "/"
+	then
+		#echo "[$fs] [$mnt] [$type] [$opts] [$dump] [$pass] [$junk]"
+
+		rootopts="$opts"		
+		roottype="$type"
+
+		#The "spinner" is broken on busybox sh	
+		TERM=dumb
+			
+		test "$pass" = 0 -o "$pass" = "" && rootcheck=no
+		
+		# Enable fsck for ext2 and ext3 rootfs, disable for everything else				
+		case "$type" in
+		ext2|ext3)	rootcheck=yes;;
+		*)		rootcheck=no;;
+		esac
+		
+		if test "$rootcheck" = yes
+		then
+			if ! test -x "/sbin/fsck.${roottype}"
+			then
+				echo -e "\n * * * WARNING: /sbin/fsck.${roottype} is missing! * * *\n"
+				rootcheck=no
+			fi
+		fi
+		
+		case "$opts" in
+			ro|ro,*|*,ro|*,ro,*)
+				rootmode=ro
+				;;
+		esac
+	fi
 done
 exec 0>&9 9>&-
 

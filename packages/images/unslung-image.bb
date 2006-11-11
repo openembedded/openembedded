@@ -1,5 +1,5 @@
 LICENSE = MIT
-PR = "r21"
+PR = "r23"
 
 IMAGE_BASENAME = "unslung"
 
@@ -11,14 +11,16 @@ DEPENDS  = "virtual/kernel \
 
 RDEPENDS  = "kernel update-modules unslung-rootfs \
 	libc6-unslung slingbox ipkg \
-	cpio \
-	findutils \
+	libipkg \
+#	cpio \
+#	findutils \
 	${UNSLUNG_EXTRA_RDEPENDS}"
 
 IPKG_INSTALL = "kernel update-modules unslung-rootfs \
 	libc6-unslung slingbox ipkg \
-	cpio \
-	findutils \
+	libipkg \
+#	cpio \
+#	findutils \
 	kernel-module-netconsole \
 	${UNSLUNG_EXTRA_INSTALL}"
 
@@ -72,25 +74,26 @@ unslung_clean_image () {
 	${STRIP} ${IMAGE_ROOTFS}/lib/libgcc_s.so.1
 	chmod ugo+x ${IMAGE_ROOTFS}/lib/libgcc_s.so.1
 
+# MJW - experimental right now, but no longer need cpio and find
 	# We need cpio and find, but we don't need any of the other stuff in
 	# the packages (users can install the full package with ipkg after
 	# unsling).  Remove the extra files and executables, and clean up
 	# the entries from the ipkg database manually.
 
 	#-- these are for cpio:
-	rm -f ${IMAGE_ROOTFS}/usr/bin/mt
-	rm -rf ${IMAGE_ROOTFS}/usr/libexec
-	rm -f ${IMAGE_ROOTFS}${libdir}/ipkg/info/cpio.*
-	rm -f ${IMAGE_ROOTFS}${libdir}/ipkg/alternatives/rmt
-	sed -i -e '/^Package: cpio/,/^$/d' ${IMAGE_ROOTFS}${libdir}/ipkg/status
+#	rm -f ${IMAGE_ROOTFS}/usr/bin/mt
+#	rm -rf ${IMAGE_ROOTFS}/usr/libexec
+#	rm -f ${IMAGE_ROOTFS}${libdir}/ipkg/info/cpio.*
+#	rm -f ${IMAGE_ROOTFS}${libdir}/ipkg/alternatives/rmt
+#	sed -i -e '/^Package: cpio/,/^$/d' ${IMAGE_ROOTFS}${libdir}/ipkg/status
 
 	#-- and these for find:
-	rm -f ${IMAGE_ROOTFS}/usr/bin/locate
-	rm -f ${IMAGE_ROOTFS}/usr/bin/updatedb
-	rm -f ${IMAGE_ROOTFS}/usr/bin/xargs
-	rm -f ${IMAGE_ROOTFS}/usr/bin/xargs.findutils
-	rm -f ${IMAGE_ROOTFS}${libdir}/ipkg/info/findutils.*
-	sed -i -e '/^Package: findutils/,/^$/d' ${IMAGE_ROOTFS}${libdir}/ipkg/status
+#	rm -f ${IMAGE_ROOTFS}/usr/bin/locate
+#	rm -f ${IMAGE_ROOTFS}/usr/bin/updatedb
+#	rm -f ${IMAGE_ROOTFS}/usr/bin/xargs
+#	rm -f ${IMAGE_ROOTFS}/usr/bin/xargs.findutils
+#	rm -f ${IMAGE_ROOTFS}${libdir}/ipkg/info/findutils.*
+#	sed -i -e '/^Package: findutils/,/^$/d' ${IMAGE_ROOTFS}${libdir}/ipkg/status
 
 	# FIXME: change made 24 Jul 2006 by the OE folks changes the "strip"
 	# behavior to create an extra file named .debug/<filename> containing
@@ -107,6 +110,13 @@ unslung_clean_image () {
 	rm -rf ${IMAGE_ROOTFS}/usr/bin/.debug
 	rm -rf ${IMAGE_ROOTFS}/usr/sbin/.debug
 	rm -rf ${IMAGE_ROOTFS}/usr/lib/.debug
+
+# MJW - Experimental - just to make space; remove before releasing!
+#	#### Hack to make space for testing!  REMOVE THIS!
+#	rm -rf ${IMAGE_ROOTFS}/etc/samba/codepages/unicode_map.850
+#	rm -rf ${IMAGE_ROOTFS}/bin/ftp
+#	#### End of Hack!
+
 }
 
 python () {

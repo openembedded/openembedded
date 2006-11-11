@@ -6,8 +6,6 @@ PRIORITY = "optional"
 LICENSE = "Boost Software License"
 PR = "r1"
 
-inherit debian
-
 SRC_URI = "${SOURCEFORGE_MIRROR}/asio/boost_asio_0_3_7.tar.bz2"
 
 # mtx-[12] use 2.4 kernels but the kernel-libc-headers are from kernel 2.6,

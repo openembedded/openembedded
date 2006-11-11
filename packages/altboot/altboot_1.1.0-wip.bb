@@ -23,7 +23,7 @@ RDEPENDS_${PN}-conf = "${PN}"
 
 ######################################################################################
 
-WIP_DATE = "20061105"
+WIP_DATE = "20061108"
 PR = "${WIP_DATE}-r0"
 
 ######################################################################################
@@ -78,7 +78,7 @@ do_install() {
 ######################################################################################
 
 do_configure() {
-	cat ${WORKDIR}/altboot/init.altboot | sed "s/^VERSION=.*/VERSION=\"${PV}\"/" > ${WORKDIR}/altboot/init.altboot_
+	cat ${WORKDIR}/altboot/init.altboot | sed "s/^VERSION=.*/VERSION=\"${PV}-${PR}\"/" > ${WORKDIR}/altboot/init.altboot_
 	mv ${WORKDIR}/altboot/init.altboot_ ${WORKDIR}/altboot/init.altboot
 }
 

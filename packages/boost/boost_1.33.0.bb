@@ -11,9 +11,6 @@ PRIORITY = "optional"
 LICENSE = "Boost Software License"
 PR = "r1"
 
-# need debian package naming for the libs
-inherit debian
-
 BOOST_VER = "${@"_".join(bb.data.getVar("PV",d,1).split("."))}"
 BOOST_MAJ = "${@"_".join(bb.data.getVar("PV",d,1).split(".")[0:2])}"
 BOOST_P = "boost_${BOOST_VER}"
