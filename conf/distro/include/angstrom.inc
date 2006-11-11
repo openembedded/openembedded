@@ -42,7 +42,7 @@ SLUGOS_IMAGESEX = "little-endian"
 
 #Name the generated images in a sane way
 IMAGE_NAME = "${DISTRO_NAME}-${IMAGE_BASENAME}-${DISTRO_VERSION}-${MACHINE}"
-DEPLOY_DIR_IMAGE = ${DEPLOY_DIR}/images/${MACHINE}
+DEPLOY_DIR_IMAGE = "${DEPLOY_DIR}/images/${MACHINE}"
 
 # Angstrom *always* has some form of release config, so error out if someone thinks he knows better 
 DISTRO_CHECK := "${@bb.data.getVar("DISTRO_VERSION",d,1) or bb.fatal('Remove this line or set a dummy DISTRO_VERSION if you really want to build an unversioned distro')}"

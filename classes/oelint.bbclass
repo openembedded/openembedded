@@ -1,5 +1,5 @@
 addtask lint before do_fetch
-do_lint[nostamp] = 1
+do_lint[nostamp] = "1"
 python do_lint() {
 	def testVar(var, explain=None):
 		try:

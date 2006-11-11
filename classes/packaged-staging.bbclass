@@ -35,10 +35,10 @@ PSTAGE_PKGNAME 		= "staging-${PN}_${PV}-${PR}_${PACKAGE_ARCH}.ipk"
 PCROSS_PKGNAME		= "cross-${PN}_${PV}-${PR}_${BUILD_ARCH}.ipk"
 
 SPAWNFILE 		= "${STAGING_DIR}/pkgmaps/${P}-${PR}.spawn"
-SPAWNIPK                = ${spawn}
+SPAWNIPK                = "${spawn}"
 
-PSTAGE_TMPDIR_STAGE     = ${TMPDIR}/tmp-staging
-PSTAGE_TMPDIR_CROSS     = ${TMPDIR}/tmp-cross
+PSTAGE_TMPDIR_STAGE     = "${TMPDIR}/tmp-staging"
+PSTAGE_TMPDIR_CROSS     = "${TMPDIR}/tmp-cross"
 
 STAGING_BASEDIR		= "${STAGING_LIBDIR}/.."
 
