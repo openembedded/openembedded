@@ -1,4 +1,4 @@
-PV = ${DISTRO_VERSION}
+PV = "${DISTRO_VERSION}"
 
 PACKAGES = "${PN}"
 

@@ -1,5 +1,5 @@
 #Angstrom GPE image
-LICENSE = MIT
+LICENSE = "MIT"
 PR = "r4"
 
 PREFERRED_PROVIDER_libgpewidget 	?= "libgpewidget"
