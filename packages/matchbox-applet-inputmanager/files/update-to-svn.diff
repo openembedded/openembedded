@@ -1,0 +1,33 @@
+--- /tmp/mbinputmgr-tray.c	2006-11-11 14:11:02.000000000 +0100
++++ mb-applet-input-manager-0.6/mbinputmgr-tray.c	2006-11-11 14:11:43.638554000 +0100
+@@ -228,6 +228,15 @@
+ 	   || (!mb_tray_app_tray_is_vertical (app) && x > IconWidth) )
+ 	{
+ 	  mb_tray_app_get_absolute_coords (app, &abs_x, &abs_y);
++
++	  /* aligned top, position down a little */
++	  if (abs_y < 8)
++	    {
++	      int w, h;
++	      mb_menu_get_root_menu_size(PopupMenu, &w, &h);
++	      abs_y = h + IconDim + 2;
++	    }
++
+ 	  mb_menu_activate(PopupMenu, abs_x, abs_y);
+ 	  ButtonActive = BUTTON_MENU;
+ 	}
+@@ -257,14 +266,10 @@
+ {
+   if (ev->type == ClientMessage)
+     {
+-      printf("beep\n");
+-
+       XClientMessageEvent *cmev = (XClientMessageEvent *)&ev->xconfigure;
+ 
+       if (cmev->message_type == AtomIMActivate)
+ 	{
+-	  printf("beep\n");
+-
+ 	  /* De Activate */
+ 	  if (cmev->data.l[0] == 0 && mbinputmgr_method_active(Inpmgr_state))
+ 	    mbinputmgr_toggle_selected_method (Inpmgr_state);

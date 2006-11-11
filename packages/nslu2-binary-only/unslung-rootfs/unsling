@@ -36,6 +36,9 @@ else
     exit 1
 fi
 
+# MJW - The new "tar" method of unslinging does not care if the device
+# has already been unslung.  The following test has been removed.
+#
 # Check that we can unsling at all!  An unsling operation creates a new
 # rootfs, but it also marks the flash rootfs (with a flag file such as
 # ".sda1root") so that subsequent boots do not create the "var.state"
@@ -45,39 +48,39 @@ fi
 # making sure that we are in a state in which we are capable of
 # performing the unsling operation.
 
-echo "Checking if able to unsling..."
-echo
-m1="/dev/root /dev.state jffs2 rw 0 0"
-m2="/dev/root /var.state jffs2 rw 0 0"
-if ! grep "$m1" /proc/mounts >/dev/null 2>&1 || ! grep "$m2" /proc/mounts >/dev/null 2>&1 ; then
-    echo "Error: This system is unable to properly unsling because certain"
-    echo "required mounts (dev.state and/or var.state) are not available."
-    echo "This is most probably because you have already unslung this system."
-    echo
-
-    if   [ -f /.sda1root ] ; then
-	rm -f /.sda1root
-    elif [ -f /.sdb1root ] ; then
-	rm -f /.sdb1root
-    elif [ -f /.sda2root ] ; then
-	rm -f /.sda2root
-    elif [ -f /.sdb2root ] ; then
-	rm -f /.sdb2root
-    else
-	echo "However, in this case, the flags that indicate an already-unslung"
-	echo "system seem to be missing.  Try restarting your NSLU2 to correct,"
-	echo "but if the problem persists, try re-flashing your NSLU2."
-	exit 1
-    fi
-    echo "The flags that indicate an already-unslung system have now been"
-    echo "removed and the required mounts should now become present after"
-    echo "reboot of the NSLU2."
-    echo
-    echo "1) Please unplug all drives from the NSLU2,"
-    echo "2) reboot,"
-    echo "3) and retry the unslinging process."
-    exit 1
-fi
+#echo "Checking if able to unsling..."
+#echo
+#m1="/dev/root /dev.state jffs2 rw 0 0"
+#m2="/dev/root /var.state jffs2 rw 0 0"
+#if ! grep "$m1" /proc/mounts >/dev/null 2>&1 || ! grep "$m2" /proc/mounts >/dev/null 2>&1 ; then
+#    echo "Error: This system is unable to properly unsling because certain"
+#    echo "required mounts (dev.state and/or var.state) are not available."
+#    echo "This is most probably because you have already unslung this system."
+#    echo
+#
+#    if   [ -f /.sda1root ] ; then
+#	rm -f /.sda1root
+#    elif [ -f /.sdb1root ] ; then
+#	rm -f /.sdb1root
+#    elif [ -f /.sda2root ] ; then
+#	rm -f /.sda2root
+#    elif [ -f /.sdb2root ] ; then
+#	rm -f /.sdb2root
+#    else
+#	echo "However, in this case, the flags that indicate an already-unslung"
+#	echo "system seem to be missing.  Try restarting your NSLU2 to correct,"
+#	echo "but if the problem persists, try re-flashing your NSLU2."
+#	exit 1
+#    fi
+#    echo "The flags that indicate an already-unslung system have now been"
+#    echo "removed and the required mounts should now become present after"
+#    echo "reboot of the NSLU2."
+#    echo
+#    echo "1) Please unplug all drives from the NSLU2,"
+#    echo "2) reboot,"
+#    echo "3) and retry the unslinging process."
+#    exit 1
+#fi
 
 # Check it's a real mount point
 
@@ -138,8 +141,16 @@ if [ "$nopw" -eq 0 ] ; then
        echo "Error setting password."
        exit 1
    fi
+# Quick sanity check, something may have gone wrong while we were
+# waiting at the passwd prompt...
+   if ! [ -d $targ/public ] || ! [ -f $targconf/.dongle ] || ! [ -f $targconf/passwd ] ; then
+       echo
+       echo "Error: $targ appears to have vanished into thin air."
+       echo "This would indicate some type of problem with the USB cable,"
+       echo "the device, or the formatting of the device."
+       exit 1
+   fi
    cp /etc/passwd /usr/local/passwd
-#   cp /etc/passwd $targconf/passwd
    grep "^root:" /etc/passwd >$targconf/passwd.new
    grep -v "^root:" $targconf/passwd >>$targconf/passwd.new
    mv $targconf/passwd $targconf/passwd.save
@@ -161,10 +172,29 @@ fi
 # Copy the complete rootfs to the target.
 
 echo
-echo "Copying the complete rootfs from / to $targ ..."
-/usr/bin/find / -xdev -print | /usr/bin/cpio -p -d -m -u $targ
-rm -rf $targ/dev ; mv $targ/dev.state $targ/dev
-rm -rf $targ/var ; mv $targ/var.state $targ/var
+echo "Copying the complete rootfs from / to $targ ... "
+echo " (this will take just a couple of minutes)"
+# Quick sanity check to avoid filling the flash...
+if ! [ -d $targ/public ] || ! [ -f $targconf/.dongle ] || ! [ -f $targconf/passwd ] ; then
+    echo
+    echo "Error: $targ appears to have vanished into thin air."
+    echo "This would indicate some type of problem with the USB cable,"
+    echo "the device, or the formatting of the device."
+    exit 1
+fi
+# /usr/bin/find / -xdev -print | /usr/bin/cpio -p -d -m -u $targ
+# rm -rf $targ/dev ; mv $targ/dev.state $targ/dev
+# rm -rf $targ/var ; mv $targ/var.state $targ/var
+echo "./var/tmp" > /tmp/xfile
+echo "./dev.state" >> /tmp/xfile
+echo "./var.state" >> /tmp/xfile
+echo "./lost+found" >>/tmp/xfile
+mkdir -p /tmp/tmprootfs
+/bin/mount /dev/mtdblock4 /tmp/tmprootfs
+/bin/tar -c -C /tmp/tmprootfs -X /tmp/xfile -f - . | (cd $targ; /bin/tar -x -f -)
+/bin/umount /tmp/tmprootfs
+echo "Copy complete ..."
+echo
 
 # Copy over the existing ipkg database.
 
@@ -191,6 +221,8 @@ touch $targ/var/log/wtmp
 chmod 644 $targ/var/log/wtmp
 touch $targ/var/run/utmp
 chmod 644 $targ/var/run/utmp
+mkdir -p $targ/var/tmp
+chmod 777 $targ/var/tmp
 
 # The "user password" Linksys utility is hard-coded to /share/hdd; also the
 # QuickSet utility seems to have some difficulty as well.  Ugly fix is to
@@ -227,7 +259,8 @@ echo > $targ/$flag
 echo
 echo "Unsling complete."
 echo
-echo "Leave the device $htmlinfo plugged in, and reboot"
-echo "in order to boot this system up into unslung mode."
+echo "Leave the device $htmlinfo, plugged in and reboot (using"
+echo "either the Web GUI, or the command \"DO_Reboot\") in order to boot"
+echo "this system up into unslung mode."
 
 exit 0
