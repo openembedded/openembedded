@@ -185,9 +185,10 @@ fi
 # /usr/bin/find / -xdev -print | /usr/bin/cpio -p -d -m -u $targ
 # rm -rf $targ/dev ; mv $targ/dev.state $targ/dev
 # rm -rf $targ/var ; mv $targ/var.state $targ/var
-echo "./var/tmp"    > /tmp/xfile
+echo "./var/tmp" > /tmp/xfile
 echo "./dev.state" >> /tmp/xfile
 echo "./var.state" >> /tmp/xfile
+echo "./lost+found" >>/tmp/xfile
 mkdir -p /tmp/tmprootfs
 /bin/mount /dev/mtdblock4 /tmp/tmprootfs
 /bin/tar -c -C /tmp/tmprootfs -X /tmp/xfile -f - . | (cd $targ; /bin/tar -x -f -)
