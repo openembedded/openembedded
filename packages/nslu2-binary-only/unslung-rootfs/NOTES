@@ -546,3 +546,10 @@ maintenance; easier than plugging and unplugging disks.
 
 Empty the /etc/win_share.info file on boot (fixes problem with multiple
 identical shares appearing on a system).
+
+Upgraded slingbox to v1.2.2 busybox base; enabled fdisk.
+
+Replaced Linksys busybox with slingbox entirely.
+
+Modified "unsling" script to use tar instead of find and cpio; removed
+obsolete and untested unsling utilities (eg: resling).
