@@ -30,8 +30,8 @@ PR = "${WIP_DATE}-r0"
 
 PACKAGES = "${PN}-conf ${PN}-doc ${PN}"
 
-PACKAGE_ARCH_${PN} = all
-PACKAGE_ARCH_${PN}-doc = all
+PACKAGE_ARCH_${PN} = "all"
+PACKAGE_ARCH_${PN}-doc = "all"
 PACKAGE_ARCH_${PN}-conf = "${MACHINE}"
 
 TAG = "${@'v' + bb.data.getVar('PV',d,1).replace('.', '-')}"
