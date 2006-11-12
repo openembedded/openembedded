@@ -150,6 +150,12 @@ else
     #
     if test "$?" -gt 1
     then
+    
+      # Since this script is run very early in the boot-process, it should be safe to assume that the
+      # output is printed to VT1. However, some distributions use a bootsplash to hide the "ugly" boot
+      # messages and having the bootsplash "hang" due to a waiting fsck prompt is less than ideal
+      chvt 1
+    
       # Surprise! Re-directing from a HERE document (as in
       # "cat << EOF") won't work, because the root is read-only.
       echo
