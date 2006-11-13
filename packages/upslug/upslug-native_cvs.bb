@@ -1,11 +1,12 @@
 # This package builds the 'upslug' binary upload/flash tool
 # for the NSLU2.  It is not useful for anything else.
-PR = "r0"
+PR = "r1"
 DESCRIPTION = "NSLU2 binary upload tool"
 HOMEPAGE = "http://www.nslu2-linux.org/wiki/Main/UpSlug"
 SECTION = "console/network"
 PRIORITY = "optional"
 LICENSE = "GPL-2"
+COMPATIBLE_MACHINE = "nslu2"
 
 # Use releases in preference
 DEFAULT_PREFERENCE = "-1"
@@ -23,11 +24,4 @@ do_compile() {
 
 do_stage() {
 	oe_runmake "DESTDIR=${STAGING_BINDIR}" install
-}
-
-python () {
-	# Don't build upslug unless we're targeting an nslu2
-	mach = bb.data.getVar("MACHINE", d, 1)
-	if mach != 'nslu2':
-		raise bb.parse.SkipPackage("upslug only builds for the Linksys NSLU2")
 }

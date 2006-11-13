@@ -4,7 +4,8 @@ HOMEPAGE = "http://www.busybox.net"
 LICENSE = "GPL"
 SECTION = "base"
 PRIORITY = "required"
-PR = "r3"
+PR = "r4"
+COMPATIBLE_MACHINE = "nslu2"
 
 SRC_URI = "http://www.busybox.net/downloads/busybox-${PV}.tar.gz \
            file://defconfig \
@@ -16,12 +17,6 @@ SRC_URI = "http://www.busybox.net/downloads/busybox-${PV}.tar.gz \
            file://slingbox.patch;patch=1"
 
 S = "${WORKDIR}/busybox-${PV}"
-
-python () {
-	# Don't build slingbox unless we're targeting an nslu2
-	if bb.data.getVar("MACHINE", d, 1) != "nslu2":
-		raise bb.parse.SkipPackage("slingbox only builds for the Linksys NSLU2")
-}
 
 export EXTRA_CFLAGS = "${CFLAGS}"
 EXTRA_OEMAKE_append = " CROSS=${HOST_PREFIX}"

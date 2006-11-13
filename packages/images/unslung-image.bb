@@ -1,5 +1,6 @@
 LICENSE = MIT
-PR = "r24"
+PR = "r25"
+COMPATIBLE_MACHINE = "nslu2"
 
 IMAGE_BASENAME = "unslung"
 IMAGE_NAME = "${IMAGE_BASENAME}-${MACHINE}-${DISTRO_VERSION}"
@@ -118,11 +119,4 @@ unslung_clean_image () {
 #	rm -rf ${IMAGE_ROOTFS}/bin/ftp
 #	#### End of Hack!
 
-}
-
-python () {
-	# Don't build unslung images unless we're targeting an nslu2
-	mach = bb.data.getVar("MACHINE", d, 1)
-	if mach != 'nslu2':
-		raise bb.parse.SkipPackage("Unslung only builds for the Linksys NSLU2")
 }
