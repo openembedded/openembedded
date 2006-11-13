@@ -8,6 +8,8 @@ HOMEPAGE = "http://www.nslu2-linux.org"
 LICENSE = "MIT"
 PR = "r37"
 
+COMPATIBLE_MACHINE = "nslu2"
+
 # SLUGOS_IMAGENAME defines the name of the image to be build, if it
 # is not set this package will be skipped!
 IMAGE_BASENAME = "${SLUGOS_IMAGENAME}"

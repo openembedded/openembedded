@@ -9,6 +9,7 @@ PACKAGES = ""
 INHIBIT_DEFAULT_DEPS = "1"
 
 SLUGOS_IMAGENAME ?= "slugos"
+COMPATIBLE_MACHINE = "nslu2"
 
 do_fetch() {
 }
