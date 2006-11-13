@@ -1,12 +1,13 @@
 SECTION = "kernel"
 DESCRIPTION = "Linux kernel for the LogicPD Zoom(PXA270 ref design)"
 LICENSE = "GPL"
-PR = "r1"
+PR = "r3"
 
 SRC_URI = "ftp://ftp.kernel.org/pub/linux/kernel/v2.6/testing/linux-2.6.17-rc5.tar.bz2 \
            file://linux-2.6.17-rc5.patch;pnum=0;patch=1 \
+           file://ucb1400-ac97-audio.patch;pnum=1;patch=1 \
+           file://ucb1400-touchscreen.patch;pnum=1;patch=1 \
            file://defconfig"
-
 
 S = "${WORKDIR}/linux-2.6.17-rc5"
 
