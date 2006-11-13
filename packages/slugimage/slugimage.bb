@@ -3,7 +3,7 @@ SECTION = "console/utils"
 LICENSE = "BSD"
 DESCRIPTION = "Slugimage is a small app to disassemble and reassemble \
 flash images for the Linksys NSLU2 device. It also has jffs2 support"
-PR = "r5"
+PR = "r6"
 
 RDEPENDS = "perl"
 
