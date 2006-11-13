@@ -115,7 +115,7 @@ python () {
 # it is a bad idea to produce flash images without a valid RedBoot - that allows
 # an innocent user upgrade attempt to instantly brick the NSLU2.
 PACK_IMAGE += "${@['', 'nslu2_pack_image;'][bb.data.getVar('SLUGOS_FLASH_IMAGE', d, 1) == 'nslu2']}"
-PACK_IMAGE_DEPENDS += "${@['', 'slugimage-native nslu2-linksys-firmware'][bb.data.getVar('SLUGOS_FLASH_IMAGE', d, 1) == 'nslu2']}"
+PACK_IMAGE_DEPENDS += "${@['', 'slugimage-native nslu2-linksys-firmware apex ixp4xx-npe'][bb.data.getVar('SLUGOS_FLASH_IMAGE', d, 1) == 'nslu2']}"
 
 NSLU2_SLUGIMAGE_ARGS ?= ""
 
@@ -127,13 +127,16 @@ nslu2_pack_image() {
 				${STAGING_LIBDIR}/nslu2-binaries/Trailer \
 				${STAGING_LIBDIR}/nslu2-binaries/SysConf \
 				${DEPLOY_DIR_IMAGE}/slug/
+		install -m 0644 ${STAGING_LOADER_DIR}/apex.bin ${DEPLOY_DIR_IMAGE}/slug/
 		install -m 0644 ${DEPLOY_DIR_IMAGE}/zImage-nslu2${ARCH_BYTE_SEX} \
 			${DEPLOY_DIR_IMAGE}/slug/vmlinuz
 		install -m 0644 ${DEPLOY_DIR_IMAGE}/${IMAGE_NAME}.rootfs.jffs2 \
 			${DEPLOY_DIR_IMAGE}/slug/flashdisk.jffs2
+		install -m 0644 ${STAGING_FIRMWARE_DIR}/NPE-B ${DEPLOY_DIR_IMAGE}/slug/
 		cd ${DEPLOY_DIR_IMAGE}/slug
-		slugimage -p -b RedBoot -s SysConf -r Ramdisk:1,Flashdisk:flashdisk.jffs2 -t \
-			Trailer -o ${DEPLOY_DIR_IMAGE}/${IMAGE_NAME}.flashdisk.img \
+		slugimage -p -b RedBoot -s SysConf -L apex.bin -k vmlinuz \
+			-r Flashdisk:flashdisk.jffs2 -m NPE-B -t Trailer \
+			-o ${DEPLOY_DIR_IMAGE}/${IMAGE_NAME}.flashdisk.img \
 			${NSLU2_SLUGIMAGE_ARGS}
 		rm -rf ${DEPLOY_DIR_IMAGE}/slug
 	fi
