@@ -1,6 +1,7 @@
 DESCRIPTION = "Packages that are compatible with the Unslung binary kernel firmware"
 LICENSE = MIT
-PR = "r0"
+PR = "r1"
+COMPATIBLE_MACHINE = "nslu2"
 
 ALLOW_EMPTY = 1
 PACKAGES = "${PN}"
