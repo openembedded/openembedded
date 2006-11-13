@@ -1,5 +1,5 @@
 DESCRIPTION = "Merge machine and distro options to create a basic machine task/package"
-PR = "r12"
+PR = "r13"
 
 PACKAGES = "task-base \
             task-base-minimal \
@@ -17,6 +17,8 @@ PACKAGE_ARCH = "${MACHINE_ARCH}"
 # apm
 # keyboard
 # touchscreen
+# screen
+# pci
 
 # Valid only in DISTRO_FEATURES:
 #

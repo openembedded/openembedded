@@ -49,48 +49,59 @@ def check_sanity(e):
 		print "Foo %s" % minversion
 		return
 
+	messages = ""
+
 	if (LooseVersion(__version__) < LooseVersion(minversion)):
-		raise_sanity_error('Bitbake version %s is required and version %s was found' % (minversion, __version__))
+		messages = messages + 'Bitbake version %s is required and version %s was found\n' % (minversion, __version__)
 
 	# Check TARGET_ARCH is set
 	if data.getVar('TARGET_ARCH', e.data, True) == 'INVALID':
-		raise_sanity_error('Please set TARGET_ARCH directly, or choose a MACHINE or DISTRO that does so.')
+		messages = messages + 'Please set TARGET_ARCH directly, or choose a MACHINE or DISTRO that does so.\n'
 	
 	# Check TARGET_OS is set
 	if data.getVar('TARGET_OS', e.data, True) == 'INVALID':
-		raise_sanity_error('Please set TARGET_OS directly, or choose a MACHINE or DISTRO that does so.')
+		messages = messages + 'Please set TARGET_OS directly, or choose a MACHINE or DISTRO that does so.\n'
 
 	# Check user doesn't have ASSUME_PROVIDED = instead of += in local.conf
 	if "diffstat-native" not in data.getVar('ASSUME_PROVIDED', e.data, True).split():
-		raise_sanity_error('Please use ASSUME_PROVIDED +=, not ASSUME_PROVIDED = in your local.conf')
+		messages = messages + 'Please use ASSUME_PROVIDED +=, not ASSUME_PROVIDED = in your local.conf\n'
 	
 	# Check that the MACHINE is valid
 	if not check_conf_exists("conf/machine/${MACHINE}.conf", e.data):
-		raise_sanity_error('Please set a valid MACHINE in your local.conf')
+		messages = messages + 'Please set a valid MACHINE in your local.conf\n'
 	
 	# Check that the DISTRO is valid
 	# need to take into account DISTRO renaming DISTRO
 	if not ( check_conf_exists("conf/distro/${DISTRO}.conf", e.data) or check_conf_exists("conf/distro/include/${DISTRO}.inc", e.data) ):
-		raise_sanity_error("DISTRO '%s' not found. Please set a valid DISTRO in your local.conf" % data.getVar("DISTRO", e.data, True ))
+		messages = messages + "DISTRO '%s' not found. Please set a valid DISTRO in your local.conf\n" % data.getVar("DISTRO", e.data, True )
+
+	missing = ""
 
 	if not check_app_exists("${MAKE}", e.data):
-		raise_sanity_error('GNU make missing. Please install GNU make')
+		missing = missing + "GNU make,"
 
 	if not check_app_exists('${BUILD_PREFIX}gcc', e.data):
-		raise_sanity_error('C Host-Compiler is missing, please install one' )
+		missing = missing + "C Compiler (${BUILD_PREFIX}gcc),"
 
 	if not check_app_exists('${BUILD_PREFIX}g++', e.data):
-		raise_sanity_error('C++ Host-Compiler is missing, please install one' )
+		missing = missing + "C++ Compiler (${BUILD_PREFIX}g++),"
 
-	required_utilities = "patch diffstat texi2html makeinfo cvs svn git bzip2 tar gzip"
+	required_utilities = "patch diffstat texi2html makeinfo cvs svn git bzip2 tar gzip gawk"
 
 	for util in required_utilities.split():
 		if not check_app_exists( util, e.data ):
-			raise_sanity_error( "Please install the %s utility." % util )
+			missing = missing + "%s," % util
+
+	if missing != "":
+		missing = missing.rstrip(',')
+		messages = messages + "Please install following missing utilities: %s\n" % missing
 
 	oes_bb_conf = data.getVar( 'OES_BITBAKE_CONF', e.data, True )
 	if not oes_bb_conf:
-		raise_sanity_error('You do not include OpenEmbeddeds version of conf/bitbake.conf')
+		messages = messages + 'You do not include OpenEmbeddeds version of conf/bitbake.conf\n'
+
+	if messages != "":
+		raise_sanity_error(messages)
 
 addhandler check_sanity_eventhandler
 python check_sanity_eventhandler() {

@@ -3,7 +3,7 @@ SECTION = "opie/base"
 ALLOW_EMPTY = 1
 PACKAGE_ARCH = "all"
 LICENSE = "MIT"
-PR = "r7"
+PR = "r8"
 
 PACKAGES = "task-qpe-applets task-qpe-games task-qpe-inputmethods \
 	task-qpe-multimedia task-qpe-emulators task-qpe-applications \
@@ -74,7 +74,6 @@ RDEPENDS_task-qpe-games = "\
     froot \
     gemdropx \
     glider \
-    gnuz \
     hexatrolic \
     iaimaster \
     icebloxx \
@@ -130,11 +129,6 @@ RDEPENDS_task-qpe-emulators = "scummvm"
 RDEPENDS_task-qpe-fonts = "\
     qpf-bitstream-vera-large \
     qpf-bitstream-vera-sans-mono-huge \
-    qpf-dejavusans \
-    qpf-dejavusanscondensed \
-    qpf-dejavusansmono \
-    qpf-dejavuserif \
-    qpf-dejavuserifcondensed \
     qpf-freemono \
     qpf-freeserif \
     ttf-gentium \

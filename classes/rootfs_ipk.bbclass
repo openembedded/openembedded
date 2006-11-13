@@ -11,9 +11,9 @@ RDEPENDS += "ipkg ipkg-collateral"
 
 PACKAGES = ""
 
-do_rootfs[nostamp] = 1
-do_rootfs[dirs] = ${TOPDIR}
-do_build[nostamp] = 1
+do_rootfs[nostamp] = "1"
+do_rootfs[dirs] = "${TOPDIR}"
+do_build[nostamp] = "1"
 
 IPKG_ARGS = "-f ${T}/ipkg.conf -o ${IMAGE_ROOTFS}"
 
@@ -98,7 +98,7 @@ log_check() {
 			for keyword_die in "Cannot find package" "exit 1" ERR Fail
 			do				
 				
-				if (echo "$lf_txt" | grep -v log_check | grep "$keyword_die") &>/dev/null
+				if (echo "$lf_txt" | grep -v log_check | grep "$keyword_die") >/dev/null 2>&1
 				then
 					echo "log_check: There were error messages in the logfile"
 					echo -e "log_check: Matched keyword: [$keyword_die]\n"

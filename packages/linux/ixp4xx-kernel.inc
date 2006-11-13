@@ -145,7 +145,8 @@ IXP4XX_PATCHES ?= ""
 SRC_URI  = "${IXP4XX_SRCURI}"
 SRC_URI += "${IXP4XX_PATCHES}"
 
-COMPATIBLE_HOST = 'arm.*-linux'
+COMPATIBLE_HOST = 'arm.*-linux.*'
+COMPATIBLE_MACHINE = '(ixp4xx|loft|nslu2|nas100d|dsmg600|fsg3)'
 
 inherit kernel
 
@@ -197,13 +198,26 @@ do_configure_prepend() {
 	then
 		echo 'CONFIG_JFFS2_LITTLE_ENDIAN=y' >>'${S}/.config'
 	fi
-	sed -e '/CONFIG_CPU_BIG_ENDIAN/d' -e '/CONFIG_CMDLINE=/d' \
+
+        if [ "${TARGET_OS}" == "linux-gnueabi" -o  "${TARGET_OS}" == "linux-uclibcgnueabi" ]; then               
+                echo "CONFIG_AEABI=y"                   >> ${S}/.config               
+                echo "CONFIG_OABI_COMPAT=y"             >> ${S}/.config       
+        else
+                echo "# CONFIG_AEABI is not set"        >> ${S}/.config
+                echo "# CONFIG_OABI_COMPAT is not set"  >> ${S}/.config
+        fi      
+
+        sed     -e '/CONFIG_CPU_BIG_ENDIAN/d' \
+	        -e '/CONFIG_CMDLINE=/d' \
 		-e '/CONFIG_JFFS2_NATIVE_ENDIAN=/d' \
 		-e '/CONFIG_JFFS2_BIG_ENDIAN=/d' \
 		-e '/CONFIG_JFFS2_LITTLE_ENDIAN=/d' \
+		-e '/CONFIG_AEABI/d' \
+		-e '/CONFIG_OABI_COMPAT=/d' \
 		'${WORKDIR}/defconfig' >>'${S}/.config'
 	rm -rf ${S}/include/asm-arm/arch ${S}/include/asm-arm/proc \
 	       ${S}/include/asm-arm/.proc ${S}/include/asm-arm/.arch
+
 }
 
 # MACHID and LE handling
@@ -251,20 +265,6 @@ pkg_postinst_kernel-image-nslu2 () {
 }
 pkg_postrm_kernel-image-nslu2 () {
 	update-alternatives --remove ${KERNEL_IMAGETYPE} /${KERNEL_IMAGEDEST}/${KERNEL_IMAGETYPE}-nslu2${ARCH_BYTE_SEX}-${KERNEL_RELEASE} || true
-}
-
-# The correct settings for the DS101 board:
-ds101_MACHID = "833"
-PACKAGES += "kernel-image-ds101"
-PKG_kernel-image-ds101 = "kernel-image-${KERNEL_VERSION}"
-PACKAGE_ARCH_kernel-image-ds101 = "ds101${ARCH_BYTE_SEX}"
-DESCRIPTION_kernel-image-ds101 = "Linux kernel for the Synology DS101"
-FILES_kernel-image-ds101 = "/${KERNEL_IMAGEDEST}/${KERNEL_IMAGETYPE}-ds101${ARCH_BYTE_SEX}-${KERNEL_RELEASE}"
-pkg_postinst_kernel-image-ds101 () {
-	update-alternatives --install /${KERNEL_IMAGEDEST}/${KERNEL_IMAGETYPE} ${KERNEL_IMAGETYPE} /${KERNEL_IMAGEDEST}/${KERNEL_IMAGETYPE}-ds101${ARCH_BYTE_SEX}-${KERNEL_RELEASE} ${KERNEL_PRIORITY} || true
-}
-pkg_postrm_kernel-image-ds101 () {
-	update-alternatives --remove ${KERNEL_IMAGETYPE} /${KERNEL_IMAGEDEST}/${KERNEL_IMAGETYPE}-ds101${ARCH_BYTE_SEX}-${KERNEL_RELEASE} || true
 }
 
 # The correct settings for Loft:
@@ -368,7 +368,6 @@ do_install_append() {
 
 	# Add the machine specific images, with appropriate suffixes
 	install_image 'nslu2${ARCH_BYTE_SEX}' '${nslu2_MACHID}'
-	install_image 'ds101${ARCH_BYTE_SEX}' '${ds101_MACHID}'
 	install_image 'loft${ARCH_BYTE_SEX}' '${loft_MACHID}'
 	install_image 'nas100d${ARCH_BYTE_SEX}' '${nas100d_MACHID}'
 	install_image 'dsmg600${ARCH_BYTE_SEX}' '${dsmg600_MACHID}'
@@ -387,7 +386,6 @@ do_deploy() {
 
 	# And the machine specific images
 	deploy_image 'nslu2${ARCH_BYTE_SEX}' '${nslu2_MACHID}'
-	deploy_image 'ds101${ARCH_BYTE_SEX}' '${ds101_MACHID}'
 	deploy_image 'loft${ARCH_BYTE_SEX}' '${loft_MACHID}'
 	deploy_image 'nas100d${ARCH_BYTE_SEX}' '${nas100d_MACHID}'
 	deploy_image 'dsmg600${ARCH_BYTE_SEX}' '${dsmg600_MACHID}'

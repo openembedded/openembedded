@@ -1,4 +1,6 @@
-PV = ${DISTRO_VERSION}
+PV = "${DISTRO_VERSION}"
+
+PACKAGES = "${PN}"
 
 do_compile() {
 	mkdir -p ${D}${sysconfdir}

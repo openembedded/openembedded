@@ -34,4 +34,5 @@ do_install () {
 	make DESTDIR=${D} install
 	install -d ${D}${sysconfdir}
 	install -m 0644 ${WORKDIR}/omniORB.cfg ${D}${sysconfdir}
+	install -d ${D}${localstatedir}/omninames
 }

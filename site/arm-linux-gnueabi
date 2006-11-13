@@ -72,6 +72,7 @@ nano_cv_func_regexec_segv_emptystr=${nano_cv_func_regexec_segv_emptystr=no}
 
 # libnet 
 ac_cv_libnet_endianess=${ac_cv_libnet_endianess=lil}
+ac_libnet_have_packet_socket=${ac_libnet_have_packet_socket=yes}
 
 # screen
 screen_cv_sys_bcopy_overlap=${screen_cv_sys_bcopy_overlap=no}
@@ -304,4 +305,17 @@ dpkg_cv___va_copy=${ac_cv___va_copy=yes}
 
 # enca
 yeti_cv_func_scanf_modif_size_t=yes
+
+# clamav
+clamav_av_func_working_snprintf_long=${clamav_av_func_working_snprintf_long=yes}
+clamav_av_have_in_port_t=${clamav_av_have_in_port_t=yes}
+clamav_av_have_in_addr_t=${clamav_av_have_in_addr_t=yes}
+ac_cv_func_mmap_fixed_mapped=${ac_cv_func_mmap_fixed_mapped=yes}
+
+#dbus
+ac_cv_have_abstract_sockets=${ac_cv_have_abstract_sockets=no}
+
+# p3scan
+ac_cv_func_realloc_0_nonnull=${ac_cv_func_realloc_0_nonnull=yes}
+
 

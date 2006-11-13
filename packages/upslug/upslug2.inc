@@ -1,11 +1,12 @@
 # This package builds the 'upslug2' binary upload/flash tool
 # for the NSLU2.  It is not useful for anything else.
-PR = "r0"
+PR = "r1"
 DESCRIPTION = "NSLU2 binary upload tool (version 2)"
 HOMEPAGE = "http://www.nslu2-linux.org/wiki/Main/UpSlug2"
 SECTION = "console/network"
 PRIORITY = "optional"
 LICENSE = "MIT"
+COMPATIBLE_MACHINE = "nslu2"
 
 # On Linux libpcap does not work.  Using libpcap is sub-optimal - it
 # is intended for packet capture not management of a new protocol
@@ -28,10 +29,3 @@ S = "${WORKDIR}/upslug2-${PV}"
 
 PACKAGES = "${PN}"
 EXTRA_OECONF += "${LIBPCAP_OECONF}"
-
-python () {
-	# Don't build upslug2 unless we're targeting an nslu2
-	mach = bb.data.getVar("MACHINE", d, 1)
-	if mach != 'nslu2':
-		raise bb.parse.SkipPackage("upslug2 only builds for the Linksys NSLU2")
-}

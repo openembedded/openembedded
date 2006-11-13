@@ -8,7 +8,7 @@ used to detect the type of a file system and read its metadata."
 DESCRIPTION_libvolume-id-dev = "libvolume_id development headers, \
 needed to link programs with libvolume_id."
 
-PR = "r3"
+PR = "r4"
 
 SRC_URI = "http://kernel.org/pub/linux/utils/kernel/hotplug/udev-${PV}.tar.gz \
 	   file://noasmlinkage.patch;patch=1 \
@@ -61,3 +61,21 @@ do_install () {
 do_install_append_h2200() {
 	install -m 0644 ${WORKDIR}/50-hostap_cs.rules         ${D}${sysconfdir}/udev/rules.d/50-hostap_cs.rules
 }
+
+pkg_postinst_append() {
+	
+	# Add the root partition to mount.blacklist to avoid a bug in the auto-mounter,
+	# causing confusion with fsck on boot
+	
+        while read dev mp fs junk
+        do
+                if test "$mp" = "/"
+                then
+                        root_partition="$dev"
+                        echo "$root_partition" >> /etc/udev/mount.blacklist
+                fi
+        done < /etc/fstab
+	
+}
+
+

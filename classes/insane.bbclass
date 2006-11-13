@@ -8,7 +8,7 @@
 #  -Check the RUNTIME path for the $TMPDIR
 #  -Check if .la files wrongly point to workdir
 #  -Check if .pc files wrongly point to workdir
-#  -Check if packages contains .dbg or .so files where they should be in -dev or -dbg
+#  -Check if packages contains .debug directories  or .so files where they should be in -dev or -dbg
 #
 
 
@@ -55,7 +55,7 @@ def package_qa_check_devdbg(path, name,d):
 
     if not "-dbg" in name:
         if '.debug' in path:
-            bb.error("QA Issue: non debug package contains .dbg file: %s" % name)
+            bb.error("QA Issue: non debug package contains .debug directory: %s" % name)
 
 def package_qa_check_perm(path,name,d):
     """
@@ -126,7 +126,7 @@ def package_qa_check_rdepends(pkg, workdir, d):
 # The PACKAGE FUNC to scan each package
 python do_package_qa () {
     bb.note("DO PACKAGE QA")
-    workdir  = bb.data.getVar('WORKDIR', d, True)
+    workdir = bb.data.getVar('WORKDIR', d, True)
     packages = bb.data.getVar('PACKAGES',d, True)
 
     # no packages should be scanned

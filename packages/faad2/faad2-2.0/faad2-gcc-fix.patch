@@ -1,0 +1,11 @@
+--- /tmp/mp4ff.c	2006-11-11 21:25:07.000000000 +0100
++++ faad2/common/mp4ff/mp4ff.c	2006-11-11 21:25:20.348554000 +0100
+@@ -87,7 +87,7 @@
+     if (ff) free(ff);
+ }
+ 
+-static void mp4ff_track_add(mp4ff_t *f)
++void mp4ff_track_add(mp4ff_t *f)
+ {
+     f->total_tracks++;
+ 

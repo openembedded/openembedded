@@ -1,0 +1,7 @@
+--- nslu2-linksys-ramdisk-2.3r63/etc/rc.d/rc.lan.orig	2006-11-10 20:07:27.000000000 -0600
++++ nslu2-linksys-ramdisk-2.3r63/etc/rc.d/rc.lan	2006-11-10 20:07:35.000000000 -0600
+@@ -1,3 +1,3 @@
+-#!/bin/bash
++#!/bin/sh
+ #echo "set network driver to operate in auto-sense mode"
+ #/sbin/insmod /lib/modules/sk98lin.o

@@ -23,15 +23,15 @@ RDEPENDS_${PN}-conf = "${PN}"
 
 ######################################################################################
 
-WIP_DATE = "20061029"
-PR = "${WIP_DATE}-r0"
+WIP_DATE = "20061108"
+PR = "${WIP_DATE}-r1"
 
 ######################################################################################
 
 PACKAGES = "${PN}-conf ${PN}-doc ${PN}"
 
-PACKAGE_ARCH_${PN} = all
-PACKAGE_ARCH_${PN}-doc = all
+PACKAGE_ARCH_${PN} = "all"
+PACKAGE_ARCH_${PN}-doc = "all"
 PACKAGE_ARCH_${PN}-conf = "${MACHINE}"
 
 TAG = "${@'v' + bb.data.getVar('PV',d,1).replace('.', '-')}"
@@ -78,7 +78,7 @@ do_install() {
 ######################################################################################
 
 do_configure() {
-	cat ${WORKDIR}/altboot/init.altboot | sed "s/^VERSION=.*/VERSION=\"${PV}\"/" > ${WORKDIR}/altboot/init.altboot_
+	cat ${WORKDIR}/altboot/init.altboot | sed "s/^VERSION=.*/VERSION=\"${PV}-${PR}\"/" > ${WORKDIR}/altboot/init.altboot_
 	mv ${WORKDIR}/altboot/init.altboot_ ${WORKDIR}/altboot/init.altboot
 }
 
