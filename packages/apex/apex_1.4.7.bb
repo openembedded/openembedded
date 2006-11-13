@@ -23,18 +23,19 @@ CMDLINE="console=ttyS0,115200 rootfstype=jffs2 root=/dev/mtdblock4 rw init=/linu
 # defconfig to .config
 do_configure() {
 	rm -f ${S}/.config
-	echo "CONFIG_ENV_DEFAULT_CMDLINE=\"${CMDLINE}\"" >>'${S}/.config'
 	if test '${ARCH_BYTE_SEX}' = be
 	then
-		echo 'CONFIG_USER_BIGENDIAN=y' >>'${S}/.config'
-		echo 'CONFIG_BIGENDIAN=y' >>'${S}/.config'
+	  sed -e 's/.*CONFIG_USER_BIGENDIAN.*/CONFIG_USER_BIGENDIAN=y/' \
+	      -e 's/.*CONFIG_BIGENDIAN.*/CONFIG_BIGENDIAN=y/' \
+	      -e 's|CONFIG_ENV_DEFAULT_CMDLINE=|CONFIG_ENV_DEFAULT_CMDLINE=\"${CMDLINE}\"|' \
+		${WORKDIR}/defconfig > ${S}/.config
 	else
-		echo 'CONFIG_USER_LITTLEENDIAN=y' >>'${S}/.config'
-		echo 'CONFIG_LITTLEENDIAN=y' >>'${S}/.config'
+	  sed -e 's/.*CONFIG_USER_LITTLEENDIAN.*/CONFIG_USER_LITTLEENDIAN=y/' \
+	      -e 's/.*CONFIG_LITTLEENDIAN.*/CONFIG_LITTLEENDIAN=y/' \
+	      -e 's/.*CONFIG_ENV_REGION_KERNEL_SWAP.*/CONFIG_ENV_REGION_KERNEL_SWAP=y/' \
+	      -e 's|CONFIG_ENV_DEFAULT_CMDLINE=|CONFIG_ENV_DEFAULT_CMDLINE=\"${CMDLINE}\"|' \
+		${WORKDIR}/defconfig > ${S}/.config
 	fi
-	sed -e '/CONFIG_USER_BIGENDIAN/d' -e '/CONFIG_USER_LITTLEENDIAN/d' \
-	    -e '/CONFIG_ENV_DEFAULT_CMDLINE/d' \
-		${S}/src/mach-ixp42x/debian-nslu2-arm_config >>${S}/.config
 	oe_runmake oldconfig
 }
 
