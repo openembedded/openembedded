@@ -1,0 +1,350 @@
+Index: mb-applet-input-manager-0.6/mbinputmgr-tray.c
+===================================================================
+--- mb-applet-input-manager-0.6/mbinputmgr-tray.c	(revision 1292)
++++ mb-applet-input-manager-0.6/mbinputmgr-tray.c	(working copy)
+@@ -32,8 +32,20 @@
+ MBInpmgrState *Inpmgr_state = NULL;
+ Bool           ButtonIsDown = False;
+ int            ButtonActive;
+-Atom           AtomIMActivate;
+ 
++Atom	       atoms[2];
++char *atom_names[] =
++  {
++    "_MB_INPUT_REQUEST",
++    "_GPE_INPUT_MANAGER"
++  };
++
++#define	       _MB_INPUT_REQUEST	0
++#define	       _GPE_INPUT_MANAGER	1
++
++#define _GPE_INPUT_MANAGER_OPEN	1
++#define _GPE_INPUT_MANAGER_CLOSE 2
++
+ typedef struct ButtonImgs {
+   
+   MBPixbufImage *active;
+@@ -41,6 +53,17 @@
+ 
+ } ButtonImgs;
+ 
++struct window_record
++{
++  Window w;
++  struct window_record *next;
++};
++
++struct window_record *requests;
++
++Display	 *dpy;
++Bool	 auto_enabled;
++
+ void
+ paint_callback ( MBTrayApp *app, Drawable drw )
+ {
+@@ -262,14 +285,190 @@
+ }
+ 
+ void
++really_close (void)
++{
++  if (requests == NULL && mbinputmgr_method_active (Inpmgr_state) && auto_enabled)
++    {    
++      mbinputmgr_toggle_selected_method (Inpmgr_state);
++      auto_enabled = False;
++    }
++}
++
++Bool timer_active;
++struct timeval expires;
++
++Bool
++get_timeout (struct timeval *tv)
++{
++  int sec, usec;
++  struct timeval now;
++
++  if (!timer_active)
++    return False;
++  
++  gettimeofday (&now, NULL);
++  
++  sec = expires.tv_sec - now.tv_sec;
++  usec = expires.tv_usec - now.tv_usec;
++  if (usec < 0)
++    {
++      sec--;
++      usec += 1000000;
++    }
++
++  if (sec < 0)
++    {
++      /* timer expired */
++      really_close ();
++      timer_active = False;
++      return False;
++    }
++
++  tv->tv_sec = sec;
++  tv->tv_usec = usec;
++
++  return True;
++}
++
++Bool
++process_close_request (Window w)
++{
++  struct window_record *r, *pr = NULL;
++  unsigned long tv;
++
++  for (r = requests; r != NULL && r->w != w; )
++    {
++      pr = r;
++      r = r->next;
++    }
++  
++  if (r)
++    {
++      if (pr)
++	pr->next = r->next;
++      else
++	requests = r->next;
++
++      free (r);
++      
++      if (requests == NULL && mbinputmgr_method_active (Inpmgr_state) && auto_enabled)
++	{
++	  timer_active = True;
++	  gettimeofday (&expires, NULL);
++	  expires.tv_usec += 100000;
++	  if (expires.tv_usec >= 1000000)
++	    {
++	      expires.tv_sec++;
++	      expires.tv_usec -= 1000000;
++	    }
++	}
++
++      return True;
++    }
++  
++  return False;
++}
++
++int trapped_error_code;
++int (*old_error_handler) (Display *d, XErrorEvent *e);
++
++static int
++error_handler(Display     *display,
++	      XErrorEvent *error)
++{
++   trapped_error_code = error->error_code;
++   return 0;
++}
++
++static void
++trap_errors(void)
++{
++   trapped_error_code = 0;
++   old_error_handler = XSetErrorHandler(error_handler);
++}
++
++static int
++untrap_errors(void)
++{
++   XSetErrorHandler(old_error_handler);
++   return trapped_error_code;
++}
++
++Bool
++process_open_request (Window w)
++{
++  struct window_record *r;
++
++  for (r = requests; r != NULL && r->w != w; r = r->next)
++    ;
++
++  if (r)
++    return True;
++
++  trap_errors ();
++  XSelectInput (dpy, w, StructureNotifyMask);
++  XSync (dpy, False);
++  if (untrap_errors ())
++    return False;
++
++  r = malloc (sizeof (*r));
++  r->next = requests;
++  r->w = w;
++  requests = r;
++
++  if (!mbinputmgr_method_active(Inpmgr_state))
++    {
++      mbinputmgr_toggle_selected_method (Inpmgr_state);
++      auto_enabled = True;
++    }
++
++  return False;
++}
++
++Bool docked_already;
++
++void
++is_docked (void)
++{
++  Window	 tray_w;
++
++  tray_w = mb_tray_app_xwin (app);
++
++  if (XGetSelectionOwner (dpy, atoms[_GPE_INPUT_MANAGER]) == None)
++    {
++      XSetSelectionOwner (dpy, atoms[_GPE_INPUT_MANAGER], tray_w, CurrentTime);
++    } 
++  else 
++    {
++      fprintf (stderr, "Unable to claim _GPE_INPUT_MANAGER selection.\n");
++    }
++}
++
++void
+ xevent_callback (MBTrayApp *app, XEvent *ev)
+ {
+   if (ev->type == ClientMessage)
+     {
+       XClientMessageEvent *cmev = (XClientMessageEvent *)&ev->xconfigure;
+ 
+-      if (cmev->message_type == AtomIMActivate)
++      if (cmev->message_type == atoms[_GPE_INPUT_MANAGER])
+ 	{
++	  switch (cmev->data.l[0])
++	    {
++	    case _GPE_INPUT_MANAGER_OPEN:
++	      process_open_request (cmev->data.l[1]);
++	      break;
++	    case _GPE_INPUT_MANAGER_CLOSE:
++	      process_close_request (cmev->data.l[1]);
++	      break;
++	    default:
++	      fprintf (stderr, "received unknown _GPE_INPUT_MANAGER request %d\n", cmev->data.l[0]);
++	      break;
++	    }
++	} 
++#ifndef DISABLE_OLD_PROTOCOL
++      else if (cmev->message_type == atoms[_MB_INPUT_REQUEST])
++	{
+ 	  /* De Activate */
+ 	  if (cmev->data.l[0] == 0 && mbinputmgr_method_active(Inpmgr_state))
+ 	    mbinputmgr_toggle_selected_method (Inpmgr_state);
+@@ -278,8 +477,20 @@
+ 		   && !mbinputmgr_method_active(Inpmgr_state))
+ 	    mbinputmgr_toggle_selected_method (Inpmgr_state);
+ 	}
++#endif
+     }
++  else if (ev->type == UnmapNotify)
++    {
++      XUnmapEvent *uev = &ev->xunmap;
+ 
++      process_close_request (uev->window);
++    }
++  else if (ev->type == ConfigureNotify && !docked_already)
++    {
++      docked_already = TRUE;
++      is_docked ();
++    }
++
+   mb_menu_handle_xevent (PopupMenu, ev);
+ }
+ 
+@@ -347,11 +558,42 @@
+   free(icon_path);
+ }
+ 
++static Bool
++get_xevent_timed(Display* dpy, XEvent* event_return, struct timeval *tv)
++{
++  if (tv == NULL) 
++    {
++      XNextEvent(dpy, event_return);
++      return True;
++    }
++
++  XFlush(dpy);
++
++  if (XPending(dpy) == 0) 
++    {
++      int fd = ConnectionNumber(dpy);
++      fd_set readset;
++      FD_ZERO(&readset);
++      FD_SET(fd, &readset);
++      if (select(fd+1, &readset, NULL, NULL, tv) == 0) 
++	{
++	  return False;
++	} else {
++	  XNextEvent(dpy, event_return);
++	  return True;
++	}
++    } else {
++      XNextEvent(dpy, event_return);
++      return True;
++    }
++}
++
+ int 
+ main(int argc, char **argv)
+ {
+   int            i;
+   MBPixbufImage *app_icon_img  = NULL;
++  XEvent xevent;
+ 
+   app = mb_tray_app_new ( "Input Selector",
+ 			  resize_callback,
+@@ -359,13 +601,13 @@
+ 			  &argc,
+ 			  &argv );  
+ 
++  dpy = mb_tray_app_xdisplay (app);
++
+   Pixbuf = mb_pixbuf_new(mb_tray_app_xdisplay(app), 
+ 			 mb_tray_app_xscreen(app));
+ 
+-  AtomIMActivate = XInternAtom(mb_tray_app_xdisplay(app), 
+-			       "_MB_INPUT_REQUEST", False);
++  XInternAtoms (dpy, atom_names, sizeof (atom_names) / sizeof (atom_names[0]), False, atoms);
+ 
+-
+   PopupMenu = mb_menu_new (mb_tray_app_xdisplay(app),
+ 			   mb_tray_app_xscreen(app));
+ 
+@@ -399,17 +641,30 @@
+ 
+   mb_tray_app_set_xevent_callback (app, xevent_callback );
+ 
++  mb_tray_app_set_xevent_mask (app, SubstructureNotifyMask);
++
+   mb_tray_app_set_button_callback (app, button_callback );
+ 
+   /* XXX set up dnotify to reload entrys only on _addition_  */
+ 
++#ifndef DISABLE_OLD_PROTOCOL
+   XSelectInput(mb_tray_app_xdisplay(app),
+ 	       mb_tray_app_xrootwin(app),
+ 	       SubstructureNotifyMask);
++#endif 
+ 
++  /* Not using mb_tray_app_main() to avoid libmb's broken get_xevent_timed() */
++  mb_tray_app_main_init (app);
++  for (;;)
++    {
++      struct timeval tv, *tvp = NULL;
+ 
+-  mb_tray_app_main (app);
++      if (get_timeout (&tv))
++	tvp = &tv;
+ 
++      if (get_xevent_timed (dpy, &xevent, tvp))
++	mb_tray_handle_xevent (app, &xevent);
++    }
++
+   return 0;
+ }
+-

@@ -4,12 +4,13 @@ SECTION = "libs"
 LICENSE = "LGPL"
 PRIORITY = "optional"
 DEPENDS = ""
-PR="r1"
+PR="r2"
 
 inherit autotools
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/faac/${PN}-${PV}.zip \
-           file://Makefile.am"
+           file://faad2-gcc-fix.patch;patch=1 \
+ 	   file://Makefile.am"
 
 S="${WORKDIR}/${PN}"
 
@@ -17,7 +18,7 @@ do_configure_prepend() {
         mv ${WORKDIR}/Makefile.am ${S}/
 }
 
-PACKAGES = "${PN} libfaad libfaad-dev libmp4ff libmp4ff-dev" 
+PACKAGES =+ "libfaad libfaad-dev libmp4ff libmp4ff-dev" 
 
 FILES_${PN} = "${bindir}/faad"
 

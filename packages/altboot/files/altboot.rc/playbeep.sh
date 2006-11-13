@@ -11,7 +11,7 @@ then
 	for module in `cat /etc/modules | grep snd | grep -v ^#` 
 	do
 		#echo "loading $module"
-		modprobe $module
+		modprobe $module >/dev/null 2>&1
 	done
 
 	mount -o remount,rw /

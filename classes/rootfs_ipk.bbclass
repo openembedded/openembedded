@@ -11,9 +11,9 @@ RDEPENDS += "ipkg ipkg-collateral"
 
 PACKAGES = ""
 
-do_rootfs[nostamp] = 1
-do_rootfs[dirs] = ${TOPDIR}
-do_build[nostamp] = 1
+do_rootfs[nostamp] = "1"
+do_rootfs[dirs] = "${TOPDIR}"
+do_build[nostamp] = "1"
 
 IPKG_ARGS = "-f ${T}/ipkg.conf -o ${IMAGE_ROOTFS}"
 

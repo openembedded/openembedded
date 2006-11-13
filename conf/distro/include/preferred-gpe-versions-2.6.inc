@@ -3,13 +3,13 @@
 #
 
 #work around some breakages
-SRCDATE_xserver-kdrive=20050207
-SRCDATE_minimo=20050401
-SRCDATE_cairo=20050330
-SRCDATE_xext=20050222
+SRCDATE_xserver-kdrive="20050207"
+SRCDATE_minimo="20050401"
+SRCDATE_cairo="20050330"
+SRCDATE_xext="20050222"
 
 #set some preferred providers:
-PREFERRED_PROVIDER_gconf=gconf-dbus
+PREFERRED_PROVIDER_gconf="gconf-dbus"
 
 #specify versions, as the header says :)
 PREFERRED_VERSION_libmatchbox ?= "1.6"

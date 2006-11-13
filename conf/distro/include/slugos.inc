@@ -113,8 +113,9 @@ SLUGOS_IMAGENAME ?= "${DISTRO_NAME}"
 # issues in the kernel need to cancel this (set CMDLINE_DEBUG empty in local.conf)
 CMDLINE_DEBUG = "noirqdebug"
 
-# Building a full image.  If you set SLUGOS_FLASH_IMAGE to "yes" a complete
-# 8MByte flash image will be built after the rootfs JFFS2 image.
+# Building a full image.  If you set SLUGOS_FLASH_IMAGE to "nslu2" a complete
+# 8MByte flash image will be built after the rootfs JFFS2 image.  Other options
+# may later be defined for other vendor-flashable image types.
 #
 # If you do this you will need to find a source for the LinkSys software to be
 # placed in the full image - 'RedBoot' (the boot loader), 'Trailer' (just a bunch
@@ -170,7 +171,7 @@ PREFERRED_VERSION_glibc ?= "2.3.5+cvs20050627"
 # Select the correct versions of the kernel and modules (these are the
 # defaults, override in the conf/distro top-level distro file).
 PREFERRED_PROVIDER_virtual/kernel ?= "ixp4xx-kernel"
-PREFERRED_VERSION_ixp4xx-kernel ?= "2.6.18"
+PREFERRED_VERSION_ixp4xx-kernel ?= "2.6.19-rc5"
 
 # Select the smallest provider of x11 libraries
 PREFERRED_PROVIDER_virtual/libx11 ?= "diet-x11"

@@ -1,0 +1,86 @@
+Index: linux-2.6.17-rc5/sound/pci/ac97/ac97_codec.c
+===================================================================
+--- linux-2.6.17-rc5.orig/sound/pci/ac97/ac97_codec.c
++++ linux-2.6.17-rc5/sound/pci/ac97/ac97_codec.c
+@@ -151,7 +151,7 @@ static const struct ac97_codec_id snd_ac
+ { 0x4e534300, 0xffffffff, "LM4540,43,45,46,48",	NULL,		NULL }, // only guess --jk
+ { 0x4e534331, 0xffffffff, "LM4549",		NULL,		NULL },
+ { 0x4e534350, 0xffffffff, "LM4550",		patch_lm4550,  	NULL }, // volume wrap fix 
+-{ 0x50534304, 0xffffffff, "UCB1400",		NULL,		NULL },
++{ 0x50534304, 0xffffffff, "UCB1400",		patch_ucb1400,		NULL, AC97_HAS_NO_STD_PCM },
+ { 0x53494c20, 0xffffffe0, "Si3036,8",		mpatch_si3036,	mpatch_si3036, AC97_MODEM_PATCH },
+ { 0x54524102, 0xffffffff, "TR28022",		NULL,		NULL },
+ { 0x54524106, 0xffffffff, "TR28026",		NULL,		NULL },
+Index: linux-2.6.17-rc5/sound/pci/ac97/ac97_patch.c
+===================================================================
+--- linux-2.6.17-rc5.orig/sound/pci/ac97/ac97_patch.c
++++ linux-2.6.17-rc5/sound/pci/ac97/ac97_patch.c
+@@ -375,7 +375,57 @@ int patch_yamaha_ymf753(struct snd_ac97 
+ 	ac97->caps |= 0x04 << 10; /* Yamaha 3D enhancement */
+ 	return 0;
+ }
++/*
++ * UCB1400 codec
++ */
++
++#define AC97_UCB1400_FCSR1	0x6a
++#define AC97_UCB1400_FCSR2	0x6c
++
++static const snd_kcontrol_new_t ucb1400_snd_ac97_controls[] = {
++	AC97_SINGLE("Tone Control - Bass", AC97_UCB1400_FCSR1, 11, 4, 0),
++	AC97_SINGLE("Tone Control - Treble", AC97_UCB1400_FCSR1, 9, 2, 0),
++	AC97_SINGLE("Headphone Playback Switch", AC97_UCB1400_FCSR1, 6, 1, 0),
++	AC97_SINGLE("De-emphasis", AC97_UCB1400_FCSR1, 5, 1, 0),
++	AC97_SINGLE("DC Filter", AC97_UCB1400_FCSR1, 4, 1, 0),
++	AC97_SINGLE("Hi-pass Filter", AC97_UCB1400_FCSR1, 3, 1, 0),
++	AC97_SINGLE("ADC Filter", AC97_UCB1400_FCSR2, 12, 1, 0),
++};
++
++int patch_ucb1400(ac97_t * ac97)
++{
++	int err, i;
+ 
++	for(i = 0; i < ARRAY_SIZE(ucb1400_snd_ac97_controls); i++) {
++		if((err = snd_ctl_add(ac97->bus->card, snd_ac97_cnew(&ucb1400_snd_ac97_controls[i], ac97))) < 0)
++			return err;
++	}
++
++	snd_ac97_write_cache(ac97,  AC97_UCB1400_FCSR1,
++			(0 << 11) |     // 0 base boost
++			(0 << 9)  |     // 0 treble boost
++			(0 << 7)  |     // Mode = flat
++			(1 << 6)  |     // Headphones enable
++			(0 << 5)  |     // De-emphasis disabled
++			(1 << 4)  |     // DC filter enabled
++			(1 << 3)  |     // Hi-pass filter enabled
++			(0 << 2)  |     // disable interrupt signalling via GPIO_INT
++			(1 << 0)        // clear ADC overflow status if set
++		);
++
++	snd_ac97_write_cache(ac97, AC97_UCB1400_FCSR2,
++			(0 << 15) |     // must be 0
++			(0 << 13) |     // must be 0
++			(1 << 12) |     // ADC filter enabled
++			(0 << 10) |     // must be 0
++			(0 << 4)  |     // Smart low power mode on neither Codec nor PLL
++			(0 << 0)        // must be 0
++		);
++
++	return 0;
++}
++
++/*
+ /*
+  * May 2, 2003 Liam Girdwood <liam.girdwood@wolfsonmicro.com>
+  *  removed broken wolfson00 patch.
+Index: linux-2.6.17-rc5/sound/pci/ac97/ac97_patch.h
+===================================================================
+--- linux-2.6.17-rc5.orig/sound/pci/ac97/ac97_patch.h
++++ linux-2.6.17-rc5/sound/pci/ac97/ac97_patch.h
+@@ -58,5 +58,6 @@ int patch_cm9780(struct snd_ac97 * ac97)
+ int patch_vt1616(struct snd_ac97 * ac97);
+ int patch_vt1617a(struct snd_ac97 * ac97);
+ int patch_it2646(struct snd_ac97 * ac97);
++int patch_ucb1400(ac97_t * ac97);
+ int mpatch_si3036(struct snd_ac97 * ac97);
+ int patch_lm4550(struct snd_ac97 * ac97);
