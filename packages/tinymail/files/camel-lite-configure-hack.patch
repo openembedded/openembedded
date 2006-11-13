@@ -1,0 +1,18 @@
+--- /tmp/configure.ac	2006-11-10 12:33:24.000000000 +0100
++++ trunk/libtinymail-camel/camel-lite/configure.ac	2006-11-10 12:33:56.238554000 +0100
+@@ -157,15 +157,6 @@
+ 
+ CFLAGS="$CFLAGS -I$srcdir"
+ 
+-AC_MSG_CHECKING(preferred charset formats for system iconv)
+-AC_RUN_IFELSE([AC_LANG_SOURCE([[
+-#define CONFIGURE_IN
+-#include "iconv-detect.c"
+-]])],[
+-	AC_MSG_RESULT(found)
+-],[
+-	AC_MSG_RESULT(not found)
+-],[])
+ 
+ CFLAGS="$save_CFLAGS"
+ LIBS="$save_LIBS"

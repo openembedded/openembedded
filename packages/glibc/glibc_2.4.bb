@@ -3,7 +3,7 @@ HOMEPAGE = "http://www.gnu.org/software/libc/libc.html"
 LICENSE = "LGPL"
 SECTION = "libs"
 PRIORITY = "required"
-PR = "r10"
+PR = "r11"
 
 #add the hosts that are confirmed to be working to COMPATIBLE_HOSTi
 COMPATIBLE_HOST = '(i.86.*-linux|sh.*-linux)'
@@ -63,6 +63,7 @@ SRC_URI = "ftp://ftp.gnu.org/pub/gnu/glibc/glibc-2.4.tar.bz2 \
 	   file://glibc-2.4-openat-3.patch;patch=1 \
 	   file://fixup-aeabi-syscalls.patch;patch=1 \
 	   file://zecke-sane-readelf.patch;patch=1 \
+	   file://arm_eabi_ipc_fix.patch;patch=1 \
 	   file://generic-bits_select.h \
 	   file://generic-bits_types.h \
 	   file://generic-bits_typesizes.h \
@@ -89,11 +90,6 @@ EXTRA_OECONF = "--enable-kernel=${OLDEST_KERNEL} \
 		${GLIBC_EXTRA_OECONF}"
 
 EXTRA_OECONF += "${@get_glibc_fpu_setting(bb, d)}"
-
-def get_glibc_fpu_setting(bb, d):
-	if bb.data.getVar('TARGET_FPU', d, 1) in [ 'soft' ]:
-		return "--without-fp"
-	return ""
 
 do_munge() {
 	# Integrate ports and libidn into tree

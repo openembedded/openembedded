@@ -4,11 +4,10 @@ AUTHOR = "Russell King w/ plugins by Chris Larson et. al."
 SECTION = "base"
 LICENSE = "LGPL"
 
-PR = "r0"
+PR = "r3"
 
 SRC_URI = "http://download.berlios.de/tslib/tslib-1.0.tar.bz2 \
            file://ts.conf \
-           file://ts-2.6.conf \
            file://ts.conf-h3600-2.4 \
            file://ts.conf-simpad-2.4 \
            file://ts.conf-corgi-2.4 \
@@ -36,32 +35,20 @@ do_install_append() {
 	case ${MACHINE} in
 	a780 | e680 | h3600 | h3900 | h5xxx | h1940 | h6300 | h2200 | ipaq-pxa270 | hx4700 | hx2000 |blueangel | h4000)
 		install -d ${D}${datadir}/tslib
-		for f in ts-2.6.conf ts.conf-h3600-2.4; do
-			install -m 0644 ${WORKDIR}/$f ${D}${datadir}/tslib/
-		done
-		rm -f ${D}${sysconfdir}/ts.conf
+		install -m 0644 ${WORKDIR}/ts.conf-h3600-2.4 ${D}${datadir}/tslib/
 		;;
 	c7x0 | spitz | akita | tosa )
 		install -d ${D}${datadir}/tslib
-		for f in ts-2.6.conf ts.conf-corgi-2.4; do
-			install -m 0644 ${WORKDIR}/$f ${D}${datadir}/tslib/
-		done
-		rm -f ${D}${sysconfdir}/ts.conf
+		install -m 0644 ${WORKDIR}/ts.conf-corgi-2.4 ${D}${datadir}/tslib/
 		;;
 	collie | poodle )
 		install -d ${D}${datadir}/tslib
-		for f in ts-2.6.conf ts.conf-collie-2.4; do
-			install -m 0644 ${WORKDIR}/$f ${D}${datadir}/tslib/
-		done
-		rm -f ${D}${sysconfdir}/ts.conf
+		install -m 0644 ${WORKDIR}/ts.conf-collie-2.4 ${D}${datadir}/tslib/
 		;;
 
 	simpad )
 		install -d ${D}${datadir}/tslib
-		for f in ts-2.6.conf ts.conf-simpad-2.4; do
-			install -m 0644 ${WORKDIR}/$f ${D}${datadir}/tslib/
-		done
-		rm -f ${D}${sysconfdir}/ts.conf
+		install -m 0644 ${WORKDIR}/ts.conf-simpad-2.4 ${D}${datadir}/tslib/
 		;;
 	*)
 		;;
@@ -70,11 +57,11 @@ do_install_append() {
 
 SRC_URI_OVERRIDES_PACKAGE_ARCH = "0"
 
+# People should consider using udev's /dev/input/touchscreen0 symlink 
+# instead of detect-stylus
 RDEPENDS_tslib-conf_h1940 = "detect-stylus"
-RDEPENDS_tslib-conf_h2200 = "detect-stylus"
 RDEPENDS_tslib-conf_h3600 = "detect-stylus"
 RDEPENDS_tslib-conf_h3900 = "detect-stylus"
-RDEPENDS_tslib-conf_h5xxx = "detect-stylus"
 RDEPENDS_tslib-conf_h6300 = "detect-stylus"
 RDEPENDS_tslib-conf_blueangel = "detect-stylus"
 RDEPENDS_tslib-conf_htcuniversal = "detect-stylus"

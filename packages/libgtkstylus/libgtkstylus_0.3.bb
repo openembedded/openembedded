@@ -2,8 +2,7 @@ DESCRIPTION = "GTK plugin for stylus based systems"
 SECTION = "libs"
 DEPENDS = "gtk+"
 LICENSE = "LGPL"
-FILES_${PN} = "/etc ${libdir}/gtk-2.0/2.4.0/modules/*.so*"
-PR = "r4"
+PR = "r5"
 
 inherit autotools
 
@@ -15,4 +14,6 @@ do_install_append() {
 	install -d ${D}/${sysconfdir}/X11/Xsession.d
 	install -m 755 ${WORKDIR}/gtkstylus.sh ${D}/${sysconfdir}/X11/Xsession.d/45gtkstylus
 }
+
+FILES_${PN} = "/etc ${libdir}/gtk-2.0/*/modules/*.so*"
 

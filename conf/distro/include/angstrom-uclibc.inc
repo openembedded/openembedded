@@ -4,6 +4,8 @@ PREFERRED_PROVIDER_virtual/libc = "uclibc"
 PREFERRED_PROVIDER_virtual/libiconv ?= "libiconv"
 PREFERRED_PROVIDER_virtual/libintl ?= "gettext"
 
+USE_NLS ?= "no"
+
 TARGET_OS = "linux${@['-uclibc','-uclibcgnueabi'][bb.data.getVar('TARGET_ARCH',d,1)=='arm']}"
 
 #mess with compiler flags to use -Os instead of -O2

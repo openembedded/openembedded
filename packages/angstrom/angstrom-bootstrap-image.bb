@@ -1,5 +1,5 @@
 #Angstrom bootstrap image
-LICENSE = MIT
+LICENSE = "MIT"
 PR = "r2"
 
 DEPENDS = "task-base"

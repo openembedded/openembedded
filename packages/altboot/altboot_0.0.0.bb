@@ -20,14 +20,14 @@ RDEPENDS_${PN} = "${PN}-conf"
 
 ######################################################################################
 
-PR = "r47"
+PR = "r49"
 
 ######################################################################################
 
 PACKAGES = "${PN}-conf ${PN}-doc ${PN}"
 
-PACKAGE_ARCH_${PN} = all
-PACKAGE_ARCH_${PN}-doc = all
+PACKAGE_ARCH_${PN} = "all"
+PACKAGE_ARCH_${PN}-doc = "all"
 PACKAGE_ARCH_${PN}-conf = "${MACHINE}"
 
 SRC_URI = "file://altboot-menu \

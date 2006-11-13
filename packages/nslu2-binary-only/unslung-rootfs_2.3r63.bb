@@ -1,6 +1,7 @@
 SECTION = "base"
+COMPATIBLE_MACHINE = "nslu2"
 
-PR = "r15"
+PR = "r17"
 
 DEPENDS = "nslu2-linksys-libs nslu2-linksys-sambacodepages"
 
@@ -11,11 +12,12 @@ SRC_URI = "http://nslu.sf.net/downloads/nslu2-linksys-ramdisk-2.3r63-2.tar.bz2 \
 	   file://motd-fl \
 	   file://motd-un \
 	   file://unsling \
-	   file://resling \
-	   file://slingover \
+#	   file://resling \
+#	   file://slingover \
 	   file://linuxrc \
 	   file://unslung.gif \
 	   file://nsswitch.conf \
+	   file://rc.bootdisk \
 	   file://rc.optware-start \
 	   file://rc.optware-stop \
 	   file://rc-diversion.patch;patch=1 \
@@ -23,6 +25,7 @@ SRC_URI = "http://nslu.sf.net/downloads/nslu2-linksys-ramdisk-2.3r63-2.tar.bz2 \
 	   file://rc.1-timestamp.patch;patch=1 \
 	   file://rc.crond-diversion.patch;patch=1 \
 	   file://rc.halt-diversion.patch;patch=1 \
+	   file://rc.lan-shell.patch;patch=1 \
 	   file://rc.local-diversion.patch;patch=1 \
 	   file://rc.modules-diversion.patch;patch=1 \
 	   file://rc.network-diversion.patch;patch=1 \
@@ -55,13 +58,6 @@ SRC_URI = "http://nslu.sf.net/downloads/nslu2-linksys-ramdisk-2.3r63-2.tar.bz2 \
 	   "
 
 S = "${WORKDIR}/nslu2-linksys-ramdisk-2.3r63"
-
-python () {
-	# Don't build unslung images unless we're targeting an nslu2
-	mach = bb.data.getVar("MACHINE", d, 1)
-	if mach != 'nslu2':
-		raise bb.parse.SkipPackage("Unslung only builds for the Linksys NSLU2")
-}
 
 do_compile () {
 	echo "V2.3R63-uNSLUng-${DISTRO_VERSION}" > ${S}/.unslung
@@ -104,10 +100,11 @@ do_compile () {
 	install -d ${S}/initrd
 
 	install -m 755 ${WORKDIR}/unsling ${S}/sbin/unsling
-	install -m 755 ${WORKDIR}/resling ${S}/sbin/resling
-	install -m 755 ${WORKDIR}/slingover ${S}/sbin/slingover
+#	install -m 755 ${WORKDIR}/resling ${S}/sbin/resling
+#	install -m 755 ${WORKDIR}/slingover ${S}/sbin/slingover
 	install -m 755 ${WORKDIR}/rc.optware-start ${S}/etc/rc.d/rc.optware-start
 	install -m 755 ${WORKDIR}/rc.optware-stop ${S}/etc/rc.d/rc.optware-stop
+	install -m 755 ${WORKDIR}/rc.bootdisk ${S}/etc/rc.d/rc.bootdisk
 
 	install -m 644 ${WORKDIR}/nsswitch.conf ${S}/etc/nsswitch.conf
 
@@ -161,6 +158,14 @@ do_compile () {
 	# a link to busybox or slingbox at some point.
 	rm -r ${S}/usr/sbin/date
 	ln -s ../../bin/date ${S}/usr/sbin/date
+
+	# Replace the Linksys-provided /bin/busybox with a link to slingbox.
+	rm -f ${S}/bin/busybox
+	ln -s slingbox ${S}/bin/busybox
+
+	# No reason not to have a home directory for root...
+	mkdir -p ${S}/root
+	chmod 775 ${S}/root
 }
 
 do_install () {

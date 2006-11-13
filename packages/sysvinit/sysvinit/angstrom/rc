@@ -18,6 +18,11 @@
 . /etc/default/rcS
 export VERBOSE
 
+if [ $(($num_steps + $first_step)) -lt 1 ]; then
+        numsteps="10"                           
+        first_step="1"                          
+fi    
+
 startup_progress() {
     step=$(($step + $step_change))
     progress=$(($step * $progress_size / $num_steps + $first_step))

@@ -1,9 +1,10 @@
 SECTION = "kernel"
+COMPATIBLE_MACHINE = "nslu2"
 
 require nslu2-linksys-kernel_2.4.22.bb
 
 DESCRIPTION = "Unslung kernel for the Linksys NSLU2 device"
-PR = "r14"
+PR = "r15"
 
 KERNEL_SUFFIX = "unslung"
 
@@ -27,5 +28,3 @@ SRC_URI += "file://linux-kernel-R25_to_R29.patch;patch=1 \
 	    ${UNSLUNG_KERNEL_EXTRA_SRC_URI}"
 
 FILESPATH = "${@base_set_filespath([ '${FILE_DIRNAME}/unslung-kernel', '${FILE_DIRNAME}/nslu2-linksys-kernel-2.4.22', '${FILE_DIRNAME}/files', '${FILE_DIRNAME}' ], d)}"
-
-COMPATIBLE_MACHINE = "nslu2"

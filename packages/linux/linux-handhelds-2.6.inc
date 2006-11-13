@@ -5,7 +5,8 @@ LICENSE = "GPL"
 COMPATIBLE_HOST = "arm.*-linux"
 COMPATIBLE_MACHINE ?= '(h1910|h2200|h3600|h3900|h4000|h5xxx|htcuniversal|hx4700|jornada56x|simpad)'
 
-SRC_URI = "${HANDHELDS_CVS};module=linux/kernel26;tag=${@'K' + bb.data.getVar('PV',d,1).replace('.', '-')} \
+# SRC_URI *must* be overriden in includer, but this is a good reference
+SRC_URI ?= "${HANDHELDS_CVS};module=linux/kernel26;tag=${@'K' + bb.data.getVar('PV',d,1).replace('.', '-')} \
            file://24-hostap_cs_id.diff;patch=1 \
            file://hrw-pcmcia-ids-r2.patch;patch=1 \
 	   file://defconfig"
@@ -21,10 +22,10 @@ ALLOW_EMPTY_htcuniversal = 1
 
 
 
-K_MAJOR = "${@bb.data.getVar('PV',d,1).split('-')[0].split('.')[0]}"
-K_MINOR = "${@bb.data.getVar('PV',d,1).split('-')[0].split('.')[1]}"
-K_MICRO = "${@bb.data.getVar('PV',d,1).split('-')[0].split('.')[2]}"
-HHV     = "${@bb.data.getVar('PV',d,1).split('-')[1].split('hh')[-1]}"
+K_MAJOR ?= "${@bb.data.getVar('PV',d,1).split('-')[0].split('.')[0]}"
+K_MINOR ?= "${@bb.data.getVar('PV',d,1).split('-')[0].split('.')[1]}"
+K_MICRO ?= "${@bb.data.getVar('PV',d,1).split('-')[0].split('.')[2]}"
+HHV     ?= "${@bb.data.getVar('PV',d,1).split('-')[1].split('hh')[-1]}"
 
 KERNEL_PRIORITY = "${@'%d' % (int(bb.data.getVar('K_MAJOR',d,1)) * 100000000 + int(bb.data.getVar('K_MINOR',d,1)) * 1000000 + int(bb.data.getVar('K_MICRO',d,1)) * 10000 + float(bb.data.getVar('HHV',d,1)))}"
 

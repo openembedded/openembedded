@@ -4,7 +4,7 @@ SECTION = "libs"
 LICENSE = "LGPL"
 DEPENDS = "zlib libxml2 expat time"
 
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "http://be.lunar-linux.org/lunar/cache/neon-${PV}.tar.gz"
 

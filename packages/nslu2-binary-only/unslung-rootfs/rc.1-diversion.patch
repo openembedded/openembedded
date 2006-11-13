@@ -13,7 +13,7 @@
  /bin/echo  "Starting Rest Task :"; . /etc/rc.d/rc.local
  
 +/bin/echo  "Starting Optware Packages:"; ( . /etc/rc.d/rc.optware-start )
-+
++/bin/echo  "Starting Bootdisk scripts:"; ( . /etc/rc.d/rc.bootdisk )
  /usr/bin/Set_Led ready
  /usr/bin/Set_Led beep1
  /bin/echo  "Checking disk status :"; /usr/sbin/CheckDiskFull 2 >/dev/null

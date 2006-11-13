@@ -1,13 +1,13 @@
 LICENSE = "LGPL"
 DEPENDS = "gtk+"
 GPE_TARBALL_SUFFIX = "bz2"
-PR = "r1"
+PR = "r2"
 
 inherit gpe autotools
 
 SRC_URI += "file://gtkinput.sh"
 
-FILES_${PN} = "/etc ${libdir}/gtk-2.0/2.4.0/modules/*.so*"
+FILES_${PN} = "/etc ${libdir}/gtk-2.0/*/modules/*.so*"
 
 
 

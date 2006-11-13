@@ -9,6 +9,7 @@ PR = "r15"
 CONFLICTS = "db3"
 PROVIDES += "${SLUGOS_IMAGENAME}-packages"
 
+COMPATIBLE_MACHINE = "nslu2"
 EXCLUDE_FROM_WORLD = "1"
 INHIBIT_DEFAULT_DEPS = "1"
 ALLOW_EMPTY = 1
@@ -49,6 +50,7 @@ SLUGOS_PACKAGES = "\
 	devlabel \
 	diffstat \
 	diffutils \
+	dircproxy \
 	dnsmasq \
 	e2fsprogs \
 	e2fsprogs-libs \
@@ -179,6 +181,7 @@ SLUGOS_PACKAGES = "\
 # Packages currently broken on all platforms
 SLUGOS_BROKEN_PACKAGES = "\
 	irssi \
+	bwmon \
 	obexftp \
 	qc-usb-messenger \
 	unionfs-modules \
@@ -208,7 +211,6 @@ UCLIBC_BROKEN_PACKAGES = "\
 	apr \
 	bogofilter \
 	boost \
-	bwmon \
 	erlang \
 	linphone \
 	sudo \

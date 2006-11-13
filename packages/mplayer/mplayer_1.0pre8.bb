@@ -6,25 +6,26 @@ DEPENDS = "virtual/libsdl libmad zlib libpng jpeg liba52 freetype fontconfig als
 RDEPENDS = "mplayer-common"
 LICENSE = "GPL"
 SRC_URI = "http://www1.mplayerhq.hu/MPlayer/releases/MPlayer-${PV}.tar.bz2 \
-	   file://vo_w100.c \
-	   file://vo_w100_api.h \
-	   file://vo_w100_fb.h \
-	   file://Makefile.patch;patch=1 \
-	   file://w100-configure.patch;patch=1 \
-	   file://w100-Makefile.patch;patch=1 \
-	   file://w100-video_out.patch;patch=1 \
-	   file://w100-mplayer.patch;patch=1 \
+           file://vo_w100.c \
+           file://vo_w100_api.h \
+           file://vo_w100_fb.h \
+           file://Makefile.patch;patch=1 \
+           file://w100-configure.patch;patch=1 \
+           file://w100-Makefile.patch;patch=1 \
+           file://w100-video_out.patch;patch=1 \
+           file://w100-mplayer.patch;patch=1 \
            file://libmpdemux-ogg-include.patch;patch=1 \
            file://libmpcodecs-ogg-include.patch;patch=1 \
-           file://pld-onlyarm5.patch;patch=1"
+           file://pld-onlyarm5.patch;patch=1 \
+           ${SOURCEFORGE_MIRROR}/libw100/mplayer-imageon.patch;patch=1"
 
 RCONFLICTS_${PN} = "mplayer-atty"
 RREPLACES_${PN} = "mplayer-atty"
-PR = "r2"
+PR = "r3"
 
 PARALLEL_MAKE = ""
 
-DEPENDS_append_c7x0 = " sharp-aticore-oss"
+DEPENDS_append_c7x0 = " sharp-aticore-oss libw100 "
 
 S = "${WORKDIR}/MPlayer-${PV}"
 
@@ -166,7 +167,7 @@ EXTRA_OECONF = " \
         --disable-runtime-cpudetection \
         "
 
-EXTRA_OECONF_append_c7x0 = " --enable-w100 "
+EXTRA_OECONF_append_c7x0 = " --enable-w100 --enable-imageon "
 
 do_configure() {
 	cp ${WORKDIR}/vo_w100.c ${S}/libvo

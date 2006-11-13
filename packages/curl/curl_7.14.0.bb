@@ -2,7 +2,7 @@ DESCRIPTION = "Command line tool and library for client-side URL transfers."
 LICENSE = "MIT"
 DEPENDS = "zlib"
 SECTION = "console/network"
-PR = "r2"
+PR = "r3"
 
 SRC_URI = "http://curl.haxx.se/download/curl-${PV}.tar.bz2"
 S = "${WORKDIR}/curl-${PV}"

@@ -1,8 +1,8 @@
-LICENSE = "LGPL"
 DESCRIPTION = "GTK+ is a multi-platform toolkit for creating graphical user interfaces. Offering a complete \
 set of widgets, GTK+ is suitable for projects ranging from small one-off projects to complete application suites."
 HOMEPAGE = "http://www.gtk.org"
 SECTION = "libs"
+LICENSE = "LGPL"
 PRIORITY = "optional"
 DEPENDS = "glib-2.0 pango atk jpeg libpng libxext libxcursor gtk-doc libgcrypt"
 PR = "r4"
@@ -22,7 +22,8 @@ SRC_URI = "ftp://ftp.gtk.org/pub/gtk/v2.6/gtk+-${PV}.tar.bz2 \
 	   file://scroll-timings.patch;patch=1 \
 	   file://small-gtkfilesel.patch;patch=1 \
 	   file://migration.patch;patch=1;pnum=0 \
-	   file://single-click.patch;patch=1"
+	   file://single-click.patch;patch=1 \
+	   file://menu-styling.patch;patch=1"
 
 inherit autotools pkgconfig
 
@@ -89,7 +90,7 @@ python populate_packages_prepend () {
 	immodules_root = os.path.join(gtk_libdir, 'immodules')
 
 	do_split_packages(d, loaders_root, '^libpixbufloader-(.*)\.so$', 'gdk-pixbuf-loader-%s', 'GDK pixbuf loader for %s', prologue + 'gdk-pixbuf-query-loaders > /etc/gtk-2.0/gdk-pixbuf.loaders')
-	do_split_packages(d, immodules_root, '^im-(.*)\.so$', 'gtk-immodule-%s', 'GTK input module for %s', prologue + 'gtk-query-immodules > /etc/gtk-2.0/gtk.immodules')
+	do_split_packages(d, immodules_root, '^im-(.*)\.so$', 'gtk-immodule-%s', 'GTK input module for %s', prologue + 'gtk-query-immodules-2.0 > /etc/gtk-2.0/gtk.immodules')
 
         if (bb.data.getVar('DEBIAN_NAMES', d, 1)):
                 bb.data.setVar('PKG_${PN}', 'libgtk-2.0', d)

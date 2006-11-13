@@ -34,6 +34,7 @@ SRC_URI = "http://ftp.gnu.org/pub/gnu/gcc/gcc-4.1.1/gcc-4.1.1.tar.bz2 \
 SRC_URI_append_fail-fast = " file://zecke-no-host-includes.patch;patch=1 "
 
 #Set the fortran bits
+# 'fortran' or '', not 'f77' like gcc3 had 
 FORTRAN = "" 
 HAS_GFORTRAN = "no"
 HAS_G2C = "no"
@@ -41,7 +42,7 @@ HAS_G2C = "no"
 #Set the java bits
 JAVA_arm = ""  
 
-LANGUAGES = "c,c++"
+LANGUAGES = "c,c++${FORTRAN}${JAVA}"
 require gcc3-build.inc
 
 
