@@ -1,1 +1,2 @@
-DEPENDS = slugos-image
+DEPENDS = "slugos-image"
+COMPATIBLE_MACHINE = "nslu2"
