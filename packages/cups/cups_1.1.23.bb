@@ -4,7 +4,7 @@ LICENSE = "GPL LGPL"
 DEPENDS = "openssl jpeg libpng zlib install-native fakeroot-native"
 PR = "r6"
 
-SRC_URI = "ftp://ftp.easysw.com/pub/cups/${PV}/cups-${PV}-source.tar.bz2 \
+SRC_URI = "ftp://ftp3.easysw.com/pub/cups/${PV}/cups-${PV}-source.tar.bz2 \
            file://strftime_fix.patch;patch=1"
 
 inherit autotools binconfig
