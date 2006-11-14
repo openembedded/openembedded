@@ -1,6 +1,3 @@
-# Native packages does not need cross toolchain which is added by base.bbclass
-INHIBIT_DEFAULT_DEPS = "1"
-
 inherit base
 
 # Native packages are built indirectly via dependency,
