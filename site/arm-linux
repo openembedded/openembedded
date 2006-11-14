@@ -40,8 +40,6 @@ ac_cv_ushort=${ac_cv_ushort=yes}
 
 mr_cv_target_elf=${mr_cv_target_elf=yes}
 
-ac_cv_c_littleendian=${ac_cv_c_littleendian=yes}
-ac_cv_c_bigendian=${ac_cv_c_bigendian=no}
 ac_cv_time_r_type=${ac_cv_time_r_type=POSIX}
 
 # apache
@@ -306,3 +304,11 @@ dpkg_cv___va_copy=${ac_cv___va_copy=yes}
 # enca
 yeti_cv_func_scanf_modif_size_t=yes
 
+# clamav
+clamav_av_func_working_snprintf_long=${clamav_av_func_working_snprintf_long=yes}
+clamav_av_have_in_port_t=${clamav_av_have_in_port_t=yes}
+clamav_av_have_in_addr_t=${clamav_av_have_in_addr_t=yes}
+ac_cv_func_mmap_fixed_mapped=${ac_cv_func_mmap_fixed_mapped=yes}
+
+#dbus
+ac_cv_have_abstract_sockets=${ac_cv_have_abstract_sockets=no}
