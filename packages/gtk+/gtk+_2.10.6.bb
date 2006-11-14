@@ -5,7 +5,7 @@ HOMEPAGE = "http://www.gtk.org"
 SECTION = "libs"
 PRIORITY = "optional"
 DEPENDS = "glib-2.0 pango atk jpeg libpng libxext libxcursor gtk-doc libgcrypt cairo cups"
-PR = "r4"
+PR = "r5"
 
 # disable per default - untested and not all patches included.
 DEFAULT_PREFERENCE = "-1" 
@@ -21,7 +21,6 @@ SRC_URI = "ftp://ftp.gtk.org/pub/gtk/v2.10/gtk+-${PV}.tar.bz2 \
 	   file://small-gtkfilesel.patch;patch=1 \
 	   file://migration.patch;patch=1;pnum=0 \
            file://run-iconcache.patch;patch=1 \
-           file://disable-print.patch;patch=1 \
            file://hardcoded_libtool.patch;patch=1 \
            file://no-demos.patch;patch=1 \
            file://pangoxft2.10.6.diff;patch=1 \
@@ -29,7 +28,7 @@ SRC_URI = "ftp://ftp.gtk.org/pub/gtk/v2.10/gtk+-${PV}.tar.bz2 \
 	   file://spinbutton.patch;patch=1"
 #           file://gtk+-handhelds.patch;patch=1
 
-inherit autotools pkgconfig
+inherit autotools pkgconfig 
 
 FILES_${PN} = "${bindir}/gdk-pixbuf-query-loaders \
 	${bindir}/gtk-update-icon-cache \
