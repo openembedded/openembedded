@@ -1,0 +1,21 @@
+--- /tmp/Makefile.am	2006-11-14 10:33:58.000000000 +0100
++++ fuse-2.6.0/util/Makefile.am	2006-11-14 10:34:39.308554000 +0100
+@@ -29,10 +29,6 @@
+ 	$(INSTALL_PROGRAM) $(srcdir)/mount.fuse $(DESTDIR)$(MOUNT_FUSE_PATH)/mount.fuse
+ 	$(mkdir_p) $(DESTDIR)$(INIT_D_PATH)
+ 	$(INSTALL_PROGRAM) $(srcdir)/init_script $(DESTDIR)$(INIT_D_PATH)/fuse
+-	@if test -x /usr/sbin/update-rc.d; then \
+-		echo "/usr/sbin/update-rc.d fuse start 34 S . start 41 0 6 ."; \
+-		/usr/sbin/update-rc.d fuse start 34 S . start 41 0 6 .; \
+-	fi
+ 
+ install-data-local:
+ 	$(mkdir_p) $(DESTDIR)$(UDEV_RULES_PATH)
+@@ -42,7 +38,3 @@
+ 	rm -f $(DESTDIR)$(MOUNT_FUSE_PATH)/mount.fuse
+ 	rm -f $(DESTDIR)$(UDEV_RULES_PATH)/99-fuse.rules
+ 	rm -f $(DESTDIR)$(INIT_D_PATH)/fuse
+-	@if test -x /usr/sbin/update-rc.d; then \
+-		echo "/usr/sbin/update-rc.d fuse remove"; \
+-		/usr/sbin/update-rc.d fuse remove; \
+-	fi
