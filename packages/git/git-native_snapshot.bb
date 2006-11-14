@@ -1,4 +1,4 @@
-require git.bb
+require git_snapshot.bb
 inherit native
 DEPENDS = "expat-native openssl-native curl-native"
 
