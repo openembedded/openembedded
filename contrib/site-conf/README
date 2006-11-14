@@ -1,0 +1,7 @@
+Unified source of autoconf tests used to generate the site results
+
+
+Executing this on a new platform will generate the necessary results
+to write the right site-conf.
+
+Copy and paste the autoconf test to an approriate file
