@@ -3,7 +3,7 @@ HOMEPAGE = "http://www.gnu.org/software/libc/libc.html"
 LICENSE = "LGPL"
 SECTION = "libs"
 PRIORITY = "required"
-PR = "r2"
+PR = "r3"
 
 # the -isystem in bitbake.conf screws up glibc do_stage
 BUILD_CPPFLAGS = "-I${STAGING_DIR}/${BUILD_SYS}/include"
@@ -55,6 +55,7 @@ SRC_URI = "ftp://ftp.gnu.org/pub/gnu/glibc/glibc-${PV}.tar.bz2 \
            file://dl-cache-libcmp.patch;patch=1 \
            file://ldsocache-varrun.patch;patch=1 \
            file://nptl-crosscompile.patch;patch=1 \
+	   file://glibc-check_pf.patch;patch=1;pnum=0 \
 #	   file://glibc-2.4-compile.patch;patch=1 \
 #	   file://glibc-2.4-openat-3.patch;patch=1 \
 #	   file://fixup-aeabi-syscalls.patch;patch=1 \
