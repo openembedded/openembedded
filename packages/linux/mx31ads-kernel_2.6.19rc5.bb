@@ -1,8 +1,7 @@
 SECTION = "kernel"
 DESCRIPTION = "Linux kernel for the MX31ADS"
 LICENSE = "GPL"
-MAINTAINER = "Liam Girdwood <liam.girdwood@wolfsonmicro.com>"
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "http://www.kernel.org/pub/linux/kernel/v2.6/linux-2.6.18.tar.bz2 \
     http://www.kernel.org/pub/linux/kernel/v2.6/testing/patch-2.6.19-rc5.bz2;patch=1 \
@@ -12,18 +11,41 @@ SRC_URI = "http://www.kernel.org/pub/linux/kernel/v2.6/linux-2.6.18.tar.bz2 \
 S = "${WORKDIR}/linux-2.6.18"
 
 COMPATIBLE_HOST = 'arm.*-linux'
+COMPATIBLE_MACHINE = "mx31ads"
 
 inherit kernel
 inherit package
 
 ARCH = "arm"
 KERNEL_IMAGETYPE = "zImage"
+
+# to get module dependencies working
+KERNEL_RELEASE = "2.6.19-rc5"
+
+
 #CMDLINE_ROOT = "root=/dev/mtdblock4 rootfstype=jffs2 mem=32M@0x00000000"
 #CMDLINE = "${CMDLINE_ROOT} ${CMDLINE_CONSOLE}"
 
 do_configure_prepend() {
-	install -m 0644 ${WORKDIR}/imx31ads_defconfig ${S}/.config
+	install -m 0644 ${WORKDIR}/imx31ads_defconfig ${S}/defconfig
+
+        if [ "${TARGET_OS}" == "linux-gnueabi" -o  "${TARGET_OS}" == "linux-uclibcgnueabi" ]; then
+                echo "CONFIG_AEABI=y"                   >> ${S}/.config
+                echo "CONFIG_OABI_COMPAT=y"             >> ${S}/.config
+        else
+                echo "# CONFIG_AEABI is not set"        >> ${S}/.config
+                echo "# CONFIG_OABI_COMPAT is not set"  >> ${S}/.config
+        fi
+
+        sed     -e '/CONFIG_AEABI/d' \
+                -e '/CONFIG_OABI_COMPAT=/d' \
+                '${WORKDIR}/defconfig' >>'${S}/.config'
+
+
 #	echo "CONFIG_CMDLINE=\"${CMDLINE}\"" >> ${S}/.config
+
+	yes '' | oe_runmake oldconfig
+
 }
 
 do_deploy() {
@@ -35,8 +57,4 @@ do_deploy[dirs] = "${S}"
 
 addtask deploy before do_build after do_compile
 
-COMPATIBLE_MACHINE = "mx31ads"
-
-# to get module dependencies working
-KERNEL_RELEASE = "2.6.19-rc5"
 
