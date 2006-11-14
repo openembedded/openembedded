@@ -2,6 +2,7 @@ DESCRIPTION = "Various benchmarking tests for X"
 HOMEPAGE = "http://www.o-hand.com"
 SECTION = "devel"
 LICENSE = "GPL"
+PV = "0.0+svn${SRCDATE}"
 PR = "r1"
 
 inherit autotools
