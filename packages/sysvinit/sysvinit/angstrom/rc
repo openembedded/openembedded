@@ -1,4 +1,5 @@
 #!/bin/sh
+
 #
 # rc		This file is responsible for starting/stopping
 #		services when the runlevel changes.
@@ -18,13 +19,14 @@
 . /etc/default/rcS
 export VERBOSE
 
-if [ $(($num_steps + $first_step)) -lt 1 ]; then
-        numsteps="10"                           
-        first_step="1"                          
-fi    
-
 startup_progress() {
     step=$(($step + $step_change))
+
+    if [ $(($num_steps + $first_step)) -lt 1 ]; then
+        numsteps="1"
+        first_step="0"
+    fi
+
     progress=$(($step * $progress_size / $num_steps + $first_step))
     if type psplash-write >/dev/null 2>&1; then
         TMPDIR=/mnt/.psplash psplash-write "PROGRESS $progress" || true
