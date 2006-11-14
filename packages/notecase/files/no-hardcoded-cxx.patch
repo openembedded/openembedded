@@ -1,0 +1,37 @@
+--- /tmp/Makefile	2006-11-14 12:57:44.000000000 +0100
++++ notecase-1.2.6/Makefile	2006-11-14 13:22:57.858554000 +0100
+@@ -35,7 +35,6 @@
+ 
+ #DEBUG=-g -D_DEBUG
+ 
+-CXX=g++
+ 
+ ifdef WINDIR
+  EXE=.exe
+@@ -63,7 +62,7 @@
+ ifdef WINDIR
+  LD=$(QL) $(CXX) $(DEBUG) $(PROFILE) $(LOPTIMIZE) -L$(OBJ) -lz 
+ else
+- LD=$(QL) $(CXX) $(DEBUG) $(PROFILE) $(LOPTIMIZE) -ldl -export-dynamic $(LOPTIMIZE)
++ NLD=$(QL) $(CXX) $(DEBUG) $(PROFILE) $(LOPTIMIZE) -ldl -export-dynamic $(LOPTIMIZE)
+ endif 
+ 
+ #
+@@ -122,7 +121,7 @@
+ 	$(LD) $(OBJS) -o $(BIN)/notecase$(EXE) $(FLAGS) $(LDFLAGS) $(GTKLIBS)
+ else
+ notecase$(EXE): updatesrc $(OBJS)
+-	$(LD) $(OBJS) -o $(BIN)/notecase$(EXE) $(FLAGS) $(LDFLAGS) $(GTKLIBS)
++	$(NLD) $(OBJS) -o $(BIN)/notecase$(EXE) $(FLAGS) $(LDFLAGS) $(GTKLIBS)
+ endif	
+ 
+ #
+@@ -300,7 +299,7 @@
+ 	$(CC) $(FLAGS) -c $(GUIPATH)/_win/RegisterExtension.cpp -o $(OBJ)/RegisterExtension.o
+ 
+ $(OBJ)/libz.a:
+-	@cd ./src/lib/zlib/; make; cp ./libz.a ../../../$(OBJ)/
++	@cd ./src/lib/zlib/; cp ./libz.a ../../../$(OBJ)/
+ 
+ 
+ # compile Windows resources
