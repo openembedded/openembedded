@@ -11,7 +11,7 @@ PV = "0.4.0+cvs${SRCDATE}"
 SRC_URI = "cvs://anonymous@anoncvs.gnome.org/cvs/gnome;module=libmimedir \
            file://mimedir-update.patch;patch=1 \
            file://mimedir-write-sequence.patch;patch=1;pnum=0 \
-	   file://gslist-fix.patch;patch=1"
+	   file://gslist-fix.patch;patch=1;maxdate=20060814"
 
 S = "${WORKDIR}/libmimedir"
 
