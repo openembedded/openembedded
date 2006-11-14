@@ -41,6 +41,7 @@ SRCDATE_zaurusd ?= "20060628"
 # GPE
 SRCDATE_dasher-gpe  ?= "20060814"
 SRCDATE_rosetta ?= "20060804"
+SRCDATE_libmimedir ?= "20060804"
 
 # GNOME
 SRCDATE_gconf-dbus ?= "20060719"
