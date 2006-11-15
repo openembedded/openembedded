@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 import sys, os, string, getopt, re
 
-mtncmd = "monotone"
+mtncmd = "mtn"
 
 def main(argv = None):
     if argv is None:
@@ -18,10 +18,6 @@ def main(argv = None):
         input = open(list[0], 'r')
         renameFrom = ""
         cmd = ""
-        if reverse:
-            print "patch -R -p0 < %s" % list[0]
-        else:
-            print "patch -p0 < %s" % list[0]
         for line in input:
             if len(line) > 0:
                 if line[0] == '#':
@@ -29,17 +25,17 @@ def main(argv = None):
                     if matches is not None:
                         cmd = matches.group(1)
                         fileName = matches.group(2)
-                        if cmd == "delete_file":
+                        if cmd == "delete":
                             if reverse:
                                 print "%s add %s" % (mtncmd, fileName)
                             else:
                                 print "%s drop -e %s" % (mtncmd, fileName)
-                        elif cmd == "add_file":
+                        elif cmd == "add":
                             if reverse:
                                 print "%s drop -e %s" % (mtncmd, fileName)
                             else:
                                 print "%s add %s" % (mtncmd, fileName)
-                        elif cmd == "rename_file":
+                        elif cmd == "rename":
                             renameFrom = fileName
                         elif cmd == "to" and renameFrom != "":
                             if reverse:
@@ -49,6 +45,10 @@ def main(argv = None):
                             renameFrom = ""
                         else:
                             cmd = ""
+        if reverse:
+            print "patch -R -p0 < %s" % list[0]
+        else:
+            print "patch -p0 < %s" % list[0]
 
 if __name__ == "__main__":
     sys.exit(main())
