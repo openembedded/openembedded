@@ -18,8 +18,6 @@ ac_cv_linux_vers=${ac_cv_linux_vers=2}
 # libnet 
 ac_cv_lbl_unaligned_fail=${ac_cv_lbl_unaligned_fail=no}
 ac_libnet_have_packet_socket=${ac_libnet_have_packet_socket=yes}
-ac_cv_c_littleendian=${ac_cv_c_littleendian=yes}
-ac_cv_c_bigendian=${ac_cv_c_bigendian=no}
 
 # ssh
 ac_cv_have_space_d_name_in_struct_dirent=${ac_cv_dirent_have_space_d_name=yes}

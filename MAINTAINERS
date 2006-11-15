@@ -81,6 +81,11 @@ Person:     Leon Woestenberg
 Mail:       leonw@mailcan.com
 Interests:  SquashFS, LZMA
 
+Person:	    Liam Girdwoord
+Mail:       liam.girdwood@wolfsonmicro.com
+Machines:   mx31ads
+Recipes:    mx31ads-kernel*	
+
 Person:     Marcin Juszkiewicz
 Mail:       hrw@openembedded.org
 Website:    http://www.hrw.one.pl/

@@ -21,8 +21,10 @@ SRCDATE_xxf86vmext ?= "20060814"
 # Matchbox / O-hand
 SRCDATE_contacts ?= "20060707"
 SRCDATE_dates ?= "20060707"
-SRCDATE_web ?= "20060613"
+SRCDATE_fstests ?= "20061111"
 SRCDATE_eds-dbus ?= "20060707"
+SRCDATE_libmatchbox ?= "20060612"
+SRCDATE_libfakekey ?= "20051101"
 SRCDATE_matchbox-common ?= "20060612"
 SRCDATE_matchbox-config-gtk ?= "20060612"
 SRCDATE_matchbox-desktop ?= "20060612"
@@ -32,14 +34,14 @@ SRCDATE_matchbox-panel-manager ?= "20060612"
 SRCDATE_matchbox-stroke ?= "20060612"
 SRCDATE_matchbox-themes-extra ?= "20060612"
 SRCDATE_matchbox-wm ?= "20060612"
-SRCDATE_libmatchbox ?= "20060612"
-SRCDATE_libfakekey ?= "20051101"
 SRCDATE_psplash ?= "20061011"
+SRCDATE_web ?= "20060613"
 SRCDATE_zaurusd ?= "20060628"
 
 # GPE
 SRCDATE_dasher-gpe  ?= "20060814"
 SRCDATE_rosetta ?= "20060804"
+SRCDATE_libmimedir ?= "20060804"
 
 # GNOME
 SRCDATE_gconf-dbus ?= "20060719"
