@@ -1,5 +1,5 @@
 require gst-plugins.inc
-PROVIDES_${PN} += "gst-plugins"
+PROVIDES += "gst-plugins"
 
 do_stage() {
        autotools_stage_all
