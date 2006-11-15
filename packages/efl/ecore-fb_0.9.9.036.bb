@@ -20,8 +20,10 @@ EXTRA_OECONF = "--enable-ecore-fb \
 		--disable-curl \
 		--without-curl-config \
 		--enable-ecore-config \
+        --enable-ecore-desktop \
 		--disable-openssl"
 
 parts = "Ecore Ecore_Job Ecore_File Ecore_DBus \
 	 Ecore_Txt Ecore_Fb Ecore_Con \
-	 Ecore_Ipc Ecore_Evas Ecore_Config"
+	 Ecore_Ipc Ecore_Evas Ecore_Config \
+     Ecore_Desktop"
