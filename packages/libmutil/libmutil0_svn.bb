@@ -1,21 +1,16 @@
-PV = "0.2.2+svn${SRCDATE}"
-LICENSE = "LGPL"
-
 DESCRIPTION = "Class library implementing utilities for C++ programming"
+LICENSE = "LGPL"
 SECTION = "libs"
 PRIORITY = "optional"
+
 DEPENDS = "openssl"
-DEFAULT_PREFERENCE=-1
 
-inherit autotools
+PV = "0.3.1+svn${SRCDATE}"
 
-SRC_URI = "svn://svn.minisip.org/var/svn/minisip/trunk;module=libmutil"
-S="${WORKDIR}/libmutil"
+inherit autotools lib_package
 
-
-PACKAGES = "${PN}"
-
-FILES_${PN} = " ${libdir}/libmutil.so.0 ${libdir}/libmutil.so.0.0.0 " 
+SRC_URI = "svn://svn.minisip.org/minisip/trunk;module=libmutil"
+S = "${WORKDIR}/libmutil"
 
 do_stage() {
 	oe_libinstall -a -so libmutil ${STAGING_LIBDIR}
