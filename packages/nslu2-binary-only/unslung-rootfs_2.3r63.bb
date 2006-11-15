@@ -1,7 +1,7 @@
 SECTION = "base"
 COMPATIBLE_MACHINE = "nslu2"
 
-PR = "r17"
+PR = "r18"
 
 DEPENDS = "nslu2-linksys-libs nslu2-linksys-sambacodepages"
 
@@ -165,7 +165,7 @@ do_compile () {
 
 	# No reason not to have a home directory for root...
 	mkdir -p ${S}/root
-	chmod 775 ${S}/root
+	chmod 755 ${S}/root
 }
 
 do_install () {
