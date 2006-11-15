@@ -27,7 +27,7 @@ DL_DIR = "${HOME}/sources"
 BBFILES := "${@bb.fatal('Edit your conf/local.conf: BBFILES')}"
 
 # Use the BBMASK below to instruct BitBake to _NOT_ consider some .bb files
-# This is a regulary expression, so be sure to get your parenthesis balanced.
+# This is a regular expression, so be sure to get your parenthesis balanced.
 BBMASK = ""
 
 # Uncomment this if you want to use a prebuilt toolchain. You will need to
