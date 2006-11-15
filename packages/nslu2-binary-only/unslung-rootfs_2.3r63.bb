@@ -1,6 +1,7 @@
 SECTION = "base"
+COMPATIBLE_MACHINE = "nslu2"
 
-PR = "r16"
+PR = "r17"
 
 DEPENDS = "nslu2-linksys-libs nslu2-linksys-sambacodepages"
 
@@ -57,13 +58,6 @@ SRC_URI = "http://nslu.sf.net/downloads/nslu2-linksys-ramdisk-2.3r63-2.tar.bz2 \
 	   "
 
 S = "${WORKDIR}/nslu2-linksys-ramdisk-2.3r63"
-
-python () {
-	# Don't build unslung images unless we're targeting an nslu2
-	mach = bb.data.getVar("MACHINE", d, 1)
-	if mach != 'nslu2':
-		raise bb.parse.SkipPackage("Unslung only builds for the Linksys NSLU2")
-}
 
 do_compile () {
 	echo "V2.3R63-uNSLUng-${DISTRO_VERSION}" > ${S}/.unslung

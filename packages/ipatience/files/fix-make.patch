@@ -1,0 +1,569 @@
+diff -urNd ../ipatience-0.1-r2/ipatience/build/Makefile.dpkg_ipkg ipatience/build/Makefile.dpkg_ipkg
+--- ../ipatience-0.1-r2/ipatience/build/Makefile.dpkg_ipkg	1970-01-01 00:00:00.000000000 +0000
++++ ipatience/build/Makefile.dpkg_ipkg	2006-11-08 16:41:55.000000000 +0000
+@@ -0,0 +1,114 @@
++## Please read the README in this directory to see how to use this
++## Makefile snippet
++
++# Let's use whatever clean target the specific app provides
++
++CONTROL = `if test -e familiar/control1; then echo control1; else echo control; fi`
++
++# URL to source tarball
++SOURCE = ftp://gpe.handhelds.org/projects/gpe/source/$(PACKAGE)-$(VERSION).tar.gz
++
++# can change this to e.g. /var/tmp/deb
++DEB_PATH = ../deb
++
++ifeq ($(CVSBUILD),yes)
++LIBGPEWIDGET_PC = libgpewidget-uninstalled
++PC_EXTRA=PKG_CONFIG_PATH=../../base/libgpewidget
++else
++LIBGPEWIDGET_PC = libgpewidget
++endif
++
++ifeq ($(IN_LIBGPEWIDGET),)
++GPECFLAGS = $(shell $(PC_EXTRA) pkg-config --cflags $(LIBGPEWIDGET_PC))
++GPELIBS = $(shell $(PC_EXTRA) pkg-config --libs $(LIBGPEWIDGET_PC))
++endif
++
++GTKCFLAGS = $(shell pkg-config --cflags gtk+-2.0)
++GTKLIBS = $(shell pkg-config --libs gtk+-2.0)
++
++STANDARD_CPPFLAGS = -D_GNU_SOURCE -DPACKAGE=\"$(PACKAGE)\" -DPREFIX=\"$(PREFIX)\" -DPACKAGE_LOCALE_DIR=\"$(PREFIX)/share/locale\"
++STANDARD_CFLAGS = -MD -Wall
++
++ifeq ($(DEBUG),yes)
++CFLAGS += -O2 -g
++LDFLAGS = -g
++else
++CFLAGS += -Os -fomit-frame-pointer
++endif
++
++dist: check-source clean dist-prep
++	rm -rf ../$(PACKAGE)-$(VERSION)
++	mkdir ../$(PACKAGE)-$(VERSION)
++	( tar cf - --exclude "*/CVS" --exclude CVS --exclude "*~" --exclude "#*#" --exclude "debian" --exclude ".*" --exclude "*.ipk" --exclude "*.ipk.*" --exclude "*.mo" --exclude "*.batch" --exclude "translation-ipkgs.txt" * ) | (cd ../$(PACKAGE)-$(VERSION); tar xf -)
++	( if [ -f linguas ]; then LINGUAS=`cat linguas`; PATCH_LINGUAS="s:^LINGUAS =.*:LINGUAS = $${LINGUAS}:"; fi; cd ../$(PACKAGE)-$(VERSION) && mkdir build && cp $(BUILD)/Makefile.dpkg_ipkg $(BUILD)/Makefile.translation build/ && sed "s:^CVSBUILD =.*:CVSBUILD = no:;s:^DEBUG =.*:DEBUG = no:;s:Makefile.translation-auto-linguas:Makefile.translation:;$${PATCH_LINGUAS}" < Makefile > Makefile.new && mv Makefile.new Makefile )
++	( cd .. ; tar cf - $(PACKAGE)-$(VERSION) | gzip -9 >$(PACKAGE)-$(VERSION).tar.gz )
++	rm -rf ../$(PACKAGE)-$(VERSION)
++	$(MAKE) printinfo
++
++dist-upload: dist
++	scp ../$(PACKAGE)-$(VERSION).tar.gz $(USER)@handhelds.org:/home/ftp/projects/gpe/source/
++
++dist-prep:
++ipkg-prep:
++install-mo:
++# empty, can be filled in Makefile.translation
++
++install: install-program install-mo
++
++clean-dist:
++	rm -rf familiar/dist familiar/dist.list
++
++clean: clean-dist
++
++check-source:
++	@if [ -f familiar/$(CONTROL) ] && ! grep -q '^Source:' familiar/$(CONTROL); then echo -e "\nNo Source: field in control file.  Aborting.\n"; exit 1; fi
++
++ipkg: check-source ipkg-prep clean
++	rm -rf familiar/dist
++	mkdir -p familiar/dist/CONTROL
++	sed 's:VERSION:$(VERSION):;s$$SOURCE$$$(SOURCE)$$' < familiar/$(CONTROL) > familiar/dist/CONTROL/control
++	if test -e familiar/conffiles; then install -m 644 familiar/conffiles familiar/dist/CONTROL; fi
++	if test -e familiar/preinst;   then install familiar/preinst   familiar/dist/CONTROL; fi
++	if test -e familiar/postinst;  then install familiar/postinst  familiar/dist/CONTROL; fi
++	if test -e familiar/prerm;     then install familiar/prerm     familiar/dist/CONTROL; fi
++	if test -e familiar/postrm;    then install familiar/postrm    familiar/dist/CONTROL; fi
++	$(MAKE) DESTDIR=`pwd`/familiar/dist PREFIX=/usr prefix=/usr DEBUG=no install-program
++	rm -rf familiar/dist.list
++	ipkg-build -o 0 -g 0 familiar/dist | sed 's/^Packaged .*into //; t 1; d; : 1; s:.*/::' >> familiar/dist.list
++	if [ "x$(LINGUAS)" != "x" ]; then make translation-ipkg; tr ' ' '\n' < translation-ipkgs.txt >> familiar/dist.list; fi
++	md5sum `cat familiar/dist.list` > $(PACKAGE)_$(VERSION).batch
++	rm -rf familiar/dist familiar/dist.list
++	$(MAKE) printinfo
++
++dpkg: dist
++	mkdir -p $(DEB_PATH)
++	( olddir=`pwd`; cd $(DEB_PATH); rm -rf $(PACKAGE)-$(VERSION); ln -s $$olddir/../$(PACKAGE)-$(VERSION).tar.gz $(PACKAGE)_$(VERSION).orig.tar.gz ; tar xzf $(PACKAGE)_$(VERSION).orig.tar.gz )
++	mkdir -p $(DEB_PATH)/$(PACKAGE)-$(VERSION)/debian
++	for i in debian/*; do if test -f $$i; then cp $$i $(DEB_PATH)/$(PACKAGE)-$(VERSION)/debian/; fi; done
++
++CVSTAG := $(shell echo $(PACKAGE)-$(VERSION) | tr [a-z.] [A-Z_])
++printinfo:
++	@printf '-------------------------------------------------------------------------------\n'
++	@printf "If this becomes a package release, please add a CVS tag.\n"
++	@printf "You can use 'make tag' for that, it will execute\n"
++	@printf "   cvs tag %s\n" $(CVSTAG)
++	@printf "Please upload a tarball (created with 'make dist') to\n"
++	@printf "   ftp://ftp.handhelds.org/pub/projects/gpe/\n"
++	@printf "   (handhelds.org:~ftp/pub/projects/gpe/source)\n"
++	@printf "You can use 'make dist-upload' to do that.\n"
++	@printf "You are currently known as USER %s.\n" $(USER)
++	@printf '-------------------------------------------------------------------------------\n'
++
++tag: check-source
++	cvs tag $(CVSTAG)
++
++retag: check-source
++	cvs tag -F $(CVSTAG)
++
++source: tag dist-upload
++
++%.pc: %.pc.in
++	sed 's:PREFIX:$(PREFIX):;s:BUILDDIR:$(shell pwd):;s:VERSION:$(VERSION):' < $< > $@
++
++.c.o:;
++	$(CC) $(CFLAGS) $(CPPFLAGS) $(PACKAGE_CFLAGS) $(PACKAGE_CPPFLAGS) -c $< -o $@
+diff -urNd ../ipatience-0.1-r2/ipatience/build/Makefile.translation ipatience/build/Makefile.translation
+--- ../ipatience-0.1-r2/ipatience/build/Makefile.translation	1970-01-01 00:00:00.000000000 +0000
++++ ipatience/build/Makefile.translation	2006-11-08 16:41:55.000000000 +0000
+@@ -0,0 +1,107 @@
++.SUFFIXES: .mo .po .pot .po8
++
++CONTROL = `if test -e familiar/control1; then echo control1; else echo control; fi`
++
++# use ipkg-build or ipkg-deb-build
++IPKG_BUILD := ipkg-build
++
++TRANSLATION_SITE := http://www.iro.umontreal.ca/~gnutra/maint
++
++ifeq ($(DIR_PO),)
++DIR_PO := po
++endif
++
++ifeq ($(BINPACKAGE),)
++BINPACKAGE := $(PACKAGE)
++endif
++
++mo-files = $(patsubst %,$(DIR_PO)/%.mo,$(LINGUAS))
++po-files = $(patsubst %,$(DIR_PO)/%.po,$(LINGUAS))
++
++ifeq ($(shell if [ -f $(PACKAGE).desktop.in ]; then echo present; fi;),present)
++desktop-files += $(PACKAGE).desktop
++endif
++
++ifneq ($(EXTRA_DESKTOPS),)
++desktop-files += $(patsubst %.desktop.in,%.desktop,$(EXTRA_DESKTOPS))
++endif
++
++all-mo: $(mo-files)
++
++all-desktop: $(desktop-files)
++
++install-mo: all-mo
++	if [ "$(ENABLE_NLS)" != "no" ]; then \
++		if [ "x$(LINGUAS)" != "x" ]; then \
++			for i in $(LINGUAS); do mkdir -p $(DESTDIR)$(PREFIX)/share/locale/$$i/LC_MESSAGES; install -m 644 $(DIR_PO)/$$i.mo $(DESTDIR)$(PREFIX)/share/locale/$$i/LC_MESSAGES/$(PACKAGE).mo; done \
++		fi; \
++	fi;
++
++.po8.mo:;
++	if [ "$(ENABLE_NLS)" != "no" ]; then \
++		msgfmt -o $@ $<; \
++	fi;
++
++.po.po8:;
++	CTYPE=`grep "^\"Content-Type:" $< | sed 's/^.*charset=//;s/\\\\.*//'`; sed "s/\(Content-Type: .*=\)$$CTYPE/\1UTF-8/" < $< | iconv -f $${CTYPE} -t UTF-8 >$@
++
++update-po: $(po-files) extract-po
++
++dist-prep: update-po freshen-po
++# empty
++
++ifeq ($(CVSBUILD),yes)
++ipkg-prep: freshen-po
++# empty
++endif
++
++extract-po:
++	mkdir -p $(DIR_PO)
++	( SOURCES="$(SOURCES)"; for DESK in $(PACKAGE).desktop.in $(EXTRA_DESKTOPS); do if [ -f $$DESK ]; then intltool-extract --type=gettext/ini $$DESK; SOURCES="$$SOURCES $${DESK}.h"; fi; done; if [ "x$$SOURCES" != "x" ]; then xgettext --add-comments=TRANSLATORS: -k_ -kN_ -o $(DIR_PO)/$(PACKAGE).pot.new $$SOURCES; fi )
++	if [ -f $(DIR_PO)/$(PACKAGE).pot.new ]; then if cmp -s $(DIR_PO)/$(PACKAGE).pot.new $(PACKAGE).pot; then rm $(DIR_PO)/$(PACKAGE).pot.new; else mv $(DIR_PO)/$(PACKAGE).pot.new $(DIR_PO)/$(PACKAGE).pot; fi; fi
++
++clean: clean-po clean-dist-translation
++
++clean-po:
++	rm -rf $(DIR_PO)/*.mo
++	for i in $(desktop-files); do if [ -f $$i.in ]; then rm -f $$i; rm -f $$i.in.h; fi; done
++
++%.desktop: %.desktop.in $(patsubst %,$(DIR_PO)/%.po,$(LINGUAS))
++	intltool-merge -u -d $(DIR_PO) $< $@
++
++freshen-po:
++	rm -rf tmp-po
++	mkdir tmp-po
++	cd tmp-po; for LANG in $(LINGUAS); do wget $(TRANSLATION_SITE)/$(PACKAGE)/$$LANG.po; done
++	for LANG in $(LINGUAS); do if [ ! -f $(DIR_PO)/$$LANG.po ] || ! cmp -s $(DIR_PO)/$$LANG.po tmp-po/$$LANG.po ; then mv tmp-po/$$LANG.po $(DIR_PO)/$$LANG.po; echo "Updated $$LANG translation"; fi; done
++	rm -rf tmp-po
++
++# ------------------------------------------------------------------------
++
++MAINTAINER = $(shell grep 'Maintainer: ' familiar/$(CONTROL) | cut -d ' ' -f 2-)
++
++ifndef BUILD
++BUILD = ../build
++endif
++
++transdist := familiar/dist-translation
++templates := $(BUILD)/familiar
++ipkglist  := translation-ipkgs.txt
++
++clean-dist-translation:
++	rm -rf $(transdist) $(ipkglist)
++
++real-translation-package: all-mo
++	rm -rf $(transdist) $(ipkglist)
++	for LINGUA in $(LINGUAS); do \
++		i=$$(echo $$LINGUA | tr '[A-Z_]' '[a-z+]'); \
++		mkdir -p $(transdist)/$$i/CONTROL; \
++		mkdir -p $(transdist)/$$i$(PREFIX)/share/locale/$$LINGUA/LC_MESSAGES; \
++		install -m 644 po/$$LINGUA.mo $(transdist)/$$i$(PREFIX)/share/locale/$$LINGUA/LC_MESSAGES/$(PACKAGE).mo; \
++		sed -e "s/<maintainer>/$(MAINTAINER)/;s/<package>/$(BINPACKAGE)/;s/<version>/$(VERSION)/;s/<language>/$$i/;s!<source>!$(SOURCE)!" $(templates)/control.translation > $(transdist)/$$i/CONTROL/control; \
++		install $(templates)/postinst.translation $(transdist)/$$i/CONTROL/postinst; \
++		$(IPKG_BUILD) -g 0 -o 0 $(transdist)/$$i | sed 's/^Packaged .*into //; t 1; d; : 1; s:.*/::' >> $(ipkglist); \
++	done
++
++translation-ipkg:
++	make PREFIX=/usr real-translation-package
+diff -urNd ../ipatience-0.1-r2/ipatience/Imakefile ipatience/Imakefile
+--- ../ipatience-0.1-r2/ipatience/Imakefile	2001-01-31 05:25:03.000000000 +0000
++++ ipatience/Imakefile	1970-01-01 00:00:00.000000000 +0000
+@@ -1,11 +0,0 @@
+-LOCAL_LIBRARIES=-lfltk $(XFTLIB) $(XLIB) -lm
+-SRCS=main.cc table.cc cards.cc\
+-     aces.cc calc.cc canfield.cc eight.cc freecell.cc \
+-     golf.cc klondike.cc montana.cc spider.cc spiderette.cc \
+-     tabby.cc towers.cc vegas.cc wish.cc yukon.cc
+-OBJS=main.o table.o cards.o \
+-     aces.o calc.o canfield.o eight.o freecell.o \
+-     golf.o klondike.o montana.o spider.o spiderette.o \
+-     tabby.o towers.o vegas.o wish.o yukon.o
+-
+-ComplexProgramTarget(ipatience)
+diff -urNd ../ipatience-0.1-r2/ipatience/ipatience.desktop ipatience/ipatience.desktop
+--- ../ipatience-0.1-r2/ipatience/ipatience.desktop	1970-01-01 00:00:00.000000000 +0000
++++ ipatience/ipatience.desktop	2006-11-11 15:59:25.000000000 +0000
+@@ -0,0 +1,9 @@
++[Desktop Entry]
++Name=Ipatience
++Comment=The Patience Game
++Exec=ipatience -small
++Terminal=0
++Type=Application
++Icon=ipatience.xpm
++Categories=Games
++StartupNotify=True
+diff -urNd ../ipatience-0.1-r2/ipatience/ipatience.xpm ipatience/ipatience.xpm
+--- ../ipatience-0.1-r2/ipatience/ipatience.xpm	1970-01-01 00:00:00.000000000 +0000
++++ ipatience/ipatience.xpm	2006-11-11 15:58:52.000000000 +0000
+@@ -0,0 +1,194 @@
++/* XPM */
++static char * ipatience_xpm[] = {
++"32 32 159 2",
++"  	c None",
++". 	c #000000",
++"+ 	c #181817",
++"@ 	c #525251",
++"# 	c #595959",
++"$ 	c #464644",
++"% 	c #0D0D0D",
++"& 	c #F4F4F1",
++"* 	c #ECEDEB",
++"= 	c #E6E9E9",
++"- 	c #F1F1EE",
++"; 	c #D5D3D0",
++"> 	c #151515",
++", 	c #748AA2",
++"' 	c #71879E",
++") 	c #6E839A",
++"! 	c #6C8197",
++"~ 	c #657B92",
++"{ 	c #95A4B4",
++"] 	c #D9D8D5",
++"^ 	c #4D6780",
++"/ 	c #3B4B5C",
++"( 	c #39414A",
++"_ 	c #344353",
++": 	c #494E53",
++"< 	c #616364",
++"[ 	c #1C1C1C",
++"} 	c #5C738A",
++"| 	c #41596F",
++"1 	c #4E5152",
++"2 	c #DEDEDB",
++"3 	c #E0DFDB",
++"4 	c #E2E2DE",
++"5 	c #E5E5E3",
++"6 	c #BCBBB8",
++"7 	c #546C82",
++"8 	c #59636D",
++"9 	c #B5BEC7",
++"0 	c #99A9B9",
++"a 	c #97A7B8",
++"b 	c #909FAF",
++"c 	c #364D62",
++"d 	c #5F6163",
++"e 	c #3E576C",
++"f 	c #3E5266",
++"g 	c #384757",
++"h 	c #8B8B8A",
++"i 	c #495D73",
++"j 	c #456079",
++"k 	c #2F4457",
++"l 	c #A1A09F",
++"m 	c #999896",
++"n 	c #9B9B9A",
++"o 	c #A3A3A2",
++"p 	c #4D4D4C",
++"q 	c #445B71",
++"r 	c #D4CBC6",
++"s 	c #777572",
++"t 	c #ADABA7",
++"u 	c #EAE9E6",
++"v 	c #52677C",
++"w 	c #334A5E",
++"x 	c #4C667E",
++"y 	c #94928F",
++"z 	c #6A6967",
++"A 	c #D3D1CD",
++"B 	c #E8E7E2",
++"C 	c #6B7F95",
++"D 	c #4D6276",
++"E 	c #5C7186",
++"F 	c #959593",
++"G 	c #686765",
++"H 	c #585654",
++"I 	c #B0AFAD",
++"J 	c #394E62",
++"K 	c #A19F9C",
++"L 	c #DAD7D3",
++"M 	c #ADADA9",
++"N 	c #283745",
++"O 	c #D3C3BC",
++"P 	c #C48F7D",
++"Q 	c #C88167",
++"R 	c #C8866E",
++"S 	c #CA9989",
++"T 	c #677B8F",
++"U 	c #62778C",
++"V 	c #CD7C60",
++"W 	c #ED8247",
++"X 	c #FB9B53",
++"Y 	c #F58E4B",
++"Z 	c #DF6F3C",
++"` 	c #E97B42",
++" .	c #F88D4A",
++"..	c #D85B31",
++"+.	c #E5E7E8",
++"@.	c #C39587",
++"#.	c #FEA458",
++"$.	c #F47C3F",
++"%.	c #F4763B",
++"&.	c #EE612E",
++"*.	c #E44C22",
++"=.	c #C1492E",
++"-.	c #C2AAA3",
++";.	c #BD7A67",
++">.	c #F98442",
++",.	c #F26C35",
++"'.	c #E9592A",
++").	c #E2431D",
++"!.	c #DC3C1A",
++"~.	c #D63113",
++"{.	c #C54022",
++"].	c #B3948C",
++"^.	c #5B6E82",
++"/.	c #BC887A",
++"(.	c #E2582B",
++"_.	c #ED5727",
++":.	c #D83817",
++"<.	c #D32D12",
++"[.	c #CD240D",
++"}.	c #C71A08",
++"|.	c #CE2F12",
++"1.	c #BD482C",
++"2.	c #B9A49E",
++"3.	c #B9C1C5",
++"4.	c #9CA3A7",
++"5.	c #6B6A69",
++"6.	c #2A3846",
++"7.	c #CBC3BF",
++"8.	c #BE533A",
++"9.	c #CB2A0F",
++"0.	c #C93F1D",
++"a.	c #AE6B5A",
++"b.	c #CDCBC8",
++"c.	c #302F2E",
++"d.	c #8A8987",
++"e.	c #53697C",
++"f.	c #CA1D0A",
++"g.	c #C33C1C",
++"h.	c #C5BCB8",
++"i.	c #C6B4AE",
++"j.	c #B05D4D",
++"k.	c #C42D14",
++"l.	c #B73F22",
++"m.	c #A87164",
++"n.	c #85929D",
++"o.	c #7C8B97",
++"p.	c #44566A",
++"q.	c #B36A5B",
++"r.	c #C8371A",
++"s.	c #B34428",
++"t.	c #A57F75",
++"u.	c #CBC9C7",
++"v.	c #A88178",
++"w.	c #868683",
++"x.	c #7F7F7D",
++"y.	c #C6C5C2",
++"z.	c #72716F",
++"A.	c #262625",
++"B.	c #50504F",
++"                                                                ",
++"    . . . . . . . . . . . . . . . . .                           ",
++"  . + @ # # # # # # # # # # # # # $ % . .                       ",
++"  . @ & * * = * * = = * * = = * - ; > . . .                     ",
++"  . # * , , , , ' ' ) ) ! ! ! ~ { ] + . .                       ",
++"  . # = ~ ^ / ( ( _ ( ( ( ( ( ( : < [ + + > . . .               ",
++"  . # = } | 1 ] ] 2 2 2 2 2 2 2 2 2 3 4 5 6 % . . .             ",
++"  . # = ' 7 8 - 9 0 0 a a a a { { { { b 9 2 + . .               ",
++"  . # = 7 c d = ! } 7 e : f / / / / g g 8 h % . . . . .         ",
++"  . # = ~ i < = 7 j k d l m n o l l l l o o o o o o p . . .     ",
++"  . # = ~ q < = ' ~ / o r s t 4 4 4 u u u * * * & & m . . .     ",
++"  . # = v w d = } x k o y z z A 4 4 4 4 4 4 B u = - m . . .     ",
++"  . # = C D < = E x k F G G H I 4 4 4 4 B u u u = & m . . .     ",
++"  . # = 7 J < = ! ~ / h K L M l r 3 4 4 L L 5 * * & n . . .     ",
++"  . # = 7 / < = x q N n 4 3 O P Q R S S Q Q S L * - n . . .     ",
++"  . # = T i < = U 7 _ o u r V W X Y Z `  .` ..P ] - m . . .     ",
++"  . # +.D k d = U 7 ( o B @.` #.X  .$.$.%.&.*.=.-.- n . . .     ",
++"  . # = E f d = D e N o 3 ;.$.>.,.'.'.).!.~.~.{.].* n . . .     ",
++"  . # = ^.f d = T } g l 5 /.(._.).:.:.<.[.}.|.1.2.- n . . .     ",
++"  . # & 3.4.5.= v q 6.o * 7.8.!.<.<.[.[.}.9.0.a.b.- m . . .     ",
++"  . c.F l d.G 5 e.q N o & u -.8.|.[.f.}.9.g.a.h.5 & m . . .     ",
++"  . . . . . # = E v ( o & u 4 i.j.k.[.9.l.m.7.5 * & n . . .     ",
++"    . . . . # * n.o.p.l & u * u 7.q.r.s.t.u.A 5 - 2 h . . .     ",
++"    . . . . $ A L 3 h o & - * * u r q.v.A * t F b.w.x.. . .     ",
++"          . . + + + % o & * * * * u ; L u - y.@ # s F . . .     ",
++"            . . . . . o & * * * * * * * * * u w.z.I n . . .     ",
++"            . . . . . F & - * * * - * - * - - u.m 4 h . . .     ",
++"              . .   . A.B.@ B.@ B.B.@ @ @ B.@ @ @ @ A.. . .     ",
++"                    . . . . . . . . . . . . . . . . . . . .     ",
++"                      . . . . . . . . . . . . . . . . . . .     ",
++"                      . . . . . . . . . . . . . . . . . . .     ",
++"                                                                "};
+diff -urNd ../ipatience-0.1-r2/ipatience/main.cc ipatience/main.cc
+--- ../ipatience-0.1-r2/ipatience/main.cc	2001-02-09 08:15:27.000000000 +0000
++++ ipatience/main.cc	2006-11-02 16:37:55.000000000 +0000
+@@ -549,7 +549,7 @@
+ 
+ int main (int argc, char **argv) {
+     int i;
+-    small = -1;
++    small = 0;
+     Fl::args(argc,argv,i,arg_cb);
+     fl_open_display ();
+     if (small == -1)
+diff -urNd ../ipatience-0.1-r2/ipatience/Makefile ipatience/Makefile
+--- ../ipatience-0.1-r2/ipatience/Makefile	1970-01-01 00:00:00.000000000 +0000
++++ ipatience/Makefile	2006-11-10 18:03:49.000000000 +0000
+@@ -0,0 +1,39 @@
++PREFIX = /usr
++PACKAGE = ipatience
++DEBUG = no
++CVSBUILD = no
++VERSION = 0.10
++
++MEMBERS = main aces calc canfield cards eight freecell golf klondike main montana spider spiderette tabby table towers vegas wish yukon 
++
++PACKAGE_CPPFLAGS += $(STANDARD_CPPFLAGS)
++PACKAGE_CFLAGS += $(STANDARD_CFLAGS) 
++PACKAGE_LDFLAGS += $(STANDARD_LDFLAGS) -lfltk -lm
++
++DEPS = $(patsubst %,%.d,$(MEMBERS))
++OBJS = $(patsubst %,%.o,$(MEMBERS))
++SOURCES = $(patsubst %,%.cc,$(MEMBERS))
++
++ifeq ($(CVSBUILD),yes)
++BUILD = ../build
++else
++BUILD = build
++endif
++
++all: ipatience
++
++ipatience: $(OBJS)
++	$(CXX) -o $@ $^ $(LDFLAGS) $(PACKAGE_LDFLAGS)
++
++install-program: all ipatience.desktop
++	install -d $(DESTDIR)$(PREFIX)/bin
++	install -s ipatience $(DESTDIR)$(PREFIX)/bin/ipatience
++	install -d $(DESTDIR)$(PREFIX)/share/applications
++	install -m 644 ipatience.desktop $(DESTDIR)$(PREFIX)/share/applications/
++	install -D -m 644 ipatience.xpm $(DESTDIR)$(PREFIX)/share/pixmaps/ipatience.xpm
++
++clean: 
++	rm -f ipatience $(OBJS) $(DEPS) *.ipk *~ *.bak
++
++include $(BUILD)/Makefile.dpkg_ipkg
++-include $(DEPS)
+diff -urNd ../ipatience-0.1-r2/ipatience/table.cc ipatience/table.cc
+--- ../ipatience-0.1-r2/ipatience/table.cc	2001-06-22 00:32:12.000000000 +0000
++++ ipatience/table.cc	2006-11-10 17:06:56.000000000 +0000
+@@ -231,9 +231,9 @@
+ 	suit_bitmap = suit[Suit(card) >> 4];
+ 	
+ 	if (rank_bitmap != 0)
+-	    rank_width = rank_bitmap->w;
++	    rank_width = (short) rank_bitmap->w();
+ 	if (suit_bitmap != 0)
+-	    suit_width = suit_bitmap->w;
++	    suit_width = (short) suit_bitmap->w();
+     
+ 	if (horizontal)
+ 	{
+@@ -723,7 +723,7 @@
+ }
+ 
+ static PatI
+-abs (PatI x)
++absx (PatI x)
+ {
+     return x >= 0 ? x : -x;
+ }
+@@ -735,7 +735,7 @@
+ 	game.srcCard != NullIndex)
+     {
+ 	if (getTimeInMillis () >= downTime + TRACK_TIMEOUT ||
+-	    abs (x - downX) > TRACK_BOX || abs (y - downY) > TRACK_BOX)
++	    absx (x - downX) > TRACK_BOX || absx (y - downY) > TRACK_BOX)
+ 	{
+ 	    tracking = CardStartAnimate (x, y,
+ 					 game.srcStack, 
+@@ -985,17 +985,17 @@
+ 	cardLabelHeight = 0;
+ 	for (i = 0; i < 13; i++)
+ 	{
+-	    if (rank[0]->w > cardLabelWidth)
+-		cardLabelWidth = rank[0]->w;
+-	    if (rank[0]->h > cardLabelHeight)
+-		cardLabelHeight = rank[0]->h;
++	    if (rank[0]->w() > cardLabelWidth)
++		cardLabelWidth = rank[0]->w();
++	    if (rank[0]->h() > cardLabelHeight)
++		cardLabelHeight = rank[0]->h();
+ 	}
+ 	for (i = 0; i < 4; i++)
+ 	{
+-	    if (suit[0]->w > cardLabelWidth)
+-		cardLabelWidth = suit[0]->w;
+-	    if (suit[0]->h > cardLabelHeight)
+-		cardLabelHeight = suit[0]->h;
++	    if (suit[0]->w() > cardLabelWidth)
++		cardLabelWidth = suit[0]->w();
++	    if (suit[0]->h() > cardLabelHeight)
++		cardLabelHeight = suit[0]->h();
+ 	}
+     }
+     else

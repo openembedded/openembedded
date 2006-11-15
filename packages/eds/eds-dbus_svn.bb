@@ -18,7 +18,7 @@ S = "${WORKDIR}/trunk"
 inherit autotools pkgconfig
 
 # -ldb needs this on some platforms
-export LDFLAGS += "-lpthread"
+LDFLAGS += "-lpthread"
 
 EXTRA_OECONF = "--without-openldap --with-dbus --without-bug-buddy --without-soup --with-libdb=${STAGING_DIR}/${HOST_SYS} --disable-smime --disable-nss --disable-nntp --disable-gtk-doc"
 
