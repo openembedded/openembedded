@@ -20,6 +20,7 @@ EXTRA_OECONF = "--x-includes=${STAGING_INCDIR}/X11  \
 		--enable-scale-sample		\
 		--enable-scale-smooth		\
 		--enable-convert-yuv		\
+        --disable-image-loader-svg  \
 		--disable-convert-8-rgb-332	\
 		--disable-convert-8-rgb-666	\
 		--disable-convert-8-rgb-232	\
