@@ -1,0 +1,67 @@
+
+#
+# Patch managed by http://www.holgerschurig.de/patcher.html
+#
+
+--- qpealarmclock/AlarmDetails.h~fix_compile
++++ qpealarmclock/AlarmDetails.h
+@@ -63,26 +63,9 @@
+ 
+        WEEKDAYS_IGNORE    = 0xFF    // do not change any days
+     };
+-       
+-    static const Weekdays flags[] =
+-    {
+-      WEEKDAYS_MONDAY,
+-      WEEKDAYS_TUESDAY,
+-      WEEKDAYS_WEDNSDAY,
+-      WEEKDAYS_THURSDAY,
+-      WEEKDAYS_FRIDAY,
+-      WEEKDAYS_SATURDAY,
+-      WEEKDAYS_SUNDAY
+-    };
+ 
+-    static const Weekdays weekdaysGroups[] =
+-    {
+-      WEEKDAYS_NONE,
+-      WEEKDAYS_ALL,
+-      WEEKDAYS_WORKDAYS,
+-      WEEKDAYS_WEEKEND,
+-      WEEKDAYS_IGNORE
+-    };
++    static const Weekdays flags[];
++    static const AlarmDetails::Weekdays weekdaysGroups[];
+   
+     AlarmDetails(int alarmNumberInit);
+     ~AlarmDetails();
+
+--- qpealarmclock/AlarmDetails.cpp~fix-compile-2
++++ qpealarmclock/AlarmDetails.cpp
+@@ -22,8 +22,25 @@
+ #include <qimage.h>
+ #include <qpixmap.h>
+ 
+-const AlarmDetails::Weekdays AlarmDetails::flags[];
+-const AlarmDetails::Weekdays AlarmDetails::weekdaysGroups[];
++const AlarmDetails::Weekdays AlarmDetails::flags[] =
++{
++    WEEKDAYS_MONDAY,
++    WEEKDAYS_TUESDAY,
++    WEEKDAYS_WEDNSDAY,
++    WEEKDAYS_THURSDAY,
++    WEEKDAYS_FRIDAY,
++    WEEKDAYS_SATURDAY,
++    WEEKDAYS_SUNDAY
++};
++
++const AlarmDetails::Weekdays AlarmDetails::weekdaysGroups[] =
++{
++    AlarmDetails::WEEKDAYS_NONE,
++    AlarmDetails::WEEKDAYS_ALL,
++    AlarmDetails::WEEKDAYS_WORKDAYS,
++    AlarmDetails::WEEKDAYS_WEEKEND,
++    AlarmDetails::WEEKDAYS_IGNORE
++};
+ 
+ AlarmDetails::AlarmDetails(int alarmNumberInit) : alarmNumber(alarmNumberInit)
+ {
