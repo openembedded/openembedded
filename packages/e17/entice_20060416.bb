@@ -6,7 +6,7 @@ PR = "r0"
 
 inherit e
 
-RDEPENDS += "libesmart-container-plugins libesmart-thumb0 libesmart-trans-x11-0 libesmart-file-dialog0"
+RDEPENDS += "libesmart-container-plugins libesmart-thumb libesmart-trans-x11-0 libesmart-file-dialog"
 
 SRC_URI = "${E_CVS};module=e17/apps/entice;date=${PV}"
 S = "${WORKDIR}/entice"
