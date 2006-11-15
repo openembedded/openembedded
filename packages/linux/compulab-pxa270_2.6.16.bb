@@ -18,6 +18,8 @@ inherit package
 ARCH = "arm"
 KERNEL_IMAGETYPE = "zImage"
 
+FILES_kernel-image = ""
+
 do_configure_prepend() {
 	install -m 0644 ${WORKDIR}/defconfig ${S}/.config
 	install -m 0644 ${WORKDIR}/2.6.16/CL_FlashDrv ${S}/drivers/block/cl_flash
