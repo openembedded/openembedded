@@ -18,3 +18,4 @@ do_stage () {
 
 FILES_${PN} += "/home/sca/xml/dtd/*.dtd"
 
+BROKEN = "1"

@@ -1,0 +1,30 @@
+Unified source of autoconf tests used to generate the site results
+
+
+Executing this on a new platform will generate the necessary results
+to write the right site-conf.
+
+1.) creating a configure script
+    '''use autoreconf -I m4'''
+
+
+2.) adding a test
+    '''vim m4/yourpackage.m4'''
+    '''add the functions'''
+    '''AC_DEFUN([OE_CHECK_YOURPACKAGE],
+       [
+        CALL_YOUR_FUNCTION_ONE_BY_ONE
+       ])
+    '''
+
+    Add to
+    '''vim aclocal.m4'''
+    '''m4_include(yourpackage,m4)'''
+
+    Add to
+    '''vim configure.ac'''
+    '''OE_CHECK_YOURPACKAGE
+
+
+
+Copy and paste the autoconf test to an approriate file

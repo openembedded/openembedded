@@ -5,7 +5,7 @@ HOMEPAGE = "http://www.gtk.org"
 SECTION = "libs"
 PRIORITY = "optional"
 DEPENDS = "glib-2.0 pango atk jpeg libpng libxext libxcursor gtk-doc libgcrypt cairo cups"
-PR = "r6"
+PR = "r7"
 
 # disable per default - untested and not all patches included.
 DEFAULT_PREFERENCE = "-1" 

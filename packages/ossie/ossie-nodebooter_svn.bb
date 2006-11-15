@@ -12,3 +12,4 @@ SRC_URI = "svn://ossie-dev.mprg.org/repos/ossie/platform/nodebooter/trunk;module
 
 inherit autotools
 
+BROKEN = "1"

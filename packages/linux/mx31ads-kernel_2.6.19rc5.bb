@@ -39,7 +39,7 @@ do_configure_prepend() {
 
         sed     -e '/CONFIG_AEABI/d' \
                 -e '/CONFIG_OABI_COMPAT=/d' \
-                '${WORKDIR}/defconfig' >>'${S}/.config'
+                '${S}/defconfig' >>'${S}/.config'
 
 
 #	echo "CONFIG_CMDLINE=\"${CMDLINE}\"" >> ${S}/.config
