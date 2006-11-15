@@ -14,11 +14,11 @@ RDEPENDS_maemo-base-depends := "${maemo-base-depends}"
 DEPENDS += " ${maemo-base-depends}"
 
 maemo-task-libs-install = "\
-                           libsqlite0 \
-                           libhildonlgpl0 \
-                           libhildonbase0 \
-                           libhildonwidgets0 \
-                           libhildonfm1"
+                           libsqlite \
+                           hildon-lgpl \
+                           libhildonbase \
+                           libhildonwidgets \
+                           hildon-fm"
 
 RDEPENDS_maemo-task-libs-install := "${maemo-task-libs-install}"
 
