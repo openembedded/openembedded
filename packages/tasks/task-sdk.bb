@@ -34,23 +34,23 @@ RDEPENDS_task-sdk-base := "\
     ipkg-dev \
     jpeg-dev \
     libapm-dev \
-    libasound2 \
+    libasound \
     libdisplaymigration-dev \
     libetpan-dev \
     libgcrypt-dev \
     libglade-dev \
-    libgnutls-dev \
+    gnutls-dev \
     libgpg-error-dev \ 
     libidl-dev \
     libiw-dev \
-    libmimedir-0.4-dev \
+    libmimedir-dev \
     libpcap-dev \
     libpixman-dev \
     libpng-dev \
     libschedule-dev \
     libsm-dev \
     libsoundgen-dev \
-    libsoup-2.2-dev \
+    libsoup-dev \
     libsvg-dev \
     libtododb-dev \
     libts-dev \
@@ -90,20 +90,20 @@ RDEPENDS_task-sdk-x11-ext := "\
     recordext-dev \
     renderext-dev \
     resourceext-dev \
-    x11-dev \
-    xau-dev \
-    xcalibrate-dev \
+    libx11-dev \
+    libxau-dev \
+    libxcalibrate-dev \
     xcalibrateext-dev \
-    xcomposite-dev \
-    xdamage-dev \
-    xext-dev \
-    xextensions-dev \
-    xfont-dev \
-    xpm-dev \
+    libxcomposite-dev \
+    libxdamage-dev \
+    libxext-dev \
+    xextproto-dev \
+    libxfont-dev \
+    libxpm-dev \
     xproto-dev \
-    xt-dev \
+    libxt-dev \
     xtrans-dev \
-    xtst-dev"
+    libxtst-dev"
 #    libxss-dev \
 
 RDEPENDS_task-sdk-gpe := "\
