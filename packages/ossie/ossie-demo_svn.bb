@@ -16,3 +16,4 @@ prefix="/home/sca"
 inherit autotools
 
 FILES_${PN} += "/home/sca/waveforms/ossie_demo/*.xml /home/sca/xml/TxDemo/*.xml"
+BROKEN = "1"

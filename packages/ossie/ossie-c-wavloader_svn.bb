@@ -12,3 +12,4 @@ SRC_URI = "svn://ossie-dev.mprg.org/repos/ossie/platform/c_wavLoader/trunk;modul
 
 inherit autotools
 
+BROKEN = "1"

@@ -17,3 +17,4 @@ inherit autotools
 
 FILES_${PN} += "/home/sca/xml/USRP/*xml"
 
+BROKEN = "1"
