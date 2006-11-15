@@ -1,0 +1,14 @@
+--- ecore-0.9.9.036/configure.in~	2006-11-13 14:05:24.000000000 -0800
++++ ecore-0.9.9.036/configure.in	2006-11-13 14:18:22.000000000 -0800
+@@ -886,10 +886,7 @@
+   )
+ fi
+ 
+-AC_ABSTRACT_SOCKET_TEST(
+-  [AC_DEFINE(HAVE_ABSTRACT_SOCKETS, 1, [Have abstract socket namespace])],
+-  []
+-)
++HAVE_ABSTRACT_SOCKETS = 1
+ 
+ want_ecore_ipc="yes";
+ have_ecore_ipc="no";
