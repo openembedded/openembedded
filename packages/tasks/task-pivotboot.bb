@@ -13,6 +13,8 @@ MODUTILS ?= "24 26"
 require task-bootstrap.inc
 
 HOTPLUG ?= "linux-hotplug"
+PIVOTBOOT_EXTRA_RDEPENDS ?= ""
+PIVOTBOOT_EXTRA_RRECOMMENDS ?= ""
 
 RDEPENDS = 'base-files base-passwd busybox \
 	netbase modutils-initscripts \
