@@ -9,7 +9,7 @@ PR = "r2"
 EXTRA_OECONF=" --disable-gnome --with-platform=gpe --with-html-component=none"
 
 #camel-lite-configure-hack.patch is still needed after the maxdate, but needs fixing
-SRC_URI = "svn://svn.tinymail.org/svn/tinymail/;module=trunk;proto=https \
+SRC_URI = "svn://svn.tinymail.org/svn/tinymail/;module=trunk;proto=http \
 	   file://camel-lite-configure-hack.patch;patch=1;maxdate=20061113 \
 	   file://gtk-doc.m4 \
            file://gtk-doc.make"
