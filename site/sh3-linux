@@ -60,10 +60,6 @@ ac_cv_linux_vers=${ac_cv_linux_vers=2}
 ac_cv_regexec_segfault_emptystr=${ac_cv_regexec_segfault_emptystr=no}
 nano_cv_func_regexec_segv_emptystr=${nano_cv_func_regexec_segv_emptystr=no}
 
-# libnet 
-ac_cv_libnet_endianess=${ac_cv_libnet_endianess=lil}
-ac_libnet_have_packet_socket=${ac_libnet_have_packet_socket=yes}
-
 # screen
 screen_cv_sys_bcopy_overlap=${screen_cv_sys_bcopy_overlap=no}
 screen_cv_sys_memcpy_overlap=${screen_cv_sys_memcpy_overlap=no}
@@ -256,6 +252,9 @@ mysql_cv_func_atomic_sub=${mysql_cv_func_atomic_sub=no}
 mysql_cv_func_atomic_add=${mysql_cv_func_atomic_add=no}
 ac_cv_conv_longlong_to_float=${ac_cv_conv_longlong_to_float=yes}
 
+# rp-pppoe
+rpppoe_cv_pack_bitfields=${rpppoe_cv_pack_bitfields=rev}
+
 # gettext
 am_cv_func_working_getline=${am_cv_func_working_getline=yes}
 
@@ -288,3 +287,13 @@ racoon_cv_bug_getaddrinfo=${racoon_cv_bug_getaddrinfo=no}
 # libxfce4util
 with_broken_putenv=${with_broken_putenv=no}
 
+# clamav
+clamav_av_func_working_snprintf_long=${clamav_av_func_working_snprintf_long=yes}
+clamav_av_have_in_port_t=${clamav_av_have_in_port_t=yes}
+clamav_av_have_in_addr_t=${clamav_av_have_in_addr_t=yes}
+ac_cv_func_mmap_fixed_mapped=${ac_cv_func_mmap_fixed_mapped=yes}
+
+# libnet 
+ac_cv_lbl_unaligned_fail=${ac_cv_lbl_unaligned_fail=no}
+ac_libnet_have_packet_socket=${ac_libnet_have_packet_socket=yes}
+ac_cv_libnet_endianess=${ac_cv_libnet_endianess=lil}
