@@ -27,6 +27,7 @@ S = "${WORKDIR}/ixp400_xscale_sw"
 PR = "r6"
 
 COMPATIBLE_HOST = "^armeb-linux.*"
+COMPATIBLE_MACHINE = "(nslu2|ixp4xx)"
 
 inherit module
 

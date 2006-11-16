@@ -43,6 +43,7 @@ S = "${WORKDIR}/ixp400_xscale_sw"
 PR = "r2"
 
 COMPATIBLE_HOST = "^arm.*-linux.*"
+COMPATIBLE_MACHINE = "(nslu2|ixp4xx)"
 
 inherit module
 
