@@ -29,6 +29,7 @@ S = "${WORKDIR}/ixp_osal"
 PR = "r4"
 
 COMPATIBLE_HOST = "^arm.*-linux.*"
+COMPATIBLE_MACHINE = "(nslu2|ixp4xx)"
 
 inherit module
 

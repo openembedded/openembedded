@@ -23,6 +23,7 @@ S = "${WORKDIR}/ixp_osal"
 PR = "r1"
 
 COMPATIBLE_HOST = "^armeb-linux.*"
+COMPATIBLE_MACHINE = "(nslu2|ixp4xx)"
 
 inherit module
 
