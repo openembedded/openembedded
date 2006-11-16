@@ -384,6 +384,9 @@ python base_do_fetch() {
 
 addtask fetchall after do_fetch
 do_fetchall[recrdeptask] = "do_fetch"
+base_do_fetchall() {
+	:
+}
 
 def oe_unpack_file(file, data, url = None):
 	import bb, os
