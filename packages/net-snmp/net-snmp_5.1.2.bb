@@ -2,7 +2,7 @@ DESCRIPTION = "Various tools relating to the Simple Network Management Protocol"
 HOMEPAGE = "http://www.net-snmp.org/"
 LICENSE = "BSD"
 DEPENDS = "openssl"
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/net-snmp/net-snmp-${PV}.tar.gz \
 	file://uclibc-fix.patch;patch=1 \
@@ -17,15 +17,8 @@ EXTRA_OECONF = "--enable-shared --disable-manuals"
 EXTRA_OEMAKE = "INSTALL_PREFIX=${D}"
 
 do_configure() {
-	# endianness fun... inspired by openssl.inc
-	. ${CONFIG_SITE}
-	if [ "x$ac_cv_c_bigendian" = "xyes" -o "x$ac_cv_c_littleendian" = "xno" ]; then
-	    ENDIANESS=" --with-endianness=big"
-	elif [ "x$ac_cv_c_littleendian" = "xyes" -o "x$ac_cv_c_bigendian" = "xno" ]; then
-	    ENDIANESS=" --with-endianness=little"
-	else
-	    oefatal do_configure cannot determine endianess
-	fi
+	# Additional flag based on target endiness (see siteinfo.bbclass)
+	ENDIANESS="${@base_conditional('SITEINFO_ENDIANESS', 'le', '--with-endianness=little', '--with-endianness=big', d)}"
 	oenote Determined endianess as: $ENDIANESS
 	oe_runconf $ENDIANESS
 }
