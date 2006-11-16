@@ -382,11 +382,8 @@ python base_do_fetch() {
 		raise bb.build.FuncFailed("Fetch failed: %s" % value)
 }
 
-addtask fetchall
+addtask fetchall after do_fetch
 do_fetchall[recrdeptask] = "do_fetch"
-python base_do_fetchall() {
-	bb.build.exec_task('do_fetch', d)
-}
 
 def oe_unpack_file(file, data, url = None):
 	import bb, os
