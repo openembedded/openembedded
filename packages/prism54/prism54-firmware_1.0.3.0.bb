@@ -3,7 +3,7 @@ SECTION = "base"
 PRIORITY = "optional"
 LICENSE = "unknown"
 
-SRC_URI = "http://prism54.org/~mcgrof/firmware/${PV}.arm"
+SRC_URI = "http://daemonizer.de/prism54/prism54-fw/fw-fullmac/${PV}.arm"
 
 S = "${WORKDIR}/prism54.org"
 
