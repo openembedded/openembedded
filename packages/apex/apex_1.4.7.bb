@@ -3,7 +3,7 @@ SECTION = ""
 PRIORITY = "optional"
 HOMEPAGE = "http://wiki.buici.com/twiki/bin/view/Main/ApexBootloader"
 LICENSE = "GPL"
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "ftp://ftp.buici.com/pub/apex/apex-${PV}.tar.gz \
 	   file://defconfig"
@@ -39,8 +39,15 @@ do_configure() {
 	oe_runmake oldconfig
 }
 
+DEPENDS += "devio-native"
+
 do_populate_staging() {
 	install -d ${STAGING_LOADER_DIR}
 	# FIXME - arch-arm should not be hard-coded
-	install -m 0755 src/arch-arm/rom/apex.bin ${STAGING_LOADER_DIR}/apex.bin
+	if test '${ARCH_BYTE_SEX}' = be
+	then
+		cp src/arch-arm/rom/apex.bin ${STAGING_LOADER_DIR}/apex.bin
+	else
+		devio '<<'src/arch-arm/rom/apex.bin >${STAGING_LOADER_DIR}/apex.bin 'xp $,4'
+	fi
 }
