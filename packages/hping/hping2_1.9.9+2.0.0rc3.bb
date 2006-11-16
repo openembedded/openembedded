@@ -7,12 +7,12 @@ other features."
 HOMEPAGE = "http://www.hping.org/"
 SECTION = "console/network"
 LICENSE = "GPL"
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "http://www.hping.org/hping2.0.0-rc3.tar.gz \
 	   file://hping2_debian.patch;patch=1 \
 	   file://hping2_configure.patch;patch=1"
-S="${WORKDIR}/hping2-rc3"
+S = "${WORKDIR}/hping2-rc3"
 
 #
 # We've patched configure to accept byte order and ostype as env
@@ -21,16 +21,8 @@ S="${WORKDIR}/hping2-rc3"
 # NOTE: The configure script is not an autoconf script.
 #
 do_configure() {
-	# endianness fun.. inspired by openssl.inc
-	. ${CONFIG_SITE}
-	BYTEORDER="UNKNOWN"
-	if [ "x$ac_cv_c_bigendian" = "xyes" -o "x$ac_cv_c_littleendian" = "xno" ]; then
-	    BYTEORDER="__BIG_ENDIAN_BITFIELD"
-	elif [ "x$ac_cv_c_littleendian" = "xyes" -o "x$ac_cv_c_bigendian" = "xno" ]; then
-	    BYTEORDER="__LITTLE_ENDIAN_BITFIELD"
-	else
-	    oefatal do_configure cannot determine endianess
-	fi
+	# Additional flag based on target endiness (see siteinfo.bbclass)
+	BYTEORDER="${@base_conditional('SITEINFO_ENDIANESS', 'le', '__LITTLE_ENDIAN_BITFIELD', '__BIG_ENDIAN_BITFIELD', d)}"
 	oenote Determined byteorder as: $BYTEORDER
 	BYTEORDER="${BYTEORDER}" CONFIGOSTYPE="LINUX" ./configure
 }
