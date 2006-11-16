@@ -9,15 +9,15 @@ SECTION = "network"
 LICENSE = "GPL"
 DEPENDS = "readline ncurses perl-native"
 # Each of the per-protocol packages depends on the main package
-RDEPENDS_${PN}-ospfd    = ${PN}
-RDEPENDS_${PN}-ospf6d   = ${PN}
-RDEPENDS_${PN}-bgpd     = ${PN}
-RDEPENDS_${PN}-ripd     = ${PN}
-RDEPENDS_${PN}-ripngd   = ${PN}
-RDEPENDS_${PN}-isisd    = ${PN}
-RDEPENDS_${PN}-ospfclient = ${PN}
+RDEPENDS_${PN}-ospfd    = "${PN}"
+RDEPENDS_${PN}-ospf6d   = "${PN}"
+RDEPENDS_${PN}-bgpd     = "${PN}"
+RDEPENDS_${PN}-ripd     = "${PN}"
+RDEPENDS_${PN}-ripngd   = "${PN}"
+RDEPENDS_${PN}-isisd    = "${PN}"
+RDEPENDS_${PN}-ospfclient = "${PN}"
 RDEPENDS_${PN}-doc      = ""
-RDEPENDS_${PN}-watchquagga = ${PN}
+RDEPENDS_${PN}-watchquagga = "${PN}"
 # the "ip" command from busybox is not sufficient (flush by protocol flushes all routes)
 RDEPENDS_${PN}          += "iproute2"
 # These are required for vtysh
@@ -98,8 +98,8 @@ CONFFILES_${PN} = "${sysconfdir}/default/quagga"
 CONFFILES_${PN}-watchquagga = "${sysconfdir}/default/watchquagga"
 
 # Stop the names being rewritten due to the internal shared libraries
-PKG_${PN}-ospfd         = ${PN}-ospfd
-PKG_${PN}-ospfclient    = ${PN}-ospfclient
+PKG_${PN}-ospfd         = "${PN}-ospfd"
+PKG_${PN}-ospfclient    = "${PN}-ospfclient"
 
 # Main init script starts all deamons
 # Seperate init script for watchquagga
