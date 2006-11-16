@@ -5,7 +5,7 @@ DEPENDS = "ncurses openssl"
 RDEPENDS_pine = "pico"
 HOMEPAGE = "http://www.washington.edu/pine/"
 
-SRC_URI = "ftp://ftp.cac.washington.edu/pine/old/pine${PV}.tar.Z"
+SRC_URI = "ftp://ftp.cac.washington.edu/pine/pine${PV}.tar.Z"
 S = "${WORKDIR}/pine${PV}"
 
 inherit autotools
