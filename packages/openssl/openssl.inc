@@ -27,15 +27,8 @@ do_compile () {
 	cd ..
 	ln -sf apps/openssl.pod crypto/crypto.pod ssl/ssl.pod doc/
 
-	# endianness fun.. whee
-	. ${CONFIG_SITE}
-	if [ "x$ac_cv_c_bigendian" = "xyes" -o "x$ac_cv_c_littleendian" = "xno" ]; then
-		CFLAG="${CFLAG} -DB_ENDIAN"
-	elif [ "x$ac_cv_c_littleendian" = "xyes" -o "x$ac_cv_c_bigendian" = "xno" ]; then
-		CFLAG="${CFLAG} -DL_ENDIAN"
-	else
-		oefatal do_configure cannot determine endianess
-	fi
+	# Additional flag based on target endiness (see siteinfo.bbclass)
+	CFLAG="${CFLAG} ${@base_conditional('SITEINFO_ENDIANESS', 'le', '-DL_ENDIAN', '-DB_ENDIAN', d)}"
 
 	os=${HOST_OS}
 	if [ "x$os" = "xlinux-uclibc" ]; then
