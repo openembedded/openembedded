@@ -6,6 +6,8 @@ RDEPENDS = "sharp-camera-support"
 APPNAME = "camera"
 APPTYPE = "binary"
 
+COMPATIBLE_MACHINE = "collie"
+
 S = "${WORKDIR}/camera"
 
 EXTRA_QMAKEVARS_POST += "LIBS+=-L.."
