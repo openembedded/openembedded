@@ -4,7 +4,7 @@ DEPENDS = "eet virtual/evas edje virtual/ecore embryo virtual/libxine"
 RPROVIDES += "emotion-themes emotion-plugins"
 RDEPENDS += "emotion-themes emotion-plugins"
 
-PR = "r2"
+PR = "r3"
 
 #FIXME: Needs patch not to build the examples when building against ecore-fb, because the examples depend on ecore-x11
 
@@ -15,7 +15,3 @@ S = "${WORKDIR}/emotion"
 
 PACKAGES += "emotion-plugins"
 FILES_emotion-plugins = "${libdir}/xine/plugins/1.1.0/*.so ${libdir}/emotion/*.so"
-
-do_compile_prepend() {
-	find ${S} -type f -name "*.[ch]" | xargs sed -i 's:NULL:0:g'
-}
