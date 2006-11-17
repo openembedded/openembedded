@@ -7,7 +7,7 @@ SRC_URI = "http://us2.samba.org/samba/ftp/stable/samba-${PV}.tar.gz \
 	   file://init \
            file://quota.patch;patch=1;pnum=0 \
 	   "
-S = ${WORKDIR}/${P}/source
+S = "${WORKDIR}/${P}/source"
 
 require samba.inc
 inherit update-rc.d
