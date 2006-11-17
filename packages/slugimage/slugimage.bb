@@ -7,8 +7,8 @@ PR = "r7"
 
 RDEPENDS = "perl"
 
-SLUGIMAGE_SVN_REV  ?= 78
-SLUGIMAGE_SVN_REPO ?= http://svn.nslu2-linux.org/svnroot/slugimage/trunk
+SLUGIMAGE_SVN_REV  ?= "78
+SLUGIMAGE_SVN_REPO ?= "http://svn.nslu2-linux.org/svnroot/slugimage/trunk"
 
 addtask svnfetch before do_configure after do_patch
 
