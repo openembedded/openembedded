@@ -12,7 +12,7 @@ SRC_URI = "${SOURCEFORGE_MIRROR}/nfs/nfs-utils-${PV}.tar.gz \
 	file://nfsserver \
 	file://forgotten-defines"
 
-S = ${WORKDIR}/nfs-utils-${PV}/
+S = "${WORKDIR}/nfs-utils-${PV}/"
 
 PARALLEL_MAKE = ""
 

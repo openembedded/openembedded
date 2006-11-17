@@ -6,7 +6,7 @@ HOMEPAGE = "http://www.busybox.net"
 LICENSE = "GPL"
 PR = "r5"
 
-S = ${WORKDIR}/busybox-${PV}
+S = "${WORKDIR}/busybox-${PV}"
 
 SRC_URI = "http://www.busybox.net/downloads/busybox-${PV}.tar.gz \
 	   file://mdevdelnodes.patch;patch=1 \

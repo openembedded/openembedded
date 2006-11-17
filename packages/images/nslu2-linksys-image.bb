@@ -11,4 +11,4 @@ NSLU2_DEVICE_TABLE = "${@bb.which(bb.data.getVar('BBPATH', d, 1), 'files/device_
 EXTRA_IMAGECMD_ext2.gz = "-f ${NSLU2_DEVICE_TABLE}"
 
 inherit image_ipk
-LICENSE = MIT
+LICENSE = "MIT"
