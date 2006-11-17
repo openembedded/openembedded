@@ -4,7 +4,7 @@ SECTION = "network"
 LICENSE = "GPL"
 DEPENDS = "libpcre gnutls"
 HOMEPAGE = "http://www.cherokee-project.com/"
-PR = "r3"
+PR = "r4"
 
 SRC_URI = "http://www.cherokee-project.com/download/0.5/${PV}/cherokee-${PV}.tar.gz \
 	  file://configure.patch;patch=1 \
@@ -38,6 +38,16 @@ FILES_cget = "${bindir}/cget"
 FILES_libcherokee-server = "${libdir}/libcherokee-server*"
 FILES_libcherokee-client = "${libdir}/libcherokee-client*"
 FILES_libcherokee-base = "${libdir}/libcherokee-base*"
+
+CONFFILES_${PN} = "${sysconfdir}/cherokee/mime.types \
+		   ${sysconfdir}/cherokee/mods-available/admin \
+		   ${sysconfdir}/cherokee/mods-available/ssl \
+		   ${sysconfdir}/cherokee/advanced.conf \
+		   ${sysconfdir}/cherokee/cherokee.conf \
+		   ${sysconfdir}/cherokee/mime.compression.types \
+		   ${sysconfdir}/cherokee/sites-available/example.com \
+		   ${sysconfdir}/cherokee/sites-available/default \
+		   ${sysconfdir}/cherokee/icons.conf"
 
 INITSCRIPT_NAME = "cherokee"
 INITSCRIPT_PARAMS = "defaults 91 91"
