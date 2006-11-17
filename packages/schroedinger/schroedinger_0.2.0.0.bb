@@ -1,4 +1,4 @@
-HOMEPAGE = "http://schrodinger.sourceforge.net/
+HOMEPAGE = "http://schrodinger.sourceforge.net/"
 LICENSE = "MPL/GPL/LGPL and MIT" 
 DEPENDS = "liboil gstreamer gst-plugins-base"
 
