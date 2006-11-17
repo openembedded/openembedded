@@ -1,12 +1,14 @@
-PR          = "r1"
 SECTION     = "gpe"
 PRIORITY    = "optional"
 DESCRIPTION = "Suspend feature for the application launcher menu."
 LICENSE     = "GPL"
-DEPENDS     = "gpe-conf"
+
+PR          = "r1"
+
 RDEPENDS    = "gpe-conf"
 RRECOMMENDS = "apm"
-PACKAGES    = ${PN}
+
+PACKAGES    = "${PN}"
 PACKAGE_ARCH = "all"
 
 SRC_URI = "file://suspend.desktop \
