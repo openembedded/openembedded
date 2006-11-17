@@ -15,7 +15,6 @@ inherit kernel
 COMPATIBLE_MACHINE = "nokia770"
 
 do_configure_prepend() {
-	install -m 0644 ${WORKDIR}/defconfig ${S}/.config
 
         if [ "${TARGET_OS}" == "linux-gnueabi" -o  "${TARGET_OS}" == "linux-uclibcgnueabi" ]; then
                 echo "CONFIG_AEABI=y"                   >> ${S}/.config
