@@ -2,10 +2,10 @@
 # Make sure that you don't set MACHINE in your local.conf
 #
 #include auto.conf
-#STAMP = "${TMPDIR}/stamps/${PACKAGE_ARCH}-${HOST_OS}/${PF}"
-#WORKDIR = "${TMPDIR}/work/${PACKAGE_ARCH}-${HOST_OS}/${PF}"
-#STAGING_KERNEL_DIR = "${STAGING_DIR}/${PACKAGE_ARCH}-${HOST_OS}/kernel"
-#KERNEL_STAGING = "${STAGING_DIR}/${PACKAGE_ARCH}-${HOST_OS}/kernel"
+#STAMP = "${TMPDIR}/stamps/${PACKAGE_ARCH}-${TARGET_OS}/${PF}"
+#WORKDIR = "${TMPDIR}/work/${PACKAGE_ARCH}-${TARGET_OS}/${PF}"
+#STAGING_KERNEL_DIR = "${STAGING_DIR}/${PACKAGE_ARCH}-${TARGET_OS}/kernel"
+#KERNEL_STAGING = "${STAGING_DIR}/${PACKAGE_ARCH}-${TARGET_OS}/kernel"
 
 for machine in spitz poodle akita borzoi c7x0 tosa collie;
 do
