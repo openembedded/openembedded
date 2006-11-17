@@ -6,9 +6,9 @@ LICENSE = "GPL"
 SRC_URI = "${SOURCEFORGE_MIRROR}/vnc-tight/tightvnc-1.3dev7_unixsrc.tar.gz \
            file://Makefile"
 
-S = ${WORKDIR}/vnc_unixsrc/vncviewer/
+S = "${WORKDIR}/vnc_unixsrc/vncviewer/"
 
-PACKAGES="tightvncviewer"
+PACKAGES = "tightvncviewer-dbg tightvncviewer"
 FILES_tightvncviewer = "/usr/bin/tightvncviewer"
 
 do_compile () {
