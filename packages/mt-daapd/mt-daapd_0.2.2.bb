@@ -1,4 +1,4 @@
 require ${PN}.inc
 # This has not been released yet!
-DEFAULT_PREFERENCE = -1
+DEFAULT_PREFERENCE = "-1"
 PR = "r0"
