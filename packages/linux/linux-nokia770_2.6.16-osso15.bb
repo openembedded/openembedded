@@ -16,6 +16,8 @@ COMPATIBLE_MACHINE = "nokia770"
 
 do_configure_prepend() {
 
+	rm -f ${S}/.config || true
+
         if [ "${TARGET_OS}" == "linux-gnueabi" -o  "${TARGET_OS}" == "linux-uclibcgnueabi" ]; then
                 echo "CONFIG_AEABI=y"                   >> ${S}/.config
                 echo "CONFIG_OABI_COMPAT=y"             >> ${S}/.config
