@@ -1,0 +1,56 @@
+Index: ChangeLog
+===================================================================
+--- a/ChangeLog	(revision 8846)
++++ a/ChangeLog	(working copy)
+@@ -1,3 +1,11 @@
++2006-11-18  Paul Sokolovsky <pmiscml@gmail.com>
++
++	* X11/keyboardless.xmodmap: New common keymap for all
++	keyboardless PDA devices. (actually, a copy of h2200.xmodmap).
++	* X11/Xinit.d/12keymap: Use keyboardless.xmodmap as default for
++	all HP iPaq, Asus MyPal devices (which don't have need for adhoc
++	modmap).
++
+ 2006-11-11  Florian Boor <florian@kernelconcepts.de>
+ 
+ 	* Release version 1.12
+Index: X11/keyboardless.xmodmap
+===================================================================
+--- a/X11/keyboardless.xmodmap	(revision 0)
++++ a/X11/keyboardless.xmodmap	(revision 0)
+@@ -0,0 +1,6 @@
++keycode 75 = XF86Calendar
++keycode 76 = telephone
++keycode 95 = XF86Mail
++keycode 96 = XF86Start
++keycode 97 = XF86AudioRecord
++keycode 124 = XF86PowerDown
+Index: X11/Xinit.d/12keymap
+===================================================================
+--- a/X11/Xinit.d/12keymap	(revision 8846)
++++ a/X11/Xinit.d/12keymap	(working copy)
+@@ -26,20 +26,12 @@
+ 	"Simpad")
+ 		xmodmap - < /etc/X11/simpad.xmodmap
+ 		;;
+-	"HP iPAQ H2200")
+-		xmodmap - < /etc/X11/h2200.xmodmap
+-		;;
+-	"HP iPAQ HX4700")
+-		xmodmap - < /etc/X11/hx4700.xmodmap
+-		;;
+-	"HP iPAQ H1910" | "HP iPAQ H4000")
+-		xmodmap - < /etc/X11/h1910.xmodmap
+-		;;
+-	"Asus MyPal A716")
+-		xmodmap - < /etc/X11/a716.xmodmap
+-		;;
+ 	"HP iPAQ h6300")
+ 		xmodmap - < /etc/X11/h6300.xmodmap
+ 		;;
++	# All the rest of keyboardless PDA machines use common buttonmap
++	"HP iPAQ"* | "Asus MyPal"*)
++		xmodmap - < /etc/X11/keyboardless.xmodmap
++		;;
+ esac
+ 
