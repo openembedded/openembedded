@@ -84,38 +84,38 @@ python () {
     pref = 10
     mmac = 0
     for patch in pv[1:]:
-	name.append(patch)
-	pname = '-'.join(name)
-    	if patch[0:2] == "rc" or patch[0:3] == "pre":
-	    patch_uri.append("ftp://ftp.kernel.org/pub/linux/kernel/v%s/testing/patch-%s.bz2;patch=1;pname=%s" % (major, pname, pname))
-	    kernel[-1] = str(int(kernel[-1]) - 1)
-	    if patch[0:2] == "rc" and pref == 10:
-	    	pref = 6
-		filepath[0:0] = [ filedir % name[0] ]
-		filepath[0:0] = [ filedir % (name[0] + "-rc") ]
-	    else:
-	    	pref = 2
-	elif patch[0:2] == "bk" or patch[0:3] == "git":
-	    patch_uri.append("ftp://ftp.kernel.org/pub/linux/kernel/v%s/snapshots/patch-%s.bz2;patch=1;pname=%s" % (major, pname, pname))
-	    pref = 2
-	elif patch[0:2] == "ac":
-	    patch_uri.append("ftp://ftp.kernel.org/pub/linux/kernel/people/alan/linux-%s/%s/patch-%s" % (major, base, pname))
-	    mmac = 2
-	    filepath[0:0] = [ filedir % (name[0] + "-ac") ]
-	elif patch[0:2] == "mm":
-	    patch_uri.append("ftp://ftp.kernel.org/pub/linux/kernel/people/akpm/patches/%s/%s/%s/%s.bz2;patch=1;pname=%s" % (major, base, pname, pname, pname))
-	    mmac = 2
-	    filepath[0:0] = [ filedir % (name[0] + "-mm") ]
-	else:
-	    raise bb.build.FuncFailed("ixp4xx-kernel: patch %s not recognized in %s" % (patch, '-'.join(pv)))
-	filepath[0:0] = [ filedir % pname ]
-	base = pname
+        name.append(patch)
+        pname = '-'.join(name)
+        if patch[0:2] == "rc" or patch[0:3] == "pre":
+            patch_uri.append("ftp://ftp.kernel.org/pub/linux/kernel/v%s/testing/patch-%s.bz2;patch=1;pname=%s" % (major, pname, pname))
+            kernel[-1] = str(int(kernel[-1]) - 1)
+            if patch[0:2] == "rc" and pref == 10:
+                pref = 6
+                filepath[0:0] = [ filedir % name[0] ]
+                filepath[0:0] = [ filedir % (name[0] + "-rc") ]
+            else:
+                pref = 2
+        elif patch[0:2] == "bk" or patch[0:3] == "git":
+            patch_uri.append("ftp://ftp.kernel.org/pub/linux/kernel/v%s/snapshots/patch-%s.bz2;patch=1;pname=%s" % (major, pname, pname))
+            pref = 2
+        elif patch[0:2] == "ac":
+            patch_uri.append("ftp://ftp.kernel.org/pub/linux/kernel/people/alan/linux-%s/%s/patch-%s" % (major, base, pname))
+            mmac = 2
+            filepath[0:0] = [ filedir % (name[0] + "-ac") ]
+        elif patch[0:2] == "mm":
+            patch_uri.append("ftp://ftp.kernel.org/pub/linux/kernel/people/akpm/patches/%s/%s/%s/%s.bz2;patch=1;pname=%s" % (major, base, pname, pname, pname))
+            mmac = 2
+            filepath[0:0] = [ filedir % (name[0] + "-mm") ]
+        else:
+            raise bb.build.FuncFailed("ixp4xx-kernel: patch %s not recognized in %s" % (patch, '-'.join(pv)))
+            filepath[0:0] = [ filedir % pname ]
+        base = pname
 
     base = '.'.join(kernel)
     patch_uri[0] = "ftp://ftp.kernel.org/pub/linux/kernel/v%s/linux-%s.tar.bz2" % (major, base)
     filepath[-1:-1] = [ filedir % base ]
     if base != minor:
-	    filepath[-1:-1] = [ filedir % minor ]
+        filepath[-1:-1] = [ filedir % minor ]
     filepath[-1:-1] = [ filedir % major ]
 
     bb.data.setVar("IXP4XX_SRCMAJ", major, d)
@@ -395,12 +395,12 @@ do_deploy() {
 addtask deploy before do_build after do_compile
 
 python () {
-	# check for IXP4XX_SUFFIX - if not set then we don't know what to build,
-	# also sanity check the SLUGOS_IMAGESEX
-	sex = bb.data.getVar("SLUGOS_IMAGESEX", d, 1)
-	if sex != 'little-endian' and sex != 'big-endian':
-		raise bb.parse.SkipPackage("slugos kernels require SLUGOS_IMAGESEX")
-	suffix = bb.data.getVar("IXP4XX_SUFFIX", d, 1)
-	if suffix == '':
-		raise bb.parse.SkipPackage("slugos kernels require IXP4XX_SUFFIX")
+    # check for IXP4XX_SUFFIX - if not set then we don't know what to build,
+    # also sanity check the SLUGOS_IMAGESEX
+    sex = bb.data.getVar("SLUGOS_IMAGESEX", d, 1)
+    if sex != 'little-endian' and sex != 'big-endian':
+        raise bb.parse.SkipPackage("slugos kernels require SLUGOS_IMAGESEX")
+    suffix = bb.data.getVar("IXP4XX_SUFFIX", d, 1)
+    if suffix == '':
+        raise bb.parse.SkipPackage("slugos kernels require IXP4XX_SUFFIX")
 }

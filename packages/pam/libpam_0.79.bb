@@ -66,7 +66,7 @@ do_stage() {
 # that those which use YP don't get built on uClibC, this looks
 # like a big patch...
 python () {
-	os = bb.data.getVar("TARGET_OS", d, 1)
-	if os == "linux-uclibc":
-		raise bb.parse.SkipPackage("Some PAM modules require rpcsvc/yp.h, uClibC does not provide this")
+    os = bb.data.getVar("TARGET_OS", d, 1)
+    if os == "linux-uclibc":
+        raise bb.parse.SkipPackage("Some PAM modules require rpcsvc/yp.h, uClibC does not provide this")
 }

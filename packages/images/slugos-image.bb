@@ -98,10 +98,10 @@ IPKG_INSTALL = "${RDEPENDS}"
 inherit image_ipk
 
 python () {
-	# Don't build slugos images unless the configuration is set up
-	# for an image build!
-	if bb.data.getVar("SLUGOS_IMAGENAME", d, 1) == '' or bb.data.getVar("SLUGOS_IMAGESEX", d, 1) == '':
-		raise bb.parse.SkipPackage("absent or broken SlugOS configuration")
+    # Don't build slugos images unless the configuration is set up
+    # for an image build!
+    if bb.data.getVar("SLUGOS_IMAGENAME", d, 1) == '' or bb.data.getVar("SLUGOS_IMAGESEX", d, 1) == '':
+        raise bb.parse.SkipPackage("absent or broken SlugOS configuration")
 }
 
 #--------------------------------------------------------------------------------

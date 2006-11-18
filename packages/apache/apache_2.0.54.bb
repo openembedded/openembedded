@@ -82,10 +82,10 @@ do_install_append () {
 }
 
 python () {
-	# Don't build apache unless we are building nativly
-	target = bb.data.getVar("TARGET_ARCH", d, 1)
-	build = bb.data.getVar("BUILD_ARCH", d, 1)
-	if target != build:
-		raise bb.parse.SkipPackage("Apache will only build nativly (TARGET_ARCH == BUILD_ARCH)")
+    # Don't build apache unless we are building nativly
+    target = bb.data.getVar("TARGET_ARCH", d, 1)
+    build = bb.data.getVar("BUILD_ARCH", d, 1)
+    if target != build:
+        raise bb.parse.SkipPackage("Apache will only build nativly (TARGET_ARCH == BUILD_ARCH)")
 }
 

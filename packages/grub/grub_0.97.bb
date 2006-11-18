@@ -8,10 +8,10 @@ S = "${WORKDIR}/grub-${PV}"
 inherit autotools
 
 python __anonymous () {
-	import re
-	host = bb.data.getVar('HOST_SYS', d, 1)
-	if not re.match('i.86.*-linux', host):
-		raise bb.parse.SkipPackage("incompatible with host %s" % host)
+    import re
+    host = bb.data.getVar('HOST_SYS', d, 1)
+    if not re.match('i.86.*-linux', host):
+        raise bb.parse.SkipPackage("incompatible with host %s" % host)
 }
 
 do_install_append_vmware() {

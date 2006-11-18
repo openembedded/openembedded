@@ -28,7 +28,7 @@ do_install() {
 # so force the package to be skipped here (this will cause a
 # 'nothing provides' error)
 python () {
-	os = bb.data.getVar("TARGET_OS", d, 1)
-	if os == "linux-uclibc":
-		raise bb.parse.SkipPackage("NIS functionality requires rpcsvc/yp.h, uClibC does not provide this")
+    os = bb.data.getVar("TARGET_OS", d, 1)
+    if os == "linux-uclibc":
+        raise bb.parse.SkipPackage("NIS functionality requires rpcsvc/yp.h, uClibC does not provide this")
 }
