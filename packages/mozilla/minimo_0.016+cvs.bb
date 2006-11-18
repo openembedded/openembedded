@@ -30,7 +30,7 @@ export ac_cv_prog_HOST_CFLAGS="${BUILD_CFLAGS}"
 export ac_cv_prog_HOST_CXX="${BUILD_CXX}"
 export ac_cv_prog_HOST_CXXFLAGS="${BUILD_CXXFLAGS}"
 
-mozdir="${D}${libdir}/mozilla-minimo"
+mozdir="${libdir}/mozilla-minimo"
 
 EXTRA_OECONF += "--build=${BUILD_SYS} --host=${BUILD_SYS} --target=${TARGET_SYS} "
 
