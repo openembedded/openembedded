@@ -11,7 +11,7 @@ BRTAG = "MOZILLA_1_8_BRANCH"
 MOZDATE = "20060720"
 
 PV = "0.016+cvs${MOZDATE}"
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "cvs://anonymous@${CVSSVR}/cvsroot;module=mozilla;tag=${BRTAG};date=${MOZDATE} \
 	   file://minimo.patch;patch=1 \
@@ -141,4 +141,5 @@ do_install() {
 	install -m 0644 res/html/gopher-unknown.gif ${D}${mozdir}/res/html
 }
 
+FILES_${PN}-dbg += "${libdir}/mozilla-minimo/.debug*"
 FILES_${PN} += "${mozdir}"
