@@ -25,5 +25,5 @@ do_install() {
 	oe_libinstall -so libqtaux2 ${D}${palmtopdir}/lib
 }
 
-FILES_${PN}=${palmtopdir}/lib
+FILES_${PN}="${palmtopdir}/lib"
 

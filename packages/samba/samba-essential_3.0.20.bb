@@ -10,7 +10,7 @@ SRC_URI = "http://us2.samba.org/samba/ftp/stable/samba-${PV}.tar.gz \
 	   file://smb-essential-inactive.conf \	   
 	   file://Managing-Samba.txt"
 	   
-S := ${WORKDIR}/samba-${PV}/source
+S := "${WORKDIR}/samba-${PV}/source"
 
 RCONFILCTS = samba
 

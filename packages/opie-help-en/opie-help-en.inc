@@ -2,7 +2,7 @@ DESCRIPTION = "Opie Help Packages - English"
 SECTION = "opie/help"
 PRIORITY = "optional"
 LICENSE = "GPL"
-ALLOW_EMPTY = 1
+ALLOW_EMPTY = "1"
 PACKAGE_ARCH = "all"
 
 PACKAGES += "${PN}"

@@ -33,7 +33,7 @@ FILES_ntpdate = "${bindir}/ntpdate ${sysconfdir}/init.d/ntpdate"
 
 # ntp originally includes tickadj. It's split off for inclusion in small firmware images on platforms 
 # with wonky clocks (e.g. OpenSlug)
-RDEPENDS_${PN} = ${PN}-tickadj
+RDEPENDS_${PN} = "${PN}-tickadj"
 FILES_${PN}-bin = "${bindir}/ntp-wait ${bindir}/ntpdc ${bindir}/ntpq ${bindir}/ntptime ${bindir}/ntptrace"
 FILES_${PN} = "${bindir}/ntpd ${sysconfdir}/ntp.conf ${sysconfdir}/init.d/ntpd"
 FILES_${PN}-tickadj = "${bindir}/tickadj"

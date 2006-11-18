@@ -10,7 +10,7 @@ SRC_URI = "${GNU_MIRROR}/classpath/${PBN}-${PV}.tar.gz \
            file://disable-automake-checks.patch;patch=1 \
            file://fix-endian-arm-floats.patch;patch=1"
 
-S = ${WORKDIR}/${PBN}-${PV}
+S = "${WORKDIR}/${PBN}-${PV}"
 
 inherit autotools
 

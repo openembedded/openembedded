@@ -57,7 +57,7 @@ inherit autotools pkgconfig
 W100_OECONF = "--disable-w100"
 W100_OECONF_arm = "--enable-w100"
 
-EXTRA_OECONF = "--enable-composite --enable-kdrive \       
+EXTRA_OECONF = "--enable-composite --enable-kdrive \
                 --disable-dga --disable-dri --disable-xinerama \
                 --disable-xf86misc --disable-xf86vidmode \
                 --disable-xorg --disable-xorgcfg \

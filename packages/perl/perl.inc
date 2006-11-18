@@ -14,7 +14,7 @@ SRC_URI = "ftp://ftp.funet.fi/pub/CPAN/src/perl-${PV}.tar.gz \
 	file://config.sh-mipsel-linux \
 	file://config.sh-i686-linux"
 
-HOSTPERL=${STAGING_BINDIR}/perl${PV}
+HOSTPERL="${STAGING_BINDIR}/perl${PV}"
 
 do_configure() {
 	ln -sf ${HOSTPERL} ${STAGING_BINDIR}/hostperl 

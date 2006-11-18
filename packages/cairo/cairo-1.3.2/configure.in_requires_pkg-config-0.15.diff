@@ -1,0 +1,13 @@
+Index: cairo-1.3.2-r0/cairo-1.3.2/configure.in
+===================================================================
+--- cairo-1.3.2-r0.orig/cairo-1.3.2/configure.in	2006-11-15 22:31:59.000000000 +0100
++++ cairo-1.3.2-r0/cairo-1.3.2/configure.in	2006-11-16 23:15:07.000000000 +0100
+@@ -90,7 +90,7 @@
+ 
+ dnl ===========================================================================
+ 
+-PKGCONFIG_REQUIRED=0.19
++PKGCONFIG_REQUIRED=0.15
+ PKG_PROG_PKG_CONFIG($PKGCONFIG_REQUIRED)
+ if test "x$PKG_CONFIG" = x; then
+ 	AC_MSG_ERROR([pkg-config >= $PKGCONFIG_REQUIRED required but not found (http://pkgconfig.freedesktop.org/)])

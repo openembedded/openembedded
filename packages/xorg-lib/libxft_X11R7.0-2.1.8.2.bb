@@ -7,7 +7,7 @@ PROVIDES = "xft"
 
 XORG_PN = "libXft"
 
-FILES_${PN} = ${libdir}/lib*.so.*
+FILES_${PN} = "${libdir}/lib*.so.*"
 FILES_${PN}-dev = ${includedir} ${libdir}/lib*.so ${libdir}/*.la \
 		${libdir}/*.a ${libdir}/pkgconfig \
 		${datadir}/aclocal ${bindir} ${sbindir}

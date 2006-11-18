@@ -1,5 +1,5 @@
 SECTION = "console/network"
-DEPENDS = readline
+DEPENDS = "readline"
 LICENSE = "GPL"
 
 PACKAGES =+ "libsmbclient libsmbclient-dev cifs cifs-doc"

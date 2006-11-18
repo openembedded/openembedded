@@ -1,4 +1,4 @@
-LICENSE = MIT
+LICENSE = "MIT"
 PR = "r25"
 COMPATIBLE_MACHINE = "nslu2"
 
