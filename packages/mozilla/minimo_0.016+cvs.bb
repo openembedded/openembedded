@@ -11,7 +11,7 @@ BRTAG = "MOZILLA_1_8_BRANCH"
 MOZDATE = "20060720"
 
 PV = "0.016+cvs${MOZDATE}"
-PR = r0
+PR = "r1"
 
 SRC_URI = "cvs://anonymous@${CVSSVR}/cvsroot;module=mozilla;tag=${BRTAG};date=${MOZDATE} \
 	   file://minimo.patch;patch=1 \
