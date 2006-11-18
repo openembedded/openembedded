@@ -2,10 +2,9 @@ DESCRIPTION = "CHMLIB is a library for dealing with Microsoft ITSS/CHM format fi
 LICENSE = "GPLv2"
 HOMEPAGE = "http://66.93.236.84/~jedwin/projects/chmlib/"
 
-SRC_URI = "http://66.93.236.84/~jedwin/projects/chmlib/${P}.tar.bz2 \
+SRC_URI = "${DEBIAN_MIRROR}/main/c/chmlib/chmlib_0.380.orig.tar.gz \
 	   file://arm-guess.patch;patch=1"
 
+S = "${WORKDIR}/chmlib-0.380"
+
 inherit autotools pkgconfig
-
-
-
