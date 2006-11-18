@@ -6,7 +6,7 @@
 DESCRIPTION = "Generic SlugOS image"
 HOMEPAGE = "http://www.nslu2-linux.org"
 LICENSE = "MIT"
-PR = "r39"
+PR = "r40"
 
 COMPATIBLE_MACHINE = "nslu2"
 
