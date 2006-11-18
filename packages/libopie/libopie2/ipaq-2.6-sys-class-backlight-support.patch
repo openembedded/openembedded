@@ -1,0 +1,144 @@
+Index: libopie2/opiecore/device/odevice_ipaq.cpp
+===================================================================
+RCS file: /cvs/opie/libopie2/opiecore/device/odevice_ipaq.cpp,v
+retrieving revision 1.26
+diff -u -r1.26 odevice_ipaq.cpp
+--- libopie2/opiecore/device/odevice_ipaq.cpp	2 Aug 2006 19:12:39 -0000	1.26
++++ libopie2/opiecore/device/odevice_ipaq.cpp	11 Oct 2006 00:46:38 -0000
+@@ -408,45 +408,19 @@
+     if ( bright < 0 )
+         bright = 0;
+ 
+-    QString cmdline;
+-
+-    switch ( model()) {
+-    case Model_iPAQ_H191x:
+-    case Model_iPAQ_H4xxx:
+-	{
+-	    QDir sysClass( "/sys/class/backlight/pxafb/" );
+-	    sysClass.setFilter(QDir::Dirs);
+-	    int fd;
+-	    if ( sysClass.exists() ) {
+-		QString sysClassPath = sysClass.absFilePath( "/sys/class/backlight/pxafb/power" );
+-		fd = ::open( sysClassPath, O_WRONLY | O_NONBLOCK );
+-		if ( fd ) {
+-		    char buf[10];
+-		    buf[0] = bright ? 0 : 4;
+-		    buf[1] = '\0';
+-		    res = ( ::write( fd, &buf[0], 2 ) == 0 );
+-		    ::close( fd );
+-		}
+-		sysClassPath = sysClass.absFilePath( "/sys/class/backlight/pxafb/brightness" );
+-		fd = ::open( sysClassPath, O_WRONLY | O_NONBLOCK );
+-		if ( fd ) {
+-		    char buf[100];
+-		    int len = ::snprintf( &buf[0], sizeof buf, "%d", bright );
+-		    res = ( ::write( fd, &buf[0], len ) == 0 );
+-		    ::close( fd );
+-		}
+-	    }
+-	}
+-        break; 
+-	
+-    case Model_iPAQ_HX4700:
+-            cmdline = QString::fromLatin1( "echo %1 > /sys/class/backlight/w100fb/brightness" ).arg( bright );
+-        // No Global::shellQuote as we gurantee it to be sane
+-        res = ( ::system( QFile::encodeName(cmdline) ) == 0 );
+-        break; 
+-	
+-
+-    default:
++    QDir sysClass( "/sys/class/backlight/" );
++    sysClass.setFilter(QDir::Dirs);
++    if ( sysClass.exists() && sysClass.count() > 2 ) {
++        QString sysClassPath = sysClass.absFilePath( sysClass[2] + "/brightness" );
++        int fd = ::open( sysClassPath, O_WRONLY|O_NONBLOCK );
++        if ( fd ) {
++            char buf[100];
++            int val = bright * displayBrightnessResolution() / 255;
++            int len = ::snprintf( &buf[0], sizeof buf, "%d", val );
++            res = ( ::write( fd, &buf[0], len ) == 0 );
++            ::close( fd );
++        }
++    } else {
+         if (( fd = ::open ( "/dev/touchscreen/0", O_WRONLY )) >= 0 ) {
+             FLITE_IN bl;
+             bl. mode = 1;
+@@ -456,11 +430,28 @@
+             ::close ( fd );
+         }
+     }
++
+     return res;
+ }
+ 
+ int iPAQ::displayBrightnessResolution() const
+ {
++    int res = 16;
++
++    QDir sysClass( "/sys/class/backlight/" );
++    sysClass.setFilter(QDir::Dirs);
++    if ( sysClass.exists() && sysClass.count() > 2 ) {
++	QString sysClassPath = sysClass.absFilePath( sysClass[2] + "/max_brightness" );
++        int fd = ::open( sysClassPath, O_RDONLY|O_NONBLOCK );
++        if ( fd ) {
++            char buf[100];
++            if ( ::read( fd, &buf[0], sizeof buf ) )
++                ::sscanf( &buf[0], "%d", &res );
++            ::close( fd );
++        }
++    	return res;
++    } 
++
+     switch ( model()) {
+         case Model_iPAQ_H31xx:
+         case Model_iPAQ_H36xx:
+@@ -489,27 +480,22 @@
+ 
+     QString cmdline;
+ 
+-    if ( model() == Model_iPAQ_H191x ) {
+-	QDir sysClass( "/sys/class/lcd/pxafb/" );
+-	sysClass.setFilter(QDir::Dirs);
+-	if ( sysClass.exists() ) {
+-	    QString sysClassPath = sysClass.absFilePath( "/sys/class/lcd/pxafb/power" );
+-	    int fd = ::open( sysClassPath, O_WRONLY | O_NONBLOCK );
+-	    if ( fd ) {
+-		char buf[10];
+-		buf[0] = on ? 0 : 4;
+-		buf[1] = '\0';
+-		res = ( ::write( fd, &buf[0], 2 ) == 0 );
+-		::close( fd );
+-	    }
+-	}
+-	return res;
++    QDir sysClass( "/sys/class/lcd/" );
++    sysClass.setFilter(QDir::Dirs);
++    if ( sysClass.exists() && sysClass.count() > 2 ) {
++        QString sysClassPath = sysClass.absFilePath( sysClass[2] + "/power" );
++        int fd = ::open( sysClassPath, O_WRONLY|O_NONBLOCK );
++        if ( fd ) {
++            char buf[10];
++            buf[0] = on ? 0 : 4;
++            buf[1] = '\0';
++            res = ( ::write( fd, &buf[0], 2 ) == 0 );
++            ::close( fd );
++        }
+     } else {
+-        return OAbstractMobileDevice::setDisplayStatus(on);
++         res = OAbstractMobileDevice::setDisplayStatus(on);
+     }
+ 
+-    res = ( ::system( QFile::encodeName(cmdline) ) == 0 );
+-
+     return res;
+ }
+ 
+@@ -517,6 +503,7 @@
+ {
+     switch (model()) {
+ 	case Model_iPAQ_H191x:
++	case Model_iPAQ_H22xx:
+ 	case Model_iPAQ_H4xxx:
+ 	    return false;
+ 	default:
