@@ -1,6 +1,8 @@
 require ${PN}.inc
 
-PV = "${OPIE_CVS_PV}"
+PV = "1.2.2+cvs${SRCDATE}"
+
+DEFAULT_PREFERENCE = "-1"
 
 SRC_URI = "${HANDHELDS_CVS};module=opie/libopie2 \
            file://include.pro"
