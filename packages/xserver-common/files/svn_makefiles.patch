@@ -1,0 +1,11 @@
+--- xserver-common-1.7/Makefile.org	2006-06-14 21:36:04.000000000 +0000
++++ xserver-common-1.7/Makefile	2006-08-28 20:02:47.000000000 +0000
+@@ -7,7 +7,7 @@
+ LINGUAS = 
+ 
+ ifeq ($(CVSBUILD),yes)
+-BUILD = ../build
++BUILD = ..
+ else
+ BUILD = build
+ endif
