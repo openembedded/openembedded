@@ -16,7 +16,7 @@ S="${WORKDIR}/${AMD_DRIVER_LABEL}"
 PACKAGES="${PN}"
 FILES_${PN} = "/lib"
 
-KERNEL_SOURCE = ${@base_read_file('${STAGING_KERNEL_DIR}/kernel-source')}
+KERNEL_SOURCE = "${@base_read_file('${STAGING_KERNEL_DIR}/kernel-source')}"
 
 EXTRA_OECONF="--with-kernel-path=${KERNEL_SOURCE} --with-module-path=${D}/lib/modules"
 

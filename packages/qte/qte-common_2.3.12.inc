@@ -1,7 +1,7 @@
 require qte-common_2.3.10.inc
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/qte-${PV}"
 
-SRC_URI = "http://ewi546.ewi.utwente.nl/mirror/hrw-oe-sources/qt-embedded-2.3.10-snapshot-20060120.tar.gz \ 
+SRC_URI = "http://ewi546.ewi.utwente.nl/mirror/hrw-oe-sources/qt-embedded-2.3.10-snapshot-20060120.tar.gz \
    	   file://qpe.patch;patch=1 \
 	   file://vt-switch.patch;patch=1 \
 	   file://daemonize.patch;patch=1 \
@@ -31,9 +31,9 @@ SRC_URI = "http://ewi546.ewi.utwente.nl/mirror/hrw-oe-sources/qt-embedded-2.3.10
 SRC_URI_append_simpad       = "file://devfs.patch;patch=1 "
 SRC_URI_append_c7x0         = "file://kernel-keymap.patch;patch=1;pnum=0 file://kernel-keymap-corgi.patch;patch=1 \
                                file://c7x0-w100-accel.patch;patch=1 file://suspend-resume-hooks.patch;patch=1 "
-SRC_URI_append_spitz        = "file://kernel-keymap.patch;patch=1;pnum=0 file://kernel-keymap-corgi.patch;patch=1 \                 
+SRC_URI_append_spitz        = "file://kernel-keymap.patch;patch=1;pnum=0 file://kernel-keymap-corgi.patch;patch=1 \
                                file://kernel-keymap-CXK.patch;patch=1 "
-SRC_URI_append_akita        = "file://kernel-keymap.patch;patch=1;pnum=0 file://kernel-keymap-corgi.patch;patch=1 \                 
+SRC_URI_append_akita        = "file://kernel-keymap.patch;patch=1;pnum=0 file://kernel-keymap-corgi.patch;patch=1 \
                                file://kernel-keymap-CXK.patch;patch=1 "
 SRC_URI_append_poodle       = "file://kernel-keymap.patch;patch=1;pnum=0 "
 SRC_URI_append_a780         = "file://kernel-keymap.patch;patch=1;pnum=0 "

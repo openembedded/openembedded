@@ -16,7 +16,7 @@ CHSRC = "http://oz.drigon.com/patches"
 # Compensate for sucky bootloader on all Sharp Zaurus models
 #
 FILES_kernel-image = ""
-ALLOW_EMPTY = 1
+ALLOW_EMPTY = "1"
 
 EXTRA_OEMAKE = "OPENZAURUS_RELEASE=-${DISTRO_VERSION}"
 COMPATIBLE_HOST = "(arm|i.86).*-linux"
@@ -32,8 +32,8 @@ CMDLINE_DEBUG = '${@base_conditional("DISTRO_TYPE", "release", "quiet", "debug",
 ##############################################################
 # Configure memory/ramdisk split for collie
 #
-export mem = ${@bb.data.getVar("COLLIE_MEMORY_SIZE",d,1) or "32"}
-export rd  = ${@bb.data.getVar("COLLIE_RAMDISK_SIZE",d,1) or "32"}
+export mem = '${@bb.data.getVar("COLLIE_MEMORY_SIZE",d,1) or "32"}'
+export rd  = '${@bb.data.getVar("COLLIE_RAMDISK_SIZE",d,1) or "32"}'
 
 CMDLINE_MEM_collie = "mem=${mem}M"
 CMDLINE_ROTATE_spitz = "fbcon=rotate:1"
@@ -45,7 +45,7 @@ CMDLINE = "${CMDLINE_CON} ${CMDLINE_ROOT} ${CMDLINE_MEM} ${CMDLINE_ROTATE} ${CMD
 ###############################################################
 # Enable or disable ELPP via local.conf - default is "no"
 #
-ENABLE_ELPP = ${@bb.data.getVar("OZ_KERNEL_ENABLE_ELPP",d,1) or "no"}
+ENABLE_ELPP = '${@bb.data.getVar("OZ_KERNEL_ENABLE_ELPP",d,1) or "no"}'
 
 ###############################################################
 # module configs specific to this kernel

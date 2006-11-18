@@ -5,7 +5,7 @@ LICENSE = "GPL"
 RRECOMMENDS = "opie-logoutapplet"
 APPNAME = "opie-login"
 
-BROKEN = 1
+BROKEN = "1"
 
 S = "${WORKDIR}/${APPNAME}"
 

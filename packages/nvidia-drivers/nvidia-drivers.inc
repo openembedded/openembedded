@@ -7,7 +7,7 @@ DESCRIPTION="NVidia Graphics Driver Binary"
 LICENSE = "NVIDIA"
 
 inherit module
-INHIBIT_PACKAGE_STRIP=1
+INHIBIT_PACKAGE_STRIP="1"
 
 def nvidia_pkgrun(d):
 	import bb, re

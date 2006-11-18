@@ -5,7 +5,7 @@ LICENSE = "MIT-X"
 RPROVIDES = "virtual/xserver"
 PROVIDES = "virtual/xserver"
 
-DEPENDS = "fontconfig freetype flex-native lbxutil kbproto \ 
+DEPENDS = "fontconfig freetype flex-native lbxutil kbproto \
 xf86driproto drm glproto randrproto renderproto fixesproto damageproto \
 xcmiscproto xextproto xproto xf86miscproto xf86vidmodeproto xf86bigfontproto \
 scrnsaverproto bigreqsproto resourceproto fontsproto inputproto \

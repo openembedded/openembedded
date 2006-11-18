@@ -5,7 +5,7 @@ LICENSE = "GPL"
 DEPENDS = "opie-keytabs"
 RDEPENDS = "opie-keytabs"
 APPNAME = "opie-console"
-APPTYPE = binary
+APPTYPE = "binary"
 
 S = "${WORKDIR}/${APPNAME}"
 
