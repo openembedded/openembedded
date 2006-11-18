@@ -11,7 +11,7 @@ BRTAG = "MOZILLA_1_8_BRANCH"
 MOZDATE = "20060720"
 
 PV = "0.016+cvs${MOZDATE}"
-PR = r0
+PR = "r2"
 
 SRC_URI = "cvs://anonymous@${CVSSVR}/cvsroot;module=mozilla;tag=${BRTAG};date=${MOZDATE} \
 	   file://minimo.patch;patch=1 \
@@ -30,7 +30,7 @@ export ac_cv_prog_HOST_CFLAGS="${BUILD_CFLAGS}"
 export ac_cv_prog_HOST_CXX="${BUILD_CXX}"
 export ac_cv_prog_HOST_CXXFLAGS="${BUILD_CXXFLAGS}"
 
-mozdir="${D}${libdir}/mozilla-minimo"
+mozdir="${libdir}/mozilla-minimo"
 
 EXTRA_OECONF += "--build=${BUILD_SYS} --host=${BUILD_SYS} --target=${TARGET_SYS} "
 
@@ -141,4 +141,5 @@ do_install() {
 	install -m 0644 res/html/gopher-unknown.gif ${D}${mozdir}/res/html
 }
 
+FILES_${PN}-dbg += "${libdir}/mozilla-minimo/.debug*"
 FILES_${PN} += "${mozdir}"
