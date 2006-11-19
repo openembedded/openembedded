@@ -10,6 +10,7 @@ NAME=dbus
 DAEMONUSER=messagebus
 PIDDIR=/var/run/dbus
 PIDFILE=$PIDDIR/pid
+UUIDDIR=/var/lib/dbus
 DESC="system message bus"
 EVENTDIR=/etc/dbus-1/event.d
 
@@ -40,8 +41,15 @@ start_it_up()
       rm -f $PIDFILE
     fi
   fi
+
+  if [ ! -d $UUIDDIR ]; then
+    mkdir -p $UUIDDIR
+    chown $DAEMONUSER $UUIDDIR
+    chgrp $DAEMONUSER $UUIDDIR
+  fi
  
   dbus-uuidgen --ensure  
+
   echo -n "Starting $DESC: "
   start-stop-daemon --start --quiet --pidfile $PIDFILE \
     --user $DAEMONUSER --exec $DAEMON -- --system $PARAMS
