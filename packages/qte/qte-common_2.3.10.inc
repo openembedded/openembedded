@@ -37,6 +37,7 @@ SRC_URI = "ftp://ftp.trolltech.com/pub/qt/source/qt-embedded-${PV}-free.tar.gz;m
 	   file://fix-native-build.patch;patch=1 \
 	   file://simpad-defaultkbd.patch;patch=1 \
 	   file://fix-errno-exception-spec.patch;patch=1 \
+           file://keyboardless-buttonmap.patch;patch=1 \
 	   file://sharp_char.h \
 	   file://switches.h "
 
@@ -62,16 +63,16 @@ SRC_URI_append_mnci         = "file://devfs.patch;patch=1 \
                                file://mnci-touchscreen.patch;patch=1 \
                                file://qkeyboard_qws.h \
                                file://qkeyboard_qws.cpp "
-SRC_URI_append_h1910        = "file://ipaq-keyboard.patch;patch=1 file://ipaq_sound_fix.patch;patch=1 "
-SRC_URI_append_h1940        = "file://ipaq-keyboard.patch;patch=1 file://ipaq_sound_fix.patch;patch=1 "
-SRC_URI_append_h2200        = "file://ipaq-keyboard.patch;patch=1 file://ipaq_sound_fix.patch;patch=1 "
-SRC_URI_append_h3600        = "file://ipaq-keyboard.patch;patch=1 file://ipaq_sound_fix.patch;patch=1 "
-SRC_URI_append_h3900        = "file://ipaq-keyboard.patch;patch=1 file://ipaq_sound_fix.patch;patch=1 "
-SRC_URI_append_h4000        = "file://ipaq-keyboard.patch;patch=1 file://ipaq_sound_fix.patch;patch=1 "
-SRC_URI_append_h5xxx        = "file://ipaq-keyboard.patch;patch=1 file://ipaq_sound_fix.patch;patch=1 "
-SRC_URI_append_h6300        = "file://ipaq-keyboard.patch;patch=1 file://ipaq_sound_fix.patch;patch=1 "
-SRC_URI_append_hx2000       = "file://ipaq-keyboard.patch;patch=1 file://ipaq_sound_fix.patch;patch=1 "
-SRC_URI_append_hx4700       = "file://ipaq-keyboard.patch;patch=1 file://ipaq_sound_fix.patch;patch=1 "
+#SRC_URI_append_h1910        = "file://ipaq-keyboard.patch;patch=1 file://ipaq_sound_fix.patch;patch=1 "
+#SRC_URI_append_h1940        = "file://ipaq-keyboard.patch;patch=1 file://ipaq_sound_fix.patch;patch=1 "
+#SRC_URI_append_h2200        = "file://ipaq-keyboard.patch;patch=1 file://ipaq_sound_fix.patch;patch=1 "
+#SRC_URI_append_h3600        = "file://ipaq-keyboard.patch;patch=1 file://ipaq_sound_fix.patch;patch=1 "
+#SRC_URI_append_h3900        = "file://ipaq-keyboard.patch;patch=1 file://ipaq_sound_fix.patch;patch=1 "
+#SRC_URI_append_h4000        = "file://ipaq-keyboard.patch;patch=1 file://ipaq_sound_fix.patch;patch=1 "
+#SRC_URI_append_h5xxx        = "file://ipaq-keyboard.patch;patch=1 file://ipaq_sound_fix.patch;patch=1 "
+#SRC_URI_append_h6300        = "file://ipaq-keyboard.patch;patch=1 file://ipaq_sound_fix.patch;patch=1 "
+#SRC_URI_append_hx2000       = "file://ipaq-keyboard.patch;patch=1 file://ipaq_sound_fix.patch;patch=1 "
+#SRC_URI_append_hx4700       = "file://ipaq-keyboard.patch;patch=1 file://ipaq_sound_fix.patch;patch=1 "
 
 
 S = "${WORKDIR}/qt-${PV}"

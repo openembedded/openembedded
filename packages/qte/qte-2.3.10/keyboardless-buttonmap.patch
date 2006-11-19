@@ -1,0 +1,19 @@
+--- qt-2.3.10/src/kernel/qkeyboard_qws.cpp.org	2006-09-16 20:54:32.000000000 +0000
++++ qt-2.3.10/src/kernel/qkeyboard_qws.cpp	2006-10-06 13:25:29.000000000 +0000
+@@ -1018,6 +1018,16 @@
+ 	    repeatable = FALSE;
+ 	    break;
+ #endif
++
++	case 0x74: // kernel KEY_POWER
++	    keyCode = Key_F34;
++	    repeatable = FALSE;
++	    break;
++	case 89: // kernel KEY_RO
++	    keyCode = Key_F24;
++	    repeatable = FALSE;
++	    break;
++
+ 	case 0x78:
+ # if defined(QT_QWS_IPAQ)
+ 	    keyCode = Key_F24;  // record
