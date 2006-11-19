@@ -1,3 +1,9 @@
+openembedded-essential (1.1-1) unstable; urgency=low
+
+  * added gawk
+
+ -- Marcin Juszkiewicz <hrw@hrw.one.pl>  Wed,  8 Nov 2006 11:17:42 +0100
+
 openembedded-essential (1.0-1) unstable; urgency=low
 
   * Initial release
