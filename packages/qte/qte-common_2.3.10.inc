@@ -10,6 +10,11 @@ PROVIDES = "virtual/libqte2"
 
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/qte-${PV}"
 
+# Workaround GCC 4.1 issues with -fvisibility-inlines-hidden (see #1521)
+# by disabling it for qpe only. TODO: pinpoint actual issue causing GCC 
+# misbehavior.
+CXXFLAGS += "-fno-visibility-inlines-hidden"
+
 SRC_URI = "ftp://ftp.trolltech.com/pub/qt/source/qt-embedded-${PV}-free.tar.gz;md5sum=1f7ad30113afc500cab7f5b2f4dec0d7 \
    	   file://qpe.patch;patch=1 \
 	   file://vt-switch.patch;patch=1 \
