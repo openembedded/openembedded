@@ -1,16 +1,17 @@
 SECTION = "x11/utils"
-DEPENDS = "gtk+ glib-2.0 gnome-vfs-dbus libgnomeui eds-dbus libiconv"
+DEPENDS = "gtk+ glib-2.0 gnome-vfs-dbus gconf-dbus libgnomeui eds-dbus"
 DESCRIPTION = "TinyMail is an attempt to create an E-mail framework for mobile devices"
 LICENSE = "GPL"
 
 PV = "0.0+svn${SRCDATE}"
-PR = "r2"
+PR = "r3"
 
 EXTRA_OECONF=" --disable-gnome --with-platform=gpe --with-html-component=none"
 
-#camel-lite-configure-hack.patch is still needed after the maxdate, but needs fixing
 SRC_URI = "svn://svn.tinymail.org/svn/tinymail/;module=trunk;proto=http \
 	   file://camel-lite-configure-hack.patch;patch=1;maxdate=20061113 \
+	   file://no-iconv-detect.patch;patch=1;mindate=20061114 \
+	   file://iconv-detect.h \	
 	   file://gtk-doc.m4 \
            file://gtk-doc.make"
 
@@ -21,6 +22,8 @@ do_configure_prepend() {
         mkdir -p m4
         install ${WORKDIR}/gtk-doc.m4 ./m4/
         install ${WORKDIR}/gtk-doc.make ./
+
+	cp ${WORKDIR}/iconv-detect.h ${S}/libtinymail-camel/camel-lite/
 }
 
 
@@ -49,8 +52,5 @@ FILES_tinymail-camel-lite-dev +=  "${libdir}/libcamel-lite*.so \
 				   ${libdir}/camel-lite-1.2/camel-providers/*.la \
 				   ${libdir}/camel-lite-1.2/camel-providers/*.a "			      
 FILES_tinymail-camel-lite-dbg +=  "${libdir}/camel-lite-1.2/camel-providers/.debug"
-
-PARALLEL_MAKE = ""
-LDFLAGS += "-liconv"
 
 
