@@ -1,4 +1,4 @@
-PR = "r6"
+PR = "r7"
 
 SRC_URI_append = "file://configure.patch;patch=1 \
                   file://Makefile.in.patch;patch=1 \
