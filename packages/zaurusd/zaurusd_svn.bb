@@ -4,12 +4,13 @@ MAINTAINER = "Richard Purdie <rpurdie@openedhand.com>"
 LICENSE = "GPL"
 DEPENDS = "tslib"
 PV = "0.0+svn${CVSDATE}"
-PR = "r8"
+PR = "r9"
 
 SRC_URI = "svn://svn.o-hand.com/repos/misc/trunk;module=zaurusd;proto=http \
            file://zaurus-hinge.in \
 	   file://zaurus-hinge.matchbox-portrait \
-	   file://zaurus-hinge.matchbox-landscape"
+	   file://zaurus-hinge.matchbox-landscape \
+	   file://poodle-asound.state.patch;patch=1"
 
 S = "${WORKDIR}/${PN}"
 
