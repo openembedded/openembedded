@@ -1,0 +1,2 @@
+cherokee_cv_have_epoll=yes
+cherokee_cv_func_sendfile_works=yes

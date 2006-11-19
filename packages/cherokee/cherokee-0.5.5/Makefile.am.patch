@@ -1,0 +1,26 @@
+Index: cherokee-0.5.5/cget/Makefile.am
+===================================================================
+--- cherokee-0.5.5.orig/cget/Makefile.am
++++ cherokee-0.5.5/cget/Makefile.am
+@@ -12,6 +12,8 @@ $(LARGEFILE_CFLAGS)
+ 
+ cget_LDADD = \
+ ../cherokee/libcherokee-client.la \
++../cherokee/libcherokee-base.la \
++../cherokee/libcherokee-server.la \
+ $(TLS_LIBS) \
+ $(PTHREAD_LIBS) \
+ $(PTHREAD_CFLAGS)
+Index: cherokee-0.5.5/cherokee/Makefile.am
+===================================================================
+--- cherokee-0.5.5.orig/cherokee/Makefile.am
++++ cherokee-0.5.5/cherokee/Makefile.am
+@@ -923,7 +923,7 @@ cherokee_logrotate_LDADD = libcherokee-b
+ noinst_PROGRAMS = cherokee_admin
+ 
+ cherokee_admin_SOURCES = cherokee_admin.c 
+-cherokee_admin_LDADD = libcherokee-config.la libcherokee-base.la libcherokee-client.la 
++cherokee_admin_LDADD = libcherokee-config.la libcherokee-base.la libcherokee-client.la libcherokee-server.la
+ 
+ ##cherokee_table_test_SOURCES = cherokee_table_test.c
+ ##cherokee_table_test_LDADD = libcherokee.la

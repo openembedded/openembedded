@@ -1,0 +1,52 @@
+Add cache support for some values which require running on the
+target. These need to be set in the site files:
+
+ cherokee_cv_have_epoll
+ cherokee_cv_func_sendfile_works
+
+Both should be set to yes for any reasonably recent linux.
+
+Index: cherokee-0.5.5/configure.in
+===================================================================
+--- cherokee-0.5.5.orig/configure.in
++++ cherokee-0.5.5/configure.in
+@@ -280,6 +280,7 @@ have_epoll=no
+ if test "x$have_epoll_include" = "xyes"; then
+  	AC_MSG_CHECKING(for epoll system call)
+ 
++     AC_CACHE_CHECK([for epoll],cherokee_cv_have_epoll,[
+      AC_TRY_RUN([
+ 		#include <stdint.h>
+ 		#include <sys/param.h>
+@@ -297,8 +298,7 @@ if test "x$have_epoll_include" = "xyes";
+ 	        epfd = epoll_create(256);
+ 	    	   exit (epfd == -1 ? 1 : 0);
+ 		}
+-	], have_epoll=yes)
+-	AC_MSG_RESULT($have_epoll)
++	], have_epoll=yes)])
+ fi
+ 
+ dnl
+@@ -625,16 +625,16 @@ ETR_SOCKET_NSL
+ SENDFILE_CHECK
+ 
+ # Is sendfile broken?
+-AC_MSG_CHECKING(if sendfile works)
++AC_CACHE_CHECK([if sendfile works],cherokee_cv_func_sendfile_works,[
+ AC_TRY_RUN([#include <errno.h>
+             int main() {
+                int o = 0;
+                if (-1 == sendfile(0, 0, &o, 0) && errno == ENOSYS) return -1;
+                return 0;
+-            } ], 
+-            AC_MSG_RESULT(yes), 
+-            [ AC_MSG_RESULT(no) 
+-              AC_DEFINE([HAVE_SENDFILE_BROKEN], [1], [broken sendfile]) ])
++            } ], cherokee_cv_func_sendfile_works=yes,cherokee_cv_func_sendfile_works=no,cherokee_cv_func_sendfile_works=false)])
++if test "$cherokee_cv_func_sendfile_works" = false; then
++        AC_DEFINE([HAVE_SENDFILE_BROKEN], [1], [broken sendfile])
++fi
+ 
+ # readdir_r()
+ LIBWWW_READDIR_R_TYPE
