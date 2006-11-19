@@ -21,8 +21,12 @@ do_install_append () {
         install -m 755 ${WORKDIR}/cherokee.init ${D}${sysconfdir}/init.d/cherokee
 }
 
-PACKAGES =+ "cget libcherokee-server libcherokee-client libcherokee-base"
+# Put -dev near the front so we can move the .la files into it with a wildcard
+PACKAGES = "${PN}-dbg ${PN}-dev \
+            libcherokee-server libcherokee-client libcherokee-base \
+            cget ${PN} ${PN}-doc ${PN}-locale"
 
+FILES_${PN}-dev += "${libdir}/cherokee/*.la"
 FILES_cget = "${bindir}/cget"
 FILES_libcherokee-server = "${libdir}/libcherokee-server*"
 FILES_libcherokee-client = "${libdir}/libcherokee-client*"
