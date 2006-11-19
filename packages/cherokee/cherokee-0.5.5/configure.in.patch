@@ -43,8 +43,8 @@ Index: cherokee-0.5.5/configure.in
 -            AC_MSG_RESULT(yes), 
 -            [ AC_MSG_RESULT(no) 
 -              AC_DEFINE([HAVE_SENDFILE_BROKEN], [1], [broken sendfile]) ])
-+            } ], cherokee_cv_func_sendfile_works=yes,cherokee_cv_func_sendfile_works=no,cherokee_cv_func_sendfile_works=false)])
-+if test "$cherokee_cv_func_sendfile_works" = false; then
++            } ], cherokee_cv_func_sendfile_works=yes,cherokee_cv_func_sendfile_works=no,cherokee_cv_func_sendfile_works=no)])
++if test "$cherokee_cv_func_sendfile_works" = no; then
 +        AC_DEFINE([HAVE_SENDFILE_BROKEN], [1], [broken sendfile])
 +fi
  
