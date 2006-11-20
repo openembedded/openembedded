@@ -6,7 +6,7 @@ PR = "r1"
 COMPATIBLE_MACHINE = "gumstix"
 
 SRC_URI = "ftp://ftp.kernel.org/pub/linux/kernel/v2.6/linux-${PV}.tar.bz2 \
-		   cvs://anoncvs:anoncvs@cvs.infradead.org/home/cvs;module=mtd;date=20060223 \ 
+		   cvs://anoncvs:anoncvs@cvs.infradead.org/home/cvs;module=mtd;date=20060223 \
            file://defconfig-gumstix \
 		   file://arch-config.patch;patch=1 \
 		   file://board-init.patch;patch=1 \

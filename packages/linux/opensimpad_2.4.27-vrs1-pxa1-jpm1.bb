@@ -53,9 +53,9 @@ inherit kernel
 KERNEL_CCSUFFIX = "-3.3.4"
 COMPATIBLE_HOST = "arm.*-linux"
 
-SIMPAD_MEM     = ${@bb.data.getVar("SIMPAD_MEMORY_SIZE",d,1)  or "32"}
-SIMPAD_RD      = ${@bb.data.getVar("SIMPAD_RAMDISK_SIZE",d,1) or "32"}
-export CMDLINE = ${@bb.data.getVar("SIMPAD_CMDLINE",d,1) or  "mtdparts=sa1100:512k(boot),1m(kernel),14848k(root),-(home) console=ttySA root=1f02 noinitrd jffs2_orphaned_inodes=delete rootfstype=jffs2 "}
+SIMPAD_MEM     = '${@bb.data.getVar("SIMPAD_MEMORY_SIZE",d,1)  or "32"}'
+SIMPAD_RD      = '${@bb.data.getVar("SIMPAD_RAMDISK_SIZE",d,1) or "32"}'
+export CMDLINE = '${@bb.data.getVar("SIMPAD_CMDLINE",d,1) or  "mtdparts=sa1100:512k(boot),1m(kernel),14848k(root),-(home) console=ttySA root=1f02 noinitrd jffs2_orphaned_inodes=delete rootfstype=jffs2 "}'
 #EXTRA_OEMAKE = ""
 
 module_conf_sa1100_ir = "alias irda0 sa1100_ir"

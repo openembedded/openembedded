@@ -10,7 +10,7 @@ PR = "r0"
 AMD_DRIVER_VERSION = "02.03.0100"
 AMD_DRIVER_LABEL = "Patches_Linux2.6.11_Common_${AMD_DRIVER_VERSION}"
 
-KV=${PV}
+KV = "${PV}"
 
 S = "${WORKDIR}/linux-${KV}"
 

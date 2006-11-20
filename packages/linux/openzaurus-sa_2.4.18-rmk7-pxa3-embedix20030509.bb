@@ -53,7 +53,7 @@ inherit kernel
 # Compensate for sucky bootloader on all Sharp Zaurus models
 #
 FILES_kernel-image = ""
-ALLOW_EMPTY = 1
+ALLOW_EMPTY = "1"
 
 KERNEL_CCSUFFIX = "-2.95"
 KERNEL_LDSUFFIX = "-2.11.2"

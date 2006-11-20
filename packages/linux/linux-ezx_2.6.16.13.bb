@@ -30,7 +30,7 @@ S = "${WORKDIR}/linux-2.6.16"
 # kernel image resides on a seperate flash partition (for now)
 #
 FILES_kernel-image = ""
-ALLOW_EMPTY = 1
+ALLOW_EMPTY  = "1"
 
 COMPATIBLE_HOST = "arm.*-linux"
 COMPATIBLE_MACHINE = '(a780|e680)'

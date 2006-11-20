@@ -23,7 +23,7 @@ S = "${WORKDIR}/kernel26"
 inherit kernel
 
 FILES_kernel-image_h2200 = ""
-ALLOW_EMPTY_kernel-image_h2200 = 1
+ALLOW_EMPTY_kernel-image_h2200  = "1"
 
 K_MAJOR = "2"
 K_MINOR = "6"
