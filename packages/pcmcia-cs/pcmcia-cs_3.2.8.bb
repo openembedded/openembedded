@@ -29,7 +29,7 @@ INITSCRIPT_PARAMS = "defaults"
 
 inherit update-rc.d module-base
 
-export KERNEL_SOURCE = ${@base_read_file('${STAGING_KERNEL_DIR}/kernel-source')}
+export KERNEL_SOURCE = "${@base_read_file('${STAGING_KERNEL_DIR}/kernel-source')}"
 
 sbindir = "/sbin"
 

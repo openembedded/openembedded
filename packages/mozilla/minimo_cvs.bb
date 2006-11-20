@@ -17,7 +17,7 @@ inherit mozilla
 EXTRA_OECONF += "--enable-application=minimo --disable-native-uconv"
 export MOZ_CO_PROJECT="minimo"
 
-export MINIMO=1
+export MINIMO="1"
 export MOZ_OBJDIR="${WORKDIR}/build-${TARGET_SYS}"
 
 require mozilla-cvs.inc

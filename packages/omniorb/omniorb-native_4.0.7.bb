@@ -3,7 +3,7 @@ SRC_URI = "${SOURCEFORGE_MIRROR}/omniorb/omniORB-${PV}.tar.gz"
 SECTION = "devel"
 S = "${WORKDIR}/omniORB-${PV}"
 
-DEPENDS += python-native
+DEPENDS += "python-native"
 
 inherit native autotools
 

@@ -23,7 +23,7 @@ EXTRA_OECONF = " \
 		--disable-hal  \
 		--with-dhcdbd=/sbin/dhcdbd"
 
-S = ${WORKDIR}/NetworkManager-${PV}
+S = "${WORKDIR}/NetworkManager-${PV}"
 
 inherit autotools
 

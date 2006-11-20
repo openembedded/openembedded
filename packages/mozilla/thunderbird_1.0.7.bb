@@ -20,7 +20,7 @@ FILES_${PN}-dbg += "${libdir}/thunderbird-${PV}/.debug*"
 
 inherit mozilla
 
-export MOZ_THUNDERBIRD=1
+export MOZ_THUNDERBIRD="1"
 
 do_configure() {
 	for x in ipc enigmail; do

@@ -12,12 +12,12 @@ SRC_URI="http://http.us.debian.org/debian/pool/main/o/${PN}/${PN}_${PV}.orig.tar
 S="${WORKDIR}/${PN}"
 DEPENDS="pwlib openssl"
 
-export PWLIBDIR=${STAGING_DATADIR}/pwlib
-export PTLIB_CONFIG=${STAGING_DATADIR}/pwlib/make/ptlib-config
-export OPENH323DIR=${S}
+export PWLIBDIR= "${STAGING_DATADIR}/pwlib"
+export PTLIB_CONFIG= "${STAGING_DATADIR}/pwlib/make/ptlib-config"
+export OPENH323DIR= "${S}"
 
-export OPENSSLFLAG=1
-export OPENSSLDIR=${STAGING_LIBDIR}
+export OPENSSLFLAG= "1"
+export OPENSSLDIR= "${STAGING_LIBDIR}"
 export OPENSSLLIBS="-lssl -lcrypt"
 export MACHTYPE="x86"
 export OSTYPE="linux"

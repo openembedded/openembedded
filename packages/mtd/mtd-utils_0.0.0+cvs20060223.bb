@@ -6,7 +6,7 @@ LICENSE = "GPLv2"
 PR = "r0"
 SRCDATE = "20060223"
 
-SRC_URI = "cvs://anoncvs:anoncvs@cvs.infradead.org/home/cvs;module=mtd \ 
+SRC_URI = "cvs://anoncvs:anoncvs@cvs.infradead.org/home/cvs;module=mtd \
            file://add-exclusion-to-mkfs-jffs2-20060131.patch;patch=1 \
 	   file://fix-ignoreerrors-20060131.patch;patch=1"
 S = "${WORKDIR}/mtd/"

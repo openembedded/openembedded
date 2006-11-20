@@ -21,7 +21,7 @@ SRC_URI = "ftp://ftp.mutt.org/mutt/devel/mutt-${PV}.tar.gz \
 #	   file://configure.patch;patch=1"
 S = "${WORKDIR}/mutt-1.5.9"
 
-DEFAULT_PREFERENCE = -1
+DEFAULT_PREFERENCE = "-1"
 
 inherit autotools
 

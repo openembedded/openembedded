@@ -98,5 +98,5 @@ EOF
 	fakeroot tar cfj ${SDK_DEPLOY}/${DISTRO}-${DISTRO_VERSION}-${TARGET_ARCH}-oe-sdk-${DATE}.tar.bz2 .
 }
 
-do_populate_sdk[nostamp] = 1
+do_populate_sdk[nostamp] = "1"
 addtask populate_sdk before do_build after do_install

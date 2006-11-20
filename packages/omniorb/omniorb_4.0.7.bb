@@ -4,7 +4,7 @@ SECTION = "devel"
 PRIORITY = "optional"
 LICENSE = "LGPL"
 
-DEPENDS = omniorb-native
+DEPENDS = "omniorb-native"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/omniorb/omniORB-${PV}.tar.gz \
 file://omniORB.cfg \

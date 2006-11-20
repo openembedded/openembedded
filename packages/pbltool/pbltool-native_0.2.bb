@@ -4,7 +4,7 @@ PR = "r0"
 
 SRC_URI = "http://the.earth.li/pub/e3/pbltool-${PV}.c"
 
-INHIBIT_NATIVE_STAGE_INSTALL = 1
+INHIBIT_NATIVE_STAGE_INSTALL = "1"
 
 do_compile() {
 	${CC} -o pbltool ${WORKDIR}/pbltool-${PV}.c

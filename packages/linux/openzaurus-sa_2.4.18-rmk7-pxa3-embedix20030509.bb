@@ -69,8 +69,8 @@ module_autoload_collie_tc35143af = "collie_tc35143af"
 #
 # FIXME: Use configuration system
 #
-export mem = ${@bb.data.getVar("COLLIE_MEMORY_SIZE",d,1) or "32"}
-export rd  = ${@bb.data.getVar("COLLIE_RAMDISK_SIZE",d,1) or "32"}
+export mem = '${@bb.data.getVar("COLLIE_MEMORY_SIZE",d,1) or "32"}'
+export rd  = '${@bb.data.getVar("COLLIE_RAMDISK_SIZE",d,1) or "32"}'
 export CMDLINE = "${CMDLINE_CONSOLE} root=/dev/mtdblock4 rootfstype=jffs2 jffs2_orphaned_inodes=delete"
 
 do_configure_prepend() {

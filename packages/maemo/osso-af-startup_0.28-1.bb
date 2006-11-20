@@ -16,7 +16,7 @@ FILES_${PN} = "${sysconfdir}/osso-af-init ${sysconfdir}/init.d/af-startup"
 FILES_osso-af-services = "${sysconfdir}/init.d/af-services"
 FILES_osso-af-base-apps = "${sysconfdir}/init.d/af-base-apps"
 
-INITSCRIPT_PACKAGES = ${PACKAGES}
+INITSCRIPT_PACKAGES = "${PACKAGES}"
 INITSCRIPT_NAME_${PN} = "af-startup"
 INITSCRIPT_PARAMS_${PN} = "defaults 50"
 INITSCRIPT_NAME_osso-af-services = "af-services"

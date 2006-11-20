@@ -108,7 +108,7 @@ OPENLDAP_DEPENDS_hdb  ?= "db"
 OPENLDAP_PACKAGE_hdb  ?= "${PN}-backend-hdb"
 FILES_${PN}-backend-hdb = "${md}/back_hdb.so ${md}/back_hdb.la ${md}/back_hdb-*.so.*"
 EXTRA_OECONF += "${OPENLDAP_OPTION_hdb}"
-DEPENDS += ${OPENLDAP_DEPENDS_hdb}
+DEPENDS += "${OPENLDAP_DEPENDS_hdb}"
 PACKAGES += "${OPENLDAP_PACKAGE_hdb}"
 #
 #--enable-ldap         enable ldap backend no|yes|mod no

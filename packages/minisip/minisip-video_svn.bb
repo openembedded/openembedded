@@ -7,7 +7,7 @@ CONFLICTS = "minisip"
 DESCRIPTION = "SIP user agent, with focus on security - video support"
 DEPENDS = "libsdl-x11 ffmpeg-0.4.9-pre1+cvs${SRCDATE} libglademm libmsip0 libmikey0"
 SRC_URI = "svn://svn.minisip.org/var/svn/minisip/trunk;module=minisip"
-S = ${WORKDIR}/minisip
+S = "${WORKDIR}/minisip"
 
 
 
