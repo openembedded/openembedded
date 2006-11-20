@@ -1,10 +1,10 @@
 DESCRIPTION = "Meta-package for Opie"
 SECTION = "opie/base"
-ALLOW_EMPTY = 1
+ALLOW_EMPTY = "1"
 PR = "r34"
 PACKAGE_ARCH = "all"
 LICENSE = "MIT"
-BUILD_ALL_DEPS=1
+BUILD_ALL_DEPS = "1"
 
 DEPENDS = "task-opie"
 RDEPENDS = "task-opie-applets task-opie-apps task-opie-base \

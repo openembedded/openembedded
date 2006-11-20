@@ -15,7 +15,7 @@ SRC_URI = "http://repository.maemo.org/pool/maemo/ossw/source/o/${PN}/${PN}_${PV
 
 EXTRA_OECONF = "--with-ipc=dbus --enable-ext-dbus-daemon --disable-orbit"
 
-S = ${WORKDIR}/${PN}-2.8.4.4
+S = "${WORKDIR}/${PN}-2.8.4.4"
 
 FILES_${PN} += " ${libdir}/vfs"
 FILES_${PN}-dev += " ${libdir}/gnome-vfs-2.0/modules/*.a ${libdir}/gnome-vfs-2.0/modules/*.la ${libdir}/gnome-vfs-2.0/include"

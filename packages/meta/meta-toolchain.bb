@@ -1,5 +1,5 @@
 DESCRIPTION = "Meta package for building a installable toolchain"
-LICENSE = MIT
+LICENSE = "MIT"
 DEPENDS = "ipkg-native ipkg-utils-native fakeroot-native sed-native"
 PR = "r0"
 
@@ -95,5 +95,5 @@ EOF
 	fakeroot tar cfj ${SDK_DEPLOY}/${DISTRO}-${DISTRO_VERSION}-${TARGET_ARCH}-oe-toolchain.tar.bz2 .
 }
 
-do_populate_sdk[nostamp] = 1
+do_populate_sdk[nostamp] = "1"
 addtask populate_sdk before do_build after do_install

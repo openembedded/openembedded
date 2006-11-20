@@ -4,7 +4,7 @@ SECTION = "console/network"
 PRIORITY = "optional"
 PR = "r3"
 
-S = ${WORKDIR}/
+S = "${WORKDIR}/"
 
 #INHIBIT_PACKAGE_STRIP = "1"
 

@@ -5,8 +5,8 @@ DEPENDS = "virtual/kernel"
 SRC_URI = "ftp://oss.sgi.com/projects/lockmeter/download/lockstat-${PV}.tar.gz"
 S = "${WORKDIR}/lockstat"
 
-export KERNEL_VERSION = ${@base_read_file('${STAGING_KERNEL_DIR}/kernel-abiversion')}
-export KERNEL_SOURCE = ${@base_read_file('${STAGING_KERNEL_DIR}/kernel-source')}
+export KERNEL_VERSION = "${@base_read_file('${STAGING_KERNEL_DIR}/kernel-abiversion')}"
+export KERNEL_SOURCE = "${@base_read_file('${STAGING_KERNEL_DIR}/kernel-source')}"
 CFLAGS += " -I${KERNEL_SOURCE}/include"
 
 python () {

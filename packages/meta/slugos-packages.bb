@@ -111,7 +111,7 @@ SLUGOS_PACKAGES = "\
 	mdadm \
 	memtester \
 	mgetty \
-	miau \ 
+	miau \
 	microcom \
 	minicom \
 	motion \

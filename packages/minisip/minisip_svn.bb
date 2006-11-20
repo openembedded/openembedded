@@ -6,9 +6,9 @@ PR = "r0"
 DESCRIPTION = "SIP user agent, with focus on security"
 DEPENDS = "libglademm libmsip0 libmikey0"
 SRC_URI = "svn://svn.minisip.org/var/svn/minisip/trunk;module=minisip"
-S = ${WORKDIR}/${PN}
+S = "${WORKDIR}/${PN}"
 
-DEFAULT_PREFERENCE=-1
+DEFAULT_PREFERENCE="-1"
 
 FILES_${PN} += "${datadir}/minisip"
 

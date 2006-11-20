@@ -8,7 +8,7 @@ SRC_URI =	"http://repository.maemo.org/pool/maemo/ossw/source/libo/${PN}/libosso
 
 inherit pkgconfig autotools
 
-S = ${WORKDIR}/libosso-help-sdk-${PV}
+S = "${WORKDIR}/libosso-help-sdk-${PV}"
 
 #FILES_${PN} += "${libdir}/dbus-1.0/services/ ${libdir}/outo/*.so ${libdir}/outo/*bin ${libdir}/outo/mimedummy.doc"
 

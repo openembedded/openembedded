@@ -20,11 +20,11 @@ FILES_${PN} = "${bindir}/* \
 
 FILES_${PN}-dev += "${libdir}/matchbox-desktop \
 		   ${includedir}/matchbox-desktop \
-		   ${libdir}/matchbox/desktop/*.*a \	
+		   ${libdir}/matchbox/desktop/*.*a \
 		   ${datadir}/matchbox/desktop/modules/*a"
 
 FILES_${PN}-dbg += "${libdir}/matchbox/desktop/.debug/"
-  	 
+
 
 do_stage() {
 		install -d ${STAGING_INCDIR}/matchbox-desktop/
