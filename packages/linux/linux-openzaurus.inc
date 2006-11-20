@@ -28,6 +28,7 @@ COMPATIBLE_MACHINE = '(collie|poodle|c7x0|akita|spitz|tosa|ipaq-pxa270|qemuarm)'
 CMDLINE_CON = "console=ttyS0,115200n8 console=tty1 noinitrd"
 CMDLINE_ROOT = "root=/dev/mtdblock2 rootfstype=jffs2"
 CMDLINE_ROOT_spitz = "root=/dev/hda1 rootfstype=ext3 rw"
+CMDLINE_ROOT_poodle = "root=/dev/mmcblk0p1 rootdelay=3 rootfstype=ext2 rw"
 CMDLINE_OTHER = "dyntick=enable"
 CMDLINE_DEBUG = '${@base_conditional("DISTRO_TYPE", "release", "quiet", "debug",d)}'
 
