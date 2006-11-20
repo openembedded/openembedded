@@ -1,33 +1,34 @@
 SECTION = "kernel"
-DESCRIPTION = "Linux kernel for the MX31ADS"
+DESCRIPTION = "Linux kernel for the MX21ADS"
 LICENSE = "GPL"
 PR = "r2"
 
 SRC_URI = "http://www.kernel.org/pub/linux/kernel/v2.6/linux-2.6.18.tar.bz2 \
-    http://www.kernel.org/pub/linux/kernel/v2.6/testing/patch-2.6.19-rc5.bz2;patch=1 \
-    http://opensource.wolfsonmicro.com/~lg/linux-2.6-mx31/mx31ads-2.6.19rc5-lg3.patch.bz2;patch=1 \
-    file://imx31ads_defconfig"
+    http://www.kernel.org/pub/linux/kernel/v2.6/testing/patch-2.6.19-rc6.bz2;patch=1 \
+    http://opensource.wolfsonmicro.com/~lg/linux-2.6-mx21/mx21ads-2.6.19rc6-lg1.patch.bz2;patch=1 \
+    file://mx21ads_defconfig"
 
 S = "${WORKDIR}/linux-2.6.18"
 
 COMPATIBLE_HOST = 'arm.*-linux'
-COMPATIBLE_MACHINE = "mx31ads"
+COMPATIBLE_MACHINE = "mx21ads"
 
 inherit kernel
 inherit package
 
 ARCH = "arm"
 KERNEL_IMAGETYPE = "zImage"
+RPROVIDES_kernel-image += "hostap-modules"
 
 # to get module dependencies working
-KERNEL_RELEASE = "2.6.19-rc5"
+KERNEL_RELEASE = "2.6.19-rc6"
 
 
 #CMDLINE_ROOT = "root=/dev/mtdblock4 rootfstype=jffs2 mem=32M@0x00000000"
 #CMDLINE = "${CMDLINE_ROOT} ${CMDLINE_CONSOLE}"
 
 do_configure_prepend() {
-	install -m 0644 ${WORKDIR}/imx31ads_defconfig ${S}/defconfig
+	install -m 0644 ${WORKDIR}/mx21ads_defconfig ${S}/defconfig
 
         if [ "${TARGET_OS}" == "linux-gnueabi" -o  "${TARGET_OS}" == "linux-uclibcgnueabi" ]; then
                 echo "CONFIG_AEABI=y"                   >> ${S}/.config

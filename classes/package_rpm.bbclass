@@ -3,6 +3,7 @@ inherit rpm_core
 
 RPMBUILD="rpmbuild --short-circuit ${RPMOPTS}"
 PACKAGE_WRITE_FUNCS += "do_package_rpm"
+IMAGE_PKGTYPE ?= "rpm"
 
 python write_specfile() {
 	from bb import data, build

@@ -7,7 +7,7 @@ PROVIDES += "esound"
 RPROVIDES += "esound"
 
 SRCDATE = "${PV}"
-SRC_URI = "${HANDHELDS_CVS};module=gpe/base/esound \
+SRC_URI = "svn://projects.linuxtogo.org/svn/gpe/trunk/base/;module=esound;date=20061119 \
 	   file://audiofile-please.patch;patch=1 \
 	   file://configure.patch;patch=1"
 
