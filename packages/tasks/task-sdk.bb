@@ -1,6 +1,6 @@
 DESCRIPTION = "SDK packages for Opie and GPE"
 PR = "r5"
-LICENSE = MIT
+LICENSE = "MIT"
 ALLOW_EMPTY = "1"
 
 PACKAGES = "\
@@ -15,7 +15,7 @@ RDEPENDS_task-sdk-bare := "\
     glibc \
     glibc-dev \
     libgcc1 \
-    "	
+    "
 
 RDEPENDS_task-sdk-base := "\
     glibc \
@@ -40,7 +40,7 @@ RDEPENDS_task-sdk-base := "\
     libgcrypt-dev \
     libglade-dev \
     gnutls-dev \
-    libgpg-error-dev \ 
+    libgpg-error-dev \
     libidl-dev \
     libiw-dev \
     libmimedir-dev \
@@ -54,7 +54,7 @@ RDEPENDS_task-sdk-base := "\
     libsvg-dev \
     libtododb-dev \
     libts-dev \
-    libxml2-dev \    
+    libxml2-dev \
     ncurses-dev \
     openobex-dev \
     popt-dev \

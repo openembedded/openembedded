@@ -1,6 +1,6 @@
 DESCRIPTION = "Task packages for GPE Palmtop Environment"
 PR = "r3"
-LICENSE = MIT
+LICENSE = "MIT"
 ALLOW_EMPTY = "1"
 
 PACKAGES = "\
@@ -9,7 +9,7 @@ PACKAGES = "\
     gpe-task-settings \
     gpe-task-pim \
     gpe-task-apps \
-    gpe-task-games \ 
+    gpe-task-games \
     gpe-task-connectivity \
     gpe-task-apps-extra \
     gpe-task-web \

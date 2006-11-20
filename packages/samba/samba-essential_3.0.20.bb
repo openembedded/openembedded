@@ -66,7 +66,7 @@ do_configure_append() {
 	mv  ${WORKDIR}/smb-essential.conf_ ${WORKDIR}/smb-essential.conf 	
 }
 
-FILES_${PN} = "${bindir}/smbpasswd \	       
+FILES_${PN} = "${bindir}/smbpasswd \
 	       ${sbindir}/nmbd \
 	       ${sbindir}/smbd \
 	       ${libdir}/charset \

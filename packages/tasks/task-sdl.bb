@@ -1,5 +1,5 @@
 DESCRIPTION = "Tasks for SDL stuff"
-LICENSE = MIT
+LICENSE = "MIT"
 PACKAGES = "task-sdl-libs task-sdl-games task-sdl-emulators"
 
 # no need to add libsdl as all libsdl-* already rdepend on it

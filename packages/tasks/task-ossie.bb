@@ -1,6 +1,6 @@
-PACKAGES = task-ossie
+PACKAGES = "task-ossie"
 DESCRIPTION = "Meta-package for OSSIE Software Defined Radio (SDR)"
-ALLOW_EMPTY = 1
+ALLOW_EMPTY = "1"
 PR = "r0"
 
 OSSIE_BASE = "screen procps xerces-c omniorb usrp"
@@ -14,5 +14,4 @@ RDEPENDS = "${OSSIE_BASE} ${OSSIE_PLATFORM} ${OSSIE_COMPONENTS}"
 
 IPKG_INSTALL = "${OSSIE_BASE} ${OSSIE_PLATFORM} ${OSSIE_COMPONENTS}"
 
-LICENSE = MIT
-
+LICENSE = "MIT"

@@ -1,6 +1,6 @@
 require xorg-lib-common.inc
 
-export CC_FOR_BUILD=gcc
+export CC_FOR_BUILD = "gcc"
 
 SRC_URI += "file://mkg3states.patch;patch=1"
 

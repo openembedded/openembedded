@@ -1,6 +1,6 @@
 DESCRIPTION = "Tasks for OPIE stuff"
 SECTION = "opie/base"
-ALLOW_EMPTY = 1
+ALLOW_EMPTY = "1"
 PACKAGE_ARCH = "all"
 LICENSE = "MIT"
 PROVIDES = "task-opie-everything"

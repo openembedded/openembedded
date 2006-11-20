@@ -5,7 +5,7 @@ PR = "r25"
 # MACHINE .conf files, so adjust PACKAGE_ARCH accordingly.
 PACKAGE_ARCH = "${MACHINE_ARCH}"
 
-ALLOW_EMPTY = 1
+ALLOW_EMPTY = "1"
 PACKAGES = "${PN}"
 
 MODUTILS ?= "24 26"
@@ -24,4 +24,4 @@ RDEPENDS = 'base-files base-passwd busybox \
 
 RRECOMMENDS = 'dropbear portmap \
 	${BOOTSTRAP_EXTRA_RRECOMMENDS}'
-LICENSE = MIT
+LICENSE = "MIT"

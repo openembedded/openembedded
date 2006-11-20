@@ -5,7 +5,7 @@ PR = "r9"
 
 PREFERRED_PROVIDER_virtual/imlib2 = "imlib-x11"
 
-ALLOW_EMPTY = 1
+ALLOW_EMPTY = "1"
 
 #
 # X

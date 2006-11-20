@@ -13,7 +13,7 @@ S = "${WORKDIR}/vlc-${PV}"
 
 export GTK2_CFLAGS  = "`pkg-config --cflags gtk+-2.0 gthread-2.0`"
 export GTK2_LIBS  = "`pkg-config --libs gtk+-2.0 gthread-2.0`"
-export vlc_WORKAROUNDLDFLAGS = lib/libvlc.a
+export vlc_WORKAROUNDLDFLAGS = "lib/libvlc.a"
 
 inherit autotools
 

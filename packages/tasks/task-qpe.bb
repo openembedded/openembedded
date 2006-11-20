@@ -1,6 +1,6 @@
 DESCRIPTION = "Tasks for programs running on Qt/Embedded based Palmtop Environents like Opie and Qtopia."
 SECTION = "opie/base"
-ALLOW_EMPTY = 1
+ALLOW_EMPTY = "1"
 PACKAGE_ARCH = "all"
 LICENSE = "MIT"
 PR = "r8"

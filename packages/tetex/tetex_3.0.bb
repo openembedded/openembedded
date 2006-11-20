@@ -7,17 +7,17 @@ PR = "r5"
 
 SRC_URI = "ftp://dante.ctan.org/tex-archive/systems/unix/teTeX/current/distrib/tetex-src-${PV}.tar.gz \
            file://configure.patch;patch=1"
-S = ${WORKDIR}/tetex-src-${PV}
+S = "${WORKDIR}/tetex-src-${PV}"
 
 inherit autotools
 
 PARALLEL_MAKE = ""
-        
+
 export BUILDCC = "${BUILD_CC}"
 export BUILDCFLAGS = "${BUILD_CFLAGS}"
 export BUILDLDFLAGS = "${BUILD_LDFLAGS}"
 export BUILDCCLD = "${BUILD_CC}"
-        
+
 EXTRA_OECONF = "--with-system-libgd \
                 --with-system-ncurses \
                 --with-ncurses-include=${STAGING_INCDIR} \
