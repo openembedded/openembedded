@@ -10,11 +10,6 @@ Reason:         description why it will get removed
 
 -----------------------------------------------------------------------------
 
-Package Name:   plinciv
-Removal Date:   2006-11-20
-Maintainer:     none
-Reason:         Unfetchable version from 2003 year.
-
 Package Name:   Maemo
 Removal Date:   2006-12-12
 Maintainer:     none
