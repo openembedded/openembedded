@@ -2,7 +2,7 @@ DESCRIPTION = "Precompiled SharpROM toolchain glue package"
 LICENSE = "GPL"
 SECTION = "base"
 PROVIDES_sharprom-compatible = "\
-  virtual/arm-linux-gcc-2.95 \      
+  virtual/arm-linux-gcc-2.95 \
   virtual/arm-linux-libc-for-gcc \
   virtual/arm-linux-binutils \
   virtual/libc \

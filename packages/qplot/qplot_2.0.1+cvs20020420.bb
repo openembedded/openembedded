@@ -3,7 +3,7 @@ SECTION = "opie/applications"
 PRIORITY = "optional"
 LICENSE = "GPL"
 HOMEPAGE = "http://qplot.sourceforge.net/"
-SRCDATE = 20020420
+SRCDATE = "20020420"
 #Change to form x.y.z+cvs${SRCDATE} when 2.0.1 changes in PV
 PV = "2.0.1-cvs-${SRCDATE}"
 PR = "r1"

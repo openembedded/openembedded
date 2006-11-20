@@ -75,7 +75,7 @@ do_install_append() {
 
 # Create a perl-modules package recommending all the other perl
 # packages (actually the non modules packages and not created too)
-ALLOW_EMPTY_perl-modules = 1
+ALLOW_EMPTY_perl-modules = "1"
 PACKAGES_append = " perl-modules"
 RRECOMMENDS_perl-modules = "${PACKAGES}"
 RPROVIDES_perl-lib = "perl-lib"

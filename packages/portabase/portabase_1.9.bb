@@ -22,7 +22,7 @@ do_configure_prepend() {
 }
 
 QMAKE_PROFILES = "portabase.pro"
-QPEDIR = ${OPIEDIR}
+QPEDIR = "${OPIEDIR}"
 EXTRA_QMAKEVARS_POST += "CONFIG-=desktop"
 
 # lrelease portabase.pro

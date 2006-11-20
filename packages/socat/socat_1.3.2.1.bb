@@ -6,7 +6,7 @@ LICENSE = "GPL"
 PR = "r1"
 
 SRC_URI = "http://www.dest-unreach.org/socat/download/socat-${PV}.tar.bz2 \
-           file://xioopen.patch;patch=1 \ 
+           file://xioopen.patch;patch=1 \
            file://ldflags.patch;patch=1 \
            file://xioinitialize.patch;patch=1"
 

@@ -11,7 +11,7 @@ inherit autotools update-alternatives
 ALTERNATIVE_NAME = "x-terminal-emulator"
 ALTERNATIVE_PATH = "${bindir}/rxvt-2.7.9"
 
-S = ${WORKDIR}/rxvt
+S = "${WORKDIR}/rxvt"
 
 EXTRA_OECONF = "--disable-menubar --disable-xim \
 		--enable-utmp --enable-wtmp --enable-lastlog \
@@ -23,7 +23,7 @@ EXTRA_OECONF = "--disable-menubar --disable-xim \
 		--enable-text-blink --enable-plain-scroll \
 		--enable-combining --enable-shared \
 		--with-x=${STAGING_LIBDIR}/.."
-		
+
 EXTRA_OEMAKE = "'XINC=-I${STAGING_INCDIR}' \
 		'XLIB=-L${STAGING_LIBDIR} -lX11 -lXft'"
 

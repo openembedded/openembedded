@@ -12,7 +12,7 @@ SRC_URI = "http://linux.tlk.fr/games/Powermanga/download/powermanga-0.79.tgz \
 	   file://powermanga.png \
 	   file://powermanga.desktop"
 
-S = ${WORKDIR}/${PN}-${PV}/
+S = "${WORKDIR}/${PN}-${PV}/"
 
 inherit palmtop
 

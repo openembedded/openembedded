@@ -7,7 +7,7 @@ PACKAGE_ARCH = "all"
 PR = "r2"
 
 SRC_URI = "http://www.mn-solutions.de/downloads/mnci/terminus-fonts.tar.bz2"
-S = ${WORKDIR}/terminus-fonts
+S = "${WORKDIR}/terminus-fonts"
 
 do_install() {
 	mkdir -p ${D}${palmqtdir}/lib/fonts

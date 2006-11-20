@@ -7,7 +7,7 @@ LICENSE = "GPL"
 # This version can be started w/ -height 240 but it
 # a) doesn't load doom1.wad (crash)
 # b) crahes a few seconds after starting w/ doom2.wad
-DEFAULT_PREFERENCE = -1
+DEFAULT_PREFERENCE = "-1"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/prboom/prboom-${PV}.tar.gz \
            file://m4.patch;patch=1 \

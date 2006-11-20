@@ -1,5 +1,5 @@
 DESCRIPTION = "Driver for the Hauppauge WinTV PVR USB2"
-AUTHOR = Mike Isely
+AUTHOR = "Mike Isely"
 HOMEPAGE = "http://www.isely.net/pvrusb2.html"
 SECTION = "kernel/modules"
 PRIORITY = "optional"
@@ -18,7 +18,7 @@ PR = "r0"
 SRC_URI = "http://www.isely.net/downloads/pvrusb2-mci-${PV}.tar.bz2 \
            file://hotplug.functions \
            file://firmware.hotplug \
-           file://Makefile.patch;patch=1" 
+           file://Makefile.patch;patch=1"
 
 S = "${WORKDIR}/pvrusb2-mci-${PV}/driver"
 
@@ -34,7 +34,7 @@ CFLAGS_append_armeb = " '-D__LINUX_ARM_ARCH__=5' "
 EXTRA_OEMAKE = "'V=1' 'CFLAGS=${CFLAGS}' \
                 'CC=${KERNEL_CC}' \
                 'LD=${KERNEL_LD}' \
-                'KDIR=${STAGING_KERNEL_DIR}'" 
+                'KDIR=${STAGING_KERNEL_DIR}'"
 
 export TARGET_LDFLAGS = "-L${STAGING_DIR}/${TARGET_SYS}/lib \
                          -Wl,-rpath-link,${STAGING_DIR}/${TARGET_SYS}/lib"

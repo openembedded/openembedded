@@ -4,7 +4,7 @@ PRIORITY = "optional"
 LICENSE = "PYRAF"
 SRCNAME = "numarray"
 
-SRC_URI = ${SOURCEFORGE_MIRROR}/numpy/${SRCNAME}-${PV}.tar.gz
+SRC_URI = "${SOURCEFORGE_MIRROR}/numpy/${SRCNAME}-${PV}.tar.gz"
 S = "${WORKDIR}/${SRCNAME}-${PV}"
 
 inherit distutils

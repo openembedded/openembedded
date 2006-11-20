@@ -22,7 +22,7 @@ SRC_URI_append_nylon = " file://ppp-tdbread.patch;patch=1"
 inherit autotools
 
 EXTRA_OEMAKE = "STRIPPROG=${STRIP}"
-EXTRA_OECONF = --disable-strip
+EXTRA_OECONF = "--disable-strip"
 
 do_install_append () {
 	install -d ${D}${bindir}/ ${D}${sysconfdir}/init.d

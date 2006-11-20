@@ -21,7 +21,7 @@ S="${WORKDIR}/${PN}"
 
 # Use openSSL
 
-export OPENSSLFLAG=1
+export OPENSSLFLAG="1"
 export OPENSSLDIR="${STAGING_LIBDIR}"
 export OPENSSLLIBS="-lssl -lcrypt"
 export MACHTYPE="x86"

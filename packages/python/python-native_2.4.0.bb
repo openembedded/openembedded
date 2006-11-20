@@ -16,8 +16,8 @@ S = "${WORKDIR}/Python-2.4"
 
 inherit autotools native
 
-prefix = ${STAGING_DIR}/${BUILD_SYS}
-exec_prefix = ${STAGING_DIR}/${BUILD_SYS}
+prefix = "${STAGING_DIR}/${BUILD_SYS}"
+exec_prefix = "${STAGING_DIR}/${BUILD_SYS}"
 
 EXTRA_OECONF = "--with-threads --with-pymalloc --with-cyclic-gc \
                 --without-cxx --with-signal-module --with-wctype-functions"
