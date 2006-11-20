@@ -23,11 +23,6 @@ loaddiskmods(){
 
 loadnetmods(){
 	modprobe af_packet
-	case "$(machine)" in
-	    ixdp425|nslu2|nas100d)
-	        modprobe ixp4xx_mac
-	        ;;                     
-	esac
 }
 
 loadmiscmods(){
