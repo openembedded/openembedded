@@ -195,10 +195,10 @@ oe_libinstall() {
 	lafile=$libname.la
 
 	# If such file doesn't exist, try to cut version suffix
-        if [ ! -f "$lafile" ]; then
-                libname=`echo "$libname" | sed 's/-[0-9.]*$//'`
-                lafile=$libname.la
-        fi
+	if [ ! -f "$lafile" ]; then
+		libname=`echo "$libname" | sed 's/-[0-9.]*$//'`
+		lafile=$libname.la
+	fi
 
 	if [ -f "$lafile" ]; then
 		# libtool archive
@@ -562,8 +562,6 @@ base_do_compile() {
 	fi
 }
 
-
-addtask stage after do_compile
 base_do_stage () {
 	:
 }
@@ -581,7 +579,7 @@ python do_populate_staging () {
 	bb.build.exec_func('do_stage', d)
 }
 
-addtask install after do_compile 
+addtask install after do_compile
 do_install[dirs] = "${D} ${S} ${B}"
 
 base_do_install() {
