@@ -3,7 +3,7 @@ DEPENDS = "encdec-updater-native"
 LICENSE = "zaurus-updater"
 
 PR = "r0"
-PV= "0.0.1"
+PV= "0.0.2"
 
 SRC_URI = "file://updater.sh \
            file://gnu-tar.gz"

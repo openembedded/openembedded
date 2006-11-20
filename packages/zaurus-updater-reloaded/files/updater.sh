@@ -51,27 +51,39 @@ get_model(){
 	# w/o writerominfo /proc/deviceinfo/product returns "unknown"
 	/sbin/writerominfo
 	PDA_MODEL=`cat /proc/deviceinfo/product`
+
+	# These variables are the same for all machines to date
+	KERNEL_ISLOGICAL=1
+	KERNEL_MODULEID=5
+	KERNEL_MODULESIZE=0x13C000
+	KERNEL_ADDR=`dc 0xE0000`
+	KERNEL_ISFORMATTED=1
+	KERNEL_DATAPOS=0
+	KERNEL_ONESIZE=524288
+	
+	ROOTFS_ISLOGICAL=0
+	ROOTFS_MODULEID=6				
+	ROOTFS_ADDR=0
+	ROOTFS_ISFORMATTED=0				
+	ROOTFS_DATAPOS=16
+	ROOTFS_ONESIZE=1048576				
+
 	
 	case "$PDA_MODEL" in
 	SL-B500|SL-5600)	PDA_NAME="Poodle"
 				KERNEL_TYPES="NAND"
 				ROOTFS_TYPES="NAND sdimage"
 				
-				KERNEL_ISLOGICAL=1
-				KERNEL_MODULEID=5
-				KERNEL_MODULESIZE=0x13C000
-				KERNEL_ADDR=`dc 0xE0000`
-				KERNEL_ISFORMATTED=1
-				KERNEL_DATAPOS=0
-				KERNEL_ONESIZE=524288
-				
-				ROOTFS_ISLOGICAL=0
-				ROOTFS_MODULEID=6
 				ROOTFS_MODULESIZE=0x1600000
-				ROOTFS_ADDR=0
-				ROOTFS_ISFORMATTED=0				
-				ROOTFS_DATAPOS=16
-				ROOTFS_ONESIZE=1048576				
+				
+				;;
+				
+	SL-C1000)		PDA_NAME="Akita"
+				KERNEL_TYPES="NAND"
+				ROOTFS_TYPES="NAND"
+
+				ROOTFS_MODULESIZE=0x1900000
+				
 				;;
 	*)			die "Error: Unknown model: [$PDA_MODEL]"
 				;;
@@ -124,6 +136,9 @@ update_sdimage_rootfs(){
 				echo ""
 				echo "${C_RESET}Note: gnu-tar is missing!${C_WHITE}"
 				return
+			else	
+				# Work around yet another stupid problem $USER will run into from time to time
+				chmod a+x ./gnu-tar >/dev/null 2>&1
 			fi
 		
 			echo ""
@@ -178,7 +193,7 @@ update_sdimage_rootfs(){
 			# Well, as a last resort, rely on SHARPs auto-mounter
 			if test -e /mnt/card/NotAvailable
 			then
-				echo -e "\nPlease eject the SD/MMC \ncard and re-insert it."
+				echo -e "\nPlease eject the SD/MMC \ncard and re-insert it.\n"
 				echo "Press <ENTER> when finished"
 				read junk
 				sleep 2
