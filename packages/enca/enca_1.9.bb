@@ -11,8 +11,13 @@ SRC_URI = "http://trific.ath.cx/Ftp//enca/enca-${PV}.tar.bz2 \
 
 inherit autotools 
 
+do_configure_append() {
+	sed -i s:-I/usr/include::g Makefile
+	sed -i s:-I/usr/include::g */Makefile
+}
+
 do_compile() {
-    cd ${S}/tools && oe_runmake CC="${BUILD_CC}"
+    cd ${S}/tools && make CC="${BUILD_CC}" CFLAGS="-O2" CPPFLAGS=""
     oe_runmake
 }
 
