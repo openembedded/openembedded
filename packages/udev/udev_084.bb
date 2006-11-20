@@ -16,11 +16,12 @@ include udev.inc
 
 INITSCRIPT_PARAMS = "start 03 S . start 55 0 6 ."
 
-PR = "r14"
+PR = "r15"
 
 FILES_${PN} += "${base_libdir}"
 UDEV_EXTRAS = "extras/firmware/ extras/scsi_id/ extras/volume_id/ extras/run_directory/"
 EXTRA_OEMAKE += "libudevdir=/lib/udev"
+PACKAGE_ARCH = "${MACHINE}"
 
 do_install () {
 	install -d ${D}${usrsbindir} \
