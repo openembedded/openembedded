@@ -9,6 +9,8 @@
 
 M_TITLE="Boot from NFS"
 
+test "$DISABLE_NFS_BOOT" = yes && exit 0
+
 # This function is activated by init.altboot by calling this script with the "run" option
 run_module() {
 

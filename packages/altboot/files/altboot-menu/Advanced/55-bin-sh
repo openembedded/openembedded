@@ -1,6 +1,7 @@
 # !/bin/sh
 M_TITLE="init=/bin/sh"
 
+test "$DISABLE_BINSH_BOOT" = yes && exit 0
 
 run_module() {
 	
