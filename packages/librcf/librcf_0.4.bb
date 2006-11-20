@@ -42,5 +42,3 @@ PACKAGES = "${PN}-mt ${PN}-st ${PN}-dev"
 FILES_${PN}-mt = "/usr/lib/libRCFmt.so*"
 FILES_${PN}-st = "/usr/lib/libRCFst.so*"
 FILES_${PN}-dev = "/usr/lib/libRCF[sm]t.a /usr/include"
-
-IPKG_ARCHS = "all mipsel ${MACHINE} mtx-1u"
