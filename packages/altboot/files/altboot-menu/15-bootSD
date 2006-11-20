@@ -7,6 +7,8 @@
 
 M_TITLE="Boot SD card"
 
+test "$DISABLE_SD_BOOT" = yes && exit 0
+
 # This function is activated by init.altboot by calling this script with the "run" option
 run_module() {
 	

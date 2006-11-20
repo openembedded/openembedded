@@ -95,7 +95,9 @@ show_menu() {
 	do	
 		if ! test -d "$1/$file"
 		then			
-			M_TITLE="`$1/$file title`"
+			# NOTE: It is important to use "." here so that the script inherits
+			# the shell environment / all set variables!						
+			M_TITLE="`. $1/$file title`"
 			FLAGS="`$1/$file flags`"
 			
 			if ! test -z "$M_TITLE"
