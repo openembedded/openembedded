@@ -113,7 +113,7 @@ do_stage_prepend() {
 	        rm ${DEPLOY_DIR_PSTAGE}/ipkg.conf
 	fi
 
-	ipkgarchs="${BUILD_ARCH} all any noarch ${TARGET_ARCH} ${IPKG_ARCHS} ${IPKG_EXTRA_ARCHS} ${MACHINE}"
+	ipkgarchs="${BUILD_ARCH} all any noarch ${TARGET_ARCH} ${PACKAGE_ARCHS} ${PACKAGE_EXTRA_ARCHS} ${MACHINE}"
 	priority=1
 	for arch in $ipkgarchs; do
 		echo "arch $arch $priority" >> ${DEPLOY_DIR_PSTAGE}/ipkg.conf
