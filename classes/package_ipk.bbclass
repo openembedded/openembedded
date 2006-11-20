@@ -46,7 +46,7 @@ python package_ipk_install () {
 
 
 	if (not os.access(os.path.join(ipkdir,"Packages"), os.R_OK) or
-		not os.access(os.path.join(tmpdir, "stamps", "do_packages"),os.R_OK)):
+		not os.access(os.path.join(tmpdir, "stamps", "do_packages"),os.R_OK):
 		ret = os.system('ipkg-make-index -p %s %s ' % (os.path.join(ipkdir, "Packages"), ipkdir))
 		if (ret != 0 ):
 			raise bb.build.FuncFailed
