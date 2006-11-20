@@ -1,10 +1,9 @@
-PR = "r0"
 DESCRIPTION = "OmniORB High Performance ORB"
 SECTION = "devel"
 PRIORITY = "optional"
 LICENSE = "LGPL"
-
 DEPENDS = "omniorb-native"
+PR = "r0"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/omniorb/omniORB-${PV}.tar.gz \
 file://omniORB.cfg \
@@ -19,20 +18,18 @@ S = "${WORKDIR}/omniORB-${PV}"
 inherit autotools pkgconfig
 
 do_compile () {
-	export EmbeddedSystem=1
-	export TOOLBINDIR=${STAGING_BINDIR}
-	oe_runmake
+        export EmbeddedSystem=1
+        export TOOLBINDIR=${STAGING_BINDIR}
+        oe_runmake
 }
-
-do_stage () {
-	export EmbeddedSystem=1
-	autotools_stage_all
-}
-
 do_install () {
-	export EmbeddedSystem=1
-	make DESTDIR=${D} install
-	install -d ${D}${sysconfdir}
-	install -m 0644 ${WORKDIR}/omniORB.cfg ${D}${sysconfdir}
-	install -d ${D}${localstatedir}/omninames
+        export EmbeddedSystem=1
+        make DESTDIR=${D} install
+        install -d ${D}${sysconfdir}
+        install -m 0644 ${WORKDIR}/omniORB.cfg ${D}${sysconfdir}
+        install -d ${D}${localstatedir}/omninames
+}
+do_stage () {
+        export EmbeddedSystem=1
+        autotools_stage_all
 }
