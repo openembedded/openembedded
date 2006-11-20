@@ -9,7 +9,7 @@ PR = "r1"
 
 INHIBIT_DEFAULT_DEPS = "1"
 PATCH_DEPENDS = ""
-ALLOW_EMPTY = 1
+ALLOW_EMPTY = "1"
 PACKAGES = ""
 
 SRC_URI = "file://unfreeze"

@@ -32,7 +32,7 @@ PACKAGE_ARCH_${PN}-conf = "${MACHINE}"
 
 SRC_URI = "file://altboot-menu \
 	   file://altboot.rc \
-	   file://altboot.func \	 
+	   file://altboot.func \
 	   file://init.altboot \
 	   file://altboot*.cfg \
 	   file://altbootctl.conf \

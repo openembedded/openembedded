@@ -1,4 +1,4 @@
-PV = ${DISTRO_VERSION}
+PV = "${DISTRO_VERSION}"
 
 do_compile() {
 	mkdir -p ${D}${sysconfdir}

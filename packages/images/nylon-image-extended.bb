@@ -1,9 +1,8 @@
-LICENSE = MIT
 require nylon-image-base.bb
 require ../meta/nylon-feed.inc
 
 export IMAGE_BASENAME = "nylon-extended"
- 
+
 NYLON_EXTENDED_DEPENDS = "${NYLON_FEED}"
 
 NYLON_EXTENDED_RDEPENDS = "\

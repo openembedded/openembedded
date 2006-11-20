@@ -1,9 +1,9 @@
 inherit image_ipk 
 inherit nylon-image
-LICENSE = MIT
+LICENSE = "MIT"
 
 export IMAGE_BASENAME = "nylon-base"
- 
+
 NYLON_BASE = "base-files base-passwd bash busybox \
 	ipkg initscripts less \
 	mtd-utils \

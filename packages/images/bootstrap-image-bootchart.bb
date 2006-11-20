@@ -7,4 +7,4 @@ RDEPENDS = "acct"
 
 inherit image_ipk
 
-LICENSE = MIT
+LICENSE = "MIT"

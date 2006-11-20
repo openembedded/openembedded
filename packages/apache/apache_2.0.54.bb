@@ -52,7 +52,7 @@ EXTRA_OECONF = "--enable-ssl \
 		--sysconfdir=${sysconfdir}/apache \
 		"
 
-export LD_LIBRARY_PATH=${STAGING_LIBDIR}
+export LD_LIBRARY_PATH = "${STAGING_LIBDIR}"
 
 do_configure () {
 	# Looks like rebuilding configure doesn't work, so we are skipping

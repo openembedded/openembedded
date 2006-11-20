@@ -8,4 +8,4 @@ export IPKG_INSTALL = "${DVB_PACKAGES}"
 DEPENDS = "${DVB_PACKAGES}"
 
 inherit image_ipk
-LICENSE = MIT
+LICENSE = "MIT"

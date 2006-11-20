@@ -17,7 +17,7 @@ GPE_EXTRA_INSTALL += "${GPE_EXTRA_INSTALL_${GUI_MACHINE_CLASS}}"
 GPE_BIGFLASH_INSTALL := '${@base_conditional("ROOT_FLASH_SIZE", "16", "", "\
     gpe-task-connectivity \
     gpe-theme-clearlooks \
-    figment \		
+    figment \
 ",d)}'
 
 GPE_EXTRA_INSTALL += ${GPE_BIGFLASH_INSTALL}

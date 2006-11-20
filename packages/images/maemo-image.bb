@@ -24,4 +24,4 @@ export IPKG_INSTALL = "${MACHINE_TASK_PROVIDER} maemo-task-base maemo-task-theme
 		       ${XSERVER}"
 
 inherit image_ipk
-LICENSE = MIT
+LICENSE = "MIT"

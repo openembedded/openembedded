@@ -66,7 +66,7 @@ SRC_URI_append_arm = " file://dyn-ldconfig-20041128.patch;patch=1"
 # Build fails on sh3 and sh4 without additional patches
 SRC_URI_append_sh3 = " file://no-z-defs.patch;patch=1 \
                        file://superh-fcntl.patch;patch=1;pnum=0"
-SRC_URI_append_sh4 = " file://no-z-defs.patch;patch=1 \ 
+SRC_URI_append_sh4 = " file://no-z-defs.patch;patch=1 \
                        file://superh-fcntl.patch;patch=1;pnum=0"
 
 S = "${WORKDIR}/libc"

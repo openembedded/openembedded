@@ -1,6 +1,6 @@
 DESCRIPTION = "Album Shaper strives to be the most friendly, easy to use, open source application for \
 organizing, annotating, framing, enhancing, stylizing, and sharing your digital photos. \
-Album Shaper embraces open formats like XML, JPEG, and XSLT, while supporting Windows, Mac OS X, and Unix \ 
+Album Shaper embraces open formats like XML, JPEG, and XSLT, while supporting Windows, Mac OS X, and Unix \
 users who speak a multitude of languages around the world."
 HOMEPAGE = "http://albumshaper.sourceforge.net"
 AUTHOR = "Will Stokes"

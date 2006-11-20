@@ -1,8 +1,7 @@
-LICENSE = MIT
 require nylon-image-base.bb
 
 export IMAGE_BASENAME = "nylon-standard"
- 
+
 NYLON_STANDARD = "\
 	bridge-utils \
 	dnsmasq \

@@ -1,4 +1,4 @@
-LICENSE = MIT
+LICENSE = "MIT"
 
 export IMAGE_BASENAME = "sdl-image"
 

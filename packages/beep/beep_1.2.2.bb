@@ -18,7 +18,7 @@ EXTRA_OEMAKE += 'CC="${CC}"'
 EXTRA_OEMAKE += 'FLAGS="${CFLAGS}"'
 
 # slugos requires beep in boot
-BINDIR = "${bindir}
+BINDIR = "${bindir}"
 BINDIR_slugos = "${base_bindir}"
 
 do_install() {

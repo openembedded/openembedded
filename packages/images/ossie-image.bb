@@ -16,4 +16,4 @@ FEED_URIS += " \
 
 inherit image_ipk
 
-LICENSE = MIT
+LICENSE = "MIT"

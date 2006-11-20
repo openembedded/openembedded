@@ -12,7 +12,7 @@ S="${WORKDIR}/cdrtools-${PV}"
 
 inherit native
 
-STAGE_TEMP=${WORKDIR}/stage_temp
+STAGE_TEMP="${WORKDIR}/stage_temp"
 
 do_stage() {
 	install -d ${STAGE_TEMP}

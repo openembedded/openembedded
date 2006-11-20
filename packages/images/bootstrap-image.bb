@@ -9,4 +9,4 @@ inherit image_ipk
 FEED_URIS_append_familiar   = " x11##http://familiar.handhelds.org/releases/${DISTRO_VERSION}/feed/x11 \
                                opie##http://familiar.handhelds.org/releases/${DISTRO_VERSION}/feed/opie"
 
-LICENSE = MIT
+LICENSE = "MIT"
