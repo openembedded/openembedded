@@ -688,17 +688,17 @@ def base_after_parse_two(d):
 
     need_machine = bb.data.getVar('COMPATIBLE_MACHINE', d, 1)
     if need_machine:
-	    import re
-	    this_machine = bb.data.getVar('MACHINE', d, 1)
-	    if this_machine and not re.match(need_machine, this_machine):
-		    raise bb.parse.SkipPackage("incompatible with machine %s" % this_machine)
+        import re
+        this_machine = bb.data.getVar('MACHINE', d, 1)
+        if this_machine and not re.match(need_machine, this_machine):
+            raise bb.parse.SkipPackage("incompatible with machine %s" % this_machine)
 
     pn = bb.data.getVar('PN', d, 1)
 
     # OBSOLETE in bitbake 1.7.4
     srcdate = bb.data.getVar('SRCDATE_%s' % pn, d, 1)
     if srcdate != None:
-	    bb.data.setVar('SRCDATE', srcdate, d)
+        bb.data.setVar('SRCDATE', srcdate, d)
 
     use_nls = bb.data.getVar('USE_NLS_%s' % pn, d, 1)
     if use_nls != None:
@@ -715,7 +715,7 @@ def base_after_parse(d):
         return
     paths = []
     for p in [ "${FILE_DIRNAME}/${PF}", "${FILE_DIRNAME}/${P}", "${FILE_DIRNAME}/${PN}", "${FILE_DIRNAME}/files", "${FILE_DIRNAME}" ]:
-	    paths.append(bb.data.expand(os.path.join(p, mach_arch), d))
+        paths.append(bb.data.expand(os.path.join(p, mach_arch), d))
     for s in bb.data.getVar('SRC_URI', d, 1).split():
         local = bb.data.expand(bb.fetch.localpath(s, d), d)
         for mp in paths:
