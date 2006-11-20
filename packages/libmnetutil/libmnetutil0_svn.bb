@@ -5,7 +5,7 @@ DESCRIPTION = "Networking class library for C++ programming"
 SECTION = "libs"
 PRIORITY = "optional"
 DEPENDS = "libmutil0 openssl"
-DEFAULT_PREFERENCE=-1
+DEFAULT_PREFERENCE = "-1"
 
 inherit autotools
 

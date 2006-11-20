@@ -1,7 +1,7 @@
 DESCRIPTION = "A library for object-oriented inter process communication"
 SECTION = "base"
 PRIORITY = "optional"
-MAINTAINER = "Martin Dietze <dietze@4g-systems.com>
+MAINTAINER = "Martin Dietze <dietze@4g-systems.com>"
 LICENSE = "unknown"
 DEPENDS="zlib openssl boost-asio"
 RDEPENDS = "libstdc++5 libgcc1"

@@ -16,10 +16,10 @@ inherit autotools update-rc.d
 PACKAGES =+ "lcdd lcdd-driver-cfontz lcdd-driver-bayrad lcdd-driver-hd44780nousb \
 		lcdd-driver-hd44780 lcdd-driver-mtxorb lcdd-driver-serialvfd \
 		lcdd-driver-curses lcdd-driver-text \
-		lcdd-driver-sed lcdd-driver-cwlnx lcdd-driver-glk lcdd-driver-icp-a106 \ 
-		lcdd-driver-imon lcdd-driver-joy lcdd-driver-lb216 lcdd-driver-lcdm001 \ 
-		lcdd-driver-lcterm lcdd-driver-ms6931 lcdd-driver-mtc-s16209x \ 
-		lcdd-driver-noritakevfd lcdd-driver-pyramid lcdd-driver-sli \ 
+		lcdd-driver-sed lcdd-driver-cwlnx lcdd-driver-glk lcdd-driver-icp-a106 \
+		lcdd-driver-imon lcdd-driver-joy lcdd-driver-lb216 lcdd-driver-lcdm001 \
+		lcdd-driver-lcterm lcdd-driver-ms6931 lcdd-driver-mtc-s16209x \
+		lcdd-driver-noritakevfd lcdd-driver-pyramid lcdd-driver-sli \
 		lcdd-driver-stv5730 lcdd-driver-t6963 lcdd-driver-tyan"
 
 CONFFILES_lcdd = "${sysconfdir}/LCDd.conf"

@@ -5,7 +5,7 @@ LICENSE = "LGPL"
 DEPENDS = "intltool-native"
 PR = "r2"
 
-DEFAULT_PREFERENCE = 1
+DEFAULT_PREFERENCE = "1"
 
 SRC_URI = "http://www.rittau.org/mimedir/${P}.tar.gz \
 	   file://mimedir-duration.diff;patch=1"

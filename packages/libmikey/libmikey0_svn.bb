@@ -5,13 +5,13 @@ DESCRIPTION = "C++ implementation of the Multimedia Internet KEYing (RFC3830)"
 SECTION = "libs"
 PRIORITY = "optional"
 DEPENDS = "libmutil0 openssl"
-DEFAULT_PREFERENCE=-1
+DEFAULT_PREFERENCE = "-1"
 
 
 inherit autotools
 
 SRC_URI = "svn://svn.minisip.org/var/svn/minisip/trunk;module=libmikey"
-S="${WORKDIR}/libmikey"
+S = "${WORKDIR}/libmikey"
 
 
 PACKAGES = "${PN}"

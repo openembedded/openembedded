@@ -9,4 +9,4 @@ DEPENDS = "${MACHINE_TASK_PROVIDER}"
 export IPKG_INSTALL = "${DEPENDS}"
 
 inherit image_ipk
-LICENSE = MIT
+LICENSE = "MIT"

@@ -20,7 +20,7 @@ GPE_BIGFLASH_INSTALL := '${@base_conditional("ROOT_FLASH_SIZE", "16", "", "\
     figment \
 ",d)}'
 
-GPE_EXTRA_INSTALL += ${GPE_BIGFLASH_INSTALL}
+GPE_EXTRA_INSTALL += "${GPE_BIGFLASH_INSTALL}"
 
 XSERVER ?= "xserver-kdrive-fbdev"
 

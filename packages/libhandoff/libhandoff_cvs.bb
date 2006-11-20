@@ -11,7 +11,7 @@ inherit pkgconfig gpe autotools
 
 SRC_URI = "${HANDHELDS_CVS};module=gpe/base/${PN}"
 
-S = ${WORKDIR}/${PN}
+S = "${WORKDIR}/${PN}"
 
 do_stage () {
 autotools_stage_all

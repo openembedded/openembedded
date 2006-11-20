@@ -15,4 +15,4 @@ export IPKG_INSTALL = '${MACHINE_TASK_PROVIDER} \
 		       mutt'
 
 inherit image_ipk
-LICENSE = MIT
+LICENSE = "MIT"

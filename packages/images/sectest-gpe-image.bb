@@ -1,4 +1,4 @@
-LICENSE = MIT
+LICENSE = "MIT"
 PR = "r6"
 
 FEED_URIS_append_familiar   = " x11##http://familiar.handhelds.org/releases/${DISTRO_VERSION}/feed/x11"

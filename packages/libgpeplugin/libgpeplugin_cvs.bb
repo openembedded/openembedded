@@ -6,7 +6,7 @@ PV = "0.0+cvs${SRCDATE}"
 PR = "r0"
 
 #put examples in a seperate package 
-PACKAGES += ${PN}-examples
+PACKAGES += "${PN}-examples"
 FILES_${PN}-examples = "${bindir}/* ${libexecdir}/*"
 FILES_${PN} = "${libdir}/*.so.*"
 

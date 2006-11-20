@@ -12,4 +12,4 @@ export IPKG_INSTALL = "${X_RDEPENDS} ${XFCE_RDEPENDS}"
 DEPENDS = "${X_DEPENDS} ${XFCE_DEPENDS}"
 
 inherit image_ipk
-LICENSE = MIT
+LICENSE = "MIT"

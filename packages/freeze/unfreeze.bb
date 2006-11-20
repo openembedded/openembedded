@@ -23,7 +23,7 @@ do_install() {
 do_stage() {
 }
 
-do_build[nostamp] = 1
+do_build[nostamp] = "1"
 do_build() {
 	# export FROZEN_DIR=<place to write conf files>
 	# export PKGDIR=<location of openembedded package source>

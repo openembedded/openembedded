@@ -82,4 +82,4 @@ RDEPENDS_append_mtx-1 = "\
     kernel-module-au1x00-bi \
     kernel-module-network-fd \
     kernel-module-usbdcore"
-    kernel-module-usbdprocfs \
+#    kernel-module-usbdprocfs \

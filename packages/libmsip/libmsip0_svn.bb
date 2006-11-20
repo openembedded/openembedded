@@ -5,7 +5,7 @@ DESCRIPTION = "C++ implementation Session Initiation Protocol (RFC3261)"
 SECTION = "libs"
 PRIORITY = "optional"
 DEPENDS = "libmnetutil0 libmutil0"
-DEFAULT_PREFERENCE=-1
+DEFAULT_PREFERENCE = "-1"
 
 inherit autotools
 

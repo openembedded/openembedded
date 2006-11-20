@@ -9,13 +9,13 @@ DEPENDS = "zlib"
 
 PACKAGES =+ "${PN}12-dbg ${PN}12 ${PN}12-dev"
 
-FILES_${PN}12-dbg = ${libdir}/libpng12*.dbg
-FILES_${PN}12 = ${libdir}/libpng12.so.*
-FILES_${PN}12-dev = ${libdir}/libpng12.* ${includedir}/libpng12 ${libdir}/pkgconfig/libpng12.pc
-FILES_${PN} = ${libdir}/lib*.so.*
-FILES_${PN}-dev = ${includedir} ${libdir}/lib*.so ${libdir}/*.la \
+FILES_${PN}12-dbg = "${libdir}/libpng12*.dbg"
+FILES_${PN}12 = "${libdir}/libpng12.so.*"
+FILES_${PN}12-dev = "${libdir}/libpng12.* ${includedir}/libpng12 ${libdir}/pkgconfig/libpng12.pc"
+FILES_${PN} = "${libdir}/lib*.so.*"
+FILES_${PN}-dev = "${includedir} ${libdir}/lib*.so ${libdir}/*.la \
 		${libdir}/*.a ${libdir}/pkgconfig \
-		${datadir}/aclocal ${bindir} ${sbindir}
+		${datadir}/aclocal ${bindir} ${sbindir}"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/libpng/libpng-${PV}.tar.bz2"
 S = "${WORKDIR}/libpng-${PV}"

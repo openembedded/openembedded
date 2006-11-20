@@ -7,7 +7,7 @@ PR = "r2"
 #Remove the dash below when 0.3.1 changes in PV
 PV = "0.3.1+cvs-${SRCDATE}"
 
-DEFAULT_PREFERENCE = -1
+DEFAULT_PREFERENCE = "-1"
 
 SRC_URI = "cvs://anonymous@anoncvs.gnome.org/cvs/gnome;module=libmimedir \
            file://mimedir-update.patch;patch=1"
