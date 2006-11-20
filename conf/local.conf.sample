@@ -42,7 +42,7 @@ BBMASK = ""
 
 # Select between multiple alternative providers, if more than one is eligible.
 PREFERRED_PROVIDERS = "virtual/qte:qte virtual/libqpe:libqpe-opie"
-PREFERRED_PROVIDERS += " virtual/libsdl:libsdl-qpe"
+PREFERRED_PROVIDERS += " virtual/libsdl:libsdl-x11"
 PREFERRED_PROVIDERS += " virtual/${TARGET_PREFIX}gcc-initial:gcc-cross-initial"
 PREFERRED_PROVIDERS += " virtual/${TARGET_PREFIX}gcc:gcc-cross"
 PREFERRED_PROVIDERS += " virtual/${TARGET_PREFIX}g++:gcc-cross"
@@ -76,7 +76,7 @@ PREFERRED_PROVIDERS += " virtual/${TARGET_PREFIX}g++:gcc-cross"
 # distros, i.e. they explicitely select specific versions of various
 # packages.
 # Stay away from unversioned distros unless you really know what you are doing
-# DISTRO = "familiar-unstable"
+# DISTRO = "generic"
 
 # So far, angstrom.conf and familiar.conf set ENABLE_BINARY_LOCALE_GENERATION
 # to generate binary locale packages at build time using qemu-native and
