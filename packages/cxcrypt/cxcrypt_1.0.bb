@@ -1,8 +1,7 @@
 DESCRIPTION = "A simple, xor-based encryption tool"
 SECTION = "base"
 PRIORITY = "optional"
-PV = 1.0
-LICENSE = LGPL
+LICENSE = "LGPL"
 
 SRC_URI = "http://www.fh-wedel.de/pub/fh-wedel/staff/herbert/misc/${PN}-${PV}.tar.gz"
 S = "${WORKDIR}/cxcrypt"

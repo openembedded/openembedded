@@ -39,4 +39,4 @@ export IPKG_INSTALL = "\
 #ROOTFS_POSTPROCESS_COMMAND += "zap_root_password; "
 
 inherit image_ipk
-LICENSE = MIT
+LICENSE = "MIT"
