@@ -1,7 +1,7 @@
 #
 # Automatically generated make config: don't edit
-# Linux kernel version: 2.6.19-rc5
-# Mon Nov 13 12:42:45 2006
+# Linux kernel version: 2.6.19-rc6
+# Mon Nov 20 18:11:58 2006
 #
 CONFIG_ARM=y
 # CONFIG_GENERIC_TIME is not set
@@ -235,9 +235,9 @@ CONFIG_MXC_IPU_PF=y
 # MXC SPI support
 #
 CONFIG_MXC_SPI=y
-# CONFIG_MXC_SPI_SELECT1 is not set
+CONFIG_MXC_SPI_SELECT1=y
 CONFIG_MXC_SPI_SELECT2=y
-# CONFIG_MXC_SPI_SELECT3 is not set
+CONFIG_MXC_SPI_SELECT3=y
 
 #
 # MXC SSI support
@@ -308,7 +308,7 @@ CONFIG_PM_LEGACY=y
 # Dynamic Power Management
 #
 CONFIG_DPM=y
-# CONFIG_DPM_STATS is not set
+CONFIG_DPM_STATS=y
 CONFIG_DPM_PROCFS=y
 
 #
