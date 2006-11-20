@@ -5,7 +5,7 @@ DEPENDS = "audiofile"
 
 SRC_URI = "http://repository.maemo.org/pool/maemo/ossw/source/o/${PN}/${PN}_${PV}.tar.gz"
 
-S = ${WORKDIR}/${PN}-0.3
+S = "${WORKDIR}/${PN}-0.3"
 
 datafiles = "game-chess_check.wav ui-charging_started.wav game-chess_checkmate.wav \
              ui-clock_alarm.mp3 game-chess_illegal_move.wav ui-confirmation_note.wav \

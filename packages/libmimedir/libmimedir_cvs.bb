@@ -22,7 +22,7 @@ do_stage() {
 	autotools_stage_all
 }
 
-PACKAGES += libmimedir-utils
+PACKAGES += "libmimedir-utils"
 FILES_libmimedir-utils = "${bindir}"
 FILES_${PN} = "${libdir}"
 

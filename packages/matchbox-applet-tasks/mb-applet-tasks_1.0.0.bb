@@ -9,7 +9,7 @@ CFLAGS += "-I${STAGING_INCDIR} \
 	   -I${STAGING_INCDIR}/glib-2.0 \
 	   -I${STAGING_INCDIR}/freetype2 \
 	   -I${STAGING_INCDIR}/atk-1.0 \
-	   -I${STAGING_INCDIR}/libwnck-1.0 \	
+	   -I${STAGING_INCDIR}/libwnck-1.0 \
 	   -I${STAGING_LIBDIR}/gtk-2.0/include \
 	   -I${STAGING_INCDIR}/cairo \
 	   -DWNCK_I_KNOW_THIS_IS_UNSTABLE"

@@ -8,7 +8,7 @@ DEPENDS = "libxsettings virtual/libx11 libxt"
 inherit autotools pkgconfig gpe
 
 SRC_URI = "${GPE_MIRROR}/xsettings-client-${PV}.tar.bz2"
-S = ${WORKDIR}/xsettings-client-${PV}
+S = "${WORKDIR}/xsettings-client-${PV}"
 
 
 headers = "xsettings-client.h xsettings-common.h"

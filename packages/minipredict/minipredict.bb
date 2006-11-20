@@ -11,7 +11,7 @@ SRC_URI = "http://handhelds.org/~paxanima/files/${PN}.tar.gz \
 	   file://minipredict.desktop \
 	   file://minipredict.png"
 
-S = ${WORKDIR}/${PN}
+S = "${WORKDIR}/${PN}"
 
 FILES_${PN} = "${bindir} ${datadir}/pixmaps ${datadir}/applications"
 

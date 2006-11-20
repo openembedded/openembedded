@@ -1,4 +1,4 @@
-LICENSE = MIT
+LICENSE = "MIT"
 
 include nylon-feed.inc
 DEPENDS = "${NYLON_FEED} \

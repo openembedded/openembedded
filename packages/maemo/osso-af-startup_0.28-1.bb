@@ -10,7 +10,7 @@ SRC_URI = "http://stage.maemo.org:80/pool/maemo/ossw/source/o/${PN}/${PN}_${PV}.
            file://osso-af-startup-source.patch;patch=1;pnum=0 \
            file://launch-no-o.patch;patch=1;pnum=0"
 
-S = ${WORKDIR}/${PN}-0.28
+S = "${WORKDIR}/${PN}-0.28"
 
 FILES_${PN} = "${sysconfdir}/osso-af-init ${sysconfdir}/init.d/af-startup"
 FILES_osso-af-services = "${sysconfdir}/init.d/af-services"

@@ -5,7 +5,7 @@ DEPENDS = "libosso"
 
 SRC_URI = "http://repository.maemo.org/pool/maemo/ossw/source/o/${PN}/${PN}_${PV}.tar.gz"
 
-S = ${WORKDIR}/${PN}-0.4
+S = "${WORKDIR}/${PN}-0.4"
 
 inherit autotools pkgconfig
 

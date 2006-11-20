@@ -1,4 +1,4 @@
-PACKAGES    = maemo-task-base maemo-task-apps maemo-task-libs-install maemo-task-theme
+PACKAGES    = "maemo-task-base maemo-task-apps maemo-task-libs-install maemo-task-theme"
 DESCRIPTION = "Meta-package for maemo environment"
 PR          = "r8"
 

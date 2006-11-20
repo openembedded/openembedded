@@ -4,4 +4,4 @@ DEPENDS = "matchbox-common matchbox-wm matchbox-panel matchbox-desktop"
 RDEPENDS = "matchbox-common matchbox-wm matchbox-panel matchbox-desktop"
 SECTION = "x11/wm"
 PACKAGES= "${PN}"
-ALLOW_EMPTY = 1
+ALLOW_EMPTY = "1"

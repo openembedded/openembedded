@@ -10,7 +10,7 @@ SRC_URI = "http://stage.maemo.org/pool/maemo/ossw/source/s/${PN}/${PN}_${PV}.tar
            file://cflags.patch;patch=1;pnum=0 \
            file://sockets.patch;patch=1;pnum=0"
 
-S = ${WORKDIR}/${PN}-1.20 
+S = "${WORKDIR}/${PN}-1.20"
 EXTRA_OECONF = "--enable-abstract-sockets=no"
 
 inherit autotools pkgconfig
