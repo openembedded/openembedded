@@ -474,7 +474,7 @@ BBMASK = ""
 # machine stuff
 #
 MACHINE = "secret-killer"
-IPKG_ARCHS = "all arm armv4 armv5te iwmmxt xscale ${MACHINE}"
+PACKAGE_EXTRA_ARCHS = "armv4 armv4t armv5te iwmmxt xscale""
 TARGET_CC_ARCH = "-mcpu=xscale -mtune=iwmmxt"
 TARGET_ARCH = "arm"
 PACKAGE_ARCH="xscale"
