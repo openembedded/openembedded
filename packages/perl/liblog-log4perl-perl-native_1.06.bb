@@ -2,4 +2,4 @@ SECTION = "libs"
 
 inherit native
 
-require ${@bb.data.getVar('P', d , 1).replace('-native-', '_')}.bb
+require liblog-log4perl-perl_${PV}.bb
