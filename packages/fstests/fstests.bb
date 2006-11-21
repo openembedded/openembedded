@@ -8,8 +8,7 @@ PR = "r1"
 inherit autotools
 
 SRC_URI = \
-    "svn://svn.o-hand.com/repos/misc/trunk;module=fstests;proto=http \
-    file://compile-fix.patch;patch=0"
+    "svn://svn.o-hand.com/repos/misc/trunk;module=fstests;proto=http"
 
 S = "${WORKDIR}/fstests/tests"
 
