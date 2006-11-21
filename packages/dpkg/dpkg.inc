@@ -3,11 +3,12 @@ LICENSE = "GPL"
 SECTION = "base"
 
 SRC_URI = "${DEBIAN_MIRROR}/main/d/dpkg/dpkg_${PV}.tar.gz \
+           file://ignore_extra_fields.patch;patch=1 \
            file://noupdalt.patch;patch=1"
 
 S = "${WORKDIR}/dpkg-${PV}"
 
-RDEPENDS_${PN} += "update-alternatives"
+DEPENDS_${PN} += "update-alternatives"
 
 PARALLEL_MAKE = ""
 
