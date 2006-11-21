@@ -1,3 +1,6 @@
 require util-linux.inc
 
-PR = "r8"
+SRC_URI += "file://util-linux_2.12r-12.diff.gz;patch=1"
+SRC_URI += "file://glibc-fix.patch;patch=1"
+
+PR = "r10"
