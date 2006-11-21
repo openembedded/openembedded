@@ -21,7 +21,7 @@ SRCDATE_xxf86vmext ?= "20060814"
 # Matchbox / O-hand
 SRCDATE_contacts ?= "20060707"
 SRCDATE_dates ?= "20060707"
-SRCDATE_fstests ?= "20061111"
+SRCDATE_fstests ?= "20061122"
 SRCDATE_eds-dbus ?= "20060707"
 SRCDATE_libmatchbox ?= "20060612"
 SRCDATE_libfakekey ?= "20051101"
