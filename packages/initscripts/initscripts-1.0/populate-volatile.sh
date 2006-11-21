@@ -15,8 +15,12 @@ create_file() {
 	chmod ${TMODE} $1 || echo \"Failed to set mode -${TMODE}- for -$1-.\" >/dev/tty0 2>&1 " 
 
 	test "$VOLATILE_ENABLE_CACHE" = yes && echo "$EXEC" >> /etc/volatile.cache
-	
-	eval $EXEC &
+
+	[ -e "$1" ] && {
+	  [ "${VERBOSE}" != "no" ] && echo "Target already exists. Skipping."
+	} || {
+	  eval $EXEC &
+	}
 }
 
 mk_dir() {
@@ -27,7 +31,11 @@ mk_dir() {
 
 	test "$VOLATILE_ENABLE_CACHE" = yes && echo "$EXEC" >> /etc/volatile.cache
 	
-	eval $EXEC &
+	[ -e "$1" ] && {
+	  [ "${VERBOSE}" != "no" ] && echo "Target already exists. Skipping."
+	} || {
+	  eval $EXEC &
+	}
 }
 
 link_file() {
@@ -35,7 +43,11 @@ link_file() {
 
 	test "$VOLATILE_ENABLE_CACHE" = yes && echo "	$EXEC" >> /etc/volatile.cache
 	
-	eval $EXEC &
+	[ -e "$2" ] && {
+	  echo "Cannot create link over existing -${TNAME}-." >&2
+	} || {
+	  eval $EXEC &
+	}
 }
 
 check_requirements() {
@@ -109,14 +121,10 @@ apply_cfgfile() {
 
 
     [ "${TTYPE}" = "l" ] && {
-      [ -e "${TNAME}" ] && {
-        echo "Cannot create link over existing -${TNAME}-." >&2
-        } || {
-        TSOURCE="$TLTARGET"
-	[ -L "${TNAME}" ] || {
-          [ "${VERBOSE}" != "no" ] && echo "Creating link -${TNAME}- pointing to -${TSOURCE}-."
-          link_file "${TSOURCE}" "${TNAME}" &
-	  }
+      TSOURCE="$TLTARGET"
+      [ -L "${TNAME}" ] || {
+        [ "${VERBOSE}" != "no" ] && echo "Creating link -${TNAME}- pointing to -${TSOURCE}-."
+        link_file "${TSOURCE}" "${TNAME}" &
         }
       continue
       }
@@ -131,11 +139,6 @@ apply_cfgfile() {
         TNAME="${NEWNAME}"
         [ "${VERBOSE}" != "no" ] && echo "Using absolute link target -${TNAME}-."
         }
-      }
-
-    [ -e "${TNAME}" ] && {
-      [ "${VERBOSE}" != "no" ] && echo "Target already exists. Skipping."
-      continue
       }
 
     case "${TTYPE}" in
@@ -158,7 +161,7 @@ apply_cfgfile() {
 
   }
 
-if test -e /etc/volatile.cache -a "$VOLATILE_ENABLE_CACHE" = "yes"
+if test -e /etc/volatile.cache -a "$VOLATILE_ENABLE_CACHE" = "yes" -a "x$1" != "xupdate"
 then
 	sh /etc/volatile.cache
 else	
