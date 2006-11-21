@@ -23,8 +23,10 @@ RDEPENDS_${PN}-conf = "${PN}"
 
 ######################################################################################
 
-WIP_DATE = "20061120"
-PR = "${WIP_DATE}-r1"
+WIP_DATE = "20061122"
+
+PV = "1.1.1+wip-${WIP_DATE}"
+PR = "r0"
 
 ######################################################################################
 
@@ -34,9 +36,9 @@ PACKAGE_ARCH_${PN} = "all"
 PACKAGE_ARCH_${PN}-doc = "all"
 PACKAGE_ARCH_${PN}-conf = "${MACHINE}"
 
-TAG = "${@'v' + bb.data.getVar('PV',d,1).replace('.', '-')}"
+TAG = "${@'v' + bb.data.getVar('PV',d,1).replace('.', '-').replace('+', '-')}"
 
-SRC_URI = "cvs://anonymous@hentges.net/hentgescvs;method=pserver;tag=${TAG}-${WIP_DATE};module=altboot"
+SRC_URI = "cvs://anonymous@hentges.net/hentgescvs;method=pserver;tag=${TAG};module=altboot"
 
 S = "${WORKDIR}/altboot/"
 
