@@ -114,7 +114,7 @@
     </varlistentry>
 
     <varlistentry>
-      <term>IPKG_ARCH</term>
+      <term>PACKAGE_ARCH</term>
 
       <listitem>
         <para>Defines the list of architectures that are support by the target
@@ -122,7 +122,7 @@
         target system.</para>
 
         <para>Default: <command>"all any noarch ${TARGET_ARCH}
-        ${IPKG_EXTRA_ARCHS} ${MACHINE}"</command></para>
+        ${PACKAGE_EXTRA_ARCHS} ${MACHINE}"</command></para>
       </listitem>
     </varlistentry>
 
