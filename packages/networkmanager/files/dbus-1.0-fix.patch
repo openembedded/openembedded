@@ -1,0 +1,11 @@
+--- /tmp/NetworkManagerDbus.c	2006-11-21 11:07:35.000000000 +0100
++++ NetworkManager-0.6.4/src/NetworkManagerDbus.c	2006-11-21 11:08:35.748554000 +0100
+@@ -833,7 +833,7 @@
+ 	}
+ 
+ 	dbus_error_init (&error);
+-#if (DBUS_VERSION_MAJOR == 0) && (DBUS_VERSION_MINOR >= 60)
++#if (DBUS_VERSION_MAJOR == 0) && (DBUS_VERSION_MINOR >= 60) || DBUS_VERSION_MAJOR > 0
+ 	flags = DBUS_NAME_FLAG_DO_NOT_QUEUE;	/* Prohibit replacement is now the default */
+ #else
+ 	flags = DBUS_NAME_FLAG_PROHIBIT_REPLACEMENT;

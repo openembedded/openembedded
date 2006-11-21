@@ -6,11 +6,12 @@ PRIORITY = "optional"
 DEPENDS = "libnl dbus dbus-glib libhal-nm libgpewidget gnome-keyring gconf-dbus wireless-tools libglade"
 RDEPENDS = "wpa-supplicant iproute2 dhcdbd gnome-keyring hicolor-icon-theme"
 
-PR = "r2"
+PR = "r3"
 
 SRC_URI="http://www.handhelds.org/~mmp/files/NetworkManager-${PV}-gpe.tar.gz \
 	file://dbus-api-fix.patch;patch=1 \
-	file://99_networkmanager \
+	file://dbus-1.0-fix.patch;patch=1 \
+        file://99_networkmanager \
 	file://NetworkManager \
 	file://nm-applet.desktop"
 
