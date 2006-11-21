@@ -5,8 +5,7 @@ DEPENDS = "fakeroot"
 PR = "r1"
 RRECOMMENDS = "kernel-module-nfs"
 
-
-SRC_URI = "http://scratchbox.org/download/files/sbox-releases/apophis/src/${P}.tar.gz" 
+SRC_URI = "http://scratchbox.org/download/files/sbox-releases/1.0/src/${P}.tar.gz"
 
 do_install() {
 	install -d ${D}${sbindir}
