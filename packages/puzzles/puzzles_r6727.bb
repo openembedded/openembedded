@@ -1,33 +1,30 @@
 
-DEPENDS = "gtk+ perl-native"
+DEPENDS = "gtk+"
+PR = "r2"
 
-SRC_URI = "svn://ixion.tartarus.org/main;module=puzzles;rev=6712 \
+SRC_URI = "http://www.chiark.greenend.org.uk/~sgtatham/puzzles/puzzles-${PV}.tar.gz \
            file://game.png"
-
-S = "${WORKDIR}/puzzles/"
-
-do_configure() {
-        cd ${S} && perl mkfiles.pl
-}
 
 do_compile_prepend = " \
         export XLDFLAGS='${LDFLAGS} `${STAGING_BINDIR}/pkg-config gtk+-2.0 --libs`'; \
 	export CFLAGS='${CFLAGS} -I./ `${STAGING_BINDIR}/pkg-config gtk+-2.0 --cflags`'; "
 
 FILES_${PN} = "${prefix}/games/* ${datadir}/applications/* ${datadir}/pixmaps"
+FILES_${PN}-dbg += "${prefix}/games/.debug"
 
 do_install () {
+    rm -rf ${D}/*
     export prefix=${D}
     export DESTDIR=${D}
-    install -d ${D}/${prefix}
-    install -d ${D}/${prefix}/games
+    install -d ${D}/${prefix}/
+    install -d ${D}/${prefix}/games/
     oe_runmake install
     
-    install -d ${D}/${datadir}
-    install -d ${D}/${datadir}/applications
-    install -d ${D}/${datadir}/pixmaps
+    install -d ${D}/${datadir}/
+    install -d ${D}/${datadir}/applications/
+    install -d ${D}/${datadir}/pixmaps/
 
-    install ${WORKDIR}/game.png ${D}/${datadir}/pixmaps
+    install ${WORKDIR}/game.png ${D}/${datadir}/pixmaps/
 
     cd ${D}/${prefix}/games 
     for prog in *; do
