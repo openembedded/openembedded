@@ -4,7 +4,7 @@ DEPENDS = "glib-2.0 fontconfig freetype zlib virtual/libx11 libxft gtk-doc cairo
 DESCRIPTION = "The goal of the Pango project is to provide an \
 Open Source framework for the layout and rendering of \
 internationalized text."
-PR = "r1"
+PR = "r2"
 
 RRECOMMENDS_${PN} = "pango-module-basic-x pango-module-basic-fc" 
 
@@ -20,9 +20,12 @@ EXTRA_OECONF = "--disable-glibtest \
 		--enable-explicit-deps=no \
 	        --disable-debug"
 
-FILES_${PN} = "/etc ${bindir}/* ${libdir}/libpango*.so.*"
-
+LEAD_SONAME = "libpango-1.0*"
 LIBV = "1.4.0"
+
+FILES_${PN} = "/etc ${bindir}/* ${libdir}/libpango*.so.*"
+FILES_${PN}-dbg += "${libdir}/pango/${LIBV}/modules/.debug"
+FILES_${PN}-dev += "${libdir}/pango/${LIBV}/modules/*.la"
 
 do_stage () {
 autotools_stage_all
