@@ -677,19 +677,21 @@ python read_subpackage_metadata () {
 def base_after_parse_two(d):
     import bb
     import exceptions
-    need_host = bb.data.getVar('COMPATIBLE_HOST', d, 1)
-    if need_host:
-        import re
-        this_host = bb.data.getVar('HOST_SYS', d, 1)
-        if not re.match(need_host, this_host):
-            raise bb.parse.SkipPackage("incompatible with host %s" % this_host)
+    source_mirror_fetch = bb.data.getVar('SOURCE_MIRROR_FETCH', d, 0)
+    if not source_mirror_fetch:
+        need_host = bb.data.getVar('COMPATIBLE_HOST', d, 1)
+        if need_host:
+            import re
+            this_host = bb.data.getVar('HOST_SYS', d, 1)
+            if not re.match(need_host, this_host):
+                raise bb.parse.SkipPackage("incompatible with host %s" % this_host)
 
-    need_machine = bb.data.getVar('COMPATIBLE_MACHINE', d, 1)
-    if need_machine:
-        import re
-        this_machine = bb.data.getVar('MACHINE', d, 1)
-        if this_machine and not re.match(need_machine, this_machine):
-            raise bb.parse.SkipPackage("incompatible with machine %s" % this_machine)
+        need_machine = bb.data.getVar('COMPATIBLE_MACHINE', d, 1)
+        if need_machine:
+            import re
+            this_machine = bb.data.getVar('MACHINE', d, 1)
+            if this_machine and not re.match(need_machine, this_machine):
+                raise bb.parse.SkipPackage("incompatible with machine %s" % this_machine)
 
     pn = bb.data.getVar('PN', d, 1)
 
