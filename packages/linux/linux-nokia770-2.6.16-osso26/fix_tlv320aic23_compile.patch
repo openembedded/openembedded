@@ -1,0 +1,11 @@
+--- kernel-source-2.6.16-2.6.16.rel/drivers/i2c/chips/tlv320aic23.c.orig	2006-11-22 11:48:20.000000000 +0100
++++ kernel-source-2.6.16-2.6.16.rel/drivers/i2c/chips/tlv320aic23.c	2006-11-22 11:48:42.000000000 +0100
+@@ -184,7 +184,7 @@
+ }
+ 
+ static struct i2c_driver aic23_driver = {
+-	.driver {
++	.driver = {
+ 		.name	= "OMAP+TLV320AIC23 codec",
+ 	},
+ 	.id		= I2C_DRIVERID_MISC,
