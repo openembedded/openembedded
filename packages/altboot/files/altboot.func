@@ -330,6 +330,9 @@ image_conf(){
 
 # This functions configures the master password for altboot if none is set
 set_password() {
+
+	test -e /etc/altboot.pwd && . /etc/altboot.pwd	
+
 	mount -o remount,rw /
 	if test -z "$MASTER_PASSWORD" -a "$ENABLE_DEBUG" != yes
 	then
@@ -358,14 +361,15 @@ set_password() {
 				then
 					crypt_pw="`echo "$junk1" | md5sum | awk '{print $1}'`"
 					
-					if test -e "${ALTBOOT_CFG_FILE}"
+					if test -e "/etc/altboot.pwd"
 					then
 						sed "/^MASTER_PASSWORD/s/\(.*\=\).*/\1\"$crypt_pw\"/" "${ALTBOOT_CFG_FILE}" > ${ALTBOOT_CFG_FILE}_
 						mv ${ALTBOOT_CFG_FILE}_ ${ALTBOOT_CFG_FILE}
 						MASTER_PASSWORD="$crypt_pw"
 						echo "Password changed."
 					else
-						echo "${ALTBOOT_CFG_FILE} is missing, no password saved"
+						echo "MASTER_PASSWORD=\"$crypt_pw\"" > /etc/altboot.pwd
+						echo "Password installed"
 					fi
 					
 					break
@@ -380,6 +384,9 @@ set_password() {
 
 # This function asks for altboots master password. It only returns if the correct password was supplied
 verify_master_pw() {
+	
+	test -e /etc/altboot.pwd && . /etc/altboot.pwd
+	
 	if ! test -z "$MASTER_PASSWORD"
 	then
 		auth_timeout="3"
