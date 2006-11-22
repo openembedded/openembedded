@@ -23,8 +23,10 @@ RDEPENDS_${PN}-conf = "${PN}"
 
 ######################################################################################
 
-WIP_DATE = "20061120"
-PR = "${WIP_DATE}-r1"
+WIP_DATE = "20061123"
+
+PV = "1.1.1+wip-${WIP_DATE}"
+PR = "r0"
 
 ######################################################################################
 
@@ -34,15 +36,15 @@ PACKAGE_ARCH_${PN} = "all"
 PACKAGE_ARCH_${PN}-doc = "all"
 PACKAGE_ARCH_${PN}-conf = "${MACHINE}"
 
-TAG = "${@'v' + bb.data.getVar('PV',d,1).replace('.', '-')}"
+TAG = "${@'v' + bb.data.getVar('PV',d,1).replace('.', '-').replace('+', '-')}"
 
-SRC_URI = "cvs://anonymous@hentges.net/hentgescvs;method=pserver;tag=${TAG}-${WIP_DATE};module=altboot"
+SRC_URI = "cvs://anonymous@hentges.net/hentgescvs;method=pserver;tag=${TAG};module=altboot"
 
 S = "${WORKDIR}/altboot/"
 
 ######################################################################################
 
-FILES_${PN}-conf = "/etc/altboot*.cfg"
+FILES_${PN}-conf = "/etc/altboot*cfg"
 
 ######################################################################################
 
@@ -53,12 +55,13 @@ do_install() {
 	install -d ${D}/etc/altboot.rc
 	install -d ${D}/usr/share/doc/altboot
 	install -d ${D}/usr/share/sounds
+	install -d ${D}/etc/skel/altboot
 	
 	if test -d ${WORKDIR}/altboot/${MACHINE}
 	then
-		install -m 0644 ${WORKDIR}/altboot/${MACHINE}/altboot*.cfg ${D}/etc
+		install -m 0644 ${WORKDIR}/altboot/${MACHINE}/altboot*.cfg ${D}/etc/
 	else
-		install -m 0644 ${WORKDIR}/altboot/altboot*.cfg ${D}/etc
+		install -m 0644 ${WORKDIR}/altboot/altboot*.cfg ${D}/etc/
 	fi
 
 	install -m 0644 ${WORKDIR}/altboot/beep.raw ${D}/usr/share/sounds
