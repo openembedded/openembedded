@@ -1,0 +1,19 @@
+--- kernel-source-2.6.16-2.6.16.rel/drivers/usb/core/hub.c.orig	2006-11-22 12:17:01.000000000 +0100
++++ kernel-source-2.6.16-2.6.16.rel/drivers/usb/core/hub.c	2006-11-22 12:17:48.000000000 +0100
+@@ -1289,6 +1289,7 @@
+  *
+  * Only the hub driver or root-hub registrar should ever call this.
+  */
++static int __usb_suspend_device(struct usb_device *, int port1);
+ int usb_new_device(struct usb_device *udev)
+ {
+ 	int err;
+@@ -1371,8 +1372,6 @@
+ 		 * (Includes HNP test device.)
+ 		 */
+ 		if (udev->bus->b_hnp_enable || udev->bus->is_b_host) {
+-			static int __usb_suspend_device(struct usb_device *,
+-						int port1);
+ 			err = __usb_suspend_device(udev, udev->bus->otg_port);
+ 			if (err < 0)
+ 				dev_dbg(&udev->dev, "HNP fail, %d\n", err);
