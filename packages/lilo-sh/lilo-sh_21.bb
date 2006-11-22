@@ -39,3 +39,6 @@ do_install() {
 
 # Include /boot in the package
 FILES_${PN} = "${base_sbindir} /boot"
+
+# Works for sh3/sh4 only
+COMPATIBLE_HOST = "sh.*-linux"
