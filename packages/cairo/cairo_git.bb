@@ -19,6 +19,10 @@ do_configure_prepend() {
 	sed -i s:PKGCONFIG_REQUIRED=0.19:PKGCONFIG_REQUIRED=0.15: configure.in
 }
 
+do_compile_append() {
+	cd ${S}/perf ; oe_runmake
+}
+
 do_stage () {
  	autotools_stage_all
 }
