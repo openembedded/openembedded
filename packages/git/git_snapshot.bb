@@ -2,8 +2,11 @@ SECTION = "console/utils"
 LICENSE = "GPL"
 DESCRIPTION = "The git revision control system used by the Linux kernel developers"
 DEPENDS = "openssl curl"
-RDEPENDS = "perl"
-PR = "r1"
+RDEPENDS = "perl \
+	    perl-module-file-path \
+	    "
+
+PR = "r2"
 
 def get_git_pkgdate(d):
     import bb
