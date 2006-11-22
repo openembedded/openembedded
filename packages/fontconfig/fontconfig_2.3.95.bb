@@ -12,8 +12,6 @@ PACKAGES =+ "fontconfig-utils-dbg fontconfig-utils "
 FILES_fontconfig-utils-dbg = "${bindir}/*.dbg"
 FILES_fontconfig-utils = "${bindir}/*"
 
-DEFAULT_PREFERENCE = "-1"
-
 # Work around past breakage in debian.bbclass
 RPROVIDES_fontconfig-utils = "libfontconfig-utils"
 RREPLACES_fontconfig-utils = "libfontconfig-utils"
