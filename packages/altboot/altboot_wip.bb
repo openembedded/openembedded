@@ -23,10 +23,10 @@ RDEPENDS_${PN}-conf = "${PN}"
 
 ######################################################################################
 
-WIP_DATE = "20061122"
+WIP_DATE = "20061123"
 
 PV = "1.1.1+wip-${WIP_DATE}"
-PR = "r1"
+PR = "r0"
 
 ######################################################################################
 
@@ -44,7 +44,7 @@ S = "${WORKDIR}/altboot/"
 
 ######################################################################################
 
-FILES_${PN}-conf = "/etc/skel/altboot/*"
+FILES_${PN}-conf = "/etc/altboot*cfg"
 
 ######################################################################################
 
@@ -59,9 +59,9 @@ do_install() {
 	
 	if test -d ${WORKDIR}/altboot/${MACHINE}
 	then
-		install -m 0644 ${WORKDIR}/altboot/${MACHINE}/altboot*.cfg ${D}/etc/skel/altboot/
+		install -m 0644 ${WORKDIR}/altboot/${MACHINE}/altboot*.cfg ${D}/etc/
 	else
-		install -m 0644 ${WORKDIR}/altboot/altboot*.cfg ${D}/etc/skel/altboot/
+		install -m 0644 ${WORKDIR}/altboot/altboot*.cfg ${D}/etc/
 	fi
 
 	install -m 0644 ${WORKDIR}/altboot/beep.raw ${D}/usr/share/sounds
@@ -89,21 +89,6 @@ do_configure() {
 
 pkg_postinst_${PN}() {
 	update-alternatives --install /sbin/init init /sbin/init.altboot 55
-}
-
-
-pkg_postinst_${PN}-conf() {
-	for kernel in 2.4 2.6
-	do
-		if ! test -e /etc/altboot-${kernel}.cfg
-		then			
-			if test -e /etc/skel/altboot/altboot-${kernel}.cfg
-			then
-				echo "Installing altboot configuration for kernel $kernel..."
-				cp /etc/skel/altboot/altboot-${kernel}.cfg /etc
-			fi
-		fi
-	done		
 }
 
 ######################################################################################
