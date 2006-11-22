@@ -1,0 +1,2 @@
+# <type> <owner> <group> <mode> <path> <linksource>
+d root root 0775 /var/lib/arpwatch none
