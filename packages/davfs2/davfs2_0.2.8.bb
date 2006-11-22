@@ -6,7 +6,7 @@ DEPENDS = "neon-0.25.5"
 RDEPENDS_${PN} = "kernel-module-coda"
 LICENSE = "GPL"
 
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/dav/${P}.tar.gz \
            file://Makefile.in.patch;patch=1 \
@@ -35,7 +35,7 @@ do_install_append () {
 pkg_postinst () {
 	update-alternatives --install ${ALTERNATIVE_LINK} ${ALTERNATIVE_NAME} \
 		${ALTERNATIVE_PATH} ${ALTERNATIVE_PRIORITY}
-	/etc/init.d/populate-volatile.sh
+	/etc/init.d/populate-volatile.sh update
 }
 
 pkg_prerm () {

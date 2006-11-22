@@ -6,7 +6,7 @@ PRIORITY = "optional"
 DEPENDS = "libnl dbus dbus-glib libhal-nm libgpewidget gnome-keyring gconf-dbus wireless-tools libglade"
 RDEPENDS = "wpa-supplicant iproute2 dhcdbd gnome-keyring hicolor-icon-theme"
 
-PR = "r3"
+PR = "r4"
 
 SRC_URI="http://www.handhelds.org/~mmp/files/NetworkManager-${PV}-gpe.tar.gz \
 	file://dbus-api-fix.patch;patch=1 \
@@ -48,6 +48,9 @@ do_install () {
 	install -m 0755 ${WORKDIR}/nm-applet.desktop ${D}/${datadir}/
 }
 
+pkg_postinst () {
+	/etc/init.d/populate-volatile.sh update
+}
 
 FILES_${PN} += "${datadir} \
 		${libdir}/*.so* \

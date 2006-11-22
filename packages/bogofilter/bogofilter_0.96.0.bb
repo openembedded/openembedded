@@ -5,7 +5,7 @@ DESCRIPTION = "Bogofilter is a mail filter that classifies mail as spam or ham (
 by a statistical analysis of the message's header and content (body). \
 The program is able to learn from the user's classifications and corrections."
 LICENSE = "GPL"
-PR = "r5"
+PR = "r6"
 PRIORITY = "optional"
 
 SRC_URI = "http://download.sourceforge.net/bogofilter/bogofilter-${PV}.tar.bz2 \
@@ -34,5 +34,5 @@ pkg_postinst () {
 	  echo "bogofilter unix -       n       n       -       -       pipe" >> /etc/postfix/master.cf
 	  echo "  flags=R user=bogo argv=/usr/bin/postfix-filter.sh -f ${sender} -- ${recipient}" >> /etc/postfix/master.cf
 	  }
-	/etc/init.d/populate-volatile.sh
+	/etc/init.d/populate-volatile.sh update
 }

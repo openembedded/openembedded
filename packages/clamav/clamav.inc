@@ -93,21 +93,21 @@ pkg_postinst_${PN}-freshclam () {
         grep -q clamav: /etc/passwd || \
             adduser --disabled-password --home=/var/lib/clamav/ --system \
                     --ingroup clamav --no-create-home -g "ClamAV" clamav
-        /etc/init.d/populate-volatile.sh
+        /etc/init.d/populate-volatile.sh update
 }
 pkg_postinst_${PN}-daemon () {
         grep -q clamav: /etc/group || addgroup clamav
         grep -q clamav: /etc/passwd || \
             adduser --disabled-password --home=/var/lib/clamav/ --system \
                     --ingroup clamav --no-create-home -g "ClamAV" clamav
-        /etc/init.d/populate-volatile.sh
+        /etc/init.d/populate-volatile.sh update
 }
 pkg_postinst_${PN}-data () {
         grep -q clamav: /etc/group || addgroup clamav
         grep -q clamav: /etc/passwd || \
             adduser --disabled-password --home=/var/lib/clamav/ --system \
                     --ingroup clamav --no-create-home -g "ClamAV" clamav
-        /etc/init.d/populate-volatile.sh
+        /etc/init.d/populate-volatile.sh update
 }
 
 # Indicate that the default files are configuration files

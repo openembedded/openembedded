@@ -8,7 +8,7 @@ SECTION = "network"
 LICENSE = "GPLv2"
 DEPENDS = "clamav"
 RDEPENDS_${PN} += "${PN}-templates-css2 ${PN}-templates-en"
-PR = "r2"
+PR = "r3"
 
 SRC_URI = "http://www.server-side.de/download/havp-${PV}.tar.gz \
            file://sysconfdir-is-etc.patch;patch=1 \
@@ -79,7 +79,7 @@ pkg_postinst_${PN} () {
         grep -q havp: /etc/passwd || \
             adduser --disabled-password --home=${localstatedir}/lib/havp/ --system \
                     --ingroup havp --no-create-home -g "HAVP" havp
-        /etc/init.d/populate-volatile.sh
+        /etc/init.d/populate-volatile.sh update
 }
 
 CONFFILES_${PN} = "${sysconfdir}/havp/havp.config \

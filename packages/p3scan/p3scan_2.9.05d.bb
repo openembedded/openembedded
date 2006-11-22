@@ -6,7 +6,7 @@ SECTION = "network"
 LICENSE = "GPLv2"
 DEPENDS = "gmp bzip2 zlib clamav openssl"
 RDEPENDS_${PN} = "${PN}-templates-en"
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/p3scan/p3scan-2.9.05d.tar.gz \
            file://libtool-fix.patch;patch=1 \
@@ -76,7 +76,7 @@ pkg_postinst_${PN} () {
         grep -q mail: /etc/passwd || \
             adduser --disabled-password --home=${localstatedir}/mail --system \
                     --ingroup mail --no-create-home -g "Mail" mail
-        /etc/init.d/populate-volatile.sh
+        /etc/init.d/populate-volatile.sh update
 }
 
 CONFFILES_${PN} = "${sysconfdir}/p3scan/p3scan.conf"
