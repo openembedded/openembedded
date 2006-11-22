@@ -1,5 +1,5 @@
 #This is a development snapshot, so lets hint OE to use the releases
-#DEFAULT_PREFERENCE = "-1"
+DEFAULT_PREFERENCE = "-1"
 
 SECTION = "libs"
 PRIORITY = "optional"
