@@ -22,7 +22,7 @@ MAINTAINER = "Angstrom Developers <angstrom-distro-devel@linuxtogo.org>"
 
 #use ipkg package format with debian style naming
 #use multimachine buildrules 
-INHERIT += "package_ipk debian multimachine sanity"
+INHERIT += "package_ipk debian multimachine sanity devshell"
 
 #Generate locales on the buildsystem instead of on the target. Speeds up first boot, set to "1" to enable
 PREFERRED_PROVIDER_qemu-native = "qemu-native"
@@ -34,6 +34,7 @@ ENABLE_BINARY_LOCALE_GENERATION_mx31ads = "0"
 #ARM EABI is softfloat by default, but let's make sure :)
 #make it overridable for platforms with FPU, like ep93xx or i.mx31
 TARGET_FPU_arm ?= "soft"
+TARGET_FPU_armeb ?= "soft"
 TARGET_FPU_ixp4xx ?= "soft"
 
 
