@@ -14,3 +14,8 @@ Package Name:   Maemo
 Removal Date:   2006-12-12
 Maintainer:     none
 Reason:         Unfetchable, obsoleted by IT2006 release.
+
+Package Name:	task-bootstrap*
+Removal Date:	2006-12-12
+Maintainer:	None
+Reason:		Obsoleted by task-base
