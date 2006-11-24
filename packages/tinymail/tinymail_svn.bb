@@ -1,5 +1,5 @@
 SECTION = "x11/utils"
-DEPENDS = "gtk+ glib-2.0 gnome-vfs-dbus gconf-dbus libgnomeui eds-dbus"
+DEPENDS = "gtk+ glib-2.0 gnome-vfs-dbus gconf-dbus libgnomeui"
 DESCRIPTION = "TinyMail is an attempt to create an E-mail framework for mobile devices"
 LICENSE = "GPL"
 
