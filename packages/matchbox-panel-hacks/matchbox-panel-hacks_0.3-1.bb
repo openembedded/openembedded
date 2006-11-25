@@ -1,12 +1,15 @@
 DESCRIPTION = "Simple dockapps created with monolaunch and shell script"
+LICENSE = "MIT"
+SECTION = "x11/wm"
+PRIORITY = "optional"
+
 DEPENDS = "matchbox xmodmap"
+
+PR = "r6"
+
 SRC_URI = "file://xrandr-panelapp.sh \
 	   file://xrandr-panelapp.desktop \
 	   file://xrandr.png"
-SECTION = "x11/wm"
-PRIORITY = "optional"
-PR = "r4"
-LICENSE = "MIT"
 
 do_install() {
         install -d ${D}${bindir}
@@ -16,3 +19,7 @@ do_install() {
 	install -m 0644 ${WORKDIR}/xrandr-panelapp.desktop ${D}${datadir}/applications/
 	install -m 0644 ${WORKDIR}/xrandr.png ${D}${datadir}/pixmaps/
 }
+
+#The package contains ashellscript, a .desktop file and a png
+PACKAGE_ARCH = "all"
+
