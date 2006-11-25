@@ -1,9 +1,16 @@
 ac_cv_sizeof_char=${ac_cv_sizeof_char=1}
+ac_cv_sizeof_unsigned_char=${ac_cv_sizeof_unsigned_int=1}
 ac_cv_sizeof_char_p=${ac_cv_sizeof_char_p=4}
+ac_cv_sizeof_unsigned_char_p=${ac_cv_sizeof_unsigned_char_p=4}
 ac_cv_sizeof_int=${ac_cv_sizeof_int=4}
+ac_cv_sizeof_unsigned_int=${ac_cv_sizeof_unsigned_int=4}
+ac_cv_sizeof_int_p=${ac_cv_sizeof_int_p=4}
 ac_cv_sizeof_long=${ac_cv_sizeof_long=4}
+ac_cv_sizeof_unsigned_long=${ac_cv_sizeof_unsigned_long=4}
 ac_cv_sizeof_long_long=${ac_cv_sizeof_long_long=8}
+ac_cv_sizeof_unsigned_long_long=${ac_cv_sizeof_unsigned_long_long=8}
 ac_cv_sizeof_short=${ac_cv_sizeof_short=2}
+ac_cv_sizeof_unsigned_short=${ac_cv_sizeof_unsigned_short=2}
 ac_cv_sizeof_size_t=${ac_cv_sizeof_size_t=4}
 ac_cv_sizeof_ssize_t=${ac_cv_sizeof_ssize_t=4}
 ac_cv_sizeof_void_p=${ac_cv_sizeof_void_p=4}
@@ -14,6 +21,7 @@ ac_cv_func_getpwuid_r=${ac_cv_func_getpwuid_r=yes}
 ac_cv_func_lstat_dereferences_slashed_symlink=${ac_cv_func_lstat_dereferences_slashed_symlink=yes}
 ac_cv_func_lstat_empty_string_bug=${ac_cv_func_lstat_empty_string_bug=no}
 ac_cv_func_malloc_0_nonnull=${ac_cv_func_malloc_0_nonnull=yes}
+ac_cv_func_malloc_works=${ac_cv_func_malloc_works=yes}
 ac_cv_func_pthread_key_delete=${ac_cv_func_pthread_key_delete=yes}
 ac_cv_func_setpgrp_void=${ac_cv_func_setpgrp_void=yes}
 ac_cv_func_setvbuf_reversed=${ac_cv_func_setvbuf_reversed=no}
@@ -92,6 +100,9 @@ db_cv_uimutexes=${db_cv_uimutexes=no}
 
 # D-BUS
 ac_cv_func_posix_getpwnam_r=${ac_cv_func_posix_getpwnam_r=yes}
+
+dpkg_cv_va_copy=${ac_cv_va_copy=no}
+dpkg_cv___va_copy=${ac_cv___va_copy=yes}
 
 # ettercap
 ettercap_cv_type_socklen_t=${ettercap_cv_type_socklen_t=yes}
