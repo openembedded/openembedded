@@ -1,7 +1,7 @@
 SECTION = "kernel"
 DESCRIPTION = "Linux kernel for Nokia 770"
 LICENSE = "GPL"
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "http://repository.maemo.org/pool/maemo2.1/free/source/k/kernel-source-2.6.16/kernel-source-2.6.16_2.6.16.rel-osso26.tar.gz \
 	   file://fix_tlv320aic23_compile.patch;patch=1 \
