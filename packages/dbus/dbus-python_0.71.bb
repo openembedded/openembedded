@@ -1,14 +1,10 @@
-DEFAULT_PREFERENCE="-1"
-
-SECTION = "devel/python"
-PRIORITY = "optional"
-HOMEPAGE = "http://www.freedesktop.org/Software/dbus"
 DESCRIPTION = "message bus system for applications to talk to one another - python bindings"
+HOMEPAGE = "http://www.freedesktop.org/Software/dbus"
 LICENSE = "GPL"
+SECTION = "devel/python"
+DEPENDS = "python-pyrex-native dbus dbus-glib"
 PR = "r0"
-DEPENDS = "python-native"
 
-SRC_URI = "http://freedesktop.org/software/dbus/releases/dbus-python-${PV}.tar.gz \
-	   file://cross.patch;patch=1"
+SRC_URI = "http://freedesktop.org/software/dbus/releases/dbus-python-${PV}.tar.gz"
 
 inherit distutils
