@@ -3,7 +3,7 @@ DESCRIPTION = "Linux kernel for Nokia 770"
 LICENSE = "GPL"
 PR = "r1"
 
-SRC_URI = "http://repository.maemo.org/pool/mistral/non-free/source/k/kernel-source-2.6.16/kernel-source-2.6.16_2.6.16.rel-osso15.tar.gz \
+SRC_URI = "http://repository.maemo.org/pool/maemo2.1/free/source/k/kernel-source-2.6.16/kernel-source-2.6.16_2.6.16.rel-osso26.tar.gz \
 	   file://fix_tlv320aic23_compile.patch;patch=1 \
 	   file://fix_usb_hub_compile.patch;patch=1 \
 	   file://defconfig"
@@ -13,6 +13,8 @@ S = "${WORKDIR}/kernel-source-2.6.16-2.6.16.rel"
 KERNEL_OUTPUT = "arch/${ARCH}/boot/compressed/${KERNEL_IMAGETYPE}"
 
 inherit kernel
+
+RPROVIDES_kernel-image = "hostap-modules"
 
 COMPATIBLE_MACHINE = "nokia770"
 
