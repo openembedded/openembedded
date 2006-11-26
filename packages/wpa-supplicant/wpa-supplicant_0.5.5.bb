@@ -3,7 +3,7 @@ SECTION = "network"
 LICENSE = "GPL"
 HOMEPAGE = "http://hostap.epitest.fi/wpa_supplicant/"
 DEPENDS = "gnutls ${@base_contains("COMBINED_FEATURES", "pci", "madwifi-ng", "",d)}"
-PACKAGE_ARCH = "${@base_contains('COMBINED_FEATURES', 'pci', ${MACHINE}, ${TARGET_ARCH}, d)}"
+PACKAGE_ARCH = "${@base_contains('COMBINED_FEATURES', 'pci', '${MACHINE}', '${TARGET_ARCH}', d)}"
 
 DEFAULT_PREFERENCE = "-2"
 
