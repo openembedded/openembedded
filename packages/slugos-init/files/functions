@@ -23,6 +23,7 @@ machine(){
 	*NAS?100d*)	echo nas100d;;
 	*DSM?G600*)	echo dsmg600;;
 	*NSLU2*)	echo nslu2;;
+	*FSG?3*)	echo fsg3;;
 	*)		echo unknown;;
 	esac
 }
