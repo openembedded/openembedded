@@ -40,29 +40,7 @@ PACKAGE_ARCH = "${MACHINE_ARCH}"
 # usbgadget
 # usbhost
 
-
-MACHINE_FEATURES ?= "kernel26"
-DISTRO_FEATURES ?= ""
 DISTRO_CORE_PACKAGE ?= "task-base-core-default"
-
-DISTRO_EXTRA_RDEPENDS ?= ""
-DISTRO_EXTRA_RRECOMMENDS ?= ""
-MACHINE_EXTRA_RDEPENDS ?= ""
-MACHINE_EXTRA_RRECOMMENDS ?= ""
-MACHINE_ESSENTIAL_EXTRA_RDEPENDS ?= ""
-MACHINE_ESSENTIAL_EXTRA_RRECOMMENDS ?= ""
-
-
-COMBINED_FEATURES = "\
-    ${@base_both_contain("DISTRO_FEATURES", "MACHINE_FEATURES", "alsa", d)} \
-    ${@base_both_contain("DISTRO_FEATURES", "MACHINE_FEATURES", "bluetooth", d)} \
-    ${@base_both_contain("DISTRO_FEATURES", "MACHINE_FEATURES", "ext2", d)} \
-    ${@base_both_contain("DISTRO_FEATURES", "MACHINE_FEATURES", "irda", d)} \
-    ${@base_both_contain("DISTRO_FEATURES", "MACHINE_FEATURES", "pcmcia", d)} \
-    ${@base_both_contain("DISTRO_FEATURES", "MACHINE_FEATURES", "pci", d)} \
-    ${@base_both_contain("DISTRO_FEATURES", "MACHINE_FEATURES", "usbgadget", d)} \
-    ${@base_both_contain("DISTRO_FEATURES", "MACHINE_FEATURES", "usbhost", d)}"
-
 
 #
 # task-base 

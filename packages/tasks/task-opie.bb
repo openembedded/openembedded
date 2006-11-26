@@ -1,11 +1,11 @@
 DESCRIPTION = "Tasks for OPIE stuff"
 SECTION = "opie/base"
+PACKAGE_ARCH = "${MACHINE_ARCH}"
 ALLOW_EMPTY = "1"
-PACKAGE_ARCH = "all"
 LICENSE = "MIT"
 PROVIDES = "task-opie-everything"
 
-PR = "r3"
+PR = "r4"
 
 PACKAGES = "task-opie-applets task-opie-apps task-opie-base \
             task-opie-base-applets task-opie-base-apps \
@@ -35,16 +35,13 @@ RDEPENDS_task-opie-base = "opie-alarm opie-qcop opie-quicklauncher opie-taskbar 
 # things for reasonable bootstrap image
 #
 RDEPENDS_task-opie-base-applets = "opie-aboutapplet opie-clockapplet opie-suspendapplet \
-                          opie-homeapplet opie-rotateapplet \
-                          opie-irdaapplet opie-brightnessapplet opie-batteryapplet \
-                          opie-pcmciaapplet opie-volumeapplet \
-                          opie-screenshotapplet"
-
-#
-# keyboard models can benefit from the vt and logout applets
-#
-RDEPENDS_task-opie-base-applets_append_openzaurus = " opie-vtapplet opie-logoutapplet"
-RDEPENDS_task-opie-base-applets_append_mnci       = " opie-vtapplet opie-logoutapplet"
+                                   opie-homeapplet opie-rotateapplet \
+		   opie-brightnessapplet opie-volumeapplet \
+                                   opie-screenshotapplet \
+    ${@base_contains("COMBINED_FEATURES", "irda", "opie-irdaapplet", "",d)} \
+    ${@base_contains("COMBINED_FEATURES", "apm", "opie-batteryapplet", "",d)} \
+    ${@base_contains("COMBINED_FEATURES", "pcmcia", "opie-pcmciaapplet", "",d)} \
+    ${@base_contains("MACHINE_FEATURES", "keyboard", "opie-vtapplet opie-logoutapplet", "",d)}"
 
 #
 # clamshell models can benefit from the autorotate applet
@@ -67,7 +64,9 @@ RDEPENDS_task-opie-base-settings = "opie-packagemanager opie-light-and-power opi
 # That settings can be removed and device will be still usable
 #
 RDEPENDS_task-opie-extra-settings = "opie-language opie-doctab opie-mediummount \
-                            opie-networksettings-wlanplugin opie-networksettings-pppplugin"
+    ${@base_contains("DISTRO_FEATURES", "wifi", "opie-networksettings-wlanplugin", "",d)} \
+    ${@base_contains("DISTRO_FEATURES", "ppp", "opie-networksettings-pppplugin", "",d)} \
+			    "
 
 RDEPENDS_task-opie-base-decorations = "opie-deco-flat opie-deco-liquid opie-deco-polished"
 
