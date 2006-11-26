@@ -1,5 +1,5 @@
 DESCRIPTION = "Task packages for the Angstrom distribution"
-PR = "r23"
+PR = "r24"
 ALLOW_EMPTY = "1"
 
 PACKAGE_ARCH = "${MACHINE_ARCH}"
@@ -24,6 +24,7 @@ RDEPENDS_angstrom-x11-base-depends := "\
 
 RDEPENDS_angstrom-gpe-task-base := "\
     matchbox \
+    matchbox-panel-hacks \
     xcursor-transparent-theme \
     rxvt-unicode \
     gpe-terminal \
@@ -89,7 +90,8 @@ RDEPENDS_angstrom-gpe-task-games := "\
     gpe-othello \
     gpe-tetris \
     gsoko \
-    xdemineur"
+#    xdemineur \
+"
 
 RDEPENDS_angstrom-task-office := "\
     gnumeric \
