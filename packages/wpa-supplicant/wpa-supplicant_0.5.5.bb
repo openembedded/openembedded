@@ -32,7 +32,7 @@ export HAS_PCI = "${@base_contains('COMBINED_FEATURES', 'pci', 1, 0,d)}"
 do_configure () {
         install -m 0755 ${WORKDIR}/defconfig-gnutls  .config
  
-        if [ "x$HAS_PCI" == "x1" ] then; do
+        if [ "x$HAS_PCI" == "x1" ] ; then
                 echo "CONFIG_DRIVER_MADWIFI=y" >> .config
                 echo "CFLAGS += -I${STAGING_INCDIR}/madwifi-ng" >> .config
         fi
