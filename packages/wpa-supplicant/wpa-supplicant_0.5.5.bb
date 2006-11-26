@@ -3,7 +3,10 @@ SECTION = "network"
 LICENSE = "GPL"
 HOMEPAGE = "http://hostap.epitest.fi/wpa_supplicant/"
 DEPENDS = "gnutls ${@base_contains("COMBINED_FEATURES", "pci", "madwifi-ng", "",d)}"
-PACKAGE_ARCH = "${@base_contains('COMBINED_FEATURES', 'pci', '${MACHINE}', '${TARGET_ARCH}', d)}"
+
+#we introduce MY_ARCH to get 'armv5te' as arch instead of the misleading 'arm' on armv5te builds
+MY_ARCH := "${PACKAGE_ARCH}"
+PACKAGE_ARCH = "${@base_contains('COMBINED_FEATURES', 'pci', '${MACHINE}', '${MY_ARCH}', d)}"
 
 DEFAULT_PREFERENCE = "-2"
 
