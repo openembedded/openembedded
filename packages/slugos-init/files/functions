@@ -21,6 +21,7 @@ machine(){
 	*Avila*)	echo avila;;
 	*Loft*)		echo loft;;
 	*NAS?100d*)	echo nas100d;;
+	*DSM?G600*)	echo dsmg600;;
 	*NSLU2*)	echo nslu2;;
 	*)		echo unknown;;
 	esac

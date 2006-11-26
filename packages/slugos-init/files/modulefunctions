@@ -16,6 +16,11 @@ loaddiskmods(){
                 modprobe ehci-hcd
                 modprobe uhci-hcd
                 ;;
+            dsmg600)
+                modprobe pata-artop
+                modprobe ehci-hcd
+                modprobe uhci-hcd
+                ;;
 
 	esac
 	modprobe usb-storage
