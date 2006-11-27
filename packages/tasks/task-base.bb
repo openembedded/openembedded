@@ -1,5 +1,5 @@
 DESCRIPTION = "Merge machine and distro options to create a basic machine task/package"
-PR = "r13"
+PR = "r14"
 
 PACKAGES = "task-base \
             task-base-minimal \
@@ -19,6 +19,7 @@ PACKAGE_ARCH = "${MACHINE_ARCH}"
 # touchscreen
 # screen
 # pci
+# acpi
 
 # Valid only in DISTRO_FEATURES:
 #
@@ -50,6 +51,7 @@ RDEPENDS_task-base = "\
     kernel \
     ${@base_contains("MACHINE_FEATURES", "kernel26", "${task-base-kernel26-rdepends}", "",d)} \
     ${@base_contains("MACHINE_FEATURES", "apm", "${task-base-apm-rdepends}", "",d)} \
+    ${@base_contains("MACHINE_FEATURES", "acpi", "${task-base-acpi-rdepends}", "",d)} \
     ${@base_contains("MACHINE_FEATURES", "keyboard", "${task-base-keyboard-rdepends}", "",d)} \
     ${@base_contains("COMBINED_FEATURES", "alsa", "${task-base-alsa-rdepends}", "",d)} \
     ${@base_contains("COMBINED_FEATURES", "ext2", "${task-base-ext2-rdepends}", "",d)} \
@@ -136,6 +138,9 @@ task-base-pci-rdepends = "\
 task-base-kernel26-extras-rrecommends = "\
     kernel-module-input \
     kernel-module-uinput"
+
+task-base-acpi-rdepends = "\
+    acpid"
 
 task-base-apm-rdepends = "\
     apm \
