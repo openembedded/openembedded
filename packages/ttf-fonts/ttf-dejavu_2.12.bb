@@ -2,7 +2,7 @@ DESCRIPTION = "DejaVu font - TTF Edition"
 LICENSE = "Bitstream Vera"
 HOMEPAGE = "http://dejavu.sourceforge.net/wiki/index.php/Main_Page"
 
-SRC_URI = "${SOURCEFORGE_MIRROR}/dejavu/dejavu-ttf-${PV}.tar.gz"
+SRC_URI = "${SOURCEFORGE_MIRROR}/dejavu/dejavu-ttf-${PV}.tar.bz2"
 
 require ttf.inc
 
