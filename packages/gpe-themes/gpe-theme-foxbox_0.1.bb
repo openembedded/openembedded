@@ -10,4 +10,4 @@ S = 			"${WORKDIR}/foxbox"
 
 FILES_${PN} = 	"${datadir}/themes"
 
-SRC_URI = 		"http://dominion.kabel.utwente.nl/~florian/themes/foxbox-${PV}.tar.gz"
+SRC_URI = 		"http://linuxtogo.org/~florian/themes/foxbox-${PV}.tar.gz"
