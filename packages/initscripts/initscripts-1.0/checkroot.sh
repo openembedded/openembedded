@@ -148,7 +148,10 @@ else
     # 2 or larger.  A return code of 1 indicates that filesystem
     # errors were corrected but that the boot may proceed.
     #
-    if test "$?" -gt 1
+    
+    echo "RETURNCODE: [$RTC]"
+    
+    if test "$RTC" -gt 3
     then
     
       # Since this script is run very early in the boot-process, it should be safe to assume that the
@@ -159,13 +162,14 @@ else
       # Surprise! Re-directing from a HERE document (as in
       # "cat << EOF") won't work, because the root is read-only.
       echo
-      echo "fsck failed.  Please repair manually and reboot.  Please note"
-      echo "that the root filesystem is currently mounted read-only.  To"
-      echo "remount it read-write:"
+      echo "fsck failed.  Please repair manually and reboot. " 
+      echo "Please note that the root filesystem is currently "
+      echo "mounted read-only.  To remount it read-write:"
       echo
       echo "   # mount -n -o remount,rw /"
       echo
-      echo "CONTROL-D will exit from this shell and REBOOT the system."
+      echo "CONTROL-D will exit from this shell"
+      echo "and REBOOT the system."
       echo
       # Start a single user shell on the console
       /sbin/sulogin $CONSOLE

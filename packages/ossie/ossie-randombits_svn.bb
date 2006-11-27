@@ -1,0 +1,20 @@
+PR = "r0"
+DESCRIPTION = "OSSIE Random bit generator component"
+SECTION =  "apps"
+PRIORITY = "optional"
+LICENSE = "GPL"
+
+DEPENDS = "ossiecf ossie-standardinterfaces ossie-sigproc"
+
+S="${WORKDIR}/RandomBits"
+
+
+SRC_URI = "svn://ossie-dev.mprg.org/repos/ossie/components/RandomBits/trunk;module=RandomBits;proto=https"
+
+prefix="/home/sca"
+
+inherit autotools
+
+FILES_${PN} += "/home/sca/xml/RandomBits/*.xml"
+
+BROKEN = "1"
