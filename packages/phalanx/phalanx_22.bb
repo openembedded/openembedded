@@ -3,7 +3,7 @@ SECTION = "opie/libs"
 PRIORITY = "optional"
 PR = "r3"
 LICENSE = "GPL"
-SRC_URI = "http://dusan.freeshell.org/phalanx/phalanx-${PV}.tar.gz \
+SRC_URI = "ftp://ftp.math.muni.cz/pub/math/people/Dobes/phalanx-22.tar.gz \
            file://gcc3.patch;patch=1 \
            file://capabilities \
            file://description"
