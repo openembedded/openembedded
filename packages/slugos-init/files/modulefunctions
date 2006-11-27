@@ -13,6 +13,7 @@ loaddiskmods(){
 	        modprobe ohci-hcd
 		;;
             nas100d)
+                modprobe pata-artop
                 modprobe ehci-hcd
                 modprobe uhci-hcd
                 ;;
