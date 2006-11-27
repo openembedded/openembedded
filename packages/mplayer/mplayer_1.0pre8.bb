@@ -17,7 +17,8 @@ SRC_URI = "http://www1.mplayerhq.hu/MPlayer/releases/MPlayer-${PV}.tar.bz2 \
            file://libmpdemux-ogg-include.patch;patch=1 \
            file://libmpcodecs-ogg-include.patch;patch=1 \
            file://pld-onlyarm5.patch;patch=1 \
-           ${SOURCEFORGE_MIRROR}/libw100/mplayer-imageon.patch;patch=1"
+           ${SOURCEFORGE_MIRROR}/libw100/mplayer-imageon.patch;patch=1 \
+           file://imageon-video_out.patch;patch=1"
 
 RCONFLICTS_${PN} = "mplayer-atty"
 RREPLACES_${PN} = "mplayer-atty"
@@ -26,6 +27,7 @@ PR = "r3"
 PARALLEL_MAKE = ""
 
 DEPENDS_append_c7x0 = " sharp-aticore-oss libw100 "
+DEPENDS_append_hx4700 = " libw100 "
 
 S = "${WORKDIR}/MPlayer-${PV}"
 
@@ -168,6 +170,7 @@ EXTRA_OECONF = " \
         "
 
 EXTRA_OECONF_append_c7x0 = " --enable-w100 --enable-imageon "
+EXTRA_OECONF_append_hx4700 = " --enable-imageon "
 
 do_configure() {
 	cp ${WORKDIR}/vo_w100.c ${S}/libvo
