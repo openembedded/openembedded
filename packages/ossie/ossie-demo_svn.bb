@@ -5,6 +5,7 @@ PRIORITY = "optional"
 LICENSE = "GPL"
 
 DEPENDS = "ossiecf ossie-channeldemo ossie-rxdemo"
+RDEPENDS = "ossie-channeldemo ossie-rxdemo"
 
 S="${WORKDIR}/ossie_demo"
 
