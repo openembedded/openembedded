@@ -2,7 +2,7 @@ SECTION = "unknown"
 DESCRIPTION = "Hardware Abstraction Layer"
 DEPENDS = "dbus expat libusb"
 RDEPENDS += "hotplug"
-RDEPENDS_hal-device-manager = "python hal python-pygnome"
+#RDEPENDS_hal-device-manager = "python hal python-pygnome"
 RRECOMMENDS = "udev-utils"
 HOMEPAGE = "http://freedesktop.org/Software/hal"
 LICENSE = "GPL LGPL AFL"
@@ -27,7 +27,7 @@ do_stage() {
 	install -m 755 libhal-storage/.libs/libhal-storage.so.1.0.0 ${STAGING_LIBDIR}/libhal-storage.so
 }
 
-PACKAGES += "hal-device-manager"
+#PACKAGES += "hal-device-manager"
 FILES_${PN} =  "${sysconfdir} \
 		${bindir}/lshal \
 		${bindir}/hal-find-by-capability \
@@ -41,7 +41,7 @@ FILES_${PN} =  "${sysconfdir} \
 		${libexecdir} \
 		${datadir}/hal/fdi \
 		${datadir}/hal/scripts"
-FILES_hal-device-manager = " \
-		${datadir}/hal/device-manager/ \
-		${bindir}/hal-device-manager"
+#FILES_hal-device-manager = " \
+#		${datadir}/hal/device-manager/ \
+#		${bindir}/hal-device-manager"
 
