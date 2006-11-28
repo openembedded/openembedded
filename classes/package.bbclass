@@ -575,7 +575,7 @@ python package_do_shlibs() {
 				soname = None
 				path = os.path.join(root, file)
 				if os.access(path, os.X_OK) or lib_re.match(file):
-					cmd = (bb.data.getVar('BUILD_PREFIX', d, 1) or "") + "objdump -p " + path + " 2>/dev/null"
+					cmd = bb.data.getVar('OBJDUMP', d, 1) + " -p " + path + " 2>/dev/null"
 					fd = os.popen(cmd)
 					lines = fd.readlines()
 					fd.close()
