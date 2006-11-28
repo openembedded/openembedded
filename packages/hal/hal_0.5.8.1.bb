@@ -6,9 +6,9 @@ LICENSE = "GPL LGPL AFL"
 DEPENDS = "dbus-glib  expat libusb"
 RDEPENDS += "udev"
 #RDEPENDS_hal-device-manager = "python hal python-pygnome"
-RRECOMMENDS = "udev-utils hal-info"
+RRECOMMENDS = "udev-utils"
 
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "http://freedesktop.org/~david/dist/hal-${PV}.tar.gz"
 
