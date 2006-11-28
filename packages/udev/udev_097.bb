@@ -8,7 +8,7 @@ used to detect the type of a file system and read its metadata."
 DESCRIPTION_libvolume-id-dev = "libvolume_id development headers, \
 needed to link programs with libvolume_id."
 
-PR = "r4"
+PR = "r5"
 
 SRC_URI = "http://kernel.org/pub/linux/utils/kernel/hotplug/udev-${PV}.tar.gz \
 	   file://noasmlinkage.patch;patch=1 \
@@ -23,10 +23,6 @@ PACKAGE_ARCH_h2200 = "h2200"
 
 INITSCRIPT_PARAMS = "start 03 S ."
 
-PACKAGES =+ "libvolume-id-dev libvolume-id"
-PKG_libvolume-id-dev = "libvolume-id-dev"
-FILES_libvolume-id-dev = "${includedir}/libvolume_id.h ${libdir}/libvolume_id.a ${libdir}/libvolume_id.so ${libdir}/pkgconfig/libvolume_id.pc"
-FILES_libvolume-id = "${base_libdir}/libvolume_id.so.*"
 FILES_${PN} += "${base_libdir}/udev/*"
 FILES_${PN}-dbg += "${base_libdir}/udev/.debug"
 UDEV_EXTRAS = "extras/firmware/ extras/scsi_id/ extras/volume_id/ extras/run_directory/"
