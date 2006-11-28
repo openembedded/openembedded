@@ -6,16 +6,8 @@ HAS_GFORTRAN ?= "no"
 OLD_INHIBIT_PACKAGE_STRIP := "${INHIBIT_PACKAGE_STRIP}"
 INHIBIT_PACKAGE_STRIP = "1"
 
-#we introduce MY_ARCH to get 'armv5te' as arch instead of the misleading 'arm' on armv5te builds
-MY_ARCH := "${PACKAGE_ARCH}"
-
 PACKAGES = "libgcc libgcc-dev libstdc++ libg2c libg2c-dev libgfortran libgfortran-dev"
 PACKAGES_DYNAMIC = "libgcc* libstdc* libg2c* libgfortran*"
-
-PACKAGE_ARCH_libg2c = "${MY_ARCH}"
-PACKAGE_ARCH_libg2c-dev = "${MY_ARCH}"
-PACKAGE_ARCH_libgfortran = "${MY_ARCH}"
-PACKAGE_ARCH_libgfortran-dev = "${MY_ARCH}"
 
 # Called from within gcc-cross, so libdir is set wrong
 FILES_libg2c = "${target_libdir}/libg2c.so.*"
@@ -28,13 +20,9 @@ FILES_libgfortran-dev = "${target_libdir}/libgfortran.a \
 			 ${target_libdir}/libgfortran.so \
 			 ${target_libdir}/libgfortranbegin.a"
 
-PACKAGE_ARCH_libgcc = "${MY_ARCH}"
-PACKAGE_ARCH_libgcc-dev = "${MY_ARCH}"
 FILES_libgcc = "${target_base_libdir}/libgcc_s.so.1"
 FILES_libgcc-dev = "${target_base_libdir}/libgcc_s.so"
 
-PACKAGE_ARCH_libstdc++ = "${MY_ARCH}"
-PACKAGE_ARCH_libstdc++-dev = "${MY_ARCH}"
 FILES_libstdc++ = "${target_libdir}/libstdc++.so.*"
 FILES_libstdc++-dev = "${target_includedir}/c++/${PV} \
 		       ${target_libdir}/libstdc++.so \
