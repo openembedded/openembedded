@@ -93,7 +93,7 @@ Machines:   collie, spitz, tosa
 Distros:    OpenZaurus, celinux-test
 Interests:  WiFi, Opie, Qtopia fonts, Native SDK
 Recipes:    hostap*, orinoco*, wpa-supplicant*, wireless-tools, keymaps
-Recipes:    linux-openzaurus, kdepimpi, subapplet, corsair, gammu, iqnotes, zbedic
+Recipes:    linux-rp, kdepimpi, subapplet, corsair, gammu, iqnotes, zbedic
 Recipes:    ttf-fonts/* qpf-fonts/*
 
 Person:     Michael 'Mickey' Lauer
@@ -121,7 +121,7 @@ Mail:       rpurdie@rpsys.net
 Distros:    poky, openzaurus, Ångström
 Machines:   poodle, c7x0, spitz, nokia770, qemuarm, qemux86, hx2xxx
 Interests:  Kernels, Bitbake, Core OE infrastructure, Zaurus 2.6
-Recipes:    linux-openzaurus, udev, zaurusd, task-base
+Recipes:    linux-rp, udev, zaurusd, task-base
 
 Person:	    Rolf 'Laibsch' Leggewie
 Mail:       OE-recipes@rolf.leggewie.biz
