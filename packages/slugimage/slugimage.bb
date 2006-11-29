@@ -3,11 +3,11 @@ SECTION = "console/utils"
 LICENSE = "BSD"
 DESCRIPTION = "Slugimage is a small app to disassemble and reassemble \
 flash images for the Linksys NSLU2 device. It also has jffs2 support"
-PR = "r9"
+PR = "r10"
 
 RDEPENDS = "perl"
 
-SLUGIMAGE_SVN_REV  ?= "81"
+SLUGIMAGE_SVN_REV  ?= "82"
 SLUGIMAGE_SVN_REPO ?= "http://svn.nslu2-linux.org/svnroot/slugimage/trunk"
 
 addtask svnfetch before do_configure after do_patch
