@@ -308,8 +308,8 @@ python package_do_split_gconvs () {
 # We want to do this indirection so that we can safely 'return'
 # from the called function even though we're prepending
 python populate_packages_prepend () {
-    if bb.data.getVar('DEBIAN_NAMES', d, 1):
-        bb.data.setVar('PKG_glibc', 'libc6', d)
-        bb.data.setVar('PKG_glibc-dev', 'libc6-dev', d)
-    bb.build.exec_func('package_do_split_gconvs', d)
+	if bb.data.getVar('DEBIAN_NAMES', d, 1):
+		bb.data.setVar('PKG_glibc', 'libc6', d)
+		bb.data.setVar('PKG_glibc-dev', 'libc6-dev', d)
+	bb.build.exec_func('package_do_split_gconvs', d)
 }
