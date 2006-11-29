@@ -3,7 +3,7 @@ HOMEPAGE = "http://www.gnu.org/software/libc/libc.html"
 LICENSE = "LGPL"
 SECTION = "libs"
 PRIORITY = "required"
-PR = "r11"
+PR = "r12"
 
 #add the hosts that are confirmed to be working to COMPATIBLE_HOSTi
 COMPATIBLE_HOST = '(i.86.*-linux|sh.*-linux)'
