@@ -8,7 +8,7 @@ PR = "r0"
 
 SRC_URI = "http://be.lunar-linux.org/lunar/cache/neon-${PV}.tar.gz"
 
-inherit autotools binconfig lib_package
+inherit autotools binconfig lib_package pkgconfig
 
 EXTRA_OECONF = "--without-ssl --with-libxml2 --with-expat --enable-shared"
 
