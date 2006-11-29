@@ -56,9 +56,9 @@ DESCRIPTION_localedef = "glibc: compile locale definition files"
 DESCRIPTION_glibc-utils = "glibc: misc utilities like iconf, local, gencat, tzselect, rpcinfo, ..."
 
 def get_glibc_fpu_setting(bb, d):
-	if bb.data.getVar('TARGET_FPU', d, 1) in [ 'soft' ]:
-		return "--without-fp"
-	return ""
+    if bb.data.getVar('TARGET_FPU', d, 1) in [ 'soft' ]:
+        return "--without-fp"
+    return ""
 
 EXTRA_OECONF += "${@get_glibc_fpu_setting(bb, d)}"
 
@@ -116,23 +116,23 @@ rm -rf ${TMP_LOCALE}
 }
 
 python __anonymous () {
-	enabled = bb.data.getVar("ENABLE_BINARY_LOCALE_GENERATION", d, 1)
+    enabled = bb.data.getVar("ENABLE_BINARY_LOCALE_GENERATION", d, 1)
 
-	if enabled and int(enabled):
-		import re
+    if enabled and int(enabled):
+        import re
 
-		target_arch = bb.data.getVar("TARGET_ARCH", d, 1)
-		binary_arches = bb.data.getVar("BINARY_LOCALE_ARCHES", d, 1) or ""
+        target_arch = bb.data.getVar("TARGET_ARCH", d, 1)
+        binary_arches = bb.data.getVar("BINARY_LOCALE_ARCHES", d, 1) or ""
 
-		for regexp in binary_arches.split(" "):
-			r = re.compile(regexp)
+        for regexp in binary_arches.split(" "):
+            r = re.compile(regexp)
 
-			if r.match(target_arch):
-				depends = bb.data.getVar("DEPENDS", d, 1)
-				depends = "%s qemu-native" % depends
-				bb.data.setVar("DEPENDS", depends, d)
-				bb.data.setVar("GLIBC_INTERNAL_USE_BINARY_LOCALE", "1", d)
-				break
+            if r.match(target_arch):
+                depends = bb.data.getVar("DEPENDS", d, 1)
+                depends = "%s qemu-native" % depends
+                bb.data.setVar("DEPENDS", depends, d)
+                bb.data.setVar("GLIBC_INTERNAL_USE_BINARY_LOCALE", "1", d)
+                break
 }
 
 do_prep_locale_tree() {
@@ -308,8 +308,8 @@ python package_do_split_gconvs () {
 # We want to do this indirection so that we can safely 'return'
 # from the called function even though we're prepending
 python populate_packages_prepend () {
-	if bb.data.getVar('DEBIAN_NAMES', d, 1):
-		bb.data.setVar('PKG_glibc', 'libc6', d)
-		bb.data.setVar('PKG_glibc-dev', 'libc6-dev', d)
-	bb.build.exec_func('package_do_split_gconvs', d)
+    if bb.data.getVar('DEBIAN_NAMES', d, 1):
+        bb.data.setVar('PKG_glibc', 'libc6', d)
+        bb.data.setVar('PKG_glibc-dev', 'libc6-dev', d)
+    bb.build.exec_func('package_do_split_gconvs', d)
 }
