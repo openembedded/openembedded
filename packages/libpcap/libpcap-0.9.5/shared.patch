@@ -11,7 +11,7 @@
  
 +# some defines for shared library compilation - FIXME, if not matching
 +MAJ=0.9
-+MIN=3
++MIN=5
 +VERSION=$(MAJ).$(MIN)
 +LIBNAME=pcap
 +LIBRARY=lib$(LIBNAME).a
