@@ -1,7 +1,7 @@
 DESCRIPTION = "Proper tools for busybox haters"
 PR = "r1"
 
-ALLOW_EMPTY = "1"
+ALLOW_EMPTY_${PN} = "1"
 
 RDEPENDS = "\
             coreutils \
