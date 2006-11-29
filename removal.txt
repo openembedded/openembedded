@@ -47,3 +47,14 @@ Maintainer:     None
 Reason:         Not fetchable, all search results points to OE related infos
 Proposed by:    Marcin 'Hrw' Juszkiewicz
  
+Package Name:   nsqld
+Removal Date:   2006-12-12
+Maintainer:     None
+Reason:		Never used
+Proposed by:    Florian Boor
+
+Package Name:   gpe-mileage
+Removal Date:   2006-12-12
+Maintainer:     None
+Reason:         Unfinished, no development progress
+Proposed by:    Florian Boor
