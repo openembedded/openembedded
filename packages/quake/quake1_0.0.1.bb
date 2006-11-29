@@ -20,7 +20,7 @@ EXTRA_OEMAKE = "-e"
 
 export CFLAG = "-DHAVE_ZLIB -DNO_DEBUG -finline-function"
 export CXXFLAGS = "-DHAVE_ZLIB -DNO_DEBUG -finline-function"
-export LIBS = "-L${STAGING_LIBDIR} -lz -lm -lX11 -lXext -lXau `${STAGING_BINDIR}/sdl-config --libs`"
+export LIBS = "-L${STAGING_LIBDIR} -lz -lm -lX11 -lXext -lXau `${STAGING_BINDIR_CROSS}/sdl-config --libs`"
 
 do_install() {
 	install -d ${D}${bindir}

@@ -48,7 +48,7 @@ do_stage () {
 	mkdir -p ${STAGING_LIBDIR}/gtk-1.2/include
 
 	install -m 0644 gtk.m4 ${STAGING_DATADIR}/aclocal/
-	install -m 0755 gtk-config ${STAGING_BINDIR}
+	install -m 0755 gtk-config ${STAGING_BINDIR_CROSS}
 }
 
 do_install_append () {

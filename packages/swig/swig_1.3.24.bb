@@ -8,7 +8,7 @@ S = "${WORKDIR}/SWIG-${PV}"
 
 inherit autotools
 
-EXTRA_OECONF = "--with-python=${STAGING_BINDIR} --with-swiglibdir=${STAGING_DIR}/${BUILD_SYS}/swig"
+EXTRA_OECONF = "--with-python=${STAGING_BINDIR_NATIVE} --with-swiglibdir=${STAGING_DIR}/${BUILD_SYS}/swig"
 
 do_configure() {
 	oe_runconf

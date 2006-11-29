@@ -43,7 +43,7 @@ EXTRA_OECONF="-with-zlib-path=${STAGING_DIR}/${HOST_SYS} \
 	--disable-aalibtest \
 	--with-x --x-includes=${STAGING_INCDIR}/X11 --x-libraries=${STAGING_LIBDIR}"
 
-export WAND_CONFIG="${STAGING_BINDIR}/Wand-config"
+export WAND_CONFIG="${STAGING_BINDIR_CROSS}/Wand-config"
 
 do_compile() {
 	oe_runmake LIBTOOL=${S}/${TARGET_SYS}-libtool

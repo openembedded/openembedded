@@ -7,7 +7,7 @@ SRC_URI = "${SOURCEFORGE_MIRROR}/xmms-mad/xmms-mad-${PV}.tar.bz2"
 
 inherit autotools
 
-export XMMS_CONFIG = "${STAGING_BINDIR}/xmms-config"
+export XMMS_CONFIG = "${STAGING_BINDIR_CROSS}/xmms-config"
 
 FILES_${PN} = "${libdir}/xmms/Input/libxmmsmad.so"
 FILES_${PN}-dbg = "${libdir}/xmms/Input/.debug/libxmmsmad.so"

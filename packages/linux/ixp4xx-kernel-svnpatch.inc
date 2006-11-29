@@ -7,5 +7,5 @@ do_svnpatch() {
 	cp ${WORKDIR}/patches-${PV}/defconfig ${WORKDIR}/defconfig
 	rm -rf ${S}/patches
 	cd ${S} && ln -s ${WORKDIR}/patches-${PV} ${S}/patches
-	cd ${S} && rm -rf .pc && ${STAGING_BINDIR}/quilt push -av
+	cd ${S} && rm -rf .pc && ${STAGING_BINDIR_NATIVE}/quilt push -av
 }

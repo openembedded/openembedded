@@ -27,7 +27,7 @@ do_stage() {
 	oe_libinstall -a libtclstub8.4 ${STAGING_LIBDIR}
 	oe_libinstall -so libtcl8.4 ${STAGING_LIBDIR}
 	sed -i "s+${WORKDIR}+${STAGING_INCDIR}+g" tclConfig.sh
-	install -m 0755 tclConfig.sh ${STAGING_BINDIR}
+	install -m 0755 tclConfig.sh ${STAGING_BINDIR_CROSS}
 	cd ..
 	for dir in compat generic unix
 	do

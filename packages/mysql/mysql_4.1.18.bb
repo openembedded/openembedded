@@ -23,7 +23,7 @@ INITSCRIPT_PACKAGES = "mysql-server"
 INITSCRIPT_NAME = "mysqld"
 INITSCRIPT_PARAMS = "start 45 S . stop 45 0 6 1 ."
 
-EXTRA_OEMAKE = "'GEN_LEX_HASH=${STAGING_BINDIR}/gen_lex_hash'"
+EXTRA_OEMAKE = "'GEN_LEX_HASH=${STAGING_BINDIR_NATIVE}/gen_lex_hash'"
 EXTRA_OECONF = " --with-embedded-server --prefix=/usr --sysconfdir=/etc/mysql --localstatedir=/var/mysql --datadir=/var/mysql --disable-dependency-tracking --without-raid --without-debug --with-low-memory --without-query-cache --without-man --without-docs --without-innodb "
 
 do_stage() {

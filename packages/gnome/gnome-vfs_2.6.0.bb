@@ -8,7 +8,7 @@ RRECOMMENDS = "gnome-vfs-plugin-file shared-mime-info"
 
 SRC_URI += "file://gconftool-lossage.patch;patch=1;pnum=1"
 
-ORBIT_IDL_SRC = "${STAGING_BINDIR}/orbit-idl-2"
+ORBIT_IDL_SRC = "${STAGING_BINDIR_NATIVE}/orbit-idl-2"
 
 FILES_${PN} += " ${libdir}/gnome-vfs-2.0/modules/*.so ${libdir}/bonobo/servers ${libdir}/bonobo/monikers/*.so ${libdir}/vfs"
 FILES_${PN}-dev += " ${libdir}/gnome-vfs-2.0/modules/*.a ${libdir}/gnome-vfs-2.0/modules/*.la ${libdir}/gnome-vfs-2.0/include ${libdir}/bonobo/monikers/*.a ${libdir}/bonobo/monikers/*.la"

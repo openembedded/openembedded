@@ -10,7 +10,7 @@ inherit e
 SRC_URI = "cvs://anonymous@evidence.cvs.sourceforge.net/cvsroot/evidence;module=evidence;date=${PV}"
 S = "${WORKDIR}/evidence"
 
-EXTRA_OECONF = "--with-edje-cc=${STAGING_BINDIR}/edje_cc \
+EXTRA_OECONF = "--with-edje-cc=${STAGING_BINDIR_NATIVE}/edje_cc \
 	--enable-ecore \
 	--enable-ecore-ipc \
 	--enable-canvas-evas2 \

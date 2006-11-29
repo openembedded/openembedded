@@ -9,7 +9,7 @@ require kaffe.inc
 DEPENDS += "libqpe-opie"
 
 CXXFLAGS += " -DQPE "
-EXTRA_OEMAKE += "MOC=${STAGING_BINDIR}/moc"
+EXTRA_OEMAKE += "MOC=${STAGING_BINDIR_NATIVE}/moc"
 EXTRA_OECONF += " --with-qtdir=$QTDIR \
 	--with-awt=qt \
 	--enable-pure-java-math \

@@ -29,7 +29,7 @@ export SYSLIBS = "-lpcre -ldb ${LIBBDB_EXTRA} -lnsl -lresolv ${LDFLAGS}"
 export EXPORT = "AUXLIBS='-lpcre' CCARGS='-DHAS_PCRE ${CFLAGS}' OPT='' DEBUG='-g'"
 export CC_append = " -DHAS_PCRE ${CFLAGS}"
 export EXTRA_OEMAKE = "-e"
-export POSTCONF = "${STAGING_BINDIR}/postconf"
+export POSTCONF = "${STAGING_BINDIR_NATIVE}/postconf"
 
 do_compile () {
 	unset CFLAGS CPPFLAGS CXXFLAGS

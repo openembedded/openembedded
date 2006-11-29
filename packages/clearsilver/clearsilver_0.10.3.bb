@@ -8,7 +8,7 @@ PR = "r1"
 SRC_URI = "http://www.clearsilver.net/downloads/${P}.tar.gz \
            file://crosscompile.patch;patch=1"
 
-EXTRA_OECONF = "--disable-apache --disable-perl --disable-ruby --disable-java --disable-csharp --enable-gettext --with-python=${STAGING_BINDIR}/python"
+EXTRA_OECONF = "--disable-apache --disable-perl --disable-ruby --disable-java --disable-csharp --enable-gettext --with-python=${STAGING_BINDIR_NATIVE}/python"
 
 inherit autotools
 

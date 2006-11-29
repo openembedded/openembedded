@@ -14,7 +14,7 @@ do_compile() {
 	do
 		install -m 0644 $i ${STAGING_INCDIR}/opie2/`basename $i`
 	done
-	oe_runmake MOC=${STAGING_BINDIR}/moc UIC=${STAGING_BINDIR}/uic DESTDIR=${S}
+	oe_runmake MOC=${STAGING_BINDIR_NATIVE}/moc UIC=${STAGING_BINDIR_NATIVE}/uic DESTDIR=${S}
 }
 
 do_stage() {

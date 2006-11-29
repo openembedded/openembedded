@@ -20,7 +20,7 @@ SRC_URI = "${E_URI}/entrance-${PV}.tar.gz \
 
 S = "${WORKDIR}/entrance-${PV}"
 
-EXTRA_OECONF = "--with-edje-cc=${STAGING_BINDIR}/edje_cc \
+EXTRA_OECONF = "--with-edje-cc=${STAGING_BINDIR_NATIVE}/edje_cc \
                 --with-xsession=/etc/X11/Xsession \
                 --with-auth-mode=0"
 

@@ -19,7 +19,7 @@ inherit autotools pkgconfig
 
 do_compile () {
         export EmbeddedSystem=1
-        export TOOLBINDIR=${STAGING_BINDIR}
+        export TOOLBINDIR=${STAGING_BINDIR_NATIVE}
         oe_runmake
 }
 do_install () {

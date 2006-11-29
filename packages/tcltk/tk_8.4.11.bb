@@ -15,7 +15,7 @@ S = "${WORKDIR}/tk${PV}/unix"
 
 inherit autotools
 
-EXTRA_OECONF = "--enable-threads --with-tcl=${STAGING_BINDIR} \
+EXTRA_OECONF = "--enable-threads --with-tcl=${STAGING_BINDIR_CROSS} \
 		--x-includes=${STAGING_INCDIR} --x-libraries=${STAGING_LIBDIR}"
 
 do_configure() {
@@ -27,7 +27,7 @@ do_stage() {
         oe_libinstall -a libtkstub8.4 ${STAGING_LIBDIR}
         oe_libinstall -so libtk8.4 ${STAGING_LIBDIR}
         sed -i "s+${WORKDIR}+${STAGING_INCDIR}+g" tkConfig.sh
-        install -m 0755 tkConfig.sh ${STAGING_BINDIR}
+        install -m 0755 tkConfig.sh ${STAGING_BINDIR_CROSS}
 	cd ..
 	#for dir in compat generic unix
 	#do

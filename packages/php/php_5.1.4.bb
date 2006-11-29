@@ -22,7 +22,7 @@ EXTRA_OECONF = "--without-iconv \
 
 EXTRA_OECONF += " --without-pear"
 # Uncomment the following two lines, and comment the above to enable PEAR
-#EXTRA_OECONF += " --with-pear-php-cli=${STAGING_BINDIR}/php"
+#EXTRA_OECONF += " --with-pear-php-cli=${STAGING_BINDIR_NATIVE}/php"
 #DEPENDS += " php-native"
 
 acpaths = ""

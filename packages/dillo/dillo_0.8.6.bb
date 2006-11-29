@@ -18,7 +18,7 @@ inherit autotools pkgconfig
 
 FILES_${PN} += " /usr/lib/dillo/ /usr/bin/dpid /usr/bin/dpidc "
 
-export PNG_CONFIG = "${STAGING_BINDIR}/libpng-config"
+export PNG_CONFIG = "${STAGING_BINDIR_CROSS}/libpng-config"
 
 EXTRA_OECONF = "--disable-dlgui"
 

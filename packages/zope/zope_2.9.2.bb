@@ -10,7 +10,7 @@ SRC_URI = "http://zope.org/Products/Zope/${PV}/Zope-${PV}.tgz"
 S = "${WORKDIR}/Zope-${PV}"
 
 do_configure() {
-	./configure --with-python=${STAGING_BINDIR}/python --prefix=${prefix} --force
+	./configure --with-python=${STAGING_BINDIR_NATIVE}/python --prefix=${prefix} --force
 }
 
 do_compile() {

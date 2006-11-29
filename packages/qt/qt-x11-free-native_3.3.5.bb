@@ -36,7 +36,7 @@ do_configure() {
 
 do_compile() {
 	LD_LIBRARY_PATH=${S}/lib oe_runmake \
-		QMAKE="${STAGING_BINDIR}/qmake -after INCLUDEPATH+=${STAGING_INCDIR} LIBS+=-I${STAGING_LIBDIR}" \
+		QMAKE="${STAGING_BINDIR_NATIVE}/qmake -after INCLUDEPATH+=${STAGING_INCDIR} LIBS+=-I${STAGING_LIBDIR}" \
 		QMAKESPEC="${THIS_QMAKESPEC}"
 }
 

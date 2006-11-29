@@ -43,8 +43,8 @@ do_configure() {
         find . -name libtool|xargs rm -f
         rm -rf ${S}/utils/texinfo/tools/info
         rm -rf ${S}/utils/texinfo/tools/makeinfo
-        ln -sf ${STAGING_BINDIR} ${S}/utils/texinfo/tools/info
-        ln -sf ${STAGING_BINDIR} ${S}/utils/texinfo/tools/makeinfo
+        ln -sf ${STAGING_BINDIR_NATIVE} ${S}/utils/texinfo/tools/info
+        ln -sf ${STAGING_BINDIR_NATIVE} ${S}/utils/texinfo/tools/makeinfo
         cat >${S}/utils/texinfo/tools/Makefile <<EOF
 install:
 	echo "mickey _is_ cool - he tamed the tetex buildsystem"
@@ -54,7 +54,7 @@ EOF
 }
 # NOTE: Make sure it is using _our_ libtool and nothing else :/
 do_compile() {
-	LIBTOOL="${STAGING_BINDIR}/${HOST_SYS}-libtool" oe_runmake MAKE="${MAKE} LIBTOOL=${STAGING_BINDIR}/${HOST_SYS}-libtool"
+	LIBTOOL="${STAGING_BINDIR_NATIVE}/${HOST_SYS}-libtool" oe_runmake MAKE="${MAKE} LIBTOOL=${STAGING_BINDIR_NATIVE}/${HOST_SYS}-libtool"
 }
 
 # NOTE: This is really ugly. Unfortunately the teTeX people seem not to know about PREFIX...
@@ -81,7 +81,7 @@ do_install() {
 	web2cdir="${D}${datadir}" \
 	kpathsea="${D}${libdir}/libkpathsea.la" \
 	DESTDIR="" \
-	LIBTOOL="${STAGING_BINDIR}/${HOST_SYS}-libtool"
+	LIBTOOL="${STAGING_BINDIR_NATIVE}/${HOST_SYS}-libtool"
 	MAKE="make -e" oe_runmake -e install
 }
 

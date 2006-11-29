@@ -8,7 +8,7 @@ inherit e
 SRC_URI = "${E_CVS};module=e17/apps/eclair;date=${PV}"
 S = "${WORKDIR}/eclair"
 
-EXTRA_OECONF = "--with-edje-cc=${STAGING_BINDIR}/edje_cc"
+EXTRA_OECONF = "--with-edje-cc=${STAGING_BINDIR_NATIVE}/edje_cc"
 
 FILES_${PN} = "${bindir}/* ${libdir}/* ${datadir} ${sysconfdir} ${sbindir}"
 

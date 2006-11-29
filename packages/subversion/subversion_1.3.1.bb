@@ -11,8 +11,8 @@ SRC_URI = "http://subversion.tigris.org/downloads/${P}.tar.bz2 \
 
 EXTRA_OECONF = "--with-neon=${STAGING_DIR}/${BUILD_SYS} \
                 --without-berkeley-db --without-apxs --without-apache \
-                --without-swig --with-apr=${STAGING_BINDIR} \
-                --with-apr-util=${STAGING_BINDIR}"
+                --without-swig --with-apr=${STAGING_BINDIR_CROSS} \
+                --with-apr-util=${STAGING_BINDIR_CROSS}"
 
 inherit autotools
 

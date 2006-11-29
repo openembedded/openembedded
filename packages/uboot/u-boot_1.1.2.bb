@@ -29,7 +29,7 @@ do_compile () {
 }
 
 do_stage() {
-	install -m755 tools/mkimage ${STAGING_BINDIR}
+	install -m755 tools/mkimage ${STAGING_BINDIR_NATIVE}
 }
 
 do_deploy () {

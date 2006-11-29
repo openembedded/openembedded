@@ -21,5 +21,5 @@ do_stage() {
 }
 
 do_compile() {
-	oe_runmake ORBIT_IDL=${STAGING_BINDIR}/orbit-idl-2
+	oe_runmake ORBIT_IDL=${STAGING_BINDIR_NATIVE}/orbit-idl-2
 }

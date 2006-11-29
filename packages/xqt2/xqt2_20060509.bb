@@ -45,7 +45,7 @@ do_configure() {
 	echo "#define QtCmnDefs -fno-exceptions -fno-rtti" >> config/cf/host.def
 	echo "#define QtDir ${QTDIR}" >> config/cf/host.def
 	echo "#define QtLibs -lqpe -l${QT_LIBRARY} -lm -lpng -ljpeg -lts -lsupc++" >> config/cf/host.def
-	echo "#define MocBin ${STAGING_BINDIR}/moc" >> config/cf/host.def
+	echo "#define MocBin ${STAGING_BINDIR_NATIVE}/moc" >> config/cf/host.def
 	echo "#define QtDefs -DQWS -DOPIE_NEW_MALLOC -DOPIE_NO_ERASE_RECT_HACKFIX  QtCmnDefs" >> config/cf/host.def
 	
 	# Build these XServers

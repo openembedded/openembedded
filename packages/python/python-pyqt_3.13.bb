@@ -22,8 +22,8 @@ SIP_MODULES = "qt qtcanvas qttable qtpe"
 SIP_FEATURES = "${WORKDIR}/features"
 EXTRA_OEMAKE = " MAKEFLAGS= "
 
-EXTRA_QMAKEVARS_POST += "QMAKE_UIC=${STAGING_BINDIR}/uic \
-                         QMAKE_MOC=${STAGING_BINDIR}/moc \
+EXTRA_QMAKEVARS_POST += "QMAKE_UIC=${STAGING_BINDIR_NATIVE}/uic \
+                         QMAKE_MOC=${STAGING_BINDIR_NATIVE}/moc \
                          QMAKE_RPATH=-Wl,-rpath-link, \
                          DESTDIR= \
                          VERSION=1.0.0 \

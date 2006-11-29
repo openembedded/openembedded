@@ -19,13 +19,13 @@ do_configure() {
 }
 
 do_compile() {
-	oe_runmake STAGING_BINDIR="${STAGING_BINDIR}"
+	oe_runmake STAGING_BINDIR_NATIVE="${STAGING_BINDIR_NATIVE}"
 }
 
 do_install() {
 	oe_runmake install bindir="${D}${bindir}" libdir="${D}${libdir}" includedir="${D}${includedir}" \
                            sharedir="${D}${datadir}" mandir="${D}${mandir}" sysconfdir="${D}${sysconfdir}" \
-                           STAGING_BINDIR="${STAGING_BINDIR}"
+                           STAGING_BINDIR_NATIVE="${STAGING_BINDIR_NATIVE}"
 }
 
 FILES_${PN} += "${datadir}"

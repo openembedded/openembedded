@@ -27,7 +27,7 @@ do_configure() {
 }
 
 do_stage() {
-	install -m 0755 libnet-config ${STAGING_BINDIR}/
+	install -m 0755 libnet-config ${STAGING_BINDIR_CROSS}/
 	install -m 0644 include/libnet.h ${STAGING_INCDIR}/
 	install -d ${STAGING_INCDIR}/libnet
 	install -m 0644 include/libnet/libnet-headers.h ${STAGING_INCDIR}/libnet/

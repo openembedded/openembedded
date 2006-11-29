@@ -11,7 +11,7 @@
  # If cross compiling, define these to suit
 +CROSS_COMPILE=$(CROSS_DIR)
 +CROSS_COMPILE_TARGET=$(STAGING_DIR)
-+CROSS_COMPILE_BIN=$(STAGING_BINDIR)
++CROSS_COMPILE_BIN=$(STAGING_BINDIR_CROSS)
  # CROSS_COMPILE=/opt/montavista/pro/devkit/arm/xscale_be/bin/xscale_be-
  # CROSS_COMPILE_BIN=/opt/montavista/pro/devkit/arm/xscale_be/bin/
  # CROSS_COMPILE_TARGET=/opt/montavista/pro/devkit/arm/xscale_be/target

@@ -9,7 +9,7 @@ SRC_URI = "${E_CVS};module=misc/engage;date=${PV} \
            file://no-local-includes.patch;patch=1"
 S = "${WORKDIR}/engage"
 
-EXTRA_OECONF = "--with-edje-cc=${STAGING_BINDIR}/edje_cc"
+EXTRA_OECONF = "--with-edje-cc=${STAGING_BINDIR_NATIVE}/edje_cc"
 
 FILES_${PN} = "${bindir}/* ${libdir}/* ${datadir} ${sysconfdir} ${sbindir}"
 

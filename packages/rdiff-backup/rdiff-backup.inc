@@ -24,7 +24,7 @@ inherit distutils
 #
 do_compile() {
 	BUILD_SYS=${BUILD_SYS} HOST_SYS=${HOST_SYS} \
-	  ${STAGING_BINDIR}/python setup.py build --executable=${bindir}/python || \
+	  ${STAGING_BINDIR_NATIVE}/python setup.py build --executable=${bindir}/python || \
 	  oefatal "python setup.py build execution failed."
 }
 
@@ -36,6 +36,6 @@ do_compile() {
 #
 do_install() {
 	BUILD_SYS=${BUILD_SYS} HOST_SYS=${HOST_SYS} \
-	  ${STAGING_BINDIR}/python setup.py install --prefix=${D}/${prefix} --install-data=${D}/${prefix} || \
+	  ${STAGING_BINDIR_NATIVE}/python setup.py install --prefix=${D}/${prefix} --install-data=${D}/${prefix} || \
 	  oefatal "python setup.py install execution failed."
 }

@@ -28,7 +28,7 @@ def package_qa_check_rpath(file,name,d):
     Check for dangerous RPATHs
     """
     import bb, os
-    scanelf = os.path.join(bb.data.getVar('STAGING_BINDIR',d,True),'scanelf')
+    scanelf = os.path.join(bb.data.getVar('STAGING_BINDIR_NATIVE',d,True),'scanelf')
     bad_dir = bb.data.getVar('TMPDIR', d, True) + "/work"
     if not os.path.exists(scanelf):
         bb.note("Can not check RPATH scanelf not found")

@@ -7,7 +7,7 @@ PR = "r1"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/lgames/lbreakout2-2.6beta.tar.gz"
 
-export SDL_CONFIG = "${STAGING_BINDIR}/sdl-config"
+export SDL_CONFIG = "${STAGING_BINDIR_CROSS}/sdl-config"
 
 inherit autotools
 

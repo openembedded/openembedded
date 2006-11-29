@@ -8,7 +8,7 @@ PR = "r0"
 # apache mirrors?
 SRC_URI = "${APACHE_MIRROR}/apr/${P}.tar.gz"
 
-EXTRA_OECONF = "--with-apr=${STAGING_BINDIR} --with-dbm=gdbm --with-gdbm=${STAGING_DIR}/${HOST_SYS} --with-expat=${STAGING_DIR}/${HOST_SYS}"
+EXTRA_OECONF = "--with-apr=${STAGING_BINDIR_CROSS} --with-dbm=gdbm --with-gdbm=${STAGING_DIR}/${HOST_SYS} --with-expat=${STAGING_DIR}/${HOST_SYS}"
 
 inherit autotools lib_package binconfig
 

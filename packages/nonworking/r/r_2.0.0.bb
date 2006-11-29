@@ -40,5 +40,5 @@ do_compile_prepend () {
 }
 
 do_compile() {
-	oe_runmake 'R_EXE_NATIVE = ${STAGING_BINDIR}/R'
+	oe_runmake 'R_EXE_NATIVE = ${STAGING_BINDIR_NATIVE}/R'
 }

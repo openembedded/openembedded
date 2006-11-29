@@ -1,4 +1,3 @@
-DESCRIPTION = "Qt/X11 Version ${PV}"
 SECTION = "x11/libs"
 PRIORITY = "optional"
 HOMEPAGE = "http://www.trolltech.com"
@@ -49,17 +48,17 @@ QT_CONFIG_FLAGS = "-release -shared -qt-zlib -system-libjpeg -no-nas-sound -no-s
                    -no-sql-ibase -no-sql-mysql -no-sql-odbc -no-sql-psql -no-sql-sqlite -no-sql-sqlite2 \
                    -verbose -stl -no-accessibility"
 
-EXTRA_ENV = 'QMAKE="${STAGING_BINDIR}/qmake2 -after DEFINES+=QT_NO_XIM INCPATH+=${STAGING_INCDIR} \
+EXTRA_ENV = 'QMAKE="${STAGING_BINDIR_NATIVE}/qmake2 -after DEFINES+=QT_NO_XIM INCPATH+=${STAGING_INCDIR} \
              INCPATH+=${STAGING_INCDIR}/freetype2 LIBS+=-L${STAGING_LIBDIR}" \
              QMAKESPEC="${QMAKESPEC}" LINK="${CXX} -Wl,-rpath-link,${STAGING_LIBDIR}" \
              AR="${TARGET_PREFIX}ar cqs" \
-             MOC="${STAGING_BINDIR}/moc4" UIC="${STAGING_BINDIR}/uic4" MAKE="make -e"'
+             MOC="${STAGING_BINDIR_NATIVE}/moc4" UIC="${STAGING_BINDIR_NATIVE}/uic4" MAKE="make -e"'
 
 do_configure() {
 	echo "DEFINES -= QT_NO_CAST_TO_ASCII" >>src/qbase.pri
 	echo "DEFINES += QT_NO_XIM" >>src/qbase.pri
 	unset QMAKESPEC
-	ln -sf ${STAGING_BINDIR}/qmake2 bin/qmake
+	ln -sf ${STAGING_BINDIR_NATIVE}/qmake2 bin/qmake
 	ln -sf ./linux-g++ mkspecs/linux-gnueabi-g++
 	#export QMAKESPEC="linux-oe-g++" 
 	#rm -rf ./mkspecs
@@ -71,9 +70,9 @@ do_configure() {
 # FIXME: Might want to compile the cross tools for the -dev packages as well...
 do_compile() {
 	unset CFLAGS CXXFLAGS
-	install -m 0755 ${STAGING_BINDIR}/rcc4 ${S}/bin/rcc
-	install -m 0755 ${STAGING_BINDIR}/moc4 ${S}/bin/moc
-	install -m 0755 ${STAGING_BINDIR}/uic4 ${S}/bin/uic
+	install -m 0755 ${STAGING_BINDIR_NATIVE}/rcc4 ${S}/bin/rcc
+	install -m 0755 ${STAGING_BINDIR_NATIVE}/moc4 ${S}/bin/moc
+	install -m 0755 ${STAGING_BINDIR_NATIVE}/uic4 ${S}/bin/uic
 
 	oe_runmake ${EXTRA_ENV}
 }
@@ -82,9 +81,9 @@ PARTS = "3Support Core Designer DesignerComponents Gui Network Sql Svg Test Xml"
 
 do_stage() {
 	oe_runmake install INSTALL_ROOT=/
-	install -m 0755 ${STAGING_BINDIR}/rcc4 ${STAGING_QT_DIR}/bin/rcc
-	install -m 0755 ${STAGING_BINDIR}/moc4 ${STAGING_QT_DIR}/bin/moc
-	install -m 0755 ${STAGING_BINDIR}/uic4 ${STAGING_QT_DIR}/bin/uic
+	install -m 0755 ${STAGING_BINDIR_NATIVE}/rcc4 ${STAGING_QT_DIR}/bin/rcc
+	install -m 0755 ${STAGING_BINDIR_NATIVE}/moc4 ${STAGING_QT_DIR}/bin/moc
+	install -m 0755 ${STAGING_BINDIR_NATIVE}/uic4 ${STAGING_QT_DIR}/bin/uic
 
 }
 

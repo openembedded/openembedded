@@ -23,7 +23,7 @@ EXTRA_OECONF = "--disable-ethereal \
                 --with-zlib=${STAGING_LIBDIR}/.. \
                 --without-x"
 
-export GLIB_CONFIG = "${STAGING_BINDIR}/glib-config"
+export GLIB_CONFIG = "${STAGING_BINDIR_CROSS}/glib-config"
 
 CFLAGS += "-I${STAGING_INCDIR}/glib-1.2"
 LIBS += "-lglib-1.2"

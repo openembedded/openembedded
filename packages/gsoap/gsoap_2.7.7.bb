@@ -12,7 +12,7 @@ inherit autotools
 
 PARALLEL_MAKE = ""
 
-EXTRA_OEMAKE = "SOAP=${STAGING_BINDIR}/soapcpp2"
+EXTRA_OEMAKE = "SOAP=${STAGING_BINDIR_NATIVE}/soapcpp2"
 
 do_install_append() {
 	install -d ${D}${libdir}

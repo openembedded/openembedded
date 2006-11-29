@@ -39,8 +39,8 @@ do_compile_prepend() {
 }
 
 do_compile() {
-	oe_runmake HOSTPGEN=${STAGING_BINDIR}/pgen \
-		   HOSTPYTHON=${STAGING_BINDIR}/python \
+	oe_runmake HOSTPGEN=${STAGING_BINDIR_NATIVE}/pgen \
+		   HOSTPYTHON=${STAGING_BINDIR_NATIVE}/python \
 		   STAGING_LIBDIR=${STAGING_LIBDIR} \
 		   STAGING_INCDIR=${STAGING_INCDIR} \
 		   BUILD_SYS=${BUILD_SYS} HOST_SYS=${HOST_SYS} \
@@ -54,8 +54,8 @@ do_stage() {
 
 do_install() {
 	install -m 0644 Makefile.orig Makefile
-        oe_runmake HOSTPGEN=${STAGING_BINDIR}/pgen \
-                   HOSTPYTHON=${STAGING_BINDIR}/python \
+        oe_runmake HOSTPGEN=${STAGING_BINDIR_NATIVE}/pgen \
+                   HOSTPYTHON=${STAGING_BINDIR_NATIVE}/python \
                    STAGING_LIBDIR=${STAGING_LIBDIR} \
                    STAGING_INCDIR=${STAGING_INCDIR} \
 		   BUILD_SYS=${BUILD_SYS} HOST_SYS=${HOST_SYS} \

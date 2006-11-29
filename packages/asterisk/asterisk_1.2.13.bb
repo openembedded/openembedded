@@ -11,7 +11,7 @@ SRC_URI="http://ftp.digium.com/pub/asterisk/releases/asterisk-${PV}.tar.gz \
 
 
 export CROSS_COMPILE="${CCACHE}${HOST_PREFIX}"
-export CROSS_COMPILE_BIN="${STAGING_BINDIR}"
+export CROSS_COMPILE_BIN="${STAGING_BINDIR_CROSS}"
 export CROSS_COMPILE_TARGET="${STAGING_DIR}/${HOST_SYS}"
 
 export CROSS_ARCH="Linux"

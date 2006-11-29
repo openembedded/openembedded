@@ -13,11 +13,11 @@ FILES_${PN} = "${base_libdir}/firmware/NPE-B"
 do_compile() {
 #        if test '${ARCH_BYTE_SEX}' = be
 #        then
-		${STAGING_BINDIR}/IxNpeMicrocode-${PV} -be
+		${STAGING_BINDIR_NATIVE}/IxNpeMicrocode-${PV} -be
 #        fi
 #        if test '${ARCH_BYTE_SEX}' = le
 #        then
-#                ${STAGING_BINDIR}/IxNpeMicrocode-${PV} -le
+#                ${STAGING_BINDIR_NATIVE}/IxNpeMicrocode-${PV} -le
 #        fi
 }
 

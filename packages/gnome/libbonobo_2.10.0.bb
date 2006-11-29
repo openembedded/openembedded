@@ -6,7 +6,7 @@ SRC_URI = "http://ftp.gnome.org/pub/GNOME/sources/libbonobo/2.10/libbonobo-${PV}
            file://gtk-doc.m4 \
            file://gtk-doc.make"
 DEPENDS = "glib-2.0 orbit2 intltool-native libxml2"
-ORBIT_IDL_SRC = "${STAGING_BINDIR}/orbit-idl-2"
+ORBIT_IDL_SRC = "${STAGING_BINDIR_NATIVE}/orbit-idl-2"
 
 FILES_${PN} += "${libdir}/orbit-2.0/*.so ${libdir}/bonobo/monikers/*.so"
 FILES_${PN}-dev += "${libdir}/orbit-2.0/* ${libdir}/bonobo/monikers/* \

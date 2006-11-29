@@ -7,8 +7,9 @@ PRIORITY = "optional"
 
 S = "${WORKDIR}/tmake-${PV}"
 
+# Ick. This .bb file should really have a -native version doing this, even if it is a perl script... RP
 do_stage() {
-	install -m 0755 bin/tmake bin/progen ${STAGING_BINDIR}/
+	install -m 0755 bin/tmake bin/progen ${STAGING_BINDIR_NATIVE}/
 
 	install -d ${STAGING_DATADIR}/tmake
 	cp -R lib/* ${STAGING_DATADIR}/tmake/

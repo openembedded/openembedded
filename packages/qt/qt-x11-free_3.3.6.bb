@@ -23,11 +23,11 @@ EXTRA_OEMAKE = "-e"
 QT_CONFIG_FLAGS = "-release -shared -qt-zlib -no-nas-sound -no-sm -qt-libpng -no-gif -no-xinerama \
                    -no-tablet -no-xkb -no-dlopen-opengl -no-nis -no-cups -thread -plugin-sql-mysql -verbose"
 
-EXTRA_ENV = 'QMAKE="${STAGING_BINDIR}/qmake -after INCPATH+=${STAGING_INCDIR} \
+EXTRA_ENV = 'QMAKE="${STAGING_BINDIR_NATIVE}/qmake -after INCPATH+=${STAGING_INCDIR} \
              INCPATH+=${STAGING_INCDIR}/freetype2 LIBS+=-L${STAGING_LIBDIR}" \
              QMAKESPEC="${QMAKESPEC}" LINK="${CXX} -Wl,-rpath-link,${STAGING_LIBDIR}" \
              AR="${TARGET_PREFIX}ar cqs" \
-             MOC="${STAGING_BINDIR}/moc3" UIC="${STAGING_BINDIR}/uic3" MAKE="make -e"'
+             MOC="${STAGING_BINDIR_NATIVE}/moc3" UIC="${STAGING_BINDIR_NATIVE}/uic3" MAKE="make -e"'
 
 do_configure() {
 	echo "yes" | ./configure -prefix ${prefix} ${QT_CONFIG_FLAGS} -fast \
@@ -53,9 +53,9 @@ do_compile() {
 
 do_stage() {
 	install -d ${STAGING_QT_DIR}/bin
-	ln -sf ${STAGING_BINDIR}/moc3 ${STAGING_QT_DIR}/bin/moc
-	ln -sf ${STAGING_BINDIR}/uic3 ${STAGING_QT_DIR}/bin/uic
-	ln -sf ${STAGING_BINDIR}/qmake ${STAGING_QT_DIR}/bin/qmake
+	ln -sf ${STAGING_BINDIR_NATIVE}/moc3 ${STAGING_QT_DIR}/bin/moc
+	ln -sf ${STAGING_BINDIR_NATIVE}/uic3 ${STAGING_QT_DIR}/bin/uic
+	ln -sf ${STAGING_BINDIR_NATIVE}/qmake ${STAGING_QT_DIR}/bin/qmake
 	install -d ${STAGING_QT_DIR}/lib
 	oe_soinstall lib/libqt-mt.so.${PV} ${STAGING_QT_DIR}/lib
 	install -d ${STAGING_QT_DIR}/include/private

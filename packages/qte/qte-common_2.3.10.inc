@@ -140,16 +140,16 @@ export SYSCONF_CXXFLAGS = "${CXXFLAGS} -pipe -DQWS -fno-exceptions -frtti -DNO_D
 #export SYSCONF_CXXFLAGS = "${CXXFLAGS} -pipe -DQWS -fno-exceptions -frtti -fvisibility=hidden -DGCC_SUPPORTS_VISIBILITY -DNO_DEBUG ${EXTRA_DEFINES} -DUSE_BIDI"
 export SYSCONF_LFLAGS = "${LDFLAGS} -lts"
 export SYSCONF_LFLAGS_mnci = "${LDFLAGS}"
-export SYSCONF_MOC = "${STAGING_BINDIR}/moc"
-export SYSCONF_UIC = "${STAGING_BINDIR}/uic"
+export SYSCONF_MOC = "${STAGING_BINDIR_NATIVE}/moc"
+export SYSCONF_UIC = "${STAGING_BINDIR_NATIVE}/uic"
 
 do_configure_prepend_mnci() {
 	chmod -R a+w ${S}/src/kernel
 	cp ${WORKDIR}/qkeyboard_qws.h ${S}/src/kernel
 	cp ${WORKDIR}/qkeyboard_qws.cpp ${S}/src/kernel
 	mkdir bin
-	ln -sf ${STAGING_BINDIR}/moc bin/moc
-	ln -sf ${STAGING_BINDIR}/uic bin/uic
+	ln -sf ${STAGING_BINDIR_NATIVE}/moc bin/moc
+	ln -sf ${STAGING_BINDIR_NATIVE}/uic bin/uic
 }
 
 # generate uclibc and eabi configurations

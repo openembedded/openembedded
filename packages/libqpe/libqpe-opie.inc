@@ -44,7 +44,7 @@ do_compile() {
 		install -m 0644 $i ${STAGING_INCDIR}/qtopia/private/`basename $i`
 	done
 	rm -f ${STAGING_INCDIR}/qtopia/*_p.h # remove private stuff out of qtopia
-	oe_runmake MOC=${STAGING_BINDIR}/moc UIC=${STAGING_BINDIR}/uic
+	oe_runmake MOC=${STAGING_BINDIR_NATIVE}/moc UIC=${STAGING_BINDIR_NATIVE}/uic
 }
 
 do_stage() {

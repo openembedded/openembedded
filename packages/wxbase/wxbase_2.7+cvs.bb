@@ -29,7 +29,7 @@ do_stage() {
        cp -pR lib/wx     ${STAGING_LIBDIR}
        cp -pR build/bakefiles/wxpresets/presets  ${STAGING_DATADIR}/bakefile
        cp -pR wxwin.m4                           ${STAGING_DATADIR}/aclocal
-       ln -sf ${STAGING_LIBDIR}/wx/config/${TARGET_PREFIX}base-ansi-release-2.7 ${STAGING_BINDIR}/wx-config
+       ln -sf ${STAGING_LIBDIR}/wx/config/${TARGET_PREFIX}base-ansi-release-2.7 ${STAGING_BINDIR_CROSS}/wx-config
        sed -e s,'wxconfdir=".*"','wxconfigdir="${STAGING_LIBDIR}/wx/config"', \
            -e s,'bindir=".*"','bindir="${STAGING_BINDIR}"', \
            -e s,'libdir=".*"','libdir="${STAGING_LIBDIR}"', \

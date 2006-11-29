@@ -8,8 +8,8 @@ SRC_URI = "${DEBIAN_MIRROR}/main/b/bogl/bogl_${PV}-${PR}.tar.gz"
 S = "${WORKDIR}/bogl"
 
 do_compile() {
-	ln -sf ${STAGING_BINDIR}/bdftobogl .
-	ln -sf ${STAGING_BINDIR}/pngtobogl .
+	ln -sf ${STAGING_BINDIR_NATIVE}/bdftobogl .
+	ln -sf ${STAGING_BINDIR_NATIVE}/pngtobogl .
 	oe_runmake libbogl.so.0.1 libbogl.a
 }
 

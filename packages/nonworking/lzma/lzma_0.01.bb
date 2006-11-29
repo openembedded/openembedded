@@ -10,7 +10,7 @@ S = "${WORKDIR}/"
 inherit qmake
 
 do_configure_prepend() {
-	${STAGING_BINDIR}/qmake -project -o lzma.pro
+	${STAGING_BINDIR_NATIVE}/qmake -project -o lzma.pro
 }
 
 do_install_append () {

@@ -28,9 +28,9 @@ inherit autotools
 
 FILES_${PN} = "${palmtopdir}"
 
-export QMAKE = "${STAGING_BINDIR}/qmake"
-export MOC = "${STAGING_BINDIR}/moc"
-export UIC = "${STAGING_BINDIR}/uic"
+export QMAKE = "${STAGING_BINDIR_NATIVE}/qmake"
+export MOC = "${STAGING_BINDIR_NATIVE}/moc"
+export UIC = "${STAGING_BINDIR_NATIVE}/uic"
 export exec_prefix = "${STAGING_LIBDIR}/.."
 
 EXTRA_OECONF = '--prefix=${palmtopdir} --exec-prefix=${palmtopdir}                              \

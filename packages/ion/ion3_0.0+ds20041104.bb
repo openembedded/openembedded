@@ -27,7 +27,7 @@ S = "${WORKDIR}/ion-3ds-${SNAPDATE}"
 
 EXTRA_OECONF += "--disable-xinerama --disable-xfree86-textprop-bug-workaround \
 		 --disable-Xutf8 --disable-sun-fix-remap --enable-shared \
-		 --with-lua-prefix=${STAGING_BINDIR}/.. \
+		 --with-lua-prefix=${STAGING_BINDIR_NATIVE}/.. \
 		 --x-libraries=${STAGING_LIBDIR} \
 		 --x-includes=${STAGING_INCDIR}"
 

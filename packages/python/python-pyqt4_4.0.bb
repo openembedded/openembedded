@@ -25,8 +25,8 @@ SIP_MODULES = "QtCore QtGui QtNetwork QtSql QtSvg QtXml"
 EXTRA_QMAKEVARS_POST += "INCLUDEPATH+=${OE_QMAKE_INCDIR_QT}/Qt \
                          INCLUDEPATH+=${STAGING_INCDIR}/${PYTHON_DIR}"
 
-#EXTRA_QMAKEVARS_POST += "QMAKE_UIC=${STAGING_BINDIR}/uic \
-#                         QMAKE_MOC=${STAGING_BINDIR}/moc \
+#EXTRA_QMAKEVARS_POST += "QMAKE_UIC=${STAGING_BINDIR_NATIVE}/uic \
+#                         QMAKE_MOC=${STAGING_BINDIR_NATIVE}/moc \
 #                         QMAKE_RPATH=-Wl,-rpath-link, \
 #                         DESTDIR= \
 #                         VERSION=1.0.0 \

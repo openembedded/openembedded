@@ -51,7 +51,7 @@ do_compile() {
 		install -m 0644 opiepim/private/$header ${STAGING_INCDIR}/opie2/private/
 	done
 
-	oe_runmake MOC=${STAGING_BINDIR}/moc UIC=${STAGING_BINDIR}/uic DESTDIR=${S}
+	oe_runmake MOC=${STAGING_BINDIR_NATIVE}/moc UIC=${STAGING_BINDIR_NATIVE}/uic DESTDIR=${S}
 }
 
 do_stage() {

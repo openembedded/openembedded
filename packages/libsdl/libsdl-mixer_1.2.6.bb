@@ -8,7 +8,7 @@ PR = "r1"
 SRC_URI = "http://www.libsdl.org/projects/SDL_mixer/release/SDL_mixer-${PV}.tar.gz"
 S = "${WORKDIR}/SDL_mixer-${PV}"
 
-export SDL_CONFIG = "${STAGING_BINDIR}/sdl-config"
+export SDL_CONFIG = "${STAGING_BINDIR_CROSS}/sdl-config"
 
 inherit autotools
 
