@@ -7,11 +7,13 @@ PR = "r0"
 
 SRC_URI = "${HANDHELDS_CVS};module=apps/update-rc.d;tag=r0_7"
 
+PACKAGE_ARCH = "all"
+
 do_compile() {
 }
 
 do_stage() {
-	install -m 0755 ${S}/update-rc.d ${STAGING_BINDIR}/
+	install -m 0755 ${S}/update-rc.d ${STAGING_BINDIR_NATIVE}/
 }
 
 do_install() {
