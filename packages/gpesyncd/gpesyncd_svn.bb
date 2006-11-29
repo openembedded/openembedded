@@ -3,7 +3,7 @@ DESCRIPTION =	"Sync daemon for GPE and OpenSync"
 
 SRC_URI =	"${GPE_SVN}"
 
-DEPENDS =	"libgpevtype libcontactsdb libeventdb sqlite libmimedir glib-2.0"
+DEPENDS =	"libgpevtype libtododb libcontactsdb libeventdb sqlite libmimedir glib-2.0"
 
 S =		"${WORKDIR}/${PN}"
 PV =		"0.0+svn${SRCDATE}"
