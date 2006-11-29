@@ -23,6 +23,16 @@ Machines:   h3600, h5400
 Interests:  Kernels, Porting, Distro refinement
 Recipes:    at76c503a, dropbear, handhelds-sa, handhelds-pxa
 
+Person:     Florian Boor
+Mail:       fb@kernelconcepts.de
+Website:    http://fl0rian.wordpress.com, http://www.kernelconcepts.de/~fuchs/
+Machines:   nokia770, netvista, htcuniversal, netbook-pro
+Distros:  
+Interests:  GPE, OpenSync, GPE, Matchbox, *dbus*, X, sqlite
+Recipes:    gpe-*, libgpe*, libeventdb, libtododb, libcontactsdb, xserver-common
+Recipes:    gomunicator, mbmerlin, prismstumbler gkdial, fbreader, networkmanager
+Recipes:    minimix, minilite, miniclipboard
+
 Person:     Graeme Gregory
 Mail:       dp@xora.org.uk
 Website:    http://www.xora.org.uk
