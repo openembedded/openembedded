@@ -1,5 +1,5 @@
 DESCRIPTION = "Proper tools for busybox haters"
-PR = "r0"
+PR = "r1"
 
 ALLOW_EMPTY = "1"
 
@@ -12,7 +12,11 @@ RDEPENDS = "\
 	    wget \
 	    patch \
 	    diffutils \
-	    module-init-tools \
+            less \
+            vim \
+	    e2fsprogs \
+            binutils-symlinks \
+            module-init-tools \
 	    "
 
 
