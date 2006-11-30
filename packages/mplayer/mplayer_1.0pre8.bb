@@ -1,5 +1,5 @@
 DESCRIPTION = "Open Source multimedia player."
-SECTION = "opie/multimedia"
+SECTION = "multimedia"
 PRIORITY = "optional"
 HOMEPAGE = "http://www.mplayerhq.hu/"
 DEPENDS = "virtual/libsdl libmad zlib libpng jpeg liba52 freetype fontconfig alsa-lib lzo ncurses lame"
@@ -22,7 +22,7 @@ SRC_URI = "http://www1.mplayerhq.hu/MPlayer/releases/MPlayer-${PV}.tar.bz2 \
 
 RCONFLICTS_${PN} = "mplayer-atty"
 RREPLACES_${PN} = "mplayer-atty"
-PR = "r3"
+PR = "r4"
 
 PARALLEL_MAKE = ""
 
