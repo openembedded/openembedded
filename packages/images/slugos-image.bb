@@ -69,11 +69,10 @@ EXTRA_IMAGEDEPENDS += "${IMAGE_TOOLS}"
 # known to be sufficient for boot.)
 SLUGOS_SUPPORT ?= "diffutils cpio findutils udev"
 
-# kernel-module-af-packet must be in the image for DHCP to work
 # kernel-module-netconsole is here because it is small and is
 # highly useful on minimal systems (which really don't have anywhere
 # other than the network to output error messages!)
-SLUGOS_KERNEL ?= "kernel-module-af-packet kernel-module-netconsole"
+SLUGOS_KERNEL ?= "kernel-module-netconsole"
 
 RDEPENDS = "kernel ixp4xx-npe \
 	base-files base-passwd netbase \
