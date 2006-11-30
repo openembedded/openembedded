@@ -1,4 +1,4 @@
-PR = "r5"
+PR = "r6"
 DESCRIPTION = "The GNU cc and gcc C compilers."
 HOMEPAGE = "http://www.gnu.org/software/gcc/"
 SECTION = "devel"
@@ -26,5 +26,6 @@ SRC_URI = "${GNU_MIRROR}/gcc/gcc-${PV}/gcc-${PV}.tar.bz2 \
 
 SRC_URI += "file://gcc34-configure.in.patch;patch=1"
 SRC_URI += "file://gcc34-thumb-support.patch;patch=1"
+SRC_URI += " file://zecke-no-host-includes.patch;patch=1 "
 
 include gcc3-build.inc
