@@ -1,5 +1,5 @@
 DESCRIPTION = "Task packages for the Angstrom distribution"
-PR = "r24"
+PR = "r25"
 ALLOW_EMPTY = "1"
 
 PACKAGE_ARCH = "${MACHINE_ARCH}"
@@ -40,7 +40,8 @@ RDEPENDS_angstrom-gpe-task-base := "\
     gpe-icons \
     gpe-confd \
     gpe-autostarter \
-    libgtkstylus \
+    ${@base_contains("MACHINE_FEATURES", "touchscreen", "libgtkstylus", "",d)} \
+    ${@base_contains("MACHINE_FEATURES", "keyboard", "", "libgtkinput",d)} \
     suspend-desktop \
     teleport \
     xauth \
@@ -48,7 +49,9 @@ RDEPENDS_angstrom-gpe-task-base := "\
     gdk-pixbuf-loader-xpm \
     gdk-pixbuf-loader-jpeg \
     pango-module-basic-x \
-    pango-module-basic-fc"
+    pango-module-basic-fc \
+    ${@base_contains("COMBINED_FEATURES", "bluetooth", "gpe-bluetooth", "",d)} \
+    "
 
 RDEPENDS_angstrom-gpe-task-pim := "\
     gpe-timesheet \
@@ -78,9 +81,9 @@ RDEPENDS_angstrom-gpe-task-apps := "\
     gpe-watch \
     gpe-what \
     matchbox-panel-hacks \
-    gpe-aerial \
+    ${@base_contains("COMBINED_FEATURES", "wifi", "gpe-aerial", "",d)} \
     gpe-soundbite \
-    rosetta \
+    ${@base_contains("MACHINE_FEATURES", "touchscreen", "rosetta", "",d)} \
     gpe-scap \
     gpe-windowlist"
 
