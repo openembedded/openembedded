@@ -1,6 +1,7 @@
 DESCRIPTION = "Proper tools for busybox haters"
-PR = "r1"
+PR = "r2"
 
+PACKAGE_ARCH = "all"
 ALLOW_EMPTY_${PN} = "1"
 
 RDEPENDS = "\
