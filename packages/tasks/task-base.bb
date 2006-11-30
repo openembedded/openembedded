@@ -1,5 +1,5 @@
 DESCRIPTION = "Merge machine and distro options to create a basic machine task/package"
-PR = "r14"
+PR = "r15"
 
 PACKAGES = "task-base \
             task-base-minimal \
@@ -49,6 +49,7 @@ DISTRO_CORE_PACKAGE ?= "task-base-core-default"
 RDEPENDS_task-base = "\
     ${DISTRO_CORE_PACKAGE} \
     kernel \
+    ${@base_contains("MACHINE_FEATURES", "kernel24", "${task-base-kernel24-rdepends}", "",d)} \
     ${@base_contains("MACHINE_FEATURES", "kernel26", "${task-base-kernel26-rdepends}", "",d)} \
     ${@base_contains("MACHINE_FEATURES", "apm", "${task-base-apm-rdepends}", "",d)} \
     ${@base_contains("MACHINE_FEATURES", "acpi", "${task-base-acpi-rdepends}", "",d)} \
@@ -123,6 +124,8 @@ RDEPENDS_task-base-core-default = '\
 RRECOMMENDS_task-base-core-default = '\
     dropbear '
 
+task-base-kernel24-rdepends = "\
+    linux-hotplug "
 
 task-base-kernel26-rdepends = "\
     udev \
@@ -176,6 +179,13 @@ task-base-pcmcia-rrecommends = "\
     kernel-module-pcnet-cs \
     kernel-module-serial-cs \
     kernel-module-ide-cs \
+    ${@base_contains("MACHINE_FEATURES", "kernel26", "${task-base-pcmcia26-rrecommends}", "${task-base-pcmcia24-rrecommends}",d)} "
+
+task-base-pcmcia24-rrecommends = "\
+    ${@base_contains("DISTRO_FEATURES", "wifi", "hostap-modules-cs", "",d)} \
+    ${@base_contains("DISTRO_FEATURES", "wifi", "orinoco-modules-cs", "",d)}"
+
+task-base-pcmcia26-rrecommends = "\
     ${@base_contains("DISTRO_FEATURES", "wifi", "kernel-module-hostap-cs", "",d)} \
     ${@base_contains("DISTRO_FEATURES", "wifi", "kernel-module-orinoco-cs", "",d)} \
     ${@base_contains("DISTRO_FEATURES", "wifi", "kernel-module-spectrum-cs", "",d)}"
