@@ -1,7 +1,8 @@
 USE_NLS = '${@base_conditional( "TARGET_OS", "linux-uclibc", "no", "", d )}'
 
 EXTRA_OECONF_PATHS = "--with-local-prefix=${CROSS_DIR}/${TARGET_SYS} \
-		      --with-gxx-include-dir=${CROSS_DIR}/${TARGET_SYS}/include/c++"
+		      --with-gxx-include-dir=${CROSS_DIR}/${TARGET_SYS}/include/c++ \
+                      --disable-multilib"
 
 do_configure_prepend () {
 	rm -f ${CROSS_DIR}/lib/gcc/${TARGET_SYS}/${BINV}/libgcc_eh.a
