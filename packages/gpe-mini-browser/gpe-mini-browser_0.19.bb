@@ -1,4 +1,4 @@
-SRC_URI = "ftp://ftp.handhelds.org/projects/gpe/source/gpe-mini-browser-${PV}.tar.gz"
+SRC_URI = "http://gpe.linuxtogo.org/download/source/gpe-mini-browser-${PV}.tar.gz"
 DESCRIPTION = "A lightweight webbrowser for the GPE platform"
 LICENSE = "GPL"
 DEPENDS = "osb-nrcit sqlite libgpewidget"
