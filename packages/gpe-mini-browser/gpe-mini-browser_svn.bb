@@ -1,31 +1,31 @@
-PR = "r2"
-PV = "0.18+cvs${SRCDATE}"
+DEFAULT_PREFERENCE = "-1"
 
-SRC_URI = "${HANDHELDS_CVS};module=gpe/base/gpe-mini-browser"
 DESCRIPTION = "A lightweight webbrowser for the GPE platform"
 LICENSE = "GPL"
+
 DEPENDS = "sqlite gettext gtk+ glib-2.0 osb-nrcit libgpewidget"
 RRECOMMENDS = "gdk-pixbuf-loader-gif gdk-pixbuf-loader-png gdk-pixbuf-loader-jpeg"
- 
-DEFAULT_PREFERENCE = "-1"
+
+PV = "0.19+svn${SRCDATE}"
+PR = "r0"
+
+SRC_URI = "${GPE_SVN}"
 
 S = "${WORKDIR}/gpe-mini-browser"
 
 inherit autotools
 
 do_install() {
-	#	install -d ${D}${docdir}/gpe
-	#	install -m 0644 ${S}/gpe-mini-browser.html  ${D}${docdir}/gpe/
-		install -d ${D}/usr/share/applications
-		install -m 0644 ${S}/gpe-mini-browser.desktop ${D}/usr/share/applications/gpe-mini-browser.desktop
-		install -d ${D}/usr/share/pixmaps
-		install -m 0644 ${S}/gpe-mini-browser.png ${D}/usr/share/pixmaps/gpe-mini-browser.png
-		autotools_do_install
+                install -d ${D}/usr/share/applications
+                install -m 0644 ${S}/gpe-mini-browser.desktop ${D}/usr/share/applications/gpe-mini-browser.desktop
+                install -d ${D}/usr/share/pixmaps
+                install -m 0644 ${S}/gpe-mini-browser.png ${D}/usr/share/pixmaps/gpe-mini-browser.png
+                autotools_do_install
 }
 
 pkg_postinst_${PN}-doc () {
         #!/bin/sh
-	if [ "x$D" != "x" ]; then
+        if [ "x$D" != "x" ]; then
         if [ -e /etc/gpe/gpe-help.conf ]; then
                 echo gpe-mini-browser= /usr/share/doc/gpe/gpe-mini-browser.html >> /etc/gpe/gpe-help.conf
         else
@@ -38,7 +38,7 @@ pkg_postinst_${PN}-doc () {
         else
                 echo not generating index for gpe-mini-browser
         fi
-	fi
+        fi
 }
 
 pkg_postrm_${PN}-doc () {
@@ -54,3 +54,4 @@ pkg_postrm_${PN}-doc () {
                 echo not generating index for gpe-mini-browser
         fi
 }
+
