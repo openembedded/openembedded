@@ -21,8 +21,10 @@ loaddiskmods(){
 }
 
 loadnetmods(){
+	true
 }
 
 loadmiscmods(){
+	true
 }
 
