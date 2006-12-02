@@ -4,6 +4,8 @@ LICENSE = "GPL"
 PV = "${K_MAJOR}.${K_MINOR}.${K_MICRO}-hh${HHV}+cvs${SRCDATE}"
 PR = "r5"
 
+DEFAULT_PREFERENCE = "-1"
+
 K_MAJOR = "2"
 K_MINOR = "6"
 K_MICRO = "19"
