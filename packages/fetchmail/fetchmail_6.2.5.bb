@@ -1,4 +1,4 @@
-PR = "r1"
+PR = "r2"
 SECTION = "console/network"
 LICENSE = "GPL"
 DESCRIPTION = "Fetchmail is a free, full-featured, robust, \
@@ -15,6 +15,8 @@ SRC_URI = "${DEBIAN_MIRROR}/main/f/${PN}/${PN}_${PV}.orig.tar.gz \
 	   file://configure.patch;patch=1"
 
 inherit autotools gettext
+
+FULL_OPTIMIZATION_sharprom-compatible = "-fexpensive-optimizations -fomit-frame-pointer -O1"
 
 do_configure_prepend () {
 	if [ ! -e acinclude.m4 ]; then
