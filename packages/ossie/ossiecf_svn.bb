@@ -8,7 +8,7 @@ DEPENDS = "xerces-c omniorb libtool-cross"
 
 S="${WORKDIR}/ossie"
 
-SRC_URI = "svn://ossie-dev.mprg.org/repos/ossie/ossie/trunk;module=ossie;proto=https"
+SRC_URI = "svn://oe:oe@ossie-dev.mprg.org/repos/ossie/ossie/trunk;module=ossie;proto=https"
 
 inherit autotools pkgconfig
 

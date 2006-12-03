@@ -8,7 +8,7 @@ DEPENDS = "ossiecf expat"
 
 S="${WORKDIR}/c_wavLoader"
 
-SRC_URI = "svn://ossie-dev.mprg.org/repos/ossie/platform/c_wavLoader/trunk;module=c_wavLoader;proto=https"
+SRC_URI = "svn://oe:oe@ossie-dev.mprg.org/repos/ossie/platform/c_wavLoader/trunk;module=c_wavLoader;proto=https"
 
 inherit autotools
 

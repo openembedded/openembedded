@@ -4,13 +4,13 @@ SECTION =  "apps"
 PRIORITY = "optional"
 LICENSE = "GPL"
 
-DEPENDS = "ossiecf ossie-randombits ossie-modulator ossie-interpolator ossie-usrp-device ossie-gpp-device"
-RDEPENDS = "ossie-randombits ossie-modulator ossie-interpolator ossie-usrp-device ossie-gpp-device"
+DEPENDS = "ossiecf ossie-randombits ossie-modulator ossie-interpolator ossie-usrp-tx-control ossie-usrp-device ossie-gpp-device"
+RDEPENDS = "ossie-randombits ossie-modulator ossie-interpolator ossie-usrp-tx-control ossie-usrp-device ossie-gpp-device"
 
 S="${WORKDIR}/TX_Random_data"
 
 
-SRC_URI = "svn://ossie-dev.mprg.org/repos/ossie/waveforms/TX_Random_data/trunk;module=TX_Random_data;proto=https"
+SRC_URI = "svn://oe:oe@ossie-dev.mprg.org/repos/ossie/waveforms/TX_Random_data/trunk;module=TX_Random_data;proto=https"
 
 prefix="/home/sca"
 

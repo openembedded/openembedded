@@ -9,7 +9,7 @@ DEPENDS = "ossiecf ossie-standardinterfaces ossie-sigproc"
 S="${WORKDIR}/Modulator"
 
 
-SRC_URI = "svn://ossie-dev.mprg.org/repos/ossie/components/Modulator/trunk;module=Modulator;proto=https"
+SRC_URI = "svn://oe:oe@ossie-dev.mprg.org/repos/ossie/components/Modulator/trunk;module=Modulator;proto=https"
 
 prefix="/home/sca"
 
