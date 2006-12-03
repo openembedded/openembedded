@@ -1,0 +1,10 @@
+--- boa-0.94.13/src/cgi.c	2002-07-23 08:49:54.000000000 -0700
++++ boa-0.94.13/src/cgi.c~	2005-06-22 23:13:54.000000000 -0700
+@@ -214,6 +214,7 @@
+     my_add_cgi_env(req, "SERVER_ADDR", req->local_ip_addr);
+     my_add_cgi_env(req, "SERVER_PROTOCOL", req->http_version);
+     my_add_cgi_env(req, "REQUEST_URI", req->request_uri);
++    my_add_cgi_env(req, "SCRIPT_FILENAME", req->request_uri);
+ 
+     if (req->path_info)
+         my_add_cgi_env(req, "PATH_INFO", req->path_info);
