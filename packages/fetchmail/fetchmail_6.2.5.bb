@@ -16,8 +16,6 @@ SRC_URI = "${DEBIAN_MIRROR}/main/f/${PN}/${PN}_${PV}.orig.tar.gz \
 
 inherit autotools gettext
 
-FULL_OPTIMIZATION_sharprom-compatible = "-fexpensive-optimizations -fomit-frame-pointer -O1"
-
 do_configure_prepend () {
 	if [ ! -e acinclude.m4 ]; then
 		cat aclocal.m4 > acinclude.m4

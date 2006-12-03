@@ -1,7 +1,6 @@
 DESCRIPTION = "Sanitized set of 2.6 kernel headers for the C library's use."
 SECTION = "devel"
 LICENSE = "GPL"
-DEFAULT_PREFERENCE = "-1"
 INHIBIT_DEFAULT_DEPS = "1"
 DEPENDS = "unifdef-native"
 PR = "r1"
@@ -21,7 +20,7 @@ set_arch() {
 		ia64*)    ARCH=ia64 ;;
 		mips*)    ARCH=mips ;;
 		m68k*)    ARCH=m68k ;;
-		powerpc*) ARCH=ppc ;;
+		powerpc*) ARCH=powerpc ;;
 		s390*)    ARCH=s390 ;;
 		sh*)      ARCH=sh ;;
 		sparc64*) ARCH=sparc64 ;;
