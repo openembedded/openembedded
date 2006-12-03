@@ -1,11 +1,10 @@
 DESCRIPTION = "A pure Python implementation of Zeroconf"
 SECTION = "devel/python"
 PRIORITY = "optional"
-RDEPENDS = "python-core"
 LICENSE = "LGPL"
-PR = "r1"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/pyzeroconf/pyzeroconf-${PV}.tgz"
+
 S = "${WORKDIR}/pyzeroconf-${PV}"
 
 inherit distutils-base
