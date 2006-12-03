@@ -1,4 +1,4 @@
-PR = "r7"
+PR = "r8"
 DESCRIPTION = "The GNU cc and gcc C compilers."
 HOMEPAGE = "http://www.gnu.org/software/gcc/"
 SECTION = "devel"
@@ -29,7 +29,8 @@ SRC_URI = "http://ftp.gnu.org/pub/gnu/gcc/gcc-4.1.1/gcc-4.1.1.tar.bz2 \
 	file://cse.patch;patch=1 \
 	file://zecke-xgcc-cpp.patch;patch=1 \
 	file://unbreak-armv4t.patch;patch=1 \
-	"
+        file://fix-ICE-in-arm_unwind_emit_set.diff;patch=1 \
+        "
 
 SRC_URI_append_fail-fast = " file://zecke-no-host-includes.patch;patch=1 "
 
@@ -41,6 +42,7 @@ HAS_G2C = "no"
 
 #Set the java bits
 JAVA_arm = ""  
+JAVA = ""
 
 LANGUAGES = "c,c++${FORTRAN}${JAVA}"
 require gcc3-build.inc
