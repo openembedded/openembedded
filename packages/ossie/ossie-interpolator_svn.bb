@@ -9,7 +9,7 @@ DEPENDS = "ossiecf ossie-standardinterfaces ossie-sigproc"
 S="${WORKDIR}/Interpolator"
 
 
-SRC_URI = "svn://ossie-dev.mprg.org/repos/ossie/components/Interpolator/trunk;module=Interpolator;proto=https"
+SRC_URI = "svn://oe:oe@ossie-dev.mprg.org/repos/ossie/components/Interpolator/trunk;module=Interpolator;proto=https"
 
 prefix="/home/sca"
 

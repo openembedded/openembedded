@@ -9,7 +9,7 @@ DEPENDS = "alsa-lib ossiecf ossie-standardinterfaces"
 
 S="${WORKDIR}/Sound_out"
 
-SRC_URI = "svn://ossie-dev.mprg.org/repos/ossie/platform/Sound_out/trunk;module=Sound_out;proto=https"
+SRC_URI = "svn://oe:oe@ossie-dev.mprg.org/repos/ossie/platform/Sound_out/trunk;module=Sound_out;proto=https"
 
 prefix="/home/sca"
 
