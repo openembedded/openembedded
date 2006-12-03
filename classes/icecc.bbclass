@@ -1,8 +1,18 @@
 # IceCream distributed compiling support
 #
-# We need to create a tar.bz2 of our toolchain and set
-# ICECC_VERSION, ICECC_CXX and ICEC_CC
+# Stages directories with symlinks from gcc/g++ to icecc, for both
+# native and cross compilers. Depending on each configure or compile,
+# the directories are added at the head of the PATH list and ICECC_CXX
+# and ICEC_CC are set.
 #
+# For the cross compiler, creates a tar.bz2 of our toolchain and sets
+# ICECC_VERSION accordingly.
+#
+# This class needs ICECC_PATH to be set already. It must have
+# been exported from the shell running bitbake. Setting it in
+# local.conf is not adequate.
+#
+# This class objdump, ldconfig, grep, sed installed on the build host.
 
 def icc_determine_gcc_version(gcc):
     """
@@ -10,11 +20,12 @@ def icc_determine_gcc_version(gcc):
 
     'i686-apple-darwin8-gcc-4.0.1 (GCC) 4.0.1 (Apple Computer, Inc. build 5363)'
     """
+    import os
     return os.popen("%s --version" % gcc ).readline().split()[2]
 
 def create_env(bb,d):
     """
-    Create a tar.bz of the current toolchain
+    Create a tar.bz2 of the current toolchain
     """
 
     # Constin native-native compilation no environment needed if
@@ -23,14 +34,12 @@ def create_env(bb,d):
     if len(prefix) == 0:
         return ""
 
-    import tarfile
-    import socket
-    import time
-    import os
+    import tarfile, socket, time, os
     ice_dir = bb.data.expand('${CROSS_DIR}', d)
     prefix  = bb.data.expand('${HOST_PREFIX}' , d)
     distro  = bb.data.expand('${DISTRO}', d)
     target_sys = bb.data.expand('${TARGET_SYS}',  d)
+    target_prefix = bb.data.expand('${TARGET_PREFIX}',  d)
     float   = bb.data.getVar('${TARGET_FPU}', d) or "hard"
     name    = socket.gethostname()
 
@@ -39,7 +48,7 @@ def create_env(bb,d):
     try:
         os.stat(os.path.join(ice_dir, target_sys, 'lib', 'ld-linux.so.2'))
         os.stat(os.path.join(ice_dir, target_sys, 'bin', 'g++'))
-    except:
+    except: # no cross compiler built yet
         return ""
 
     VERSION = icc_determine_gcc_version( os.path.join(ice_dir,target_sys,"bin","g++") )
@@ -48,11 +57,13 @@ def create_env(bb,d):
 
     try:
         os.stat(tar_file)
+	# tar file already exists
         return tar_file
-    except:
+    except: 
         try:
             os.makedirs(os.path.join(ice_dir,'ice'))
         except:
+            # directory already exists, continue
             pass
 
     # FIXME find out the version of the compiler
@@ -78,14 +89,42 @@ def create_env(bb,d):
     tar.add(os.path.join(ice_dir,target_sys,'bin','as'),
             os.path.join("usr","bin","as") )
 
+    cc = bb.data.getVar('CC', d, True)
+
+    # use bitbake's PATH so that the cross-compiler is actually found on the PATH
+    oldpath = os.environ['PATH']
+    os.environ['PATH'] = bb.data.getVar('PATH', d, True)
+
+    # FIXME falsely assuming there is only a single NEEDED per file
+    # FIXME falsely assuming the lib path is /lib
+
+    # which libc does the compiler need? (for example: libc.so.6)
+    libc = os.popen("objdump -x `which %s` | sed -n 's/.*NEEDED *//p'" % cc).read()[:-1]
+    # what is the absolute path of libc? (for example: /lib/libc.so.6)
+    # FIXME assuming only one entry is returned, which easily breaks
+    libc = os.popen("ldconfig -p | grep -e %s$ | sed 's:[^/]*/:/:'" % libc).read()[:-1]
+
+    # which loader does the compiler need?
+    ldlinux = os.popen("objdump -x %s | sed -n 's/.*NEEDED *//p'" % libc).read()[:-1]
+    ldlinux = os.popen("ldconfig -p | grep -e %s$ | sed 's:[^/]*/:/:'" % ldlinux).read()[:-1]
+
+    tar.add(libc)
+    tar.add(ldlinux)
+  
     # Now let us find cc1 and cc1plus
-    cc1 = os.popen("%s -print-prog-name=cc1" % data.getVar('CC', d, True)).read()[:-1]
-    cc1plus = os.popen("%s -print-prog-name=cc1plus" % data.getVar('CC', d, True)).read()[:-1]
-    spec = os.popen("%s -print-file-name=specs" % data.getVar('CC', d, True)).read()[:-1]
+    cc1 = os.popen("%s -print-prog-name=cc1" % cc).read()[:-1]
+    cc1plus = os.popen("%s -print-prog-name=cc1plus" % cc).read()[:-1]
+    spec = os.popen("%s -print-file-name=specs" % cc).read()[:-1]
+
+    os.environ['PATH'] = oldpath
 
     # CC1 and CC1PLUS should be there...
-    tar.add(cc1, os.path.join('usr', 'bin', 'cc1'))
-    tar.add(cc1plus, os.path.join('usr', 'bin', 'cc1plus'))
+    #tar.add(cc1, os.path.join('usr', 'bin', 'cc1'))
+    #tar.add(cc1plus, os.path.join('usr', 'bin', 'cc1plus'))
+
+    # I think they should remain absolute paths (as gcc expects them there)
+    tar.add(cc1)
+    tar.add(cc1plus)
 
     # spec - if it exists
     if os.path.exists(spec):
@@ -110,7 +149,6 @@ def create_path(compilers, type, bb, d):
     except:
         os.makedirs(staging)
 
-
     for compiler in compilers:
         gcc_path = os.path.join(staging, compiler)
         try:
@@ -120,13 +158,11 @@ def create_path(compilers, type, bb, d):
 
     return staging + ":"
 
-
 def use_icc_version(bb,d):
     # Constin native native
     prefix = bb.data.expand('${HOST_PREFIX}', d)
     if len(prefix) == 0:
         return "no"
-
 
     blacklist = [ "cross", "native" ]
 
@@ -150,17 +186,15 @@ def icc_path(bb,d,compile):
 
     prefix = bb.data.expand('${HOST_PREFIX}', d)
     if compile and len(prefix) != 0:
-        return create_path( [prefix+"gcc", prefix+"g++"], "cross", bb, d )
+        return create_path( [prefix+"gcc", prefix+"g++"], "cross", bb, d)
     elif not compile or len(prefix) == 0:
         return create_path( ["gcc", "g++"], "native", bb, d)
-
 
 def icc_version(bb,d):
     return create_env(bb,d)
 
-
 #
-# set the IceCream  environment variables
+# set the icecream environment variables
 do_configure_prepend() {
     export PATH=${@icc_path(bb,d,False)}$PATH
     export ICECC_CC="gcc"
@@ -173,6 +207,7 @@ do_compile_prepend() {
     export ICECC_CXX="${HOST_PREFIX}g++"
 
     if [ "${@use_icc_version(bb,d)}" = "yes" ]; then
+        print ICECC_VERSION="${@icc_version(bb,d)}"
         export ICECC_VERSION="${@icc_version(bb,d)}"
     fi
 }
