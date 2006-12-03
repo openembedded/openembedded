@@ -14,6 +14,6 @@ EXTRA_OECONF += "--disable-applet \
                  --without-mana \
                  --without-eb"
 
-SRC_URI = "http://uim.freedesktop.org/releases/uim-${PV}.tar.gz"
+SRC_URI = "http://uim.freedesktop.org/releases/uim-${PV}.tar.bz2"
 
 S = "${WORKDIR}/uim-${PV}"
