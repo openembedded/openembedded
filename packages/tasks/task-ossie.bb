@@ -7,7 +7,7 @@ PACKAGES = "task-ossie"
 
 ALLOW_EMPTY = "1"
 
-IPKG_INSTALL = "${OSSIE_BASE} ${OSSIE_PLATFORM} ${OSSIE_COMPONENTS}"
+IPKG_INSTALL = "${OSSIE_BASE} ${OSSIE_PLATFORM} ${OSSIE_COMPONENTS} ${OSSIE_WAVEFORMS}"
 
 OSSIE_BASE = "screen procps xerces-c omniorb usrp"
 OSSIE_PLATFORM = "ossiecf ossie-standardinterfaces ossie-nodebooter ossie-c-wavloader"
