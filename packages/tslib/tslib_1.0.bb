@@ -4,7 +4,7 @@ AUTHOR = "Russell King w/ plugins by Chris Larson et. al."
 SECTION = "base"
 LICENSE = "LGPL"
 
-PR = "r3"
+PR = "r4"
 
 SRC_URI = "http://download.berlios.de/tslib/tslib-1.0.tar.bz2 \
            file://ts.conf \
@@ -62,10 +62,7 @@ SRC_URI_OVERRIDES_PACKAGE_ARCH = "0"
 RDEPENDS_tslib-conf_h1940 = "detect-stylus"
 RDEPENDS_tslib-conf_h3600 = "detect-stylus"
 RDEPENDS_tslib-conf_h3900 = "detect-stylus"
-RDEPENDS_tslib-conf_h6300 = "detect-stylus"
 RDEPENDS_tslib-conf_blueangel = "detect-stylus"
-RDEPENDS_tslib-conf_htcuniversal = "detect-stylus"
-RDEPENDS_tslib-conf_h4000 = "detect-stylus"
 RPROVIDES_tslib-conf = "libts-0.0-conf"
 
 PACKAGE_ARCH_tslib-conf = "${MACHINE_ARCH}"
