@@ -1,5 +1,5 @@
 DESCRIPTION = "tslib is a plugin-based flexible touchscreen access library."
-HOMEPAGE = "http://cvs.arm.linux.org.uk/"
+HOMEPAGE = "http://tslib.berlios.de/"
 AUTHOR = "Russell King w/ plugins by Chris Larson et. al."
 SECTION = "base"
 LICENSE = "LGPL"
