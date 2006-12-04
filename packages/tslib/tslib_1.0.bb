@@ -4,7 +4,7 @@ AUTHOR = "Russell King w/ plugins by Chris Larson et. al."
 SECTION = "base"
 LICENSE = "LGPL"
 
-PR = "r4"
+PR = "r5"
 
 SRC_URI = "http://download.berlios.de/tslib/tslib-1.0.tar.bz2 \
            file://ts.conf \
@@ -59,7 +59,6 @@ SRC_URI_OVERRIDES_PACKAGE_ARCH = "0"
 
 # People should consider using udev's /dev/input/touchscreen0 symlink 
 # instead of detect-stylus
-RDEPENDS_tslib-conf_h1940 = "detect-stylus"
 RDEPENDS_tslib-conf_h3600 = "detect-stylus"
 RDEPENDS_tslib-conf_h3900 = "detect-stylus"
 RDEPENDS_tslib-conf_blueangel = "detect-stylus"

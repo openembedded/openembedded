@@ -1,8 +1,7 @@
 #!/bin/sh
 
-TSLIB_TSDEVICE=`detect-stylus --device`
+TSLIB_TSDEVICE=/dev/input/touchscreen0
 TSLIB_CONFFILE=/etc/ts.conf
-QWS_MOUSE_PROTO=TPanel
 
-export TSLIB_TSDEVICE TSLIB_CONFFILE QWS_MOUSE_PROTO
+export TSLIB_TSDEVICE TSLIB_CONFFILE
 
