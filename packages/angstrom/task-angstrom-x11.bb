@@ -1,5 +1,5 @@
 DESCRIPTION = "Task packages for the Angstrom distribution"
-PR = "r25"
+PR = "r26"
 ALLOW_EMPTY = "1"
 
 PACKAGE_ARCH = "${MACHINE_ARCH}"
@@ -42,6 +42,7 @@ RDEPENDS_angstrom-gpe-task-base := "\
     gpe-autostarter \
     ${@base_contains("MACHINE_FEATURES", "touchscreen", "libgtkstylus", "",d)} \
     ${@base_contains("MACHINE_FEATURES", "keyboard", "", "libgtkinput",d)} \
+    ${@base_contains("MACHINE_FEATURES", "touchscreen", "detect-stylus", "",d)} \	
     suspend-desktop \
     teleport \
     xauth \
