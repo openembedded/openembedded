@@ -1,7 +1,7 @@
 DESCRIPTION = "Linux Kernel for the EFIKA dev platform"
 SECTION = "kernel"
 LICENSE = "GPL"
-PR = "r0"
+PR = "r1"
 
 COMPATIBLE_MACHINE = "efika"
 
@@ -13,11 +13,13 @@ S = "${WORKDIR}/linux-2.6.19-rc6_efika"
 
 inherit kernel
 
-KERNEL_IMAGETYPE = "images/zImage.elf"
+export ARCH=powerpc
+
+KERNEL_IMAGETYPE = "zImage"
 
 do_configure() {
 		install -m 644 ${WORKDIR}/defconfig ${S}/.config
-		make ARCH=ppc oldconfig
+		make ARCH=${ARCH} oldconfig
 }
 
 do_deploy() {
