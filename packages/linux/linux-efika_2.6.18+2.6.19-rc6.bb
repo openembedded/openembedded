@@ -13,7 +13,7 @@ S = "${WORKDIR}/linux-2.6.19-rc6_efika"
 
 inherit kernel
 
-KERNEL_IMAGETYPE = "zImage.elf"
+KERNEL_IMAGETYPE = "images/zImage.elf"
 
 do_configure() {
 		install -m 644 ${WORKDIR}/defconfig ${S}/.config
@@ -22,7 +22,7 @@ do_configure() {
 
 do_deploy() {
         install -d ${DEPLOY_DIR_IMAGE}
-        install -m 0644 arch/${ARCH}/boot/images/${KERNEL_IMAGETYPE} ${DEPLOY_DIR_IMAGE}/${KERNEL_IMAGETYPE}-${PV}-${MACHINE}-${DATETIME}
+        install -m 0644 arch/${ARCH}/boot/${KERNEL_IMAGETYPE} ${DEPLOY_DIR_IMAGE}/${KERNEL_IMAGETYPE}-${PV}-${MACHINE}-${DATETIME}
 }
 
 do_deploy[dirs] = "${S}"
