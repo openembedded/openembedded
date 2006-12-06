@@ -17065,7 +17065,7 @@ Index: linux-2.6-pxa-new/sound/soc/pxa/pxa2xx-ac97.c
 +{
 +	int ret;
 +
-+	ret = request_irq(IRQ_AC97, pxa2xx_ac97_irq, IRQF_DISABLED, "AC97", NULL);
++	ret = request_irq(IRQ_AC97, pxa2xx_ac97_irq, 0, "AC97", NULL);
 +	if (ret < 0)
 +		goto err;
 +
