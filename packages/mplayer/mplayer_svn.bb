@@ -5,23 +5,20 @@ HOMEPAGE = "http://www.mplayerhq.hu/"
 DEPENDS = "virtual/libsdl libmad zlib libpng jpeg liba52 freetype fontconfig alsa-lib lzo ncurses lame"
 RDEPENDS = "mplayer-common"
 LICENSE = "GPL"
-SRC_URI = "svn://svn.mplayerhq.hu/;module=mplayer \
-	   file://vo_w100.c \
-	   file://vo_w100_api.h \
-	   file://vo_w100_fb.h \
-	   file://Makefile-codec-cfg.patch;patch=1 \
-	   file://w100-configure.patch;patch=1 \
-	   file://w100-Makefile.patch;patch=1 \
-	   file://w100-video_out.patch;patch=1 \
-	   file://w100-mplayer.patch;patch= \
-           file://libmpdemux-ogg-include-svn.patch;patch=1 \
-           file://libmpcodecs-ogg-include.patch;patch=1 \
+SRC_URI = "svn://svn.mplayerhq.hu/mplayer;module=trunk \
+           file://vo_w100.c \
+           file://vo_w100_api.h \
+           file://vo_w100_fb.h \
+           file://Makefile-codec-cfg.patch;patch=1 \
+           file://w100-configure-svn.patch;patch=1 \
+           file://w100-video_out.patch;patch=1 \
+	       file://w100-mplayer.patch;patch= \
            file://pld-onlyarm5.patch;patch=1"
 
 RCONFLICTS_${PN} = "mplayer-atty"
 RREPLACES_${PN} = "mplayer-atty"
 
-PV = "1.0pre8+svn${SRCDATE}"
+PV = "0.0+1.0rc1+svn${SRCDATE}"
 PR = "r1"
 DEFAULT_PREFERENCE = "-1"
 
@@ -29,7 +26,7 @@ PARALLEL_MAKE = ""
 
 DEPENDS_append_c7x0 = " sharp-aticore-oss"
 
-S = "${WORKDIR}/mplayer/trunk/"
+S = "${WORKDIR}/trunk/"
 
 PACKAGES =+ "mencoder"
 
@@ -53,7 +50,6 @@ EXTRA_OECONF = " \
         --disable-vm \
         --disable-xf86keysym \
         --disable-tv \
-        --disable-tv-v4l \
         --disable-tv-v4l2 \
         --disable-tv-bsdbt848 \
         --enable-rtc \
@@ -61,8 +57,10 @@ EXTRA_OECONF = " \
         --disable-winsock2 \
         --disable-smb \
         --disable-live \
+		--disable-dvdnav \
         --disable-dvdread \
-        --disable-mpdvdkit \
+        --disable-dvdread-internal \
+        --disable-libdvdcss-internal \
         --disable-cdparanoia \
         --enable-freetype \
         --disable-unrarlib \
@@ -92,7 +90,6 @@ EXTRA_OECONF = " \
         --disable-libavcodec_so \
         --disable-libavformat_so \
         --disable-libpostproc_so \
-        --disable-libfame \
         \
         --enable-tremor-low \
         \

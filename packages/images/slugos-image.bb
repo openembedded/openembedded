@@ -6,7 +6,7 @@
 DESCRIPTION = "Generic SlugOS image"
 HOMEPAGE = "http://www.nslu2-linux.org"
 LICENSE = "MIT"
-PR = "r40"
+PR = "r41"
 
 COMPATIBLE_MACHINE = "nslu2"
 
@@ -53,7 +53,7 @@ EXTRA_IMAGEDEPENDS += "${IMAGE_TOOLS}"
 
 # CONFIG:
 # SLUGOS_EXTRA_RDEPENDS: set in conf, things to add to the image
-# SLUGOS_SUPPORT:        set to here, see below, added to the image.
+# SLUGOS_SUPPORT:        set here, see below, added to the image.
 # SLUGOS_KERNEL:         set here, kernel modules added to the image
 #
 # Do not override the last two unless you really know what you
@@ -69,11 +69,9 @@ EXTRA_IMAGEDEPENDS += "${IMAGE_TOOLS}"
 # known to be sufficient for boot.)
 SLUGOS_SUPPORT ?= "diffutils cpio findutils udev"
 
-# kernel-module-af-packet must be in the image for DHCP to work
-# kernel-module-netconsole is here because it is small and is
-# highly useful on minimal systems (which really don't have anywhere
-# other than the network to output error messages!)
-SLUGOS_KERNEL ?= "kernel-module-af-packet kernel-module-netconsole"
+SLUGOS_KERNEL ?= ""
+
+SLUGOS_EXTRA_RDEPENDS ?= ""
 
 RDEPENDS = "kernel ixp4xx-npe \
 	base-files base-passwd netbase \

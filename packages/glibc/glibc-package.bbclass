@@ -63,7 +63,6 @@ def get_glibc_fpu_setting(bb, d):
 EXTRA_OECONF += "${@get_glibc_fpu_setting(bb, d)}"
 
 OVERRIDES_append = ":${TARGET_ARCH}-${TARGET_OS}"
-EXTRA_OECONF_append_arm-linuxeabi = " --without-fp"
 
 do_install() {
 	oe_runmake install_root=${D} install

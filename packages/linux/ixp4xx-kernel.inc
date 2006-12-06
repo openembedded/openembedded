@@ -190,14 +190,6 @@ do_configure_prepend() {
 	then
 		echo 'CONFIG_CPU_BIG_ENDIAN=y' >>'${S}/.config'
 	fi
-	if test '${SLUGOS_IMAGESEX}' = big-endian
-	then
-		echo 'CONFIG_JFFS2_BIG_ENDIAN=y' >>'${S}/.config'
-	fi
-	if test '${SLUGOS_IMAGESEX}' = little-endian
-	then
-		echo 'CONFIG_JFFS2_LITTLE_ENDIAN=y' >>'${S}/.config'
-	fi
 
         if [ "${TARGET_OS}" == "linux-gnueabi" -o  "${TARGET_OS}" == "linux-uclibcgnueabi" ]; then               
                 echo "CONFIG_AEABI=y"                   >> ${S}/.config               
@@ -209,9 +201,6 @@ do_configure_prepend() {
 
         sed     -e '/CONFIG_CPU_BIG_ENDIAN/d' \
 	        -e '/CONFIG_CMDLINE=/d' \
-		-e '/CONFIG_JFFS2_NATIVE_ENDIAN=/d' \
-		-e '/CONFIG_JFFS2_BIG_ENDIAN=/d' \
-		-e '/CONFIG_JFFS2_LITTLE_ENDIAN=/d' \
 		-e '/CONFIG_AEABI/d' \
 		-e '/CONFIG_OABI_COMPAT=/d' \
 		'${WORKDIR}/defconfig' >>'${S}/.config'

@@ -4,35 +4,27 @@
 . /etc/default/functions
 
 loaddiskmods(){
-	modprobe scsi_mod
-	modprobe sd_mod 
-	modprobe usbcore 
 	case "$(machine)" in
 	    nslu2)                     
-	        modprobe ehci-hcd
 	        modprobe ohci-hcd
 		;;
             nas100d)
                 modprobe pata-artop
-                modprobe ehci-hcd
                 modprobe uhci-hcd
                 ;;
             dsmg600)
                 modprobe pata-artop
-                modprobe ehci-hcd
                 modprobe uhci-hcd
                 ;;
 
 	esac
-	modprobe usb-storage
 }
 
 loadnetmods(){
-	modprobe af_packet
+	true
 }
 
 loadmiscmods(){
-	modprobe ixp4xx_rng
-	modprobe i2c_dev
+	true
 }
 

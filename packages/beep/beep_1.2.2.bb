@@ -24,7 +24,7 @@ BINDIR_slugos = "${base_bindir}"
 do_install() {
 	# this is easier than patching the Makefile...
 	install -d "${D}${BINDIR}"
-	install -c -s -m 755 beep "${D}${BINDIR}/beep"
+	install -c -m 755 beep "${D}${BINDIR}/beep"
 	install -d "${D}${mandir}/man1"
 	install -c -m 644 beep.1.gz "${D}${mandir}/man1/beep.1.gz"
 }

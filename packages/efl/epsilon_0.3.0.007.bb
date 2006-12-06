@@ -5,7 +5,10 @@ DEPENDS = "virtual/imlib2 epeg libpng virtual/evas virtual/ecore perl-native edj
 
 inherit efl
 
+PR = "r1"
+
 SRC_URI += "file://compile-fix.patch;patch=1 \
+            file://server-is-not-client.patch;patch=1 \
             ${E_CVS};module=e17/libs/epsilon/m4;date=20060101"
 
 do_configure_prepend() {

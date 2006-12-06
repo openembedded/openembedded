@@ -1,10 +1,11 @@
 DESCRIPTION = "Emotion is a multimedia library based on libxine"
 LICENSE = "MIT"
-DEPENDS = "eet virtual/evas edje virtual/ecore embryo virtual/libxine"
+DEPENDS = "eet virtual/evas edje virtual/ecore embryo gstreamer gst-plugins-base"
+# virtual/libxine
 #RPROVIDES += "emotion-themes emotion-plugins"
 RDEPENDS += "emotion-themes emotion-plugins"
 
-PR = "r0"
+PR = "r1"
 
 #FIXME: Needs patch not to build the examples when building against ecore-fb, because the examples depend on ecore-x11
 

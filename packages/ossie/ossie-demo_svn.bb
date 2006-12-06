@@ -10,7 +10,7 @@ RDEPENDS = "ossie-channeldemo ossie-rxdemo"
 S="${WORKDIR}/ossie_demo"
 
 
-SRC_URI = "svn://ossie-dev.mprg.org/repos/ossie/waveforms/ossie_demo/trunk;module=ossie_demo;proto=https"
+SRC_URI = "svn://oe:oe@ossie-dev.mprg.org/repos/ossie/waveforms/ossie_demo/trunk;module=ossie_demo;proto=https"
 
 prefix="/home/sca"
 

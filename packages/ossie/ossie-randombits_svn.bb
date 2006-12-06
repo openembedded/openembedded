@@ -9,7 +9,7 @@ DEPENDS = "ossiecf ossie-standardinterfaces ossie-sigproc"
 S="${WORKDIR}/RandomBits"
 
 
-SRC_URI = "svn://ossie-dev.mprg.org/repos/ossie/components/RandomBits/trunk;module=RandomBits;proto=https"
+SRC_URI = "svn://oe:oe@ossie-dev.mprg.org/repos/ossie/components/RandomBits/trunk;module=RandomBits;proto=https"
 
 prefix="/home/sca"
 

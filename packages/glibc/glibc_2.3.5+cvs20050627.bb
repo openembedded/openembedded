@@ -6,7 +6,7 @@ PRIORITY = "required"
 
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/glibc-cvs-2.3.5"
 SRCDATE = "20050627"
-PR = "r12"
+PR = "r13"
 
 #Doesnt build for sh3
 DEFAULT_PREFERENCE_sh3="-1"
@@ -86,6 +86,9 @@ EXTRA_OECONF = "--enable-kernel=${OLDEST_KERNEL} \
 		${GLIBC_EXTRA_OECONF}"
 
 EXTRA_OECONF += "${@get_glibc_fpu_setting(bb, d)}"
+
+#avoid too much optimization on ppc
+CFLAGS_dht-walnut += " -O1 -g0 -fPIC -fno-inline-functions -fno-unit-at-a-time "
 
 do_munge() {
 	# Integrate ports into tree

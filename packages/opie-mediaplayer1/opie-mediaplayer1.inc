@@ -2,6 +2,7 @@ DESCRIPTION = "The classic Opie media player"
 SECTION = "opie/multimedia"
 PRIORITY = "optional"
 LICENSE = "GPL"
+DEPENDS = "libqtaux2"
 RDEPENDS = "opie-mediaplayer2-skin-default"
 RRECOMMENDS = "opie-mediaplayer1-libmadplugin opie-mediaplayer1-libwavplugin \
 opie-mediaplayer1-libmodplugin opie-mediaplayer1-libtremorplugin"

@@ -24,7 +24,7 @@ set_arch() {
 		ia64*)    ARCH=ia64 ;;
 		mips*)    ARCH=mips ;;
 		m68k*)    ARCH=m68k ;;
-		powerpc*) ARCH=ppc ;;
+		powerpc*) ARCH=powerpc ;;
 		s390*)    ARCH=s390 ;;
 		sh*)      ARCH=sh ;;
 		sparc64*) ARCH=sparc64 ;;

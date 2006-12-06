@@ -9,7 +9,7 @@ DEPENDS = "ossiecf usrp ossie-standardinterfaces"
 
 S="${WORKDIR}/USRP"
 
-SRC_URI = "svn://ossie-dev.mprg.org/repos/ossie/platform/USRP/trunk;module=USRP;proto=https"
+SRC_URI = "svn://oe:oe@ossie-dev.mprg.org/repos/ossie/platform/USRP/trunk;module=USRP;proto=https"
 
 prefix="/home/sca"
 
