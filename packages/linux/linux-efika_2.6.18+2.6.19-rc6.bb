@@ -5,11 +5,11 @@ PR = "r0"
 
 COMPATIBLE_MACHINE = "efika"
 
-SRC_URI = "ftp://ftp.kernel.org/pub/linux/kernel/v2.6/linux-2.6.16.tar.bz2 \
+SRC_URI = "http://www.efika.de/download/linux-2.6.19-rc6_efika.tgz \
            file://defconfig \
 		   "
 
-S = "${WORKDIR}/linux-2.6.16"
+S = "${WORKDIR}/linux-2.6.19-rc6_efika"
 
 inherit kernel
 
@@ -17,7 +17,7 @@ KERNEL_IMAGETYPE = "zImage"
 
 do_configure() {
 		install -m 644 ${WORKDIR}/defconfig ${S}/.config
-		make ARCH=arm oldconfig
+		make ARCH=ppc oldconfig
 }
 
 do_deploy() {
