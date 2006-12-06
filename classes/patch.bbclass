@@ -38,7 +38,7 @@ def patch_init(d):
 			if not os.path.exists(dir):
 				raise NotFoundError(dir)
 			os.chdir(dir)
-			# print("cwd: %s -> %s" % (olddir, self.dir))
+			# print("cwd: %s -> %s" % (olddir, dir))
 
 		try:
 			args = [ commands.mkarg(str(arg)) for arg in args ]
@@ -231,6 +231,7 @@ def patch_init(d):
 			args = ["import", "-p", patch["strippath"]]
 			if force:
 				args.append("-f")
+				args.append("-dn")
 			args.append(patch["file"])
 
 			self._runcmd(args)
