@@ -1,0 +1,929 @@
+
+ drivers/usb/host/Kconfig     |    1 
+ drivers/usb/host/ohci-hcd.c  |    1 
+ drivers/usb/host/ohci-tmio.c |  894 +++++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 896 insertions(+)
+
+Index: git/drivers/usb/host/ohci-tmio.c
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ git/drivers/usb/host/ohci-tmio.c	2006-11-07 21:48:33.000000000 +0000
+@@ -0,0 +1,894 @@
++/*
++ * OHCI HCD (Host Controller Driver) for USB.
++ *
++ * (C) Copyright 1999 Roman Weissgaerber <weissg@vienna.at>
++ * (C) Copyright 2000-2002 David Brownell <dbrownell@users.sourceforge.net>
++ * (C) Copyright 2002 Hewlett-Packard Company
++ *
++ * Bus glue for Toshiba Mobile IO (TMIO) Controller's OHCI core
++ * (C) Copyright 2005 Chris Humbert <mahadri-usb@drigon.com>
++ *
++ * This is known to work with the following variants:
++ *	TC6393XB revision 3	(32kB SRAM)
++ *
++ * The TMIO's OHCI core DMAs through a small internal buffer that
++ * is directly addressable by the CPU.  dma_declare_coherent_memory
++ * and DMA bounce buffers allow the higher-level OHCI host driver to
++ * work.  However, the dma API doesn't handle dma mapping failures
++ * well (dma_sg_map() is a prime example), so it is unusable.
++ *
++ * This HC pretends be a PIO-ish controller and uses the kernel's
++ * generic allocator for the entire SRAM.  Using the USB core's
++ * usb_operations, we provide hcd_buffer_alloc/free.  Using the OHCI's
++ * ohci_ops, we provide memory management for OHCI's TDs and EDs.  We
++ * internally queue a URB's TDs until enough dma memory is available
++ * to enqueue them with the HC.
++ *
++ * Written from sparse documentation from Toshiba and Sharp's driver
++ * for the 2.4 kernel,
++ *	usb-ohci-tc6393.c (C) Copyright 2004 Lineo Solutions, Inc.
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ */
++
++#include <linux/fs.h>
++#include <linux/mount.h>
++#include <linux/pagemap.h>
++#include <linux/init.h>
++#include <linux/namei.h>
++#include <linux/sched.h>
++
++#include <linux/genalloc.h>
++#include <asm/dma-mapping.h>		/* for consistent_sync()	*/
++#include <asm/hardware/tmio.h>
++
++/*-------------------------------------------------------------------------*/
++
++/*
++ * USB Host Controller Configuration Register
++ */
++struct tmio_uhccr {
++	u8 x00[8];
++	u8	revid;	/* 0x08 Revision ID				*/
++	u8 x01[7];
++	u16	basel;	/* 0x10 USB Control Register Base Address Low	*/
++	u16	baseh;	/* 0x12 USB Control Register Base Address High	*/
++	u8 x02[0x2c];
++	u8	ilme;	/* 0x40 Internal Local Memory Enable		*/
++	u8 x03[0x0b];
++	u16	pm;	/* 0x4c Power Management			*/
++	u8 x04[2];
++	u8	intc;	/* 0x50 INT Control				*/
++	u8 x05[3];
++	u16	lmw1l;	/* 0x54 Local Memory Window 1 LMADRS Low	*/
++	u16	lmw1h;	/* 0x56 Local Memory Window 1 LMADRS High	*/
++	u16	lmw1bl;	/* 0x58 Local Memory Window 1 Base Address Low	*/
++	u16	lmw1bh;	/* 0x5A Local Memory Window 1 Base Address High	*/
++	u16	lmw2l;	/* 0x5C Local Memory Window 2 LMADRS Low	*/
++	u16	lmw2h;	/* 0x5E Local Memory Window 2 LMADRS High	*/
++	u16	lmw2bl;	/* 0x60 Local Memory Window 2 Base Address Low	*/
++	u16	lmw2bh;	/* 0x62 Local Memory Window 2 Base Address High	*/
++	u8 x06[0x98];
++	u8	misc;	/* 0xFC MISC					*/
++	u8 x07[3];
++} __attribute__ ((packed));
++
++union tmio_uhccr_pm {
++	u16		raw;
++struct {
++	unsigned	gcken:1;	/* D0 */
++	unsigned	ckrnen:1;	/* D1 */
++	unsigned	uspw1:1;	/* D2 USB Port 1 Power Disable	*/
++	unsigned	uspw2:1;	/* D3 USB Port 2 Power Disable	*/
++	unsigned	x00:4;
++	unsigned	pmee:1;		/* D8 */
++	unsigned	x01:6;
++	unsigned	pmes:1;		/* D15 */
++} __attribute__ ((packed));
++} __attribute__ ((packed));
++
++/*-------------------------------------------------------------------------*/
++
++struct tmio_dma_pool {
++	struct device*		dev;
++	unsigned int		size;
++};
++
++struct tmio_hcd {
++	struct gen_pool*	poolp;
++	struct usb_operations	ops;
++	struct tmio_dma_pool	td_pool;
++	struct tmio_dma_pool	ed_pool;
++
++	struct tmio_uhccr __iomem *ccr;
++	void __iomem *		sram;
++	size_t			sram_len;
++};
++
++#define hcd_to_tmio(hcd)	((struct tmio_hcd*)(hcd_to_ohci (hcd) + 1))
++
++struct tmio_td {
++	void*		data;		/* td's data buffer		*/
++	void __iomem *	bounce;		/* dma bounce buffer		*/
++	dma_addr_t	dma;		/* bounce buffer dma address	*/
++	size_t		len;		/* bounce buffer length		*/
++	u32		info;		/* parameter for td_fill	*/
++};
++
++struct tmio_urb {
++	int		td_add;		/* next index to be added	*/
++	int		td_queue;	/* next index to be HC enqueued	*/
++
++	struct tmio_td	td [0];		/* private td data		*/
++};
++
++static inline struct tmio_urb *urb_to_turb (struct urb *urb)
++{
++	urb_priv_t* urb_priv = urb->hcpriv;
++	return (struct tmio_urb*)(urb_priv->td + urb_priv->length);
++}
++
++/*-------------------------------------------------------------------------*/
++
++/* gen_pool_alloc page allocator callback */
++static unsigned long tmio_pool_callback(struct gen_pool *poolp)
++{
++	return 0;
++}
++
++static inline void tmio_pool_destroy(struct tmio_hcd *tmio)
++{
++	struct gen_pool *poolp = tmio->poolp;
++
++	if (!poolp)
++		return;
++	if (poolp->h)
++		kfree(poolp->h);
++	kfree(poolp);
++	tmio->poolp = NULL;
++}
++
++/*-------------------------------------------------------------------------*/
++
++#define BOUNDED_XYL(x,y,ylen)	(((y) <= (x)) && ((x) < ((y)+(ylen))))
++#define BOUNDED_XYY(x,y1,y2)	(((y1) <= (x)) && ((x) < (y2)))
++
++static inline dma_addr_t tmio_virt_to_dma (struct usb_hcd *hcd, void *vaddr)
++{
++	struct resource* sram	= tmio_resource_mem (hcd->self.controller);
++	struct tmio_hcd* tmio	= hcd_to_tmio (hcd);
++
++	return BOUNDED_XYL (vaddr, tmio->sram, tmio->sram_len)
++			? sram->start + (vaddr - tmio->sram)
++			: ~0;
++}
++
++static inline void* tmio_dma_to_virt (struct usb_hcd *hcd, dma_addr_t handle)
++{
++	struct resource* sram	= tmio_resource_mem (hcd->self.controller);
++	struct tmio_hcd* tmio	= hcd_to_tmio (hcd);
++
++	return BOUNDED_XYY (handle, sram->start, sram->end + 1)
++			? tmio->sram + handle - sram->start
++			: NULL;
++}
++
++/*
++ * allocate dma-able memory in the device's internal sram
++ *
++ * The generic pool allocator's minimum chunk size is 32 bytes,
++ * which is the cache line size on the PXA255, so we don't need
++ * to do anything special for smaller requests.
++ */
++static inline void *tmio_dma_alloc (struct device *dev, size_t size,
++				dma_addr_t *handle, gfp_t mem_flags)
++{
++	struct usb_hcd*	 hcd	= dev_get_drvdata (dev);
++	struct tmio_hcd* tmio	= hcd_to_tmio (hcd);
++	void*		 virt	= (void*) gen_pool_alloc (tmio->poolp, size);
++
++	return (*handle = tmio_virt_to_dma (hcd, virt)) == ~0 ? NULL : virt;
++}
++
++static inline void tmio_dma_free (struct device *dev, size_t size,
++					void *cpu_addr, dma_addr_t handle)
++{
++	struct usb_hcd*		hcd	= dev_get_drvdata (dev);
++	struct tmio_hcd*	tmio	= hcd_to_tmio (hcd);
++	dma_addr_t		dma	= tmio_virt_to_dma (hcd, cpu_addr);
++
++	if (unlikely (dma == ~0)) {
++		dev_err (dev, "trying to free bad address 0x%p\n", cpu_addr);
++		return;
++	}
++
++	if (unlikely (handle != dma))
++		dev_err (dev, "dma address mismatch for 0x%p: %08x != %08x\n",
++				cpu_addr, handle, dma);
++
++	gen_pool_free (tmio->poolp, (unsigned long) cpu_addr, size);
++}
++
++/*-------------------------------------------------------------------------*/
++
++static void *tmio_dma_pool_alloc(struct dma_pool *pool, gfp_t mem_flags,
++							dma_addr_t *handle)
++{
++	struct tmio_dma_pool *tdp = (struct tmio_dma_pool*) pool;
++	return tmio_dma_alloc (tdp->dev, tdp->size, handle, mem_flags);
++}
++
++static void
++tmio_dma_pool_free (struct dma_pool *pool, void *vaddr, dma_addr_t addr)
++{
++	struct tmio_dma_pool *tdp = (struct tmio_dma_pool*) pool;
++	return tmio_dma_free (tdp->dev, tdp->size, vaddr, addr);
++}
++
++static void *tmio_buffer_alloc (struct usb_bus *bus, size_t size,
++				gfp_t mem_flags, dma_addr_t *dma)
++{
++	return tmio_dma_alloc (bus->controller, size, dma, mem_flags);
++}
++
++static void tmio_buffer_free (struct usb_bus *bus, size_t size,
++				void *addr, dma_addr_t dma)
++{
++	tmio_dma_free (bus->controller, size, addr, dma);
++}
++
++/*-------------------------------------------------------------------------*/
++
++static void tmio_hc_stop (struct usb_hcd *hcd)
++{
++	struct device*			dev	= hcd->self.controller;
++	struct tmio_device*		tdev	= dev_to_tdev (dev);
++	struct tmio_hcd*		tmio	= hcd_to_tmio (hcd);
++	struct tmio_uhccr __iomem*	ccr	= tmio->ccr;
++	union tmio_uhccr_pm		pm	= {0};
++
++	pm.gcken	= 1;
++	pm.ckrnen	= 1;
++	pm.uspw1	= 1;
++	pm.uspw2	= 1;
++
++	iowrite8 (0,		&ccr->intc);
++	iowrite8 (0,		&ccr->ilme);
++	iowrite16(0,		&ccr->basel);
++	iowrite16(0,		&ccr->baseh);
++	iowrite16(pm.raw,	&ccr->pm);
++
++	tdev->ops->function (dev, 0);
++	tdev->ops->clock (dev, 0);
++}
++
++static void tmio_hc_start (struct usb_hcd *hcd)
++{
++	struct device*			dev	= hcd->self.controller;
++	struct tmio_device*		tdev	= dev_to_tdev (dev);
++	struct tmio_hcd*		tmio	= hcd_to_tmio (hcd);
++	struct tmio_uhccr __iomem*	ccr	= tmio->ccr;
++	union tmio_uhccr_pm		pm	= {0};
++
++	pm.pmes		= 1;
++	pm.pmee		= 1;
++	pm.ckrnen	= 1;
++	pm.gcken	= 1;
++
++	tdev->ops->clock (dev, 1);
++	tdev->ops->function (dev, 1);
++
++	iowrite16(pm.raw,			&ccr->pm);
++	iowrite16(hcd->rsrc_start,		&ccr->basel);
++	iowrite16(hcd->rsrc_start >> 16,	&ccr->baseh);
++	iowrite8 (1,				&ccr->ilme);
++	iowrite8 (2,				&ccr->intc);
++
++	consistent_sync (tmio->sram, tmio->sram_len, DMA_BIDIRECTIONAL);
++
++	dev_info (dev, "revision %d @ 0x%08llx, irq %d\n",
++			ioread8 (&ccr->revid), hcd->rsrc_start, hcd->irq);
++}
++
++static void tmio_stop (struct usb_hcd *hcd)
++{
++	struct ohci_hcd*	ohci	= hcd_to_ohci (hcd);
++
++	/* NULL these so ohci_stop() doesn't try to free them */
++	ohci->hcca	= NULL;
++	ohci->td_cache	= NULL;
++	ohci->ed_cache	= NULL;
++
++	ohci_stop (hcd);
++	tmio_hc_stop (hcd);
++	tmio_pool_destroy (hcd_to_tmio (hcd));
++
++	/* We don't free the hcca because tmio_hc_stop() turns off
++	 * the sram and the memory allocation data is destroyed. */
++}
++
++static int tmio_start (struct usb_hcd *hcd)
++{
++	struct device*		dev	= hcd->self.controller;
++	struct ohci_hcd*	ohci	= hcd_to_ohci (hcd);
++	struct tmio_hcd*	tmio	= hcd_to_tmio (hcd);
++	int			retval;
++
++	tmio_hc_start (hcd);
++
++	tmio->poolp = gen_pool_create(0, fls(tmio->sram_len) - 1,
++						tmio_pool_callback, 0);
++	if (!tmio->poolp) {
++		retval = -ENOMEM;
++		goto err_gen_pool_create;
++	}
++
++	gen_pool_free (tmio->poolp, (unsigned long)(tmio->sram),
++							tmio->sram_len);
++
++	ohci->hcca = tmio_dma_alloc (dev, sizeof *ohci->hcca,
++					&ohci->hcca_dma, GFP_KERNEL);
++	if (!ohci->hcca) {
++		retval = -ENOMEM;
++		goto err_hcca_alloc;
++	}
++
++	/* for our dma_pool_alloc/free hooks */
++	ohci->td_cache = (struct dma_pool*) &tmio->td_pool;
++	ohci->ed_cache = (struct dma_pool*) &tmio->ed_pool;
++
++	if ((retval = ohci_init (ohci)) < 0)
++		goto err_ohci_init;
++
++	if ((retval = ohci_run (ohci)) < 0)
++		goto err_ohci_run;
++
++	return 0;
++
++err_ohci_run:
++	err ("can't start %s", hcd->self.bus_name);
++err_ohci_init:
++err_hcca_alloc:
++err_gen_pool_create:
++	tmio_stop (hcd);
++	return retval;
++}
++
++/*-------------------------------------------------------------------------*/
++
++static inline void *tmio_urb_dma_to_virt(struct urb *urb, dma_addr_t dma)
++{
++	if (BOUNDED_XYL(dma, urb->transfer_dma, urb->transfer_buffer_length))
++		return urb->transfer_buffer	+ dma - urb->transfer_dma;
++
++	if (BOUNDED_XYL(dma, urb->setup_dma, sizeof (struct usb_ctrlrequest)))
++		return urb->setup_packet	+ dma - urb->setup_dma;
++
++	return NULL;
++}
++
++static struct tmio_td* tmio_td_find (struct td *td, int *index)
++{
++	struct urb*		urb		= td->urb;
++	urb_priv_t*		urb_priv	= urb->hcpriv;
++	struct tmio_urb*	turb		= urb_to_turb (urb);
++	int			i;
++
++	for (i=0; i < urb_priv->length; i++)
++		if (urb_priv->td[i] == td) {
++			*index = i;
++			return turb->td + i;
++		}
++
++	return NULL;
++}
++
++/*
++ * map the td's data to dma-able memory
++ *
++ * if this td transfers data,
++ *	sets tmtd->data		to the urb's data buffer
++ *	sets tmtd->dma		to dma-able memory
++ *	sets tmtd->bounce	to non-NULL if a bounce buffer is allocated
++ *	copies the urb's data buffer to the bounce buffer if necessary
++ */
++static int tmio_td_dma_map (struct ohci_hcd *ohci, struct urb *urb,
++				struct tmio_td *tmtd, int idx)
++{
++	struct usb_hcd*		hcd	= ohci_to_hcd (ohci);
++	struct device*		dev	= hcd->self.controller;
++	dma_addr_t		dma;
++
++	if (!tmtd->len)
++		return 0;
++
++	if (tmio_dma_to_virt (hcd, tmtd->dma))
++		return 0;
++
++	tmtd->data = tmio_urb_dma_to_virt (urb, tmtd->dma);
++	if (unlikely (!tmtd->data)) {
++		dev_err (dev, "TD has bad dma address 0x%08x\n", tmtd->dma);
++		return 0;
++	}
++
++	tmtd->bounce = tmio_dma_alloc (dev, tmtd->len, &dma, GFP_ATOMIC);
++	if (!tmtd->bounce)
++		return -ENOMEM;
++
++	if ((usb_pipecontrol (urb->pipe) && !idx) || usb_pipeout (urb->pipe)) {
++		consistent_sync (tmtd->bounce, tmtd->len, DMA_TO_DEVICE);
++		memcpy (tmtd->bounce, tmtd->data, tmtd->len);
++	} else
++		consistent_sync (tmtd->bounce, tmtd->len, DMA_FROM_DEVICE);
++
++	tmtd->dma = dma;
++	return 0;
++}
++
++/*
++ * unmaps the td's data from dma-able memory
++ *
++ * if a bounce buffer has been allocated,
++ * 	copy the bounce buffer to the urb's data buffer if necessary
++ * 	free the bounce buffer
++ */
++static void tmio_td_dma_unmap (struct ohci_hcd *ohci, struct td *td)
++{
++	struct device*	dev	= (ohci_to_hcd (ohci))->self.controller;
++	struct urb*	urb	= td->urb;
++	int		idx;
++	struct tmio_td*	tmtd	= tmio_td_find (td, &idx);
++
++	if (!tmtd->bounce)
++		return;
++
++	if (usb_pipein (urb->pipe) && (usb_pipecontrol (urb->pipe) ? idx : 1)) {
++		memcpy (tmtd->data, tmtd->bounce, tmtd->len);
++		consistent_sync (tmtd->data, tmtd->len, DMA_TO_DEVICE);
++	}
++
++	tmio_dma_free (dev, tmtd->len, tmtd->bounce, tmtd->dma);
++}
++
++static int tmio_urb_runqueue (struct ohci_hcd *ohci, struct urb *urb)
++{
++	struct tmio_urb*	turb	= urb_to_turb (urb);
++	urb_priv_t*		urb_priv= urb->hcpriv;
++	int			start	= turb->td_queue;
++	int			retval	= 0;
++	int			i;
++
++	for (i = start; i < turb->td_add; i = ++turb->td_queue) {
++		struct tmio_td *tmtd = turb->td + i;
++
++		if ((retval = tmio_td_dma_map (ohci, urb, tmtd, i)))
++			break;
++
++		td_fill (ohci, tmtd->info, tmtd->dma, tmtd->len, urb, i);
++	}
++
++	if (i <= start)
++		return retval;
++
++	/* kickstart the appropriate list */
++	wmb ();
++	switch (urb_priv->ed->type) {
++		case PIPE_BULK:
++			ohci_writel (ohci, OHCI_BLF, &ohci->regs->cmdstatus);
++			break;
++		case PIPE_CONTROL:
++			ohci_writel (ohci, OHCI_CLF, &ohci->regs->cmdstatus);
++			break;
++	}
++
++	return retval;
++}
++
++/*
++ * This needs to be called with ohci->lock held so the pending urb list
++ * isn't modified.
++ */
++static int tmio_ohci_runqueue (struct ohci_hcd *ohci)
++{
++	urb_priv_t*		priv;
++	int			retval	= 0;
++
++	list_for_each_entry_reverse (priv, &ohci->pending, pending)
++		if ((retval = tmio_urb_runqueue (ohci, priv->td[0]->urb)))
++			return retval;
++
++	return retval;
++}
++
++static void tmio_td_fill (struct ohci_hcd *ohci, u32 info,
++			dma_addr_t data, int len, struct urb *urb, int index)
++{
++	struct tmio_urb*	turb	= urb_to_turb (urb);
++	struct tmio_td*		tmtd	= turb->td + index;
++
++	tmtd->data	= NULL;
++	tmtd->bounce	= NULL;
++	tmtd->dma	= data;
++	tmtd->len	= len;
++	tmtd->info	= info;
++	turb->td_add	= index + 1;
++}
++
++static void
++tmio_td_done (struct ohci_hcd *ohci, struct urb *urb, struct td *td)
++{
++	tmio_td_dma_unmap (ohci, td);
++	td_done (ohci, urb, td);
++}
++
++const static struct ohci_ops tmio_ops = {
++	.dma_pool_alloc	= tmio_dma_pool_alloc,
++	.dma_pool_free	= tmio_dma_pool_free,
++	.td_fill	= tmio_td_fill,
++	.td_done	= tmio_td_done,
++};
++
++/*-------------------------------------------------------------------------*/
++
++static irqreturn_t tmio_irq (struct usb_hcd *hcd, struct pt_regs *ptregs)
++{
++	irqreturn_t		retval	= ohci_irq (hcd, ptregs);
++
++	if (retval == IRQ_HANDLED) {
++		struct ohci_hcd	*ohci = hcd_to_ohci (hcd);
++		unsigned long flags;
++
++		spin_lock_irqsave(&ohci->lock, flags);
++		tmio_ohci_runqueue (ohci);
++		spin_unlock_irqrestore (&ohci->lock, flags);
++	}
++
++	return retval;
++}
++
++/*
++ * This is ohci_urb_enqueue with:
++ *	dma address sanitization for tmio_urb_dma_to_virt()
++ *	allocate extra space in urb_priv for our private data
++ *	initialize urb_priv->td[0]->urb for tmio_ohci_runqueue()
++ *	call tmio_ohci_runqueue() after submitting TDs
++ */
++static int tmio_urb_enqueue (
++	struct usb_hcd	*hcd,
++	struct usb_host_endpoint *ep,
++	struct urb	*urb,
++	gfp_t		mem_flags
++) {
++	struct ohci_hcd	*ohci = hcd_to_ohci (hcd);
++	struct ed	*ed;
++	urb_priv_t	*urb_priv;
++	unsigned int	pipe = urb->pipe;
++	int		i, size = 0;
++	unsigned long	flags;
++	int		retval = 0;
++
++#ifdef OHCI_VERBOSE_DEBUG
++	urb_print (urb, "SUB", usb_pipein (pipe));
++#endif
++
++	/* make sure we can convert dma offsets back to virtual addresses */
++	if (!tmio_dma_to_virt (hcd, urb->setup_dma))
++		urb->setup_dma		= 0;
++
++	if (!tmio_dma_to_virt (hcd, urb->transfer_dma))
++		urb->transfer_dma	= sizeof (struct usb_ctrlrequest);
++
++	/* every endpoint has a ed, locate and maybe (re)initialize it */
++	if (! (ed = ed_get (ohci, ep, urb->dev, pipe, urb->interval)))
++		return -ENOMEM;
++
++	/* for the private part of the URB we need the number of TDs (size) */
++	switch (ed->type) {
++		case PIPE_CONTROL:
++			/* td_submit_urb() doesn't yet handle these */
++			if (urb->transfer_buffer_length > 4096)
++				return -EMSGSIZE;
++
++			/* 1 TD for setup, 1 for ACK, plus ... */
++			size = 2;
++			/* FALLTHROUGH */
++		// case PIPE_INTERRUPT:
++		// case PIPE_BULK:
++		default:
++			/* one TD for every 4096 Bytes (can be upto 8K) */
++			size += urb->transfer_buffer_length / 4096;
++			/* ... and for any remaining bytes ... */
++			if ((urb->transfer_buffer_length % 4096) != 0)
++				size++;
++			/* ... and maybe a zero length packet to wrap it up */
++			if (size == 0)
++				size++;
++			else if ((urb->transfer_flags & URB_ZERO_PACKET) != 0
++				&& (urb->transfer_buffer_length
++					% usb_maxpacket (urb->dev, pipe,
++						usb_pipeout (pipe))) == 0)
++				size++;
++			break;
++		case PIPE_ISOCHRONOUS: /* number of packets from URB */
++			size = urb->number_of_packets;
++			break;
++	}
++
++	/* allocate the private part of the URB */
++	urb_priv = kzalloc (sizeof (urb_priv_t)
++				+ size * sizeof (struct td*)
++				+ sizeof (struct tmio_urb)
++				+ size * sizeof (struct tmio_td),
++				mem_flags);
++	if (!urb_priv)
++		return -ENOMEM;
++	INIT_LIST_HEAD (&urb_priv->pending);
++	urb_priv->length = size;
++	urb_priv->ed = ed;
++
++	/* allocate the TDs (deferring hash chain updates) */
++	for (i = 0; i < size; i++) {
++		urb_priv->td [i] = td_alloc (ohci, mem_flags);
++		if (!urb_priv->td [i]) {
++			urb_priv->length = i;
++			urb_free_priv (ohci, urb_priv);
++			return -ENOMEM;
++		}
++		urb_priv->td [i]->urb = urb;
++	}
++
++	spin_lock_irqsave (&ohci->lock, flags);
++
++	/* don't submit to a dead HC */
++	if (!HC_IS_RUNNING(hcd->state)) {
++		retval = -ENODEV;
++		goto fail;
++	}
++
++	/* in case of unlink-during-submit */
++	spin_lock (&urb->lock);
++	if (urb->status != -EINPROGRESS) {
++		spin_unlock (&urb->lock);
++		urb->hcpriv = urb_priv;
++		finish_urb (ohci, urb, NULL);
++		retval = 0;
++		goto fail;
++	}
++
++	/* schedule the ed if needed */
++	if (ed->state == ED_IDLE) {
++		retval = ed_schedule (ohci, ed);
++		if (retval < 0)
++			goto fail0;
++		if (ed->type == PIPE_ISOCHRONOUS) {
++			u16	frame = ohci_frame_no(ohci);
++
++			/* delay a few frames before the first TD */
++			frame += max_t (u16, 8, ed->interval);
++			frame &= ~(ed->interval - 1);
++			frame |= ed->branch;
++			urb->start_frame = frame;
++
++			/* yes, only URB_ISO_ASAP is supported, and
++			 * urb->start_frame is never used as input.
++			 */
++		}
++	} else if (ed->type == PIPE_ISOCHRONOUS)
++		urb->start_frame = ed->last_iso + ed->interval;
++
++	/* fill the TDs and link them to the ed; and
++	 * enable that part of the schedule, if needed
++	 * and update count of queued periodic urbs
++	 */
++	urb->hcpriv = urb_priv;
++	td_submit_urb (ohci, urb);
++	tmio_ohci_runqueue (ohci);
++
++fail0:
++	spin_unlock (&urb->lock);
++fail:
++	if (retval)
++		urb_free_priv (ohci, urb_priv);
++	spin_unlock_irqrestore (&ohci->lock, flags);
++	return retval;
++}
++
++static const struct hc_driver tmio_hc_driver = {
++	.description =		hcd_name,
++	.product_desc =		"TMIO OHCI USB Host Controller",
++	.hcd_priv_size =	sizeof (struct ohci_hcd)
++				+ sizeof (struct tmio_hcd),
++
++	/* generic hardware linkage */
++	.irq =			tmio_irq,
++	.flags =		HCD_USB11 | HCD_MEMORY,
++
++	/* basic lifecycle operations */
++	.start =		tmio_start,
++	.stop =			tmio_stop,
++
++	/* managing i/o requests and associated device resources */
++	.urb_enqueue =		tmio_urb_enqueue,
++	.urb_dequeue =		ohci_urb_dequeue,
++	.endpoint_disable =	ohci_endpoint_disable,
++
++	/* scheduling support */
++	.get_frame_number =	ohci_get_frame,
++
++	/* root hub support */
++	.hub_status_data =	ohci_hub_status_data,
++	.hub_control =		ohci_hub_control,
++#ifdef	CONFIG_PM
++	.bus_suspend =		ohci_bus_suspend,
++	.bus_resume =		ohci_bus_resume,
++#endif
++	.start_port_reset =	ohci_start_port_reset,
++};
++
++/*-------------------------------------------------------------------------*/
++
++/* configure so an HC device and id are always provided */
++/* always called with process context; sleeping is OK */
++
++/**
++ * tmio_probe - initialize TMIO-based HCDs
++ * Context: !in_interrupt()
++ *
++ * Allocates basic resources for this USB host controller, and
++ * then invokes the start() method for the HCD associated with it
++ * through the hotplug entry's driver_data.
++ */
++static int tmio_probe (struct device *dev)
++{
++	struct tmio_device*	tdev	= dev_to_tdev (dev);
++	struct resource*	config	= tmio_resource_config (dev);
++	struct resource*	regs	= tmio_resource_control (dev);
++	struct resource*	sram	= tmio_resource_mem (dev);
++	struct resource*	irq	= tmio_resource_irq (dev);
++	struct usb_operations*	ops;
++	struct tmio_hcd*	tmio;
++	struct ohci_hcd*	ohci;
++	struct usb_hcd*		hcd;
++	int			retval;
++
++	if (usb_disabled ())
++		return -ENODEV;
++
++	if (dev->dma_mask || dev->coherent_dma_mask) {
++		dev_err (dev, "DMA not supported\n");
++		return -ENODEV;
++	}
++
++	hcd = usb_create_hcd (&tmio_hc_driver, dev, dev->bus_id);
++	if (!hcd) {
++		retval = -ENOMEM;
++		goto err_create_hcd;
++	}
++
++	tmio			= hcd_to_tmio (hcd);
++	tmio->td_pool.dev	= dev;
++	tmio->ed_pool.dev	= dev;
++	tmio->td_pool.size	= sizeof (struct td);
++	tmio->ed_pool.size	= sizeof (struct ed);
++	ohci			= hcd_to_ohci (hcd);
++	ohci_hcd_init (ohci);
++	ohci->ops		= &tmio_ops;
++
++	retval = request_resource (tdev->iomem, config);
++	if (retval)
++		goto err_request_config_resource;
++
++	retval = request_resource (tdev->iomem, regs);
++	if (retval)
++		goto err_request_regs_resource;
++
++	retval = request_resource (tdev->iomem, sram);
++	if (retval)
++		goto err_request_sram_resource;
++
++	hcd->rsrc_start	= regs->start;
++	hcd->rsrc_len	= regs->end - regs->start + 1;
++	tmio->sram_len	= sram->end - sram->start + 1;
++
++	tmio->ccr = ioremap (config->start, config->end - config->start + 1);
++	if (!tmio->ccr) {
++		retval = -ENOMEM;
++		goto err_ioremap_ccr;
++	}
++
++	hcd->regs = ioremap (hcd->rsrc_start, hcd->rsrc_len);
++	if (!hcd->regs) {
++		retval = -ENOMEM;
++		goto err_ioremap_regs;
++	}
++
++	tmio->sram = ioremap (sram->start, tmio->sram_len);
++	if (!tmio->sram) {
++		retval = -ENOMEM;
++		goto err_ioremap_sram;
++	}
++
++	/* drivers should use our coherent buffer allocator */
++	ops			= &tmio->ops;
++	memcpy (ops, hcd->self.op, sizeof *ops);
++	ops->buffer_alloc	= tmio_buffer_alloc;
++	ops->buffer_free	= tmio_buffer_free;
++	hcd->self.op		= ops;
++
++	retval = usb_add_hcd (hcd, irq->start, SA_INTERRUPT);
++	if (retval)
++		goto err_usb_add_hcd;
++
++	return 0;
++
++err_usb_add_hcd:
++	iounmap (tmio->sram);
++err_ioremap_sram:
++	iounmap (hcd->regs);
++err_ioremap_regs:
++	iounmap (tmio->ccr);
++err_ioremap_ccr:
++	release_resource (sram);
++err_request_sram_resource:
++	release_resource (regs);
++err_request_regs_resource:
++	release_resource (config);
++err_request_config_resource:
++	usb_put_hcd (hcd);
++err_create_hcd:
++	return retval;
++}
++
++/* may be called without controller electrically present */
++/* may be called with controller, bus, and devices active */
++
++/**
++ * tmio_remove - shutdown processing for TMIO-based HCDs
++ * @dev: USB Host Controller being removed
++ * Context: !in_interrupt()
++ *
++ * Reverses the effect of tmio_probe(), first invoking
++ * the HCD's stop() method.  It is always called from a thread
++ * context, normally "rmmod", "apmd", or something similar.
++ */
++static int tmio_remove (struct device *dev)
++{
++	struct usb_hcd*		hcd	= dev_get_drvdata (dev);
++	struct tmio_hcd*	tmio	= hcd_to_tmio (hcd);
++
++	usb_remove_hcd (hcd);
++	iounmap (tmio->sram);
++	iounmap (hcd->regs);
++	iounmap (tmio->ccr);
++	release_resource (tmio_resource_mem (dev));
++	release_resource (tmio_resource_control (dev));
++	release_resource (tmio_resource_config (dev));
++	usb_put_hcd (hcd);
++	return 0;
++}
++
++static struct device_driver tmio_ohci = {
++	.name		= TMIO_NAME_OHCI,
++	.bus		= &tmio_bus_type,
++	.probe		= tmio_probe,
++	.remove		= tmio_remove,
++};
++
++static int __init tmio_init (void)
++{
++	dbg (DRIVER_INFO " (%s)", TMIO_SOC_NAME);
++	dbg ("block sizes: ed %d td %d",
++			sizeof (struct ed), sizeof (struct td));
++
++	return driver_register (&tmio_ohci);
++}
++
++static void __exit tmio_exit (void)
++{
++	driver_unregister (&tmio_ohci);
++}
++
++module_init (tmio_init);
++module_exit (tmio_exit);
+Index: git/drivers/usb/host/Kconfig
+===================================================================
+--- git.orig/drivers/usb/host/Kconfig	2006-11-07 21:46:32.000000000 +0000
++++ git/drivers/usb/host/Kconfig	2006-11-07 21:48:38.000000000 +0000
+@@ -84,6 +84,7 @@ config USB_OHCI_HCD
+ 	depends on USB && USB_ARCH_HAS_OHCI
+ 	select ISP1301_OMAP if MACH_OMAP_H2 || MACH_OMAP_H3
+ 	select I2C if ARCH_PNX4008
++	select GENERIC_ALLOCATOR if TOSHIBA_TC6393XB
+ 	---help---
+ 	  The Open Host Controller Interface (OHCI) is a standard for accessing
+ 	  USB 1.1 host controller hardware.  It does more in hardware than Intel's
+Index: git/drivers/usb/host/ohci-hcd.c
+===================================================================
+--- git.orig/drivers/usb/host/ohci-hcd.c	2006-11-07 21:46:32.000000000 +0000
++++ git/drivers/usb/host/ohci-hcd.c	2006-11-07 21:48:33.000000000 +0000
+@@ -944,6 +944,7 @@ MODULE_LICENSE ("GPL");
+       || defined(CONFIG_ARCH_OMAP) \
+       || defined (CONFIG_ARCH_LH7A404) \
+       || defined (CONFIG_PXA27x) \
++      || defined (CONFIG_TOSHIBA_TC6393XB) \
+       || defined (CONFIG_ARCH_EP93XX) \
+       || defined (CONFIG_SOC_AU1X00) \
+       || defined (CONFIG_USB_OHCI_HCD_PPC_SOC) \

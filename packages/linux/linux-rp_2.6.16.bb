@@ -4,7 +4,7 @@ PR = "r47"
 
 # Handy URLs
 # git://rsync.kernel.org/pub/scm/linux/kernel/git/torvalds/linux-2.6.git \
-# http://www.kernel.org/pub/linux/kernel/v2.6/linux-2.6.14.tar.gz \
+# http://www.kernel.org/pub/linux/kernel/v2.6/linux-2.6.14.tar.bz2 \
 # http://www.kernel.org/pub/linux/kernel/v2.6/testing/patch-2.6.15-rc1.bz2;patch=1 \
 # http://www.kernel.org/pub/linux/kernel/v2.6/snapshots/patch-2.6.15-rc2-git1.bz2;patch=1 \
 # http://www.kernel.org/pub/linux/kernel/people/alan/linux-2.6/2.6.10/patch-2.6.10-ac8.gz;patch=1 \

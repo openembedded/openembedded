@@ -4,7 +4,7 @@ PR = "r31"
 
 # Handy URLs
 # git://rsync.kernel.org/pub/scm/linux/kernel/git/torvalds/linux-2.6.git \
-# http://www.kernel.org/pub/linux/kernel/v2.6/linux-2.6.14.tar.gz \
+# http://www.kernel.org/pub/linux/kernel/v2.6/linux-2.6.14.tar.bz2 \
 # http://www.kernel.org/pub/linux/kernel/v2.6/testing/patch-2.6.15-rc1.bz2;patch=1 \
 # http://www.kernel.org/pub/linux/kernel/v2.6/snapshots/patch-2.6.15-rc2-git1.bz2;patch=1 \
 # http://www.kernel.org/pub/linux/kernel/people/alan/linux-2.6/2.6.10/patch-2.6.10-ac8.gz;patch=1 \
@@ -47,6 +47,7 @@ SRC_URI = "http://www.kernel.org/pub/linux/kernel/v2.6/linux-2.6.17.tar.bz2 \
            ${RPSRC}/pxafb_changeres-r0.patch;patch=1 \
            ${RPSRC}/poodle_audio-r7.patch;patch=1 \
            ${RPSRC}/pxa27x_overlay-r2.patch;patch=1 \
+           ${RPSRC}/w100_extaccel-r0.patch;patch=1 \
            file://serial-add-support-for-non-standard-xtals-to-16c950-driver.patch;patch=1 \
            file://hrw-pcmcia-ids-r5.patch;patch=1 \
            ${RPSRC}/logo_oh-r0.patch.bz2;patch=1;status=unmergable \
@@ -111,11 +112,11 @@ SRC_URI_append_tosa = "\
 	   ${DOSRC}/tosa-tmio-lcd-r8.patch;patch=1 \
 	   ${DOSRC}/tosa-bluetooth-r8.patch;patch=1 \
 	   ${DOSRC}/wm97xx-lg7-r0.patch;patch=1 \
-	   ${DOSRC}/wm9712-suspend-cold-res-r1.patch;patch=1 \
+	   file://wm9712-suspend-cold-res-r2.patch;patch=1 \
 	   ${DOSRC}/sharpsl-pm-postresume-r0.patch;patch=1 \
 	   ${DOSRC}/wm97xx-dig-restore-r0.patch;patch=1 \
 	   ${DOSRC}/wm97xx-miscdevs-resume-r0.patch;patch=1 \
-	   ${DOSRC}/wm9712-reset-loop-r1.patch;patch=1 \
+	   file://wm9712-reset-loop-r2.patch;patch=1 \
 	   file://tosa-lcdnoise-r0.patch;patch=1 \
 	   file://wm97xx-lcdnoise-r0.patch;patch=1 "
 #	   ${DOSRC}/tosa-asoc-r1.patch;patch=1 "
