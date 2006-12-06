@@ -6,7 +6,7 @@ DEFAULT_PREFERENCE = "-1"
 
 # Handy URLs
 # git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux-2.6.git;protocol=git;tag=ef7d1b244fa6c94fb76d5f787b8629df64ea4046
-# http://www.kernel.org/pub/linux/kernel/v2.6/linux-2.6.18.tar.gz
+# http://www.kernel.org/pub/linux/kernel/v2.6/linux-2.6.18.tar.bz2
 # http://www.kernel.org/pub/linux/kernel/v2.6/testing/patch-2.6.18-rc6.bz2;patch=1
 # http://www.kernel.org/pub/linux/kernel/v2.6/snapshots/patch-2.6.18-rc2-git1.bz2;patch=1
 # http://www.kernel.org/pub/linux/kernel/people/alan/linux-2.6/2.6.10/patch-2.6.10-ac8.gz;patch=1
@@ -14,7 +14,6 @@ DEFAULT_PREFERENCE = "-1"
 
 # Patches submitted upstream are towards top of this list 
 # Hacks should clearly named and at the bottom
-#           ftp://ftp.kernel.org/pub/linux/kernel/people/akpm/patches/2.6/2.6.14-rc2/2.6.14-rc2-mm1/2.6.14-rc2-mm1.bz2;patch=1 \	   
 SRC_URI = "git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux-2.6.git;protocol=git;tag=ae99a78af33f00565a05dbbc6ca9b247fed002c5 \
            ${RPSRC}/alsa/asoc-v0.12.4.patch;patch=1 \
            ${RPSRC}/asoc_makefile-r1.patch;patch=1 \
@@ -35,6 +34,7 @@ SRC_URI = "git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux-2.6.git;
            ${RPSRC}/locomo_kbd_tweak-r1.patch;patch=1 \
            ${RPSRC}/poodle_pm-r3.patch;patch=1 \
            ${RPSRC}/pxa27x_overlay-r3.patch;patch=1 \
+           ${RPSRC}/w100_extaccel-r0.patch;patch=1 \
            file://serial-add-support-for-non-standard-xtals-to-16c950-driver.patch;patch=1 \
            ${RPSRC}/logo_oh-r0.patch.bz2;patch=1;status=unmergable \
            ${RPSRC}/logo_oz-r2.patch.bz2;patch=1;status=unmergable \
