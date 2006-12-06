@@ -1,0 +1,593 @@
+ drivers/mtd/nand/Kconfig  |    7 
+ drivers/mtd/nand/Makefile |    1 
+ drivers/mtd/nand/tmio.c   |  554 ++++++++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 562 insertions(+)
+
+Index: git/drivers/mtd/nand/tmio.c
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ git/drivers/mtd/nand/tmio.c	2006-11-07 23:31:12.000000000 +0000
+@@ -0,0 +1,554 @@
++/*
++ * A device driver for NAND flash connected to a Toshiba Mobile IO
++ * controller. This is known to work with the following variants:
++ *	TC6393XB revision 3
++ *
++ * Maintainer: Chris Humbert <mahadri+mtd@drigon.com>
++ *
++ * Copyright (C) 2005 Chris Humbert
++ * Copyright (C) 2005 Dirk Opfer
++ * Copyright (C) 2004 SHARP
++ * Copyright (C) 2002 Lineo Japan, Inc.
++ * Copyright (C) Ian Molton and Sebastian Carlier
++ *
++ * Based on Sharp's NAND driver, sharp_sl_tc6393.c
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ */
++
++#include <linux/module.h>
++#include <linux/types.h>
++#include <linux/delay.h>
++#include <linux/wait.h>
++#include <linux/ioport.h>
++#include <linux/mtd/mtd.h>
++#include <linux/mtd/nand.h>
++#include <linux/mtd/nand_ecc.h>
++#include <linux/mtd/partitions.h>
++#include <asm/io.h>
++#include <asm/hardware/tmio.h>
++
++#include <linux/interrupt.h>
++
++#define mtd_printk(level, mtd, format, arg...)	\
++	printk (level "%s: " format, mtd->name, ## arg)
++#define mtd_warn(mtd, format, arg...)		\
++	mtd_printk (KERN_WARNING, mtd, format, ## arg)
++
++/*--------------------------------------------------------------------------*/
++
++/* tmio_nfcr.mode Register Command List */
++#define FCR_MODE_DATA		0x94	// Data Data_Mode
++#define FCR_MODE_COMMAND	0x95	// Data Command_Mode
++#define FCR_MODE_ADDRESS	0x96	// Data Address_Mode
++
++#define FCR_MODE_HWECC_CALC	0xB4	// HW-ECC Data
++#define FCR_MODE_HWECC_RESULT	0xD4	// HW-ECC Calculation Result Read_Mode
++#define FCR_MODE_HWECC_RESET	0xF4	// HW-ECC Reset
++
++#define FCR_MODE_POWER_ON	0x0C	// Power Supply ON  to SSFDC card
++#define FCR_MODE_POWER_OFF	0x08	// Power Supply OFF to SSFDC card
++
++#define FCR_MODE_LED_OFF	0x00	// LED OFF
++#define FCR_MODE_LED_ON		0x04	// LED ON
++
++#define FCR_MODE_EJECT_ON	0x68	// Ejection Demand from Penguin is Advanced
++#define FCR_MODE_EJECT_OFF	0x08	// Ejection Demand from Penguin is Not Advanced
++
++#define FCR_MODE_LOCK		0x6C	// Operates By Lock_Mode. Ejection Switch is Invalid
++#define FCR_MODE_UNLOCK		0x0C	// Operates By UnLock_Mode.Ejection Switch is Effective
++
++#define FCR_MODE_CONTROLLER_ID	0x40	// Controller ID Read
++#define FCR_MODE_STANDBY	0x00	// SSFDC card Changes Standby State
++
++#define FCR_MODE_WE		0x80
++#define FCR_MODE_ECC1		0x40
++#define FCR_MODE_ECC0		0x20
++#define FCR_MODE_CE		0x10
++#define FCR_MODE_PCNT1		0x08
++#define FCR_MODE_PCNT0		0x04
++#define FCR_MODE_ALE		0x02
++#define FCR_MODE_CLE		0x01
++
++#define FCR_STATUS_BUSY		0x80
++
++/*
++ * NAND Flash Host Controller Configuration Register
++ */
++struct tmio_nfhccr {
++	u8 x00[4];
++	u16	command;	/* 0x04 Command				*/
++	u8 x01[0x0a];
++	u16	base[2];	/* 0x10 NAND Flash Control Reg Base Addr*/
++	u8 x02[0x29];
++	u8	intp;		/* 0x3d Interrupt Pin			*/
++	u8 x03[0x0a];
++	u8	inte;		/* 0x48 Interrupt Enable		*/
++	u8 x04;
++	u8	ec;		/* 0x4a Event Control			*/
++	u8 x05;
++	u8	icc;		/* 0x4c Internal Clock Control		*/
++	u8 x06[0x0e];
++	u8	eccc;		/* 0x5b ECC Control			*/
++	u8 x07[4];
++	u8	nftc;		/* 0x60 NAND Flash Transaction Control	*/
++	u8	nfm;		/* 0x61 NAND Flash Monitor		*/
++	u8	nfpsc;		/* 0x62 NAND Flash Power Supply Control	*/
++	u8	nfdc;		/* 0x63 NAND Flash Detect Control	*/
++	u8 x08[0x9c];
++} __attribute__ ((packed));
++
++/*
++ * NAND Flash Control Register
++ */
++struct tmio_nfcr {
++union {
++	u8	u8;		/* 0x00 Data Register			*/
++	u16	u16;
++	u32	u32;
++} __attribute__ ((packed));
++	u8	mode;		/* 0x04 Mode Register			*/
++	u8	status;		/* 0x05 Status Register			*/
++	u8	isr;		/* 0x06 Interrupt Status Register	*/
++	u8	imr;		/* 0x07 Interrupt Mask Register		*/
++} __attribute__ ((packed));
++
++struct tmio_nand {
++	struct mtd_info			mtd;
++	struct nand_chip		chip;
++
++	struct tmio_nfhccr __iomem *	ccr;
++	struct tmio_nfcr __iomem *	fcr;
++
++	unsigned int			irq;
++
++	/* for tmio_nand_read_byte */
++	u8				read;
++	unsigned			read_good:1;
++};
++
++#define mtd_to_tmio(m)			container_of(m, struct tmio_nand, mtd)
++
++/*--------------------------------------------------------------------------*/
++
++static void tmio_nand_hwcontrol(struct mtd_info *mtd, int cmd,
++				   unsigned int ctrl)
++{
++	struct tmio_nand *tmio = mtd_to_tmio (mtd);
++	struct tmio_nfcr __iomem *fcr = tmio->fcr;
++	struct nand_chip *chip = mtd->priv;
++
++	if (ctrl & NAND_CTRL_CHANGE) {
++		u8 mode;
++
++		if (ctrl & NAND_NCE) {
++			mode = FCR_MODE_DATA;
++
++			if (ctrl & NAND_CLE)
++				mode |=  FCR_MODE_CLE;
++			else
++				mode &= ~FCR_MODE_CLE;
++
++			if (ctrl & NAND_ALE)
++				mode |=  FCR_MODE_ALE;
++			else
++				mode &= ~FCR_MODE_ALE;
++		} else {
++			mode = FCR_MODE_STANDBY;
++		}
++
++		iowrite8 (mode, &fcr->mode);
++		tmio->read_good = 0;
++	}
++
++	if (cmd != NAND_CMD_NONE)
++		writeb(cmd, chip->IO_ADDR_W);
++}
++
++static int tmio_nand_dev_ready (struct mtd_info* mtd)
++{
++	struct tmio_nand*		tmio	= mtd_to_tmio (mtd);
++	struct tmio_nfcr __iomem *	fcr	= tmio->fcr;
++
++	return !(ioread8 (&fcr->status) & FCR_STATUS_BUSY);
++}
++
++static irqreturn_t tmio_irq (int irq, void *__tmio)
++{
++	struct tmio_nand*		tmio	= __tmio;
++	struct nand_chip*		this	= &tmio->chip;
++	struct tmio_nfcr __iomem *	fcr	= tmio->fcr;
++
++	/* disable RDYREQ interrupt */
++	iowrite8 (0x00,	&fcr->imr);
++
++	if (unlikely (!waitqueue_active (&this->controller->wq)))
++		printk (KERN_WARNING TMIO_NAME_NAND ": spurious interrupt\n");
++
++	wake_up (&this->controller->wq);
++	return IRQ_HANDLED;
++}
++
++/*
++ * The TMIO core has a RDYREQ interrupt on the posedge of #SMRB.
++ * This interrupt is normally disabled, but for long operations like
++ * erase and write, we enable it to wake us up.  The irq handler
++ * disables the interrupt.
++ */
++static int
++tmio_nand_wait (struct mtd_info *mtd, struct nand_chip *this)
++{
++	struct tmio_nand*		tmio	= mtd_to_tmio (mtd);
++	struct tmio_nfcr __iomem *	fcr	= tmio->fcr;
++	long				timeout;
++
++	/* enable RDYREQ interrupt */
++	iowrite8 (0x0f,	&fcr->isr);
++	iowrite8 (0x81,	&fcr->imr);
++
++	timeout = wait_event_timeout (this->controller->wq, tmio_nand_dev_ready (mtd),
++			msecs_to_jiffies (this->state == FL_ERASING ? 400 : 20));
++
++	if (unlikely (!tmio_nand_dev_ready (mtd))) {
++		iowrite8 (0x00,	&fcr->imr);
++		mtd_warn (mtd, "still busy with %s after %d ms\n",
++				this->state == FL_ERASING ? "erase" : "program",
++				this->state == FL_ERASING ? 400 : 20);
++
++	} else if (unlikely (!timeout)) {
++		iowrite8 (0x00,	&fcr->imr);
++		mtd_warn (mtd, "timeout waiting for interrupt\n");
++	}
++
++	this->cmdfunc (mtd, NAND_CMD_STATUS, -1, -1);
++	return this->read_byte (mtd);
++}
++
++/*
++ * The TMIO controller combines two 8-bit data bytes into one 16-bit
++ * word. This function separates them so nand_base.c works as expected,
++ * especially its NAND_CMD_READID routines.
++ *
++ * To prevent stale data from being read, tmio_nand_hwcontrol() clears
++ * tmio->read_good.
++ */
++static u_char tmio_nand_read_byte (struct mtd_info *mtd)
++{
++	struct tmio_nand*		tmio	= mtd_to_tmio (mtd);
++	struct tmio_nfcr __iomem *	fcr	= tmio->fcr;
++	unsigned int			data;
++
++	if (tmio->read_good--)
++		return tmio->read;
++
++	data		= ioread16 (&fcr->u16);
++	tmio->read	= data >> 8;
++	return data;
++}
++
++/*
++ * The TMIO controller converts an 8-bit NAND interface to a 16-bit
++ * bus interface, so all data reads and writes must be 16-bit wide.
++ * Thus, we implement 16-bit versions of the read, write, and verify
++ * buffer functions.
++ */
++static void
++tmio_nand_write_buf (struct mtd_info *mtd, const u_char *buf, int len)
++{
++	struct tmio_nand*		tmio	= mtd_to_tmio (mtd);
++	struct tmio_nfcr __iomem *	fcr	= tmio->fcr;
++
++	iowrite16_rep (&fcr->u16, buf, len >> 1);
++}
++
++static void tmio_nand_read_buf (struct mtd_info *mtd, u_char *buf, int len)
++{
++	struct tmio_nand*		tmio	= mtd_to_tmio (mtd);
++	struct tmio_nfcr __iomem *	fcr	= tmio->fcr;
++
++	ioread16_rep (&fcr->u16, buf, len >> 1);
++}
++
++static int
++tmio_nand_verify_buf (struct mtd_info *mtd, const u_char *buf, int len)
++{
++	struct tmio_nand*		tmio	= mtd_to_tmio (mtd);
++	struct tmio_nfcr __iomem *	fcr	= tmio->fcr;
++	u16*				p	= (u16*) buf;
++
++	for (len >>= 1; len; len--)
++		if (*(p++) != ioread16 (&fcr->u16))
++			return -EFAULT;
++	return 0;
++}
++
++static void tmio_nand_enable_hwecc (struct mtd_info* mtd, int mode)
++{
++	struct tmio_nand*		tmio	= mtd_to_tmio (mtd);
++	struct tmio_nfcr __iomem *	fcr	= tmio->fcr;
++
++	iowrite8 (FCR_MODE_HWECC_RESET, &fcr->mode);
++	ioread8 (&fcr->u8);	/* dummy read */
++	iowrite8 (FCR_MODE_HWECC_CALC, &fcr->mode);
++}
++
++static int tmio_nand_calculate_ecc (struct mtd_info* mtd, const u_char* dat,
++							u_char* ecc_code)
++{
++	struct tmio_nand*		tmio	= mtd_to_tmio (mtd);
++	struct tmio_nfcr __iomem *	fcr	= tmio->fcr;
++	unsigned int			ecc;
++
++	iowrite8 (FCR_MODE_HWECC_RESULT, &fcr->mode);
++
++	ecc = ioread16 (&fcr->u16);
++	ecc_code[1] = ecc;	// 000-255 LP7-0
++	ecc_code[0] = ecc >> 8;	// 000-255 LP15-8
++	ecc = ioread16 (&fcr->u16);
++	ecc_code[2] = ecc;	// 000-255 CP5-0,11b
++	ecc_code[4] = ecc >> 8;	// 256-511 LP7-0
++	ecc = ioread16 (&fcr->u16);
++	ecc_code[3] = ecc;	// 256-511 LP15-8
++	ecc_code[5] = ecc >> 8;	// 256-511 CP5-0,11b
++
++	iowrite8 (FCR_MODE_DATA, &fcr->mode);
++	return 0;
++}
++
++static void tmio_hw_init (struct device *dev, struct tmio_nand *tmio)
++{
++	struct resource*		nfcr	= tmio_resource_control (dev);
++	struct tmio_device*		tdev	= dev_to_tdev (dev);
++	struct tmio_nfhccr __iomem *	ccr	= tmio->ccr;
++	struct tmio_nfcr __iomem *	fcr	= tmio->fcr;
++	unsigned long			base;
++
++	/* (89h) SMD Buffer ON By TC6393XB SystemConfig gpibfc1 */
++	tdev->ops->clock (dev, 1);
++	tdev->ops->function (dev, 1);
++
++	/* (4Ch) CLKRUN Enable    1st spcrunc */
++	iowrite8 (0x81,			&ccr->icc);
++
++	/* (10h)BaseAddress    0x1000 spba.spba2 */
++	base = nfcr->start - tdev->iomem->start;
++	iowrite16 (base,		ccr->base + 0);
++	iowrite16 (base >> 16,		ccr->base + 1);
++
++	/* (04h)Command Register I/O spcmd */
++	iowrite8 (0x02,			&ccr->command);
++
++	/* (62h) Power Supply Control ssmpwc */
++	/* HardPowerOFF - SuspendOFF - PowerSupplyWait_4MS */
++	iowrite8 (0x02,			&ccr->nfpsc);
++
++	/* (63h) Detect Control ssmdtc */
++	iowrite8 (0x02,			&ccr->nfdc);
++
++	/* Interrupt status register clear sintst */
++	iowrite8 (0x0f,			&fcr->isr);
++
++	/* After power supply, Media are reset smode */
++	iowrite8 (FCR_MODE_POWER_ON,	&fcr->mode);
++	iowrite8 (FCR_MODE_COMMAND,	&fcr->mode);
++	iowrite8 (NAND_CMD_RESET,	&fcr->u8);
++
++	/* Standby Mode smode */
++	iowrite8 (FCR_MODE_STANDBY,	&fcr->mode);
++
++	mdelay (5);
++}
++
++static void tmio_hw_stop (struct device *dev, struct tmio_nand *tmio)
++{
++	struct tmio_device*		tdev	= dev_to_tdev (dev);
++	struct tmio_nfcr __iomem *	fcr	= tmio->fcr;
++
++	iowrite8 (FCR_MODE_POWER_OFF,	&fcr->mode);
++	tdev->ops->function (dev, 0);
++	tdev->ops->clock (dev, 0);
++}
++
++/*--------------------------------------------------------------------------*/
++
++#ifdef CONFIG_MTD_PARTITIONS
++static const char *part_probes[] = { "cmdlinepart", NULL };
++#endif
++
++static int tmio_probe (struct device *dev)
++{
++	struct tmio_device*		tdev	= dev_to_tdev (dev);
++	struct tmio_nand_platform_data*	tnpd	= dev->platform_data;
++	struct resource*		ccr	= tmio_resource_config (dev);
++	struct resource*		fcr	= tmio_resource_control (dev);
++	struct resource*		irq	= tmio_resource_irq (dev);
++	struct tmio_nand*		tmio;
++	struct mtd_info*		mtd;
++	struct nand_chip*		this;
++	struct mtd_partition*		parts;
++	int				nbparts = 0;
++	int				retval;
++
++	if (!tnpd)
++		return -EINVAL;
++
++	retval = request_resource (tdev->iomem, ccr);
++	if (retval)
++		goto err_request_ccr;
++
++	retval = request_resource (tdev->iomem, fcr);
++	if (retval)
++		goto err_request_fcr;
++
++	tmio = kzalloc (sizeof *tmio, GFP_KERNEL);
++	if (!tmio) {
++		retval = -ENOMEM;
++		goto err_kzalloc;
++	}
++
++	dev_set_drvdata (dev, tmio);
++	mtd		= &tmio->mtd;
++	this		= &tmio->chip;
++	mtd->priv	= this;
++	mtd->name	= TMIO_NAME_NAND;
++
++	tmio->ccr = ioremap (ccr->start, ccr->end - ccr->start + 1);
++	if (!tmio->ccr) {
++		retval = -EIO;
++		goto err_iomap_ccr;
++	}
++
++	tmio->fcr = ioremap (fcr->start, fcr->end - fcr->start + 1);
++	if (!tmio->fcr) {
++		retval = -EIO;
++		goto err_iomap_fcr;
++	}
++
++	tmio_hw_init (dev, tmio);
++
++	/* Set address of NAND IO lines */
++	this->IO_ADDR_R		= tmio->fcr;
++	this->IO_ADDR_W		= tmio->fcr;
++
++	/* Set address of hardware control function */
++	this->cmd_ctrl		= tmio_nand_hwcontrol;
++	this->dev_ready		= tmio_nand_dev_ready;
++	this->read_byte		= tmio_nand_read_byte;
++	this->write_buf		= tmio_nand_write_buf;
++	this->read_buf		= tmio_nand_read_buf;
++	this->verify_buf	= tmio_nand_verify_buf;
++
++	/* set eccmode using hardware ECC */
++	this->ecc.mode		= NAND_ECC_HW;
++	this->ecc.size 		= 512;
++	this->ecc.bytes 	= 6;
++	this->ecc.hwctl		= tmio_nand_enable_hwecc;
++	this->ecc.calculate	= tmio_nand_calculate_ecc;
++	this->ecc.correct	= nand_correct_data;
++	this->badblock_pattern	= tnpd->badblock_pattern;
++
++	/* 15 us command delay time */
++	this->chip_delay	= 15;
++
++	if (irq->start) {
++		retval = request_irq (irq->start, &tmio_irq,
++					SA_INTERRUPT, irq->name, tmio);
++		if (!retval) {
++			tmio->irq	= irq->start;
++			this->waitfunc	= tmio_nand_wait;
++		} else
++			mtd_warn (mtd, "request_irq error %d\n", retval);
++	}
++
++	/* Scan to find existence of the device */
++	if (nand_scan (mtd, 1)) {
++		retval = -ENODEV;
++		goto err_scan;
++	}
++
++	/* Register the partitions */
++#ifdef CONFIG_MTD_PARTITIONS
++	nbparts = parse_mtd_partitions (mtd, part_probes, &parts, 0);
++#endif
++	if (nbparts <= 0) {
++		parts	= tnpd->partition;
++		nbparts	= tnpd->num_partitions;
++	}
++
++	add_mtd_partitions (mtd, parts, nbparts);
++	return 0;
++
++err_scan:
++	if (tmio->irq)
++		free_irq (tmio->irq, tmio);
++	tmio_hw_stop (dev, tmio);
++	iounmap (tmio->fcr);
++err_iomap_fcr:
++	iounmap (tmio->ccr);
++err_iomap_ccr:
++	kfree (tmio);
++err_kzalloc:
++	release_resource (fcr);
++err_request_fcr:
++	release_resource (ccr);
++err_request_ccr:
++	return retval;
++}
++
++static int tmio_remove (struct device *dev)
++{
++	struct tmio_nand*		tmio	= dev_get_drvdata (dev);
++
++	nand_release (&tmio->mtd);
++	if (tmio->irq)
++		free_irq (tmio->irq, tmio);
++	tmio_hw_stop (dev, tmio);
++	iounmap (tmio->fcr);
++	iounmap (tmio->ccr);
++	kfree (tmio);
++	release_resource (tmio_resource_control (dev));
++	release_resource (tmio_resource_config (dev));
++	return 0;
++}
++
++#ifdef CONFIG_PM
++static int tmio_suspend (struct device *dev, pm_message_t state)
++{
++	tmio_hw_stop (dev, dev_get_drvdata (dev));
++	return 0;
++}
++
++static int tmio_resume (struct device *dev)
++{
++	tmio_hw_init (dev, dev_get_drvdata (dev));
++	return 0;
++}
++#endif
++
++static struct device_driver tmio_driver = {
++	.name		= TMIO_NAME_NAND,
++	.bus		= &tmio_bus_type,
++	.probe		= tmio_probe,
++	.remove		= tmio_remove,
++#ifdef CONFIG_PM
++	.suspend	= tmio_suspend,
++	.resume		= tmio_resume,
++#endif
++};
++
++static int __init tmio_init (void) {
++	return driver_register (&tmio_driver);
++}
++
++static void __exit tmio_exit (void) {
++	driver_unregister (&tmio_driver);
++}
++
++module_init (tmio_init);
++module_exit (tmio_exit);
++
++MODULE_LICENSE ("GPL");
++MODULE_AUTHOR ("Dirk Opfer, Chris Humbert");
++MODULE_DESCRIPTION ("NAND flash driver on Toshiba Mobile IO controller");
+Index: git/drivers/mtd/nand/Kconfig
+===================================================================
+--- git.orig/drivers/mtd/nand/Kconfig	2006-10-31 16:09:03.000000000 +0000
++++ git/drivers/mtd/nand/Kconfig	2006-11-07 22:13:09.000000000 +0000
+@@ -63,6 +63,13 @@ config MTD_NAND_AMS_DELTA
+ 	help
+ 	  Support for NAND flash on Amstrad E3 (Delta).
+ 
++config MTD_NAND_TMIO
++	tristate "NAND Flash device on Toshiba Mobile IO Controller"
++	depends on MTD_NAND && TOSHIBA_TC6393XB
++	help
++	  Support for NAND flash connected to a Toshiba Mobile IO
++	  Controller in some PDAs, including the Sharp SL6000x.
++
+ config MTD_NAND_TOTO
+ 	tristate "NAND Flash device on TOTO board"
+ 	depends on ARCH_OMAP && MTD_NAND && BROKEN
+Index: git/drivers/mtd/nand/Makefile
+===================================================================
+--- git.orig/drivers/mtd/nand/Makefile	2006-10-31 16:09:03.000000000 +0000
++++ git/drivers/mtd/nand/Makefile	2006-11-07 22:13:09.000000000 +0000
+@@ -22,5 +22,6 @@ obj-$(CONFIG_MTD_NAND_TS7250)		+= ts7250
+ obj-$(CONFIG_MTD_NAND_NANDSIM)		+= nandsim.o
+ obj-$(CONFIG_MTD_NAND_CS553X)		+= cs553x_nand.o
+ obj-$(CONFIG_MTD_NAND_NDFC)		+= ndfc.o
++obj-$(CONFIG_MTD_NAND_TMIO)		+= tmio.o
+ 
+ nand-objs = nand_base.o nand_bbt.o

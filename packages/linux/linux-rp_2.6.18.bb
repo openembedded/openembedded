@@ -1,6 +1,6 @@
 require linux-rp.inc
 
-PR = "r5"
+PR = "r6"
 
 # Handy URLs
 # git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux-2.6.git;protocol=git;tag=ef7d1b244fa6c94fb76d5f787b8629df64ea4046
@@ -13,7 +13,7 @@ PR = "r5"
 # Patches submitted upstream are towards top of this list 
 # Hacks should clearly named and at the bottom
 SRC_URI = "http://www.kernel.org/pub/linux/kernel/v2.6/linux-2.6.18.tar.bz2 \
-           ${RPSRC}/alsa/asoc-v0.12.patch;patch=1 \
+           ${RPSRC}/alsa/asoc-v0.12.4.patch;patch=1 \
            ${RPSRC}/asoc_makefile-r1.patch;patch=1 \
            ${RPSRC}/poodle_audio-r6.patch;patch=1 \
            ${RPSRC}/hx2750_base-r27.patch;patch=1 \
@@ -84,21 +84,21 @@ SRC_URI_append_tosa = "\
            ${CHSRC}/usb-ohci-hooks-r1.patch;patch=1 \
            ${CHSRC}/tmio-core-r4.patch;patch=1 \
            file://tmio-tc6393-r7.patch;patch=1 \
-           file://tmio-nand-r6.patch;patch=1 \
+           file://tmio-nand-r7.patch;patch=1 \
            file://tmio-ohci-r5.patch;patch=1 \
            ${CHSRC}/tmio-fb-r6.patch;patch=1 \
            ${DOSRC}/tosa-keyboard-r17.patch;patch=1 \
            ${DOSRC}/tosa-pxaac97-r6.patch;patch=1 \
            ${DOSRC}/tosa-tmio-r6.patch;patch=1 \
            ${DOSRC}/tosa-power-r17.patch;patch=1 \
-           file://tosa-tmio-lcd-r9.patch;patch=1 \
+           file://tosa-tmio-lcd-r10.patch;patch=1 \
            ${DOSRC}/tosa-bluetooth-r8.patch;patch=1 \
            ${DOSRC}/wm97xx-lg7-r0.patch;patch=1 \
-           ${DOSRC}/wm9712-suspend-cold-res-r1.patch;patch=1 \
+           file://wm9712-suspend-cold-res-r2.patch;patch=1 \
            ${DOSRC}/sharpsl-pm-postresume-r0.patch;patch=1 \
            ${DOSRC}/wm97xx-dig-restore-r0.patch;patch=1 \
            ${DOSRC}/wm97xx-miscdevs-resume-r0.patch;patch=1 \
-           ${DOSRC}/wm9712-reset-loop-r1.patch;patch=1 \
+           file://wm9712-reset-loop-r2.patch;patch=1 \
            file://tosa-lcdnoise-r1.patch;patch=1 \
            file://wm97xx-lcdnoise-r0.patch;patch=1 "
 #          ${DOSRC}/tosa-asoc-r1.patch;patch=1 "

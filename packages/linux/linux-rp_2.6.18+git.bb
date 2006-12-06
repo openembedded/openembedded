@@ -16,7 +16,7 @@ DEFAULT_PREFERENCE = "-1"
 # Hacks should clearly named and at the bottom
 #           ftp://ftp.kernel.org/pub/linux/kernel/people/akpm/patches/2.6/2.6.14-rc2/2.6.14-rc2-mm1/2.6.14-rc2-mm1.bz2;patch=1 \	   
 SRC_URI = "git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux-2.6.git;protocol=git;tag=ae99a78af33f00565a05dbbc6ca9b247fed002c5 \
-           ${RPSRC}/alsa/asoc-v0.12.patch;patch=1 \
+           ${RPSRC}/alsa/asoc-v0.12.4.patch;patch=1 \
            ${RPSRC}/asoc_makefile-r1.patch;patch=1 \
            ${RPSRC}/hx2750_base-r27.patch;patch=1 \
            ${RPSRC}/hx2750_bl-r7.patch;patch=1 \
