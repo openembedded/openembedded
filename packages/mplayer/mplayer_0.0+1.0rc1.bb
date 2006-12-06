@@ -5,7 +5,7 @@ HOMEPAGE = "http://www.mplayerhq.hu/"
 DEPENDS = "virtual/libsdl libmad zlib libpng jpeg liba52 freetype fontconfig alsa-lib lzo ncurses lame"
 RDEPENDS = "mplayer-common"
 LICENSE = "GPL"
-SRC_URI = "http://www1.mplayerhq.hu/MPlayer/releases/MPlayer-${PV}.tar.bz2 \
+SRC_URI = "http://www1.mplayerhq.hu/MPlayer/releases/MPlayer-1.0rc1.tar.bz2 \
            file://vo_w100.c \
            file://vo_w100_api.h \
            file://vo_w100_fb.h \
@@ -14,8 +14,6 @@ SRC_URI = "http://www1.mplayerhq.hu/MPlayer/releases/MPlayer-${PV}.tar.bz2 \
            file://w100-Makefile.patch;patch=1 \
            file://w100-video_out.patch;patch=1 \
            file://w100-mplayer.patch;patch=1 \
-           file://libmpdemux-ogg-include.patch;patch=1 \
-           file://libmpcodecs-ogg-include.patch;patch=1 \
            file://pld-onlyarm5.patch;patch=1 \
            ${SOURCEFORGE_MIRROR}/libw100/mplayer-imageon.patch;patch=1 \
            file://imageon-video_out.patch;patch=1"
@@ -29,7 +27,7 @@ PARALLEL_MAKE = ""
 DEPENDS_append_c7x0 = " sharp-aticore-oss libw100 "
 DEPENDS_append_hx4700 = " libw100 "
 
-S = "${WORKDIR}/MPlayer-${PV}"
+S = "${WORKDIR}/MPlayer-1.0rc1"
 
 PACKAGES =+ "mencoder"
 
@@ -53,7 +51,6 @@ EXTRA_OECONF = " \
         --disable-vm \
         --disable-xf86keysym \
 	--disable-tv \
-        --disable-tv-v4l \
         --disable-tv-v4l2 \
         --disable-tv-bsdbt848 \
 	--enable-rtc \
@@ -82,14 +79,11 @@ EXTRA_OECONF = " \
         --disable-libcdio \
         --enable-liblzo \
 	--disable-win32 \
-        --disable-dshow \
         --disable-qtx \
         --disable-xanim \
         --disable-real \
         --disable-xvid \
         --disable-x264 \
-        --disable-divx4linux \
-        --disable-opendivx \
         \
         --disable-libavutil_so \
         --disable-libavcodec_so \
@@ -101,7 +95,6 @@ EXTRA_OECONF = " \
         \
         --disable-speex \
         --disable-theora \
-        --disable-external-faad \
         --disable-faac \
         --disable-ladspa \
         --disable-libdv \
@@ -117,8 +110,6 @@ EXTRA_OECONF = " \
         --disable-amr_nb-fixed \
         --disable-amr_wb \
 	\
-        --disable-internal-vidix \
-        --disable-external-vidix \
         --disable-gl \
         --disable-dga \
         --disable-vesa \
