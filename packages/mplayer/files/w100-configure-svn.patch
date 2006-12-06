@@ -1,0 +1,48 @@
+Index: trunk/configure
+===================================================================
+--- trunk.orig/configure
++++ trunk/configure
+@@ -1623,6 +1623,7 @@ _caca=auto
+ _svga=auto
+ _vesa=auto
+ _fbdev=auto
++_w100=no
+ _dvb=auto
+ _dvbhead=auto
+ _dxr2=auto
+@@ -1822,6 +1823,8 @@ for ac_option do
+   --disable-vesa)	_vesa=no	;;
+   --enable-fbdev)	_fbdev=yes	;;
+   --disable-fbdev)	_fbdev=no	;;
++  --enable-w100)        _w100=yes       ;;
++  --disable-w100)       _w100=no        ;;
+   --enable-dvb)		_dvb=yes	;;
+   --disable-dvb)        _dvb=no		;;
+   --enable-dvbhead)	_dvbhead=yes	;;
+@@ -4280,6 +4283,18 @@ else
+ fi
+ echores "$_fbdev"
+ 
++echocheck "ATI Imageon 100 (w100)"
++if test "$_w100" = yes ; then
++  _def_w100='#define HAVE_W100 1'
++  _ld_w100='-laticore'
++  _libs_mplayer="$_libs_mplayer $_ld_w100"
++  _vosrc="$_vosrc vo_w100.c"
++  _vomodules="w100 $_vomodules"
++else
++  _def_w100='#undef HAVE_W100'
++  _novomodules="w100 $_novomodules"
++fi
++echores "$_w100"
+ 
+ 
+ echocheck "DVB"
+@@ -8227,6 +8242,7 @@ $_def_mga
+ $_def_xmga
+ $_def_syncfb
+ $_def_fbdev
++$_def_w100
+ $_def_dxr2
+ $_def_dxr3
+ $_def_ivtv
