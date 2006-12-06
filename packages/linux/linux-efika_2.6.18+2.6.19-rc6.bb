@@ -13,7 +13,7 @@ S = "${WORKDIR}/linux-2.6.19-rc6_efika"
 
 inherit kernel
 
-export ARCH=powerpc
+export ARCH="powerpc"
 
 KERNEL_IMAGETYPE = "zImage"
 
