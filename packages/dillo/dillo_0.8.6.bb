@@ -1,11 +1,12 @@
 SECTION = "x11/network"
-DESCRIPTION = "Lightweight gtk+ browser."
+DESCRIPTION = "Lightweight gtk+ browser, enhanced version, with support for SSL, frames, tabs and much more..."
 LICENSE = "GPL"
-DEPENDS = "gtk+-1.2 libpng"
+PR = "r1"
+DEPENDS = "gtk+-1.2 libpng openssl"
 SRC_URI="http://www.dillo.org/download/dillo-${PV}.tar.bz2 \
-         file://font.patch;patch=1 \
-	 file://dillo.desktop \
-	 file://dillo.png"
+         file://dillo-i18n.diff;patch=1 \
+         file://dillo.desktop \
+         file://dillo.png"
 	 
 
 PRIORITY = "optional"
@@ -20,7 +21,7 @@ FILES_${PN} += " /usr/lib/dillo/ /usr/bin/dpid /usr/bin/dpidc "
 
 export PNG_CONFIG = "${STAGING_BINDIR_CROSS}/libpng-config"
 
-EXTRA_OECONF = "--disable-dlgui"
+EXTRA_OECONF = "--disable-dlgui --disable-anti-alias"
 
 do_install_append() {
         install -d ${D}${datadir}/applications
