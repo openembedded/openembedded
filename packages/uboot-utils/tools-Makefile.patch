@@ -1,0 +1,19 @@
+--- u-boot-1.1.2.orig/tools/Makefile	2004-09-28 14:39:46.000000000 -0700
++++ u-boot-1.1.2/tools/Makefile	2006-11-08 11:07:18.000000000 -0800
+@@ -56,7 +56,7 @@
+ HOSTOS := $(shell uname -s | tr A-Z a-z | \
+ 	sed -e 's/\(cygwin\).*/cygwin/')
+ 
+-TOOLSUBDIRS =
++TOOLSUBDIRS = env
+ 
+ #
+ # Mac OS X / Darwin's C preprocessor is Apple specific.  It
+@@ -176,6 +176,7 @@
+ else
+ 		@for dir in $(TOOLSUBDIRS) ; do \
+ 		    $(MAKE) \
++			CROSS_COMPILE=$(CROSS_COMPILE) \
+ 			HOSTOS=$(HOSTOS) \
+ 			HOSTARCH=$(HOSTARCH) \
+ 			HOST_CFLAGS="$(HOST_CFLAGS)" \
