@@ -34,7 +34,7 @@ SRCDATE_matchbox-panel-manager ?= "20060612"
 SRCDATE_matchbox-stroke ?= "20060612"
 SRCDATE_matchbox-themes-extra ?= "20060612"
 SRCDATE_matchbox-wm ?= "20060612"
-SRCDATE_psplash ?= "20061011"
+SRCDATE_psplash ?= "20061207"
 SRCDATE_web ?= "20060613"
 SRCDATE_zaurusd ?= "20060628"
 
