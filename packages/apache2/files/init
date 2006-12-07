@@ -1,0 +1,70 @@
+#!/bin/sh
+ARGS="-D SSL -k start"
+NAME=apache2
+PATH=/bin:/usr/bin:/sbin:/usr/sbin
+DAEMON=/usr/sbin/httpd
+SUEXEC=/usr/lib/apache/suexec
+PIDFILE=/var/run/$NAME.pid
+CONF=/etc/apache2/httpd.conf
+APACHECTL=/usr/sbin/apachectl 
+
+trap "" 1
+export LANG=C
+export PATH
+
+test -f $DAEMON || exit 0
+test -f $APACHECTL || exit 0
+
+# ensure we don't leak environment vars into apachectl
+APACHECTL="env -i LANG=${LANG} PATH=${PATH} $APACHECTL"
+
+if egrep -q -i "^[[:space:]]*ServerType[[:space:]]+inet" $CONF
+then
+    exit 0
+fi
+
+case "$1" in
+  start)
+    echo -n "Starting web server: $NAME"
+    start-stop-daemon --start --quiet --background --exec $DAEMON -- $ARGS
+    ;;
+
+  stop)
+    echo -n "Stopping web server: $NAME"
+    start-stop-daemon --stop --signal 3 --quiet --exec $DAEMON
+    ;;
+
+  reload)
+    echo -n "Reloading $NAME configuration"
+    start-stop-daemon --stop --signal 1 --quiet --exec $DAEMON
+    ;;
+
+  reload-modules)
+    echo -n "Reloading $NAME modules"
+    $0 stop
+    $0 start
+    ;;
+
+  restart)
+    $0 reload-modules
+    exit $?
+    ;;
+
+  force-reload)
+    $0 reload-modules
+    exit $?
+    ;;
+
+  *)
+    echo "Usage: /etc/init.d/$NAME {start|stop|reload|reload-modules|force-reload|restart}"
+    exit 1
+    ;;
+esac
+
+if [ $? = 0 ]; then
+	echo .
+	exit 0
+else
+	echo failed
+	exit 1
+fi

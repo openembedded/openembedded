@@ -1,0 +1,10 @@
+--- httpd-2.2.3/srclib/apr/network_io/unix/sockets.c.orig
++++ httpd-2.2.3/srclib/apr/network_io/unix/sockets.c	
+@@ -231,6 +231,7 @@
+ #if APR_O_NONBLOCK_INHERITED
+     if (apr_is_option_set(sock, APR_SO_NONBLOCK) == 1) {
+         apr_set_option(*new, APR_SO_NONBLOCK, 1);
++	apr_socket_opt_set(*new, APR_SO_NONBLOCK, 0); 
+     }
+ #endif /* APR_O_NONBLOCK_INHERITED */
+ 

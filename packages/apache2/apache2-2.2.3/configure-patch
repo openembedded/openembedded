@@ -1,0 +1,52 @@
+--- httpd-2.2.3/configure-orig	2006-08-11 11:00:11.000000000 -0700
++++ httpd-2.2.3/configure	2006-08-11 10:59:44.000000000 -0700
+@@ -2643,24 +2643,6 @@
+ 
+ else
+ 
+-        if test -n "1" && test "1" = "1"; then
+-      for apr_temp_apr_config_file in $apr_temp_acceptable_apr_config
+-      do
+-        if $apr_temp_apr_config_file --help > /dev/null 2>&1 ; then
+-          apr_found="yes"
+-          apr_config="$apr_temp_apr_config_file"
+-          break
+-        else
+-                    for lookdir in /usr /usr/local /usr/local/apr /opt/apr /usr/local/apache2; do
+-            if $TEST_X "$lookdir/bin/$apr_temp_apr_config_file"; then
+-              apr_found="yes"
+-              apr_config="$lookdir/bin/$apr_temp_apr_config_file"
+-              break 2
+-            fi
+-          done
+-        fi
+-      done
+-    fi
+         if test "$apr_found" = "no" && test -d ""$srcdir/srclib/apr""; then
+       apr_temp_abs_srcdir="`cd "$srcdir/srclib/apr" && pwd`"
+       apr_found="reconfig"
+@@ -2979,24 +2961,6 @@
+ 
+ else
+ 
+-    if test -n "1" && test "1" = "1"; then
+-      for apu_temp_apu_config_file in $apu_temp_acceptable_apu_config
+-      do
+-        if $apu_temp_apu_config_file --help > /dev/null 2>&1 ; then
+-          apu_found="yes"
+-          apu_config="$apu_temp_apu_config_file"
+-          break
+-        else
+-                    for lookdir in /usr /usr/local /usr/local/apr /opt/apr /usr/local/apache2 ; do
+-            if $TEST_X "$lookdir/bin/$apu_temp_apu_config_file"; then
+-              apu_found="yes"
+-              apu_config="$lookdir/bin/$apu_temp_apu_config_file"
+-              break 2
+-            fi
+-          done
+-        fi
+-      done
+-    fi
+         if test "$apu_found" = "no" && test -d ""$srcdir/srclib/apr-util""; then
+       apu_temp_abs_srcdir="`cd "$srcdir/srclib/apr-util" && pwd`"
+       apu_found="reconfig"
