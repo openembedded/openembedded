@@ -1,0 +1,60 @@
+#! /bin/sh 
+#
+# This is an init script for openprotium for storcenter
+# 
+# This script cleansup after a successful uboot based reflash.
+# A uboot reflash is done by changing the bootloader boot command 
+# to tftp a flash image and flash the firmware. However the boot command
+# is never reset back to a regular boot. This way if the flash did
+# not work the next power cycle will cause another reflash. A nice
+# development recovery feature. So this boot script is the mechanism
+# to reset the uboot boot command. Once booted and access it validated
+# this script will issue command to reset the boot command.
+#
+# This command only has a start so stop is not necessary and should
+# as late in the boot process as possible to ensure a successful reboot
+# 
+# Copy it to /etc/init.d/flashclean and type
+#	update-rc.d flashclean start 99 5
+#
+BOOTCMD="bootm FF800000"
+
+dmesg | grep StorCenter >/dev/null 2>&1
+if [ $? -ne 0 ]; then
+	exit 0
+fi
+
+printenv=/sbin/fw_printenv
+setenv=/sbin/fw_setenv 
+test -x "$printenv" -a -x "$setenv" || exit 0
+
+case "$1" in
+  start)
+	# Check to see if any work needs to be done
+	# Need to quote the right hand side, hence the ugly awk.
+	eval `$printenv bootcmd | awk -F= '{printf("%s=\"%s\"", $1, $2)}'`
+	if [ "$bootcmd" = "$BOOTCMD" ]; then
+		exit 0
+	fi
+
+	echo -n "Restoring u-Boot bootcmd"
+	$setenv bootcmd $BOOTCMD > /dev/null 2>&1
+	eval `$printenv bootcmd | awk -F= '{printf("%s=\"%s\"", $1, $2)}'`
+	if [ "$bootcmd" != "$BOOTCMD" ]; then 
+		echo " FAILED."
+        	exit 1
+	fi
+    	echo "."
+    ;;
+  stop)
+    ;;
+  reload|force-reload)
+    ;;
+  restart)
+    ;;
+  *)
+    echo "Usage: /etc/init.d/flashclean {start|stop|reload|restart|force-reload}"
+    exit 1
+esac
+
+exit 0
