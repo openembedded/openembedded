@@ -1,6 +1,6 @@
 require bitbake.inc
 
-PR = "r1"
+PR = "r0"
 
 # We don't need a toolchain...
 INHIBIT_DEFAULT_DEPS = "1"
