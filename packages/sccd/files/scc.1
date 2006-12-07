@@ -1,0 +1,120 @@
+.\" Copyright (c) 2006
+.\"	Protium Computing, Inc.  All rights reserved.
+.\"
+.\" Redistribution and use in source and binary forms, with or without
+.\" modification, are permitted provided that the following conditions
+.\" are met:
+.\" 1. Redistributions of source code must retain the above copyright
+.\"    notice, this list of conditions and the following disclaimer.
+.\" 2. Redistributions in binary form must reproduce the above copyright
+.\"    notice, this list of conditions and the following disclaimer in the
+.\"    documentation and/or other materials provided with the distribution.
+.\" 3. All advertising materials mentioning features or use of this software
+.\"    must display the following acknowledgement:
+.\"	This product includes software developed by Protium Computing, Inc.
+.\" 4. The name of Protium Computing, Inc. may not be used to endorse or 
+.\"    promote products derived from this software without specific prior 
+.\"    written permission.
+.\"
+.\" THIS SOFTWARE IS PROVIDED BY PROTIUM COMPUTING ``AS IS'' AND
+.\" ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+.\" IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+.\" ARE DISCLAIMED.  IN NO EVENT SHALL PROTIUM COMPUTING BE LIABLE
+.\" FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+.\" DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
+.\" OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+.\" HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+.\" LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+.\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+.\" SUCH DAMAGE.
+.\" 
+.TH SCC "1" "November 2006" "scc 1.0" "User Commands"
+.SH NAME
+scc \- StorCenter Control Utility
+.SH SYNOPSIS
+.B scc
+\fI[OPTIONS]\fR ...
+.SH DESCRIPTION
+scc controls the Iomega StorCenter's LED, fan and soft power. It does this 
+either by sending a message to the StorCenter Control Daemon, if available, 
+or directly communicating with the StorCenter's microcontroller responsible 
+for these devices.
+.PP
+The scc utility  can perform the following functions:
+.TP
+\fB\fR
+The LED can be set to off, blue, red, blue flash, red flash, 
+alternate (blue->red->blue) and on some boards alternate3
+(blue->blue->blue->red->red->red). The flash and alernate rates 
+can be be set. Alternate3 rate is fixed.
+.TP
+\fB\fR
+Fan can be set to on or auto. Auto mode is a thermostat function
+that turns the fan on and off based on two temprature settings:
+Fan Temp High and Fan Temp Low.
+.TP
+\fB\fR
+The system can be reset, causing a StorCenter reset, or stopped,
+causing a full power down.
+.SH OPTIONS
+.TP
+\fB\-?\fR
+display this help and exit
+.TP
+\fB\-d\fR
+send send directly, stop/restart only
+.TP
+\fB\-p POWER\fR
+control soft power
+.br
+POWER=[run|off|restart]
+.TP
+\fB\-l LED\fR
+control LED state
+.br
+LED=[off|blue|red|blueflash|redflash|alternate|alternate3]
+.TP
+\fB\-r RATE\fR
+Rate the LED flashes (0<=RATE<256)
+.TP
+\fB\-f FAN\fR
+control fan operation
+.br
+FAN=[auto|on]
+.TP
+\fB\-h TEMP\fR
+Hot temp when FAN=auto should go on (0<=TEMP<256)
+.TP
+\fB\-c TEMP\fR
+Cold temp when FAN=auto should go off (0<=TEMP<256)
+.SH NOTES
+Care should be taken when changing the LED. The boot scripts and the 
+.B sccd
+daemon use LED colors to indicate boot and disk activity. Changing the LED can
+cause some of these functions to be disabled. 
+.SH AUTHOR
+Written by Philip Kufeldt.
+.SH "REPORTING BUGS"
+Report bugs at www.openprotium.org.
+.SH COPYRIGHT
+Copyright \(co 2006 Protium Computing, Inc.  All rights reserved.
+.br
+This is free software. Redistribution and use in source and binary forms, 
+with or without modification, are permitted provided that the following 
+conditions are met:
+.IP
+Redistributions of source code must retain the above copyright notice,this list of conditions and the following disclaimer.
+.br
+Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+.br
+All advertising materials mentioning features or use of this software must display the following acknowledgement: 
+.br
+	This product includes software developed by Protium Computing, Inc.
+.br 
+The name of Protium Computing, Inc. may not be used to endorse or promote products derived from this software without specific prior written permission.
+.PP
+.SH "SEE ALSO"
+The full documentation for
+.B scc 
+can be found at www.openprotium.org
+

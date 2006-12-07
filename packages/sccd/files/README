@@ -1,0 +1,220 @@
+		     Iomega G2 MC68HC908QY4 Support Notes
+				 October 2006
+
+The Iomega G2 Version 3.x and 5.x boards have a secondary microcontroller
+aboard, a Freescale MC68HC908QY4. This microcontroller is connected to the
+board's LED, fan, digital thermometer, power switch, and main processor, the
+MPC8241. The connection to the main processor is through the 8241's second
+UART and possibly its reset lines.     
+
+The microcontroller can perform the following functions:
+	o The LED can be set to off, blue, red, blue flash, red flash, 
+	  alternate (blue->red->blue) and some boards alternate3
+	  (blue->blue->blue->red->red->red). The flash and alernate rates 
+	  can be be set. Alternate3 rate is fixed.
+	o Fan can be set to on or auto. Auto mode is a thermostat function
+	  that turns the fan on and off based on two temprature settings:
+        	Fan Temp High and Fan Temp Low.
+	o The system can be reset, causing a MPC8241 reset, or stopped,
+	  causing a full power down.
+	o The microcontroller can detect if the soft power switch has been
+	  activated. There appears to a 20s delay after the power switch 
+	  has been depressed before the microcontroller causes an actual 
+	  power off. This event can be detected by polling the 
+	  microcontroller.
+
+The running system communicates with microcontroller and ultimately controls
+the devices connected to it via the MPC8241's second UART. The connection
+settings are: 9600,8,n,1. The serial protocol is very simple, an alternating
+send and receive of data packets. Communication is done in 8 byte data packets
+and is initiated by the host processor. Once the host processor has sent 8
+bytes, the microcontroller responds with 8 bytes. The packet contains bytes
+that can affect the state of the power, led and fan. It also contains bits
+reflecting external soft power events. Both packets sent and received follow
+the same structure.  
+
+The 8 bytes are decoded as follows:
+
+  0                   1                   2                   3   
+  0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 
+ +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ |      Power    |       LED     |      LED      |       Fan     |
+ |      State    |      State    |   Flash Rate  |      State    |
+ +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ | Fan High Temp |  Fan Low Temp |               |               |
+ |      ON       |      OFF      |      ID       |    CheckSum   |
+ +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+
+	Hex 	Ascii	Comments
+	---	-----	--------------------------------------------------
+Power State:
+	0x62	 b	Running, nominal running state
+	0x63	 c	Stop, power down immediately (ID == HOST) OR
+			Stop, the power switch has been activated, stop in 20s 
+				(ID == CONTROLLERxx) OR
+			Stop, the host has advised Stop
+				(ID == CONTROLLERxx)
+	0x64	 d	Advise Stop, the host is annoucing its intention
+				to stop (ID == HOST) 
+	0x65	 e	Restart, restart immediately (ID == HOST) OR
+			Restart, the host has advised Restart
+				(ID == CONTROLLERxx)
+	0x66	 f	Advise Restart, the host is annoucing its intention
+				to restart (ID == HOST) 
+	0x67	 g	Reset, reset immediately (ID == HOST) OR
+			Reset, the host has advised Reset
+				(ID == CONTROLLERxx)
+	0x68	 h	Advise Reset, the host is annoucing its intention
+				to reset (ID == HOST) 
+
+Except for Running, the Power states are grouped in pairs: Advise [state] and
+[state], where state can be: Stop, Restart, or Reset. The Advise state lets
+the controller know that there is an intention to either stop, restart or
+reset the board. The controller responds by moving to that state and setting
+the LED to redflash, but it does not enact the power change. Instead it waits
+for the host to issue the actual state before performing the power commands.
+For example, assume the microcontroller is reporting the power state to be
+[Running, LED Blue]. After the host issues a Advise Stop, the microcontroller
+reports [Stop, LED Redflash] and then waits, indefinitely. The Host then
+issues a Stop, the microcontroller immediately turns the power off. 
+
+There is nothing in the protocol that requires the Advise [state] packets. The
+Host can issue a Stop, Restart, or Reset directly from the Running state and
+the microcontroller will immediately enact the change. 
+
+There is nothing in the protocol that forbids moving back to Running from the
+Stop, Restart or Reset states, i.e. undoing an Advise [state] packet.  
+
+The exception to that rule is in the Stop state. The Stop state can be reached
+by either issuing a Advise Stop or from a softpower switch activation (someone
+hits the power switch). If the latter, then a request to move to any other
+state is ignored and the power will go off in approximately 20s. 
+
+NOTE 1: There does not appear to be any difference in processing the Restart
+and Reset state changes. They both deliver a system restart. 
+
+NOTE 2: Obvious absence of an 'a' state. Both the LED and Fan controls use 'a'
+as a state, but Power starts with 'b'. No evidence has shown 'a' to be a
+valid state. 
+
+LED State:
+	0x61	 a	Off
+	0x62	 b	Blue
+	0x63	 c	Red
+	0x64	 d	Blue Flash
+	0x65	 e	Red Flash
+	0x66	 f	Alternate1 Blue/Red
+	0x67	 g	Alternate3 3 Blue/3 Red (only on version 5.x boards)
+
+LED States are self explanatory with one exception. Although state 'g' or
+Alternate3 has been observed, it only seems to function on IOMEGA G2 Version
+5.x boards and does not respond to rate changes.
+ 
+LED Flash Rate:
+The flash rate seems to be 1/x seconds on, then 1/x seconds off. So one cycle
+of off and on at an LED Flash rate of 1 is almost 2s.  The value spans 8 bits
+but functionally 0 is off and 36-40 is on. Testing has shown an oddity, the
+value 35 is rejected by the microcontroller software and is not set.  
+
+Fan State:
+	0x61	 a	Auto	thermostat function
+	0x62	 b	On	always on
+
+Fan High Temp:
+High Temp is the temprature in Celsius where the fan is be turned on. 
+
+Fan Low Temp:
+Low Temp is the temprature in Celsius where the fan is be turned off.
+
+ID:
+The real purpose of this field is not known. It is known that it is a constant
+depending upon the direction of the packets and the board rev. It has been
+designated ID as a place holder but it could as easily be defined as version
+or it may be something else entirely.   
+
+	0x00	DC2	CONTROLLER00
+			IOMEGA G2 Version 5.x Controller ID (recv'd packets)
+	0x07	BEL	HOST (sent packets)
+	0x12	DC2	CONTROLLER12
+			IOMEGA G2 Version 3.x Controller ID (recv'd packets)
+
+Checksum:
+The check sum is an 8 bit sum of the first 7 bytes with the most significant
+bit cleared.  
+		
+		Sum = ((b1 + b2 + b3 +b4 +b5 +b6 + b7) & 0x7f)
+
+The bytes and their meanings were determined by watching the serial port
+chatter during specific events such as LED Blue, LED Red, Fan ON, etc. So only
+events observed have been decoded. Although all the significant events were
+observed and decoded, there are some holes in the understanding of the
+protocol.       
+
+There is one special packet that causes the microcontroller to reset. This
+packet is: 
+		0x23696f6d 0x65676115 
+		(or as a string "#iomega\025")
+
+The resulting packet from the microcontroller is:
+		0x62000000 0x00000062
+
+Testing also yielded that a null packet will cause the microcontroller to
+feed back the current state. So this packet: 
+		0x00000000 0x00000000
+
+will yield something like this (this is the default state):
+		0x62620a61 0x322d1220 
+
+The default state when the board powers on is:
+		State: Run
+		LED: Red
+		LED Rate: 10
+		Fan: On
+		Fan Temp High: 50C
+		Fan Temp Low: 45C
+
+Below is some of the data collected while watching the serial port chatter:
+
+w: 0x23696f6d 0x65676115   #iomega\025
+r: 0x62000000 0x00000062   b\0\0\0\0\0\0b
+w: 0x62630a61 0x322d0716   bc\na2-\7\26 		red state
+r: 0x62630a61 0x322d1221   bc\na2-\22!		
+w: 0x62641161 0x322d071e   bd\21a2-\7\36		blue flash
+r: 0x62641161 0x322d1229   bd\21a2-\22)
+w: 0x62641161 0x322d071e   bd\21a2-\7\36		blue flash
+
+LED ok 
+w: 0x62620a61 0x322d0715   bb\na2-\7\25
+r: 0x62630a61 0x322d1220   bb\na2-\22  
+
+LED alt 
+w: 0x626f0a61 0x322d0719   bf\na2-\7\31
+r: 0x626f0a61 0x322d1224   bf\na2-\22$
+
+reset
+w: 0x68620a61 0x322d071b   hb\na2-\7\33		reset
+r: 0x67620a61 0x322d0013   gb\na2-\0\23		resetting
+				
+restart
+w: 0x66620a61 0x322d0719  fb\na2-\7\31		restart
+r: 0x65620a61 0x322d1223  eb\na2-\22#  		restarting
+
+shutdown 
+w: 0x64620a61 0x322d0717  db\na2-\7\27		shutdown
+r: 0x63620a61 0x322d1221  cb\na2-\22!  		power shutting down
+
+soft Power
+r: 0x63620a61 0x322d000f  cb\na2-\0\17		power shutting down 
+
+
+
+
+
+
+
+
+
+
+
+
+

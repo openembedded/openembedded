@@ -1,0 +1,38 @@
+#! /bin/sh 
+#
+# This is an init script for open protium for storcenter
+# Copy it to /etc/init.d/sccd and type
+# > update-rc.d sccd defaults 60
+#
+sccd=/sbin/sccd
+test -x "$sccd" || exit 0
+
+case "$1" in
+  start)
+    echo -n "Starting StorCenter Control Daemon"
+    start-stop-daemon --start --quiet --exec $sccd
+    echo "."
+    ;;
+  stop)
+    echo -n "Stopping StorCenter Control Daemon"
+    start-stop-daemon --stop --quiet --pidfile /var/run/sccd.pid
+    echo "."
+    ;;
+  reload|force-reload)
+    start-stop-daemon --stop --quiet --signal 1 --exec $sccd
+    ;;
+  restart)
+    echo -n "Stopping StorCenter Control Daemon"
+    start-stop-daemon --stop --quiet --pidfile /var/run/sccd.pid
+    echo "."
+    sleep 1
+    echo -n "Starting StorCenter Control Daemon"
+    start-stop-daemon --start --quiet --exec $sccd
+    echo "."
+    ;;
+  *)
+    echo "Usage: /etc/init.d/sccd {start|stop|reload|restart|force-reload}"
+    exit 1
+esac
+
+exit 0
