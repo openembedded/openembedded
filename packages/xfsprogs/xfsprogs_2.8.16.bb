@@ -1,0 +1,23 @@
+DESCRIPTION = "XFS Filesystem Utilities"
+HOMEPAGE = "http://oss.sgi.com/projects/xfs"
+LICENSE = "GPL"
+SECTION = "base"
+PR = "r0"
+
+SRC_URI = "ftp://oss.sgi.com/projects/xfs/download/download/cmd_tars/xfsprogs_2.8.16-1.tar.gz"
+
+PARALLEL_MAKE = ""
+inherit autotools
+EXTRA_OECONF = "--enable-gettext=no"
+
+do_configure () {
+	export LIBTOOL="${STAGING_BINDIR}/${HOST_SYS}-libtool"
+	export DEBUG="-DNDEBUG"
+	oe_runconf
+}
+
+do_install () {
+	export DIST_ROOT=${D}
+	oe_runmake install
+}
+
