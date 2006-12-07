@@ -233,3 +233,50 @@ ac_cv_have_control_in_msghdr=${ac_cv_have_control_in_msghdr='yes'}
 
 # vim
 ac_cv_sizeof_int=${ac_cv_sizeof_int='4'}
+
+#openprotium additions:
+ac_cv_c_littleendian=${ac_cv_c_littleendian=no}
+ac_cv_c_bigendian=${ac_cv_c_bigendian=yes}
+
+#samba
+samba_cv_have_gettimeofday_tz=${samba_cv_have_gettimeofday_tz=yes}
+samba_cv_HAVE_GETTIMEOFDAY_TZ=${samba_cv_HAVE_GETTIMEOFDAY_TZ=yes}
+samba_cv_use_setresuid=${samba_cv_use_setresuid=yes}
+
+#modphp 
+ac_cv_c_bigendian_php=${ac_cv_c_bigendian_php=yes}
+ac_cv_sizeof_ptrdiff_t=${ac_cv_sizeof_ptrdiff_t=0}
+ac_cv_func_dlopen=${ac_cv_func_dlopen=yes}
+lt_cv_dlopen_self=${lt_cv_dlopen_self=yes}
+
+# for apache2 (note other apache stanza in this file provided by OE
+ap_void_ptr_lt_long=${ap_void_ptr_lt_long=no}
+apr_cv_use_lfs64=${apr_cv_use_lfs64=yes}
+apr_cv_epoll=${apr_cv_epoll=yes}
+apr_cv_pthreads_cflags=${apr_cv_pthreads_cflags=-pthread}
+apr_cv_pthreads_lib=${apr_cv_pthreads_lib=-lpthread}
+apr_cv_mutex_recursive=${apr_cv_mutex_recursive=yes}
+ac_cv_func_mmap=${ac_cv_func_mmap=yes}
+ac_cv_file__dev_zero=${ac_cv_file__dev_zero=yes}
+ac_cv_type_off_t=${ac_cv_type_off_t=yes}
+ac_cv_sizeof_off_t=${ac_cv_sizeof_off_t=4}
+ac_cv_type_pid_t=${ac_cv_type_pid_t=yes}
+ac_cv_sizeof_pid_t=${ac_cv_sizeof_pid_t=4}
+ac_cv_type_size_t=${ac_cv_type_size_t=yes}
+ac_cv_type_ssize_t=${ac_cv_type_ssize_t=yes}
+ac_cv_socklen_t=${ac_cv_socklen_t=yes}
+ac_cv_type_voidp=${ac_cv_type_voidp=yes}
+ac_cv_sizeof_voidp=${ac_cv_sizeof_voidp=4}
+ac_cv_struct_rlimit=${ac_cv_struct_rlimit=yes}
+ac_cv_type_char=${ac_cv_type_char=yes}
+ac_cv_type_int=${ac_cv_type_int=yes}
+ac_cv_type_long=${ac_cv_type_long=yes}
+ac_cv_type_short=${ac_cv_type_short=yes}
+ac_cv_type_long_long=${ac_cv_type_long_long=yes}
+ac_cv_negative_eai=${ac_cv_negative_eai=yes}
+apr_cv_gai_addrconfig=${apr_cv_gai_addrconfig=no}
+ac_cv_o_nonblock_inherited=${ac_cv_o_nonblock_inherited=no}
+apr_cv_tcp_nodelay_with_cork=${apr_cv_tcp_nodelay_with_cork=yes}
+
+# fnmatch
+ac_cv_func_fnmatch_works=${ac_cv_func_fnmatch_works=yes}
