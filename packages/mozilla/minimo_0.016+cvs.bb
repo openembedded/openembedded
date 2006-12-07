@@ -11,7 +11,7 @@ BRTAG = "MOZILLA_1_8_BRANCH"
 MOZDATE = "20060720"
 
 PV = "0.016+cvs${MOZDATE}"
-PR = "r2"
+PR = "r3"
 
 SRC_URI = "cvs://anonymous@${CVSSVR}/cvsroot;module=mozilla;tag=${BRTAG};date=${MOZDATE} \
 	   file://minimo.patch;patch=1 \
@@ -37,6 +37,7 @@ EXTRA_OECONF += "--build=${BUILD_SYS} --host=${BUILD_SYS} --target=${TARGET_SYS}
 do_configure() {
 	cd ${S}
 	oe_runmake -f client.mk CONFIGURE_ARGS="${EXTRA_OECONF}" configure
+	sed -i s:${TARGET_PREFIX}strip:echo:g config/autoconf.mk
 }
 
 do_compile() {
