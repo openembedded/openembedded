@@ -16,6 +16,15 @@ Recipes:    Maintained recipes (should match package names, can include wildcard
 
 -----------------------------------------------------------------------------
 
+Person:     Andy Wilcox
+Mail:       andy@protium.com
+Website:    http://www.openprotium.com
+Interests:  kernels, net, storage
+Distros:    openprotium
+Machines:   storcenter
+Recipes:    apache2, apc, gallery, initscripts-openprotium, linux-storcenter*, 
+Recipes:    modphp, sccd, uboot-utils, xfsprogs
+
 Person:     Erik Hovland
 Mail:       erik@hovland.org
 Distros:    familiar
