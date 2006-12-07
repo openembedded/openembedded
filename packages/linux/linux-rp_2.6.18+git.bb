@@ -15,8 +15,7 @@ DEFAULT_PREFERENCE = "-1"
 # Patches submitted upstream are towards top of this list 
 # Hacks should clearly named and at the bottom
 SRC_URI = "git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux-2.6.git;protocol=git;tag=ae99a78af33f00565a05dbbc6ca9b247fed002c5 \
-           ${RPSRC}/alsa/asoc-v0.12.4.patch;patch=1 \
-           ${RPSRC}/asoc_makefile-r1.patch;patch=1 \
+           http://opensource.wolfsonmicro.com/~lg/asoc/asoc-v0.12.4.patch;patch=1 \
            ${RPSRC}/hx2750_base-r27.patch;patch=1 \
            ${RPSRC}/hx2750_bl-r7.patch;patch=1 \
            ${RPSRC}/hx2750_pcmcia-r2.patch;patch=1 \

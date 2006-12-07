@@ -13,8 +13,7 @@ PR = "r6"
 # Patches submitted upstream are towards top of this list 
 # Hacks should clearly named and at the bottom
 SRC_URI = "http://www.kernel.org/pub/linux/kernel/v2.6/linux-2.6.18.tar.bz2 \
-           ${RPSRC}/alsa/asoc-v0.12.4.patch;patch=1 \
-           ${RPSRC}/asoc_makefile-r1.patch;patch=1 \
+           http://opensource.wolfsonmicro.com/~lg/asoc/asoc-v0.12.4.patch;patch=1 \
            ${RPSRC}/poodle_audio-r6.patch;patch=1 \
            ${RPSRC}/hx2750_base-r27.patch;patch=1 \
            ${RPSRC}/hx2750_bl-r7.patch;patch=1 \
