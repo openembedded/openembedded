@@ -33,6 +33,9 @@ cookie_io_functions_use_off64_t=${cookie_io_functions_use_off64_t=yes}
 
 # libc
 libc_cv_ppc_machine=${libc_cv_ppc_machine=yes}
+libc_cv_mlong_double_128ibm=${libc_cv_mlong_double_128ibm=yes}
+libc_cv_mabi_ibmlongdouble=${libc_cv_mabi_ibmlongdouble=yes}
+libc_cv_mlong_double_128=${libc_cv_mlong_double_128=yes}
 
 # apache
 ac_cv_func_pthread_key_delete=${ac_cv_func_pthread_key_delete=yes}
