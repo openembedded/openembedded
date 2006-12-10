@@ -14,7 +14,8 @@ UTILS = "showiframe"
 
 do_configure_prepend() {
 	cd ${S}/
-	echo -e "TEMPLATE=subdirs\nSUBDIRS=${UTILS}\n" >dmutils.pro
+	echo "TEMPLATE=subdirs" > dmutils.pro
+	echo "SUBDIRS=${UTILS}" >> dmutils.pro
 }
 
 do_install() {
