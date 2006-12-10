@@ -1,0 +1,13 @@
+Index: MPlayer-1.0rc1/Makefile
+===================================================================
+--- MPlayer-1.0rc1.orig/Makefile
++++ MPlayer-1.0rc1/Makefile
+@@ -416,7 +416,7 @@ ifeq ($(VIDIX),yes)
+ 	$(MAKE) -C vidix install
+ endif
+ 	$(INSTALL) -d $(BINDIR)
+-	$(INSTALL) -m 755 $(INSTALLSTRIP) $(PRG) $(BINDIR)/$(PRG)
++	$(INSTALL) -m 755 $(PRG) $(BINDIR)/$(PRG)
+ ifeq ($(GUI),yes)
+ 	-ln -sf $(PRG) $(BINDIR)/gmplayer
+ endif
