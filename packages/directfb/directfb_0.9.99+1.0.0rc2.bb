@@ -6,13 +6,18 @@ Linux framebuffer device."
 SECTION = "libs"
 LICENSE = "LGPL"
 HOMEPAGE = "http://directfb.org"
-DEPENDS = "jpeg libpng freetype zlib"
+DEPENDS = "jpeg libpng freetype zlib tslib"
 PR = "r1"
-RV = "0.9.25"
+RV = "1.0-0"
 
-SRC_URI = "http://directfb.org/downloads/Core/DirectFB-${PV}.tar.gz \
-           file://fix-pkgconfig-specs.patch;patch=1"
-S = "${WORKDIR}/DirectFB-${PV}"
+SRC_URI = "http://directfb.org/downloads/Core/DirectFB-1.0.0-rc2.tar.gz \
+           file://fix-pkgconfig-specs.patch;patch=1 \
+	   file://mkdfiff.patch;patch=1 \
+	   file://tslib_support.patch;patch=1"
+
+S = "${WORKDIR}/DirectFB-1.0.0-rc2"
+
+LDFLAGS_append =" -lts -lm"
 
 inherit autotools pkgconfig
 
