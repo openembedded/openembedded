@@ -15,6 +15,7 @@ SRC_URI = "http://www1.mplayerhq.hu/MPlayer/releases/MPlayer-1.0rc1.tar.bz2 \
            file://w100-video_out.patch;patch=1 \
            file://w100-mplayer.patch;patch=1 \
            file://pld-onlyarm5.patch;patch=1 \
+           file://makefile-nostrip.patch;patch=1 \
            ${SOURCEFORGE_MIRROR}/libw100/mplayer-imageon.patch;patch=1 \
            file://imageon-video_out.patch;patch=1"
 

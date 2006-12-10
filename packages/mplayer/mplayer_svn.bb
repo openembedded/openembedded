@@ -12,8 +12,9 @@ SRC_URI = "svn://svn.mplayerhq.hu/mplayer;module=trunk \
            file://Makefile-codec-cfg.patch;patch=1 \
            file://w100-configure-svn.patch;patch=1 \
            file://w100-video_out.patch;patch=1 \
-	       file://w100-mplayer.patch;patch= \
-           file://pld-onlyarm5.patch;patch=1"
+           file://w100-mplayer.patch;patch= \
+           file://pld-onlyarm5.patch;patch=1 \
+           file://makefile-nostrip-svn.patch;patch=1"
 
 RCONFLICTS_${PN} = "mplayer-atty"
 RREPLACES_${PN} = "mplayer-atty"
