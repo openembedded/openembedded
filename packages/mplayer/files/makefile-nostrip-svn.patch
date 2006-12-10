@@ -1,0 +1,26 @@
+Index: trunk/Makefile
+===================================================================
+--- trunk.orig/Makefile
++++ trunk/Makefile
+@@ -253,10 +253,10 @@ install: $(ALL_PRG)
+ ifeq ($(VIDIX),yes)
+ 	$(MAKE) -C libdha install
+ 	mkdir -p $(LIBDIR)/mplayer/vidix
+-	-install -m 755 $(INSTALLSTRIP) -p vidix/drivers/*.so $(LIBDIR)/mplayer/vidix
++	-install -m 755 -p vidix/drivers/*.so $(LIBDIR)/mplayer/vidix
+ endif
+ 	$(INSTALL) -d $(BINDIR)
+-	$(INSTALL) -m 755 $(INSTALLSTRIP) mplayer$(EXESUF) \
++	$(INSTALL) -m 755 mplayer$(EXESUF) \
+ 		$(BINDIR)/mplayer$(EXESUF)
+ ifeq ($(GUI),yes)
+ 	-ln -sf mplayer$(EXESUF) $(BINDIR)/gmplayer$(EXESUF)
+@@ -271,7 +271,7 @@ endif
+ 		fi ; \
+ 	done
+ ifeq ($(MENCODER),yes)
+-	$(INSTALL) -m 755 $(INSTALLSTRIP) mencoder$(EXESUF) \
++	$(INSTALL) -m 755 mencoder$(EXESUF) \
+ 		$(BINDIR)/mencoder$(EXESUF)
+ 	for i in $(MAN_LANG); do \
+ 		if test "$$i" = en ; then \
