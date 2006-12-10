@@ -2,6 +2,7 @@ DESCRIPTION = "Libcap is a library for getting and setting POSIX.1e (formerly PO
 PRIORITY = "optional"
 SECTION = "libs"
 LICENSE = "GPL"
+DEPENDS = "bison-native flex-native"
 
 SRC_URI = "http://www.kernel.org/pub/linux/libs/security/linux-privs/kernel-2.4/libcap-${PV}.tar.bz2 \
 	   file://makenames.patch;patch=1 \
