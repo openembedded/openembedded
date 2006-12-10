@@ -12,7 +12,6 @@ SRC_URI = "http://www.kernel.org/pub/linux/libs/security/linux-privs/kernel-2.4/
 
 FILES_${PN} = "${libdir}"
 FILES_${PN}-dev = "${includedir}"
-#S = "${WORKDIR}/libcap-${PV}"
 
 do_install() {
 	install -d ${D}${includedir}/sys
