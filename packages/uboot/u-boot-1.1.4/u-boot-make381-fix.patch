@@ -1,0 +1,15 @@
+--- /examples/orig-Makefile	2005-12-16 18:39:27.000000000 +0200
++++ /examples/Makefile	2006-12-02 14:58:59.000000000 +0200
+@@ -123,10 +123,10 @@
+ 	$(LD) -g $(EX_LDFLAGS) -Ttext $(LOAD_ADDR) \
+ 		-o $@ -e $(<:.o=) $< $(LIB) \
+ 		-L$(gcclibdir) -lgcc
+-%.srec:	%
++%.srec:	%.o
+ 	$(OBJCOPY) -O srec $< $@ 2>/dev/null
+ 
+-%.bin:	%
++%.bin:	%.o
+ 	$(OBJCOPY) -O binary $< $@ 2>/dev/null
+ 
+ #########################################################################
