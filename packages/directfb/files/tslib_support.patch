@@ -1,0 +1,818 @@
+diff -u'rNF^function' DirectFB-1.0.0-rc1~org/configure.in DirectFB-1.0.0-rc1/configure.in
+--- DirectFB-1.0.0-rc1~org/configure.in	2006-09-30 17:08:56.000000000 -0400
++++ DirectFB-1.0.0-rc1/configure.in	2006-10-16 08:15:32.000000000 -0400
+@@ -998,6 +998,7 @@
+ checkfor_serialmouse=no
+ checkfor_sonypijogdial=no
+ checkfor_ucb1x00=no
++checkfor_tslib=no
+ checkfor_wm97xx=no
+ 
+ AC_MSG_CHECKING(which inputdrivers should be built)
+@@ -1027,6 +1028,7 @@
+   checkfor_serialmouse=yes
+   checkfor_sonypijogdial=yes
+   checkfor_ucb1x00="$have_arm"
++  checkfor_tslib=yes
+   checkfor_wm97xx=yes
+   AC_MSG_RESULT(all)
+ else 
+@@ -1083,6 +1085,9 @@
+           ucb1x00)
+                   checkfor_ucb1x00=yes
+                   ;;
++	  tslib)
++                  checkfor_tslib=yes
++                  ;;
+           wm97xx)
+                   checkfor_wm97xx=yes
+                   ;;
+@@ -1196,6 +1201,12 @@
+   enable_ucb1x00_ts=yes
+ fi
+ 
++enable_tslib=no
++if test "$checkfor_tslib" = "yes"; then
++  dnl Test for TSLIB Touchscreen support
++  enable_tslib=yes
++fi
++
+ enable_wm97xx_ts=no
+ if test "$checkfor_wm97xx" = "yes"; then
+   dnl Test for WM97xx Touchscreen support
+@@ -1266,6 +1277,7 @@
+ AM_CONDITIONAL(WM97XX_TS, test "$enable_wm97xx_ts" = "yes")
+ 
+ AM_CONDITIONAL(UCB1X00_TS, test "$enable_ucb1x00_ts" = "yes")
++AM_CONDITIONAL(TSLIB, test "$enable_tslib" = "yes")
+ 
+ AM_CONDITIONAL(BUILD_TESTS, test "$with_tests" = "yes")
+ AM_CONDITIONAL(BUILD_TOOLS, test "$with_tools" = "yes")
+@@ -1426,6 +1438,7 @@
+ inputdrivers/serialmouse/Makefile
+ inputdrivers/sonypi/Makefile
+ inputdrivers/ucb1x00_ts/Makefile
++inputdrivers/tslib/Makefile
+ inputdrivers/wm97xx_ts/Makefile
+ 
+ interfaces/Makefile
+@@ -1536,6 +1549,7 @@
+   Serial Mouse              $enable_serial_mouse
+   SonyPI Jogdial            $enable_sonypi_jogdial
+   ucb1x00 Touchscreen       $enable_ucb1x00_ts
++  tslib Touchscreen	    $enable_tslib
+   WM97xx Touchscreen        $enable_wm97xx_ts]);
+ fi
+ 
+diff -u'rNF^function' DirectFB-1.0.0-rc1~org/inputdrivers/Makefile.am DirectFB-1.0.0-rc1/inputdrivers/Makefile.am
+--- DirectFB-1.0.0-rc1~org/inputdrivers/Makefile.am	2006-09-30 17:06:58.000000000 -0400
++++ DirectFB-1.0.0-rc1/inputdrivers/Makefile.am	2006-10-16 08:06:27.000000000 -0400
+@@ -44,6 +44,10 @@
+ UCB1X00_TS_DIR = ucb1x00_ts
+ endif
+ 
++if TSLIB
++TSLIB_DIR = tslib
++endif
++
+ if SONYPI
+ SONYPI_DIR = sonypi
+ endif
+@@ -80,6 +84,7 @@
+ 	$(SERIALMOUSE_INPUT_DIR) \
+ 	$(H3600_TS_DIR)		\
+ 	$(UCB1X00_TS_DIR)	\
++	$(TSLIB_DIR)		\
+ 	$(MUTOUCH_TS_DIR)	\
+ 	$(PENMOUNT_TS_DIR)	\
+ 	$(SONYPI_DIR)		\
+diff -u'rNF^function' DirectFB-1.0.0-rc1~org/inputdrivers/tslib/Makefile.am DirectFB-1.0.0-rc1/inputdrivers/tslib/Makefile.am
+--- DirectFB-1.0.0-rc1~org/inputdrivers/tslib/Makefile.am	1969-12-31 19:00:00.000000000 -0500
++++ DirectFB-1.0.0-rc1/inputdrivers/tslib/Makefile.am	2006-10-13 07:44:02.000000000 -0400
+@@ -0,0 +1,31 @@
++## Makefile.am for DirectFB/inputdrivers/tslib
++
++INCLUDES = \
++	-I$(top_srcdir)/include	\
++	-I$(top_builddir)/lib	\
++	-I$(top_srcdir)/lib	\
++	-I$(top_srcdir)/src
++
++input_LTLIBRARIES = libdirectfb_tslib.la
++
++if BUILD_STATIC
++input_DATA = $(input_LTLIBRARIES:.la=.o)
++endif
++
++inputdir = $(MODULEDIR)/inputdrivers
++
++libdirectfb_tslib_la_SOURCES =	\
++	tslib.c
++
++libdirectfb_tslib_la_LDFLAGS = \
++	-export-dynamic		\
++	-avoid-version		\
++	$(DFB_LDFLAGS)
++
++libdirectfb_tslib_la_LIBADD = \
++	$(top_builddir)/lib/direct/libdirect.la \
++	$(top_builddir)/src/libdirectfb.la
++
++
++include $(top_srcdir)/rules/libobject.make
++	
+diff -u'rNF^function' DirectFB-1.0.0-rc1~org/inputdrivers/tslib/Makefile.in DirectFB-1.0.0-rc1/inputdrivers/tslib/Makefile.in
+--- DirectFB-1.0.0-rc1~org/inputdrivers/tslib/Makefile.in	1969-12-31 19:00:00.000000000 -0500
++++ DirectFB-1.0.0-rc1/inputdrivers/tslib/Makefile.in	2006-10-13 07:44:02.000000000 -0400
+@@ -0,0 +1,429 @@
++# Makefile.in generated automatically by automake 1.4-p6 from Makefile.am
++
++# Copyright (C) 1994, 1995-8, 1999, 2001 Free Software Foundation, Inc.
++# This Makefile.in is free software; the Free Software Foundation
++# gives unlimited permission to copy and/or distribute it,
++# with or without modifications, as long as this notice is preserved.
++
++# This program is distributed in the hope that it will be useful,
++# but WITHOUT ANY WARRANTY, to the extent permitted by law; without
++# even the implied warranty of MERCHANTABILITY or FITNESS FOR A
++# PARTICULAR PURPOSE.
++
++
++
++SHELL = @SHELL@
++
++srcdir = @srcdir@
++top_srcdir = @top_srcdir@
++VPATH = @srcdir@
++prefix = @prefix@
++exec_prefix = @exec_prefix@
++
++bindir = @bindir@
++sbindir = @sbindir@
++libexecdir = @libexecdir@
++datadir = @datadir@
++sysconfdir = @sysconfdir@
++sharedstatedir = @sharedstatedir@
++localstatedir = @localstatedir@
++libdir = @libdir@
++infodir = @infodir@
++mandir = @mandir@
++includedir = @includedir@
++oldincludedir = /usr/include
++
++DESTDIR =
++
++pkgdatadir = $(datadir)/@PACKAGE@
++pkglibdir = $(libdir)/@PACKAGE@
++pkgincludedir = $(includedir)/@PACKAGE@
++
++top_builddir = ../..
++
++ACLOCAL = @ACLOCAL@
++AUTOCONF = @AUTOCONF@
++AUTOMAKE = @AUTOMAKE@
++AUTOHEADER = @AUTOHEADER@
++
++INSTALL = @INSTALL@
++INSTALL_PROGRAM = @INSTALL_PROGRAM@ $(AM_INSTALL_PROGRAM_FLAGS)
++INSTALL_DATA = @INSTALL_DATA@
++INSTALL_SCRIPT = @INSTALL_SCRIPT@
++transform = @program_transform_name@
++
++NORMAL_INSTALL = :
++PRE_INSTALL = :
++POST_INSTALL = :
++NORMAL_UNINSTALL = :
++PRE_UNINSTALL = :
++POST_UNINSTALL = :
++host_alias = @host_alias@
++host_triplet = @host@
++AR = @AR@
++AS = @AS@
++ASFLAGS = @ASFLAGS@
++CC = @CC@
++CXX = @CXX@
++CXXCPP = @CXXCPP@
++DATADIR = @DATADIR@
++DFB_CFLAGS_OMIT_FRAME_POINTER = @DFB_CFLAGS_OMIT_FRAME_POINTER@
++DFB_INTERNAL_CFLAGS = @DFB_INTERNAL_CFLAGS@
++DFB_LDFLAGS = @DFB_LDFLAGS@
++DIRECTFB_BINARY_AGE = @DIRECTFB_BINARY_AGE@
++DIRECTFB_CSOURCE = @DIRECTFB_CSOURCE@
++DIRECTFB_INTERFACE_AGE = @DIRECTFB_INTERFACE_AGE@
++DIRECTFB_MAJOR_VERSION = @DIRECTFB_MAJOR_VERSION@
++DIRECTFB_MICRO_VERSION = @DIRECTFB_MICRO_VERSION@
++DIRECTFB_MINOR_VERSION = @DIRECTFB_MINOR_VERSION@
++DIRECTFB_VERSION = @DIRECTFB_VERSION@
++DIRECT_BUILD_DEBUG = @DIRECT_BUILD_DEBUG@
++DIRECT_BUILD_DEBUGS = @DIRECT_BUILD_DEBUGS@
++DIRECT_BUILD_GETTID = @DIRECT_BUILD_GETTID@
++DIRECT_BUILD_NETWORK = @DIRECT_BUILD_NETWORK@
++DIRECT_BUILD_TEXT = @DIRECT_BUILD_TEXT@
++DIRECT_BUILD_TRACE = @DIRECT_BUILD_TRACE@
++DLLTOOL = @DLLTOOL@
++DYNLIB = @DYNLIB@
++ECHO = @ECHO@
++EGREP = @EGREP@
++EXEEXT = @EXEEXT@
++F77 = @F77@
++FREETYPE_CFLAGS = @FREETYPE_CFLAGS@
++FREETYPE_CONFIG = @FREETYPE_CONFIG@
++FREETYPE_LIBS = @FREETYPE_LIBS@
++FREETYPE_PROVIDER = @FREETYPE_PROVIDER@
++FUSION_BUILD_MULTI = @FUSION_BUILD_MULTI@
++GCJ = @GCJ@
++GCJFLAGS = @GCJFLAGS@
++GIF_PROVIDER = @GIF_PROVIDER@
++HAVE_LIB = @HAVE_LIB@
++HAVE_LINUX = @HAVE_LINUX@
++INCLUDEDIR = @INCLUDEDIR@
++INTERNALINCLUDEDIR = @INTERNALINCLUDEDIR@
++JPEG_PROVIDER = @JPEG_PROVIDER@
++LIB = @LIB@
++LIBJPEG = @LIBJPEG@
++LIBPNG = @LIBPNG@
++LIBTOOL = @LIBTOOL@
++LN_S = @LN_S@
++LTLIB = @LTLIB@
++LT_AGE = @LT_AGE@
++LT_CURRENT = @LT_CURRENT@
++LT_RELEASE = @LT_RELEASE@
++LT_REVISION = @LT_REVISION@
++MAINT = @MAINT@
++MAKEINFO = @MAKEINFO@
++MAN2HTML = @MAN2HTML@
++MODULEDIR = @MODULEDIR@
++MODULEDIRNAME = @MODULEDIRNAME@
++OBJDUMP = @OBJDUMP@
++OBJEXT = @OBJEXT@
++OSX_LIBS = @OSX_LIBS@
++PACKAGE = @PACKAGE@
++PERL = @PERL@
++PNG_PROVIDER = @PNG_PROVIDER@
++RANLIB = @RANLIB@
++RC = @RC@
++RUNTIME_SYSROOT = @RUNTIME_SYSROOT@
++SDL_CFLAGS = @SDL_CFLAGS@
++SDL_CONFIG = @SDL_CONFIG@
++SDL_LIBS = @SDL_LIBS@
++SOPATH = @SOPATH@
++STRIP = @STRIP@
++SYSFS_LIBS = @SYSFS_LIBS@
++THREADFLAGS = @THREADFLAGS@
++THREADLIB = @THREADLIB@
++VERSION = @VERSION@
++VNC_CFLAGS = @VNC_CFLAGS@
++VNC_CONFIG = @VNC_CONFIG@
++VNC_LIBS = @VNC_LIBS@
++X11_CFLAGS = @X11_CFLAGS@
++X11_LIBS = @X11_LIBS@
++ZLIB_LIBS = @ZLIB_LIBS@
++
++INCLUDES =  	-I$(top_srcdir)/include		-I$(top_builddir)/lib		-I$(top_srcdir)/lib		-I$(top_srcdir)/src
++
++
++input_LTLIBRARIES = libdirectfb_tslib.la
++
++@BUILD_STATIC_TRUE@input_DATA = $(input_LTLIBRARIES:.la=.o)
++
++inputdir = $(MODULEDIR)/inputdrivers
++
++libdirectfb_tslib_la_SOURCES =  	tslib.c
++
++
++libdirectfb_tslib_la_LDFLAGS =  	-export-dynamic			-avoid-version			$(DFB_LDFLAGS)
++
++
++libdirectfb_tslib_la_LIBADD =  	$(top_builddir)/lib/direct/libdirect.la 	$(top_builddir)/src/libdirectfb.la
++
++mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
++CONFIG_HEADER = ../../config.h
++CONFIG_CLEAN_FILES = 
++LTLIBRARIES =  $(input_LTLIBRARIES)
++
++
++DEFS = @DEFS@ -I. -I$(srcdir) -I../..
++CPPFLAGS = @CPPFLAGS@
++LDFLAGS = @LDFLAGS@
++LIBS = @LIBS@
++libdirectfb_tslib_la_DEPENDENCIES =  \
++$(top_builddir)/lib/direct/libdirect.la \
++$(top_builddir)/src/libdirectfb.la
++libdirectfb_tslib_la_OBJECTS =  tslib.lo
++CFLAGS = @CFLAGS@
++COMPILE = $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
++LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
++CCLD = $(CC)
++LINK = $(LIBTOOL) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(LDFLAGS) -o $@
++DATA =  $(input_DATA)
++
++DIST_COMMON =  Makefile.am Makefile.in
++
++
++DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
++
++TAR = tar
++GZIP_ENV = --best
++SOURCES = $(libdirectfb_tslib_la_SOURCES)
++OBJECTS = $(libdirectfb_tslib_la_OBJECTS)
++
++all: all-redirect
++.SUFFIXES:
++.SUFFIXES: .S .c .lo .o .obj .s
++$(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ Makefile.am $(top_srcdir)/configure.in $(ACLOCAL_M4) $(top_srcdir)/rules/libobject.make
++	cd $(top_srcdir) && $(AUTOMAKE) --gnu --include-deps inputdrivers/tslib/Makefile
++
++Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status
++	cd $(top_builddir) \
++	  && CONFIG_FILES=$(subdir)/$@ CONFIG_HEADERS= $(SHELL) ./config.status
++
++
++mostlyclean-inputLTLIBRARIES:
++
++clean-inputLTLIBRARIES:
++	-test -z "$(input_LTLIBRARIES)" || rm -f $(input_LTLIBRARIES)
++
++distclean-inputLTLIBRARIES:
++
++maintainer-clean-inputLTLIBRARIES:
++
++install-inputLTLIBRARIES: $(input_LTLIBRARIES)
++	@$(NORMAL_INSTALL)
++	$(mkinstalldirs) $(DESTDIR)$(inputdir)
++	@list='$(input_LTLIBRARIES)'; for p in $$list; do \
++	  if test -f $$p; then \
++	    echo "$(LIBTOOL)  --mode=install $(INSTALL) $$p $(DESTDIR)$(inputdir)/$$p"; \
++	    $(LIBTOOL)  --mode=install $(INSTALL) $$p $(DESTDIR)$(inputdir)/$$p; \
++	  else :; fi; \
++	done
++
++uninstall-inputLTLIBRARIES:
++	@$(NORMAL_UNINSTALL)
++	list='$(input_LTLIBRARIES)'; for p in $$list; do \
++	  $(LIBTOOL)  --mode=uninstall rm -f $(DESTDIR)$(inputdir)/$$p; \
++	done
++
++.c.o:
++	$(COMPILE) -c $<
++
++# FIXME: We should only use cygpath when building on Windows,
++# and only if it is available.
++.c.obj:
++	$(COMPILE) -c `cygpath -w $<`
++
++.s.o:
++	$(COMPILE) -c $<
++
++.S.o:
++	$(COMPILE) -c $<
++
++mostlyclean-compile:
++	-rm -f *.o core *.core
++	-rm -f *.$(OBJEXT)
++
++clean-compile:
++
++distclean-compile:
++	-rm -f *.tab.c
++
++maintainer-clean-compile:
++
++.c.lo:
++	$(LIBTOOL) --mode=compile $(COMPILE) -c $<
++
++.s.lo:
++	$(LIBTOOL) --mode=compile $(COMPILE) -c $<
++
++.S.lo:
++	$(LIBTOOL) --mode=compile $(COMPILE) -c $<
++
++mostlyclean-libtool:
++	-rm -f *.lo
++
++clean-libtool:
++	-rm -rf .libs _libs
++
++distclean-libtool:
++
++maintainer-clean-libtool:
++
++libdirectfb_tslib.la: $(libdirectfb_tslib_la_OBJECTS) $(libdirectfb_tslib_la_DEPENDENCIES)
++	$(LINK) -rpath $(inputdir) $(libdirectfb_tslib_la_LDFLAGS) $(libdirectfb_tslib_la_OBJECTS) $(libdirectfb_tslib_la_LIBADD) $(LIBS)
++
++install-inputDATA: $(input_DATA)
++	@$(NORMAL_INSTALL)
++	$(mkinstalldirs) $(DESTDIR)$(inputdir)
++	@list='$(input_DATA)'; for p in $$list; do \
++	  if test -f $(srcdir)/$$p; then \
++	    echo " $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(inputdir)/$$p"; \
++	    $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(inputdir)/$$p; \
++	  else if test -f $$p; then \
++	    echo " $(INSTALL_DATA) $$p $(DESTDIR)$(inputdir)/$$p"; \
++	    $(INSTALL_DATA) $$p $(DESTDIR)$(inputdir)/$$p; \
++	  fi; fi; \
++	done
++
++uninstall-inputDATA:
++	@$(NORMAL_UNINSTALL)
++	list='$(input_DATA)'; for p in $$list; do \
++	  rm -f $(DESTDIR)$(inputdir)/$$p; \
++	done
++
++tags: TAGS
++
++ID: $(HEADERS) $(SOURCES) $(LISP)
++	list='$(SOURCES) $(HEADERS)'; \
++	unique=`for i in $$list; do echo $$i; done | \
++	  awk '    { files[$$0] = 1; } \
++	       END { for (i in files) print i; }'`; \
++	here=`pwd` && cd $(srcdir) \
++	  && mkid -f$$here/ID $$unique $(LISP)
++
++TAGS:  $(HEADERS) $(SOURCES)  $(TAGS_DEPENDENCIES) $(LISP)
++	tags=; \
++	here=`pwd`; \
++	list='$(SOURCES) $(HEADERS)'; \
++	unique=`for i in $$list; do echo $$i; done | \
++	  awk '    { files[$$0] = 1; } \
++	       END { for (i in files) print i; }'`; \
++	test -z "$(ETAGS_ARGS)$$unique$(LISP)$$tags" \
++	  || (cd $(srcdir) && etags -o $$here/TAGS $(ETAGS_ARGS) $$tags  $$unique $(LISP))
++
++mostlyclean-tags:
++
++clean-tags:
++
++distclean-tags:
++	-rm -f TAGS ID
++
++maintainer-clean-tags:
++
++distdir = $(top_builddir)/$(PACKAGE)-$(VERSION)/$(subdir)
++
++subdir = inputdrivers/tslib
++
++distdir: $(DISTFILES)
++	@for file in $(DISTFILES); do \
++	  d=$(srcdir); \
++	  if test -d $$d/$$file; then \
++	    cp -pr $$d/$$file $(distdir)/$$file; \
++	  else \
++	    test -f $(distdir)/$$file \
++	    || ln $$d/$$file $(distdir)/$$file 2> /dev/null \
++	    || cp -p $$d/$$file $(distdir)/$$file || :; \
++	  fi; \
++	done
++
++info-am:
++info: info-am
++dvi-am:
++dvi: dvi-am
++check-am: all-am
++check: check-am
++installcheck-am:
++installcheck: installcheck-am
++install-exec-am:
++install-exec: install-exec-am
++
++install-data-am: install-inputLTLIBRARIES install-inputDATA
++install-data: install-data-am
++
++install-am: all-am
++	@$(MAKE) $(AM_MAKEFLAGS) install-exec-am install-data-am
++install: install-am
++uninstall-am: uninstall-inputLTLIBRARIES uninstall-inputDATA
++uninstall: uninstall-am
++all-am: Makefile $(LTLIBRARIES) $(DATA)
++all-redirect: all-am
++install-strip:
++	$(MAKE) $(AM_MAKEFLAGS) AM_INSTALL_PROGRAM_FLAGS=-s install
++installdirs:
++	$(mkinstalldirs)  $(DESTDIR)$(inputdir) $(DESTDIR)$(inputdir)
++
++
++mostlyclean-generic:
++
++clean-generic:
++
++distclean-generic:
++	-rm -f Makefile $(CONFIG_CLEAN_FILES)
++	-rm -f config.cache config.log stamp-h stamp-h[0-9]*
++
++maintainer-clean-generic:
++mostlyclean-am:  mostlyclean-inputLTLIBRARIES mostlyclean-compile \
++		mostlyclean-libtool mostlyclean-tags \
++		mostlyclean-generic
++
++mostlyclean: mostlyclean-am
++
++clean-am:  clean-inputLTLIBRARIES clean-compile clean-libtool clean-tags \
++		clean-generic mostlyclean-am
++
++clean: clean-am
++
++distclean-am:  distclean-inputLTLIBRARIES distclean-compile \
++		distclean-libtool distclean-tags distclean-generic \
++		clean-am
++	-rm -f libtool
++
++distclean: distclean-am
++
++maintainer-clean-am:  maintainer-clean-inputLTLIBRARIES \
++		maintainer-clean-compile maintainer-clean-libtool \
++		maintainer-clean-tags maintainer-clean-generic \
++		distclean-am
++	@echo "This command is intended for maintainers to use;"
++	@echo "it deletes files that may require special tools to rebuild."
++
++maintainer-clean: maintainer-clean-am
++
++.PHONY: mostlyclean-inputLTLIBRARIES distclean-inputLTLIBRARIES \
++clean-inputLTLIBRARIES maintainer-clean-inputLTLIBRARIES \
++uninstall-inputLTLIBRARIES install-inputLTLIBRARIES mostlyclean-compile \
++distclean-compile clean-compile maintainer-clean-compile \
++mostlyclean-libtool distclean-libtool clean-libtool \
++maintainer-clean-libtool uninstall-inputDATA install-inputDATA tags \
++mostlyclean-tags distclean-tags clean-tags maintainer-clean-tags \
++distdir info-am info dvi-am dvi check check-am installcheck-am \
++installcheck install-exec-am install-exec install-data-am install-data \
++install-am install uninstall-am uninstall all-redirect all-am all \
++installdirs mostlyclean-generic distclean-generic clean-generic \
++maintainer-clean-generic clean mostlyclean distclean maintainer-clean
++
++
++%.o: .libs/%.a %.la
++	rm -f $<.tmp/*.o
++	if test -d $<.tmp; then rmdir $<.tmp; fi
++	mkdir $<.tmp
++	(cd $<.tmp && $(AR) x ../../$<)
++	$(LD) -o $@ -r $<.tmp/*.o
++	rm -f $<.tmp/*.o && rmdir $<.tmp
++
++.PHONY: $(LTLIBRARIES:%.la=.libs/%.a)
++
++# Tell versions [3.59,3.63) of GNU make to not export all variables.
++# Otherwise a system limit (for SysV at least) may be exceeded.
++.NOEXPORT:
+diff -u'rNF^function' DirectFB-1.0.0-rc1~org/inputdrivers/tslib/tslib.c DirectFB-1.0.0-rc1/inputdrivers/tslib/tslib.c
+--- DirectFB-1.0.0-rc1~org/inputdrivers/tslib/tslib.c	1969-12-31 19:00:00.000000000 -0500
++++ DirectFB-1.0.0-rc1/inputdrivers/tslib/tslib.c	2006-10-30 15:30:35.000000000 -0500
+@@ -0,0 +1,258 @@
++/*
++   (c) Copyright 2000-2002  convergence integrated media GmbH.
++   (c) Copyright 2002-2004  convergence GmbH.
++
++   All rights reserved.
++
++   Written by Shane Volpe <shanevolpe@gmail.com
++
++   Based on usb1x00_ts writen by:
++              Denis Oliver Kropp <dok@directfb.org>,
++              Andreas Hundt <andi@fischlustig.de>,
++              Sven Neumann <neo@directfb.org> and
++              Ville Syrj��<syrjala@sci.fi>.
++
++   This library is free software; you can redistribute it and/or
++   modify it under the terms of the GNU Lesser General Public
++   License as published by the Free Software Foundation; either
++   version 2 of the License, or (at your option) any later version.
++
++   This library is distributed in the hope that it will be useful,
++   but WITHOUT ANY WARRANTY; without even the implied warranty of
++   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
++   Lesser General Public License for more details.
++
++   You should have received a copy of the GNU Lesser General Public
++   License along with this library; if not, write to the
++   Free Software Foundation, Inc., 59 Temple Place - Suite 330,
++   Boston, MA 02111-1307, USA.
++*/
++
++#include <config.h>
++
++#include <stdlib.h>
++#include <stdio.h>
++
++#include <tslib.h>
++
++#include <directfb.h>
++
++#include <core/coredefs.h>
++#include <core/coretypes.h>
++
++#include <core/input.h>
++
++#include <direct/mem.h>
++#include <direct/messages.h>
++#include <direct/thread.h>
++
++#include <core/input_driver.h>
++
++
++const char* ts_dev = "/dev/ts0";
++#define TS_BLOCK	0
++
++DFB_INPUT_DRIVER( tslib )
++
++typedef struct {
++     CoreInputDevice   *device;
++     DirectThread  *thread;
++     struct tsdev *ts;
++} tslibData;
++
++
++static void *
++tslibEventThread( DirectThread *thread, void *driver_data )
++{
++     tslibData *data = (tslibData*) driver_data;
++
++     struct ts_sample ts_event;
++
++     int readlen;
++
++     unsigned short old_x = -1;
++     unsigned short old_y = -1;
++     unsigned short old_pressure = 0;
++
++     while ((readlen = ts_read(data->ts, &ts_event, 1)) >= 0)
++     {
++          DFBInputEvent evt;
++
++          direct_thread_testcancel( thread );
++
++          if (readlen < 1)
++               continue;
++	
++          if (ts_event.pressure) {
++
++ 
++              if (ts_event.x != old_x) {
++
++                    evt.type    = DIET_AXISMOTION;
++                    evt.flags   = DIEF_AXISABS;
++                    evt.axis    = DIAI_X;
++                    evt.axisabs = ts_event.x;
++
++                    dfb_input_dispatch( data->device, &evt );
++
++                    old_x = ts_event.x;
++               }
++
++               if (ts_event.y != old_y) {
++                    evt.type    = DIET_AXISMOTION;
++                    evt.flags   = DIEF_AXISABS;
++                    evt.axis    = DIAI_Y;
++                    evt.axisabs = ts_event.y;
++
++                    dfb_input_dispatch( data->device, &evt );
++
++                    old_y = ts_event.y;
++               }
++          }
++
++          if (!ts_event.pressure != !old_pressure) {
++              evt.type   = (ts_event.pressure ?
++                             DIET_BUTTONPRESS : DIET_BUTTONRELEASE);
++               evt.flags  = DIEF_NONE;
++               evt.button = DIBI_LEFT;
++
++               dfb_input_dispatch( data->device, &evt );
++
++               old_pressure = ts_event.pressure;
++          }
++     }
++
++     if (readlen <= 0)
++          D_ERROR ("tslib Touchscreen thread died\n");
++
++     return NULL;
++}
++
++
++/* exported symbols */
++
++static int 
++driver_get_available()
++{
++	struct tsdev *tschk;
++
++//	printf("tslib available check occured! \n");
++
++     tschk = ts_open(ts_dev, TS_BLOCK);
++     if (!tschk) {
++          D_ERROR( "DirectFB/tslib: Error opening `%s'!\n", ts_dev);
++          return 0;
++     }
++
++     if (ts_config(tschk)) {
++          D_ERROR( "DirectFB/tslib: Error configuring `%s'!\n", ts_dev);
++     ts_close( tschk );
++          return 0;
++     }
++
++     ts_close( tschk );
++     D_INFO( "DirectFB/tslib: Found `%s'\n", ts_dev);
++
++     return 1;
++}
++
++static void 
++driver_get_info( InputDriverInfo *info ) 
++{
++     /* fill driver info structure */
++//	printf("tslib getinfo occured! \n");
++
++     snprintf( info->name,
++               DFB_INPUT_DRIVER_INFO_NAME_LENGTH, "tslib Touchscreen Driver" );
++
++     snprintf( info->vendor,
++               DFB_INPUT_DRIVER_INFO_VENDOR_LENGTH,
++               "tslib" );
++
++     info->version.major = 0;
++     info->version.minor = 1;
++}
++
++static DFBResult
++driver_open_device( CoreInputDevice      *device,
++                    unsigned int      number,
++                    InputDeviceInfo  *info,
++                    void            **driver_data )
++{
++     tslibData *data;
++	 struct tsdev *ts;
++
++     /* open device */
++//	printf("tslib open occured! \n");
++
++	ts = ts_open(ts_dev, TS_BLOCK);
++     if (!ts) {
++          D_ERROR( "DirectFB/tslib: Error opening `%s'!\n", ts_dev);
++          return DFB_INIT;
++     }
++
++     if (ts_config(ts)) {
++          D_ERROR( "DirectFB/tslib: Error configuring `%s'!\n", ts_dev);
++          ts_close( ts );
++          return DFB_INIT;
++     }
++
++     /* fill device info structure */
++     snprintf( info->desc.name,
++               DFB_INPUT_DEVICE_DESC_NAME_LENGTH, "tslib Touchscreen" );
++
++     snprintf( info->desc.vendor,
++               DFB_INPUT_DEVICE_DESC_VENDOR_LENGTH, "Unknown" );
++
++     info->prefered_id     = DIDID_MOUSE;
++
++     info->desc.type       = DIDTF_MOUSE;
++     info->desc.caps       = DICAPS_AXES | DICAPS_BUTTONS;
++     info->desc.max_axis   = DIAI_Y;
++     info->desc.max_button = DIBI_LEFT;
++
++     /* allocate and fill private data */
++     data = D_CALLOC( 1, sizeof(tslibData) );
++
++     data->ts   = ts;
++     data->device = device;
++
++     /* start input thread */
++     data->thread = direct_thread_create( DTT_INPUT, tslibEventThread, data, "tslib Input" );
++
++     /* set private data pointer */
++     *driver_data = data;
++		D_INFO("tslib open return \n");
++
++     return DFB_OK;
++}
++
++/*
++ * Fetch one entry from the device's keymap if supported.
++ */
++static DFBResult 
++driver_get_keymap_entry( CoreInputDevice               *device,
++                         void                      *driver_data,
++                         DFBInputDeviceKeymapEntry *entry )
++{
++     return DFB_UNSUPPORTED;
++}
++
++static void 
++driver_close_device( void *driver_data )
++{
++     tslibData *data = (tslibData*) driver_data;
++//	printf("tslib close occured! \n");
++
++     /* stop input thread */
++     direct_thread_cancel( data->thread );
++     direct_thread_join( data->thread );
++     direct_thread_destroy( data->thread );
++
++     /* close device */
++     if (ts_close(data->ts))
++          D_ERROR( "DirectFB/tslib: Error closing `%s'!\n", ts_dev);
++
++     /* free private data */
++     D_FREE( data );
++}

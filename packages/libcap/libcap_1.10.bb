@@ -2,18 +2,16 @@ DESCRIPTION = "Libcap is a library for getting and setting POSIX.1e (formerly PO
 PRIORITY = "optional"
 SECTION = "libs"
 LICENSE = "GPL"
+DEPENDS = "bison-native flex-native"
 
-SRC_URI = "http://www.kernel.org/pub/linux/libs/security/linux-privs/kernel-2.4/libcap-${PV}.tar.bz2 \
+CFLAGS_append = " -I${S}/libcap/include"
+
+SRC_URI = "http://www.kernel.org/pub/linux/libs/security/linux-privs/kernel-2.4/${PN}-${PV}.tar.bz2 \
 	   file://makenames.patch;patch=1 \
 	   file://make.patch;patch=1 "
 
-S = "${WORKDIR}/libcap-${PV}"
-
-do_stage() {
-	install -d ${STAGING_INCDIR}/sys
-	install -m 0644 libcap/include/sys/capability.h ${STAGING_INCDIR}/sys/
-	oe_libinstall -s -C libcap libcap ${STAGING_LIBDIR}
-}
+FILES_${PN} = "${libdir}"
+FILES_${PN}-dev = "${includedir}"
 
 do_install() {
 	install -d ${D}${includedir}/sys
@@ -22,5 +20,8 @@ do_install() {
 	oe_libinstall -s -C libcap libcap ${D}${libdir}
 }
 
-FILES_${PN} = "${libdir}"
-FILES_${PN}-dev = "${includedir}"
+do_stage() {
+	install -d ${STAGING_INCDIR}/sys
+	install -m 0644 libcap/include/sys/capability.h ${STAGING_INCDIR}/sys/
+	oe_libinstall -s -C libcap libcap ${STAGING_LIBDIR}
+}

@@ -11,7 +11,7 @@ DEPENDS = "matchbox-wm matchbox-panel gpe-bluetooth xstroke xtscal gpe-question 
 SRC_URI += "file://matchbox-session \
 	file://disable-composite.xsettings"
 
-PR = "r3"
+PR = "r4"
 
 #apply a patch to set the fontsize for bigdpi (200+) devices to 5
 SRC_URI_append_hx4700 = " file://highdpifontfix.patch;patch=1"
@@ -20,7 +20,11 @@ SRC_URI_append_akita = " file://highdpifontfix.patch;patch=1"
 SRC_URI_append_c7x0 = " file://highdpifontfix.patch;patch=1"
 SRC_URI_append_nokia770 = " file://highdpifontfix.patch;patch=1"
 
-SRC_URI_append_angstrom = " file://angstrom-change-theme.diff;patch=1" 
+
+do_configure_append_angstrom() {
+	sed -i s:Default:Clearlooks:g X11/xsettings.default
+	sed -i s:Industrial:Clearlooks:g X11/xsettings.default
+}	
 
 do_install_append() {
 	install -d ${D}${sysconfdir}/gpe/xsettings-default.d
