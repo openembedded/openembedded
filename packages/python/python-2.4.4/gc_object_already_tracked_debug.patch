@@ -1,0 +1,19 @@
+diff -Naur Python-2.4.4/Include/objimpl.h Python-2.4.4/Include/objimpl.h
+--- Python-2.4.4/Include/objimpl.h	2006-01-26 19:49:57.000000000 +0100
++++ Python-2.4.4/Include/objimpl.h	2006-12-11 00:41:31.000000000 +0100
+@@ -267,8 +267,13 @@
+  * collector it must be safe to call the ob_traverse method. */
+ #define _PyObject_GC_TRACK(o) do { \
+ 	PyGC_Head *g = _Py_AS_GC(o); \
+-	if (g->gc.gc_refs != _PyGC_REFS_UNTRACKED) \
+-		Py_FatalError("GC object already tracked"); \
++	if (g->gc.gc_refs != _PyGC_REFS_UNTRACKED) { \
++		PyObject *obj = (PyObject*)o; \
++		char bla[512]; \
++		snprintf(bla, 512, "GC object already tracked(gc_cnt %d, ob_refcnt %d, ob_type_ptr %p, ob_type '%s')", \
++			g->gc.gc_refs, obj->ob_refcnt, obj->ob_type, (obj->ob_type && obj->ob_type->tp_name) ? obj->ob_type->tp_name : "typeobject not valid"); \
++		Py_FatalError(bla); \
++	} \
+ 	g->gc.gc_refs = _PyGC_REFS_REACHABLE; \
+ 	g->gc.gc_next = _PyGC_generation0; \
+ 	g->gc.gc_prev = _PyGC_generation0->gc.gc_prev; \
