@@ -9,7 +9,7 @@ SRC_URI = "http://www.apache.org/dist/httpd/httpd-${PV}.tar.bz2"
 S = "${WORKDIR}/httpd-${PV}"
 
 do_configure () {
-	./configure --prefix=${prefix}
+	./configure --with-included-apr --prefix=${prefix}
 }
 
 do_populate_staging () {
