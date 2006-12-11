@@ -12,3 +12,4 @@
 # PARTICULAR PURPOSE.
 
 m4_include([m4/builtin.m4])
+m4_include([m4/gnu.m4])
