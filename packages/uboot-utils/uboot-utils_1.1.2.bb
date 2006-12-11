@@ -26,6 +26,11 @@ do_compile () {
 	oe_runmake tools
 }
 
+# install mkimage for the kernel makefile
+do_stage() {
+	install -m 755 ${S}/tools/mkimage ${STAGING_BINDIR_NATIVE}
+}
+
 do_install () {
 	install -d     ${D}/sbin
 	install -m 755 ${S}/tools/env/fw_printenv ${D}/sbin/fw_printenv
