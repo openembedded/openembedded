@@ -23,12 +23,6 @@ Maintainer:     None
 Reason:         Obsoleted by task-base
 Proposed by:    Koen Kooi
 
-Package Name:   bluez*2.*
-Removal Date:   2006-12-12
-Maintainer:     None
-Reason:         Obsolete by, and conflicts with bluez 3.7               
-Proposed by:    Koen Kooi
-
 Package Name:   mono
 Removal Date:   2006-12-12
 Maintainer:     None
