@@ -2,16 +2,15 @@ PACKAGES = "gpe-base-depends gpe-task-base gpe-task-settings gpe-task-pim gpe-ta
 DESCRIPTION = "Meta-package for GPE Palmtop Environment"
 MAINTAINER = "Phil Blundell <pb@handhelds.org>"
 PACKAGE_ARCH = "all"
-PR = "r47"
+PR = "r48"
 
 ALLOW_EMPTY = "1"
 
 gpe-base-depends = "\
-    diet-x11 \
     virtual/xserver"
 
 RDEPENDS_gpe-base-depends := "${gpe-base-depends}"
-DEPENDS += " ${gpe-base-depends}"
+DEPENDS += "diet-x11 ${gpe-base-depends}"
 
 gpe-task-base = "\
     bl \
