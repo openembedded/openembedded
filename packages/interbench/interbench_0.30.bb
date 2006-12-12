@@ -2,7 +2,7 @@ DESCRIPTION = "Linux interactivity benchmark"
 HOMEPAGE = "http://members.optusnet.com.au/ckolivas/interbench/"
 LICENSE = "GPL"
 
-SRC_URI = "http://www.kernel.org/pub/linux/kernel/people/ck/apps/interbench/interbench-0.30.tar.bz2"
+SRC_URI = "${KERNELORG_MIRROR}/gpub/linux/kernel/people/ck/apps/interbench/interbench-0.30.tar.bz2"
 
 inherit autotools
 

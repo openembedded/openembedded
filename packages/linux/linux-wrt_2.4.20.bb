@@ -3,7 +3,7 @@ DESCRIPTION = "Linux kernel for the Linksys WRT54 devices"
 LICENSE = "GPL"
 PR = "r1"
 
-SRC_URI = "ftp://ftp.kernel.org/pub/linux/kernel/v2.4/linux-2.4.20.tar.bz2 \
+SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.4/linux-2.4.20.tar.bz2 \
 	   file://linux-2.4.20-mipscvs.patch;patch=1 \
 	   file://2.4.20_broadcom_3_37_2_1109_US.patch;patch=1 \
 	   file://110-sch_htb.patch;patch=1 \

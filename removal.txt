@@ -35,40 +35,16 @@ Maintainer:     None
 Reason:         Obsolete version - 1.2 is current, 1.0 is not fetchable
 Proposed by:    Marcin 'Hrw' Juszkiewicz
  
-Package Name:   zeecookbook
-Removal Date:   2006-12-12
-Maintainer:     None
-Reason:         Not maintained upstream, not fetchable
-Proposed by:    Marcin 'Hrw' Juszkiewicz
- 
-Package Name:   qpe-vexed
-Removal Date:   2006-12-12
-Maintainer:     None
-Reason:         Not fetchable, all search results points to OE related infos
-Proposed by:    Marcin 'Hrw' Juszkiewicz
- 
 Package Name:   ipac-ng
 Removal Date:   2006-12-12
 Maintainer:     None
 Reason:         Depends on libgd-perl which is not in metada
 Proposed by:    Marcin 'Hrw' Juszkiewicz
  
-Package Name:   
-Removal Date:   2006-12-12
-Maintainer:     None
-Reason:         Obsolete version
-Proposed by:    Marcin 'Hrw' Juszkiewicz
- 
-Package Name:   
-Removal Date:   2006-12-12
-Maintainer:     None
-Reason:         Obsolete version
-Proposed by:    Marcin 'Hrw' Juszkiewicz
- 
 Package Name:   nsqld
 Removal Date:   2006-12-12
 Maintainer:     None
-Reason:		Never used
+Reason:	        Never used
 Proposed by:    Florian Boor
 
 Package Name:   gpe-mileage

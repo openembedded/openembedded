@@ -12,7 +12,7 @@ PR = "r47"
 
 # Patches submitted upstream are towards top of this list 
 # Hacks should clearly named and at the bottom
-SRC_URI = "http://www.kernel.org/pub/linux/kernel/v2.6/linux-2.6.16.tar.bz2 \
+SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.16.tar.bz2 \
            file://rmk-mmc1.patch;patch=1;status=merged \
            file://rmk-mmc2.patch;patch=1;status=merged \
            ${RPSRC}/led_core-r15.patch;patch=1;status=merged \

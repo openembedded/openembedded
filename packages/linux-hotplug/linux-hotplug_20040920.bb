@@ -10,7 +10,7 @@ SECTION = "base"
 RSUGGESTS = "pciutils usbutils"
 PR = "r9"
 
-SRC_URI = "ftp://ftp.kernel.org/pub/linux/utils/kernel/hotplug/hotplug-2004_09_20.tar.gz \
+SRC_URI = "${KERNELORG_MIRROR}/pub/linux/utils/kernel/hotplug/hotplug-2004_09_20.tar.gz \
 	file://dash.patch;patch=1 \
 	file://userspecified_hcd.patch;patch=1 \
 	file://hotplug-net-agent-usb.patch;patch=1 \

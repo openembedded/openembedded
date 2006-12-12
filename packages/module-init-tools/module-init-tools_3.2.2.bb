@@ -11,7 +11,7 @@ RDEPENDS_${PN} += "module-init-tools-depmod"
 FILES_module-init-tools-depmod = "${sbindir}/depmod.26"
 FILES_module-init-tools-insmod-static = "${sbindir}/insmod.static"
 
-SRC_URI = "ftp://ftp.kernel.org/pub/linux/utils/kernel/module-init-tools/module-init-tools-${PV}.tar.bz2 \
+SRC_URI = "${KERNELORG_MIRROR}/pub/linux/utils/kernel/module-init-tools/module-init-tools-${PV}.tar.bz2 \
 	   file://ignore_arch_directory;patch=1 \
 	   file://modutils_extension;patch=1 \
 	   file://no_man_rebuild;patch=1 \

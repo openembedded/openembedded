@@ -6,7 +6,7 @@ INHIBIT_DEFAULT_DEPS = "1"
 PR = "r0"
 
 SRC_URI = " \
-	ftp://ftp.kernel.org/pub/linux/kernel/people/dwmw2/kernel-headers/snapshot/linux-kernel-headers-2.6.19-rc1.tar.bz2 \
+	${KERNELORG_MIRROR}/pub/linux/kernel/people/dwmw2/kernel-headers/snapshot/linux-kernel-headers-2.6.19-rc1.tar.bz2 \
 	file://arm-procinfo-hwcap.patch;patch=1 \
 	file://arm-unistd-syscall.patch;patch=1 \
 	file://linux-err.patch;patch=1 \

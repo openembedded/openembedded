@@ -3,8 +3,8 @@ DESCRIPTION = "Linux kernel for the MX31ADS"
 LICENSE = "GPL"
 PR = "r3"
 
-SRC_URI = "http://www.kernel.org/pub/linux/kernel/v2.6/linux-2.6.18.tar.bz2 \
-    http://www.kernel.org/pub/linux/kernel/v2.6/testing/patch-2.6.19-rc6.bz2;patch=1 \
+SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.18.tar.bz2 \
+    ${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/testing/patch-2.6.19-rc6.bz2;patch=1 \
     http://opensource.wolfsonmicro.com/~lg/linux-2.6-mx31/mx31ads-2.6.19rc6-lg1.patch.bz2;patch=1 \
     file://imx31ads_defconfig"
 

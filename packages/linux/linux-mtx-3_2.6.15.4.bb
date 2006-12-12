@@ -12,7 +12,7 @@ inherit kernel
 DEPENDS = "uboot"
 RDEPENDS = "mtd-utils"
 
-SRC_URI += "ftp://ftp.kernel.org/pub/linux/kernel/v2.6/linux-${KV}.tar.bz2 \
+SRC_URI += "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-${KV}.tar.bz2 \
 	file://00-mtx-3.diff;patch=1 \
 	file://01-verbose-and-fatal-mkuboot.diff;patch=1 \
 	file://defconfig-mtx-3"

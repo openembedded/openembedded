@@ -10,7 +10,7 @@ PRIORITY ?= "optional"
 LICENSE ?= "GPL-2"
 
 # Override these *after* the include file if necessary!
-SRC_URI = "ftp://ftp.kernel.org/pub/linux/utils/net/NIS/${P}.tar.bz2"
+SRC_URI = "${KERNELORG_MIRROR}/pub/linux/utils/net/NIS/${P}.tar.bz2"
 
 inherit autotools gettext
 

@@ -5,7 +5,7 @@ INHIBIT_DEFAULT_DEPS = "1"
 DEPENDS = "unifdef-native"
 PR = "r1"
 
-SRC_URI = "http://www.kernel.org/pub/linux/kernel/v2.6/linux-2.6.18.tar.bz2 \
+SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.18.tar.bz2 \
            file://arm-syscall-define.patch;patch=1"
 
 S = "${WORKDIR}/linux-2.6.18"

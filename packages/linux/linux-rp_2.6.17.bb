@@ -12,7 +12,7 @@ PR = "r31"
 
 # Patches submitted upstream are towards top of this list 
 # Hacks should clearly named and at the bottom
-SRC_URI = "http://www.kernel.org/pub/linux/kernel/v2.6/linux-2.6.17.tar.bz2 \
+SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.17.tar.bz2 \
            ${RPSRC}/poodle_partsize-r0.patch;patch=1;status=merged \
            ${RPSRC}/jffs2_longfilename-r1.patch;patch=1;status=merged \
            ${RPSRC}/locomo_led_default_trigger-r0.patch;patch=1;status=merged \

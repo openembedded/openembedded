@@ -3,7 +3,7 @@ HOMEPAGE = "http://kernbench.kolivas.org/"
 LICENSE = "GPL"
 RDEPENDS = "time"
 
-SRC_URI = "http://www.kernel.org/pub/linux/kernel/people/ck/apps/kernbench/kernbench-${PV}.tar.bz2"
+SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/people/ck/apps/kernbench/kernbench-${PV}.tar.bz2"
 
 inherit autotools
 
