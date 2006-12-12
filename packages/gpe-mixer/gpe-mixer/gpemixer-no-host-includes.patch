@@ -1,0 +1,10 @@
+--- /tmp/Makefile	2006-05-20 15:44:18.249491416 +0200
++++ gpe-mixer-0.42/Makefile	2006-05-20 15:44:38.710380888 +0200
+@@ -22,7 +22,6 @@
+ PACKAGE_LDFLAGS += -L../libgpewidget
+ BUILD = ../build
+ else
+-PACKAGE_CFLAGS += -I/usr/include/gpe
+ BUILD = build
+ endif
+ PACKAGE_LDFLAGS += $(GPELIBS) $(GTKLIBS)
