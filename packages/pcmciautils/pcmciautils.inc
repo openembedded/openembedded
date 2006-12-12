@@ -5,7 +5,7 @@ HOMEPAGE = "http://kernel.org/pub/linux/utils/kernel/pcmcia/pcmcia.html"
 SECTION = "kernel/userland"
 PRIORITY = "optional"
 
-SRC_URI = "http://kernel.org/pub/linux/utils/kernel/pcmcia/pcmciautils-${PV}.tar.bz2"
+SRC_URI = "${KERNELORG_MIRROR}/pub/linux/utils/kernel/pcmcia/pcmciautils-${PV}.tar.bz2"
 
 S = "${WORKDIR}/pcmciautils-${PV}"
 

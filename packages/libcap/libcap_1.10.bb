@@ -6,7 +6,7 @@ DEPENDS = "bison-native flex-native"
 
 CFLAGS_append = " -I${S}/libcap/include"
 
-SRC_URI = "http://www.kernel.org/pub/linux/libs/security/linux-privs/kernel-2.4/${PN}-${PV}.tar.bz2 \
+SRC_URI = "${KERNELORG_MIRROR}/pub/linux/libs/security/linux-privs/kernel-2.4/${PN}-${PV}.tar.bz2 \
 	   file://makenames.patch;patch=1 \
 	   file://make.patch;patch=1 "
 

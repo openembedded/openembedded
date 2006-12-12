@@ -27,7 +27,7 @@ PR = "r0"
 
 COMPATIBLE_MACHINE = "storcenter"
 
-SRC_URI = "ftp://ftp.kernel.org/pub/linux/kernel/v2.6/linux-${PV}.tar.bz2 \
+SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-${PV}.tar.bz2 \
 	file://kernel.patch-${PV};patch=1 \
 	file://10-command-line.patch;patch=1 \
 	file://defconfig-${PV} "

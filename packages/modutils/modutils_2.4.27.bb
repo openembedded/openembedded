@@ -5,7 +5,7 @@ LICENSE = "GPLv2"
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/files"
 PR = "r7"
 
-SRC_URI = "ftp://ftp.kernel.org/pub/linux/utils/kernel/modutils/v2.4/modutils-${PV}.tar.bz2 \
+SRC_URI = "${KERNELORG_MIRROR}/pub/linux/utils/kernel/modutils/v2.4/modutils-${PV}.tar.bz2 \
            file://lex.l.diff;patch=1 \
            file://modutils-notest.patch;patch=1 \
            file://configure.patch;patch=1 \

@@ -6,7 +6,7 @@ RPROVIDES_${PN} = "hotplug"
 RCONFLICTS_${PN} = "hotplug"
 RREPLACES_${PN} = "hotplug"
 
-SRC_URI = "http://www.kernel.org/pub/linux/utils/kernel/hotplug/hotplug-ng-${PV}.tar.gz"
+SRC_URI = "${KERNELORG_MIRROR}/pub/linux/utils/kernel/hotplug/hotplug-ng-${PV}.tar.gz"
 
 #S = "${WORKDIR}/hotplug-ng-${PV}"
 

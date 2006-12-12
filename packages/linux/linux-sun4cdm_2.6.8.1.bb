@@ -3,7 +3,7 @@ DESCRIPTION = "Linux kernel for sparc32/sun4c"
 LICENSE = "GPL"
 PR = "r1"
 
-SRC_URI = "ftp://ftp.kernel.org/pub/linux/kernel/v2.6/linux-${PV}.tar.bz2 \
+SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-${PV}.tar.bz2 \
            file://sun4c_defconfig"
 S = "${WORKDIR}/linux-${PV}"
 

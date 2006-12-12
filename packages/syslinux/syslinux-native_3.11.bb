@@ -8,7 +8,7 @@ LICENSE="GPL"
 
 PR="r1"
 
-SRC_URI="http://www.kernel.org/pub/linux/utils/boot/syslinux/syslinux-${PV}.tar.bz2 "
+SRC_URI="${KERNELORG_MIRROR}/pub/linux/utils/boot/syslinux/syslinux-${PV}.tar.bz2 "
 
 S="${WORKDIR}/syslinux-${PV}"
 

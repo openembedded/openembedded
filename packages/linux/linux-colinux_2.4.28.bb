@@ -4,7 +4,7 @@ LICENSE = "GPL"
 COLV = "0.6.1"
 
 #http://internap.dl.sourceforge.net/sourceforge/colinux/coLinux-0.6.1.tar.gz
-SRC_URI = "ftp://ftp.kernel.org/pub/linux/kernel/v2.4/linux-${PV}.tar.bz2 \
+SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.4/linux-${PV}.tar.bz2 \
 	   file://colinux-${COLV}.patch;patch=1 \
 	   file://nofpu.patch;patch=1 \
 	   file://shortloadbytes.patch;patch=1 \

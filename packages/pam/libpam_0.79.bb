@@ -26,7 +26,7 @@ pn = "Linux-PAM"
 p = "${pn}-${PV}"
 S = "${WORKDIR}/${p}"
 
-SRC_URI = "ftp://ftp.kernel.org/pub/linux/libs/pam/pre/library/${p}.tar.bz2"
+SRC_URI = "${KERNELORG_MIRROR}/pub/linux/libs/pam/pre/library/${p}.tar.bz2"
 
 # the patches are necessary to get the autoreconf and cross build
 # to work correctly

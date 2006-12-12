@@ -3,7 +3,7 @@ DESCRIPTION = "Linux kernel for the Linksys NSLU2 device"
 LICENSE = "GPL"
 PR = "r2"
 
-SRC_URI = "ftp://ftp.kernel.org/pub/linux/kernel/v2.4/linux-2.4.22.tar.bz2 \
+SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.4/linux-2.4.22.tar.bz2 \
 	   http://nslu.sf.net/downloads/xfs-2.4.22-all-i386.bz2;patch=1 \
 	   http://nslu.sf.net/downloads/2.4.22-xfs-nslu2.patch.bz2;patch=1 \
 	   file://config-fixes.patch;patch=1 \

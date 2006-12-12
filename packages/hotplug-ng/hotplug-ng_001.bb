@@ -7,7 +7,7 @@ RCONFLICTS = "hotplug"
 RREPLACES = "hotplug"
 PR = "r1"
 
-SRC_URI = "http://www.kernel.org/pub/linux/utils/kernel/hotplug/hotplug-ng-${PV}.tar.gz \
+SRC_URI = "${KERNELORG_MIRROR}/pub/linux/utils/kernel/hotplug/hotplug-ng-${PV}.tar.gz \
 	   file://flags.patch;patch=1"
 S = "${WORKDIR}/hotplug-ng-${PV}"
 

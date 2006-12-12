@@ -3,7 +3,7 @@ DESCRIPTION = "Linux kernel for the BSQUARE PXA255 DevKitIDP"
 LICENSE = "GPL"
 PR = "r2"
 
-SRC_URI = "ftp://ftp.kernel.org/pub/linux/kernel/v2.6/linux-2.6.11.tar.bz2 \
+SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.11.tar.bz2 \
 	   ftp://ftp.accelent.com/pxa255_idp/linux/kernel-2.6.11-rc4_idp.patch;patch=1 \
 	   ftp://ftp.accelent.com/pxa255_idp/linux/kernel-2.6.11_idp_leds.patch;patch=1 \
 	   ftp://ftp.accelent.com/pxa255_idp/linux/devkitidp-pxa255_defconfig"
