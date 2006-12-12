@@ -5,7 +5,7 @@ DEPENDS = "lzma-native"
 LICENSE = "GPL"
 PR = "r2"
 
-SRC_URI = "http://www.fi.kernel.org/pub/linux/kernel/v2.4/linux-2.4.30.tar.bz2 \
+SRC_URI = "${KERNELORG_MIRROR}pub/linux/kernel/v2.4/linux-2.4.30.tar.bz2 \
 	cvs://anonymous@openwrt.org/openwrt;module=openwrt/package/linux/kernel-source;tag=TESTED \
 	http://downloads.openwrt.org/sources/kernel-binary-wl-0.2.tar.gz \
 	http://downloads.openwrt.org/sources/kernel-source-et-0.6.tar.gz \

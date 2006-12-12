@@ -19,7 +19,7 @@ inherit kernel
 ARCH = "i386"
 KERNEL_IMAGETYPE = "bzImage"
 
-SRC_URI = "http://kernel.org/pub/linux/kernel/v2.6/linux-${KV}.tar.bz2 \
+SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-${KV}.tar.bz2 \
 	http://www.amd.com/files/connectivitysolutions/geode/geode_lx/${AMD_DRIVER_LABEL}.patch;patch=1 \
 	file://defconfig"
 

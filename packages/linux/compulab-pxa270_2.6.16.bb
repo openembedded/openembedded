@@ -3,7 +3,7 @@ DESCRIPTION = "Linux kernel for the Compulab PXA270 system"
 LICENSE = "GPL"
 PR = "r2"
 
-SRC_URI = "ftp://ftp.kernel.org/pub/linux/kernel/v2.6/linux-2.6.16.tar.bz2 \
+SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.16.tar.bz2 \
            file://linux-2.6.16.patch;patch=1 \
            file://defconfig \
 	   http://www.compulab.co.il/x270/download/x270-linux-drv.zip"

@@ -5,7 +5,7 @@ PR = "r0"
 
 KERNEL_CCSUFFIX = "-3.3.4"
 
-SRC_URI = "ftp://ftp.kernel.org/pub/linux/kernel/v2.6/linux-${PV}.tar.bz2 \
+SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-${PV}.tar.bz2 \
 	   http://hem.bredband.net/ekmlar/patch-vt1211-2.6.txt;patch=1 \
            file://epia_defconfig"
 S = "${WORKDIR}/linux-${PV}"

@@ -15,7 +15,7 @@ RPSRC = "http://www.rpsys.net/openzaurus/patches/archive"
 ##############################################################
 # source and patches
 #
-SRC_URI = "http://www.kernel.org/pub/linux/kernel/v2.6/linux-2.6.16.tar.bz2 \
+SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.16.tar.bz2 \
            http://people.openezx.org/stefan/patches/patches-2.6.16-2.6.16.13-ezx7.tar.bz2 \
            \
            file://sa1100-rtc-gcc4.diff;patch=1 \

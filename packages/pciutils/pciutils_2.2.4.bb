@@ -6,7 +6,7 @@ HOMEPAGE = "http://atrey.karlin.mff.cuni.cz/~mj/pciutils.shtml"
 LICENSE = "GPLv2"
 DEPENDS = "zlib"
 
-SRC_URI = "ftp://ftp.kernel.org/pub/software/utils/pciutils/pciutils-${PV}.tar.bz2 \
+SRC_URI = "${KERNELORG_MIRROR}/pub/software/utils/pciutils/pciutils-${PV}.tar.bz2 \
 	   file://configure.patch;patch=1 \
 	   file://pcimodules-pciutils.diff;patch=1"
 

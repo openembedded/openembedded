@@ -12,7 +12,7 @@ COMPATIBLE_MACHINE = 'simpad'
 
 FILESPATH = "${FILE_DIRNAME}/opensimpad-${PV}:${FILE_DIRNAME}/opensimpad:${FILE_DIRNAME}/files:${FILE_DIRNAME}"
 
-SRC_URI = "ftp://ftp.kernel.org/pub/linux/kernel/v2.4/linux-${KV}.tar.bz2 \
+SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.4/linux-${KV}.tar.bz2 \
            file://${KV}-${VRSV}.patch;patch=1 \
            file://${KV}-${VRSV}-${PXAV}.patch;patch=1 \
            file://${KV}-${VRSV}-${PXAV}-${JPMV}.patch;patch=1 \

@@ -33,6 +33,9 @@ cookie_io_functions_use_off64_t=${cookie_io_functions_use_off64_t=yes}
 
 # libc
 libc_cv_ppc_machine=${libc_cv_ppc_machine=yes}
+libc_cv_mlong_double_128ibm=${libc_cv_mlong_double_128ibm=yes}
+libc_cv_mabi_ibmlongdouble=${libc_cv_mabi_ibmlongdouble=yes}
+libc_cv_mlong_double_128=${libc_cv_mlong_double_128=yes}
 
 # apache
 ac_cv_func_pthread_key_delete=${ac_cv_func_pthread_key_delete=yes}
@@ -257,3 +260,10 @@ ac_cv_negative_eai=${ac_cv_negative_eai=yes}
 apr_cv_gai_addrconfig=${apr_cv_gai_addrconfig=no}
 ac_cv_o_nonblock_inherited=${ac_cv_o_nonblock_inherited=no}
 apr_cv_tcp_nodelay_with_cork=${apr_cv_tcp_nodelay_with_cork=yes}
+
+# binutils (libiberty)
+ac_cv_sizeof_int=${ac_cv_sizeof_int=4}
+ac_cv_type_int=${ac_cv_type_int=yes}
+ac_cv_type_uintptr_t=${ac_cv_type_uintptr_t=yes}
+liberty_cv_uint64=${liberty_cv_uint64=uint64_t}
+

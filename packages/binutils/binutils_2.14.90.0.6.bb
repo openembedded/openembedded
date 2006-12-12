@@ -38,7 +38,7 @@ FILES_${PN}-symlinks = " \
 	${bindir}/strip"
 
 SRC_URI = \
-    "http://ftp.kernel.org/pub/linux/devel/binutils/binutils-${PV}.tar.bz2 \
+    "${KERNELORG_MIRROR}/pub/linux/devel/binutils/binutils-${PV}.tar.bz2 \
      file://ld_makefile.patch;patch=1 \
      file://better_file_error.patch;patch=1 \
      file://signed_char_fix.patch;patch=1 \

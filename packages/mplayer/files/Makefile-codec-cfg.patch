@@ -1,11 +1,13 @@
---- trunk/Makefile.orig	2006-07-24 09:55:12.000000000 +0100
-+++ trunk/Makefile	2006-07-24 09:56:18.000000000 +0100
-@@ -410,7 +410,7 @@
- endif
+Index: trunk/Makefile
+===================================================================
+--- trunk.orig/Makefile
++++ trunk/Makefile
+@@ -239,7 +239,7 @@ mencoder$(EXESUF): $(MENCODER_DEPS)
+ 	$(CC) -o $@ $^ $(LDFLAGS_MENCODER)
  
- codec-cfg: codec-cfg.c codec-cfg.h help_mp.h
+ codec-cfg$(EXESUF): codec-cfg.c codec-cfg.h help_mp.h
 -	$(HOST_CC) -I. -DCODECS2HTML codec-cfg.c -o $@
-+	$(BUILD_CC) -Ilibmpdemux -Iloader -Ilibvo -I. -DCODECS2HTML codec-cfg.c -o $@
++	$(BUILD_CC) -I. -DCODECS2HTML codec-cfg.c -o $@
  
- codecs.conf.h: codec-cfg etc/codecs.conf
- 	./codec-cfg ./etc/codecs.conf > $@
+ codecs.conf.h: codec-cfg$(EXESUF) etc/codecs.conf
+ 	./codec-cfg$(EXESUF) ./etc/codecs.conf > $@

@@ -1,4 +1,4 @@
-SRC_URI="http://ftp.kernel.org/pub/linux/kernel/people/lenb/acpi/utils/pmtools-${PV}.tar.bz2"
+SRC_URI="${KERNELORG_MIRROR}/pub/linux/kernel/people/lenb/acpi/utils/pmtools-${PV}.tar.bz2"
 
 S="${WORKDIR}/pmtools"
 

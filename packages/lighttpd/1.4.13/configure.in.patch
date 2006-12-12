@@ -1,0 +1,28 @@
+Index: lighttpd-1.4.13-r0/lighttpd-1.4.13/configure.in
+===================================================================
+--- lighttpd-1.4.13-r0.orig/lighttpd-1.4.13/configure.in	2006-10-09 18:19:34.000000000 +0200
++++ lighttpd-1.4.13-r0/lighttpd-1.4.13/configure.in	2006-12-07 22:31:52.000000000 +0100
+@@ -250,23 +250,9 @@
+     [WITH_PCRE=$withval],[WITH_PCRE=yes])
+ AC_MSG_RESULT([$WITH_PCRE])
+ 
+-if test "x$cross_compiling" = xno -a "$WITH_PCRE" != "no"; then
+-  AC_PATH_PROG(PCRECONFIG, pcre-config)
+ 
+-  if test x"$PCRECONFIG" != x; then
+-    PCRE_LIB=`$PCRECONFIG --libs`
+-    CPPFLAGS="$CPPFLAGS `$PCRECONFIG --cflags`"
+-    OLDLIBS="$LIBS"
+-    LIBS="$LIBS $PCRE_LIB"
+-    AC_CHECK_LIB(pcre, pcre_compile, [
+-      AC_CHECK_HEADERS([pcre.h], [
+         AC_DEFINE([HAVE_LIBPCRE], [1], [libpcre])
+         AC_DEFINE([HAVE_PCRE_H], [1])
+-      ])
+-    ])
+-    LIBS="$OLDLIBS"
+-  fi
+-fi
+ 
+ AC_SUBST(PCRE_LIB)
+ 

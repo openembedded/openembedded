@@ -8,7 +8,7 @@ RCONFLICTS_${PN} = "hotplug"
 RREPLACES_${PN} = "hotplug"
 PR = "r1"
 
-SRC_URI = "ftp://ftp.kernel.org/pub/linux/utils/kernel/hotplug/hotplug-2004_03_29.tar.gz \
+SRC_URI = "${KERNELORG_MIRROR}/pub/linux/utils/kernel/hotplug/hotplug-2004_03_29.tar.gz \
 	   file://busybox.patch;patch=1 \
            file://fix-net.agent \
            file://update-usb.usermap \

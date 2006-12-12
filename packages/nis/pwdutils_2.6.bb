@@ -12,7 +12,7 @@ HOMEPAGE="http://lists.suse.com/archive/pwdutils/"
 
 require nis.inc
 
-SRC_URI = "ftp://ftp.kernel.org/pub/linux/utils/net/NIS/OLD/${PN}/${P}.tar.bz2"
+SRC_URI = "${KERNELORG_MIRROR}/pub/linux/utils/net/NIS/OLD/${PN}/${P}.tar.bz2"
 
 # an selinux API is used even if no selinux is detected by
 # configure.

@@ -6,7 +6,9 @@ LICENSE = "GPL"
 
 DEFAULT_PREFERENCE = "-1"
 
-SRC_URI = "${SOURCEFORGE_MIRROR}/${PN}/${PN}-${PV}.tar.bz2"
+SRC_URI = "${SOURCEFORGE_MIRROR}/${PN}/${PN}-${PV}.tar.bz2 \
+          file://u-boot-make381-fix.patch;patch=1"
+
 SRC_URI_append_gumstix = "\
 						  file://u-boot-autoscript.patch;patch=1 \
 						  file://u-boot-base.patch;patch=1 \
@@ -24,12 +26,18 @@ SRC_URI_append_gumstix = "\
 SRC_URI_append_amsdelta = "\
 	http://the.earth.li/pub/e3/u-boot-amsdelta-20060519.diff;patch=1"
 
+SRC_URI_append_dht-walnut= "\ 
+        file://u-boot-dht-walnut-df2.patch;patch=1"
+
+
 EXTRA_OEMAKE = "CROSS_COMPILE=${TARGET_PREFIX}"
 EXTRA_OEMAKE_gumstix = "CROSS_COMPILE=${TARGET_PREFIX} GUMSTIX_400MHZ=${GUMSTIX_400MHZ}"
 TARGET_LDFLAGS = ""
 
 UBOOT_MACHINE ?= "${MACHINE}_config"
 UBOOT_IMAGE = "u-boot-${MACHINE}-${PV}-${PR}.bin"
+
+UBOOT_MACHINE_dht-walnut = "walnut_config"
 
 def gumstix_mhz(d):
 	import bb
