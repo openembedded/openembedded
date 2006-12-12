@@ -4,7 +4,7 @@ Geode SC1100 (i486) based wirless router appliance boards"
 LICENSE = "GPL"
 PR = "r0"
 
-SRC_URI = "ftp://ftp.kernel.org/pub/linux/kernel/v2.6/linux-${PV}.tar.bz2 \
+SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-${PV}.tar.bz2 \
 	   file://defconfig"
 S = "${WORKDIR}/linux-${PV}"
 

@@ -6,7 +6,7 @@ PR = "r0"
 COMPATIBLE_HOST = "sh.*-linux"
 #COMPATIBLE_MACHINE = "jornada6xx"
 
-SRC_URI = "http://www.kernel.org/pub/linux/kernel/v2.6/linux-2.6.17.tar.gz \
+SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.17.tar.gz \
            file://defconfig_jlime \
 	   file://LinuxSH-2.6.17.patch;patch=0 \
 	   file://unexpected-int-fix.patch;patch=0 \

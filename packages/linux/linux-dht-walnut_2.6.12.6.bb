@@ -6,7 +6,7 @@ DEPENDS = "u-boot"
 
 KERNEL_CCSUFFIX = "-3.4.4"
 
-SRC_URI = "ftp://ftp.kernel.org/pub/linux/kernel/v2.6/linux-${PV}.tar.bz2 \
+SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-${PV}.tar.bz2 \
            file://ppc_40x_uboot.patch;patch=1 \
            file://iw_we18-5.diff;patch=1 \
            file://linux-2.6.12-mppe-mppc-1.3.patch;patch=1 \

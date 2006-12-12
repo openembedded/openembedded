@@ -5,9 +5,9 @@ PR = "r1"
 
 COMPATIBLE_MACHINE = "ep93xx"
 
-SRC_URI = "ftp://ftp.kernel.org/pub/linux/kernel/v2.6/linux-2.6.17.tar.bz2 \
-	   http://ftp.kernel.org/pub/linux/kernel/v2.6/testing/patch-2.6.18-rc1.bz2;patch=1 \
-	   http://ftp.kernel.org/pub/linux/kernel/v2.6/snapshots/old/patch-2.6.18-rc1-git9.bz2;patch=1 \
+SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.17.tar.bz2 \
+	   ${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/testing/patch-2.6.18-rc1.bz2;patch=1 \
+	   ${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/snapshots/old/patch-2.6.18-rc1-git9.bz2;patch=1 \
 	   http://www.wantstofly.org/~buytenh/ep93xx/derevo20.diff;pnum=1;patch=1 \
            file://defconfig \
 		   "

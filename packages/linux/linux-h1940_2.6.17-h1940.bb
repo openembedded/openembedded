@@ -6,7 +6,7 @@ PR = "r1"
 
 COMPATIBLE_HOST = "arm.*-linux"
 
-SRC_URI = "ftp://ftp.kernel.org/pub/linux/kernel/v2.6/linux-2.6.17.tar.bz2 \
+SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.17.tar.bz2 \
            http://rtpnet.nerim.net/ipaq/patches/2.6.17-1/v2.6.17-gitcurrent.patch;patch=1 \
            http://rtpnet.nerim.net/ipaq/patches/2.6.17-1/full.patch;patch=1 \
            http://rtpnet.nerim.net/ipaq/patches/2.6.17-1/WIP/serial_sparse.patch;patch=1 \

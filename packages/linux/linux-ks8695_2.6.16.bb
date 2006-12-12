@@ -3,7 +3,7 @@ SECTION = "kernel"
 LICENSE = "GPL"
 PR = "r0"
 
-SRC_URI = "ftp://ftp.kernel.org/pub/linux/kernel/v2.6/linux-${PV}.tar.bz2 \
+SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-${PV}.tar.bz2 \
            file://ks8695-headers-r0.patch;patch=1 \
            file://ks8695-base-r0.patch;patch=1 \
            file://defconfig-ks8695"

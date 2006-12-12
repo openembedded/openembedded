@@ -6,8 +6,8 @@ PR = "r0"
 COMPATIBLE_HOST = "arm.*-linux"
 COMPATIBLE_MACHINE = "jornada7xx"
 
-SRC_URI = "http://www.kernel.org/pub/linux/kernel/v2.6/linux-2.6.18.tar.gz \
-           http://www.kernel.org/pub/linux/kernel/v2.6/testing/patch-2.6.19-rc6.bz2;patch=1 \
+SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.18.tar.gz \
+           ${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/testing/patch-2.6.19-rc6.bz2;patch=1 \
 	   file://jornada7xx.patch;patch=0 \
            file://defconf_jlime "
 
