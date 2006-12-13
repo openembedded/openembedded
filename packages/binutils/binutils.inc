@@ -60,6 +60,13 @@ export CC = "${CCACHE} ${HOST_PREFIX}gcc ${HOST_CC_ARCH}"
 do_configure () {
 	(cd ${S}; gnu-configize) || die "Failed to run gnu-configize"
 	oe_runconf
+#
+# must prime config.cache to ensure the build of libiberty
+#
+        mkdir -p ${B}/build-${BUILD_SYS}
+	for i in ${CONFIG_SITE}; do
+	    cat $i >> ${B}/build-${BUILD_SYS}/config.cache
+	done
 }
 
 do_stage () {
