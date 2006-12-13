@@ -1,8 +1,6 @@
 export IMAGE_BASENAME = "opie-image"
 export IMAGE_LINGUAS = ""
 
-FEED_URIS_append_familiar   = " opie##http://familiar.handhelds.org/releases/${DISTRO_VERSION}/feed/opie"
-
 LICENSE = "MIT"
 PR = "r21"
 
