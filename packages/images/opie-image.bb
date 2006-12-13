@@ -7,15 +7,15 @@ PR = "r21"
 DEPENDS = "${MACHINE_TASK_PROVIDER} task-opie"
 RDEPENDS = "${INSTALL_PACKAGES}"
 
-extra_stuff := '${@base_conditional("ROOT_FLASH_SIZE", "24", "", "task-opie-extra-games task-opie-extra-apps task-opie-extra-styles",d)}'
-
 INSTALL_PACKAGES = "${MACHINE_TASK_PROVIDER} task-opie-base task-opie-base-applets \
 		    task-opie-base-inputmethods task-opie-base-apps \
 		    task-opie-base-settings task-opie-base-decorations \
 		    task-opie-base-styles task-opie-base-pim \
 		    task-opie-extra-settings \
-		    task-opie-bluetooth task-opie-irda \
-		    ${extra_stuff}"
+		    task-opie-bluetooth task-opie-irda "
+
+INSTALL_PACKAGES_spitz_append = "task-opie-extra-games task-opie-extra-apps task-opie-extra-styles"
+INSTALL_PACKAGES_akita_append = "task-opie-extra-games task-opie-extra-apps task-opie-extra-styles"
 
 export IPKG_INSTALL = "${INSTALL_PACKAGES}"
 
