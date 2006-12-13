@@ -125,6 +125,7 @@ RRECOMMENDS_task-base-core-default = '\
     dropbear '
 
 task-base-kernel24-rdepends = "\
+    modutils-depmod \
     linux-hotplug "
 
 task-base-kernel26-rdepends = "\
