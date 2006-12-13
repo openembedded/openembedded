@@ -5,7 +5,7 @@ ALLOW_EMPTY = "1"
 LICENSE = "MIT"
 PROVIDES = "task-opie-everything"
 
-PR = "r4"
+PR = "r5"
 
 PACKAGES = "task-opie-applets task-opie-apps task-opie-base \
             task-opie-base-applets task-opie-base-apps \
@@ -155,7 +155,7 @@ RDEPENDS_task-opie-todayplugins = "opie-today-addressbookplugin opie-today-dateb
 RDEPENDS_task-opie-pim = "task-opie-base-pim task-opie-todayplugins task-opie-datebookplugins \
                  opie-mail opie-pimconverter"
 
-RDEPENDS_task-opie-bluetooth = "bluez-utils-nodbus obexftp obexpush libopieobex0 \
+RDEPENDS_task-opie-bluetooth = "bluez-utils obexftp obexpush libopieobex0 \
                        opie-bluepin opie-bluetoothmanager opie-bluetoothapplet"
 
 RDEPENDS_task-opie-wlan = "wireless-tools opie-wellenreiter opie-networksettings-wlanplugin"
