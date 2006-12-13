@@ -6,6 +6,7 @@ require perl.inc
 
 SRC_URI += "file://config.sh-armeb-linux \
 	    file://config.sh-arm-linux \
+	    file://config.sh-powerpc-linux \
 	    file://config.sh-i386-linux \
 	    file://config.sh-i486-linux \
 	    file://config.sh-i586-linux \
@@ -38,6 +39,7 @@ do_configure() {
 	cp ${WORKDIR}/config.sh-i686-linux .
 	cp ${WORKDIR}/config.sh-x86_64-linux .
 	cp ${WORKDIR}/config.sh-armeb-linux .
+	cp ${WORKDIR}/config.sh-powerpc-linux .
 	cp ${WORKDIR}/config.sh-sh3-linux .
 	cp ${WORKDIR}/config.sh-sh4-linux .
 	#perl insists on an extra config.sh for arm EABI
