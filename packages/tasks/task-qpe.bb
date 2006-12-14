@@ -3,7 +3,7 @@ SECTION = "opie/base"
 ALLOW_EMPTY = "1"
 PACKAGE_ARCH = "all"
 LICENSE = "MIT"
-PR = "r8"
+PR = "r9"
 
 PACKAGES = "task-qpe-applets task-qpe-games task-qpe-inputmethods \
 	task-qpe-multimedia task-qpe-emulators task-qpe-applications \
@@ -48,7 +48,6 @@ RDEPENDS_task-qpe-applications = "\
     ubahnnav \
     visiscript \
     xqt2 \
-    zeecookbook \
     zbedic \
     zbench \
     zgscore \
@@ -89,7 +88,6 @@ RDEPENDS_task-qpe-games = "\
     powermanga \
     puzz-le \
     qfish2 \
-    qpe-vexed \
     qmatrix \
     shisensho \
     sokoban \
