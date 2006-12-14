@@ -1,12 +1,11 @@
-SECTION = "console/network"
 DESCRIPTION = "A security-aware DNS server"
+SECTION = "console/network"
 HOMEPAGE = "http://www.maradns.org"
 LICENSE = "PD"
-PR = "r1"
 
-SRC_URI = "http://www.maradns.org/download/maradns-${PV}.tar.bz2 \
-	file://init \
-	file://rng-makefile-build-cc.patch;patch=1;pnum=0"
+SRC_URI = "http://www.maradns.org/download/1.0/maradns-${PV}.tar.bz2 \
+           file://init \
+           file://rng-makefile-build-cc.patch;patch=1;pnum=0"
 
 do_install() {
 	install -d ${D}${bindir}
@@ -37,7 +36,7 @@ do_install() {
 	install -m 755 ${WORKDIR}/init ${D}${sysconfdir}/init.d/maradns
 }
 
-PACKAGES = "maradns-zone maradns-ask maradns maradns-doc"
+PACKAGES =+ "maradns-zone maradns-ask"
 FILES_maradns-zone = "${sbindir}/zoneserver ${bindir}/getzone"
 FILES_maradns-ask = "${bindir}/askmara"
 
