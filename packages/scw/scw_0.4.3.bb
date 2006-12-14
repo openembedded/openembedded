@@ -3,8 +3,7 @@ HOMEPAGE = "http://corrie.scp.fi/users/kalle.vahlman/scw/"
 LICENSE = "LGPL"
 DEPENDS = "gtk+"
 
-
-SRC_URI = "http://corrie.scp.fi/users/kalle.vahlman/scw/${P}.tar.gz"
+SRC_URI = "${DEBIAN_MIRROR}/main/s/${PN}/${PN}_${PV}.orig.tar.gz"
 
 inherit autotools pkgconfig
 
