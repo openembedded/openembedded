@@ -1,3 +1,5 @@
 require dbus.inc
 
-PR = "r1"
+SRC_URI += "file://dbus-exploit-fix.patch;patch=1"
+
+PR = "r2"
