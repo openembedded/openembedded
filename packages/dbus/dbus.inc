@@ -3,6 +3,7 @@ SECTION = "base"
 HOMEPAGE = "http://www.freedesktop.org/Software/dbus"
 LICENSE = "GPL"
 DEPENDS = "expat virtual/libintl"
+RRECOMMENDS_${PN}-lib = "${PN}"
 
 SRC_URI = "http://dbus.freedesktop.org/releases/dbus/dbus-${PV}.tar.gz \
 	   file://tmpdir.patch;patch=1 \
