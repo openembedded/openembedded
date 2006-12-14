@@ -4,7 +4,7 @@ LICENSE = "GPL"
 DEPENDS = "perl-native ruby-native nkf-native"
 PR = "r2"
 
-SRC_URI = "http://pitecan.com/OpenPOBox/dist/pobox-${PV}.tgz \
+SRC_URI = "${SOURCEFORGE_MIRROR}/gakusei/pobox-${PV}.tar.bz2 \
            http://www.vanille.de/mirror/pbserver-${PV}.tar.gz \
            file://OpenPOBox-1.25.diff;patch=1 \
            file://remove-local-includes.patch;patch=1 \
