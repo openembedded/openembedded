@@ -27,7 +27,7 @@ do_stage() {
     cp ${S}/lib/libgnutls.m4 ${STAGING_DATADIR}/aclocal/
 }
 
-PACKAGES =+ "${PN}-openssl ${PN}-extra ${PN}-bin"
+PACKAGES =+ "${PN}-openssl ${PN}-extra ${PN}-bin ${PN}-xx"
 
 FILES_${PN} = "${libdir}/libgnutls.so.*"
 FILES_${PN}-bin = "${bindir}/gnutls-serv \
@@ -40,3 +40,4 @@ FILES_${PN}-bin = "${bindir}/gnutls-serv \
 FILES_${PN}-dev += "${bindir}/*-config ${bindir}/gnutls-cli-debug"
 FILES_${PN}-extra = "${libdir}/libgnutls-extra.so.*"
 FILES_${PN}-openssl = "${libdir}/libgnutls-openssl.so.*"
+FILES_${PN}-xx = "${libdir}/libgnutlsxx.so.*"

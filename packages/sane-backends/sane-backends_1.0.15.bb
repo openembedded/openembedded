@@ -3,7 +3,7 @@ PR = "r4"
 DEPENDS = "gphoto2 jpeg libusb"
 LICENSE = "LGPL"
 
-SRC_URI = "ftp://ftp.sane-project.org/pub/sane/sane-backends-${PV}/sane-backends-${PV}.tar.gz \
+SRC_URI = "ftp://ftp.sane-project.org/pub/sane/old-versions/sane-backends-${PV}/sane-backends-${PV}.tar.gz \
 	file://sane-plustek.patch;patch=1 \
 	file://Makefile.in.patch;patch=1 \
 	file://saned.xinetd \
