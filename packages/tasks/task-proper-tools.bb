@@ -1,5 +1,5 @@
 DESCRIPTION = "Proper tools for busybox haters"
-PR = "r2"
+PR = "r3"
 
 PACKAGE_ARCH = "all"
 ALLOW_EMPTY_${PN} = "1"
@@ -12,6 +12,7 @@ RDEPENDS = "\
 	    sed \
 	    wget \
 	    patch \
+            tar \
 	    diffutils \
             less \
             vim \
