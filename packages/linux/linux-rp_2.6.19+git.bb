@@ -1,6 +1,6 @@
 require linux-rp.inc
 
-PR = "r1"
+PR = "r0"
 
 DEFAULT_PREFERENCE = "-1"
 
@@ -14,31 +14,31 @@ DEFAULT_PREFERENCE = "-1"
 
 # Patches submitted upstream are towards top of this list 
 # Hacks should clearly named and at the bottom
-SRC_URI = "git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux-2.6.git;protocol=git;tag=ae99a78af33f00565a05dbbc6ca9b247fed002c5 \
+SRC_URI = "git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux-2.6.git;protocol=git;tag=v2.6.20-rc1 \
            http://opensource.wolfsonmicro.com/~lg/asoc/asoc-v0.12.4.patch;patch=1 \
+           ${RPSRC}/pxafb_fix_params-r1.patch;patch=1 \
            ${RPSRC}/hx2750_base-r27.patch;patch=1 \
            ${RPSRC}/hx2750_bl-r7.patch;patch=1 \
            ${RPSRC}/hx2750_pcmcia-r2.patch;patch=1 \
-           ${RPSRC}/pxa_keys-r5.patch;patch=1 \
-           ${RPSRC}/tsc2101-r14.patch;patch=1 \
+           ${RPSRC}/pxa_keys-r6.patch;patch=1 \
+           ${RPSRC}/tsc2101-r15.patch;patch=1 \
            ${RPSRC}/hx2750_test1-r4.patch;patch=1 \
            ${RPSRC}/pxa_timerfix-r0.patch;patch=1 \
            ${RPSRC}/input_power-r6.patch;patch=1 \
-           ${RPSRC}/pxa25x_cpufreq-r1.patch;patch=1 \
+           ${RPSRC}/pxa25x_cpufreq-r2.patch;patch=1 \
            ${RPSRC}/sharpsl_pm_fixes1-r0.patch;patch=1 \
            ${RPSRC}/pm_changes-r1.patch;patch=1 \
-           ${RPSRC}/usb_pxa27x_udc-r1.patch;patch=1 \
            ${RPSRC}/usb_add_epalloc-r3.patch;patch=1 \
+           ${RPSRC}/usb_pxa27x_udc-r2.patch;patch=1 \
            ${DOSRC}/kexec-arm-r3.patch;patch=1 \
            ${RPSRC}/locomo_kbd_tweak-r1.patch;patch=1 \
            ${RPSRC}/poodle_pm-r3.patch;patch=1 \
-           ${RPSRC}/pxa27x_overlay-r3.patch;patch=1 \
+           ${RPSRC}/pxa27x_overlay-r5.patch;patch=1 \
            ${RPSRC}/w100_extaccel-r0.patch;patch=1 \
            file://serial-add-support-for-non-standard-xtals-to-16c950-driver.patch;patch=1 \
            ${RPSRC}/logo_oh-r0.patch.bz2;patch=1;status=unmergable \
            ${RPSRC}/logo_oz-r2.patch.bz2;patch=1;status=unmergable \
            ${RPSRC}/pxa-linking-bug.patch;patch=1;status=unmergable \
-           file://add-oz-release-string.patch;patch=1;status=unmergable \
            ${RPSRC}/mmcsd_large_cards-r0.patch;patch=1;status=hack \
            ${RPSRC}/mmcsd_no_scr_check-r0.patch;patch=1;status=hack \
            ${RPSRC}/integrator_rgb-r1.patch;patch=1;status=hack \
