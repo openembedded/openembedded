@@ -1,19 +1,6 @@
-LICENSE = "LGPL"
-DESCRIPTION = "C++ bindings for the GTK+ toolkit."
-HOMEPAGE = "http://www.gtkmm.org/"
-SECTION = "libs"
-PRIORITY = "optional"
-DEPENDS = "glibmm"
-PR = "r0"
+require gtkmm.inc
 
-SRC_URI = "ftp://ftp.gnome.org/pub/GNOME/sources/gtkmm/2.4/gtkmm-${PV}.tar.bz2"
-
-inherit autotools pkgconfig flow-lossage
-
-FILES_${PN} = "${libdir}/lib*.so.*"
-FILES_${PN}-dev += "${libdir}/glibmm-2.4/include/"
-
-LIBV = "2.4.0"
+SRC_URI = "${GNOME_MIRROR}/gtkmm/2.4/gtkmm-${PV}.tar.bz2"
 
 do_stage () {
 	oe_libinstall -so -C atk/atkmm libatkmm-1.6 ${STAGING_LIBDIR}
