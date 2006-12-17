@@ -1,0 +1,5 @@
+DESCRIPTION = "GNU C Library"
+HOMEPAGE = "http://www.gnu.org/software/libc/libc.html"
+SECTION = "libs"
+PRIORITY = "required"
+LICENSE = "LGPL"

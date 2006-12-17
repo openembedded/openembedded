@@ -1,9 +1,6 @@
+require glibc.inc
+
 PR = "r8"
-DESCRIPTION = "GNU C Library"
-HOMEPAGE = "http://www.gnu.org/software/libc/libc.html"
-LICENSE = "LGPL"
-SECTION = "libs"
-PRIORITY = "required"
 
 DEFAULT_PREFERENCE_sh3 = "-99"
 
