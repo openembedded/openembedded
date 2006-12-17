@@ -1,11 +1,13 @@
---- mplayer_20060519/Makefile.orig	2006-05-30 09:32:23.000000000 +0100
-+++ mplayer_20060519/Makefile	2006-05-30 09:34:07.000000000 +0100
-@@ -438,7 +438,7 @@
- 	$(CC) -DCODECS2HTML codec-cfg.c mp_msg.o -o $@
+Index: MPlayer-1.0rc1/Makefile
+===================================================================
+--- MPlayer-1.0rc1.orig/Makefile
++++ MPlayer-1.0rc1/Makefile
+@@ -399,7 +399,7 @@ osdep/mplayer-rc.o: osdep/mplayer.rc
+ 	windres -o $@ osdep/mplayer.rc
  
- $(PRG_CFG): codec-cfg.c codec-cfg.h help_mp.h
--	$(HOST_CC) $(HOST_CFLAGS) -I. codec-cfg.c -o $(PRG_CFG) \
-+	$(BUILD_CC) -Ilibmpdemux -Iloader -Ilibvo -I. codec-cfg.c -o $(PRG_CFG) \
- 	-DCODECS2HTML $(EXTRA_LIB) $(EXTRA_INC)
+ codec-cfg: codec-cfg.c codec-cfg.h help_mp.h
+-	$(HOST_CC) -I. -DCODECS2HTML codec-cfg.c -o $@
++	$(BUILD_CC) -I. -DCODECS2HTML codec-cfg.c -o $@
  
- install: $(ALL_PRG)
+ codecs.conf.h: codec-cfg etc/codecs.conf
+ 	./codec-cfg ./etc/codecs.conf > $@

@@ -1,40 +1,42 @@
 DESCRIPTION = "Open Source multimedia player."
-SECTION = "opie/multimedia"
+SECTION = "multimedia"
 PRIORITY = "optional"
 HOMEPAGE = "http://www.mplayerhq.hu/"
-DEPENDS = "virtual/libsdl libmad zlib libpng jpeg liba52 fontconfig alsa-lib lzo ncurses lame"
+DEPENDS = "virtual/libsdl libmad zlib libpng jpeg liba52 freetype fontconfig alsa-lib lzo ncurses lame"
 RDEPENDS = "mplayer-common"
 LICENSE = "GPL"
-SRC_URI = "http://www1.mplayerhq.hu/MPlayer/releases/MPlayer-${PV}.tar.bz2 \
-	   file://vo_w100.c \
-	   file://vo_w100_api.h \
-	   file://vo_w100_fb.h \
-	   file://Makefile.patch;patch=1 \
-	   file://w100-configure.patch;patch=1 \
-	   file://w100-Makefile.patch;patch=1 \
-	   file://w100-video_out.patch;patch=1 \
-	   file://w100-mplayer.patch;patch=1 \
-           file://libmpdemux-ogg-include.patch;patch=1 \
-           file://libmpcodecs-ogg-include.patch;patch=1 \
-           file://pld-onlyarm5.patch;patch=1"
+SRC_URI = "http://www1.mplayerhq.hu/MPlayer/releases/MPlayer-1.0rc1.tar.bz2 \
+           file://vo_w100.c \
+           file://vo_w100_api.h \
+           file://vo_w100_fb.h \
+           file://Makefile.patch;patch=1 \
+           file://w100-configure.patch;patch=1 \
+           file://w100-Makefile.patch;patch=1 \
+           file://w100-video_out.patch;patch=1 \
+           file://w100-mplayer.patch;patch=1 \
+           file://pld-onlyarm5.patch;patch=1 \
+           file://makefile-nostrip.patch;patch=1"
 
-MAINTAINER="Graeme Gregory <dp@xora.org.uk>"
+SRC_URI_append_collie = " file://disable-executable-stack-test.patch;patch=1"
+PACKAGE_ARCH_mplayer_collie = "collie"
+PACKAGE_ARCH_mencoder_collie = "collie"
+
 RCONFLICTS_${PN} = "mplayer-atty"
 RREPLACES_${PN} = "mplayer-atty"
-PR = "r2"
+PR = "r0"
 
 PARALLEL_MAKE = ""
 
-DEPENDS_append_c7x0 = " sharp-aticore-oss"
+DEPENDS_append_c7x0 = " sharp-aticore-oss "
 
-S = "${WORKDIR}/MPlayer-${PV}"
+S = "${WORKDIR}/MPlayer-1.0rc1"
 
 PACKAGES =+ "mencoder"
 
 FILES_${PN} = "${bindir}/mplayer"
 FILES_mencoder = "${bindir}/mencoder"
 
-inherit autotools
+inherit autotools pkgconfig
 
 EXTRA_OECONF = " \
         --prefix=/usr \
@@ -51,7 +53,6 @@ EXTRA_OECONF = " \
         --disable-vm \
         --disable-xf86keysym \
 	--disable-tv \
-        --disable-tv-v4l \
         --disable-tv-v4l2 \
         --disable-tv-bsdbt848 \
 	--enable-rtc \
@@ -62,8 +63,7 @@ EXTRA_OECONF = " \
         --disable-dvdread \
         --disable-mpdvdkit \
         --disable-cdparanoia \
-        --disable-freetype \
-        --enable-fontconfig \
+        --enable-freetype \
         --disable-unrarlib \
         --disable-menu \
         --enable-sortsub \
@@ -81,14 +81,11 @@ EXTRA_OECONF = " \
         --disable-libcdio \
         --enable-liblzo \
 	--disable-win32 \
-        --disable-dshow \
         --disable-qtx \
         --disable-xanim \
         --disable-real \
         --disable-xvid \
         --disable-x264 \
-        --disable-divx4linux \
-        --disable-opendivx \
         \
         --disable-libavutil_so \
         --disable-libavcodec_so \
@@ -100,7 +97,6 @@ EXTRA_OECONF = " \
         \
         --disable-speex \
         --disable-theora \
-        --disable-external-faad \
         --disable-faac \
         --disable-ladspa \
         --disable-libdv \
@@ -116,8 +112,6 @@ EXTRA_OECONF = " \
         --disable-amr_nb-fixed \
         --disable-amr_wb \
 	\
-        --disable-internal-vidix \
-        --disable-external-vidix \
         --disable-gl \
         --disable-dga \
         --disable-vesa \
@@ -174,6 +168,12 @@ do_configure() {
 	cp ${WORKDIR}/vo_w100.c ${S}/libvo
 	cp ${WORKDIR}/vo_w100_api.h ${S}/libvo
 	cp ${WORKDIR}/vo_w100_fb.h ${S}/libvo
+
+	sed -i 's|/usr/include|${STAGING_INCDIR}|g' ${S}/configure
+	sed -i 's|/usr/lib|${STAGING_LIBDIR}|g' ${S}/configure
+	sed -i 's|/usr/\S*include[\w/]*||g' ${S}/configure
+	sed -i 's|/usr/\S*lib[\w/]*||g' ${S}/configure
+
         ./configure ${EXTRA_OECONF}
 }
 
