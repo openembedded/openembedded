@@ -1,6 +1,6 @@
 require linux-rp.inc
 
-PR = "r0"
+PR = "r1"
 
 DEFAULT_PREFERENCE = "-1"
 
@@ -29,7 +29,7 @@ SRC_URI = "git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux-2.6.git;
            ${RPSRC}/sharpsl_pm_fixes1-r0.patch;patch=1 \
            ${RPSRC}/pm_changes-r1.patch;patch=1 \
            ${RPSRC}/usb_add_epalloc-r3.patch;patch=1 \
-           ${RPSRC}/usb_pxa27x_udc-r2.patch;patch=1 \
+           ${RPSRC}/usb_pxa27x_udc-r3.patch;patch=1 \
            ${DOSRC}/kexec-arm-r3.patch;patch=1 \
            ${RPSRC}/locomo_kbd_tweak-r1.patch;patch=1 \
            ${RPSRC}/poodle_pm-r3.patch;patch=1 \
