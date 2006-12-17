@@ -1,8 +1,5 @@
-DESCRIPTION = "GNU C Library"
-HOMEPAGE = "http://www.gnu.org/software/libc/libc.html"
-LICENSE = "LGPL"
-SECTION = "libs"
-PRIORITY = "required"
+require glibc.inc
+
 PR = "r4"
 
 # the -isystem in bitbake.conf screws up glibc do_stage

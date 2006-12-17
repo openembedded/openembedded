@@ -1,8 +1,5 @@
-DESCRIPTION = "GNU C Library"
-HOMEPAGE = "http://www.gnu.org/software/libc/libc.html"
-LICENSE = "LGPL"
-SECTION = "libs"
-PRIORITY = "required"
+require glibc.inc
+
 PR = "r12"
 
 #add the hosts that are confirmed to be working to COMPATIBLE_HOSTi

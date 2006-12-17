@@ -1,10 +1,7 @@
+require glibc.inc
+
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/glibc-cvs"
 PR = "r10"
-DESCRIPTION = "GNU C Library"
-HOMEPAGE = "http://www.gnu.org/software/libc/libc.html"
-LICENSE = "LGPL"
-SECTION = "libs"
-PRIORITY = "required"
 
 DEFAULT_PREFERENCE_sh3 = "-99"
 
