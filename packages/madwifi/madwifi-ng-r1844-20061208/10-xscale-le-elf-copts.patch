@@ -1,0 +1,10 @@
+Index: madwifi-ng-r1844-20061208/hal/public/xscale-le-elf.inc
+===================================================================
+--- madwifi-ng-r1844-20061208.orig/hal/public/xscale-le-elf.inc
++++ madwifi-ng-r1844-20061208/hal/public/xscale-le-elf.inc
+@@ -79,4 +79,4 @@ AH_REGOPS_FUNC=1
+ LDOPTS=	-EL
+ COPTS+=	-DAH_BYTE_ORDER=AH_LITTLE_ENDIAN
+ COPTS+= -march=armv4 -mlittle-endian -fno-strict-aliasing -fno-common \
+-	-mapcs-32 -mtune=xscale  -mshort-load-bytes
++	-mtune=xscale -msoft-float -mfp=2
