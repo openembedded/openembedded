@@ -7,11 +7,11 @@ HOMEPAGE = "http://www.cmake.org/"
 LICENSE = "Berkely-style license"
 SECTION = "console/utils"
 
-SRC_URI = "http://www.cmake.org/files/v2.2/cmake-2.2.1.tar.gz"
+SRC_URI = "http://www.cmake.org/files/v2.2/cmake-${PV}.tar.gz"
 
 inherit autotools
 
-S = "${WORKDIR}/cmake-2.2.1"
+S = "${WORKDIR}/cmake-${PV}"
 
 inherit native
 

@@ -3,7 +3,7 @@ DESCRIPTION = "Matchbox window manager common files"
 LICENSE = "GPL"
 DEPENDS = "libmatchbox"
 
-SRC_URI = "ftp://ftp.handhelds.org/matchbox/sources/matchbox-common/${PV}/matchbox-common-${PV}.tar.bz2"
+SRC_URI = "http://projects.o-hand.com/matchbox/sources/matchbox-common/${PV}/matchbox-common-${PV}.tar.bz2"
 S = "${WORKDIR}/matchbox-common-${PV}"
 
 inherit autotools  pkgconfig
