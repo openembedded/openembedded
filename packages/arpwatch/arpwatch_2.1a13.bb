@@ -5,7 +5,7 @@ HOMEPAGE = "http://www-nrg.ee.lbl.gov/"
 DEPENDS = "fakeroot-native"
 RRECOMMENDS = "arpwatch-data"
 
-SRC_URI = "ftp://ftp.ee.lbl.gov/arpwatch-${PV}.tar.gz \
+SRC_URI = "${DEBIAN_MIRROR}/main/pool/a/arpwatch/arpwatch-${PV}.tar.gz \
     file://05debian_fhs.patch;patch=1 \
     file://06debian_manpages.patch;patch=1 \
     file://init.d \
