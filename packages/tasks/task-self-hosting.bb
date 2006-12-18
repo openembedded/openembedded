@@ -27,4 +27,5 @@ RDEPENDS = "cpp gcc-symlinks binutils-symlinks \
 
 ALLOW_EMPTY = "1"
 
+PACKAGES = "${PN}"
 PACKAGE_ARCH = "all"
