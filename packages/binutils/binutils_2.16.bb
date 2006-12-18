@@ -1,7 +1,3 @@
-DESCRIPTION = "A GNU collection of binary utilities"
-HOMEPAGE = "http://www.gnu.org/software/binutils/"
-SECTION = "devel"
-LICENSE = "GPL"
 PR = "r7"
 
 SRC_URI = \
@@ -18,8 +14,5 @@ SRC_URI += "file://binutils-2.16-linux-uclibc.patch;patch=1"
 # thumb support patches
 SRC_URI += "file://binutils-2.16-thumb-trampoline.patch;patch=1"
 SRC_URI += "file://binutils-2.16-thumb-glue.patch;patch=1"
-
-S = "${WORKDIR}/binutils-${PV}"
-B = "${S}/build.${HOST_SYS}.${TARGET_SYS}"
 
 require binutils.inc
