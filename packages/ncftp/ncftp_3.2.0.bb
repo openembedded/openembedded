@@ -2,10 +2,11 @@ DESCRIPTION = "A sophisticated console ftp client"
 SECTION = "console/network"
 PRIORITY = "optional"
 LICENSE = "ClarifiedArtistic"
-PR = "r1"
 
-SRC_URI = "ftp://ftp.ncftp.com/ncftp/older_versions/ncftp-${PV}-src.tar.gz \
-	   file://acinclude.m4"
+SRC_URI = "ftp://ftp.ncftp.com/ncftp/ncftp-${PV}-src.tar.bz2 \
+	   file://acinclude.m4 \
+	   file://make.patch;patch=1 \
+	   file://fixes.patch;patch=1"
 
 inherit autotools
 

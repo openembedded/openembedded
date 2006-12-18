@@ -127,7 +127,7 @@ glib_cv_va_val_copy=${glib_cv_va_val_copy=yes}
 glib_cv_rtldglobal_broken=${glib_cv_rtldglobal_broken=yes}
 
 # glib-2.0
-glib_cv_stack_grows=${glib_cv_stack_grows=no}
+glib_cv_stack_grows=no
 utils_cv_sys_open_max=${utils_cv_sys_open_max=1015}
 ac_cv_func_posix_getpwuid_r=${ac_cv_func_posix_getpwuid_r=yes}
 glib_cv_use_pid_surrogate=${glib_cv_use_pid_surrogate=yes}
