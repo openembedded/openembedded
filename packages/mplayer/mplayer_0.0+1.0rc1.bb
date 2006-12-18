@@ -19,6 +19,14 @@ SRC_URI = "http://www1.mplayerhq.hu/MPlayer/releases/MPlayer-1.0rc1.tar.bz2 \
            ${SOURCEFORGE_MIRROR}/libw100/mplayer-imageon.patch;patch=1 \
            file://imageon-video_out.patch;patch=1"
 
+# This is required for the collie machine only as all stacks in that
+# machine seem to be set to executable by the toolchain. If someone
+# discovers this is more general than please make this more general
+# ie. for all armv4 machines.
+SRC_URI_append_collie = "file://disable-executable-stack-test.patch;patch=1"
+PACKAGE_ARCH_mplayer_collie = "collie"
+PACKAGE_ARCH_mencoder_collie = "collie"
+
 RCONFLICTS_${PN} = "mplayer-atty"
 RREPLACES_${PN} = "mplayer-atty"
 PR = "r4"
