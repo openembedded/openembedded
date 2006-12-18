@@ -1,5 +1,5 @@
-SECTION = "devel"
 require autoconf_${PV}.bb
+
 DEPENDS = "m4-native gnu-config-native"
 RDEPENDS_${PN} = "m4-native gnu-config-native"
 

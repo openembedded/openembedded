@@ -1,16 +1,14 @@
 DESCRIPTION = "Evolution database backend server"
 HOMEPAGE = "http://projects.o-hand.com/eds"
 LICENSE = "LGPL"
-DEPENDS = "glib-2.0 gtk+ gconf dbus db gnome-common libglade virtual/libiconv zlib"
+DEPENDS = "glib-2.0 gtk+ gconf dbus db gnome-common libglade virtual/libiconv zlib intltool"
 
 PV = "1.4.0+svn${SRCDATE}"
-PR = "r17"
 
 SRC_URI = "svn://svn.o-hand.com/repos/${PN};module=trunk;proto=http \
            file://no_libdb.patch;patch=1 \
            file://no_iconv_test.patch;patch=1 \
            file://no_libedataserverui.patch;patch=1 \
-           file://disable_orbit.patch;patch=1;maxdate=20060126 \
            file://iconv-detect.h"
 
 S = "${WORKDIR}/trunk"
@@ -38,7 +36,6 @@ FILES_${PN}-dev += "${libdir}/evolution-data-server-1.2/extensions/*.la \
 do_configure_append = " cp ${WORKDIR}/iconv-detect.h ${S} "
 
 do_stage () {
-	autotools_stage_all
+        autotools_stage_all
 }
-
 

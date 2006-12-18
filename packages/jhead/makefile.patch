@@ -1,0 +1,22 @@
+--- jhead-2.6/makefile	2006-04-29 16:14:59.000000000 -0700
++++ jhead-2.6/makefile	2006-08-17 07:59:14.000000000 -0700
+@@ -3,13 +3,18 @@
+ #--------------------------------
+ OBJ=.
+ SRC=.
++DESTDIR=/usr
++bindir=/bin
+ 
+ all: jhead
+ 
+ objs = $(OBJ)/jhead.o $(OBJ)/jpgfile.o $(OBJ)/exif.o $(OBJ)/gpsinfo.o $(OBJ)/makernote.o 
+ 
+ $(OBJ)/%.o:$(SRC)/%.c
+-	${CC} -O3 -Wall -c $< -o $@
++	${CC} ${CFLAGS} -c $< -o $@
+ 
+ jhead: $(objs) jhead.h
+ 	${CC} -o jhead $(objs) -lm
++
++install: jhead
++	install -m 755 jhead $(DESTDIR)$(bindir)/jhead

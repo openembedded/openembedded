@@ -1,6 +1,4 @@
-SECTION = "base"
-LICENSE = "GPL"
-inherit gpe
+require blueprobe.inc
 
 PR = "r2"
 
