@@ -4,7 +4,7 @@ HOMEPAGE = "http://www.gtk.org"
 SECTION = "libs"
 PRIORITY = "optional"
 MAINTAINER = "Rob Taylor <robtaylor@fastmail.fm>"
-DEPENDS = "glib-1.2 jpeg libpng xext"
+DEPENDS = "glib-1.2 jpeg libpng xext xt"
 PR = "r2"
 
 SRC_URI = "ftp://ftp.gtk.org/pub/gtk/v1.2/gtk+-${PV}.tar.gz \
