@@ -8,7 +8,7 @@ RDEPENDS_${PN} = "less groff"
 
 # Note: The default man.conf uses wrong names for GNU eqn and troff,
 # so we install our own
-SRC_URI = "${KERNELORG_MIRROR}/gpub/linux/utils/man/man-${PV}.tar.bz2 \
+SRC_URI = "${KERNELORG_MIRROR}/pub/linux/utils/man/man-${PV}.tar.bz2 \
 		file://man.conf"
 
 # Disable parallel make or it tries to link objects before they are built

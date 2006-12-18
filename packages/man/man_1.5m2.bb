@@ -6,7 +6,7 @@ of the documentation available on a Linux system."
 RDEPENDS_${PN} = "less groff"
 PR = "r1"
 
-SRC_URI = "${KERNELORG_MIRROR}/gpub/linux/utils/man/man-${PV}.tar.bz2"
+SRC_URI = "${KERNELORG_MIRROR}/pub/linux/utils/man/man-${PV}.tar.bz2"
 
 EXTRA_OEMAKE = ""
 GS = "-DGREPSILENT=\"q\""
