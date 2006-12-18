@@ -4,7 +4,7 @@ LICENSE = "MIT"
 RDEPENDS = "cpp gcc-symlinks binutils-symlinks \
             perl perl-modules bitbake bash \
 			task-proper-tools glibc-utils \
-			libc-linux-headers-dev glibc-dev \
+			linux-libc-headers-dev glibc-dev \
 			texinfo make cvs subversion monotone-6"
 
 #
@@ -19,7 +19,7 @@ RDEPENDS = "cpp gcc-symlinks binutils-symlinks \
 # - glibc-utils REQ cpp
 # 
 # problems:
-# - binutils-synlinks conflict with busybox
+# - binutils-symlinks conflict with busybox
 # - glibc-dev conflict with libc-linux-headers-dev
 # - perl is so granulated that it is probably impossible 
 #   to find out which packages are needed
