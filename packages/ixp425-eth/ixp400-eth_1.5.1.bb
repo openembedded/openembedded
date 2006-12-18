@@ -10,7 +10,7 @@ DEPENDS = "ixp-osal"
 DEPENDS = "ixp4xx-csr"
 RDEPENDS = "ixp4xx-csr"
 
-SRC_URI = "ftp://aiedownload.intel.com/df-support/9519/eng/GPL_ixp400LinuxEthernetDriverPatch-1_5_1.zip"
+SRC_URI = "http://downloadmirror.intel.com/df-support/10159/eng/GPL_ixp400LinuxEthernetDriverPatch-1_5_1.zip"
 SRC_URI += "file://2.6.14.patch;patch=1"
 SRC_URI += "file://2.6.15.patch;patch=1"
 SRC_URI += "file://device-name.patch;patch=1"
