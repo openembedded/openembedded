@@ -1,7 +1,6 @@
 DESCRIPTION = "RPC program number mapper."
 SECTION = "console/network"
 LICENSE = "GPL"
-PR = "r2"
 
 SRC_URI = "http://www.uk.debian.org/debian/pool/main/p/portmap/portmap_5.orig.tar.gz \
 	http://www.uk.debian.org/debian/pool/main/p/portmap/portmap_${PV}.diff.gz;patch=1 \
@@ -15,7 +14,7 @@ FILES_portmap-utils = "/sbin/pmap_set /sbin/pmap_dump"
 FILES_${PN}-doc += "${docdir}"
 
 INITSCRIPT_NAME = "portmap"
-INITSCRIPT_PARAMS = "start 43 S . start 32 0 6 . start 18 2 3 4 5 . stop 81 1 ."
+INITSCRIPT_PARAMS = "start 43 S . start 32 0 6 . stop 81 1 ."
 
 inherit update-rc.d
 
