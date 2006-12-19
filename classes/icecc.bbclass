@@ -253,7 +253,7 @@ def icc_path(bb,d,compile):
 
     #"system" package blacklist contains a list of packages that can not distribute compile tasks
     #for one reason or the other
-    system_package_blacklist = [ "ulibc", "glibc", "qemu" ]
+    system_package_blacklist = [ "uclibc", "glibc", "qemu" ]
 
     for black in system_package_blacklist:
       if black in package_tmp:
