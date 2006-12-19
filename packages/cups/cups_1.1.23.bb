@@ -2,7 +2,7 @@ DESCRIPTION = "An Internet printing system for Unix."
 SECTION = "console/utils"
 LICENSE = "GPL LGPL"
 
-DEPENDS = "openssl jpeg libpng zlib install-native"
+DEPENDS = "openssl jpeg libpng zlib install-native fakeroot-native"
 
 PR = "r4"
 
