@@ -3,12 +3,12 @@ Commodore 64 music for the masses"
 LICENSE = "PD"
 SECTION = "multimedia"
 
-SRC_URI = "http://gallium.prg.dtu.dk/HVSC/random/HVSC_${PV}-all-of-them.zip"
+SRC_URI = "http://gallium.prg.dtu.dk/HVSC/random/HVSC_${PV}-all-of-them.rar"
 S = "${WORKDIR}"
 
 do_install() {
 	install -d ${D}${datadir}/hvsc
-	unzip -d ${D}${datadir}/hvsc C64Music.zip
+	cd ${D}${datadir}/hvsc && unrar x ${S}/HVSC_${PV}-all-of-them.rar
 }
 
 PACKAGE_ARCH = "all"
