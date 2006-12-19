@@ -232,11 +232,15 @@ def use_icc_version(bb,d):
       icecc_ver = "yes"
       system_class_blacklist = [ "none" ] 
       
-      user_class_blacklist =  bb.data.getVar('ICECC_USER_CLASS_BL', d) or "none"
-      system_class_blacklist = user_class_blacklist.split()
-
       for black in system_class_blacklist:
-           print("Class value is %s " %black)
+           if bb.data.inherits_class(black, d):
+              icecc_ver = "no"
+
+
+      user_class_blacklist =  bb.data.getVar('ICECC_USER_CLASS_BL', d) or "none"
+      user_class_blacklist = user_class_blacklist.split()
+      
+      for black in user_class_blacklist:
            if bb.data.inherits_class(black, d):
               icecc_ver = "no"
  
@@ -251,11 +255,15 @@ def icc_path(bb,d,compile):
     #for one reason or the other
     system_package_blacklist = [ "ulibc", "glibc", "qemu" ]
 
+    for black in system_package_blacklist:
+      if black in package_tmp:
+         return ""
+
     #user defined exclusion list
     user_package_blacklist = bb.data.getVar('ICECC_USER_PACKAGE_BL', d) or "none"   
-    system_package_blacklist = user_package_blacklist.split()
+    user_package_blacklist = user_package_blacklist.split()
 
-    for black in system_package_blacklist:
+    for black in user_package_blacklist:
       if black in package_tmp:
          return ""
 
