@@ -323,8 +323,3 @@ do_compile_prepend() {
     fi
 }
 
-
-
-
-
-DEPENDS =+ "icecc-create-env"
