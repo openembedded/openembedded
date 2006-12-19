@@ -1,6 +1,11 @@
+DESCRIPTION = "A GNU collection of binary utilities"
+HOMEPAGE = "http://www.gnu.org/software/binutils/"
+SECTION = "devel"
+LICENSE = "GPL"
+
 inherit autotools gettext
 
-PACKAGES = "${PN} ${PN}-dev ${PN}-doc ${PN}-symlinks"
+PACKAGES += "${PN}-symlinks"
 
 FILES_${PN} = " \
 	${bindir}/${TARGET_PREFIX}* \
@@ -27,6 +32,9 @@ FILES_${PN}-symlinks = " \
 	${bindir}/readelf \
 	${bindir}/size \
 	${bindir}/strip"
+
+S = "${WORKDIR}/binutils-${PV}"
+B = "${S}/build.${HOST_SYS}.${TARGET_SYS}"
 
 EXTRA_OECONF = "--program-prefix=${TARGET_PREFIX} \
 		--enable-shared"

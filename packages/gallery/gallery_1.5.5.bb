@@ -1,21 +1,23 @@
-SECTION = "apps"
 DESCRIPTION = "The Gallery v1 web image gallery"
+SECTION = "apps"
 LICENSE = "GPL"
-#
 RDEPENDS = "apache2 modphp imagemagick jhead"
-
 PR = "r1"
+
+SRC_URI = "http://easynews.dl.sourceforge.net/sourceforge/gallery/gallery-${PV}-pl1.tar.gz"
+
 S = "${WORKDIR}/gallery"
-HTTPCONF=/etc/apache2/httpd.conf
-DEST_DIR=/usr/share/apache2/htdocs/
+
+inherit autotools 
+
+HTTPCONF = "/etc/apache2/httpd.conf"
+DEST_DIR = "/usr/share/apache2/htdocs/"
+
 #
 # don't list the albums as a file - it might get auto-deleted
 #
 FILES_${PN} = "${DEST_DIR}/gallery /etc/apache2/modules.d"
 
-SRC_URI = "http://easynews.dl.sourceforge.net/sourceforge/gallery/gallery-${PV}-pl1.tar.gz"
-
-inherit autotools 
 
 # No configure step for gallery
 do_configure() {

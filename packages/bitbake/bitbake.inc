@@ -9,3 +9,14 @@ HOMEPAGE = "http://developer.berlios.de/projects/bitbake/"
 LICENSE = "GPL MIT"
 SECTION = "devel"
 SUMMARY = "BitBake build tool"
+RDEPENDS += "python-shell python-lang python-textutils python-pickle python-crypt python-netclient"
+
+# crypt for md5
+# netclient for tinderclient.bbclass
+
+# We don't need a toolchain...
+INHIBIT_DEFAULT_DEPS = "1"
+
+inherit distutils
+
+FILES_${PN} += "${datadir}/bitbake"

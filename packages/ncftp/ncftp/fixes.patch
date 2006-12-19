@@ -1,0 +1,22 @@
+Index: ncftp-3.2.0/ncftp/cmds.c
+===================================================================
+--- ncftp-3.2.0.orig/ncftp/cmds.c	2006-12-18 22:21:34.000000000 +0100
++++ ncftp-3.2.0/ncftp/cmds.c	2006-12-18 22:23:55.000000000 +0100
+@@ -945,7 +945,7 @@
+ 			--n;
+ 			memset(&st, 0, sizeof(st));
+ 		}
+-		(void) sprintf(modstr, "%u " PRINTF_LONG_LONG, (unsigned int) st.st_mtime, (longest_int) st.st_size);
++		(void) sprintf(modstr, "%u %ld" , (unsigned int) st.st_mtime, (longest_int) st.st_size);
+ 		if (AddLine(&modstrs, modstr) == NULL) {
+ 			DisposeLineListContents(&modstrs);
+ 			DisposeLineListContents(&rfiles);
+@@ -1006,7 +1006,7 @@
+ 			(void) fprintf(stdout, "\n");
+ 			continue;
+ 		}
+-		(void) sprintf(modstr, "%u " PRINTF_LONG_LONG, (unsigned int) st.st_mtime, (longest_int) st.st_size);
++		(void) sprintf(modstr, "%u %ld" , (unsigned int) st.st_mtime, (longest_int) st.st_size);
+ 		if (strcmp(modstr, mlp->line) == 0) {
+ 			Trace(-1, "No changes made to \"%s\".\n", rpath);
+ 			continue;

@@ -4,7 +4,7 @@ LICENSE = "GPL"
 DEPENDS = "libmatchbox virtual/libx11 libxext libxcomposite libxfixes libxdamage libxrender startup-notification expat gconf matchbox-common"
 RDEPENDS = "matchbox-common"
 
-SRC_URI = "ftp://ftp.handhelds.org/matchbox/sources/matchbox-window-manager/0.8/matchbox-window-manager-${PV}.tar.bz2 \
+SRC_URI = "http://projects.o-hand.com/matchbox/sources/matchbox-window-manager/0.8/matchbox-window-manager-${PV}.tar.bz2 \
 	file://kbdconfig_keylaunch_simpad.patch;patch=1;pnum=0"
 S = "${WORKDIR}/matchbox-window-manager-${PV}"
 

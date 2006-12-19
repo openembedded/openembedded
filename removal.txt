@@ -3,6 +3,8 @@ Packages to be removed from OpenEmbedded if no one will fix them.
 Dropping stuff from metadata is not best way so this file will be filled
 with informations about which parts of metadata will be removed.
 
+Please sort by removal date
+
 Package Name:   recipe, directory or subsystem name
 Removal Date:   YYYY-MM-DD
 Maintainer:     Surname Name + e-mail
@@ -12,45 +14,45 @@ Proposed by:    person which want entry to be removed
 -----------------------------------------------------------------------------
 
 Package Name:   Maemo
-Removal Date:   2006-12-12
+Removal Date:   2006-12-15
 Maintainer:     none
 Reason:         Unfetchable, obsoleted by IT2006 release.
 Proposed by:    Marcin 'Hrw' Juszkiewicz
 
-Package Name:   task-bootstrap*
-Removal Date:   2006-12-12
-Maintainer:     None
-Reason:         Obsoleted by task-base
-Proposed by:    Koen Kooi
-
-Package Name:   bluez*2.*
-Removal Date:   2007-01-15
-Maintainer:     None
-Reason:         Obsolete by, and conflicts with bluez 3.7               
-Proposed by:    Koen Kooi
-Will fix:       Paul Sokolovsky
-Reason:         Still known to be used by OPIE, so extra time needed to upgrade it.
-
 Package Name:   mono
-Removal Date:   2006-12-12
+Removal Date:   2006-12-15
 Maintainer:     None
 Reason:         Obsolete version - 1.2 is current, 1.0 is not fetchable
 Proposed by:    Marcin 'Hrw' Juszkiewicz
  
 Package Name:   ipac-ng
-Removal Date:   2006-12-12
+Removal Date:   2006-12-15
 Maintainer:     None
 Reason:         Depends on libgd-perl which is not in metada
 Proposed by:    Marcin 'Hrw' Juszkiewicz
  
 Package Name:   nsqld
-Removal Date:   2006-12-12
+Removal Date:   2006-12-15
 Maintainer:     None
 Reason:	        Never used
 Proposed by:    Florian Boor
 
 Package Name:   gpe-mileage
-Removal Date:   2006-12-12
+Removal Date:   2006-12-15
 Maintainer:     None
 Reason:         Unfinished, no development progress
 Proposed by:    Florian Boor
+
+Package Name:   task-bootstrap*
+Removal Date:   2006-12-22
+Maintainer:     None
+Reason:         Obsoleted by task-base
+Proposed by:    Koen Kooi
+
+Package Name:   gst* 0.8.x
+Removal Date:   2006-12-29
+Maintainer:     None
+Reason:         Conflicting namespace with gstreamer 0.10 at build time
+Proposed by:    Koen Kooi
+
+

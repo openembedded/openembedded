@@ -7,7 +7,7 @@ HOMEPAGE="http://www.linux-nis.org/nis/ypserv/index.html"
 
 require nis.inc
 
-SRC_URI = "${KERNELORG_MIRROR}/gpub/linux/utils/net/NIS/OLD/${PN}/${P}.tar.bz2"
+SRC_URI = "${KERNELORG_MIRROR}/pub/linux/utils/net/NIS/OLD/${PN}/${P}.tar.bz2"
 
 # ypserv needs a database package, gdbm is currently the
 # only candidate
