@@ -4,8 +4,6 @@ SECTION = "x11"
 RDEPENDS_${PN} = "xmodmap xrandr xdpyinfo xtscal"
 PR = "r0"
 
-DEFAULT_PREFERENCE = "-1"
-
 PACKAGE_ARCH = "all"
 
 # we are using a gpe-style Makefile
