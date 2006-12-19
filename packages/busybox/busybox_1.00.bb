@@ -1,83 +1,34 @@
-DESCRIPTION = "BusyBox combines tiny versions of many common UNIX utilities into a single \
-small executable. It provides minimalist replacements for most of the \
-utilities you usually find in GNU fileutils, shellutils, etc. The utilities \
-in BusyBox generally have fewer options than their full-featured GNU \
-cousins; however, the options that are included provide the expected \
-functionality and behave very much like their GNU counterparts. BusyBox \
-provides a fairly complete POSIX environment for any small or embedded \
-system."
-HOMEPAGE = "http://www.busybox.net"
-LICENSE = "GPL"
-SECTION = "base"
-PRIORITY = "required"
+require busybox.inc
+
 PR = "r37"
 
-SRC_URI = "http://www.busybox.net/downloads/busybox-${PV}.tar.gz \
-           file://add-getkey-applet.patch;patch=1 \
-	   file://udhcpscript.patch;patch=1 \
-	   file://dhcpretrytime.patch;patch=1 \
-	   file://hdparm_M.patch;patch=1 \
-	   file://udhcppidfile.patch;patch=1 \
-	   file://udhcppidfile-breakage.patch;patch=1 \
-	   file://readlink.patch;patch=1 \
-	   file://iproute-flush-cache.patch;patch=1;pnum=0 \
-	   file://rmmod.patch;patch=1 \
-	   file://df.patch;patch=1 \
-	   file://below.patch;patch=1 \
-	   file://fbset.patch;patch=1 \
-	   file://mount-all-type.patch;patch=1 \
-	   file://dhcp-hostname.patch;patch=1 \
-	   file://gzip-spurious-const.patch;patch=1 \
-	   file://ifupdown-spurious-environ.patch;patch=1 \
-           file://uclibc_posix.patch;patch=1 \
-	   file://unzip-enhancement-and-fixes.patch;patch=1;pnum=0 \
-	   file://unzip-endian-fixes.patch;patch=1;pnum=0 \
-	   file://start-stop-daemon-oknodo-support.patch;patch=1 \
+SRC_URI += "file://add-getkey-applet.patch;patch=1 \
+           file://below.patch;patch=1 \
            file://defconfig \
-           file://busybox-cron \
-	   file://busybox-httpd \
-	   file://busybox-udhcpd \
-	   file://syslog \
-           file://hwclock.sh \
-	   file://default.script \
-	   file://syslog.conf \
-	   file://mount.busybox \
-	   file://umount.busybox"
+           file://df.patch;patch=1 \
+           file://dhcpretrytime.patch;patch=1 \
+           file://fbset.patch;patch=1 \
+           file://gzip-spurious-const.patch;patch=1 \
+           file://hdparm_M.patch;patch=1 \
+           file://iproute-flush-cache.patch;patch=1;pnum=0 \
+           file://mount-all-type.patch;patch=1 \
+           file://readlink.patch;patch=1 \
+           file://rmmod.patch;patch=1 \
+           file://start-stop-daemon-oknodo-support.patch;patch=1 \
+           file://uclibc_posix.patch;patch=1 \
+           file://udhcppidfile-breakage.patch;patch=1 \
+           file://udhcppidfile.patch;patch=1 \
+           file://unzip-endian-fixes.patch;patch=1;pnum=0 \
+           file://unzip-enhancement-and-fixes.patch;patch=1;pnum=0"
 
-SRC_URI_append_nylon = " file://xargs-double-size.patch;patch=1"
 SRC_URI_append_mtx-1 = " file://linux-types.patch;patch=1"
 SRC_URI_append_mtx-2 = " file://linux-types.patch;patch=1"
 
 S = "${WORKDIR}/busybox-${PV}"
 
-export EXTRA_CFLAGS = "${CFLAGS}"
-EXTRA_OEMAKE_append = " CROSS=${HOST_PREFIX}"
-PACKAGES =+ "${PN}-httpd ${PN}-udhcpd"
-
-FILES_${PN}-httpd = "${sysconfdir}/init.d/busybox-httpd /srv/www"
-FILES_${PN}-udhcpd = "${sysconfdir}/init.d/busybox-udhcpd"
-
-FILES_${PN} += " ${datadir}/udhcpc"
-
-INITSCRIPT_PACKAGES = "${PN} ${PN}-httpd ${PN}-udhcpd"
-INITSCRIPT_NAME_${PN}-httpd = "busybox-httpd"
-INITSCRIPT_NAME_${PN}-udhcpd = "busybox-udhcpd" 
-INITSCRIPT_NAME_${PN} = "syslog"
-CONFFILES_${PN} = "${sysconfdir}/syslog.conf"
-
-# This disables the syslog startup links in slugos (see slugos-init)
-INITSCRIPT_PARAMS_${PN}_slugos = "start 20 ."
-
-inherit cml1 update-rc.d
-
 do_configure () {
 	install -m 0644 ${WORKDIR}/defconfig ${S}/.config
 	cml1_do_configure
-}
-
-do_compile () {
-	unset CFLAGS
-	base_do_compile
 }
 
 do_install () {
@@ -136,17 +87,6 @@ do_install () {
 	fi
 
 	install -m 0644 ${S}/busybox.links ${D}${sysconfdir}
-}
-
-pkg_postinst_${PN} () {
-	# If we are not making an image we create links for the utilities that doesn't exist
-	# so the update-alternatives script will get the utilities it needs
-	# (update-alternatives have no problem replacing links later anyway)
-	test -n 2> /dev/null || alias test='busybox test'
-	if test "x$D" = "x"; then while read link; do if test ! -h "$link"; then case "$link" in /*/*/*) to="../../bin/busybox";; /bin/*) to="busybox";; /*/*) to="../bin/busybox";; esac; busybox ln -s $to $link; fi; done </etc/busybox.links; fi
-	
-	# This adds the links, remember that this has to work when building an image too, hence the $D
-	while read link; do case "$link" in /*/*/*) to="../../bin/busybox";; /bin/*) to="busybox";; /*/*) to="../bin/busybox";; esac; bn=`basename $link`; update-alternatives --install $link $bn $to 50; done <$D/etc/busybox.links
 }
 
 pkg_prerm_${PN} () {

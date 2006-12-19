@@ -1,18 +1,7 @@
-DEPENDS = "glib-2.0"
-DESCRIPTION = "An accessibility toolkit for GNOME."
-SECTION = "x11/libs"
-LICENSE = "LGPL"
+require atk.inc
 
-SRC_URI = "http://ftp.gnome.org/pub/gnome/sources/atk/1.2/atk-${PV}.tar.bz2 \
+SRC_URI = "${GNOME_MIRROR}/atk/1.2/atk-${PV}.tar.bz2 \
 	   file://m4.patch;patch=1"
-
-inherit autotools  pkgconfig
-
-EXTRA_OECONF = "--disable-glibtest"
-
-CFLAGS_append = " -I${STAGING_INCDIR}/glib-2.0 \
-		  -I${STAGING_INCDIR}/glib-2.0/glib \
-		  -I${STAGING_INCDIR}/glib-2.0/gobject"
 
 do_stage () {
 	oe_libinstall -so -C atk libatk-1.0 ${STAGING_LIBDIR}
