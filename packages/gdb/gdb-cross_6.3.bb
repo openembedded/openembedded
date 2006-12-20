@@ -1,7 +1,6 @@
-LICENSE = "GPL"
-DESCRIPTION = "gdb - GNU debugger"
+require gdb.inc
+
 SECTION = "base"
-PRIORITY = "optional"
 DEPENDS = "ncurses-native"
 
 inherit autotools sdk

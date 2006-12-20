@@ -1,7 +1,5 @@
-DESCRIPTION = "gdb - GNU debugger"
-LICENSE="GPL"
-SECTION = "devel"
-PRIORITY = "optional"
+require gdb.inc
+
 PR = "r1"
 DEPENDS = "ncurses readline"
 
