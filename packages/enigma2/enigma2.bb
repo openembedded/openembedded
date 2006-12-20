@@ -10,13 +10,13 @@ RDEPENDS = "python-codecs python-core python-lang python-re python-threading \
 	gst-plugin-wavparse python-netclient gst-plugin-mpegstream"
 
 RDEPENDS_append_dm7020 = " gst-plugin-ossaudio"
-RDEPENDS_append_dm7025 = " gst-plugin-alsa"
+RDEPENDS_append_dm7025 = " gst-plugin-alsa alsa-conf"
 
 PACKAGES_DYNAMIC = "enigma2-plugin-*"
 
 PN = "enigma2"
 PR = "r0"
-SRCDATE = "20061013"
+SRCDATE = "20061109"
 PV = "1.0cvs${SRCDATE}"
 
 SRC_URI = "cvs://anonymous@dreamboxupdate.com/cvs;module=enigma2;method=pserver \
