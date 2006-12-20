@@ -3,7 +3,7 @@ SECTION = "base"
 LICENSE = "GPL"
 
 PV = "0.0+svn${SRCDATE}"
-PR = "r1"
+PR = "r2"
 
 # You can create your own pslash-hand-img.h by doing
 # ./make-image-header.sh <file>.png HAND

@@ -16,7 +16,7 @@ HOMEPAGE="http://www.linux-nis.org/nis/ypbind-mt/index.html"
 
 require nis.inc
 
-SRC_URI = "${KERNELORG_MIRROR}/gpub/linux/utils/net/NIS/OLD/${PN}/${P}.tar.bz2"
+SRC_URI = "${KERNELORG_MIRROR}/pub/linux/utils/net/NIS/OLD/${PN}/${P}.tar.bz2"
 
 # ypbind-mt now provides all the functionality of ypbind
 # and is used in place of it.

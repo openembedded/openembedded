@@ -1,0 +1,33 @@
+--- reiserfsprogs-3.6.19/include/reiserfs_fs.h~	2006-06-05 19:29:45.240611000 -0400
++++ reiserfsprogs-3.6.19/include/reiserfs_fs.h	2006-06-05 19:30:29.588212000 -0400
+@@ -38,15 +38,22 @@
+ # define extern_inline
+ #endif
+ 
+-#include <asm/unaligned.h>
++#define get_unaligned(ptr)                  \
++({                                             \
++	struct __attribute__((packed)) {        \
++	typeof(*(ptr)) __v;             \
++	}  *__p = (void *)(ptr);                \
++	__p->__v;                               \
++})
++
++#define put_unaligned(val, ptr)             \
++do {                                           \
++	struct __attribute__((packed)) {        \
++	typeof(*(ptr)) __v;             \
++	}  *__p = (void *)(ptr);                \
++	__p->__v = (val);                       \
++} while(0)
+ 
+-#ifndef get_unaligned
+-#if defined(__ppc__) || defined(ppc) || defined(__ppc) || \
+-    defined(__PPC) || defined(powerpc) || defined(__powerpc__)
+-#	define get_unaligned(ptr)	(*(ptr))
+-#	define put_unaligned(val,ptr)	((void)(*(ptr) = (val)))
+-#endif
+-#endif
+ 
+ #define get_leXX(xx,p,field)	(le##xx##_to_cpu ((p)->field))
+ #define set_leXX(xx,p,field,val) do { (p)->field = cpu_to_le##xx(val); } while (0)
