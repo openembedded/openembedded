@@ -1,7 +1,6 @@
-DEFAULT_PREFERENCE = "-1"
+require gpe-mini-browser.inc
 
-DESCRIPTION = "A lightweight webbrowser for the GPE platform"
-LICENSE = "GPL"
+DEFAULT_PREFERENCE = "-1"
 
 DEPENDS = "sqlite gettext gtk+ glib-2.0 osb-nrcit libgpewidget"
 RRECOMMENDS = "gdk-pixbuf-loader-gif gdk-pixbuf-loader-png gdk-pixbuf-loader-jpeg"

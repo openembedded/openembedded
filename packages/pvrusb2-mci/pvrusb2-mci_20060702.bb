@@ -1,8 +1,5 @@
-DESCRIPTION = "Driver for the Hauppauge WinTV PVR USB2"
-HOMEPAGE = "http://www.isely.net/pvrusb2.html"
-PRIORITY = "optional"
-SECTION = "kernel/modules"
-LICENSE = "GPL"
+require pvrusb2-mci.inc
+
 PR = "r1"
 RRECOMMENDS = "kernel-module-tveeprom \
 	kernel-module-firmware-class \

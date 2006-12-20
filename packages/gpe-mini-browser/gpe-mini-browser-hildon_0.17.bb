@@ -1,8 +1,9 @@
+require gpe-mini-browser.inc
+
 PR = "r0"
 
 SRC_URI      = "${GPE_MIRROR}/gpe-mini-browser-${PV}.tar.gz"
 DESCRIPTION  = "A lightweight webbrowser for the GPE platform (Hildon UI)"
-LICENSE      = "GPL"
 DEPENDS      = "osb-nrcit libosso hildon-lgpl hildon-fm libgpewidget"
 EXTRA_OECONF = "--enable-hildon"
 
