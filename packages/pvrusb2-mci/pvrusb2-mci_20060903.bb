@@ -1,9 +1,5 @@
-DESCRIPTION = "Driver for the Hauppauge WinTV PVR USB2"
-AUTHOR = "Mike Isely"
-HOMEPAGE = "http://www.isely.net/pvrusb2.html"
-SECTION = "kernel/modules"
-PRIORITY = "optional"
-LICENSE = "GPL"
+require pvrusb2-mci.inc
+
 RRECOMMENDS = "kernel-module-tveeprom \
 	kernel-module-firmware-class \
 	kernel-module-tuner \
@@ -13,7 +9,6 @@ RRECOMMENDS = "kernel-module-tveeprom \
 	kernel-module-v4l1-compat \
 	kernel-module-v4l2-common \
 	kernel-module-videodev"
-PR = "r0"
 
 SRC_URI = "http://www.isely.net/downloads/pvrusb2-mci-${PV}.tar.bz2 \
            file://hotplug.functions \

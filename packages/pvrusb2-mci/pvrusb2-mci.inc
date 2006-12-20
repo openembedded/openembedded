@@ -1,0 +1,6 @@
+DESCRIPTION = "Driver for the Hauppauge WinTV PVR USB2"
+AUTHOR = "Mike Isely"
+HOMEPAGE = "http://www.isely.net/pvrusb2.html"
+SECTION = "kernel/modules"
+PRIORITY = "optional"
+LICENSE = "GPL"
