@@ -53,9 +53,9 @@ Index: portmap_5beta/Makefile
 +	install -d $(DESTDIR)/$(sbindir) \
 +		   $(DESTDIR)/$(docdir) \
 +		   $(DESTDIR)/$(mandir)/man8
-+	install -m 0755 -s portmap ${DESTDIR}/sbin
-+	install -m 0755 -s pmap_dump ${DESTDIR}/sbin
-+	install -m 0755 -s pmap_set ${DESTDIR}/sbin
++	install -m 0755 portmap ${DESTDIR}/sbin
++	install -m 0755 pmap_dump ${DESTDIR}/sbin
++	install -m 0755 pmap_set ${DESTDIR}/sbin
 +	install -m 0644 portmap.8 ${DESTDIR}/usr/share/man/man8
 +	install -m 0644 pmap_dump.8 ${DESTDIR}/usr/share/man/man8
 +	install -m 0644 pmap_set.8 ${DESTDIR}/usr/share/man/man8
