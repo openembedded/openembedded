@@ -1,8 +1,8 @@
+require gpe-mini-browser.inc
+
 PR = "r0"
 
 SRC_URI = "http://handhelds.org/~philippe/gpe-mini-browser-${PV}.tar.bz2"
-DESCRIPTION = "A lightweight webbrowser for the GPE platform"
-LICENSE = "GPL"
 DEPENDS = "osb-nrcit"
 
 S = "${WORKDIR}/gpe-mini-browser"
