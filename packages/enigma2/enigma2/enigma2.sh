@@ -3,7 +3,7 @@
 /usr/bin/showiframe /boot/backdrop.mvi
 
 cd /home/root
-/usr/bin/enigma2
+LD_PRELOAD=/usr/lib/libopen.so.0.0 /usr/bin/enigma2
 
 # enigma2 exit codes:
 #
