@@ -19,18 +19,6 @@ Maintainer:     none
 Reason:         Unfetchable, obsoleted by IT2006 release.
 Proposed by:    Marcin 'Hrw' Juszkiewicz
 
-Package Name:   mono
-Removal Date:   2006-12-15
-Maintainer:     None
-Reason:         Obsolete version - 1.2 is current, 1.0 is not fetchable
-Proposed by:    Marcin 'Hrw' Juszkiewicz
- 
-Package Name:   ipac-ng
-Removal Date:   2006-12-15
-Maintainer:     None
-Reason:         Depends on libgd-perl which is not in metada
-Proposed by:    Marcin 'Hrw' Juszkiewicz
- 
 Package Name:   task-bootstrap*
 Removal Date:   2006-12-22
 Maintainer:     None

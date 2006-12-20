@@ -1,7 +1,0 @@
---- mono-1.0/libgc/acinclude.m4.old	2004-07-21 19:10:53.059455128 +0100
-+++ mono-1.0/libgc/acinclude.m4	2004-07-21 19:10:56.881874032 +0100
-@@ -46,4 +46,3 @@
- ${GC_ALPHA_VERSION:+alpha=}$GC_ALPHA_VERSION)
- ])
- 
--sinclude(libtool.m4)
