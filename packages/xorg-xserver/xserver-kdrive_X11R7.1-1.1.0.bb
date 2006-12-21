@@ -54,6 +54,8 @@ S = "${WORKDIR}/xorg-server-X11R7.1-1.1.0"
 
 inherit autotools pkgconfig 
 
+ARM_INSTRUCTION_SET = "arm"
+
 W100_OECONF = "--disable-w100"
 W100_OECONF_arm = "--enable-w100"
 
