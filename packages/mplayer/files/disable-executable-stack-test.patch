@@ -1,0 +1,30 @@
+Removes the "noexecstack" check from configure so we don't end up with:
+
+     mplayer: error while loading shared libraries: libmad.so.0: cannot 
+     enable executable stack as shared object requires: Error 14
+
+at runtime.
+
+#
+# Patch managed by http://www.holgerschurig.de/patcher.html
+#
+
+--- MPlayer-1.0pre8/configure~disable-executable-stack-test
++++ MPlayer-1.0pre8/configure
+@@ -7193,15 +7193,7 @@
+ fi
+ 
+ echocheck "compiler support for noexecstack"
+-cat > $TMPC <<EOF
+-int main(void) { return 0; }
+-EOF
+-if cc_check -Wl,-z,noexecstack ; then
+-  _ld_extra="-Wl,-z,noexecstack $_ld_extra"
+-  echores "yes"
+-else
+-  echores "no"
+-fi
++echores "no"
+ 
+ echocheck "ftello()"
+ # if we don't have ftello use the osdep/ compatibility module

@@ -1,0 +1,546 @@
+Index: wireshark-0.99.4/plugins/acn/Makefile.am
+===================================================================
+--- wireshark-0.99.4.orig/plugins/acn/Makefile.am	2006-12-14 14:47:13.322227000 +0100
++++ wireshark-0.99.4/plugins/acn/Makefile.am	2006-12-14 14:47:38.862227000 +0100
+@@ -22,7 +22,7 @@
+ # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+ #
+ 
+-INCLUDES = -I$(top_srcdir) -I$(includedir)
++INCLUDES = -I$(top_srcdir)
+ 
+ include Makefile.common
+ 
+Index: wireshark-0.99.4/plugins/acn/Makefile.in
+===================================================================
+--- wireshark-0.99.4.orig/plugins/acn/Makefile.in	2006-12-14 14:47:13.352227000 +0100
++++ wireshark-0.99.4/plugins/acn/Makefile.in	2006-12-14 14:48:09.612227000 +0100
+@@ -371,7 +371,7 @@
+ wireshark_bin = @wireshark_bin@
+ wireshark_man = @wireshark_man@
+ wiresharkfilter_man = @wiresharkfilter_man@
+-INCLUDES = -I$(top_srcdir) -I$(includedir)
++INCLUDES = -I$(top_srcdir)
+ 
+ # the name of the plugin
+ PLUGIN_NAME = acn
+Index: wireshark-0.99.4/plugins/agentx/Makefile.am
+===================================================================
+--- wireshark-0.99.4.orig/plugins/agentx/Makefile.am	2006-12-14 14:47:13.372227000 +0100
++++ wireshark-0.99.4/plugins/agentx/Makefile.am	2006-12-14 14:48:30.252227000 +0100
+@@ -22,7 +22,7 @@
+ # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+ #
+ 
+-INCLUDES = -I$(top_srcdir) -I$(includedir)
++INCLUDES = -I$(top_srcdir)
+ 
+ include Makefile.common
+ 
+Index: wireshark-0.99.4/plugins/agentx/Makefile.in
+===================================================================
+--- wireshark-0.99.4.orig/plugins/agentx/Makefile.in	2006-12-14 14:47:13.402227000 +0100
++++ wireshark-0.99.4/plugins/agentx/Makefile.in	2006-12-14 14:48:37.612227000 +0100
+@@ -370,7 +370,7 @@
+ wireshark_bin = @wireshark_bin@
+ wireshark_man = @wireshark_man@
+ wiresharkfilter_man = @wiresharkfilter_man@
+-INCLUDES = -I$(top_srcdir) -I$(includedir)
++INCLUDES = -I$(top_srcdir)
+ 
+ # the name of the plugin
+ PLUGIN_NAME = agentx
+Index: wireshark-0.99.4/plugins/artnet/Makefile.am
+===================================================================
+--- wireshark-0.99.4.orig/plugins/artnet/Makefile.am	2006-12-14 14:47:13.422227000 +0100
++++ wireshark-0.99.4/plugins/artnet/Makefile.am	2006-12-14 14:48:42.422227000 +0100
+@@ -22,7 +22,7 @@
+ # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+ #
+ 
+-INCLUDES = -I$(top_srcdir) -I$(includedir)
++INCLUDES = -I$(top_srcdir)
+ 
+ include Makefile.common
+ 
+Index: wireshark-0.99.4/plugins/artnet/Makefile.in
+===================================================================
+--- wireshark-0.99.4.orig/plugins/artnet/Makefile.in	2006-12-14 14:47:13.452227000 +0100
++++ wireshark-0.99.4/plugins/artnet/Makefile.in	2006-12-14 14:48:46.142227000 +0100
+@@ -370,7 +370,7 @@
+ wireshark_bin = @wireshark_bin@
+ wireshark_man = @wireshark_man@
+ wiresharkfilter_man = @wiresharkfilter_man@
+-INCLUDES = -I$(top_srcdir) -I$(includedir)
++INCLUDES = -I$(top_srcdir)
+ 
+ # the name of the plugin
+ PLUGIN_NAME = artnet
+Index: wireshark-0.99.4/plugins/asn1/Makefile.am
+===================================================================
+--- wireshark-0.99.4.orig/plugins/asn1/Makefile.am	2006-12-14 14:47:13.482227000 +0100
++++ wireshark-0.99.4/plugins/asn1/Makefile.am	2006-12-14 14:48:50.352227000 +0100
+@@ -22,7 +22,7 @@
+ # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+ #
+ 
+-INCLUDES = -I$(top_srcdir) -I$(includedir)
++INCLUDES = -I$(top_srcdir)
+ 
+ include Makefile.common
+ 
+Index: wireshark-0.99.4/plugins/asn1/Makefile.in
+===================================================================
+--- wireshark-0.99.4.orig/plugins/asn1/Makefile.in	2006-12-14 14:47:13.502227000 +0100
++++ wireshark-0.99.4/plugins/asn1/Makefile.in	2006-12-14 14:48:54.772227000 +0100
+@@ -370,7 +370,7 @@
+ wireshark_bin = @wireshark_bin@
+ wireshark_man = @wireshark_man@
+ wiresharkfilter_man = @wiresharkfilter_man@
+-INCLUDES = -I$(top_srcdir) -I$(includedir)
++INCLUDES = -I$(top_srcdir)
+ 
+ # the name of the plugin
+ PLUGIN_NAME = asn1
+Index: wireshark-0.99.4/plugins/ciscosm/Makefile.am
+===================================================================
+--- wireshark-0.99.4.orig/plugins/ciscosm/Makefile.am	2006-12-14 14:47:13.532227000 +0100
++++ wireshark-0.99.4/plugins/ciscosm/Makefile.am	2006-12-14 14:49:01.482227000 +0100
+@@ -23,7 +23,7 @@
+ # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+ #
+ 
+-INCLUDES = -I$(top_srcdir) -I$(includedir)
++INCLUDES = -I$(top_srcdir)
+ 
+ include Makefile.common
+ 
+Index: wireshark-0.99.4/plugins/ciscosm/Makefile.in
+===================================================================
+--- wireshark-0.99.4.orig/plugins/ciscosm/Makefile.in	2006-12-14 14:47:13.552227000 +0100
++++ wireshark-0.99.4/plugins/ciscosm/Makefile.in	2006-12-14 14:49:18.302227000 +0100
+@@ -371,7 +371,7 @@
+ wireshark_bin = @wireshark_bin@
+ wireshark_man = @wireshark_man@
+ wiresharkfilter_man = @wiresharkfilter_man@
+-INCLUDES = -I$(top_srcdir) -I$(includedir)
++INCLUDES = -I$(top_srcdir)
+ 
+ # the name of the plugin
+ PLUGIN_NAME = ciscosm
+Index: wireshark-0.99.4/plugins/docsis/Makefile.am
+===================================================================
+--- wireshark-0.99.4.orig/plugins/docsis/Makefile.am	2006-12-14 14:47:13.582227000 +0100
++++ wireshark-0.99.4/plugins/docsis/Makefile.am	2006-12-14 14:49:18.302227000 +0100
+@@ -22,7 +22,7 @@
+ # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+ #
+ 
+-INCLUDES = -I$(top_srcdir) -I$(includedir)
++INCLUDES = -I$(top_srcdir)
+ 
+ include Makefile.common
+ 
+Index: wireshark-0.99.4/plugins/docsis/Makefile.in
+===================================================================
+--- wireshark-0.99.4.orig/plugins/docsis/Makefile.in	2006-12-14 14:47:13.602227000 +0100
++++ wireshark-0.99.4/plugins/docsis/Makefile.in	2006-12-14 14:49:18.312227000 +0100
+@@ -380,7 +380,7 @@
+ wireshark_bin = @wireshark_bin@
+ wireshark_man = @wireshark_man@
+ wiresharkfilter_man = @wiresharkfilter_man@
+-INCLUDES = -I$(top_srcdir) -I$(includedir)
++INCLUDES = -I$(top_srcdir)
+ 
+ # the name of the plugin
+ PLUGIN_NAME = docsis
+Index: wireshark-0.99.4/plugins/enttec/Makefile.am
+===================================================================
+--- wireshark-0.99.4.orig/plugins/enttec/Makefile.am	2006-12-14 14:47:13.632227000 +0100
++++ wireshark-0.99.4/plugins/enttec/Makefile.am	2006-12-14 14:49:18.322227000 +0100
+@@ -22,7 +22,7 @@
+ # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+ #
+ 
+-INCLUDES = -I$(top_srcdir) -I$(includedir)
++INCLUDES = -I$(top_srcdir)
+ 
+ include Makefile.common
+ 
+Index: wireshark-0.99.4/plugins/enttec/Makefile.in
+===================================================================
+--- wireshark-0.99.4.orig/plugins/enttec/Makefile.in	2006-12-14 14:47:13.662227000 +0100
++++ wireshark-0.99.4/plugins/enttec/Makefile.in	2006-12-14 14:49:18.332227000 +0100
+@@ -370,7 +370,7 @@
+ wireshark_bin = @wireshark_bin@
+ wireshark_man = @wireshark_man@
+ wiresharkfilter_man = @wiresharkfilter_man@
+-INCLUDES = -I$(top_srcdir) -I$(includedir)
++INCLUDES = -I$(top_srcdir)
+ 
+ # the name of the plugin
+ PLUGIN_NAME = enttec
+Index: wireshark-0.99.4/plugins/gryphon/Makefile.am
+===================================================================
+--- wireshark-0.99.4.orig/plugins/gryphon/Makefile.am	2006-12-14 14:47:13.712227000 +0100
++++ wireshark-0.99.4/plugins/gryphon/Makefile.am	2006-12-14 14:49:18.342227000 +0100
+@@ -24,7 +24,7 @@
+ # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+ #
+ 
+-INCLUDES = -I$(top_srcdir) -I$(includedir)
++INCLUDES = -I$(top_srcdir)
+ 
+ include Makefile.common
+ 
+Index: wireshark-0.99.4/plugins/gryphon/Makefile.in
+===================================================================
+--- wireshark-0.99.4.orig/plugins/gryphon/Makefile.in	2006-12-14 14:47:13.732227000 +0100
++++ wireshark-0.99.4/plugins/gryphon/Makefile.in	2006-12-14 14:49:18.342227000 +0100
+@@ -373,7 +373,7 @@
+ wireshark_bin = @wireshark_bin@
+ wireshark_man = @wireshark_man@
+ wiresharkfilter_man = @wiresharkfilter_man@
+-INCLUDES = -I$(top_srcdir) -I$(includedir)
++INCLUDES = -I$(top_srcdir)
+ 
+ # the name of the plugin
+ PLUGIN_NAME = gryphon
+Index: wireshark-0.99.4/plugins/h223/Makefile.am
+===================================================================
+--- wireshark-0.99.4.orig/plugins/h223/Makefile.am	2006-12-14 14:47:13.762227000 +0100
++++ wireshark-0.99.4/plugins/h223/Makefile.am	2006-12-14 14:49:18.352227000 +0100
+@@ -22,7 +22,7 @@
+ # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+ #
+ 
+-INCLUDES = -I$(top_srcdir) -I$(includedir)
++INCLUDES = -I$(top_srcdir)
+ 
+ include Makefile.common
+ 
+Index: wireshark-0.99.4/plugins/h223/Makefile.in
+===================================================================
+--- wireshark-0.99.4.orig/plugins/h223/Makefile.in	2006-12-14 14:47:13.792227000 +0100
++++ wireshark-0.99.4/plugins/h223/Makefile.in	2006-12-14 14:49:18.362227000 +0100
+@@ -373,7 +373,7 @@
+ wireshark_bin = @wireshark_bin@
+ wireshark_man = @wireshark_man@
+ wiresharkfilter_man = @wiresharkfilter_man@
+-INCLUDES = -I$(top_srcdir) -I$(includedir)
++INCLUDES = -I$(top_srcdir)
+ 
+ # the name of the plugin
+ PLUGIN_NAME = h223
+Index: wireshark-0.99.4/plugins/irda/Makefile.am
+===================================================================
+--- wireshark-0.99.4.orig/plugins/irda/Makefile.am	2006-12-14 14:47:13.812227000 +0100
++++ wireshark-0.99.4/plugins/irda/Makefile.am	2006-12-14 14:49:18.362227000 +0100
+@@ -22,7 +22,7 @@
+ # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+ #
+ 
+-INCLUDES = -I$(top_srcdir) -I$(includedir)
++INCLUDES = -I$(top_srcdir)
+ 
+ include Makefile.common
+ 
+Index: wireshark-0.99.4/plugins/irda/Makefile.in
+===================================================================
+--- wireshark-0.99.4.orig/plugins/irda/Makefile.in	2006-12-14 14:47:13.842227000 +0100
++++ wireshark-0.99.4/plugins/irda/Makefile.in	2006-12-14 14:49:18.372227000 +0100
+@@ -371,7 +371,7 @@
+ wireshark_bin = @wireshark_bin@
+ wireshark_man = @wireshark_man@
+ wiresharkfilter_man = @wiresharkfilter_man@
+-INCLUDES = -I$(top_srcdir) -I$(includedir)
++INCLUDES = -I$(top_srcdir)
+ 
+ # the name of the plugin
+ PLUGIN_NAME = irda
+Index: wireshark-0.99.4/plugins/lwres/Makefile.am
+===================================================================
+--- wireshark-0.99.4.orig/plugins/lwres/Makefile.am	2006-12-14 14:47:13.862227000 +0100
++++ wireshark-0.99.4/plugins/lwres/Makefile.am	2006-12-14 14:49:18.382227000 +0100
+@@ -22,7 +22,7 @@
+ # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+ #
+ 
+-INCLUDES = -I$(top_srcdir) -I$(includedir)
++INCLUDES = -I$(top_srcdir)
+ 
+ include Makefile.common
+ 
+Index: wireshark-0.99.4/plugins/lwres/Makefile.in
+===================================================================
+--- wireshark-0.99.4.orig/plugins/lwres/Makefile.in	2006-12-14 14:47:13.892227000 +0100
++++ wireshark-0.99.4/plugins/lwres/Makefile.in	2006-12-14 14:49:19.432227000 +0100
+@@ -370,7 +370,7 @@
+ wireshark_bin = @wireshark_bin@
+ wireshark_man = @wireshark_man@
+ wiresharkfilter_man = @wiresharkfilter_man@
+-INCLUDES = -I$(top_srcdir) -I$(includedir)
++INCLUDES = -I$(top_srcdir)
+ 
+ # the name of the plugin
+ PLUGIN_NAME = lwres
+Index: wireshark-0.99.4/plugins/megaco/Makefile.am
+===================================================================
+--- wireshark-0.99.4.orig/plugins/megaco/Makefile.am	2006-12-14 14:47:13.942227000 +0100
++++ wireshark-0.99.4/plugins/megaco/Makefile.am	2006-12-14 14:49:19.442227000 +0100
+@@ -22,7 +22,7 @@
+ # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+ #
+ 
+-INCLUDES = -I$(top_srcdir) -I$(includedir)
++INCLUDES = -I$(top_srcdir)
+ 
+ include Makefile.common
+ 
+Index: wireshark-0.99.4/plugins/megaco/Makefile.in
+===================================================================
+--- wireshark-0.99.4.orig/plugins/megaco/Makefile.in	2006-12-14 14:47:13.972227000 +0100
++++ wireshark-0.99.4/plugins/megaco/Makefile.in	2006-12-14 14:49:19.452227000 +0100
+@@ -370,7 +370,7 @@
+ wireshark_bin = @wireshark_bin@
+ wireshark_man = @wireshark_man@
+ wiresharkfilter_man = @wiresharkfilter_man@
+-INCLUDES = -I$(top_srcdir) -I$(includedir)
++INCLUDES = -I$(top_srcdir)
+ 
+ # the name of the plugin
+ PLUGIN_NAME = megaco
+Index: wireshark-0.99.4/plugins/mgcp/Makefile.am
+===================================================================
+--- wireshark-0.99.4.orig/plugins/mgcp/Makefile.am	2006-12-14 14:47:13.992227000 +0100
++++ wireshark-0.99.4/plugins/mgcp/Makefile.am	2006-12-14 14:49:19.462227000 +0100
+@@ -22,7 +22,7 @@
+ # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+ #
+ 
+-INCLUDES = -I$(top_srcdir) -I$(includedir)
++INCLUDES = -I$(top_srcdir)
+ 
+ include Makefile.common
+ 
+Index: wireshark-0.99.4/plugins/mgcp/Makefile.in
+===================================================================
+--- wireshark-0.99.4.orig/plugins/mgcp/Makefile.in	2006-12-14 14:47:14.022227000 +0100
++++ wireshark-0.99.4/plugins/mgcp/Makefile.in	2006-12-14 14:49:19.462227000 +0100
+@@ -371,7 +371,7 @@
+ wireshark_bin = @wireshark_bin@
+ wireshark_man = @wireshark_man@
+ wiresharkfilter_man = @wiresharkfilter_man@
+-INCLUDES = -I$(top_srcdir) -I$(includedir)
++INCLUDES = -I$(top_srcdir)
+ 
+ # the name of the plugin
+ PLUGIN_NAME = mgcp
+Index: wireshark-0.99.4/plugins/opsi/Makefile.am
+===================================================================
+--- wireshark-0.99.4.orig/plugins/opsi/Makefile.am	2006-12-14 14:47:14.042227000 +0100
++++ wireshark-0.99.4/plugins/opsi/Makefile.am	2006-12-14 14:49:19.472227000 +0100
+@@ -22,7 +22,7 @@
+ # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+ #
+ 
+-INCLUDES = -I$(top_srcdir) -I$(includedir)
++INCLUDES = -I$(top_srcdir)
+ 
+ include Makefile.common
+ 
+Index: wireshark-0.99.4/plugins/opsi/Makefile.in
+===================================================================
+--- wireshark-0.99.4.orig/plugins/opsi/Makefile.in	2006-12-14 14:47:14.072227000 +0100
++++ wireshark-0.99.4/plugins/opsi/Makefile.in	2006-12-14 14:49:19.482227000 +0100
+@@ -371,7 +371,7 @@
+ wireshark_bin = @wireshark_bin@
+ wireshark_man = @wireshark_man@
+ wiresharkfilter_man = @wiresharkfilter_man@
+-INCLUDES = -I$(top_srcdir) -I$(includedir)
++INCLUDES = -I$(top_srcdir)
+ 
+ # the name of the plugin
+ PLUGIN_NAME = opsi
+Index: wireshark-0.99.4/plugins/pcli/Makefile.am
+===================================================================
+--- wireshark-0.99.4.orig/plugins/pcli/Makefile.am	2006-12-14 14:47:14.102227000 +0100
++++ wireshark-0.99.4/plugins/pcli/Makefile.am	2006-12-14 14:49:19.492227000 +0100
+@@ -22,7 +22,7 @@
+ # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+ #
+ 
+-INCLUDES = -I$(top_srcdir) -I$(includedir)
++INCLUDES = -I$(top_srcdir)
+ 
+ include Makefile.common
+ 
+Index: wireshark-0.99.4/plugins/pcli/Makefile.in
+===================================================================
+--- wireshark-0.99.4.orig/plugins/pcli/Makefile.in	2006-12-14 14:47:14.122227000 +0100
++++ wireshark-0.99.4/plugins/pcli/Makefile.in	2006-12-14 14:49:19.492227000 +0100
+@@ -370,7 +370,7 @@
+ wireshark_bin = @wireshark_bin@
+ wireshark_man = @wireshark_man@
+ wiresharkfilter_man = @wiresharkfilter_man@
+-INCLUDES = -I$(top_srcdir) -I$(includedir)
++INCLUDES = -I$(top_srcdir)
+ 
+ # the name of the plugin
+ PLUGIN_NAME = pcli
+Index: wireshark-0.99.4/plugins/profinet/Makefile.am
+===================================================================
+--- wireshark-0.99.4.orig/plugins/profinet/Makefile.am	2006-12-14 14:47:14.152227000 +0100
++++ wireshark-0.99.4/plugins/profinet/Makefile.am	2006-12-14 14:49:19.502227000 +0100
+@@ -22,7 +22,7 @@
+ # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+ #
+ 
+-INCLUDES = -I$(top_srcdir) -I$(includedir)
++INCLUDES = -I$(top_srcdir)
+ 
+ include Makefile.common
+ 
+Index: wireshark-0.99.4/plugins/profinet/Makefile.in
+===================================================================
+--- wireshark-0.99.4.orig/plugins/profinet/Makefile.in	2006-12-14 14:47:14.182227000 +0100
++++ wireshark-0.99.4/plugins/profinet/Makefile.in	2006-12-14 14:49:19.512227000 +0100
+@@ -371,7 +371,7 @@
+ wireshark_bin = @wireshark_bin@
+ wireshark_man = @wireshark_man@
+ wiresharkfilter_man = @wiresharkfilter_man@
+-INCLUDES = -I$(top_srcdir) -I$(includedir)
++INCLUDES = -I$(top_srcdir)
+ 
+ # the name of the plugin
+ PLUGIN_NAME = profinet
+Index: wireshark-0.99.4/plugins/rlm/Makefile.am
+===================================================================
+--- wireshark-0.99.4.orig/plugins/rlm/Makefile.am	2006-12-14 14:47:14.202227000 +0100
++++ wireshark-0.99.4/plugins/rlm/Makefile.am	2006-12-14 14:49:19.522227000 +0100
+@@ -23,7 +23,7 @@
+ # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+ #
+ 
+-INCLUDES = -I$(top_srcdir) -I$(includedir)
++INCLUDES = -I$(top_srcdir)
+ 
+ include Makefile.common
+ 
+Index: wireshark-0.99.4/plugins/rlm/Makefile.in
+===================================================================
+--- wireshark-0.99.4.orig/plugins/rlm/Makefile.in	2006-12-14 14:47:14.232227000 +0100
++++ wireshark-0.99.4/plugins/rlm/Makefile.in	2006-12-14 14:49:19.542227000 +0100
+@@ -371,7 +371,7 @@
+ wireshark_bin = @wireshark_bin@
+ wireshark_man = @wireshark_man@
+ wiresharkfilter_man = @wiresharkfilter_man@
+-INCLUDES = -I$(top_srcdir) -I$(includedir)
++INCLUDES = -I$(top_srcdir)
+ 
+ # the name of the plugin
+ PLUGIN_NAME = rlm
+Index: wireshark-0.99.4/plugins/rtnet/Makefile.am
+===================================================================
+--- wireshark-0.99.4.orig/plugins/rtnet/Makefile.am	2006-12-14 14:47:14.252227000 +0100
++++ wireshark-0.99.4/plugins/rtnet/Makefile.am	2006-12-14 14:49:19.562227000 +0100
+@@ -22,7 +22,7 @@
+ # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+ #
+ 
+-INCLUDES = -I$(top_srcdir) -I$(includedir)
++INCLUDES = -I$(top_srcdir)
+ 
+ include Makefile.common
+ 
+Index: wireshark-0.99.4/plugins/rtnet/Makefile.in
+===================================================================
+--- wireshark-0.99.4.orig/plugins/rtnet/Makefile.in	2006-12-14 14:47:14.282227000 +0100
++++ wireshark-0.99.4/plugins/rtnet/Makefile.in	2006-12-14 14:49:19.572227000 +0100
+@@ -370,7 +370,7 @@
+ wireshark_bin = @wireshark_bin@
+ wireshark_man = @wireshark_man@
+ wiresharkfilter_man = @wiresharkfilter_man@
+-INCLUDES = -I$(top_srcdir) -I$(includedir)
++INCLUDES = -I$(top_srcdir)
+ 
+ # the name of the plugin
+ PLUGIN_NAME = rtnet
+Index: wireshark-0.99.4/plugins/rudp/Makefile.am
+===================================================================
+--- wireshark-0.99.4.orig/plugins/rudp/Makefile.am	2006-12-14 14:47:14.312227000 +0100
++++ wireshark-0.99.4/plugins/rudp/Makefile.am	2006-12-14 14:49:19.582227000 +0100
+@@ -23,7 +23,7 @@
+ # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+ #
+ 
+-INCLUDES = -I$(top_srcdir) -I$(includedir)
++INCLUDES = -I$(top_srcdir)
+ 
+ include Makefile.common
+ 
+Index: wireshark-0.99.4/plugins/rudp/Makefile.in
+===================================================================
+--- wireshark-0.99.4.orig/plugins/rudp/Makefile.in	2006-12-14 14:47:14.342227000 +0100
++++ wireshark-0.99.4/plugins/rudp/Makefile.in	2006-12-14 14:49:20.202227000 +0100
+@@ -371,7 +371,7 @@
+ wireshark_bin = @wireshark_bin@
+ wireshark_man = @wireshark_man@
+ wiresharkfilter_man = @wiresharkfilter_man@
+-INCLUDES = -I$(top_srcdir) -I$(includedir)
++INCLUDES = -I$(top_srcdir)
+ 
+ # the name of the plugin
+ PLUGIN_NAME = rudp
+Index: wireshark-0.99.4/plugins/sbus/Makefile.am
+===================================================================
+--- wireshark-0.99.4.orig/plugins/sbus/Makefile.am	2006-12-14 14:47:14.362227000 +0100
++++ wireshark-0.99.4/plugins/sbus/Makefile.am	2006-12-14 14:49:20.212227000 +0100
+@@ -21,7 +21,7 @@
+ # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+ #
+ 
+-INCLUDES = -I$(top_srcdir) -I$(includedir)
++INCLUDES = -I$(top_srcdir)
+ 
+ include Makefile.common
+ 
+Index: wireshark-0.99.4/plugins/sbus/Makefile.in
+===================================================================
+--- wireshark-0.99.4.orig/plugins/sbus/Makefile.in	2006-12-14 14:47:14.392227000 +0100
++++ wireshark-0.99.4/plugins/sbus/Makefile.in	2006-12-14 14:49:20.222227000 +0100
+@@ -369,7 +369,7 @@
+ wireshark_bin = @wireshark_bin@
+ wireshark_man = @wireshark_man@
+ wiresharkfilter_man = @wiresharkfilter_man@
+-INCLUDES = -I$(top_srcdir) -I$(includedir)
++INCLUDES = -I$(top_srcdir)
+ 
+ # the name of the plugin
+ PLUGIN_NAME = sbus
+Index: wireshark-0.99.4/plugins/v5ua/Makefile.am
+===================================================================
+--- wireshark-0.99.4.orig/plugins/v5ua/Makefile.am	2006-12-14 14:47:14.442227000 +0100
++++ wireshark-0.99.4/plugins/v5ua/Makefile.am	2006-12-14 14:49:20.232227000 +0100
+@@ -22,7 +22,7 @@
+ # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+ #
+ 
+-INCLUDES = -I$(top_srcdir) -I$(includedir)
++INCLUDES = -I$(top_srcdir)
+ 
+ include Makefile.common
+ 
+Index: wireshark-0.99.4/plugins/v5ua/Makefile.in
+===================================================================
+--- wireshark-0.99.4.orig/plugins/v5ua/Makefile.in	2006-12-14 14:47:14.472227000 +0100
++++ wireshark-0.99.4/plugins/v5ua/Makefile.in	2006-12-14 14:49:20.232227000 +0100
+@@ -370,7 +370,7 @@
+ wireshark_bin = @wireshark_bin@
+ wireshark_man = @wireshark_man@
+ wiresharkfilter_man = @wiresharkfilter_man@
+-INCLUDES = -I$(top_srcdir) -I$(includedir)
++INCLUDES = -I$(top_srcdir)
+ 
+ # the name of the plugin
+ PLUGIN_NAME = v5ua

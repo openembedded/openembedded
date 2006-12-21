@@ -11,7 +11,7 @@ PROVIDES += "${OPENPROTIUM_IMAGENAME}-packages"
 
 EXCLUDE_FROM_WORLD = "1"
 INHIBIT_DEFAULT_DEPS = "1"
-ALLOW_EMPTY = 1
+ALLOW_EMPTY = "1"
 
 # The list of packages to build for the slugos DISTRO.
 # KEEP IN ALPHABETICAL ORDER
@@ -119,7 +119,7 @@ OPENIOM_PACKAGES = "\
 	mdadm \
 	memtester \
 	mgetty \
-	miau \ 
+	miau \
 	microcom \
 	minicom \
 	mt-daapd \

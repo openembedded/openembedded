@@ -1,0 +1,532 @@
+Index: linux-2.6.19/drivers/input/touchscreen/s3c2410_ts.c
+===================================================================
+--- /dev/null
++++ linux-2.6.19/drivers/input/touchscreen/s3c2410_ts.c
+@@ -0,0 +1,351 @@
++/*
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 2 of the License, or
++ * (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write to the Free Software
++ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
++ *
++ * Copyright (c) 2004 Arnaud Patard <arnaud.patard@rtp-net.org>
++ * iPAQ H1940 touchscreen support
++ *
++ * ChangeLog
++ *
++ * 2004-09-05: Herbert Pötzl <herbert@13thfloor.at>
++ *	- added clock (de-)allocation code
++ *
++ * 2005-03-06: Arnaud Patard <arnaud.patard@rtp-net.org>
++ *      - h1940_ -> s3c2410 (this driver is now also used on the n30
++ *        machines :P)
++ *      - Debug messages are now enabled with the config option
++ *        TOUCHSCREEN_S3C2410_DEBUG
++ *      - Changed the way the value are read
++ *      - Input subsystem should now work
++ *      - Use ioremap and readl/writel
++ *
++ * 2005-03-23: Arnaud Patard <arnaud.patard@rtp-net.org>
++ *      - Make use of some undocumented features of the touchscreen
++ *        controller
++ *
++ */
++
++#include <linux/errno.h>
++#include <linux/kernel.h>
++#include <linux/module.h>
++#include <linux/slab.h>
++#include <linux/input.h>
++#include <linux/init.h>
++#include <linux/serio.h>
++#include <linux/delay.h>
++#include <linux/platform_device.h>
++#include <linux/clk.h>
++#include <asm/io.h>
++#include <asm/irq.h>
++
++#include <asm/arch/regs-adc.h>
++#include <asm/arch/regs-gpio.h>
++#include <asm/arch/ts.h>
++
++/* For ts.dev.id.version */
++#define S3C2410TSVERSION	0x0101
++
++#define WAIT4INT(x)  (((x)<<8) | \
++		     S3C2410_ADCTSC_YM_SEN | S3C2410_ADCTSC_YP_SEN | S3C2410_ADCTSC_XP_SEN | \
++		     S3C2410_ADCTSC_XY_PST(3))
++
++#define AUTOPST	     (S3C2410_ADCTSC_YM_SEN | S3C2410_ADCTSC_YP_SEN | S3C2410_ADCTSC_XP_SEN | \
++		     S3C2410_ADCTSC_AUTO_PST | S3C2410_ADCTSC_XY_PST(0))
++
++#define DEBUG_LVL    KERN_DEBUG
++
++MODULE_AUTHOR("Arnaud Patard <arnaud.patard@rtp-net.org>");
++MODULE_DESCRIPTION("s3c2410 touchscreen driver");
++MODULE_LICENSE("GPL");
++
++/*
++ * Definitions & global arrays.
++ */
++
++
++static char *s3c2410ts_name = "s3c2410 TouchScreen";
++
++/*
++ * Per-touchscreen data.
++ */
++
++struct s3c2410ts {
++	struct input_dev *dev;
++	long xp;
++	long yp;
++	int count;
++	int shift;
++};
++
++static struct s3c2410ts ts;
++static void __iomem *base_addr;
++
++static inline void s3c2410_ts_connect(void)
++{
++	s3c2410_gpio_cfgpin(S3C2410_GPG12, S3C2410_GPG12_XMON);
++	s3c2410_gpio_cfgpin(S3C2410_GPG13, S3C2410_GPG13_nXPON);
++	s3c2410_gpio_cfgpin(S3C2410_GPG14, S3C2410_GPG14_YMON);
++	s3c2410_gpio_cfgpin(S3C2410_GPG15, S3C2410_GPG15_nYPON);
++}
++
++static void touch_timer_fire(unsigned long data)
++{
++  	unsigned long data0;
++  	unsigned long data1;
++	int updown;
++
++  	data0 = readl(base_addr+S3C2410_ADCDAT0);
++  	data1 = readl(base_addr+S3C2410_ADCDAT1);
++
++ 	updown = (!(data0 & S3C2410_ADCDAT0_UPDOWN)) && (!(data1 & S3C2410_ADCDAT0_UPDOWN));
++
++ 	if (updown) {
++ 		if (ts.count != 0) {
++ 			ts.xp >>= ts.shift;
++ 			ts.yp >>= ts.shift;
++
++#ifdef CONFIG_TOUCHSCREEN_S3C2410_DEBUG
++ 			{
++ 				struct timeval tv;
++ 				do_gettimeofday(&tv);
++ 				printk(DEBUG_LVL "T: %06d, X: %03ld, Y: %03ld\n", (int)tv.tv_usec, ts.xp, ts.yp);
++ 			}
++#endif
++
++ 			input_report_abs(ts.dev, ABS_Y, ts.xp);
++ 			input_report_abs(ts.dev, ABS_X, ts.yp);
++
++ 			input_report_key(ts.dev, BTN_TOUCH, 1);
++ 			input_report_abs(ts.dev, ABS_PRESSURE, 1);
++ 			input_sync(ts.dev);
++ 		}
++
++ 		ts.count = 0;
++
++ 		writel(S3C2410_ADCTSC_PULL_UP_DISABLE | AUTOPST, base_addr+S3C2410_ADCTSC);
++ 		writel(readl(base_addr+S3C2410_ADCCON) | S3C2410_ADCCON_ENABLE_START, base_addr+S3C2410_ADCCON);
++ 	} else {
++ 		ts.count = 0;
++
++		input_report_abs(ts.dev, ABS_Y, ts.xp);
++ 		input_report_abs(ts.dev, ABS_X, ts.yp);
++	
++ 		input_report_key(ts.dev, BTN_TOUCH, 0);
++ 		input_report_abs(ts.dev, ABS_PRESSURE, 0);
++ 		input_sync(ts.dev);
++
++ 		writel(WAIT4INT(0), base_addr+S3C2410_ADCTSC);
++ 	}
++}
++
++static struct timer_list touch_timer =
++		TIMER_INITIALIZER(touch_timer_fire, 0, 0);
++
++static irqreturn_t stylus_updown(int irq, void *dev_id, struct pt_regs *regs)
++{
++	unsigned long data0;
++	unsigned long data1;
++	int updown;
++
++	data0 = readl(base_addr+S3C2410_ADCDAT0);
++	data1 = readl(base_addr+S3C2410_ADCDAT1);
++
++	updown = (!(data0 & S3C2410_ADCDAT0_UPDOWN)) && (!(data1 & S3C2410_ADCDAT0_UPDOWN));
++
++	/* TODO we should never get an interrupt with updown set while
++	 * the timer is running, but maybe we ought to verify that the
++	 * timer isn't running anyways. */
++
++	if (updown)
++		touch_timer_fire(0);
++
++	return IRQ_HANDLED;
++}
++
++
++static irqreturn_t stylus_action(int irq, void *dev_id, struct pt_regs *regs)
++{
++	unsigned long data0;
++	unsigned long data1;
++
++	data0 = readl(base_addr+S3C2410_ADCDAT0);
++	data1 = readl(base_addr+S3C2410_ADCDAT1);
++
++	ts.xp += data0 & S3C2410_ADCDAT0_XPDATA_MASK;
++	ts.yp += data1 & S3C2410_ADCDAT1_YPDATA_MASK;
++	ts.count++;
++
++        if (ts.count < (1<<ts.shift)) {
++		writel(S3C2410_ADCTSC_PULL_UP_DISABLE | AUTOPST, base_addr+S3C2410_ADCTSC);
++		writel(readl(base_addr+S3C2410_ADCCON) | S3C2410_ADCCON_ENABLE_START, base_addr+S3C2410_ADCCON);
++	} else {
++		mod_timer(&touch_timer, jiffies+1);
++		writel(WAIT4INT(1), base_addr+S3C2410_ADCTSC);
++	}
++
++	return IRQ_HANDLED;
++}
++
++static struct clk	*adc_clock;
++
++/*
++ * The functions for inserting/removing us as a module.
++ */
++
++static int __init s3c2410ts_probe(struct platform_device *pdev)
++{
++	struct s3c2410_ts_mach_info *info;
++	struct input_dev *input_dev;
++
++	info = ( struct s3c2410_ts_mach_info *)pdev->dev.platform_data;
++
++	if (!info)
++	{
++		printk(KERN_ERR "Hm... too bad : no platform data for ts\n");
++		return -EINVAL;
++	}
++
++#ifdef CONFIG_TOUCHSCREEN_S3C2410_DEBUG
++	printk(DEBUG_LVL "Entering s3c2410ts_init\n");
++#endif
++
++	adc_clock = clk_get(NULL, "adc");
++	if (!adc_clock) {
++		printk(KERN_ERR "failed to get adc clock source\n");
++		return -ENOENT;
++	}
++	clk_enable(adc_clock);
++
++#ifdef CONFIG_TOUCHSCREEN_S3C2410_DEBUG
++	printk(DEBUG_LVL "got and enabled clock\n");
++#endif
++
++	base_addr=ioremap(S3C2410_PA_ADC,0x20);
++	if (base_addr == NULL) {
++		printk(KERN_ERR "Failed to remap register block\n");
++		return -ENOMEM;
++	}
++
++
++	/* Configure GPIOs */
++	s3c2410_ts_connect();
++
++	if ((info->presc&0xff) > 0)
++		writel(S3C2410_ADCCON_PRSCEN | S3C2410_ADCCON_PRSCVL(info->presc&0xFF),\
++			     base_addr+S3C2410_ADCCON);
++	else
++		writel(0,base_addr+S3C2410_ADCCON);
++
++
++	/* Initialise registers */
++	if ((info->delay&0xffff) > 0)
++		writel(info->delay & 0xffff,  base_addr+S3C2410_ADCDLY);
++
++	writel(WAIT4INT(0), base_addr+S3C2410_ADCTSC);
++
++	/* Initialise input stuff */
++	memset(&ts, 0, sizeof(struct s3c2410ts));
++	input_dev = input_allocate_device();
++
++	if (!input_dev) {
++		printk(KERN_ERR "Unable to allocate the input device !!\n");
++		return -ENOMEM;
++	}
++
++	ts.dev = input_dev;
++	ts.dev->evbit[0] = BIT(EV_SYN) | BIT(EV_KEY) | BIT(EV_ABS);
++	ts.dev->keybit[LONG(BTN_TOUCH)] = BIT(BTN_TOUCH);
++	input_set_abs_params(ts.dev, ABS_X, 0x10, 0x3FF, 0, 0);
++	input_set_abs_params(ts.dev, ABS_Y, 0x10, 0x3FF, 0, 0);
++	input_set_abs_params(ts.dev, ABS_PRESSURE, 0, 1, 0, 0);
++
++	ts.dev->private = &ts;
++	ts.dev->name = s3c2410ts_name;
++	ts.dev->id.bustype = BUS_RS232;
++	ts.dev->id.vendor = 0xDEAD;
++	ts.dev->id.product = 0xBEEF;
++	ts.dev->id.version = S3C2410TSVERSION;
++
++	ts.shift = info->oversampling_shift;
++
++	/* Get irqs */
++	if (request_irq(IRQ_ADC, stylus_action, SA_SAMPLE_RANDOM,
++		"s3c2410_action", ts.dev)) {
++		printk(KERN_ERR "s3c2410_ts.c: Could not allocate ts IRQ_ADC !\n");
++		iounmap(base_addr);
++		return -EIO;
++	}
++	if (request_irq(IRQ_TC, stylus_updown, SA_SAMPLE_RANDOM,
++			"s3c2410_action", ts.dev)) {
++		printk(KERN_ERR "s3c2410_ts.c: Could not allocate ts IRQ_TC !\n");
++		iounmap(base_addr);
++		return -EIO;
++	}
++
++	printk(KERN_INFO "%s successfully loaded\n", s3c2410ts_name);
++
++	/* All went ok, so register to the input system */
++	input_register_device(ts.dev);
++
++	return 0;
++}
++
++static int s3c2410ts_remove(struct platform_device *pdev)
++{
++	disable_irq(IRQ_ADC);
++	disable_irq(IRQ_TC);
++	free_irq(IRQ_TC,ts.dev);
++	free_irq(IRQ_ADC,ts.dev);
++
++	if (adc_clock) {
++		clk_disable(adc_clock);
++		clk_put(adc_clock);
++		adc_clock = NULL;
++	}
++
++	input_unregister_device(ts.dev);
++	iounmap(base_addr);
++
++	return 0;
++}
++
++static struct platform_driver s3c2410ts_driver = {
++       .driver         = {
++	       .name   = "s3c2410-ts",
++	       .owner  = THIS_MODULE,
++       },
++       .probe          = s3c2410ts_probe,
++       .remove         = s3c2410ts_remove,
++};
++
++
++static int __init s3c2410ts_init(void)
++{
++	return platform_driver_register(&s3c2410ts_driver);
++}
++
++static void __exit s3c2410ts_exit(void)
++{
++	platform_driver_unregister(&s3c2410ts_driver);
++}
++
++module_init(s3c2410ts_init);
++module_exit(s3c2410ts_exit);
++
++/*
++    Local variables:
++        compile-command: "make ARCH=arm CROSS_COMPILE=/usr/local/arm/3.3.2/bin/arm-linux- -k -C ../../.."
++        c-basic-offset: 8
++    End:
++*/
+Index: linux-2.6.19/arch/arm/mach-s3c2410/devs.c
+===================================================================
+--- linux-2.6.19.orig/arch/arm/mach-s3c2410/devs.c
++++ linux-2.6.19/arch/arm/mach-s3c2410/devs.c
+@@ -28,6 +28,7 @@
+ #include <asm/irq.h>
+ 
+ #include <asm/arch/regs-serial.h>
++#include <asm/arch/ts.h>
+ 
+ #include "devs.h"
+ #include "cpu.h"
+@@ -204,6 +205,23 @@ struct platform_device s3c_device_nand =
+ 
+ EXPORT_SYMBOL(s3c_device_nand);
+ 
++/* Touchscreen */
++struct platform_device s3c_device_ts = {
++	.name		  = "s3c2410-ts",
++	.id		  = -1,
++};
++
++EXPORT_SYMBOL(s3c_device_ts);
++
++static struct s3c2410_ts_mach_info s3c2410ts_info;
++
++void __init set_s3c2410ts_info(struct s3c2410_ts_mach_info *hard_s3c2410ts_info)
++{
++	memcpy(&s3c2410ts_info,hard_s3c2410ts_info,sizeof(struct s3c2410_ts_mach_info));
++	s3c_device_ts.dev.platform_data = &s3c2410ts_info;
++}
++EXPORT_SYMBOL(set_s3c2410ts_info);
++
+ /* USB Device (Gadget)*/
+ 
+ static struct resource s3c_usbgadget_resource[] = {
+Index: linux-2.6.19/arch/arm/mach-s3c2410/devs.h
+===================================================================
+--- linux-2.6.19.orig/arch/arm/mach-s3c2410/devs.h
++++ linux-2.6.19/arch/arm/mach-s3c2410/devs.h
+@@ -41,6 +41,8 @@ extern struct platform_device s3c_device
+ extern struct platform_device s3c_device_timer3;
+ 
+ extern struct platform_device s3c_device_usbgadget;
++extern struct platform_device s3c_device_ts;
++
+ 
+ /* s3c2440 specific devices */
+ 
+Index: linux-2.6.19/arch/arm/mach-s3c2410/mach-smdk2440.c
+===================================================================
+--- linux-2.6.19.orig/arch/arm/mach-s3c2410/mach-smdk2440.c
++++ linux-2.6.19/arch/arm/mach-s3c2410/mach-smdk2440.c
+@@ -38,6 +38,7 @@
+ 
+ #include <asm/arch/idle.h>
+ #include <asm/arch/fb.h>
++#include <asm/arch/ts.h>
+ 
+ #include "s3c2410.h"
+ #include "s3c2440.h"
+@@ -177,6 +178,7 @@ static struct platform_device *smdk2440_
+ 	&s3c_device_wdt,
+ 	&s3c_device_i2c,
+ 	&s3c_device_iis,
++	&s3c_device_ts,
+ };
+ 
+ static struct s3c24xx_board smdk2440_board __initdata = {
+@@ -184,6 +186,13 @@ static struct s3c24xx_board smdk2440_boa
+ 	.devices_count = ARRAY_SIZE(smdk2440_devices)
+ };
+ 
++static struct s3c2410_ts_mach_info smdk2440_ts_cfg __initdata = {
++		.delay = 10000,
++		.presc = 49,
++		.oversampling_shift = 2,
++};
++
++
+ static void __init smdk2440_map_io(void)
+ {
+ 	s3c24xx_init_io(smdk2440_iodesc, ARRAY_SIZE(smdk2440_iodesc));
+@@ -195,6 +204,7 @@ static void __init smdk2440_map_io(void)
+ static void __init smdk2440_machine_init(void)
+ {
+ 	s3c24xx_fb_set_platdata(&smdk2440_lcd_cfg);
++	set_s3c2410ts_info(&smdk2440_ts_cfg);
+ 
+ 	smdk_machine_init();
+ }
+Index: linux-2.6.19/drivers/input/touchscreen/Kconfig
+===================================================================
+--- linux-2.6.19.orig/drivers/input/touchscreen/Kconfig
++++ linux-2.6.19/drivers/input/touchscreen/Kconfig
+@@ -49,6 +49,25 @@ config TOUCHSCREEN_CORGI
+ 	  To compile this driver as a module, choose M here: the
+ 	  module will be called corgi_ts.
+ 
++config TOUCHSCREEN_S3C2410
++	tristate "Samsung S3C2410 touchscreen input driver"
++	depends on ARCH_S3C2410 && INPUT && INPUT_TOUCHSCREEN
++	select SERIO
++	help
++	  Say Y here if you have the s3c2410 touchscreen.
++
++	  If unsure, say N.
++
++	  To compile this driver as a module, choose M here: the
++	  module will be called s3c2410_ts.
++
++config TOUCHSCREEN_S3C2410_DEBUG
++	boolean "Samsung S3C2410 touchscreen debug messages"
++	depends on TOUCHSCREEN_S3C2410
++	help
++	  Select this if you want debug messages
++
++
+ config TOUCHSCREEN_GUNZE
+ 	tristate "Gunze AHL-51S touchscreen"
+ 	select SERIO
+Index: linux-2.6.19/drivers/input/touchscreen/Makefile
+===================================================================
+--- linux-2.6.19.orig/drivers/input/touchscreen/Makefile
++++ linux-2.6.19/drivers/input/touchscreen/Makefile
+@@ -15,3 +15,4 @@ obj-$(CONFIG_TOUCHSCREEN_HP600)	+= hp680
+ obj-$(CONFIG_TOUCHSCREEN_PENMOUNT)	+= penmount.o
+ obj-$(CONFIG_TOUCHSCREEN_TOUCHRIGHT)	+= touchright.o
+ obj-$(CONFIG_TOUCHSCREEN_TOUCHWIN)	+= touchwin.o
++obj-$(CONFIG_TOUCHSCREEN_S3C2410) += s3c2410_ts.o
+Index: linux-2.6.19/include/asm-arm/arch-s3c2410/ts.h
+===================================================================
+--- /dev/null
++++ linux-2.6.19/include/asm-arm/arch-s3c2410/ts.h
+@@ -0,0 +1,28 @@
++/* linux/include/asm/arch-s3c2410/ts.h
++ *
++ * Copyright (c) 2005 Arnaud Patard <arnaud.patard@rtp-net.org>
++ *
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ *
++ *
++ *  Changelog:
++ *     24-Mar-2005     RTP     Created file
++ *     03-Aug-2005     RTP     Renamed to ts.h
++ */
++
++#ifndef __ASM_ARM_TS_H
++#define __ASM_ARM_TS_H
++
++struct s3c2410_ts_mach_info {
++       int             delay;
++       int             presc;
++       int             oversampling_shift;
++};
++
++void __init set_s3c2410ts_info(struct s3c2410_ts_mach_info *hard_s3c2410ts_info);
++
++#endif /* __ASM_ARM_TS_H */
++
+Index: linux-2.6.19/include/asm-arm/arch-s3c2410/regs-adc.h
+===================================================================
+--- linux-2.6.19.orig/include/asm-arm/arch-s3c2410/regs-adc.h
++++ linux-2.6.19/include/asm-arm/arch-s3c2410/regs-adc.h
+@@ -41,7 +41,7 @@
+ #define S3C2410_ADCTSC_XP_SEN		(1<<4)
+ #define S3C2410_ADCTSC_PULL_UP_DISABLE	(1<<3)
+ #define S3C2410_ADCTSC_AUTO_PST		(1<<2)
+-#define S3C2410_ADCTSC_XY_PST		(0x3<<0)
++#define S3C2410_ADCTSC_XY_PST(x)	(((x)&0x3)<<0)
+ 
+ /* ADCDAT0 Bits */
+ #define S3C2410_ADCDAT0_UPDOWN		(1<<15)

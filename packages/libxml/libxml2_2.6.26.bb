@@ -9,6 +9,8 @@ inherit autotools pkgconfig binconfig
 
 EXTRA_OECONF = "--without-python --without-debug --without-legacy --without-catalog --without-docbook --without-c14n"
 
+export LDFLAGS += "-ldl"
+
 do_stage() {
 	autotools_stage_all
 	install -m 0644 libxml.m4 ${STAGING_DATADIR}/aclocal/

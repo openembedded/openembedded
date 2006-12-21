@@ -26,7 +26,7 @@ SRC_URI_append_gumstix = "\
 SRC_URI_append_amsdelta = "\
 	http://the.earth.li/pub/e3/u-boot-amsdelta-20060519.diff;patch=1"
 
-SRC_URI_append_dht-walnut= "\ 
+SRC_URI_append_dht-walnut= "\
         file://u-boot-dht-walnut-df2.patch;patch=1"
 
 
