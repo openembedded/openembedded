@@ -14,6 +14,8 @@ inherit autotools binconfig
 
 EXTRA_OECONF = "--without-pth --disable-asm --with-capabilities"
 
+ARM_INSTRUCTION_SET = "arm"
+
 do_stage() {
 	oe_libinstall -so -C src libgcrypt ${STAGING_LIBDIR}
 	oe_libinstall -so -C src libgcrypt-pthread ${STAGING_LIBDIR}

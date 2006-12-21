@@ -4,7 +4,7 @@ SECTION = "libs"
 LICENSE = "MIT"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/expat/expat-${PV}.tar.gz \
-	   file://autotools.patch;patch=1"
+	  "
 S = "${WORKDIR}/expat-${PV}"
 
 export LTCC = "${CC}"

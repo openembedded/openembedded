@@ -1,5 +1,7 @@
 require glibc.inc
 
+ARM_INSTRUCTION_SET = "arm"
+
 PR = "r4"
 
 # the -isystem in bitbake.conf screws up glibc do_stage
