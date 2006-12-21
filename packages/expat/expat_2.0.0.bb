@@ -1,15 +1,9 @@
-DESCRIPTION = "Jim Clarkes XML parser library."
-HOMEPAGE = "http://expat.sourceforge.net/"
-SECTION = "libs"
-LICENSE = "MIT"
+require expat.inc
 PR = "r2"
 
-SRC_URI = "${SOURCEFORGE_MIRROR}/expat/expat-${PV}.tar.gz \
-	   file://autotools.patch;patch=1"
-S = "${WORKDIR}/expat-${PV}"
+SRC_URI = "file://autotools.patch;patch=1"
 
-inherit autotools lib_package
-export LTCC = "${CC}"
+inherit lib_package
 
 do_configure() {
 	rm -f ${S}/conftools/libtool.m4

@@ -1,19 +1,11 @@
-DESCRIPTION = "EXT2 Filesystem Utilities"
-SECTION = "base"
-LICENSE = "GPL"
-PRIORITY = "optional"
-DEPENDS = ""
+require e2fsprogs.inc
+
 PR = "r1"
 
-SRC_URI = "${SOURCEFORGE_MIRROR}/e2fsprogs/e2fsprogs-${PV}.tar.gz \
-	   file://ln.patch;patch=1 \
+SRC_URI += "file://ln.patch;patch=1 \
 	   file://configure.patch;patch=1 \
 	   file://compile-subst.patch;patch=1 \
 	   file://m4.patch;patch=1"
-
-inherit autotools
-
-EXTRA_OECONF = "--enable-dynamic-e2fsck"
 
 sbindir = "/sbin"
 
