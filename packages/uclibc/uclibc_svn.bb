@@ -21,12 +21,12 @@ PROVIDES += "virtual/${TARGET_PREFIX}libc-for-gcc"
 PACKAGE_ARCH = "${MACHINE_ARCH}"
 FILESPATH = "${@base_set_filespath([ '${FILE_DIRNAME}/uclibc-cvs', '${FILE_DIRNAME}/uclibc-${UCLIBC_BASE}', '${FILE_DIRNAME}/files', '${FILE_DIRNAME}' ], d)}"
 
-# This is the correct KERNEL_SOURCE location, if the uClibc
-# fix_includes.sh script is run (see nokernelheader.patch below)
-# this must be correct.
+#as stated above, uclibc needs real kernel-headers
+#however: we can't depend on virtual/kernel when nptl hits due to depends deadlocking ....
 KERNEL_SOURCE = "${CROSS_DIR}/${TARGET_SYS}"
 
 SRC_URI += "svn://uclibc.org/trunk;module=uClibc"
 
+SRC_URI += " file://error_print_progname.patch;patch=1"
 S = "${WORKDIR}/uClibc"
 
