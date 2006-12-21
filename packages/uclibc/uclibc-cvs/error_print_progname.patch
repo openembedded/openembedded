@@ -1,0 +1,11 @@
+--- /libc/misc/error/orig-error.c	2006-11-29 14:28:13.000000000 -0500
++++ /libc/misc/error/error.c	2006-12-20 22:54:16.000000000 -0500
+@@ -44,7 +44,7 @@
+ /* If NULL, error will flush stdout, then print on stderr the program
+    name, a colon and a space.  Otherwise, error will call this
+    function without parameters instead.  */
+-/* void (*error_print_progname) (void) = NULL; */
++ void (*error_print_progname) (void) = NULL; 
+ 
+ extern __typeof(error) __error attribute_hidden;
+ void __error (int status, int errnum, const char *message, ...)
