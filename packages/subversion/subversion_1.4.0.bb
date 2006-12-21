@@ -1,11 +1,9 @@
 DESCRIPTION = "The Subversion (svn) client"
 SECTION = "console/network"
-DEPENDS = "apr-util-0.9.12 neon"
+DEPENDS = "apr-util neon"
 LICENSE = "Apache/BSD"
 HOMEPAGE = "http://subversion.tigris.org"
 PR = "r0"
-
-DEFAULT_PREFERENCE = "-1"
 
 SRC_URI = "http://subversion.tigris.org/downloads/${P}.tar.bz2 \
            file://disable-revision-install.patch;patch=1"
@@ -15,8 +13,13 @@ EXTRA_OECONF = "--with-neon=${STAGING_DIR}/${BUILD_SYS} \
                 --without-swig --with-apr=${STAGING_BINDIR_CROSS} \
                 --with-apr-util=${STAGING_BINDIR_CROSS}"
 
+
 inherit autotools
 
+export LDFLAGS += " -L${STAGING_LIBDIR} "
+
 do_configure() {
+	gnu-configize
+	libtoolize --force
 	oe_runconf
 }
