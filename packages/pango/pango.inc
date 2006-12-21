@@ -4,7 +4,7 @@ internationalized text."
 LICENSE = "LGPL"
 
 inherit gnome
-
+EXTRA_AUTORECONF = ""
 
 SECTION = "x11/libs"
 
