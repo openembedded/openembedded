@@ -1,8 +1,4 @@
-DESCRIPTION = "GNU C Library"
-HOMEPAGE = "http://www.gnu.org/software/libc/libc.html"
-LICENSE = "LGPL"
-SECTION = "libs"
-PRIORITY = "required"
+require glibc.inc
 
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/glibc-cvs-2.3.5"
 SRCDATE = "20050627"

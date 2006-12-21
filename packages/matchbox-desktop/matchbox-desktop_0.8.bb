@@ -3,7 +3,8 @@ PR = "r1"
 LICENSE = "GPL"
 DEPENDS = "libmatchbox startup-notification"
 
-SRC_URI = "ftp://ftp.handhelds.org/matchbox/sources/matchbox-desktop/${PV}/matchbox-desktop-${PV}.tar.bz2"
+SRC_URI = "http://projects.o-hand.com/matchbox/sources/matchbox-desktop/0.8/matchbox-desktop-${PV}.tar.bz2"
+
 
 EXTRA_OECONF = "--enable-startup-notification --enable-dnotify"
 

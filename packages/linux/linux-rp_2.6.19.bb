@@ -1,6 +1,6 @@
 require linux-rp.inc
 
-PR = "r1"
+PR = "r2"
 
 DEFAULT_PREFERENCE = "-1"
 
@@ -16,6 +16,8 @@ DEFAULT_PREFERENCE = "-1"
 # Hacks should clearly named and at the bottom
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.19.tar.bz2 \
            http://opensource.wolfsonmicro.com/~lg/asoc/asoc-v0.12.4.patch;patch=1 \
+           ${RPSRC}/pxafb_fix_params-r1.patch;patch=1 \
+           ${RPSRC}/pxa_irda_susres_fix-r0.patch;patch=1 \
            ${RPSRC}/hx2750_base-r27.patch;patch=1 \
            ${RPSRC}/hx2750_bl-r7.patch;patch=1 \
            ${RPSRC}/hx2750_pcmcia-r2.patch;patch=1 \
@@ -27,12 +29,12 @@ SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.19.tar.bz2 \
            ${RPSRC}/pxa25x_cpufreq-r1.patch;patch=1 \
            ${RPSRC}/sharpsl_pm_fixes1-r0.patch;patch=1 \
            ${RPSRC}/pm_changes-r1.patch;patch=1 \
-           ${RPSRC}/usb_pxa27x_udc-r1.patch;patch=1 \
            ${RPSRC}/usb_add_epalloc-r3.patch;patch=1 \
+           ${RPSRC}/usb_pxa27x_udc-r2.patch;patch=1 \
            ${DOSRC}/kexec-arm-r3.patch;patch=1 \
            ${RPSRC}/locomo_kbd_tweak-r1.patch;patch=1 \
            ${RPSRC}/poodle_pm-r3.patch;patch=1 \
-           ${RPSRC}/pxa27x_overlay-r3.patch;patch=1 \
+           ${RPSRC}/pxa27x_overlay-r4.patch;patch=1 \
            ${RPSRC}/w100_extaccel-r0.patch;patch=1 \
            file://serial-add-support-for-non-standard-xtals-to-16c950-driver.patch;patch=1 \
            ${RPSRC}/logo_oh-r0.patch.bz2;patch=1;status=unmergable \

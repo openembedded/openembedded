@@ -1,0 +1,13 @@
+Index: Makefile.am
+===================================================================
+--- trunk/Makefile.am	(revision 306)
++++ trunk/Makefile.am	(working copy)
+@@ -16,7 +16,7 @@
+ endif
+ 
+ if ENABLE_DBUS
+-SUBDIRS = $(LIBDB) libedataserver $(CAMEL_DIR) addressbook $(CALENDAR_DIR) libedataserverui docs art po
++SUBDIRS = $(LIBDB) libedataserver $(CAMEL_DIR) addressbook $(CALENDAR_DIR) docs art po
+ else
+ SUBDIRS = $(LIBDB) libedataserver servers $(CAMEL_DIR) addressbook $(CALENDAR_DIR) libedataserverui src docs art po
+ endif

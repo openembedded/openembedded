@@ -9,7 +9,7 @@ PXAV = "1"
 PR = "r5"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.4/linux-${KV}.tar.bz2 \
-	   http://lorien.handhelds.org/ftp.arm.linux.org.uk/kernel/v2.4/patch-${KV}-rmk${RMKV}.bz2;patch=1 \
+	   http://ftp.linux.org.uk/pub/linux/arm/kernel/v2.4/patch-${KV}-rmk${RMKV}.bz2;patch=1 \
 	   file://diff-${KV}-rmk${RMKV}-pxa${PXAV}.gz;patch=1 \
 	   file://mnci-combined.patch;patch=1"
 

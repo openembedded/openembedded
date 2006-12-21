@@ -1,8 +1,5 @@
-DESCRIPTION = "GNU C Library"
-HOMEPAGE = "http://www.gnu.org/software/libc/libc.html"
-LICENSE = "LGPL"
-SECTION = "libs"
-PRIORITY = "required"
+require glibc.inc
+
 DEFAULT_PREFERENCE_i586 = "0"
 
 DEFAULT_PREFERENCE_sh3 = "-99"

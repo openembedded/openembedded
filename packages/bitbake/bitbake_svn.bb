@@ -1,16 +1,11 @@
 require bitbake.inc
 
+PV = "1.7.2+svn${SRCDATE}"
+PR = "r1"
+
 # Don't use the tip of svn by default
 DEFAULT_PREFERENCE = "-1"
 
-# We don't need a toolchain...
-INHIBIT_DEFAULT_DEPS = "1"
-
-PV = "1.7.0+svn${SRCDATE}"
 SRC_URI = "svn://svn.berlios.de/bitbake/trunk;module=bitbake"
-# SRC_URI = "svn+ssh://svn.berlios.de/bitbake/trunk;module=bitbake"
+
 S = "${WORKDIR}/bitbake"
-
-inherit distutils
-
-require bitbake-package.inc

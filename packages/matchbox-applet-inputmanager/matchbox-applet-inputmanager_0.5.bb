@@ -3,7 +3,7 @@ LICENSE = "GPL"
 DEPENDS = "matchbox-wm libmatchbox"
 SECTION = "x11/wm"
 
-SRC_URI = "ftp://ftp.handhelds.org/matchbox/sources/mb-applet-input-manager/${PV}/mb-applet-input-manager-${PV}.tar.bz2"
+SRC_URI = "http://projects.o-hand.com/matchbox/sources/mb-applet-input-manager/${PV}/mb-applet-input-manager-${PV}.tar.bz2"
 S = "${WORKDIR}/mb-applet-input-manager-${PV}"
 
 inherit autotools pkgconfig
