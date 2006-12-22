@@ -1,13 +1,6 @@
-SECTION = "libs"
-DESCRIPTION = "Jim Clarkes XML parser library."
-LICENSE = "MIT"
+require expat.inc
+
 PR = "r1"
-
-SRC_URI = "${SOURCEFORGE_MIRROR}/expat/expat-${PV}.tar.gz"
-S = "${WORKDIR}/expat-${PV}"
-
-inherit autotools 
-export LTCC = "${CC}"
 
 do_stage () {
 	install -m 0644 ${S}/lib/expat.h ${STAGING_INCDIR}/

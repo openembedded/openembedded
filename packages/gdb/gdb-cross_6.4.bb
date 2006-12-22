@@ -1,8 +1,6 @@
-LICENSE = "GPL"
-DESCRIPTION = "gdb - GNU debugger"
+require gdb.inc
+
 SECTION = "base"
-PRIORITY = "optional"
-LICENSE = "GPL"
 DEPENDS = "ncurses-native"
 
 SRC_URI = "${GNU_MIRROR}/gdb/gdb-${PV}.tar.gz"

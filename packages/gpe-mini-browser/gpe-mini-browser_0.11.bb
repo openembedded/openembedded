@@ -1,3 +1,5 @@
+require gpe-mini-browser.inc
+
 PR = "r0"
 
 SRC_URI = "http://stag.mind.be/gpe-mini-browser-${PV}.tar.bz2"

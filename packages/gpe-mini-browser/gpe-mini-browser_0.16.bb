@@ -1,8 +1,8 @@
+require gpe-mini-browser.inc
+
 PR = "r1"
 
 SRC_URI = "ftp://ftp.handhelds.org/projects/gpe/source/gpe-mini-browser-${PV}.tar.gz"
-DESCRIPTION = "A lightweight webbrowser for the GPE platform"
-LICENSE = "GPL"
 DEPENDS = "osb-nrcit sqlite libgpewidget"
 
 S = "${WORKDIR}/gpe-mini-browser-${PV}"

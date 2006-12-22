@@ -1,8 +1,5 @@
-DESCRIPTION = "gdb - GNU debugger"
-HOMEPAGE = "http://www.gnu.org/software/gdb/"
-LICENSE="GPL"
-SECTION = "devel"
-PRIORITY = "optional"
+require gdb.inc
+
 DEPENDS = "ncurses readline"
 RDEPENDS_openmn = "libthread-db1"
 PR = "r2"

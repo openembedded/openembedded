@@ -1,7 +1,5 @@
-DESCRIPTION = "Driver for the Hauppauge WinTV PVR USB2"
-PRIORITY = "optional"
-SECTION = "kernel/modules"
-LICENSE = "GPL"
+require pvrusb2-mci.inc
+
 PR = "r1"
 # It in fact requires these modules, but for now is using the local ones.
 # RDEPENDS = "kernel-module-tveeprom kernel-module-tuner kernel-module-msp3400 kernel-module-saa7115"
