@@ -1,0 +1,4 @@
+#!/bin/sh
+# Run to remove /.recovery if the boot seems to have succeeded
+test -e /.recovery && rm -f /.recovery
+exit 0
