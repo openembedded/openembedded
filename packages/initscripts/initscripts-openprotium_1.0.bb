@@ -23,7 +23,7 @@ SRC_URI += "file://openprotium/devices"
 SRC_URI += "file://openprotium/halt"
 SRC_URI += "file://openprotium/reboot"
 SRC_URI += "file://openprotium/flashclean"
-SRC_URI += "file://openprotium/devices.patch;patch=1"
+SRC_URI += "file://openprotium/checkroot.sh"
 
 # Without this it is not possible to patch checkroot.sh
 S = "${WORKDIR}"
@@ -43,6 +43,7 @@ do_install_append() {
 	install -m 0755 ${WORKDIR}/openprotium/reboot   ${D}${sysconfdir}/init.d
 	install -m 0755 ${WORKDIR}/openprotium/devices  ${D}${sysconfdir}/init.d
 	install -m 0755 ${WORKDIR}/openprotium/flashclean  ${D}${sysconfdir}/init.d
+	install -m 0755 ${WORKDIR}/openprotium/checkroot.sh  ${D}${sysconfdir}/init.d
 
 	# Remove the do install links (this detects a change to the
 	# initscripts .bb file - it will cause a build failure here.)
