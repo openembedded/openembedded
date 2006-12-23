@@ -18,11 +18,18 @@ USE_DEVFS = "1"
 # dev entries!)
 SLUGOS_DEVICE_TABLE = "${@bb.which(bb.data.getVar('BBPATH', d, 1), 'files/device_table-slugos.txt')}"
 
-# IMAGE_PREPROCESS_COMMAND is run before making the image.  In SlugOS the
-# kernel image is removed from the root file system to recover the space used -
-# SlugOS is assumed to boot from a separate kernel image in flash (not in the
-# root file system), if this is not the case the following must not be done!
-IMAGE_PREPROCESS_COMMAND += "rm ${IMAGE_ROOTFS}/boot/uImage*;"
+# IMAGE_PREPROCESS_COMMAND is run before making the image.  
+# We use this to do a few things:
+# . remove the uImage, which is in a separate part of the flash already.
+# . adjust the default run level (sysvinit is 5 by default, we like 3)
+# . set a default root password, which is no more secure than a blank one
+#	(since it is documented, in case you were wondering)
+# . make the boot more verbose
+#
+IMAGE_PREPROCESS_COMMAND += "rm ${IMAGE_ROOTFS}/boot/uImage-*;"
+IMAGE_PREPROCESS_COMMAND += "sed -i -es,^id:5:initdefault:,id:3:initdefault:, ${IMAGE_ROOTFS}/etc/inittab;"
+IMAGE_PREPROCESS_COMMAND += "sed -i -es,^root::0,root:BTMzOOAQfESg6:0, ${IMAGE_ROOTFS}/etc/passwd;"
+IMAGE_PREPROCESS_COMMAND += "sed -i -es,^VERBOSE=no,VERBOSE=very, ${IMAGE_ROOTFS}/etc/default/rcS;"
 
 # Always just make a new flash image.
 PACK_IMAGE = 'storcenter_pack_image;'
@@ -76,7 +83,7 @@ OPENPROTIUM_KERNEL = "kernel-module-dummy \
 
 RDEPENDS = " \
 	kernel base-files base-passwd netbase \
-        busybox initscripts-openprotium slugos-init \
+        busybox initscripts-openprotium openprotium-init \
         update-modules sysvinit tinylogin \
 	module-init-tools modutils-initscripts \
         ipkg-collateral ipkg ipkg-link \
@@ -101,11 +108,8 @@ IPKG_INSTALL = "${RDEPENDS}"
 inherit image_ipk
 
 storcenter_pack_image() {
-	ls -ltr ${DEPLOY_DIR_IMAGE}/uImage*
-	pwd
-	echo ${IMAGE_NAME}
 	# find latest kernel
-	KERNEL=`ls -ltr ${DEPLOY_DIR_IMAGE}/uImage* | tail -1 | awk '{print $9}'`
+	KERNEL=`ls -tr ${DEPLOY_DIR_IMAGE}/uImage* | tail -1`
 	if [ -z "$KERNEL" ]; then
 		oefatal "No kernel found in ${DEPLOY_DIR_IMAGE}. Bitbake linux-storcenter to create one."
 		exit 1
