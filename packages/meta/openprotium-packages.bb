@@ -5,7 +5,7 @@
 DESCRIPTION = "Packages that are compatible with the Openprotium on the iomega Storcenter"
 HOMEPAGE = "http://www.openprotium.org"
 LICENSE = "MIT"
-PR = "r1"
+PR = "r2"
 CONFLICTS = "db3"
 PROVIDES += "${OPENPROTIUM_IMAGENAME}-packages"
 
@@ -34,15 +34,28 @@ ALLOW_EMPTY = "1"
 #	wakelan \
 #	wireless-tools \
 #	wpa-supplicant \
+#	bluez-utils-nodbus \
+#	libxml2 \
 #	madwifi-ng \
 #	motion \
+#	ftpd-topfield \
+#	eciadsl \
 #	netpbm \
 #	reiserfsprogs reiser4progs \
+#	libgphoto2 \
+#	python \
 #	mpd \
+#	memtester \
+#	puppy \
+#	samba \
+#	sane-backends \
+#	vsftpd \
+#	zd1211 \
 
-OPENIOM_PACKAGES = "\
+OPENPROTIUM_PACKAGES = "\
 	alsa-lib \
 	alsa-utils \
+	apache2 \
 	audiofile \
 	aumix \
 	autoconf \
@@ -51,7 +64,6 @@ OPENIOM_PACKAGES = "\
 	bind \
 	binutils \
 	bison \
-	bluez-utils-nodbus \
 	bridge-utils \
 	bzip2 \
 	ccxstream \
@@ -68,7 +80,6 @@ OPENIOM_PACKAGES = "\
 	dnsmasq \
 	e2fsprogs \
 	e2fsprogs-libs \
-	eciadsl \
 	expat \
 	ez-ipupdate \
 	fetchmail \
@@ -76,7 +87,7 @@ OPENIOM_PACKAGES = "\
 	findutils \
 	flex \
 	flite \
-	ftpd-topfield \
+	gallery \
 	gawk \
 	gcc \
 	gdbm \
@@ -95,7 +106,6 @@ OPENIOM_PACKAGES = "\
 	less \
 	libao \
 	libdvb \
-	libgphoto2 \
 	libid3tag \
 	liblockfile \
 	libmad \
@@ -107,7 +117,6 @@ OPENIOM_PACKAGES = "\
 	libupnp \
 	libusb \
 	libvorbis \
-	libxml2 \
 	litestream \
 	lrzsz \
 	lsof \
@@ -117,11 +126,11 @@ OPENIOM_PACKAGES = "\
 	mailx \
 	make \
 	mdadm \
-	memtester \
 	mgetty \
 	miau \
 	microcom \
 	minicom \
+	modphp \
 	mt-daapd \
 	mtd-utils \
 	mutt \
@@ -145,15 +154,11 @@ OPENIOM_PACKAGES = "\
 	pkgconfig \
 	ppp \
 	procps \
-	puppy \
 	pvrusb2-mci \
 	pwc \
-	python \
 	quilt \
 	rng-tools \
 	rsync \
-	samba \
-	sane-backends \
 	sed \
 	setpwc \
 	setserial \
@@ -171,10 +176,8 @@ OPENIOM_PACKAGES = "\
 	util-linux \
 	vim \
 	vlan \
-	vsftpd \
 	watchdog \
 	wget \
-	zd1211 \
 	zip \
 	zlib \
 	"
@@ -249,14 +252,14 @@ SLUGOS_OPTIONAL_PACKAGES = "\
 # you can place these in the top level openembedded/conf/distro/openprotium.conf
 # file to fine-tune what's happening
 #
-OPENIOM_EXTRA_PACKAGES ?= ""
+OPENPROTIUM_EXTRA_PACKAGES ?= ""
 
 # The package-index at the end causes regeneration of the Packages.gz and
 # other control files.
 # openprotium-native \
 DEPENDS = "\
 	openprotium-image \
-	${OPENIOM_PACKAGES} \
-	${OPENIOM_EXTRA_PACKAGES} \
+	${OPENPROTIUM_PACKAGES} \
+	${OPENPROTIUM_EXTRA_PACKAGES} \
 	package-index \
 	"
