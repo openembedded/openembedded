@@ -6,7 +6,7 @@
 DESCRIPTION = "Generic SlugOS image"
 HOMEPAGE = "http://www.nslu2-linux.org"
 LICENSE = "MIT"
-PR = "r41"
+PR = "r42"
 
 COMPATIBLE_MACHINE = "nslu2"
 
@@ -136,6 +136,24 @@ nslu2_pack_image() {
 			-o ${DEPLOY_DIR_IMAGE}/${IMAGE_NAME}.flashdisk.img \
 			${NSLU2_SLUGIMAGE_ARGS}
 		rm -rf ${DEPLOY_DIR_IMAGE}/slug
+
+		# Create an image for the DSM-G600 as well
+		install -d ${DEPLOY_DIR_IMAGE}/firmupgrade
+		install -m 0755 ${DEPLOY_DIR_IMAGE}/zImage-dsmg600${ARCH_BYTE_SEX} \
+			${DEPLOY_DIR_IMAGE}/firmupgrade/ip-ramdisk
+		install -m 0644 ${DEPLOY_DIR_IMAGE}/${IMAGE_NAME}.rootfs.jffs2 \
+			${DEPLOY_DIR_IMAGE}/firmupgrade/rootfs.gz
+		touch ${DEPLOY_DIR_IMAGE}/firmupgrade/usr.cramfs
+		chmod 0644 ${DEPLOY_DIR_IMAGE}/firmupgrade/usr.cramfs
+		echo "hwid=1.0.1"      >${DEPLOY_DIR_IMAGE}/firmupgrade/version.msg
+		echo "model=dsm-g600" >>${DEPLOY_DIR_IMAGE}/firmupgrade/version.msg
+		echo "vendor=dlink"   >>${DEPLOY_DIR_IMAGE}/firmupgrade/version.msg
+		echo ""               >>${DEPLOY_DIR_IMAGE}/firmupgrade/version.msg
+		chmod 0744 ${DEPLOY_DIR_IMAGE}/firmupgrade/version.msg
+		tar -c -f ${DEPLOY_DIR_IMAGE}/${IMAGE_NAME}.dsmg600.bin \
+			-C ${DEPLOY_DIR_IMAGE} firmupgrade
+		rm -rf ${DEPLOY_DIR_IMAGE}/firmupgrade
+
 	fi
 }
 
