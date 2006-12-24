@@ -1,8 +1,9 @@
 require busybox.inc
 
-PR = "r9"
+PR = "r10"
 
 SRC_URI += "file://wget-long-options.patch;patch=1 \
+	   file://df_rootfs.patch;patch=1 \
            file://defconfig"
 
 do_configure () {
