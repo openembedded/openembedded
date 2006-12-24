@@ -31,11 +31,3 @@ Removal Date:   2006-12-29
 Maintainer:     None
 Reason:         Conflicting namespace with gstreamer 0.10 at build time
 Proposed by:    Koen Kooi
-
-Package Name:	familiar-unstable.conf
-Removal Date:	2007-01-31
-Maintainer:	None
-Reason:		Familiar has forked and the conf files in OE are no longer
-		maintained. This is causing a support problem for oe devs.
-Proposed by:	Graeme Gregory (XorA)
-
