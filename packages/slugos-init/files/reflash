@@ -17,21 +17,36 @@ case "$(machine)" in
 nslu2)
 	isnslu2=1
 	isdsmg600=
+	isnas100d=
 	imageok=1
+	apexpart="Loader"
 	usrpart=
 	kpart="Kernel"
 	ffspart="Flashdisk";;
+nas100d)
+	isnslu2=
+	isdsmg600=
+	isnas100d=1
+	imageok=1
+	apexpart=
+	usrpart="usr"
+	kpart="kernel"
+	ffspart="filesystem";;
 dsmg600)
 	isnslu2=
 	isdsmg600=1
+	isnas100d=
 	imageok=1
+	apexpart=
 	usrpart="usr"
 	kpart="kernel"
 	ffspart="filesystem";;
 *)
 	isnslu2=
 	isdsmg600=
+	isnas100d=
 	imageok=
+	apexpart=
 	usrpart=
 	kpart="kernel"
 	ffspart="filesystem";;
@@ -67,8 +82,8 @@ do
 		shift;;
 	-i)	shift
 		test -n "$imageok" || {
-			echo "reflash: -i: only supported on the LinkSys NSLU2"     >&2
-			echo " and the D-Link DSM-G600 systems; use -k and -j"      >&2
+			echo "reflash: -i: only supported on the LinkSys NSLU2,"     >&2
+			echo " Iomega NAS 100d and D-Link DSM-G600 systems; use -k and -j" >&2
 			echo " to specify the kernel and root file system instead." >&2
 			exit 1
 		}
@@ -123,7 +138,11 @@ then
 		# works in ash, no guarantees about other shells!
 		while read size base name
 		do
-			if test "$name" = "$kpart"
+			if test "$name" = "$apexpart"
+			then
+				imgapexsize="$size"
+				imgapexoffset="$base"
+			elif test "$name" = "$kpart"
 			then
 				imgksize="$size"
 				imgkoffset="$base"
@@ -180,7 +199,7 @@ EOI
 			echo "reflash: $imgfile: failed to find $ffspart" >&2
 			exit 1
 		}
-	elif test -r "$imgfile" -a -n "$isdsmg600"
+	elif test -r "$imgfile" -a \( -n "$isdsmg600" -o -n "$isnas100d" \)
 	then
 		#
 		# For the DSM-G600, this is really easy - the image is just
@@ -203,7 +222,7 @@ EOI
 		#       to make sure that it matches the native firmware's kernel
 		#       and rootfs that we're now flashing back onto the device.
 
-		echo "reflash: unpacking DSM-G600 image file" >&2
+		echo "reflash: unpacking DSM-G600/NAS-100d image file" >&2
 		tar -x -f "$imgfile" -C /var/tmp || {
 			echo "reflash: unable to unpack image file to be flashed" >&2
 			exit 1
@@ -224,7 +243,6 @@ EOI
 			echo "reflash: Native flash being restored" >&2
 			usrfile="/var/tmp/firmupgrade/usr.cramfs"
 			preserve_config=
-			dsmg600_native_flash=1
 		fi
 
 	else

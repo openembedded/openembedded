@@ -6,7 +6,7 @@
 DESCRIPTION = "Generic SlugOS image"
 HOMEPAGE = "http://www.nslu2-linux.org"
 LICENSE = "MIT"
-PR = "r42"
+PR = "r43"
 
 COMPATIBLE_MACHINE = "nslu2"
 
@@ -111,50 +111,63 @@ python () {
 # LinkSys have made "EraseAll" available, however, (this does overwrite RedBoot)
 # it is a bad idea to produce flash images without a valid RedBoot - that allows
 # an innocent user upgrade attempt to instantly brick the NSLU2.
-PACK_IMAGE += "${@['', 'nslu2_pack_image;'][bb.data.getVar('SLUGOS_FLASH_IMAGE', d, 1) == 'nslu2']}"
+PACK_IMAGE += "${@['', 'slugos_pack_image;'][bb.data.getVar('SLUGOS_FLASH_IMAGE', d, 1) == '1']}"
 PACK_IMAGE_DEPENDS += "${@['', 'slugimage-native nslu2-linksys-firmware apex ixp4xx-npe'][bb.data.getVar('SLUGOS_FLASH_IMAGE', d, 1) == 'nslu2']}"
 
 NSLU2_SLUGIMAGE_ARGS ?= ""
 
-nslu2_pack_image() {
-	if test '${SLUGOS_FLASH_IMAGE}' = nslu2
-	then
-		install -d ${DEPLOY_DIR_IMAGE}/slug
-		install -m 0644 ${STAGING_LIBDIR}/nslu2-binaries/RedBoot \
-				${STAGING_LIBDIR}/nslu2-binaries/Trailer \
-				${STAGING_LIBDIR}/nslu2-binaries/SysConf \
-				${DEPLOY_DIR_IMAGE}/slug/
-		install -m 0644 ${STAGING_LOADER_DIR}/apex.bin ${DEPLOY_DIR_IMAGE}/slug/
-		install -m 0644 ${DEPLOY_DIR_IMAGE}/zImage-nslu2${ARCH_BYTE_SEX} \
-			${DEPLOY_DIR_IMAGE}/slug/vmlinuz
-		install -m 0644 ${DEPLOY_DIR_IMAGE}/${IMAGE_NAME}.rootfs.jffs2 \
-			${DEPLOY_DIR_IMAGE}/slug/flashdisk.jffs2
-		install -m 0644 ${STAGING_FIRMWARE_DIR}/NPE-B ${DEPLOY_DIR_IMAGE}/slug/
-		cd ${DEPLOY_DIR_IMAGE}/slug
-		slugimage -p -b RedBoot -s SysConf -L apex.bin -k vmlinuz \
-			-r Flashdisk:flashdisk.jffs2 -m NPE-B -t Trailer \
-			-o ${DEPLOY_DIR_IMAGE}/${IMAGE_NAME}.flashdisk.img \
-			${NSLU2_SLUGIMAGE_ARGS}
-		rm -rf ${DEPLOY_DIR_IMAGE}/slug
+slugos_pack_image() {
+	install -d ${DEPLOY_DIR_IMAGE}/slug
+	install -m 0644 ${STAGING_LIBDIR}/nslu2-binaries/RedBoot \
+			${STAGING_LIBDIR}/nslu2-binaries/Trailer \
+			${STAGING_LIBDIR}/nslu2-binaries/SysConf \
+			${DEPLOY_DIR_IMAGE}/slug/
+	install -m 0644 ${STAGING_LOADER_DIR}/apex.bin ${DEPLOY_DIR_IMAGE}/slug/
+	install -m 0644 ${DEPLOY_DIR_IMAGE}/zImage-nslu2${ARCH_BYTE_SEX} \
+		${DEPLOY_DIR_IMAGE}/slug/vmlinuz
+	install -m 0644 ${DEPLOY_DIR_IMAGE}/${IMAGE_NAME}.rootfs.jffs2 \
+		${DEPLOY_DIR_IMAGE}/slug/flashdisk.jffs2
+	install -m 0644 ${STAGING_FIRMWARE_DIR}/NPE-B ${DEPLOY_DIR_IMAGE}/slug/
+	cd ${DEPLOY_DIR_IMAGE}/slug
+	slugimage -p -b RedBoot -s SysConf -L apex.bin -k vmlinuz \
+		-r Flashdisk:flashdisk.jffs2 -m NPE-B -t Trailer \
+		-o ${DEPLOY_DIR_IMAGE}/${IMAGE_NAME}-nslu2.bin \
+		${NSLU2_SLUGIMAGE_ARGS}
+	rm -rf ${DEPLOY_DIR_IMAGE}/slug
 
-		# Create an image for the DSM-G600 as well
-		install -d ${DEPLOY_DIR_IMAGE}/firmupgrade
-		install -m 0755 ${DEPLOY_DIR_IMAGE}/zImage-dsmg600${ARCH_BYTE_SEX} \
-			${DEPLOY_DIR_IMAGE}/firmupgrade/ip-ramdisk
-		install -m 0644 ${DEPLOY_DIR_IMAGE}/${IMAGE_NAME}.rootfs.jffs2 \
-			${DEPLOY_DIR_IMAGE}/firmupgrade/rootfs.gz
-		touch ${DEPLOY_DIR_IMAGE}/firmupgrade/usr.cramfs
-		chmod 0644 ${DEPLOY_DIR_IMAGE}/firmupgrade/usr.cramfs
-		echo "hwid=1.0.1"      >${DEPLOY_DIR_IMAGE}/firmupgrade/version.msg
-		echo "model=dsm-g600" >>${DEPLOY_DIR_IMAGE}/firmupgrade/version.msg
-		echo "vendor=dlink"   >>${DEPLOY_DIR_IMAGE}/firmupgrade/version.msg
-		echo ""               >>${DEPLOY_DIR_IMAGE}/firmupgrade/version.msg
-		chmod 0744 ${DEPLOY_DIR_IMAGE}/firmupgrade/version.msg
-		tar -c -f ${DEPLOY_DIR_IMAGE}/${IMAGE_NAME}.dsmg600.bin \
-			-C ${DEPLOY_DIR_IMAGE} firmupgrade
-		rm -rf ${DEPLOY_DIR_IMAGE}/firmupgrade
+	# Create an image for the DSM-G600 as well
+	install -d ${DEPLOY_DIR_IMAGE}/firmupgrade
+	install -m 0755 ${DEPLOY_DIR_IMAGE}/zImage-dsmg600${ARCH_BYTE_SEX} \
+		${DEPLOY_DIR_IMAGE}/firmupgrade/ip-ramdisk
+	install -m 0644 ${DEPLOY_DIR_IMAGE}/${IMAGE_NAME}.rootfs.jffs2 \
+		${DEPLOY_DIR_IMAGE}/firmupgrade/rootfs.gz
+	touch ${DEPLOY_DIR_IMAGE}/firmupgrade/usr.cramfs
+	chmod 0644 ${DEPLOY_DIR_IMAGE}/firmupgrade/usr.cramfs
+	echo "hwid=1.0.1"      >${DEPLOY_DIR_IMAGE}/firmupgrade/version.msg
+	echo "model=dsm-g600" >>${DEPLOY_DIR_IMAGE}/firmupgrade/version.msg
+	echo "vendor=dlink"   >>${DEPLOY_DIR_IMAGE}/firmupgrade/version.msg
+	echo ""               >>${DEPLOY_DIR_IMAGE}/firmupgrade/version.msg
+	chmod 0744 ${DEPLOY_DIR_IMAGE}/firmupgrade/version.msg
+	tar -c -f ${DEPLOY_DIR_IMAGE}/${IMAGE_NAME}-dsmg600.bin \
+		-C ${DEPLOY_DIR_IMAGE} firmupgrade
+	rm -rf ${DEPLOY_DIR_IMAGE}/firmupgrade
 
-	fi
+	# Create an image for the NAS 100d as well
+	install -d ${DEPLOY_DIR_IMAGE}/firmupgrade
+	install -m 0755 ${DEPLOY_DIR_IMAGE}/zImage-nas100d${ARCH_BYTE_SEX} \
+		${DEPLOY_DIR_IMAGE}/firmupgrade/ip-ramdisk
+	install -m 0644 ${DEPLOY_DIR_IMAGE}/${IMAGE_NAME}.rootfs.jffs2 \
+		${DEPLOY_DIR_IMAGE}/firmupgrade/rootfs.gz
+	touch ${DEPLOY_DIR_IMAGE}/firmupgrade/usr.cramfs
+	chmod 0644 ${DEPLOY_DIR_IMAGE}/firmupgrade/usr.cramfs
+	echo "hwid=1.0.1"      >${DEPLOY_DIR_IMAGE}/firmupgrade/version.msg
+	echo "model=koala"    >>${DEPLOY_DIR_IMAGE}/firmupgrade/version.msg
+	echo "vendor=iomega"  >>${DEPLOY_DIR_IMAGE}/firmupgrade/version.msg
+	echo ""               >>${DEPLOY_DIR_IMAGE}/firmupgrade/version.msg
+	chmod 0744 ${DEPLOY_DIR_IMAGE}/firmupgrade/version.msg
+	tar -c -f ${DEPLOY_DIR_IMAGE}/${IMAGE_NAME}-nas100d.bin \
+		-C ${DEPLOY_DIR_IMAGE} firmupgrade
+	rm -rf ${DEPLOY_DIR_IMAGE}/firmupgrade
 }
 
 # upslug2 (in tmp/work/upslug2-native-*) is the program to write the NSLU2 flash
