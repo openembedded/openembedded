@@ -3,7 +3,7 @@ PRIORITY = "optional"
 LICENSE = "GPL"
 DEPENDS = "mtd-utils"
 
-SRC_URI = "${SOURCEFORGE_MIRROR}/${PN}/u-boot-${PV}.tar.bz2 \
+SRC_URI = "${SOURCEFORGE_MIRROR}/u-boot/u-boot-${PV}.tar.bz2 \
 	 file://fw_env.h.patch;patch=1 \
 	 file://fw_env.c.patch;patch=1 \
 	 file://tools-Makefile.patch;patch=1 \
