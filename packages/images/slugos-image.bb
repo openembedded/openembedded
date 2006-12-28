@@ -112,7 +112,7 @@ python () {
 # it is a bad idea to produce flash images without a valid RedBoot - that allows
 # an innocent user upgrade attempt to instantly brick the NSLU2.
 PACK_IMAGE += "${@['', 'slugos_pack_image;'][bb.data.getVar('SLUGOS_FLASH_IMAGE', d, 1) == '1']}"
-PACK_IMAGE_DEPENDS += "${@['', 'slugimage-native nslu2-linksys-firmware apex ixp4xx-npe'][bb.data.getVar('SLUGOS_FLASH_IMAGE', d, 1) == 'nslu2']}"
+PACK_IMAGE_DEPENDS += "${@['', 'slugimage-native nslu2-linksys-firmware apex ixp4xx-npe'][bb.data.getVar('SLUGOS_FLASH_IMAGE', d, 1) == '1']}"
 
 NSLU2_SLUGIMAGE_ARGS ?= ""
 
