@@ -74,7 +74,7 @@ python debian_package_name_hook () {
 			if soname_result:
 				(pkgname, devname) = soname_result
 				for pkg in packages.split():
-					if (bb.data.getVar('PKG_' + pkg, d)):
+					if (bb.data.getVar('PKG_' + pkg, d) or bb.data.getVar('DEBIAN_NOAUTONAME_' + pkg, d)):
 						continue
 					if pkg == orig_pkg:
 						newpkg = pkgname
@@ -89,5 +89,5 @@ python debian_package_name_hook () {
 
 EXPORT_FUNCTIONS package_name_hook
 
-DEBIAN_NAMES = 1
+DEBIAN_NAMES = "1"
 
