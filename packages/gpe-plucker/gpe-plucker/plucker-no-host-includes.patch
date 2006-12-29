@@ -1,0 +1,10 @@
+--- /tmp/Makefile	2006-05-20 14:04:09.557951376 +0200
++++ gpe-plucker-0.4/Makefile	2006-05-20 14:04:35.687979008 +0200
+@@ -26,7 +26,6 @@
+ PACKAGE_LDFLAGS += -L../libgpewidget
+ BUILD = ../build
+ else
+-PACKAGE_CFLAGS += -I/usr/include/gpe
+ BUILD = build
+ endif
+ PACKAGE_LDFLAGS += -lgpewidget $(GTKLDFLAGS) -Lunpluck/ -lunpluck -lz

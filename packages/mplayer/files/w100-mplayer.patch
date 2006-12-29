@@ -1,6 +1,8 @@
---- mplayer_20060519/mplayer.c.orig	2006-05-30 12:31:01.000000000 +0100
-+++ mplayer_20060519/mplayer.c	2006-05-30 12:33:41.000000000 +0100
-@@ -628,6 +628,18 @@
+Index: MPlayer-1.0rc1/mplayer.c
+===================================================================
+--- MPlayer-1.0rc1.orig/mplayer.c
++++ MPlayer-1.0rc1/mplayer.c
+@@ -807,6 +807,17 @@ static void exit_sighandler(int x){
    exit_player(NULL);
  }
  
@@ -15,11 +17,10 @@
 +  }
 +}
 +
-+
- //extern void write_avi_header_1(FILE *f,int fcc,float fps,int width,int height);
- 
  extern void mp_input_register_options(m_config_t* cfg);
-@@ -2732,6 +2744,9 @@
+ 
+ #include "mixer.h"
+@@ -3216,6 +3227,9 @@ current_module = NULL;
  #endif
  #endif
  

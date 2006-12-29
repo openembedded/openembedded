@@ -1,0 +1,22 @@
+Index: MPlayer-1.0rc1/Makefile
+===================================================================
+--- MPlayer-1.0rc1.orig/Makefile
++++ MPlayer-1.0rc1/Makefile
+@@ -416,7 +416,7 @@ ifeq ($(VIDIX),yes)
+ 	$(MAKE) -C vidix install
+ endif
+ 	$(INSTALL) -d $(BINDIR)
+-	$(INSTALL) -m 755 $(INSTALLSTRIP) $(PRG) $(BINDIR)/$(PRG)
++	$(INSTALL) -m 755 $(PRG) $(BINDIR)/$(PRG)
+ ifeq ($(GUI),yes)
+ 	-ln -sf $(PRG) $(BINDIR)/gmplayer
+ endif
+@@ -430,7 +430,7 @@ endif
+ 		fi ; \
+ 	done
+ ifeq ($(MENCODER),yes)
+-	$(INSTALL) -m 755 $(INSTALLSTRIP) $(PRG_MENCODER) $(BINDIR)/$(PRG_MENCODER)
++	$(INSTALL) -m 755 $(PRG_MENCODER) $(BINDIR)/$(PRG_MENCODER)
+ 	for i in $(MAN_LANG); do \
+ 		if test "$$i" = en ; then \
+ 			cd $(MANDIR)/man1 && ln -sf mplayer.1 mencoder.1 ; \

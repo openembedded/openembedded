@@ -1,6 +1,27 @@
+def tinder_http_post(server, selector, content_type, body):
+    import httplib
+    # now post it
+    for i in range(0,5):
+       try:
+           h = httplib.HTTP(server)
+           h.putrequest('POST', selector)
+           h.putheader('content-type', content_type)
+           h.putheader('content-length', str(len(body)))
+           h.endheaders()
+           h.send(body)
+           errcode, errmsg, headers = h.getreply()
+           #print errcode, errmsg, headers
+           return (errcode,errmsg, headers, h.file)
+       except:
+           print "Error sending the report!"
+           # try again
+           pass
+
+    # return some garbage
+    return (-1, "unknown", "unknown", None)
+
 def tinder_form_data(bound, dict, log):
     output = []
-  #br
     # for each key in the dictionary
     for name in dict:
         output.append( "--" + bound )
@@ -29,7 +50,7 @@ def tinder_format_http_post(d,status,log):
     for the tinderbox to be happy.
     """
 
-    from bb import data
+    from bb import data, build
     import os,random
 
     # the variables we will need to send on this form post
@@ -39,7 +60,18 @@ def tinder_format_http_post(d,status,log):
         "os"           : os.uname()[0],
         "os_version"   : os.uname()[2],
         "compiler"     : "gcc",
-        "clobber"      : data.getVar('TINDER_CLOBBER', d, True)
+        "clobber"      : data.getVar('TINDER_CLOBBER', d, True),
+        "srcdate"      : data.getVar('SRCDATE', d, True),
+        "PN"           : data.getVar('PN', d, True),
+        "PV"           : data.getVar('PV', d, True),
+        "PR"           : data.getVar('PR', d, True),
+        "FILE"         : data.getVar('FILE', d, True) or "N/A",
+        "TARGETARCH"   : data.getVar('TARGET_ARCH', d, True),
+        "TARGETFPU"    : data.getVar('TARGET_FPU', d, True) or "Unknown",
+        "TARGETOS"     : data.getVar('TARGET_OS', d, True) or "Unknown",
+        "MACHINE"      : data.getVar('MACHINE', d, True) or "Unknown",
+        "DISTRO"       : data.getVar('DISTRO', d, True) or "Unknown",
+        "zecke-rocks"  : "sure",
     }
 
     # optionally add the status
@@ -72,7 +104,6 @@ def tinder_build_start(d):
     on the server.
     """
     from bb import data
-    import httplib
 
     # get the body and type
     content_type, body = tinder_format_http_post(d,None,None)
@@ -84,15 +115,9 @@ def tinder_build_start(d):
     #print "selector %s and url %s" % (selector, url)
 
     # now post it
-    h = httplib.HTTP(server)
-    h.putrequest('POST', selector)
-    h.putheader('content-type', content_type)
-    h.putheader('content-length', str(len(body)))
-    h.endheaders()
-    h.send(body)
-    errcode, errmsg, headers = h.getreply()
+    errcode, errmsg, headers, h_file = tinder_http_post(server,selector,content_type, body)
     #print errcode, errmsg, headers
-    report = h.file.read()
+    report = h_file.read()
 
     # now let us find the machine id that was assigned to us
     search = "<machine id='"
@@ -108,31 +133,27 @@ def tinder_build_start(d):
     f.write(report)
 
 
-def tinder_send_http(d, status, log):
+def tinder_send_http(d, status, _log):
     """
     Send this log as build status
     """
     from bb import data
-    import httplib
 
 
     # get the body and type
-    content_type, body = tinder_format_http_post(d,status,log)
     server = data.getVar('TINDER_HOST', d, True )
     url    = data.getVar('TINDER_URL',  d, True )
 
     selector = url + "/xml/build_status.pl"
 
-    # now post it
-    h = httplib.HTTP(server)
-    h.putrequest('POST', selector)
-    h.putheader('content-type', content_type)
-    h.putheader('content-length', str(len(body)))
-    h.endheaders()
-    h.send(body)
-    errcode, errmsg, headers = h.getreply()
-    #print errcode, errmsg, headers
-    #print h.file.read()
+    # now post it - in chunks of 10.000 charachters
+    new_log = _log
+    while len(new_log) > 0:
+        content_type, body = tinder_format_http_post(d,status,new_log[0:18000])
+        errcode, errmsg, headers, h_file = tinder_http_post(server,selector,content_type, body)
+        #print errcode, errmsg, headers
+        #print h.file.read()
+        new_log = new_log[18000:]
 
 
 def tinder_print_info(d):
@@ -230,8 +251,8 @@ def tinder_tinder_start(d, event):
     output.append( "---> TINDERBOX BUILDING '%(packages)s'" )
     output.append( "<--- TINDERBOX STARTING BUILD NOW" )
 
-    output.append( "" ) 
- 
+    output.append( "" )
+
     return "\n".join(output) % vars()
 
 def tinder_do_tinder_report(event):
@@ -245,16 +266,23 @@ def tinder_do_tinder_report(event):
     information immediately. The caching/queuing needs to be
     implemented. Also sending more or less information is not
     implemented yet.
+
+    We have two temporary files stored in the TMP directory. One file
+    contains the assigned machine id for the tinderclient. This id gets
+    assigned when we connect the box and start the build process the second
+    file is used to workaround an EventHandler limitation. If BitBake is ran
+    with the continue option we want the Build to fail even if we get the
+    BuildCompleted Event. In this case we have to look up the status and
+    send it instead of 100/success.
     """
     from bb.event import getName
-    from bb import data, mkdirhier
+    from bb import data, mkdirhier, build
     import os, glob
 
     # variables
     name = getName(event)
     log  = ""
     status = 1
-    #print asd 
     # Check what we need to do Build* shows we start or are done
     if name == "BuildStarted":
         tinder_build_start(event.data)
@@ -262,9 +290,18 @@ def tinder_do_tinder_report(event):
 
         try:
             # truncate the tinder log file
-            f = file(data.getVar('TINDER_LOG', event.data, True), 'rw+')
-            f.truncate(0)
+            f = file(data.getVar('TINDER_LOG', event.data, True), 'w')
+            f.write("")
             f.close()
+        except:
+            pass
+
+        try:
+            # write a status to the file. This is needed for the -k option
+            # of BitBake
+            g = file(data.getVar('TMPDIR', event.data, True)+"/tinder-status", 'w')
+            g.write("")
+            g.close()
         except IOError:
             pass
 
@@ -285,15 +322,27 @@ def tinder_do_tinder_report(event):
     elif name == "TaskFailed":
         log += "<--- TINDERBOX Task %s failed (FAILURE)\n" % event.task
     elif name == "PkgStarted":
-        log += "---> TINDERBOX Package %s started\n" % data.getVar('P', event.data, True)
+        log += "---> TINDERBOX Package %s started\n" % data.getVar('PF', event.data, True)
     elif name == "PkgSucceeded":
-        log += "<--- TINDERBOX Package %s done (SUCCESS)\n" % data.getVar('P', event.data, True)
+        log += "<--- TINDERBOX Package %s done (SUCCESS)\n" % data.getVar('PF', event.data, True)
     elif name == "PkgFailed":
-        log += "<--- TINDERBOX Package %s failed (FAILURE)\n" % data.getVar('P', event.data, True)
+        if not data.getVar('TINDER_AUTOBUILD', event.data, True) == "0":
+            build.exec_task('do_clean', event.data)
+        log += "<--- TINDERBOX Package %s failed (FAILURE)\n" % data.getVar('PF', event.data, True)
         status = 200
+        # remember the failure for the -k case
+        h = file(data.getVar('TMPDIR', event.data, True)+"/tinder-status", 'w')
+        h.write("200")
     elif name == "BuildCompleted":
         log += "Build Completed\n"
         status = 100
+        # Check if we have a old status...
+        try:
+            h = file(data.getVar('TMPDIR',event.data,True)+'/tinder-status', 'r')
+            status = int(h.read())
+        except:
+            pass
+
     elif name == "MultipleProviders":
         log += "---> TINDERBOX Multiple Providers\n"
         log += "multiple providers are available (%s);\n" % ", ".join(event.getCandidates())
@@ -304,6 +353,9 @@ def tinder_do_tinder_report(event):
         log += "Error: No Provider for: %s\n" % event.getItem()
         log += "Error:Was Runtime: %d\n" % event.isRuntime()
         status = 200
+        # remember the failure for the -k case
+        h = file(data.getVar('TMPDIR', event.data, True)+"/tinder-status", 'w')
+        h.write("200")
 
     # now post the log
     if len(log) == 0:

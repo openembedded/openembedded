@@ -1,15 +1,15 @@
 SECTION = "x11/network"
-PR = "r3"
+PR = "r4"
 
 PACKAGES = "prismstumbler prismstumbler-frontend prismstumbler-doc"
 DESCRIPTION = "Prismstumbler wireless LAN scanner"
 LICENSE = "GPL"
-MAINTAINER = "Florian Boor <florian.boor@kernelconcepts.de>"
 DEPENDS = "libpcap gtk+ wireless-tools sqlite zlib"
 RDEPENDS = "wireless-tools"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/prismstumbler/${PN}-${PV}.tar.bz2 \
 	file://bogoconf.patch;patch=1 \
+        file://fix-includes.patch;patch=1 \
         file://libz.patch;patch=1;pnum=0"
 
 inherit autotools pkgconfig
