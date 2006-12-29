@@ -4,7 +4,7 @@ AUTHOR = "Russell King w/ plugins by Chris Larson et. al."
 SECTION = "base"
 LICENSE = "LGPL"
 
-PR = "r5"
+PR = "r6"
 
 SRC_URI = "http://download.berlios.de/tslib/tslib-1.0.tar.bz2 \
            file://ts.conf \
@@ -33,7 +33,7 @@ do_install_append() {
 	install -d ${D}${sysconfdir}/profile.d/
 	install -m 0755 ${WORKDIR}/tslib.sh ${D}${sysconfdir}/profile.d/
 	case ${MACHINE} in
-	a780 | e680 | h3600 | h3900 | h5000 | h1940 | h6300 | h2200 | ipaq-pxa270 | hx4700 | hx2000 | blueangel | h4000)
+	a780 | e680 )
 		install -d ${D}${datadir}/tslib
 		install -m 0644 ${WORKDIR}/ts.conf-h3600-2.4 ${D}${datadir}/tslib/
 		;;
@@ -59,9 +59,7 @@ SRC_URI_OVERRIDES_PACKAGE_ARCH = "0"
 
 # People should consider using udev's /dev/input/touchscreen0 symlink 
 # instead of detect-stylus
-RDEPENDS_tslib-conf_h3600 = "detect-stylus"
-RDEPENDS_tslib-conf_h3900 = "detect-stylus"
-RDEPENDS_tslib-conf_blueangel = "detect-stylus"
+#RDEPENDS_tslib-conf_weird-machine = "detect-stylus"
 RPROVIDES_tslib-conf = "libts-0.0-conf"
 
 PACKAGE_ARCH_tslib-conf = "${MACHINE_ARCH}"
