@@ -1,5 +1,5 @@
 DESCRIPTION = "Task packages for GPE Palmtop Environment"
-PR = "r3"
+PR = "r4"
 LICENSE = "MIT"
 ALLOW_EMPTY = "1"
 
@@ -106,7 +106,6 @@ RDEPENDS_gpe-task-connectivity := "\
 
 RDEPENDS_gpe-task-apps-extra := "\
     gpe-filemanager \
-    gpe-nmf \
     gpe-soundbite \
     mbmerlin"
 
