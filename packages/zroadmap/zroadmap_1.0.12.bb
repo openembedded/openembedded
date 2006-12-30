@@ -46,7 +46,7 @@ do_install() {
 	install -m 0755 qtroadgps ${D}${palmtopdir}/bin/roadgps
 	install -m 0644 ../roadmap.png ${D}${palmtopdir}/pics/zroadmap.png
 	install -m 0644 ${WORKDIR}/zroadgps.png ${D}${palmtopdir}/pics/zroadgps.png
-        install -m 0644 ipkg/*.desktop ${D}${palmtopdir}/apps/
+        install -m 0644 ipkg/*.desktop ${D}${palmtopdir}/apps/Applications/
 	install -d ${D}${palmtopdir}/share/roadmap/
         install -m 0644 ../sprites ../schema ../preferences ${D}${palmtopdir}/share/roadmap/
 	install -m 0644 ${WORKDIR}/usdir.rdm ${D}${palmtopdir}/share/roadmap/
