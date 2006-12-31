@@ -4,13 +4,11 @@ AUTHOR = "Russell King w/ plugins by Chris Larson et. al."
 SECTION = "base"
 LICENSE = "LGPL"
 
-PR = "r6"
+PR = "r7"
 
 SRC_URI = "http://download.berlios.de/tslib/tslib-1.0.tar.bz2 \
            file://ts.conf \
-           file://ts.conf-h3600-2.4 \
            file://ts.conf-simpad-2.4 \
-           file://ts.conf-corgi-2.4 \
            file://ts.conf-collie-2.4 \
            file://tslib.sh"
 SRC_URI_append_mnci += " file://devfs.patch;patch=1"
@@ -33,19 +31,10 @@ do_install_append() {
 	install -d ${D}${sysconfdir}/profile.d/
 	install -m 0755 ${WORKDIR}/tslib.sh ${D}${sysconfdir}/profile.d/
 	case ${MACHINE} in
-	a780 | e680 )
-		install -d ${D}${datadir}/tslib
-		install -m 0644 ${WORKDIR}/ts.conf-h3600-2.4 ${D}${datadir}/tslib/
-		;;
-	c7x0 | spitz | akita | tosa )
-		install -d ${D}${datadir}/tslib
-		install -m 0644 ${WORKDIR}/ts.conf-corgi-2.4 ${D}${datadir}/tslib/
-		;;
-	collie | poodle )
+	collie )
 		install -d ${D}${datadir}/tslib
 		install -m 0644 ${WORKDIR}/ts.conf-collie-2.4 ${D}${datadir}/tslib/
 		;;
-
 	simpad )
 		install -d ${D}${datadir}/tslib
 		install -m 0644 ${WORKDIR}/ts.conf-simpad-2.4 ${D}${datadir}/tslib/
@@ -62,8 +51,19 @@ SRC_URI_OVERRIDES_PACKAGE_ARCH = "0"
 #RDEPENDS_tslib-conf_weird-machine = "detect-stylus"
 RPROVIDES_tslib-conf = "libts-0.0-conf"
 
-PACKAGE_ARCH_tslib-conf = "${MACHINE_ARCH}"
+# Machines with machine specific patches
 PACKAGE_ARCH_mnci = "${MACHINE_ARCH}"
+# Machines with machine specific config files (tslib.sh)
+PACKAGE_ARCH_tslib-conf_a780 = "${MACHINE_ARCH}"
+PACKAGE_ARCH_tslib-conf_collie = "${MACHINE_ARCH}"
+PACKAGE_ARCH_tslib-conf_e680 = "${MACHINE_ARCH}"
+PACKAGE_ARCH_tslib-conf_jornada56x = "${MACHINE_ARCH}"
+PACKAGE_ARCH_tslib-conf_jornada6xx = "${MACHINE_ARCH}"
+PACKAGE_ARCH_tslib-conf_jornada7xx = "${MACHINE_ARCH}"
+PACKAGE_ARCH_tslib-conf_netbook-pro = "${MACHINE_ARCH}"
+PACKAGE_ARCH_tslib-conf_omap1610h2 = "${MACHINE_ARCH}"
+PACKAGE_ARCH_tslib-conf_omap5912osk = "${MACHINE_ARCH}"
+PACKAGE_ARCH_tslib-conf_simpad = "${MACHINE_ARCH}"
 
 PACKAGES =+ "tslib-conf libts-dev tslib-tests tslib-calibrate"
 DEBIAN_NOAUTONAME_tslib-conf = "1"
