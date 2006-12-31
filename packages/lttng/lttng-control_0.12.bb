@@ -12,4 +12,4 @@ inherit autotools
 
 export KERNELDIR="${STAGING_KERNEL_DIR}"
 
-FILES_${PN} += "${datadir}/ltt-control/facilities/*"	    
+FILES_${PN} += "${datadir}/ltt-control/facilities/*"

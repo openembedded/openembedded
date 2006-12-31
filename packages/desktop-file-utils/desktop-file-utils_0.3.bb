@@ -7,4 +7,4 @@ DEPENDS = "popt glib-2.0"
 SRC_URI = "http://freedesktop.org/Software/desktop-file-utils/releases/desktop-file-utils-${PV}.tar.gz \
 	   file://m4.patch;patch=1"
 
-inherit autotools 
+inherit autotools

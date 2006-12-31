@@ -10,4 +10,4 @@ S = "${WORKDIR}/hildon-navigator-0.9.6"
 
 inherit autotools pkgconfig
 
-#FILES_${PN} += " ${libdir}/outo/*.so" 
+#FILES_${PN} += " ${libdir}/outo/*.so"

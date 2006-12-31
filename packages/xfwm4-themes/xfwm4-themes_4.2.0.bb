@@ -7,7 +7,7 @@ SECTION = "x11/wm"
 
 inherit xfce
 
-# No ${PN} for this one 
+# No ${PN} for this one
 PACKAGES=""
 
 PACKAGES_DYNAMIC = "xfwm4-theme-*"

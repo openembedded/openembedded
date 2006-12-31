@@ -32,13 +32,13 @@ do_install() {
 	for dir in bin include lib share ; do
 		cp -pPR ${WORKDIR}/${PKG_BASENAME}/usr/$dir ${D}/usr/
 	done
-	
+
 	#X11R7.0 style...
 	install -d ${D}/usr/lib/xorg/
 	cp ${WORKDIR}/${PKG_BASENAME}/usr/X11R6/lib/lib* ${D}/usr/lib/
 	cp -pPR ${WORKDIR}/${PKG_BASENAME}/usr/X11R6/lib/modules ${D}/usr/lib/xorg/
 	ln -s libglx.so.1.0.8756 ${D}/usr/lib/xorg/modules/extensions/libglx.so
-	
+
 }
 
 do_stage() {

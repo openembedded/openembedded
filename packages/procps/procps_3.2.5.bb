@@ -15,7 +15,7 @@ SRC_URI = "http://procps.sourceforge.net/procps-${PV}.tar.gz \
 
 
 
-inherit autotools 
+inherit autotools
 FILES = "${bindir}/top.${PN} ${base_bindir}/ps.${PN} ${bindir}/uptime.${PN} ${base_bindir}/kill.${PN} \
 	 ${bindir}/free.${PN} ${bindir}/w ${bindir}/watch ${bindir}/pgrep ${bindir}/pmap ${bindir}/pwdx \
 	 ${bindir}/snice ${bindir}/vmstat ${bindir}/slabtop ${bindir}/pkill ${bindir}/skill ${bindir}/tload \
@@ -35,7 +35,7 @@ do_install_append () {
 	mv ${D}${base_bindir}/ps ${D}${base_bindir}/ps.${PN}
 	mv ${D}${bindir}/free ${D}${bindir}/free.${PN}
 	mv ${D}${base_sbindir}/sysctl ${D}${base_sbindir}/sysctl.${PN}
-}	
+}
 
 pkg_postinst() {
 	update-alternatives --install ${bindir}/top top top.${PN} 90

@@ -1,5 +1,5 @@
 DESCRIPTION = "teTeX is a complete (pdf)(La)TeX distribution for UNIX compatible systems"
-HOMEPAGE = "http://www.tug.org/tetex" 
+HOMEPAGE = "http://www.tug.org/tetex"
 LICENSE = "GPL"
 SECTION = "console/utils"
 DEPENDS = "tetex-native flex gd ncurses libpng t1lib virtual/libx11 libxau libxext libxt zlib"

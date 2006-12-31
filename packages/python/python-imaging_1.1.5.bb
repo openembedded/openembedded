@@ -26,7 +26,7 @@ do_install() {
 
     export STAGING_LIBDIR=${STAGING_LIBDIR}
     export STAGING_INCDIR=${STAGING_INCDIR}
-    
+
     distutils_do_install
 
     install -d ${D}${datadir}/doc/${PN}/html/

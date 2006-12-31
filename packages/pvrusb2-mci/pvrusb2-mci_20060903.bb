@@ -34,7 +34,7 @@ EXTRA_OEMAKE = "'V=1' 'CFLAGS=${CFLAGS}' \
 export TARGET_LDFLAGS = "-L${STAGING_DIR}/${TARGET_SYS}/lib \
                          -Wl,-rpath-link,${STAGING_DIR}/${TARGET_SYS}/lib"
 
-do_install() {   
+do_install() {
         install -d ${D}${base_libdir}/modules/${KERNEL_VERSION}/kernel/drivers/usb/media
         install -m 0644 *${KERNEL_OBJECT_SUFFIX} ${D}${base_libdir}/modules/${KERNEL_VERSION}/kernel/drivers/usb/media
 	mkdir -p ${D}/etc/hotplug.d/firmware

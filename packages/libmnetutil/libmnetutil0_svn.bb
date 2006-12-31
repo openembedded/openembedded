@@ -15,7 +15,7 @@ S="${WORKDIR}/libmnetutil"
 
 PACKAGES = "${PN}"
 
-FILES_${PN} = " ${libdir}/libmnetutil.so.0 ${libdir}/libmnetutil.so.0.0.0 " 
+FILES_${PN} = " ${libdir}/libmnetutil.so.0 ${libdir}/libmnetutil.so.0.0.0 "
 
 do_stage() {
 	oe_libinstall -a -so libmnetutil ${STAGING_LIBDIR}

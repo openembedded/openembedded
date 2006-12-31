@@ -7,7 +7,7 @@ SRC_URI = "http://poppler.freedesktop.org/${PN}-${PV}.tar.gz"
 
 inherit autotools pkgconfig
 
-EXTRA_OECONF = "--enable-xpdf-headers  --disable-gtk-test --disable-poppler-qt"  
+EXTRA_OECONF = "--enable-xpdf-headers  --disable-gtk-test --disable-poppler-qt"
 
 do_stage() {
 	autotools_stage_all

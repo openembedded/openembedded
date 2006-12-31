@@ -37,7 +37,7 @@ EXTRA_OECONF="-with-zlib-path=${STAGING_DIR}/${HOST_SYS} \
 	--without-v4l --without-arts --without-sdl \
 	--without-xv  --without-xxmc --without-xvmc \
 	--with-x --x-includes=${STAGING_INCDIR}/X11 --x-libraries=${STAGING_LIBDIR}"
-			      
+
 do_compile() {
 	oe_runmake LIBTOOL=${S}/${TARGET_SYS}-libtool
 }

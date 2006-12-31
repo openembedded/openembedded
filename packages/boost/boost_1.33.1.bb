@@ -93,7 +93,7 @@ FILES_${PN}-dev = "${includedir} ${libdir}/libboost_*.so ${libdir}/libboost_*.a"
 # it.  The problem is that the user.hpp configuration file must receive a
 # pre-processor macro defined as the appropriate string - complete with "'s
 # around it.  (<> is a possibility here but the danger to that is that the
-# failure case interprets the < and > as shell redirections, creating 
+# failure case interprets the < and > as shell redirections, creating
 # random files in the source tree.)
 #
 #bjam: '-DBOOST_PLATFORM_CONFIG=\"config\"'

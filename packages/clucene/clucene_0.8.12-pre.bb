@@ -7,7 +7,7 @@ SRC_URI = "cvs://anonymous@clucene.cvs.sourceforge.net/cvsroot/clucene;module=. 
 	   file://compile-fix.patch;patch=1"
 S = "${WORKDIR}"
 
-inherit autotools 
+inherit autotools
 
 do_stage() {
 	oe_libinstall -C src libclucene ${STAGING_LIBDIR}

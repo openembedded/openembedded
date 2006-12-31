@@ -8,7 +8,7 @@ LICENSE = "BSD"
 SRC_URI = "${SOURCEFORGE_MIRROR}/openjade/openjade-${PV}.tar.gz \
 	   file://configure.patch;patch=1"
 
-inherit autotools 
+inherit autotools
 
 EXTRA_OECONF = "--enable-spincludedir=${STAGING_INCDIR}/OpenSP \
                 --enable-splibdir=${STAGING_LIBDIR}"

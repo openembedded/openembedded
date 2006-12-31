@@ -170,7 +170,7 @@ RDEPENDS_task-opie-extra-apps = "opie-calculator opie-checkbook opie-mail opie-e
                         opie-rdesktop opie-wellenreiter opie-irc \
                         opie-mediaplayer2 \
                         qpdf2"
-# konqueror-embedded 
+# konqueror-embedded
 
 RDEPENDS_task-opie-extra-games = "opie-parashoot opie-mindbreaker opie-fifteen opie-tictac \
                          opie-tetrix"

@@ -4,7 +4,7 @@ HOMEPAGE	= "http://www.hpl.hp.com/personal/Hans_Boehm/gc/"
 
 DEPENDS		= "sed-native"
 SRC_URI 	= "http://www.hpl.hp.com/personal/Hans_Boehm/gc/gc_source/gc6.7.tar.gz"
-S 		= "${WORKDIR}/gc6.7" 
+S 		= "${WORKDIR}/gc6.7"
 FILES_${PN}-doc += "/usr/share/gc/"
 
 inherit autotools

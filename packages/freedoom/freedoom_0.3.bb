@@ -12,17 +12,17 @@ PR = "r1"
 
 FILES_${PN} = "/usr/share/games/doom/*"
 FILES_${PN}-doc = "/usr/share/doc/freedoom/*"
-			       
-do_install() {		
+
+do_install() {
 	install -d ${D}/usr/share/games/doom
 	install -d ${D}/usr/share/doc/freedoom
-	
+
 	install -m 0644 ${WORKDIR}/freedoom-iwad-${PV}/doom2.wad ${D}/usr/share/games/doom/
 	install -m 0644 ${WORKDIR}/freedoom-iwad-${PV}/* ${D}/usr/share/doc/freedoom
 	rm ${D}/usr/share/doc/freedoom/*.wad
-	
-	
-	
-	
+
+
+
+
 }
 

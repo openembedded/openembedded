@@ -7,7 +7,7 @@ SRC_URI = "http://lisa-home.sourceforge.net/src/lisa-${PV}.tar.bz2 \
 	   file://configure.patch;patch=1 \
 	   file://head-n.patch;patch=1"
 LICENSE = "GPL"
-inherit autotools 
+inherit autotools
 
 do_configure_prepend () {
 	set -e

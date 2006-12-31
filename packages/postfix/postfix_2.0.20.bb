@@ -71,7 +71,7 @@ pkg_postinst () {
 }
 
 pkg_postrm () {
-	update-alternatives --remove sendmail ${sbindir}/sendmail 
+	update-alternatives --remove sendmail ${sbindir}/sendmail
 }
 
 # Exclude .debug directories from the main package

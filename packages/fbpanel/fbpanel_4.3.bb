@@ -23,7 +23,7 @@ do_install () {
 	install -m 0755 fbpanel ${D}${bindir}
 	install -d ${D}${datadir}/fbpanel/
 	install -d ${D}${datadir}/fbpanel/plugins
-	install -m 644 plugins/*.so ${D}${datadir}/fbpanel/plugins 
+	install -m 644 plugins/*.so ${D}${datadir}/fbpanel/plugins
 	install -m 644 systray/tray.so ${D}${datadir}/fbpanel/plugins
 	install -m 644 config/default ${D}${datadir}/fbpanel/default
 	install -d ${D}${datadir}/fbpanel/images

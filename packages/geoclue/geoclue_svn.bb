@@ -13,7 +13,7 @@ S = "${WORKDIR}/trunk"
 
 do_install_append() {
 	mkdir -p ${D}/usr/share/
-	cp -pPr ${D}${STAGING_DATADIR}/* ${D}/usr/share  
+	cp -pPr ${D}${STAGING_DATADIR}/* ${D}/usr/share
 	rm -rf ${D}${STAGING_DATADIR}/
 }
 

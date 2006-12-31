@@ -23,6 +23,6 @@ NYLON_STANDARD = "\
 
 DEPENDS += "hostap-modules ntp \
 	${NYLON_STANDARD}"
-	
+
 RDEPENDS += "hostap-modules-pci ntpdate nano elvis-tiny \
 	${NYLON_STANDARD}"

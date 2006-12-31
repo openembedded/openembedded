@@ -8,7 +8,7 @@ DEPENDS = "openssl"
 SRC_URI = "http://minisip.org/source/libmikey-${PV}.tar.gz"
 S = "${WORKDIR}/libmikey-0.1"
 
-inherit autotools 
+inherit autotools
 
 do_configure() {
 	gnu-configize

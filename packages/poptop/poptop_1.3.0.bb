@@ -4,12 +4,12 @@ This enables administrators to leverage the considerable benefits of both Micros
 The current release version supports Windows 95/98/Me/NT/2000/XP PPTP clients and Linux PPTP clients \
 For more info visit http://www.poptop.org/"
 
-HOMEPAGE    = "http://www.poptop.org/"	
+HOMEPAGE    = "http://www.poptop.org/"
 LICENSE     = "GPL"
 SECTION     = "network"
 PRIORITY    = "optional"
 DEPENDS     = "ppp"
-RDEPENDS    = "ppp"	
+RDEPENDS    = "ppp"
 
 PR = "r0"
 
@@ -20,7 +20,7 @@ S = "${WORKDIR}/pptpd-${PV}"
 
 
 
-do_install() {	
+do_install() {
 	install -d ${D}${sbindir}
 	install -d ${D}/${sysconfdir}
 	install -d ${D}/${sysconfdir}/ppp/

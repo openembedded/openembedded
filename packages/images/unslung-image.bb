@@ -27,7 +27,7 @@ IPKG_INSTALL = "kernel update-modules unslung-rootfs \
 	${UNSLUNG_EXTRA_INSTALL}"
 
 IMAGE_PREPROCESS_COMMAND += "unslung_clean_image; "
-		
+
 inherit image_ipk
 
 # Note that anything in this function must be repeatable without having to rebuild the rootfs

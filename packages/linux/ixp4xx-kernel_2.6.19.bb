@@ -1,7 +1,7 @@
 # Kernel for IXP4xx
 #
-# This bitbake file pulls patches and the defconfig straight  
-# from the NSLU2-Linux SVN repository. Information about this 
+# This bitbake file pulls patches and the defconfig straight
+# from the NSLU2-Linux SVN repository. Information about this
 # repository can be found at:
 # http://trac.nslu2-linux.org/kernel/
 #

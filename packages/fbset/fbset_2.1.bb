@@ -21,13 +21,13 @@ PARALLEL_MAKE=""
 
 ######################################################################################
 
-inherit autotools 
+inherit autotools
 
 ######################################################################################
 
 do_install() {
 	install -d ${D}/usr/sbin ${D}/usr/share/man/man8 ${D}/usr/share/man/man5
-	
+
 	install -m 0755 ${WORKDIR}/${P}/fbset ${D}/usr/sbin/fbset.real
 
 	install -m 0644 ${WORKDIR}/${P}/*.5 ${D}/usr/share/man/man5
@@ -37,9 +37,9 @@ do_install() {
 ######################################################################################
 
 pkg_postinst_${PN}() {
-	update-alternatives --install /usr/sbin/fbset fbset /usr/sbin/fbset.real 55	
+	update-alternatives --install /usr/sbin/fbset fbset /usr/sbin/fbset.real 55
 }
 
-pkg_postrm_${PN}() { 
+pkg_postrm_${PN}() {
 	update-alternatives --remove fbset /usr/sbin/fbset.real
-}                                                                               
+}

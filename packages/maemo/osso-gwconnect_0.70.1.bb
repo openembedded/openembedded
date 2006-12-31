@@ -15,4 +15,4 @@ do_stage() {
     install -d ${STAGING_INCDIR}
     install -m 644 src/*.h ${STAGING_INCDIR}
 }
-	
+

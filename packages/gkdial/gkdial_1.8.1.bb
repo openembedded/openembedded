@@ -18,7 +18,7 @@ SRC_URI = "http://familiar.handhelds.org/source/v0.8.2/${PN}-${PV}.tar.gz \
 
 FILES_${PN} = "${sysconfdir}/chatscripts ${bindir} ${datadir}/pixmaps ${datadir}/applications"
 FILES_${PN} += " ${datadir}/gkdial ${datadir}/gkdial/glade ${sysconfdir}/gconf/schemas"
- 
+
 CFLAGS_append = " -I${STAGING_KERNEL_DIR}/include -D_GNU_SOURCE"
 LDFLAGS_append = " -Wl,--export-dynamic"
 

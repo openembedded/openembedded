@@ -14,7 +14,7 @@ FILES_${PN}-dev = ${includedir} ${libdir}/lib*.so ${libdir}/*.la \
 		${libdir}/*.a ${libdir}/pkgconfig \
 		${datadir}/aclocal ${bindir} ${sbindir}
 
-inherit autotools pkgconfig 
+inherit autotools pkgconfig
 
 do_stage() {
 	autotools_stage_all

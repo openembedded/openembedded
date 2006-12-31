@@ -18,7 +18,7 @@ USE_DEVFS = "1"
 # dev entries!)
 SLUGOS_DEVICE_TABLE = "${@bb.which(bb.data.getVar('BBPATH', d, 1), 'files/device_table-slugos.txt')}"
 
-# IMAGE_PREPROCESS_COMMAND is run before making the image.  
+# IMAGE_PREPROCESS_COMMAND is run before making the image.
 # We use this to do a few things:
 # . remove the uImage, which is in a separate part of the flash already.
 # . adjust the default run level (sysvinit is 5 by default, we like 3)

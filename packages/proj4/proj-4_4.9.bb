@@ -10,5 +10,5 @@ S = "${WORKDIR}/proj-4.${PV}"
 
 do_stage() {
 	autotools_stage_all
-}	
+}
 

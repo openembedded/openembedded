@@ -19,7 +19,7 @@ inherit autotools
 ALTERNATIVE_NAME = "mount.davfs"
 ALTERNATIVE_PATH = "${sbindir}/${ALTERNATIVE_NAME}"
 ALTERNATIVE_PRIORITY = "90"
-ALTERNATIVE_LINK = "${base_sbindir}/${ALTERNATIVE_NAME}" 
+ALTERNATIVE_LINK = "${base_sbindir}/${ALTERNATIVE_NAME}"
 
 EXTRA_OECONF = "--with-neon"
 

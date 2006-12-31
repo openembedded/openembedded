@@ -9,7 +9,7 @@ PR = "r3"
 SRC_URI = "cvs://anonymous@linux-usb.cvs.sourceforge.net/cvsroot/linux-usb;module=usbutils"
 S = "${WORKDIR}/usbutils"
 
-inherit autotools 
+inherit autotools
 
 EXTRA_OECONF = "--program-prefix="
 sbindir = "/sbin"

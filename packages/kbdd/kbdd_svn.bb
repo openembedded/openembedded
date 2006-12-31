@@ -13,7 +13,7 @@ SRC_URI = "svn://projects.linuxtogo.org/svn/kbdd;module=trunk;proto=svn \
            file://kbdd-modules"
 S = "${WORKDIR}/trunk"
 
-inherit update-rc.d 
+inherit update-rc.d
 
 INITSCRIPT_NAME = "kbdd"
 INITSCRIPT_PARAMS = "defaults"

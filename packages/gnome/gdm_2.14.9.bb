@@ -1,7 +1,7 @@
 DESCRIPTION = "Graphical login manager"
 LICENSE = "GPL"
 
-DEPENDS = "gnome-doc-utils gtk+ libglade libgnomecanvas librsvg libxml2 libart-lgpl" 
+DEPENDS = "gnome-doc-utils gtk+ libglade libgnomecanvas librsvg libxml2 libart-lgpl"
 
 inherit gnome
 

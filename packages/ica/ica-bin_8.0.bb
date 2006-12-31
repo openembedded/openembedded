@@ -6,7 +6,7 @@ DEPENDS = "virtual/libx11 libxaw rpm2cpio-native"
 
 HOMEPAGE="www.citrix.com/download/"
 
-SRC_URI="file://${DL_DIR}/ICAClient-8.0-1.i386.rpm" 
+SRC_URI="file://${DL_DIR}/ICAClient-8.0-1.i386.rpm"
 
 S="${WORKDIR}"
 PACKAGES= "${PN}"
@@ -17,9 +17,9 @@ python ica_do_fetch() {
 	def dowarn(str,d):
 		out = bb.data.expand(str, d)
 		bb.note(out)
-	
+
 	file = bb.data.getVar('A', d)
-	basen = os.path.basename(file)	
+	basen = os.path.basename(file)
 
 	if not os.path.exists(file):
 		dowarn('You need to perform the following steps to build this package:',d)
@@ -44,7 +44,7 @@ do_compile() {
 DDIR="${D}/usr/lib/ICAClient"
 
 do_install () {
-	for file in `find usr/lib/ICAClient/ -type d`; do 
+	for file in `find usr/lib/ICAClient/ -type d`; do
 		install -d ${D}/$file
 	done
 

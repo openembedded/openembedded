@@ -21,7 +21,7 @@ do_configure_prepend() {
 	mkdir -p m4
 }
 
-inherit autotools 
+inherit autotools
 
 do_install_append() {
 	install -d ${D}${datadir}/applications

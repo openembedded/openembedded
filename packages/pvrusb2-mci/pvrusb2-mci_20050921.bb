@@ -18,7 +18,7 @@ EXTRA_OEMAKE = "'CFLAGS=${CFLAGS}' \
                 'LD=${KERNEL_LD}' \
                 'KDIR=${STAGING_KERNEL_DIR}'"
 
-do_install() {   
+do_install() {
         install -d ${D}${base_libdir}/modules/${KERNEL_VERSION}/kernel/drivers/usb/media
         install -m 0644 *${KERNEL_OBJECT_SUFFIX} ${D}${base_libdir}/modules/${KERNEL_VERSION}/kernel/drivers/usb/media
 }

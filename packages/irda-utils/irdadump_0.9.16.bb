@@ -10,7 +10,7 @@ S="${WORKDIR}/irda-utils-${PV}/irdadump"
 EXTRA_CFLAGS += "-I${STAGING_INCDIR}/glib-1.2/"
 EXTRA_LDFLAGS += "-lglib"
 
-inherit autotools 
+inherit autotools
 
 do_compile() {
     oe_runmake CFLAGS="${CFLAGS} ${EXTRA_CFLAGS}" LDFLAGS="${LDFLAGS} ${EXTRA_LDFLAGS}"

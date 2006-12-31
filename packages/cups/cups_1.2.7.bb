@@ -24,7 +24,7 @@ do_configure() {
 	gnu-configize
 	libtoolize --force
 	oe_runconf
-}	
+}
 
 do_compile () {
 	sed -i s:STRIP:NOSTRIP: Makedefs

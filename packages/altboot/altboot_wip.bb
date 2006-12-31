@@ -56,7 +56,7 @@ do_install() {
 	install -d ${D}/usr/share/doc/altboot
 	install -d ${D}/usr/share/sounds
 	install -d ${D}/etc/skel/altboot
-	
+
 	if test -d ${WORKDIR}/altboot/${MACHINE}
 	then
 		install -m 0644 ${WORKDIR}/altboot/${MACHINE}/altboot*.cfg ${D}/etc/
@@ -66,17 +66,17 @@ do_install() {
 
 	install -m 0644 ${WORKDIR}/altboot/beep.raw ${D}/usr/share/sounds
 	install -m 0644 ${WORKDIR}/altboot/altboot.func ${D}/etc
-	install -m 0644 ${WORKDIR}/altboot/altbootctl.conf ${D}/etc	
+	install -m 0644 ${WORKDIR}/altboot/altbootctl.conf ${D}/etc
 	install -m 0755 ${WORKDIR}/altboot/init.altboot ${D}/sbin
 	install -m 0755 ${WORKDIR}/altboot/altbootctl ${D}/sbin
-	
+
 	install -m 0755 ${WORKDIR}/altboot/altboot-menu/*-* ${D}/etc/altboot-menu
 
 	install -m 0755 ${WORKDIR}/altboot/altboot-menu/Advanced/*-* ${D}/etc/altboot-menu/Advanced
-	
+
 	install -m 0755 ${WORKDIR}/altboot/altboot.rc/*.sh ${D}/etc/altboot.rc
-	install -m 0644 ${WORKDIR}/altboot/altboot.rc/*.txt ${D}/etc/altboot.rc	
-}		
+	install -m 0644 ${WORKDIR}/altboot/altboot.rc/*.txt ${D}/etc/altboot.rc
+}
 
 ######################################################################################
 

@@ -9,7 +9,7 @@ PR = "r5"
 
 SRC_URI = "http://www.crosswire.org/~dglassey/sword-1.5.7a.tar.gz"
 
-inherit autotools 
+inherit autotools
 
 EXTRA_OECONF = "--without-clucene --without-curl"
 

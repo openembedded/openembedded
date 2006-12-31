@@ -9,11 +9,11 @@ SRC_URI = "http://ewi546.ewi.utwente.nl/mirror/hrw-oe-sources/${PN}-${PV}.tar.bz
 
 S = "${WORKDIR}/${PN}"
 
-do_install () { 
-        install -d ${D}${palmqtdir}/lib/fonts/ 
-        for i in *.qpf; do 
-                install -m 644 $i ${D}${palmqtdir}/lib/fonts/${i} 
-        done 
-} 
+do_install () {
+        install -d ${D}${palmqtdir}/lib/fonts/
+        for i in *.qpf; do
+                install -m 644 $i ${D}${palmqtdir}/lib/fonts/${i}
+        done
+}
 
 inherit qpf

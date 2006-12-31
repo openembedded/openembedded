@@ -42,7 +42,7 @@ RDEPENDS_angstrom-gpe-task-base := "\
     gpe-autostarter \
     ${@base_contains("MACHINE_FEATURES", "touchscreen", "libgtkstylus", "",d)} \
     ${@base_contains("MACHINE_FEATURES", "keyboard", "", "libgtkinput",d)} \
-    ${@base_contains("MACHINE_FEATURES", "touchscreen", "detect-stylus", "",d)} \	
+    ${@base_contains("MACHINE_FEATURES", "touchscreen", "detect-stylus", "",d)} \
     suspend-desktop \
     teleport \
     xauth \

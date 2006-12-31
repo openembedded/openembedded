@@ -16,5 +16,5 @@ inherit opie
 do_install () {
 	install -d ${D}${palmtopdir}/pics/
 	install -m 0644 resistorUI.png ${D}${palmtopdir}/pics/
-	
+
 }

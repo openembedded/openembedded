@@ -5,7 +5,7 @@ DESCRIPTION = "PanoramiX extension headers"
 
 SRC_URI = "${XLIBS_MIRROR}/panoramixext-${PV}.tar.bz2"
 
-inherit autotools pkgconfig 
+inherit autotools pkgconfig
 
 do_stage() {
 	oe_runmake install prefix=${STAGING_DIR} \

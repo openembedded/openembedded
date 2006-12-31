@@ -48,7 +48,7 @@ EOF
 
 	rm -r ${SDK_OUTPUT}
 	mkdir -p ${SDK_OUTPUT}
-	
+
 	${IPKG_HOST} update
 	${IPKG_HOST} -nodeps install ${HOST_INSTALL}
 

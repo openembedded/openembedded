@@ -7,7 +7,7 @@ PR = "r0"
 
 SRC_URI = "ftp://ftp.alsa-project.org/pub/oss-lib/alsa-oss-${PV}.tar.bz2"
 
-inherit autotools 
+inherit autotools
 
 do_configure_prepend () {
 	touch NEWS README AUTHORS ChangeLog

@@ -131,8 +131,8 @@ glibc_do_unpack () {
 }
 
 python do_unpack () {
-	bb.build.exec_func('base_do_unpack', d)	
-	bb.build.exec_func('glibc_do_unpack', d)	
+	bb.build.exec_func('base_do_unpack', d)
+	bb.build.exec_func('glibc_do_unpack', d)
 }
 
 do_configure () {

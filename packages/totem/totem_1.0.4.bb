@@ -26,7 +26,7 @@ LDFLAGS_append = " -Wl,--export-dynamic"
 
 pkg_postinst_totem() {
 #!/bin/sh
-if [ -n "$D"  ]; then exit 1; fi; 
+if [ -n "$D"  ]; then exit 1; fi;
 SOURCE=`gconftool-2 --get-default-source`
 GCONF_CONFIG_SOURCE=$SOURCE gconftool-2 --makefile-install-rule \
 /etc/gconf/schemas/totem.schemas > /dev/null

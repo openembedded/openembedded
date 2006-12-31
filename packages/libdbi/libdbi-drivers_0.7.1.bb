@@ -26,7 +26,7 @@ FILES_libdbd-sqlite = "/usr/lib/dbd/libsqlite.so \
                        /usr/lib/dbd/libsqlite.a"
 
 DESCRIPTION_libdbd-sqlite = "SQLite database driver for libdbi"
-        
+
 do_configure_old () {
   ./configure \
 		    --build=${BUILD_SYS} \
@@ -37,4 +37,4 @@ do_configure_old () {
 		    --with-sqlite-libdir=${STAGING_LIBDIR} \
 		    --with-sqlite-incdir=${STAGING_INCDIR}
 }
-        
+

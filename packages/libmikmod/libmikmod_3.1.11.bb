@@ -6,7 +6,7 @@ SRC_URI = "http://mikmod.raphnet.net/files/libmikmod-${PV}.tar.gz \
 	   file://m4.patch;patch=1 \
 	   file://autofoo.patch;patch=1"
 
-inherit autotools 
+inherit autotools
 
 EXTRA_OECONF = "--disable-af --disable-alsa --disable-esd \
 --enable-oss --disable-sam9407 --disable-ultra \

@@ -28,6 +28,6 @@ RDEPENDS = "\
 export IPKG_INSTALL = "${RDEPENDS}"
 
 #zap root password for release images
-ROOTFS_POSTPROCESS_COMMAND += '${@base_conditional("DISTRO_TYPE", "release", "zap_root_password; ", "",d)}' 
+ROOTFS_POSTPROCESS_COMMAND += '${@base_conditional("DISTRO_TYPE", "release", "zap_root_password; ", "",d)}'
 
 inherit image_ipk

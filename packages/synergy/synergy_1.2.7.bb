@@ -9,7 +9,7 @@ PR = "r2"
 SRC_URI = "${SOURCEFORGE_MIRROR}/synergy2/synergy-${PV}.tar.gz"
 
 do_configure_prepend() {
-	grep -l -- -Werror "${S}/"* | xargs sed -i 's:-Werror::' 
+	grep -l -- -Werror "${S}/"* | xargs sed -i 's:-Werror::'
 }
 
 inherit autotools

@@ -23,7 +23,7 @@ do_compile () {
 	install ${WORKDIR}/make_include ${S}/make_include
 	install ${WORKDIR}/swapargs.h ${S}/mount/swapargs.h
 	install ${WORKDIR}/defines.h ${S}/defines.h
-	oe_runmake 
+	oe_runmake
 }
 
 do_stage () {

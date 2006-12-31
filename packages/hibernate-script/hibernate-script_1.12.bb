@@ -23,7 +23,7 @@ do_install () {
 		${S}/install.sh
 
 	ln -s ./hibernate ${D}/usr/sbin/hibernate-standby
-	ln -s ./hibernate ${D}/usr/sbin/hibernate-ram 
+	ln -s ./hibernate ${D}/usr/sbin/hibernate-ram
 
 	#Override conf files from ${WORKDIR}
 	install -m 0644 ${WORKDIR}/hibernate.conf ${D}/etc/hibernate/

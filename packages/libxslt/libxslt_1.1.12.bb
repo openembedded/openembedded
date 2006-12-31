@@ -8,7 +8,7 @@ PR = "r2"
 SRC_URI = "ftp://xmlsoft.org/libxml2/libxslt-${PV}.tar.gz"
 S = "${WORKDIR}/libxslt-${PV}"
 
-inherit autotools pkgconfig 
+inherit autotools pkgconfig
 
 EXTRA_OECONF = "--without-python --without-debug --without-mem-debug --without-crypto"
 

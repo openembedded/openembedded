@@ -6,4 +6,4 @@ SRC_URI		= "${SOURCEFORGE_MIRROR}/scigraphica/gtk+extra-${PV}.tar.gz"
 DEPENDS		= "gtk+"
 
 inherit autotools
- 
+

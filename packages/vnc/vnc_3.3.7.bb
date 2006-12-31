@@ -18,4 +18,4 @@ do_install() {
 	install -d ${D}/usr/bin/
 	install -m 0755 vncviewer/vncviewer ${D}/usr/bin/vncviewer
 }
-	
+

@@ -31,7 +31,7 @@ midi_modules = "snd-seq-midi-emul.o \
 	snd-seq-midi-event.o \
 	snd-seq-midi.o \
 	snd-seq-virmidi.o \
-	snd-seq-oss.o" 
+	snd-seq-oss.o"
 FILES_${PN}-midi = "${@' '.join(map ((lambda x: '/lib/modules/*/misc/%s' % x), bb.data.getVar('midi_modules', d).split()))}"
 misc_modules = "snd-gus-synth.o \
 	snd-emu8000-synth.o \
@@ -72,9 +72,9 @@ if grep "CONFIG_ARCH_H3900=y" "${STAGING_KERNEL_DIR}/.config" ; then
   familiar_arch=ipaqpxa
 fi
 
-      fakeroot make -k NODEPMOD=yes DESTDIR=${D} install; 
+      fakeroot make -k NODEPMOD=yes DESTDIR=${D} install;
 
-      if [ -d ${D}${sysconfdir}/modutils/ ] ; then 
+      if [ -d ${D}${sysconfdir}/modutils/ ] ; then
          rm -r ${D}${sysconfdir}/modutils/ ;
       fi
       mkdir -p ${D}${sysconfdir}/modutils/

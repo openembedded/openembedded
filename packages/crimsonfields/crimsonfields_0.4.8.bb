@@ -8,7 +8,7 @@ SRC_URI = "http://crimson.seul.org/files/crimson-${PV}.tar.bz2 \
            file://native-tools.patch;patch=1"
 S = "${WORKDIR}/crimson-${PV}"
 
-inherit autotools 
+inherit autotools
 
 HOST_TOOLS = "cfed mkdatafile mklocale mktileset mkunitset"
 

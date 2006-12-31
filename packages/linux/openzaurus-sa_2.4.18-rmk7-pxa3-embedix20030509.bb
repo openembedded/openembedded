@@ -39,7 +39,7 @@ SRC_URI = "http://www.openzaurus.org/mirror/linux-sl5500-${SHARPV}-rom3_10.tar.b
 
 # that patch allow to use buzzer as sound device but it removes alarms,
 # touchclicks etc so it is removed until be fixed
-#           file://sound-2.4.18r2.patch;patch=1 
+#           file://sound-2.4.18r2.patch;patch=1
 
 # apply this when we have a patch that allows building with gcc 3.x:
 # SRC_URI_append = file://gcc-3.3.patch;patch=1
@@ -93,7 +93,7 @@ do_configure_prepend() {
 }
 
 do_deploy() {
-        install -d ${DEPLOY_DIR_IMAGE} 
+        install -d ${DEPLOY_DIR_IMAGE}
         install -m 0644 arch/${ARCH}/boot/${KERNEL_IMAGETYPE} \
 	${DEPLOY_DIR_IMAGE}/${KERNEL_IMAGETYPE}-${MACHINE}-${COLLIE_MEMORY_SIZE}-${COLLIE_RAMDISK_SIZE}-${DATETIME}.bin
 }
