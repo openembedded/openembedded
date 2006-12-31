@@ -3,7 +3,7 @@ DESCRIPTION = "An X11-based distribution with the Enlightenment Window Manager a
 PR = "r5"
 
 export IMAGE_BASENAME = "e-image"
-export IPKG_INSTALL += "task-e-x11-core \
+export PACKAGE_INSTALL += "task-e-x11-core \
                         gpe-task-pim \
                         gpe-task-settings \
                         gpe-task-apps \
@@ -32,4 +32,4 @@ export IPKG_INSTALL += "task-e-x11-core \
 
 DEPENDS += "task-e-x11-core task-gpe figment xhost gpe-soundserver gpe-confd xauth"
 
-RDEPENDS = "${IPKG_INSTALL}"
+RDEPENDS = "${PACKAGE_INSTALL}"

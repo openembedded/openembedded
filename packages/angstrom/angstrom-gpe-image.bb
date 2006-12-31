@@ -25,9 +25,9 @@ RDEPENDS = "\
     ${ANGSTROM_EXTRA_INSTALL}"
 
 
-export IPKG_INSTALL = "${RDEPENDS}"
+export PACKAGE_INSTALL = "${RDEPENDS}"
 
 #zap root password for release images
 ROOTFS_POSTPROCESS_COMMAND += '${@base_conditional("DISTRO_TYPE", "release", "zap_root_password; ", "",d)}'
 
-inherit image_ipk
+inherit image

@@ -103,9 +103,9 @@ RDEPENDS = " \
 	${OPENPROTIUM_KERNEL} "
 #	${SLUGOS_EXTRA_RDEPENDS}"
 
-IPKG_INSTALL = "${RDEPENDS}"
+PACKAGE_INSTALL = "${RDEPENDS}"
 
-inherit image_ipk
+inherit image
 
 storcenter_pack_image() {
 	# find latest kernel

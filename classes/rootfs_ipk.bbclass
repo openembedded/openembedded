@@ -2,7 +2,7 @@
 # Creates a root filesystem out of IPKs
 #
 # This rootfs can be mounted via root-nfs or it can be put into an cramfs/jffs etc.
-# See image_ipk.oeclass for a usage of this.
+# See image.bbclass for a usage of this.
 #
 
 DEPENDS_prepend="ipkg-native ipkg-utils-native fakeroot-native "
@@ -17,7 +17,7 @@ do_build[nostamp] = "1"
 
 IPKG_ARGS = "-f ${T}/ipkg.conf -o ${IMAGE_ROOTFS}"
 
-IPKG_INSTALL += "ipkg ipkg-collateral"
+PACKAGE_INSTALL += "ipkg ipkg-collateral"
 
 ROOTFS_POSTPROCESS_COMMAND ?= ""
 
@@ -55,8 +55,8 @@ real_do_rootfs () {
 			ipkg-cl ${IPKG_ARGS} install $i
 		done
 	fi
-	if [ ! -z "${IPKG_INSTALL}" ]; then
-		ipkg-cl ${IPKG_ARGS} install ${IPKG_INSTALL}
+	if [ ! -z "${PACKAGE_INSTALL}" ]; then
+		ipkg-cl ${IPKG_ARGS} install ${PACKAGE_INSTALL}
 	fi
 
 	export D=${IMAGE_ROOTFS}

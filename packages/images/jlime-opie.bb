@@ -17,7 +17,7 @@ INSTALL_PACKAGES = "task-bootstrap task-opie-base task-opie-base-applets \
 		    task-opie-bluetooth task-opie-irda \
 		    ${extra_stuff}"
 
-export IPKG_INSTALL = "${INSTALL_PACKAGES}"
+export PACKAGE_INSTALL = "${INSTALL_PACKAGES}"
 
 # merge feed-sources into ipkg.conf for opie-aqpkg as it can't handle feed-sources outside of ipkg.conf.
 merge_feeds() {
@@ -65,4 +65,4 @@ merge_feeds() {
 # merge feed-sources into ipkg.conf and create /etc/timestamp from build date
 IMAGE_PREPROCESS_COMMAND = "merge_feeds; create_etc_timestamp"
 
-inherit image_ipk
+inherit image

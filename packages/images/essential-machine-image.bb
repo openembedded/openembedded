@@ -15,7 +15,7 @@ PR = "r0"
 
 ######################################################################################
 
-inherit image_ipk
+inherit image
 
 ######################################################################################
 
@@ -33,4 +33,4 @@ MACHINE_TASKS_akita = "task-essential-to-boot \
 
 export IMAGE_BASENAME = "essential-image"
 export IMAGE_LINGUAS = ""
-export IPKG_INSTALL = "${MACHINE_TASKS}"
+export PACKAGE_INSTALL = "${MACHINE_TASKS}"
