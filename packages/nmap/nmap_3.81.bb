@@ -20,7 +20,7 @@ EXTRA_OECONF = "--with-pcap=linux \
 EXTRA_OEMAKE = "STRIPPROG=${STRIP}"
 
 CXXFLAGS_append = " -fpermissive"
-# Ugly hack follows -- their configure.ac doesnt match their configure .. 
+# Ugly hack follows -- their configure.ac doesnt match their configure ..
 # doesnt include a check for the length type in recvfrom, so we hack it here
 CPPFLAGS_append = " -Drecvfrom6_t=socklen_t"
 

@@ -75,9 +75,9 @@ do_install_append () {
 		    -e 's,/etc/,${sysconfdir}/,g' \
 		    -e 's,/usr/,${prefix}/,g' > ${D}/${sysconfdir}/init.d/apache
 	chmod 755 ${D}/${sysconfdir}/init.d/apache
-	
+
 	install -m 0644 ${FILESDIR}/httpd.conf ${D}/${sysconfdir}/apache/httpd.conf
-	
+
 	rm ${D}/${libdir}/libexpat.*
 }
 

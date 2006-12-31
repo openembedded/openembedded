@@ -16,4 +16,4 @@ S = "${WORKDIR}/mb-applet-input-manager-${PV}"
 inherit autotools pkgconfig
 
 FILES_${PN} = "${bindir}/* ${datadir}/applications ${datadir}/pixmaps"
- 
+

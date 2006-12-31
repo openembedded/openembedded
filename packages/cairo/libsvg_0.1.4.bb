@@ -10,7 +10,7 @@ SRC_URI = "http://cairographics.org/snapshots/libsvg-${PV}.tar.gz \
 
 EXTRA_OECONF = "--with-expat"
 
-inherit autotools pkgconfig 
+inherit autotools pkgconfig
 
 do_stage () {
 	autotools_stage_all

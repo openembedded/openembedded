@@ -24,7 +24,7 @@ do_compile() {
 		KERNEL_VERSION=${KERNEL_VERSION}    \
 		CC="${KERNEL_CC}" LD="${KERNEL_LD}" \
 		${MAKE_TARGETS}
-									   
+
 	cd ../nvsound/main
 	oe_runmake KERNEL_PATH=${STAGING_KERNEL_DIR}   \
 		KERNEL_SRC=${STAGING_KERNEL_DIR}    \
@@ -37,7 +37,7 @@ do_compile() {
 do_configure() {
 	rm -f ${S}/nvnet/makefile
 	rm -f ${S}/nvsound/main/makefile
-	
+
 	if [ "${KERNEL_PATCHLEVEL}" != "4" ] ; then
 		ln -sf Makefile.kbuild ${S}/nvnet/Makefile
 		ln -sf Makefile.kbuild ${S}/nvsound/main/Makefile
@@ -61,7 +61,7 @@ do_install() {
 	for dir in usr/bin nvsound/lib ; do
 		cp -pPR ${S}/$dir ${D}/usr/
 	done
-	
+
 }
 
 do_stage() {

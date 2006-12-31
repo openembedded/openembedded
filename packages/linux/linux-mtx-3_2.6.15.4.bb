@@ -47,14 +47,14 @@ do_configure_prepend() {
 }
 
 do_compile() {
-	
+
 	kernel_do_compile
 
 	# set CONFIG_XIP_KERNEL=y and CONFIG_XIP_PHYS_ADDR=xxxx if commented out, else append it
 #        sed -i -e "s/^[#        ]*CONFIG_XIP_KERNEL.*/CONFIG_XIP_KERNEL=y/" \
 #                -e "s/^[#       ]*CONFIG_XIP_PHYS_ADDR.*/CONFIG_XIP_PHYS_ADDR=${XIP_PHYS_ADDR}/" .config
 #	grep -q "^CONFIG_XIP_PHYS_ADDR=" .config || echo "CONFIG_XIP_PHYS_ADDR=${XIP_PHYS_ADDR}" >>.config
-	
+
 #        oe_runmake xipImage CC="arm-linux-gcc " LD="arm-linux-ld " ARCH="arm"
 }
 

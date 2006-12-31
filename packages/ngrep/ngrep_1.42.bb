@@ -10,7 +10,7 @@ SRC_URI = "${SOURCEFORGE_MIRROR}/ngrep/ngrep-${PV}.tar.bz2 \
 EXTRA_OECONF = "--with-restart --enable-pcre --with-pcap-includes=${STAGING_INCDIR}"
 EXTRA_OEMAKE = "INCLUDES=${S}"
 
-inherit autotools 
+inherit autotools
 
 CFLAGS += '-DDROPPRIVS_ONLY_ROOT=0 -DDROPPRIVS_USER=\""nobody\"" -DUSE_DROPPRIVS=1'
 

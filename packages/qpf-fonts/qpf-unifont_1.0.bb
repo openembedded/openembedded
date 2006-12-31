@@ -8,11 +8,11 @@ PR = "r1"
 SRC_URI = "http://www.openzaurus.org/mirror/qpf-unifont.tar.bz2"
 S = "${WORKDIR}"
 
-do_install () { 
-        install -d ${D}${palmqtdir}/lib/fonts/ 
-        for i in *.qpf; do 
-                install -m 644 $i ${D}${palmqtdir}/lib/fonts/${i} 
-        done 
-} 
+do_install () {
+        install -d ${D}${palmqtdir}/lib/fonts/
+        for i in *.qpf; do
+                install -m 644 $i ${D}${palmqtdir}/lib/fonts/${i}
+        done
+}
 
 inherit qpf

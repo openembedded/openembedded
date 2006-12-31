@@ -7,7 +7,7 @@ RDEPENDS = "wireless-tools"
 
 SRC_URI = "http://zd1211.ath.cx/download/zd1211-driver-${PV}.tgz \
 	file://makefile.patch;patch=1 \
-	" 
+	"
 
 SRC_URI_unslung = "http://zd1211.ath.cx/download/zd1211-driver-${PV}.tgz \
        	file://makefile-unslung.patch;patch=1 \
@@ -26,10 +26,10 @@ do_compile () {
 		   'KDIR=${STAGING_KERNEL_DIR}' \
 		   'KERNEL_VERSION=${KERNEL_VERSION}' \
                    'CC=${KERNEL_CC}' \
-                   'LD=${KERNEL_LD}' 
+                   'LD=${KERNEL_LD}'
 }
 
-do_install() {   
+do_install() {
         install -d ${D}${base_libdir}/modules/${KERNEL_VERSION}/kernel/drivers/net
         install -m 0644 ${S}/zd1211*${KERNEL_OBJECT_SUFFIX} ${D}${base_libdir}/modules/${KERNEL_VERSION}/kernel/drivers/net
 }

@@ -12,7 +12,7 @@ SRC_URI = "cvs://anoncvs:anoncvs@cvs.cebix.net/home/cvs/cebix;module=Frodo4 \
            file://frodorc \
            file://Frodo.png \
            file://frodo.desktop"
-	   
+
 S = "${WORKDIR}/Frodo4/Src"
 
 inherit autotools

@@ -16,7 +16,7 @@ inherit autotools pkgconfig
 
 EXTRA_OECONF = "--disable-gui --enable-largefile"
 
-LEAD_SONAME = "libwx_base-2.7*" 
+LEAD_SONAME = "libwx_base-2.7*"
 
 do_configure() {
        oe_runconf
@@ -24,7 +24,7 @@ do_configure() {
 
 do_stage() {
        install -d ${STAGING_INCDIR}/wx-2.7/wx
-       cp -pR include/wx ${STAGING_INCDIR}/wx-2.7	
+       cp -pR include/wx ${STAGING_INCDIR}/wx-2.7
        cp -pR lib/libwx* ${STAGING_LIBDIR}
        cp -pR lib/wx     ${STAGING_LIBDIR}
        cp -pR build/bakefiles/wxpresets/presets  ${STAGING_DATADIR}/bakefile
@@ -49,5 +49,5 @@ do_install() {
        ln -sf ${libdir}/wx/config/${TARGET_PREFIX}base-ansi-release-2.7 ${D}${bindir}/wx-config
        install -d ${D}${docdir}/${PN}-${PV}
        install -m 644 -p docs/*.txt      ${D}${docdir}/${PN}-${PV}
-       install -m 644 -p docs/*.htm      ${D}${docdir}/${PN}-${PV}	
+       install -m 644 -p docs/*.htm      ${D}${docdir}/${PN}-${PV}
 }

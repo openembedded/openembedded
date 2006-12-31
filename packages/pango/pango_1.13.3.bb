@@ -6,7 +6,7 @@ Open Source framework for the layout and rendering of \
 internationalized text."
 PR = "r2"
 
-RRECOMMENDS_${PN} = "pango-module-basic-x pango-module-basic-fc" 
+RRECOMMENDS_${PN} = "pango-module-basic-x pango-module-basic-fc"
 
 # seems to go wrong with default cflags
 FULL_OPTIMIZATION_arm = "-O2"

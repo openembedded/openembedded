@@ -26,5 +26,5 @@ do_configure_prepend() {
 do_install () {
 	install -d ${D}/${palmtopdir}/pics/${APPNAME}/
 	install -m 0644 ${WORKDIR}/*.png ${D}/${palmtopdir}/pics/
-	
+
 }

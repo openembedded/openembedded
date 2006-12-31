@@ -9,7 +9,7 @@ SRC_URI = "http://repository.maemo.org/pool/maemo/ossw/source/x/${PN}/${PN}_${PV
            file://auxdir.patch;patch=1;pnum=0"
 S = "${WORKDIR}/xpext-1.0"
 
-inherit autotools pkgconfig 
+inherit autotools pkgconfig
 
 do_configure_prepend () {
   cd ${S}

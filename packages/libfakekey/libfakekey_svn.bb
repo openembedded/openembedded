@@ -12,8 +12,8 @@ S = "${WORKDIR}/${PN}"
 inherit autotools pkgconfig gettext
 
 do_stage () {
-	   install -d ${STAGING_INCDIR}/fakekey	
+	   install -d ${STAGING_INCDIR}/fakekey
            install -m 0644 ${S}/fakekey/fakekey.h ${STAGING_INCDIR}/fakekey
-	    oe_libinstall -so -C src libfakekey ${STAGING_LIBDIR}		
+	    oe_libinstall -so -C src libfakekey ${STAGING_LIBDIR}
 }
 

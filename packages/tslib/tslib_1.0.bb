@@ -57,7 +57,7 @@ do_install_append() {
 
 SRC_URI_OVERRIDES_PACKAGE_ARCH = "0"
 
-# People should consider using udev's /dev/input/touchscreen0 symlink 
+# People should consider using udev's /dev/input/touchscreen0 symlink
 # instead of detect-stylus
 #RDEPENDS_tslib-conf_weird-machine = "detect-stylus"
 RPROVIDES_tslib-conf = "libts-0.0-conf"

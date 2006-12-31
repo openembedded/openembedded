@@ -60,9 +60,9 @@ export CMDLINE = '${@bb.data.getVar("SIMPAD_CMDLINE",d,1) or  "mtdparts=sa1100:5
 
 module_conf_sa1100_ir = "alias irda0 sa1100_ir"
 
-do_configure() { 
+do_configure() {
        install -m 0644 ${WORKDIR}/defconfig-${MACHINE} ${S}/.config || die "No default configuration for ${MACHINE} available."
-              
+
 	mem=${SIMPAD_MEM}
 	rd=${SIMPAD_RD}
         mempos=`echo "obase=16; $mem * 1024 * 1024" | bc`

@@ -12,6 +12,6 @@ do_stage() {
 	install -d ${STAGING_LIBDIR}
 	install -m 644 src/*.h ${STAGING_INCDIR}
 	install -m 755 src/.libs/*.so* ${STAGING_LIBDIR}
-} 
+}
 
 

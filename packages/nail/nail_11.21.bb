@@ -7,7 +7,7 @@ LICENSE = "GPL"
 
 SRC_URI = "http://optusnet.dl.sourceforge.net/sourceforge/nail/nail-11.21.tar.bz2 \
 	   file://nail.spec.diff;patch=1"
-	   
+
 S = "${WORKDIR}/nail-11.21/"
 
 inherit autotools

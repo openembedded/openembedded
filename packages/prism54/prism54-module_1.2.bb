@@ -27,7 +27,7 @@ do_compile() {
 do_install() {
 	unset CFLAGS CPPFLAGS CXXFLAGS LDFLAGS
 	oe_runmake install
-	
+
 }
 
 FILES_${PN} = "/lib/modules/"

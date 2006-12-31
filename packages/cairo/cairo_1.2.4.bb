@@ -10,7 +10,7 @@ SRC_URI = "http://cairographics.org/releases/cairo-${PV}.tar.gz \
 	   file://0002-Change-_cairo_fixed_from_double-to-use-the-magic-number-technique.diff;patch=1 \
   	   "
 
-inherit autotools pkgconfig 
+inherit autotools pkgconfig
 
 do_stage () {
 	autotools_stage_all

@@ -20,5 +20,5 @@ do_install() {
         install -d ${D}${palmtopdir}/bin \
         	   ${D}${palmtopdir}/apps/Applications \
         	   ${D}${palmtopdir}/pics
-	cp -pPR ../apps ../bin ../pics ${D}${palmtopdir}/        
+	cp -pPR ../apps ../bin ../pics ${D}${palmtopdir}/
 }

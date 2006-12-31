@@ -52,7 +52,7 @@ PACKAGE_ARCH_poodle = "poodle"
 
 S = "${WORKDIR}/xorg-server-X11R7.1-1.1.0"
 
-inherit autotools pkgconfig 
+inherit autotools pkgconfig
 
 ARM_INSTRUCTION_SET = "arm"
 

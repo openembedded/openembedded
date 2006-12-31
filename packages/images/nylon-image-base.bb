@@ -1,4 +1,4 @@
-inherit image_ipk 
+inherit image_ipk
 inherit nylon-image
 LICENSE = "MIT"
 
@@ -21,7 +21,7 @@ RDEPENDS_append_mtx-2 = " modutils modutils-initscripts modutils-depmod modutils
 ## kernel 2.6 ##
 RDEPENDS_append_mtx-3 = " module-init-tools udev"
 
-export IPKG_INSTALL = "${RDEPENDS}" 
+export IPKG_INSTALL = "${RDEPENDS}"
 
 IMAGE_LINGUAS = ""
 

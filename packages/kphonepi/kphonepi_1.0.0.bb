@@ -21,7 +21,7 @@ do_configure_prepend() {
 do_install() {
     install -d ${D}${palmtopdir}/bin \
                ${D}${palmtopdir}/apps/Applications \
-               ${D}${palmtopdir}/pics/kphone/ 
+               ${D}${palmtopdir}/pics/kphone/
 
     install -m 0644 ${S}/bin/kdepim/kphone/*.png ${D}${palmtopdir}/pics/kphone/
     install -m 0644 ${S}/kphone.desktop ${D}${palmtopdir}/apps/Applications/

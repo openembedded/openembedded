@@ -9,7 +9,7 @@ SRC_URI = "${SOURCEFORGE_MIRROR}/scummvm/scummvm-${PV}.tar.bz2 \
 			file://tremor.patch;patch=1 \
 			file://mouse.patch;patch=1 "
 
-inherit autotools 
+inherit autotools
 
 EXTRA_OECONF = "--host=${HOST_SYS} \
 		--backend=sdl \

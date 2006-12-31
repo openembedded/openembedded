@@ -53,9 +53,9 @@ pkg_postinst_mysql-server () {
 	test -d /usr/bin || mkdir -p /usr/bin
 	test -e /usr/bin/hostname || ln -s /bin/hostname /usr/bin/hostname
 	chmod go+rw /var/run
-	
+
 	mysql_install_db
-	
+
 }
 
 pkg_postrm_mysql-server () {

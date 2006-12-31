@@ -19,4 +19,4 @@ do_stage() {
 }
 
 FILES_${PN} = "${libdir}/*.so.*"
-FILES_${PN}-dev += " ${bindir}" 
+FILES_${PN}-dev += " ${bindir}"

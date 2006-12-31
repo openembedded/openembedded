@@ -8,4 +8,4 @@ LICENSE="GPL"
 SRC_URI="${SOURCEFORGE_MIRROR}/grip/grip-${PV}.tar.gz"
 DEPENDS="libgnomeui vte curl cdparanoia id3lib"
 
-inherit autotools 
+inherit autotools

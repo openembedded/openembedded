@@ -8,11 +8,11 @@ PR = "r1"
 SRC_URI = "http://ewi546.ewi.utwente.nl/mirror/hrw-oe-sources/qpf-helvetica.tar.bz2"
 S = "${WORKDIR}/helvetica"
 
-do_install () { 
-        install -d ${D}${palmqtdir}/lib/fonts/ 
-        for font in *.qpf; do 
+do_install () {
+        install -d ${D}${palmqtdir}/lib/fonts/
+        for font in *.qpf; do
                 install -m 644 $font ${D}${palmqtdir}/lib/fonts/
-        done 
-} 
+        done
+}
 
 inherit qpf

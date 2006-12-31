@@ -26,7 +26,7 @@ RDEPENDS = "libxine-plugin-vo-out-xshm \
 	    libxine-plugin-dmx-ogg \
 	    libxine-plugin-dmx-image \
 	    libxine-plugin-dmx-avi"
-	    
+
 S = "${WORKDIR}/${PN}-0.4.1/"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/xine/${PN}-0.4.1.tar.gz \

@@ -35,7 +35,7 @@ do_install() {
                    ${D}${sysconfdir}/default \
                    ${D}${base_sbindir} \
                    ${D}${base_libdir}/modules/${KERNEL_VERSION}/kernel/drivers/block/
-                   
+
         install -m 0755 ${WORKDIR}/sdmgr ${D}${base_sbindir}/
         install -m 0755 ${WORKDIR}/sdcontrol ${D}${sysconfdir}
         install -m 0755 ${WORKDIR}/sd ${D}${sysconfdir}/init.d/

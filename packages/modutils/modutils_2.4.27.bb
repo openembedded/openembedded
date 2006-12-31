@@ -66,7 +66,7 @@ pkg_postinst_modutils-depmod() {
 update-alternatives --install /sbin/depmod depmod /sbin/depmod.24 10
 }
 
-pkg_postinst_modutils-modinfo() { 
+pkg_postinst_modutils-modinfo() {
 #!/bin/sh
 update-alternatives --install /sbin/modinfo modinfo /sbin/modinfo.24 10
 }

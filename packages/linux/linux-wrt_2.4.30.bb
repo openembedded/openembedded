@@ -97,8 +97,8 @@ addtask unpack_extra after do_unpack before do_patch
 do_configure_prepend() {
 	install -m 0644 ${WORKDIR}/linux.config ${S}/.config
 	echo "CONFIG_CMDLINE=\"${CMDLINE}\"" >> ${S}/.config
-	
-	sed -i -e 's/@expr length/@-expr length/' ${S}/Makefile 
+
+	sed -i -e 's/@expr length/@-expr length/' ${S}/Makefile
 	sed -i -e "s,\-mcpu=,\-mtune=,g;" ${S}/arch/mips/Makefile
 }
 

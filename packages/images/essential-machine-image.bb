@@ -28,7 +28,7 @@ MACHINE_TASKS_akita = "task-essential-to-boot \
 		       task-essential-usbhost task-essential-usbclient \
 		       task-essential-sound task-essential-irda \
 		       task-essential-sd"
-		       
+
 ######################################################################################
 
 export IMAGE_BASENAME = "essential-image"

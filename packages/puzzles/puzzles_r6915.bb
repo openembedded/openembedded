@@ -19,14 +19,14 @@ do_install () {
     install -d ${D}/${prefix}/
     install -d ${D}/${prefix}/games/
     oe_runmake install
-    
+
     install -d ${D}/${datadir}/
     install -d ${D}/${datadir}/applications/
     install -d ${D}/${datadir}/pixmaps/
 
     install ${WORKDIR}/game.png ${D}/${datadir}/pixmaps/
 
-    cd ${D}/${prefix}/games 
+    cd ${D}/${prefix}/games
     for prog in *; do
 	if [ -x $prog ]; then
 	    echo "making ${D}/${datadir}/applications/$prog.desktop"

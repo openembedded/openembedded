@@ -15,7 +15,7 @@ SRC_URI = "${SOURCEFORGE_MIRROR}/portabase/portabase_${PV}.tar.gz \
 
 S = "${WORKDIR}/portabase"
 
-inherit palmtop 
+inherit palmtop
 
 do_configure_prepend() {
 	find . -name "Makefile"|xargs rm -f
@@ -34,15 +34,15 @@ do_install() {
 			${D}${palmtopdir}/help/en
 	install -D -m 0755 ${APPNAME} ${D}${palmtopdir}/bin/${APPNAME}
 	install -m 0644 package/${APPNAME}.desktop ${D}${palmtopdir}/apps/Applications/${APPNAME}.desktop
-	 
+
 	install -D -m 0644 pics/PortaBase.png ${D}${palmtopdir}/pics/PortaBase.png
 	for f in calculator.png checked.png image.png note.png save.png save_disabled.png unchecked.png calendar.xpm QtaDatePickerNext.xpm QtaDatePickerPrev.xpm
 	do
 		install -D -m 0644 pics/$f ${D}${palmtopdir}/pics/${APPNAME}/$f
-	done         
+	done
 
 	install -D -m 0644 help/html/${APPNAME}.html ${D}${palmtopdir}/help/en/html/${APPNAME}.html
-} 
+}
 
 
 pkg_postinst() {
@@ -124,6 +124,6 @@ grep  $EXT $QPEDIR/etc/mime.types |
         echo >&2 "$EXT already assigned to $TYPE"
         exit 1
     fi
-) 
-} 
+)
+}
 

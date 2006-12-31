@@ -1,6 +1,6 @@
 require fuse.inc
 
-SRC_URI += "file://not-run-updaterc.d-on-host.patch;patch=1" 
+SRC_URI += "file://not-run-updaterc.d-on-host.patch;patch=1"
 
 EXTRA_OECONF = " --disable-kernel-module"
 

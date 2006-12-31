@@ -7,7 +7,7 @@ DESCRIPTION = "PanoramiX extension headers"
 SRC_URI = "${FREEDESKTOP_CVS}/xlibs;module=PanoramiXExt"
 S = "${WORKDIR}/PanoramiXExt"
 
-inherit autotools pkgconfig 
+inherit autotools pkgconfig
 
 do_stage() {
 	oe_runmake install prefix=${STAGING_DIR} \

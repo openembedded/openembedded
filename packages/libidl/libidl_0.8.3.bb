@@ -20,10 +20,10 @@ do_stage() {
 		libdir=${STAGING_LIBDIR} \
 		datadir=${STAGING_DATADIR} \
 		infodir=${STAGING_INFODIR}
-	
+
 	cp ${STAGING_BINDIR}/libIDL-config-2 ${STAGING_BINDIR}/libIDL-config-2.orig
 	cat ${STAGING_BINDIR}/libIDL-config-2.orig | sed -e 's:${includedir}:${STAGING_INCDIR}:' > ${STAGING_BINDIR}/libIDL-config-2
 }
 
 FILES_${PN} = "${libdir}/*.so.*"
-FILES_${PN}-dev += " ${bindir}" 
+FILES_${PN}-dev += " ${bindir}"

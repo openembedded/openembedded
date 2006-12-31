@@ -21,7 +21,7 @@ do_configure_prepend() {
     echo "SUBDIRS = lib tests" >>portaudio.pro
 
     mkdir -p lib
-    cat <<EOF >lib/lib.pro    
+    cat <<EOF >lib/lib.pro
 TEMPLATE = lib
 CONFIG = console debug warn_on
 TARGET = portaudio
@@ -51,7 +51,7 @@ EOF
     mkdir -p tests
     echo "TEMPLATE = subdirs" >tests/tests.pro
     echo "SUBDIRS = \\" >>tests/tests.pro
-    
+
     for test in ${TESTS}
     do
         mkdir -p tests/$test

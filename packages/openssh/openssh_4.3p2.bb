@@ -34,7 +34,7 @@ EXTRA_OECONF = "--disable-suid-ssh --with-ssl=${STAGING_LIBDIR}/ssl \
 		--with-privsep-path=/var/run/sshd \
 		--sysconfdir=${sysconfdir}/ssh \
 		--with-xauth=/usr/bin/xauth"
-		
+
 EXTRA_OEMAKE = "'STRIP_OPT='"
 
 do_configure_prepend () {

@@ -19,13 +19,13 @@ SRC_URI = "${SOURCEFORGE_MIRROR}/cameraassistant/camera-assistant_0.2.0.tar.gz \
 	  file://g++-3.4-compile-fixes.patch;patch=1 \
 	  file://ca.desktop \
 	  file://ca.png "
-	  
+
 
 S = "${WORKDIR}/CameraAssistant"
 
 APPNAME = "ca"
 APPTYPE = "binary"
-APPDESKTOP = "${WORKDIR}" 
+APPDESKTOP = "${WORKDIR}"
 
 do_install() {
     install -d ${D}${palmtopdir}/pics/${APPNAME}/

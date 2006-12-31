@@ -11,5 +11,5 @@ SRC_URI += "file://fixloop.patch;patch=1;pnum=0"
 
 do_stage () {
 	oe_libinstall -a libgpe-ownerinfo ${STAGING_LIBDIR}
-	install -m 0644 gpe-ownerinfo.h ${STAGING_INCDIR}/ 
+	install -m 0644 gpe-ownerinfo.h ${STAGING_INCDIR}/
 }

@@ -12,7 +12,7 @@ python do_unpack() {
 	if not overrides:
 		raise bb.build.FuncFailed('OVERRIDES not defined')
 	bb.data.setVar('OVERRIDES', overrides+':'+bb.data.getVar('PN', localdata, 1), localdata)
-	
+
 	bb.data.update_data(localdata)
 
 	src_uri = bb.data.getVar('SRC_URI', localdata)

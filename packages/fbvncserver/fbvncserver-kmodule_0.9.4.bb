@@ -8,7 +8,7 @@ SRC_URI = "http://sdgsystems.com/download/fbvncserver-${PV}.tar.gz \
 	   file://paths.patch;patch=1 \
 	   file://kernelinclude.patch;patch=1 \
            file://ipaq.patch;patch=1"
-	  
+
 S = "${WORKDIR}/fbvncserver-${PV}"
 
 inherit module

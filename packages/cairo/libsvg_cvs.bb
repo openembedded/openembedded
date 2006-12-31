@@ -10,7 +10,7 @@ PR = "r2"
 
 EXTRA_OECONF = "--with-expat"
 
-inherit autotools pkgconfig 
+inherit autotools pkgconfig
 
 do_stage () {
 	autotools_stage_all

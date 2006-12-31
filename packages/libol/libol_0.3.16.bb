@@ -12,4 +12,4 @@ do_stage() {
 	ln -fs ${STAGING_LIBDIR}/libol.so.0.0.0 ${STAGING_LIBDIR}/libol.so.0
 	install ${S}/src/*.h ${STAGING_INCDIR}/libol/
 }
-	
+

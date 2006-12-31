@@ -13,10 +13,10 @@ do_install() {
 		   ${D}${sysconfdir}/rcS.d \
 		   ${D}${sysconfdir}/rc2.d \
 		   ${D}${sysconfdir}/init.d
-	
+
 	install -m 0644 ${WORKDIR}/inittab ${D}${sysconfdir}/inittab
 	install -m 0755 ${WORKDIR}/rcS ${D}${sysconfdir}/init.d
-	
+
 	if [ ! -z "${SERIAL_CONSOLE}" ]; then
 		echo "${SERIAL_CONSOLE}::askfirst:/bin/sh --login" >> ${D}${sysconfdir}/inittab
 	fi

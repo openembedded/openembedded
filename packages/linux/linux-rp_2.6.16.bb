@@ -8,9 +8,9 @@ PR = "r47"
 # http://www.kernel.org/pub/linux/kernel/v2.6/testing/patch-2.6.15-rc1.bz2;patch=1 \
 # http://www.kernel.org/pub/linux/kernel/v2.6/snapshots/patch-2.6.15-rc2-git1.bz2;patch=1 \
 # http://www.kernel.org/pub/linux/kernel/people/alan/linux-2.6/2.6.10/patch-2.6.10-ac8.gz;patch=1 \
-# http://www.kernel.org/pub/linux/kernel/people/akpm/patches/2.6/2.6.14-rc2/2.6.14-rc2-mm1/2.6.14-rc2-mm1.bz2;patch=1 \	   
+# http://www.kernel.org/pub/linux/kernel/people/akpm/patches/2.6/2.6.14-rc2/2.6.14-rc2-mm1/2.6.14-rc2-mm1.bz2;patch=1 \
 
-# Patches submitted upstream are towards top of this list 
+# Patches submitted upstream are towards top of this list
 # Hacks should clearly named and at the bottom
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.16.tar.bz2 \
            file://rmk-mmc1.patch;patch=1;status=merged \
@@ -119,12 +119,12 @@ SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.16.tar.bz2 \
 # Disabled until I find the reason this gives issues with cdc_subset
 #            ${RPSRC}/usb_rndis_tweaks-r0.patch;patch=1 \
 
-# These patches would really help collie/poodle but we 
+# These patches would really help collie/poodle but we
 # need someone to maintain them
-# ${JLSRC}/zaurus-lcd-2.6.11.diff.gz;patch=1 
+# ${JLSRC}/zaurus-lcd-2.6.11.diff.gz;patch=1
 #   (Pavel Machek's git tree has updated versions of this?)
 #   Also parts were recently committed to mainline by rmk (drivers/mfd/)
-# ${JLSRC}/zaurus-base-2.6.11.diff.gz;patch=1 
+# ${JLSRC}/zaurus-base-2.6.11.diff.gz;patch=1
 #   (This is mostly in mainline now?)
 # ${JLSRC}/zaurus-local-2.6.11.diff.gz;patch=1 \
 # ${JLSRC}/zaurus-leds-2.6.11.diff.gz;patch=1 \

@@ -9,7 +9,7 @@ PR = "r2"
 SRC_URI = "http://www.tcpdump.org/release/tcpdump-${PV}.tar.gz \
            file://tcpdump_configure_no_-O2.patch;patch=1"
 
-inherit autotools 
+inherit autotools
 
 EXTRA_OECONF = "--without-crypto"
 

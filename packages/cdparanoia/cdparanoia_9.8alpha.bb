@@ -15,12 +15,12 @@ inherit autotools
 
 do_install() {
 	oe_runmake BINDIR="${D}/usr/bin" MANDIR="${D}/usr/share/man/" \
-		   INCLUDEDIR="${D}/usr/include/" LIBDIR="${D}/usr/lib" install 
+		   INCLUDEDIR="${D}/usr/include/" LIBDIR="${D}/usr/lib" install
 }
 
 do_stage() {
 	install -d ${STAGING_INCDIR} ${STAGING_LIBDIR}
-	
+
 	install -m 0644 paranoia/cdda_paranoia.h ${STAGING_INCDIR}
 	install -m 0644 interface/cdda_interface.h ${STAGING_INCDIR}
 

@@ -20,6 +20,6 @@ do_stage() {
 
 	my_PERL="/usr/bin/env perl"
 	sed -e "s%/[a-zA-Z0-9/]*/bin/perl%$my_PERL%g" -i ${STAGING_BINDIR}/rpm2cpio.pl
-	
-	chmod 0755 ${STAGING_BINDIR}/rpm2cpio.pl 
+
+	chmod 0755 ${STAGING_BINDIR}/rpm2cpio.pl
 }

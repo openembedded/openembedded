@@ -11,7 +11,7 @@ SRC_URI = "file://abiword.applications \
            file://gnumeric.applications \
            file://gpe-calendar.applications \
            file://gpe-contacts.applications \
-           file://ipkg.applications" 
+           file://ipkg.applications"
 
 
 do_install_append () {

@@ -10,7 +10,7 @@ SRC_URI = "${XLIBS_MIRROR}/libXcursor-${PV}.tar.bz2 \
 S = "${WORKDIR}/libXcursor-${PV}"
 FILES_${PN} += "${libdir}/libXcursor.so"
 
-inherit autotools pkgconfig 
+inherit autotools pkgconfig
 
 do_stage() {
 	autotools_stage_all

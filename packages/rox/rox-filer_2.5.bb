@@ -15,7 +15,7 @@ S = "${WORKDIR}/${P}/ROX-Filer/src/"
 
 do_compile() {
 	../AppRun --compile
-}	
+}
 
 do_install() {
 	install -d ${D}${bindir}
@@ -32,13 +32,13 @@ do_install() {
 	cp -r ${WORKDIR}/${P}/Choices ${D}${datadir}/rox
 	rm -rf ${D}${datadir}rox/Choices/MIME-info/
 	cp ${WORKDIR}/${P}/ROX-Filer/*.xml ${D}${datadir}/rox
-	
+
 	cp ${WORKDIR}/${P}/ROX-Filer/Help/{Changes,README*,TODO} ${D}${datadir}/doc/rox
 	cp ${WORKDIR}/${P}/ROX-Filer/Help/*html ${D}${datadir}/doc/rox/html
 	cp ${WORKDIR}/${P}/ROX-Filer/style.css ${D}${datadir}/doc/rox/html
 	cp -r ${WORKDIR}/${P}/ROX-Filer/images ${D}${datadir}/rox
 	cp -r ${WORKDIR}/${P}/ROX-Filer/ROX ${D}${datadir}/rox
-	
+
 #	cp ROX-Filer/ROX-Filer ${D}/usr/bin/rox
 	cp ${WORKDIR}/${P}/ROX-Filer/.DirIcon ${D}${datadir}/rox/.DirIcon
 	cp ${WORKDIR}/${P}/rox.xml ${D}${datadir}/mime/packages

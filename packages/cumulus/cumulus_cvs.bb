@@ -25,7 +25,7 @@ do_compile() {
 	echo "#define SHARP_PDA_WARNSOUND 4" >sharp_char.h
 	qmake -makefile -spec ${QMAKESPEC} -after ${EXTRA_QMAKEVARS_POST} cumulus.pro
 	oe_runmake
-	qmake -makefile -spec ${QMAKESPEC} -after ${EXTRA_QMAKEVARS_POST} gpsClient.pro 
+	qmake -makefile -spec ${QMAKESPEC} -after ${EXTRA_QMAKEVARS_POST} gpsClient.pro
 	oe_runmake
 }
 

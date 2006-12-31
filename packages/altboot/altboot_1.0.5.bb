@@ -32,18 +32,18 @@ do_install() {
 	install -d ${D}/etc/altboot-menu/Advanced
 	install -d ${D}/etc/altboot.rc
 	install -d ${D}/usr/share/doc/altboot
-	
+
 	if test -d ${WORKDIR}/altboot/${MACHINE}
 	then
 		install -m 0644 ${WORKDIR}/altboot/${MACHINE}/altboot*.cfg ${D}/etc
 	else
 		install -m 0644 ${WORKDIR}/altboot/altboot*.cfg ${D}/etc
 	fi
-	
+
 	install -m 0644 ${WORKDIR}/altboot/altboot.func ${D}/etc
 	install -m 0755 ${WORKDIR}/altboot/init.altboot ${D}/sbin
-	
-	if test -d ${WORKDIR}/altboot/${MACHINE}/altboot-menu/	
+
+	if test -d ${WORKDIR}/altboot/${MACHINE}/altboot-menu/
 	then
 		install -m 0755 ${WORKDIR}/altboot/${MACHINE}/altboot-menu/*-* ${D}/etc/altboot-menu
 	else
@@ -56,10 +56,10 @@ do_install() {
 	else
 		install -m 0755 ${WORKDIR}/altboot/altboot-menu/Advanced/*-* ${D}/etc/altboot-menu/Advanced
 	fi
-	
+
 	install -m 0755 ${WORKDIR}/altboot/altboot.rc/*.sh ${D}/etc/altboot.rc
-	install -m 0644 ${WORKDIR}/altboot/altboot.rc/*.txt ${D}/etc/altboot.rc	
-}		
+	install -m 0644 ${WORKDIR}/altboot/altboot.rc/*.txt ${D}/etc/altboot.rc
+}
 
 ######################################################################################
 

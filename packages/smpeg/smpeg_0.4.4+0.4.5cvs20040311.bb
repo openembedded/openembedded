@@ -10,7 +10,7 @@ SRC_URI = "cvs://anonymous:anonymous@cvs.icculus.org/cvs/cvsroot;module=smpeg;da
 	   file://compile.patch;patch=1"
 S = "${WORKDIR}/smpeg"
 
-inherit autotools 
+inherit autotools
 
 CFLAGS_append = " -I${STAGING_INCDIR}/SDL"
 EXTRA_OECONF = "--disable-gtktest --disable-opengl-player --without-x \

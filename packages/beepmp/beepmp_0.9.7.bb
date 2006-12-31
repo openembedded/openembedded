@@ -17,10 +17,10 @@ S = "${WORKDIR}/bmp-0.9.7"
 
 FILES_${PN} += " ${libdir}/bmp/Output/*.so ${libdir}/bmp/Input/*.so \
 	${libdir}/bmp/Visualization/*.so ${datadir}/bmp"
-	
+
 EXTRA_OECONF = "--disable-esd --disable-alsa --enable-simd"
 
 do_configure() {
 	rm -rf  m4/libtool.m4
-	autotools_do_configure	
+	autotools_do_configure
 }

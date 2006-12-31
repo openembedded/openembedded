@@ -26,7 +26,7 @@ do_configure_append () {
         sed -e 's:ENABLECLAMLIB false:ENABLECLAMLIB true:' \
             -e 's:/usr/local/etc:/etc:' \
             etc/havp/havp.config > etc/havp/havp.config.oe
-}	
+}
 do_install () {
         install -m 0755 -d ${D}${sbindir} ${D}${sysconfdir}/havp \
                 ${D}${sysconfdir}/init.d ${D}${docdir}/havp \

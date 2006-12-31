@@ -30,5 +30,5 @@ do_configure () {
 }
 
 do_stage() {
-	:	
+	:
 }

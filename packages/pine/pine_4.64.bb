@@ -11,7 +11,7 @@ S = "${WORKDIR}/pine${PV}"
 inherit autotools
 
 #
-# ~lart Pine's build structure... 
+# ~lart Pine's build structure...
 #
 PARALLEL_MAKE = ""
 EXTRA_OEMAKE = "-e"

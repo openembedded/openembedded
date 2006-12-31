@@ -100,9 +100,9 @@ do_stage() {
 	done
 
 	install -d ${STAGING_LIBDIR}
-	
+
 	oe_libinstall -C lib libpt_linux_x86_r ${STAGING_LIBDIR}
-	
+
 	ln -sf ${STAGING_LIBDIR}/libpt_linux_x86_r.so ${STAGING_LIBDIR}/libpt.so
 
 	install -d ${STAGING_DATADIR}/pwlib/make

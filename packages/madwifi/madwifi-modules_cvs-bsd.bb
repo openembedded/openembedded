@@ -27,7 +27,7 @@ do_compile() {
 do_install() {
 	oe_runmake DESTDIR=${D} install
 	install -d ${D}${sbindir}
-	cd tools; 
+	cd tools;
 	oe_runmake DESTDIR=${D} BINDIR=${sbindir} install
 	install -m 755 athchans athctrl athkey ${D}${sbindir}
 }

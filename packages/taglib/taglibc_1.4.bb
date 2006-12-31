@@ -12,7 +12,7 @@ S = "${WORKDIR}/taglib-${PV}"
 inherit autotools qmake-base pkgconfig binconfig
 
 do_configure() {
-	echo running oe_runconf to get pkgconfig and binconfig files created          
+	echo running oe_runconf to get pkgconfig and binconfig files created
 	oe_runconf
 	cd ${S}/bindings/c && rm -f Makefile* && qmake -project -o tag_c.pro -t lib && \
 	qmake -spec ${QMAKESPEC} -after CONFIG=console INCLUDEPATH+=${STAGING_INCDIR}/taglib LIBS+=-ltag

@@ -12,7 +12,7 @@ DEFAULT_PREFERENCE = "-1"
 # http://www.kernel.org/pub/linux/kernel/people/alan/linux-2.6/2.6.10/patch-2.6.10-ac8.gz;patch=1
 # http://www.kernel.org/pub/linux/kernel/people/akpm/patches/2.6/2.6.14-rc2/2.6.14-rc2-mm1/2.6.14-rc2-mm1.bz2;patch=1
 
-# Patches submitted upstream are towards top of this list 
+# Patches submitted upstream are towards top of this list
 # Hacks should clearly named and at the bottom
 SRC_URI = "git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux-2.6.git;protocol=git;tag=v2.6.20-rc1 \
            http://opensource.wolfsonmicro.com/~lg/asoc/asoc-v0.12.4.patch;patch=1 \
@@ -65,7 +65,7 @@ SRC_URI = "git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux-2.6.git;
 
 # Is anything out of this still needed? Parts were commited to mainline by rmk (drivers/mfd/)
 # (Pavel Machek's git tree has updated versions of this?)
-#  ${JLSRC}/zaurus-lcd-2.6.11.diff.gz;patch=1 
+#  ${JLSRC}/zaurus-lcd-2.6.11.diff.gz;patch=1
 
 # These patches are extracted from Pavel Machek's git tree
 # (diff against vanilla kernel)

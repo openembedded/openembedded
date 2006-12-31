@@ -28,7 +28,7 @@ do_stage () {
 	oe_libinstall -so -C kjs libjscore ${STAGING_LIBDIR}
 
 	autotools_stage_includes
-	
+
 	install -d ${STAGING_INCDIR}/osb/JavaScriptCore
 	for i in ${S}/kjs/*.h ${S}/kjs/new; do
 		install -m 0644 $i ${STAGING_INCDIR}/osb/JavaScriptCore

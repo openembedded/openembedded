@@ -25,11 +25,11 @@ do_configure() {
 	--with-x=${STAGING_DIR}/${HOST_SYS} \
 	--with-openssl=${STAGING_DIR}/${HOST_SYS} \
 	--with-oss \
-	--without-debug	 
+	--without-debug
 }
 
 do_compile() {
-	oe_runmake 'KEYMAP_PATH=${datadir}/keymaps/' 
+	oe_runmake 'KEYMAP_PATH=${datadir}/keymaps/'
 }
 
 do_install() {

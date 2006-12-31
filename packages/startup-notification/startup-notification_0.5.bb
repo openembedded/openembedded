@@ -4,7 +4,7 @@ SECTION = "libs"
 PRIORITY = "optional"
 DEPENDS = "virtual/libx11"
 
-inherit autotools pkgconfig 
+inherit autotools pkgconfig
 
 SRC_URI = "http://freedesktop.org/Software/startup-notification/releases/startup-notification-${PV}.tar.gz"
 
