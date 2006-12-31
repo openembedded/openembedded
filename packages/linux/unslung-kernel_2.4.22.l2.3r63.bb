@@ -4,7 +4,7 @@ COMPATIBLE_MACHINE = "nslu2"
 require nslu2-linksys-kernel_2.4.22.bb
 
 DESCRIPTION = "Unslung kernel for the Linksys NSLU2 device"
-PR = "r16"
+PR = "r17"
 
 KERNEL_SUFFIX = "unslung"
 
