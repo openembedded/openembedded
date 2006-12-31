@@ -1,14 +1,22 @@
-require gdb.inc
-
+DESCRIPTION = "gdb - GNU debugger"
+HOMEPAGE = "http://www.gnu.org/software/gdb/"
+LICENSE="GPL"
+SECTION = "devel"
+PRIORITY = "optional"
 DEPENDS = "ncurses readline"
+PR = "r0"
 
 PACKAGES =+ 'gdbserver '
 FILES_gdbserver = '${bindir}/gdbserver'
 
+RRECOMMENDS_gdb = "glibc-thread-db"
+
 inherit autotools gettext
 
 SRC_URI = "${GNU_MIRROR}/gdb/gdb-${PV}.tar.gz \
-	   file://uclibc.patch;patch=1"
+#FIXME	   file://uclibc.patch;patch=1 \
+	   file://kill_arm_map_symbols.patch;patch=1 \
+	   file://gdbserver-cflags-last.diff;patch=1;pnum=0"
 
 LDFLAGS_append = " -s"
 export CC_FOR_BUILD = "${BUILD_CC}"
@@ -21,31 +29,22 @@ export CFLAGS_append=" -L${STAGING_LIBDIR}"
 EXTRA_OEMAKE = "'SUBDIRS=intl mmalloc libiberty opcodes bfd sim gdb etc utils'"
 
 EXTRA_OECONF = "--disable-gdbtk --disable-tui --disable-x \
-                --with-curses --with-readline --disable-sim \
+                --with-curses --disable-multilib --with-readline --disable-sim \
                 --program-prefix=''"
+
+S = "${WORKDIR}/gdb-${PV}"
+B = "${WORKDIR}/build-${TARGET_SYS}"
 
 do_configure () {
 # override this function to avoid the autoconf/automake/aclocal/autoheader
 # calls for now
-	gnu-configize
-	oe_runconf
+	(cd ${S} && gnu-configize) || die "failure in running gnu-configize"
+        CPPFLAGS="" oe_runconf
 }
 
 do_install () {
 	make -C bfd/doc chew LDFLAGS= CFLAGS=-O2
-	oe_runmake install \
-	    'prefix=${D}${prefix}' 'exec_prefix=${D}${prefix}' 'bindir=${D}${bindir}' \
-	    'sbindir=${D}${sbindir}' 'infodir=${D}${infodir}' 'libdir=${D}${libdir}' \
-	    'mandir=${D}${mandir}' 'includedir=${D}${includedir}'
+	oe_runmake DESTDIR='${D}' install
 	install -d ${D}${bindir}
 	install -m 0755 gdb/gdbserver/gdbserver ${D}${bindir}
 }
-
-#
-# patch description
-#
-# readline.patch:
-#   gdb 5.3 provides its own readline source which tends to conflict with
-#   readline package. we override readline included from gdb source
-#   with packaged readline and fix up extern tilde_expand in gdb/defs.h
-#

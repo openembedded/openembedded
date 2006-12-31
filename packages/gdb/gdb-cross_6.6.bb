@@ -1,6 +1,7 @@
-require gdb.inc
-
+LICENSE = "GPL"
+DESCRIPTION = "gdb - GNU debugger"
 SECTION = "base"
+PRIORITY = "optional"
 DEPENDS = "ncurses-native"
 
 inherit autotools sdk
@@ -30,5 +31,5 @@ do_configure () {
 }
 
 do_stage() {
-	:
+	:	
 }
