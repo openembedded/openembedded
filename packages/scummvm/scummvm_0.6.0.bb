@@ -11,14 +11,15 @@ SRC_URI = "${SOURCEFORGE_MIRROR}/scummvm/scummvm-${PV}.tar.bz2 \
 
 inherit autotools
 
+export SDL_CONFIG = "${STAGING_BINDIR_CROSS}/sdl-config"
+
 EXTRA_OECONF = "--host=${HOST_SYS} \
 		--backend=sdl \
-		--with-sdl-prefix=${STAGING_BINDIR}/.. \
 		--disable-alsa \
 		--with-ogg-prefix=${STAGING_LIBDIR}/.. \
 		--with-vorbis-prefix=${STAGING_LIBDIR}/.. \
 		--with-mpeg2-prefix=${STAGING_LIBDIR}/.. \
-		--with-mad-prefix=${STAGING_BINDIR}/.. "
+		--with-mad-prefix=${STAGING_BINDIR_CROSS}/.. "
 
 do_configure() {
 	./configure ${EXTRA_OECONF}

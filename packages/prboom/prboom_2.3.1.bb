@@ -19,7 +19,6 @@ inherit autotools
 EXTRA_OECONF = " --without-x --disable-sdltest --with-sdl-exec-prefix=${STAGING_DIR}/${BUILD_SYS} "
 
 do_configure() {
-	PATH=${STAGING_BINDIR}:$PATH
 	gnu-configize
 	oe_runconf
 }

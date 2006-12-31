@@ -31,11 +31,11 @@ do_stage () {
 		install -m 0644 ${S}/libexslt/$i ${STAGING_INCDIR}/libexslt/$i
 	done
 
-	cat xslt-config | sed -e "s,^prefix=.*,prefix=${STAGING_BINDIR}/..," \
-		       	     -e "s,^exec_prefix=.*,exec_prefix=${STAGING_BINDIR}/..," \
+	cat xslt-config | sed -e "s,^prefix=.*,prefix=${STAGING_DIR}/${HOST_SYS}," \
+		       	     -e "s,^exec_prefix=.*,exec_prefix=${STAGING_DIR}/${HOST_SYS}," \
 			     -e "s,^includedir=.*,includedir=${STAGING_INCDIR}," \
-			     -e "s,^libdir=.*,libdir=${STAGING_LIBDIR}," > ${STAGING_BINDIR}/xslt-config
-	chmod a+rx ${STAGING_BINDIR}/xslt-config
+			     -e "s,^libdir=.*,libdir=${STAGING_LIBDIR}," > ${STAGING_BINDIR_CROSS}/xslt-config
+	chmod a+rx ${STAGING_BINDIR_CROSS}/xslt-config
 	install -m 0644 libxslt.m4 ${STAGING_DATADIR}/aclocal/
 }
 
