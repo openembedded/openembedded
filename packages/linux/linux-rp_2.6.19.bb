@@ -36,7 +36,7 @@ SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.19.tar.bz2 \
            ${RPSRC}/poodle_pm-r3.patch;patch=1 \
            ${RPSRC}/pxa27x_overlay-r4.patch;patch=1 \
            ${RPSRC}/w100_extaccel-r0.patch;patch=1 \
-           ${RPSRC}/xscale_cache_workaround-r0.patch;patch=1 \
+           ${RPSRC}/xscale_cache_workaround-r1.patch;patch=1 \
            file://serial-add-support-for-non-standard-xtals-to-16c950-driver.patch;patch=1 \
            ${RPSRC}/logo_oh-r0.patch.bz2;patch=1;status=unmergable \
            ${RPSRC}/logo_oz-r2.patch.bz2;patch=1;status=unmergable \
