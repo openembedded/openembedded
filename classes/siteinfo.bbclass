@@ -91,7 +91,7 @@ def siteinfo_get_files(d):
                if os.path.exists(fname):
                        sitefiles += fname + " "
 
-       bb.note("SITE files " + sitefiles);
+       bb.debug(1, "SITE files " + sitefiles);
        return sitefiles
 
 #
