@@ -5,7 +5,12 @@ AUTHOR = "Harald Welte"
 LICENSE = "GPL"
 PR = "r1"
 
-SRC_URI = "svn://svn.openezx.org/trunk/src/host;module=boot_usb;proto=http;rev=${PV}"
+DEFAULT_PREFERENCE = "-1"
+
+REV = "1922"
+PV = "0.1.0+r${REV}"
+
+SRC_URI = "svn://svn.openezx.org/trunk/src/host;module=boot_usb;proto=http;rev=${REV}"
 S = "${WORKDIR}/boot_usb"
 
 inherit native
