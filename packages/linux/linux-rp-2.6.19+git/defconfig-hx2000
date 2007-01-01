@@ -1,7 +1,7 @@
 #
 # Automatically generated make config: don't edit
 # Linux kernel version: 2.6.20-rc2
-# Sun Dec 31 01:06:18 2006
+# Mon Jan  1 01:49:04 2007
 #
 CONFIG_ARM=y
 # CONFIG_GENERIC_TIME is not set
@@ -240,7 +240,8 @@ CONFIG_BINFMT_ELF=y
 #
 CONFIG_PM=y
 # CONFIG_PM_LEGACY is not set
-# CONFIG_PM_DEBUG is not set
+CONFIG_PM_DEBUG=y
+# CONFIG_DISABLE_CONSOLE_SUSPEND is not set
 # CONFIG_PM_SYSFS_DEPRECATED is not set
 CONFIG_APM=y
 

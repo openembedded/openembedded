@@ -1,6 +1,6 @@
 require linux-rp.inc
 
-PR = "r3"
+PR = "r4"
 
 DEFAULT_PREFERENCE = "-1"
 
@@ -23,7 +23,7 @@ SRC_URI = "git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux-2.6.git;
            ${RPSRC}/hx2750_pcmcia-r2.patch;patch=1 \
            ${RPSRC}/pxa_keys-r7.patch;patch=1 \
            ${RPSRC}/tsc2101-r16.patch;patch=1 \
-           ${RPSRC}/hx2750_test1-r5.patch;patch=1 \
+           ${RPSRC}/hx2750_test1-r6.patch;patch=1 \
            ${RPSRC}/pxa_timerfix-r0.patch;patch=1 \
            ${RPSRC}/input_power-r6.patch;patch=1 \
            ${RPSRC}/pxa25x_cpufreq-r2.patch;patch=1 \
