@@ -65,7 +65,6 @@ ac_cv_regexec_segfault_emptystr=${ac_cv_regexec_segfault_emptystr=no}
 nano_cv_func_regexec_segv_emptystr=${nano_cv_func_regexec_segv_emptystr=no}
 
 # libnet 
-ac_cv_libnet_endianess=${ac_cv_libnet_endianess=big}
 ac_libnet_have_packet_socket=${ac_libnet_have_packet_socket=yes}
 
 # screen
