@@ -62,9 +62,6 @@ samba_cv_HAVE_KERNEL_CHANGE_NOTIFY=${samba_cv_HAVE_KERNEL_CHANGE_NOTIFY=yes}
 samba_cv_HAVE_KERNEL_SHARE_MODES=${samba_cv_HAVE_KERNEL_SHARE_MODES=yes}
 samba_cv_LINUX_LFS_SUPPORT=${samba_cv_LINUX_LFS_SUPPORT=yes}
 
-# mono
-cv_mono_sizeof_sunpath=108
-
 # dpkg
 dpkg_cv_va_copy=${ac_cv_va_copy=no}
 dpkg_cv___va_copy=${ac_cv___va_copy=yes}
@@ -78,16 +75,9 @@ clamav_av_have_in_port_t=${clamav_av_have_in_port_t=yes}
 clamav_av_have_in_addr_t=${clamav_av_have_in_addr_t=yes}
 ac_cv_func_mmap_fixed_mapped=${ac_cv_func_mmap_fixed_mapped=yes}
 
-#dbus
+# dbus
 ac_cv_have_abstract_sockets=${ac_cv_have_abstract_sockets=no}
-
-#apache
-apr_cv_tcp_nodelay_with_cork=${apr_cv_tcp_nodelay_with_cork=yes}
-
-# jikes
-ac_cv_sizeof_wchar_t=4
 
 # lftp
 ac_cv_file___dev_ptc_=yes
-
 
