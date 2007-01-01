@@ -3,13 +3,13 @@ LICENSE = "GPLv2"
 
 DEPENDS = "glib-2.0"
 
-PV = "0.0+cvs${SRCDATE}"
+PV = "0.0+svn${SRCDATE}"
 
 inherit gnome
 
-SRC_URI = "cvs://anonymous@anoncvs.gnome.org/cvs/gnome;module=${PN}"
+SRC_URI = "svn://svn.gnome.org/svn/${PN}/;module=trunk"
 
-S = "${WORKDIR}/${PN}"
+S = "${WORKDIR}/trunk"
 
 do_stage() {
 	autotools_stage_all
