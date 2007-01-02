@@ -18,7 +18,7 @@ inherit palmtop sip distutils-base
 QMAKE_PROFILES = "pyqwt.pro"
 EXTRA_SIPTAGS = "-tWS_QWS -tQtPE_1_6_0 -tQt_2_3_1"
 SIP_MODULES = "qwt"
-SIP_FEATURES = "${WORKDIR}/features"   
+SIP_FEATURES = "${WORKDIR}/features"
 EXTRA_OEMAKE = " MAKEFLAGS= "
 
 EXTRA_QMAKEVARS_POST += "TARGET=qwt \
@@ -34,7 +34,7 @@ EXTRA_QMAKEVARS_POST += "TARGET=qwt \
 
 do_generate_prepend() {
     echo -e "TEMPLATE=subdirs\nSUBDIRS=qwt\n" >pyqwt.pro
-    
+
     echo "%Makefile qwt.pro.in" >>sip/qwtmod.sip
     echo "TEMPLATE=lib" >>sip/qwtmod.sip
     echo 'SOURCES = $B' >>sip/qwtmod.sip

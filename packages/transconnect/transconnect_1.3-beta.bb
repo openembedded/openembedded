@@ -9,7 +9,7 @@ S = "${WORKDIR}/transconnect-1.3-Beta"
 LDFLAGS_append = " -shared"
 do_compile () {
 	# build with local resolv.conf and dns over tcp support
-	oe_runmake localtcp 
+	oe_runmake localtcp
 }
 
 do_install () {

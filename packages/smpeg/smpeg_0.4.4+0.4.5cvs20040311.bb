@@ -10,13 +10,13 @@ SRC_URI = "cvs://anonymous:anonymous@cvs.icculus.org/cvs/cvsroot;module=smpeg;da
 	   file://compile.patch;patch=1"
 S = "${WORKDIR}/smpeg"
 
-inherit autotools 
+inherit autotools
+
+export SDL_CONFIG = "${STAGING_BINDIR_CROSS}/sdl-config"
 
 CFLAGS_append = " -I${STAGING_INCDIR}/SDL"
 EXTRA_OECONF = "--disable-gtktest --disable-opengl-player --without-x \
-		--without-gtk --disable-gtk-player \
-		--with-sdl-prefix=${STAGING_LIBDIR}/.. \
-		--with-sdl-exec-prefix=${STAGING_BINDIR}/.."
+		--without-gtk --disable-gtk-player"
 
 do_configure_prepend () {
 	touch NEWS AUTHORS ChangeLog
@@ -35,8 +35,8 @@ do_stage() {
         cat smpeg-config | sed -e "s,-I/usr/include/SDL,-I${STAGING_INCDIR}/SDL," \
                          | sed -e "s,-I/usr/include/smpeg, ," \
                          | sed -e "s,libdirs ,mickey_is_cool ," \
-                         | sed -e "s,-lSDL ,-lSDL-1.2 , "> ${STAGING_BINDIR}/smpeg-config
-        chmod a+rx ${STAGING_BINDIR}/smpeg-config
+                         | sed -e "s,-lSDL ,-lSDL-1.2 , "> ${STAGING_BINDIR_CROSS}/smpeg-config
+        chmod a+rx ${STAGING_BINDIR_CROSS}/smpeg-config
 }
 
 PACKAGES =+ "plaympeg "

@@ -6,7 +6,7 @@ PR = "r0"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/config-plus/config-plus-${PV}.tar.gz"
 S = "${WORKDIR}/config-plus-${PV}"
- 
+
 inherit autotools
 
 

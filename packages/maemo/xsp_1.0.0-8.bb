@@ -8,7 +8,7 @@ DEPENDS = "virtual/libx11 xextensions libxext xpext"
 SRC_URI = "http://repository.maemo.org/pool/maemo/ossw/source/x/xsp/${PN}_${PV}.tar.gz"
 S = "${WORKDIR}/Xsp"
 
-inherit autotools pkgconfig 
+inherit autotools pkgconfig
 
 do_stage() {
 	oe_runmake install prefix=${STAGING_DIR} \

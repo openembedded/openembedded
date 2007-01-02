@@ -17,7 +17,7 @@ APPDESKTOP = "${S}"
 inherit opie
 
 do_compile_prepend() {
-	oe_runmake -C images	
+	oe_runmake -C images
 }
 
 do_install () {

@@ -8,7 +8,7 @@ LICENSE = "GPL"
 SRC_URI = "${SOURCEFORGE_MIRROR}/cpufreqd/cpufreqd-${PV}.tar.gz \
 	   file://nonrootinstall.patch;patch=1"
 
-inherit autotools 
+inherit autotools
 
 FILES_${PN} = "${sbindir} ${sysconfdir} ${libdir}/libsys_*.so"
 FILES_${PN}-dev = "${libdir}/*.la ${libdir}/*.a"

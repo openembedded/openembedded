@@ -21,7 +21,7 @@ SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.17.tar.gz \
 	   file://Newfile-Epson1356fb.patch;patch=0 \
 	   file://Newfile-Jornada720_kbd.patch;patch=0 \
 	   file://Newfile-Jornada720_ts.patch;patch=0"
-	   	            
+
 S = "${WORKDIR}/linux-${PV}"
 
 inherit kernel

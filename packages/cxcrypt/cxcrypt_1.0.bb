@@ -10,7 +10,7 @@ CFLAGS_prepend = "-g -Wall -ansi -pedantic "
 LDFLAGS_prepend = "-L. -lcxio "
 
 do_compile() {
-	oe_runmake 
+	oe_runmake
 }
 
 do_install() {

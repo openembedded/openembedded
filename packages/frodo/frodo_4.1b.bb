@@ -12,7 +12,7 @@ SRC_URI = "http://wwwthep.physik.uni-mainz.de/~cbauer/FrodoV4_1b.Src.tar.gz \
            file://frodo.desktop"
 S = "${WORKDIR}/Frodo-${PV}/Src"
 
-inherit autotools 
+inherit autotools
 
 EXTRA_OECONF = "--disable-sdltest --enable-qtopia"
 

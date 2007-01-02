@@ -54,7 +54,7 @@ PACKAGE_ARCH_poodle = "poodle"
 
 S = "${WORKDIR}/git"
 
-inherit autotools pkgconfig 
+inherit autotools pkgconfig
 
 W100_OECONF = "--disable-w100"
 W100_OECONF_arm = "--enable-w100"

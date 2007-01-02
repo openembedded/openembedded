@@ -18,7 +18,7 @@ do_configure_prepend() {
         mv ${WORKDIR}/Makefile.am ${S}/
 }
 
-PACKAGES =+ "libfaad libfaad-dev libmp4ff libmp4ff-dev" 
+PACKAGES =+ "libfaad libfaad-dev libmp4ff libmp4ff-dev"
 
 FILES_${PN} = "${bindir}/faad"
 

@@ -18,7 +18,7 @@ RDEPENDS  = "kernel update-modules unslung-rootfs \
 #	findutils \
 	${UNSLUNG_EXTRA_RDEPENDS}"
 
-IPKG_INSTALL = "kernel update-modules unslung-rootfs \
+PACKAGE_INSTALL = "kernel update-modules unslung-rootfs \
 	libc6-unslung slingbox ipkg \
 	libipkg \
 #	cpio \
@@ -27,8 +27,8 @@ IPKG_INSTALL = "kernel update-modules unslung-rootfs \
 	${UNSLUNG_EXTRA_INSTALL}"
 
 IMAGE_PREPROCESS_COMMAND += "unslung_clean_image; "
-		
-inherit image_ipk
+
+inherit image
 
 # Note that anything in this function must be repeatable without having to rebuild the rootfs
 unslung_clean_image () {

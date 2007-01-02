@@ -26,7 +26,7 @@ inherit autotools
 export INTLTOOL_PERL="/usr/bin/env perl"
 
 EXTRA_OECONF="--with-xml --with-gtk --disable-locking --without-pixbuf \
-	--with-jpeg --with-xpm" 
+	--with-jpeg --with-xpm"
 
 PACKAGES =+  " xscreensaver-demo xscreensaver-extra"
 

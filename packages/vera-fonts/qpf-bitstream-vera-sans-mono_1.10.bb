@@ -14,15 +14,15 @@ S = "${WORKDIR}/verasansmono"
 
 FILES_${PN} += "/opt"
 
-do_install () { 
-        install -d ${D}${palmqtdir}/lib/fonts/ 
-	
+do_install () {
+        install -d ${D}${palmqtdir}/lib/fonts/
+
 	cd ${WORKDIR}
 	files=`find . -name "*.qpf"`
-        for i in $files; do 
+        for i in $files; do
                 install -m 644 $i ${D}${palmqtdir}/lib/fonts/
-        done 
-} 
+        done
+}
 
 pkg_postinst () {
 #!/bin/sh

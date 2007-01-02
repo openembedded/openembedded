@@ -296,4 +296,3 @@ ac_cv_func_mmap_fixed_mapped=${ac_cv_func_mmap_fixed_mapped=yes}
 # libnet 
 ac_cv_lbl_unaligned_fail=${ac_cv_lbl_unaligned_fail=no}
 ac_libnet_have_packet_socket=${ac_libnet_have_packet_socket=yes}
-ac_cv_libnet_endianess=${ac_cv_libnet_endianess=lil}

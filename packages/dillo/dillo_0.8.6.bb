@@ -7,7 +7,7 @@ SRC_URI="http://www.dillo.org/download/dillo-${PV}.tar.bz2 \
          file://dillo-i18n.diff;patch=1 \
          file://dillo.desktop \
          file://dillo.png"
-	 
+
 
 PRIORITY = "optional"
 

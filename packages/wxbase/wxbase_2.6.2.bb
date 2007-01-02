@@ -15,7 +15,7 @@ inherit autotools pkgconfig
 
 EXTRA_OECONF = "--enable-largefile"
 
-LEAD_SONAME = "libwx_base-2.6.so*" 
+LEAD_SONAME = "libwx_base-2.6.so*"
 
 do_configure() {
        oe_runconf
@@ -23,17 +23,17 @@ do_configure() {
 
 do_stage() {
        install -d ${STAGING_INCDIR}/wx-2.6/wx
-       cp -pR include/wx ${STAGING_INCDIR}/wx-2.6	
+       cp -pR include/wx ${STAGING_INCDIR}/wx-2.6
        cp -pR lib/libwx* ${STAGING_LIBDIR}
        cp -pR lib/wx     ${STAGING_LIBDIR}
        cp -pR build/bakefiles/wxpresets/presets  ${STAGING_DATADIR}/bakefile
-       cp -pR wxwin.m4                           ${STAGING_DATADIR}/aclocal		
+       cp -pR wxwin.m4                           ${STAGING_DATADIR}/aclocal
        ln -sf ${STAGING_LIBDIR}/wx/config/${TARGET_PREFIX}base-ansi-release-2.6 ${STAGING_BINDIR_CROSS}/wx-config
        sed -e s,'wxconfdir=".*"','wxconfigdir="${STAGING_LIBDIR}/wx/config"', \
            -e s,'bindir=".*"','bindir="${STAGING_BINDIR}"', \
            -e s,'libdir=".*"','libdir="${STAGING_LIBDIR}"', \
            -e s,'includedir=".*"','includedir="${STAGING_INCDIR}"', \
-           -i ${STAGING_LIBDIR}/wx/config/${TARGET_PREFIX}base-ansi-release-2.6	       
+           -i ${STAGING_LIBDIR}/wx/config/${TARGET_PREFIX}base-ansi-release-2.6
 }
 
 FILES_${PN} += " \

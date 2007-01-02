@@ -28,7 +28,7 @@ RDEPENDS = "libxine-plugin-vo-out-xshm \
 	    libxine-plugin-dmx-ogg \
 	    libxine-plugin-dmx-image \
 	    libxine-plugin-dmx-avi"
-	    
+
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/xine/${PN}-${PV}.tar.gz \
 	   file://disable-browser-plugin.patch;patch=1"

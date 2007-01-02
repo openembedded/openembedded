@@ -18,5 +18,5 @@ do_install() {
 
 	install -m 0755 qclockchange ${D}${palmtopdir}/bin/qclockchange
 	install -m 0644 ipkg/opt/QtPalmtop/pics/qclockchange.png ${D}${palmtopdir}/pics/qclockchange.png
-	install -m 0644 ipkg/opt/QtPalmtop/apps/Settings/qclockchange.desktop ${D}${palmtopdir}/apps/Settings/qclockchange.desktop	
+	install -m 0644 ipkg/opt/QtPalmtop/apps/Settings/qclockchange.desktop ${D}${palmtopdir}/apps/Settings/qclockchange.desktop
 }

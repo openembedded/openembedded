@@ -1,6 +1,6 @@
 require linux-rp.inc
 
-PR = "r2"
+PR = "r4"
 
 DEFAULT_PREFERENCE = "-1"
 
@@ -14,15 +14,16 @@ DEFAULT_PREFERENCE = "-1"
 
 # Patches submitted upstream are towards top of this list 
 # Hacks should clearly named and at the bottom
-SRC_URI = "git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux-2.6.git;protocol=git;tag=v2.6.20-rc1 \
-           http://opensource.wolfsonmicro.com/~lg/asoc/asoc-v0.12.4.patch;patch=1 \
-           ${RPSRC}/pxafb_fix_params-r1.patch;patch=1 \
-           ${RPSRC}/hx2750_base-r27.patch;patch=1 \
-           ${RPSRC}/hx2750_bl-r7.patch;patch=1 \
+SRC_URI = "git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux-2.6.git;protocol=git;tag=v2.6.20-rc2 \
+           http://opensource.wolfsonmicro.com/~lg/asoc/asoc-v0.12.4.patch;patch=1;status=merged \
+           ${RPSRC}/xscale_cache_workaround-r1.patch;patch=1;status=merged \
+           ${RPSRC}/backlight_parameter_fix-r0.patch;patch=1;status=pending \
+           ${RPSRC}/hx2750_base-r28.patch;patch=1 \
+           ${RPSRC}/hx2750_bl-r8.patch;patch=1 \
            ${RPSRC}/hx2750_pcmcia-r2.patch;patch=1 \
-           ${RPSRC}/pxa_keys-r6.patch;patch=1 \
-           ${RPSRC}/tsc2101-r15.patch;patch=1 \
-           ${RPSRC}/hx2750_test1-r4.patch;patch=1 \
+           ${RPSRC}/pxa_keys-r7.patch;patch=1 \
+           ${RPSRC}/tsc2101-r16.patch;patch=1 \
+           ${RPSRC}/hx2750_test1-r6.patch;patch=1 \
            ${RPSRC}/pxa_timerfix-r0.patch;patch=1 \
            ${RPSRC}/input_power-r6.patch;patch=1 \
            ${RPSRC}/pxa25x_cpufreq-r2.patch;patch=1 \
@@ -30,12 +31,11 @@ SRC_URI = "git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux-2.6.git;
            ${RPSRC}/pm_changes-r1.patch;patch=1 \
            ${RPSRC}/usb_add_epalloc-r3.patch;patch=1 \
            ${RPSRC}/usb_pxa27x_udc-r3.patch;patch=1 \
-           ${DOSRC}/kexec-arm-r3.patch;patch=1 \
+           ${DOSRC}/kexec-arm-r4.patch;patch=1 \
            ${RPSRC}/locomo_kbd_tweak-r1.patch;patch=1 \
            ${RPSRC}/poodle_pm-r3.patch;patch=1 \
            ${RPSRC}/pxa27x_overlay-r5.patch;patch=1 \
            ${RPSRC}/w100_extaccel-r0.patch;patch=1 \
-           ${RPSRC}/xscale_cache_workaround-r0.patch;patch=1 \
            file://serial-add-support-for-non-standard-xtals-to-16c950-driver.patch;patch=1 \
            ${RPSRC}/logo_oh-r0.patch.bz2;patch=1;status=unmergable \
            ${RPSRC}/logo_oz-r2.patch.bz2;patch=1;status=unmergable \
@@ -65,7 +65,7 @@ SRC_URI = "git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux-2.6.git;
 
 # Is anything out of this still needed? Parts were commited to mainline by rmk (drivers/mfd/)
 # (Pavel Machek's git tree has updated versions of this?)
-#  ${JLSRC}/zaurus-lcd-2.6.11.diff.gz;patch=1 
+#  ${JLSRC}/zaurus-lcd-2.6.11.diff.gz;patch=1
 
 # These patches are extracted from Pavel Machek's git tree
 # (diff against vanilla kernel)

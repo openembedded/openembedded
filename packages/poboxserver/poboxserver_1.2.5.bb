@@ -25,7 +25,7 @@ do_compile() {
 	oe_runmake
 	cp ${S}/dict/data/fugodic ${WORKDIR}/pbserver/fugodic.txt
 	oe_runmake -C ${WORKDIR}/pbserver dic
-	#patch -p1 
+	#patch -p1
 }
 
 do_install() {

@@ -12,7 +12,7 @@ RDEPENDS = "task-base-core-default \
 
 export IMAGE_BASENAME = "bootstrap-image"
 export IMAGE_LINGUAS = ""
-export IPKG_INSTALL = "${RDEPENDS}"
+export PACKAGE_INSTALL = "${RDEPENDS}"
 
-inherit image_ipk
+inherit image
 

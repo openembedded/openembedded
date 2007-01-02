@@ -9,6 +9,6 @@ inherit autotools
 SRC_URI = "svn://svn.berlios.de/;module=${PN}"
 
 S = "${WORKDIR}/${PN}/trunk"
-EXTRA_OECONF = "  --disable-ftdi2232 --disable-ftd2xx"  
+EXTRA_OECONF = "  --disable-ftdi2232 --disable-ftd2xx"
 
 

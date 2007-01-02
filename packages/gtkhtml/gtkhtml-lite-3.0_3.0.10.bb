@@ -6,7 +6,7 @@ PR = "r1"
 
 inherit gnome
 
-SRC_URI = "http://stag.mind.be/gtkhtml-lite-3.0.10.tar.bz2" 
+SRC_URI = "http://stag.mind.be/gtkhtml-lite-3.0.10.tar.bz2"
 FILES_${PN} += "${datadir}/gtkhtml-3.0 ${libdir}/gtkhtml/*.so"
 FILES_${PN}-dev += "${libdir}/gtkhtml"
 S = "${WORKDIR}/gtkhtml-${PV}"

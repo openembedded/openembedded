@@ -10,7 +10,7 @@ S = "${WORKDIR}/${PN}/src"
 CFLAGS += " -L${STAGING_LIBDIR} "
 
 do_compile() {
-        oe_runmake 
+        oe_runmake
 }
 
 do_install() {

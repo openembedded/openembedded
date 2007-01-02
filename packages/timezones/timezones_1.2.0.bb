@@ -20,7 +20,7 @@ python populate_packages_prepend() {
         pkgpattern = "timezone-%s"
         pkgdescription = "Timezone for %s"
 
-        do_split_packages(d, root=bb.data.expand('${datadir}/zoneinfo/', d), file_regex=pkgregex, output_pattern=pkgpattern, 
+        do_split_packages(d, root=bb.data.expand('${datadir}/zoneinfo/', d), file_regex=pkgregex, output_pattern=pkgpattern,
                           description=pkgdescription,allow_dirs=True )
 }
 

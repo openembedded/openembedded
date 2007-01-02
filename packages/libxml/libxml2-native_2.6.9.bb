@@ -5,7 +5,7 @@ SRC_URI = "http://xmlsoft.org/sources/libxml2-${PV}.tar.gz"
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/libxml2-${PV}"
 S = "${WORKDIR}/libxml2-${PV}"
 
-inherit autotools native pkgconfig 
+inherit autotools native pkgconfig
 
 EXTRA_OECONF = "--without-python --without-debug --without-legacy --without-schemas --without-catalog --without-docbook --without-c14n"
 

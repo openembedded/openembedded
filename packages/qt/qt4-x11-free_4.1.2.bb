@@ -60,7 +60,7 @@ do_configure() {
 	unset QMAKESPEC
 	ln -sf ${STAGING_BINDIR_NATIVE}/qmake2 bin/qmake
 	ln -sf ./linux-g++ mkspecs/linux-gnueabi-g++
-	#export QMAKESPEC="linux-oe-g++" 
+	#export QMAKESPEC="linux-oe-g++"
 	#rm -rf ./mkspecs
 	#ln -sf ${QMAKE_MKSPEC_PATH} ./mkspecs
 	echo yes | ./configure -prefix / -platform ${TARGET_OS}-g++ -crossarch ${QT_ARCH} ${QT_CONFIG_FLAGS} -fast \

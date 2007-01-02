@@ -12,6 +12,6 @@ FILES_${PN} = "/usr/share/games/doom/prboom.cfg"
 
 do_install() {
 	install -d ${D}/usr/share/games/doom/
-	
+
 	install -m 644 ${WORKDIR}/prboom.cfg ${D}/usr/share/games/doom/
 }

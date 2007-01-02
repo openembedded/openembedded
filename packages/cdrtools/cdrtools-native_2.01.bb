@@ -17,7 +17,7 @@ STAGE_TEMP="${WORKDIR}/stage_temp"
 do_stage() {
 	install -d ${STAGE_TEMP}
 	make install INS_BASE=${STAGE_TEMP}
-	
+
 	install -d ${STAGING_BINDIR}
 	install ${STAGE_TEMP}/bin/* ${STAGING_BINDIR}
 }

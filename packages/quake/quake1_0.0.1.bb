@@ -14,7 +14,7 @@ SRC_URI = "http://mirror1.pdaXrom.org/rc9/src/quake1src.tar.bz2 \
 
 S = "${WORKDIR}/quake1src"
 
-inherit autotools 
+inherit autotools
 
 EXTRA_OEMAKE = "-e"
 

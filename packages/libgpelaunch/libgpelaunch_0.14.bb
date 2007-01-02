@@ -9,7 +9,7 @@ inherit autotools pkgconfig
 SRC_URI = "${GPE_MIRROR}/${PN}-${PV}.tar.bz2"
 
 
-FILES_${PN}-dbg += "/usr/libexec/libgpelaunch/.debug" 
+FILES_${PN}-dbg += "/usr/libexec/libgpelaunch/.debug"
 
 do_stage() {
 	autotools_stage_all

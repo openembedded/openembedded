@@ -2,7 +2,7 @@ require fuse.inc
 
 PR = "r1"
 
-#package utils in a sperate package and stop debian.bbclass renaming it to libfuse-utils, we want it to be fuse-utils 
+#package utils in a sperate package and stop debian.bbclass renaming it to libfuse-utils, we want it to be fuse-utils
 PACKAGES += "fuse-utils"
 FILES_${PN} = "${libdir}/*.so*"
 FILES_${PN}-dev += "${libdir}/*.la"

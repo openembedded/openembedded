@@ -15,7 +15,7 @@ SRC_URI = "svn://svn.tinymail.org/svn/tinymail/;module=trunk;proto=http \
 	   file://gtk-doc.m4 \
            file://gtk-doc.make"
 
-inherit pkgconfig autotools 
+inherit pkgconfig autotools
 S = "${WORKDIR}/trunk"
 
 do_configure_prepend() {
@@ -50,7 +50,7 @@ FILES_tinymail-camel-lite-dev +=  "${libdir}/libcamel-lite*.so \
 				   ${libdir}/libcamel-lite*.a \
 				   ${libdir}/libcamel-lite*.la \
 				   ${libdir}/camel-lite-1.2/camel-providers/*.la \
-				   ${libdir}/camel-lite-1.2/camel-providers/*.a "			      
+				   ${libdir}/camel-lite-1.2/camel-providers/*.a "
 FILES_tinymail-camel-lite-dbg +=  "${libdir}/camel-lite-1.2/camel-providers/.debug"
 
 

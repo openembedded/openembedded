@@ -8,7 +8,7 @@ SRC_URI = "${SOURCEFORGE_MIRROR}/openjade/OpenSP-${PV}.tar.gz \
 	   file://attributevalue.patch;patch=1"
 S = "${WORKDIR}/OpenSP-${PV}"
 
-inherit autotools 
+inherit autotools
 
 do_stage () {
 	oe_libinstall -a -so -C lib libosp ${STAGING_LIBDIR}

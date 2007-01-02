@@ -19,7 +19,7 @@ S = "${WORKDIR}/prelink-0.0.${PV}"
 
 EXTRA_OECONF = "--disable-64bit"
 
-inherit autotools 
+inherit autotools
 
 do_install_append () {
 	install -d ${D}${sysconfdir}/cron.daily ${D}${sysconfdir}/default

@@ -8,7 +8,7 @@ SRC_URI = "ftp://ftp.gnome.org/pub/GNOME/sources/libglade/2.0/libglade-${PV}.tar
            file://glade-cruft.patch;patch=1;pnum=0 \
            file://gtk-2.0.m4"
 
-inherit autotools pkgconfig 
+inherit autotools pkgconfig
 
 headers = "glade-build.h glade-init.h glade-parser.h glade-xml.h glade.h"
 

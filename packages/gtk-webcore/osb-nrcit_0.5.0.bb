@@ -23,7 +23,7 @@ do_stage () {
 	oe_libinstall -so -C src libnrcit ${STAGING_LIBDIR}
 
 	autotools_stage_includes
-	
+
 	install -d ${STAGING_INCDIR}/osb
 	install -m 0644 ${S}/src/gtk/gtk-khtml.h ${STAGING_INCDIR}/osb
 	install -m 0644 ${S}/src/osb.h ${STAGING_INCDIR}/osb

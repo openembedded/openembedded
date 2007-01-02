@@ -8,4 +8,4 @@ DESCRIPTION = "X Compositing Manager"
 SRC_URI = "${FREEDESKTOP_CVS}/xapps;module=xcompmgr"
 S = "${WORKDIR}/xcompmgr"
 
-inherit autotools 
+inherit autotools

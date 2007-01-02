@@ -13,9 +13,9 @@ inherit autotools pkgconfig
 EXTRA_OECONF = 	" --disable-gtktest \
 		--without-libtiff \
 		--disable-print \
-		--enable-mp" 
+		--enable-mp"
 
 do_configure_append() {
     find ${S} -name Makefile | xargs sed -i s:'-I$(includedir)':'-I.':g
 }
-	
+

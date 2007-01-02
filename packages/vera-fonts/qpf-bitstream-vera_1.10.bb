@@ -10,12 +10,12 @@ PROVIDES = "qpf-bitstream-vera-small qpf-bitstream-vera-large"
 SRC_URI = "http://openzaurus.org/mirror/vera-qpf_1.10-3.tar.gz"
 S = "${WORKDIR}/vera-qpf"
 
-do_install () { 
-        install -d ${D}${palmqtdir}/lib/fonts/ 
-        for i in *.qpf; do 
-                install -m 644 $i ${D}${palmqtdir}/lib/fonts/${i} 
-        done 
-} 
+do_install () {
+        install -d ${D}${palmqtdir}/lib/fonts/
+        for i in *.qpf; do
+                install -m 644 $i ${D}${palmqtdir}/lib/fonts/${i}
+        done
+}
 
 pkg_postinst () {
 #!/bin/sh

@@ -7,7 +7,7 @@ PR = "r5"
 SRC_URI = "${SOURCEFORGE_MIRROR}/flac/flac-${PV}.tar.gz \
 	   file://disable-xmms-plugin.patch;patch=1 \
 	   file://xmms.m4"
-	   
+
 S = "${WORKDIR}/flac-${PV}"
 
 inherit autotools
@@ -39,7 +39,7 @@ do_stage () {
 	oe_libinstall -a -so -C src/libOggFLAC libOggFLAC ${STAGING_LIBDIR}/
 	install -d ${STAGING_INCDIR}/OggFLAC
 	install -m 0644 ${S}/include/OggFLAC/export.h ${STAGING_INCDIR}/OggFLAC/export.h
-	
+
 	install -m 0644 ${S}/include/OggFLAC/all.h ${STAGING_INCDIR}/OggFLAC/all.h
 	install -m 0644 ${S}/include/OggFLAC/stream_encoder.h ${STAGING_INCDIR}/OggFLAC/stream_encoder.h
 	install -m 0644 ${S}/include/OggFLAC/stream_decoder.h ${STAGING_INCDIR}/OggFLAC/stream_decoder.h

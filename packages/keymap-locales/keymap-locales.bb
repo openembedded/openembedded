@@ -20,6 +20,6 @@ FILES_keymap-extension-fi = "/etc/*-fi.map"
 
 do_install() {
 	install -d ${D}/${sysconfdir}
-	
+
 	install -m 0644 ${WORKDIR}/*.map ${D}/${sysconfdir}
 }

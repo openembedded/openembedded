@@ -28,10 +28,10 @@ do_install_append() {
 
 export CVSBUILD="no"
 
-pkg_postinst_${PN}() { 
+pkg_postinst_${PN}() {
 	update-alternatives --install /etc/keylaunchrc keylaunchrc /etc/keylaunchrc.matchbox 10
 }
 
-pkg_postrm_${PN}() {   
+pkg_postrm_${PN}() {
        update-alternatives --remove keylaunchrc /etc/keylaunchrc.matchbox
 }

@@ -19,6 +19,6 @@ do_stage () {
 #	install -m 0644 libgnome-desktop/libgnomeui/gnome-ditem-edit.h ${STAGING_INCDIR}/gnome-desktop-2.0/libgnomeui/
 #	install -m 0644 libgnome-desktop/libgnomeui/gnome-hint.h ${STAGING_INCDIR}/gnome-desktop-2.0/libgnomeui/
 	oe_libinstall -C libgnome-desktop/.libs -so libgnome-desktop-2 ${STAGING_LIBDIR}
-	
- 
+
+
 }

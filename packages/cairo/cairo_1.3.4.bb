@@ -10,7 +10,7 @@ LICENSE = "MPL LGPL"
 SRC_URI = "http://cairographics.org/snapshots/cairo-${PV}.tar.gz \
            file://configure.in_requires_pkg-config-0.15.diff;patch=1;pnum=2"
 
-inherit autotools pkgconfig 
+inherit autotools pkgconfig
 
 do_stage () {
  	autotools_stage_all

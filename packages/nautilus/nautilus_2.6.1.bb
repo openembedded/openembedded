@@ -32,14 +32,14 @@ nextdir="${STAGING_INCDIR}/nautilus/libnautilus-extension"
 
 do_stage() {
 	install -d ${libndir} ${nextdir}
-	for file in ${libnheaders}; do 
+	for file in ${libnheaders}; do
 		install -m 0644 libnautilus/$file ${libndir}/$file
-	done	
+	done
 
 	for file in ${nextheaders}; do
 		install -m 0644 libnautilus-extension/$file ${nextdir}/$file
 	done
-	
+
 	oe_libinstall -C libnautilus-adapter libnautilus-adapter ${STAGING_LIBDIR}
 	oe_libinstall -C libnautilus-extension libnautilus-extension ${STAGING_LIBDIR}
 	oe_libinstall -C libnautilus-private libnautilus-private ${STAGING_LIBDIR}

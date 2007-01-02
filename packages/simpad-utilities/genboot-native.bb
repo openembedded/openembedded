@@ -11,7 +11,7 @@ inherit native
 
 do_compile() {
 	cp ${WORKDIR}/*.h ${WORKDIR}/*.c .
-	${CC} -I. -o genboot gen_boot.c 
+	${CC} -I. -o genboot gen_boot.c
 }
 
 do_stage() {

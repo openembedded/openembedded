@@ -1,4 +1,4 @@
-require coreutils.inc 
+require coreutils.inc
 
 PR = "r1"
 

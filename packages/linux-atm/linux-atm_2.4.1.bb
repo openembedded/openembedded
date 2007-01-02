@@ -22,7 +22,7 @@ binarys_bin="test/aread maint/atmdiag maint/atmdump test/awrite maint/saaldump m
 
 
 do_compile_prepend() {
-	oe_runmake -C ${S}/src/qgen AR='${BUILD_AR}' CPP='${BUILD_CPP}' CC='${BUILD_CC}' CFLAGS='${BUILD_CFLAGS}' DEFS='-I${S}/src -I. -I../.. -DHAVE_CONFIG_H' CPPFLAGS='${BUILD_CPPFLAGS}' LD='${BUILD_LD}' LDFLAGS='${BUILD_LDFLAGS}' qgen q.dump  
+	oe_runmake -C ${S}/src/qgen AR='${BUILD_AR}' CPP='${BUILD_CPP}' CC='${BUILD_CC}' CFLAGS='${BUILD_CFLAGS}' DEFS='-I${S}/src -I. -I../.. -DHAVE_CONFIG_H' CPPFLAGS='${BUILD_CPPFLAGS}' LD='${BUILD_LD}' LDFLAGS='${BUILD_LDFLAGS}' qgen q.dump
 	oe_runmake -C ${S}/src/qgen DEFS='-I${S}/src -I. -I../.. -DHAVE_CONFIG_H' all
 }
 
@@ -37,11 +37,11 @@ do_stage () {
 		install -m 0644 src/arpd/$i ${STAGING_INCDIR}/$i
 	done
 
-	for i in ${binarys_sbin}; do 
+	for i in ${binarys_sbin}; do
 		install -m 0755 src/$i ${STAGING_BINDIR}/`basename $i`
 	done
 
-	for i in ${binarys_bin}; do 
+	for i in ${binarys_bin}; do
 		install -m 0755 src/$i ${STAGING_BINDIR}/`basename $i`
 	done
 }

@@ -16,7 +16,12 @@ do_stage() {
 	autotools_stage_all
 
 	cat ${S}/libIDL-config-2 | sed -e 's:${includedir}:${STAGING_INCDIR}:' > ${STAGING_BINDIR}/libIDL-config-2
+
+	if [ "${STAGING_BINDIR}" != "${STAGING_BINDIR_CROSS}" ]; then
+		mv ${STAGING_BINDIR}/libIDL-config-2 ${STAGING_BINDIR_CROSS}/libIDL-config-2
+	fi
+			 
 }
 
 FILES_${PN} = "${libdir}/*.so.*"
-FILES_${PN}-dev += " ${bindir}" 
+FILES_${PN}-dev += " ${bindir}"

@@ -10,5 +10,5 @@ inherit pkgconfig autotools
 
 do_stage() {
 		install -d ${STAGING_INCDIR}
-		install -m 644 include/outo.h ${STAGING_INCDIR} 
+		install -m 644 include/outo.h ${STAGING_INCDIR}
 }

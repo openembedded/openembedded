@@ -53,7 +53,7 @@ do_install() {
 	install -d ${D}/etc/altboot-menu/Advanced
 	install -d ${D}/etc/altboot.rc
 	install -d ${D}/usr/share/doc/altboot
-	install -d ${D}/usr/share/sounds		
+	install -d ${D}/usr/share/sounds
 
 	install -m 0644 ${WORKDIR}/beep.raw ${D}/usr/share/sounds
 	install -m 0644 ${WORKDIR}/altboot*.cfg ${D}/etc
@@ -61,14 +61,14 @@ do_install() {
 	install -m 0644 ${WORKDIR}/altbootctl.conf ${D}/etc
 	install -m 0755 ${WORKDIR}/init.altboot ${D}/sbin
 	install -m 0755 ${WORKDIR}/altbootctl ${D}/sbin
-	
+
 	install -m 0755 ${WORKDIR}/altboot-menu/*-* ${D}/etc/altboot-menu
 
 	install -m 0755 ${WORKDIR}/altboot-menu/Advanced/*-* ${D}/etc/altboot-menu/Advanced
-	
+
 	install -m 0755 ${WORKDIR}/altboot.rc/*.sh ${D}/etc/altboot.rc
-	install -m 0644 ${WORKDIR}/altboot.rc/*.txt ${D}/etc/altboot.rc	
-}		
+	install -m 0644 ${WORKDIR}/altboot.rc/*.txt ${D}/etc/altboot.rc
+}
 
 ######################################################################################
 

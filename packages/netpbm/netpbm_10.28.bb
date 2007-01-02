@@ -2,14 +2,14 @@
 # data) processing package derived from PBMPlus
 #
 # For documentation see: http://netpbm.sourceforge.net/doc/
-LICENSE = "GPL MIT Artistic" 
+LICENSE = "GPL MIT Artistic"
 # NOTE: individual command line utilities are covered by different
 # licenses.  The compiled and linked command line utilties are
 # subject to the licenses of the libraries they use too - including
 # libpng libz, IJG, and libtiff licenses
 
-SECTION = "console/utils" 
-DEPENDS = "jpeg zlib libpng tiff install-native flex-native" 
+SECTION = "console/utils"
+DEPENDS = "jpeg zlib libpng tiff install-native flex-native"
 RDEPENDS = "perl\
 	perl-module-cwd\
 	perl-module-english\
@@ -25,7 +25,7 @@ RDEPENDS = "perl\
 RDEPENDS += "perl-module-exporter-heavy"
 RDEPENDS += "perl-module-file-spec-unix"
 
-HOMEPAGE = "http://netpbm.sourceforge.net" 
+HOMEPAGE = "http://netpbm.sourceforge.net"
 DESCRIPTION = "Netpbm is a toolkit for manipulation of graphic images, including\
 conversion of images between a variety of different formats.  There\
 are over 220 separate tools in the package including converters for\
@@ -35,11 +35,11 @@ PR = "r3"
 SRC_URI = "${SOURCEFORGE_MIRROR}/netpbm/netpbm-${PV}.tgz \
 	   file://ppmtojpeg.patch;patch=42 \
 	   file://Makefile.config \
-	   file://oeendiangen" 
+	   file://oeendiangen"
 
 EXTRA_OEMAKE = "ENDIANGEN=${S}/buildtools/oeendiangen TARGET_LD=${LD}"
 
-do_configure() { 
+do_configure() {
 	install -c -m 644 ../Makefile.config .
 	# The following stops the host endiangen program being run and uses
 	# the target endian.h header instead.
@@ -50,8 +50,8 @@ do_compile() {
 	# need all to get the static library too
 	oe_runmake all default
 }
-	    
-do_install() { 
+
+do_install() {
 	# netpbm makes its own installation package, which must then be
 	# installed to form the dummy installation for ipkg
 	rm -rf ${WORKDIR}/netpbm-package
@@ -90,4 +90,4 @@ do_install() {
 				exit 1;;
 		esac
 	done
-} 
+}

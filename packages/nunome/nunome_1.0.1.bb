@@ -13,6 +13,7 @@ S = "${WORKDIR}/nunome"
 inherit opie
 
 EXTRA_QMAKEVARS_POST += "INCLUDEPATH+=${S}/Nnmlib INCLUDEPATH+=${S}/ui LIBS+=-L${S}"
+OE_QMAKE_CXXFLAGS := "${@oe_filter_out('-fno-rtti', '${OE_QMAKE_CXXFLAGS}', d)}"
 PARALLEL_MAKE = ""
 
 do_configure_prepend() {

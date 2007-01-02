@@ -58,7 +58,7 @@ do_install() {
 	install -m 0755 ${S}/utils/rquotad/rquotad ${D}${sbindir}/rquotad
 	install -m 0755 ${S}/utils/showmount/showmount ${D}${sbindir}/showmount
 	install -m 0755 ${S}/utils/statd/statd ${D}${sbindir}/statd
-	
+
 	install -d ${D}${mandir}/man8
 	install -m 0644 ${S}/utils/exportfs/exportfs.man ${D}${mandir}/man8/exportfs.8
 	install -m 0644 ${S}/utils/lockd/lockd.man ${D}${mandir}/man8/lockd.8

@@ -6,7 +6,7 @@ PR = "r1"
 
 SRC_URI = "ftp://ftp.ossp.org/pkg/lib/pth/pth-${PV}.tar.gz"
 
-inherit autotools 
+inherit autotools
 
 do_configure() {
 	gnu-configize

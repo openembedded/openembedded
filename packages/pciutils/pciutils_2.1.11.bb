@@ -31,4 +31,4 @@ do_install_append () {
 	install -d ${D}/${prefix}/share
 	install -m 6440 ${WORKDIR}/${PN}-${PV}/pci.ids ${D}/${prefix}/share
 }
-		
+

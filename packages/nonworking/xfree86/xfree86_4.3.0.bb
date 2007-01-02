@@ -13,24 +13,24 @@ S=${WORKDIR}/xc
 
 
 do_configure() {
-    rm -fr ${WORKDIR}/XXcompiler; 
-    mkdir -p ${WORKDIR}/XXcompiler 
-    pushd ./ 
-    cd ${CROSS_DIR}/bin/; 
+    rm -fr ${WORKDIR}/XXcompiler;
+    mkdir -p ${WORKDIR}/XXcompiler
+    pushd ./
+    cd ${CROSS_DIR}/bin/;
     echo ${CC}
-    for i in *; do  
-       echo " linking ${WORKDIR}/XXcompiler/$i to $i"; 
-            ln -s ${CROSS_DIR}/bin/$i ${WORKDIR}/XXcompiler/$i ; 
+    for i in *; do
+       echo " linking ${WORKDIR}/XXcompiler/$i to $i";
+            ln -s ${CROSS_DIR}/bin/$i ${WORKDIR}/XXcompiler/$i ;
             toolname=`echo $i | sed s/${TARGET_ARCH}-${TARGET_OS}-//`
             echo `echo $i | sed s/${TARGET_ARCH}-${TARGET_OS}-//`
-            echo " linking ${WORKDIR}/XXcompiler/$i to $toolname"; 
-            ln -s ${CROSS_DIR}/bin/$i ${WORKDIR}/XXcompiler/$toolname; 
-    done                                   
+            echo " linking ${WORKDIR}/XXcompiler/$i to $toolname";
+            ln -s ${CROSS_DIR}/bin/$i ${WORKDIR}/XXcompiler/$toolname;
+    done
     echo "#!/bin/sh" >  ${WORKDIR}/XXcompiler/cc
     echo "${CC} \$*" >> ${WORKDIR}/XXcompiler/cc
     chmod 755 ${WORKDIR}/XXcompiler/cc
     popd ;
-        
+
 
 }
 
@@ -40,7 +40,7 @@ EXTRA_OEMAKE="-C ${S} CC='${BUILD_CC}' \
 	      EXTRA_LDOPTIONS='${LDFLAGS}' \
 	      EXTRA_INCLUDES='-I${STAGING_DIR}/target/include' "
 do_compile() {
-    sed -e "s/^\#define KdriveServerExtraDefines -DITSY -DMAXSCREENS=2 -DXResExtension.*/\#define KdriveServerExtraDefines -DITSY -DMAXSCREENS=2 -DXResExtension ${FULL_OPTIMIZATION}/" < ${FILESDIR}/host.def > ${S}/config/cf/host.def; 
+    sed -e "s/^\#define KdriveServerExtraDefines -DITSY -DMAXSCREENS=2 -DXResExtension.*/\#define KdriveServerExtraDefines -DITSY -DMAXSCREENS=2 -DXResExtension ${FULL_OPTIMIZATION}/" < ${FILESDIR}/host.def > ${S}/config/cf/host.def;
 
     oe_runmake  World
 

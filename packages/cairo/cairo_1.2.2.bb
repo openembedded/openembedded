@@ -6,7 +6,7 @@ LICENSE = "MPL LGPL"
 
 SRC_URI = "http://cairographics.org/releases/cairo-${PV}.tar.gz"
 
-inherit autotools pkgconfig 
+inherit autotools pkgconfig
 
 do_stage () {
 autotools_stage_all

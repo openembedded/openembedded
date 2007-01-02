@@ -20,7 +20,7 @@ do_install() {
 	sed -i -e "s:PREFIX/man:PREFIX/share/man:" \
                 -e "s:PREFIX/doc/maradns-\$VERSION:PREFIX/share/doc/${PF}:" \
                 build/install.locations
-	
+
 	oe_runmake \
                 TOPLEVEL=${S} \
                 BUILDDIR=${S}/build \
@@ -30,7 +30,7 @@ do_install() {
                 MAN5=${D}${mandir}/man5 \
                 MAN8=${D}${mandir}/man8 \
                 install
-	
+
 	mv ${D}${sysconfdir}/mararc/example_mararc ${D}${sysconfdir}/maradns/mararc
 	rm -r ${D}${sysconfdir}/mararc/
 	install -m 755 ${WORKDIR}/init ${D}${sysconfdir}/init.d/maradns

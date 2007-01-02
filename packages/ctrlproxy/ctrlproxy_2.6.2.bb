@@ -13,7 +13,7 @@ inherit autotools
 
 #INITSCRIPT_NAME = "ctrlproxy"
 #INITSCRIPT_PARAMS = "defaults 84"
-# CONFFILES_${PN} = "${sysconfdir}/foo.conf" 
+# CONFFILES_${PN} = "${sysconfdir}/foo.conf"
 
 # To fix this error in autotools_do_configure (which arises after a
 # change to pkg-config pkg.m4):

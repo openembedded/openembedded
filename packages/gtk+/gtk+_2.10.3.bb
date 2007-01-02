@@ -8,7 +8,7 @@ DEPENDS = "glib-2.0 pango atk jpeg libpng libxext libxcursor gtk-doc libgcrypt c
 PR = "r3"
 
 # disable per default - untested and not all patches included.
-DEFAULT_PREFERENCE = "-1" 
+DEFAULT_PREFERENCE = "-1"
 
 SRC_URI = "ftp://ftp.gtk.org/pub/gtk/v2.10/gtk+-${PV}.tar.bz2 \
            file://no-xwc.patch;patch=1 \

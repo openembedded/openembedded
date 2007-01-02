@@ -18,7 +18,7 @@ inherit kernel-arch
 DEPENDS_append = " rpm2cpio-native"
 
 do_unpack() {
-	
+
 	if ! test -f libaio-${PV}.tar.gz ; then
 		rpm2cpio.pl ${DL_DIR}/${P}-3.src.rpm | cpio -i --make-directories
 		tar xzvf libaio-${PV}.tar.gz
@@ -26,12 +26,12 @@ do_unpack() {
 }
 
 do_stage () {
-	#make install prefix='${STAGING_DIR}/${TARGET_SYS}' 
+	#make install prefix='${STAGING_DIR}/${TARGET_SYS}'
         install -D -m 644 src/libaio.h ${STAGING_DIR}/${TARGET_SYS}/include/libaio.h
 	oe_libinstall -so -C src libaio ${STAGING_LIBDIR}
-					
+
 }
 
 do_install () {
-	make install prefix='${D}/usr' 
+	make install prefix='${D}/usr'
 }

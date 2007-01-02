@@ -24,7 +24,7 @@ SRC_URI_append_nokia770 = " file://highdpifontfix.patch;patch=1"
 do_configure_append_angstrom() {
 	sed -i s:Default:Clearlooks:g X11/xsettings.default
 	sed -i s:Industrial:Clearlooks:g X11/xsettings.default
-}	
+}
 
 do_install_append() {
 	install -d ${D}${sysconfdir}/gpe/xsettings-default.d
@@ -36,16 +36,16 @@ do_install_append() {
 
 	install -d ${D}${sysconfdir}/gpe/xsettings-default.d
 	install -m 0644 ${WORKDIR}/disable-composite.xsettings ${D}${sysconfdir}/gpe/xsettings-default.d/disable-composite
-	
+
 	mv ${D}/usr/bin/gpe-logout ${D}/usr/bin/gpe-logout.matchbox
 }
 
-pkg_postinst_${PN}() { 
+pkg_postinst_${PN}() {
 	update-alternatives --install /usr/bin/gpe-logout gpe-logout /usr/bin/gpe-logout.matchbox 10
 }
 
-pkg_postrm_${PN}() {   
-       update-alternatives --remove gpe-logout /usr/bin/gpe-logout.matchbox 
+pkg_postrm_${PN}() {
+       update-alternatives --remove gpe-logout /usr/bin/gpe-logout.matchbox
 }
 
 # This makes use of GUI_MACHINE_CLASS, so set PACKAGE_ARCH appropriately

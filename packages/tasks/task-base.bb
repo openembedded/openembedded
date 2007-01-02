@@ -44,7 +44,7 @@ PACKAGE_ARCH = "${MACHINE_ARCH}"
 DISTRO_CORE_PACKAGE ?= "task-base-core-default"
 
 #
-# task-base 
+# task-base
 #
 RDEPENDS_task-base = "\
     ${DISTRO_CORE_PACKAGE} \
@@ -117,7 +117,7 @@ RDEPENDS_task-base-core-default = '\
     fuser \
     setserial'
 # Lets see if we can kill off hotplug...
-#    ${HOTPLUG} 
+#    ${HOTPLUG}
 #    ${@bootstrap_modutils_rdepends(d)}
 
 
@@ -289,22 +289,22 @@ task-distro-nfs-rrecommends = "\
 
 
 # Tosort
-# kernel-module-ipv6 
+# kernel-module-ipv6
 # kernel-module-nvrd
 # kernel-module-mip6-mn
 # kernel-module-tun
-# kernel-module-ide-disk 
+# kernel-module-ide-disk
 # kernel-module-ide-probe-mo
 # kernel-module-loop
-# kernel-module-vfat 
+# kernel-module-vfat
 # kernel-module-ext2
-# kernel-module-sco 
+# kernel-module-sco
 # kernel-module-af_packet
-# kernel-module-ip-gre 
-# kernel-module-ip-tables 
+# kernel-module-ip-gre
+# kernel-module-ip-tables
 # kernel-module-ipip
-# kernel-module-des 
+# kernel-module-des
 # kernel-module-md5
 # kernel-module-8250
-# Should be DISTRO_EXTRA_RRECOMMENDS: lrzsz 
+# Should be DISTRO_EXTRA_RRECOMMENDS: lrzsz
 

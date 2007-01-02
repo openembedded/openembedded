@@ -13,7 +13,7 @@ file://edx_assume_zero.patch;patch=1"
 
 S="${WORKDIR}/syslinux-${PV}"
 
-# If you really want to run syslinux, you need mtools.  We just want the 
+# If you really want to run syslinux, you need mtools.  We just want the
 # ldlinux.* stuff for now, so skip mtools-native
 
 DEPENDS="nasm-native"

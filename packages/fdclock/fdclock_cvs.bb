@@ -8,4 +8,4 @@ DESCRIPTION = "The freedesktop.org clock"
 SRC_URI = "${FREEDESKTOP_CVS}/xapps;module=fdclock"
 S = "${WORKDIR}/fdclock"
 
-inherit autotools 
+inherit autotools

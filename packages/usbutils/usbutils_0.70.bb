@@ -8,7 +8,7 @@ DEFAULT_PREFERENCE = "1"
 SRC_URI = "${SOURCEFORGE_MIRROR}/linux-usb/usbutils-${PV}.tar.gz"
 S = "${WORKDIR}/usbutils-${PV}"
 
-inherit autotools 
+inherit autotools
 
 EXTRA_OECONF = "--program-prefix="
 sbindir = "/sbin"

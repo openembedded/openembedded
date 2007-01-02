@@ -32,28 +32,28 @@ do_stage() {
         oe_libinstall -so -C common libGammu ${STAGING_LIBDIR}
 
         install -m 0644 common/*.h                      ${STAGING_INCDIR}/gammu/
-        install -m 0644 common/misc/*.h                 ${STAGING_INCDIR}/gammu/misc 
-        install -m 0644 common/misc/coding/*.h          ${STAGING_INCDIR}/gammu/misc/coding 
-        install -m 0644 common/phone/*.h                ${STAGING_INCDIR}/gammu/phone 
-        install -m 0644 common/phone/at/*.h             ${STAGING_INCDIR}/gammu/phone/at 
-        install -m 0644 common/phone/obex/*.h           ${STAGING_INCDIR}/gammu/phone/obex 
-        install -m 0644 common/phone/nokia/*.h          ${STAGING_INCDIR}/gammu/phone/nokia 
-        install -m 0644 common/phone/nokia/dct3/*.h     ${STAGING_INCDIR}/gammu/phone/nokia/dct3 
+        install -m 0644 common/misc/*.h                 ${STAGING_INCDIR}/gammu/misc
+        install -m 0644 common/misc/coding/*.h          ${STAGING_INCDIR}/gammu/misc/coding
+        install -m 0644 common/phone/*.h                ${STAGING_INCDIR}/gammu/phone
+        install -m 0644 common/phone/at/*.h             ${STAGING_INCDIR}/gammu/phone/at
+        install -m 0644 common/phone/obex/*.h           ${STAGING_INCDIR}/gammu/phone/obex
+        install -m 0644 common/phone/nokia/*.h          ${STAGING_INCDIR}/gammu/phone/nokia
+        install -m 0644 common/phone/nokia/dct3/*.h     ${STAGING_INCDIR}/gammu/phone/nokia/dct3
         install -m 0644 common/phone/nokia/dct4tiku/*.h     ${STAGING_INCDIR}/gammu/phone/nokia/dct4tiku
-        install -m 0644 common/phone/symbian/*.h        ${STAGING_INCDIR}/gammu/phone/symbian 
-        install -m 0644 common/phone/alcatel/*.h        ${STAGING_INCDIR}/gammu/phone/alcatel 
-        install -m 0644 common/service/*.h              ${STAGING_INCDIR}/gammu/service 
-        install -m 0644 common/service/sms/*.h          ${STAGING_INCDIR}/gammu/service/sms 
-        install -m 0644 common/service/backup/*.h       ${STAGING_INCDIR}/gammu/service/backup 
-        install -m 0644 common/device/*.h               ${STAGING_INCDIR}/gammu/device 
-        install -m 0644 common/device/irda/*.h          ${STAGING_INCDIR}/gammu/device/irda 
-        install -m 0644 common/device/bluetoth/*.h      ${STAGING_INCDIR}/gammu/device/bluetoth 
-        install -m 0644 common/device/serial/*.h        ${STAGING_INCDIR}/gammu/device/serial 
-        install -m 0644 common/protocol/*.h             ${STAGING_INCDIR}/gammu/protocol 
-        install -m 0644 common/protocol/at/*.h          ${STAGING_INCDIR}/gammu/protocol/at 
-        install -m 0644 common/protocol/obex/*.h        ${STAGING_INCDIR}/gammu/protocol/obex 
-        install -m 0644 common/protocol/nokia/*.h       ${STAGING_INCDIR}/gammu/protocol/nokia 
-        install -m 0644 common/protocol/symbian/*.h     ${STAGING_INCDIR}/gammu/protocol/symbian 
+        install -m 0644 common/phone/symbian/*.h        ${STAGING_INCDIR}/gammu/phone/symbian
+        install -m 0644 common/phone/alcatel/*.h        ${STAGING_INCDIR}/gammu/phone/alcatel
+        install -m 0644 common/service/*.h              ${STAGING_INCDIR}/gammu/service
+        install -m 0644 common/service/sms/*.h          ${STAGING_INCDIR}/gammu/service/sms
+        install -m 0644 common/service/backup/*.h       ${STAGING_INCDIR}/gammu/service/backup
+        install -m 0644 common/device/*.h               ${STAGING_INCDIR}/gammu/device
+        install -m 0644 common/device/irda/*.h          ${STAGING_INCDIR}/gammu/device/irda
+        install -m 0644 common/device/bluetoth/*.h      ${STAGING_INCDIR}/gammu/device/bluetoth
+        install -m 0644 common/device/serial/*.h        ${STAGING_INCDIR}/gammu/device/serial
+        install -m 0644 common/protocol/*.h             ${STAGING_INCDIR}/gammu/protocol
+        install -m 0644 common/protocol/at/*.h          ${STAGING_INCDIR}/gammu/protocol/at
+        install -m 0644 common/protocol/obex/*.h        ${STAGING_INCDIR}/gammu/protocol/obex
+        install -m 0644 common/protocol/nokia/*.h       ${STAGING_INCDIR}/gammu/protocol/nokia
+        install -m 0644 common/protocol/symbian/*.h     ${STAGING_INCDIR}/gammu/protocol/symbian
         install -m 0644 common/protocol/alcatel/*.h     ${STAGING_INCDIR}/gammu/protocol/alcatel
 }
 
@@ -70,6 +70,6 @@ PACKAGES_DYNAMIC = "gammu-locale-*"
 
 python populate_packages_prepend () {
         help_dir = bb.data.expand('${datadir}/gammu/', d)
-        
+
         do_split_packages(d, help_dir, file_regex='^gammu_(.*)\.txt$', output_pattern='gammu-locale-%s', description='%s translation for Gammu')
 }

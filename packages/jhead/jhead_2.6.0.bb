@@ -6,7 +6,7 @@ SRC_URI = "http://www.sentex.net/~mwandel/jhead/jhead-2.6.tar.gz \
 
 S = "${WORKDIR}/jhead-2.6"
 
-inherit autotools 
+inherit autotools
 
 do_configure() {
 	:
