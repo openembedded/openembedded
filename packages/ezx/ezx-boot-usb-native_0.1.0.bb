@@ -3,10 +3,10 @@ DEPENDS = "libusb-native"
 SECTION = "devel"
 AUTHOR = "Harald Welte"
 LICENSE = "GPL"
-PR = "r1"
+PR = "r0"
 
-SRC_URI = "svn://svn.openezx.org/trunk/src/host;module=boot_usb;proto=http;rev=${PV}"
-S = "${WORKDIR}/boot_usb"
+SRC_URI = "http://www.openezx.org/download/boot_usb-${PV}.tar.bz2"
+S = "${WORKDIR}/boot_usb-${PV}"
 
 inherit native
 
