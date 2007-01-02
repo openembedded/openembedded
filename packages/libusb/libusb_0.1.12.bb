@@ -9,29 +9,25 @@ SRC_URI = "${SOURCEFORGE_MIRROR}/libusb/libusb-${PV}.tar.gz"
 
 S = "${WORKDIR}/libusb-${PV}"
 
-inherit autotools pkgconfig
+inherit autotools pkgconfig binconfig lib_package
 
 PARALLEL_MAKE = ""
 EXTRA_OECONF = "--disable-build-docs"
 
-do_stage() {
-	oe_libinstall -a -so libusb ${STAGING_LIBDIR}
+export CXXFLAGS += "-lstdc++"
 
-        install -d ${STAGING_BINDIR}
+do_stage() {
+
+	autotools_stage_all
 	install -m 755 ${S}/libusb-config ${STAGING_BINDIR}
 	# can we get rid of that? wouldn't a sed statement do as well?
-	perl -pi -e 's:\-L${libdir} :-L${STAGING_LIBDIR} :' ${STAGING_BINDIR}/libusb-config
+	sed -i 's:\-L${libdir} :-L${STAGING_LIBDIR} :' ${STAGING_BINDIR}/libusb-config
 
 	if [ "${STAGING_BINDIR}" != "${STAGING_BINDIR_CROSS}" ]; then
 	        install -d ${STAGING_BINDIR_CROSS}/
 		mv ${STAGING_BINDIR}/libusb-config ${STAGING_BINDIR_CROSS}/libusb-config
 	fi
 
-        install -d ${STAGING_INCDIR}/
-        for X in usb.h
-        do
-                install -m 0644 ${S}/$X ${STAGING_INCDIR}/$X
-        done
 }
 
 PACKAGES =+ "libusbpp"
