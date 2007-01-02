@@ -36,6 +36,7 @@ ALLOW_EMPTY = "1"
 #	wpa-supplicant \
 #	bluez-utils-nodbus \
 #	libxml2 \
+#	libdvb \
 #	madwifi-ng \
 #	motion \
 #	ftpd-topfield \
@@ -105,7 +106,6 @@ OPENPROTIUM_PACKAGES = "\
 	lcdproc \
 	less \
 	libao \
-	libdvb \
 	libid3tag \
 	liblockfile \
 	libmad \
