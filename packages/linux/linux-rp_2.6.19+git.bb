@@ -17,13 +17,13 @@ DEFAULT_PREFERENCE = "-1"
 SRC_URI = "git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux-2.6.git;protocol=git;tag=v2.6.20-rc2 \
            http://opensource.wolfsonmicro.com/~lg/asoc/asoc-v0.12.4.patch;patch=1;status=merged \
            ${RPSRC}/xscale_cache_workaround-r1.patch;patch=1;status=merged \
+           ${RPSRC}/backlight_parameter_fix-r1.patch;patch=1;status=pending \
            ${RPSRC}/hx2750_base-r28.patch;patch=1 \
            ${RPSRC}/hx2750_bl-r8.patch;patch=1 \
            ${RPSRC}/hx2750_pcmcia-r2.patch;patch=1 \
            ${RPSRC}/pxa_keys-r7.patch;patch=1 \
            ${RPSRC}/tsc2101-r16.patch;patch=1 \
            ${RPSRC}/hx2750_test1-r6.patch;patch=1 \
-           ${RPSRC}/backlight_parameter_fix-r0.patch;patch=1;status=pending \
            ${RPSRC}/pxa_timerfix-r0.patch;patch=1 \
            ${RPSRC}/input_power-r6.patch;patch=1 \
            ${RPSRC}/pxa25x_cpufreq-r2.patch;patch=1 \
