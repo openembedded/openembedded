@@ -11,3 +11,8 @@ inherit autotools
 do_configure() {
 	:
 }
+
+do_install() {
+	install -d ${D}/bin
+	autotools_do_install
+}
