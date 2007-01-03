@@ -1,0 +1,1198 @@
+
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<!-- ViewVC - http://viewvc.org/
+by Greg Stein - mailto:gstein@lyra.org -->
+<head>
+<title>SourceForge.net Repository - [hackndev] Log of /linux4palm/linux/trunk/arch/arm/configs/palmld_defconfig</title>
+<meta name="generator" content="ViewVC 1.0.3" />
+<link rel="stylesheet" href="/viewvc/*docroot*/styles.css" type="text/css" />
+</head>
+<body>
+<table style="padding:0.1em;">
+<tr>
+<td>
+<strong>
+
+<a href="/viewvc/hackndev/">
+
+[hackndev]</a>
+/
+
+<a href="/viewvc/hackndev/linux4palm/">
+
+linux4palm</a>
+/
+
+<a href="/viewvc/hackndev/linux4palm/linux/">
+
+linux</a>
+/
+
+<a href="/viewvc/hackndev/linux4palm/linux/trunk/">
+
+trunk</a>
+/
+
+<a href="/viewvc/hackndev/linux4palm/linux/trunk/arch/">
+
+arch</a>
+/
+
+<a href="/viewvc/hackndev/linux4palm/linux/trunk/arch/arm/">
+
+arm</a>
+/
+
+<a href="/viewvc/hackndev/linux4palm/linux/trunk/arch/arm/configs/">
+
+configs</a>
+/
+
+
+
+palmld_defconfig
+
+
+</strong>
+
+</td>
+</tr>
+</table>
+
+
+<div style="float: right; padding: 5px;"><a href="http://sourceforge.net"><img src="/viewvc/*docroot*/images/sourceforge_whitebg.gif" alt="(logo)" border=0 width=136 height=79></a></div>
+<h1>Log of /linux4palm/linux/trunk/arch/arm/configs/palmld_defconfig</h1>
+
+<p style="margin:0;">
+
+<a href="/viewvc/hackndev/linux4palm/linux/trunk/arch/arm/configs/"><img src="/viewvc/*docroot*/images/back_small.png" width="16" height="16" alt="Parent Directory" /> Parent Directory</a>
+
+
+
+
+</p>
+
+<hr />
+<table class="auto">
+
+
+
+<tr>
+<td>Links to HEAD:</td>
+<td>
+(<a href="/viewvc/hackndev/linux4palm/linux/trunk/arch/arm/configs/palmld_defconfig?view=markup">view</a>)
+(<a href="/viewvc/*checkout*/hackndev/linux4palm/linux/trunk/arch/arm/configs/palmld_defconfig">download</a>)
+
+(<a href="/viewvc/hackndev/linux4palm/linux/trunk/arch/arm/configs/palmld_defconfig?view=annotate">annotate</a>)
+</td>
+</tr>
+
+
+
+<tr>
+<td>Sticky Revision:</td>
+<td><form method="get" action="/viewvc/hackndev" style="display: inline">
+<input type="hidden" name="orig_pathtype" value="FILE" /><input type="hidden" name="orig_view" value="log" /><input type="hidden" name="orig_path" value="linux4palm/linux/trunk/arch/arm/configs/palmld_defconfig" /><input type="hidden" name="view" value="redirect_pathrev" />
+
+<input type="text" name="pathrev" value="" size="6"/>
+
+<input type="submit" value="Set" />
+</form>
+
+</td>
+</tr>
+</table>
+ 
+
+
+
+
+
+
+
+
+<div>
+<hr />
+
+<a name="rev658"></a>
+
+
+Revision <a href="/viewvc/hackndev?view=rev&amp;revision=658"><strong>658</strong></a> -
+
+(<a href="/viewvc/hackndev/linux4palm/linux/trunk/arch/arm/configs/palmld_defconfig?revision=658&amp;view=markup">view</a>)
+
+(<a href="/viewvc/*checkout*/hackndev/linux4palm/linux/trunk/arch/arm/configs/palmld_defconfig?revision=658">download</a>)
+
+(<a href="/viewvc/hackndev/linux4palm/linux/trunk/arch/arm/configs/palmld_defconfig?annotate=658">annotate</a>)
+
+
+
+- <a href="/viewvc/hackndev/linux4palm/linux/trunk/arch/arm/configs/palmld_defconfig?r1=658&amp;view=log">[select for diffs]</a>
+
+
+
+
+<br />
+
+Modified
+
+<em>Tue Oct 31 13:41:37 2006 UTC</em> (2 months ago) by <em>bobofdoom</em>
+
+
+
+
+
+
+
+
+
+<br />File length: 20678 byte(s)
+
+
+
+
+
+
+<br />Diff to <a href="/viewvc/hackndev/linux4palm/linux/trunk/arch/arm/configs/palmld_defconfig?r1=654&amp;r2=658">previous 654</a>
+
+
+
+
+
+
+
+<pre class="vc_log">palmld: defconfig: Qt/C requires compaq protocol tsdev.</pre>
+</div>
+
+
+
+<div>
+<hr />
+
+<a name="rev654"></a>
+
+
+Revision <a href="/viewvc/hackndev?view=rev&amp;revision=654"><strong>654</strong></a> -
+
+(<a href="/viewvc/hackndev/linux4palm/linux/trunk/arch/arm/configs/palmld_defconfig?revision=654&amp;view=markup">view</a>)
+
+(<a href="/viewvc/*checkout*/hackndev/linux4palm/linux/trunk/arch/arm/configs/palmld_defconfig?revision=654">download</a>)
+
+(<a href="/viewvc/hackndev/linux4palm/linux/trunk/arch/arm/configs/palmld_defconfig?annotate=654">annotate</a>)
+
+
+
+- <a href="/viewvc/hackndev/linux4palm/linux/trunk/arch/arm/configs/palmld_defconfig?r1=654&amp;view=log">[select for diffs]</a>
+
+
+
+
+<br />
+
+Modified
+
+<em>Tue Oct 31 04:03:13 2006 UTC</em> (2 months ago) by <em>bobofdoom</em>
+
+
+
+
+
+
+
+
+
+<br />File length: 20625 byte(s)
+
+
+
+
+
+
+<br />Diff to <a href="/viewvc/hackndev/linux4palm/linux/trunk/arch/arm/configs/palmld_defconfig?r1=646&amp;r2=654">previous 646</a>
+
+
+
+
+
+
+
+<pre class="vc_log">palmld: Enabling many NLS codepages and setting UTF-8 to be default.</pre>
+</div>
+
+
+
+<div>
+<hr />
+
+<a name="rev646"></a>
+
+
+Revision <a href="/viewvc/hackndev?view=rev&amp;revision=646"><strong>646</strong></a> -
+
+(<a href="/viewvc/hackndev/linux4palm/linux/trunk/arch/arm/configs/palmld_defconfig?revision=646&amp;view=markup">view</a>)
+
+(<a href="/viewvc/*checkout*/hackndev/linux4palm/linux/trunk/arch/arm/configs/palmld_defconfig?revision=646">download</a>)
+
+(<a href="/viewvc/hackndev/linux4palm/linux/trunk/arch/arm/configs/palmld_defconfig?annotate=646">annotate</a>)
+
+
+
+- <a href="/viewvc/hackndev/linux4palm/linux/trunk/arch/arm/configs/palmld_defconfig?r1=646&amp;view=log">[select for diffs]</a>
+
+
+
+
+<br />
+
+Modified
+
+<em>Sat Oct 28 11:32:19 2006 UTC</em> (2 months ago) by <em>bobofdoom</em>
+
+
+
+
+
+
+
+
+
+<br />File length: 20959 byte(s)
+
+
+
+
+
+
+<br />Diff to <a href="/viewvc/hackndev/linux4palm/linux/trunk/arch/arm/configs/palmld_defconfig?r1=607&amp;r2=646">previous 607</a>
+
+
+
+
+
+
+
+<pre class="vc_log">palmld: Linking in loobback instead of compiling as module.</pre>
+</div>
+
+
+
+<div>
+<hr />
+
+<a name="rev607"></a>
+
+
+Revision <a href="/viewvc/hackndev?view=rev&amp;revision=607"><strong>607</strong></a> -
+
+(<a href="/viewvc/hackndev/linux4palm/linux/trunk/arch/arm/configs/palmld_defconfig?revision=607&amp;view=markup">view</a>)
+
+(<a href="/viewvc/*checkout*/hackndev/linux4palm/linux/trunk/arch/arm/configs/palmld_defconfig?revision=607">download</a>)
+
+(<a href="/viewvc/hackndev/linux4palm/linux/trunk/arch/arm/configs/palmld_defconfig?annotate=607">annotate</a>)
+
+
+
+- <a href="/viewvc/hackndev/linux4palm/linux/trunk/arch/arm/configs/palmld_defconfig?r1=607&amp;view=log">[select for diffs]</a>
+
+
+
+
+<br />
+
+Modified
+
+<em>Sun Oct  1 04:59:15 2006 UTC</em> (3 months ago) by <em>bobofdoom</em>
+
+
+
+
+
+
+
+
+
+<br />File length: 20959 byte(s)
+
+
+
+
+
+
+<br />Diff to <a href="/viewvc/hackndev/linux4palm/linux/trunk/arch/arm/configs/palmld_defconfig?r1=606&amp;r2=607">previous 606</a>
+
+
+
+
+
+
+
+<pre class="vc_log">palmld: Reverting accidental LOCALVERSION_AUTO=y setting.</pre>
+</div>
+
+
+
+<div>
+<hr />
+
+<a name="rev606"></a>
+
+
+Revision <a href="/viewvc/hackndev?view=rev&amp;revision=606"><strong>606</strong></a> -
+
+(<a href="/viewvc/hackndev/linux4palm/linux/trunk/arch/arm/configs/palmld_defconfig?revision=606&amp;view=markup">view</a>)
+
+(<a href="/viewvc/*checkout*/hackndev/linux4palm/linux/trunk/arch/arm/configs/palmld_defconfig?revision=606">download</a>)
+
+(<a href="/viewvc/hackndev/linux4palm/linux/trunk/arch/arm/configs/palmld_defconfig?annotate=606">annotate</a>)
+
+
+
+- <a href="/viewvc/hackndev/linux4palm/linux/trunk/arch/arm/configs/palmld_defconfig?r1=606&amp;view=log">[select for diffs]</a>
+
+
+
+
+<br />
+
+Modified
+
+<em>Sun Oct  1 04:21:59 2006 UTC</em> (3 months ago) by <em>bobofdoom</em>
+
+
+
+
+
+
+
+
+
+<br />File length: 20948 byte(s)
+
+
+
+
+
+
+<br />Diff to <a href="/viewvc/hackndev/linux4palm/linux/trunk/arch/arm/configs/palmld_defconfig?r1=602&amp;r2=606">previous 602</a>
+
+
+
+
+
+
+
+<pre class="vc_log">palmld: updated defconfig for 1904 epoch.</pre>
+</div>
+
+
+
+<div>
+<hr />
+
+<a name="rev602"></a>
+
+
+Revision <a href="/viewvc/hackndev?view=rev&amp;revision=602"><strong>602</strong></a> -
+
+(<a href="/viewvc/hackndev/linux4palm/linux/trunk/arch/arm/configs/palmld_defconfig?revision=602&amp;view=markup">view</a>)
+
+(<a href="/viewvc/*checkout*/hackndev/linux4palm/linux/trunk/arch/arm/configs/palmld_defconfig?revision=602">download</a>)
+
+(<a href="/viewvc/hackndev/linux4palm/linux/trunk/arch/arm/configs/palmld_defconfig?annotate=602">annotate</a>)
+
+
+
+- <a href="/viewvc/hackndev/linux4palm/linux/trunk/arch/arm/configs/palmld_defconfig?r1=602&amp;view=log">[select for diffs]</a>
+
+
+
+
+<br />
+
+Modified
+
+<em>Sat Sep 30 07:13:53 2006 UTC</em> (3 months ago) by <em>bobofdoom</em>
+
+
+
+
+
+
+
+
+
+<br />File length: 20935 byte(s)
+
+
+
+
+
+
+<br />Diff to <a href="/viewvc/hackndev/linux4palm/linux/trunk/arch/arm/configs/palmld_defconfig?r1=587&amp;r2=602">previous 587</a>
+
+
+
+
+
+
+
+<pre class="vc_log">palmld: Updated defconfig for 2.6.17.</pre>
+</div>
+
+
+
+<div>
+<hr />
+
+<a name="rev587"></a>
+
+
+Revision <a href="/viewvc/hackndev?view=rev&amp;revision=587"><strong>587</strong></a> -
+
+(<a href="/viewvc/hackndev/linux4palm/linux/trunk/arch/arm/configs/palmld_defconfig?revision=587&amp;view=markup">view</a>)
+
+(<a href="/viewvc/*checkout*/hackndev/linux4palm/linux/trunk/arch/arm/configs/palmld_defconfig?revision=587">download</a>)
+
+(<a href="/viewvc/hackndev/linux4palm/linux/trunk/arch/arm/configs/palmld_defconfig?annotate=587">annotate</a>)
+
+
+
+- <a href="/viewvc/hackndev/linux4palm/linux/trunk/arch/arm/configs/palmld_defconfig?r1=587&amp;view=log">[select for diffs]</a>
+
+
+
+
+<br />
+
+Modified
+
+<em>Thu Sep 28 13:18:47 2006 UTC</em> (3 months ago) by <em>bobofdoom</em>
+
+
+
+
+
+
+
+
+
+<br />File length: 20011 byte(s)
+
+
+
+
+
+
+<br />Diff to <a href="/viewvc/hackndev/linux4palm/linux/trunk/arch/arm/configs/palmld_defconfig?r1=584&amp;r2=587">previous 584</a>
+
+
+
+
+
+
+
+<pre class="vc_log">Trunk is now 2.6.17.
+</pre>
+</div>
+
+
+
+<div>
+<hr />
+
+<a name="rev584"></a>
+
+
+Revision <a href="/viewvc/hackndev?view=rev&amp;revision=584"><strong>584</strong></a> -
+
+(<a href="/viewvc/hackndev/linux4palm/linux/trunk/arch/arm/configs/palmld_defconfig?revision=584&amp;view=markup">view</a>)
+
+(<a href="/viewvc/*checkout*/hackndev/linux4palm/linux/trunk/arch/arm/configs/palmld_defconfig?revision=584">download</a>)
+
+(<a href="/viewvc/hackndev/linux4palm/linux/trunk/arch/arm/configs/palmld_defconfig?annotate=584">annotate</a>)
+
+
+
+- <a href="/viewvc/hackndev/linux4palm/linux/trunk/arch/arm/configs/palmld_defconfig?r1=584&amp;view=log">[select for diffs]</a>
+
+
+
+
+<br />
+
+Modified
+
+<em>Thu Sep 28 13:15:10 2006 UTC</em> (3 months ago) by <em>bobofdoom</em>
+
+<br />Original Path: <a href="/viewvc/hackndev/linux4palm/linux/tags/K2-6-17-hnd0/arch/arm/configs/palmld_defconfig?view=log&amp;pathrev=584"><em>linux4palm/linux/tags/K2-6-17-hnd0/arch/arm/configs/palmld_defconfig</em></a>
+
+
+
+
+
+
+
+
+
+<br />File length: 20011 byte(s)
+
+
+
+
+
+
+<br />Diff to <a href="/viewvc/hackndev/linux4palm/linux/trunk/arch/arm/configs/palmld_defconfig?r1=573&amp;r2=584">previous 573</a>
+
+
+
+
+
+
+
+<pre class="vc_log">Fixing incorrect tag, this is actually 2.6.17.
+</pre>
+</div>
+
+
+
+<div>
+<hr />
+
+<a name="rev573"></a>
+
+
+Revision <a href="/viewvc/hackndev?view=rev&amp;revision=573"><strong>573</strong></a> -
+
+(<a href="/viewvc/hackndev/linux4palm/linux/trunk/arch/arm/configs/palmld_defconfig?revision=573&amp;view=markup">view</a>)
+
+(<a href="/viewvc/*checkout*/hackndev/linux4palm/linux/trunk/arch/arm/configs/palmld_defconfig?revision=573">download</a>)
+
+(<a href="/viewvc/hackndev/linux4palm/linux/trunk/arch/arm/configs/palmld_defconfig?annotate=573">annotate</a>)
+
+
+
+- <a href="/viewvc/hackndev/linux4palm/linux/trunk/arch/arm/configs/palmld_defconfig?r1=573&amp;view=log">[select for diffs]</a>
+
+
+
+
+<br />
+
+Modified
+
+<em>Mon Sep 25 08:07:27 2006 UTC</em> (3 months, 1 week ago) by <em>bobofdoom</em>
+
+<br />Original Path: <a href="/viewvc/hackndev/linux4palm/linux/tags/K2-6-16-hnd/arch/arm/configs/palmld_defconfig?view=log&amp;pathrev=573"><em>linux4palm/linux/tags/K2-6-16-hnd/arch/arm/configs/palmld_defconfig</em></a>
+
+
+
+
+
+
+
+
+
+<br />File length: 20011 byte(s)
+
+
+
+
+
+
+<br />Diff to <a href="/viewvc/hackndev/linux4palm/linux/trunk/arch/arm/configs/palmld_defconfig?r1=567&amp;r2=573">previous 567</a>
+
+
+
+
+
+
+
+<pre class="vc_log">Tagging 2.6.16 in preperation for update
+</pre>
+</div>
+
+
+
+<div>
+<hr />
+
+<a name="rev567"></a>
+
+
+Revision <a href="/viewvc/hackndev?view=rev&amp;revision=567"><strong>567</strong></a> -
+
+(<a href="/viewvc/hackndev/linux4palm/linux/trunk/arch/arm/configs/palmld_defconfig?revision=567&amp;view=markup">view</a>)
+
+(<a href="/viewvc/*checkout*/hackndev/linux4palm/linux/trunk/arch/arm/configs/palmld_defconfig?revision=567">download</a>)
+
+(<a href="/viewvc/hackndev/linux4palm/linux/trunk/arch/arm/configs/palmld_defconfig?annotate=567">annotate</a>)
+
+
+
+- <a href="/viewvc/hackndev/linux4palm/linux/trunk/arch/arm/configs/palmld_defconfig?r1=567&amp;view=log">[select for diffs]</a>
+
+
+
+
+<br />
+
+Modified
+
+<em>Sun Sep 17 02:33:51 2006 UTC</em> (3 months, 2 weeks ago) by <em>bobofdoom</em>
+
+
+
+
+
+
+
+
+
+<br />File length: 20011 byte(s)
+
+
+
+
+
+
+<br />Diff to <a href="/viewvc/hackndev/linux4palm/linux/trunk/arch/arm/configs/palmld_defconfig?r1=566&amp;r2=567">previous 566</a>
+
+
+
+
+
+
+
+<pre class="vc_log">palmld: Updated defconfig.</pre>
+</div>
+
+
+
+<div>
+<hr />
+
+<a name="rev566"></a>
+
+
+Revision <a href="/viewvc/hackndev?view=rev&amp;revision=566"><strong>566</strong></a> -
+
+(<a href="/viewvc/hackndev/linux4palm/linux/trunk/arch/arm/configs/palmld_defconfig?revision=566&amp;view=markup">view</a>)
+
+(<a href="/viewvc/*checkout*/hackndev/linux4palm/linux/trunk/arch/arm/configs/palmld_defconfig?revision=566">download</a>)
+
+(<a href="/viewvc/hackndev/linux4palm/linux/trunk/arch/arm/configs/palmld_defconfig?annotate=566">annotate</a>)
+
+
+
+- <a href="/viewvc/hackndev/linux4palm/linux/trunk/arch/arm/configs/palmld_defconfig?r1=566&amp;view=log">[select for diffs]</a>
+
+
+
+
+<br />
+
+Modified
+
+<em>Sat Sep 16 14:23:55 2006 UTC</em> (3 months, 2 weeks ago) by <em>bobofdoom</em>
+
+
+
+
+
+
+
+
+
+<br />File length: 19887 byte(s)
+
+
+
+
+
+
+<br />Diff to <a href="/viewvc/hackndev/linux4palm/linux/trunk/arch/arm/configs/palmld_defconfig?r1=494&amp;r2=566">previous 494</a>
+
+
+
+
+
+
+
+<pre class="vc_log">palmld: Disabled CONFIG_LOCALVERSION_AUTO as it was causing the kernel make system to get confused and start tagging things with the familiar git repository's revision.</pre>
+</div>
+
+
+
+<div>
+<hr />
+
+<a name="rev494"></a>
+
+
+Revision <a href="/viewvc/hackndev?view=rev&amp;revision=494"><strong>494</strong></a> -
+
+(<a href="/viewvc/hackndev/linux4palm/linux/trunk/arch/arm/configs/palmld_defconfig?revision=494&amp;view=markup">view</a>)
+
+(<a href="/viewvc/*checkout*/hackndev/linux4palm/linux/trunk/arch/arm/configs/palmld_defconfig?revision=494">download</a>)
+
+(<a href="/viewvc/hackndev/linux4palm/linux/trunk/arch/arm/configs/palmld_defconfig?annotate=494">annotate</a>)
+
+
+
+- <a href="/viewvc/hackndev/linux4palm/linux/trunk/arch/arm/configs/palmld_defconfig?r1=494&amp;view=log">[select for diffs]</a>
+
+
+
+
+<br />
+
+Modified
+
+<em>Wed Jul 12 14:35:33 2006 UTC</em> (5 months, 3 weeks ago) by <em>bobofdoom</em>
+
+
+
+
+
+
+
+
+
+<br />File length: 19887 byte(s)
+
+
+
+
+
+
+<br />Diff to <a href="/viewvc/hackndev/linux4palm/linux/trunk/arch/arm/configs/palmld_defconfig?r1=419&amp;r2=494">previous 419</a>
+
+
+
+
+
+
+
+<pre class="vc_log">palmld: updated defconfig</pre>
+</div>
+
+
+
+<div>
+<hr />
+
+<a name="rev419"></a>
+
+
+Revision <a href="/viewvc/hackndev?view=rev&amp;revision=419"><strong>419</strong></a> -
+
+(<a href="/viewvc/hackndev/linux4palm/linux/trunk/arch/arm/configs/palmld_defconfig?revision=419&amp;view=markup">view</a>)
+
+(<a href="/viewvc/*checkout*/hackndev/linux4palm/linux/trunk/arch/arm/configs/palmld_defconfig?revision=419">download</a>)
+
+(<a href="/viewvc/hackndev/linux4palm/linux/trunk/arch/arm/configs/palmld_defconfig?annotate=419">annotate</a>)
+
+
+
+- <a href="/viewvc/hackndev/linux4palm/linux/trunk/arch/arm/configs/palmld_defconfig?r1=419&amp;view=log">[select for diffs]</a>
+
+
+
+
+<br />
+
+Modified
+
+<em>Sat May 13 07:38:30 2006 UTC</em> (7 months, 3 weeks ago) by <em>bobofdoom</em>
+
+
+
+
+
+
+
+
+
+<br />File length: 19613 byte(s)
+
+
+
+
+
+
+<br />Diff to <a href="/viewvc/hackndev/linux4palm/linux/trunk/arch/arm/configs/palmld_defconfig?r1=265&amp;r2=419">previous 265</a>
+
+
+
+
+
+
+
+<pre class="vc_log">LD: updating defconfig</pre>
+</div>
+
+
+
+<div>
+<hr />
+
+<a name="rev265"></a>
+
+
+Revision <a href="/viewvc/hackndev?view=rev&amp;revision=265"><strong>265</strong></a> -
+
+(<a href="/viewvc/hackndev/linux4palm/linux/trunk/arch/arm/configs/palmld_defconfig?revision=265&amp;view=markup">view</a>)
+
+(<a href="/viewvc/*checkout*/hackndev/linux4palm/linux/trunk/arch/arm/configs/palmld_defconfig?revision=265">download</a>)
+
+(<a href="/viewvc/hackndev/linux4palm/linux/trunk/arch/arm/configs/palmld_defconfig?annotate=265">annotate</a>)
+
+
+
+- <a href="/viewvc/hackndev/linux4palm/linux/trunk/arch/arm/configs/palmld_defconfig?r1=265&amp;view=log">[select for diffs]</a>
+
+
+
+
+<br />
+
+Modified
+
+<em>Fri Apr 14 11:16:14 2006 UTC</em> (8 months, 2 weeks ago) by <em>farcaller</em>
+
+
+
+
+
+
+
+
+
+<br />File length: 19142 byte(s)
+
+
+
+
+
+
+<br />Diff to <a href="/viewvc/hackndev/linux4palm/linux/trunk/arch/arm/configs/palmld_defconfig?r1=254&amp;r2=265">previous 254</a>
+
+
+
+
+
+
+
+<pre class="vc_log">moving stuff from trunk
+</pre>
+</div>
+
+
+
+<div>
+<hr />
+
+<a name="rev254"></a>
+
+
+Revision <a href="/viewvc/hackndev?view=rev&amp;revision=254"><strong>254</strong></a> -
+
+(<a href="/viewvc/hackndev/linux4palm/linux/trunk/arch/arm/configs/palmld_defconfig?revision=254&amp;view=markup">view</a>)
+
+(<a href="/viewvc/*checkout*/hackndev/linux4palm/linux/trunk/arch/arm/configs/palmld_defconfig?revision=254">download</a>)
+
+(<a href="/viewvc/hackndev/linux4palm/linux/trunk/arch/arm/configs/palmld_defconfig?annotate=254">annotate</a>)
+
+
+
+- <a href="/viewvc/hackndev/linux4palm/linux/trunk/arch/arm/configs/palmld_defconfig?r1=254&amp;view=log">[select for diffs]</a>
+
+
+
+
+<br />
+
+Modified
+
+<em>Wed Apr 12 02:12:36 2006 UTC</em> (8 months, 3 weeks ago) by <em>bobofdoom</em>
+
+<br />Original Path: <a href="/viewvc/hackndev/trunk/linux/arch/arm/configs/palmld_defconfig?view=log&amp;pathrev=254"><em>trunk/linux/arch/arm/configs/palmld_defconfig</em></a>
+
+
+
+
+
+
+
+
+
+<br />File length: 19142 byte(s)
+
+
+
+
+
+
+<br />Diff to <a href="/viewvc/hackndev/linux4palm/linux/trunk/arch/arm/configs/palmld_defconfig?r1=175&amp;r2=254">previous 175</a>
+
+
+
+
+
+
+
+<pre class="vc_log">ALL: Update kernel tree to hh.org 2.6.16.</pre>
+</div>
+
+
+
+<div>
+<hr />
+
+<a name="rev175"></a>
+
+
+Revision <a href="/viewvc/hackndev?view=rev&amp;revision=175"><strong>175</strong></a> -
+
+(<a href="/viewvc/hackndev/linux4palm/linux/trunk/arch/arm/configs/palmld_defconfig?revision=175&amp;view=markup">view</a>)
+
+(<a href="/viewvc/*checkout*/hackndev/linux4palm/linux/trunk/arch/arm/configs/palmld_defconfig?revision=175">download</a>)
+
+(<a href="/viewvc/hackndev/linux4palm/linux/trunk/arch/arm/configs/palmld_defconfig?annotate=175">annotate</a>)
+
+
+
+- <a href="/viewvc/hackndev/linux4palm/linux/trunk/arch/arm/configs/palmld_defconfig?r1=175&amp;view=log">[select for diffs]</a>
+
+
+
+
+<br />
+
+Modified
+
+<em>Sun Feb 26 03:18:12 2006 UTC</em> (10 months, 1 week ago) by <em>bobofdoom</em>
+
+<br />Original Path: <a href="/viewvc/hackndev/trunk/linux/arch/arm/configs/palmld_defconfig?view=log&amp;pathrev=175"><em>trunk/linux/arch/arm/configs/palmld_defconfig</em></a>
+
+
+
+
+
+
+
+
+
+<br />File length: 19141 byte(s)
+
+
+
+
+
+
+<br />Diff to <a href="/viewvc/hackndev/linux4palm/linux/trunk/arch/arm/configs/palmld_defconfig?r1=22&amp;r2=175">previous 22</a>
+
+
+
+
+
+
+
+<pre class="vc_log">updated for IDE support
+</pre>
+</div>
+
+
+
+<div>
+<hr />
+
+<a name="rev22"></a>
+
+
+Revision <a href="/viewvc/hackndev?view=rev&amp;revision=22"><strong>22</strong></a> -
+
+(<a href="/viewvc/hackndev/linux4palm/linux/trunk/arch/arm/configs/palmld_defconfig?revision=22&amp;view=markup">view</a>)
+
+(<a href="/viewvc/*checkout*/hackndev/linux4palm/linux/trunk/arch/arm/configs/palmld_defconfig?revision=22">download</a>)
+
+(<a href="/viewvc/hackndev/linux4palm/linux/trunk/arch/arm/configs/palmld_defconfig?annotate=22">annotate</a>)
+
+
+
+- <a href="/viewvc/hackndev/linux4palm/linux/trunk/arch/arm/configs/palmld_defconfig?r1=22&amp;view=log">[select for diffs]</a>
+
+
+
+
+<br />
+
+Modified
+
+<em>Fri Dec 23 19:48:26 2005 UTC</em> (12 months, 1 week ago) by <em>bobofdoom</em>
+
+<br />Original Path: <a href="/viewvc/hackndev/trunk/linux/arch/arm/configs/palmld_defconfig?view=log&amp;pathrev=22"><em>trunk/linux/arch/arm/configs/palmld_defconfig</em></a>
+
+
+
+
+
+
+
+
+
+<br />File length: 18640 byte(s)
+
+
+
+
+
+
+<br />Diff to <a href="/viewvc/hackndev/linux4palm/linux/trunk/arch/arm/configs/palmld_defconfig?r1=4&amp;r2=22">previous 4</a>
+
+
+
+
+
+
+
+<pre class="vc_log">bringing LD code up to date
+</pre>
+</div>
+
+
+
+<div>
+<hr />
+
+<a name="rev4"></a>
+
+
+Revision <a href="/viewvc/hackndev?view=rev&amp;revision=4"><strong>4</strong></a> -
+
+(<a href="/viewvc/hackndev/linux4palm/linux/trunk/arch/arm/configs/palmld_defconfig?revision=4&amp;view=markup">view</a>)
+
+(<a href="/viewvc/*checkout*/hackndev/linux4palm/linux/trunk/arch/arm/configs/palmld_defconfig?revision=4">download</a>)
+
+(<a href="/viewvc/hackndev/linux4palm/linux/trunk/arch/arm/configs/palmld_defconfig?annotate=4">annotate</a>)
+
+
+
+- <a href="/viewvc/hackndev/linux4palm/linux/trunk/arch/arm/configs/palmld_defconfig?r1=4&amp;view=log">[select for diffs]</a>
+
+
+
+
+<br />
+
+Added
+
+<em>Fri Dec 23 11:17:00 2005 UTC</em> (12 months, 1 week ago) by <em>bobofdoom</em>
+
+<br />Original Path: <a href="/viewvc/hackndev/trunk/linux/arch/arm/configs/palmld_defconfig?view=log&amp;pathrev=4"><em>trunk/linux/arch/arm/configs/palmld_defconfig</em></a>
+
+
+
+
+
+
+
+<br />File length: 12827 byte(s)
+
+
+
+
+
+
+
+
+
+
+<pre class="vc_log">Initial revision
+</pre>
+</div>
+
+ 
+
+
+
+ <hr />
+<p><a name="diff"></a>
+This form allows you to request diffs between any two revisions of this file.
+For each of the two "sides" of the diff,
+
+enter a numeric revision.
+
+</p>
+<form method="get" action="/viewvc/hackndev/linux4palm/linux/trunk/arch/arm/configs/palmld_defconfig" name="diff_select">
+<table cellpadding="2" cellspacing="0" class="auto">
+<tr>
+<td>&nbsp;</td>
+<td>
+<input type="hidden" name="view" value="diff" />
+Diffs between
+
+<input type="text" size="12" name="r1"
+value="658" />
+
+and
+
+<input type="text" size="12" name="r2" value="4" />
+
+</td>
+</tr>
+<tr>
+<td>&nbsp;</td>
+<td>
+Type of Diff should be a
+<select name="diff_format" onchange="submit()">
+<option value="h" selected="selected">Colored Diff</option>
+<option value="l" >Long Colored Diff</option>
+<option value="u" >Unidiff</option>
+<option value="c" >Context Diff</option>
+<option value="s" >Side by Side</option>
+</select>
+<input type="submit" value=" Get Diffs " />
+</td>
+</tr>
+</table>
+</form>
+
+
+<form method="get" action="/viewvc/hackndev/linux4palm/linux/trunk/arch/arm/configs/palmld_defconfig">
+<div>
+<hr />
+<a name="logsort"></a>
+<input type="hidden" name="view" value="log" />
+Sort log by:
+<select name="logsort" onchange="submit()">
+<option value="cvs" >Not sorted</option>
+<option value="date" selected="selected">Commit date</option>
+<option value="rev" >Revision</option>
+</select>
+<input type="submit" value=" Sort " />
+</div>
+</form>
+
+
+<hr />
+<table>
+<tr>
+<td>
+<address><a href="http://sourceforge.net/">Back to SourceForge.net</a></address><br />
+Powered by <a href="http://viewvc.tigris.org/">ViewVC 1.0.3</a>
+</td>
+<td style="text-align:right;">
+<h3><a href="/viewvc/*docroot*/help_log.html">ViewVC and Help</a></h3>
+</td>
+</tr>
+</table>
+</body>
+</html>
+
+
