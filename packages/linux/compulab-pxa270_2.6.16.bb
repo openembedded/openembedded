@@ -3,10 +3,13 @@ DESCRIPTION = "Linux kernel for the Compulab PXA270 system"
 LICENSE = "GPL"
 PR = "r2"
 
+# Note, the compulab package contains a binary NAND driver that is not
+# EABI compatible
+
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.16.tar.bz2 \
            file://linux-2.6.16.patch;patch=1 \
            file://defconfig \
-	   http://www.compulab.co.il/x270/download/x270-linux-drv.zip"
+	   http://www.compulab.co.il/x270/download/x270-linux-drv.zip;md5sum=ac57536294406223e527367af5aefce2"
 
 S = "${WORKDIR}/linux-2.6.16"
 
