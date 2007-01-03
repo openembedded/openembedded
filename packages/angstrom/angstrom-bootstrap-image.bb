@@ -1,9 +1,14 @@
 #Angstrom bootstrap image
 LICENSE = "MIT"
-PR = "r2"
+PR = "r3"
+
+ANGSTROM_EXTRA_INSTALL ?= ""
 
 DEPENDS = "task-base"
-RDEPENDS = "task-base-core-default task-base"
+RDEPENDS = "task-base-core-default \
+	    task-base \
+	    ${ANGSTROM_EXTRA_INSTALL} \
+	   "
 
 export IMAGE_BASENAME = "bootstrap-image"
 export IMAGE_LINGUAS = ""

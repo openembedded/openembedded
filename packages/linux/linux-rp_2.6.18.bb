@@ -1,6 +1,6 @@
 require linux-rp.inc
 
-PR = "r6"
+PR = "r7"
 
 # Handy URLs
 # git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux-2.6.git;protocol=git;tag=ef7d1b244fa6c94fb76d5f787b8629df64ea4046
@@ -34,6 +34,7 @@ SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.18.tar.bz2 \
            ${RPSRC}/pxafb_changeres-r2.patch;patch=1 \
            ${RPSRC}/pxa27x_overlay-r2.patch;patch=1 \
            ${RPSRC}/w100_extaccel-r0.patch;patch=1 \
+           ${RPSRC}/xscale_cache_workaround-r0.patch;patch=1 \
            file://serial-add-support-for-non-standard-xtals-to-16c950-driver.patch;patch=1 \
            file://hrw-pcmcia-ids-r5.patch;patch=1 \
            ${RPSRC}/logo_oh-r0.patch.bz2;patch=1;status=unmergable \

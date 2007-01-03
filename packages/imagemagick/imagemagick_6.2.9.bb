@@ -10,7 +10,8 @@ S = "${WORKDIR}/ImageMagick-${PV}"
 
 inherit autotools
 
-EXTRA_OECONF="-without-x "
+EXTRA_OECONF="--without-x"
+EXTRA_OECONF_openprotium="--without-x --without-xml --without-perl"
 
 LEAD_SONAME="libMagick.so.*"
 

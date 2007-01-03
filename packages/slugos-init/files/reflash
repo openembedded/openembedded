@@ -16,10 +16,38 @@ load_functions sysconf
 case "$(machine)" in
 nslu2)
 	isnslu2=1
+	isdsmg600=
+	isnas100d=
+	imageok=1
+	apexpart="Loader"
+	usrpart=
 	kpart="Kernel"
 	ffspart="Flashdisk";;
+nas100d)
+	isnslu2=
+	isdsmg600=
+	isnas100d=1
+	imageok=1
+	apexpart=
+	usrpart="usr"
+	kpart="kernel"
+	ffspart="filesystem";;
+dsmg600)
+	isnslu2=
+	isdsmg600=1
+	isnas100d=
+	imageok=1
+	apexpart=
+	usrpart="usr"
+	kpart="kernel"
+	ffspart="filesystem";;
 *)
 	isnslu2=
+	isdsmg600=
+	isnas100d=
+	imageok=
+	apexpart=
+	usrpart=
 	kpart="kernel"
 	ffspart="filesystem";;
 esac
@@ -32,9 +60,12 @@ esac
 ffsfile=
 kfile=
 imgfile=
+preserve_config=1
 while test $# -gt 0
 do
 	case "$1" in
+	-n)	preserve_config=
+		shift;;
 	-k)	shift
 		test $# -gt 0 || {
 			echo "reflash: -k: give the file containing the kernel image" >&2
@@ -50,9 +81,10 @@ do
 		ffsfile="$1"
 		shift;;
 	-i)	shift
-		test -n "$isnslu2" || {
-			echo "reflash: -i: only supported on the LinkSys NSLU2" >&2
-			echo " use -k and -j to specify the kernel and root file system" >&2
+		test -n "$imageok" || {
+			echo "reflash: -i: only supported on the LinkSys NSLU2,"     >&2
+			echo " Iomega NAS 100d and D-Link DSM-G600 systems; use -k and -j" >&2
+			echo " to specify the kernel and root file system instead." >&2
 			exit 1
 		}
 		test $# -gt 0 || {
@@ -61,15 +93,16 @@ do
 		}
 		imgfile="$1"
 		shift;;
-	*)	if test -n "$isnslu2"
+	*)	if test -n "$imageok"
 		then
-			echo "reflash: usage: $0 [-k kernel] [-j rootfs] [-i image]" >&2
+			echo "reflash: usage: $0 [-n] [-k kernel] [-j rootfs] [-i image]" >&2
 		else
-			echo "reflash: usage: $0 [-k kernel] [-j rootfs]" >&2
+			echo "reflash: usage: $0 [-n] [-k kernel] [-j rootfs]" >&2
 		fi
+		echo "  -n: do not attempt to preserve the configuration" >&2
 		echo "  -k file: the new compressed kernel image ('zImage')" >&2
 		echo "  -j file: the new root file system (jffs2)" >&2
-		test -n "$isnslu2" &&
+		test -n "$imageok" &&
 			echo "  -i file: a complete flash image (gives both kernel and jffs2)" >&2
 		echo " The current jffs2 will be umounted if mounted." >&2
 		exit 1;;
@@ -77,7 +110,7 @@ do
 done
 #
 # Sanity check on the arguments (note that the first case can only fire
-# on NSLU2 because of the check for -i above.)
+# on NSLU2 or DSM-G600 because of the check for -i above.)
 if test -n "$imgfile" -a -n "$ffsfile" -a -n "$kfile"
 then
 	echo "reflash: specify at most two files" >&2
@@ -93,7 +126,7 @@ fi
 # Perform basic checks on the input (must exist, size must be ok).
 if test -n "$imgfile"
 then
-	if test -r "$imgfile"
+	if test -r "$imgfile" -a -n "$isnslu2"
 	then
 		# read the partition table and from this find the offset
 		# and size of $kpart and $ffspart partitions.  The following
@@ -105,7 +138,11 @@ then
 		# works in ash, no guarantees about other shells!
 		while read size base name
 		do
-			if test "$name" = "$kpart"
+			if test "$name" = "$apexpart"
+			then
+				imgapexsize="$size"
+				imgapexoffset="$base"
+			elif test "$name" = "$kpart"
 			then
 				imgksize="$size"
 				imgkoffset="$base"
@@ -162,6 +199,52 @@ EOI
 			echo "reflash: $imgfile: failed to find $ffspart" >&2
 			exit 1
 		}
+	elif test -r "$imgfile" -a \( -n "$isdsmg600" -o -n "$isnas100d" \)
+	then
+		#
+		# For the DSM-G600, this is really easy - the image is just
+		# a tar file.  So, extract the contents of the tar file, and
+		# set the kernel and filesystem variables (if not already set)
+		# to point to the extracted content.  Content will look like:
+		# 
+		# drwxr-xr-x 500/500         0 2006-11-25 23:47:59 firmupgrade
+		# -rw-r--r-- 500/500   4718592 2006-12-02 16:32:51 firmupgrade/rootfs.gz
+		# -rw-r--r-- 500/500        40 2006-11-25 22:15:41 firmupgrade/version.msg
+		# -rw-r--r-- 500/500         0 2006-11-25 23:47:59 firmupgrade/usr.cramfs
+		# -rw-rw-r-- 500/500   1306872 2006-12-02 16:33:37 firmupgrade/ip-ramdisk
+		# 
+		# Heuristic: if the size of usr.cramfs is zero, the firmware
+		# is not a D-Link firmware for the device.  (The version.msg
+		# file is not useful for this purpose; it describes the hardware,
+		# not the firmware version in the image!)
+		# 
+		# TODO: If usr.cramfs is non-zero, we should flash that, too, just
+		#       to make sure that it matches the native firmware's kernel
+		#       and rootfs that we're now flashing back onto the device.
+
+		echo "reflash: unpacking DSM-G600/NAS-100d image file" >&2
+		tar -x -f "$imgfile" -C /var/tmp || {
+			echo "reflash: unable to unpack image file to be flashed" >&2
+			exit 1
+		}
+
+		if test -z "$kfile"
+		then
+			kfile="/var/tmp/firmupgrade/ip-ramdisk"
+		fi
+
+		if test -z "$ffsfile"
+		then
+			ffsfile="/var/tmp/firmupgrade/rootfs.gz"
+		fi
+
+		if test -s "/var/tmp/firmupgrade/usr.cramfs"
+		then
+			echo "reflash: Native flash being restored" >&2
+			usrfile="/var/tmp/firmupgrade/usr.cramfs"
+			preserve_config=
+		fi
+
 	else
 		echo "reflash: $imgfile: image file not found" >&2
 		exit 1
@@ -192,6 +275,19 @@ then
 	imgffsoffset=0
 else
 	ffsfile="$imgfile"
+fi
+if test -n "$usrfile"
+then
+	if test ! -r "$usrfile"
+	then
+		echo "reflash: $usrfile: usr file system image file not found" >&2
+		exit 1
+	fi
+	# values override those from the image
+	imgusrsize="$(devio "<<$usrfile" 'pr$')"
+	imgusroffset=0
+else
+	usrfile=
 fi
 #
 # INPUTS OK, CHECKING THE ENVIRONMENT
@@ -238,6 +334,26 @@ then
 		exit 1
 	}
 fi
+#
+usrdev=
+usrsize=0
+if test -n "$usrfile"
+then
+	usrdev="$(mtblockdev $usrpart)"
+	test -n "$usrdev" -a -b "$usrdev" || {
+		echo "reflash: $usrpart($usrdev): cannot find $usrpart mtd partition." >&2
+		echo "  check /proc/mtd, either the partition does not exist or there is no" >&2
+		echo "  corresponding block device." >&2
+		exit 1
+	}
+	usrsize="$(devio "<<$usrdev" 'pr$')"
+	#
+	# check the input file size
+	test -n "$imgusrsize" -a "$imgusrsize" -gt 0 -a "$imgusrsize" -le "$usrsize" || {
+		echo "reflash: $usrfile: bad $usrpart size ($imgusrsize, max $usrsize)" >&2
+		exit 1
+	}
+fi
 
 #
 # INPUTS OK, ENVIRONMENT OK, UMOUNT ANY EXISTING MOUNT OF THE FLASHDISK
@@ -280,7 +396,7 @@ fi
 # PRESERVE EXISTING CONFIGURATION
 # -------------------------------
 # Only required if the flash partition will be written
-if test -n "$ffsdev"
+if test -n "$ffsdev" -a -n "$preserve_config"
 then
 	echo "reflash: preserving existing configuration file" >&2
 	#
@@ -352,6 +468,14 @@ do_ffs() {
 		fb #t-,255'
 }
 #
+do_usr() {
+	devio $progress "$@" "<<$usrfile" ">>$usrdev" '
+		# usrfs is at imgusroffset[imgusrsize]
+		' "<= $imgusroffset" "cp $imgusrsize" '
+		# fill with 255
+		fb #t-,255'
+}
+#
 # check_status $? type file(offset,size) device
 #  check the devio status code (given in $1)
 check_status() {
@@ -384,6 +508,13 @@ check_status() {
 	esac
 }
 #
+if test -n "$usrdev"
+then
+	echo -n "reflash: writing usrfs to $usrdev " >&2
+	do_usr
+	check_status $? usrfs "$usrfile($imgusroffset,$imgusrsize)" "$usrdev"
+fi
+#
 if test -n "$ffsdev"
 then
 	echo -n "reflash: writing rootfs to $ffsdev " >&2
@@ -399,6 +530,19 @@ then
 fi
 #
 # verify - this just produces a warning
+if test -n "$usrdev"
+then
+	echo -n "reflash: verifying new usr image " >&2
+	if do_usr -v
+	then
+		echo " done" >&2
+	else
+		echo " failed" >&2
+		echo "reflash: WARNING: usrfs flash image verification failed" >&2
+		echo "  The system is may be bootable." >&2
+	fi
+fi
+#
 if test -n "$ffsdev"
 then
 	echo -n "reflash: verifying new flash image " >&2
@@ -432,7 +576,7 @@ fi
 # RESTORE THE OLD CONFIGURATION
 # -----------------------------
 # If not write the rootfs none of the following is required - exit now.
-test -n "$ffsdev" || exit 0
+test -n "$ffsdev" -a -n "$preserve_config" || exit 0
 #
 echo "reflash: restoring saved configuration files" >&2
 #
