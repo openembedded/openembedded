@@ -19,7 +19,7 @@ S = "${WORKDIR}/httpd-${PV}"
 #
 # implications - autotools defines suitable do_configure, do_install, etc.
 # update-rc.d adds hooks for rc-update.
-# 
+#
 #
 inherit autotools update-rc.d
 
@@ -60,7 +60,7 @@ FILES_${PN} =  "${bindir} ${sbindir} ${libexecdir} ${libdir}/lib*.so.* ${sysconf
 		${sharedstatedir} ${localstatedir} /bin /sbin /lib/*.so* \
 		${libdir}/${PN}"
 
-# we want htdocs and cgi-bin to go with the binary 
+# we want htdocs and cgi-bin to go with the binary
 FILES_${PN} += "${datadir}/${PN}/htdocs ${datadir}/${PN}/cgi-bin"
 
 #make sure the lone .so links also get wrapped in the base package

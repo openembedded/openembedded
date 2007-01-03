@@ -4,6 +4,6 @@ HOMEPAGE =	""
 
 inherit gnome
 
-do_stage() {        
-	autotools_stage_all      
+do_stage() {
+	autotools_stage_all
 }

@@ -71,7 +71,7 @@ do_configure_prepend() {
 	then
 	    ln -s ../kdelibs/admin admin
 	fi
-	make -f Makefile.cvs 
+	make -f Makefile.cvs
 }
 
 do_compile_prepend() {

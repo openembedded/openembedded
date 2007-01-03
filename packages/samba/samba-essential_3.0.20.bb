@@ -43,27 +43,27 @@ do_install_append() {
 	rmdir ${D}/sbin
 	install -d "${D}${sysconfdir}/init.d"
 	install -d "${D}${sysconfdir}/samba/private"
-	
+
 	install -c -m 755 ${WORKDIR}/init-essential ${D}${sysconfdir}/init.d/samba
-	
-	install -d "${D}${sysconfdir}/samba"	
-	install -d "${D}/usr/share/samba/help"	
-	
+
+	install -d "${D}${sysconfdir}/samba"
+	install -d "${D}/usr/share/samba/help"
+
 	install -m 0644 ${WORKDIR}/smb-essential-inactive.conf "${D}${sysconfdir}/samba/"
 	install -m 0644 ${WORKDIR}/smb-essential.conf "${D}${sysconfdir}/samba/smb.conf"
 
 	install -m 0644 ${WORKDIR}/Managing-Samba.txt  ${D}/usr/share/samba/help
-	
+
 }
 
 do_configure_append() {
 	distro_up="`echo "${DISTRO}" | awk '{printf("%s\n",toupper($0))}'`"
-	
+
 	cat ${WORKDIR}/smb-essential-inactive.conf | sed "s/MYWORKGROUP/${distro_up}/" > ${WORKDIR}/smb-essential-inactive.conf_
-	mv  ${WORKDIR}/smb-essential-inactive.conf_ ${WORKDIR}/smb-essential-inactive.conf 
+	mv  ${WORKDIR}/smb-essential-inactive.conf_ ${WORKDIR}/smb-essential-inactive.conf
 
 	cat ${WORKDIR}/smb-essential.conf | sed "s/MYWORKGROUP/${distro_up}/" > ${WORKDIR}/smb-essential.conf_
-	mv  ${WORKDIR}/smb-essential.conf_ ${WORKDIR}/smb-essential.conf 	
+	mv  ${WORKDIR}/smb-essential.conf_ ${WORKDIR}/smb-essential.conf
 }
 
 FILES_${PN} = "${bindir}/smbpasswd \

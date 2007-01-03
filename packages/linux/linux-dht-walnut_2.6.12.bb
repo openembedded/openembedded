@@ -30,7 +30,7 @@ KERNEL_OUTPUT = "arch/ppc/boot/images/zImage.elf"
 
 do_configure_prepend() {
 	install -m 0644 ${WORKDIR}/dht-walnut_defconfig ${S}/.config
-#        oe_machinstall -m 0644 ${S}/arch/ppc/configs/dht-walnut_defconfig ${S}/.config || die "no default configuration for ${MACHINE} available."       
+#        oe_machinstall -m 0644 ${S}/arch/ppc/configs/dht-walnut_defconfig ${S}/.config || die "no default configuration for ${MACHINE} available."
 #        oe_runmake oldconfig
 }
 

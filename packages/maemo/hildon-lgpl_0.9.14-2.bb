@@ -10,7 +10,7 @@ EXTRA_OECONF =	"--enable-shared --disable-gtk-doc"
 
 inherit pkgconfig autotools
 
-FILES_${PN} += " ${libdir}/outo/*.so" 
+FILES_${PN} += " ${libdir}/outo/*.so"
 
 do_install_prepend() {
 	install -d ${D}/${libdir}

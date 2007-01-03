@@ -68,7 +68,7 @@ do_configure() {
 	if [ "${TARGET_OS}" == "linux-gnueabi" -o  "${TARGET_OS}" == "linux-uclibcgnueabi" ]; then
 		echo "CONFIG_AEABI=y"                   >> ${S}/.config
 		echo "CONFIG_OABI_COMPAT=y"             >> ${S}/.config
-	else 
+	else
 		echo "# CONFIG_AEABI is not set"        >> ${S}/.config
 		echo "# CONFIG_OABI_COMPAT is not set"  >> ${S}/.config
 	fi
@@ -90,7 +90,7 @@ do_configure() {
 #
 do_compile_append() {
 	size=`ls -l arch/${ARCH}/boot/${KERNEL_IMAGETYPE} | awk '{ print $5}'`
-	if [ $size -ge 1294336 ]; then	
+	if [ $size -ge 1294336 ]; then
 		rm arch/${ARCH}/boot/${KERNEL_IMAGETYPE}
 		echo "Size is $size"
 		die "This kernel is too big for your EZX Phone. Please reduce the size of the kernel by making more of it modular."
@@ -103,7 +103,7 @@ do_compile_append() {
 do_deploy() {
         install -d ${DEPLOY_DIR_IMAGE}
         install -m 0644 arch/${ARCH}/boot/${KERNEL_IMAGETYPE} ${DEPLOY_DIR_IMAGE}/${KERNEL_IMAGETYPE}-${PV}-${MACHINE}-${DATETIME}.bin
-        tar -cvzf ${DEPLOY_DIR_IMAGE}/modules-${KERNEL_RELEASE}-${MACHINE}.tgz -C ${D} lib	
+        tar -cvzf ${DEPLOY_DIR_IMAGE}/modules-${KERNEL_RELEASE}-${MACHINE}.tgz -C ${D} lib
 }
 
 do_deploy[dirs] = "${S}"

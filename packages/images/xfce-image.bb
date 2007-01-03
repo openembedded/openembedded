@@ -8,8 +8,8 @@ X_RDEPENDS = "xserver-kdrive-fbdev"
 XFCE_DEPENDS = "${MACHINE_TASK_PROVIDER} task-xfce-base"
 XFCE_RDEPENDS = "${XFCE_DEPENDS}"
 
-export IPKG_INSTALL = "${X_RDEPENDS} ${XFCE_RDEPENDS}"
+export PACKAGE_INSTALL = "${X_RDEPENDS} ${XFCE_RDEPENDS}"
 DEPENDS = "${X_DEPENDS} ${XFCE_DEPENDS}"
 
-inherit image_ipk
+inherit image
 LICENSE = "MIT"

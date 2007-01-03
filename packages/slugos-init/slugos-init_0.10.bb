@@ -66,7 +66,7 @@ do_install() {
 		   ${D}${base_sbindir} \
 		   ${D}/initrd \
 		   ${D}/boot
-		  
+
 	# linuxrc
 	rm -f ${D}/linuxrc
 	ln -s boot/flash ${D}/linuxrc
@@ -90,7 +90,7 @@ do_install() {
 	#
 	# Init scripts
 	install -m 0644 functions ${D}${sysconfdir}/default
-	install -m 0644 modulefunctions ${D}${sysconfdir}/default	
+	install -m 0644 modulefunctions ${D}${sysconfdir}/default
 	for s in ${INITSCRIPTS}
 	do
 		install -m 0755 initscripts/$s ${D}${sysconfdir}/init.d/

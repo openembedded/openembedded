@@ -9,7 +9,7 @@ PROVIDES += "virtual/evas"
 
 inherit efl
 
-export FREETYPE_CONFIG		= "${STAGING_BINDIR}/freetype-config${@binconfig_suffix(d)}"
+export FREETYPE_CONFIG = "${STAGING_BINDIR_CROSS}/freetype-config"
 
 SRC_URI = "http://enlightenment.freedesktop.org/files/evas-${PV}.tar.gz \
            file://fix-configure.patch;patch=1 \

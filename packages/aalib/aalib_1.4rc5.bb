@@ -7,7 +7,7 @@ SRC_URI = "${SOURCEFORGE_MIRROR}/aa-project/aalib-${PV}.tar.gz \
 	   file://configure.patch;patch=1"
 S = "${WORKDIR}/aalib-1.4.0"
 
-inherit autotools 
+inherit autotools
 
 EXTRA_OECONF = '--without-x11-driver --without-slang-driver \
 		--with-curses-driver --without-gpm \

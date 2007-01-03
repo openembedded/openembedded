@@ -15,7 +15,7 @@ EXTRA_OECONF = "--disable-ipv6 \
                 --with-gnu-ld \
                 --with-bundled-lua --with-bundled-sqlite"
 
-inherit autotools 
+inherit autotools
 
 # Release 0.22 reveals bugs in g++ for thumb (g++ generates
 # relocations which the linker cannot represent)

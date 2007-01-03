@@ -15,7 +15,7 @@ PR = "r0"
 
 ######################################################################################
 
-inherit image_ipk
+inherit image
 
 ######################################################################################
 
@@ -25,4 +25,4 @@ DEPENDS = "task-essential-to-boot"
 
 export IMAGE_BASENAME = "essential-image"
 export IMAGE_LINGUAS = ""
-export IPKG_INSTALL = "task-essential-to-boot"
+export PACKAGE_INSTALL = "task-essential-to-boot"

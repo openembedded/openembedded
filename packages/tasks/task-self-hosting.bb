@@ -13,15 +13,15 @@ RDEPENDS = "cpp gcc-symlinks binutils-symlinks \
 #
 # bitbake will fetch all needed python modules
 #
-# toolchain: 
+# toolchain:
 # - gcc-symlinks will fetch gcc
 # - binutils-symlinks will fetch binutils
 # - glibc-utils REQ cpp
-# 
+#
 # problems:
 # - binutils-symlinks conflict with busybox
 # - glibc-dev conflict with libc-linux-headers-dev
-# - perl is so granulated that it is probably impossible 
+# - perl is so granulated that it is probably impossible
 #   to find out which packages are needed
 #
 

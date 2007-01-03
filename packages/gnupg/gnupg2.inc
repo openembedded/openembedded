@@ -24,12 +24,6 @@ FILES_${PN} += "${datadir}/gnupg"
 
 EXTRA_OECONF = "--disable-ldap \
 		--with-zlib=${STAGING_LIBDIR}/.. \
-		--with-gpg-error-prefix=${STAGING_BINDIR}/.. \
-		--with-libgcrypt-prefix=${STAGING_BINDIR}/.. \
-		--with-libassuan-prefix=${STAGING_BINDIR}/.. \
-		--with-pth-prefix=${STAGING_BINDIR}/.. \
-		--with-opensc-prefix=${STAGING_BINDIR}/.. \
-		--with-ksba-prefix=${STAGING_BINDIR}/.. \
 		--disable-threads \
 		--disable-gpgsm \
 		--disable-scdaemon"

@@ -30,7 +30,7 @@ do_install() {
 #	install -d ${D}${bindir}
 
 	install -m 0644 qpPhoto.png ${D}${palmtopdir}/pics
-#	install -m 0644 qpPhoto.desktop ${D}${palmtopdir}/apps/Applications		
+#	install -m 0644 qpPhoto.desktop ${D}${palmtopdir}/apps/Applications
 #	install -m 0755 qpPhoto ${D}${bindir}
 }
 

@@ -25,9 +25,9 @@ GPE_EXTRA_INSTALL += "${GPE_BIGFLASH_INSTALL}"
 XSERVER ?= "xserver-kdrive-fbdev"
 
 DEPENDS = "${MACHINE_TASK_PROVIDER} task-gpe"
-RDEPENDS = "${IPKG_INSTALL}"
+RDEPENDS = "${PACKAGE_INSTALL}"
 
-export IPKG_INSTALL = "\
+export PACKAGE_INSTALL = "\
     ${MACHINE_TASK_PROVIDER} \
     gpe-task-base \
     gpe-task-pim \
@@ -38,5 +38,5 @@ export IPKG_INSTALL = "\
 
 #ROOTFS_POSTPROCESS_COMMAND += "zap_root_password; "
 
-inherit image_ipk
+inherit image
 LICENSE = "MIT"

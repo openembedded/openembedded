@@ -14,12 +14,12 @@ SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.4/linux-${KV}.tar.bz2 \
 
 S = "${WORKDIR}/linux-${KV}"
 
-inherit kernel 
+inherit kernel
 
 ARCH = "i386"
 KERNEL_IMAGETYPE = "bzImage"
 
 do_configure_prepend() {
-	install -m 0644 ${WORKDIR}/defconfig ${S}/.config 
+	install -m 0644 ${WORKDIR}/defconfig ${S}/.config
         oe_runmake oldconfig
 }

@@ -10,7 +10,7 @@ SRC_URI = "ftp://ftp.nl.postgresql.org/pub/mirror/postgresql/source/v${PV}/${P}.
 
 inherit autotools pkgconfig
 
-FILES_${PN}-doc += "${prefix}/doc/" 
+FILES_${PN}-doc += "${prefix}/doc/"
 
 do_compile_append() {
 cp /usr/sbin/zic ${S}/src/timezone/

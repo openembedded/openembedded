@@ -14,5 +14,5 @@ SRC_URI = "file://login-manager"
 do_install() {
 	install -d ${D}/etc/init.d
 	install -m 0755 ${WORKDIR}/login-manager ${D}/etc/init.d/
-}		
+}
 

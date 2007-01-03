@@ -13,7 +13,7 @@ require geode-modules.inc
 
 FILES_${PN} += " /etc"
 
-do_install_append(){ 
+do_install_append(){
         install -d ${D}/etc/modules.d
         echo options geodeaes rsvd_mem=0x200000 > ${D}/etc/modules.d/aes
 }

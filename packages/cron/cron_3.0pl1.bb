@@ -30,5 +30,5 @@ pkg_postinst() {
 pkg_postrm() {
 	update-rc.d cron remove
 }
-		
+
 

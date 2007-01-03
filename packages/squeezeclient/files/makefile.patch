@@ -1,0 +1,57 @@
+---
+ makefile.linux |   30 +++++++++++++++++-------------
+ 1 file changed, 17 insertions(+), 13 deletions(-)
+
+Index: SlimProtoLib/makefile.linux
+===================================================================
+--- SlimProtoLib.orig/makefile.linux	2006-12-31 11:09:10.000000000 +0000
++++ SlimProtoLib/makefile.linux	2006-12-31 12:34:11.000000000 +0000
+@@ -1,6 +1,4 @@
+-CC=gcc
+-
+-CFLAGS=-Wall -Werror -DSLIMPROTO_DEBUG -g
++CFLAGS+=-Wall  -DSLIMPROTO_DEBUG -g
+ 
+ INCLUDE=-Ilib/portaudio_v18/pa_common -Ilib/portaudio_v18/pablio -Ilib/portmixer/px_common -Isrc
+ 
+@@ -20,24 +18,30 @@ SQUEEZESLAVEFILES:=src/squeezeslave/sque
+ 
+ all : bin/squeezeslave
+ 
+-lib/libportaudio.a: $(PORTAUDIOFILES:.c=.o)
+-	ar cru lib/libportaudio.a $^
+-	ranlib lib/libportaudio.a
++LIBVERSION:=3.0.0
+ 
+-lib/libslimproto.a: $(SLIMPROTOFILES:.c=.o)
+-	ar cru lib/libslimproto.a $^
+-	ranlib lib/libslimproto.a
++lib/libportaudio.so.$(LIBVERSION): $(PORTAUDIOFILES:.c=.o)
++	${CC} $^ $(CFLAGS) $(LDFLAGS) $(INCLUDE) -shared -Wl,-soname,$(@F) -Wl,--as-needed -o $@
++	ln -s $(@F) lib/libportaudio.so 
+ 
+-bin/squeezeslave : $(SQUEEZESLAVEFILES:.c=.o) $(PORTMIXERFILES:.c=.o) lib/libslimproto.a lib/libportaudio.a
+-	${CC} -o bin/squeezeslave $^ /usr/local/lib/libmad.a /usr/local/lib/libFLAC.a /usr/lib/libvorbisfile.a /usr/lib/libvorbis.a /usr/lib/libogg.a -lpthread -lm
++lib/libslimproto.so.$(LIBVERSION): $(SLIMPROTOFILES:.c=.o)
++	${CC} $^ $(CFLAGS) $(LDFLAGS) $(INCLUDE) -shared -Wl,-soname,$(@F) -Wl,--as-needed -o $@
++	ln -s $(@F) lib/libslimproto.so
+ 
++lib/libportmixer.so.$(LIBVERSION): $(PORTMIXERFILES:.c=.o)
++	${CC} $^ $(CFLAGS) $(LDFLAGS) $(INCLUDE) -shared -Wl,-soname,$(@F) -Wl,--as-needed -o $@
++	ln -s $(@F) lib/libportmixer.so
++
++bin/squeezeslave: $(SQUEEZESLAVEFILES:.c=.o) lib/libportaudio.so.$(LIBVERSION) lib/libportmixer.so.$(LIBVERSION) lib/libslimproto.so.$(LIBVERSION)
++	${CC} -o bin/squeezeslave $(LDFLAGS) $(LDFLAGS) $^ -Llib -lmad -lFLAC -lvorbisfile -lvorbis -logg -lpthread -lm -lslimproto -lportaudio -lportmixer
+ 
+ clean:
+ 	@{ for FILE in $(PORTAUDIOFILES:.c=.o) \
+ 	               $(SLIMPROTOFILES:.c=.o) \
+ 	               $(SQUEEZESLAVEFILES:.c=.o) \
+-	               lib/libportaudio.a \
+-	               lib/libslimproto.a \
++	               lib/libportaudio*.so \
++	               lib/libportmixer*.so \
++	               lib/libslimproto*.so \
+ 	               bin/squeezeslave; do \
+ 	  test -e $$FILE && echo $$FILE || true; \
+ 	  test -e $$FILE && $(RM) $$FILE 2>/dev/null || true; \

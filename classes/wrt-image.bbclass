@@ -3,7 +3,7 @@ ROOTFS_POSTPROCESS_COMMAND += "rm -f ${IMAGE_ROOTFS}/boot/zImage*"
 
 def wrt_get_kernel_version(d):
 	import bb
-	if bb.data.inherits_class('image_ipk', d):
+	if bb.data.inherits_class('image', d):
 		skd = bb.data.getVar('STAGING_KERNEL_DIR', d, 1)
 		return base_read_file(skd+'/kernel-abiversion')
 	return "-no kernel version for available-"

@@ -15,10 +15,10 @@ do_compile () {
         unset CFLAGS CPPFLAGS CXXFLAGS LDFLAGS
         oe_runmake 'KERNELDIR=${STAGING_KERNEL_DIR}' \
                    'CC=${KERNEL_CC}' \
-                   'LD=${KERNEL_LD}' 
+                   'LD=${KERNEL_LD}'
 }
 
-do_install() {   
+do_install() {
         install -d ${D}${base_libdir}/modules/${KERNEL_VERSION}/kernel/drivers/usb/media
         install -m 0644 *${KERNEL_OBJECT_SUFFIX} ${D}${base_libdir}/modules/${KERNEL_VERSION}/kernel/drivers/usb/media
 }

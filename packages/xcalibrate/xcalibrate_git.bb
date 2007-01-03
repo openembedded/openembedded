@@ -8,7 +8,7 @@ DESCRIPTION = "XCalibrate client-side library"
 SRC_URI = "git://anongit.freedesktop.org/xorg/lib/libXCalibrate;protocol=git"
 S = "${WORKDIR}/git"
 
-inherit autotools pkgconfig 
+inherit autotools pkgconfig
 
 do_stage() {
 	autotools_stage_all

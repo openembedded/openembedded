@@ -1,4 +1,4 @@
-require coreutils.inc 
+require coreutils.inc
 
 PR = "r1"
 
@@ -27,10 +27,10 @@ sbindir_progs= "chroot"
 
 do_install () {
 	autotools_do_install
-	
+
 	# Renaming the utilities that should go in /usr/bin
 	for i in ${bindir_progs}; do mv ${D}${bindir}/$i ${D}${bindir}/$i.${PN}; done
-	
+
 	# Renaming and moving the utilities that should go in /bin (FHS)
 	install -d ${D}${base_bindir}
 	for i in ${base_bindir_progs}; do mv ${D}${bindir}/$i ${D}${base_bindir}/$i.${PN}; done
@@ -46,7 +46,7 @@ do_install () {
 	# hostname and uptime separated. busybox's versions are preferred
 	mv ${D}${bindir}/hostname ${D}${base_bindir}/hostname.${PN}
 	mv ${D}${bindir}/uptime ${D}${bindir}/uptime.${PN}
-					
+
 }
 
 pkg_postinst_${PN} () {
@@ -55,11 +55,11 @@ pkg_postinst_${PN} () {
 
 	# The utilities in /bin
 	for i in ${base_bindir_progs}; do update-alternatives --install ${base_bindir}/$i $i $i.${PN} 100; done
-	
+
 	# The utilities in /usr/sbin
 	for i in ${sbindir_progs}; do update-alternatives --install ${sbindir}/$i $i $i.${PN} 100; done
 
-	# Special cases. uptime and hostname is broken, prefer busybox's version. [ needs to be treated separately. 
+	# Special cases. uptime and hostname is broken, prefer busybox's version. [ needs to be treated separately.
 	update-alternatives --install ${bindir}/uptime uptime uptime.${PN} 10
 	update-alternatives --install ${base_bindir}/hostname hostname hostname.${PN} 10
 	update-alternatives --install '${bindir}/[' '[' 'lbracket.${PN}' 100

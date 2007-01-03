@@ -22,7 +22,7 @@ do_install() {
         install -m 4755 src/netperf ${D}${bindir}
         install -m 4755 src/netserver ${D}${sbindir}
         install -m 0755 ${WORKDIR}/init ${D}${sysconfdir}/init.d/netperf
-    
+
         # man
         install -d ${D}${mandir}/man1/
         install -m 0644 doc/netserver.man ${D}${mandir}/man1/netserver.1
@@ -31,7 +31,7 @@ do_install() {
         # move scripts to examples directory
         install -d ${D}${docdir}/netperf/examples
         install -m 0644 doc/examples/*_script ${D}${docdir}/netperf/examples/
-        
+
         # docs ..
         install -m 0644 COPYING ${D}${docdir}/netperf
         install -m 0644 Release_Notes ${D}${docdir}/netperf

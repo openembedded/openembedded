@@ -6,7 +6,7 @@ LICENSE = "GPL"
 PR = "r0"
 
 SRC_URI = "http://www.saillard.org/linux/pwc/files/pwc-${PV}.tar.bz2 \
-           file://Makefile.patch;patch=1" 
+           file://Makefile.patch;patch=1"
 
 S = "${WORKDIR}/pwc-${PV}"
 
@@ -21,12 +21,12 @@ CFLAGS_append_armeb = " '-D__LINUX_ARM_ARCH__=5' "
 EXTRA_OEMAKE = "'V=1' 'CFLAGS=${CFLAGS}' \
                 'CC=${KERNEL_CC}' \
                 'LD=${KERNEL_LD}' \
-                'KDIR=${STAGING_KERNEL_DIR}'" 
+                'KDIR=${STAGING_KERNEL_DIR}'"
 
 export TARGET_LDFLAGS = "-L${STAGING_DIR}/${TARGET_SYS}/lib \
                          -rpath-link ${STAGING_DIR}/${TARGET_SYS}/lib"
 
-do_install() {   
+do_install() {
         install -d ${D}${base_libdir}/modules/${KERNEL_VERSION}/kernel/drivers/usb/media
         install -m 0644 *${KERNEL_OBJECT_SUFFIX} ${D}${base_libdir}/modules/${KERNEL_VERSION}/kernel/drivers/usb/media
 }

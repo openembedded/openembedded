@@ -16,7 +16,7 @@ do_configure () {
 		--enable-hacker-mode
 	if grep -q GLIBC_2.3 ${S}/ChangeLog; then
 		# glibc-2.3.x passes cross options to $(CC) when generating errlist-compat.c, which fails without a real cross-compiler.
-		# Fortunately, we don't need errlist-compat.c, since we just need .h files, 
+		# Fortunately, we don't need errlist-compat.c, since we just need .h files,
 		# so work around this by creating a fake errlist-compat.c and satisfying its dependencies.
 		# Another workaround might be to tell configure to not use any cross options to $(CC).
 		# The real fix would be to get install-headers to not generate errlist-compat.c.

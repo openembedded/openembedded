@@ -49,7 +49,7 @@ do_install() {
 
         # Listen closely... sssshhh... can you hear the wlan-ng build system suck?
         rm -f ${KERNEL_SOURCE}/../config.mk
-        rm -f ${KERNEL_SOURCE}/../../config.mk	
+        rm -f ${KERNEL_SOURCE}/../../config.mk
 }
 
 FILES_${PN} = "/lib"

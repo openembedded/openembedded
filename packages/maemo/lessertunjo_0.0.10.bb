@@ -10,7 +10,7 @@ LDFLAGS += " -losso -L${STAGING_LIBDIR} -I${STAGING_INCDIR}  -I${STAGING_LIBDIR}
 
 
 do_install() {
-	install -d ${D}${libdir}        
+	install -d ${D}${libdir}
 	install -m 755 *so.0.0.10  ${D}${libdir}
 }
 

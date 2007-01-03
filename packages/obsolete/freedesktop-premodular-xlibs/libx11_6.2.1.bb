@@ -14,7 +14,7 @@ SRC_URI = "${XLIBS_MIRROR}/libX11-${PV}.tar.bz2 \
 	   file://autofoo.patch;patch=1"
 S = "${WORKDIR}/libX11-${PV}"
 
-inherit autotools pkgconfig 
+inherit autotools pkgconfig
 
 do_compile() {
 	(

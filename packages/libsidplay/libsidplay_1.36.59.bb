@@ -5,7 +5,7 @@ LICENSE = "GPL"
 
 SRC_URI = "http://www.geocities.com/SiliconValley/Lakes/5147/sidplay/packages/libsidplay-${PV}.tgz"
 
-inherit autotools 
+inherit autotools
 
 do_stage() {
 	oe_libinstall -so -C src libsidplay ${STAGING_LIBDIR}

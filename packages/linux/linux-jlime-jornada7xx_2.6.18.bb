@@ -9,7 +9,7 @@ COMPATIBLE_MACHINE = "jornada7xx"
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.18.tar.gz \
            file://defconf_jlime \
 	   file://linux-2.6.18-jornada7xx.patch;patch=0"
-	   	            
+
 S = "${WORKDIR}/linux-${PV}"
 
 inherit kernel

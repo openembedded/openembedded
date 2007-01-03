@@ -37,9 +37,9 @@ headers="eel-accessibility.h              eel-graphic-effects.h \
 
 do_stage() {
 	install -d ${edir}
-	for file in ${headers}; do 
+	for file in ${headers}; do
 		install -m 0644 eel/$file ${edir}/$file
 	done
- 
+
 	oe_libinstall -C eel libeel-2 ${STAGING_LIBDIR}
 }

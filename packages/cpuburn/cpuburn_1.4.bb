@@ -21,5 +21,5 @@ cpuburn_do_unpack () {
 do_install () {
 	oe_runmake install DESTDIR=${D}
 }
-			
+
 

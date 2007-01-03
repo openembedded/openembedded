@@ -10,8 +10,8 @@ SRC_URI = "svn://svn.o-hand.com/repos/misc/trunk;module=zaurusd;proto=http \
            file://zaurus-hinge.in \
 	   file://add-poodle.patch;patch=1 \
 	   file://zaurus-hinge.matchbox-portrait \
-	   file://zaurus-hinge.matchbox-landscape" 
-	   
+	   file://zaurus-hinge.matchbox-landscape"
+
 
 S = "${WORKDIR}/${PN}"
 
@@ -25,7 +25,7 @@ do_install_append() {
 	install -d "${D}/etc/zaurusd/hinge-landscape.d"
 	install -d "${D}/etc/zaurusd/hinge-portrait.d"
 	install -d "${D}/etc/zaurusd/hinge-close.d"
-	
+
 	install -m 0755 "${WORKDIR}/zaurus-hinge.matchbox-landscape" "${D}/etc/zaurusd/hinge-landscape.d/20-matchbox-landscape"
 	install -m 0755 "${WORKDIR}/zaurus-hinge.matchbox-portrait" "${D}/etc/zaurusd/hinge-portrait.d/20-matchbox-portrait"
 }

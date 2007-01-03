@@ -19,7 +19,7 @@ do_compile() {
 	export OBJDIR="${D}${base_libdir}/modules/${KERNEL_VERSION}/drivers/net/wireless/atmel/"
 	export KERNEL_PATH="${STAGING_KERNEL_DIR}"
 	export KERNEL_SRC="${STAGING_KERNEL_DIR}"
-	export CC="${KERNEL_CC}" 
+	export CC="${KERNEL_CC}"
 	export LD="${KERNEL_LD}"
 	export KERNEL_VERSION="${KERNEL_VERSION}"
 	export TOPDIR="${S}"

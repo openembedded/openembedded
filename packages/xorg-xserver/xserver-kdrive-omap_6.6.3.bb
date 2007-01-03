@@ -17,7 +17,7 @@ SRC_URI = " http://stage.maemo.org/pool/maemo/ossw/source/x/xserver-kdrive/xserv
 
 S = "${WORKDIR}/xserver"
 
-inherit autotools pkgconfig 
+inherit autotools pkgconfig
 
 EXTRA_OECONF = "--enable-composite --disable-xinerama --enable-xomapserver \
                 --enable-xsp --disable-xlocale --disable-rpath --prefix=/usr"

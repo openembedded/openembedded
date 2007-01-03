@@ -13,6 +13,10 @@ libdirectory = "src/lib"
 libraries = "lib${SRCNAME}"
 headers = "${@bb.data.getVar('SRCNAME',d,1).capitalize()}.h"
 
+def efl_is_native(d):
+    import bb
+    return ["","-native"][bb.data.inherits_class('native', d)]
+
 do_stage_append () {
 	for i in ${libraries}
 	do
@@ -24,7 +28,7 @@ do_stage_append () {
 	done
 
 	# Install binaries automatically for native builds
-	if [ "${@binconfig_suffix(d)}" = "-native" ]
+	if [ "${@efl_is_native(d)}" = "-native" ]
 	then
 
 		# Most EFL binaries start with the package name

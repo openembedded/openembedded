@@ -8,7 +8,7 @@ DEPENDS     = "uicmoc3-native"
 SRC_URI     = "svn://anonsvn.kde.org/home/kde/branches/KDE/3.5/kdelibs/dcop/;module=dcopidl2cpp "
 #\
 #	      file://dcopidl-compile.patch;patch=1 "
-S           = "${WORKDIR}/dcopidl2cpp" 
+S           = "${WORKDIR}/dcopidl2cpp"
 
 
 inherit native qmake qt3e

@@ -9,7 +9,7 @@ SRC_URI = "http://trific.ath.cx/Ftp//enca/enca-${PV}.tar.bz2 \
 	file://configure-hack.patch;patch=1 \
 	file://dont-run-tests.patch;patch=1 "
 
-inherit autotools 
+inherit autotools
 
 do_configure_append() {
 	sed -i s:-I/usr/include::g Makefile

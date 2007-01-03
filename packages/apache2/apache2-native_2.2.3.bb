@@ -29,9 +29,9 @@ do_populate_staging () {
 	cp build/instdso.sh ${STAGING_DIR}/build
 	cp .libs/httpd ${STAGING_BINDIR}
 
-	(cd srclib/apr/.libs; tar -cf - libapr-*.so* ) | 
+	(cd srclib/apr/.libs; tar -cf - libapr-*.so* ) |
 	  (cd ${STAGING_LIBDIR}; tar -xf - )
-	(cd srclib/apr-util/.libs; tar -cf - libaprutil-*.so* ) | 
+	(cd srclib/apr-util/.libs; tar -cf - libaprutil-*.so* ) |
 	  (cd ${STAGING_LIBDIR}; tar -xf - )
 
     	mkdir -p ${STAGING_INCDIR}/apache2

@@ -4,8 +4,8 @@ IMAGE_LINGUAS = ""
 
 DVB_PACKAGES = "${MACHINE_TASK_PROVIDER} task-dvb"
 
-export IPKG_INSTALL = "${DVB_PACKAGES}"
+export PACKAGE_INSTALL = "${DVB_PACKAGES}"
 DEPENDS = "${DVB_PACKAGES}"
 
-inherit image_ipk
+inherit image
 LICENSE = "MIT"

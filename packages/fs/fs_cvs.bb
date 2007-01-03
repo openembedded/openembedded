@@ -7,7 +7,7 @@ DEPENDS = "libxfont xtrans"
 SRC_URI = "${FREEDESKTOP_CVS}/xlibs;module=FS"
 S = "${WORKDIR}/FS"
 
-inherit autotools pkgconfig 
+inherit autotools pkgconfig
 
 do_stage() {
 	oe_runmake install prefix=${STAGING_DIR} \

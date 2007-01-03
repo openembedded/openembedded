@@ -14,12 +14,11 @@ SRC_URI = "${SOURCEFORGE_MIRROR}/prboom/prboom-${PV}.tar.gz \
            file://prboom.png \
            file://prboom.desktop"
 
-inherit autotools 
+inherit autotools
 
 EXTRA_OECONF = " --without-x --disable-sdltest --with-sdl-exec-prefix=${STAGING_DIR}/${BUILD_SYS} "
 
 do_configure() {
-	PATH=${STAGING_BINDIR}:$PATH
 	gnu-configize
 	oe_runconf
 }

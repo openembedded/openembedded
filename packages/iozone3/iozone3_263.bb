@@ -40,10 +40,10 @@ FILES_${PN} += "${datadir}/doc/${PN}/copyright.txt"
 # LICENSE:
 #
 #  Copyright 1991, 1992, 1994, 1998, 1999, 2002   William D. Norcott
-# 
-#  License to freely use and distribute this software is hereby granted 
-#  by the author, subject to the condition that this copyright notice 
-#  remains intact.  The author retains the exclusive right to publish 
+#
+#  License to freely use and distribute this software is hereby granted
+#  by the author, subject to the condition that this copyright notice
+#  remains intact.  The author retains the exclusive right to publish
 #  derivative works based on this work, including, but not limited to
 #  revised versions of this work.
 #
@@ -55,25 +55,25 @@ FILES_${PN} += "${datadir}/doc/${PN}/copyright.txt"
 # ========================================================================
 #
 # Marcin,
-# 
+#
 #         Re-distribution is permitted as long as the copyright is
 #     maintained and the source code is not changed. I do not
 #     see a problem with your mods to enable fileop for Linux-arm,
 #     as these mods have been returned to the Iozone folks,
 #     and they have been accepted for inclusion in the next
 #     release :-)
-# 
+#
 # Thank you for your contribution,
 # Don Capps
-# 
-# ----- Original Message ----- 
+#
+# ----- Original Message -----
 # From: "Marcin Juszkiewicz" <firma@hrw.one.pl>
-# To: "Don Capps" <don.capps2@verizon.net>; "William D. Norcott" 
+# To: "Don Capps" <don.capps2@verizon.net>; "William D. Norcott"
 # <wnorcott@us.oracle.com>
 # Sent: Sunday, October 29, 2006 4:55 PM
 # Subject: iozone3 263 patch for arm and License question
-# 
-# 
+#
+#
 # > Morning
 # >
 # > I want to include iozone3 in OpenEmbedded [1] metadata to give it for
@@ -95,6 +95,6 @@ FILES_${PN} += "${datadir}/doc/${PN}/copyright.txt"
 # > 1. http://www.openembedded.org/
 # >
 # > Regards
-# > -- 
+# > --
 # > JID: hrw-jabber.org
 # > OpenEmbedded developer/consultant

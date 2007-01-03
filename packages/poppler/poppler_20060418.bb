@@ -9,7 +9,7 @@ S = "${WORKDIR}/poppler"
 
 inherit autotools pkgconfig
 
-EXTRA_OECONF = "--enable-xpdf-headers  --disable-gtk-test --disable-poppler-qt"  
+EXTRA_OECONF = "--enable-xpdf-headers  --disable-gtk-test --disable-poppler-qt"
 
 do_stage() {
 	autotools_stage_all

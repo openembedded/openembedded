@@ -15,7 +15,7 @@ SRC_URI = "ftp://ftp.gnuplot.info/pub/gnuplot/gnuplot-${PV}.tar.gz \
 	   file://gnuplot.desktop \
 	   file://gnuplot.png"
 
-inherit autotools 
+inherit autotools
 
 PACKAGES =+ "${PN}-x11"
 DESCRIPTION_${PN}-x11 = "X11 display terminal for Gnuplot."

@@ -12,7 +12,7 @@ SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.17.tar.gz \
 	   file://unexpected-int-fix.patch;patch=0 \
 	   file://keymap-fix.patch;patch=0 \
 	   file://io.h-fix.patch;patch=0"
-	   	            
+
 S = "${WORKDIR}/linux-${PV}"
 
 inherit kernel

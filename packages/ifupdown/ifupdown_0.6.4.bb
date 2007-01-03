@@ -1,4 +1,4 @@
-BROKEN = "1" 
+BROKEN = "1"
 # Debian moved to 0.6.7
 
 DESCRIPTION = "High level tools to configure network interfaces \

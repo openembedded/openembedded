@@ -5,6 +5,6 @@ LICENSE = "GPL LGPL"
 SRC_URI = "${GNU_MIRROR}/mailutils/mailutils-${PV}.tar.bz2 \
 	   file://configure.patch;patch=1"
 
-inherit autotools 
+inherit autotools
 
 EXTRA_OECONF = "--disable-pam --without-guile"

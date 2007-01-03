@@ -2,7 +2,7 @@ DESCRIPTION="EXT2 Filesystem Utilities"
 SECTION="base"
 PRIORITY="optional"
 RDEPENDS="libc6"
-DEPENDS=virtual/libc 
+DEPENDS=virtual/libc
 
 SRC_URI=${SOURCEFORGE_MIRROR}/e2fsprogs/e2fsprogs-${PV}.tar.gz \
 	file://${FILESDIR}/ln.patch;patch=1 \

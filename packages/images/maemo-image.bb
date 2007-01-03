@@ -19,9 +19,9 @@ DEPENDS = "${MACHINE_TASK_PROVIDER} \
 	   meta-maemo \
 	   ${MAEMO_EXTRA_DEPENDS}"
 
-export IPKG_INSTALL = "${MACHINE_TASK_PROVIDER} maemo-task-base maemo-task-theme \
+export PACKAGE_INSTALL = "${MACHINE_TASK_PROVIDER} maemo-task-base maemo-task-theme \
 	               maemo-task-apps ${MAEMO_EXTRA_INSTALL} \
 		       ${XSERVER}"
 
-inherit image_ipk
+inherit image
 LICENSE = "MIT"

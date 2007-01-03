@@ -5,7 +5,7 @@ DEPENDS = "ncurses"
 LICENSE = "GPL"
 SRC_URI = "http://www.stack.nl/~brama/projects/nmixer/src/nmixer-${PV}.tar.gz"
 
-inherit autotools 
+inherit autotools
 
 do_compile() {
 	oe_runmake nmixer INCLUDES=-I${STAGING_INCDIR}/

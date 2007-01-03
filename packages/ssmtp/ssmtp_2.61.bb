@@ -35,5 +35,5 @@ pkg_postinst () {
 }
 
 pkg_postrm () {
-        update-alternatives --remove ${sbindir}/sendmail sendmail 
+        update-alternatives --remove ${sbindir}/sendmail sendmail
 }

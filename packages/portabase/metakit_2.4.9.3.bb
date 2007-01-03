@@ -13,7 +13,7 @@ PR = "r1"
 do_configure_prepend() {
 
 	cp ${STAGING_DATADIR}/libtool/*.* ${S}/unix/scripts/
-	
+
 }
 do_configure () {
 
@@ -38,7 +38,7 @@ do_configure () {
                     --mandir=${mandir} \
                         ${EXTRA_OECONF} \
                     $@;
-	
+
 }
 
 
@@ -56,11 +56,11 @@ do_stage() {
 
 
 do_compile () {
-	cd builds	
+	cd builds
 	oe_runmake
 }
 
 do_install() {
-	
+
 	:
 }

@@ -27,7 +27,7 @@ INITSCRIPT_NAME_${PN} = "mdev.sh"
 INITSCRIPT_PARAMS_${PN} = "start 04 S ."
 CONFFILES_${PN} = "${sysconfdir}/mdev.conf"
 
-inherit cml1 update-rc.d  
+inherit cml1 update-rc.d
 
 do_configure () {
 	install -m 0644 ${WORKDIR}/defconfig ${S}/.config.oe
@@ -48,14 +48,14 @@ do_compile () {
 
 do_install () {
 	mv ${S}/busybox ${S}/mdev
-	
+
 	install -d ${D}${base_sbindir}
 	install -m 0755 ${S}/mdev ${D}${base_sbindir}/
-	
+
 	install -d ${D}${sysconfdir}/init.d
 	install -m 644 ${WORKDIR}/mdev.conf ${D}${sysconfdir}/
 	install -m 0755 ${WORKDIR}/mdev.sh ${D}${sysconfdir}/init.d/
-	
+
 	install -d ${D}${base_libdir}/mdev
 	install -m 0755 ${WORKDIR}/firmware ${D}${base_libdir}/mdev/firmware
 }

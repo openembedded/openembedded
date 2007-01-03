@@ -6,7 +6,7 @@ SRC_URI = "file://update-qtttffontdir.c"
 S = "${WORKDIR}"
 
 do_compile() {
-	${CC} ${CFLAGS} ${LDFLAGS} -I${STAGING_INCDIR}/freetype2 -lfreetype -o update-qtttffontdir update-qtttffontdir.c 
+	${CC} ${CFLAGS} ${LDFLAGS} -I${STAGING_INCDIR}/freetype2 -lfreetype -o update-qtttffontdir update-qtttffontdir.c
 }
 
 do_install() {

@@ -14,7 +14,7 @@ sbindir="/sbin"
 do_install() {
 	install -d ${D}${sbindir}
 	install -m 0755 hotplug-qcop ${D}${sbindir}
-	
+
 	install -d ${D}${sysconfdir}/hotplug.d/default/
 	ln -sf /sbin/hotplug-qcop ${D}${sysconfdir}/hotplug.d/default/11-qcop.hotplug
 }

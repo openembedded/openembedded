@@ -1,6 +1,6 @@
 # UCLIBC_BASE should be the latest released revision of uclibc (that way
 # the config files will typically be correct!)  uclibc-cvs takes precedence
-# over uclibc-${UCLIBC_BASE}, if a config file in uclibc-cvs is out of date 
+# over uclibc-${UCLIBC_BASE}, if a config file in uclibc-cvs is out of date
 # try removing it
 #
 # UCLIBC_BASE can be set in a distro file, but whether this works depends
@@ -17,7 +17,7 @@ require uclibc.inc
 
 PROVIDES += "virtual/${TARGET_PREFIX}libc-for-gcc"
 
-#recent versions uclibc require real kernel headers 
+#recent versions uclibc require real kernel headers
 PACKAGE_ARCH = "${MACHINE_ARCH}"
 FILESPATH = "${@base_set_filespath([ '${FILE_DIRNAME}/uclibc-cvs', '${FILE_DIRNAME}/uclibc-${UCLIBC_BASE}', '${FILE_DIRNAME}/files', '${FILE_DIRNAME}' ], d)}"
 

@@ -19,12 +19,12 @@ export QTDIR = "${S}"
 EXTRA_OEMAKE = "-e"
 
 do_configure() {
-        # Install the OE build templates                      
+        # Install the OE build templates
         for template in linux-oe-g++ linux-uclibc-oe-g++ linux-gnueabi-oe-g++
-        do      
-                install -d ${S}/mkspecs/$template   
+        do
+                install -d ${S}/mkspecs/$template
                 install -m 0644 ${WORKDIR}/linux-oe-qmake.conf ${S}/mkspecs/$template/qmake.conf
-                ln -sf ../linux-g++/qplatformdefs.h ${S}/mkspecs/$template/qplatformdefs.h    
+                ln -sf ../linux-g++/qplatformdefs.h ${S}/mkspecs/$template/qplatformdefs.h
         done
 
 	QMAKESPEC=

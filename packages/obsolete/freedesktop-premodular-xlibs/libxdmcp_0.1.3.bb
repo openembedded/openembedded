@@ -10,7 +10,7 @@ S = "${WORKDIR}/libXdmcp-${PV}"
 SRC_URI = "${XLIBS_MIRROR}/libXdmcp-${PV}.tar.bz2 \
 	   file://autofoo.patch;patch=1"
 
-inherit autotools pkgconfig 
+inherit autotools pkgconfig
 
 do_stage() {
 	autotools_stage_all

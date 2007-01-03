@@ -10,4 +10,4 @@ LICENSE = "GPL"
 SRC_URI = "${SOURCEFORGE_MIRROR}/httppc/httppc-${PV}.tar.gz \
 	   file://install.patch;patch=1"
 
-inherit autotools 
+inherit autotools

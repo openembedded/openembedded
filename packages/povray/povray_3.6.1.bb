@@ -1,7 +1,7 @@
 DESCRIPTION = "The Persistence of Vision Raytracer is a high-quality, totally free tool for creating stunning three-dimensional graphics. "
 HOMEPAGE = "http://www.povray.org"
 SECTION = "console/graphics"
-#Make this a weak assigment to allow branding of the povray binary 
+#Make this a weak assigment to allow branding of the povray binary
 LICENSE = "povray"
 
 DEPENDS = "virtual/libx11 zlib jpeg libpng tiff"
@@ -20,7 +20,7 @@ PARALLEL_MAKE = ""
 #autoreconf breaks, so we'll skip that. The added advantage is that the patch to ./configure actually has effect
 do_configure() {
 	oe_runconf
-}	
+}
 
 PACKAGES += "${PN}-scenes ${PN}-ini ${PN}-icons ${PN}-scripts ${PN}-includes"
 

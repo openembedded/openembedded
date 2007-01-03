@@ -11,7 +11,7 @@ PV = "1.3.11+git${SRCDATE}"
 
 SRC_URI = "git://git.cairographics.org/git/cairo;protocol=git \
 	  "
-inherit autotools pkgconfig 
+inherit autotools pkgconfig
 
 S = "${WORKDIR}/git"
 

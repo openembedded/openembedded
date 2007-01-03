@@ -7,12 +7,12 @@ DEPENDS = '${MACHINE_TASK_PROVIDER} \
 	  vim \
 	  mutt'
 
-export IPKG_INSTALL = '${MACHINE_TASK_PROVIDER} \
+export PACKAGE_INSTALL = '${MACHINE_TASK_PROVIDER} \
 		       twin \
 		       orpheus \
 		       nano \
 		       vim \
 		       mutt'
 
-inherit image_ipk
+inherit image
 LICENSE = "MIT"

@@ -11,6 +11,6 @@ SRC_URI = "${SOURCEFORGE_MIRROR}/super-tux/supertux-${PV}.tar.bz2 \
 
 export SDL_CONFIG = "${STAGING_BINDIR_CROSS}/sdl-config"
 
-inherit autotools 
+inherit autotools
 
 # FIXME: Add .desktop file for Opie/Qtopia

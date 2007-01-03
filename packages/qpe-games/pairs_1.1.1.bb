@@ -16,14 +16,14 @@ APPTYPE = "binary"
 APPDESKTOP = "${S}"
 
 do_compile_prepend() {
-	oe_runmake -C images	
+	oe_runmake -C images
 }
 
 
 do_install () {
 	install -d ${D}${palmtopdir}/pics/${APPNAME}/
 	install -m 0644 ${S}/*.png ${D}${palmtopdir}/pics/${APPNAME}/
-	
+
 }
 
 

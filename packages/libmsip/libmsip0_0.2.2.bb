@@ -13,7 +13,7 @@ S="${WORKDIR}/libmsip-${PV}"
 
 PACKAGES = "${PN}"
 
-FILES_${PN} = " ${libdir}/libmsip.so.0 ${libdir}/libmsip.so.0.0.0 " 
+FILES_${PN} = " ${libdir}/libmsip.so.0 ${libdir}/libmsip.so.0.0.0 "
 
 do_stage() {
 	oe_libinstall -a -so libmsip ${STAGING_LIBDIR}

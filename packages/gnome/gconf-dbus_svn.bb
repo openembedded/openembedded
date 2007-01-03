@@ -43,5 +43,5 @@ do_install_append () {
 	install -d ${D}/${sysconfdir}/X11/Xsession.d
 	install -m 755 ${WORKDIR}/69gconfd-dbus ${D}/${sysconfdir}/X11/Xsession.d/
 	install -d ${D}/${datadir}/dbus-1.0/services/
-	install -m 644  gconf/gconf.service ${D}${datadir}/dbus-1.0/services/ 
+	install -m 644  gconf/gconf.service ${D}${datadir}/dbus-1.0/services/
 }

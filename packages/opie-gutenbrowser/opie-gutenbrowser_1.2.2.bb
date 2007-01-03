@@ -1,6 +1,6 @@
 require ${PN}.inc
-    
- 
+
+
 
 SRC_URI = "${HANDHELDS_CVS};tag=${TAG};module=opie/noncore/apps/opie-gutenbrowser \
            ${HANDHELDS_CVS};tag=${TAG};module=opie/pics \

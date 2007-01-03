@@ -59,10 +59,10 @@ do_install_append_h2200() {
 }
 
 pkg_postinst_append() {
-	
+
 	# Add the root partition to mount.blacklist to avoid a bug in the auto-mounter,
 	# causing confusion with fsck on boot
-	
+
         while read dev mp fs junk
         do
                 if test "$mp" = "/"
@@ -71,6 +71,6 @@ pkg_postinst_append() {
                         echo "$root_partition" >> /etc/udev/mount.blacklist
                 fi
         done < /etc/fstab
-	
+
 }
 

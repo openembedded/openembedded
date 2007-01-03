@@ -15,11 +15,11 @@ TARGET_CFLAGS =+ "-I${STAGING_KERNEL_DIR}/include"
 do_compile() {
 	make -C libshared TARGET_CC="${CC}"
 	make -C libnvram TARGET_CC="${CC}"
-	
+
 	${CC} ${CFLAGS} -Iinclude -o wlc wlc.c -L./libshared -lshared
 	${CC} ${CFLAGS} -o jffs2root jffs2root.c
 	${CC} ${CFLAGS} -o mtd mtd.c
-	
+
 	make -C ../linksys-wlconf TOP=${S} SRCBASE=${S} LDFLAGS="-L${S}/libnvram -lnvram -L${S}/libshared -lshared"
 
 	${KERNEL_CC} -D__KERNEL__ -fno-strict-aliasing -fno-common -fomit-frame-pointer -G 0 \
@@ -34,11 +34,11 @@ do_install() {
 	install -m 644 libshared/libshared.so ${D}/${libdir}
 	install -m 755 libnvram/nvram ${D}/usr/sbin/
 	install -m 644 libnvram/libnvram.so ${D}/${libdir}
-	
+
 	install -m 755 wlc ${D}/usr/sbin/
 	install -m 755 jffs2root ${D}/sbin/
 	install -m 755 mtd ${D}/sbin/
-	
+
 	install -m 755 ../linksys-wlconf/wlconf ${D}/usr/sbin/
 	install -m 644 wlcompat.o ${D}/lib/modules/${KERNEL_VERSION}/
 }

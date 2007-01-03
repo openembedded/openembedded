@@ -6,7 +6,7 @@ DEPENDS = "expat gmp"
 
 SRC_URI = "http://www.kismetwireless.net/code/kismet-2006-04-R1.tar.gz \
            file://no-chmod.patch;patch=1"
-	
+
 
 EXTRA_OECONF = "--with-pcap=linux --disable-setuid --with-linuxheaders=${STAGING_KERNEL_DIR}/include"
 
