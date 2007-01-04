@@ -13,7 +13,7 @@ SRC_URI = "http://handhelds.org/~paxanima/files/${PN}.tar.gz \
 
 S = "${WORKDIR}/${PN}"
 
-FILES_${PN} = "${bindir} ${datadir}/pixmaps ${datadir}/applications"
+FILES_${PN} = "${bindir}/* ${datadir}/pixmaps ${datadir}/applications"
 
 do_install() {
 	install -d ${D}/${bindir}

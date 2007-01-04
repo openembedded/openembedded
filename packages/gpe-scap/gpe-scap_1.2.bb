@@ -6,7 +6,7 @@ PR = "r0"
 
 RREPLACES = "gpe-screenshot"
 
-DEPENDS = "glib-2.0 gtk+ libglade"
+DEPENDS = "glib-2.0 gtk+ libgpewidget libglade libsoup"
 
 GPE_TARBALL_SUFFIX = "bz2"
 

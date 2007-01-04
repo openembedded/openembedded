@@ -3,7 +3,7 @@ HOMEPAGE = "http://www.fltk.org"
 SECTION = "libs"
 PRIORITY = "optional"
 LICENSE = "LGPL"
-DEPENDS = "jpeg libpng zlib"
+DEPENDS = "jpeg libpng mesa zlib"
 
 PR = "FLDevice-r0"
 
@@ -13,7 +13,9 @@ S = "${WORKDIR}/fltk-${PV}-Fl_Device"
 
 inherit autotools binconfig lib_package
 
-EXTRA_OECONF = "--enable-shared --disable-gl --x-includes=${STAGING_INCDIR} --x-libraries=${STAGING_LIBDIR}"
+CXXFLAGS = ""
+
+EXTRA_OECONF = "--enable-shared --enable-gl --x-includes=${STAGING_INCDIR} --x-libraries=${STAGING_LIBDIR}"
 
 do_configure() {
         oe_runconf
