@@ -15,10 +15,6 @@ S="${WORKDIR}/syslinux-${PV}"
 
 inherit native
 
-do_compile() {
-	oe_runmake syslinux
-}
-
 do_stage() {
 	install -d ${STAGING_BINDIR}
 	install -m 755 ${S}/syslinux ${STAGING_BINDIR}
