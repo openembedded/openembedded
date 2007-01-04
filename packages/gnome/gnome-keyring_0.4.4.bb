@@ -4,7 +4,7 @@ SRC_URI = "http://ftp.gnome.org/pub/GNOME/sources/${PN}/0.4/${PN}-${PV}.tar.bz2"
 
 inherit autotools pkgconfig
 
-DEPENDS = ""
+DEPENDS = "gtk+"
 
 EXTRA_OECONF = "--disable-gtk-doc"
 
