@@ -9,11 +9,12 @@ PR = "r1"
 # There are major API changes beween libnet v1.0 and libnet v1.1
 PROVIDES = "libnet-1.0"
 
-SRC_URI = "http://www.packetfactory.net/libnet/dist/deprecated/libnet-${PV}.tar.gz \
+#SRC_URI = "http://www.packetfactory.net/libnet/dist/deprecated/libnet-${PV}.tar.gz \
+SRC_URI = "${DEBIAN_MIRROR}/main/libn/libnet0/libnet0_${PV}.orig.tar.gz \
 	   file://configure.patch;patch=1 \
 	   file://configure.uclibc.patch;patch=1 \
 	   "
-S = "${WORKDIR}/Libnet-${PV}"
+S = "${WORKDIR}/libnet-${PV}.orig"
 
 inherit autotools
 

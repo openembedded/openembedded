@@ -4,7 +4,7 @@ PRIORITY = "optional"
 DEPENDS = ""
 LICENSE = "GPL"
 
-SRC_URI = "https://cvs.cvshome.org/files/documents/19/170/cvs-${PV}.tar.bz2 \
+SRC_URI = "http://musthave.sunbase.org/progs/ccvs/Old/cvs-${PV}/cvs-${PV}.tar.bz2 \
 	   file://m4.patch;patch=1"
 
 inherit autotools gettext

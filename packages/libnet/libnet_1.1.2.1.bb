@@ -8,7 +8,7 @@ DEPENDS = "libpcap"
 PROVIDES = "libnet-1.1"
 PR = "r1"
 
-SRC_URI = "http://www.packetfactory.net/libnet/dist/libnet-${PV}.tar.gz \
+SRC_URI = "${DEBIAN_MIRROR}/main/libn/libnet/libnet_${PV}.orig.tar.gz \
            file://support-uclibc.patch;patch=1 \
            file://fix-endianess-test.patch;patch=1"
 
@@ -31,6 +31,7 @@ do_stage () {
         oe_runmake -C include/libnet 'DESTDIR=${STAGING_INCDIR}' 'includedir=' install-libnetincludeHEADERS
 }
 
+#static build
 PACKAGES = "${PN}-dev ${PN}-doc"
 
 FILES_${PN}-dev += "${bindir}/libnet-config"
