@@ -4,6 +4,10 @@ LICENSE = "GPL"
 DEPENDS = "libxml-parser-perl-native"
 #RDEPENDS = "libxml-parser-perl"
 
+PR = "r1"
+
+RRECOMMENDS = "perl-modules"
+
 SRC_URI = "${GNOME_MIRROR}/intltool/0.35/intltool-${PV}.tar.bz2"
 S = "${WORKDIR}/intltool-${PV}"
 
