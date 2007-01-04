@@ -7,7 +7,7 @@ PRIORITY    = "optional"
 DEPENDS     = "gtk+ libgpewidget gpe-ownerinfo xkbd"
 RDEPENDS    = "xkbd"
 RPROVIDES   = "gpe-session-starter"
-PR = "r1"
+PR = "r2"
 
 SRC_URI += "file://removeblue-fontsize8.patch;patch=1"
 
