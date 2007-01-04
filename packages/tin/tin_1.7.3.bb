@@ -1,17 +1,12 @@
-DESCRIPTION = "Tin is a powerful text mode news reader."
-SECTION = "console/network"
-DEPENDS = "ncurses"
-LICENSE = "GPL"
+require tin.inc
+
 PR = "r3"
 
-SRC_URI = "ftp://ftp.tin.org/pub/news/clients/tin/unstable/tin-${PV}.tar.gz \
+SRC_URI = "ftp://ftp.tin.org/pub/news/clients/tin/v1.7/tin-${PV}.tar.gz \
 	   file://makecfg-buildcc.patch;patch=1 \
 	   file://m4.patch;patch=1 \
 	   file://configure.patch;patch=1"
 
-inherit autotools
-
-EXTRA_OECONF = "--with-screen=ncurses"
 CFLAGS += "-DM_UNIX"
 
 do_compile() {
