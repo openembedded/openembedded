@@ -4,6 +4,8 @@ PRIORITY = "optional"
 DEPENDS = "gstreamer libmikmod libmad liboil libogg tremor libvorbis libid3tag esound-gpe"
 PR = "r1"
 
+PACKAGES_DYNAMIC = "gst-plugin-*"
+
 # until we have decided for a final naming scheme,
 # keep using version 0.8
 DEFAULT_PREFERENCE = "-1"

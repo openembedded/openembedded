@@ -11,4 +11,4 @@
 -
 -widget "*" style "default"
 +gtk-font-name = "Sans 8"
-+include "/usr/share/themes/Industrial/gtk-2.0/gtkrc"
++include "/usr/share/themes/Clearlooks/gtk-2.0/gtkrc"
