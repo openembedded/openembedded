@@ -3,7 +3,7 @@ SECTION = "opie/applications"
 LICENSE = "GPL"
 AUTHOR = "Joe Rumsey <joe@rumsey.org>"
 HOMEPAGE = "http://corsair.sf.net/"
-DEPENDS = "opie-pics"
+RDEPENDS = "opie-pics"
 
 inherit palmtop
 
