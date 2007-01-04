@@ -3,6 +3,8 @@ require linux-rp.inc
 PR = "r4"
 
 DEFAULT_PREFERENCE = "-1"
+#up the default pref for the hx2000 machine, since this is the only working kernel for it present in .dev
+DEFAULT_PREFERENCE_hx2000 = "1"
 
 # Handy URLs
 # git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux-2.6.git;protocol=git;tag=ef7d1b244fa6c94fb76d5f787b8629df64ea4046
