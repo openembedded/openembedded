@@ -1,6 +1,6 @@
 require ${PN}.inc
-    
- 
+
+
 
 SRC_URI = "${HANDHELDS_CVS};tag=${TAG};module=opie/noncore/games/buzzword \
            ${HANDHELDS_CVS};tag=${TAG};module=opie/pics \

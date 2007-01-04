@@ -25,6 +25,12 @@ Machines:   storcenter
 Recipes:    apache2, apc, gallery, initscripts-openprotium, linux-storcenter*, 
 Recipes:    modphp, sccd, uboot-utils, xfsprogs
 
+Person:     Cliff Brake
+Mail:       cbrake@bec-systems.com
+Website:    http://bec-systems.com
+Interests:  Support in OE for single board computers, web application support
+Machines:   compulab-pxa270, logicpd-pxa270
+
 Person:     Erik Hovland
 Mail:       erik@hovland.org
 Distros:    familiar
@@ -150,6 +156,11 @@ Distros:    openzaurus
 Machines:   collie
 Recipes:    anthy, nunome, uim*, granule, qpobox*, qte-font-unifont*
 Recipes:    qpf-unismall, poboxserver, imkit*
+
+Person:     Shane Volpe
+Mail:       shanevolpe@gmail.com
+Machines:   logicpd-pxa270
+Recipes:    directfb
 
 Person:     Øyvind Repvik
 Mail:       nail@nslu2-linux.org

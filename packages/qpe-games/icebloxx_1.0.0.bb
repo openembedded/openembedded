@@ -24,7 +24,7 @@ do_compile_prepend() {
 do_install () {
 	install -d ${D}${palmtopdir}/pics/${APPNAME}/
 	install -m 0644 ${S}/*.png ${D}${palmtopdir}/pics/${APPNAME}/
-	
+
 }
 
 inherit opie

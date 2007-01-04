@@ -10,7 +10,7 @@ S = "${WORKDIR}/pyzeroconf-${PV}"
 inherit distutils-base
 
 do_install() {
-	
+
    install -d ${D}${libdir}
    install -d ${D}${libdir}/${PYTHON_DIR}
    install -d ${D}${libdir}/${PYTHON_DIR}/site-packages

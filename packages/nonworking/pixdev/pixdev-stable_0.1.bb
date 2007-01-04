@@ -16,13 +16,13 @@ do_compile() {
 
 	if [ -z "$CONFIG" ]; then CONFIG=defconfig; fi
 
-	oe_runmake $CONFIG    
+	oe_runmake $CONFIG
 	oe_runmake MWDIR=${STAGING_DIR}/target/ "TARGET_CROSS=${TARGET_PREFIX}" all
 }
 
 do_install() {
 	install -d ${D}/${prefix}/pixil
-	
+
 	oe_runmake "TARGET_CROSS=${TARGET_PREFIX}" INSTALL_DIR=${D}/${prefix}/pixil \
 	DEST_DIR=/${prefix}/pixil install
 }

@@ -7,11 +7,11 @@ DEPENDS = "virtual/libx11 libsm libpng fontconfig libxrender"
 DESCRIPTION = "Cairo graphics library"
 LICENSE = "MPL LGPL"
 
-PV = "1.3.9+git${SRCDATE}"
+PV = "1.3.11+git${SRCDATE}"
 
 SRC_URI = "git://git.cairographics.org/git/cairo;protocol=git \
 	  "
-inherit autotools pkgconfig 
+inherit autotools pkgconfig
 
 S = "${WORKDIR}/git"
 

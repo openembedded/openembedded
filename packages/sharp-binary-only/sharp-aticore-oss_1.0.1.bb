@@ -19,10 +19,10 @@ do_install() {
 	install -d ${D}${bindir}
 	install -m 0755 testcore ${D}${bindir}/testcore
 	install -m 0755 atitest ${D}${bindir}/atitest
-	
+
 	install -d ${D}${libdir}
 	install -m 0755 libaticore.so.1.0.1 ${D}${libdir}/libaticore.so.1.0.1
-	
+
 	install -d ${D}${includedir}
 	install -m 0644 aticore.h ${D}${includedir}/aticore.h
 

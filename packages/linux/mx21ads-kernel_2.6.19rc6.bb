@@ -3,6 +3,8 @@ DESCRIPTION = "Linux kernel for the MX21ADS"
 LICENSE = "GPL"
 PR = "r2"
 
+PV = "2.6.18+2.6.19-rc6"
+
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.18.tar.bz2 \
     ${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/testing/patch-2.6.19-rc6.bz2;patch=1 \
     http://opensource.wolfsonmicro.com/~lg/linux-2.6-mx21/mx21ads-2.6.19rc6-lg1.patch.bz2;patch=1 \

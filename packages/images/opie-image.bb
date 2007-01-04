@@ -17,7 +17,7 @@ INSTALL_PACKAGES = "${MACHINE_TASK_PROVIDER} task-opie-base task-opie-base-apple
 INSTALL_PACKAGES_spitz_append = "task-opie-extra-games task-opie-extra-apps task-opie-extra-styles"
 INSTALL_PACKAGES_akita_append = "task-opie-extra-games task-opie-extra-apps task-opie-extra-styles"
 
-export IPKG_INSTALL = "${INSTALL_PACKAGES}"
+export PACKAGE_INSTALL = "${INSTALL_PACKAGES}"
 
 # merge feed-sources into ipkg.conf for opie-aqpkg as it can't handle feed-sources outside of ipkg.conf.
 merge_feeds() {
@@ -30,11 +30,11 @@ merge_feeds() {
                         echo "[${IMAGE_ROOTFS}/etc/ipkg.conf] is missing!"
                         exit 1
                 fi
-                
+
                 # comment out existing feed-sources inserted by ipkg-collateral
                 cat ${IMAGE_ROOTFS}/etc/ipkg.conf | sed "s/^src\ /#src\ /" > ${IMAGE_ROOTFS}/etc/ipkg.conf_
                 rm ${IMAGE_ROOTFS}/etc/ipkg.conf && mv ${IMAGE_ROOTFS}/etc/ipkg.conf_ ${IMAGE_ROOTFS}/etc/ipkg.conf
-                
+
                 # extract, then delete destinations
                 cat ${IMAGE_ROOTFS}/etc/ipkg.conf | egrep "^dest\ " > ${IMAGE_ROOTFS}/etc/ipkg.conf.dest
                 cat ${IMAGE_ROOTFS}/etc/ipkg.conf | egrep -v "^dest\ " > ${IMAGE_ROOTFS}/etc/ipkg.conf_
@@ -46,23 +46,23 @@ merge_feeds() {
                         # strip leading and trailing spaces/tabs, then split into name and uri
                         line_clean="`echo "$line"|sed 's/^[ \t]*//;s/[ \t]*$//'`"
                         feed_name="`echo "$line_clean" | sed -n 's/\(.*\)##\(.*\)/\1/p'`"
-                        feed_uri="`echo "$line_clean" | sed -n 's/\(.*\)##\(.*\)/\2/p'`"                
+                        feed_uri="`echo "$line_clean" | sed -n 's/\(.*\)##\(.*\)/\2/p'`"
 
                         # insert new feed-sources
                         echo "src/gz $feed_name $feed_uri" >> ${IMAGE_ROOTFS}/etc/ipkg.conf
                 done
-                
+
                 # remove temporary files and rebuild ipkg.conf
                 echo "" >> ${IMAGE_ROOTFS}/etc/ipkg.conf
                 cat ${IMAGE_ROOTFS}/etc/ipkg.conf.dest >> ${IMAGE_ROOTFS}/etc/ipkg.conf
                 rm ${IMAGE_ROOTFS}/etc/ipkg.conf.dest
-                
+
                 # remove -feed.conf files which are no longer needed
-                cd ${IMAGE_ROOTFS}/etc/ipkg/ && rm -- *-feed.conf                               
+                cd ${IMAGE_ROOTFS}/etc/ipkg/ && rm -- *-feed.conf
         fi
 }
 
 # merge feed-sources into ipkg.conf and create /etc/timestamp from build date
 IMAGE_PREPROCESS_COMMAND = "merge_feeds; create_etc_timestamp"
 
-inherit image_ipk
+inherit image

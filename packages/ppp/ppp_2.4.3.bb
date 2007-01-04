@@ -20,7 +20,7 @@ SRC_URI = "http://ppp.samba.org/ftp/ppp/ppp-${PV}.tar.gz \
 	file://ip-down \
 	file://08setupdns \
 	file://92removedns"
-	
+
 SRC_URI_append_nylon = " file://ppp-tdbread.patch;patch=1"
 
 inherit autotools

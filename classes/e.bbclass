@@ -8,23 +8,19 @@ do_prepsources () {
 }
 addtask prepsources after do_fetch before do_unpack
 
-def binconfig_suffix(d):
-	import bb
-        return ["","-native"][bb.data.inherits_class('native', d)]
-
-export CURL_CONFIG		= "${STAGING_BINDIR}/curl-config${@binconfig_suffix(d)}"
-export EDB_CONFIG		= "${STAGING_BINDIR}/edb-config${@binconfig_suffix(d)}"
-export EET_CONFIG		= "${STAGING_BINDIR}/eet-config${@binconfig_suffix(d)}"
-export EVAS_CONFIG		= "${STAGING_BINDIR}/evas-config${@binconfig_suffix(d)}"
-export ECORE_CONFIG		= "${STAGING_BINDIR}/ecore-config${@binconfig_suffix(d)}"
-export EMBRYO_CONFIG		= "${STAGING_BINDIR}/embryo-config${@binconfig_suffix(d)}"
-export ENGRAVE_CONFIG		= "${STAGING_BINDIR}/engrave-config${@binconfig_suffix(d)}"
-export ENLIGHTENMENT_CONFIG	= "${STAGING_BINDIR}/enlightenment-config${@binconfig_suffix(d)}"
-export EPSILON_CONFIG		= "${STAGING_BINDIR}/epsilon-config${@binconfig_suffix(d)}"
-export EPEG_CONFIG		= "${STAGING_BINDIR}/epeg-config${@binconfig_suffix(d)}"
-export ESMART_CONFIG		= "${STAGING_BINDIR}/esmart-config${@binconfig_suffix(d)}"
-export FREETYPE_CONFIG		= "${STAGING_BINDIR}/freetype-config${@binconfig_suffix(d)}"
-export IMLIB2_CONFIG		= "${STAGING_BINDIR}/imlib2-config${@binconfig_suffix(d)}"
+export CURL_CONFIG		= "${STAGING_BINDIR_CROSS}/curl-config"
+export EDB_CONFIG		= "${STAGING_BINDIR_CROSS}/edb-config"
+export EET_CONFIG		= "${STAGING_BINDIR_CROSS}/eet-config"
+export EVAS_CONFIG		= "${STAGING_BINDIR_CROSS}/evas-config"
+export ECORE_CONFIG		= "${STAGING_BINDIR_CROSS}/ecore-config"
+export EMBRYO_CONFIG		= "${STAGING_BINDIR_CROSS}/embryo-config"
+export ENGRAVE_CONFIG		= "${STAGING_BINDIR_CROSS}/engrave-config"
+export ENLIGHTENMENT_CONFIG	= "${STAGING_BINDIR_CROSS}/enlightenment-config"
+export EPSILON_CONFIG		= "${STAGING_BINDIR_CROSS}/epsilon-config"
+export EPEG_CONFIG		= "${STAGING_BINDIR_CROSS}/epeg-config"
+export ESMART_CONFIG		= "${STAGING_BINDIR_CROSS}/esmart-config"
+export FREETYPE_CONFIG		= "${STAGING_BINDIR_CROSS}/freetype-config"
+export IMLIB2_CONFIG		= "${STAGING_BINDIR_CROSS}/imlib2-config"
 
 do_compile_prepend() {
 	find ${S} -name Makefile | xargs sed -i 's:/usr/include:${STAGING_INCDIR}:'

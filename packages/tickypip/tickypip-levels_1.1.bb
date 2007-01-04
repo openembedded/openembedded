@@ -19,7 +19,7 @@ S = "${WORKDIR}/"
 # packs in PalmGear.
 #
 # Packs available on PalmGear: Pak1, Pak3, Pak8, Pak9, Pak10
-# 
+#
 # URL: http://palmgear.com/index.cfm?fuseaction=software.developer&userID=862314499
 #
 # I also got permission to distribute rest of levelpacks which was available

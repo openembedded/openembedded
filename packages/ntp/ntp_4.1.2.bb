@@ -39,10 +39,10 @@ else
 		test -d /etc/cron/crontabs || mkdir -p /etc/cron/crontabs
 		echo "30 * * * *    ${bindir}/ntpdate -s -u pool.ntp.org" >> /etc/cron/crontabs/root
 	fi
-	
+
 	# Dunno why this is here, ask the "nylon" guys :)
 	test -x /etc/init.d/busybox-cron && update-rc.d -s busybox-cron defaults
-	
+
 	update-rc.d -s ntpdate defaults 30
 fi
 }

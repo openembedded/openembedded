@@ -8,7 +8,7 @@ SRC_URI = "ftp://ftp.andrew.cmu.edu/pub/cyrus-mail/cyrus-sasl-${PV}.tar.gz \
 	   file://berkdb.m4.patch;patch=1 \
 	   file://client.c.patch;patch=1"
 
-inherit autotools 
+inherit autotools
 
 acpaths = "-I ${S}/cmulocal -I ${S}/config -I ."
 CFLAGS_append = " -I${S}/include -I${S}/saslauthd/include"

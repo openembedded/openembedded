@@ -34,7 +34,7 @@ do_compile() {
   # move classes into jar archive
   # jar -> fastjar
   ${STAGING_BINDIR_NATIVE}/fastjar -v -cf avetanaBT.jar -C build de -C build javax -C build com -C build version.xml
-  
+
   # JNI generated header file - de_avetana_bluetooth_stack_BlueZ.h
   # javah -> kaffeh
   ${STAGING_BINDIR_NATIVE}/kaffeh -jni -classpath avetanaBT.jar:${STAGING_DIR}/${BUILD_SYS}/share/kaffeh/rt.jar -d c de.avetana.bluetooth.stack.BlueZ
@@ -58,5 +58,5 @@ do_install() {
 
   install -d ${D}${datadir}/avetanabt
   install avetanaBT.jar ${D}${datadir}/avetanabt/
- 
+
 }

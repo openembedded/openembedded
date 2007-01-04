@@ -15,7 +15,7 @@ SRC_URI = "file://splash-e-portrait.svg \
 #FIXME: please use an gpe-bootsplash-theme.inc to reduce duplication
 
 do_install() {
-	install -d "${D}/usr/share/gpe"	
+	install -d "${D}/usr/share/gpe"
 	install -m 0644 ${WORKDIR}/splash-${THEME}* ${D}/usr/share/gpe
 }
 
@@ -26,7 +26,7 @@ pkg_postinst() {
 
 pkg_postrm() {
 	update-alternatives --remove bootsplash-l /usr/share/gpe/splash-${THEME}-landscape.svg
-	update-alternatives --remove bootsplash-p /usr/share/gpe/splash-${THEME}-portrait.svg	
+	update-alternatives --remove bootsplash-p /usr/share/gpe/splash-${THEME}-portrait.svg
 }
 
 FILES_${PN} = "/usr/share/gpe/splash-${THEME}-*"

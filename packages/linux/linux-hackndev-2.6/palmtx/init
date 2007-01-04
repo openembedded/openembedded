@@ -1,0 +1,195 @@
+#!/bin/sh
+# $Id: $
+# authors: Cristiano P.
+#
+
+# TODO: echo only if VERBOSE
+# TODO: check the whole thing ...
+
+# defaults:
+VERBOSE=true
+FORCE_FSCK=false
+UMOUNT_FILES_DEV=false
+
+FILES_DEV=/dev/mmcblk0p1
+FILES_MNT=/mnt/mmc
+ROOT_DEV=$FILES_MNT/opie-image-v0.8.4-palmtx.rootfs.ext2
+SWAP_DEV=none
+
+MODULES_DIR="/lib/modules"
+POST_MODULES_SCRIPT=""
+
+echo mounting sysfs
+mount -n -t sysfs sys /sys >/dev/null 2>&1 || mount -t sysfs sys /sys
+
+echo mounting proc filesystem
+mount -n -t proc none /proc >/dev/null  2>&1 || mount -t proc none /proc
+
+# try to get model name from /proc/cpuinfo
+MODEL_NAME=`awk -F: '/Hardware/ { print $2 }' </proc/cpuinfo | sed 's/^ *//;s/ *$//'`
+
+[ $VERBOSE = "true" ] && echo Model name: $MODEL_NAME
+
+# device specific configuration
+case $MODEL_NAME in
+  "Palm TX")
+    FILES_MNT=/media/mmc1  
+  ;;
+  
+  "Palm LifeDrive")
+    HDD_DEV=/dev/hda
+    HDD_OFFSET=91814912
+    LOOP_DEV=/dev/loop0
+  ;;
+  
+  *)
+  ;;  
+esac
+
+echo initram init started
+
+if [ -f /etc/modules.initrd ]; then
+  echo loading initial modules
+  cat /etc/modules.initrd | while read module; do
+    echo loading module: $module
+    /sbin/insmod $MODULES_DIR/$module > /dev/null
+  done
+fi
+
+
+# device specific actions ...
+case $MODEL_NAME in
+  "Palm LifeDrive")
+     echo Mounting LifeDrive data partition...
+     losetup -o $HDD_OFFSET $LOOP_DEV $HDD_DEV
+     FILES_DEV=$LOOP_DEV
+     FILES_MNT=/mnt/hda	     
+  ;;
+
+  *)
+  ;;
+esac
+
+
+if [ -b $FILES_DEV ]; then
+  FILES_DEV_MOUNTED=false
+  echo -n "attempting to mount $FILES_DEV: "
+  /bin/mount -t vfat -o rw $FILES_DEV $FILES_MNT > /dev/null 2>&1
+  [ $? ] && FILES_DEV_MOUNTED=true
+
+  if [ $FILES_DEV_MOUNTED = "true" ]; then	
+    echo "mounted on $FILES_MNT."
+    /bin/sleep 1
+    echo -n "sourcing linux.boot.cfg: "
+    # todo: check parameters/files?
+    if [ -f $FILES_MNT/linux.boot.cfg ]; then
+      echo found.
+      .  $FILES_MNT/linux.boot.cfg
+
+      if [ -f $FILES_MNT/modules.initrd ]; then
+        echo loading additional modules now:
+        cat $FILES_MNT/modules.initrd | while read module; do
+          loading module: $module
+          /sbin/insmod $MODULES_DIR/$module > /dev/null
+        done
+      fi
+    else
+      echo not found.
+    fi
+  else
+    echo "could not mount."
+    FILES_DEV_MOUNTED=false
+  fi
+else
+  echo device $FILES_DEV not found.
+  FILES_DEV_MOUNTED=false
+fi
+
+# this script could be used to update the rootfs before booting familiar (new modules, scripts, config, ...)
+echo -n "post_module script: "
+if [ -n "$POST_MODULES_SCRIPT" ]; then
+  if [ -f "$POST_MODULES_SCRIPT" ]; then
+    echo found $POST_MODULES_SCRIPT .
+    $POST_MODULES_SCRIPT
+  fi
+else
+  echo not found.
+fi
+
+# probably swap should/can be enabled by familiar (add to /etc/fstab?)
+# is it the right place to mount swap?
+if [ -n "$SWAP_DEV" -a $SWAP_DEV != "none" ]; then
+  echo -n "mount swap at $SWAP_DEV: "
+
+  if [ -f $SWAP_DEV -o -b $SWAP_DEV ]; then
+    /sbin/swapon $SWAP_DEV > /dev/null 2>&1
+    echo done.
+  else
+    echo not found.
+  fi
+else
+  echo "no swap specified."
+fi
+
+# force fsck if specified
+if [ $FORCE_FSCK = "true" ]; then
+  echo "checking rootfs [$ROOT_DEV]"
+  if [ $VERBOSE = "true" ]; then
+    /sbin/e2fsck -f -y $ROOT_DEV
+  else
+    /sbin/e2fsck -f -y $ROOT_DEV > /dev/null 2>&1
+  fi
+fi
+
+echo -n "mounting rootfs: "
+
+# todo: calculate root dev id? (256*major + minor)
+if [ -f $ROOT_DEV ]; then
+  #echo 0x701 > /proc/sys/kernel/real-root-dev
+  mount -n $ROOT_DEV /newroot -o rw loop 2>/dev/null
+  [ $? ] && ROOT_MOUNTED=true
+  # this shouldn't be possible if image is on FILES_DEV
+  UMOUNT_FILES_DEV=false
+elif [ -b $ROOT_DEV ]; then
+  mount -n $ROOT_DEV /newroot -o rw 2>/dev/null
+  [ $? ] && ROOT_MOUNTED=true
+else
+  echo "not a file or a block device."
+  ROOT_MOUNTED=false
+fi
+
+# TODO: should initial /dev (/oldroot/dev) be unmounted after init by GPE?
+if [ $ROOT_MOUNTED = "true" ]; then
+  echo mounted
+
+  # umount mmc if forced by UMOUNT_FILES_DEV
+  if [ $UMOUNT_FILES_DEV = "true" -a $FILES_DEV_MOUNTED = "true" ]; then
+    umount -l $FILES_DEV
+    [ $? ] && FILES_DEV_MOUNTED=false
+    [ $FILES_DEV_MOUNTED = "false" ] && echo "$FILES_DEV umounted"
+  fi
+  
+  # move mmc's mount point on new rootfs
+  if [ $FILES_DEV_MOUNTED = "true" ]; then
+    echo moving $FILES_MNT to /newroot$FILES_MNT
+    mount --move $FILES_MNT /newroot$FILES_MNT
+  fi
+
+  # force umount sys and proc
+  umount -l /sys
+  umount -l /proc
+
+  # method 2: use switch_root (needs initramfs)
+  exec /sbin/switch_root -c /dev/console /newroot /sbin/init 5
+
+  echo "*  * * switch_root failed!  * * *"
+else
+  echo "failed!"
+  echo could not mount root fs: init failed!
+  echo please, reset, check your configuration and retry.
+  sleep 100000
+fi
+
+# TODO: run ezhikov's keyshell here?
+exec /bin/sh
+

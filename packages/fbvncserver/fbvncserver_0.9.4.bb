@@ -16,7 +16,7 @@ SRC_URI = "http://sdgsystems.com/download/fbvncserver-${PV}.tar.gz \
 	   file://buildfix.patch;patch=1 \
 	   file://ipaq.patch;patch=1 \
            file://init"
-	  
+
 S = "${WORKDIR}/fbvncserver-${PV}"
 
 export INCLUDES = "-I${STAGING_INCDIR}"
@@ -43,10 +43,10 @@ do_install () {
 	install -d ${D}${bindir}
 	install -m 0755 ${FBVNCSERVER_SYSTEM}_fbvncserver ${D}${bindir}/fbvncserver
 	install -m 0755 ${FBVNCSERVER_SYSTEM}_tssimd ${D}${bindir}/tssimd
-	
+
 	install -d ${D}${datadir}/fbvncserver
 	install -m 0644 ${FBVNCSERVER_SYSTEM}_panel.jpg ${D}${datadir}/fbvncserver/
-	
+
 	install -d ${D}${sysconfdir}/init.d
 	install -m 0755 ${WORKDIR}/init ${D}${sysconfdir}/init.d/fbvncinput
 }

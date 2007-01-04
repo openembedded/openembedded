@@ -7,7 +7,7 @@ PR = "r0"
 SRC_URI = "ftp://ftp.tin.org/pub/news/clients/tin/unstable/tin-${PV}.tar.gz \
 	   file://m4.patch;patch=1"
 
-inherit autotools 
+inherit autotools
 
 PARALLEL_MAKE = ""
 EXTRA_OECONF = "--with-screen=ncurses --with-pcre=${STAGING_LIBDIR}/.."

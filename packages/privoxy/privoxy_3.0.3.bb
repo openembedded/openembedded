@@ -29,14 +29,14 @@ do_install() {
         mkdir -p ${D}/${sbindir}
         install -m 0755 ${S}/privoxy ${D}/${sbindir}
 
-        # Documentation        
+        # Documentation
         mkdir -p ${D}/${docdir}
         install -m 0755 -d ${S}/doc ${D}/${docdir}
 
         # Install man page
         mkdir -p ${D}/${mandir}
         install -m 0755 ${S}/privoxy.1 ${D}/${mandir}
-}           
+}
 
 
 do_install_append() {

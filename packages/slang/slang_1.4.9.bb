@@ -6,7 +6,7 @@ LICENSE = "GPL Artistic"
 SRC_URI = "ftp://space.mit.edu/pub/davis/slang/v1.4/slang-${PV}.tar.bz2 \
            file://configure.patch;patch=1 \
            file://Makefile.patch;patch=1"
-inherit autotools 
+inherit autotools
 
 acpaths = "-I ${S}/autoconf"
 EXTRA_OECONF="--enable-warnings"

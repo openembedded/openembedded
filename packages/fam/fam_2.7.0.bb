@@ -6,7 +6,7 @@ LICENSE = "GPL LGPL"
 SRC_URI = "ftp://oss.sgi.com/projects/fam/download/stable/fam-${PV}.tar.gz \
 	   file://compile-fix.patch;patch=1"
 
-inherit autotools 
+inherit autotools
 
 CPPFLAGS_append = " -DNDEBUG"
 

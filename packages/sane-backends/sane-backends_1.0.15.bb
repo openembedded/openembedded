@@ -8,7 +8,7 @@ SRC_URI = "ftp://ftp.sane-project.org/pub/sane/old-versions/sane-backends-${PV}/
 	file://Makefile.in.patch;patch=1 \
 	file://saned.xinetd \
 	"
-	
+
 EXTRA_OECONF = "--disable-translations"
 
 inherit autotools

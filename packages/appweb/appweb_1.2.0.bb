@@ -55,10 +55,10 @@ require appweb.inc
 #  --with-esp               Include the ESP handler.
 #  --with-ssl               Build support for the SSL protocol.
 #  --with-upload            Build with the file upload handler
-#  --with-xdb               Build with XDB 
+#  --with-xdb               Build with XDB
 #  Supported PACKAGE names: openssl, php4, php5
-#  --with-PACKAGE=[builtin|, module]       
-#                           Include support for the PACKAGE. Link into appWeb 
+#  --with-PACKAGE=[builtin|, module]
+#                           Include support for the PACKAGE. Link into appWeb
 #                           statically and/or build as a module
 #  --with-PACKAGE-dir=DIR   Set the source directory of the package
 #  --with-PACKAGE-libs=libs Set a list of libraries to use when linking with

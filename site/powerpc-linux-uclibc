@@ -61,11 +61,6 @@ ac_cv_linux_vers=${ac_cv_linux_vers=2}
 ac_cv_regexec_segfault_emptystr=${ac_cv_regexec_segfault_emptystr=no}
 nano_cv_func_regexec_segv_emptystr=${nano_cv_func_regexec_segv_emptystr=no}
 
-# libnet 
-ac_cv_libnet_endianess=${ac_cv_libnet_endianess=big}
-
-
-
 # socat
 ac_cv_ispeed_offset=${ac_cv_ispeed_offset=13}
 sc_cv_termios_ispeed=${sc_cv_termios_ispeed=yes}

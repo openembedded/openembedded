@@ -33,7 +33,7 @@ do_stage() {
 	for header in account.h accountopt.h away.h blist.h buddyicon.h cmds.h config.h connection.h conversation.h core.h debug.h eventloop.h ft.h gaim.h imgstore.h log.h md5.h network.h notify.h plugin.h pluginpref.h pounce.h prefix.h prefs.h privacy.h proxy.h prpl.h request.h roomlist.h server.h sha.h signals.h sound.h sslconn.h status.h stringref.h util.h value.h version.h xmlnode.h
 	do
 		if [ -e ${S}/src/$header ]; then
-			install -m 0644 ${S}/src/$header $GAIM_DIR	
+			install -m 0644 ${S}/src/$header $GAIM_DIR
 		fi
 		if [ -e ${S}/$header ]; then
 			install -m 0644 ${S}/$header $GAIM_DIR

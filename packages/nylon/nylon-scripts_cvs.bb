@@ -28,13 +28,13 @@ else
 	update-rc.d -s emergency-ip defaults 98
 	update-rc.d -s flash-backup start 38 S . stop 38 0 6 .
 	update-rc.d -s dummydate start 50 S . stop 50 0 6 .
-	
+
 	if ! grep -q flash-backup /etc/cron/crontabs/root; then
 		echo "adding flash-backup crontab"
 		test -d /etc/cron/crontabs || mkdir -p /etc/cron/crontabs
 		echo "0 * * * *    /etc/init.d/flash-backup backup" >> /etc/cron/crontabs/root
 	fi
-	 
+
 	if ! grep -q reset-wlan /etc/cron/crontabs/root; then
 		echo "adding reset-wlan crontab"
 		test -d /etc/cron/crontabs || mkdir -p /etc/cron/crontabs

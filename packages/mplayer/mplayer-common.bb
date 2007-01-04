@@ -25,6 +25,6 @@ FILES_${PN} = "/usr/etc/mplayer"
 
 do_install() {
 	install -d "${D}/usr/etc/mplayer"
-	
+
 	install -m 0644 ${WORKDIR}/mplayer.conf "${D}/usr/etc/mplayer"
 }

@@ -9,7 +9,7 @@ PRIORITY = "optional"
 
 SRC_URI = "ftp://ftp.feep.net/pub/software/fget/fget-${PV}.tar.gz"
 
-inherit autotools 
+inherit autotools
 
 do_configure() {
 	oe_runconf

@@ -13,7 +13,7 @@ DEPENDS="gtk+"
 FILES_${PN} += " /usr/lib/emelfm2/plugins/ /usr/share/pixmaps/emelfm2/"
 
 do_compile() {
-	oe_runmake PREFIX=/usr all 
+	oe_runmake PREFIX=/usr all
 }
 
 do_install() {

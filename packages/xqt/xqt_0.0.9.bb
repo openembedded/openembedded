@@ -15,39 +15,39 @@ do_configure() {
 	#general config
 	echo "#define BuildServersOnly YES" > config/cf/host.def
 	echo "#define ProjectRoot /usr" >> config/cf/host.def
-	
+
 	# do not build these XServers
 	echo "#define XnestServer NO"  >> config/cf/host.def
 	echo "#define XdmxServer NO"  >> config/cf/host.def
-	
+
 	# build commands
 	echo "#define CcCmd ${CC}" >> config/cf/host.def
 	echo "#define CplusplusCmd ${CXX}" >> config/cf/host.def
 	echo "#define LdCmd ${LD}" >> config/cf/host.def
-	
+
 	# Qt defines
 	echo "#define QtCmnDefs -fno-exceptions -fno-rtti" >> config/cf/host.def
 	echo "#define QtDir ${QTDIR}" >> config/cf/host.def
 	echo "#define QtLibs -lqpe -lqte -lm -lpng -ljpeg -lts -lsupc++" >> config/cf/host.def
 	echo "#define MocBin ${STAGING_BINDIR_NATIVE}/moc" >> config/cf/host.def
 	echo "#define QtDefs -DQWS -DOPIE_NEW_MALLOC -DOPIE_NO_ERASE_RECT_HACKFIX  QtCmnDefs" >> config/cf/host.def
-	
+
 	# Build these XServers
 	echo "#define XqtXServer  YES" >> config/cf/host.def
 	echo "#define XF86Server  NO"  >> config/cf/host.def
 	echo "#define TinyXServer YES" >> config/cf/host.def
 	echo "#define KDriveXServer YES" >> config/cf/host.def
 	echo "#define KdriveServerExtraDefines -DDDXOSFATALERROR -DDDXOSVERRORF" >> config/cf/host.def
-	
+
 	# General Config
 	echo "#define SystemUsrIncDir ${STAGING_INCDIR}" >> config/cf/host.def
 	echo "#define IncRoot ${STAGING_INCDIR}" >> config/cf/host.def
 	echo "#define LdPostLib -L${STAGING_LIBDIR}" >> config/cf/host.def
-	
+
 	echo "#undef BuildRandR " >> config/cf/host.def
 	echo "#define BuildRandR YES" >> config/cf/host.def
 	echo "#define BuildLBX YES" >> config/cf/host.def
-	
+
 	# change standard defines
 	if [ ${TARGET_ARCH} == "arm" ]; then
 		echo "#define StandardDefines -Dlinux -D__arm__ -D_POSIX_SOURCE -D_BSD_SOURCE -D_GNU_SOURCE" >> config/cf/host.def
@@ -72,12 +72,12 @@ do_compile() {
 do_install() {
 	make -C programs/Xserver DESTDIR="${D}" CC="${CC}" LD="${LD}" CC_STAGING="-I${STAGING_INCDIR}" LD_STAGING="-L${STAGING_LIBDIR}" INSTALLED_LIBS="" install
 	make -C lib/font DESTDIR="${D}" CC="${CC}" LD="${LD}" CC_STAGING="-I${STAGING_INCDIR}" LD_STAGING="-L${STAGING_LIBDIR}" INSTALLED_LIBS="" install
-	
+
 	install -d ${D}${palmtopdir}/apps/Applications
 	install -d ${D}${palmtopdir}/pics/Xqt
-	
+
 	install -m 0644 programs/Xserver/hw/xqt/Xqt.png ${D}${palmtopdir}/pics/Xqt
-	install -m 0644 IPKG/Xqt.desktop ${D}${palmtopdir}/apps/Applications		
+	install -m 0644 IPKG/Xqt.desktop ${D}${palmtopdir}/apps/Applications
 }
 
 do_stage() {

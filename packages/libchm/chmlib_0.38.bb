@@ -1,4 +1,4 @@
-DESCRIPTION = "CHMLIB is a library for dealing with Microsoft ITSS/CHM format files." 
+DESCRIPTION = "CHMLIB is a library for dealing with Microsoft ITSS/CHM format files."
 LICENSE = "GPLv2"
 HOMEPAGE = "http://66.93.236.84/~jedwin/projects/chmlib/"
 

@@ -31,7 +31,7 @@ PACKAGES += "ntpdate ntp-bin ntp-tickadj ntp-utils"
 # This should use rc.update
 FILES_ntpdate = "${bindir}/ntpdate ${sysconfdir}/init.d/ntpdate"
 
-# ntp originally includes tickadj. It's split off for inclusion in small firmware images on platforms 
+# ntp originally includes tickadj. It's split off for inclusion in small firmware images on platforms
 # with wonky clocks (e.g. OpenSlug)
 RDEPENDS_${PN} = "${PN}-tickadj"
 FILES_${PN}-bin = "${bindir}/ntp-wait ${bindir}/ntpdc ${bindir}/ntpq ${bindir}/ntptime ${bindir}/ntptrace"

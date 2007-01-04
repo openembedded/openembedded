@@ -1,7 +1,7 @@
 #
 # Automatically generated make config: don't edit
 # Linux kernel version: 2.6.19-rc6
-# Mon Nov 27 17:09:56 2006
+# Sun Dec 31 01:46:08 2006
 #
 # CONFIG_PPC64 is not set
 CONFIG_PPC32=y
@@ -1411,6 +1411,11 @@ CONFIG_SND_VIA82XX_MODEM=m
 #
 # ALSA PowerMac devices
 #
+
+#
+# ALSA PPC devices
+#
+CONFIG_SND_PPC_MPC52xx_AC97=m
 
 #
 # USB devices

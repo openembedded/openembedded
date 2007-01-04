@@ -15,6 +15,8 @@ FILES_libpspell-dev = "${libdir}/libpspell* ${bindir}/pspell-config ${includedir
 
 inherit autotools
 
+export CXXFLAGS += "-lstdc++"
+
 do_compile_prepend() {
 	install ${WORKDIR}/mk-dirs_h.py ${S}/common/mk-dirs_h
 }

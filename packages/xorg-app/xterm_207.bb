@@ -19,8 +19,8 @@ EXTRA_OECONF = " --x-includes=${STAGING_INCDIR} --x-libraries=${STAGING_LIBDIR} 
 do_configure() {
 
 	sed -e "s%/usr/contrib/X11R6%${STAGING_LIBDIR}%g" -i configure
-	
-	oe_runconf 
+
+	oe_runconf
 }
 
 do_stage() {

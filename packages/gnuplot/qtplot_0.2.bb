@@ -17,7 +17,7 @@ APPDESKTOP = "${S}"
 inherit opie
 
 do_install_prepend() {
-	install -d ${D}${palmtopdir}/pics 
+	install -d ${D}${palmtopdir}/pics
         install -d ${D}${palmtopdir}/help/html
 
         install -m 644 Qtplot.png ${D}${palmtopdir}/pics/

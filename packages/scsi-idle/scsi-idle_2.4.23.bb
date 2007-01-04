@@ -11,7 +11,7 @@ PR = "r1"
 
 SRC_URI = "${DEBIAN_MIRROR}/main/s/scsi-idle/scsi-idle_${PV}-5.tar.gz \
 	file://makefile.patch;patch=1 \
-	file://scsi-idle.init.patch;patch=1"	
+	file://scsi-idle.init.patch;patch=1"
 
 S = "${WORKDIR}/scsi-idle-${PV}"
 

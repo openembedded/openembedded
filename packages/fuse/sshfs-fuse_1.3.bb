@@ -3,7 +3,7 @@ DESCRIPTION = "This is a filesystem client based on the SSH File Transfer Protoc
 
 LICENSE_${PN} = "LGPL"
 
-DEPENDS = "fakeroot-native fuse" 
+DEPENDS = "fakeroot-native fuse"
 RRECOMMENDS_${PN} = "fuse-module"
 
 SRC_URI="${SOURCEFORGE_MIRROR}/fuse/${P}.tar.gz"

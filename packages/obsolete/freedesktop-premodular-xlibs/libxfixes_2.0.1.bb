@@ -8,7 +8,7 @@ SRC_URI = "${XLIBS_MIRROR}/libXfixes-${PV}.tar.bz2 \
 	   file://autofoo.patch;patch=1"
 S = "${WORKDIR}/libXfixes-${PV}"
 
-inherit autotools pkgconfig 
+inherit autotools pkgconfig
 
 do_stage() {
 	autotools_stage_all

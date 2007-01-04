@@ -1,10 +1,10 @@
 SECTION = "devel"
 DESCRIPTION = "Sanitized set of 2.6 kernel headers for the C library's use."
 HOMEPAGE = "http://ep09.pld-linux.org/~mmazur/linux-libc-headers/"
-# license note from the package: 
+# license note from the package:
 #   Linux-libc-headers are derived from linux kernel headers. For license of a
 #   particular header, check it's content, and if copyright notice isn't present,
-#   standard linux kernel license applies. 
+#   standard linux kernel license applies.
 # since we assume GPL for linux i think we can also assume it here
 LICENSE = "GPL"
 INHIBIT_DEFAULT_DEPS = "1"
@@ -16,7 +16,7 @@ PACKAGES = ""
 SRC_URI = "http://ep09.pld-linux.org/~mmazur/linux-libc-headers/linux-libc-headers-${PV}.tar.bz2 \
 	file://mips-asm-atomic-system.diff;patch=1;pnum=0 \
 	file://keyboard.patch;patch=1"
-	
+
 S = "${WORKDIR}/linux-libc-headers-${PV}"
 
 do_configure () {

@@ -16,7 +16,7 @@ S = "${WORKDIR}/libmikey"
 
 PACKAGES = "${PN}"
 
-FILES_${PN} = " ${libdir}/libmikey.so.0 ${libdir}/libmikey.so.0.0.0 " 
+FILES_${PN} = " ${libdir}/libmikey.so.0 ${libdir}/libmikey.so.0.0.0 "
 
 do_stage() {
 	oe_libinstall -a -so libmikey ${STAGING_LIBDIR}

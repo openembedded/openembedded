@@ -1,10 +1,10 @@
 export IMAGE_BASENAME = "bootstrap-image-bootchart"
 export IMAGE_LINGUAS = ""
-export IPKG_INSTALL = "${MACHINE_TASK_PROVIDER} bootchart acct"
+export PACKAGE_INSTALL = "${MACHINE_TASK_PROVIDER} bootchart acct"
 
 DEPENDS = "${MACHINE_TASK_PROVIDER} bootchart"
 RDEPENDS = "acct"
 
-inherit image_ipk
+inherit image
 
 LICENSE = "MIT"

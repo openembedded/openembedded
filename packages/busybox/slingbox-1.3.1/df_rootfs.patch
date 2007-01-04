@@ -1,0 +1,44 @@
+--- busybox-1.3.1.orig/coreutils/df.c	2006-12-26 22:54:50.000000000 -0600
++++ busybox-1.3.1/coreutils/df.c	2006-12-30 00:45:10.000000000 -0600
+@@ -47,6 +47,7 @@
+ 	struct statfs s;
+ 	static const char hdr_1k[] = "1k-blocks"; /* default display is kilobytes */
+ 	const char *disp_units_hdr = hdr_1k;
++	int root_done = 0;
+ 
+ #ifdef CONFIG_FEATURE_HUMAN_READABLE
+ 	opt_complementary = "h-km:k-hm:m-hk";
+@@ -77,7 +78,7 @@
+ 
+ 	do {
+ 		const char *device;
+-		const char *mount_point;
++		char *mount_point;
+ 
+ 		if (mount_table) {
+ 			mount_entry = getmntent(mount_table);
+@@ -116,17 +117,20 @@
+ 						) / (blocks_used + s.f_bavail);
+ 			}
+ 
+-			if (strcmp(device, "rootfs") == 0) {
+-				continue;
+-			} else if (strcmp(device, "/dev/root") == 0) {
++			if (strcmp(device, "/dev/root") == 0 || strcmp(device, "rootfs") == 0) {
+ 				/* Adjusts device to be the real root device,
+ 				* or leaves device alone if it can't find it */
+-				device = find_block_device("/");
++				device = find_block_device(mount_point);
+ 				if (!device) {
+ 					goto SET_ERROR;
+ 				}
+ 			}
+ 
++			if (strcmp(mount_point, "/") == 0) {
++				if (root_done) continue;
++				root_done = 1;
++			}
++
+ #ifdef CONFIG_FEATURE_HUMAN_READABLE
+ 			printf("%-20s %9s ", device,
+ 				make_human_readable_str(s.f_blocks, s.f_bsize, df_disp_hr));

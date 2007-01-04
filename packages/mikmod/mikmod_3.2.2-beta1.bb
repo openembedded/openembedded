@@ -7,6 +7,6 @@ LICENSE = "GPL"
 SRC_URI = "http://mikmod.raphnet.net/files/mikmod-${PV}.tar.bz2 \
            file://m4.patch;patch=1"
 
-inherit autotools 
+inherit autotools
 
 LDFLAGS_append = " -lm"

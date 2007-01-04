@@ -38,7 +38,7 @@ FILES_ntpdate = "${bindir}/ntpdate ${sysconfdir}/init.d/ntpdate"
 #perl scripts, and installing perl is an enormous overhead for a user who only
 #needs ntpq
 #RDEPENDS_ntp-bin = perl
-# ntp originally includes tickadj. It's split off for inclusion in small firmware images on platforms 
+# ntp originally includes tickadj. It's split off for inclusion in small firmware images on platforms
 # with wonky clocks (e.g. OpenSlug)
 RDEPENDS_${PN} = "${PN}-tickadj"
 FILES_${PN}-bin = "${bindir}/ntp-wait ${bindir}/ntpdc ${bindir}/ntpq ${bindir}/ntptime ${bindir}/ntptrace"

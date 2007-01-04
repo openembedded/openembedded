@@ -15,7 +15,7 @@ FILES_libgpewidget-bin = "${bindir}/*"
 
 EXTRA_OECONF = "--enable-cairo"
 
-LDFLAGS += " -L${STAGING_LIBDIR}" 
+LDFLAGS += " -L${STAGING_LIBDIR}"
 
 do_stage () {
 	autotools_stage_all

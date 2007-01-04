@@ -7,7 +7,7 @@ SRC_URI = "http://www.access-company.com/downloads/${P}.tar.gz"
 
 inherit autotools pkgconfig lib_package
 
-export CFLAGS += "-DALP_BUILD=ALP_BUILD_DEBUG" 
+export CFLAGS += "-DALP_BUILD=ALP_BUILD_DEBUG"
 export CXXFLAGS += "-DALP_BUILD=ALP_BUILD_DEBUG"
 
 do_configure_prepend() {

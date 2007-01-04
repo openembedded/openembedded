@@ -4,7 +4,7 @@ device, as well as allowing them to share audio between \
 themselves."
 SECTION = "libs/multimedia"
 PRIORITY = "optional"
-LICENSE = "GPL LGPL" 
+LICENSE = "GPL LGPL"
 PR = "r0"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/jackit/jack-audio-connection-kit-${PV}.tar.gz"

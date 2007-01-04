@@ -12,7 +12,7 @@ S="${WORKDIR}/${PN}"
 PACKAGES = "${PN} lib${PN} lib${PN}-dev"
 
 FILES_${PN} = " ${bindir}/faac "
-FILES_lib${PN} = " ${libdir}/libfaac.so.0 ${libdir}/libfaac.so.0.0.0 " 
+FILES_lib${PN} = " ${libdir}/libfaac.so.0 ${libdir}/libfaac.so.0.0.0 "
 FILES_lib${PN}-dev = " ${includedir}/faac.h ${includedir}/faaccfg.h ${libdir}/libfaac.so ${libdir}/libfaac.la ${libdir}/libfaac.a "
 
 do_stage() {

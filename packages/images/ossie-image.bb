@@ -1,6 +1,6 @@
 export IMAGE_BASENAME = "ossie-image"
 export IMAGE_LINGUAS = ""
-export IPKG_INSTALL = "${MACHINE_TASK_PROVIDER} task-ossie"
+export PACKAGE_INSTALL = "${MACHINE_TASK_PROVIDER} task-ossie"
 
 DEPENDS = "${MACHINE_TASK_PROVIDER} task-ossie"
 
@@ -14,6 +14,6 @@ FEED_URIS += " \
                 ${MACHINE}##${OSSIE_URI}/unstable/feed/${TARGET_ARCH}/machine/${MACHINE}"
 
 
-inherit image_ipk
+inherit image
 
 LICENSE = "MIT"

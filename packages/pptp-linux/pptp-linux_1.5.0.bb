@@ -22,7 +22,7 @@ do_compile() {
 	oe_runmake
 }
 
-do_install() {	
+do_install() {
 	install -d ${D}${sbindir}
 	install -d ${D}/etc/
 	install -d ${D}/etc/ppp/

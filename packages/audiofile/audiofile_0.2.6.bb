@@ -4,7 +4,7 @@ LICENSE = "LGPL GPL"
 DESCRIPTION = "The Audio File Library provides a uniform and elegant \
 API for accessing a variety of audio file formats, such as AIFF/AIFF-C, \
 WAVE, NeXT/Sun .snd/.au, Berkeley/IRCAM/CARL Sound File, Audio Visual \
-Research, Amiga IFF/8SVX, and NIST SPHERE." 
+Research, Amiga IFF/8SVX, and NIST SPHERE."
 
 PACKAGES += "${PN}-bin"
 FILES_${PN} = "${libdir}/libaudiofile*.so.*"

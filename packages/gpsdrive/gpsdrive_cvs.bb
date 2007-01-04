@@ -23,7 +23,7 @@ FILES_${PN} = "${bindir}/gpsdrive ${bindir}/wpcvt ${bindir}/wpget ${datadir}/pix
 FILES_${PN} += "${datadir}/${PN}"
 
 FILES_gpsdrive-add = "${libdir}"
- 
+
 EXTRA_OECONF = "--disable-garmin"
 
 do_install_append () {

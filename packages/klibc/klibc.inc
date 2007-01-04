@@ -66,6 +66,8 @@ do_stage() {
 	# use the staged libraries and include files.
 	sed -i -e 's@^\$prefix = .*$@\$prefix = "${STAGING_KLIBC_DIR}/lib/klibc";@' \
 		'${STAGING_BINDIR}/${TARGET_PREFIX}klcc'
+        # Perhaps other binaries need to be moved to cross?
+	mv '${STAGING_BINDIR}/${TARGET_PREFIX}klcc' '${STAGING_BINDIR_CROSS}'
 }
 
 do_install() {

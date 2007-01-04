@@ -8,7 +8,7 @@ SRC_URI = "http://easynews.dl.sourceforge.net/sourceforge/gallery/gallery-${PV}-
 
 S = "${WORKDIR}/gallery"
 
-inherit autotools 
+inherit autotools
 
 HTTPCONF = "/etc/apache2/httpd.conf"
 DEST_DIR = "/usr/share/apache2/htdocs/"

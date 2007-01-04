@@ -14,7 +14,7 @@ EXTRA_OECONF = "--with-apr=${STAGING_BINDIR_CROSS} --with-dbm=gdbm --with-gdbm=$
 inherit autotools lib_package binconfig
 
 do_configure() {
-	cp ${S}/../uri_delims.h ${S}/uri/. 
+	cp ${S}/../uri_delims.h ${S}/uri/.
 	oe_runconf
 }
 

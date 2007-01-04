@@ -18,11 +18,11 @@ CFLAGS += " -I${STAGING_INCDIR} -I${STAGING_INCDIR}/SDL -I. -Isrc -L${STAGING_LI
 
 do_compile() {
 	#yes, this is a hack to work around a faulty makefile
-	oe_runmake horizon 
-}	
+	oe_runmake horizon
+}
 
 do_install() {
 	install -d ${D}${bindir}
 	install -m 755 horizon ${D}${bindir}
-}	
+}
 

@@ -38,7 +38,7 @@ python do_compile() {
 
 	workdir = bb.data.getVar('WORKDIR', d, 1)
 	shellfile = os.path.join(workdir, bb.data.expand("${TARGET_PREFIX}${DISTRO}-${MACHINE}-devshell", d))
-	
+
 	f = open(shellfile, "w")
 
 	# emit variables and shell functions
@@ -63,7 +63,7 @@ do_deploy() {
 	cp $shellfile tmpfile
 	echo "#!/bin/bash --rcfile" > $shellfile
 	sed -e "s:${S}:.:g" -e "s:exit 1:true:" tmpfile >> $shellfile
-	
+
 	echo "export PS1='[OE::${TARGET_PREFIX}${DISTRO}-${MACHINE}]:\w\$ '" >> $shellfile
 	echo "alias ./configure=oe_runconf" >> $shellfile
 	echo "alias make=oe_runmake" >> $shellfile

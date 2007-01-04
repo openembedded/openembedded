@@ -9,7 +9,7 @@ SRC_URI = "ftp://ftp.tin.org/pub/news/clients/tin/unstable/tin-${PV}.tar.gz \
 	   file://m4.patch;patch=1 \
 	   file://configure.patch;patch=1"
 
-inherit autotools 
+inherit autotools
 
 EXTRA_OECONF = "--with-screen=ncurses"
 CFLAGS += "-DM_UNIX"

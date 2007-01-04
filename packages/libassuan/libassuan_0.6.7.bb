@@ -7,7 +7,7 @@ inherit autotools binconfig
 
 do_stage() {
 	autotools_stage_includes
-	
+
 	install -d ${STAGING_LIBDIR}
 	oe_libinstall -C src -a libassuan ${STAGING_LIBDIR}
 

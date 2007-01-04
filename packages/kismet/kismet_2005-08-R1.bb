@@ -8,7 +8,7 @@ SRC_URI = "http://www.kismetwireless.net/code/kismet-2005-08-R1.tar.gz \
 	file://no-strip.diff;patch=1;pnum=0 \
 	file://no-chmod.diff;patch=1;pnum=0 \
 	file://glibc3.3.2-getopt-throw.diff;patch=1;pnum=0"
-	
+
 
 EXTRA_OECONF = "--with-pcap=linux --disable-setuid --with-linuxheaders=${STAGING_KERNEL_DIR}/include"
 

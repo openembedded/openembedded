@@ -10,9 +10,9 @@ SRC_URI = "http://www.handhelds.org/pub/packages/ipkg/ipkg-${PV}.tar.gz \
 do_stage() {
 	oe_libinstall -so libipkg ${STAGING_LIBDIR}
 	install -d ${STAGING_INCDIR}/libipkg/
-	for f in *.h  
-	do   
-		install -m 0644 $f ${STAGING_INCDIR}/libipkg/   
+	for f in *.h
+	do
+		install -m 0644 $f ${STAGING_INCDIR}/libipkg/
 	done
 }
 

@@ -33,9 +33,9 @@ else
 	/etc/init.d/busybox-cron reload
 	if [ ! -e /etc/httpd.conf ]; then
 		echo "A:*" > /etc/httpd.conf
-	fi	
+	fi
 	update-rc.d -s busybox-httpd defaults
-	
+
 	if ! grep -q "/var/lib/rrd/" /etc/nylon/backup.list; then
 		echo "adding to backup list"
 		echo "/var/lib/rrd/" >> /etc/nylon/backup.list

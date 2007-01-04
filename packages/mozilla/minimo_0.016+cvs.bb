@@ -19,7 +19,7 @@ SRC_URI = "cvs://anonymous@${CVSSVR}/cvsroot;module=mozilla;tag=${BRTAG};date=${
 	   file://mozconfig file://minimo \
            file://minimo.desktop file://minimo.png"
 
-inherit autotools 
+inherit autotools
 
 S = "${WORKDIR}/mozilla"
 

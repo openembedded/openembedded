@@ -91,9 +91,9 @@ RDEPENDS = "kernel ixp4xx-npe \
 	${SLUGOS_KERNEL} \
 	${SLUGOS_EXTRA_RDEPENDS}"
 
-IPKG_INSTALL = "${RDEPENDS}"
+PACKAGE_INSTALL = "${RDEPENDS}"
 
-inherit image_ipk
+inherit image
 
 python () {
     # Don't build slugos images unless the configuration is set up

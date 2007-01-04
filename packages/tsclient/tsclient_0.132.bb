@@ -13,7 +13,7 @@ SRC_URI="http://www.gnomepro.com/tsclient/tsclient-${PV}.tar.gz \
 
 DEPENDS="gtk+ intltool-native"
 
-inherit autotools 
+inherit autotools
 
 EXTRA_OECONF=" --without-applet --without-ica"
 
@@ -26,4 +26,4 @@ FILES_${PN}="${bindir}  \
 	${datadir}/pixmaps/tsclient/colors.png \
 	${datadir}/pixmaps/tsclient/keyboard.png \
 	${datadir}/pixmaps/tsclient/program.png \
-	${datadir}/pixmaps/tsclient/sound.png"	
+	${datadir}/pixmaps/tsclient/sound.png"

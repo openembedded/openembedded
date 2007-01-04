@@ -35,36 +35,36 @@ do_install () {
 
 	install -m 0755 ${WORKDIR}/syslog ${D}${sysconfdir}/init.d/
 	install -m 644 ${WORKDIR}/syslog.conf ${D}${sysconfdir}/
-	if grep "CONFIG_CROND=y" ${WORKDIR}/defconfig; then 
+	if grep "CONFIG_CROND=y" ${WORKDIR}/defconfig; then
 		# Move crond back to /usr/sbin/crond
 		install -d ${D}${sbindir}
 		mv ${D}/busybox${sbindir}/crond ${D}${sbindir}/
 
 		install -m 0755 ${WORKDIR}/busybox-cron ${D}${sysconfdir}/init.d/
 	fi
-	if grep "CONFIG_HTTPD=y" ${WORKDIR}/defconfig; then 
+	if grep "CONFIG_HTTPD=y" ${WORKDIR}/defconfig; then
 		# Move httpd back to /usr/sbin/httpd
 		install -d ${D}${sbindir}
 		mv ${D}/busybox${sbindir}/httpd ${D}${sbindir}/
-					
+
 		install -m 0755 ${WORKDIR}/busybox-httpd ${D}${sysconfdir}/init.d/
 		install -d ${D}/srv/www
 	fi
-	if grep "CONFIG_APP_UDHCPD=y" ${WORKDIR}/defconfig; then 
+	if grep "CONFIG_APP_UDHCPD=y" ${WORKDIR}/defconfig; then
 		# Move udhcpd back to /usr/sbin/udhcpd
 		install -d ${D}${sbindir}
 		mv ${D}/busybox${sbindir}/udhcpd ${D}${sbindir}/
-					
+
 		install -m 0755 ${WORKDIR}/busybox-udhcpd ${D}${sysconfdir}/init.d/
 	fi
-	if grep "CONFIG_HWCLOCK=y" ${WORKDIR}/defconfig; then 
+	if grep "CONFIG_HWCLOCK=y" ${WORKDIR}/defconfig; then
 		# Move hwclock back to /sbin/hwclock
 		install -d ${D}${base_sbindir}
 		mv ${D}/busybox${base_sbindir}/hwclock ${D}${base_sbindir}/
-					
+
 		install -m 0755 ${WORKDIR}/hwclock.sh ${D}${sysconfdir}/init.d/
 	fi
-	if grep "CONFIG_APP_UDHCPC=y" ${WORKDIR}/defconfig; then 
+	if grep "CONFIG_APP_UDHCPC=y" ${WORKDIR}/defconfig; then
 		# Move dhcpc back to /usr/sbin/udhcpc
 		install -d ${D}${base_sbindir}
 		mv ${D}/busybox${base_sbindir}/udhcpc ${D}${base_sbindir}/

@@ -1,5 +1,5 @@
 export IMAGE_BASENAME = "nylon-mini"
- 
+
 NYLON_BASE = "base-files base-passwd busybox \
 	dropbear \
 	miniinit \
@@ -11,9 +11,9 @@ NYLON_BASE = "base-files base-passwd busybox \
 RDEPENDS = "kernel \
 	${NYLON_BASE} ${BOOTSTRAP_EXTRA_RDEPENDS}"
 
-export IPKG_INSTALL = "${RDEPENDS}" 
+export PACKAGE_INSTALL = "${RDEPENDS}"
 
 IMAGE_LINGUAS = ""
 
-inherit image_ipk
+inherit image
 LICENSE = "MIT"

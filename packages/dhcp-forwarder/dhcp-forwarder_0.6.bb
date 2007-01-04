@@ -5,7 +5,7 @@ DESCRIPTION = "This program is used to forward DHCP and BOOTP messages between t
  dhcp-relay from ISC and has a smaller foot print."
 HOMEPAGE = "http://www.nongnu.org/dhcp-fwd/"
 LICENSE = "GPLv2"
- 
+
 SRC_URI = "http://savannah.nongnu.org/download/dhcp-fwd/dhcp-forwarder-${PV}.tar.bz2 \
 	file://init \
 	file://dhcp-fwd.cfg"

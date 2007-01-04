@@ -21,7 +21,7 @@ cp ${WORKDIR}/config.m4 ${S}/gas/
 
 
 do_stage() {
-	
+
 #	oe_libinstall  -a  -C .libs libbeecrypt  ${STAGING_LIBDIR}
 	cp .libs/libbeecrypt.a ${STAGING_LIBDIR}/
 	install -d ${STAGING_INCDIR}/

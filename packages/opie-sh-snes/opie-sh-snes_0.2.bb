@@ -13,7 +13,7 @@ FILES_${PN} = "/opt/QtPalmtop"
 SRC_URI = "file://snes.desktop \
            file://snes.png \
 	   file://opie-sh-snes.sh"
-	   
+
 
 do_install() {
 
@@ -21,8 +21,8 @@ do_install() {
 	do
 		install -d ${D}${palmtopdir}/$dir
 	done
-	
+
 	install -m 755 ${WORKDIR}/opie-sh-snes.sh ${D}${palmtopdir}/bin
 	install -m 644 ${WORKDIR}/*.png ${D}${palmtopdir}/pics
 	install -m 644 ${WORKDIR}/*.desktop ${D}${palmtopdir}/apps/Games
-}	   
+}

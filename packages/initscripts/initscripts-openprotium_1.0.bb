@@ -57,7 +57,7 @@ do_install_append() {
 #	rm	${D}${sysconfdir}/rc6.d/S30urandom
 	rm	${D}${sysconfdir}/rc6.d/S31umountnfs.sh
 	rm	${D}${sysconfdir}/rc6.d/S40umountfs
-	rm      ${D}${sysconfdir}/rcS.d/S30ramdisk 
+	rm      ${D}${sysconfdir}/rcS.d/S30ramdisk
 	rm	${D}${sysconfdir}/rc6.d/S90reboot
 	rm	${D}${sysconfdir}/rc0.d/S20sendsigs
 #	rm	${D}${sysconfdir}/rc0.d/S30urandom
@@ -134,7 +134,7 @@ do_install_append() {
 	# urandom is currently disabled from S 55 (and won't work with tmpfs /var)
 
 	# ipkg-cl configure runs at S 98
-	update-rc.d -r ${D} finish		start 99 S . 
+	update-rc.d -r ${D} finish		start 99 S .
 
 	#
 	# User (2-5) links - UNCHANGED
@@ -142,7 +142,7 @@ do_install_append() {
 	update-rc.d -r ${D} rmnologin		start 99 2 3 4 5 .
 	update-rc.d -r ${D} flashclean		start 99 5 .
 
-	# 
+	#
 	# Shutdown (0,6) links - !!!CHANGED!!!
 	#
 	# The problem here is that netbase installs K40networking but portmap

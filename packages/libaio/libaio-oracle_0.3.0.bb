@@ -31,4 +31,4 @@ do_stage() {
 	rm -f ${STAGE_TEMP}/usr/lib/*.la
 	oe_libinstall -a -so -C ${STAGE_TEMP}/usr/lib libaio-oracle ${STAGING_LIBDIR}
 }
-							
+

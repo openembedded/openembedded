@@ -13,5 +13,5 @@ do_install_append() {
 	install -d ${D}/etc
 	install -m 0644 ${WORKDIR}/rsyncd.conf ${D}/etc
 }
-		
+
 EXTRA_OEMAKE='STRIP=""'

@@ -15,7 +15,7 @@ QPEDIR = "${OPIEDIR}"
 do_install() {
         install -d ${D}${palmtopdir}/bin \
         	   ${D}${palmtopdir}/apps/Applications \
-        	   ${D}${palmtopdir}/pics/keyring 
+        	   ${D}${palmtopdir}/pics/keyring
         install -m 0755 keyring ${D}${palmtopdir}/bin/
         install -m 0644 keyring.desktop \
 			${D}${palmtopdir}/apps/Applications/
