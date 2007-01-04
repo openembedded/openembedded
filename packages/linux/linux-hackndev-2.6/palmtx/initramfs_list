@@ -1,0 +1,243 @@
+
+#####################
+# ../initramfs/root
+# Last modified: 1156149630
+
+dir /bin 755 0 0
+file /bin/busybox ../busybox-1.1.0/busybox 4755 0 0
+slink /bin/awk busybox 777 0 0
+slink /bin/ash busybox 777 0 0
+slink /bin/cat busybox 777 0 0
+slink /bin/chgrp busybox 777 0 0
+slink /bin/chmod busybox 777 0 0
+slink /bin/chown busybox 777 0 0
+slink /bin/cp busybox 777 0 0
+slink /bin/df busybox 777 0 0
+slink /bin/dmesg busybox 777 0 0
+slink /bin/echo busybox 777 0 0
+slink /bin/false busybox 777 0 0
+slink /bin/getopt busybox 777 0 0
+slink /bin/grep busybox 777 0 0
+slink /bin/hostname busybox 777 0 0
+slink /bin/kill busybox 777 0 0
+slink /bin/ln busybox 777 0 0
+slink /bin/ls busybox 777 0 0
+slink /bin/mkdir busybox 777 0 0
+slink /bin/mknod busybox 777 0 0
+slink /bin/mktemp busybox 777 0 0
+slink /bin/more busybox 777 0 0
+slink /bin/mount busybox 777 0 0
+slink /bin/mt busybox 777 0 0
+slink /bin/mv busybox 777 0 0
+slink /bin/pidof busybox 777 0 0
+slink /bin/ping busybox 777 0 0
+slink /bin/ps busybox 777 0 0
+slink /bin/pwd busybox 777 0 0
+slink /bin/rm busybox 777 0 0
+slink /bin/rmdir busybox 777 0 0
+slink /bin/sed busybox 777 0 0
+slink /bin/sh busybox 777 0 0
+slink /bin/sleep busybox 777 0 0
+slink /bin/stty busybox 777 0 0
+slink /bin/su busybox 777 0 0
+slink /bin/sync busybox 777 0 0
+slink /bin/touch busybox 777 0 0
+slink /bin/true busybox 777 0 0
+slink /bin/umount busybox 777 0 0
+slink /bin/uname busybox 777 0 0
+slink /bin/stat busybox 777 0 0
+dir /dev 755 0 0
+slink /dev/log /tmp/log 777 0 0
+dir /dev/pts 755 0 0
+dir /dev/shm 755 0 0
+nod /dev/mem 640 0 0 c 1 1
+nod /dev/kmem 640 0 0 c 1 2
+nod /dev/null 666 0 0 c 1 3
+nod /dev/zero 666 0 0 c 1 5
+nod /dev/random 666 0 0 c 1 8
+nod /dev/urandom 666 0 0 c 1 9
+nod /dev/ram 640 0 0 b 1 1
+nod /dev/ram0 640 0 0 b 1 0
+nod /dev/ram1 640 0 0 b 1 1
+nod /dev/ram2 640 0 0 b 1 2
+nod /dev/ram3 640 0 0 b 1 3
+slink /dev/loop0 loop/0 777 0 0
+slink /dev/loop1 loop/1 777 0 0
+nod /dev/rtc 640 0 0 c 10 135
+nod /dev/console 666 0 0 c 5 1
+nod /dev/tty 666 0 0 c 5 0
+nod /dev/tty0 666 0 0 c 4 0
+nod /dev/tty1 666 0 0 c 4 1
+nod /dev/tty2 666 0 0 c 4 2
+nod /dev/tty3 666 0 0 c 4 3
+nod /dev/tty4 666 0 0 c 4 4
+nod /dev/tty5 666 0 0 c 4 5
+nod /dev/tty6 666 0 0 c 4 6
+nod /dev/tty7 666 0 0 c 4 7
+nod /dev/ttyp0 666 0 0 c 3 0
+nod /dev/ttyp1 666 0 0 c 3 1
+nod /dev/ttyp2 666 0 0 c 3 2
+nod /dev/ttyp3 666 0 0 c 3 3
+nod /dev/ttyp4 666 0 0 c 3 4
+nod /dev/ttyp5 666 0 0 c 3 5
+nod /dev/ttyp6 666 0 0 c 3 6
+nod /dev/ttyp7 666 0 0 c 3 7
+nod /dev/ttyp8 666 0 0 c 3 8
+nod /dev/ttyp9 666 0 0 c 3 9
+nod /dev/ptyp0 666 0 0 c 2 0
+nod /dev/ptyp1 666 0 0 c 2 1
+nod /dev/ptyp2 666 0 0 c 2 2
+nod /dev/ptyp3 666 0 0 c 2 3
+nod /dev/ptyp4 666 0 0 c 2 4
+nod /dev/ptyp5 666 0 0 c 2 5
+nod /dev/ptyp6 666 0 0 c 2 6
+nod /dev/ptyp7 666 0 0 c 2 7
+nod /dev/ptyp8 666 0 0 c 2 8
+nod /dev/ptyp9 666 0 0 c 2 9
+nod /dev/ptmx 666 0 0 c 5 2
+nod /dev/ttyP0 666 0 0 c 57 0
+nod /dev/ttyP1 666 0 0 c 57 1
+nod /dev/ttyP2 666 0 0 c 57 2
+nod /dev/ttyP3 666 0 0 c 57 3
+nod /dev/ttyS0 666 0 0 c 4 64
+nod /dev/ttyS1 666 0 0 c 4 65
+nod /dev/ttyS2 666 0 0 c 4 66
+nod /dev/ttyS3 666 0 0 c 4 67
+nod /dev/fb0 640 0 0 c 29 0
+nod /dev/fb1 640 0 0 c 29 32
+nod /dev/fb2 640 0 0 c 29 64
+nod /dev/fb3 640 0 0 c 29 96
+nod /dev/psaux 666 0 0 c 10 1
+dir /dev/input 755 0 0
+nod /dev/input/mice 640 0 0 c 13 63
+nod /dev/input/mouse0 660 0 0 c 13 32
+nod /dev/input/mouse1 660 0 0 c 13 33
+nod /dev/input/mouse2 660 0 0 c 13 34
+nod /dev/input/mouse3 660 0 0 c 13 35
+nod /dev/input/event0 660 0 0 c 13 64
+nod /dev/input/event1 660 0 0 c 13 65
+nod /dev/input/event2 660 0 0 c 13 66
+nod /dev/input/event3 660 0 0 c 13 67
+nod /dev/mtd0 640 0 0 c 90 0
+nod /dev/mtd1 640 0 0 c 90 2
+nod /dev/mtd2 640 0 0 c 90 4
+nod /dev/mtd3 640 0 0 c 90 6
+nod /dev/mtdblock0 640 0 0 b 31 0
+nod /dev/mtdblock1 640 0 0 b 31 1
+nod /dev/mtdblock2 640 0 0 b 31 2
+nod /dev/mtdblock3 640 0 0 b 31 3
+dir /dev/net 755 0 0
+nod /dev/net/tun 660 0 0 c 10 200
+nod /dev/hda 640 0 0 b 3 0
+nod /dev/hda1 640 0 0 b 3 1
+nod /dev/hda2 640 0 0 b 3 2
+nod /dev/hda3 640 0 0 b 3 3
+nod /dev/hda4 640 0 0 b 3 4
+nod /dev/hda5 640 0 0 b 3 5
+nod /dev/hda6 640 0 0 b 3 6
+nod /dev/hda7 640 0 0 b 3 7
+nod /dev/hda8 640 0 0 b 3 8
+nod /dev/hda9 640 0 0 b 3 9
+nod /dev/hda10 640 0 0 b 3 10
+nod /dev/hda11 640 0 0 b 3 11
+nod /dev/hda12 640 0 0 b 3 12
+nod /dev/hda13 640 0 0 b 3 13
+nod /dev/hda14 640 0 0 b 3 14
+nod /dev/hdb 640 0 0 b 3 64
+nod /dev/hdb1 640 0 0 b 3 65
+nod /dev/hdb2 640 0 0 b 3 66
+nod /dev/hdb3 640 0 0 b 3 67
+nod /dev/hdb4 640 0 0 b 3 68
+nod /dev/hdb5 640 0 0 b 3 69
+nod /dev/hdb6 640 0 0 b 3 70
+nod /dev/hdb7 640 0 0 b 3 71
+nod /dev/hdb8 640 0 0 b 3 72
+nod /dev/hdb9 640 0 0 b 3 73
+nod /dev/hdb10 640 0 0 b 3 74
+nod /dev/hdb11 640 0 0 b 3 75
+nod /dev/hdb12 640 0 0 b 3 76
+nod /dev/hdb13 640 0 0 b 3 77
+nod /dev/hdb14 640 0 0 b 3 78
+nod /dev/mmcblk0 666 0 0 b 254 0
+nod /dev/mmcblk0p1 666 0 0 b 254 1
+nod /dev/mmcblk0p2 666 0 0 b 254 2
+nod /dev/mmcblk0p3 666 0 0 b 254 3
+nod /dev/mmcblk0p4 666 0 0 b 254 4
+nod /dev/mmcblk0p5 666 0 0 b 254 5
+nod /dev/mmcblk0p6 666 0 0 b 254 6
+nod /dev/mmcblk0p7 666 0 0 b 254 7
+nod /dev/mmcblk0p8 666 0 0 b 254 8
+nod /dev/mmcblk0p9 666 0 0 b 254 9
+dir /dev/loop 755 0 0
+nod /dev/loop/0 644 0 0 b 7 0
+nod /dev/loop/1 644 0 0 b 7 1
+nod /dev/loop/2 644 0 0 b 7 2
+nod /dev/loop/3 644 0 0 b 7 3
+nod /dev/loop/4 644 0 0 b 7 4
+nod /dev/loop/5 644 0 0 b 7 5
+slink /dev/loop2 loop/2 777 0 0
+slink /dev/loop3 loop/3 777 0 0
+slink /dev/loop4 loop/4 777 0 0
+slink /dev/loop5 loop/5 777 0 0
+dir /etc 755 0 0
+slink /etc/mtab ../proc/mounts 777 0 0
+dir /lib 755 0 0
+dir /lib/modules 755 0 0
+dir /media 755 0 0
+dir /media/mmc1 755 0 0
+dir /mnt 755 0 0
+dir /mnt/mmc 755 0 0
+dir /newroot 755 0 0
+dir /proc 755 0 0
+dir /root 755 0 0
+dir /sbin 755 0 0
+slink /sbin/getty ../bin/busybox 777 0 0
+slink /sbin/halt ../bin/busybox 777 0 0
+slink /sbin/init ../bin/busybox 777 0 0
+slink /sbin/insmod ../bin/busybox 777 0 0
+slink /sbin/klogd ../bin/busybox 777 0 0
+slink /sbin/lsmod ../bin/busybox 777 0 0
+slink /sbin/rmmod ../bin/busybox 777 0 0
+slink /sbin/route ../bin/busybox 777 0 0
+slink /sbin/sulogin ../bin/busybox 777 0 0
+slink /sbin/swapoff ../bin/busybox 777 0 0
+slink /sbin/swapon ../bin/busybox 777 0 0
+slink /sbin/syslogd ../bin/busybox 777 0 0
+slink /sbin/switch_root ../bin/busybox 777 0 0
+slink /sbin/e2fsck ../bin/busybox 777 0 0
+slink /sbin/fsck.ext2 ../bin/busybox 777 0 0
+slink /sbin/fsck.ext3 ../bin/busybox 777 0 0
+dir /sys 755 0 0
+dir /tmp 755 0 0
+dir /usr 755 0 0
+dir /usr/bin 755 0 0
+slink /usr/bin/[ ../../bin/busybox 777 0 0
+slink /usr/bin/[[ ../../bin/busybox 777 0 0
+slink /usr/bin/chvt ../../bin/busybox 777 0 0
+slink /usr/bin/clear ../../bin/busybox 777 0 0
+slink /usr/bin/du ../../bin/busybox 777 0 0
+slink /usr/bin/env ../../bin/busybox 777 0 0
+slink /usr/bin/expr ../../bin/busybox 777 0 0
+slink /usr/bin/find ../../bin/busybox 777 0 0
+slink /usr/bin/free ../../bin/busybox 777 0 0
+slink /usr/bin/hostid ../../bin/busybox 777 0 0
+slink /usr/bin/id ../../bin/busybox 777 0 0
+slink /usr/bin/logger ../../bin/busybox 777 0 0
+slink /usr/bin/logname ../../bin/busybox 777 0 0
+slink /usr/bin/tail ../../bin/busybox 777 0 0
+slink /usr/bin/test ../../bin/busybox 777 0 0
+slink /usr/bin/tty ../../bin/busybox 777 0 0
+slink /usr/bin/uptime ../../bin/busybox 777 0 0
+slink /usr/bin/xargs ../../bin/busybox 777 0 0
+slink /usr/bin/yes ../../bin/busybox 777 0 0
+slink /usr/bin/basename ../../bin/busybox 777 0 0
+slink /usr/bin/cmp ../../bin/busybox 777 0 0
+slink /usr/bin/dc ../../bin/busybox 777 0 0
+slink /usr/bin/dirname ../../bin/busybox 777 0 0
+slink /usr/bin/head ../../bin/busybox 777 0 0
+slink /usr/bin/sort ../../bin/busybox 777 0 0
+slink /usr/bin/strings ../../bin/busybox 777 0 0
+slink /usr/bin/tee ../../bin/busybox 777 0 0
+slink /usr/bin/uniq ../../bin/busybox 777 0 0
+dir /usr/sbin 755 0 0
+file /init ../init 755 0 0
