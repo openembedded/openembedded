@@ -1,23 +1,8 @@
-# syslinux-native OE build file
-# Copyright (C) 2004-2006, Advanced Micro Devices, Inc.  All Rights Reserved
-# Released under the MIT license (see packages/COPYING)
-
-DESCRIPTION="A multi-purpose linux bootloader"
-HOMEPAGE="http://syslinux.zytor.com/"
-LICENSE="GPL"
-
 PR="r1"
 
 SRC_URI="${KERNELORG_MIRROR}/pub/linux/utils/boot/syslinux/Old/syslinux-${PV}.tar.bz2 "
 
-S="${WORKDIR}/syslinux-${PV}"
-
-# If you really want to run syslinux, you need mtools.  We just want the
-# ldlinux.* stuff for now, so skip mtools-native
-
-DEPENDS="nasm-native"
-
-inherit native
+require syslinux.inc
 
 STAGE_TEMP="${WORKDIR}/stage_temp"
 
