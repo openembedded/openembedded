@@ -6,7 +6,7 @@ HOMEPAGE = "http://lftp.yar.ru"
 SECTION = "console/network"
 DEPENDS = "readline gnutls"
 
-SRC_URI = "http://www.ibiblio.org/pub/Linux/system/network/file-transfer/lftp-3.5.1.tar.gz"
+SRC_URI = "ftp://ftp.wiretapped.net/pub/mirrors/lftp/old/lftp-3.5.1.tar.bz2"
 
 EXTRA_OECONF = "--disable-largefile --disable-rpath --with-included-readline=no"
 
