@@ -1,0 +1,8 @@
+--- madwifi.orig/hal/public/xscale-le-elf.inc	2007-01-03 23:42:06.000000000 -0600
++++ madwifi/hal/public/xscale-le-elf.inc	2007-01-03 23:48:50.000000000 -0600
+@@ -79,4 +79,4 @@
+ LDOPTS=	-EL
+ COPTS+=	-DAH_BYTE_ORDER=AH_LITTLE_ENDIAN
+ COPTS+= -march=armv4 -mlittle-endian -fno-strict-aliasing -fno-common \
+-	-mapcs-32 -mtune=xscale  -mshort-load-bytes
++	-mtune=xscale

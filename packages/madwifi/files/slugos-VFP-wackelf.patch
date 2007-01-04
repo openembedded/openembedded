@@ -1,0 +1,20 @@
+--- madwifi.orig/ath_hal/Makefile	2007-01-03 23:44:10.000000000 -0600
++++ madwifi/ath_hal/Makefile	2007-01-03 23:47:55.000000000 -0600
+@@ -81,12 +81,16 @@
+ quiet_cmd_uudecode = UUDECODE $@
+       cmd_uudecode = $(obj)/uudecode -o $@ $<
+ 
+-$(obj)/$(TARGET).hal.o: $(HAL)/public/$(TARGET).hal.o.uu $(obj)/uudecode
++$(obj)/wackelf: $(HAL)/public/wackelf.c
++	$(HOSTCC) $(HOSTCFLAGS) -o $@ $<
++
++$(obj)/$(TARGET).hal.o: $(HAL)/public/$(TARGET).hal.o.uu $(obj)/uudecode $(obj)/wackelf
+ ifdef LINUX24
+ 	$(Q)$(obj)/uudecode -o $@ $<
+ else
+ 	$(call if_changed,uudecode)
+ endif
++	$(Q)$(obj)/wackelf -fpa $@
+ 
+ install:
+ 	test -d $(DESTDIR)/$(KMODPATH) || mkdir -p $(DESTDIR)/$(KMODPATH)
