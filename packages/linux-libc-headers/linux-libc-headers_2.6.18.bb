@@ -1,4 +1,4 @@
-require linux-libs-headers.inc
+require linux-libc-headers.inc
 
 INHIBIT_DEFAULT_DEPS = "1"
 DEPENDS = "unifdef-native"

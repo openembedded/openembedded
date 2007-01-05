@@ -1,4 +1,4 @@
-require linux-libs-headers.inc
+require linux-libc-headers.inc
 
 HOMEPAGE = "http://ep09.pld-linux.org/~mmazur/linux-libc-headers/"
 # license note from the package:
