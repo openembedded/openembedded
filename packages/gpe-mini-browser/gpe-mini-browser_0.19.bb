@@ -4,6 +4,8 @@ SRC_URI = "http://gpe.linuxtogo.org/download/source/gpe-mini-browser-${PV}.tar.g
 DEPENDS = "osb-nrcit sqlite libgpewidget"
 RRECOMMENDS = "gdk-pixbuf-loader-gif gdk-pixbuf-loader-png gdk-pixbuf-loader-jpeg"
 
+PR = "r1"
+
 S = "${WORKDIR}/gpe-mini-browser-${PV}"
 
 inherit autotools
