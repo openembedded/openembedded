@@ -1,8 +1,7 @@
-SECTION = "devel"
-DESCRIPTION = "Sanitized set of 2.6 kernel headers for the C library's use."
+require linux-libs-headers.inc
+
 INHIBIT_DEFAULT_DEPS = "1"
 PR = "r3"
-LICENSE = "GPL"
 # NOTE: no need to package these headers, since the c library includes them.
 PACKAGES = ""
 

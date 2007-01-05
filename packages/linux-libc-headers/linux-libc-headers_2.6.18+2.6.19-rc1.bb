@@ -1,9 +1,7 @@
-DESCRIPTION = "Sanitized set of 2.6 kernel headers for the C library's use."
-SECTION = "devel"
-LICENSE = "GPL"
+require linux-libc-headers.inc
+
 DEFAULT_PREFERENCE = "-1"
 INHIBIT_DEFAULT_DEPS = "1"
-PR = "r0"
 
 SRC_URI = " \
 	${KERNELORG_MIRROR}/pub/linux/kernel/people/dwmw2/kernel-headers/snapshot/linux-kernel-headers-2.6.19-rc1.tar.bz2 \

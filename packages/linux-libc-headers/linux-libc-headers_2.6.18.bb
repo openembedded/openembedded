@@ -1,6 +1,5 @@
-DESCRIPTION = "Sanitized set of 2.6 kernel headers for the C library's use."
-SECTION = "devel"
-LICENSE = "GPL"
+require linux-libs-headers.inc
+
 INHIBIT_DEFAULT_DEPS = "1"
 DEPENDS = "unifdef-native"
 PR = "r1"
