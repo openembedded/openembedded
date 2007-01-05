@@ -1,5 +1,5 @@
 DESCRIPTION = "Merge machine and distro options to create a basic machine task/package"
-PR = "r15"
+PR = "r16"
 
 PACKAGES = "task-base \
             task-base-minimal \
@@ -60,6 +60,7 @@ RDEPENDS_task-base = "\
     ${@base_contains("COMBINED_FEATURES", "pci", "${task-base-pci-rdepends}", "",d)} \
     ${@base_contains("COMBINED_FEATURES", "pcmcia", "${task-base-pcmcia-rdepends}", "",d)} \
     ${@base_contains("COMBINED_FEATURES", "usbhost", "${task-base-usbhost-rdepends}", "",d)} \
+    ${@base_contains("COMBINED_FEATURES", "bluetooth", "${task-base-bluetooth-rdepends}", "",d)} \
     ${@base_contains("DISTRO_FEATURES", "nfs", "${task-distro-nfs-rdepends}", "",d)} \
     ${@base_contains("DISTRO_FEATURES", "ipsec", "${task-distro-ipsec-rdepends}", "",d)} \
     ${@base_contains("DISTRO_FEATURES", "ppp", "${task-distro-ppp-rdepends}", "",d)} \
@@ -190,6 +191,10 @@ task-base-pcmcia26-rrecommends = "\
     ${@base_contains("DISTRO_FEATURES", "wifi", "kernel-module-hostap-cs", "",d)} \
     ${@base_contains("DISTRO_FEATURES", "wifi", "kernel-module-orinoco-cs", "",d)} \
     ${@base_contains("DISTRO_FEATURES", "wifi", "kernel-module-spectrum-cs", "",d)}"
+
+task-base-bluetooth-rdepends = "\ 
+	blueprobe \
+	bluez-utils"
 
 task-base-bluetooth-rrecommends = "\
     kernel-module-bluetooth \
