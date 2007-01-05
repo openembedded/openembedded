@@ -2,7 +2,7 @@ LICENSE = "GPL"
 DEPENDS = "libxml2 gconf gnutls avahi dbus bzip2 gnome-mime-data zlib"
 RRECOMMENDS = "gnome-vfs-plugin-file gnome-mime-data shared-mime-info"
 
-PR = "r0"
+PR = "r1"
 
 inherit gnome
 
@@ -10,7 +10,8 @@ inherit gnome
 PROVIDES = "gnome-vfs-plugin-dbus"
 RRPEPLACES = "gnome-vfs-dbus"
 
-SRC_URI += "file://gconftool-lossage.patch;patch=1;pnum=1"
+SRC_URI += "file://gconftool-lossage.patch;patch=1;pnum=1 \
+	    file://gnome-vfs-no-kerberos.patch;patch=1;pnum=0"
 
 EXTRA_OECONF = " \
 		 --disable-openssl \
