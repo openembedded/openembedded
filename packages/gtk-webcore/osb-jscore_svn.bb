@@ -3,6 +3,8 @@ HOMEPAGE = "http://gtk-webcore.sourceforge.net/"
 LICENSE = "GPL"
 PRIORITY = "optional"
 
+DEFAULT_PREFERENCE = "-1"
+
 PV = "0.5.0+svn${SRCDATE}"
 PR = "r0"
 
