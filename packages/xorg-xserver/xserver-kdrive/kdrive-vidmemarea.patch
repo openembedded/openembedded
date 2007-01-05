@@ -1,4 +1,9 @@
 
+# Author : Manuel Teira <manuel.teira@telefonica.net> (sirfred in #oe)
+# Description: Support for multiple memory video zones in kdrive. Make offscreen
+# areas aware of the memory video zone it belongs to. Change the fbdev driver to
+# honour this new model.
+
 #
 # Patch managed by http://www.holgerschurig.de/patcher.html
 #

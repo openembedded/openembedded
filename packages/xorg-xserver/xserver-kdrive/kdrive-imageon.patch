@@ -1,4 +1,13 @@
 
+# Author: Manuel Teira <manuel.teira@telefonica.net> (sirfred in #oe)
+# Description: New driver for the Imageon ATI Card. Implementing:
+# -Hardware solid fills
+# -Hardware bitblt
+# -Hardware cursors
+# -XV Extension
+# -Internal and External Imageon offscreen memory support
+# -Hardware RandR rotation (without using a shadow framebuffer)
+
 #
 # Patch managed by http://www.holgerschurig.de/patcher.html
 #
