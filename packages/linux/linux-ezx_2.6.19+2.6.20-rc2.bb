@@ -5,7 +5,7 @@ HOMEPAGE = "http://www.openezx.org"
 LICENSE = "GPL"
 DEPENDS += "quilt-native"
 EZX = "ezx0"
-PR = "${EZX}-r0"
+PR = "${EZX}-r1"
 
 DEFAULT_PREFERENCE = "-1"
 DEFAULT_PREFERENCE_rokr-e2 = "1"
@@ -44,6 +44,8 @@ COMPATIBLE_HOST = "arm.*-linux"
 COMPATIBLE_MACHINE = '(a780|e680|a1200|rokr-e2)'
 
 CMDLINE_CON = "console=ttyS2,115200n8 console=tty1 noinitrd"
+CMDLINE_CON_rokr-e2 = "video=pxafb:mode:240x320-8,active console=ttyS2,115200n8 console=tty1"
+
 CMDLINE_ROOT = "root=/dev/mmcblk0p1 rootfstype=ext3 rootdelay=5"
 # uncomment if you want to boot over NFS
 #CMDLINE_ROOT = "root=/dev/nfs nfsroot=192.168.1.10:/export/opie-image rootdelay=5 3"
@@ -52,6 +54,7 @@ CMDLINE_ROOT = "root=/dev/mmcblk0p1 rootfstype=ext3 rootdelay=5"
 CMDLINE_DEBUG = '${@base_conditional("DISTRO_TYPE", "release", "quiet", "debug",d)}'
 CMDLINE_IP = "ip=192.168.1.2:192.168.1.10:192.168.1.10:255.255.255.0:ezx:usb0:off"
 CMDLINE = "${CMDLINE_CON} ${CMDLINE_ROOT} ${CMDLINE_IP} ${CMDLINE_ROTATE} ${CMDLINE_OTHER} ${CMDLINE_DEBUG} mem=32M@0xA0000000 mem=16M@0xAC000000"
+CMDLINE_rokr-e2 = "${CMDLINE_CON} ${CMDLINE_ROOT} ${CMDLINE_IP} ${CMDLINE_ROTATE} ${CMDLINE_OTHER} ${CMDLINE_DEBUG}"
 
 ###############################################################
 # module configs specific to this kernel
