@@ -8,7 +8,7 @@ EZX = "ezx0"
 PR = "${EZX}-r0"
 
 DEFAULT_PREFERENCE = "-1"
-DEFAULT_PREFERENCE_a1200 = "1"
+DEFAULT_PREFERENCE_rokr-e2 = "1"
 
 inherit kernel
 
@@ -41,7 +41,7 @@ FILES_kernel-image = ""
 ALLOW_EMPTY  = "1"
 
 COMPATIBLE_HOST = "arm.*-linux"
-COMPATIBLE_MACHINE = '(a780|e680|a1200)'
+COMPATIBLE_MACHINE = '(a780|e680|a1200|rokr-e2)'
 
 CMDLINE_CON = "console=ttyS2,115200n8 console=tty1 noinitrd"
 CMDLINE_ROOT = "root=/dev/mmcblk0p1 rootfstype=ext3 rootdelay=5"
