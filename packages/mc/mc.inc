@@ -6,7 +6,6 @@ SECTION = "console/utils"
 PRIORITY = "optional"
 DEPENDS = "ncurses glib-2.0"
 RDEPENDS = "ncurses-terminfo"
-PR ="r1"
 
 SRC_URI = "http://www.ibiblio.org/pub/Linux/utils/file/managers/mc/mc-${PV}.tar.gz"
 
@@ -14,6 +13,17 @@ inherit autotools
 
 EXTRA_OECONF = "--disable-glibtest --without-x --without-samba \
 --without-nfs --without-gpm-mouse --with-screen=ncurses"
+
+PACKAGES += "${PN}-extfs ${PN}-hilite"
+FILES_${PN} = "${bindir}/ ${libdir}/ ${datadir}/mc/*.*"
+FILES_${PN}-extfs = "${datadir}/mc/extfs/"
+FILES_${PN}-hilite = "${datadir}/mc/syntax/"
+RRECOMMENDS_${PN} += "${PN}-extfs ${PN}-hilite"
+RDEPENDS_${PN}-extfs = "${PN}"
+RDEPENDS_${PN}-hilite = "${PN}"
+PACKAGE_ARCH_${PN}-extfs = "all"
+PACKAGE_ARCH_${PN}-hilite = "all"
+
 
 do_configure() {
 	gnu-configize
