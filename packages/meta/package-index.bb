@@ -1,8 +1,8 @@
 DESCRIPTION = "Rebuild the package index"
 LICENSE = "MIT"
-PR = "r0"
+PR = "r1"
 
-DEPENDS = "ipkg-native"
+DEPENDS = "ipkg-utils-native"
 
 INHIBIT_DEFAULT_DEPS = "1"
 ALLOW_EMPTY = "1"
