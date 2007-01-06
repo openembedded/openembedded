@@ -81,7 +81,6 @@ SLUGOS_PACKAGES = "\
 	less \
 	libao \
 	libdvb \
-	libgphoto2 \
 	libid3tag \
 	liblockfile \
 	libmad \
@@ -182,6 +181,7 @@ SLUGOS_BROKEN_PACKAGES = "\
 	cron \
 	ftpd-topfield \
 	irssi \
+	libgphoto2 \
 	obexftp \
 	qc-usb-messenger \
 	unionfs-modules \
