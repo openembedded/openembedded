@@ -118,7 +118,6 @@ SLUGOS_PACKAGES = "\
 	ncftp \
 	ncurses \
 	netcat \
-	netpbm \
 	nmap \
 	ntp \
 	openobex-apps \
@@ -182,6 +181,7 @@ SLUGOS_BROKEN_PACKAGES = "\
 	gphoto2 \
 	irssi \
 	libgphoto2 \
+	netpbm \
 	obexftp \
 	qc-usb-messenger \
 	unionfs-modules \
