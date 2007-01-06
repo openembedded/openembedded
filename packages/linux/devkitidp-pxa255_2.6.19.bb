@@ -1,18 +1,16 @@
 SECTION = "kernel"
 DESCRIPTION = "Linux kernel for the BSQUARE PXA255 DevKitIDP"
 LICENSE = "GPL"
-PR = "r2"
+PR = "r4"
 DEPENDS = "u-boot"
 
-SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.11.tar.bz2 \
-	   ftp://ftp.accelent.com/pxa255_idp/linux/kernel-2.6.11-rc4_idp.patch;patch=1 \
-	   ftp://ftp.accelent.com/pxa255_idp/linux/kernel-2.6.11_idp_leds.patch;patch=1 \
-	   ftp://ftp.accelent.com/pxa255_idp/linux/devkitidp-pxa255_defconfig"
+SRC_URI = "ftp://ftp.kernel.org/pub/linux/kernel/v2.6/linux-2.6.19.tar.bz2 \
+	   file://linux-2.6.19_devkitidp1.patch;patch=1 \
+	   file://defconfig"
 
-S = "${WORKDIR}/linux-2.6.11"
+S = "${WORKDIR}/linux-2.6.19"
 
 COMPATIBLE_HOST = 'arm.*-linux'
-COMPATIBLE_MACHINE = "devkitidp-pxa255"
 
 inherit kernel
 inherit package
@@ -27,15 +25,23 @@ KERNEL_IMAGETYPE = "uImage"
 CMDLINE = "root=/dev/mtdblock2 rootfstype=jffs2 console=ttyS0,115200 mtdparts=phys_mapped_flash:256k(boot)ro,0x1C0000(kernel),-(root)"
 
 do_configure_prepend() {
-	install -m 0644 ${WORKDIR}/${MACHINE}_defconfig ${S}/.config
+	install -m 0644 ${WORKDIR}/defconfig ${S}/.config
 #	echo "CONFIG_CMDLINE=\"${CMDLINE}\"" >> ${S}/.config
 }
 
 do_deploy() {
-        install -d ${DEPLOY_DIR_IMAGE}
-        install -m 0644 arch/${ARCH}/boot/${KERNEL_IMAGETYPE} ${DEPLOY_DIR_IMAGE}/${KERNEL_IMAGETYPE}-${MACHINE}-${DATETIME}.bin
+        install -d ${DEPLOY_DIR}/images
+        install -m 0644 arch/${ARCH}/boot/${KERNEL_IMAGETYPE} ${DEPLOY_DIR}/images/${KERNEL_IMAGETYPE}-${MACHINE}-${DATETIME}.bin
 }
 
 do_deploy[dirs] = "${S}"
 
 addtask deploy before do_build after do_compile
+
+python () {
+	# Don't build openslug kernel unless we're targeting an nslu2
+	mach = bb.data.getVar("MACHINE", d, 1)
+	if mach != 'devkitidp-pxa255':
+		raise bb.parse.SkipPackage("This kernel only builds for the PXA255 DevKitIDP")
+}
+
