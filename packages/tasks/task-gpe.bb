@@ -134,5 +134,5 @@ RDEPENDS_gpe-task-sectest := "\
     kismet \
     hydra \
     thcrut \
-    driftnet \
     miniclipboard"
+#	driftnet \
