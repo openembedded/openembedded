@@ -198,7 +198,8 @@ SLUGOS_BROKEN_PACKAGES = "\
 # calls often still have 'yp' in the name).
 
 # NOTE: rng-tools is only here until argp-standalone can be built!
-	nfs-utils \
+#	nfs-utils \
+
 UCLIBC_UNSUPPORTABLE_PACKAGES = "\
 	libpam \
 	rng-tools \
@@ -207,11 +208,12 @@ UCLIBC_UNSUPPORTABLE_PACKAGES = "\
 	"
 
 # These packages work with glibc, but break on uclibc.
+#	erlang \
+
 UCLIBC_BROKEN_PACKAGES = "\
 	apr \
 	bogofilter \
 	boost \
-	erlang \
 	linphone \
 	sudo \
 	ushare \
