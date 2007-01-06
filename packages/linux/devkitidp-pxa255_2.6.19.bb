@@ -4,13 +4,13 @@ LICENSE = "GPL"
 PR = "r4"
 DEPENDS = "u-boot"
 
-SRC_URI = "ftp://ftp.kernel.org/pub/linux/kernel/v2.6/linux-2.6.19.tar.bz2 \
+SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.19.tar.bz2 \
 	   file://linux-2.6.19_devkitidp1.patch;patch=1 \
 	   file://defconfig"
 
 S = "${WORKDIR}/linux-2.6.19"
 
-COMPATIBLE_HOST = 'arm.*-linux'
+COMPATIBLE_MACHINE = "devkitidp-pxa255"
 
 inherit kernel
 inherit package
@@ -37,11 +37,3 @@ do_deploy() {
 do_deploy[dirs] = "${S}"
 
 addtask deploy before do_build after do_compile
-
-python () {
-	# Don't build openslug kernel unless we're targeting an nslu2
-	mach = bb.data.getVar("MACHINE", d, 1)
-	if mach != 'devkitidp-pxa255':
-		raise bb.parse.SkipPackage("This kernel only builds for the PXA255 DevKitIDP")
-}
-
