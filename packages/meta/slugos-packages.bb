@@ -133,7 +133,6 @@ SLUGOS_PACKAGES = "\
 	pkgconfig \
 	ppp \
 	procps \
-	puppy \
 	pvrusb2-mci \
 	python \
 	quilt \
@@ -183,6 +182,7 @@ SLUGOS_BROKEN_PACKAGES = "\
 	libgphoto2 \
 	netpbm \
 	obexftp \
+	puppy \
 	qc-usb-messenger \
 	unionfs-modules \
 	unionfs-utils \
