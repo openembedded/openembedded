@@ -40,7 +40,6 @@ SLUGOS_PACKAGES = "\
 	cdstatus \
 	cherokee \
 	coreutils \
-	cron \
 	ctorrent \
 	cvs \
 	cyrus-sasl \
@@ -180,8 +179,9 @@ SLUGOS_PACKAGES = "\
 SLUGOS_BROKEN_PACKAGES = "\
 	asterisk \
 	asterisk-sounds \
-	irssi \
 	bwmon \
+	cron \
+	irssi \
 	obexftp \
 	qc-usb-messenger \
 	unionfs-modules \
