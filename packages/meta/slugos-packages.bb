@@ -40,7 +40,6 @@ SLUGOS_PACKAGES = "\
 	cdstatus \
 	cherokee \
 	coreutils \
-	cron \
 	ctorrent \
 	cvs \
 	cyrus-sasl \
@@ -61,14 +60,12 @@ SLUGOS_PACKAGES = "\
 	flac \
 	flex \
 	flite \
-	ftpd-topfield \
 	gawk \
 	gcc \
 	gdb \
 	gdbm \
 	glib-2.0 \
 	gnu-config \
-	gphoto2 \
 	grep \
 	gtk-doc \
 	gzip \
@@ -83,7 +80,6 @@ SLUGOS_PACKAGES = "\
 	less \
 	libao \
 	libdvb \
-	libgphoto2 \
 	libid3tag \
 	liblockfile \
 	libmad \
@@ -180,8 +176,12 @@ SLUGOS_PACKAGES = "\
 SLUGOS_BROKEN_PACKAGES = "\
 	asterisk \
 	asterisk-sounds \
-	irssi \
 	bwmon \
+	cron \
+	ftpd-topfield \
+	gphoto2 \
+	irssi \
+	libgphoto2 \
 	obexftp \
 	qc-usb-messenger \
 	unionfs-modules \
