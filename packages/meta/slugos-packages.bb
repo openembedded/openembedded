@@ -32,7 +32,7 @@ SLUGOS_PACKAGES = "\
 	bind \
 	binutils \
 	bison \
-	bluez-utils-nodbus \
+	bluez-utils \
 	bridge-utils \
 	bzip2 \
 	ccxstream \
