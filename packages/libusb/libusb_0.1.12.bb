@@ -22,12 +22,6 @@ do_stage() {
 	install -m 755 ${S}/libusb-config ${STAGING_BINDIR}
 	# can we get rid of that? wouldn't a sed statement do as well?
 	sed -i 's:\-L${libdir} :-L${STAGING_LIBDIR} :' ${STAGING_BINDIR}/libusb-config
-
-	if [ "${STAGING_BINDIR}" != "${STAGING_BINDIR_CROSS}" ]; then
-	        install -d ${STAGING_BINDIR_CROSS}/
-		mv ${STAGING_BINDIR}/libusb-config ${STAGING_BINDIR_CROSS}/libusb-config
-	fi
-
 }
 
 PACKAGES =+ "libusbpp"
