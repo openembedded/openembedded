@@ -66,7 +66,6 @@ SLUGOS_PACKAGES = "\
 	gdbm \
 	glib-2.0 \
 	gnu-config \
-	gphoto2 \
 	grep \
 	gtk-doc \
 	gzip \
@@ -180,6 +179,7 @@ SLUGOS_BROKEN_PACKAGES = "\
 	bwmon \
 	cron \
 	ftpd-topfield \
+	gphoto2 \
 	irssi \
 	libgphoto2 \
 	obexftp \
