@@ -36,7 +36,7 @@ SLUGOS_NATIVE_RT = "\
 
 # Run-time and DEPENDS
 SLUGOS_NATIVE_prepend_linux = "\
-	libc6-dev \
+	glibc \
 	"
 SLUGOS_NATIVE_prepend_linux-uclibc = "\
 	libiconv \
