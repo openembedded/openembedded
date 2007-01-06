@@ -22,8 +22,6 @@ ALLOW_EMPTY = "1"
 SLUGOS_PACKAGES = "\
 	alsa-lib \
 	alsa-utils \
-	asterisk \
-	asterisk-sounds \
 	atftp \
 	audiofile \
 	aumix \
@@ -180,6 +178,8 @@ SLUGOS_PACKAGES = "\
 
 # Packages currently broken on all platforms
 SLUGOS_BROKEN_PACKAGES = "\
+	asterisk \
+	asterisk-sounds \
 	irssi \
 	bwmon \
 	obexftp \
