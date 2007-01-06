@@ -1,0 +1,20 @@
+Index: progear-ac-0.1/Makefile
+===================================================================
+--- progear-ac-0.1.orig/Makefile	2007-01-04 21:58:28.000000000 +0100
++++ progear-ac-0.1/Makefile	2007-01-04 21:58:39.000000000 +0100
+@@ -2,12 +2,12 @@
+ KERNELDIR := /lib/modules/$(shell uname -r)
+ 
+ all : 
+-	$(MAKE) -C $(KERNELDIR)/build M=$(PWD) modules
++	$(MAKE) -C $(KERNELDIR) M=$(PWD) modules
+ 
+ clean :
+-	$(MAKE) -C $(KERNELDIR)/build M=$(PWD) clean
++	$(MAKE) -C $(KERNELDIR) M=$(PWD) clean
+ 
+ install :
+-	$(MAKE) INSTALL_MOD_DIR=kernel/drivers/acpi -C $(KERNELDIR)/build M=$(PWD) modules_install
++	$(MAKE) INSTALL_MOD_DIR=kernel/drivers/acpi -C $(KERNELDIR) M=$(PWD) modules_install
+ 	depmod -a
+ 

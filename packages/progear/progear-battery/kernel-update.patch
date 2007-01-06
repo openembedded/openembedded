@@ -1,0 +1,13 @@
+Index: progear-battery-0.3/progear-sbs.c
+===================================================================
+--- progear-battery-0.3.orig/progear-sbs.c	2007-01-04 22:11:19.000000000 +0100
++++ progear-battery-0.3/progear-sbs.c	2007-01-04 22:11:30.000000000 +0100
+@@ -129,8 +129,6 @@
+ 
+ static struct i2c_driver sbs_driver =
+ {
+-	.name		="Progear ACPI-SBS Interface",
+-	.flags		=I2C_DF_NOTIFY,
+ 	.attach_adapter	=&sbs_attach_adapter,
+ 	.detach_client	=&sbs_detach_client
+ };
