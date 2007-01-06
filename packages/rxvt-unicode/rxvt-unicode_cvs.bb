@@ -7,7 +7,7 @@ output. It also supports mixing multiple fonts at the \
 same time, including Xft fonts."
 DEFAULT_PREFERENCE = "-1"
 LICENSE = "GPL"
-SRC_URI = "cvs://anonymous@cvs.schmorp.de/schmorpforge;module=rxvt-unicode \
+SRC_URI = "cvs://anonymous@cvs.schmorp.de/schmorpforge;module=rxvt-unicode;port=636 \
 	   file://xwc.patch;patch=1 \
 	   file://signedchar.patch;patch=1 \
 	   file://makefile.patch;patch=1"
