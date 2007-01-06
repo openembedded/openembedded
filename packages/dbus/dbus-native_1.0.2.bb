@@ -1,18 +1,21 @@
-SECTION = "base"
-PR = "r0"
-HOMEPAGE = "http://www.freedesktop.org/Software/dbus"
 DESCRIPTION = "message bus system for applications to talk to one another"
+HOMEPAGE = "http://www.freedesktop.org/Software/dbus"
 LICENSE = "GPL"
+SECTION = "base"
 
-S = "${WORKDIR}/dbus-${PV}"
-FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/dbus"
-DEPENDS = "glib-2.0-native"
+PR = "r0"
 
-SRC_URI = "http://freedesktop.org/software/dbus/releases/dbus-${PV}.tar.gz \
+DEPENDS = "glib-2.0-native libxml2-native expat-native"
+
+
+FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/dbus-1.0.2"
+SRC_URI = "http://dbus.freedesktop.org/releases/dbus/dbus-${PV}.tar.gz \
 	   file://cross.patch;patch=1 \
-	   file://tmpdir.patch;patch=1"
+	   "
 
 inherit autotools pkgconfig gettext native
+
+S = "${WORKDIR}/dbus-${PV}"
 
 EXTRA_OECONF = "--disable-qt  --disable-qt3 --disable-gtk --disable-tests \
 		--disable-checks --disable-xml-docs --disable-doxygen-docs \

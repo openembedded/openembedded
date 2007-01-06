@@ -6,10 +6,11 @@
 set -e
 
 DAEMON=/usr/bin/dbus-daemon
-NAME=dbus-1
+NAME=dbus
 DAEMONUSER=messagebus
 PIDDIR=/var/run/dbus
 PIDFILE=$PIDDIR/pid
+UUIDDIR=/var/lib/dbus
 DESC="system message bus"
 EVENTDIR=/etc/dbus-1/event.d
 
@@ -18,8 +19,8 @@ test -x $DAEMON || exit 0
 # Source defaults file; edit that file to configure this script.
 ENABLED=1
 PARAMS=""
-if [ -e /etc/default/dbus-1 ]; then
-  . /etc/default/dbus-1
+if [ -e /etc/default/dbus ]; then
+  . /etc/default/dbus
 fi
 
 test "$ENABLED" != "0" || exit 0
@@ -40,6 +41,15 @@ start_it_up()
       rm -f $PIDFILE
     fi
   fi
+
+  if [ ! -d $UUIDDIR ]; then
+    mkdir -p $UUIDDIR
+    chown $DAEMONUSER $UUIDDIR
+    chgrp $DAEMONUSER $UUIDDIR
+  fi
+ 
+  dbus-uuidgen --ensure  
+
   echo -n "Starting $DESC: "
   start-stop-daemon --start --quiet --pidfile $PIDFILE \
     --user $DAEMONUSER --exec $DAEMON -- --system $PARAMS
