@@ -60,7 +60,6 @@ SLUGOS_PACKAGES = "\
 	flac \
 	flex \
 	flite \
-	ftpd-topfield \
 	gawk \
 	gcc \
 	gdb \
@@ -181,6 +180,7 @@ SLUGOS_BROKEN_PACKAGES = "\
 	asterisk-sounds \
 	bwmon \
 	cron \
+	ftpd-topfield \
 	irssi \
 	obexftp \
 	qc-usb-messenger \
