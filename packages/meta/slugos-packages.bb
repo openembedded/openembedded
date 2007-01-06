@@ -140,7 +140,6 @@ SLUGOS_PACKAGES = "\
 	rng-tools \
 	rsync \
 	samba \
-	sane-backends \
 	sed \
 	setpwc \
 	setserial \
@@ -165,7 +164,6 @@ SLUGOS_PACKAGES = "\
 	wget \
 	wireless-tools \
 	wpa-supplicant \
-	zd1211 \
 	zip \
 	zlib \
 	"
@@ -184,11 +182,13 @@ SLUGOS_BROKEN_PACKAGES = "\
 	obexftp \
 	puppy \
 	qc-usb-messenger \
+	sane-backends \
 	unionfs-modules \
 	unionfs-utils \
 	cyrus-imapd \
 	lirc \
 	pwc \
+	zd1211 \
 	"
 
 # These packages will never build because uclibc lacks (and always will lack)
@@ -198,9 +198,9 @@ SLUGOS_BROKEN_PACKAGES = "\
 # calls often still have 'yp' in the name).
 
 # NOTE: rng-tools is only here until argp-standalone can be built!
+	nfs-utils \
 UCLIBC_UNSUPPORTABLE_PACKAGES = "\
 	libpam \
-	nfs-utils \
 	rng-tools \
 	postfix \
 	yp-tools ypbind ypserv \
