@@ -1,7 +1,8 @@
 DESCRIPTION = "ipkg configuration files"
 SECTION = "base"
 LICENSE = "MIT"
-PR = "r3"
+PR = "r5"
+PACKAGE_ARCH = "all"
 
 SRC_URI = " \
 file://ipkg.conf.comments	\
@@ -21,3 +22,5 @@ do_install () {
 	install -d ${D}${sysconfdir}/
 	install -m 0644 ${WORKDIR}/ipkg.conf ${D}${sysconfdir}/ipkg.conf
 }
+
+CONFFILES_${PN} = "${sysconfdir}/ipkg.conf"
