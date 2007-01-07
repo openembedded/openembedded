@@ -1,7 +1,8 @@
 require qemu_${PV}.bb
 require qemu-gcc-check.inc
 
-SRC_URI += "file://2.6.17-linux-libc-headers-fix.patch;patch=1"
+SRC_URI += "file://2.6.17-linux-libc-headers-fix.patch;patch=1 \
+  file://debug.patch;patch=1"
 
 inherit native
 

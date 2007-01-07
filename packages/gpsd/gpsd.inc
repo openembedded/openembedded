@@ -21,10 +21,20 @@ do_stage() {
         install -m 0655 ${S}/gpsd.h ${STAGING_INCDIR}
 }
 
+do_install_prepend() {
+    export BUILD_SYS=${BUILD_SYS}
+    export HOST_SYS=${HOST_SYS}
+}
+
 do_install_append() {
         install -d ${D}/${sysconfdir}/init.d
         install -d ${D}/dev
         install -m 0755 ${WORKDIR}/gpsd ${D}/${sysconfdir}/init.d/
+}
+
+do_compile_prepend() {
+    export BUILD_SYS=${BUILD_SYS}
+    export HOST_SYS=${HOST_SYS}
 }
 
 PACKAGES =+ "libgps"
