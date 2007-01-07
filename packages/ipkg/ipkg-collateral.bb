@@ -23,4 +23,4 @@ do_install () {
 	install -m 0644 ${WORKDIR}/ipkg.conf ${D}${sysconfdir}/ipkg.conf
 }
 
-CONFFILES_${PN} = "${sysconfdir}/etc/ipkg.conf"
+CONFFILES_${PN} = "${sysconfdir}/ipkg.conf"
