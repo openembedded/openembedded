@@ -7,5 +7,3 @@ SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/testing/linux-2.6.12-rc2.ta
 	   file://defconfig"
 
 S = "${WORKDIR}/linux-2.6.12-rc2"
-
-KERNEL_RELEASE = "2.6.12-rc2-omap1"

@@ -4,7 +4,7 @@ DEPENDS = "libsdl-qpe"
 LICENSE = "GPL"
 PR = "r1"
 
-SRC_URI = "http://wwwthep.physik.uni-mainz.de/~cbauer/FrodoV4_1b.Src.tar.gz \
+SRC_URI = "http://frodo.cebix.net/downloads/FrodoV4_1b.Src.tar.gz \
            file://frodo-qte.diff;patch=1 \
            file://frodo-joystick-4state.diff;patch=1 \
            file://frodorc \

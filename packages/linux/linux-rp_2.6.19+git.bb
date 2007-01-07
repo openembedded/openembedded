@@ -106,6 +106,3 @@ SRC_URI_append_tosa = "\
 #          ${DOSRC}/tosa-asoc-r1.patch;patch=1 "
 
 S = "${WORKDIR}/git"
-
-# to get module dependencies working
-KERNEL_RELEASE = "2.6.19-rc4"

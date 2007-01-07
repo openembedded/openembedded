@@ -1,0 +1,1586 @@
+Index: linux-2.6.19/arch/arm/configs/pxa255-idp_defconfig
+===================================================================
+--- linux-2.6.19.orig/arch/arm/configs/pxa255-idp_defconfig
++++ linux-2.6.19/arch/arm/configs/pxa255-idp_defconfig
+@@ -1,14 +1,13 @@
+ #
+ # Automatically generated make config: don't edit
+-# Linux kernel version: 2.6.12-rc1-bk2
+-# Sun Mar 27 22:20:17 2005
++# Linux kernel version: 2.6.13
++# Fri Sep  2 11:36:29 2005
+ #
+ CONFIG_ARM=y
+ CONFIG_MMU=y
+ CONFIG_UID16=y
+ CONFIG_RWSEM_GENERIC_SPINLOCK=y
+ CONFIG_GENERIC_CALIBRATE_DELAY=y
+-CONFIG_GENERIC_IOMAP=y
+ 
+ #
+ # Code maturity level options
+@@ -16,6 +15,7 @@ CONFIG_GENERIC_IOMAP=y
+ CONFIG_EXPERIMENTAL=y
+ CONFIG_CLEAN_COMPILE=y
+ CONFIG_BROKEN_ON_SMP=y
++CONFIG_INIT_ENV_ARG_LIMIT=32
+ 
+ #
+ # General setup
+@@ -34,6 +34,8 @@ CONFIG_KOBJECT_UEVENT=y
+ CONFIG_KALLSYMS=y
+ # CONFIG_KALLSYMS_ALL is not set
+ # CONFIG_KALLSYMS_EXTRA_PASS is not set
++CONFIG_PRINTK=y
++CONFIG_BUG=y
+ CONFIG_BASE_FULL=y
+ CONFIG_FUTEX=y
+ CONFIG_EPOLL=y
+@@ -50,11 +52,12 @@ CONFIG_BASE_SMALL=0
+ # Loadable module support
+ #
+ CONFIG_MODULES=y
+-# CONFIG_MODULE_UNLOAD is not set
++CONFIG_MODULE_UNLOAD=y
++CONFIG_MODULE_FORCE_UNLOAD=y
+ CONFIG_OBSOLETE_MODPARM=y
+ # CONFIG_MODVERSIONS is not set
+ # CONFIG_MODULE_SRCVERSION_ALL is not set
+-# CONFIG_KMOD is not set
++CONFIG_KMOD=y
+ 
+ #
+ # System Type
+@@ -79,6 +82,7 @@ CONFIG_ARCH_PXA=y
+ # CONFIG_ARCH_VERSATILE is not set
+ # CONFIG_ARCH_IMX is not set
+ # CONFIG_ARCH_H720X is not set
++# CONFIG_ARCH_AAEC2000 is not set
+ 
+ #
+ # Intel PXA2xx Implementations
+@@ -98,7 +102,6 @@ CONFIG_CPU_32v5=y
+ CONFIG_CPU_ABRT_EV5T=y
+ CONFIG_CPU_CACHE_VIVT=y
+ CONFIG_CPU_TLB_V4WBI=y
+-CONFIG_CPU_MINICACHE=y
+ 
+ #
+ # Processor Features
+@@ -109,16 +112,35 @@ CONFIG_XSCALE_PMU=y
+ #
+ # Bus support
+ #
++CONFIG_ISA_DMA_API=y
+ 
+ #
+ # PCCARD (PCMCIA/CardBus) support
+ #
+-# CONFIG_PCCARD is not set
++CONFIG_PCCARD=y
++CONFIG_PCMCIA_DEBUG=y
++CONFIG_PCMCIA=y
++CONFIG_PCMCIA_LOAD_CIS=y
++CONFIG_PCMCIA_IOCTL=y
++
++#
++# PC-card bridges
++#
++# CONFIG_TCIC is not set
++CONFIG_PCMCIA_PXA2XX=y
+ 
+ #
+ # Kernel Features
+ #
+ # CONFIG_PREEMPT is not set
++# CONFIG_NO_IDLE_HZ is not set
++# CONFIG_ARCH_DISCONTIGMEM_ENABLE is not set
++CONFIG_SELECT_MEMORY_MODEL=y
++CONFIG_FLATMEM_MANUAL=y
++# CONFIG_DISCONTIGMEM_MANUAL is not set
++# CONFIG_SPARSEMEM_MANUAL is not set
++CONFIG_FLATMEM=y
++CONFIG_FLAT_NODE_MEM_MAP=y
+ CONFIG_LEDS=y
+ CONFIG_LEDS_TIMER=y
+ CONFIG_LEDS_CPU=y
+@@ -129,7 +151,7 @@ CONFIG_ALIGNMENT_TRAP=y
+ #
+ CONFIG_ZBOOT_ROM_TEXT=0x0
+ CONFIG_ZBOOT_ROM_BSS=0x0
+-CONFIG_CMDLINE="root=/dev/nfs ip=dhcp console=ttyS0,115200 mem=64M"
++CONFIG_CMDLINE="root=/dev/mtdblock2 rootfstype=jffs2 console=ttyS0,115200 mtdparts=phys_mapped_flash:256k(boot)ro,0x1C0000(kernel),-(root)"
+ # CONFIG_XIP_KERNEL is not set
+ 
+ #
+@@ -157,6 +179,67 @@ CONFIG_BINFMT_ELF=y
+ # CONFIG_PM is not set
+ 
+ #
++# Networking
++#
++CONFIG_NET=y
++
++#
++# Networking options
++#
++# CONFIG_PACKET is not set
++CONFIG_UNIX=y
++# CONFIG_NET_KEY is not set
++CONFIG_INET=y
++# CONFIG_IP_MULTICAST is not set
++# CONFIG_IP_ADVANCED_ROUTER is not set
++CONFIG_IP_FIB_HASH=y
++CONFIG_IP_PNP=y
++CONFIG_IP_PNP_DHCP=y
++# CONFIG_IP_PNP_BOOTP is not set
++# CONFIG_IP_PNP_RARP is not set
++# CONFIG_NET_IPIP is not set
++# CONFIG_NET_IPGRE is not set
++# CONFIG_ARPD is not set
++# CONFIG_SYN_COOKIES is not set
++# CONFIG_INET_AH is not set
++# CONFIG_INET_ESP is not set
++# CONFIG_INET_IPCOMP is not set
++# CONFIG_INET_TUNNEL is not set
++CONFIG_IP_TCPDIAG=y
++# CONFIG_IP_TCPDIAG_IPV6 is not set
++# CONFIG_TCP_CONG_ADVANCED is not set
++CONFIG_TCP_CONG_BIC=y
++# CONFIG_IPV6 is not set
++# CONFIG_NETFILTER is not set
++
++#
++# SCTP Configuration (EXPERIMENTAL)
++#
++# CONFIG_IP_SCTP is not set
++# CONFIG_ATM is not set
++# CONFIG_BRIDGE is not set
++# CONFIG_VLAN_8021Q is not set
++# CONFIG_DECNET is not set
++# CONFIG_LLC2 is not set
++# CONFIG_IPX is not set
++# CONFIG_ATALK is not set
++# CONFIG_X25 is not set
++# CONFIG_LAPB is not set
++# CONFIG_NET_DIVERT is not set
++# CONFIG_ECONET is not set
++# CONFIG_WAN_ROUTER is not set
++# CONFIG_NET_SCHED is not set
++# CONFIG_NET_CLS_ROUTE is not set
++
++#
++# Network testing
++#
++# CONFIG_NET_PKTGEN is not set
++# CONFIG_HAMRADIO is not set
++# CONFIG_IRDA is not set
++# CONFIG_BT is not set
++
++#
+ # Device Drivers
+ #
+ 
+@@ -165,7 +248,7 @@ CONFIG_BINFMT_ELF=y
+ #
+ CONFIG_STANDALONE=y
+ CONFIG_PREVENT_FIRMWARE_BUILD=y
+-# CONFIG_FW_LOADER is not set
++CONFIG_FW_LOADER=y
+ # CONFIG_DEBUG_DRIVER is not set
+ 
+ #
+@@ -176,7 +259,7 @@ CONFIG_MTD=y
+ # CONFIG_MTD_CONCAT is not set
+ CONFIG_MTD_PARTITIONS=y
+ # CONFIG_MTD_REDBOOT_PARTS is not set
+-# CONFIG_MTD_CMDLINE_PARTS is not set
++CONFIG_MTD_CMDLINE_PARTS=y
+ # CONFIG_MTD_AFS_PARTS is not set
+ 
+ #
+@@ -209,6 +292,7 @@ CONFIG_MTD_MAP_BANK_WIDTH_4=y
+ CONFIG_MTD_CFI_I2=y
+ # CONFIG_MTD_CFI_I4 is not set
+ # CONFIG_MTD_CFI_I8 is not set
++# CONFIG_MTD_OTP is not set
+ CONFIG_MTD_CFI_INTELEXT=y
+ # CONFIG_MTD_CFI_AMDSTD is not set
+ # CONFIG_MTD_CFI_STAA is not set
+@@ -222,10 +306,14 @@ CONFIG_MTD_CFI_UTIL=y
+ # Mapping drivers for chip access
+ #
+ # CONFIG_MTD_COMPLEX_MAPPINGS is not set
+-# CONFIG_MTD_PHYSMAP is not set
++CONFIG_MTD_PHYSMAP=y
++CONFIG_MTD_PHYSMAP_START=0x0000000
++CONFIG_MTD_PHYSMAP_LEN=0x4000000
++CONFIG_MTD_PHYSMAP_BANKWIDTH=4
+ # CONFIG_MTD_ARM_INTEGRATOR is not set
+ # CONFIG_MTD_EDB7312 is not set
+ # CONFIG_MTD_SHARP_SL is not set
++# CONFIG_MTD_PLATRAM is not set
+ 
+ #
+ # Self-contained MTD device drivers
+@@ -260,10 +348,10 @@ CONFIG_MTD_CFI_UTIL=y
+ #
+ # Block devices
+ #
+-# CONFIG_BLK_DEV_FD is not set
+ # CONFIG_BLK_DEV_COW_COMMON is not set
+ # CONFIG_BLK_DEV_LOOP is not set
+ # CONFIG_BLK_DEV_NBD is not set
++# CONFIG_BLK_DEV_UB is not set
+ # CONFIG_BLK_DEV_RAM is not set
+ CONFIG_BLK_DEV_RAM_COUNT=16
+ CONFIG_INITRAMFS_SOURCE=""
+@@ -290,9 +378,11 @@ CONFIG_BLK_DEV_IDE=y
+ # CONFIG_BLK_DEV_IDE_SATA is not set
+ CONFIG_BLK_DEV_IDEDISK=y
+ # CONFIG_IDEDISK_MULTI_MODE is not set
++# CONFIG_BLK_DEV_IDECS is not set
+ # CONFIG_BLK_DEV_IDECD is not set
+ # CONFIG_BLK_DEV_IDETAPE is not set
+ # CONFIG_BLK_DEV_IDEFLOPPY is not set
++# CONFIG_BLK_DEV_IDESCSI is not set
+ # CONFIG_IDE_TASK_IOCTL is not set
+ 
+ #
+@@ -307,89 +397,69 @@ CONFIG_BLK_DEV_IDEDISK=y
+ #
+ # SCSI device support
+ #
+-# CONFIG_SCSI is not set
++CONFIG_SCSI=y
++CONFIG_SCSI_PROC_FS=y
+ 
+ #
+-# Multi-device support (RAID and LVM)
++# SCSI support type (disk, tape, CD-ROM)
+ #
+-# CONFIG_MD is not set
++# CONFIG_BLK_DEV_SD is not set
++# CONFIG_CHR_DEV_ST is not set
++# CONFIG_CHR_DEV_OSST is not set
++# CONFIG_BLK_DEV_SR is not set
++# CONFIG_CHR_DEV_SG is not set
++# CONFIG_CHR_DEV_SCH is not set
+ 
+ #
+-# Fusion MPT device support
++# Some SCSI devices (e.g. CD jukebox) support multiple LUNs
+ #
++# CONFIG_SCSI_MULTI_LUN is not set
++# CONFIG_SCSI_CONSTANTS is not set
++# CONFIG_SCSI_LOGGING is not set
+ 
+ #
+-# IEEE 1394 (FireWire) support
++# SCSI Transport Attributes
+ #
++# CONFIG_SCSI_SPI_ATTRS is not set
++# CONFIG_SCSI_FC_ATTRS is not set
++# CONFIG_SCSI_ISCSI_ATTRS is not set
+ 
+ #
+-# I2O device support
++# SCSI low-level drivers
+ #
++# CONFIG_SCSI_SATA is not set
++# CONFIG_SCSI_DEBUG is not set
+ 
+ #
+-# Networking support
++# PCMCIA SCSI adapter support
+ #
+-CONFIG_NET=y
++# CONFIG_PCMCIA_AHA152X is not set
++# CONFIG_PCMCIA_FDOMAIN is not set
++# CONFIG_PCMCIA_NINJA_SCSI is not set
++# CONFIG_PCMCIA_QLOGIC is not set
++# CONFIG_PCMCIA_SYM53C500 is not set
+ 
+ #
+-# Networking options
++# Multi-device support (RAID and LVM)
+ #
+-# CONFIG_PACKET is not set
+-# CONFIG_NETLINK_DEV is not set
+-CONFIG_UNIX=y
+-# CONFIG_NET_KEY is not set
+-CONFIG_INET=y
+-# CONFIG_IP_MULTICAST is not set
+-# CONFIG_IP_ADVANCED_ROUTER is not set
+-CONFIG_IP_PNP=y
+-CONFIG_IP_PNP_DHCP=y
+-# CONFIG_IP_PNP_BOOTP is not set
+-# CONFIG_IP_PNP_RARP is not set
+-# CONFIG_NET_IPIP is not set
+-# CONFIG_NET_IPGRE is not set
+-# CONFIG_ARPD is not set
+-# CONFIG_SYN_COOKIES is not set
+-# CONFIG_INET_AH is not set
+-# CONFIG_INET_ESP is not set
+-# CONFIG_INET_IPCOMP is not set
+-# CONFIG_INET_TUNNEL is not set
+-CONFIG_IP_TCPDIAG=y
+-# CONFIG_IP_TCPDIAG_IPV6 is not set
+-# CONFIG_IPV6 is not set
+-# CONFIG_NETFILTER is not set
++# CONFIG_MD is not set
+ 
+ #
+-# SCTP Configuration (EXPERIMENTAL)
++# Fusion MPT device support
+ #
+-# CONFIG_IP_SCTP is not set
+-# CONFIG_ATM is not set
+-# CONFIG_BRIDGE is not set
+-# CONFIG_VLAN_8021Q is not set
+-# CONFIG_DECNET is not set
+-# CONFIG_LLC2 is not set
+-# CONFIG_IPX is not set
+-# CONFIG_ATALK is not set
+-# CONFIG_X25 is not set
+-# CONFIG_LAPB is not set
+-# CONFIG_NET_DIVERT is not set
+-# CONFIG_ECONET is not set
+-# CONFIG_WAN_ROUTER is not set
++# CONFIG_FUSION is not set
+ 
+ #
+-# QoS and/or fair queueing
++# IEEE 1394 (FireWire) support
+ #
+-# CONFIG_NET_SCHED is not set
+-# CONFIG_NET_CLS_ROUTE is not set
+ 
+ #
+-# Network testing
++# I2O device support
++#
++
++#
++# Network device support
+ #
+-# CONFIG_NET_PKTGEN is not set
+-# CONFIG_NETPOLL is not set
+-# CONFIG_NET_POLL_CONTROLLER is not set
+-# CONFIG_HAMRADIO is not set
+-# CONFIG_IRDA is not set
+-# CONFIG_BT is not set
+ CONFIG_NETDEVICES=y
+ # CONFIG_DUMMY is not set
+ # CONFIG_BONDING is not set
+@@ -402,6 +472,7 @@ CONFIG_NETDEVICES=y
+ CONFIG_NET_ETHERNET=y
+ CONFIG_MII=y
+ CONFIG_SMC91X=y
++# CONFIG_DM9000 is not set
+ 
+ #
+ # Ethernet (1000 Mbit)
+@@ -421,6 +492,11 @@ CONFIG_SMC91X=y
+ # CONFIG_NET_RADIO is not set
+ 
+ #
++# PCMCIA network device support
++#
++# CONFIG_NET_PCMCIA is not set
++
++#
+ # Wan interfaces
+ #
+ # CONFIG_WAN is not set
+@@ -428,6 +504,8 @@ CONFIG_SMC91X=y
+ # CONFIG_SLIP is not set
+ # CONFIG_SHAPER is not set
+ # CONFIG_NETCONSOLE is not set
++# CONFIG_NETPOLL is not set
++# CONFIG_NET_POLL_CONTROLLER is not set
+ 
+ #
+ # ISDN subsystem
+@@ -443,7 +521,7 @@ CONFIG_INPUT=y
+ # Userland interfaces
+ #
+ CONFIG_INPUT_MOUSEDEV=y
+-CONFIG_INPUT_MOUSEDEV_PSAUX=y
++# CONFIG_INPUT_MOUSEDEV_PSAUX is not set
+ CONFIG_INPUT_MOUSEDEV_SCREEN_X=1024
+ CONFIG_INPUT_MOUSEDEV_SCREEN_Y=768
+ # CONFIG_INPUT_JOYDEV is not set
+@@ -455,11 +533,12 @@ CONFIG_INPUT_EVDEV=y
+ # Input Device Drivers
+ #
+ CONFIG_INPUT_KEYBOARD=y
+-CONFIG_KEYBOARD_ATKBD=y
++# CONFIG_KEYBOARD_ATKBD is not set
+ # CONFIG_KEYBOARD_SUNKBD is not set
+ # CONFIG_KEYBOARD_LKKBD is not set
+ # CONFIG_KEYBOARD_XTKBD is not set
+ # CONFIG_KEYBOARD_NEWTON is not set
++CONFIG_KEYBOARD_IDPKBD=y
+ # CONFIG_INPUT_MOUSE is not set
+ # CONFIG_INPUT_JOYSTICK is not set
+ # CONFIG_INPUT_TOUCHSCREEN is not set
+@@ -470,10 +549,8 @@ CONFIG_KEYBOARD_ATKBD=y
+ #
+ CONFIG_SERIO=y
+ # CONFIG_SERIO_SERPORT is not set
+-CONFIG_SERIO_LIBPS2=y
+ # CONFIG_SERIO_RAW is not set
+ # CONFIG_GAMEPORT is not set
+-CONFIG_SOUND_GAMEPORT=y
+ 
+ #
+ # Character devices
+@@ -516,18 +593,28 @@ CONFIG_LEGACY_PTY_COUNT=256
+ #
+ # Ftape, the floppy tape device driver
+ #
+-# CONFIG_DRM is not set
++
++#
++# PCMCIA character devices
++#
++# CONFIG_SYNCLINK_CS is not set
+ # CONFIG_RAW_DRIVER is not set
+ 
+ #
+ # TPM devices
+ #
+-# CONFIG_TCG_TPM is not set
+ 
+ #
+ # I2C support
+ #
+ # CONFIG_I2C is not set
++# CONFIG_I2C_SENSOR is not set
++
++#
++# Hardware Monitoring support
++#
++CONFIG_HWMON=y
++# CONFIG_HWMON_DEBUG_CHIP is not set
+ 
+ #
+ # Misc devices
+@@ -551,10 +638,12 @@ CONFIG_FB_CFB_FILLRECT=y
+ CONFIG_FB_CFB_COPYAREA=y
+ CONFIG_FB_CFB_IMAGEBLIT=y
+ CONFIG_FB_SOFT_CURSOR=y
++# CONFIG_FB_MACMODES is not set
+ # CONFIG_FB_MODE_HELPERS is not set
+ # CONFIG_FB_TILEBLITTING is not set
+ CONFIG_FB_PXA=y
+ # CONFIG_FB_PXA_PARAMETERS is not set
++# CONFIG_FB_S1D13XXX is not set
+ # CONFIG_FB_VIRTUAL is not set
+ 
+ #
+@@ -563,15 +652,9 @@ CONFIG_FB_PXA=y
+ # CONFIG_VGA_CONSOLE is not set
+ CONFIG_DUMMY_CONSOLE=y
+ CONFIG_FRAMEBUFFER_CONSOLE=y
+-CONFIG_FONTS=y
++# CONFIG_FONTS is not set
+ CONFIG_FONT_8x8=y
+ CONFIG_FONT_8x16=y
+-# CONFIG_FONT_6x11 is not set
+-# CONFIG_FONT_PEARL_8x8 is not set
+-# CONFIG_FONT_ACORN_8x8 is not set
+-# CONFIG_FONT_MINI_4x6 is not set
+-# CONFIG_FONT_SUN8x16 is not set
+-# CONFIG_FONT_SUN12x22 is not set
+ 
+ #
+ # Logo configuration
+@@ -592,7 +675,116 @@ CONFIG_LOGO_LINUX_CLUT224=y
+ #
+ CONFIG_USB_ARCH_HAS_HCD=y
+ # CONFIG_USB_ARCH_HAS_OHCI is not set
+-# CONFIG_USB is not set
++CONFIG_USB=y
++CONFIG_USB_DEBUG=y
++
++#
++# Miscellaneous USB options
++#
++# CONFIG_USB_DEVICEFS is not set
++CONFIG_USB_BANDWIDTH=y
++# CONFIG_USB_DYNAMIC_MINORS is not set
++# CONFIG_USB_OTG is not set
++
++#
++# USB Host Controller Drivers
++#
++# CONFIG_USB_ISP116X_HCD is not set
++# CONFIG_USB_SL811_HCD is not set
++
++#
++# USB Device Class drivers
++#
++# CONFIG_USB_BLUETOOTH_TTY is not set
++# CONFIG_USB_ACM is not set
++# CONFIG_USB_PRINTER is not set
++
++#
++# NOTE: USB_STORAGE enables SCSI, and 'SCSI disk support' may also be needed; see USB_STORAGE Help for more information
++#
++CONFIG_USB_STORAGE=y
++# CONFIG_USB_STORAGE_DEBUG is not set
++# CONFIG_USB_STORAGE_DATAFAB is not set
++# CONFIG_USB_STORAGE_FREECOM is not set
++# CONFIG_USB_STORAGE_ISD200 is not set
++# CONFIG_USB_STORAGE_DPCM is not set
++# CONFIG_USB_STORAGE_USBAT is not set
++# CONFIG_USB_STORAGE_SDDR09 is not set
++# CONFIG_USB_STORAGE_SDDR55 is not set
++# CONFIG_USB_STORAGE_JUMPSHOT is not set
++
++#
++# USB Input Devices
++#
++CONFIG_USB_HID=y
++CONFIG_USB_HIDINPUT=y
++# CONFIG_HID_FF is not set
++# CONFIG_USB_HIDDEV is not set
++# CONFIG_USB_AIPTEK is not set
++# CONFIG_USB_WACOM is not set
++# CONFIG_USB_ACECAD is not set
++# CONFIG_USB_KBTAB is not set
++# CONFIG_USB_POWERMATE is not set
++# CONFIG_USB_MTOUCH is not set
++# CONFIG_USB_ITMTOUCH is not set
++# CONFIG_USB_EGALAX is not set
++# CONFIG_USB_XPAD is not set
++# CONFIG_USB_ATI_REMOTE is not set
++# CONFIG_USB_KEYSPAN_REMOTE is not set
++
++#
++# USB Imaging devices
++#
++# CONFIG_USB_MDC800 is not set
++# CONFIG_USB_MICROTEK is not set
++
++#
++# USB Multimedia devices
++#
++# CONFIG_USB_DABUSB is not set
++
++#
++# Video4Linux support is needed for USB Multimedia device support
++#
++
++#
++# USB Network Adapters
++#
++# CONFIG_USB_CATC is not set
++# CONFIG_USB_KAWETH is not set
++# CONFIG_USB_PEGASUS is not set
++# CONFIG_USB_RTL8150 is not set
++# CONFIG_USB_USBNET is not set
++CONFIG_USB_MON=y
++
++#
++# USB port drivers
++#
++
++#
++# USB Serial Converter support
++#
++# CONFIG_USB_SERIAL is not set
++
++#
++# USB Miscellaneous drivers
++#
++# CONFIG_USB_EMI62 is not set
++# CONFIG_USB_EMI26 is not set
++# CONFIG_USB_AUERSWALD is not set
++# CONFIG_USB_RIO500 is not set
++# CONFIG_USB_LEGOTOWER is not set
++# CONFIG_USB_LCD is not set
++# CONFIG_USB_LED is not set
++# CONFIG_USB_CYTHERM is not set
++# CONFIG_USB_PHIDGETKIT is not set
++# CONFIG_USB_PHIDGETSERVO is not set
++# CONFIG_USB_IDMOUSE is not set
++# CONFIG_USB_LD is not set
++
++#
++# USB DSL modem support
++#
+ 
+ #
+ # USB Gadget Support
+@@ -602,17 +794,23 @@ CONFIG_USB_ARCH_HAS_HCD=y
+ #
+ # MMC/SD Card support
+ #
+-# CONFIG_MMC is not set
++CONFIG_MMC=y
++CONFIG_MMC_DEBUG=y
++CONFIG_MMC_BLOCK=y
++CONFIG_MMC_PXA=y
++# CONFIG_MMC_WBSD is not set
+ 
+ #
+ # File systems
+ #
+ CONFIG_EXT2_FS=y
+ # CONFIG_EXT2_FS_XATTR is not set
++# CONFIG_EXT2_FS_XIP is not set
+ # CONFIG_EXT3_FS is not set
+ # CONFIG_JBD is not set
+ # CONFIG_REISERFS_FS is not set
+ # CONFIG_JFS_FS is not set
++# CONFIG_FS_POSIX_ACL is not set
+ 
+ #
+ # XFS support
+@@ -620,6 +818,7 @@ CONFIG_EXT2_FS=y
+ # CONFIG_XFS_FS is not set
+ # CONFIG_MINIX_FS is not set
+ # CONFIG_ROMFS_FS is not set
++CONFIG_INOTIFY=y
+ # CONFIG_QUOTA is not set
+ CONFIG_DNOTIFY=y
+ # CONFIG_AUTOFS_FS is not set
+@@ -636,8 +835,9 @@ CONFIG_DNOTIFY=y
+ #
+ CONFIG_FAT_FS=y
+ CONFIG_MSDOS_FS=y
+-# CONFIG_VFAT_FS is not set
++CONFIG_VFAT_FS=y
+ CONFIG_FAT_DEFAULT_CODEPAGE=437
++CONFIG_FAT_DEFAULT_IOCHARSET="iso8859-1"
+ # CONFIG_NTFS_FS is not set
+ 
+ #
+@@ -645,7 +845,6 @@ CONFIG_FAT_DEFAULT_CODEPAGE=437
+ #
+ CONFIG_PROC_FS=y
+ CONFIG_SYSFS=y
+-# CONFIG_DEVFS_FS is not set
+ # CONFIG_DEVPTS_FS_XATTR is not set
+ # CONFIG_TMPFS is not set
+ # CONFIG_HUGETLB_PAGE is not set
+@@ -664,8 +863,7 @@ CONFIG_RAMFS=y
+ # CONFIG_JFFS_FS is not set
+ CONFIG_JFFS2_FS=y
+ CONFIG_JFFS2_FS_DEBUG=0
+-# CONFIG_JFFS2_FS_NAND is not set
+-# CONFIG_JFFS2_FS_NOR_ECC is not set
++CONFIG_JFFS2_FS_WRITEBUFFER=y
+ # CONFIG_JFFS2_COMPRESSION_OPTIONS is not set
+ CONFIG_JFFS2_ZLIB=y
+ CONFIG_JFFS2_RTIME=y
+@@ -687,6 +885,7 @@ CONFIG_NFS_FS=y
+ # CONFIG_NFSD is not set
+ CONFIG_ROOT_NFS=y
+ CONFIG_LOCKD=y
++CONFIG_NFS_COMMON=y
+ CONFIG_SUNRPC=y
+ # CONFIG_RPCSEC_GSS_KRB5 is not set
+ # CONFIG_RPCSEC_GSS_SPKM3 is not set
+Index: linux-2.6.19/arch/arm/mach-pxa/Kconfig
+===================================================================
+--- linux-2.6.19.orig/arch/arm/mach-pxa/Kconfig
++++ linux-2.6.19/arch/arm/mach-pxa/Kconfig
+@@ -21,7 +21,7 @@ config MACH_MAINSTONE
+ 	select IWMMXT
+ 
+ config ARCH_PXA_IDP
+-	bool "Accelent Xscale IDP"
++	bool "DevKitIDP PXA255"
+ 	select PXA25x
+ 
+ config PXA_SHARPSL
+Index: linux-2.6.19/drivers/input/keyboard/idpkbd.c
+===================================================================
+--- /dev/null
++++ linux-2.6.19/drivers/input/keyboard/idpkbd.c
+@@ -0,0 +1,418 @@
++/*
++ * DevKitIDP PXA255 matrix keyboard driver
++ * Copyright (C) 2005 BSQUARE
++ * David Plentovich <davidp@bsquare.com>
++ *
++ * Based on (2.4.x) driver/char/asi_keyboard.c - Cliff Brake
++ */
++
++/*
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 2 of the License, or
++ * (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write to the Free Software
++ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
++ *
++ */
++
++#include <linux/stddef.h>
++
++#include <linux/input.h>
++#include <linux/module.h>
++#include <linux/init.h>
++
++#include <linux/timer.h>
++#include <linux/sched.h>
++#include <linux/delay.h>
++
++#include <linux/types.h>
++#include <linux/keyboard.h>
++#include <linux/kd.h>
++
++#include <asm/irq.h>
++#include <asm/io.h>
++
++//#include <asm/hardware.h>
++#include <asm/arch/pxa-regs.h>
++#include <asm/arch/idp.h>
++
++MODULE_AUTHOR("David Plentovich <davidp@bsquare.com>");
++MODULE_DESCRIPTION("DevKitIDP PXA255 matrix keyboard driver");
++MODULE_LICENSE("GPL");
++
++
++//NOTE: Platform HW specific settings are defined in include/asm-arm/arch-pxa/idp.h
++
++
++// set to true to use timers to poll keyboard
++#define POLL_KEYBOARD	1
++
++
++// local variables
++
++#define FN_KEY_SCANCODE			4		//scancode returned when Fn key pressed
++#define NUMLOCK_KEY_SCANCODE	10		//scancode returned when NumLock key pressed
++
++// keyboard matrix 14 columns by 7 rows
++static unsigned char idpkbd_keycode[(KEYBD_MATRIX_NUMBER_OUTPUTS * KEYBD_MATRIX_NUMBER_INPUTS)] = { \
++ KEY_LEFTALT, KEY_GRAVE, 0, KEY_LEFTCTRL, 0, KEY_ESC, KEY_1, KEY_2, KEY_9, KEY_0, KEY_MINUS, KEY_EQUAL, 0, KEY_BACKSPACE, \
++ 0, KEY_BACKSLASH, KEY_LEFTSHIFT, 0, 0, KEY_DELETE, 0, KEY_T, KEY_Y, KEY_U, KEY_I, KEY_ENTER, KEY_RIGHTSHIFT, KEY_DOWN, \
++ 0, KEY_TAB, 0, 0, 0, KEY_Q, KEY_W, KEY_E, KEY_R, KEY_O, KEY_P, KEY_LEFTBRACE, 0, KEY_RIGHTBRACE, \
++ 0, KEY_Z, 0, 0, 0, KEY_CAPSLOCK, 0, 0, KEY_K, KEY_L, KEY_SEMICOLON, KEY_APOSTROPHE, 0, KEY_UP, \
++ 0, KEY_A, 0, 0, 0, KEY_S, KEY_D, KEY_F, KEY_G, KEY_H, KEY_J, KEY_SLASH, 0, KEY_LEFT, \
++ 0, KEY_X, 0, 0, 0, KEY_C, KEY_V, KEY_B, KEY_N, KEY_M, KEY_COMMA, KEY_DOT, 0, KEY_SPACE, \
++ 0, 0, 0, 0, 0, KEY_3, KEY_4, KEY_5, KEY_6, KEY_7, KEY_8, 0, 0, KEY_RIGHT \
++};
++
++// function key keyboard matrix 14 columns by 7 rows
++//TODO: change Fn key for +/= to be shifted version of KEY_PAUSE (instead of KEY_BACK)
++static unsigned char idpkbd_fn_keycode[(KEYBD_MATRIX_NUMBER_OUTPUTS * KEYBD_MATRIX_NUMBER_INPUTS)] = { \
++ 0, 0, 0, 0, 0, 0, KEY_F1, KEY_F2, KEY_F9, KEY_F10, 0, KEY_BACK, 0, 0, \
++ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, KEY_PAGEDOWN, \
++ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, KEY_PAUSE, 0, KEY_SCROLLLOCK, \
++ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, KEY_PRINT, KEY_SYSRQ, 0, KEY_PAGEUP, \
++ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, KEY_HOME, \
++ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, \
++ 0, 0, 0, 0, 0, KEY_F3, KEY_F4, KEY_F5, KEY_F6, KEY_F7, KEY_F8, 0, 0, KEY_END \
++};
++
++//NOTE: NUMLOCK and NumKeypad are not supported; keys are already accessable in other ways.
++
++int idpkbd_used = 0;
++int fn_key_active = 0;
++
++static struct input_dev * idpkbd_dev;
++
++static int scaninterval = HZ/60;	//rate to scan keyboard 
++static struct timer_list scan_timer;
++
++
++// Note: these are not hardware dependent masks, they are
++// just simple n-bit masks based on the number of ins and outs
++// All hardware dependent matrix keyboard stuff is in portable.h
++#define KEYBD_MATRIX_INPUT_MASK		((1 << KEYBD_MATRIX_NUMBER_INPUTS)-1)
++#define KEYBD_MATRIX_OUTPUT_MASK	((1 << KEYBD_MATRIX_NUMBER_OUTPUTS)-1)
++
++static __u16 keystate_prev[KEYBD_MATRIX_NUMBER_OUTPUTS];
++static __u16 keystate_test[KEYBD_MATRIX_NUMBER_OUTPUTS];
++static __u16 keystate_cur [KEYBD_MATRIX_NUMBER_OUTPUTS];
++static int keystate_prev_active = 0;	//FALSE;
++static int keystate_stable_ctr = 0;
++
++
++
++/* local function definitions */
++static void setoutput(__u16 columns)
++{
++	#ifdef KEYBD_MATRIX_INVERT_OUTPUT_LOGIC
++		KEYBD_MATRIX_SET_OUTPUTS(~columns);
++	#else
++		KEYBD_MATRIX_SET_OUTPUTS(columns);
++	#endif
++}
++
++static __u16 scaninput(void)
++{
++	__u32 inputs;
++
++	KEYBD_MATRIX_GET_INPUTS(inputs);
++
++	#ifdef KEYBD_MATRIX_INVERT_INPUT_LOGIC
++		return (__u16)(~inputs & KEYBD_MATRIX_INPUT_MASK);
++	#else
++		return (__u16)(inputs & KEYBD_MATRIX_INPUT_MASK);
++	#endif
++}
++
++static int dokeystatetransition(void)
++{
++	unsigned char code;
++	int i, j;
++	__u16 keystate_xor[KEYBD_MATRIX_NUMBER_OUTPUTS];
++	int ret_val = 0;	//FALSE;
++	//int bFoundValidScancode = FALSE;
++	
++	/* iterate over columns */
++	for (i = 0; i < KEYBD_MATRIX_NUMBER_OUTPUTS; i++)
++	{
++		if (keystate_cur[i] != 0)
++			ret_val = 1;	//TRUE;
++
++		keystate_xor[i] = keystate_prev[i] ^ keystate_cur[i];
++		if (keystate_xor[i] != 0)
++		{
++			/* at least one matrix switch was changed, set backlight activity detect flag */
++			//vpDriverGlobals->misc.BacklightActivity = 1;
++
++			/* iterate over rows */
++			for (j = 0; j < KEYBD_MATRIX_NUMBER_INPUTS; j++)
++			{
++				if (keystate_xor[i] & (1 << j))
++				{
++					code = (j * KEYBD_MATRIX_NUMBER_OUTPUTS) + i;
++					/* figure out if key is pressed or released and process */
++
++					// support alt keymap for function keys
++					if (code == FN_KEY_SCANCODE)
++					{
++						fn_key_active = (keystate_cur[i] & (1 << j)) ? 1 : 0;
++					}
++					else
++					{
++						if (fn_key_active)
++						{
++//							printk("matrix %i, key %i, up/down %i\n", code, idpkbd_fn_keycode[code], (keystate_cur[i] & (1 << j)) ? 1 : 0);
++							input_report_key(idpkbd_dev, idpkbd_fn_keycode[code], (keystate_cur[i] & (1 << j)) ? 1 : 0);
++						}
++						else
++						{
++//							printk("matrix %i, key %i, up/down %i\n", code, idpkbd_keycode[code], (keystate_cur[i] & (1 << j)) ? 1 : 0);
++							input_report_key(idpkbd_dev, idpkbd_keycode[code], (keystate_cur[i] & (1 << j)) ? 1 : 0);
++						}
++					}
++
++				}
++			}
++			input_sync(idpkbd_dev);
++		}
++		keystate_prev[i] = keystate_cur[i];
++	}
++
++	return ret_val;
++}
++
++
++// handles keyboard keypress
++#if POLL_KEYBOARD
++static void idpkbd_scan_keyboard(unsigned long dummy)
++{
++	__u16 cs;		/* column status */
++	int i;
++//	printk(KERN_INFO "%s:\n", __FUNCTION__);
++
++#define SCAN_START	0	/* start of scan state machine */
++#define SCAN_GETSTATE	1	/* get keyboard state */
++#define SCAN_STAB	2	/* wait for key to stabalize */
++
++	/* start of keyboard scanning sequence */
++	/* Always start with an all-column scan */
++	setoutput( KEYBD_MATRIX_OUTPUT_MASK );
++	udelay( KEYBD_MATRIX_SETTLING_TIME_US );
++	cs = scaninput();
++
++//	printk("cs = %x\n", cs);
++//	printk("keystate_stable_ctr = %d\n", keystate_stable_ctr);
++//	printk("keystate_pre_active = %d\n", keystate_prev_active);
++//	printk("\n");
++
++	/* 
++	 * if no keys were down in previous state AND we are
++	 * not in stablizing mode AND the all-column scan
++	 * is 0, then keyboard is idle.
++	 */
++
++	if ((! keystate_prev_active) && (keystate_stable_ctr == 0) && (cs == 0))
++		goto scan_done;
++
++	/* Get the current state of the keyboard */
++	if (cs == 0)
++	{
++		for (i = 0; i < KEYBD_MATRIX_NUMBER_OUTPUTS; i++)
++		{
++			keystate_cur[i] = 0;
++		}
++	}
++	else
++	{
++		for (i = 0; i < KEYBD_MATRIX_NUMBER_OUTPUTS; i++)
++		{
++			setoutput ( 1 << i );
++			udelay(KEYBD_MATRIX_SETTLING_TIME_US);
++			keystate_cur[i] = scaninput();
++		}
++	}
++
++	/* Handle the stablizing case first */
++	if (keystate_stable_ctr > 0)
++	{
++
++		/* Compare the current state against the test state */
++		cs = 1;
++		for (i = 0; i < KEYBD_MATRIX_NUMBER_OUTPUTS; i++)
++		{
++			if (keystate_cur[i] != keystate_test[i])
++			{
++				cs = 0;
++				break;
++			}
++		}
++
++		// Are the states the same ?
++		if (cs)
++		{
++			++ keystate_stable_ctr;
++			if (keystate_stable_ctr == KEYBD_MATRIX_KEYSTATE_DEBOUNCE_CONSTANT)
++			{
++				keystate_prev_active = dokeystatetransition();
++				keystate_stable_ctr = 0;
++			}
++			goto scan_done;
++		}
++		else
++		{
++			keystate_stable_ctr = 0;		// Clear stable counter and fall through to next stage
++		}
++	}
++
++	// Compare the current state against the previous state
++	cs = 1;
++	for (i = 0; i < KEYBD_MATRIX_NUMBER_OUTPUTS; i++)
++	{
++		if (keystate_cur[i] != keystate_prev[i])
++		{
++			cs = 0;
++			break;
++		}
++	}
++
++	// If the states are different, begin waiting for stablizing
++	if (! cs)
++	{
++		for (i = 0; i < KEYBD_MATRIX_NUMBER_OUTPUTS; i++)
++		{
++			keystate_test[i] = keystate_cur[i];
++		}
++		keystate_stable_ctr = 1;
++	}
++
++scan_done:
++	// reload timer for next scan
++	mod_timer(&scan_timer, jiffies + scaninterval);
++}
++#else
++static void idpkbd_interrupt(int irq, void *dummy, struct pt_regs *fp)
++{
++//	printk(KERN_INFO "%s:\n", __FUNCTION__);
++
++	input_report_key(idpkbd_dev, BTN_0, inb(IDPKBD_PORT) & 1);
++	input_sync(idpkbd_dev);
++}
++#endif
++
++//TODO: Verify Events operation
++// handles keyboard LED and beep events
++int idpkbd_event(struct input_dev *dev, unsigned int type, unsigned int code, int value)
++{
++//	printk(KERN_INFO "%s:\n", __FUNCTION__);
++
++	if (type == EV_SND && code == SND_BELL) {
++//x		outb(value, IDPKBD_BELL);
++		return 0;
++	}
++
++	if (type == EV_LED) {
++// TODO:
++		return 0;
++	}
++
++	return -1;
++}
++
++static int idpkbd_open(struct input_dev *dev)
++{
++//	printk(KERN_INFO "%s:\n", __FUNCTION__);
++
++	if (idpkbd_used++)
++		return 0;
++
++#if POLL_KEYBOARD
++	// start timer to scan matrix keyboard
++	init_timer(&scan_timer);
++	scan_timer.function = idpkbd_scan_keyboard;
++	mod_timer(&scan_timer, jiffies + scaninterval);
++#else	
++	if (request_irq(IDPKBD_IRQ, idpkbd_interrupt, 0, "idpkbd", NULL)) {
++                printk(KERN_ERR "idpkbd.c: Can't allocate irq %d\n", idpkbd_irq);
++                idpkbd_used--;
++                return -EBUSY;
++        }
++#endif
++
++        return 0;
++}
++
++static void idpkbd_close(struct input_dev *dev)
++{
++//	printk(KERN_INFO "%s:\n", __FUNCTION__);
++
++	if (!--idpkbd_used) {
++#if POLL_KEYBOARD
++		// stop timer 
++		del_timer(&scan_timer);
++#else
++		free_irq(IDPKBD_IRQ, idpkbd_interrupt);
++#endif
++	}
++}
++
++static int __init idpkbd_init(void)
++{
++	int i;
++//	printk(KERN_INFO "%s:\n", __FUNCTION__);
++
++  idpkbd_dev = input_allocate_device();
++
++	// fill in driver information
++	idpkbd_dev->name = "DevKitIDP PXA255 matrix keyboard";
++	idpkbd_dev->phys = "idpkdb/input0";
++//	idpkbd_dev.id.bustype = BUS_MATRIX;
++	idpkbd_dev->id.vendor = 0x0001;
++	idpkbd_dev->id.product = 0x0001;
++	idpkbd_dev->id.version = 0x0100;
++
++	// fill in function pointers
++	idpkbd_dev->open = idpkbd_open;
++	idpkbd_dev->close = idpkbd_close;
++	idpkbd_dev->event = idpkbd_event;
++
++	// setup available keypresses
++	idpkbd_dev->evbit[0] = BIT(EV_KEY);
++//	idpkbd_dev.evbit[0] = BIT(EV_KEY) | BIT(EV_REP);
++	idpkbd_dev->keycode = idpkbd_keycode;
++	idpkbd_dev->keycodesize = sizeof(unsigned char);
++//	idpkbd_dev.keycodemax = ARRAY_SIZE(idpkbd_keycode);
++	idpkbd_dev->keycodemax = ARRAY_SIZE(idpkbd_keycode) + ARRAY_SIZE(idpkbd_fn_keycode);
++
++	for (i = 0; i < (KEYBD_MATRIX_NUMBER_OUTPUTS * KEYBD_MATRIX_NUMBER_INPUTS); i++)
++	{
++		if (idpkbd_keycode[i])
++			set_bit(idpkbd_keycode[i], idpkbd_dev->keybit);
++		if (idpkbd_fn_keycode[i])
++			set_bit(idpkbd_fn_keycode[i], idpkbd_dev->keybit);
++	}
++
++	input_register_device(idpkbd_dev);
++	
++	printk(KERN_INFO "input: %s\n", idpkbd_dev->name);
++	return 0;
++}
++
++static void __exit idpkbd_exit(void)
++{
++//	printk(KERN_INFO "%s:\n", __FUNCTION__);
++
++	input_unregister_device(idpkbd_dev);
++}
++
++module_init(idpkbd_init);
++module_exit(idpkbd_exit);
++
++
+Index: linux-2.6.19/drivers/input/keyboard/Kconfig
+===================================================================
+--- linux-2.6.19.orig/drivers/input/keyboard/Kconfig
++++ linux-2.6.19/drivers/input/keyboard/Kconfig
+@@ -203,4 +203,14 @@ config KEYBOARD_OMAP
+ 	  To compile this driver as a module, choose M here: the
+ 	  module will be called omap-keypad.
+ 
++config KEYBOARD_IDPKBD
++	tristate "IDP matrix scan keyboard"
++	depends on ARCH_PXA_IDP && INPUT && INPUT_KEYBOARD
++	help
++	  Say Y here if you are running Linux on a DevKitIDP PXA255 and want
++	  to use the attached matrix scan keyboard.
++
++	  To compile this driver as a module, choose M here: the
++	  module will be called idpkbd.
++
+ endif
+Index: linux-2.6.19/drivers/input/keyboard/Makefile
+===================================================================
+--- linux-2.6.19.orig/drivers/input/keyboard/Makefile
++++ linux-2.6.19/drivers/input/keyboard/Makefile
+@@ -4,6 +4,7 @@
+ 
+ # Each configuration option enables a list of files.
+ 
++obj-$(CONFIG_KEYBOARD_IDPKBD)		+= idpkbd.o
+ obj-$(CONFIG_KEYBOARD_ATKBD)		+= atkbd.o
+ obj-$(CONFIG_KEYBOARD_SUNKBD)		+= sunkbd.o
+ obj-$(CONFIG_KEYBOARD_LKKBD)		+= lkkbd.o
+Index: linux-2.6.19/drivers/pcmcia/Makefile
+===================================================================
+--- linux-2.6.19.orig/drivers/pcmcia/Makefile
++++ linux-2.6.19/drivers/pcmcia/Makefile
+@@ -68,5 +68,6 @@ sa1100_cs-$(CONFIG_SA1100_SIMPAD)		+= sa
+ 
+ pxa2xx_cs-$(CONFIG_ARCH_LUBBOCK)		+= pxa2xx_lubbock.o sa1111_generic.o
+ pxa2xx_cs-$(CONFIG_MACH_MAINSTONE)		+= pxa2xx_mainstone.o
++pxa2xx_cs-$(CONFIG_ARCH_PXA_IDP)		+= pxa2xx_idp.o
+ pxa2xx_cs-$(CONFIG_PXA_SHARPSL)			+= pxa2xx_sharpsl.o
+ 
+Index: linux-2.6.19/drivers/pcmcia/pxa2xx_idp.c
+===================================================================
+--- /dev/null
++++ linux-2.6.19/drivers/pcmcia/pxa2xx_idp.c
+@@ -0,0 +1,392 @@
++/*
++ * linux/drivers/pcmcia/pxa2xx_idp.c
++ *
++ * DevKitIDP PXA255 PCMCIA specific routines.
++ * Copyright (C) 2005 BSQUARE
++ * David Plentovich <davidp@bsquare.com>
++ *
++ * Based on pxa2xx_mainstone.c - Nicolas Pitre
++ * Based on (2.4.x) driver/pcmcia/pxa/pxa_idp.c - Jeff Sutherland
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ */
++
++#include <linux/module.h>
++#include <linux/init.h>
++#include <linux/kernel.h>
++#include <linux/errno.h>
++#include <linux/interrupt.h>
++#include <linux/device.h>
++#include <linux/delay.h>
++#include <linux/platform_device.h>
++
++#include <pcmcia/ss.h>
++
++#include <asm/hardware.h>
++#include <asm/irq.h>
++
++#include <asm/arch/pxa-regs.h>
++#include <asm/arch/idp.h>
++
++#include "soc_common.h"
++
++#define IDP_S0_CD_IRQ	PCMCIA_S0_CD_VALID
++#define IDP_S1_CD_IRQ	PCMCIA_S1_CD_VALID
++#define IDP_S0_IRQ	PCMCIA_S0_RDYINT
++#define IDP_S1_IRQ	PCMCIA_S1_RDYINT
++
++static struct pcmcia_irqs irqs[] = {
++	{ 0, IDP_S0_CD_IRQ, "PCMCIA0 CD" },
++	{ 1, IDP_S1_CD_IRQ, "PCMCIA1 CD" },
++};
++
++
++static int idp_pcmcia_hw_init_cnt = 0;
++
++
++static int idp_pcmcia_hw_init(struct soc_pcmcia_socket *skt)
++{
++	printk("%s: socket %i\n", __FUNCTION__, skt->nr);	//dcp
++
++	if (!idp_pcmcia_hw_init_cnt++)
++	{
++	  	/* Set PCMCIA Socket 0 power to standby mode.
++		*  PXA IDP has dedicated CPLD pins for all this stuff :-)
++	   	*/
++		IDP_CPLD_PCCARD_EN = PCC0_ENABLE | PCC1_ENABLE;	//both slots disabled, reset NOT active
++		IDP_CPLD_PCCARD_PWR = 0; //all power to both slots off
++	
++		/*
++		 * Setup default state of GPIO outputs
++		 * before we enable them as outputs.
++		 */
++		GPSR(GPIO48_nPOE) =
++			GPIO_bit(GPIO48_nPOE) |
++			GPIO_bit(GPIO49_nPWE) |
++			GPIO_bit(GPIO50_nPIOR) |
++			GPIO_bit(GPIO51_nPIOW) |
++			GPIO_bit(GPIO52_nPCE_1) |
++			GPIO_bit(GPIO53_nPCE_2);
++
++		pxa_gpio_mode(GPIO48_nPOE_MD);
++		pxa_gpio_mode(GPIO49_nPWE_MD);
++		pxa_gpio_mode(GPIO50_nPIOR_MD);
++		pxa_gpio_mode(GPIO51_nPIOW_MD);
++		pxa_gpio_mode(GPIO52_nPCE_1_MD);
++		pxa_gpio_mode(GPIO53_nPCE_2_MD);
++		pxa_gpio_mode(GPIO54_pSKTSEL_MD);
++		pxa_gpio_mode(GPIO55_nPREG_MD);
++		pxa_gpio_mode(GPIO56_nPWAIT_MD);
++		pxa_gpio_mode(GPIO57_nIOIS16_MD);
++
++#if 0	//x	
++		GPDR(IRQ_TO_GPIO_2_80(PCMCIA_S0_CD_VALID)) &= ~GPIO_bit(IRQ_TO_GPIO_2_80(PCMCIA_S0_CD_VALID));
++		GPDR(IRQ_TO_GPIO_2_80(PCMCIA_S1_CD_VALID)) &= ~GPIO_bit(IRQ_TO_GPIO_2_80(PCMCIA_S1_CD_VALID));
++
++		set_GPIO_IRQ_edge(IRQ_TO_GPIO_2_80(PCMCIA_S0_CD_VALID), GPIO_BOTH_EDGES);
++		set_GPIO_IRQ_edge(IRQ_TO_GPIO_2_80(PCMCIA_S1_CD_VALID), GPIO_BOTH_EDGES);
++
++		//irq's for slots:
++		GPDR(IRQ_TO_GPIO_2_80(PCMCIA_S0_RDYINT)) &= ~GPIO_bit(IRQ_TO_GPIO_2_80(PCMCIA_S0_RDYINT));
++		GPDR(IRQ_TO_GPIO_2_80(PCMCIA_S1_RDYINT)) &= ~GPIO_bit(IRQ_TO_GPIO_2_80(PCMCIA_S1_RDYINT));
++
++		set_GPIO_IRQ_edge(IRQ_TO_GPIO_2_80(PCMCIA_S0_RDYINT), GPIO_FALLING_EDGE);
++		set_GPIO_IRQ_edge(IRQ_TO_GPIO_2_80(PCMCIA_S1_RDYINT), GPIO_FALLING_EDGE);
++#endif	//x
++	}
++
++#if 0	//x
++	return_val = request_irq(PCMCIA_S0_CD_VALID, init->handler, SA_INTERRUPT, "PXA PCMCIA CD0", NULL);
++
++	if (return_val < 0)
++		return -1;
++	
++	return_val += request_irq(PCMCIA_S1_CD_VALID, init->handler, SA_INTERRUPT, "PXA PCMCIA CD1", NULL);
++	
++	if (return_val < 0) {
++		free_irq(PCMCIA_S0_CD_VALID, NULL);
++		return -1;
++	}
++
++	return 2;
++
++#endif	//x
++	skt->irq = (skt->nr == 0) ? IDP_S0_IRQ : IDP_S1_IRQ;
++	return soc_pcmcia_request_irqs(skt, irqs, ARRAY_SIZE(irqs));
++}
++
++static void idp_pcmcia_hw_shutdown(struct soc_pcmcia_socket *skt)
++{
++//x	free_irq(PCMCIA_S0_CD_VALID, NULL);
++//x	free_irq(PCMCIA_S1_CD_VALID, NULL);
++
++	printk("%s: socket %i\n", __FUNCTION__, skt->nr);	//dcp
++
++	soc_pcmcia_free_irqs(skt, irqs, ARRAY_SIZE(irqs));
++
++	if (!--idp_pcmcia_hw_init_cnt)
++	{
++		IDP_CPLD_PCCARD_EN = 0x03;	//disable slots
++		udelay(200);
++		IDP_CPLD_PCCARD_PWR = 0; //shut off all power
++	}
++}
++
++//x static unsigned long idp_pcmcia_status[2];
++
++static void idp_pcmcia_socket_state(struct soc_pcmcia_socket *skt,
++				    struct pcmcia_state *state)
++{
++	unsigned long status;
++	volatile unsigned long *stat_regs[2] = { &IDP_CPLD_PCCARD0_STATUS, &IDP_CPLD_PCCARD1_STATUS };
++//	printk("%s: socket %i\n", __FUNCTION__, skt->nr);	//dcp
++
++//x	status = (skt->nr == 0) ? IDP_PCMCIA0 : IDP_PCMCIA1;
++	status = *stat_regs[skt->nr];
++//x	flip = (status ^ idp_pcmcia_status[skt->nr]) & IDP_PCMCiIA_nSTSCHG_BVD1;
++
++#if 0	//x
++	/*
++	 * Workaround for STSCHG which can't be deasserted:
++	 * We therefore disable/enable corresponding IRQs
++	 * as needed to avoid IRQ locks.
++	 */
++	if (flip) {
++		idp_pcmcia_status[skt->nr] = status;
++		if (status & IDP_PCMCIA_nSTSCHG_BVD1)
++			enable_irq( (skt->nr == 0) ? IDP_S0_STSCHG_IRQ
++						   : IDP_S1_STSCHG_IRQ );
++		else
++			disable_irq( (skt->nr == 0) ? IDP_S0_STSCHG_IRQ
++						    : IDP_S1_STSCHG_IRQ );
++	}
++#endif	//x
++
++//x	state->detect = (status & IDP_PCMCIA_nCD) ? 0 : 1;
++	state->detect = (PCC_DETECT(skt->nr)) ? 0 : 1;		// this one is gpio
++	state->ready  = (status & _PCC_IRQ) ? 1 : 0;
++	state->bvd1   = (status & PCC_BVD1) ? 1 : 0;
++	state->bvd2   = (status & PCC_BVD2) ? 1 : 0;
++	state->wrprot = (status & _PCC_WRPROT) ? 1 : 0;
++	state->vs_3v  = (status & PCC_VS1) ? 0 : 1;
++	state->vs_Xv  = (status & PCC_VS2) ? 0 : 1;
++
++#if 0	
++		printk("%s: Sock %u flags: %s%s%s%s%s%s%s\n",__FUNCTION__,skt->nr,
++				(state->detect) ? "DET " : "",
++				(state->ready) ? "RDY " : "",
++				(state->bvd1) ? "BVD1 " : "",
++				(state->bvd2) ? "BVD2 " : "",
++				(state->wrprot) ? "WRPROT " : "",
++				(state->vs_3v) ? "VS_3V " : "",
++				(state->vs_Xv) ? "VS_XV " : "");
++#endif
++}
++
++static int idp_pcmcia_configure_socket(struct soc_pcmcia_socket *skt,
++				       const socket_state_t *state)
++{
++  /* The PXA Idp uses the Maxim MAX1602, with the following connections:
++   *
++   * Socket 0 (PCMCIA):
++   *	MAX1602	PXA_IDP		Register
++   *	Pin	Signal  	IDP_CPLD_PCCARD_PWR:
++   *	-----	-------		----------------------
++   *	A0VPP	PCC0_PWR0	bit0
++   *	A1VPP	PCC0_PWR1	bit1	
++   *	A0VCC	PCC0_PWR2	bit2
++   *	A1VCC	PCC0_PWR3	bit3
++   *	VX	VCC
++   *	VY	+3.3V
++   *	12IN	+12V
++   *	CODE	+3.3V		Cirrus  Code, CODE = High (VY)
++   *
++   * Socket 1 (PCMCIA):
++   *	MAX1602	PXA_IDP		Register
++   *	Pin	Signal		IDP_CPLD_PCCARD_PWR:
++   *	-----	-------		----------------------
++   *	A0VPP	PCC1_PWR0	bit4
++   *	A1VPP	PCC1_PWR1	bit5
++   *	A0VCC	PCC1_PWR2	bit6
++   *	A1VCC	PCC1_PWR3	bit7
++   *	VX	VCC
++   *	VY	+3.3V
++   *	12IN	+12V		
++   *	CODE	+3.3V		Cirrus  Code, CODE = High (VY)
++   *
++   */
++
++	printk("%s: socket %i %i %i\n", __FUNCTION__, skt->nr, state->Vcc, state->Vpp);	//dcp
++
++	switch (skt->nr) {
++		case 0:
++			switch (state->Vcc) {
++			    case 0:
++					IDP_CPLD_PCCARD_EN |= PCC0_ENABLE; // disable socket
++					udelay(200);
++					IDP_CPLD_PCCARD_PWR &= ~(PCC0_PWR2 | PCC0_PWR3);
++					break;
++
++			    case 33:
++					IDP_CPLD_PCCARD_PWR &= ~(PCC0_PWR2 | PCC0_PWR3);
++					IDP_CPLD_PCCARD_PWR |= PCC0_PWR3;
++					IDP_CPLD_PCCARD_EN &= ~PCC0_ENABLE; //turn it on
++					break;
++
++			    case 50:
++					IDP_CPLD_PCCARD_PWR &= ~(PCC0_PWR2 | PCC0_PWR3);
++					IDP_CPLD_PCCARD_PWR |= PCC0_PWR2;
++					IDP_CPLD_PCCARD_EN &= ~PCC0_ENABLE;
++					break;
++
++			    default:
++			 		printk(KERN_ERR "%s(): bad Vcc %u\n", __FUNCTION__, state->Vcc);
++					return -1;
++			}
++
++			switch (state->Vpp) {
++			    case 0:
++					IDP_CPLD_PCCARD_PWR &= ~(PCC0_PWR0 | PCC0_PWR1);
++					break;
++
++			    case 120:
++					IDP_CPLD_PCCARD_PWR &= ~(PCC0_PWR0 | PCC0_PWR1);
++					IDP_CPLD_PCCARD_PWR |= PCC0_PWR1;
++					break;
++
++			    default:
++				  	if(state->Vpp == state->Vcc) {
++						IDP_CPLD_PCCARD_PWR = (IDP_CPLD_PCCARD_PWR & ~(PCC0_PWR0 | PCC0_PWR1)) | PCC0_PWR0;
++					}
++					else {
++						printk(KERN_ERR "%s(): bad Vpp %u\n", __FUNCTION__, state->Vpp);
++						return -1;
++					}
++			}
++	
++			if (state->flags & SS_RESET) {
++				IDP_CPLD_PCCARD_EN = (IDP_CPLD_PCCARD_EN | PCC0_RESET);
++				printk("RESET\n");
++				}
++			else
++				IDP_CPLD_PCCARD_EN = (IDP_CPLD_PCCARD_EN & ~PCC0_RESET);
++
++	    	break;
++
++		case 1:
++			switch (state->Vcc) {
++		    	case 0:
++					IDP_CPLD_PCCARD_EN |= PCC1_ENABLE; // disable socket
++					udelay(200);
++					IDP_CPLD_PCCARD_PWR &= ~(PCC1_PWR2 | PCC1_PWR3);
++					break;
++
++			    case 33:
++					IDP_CPLD_PCCARD_PWR &= ~(PCC1_PWR2 | PCC1_PWR3);
++					IDP_CPLD_PCCARD_PWR |= PCC1_PWR3;
++					IDP_CPLD_PCCARD_EN &= ~PCC1_ENABLE; //turn it on
++					break;
++
++			    case 50:
++					IDP_CPLD_PCCARD_PWR &= ~(PCC1_PWR2 | PCC1_PWR3);
++					IDP_CPLD_PCCARD_PWR |= PCC1_PWR2;
++					IDP_CPLD_PCCARD_EN &= ~PCC1_ENABLE;
++					break;
++
++			    default:
++				 	printk(KERN_ERR "%s(): bad Vcc %u\n", __FUNCTION__, state->Vcc);
++					return -1;
++			}
++
++			switch (state->Vpp) {
++			    case 0:
++					IDP_CPLD_PCCARD_PWR &= ~(PCC1_PWR0 | PCC1_PWR1);
++				break;
++
++			    case 120:
++					IDP_CPLD_PCCARD_PWR &= ~(PCC1_PWR0 | PCC1_PWR1);
++					IDP_CPLD_PCCARD_PWR |= PCC1_PWR1;
++					break;
++
++			    default:
++			  		if(state->Vpp == state->Vcc) {
++						IDP_CPLD_PCCARD_PWR = (IDP_CPLD_PCCARD_PWR & ~(PCC1_PWR0 | PCC1_PWR1)) | PCC1_PWR0;
++					}
++					else {
++				  		printk(KERN_ERR "%s(): bad Vpp %u\n", __FUNCTION__, state->Vpp);
++						return -1;
++					}
++			}
++		
++			if (state->flags & SS_RESET) {
++				IDP_CPLD_PCCARD_EN = (IDP_CPLD_PCCARD_EN | PCC1_RESET);
++				printk("RESET\n");
++				}
++			else
++				IDP_CPLD_PCCARD_EN = (IDP_CPLD_PCCARD_EN & ~PCC1_RESET);
++
++		    break;
++	}
++	return 0;
++}
++
++static void idp_pcmcia_socket_init(struct soc_pcmcia_socket *skt)
++{
++	printk("%s: socket %i\n", __FUNCTION__, skt->nr);	//dcp
++}
++
++static void idp_pcmcia_socket_suspend(struct soc_pcmcia_socket *skt)
++{
++	printk("%s: socket %i\n", __FUNCTION__, skt->nr);	//dcp
++}
++
++static struct pcmcia_low_level idp_pcmcia_ops = {
++	.owner			= THIS_MODULE,
++	.hw_init		= idp_pcmcia_hw_init,
++	.hw_shutdown		= idp_pcmcia_hw_shutdown,
++	.socket_state		= idp_pcmcia_socket_state,
++	.configure_socket	= idp_pcmcia_configure_socket,
++	.socket_init		= idp_pcmcia_socket_init,
++	.socket_suspend		= idp_pcmcia_socket_suspend,
++	.nr			= 2,
++};
++
++static struct platform_device *idp_pcmcia_device;
++
++static int __init idp_pcmcia_init(void)
++{
++	int ret;
++	printk("%s\n", __FUNCTION__);	//dcp
++
++	idp_pcmcia_device = platform_device_alloc("pxa2xx-pcmcia", -1);
++	if (!idp_pcmcia_device)
++		return -ENOMEM;
++	memset(idp_pcmcia_device, 0, sizeof(*idp_pcmcia_device));
++	idp_pcmcia_device->name = "pxa2xx-pcmcia";
++	idp_pcmcia_device->dev.platform_data = &idp_pcmcia_ops;
++
++	ret = platform_device_register(idp_pcmcia_device);
++	if (ret)
++		kfree(idp_pcmcia_device);
++
++	return ret;
++}
++
++static void __exit idp_pcmcia_exit(void)
++{
++	printk("%s\n", __FUNCTION__);	//dcp
++	/*
++	 * This call is supposed to free our idp_pcmcia_device.
++	 * Unfortunately platform_device don't have a free method, and
++	 * we can't assume it's free of any reference at this point so we
++	 * can't free it either.
++	 */
++	platform_device_unregister(idp_pcmcia_device);
++}
++
++module_init(idp_pcmcia_init);
++module_exit(idp_pcmcia_exit);
++
++MODULE_LICENSE("GPL");
+Index: linux-2.6.19/include/asm-arm/arch-pxa/idp.h
+===================================================================
+--- linux-2.6.19.orig/include/asm-arm/arch-pxa/idp.h
++++ linux-2.6.19/include/asm-arm/arch-pxa/idp.h
+@@ -179,15 +179,15 @@
+ #define KEYBD_MATRIX_NUMBER_INPUTS	7
+ #define KEYBD_MATRIX_NUMBER_OUTPUTS	14
+ 
+-#define KEYBD_MATRIX_INVERT_OUTPUT_LOGIC	FALSE
+-#define KEYBD_MATRIX_INVERT_INPUT_LOGIC		FALSE
++#undef KEYBD_MATRIX_INVERT_OUTPUT_LOGIC
++#undef KEYBD_MATRIX_INVERT_INPUT_LOGIC
+ 
+-#define KEYBD_MATRIX_SETTLING_TIME_US			100
++#define KEYBD_MATRIX_SETTLING_TIME_US			40
+ #define KEYBD_MATRIX_KEYSTATE_DEBOUNCE_CONSTANT		2
+ 
+ #define KEYBD_MATRIX_SET_OUTPUTS(outputs) \
+ {\
+-	IDP_CPLD_KB_COL_LOW = outputs;\
++	IDP_CPLD_KB_COL_LOW = outputs & 0x7f;\
+ 	IDP_CPLD_KB_COL_HIGH = outputs >> 7;\
+ }
+ 

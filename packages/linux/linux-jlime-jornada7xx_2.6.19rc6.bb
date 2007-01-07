@@ -20,7 +20,6 @@ KERNEL_CCSUFFIX = "-3.4.4"
 
 ARCH = "arm"
 KERNEL_IMAGETYPE = "zImage"
-KERNEL_RELEASE = "2.6.19-rc6"
 
 FILES_kernel-image = "/boot/${KERNEL_IMAGETYPE}*"
 

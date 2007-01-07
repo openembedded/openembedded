@@ -26,7 +26,7 @@ do_deploy() {
                 install -d ${DEPLOY_DIR_IMAGE}
                 ${OBJCOPY} -O binary -R .note -R .comment -S ${KERNEL_OUTPUT} ${S}/linux.bin
                 gzip -f -9 ${S}/linux.bin
-                mkimage -A arm -O linux -T kernel -C gzip -a 0x10008000 -e 0x10008000 -n "OE" -d ${S}/linux.bin.gz ${DEPLOY_DIR_IMAGE}/${KERNEL_IMAGETYPE}-${KERNEL_RELEASE}-${MACHINE}-${DATETIME}.bin
+                mkimage -A arm -O linux -T kernel -C gzip -a 0x10008000 -e 0x10008000 -n "OE" -d ${S}/linux.bin.gz ${DEPLOY_DIR_IMAGE}/${KERNEL_IMAGETYPE}-${KERNEL_VERSION}-${MACHINE}-${DATETIME}.bin
                 rm ${S}/linux.bin.gz
         fi
 }

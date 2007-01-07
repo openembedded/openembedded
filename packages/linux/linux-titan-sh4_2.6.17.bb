@@ -19,9 +19,6 @@ ARCH = "sh"
 KERNEL_IMAGETYPE = "zImage"
 KERNEL_OUTPUT = "arch/${ARCH}/boot/${KERNEL_IMAGETYPE}"
 
-# Fix up kernel version - sh kernels get -sh added automatically
-KERNEL_RELEASE = "${KERNEL_VERSION}"
-
 #
 # The linux-sh cvs tree is a "drop in source tree" and needs to be copied
 # over the top of the normal linux source since it only includes modified
