@@ -9,7 +9,7 @@ inherit kernel
 # therefore
 # PROVIDES = "virtual/kernel"
 
-DEPENDS = "uboot"
+DEPENDS = "u-boot"
 RDEPENDS = "mtd-utils"
 
 SRC_URI += "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-${KV}.tar.bz2 \
