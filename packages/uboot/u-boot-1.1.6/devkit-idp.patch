@@ -1,0 +1,28 @@
+Index: u-boot-1.1.6/board/pxa255_idp/memsetup.S
+===================================================================
+--- u-boot-1.1.6.orig/board/pxa255_idp/memsetup.S
++++ u-boot-1.1.6/board/pxa255_idp/memsetup.S
+@@ -41,8 +41,8 @@ DRAM_SIZE:  .long   CFG_DRAM_SIZE
+ /*
+  * 	Memory setup
+  */
+-.globl memsetup
+-memsetup:
++.globl lowlevel_init
++lowlevel_init:
+ 
+ 	mov      r10, lr
+ 
+Index: u-boot-1.1.6/include/configs/pxa255_idp.h
+===================================================================
+--- u-boot-1.1.6.orig/include/configs/pxa255_idp.h
++++ u-boot-1.1.6/include/configs/pxa255_idp.h
+@@ -41,7 +41,7 @@
+  * If we are developing, we might want to start armboot from ram
+  * so we MUST NOT initialize critical regs like mem-timing ...
+  */
+-#define CONFIG_INIT_CRITICAL			/* undef for developing */
++#undef CONFIG_INIT_CRITICAL			/* undef for developing */
+ 
+ /*
+  * define the following to enable debug blinks.  A debug blink function

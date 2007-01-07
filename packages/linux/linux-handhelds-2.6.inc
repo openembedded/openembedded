@@ -61,6 +61,11 @@ do_configure() {
 do_deploy() {
 	install -d ${DEPLOY_DIR_IMAGE}
 	install -m 0644 arch/${ARCH}/boot/${KERNEL_IMAGETYPE} ${DEPLOY_DIR_IMAGE}/${KERNEL_IMAGETYPE}-${PV}-${MACHINE}-${DATETIME}
+
+	#reflash.ctl is required to reflash using bootldr
+	# format:
+	# name file md5sumfile destination
+	echo "${MACHINE}-kernel-${DATETIME} ${KERNEL_IMAGETYPE}-${PV}-${MACHINE}-${DATETIME} - kernel" >> ${DEPLOY_DIR_IMAGE}/reflash.ctl
 }   
    
 do_deploy[dirs] = "${S}"
