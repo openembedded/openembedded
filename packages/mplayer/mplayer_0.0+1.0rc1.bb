@@ -2,7 +2,7 @@ DESCRIPTION = "Open Source multimedia player."
 SECTION = "multimedia"
 PRIORITY = "optional"
 HOMEPAGE = "http://www.mplayerhq.hu/"
-DEPENDS = "virtual/libsdl libmad zlib libpng jpeg liba52 freetype fontconfig alsa-lib lzo ncurses lame"
+DEPENDS = "virtual/libsdl libmad zlib libpng jpeg liba52 freetype fontconfig alsa-lib lzo ncurses lame libxv virtual/libx11"
 RDEPENDS = "mplayer-common"
 LICENSE = "GPL"
 SRC_URI = "http://www1.mplayerhq.hu/MPlayer/releases/MPlayer-1.0rc1.tar.bz2 \
@@ -29,7 +29,7 @@ PACKAGE_ARCH_mencoder_collie = "collie"
 
 RCONFLICTS_${PN} = "mplayer-atty"
 RREPLACES_${PN} = "mplayer-atty"
-PR = "r4"
+PR = "r5"
 
 PARALLEL_MAKE = ""
 
@@ -135,11 +135,11 @@ EXTRA_OECONF = " \
         --disable-dvbhead \
         --disable-mga \
         --disable-xmga \
-        --disable-xv \
+        --enable-xv \
         --disable-xvmc \
         --disable-vm \
         --disable-xinerama \
-        --disable-x11 \
+        --enable-x11 \
 	--enable-fbdev \
         --disable-mlib \
         --disable-3dfx \
