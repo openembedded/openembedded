@@ -1,0 +1,50 @@
+diff -ur fbreader-0.7.4q.org/makefiles/arch/openzaurus.mk fbreader-0.7.4q/makefiles/arch/openzaurus.mk
+--- fbreader-0.7.4q.org/makefiles/arch/openzaurus.mk	2006-12-05 10:47:51.000000000 +0000
++++ fbreader-0.7.4q/makefiles/arch/openzaurus.mk	2007-01-07 04:58:17.000000000 +0000
+@@ -15,7 +15,7 @@
+ RM = rm -rvf
+ RM_QUIET = rm -rf
+ QTINCLUDE = -I $(INCPATH)/qt2
+-GTKINCLUDE = -I$(LIBPATH)/glib-2.0/include -I$(LIBPATH)/gtk-2.0/include -I$(INCPATH)/glib-2.0 -I$(INCPATH)/gtk-2.0 -I$(INCPATH)/pango-1.0 -I$(INCPATH)/atk-1.0
++GTKINCLUDE = -I$(LIBPATH)/glib-2.0/include -I$(LIBPATH)/gtk-2.0/include -I$(INCPATH)/cairo -I$(INCPATH)/glib-2.0 -I$(INCPATH)/gtk-2.0 -I$(INCPATH)/pango-1.0 -I$(INCPATH)/atk-1.0
+ MOC = $(TOOLSPATH)/moc
+ CC = $(TOOLSPATH)/arm-linux-gcc
+ AR = $(TOOLSPATH)/arm-linux-ar rsu
+@@ -26,10 +26,10 @@
+ BZIP2LIBS = -lbz2
+ 
+ ifeq "$(UI_TYPE)" "opie"
+-	UILIBS = -lqte -lqpe
++	UILIBS = -lqt-mt
+ else
+-	UILIBS = -lgpewidget -lgtk-x11-2.0 -lgdk-x11-2.0 -lgdk_pixbuf-2.0
++	UILIBS = $(shell pkg-config --libs gtk+-2.0) -lgpewidget
+ endif
+ 
+-CFLAGS = -pipe -DOPIE_NO_DEBUG -DQT_NO_DEBUG -DQWS -fno-exceptions -fno-rtti -march=armv4 -mtune=xscale --param large-function-growth=2000 --param inline-unit-growth=200 -Wall -Wno-ctor-dtor-privacy -W -Winline
+-LDFLAGS = -Wl,-rpath,$(LIBDIR)
++CFLAGS = -pipe -DOPIE_NO_DEBUG -DQT_NO_DEBUG -DQWS -fno-exceptions -fno-rtti $(OE_CFLAGS)
++LDFLAGS = -Wl,-rpath,$(LIBDIR) -Wl,-rpath,$(LIBPATH)
+diff -ur fbreader-0.7.4q.org/makefiles/target.mk fbreader-0.7.4q/makefiles/target.mk
+--- fbreader-0.7.4q.org/makefiles/target.mk	2006-12-05 10:47:51.000000000 +0000
++++ fbreader-0.7.4q/makefiles/target.mk	2007-01-07 04:16:20.000000000 +0000
+@@ -1,6 +1,6 @@
+-#TARGET_ARCH = openzaurus
++TARGET_ARCH = openzaurus
+ #UI_TYPE = opie
+-#UI_TYPE = gpe
++UI_TYPE = gpe
+ 
+ #TARGET_ARCH = opensimpad-0.9.0
+ #UI_TYPE = opie
+@@ -11,8 +11,8 @@
+ #TARGET_ARCH = maemo
+ #UI_TYPE = maemo
+ 
+-TARGET_ARCH = desktop
+-UI_TYPE = gtk
++#TARGET_ARCH = desktop
++#UI_TYPE = gtk
+ #UI_TYPE = qt
+ 
+ #TARGET_ARCH = zaurus
