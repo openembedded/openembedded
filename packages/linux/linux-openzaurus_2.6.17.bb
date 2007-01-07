@@ -62,7 +62,6 @@ SRC_URI = "http://www.kernel.org/pub/linux/kernel/v2.6/linux-2.6.17.tar.bz2 \
            file://connectplus-remove-ide-HACK.patch;patch=1;status=hack \
            file://orinoco-remove-all-which-are-in-hostap-HACK.patch;patch=1;status=unmergable-hack \
            file://squashfs3.0-2.6.15.patch;patch=1;status=external \
-file://sharpsl-rc.patch;patch=1 \
            file://defconfig-c7x0 \
            file://defconfig-ipaq-pxa270 \
            file://defconfig-collie \

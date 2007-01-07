@@ -14,6 +14,7 @@ export IPKG_INSTALL += "task-e-x11-core \
                         gpe-soundserver \
                         gpe-confd \
                         xauth \
+                        e17-gpe-menu-convert \
                         pango-module-basic-fc \
                         gdk-pixbuf-loader-bmp \
                         gdk-pixbuf-loader-gif \
@@ -31,6 +32,6 @@ export IPKG_INSTALL += "task-e-x11-core \
 #                        gaim \
 #                        sylpheed \
 
-DEPENDS += "task-e-x11-core meta-gpe figment xhost gpe-soundserver gpe-confd xauth"
+DEPENDS += "task-e-x11-core meta-gpe e17-gpe-menu-convert figment xhost gpe-soundserver gpe-confd xauth"
 
 RDEPENDS = "${IPKG_INSTALL}"
