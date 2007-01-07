@@ -1,0 +1,13 @@
+Index: xf86-video-vesa-X11R7.1-1.2.0/configure.ac
+===================================================================
+--- xf86-video-vesa-X11R7.1-1.2.0.orig/configure.ac	2007-01-07 19:28:00.000000000 +0100
++++ xf86-video-vesa-X11R7.1-1.2.0/configure.ac	2007-01-07 19:28:02.000000000 +0100
+@@ -57,7 +57,7 @@
+ sdkdir=$(pkg-config --variable=sdkdir xorg-server)
+ 
+ CFLAGS="$CFLAGS $XORG_CFLAGS "' -I$(top_srcdir)/src'
+-INCLUDES="$XORG_INCS -I${sdkdir} "'-I$(top_srcdir)/src -I$(prefix)/include'
++INCLUDES="$XORG_INCS -I${sdkdir} "'-I$(top_srcdir)/src'
+ AC_SUBST([CFLAGS])
+ AC_SUBST([INCLUDES])
+ 
