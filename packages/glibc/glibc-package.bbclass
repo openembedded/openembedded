@@ -257,7 +257,7 @@ python package_do_split_gconvs () {
 		i18npath = os.path.join(treedir, datadir, "i18n")
 
 		localedef_opts = "--force --old-style --no-archive --prefix=%s --inputfile=%s/i18n/locales/%s --charmap=%s %s" % (treedir, datadir, locale, encoding, locale)
-		cmd = "PATH=\"%s\" I18NPATH=\"%s\" %s -L %s %s/bin/localedef %s" % (path, i18npath, qemu, treedir, treedir, localedef_opts)
+		cmd = "PATH=\"%s\" I18NPATH=\"%s\" %s -L %s/%s %s/bin/localedef %s" % (path, i18npath, qemu, bb.data.getVar("STAGING_DIR", d, 1), bb.data.getVar("TARGET_SYS", d, 1), treedir, localedef_opts)
 		bb.note("generating locale %s (%s)" % (locale, encoding))
 		if os.system(cmd):
 			raise bb.build.FuncFailed("localedef returned an error.")
