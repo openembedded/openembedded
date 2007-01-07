@@ -3,7 +3,8 @@ LICENSE = "GPL2"
 HOMEPAGE = "http://only.mawhrin.net/fbreader/"
 SECTION = "x11/utils"
 PRIORITY = "optional"
-DEPENDS = "gtk+ enca expat"
+DEPENDS = "gtk+ enca expat bzip2"
+PR = "r1"
 
 SRC_URI = "http://only.mawhrin.net/fbreader/obsolete/fbreader-sources-${PV}.tgz \
 	file://fbreader-0.7.3d_buildsys_oe.patch;patch=1"
