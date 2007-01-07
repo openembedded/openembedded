@@ -154,6 +154,3 @@ SRC_URI_append_poodle = "\
 	   ${RPSRC}/rp_poodle_hacks-r0.patch;patch=1"
 
 S = "${WORKDIR}/linux-2.6.16"
-
-# to get module dependencies working
-KERNEL_RELEASE = "2.6.16"

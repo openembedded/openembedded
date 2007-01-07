@@ -22,5 +22,3 @@ KERNEL_IMAGETYPE = "bzImage"
 do_configure_prepend() {
 	install -m 0644 ${WORKDIR}/defconfig ${S}/.config
 }
-
-KERNEL_RELEASE = "2.6.19-rc6"

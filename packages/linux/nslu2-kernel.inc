@@ -178,9 +178,6 @@ EXTRA_OEMAKE += "EXTRAVERSION="
 EXTRA_OEMAKE += "LOCALVERSION="
 EXTRA_OEMAKE += "MAKEFLAGS='--no-print-directory'"
 
-# Override KERNEL_RELEASE from kernel.bbclass to match:
-KERNEL_RELEASE = "${KERNEL_VERSION}"
-
 addtask unpacklocal before do_patch after do_unpack
 
 # NOTE: in MM kernel builds the config options (oldconfig, menuconfig

@@ -177,9 +177,6 @@ EXTRA_OEMAKE += "EXTRAVERSION="
 EXTRA_OEMAKE += "LOCALVERSION="
 EXTRA_OEMAKE += "MAKEFLAGS='--no-print-directory'"
 
-# Override KERNEL_RELEASE from kernel.bbclass to match:
-KERNEL_RELEASE = "${KERNEL_VERSION}"
-
 # Set the correct CONFIG_CPU_xxx_ENDIAN and CONFIG_CMDLINE at the head
 # of the .config file and remove any settings in defconfig then append
 # defconfig to .config
@@ -238,7 +235,7 @@ do_configure_prepend() {
 # The generic package only includes the generic image, the other
 # packages are made below (they are kernel-image packages but
 # with a different ARCH).
-FILES_kernel-image = "/boot/${KERNEL_IMAGETYPE}-${IXP4XX_SUFFIX}-${KERNEL_RELEASE}"
+FILES_kernel-image = "/boot/${KERNEL_IMAGETYPE}-${IXP4XX_SUFFIX}-${KERNEL_VERSION}"
 
 # MACHINE DEFINITIONS: one block for each machine
 
@@ -248,12 +245,12 @@ PACKAGES += "kernel-image-nslu2"
 PKG_kernel-image-nslu2 = "kernel-image-${KERNEL_VERSION}"
 PACKAGE_ARCH_kernel-image-nslu2 = "nslu2${ARCH_BYTE_SEX}"
 DESCRIPTION_kernel-image-nslu2 = "Linux kernel for the LinkSys NSLU2"
-FILES_kernel-image-nslu2 = "/${KERNEL_IMAGEDEST}/${KERNEL_IMAGETYPE}-nslu2${ARCH_BYTE_SEX}-${KERNEL_RELEASE}"
+FILES_kernel-image-nslu2 = "/${KERNEL_IMAGEDEST}/${KERNEL_IMAGETYPE}-nslu2${ARCH_BYTE_SEX}-${KERNEL_VERSION}"
 pkg_postinst_kernel-image-nslu2 () {
-	update-alternatives --install /${KERNEL_IMAGEDEST}/${KERNEL_IMAGETYPE} ${KERNEL_IMAGETYPE} /${KERNEL_IMAGEDEST}/${KERNEL_IMAGETYPE}-nslu2${ARCH_BYTE_SEX}-${KERNEL_RELEASE} ${KERNEL_PRIORITY} || true
+	update-alternatives --install /${KERNEL_IMAGEDEST}/${KERNEL_IMAGETYPE} ${KERNEL_IMAGETYPE} /${KERNEL_IMAGEDEST}/${KERNEL_IMAGETYPE}-nslu2${ARCH_BYTE_SEX}-${KERNEL_VERSION} ${KERNEL_PRIORITY} || true
 }
 pkg_postrm_kernel-image-nslu2 () {
-	update-alternatives --remove ${KERNEL_IMAGETYPE} /${KERNEL_IMAGEDEST}/${KERNEL_IMAGETYPE}-nslu2${ARCH_BYTE_SEX}-${KERNEL_RELEASE} || true
+	update-alternatives --remove ${KERNEL_IMAGETYPE} /${KERNEL_IMAGEDEST}/${KERNEL_IMAGETYPE}-nslu2${ARCH_BYTE_SEX}-${KERNEL_VERSION} || true
 }
 
 # The correct settings for Loft:
@@ -262,12 +259,12 @@ PACKAGES += "kernel-image-loft"
 PKG_kernel-image-loft = "kernel-image-${KERNEL_VERSION}"
 PACKAGE_ARCH_kernel-image-loft = "loft${ARCH_BYTE_SEX}"
 DESCRIPTION_kernel-image-loft = "Linux kernel for the Giant Shoulder Inc. Loft board"
-FILES_kernel-image-loft = "/${KERNEL_IMAGEDEST}/${KERNEL_IMAGETYPE}-loft${ARCH_BYTE_SEX}-${KERNEL_RELEASE}"
+FILES_kernel-image-loft = "/${KERNEL_IMAGEDEST}/${KERNEL_IMAGETYPE}-loft${ARCH_BYTE_SEX}-${KERNEL_VERSION}"
 pkg_postinst_kernel-image-loft () {
-	update-alternatives --install /${KERNEL_IMAGEDEST}/${KERNEL_IMAGETYPE} ${KERNEL_IMAGETYPE} /${KERNEL_IMAGEDEST}/${KERNEL_IMAGETYPE}-loft${ARCH_BYTE_SEX}-${KERNEL_RELEASE} ${KERNEL_PRIORITY} || true
+	update-alternatives --install /${KERNEL_IMAGEDEST}/${KERNEL_IMAGETYPE} ${KERNEL_IMAGETYPE} /${KERNEL_IMAGEDEST}/${KERNEL_IMAGETYPE}-loft${ARCH_BYTE_SEX}-${KERNEL_VERSION} ${KERNEL_PRIORITY} || true
 }
 pkg_postrm_kernel-image-loft () {
-	update-alternatives --remove ${KERNEL_IMAGETYPE} /${KERNEL_IMAGEDEST}/${KERNEL_IMAGETYPE}-loft${ARCH_BYTE_SEX}-${KERNEL_RELEASE} || true
+	update-alternatives --remove ${KERNEL_IMAGETYPE} /${KERNEL_IMAGEDEST}/${KERNEL_IMAGETYPE}-loft${ARCH_BYTE_SEX}-${KERNEL_VERSION} || true
 }
 
 # The correct settings for the NAS100D board:
@@ -276,12 +273,12 @@ PACKAGES += "kernel-image-nas100d"
 PKG_kernel-image-nas100d = "kernel-image-${KERNEL_VERSION}"
 PACKAGE_ARCH_kernel-image-nas100d = "nas100d${ARCH_BYTE_SEX}"
 DESCRIPTION_kernel-image-nas100d = "Linux kernel for the IOMega NAS100D"
-FILES_kernel-image-nas100d = "/${KERNEL_IMAGEDEST}/${KERNEL_IMAGETYPE}-nas100d${ARCH_BYTE_SEX}-${KERNEL_RELEASE}"
+FILES_kernel-image-nas100d = "/${KERNEL_IMAGEDEST}/${KERNEL_IMAGETYPE}-nas100d${ARCH_BYTE_SEX}-${KERNEL_VERSION}"
 pkg_postinst_kernel-image-nas100d () {
-	update-alternatives --install /${KERNEL_IMAGEDEST}/${KERNEL_IMAGETYPE} ${KERNEL_IMAGETYPE} /${KERNEL_IMAGEDEST}/${KERNEL_IMAGETYPE}-nas100d${ARCH_BYTE_SEX}-${KERNEL_RELEASE} ${KERNEL_PRIORITY} || true
+	update-alternatives --install /${KERNEL_IMAGEDEST}/${KERNEL_IMAGETYPE} ${KERNEL_IMAGETYPE} /${KERNEL_IMAGEDEST}/${KERNEL_IMAGETYPE}-nas100d${ARCH_BYTE_SEX}-${KERNEL_VERSION} ${KERNEL_PRIORITY} || true
 }
 pkg_postrm_kernel-image-nas100d () {
-	update-alternatives --remove ${KERNEL_IMAGETYPE} /${KERNEL_IMAGEDEST}/${KERNEL_IMAGETYPE}-nas100d${ARCH_BYTE_SEX}-${KERNEL_RELEASE} || true
+	update-alternatives --remove ${KERNEL_IMAGETYPE} /${KERNEL_IMAGEDEST}/${KERNEL_IMAGETYPE}-nas100d${ARCH_BYTE_SEX}-${KERNEL_VERSION} || true
 }
 
 # The correct settings for the DSMG600 board:
@@ -290,12 +287,12 @@ PACKAGES += "kernel-image-dsmg600"
 PKG_kernel-image-dsmg600 = "kernel-image-${KERNEL_VERSION}"
 PACKAGE_ARCH_kernel-image-dsmg600 = "dsmg600${ARCH_BYTE_SEX}"
 DESCRIPTION_kernel-image-dsmg600 = "Linux kernel for the D-Link DSM-G600"
-FILES_kernel-image-dsmg600 = "/${KERNEL_IMAGEDEST}/${KERNEL_IMAGETYPE}-dsmg600${ARCH_BYTE_SEX}-${KERNEL_RELEASE}"
+FILES_kernel-image-dsmg600 = "/${KERNEL_IMAGEDEST}/${KERNEL_IMAGETYPE}-dsmg600${ARCH_BYTE_SEX}-${KERNEL_VERSION}"
 pkg_postinst_kernel-image-dsmg600 () {
-	update-alternatives --install /${KERNEL_IMAGEDEST}/${KERNEL_IMAGETYPE} ${KERNEL_IMAGETYPE} /${KERNEL_IMAGEDEST}/${KERNEL_IMAGETYPE}-dsmg600${ARCH_BYTE_SEX}-${KERNEL_RELEASE} ${KERNEL_PRIORITY} || true
+	update-alternatives --install /${KERNEL_IMAGEDEST}/${KERNEL_IMAGETYPE} ${KERNEL_IMAGETYPE} /${KERNEL_IMAGEDEST}/${KERNEL_IMAGETYPE}-dsmg600${ARCH_BYTE_SEX}-${KERNEL_VERSION} ${KERNEL_PRIORITY} || true
 }
 pkg_postrm_kernel-image-dsmg600 () {
-	update-alternatives --remove ${KERNEL_IMAGETYPE} /${KERNEL_IMAGEDEST}/${KERNEL_IMAGETYPE}-dsmg600${ARCH_BYTE_SEX}-${KERNEL_RELEASE} || true
+	update-alternatives --remove ${KERNEL_IMAGETYPE} /${KERNEL_IMAGEDEST}/${KERNEL_IMAGETYPE}-dsmg600${ARCH_BYTE_SEX}-${KERNEL_VERSION} || true
 }
 
 # The correct settings for the FSG-3 board:
@@ -304,12 +301,12 @@ PACKAGES += "kernel-image-fsg3"
 PKG_kernel-image-fsg3 = "kernel-image-${KERNEL_VERSION}"
 PACKAGE_ARCH_kernel-image-fsg3 = "fsg3${ARCH_BYTE_SEX}"
 DESCRIPTION_kernel-image-fsg3 = "Linux kernel for the Freecom FSG-3"
-FILES_kernel-image-fsg3 = "/${KERNEL_IMAGEDEST}/${KERNEL_IMAGETYPE}-fsg3${ARCH_BYTE_SEX}-${KERNEL_RELEASE}"
+FILES_kernel-image-fsg3 = "/${KERNEL_IMAGEDEST}/${KERNEL_IMAGETYPE}-fsg3${ARCH_BYTE_SEX}-${KERNEL_VERSION}"
 pkg_postinst_kernel-image-fsg3 () {
-	update-alternatives --install /${KERNEL_IMAGEDEST}/${KERNEL_IMAGETYPE} ${KERNEL_IMAGETYPE} /${KERNEL_IMAGEDEST}/${KERNEL_IMAGETYPE}-fsg3${ARCH_BYTE_SEX}-${KERNEL_RELEASE} ${KERNEL_PRIORITY} || true
+	update-alternatives --install /${KERNEL_IMAGEDEST}/${KERNEL_IMAGETYPE} ${KERNEL_IMAGETYPE} /${KERNEL_IMAGEDEST}/${KERNEL_IMAGETYPE}-fsg3${ARCH_BYTE_SEX}-${KERNEL_VERSION} ${KERNEL_PRIORITY} || true
 }
 pkg_postrm_kernel-image-fsg3 () {
-	update-alternatives --remove ${KERNEL_IMAGETYPE} /${KERNEL_IMAGEDEST}/${KERNEL_IMAGETYPE}-fsg3${ARCH_BYTE_SEX}-${KERNEL_RELEASE} || true
+	update-alternatives --remove ${KERNEL_IMAGETYPE} /${KERNEL_IMAGEDEST}/${KERNEL_IMAGETYPE}-fsg3${ARCH_BYTE_SEX}-${KERNEL_VERSION} || true
 }
 
 #FIXUP: the correct instructions to copy the kernel prepended with the le fixup
@@ -346,13 +343,13 @@ copy_image() {
 }
 
 install_image() {
-	copy_image '${D}/${KERNEL_IMAGEDEST}/${KERNEL_IMAGETYPE}-'"$1"'-${KERNEL_RELEASE}' "$2"
+	copy_image '${D}/${KERNEL_IMAGEDEST}/${KERNEL_IMAGETYPE}-'"$1"'-${KERNEL_VERSION}' "$2"
 }
 
 do_install_append() {
 	# Overwrite the unshimmed generic image with a shimmed one (but without
 	# any command line or machine id override).
-	rm -f '${D}/${KERNEL_IMAGEDEST}/${KERNEL_IMAGETYPE}-${KERNEL_RELEASE}'
+	rm -f '${D}/${KERNEL_IMAGEDEST}/${KERNEL_IMAGETYPE}-${KERNEL_VERISON}'
 	install_image '${IXP4XX_SUFFIX}'
 
 	# Add the machine specific images, with appropriate suffixes

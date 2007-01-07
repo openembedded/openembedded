@@ -22,10 +22,6 @@ ARCH = "arm"
 KERNEL_IMAGETYPE = "zImage"
 RPROVIDES_kernel-image += "hostap-modules"
 
-# to get module dependencies working
-KERNEL_RELEASE = "2.6.19-rc6"
-
-
 #CMDLINE_ROOT = "root=/dev/mtdblock4 rootfstype=jffs2 mem=32M@0x00000000"
 #CMDLINE = "${CMDLINE_ROOT} ${CMDLINE_CONSOLE}"
 
