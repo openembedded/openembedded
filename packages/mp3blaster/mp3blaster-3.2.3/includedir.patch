@@ -1,0 +1,37 @@
+Index: mp3blaster-3.2.3/mpegsound/Makefile.am
+===================================================================
+--- mp3blaster-3.2.3.orig/mpegsound/Makefile.am	2007-01-07 02:32:21.000000000 +0100
++++ mp3blaster-3.2.3/mpegsound/Makefile.am	2007-01-07 02:32:31.000000000 +0100
+@@ -12,5 +12,5 @@
+ 
+ noinst_HEADERS		= mpegsound.h mpegsound_locals.h
+ 
+-INCLUDES                = -I$(srcdir) -I$(includedir)
++INCLUDES                = -I$(srcdir)
+ AM_CXXFLAGS             = @NAS_CFLAGS@
+Index: mp3blaster-3.2.3/nmixer/Makefile.am
+===================================================================
+--- mp3blaster-3.2.3.orig/nmixer/Makefile.am	2007-01-07 02:32:22.000000000 +0100
++++ mp3blaster-3.2.3/nmixer/Makefile.am	2007-01-07 02:32:36.000000000 +0100
+@@ -2,7 +2,7 @@
+ nmixer_SOURCES	= main.cc
+ nmixer_DEPENDENCIES = libnmixer.a
+ LDADD           = @NCURSES_LIBS@ @NAS_LIBS@ @LIBNMIXER@
+-INCLUDES		= -I/usr/include/ncurses -I$(srcdir) -I$(includedir)
++INCLUDES		= -I$(srcdir)
+ noinst_LIBRARIES = libnmixer.a
+ libnmixer_a_SOURCES = nmixer.cc mixers.cc ossmixer.cc nasmixer.cc nmixer.h \
+                       getopt.c getopt1.c getopt_local.h nullmixer.cc
+Index: mp3blaster-3.2.3/src/Makefile.am
+===================================================================
+--- mp3blaster-3.2.3.orig/src/Makefile.am	2007-01-07 02:32:22.000000000 +0100
++++ mp3blaster-3.2.3/src/Makefile.am	2007-01-07 02:32:49.000000000 +0100
+@@ -35,7 +35,7 @@
+ mp3tag_DEPENDENCIES = ../mpegsound/libmpegsound.a ../nmixer/libnmixer.a
+ mp3tag_LDADD = @LIBMPEGSOUND@ @LIBESD@ @LIBSDL@
+ mp3blaster_DEPENDENCIES = ../mpegsound/libmpegsound.a ../nmixer/libnmixer.a
+-INCLUDES		= -I$(top_srcdir)/mpegsound -I/usr/include/ncurses -I$(top_srcdir)/nmixer -I$(includedir)
++INCLUDES		= -I$(top_srcdir)/mpegsound -I$(top_srcdir)/nmixer
+ mp3blaster_LDADD	= @LIBMPEGSOUND@ @LIBNMIXER@ @NAS_LIBS@ @SID_LIBS@ @OGG_LIBS@ @LIRC_LIBS@ @NCURSES_LIBS@ @LIBESD@ @LIBSDL@
+ EXTRA_DIST = FILES
+ AM_CXXFLAGS	= @NAS_CFLAGS@ -DMP3BLASTER_DOCDIR=\"${pkgdatadir}\"
