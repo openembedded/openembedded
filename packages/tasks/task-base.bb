@@ -20,6 +20,7 @@ PACKAGE_ARCH = "${MACHINE_ARCH}"
 # screen
 # pci
 # acpi
+# phone
 
 # Valid only in DISTRO_FEATURES:
 #
