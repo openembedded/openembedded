@@ -104,7 +104,8 @@ Recipes:    linux-jlime*, scummvm, blackbox
 
 Person:     Leon Woestenberg
 Mail:       leonw@mailcan.com
-Interests:  SquashFS, LZMA
+Machines:   ixp4xxbe, efika
+Interests:  squashfs w/ lzma, smartmontools, lighttpd
 
 Person:	    Liam Girdwoord
 Mail:       liam.girdwood@wolfsonmicro.com

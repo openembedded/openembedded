@@ -14,5 +14,8 @@ export IMAGE_BASENAME = "bootstrap-image"
 export IMAGE_LINGUAS = ""
 export PACKAGE_INSTALL = "${RDEPENDS}"
 
+#zap root password
+ROOTFS_POSTPROCESS_COMMAND += "zap_root_password; "
+
 inherit image
 

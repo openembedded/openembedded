@@ -2,9 +2,10 @@ DESCRIPTION = "Music Player Daemon (mpd). This version is configured for alsa su
 HOMEPAGE = "http://www.musicpd.org"
 LICENSE = "GPLv2"
 SECTION = "console/multimedia"
-DEPENDS = "libvorbis libogg libid3tag libao-alsa zlib libmikmod libmad flac audiofile virtual/libiconv"
-RDEPENDS = "libao-alsa"
-PR = "r3"
+#DEPENDS = "libvorbis libogg libid3tag libao-alsa zlib libmikmod libmad flac audiofile virtual/libiconv"
+DEPENDS = "zlib libmad"
+#RDEPENDS = "libao-alsa"
+PR = "r4"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/musicpd/mpd-${PV}.tar.gz \
            file://mpd/save-volume-state.patch;patch=1 file://mpd/mpd.init"
@@ -18,20 +19,48 @@ INITSCRIPT_NAME = "mpd"
 # in staging - remove the --with and replace with --enable to use the local
 # versions.
 
-EXTRA_OECONF = "--enable-ogg \
-		--with-iconv-libraries=${STAGING_LIBDIR} \
-		--with-iconv-includes=${STAGING_INCDIR} \
-		--with-vorbis-libraries=${STAGING_LIBDIR} \
-		--with-vorbis-includes=${STAGING_INCDIR} \
-		--with-ogg-libraries=${STAGING_LIBDIR} \
-		--with-ogg-includes=${STAGING_INCDIR} \
-		--with-ao-libraries=${STAGING_LIBDIR} \
-		--with-ao-includes=${STAGING_INCDIR} \
-		--with-id3tag-libraries=${STAGING_LIBDIR} \
-		--with-id3tag-includes=${STAGING_INCDIR} \
+EXTRA_OECONF = " \
+  --disable-ao \
+  --disable-shout \
+  --disable-iconv \
+  --disable-ipv6 \
+  --disable-sun \
+  --disable-oss \
+  --disable-alsa \
+  --disable-pulse \
+  --enable-mvp \
+  --disable-oggvorbis \
+  --disable-oggflac \
+  --disable-flac \
+  --enable-mp3 \
+  --disable-aac \
+  --disable-audiofile \
+  --disable-mod \
+  --disable-mpc \
+  --disable-id3 \
+  --disable-aotest \
+  --disable-alsatest \
+  --disable-oggtest \
+  --disable-vorbistest \
+  --disable-libFLACtest \
+  --disable-libOggFLACtest \
+  --disable-audiofiletest \
+  --disable-libmikmodtest \
 		--with-mad-libraries=${STAGING_LIBDIR} \
 		--with-mad-includes=${STAGING_INCDIR} \
 		--without-faad"
+
+#		--with-iconv-libraries=${STAGING_LIBDIR} \
+#		--with-iconv-includes=${STAGING_INCDIR} \
+#		--with-vorbis-libraries=${STAGING_LIBDIR} \
+#		--with-vorbis-includes=${STAGING_INCDIR} \
+#		--with-ogg-libraries=${STAGING_LIBDIR} \
+#		--with-ogg-includes=${STAGING_INCDIR} \
+#		--with-ao-libraries=${STAGING_LIBDIR} \
+#		--with-ao-includes=${STAGING_INCDIR} \
+#		--with-id3tag-libraries=${STAGING_LIBDIR} \
+#		--with-id3tag-includes=${STAGING_INCDIR} \
+
 
 do_install_append() {
 	install -d ${D}${sysconfdir}/init.d
