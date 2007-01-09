@@ -14,6 +14,8 @@ inherit autotools pkgconfig
 
 EXTRA_OECONF = "--with-omniorb=${STAGING_BINDIR}/.. IDL=${STAGING_BINDIR_NATIVE}/omniidl"
 
+CXXFLAGS_powerpc += "-lstdc++"
+
 do_stage () {
 	autotools_stage_all
 }
