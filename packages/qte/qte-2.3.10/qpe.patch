@@ -39,7 +39,7 @@
 +#define QT_DLL // Internal
 +#endif
 +
-+#define QT_NO_QWS_CURSOR
++#undef QT_NO_QWS_CURSOR
 +#define QT_NO_QWS_MOUSE_AUTO
 +#ifndef QT_NO_CODECS
 +#define QT_NO_CODECS
