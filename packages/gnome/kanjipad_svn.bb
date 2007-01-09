@@ -1,7 +1,7 @@
 DESCRIPTION = "KanjiPad is a very simple program for handwriting recognition"
 LICENSE = "GPLv2"
 
-DEPENDS = "gtk perl-native"
+DEPENDS = "gtk+ perl-native"
 
 PV = "2.0.0+svn${SRCDATE}"
 
