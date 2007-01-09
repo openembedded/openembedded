@@ -15,7 +15,7 @@ Index: base/blueprobe/blueprobe.init
      "HP iPAQ H3900")
  	BLUETOOTH=yes
 -	PORT=/dev/tts/1
-+	PORT=/dev/ttS1
++	PORT=/dev/ttyS1
  	SPEED=921600
          PROTO=bcsp
  	PROBE=yes
