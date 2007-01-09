@@ -72,6 +72,9 @@ python () {
     # pre patches actually require the *preceding* kernel version the code
     # fixes that up appropriately.
     pv = bb.data.getVar("PV",d,1).split('-')
+    if pv[0].count('+'):
+	prev = pv[0].split('+')
+	pv[0] = prev[1];
     kernel = pv[0].split('.')
     base = pv[0]
     name = [base]

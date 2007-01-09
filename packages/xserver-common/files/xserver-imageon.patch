@@ -1,0 +1,14 @@
+Index: xserver-common-1.13/X11/Xserver
+===================================================================
+--- xserver-common-1.13.orig/X11/Xserver
++++ xserver-common-1.13/X11/Xserver
+@@ -17,6 +17,9 @@ fi
+ if [ -f /usr/bin/Xw100 ]; then
+   XSERVER=Xw100
+ fi
++if [ -f /usr/bin/Ximageon ]; then
++  XSERVER=Ximageon
++fi
+ 
+ . /etc/profile
+ 
