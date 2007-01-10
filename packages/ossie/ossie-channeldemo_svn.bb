@@ -1,8 +1,9 @@
-PR = "r0"
 DESCRIPTION = "OSSIE Demo channel component"
 SECTION =  "apps"
 PRIORITY = "optional"
 LICENSE = "GPL"
+PV = "0.0.0+svn${SRCDATE}"
+PR = "r0"
 
 DEPENDS = "ossiecf"
 

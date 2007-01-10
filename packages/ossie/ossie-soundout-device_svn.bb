@@ -1,9 +1,10 @@
-PR = "r0"
 DESCRIPTION = "OSSIE sound playback device"
 SECTION =  "apps"
 PRIORITY = "optional"
 MAINTAINER = "Philip Balister philip@balister.org"
 LICENSE = "GPL"
+PV = "0.0.0+svn${SRCDATE}"
+PR = "r0"
 
 DEPENDS = "alsa-lib ossiecf ossie-standardinterfaces"
 
@@ -14,6 +15,8 @@ SRC_URI = "svn://oe:oe@ossie-dev.mprg.org/repos/ossie/platform/Sound_out/trunk;m
 prefix="/home/sca"
 
 inherit autotools
+
+EXTRA_OECONF = "--with-omniorb=${STAGING_BINDIR}/.. IDL=${STAGING_BINDIR_NATIVE}/omniidl"
 
 FILES_${PN} += "/home/sca/xml/soundCard/*xml"
 

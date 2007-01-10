@@ -7,6 +7,8 @@ RPROVIDES = "gconf"
 
 PR = "r3"
 
+DEFAULT_PREFERENCE = "-1"
+
 SRC_URI = "http://repository.maemo.org/pool/maemo/ossw/source/g/gconf2/gconf2_${PV}.tar.gz \
            file://gconf-update.patch;patch=1;pnum=0 \
            file://free-entry-fix.diff;patch=1 \
