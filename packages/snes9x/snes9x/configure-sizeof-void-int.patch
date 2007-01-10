@@ -1,0 +1,23 @@
+--- snes9x-1.5-src/configure.in.orig	2006-08-04 16:27:35.693980458 +0200
++++ snes9x-1.5-src/configure.in	2006-08-04 16:28:11.704193040 +0200
+@@ -655,20 +655,6 @@
+ fi
+ ])
+ 
+-AC_MSG_CHECKING(if sizeof(void *) == sizeof(int))
+-AC_TRY_RUN([
+-  int main()
+-  {
+-   return(!(sizeof(void *) == sizeof(int)));
+-  }
+-], snes9x_ptr_is_int=yes)
+-if test x$snes9x_ptr_is_int = xyes; then
+-  AC_MSG_RESULT(yes)
+-else
+-  AC_MSG_RESULT(no)
+-  SYSDEFINES="$SYSDEFINES -DPTR_NOT_INT"
+-fi
+-
+ AC_MY_CHECK_SAR(int8)
+ AC_MY_CHECK_SAR(int16)
+ AC_MY_CHECK_SAR(int32)

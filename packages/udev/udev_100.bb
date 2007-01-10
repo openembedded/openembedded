@@ -1,4 +1,3 @@
-DEFAULT_PREFERENCE = "-1"
 DEFAULT_PREFERENCE_slugos = "1"
 
 DESCRIPTION = "udev is a daemon which dynamically creates and removes device nodes from \

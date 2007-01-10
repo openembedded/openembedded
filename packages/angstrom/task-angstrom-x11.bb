@@ -10,10 +10,10 @@ PACKAGES = "\
     angstrom-gpe-task-settings \
     angstrom-gpe-task-pim \
     angstrom-gpe-task-apps \
-    angstrom-gpe-task-games \
-    angstrom-task-office \
-    angstrom-task-printing \
-    angstrom-task-sectest"
+    angstrom-gpe-task-games"
+#    angstrom-task-office \
+#    angstrom-task-printing \
+#    angstrom-task-sectest"
 
 RDEPENDS_angstrom-x11-base-depends := "\
     virtual/libx11 \

@@ -34,7 +34,7 @@ RDEPENDS_xserver-kdrive-epson = "${PN}"
 RDEPENDS_xserver-kdrive-sdl = "${PN}"
 RDEPENDS_xserver-kdrive-w100 = "${PN}"
 
-SRC_URI = "git://anongit.freedesktop.org/xorg/xserver;protocol=git \
+SRC_URI = "git://anongit.freedesktop.org/xorg/xserver;tag=input-hotplug;protocol=git \
 	file://kmode.patch;patch=1 \
 	file://disable-apm.patch;patch=1 \
 	file://no-serial-probing.patch;patch=1 \

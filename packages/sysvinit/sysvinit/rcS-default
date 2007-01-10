@@ -12,7 +12,7 @@ DELAYLOGIN=no
 # Set UTC=yes if your system clock is set to UTC (GMT), and UTC=no if not.
 # UTC=yes
 # Set VERBOSE to "no" if you would like a more quiet bootup.
-VERBOSE=no
+VERBOSE=very
 # Set EDITMOTD to "no" if you don't want /etc/motd to be editted automatically
 EDITMOTD=no
 # Set FSCKFIX to "yes" if you want to add "-y" to the fsck at startup.

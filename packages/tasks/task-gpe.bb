@@ -11,10 +11,7 @@ PACKAGES = "\
     gpe-task-apps \
     gpe-task-games \
     gpe-task-connectivity \
-    gpe-task-apps-extra \
-    gpe-task-web \
-    gpe-task-desktopapps \
-    gpe-task-sectest"
+    gpe-task-apps-extra"
 
 RDEPENDS_gpe-base-depends := "\
     diet-x11 \
@@ -22,7 +19,7 @@ RDEPENDS_gpe-base-depends := "\
 
 RDEPENDS_gpe-task-base := "\
     gpe-bootsplash \
-    bluez-utils-dbus \
+    bluez-utils \
     matchbox \
     xcursor-transparent-theme \
     rxvt-unicode \
@@ -101,38 +98,12 @@ RDEPENDS_gpe-task-games := "\
 
 RDEPENDS_gpe-task-connectivity := "\
     gpe-mini-browser"
-#    gaim
+#    gaim"
 #    linphone-hh
 
 RDEPENDS_gpe-task-apps-extra := "\
     gpe-filemanager \
+#    gpe-nmf \
     gpe-soundbite \
     mbmerlin"
-
-RDEPENDS_gpe-task-web := "\
-    gpe-irc \
-    minimo \
-    gaim"
-
-RDEPENDS_gpe-task-desktopapps := "\
-    firefox \
-    thunderbird \
-    galculator \
-    gnumeric \
-    gpdf \
-    totem"
-
-RDEPENDS_gpe-task-sectest := "\
-    mbmerlin \
-    nmap \
-    ettercap \
-    stunnel \
-    curl \
-    dsniff \
-    prismstumbler \
-    tcpdump \
-    kismet \
-    hydra \
-    thcrut \
-    miniclipboard"
 #	driftnet \

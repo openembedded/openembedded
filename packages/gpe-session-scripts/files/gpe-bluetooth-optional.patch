@@ -1,0 +1,11 @@
+--- gpe-session-scripts-0.67/gpe-auto-bluetooth.sh.orig	2006-08-31 10:12:25.000000000 +0200
++++ gpe-session-scripts-0.67/gpe-auto-bluetooth.sh	2006-08-31 10:14:27.000000000 +0200
+@@ -1,7 +1,7 @@
+ #!/bin/sh
+ 
+ # start gpe-bluetooth if hardware is built in
+-if [ -f /etc/sysconfig/bluetooth ]; then
++if [ -f /etc/sysconfig/bluetooth -a -x /usr/bin/gpe-bluetooth ]; then
+   . /etc/sysconfig/bluetooth
+   if [ "$BLUETOOTH" = "yes" ]; then
+     exec gpe-bluetooth

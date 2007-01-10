@@ -169,20 +169,20 @@ task-base-alsa-rrecommends = "\
     kernel-module-snd-pcm-oss"
 
 task-base-pcmcia-rdepends = "\
-    ${PCMCIA_MANAGER} \
-    ${@base_contains("DISTRO_FEATURES", "wifi", "prism3-firmware", "",d)} \
-    ${@base_contains("DISTRO_FEATURES", "wifi", "prism3-support", "",d)} \
-    ${@base_contains("DISTRO_FEATURES", "wifi", "spectrum-fw", "",d)} \
-    ${@base_contains("DISTRO_FEATURES", "wifi", "hostap-conf", "",d)} \
-    ${@base_contains("DISTRO_FEATURES", "wifi", "orinoco-conf", "",d)}"
+    ${PCMCIA_MANAGER}"
+#    ${@base_contains("DISTRO_FEATURES", "wifi", "prism3-firmware", "",d)} \
+#    ${@base_contains("DISTRO_FEATURES", "wifi", "prism3-support", "",d)} \
+#    ${@base_contains("DISTRO_FEATURES", "wifi", "spectrum-fw", "",d)} \
+#    ${@base_contains("DISTRO_FEATURES", "wifi", "hostap-conf", "",d)} \
+#    ${@base_contains("DISTRO_FEATURES", "wifi", "orinoco-conf", "",d)}"
 
 task-base-pcmcia-rrecommends = "\
     kernel-module-pcmcia \
     kernel-module-airo-cs \
     kernel-module-pcnet-cs \
     kernel-module-serial-cs \
-    kernel-module-ide-cs \
-    ${@base_contains("MACHINE_FEATURES", "kernel26", "${task-base-pcmcia26-rrecommends}", "${task-base-pcmcia24-rrecommends}",d)} "
+    kernel-module-ide-cs"
+#    ${@base_contains("MACHINE_FEATURES", "kernel26", "${task-base-pcmcia26-rrecommends}", "${task-base-pcmcia24-rrecommends}",d)} "
 
 task-base-pcmcia24-rrecommends = "\
     ${@base_contains("DISTRO_FEATURES", "wifi", "hostap-modules-cs", "",d)} \
@@ -265,8 +265,8 @@ task-distro-ipsec-rrecommends = "\
 
 task-distro-wifi-rdepends = "\
     wireless-tools \
-    ${@base_contains("COMBINED_FEATURES", "pcmcia", "hostap-utils", "",d)} \
-    ${@base_contains("COMBINED_FEATURES", "pci", "hostap-utils", "",d)} \
+#    ${@base_contains("COMBINED_FEATURES", "pcmcia", "hostap-utils", "",d)} \
+#    ${@base_contains("COMBINED_FEATURES", "pci", "hostap-utils", "",d)} \
     wpa-supplicant"
 
 task-distro-wifi-rrecommends = "\

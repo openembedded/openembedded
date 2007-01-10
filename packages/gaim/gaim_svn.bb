@@ -1,6 +1,6 @@
 PR = "r0"
 #Remove the dash below when 2.0 changes in PV
-DEFAULT_PREFERENCE = "-100000"
+#DEFAULT_PREFERENCE = "-100000"
 PV = "1.9+2.0beta3cvs-${SRCDATE}"
 
 SRC_URI = "svn://svn.sourceforge.net/svnroot/gaim;module=trunk;proto=https \

@@ -11,7 +11,8 @@ SRC_URI = "${KERNELORG_MIRROR}/pub/linux/utils/util-linux/util-linux-${PV}.tar.b
            file://make_include \
            file://swapargs.h \
 	   file://fdiskbsdlabel_thumb.diff;patch=1 \
-	   file://umount.diff;patch=1 \
+	   file://glibc-umount2.patch;patch=1 \
+#	   file://umount.diff;patch=1 \
            file://defines.h"
 
 PACKAGES_prepend = "util-linux-fdisk util-linux-cfdisk util-linux-sfdisk util-linux-swaponoff util-linux-losetup util-linux-umount util-linux-mount util-linux-readprofile "

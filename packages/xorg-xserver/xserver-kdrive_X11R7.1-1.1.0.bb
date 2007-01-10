@@ -43,6 +43,7 @@ SRC_URI = "http://ftp.x.org/pub/X11R7.1/src/xserver/xorg-server-X11R7.1-1.1.0.ta
 	file://enable-epson.patch;patch=1 \
 	file://disable-xf86-dga-xorgcfg.patch;patch=1 \
 	file://w100.patch;patch=1 \
+	file://w100-use-evdev.patch;patch=1 \
 	file://enable-tslib.patch;patch=1 \
 	file://xcalibrate.patch;patch=1"
 

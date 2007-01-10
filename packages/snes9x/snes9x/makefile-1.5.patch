@@ -1,0 +1,39 @@
+--- snes9x-1.5-src/Makefile.in.orig	2006-08-04 16:50:34.310687060 +0200
++++ snes9x-1.5-src/Makefile.in	2006-08-04 16:54:22.216690330 +0200
+@@ -187,7 +187,7 @@
+ OPTIMISE=-O4 -ffreestanding -ffast-math -fschedule-insns2 -fomit-frame-pointer -fno-inline-functions -fno-defer-pop -fforce-addr -fstrict-aliasing -funroll-loops -fdelete-null-pointer-checks -fno-exceptions
+ CPUFLAGS=-ml  -m4-single-only
+ else
+-OPTIMISE = @OPTIMIZE@
++OPTIMISE = $(filter-out @OPTIMIZE@,-pedantic)
+ endif
+ 
+ DEFS += \
+@@ -207,7 +207,7 @@
+ $(SDD1DEFINES) \
+ $(CORRVRAMDEFINES) \
+ $(JOYDEFINES) \
+--DNO_INLINE_SET_GET @SYSDEFINES@
++-DNO_INLINE_SET_GET @SYSDEFINES@ $(OECFLAGS)
+ 
+ CCFLAGS = $(OPTIMISE) $(CPUFLAGS) $(INCLUDES) $(DEFS)
+ 
+@@ -245,15 +245,15 @@
+ OFFSET=
+ endif
+ 
+-offsets: offsets.o
+-	$(CCC) $(INCLUDES) -o $@ offsets.o
++offsets: offsets.cpp
++	$(BUILD_CXX) $(INCLUDES) -o $@ $<
+ 	./offsets >$(CPU)/offsets.h
+ 
+ #../zlib/libz.a:
+ #	cd ../zlib && sh ./configure && make
+ 
+ snes9x: $(OBJECTS) unix/x11.o $(AIDOOBJS) $(OFFSET)
+-	$(CCC) $(INCLUDES) -o $@ $(OBJECTS) $(AIDOOBJS) $(GLIDEOBJS) $(OPENGLOBJS) unix/x11.o $(LDLIBS) $(GLIDELIBS) $(OPENGLLIBS) @SYSLIBS@ -lXext -lX11 $(EXTRALIBS) -lm
++	$(CCC) $(INCLUDES) -o $@ $(OBJECTS) $(AIDOOBJS) $(GLIDEOBJS) $(OPENGLOBJS) unix/x11.o $(OELDFLAGS) $(LDLIBS) $(GLIDELIBS) $(OPENGLLIBS) @SYSLIBS@ -lXext -lX11 $(EXTRALIBS) -lm
+ 
+ unix/svga_keynames.h: unix/svga_get_keynames.pl
+ 	unix/svga_get_keynames.pl /usr/include/vgakeyboard.h > unix/svga_keynames.h
