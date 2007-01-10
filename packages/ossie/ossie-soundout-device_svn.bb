@@ -15,6 +15,8 @@ prefix="/home/sca"
 
 inherit autotools
 
+EXTRA_OECONF = "--with-omniorb=${STAGING_BINDIR}/.. IDL=${STAGING_BINDIR_NATIVE}/omniidl"
+
 FILES_${PN} += "/home/sca/xml/soundCard/*xml"
 
 BROKEN = "1"
