@@ -730,7 +730,7 @@ def base_after_parse(d):
         local = bb.data.expand(bb.fetch.localpath(s, d), d)
         for mp in paths:
             if local.startswith(mp):
-                bb.note("overriding PACKAGE_ARCH from %s to %s" % (old_arch, mach_arch))
+                #bb.note("overriding PACKAGE_ARCH from %s to %s" % (old_arch, mach_arch))
                 bb.data.setVar('PACKAGE_ARCH', mach_arch, d)
                 return
 

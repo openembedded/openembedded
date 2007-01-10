@@ -1,15 +1,9 @@
-# HP iPAQ hx4700 fstab - for rootfs on flash partition 2
+/dev/mtdblock2 	/		jffs2	defaults		1  1		
+/dev/mtdblock3 	/home   jffs2   defaults        1  1
 
-rootfs               /                    auto       defaults              1  1
-proc                 /proc                proc       defaults              0  0
-devpts               /dev/pts             devpts     mode=0620,gid=5       0  0
-usbdevfs             /proc/bus/usb        usbdevfs   noauto                0  0
-tmpfs                /var                 tmpfs      defaults              0  0
-tmpfs                /media/ram           tmpfs      defaults              0  0
-sys                  /sys                 sysfs      defaults              0  0
-#/dev/mtdblock2      /                    jffs2      defaults              1  1
-#/dev/mtdblock3       /home                jffs2      defaults              1  1
+proc            /proc		proc    defaults        0  0
+sys             /sys        sysfs	defaults        0  0
 
-# SD/MMC slot and CF slot
-/dev/mmcblk0p1       /media/card          auto       defaults,sync,noauto,noatime      0  0
-/dev/hda1            /media/cf            auto       defaults,noauto,noatime,exec,suid 0  0
+/dev/hda1		/media/cf	auto	defaults,noauto,noatime,exec,suid	0  0
+tmpfs			/var		tmpfs	defaults	0  0
+tmpfs			/media/ram	tmpfs	defaults	0  0

@@ -10,23 +10,16 @@ PMOUNT="/usr/bin/pmount"
 UMOUNT="/bin/umount"
 name="`basename "$DEVNAME"`"
 
-cat /etc/udev/mount.whitelist | sed -n 's/^#.*/;/[^[:space:]]/p' > /tmp/mount.whitelist
-if ( echo "$DEVNAME" | grep -q -f /tmp/mount.whitelist )
-then
-	logger "udev/mount.sh" "[$DEVNAME] is not whitelisted, ignoring"
-	exit 0
-fi
-rm /tmp/mount.whitelist
-
-automount() {
-	# don't mount a block device if it contains partitions
-	if ( echo "$DEVNAME" | grep -q "[0-9]$" )
+for line in `cat /etc/udev/mount.blacklist | grep -v ^#`
+do
+	if ( echo "$DEVNAME" | grep -q "$line" )
 	then
-		ls "$DEVNAME"p[1-9] > /dev/null 2>&1 && return
-	else
-		ls "$DEVNAME"[1-9] > /dev/null 2>&1 && return
+		logger "udev/mount.sh" "[$DEVNAME] is blacklisted, ignoring"
+		exit 0
 	fi
+done
 
+automount() {	
 	! test -d "/media/$name" && mkdir -p "/media/$name"
 	
 	if ! $MOUNT -t auto -o sync $DEVNAME "/media/$name"

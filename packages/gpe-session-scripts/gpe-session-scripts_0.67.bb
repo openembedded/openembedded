@@ -6,11 +6,10 @@ SECTION = "gpe"
 PRIORITY = "optional"
 RDEPENDS_${PN} = "matchbox-panel (>= 0.9.2-r12) matchbox-desktop (>= 0.9.1-r1) matchbox-common (>= 0.9.1-r2) gpe-session-starter gpe-bluetooth xstroke xtscal gpe-question gpe-clock matchbox-applet-inputmanager xrandr xmodmap xdpyinfo xserver-common"
 # more rdepends: keylaunch ipaq-sleep apmd blueprobe
-DEPENDS = "matchbox-wm matchbox-panel xstroke xtscal gpe-question matchbox-applet-inputmanager gpe-clock xrandr xmodmap xdpyinfo xserver-common"
+DEPENDS = "matchbox-wm matchbox-panel gpe-bluetooth xstroke xtscal gpe-question matchbox-applet-inputmanager gpe-clock xrandr xmodmap xdpyinfo xserver-common"
 
 SRC_URI += "file://matchbox-session \
-	file://disable-composite.xsettings \
-	file://gpe-bluetooth-optional.patch;patch=1"
+	file://disable-composite.xsettings"
 
 PR = "r4"
 

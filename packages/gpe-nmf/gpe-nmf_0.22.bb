@@ -2,7 +2,7 @@ LICENSE = "GPL"
 inherit gpe pkgconfig
 
 DESCRIPTION = "GPE audio player"
-DEPENDS = "gtk+ libgpewidget gstreamer gst-plugins-good"
+DEPENDS = "gtk+ libgpewidget gstreamer gst-plugins"
 RDEPENDS = "esd \
 	gst-plugins \
 	gst-plugin-audio \

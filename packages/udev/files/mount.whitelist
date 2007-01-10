@@ -1,4 +1,0 @@
-# This is a grep pattern matched against the device name
-# Only matched patterns will be mounted / removed by udevd
-/dev/mmcblk[01]
-/dev/hd[ab]

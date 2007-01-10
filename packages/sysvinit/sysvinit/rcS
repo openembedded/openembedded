@@ -60,7 +60,7 @@ do
 	[ ! -f "$i" ] && continue
 
 	# Handle verbosity
-	[ "$VERBOSE" = very ] && echo -n `date +%Y%m%d\ %H%M%S`" INIT: Running $i..."
+	[ "$VERBOSE" = very ] && echo "INIT: Running $i..."
 	if [ "$PROGRESS" = yes ]; then
 		export PROGRESS_value=`expr $PROGRESS_value + $PROGRESS_incstep`
 		echo "$PROGRESS_value Starting $i..." >/proc/progress
