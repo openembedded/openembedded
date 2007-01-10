@@ -1,8 +1,9 @@
-PR = "r0"
 DESCRIPTION = "OSSIE Standard port interfaces"
 SECTION =  "libs"
 PRIORITY = "optional"
 LICENSE = "LGPL"
+PV = "0.0.0+svn${SRCDATE}"
+PR = "r0"
 
 DEPENDS = "ossiecf"
 
