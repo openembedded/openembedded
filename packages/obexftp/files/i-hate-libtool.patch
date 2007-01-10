@@ -1,0 +1,20 @@
+
+#
+# Patch managed by http://www.holgerschurig.de/patcher.html
+#
+
+--- obexftp-0.20/apps/Makefile.am~i-hate-libtool
++++ obexftp-0.20/apps/Makefile.am
+@@ -9,9 +9,9 @@
+ LDADD =				../obexftp/libobexftp.la \
+ 				../multicobex/libmulticobex.la \
+ 				../bfb/libbfb.la \
+-				@OPENOBEX_LIBS@
+-#				@BLUETOOTH_LIBS@
+-#				@USB_LIBS@
++				@OPENOBEX_LIBS@ \
++				@BLUETOOTH_LIBS@
++#				@USB_LIBS@
+ # need on win32:
+ # getopt.o getopt1.o libopenobex.a libwsock32.a
+ 
