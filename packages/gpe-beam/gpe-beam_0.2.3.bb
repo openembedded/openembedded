@@ -1,7 +1,5 @@
-inherit gpe pkgconfig
-LICENSE = "GPL"
-DESCRIPTION = "GPE infrared communication applet"
-DEPENDS = "gtk+ libgpewidget libmimedir libgpevtype openobex"
+require ${PN}.inc
+
 RDEPENDS = "libopenobex-1.0-1"
-SECTION = "gpe"
-PRIORITY = "optional"
+
+inherit gpe pkgconfig
