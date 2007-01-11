@@ -2,7 +2,6 @@ DESCRIPTION = "Configuration applets for GPE"
 SECTION = "gpe"
 PRIORITY = "optional"
 LICENSE = "GPL"
-MAINTAINER = "Florian Boor <florian@kernelconcepts.de>"
 
 DEPENDS = "gtk+ esound audiofile libgpewidget libxsettings libxsettings-client"
 RDEPENDS_${PN} = "xst xset ipaq-sleep ntpdate gpe-login gpe-icons timezones"
