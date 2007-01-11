@@ -1,0 +1,16 @@
+--- multikey/configdlg.cpp.org	2005-06-15 22:54:50.000000000 +0000
++++ multikey/configdlg.cpp	2007-01-11 19:51:09.000000000 +0000
+@@ -144,11 +144,11 @@
+     add_remove_grid->setMargin(3);
+     add_remove_grid->setSpacing(3);
+ 
+-    add_button = new QPushButton(tr("Add"), add_remove_grid);
++    add_button = new QPushButton(tr("Add custom..."), add_remove_grid);
+     add_button->setFlat(TRUE);
+     connect(add_button, SIGNAL(clicked()), SLOT(addMap()));
+ 
+-    remove_button = new QPushButton(tr("Remove"), add_remove_grid);
++    remove_button = new QPushButton(tr("Remove custom"), add_remove_grid);
+     remove_button->setFlat(TRUE);
+     if (keymaps->currentItem() == 0 || default_maps.find(QFileInfo(current_map).fileName()) != default_maps.end())
+ 	remove_button->setDisabled(true);
