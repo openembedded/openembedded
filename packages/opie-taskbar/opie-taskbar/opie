@@ -16,6 +16,10 @@ fi
 
 . /etc/profile
 
+if [ ! -e $TSLIB_TSDEVICE ]; then
+    export QWS_MOUSE_PROTO=MouseMan:/dev/input/mice
+fi
+
 for conf in $OPIEDIR/etc/skel/*.conf; do
 	conf_basename=`basename $conf`
 	if [ ! -e "$HOME/Settings/$conf_basename" ] ; then
