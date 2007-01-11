@@ -1,8 +1,9 @@
-PR = "r0"
 DESCRIPTION = "OSSIE Node Booter"
 SECTION =  "apps"
 PRIORITY = "optional"
 LICENSE = "GPL"
+PV = "0.0.0+svn${SRCDATE}"
+PR = "r0"
 
 DEPENDS = "ossiecf"
 

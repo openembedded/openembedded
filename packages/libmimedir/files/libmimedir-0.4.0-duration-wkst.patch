@@ -1,0 +1,258 @@
+diff -uNr libmimedir-0.4.0/bin/ical-dump.c libmimedir-0.4.0cvs20061111/bin/ical-dump.c
+--- libmimedir-0.4.0/bin/ical-dump.c	2005-09-01 17:36:27.000000000 +0200
++++ libmimedir-0.4.0cvs20061111/bin/ical-dump.c	2006-11-11 19:14:19.000000000 +0100
+@@ -144,7 +144,7 @@
+ print_component (MIMEDirVComponent *component)
+ {
+ 	gchar *s, *summary, *categories, *uid;
+-	guint priority, seq;
++	guint priority, seq, duration;
+ 	MIMEDirDateTime *dtstart, *dtend, *due;
+ 	MIMEDirRecurrence *recur;
+ 
+@@ -161,6 +161,7 @@
+ 
+ 		      "dtstart",    &dtstart,
+ 		      "dtend",      &dtend,
++		      "duration",   &duration,
+ 		      "due",        &due,
+ 		      "recurrence", &recur,
+ 
+@@ -207,6 +208,9 @@
+ 
+ 		}
+ 	}
++	if (duration) {
++		printf (_("  Duration: %ds\n"), duration);
++	}
+ 	if (due && mimedir_datetime_is_valid (due)) {
+ 		s = mimedir_datetime_to_string (due);
+ 		if (s) {
+diff -uNr libmimedir-0.4.0/mimedir/mimedir-recurrence.c libmimedir-0.4.0cvs20061111/mimedir/mimedir-recurrence.c
+--- libmimedir-0.4.0/mimedir/mimedir-recurrence.c	2005-10-08 08:46:36.000000000 +0200
++++ libmimedir-0.4.0cvs20061111/mimedir/mimedir-recurrence.c	2006-11-11 15:47:28.000000000 +0100
+@@ -56,7 +56,8 @@
+ 	PROP_COUNT,
+ 	PROP_INTERVAL,
+ 	PROP_UNIT,
+-	PROP_UNITLIST
++	PROP_UNITLIST,
++	PROP_WKST
+ };
+ 
+ struct _MIMEDirRecurrencePriv {
+@@ -67,6 +68,7 @@
+ 
+ 	MIMEDirRecurrenceUnit	unit;
+ 	gchar			*units;
++	guint8			wkst;
+ };
+ 
+ static GObjectClass *parent_class = NULL;
+@@ -167,6 +169,50 @@
+ 		return -1;
+ }
+ 
++static const gchar *
++weekday_to_string (GDateWeekday weekday)
++{
++	switch (weekday) {
++	case G_DATE_MONDAY:
++		return "MO";
++	case G_DATE_TUESDAY:
++		return "TU";
++	case G_DATE_WEDNESDAY:
++		return "WE";
++	case G_DATE_THURSDAY:
++		return "TH";
++	case G_DATE_FRIDAY:
++		return "FR";
++	case G_DATE_SATURDAY:
++		return "SA";
++	case G_DATE_SUNDAY:
++		return "SU";
++	default:
++		g_return_val_if_reached (NULL);
++	}
++}
++
++static GDateWeekday
++string_to_weekday (const gchar *s)
++{
++	if (strcmp (s, "MO") == 0)
++		return G_DATE_MONDAY;
++	else if (strcmp (s, "TU") == 0)
++		return G_DATE_TUESDAY;
++	else if (strcmp (s, "WE") == 0)
++		return G_DATE_WEDNESDAY;
++	else if (strcmp (s, "TH") == 0)
++		return G_DATE_THURSDAY;
++	else if (strcmp (s, "FR") == 0)
++		return G_DATE_FRIDAY;
++	else if (strcmp (s, "SA") == 0)
++		return G_DATE_SATURDAY;
++	else if (strcmp (s, "SU") == 0)
++		return G_DATE_SUNDAY;
++	else
++		return G_DATE_BAD_WEEKDAY;
++}
++
+ /*
+  * Class and Object Management
+  */
+@@ -261,6 +307,14 @@
+ 				     NULL,
+ 				     G_PARAM_READWRITE);
+ 	g_object_class_install_property (gobject_class, PROP_UNITLIST, pspec);
++	pspec = g_param_spec_uint ("wkst",
++				   _("Workweek start"),
++				   _("The day on which the workweek starts"),
++				   G_DATE_BAD_WEEKDAY,
++				   G_DATE_SUNDAY,
++				   G_DATE_BAD_WEEKDAY,
++				   G_PARAM_READWRITE);
++	g_object_class_install_property (gobject_class, PROP_WKST, pspec);
+ }
+ 
+ 
+@@ -273,6 +327,7 @@
+ 	recurrence->priv = g_new0 (MIMEDirRecurrencePriv, 1);
+ 	recurrence->priv->freq = RECURRENCE_DAILY;
+ 	recurrence->priv->unit = RECURRENCE_UNIT_NONE;
++	recurrence->priv->wkst = G_DATE_BAD_WEEKDAY;
+ }
+ 
+ 
+@@ -335,6 +390,9 @@
+ 	case PROP_UNITLIST:
+ 		mimedir_utils_set_property_string (&priv->units, value);
+ 		break;
++	case PROP_WKST:
++		priv->wkst = g_value_get_uint (value);
++		break;
+ 	default:
+ 		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
+ 		break;
+@@ -375,6 +433,9 @@
+ 	case PROP_UNITLIST:
+ 		g_value_set_string (value, priv->units);
+ 		break;
++	case PROP_WKST:
++		g_value_set_uint (value, priv->wkst);
++		break;
+ 	default:
+ 		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
+ 		return;
+@@ -512,6 +573,17 @@
+ 			g_object_set (G_OBJECT (recurrence), "unit", unit, NULL);
+ 			g_object_set (G_OBJECT (recurrence), "units", value, NULL);
+ 		}
++		else if (!strcasecmp (name, "WKST")) {
++			GDateWeekday weekday;
++
++			weekday = string_to_weekday (value);
++			if (!g_date_valid_weekday (weekday)) {
++				ret = FALSE;
++				break;
++			}
++
++			g_object_set (G_OBJECT (recurrence), "wkst", weekday, NULL);
++		}
+ 		else {
+ 			ret = FALSE;
+ 			break;
+@@ -571,5 +643,11 @@
+ 		g_string_append_printf (string, ";%s=%s", unit, priv->units);
+ 	}
+ 
++	if (g_date_valid_weekday (priv->wkst)) {
++		const gchar *weekday;
++		weekday = weekday_to_string (priv->wkst);
++		g_string_append_printf (string, ";WKST=%s", weekday);
++	}
++
+ 	return g_string_free (string, FALSE);
+ }
+
+--- libmimedir-0.4.0/mimedir/mimedir-vcomponent.c	2006-12-01 12:53:26.000000000 +0100
++++ libmimedir-0.4.0cvs20061111/mimedir/mimedir-vcomponent.c	2006-11-11 19:08:26.000000000 +0100
+@@ -908,6 +905,7 @@
+ 	const gchar *s;
+ 	gint duration = 0;
+ 	gboolean neg = FALSE;
++	gboolean dur_week = FALSE;
+ 
+ 	g_return_val_if_fail (error == NULL || *error == NULL, 0);
+ 
+@@ -939,48 +937,52 @@
+ 
+ 		if (s[0] == 'D' || s[0] == 'd')
+ 			duration = num * SECS_PER_DAY;
+-		else if (s[0] == 'W' || s[0] == 'w')
++		else if (s[0] == 'W' || s[0] == 'w') {
+ 			duration = num * SECS_PER_WEEK;
+-		else {
++			dur_week = TRUE;
++		} else {
+ 			g_set_error (error, MIMEDIR_ATTRIBUTE_ERROR, MIMEDIR_ATTRIBUTE_ERROR_INVALID_FORMAT, MIMEDIR_ATTRIBUTE_ERROR_INVALID_FORMAT_STR, "DURATION", name);
+ 			return 0;
+ 		}
+ 		s++;
+ 	}
+ 
+-	if (s[0] == 'T' || s[0] == 't') {
+-		GError *err = NULL;
+-		guint num;
++	if ((s[0] == 'T' || s[0] == 't') && !dur_week) {
++		guint state = 0;
+ 
+ 		s++;
+ 
+-		while (s[0] != '\0') {
++		while (state < 3) {
++			GError *err = NULL;
++			guint num;
++
+ 			num = mimedir_vcomponent_parse_number (name, "DURATION", &s, &err);
+ 			if (err) {
+ 				g_propagate_error (error, err);
+ 				return 0;
+ 			}
+-
+-			switch (s[0]) {
+-			case 'H':
+-				s++;
++			if (s[0] == 'H' && state < 1) {
+ 				duration += num * SECS_PER_HOUR;
+-				break;
+-			case 'M':
+-				s++;
++				state = 1;
++			} else if (s[0] == 'M' && state < 2) {
+ 				duration += num * SECS_PER_MINUTE;
+-				break;
+-			case 'S':
+-				s++;
+-				duration += num;
+-				break;
+-			default:
++				state = 2;
++			} else if (s[0] == 'S' && state < 3) {
++				duration += num ;
++				state = 3;
++			} else {
+ 				g_set_error (error, MIMEDIR_ATTRIBUTE_ERROR, MIMEDIR_ATTRIBUTE_ERROR_INVALID_FORMAT, MIMEDIR_ATTRIBUTE_ERROR_INVALID_FORMAT_STR, "DURATION", name);
+ 				return 0;
+ 			}
++			s++;
+ 		}
+ 	}
+ 
++	if (s[0] != '\0') {
++		g_set_error (error, MIMEDIR_ATTRIBUTE_ERROR, MIMEDIR_ATTRIBUTE_ERROR_INVALID_FORMAT, MIMEDIR_ATTRIBUTE_ERROR_INVALID_FORMAT_STR, "DURATION", name);
++		return 0;
++	}
++
+ 	return neg ? -duration : duration;
+ }
+ 

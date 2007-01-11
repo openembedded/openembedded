@@ -41,7 +41,7 @@ fi
 
 case $1 in
 'start')
-    /sbin/getkey 5 "Starting Opie in 5 seconds... press key to interrupt." && exit 0
+    #/sbin/getkey 5 "Starting Opie in 5 seconds... press key to interrupt." && exit 0
     
     if [ -x "$OPIEDIR/bin/opie-login" ]; then
             echo Starting Opie-login....

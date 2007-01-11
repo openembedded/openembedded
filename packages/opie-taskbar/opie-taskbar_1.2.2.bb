@@ -1,5 +1,5 @@
 require ${PN}.inc
-PR = "r1"
+PR = "r3"
 
 SRC_URI = "${HANDHELDS_CVS};tag=${TAG};module=opie/core/apps/calibrate \
            ${HANDHELDS_CVS};tag=${TAG};module=opie/noncore/settings/mediummount \
