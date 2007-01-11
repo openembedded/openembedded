@@ -44,7 +44,7 @@ case $1 in
     
     if [ -x "$OPIEDIR/bin/opie-login" ]; then
             echo Starting Opie-login....
-            $OPIEDIR/bin/opie-login -terminal 2
+            $OPIEDIR/bin/opie-login -terminal 3
     else
         $OPIEDIR/bin/opie-reorgfiles
         if [ -x /usr/bin/ssh-agent ]; then
@@ -57,7 +57,7 @@ case $1 in
             export SSH_ASKPASS=$OPIEDIR/bin/opie-sh-ssh-askpass.sh
         fi           
         echo Starting Opie....
-        $SSHAGENT $OPIEDIR/bin/qpe -terminal 2
+        $SSHAGENT $OPIEDIR/bin/qpe -terminal 3
     fi
 
     ;;
