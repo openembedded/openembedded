@@ -4,7 +4,7 @@ DEPENDS = "gtk+ libsvg-cairo"
 SECTION = "gpe"
 PRIORITY = "optional"
 LICENSE = "GPL"
-PR = "r6"
+PR = "r7"
 
 SRC_URI += "file://splash-p.svg \
 	    file://splash-l.svg \
