@@ -8,7 +8,7 @@ RRECOMMENDS = "gdk-pixbuf-loader-gif gdk-pixbuf-loader-png gdk-pixbuf-loader-jpe
 PV = "0.19+svn${SRCDATE}"
 PR = "r0"
 
-SRC_URI = "${GPE_SVN}"
+SRC_URI = "svn://projects.linuxtogo.org/svn/gpe/trunk/extra;module=${PN}"
 
 S = "${WORKDIR}/gpe-mini-browser"
 

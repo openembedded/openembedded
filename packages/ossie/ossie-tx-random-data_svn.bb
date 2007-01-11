@@ -1,8 +1,9 @@
-PR = "r0"
 DESCRIPTION = "OSSIE transmit random bits waveform"
 SECTION =  "apps"
 PRIORITY = "optional"
 LICENSE = "GPL"
+PV = "0.0.0+svn${SRCDATE}"
+PR = "r0"
 
 DEPENDS = "ossiecf ossie-randombits ossie-modulator ossie-interpolator ossie-usrp-tx-control ossie-usrp-device ossie-gpp-device"
 RDEPENDS = "ossie-randombits ossie-modulator ossie-interpolator ossie-usrp-tx-control ossie-usrp-device ossie-gpp-device"
