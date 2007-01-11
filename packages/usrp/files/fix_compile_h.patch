@@ -1,0 +1,13 @@
+Index: gnuradio/trunk/usrp/host/lib/fusb_linux.cc
+===================================================================
+--- gnuradio/trunk/usrp/host/lib/fusb_linux.cc (revision 3534)
++++ gnuradio/trunk/usrp/host/lib/fusb_linux.cc (revision 3886)
+@@ -28,5 +28,7 @@
+ #include <usb.h>		// libusb header
+ #include <stdexcept>
++#ifdef HAVE_LINUX_COMPILER_H
+ #include <linux/compiler.h>
++#endif
+ #include <linux/usbdevice_fs.h>	// interface to kernel portion of user mode usb driver
+ #include <sys/ioctl.h>
+

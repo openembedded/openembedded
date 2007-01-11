@@ -1,10 +1,10 @@
 SECTION = "x11/base"
 require libx11_${PV}.bb
 
-EXTRA_OECONF += "--disable-udc --disable-xcms --disable-xlocale --disable-xkb"
+EXTRA_OECONF += "--disable-udc --enable-xcms --disable-xlocale --disable-xkb"
 CFLAGS += "-D_GNU_SOURCE"
 
-PR = "r2"
+PR = "r4"
 
 SRC_URI += "file://X18NCMSstubs.diff;patch=1 \
 	    file://fix-disable-xlocale.diff;patch=1 \
