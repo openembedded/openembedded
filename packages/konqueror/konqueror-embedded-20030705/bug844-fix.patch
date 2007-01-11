@@ -1,0 +1,13 @@
+Index: konqueror-embedded-snapshot-20030705/konq-embed/src/Makefile.am
+===================================================================
+--- konqueror-embedded-snapshot-20030705.orig/konq-embed/src/Makefile.am	2007-01-11 09:14:48.000000000 +0100
++++ konqueror-embedded-snapshot-20030705/konq-embed/src/Makefile.am	2007-01-11 09:14:51.000000000 +0100
+@@ -53,7 +53,7 @@
+ 
+ konqueror_LDFLAGS = $(KONQ_SSL_LDFLAGS) $(all_libraries) $(exportflag)
+ konqueror_METASOURCES = AUTO
+-konqueror_DEPENDENCIES = $(LIB_KJSHTML) $(LIB_KHTML) $(lib_addons)
++konqueror_DEPENDENCIES = $(shell echo ${LIB_KJSHTML}|sed s/\s*-l\\w\\+//g) $(LIB_KHTML) $(lib_addons)
+ BUILT_SOURCES = init.inc
+ 
+ icon_DATA = konqueror.png

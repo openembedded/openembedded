@@ -3,7 +3,7 @@ SECTION = "opie/applications"
 PRIORITY = "optional"
 DEPENDS = "libqpe-opie openssl pcre"
 LICENSE = "LGPL/GPL"
-PR = "r3"
+PR = "r4"
 
 SRC_URI = "http://devel-home.kde.org/~hausmann/snapshots/Attic/konqueror-embedded-snapshot-${PV}.tar.gz \
            file://opie1.patch;patch=1 \
@@ -14,7 +14,9 @@ SRC_URI = "http://devel-home.kde.org/~hausmann/snapshots/Attic/konqueror-embedde
 	   file://malformed.patch;patch=1 \
 	   file://cachepath.patch;patch=1 \
 	   file://konq-embedrc \
-	   file://vit.patch;patch=1"
+	   file://vit.patch;patch=1 \
+	   file://bug844-fix.patch;patch=1"
+
 S = "${WORKDIR}/konqueror-embedded-snapshot-${PV}"
 
 inherit autotools
