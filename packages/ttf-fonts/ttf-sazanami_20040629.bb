@@ -1,15 +1,17 @@
+require ttf.inc
+
 DESCRIPTION = "Sazanami Gothic/Mincho Japanese TrueType fonts"
 DESCRIPTION_ttf-sazanami-gothic = "Sazanami Gothic Japanese TrueType font"
 DESCRIPTION_ttf-sazanami-mincho = "Sazanami Mincho Japanese TrueType font"
-LICENSE = "${PN}"
-SRC_DISTRIBUTE_LICENSES += "${PN}"
 AUTHOR = "Electronic Font Open Laboratory (/efont/)"
 HOMEPAGE = "http://sourceforge.jp/projects/efont/"
+LICENSE = "${PN}"
+SRC_DISTRIBUTE_LICENSES += "${PN}"
+RPROVIDES = "virtual/japanese-font"
+PR = "r1"
 
 SRC_URI = "http://download.sourceforge.jp/efont/10087/sazanami-20040629.tar.bz2"
 S = "${WORKDIR}/sazanami-20040629"
-
-require ttf.inc
 
 PACKAGES = "ttf-sazanami-gothic ttf-sazanami-mincho"
 FILES_ttf-sazanami-gothic = "${datadir}/fonts/truetype/sazanami-gothic.ttf \

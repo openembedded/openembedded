@@ -1,9 +1,6 @@
-DESCRIPTION = "GPE infrared communication applet"
-DEPENDS = "gtk+ libgpewidget libmimedir libgpevtype openobex irda-utils dbus-glib"
+require ${PN}.inc
+
 RDEPENDS = "irda-utils"
-SECTION = "gpe"
-PRIORITY = "optional"
-LICENSE = "GPL"
 
 inherit gpe
 
