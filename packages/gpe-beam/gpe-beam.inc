@@ -1,0 +1,5 @@
+DESCRIPTION = "GPE infrared communication applet"
+SECTION = "gpe"
+PRIORITY = "optional"
+LICENSE = "GPL"
+DEPENDS = "gtk+ libgpewidget libmimedir libgpevtype openobex irda-utils dbus-glib"
