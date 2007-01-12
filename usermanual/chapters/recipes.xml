@@ -1,0 +1,1459 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter>
+  <title>Recipes</title>
+
+  <section id="bb_introduction" xreflabel="introduction">
+    <title>Introduction</title>
+
+    <para>A bitbake recipe is a set of instructions that describe what needs
+    to be done to retrierve the source code for some application, apply any
+    necessary patches, provide any additional files (such as init scripts),
+    compile it, install it and generated binary packages. The end result is a
+    binary package that you can install on your target device, and maybe some
+    intermediate files, such as libraries and headers, which can be used when
+    building other application.</para>
+
+    <para>In many ways the process is similar to creating .deb or .rpm
+    packages for your standard desktop distributions with one major difference
+    - in OpenEmbedded everything is being cross-compiled. This often makes the
+    task far more difficult (depending on how well suited the application is
+    to cross compiling), then it is for other packaging systems and sometime
+    impossible. </para>
+
+    <para>This chapter assumes that you are familiar with working with
+    bitbake, including the work flow, required directory structures, bitbake
+    configuration and the use of monotone. If you are not familiar with these
+    then first take a look at the chapter on bitbake usage.</para>
+  </section>
+
+  <section id="bb_syntax" xreflabel="syntax">
+    <title>Syntax of recipes</title>
+
+    <para>The basic items that make up a bitbake recipe file are:</para>
+
+    <variablelist>
+      <varlistentry>
+        <term>functions</term>
+
+        <listitem>
+          <para>Functions provide a series of actions to be performed.
+          Functions are usually used to override the default implementation of
+          a task function, or to compliment (append or prepend to an existing
+          function) a default function. Standard functions use sh shell
+          syntax, although access to OpenEmbedded variables and internal
+          methods is also available.</para>
+
+          <para>The following is an example function from the sed
+          recipe:</para>
+
+          <para><screen>do_install () {
+    autotools_do_install
+    install -d ${D}${base_bindir}
+    mv ${D}${bindir}/sed ${D}${base_bindir}/sed.${PN}
+}</screen>It is also possible to implement new functions, that are not
+          replacing or complimenting the default functions, which are called
+          between existing tasks. It is also possible to implement functions
+          in python instead of sh. Both of these options are not seen in the
+          majority of recipes.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>variable assignments and manipulations</term>
+
+        <listitem>
+          <para>Variable assignments allow a value to be assigned to a
+          variable. The assignment may be static text or might include the
+          contents of other variables. In addition to assignment, appending
+          and prepending operations are also supported.</para>
+
+          <para>The follow example shows the some of the ways variables can be
+          used in recipes:<screen>S = "${WORKDIR}/postfix-${PV}"
+PR = "r4"
+CFLAGS += "-DNO_ASM"
+SRC_URI_append = "file://fixup.patch;patch=1"</screen></para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>keywords</term>
+
+        <listitem>
+          <para>Only a few keywords are used in btbake recipes. They are used
+          for things such as including common functions
+          (<emphasis>inherit</emphasis>), loading parts of a recipe from other
+          files (<emphasis>include</emphasis> and
+          <emphasis>require</emphasis>) and exporting variables to the
+          environment (export).</para>
+
+          <para>The following example shows the use of some of these
+          keywords:<screen>export POSTCONF = "${STAGING_BINDIR}/postconf"
+inherit autoconf
+require otherfile.inc</screen></para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>comments</term>
+
+        <listitem>
+          <para>Any lines that begin with a # are treated as comment lines and
+          are ignored.<screen># This is a comment</screen></para>
+        </listitem>
+      </varlistentry>
+    </variablelist>
+
+    <para>The following is a summary of the most important (and most commonly
+    used) parst of the recipe syntax:</para>
+
+    <variablelist>
+      <varlistentry>
+        <term>Line continuation: \</term>
+
+        <listitem>
+          <para>To split a line over multiple lines you should place a \ at
+          the end of the line that is to be continued on the next line.</para>
+
+          <screen>VAR = "A really long \
+       line"</screen>
+
+          <para>Note that there must not be anything (no spaces or tabs) after
+          the \.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>Comments: #</term>
+
+        <listitem>
+          <para>Any lines beginning with a # are comments and will be
+          ignored.<screen># This is a comment</screen></para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>Using variables: ${...}</term>
+
+        <listitem>
+          <para>To access the contents of a variable you need to access it via
+          <emphasis>${&lt;varname&gt;}</emphasis>:<screen>SRC_URI = "${SOURCEFORGE_MIRROR}/libpng/zlib-${PV}.tar.gz"</screen></para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>Quote all assignments</term>
+
+        <listitem>
+          <para>All variable assignments should be quoted with double quotes.
+          (It may work without them at pesent, but it will not work in the
+          future).<screen>VAR1 = "${OTHERVAR}"
+VAR2 = "The version is ${PV}"</screen></para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>Appending: +=</term>
+
+        <listitem>
+          <para>You can append values to existing variables using the
+          <emphasis>+=</emphasis> operator. Note that this operator will add a
+          space between the existing content of the variable and the new
+          content.<screen>SRC_URI += "file://fix-makefile.patch;patch=1"</screen></para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>Prepending: =+</term>
+
+        <listitem>
+          <para>You can preprend values to existing variables using the
+          <emphasis>=+</emphasis> operator. Note that this operater will add a
+          space between the new content and the existing content of the
+          cariable.<screen>VAR =+ "Starts"</screen></para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>Appending: _append</term>
+
+        <listitem>
+          <para>You can append values to existing variables using the
+          <emphasis>_append</emphasis> method. Note that this operator does
+          not add any additional space, and it is applied after all the
+          <emphasis>+=</emphasis>, and <emphasis>=+</emphasis> operators have
+          been applied.</para>
+
+          <para>The following example show the space being explicity added to
+          the start to ensure the appended value is not merged with the
+          existing value:<screen>SRC_URI_append = " file://fix-makefile.patch;patch=1"</screen>The
+          <emphasis>_append</emphasis> method can also be used with overrides,
+          which result in the actions only being performed for the specified
+          target or machine: [TODO: Link to section on overrides]<screen>SRC_URI_append_sh4 = " file://fix-makefile.patch;patch=1"</screen>Note
+          that the appended information is a variable itself, and therefore
+          it's possible to used <emphasis>+=</emphasis> or
+          <emphasis>=+</emphasis> to assign variables to the
+          <emphasis>_append</emphasis> information:<screen>SRC_URI_append = " file://fix-makefile.patch;patch=1"
+SRC_URI_append += "file://fix-install.patch;patch=1"</screen></para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>Prepending: _prepend</term>
+
+        <listitem>
+          <para>You can prepend values to existing variables using the
+          _prepend method. Note that this operator does not add any additional
+          space, and it is applied after all the <emphasis>+=</emphasis>, and
+          <emphasis>=+</emphasis> operators have been applied.</para>
+
+          <para>The following example show the space being explicity added to
+          the end to ensure the prepended value is not merged with the
+          existing value:<screen>CFLAGS_prepend = "-I${S}/myincludes "</screen>The
+          <emphasis>_prepend</emphasis> method can also be used with
+          overrides, which result in the actions only being performed for the
+          specified target or machine: [TODO: Link to section on
+          overrides]<screen>CFLAGS_prepend_sh4 = " file://fix-makefile.patch;patch=1"</screen>Note
+          that the appended information is a variable itself, and therefore
+          it's possible to used <emphasis>+=</emphasis> or
+          <emphasis>=+</emphasis> to assign variables to the
+          <emphasis>_prepend</emphasis> information:<screen>CFLAGS_prepend = "-I${S}/myincludes "
+CFLAGS_prepend += "-I${S}/myincludes2 "</screen>Note also the lack of a space
+          when using += to append to a preprend value - remember that the +=
+          operator is adding space itself.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>Spaces vs tabs</term>
+
+        <listitem>
+          <para>Spaces should be used for indentation, not hard tabs. Both
+          currently work, however it is a policy decision of OE that spaces
+          always be used.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>Style: oe-stylize.py</term>
+
+        <listitem>
+          <para>To help with using the correct style in your recipes there is
+          a python script in the contrib directory called
+          <emphasis>oe-stylize.py</emphasis> which can be used to reformat
+          your recipes to the correct style. The output will contain a list of
+          warning (to let you know what you did wrong) which should be edited
+          out before using the new file.<screen>contrib/oe-stylize.py myrecipe.bb &gt; fixed-recipe.bb
+vi fixed-recipe.bb
+mv fixed.recipe.bb myrecipe.bb</screen></para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>Using python for complex operations: ${@...}</term>
+
+        <listitem>
+          <para>For more advanced processing it is possible to use python code
+          during variable assignments, for doing search and replace on a
+          variable for example.</para>
+
+          <para>Python code is indicated by a proceeding @ sign in the
+          variable assignment.<screen>CXXFLAGS := "${@'${CXXFLAGS}'.replace('-frename-registers', '')}"</screen>More
+          information about using python is available in the <xref
+          linkend="bb_advanced_python" /> section.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>Shell syntax</term>
+
+        <listitem>
+          <para>When describing a list of actions to take shell syntax is used
+          (as if you were writing a shell script). You should ensure that you
+          script would work with a generic sh and not require any bash (or
+          other shell) specific functionality. The same applies to various
+          system utilities (sed, grep, awk etc) that you may wish to use. If
+          in doubt you should check with multiple implementations - including
+          those from busybox.</para>
+        </listitem>
+      </varlistentry>
+    </variablelist>
+
+    <para>For a detailed description of the syntax for the bitbake recipe
+    files you should refer to the bitbake use manual.</para>
+  </section>
+
+  <section id="bb_versioning" xreflabel="versioning">
+    <title>Recipe naming: Names, versions and releases</title>
+
+    <para>Recipes in OpenEmbedded use a standard naming convention that
+    includes the package name and version number in the filename. In addition
+    to the name and version there is also a release number, which is indicates
+    changes to the way the package is built and/or packaged. The release
+    number is contained within the recipe itself.</para>
+
+    <para>The expected fomat of recipe name is:<screen>&lt;package-name&gt;_&lt;version&gt;.bb</screen></para>
+
+    <para>where <emphasis>&lt;package-name&gt;</emphasis> is the name of the
+    package (application, library, module, or whatever it is that is being
+    packaged) and <emphasis>version</emphasis> is the version number.</para>
+
+    <para>So a typical recipe name would be:<screen>strace_4.5.14.bb</screen>which
+    would be for version <emphasis>4.5.14</emphasis> of the
+    <emphasis>strace</emphasis> application.</para>
+
+    <para>The release version is defined via the package release variable, PR,
+    contained in the recipe. The expected format is:<screen>r&lt;n&gt;</screen>where
+    <emphasis>&lt;n&gt;</emphasis> is an integer number starting from 0
+    initially and then incremented each time the recipe, or something that
+    effects the recipe, is modified. So a typical defintion of the release
+    would be:<screen>PR = "r1"</screen>to specify release number
+    <emphasis>1</emphasis> (the second release, the first would have been
+    <emphasis>0</emphasis>). If there is no definition of PR in the recipe
+    then the default value of "r0" is used.</para>
+
+    <para><note>
+        <para>It is good practice to always define PR in your recipes, even
+        for the <emphasis>"r0"</emphasis> release, so that when editing the
+        recipe it is clear that the PR number needs to be updated.</para>
+      </note></para>
+
+    <para>When a recipe is being processed some variables are automatically
+    set based on the recipe file name and can be used for other purposes from
+    within the recipe itself. These include:</para>
+
+    <variablelist>
+      <varlistentry>
+        <term>PN</term>
+
+        <listitem>
+          <para>The package name. Determined from the recipe filename -
+          everything up until the first underscore is considered to be the
+          package name. For the <command>strace_4.5.14.bb</command> recipe the
+          PN variable would be set to <emphasis>"strace"</emphasis>.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>PV</term>
+
+        <listitem>
+          <para>The package version. Determined from the recipe filename -
+          everything between the first underscore and the final .bb is
+          considered to be the pacakge version. For the
+          <command>strace_4.5.14.bb</command> recipe the PV variable would be
+          set to <emphasis>"4.5.14"</emphasis>.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>PR</term>
+
+        <listitem>
+          <para>The package release. This is explicitly set in the recipe, or
+          if not set it defaults to "<emphasis>r0"</emphasis> if not
+          set.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>P</term>
+
+        <listitem>
+          <para>The package name and versions seperated by a hyphen.<screen>P = "${PN}-${PV}"</screen></para>
+
+          <para>For the <command>strace_4.5.14.bb</command> recipe the P
+          variable would be set to
+          <emphasis>"strace-4.5.14"</emphasis>.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>PF</term>
+
+        <listitem>
+          <para>The package name, version and release seperated by
+          hypens.<screen>PF = "${PN}-${PV}-${PR}"</screen></para>
+
+          <para>For the s<command>trace_4.5.14.bb recipe</command>, with PR
+          set to <emphasis>"r1"</emphasis> in the recipe, the PF variable
+          would be set to <emphasis>"strace-4.5.14-r1"</emphasis>.</para>
+        </listitem>
+      </varlistentry>
+    </variablelist>
+
+    <para>While some of these variables are not commonly used in recipes (they
+    are used internally though) both PN and PV are used a lot.</para>
+
+    <para>In the following example we are instructing the packaging system to
+    include an additional directory in the package. We use PN to refer to the
+    name of the package rather than spelling out the package name:<screen>FILES_${PN} += "${sysconfdir}/myconf"</screen></para>
+
+    <para>In the next example we are specifying the URL for the package
+    source, by using PV in place of the actual version number it is possible
+    to duplicate, or rename, the recipe for a new version without having to
+    edit the URL:<screen>SRC_URI = "ftp://ftp.vim.org/pub/vim/unix/vim-${PV}.tar.bz2"</screen></para>
+
+    <para></para>
+  </section>
+
+  <section id="bb_variables" xreflabel="variables">
+    <title>Variables</title>
+
+    <para>One of the most confusing part of bitbake recipes for new users is
+    the large amount of variables that appear to be avaialble to change and/or
+    control the behaviour of some aspect of the recipe. Some variables, such
+    as those derived from the file name are reasonably obvious, others are not
+    at all obvious.</para>
+
+    <para>There are several places where these variables are derived from
+    and/or used:</para>
+
+    <orderedlist>
+      <listitem>
+        <para>A large number of variables are definied in the bitbake
+        configuration file conf/bitbake.conf - it's often a good idea to look
+        through that file when trying to determine what a particular variable
+        means.</para>
+      </listitem>
+
+      <listitem>
+        <para>Machine and distribution configuration files in conf/machine and
+        conf/distro will sometimes define some variables specific to the
+        machine and/or distribution. You should look at the appropriate files
+        for your targets to see if anything is being definied that effects the
+        recipes you are building.</para>
+      </listitem>
+
+      <listitem>
+        <para>Bitbake itself will define some variables. The FILE variables
+        that defines the name of the bitbake recipe being processed is set by
+        bitbake itself for example. Refer to the bitbake manual for more
+        information on the variables that bitbake sets.</para>
+      </listitem>
+
+      <listitem>
+        <para>The classes, that are used via the inherit keyword, define
+        and/or use the majority of the remaining variables. A class is a like
+        a library that contain parts of a bitbake recipe that are used by
+        multiple recipes. To make them useable in more situations they often
+        include a large number of variables to control how the class
+        operates.</para>
+      </listitem>
+    </orderedlist>
+
+    <para>[</para>
+
+    <para>talk about predefinied variables</para>
+
+    <para>look in conf/bitbake.conf</para>
+
+    <para>target filesystem paths</para>
+
+    <para>build variables</para>
+
+    <para>data/time variables</para>
+
+    <para>]</para>
+
+    <para></para>
+
+    <para>[TODO: Table probably goes to ref section, just mention some of the
+    more common of these here]</para>
+
+    <para></para>
+
+    <para>build vs host vs target</para>
+
+    <para>build - run on the build system, produce things that run on the
+    build system</para>
+
+    <para>host - run on the build system, produce things for the</para>
+
+    <para></para>
+  </section>
+
+  <section id="bb_header" xreflabel="header">
+    <title>Header</title>
+
+    <para>talk about some of the header entries</para>
+
+    <para></para>
+
+    <variablelist>
+      <varlistentry>
+        <term>DESCRIPTION</term>
+
+        <listitem>
+          <para>Describes what the software does. Hopefully this gives enough
+          information to a use to know if it's the right application for
+          them.</para>
+
+          <para>The default description is: <emphasis>"Version ${PV}-${PR} of
+          package ${PN}"</emphasis>.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>HOMEPAGE</term>
+
+        <listitem>
+          <para>The URL of the home page of the application where new releases
+          and more information can be found.</para>
+
+          <para>The default homepage is <emphasis>"unknown"</emphasis>.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>SECTION</term>
+
+        <listitem>
+          <para>The section is used to categorise the application into a
+          specific group. Often used by GUI based installers to help users
+          when searching for software.</para>
+
+          <para>See <xref linkend="section_variable" /> for a list of the
+          available sections.</para>
+
+          <para>The default section is <emphasis>"base"</emphasis>.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>PRIORITY</term>
+
+        <listitem>
+          <para>The default priority is
+          <emphasis>"optional"</emphasis>.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>LICENSE</term>
+
+        <listitem>
+          <para>The license for the application. If it is not one of the
+          standard linceses then the license itself must be included
+          (where?)</para>
+
+          <para>The default licenses is <emphasis>"unknown"</emphasis>.</para>
+        </listitem>
+      </varlistentry>
+    </variablelist>
+
+    <para></para>
+  </section>
+
+  <section id="bb_structure" xreflabel="structure">
+    <title>Structure</title>
+
+    <para>talk about about what directories and files are involved - using
+    bitbake stuff would cover this in detail, just short summary here</para>
+  </section>
+
+  <section id="bb_sources" xreflabel="sources">
+    <title>Sources: Downloading, patching and additional files</title>
+
+    <para>[</para>
+
+    <para>talk about sources</para>
+
+    <para>SRC_URI example</para>
+
+    <para>tar.gz explain</para>
+
+    <para>patch explain</para>
+
+    <para>file explain</para>
+
+    <para>svn/cvs/git etc explain?</para>
+
+    <para>point to SR_URI in reference section for more details</para>
+
+    <para>]</para>
+
+    <para>Before a recipe can start compiling and packaging up your software
+    it needs to know where to get the source from. This is controlled via the
+    <xref linkend="src_uri_variable" /> in the recipe which is able to
+    describe:</para>
+
+    <para>- http and https URI's</para>
+
+    <para>- cvs, svn and git URI's</para>
+
+    <para>- files</para>
+
+    <para>- patches</para>
+
+    <para></para>
+
+    <para></para>
+  </section>
+
+  <section id="bb_directories" xreflabel="directories">
+    <title>Directories: What goes where</title>
+
+    <para>target directories</para>
+
+    <para>unpacked source directory</para>
+
+    <para>work directory</para>
+
+    <para>files/filespath</para>
+
+    <para>staging directories</para>
+
+    <para>install directories</para>
+
+    <para></para>
+
+    <section>
+      <title>WORKDIR: The working directory</title>
+
+      <para>[UNEDITED]</para>
+
+      <para>The workdir is the directory into which the source code is
+      extracted, to which files (non patch files) are copied and where the
+      logs and installation files are created. A typical reason for needing to
+      reference the work directory is for non patch files. If we take a look
+      at the recipe for quagga we can see an example of this:</para>
+
+      <para><screen>SRC_URI = "http://www.quagga.net/download/quagga-${PV}.tar.gz \
+           file://fix-for-lib-inpath.patch;patch=1 \
+           file://quagga.init \
+           file://quagga.default \
+           file://watchquagga.init \
+           file://watchquagga.default"</screen>This has two init files and two
+      configuration files which are not patches, but actually files that it
+      wants to include in the generated packages. Bitbake will copy these
+      files into the work directory. So to access them we refer to
+      WORKDIR:</para>
+
+      <para><screen>do_install () {
+    # Install init script and default settings
+    install -m 0755 -d ${D}${sysconfdir}/default ${D}${sysconfdir}/init.d ${D}${sysconfdir}/quagga
+    install -m 0644 ${WORKDIR}/quagga.default ${D}${sysconfdir}/default/quagga
+    install -m 0644 ${WORKDIR}/watchquagga.default ${D}${sysconfdir}/default/watchquagga
+    install -m 0755 ${WORKDIR}/quagga.init ${D}${sysconfdir}/init.d/quagga
+    install -m 0755 ${WORKDIR}/watchquagga.init ${D}${sysconfdir}/init.d/watchquagga
+    ...</screen></para>
+
+      <para></para>
+    </section>
+
+    <section>
+      <title>S: The unpacked source code directory</title>
+
+      <para>[UNEDITED]</para>
+
+      <para>Bitbake expects to find the source for a package in the
+      &lt;packagename&gt;-&lt;version&gt; directory, so for a package called
+      widgets_1.2.bb we are extracting widgets-1.2.tar.gz and bitbake expects
+      to source to end up in a directory called widgets-1.2 within the work
+      directory. If the source does not end up in this directory then bitbake
+      needs to be told this by explicitly setting S.</para>
+
+      <para>For example, lets assume widgets-1.2.tar.gz extracts into a
+      directory called widgets - without the version number, instead of
+      widgets-1.2 which is what the default value of S assumes. Therefore we
+      need to modify S to specify the directory the source was actually
+      extracted into:</para>
+
+      <para><screen>SRC_URI = "http://www.example.com/software/widgets-${PN}.tar.gz"
+S = "${WORKDIR}/widgets"</screen></para>
+
+      <para></para>
+    </section>
+
+    <section>
+      <title>D: The destination directory</title>
+
+      <para>[UNEDITED]</para>
+
+      <para>aaa</para>
+    </section>
+
+    <section>
+      <title>Staging directories</title>
+
+      <para>[UNEDITED]</para>
+
+      <para>The staging directories are used during a stage task where the
+      libraries and headers are copied to the staging area to be used during
+      the building of other applications.</para>
+
+      <para>[Table to reference section, just mention lib and include dirs
+      here]</para>
+
+      <informaltable>
+        <tgroup cols="2">
+          <colspec colnum="0" colwidth="1*" />
+
+          <colspec colnum="1" colwidth="1*" />
+
+          <thead>
+            <row>
+              <entry>Directory</entry>
+
+              <entry>Definition</entry>
+            </row>
+          </thead>
+
+          <tbody>
+            <row>
+              <entry>STAGING_DIR</entry>
+
+              <entry>${TMPDIR}/staging</entry>
+            </row>
+
+            <row>
+              <entry>STAGING_BINDIR</entry>
+
+              <entry>${STAGING_DIR}/${BUILD_SYS}/bin</entry>
+            </row>
+
+            <row>
+              <entry>STAGING_LIBDIR</entry>
+
+              <entry>${STAGING_DIR}/${HOST_SYS}/lib</entry>
+            </row>
+
+            <row>
+              <entry>STAGING_INCDIR</entry>
+
+              <entry>${STAGING_DIR}/${HOST_SYS}/include</entry>
+            </row>
+
+            <row>
+              <entry>STAGING_DATADIR</entry>
+
+              <entry>${STAGING_DIR}/${HOST_SYS}/share</entry>
+            </row>
+
+            <row>
+              <entry>STAGING_LOADER_DIR</entry>
+
+              <entry>${STAGING_DIR}/${HOST_SYS}/loader</entry>
+            </row>
+
+            <row>
+              <entry>STAGING_FIRMWARE_DIR</entry>
+
+              <entry>${STAGING_DIR}/${HOST_SYS}/firmware</entry>
+            </row>
+
+            <row>
+              <entry>STAGING_PYDIR</entry>
+
+              <entry>${STAGING_DIR}/lib/python2.4</entry>
+            </row>
+
+            <row>
+              <entry>STAGING_KERNEL_DIR</entry>
+
+              <entry>${STAGING_DIR}/${HOST_SYS}/kernel</entry>
+            </row>
+
+            <row>
+              <entry>PKG_CONFIG_PATH</entry>
+
+              <entry>${STAGING_DATADIR}/pkgconfig</entry>
+            </row>
+          </tbody>
+        </tgroup>
+      </informaltable>
+
+      <para></para>
+    </section>
+
+    <section>
+      <title>...</title>
+
+      <para></para>
+
+      <para></para>
+    </section>
+
+    <section>
+      <title>FILESPATH/FILESDIR: Finding local files</title>
+
+      <para>[UNEDITED]</para>
+
+      <para></para>
+
+      <variablelist>
+        <varlistentry>
+          <term>FILE</term>
+
+          <listitem>
+            <para>The path to the .bb file which is currently being
+            processed.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>FILE_DIRNAME</term>
+
+          <listitem>
+            <para>The path to the directory which contains the FILE which is
+            currently being processed.<screen>FILE_DIRNAME = "${@os.path.dirname(bb.data.getVar('FILE', d))}"</screen></para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>FILESPATH</term>
+
+          <listitem>
+            <para>The default set of directories which are available to use
+            for the file:// URI's. Each directory is searched, in the
+            specified order, in an attempt to find the file specified by each
+            file:// URI: <screen>FILESPATH = "${FILE_DIRNAME}/${PF}:${FILE_DIRNAME}/${P}:\
+${FILE_DIRNAME}/${PN}:${FILE_DIRNAME}/files:${FILE_DIRNAME}"</screen></para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>FILESDIR</term>
+
+          <listitem>
+            <para>The default directory to search for file:// URI's. Only used
+            if the file is not found in FILESPATH. This can be used to easily
+            add one additional directory to the search path without having to
+            modify the default FILESPATH setting. By default this is just the
+            first directory from FILESPATH. <screen>FILESDIR = "${@bb.which(bb.data.getVar('FILESPATH', d, 1), '.')}" </screen></para>
+          </listitem>
+        </varlistentry>
+      </variablelist>
+
+      <para>The most common reason for changing the FILESPATH/FILESDIR value
+      is when building one recipe that includes another. The native recipes
+      are typically where this occurs. As an example the m4-native recipe
+      includes the m4 recipe. This is fine, except that the m4 recipes expects
+      its files and patches to be located in the m4 directory while the native
+      file name results in them being searched for in m4-native. So the
+      m4-native recipe sets the FILESDIR variable to the value that of m4 to
+      add the actual m4 directory (where m4 itself has its files stored) to
+      the list of directories search for: include m4_${PV}.bb inherit native
+      FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/m4"</para>
+
+      <para></para>
+    </section>
+  </section>
+
+  <section id="bb_examples" xreflabel="examples">
+    <title>Basic examples</title>
+
+    <para>XX</para>
+
+    <section id="bb_helloworld_example" xreflabel="hello world example">
+      <title>Hello world</title>
+
+      <para>Now it's time for out first recipe. This is going to be one of the
+      simpliest possible recipes - all code is included and there's only one
+      file to complile and one readme file.</para>
+
+      <para></para>
+
+      <para>Create the files and add them:</para>
+
+      <para>Create the recipe:<screen>cat &gt; packages/helloworld/helloworld_0.1.bb
+DESCRIPTION = "Hello world program"
+
+SRC_URI = "file://helloworld.c \
+           file://README.txt"
+
+do_compile() {
+        ${CC} ${CFLAGS} ${LDFLAGS} ${WORKDIR}/helloworld.c -o helloworld
+}
+
+do_install() {
+        install -m 0755 -d ${D}${bindir} ${D}${docdir}/helloworld
+        install -m 0644 ${S}/helloworld ${D}${bindir}
+        install -m 0644 ${WORKDIR}/README.txt ${D}${docdir}/helloworld
+}
+^D</screen></para>
+
+      <para>SRC_URI refers to two files, no patches - found in "files"
+      dir.</para>
+
+      <para>do_compile just compiles our one file and create helloworld
+      bin</para>
+
+      <para>do_install create dirs, copies files. Not use of S, D, WORKDIR,
+      bindir, docdir vars.</para>
+    </section>
+
+    <section id="bb_autoconf_example" xreflabel="autoconf example">
+      <title>An autotools package</title>
+
+      <para>Show simple autoconf example</para>
+
+      <para><screen>%&gt; cat packages/tuxnes/tuxnes_0.75.bb
+DESCRIPTION = "Tuxnes Nintendo (8bit) Emulator"
+HOMEPAGE = "http://prdownloads.sourceforge.net/tuxnes/tuxnes-0.75.tar.gz"
+LICENSE = "GPLv2"
+SECTION = "x/games"
+PRIORITY = "optional"
+PR ="r1"
+
+SRC_URI = "http://heanet.dl.sourceforge.net/sourceforge/tuxnes/tuxnes-0.75.tar.gz"
+
+inherit autotools</screen></para>
+
+      <para>Example show EXTRA_OECONF or leave for advanced autoconf
+      section?</para>
+
+      <para>Note about classes below</para>
+
+      <para>Note about autoconf in ref section</para>
+    </section>
+  </section>
+
+  <section id="bb_depenencies" xreflabel="dependencies">
+    <title>Dependencies: What's needed to build and/or run the
+    package?</title>
+
+    <para>[</para>
+
+    <para>DEPENDS</para>
+
+    <para>RDEPENDS</para>
+
+    <para>auto sh libs depends</para>
+
+    <para>auto building of RDEPENDS</para>
+
+    <para>]</para>
+
+    <para>Dependencies should be failiar to anyone who has used a .rpm and
+    .deb based desktop distribution. A dependency is something that a package
+    requires to either build or run.</para>
+  </section>
+
+  <section id="bb_messages" xreflabel="messages">
+    <title>Messages: Letting the user know things</title>
+
+    <para>[UNEDITED]</para>
+
+    <para></para>
+
+    <variablelist>
+      <varlistentry>
+        <term>oenote</term>
+
+        <listitem>
+          <para>Display some informational messages to the user.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>oewarn</term>
+
+        <listitem>
+          <para>Display a warning to the user.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>oedebug</term>
+
+        <listitem>
+          <para>Display an error message to the user and abort the
+          action.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>oefatal</term>
+
+        <listitem>
+          <para>Display a debugging message to the user but only if they have
+          requested debugging output.</para>
+        </listitem>
+      </varlistentry>
+    </variablelist>
+
+    <para>Of the four functions only oefatal will abort the currently
+    executing task.</para>
+  </section>
+
+  <section id="bb_methods" xreflabel="methods">
+    <title>Methods: Inbuilt methods to make your life easier</title>
+
+    <para>oe_runmake</para>
+
+    <para>oe_runconf</para>
+
+    <para>oe_libinstall</para>
+  </section>
+
+  <section id="bb_packages" xreflabel="packages">
+    <title>Packaging: Defining packages and their contents</title>
+
+    <para>[</para>
+
+    <para>Talk about multiple packages and putting things in those
+    packages</para>
+
+    <para>philosophy of packaging - dbg, doc, dev, main pakage, libs,
+    additional</para>
+
+    <para>PACKAGES</para>
+
+    <para>FILES</para>
+
+    <para>wildcards and how they effect dir/file selection</para>
+
+    <para>debian naming?</para>
+
+    <para>-dbg packages and how to handle them</para>
+
+    <para>package ordering and how it effects wildcards</para>
+
+    <para>modifying vs replacing PACKAGES</para>
+
+    <para>"find tmp/&lt;package-name&gt;/install"</para>
+
+    <para>]</para>
+
+    <para></para>
+
+    <para>The default assignment of PACKAGES and FILES is:</para>
+
+    <variablelist>
+      <varlistentry>
+        <term>PACKAGES</term>
+
+        <listitem>
+          <para>Lists the names of each of the packages which are to be
+          generated.<screen>PACKAGES = "${PN}-dbg ${PN} ${PN}-doc ${PN}-dev ${PN}-locale"</screen></para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>FILES_${PN}</term>
+
+        <listitem>
+          <para>The base package, this includes everything needed to actually
+          run the application on the target system.<screen>FILES_${PN} = "${bindir}/* ${sbindir}/* ${libexecdir}/* ${libdir}/lib*.so.* \
+${sysconfdir} ${sharedstatedir} ${localstatedir} /bin/* /sbin/* \
+/lib/*.so* ${datadir}/${PN} ${libdir}/${PN}/* ${datadir}/pixmaps \
+${datadir}/applications ${datadir}/idl ${datadir}/omf \
+${datadir}/sounds ${libdir}/bonobo/servers"</screen></para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>FILES_${PN}-dbg</term>
+
+        <listitem>
+          <para>Non-stripped versions executables. OE automatically runs strip
+          on binary commands but leaves the originals in a .debug
+          directory.<screen>FILES_${PN}-dbg = "${bindir}/.debug ${sbindir}/.debug \
+${libexecdir}/.debug ${libdir}/.debug /bin/.debug /sbin/.debug \
+/lib/.debug ${libdir}/${PN}/.debug"</screen></para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>FILES_${PN}-doc</term>
+
+        <listitem>
+          <para>Documentation related files. All documentation is seperated
+          into it's own package so that it does not need to be installed
+          unless explicitly required.<screen>FILES_${PN}-doc = "${docdir} ${mandir} ${infodir} ${datadir}/gtk-doc \
+${datadir}/gnome/help"</screen></para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>FILES_${PN}-dev</term>
+
+        <listitem>
+          <para>Development related files. Any headers, libraries and support
+          files needed for development work on the target.<screen>FILES_${PN}-dev = "${includedir} ${libdir}/lib*.so ${libdir}/*.la
+${libdir}/*.a ${libdir}/*.o ${libdir}/pkgconfig /lib/*.a /lib/*.o
+${datadir}/aclocal"</screen></para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>FILES_${PN}-locale</term>
+
+        <listitem>
+          <para>Locale related files.<screen>FILES_${PN}-locale = "${datadir}/locale"</screen></para>
+        </listitem>
+      </varlistentry>
+    </variablelist>
+
+    <para></para>
+  </section>
+
+  <section id="bb_tasks" xreflabel="tasks">
+    <title>Tasks: Playing with tasks</title>
+
+    <para>[</para>
+
+    <para>tasks are explained elesewhere, here we talk about
+    replacing/modifying/adding</para>
+
+    <para>configure</para>
+
+    <para>compile</para>
+
+    <para>stage</para>
+
+    <para>install</para>
+
+    <para>..._append/_prepend</para>
+
+    <para>add task ...</para>
+
+    <para>empty tasks (":")</para>
+
+    <para>]</para>
+  </section>
+
+  <section id="bb_classes" xreflabel="classes">
+    <title>Classes: The seperation of common functionality</title>
+
+    <para>[</para>
+
+    <para>what are classes</para>
+
+    <para>some examples - autotools, update-rc.d, distutils, cpan</para>
+
+    <para>]</para>
+  </section>
+
+  <section id="bb_staging" xreflabel="staging">
+    <title>Staging: Making includes and libraries available for
+    building</title>
+
+    <para>[</para>
+
+    <para>Why staging</para>
+
+    <para>where staging to</para>
+
+    <para>what does/does not go in staging</para>
+
+    <para>]</para>
+  </section>
+
+  <section id="bb_autoconf" xreflabel="about autoconf">
+    <title>Autoconf: All about autotools</title>
+
+    <para>[</para>
+
+    <para>More about building autoconf packages</para>
+
+    <para>EXTRA_OECONF</para>
+
+    <para>Problems with /usr/include</para>
+
+    <para>Configuring to search on staging</para>
+
+    <para>-L${STAGING_LIBDIR} vs ${TARGET_LDFLAGS}</para>
+
+    <para>site files</para>
+
+    <para>refer to ref manual for site files info</para>
+
+    <para>]</para>
+  </section>
+
+  <section id="bb_installation_scripts" xreflabel="installation scripts">
+    <title>Installation scripts: Running scripts during package install and/or
+    removal</title>
+
+    <para>[</para>
+
+    <para>Talk about pre and post inst/remove scripts</para>
+
+    <para>Talk about "sh" syntax (ie, vs "bash" syntax)</para>
+
+    <para>Talk about offline install stuff</para>
+
+    <para>Make note about how classes can effect this</para>
+
+    <para>]</para>
+  </section>
+
+  <section id="bb_conffiles" xreflabel="conf files">
+    <title>Configuration files</title>
+
+    <para>Configuration files that are installed as part of a package require
+    special handling. Without special handling as soon as the user upgrades to
+    a new version of the package then changes they have made to the
+    configuration files will be lost.</para>
+
+    <para>In order to prevent this from happening you need to tell the
+    packaging system which files are configuration files. Such files will
+    result in the user being asked how the user wants to handle any
+    configuration file changes (if any), as shown in this example:<screen>Downloading http://nynaeve.twibble.org/ipkg-titan-glibc//./p3scan_2.9.05d-r1_sh4.ipk
+    Configuration file '/etc/p3scan/p3scan.conf'
+    ==&gt; File on system created by you or by a script.
+    ==&gt; File also in package provided by package maintainer.
+       What would you like to do about it ?  Your options are:
+        Y or I  : install the package maintainer's version
+        N or O  : keep your currently-installed version
+          D     : show the differences between the versions (if diff is installed)
+     The default action is to keep your current version.
+    *** p3scan.conf (Y/I/N/O/D) [default=N] ?</screen>To declare a file as a
+    configuration file you need to define the
+    <command>CONFFILES_&lt;pkgname&gt;</command> variable as a whitespace
+    separated list of configuration files. The following example from clamav
+    shows two files being marked as configuration files:<screen>CONFFILES_${PN}-daemon = "${sysconfdir}/clamd.conf \
+                          ${sysconfdir}/default/clamav-daemon"</screen>Note
+    the user of <command>${PN}-daemon</command> as the package name. The
+    <command>${PN}</command> variable will expand to <command>clamav</command>
+    and therefore these conf files are declared as being in the clamav-daemon
+    package.</para>
+  </section>
+
+  <section id="bb_package_relationships"
+           xreflabel="package relationships files">
+    <title>Package relationships</title>
+
+    <para>[</para>
+
+    <para>RRECOMENDS</para>
+
+    <para>RCONFLICTS</para>
+
+    <para>PROVIDES</para>
+
+    <para>]</para>
+  </section>
+
+  <section id="bb_fakeroot" xreflabel="fakeroot">
+    <title>Fakeroot: Dealing with the need for "root"</title>
+
+    <para>Sometimes packages requires root permissions in order to perform
+    some action, such as changing user or group owners or creating device
+    nodes. Since OpenEmbedded will not keep the user and group information
+    it's usually preferably to remove that from the makefiles. For device
+    nodes it's usually preferably to create them from the initial device node
+    lists or via udev configuration.</para>
+
+    <para>However if you can't get by without root permissions then you can
+    use <xref linkend="fakeroot" /> to simulate a root environment, without
+    the need to really give root access.</para>
+
+    <para>Using <xref linkend="fakeroot" /> is done by prefixing the
+    task:<screen>fakeroot do_install() {</screen>Since this requires fakeroot
+    you also need to add a dependency on
+    <command>fakeroot-native</command>:<screen>DEPENDS = "fakeroot-native"</screen>See
+    the fuse recipe for an example. Further information on <xref
+    linkend="fakeroot" />, including a description of it works, is provided in
+    the reference section: <xref linkend="fakeroot" />.</para>
+  </section>
+
+  <section id="bb_native" xreflabel="native">
+    <title>Native: Packages for the build host</title>
+
+    <para>Talk about native packages</para>
+  </section>
+
+  <section id="bb_development" xreflabel="development">
+    <title>Development: Strategies for developing recipes</title>
+
+    <para>Talk about how to go about developing things</para>
+  </section>
+
+  <section id="bb_advanced_versioning" xreflabel="advanced versioning">
+    <title>Advanced versioning: How to deal with rc and pre versions</title>
+
+    <para>Talk about 1.0.0+2.0.0rc type stuff</para>
+  </section>
+
+  <section id="bb_exports" xreflabel="exports">
+    <title>Exports: Modifying the environment</title>
+
+    <para>Talk about the use of export in recipes</para>
+  </section>
+
+  <section id="bb_includes" xreflabel="includes">
+    <title>Includes: Reusing recipe contents for multiple versions (and other
+    purposes)</title>
+
+    <para>Talk about the use of include and require and .inc files and how to
+    separate these out.</para>
+  </section>
+
+  <section id="bb_advanced_python" xreflabel="advanced python">
+    <title>Python: Advanced functionality with python</title>
+
+    <para>Talk about using python code in recipes</para>
+
+    <para>Samples of useful python code.</para>
+  </section>
+
+  <section id="bb_defaultprefernece" xreflabel="default preference">
+    <title>Preferences: How to disable packages</title>
+
+    <para>Talk about using DEFAULT_PREFERENCE</para>
+
+    <para>Why you should use it.</para>
+
+    <para>Using overrides &amp; preferences together.</para>
+  </section>
+
+  <section id="bb_initscripts" xreflabel="dinitscripts">
+    <title>Initscripts: How to handle daemons</title>
+
+    <para>update-rc.d class</para>
+
+    <para>sh vs bash</para>
+
+    <para>start/stop/restart params</para>
+
+    <para>sample / standard script format</para>
+
+    <para>note about volatiles being described below</para>
+
+    <para>reference section for more info</para>
+  </section>
+
+  <section id="bb_alternatives" xreflabel="alternatives">
+    <title>Alternatives: How to handle the same command in multiple
+    packages</title>
+
+    <para>Why you should care</para>
+
+    <para>Using them</para>
+
+    <para>reference section for more info</para>
+  </section>
+
+  <section id="bb_volatiles" xreflabel="volatiles">
+    <title>Volatiles: How to handle the /var directory</title>
+
+    <para>[</para>
+
+    <para>Talk about tmpfs for var</para>
+
+    <para>Talk about how volatiles work</para>
+
+    <para>Talk about logging via syslog so non-disk logs will may be
+    used</para>
+
+    <para>Talk about default volatiles</para>
+
+    <para>reference section for more info</para>
+
+    <para>]</para>
+
+    <para>The /var directory is for storing volatile information, that is
+    information which is constantly changing and which in general may be
+    easily recreated. In embedded applications it is often desirable that such
+    files are not stored on disk or flash for various reasons include possible
+    reduced lifetime of the flash, limited storage space or to ensure
+    filesystem corruption cannot occur due to a sudden power loss.</para>
+
+    <para>For these reasons many of the OpenEmbedded distributions use a tmpfs
+    memory based filesystem for /var instead of a disk or flash based
+    filesystem. The consequence of this is that all contents of the /var
+    directory is lost when the device is powered off or restarted. Therefore
+    special handling of /var is required in all packages to ensure that they
+    don't restrict the options available to individual distributions. This
+    special handling is provided via the populate-volatiles.sh script.</para>
+
+    <para>If your package requires directory, symlinks or files in /var then
+    you should be using the populate-volatiles facilities.</para>
+
+    <para></para>
+
+    <section>
+      <title>Declaring volatiles</title>
+
+      <para></para>
+
+      <para>- don't include /var stuff in pacakges</para>
+
+      <para>- any expect dirs in def volatiles to exist</para>
+
+      <para>- add volatiles file for any other distributions</para>
+    </section>
+
+    <section>
+      <title>Logging and log files</title>
+
+      <para>As a consequence of the non-volatile and/or small capacity of the
+      /var file system some distributions choose methods of logging other than
+      writing to a file. The most typical is the use of an in-memory circular
+      log buffer which can be read using the logread command.</para>
+
+      <para>To ensure that each distribution is able to implement logging in a
+      method that is suitable for its goals all packages should be configured
+      by default to log via syslog, and not log directly to a file, if
+      possible. If the distribution and/or end-user requires logging to a file
+      then they can configured syslog and/or your application to implement
+      this.</para>
+    </section>
+
+    <section>
+      <title>Summary</title>
+
+      <para>In summary the following are required when dealing with
+      <command>/var</command>:</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>Configure all logging to use syslog whenever possible. This
+          leaves the decision on where to log upto the individual
+          distributions.</para>
+        </listitem>
+
+        <listitem>
+          <para>Don't include any <command>/var</command> directories, file or
+          symlinks in packages. They would be lost on a reboot and so should
+          not be included in packages.</para>
+        </listitem>
+
+        <listitem>
+          <para>The only directories that you can assume exist are those
+          listed in the default volatiles file:
+          <command>packages/initscripts/initscripts-1.0/volatiles</command>.</para>
+        </listitem>
+
+        <listitem>
+          <para>For any other directories, files or links that are required in
+          <command>/var</command> you should install your own volatiles list
+          as part of the package.</para>
+        </listitem>
+      </itemizedlist>
+    </section>
+  </section>
+
+  <section>
+    <title>STUFF STILL TO BE CONSIDERED/ADDED</title>
+
+    <para>about optimisation</para>
+
+    <para>about download directories</para>
+
+    <para>about parrallel builds</para>
+
+    <para>about determing endianess (aka net-snmp, openssl, hping etc
+    style)</para>
+
+    <para>about adding users/groups</para>
+
+    <para>about PACKAGES_DYNAMIC</para>
+
+    <para>about LEAD_SONAME</para>
+
+    <para>about "python () {" - looks like it is always run when a recipe is
+    parsed? see pam/libpam</para>
+
+    <para>about SRCDATE with svn/cvs?</para>
+
+    <para>about INHIBIT_DEFAULT_DEPS?</para>
+
+    <para>about COMPATIBLE_MACHINE and COMPATIBLE_HOST</para>
+
+    <para></para>
+  </section>
+</chapter>

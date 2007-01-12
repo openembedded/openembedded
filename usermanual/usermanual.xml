@@ -7,6 +7,7 @@
                       "http://www.oasis-open.org/docbook/xml/4.2/docbookx.dtd" [
 <!ENTITY class-autotools           SYSTEM "reference/class_autotools.xml">
 <!ENTITY class-binconfig           SYSTEM "reference/class_binconfig.xml">
+<!ENTITY dirs-install              SYSTEM "reference/dirs_install.xml">
 <!ENTITY class-distutils           SYSTEM "reference/class_distutils.xml">
 <!ENTITY fakeroot                  SYSTEM "reference/fakeroot.xml">
 <!ENTITY class-image_ipkg          SYSTEM "reference/class_image_ipkg.xml">
@@ -594,6 +595,7 @@ NOTE: Couldn't find shared library provider for libm.so.6
         <title>Reference</title>
         &class-autotools;
         &class-binconfig;
+        &dirs-install;
         &class-distutils;
         &fakeroot;
         &class-image_ipkg;

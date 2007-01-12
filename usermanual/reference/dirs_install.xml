@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section id="directories_installation" xreflabel="Installation directories">
+  <title>Directories: Installation variables</title>
+
+  <para>The following table provides a list of the variables that are used to
+  control the directories into which files are installed.</para>
+
+  <para>These variables can be used directly by the recipe to refer to paths
+  that will be used after the package is installed. For example, when specify
+  the location of configuration files you need to specify the location on the
+  target as show in the following example from quagga:<screen># Indicate that the default files are configuration files
+CONFFILES_${PN} = "${sysconfdir}/default/quagga"
+CONFFILES_${PN}-watchquagga = "${sysconfdir}/default/watchquagga"</screen></para>
+
+  <para>When using these variables to actually install the components of a
+  package from within a bitbake recipe they should used relative to the
+  destination directory, <emphasis role="bold">D</emphasis>. The following
+  example from the quagga recipe shows some addition files being manually
+  installed from within the recipe itself:<screen>do_install () {
+        # Install init script and default settings
+        install -m 0755 -d ${D}${sysconfdir}/default ${D}${sysconfdir}/init.d ${D}${sysconfdir}/quagga
+        install -m 0644 ${WORKDIR}/quagga.default ${D}${sysconfdir}/default/quagga</screen></para>
+
+  <informaltable>
+    <tgroup cols="3">
+      <thead>
+        <row>
+          <entry>Variable name</entry>
+
+          <entry>Definition</entry>
+
+          <entry>Typical value</entry>
+        </row>
+      </thead>
+
+      <tbody>
+        <row>
+          <entry>prefix</entry>
+
+          <entry>/usr</entry>
+
+          <entry>/usr</entry>
+        </row>
+
+        <row>
+          <entry>base_prefix</entry>
+
+          <entry align="right"><emphasis>(empty)</emphasis></entry>
+
+          <entry align="right"><emphasis>(empty)</emphasis></entry>
+        </row>
+
+        <row>
+          <entry>exec_prefix</entry>
+
+          <entry>${base_prefix}</entry>
+
+          <entry align="right"><emphasis>(empty)</emphasis></entry>
+        </row>
+
+        <row>
+          <entry>base_bindir</entry>
+
+          <entry>${base_prefix}/bin</entry>
+
+          <entry>/bin</entry>
+        </row>
+
+        <row>
+          <entry>base_sbindir</entry>
+
+          <entry>${base_prefix}/sbin</entry>
+
+          <entry>/sbin</entry>
+        </row>
+
+        <row>
+          <entry>base_libdir</entry>
+
+          <entry>${base_prefix}/lib</entry>
+
+          <entry>/lib</entry>
+        </row>
+
+        <row>
+          <entry>datadir</entry>
+
+          <entry>${prefix}/share</entry>
+
+          <entry>/usr/share</entry>
+        </row>
+
+        <row>
+          <entry>sysconfdir</entry>
+
+          <entry>/etc</entry>
+
+          <entry>/etc</entry>
+        </row>
+
+        <row>
+          <entry>localstatedir</entry>
+
+          <entry>/var</entry>
+
+          <entry>/var</entry>
+        </row>
+
+        <row>
+          <entry>infodir</entry>
+
+          <entry>${datadir}/info</entry>
+
+          <entry>/usr/share/info</entry>
+        </row>
+
+        <row>
+          <entry>mandir</entry>
+
+          <entry>${datadir}/man</entry>
+
+          <entry>/usr/share/man</entry>
+        </row>
+
+        <row>
+          <entry>docdir</entry>
+
+          <entry>${datadir}/doc</entry>
+
+          <entry>/usr/share/doc</entry>
+        </row>
+
+        <row>
+          <entry>servicedir</entry>
+
+          <entry>/srv</entry>
+
+          <entry>/srv</entry>
+        </row>
+
+        <row>
+          <entry>bindir</entry>
+
+          <entry>${exec_prefix}/bin</entry>
+
+          <entry>/usr/bin</entry>
+        </row>
+
+        <row>
+          <entry>sbindir</entry>
+
+          <entry>${exec_prefix}/sbin</entry>
+
+          <entry>/usr/sbin</entry>
+        </row>
+
+        <row>
+          <entry>libexecdir</entry>
+
+          <entry>${exec_prefix}/libexec</entry>
+
+          <entry>/usr/libexec</entry>
+        </row>
+
+        <row>
+          <entry>libdir</entry>
+
+          <entry>${exec_prefix}/lib</entry>
+
+          <entry>/usr/lib</entry>
+        </row>
+
+        <row>
+          <entry>includedir</entry>
+
+          <entry>${exec_prefix}/include</entry>
+
+          <entry>/usr/include</entry>
+        </row>
+
+        <row>
+          <entry></entry>
+
+          <entry></entry>
+
+          <entry></entry>
+        </row>
+      </tbody>
+    </tgroup>
+  </informaltable>
+
+  <para></para>
+</section>
