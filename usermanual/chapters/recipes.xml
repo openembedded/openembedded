@@ -2126,12 +2126,70 @@ addtask unpack_extra after do_unpack before do_patch</screen></para>
     expected.</para>
   </section>
 
-  <section id="bb_includes" xreflabel="includes">
-    <title>Includes: Reusing recipe contents for multiple versions (and other
-    purposes)</title>
+  <section id="bb_require" xreflabel="require">
+    <title>Require/include: Reusing recipe contents</title>
 
-    <para>Talk about the use of include and require and .inc files and how to
-    separate these out.</para>
+    <para>In many packages where you are maintaining multiple versions you'll
+    often end up with several recipes which are either identical, or have only
+    minor differences between them.</para>
+
+    <para>The require and/or include directive can be used to include common
+    content from one file into other. You should always look for a way to
+    factor out common functionality into an include file when adding new
+    versions of a recipe.</para>
+
+    <note>
+      <para>Both require and include perform the same function - including the
+      contents of another file into this recipe. The difference is that
+      require will generate an error if the file is not found while include
+      will not. For this reason include should not be used in new
+      recipes.</para>
+    </note>
+
+    <para>For example the clamav recipe looks like this:<screen>require clamav.inc
+
+PR = "r0"</screen>Note that all of the functionality of the recipe is provided
+    in the clamav.inc file, only the release number is defined in the recipe.
+    Each of the recipes includes the same <emphasis
+    role="bold">clamav.inc</emphasis> file to save having to duplicate any
+    functionality. This also means that as new versions are released it's a
+    simple matter of copying the recipe and resetting the release number back
+    to zero.</para>
+
+    <para>The following example from iproute2 shows the recipe adding
+    additional patches that are not specified by the common included file.
+    These are patches only needed for newer release and by only adding them in
+    this recipe it permits the common code to be used for both old and new
+    recipes:<screen>PR = "r1"
+
+SRC_URI += "file://iproute2-2.6.15_no_strip.diff;patch=1;pnum=0 \
+            file://new-flex-fix.patch;patch=1"
+
+require iproute2.inc
+
+DATE = "060323"</screen></para>
+
+    <para>The following example from cherokee shows a similar method of
+    including additional patches for this version only. However it also show
+    another technique in which the configure task is defined in the recipe for
+    this version, thus replacing the <emphasis>configure</emphasis> task that
+    is provided by the common include:<screen>PR = "r7"
+
+SRC_URI_append = "file://configure.patch;patch=1 \
+                  file://Makefile.in.patch;patch=1 \
+                  file://Makefile.cget.patch;patch=1 \
+                  file://util.patch;patch=1"
+
+require cherokee.inc
+
+do_configure() {
+        gnu-configize
+        oe_runconf
+        sed -i 's:-L\$:-L${STAGING_LIBDIR} -L\$:' ${S}/*libtool
+}
+</screen></para>
+
+    <para></para>
   </section>
 
   <section id="bb_advanced_python" xreflabel="advanced python">
