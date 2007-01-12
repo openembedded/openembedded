@@ -568,40 +568,118 @@ mv fixed.recipe.bb myrecipe.bb</screen></para>
   <section id="bb_sources" xreflabel="sources">
     <title>Sources: Downloading, patching and additional files</title>
 
-    <para>[</para>
+    <para>A recipes purpose is to describe how to take a software package and
+    build it for your target device. The location of the source file (or
+    files) is specified via the <xref linkend="src_uri_variable" /> in the
+    recipe. This can describe several types of URI's, the most common
+    are:</para>
 
-    <para>talk about sources</para>
+    <variablelist>
+      <varlistentry>
+        <term>http and https</term>
 
-    <para>SRC_URI example</para>
+        <listitem>
+          <para>Specifies files to be downloaded. A copy is stored locally so
+          that future builds will not download the source again.</para>
+        </listitem>
+      </varlistentry>
 
-    <para>tar.gz explain</para>
+      <varlistentry>
+        <term>cvs, svn and git</term>
 
-    <para>patch explain</para>
+        <listitem>
+          <para>Specifies that the files are to be retrieved using the
+          specified version control system.</para>
+        </listitem>
+      </varlistentry>
 
-    <para>file explain</para>
+      <varlistentry>
+        <term>files</term>
 
-    <para>svn/cvs/git etc explain?</para>
+        <listitem>
+          <para>Plain files which are included locally. These can be used for
+          adding documentation, init scripts or any other files that need to
+          be added to build the package under openembedded.</para>
+        </listitem>
+      </varlistentry>
 
-    <para>point to SR_URI in reference section for more details</para>
+      <varlistentry>
+        <term>patches</term>
 
-    <para>]</para>
+        <listitem>
+          <para>Patches are plain files which are treated as patched and
+          automatically applied.</para>
+        </listitem>
+      </varlistentry>
+    </variablelist>
 
-    <para>Before a recipe can start compiling and packaging up your software
-    it needs to know where to get the source from. This is controlled via the
-    <xref linkend="src_uri_variable" /> in the recipe which is able to
-    describe:</para>
+    <para>If a http, https or file URI refers to a compressed file, an archive
+    file or a compressed archive file, such as .tar.gz or .zip, then the files
+    will be uncompressed and extracted from the archive automatically.</para>
 
-    <para>- http and https URI's</para>
+    <para>Archive files will be extracted from with the working directory,
+    <emphasis role="bold">${WORKDIR}</emphasis> and plain files will be copied
+    into the same directory. Patches will be applied from within the unpacked
+    source directory, <emphasis role="bold">${S}</emphasis>. (Details on these
+    directories is provided in the next section.)</para>
 
-    <para>- cvs, svn and git URI's</para>
+    <para>The following example from the havp recipe shows a typical <emphasis
+    role="bold">SRC_URI</emphasis> definition:<screen>SRC_URI = "http://www.server-side.de/download/havp-${PV}.tar.gz \
+           file://sysconfdir-is-etc.patch;patch=1 \
+           file://havp.init \
+           file://doc.configure.txt \
+           file://volatiles.05_havp"</screen></para>
 
-    <para>- files</para>
+    <para>This describes several files</para>
 
-    <para>- patches</para>
+    <variablelist>
+      <varlistentry>
+        <term>http://www.server-side.de/download/havp-${PV}.tar.gz</term>
 
-    <para></para>
+        <listitem>
+          <para>This is the URI of the havp source code. Note the use of the
+          <emphasis role="bold">${PV}</emphasis> variable to specify the
+          version. This is done to enable the recipe to be renamed for a new
+          version without the need the edit the recipe itself. Because this is
+          a .tar.gz compressed archive the file will be decompressed and
+          extracted in the working dir <emphasis
+          role="bold">${WORKDIR}</emphasis>.</para>
+        </listitem>
+      </varlistentry>
 
-    <para></para>
+      <varlistentry>
+        <term>file://sysconfdir-is-etc.patch;patch=1</term>
+
+        <listitem>
+          <para>This is a local file that is used to patch the extracted
+          source code. The patch=1 is what specifies that this is a patch. The
+          patch will be applied from the unpacked source directory, <emphasis
+          role="bold">${S}</emphasis>. In this case <emphasis
+          role="bold">${S}</emphasis> will be <emphasis
+          role="bold">${WORKDIR}/havp-0.82</emphasis>, and luckily the
+          <emphasis role="bold">havp-0.82.tar.gz</emphasis> file extracts
+          itself into that directory (so no need to explicitly change
+          <emphasis role="bold">${S}</emphasis>).</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>file://havp.init file://doc.configure.txt
+        file://volatiles.05_havp"</term>
+
+        <listitem>
+          <para>These are plain files which are just copied into the working
+          directory <emphasis role="bold">${WORKDIR}</emphasis>. These are
+          then used during the install task in the recipe to provide init
+          scripts, documentation and volatiles configuration information for
+          the package.</para>
+        </listitem>
+      </varlistentry>
+    </variablelist>
+
+    <para>Full details on the <emphasis role="bold">SRC_URI</emphasis>
+    variable and all the support URI's is available in the <xref
+    linkend="src_uri_variable" /> section of the reference chapter.</para>
   </section>
 
   <section id="bb_directories" xreflabel="directories">
@@ -1474,26 +1552,117 @@ ${datadir}/aclocal"</screen></para>
   <section id="bb_tasks" xreflabel="tasks">
     <title>Tasks: Playing with tasks</title>
 
-    <para>[</para>
+    <para>Bitbake steps through a series of tasks when building a recipe.
+    Sometimes you need to explicitly define what a class does, such as
+    providing a <emphasis role="bold">do_install</emphasis> function to
+    implement the <emphasis>install</emphasis> task in a recipe and sometimes
+    they are provided for you by common classes, such as the autotools class
+    providing the default implementations of <emphasis>configure</emphasis>,
+    <emphasis>compile</emphasis> and <emphasis>install</emphasis>
+    tasks.</para>
 
-    <para>tasks are explained elsewhere, here we talk about
-    replacing/modifying/adding</para>
+    <para>There are several methods available to modify the tasks that are
+    being run:</para>
 
-    <para>configure</para>
+    <variablelist>
+      <varlistentry>
+        <term>Overriding the default task implementation</term>
 
-    <para>compile</para>
+        <listitem>
+          <para>By defining your own implementation of task you'll override
+          any default or class provided implementations.</para>
 
-    <para>stage</para>
+          <para>For example, you can define you own implementation of the
+          compile task to override any default implementation:<screen>do_compile() {
+      oe_runmake DESTDIR=${D}
+}</screen></para>
 
-    <para>install</para>
+          <para>If you with to totally prevent the task from running you need
+          to define your own empty implementation. This is typically done via
+          the definition of the task using a single colon:<screen>do_configure() {
+    :
+}</screen></para>
+        </listitem>
+      </varlistentry>
 
-    <para>..._append/_prepend</para>
+      <varlistentry>
+        <term>Appending or prepending to the task</term>
 
-    <para>add task ...</para>
+        <listitem>
+          <para>Sometime you want the default implementation, but you require
+          addition functionality. This can done by appending or pre-pending
+          additional functionality onto the task.</para>
 
-    <para>empty tasks (":")</para>
+          <para>The following example from units shows an example of
+          installing an addition file which for some reason was not installed
+          via the autotools normal <emphasis>install</emphasis> task:<screen>do_install_append() {
+       install -d ${D}${datadir}
+       install -m 0655 units.dat ${D}${datadir}
+}
 
-    <para>]</para>
+</screen></para>
+
+          <para>The following example from the cherokee recipe show an example
+          of adding functionality prior to the default
+          <emphasis>install</emphasis> task. In this case it compiles a
+          program that is used during installation natively so that it will
+          work on the host. Without this the autotools default
+          <emphasis>install</emphasis> task would fail since it'd try to run
+          the program on the host which was compiled for the target:<screen>do_install_prepend () {
+        # It only needs this app during the install, so compile it natively
+        $BUILD_CC -DHAVE_SYS_STAT_H -o cherokee_replace cherokee_replace.c
+}
+</screen></para>
+
+          <para></para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>Defining a new task</term>
+
+        <listitem>
+          <para>Another option is define a totally new task, and then register
+          that with bitbake so that it runs in between two of the existing
+          tasks.</para>
+
+          <para>The following example shows a situation in which a cvs tree
+          needs to be copied over the top of an extracted tar.gz archive, and
+          this needs to be done before any local patches are applied. So a new
+          task is defined to perform this action, and then that task is
+          registered to run between the existing <emphasis>unpack</emphasis>
+          and <emphasis>patch</emphasis> tasks:<screen>do_unpack_extra(){
+    cp -pPR ${WORKDIR}/linux/* ${S}
+}
+addtask unpack_extra after do_unpack before do_patch</screen></para>
+
+          <note>
+            <para>The task to add does not have the do_ prepended to it,
+            however the tasks to insert it after and before do have the _do
+            prepended. No errors will be generated if this is wrong, the
+            additional task simple won't be executed.</para>
+          </note>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>Using overrides</term>
+
+        <listitem>
+          <para>Overrides (described fully elsewhere) allow for various
+          functionality to be performed conditionally based on the target
+          machine, distribution, architecture etc.</para>
+
+          <para>While not commonly used it is possible to use overrides when
+          defining tasks. The following example from udev shows an additional
+          file being installed for the specified machine only by performing an
+          append to the <emphasis>install</emphasis> task for the h2200
+          machine only:<screen>do_install_append_h2200() {
+    install -m 0644 ${WORKDIR}/50-hostap_cs.rules         ${D}${sysconfdir}/udev/rules.d/50-hostap_cs.rules
+}</screen></para>
+        </listitem>
+      </varlistentry>
+    </variablelist>
   </section>
 
   <section id="bb_classes" xreflabel="classes">
@@ -1735,7 +1904,7 @@ ${datadir}/aclocal"</screen></para>
     </orderedlist>
 
     <para>This in turn result in packaging system, such as ipkg, considering
-    the released version to be older then the rc version. </para>
+    the released version to be older then the rc version.</para>
 
     <para>In OpenEmbedded the correct naming of pre and rc versions is to use
     the previous version number followed by a + followed by the new version
