@@ -1390,19 +1390,130 @@ inherit autotools</screen></para>
     via the auto shared libs dependency code.</para>
   </section>
 
-  <section id="bb_messages" xreflabel="messages">
-    <title>Messages: Letting the user know things</title>
+  <section id="bb_methods" xreflabel="methods">
+    <title>Methods: Inbuilt methods to make your life easier</title>
 
-    <para>[UNEDITED]</para>
+    <para>There are several helper functions defined by the base class, which
+    is included by default for all recipes. Many of these are used a lot in
+    both recipes and other classes.</para>
 
-    <para></para>
+    <para>The most commonly seen, and most useful functions, include:</para>
 
     <variablelist>
+      <varlistentry>
+        <term>oe_runmake</term>
+
+        <listitem>
+          <para>This function is used to run make. However unlike calling make
+          yourself this will pass the EXTRA_OEMAKE settings to make, will
+          display a note about the make command and will check for any errors
+          generated via the call to make.</para>
+
+          <para>You should never have any reason to call make directly and
+          should also use oe_runmake when you need to run make.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>oe_runconf (autotools only)</term>
+
+        <listitem>
+          <para>This function is used to run the configure script of a package
+          that is using the autotools class. This takes care of passing all of
+          the correct parameters for cross-compiling and for installing into
+          the appropriate target directory.</para>
+
+          <para>It also passes the value of the <emphasis
+          role="bold">EXTRA_OECONF</emphasis> variable to the configure
+          script. For many situations setting <emphasis
+          role="bold">EXTRA_OECONF</emphasis> is sufficient and you'll have no
+          need to define your own configure task in which you call oe_runconf
+          manually.</para>
+
+          <para>If you need to write your own <emphasis>configure</emphasis>
+          task for an autotools package you can use oe_runconf to manually
+          call the configure process when it is required. The following
+          example from net-snmp shows oe_runconf being called manually so that
+          the parameter for specifying the endianess can be computed and
+          passed in to the configure script:<screen>do_configure() {
+    # Additional flag based on target endiness (see siteinfo.bbclass)
+    ENDIANESS="${@base_conditional('SITEINFO_ENDIANESS', 'le', '--with-endianness=little', '--with-endianness=big', d)}"
+    oenote Determined endianess as: $ENDIANESS
+    oe_runconf $ENDIANESS
+}</screen></para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>oe_libinstall</term>
+
+        <listitem>
+          <para>This function is used to install <emphasis
+          role="bold">.so</emphasis>, <emphasis role="bold">.a</emphasis> and
+          associated libtool <emphasis role="bold">.la</emphasis> libraries.
+          It will determine the appropriate libraries to install and take care
+          of any modifications that may be require for <emphasis
+          role="bold">.la</emphasis> files.</para>
+
+          <para>This function supports the following options:</para>
+
+          <variablelist>
+            <varlistentry>
+              <term>-C &lt;dir&gt;</term>
+
+              <listitem>
+                <para>Change into the specified directory before attempting to
+                install a library. Used when the libraries are in
+                subdirectories of the main package.</para>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term>-s</term>
+
+              <listitem>
+                <para>Require the presence of a <emphasis
+                role="bold">.so</emphasis> library as one of the libraries
+                that is installed.</para>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term>-a</term>
+
+              <listitem>
+                <para>Require the presence of a <emphasis
+                role="bold">.a</emphasis> library as one of the libraries that
+                is installed.</para>
+              </listitem>
+            </varlistentry>
+          </variablelist>
+
+          <para>The following example from gdbm shows the installation of
+          <emphasis role="bold">.so</emphasis>, <emphasis
+          role="bold">.a</emphasis> (and associated <emphasis
+          role="bold">.la</emphasis>) libraries into the staging library
+          area:<screen>do_stage () {
+    oe_libinstall -so -a libgdbm ${STAGING_LIBDIR}
+    install -m 0644 ${S}/gdbm.h ${STAGING_INCDIR}/
+}</screen></para>
+        </listitem>
+      </varlistentry>
+
       <varlistentry>
         <term>oenote</term>
 
         <listitem>
-          <para>Display some informational messages to the user.</para>
+          <para>Used to display an informational messages to the user.</para>
+
+          <para>The following example from net-snmp uses oenote to tell the
+          user which endianess it determined was appropriate for the target
+          device:<screen>do_configure() {
+    # Additional flag based on target endiness (see siteinfo.bbclass)
+    ENDIANESS="${@base_conditional('SITEINFO_ENDIANESS', 'le', '--with-endianness=little', '--with-endianness=big', d)}"
+    oenote Determined endianess as: $ENDIANESS
+    oe_runconf $ENDIANESS
+}</screen></para>
         </listitem>
       </varlistentry>
 
@@ -1410,7 +1521,8 @@ inherit autotools</screen></para>
         <term>oewarn</term>
 
         <listitem>
-          <para>Display a warning to the user.</para>
+          <para>Used to display a warning message to the user, warning of
+          something that may be problematic or unexpected.</para>
         </listitem>
       </varlistentry>
 
@@ -1418,8 +1530,9 @@ inherit autotools</screen></para>
         <term>oedebug</term>
 
         <listitem>
-          <para>Display an error message to the user and abort the
-          action.</para>
+          <para>Used to display debugging related information. These messages
+          will only be visible when bitbake is run with the <emphasis
+          role="bold">-D</emphasis> flag to enable debug output.</para>
         </listitem>
       </varlistentry>
 
@@ -1427,24 +1540,101 @@ inherit autotools</screen></para>
         <term>oefatal</term>
 
         <listitem>
-          <para>Display a debugging message to the user but only if they have
-          requested debugging output.</para>
+          <para>Used to display a fatal error message to the user, and then
+          abort the bitbake run.</para>
+
+          <para>The following example from linux-libc-headers shows the use of
+          oefatal to tell the user when it cannot find the kernel source code
+          for the specified target architecture:<screen>do_configure () {
+    case ${TARGET_ARCH} in
+        alpha*)   ARCH=alpha ;;
+        arm*)     ARCH=arm ;;
+        cris*)    ARCH=cris ;;
+        hppa*)    ARCH=parisc ;;
+        i*86*)    ARCH=i386 ;;
+        ia64*)    ARCH=ia64 ;;
+        mips*)    ARCH=mips ;;
+        m68k*)    ARCH=m68k ;;
+        powerpc*) ARCH=ppc ;;
+        s390*)    ARCH=s390 ;;
+        sh*)      ARCH=sh ;;
+        sparc64*) ARCH=sparc64 ;;
+        sparc*)   ARCH=sparc ;;
+        x86_64*)  ARCH=x86_64 ;;
+    esac
+    if test !  -e include/asm-$ARCH; then
+        oefatal unable to create asm symlink in kernel headers
+    fi
+...</screen></para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>base_conditional (python)</term>
+
+        <listitem>
+          <para>The base conditional python function is used to set a variable
+          to one of two values based on the definition of a third variable.
+          The general usage is:<screen>${@base_conditional('&lt;variable-name&gt;', '&lt;value&gt;', '&lt;true-result&gt;', &lt;false-result&gt;', d)}"</screen>where:</para>
+
+          <variablelist>
+            <varlistentry>
+              <term>variable-name</term>
+
+              <listitem>
+                <para>This is the name of a variable to check.</para>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term>value</term>
+
+              <listitem>
+                <para>This is the value to compare the variable
+                against.</para>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term>true-result</term>
+
+              <listitem>
+                <para>If the variable equals the value then this is what is
+                returned by the function.</para>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term>false-result</term>
+
+              <listitem>
+                <para>If the variable does not equal the value then this is
+                what is returned by the function.</para>
+              </listitem>
+            </varlistentry>
+          </variablelist>
+
+          <note>
+            <para>The ${@...} syntax is used to call python functions from
+            within a recipe or class. This is described in more detail in the
+            python section.</para>
+          </note>
+
+          <para>The following example from the openssl recipe shows the
+          addition of either <emphasis role="bold">-DL_ENDING</emphasis> or
+          <emphasis role="bold">-DB_ENDIAN</emphasis> depending on the value
+          of <emphasis role="bold">SITEINFO_ENDIANESS</emphasis> which is set
+          to le for little endian targets and to be for big endian
+          targets:<screen>do_compile () {
+    ...
+    # Additional flag based on target endiness (see siteinfo.bbclass)
+    CFLAG="${CFLAG} ${@base_conditional('SITEINFO_ENDIANESS', 'le', '-DL_ENDIAN', '-DB_ENDIAN', d)}"
+    ...</screen></para>
         </listitem>
       </varlistentry>
     </variablelist>
 
-    <para>Of the four functions only oefatal will abort the currently
-    executing task.</para>
-  </section>
-
-  <section id="bb_methods" xreflabel="methods">
-    <title>Methods: Inbuilt methods to make your life easier</title>
-
-    <para>oe_runmake</para>
-
-    <para>oe_runconf</para>
-
-    <para>oe_libinstall</para>
+    <para></para>
   </section>
 
   <section id="bb_packages" xreflabel="packages">
