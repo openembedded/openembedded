@@ -2318,29 +2318,225 @@ addtask unpack_extra after do_unpack before do_patch</screen></para>
     <title>Installation scripts: Running scripts during package install and/or
     removal</title>
 
-    <para>This section is to be completed:</para>
+    <para>Packaging system such as .ipkg and .deb support pre and post
+    installation and pre and post removal scripts which are run during package
+    install and/or package removal on the target system.</para>
+
+    <para>These scripts can be defined in your recipes to enable actions to be
+    performed at the appropriate time. Common uses include starting new
+    daemons on installation, stopping daemons during uninstall, creating new
+    user and/or group entries during install, registering and unregistering
+    alternative implementations of commands and registering the need for
+    volatiles.</para>
+
+    <para>The following scripts are supported:</para>
+
+    <variablelist>
+      <varlistentry>
+        <term>preinst</term>
+
+        <listitem>
+          <para>The preinst script is run prior to installing the contents of
+          the package. During preinst the contents of the package are not
+          available to be used as part of the script. The preinst scripts are
+          not commonly used.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>postinst</term>
+
+        <listitem>
+          <para>The postinst script is run after the installation of the
+          package has completed. During postinst the contents of the package
+          are available to be used. This is often used for the creation of
+          volatile directories, registration of daemons, starting of daemons
+          and fixing up of SUID binaries.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>prerm</term>
+
+        <listitem>
+          <para>The prerm is run prior to the removal of the contents of a
+          package. During prerm the contents of the package are still
+          available for use by the script. The prerm scripts</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>postrm</term>
+
+        <listitem>
+          <para>The postrm script is run after the completion of the removal
+          of the contents of a package. During postrm the contents of the
+          package no longer exist and therefore are not available for use by
+          the script. Postrm is most commonly used for update alternatives (to
+          tell the alternatives system that this alternative is not available
+          and another should be selected).</para>
+        </listitem>
+      </varlistentry>
+    </variablelist>
+
+    <para>Scripts are registered by defining a function for:</para>
 
     <itemizedlist>
       <listitem>
-        <para>pre/post inst/remove scripts</para>
-      </listitem>
-
-      <listitem>
-        <para>"sh" syntax</para>
-      </listitem>
-
-      <listitem>
-        <para>offline install stuff</para>
-      </listitem>
-
-      <listitem>
-        <para>classes that do script stuff</para>
-      </listitem>
-
-      <listitem>
-        <para>passwd/group stuff</para>
+        <para>pkg_&lt;scriptname&gt;_&lt;packagename&gt;</para>
       </listitem>
     </itemizedlist>
+
+    <para>The following example from ndisc6 shows postinst scripts being
+    registered for three of the packages that ndisc6 creates:<screen># Enable SUID bit for applications that need it
+pkg_postinst_${PN}-rltraceroute6 () {
+    chmod 4555 ${bindir}/rltraceroute6
+}
+pkg_postinst_${PN}-ndisc6 () {
+    chmod 4555 ${bindir}/ndisc6
+}
+pkg_postinst_${PN}-rdisc6 () {
+    chmod 4555 ${bindir}/rdisc6
+}</screen></para>
+
+    <note>
+      <para>These scripts will be run via <emphasis
+      role="bold">/bin/sh</emphasis> on the target device, which is typically
+      the busybox sh but could also be bash or some other sh compatible shell.
+      As always you should not use any bash extensions in your scripts and
+      stick to basic sh syntax.</para>
+    </note>
+
+    <para>Note that several classes will also register scripts, and that any
+    script you declare will have the script for the classes append to by these
+    classes. The following classes all generate additional script
+    contents:</para>
+
+    <variablelist>
+      <varlistentry>
+        <term>update-rc.d</term>
+
+        <listitem>
+          <para>This class is used by daemons to register there init scripts
+          with the init code.</para>
+
+          <para>Details are provided in the <xref linkend="bb_initscripts" />
+          section.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>module</term>
+
+        <listitem>
+          <para>This class is used by linux kernel modules. It's responsible
+          for calling depmod and update-modules during kernel module
+          installation and removal.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>kernel</term>
+
+        <listitem>
+          <para>This class is used by the linux kernel itself. There is a lot
+          of housekeeping required both when installing and removing a kernel
+          and this class is responsible for generating the required
+          scripts.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>qpf</term>
+
+        <listitem>
+          <para>This class is used when installing and/or removing qpf fonts.
+          It register scripts to update the font paths and font cache
+          information to ensure that the font information is kept up to date
+          as fonts and installed and removed.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>update-alternatives</term>
+
+        <listitem>
+          <para>This class is used by packages that contain binaries which may
+          also be available for other packages. It tells that system that
+          another alternative is available for consideration. The alternatives
+          system will create a symlink to the correct alternative from one or
+          more available on the system.</para>
+
+          <para>Details are provided in the <xref linkend="bb_alternatives" />
+          section.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>gtk-icon-cache</term>
+
+        <listitem>
+          <para>This class is used by packages that add new gtk icons. It's
+          responsible for updating the icon cache when packages are installed
+          and removed.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>gconf</term>
+
+        <listitem>
+          <para></para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>package</term>
+
+        <listitem>
+          <para>The base class used by packaging classes such as those for
+          .ipkg and .deb. The package class may create scripts used to update
+          the dynamic linkers ld cache.</para>
+        </listitem>
+      </varlistentry>
+    </variablelist>
+
+    <para>The following example from p3scan shows and postinst script which
+    ensure that the required user and group entries exist, and registers the
+    need for volatiles (directories and/or files under <emphasis
+    role="bold">/var</emphasis>). In addition to explicitly declaring a
+    postinst script it uses the update-rc.d class which will result in an
+    additional entry being added to the postinst script to register the init
+    scripts and start the daemon (via call to update-rc.d as describes in the
+    <xref linkend="bb_alternatives" /> section).<screen>inherit autotools update-rc.d
+
+...
+
+# Add havp's user and groups
+pkg_postinst_${PN} () {
+        grep -q mail: /etc/group || addgroup --system havp
+        grep -q mail: /etc/passwd || \
+            adduser --disabled-password --home=${localstatedir}/mail --system \
+                    --ingroup mail --no-create-home -g "Mail" mail
+        /etc/init.d/populate-volatile.sh update
+}</screen></para>
+
+    <para>Several scripts in existing recipes will be of the following
+    form:<screen>if [ x"$D" = "x" ]; then
+    ...
+fi</screen></para>
+
+    <para>This is testing if the installation directory, <emphasis
+    role="bold">D</emphasis>, is defined and if it is no actions are
+    performed. The installation directory will not be defined under normal
+    circumstances. The primary use of this test is to permit the application
+    to be installed during root filesystem generation. In that situation the
+    scripts cannot be run since the root filesystem is generated on the host
+    system and not on the target. Any required script actions would need to be
+    performed via an alternative method if the package is to be installed in
+    the initial root filesystem (such as including any required users and
+    groups in the default <emphasis role="bold">passwd</emphasis> and
+    <emphasis role="bold">group</emphasis> files for example.)</para>
   </section>
 
   <section id="bb_conffiles" xreflabel="conf files">
@@ -2673,7 +2869,7 @@ do_configure() {
     </itemizedlist>
   </section>
 
-  <section id="bb_initscripts" xreflabel="dinitscripts">
+  <section id="bb_initscripts" xreflabel="initscripts">
     <title>Initscripts: How to handle daemons</title>
 
     <para>This section is to be completed.</para>
@@ -2883,6 +3079,16 @@ do_configure() {
 
       <listitem>
         <para>about COMPATIBLE_MACHINE and COMPATIBLE_HOST</para>
+      </listitem>
+
+      <listitem>
+        <para>about SUID binaries, and the need for postinst to fix them
+        up</para>
+      </listitem>
+
+      <listitem>
+        <para>about passwd and group (some comment in install scripts section
+        already).</para>
       </listitem>
     </itemizedlist>
 
