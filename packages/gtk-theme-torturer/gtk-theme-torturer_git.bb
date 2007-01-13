@@ -1,5 +1,5 @@
 DESCRIPTION = "Gtk+ Theme Benchmark Program"
-DEPENDS = "gtk+-2.0"
+DEPENDS = "gtk+"
 HOMEPAGE = "http://wiki.laptop.org/go/GTK_for_OLPC"
 SECTION = "devel"
 LICENSE = "GPL"
