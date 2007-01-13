@@ -392,8 +392,6 @@ mv fixed.recipe.bb myrecipe.bb</screen></para>
     source, by using PV in place of the actual version number it is possible
     to duplicate, or rename, the recipe for a new version without having to
     edit the URL:<screen>SRC_URI = "ftp://ftp.vim.org/pub/vim/unix/vim-${PV}.tar.bz2"</screen></para>
-
-    <para></para>
   </section>
 
   <section id="bb_variables" xreflabel="variables">
@@ -476,8 +474,6 @@ mv fixed.recipe.bb myrecipe.bb</screen></para>
         </listitem>
       </varlistentry>
     </variablelist>
-
-    <para></para>
   </section>
 
   <section id="bb_header" xreflabel="header">
@@ -554,8 +550,6 @@ mv fixed.recipe.bb myrecipe.bb</screen></para>
         </listitem>
       </varlistentry>
     </variablelist>
-
-    <para></para>
   </section>
 
   <section id="bb_sources" xreflabel="sources">
@@ -785,8 +779,6 @@ mv fixed.recipe.bb myrecipe.bb</screen></para>
     install -m 0755 ${WORKDIR}/quagga.init ${D}${sysconfdir}/init.d/quagga
     install -m 0755 ${WORKDIR}/watchquagga.init ${D}${sysconfdir}/init.d/watchquagga
     ...</screen></para>
-
-      <para></para>
     </section>
 
     <section>
@@ -816,8 +808,6 @@ mv fixed.recipe.bb myrecipe.bb</screen></para>
       <emphasis role="bold">S</emphasis> to specify the directory the source
       was actually extracted into:<screen>SRC_URI = "http://www.example.com/software/widgets-${PN}.tar.gz"
 S = "${WORKDIR}/widgets"</screen></para>
-
-      <para></para>
     </section>
 
     <section>
@@ -1316,11 +1306,9 @@ tmp/work/helloworld-0.1-r0/install/helloworld/usr/bin/helloworld: ELF 32-bit LSB
 /bin/ls: ELF 64-bit LSB executable, AMD x86-64, version 1 (SYSV), for GNU/Linux 2.4.0, dynamically linked (uses shared libs), for GNU/Linux 2.4.0, stripped
 ~/oe%&gt;</screen>This shows us that the helloworld program is for an SH
       processor (obviously this will change depending on what your target
-      system is), while checking the /bin/ls program on host shows us that the
-      host system is an AMD X86-64 system. That's exactly what we
-      wanted.</para>
-
-      <para></para>
+      system is), while checking the <emphasis role="bold">/bin/ls</emphasis>
+      program on host shows us that the host system is an AMD X86-64 system.
+      That's exactly what we wanted.</para>
     </section>
 
     <section id="bb_autoconf_example" xreflabel="autoconf example">
@@ -1675,7 +1663,7 @@ inherit autotools</screen></para>
           <note>
             <para>The ${@...} syntax is used to call python functions from
             within a recipe or class. This is described in more detail in the
-            python section.</para>
+            <xref linkend="bb_advanced_python" /> section.</para>
           </note>
 
           <para>The following example from the openssl recipe shows the
@@ -1691,8 +1679,6 @@ inherit autotools</screen></para>
         </listitem>
       </varlistentry>
     </variablelist>
-
-    <para></para>
   </section>
 
   <section id="bb_packages" xreflabel="packages">
@@ -1974,7 +1960,7 @@ NOTE: package helloworld-0.1-r0: task do_package_write: completed</screen>We
         <listitem>
           <para><emphasis role="bold">/&lt;dir&gt;/*</emphasis>: This will
           match all files and directories in the <emphasis
-          role="bold">dir</emphasis>., it will not match other
+          role="bold">dir</emphasis> - it will not match other
           directories.</para>
         </listitem>
 
@@ -2109,7 +2095,13 @@ NOTE: package helloworld-0.1-r0: task do_package: completed</screen>Except in
     <section>
       <title>Debian naming</title>
 
-      <para></para>
+      <para>This section is to be completed</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>inherit += "debian"</para>
+        </listitem>
+      </itemizedlist>
     </section>
 
     <section>
@@ -2135,8 +2127,6 @@ NOTE: package helloworld-0.1-r0: task do_package: completed</screen>Except in
           </listitem>
         </varlistentry>
       </variablelist>
-
-      <para></para>
     </section>
   </section>
 
@@ -2189,9 +2179,7 @@ NOTE: package helloworld-0.1-r0: task do_package: completed</screen>Except in
           via the autotools normal <emphasis>install</emphasis> task:<screen>do_install_append() {
        install -d ${D}${datadir}
        install -m 0655 units.dat ${D}${datadir}
-}
-
-</screen></para>
+}</screen></para>
 
           <para>The following example from the cherokee recipe show an example
           of adding functionality prior to the default
@@ -2202,10 +2190,7 @@ NOTE: package helloworld-0.1-r0: task do_package: completed</screen>Except in
           the program on the host which was compiled for the target:<screen>do_install_prepend () {
         # It only needs this app during the install, so compile it natively
         $BUILD_CC -DHAVE_SYS_STAT_H -o cherokee_replace cherokee_replace.c
-}
-</screen></para>
-
-          <para></para>
+}</screen></para>
         </listitem>
       </varlistentry>
 
@@ -2259,67 +2244,103 @@ addtask unpack_extra after do_unpack before do_patch</screen></para>
   <section id="bb_classes" xreflabel="classes">
     <title>Classes: The separation of common functionality</title>
 
-    <para>[</para>
+    <para>This section is to be completed.</para>
 
-    <para>what are classes</para>
+    <itemizedlist>
+      <listitem>
+        <para>What are classes</para>
+      </listitem>
 
-    <para>some examples - autotools, update-rc.d, distutils, cpan</para>
+      <listitem>
+        <para>How you use classes</para>
+      </listitem>
 
-    <para>]</para>
+      <listitem>
+        <para>Some example - autotools, update-r.d, distutils</para>
+      </listitem>
+    </itemizedlist>
   </section>
 
   <section id="bb_staging" xreflabel="staging">
     <title>Staging: Making includes and libraries available for
     building</title>
 
-    <para>[</para>
+    <para>This section is to be completed:</para>
 
-    <para>Why staging</para>
+    <itemizedlist>
+      <listitem>
+        <para>Why we have staging</para>
+      </listitem>
 
-    <para>where staging to</para>
+      <listitem>
+        <para>How staging is used</para>
+      </listitem>
 
-    <para>what does/does not go in staging</para>
-
-    <para>]</para>
+      <listitem>
+        <para>What does and does not need to be staged</para>
+      </listitem>
+    </itemizedlist>
   </section>
 
   <section id="bb_autoconf" xreflabel="about autoconf">
     <title>Autoconf: All about autotools</title>
 
-    <para>[</para>
+    <para>This section is to be completed:</para>
 
-    <para>More about building autoconf packages</para>
+    <itemizedlist>
+      <listitem>
+        <para>About building autoconf packages</para>
+      </listitem>
 
-    <para>EXTRA_OECONF</para>
+      <listitem>
+        <para>EXTRA_OECONF</para>
+      </listitem>
 
-    <para>Problems with /usr/include</para>
+      <listitem>
+        <para>Problems with /usr/include, /usr/lib</para>
+      </listitem>
 
-    <para>Configuring to search on staging</para>
+      <listitem>
+        <para>Configuring to search in the staging area</para>
+      </listitem>
 
-    <para>-L${STAGING_LIBDIR} vs ${TARGET_LDFLAGS}</para>
+      <listitem>
+        <para>-L${STAGING_LIBDIR} vs ${TARGET_LDFLAGS}</para>
+      </listitem>
 
-    <para>site files</para>
-
-    <para>refer to ref manual for site files info</para>
-
-    <para>]</para>
+      <listitem>
+        <para>Site files</para>
+      </listitem>
+    </itemizedlist>
   </section>
 
   <section id="bb_installation_scripts" xreflabel="installation scripts">
     <title>Installation scripts: Running scripts during package install and/or
     removal</title>
 
-    <para>[</para>
+    <para>This section is to be completed:</para>
 
-    <para>Talk about pre and post inst/remove scripts</para>
+    <itemizedlist>
+      <listitem>
+        <para>pre/post inst/remove scripts</para>
+      </listitem>
 
-    <para>Talk about "sh" syntax (ie, vs "bash" syntax)</para>
+      <listitem>
+        <para>"sh" syntax</para>
+      </listitem>
 
-    <para>Talk about offline install stuff</para>
+      <listitem>
+        <para>offline install stuff</para>
+      </listitem>
 
-    <para>Make note about how classes can effect this</para>
+      <listitem>
+        <para>classes that do script stuff</para>
+      </listitem>
 
-    <para>]</para>
+      <listitem>
+        <para>passwd/group stuff</para>
+      </listitem>
+    </itemizedlist>
   </section>
 
   <section id="bb_conffiles" xreflabel="conf files">
@@ -2416,8 +2437,6 @@ addtask unpack_extra after do_unpack before do_patch</screen></para>
         </listitem>
       </varlistentry>
     </variablelist>
-
-    <para></para>
   </section>
 
   <section id="bb_fakeroot" xreflabel="fakeroot">
@@ -2446,13 +2465,41 @@ addtask unpack_extra after do_unpack before do_patch</screen></para>
   <section id="bb_native" xreflabel="native">
     <title>Native: Packages for the build host</title>
 
-    <para>Talk about native packages</para>
+    <para>This section is to be completed.</para>
+
+    <itemizedlist>
+      <listitem>
+        <para>What native packages are</para>
+      </listitem>
+
+      <listitem>
+        <para>Using require with the non-native package</para>
+      </listitem>
+    </itemizedlist>
   </section>
 
   <section id="bb_development" xreflabel="development">
     <title>Development: Strategies for developing recipes</title>
 
-    <para>Talk about how to go about developing things</para>
+    <para>This section is to be completed.</para>
+
+    <itemizedlist>
+      <listitem>
+        <para>How to go about developing recipes</para>
+      </listitem>
+
+      <listitem>
+        <para>How do handle incrementally creating patches</para>
+      </listitem>
+
+      <listitem>
+        <para>How to deal with site file issues</para>
+      </listitem>
+
+      <listitem>
+        <para>Strategies for autotools issues</para>
+      </listitem>
+    </itemizedlist>
   </section>
 
   <section id="bb_advanced_versioning" xreflabel="advanced versioning">
@@ -2587,114 +2634,166 @@ do_configure() {
         gnu-configize
         oe_runconf
         sed -i 's:-L\$:-L${STAGING_LIBDIR} -L\$:' ${S}/*libtool
-}
-</screen></para>
-
-    <para></para>
+}</screen></para>
   </section>
 
   <section id="bb_advanced_python" xreflabel="advanced python">
     <title>Python: Advanced functionality with python</title>
 
-    <para>Talk about using python code in recipes</para>
+    <para>This section is to be completed.</para>
 
-    <para>Samples of useful python code.</para>
+    <itemizedlist>
+      <listitem>
+        <para>How to use python recipes</para>
+      </listitem>
+
+      <listitem>
+        <para>Examples of useful python code</para>
+      </listitem>
+    </itemizedlist>
   </section>
 
   <section id="bb_defaultpreference" xreflabel="default preference">
     <title>Preferences: How to disable packages</title>
 
-    <para>Talk about using DEFAULT_PREFERENCE</para>
+    <para>This section is to be completed.</para>
 
-    <para>Why you should use it.</para>
+    <itemizedlist>
+      <listitem>
+        <para>what DEFAULT_PREFERENCE does</para>
+      </listitem>
 
-    <para>Using overrides &amp; preferences together.</para>
+      <listitem>
+        <para>why you would want to use it</para>
+      </listitem>
+
+      <listitem>
+        <para>using it with overrides</para>
+      </listitem>
+    </itemizedlist>
   </section>
 
   <section id="bb_initscripts" xreflabel="dinitscripts">
     <title>Initscripts: How to handle daemons</title>
 
-    <para>update-rc.d class</para>
+    <para>This section is to be completed.</para>
 
-    <para>sh vs bash</para>
+    <itemizedlist>
+      <listitem>
+        <para>update-rc.d class</para>
+      </listitem>
 
-    <para>start/stop/restart params</para>
+      <listitem>
+        <para>sh syntax</para>
+      </listitem>
 
-    <para>sample / standard script format</para>
+      <listitem>
+        <para>stop/stop/restart params</para>
+      </listitem>
 
-    <para>note about volatiles being described below</para>
+      <listitem>
+        <para>samlpe/standard script?</para>
+      </listitem>
 
-    <para>reference section for more info</para>
+      <listitem>
+        <para>volatiles</para>
+      </listitem>
+    </itemizedlist>
   </section>
 
   <section id="bb_alternatives" xreflabel="alternatives">
     <title>Alternatives: How to handle the same command in multiple
     packages</title>
 
-    <para>Why you should care</para>
+    <para>This section is to be completed.</para>
 
-    <para>Using them</para>
+    <itemizedlist>
+      <listitem>
+        <para>why you should care</para>
+      </listitem>
 
-    <para>reference section for more info</para>
+      <listitem>
+        <para>using alternatives</para>
+      </listitem>
+    </itemizedlist>
   </section>
 
   <section id="bb_volatiles" xreflabel="volatiles">
     <title>Volatiles: How to handle the /var directory</title>
 
-    <para>[</para>
+    <para>The <emphasis role="bold">/var</emphasis> directory is for storing
+    volatile information, that is information which is constantly changing and
+    which in general may be easily recreated. In embedded applications it is
+    often desirable that such files are not stored on disk or flash for
+    various reasons including:</para>
 
-    <para>Talk about tmpfs for var</para>
+    <itemizedlist>
+      <listitem>
+        <para>The possibility of a reduced lifetime of the flash;</para>
+      </listitem>
 
-    <para>Talk about how volatiles work</para>
+      <listitem>
+        <para>The limited amount of storage space available;</para>
+      </listitem>
 
-    <para>Talk about logging via syslog so non-disk logs will may be
-    used</para>
-
-    <para>Talk about default volatiles</para>
-
-    <para>reference section for more info</para>
-
-    <para>]</para>
-
-    <para>The /var directory is for storing volatile information, that is
-    information which is constantly changing and which in general may be
-    easily recreated. In embedded applications it is often desirable that such
-    files are not stored on disk or flash for various reasons include possible
-    reduced lifetime of the flash, limited storage space or to ensure
-    filesystem corruption cannot occur due to a sudden power loss.</para>
+      <listitem>
+        <para>To ensure filesystem corruption cannot occur due to a sudden
+        power loss.</para>
+      </listitem>
+    </itemizedlist>
 
     <para>For these reasons many of the OpenEmbedded distributions use a tmpfs
-    memory based filesystem for /var instead of a disk or flash based
-    filesystem. The consequence of this is that all contents of the /var
-    directory is lost when the device is powered off or restarted. Therefore
-    special handling of /var is required in all packages to ensure that they
-    don't restrict the options available to individual distributions. This
-    special handling is provided via the populate-volatiles.sh script.</para>
+    based memory filesystem for <emphasis role="bold">/var</emphasis> instead
+    of using a disk or flash based filesystem. The consequence of this is that
+    all contents of the <emphasis role="bold">/var</emphasis> directory is
+    lost when the device is powered off or restarted. Therefore special
+    handling of <emphasis role="bold">/var</emphasis> is required in all
+    packages to ensure that they don't restrict the options available to
+    individual distributions. This special handling is provided via the
+    populate-volatiles.sh script.</para>
 
-    <para>If your package requires directory, symlinks or files in /var then
-    you should be using the populate-volatiles facilities.</para>
-
-    <para></para>
+    <note>
+      <para>If your package requires any files, directories or symlinks in
+      <emphasis role="bold">/var</emphasis> then it should be using the
+      populate-volatiles facilities.</para>
+    </note>
 
     <section>
       <title>Declaring volatiles</title>
 
-      <para></para>
+      <para>This section is to be completed.</para>
 
-      <para>- don't include /var stuff in packages</para>
+      <itemizedlist>
+        <listitem>
+          <para>how volatiles work</para>
+        </listitem>
 
-      <para>- any expect dirs in def volatiles to exist</para>
+        <listitem>
+          <para>default volatiles</para>
+        </listitem>
 
-      <para>- add volatiles file for any other distributions</para>
+        <listitem>
+          <para>don't include any /var stuff in packages</para>
+        </listitem>
+
+        <listitem>
+          <para>even if your distro don't use /var in tmpfs, others do</para>
+        </listitem>
+
+        <listitem>
+          <para>updating the volatiles cache during install</para>
+        </listitem>
+      </itemizedlist>
     </section>
 
     <section>
       <title>Logging and log files</title>
 
       <para>As a consequence of the non-volatile and/or small capacity of the
-      /var file system some distributions choose methods of logging other than
-      writing to a file. The most typical is the use of an in-memory circular
-      log buffer which can be read using the logread command.</para>
+      <emphasis role="bold">/var</emphasis> file system some distributions
+      choose methods of logging other than writing to a file. The most typical
+      is the use of an in-memory circular log buffer which can be read using
+      the <emphasis role="bold">logread</emphasis> command.</para>
 
       <para>To ensure that each distribution is able to implement logging in a
       method that is suitable for its goals all packages should be configured
@@ -2739,31 +2838,53 @@ do_configure() {
   </section>
 
   <section>
-    <title>STUFF STILL TO BE CONSIDERED/ADDED</title>
+    <title>Miscellaneous</title>
 
-    <para>about optimisation</para>
+    <para>This section is to be completed.</para>
 
-    <para>about download directories</para>
+    <itemizedlist>
+      <listitem>
+        <para>about optimisation</para>
+      </listitem>
 
-    <para>about parallel builds</para>
+      <listitem>
+        <para>about download directories</para>
+      </listitem>
 
-    <para>about determening endianess (aka net-snmp, openssl, hping etc
-    style)</para>
+      <listitem>
+        <para>about parallel builds</para>
+      </listitem>
 
-    <para>about adding users/groups</para>
+      <listitem>
+        <para>about determining endianess (aka net-snmp, openssl, hping etc
+        style)</para>
+      </listitem>
 
-    <para>about PACKAGES_DYNAMIC</para>
+      <listitem>
+        <para>about PACKAGES_DYNAMIC</para>
+      </listitem>
 
-    <para>about LEAD_SONAME</para>
+      <listitem>
+        <para>about LEAD_SONAME</para>
+      </listitem>
 
-    <para>about "python () {" - looks like it is always run when a recipe is
-    parsed? see pam/libpam</para>
+      <listitem>
+        <para>about "python () {" - looks like it is always run when a recipe
+        is parsed? see pam/libpam</para>
+      </listitem>
 
-    <para>about SRCDATE with svn/cvs?</para>
+      <listitem>
+        <para>about SRCDATE with svn/cvs?</para>
+      </listitem>
 
-    <para>about INHIBIT_DEFAULT_DEPS?</para>
+      <listitem>
+        <para>about INHIBIT_DEFAULT_DEPS?</para>
+      </listitem>
 
-    <para>about COMPATIBLE_MACHINE and COMPATIBLE_HOST</para>
+      <listitem>
+        <para>about COMPATIBLE_MACHINE and COMPATIBLE_HOST</para>
+      </listitem>
+    </itemizedlist>
 
     <para></para>
   </section>
