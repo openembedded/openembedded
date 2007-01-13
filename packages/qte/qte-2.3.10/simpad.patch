@@ -74,39 +74,6 @@
  #ifdef QT_QWS_SL5XXX
  #include <asm/sharp_char.h>
  #endif
-@@ -165,9 +220,9 @@
- 	    current = 0;
-     }
- 
--    void setAutoRepeat(int d, int p) { if ( d > 0 ) repeatdelay=d; 
-+    void setAutoRepeat(int d, int p) { if ( d > 0 ) repeatdelay=d;
- 				       if ( p > 0 ) repeatperiod=p;}
--    void getAutoRepeat(int *d ,int *p ) { if (d) *d=repeatdelay; 
-+    void getAutoRepeat(int *d ,int *p ) { if (d) *d=repeatdelay;
-     					  if (p) *p=repeatperiod; }
- 
-     void stop()
-@@ -551,9 +606,9 @@
- 
-     void doKey(uchar scancode);
- 
--    
-+
-     void restoreLeds();
--    
-+
- private:
-     bool shift;
-     bool alt;
-@@ -809,7 +864,7 @@
- 
- #if !defined(QT_QWS_SL5XXX)
-     if (code == 224
--#if defined(QT_QWS_IPAQ) 
-+#if defined(QT_QWS_IPAQ)
- 	&& !ipaq_return_pressed
- #endif
- 	) {
 @@ -1775,9 +1830,11 @@
      } else {
  	type = spec;
