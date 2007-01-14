@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<chapter>
+<chapter id="chapter_recipes">
   <title>Recipes</title>
 
-  <section id="bb_introduction" xreflabel="introduction">
+  <section id="recipes_introduction" xreflabel="introduction">
     <title>Introduction</title>
 
     <para>A bitbake recipe is a set of instructions that describe what needs
@@ -26,7 +26,7 @@
     then first take a look at the chapter on bitbake usage.</para>
   </section>
 
-  <section id="bb_syntax" xreflabel="syntax">
+  <section id="recipes_syntax" xreflabel="syntax">
     <title>Syntax of recipes</title>
 
     <para>The basic items that make up a bitbake recipe file are:</para>
@@ -259,7 +259,7 @@ mv fixed.recipe.bb myrecipe.bb</screen></para>
           <para>Python code is indicated by a proceeding @ sign in the
           variable assignment.<screen>CXXFLAGS := "${@'${CXXFLAGS}'.replace('-frename-registers', '')}"</screen>More
           information about using python is available in the <xref
-          linkend="bb_advanced_python" /> section.</para>
+          linkend="recipes_advanced_python" /> section.</para>
         </listitem>
       </varlistentry>
 
@@ -282,7 +282,7 @@ mv fixed.recipe.bb myrecipe.bb</screen></para>
     files you should refer to the bitbake use manual.</para>
   </section>
 
-  <section id="bb_versioning" xreflabel="versioning">
+  <section id="recipes_versioning" xreflabel="versioning">
     <title>Recipe naming: Names, versions and releases</title>
 
     <para>Recipes in OpenEmbedded use a standard naming convention that
@@ -394,7 +394,7 @@ mv fixed.recipe.bb myrecipe.bb</screen></para>
     edit the URL:<screen>SRC_URI = "ftp://ftp.vim.org/pub/vim/unix/vim-${PV}.tar.bz2"</screen></para>
   </section>
 
-  <section id="bb_variables" xreflabel="variables">
+  <section id="recipes_variables" xreflabel="variables">
     <title>Variables</title>
 
     <para>One of the most confusing part of bitbake recipes for new users is
@@ -476,7 +476,7 @@ mv fixed.recipe.bb myrecipe.bb</screen></para>
     </variablelist>
   </section>
 
-  <section id="bb_header" xreflabel="header">
+  <section id="recipes_header" xreflabel="header">
     <title>Header</title>
 
     <para>Practically all recipes start was the header section which describes
@@ -552,7 +552,7 @@ mv fixed.recipe.bb myrecipe.bb</screen></para>
     </variablelist>
   </section>
 
-  <section id="bb_sources" xreflabel="sources">
+  <section id="recipes_sources" xreflabel="sources">
     <title>Sources: Downloading, patching and additional files</title>
 
     <para>A recipes purpose is to describe how to take a software package and
@@ -669,7 +669,7 @@ mv fixed.recipe.bb myrecipe.bb</screen></para>
     linkend="src_uri_variable" /> section of the reference chapter.</para>
   </section>
 
-  <section id="bb_directories" xreflabel="directories">
+  <section id="recipes_directories" xreflabel="directories">
     <title>Directories: What goes where</title>
 
     <para>A large part of the work or a recipe is involved with specifying
@@ -897,7 +897,7 @@ S = "${WORKDIR}/widgets"</screen></para>
       chapter.</para>
     </section>
 
-    <section id="bb_filespath_dir" xreflabel="FILESPATH/FILESDIR">
+    <section id="recipes_filespath_dir" xreflabel="FILESPATH/FILESDIR">
       <title>FILESPATH/FILESDIR: Finding local files</title>
 
       <para>The file related variables are used by bitbake to determine where
@@ -1031,7 +1031,7 @@ ${FILE_DIRNAME}/${PN}:${FILE_DIRNAME}/files:${FILE_DIRNAME}"</screen></para>
     </section>
   </section>
 
-  <section id="bb_examples" xreflabel="examples">
+  <section id="recipes_examples" xreflabel="examples">
     <title>Basic examples</title>
 
     <para>By now you should know enough about the bitbake recipes to be able
@@ -1039,7 +1039,7 @@ ${FILE_DIRNAME}/${PN}:${FILE_DIRNAME}/files:${FILE_DIRNAME}"</screen></para>
     a more advanced example that uses the autotools helper class (to be
     described later) to build an autoconf based package.</para>
 
-    <section id="bb_helloworld_example" xreflabel="hello world example">
+    <section id="recipes_helloworld_example" xreflabel="hello world example">
       <title>Hello world</title>
 
       <para>Now it's time for our first recipe. This is going to be one of the
@@ -1311,7 +1311,7 @@ tmp/work/helloworld-0.1-r0/install/helloworld/usr/bin/helloworld: ELF 32-bit LSB
       That's exactly what we wanted.</para>
     </section>
 
-    <section id="bb_autoconf_example" xreflabel="autoconf example">
+    <section id="recipes_autoconf_example" xreflabel="autoconf example">
       <title>An autotools package</title>
 
       <para>Now for an example of a package that uses autotools. These are
@@ -1385,7 +1385,7 @@ inherit autotools</screen></para>
     </section>
   </section>
 
-  <section id="bb_depenencies" xreflabel="dependencies">
+  <section id="recipes_depenencies" xreflabel="dependencies">
     <title>Dependencies: What's needed to build and/or run the
     package?</title>
 
@@ -1436,7 +1436,7 @@ inherit autotools</screen></para>
     via the auto shared libs dependency code.</para>
   </section>
 
-  <section id="bb_methods" xreflabel="methods">
+  <section id="recipes_methods" xreflabel="methods">
     <title>Methods: Inbuilt methods to make your life easier</title>
 
     <para>There are several helper functions defined by the base class, which
@@ -1663,7 +1663,7 @@ inherit autotools</screen></para>
           <note>
             <para>The ${@...} syntax is used to call python functions from
             within a recipe or class. This is described in more detail in the
-            <xref linkend="bb_advanced_python" /> section.</para>
+            <xref linkend="recipes_advanced_python" /> section.</para>
           </note>
 
           <para>The following example from the openssl recipe shows the
@@ -1681,7 +1681,7 @@ inherit autotools</screen></para>
     </variablelist>
   </section>
 
-  <section id="bb_packages" xreflabel="packages">
+  <section id="recipes_packages" xreflabel="packages">
     <title>Packaging: Defining packages and their contents</title>
 
     <para>A bitbake recipe is a set of instructions from creating one, or
@@ -2130,7 +2130,7 @@ NOTE: package helloworld-0.1-r0: task do_package: completed</screen>Except in
     </section>
   </section>
 
-  <section id="bb_tasks" xreflabel="tasks">
+  <section id="recipes_tasks" xreflabel="tasks">
     <title>Tasks: Playing with tasks</title>
 
     <para>Bitbake steps through a series of tasks when building a recipe.
@@ -2241,7 +2241,7 @@ addtask unpack_extra after do_unpack before do_patch</screen></para>
     </variablelist>
   </section>
 
-  <section id="bb_classes" xreflabel="classes">
+  <section id="recipes_classes" xreflabel="classes">
     <title>Classes: The separation of common functionality</title>
 
     <para>This section is to be completed.</para>
@@ -2261,7 +2261,7 @@ addtask unpack_extra after do_unpack before do_patch</screen></para>
     </itemizedlist>
   </section>
 
-  <section id="bb_staging" xreflabel="staging">
+  <section id="recipes_staging" xreflabel="staging">
     <title>Staging: Making includes and libraries available for
     building</title>
 
@@ -2282,7 +2282,7 @@ addtask unpack_extra after do_unpack before do_patch</screen></para>
     </itemizedlist>
   </section>
 
-  <section id="bb_autoconf" xreflabel="about autoconf">
+  <section id="recipes_autoconf" xreflabel="about autoconf">
     <title>Autoconf: All about autotools</title>
 
     <para>This section is to be completed:</para>
@@ -2314,7 +2314,7 @@ addtask unpack_extra after do_unpack before do_patch</screen></para>
     </itemizedlist>
   </section>
 
-  <section id="bb_installation_scripts" xreflabel="installation scripts">
+  <section id="recipes_installation_scripts" xreflabel="installation scripts">
     <title>Installation scripts: Running scripts during package install and/or
     removal</title>
 
@@ -2420,7 +2420,7 @@ pkg_postinst_${PN}-rdisc6 () {
           <para>This class is used by daemons to register there init scripts
           with the init code.</para>
 
-          <para>Details are provided in the <xref linkend="bb_initscripts" />
+          <para>Details are provided in the <xref linkend="recipes_initscripts" />
           section.</para>
         </listitem>
       </varlistentry>
@@ -2467,7 +2467,7 @@ pkg_postinst_${PN}-rdisc6 () {
           system will create a symlink to the correct alternative from one or
           more available on the system.</para>
 
-          <para>Details are provided in the <xref linkend="bb_alternatives" />
+          <para>Details are provided in the <xref linkend="recipes_alternatives" />
           section.</para>
         </listitem>
       </varlistentry>
@@ -2508,7 +2508,7 @@ pkg_postinst_${PN}-rdisc6 () {
     postinst script it uses the update-rc.d class which will result in an
     additional entry being added to the postinst script to register the init
     scripts and start the daemon (via call to update-rc.d as describes in the
-    <xref linkend="bb_alternatives" /> section).<screen>inherit autotools update-rc.d
+    <xref linkend="recipes_alternatives" /> section).<screen>inherit autotools update-rc.d
 
 ...
 
@@ -2539,7 +2539,7 @@ fi</screen></para>
     <emphasis role="bold">group</emphasis> files for example.)</para>
   </section>
 
-  <section id="bb_conffiles" xreflabel="conf files">
+  <section id="recipes_conffiles" xreflabel="conf files">
     <title>Configuration files</title>
 
     <para>Configuration files that are installed as part of a package require
@@ -2571,7 +2571,7 @@ fi</screen></para>
     package.</para>
   </section>
 
-  <section id="bb_package_relationships"
+  <section id="recipes_package_relationships"
            xreflabel="package relationships files">
     <title>Package relationships</title>
 
@@ -2635,7 +2635,7 @@ fi</screen></para>
     </variablelist>
   </section>
 
-  <section id="bb_fakeroot" xreflabel="fakeroot">
+  <section id="recipes_fakeroot" xreflabel="fakeroot">
     <title>Fakeroot: Dealing with the need for "root"</title>
 
     <para>Sometimes packages requires root permissions in order to perform
@@ -2658,7 +2658,7 @@ fi</screen></para>
     the reference section: <xref linkend="fakeroot" />.</para>
   </section>
 
-  <section id="bb_native" xreflabel="native">
+  <section id="recipes_native" xreflabel="native">
     <title>Native: Packages for the build host</title>
 
     <para>This section is to be completed.</para>
@@ -2674,7 +2674,7 @@ fi</screen></para>
     </itemizedlist>
   </section>
 
-  <section id="bb_development" xreflabel="development">
+  <section id="recipes_development" xreflabel="development">
     <title>Development: Strategies for developing recipes</title>
 
     <para>This section is to be completed.</para>
@@ -2698,7 +2698,7 @@ fi</screen></para>
     </itemizedlist>
   </section>
 
-  <section id="bb_advanced_versioning" xreflabel="advanced versioning">
+  <section id="recipes_advanced_versioning" xreflabel="advanced versioning">
     <title>Advanced versioning: How to deal with rc and pre versions</title>
 
     <para>Special care needs to be taken when specify the version number for
@@ -2770,7 +2770,7 @@ fi</screen></para>
     expected.</para>
   </section>
 
-  <section id="bb_require" xreflabel="require">
+  <section id="recipes_require" xreflabel="require">
     <title>Require/include: Reusing recipe contents</title>
 
     <para>In many packages where you are maintaining multiple versions you'll
@@ -2833,7 +2833,7 @@ do_configure() {
 }</screen></para>
   </section>
 
-  <section id="bb_advanced_python" xreflabel="advanced python">
+  <section id="recipes_advanced_python" xreflabel="advanced python">
     <title>Python: Advanced functionality with python</title>
 
     <para>Recipes permit the use of python code in order to perform complex
@@ -2887,7 +2887,7 @@ do_configure() {
 
           <para>This is most commonly seen in existing recipes when settings
           the <emphasis role="bold">FILESDIR</emphasis> variable (as described
-          in the <xref linkend="bb_filespath_dir" /> section). By obtaining
+          in the <xref linkend="recipes_filespath_dir" /> section). By obtaining
           name of the recipe file itself, <emphasis
           role="bold">FILE</emphasis>, and then using os.path.dirname to strip
           the filename part:<screen>FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/make-${PV}"</screen>Note
@@ -3060,7 +3060,7 @@ do_configure() {
 }</screen></para>
   </section>
 
-  <section id="bb_defaultpreference" xreflabel="default preference">
+  <section id="recipes_defaultpreference" xreflabel="default preference">
     <title>Preferences: How to disable packages</title>
 
     <para>This section is to be completed.</para>
@@ -3080,7 +3080,7 @@ do_configure() {
     </itemizedlist>
   </section>
 
-  <section id="bb_initscripts" xreflabel="initscripts">
+  <section id="recipes_initscripts" xreflabel="initscripts">
     <title>Initscripts: How to handle daemons</title>
 
     <para>This section is to be completed.</para>
@@ -3108,7 +3108,7 @@ do_configure() {
     </itemizedlist>
   </section>
 
-  <section id="bb_alternatives" xreflabel="alternatives">
+  <section id="recipes_alternatives" xreflabel="alternatives">
     <title>Alternatives: How to handle the same command in multiple
     packages</title>
 
@@ -3125,7 +3125,7 @@ do_configure() {
     </itemizedlist>
   </section>
 
-  <section id="bb_volatiles" xreflabel="volatiles">
+  <section id="recipes_volatiles" xreflabel="volatiles">
     <title>Volatiles: How to handle the /var directory</title>
 
     <para>The <emphasis role="bold">/var</emphasis> directory is for storing
@@ -3244,7 +3244,7 @@ do_configure() {
     </section>
   </section>
 
-  <section>
+  <section id="recipes_misc">
     <title>Miscellaneous</title>
 
     <para>This section is to be completed.</para>
