@@ -42,7 +42,7 @@ $(htmltypes): $(if $(htmlcss),$(htmlcss)) $(manual)
 ifdef htmlcss
 	$(call command,install -m 0644 $(htmlcss) $@/$(htmlcssfile),CP $(htmlcss) $@/$(htmlcssfile))
 endif
-	$(call command,xsltproc --stringparam base.dir $@/ $(if $(htmlcssfile),--stringparam html.stylesheet $(htmlcssfile)) $(htmlxsl) $(manual),XSLTPROC $@ $(manual))
+	$(call command,xsltproc --param use.id.as.filename 1 --stringparam base.dir $@/ $(if $(htmlcssfile),--stringparam html.stylesheet $(htmlcssfile)) $(htmlxsl) $(manual),XSLTPROC $@ $(manual))
 
 $(xmltotypes): $(manual)
 	$(call command,xmlto --extensions -o $(topdir)/$@ $@ $(manual),XMLTO $@ $(manual))
