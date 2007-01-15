@@ -1,0 +1,204 @@
+--- linux-2.6.17-linuxsh/drivers/input/keyboard/hp680_keyb.c	2006-12-06 21:56:06.000000000 +0000
++++ linux-2.6.17/drivers/input/keyboard/hp680_keyb.c	2007-01-10 21:00:34.000000000 +0000
+@@ -5,6 +5,7 @@
+  *
+  *  Copyright (C) 2005  Andriy Skulysh
+  *  Copyright (C) 2006  Paul Mundt
++ *  Copyright (C) 2007  Kristoffer Ericson
+  *
+  * Splited from drivers/input/keyboard/hp600_keyb.c
+  *
+@@ -20,6 +21,10 @@
+ #include <asm/io.h>
+ #include "scan_keyb.h"
+ 
++#define PCCR 0xa4000104
++#define PDCR 0xa4000106
++#define PECR 0xa4000108
++#define PFCR 0xa400010a
+ #define PCDR 0xa4000124
+ #define PDDR 0xa4000126
+ #define PEDR 0xa4000128
+@@ -30,6 +35,24 @@
+ #define PKDR 0xa4000132
+ #define PLDR 0xa4000134
+ 
++/***************************************************************
++HP Jornada 680(SWEDISH version) keyboard 
++[!] indicates Special Characters 
++
++_______________________________________________________________________
++| ESC     F1  F2   F3   F4   F5   F6   F7   F8   F9   F10        POWER|
++|  1    2    3    4    5    6    7    8    9    0    +   `    BKPSPACE|
++|*    Q    W    E    R    T    Y    U    I    O    P    !    ^   ENTER|
++| TAB   A    S    D    F    G    H    J    K    L    !    !   '  ENTER|
++| SHIFT   Z    X    C    V    B    N    M    ,    .    -     UP  SHIFT|
++| CTRL  WIN  ALT  ?  =======SPACE========  ALTG  DEL    LEF  DO  RI   ]
++-----------------------------------------------------------------------
++
++
++****************************************************************/
++
++
++
+ /****************************************************************
+ HP Jornada 690(Japanese version) keyboard scan matrix
+ 
+@@ -71,31 +94,56 @@
+ ****************************************************************/
+ 
+ static const unsigned char hp680_japanese_table[] = {
+-	/* PTD1 */
++/*
++      /* PTD1 */
++      /*  ?    ?     ?     ?    Esc    ?     ?     ?  */
+ 	0x3a, 0x70, 0x29, 0x00, 0x01, 0x00, 0x00, 0x00,
++      /* F1   F2    F3     F8    F7    F6    F4    F5  */
+ 	0x3b, 0x3c, 0x3d, 0x42, 0x41, 0x40, 0x3e, 0x3f,
+-	/* PTD5 */
++
++      /* PTD5 */
++      /* /    :    Enter  ?      Z     ?     ?     ?  */	
+ 	0x35, 0x28, 0x1c, 0x00, 0x2c, 0x00, 0x00, 0x00,
++      /* X    C     V     .     ,     M     B     N  */
+ 	0x2d, 0x2e, 0x2f, 0x34, 0x33, 0x32, 0x30, 0x31,
+-	/* PTD7 */
+-	0x50, 0x4d, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+-	0x00, 0x00, 0x00, 0x4b, 0x00, 0x00, 0x38, 0x7b,
+-	/* PTE0 */
++
++      /* PTD7 */
++      /* Down  Right   ?    ?     ?     ?     ?     ?   */ 	
++ 	0x50, 0x4d, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
++      /*  ?    ?     ?    Left   ?     ?    Alt    ?	*/
++    	0x00, 0x00, 0x00, 0x4b, 0x00, 0x00, 0x38, 0x7b,
++
++      /* PTE0 */
++      /*   ?    ?      ?    ?    Win    ?     ?     ?  */	
+ 	0x00, 0x00, 0x00, 0x00, 0xdb, 0x00, 0x00, 0x00,
++      /* Ctrl	 ?   Space  Del   _     ?     ?     ?    */ 
+ 	0x1d, 0x00, 0x39, 0x53, 0x73, 0xf9, 0x00, 0x00,
+-	/* PTE1 */
++
++      /* PTE1 */
++      /*  ;    [      ]    ?     A     ?      ?    ?     */
+ 	0x27, 0x1b, 0x2b, 0x00, 0x1e, 0x00, 0x00, 0x00,
++      /*  S    D     F     L     K      J     G    H     */
+ 	0x1f, 0x20, 0x21, 0x26, 0x25, 0x24, 0x22, 0x23,
+-	/* PTE3 */
+-	0x48, 0x7d, 0x36, 0x00, 0x0f, 0x00, 0x00, 0x00,
+-	0x00, 0x2a, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+-	/* PTE6 */
++
++      /* PTE3 */
++      /*  Up     \    ShiftR    ?    Q     ?     ?     ? */	
++	0x48,   0x7d,  0x36,  0x00, 0x0f, 0x00, 0x00, 0x00,
++      /*  ?    ShiftL   ?     ?     ?     ?     ?     ?  */	
++	0x00,   0x2a,  0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
++      
++      /* PTE6 */
++      /*  P     @     BS    ?     Q     ?     ?     ?  */
+ 	0x19, 0x1a, 0x0e, 0x00, 0x10, 0x00, 0x00, 0x00,
++      /*  W     E     R     O     I     U     T     Y  */	
+ 	0x11, 0x12, 0x13, 0x18, 0x17, 0x16, 0x14, 0x15,
+-	/* PTE7 */
+-	0x0b, 0x0c, 0x0d, 0x00, 0x02, 0x00, 0x00, 0x00,
+-	0x03, 0x04, 0x05, 0x0a, 0x09, 0x08, 0x06, 0x07,
+-	/* **** */
++
++      /* PTE7 */
++      /*  0     +    =      ?     1     ?     ?     ?  */
++      	0x0b, 0x0c, 0x0d, 0x00, 0x02, 0x00, 0x00, 0x00,
++      /*  2     3     4     9     8     7     5     6  */
++	0x03, 0x04, 0x05, 0x0a, 0x09, 0x08, 0x06, 0x07, 
++
++      /* **** */
+ 	0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+ 	0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+ };
+@@ -103,37 +151,72 @@
+ static int hp680_japanese_scan_kbd(unsigned char *s)
+ {
+ 	int i;
+-	unsigned char matrix_switch[] = {
+-		0xfd, 0xff,	/* PTD1 */
+-		0xdf, 0xff,	/* PTD5 */
+-		0x7f, 0xff,	/* PTD7 */
+-		0xff, 0xfe,	/* PTE0 */
+-		0xff, 0xfd,	/* PTE1 */
+-		0xff, 0xf7,	/* PTE3 */
+-		0xff, 0xbf,	/* PTE6 */
+-		0xff, 0x7f,	/* PTE7 */
++	unsigned short ec_static,dc_static; /* = UINT16_t */
++        unsigned char matrix_switch[] = {
++		0xfd, 0xff,   /* PTD1 PD(1) */
++		0xdf, 0xff,   /* PTD5 PD(5) */
++		0x7f, 0xff,   /* PTD7 PD(7) */
++		0xff, 0xfe,   /* PTE0 PE(0) */
++		0xff, 0xfd,   /* PTE1 PE(1) */
++                0xff, 0xf7,   /* PTE3 PE(3) */
++		0xff, 0xbf,   /* PTE6 PE(6) */		
++                0xff, 0x7f,   /* PTE7 PE(7) */		
+ 	}, *t=matrix_switch;
++        /* PD(x) :
++	1.   0xcc0c & (1~(1 << (2*(x)+1)))))
++	2.   (0xf0cf & 0xfffff) */
++        /* PE(x) :
++	1.   0xcc0c & 0xffff
++	2.   0xf0cf & (1~(1 << (2*(x)+1))))) */
++        unsigned short matrix_PDE[] = {
++     	        0xcc04, 0xf0cf,  /* PD(1) */
++	        0xc40c, 0xf0cf,	 /* PD(5) */ 
++	        0x4c0c, 0xf0cf,  /* PD(7) */
++		0xcc0c, 0xf0cd,  /* PE(0) */
++		0xcc0c, 0xf0c7,	 /* PE(1) */
++	        0xcc0c, 0xf04f,  /* PE(3) */
++		0xcc0c, 0xd0cf,	 /* PE(6) */
++	        0xcc0c, 0x70cf,	 /* PE(7) */
++	        }
++        , *y=matrix_PDE;
++	/* Save these control reg bits */
++	dc_static = (ctrl_inw(PDCR) & (~0xcc0c));
++        ec_static = (ctrl_inw(PECR) & (~0xf0cf));
+ 
+ 	for(i=0; i<8; i++) {
+-		ctrl_outb(*t++, PDDR);
++                /* disable output for all but the one we want to scan */
++		ctrl_outw((dc_static | *y++), PDCR);
++		ctrl_outw((ec_static | *y++), PECR);
++                udelay(5);
++	       
++		/* Get scanline row */
++	        ctrl_outb(*t++, PDDR);
+ 		ctrl_outb(*t++, PEDR);
++                udelay(50);
++
++		/* Read data */
+ 		*s++=ctrl_inb(PCDR);
+ 		*s++=ctrl_inb(PFDR);
+ 	}
+-
++        /* Scan no lines */
+ 	ctrl_outb(0xff, PDDR);
+ 	ctrl_outb(0xff, PEDR);
++        
++        /* Enable all scanlines */
++	ctrl_outw((dc_static | (0x5555 & 0xcc0c)),PDCR);
++	ctrl_outw((ec_static | (0x5555 & 0xf0cf)),PECR);
++        /* Ignore extra keys and events */
+ 
+ 	*s++=ctrl_inb(PGDR);
+ 	*s++=ctrl_inb(PHDR);
+-
++ 
+ 	return 0;
+ }
+ 
+ static struct scan_keyboard hp680_kbd = {
+ 	.scan		= hp680_japanese_scan_kbd,
+ 	.table		= hp680_japanese_table,
+-	.length		= 18,
++	.length		= 16,
+ };
+ 
+ static int __init hp680_kbd_init_hw(void)

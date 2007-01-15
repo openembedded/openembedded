@@ -1,7 +1,9 @@
-SECTION = "opie/settings"
 DESCRIPTION = "Reload .desktop files on the fly"
+SECTION = "opie/settings"
 PRIORITY = "optional"
 LICENSE = "GPL"
+
+PACKAGE_ARCH = "all"
 
 SRC_URI = "file://icon-reload.desktop \
 	   file://icon-reload.sh \

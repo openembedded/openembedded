@@ -11,5 +11,3 @@ S = "${WORKDIR}/bluez-hcidump-${PV}"
 EXTRA_OECONF = "--with-bluez-libs=${STAGING_LIBDIR} --with-bluez-includes=${STAGING_INCDIR}"
 
 inherit autotools
-
-

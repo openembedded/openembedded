@@ -23,7 +23,9 @@ PIXMAP_SIZE_spitz	= "-640x480"
 PIXMAP_SIZE_akita	= "-640x480"
 PIXMAP_SIZE_tosa 	= "-480x640"
 PIXMAP_SIZE_simpad 	= "-800x600"
+PIXMAP_SIZE_asus730     = "-480x640"
 PIXMAP_SIZE_htcuniversal= "-480x640"
+PIXMAP_SIZE_hx4700      = "-480x640"
 
 inherit opie update-rc.d
 

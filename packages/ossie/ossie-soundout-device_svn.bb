@@ -1,9 +1,10 @@
-PR = "r0"
 DESCRIPTION = "OSSIE sound playback device"
 SECTION =  "apps"
 PRIORITY = "optional"
 MAINTAINER = "Philip Balister philip@balister.org"
 LICENSE = "GPL"
+PV = "0.0.0+svn${SRCDATE}"
+PR = "r0"
 
 DEPENDS = "alsa-lib ossiecf ossie-standardinterfaces"
 
