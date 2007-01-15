@@ -36,8 +36,12 @@ do_install() {
 }
 
 pkg_postinst() {
-        addgroup ftp
-        adduser --system --home /var/tmp/ftp --no-create-home --ingroup ftp --disabled-password -s /bin/false ftp
+        # can't do this offline
+        if [ "x$D" != "x" ]; then
+                exit 1
+        fi
+        addgroup ftp &&
+        adduser --system --home /var/tmp/ftp --no-create-home --ingroup ftp --disabled-password -s /bin/false ftp &&
         mkdir -p ${localstatedir}/share/empty
 }
 
