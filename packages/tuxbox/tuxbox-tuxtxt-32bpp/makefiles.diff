@@ -1,6 +1,85 @@
-diff -Naur tuxtxt_org/acinclude.m4 tuxtxt_32bpp/acinclude.m4
---- tuxtxt/acinclude.m4	1970-01-01 01:00:00.000000000 +0100
-+++ tuxtxt/acinclude.m4	2006-03-10 21:43:44.000000000 +0100
+diff -Naur tuxtxt_org/AUTHORS tuxtxt/AUTHORS
+--- tuxtxt_org/AUTHORS	1970-01-01 01:00:00.000000000 +0100
++++ tuxtxt/AUTHORS	2006-12-28 12:08:57.000000000 +0100
+@@ -0,0 +1,25 @@
++In order of appearance in cvs:
++------------------------------------------------
++Felix Domke		<tmbinc@berlios.de>
++Andreas Oberritter	<obi@berlios.de>
++Steffen Hehn		<mcclean@berlios.de>
++Andreas Monzner		<ghostrider@berlios.de>
++Florian Roks		<trh@berlios.de>
++Ronny Strutz		<tripledes@berlios.de>
++Bastian Blank		<waldi@berlios.de>
++Henning Heinold		<woglinde@berlios.de>
++Rainer Scherg		<rasc@berlios.de>
++Steffen Buehl		<shadow@berlios.de>
++Wolfram Joost		<wjoost@berlios.de>
++Thomas Herold		<dertom@berlios.de>
++Stefan Pluecken		<thedoc@berlios.de>
++Florian Schirmer	<jolt@berlios.de>
++Christoph Ketzler	<chkdesign@berlios.de>
++Bernhard Roth		<bernroth@berlios.de>
++Roland Meier		<RolandMeier@Siemens.com>
++DBLuelle		<dbluelle@blau-weissoedingend.de>
++
++
++Also many thanks to everyone who supported development
++without having cvs write access
++
+diff -Naur tuxtxt_org/Makefile.am tuxtxt/Makefile.am
+--- tuxtxt_org/Makefile.am	2006-12-28 12:10:01.000000000 +0100
++++ tuxtxt/Makefile.am	2006-12-28 12:10:27.000000000 +0100
+@@ -1,37 +1,18 @@
+-SUBDIRS = font 
++installdir = $(CONFIGDIR)/tuxtxt
+ 
+-if BOXTYPE_DREAMBOX
+-AM_CPPFLAGS = \
+-	@FREETYPE_CFLAGS@ \
+-	-I$(top_srcdir)/include \
+-	-I$(includedir)/tuxbox/tuxtxt 
++SUBDIRS = font
+ 
+-tuxtxt_la_LIBADD = \
+-	@FREETYPE_LIBS@ \
+-	@TUXTXT_LIBS@
+-else
+ AM_CPPFLAGS = \
+-	@TUXBOX_CFLAGS@ \
+ 	@FREETYPE_CFLAGS@ \
++	-funsigned-char \
+ 	-I$(top_srcdir)/include \
+-	-I$(includedir)/tuxbox/tuxtxt 
++	-I$(prefix)/$(includedir)/tuxbox/tuxtxt 
+ 
+-tuxtxt_la_LIBADD = \
+-	@TUXBOX_LIBS@  \
++bin_PROGRAMS = tuxtxt
++tuxtxt_LDADD = -lpthread -lz \
+ 	@FREETYPE_LIBS@ \
+-	@TUXTXT_LIBS@ 
+-endif
+-
+-noinst_LTLIBRARIES = tuxtxt.la
+-
+-tuxtxt_la_SOURCES = tuxtxt.c
++	@TUXTXT_LIBS@
+ 
+-tuxtxt_la_LDFLAGS = -rpath $(PLUGINDIR) -module -avoid-version
++tuxtxt_SOURCES = tuxtxt.c
+ 
+-install-exec-local:
+-	install -d $(DESTDIR)$(PLUGINDIR)
+-	install -d $(DESTDIR)$(CONFIGDIR)
+-	install -d $(DESTDIR)$(CONFIGDIR)/tuxtxt
+-	$(LIBTOOL) install tuxtxt.la $(DESTDIR)$(PLUGINDIR)
+-	install -m 0644 $(srcdir)/tuxtxt.cfg $(DESTDIR)$(PLUGINDIR)
+-	install -m 0644 $(srcdir)/tuxtxt.conf $(DESTDIR)$(CONFIGDIR)/tuxtxt
++install_DATA = tuxtxt2.conf
+diff -Naur tuxtxt_org/acinclude.m4 tuxtxt/acinclude.m4
+--- tuxtxt_org/acinclude.m4	1970-01-01 01:00:00.000000000 +0100
++++ tuxtxt/acinclude.m4	2006-12-28 12:08:57.000000000 +0100
 @@ -0,0 +1,434 @@
 +AC_DEFUN(TUXBOX_APPS,[
 +AM_CONFIG_HEADER(config.h)
@@ -436,38 +515,9 @@ diff -Naur tuxtxt_org/acinclude.m4 tuxtxt_32bpp/acinclude.m4
 +        python_site=`echo $python_path | sed "s/config/site-packages/"`
 +        AC_SUBST([PYTHON_SITE_PKG],[$python_site])
 +])
-diff -Naur tuxtxt_org/AUTHORS tuxtxt_32bpp/AUTHORS
---- tuxtxt/AUTHORS	1970-01-01 01:00:00.000000000 +0100
-+++ tuxtxt/AUTHORS	2006-03-10 21:43:44.000000000 +0100
-@@ -0,0 +1,25 @@
-+In order of appearance in cvs:
-+------------------------------------------------
-+Felix Domke		<tmbinc@berlios.de>
-+Andreas Oberritter	<obi@berlios.de>
-+Steffen Hehn		<mcclean@berlios.de>
-+Andreas Monzner		<ghostrider@berlios.de>
-+Florian Roks		<trh@berlios.de>
-+Ronny Strutz		<tripledes@berlios.de>
-+Bastian Blank		<waldi@berlios.de>
-+Henning Heinold		<woglinde@berlios.de>
-+Rainer Scherg		<rasc@berlios.de>
-+Steffen Buehl		<shadow@berlios.de>
-+Wolfram Joost		<wjoost@berlios.de>
-+Thomas Herold		<dertom@berlios.de>
-+Stefan Pluecken		<thedoc@berlios.de>
-+Florian Schirmer	<jolt@berlios.de>
-+Christoph Ketzler	<chkdesign@berlios.de>
-+Bernhard Roth		<bernroth@berlios.de>
-+Roland Meier		<RolandMeier@Siemens.com>
-+DBLuelle		<dbluelle@blau-weissoedingend.de>
-+
-+
-+Also many thanks to everyone who supported development
-+without having cvs write access
-+
-diff -Naur tuxtxt_org/configure.ac tuxtxt_32bpp/configure.ac
---- tuxtxt/configure.ac	1970-01-01 01:00:00.000000000 +0100
-+++ tuxtxt/configure.ac	2006-03-10 22:16:38.000000000 +0100
+diff -Naur tuxtxt_org/configure.ac tuxtxt/configure.ac
+--- tuxtxt_org/configure.ac	1970-01-01 01:00:00.000000000 +0100
++++ tuxtxt/configure.ac	2006-12-28 12:08:58.000000000 +0100
 @@ -0,0 +1,16 @@
 +AC_INIT(tuxbox-tuxtxt-32bpp,1.96)
 +AM_INIT_AUTOMAKE(tuxbox-tuxtxt-32bpp,1.96)
@@ -485,52 +535,3 @@ diff -Naur tuxtxt_org/configure.ac tuxtxt_32bpp/configure.ac
 +
 +AC_OUTPUT(Makefile)
 +AC_OUTPUT(font/Makefile)
-diff -Naur tuxtxt_org/Makefile.am tuxtxt_32bpp/Makefile.am
---- tuxtxt/Makefile.am	2006-03-10 22:13:21.000000000 +0100
-+++ tuxtxt/Makefile.am	2006-03-10 22:16:31.000000000 +0100
-@@ -1,37 +1,18 @@
--SUBDIRS = font 
-+installdir = $(CONFIGDIR)/tuxtxt
- 
--if BOXTYPE_DREAMBOX
--AM_CPPFLAGS = \
--	@FREETYPE_CFLAGS@ \
--	-I$(top_srcdir)/include \
--	-I$(includedir)/tuxbox/tuxtxt 
-+SUBDIRS = font
- 
--tuxtxt_la_LIBADD = \
--	@FREETYPE_LIBS@ \
--	@TUXTXT_LIBS@
--else
- AM_CPPFLAGS = \
--	@TUXBOX_CFLAGS@ \
- 	@FREETYPE_CFLAGS@ \
-+	-funsigned-char \
- 	-I$(top_srcdir)/include \
- 	-I$(includedir)/tuxbox/tuxtxt 
- 
--tuxtxt_la_LIBADD = \
--	@TUXBOX_LIBS@  \
-+bin_PROGRAMS = tuxtxt
-+tuxtxt_LDADD = -lpthread -lz \
- 	@FREETYPE_LIBS@ \
--	@TUXTXT_LIBS@ 
--endif
--
--noinst_LTLIBRARIES = tuxtxt.la
--
--tuxtxt_la_SOURCES = tuxtxt.c
-+	@TUXTXT_LIBS@
- 
--tuxtxt_la_LDFLAGS = -rpath $(PLUGINDIR) -module -avoid-version
-+tuxtxt_SOURCES = tuxtxt.c
- 
--install-exec-local:
--	install -d $(DESTDIR)$(PLUGINDIR)
--	install -d $(DESTDIR)$(CONFIGDIR)
--	install -d $(DESTDIR)$(CONFIGDIR)/tuxtxt
--	$(LIBTOOL) install tuxtxt.la $(DESTDIR)$(PLUGINDIR)
--	install -m 0644 $(srcdir)/tuxtxt.cfg $(DESTDIR)$(PLUGINDIR)
--	install -m 0644 $(srcdir)/tuxtxt.conf $(DESTDIR)$(CONFIGDIR)/tuxtxt
-+install_DATA = tuxtxt2.conf
