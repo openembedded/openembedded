@@ -6,13 +6,18 @@ HAS_GFORTRAN ?= "no"
 OLD_INHIBIT_PACKAGE_STRIP := "${INHIBIT_PACKAGE_STRIP}"
 INHIBIT_PACKAGE_STRIP = "1"
 
-PACKAGES = "libgcc libstdc++ libg2c libg2c-dev libgfortran libgfortran-dev"
-PACKAGES_DYNAMIC = "libgcc* libstdc* libg2c* libgfortran*"
+PACKAGES = "libgcj libgcj-dev libgcc libstdc++ libg2c libg2c-dev libgfortran libgfortran-dev"
+PACKAGES_DYNAMIC = "libgcj* libgcc* libstdc* libg2c* libgfortran*"
 
 PACKAGE_ARCH_libg2c = "${TARGET_ARCH}"
 PACKAGE_ARCH_libg2c-dev = "${TARGET_ARCH}"
 PACKAGE_ARCH_libgfortran = "${TARGET_ARCH}"
 PACKAGE_ARCH_libgfortran-dev = "${TARGET_ARCH}"
+
+PACKAGE_ARCH_libgcj = "${TARGET_ARCH}"
+FILES_libgcj = "${target_libdir}/libg?j.so.*"
+FILES_libgcj-dev = "${target_libdir}/libg?j.so \
+		    ${target_libdir}/libg?j.a"
 
 # Called from within gcc-cross, so libdir is set wrong
 FILES_libg2c = "${target_libdir}/libg2c.so.*"
@@ -58,8 +63,12 @@ do_install () {
 		mv -f ${D}${prefix}/*/lib/libgcc_s.so.* ${D}${target_base_libdir}
 	fi
 
-	# Move libstdc++ and libg2c into libdir (resetting our prefix to /usr
+	# Move libstdc++, libg2c and libgcj into libdir (resetting our prefix to /usr
 	mkdir -p ${D}${target_libdir}
+	if [ -f ${D}${prefix}/*/lib/libgcj.so.? ]; then
+		mv -f ${D}${prefix}/*/lib/libg?j.so.* ${D}${target_libdir}
+		mv -f ${D}${prefix}/*/lib/libg?j.a ${D}${target_libdir}
+	fi
 	mv -f ${D}${prefix}/*/lib/libstdc++.so.* ${D}${target_libdir}
 	if [ "${HAS_G2C}" = "yes" ]; then
 	  mv -f ${D}${prefix}/*/lib/libg2c.so.* ${D}${target_libdir}
@@ -74,5 +83,6 @@ do_install () {
                ${TARGET_PREFIX}strip ${D}${target_libdir}/libstdc++.so.*
                ${TARGET_PREFIX}strip ${D}${target_libdir}/libg2c.so.*
                ${TARGET_PREFIX}strip ${D}${target_base_libdir}/libgcc_s.so.*
+	       ${TARGET_PREFIX}strip ${D}${target_libdir}/libg?j.so.*
        fi
 }

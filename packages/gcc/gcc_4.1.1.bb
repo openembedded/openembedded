@@ -39,9 +39,7 @@ HAS_G2C = "no"
 #Set the java bits
 JAVA_arm = ""  
 
-LANGUAGES = "c,c++"
 require gcc3-build.inc
 
-
-EXTRA_OECONF += " --disable-libssp "
+EXTRA_OECONF += " --disable-libssp --without-x"
   
