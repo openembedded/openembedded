@@ -1,3 +1,3 @@
 require qte-common_${PV}.inc
-PR = "r47"
+PR = "r49"
 

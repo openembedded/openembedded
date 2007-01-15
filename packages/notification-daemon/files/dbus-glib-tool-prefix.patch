@@ -1,0 +1,13 @@
+Index: notification-daemon-0.3.6/src/Makefile.am
+===================================================================
+--- notification-daemon-0.3.6.orig/src/Makefile.am	2007-01-15 16:25:37.000000000 +0100
++++ notification-daemon-0.3.6/src/Makefile.am	2007-01-15 16:26:01.000000000 +0100
+@@ -13,7 +13,7 @@
+ BUILT_SOURCES = notificationdaemon-dbus-glue.h
+ 
+ notificationdaemon-dbus-glue.h: notificationdaemon.xml
+-	dbus-binding-tool --mode=glib-server \
++	dbus-binding-tool --mode=glib-server --prefix= \
+ 		$(srcdir)/notificationdaemon.xml > notificationdaemon-dbus-glue.h
+ 
+ INCLUDES = \

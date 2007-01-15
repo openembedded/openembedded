@@ -54,19 +54,19 @@ SRC_URI = "ftp://ftp.trolltech.com/pub/qt/source/qt-embedded-${PV}-free.tar.gz;m
 # add device specific patches here
 #
 SRC_URI_append_simpad       = "file://devfs.patch;patch=1 "
-SRC_URI_append_c7x0         = "file://kernel-keymap.patch;patch=1;pnum=0 file://kernel-keymap-corgi.patch;patch=1 \
+SRC_URI_append_c7x0         = "file://kernel-keymap.patch;patch=1 file://kernel-keymap-corgi.patch;patch=1 \
                                file://c7x0-w100-accel.patch;patch=1 file://suspend-resume-hooks.patch;patch=1 "
-SRC_URI_append_spitz        = "file://kernel-keymap.patch;patch=1;pnum=0 file://kernel-keymap-corgi.patch;patch=1 \
+SRC_URI_append_spitz        = "file://kernel-keymap.patch;patch=1 file://kernel-keymap-corgi.patch;patch=1 \
                                file://kernel-keymap-CXK.patch;patch=1 "
-SRC_URI_append_akita        = "file://kernel-keymap.patch;patch=1;pnum=0 file://kernel-keymap-corgi.patch;patch=1 \
+SRC_URI_append_akita        = "file://kernel-keymap.patch;patch=1 file://kernel-keymap-corgi.patch;patch=1 \
                                file://kernel-keymap-CXK.patch;patch=1 "
-SRC_URI_append_poodle       = "file://kernel-keymap.patch;patch=1;pnum=0 "
-SRC_URI_append_a780         = "file://kernel-keymap.patch;patch=1;pnum=0 "
-SRC_URI_append_e680         = "file://kernel-keymap.patch;patch=1;pnum=0 "
-SRC_URI_append_tosa         = "file://kernel-keymap.patch;patch=1;pnum=0 file://kernel-keymap-tosa.patch;patch=1 "
-SRC_URI_append_jornada6xx   = "file://kernel-keymap.patch;patch=1;pnum=0 "
-SRC_URI_append_jornada7xx   = "file://kernel-keymap.patch;patch=1;pnum=0 file://ipaq_sound_fix.patch;patch=1 "
-SRC_URI_append_jornada56x   = "file://kernel-keymap.patch;patch=1;pnum=0 file://ipaq_sound_fix.patch;patch=1 "
+SRC_URI_append_poodle       = "file://kernel-keymap.patch;patch=1 "
+SRC_URI_append_a780         = "file://kernel-keymap.patch;patch=1 "
+SRC_URI_append_e680         = "file://kernel-keymap.patch;patch=1 "
+SRC_URI_append_tosa         = "file://kernel-keymap.patch;patch=1 file://kernel-keymap-tosa.patch;patch=1 "
+SRC_URI_append_jornada6xx   = "file://kernel-keymap.patch;patch=1 "
+SRC_URI_append_jornada7xx   = "file://kernel-keymap.patch;patch=1 file://ipaq_sound_fix.patch;patch=1 "
+SRC_URI_append_jornada56x   = "file://kernel-keymap.patch;patch=1 file://ipaq_sound_fix.patch;patch=1 "
 SRC_URI_append_mnci         = "file://devfs.patch;patch=1 \
                                file://mnci.patch;patch=1 \
                                file://mnci-touchscreen.patch;patch=1 \
@@ -104,8 +104,8 @@ EXTRA_OEMAKE = "-e"
 # add device flags here
 #
 EXTRA_DEFINES 			= "-DQT_QWS_TSLIB -DQT_QWS_CUSTOM -DWARNING_UNKNOWN_DEVICE"
-EXTRA_DEFINES_a780		= "-DQT_QWS_TSLIB -DQT_QWS_CUSTOM -DQT_QWS_IPAQ -DQT_QWS_EZX"
-EXTRA_DEFINES_e680		= "-DQT_QWS_TSLIB -DQT_QWS_CUSTOM -DQT_QWS_IPAQ -DQT_QWS_EZX"
+EXTRA_DEFINES_a780		= "-DQT_QWS_TSLIB -DQT_QWS_CUSTOM -DQT_QWS_IPAQ"
+EXTRA_DEFINES_e680		= "-DQT_QWS_TSLIB -DQT_QWS_CUSTOM -DQT_QWS_IPAQ"
 EXTRA_DEFINES_h1910 		= "-DQT_QWS_TSLIB -DQT_QWS_CUSTOM -DQT_QWS_IPAQ"
 EXTRA_DEFINES_h1940 		= "-DQT_QWS_TSLIB -DQT_QWS_CUSTOM -DQT_QWS_IPAQ"
 EXTRA_DEFINES_h2200 		= "-DQT_QWS_TSLIB -DQT_QWS_CUSTOM -DQT_QWS_IPAQ"
@@ -135,7 +135,7 @@ EXTRA_DEFINES_spitz		= "-DQT_QWS_TSLIB -DQT_QWS_CUSTOM -DQT_QWS_SL5XXX -DQT_QWS_
 EXTRA_DEFINES_akita             = "-DQT_QWS_TSLIB -DQT_QWS_CUSTOM -DQT_QWS_SL5XXX -DQT_QWS_SLC700 -DQT_QWS_SLCXK"
 EXTRA_DEFINES_collie 		= "-DQT_QWS_TSLIB -DQT_QWS_CUSTOM -DQT_QWS_SL5XXX"
 EXTRA_DEFINES_poodle		= "-DQT_QWS_TSLIB -DQT_QWS_CUSTOM -DQT_QWS_SL5XXX"
-EXTRA_DEFINES_tosa		= "-DQT_QWS_TSLIB                 -DQT_QWS_SL5XXX -DQT_QWS_SL6000"
+EXTRA_DEFINES_tosa		= "-DQT_QWS_TSLIB -DQT_QWS_CUSTOM -DQT_QWS_SL5XXX -DQT_QWS_SL6000"
 EXTRA_DEFINES_mnci 		= "                               -DQT_QWS_RAMSES                 -DQT_QWS_DEVFS"
 
 #
