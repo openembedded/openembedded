@@ -12,11 +12,15 @@ RDEPENDS = "python-codecs python-core python-lang python-re python-threading \
 RDEPENDS_append_dm7020 = " gst-plugin-ossaudio"
 RDEPENDS_append_dm7025 = " gst-plugin-alsa alsa-conf"
 
+# 'forward depends' - no two providers can have the same PACKAGES_DYNAMIC, however both
+# enigma2 and enigma2-plugins produce enigma2-plugin-*.
+DEPENDS += "enigma2-plugins"
+
 PACKAGES_DYNAMIC = "enigma2-plugin-*"
 
 PN = "enigma2"
 PR = "r0"
-SRCDATE = "20061109"
+SRCDATE = "20070116"
 PV = "1.0cvs${SRCDATE}"
 
 SRC_URI = "cvs://anonymous@dreamboxupdate.com/cvs;module=enigma2;method=pserver \
