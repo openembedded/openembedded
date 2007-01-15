@@ -1,9 +1,9 @@
 require busybox.inc
 
 DEFAULT_PREFERENCE = "-1"
+DEFAULT_PREFERENCE_slugos = "1"
 
-SRC_URI = "file://wget-long-options.patch;patch=1 \
-           file://defconfig"
+SRC_URI = "file://defconfig"
 
 do_configure () {
 	install -m 0644 ${WORKDIR}/defconfig ${S}/.config.oe
