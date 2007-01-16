@@ -9,7 +9,8 @@ FILES_${PN} = "${libexecdir}/notification-daemon \
 	${libdir}/notification-daemon-1.0/engines/libstandard.so \
 	${sysconfdir}/gconf/schemas/notification-daemon.schemas"
 
-SRC_URI =       "http://www.galago-project.org/files/releases/source/${PN}/${P}.tar.gz"
+SRC_URI = "http://www.galago-project.org/files/releases/source/${PN}/${P}.tar.gz \
+	file://dbus-glib-tool-prefix.patch;patch=1"
 EXTRA_OECONF =	"--disable-binreloc"
 
 inherit autotools pkgconfig
