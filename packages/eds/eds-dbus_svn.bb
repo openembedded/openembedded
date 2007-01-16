@@ -11,7 +11,9 @@ SRC_URI = "svn://svn.o-hand.com/repos/${PN};module=trunk;proto=http \
            file://no_libedataserverui-20060126.patch;patch=1;maxdate=20061214 \
            file://no_libedataserverui.patch;patch=1;mindate=20061215 \
            file://disable_orbit.patch;patch=1;maxdate=20061214 \
+           file://fix-bindig-tool.patch;patch=1 \
            file://iconv-detect.h"
+
 S = "${WORKDIR}/trunk"
 
 inherit autotools pkgconfig
