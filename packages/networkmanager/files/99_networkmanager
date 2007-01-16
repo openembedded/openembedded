@@ -1,1 +1,1 @@
-d root root 0700 /var/run/NetworkManager
+d root root 0700 /var/run/NetworkManager none
