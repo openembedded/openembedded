@@ -1,7 +1,7 @@
 SECTION = "console/network"
 DEPENDS = "virtual/db libpcre postfix-native"
 LICENSE = "IPL"
-PR = "r10"
+PR = "r11"
 
 SRC_URI = "ftp://ftp.porcupine.org/mirrors/postfix-release/official/postfix-${PV}.tar.gz \
 	   file://${FILESDIR}/makedefs.patch;patch=1 \
@@ -9,6 +9,7 @@ SRC_URI = "ftp://ftp.porcupine.org/mirrors/postfix-release/official/postfix-${PV
 	   file://main.cf_2.0 \
 	   file://volatiles \
 	   file://postfix \
+	   file://internal_recipient \
 	   "
 
 S = "${WORKDIR}/postfix-${PV}"
@@ -47,6 +48,7 @@ do_install () {
 	install -m 755 ${WORKDIR}/main.cf_2.0 ${D}${localstatedir}/tmp/main_cf.sh
         install -m 644 ${WORKDIR}/volatiles ${D}${sysconfdir}/default/volatiles/01_postfix
         install -m 755 ${WORKDIR}/postfix ${D}${sysconfdir}/init.d/postfix
+        install -m 644 ${WORKDIR}/internal_recipient ${D}${sysconfdir}/postfix/internal_recipient
 	mv ${D}${sbindir}/sendmail ${D}${sbindir}/sendmail.${PN}
 }
 
