@@ -19,7 +19,7 @@ PARALLEL_MAKE = ""
 
 #autoreconf breaks, so we'll skip that. The added advantage is that the patch to ./configure actually has effect
 do_configure() {
-	oe_runconf
+	oe_runconf COMPILED_BY="${MAINTAINER}"
 }
 
 PACKAGES += "${PN}-scenes ${PN}-ini ${PN}-icons ${PN}-scripts ${PN}-includes"

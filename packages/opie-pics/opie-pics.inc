@@ -2,13 +2,12 @@ DESCRIPTION = "Common Opie pictures usable from all applications"
 SECTION = "opie/base"
 PRIORITY = "optional"
 LICENSE = "GPL"
-PR = "r1"
+PR = "r2"
 
 S = "${WORKDIR}"
 
 SHIP_INLINE_PICS = "yes"
-INLINE_PICS_smallscreen = "pics/inline"
-INLINE_PICS_bigscreen = "pics-hires/inline"
+INLINE_PICS = '${@base_conditional("GUI_MACHINE_CLASS", "bigscreen", "pics-hires/inline", "pics/inline", d)}'
 
 do_install() {
 	install -d ${D}${palmtopdir}/pics/addressbook/
@@ -20,7 +19,7 @@ do_install() {
 	install -m 0664 pics/todo/*.png ${D}${palmtopdir}/pics/todo/	
 
 	if [ "${SHIP_INLINE_PICS}" == "yes" ]; then
-		install -m 0664 ${INLINE_PICS_${GUI_MACHINE_CLASS}}/*.png ${D}${palmtopdir}/pics/
+		install -m 0664 ${INLINE_PICS}/*.png ${D}${palmtopdir}/pics/
 	fi
 }
 

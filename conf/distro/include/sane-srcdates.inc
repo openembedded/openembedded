@@ -22,7 +22,7 @@ SRCDATE_xxf86vmext ?= "20060814"
 SRCDATE_contacts ?= "20060707"
 SRCDATE_dates ?= "20060707"
 SRCDATE_fstests ?= "20061122"
-SRCDATE_eds-dbus ?= "20061215"
+SRCDATE_eds-dbus ?= "20070115"
 SRCDATE_libmatchbox ?= "20060612"
 SRCDATE_libfakekey ?= "20051101"
 SRCDATE_matchbox-common ?= "20060612"
@@ -46,7 +46,7 @@ SRCDATE_gpesyncd ?= "20061128"
 
 # GNOME
 SRCDATE_gconf-dbus ?= "20060719"
-SRCDATE_gnome-vfs-dbus ?= "20060119"
+SRCDATE_gnome-vfs ?= "20060119"
 SRCDATE_gtkhtml2 ?= "20060323"
 
 #Misc apps, sorted by alphabet

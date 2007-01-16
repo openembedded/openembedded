@@ -6,7 +6,7 @@ DEPENDS = "zlib libxml2 expat time"
 
 PR = "r1"
 
-SRC_URI = "http://be.lunar-linux.org/lunar/cache/neon-${PV}.tar.gz"
+SRC_URI = "http://www.webdav.org/${PN}/${P}.tar.gz"
 
 inherit autotools binconfig lib_package
 
