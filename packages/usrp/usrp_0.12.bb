@@ -7,7 +7,7 @@ RDEPENDS = "python-core"
 PR = "r0"
 
 SRC_URI = "ftp://ftp.gnu.org/gnu/gnuradio/usrp-${PV}.tar.gz \
-#           file://usb11.patch;patch=1 \
+           file://usb11.patch;patch=1 \
            file://fix_compile_h.patch;patch=1;pnum=3 \
            file://install_test.patch;patch=1"
 
