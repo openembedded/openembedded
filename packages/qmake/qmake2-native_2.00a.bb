@@ -3,7 +3,7 @@ PRIORITY = "optional"
 HOMEPAGE = "http://www.trolltech.com"
 SECTION = "devel"
 LICENSE = "GPL QPL"
-PR = "r1"
+PR = "r2"
 
 QTVER = "qt-x11-opensource-src-4.1.1"
 
