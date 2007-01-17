@@ -7,7 +7,7 @@ DESCRIPTION = "Base X libs."
 FILES_${PN} += "${datadir}/X11/XKeysymDB ${datadir}/X11/XErrorDB"
 FILES_${PN}-locale += "${datadir}/X11/locale"
 PROVIDES = "x11"
-PR = "r4"
+PR = "r5"
 
 SRC_URI = "${XLIBS_MIRROR}/libX11-${PV}.tar.bz2 \
            file://errordb-keysymdb-path-fix.patch;patch=1 \
