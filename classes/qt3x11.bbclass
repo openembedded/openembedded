@@ -11,5 +11,5 @@ export OE_QMAKE_INCDIR_QT = "${QTDIR}/include"
 export OE_QMAKE_LIBDIR_QT = "${QTDIR}/lib"
 export OE_QMAKE_LIBS_QT = "qt"
 export OE_QMAKE_LIBS_X11 = "-lXext -lX11 -lm"
-
-
+export OE_QMAKE_LIBS_OPENGL = "-lGLU -lGL -lXmu"
+export OE_QMAKE_LIBS_OPENGL_QT = "-lGL -lXmu"
