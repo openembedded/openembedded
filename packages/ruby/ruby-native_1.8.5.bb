@@ -1,3 +1,2 @@
-include ruby_${PV}.bb
+require ruby.inc
 inherit native
-DEPENDS = ""
