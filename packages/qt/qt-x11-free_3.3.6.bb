@@ -3,9 +3,9 @@ SECTION = "x11/libs"
 PRIORITY = "optional"
 LICENSE = "GPL QPL"
 HOMEPAGE = "http://www.trolltech.com"
-DEPENDS = "uicmoc3-native freetype virtual/libx11 xft libxext libxrender libxrandr libxcursor mysql"
+DEPENDS = "uicmoc3-native freetype virtual/libx11 xft libxext libxrender libxrandr libxcursor mysql mesa"
 PROVIDES = "qt3x11"
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "ftp://ftp.trolltech.com/qt/source/qt-x11-free-${PV}.tar.bz2 \
 	   file://configure.patch;patch=1 \
