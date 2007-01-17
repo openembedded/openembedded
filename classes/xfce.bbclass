@@ -7,7 +7,13 @@
 HOMEPAGE = "http://www.xfce.org"
 LICENSE = "LGPL-2"
 
-SRC_URI = "http://www.us.xfce.org/archive/xfce-${PV}/src/${PN}-${PV}.tar.gz"
+def xfce_extension(ver):
+	ext = "gz"
+	if ver == "4.3.99.2":
+		ext = "bz2"
+	return ext
+
+SRC_URI = "http://www.us.xfce.org/archive/xfce-${PV}/src/${PN}-${PV}.tar.${@xfce_extension("${PV}")}"
 
 inherit autotools
 
