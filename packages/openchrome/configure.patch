@@ -1,0 +1,42 @@
+--- trunk/configure.ac	2007-01-16 16:58:44.000000000 +0000
++++ trunk/configure.ac	2007-01-16 18:09:26.000000000 +0000
+@@ -69,11 +69,11 @@
+ AC_HEADER_STDC
+ 
+ if test "$DRI" != no; then
+-        AC_CHECK_FILE([${sdkdir}/dri.h],
++        AC_CHECK_BUILD_FILE([${sdkdir}/dri.h],
+                       [have_dri_h="yes"], [have_dri_h="no"])
+-        AC_CHECK_FILE([${sdkdir}/sarea.h],
++        AC_CHECK_BUILD_FILE([${sdkdir}/sarea.h],
+                       [have_sarea_h="yes"], [have_sarea_h="no"])
+-        AC_CHECK_FILE([${sdkdir}/dristruct.h],
++        AC_CHECK_BUILD_FILE([${sdkdir}/dristruct.h],
+                       [have_dristruct_h="yes"], [have_dristruct_h="no"])
+ fi
+ 
+@@ -113,7 +113,7 @@
+ 
+ AM_CONDITIONAL(XVMC, test x$XVMC = xyes)
+ 
+-AC_CHECK_FILE([${sdkdir}/xf86Module.h],
++AC_CHECK_BUILD_FILE([${sdkdir}/xf86Module.h],
+               [have_xf86Module_h="yes"], [have_xf86Module_h="no"])
+ 
+ # Check the ABI_VIDEODRV_VERSION
+--- /dev/null	2003-09-15 14:40:47.000000000 +0100
++++ trunk/m4/check-build.m4	2007-01-16 18:07:37.000000000 +0000
+@@ -0,0 +1,13 @@
++# Check for the existence of FILE.
++AC_DEFUN([AC_CHECK_BUILD_FILE],
++[AS_VAR_PUSHDEF([ac_File], [ac_cv_file_$1])dnl
++AC_CACHE_CHECK([for $1], ac_File,
++[if test -r "$1"; then
++  AS_VAR_SET(ac_File, yes)
++else
++  AS_VAR_SET(ac_File, no)
++fi])
++AS_IF([test AS_VAR_GET(ac_File) = yes], [$2], [$3])[]dnl
++AS_VAR_POPDEF([ac_File])dnl
++])# AC_CHECK_BUILD_FILE
++
