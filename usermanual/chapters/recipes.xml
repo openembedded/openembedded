@@ -2420,8 +2420,8 @@ pkg_postinst_${PN}-rdisc6 () {
           <para>This class is used by daemons to register there init scripts
           with the init code.</para>
 
-          <para>Details are provided in the <xref linkend="recipes_initscripts" />
-          section.</para>
+          <para>Details are provided in the <xref
+          linkend="recipes_initscripts" /> section.</para>
         </listitem>
       </varlistentry>
 
@@ -2467,8 +2467,8 @@ pkg_postinst_${PN}-rdisc6 () {
           system will create a symlink to the correct alternative from one or
           more available on the system.</para>
 
-          <para>Details are provided in the <xref linkend="recipes_alternatives" />
-          section.</para>
+          <para>Details are provided in the <xref
+          linkend="recipes_alternatives" /> section.</para>
         </listitem>
       </varlistentry>
 
@@ -2601,6 +2601,27 @@ fi</screen></para>
           <para>Used to specify other packages that conflict with this
           package. Two packages that conflict cannot be installed at the same
           time.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>RREPLACES</term>
+
+        <listitem>
+          <para>Used to specify that the current package replaces an older
+          package with a different name. During package installing the package
+          that is being replaced will be removed since it is no longer needed
+          when this package is installed.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>RSUGGESTS</term>
+
+        <listitem>
+          <para>Used to provide a list of suggested packages to install. These
+          are packages that are related to and useful for the current package
+          but which are not actually required to use the package.</para>
         </listitem>
       </varlistentry>
 
@@ -2887,8 +2908,8 @@ do_configure() {
 
           <para>This is most commonly seen in existing recipes when settings
           the <emphasis role="bold">FILESDIR</emphasis> variable (as described
-          in the <xref linkend="recipes_filespath_dir" /> section). By obtaining
-          name of the recipe file itself, <emphasis
+          in the <xref linkend="recipes_filespath_dir" /> section). By
+          obtaining name of the recipe file itself, <emphasis
           role="bold">FILE</emphasis>, and then using os.path.dirname to strip
           the filename part:<screen>FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/make-${PV}"</screen>Note
           however that this is no longer required as <emphasis
