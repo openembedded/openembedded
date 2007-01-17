@@ -1,10 +1,10 @@
 DESCRIPTION = "Entrance is the Enlightenment login manager"
 LICENSE = "MIT"
 # can also use pam and crypt
-DEPENDS = "edb edb-native evas-x11 ecore-x11 edje esmart-x11 bash keylaunch detect-stylus xserver-common"
+DEPENDS = "evas-x11 ecore-x11 edje esmart-x11 bash keylaunch detect-stylus xserver-common"
 RDEPENDS += "bash keylaunch detect-stylus xserver-common glibc-gconv-iso8859-1 entrance-themes"
 HOMEPAGE = "http://www.enlightenment.org"
-PR = "r13"
+PR = "r14"
 
 inherit e update-rc.d
 
