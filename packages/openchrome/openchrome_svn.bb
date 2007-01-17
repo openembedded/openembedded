@@ -14,3 +14,7 @@ FILES_libviaXvMCPro-dbg = "${libdir}/.debug/libviaXvMCPro.so.*"
 DEPENDS = "xserver-xorg"
 
 inherit autotools xorg-module
+
+do_stage() {
+	autotools_stage_all
+}
