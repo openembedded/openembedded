@@ -11,6 +11,8 @@ SRC_URI = "${SOURCEFORGE_MIRROR}/cppunit/cppunit-${PV}.tar.gz"
 
 inherit autotools
 
+CXXFLAGS_powerpc += "-lstdc++"
+
 do_stage () {
 	autotools_stage_includes
 	cd ./src/cppunit/.libs/

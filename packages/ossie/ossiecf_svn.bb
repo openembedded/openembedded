@@ -1,10 +1,10 @@
-PR = "r0"
 DESCRIPTION = "OSSIE Core Framework"
 SECTION =  "libs"
 PRIORITY = "optional"
 LICENSE = "LGPL"
-
 DEPENDS = "xerces-c omniorb libtool-cross"
+PV = "0.0.0+svn${SRCDATE}"
+PR = "r0"
 
 S="${WORKDIR}/ossie"
 

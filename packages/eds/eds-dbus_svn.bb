@@ -1,7 +1,7 @@
 DESCRIPTION = "Evolution database backend server"
 HOMEPAGE = "http://projects.o-hand.com/eds"
 LICENSE = "LGPL"
-DEPENDS = "glib-2.0 gtk+ gconf dbus db gnome-common libglade virtual/libiconv zlib intltool"
+DEPENDS = "intltool-native glib-2.0 gtk+ gconf dbus db gnome-common libglade virtual/libiconv zlib intltool"
 
 PV = "1.4.0+svn${SRCDATE}"
 
@@ -11,7 +11,9 @@ SRC_URI = "svn://svn.o-hand.com/repos/${PN};module=trunk;proto=http \
            file://no_libedataserverui-20060126.patch;patch=1;maxdate=20061214 \
            file://no_libedataserverui.patch;patch=1;mindate=20061215 \
            file://disable_orbit.patch;patch=1;maxdate=20061214 \
+           file://fix-bindig-tool.patch;patch=1;maxdate=20061223 \
            file://iconv-detect.h"
+
 S = "${WORKDIR}/trunk"
 
 inherit autotools pkgconfig

@@ -4,8 +4,10 @@ SECTION = "libs"
 PRIORITY = "required"
 
 DEPENDS = "libtool-cross"
+RPROVIDES_${PN} = "jpeg"
 
-PR = "r5"
+
+PR = "r6"
 
 SRC_URI = "http://www.ijg.org/files/jpegsrc.v${PV}.tar.gz \
 	   file://debian.patch;patch=1 \

@@ -1,7 +1,7 @@
 Index: src/kernel/kernelkeyboard.cpp
 ===================================================================
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ src/kernel/kernelkeyboard.cpp	2006-04-01 23:42:35.154645456 +0200
++++ qte/src/kernel/kernelkeyboard.cpp	2006-04-01 23:42:35.154645456 +0200
 @@ -0,0 +1,701 @@
 +/*
 +
@@ -706,8 +706,8 @@ Index: src/kernel/kernelkeyboard.cpp
 +}
 Index: src/kernel/qkeyboard_qws.cpp
 ===================================================================
---- src/kernel/qkeyboard_qws.cpp.orig	2006-04-01 23:36:22.499297680 +0200
-+++ src/kernel/qkeyboard_qws.cpp	2006-04-01 23:38:19.913448016 +0200
+--- qte/src/kernel/qkeyboard_qws.cpp.orig	2006-04-01 23:36:22.499297680 +0200
++++ qte/src/kernel/qkeyboard_qws.cpp	2006-04-01 23:38:19.913448016 +0200
 @@ -45,15 +45,18 @@
  #include <ctype.h>
  
@@ -960,7 +960,7 @@ Index: src/kernel/qkeyboard_qws.cpp
 Index: src/kernel/keyboard_linux_to_qt.h
 ===================================================================
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ src/kernel/keyboard_linux_to_qt.h	2006-04-01 23:37:03.928999408 +0200
++++ qte/src/kernel/keyboard_linux_to_qt.h	2006-04-01 23:37:03.928999408 +0200
 @@ -0,0 +1,263 @@
 +/*
 + * Generated with a small python utility found at

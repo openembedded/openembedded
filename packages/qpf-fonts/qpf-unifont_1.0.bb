@@ -2,6 +2,7 @@ DESCRIPTION = "Unicode fonts - QPF Edition"
 LICENSE = "GPL QPL"
 SECTION = "opie/fonts"
 PRIORITY = "optional"
+RPROVIDES = "virtual/japanese-font"
 PACKAGE_ARCH = "all"
 PR = "r1"
 
