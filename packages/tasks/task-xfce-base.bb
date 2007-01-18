@@ -3,12 +3,13 @@
 # Released under the MIT license (see packages/COPYING)
 
 DESCRIPTION = "All packages required for an base XFCE installation"
+LICENSE = "MIT"
 ALLOW_EMPTY = "1"
 PACKAGES = "${PN}"
-PR = "r1"
+PR = "r2"
 
 RDEPENDS= "xfce-mcs-manager xfwm4 xfwm4-theme-default xfce-utils xfdesktop \
 	xfce4-panel xfce4-panel-plugins xfce-mcs-plugins xfwm4-mcs-plugins \
-	xfce-utils-mcs-plugins xfce4-panel-mcs-plugins \
+	xfce4-panel-mcs-plugins \
 	xfdesktop-mcs-plugins"
-LICENSE = "MIT"
+RRECOMMENDS = "xfce-utils-mcs-plugins"
