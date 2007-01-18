@@ -30,7 +30,7 @@ def main(argv = None):
                                 print "%s add %s" % (mtncmd, fileName)
                             else:
                                 print "%s drop -e %s" % (mtncmd, fileName)
-                        elif cmd == "add":
+                        elif cmd == "add" or cmd == "add_file" or cmd == "add_dir":
                             if reverse:
                                 print "%s drop -e %s" % (mtncmd, fileName)
                             else:
