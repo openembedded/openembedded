@@ -1,4 +1,4 @@
-RDEPENDS_${PN} += "patch diffstat bzip2"
+RDEPENDS_${PN} += "patch diffstat bzip2 util-linux"
 
 require quilt_${PV}.inc
 
