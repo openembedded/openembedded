@@ -1,5 +1,5 @@
 DESCRIPTION = "Task packages for the Angstrom distribution"
-PR = "r26"
+PR = "r27"
 ALLOW_EMPTY = "1"
 
 PACKAGE_ARCH = "${MACHINE_ARCH}"
@@ -52,6 +52,7 @@ RDEPENDS_angstrom-gpe-task-base := "\
     pango-module-basic-x \
     pango-module-basic-fc \
     ${@base_contains("COMBINED_FEATURES", "bluetooth", "gpe-bluetooth", "",d)} \
+    ${@base_contains("COMBINED_FEATURES", "bluetooth", "bluez-gnome", "",d)} \
     "
 
 RDEPENDS_angstrom-gpe-task-pim := "\
