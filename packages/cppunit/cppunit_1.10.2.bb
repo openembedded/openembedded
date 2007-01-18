@@ -9,7 +9,7 @@ SECTION = "devel"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/cppunit/cppunit-${PV}.tar.gz"
 
-inherit autotools
+inherit autotools binconfig
 
 CXXFLAGS_powerpc += "-lstdc++"
 
