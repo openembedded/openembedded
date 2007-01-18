@@ -1,7 +1,6 @@
 require busybox.inc
 
 DEFAULT_PREFERENCE = "-1"
-DEFAULT_PREFERENCE_slugos = "1"
 
 SRC_URI = "file://defconfig"
 
