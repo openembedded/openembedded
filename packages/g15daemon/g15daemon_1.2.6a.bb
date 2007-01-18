@@ -9,18 +9,18 @@ LICENSE = "GPLv2"
 SECTION = "console/utils"
 PRIORITY = "optional"
 DEPENDS = "libdaemon libg15"
-RDEPENDS = "kernel-module-uinput libg15"
-PR="r1"
+RDEPENDS = "libg15"
+RRECOMMENDS = "kernel-module-uinput"
+PR="r2"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/g15daemon/g15daemon-${PV}.tar.bz2"
 
 inherit autotools
 
-EXTRA_OECONF = "--disable-build-docs"
+EXTRA_OECONF = "--with-gnu-ld"
 
 do_stage () {
-        for i in libg15daemon_client/g15daemon_client.h; do
-                install -m 0644 ${S}/$i ${STAGING_INCDIR}/
-        done
+        install -d ${STAGING_INCDIR}/libg15daemon_client
+        install -m 0644 ${S}/libg15daemon_client/g15daemon_client.h ${STAGING_INCDIR}/libg15daemon_client/
 }
 
