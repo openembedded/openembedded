@@ -20,7 +20,6 @@ inherit autotools
 EXTRA_OECONF = "--with-gnu-ld"
 
 do_stage () {
-        install -d ${STAGING_INCDIR}/libg15daemon_client
-        install -m 0644 ${S}/libg15daemon_client/g15daemon_client.h ${STAGING_INCDIR}/libg15daemon_client/
+	autotools_stage_all
 }
 
