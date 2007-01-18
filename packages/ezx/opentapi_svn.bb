@@ -2,6 +2,7 @@ DESCRIPTION = "Open implementation of motorola's tapisrc"
 LICENSE = "GPLv2"
 
 PV = "0.0+svn${SRCDATE}"
+PR = "r1"
 
 SRC_URI = "svn://svn.openezx.org/trunk/src/userspace/;module=opentapi;proto=http \
            file://opentapi.init \
@@ -10,7 +11,7 @@ SRC_URI = "svn://svn.openezx.org/trunk/src/userspace/;module=opentapi;proto=http
 inherit update-rc.d
 
 INITSCRIPT_NAME = "opentapi"
-INITSCRIPT_PARAMS = "defaults"
+INITSCRIPT_PARAMS = "start 04 S ."
 
 
 S = "${WORKDIR}/${PN}"
