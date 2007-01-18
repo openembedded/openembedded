@@ -1,0 +1,11 @@
+--- freetype-2.2.1/builds/unix/freetype-config.in.orig	2006-07-10 10:51:47.000000000 +0100
++++ freetype-2.2.1/builds/unix/freetype-config.in	2006-07-10 10:52:27.000000000 +0100
+@@ -16,7 +16,7 @@
+ libdir=@libdir@
+ enable_shared=@enable_shared@
+ wl=@wl@
+-hardcode_libdir_flag_spec='@hardcode_libdir_flag_spec@'
++hardcode_libdir_flag_spec=''
+ 
+ usage()
+ {
