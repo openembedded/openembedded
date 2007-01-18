@@ -5,6 +5,7 @@
 DESCRIPTION="XFCE4 Settings manager."
 DEPENDS="libxfcegui4 libxfce4mcs"
 SECTION = "x11"
+PR = "r1"
 
 inherit xfce 
 
@@ -20,5 +21,5 @@ do_stage() {
 
 do_stage_append () {
 	install -d ${PKG_CONFIG_PATH}
-	install -m 0644 ${S}/xfce-mcs-manager/xfce-mcs-manager.pc ${PKG_CONFIG_PATH}/xfce-mcs-manager.pc
+	sed -e 's:${includedir}:${STAGING_INCDIR}:;' ${S}/xfce-mcs-manager/xfce-mcs-manager.pc >${PKG_CONFIG_PATH}/xfce-mcs-manager.pc
 }
