@@ -6,21 +6,24 @@ DESCRIPTION="XFCE4 Utilities"
 DEPENDS = "virtual/libx11 libxfcegui4 xfce-mcs-manager"
 inherit xfce
 
-FILES_${PN} += " /usr/share/xfce4/AUTHORS \
-        /usr/share/xfce4/BSD \
-        /usr/share/xfce4/COPYING \
-        /usr/share/xfce4/GPL \
-	/usr/share/xfce4/INFO \
-        /usr/share/xfce4/LGPL \
-        /usr/share/xfce4/AUTHORS.html \
-        /usr/share/xfce4/BSD.html \
-        /usr/share/xfce4/COPYING.html \
-        /usr/share/xfce4/GPL.html \
-	/usr/share/xfce4/INFO.html \
-        /usr/share/xfce4/LGPL.html"
+FILES_${PN} += " \ 
+        ${bindir}/* \
+        ${datadir}/dbus-1/* \
+        ${datadir}/xfce4/AUTHORS \
+        ${datadir}/xfce4/BSD \
+        ${datadir}/xfce4/COPYING \
+        ${datadir}/xfce4/GPL \
+	${datadir}/xfce4/INFO \
+        ${datadir}/xfce4/LGPL \
+        ${datadir}/xfce4/AUTHORS.html \
+        ${datadir}/xfce4/BSD.html \
+        ${datadir}/xfce4/COPYING.html \
+        ${datadir}/xfce4/GPL.html \
+	${datadir}/xfce4/INFO.html \
+        ${datadir}/xfce4/LGPL.html"
 
-PACKAGES += "${PN}-mcs-plugins"
-FILES_${PN}-mcs-plugins = "/usr/lib/xfce4/mcs-plugins/"
+PACKAGES =+ "${PN}-mcs-plugins"
+FILES_${PN}-mcs-plugins = "${libdir}/xfce4/mcs-plugins/"
 
 # NOTE:  This package takes a --with-browser for the default browser
 # NOTE:  Works with gdm also gtkhtml
