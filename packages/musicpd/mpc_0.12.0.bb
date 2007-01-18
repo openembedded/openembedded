@@ -4,7 +4,7 @@ LICENSE = "GPLv2"
 SECTION = "console/multimedia"
 PR = "r0"
 
-SRC_URI = "http://mercury.chem.pitt.edu/~shank/mpc-${PV}.tar.gz"
+SRC_URI = "http://www.musicpd.org/uploads/files/mpc-${PV}.tar.bz2"
 EXTRA_OECONF = "--with-iconv-libraries=${STAGING_LIBDIR} \
 		--with-iconv-includes=${STAGING_INCDIR}"
 
