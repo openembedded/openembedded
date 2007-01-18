@@ -12,7 +12,7 @@ scrnsaverproto bigreqsproto resourceproto fontsproto inputproto \
 xf86dgaproto videoproto compositeproto trapproto recordproto dmxproto \
 resourceproto xineramaproto xtrans evieext libxkbfile libxfont libxau \
 libfontenc libxdmcp libxxf86vm libxaw libxmu libxt libxpm libxext libx11 \
-libxkbui libxxf86misc libxi libdmx libxtst libxres mesa"
+libxkbui libxxf86misc libxi libdmx libxtst libxres mesa mkfontscale-native"
 
 RDEPENDS="rgb"
 
