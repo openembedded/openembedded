@@ -20,10 +20,15 @@ PACKAGES_DYNAMIC = "enigma2-plugin-*"
 
 PN = "enigma2"
 PR = "r0"
-SRCDATE = "20070116"
-PV = "1.0cvs${SRCDATE}"
+SRCDATE = "20070120"
 
-SRC_URI = "cvs://anonymous@dreamboxupdate.com/cvs;module=enigma2;method=pserver \
+REL_MAJOR="2"
+REL_MINOR="2"
+
+PV = "${REL_MAJOR}.${REL_MINOR}cvs${SRCDATE}"
+TAG = "enigma2_rel${REL_MAJOR}${REL_MINOR}"
+
+SRC_URI = "cvs://anonymous@dreamboxupdate.com/cvs;module=enigma2;method=pserver;tag=${TAG};date=${SRCDATE} \
            file://enigma2.sh"
 
 S = "${WORKDIR}/enigma2"
