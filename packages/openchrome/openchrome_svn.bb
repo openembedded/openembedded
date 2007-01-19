@@ -11,7 +11,7 @@ FILES_libviaXvMCPro-dev = "${libdir}/libviaXvMCPro.so ${libdir}/libviaXvMCPro.la
 FILES_libviaXvMC-dbg = "${libdir}/.debug/libviaXvMC.so.*"
 FILES_libviaXvMCPro-dbg = "${libdir}/.debug/libviaXvMCPro.so.*"
 
-DEPENDS = "xserver-xorg"
+DEPENDS = "xserver-xorg libxvmc"
 
 inherit autotools xorg-module
 
