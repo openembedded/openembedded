@@ -4,7 +4,7 @@ AUTHOR = "Lennart Poettering"
 SECTION = "libs/multimedia"
 LICENSE = "LGPL"
 
-DEPENDS = "liboil libsamplerate0 libsndfile1 libtool"
+DEPENDS = "liboil avahi libsamplerate0 libsndfile1 libtool"
 # optional
 DEPENDS += "alsa-lib"
 
