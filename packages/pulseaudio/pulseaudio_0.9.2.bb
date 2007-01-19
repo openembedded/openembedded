@@ -3,24 +3,35 @@ HOMEPAGE = "http://www.pulseaudio.org"
 AUTHOR = "Lennart Poettering"
 SECTION = "libs/multimedia"
 LICENSE = "LGPL"
+
 DEPENDS = "liboil libsamplerate0 libsndfile1 libtool"
 # optional
 DEPENDS += "alsa-lib"
-PR = "r1"
+
+PR = "r2"
 
 SRC_URI = "http://0pointer.de/lennart/projects/pulseaudio/pulseaudio-${PV}.tar.gz"
 
 inherit autotools
 
-EXTRA_OECONF = "--disable-lynx --without-x --without-glib --without-jack --with-alsa --with-oss"
+EXTRA_OECONF = "\
+                --disable-lynx \
+		--without-x \
+		--without-glib \
+		--without-jack \
+		--with-alsa \
+		--with-oss \
+		"
 
 PARALLEL_MAKE = ""
 
 LEAD_SONAME = "libpulse.so"
+
 PACKAGES =+ "${PN}-conf ${PN}-bin"
 PACKAGES_DYNAMIC = "pulseaudio-module-* pulseaudio-lib-*"
+
 FILES_${PN}-conf = "${sysconfdir}"
-FILES_${PN}-bin = "${bindir}"
+FILES_${PN}-bin = "${bindir}/*"
 
 python populate_packages_prepend() {
         #bb.data.setVar('PKG_pulseaudio', 'pulseaudio', d)
