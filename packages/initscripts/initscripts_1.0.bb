@@ -5,7 +5,7 @@ DEPENDS = "makedevs"
 DEPENDS_openzaurus = "makedevs virtual/kernel"
 RDEPENDS = "makedevs"
 LICENSE = "GPL"
-PR = "r83"
+PR = "r84"
 
 SRC_URI = "file://halt \
            file://ramdisk \
