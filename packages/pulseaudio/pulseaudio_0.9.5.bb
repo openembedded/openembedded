@@ -33,6 +33,12 @@ PACKAGES_DYNAMIC = "pulseaudio-module-* pulseaudio-lib-*"
 FILES_${PN}-conf = "${sysconfdir}"
 FILES_${PN}-bin = "${bindir}/*"
 
+CONFFILES_${PN}-conf = "\ 
+                       ${sysconfdir}/pulse/default.pa \
+		       ${sysconfdir}/pulse/daemon.conf \
+		       ${sysconfdir}/pulse/client.conf \
+		       "
+
 python populate_packages_prepend() {
         #bb.data.setVar('PKG_pulseaudio', 'pulseaudio', d)
 
