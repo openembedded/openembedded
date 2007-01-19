@@ -141,6 +141,7 @@ else
     test `uname -m` = s390 && spinner="" # This should go away
     test "$VERBOSE" != no && echo "Checking root filesystem..."
     fsck $spinner $force $fix /
+    RTC=$?
     #
     # If there was a failure, drop into single-user mode.
     #
