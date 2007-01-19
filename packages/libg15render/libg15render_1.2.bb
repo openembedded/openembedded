@@ -13,9 +13,6 @@ inherit autotools
 EXTRA_OECONF = "--with-gnu-ld"
 
 do_stage () {
-        oe_libinstall -a -so libg15render ${STAGING_LIBDIR}
-        for i in libg15render.h; do
-                install -m 0644 ${S}/$i ${STAGING_INCDIR}/
-        done
+	autotools_stage_all
 }
 
