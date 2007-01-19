@@ -3,11 +3,11 @@ Cross Compile fixes:
     let us define those.
 
 
-Index: nbd-2.8.4/configure.ac
+Index: nbd-2.8.7/configure.ac
 ===================================================================
---- nbd-2.8.4.orig/configure.ac	2006-02-26 15:52:03.000000000 +0100
-+++ nbd-2.8.4/configure.ac	2006-05-25 21:35:26.000000000 +0200
-@@ -68,7 +68,8 @@
+--- nbd-2.8.7.orig/configure.ac	2006-10-17 19:42:11.000000000 +0200
++++ nbd-2.8.7/configure.ac	2007-01-19 14:19:09.000000000 +0100
+@@ -68,15 +68,16 @@
                man8_MANS=nbd-client.8
  	      AC_MSG_RESULT(yes)
                ;;
@@ -17,21 +17,20 @@ Index: nbd-2.8.4/configure.ac
  esac
  AC_MSG_CHECKING(where to find a working nbd.h)
  dnl We need to check for NBD_CMD_DISC, but that's part of an enum, it is not
-@@ -82,8 +83,8 @@
- [int foo=NBD_CMD_DISC], 
-   [AC_DEFINE(NBD_H_LOCAL, 1, Set to 1 if a (kernel 2.6) nbd.h can be found in the current directory)
-     NBD_H='"nbd.h"'],
--  AC_TRY_COMPILE([#define u32 int
+ dnl #define'd. Therefore, we check for something which is differently #define'd
+ dnl in the old or new versions, even if we don't really care about that.
+ dnl This might break at some time, but it should work for now, so...
+-AC_TRY_COMPILE([#define u32 int
 -#define u64 int
-+  AC_TRY_COMPILE([#define __u32 int
++AC_TRY_COMPILE([#define __u32 int
 +#define __u64 int
- #include <linux/nbd.h>
-   ],
- [int foo=NBD_CMD_DISC],
-Index: nbd-2.8.4/cliserv.h
+ #define __be32 int
+ #define __be64 int
+ #include "nbd.h"
+Index: nbd-2.8.7/cliserv.h
 ===================================================================
---- nbd-2.8.4.orig/cliserv.h	2006-01-06 18:02:03.000000000 +0100
-+++ nbd-2.8.4/cliserv.h	2006-05-25 21:41:25.000000000 +0200
+--- nbd-2.8.7.orig/cliserv.h	2006-10-17 19:29:12.000000000 +0200
++++ nbd-2.8.7/cliserv.h	2007-01-19 14:17:15.000000000 +0100
 @@ -17,20 +17,26 @@
  
  #if SIZEOF_UNSIGNED_SHORT_INT==4
