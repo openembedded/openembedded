@@ -1,7 +1,7 @@
 SECTION = "x11/libs"
 inherit gpe
 LICENSE = "LGPL"
-DEPENDS = "esound-gpe"
+DEPENDS = "esound"
 
 do_stage() {
 	install -d ${STAGING_INCDIR}/gpe

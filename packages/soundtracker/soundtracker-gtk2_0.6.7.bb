@@ -1,5 +1,5 @@
 DESCRIPTION = "Music composition program in the style of AMIGA Impulse Tracker"
-DEPENDS = "gtk+ libgnomeui audiofile esound-gpe alsa-lib"
+DEPENDS = "gtk+ libgnomeui audiofile esound alsa-lib"
 LICENSE = "GPL"
 SECTION = "x11/multimedia"
 PR = "r1"
