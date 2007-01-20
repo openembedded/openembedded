@@ -9,6 +9,9 @@ SRC_URI = "http://www.mythtv.org/mc/mythtv-${PV}.tar.bz2 \
 	file://configure.patch;patch=1 \
 	file://libmyth-libdir.patch;patch=1"
 
+# Seen on the mythtv web page:
+# http://www.mythtv.org/mc/fix-mythweb-in-0.20.diff;patch=1
+
 inherit qmake qt3x11
 
 # there is a -march=586 somewhere in the source tree
