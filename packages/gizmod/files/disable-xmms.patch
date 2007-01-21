@@ -1,0 +1,113 @@
+Index: gizmod-2.3/configure.ac
+===================================================================
+--- gizmod-2.3.orig/configure.ac
++++ gizmod-2.3/configure.ac
+@@ -393,60 +393,6 @@ fi
+ 
+ ###########################################################################
+ ##
+-## Check whether to build XMMS plugin
+-##
+-
+-##################
+-## enabled?
+-########
+-
+-AC_MSG_CHECKING(Whether or not to build XMMS plugin)
+-AC_ARG_ENABLE(xmms,
+-              [  --enable-xmms           build XMMS plugin                    <default = yes>],
+-              [enable_xmms="$enableval"], enable_xmms=yes)
+-AC_MSG_RESULT($enable_xmms)
+-
+-AM_CONDITIONAL(BUILD_EXTERNALPLUGIN_XMMS, test x$enable_xmms = xyes)
+-AM_CONDITIONAL(BUILD_PLUGIN_XMMSCONTROL, test x$enable_xmms = xyes)
+-
+-##################
+-## can we build it if it's enabled?
+-########
+-
+-if test "$enable_xmms" == "yes"; then
+-
+-XMMS_CFLAGS=""
+-XMMS_LIBS=""
+-
+-#check stuff
+-
+-AM_PATH_XMMS(1.2.4,
+-	XMMS_CFLAGS=`xmms-config --cflags`
+-	CPPFLAGS="$CPPFLAGS $XMMS_CFLAGS"
+-	XMMS_LIBS=`xmms-config --libs`
+-	,
+-	AC_MSG_ERROR([You must have the XMMS development headers installed to build the XMMS plugin!])
+-)
+-
+-AC_CHECK_HEADER(xmms/xmmsctrl.h, [
+-	AC_DEFINE(HAVE_XMMSCTRL_H, 1, [Has xmms/xmmsctrl.h])
+-	], [
+-	AC_MSG_ERROR([Cannot find xmmsctrl.h!])
+-	])
+-	
+-AC_CHECK_HEADER(xmms/plugin.h, [
+-	AC_DEFINE(HAVE_XMMSPLUGIN_H, 1, [Has xmms/xmmsplugin.h])
+-	], [
+-	AC_MSG_ERROR([Cannot find xmms/plugin.h!])
+-	])
+-
+-AC_SUBST(XMMS_CFLAGS)
+-AC_SUBST(XMMS_LIBS)
+-
+-fi
+-
+-###########################################################################
+-##
+ ## Check whether to build Sound Visualization plugin
+ ##
+ 
+@@ -691,10 +637,8 @@ AC_CONFIG_FILES([
+ 	plugins/soundVisualization/Makefile
+ 	plugins/cpuUsage/Makefile
+ 	plugins/x11/Makefile
+-	plugins/xmmsControl/Makefile
+ 	plugins/bmpControl/Makefile
+ 	plugins/externalPlugins/Makefile
+-	plugins/externalPlugins/xmms/Makefile
+ 	plugins/externalPlugins/bmp/Makefile
+ 	plugins/lirc/Makefile
+ ])
+@@ -774,22 +718,10 @@ else
+ 	echo "          BMP Control plugin: Disabled"
+ fi
+ 
+-if test "$enable_xmms" == "yes"; then
+-	echo "         XMMS Control plugin: Enabled"
+-else
+-	echo "         XMMS Control plugin: Disabled"
+-fi
+-
+ if test "$enable_bmp" == "yes"; then
+ 	echo "    BMP Visualization plugin: Enabled"
+ else
+ 	echo "    BMP Visualization plugin: Disabled"
+ fi
+ 
+-if test "$enable_xmms" == "yes"; then
+-	echo "   XMMS Visualization plugin: Enabled"
+-else
+-	echo "   XMMS Visualization plugin: Disabled"
+-fi
+-
+ echo
+Index: gizmod-2.3/plugins/Makefile.am
+===================================================================
+--- gizmod-2.3.orig/plugins/Makefile.am
++++ gizmod-2.3/plugins/Makefile.am
+@@ -1 +1 @@
+-SUBDIRS=scriptingPlugins powermate alsaMixer xosd generic externalPlugins soundVisualization cpuUsage x11 xmmsControl bmpControl lirc
++SUBDIRS=scriptingPlugins powermate alsaMixer xosd generic externalPlugins soundVisualization cpuUsage x11 bmpControl lirc
+Index: gizmod-2.3/plugins/externalPlugins/Makefile.am
+===================================================================
+--- gizmod-2.3.orig/plugins/externalPlugins/Makefile.am
++++ gizmod-2.3/plugins/externalPlugins/Makefile.am
+@@ -1 +1 @@
+-SUBDIRS=xmms bmp
++SUBDIRS=bmp
