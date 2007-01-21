@@ -5,8 +5,9 @@ MAINTAINER = "Justin Patrin <papercrane@reversefold.com>"
 SECTION = "console/multimedia"
 DEPENDS = "python x11"
 SRC_URI = "${SOURCEFORGE_MIRROR}/gizmod/gizmod-${PV}.tar.bz2 \
+           file://disable-xmms.patch;patch=1 \
            file://fix-python-configure.patch;patch=1 \
-           file://disable-xmms.patch;patch=1"
+           file://disable-bmp.patch;patch=1"
 
 PR = "r0"
 
