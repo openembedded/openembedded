@@ -19,5 +19,5 @@ do_configure_prepend() {
     sed -i 's/TARGET_SYS/${TARGET_SYS}/' ${S}/configure.ac
 }
 
-FILES_${PN} += "${datadir}/gizmo/plugins/*.so ${datadir}/gizmo/plugins/*.so.*"
+FILES_${PN} += "${datadir}/gizmo/scripts ${datadir}/gizmo/plugins/*.so ${datadir}/gizmo/plugins/*.so.*"
 FILES_${PN}-dev += "${datadir}/gizmo/plugins/*.a ${datadir}/gizmo/plugins/*.la"
