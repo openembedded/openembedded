@@ -3158,7 +3158,7 @@ do_configure() {
     commands such as <emphasis role="bold">/bin/ls</emphasis> and <emphasis
     role="bold">/bin/find</emphasis>, which are also provided by other
     packages such as coreutils (<emphasis role="bold">/bin/ls</emphasis>) and
-    findutils (<emphasis role="bold">/bin/find</emphasis>). </para>
+    findutils (<emphasis role="bold">/bin/find</emphasis>).</para>
 
     <para>A system for handling alternatives is required to allow the user to
     choose which version of the command they wish to have installed. It should
@@ -3174,7 +3174,7 @@ do_configure() {
     visible effect to the user. In some situations users may have interactive
     access, or they may be more advanced users who want shell access on
     appliances that normal don't provide it, and in these cases they should be
-    able to install the full functional version if they desire. </para>
+    able to install the full functional version if they desire.</para>
 
     <section>
       <title>Example of alternative commands</title>
@@ -3216,7 +3216,7 @@ which find
 
       <orderedlist>
         <listitem>
-          <para>Via the <xref linkend="update_alternatives-class" />. This is
+          <para>Via the <xref linkend="update-alternatives_class" />. This is
           the simplest method, but is not usable in all situations.</para>
         </listitem>
 
@@ -3225,13 +3225,13 @@ which find
         </listitem>
       </orderedlist>
 
-      <para>The <xref linkend="update_alternatives-class" /> is the provides
+      <para>The <xref linkend="update-alternatives_class" /> is the provides
       the simplest method of using alternatives but it only works for a single
       alternative. For multiple alternatives they need to be manually
       registered during post install.</para>
 
       <para>Full details on both methods is provided in the <xref
-      linkend="update_alternatives-class" /> section of the reference
+      linkend="update-alternatives_class" /> section of the reference
       manual.</para>
     </section>
   </section>
@@ -3266,9 +3266,12 @@ which find
     all contents of the <emphasis role="bold">/var</emphasis> directory is
     lost when the device is powered off or restarted. Therefore special
     handling of <emphasis role="bold">/var</emphasis> is required in all
-    packages to ensure that they don't restrict the options available to
-    individual distributions. This special handling is provided via the
-    populate-volatiles.sh script.</para>
+    packages. Even if your distrubution does not use a tmpfs based <emphasis
+    role="bold">/var</emphasis> you need to assume it does when creating
+    packages to ensure the package can be used on those distributions that do
+    use a tmpfs based <emphasis role="bold">/var</emphasis>. This special
+    handling is provided via the <emphasis
+    role="bold">populate-volatiles.sh</emphasis> script.</para>
 
     <note>
       <para>If your package requires any files, directories or symlinks in
