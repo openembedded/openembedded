@@ -31,6 +31,8 @@ FILES_mythtv-data = "${datadir}"
 RDEPENDS_${PN} = "mythtv-backend mythtv-frontend mythtv-bin mythtv-filters mythtv-data"
 ALLOW_EMPTY_${PN} = "1"
 
+PACKAGES_DYNAMIC = "mythtv-theme-*"
+
 python __anonymous () {
     import bb
 
