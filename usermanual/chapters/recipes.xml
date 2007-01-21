@@ -152,6 +152,26 @@ VAR2 = "The version is ${PV}"</screen></para>
       </varlistentry>
 
       <varlistentry>
+        <term>Conditional assignment</term>
+
+        <listitem>
+          <para>Conditional assignement is used to assign a value to a
+          variable, but only when the variable is currently unset. This is
+          commonly used to provide a default value for use when no specific
+          definition is provided by the machine or distro configuration of the
+          users local.conf configuration.</para>
+
+          <para>The following example:<screen>VAR1 ?= "New value"</screen>will
+          set <emphasis role="bold">VAR1</emphasis> to <emphasis>"New
+          value"</emphasis> if its currently empty. However if it was already
+          set it would be unchanged. In the following <emphasis
+          role="bold">VAR1</emphasis> is left with the value
+          <emphasis>"Original value"</emphasis>:<screen>VAR1 = "Original value"
+VAR1 ?= "New value"</screen></para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
         <term>Appending: +=</term>
 
         <listitem>
@@ -3133,17 +3153,87 @@ do_configure() {
     <title>Alternatives: How to handle the same command in multiple
     packages</title>
 
-    <para>This section is to be completed.</para>
+    <para>Alternatives are used when the same command is provided by multiple
+    packages. A classic example is busybox, which provides a whole set of
+    commands such as <emphasis role="bold">/bin/ls</emphasis> and <emphasis
+    role="bold">/bin/find</emphasis>, which are also provided by other
+    packages such as coreutils (<emphasis role="bold">/bin/ls</emphasis>) and
+    findutils (<emphasis role="bold">/bin/find</emphasis>). </para>
 
-    <itemizedlist>
-      <listitem>
-        <para>why you should care</para>
-      </listitem>
+    <para>A system for handling alternatives is required to allow the user to
+    choose which version of the command they wish to have installed. It should
+    be possible to install either one, or both, or remove one when both are
+    installed etc, and to have no issues with the packages overwriting files
+    from other packages.</para>
 
-      <listitem>
-        <para>using alternatives</para>
-      </listitem>
-    </itemizedlist>
+    <para>The most common reason for alternatives is to reduce the size of the
+    binaries. But cutting down on features, built in help and error messages
+    and combining multiple binaries into one large binary it's possible to
+    save considerable space. Often users are not expected to use the commands
+    interactively in embedded appliances and therefore these changes have no
+    visible effect to the user. In some situations users may have interactive
+    access, or they may be more advanced users who want shell access on
+    appliances that normal don't provide it, and in these cases they should be
+    able to install the full functional version if they desire. </para>
+
+    <section>
+      <title>Example of alternative commands</title>
+
+      <para>Most distributions include busybox in place of the full featured
+      version of the commands. The following example shows a typical install
+      in which the find command, which we'll use as an example here, is the
+      busybox version:<screen>root@titan:~$ find --version
+find --version
+BusyBox v1.2.1 (2006.12.17-05:10+0000) multi-call binary
+
+Usage: find [PATH...] [EXPRESSION]
+
+root@titan:~$ which find
+which find
+/usr/bin/find</screen>If we now install the full version of find:<screen>root@titan:~$ ipkg install findutils
+ipkg install findutils
+Installing findutils (4.2.29-r0) to root...
+Downloading http://nynaeve.twibble.org/ipkg-titan-glibc//./findutils_4.2.29-r0_sh4.ipk
+Configuring findutils
+
+update-alternatives: Linking //usr/bin/find to find.findutils
+update-alternatives: Linking //usr/bin/xargs to xargs.findutils</screen></para>
+
+      <para>Then we see that the standard version of find changes to the full
+      featured implement ion:<screen>root@titan:~$ find --version
+find --version
+GNU find version 4.2.29
+Features enabled: D_TYPE O_NOFOLLOW(enabled) LEAF_OPTIMISATION
+root@titan:~$ which find
+which find
+/usr/bin/find</screen></para>
+    </section>
+
+    <section>
+      <title>Using update-alternatives</title>
+
+      <para>Two methods of using the alternatives system are available:</para>
+
+      <orderedlist>
+        <listitem>
+          <para>Via the <xref linkend="update_alternatives-class" />. This is
+          the simplest method, but is not usable in all situations.</para>
+        </listitem>
+
+        <listitem>
+          <para>Via directly calling the update-alternatives command.</para>
+        </listitem>
+      </orderedlist>
+
+      <para>The <xref linkend="update_alternatives-class" /> is the provides
+      the simplest method of using alternatives but it only works for a single
+      alternative. For multiple alternatives they need to be manually
+      registered during post install.</para>
+
+      <para>Full details on both methods is provided in the <xref
+      linkend="update_alternatives-class" /> section of the reference
+      manual.</para>
+    </section>
   </section>
 
   <section id="recipes_volatiles" xreflabel="volatiles">
