@@ -1,0 +1,105 @@
+Index: gizmod-2.3/configure.ac
+===================================================================
+--- gizmod-2.3.orig/configure.ac
++++ gizmod-2.3/configure.ac
+@@ -319,76 +319,6 @@ fi
+ 
+ ###########################################################################
+ ##
+-## Check whether to build BMP plugin
+-##
+-
+-##################
+-## enabled?
+-########
+-
+-AC_MSG_CHECKING(Whether or not to build BMP plugin)
+-AC_ARG_ENABLE(bmp,
+-              [  --enable-bmp            build BMP plugin                     <default = no>],
+-              [enable_bmp="$enableval"], enable_bmp=no)
+-AC_MSG_RESULT($enable_bmp)
+-
+-AM_CONDITIONAL(BUILD_EXTERNALPLUGIN_BMP, test x$enable_bmp = xyes)
+-AM_CONDITIONAL(BUILD_PLUGIN_BMPCONTROL, test x$enable_bmp = xyes)
+-
+-##################
+-## can we build it if it's enabled?
+-########
+-
+-if test "$enable_bmp" == "yes"; then
+-
+-BEEP_CFLAGS=""
+-BEEP_LIBS=""
+-
+-#check stuff	
+-AM_PATH_GLIB_2_0(2.4.0, , 
+-	AC_MSG_ERROR([GTK+ >= 2.4.0 not installed - required for BMP plugin]))
+-AM_PATH_GTK_2_0(2.4.0, , 
+-	AC_MSG_ERROR([GTK+ >= 2.4.0 not installed - required for BMP plugin]))
+-
+-dnl check for beep
+-PKG_CHECK_MODULES(BEEP, [ bmp >= 0.9.7], , 
+-	AC_MSG_ERROR("You need the BEEP development files to build the BEEP plugin!"))
+-
+-BEEP_PLUGIN_DIR="`$PKG_CONFIG --variable=output_plugin_dir bmp`"
+-BEEP_INPUT_PLUGIN_DIR="`$PKG_CONFIG --variable=input_plugin_dir bmp`"
+-BEEP_OUTPUT_PLUGIN_DIR="`$PKG_CONFIG --variable=output_plugin_dir bmp`"
+-BEEP_GENERAL_PLUGIN_DIR="`$PKG_CONFIG --variable=general_plugin_dir bmp`"
+-BEEP_VISUALIZATION_PLUGIN_DIR="`$PKG_CONFIG --variable=visualization_plugin_dir bmp`"
+-BEEP_EFFECT_PLUGIN_DIR="`$PKG_CONFIG --variable=effect_plugin_dir bmp`"
+-BEEP_DATA_DIR="`$PKG_CONFIG --variable=data_dir bmp`"
+-
+-AC_SUBST(BEEP_PLUGIN_DIR)
+-AC_SUBST(BEEP_INPUT_PLUGIN_DIR)
+-AC_SUBST(BEEP_OUTPUT_PLUGIN_DIR)
+-AC_SUBST(BEEP_GENERAL_PLUGIN_DIR)
+-AC_SUBST(BEEP_VISUALIZATION_PLUGIN_DIR)
+-AC_SUBST(BEEP_EFFECT_PLUGIN_DIR)
+-AC_SUBST(BEEP_DATA_DIR)
+-	
+-dnl make BEEP_DATA_DIR a variable in config.h
+-AH_TEMPLATE(BEEP_DATA_DIR, "Path to bmp-touch.config")
+-AC_DEFINE_UNQUOTED(BEEP_DATA_DIR, "$BEEP_DATA_DIR")
+-	
+-CPPFLAGS="$CPPFLAGS $BEEP_CFLAGS"
+-
+-AC_CHECK_HEADER(bmp/beepctrl.h, [
+-	AC_DEFINE(HAVE_BEEPCTRL_H, 1, [Has bmp/beepctrl.h])
+-	], [
+-	AC_MSG_ERROR([Cannot find beepctrl.h!])
+-	])
+-	
+-AC_SUBST(BEEP_CFLAGS)
+-AC_SUBST(BEEP_LIBS)
+-
+-fi
+-
+-###########################################################################
+-##
+ ## Check whether to build Sound Visualization plugin
+ ##
+ 
+@@ -633,9 +563,7 @@ AC_CONFIG_FILES([
+ 	plugins/soundVisualization/Makefile
+ 	plugins/cpuUsage/Makefile
+ 	plugins/x11/Makefile
+-	plugins/bmpControl/Makefile
+ 	plugins/externalPlugins/Makefile
+-	plugins/externalPlugins/bmp/Makefile
+ 	plugins/lirc/Makefile
+ ])
+ AC_OUTPUT
+Index: gizmod-2.3/plugins/Makefile.am
+===================================================================
+--- gizmod-2.3.orig/plugins/Makefile.am
++++ gizmod-2.3/plugins/Makefile.am
+@@ -1 +1 @@
+-SUBDIRS=scriptingPlugins powermate alsaMixer xosd generic externalPlugins soundVisualization cpuUsage x11 bmpControl lirc
++SUBDIRS=scriptingPlugins powermate alsaMixer xosd generic externalPlugins soundVisualization cpuUsage x11 lirc
+Index: gizmod-2.3/plugins/externalPlugins/Makefile.am
+===================================================================
+--- gizmod-2.3.orig/plugins/externalPlugins/Makefile.am
++++ gizmod-2.3/plugins/externalPlugins/Makefile.am
+@@ -1 +1 @@
+-SUBDIRS=bmp
++SUBDIRS=

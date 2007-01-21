@@ -1,0 +1,17 @@
+Index: gizmod-2.3/configure.ac
+===================================================================
+--- gizmod-2.3.orig/configure.ac
++++ gizmod-2.3/configure.ac
+@@ -162,11 +162,7 @@ CFLAGS="$PYTHON_INC $CFLAGS"
+ #	AC_MSG_ERROR([Cannot find python.h!])
+ #	])
+ 
+-AC_CHECK_FILE(${py_prefix}/include/python${py_ver}/Python.h, [
+-	AC_DEFINE(HAVE_PYTHON_H, 1, [Has Python.h])
+-	], [
+-	AC_MSG_ERROR([Cannot find Python.h!])
+-	])
++AC_DEFINE(HAVE_PYTHON_H, 1, [Has Python.h])
+ 
+ CFLAGS="$OLD_CFLAGS"
+ 	
