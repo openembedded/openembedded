@@ -6,7 +6,7 @@ PR = "r1"
 inherit gpe autotools
 
 DESCRIPTION = "Starling audio player for GPE"
-DEPENDS = "gtk+ libgpewidget gstreamer gst-plugins-good gst-plugins-bad esound-gpe"
+DEPENDS = "gtk+ libgpewidget gstreamer gst-plugins-good gst-plugins-bad esound"
 RDEPENDS = "esd \
 	gst-plugins \
 	gst-plugin-audio \

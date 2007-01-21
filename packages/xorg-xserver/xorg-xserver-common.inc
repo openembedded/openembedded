@@ -27,13 +27,17 @@ inherit autotools pkgconfig
 
 EXTRA_OECONF = "--disable-builddocs"
 
-PACKAGES =+ "${PN}-xprint ${PN}-xvfb ${PN}-utils"
+PACKAGES =+ "${PN}-xprint ${PN}-xvfb ${PN}-utils ${PN}-xnest ${PN}-dmx"
 
-FILES_${PN}-xprint = "${libdir}/X11/xserver/*/print"
+FILES_${PN}-xprint = "${libdir}/X11/xserver/*/print ${bindir}/Xprt"
 FILES_${PN}-xvfb = "${bindir}/Xvfb"
+FILES_${PN}-xnest = "${bindir}/Xnest"
+FILES_${PN}-dmx = "${bindir}/Xdmx ${bindir}/dmx* ${bindir}/xdmxconfig ${bindir}/xdmx ${bindir}/vdltodmx"
 FILES_${PN}-utils = "${bindir}/scanpci ${bindir}/pcitweak ${bindir}/ioport ${bindir}/in[bwl] ${bindir}/out[bwl] ${bindir}/mmap[rw] ${bindir}/gtf ${bindir}/getconfig ${bindir}/getconfig.pl"
-FILES_${PN} = "${bindir} ${libdir}/X11/Options ${libdir}/X11/Cards ${libdir}/X11/getconfig ${libdir}/X11/etc ${libdir}/xserver/SecurityPolicy ${libdir}/modules ${libdir}/xorg/modules /etc/X11 "
+FILES_${PN} = "${bindir} ${libdir}/X11/Options ${libdir}/X11/Cards ${libdir}/X11/getconfig ${libdir}/X11/etc ${libdir}/xserver/SecurityPolicy ${libdir}/xorg/modules/*.so ${libdir}/xorg/modules/*/*.so /etc/X11"
 FILES_${PN}-doc += "${libdir}/X11/doc /usr/share/X11/xkb/compiled/README.compiled"
+FILES_${PN}-dbg += "${libdir}/xorg/modules/.debug ${libdir}/xorg/modules/*/.debug"
+FILES_${PN}-dev += "${libdir}/xorg/modules/*.la ${libdir}/xorg/modules/*/*.la"
 
 do_stage() {
 	autotools_stage_all

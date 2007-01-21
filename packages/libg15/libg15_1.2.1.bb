@@ -4,16 +4,15 @@ LICENSE = "GPLv2"
 SECTION = "libs"
 PRIORITY = "optional"
 DEPENDS = "libusb"
-PR = "r2"
+PR = "r3"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/g15tools/libg15-${PV}.tar.bz2"
 
 inherit autotools
 
+EXTRA_OECONF = "--with-gnu-ld"
+
 do_stage () {
-        oe_libinstall -a -so libg15 ${STAGING_LIBDIR}
-        for i in libg15.h; do
-                install -m 0644 ${S}/$i ${STAGING_INCDIR}/
-        done
+	autotools_stage_all
 }
 

@@ -1,8 +1,7 @@
-PV = "1.8"
+PV = "1.9"
 PR = "r0"
 
-DEPENDS = "xfonts-xorg"
-RDEPENDS_${PN} = "xfonts-xorg"
+RDEPENDS_${PN} = "font-misc-misc"
 LICENSE = "MIT"
 SRC_URI = "file://tftp.sh file://xorg.conf"
 

@@ -10,10 +10,16 @@ SECTION = "console/utils"
 PRIORITY = "optional"
 DEPENDS = "libdaemon libg15"
 RDEPENDS = "libg15"
+RRECOMMENDS = "kernel-module-uinput"
+PR="r2"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/g15daemon/g15daemon-${PV}.tar.bz2"
 
 inherit autotools
 
-EXTRA_OECONF = "--disable-build-docs"
+EXTRA_OECONF = "--with-gnu-ld"
+
+do_stage () {
+	autotools_stage_all
+}
 

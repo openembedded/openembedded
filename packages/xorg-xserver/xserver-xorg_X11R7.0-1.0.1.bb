@@ -1,5 +1,7 @@
 require xorg-xserver-common.inc
 
+PR = "r1"
+
 #DESCRIPTION = ""
 
 #DEPENDS += " "

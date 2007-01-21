@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # dont handle non-wireless interfaces 
-if [ -n `cat /proc/net/wireless|grep $IFACE` ]; then 
+if [ -n "`cat /proc/net/wireless|grep $IFACE`" ]; then 
     exit 0 
 fi 
                                                        

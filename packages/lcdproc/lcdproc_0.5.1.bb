@@ -4,7 +4,7 @@ HOMEPAGE = "http://lcdproc.org"
 LICENSE = "GPL"
 PRIORITY = "optional"
 SECTION = "utils"
-PR="r1"
+PR="r2"
 
 DEPENDS = "libusb ncurses libg15 g15daemon libg15render"
 RRECOMMENDS_lcdproc = "lcdd"
@@ -13,7 +13,7 @@ SRC_URI = "${SOURCEFORGE_MIRROR}/lcdproc/${P}.tar.gz"
 
 inherit autotools update-rc.d
 
-PACKAGES =+ "lcdd lcdd-driver-cfontz lcdd-driver-bayrad lcdd-driver-hd44780nousb \
+PACKAGES =+ "lcdd lcdvc lcdd-driver-cfontz lcdd-driver-bayrad lcdd-driver-hd44780nousb \
 		lcdd-driver-hd44780 lcdd-driver-mtxorb lcdd-driver-serialvfd \
 		lcdd-driver-curses lcdd-driver-text \
 		lcdd-driver-sed lcdd-driver-cwlnx lcdd-driver-glk lcdd-driver-icp-a106 \
@@ -24,6 +24,7 @@ PACKAGES =+ "lcdd lcdd-driver-cfontz lcdd-driver-bayrad lcdd-driver-hd44780nousb
 
 CONFFILES_lcdd = "${sysconfdir}/LCDd.conf"
 CONFFILES_lcdproc = "${sysconfdir}/lcdproc.conf"
+CONFFILES_lcdvc = "${sysconfdir}/lcdvc.conf"
 
 FILES_lcdd = "${CONFFILES_lcdd} \
 	${sbindir}/LCDd \
@@ -32,6 +33,9 @@ FILES_lcdd = "${CONFFILES_lcdd} \
 FILES_lcdproc = "${CONFFILES_lcdproc} \
 	${bindir}/lcdproc \
 	${sysconfdir}/init.d/lcdproc"
+
+FILES_lcdvc = "${CONFFILES_lcdvc} \
+	${sbindir}/lcdvc"
 
 # Driver packages
 
@@ -91,6 +95,7 @@ do_install () {
 	# binaries
 	install -D -m 0755 server/LCDd ${D}${sbindir}/LCDd
 	install -D -m 0755 clients/lcdproc/lcdproc ${D}${bindir}/lcdproc
+	install -D -m 0755 clients/lcdvc/lcdvc ${D}${sbindir}/lcdvc
 
 	# init scripts
 	install -d ${D}${sysconfdir}/init.d
@@ -104,6 +109,7 @@ do_install () {
 
 	# configuration files
 	install -D -m 0644 LCDd.conf ${D}${sysconfdir}/LCDd.conf
+	install -D -m 0644 clients/lcdvc/lcdvc.conf ${D}${sysconfdir}/lcdvc.conf
 	# don't start lcdproc by default
 	# will be fixed in next upstream release
 	cat scripts/lcdproc.conf | sed -e 's/C X//' > ${D}${sysconfdir}/lcdproc.conf

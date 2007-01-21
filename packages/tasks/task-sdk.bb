@@ -108,7 +108,7 @@ RDEPENDS_task-sdk-x11-ext := "\
 
 RDEPENDS_task-sdk-gpe := "\
     libcontactsdb-dev \
-    esound-gpe-dev \
+    esound-dev \
     libeventdb-dev \
     libgpepimc-dev \
     libgpevtype-dev \
