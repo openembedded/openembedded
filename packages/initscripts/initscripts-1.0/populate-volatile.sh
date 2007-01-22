@@ -114,7 +114,6 @@ apply_cfgfile() {
   cat ${CFGFILE} | grep -v "^#" | \
   while read LINE; do
 
-    # This is a hell of a lot faster than using cut or awk 5 times
     eval `echo "$LINE" | sed -n "s/\(.*\)\ \(.*\) \(.*\)\ \(.*\)\ \(.*\)\ \(.*\)/TTYPE=\1 ; TUSER=\2; TGROUP=\3; TMODE=\4; TNAME=\5 TLTARGET=\6/p"`
 
     [ "${VERBOSE}" != "no" ] && echo "Checking for -${TNAME}-."

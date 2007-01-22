@@ -5,6 +5,7 @@ LICENSE = "GPL"
 SECTION = "opie/games"
 APPTYPE = "binary"
 APPDESKTOP = "${WORKDIR}"
+PR = "r1"
 
 SRC_URI = "http://www.vanille.de/mirror/zudoku-${PV}.tar.gz \
            file://zudoku.html \
@@ -13,6 +14,7 @@ SRC_URI = "http://www.vanille.de/mirror/zudoku-${PV}.tar.gz \
 inherit opie
 
 EXTRA_QMAKEVARS_POST += "TARGET=zudoku"
+LDFLAGS += "-lstdc++"
 
 do_install() {
 	install -d ${D}${palmtopdir}/help/en/html
