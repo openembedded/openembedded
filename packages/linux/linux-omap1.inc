@@ -10,6 +10,8 @@ inherit kernel
 KERNEL_IMAGETYPE = "vmlinux"
 KERNEL_OUTPUT = "${KERNEL_IMAGETYPE}"
 
+module_autoload_ohci-hcd_omap5912osk = "ohci-hcd"
+
 do_configure_prepend() {
 
         if [ "${TARGET_OS}" == "linux-gnueabi" -o  "${TARGET_OS}" == "linux-uclibcgnueabi" ]; then
