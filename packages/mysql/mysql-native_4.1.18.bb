@@ -2,6 +2,8 @@ SECTION = "console/network"
 require mysql_${PV}.bb
 inherit native
 
+RDEPENDS_${PN} = ""
+
 PACKAGES = ""
 DEPENDS = "ncurses-native"
 EXTRA_OEMAKE = ""
