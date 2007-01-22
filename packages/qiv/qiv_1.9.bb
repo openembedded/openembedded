@@ -12,6 +12,9 @@ inherit pkgconfig binconfig
 CFLAGS += " -lSM -lICE -lXdmcp"
 
 do_install() {
- 	install -s -m 0755 qiv ${D}${bindir}/qiv
+	install -d ${D}${bindir}
+	install -d ${D}${mandir}/man1/
+
+	install -s -m 0755 qiv ${D}${bindir}/qiv
         install -m 0644 qiv.1 ${D}${mandir}/man1/qiv.1
 }

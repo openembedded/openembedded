@@ -74,39 +74,6 @@
  #ifdef QT_QWS_SL5XXX
  #include <asm/sharp_char.h>
  #endif
-@@ -165,9 +220,9 @@
- 	    current = 0;
-     }
- 
--    void setAutoRepeat(int d, int p) { if ( d > 0 ) repeatdelay=d; 
-+    void setAutoRepeat(int d, int p) { if ( d > 0 ) repeatdelay=d;
- 				       if ( p > 0 ) repeatperiod=p;}
--    void getAutoRepeat(int *d ,int *p ) { if (d) *d=repeatdelay; 
-+    void getAutoRepeat(int *d ,int *p ) { if (d) *d=repeatdelay;
-     					  if (p) *p=repeatperiod; }
- 
-     void stop()
-@@ -551,9 +606,9 @@
- 
-     void doKey(uchar scancode);
- 
--    
-+
-     void restoreLeds();
--    
-+
- private:
-     bool shift;
-     bool alt;
-@@ -809,7 +864,7 @@
- 
- #if !defined(QT_QWS_SL5XXX)
-     if (code == 224
--#if defined(QT_QWS_IPAQ) 
-+#if defined(QT_QWS_IPAQ)
- 	&& !ipaq_return_pressed
- #endif
- 	) {
 @@ -1775,9 +1830,11 @@
      } else {
  	type = spec;
@@ -371,30 +338,3 @@
  #endif
  
      QSocketNotifier *mouseNotifier;
-@@ -1323,7 +1330,7 @@
- 
- QTPanelHandlerPrivate::~QTPanelHandlerPrivate()
- {
--#if defined(QT_QWS_IPAQ) || defined(QT_QWS_SL5XXX) || defined(QT_QWS_K2) || defined(QT_QWS_SLC700)
-+#if defined(QT_QWS_IPAQ) || defined(QT_QWS_SL5XXX) || defined(QT_QWS_K2) || defined(QT_QWS_SLC700) || defined(QT_QWS_SIMPAD)
-     if (mouseFD >= 0)
- 	close(mouseFD);
- #endif
-@@ -1331,7 +1338,7 @@
- 
- void QTPanelHandlerPrivate::readMouseData()
- {
--#if defined(QT_QWS_IPAQ) || defined(QT_QWS_SL5XXX) || defined(QT_QWS_K2) || defined(QT_QWS_SLC700)
-+#if defined(QT_QWS_IPAQ) || defined(QT_QWS_SL5XXX) || defined(QT_QWS_K2) || defined(QT_QWS_SLC700) || defined(QT_QWS_SIMPAD)
-     if(!qt_screen)
- 	return;
- 
-@@ -2013,7 +2020,7 @@
- 	    handler = new QTSLibHandlerPrivate();
- #elif defined(QT_QWS_YOPY)
- 	    handler = new QYopyTPanelHandlerPrivate(mouseProtocol,mouseDev);
--#elif defined(QT_QWS_IPAQ) || defined(QT_QWS_SL5XXX) || defined(QT_QWS_K2) || defined(QT_QWS_SLC700)
-+#elif defined(QT_QWS_IPAQ) || defined(QT_QWS_SL5XXX) || defined(QT_QWS_K2) || defined(QT_QWS_SLC700) || defined(QT_QWS_SIMPAD)
- 	    handler = new QTPanelHandlerPrivate(mouseProtocol,mouseDev);
- #elif defined(QT_QWS_CASSIOPEIA)
- 	    handler = new QVrTPanelHandlerPrivate( mouseProtocol, mouseDev );

@@ -3,14 +3,14 @@
 #
 # Every line must either be a comment starting with #
 # or a definition of format:
-# <type> <owner> <group> <mode> <path> [<linksource>]
+# <type> <owner> <group> <mode> <path> <linksource>
 # where the items are separated by whitespace !
 #
 # <type> : d|f|l : (d)irectory|(f)ile|(l)ink
 #
 # A linking example:
 # l root root 0777 /var/test /tmp/testfile
-# f root root 0644 /var/test
+# f root root 0644 /var/test none
 #
 # Understanding links:
 # When populate-volatile is to verify/create a directory or file, it will first

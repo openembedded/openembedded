@@ -7,7 +7,7 @@
 
 #set some preferred providers:
 PREFERRED_PROVIDER_gconf="gconf-dbus"
-PREFERRED_PROVIDER_gnome-vfs="gnome-vfs-dbus"
+PREFERRED_PROVIDER_gnome-vfs="gnome-vfs"
 
 #specify versions, as the header says :)
 #PREFERRED_VERSION_libmatchbox ?= "1.6"
