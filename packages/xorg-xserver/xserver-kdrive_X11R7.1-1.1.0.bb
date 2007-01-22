@@ -1,7 +1,7 @@
 LICENSE = "MIT"
 DEPENDS = "tslib virtual/libsdl xproto libxdmcp xextproto xtrans libxau virtual/libx11 libxext libxrandr fixesproto damageproto libxfont resourceproto compositeproto xcalibrateext recordproto videoproto scrnsaverproto"
 
-PR = "r5"
+PR = "r6"
 
 PROVIDES = "virtual/xserver"
 RPROVIDES = "virtual/xserver"
@@ -44,11 +44,15 @@ SRC_URI = "http://ftp.x.org/pub/X11R7.1/src/xserver/xorg-server-X11R7.1-1.1.0.ta
 	file://disable-xf86-dga-xorgcfg.patch;patch=1 \
 	file://w100.patch;patch=1 \
 	file://enable-tslib.patch;patch=1 \
-	file://xcalibrate.patch;patch=1"
+	file://xcalibrate.patch;patch=1 \
+	file://kmode-palm.patch;patch=1"
 
 SRC_URI_append_mnci   = " file://onlyfb.patch;patch=1"
 SRC_URI_append_poodle = " file://xserver-kdrive-poodle.patch;patch=1"
 PACKAGE_ARCH_poodle = "poodle"
+PACKAGE_ARCH_palmtx = "palmtx"
+PACKAGE_ARCH_palmld = "palmld"
+PACKAGE_ARCH_palmz72 = "palmz72"
 
 S = "${WORKDIR}/xorg-server-X11R7.1-1.1.0"
 
