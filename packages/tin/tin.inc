@@ -1,7 +1,7 @@
 DESCRIPTION = "Tin is a powerful text mode news reader."
 SECTION = "console/network"
 DEPENDS = "ncurses libpcre"
-LICENSE = "GPL"
+LICENSE = "BSD"
 
 inherit autotools 
 
