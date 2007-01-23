@@ -49,7 +49,7 @@ do_pre_patch () {
 
 addtask pre_patch before do_patch
 
-IX_TARGET = "linux${ARCH_BYTE_SEX}"
+IX_TARGET = "linux${IXP4XX_MACHINE_ENDIAN}"
 IX_ENSURE = ""
 #IX_ENSURE = "IX_OSAL_ENSURE_ON=1"
 
