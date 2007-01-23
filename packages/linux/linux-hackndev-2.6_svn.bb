@@ -3,7 +3,7 @@ HOMEPAGE = "http://www.hackndev.com/"
 SECTION = "kernel"
 LICENSE = "GPL"
 
-COMPATIBLE_MACHINE = "(palmtx|palmld)"
+COMPATIBLE_MACHINE = "(palmtx|palmld|palmz72)"
 
 SRC_URI = "svn://svn.sourceforge.net/svnroot/hackndev/linux4palm/linux;module=trunk;proto=https \
 	   file://defconfig"
