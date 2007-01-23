@@ -1,30 +1,61 @@
 SECTION = "kernel"
-COMPATIBLE_MACHINE = "nslu2"
-
-require nslu2-linksys-kernel_2.4.22.bb
-
-DESCRIPTION = "Unslung kernel for the Linksys NSLU2 device"
+DESCRIPTION = "Vendor-compatible Linux kernel for the Linksys NSLU2 device"
+LICENSE = "GPL"
 PR = "r17"
 
+COMPATIBLE_HOST = 'arm.*-linux'
+COMPATIBLE_MACHINE = "nslu2"
+
+UNSLUNG_KERNEL_EXTRA_SRC_URI ?= ""
+
+SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.4/linux-2.4.22.tar.bz2 \
+	   http://nslu.sf.net/downloads/xfs-2.4.22-all-i386.bz2;patch=1 \
+	   http://nslu.sf.net/downloads/2.4.22-xfs-nslu2.patch.bz2;patch=1 \
+	   file://config-fixes.patch;patch=1 \
+	   file://nofpu.patch;patch=1 \
+	   file://short_loadbytes.patch;patch=1 \
+	   file://gcc3-userfuncs.patch;patch=1 \
+	   file://gcc-registerparanoia.patch;patch=1 \
+	   file://linux-2.4.24-attribute-used.patch;patch=1 \
+	   file://double_cpdo.patch;patch=1 \
+	   file://linux-kernel-R25_to_R29.patch;patch=1 \
+	   file://linux-kernel-R29_to_R63.patch;patch=1 \
+	   file://flash-is-now-hdd.patch;patch=1 \
+	   file://gl811e.patch;patch=1 \
+	   file://usbnet.patch;patch=1 \
+	   file://missing-usb-ioctls.patch;patch=1 \
+	   file://anonymiser.patch;patch=1 \
+	   file://ppp_mppe.patch;patch=1 \
+	   file://nfs-blocksize.patch;patch=1 \
+	   file://pl2303.patch;patch=1 \
+	   file://pl2303_mdmctl.patch;patch=1 \
+	   file://netconsole.patch;patch=1 \
+	   file://ppp_mppe_no_fp_in_kernel.patch;patch=1 \
+           file://defconfig \
+	   ${UNSLUNG_KERNEL_EXTRA_SRC_URI}"
+S = "${WORKDIR}/linux-2.4.22"
+
+inherit kernel
+
+ARCH = "arm"
+KERNEL_IMAGETYPE = "zImage"
 KERNEL_SUFFIX = "unslung"
-
+CMDLINE_CONSOLE ?= "ttyS0,115200"
 CMDLINE_ROOT = "root=/dev/mtdblock4 rootfstype=jffs2 rw init=/linuxrc mem=32M@0x00000000"
+CMDLINE = "${CMDLINE_CONSOLE} ${CMDLINE_ROOT}"
 
-UNSLUNG_KERNEL_EXTRA_SRC_URI ?=
+do_configure_prepend() {
+	install -m 0644 ${WORKDIR}/defconfig ${S}/.config
+	echo "CONFIG_CMDLINE=\"${CMDLINE}\"" >> ${S}/.config
+	rm -rf ${S}/include/asm-arm/arch ${S}/include/asm-arm/proc \
+	       ${S}/include/asm-arm/.proc ${S}/include/asm-arm/.arch
+}
 
-SRC_URI += "file://linux-kernel-R25_to_R29.patch;patch=1 \
-	    file://linux-kernel-R29_to_R63.patch;patch=1 \
-	    file://flash-is-now-hdd.patch;patch=1 \
-	    file://gl811e.patch;patch=1 \
-	    file://usbnet.patch;patch=1 \
-	    file://missing-usb-ioctls.patch;patch=1 \
-	    file://anonymiser.patch;patch=1 \
-	    file://ppp_mppe.patch;patch=1 \
-	    file://nfs-blocksize.patch;patch=1 \
-	    file://pl2303.patch;patch=1 \
-	    file://pl2303_mdmctl.patch;patch=1 \
-	    file://netconsole.patch;patch=1 \
-	    file://ppp_mppe_no_fp_in_kernel.patch;patch=1 \
-	    ${UNSLUNG_KERNEL_EXTRA_SRC_URI}"
+do_deploy() {
+        install -d ${DEPLOY_DIR_IMAGE}
+        install -m 0644 arch/${ARCH}/boot/${KERNEL_IMAGETYPE} ${DEPLOY_DIR_IMAGE}/${KERNEL_IMAGETYPE}-${KERNEL_SUFFIX}
+}
 
-FILESPATH = "${@base_set_filespath([ '${FILE_DIRNAME}/unslung-kernel', '${FILE_DIRNAME}/nslu2-linksys-kernel-2.4.22', '${FILE_DIRNAME}/files', '${FILE_DIRNAME}' ], d)}"
+do_deploy[dirs] = "${S}"
+
+addtask deploy before do_build after do_compile

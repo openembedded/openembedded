@@ -18,6 +18,7 @@ RDEPENDS = "ixp4xx-csr"
 S = "${WORKDIR}"
 
 COMPATIBLE_HOST = "^arm.*-linux.*"
+COMPATIBLE_MACHINE = "(nslu2|ixp4xx)"
 
 PROVIDES = "virtual/ixp-eth"
 RPROVIDES = "ixp-eth"
@@ -27,7 +28,7 @@ inherit module
 # This is a somewhat arbitrary choice:
 OSAL_DIR = "${STAGING_KERNEL_DIR}/ixp_osal"
 
-IX_TARGET = "linux${ARCH_BYTE_SEX}"
+IX_TARGET = "linux${IXP4XX_MACHINE_ENDIAN}"
 
 EXTRA_OEMAKE = "'CC=${KERNEL_CC}' \
 		'LD=${KERNEL_LD}' \

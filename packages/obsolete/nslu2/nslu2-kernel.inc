@@ -150,7 +150,7 @@ N2K_PATCHES ?= ""
 # Image suffix - actually set in conf/machine/nslu2.conf as it is also
 # used by anything which needs to know the name of the generated image.
 # Should be overridden in the distro if patches or defconfig are changed.
-N2K_SUFFIX ?= "nslu2${ARCH_BYTE_SEX}"
+N2K_SUFFIX ?= "nslu2${IXP4XX_MACHINE_ENDIAN}"
 
 SRC_URI  = "${N2K_SRCURI}"
 SRC_URI += "${N2K_PATCHES}"
@@ -186,7 +186,7 @@ addtask unpacklocal before do_patch after do_unpack
 do_configure_prepend() {
 	rm -f ${S}/.config
 	echo "CONFIG_CMDLINE=\"${CMDLINE}\"" >>'${S}/.config'
-	if test '${ARCH_BYTE_SEX}' = be
+	if test '${IXP4XX_MACHINE_ENDIAN}' = be
 	then
 		echo 'CONFIG_CPU_BIG_ENDIAN=y' >>'${S}/.config'
 	fi

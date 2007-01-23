@@ -1,7 +1,7 @@
 #
 # Automatically generated make config: don't edit
-# Linux kernel version: 2.6.19-hh7
-# Sun Dec 31 02:28:00 2006
+# Linux kernel version: 2.6.19-hh8
+# Mon Jan 22 05:03:33 2007
 #
 CONFIG_ARM=y
 # CONFIG_GENERIC_TIME is not set
@@ -38,7 +38,6 @@ CONFIG_SYSVIPC=y
 # CONFIG_UTS_NS is not set
 # CONFIG_AUDIT is not set
 CONFIG_IKCONFIG=y
-# CONFIG_MINIMAL_OOPS is not set
 CONFIG_IKCONFIG_PROC=y
 # CONFIG_RELAY is not set
 CONFIG_INITRAMFS_SOURCE=""
@@ -58,8 +57,6 @@ CONFIG_BASE_FULL=y
 CONFIG_FUTEX=y
 CONFIG_EPOLL=y
 CONFIG_SHMEM=y
-CONFIG_USELIB=y
-CONFIG_CORE_DUMP=y
 CONFIG_SLAB=y
 CONFIG_VM_EVENT_COUNTERS=y
 CONFIG_RT_MUTEXES=y
@@ -146,7 +143,6 @@ CONFIG_MACH_H3900=y
 CONFIG_IPAQ_H3900_LCD=y
 CONFIG_IPAQ_H3900_BACKLIGHT=y
 CONFIG_IPAQ_H3900_BATTERY=y
-# CONFIG_IPAQ_H3900_MMC is not set
 # CONFIG_MACH_H4000 is not set
 # CONFIG_MACH_H4700 is not set
 # CONFIG_MACH_HX2750 is not set
@@ -169,14 +165,17 @@ CONFIG_IPAQ_H3900_BATTERY=y
 # CONFIG_PXA_SHARPSL is not set
 # CONFIG_MACH_TRIZEPS4 is not set
 CONFIG_PXA25x=y
-# CONFIG_SA1100_H3100 is not set
-# CONFIG_SA1100_H3600 is not set
-# CONFIG_SA1100_H3800 is not set
 
 #
 # Linux As Bootloader
 #
 # CONFIG_LAB is not set
+CONFIG_PXA_IPAQ=y
+
+#
+# XScale-based iPAQ
+#
+CONFIG_IPAQ_HANDHELD=y
 
 #
 # Processor Type
@@ -197,16 +196,6 @@ CONFIG_ARM_THUMB=y
 # CONFIG_CPU_DCACHE_DISABLE is not set
 CONFIG_XSCALE_PMU=y
 CONFIG_KEXEC=y
-
-#
-# Compaq/iPAQ Platforms
-#
-CONFIG_PXA_IPAQ=y
-
-#
-# XScale-based iPAQ
-#
-CONFIG_IPAQ_HANDHELD=y
 
 #
 # Compaq/iPAQ Drivers
@@ -515,10 +504,7 @@ CONFIG_INPUT=y
 #
 # Userland interfaces
 #
-CONFIG_INPUT_MOUSEDEV=y
-CONFIG_INPUT_MOUSEDEV_PSAUX=y
-CONFIG_INPUT_MOUSEDEV_SCREEN_X=1024
-CONFIG_INPUT_MOUSEDEV_SCREEN_Y=768
+# CONFIG_INPUT_MOUSEDEV is not set
 # CONFIG_INPUT_JOYDEV is not set
 # CONFIG_INPUT_TSDEV is not set
 CONFIG_INPUT_EVDEV=y
@@ -624,7 +610,42 @@ CONFIG_LEGACY_PTY_COUNT=32
 #
 # I2C support
 #
-# CONFIG_I2C is not set
+CONFIG_I2C=m
+# CONFIG_I2C_CHARDEV is not set
+
+#
+# I2C Algorithms
+#
+# CONFIG_I2C_ALGOBIT is not set
+# CONFIG_I2C_ALGOPCF is not set
+# CONFIG_I2C_ALGOPCA is not set
+
+#
+# I2C Hardware Bus support
+#
+CONFIG_I2C_PXA=m
+# CONFIG_I2C_PXA_SLAVE is not set
+# CONFIG_I2C_OCORES is not set
+# CONFIG_I2C_PARPORT_LIGHT is not set
+# CONFIG_I2C_STUB is not set
+# CONFIG_I2C_PCA_ISA is not set
+
+#
+# Miscellaneous I2C Chip support
+#
+# CONFIG_SENSORS_DS1337 is not set
+# CONFIG_SENSORS_DS1374 is not set
+# CONFIG_SENSORS_EEPROM is not set
+# CONFIG_SENSORS_PCF8574 is not set
+# CONFIG_SENSORS_PCA9539 is not set
+# CONFIG_SENSORS_PCA9535 is not set
+# CONFIG_SENSORS_PCF8591 is not set
+# CONFIG_SENSORS_RTC8564 is not set
+# CONFIG_SENSORS_MAX6875 is not set
+# CONFIG_I2C_DEBUG_CORE is not set
+# CONFIG_I2C_DEBUG_ALGO is not set
+# CONFIG_I2C_DEBUG_BUS is not set
+# CONFIG_I2C_DEBUG_CHIP is not set
 
 #
 # SPI support
@@ -759,7 +780,17 @@ CONFIG_BACKLIGHT_CORGI=y
 #
 # Sound
 #
-# CONFIG_SOUND is not set
+CONFIG_SOUND=y
+
+#
+# Advanced Linux Sound Architecture
+#
+# CONFIG_SND is not set
+
+#
+# Open Sound System
+#
+# CONFIG_SOUND_PRIME is not set
 
 #
 # USB support
@@ -833,8 +864,15 @@ CONFIG_RTC_INTF_DEV=y
 #
 # RTC drivers
 #
+# CONFIG_RTC_DRV_X1205 is not set
+# CONFIG_RTC_DRV_DS1307 is not set
 # CONFIG_RTC_DRV_DS1553 is not set
+# CONFIG_RTC_DRV_ISL1208 is not set
+# CONFIG_RTC_DRV_DS1672 is not set
 # CONFIG_RTC_DRV_DS1742 is not set
+# CONFIG_RTC_DRV_PCF8563 is not set
+# CONFIG_RTC_DRV_PCF8583 is not set
+# CONFIG_RTC_DRV_RS5C372 is not set
 # CONFIG_RTC_DRV_M48T86 is not set
 CONFIG_RTC_DRV_SA1100=y
 # CONFIG_RTC_DRV_TEST is not set

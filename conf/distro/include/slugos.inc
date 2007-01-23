@@ -11,7 +11,7 @@
 # slugos-[bl][at][gu] - a specific configuration encoded as follows:
 #
 #  b or l - big or little endian
-#         set ARCH_BYTE_SEX to match
+#         set IXP4XX_MACHINE_ENDIAN to match
 #
 #  a or t - ARM or Thumb instructions in the low level libraries
 #         set ARM_INSTRUCTION_SET to match
@@ -45,7 +45,7 @@ DISTRO_FEED ?= "unstable"
 
 # The following must also be set, they define the basic format of the build
 #
-#ARCH_BYTE_SEX "be" or "le"
+#IXP4XX_MACHINE_ENDIAN "be" or "le"
 #ARM_INSTRUCTION_SET "arm" or "thumb"
 #TARGET_OS "linux" or "linux-uclibc"
 #SLUGOS_IMAGESEX "big-endian" or "little-endian" (JFFS2 format)
@@ -55,7 +55,7 @@ DISTRO_FEED ?= "unstable"
 USE_NLS ?= "no"
 
 # To make errors easier to identify:
-DISTRO_NAME ?= "INVALID-${ARCH_BYTE_SEX}-${ARM_INSTRUCTION_SET}-${TARGET_OS}"
+DISTRO_NAME ?= "INVALID-${IXP4XX_MACHINE_ENDIAN}-${ARM_INSTRUCTION_SET}-${TARGET_OS}"
 DISTRO_TYPE ?= "INVALID"
 
 # The following must not be changed.
@@ -171,7 +171,7 @@ PREFERRED_VERSION_glibc ?= "2.3.5+cvs20050627"
 # Select the correct versions of the kernel and modules (these are the
 # defaults, override in the conf/distro top-level distro file).
 PREFERRED_PROVIDER_virtual/kernel ?= "ixp4xx-kernel"
-PREFERRED_VERSION_ixp4xx-kernel ?= "2.6.19+2.6.20-rc4"
+PREFERRED_VERSION_ixp4xx-kernel ?= "2.6.19"
 
 # Select the smallest provider of x11 libraries
 PREFERRED_PROVIDER_virtual/libx11 ?= "diet-x11"

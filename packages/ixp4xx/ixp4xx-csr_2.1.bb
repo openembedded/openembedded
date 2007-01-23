@@ -46,7 +46,7 @@ COMPATIBLE_MACHINE = "(nslu2|ixp4xx)"
 
 inherit module
 
-IX_TARGET = "linux${ARCH_BYTE_SEX}"
+IX_TARGET = "linux${IXP4XX_MACHINE_ENDIAN}"
 IX_ENSURE = ""
 #IX_ENSURE = "IX_OSAL_ENSURE_ON=1"
 

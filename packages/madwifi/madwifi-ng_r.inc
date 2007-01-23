@@ -22,7 +22,8 @@ inherit module-base
 
 EXTRA_OEMAKE = "LDFLAGS= KERNELPATH=${STAGING_KERNEL_DIR} KERNELRELEASE=${KERNEL_VERSION} TOOLPREFIX=${TARGET_PREFIX}"
 
-EXTRA_OEMAKE_prepend_slugos = "TARGET=xscale-${ARCH_BYTE_SEX}-elf "
+EXTRA_OEMAKE_prepend_ixp4xxle = "TARGET=xscale-le-elf "
+EXTRA_OEMAKE_prepend_ixp4xxbe = "TARGET=xscale-be-elf "
 
 do_compile() {
 	oe_runmake all

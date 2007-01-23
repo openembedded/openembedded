@@ -28,6 +28,7 @@ SRC_URI += "file://modprobe.conf"
 S = "${WORKDIR}"
 
 COMPATIBLE_HOST = "^arm.*-linux.*"
+COMPATIBLE_MACHINE = "(nslu2|ixp4xx)"
 
 PROVIDES = "virtual/ixp-eth"
 RPROVIDES = "ixp-eth"
@@ -37,7 +38,7 @@ inherit module
 # This is a somewhat arbitrary choice:
 OSAL_DIR = "${STAGING_KERNEL_DIR}/ixp_osal"
 
-IX_TARGET = "linux${ARCH_BYTE_SEX}"
+IX_TARGET = "linux${IXP4XX_MACHINE_ENDIAN}"
 IX_ENSURE = ""
 #IX_ENSURE = "-DIX_OSAL_ENSURE_ON=1"
 # The following controls the name of the ethernet devices which get
