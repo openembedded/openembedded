@@ -382,14 +382,3 @@ do_deploy() {
 }
 
 addtask deploy before do_build after do_compile
-
-python () {
-    # check for MACHINE_ARCH - if not set then we don't know what to build,
-    # also sanity check the SLUGOS_IMAGESEX
-    sex = bb.data.getVar("SLUGOS_IMAGESEX", d, 1)
-    if sex != 'little-endian' and sex != 'big-endian':
-        raise bb.parse.SkipPackage("slugos kernels require SLUGOS_IMAGESEX")
-    suffix = bb.data.getVar("MACHINE_ARCH", d, 1)
-    if suffix == '':
-        raise bb.parse.SkipPackage("slugos kernels require MACHINE_ARCH")
-}
