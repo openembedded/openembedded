@@ -11,14 +11,7 @@ COMPATIBLE_MACHINE = "(nslu2|ixp4xx)"
 FILES_${PN} = "${base_libdir}/firmware/NPE-B"
 
 do_compile() {
-#        if test '${ARCH_BYTE_SEX}' = be
-#        then
-		${STAGING_BINDIR_NATIVE}/IxNpeMicrocode-${PV} -be
-#        fi
-#        if test '${ARCH_BYTE_SEX}' = le
-#        then
-#                ${STAGING_BINDIR_NATIVE}/IxNpeMicrocode-${PV} -le
-#        fi
+	${STAGING_BINDIR_NATIVE}/IxNpeMicrocode-${PV} -be
 }
 
 do_install() {
