@@ -15,7 +15,7 @@ PR = "r2"
 
 SRC_URI = "http://0pointer.de/lennart/projects/pulseaudio/pulseaudio-${PV}.tar.gz"
 
-inherit autotools
+inherit autotools pkgconfig
 
 EXTRA_OECONF = "\
                 --disable-lynx \
@@ -41,6 +41,11 @@ CONFFILES_${PN}-conf = "\
 		       ${sysconfdir}/pulse/daemon.conf \
 		       ${sysconfdir}/pulse/client.conf \
 		       "
+
+do_stage() {
+	autotools_stage_all
+}
+
 
 python populate_packages_prepend() {
         #bb.data.setVar('PKG_pulseaudio', 'pulseaudio', d)
