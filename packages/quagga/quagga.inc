@@ -20,8 +20,6 @@ RDEPENDS_${PN}-doc      = ""
 RDEPENDS_${PN}-watchquagga = "${PN}"
 # the "ip" command from busybox is not sufficient (flush by protocol flushes all routes)
 RDEPENDS_${PN}          += "iproute2"
-# These are required for vtysh
-RDEPENDS_${PN}          += "ncurses readline"
 
 # ${QUAGGASUBDIR} is deal with old versions. Set to "/attic" for old
 # versions and leave it empty for recent versions.
