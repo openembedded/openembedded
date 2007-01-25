@@ -5,7 +5,7 @@ SECTION = "libs"
 LICENSE = "LGPL"
 PRIORITY = "optional"
 DEPENDS = "glib-2.0 pango atk jpeg libpng libxext libxcursor gtk-doc libgcrypt"
-PR = "r4"
+PR = "r5"
 
 SRC_URI = "ftp://ftp.gtk.org/pub/gtk/v2.6/gtk+-${PV}.tar.bz2 \
            file://help.patch;patch=1 \
@@ -52,6 +52,13 @@ EXTRA_OECONF = "--without-libtiff --disable-xkb --disable-glibtest --enable-disp
 # --disable-cruft
 
 LIBV = "2.4.0"
+
+do_configure_prepend() {
+        for i in `find . -name "Makefile.am"`   
+        do
+                sed -e -i s,-DG_DISABLE_DEPRECATED,-DSED_ROCKS_DUDES, $i
+        done
+}
 
 do_stage () {
 	oe_libinstall -so -C gtk libgtk-x11-2.0 ${STAGING_LIBDIR}
