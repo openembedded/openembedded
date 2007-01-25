@@ -2,6 +2,7 @@ DESCRIPTION = "Hack&Dev's Linux kernel for Palm devices."
 HOMEPAGE = "http://www.hackndev.com/"
 SECTION = "kernel"
 LICENSE = "GPL"
+PR = "r1"
 
 COMPATIBLE_MACHINE = "(palmtx|palmld|palmz72)"
 
@@ -76,3 +77,12 @@ do_compile_prepend() {
                 cd -
 	fi
 }
+
+do_deploy() {
+	install -d ${DEPLOY_DIR_IMAGE}
+	install -m 0644 arch/${ARCH}/boot/${KERNEL_IMAGETYPE} ${DEPLOY_DIR_IMAGE}/${KERNEL_IMAGETYPE}-${PV}-${MACHINE}-${DATETIME}
+}   
+
+do_deploy[dirs] = "${S}"
+
+addtask deploy before do_build after do_compile
