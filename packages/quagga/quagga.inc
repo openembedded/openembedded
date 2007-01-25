@@ -28,7 +28,8 @@ SRC_URI = "http://www.quagga.net/download${QUAGGASUBDIR}/quagga-${PV}.tar.gz \
            file://quagga.init \
            file://quagga.default \
            file://watchquagga.init \
-           file://watchquagga.default"
+           file://watchquagga.default \
+           file://volatiles.03_quagga"
 
 inherit autotools update-rc.d
 
@@ -58,11 +59,13 @@ EXTRA_OECONF = "--prefix=${prefix} \
 
 do_install () {
         # Install init script and default settings
-        install -m 0755 -d ${D}${sysconfdir}/default ${D}${sysconfdir}/init.d ${D}${sysconfdir}/quagga
+        install -m 0755 -d ${D}${sysconfdir}/default ${D}${sysconfdir}/init.d \
+                           ${D}${sysconfdir}/quagga ${D}${sysconfdir}/default/volatiles
         install -m 0644 ${WORKDIR}/quagga.default ${D}${sysconfdir}/default/quagga
         install -m 0644 ${WORKDIR}/watchquagga.default ${D}${sysconfdir}/default/watchquagga
         install -m 0755 ${WORKDIR}/quagga.init ${D}${sysconfdir}/init.d/quagga
         install -m 0755 ${WORKDIR}/watchquagga.init ${D}${sysconfdir}/init.d/watchquagga
+        install -m 0644 ${WORKDIR}/volatiles.03_quagga  ${D}${sysconfdir}/default/volatiles/volatiles.03_quagga
         # Install quagga
         oe_runmake install DESTDIR=${D} prefix=${prefix} \
                 libexecdir=${libexecdir}/quagga \
@@ -88,6 +91,7 @@ FILES_${PN}-doc         = "/usr/share/doc /usr/share/man /usr/share/info"
 FILES_${PN}-watchquagga = "${libdir}/quagga/watchquagga ${sysconfdir}/default/watchquagga \
                            ${sysconfdir}/init.d/watchquagga"
 FILES_${PN}             = "${bindir}/vtysh ${libdir}/quagga/zebra /usr/lib/libzebra*.so.* \
+                           ${sysconfdir}/default/volatiles/volatiles.03_quagga \
                            ${sysconfdir}/quagga \
                            ${sysconfdir}/default/quagga ${sysconfdir}/init.d/quagga"
 
@@ -111,7 +115,10 @@ INITSCRIPT_PARAMS_${PN}-watchquagga     = "defaults 90 10"
 pkg_postinst_${PN} () {
         grep -q quagga: /etc/group || addgroup quagga
         grep -q quaggavty: /etc/group || addgroup quaggavty
-        grep -q quagga: /etc/passwd || adduser --disabled-password --home=/var/run/quagga/ --ingroup quagga -g "Quagga routing suite" quagga
+        grep -q quagga: /etc/passwd || \
+            adduser --disabled-password --home=/var/run/quagga/ --system \
+                    --ingroup quagga --no-create-home -g "Quagga routing suite" quagga                                            
+        /etc/init.d/populate-volatile.sh update
 }
 
 # Stop apps before uninstall
