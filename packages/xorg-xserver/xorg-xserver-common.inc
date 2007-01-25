@@ -2,7 +2,7 @@ HOMEPAGE = "http://www.x.org"
 SECTION = "x11/base"
 LICENSE = "MIT-X"
 
-RPROVIDES = "virtual/xserver"
+RPROVIDES_${PN} = "virtual/xserver"
 PROVIDES = "virtual/xserver"
 
 DEPENDS = "fontconfig freetype flex-native lbxutil kbproto \
@@ -14,7 +14,7 @@ resourceproto xineramaproto xtrans evieext libxkbfile libxfont libxau \
 libfontenc libxdmcp libxxf86vm libxaw libxmu libxt libxpm libxext libx11 \
 libxkbui libxxf86misc libxi libdmx libxtst libxres mesa mkfontscale-native"
 
-RDEPENDS="rgb"
+RDEPENDS_${PN} = "rgb"
 
 XORG_PN = "xorg-server"
 SRC_URI = "${XORG_MIRROR}/${@bb.data.getVar('PV', d, 1)[0:7]}/src/xserver/${XORG_PN}-${PV}.tar.bz2 \
@@ -23,7 +23,6 @@ SRC_URI = "${XORG_MIRROR}/${@bb.data.getVar('PV', d, 1)[0:7]}/src/xserver/${XORG
 S = "${WORKDIR}/${XORG_PN}-${PV}"
 
 inherit autotools pkgconfig
-
 
 EXTRA_OECONF = "--disable-builddocs"
 
