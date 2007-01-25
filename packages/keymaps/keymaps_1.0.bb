@@ -3,7 +3,7 @@ SECTION = "base"
 RDEPENDS = "initscripts console-tools"
 LICENSE = "GPL"
 PACKAGE_ARCH = "${MACHINE}"
-PR = "r12"
+PR = "r13"
 
 inherit update-rc.d
 
@@ -27,7 +27,7 @@ do_install () {
     install -m 0755 ${WORKDIR}/keymap ${D}${sysconfdir}/init.d/
 
     case ${MACHINE} in
-        c7x0 | tosa | spitz | akita | borzoi | collie | poodle | jornada6xx | h2200 | htuniversal )
+        c7x0 | tosa | spitz | akita | borzoi | collie | poodle | jornada6xx | h2200 | htcuniversal )
             install -m 0644 ${WORKDIR}/keymap-*.map	${D}${sysconfdir}
             ;;
         *)
