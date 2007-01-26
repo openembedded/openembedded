@@ -1,11 +1,11 @@
 PACKAGES = "${PN}"
 DESCRIPTION = "Meta-package for MythTV diskless frontend"
 ALLOW_EMPTY = "1"
-PR = "r10"
+PR = "r11"
 
-RDEPENDS = "xserver-xorg mythtv-frontend mythtv-filters mythtv-theme-g.a.n.t. mythtv-theme-default lirc lirc-modules ttf-bitstream-vera fontconfig-utils setserial snes9x ntp mythfront-config gpe-dm mythfront-session bootlogd drm-module-drm font-cursor-misc font-misc-misc xf86-input-keyboard xf86-input-mouse"
+RDEPENDS = "xserver-xorg mythtv-frontend mythtv-filters mythtv-theme-g.a.n.t. mythtv-theme-default lirc lirc-modules ttf-bitstream-vera fontconfig-utils setserial snes9x ntp mythfront-config gpe-dm mythfront-session bootlogd font-cursor-misc font-misc-misc xf86-input-keyboard xf86-input-mouse"
 
-RDEPENDS_append_epia = " xf86-video-via drm-module-via"
+RDEPENDS_append_epia = " xf86-video-via"
 
 LICENSE = "MIT"
 
