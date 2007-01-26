@@ -1,6 +1,6 @@
 require xorg-xserver-common.inc
 
-PR = "r2"
+PR = "r3"
 
 #DESCRIPTION = ""
 
