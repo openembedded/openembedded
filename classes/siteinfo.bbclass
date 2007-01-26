@@ -22,7 +22,9 @@ def get_siteinfo_list(d):
 
        targetinfo = {\
                "armeb-linux":             "endian-big bit-32 common-glibc arm-common",\
+               "armeb-linux-gnueabi":     "endian-big bit-32 common-glibc arm-common armeb-linux",\
                "armeb-linux-uclibc":      "endian-big bit-32 common-uclibc arm-common",\
+               "armeb-linux-uclibcgnueabi": "endian-big bit-32 common-uclibc arm-common armeb-linux-uclibc",\
                "arm-linux":               "endian-little bit-32 common-glibc arm-common",\
                "arm-linux-gnueabi":       "endian-little bit-32 common-glibc arm-common arm-linux",\
                "arm-linux-uclibc":        "endian-little bit-32 common-uclibc arm-common",\
