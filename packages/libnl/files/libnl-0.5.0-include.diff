@@ -1,0 +1,10 @@
+--- libnl-0.5.0.orig/include/netlink/route/tc.h	2005-09-08 19:13:15.000000000 -0300
++++ libnl-0.5.0/include/netlink/route/tc.h	2005-09-08 19:32:33.000000000 -0300
+@@ -24,6 +24,7 @@
+ #include <netlink/netlink.h>
+ #include <netlink/cache.h>
+ #include <netlink/data.h>
++#include <linux/pkt_sched.h>
+ 
+ #define TCA_HAS_HANDLE    0x001
+ #define TCA_HAS_PARENT    0x002
