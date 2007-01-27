@@ -186,7 +186,7 @@ EXTRA_OEMAKE += "MAKEFLAGS='--no-print-directory'"
 do_configure_prepend() {
 	rm -f ${S}/.config
 	echo "CONFIG_CMDLINE=\"${CMDLINE}\"" >>'${S}/.config'
-	if test '${IXP4XX_MACHINE_ENDIAN}' = be
+	if test '${SITEINFO_ENDIANESS}' = be
 	then
 		echo 'CONFIG_CPU_BIG_ENDIAN=y' >>'${S}/.config'
 	fi
@@ -246,70 +246,70 @@ FILES_kernel-image = "/boot/${KERNEL_IMAGETYPE}-${MACHINE_ARCH}-${KERNEL_VERSION
 nslu2_MACHID = "597"
 PACKAGES += "kernel-image-nslu2"
 PKG_kernel-image-nslu2 = "kernel-image-${KERNEL_VERSION}"
-PACKAGE_ARCH_kernel-image-nslu2 = "nslu2${IXP4XX_MACHINE_ENDIAN}"
+PACKAGE_ARCH_kernel-image-nslu2 = "nslu2${SITEINFO_ENDIANESS}"
 DESCRIPTION_kernel-image-nslu2 = "Linux kernel for the LinkSys NSLU2"
-FILES_kernel-image-nslu2 = "/${KERNEL_IMAGEDEST}/${KERNEL_IMAGETYPE}-nslu2${IXP4XX_MACHINE_ENDIAN}-${KERNEL_VERSION}"
+FILES_kernel-image-nslu2 = "/${KERNEL_IMAGEDEST}/${KERNEL_IMAGETYPE}-nslu2${SITEINFO_ENDIANESS}-${KERNEL_VERSION}"
 pkg_postinst_kernel-image-nslu2 () {
-	update-alternatives --install /${KERNEL_IMAGEDEST}/${KERNEL_IMAGETYPE} ${KERNEL_IMAGETYPE} /${KERNEL_IMAGEDEST}/${KERNEL_IMAGETYPE}-nslu2${IXP4XX_MACHINE_ENDIAN}-${KERNEL_VERSION} ${KERNEL_PRIORITY} || true
+	update-alternatives --install /${KERNEL_IMAGEDEST}/${KERNEL_IMAGETYPE} ${KERNEL_IMAGETYPE} /${KERNEL_IMAGEDEST}/${KERNEL_IMAGETYPE}-nslu2${SITEINFO_ENDIANESS}-${KERNEL_VERSION} ${KERNEL_PRIORITY} || true
 }
 pkg_postrm_kernel-image-nslu2 () {
-	update-alternatives --remove ${KERNEL_IMAGETYPE} /${KERNEL_IMAGEDEST}/${KERNEL_IMAGETYPE}-nslu2${IXP4XX_MACHINE_ENDIAN}-${KERNEL_VERSION} || true
+	update-alternatives --remove ${KERNEL_IMAGETYPE} /${KERNEL_IMAGEDEST}/${KERNEL_IMAGETYPE}-nslu2${SITEINFO_ENDIANESS}-${KERNEL_VERSION} || true
 }
 
 # The correct settings for Loft:
 loft_MACHID = "849"
 PACKAGES += "kernel-image-loft"
 PKG_kernel-image-loft = "kernel-image-${KERNEL_VERSION}"
-PACKAGE_ARCH_kernel-image-loft = "loft${IXP4XX_MACHINE_ENDIAN}"
+PACKAGE_ARCH_kernel-image-loft = "loft${SITEINFO_ENDIANESS}"
 DESCRIPTION_kernel-image-loft = "Linux kernel for the Giant Shoulder Inc. Loft board"
-FILES_kernel-image-loft = "/${KERNEL_IMAGEDEST}/${KERNEL_IMAGETYPE}-loft${IXP4XX_MACHINE_ENDIAN}-${KERNEL_VERSION}"
+FILES_kernel-image-loft = "/${KERNEL_IMAGEDEST}/${KERNEL_IMAGETYPE}-loft${SITEINFO_ENDIANESS}-${KERNEL_VERSION}"
 pkg_postinst_kernel-image-loft () {
-	update-alternatives --install /${KERNEL_IMAGEDEST}/${KERNEL_IMAGETYPE} ${KERNEL_IMAGETYPE} /${KERNEL_IMAGEDEST}/${KERNEL_IMAGETYPE}-loft${IXP4XX_MACHINE_ENDIAN}-${KERNEL_VERSION} ${KERNEL_PRIORITY} || true
+	update-alternatives --install /${KERNEL_IMAGEDEST}/${KERNEL_IMAGETYPE} ${KERNEL_IMAGETYPE} /${KERNEL_IMAGEDEST}/${KERNEL_IMAGETYPE}-loft${SITEINFO_ENDIANESS}-${KERNEL_VERSION} ${KERNEL_PRIORITY} || true
 }
 pkg_postrm_kernel-image-loft () {
-	update-alternatives --remove ${KERNEL_IMAGETYPE} /${KERNEL_IMAGEDEST}/${KERNEL_IMAGETYPE}-loft${IXP4XX_MACHINE_ENDIAN}-${KERNEL_VERSION} || true
+	update-alternatives --remove ${KERNEL_IMAGETYPE} /${KERNEL_IMAGEDEST}/${KERNEL_IMAGETYPE}-loft${SITEINFO_ENDIANESS}-${KERNEL_VERSION} || true
 }
 
 # The correct settings for the NAS100D board:
 nas100d_MACHID = "865"
 PACKAGES += "kernel-image-nas100d"
 PKG_kernel-image-nas100d = "kernel-image-${KERNEL_VERSION}"
-PACKAGE_ARCH_kernel-image-nas100d = "nas100d${IXP4XX_MACHINE_ENDIAN}"
+PACKAGE_ARCH_kernel-image-nas100d = "nas100d${SITEINFO_ENDIANESS}"
 DESCRIPTION_kernel-image-nas100d = "Linux kernel for the IOMega NAS100D"
-FILES_kernel-image-nas100d = "/${KERNEL_IMAGEDEST}/${KERNEL_IMAGETYPE}-nas100d${IXP4XX_MACHINE_ENDIAN}-${KERNEL_VERSION}"
+FILES_kernel-image-nas100d = "/${KERNEL_IMAGEDEST}/${KERNEL_IMAGETYPE}-nas100d${SITEINFO_ENDIANESS}-${KERNEL_VERSION}"
 pkg_postinst_kernel-image-nas100d () {
-	update-alternatives --install /${KERNEL_IMAGEDEST}/${KERNEL_IMAGETYPE} ${KERNEL_IMAGETYPE} /${KERNEL_IMAGEDEST}/${KERNEL_IMAGETYPE}-nas100d${IXP4XX_MACHINE_ENDIAN}-${KERNEL_VERSION} ${KERNEL_PRIORITY} || true
+	update-alternatives --install /${KERNEL_IMAGEDEST}/${KERNEL_IMAGETYPE} ${KERNEL_IMAGETYPE} /${KERNEL_IMAGEDEST}/${KERNEL_IMAGETYPE}-nas100d${SITEINFO_ENDIANESS}-${KERNEL_VERSION} ${KERNEL_PRIORITY} || true
 }
 pkg_postrm_kernel-image-nas100d () {
-	update-alternatives --remove ${KERNEL_IMAGETYPE} /${KERNEL_IMAGEDEST}/${KERNEL_IMAGETYPE}-nas100d${IXP4XX_MACHINE_ENDIAN}-${KERNEL_VERSION} || true
+	update-alternatives --remove ${KERNEL_IMAGETYPE} /${KERNEL_IMAGEDEST}/${KERNEL_IMAGETYPE}-nas100d${SITEINFO_ENDIANESS}-${KERNEL_VERSION} || true
 }
 
 # The correct settings for the DSMG600 board:
 dsmg600_MACHID = "964"
 PACKAGES += "kernel-image-dsmg600"
 PKG_kernel-image-dsmg600 = "kernel-image-${KERNEL_VERSION}"
-PACKAGE_ARCH_kernel-image-dsmg600 = "dsmg600${IXP4XX_MACHINE_ENDIAN}"
+PACKAGE_ARCH_kernel-image-dsmg600 = "dsmg600${SITEINFO_ENDIANESS}"
 DESCRIPTION_kernel-image-dsmg600 = "Linux kernel for the D-Link DSM-G600"
-FILES_kernel-image-dsmg600 = "/${KERNEL_IMAGEDEST}/${KERNEL_IMAGETYPE}-dsmg600${IXP4XX_MACHINE_ENDIAN}-${KERNEL_VERSION}"
+FILES_kernel-image-dsmg600 = "/${KERNEL_IMAGEDEST}/${KERNEL_IMAGETYPE}-dsmg600${SITEINFO_ENDIANESS}-${KERNEL_VERSION}"
 pkg_postinst_kernel-image-dsmg600 () {
-	update-alternatives --install /${KERNEL_IMAGEDEST}/${KERNEL_IMAGETYPE} ${KERNEL_IMAGETYPE} /${KERNEL_IMAGEDEST}/${KERNEL_IMAGETYPE}-dsmg600${IXP4XX_MACHINE_ENDIAN}-${KERNEL_VERSION} ${KERNEL_PRIORITY} || true
+	update-alternatives --install /${KERNEL_IMAGEDEST}/${KERNEL_IMAGETYPE} ${KERNEL_IMAGETYPE} /${KERNEL_IMAGEDEST}/${KERNEL_IMAGETYPE}-dsmg600${SITEINFO_ENDIANESS}-${KERNEL_VERSION} ${KERNEL_PRIORITY} || true
 }
 pkg_postrm_kernel-image-dsmg600 () {
-	update-alternatives --remove ${KERNEL_IMAGETYPE} /${KERNEL_IMAGEDEST}/${KERNEL_IMAGETYPE}-dsmg600${IXP4XX_MACHINE_ENDIAN}-${KERNEL_VERSION} || true
+	update-alternatives --remove ${KERNEL_IMAGETYPE} /${KERNEL_IMAGEDEST}/${KERNEL_IMAGETYPE}-dsmg600${SITEINFO_ENDIANESS}-${KERNEL_VERSION} || true
 }
 
 # The correct settings for the FSG-3 board:
 fsg3_MACHID = "1091"
 PACKAGES += "kernel-image-fsg3"
 PKG_kernel-image-fsg3 = "kernel-image-${KERNEL_VERSION}"
-PACKAGE_ARCH_kernel-image-fsg3 = "fsg3${IXP4XX_MACHINE_ENDIAN}"
+PACKAGE_ARCH_kernel-image-fsg3 = "fsg3${SITEINFO_ENDIANESS}"
 DESCRIPTION_kernel-image-fsg3 = "Linux kernel for the Freecom FSG-3"
-FILES_kernel-image-fsg3 = "/${KERNEL_IMAGEDEST}/${KERNEL_IMAGETYPE}-fsg3${IXP4XX_MACHINE_ENDIAN}-${KERNEL_VERSION}"
+FILES_kernel-image-fsg3 = "/${KERNEL_IMAGEDEST}/${KERNEL_IMAGETYPE}-fsg3${SITEINFO_ENDIANESS}-${KERNEL_VERSION}"
 pkg_postinst_kernel-image-fsg3 () {
-	update-alternatives --install /${KERNEL_IMAGEDEST}/${KERNEL_IMAGETYPE} ${KERNEL_IMAGETYPE} /${KERNEL_IMAGEDEST}/${KERNEL_IMAGETYPE}-fsg3${IXP4XX_MACHINE_ENDIAN}-${KERNEL_VERSION} ${KERNEL_PRIORITY} || true
+	update-alternatives --install /${KERNEL_IMAGEDEST}/${KERNEL_IMAGETYPE} ${KERNEL_IMAGETYPE} /${KERNEL_IMAGEDEST}/${KERNEL_IMAGETYPE}-fsg3${SITEINFO_ENDIANESS}-${KERNEL_VERSION} ${KERNEL_PRIORITY} || true
 }
 pkg_postrm_kernel-image-fsg3 () {
-	update-alternatives --remove ${KERNEL_IMAGETYPE} /${KERNEL_IMAGEDEST}/${KERNEL_IMAGETYPE}-fsg3${IXP4XX_MACHINE_ENDIAN}-${KERNEL_VERSION} || true
+	update-alternatives --remove ${KERNEL_IMAGETYPE} /${KERNEL_IMAGEDEST}/${KERNEL_IMAGETYPE}-fsg3${SITEINFO_ENDIANESS}-${KERNEL_VERSION} || true
 }
 
 #FIXUP: the correct instructions to copy the kernel prepended with the le fixup
@@ -356,11 +356,11 @@ do_install_append() {
 	install_image '${MACHINE_ARCH}'
 
 	# Add the machine specific images, with appropriate suffixes
-	install_image 'nslu2${IXP4XX_MACHINE_ENDIAN}' '${nslu2_MACHID}'
-	install_image 'loft${IXP4XX_MACHINE_ENDIAN}' '${loft_MACHID}'
-	install_image 'nas100d${IXP4XX_MACHINE_ENDIAN}' '${nas100d_MACHID}'
-	install_image 'dsmg600${IXP4XX_MACHINE_ENDIAN}' '${dsmg600_MACHID}'
-	install_image 'fsg3${IXP4XX_MACHINE_ENDIAN}' '${fsg3_MACHID}'
+	install_image 'nslu2${SITEINFO_ENDIANESS}' '${nslu2_MACHID}'
+	install_image 'loft${SITEINFO_ENDIANESS}' '${loft_MACHID}'
+	install_image 'nas100d${SITEINFO_ENDIANESS}' '${nas100d_MACHID}'
+	install_image 'dsmg600${SITEINFO_ENDIANESS}' '${dsmg600_MACHID}'
+	install_image 'fsg3${SITEINFO_ENDIANESS}' '${fsg3_MACHID}'
 }
 
 do_deploy[dirs] = "${S}"
@@ -374,11 +374,11 @@ do_deploy() {
 	deploy_image '${MACHINE_ARCH}'
 
 	# And the machine specific images
-	deploy_image 'nslu2${IXP4XX_MACHINE_ENDIAN}' '${nslu2_MACHID}'
-	deploy_image 'loft${IXP4XX_MACHINE_ENDIAN}' '${loft_MACHID}'
-	deploy_image 'nas100d${IXP4XX_MACHINE_ENDIAN}' '${nas100d_MACHID}'
-	deploy_image 'dsmg600${IXP4XX_MACHINE_ENDIAN}' '${dsmg600_MACHID}'
-	deploy_image 'fsg3${IXP4XX_MACHINE_ENDIAN}' '${fsg3_MACHID}'
+	deploy_image 'nslu2${SITEINFO_ENDIANESS}' '${nslu2_MACHID}'
+	deploy_image 'loft${SITEINFO_ENDIANESS}' '${loft_MACHID}'
+	deploy_image 'nas100d${SITEINFO_ENDIANESS}' '${nas100d_MACHID}'
+	deploy_image 'dsmg600${SITEINFO_ENDIANESS}' '${dsmg600_MACHID}'
+	deploy_image 'fsg3${SITEINFO_ENDIANESS}' '${fsg3_MACHID}'
 }
 
 addtask deploy before do_build after do_compile

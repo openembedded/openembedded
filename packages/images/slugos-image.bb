@@ -123,7 +123,7 @@ slugos_pack_image() {
 			${STAGING_LIBDIR}/nslu2-binaries/SysConf \
 			${DEPLOY_DIR_IMAGE}/slug/
 	install -m 0644 ${STAGING_LOADER_DIR}/apex.bin ${DEPLOY_DIR_IMAGE}/slug/
-	install -m 0644 ${DEPLOY_DIR_IMAGE}/zImage-nslu2${IXP4XX_MACHINE_ENDIAN} \
+	install -m 0644 ${DEPLOY_DIR_IMAGE}/zImage-nslu2${SITEINFO_ENDIANESS} \
 		${DEPLOY_DIR_IMAGE}/slug/vmlinuz
 	install -m 0644 ${DEPLOY_DIR_IMAGE}/${IMAGE_NAME}.rootfs.jffs2 \
 		${DEPLOY_DIR_IMAGE}/slug/flashdisk.jffs2
@@ -137,7 +137,7 @@ slugos_pack_image() {
 
 	# Create an image for the DSM-G600 as well
 	install -d ${DEPLOY_DIR_IMAGE}/firmupgrade
-	install -m 0755 ${DEPLOY_DIR_IMAGE}/zImage-dsmg600${IXP4XX_MACHINE_ENDIAN} \
+	install -m 0755 ${DEPLOY_DIR_IMAGE}/zImage-dsmg600${SITEINFO_ENDIANESS} \
 		${DEPLOY_DIR_IMAGE}/firmupgrade/ip-ramdisk
 	install -m 0644 ${DEPLOY_DIR_IMAGE}/${IMAGE_NAME}.rootfs.jffs2 \
 		${DEPLOY_DIR_IMAGE}/firmupgrade/rootfs.gz
@@ -154,7 +154,7 @@ slugos_pack_image() {
 
 	# Create an image for the NAS 100d as well
 	install -d ${DEPLOY_DIR_IMAGE}/firmupgrade
-	install -m 0755 ${DEPLOY_DIR_IMAGE}/zImage-nas100d${IXP4XX_MACHINE_ENDIAN} \
+	install -m 0755 ${DEPLOY_DIR_IMAGE}/zImage-nas100d${SITEINFO_ENDIANESS} \
 		${DEPLOY_DIR_IMAGE}/firmupgrade/ip-ramdisk
 	install -m 0644 ${DEPLOY_DIR_IMAGE}/${IMAGE_NAME}.rootfs.jffs2 \
 		${DEPLOY_DIR_IMAGE}/firmupgrade/rootfs.gz

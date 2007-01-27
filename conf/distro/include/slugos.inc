@@ -11,7 +11,6 @@
 # slugos-[bl][at][gu] - a specific configuration encoded as follows:
 #
 #  b or l - big or little endian
-#         set IXP4XX_MACHINE_ENDIAN to match
 #
 #  a or t - ARM or Thumb instructions in the low level libraries
 #         set ARM_INSTRUCTION_SET to match
@@ -45,7 +44,6 @@ DISTRO_FEED ?= "unstable"
 
 # The following must also be set, they define the basic format of the build
 #
-#IXP4XX_MACHINE_ENDIAN "be" or "le"
 #ARM_INSTRUCTION_SET "arm" or "thumb"
 #TARGET_OS "linux" or "linux-uclibc"
 #SLUGOS_IMAGESEX "big-endian" or "little-endian" (JFFS2 format)
@@ -55,7 +53,7 @@ DISTRO_FEED ?= "unstable"
 USE_NLS ?= "no"
 
 # To make errors easier to identify:
-DISTRO_NAME ?= "INVALID-${IXP4XX_MACHINE_ENDIAN}-${ARM_INSTRUCTION_SET}-${TARGET_OS}"
+DISTRO_NAME ?= "INVALID-${SITEINFO_ENDIANESS}-${ARM_INSTRUCTION_SET}-${TARGET_OS}"
 DISTRO_TYPE ?= "INVALID"
 
 # The following must not be changed.

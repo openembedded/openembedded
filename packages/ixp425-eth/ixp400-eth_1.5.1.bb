@@ -39,7 +39,7 @@ inherit module
 # This is a somewhat arbitrary choice:
 OSAL_DIR = "${STAGING_KERNEL_DIR}/ixp_osal"
 
-IX_TARGET = "linux${IXP4XX_MACHINE_ENDIAN}"
+IX_TARGET = "linux${SITEINFO_ENDIANESS}"
 IX_ENSURE = ""
 #IX_ENSURE = "-DIX_OSAL_ENSURE_ON=1"
 # The following controls the name of the ethernet devices which get
