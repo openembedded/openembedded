@@ -2,13 +2,13 @@ LICENSE = "GPL"
 DEPENDS = "libxml2 gconf gnutls avahi dbus bzip2 gnome-mime-data zlib"
 RRECOMMENDS = "gnome-vfs-plugin-file gnome-mime-data shared-mime-info"
 
-PR = "r1"
+PR = "r2"
 
 inherit gnome
 
 # This is to provide compatibility with the gnome-vfs DBus fork
 PROVIDES = "gnome-vfs-plugin-dbus"
-RRPEPLACES = "gnome-vfs-dbus"
+RREPLACES = "gnome-vfs-dbus"
 
 SRC_URI += "file://gconftool-lossage.patch;patch=1;pnum=1 \
 	    file://gnome-vfs-no-kerberos.patch;patch=1;pnum=0"
