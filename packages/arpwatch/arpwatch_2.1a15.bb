@@ -3,7 +3,7 @@ HOMEPAGE = "http://www-nrg.ee.lbl.gov/"
 SECTION = "network"
 LICENSE = "BSD"
 RRECOMMENDS = "arpwatch-data"
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "ftp://ftp.ee.lbl.gov/arpwatch-${PV}.tar.gz \
            file://05debian_fhs.patch;patch=1 \
@@ -21,7 +21,7 @@ PACKAGES =+ "arpwatch-data"
 
 FILES_arpwatch-data = "${datadir}/arpwatch/ethercodes.dat"
 
-do_install() {
+fakeroot do_install() {
         install -d ${D}${bindir} ${D}${sbindir} ${D}${mandir}/man8 \
                 ${D}${sysconfdir}/default \
                 ${D}${sysconfdir}/init.d \

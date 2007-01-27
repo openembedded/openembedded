@@ -1,7 +1,7 @@
 DESCRIPTION = "MediaTomb - UPnP AV MediaServer for Linux"
 HOMEPAGE = "http://mediatomb.org/"
 LICENSE = "GPLv2"
-DEPENDS = "sqlite3 libexif js zlib file taglib"
+DEPENDS = "sqlite3 libexif js zlib file id3lib"
 PV = "0.8+0.9pre1+svn${SRCDATE}-sqlite"
 PR = "r1"
 

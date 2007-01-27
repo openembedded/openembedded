@@ -16,5 +16,3 @@ do_compile() {
 do_stage() {
 	autotools_stage_all
 }
-
-

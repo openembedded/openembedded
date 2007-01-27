@@ -2,8 +2,10 @@ HOMEPAGE = "http://www.x.org"
 SECTION = "x11/base"
 LICENSE = "MIT-X"
 
-RPROVIDES = "virtual/xserver"
+RPROVIDES_${PN} = "virtual/xserver"
 PROVIDES = "virtual/xserver"
+
+MESA_VER ?= "6.5"
 
 DEPENDS = "fontconfig freetype flex-native lbxutil kbproto \
 xf86driproto drm glproto randrproto renderproto fixesproto damageproto \
@@ -14,18 +16,18 @@ resourceproto xineramaproto xtrans evieext libxkbfile libxfont libxau \
 libfontenc libxdmcp libxxf86vm libxaw libxmu libxt libxpm libxext libx11 \
 libxkbui libxxf86misc libxi libdmx libxtst libxres mesa mkfontscale-native"
 
-RDEPENDS="rgb"
+RDEPENDS_${PN} = "rgb"
 
 XORG_PN = "xorg-server"
 SRC_URI = "${XORG_MIRROR}/${@bb.data.getVar('PV', d, 1)[0:7]}/src/xserver/${XORG_PN}-${PV}.tar.bz2 \
+	${SOURCEFORGE_MIRROR}/mesa3d/MesaLib-${MESA_VER}.tar.bz2 \
 	file://xorg.conf"
 
 S = "${WORKDIR}/${XORG_PN}-${PV}"
 
 inherit autotools pkgconfig
 
-
-EXTRA_OECONF = "--disable-builddocs"
+EXTRA_OECONF = "--disable-builddocs --with-mesa-source=${WORKDIR}/Mesa-${MESA_VER}"
 
 PACKAGES =+ "${PN}-xprint ${PN}-xvfb ${PN}-utils ${PN}-xnest ${PN}-dmx"
 
