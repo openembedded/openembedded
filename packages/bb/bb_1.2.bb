@@ -3,6 +3,7 @@ HOMEPAGE = "http://aa-project.sourceforge.net/bb/"
 SECTION = "console/misc"
 DEPENDS = "aalib"
 PR = "r1"
+LICENSE = "GPLv2"
 MAINTAINER = "Justin Patrin <papercrane@reversefold.com>"
 
 SRC_URI = "http://prdownloads.sourceforge.net/aa-project/bb-1.2.tar.gz \
