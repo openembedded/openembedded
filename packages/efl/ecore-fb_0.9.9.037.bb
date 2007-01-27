@@ -1,6 +1,8 @@
 require ecore.inc
 PR = "r2"
 
+SRC_URI += "file://remove-bad-code.patch;patch=1"
+
 EXTRA_OECONF = "--enable-ecore-fb \
 		--enable-ecore-job \
 		--enable-ecore-file \
