@@ -1,6 +1,7 @@
 DESCRIPTION = "bb, The portable aalib demo"
 HOMEPAGE = "http://aa-project.sourceforge.net/bb/"
 SECTION = "console/misc"
+LICENSE = "GPLv2"
 DEPENDS = "aalib"
 PR = "r1"
 
