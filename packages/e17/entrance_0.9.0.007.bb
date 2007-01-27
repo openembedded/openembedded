@@ -1,10 +1,10 @@
 DESCRIPTION = "Entrance is the Enlightenment login manager"
 LICENSE = "MIT"
 # can also use pam and crypt
-DEPENDS = "edb edb-native evas-x11 ecore-x11 edje esmart-x11 bash keylaunch xserver-common login-manager"
+DEPENDS = "evas-x11 ecore-x11 edje esmart-x11 bash keylaunch xserver-common login-manager"
 RDEPENDS += "bash keylaunch xserver-common glibc-gconv-iso8859-1 login-manager entrance-themes"
 HOMEPAGE = "http://www.enlightenment.org"
-PR = "r13"
+PR = "r14"
 
 inherit e
 
