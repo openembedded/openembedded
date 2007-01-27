@@ -5,7 +5,7 @@ SECTION = "libs"
 LICENSE = "LGPL"
 PRIORITY = "optional"
 DEPENDS = "glib-2.0 pango atk jpeg libpng libxext libxcursor gtk-doc libgcrypt"
-PR = "r5"
+PR = "r6"
 
 SRC_URI = "ftp://ftp.gtk.org/pub/gtk/v2.6/gtk+-${PV}.tar.bz2 \
            file://help.patch;patch=1 \
@@ -23,7 +23,8 @@ SRC_URI = "ftp://ftp.gtk.org/pub/gtk/v2.6/gtk+-${PV}.tar.bz2 \
 	   file://small-gtkfilesel.patch;patch=1 \
 	   file://migration.patch;patch=1;pnum=0 \
 	   file://single-click.patch;patch=1 \
-	   file://menu-styling.patch;patch=1"
+	   file://menu-styling.patch;patch=1 \
+	   file://compile-against-newer-glib.patch;patch=1"
 
 inherit autotools pkgconfig
 
