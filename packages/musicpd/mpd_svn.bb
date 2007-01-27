@@ -6,9 +6,10 @@ SECTION = "console/multimedia"
 DEPENDS = "libvorbis libogg libid3tag libao zlib libmikmod libmad flac audiofile virtual/libiconv faad2"
 SRCDATE = "20070120"
 PV = "0.12.1+svn${SRCDATE}"
-PR = "r0"
+PR = "r1"
 
-SRC_URI = "svn://svn.musicpd.org/mpd;module=trunk;proto=https"
+SRC_URI = "svn://svn.musicpd.org/mpd;module=trunk;proto=https \
+           file://fix-mod-support.patch;patch=1"
 #           file://save-volume-state.patch;patch=1"
 S = "${WORKDIR}/trunk"
 

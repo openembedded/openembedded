@@ -1,0 +1,21 @@
+Index: trunk/src/inputPlugins/mod_plugin.c
+===================================================================
+--- trunk.orig/src/inputPlugins/mod_plugin.c
++++ trunk/src/inputPlugins/mod_plugin.c
+@@ -64,9 +64,13 @@ static MDRIVER drv_mpd = {
+ 	"MPD Output Driver v0.1",
+ 	0,
+ 	255,
+-	"mpd",
+-	NULL,
+-	mod_mpd_IsThere,
++#if (LIBMIKMOD_VERSION > 0x030106)
++    "mpd", /* alias */
++    NULL, /* cmd help line*/
++#endif
++#if (LIBMIKMOD_VERSION >= 0x030200)
++    NULL, /*Command Line */
++#endif	mod_mpd_IsThere,
+ 	VC_SampleLoad,
+ 	VC_SampleUnload,
+ 	VC_SampleSpace,
