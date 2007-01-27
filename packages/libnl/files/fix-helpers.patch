@@ -1,0 +1,49 @@
+Index: libnl-0.5.0/lib/helpers.c
+===================================================================
+--- libnl-0.5.0.orig/lib/helpers.c
++++ libnl-0.5.0/lib/helpers.c
+@@ -29,6 +29,7 @@
+ #include <netlink/netlink.h>
+ #include <netlink/helpers.h>
+ #include <linux/socket.h>
++#include <linux/if_ether.h>
+ 
+ int nl_debug = 0;
+ 
+Index: libnl-0.5.0/lib/route/filter.c
+===================================================================
+--- libnl-0.5.0.orig/lib/route/filter.c
++++ libnl-0.5.0/lib/route/filter.c
+@@ -40,6 +40,7 @@
+ #include <netlink/route/filter.h>
+ #include <netlink/route/link.h>
+ #include <netlink/route/rtattr.h>
++#include <linux/if_ether.h>
+ 
+ static struct rtnl_filter_ops *filter_ops;
+ 
+Index: libnl-0.5.0/lib/Makefile
+===================================================================
+--- libnl-0.5.0.orig/lib/Makefile
++++ libnl-0.5.0/lib/Makefile
+@@ -68,7 +68,7 @@ distclean:
+ 
+ install:
+ 	mkdir -p $(DESTDIR)$(prefix)/lib/
+-	install -o root -g root -m 0644 $(OUT_SLIB) $(DESTDIR)$(prefix)/lib
++	install -m 0644 $(OUT_SLIB) $(DESTDIR)$(prefix)/lib
+ 	rm -f $(DESTDIR)$(prefix)/lib/$(LN1_SLIB) ; \
+ 	$(LN) -s $(DESTDIR)$(prefix)/lib/$(OUT_SLIB) $(DESTDIR)$(prefix)/lib/$(LN1_SLIB)
+ 	rm -f $(DESTDIR)$(prefix)/lib/$(LN_SLIB) ; \
+Index: libnl-0.5.0/include/Makefile
+===================================================================
+--- libnl-0.5.0.orig/include/Makefile
++++ libnl-0.5.0/include/Makefile
+@@ -37,5 +37,5 @@ distclean:
+ 
+ install:
+ 	mkdir -p $(DESTDIR)$(prefix)/include/netlink/route/
+-	install -o root -g root -m 0644 netlink/*.h $(DESTDIR)$(prefix)/include/netlink/
+-	install -o root -g root -m 0644 netlink/route/*.h $(DESTDIR)$(prefix)/include/netlink/route/
++	install -m 0644 netlink/*.h $(DESTDIR)$(prefix)/include/netlink/
++	install -m 0644 netlink/route/*.h $(DESTDIR)$(prefix)/include/netlink/route/
