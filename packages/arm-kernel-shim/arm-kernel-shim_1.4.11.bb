@@ -9,7 +9,7 @@ SRC_URI = "ftp://ftp.buici.com/pub/apex/apex-${PV}.tar.gz \
 	   file://disable-commandline.patch;patch=1 \
 	   file://config-nslu2.h \
 	   file://config-nas100d.h \
-	   file://config-dmsg600.h \
+	   file://config-dsmg600.h \
 	   file://config-fsg3.h"
 
 S = ${WORKDIR}/apex-${PV}/arm-kernel-shim
