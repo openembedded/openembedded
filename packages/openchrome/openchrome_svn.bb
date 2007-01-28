@@ -3,6 +3,7 @@ SRC_URI = "svn://svn.openchrome.org/svn;module=trunk;proto=http \
 S = "${WORKDIR}/trunk"
 
 PACKAGES = "libviaXvMC libviaXvMCPro libviaXvMC-dev libviaXvMCPro-dev libviaXvMC-dbg libviaXvMCPro-dbg ${PN}-doc"
+PACKAGES_DYNAMIC = "xorg-driver-via"
 
 FILES_libviaXvMC = "${libdir}/libviaXvMC.so.*"
 FILES_libviaXvMCPro = "${libdir}/libviaXvMCPro.so.*"
