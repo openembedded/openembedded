@@ -1,4 +1,4 @@
-PV = "1.9"
+PV = "1.10"
 PR = "r0"
 
 RDEPENDS_${PN} = "font-misc-misc"
