@@ -5,7 +5,7 @@ SECTION = "console/multimedia"
 DEPENDS = "libvorbis libogg libid3tag libao zlib libmikmod libmad flac audiofile virtual/libiconv faad2 pulseaudio"
 SRCDATE = "20070120"
 PV = "0.12.1+svn${SRCDATE}"
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "svn://svn.musicpd.org/mpd;module=trunk;proto=https \
            file://fix-mod-support.patch;patch=1"
