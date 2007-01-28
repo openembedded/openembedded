@@ -25,6 +25,6 @@
 //#define COMMANDLINE\
 // "console=ttyAMA0 root=/dev/memblk0 rootfstype=jffs"
 
-#define MACH_TYPE		   865
+#define MACH_TYPE		   597
 
 #endif  /* __CONFIG_H__ */
