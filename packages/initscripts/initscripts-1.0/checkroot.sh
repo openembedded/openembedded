@@ -189,15 +189,14 @@ fi
 #	and finally write the new mtab.
 #	This part is only needed if the rootfs was mounted ro.
 #
-if [ $(grep rootfs /proc/mounts | awk '{print $4}') = rw ]; then
+ROOTFSDEV="/dev/root"
+if ! grep -q "^$ROOTFSDEV\w" /proc/mounts; then
+  ROOTFSDEV="rootfs"
+fi
+if [ $(grep "^$ROOTFSDEV\w" /proc/mounts | awk '{print $4}') = rw ]; then
+	echo "Root filesystem already read-write, not remounting"
 	exit 0
 fi
-
-#       Add a second check, which seems to be needed for some kernel versions
-if [ $(grep "/dev/root" /proc/mounts | awk '{print $4}') = rw ]; then
-        exit 0
-fi
-
 
 echo "Remounting root file system..."
 mount -n -o remount,$rootmode /
