@@ -2,6 +2,7 @@ DESCRIPTION = "X driver"
 HOMEPAGE = "http://www.x.org"
 SECTION = "x11/drivers"
 LICENSE = "MIT-X"
+PR = "r1"
 
 DEPENDS = "randrproto xorg-server xproto"
 
@@ -11,6 +12,7 @@ SRC_URI = "${XORG_MIRROR}/${@bb.data.getVar('PV', d, 1)[0:7]}/src/driver/${XORG_
 S = "${WORKDIR}/${XORG_PN}-${PV}"
 
 FILES_${PN} += " ${libdir}/xorg/modules"
+FILES_${PN}-dbg +=  "${libdir}/xorg/modules/*/.debug"
 
 inherit autotools pkgconfig
 
