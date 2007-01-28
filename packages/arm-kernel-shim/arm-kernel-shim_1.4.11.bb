@@ -8,7 +8,10 @@ PR = "r1"
 SRC_URI = "ftp://ftp.buici.com/pub/apex/apex-${PV}.tar.gz \
 	   file://disable-commandline.patch;patch=1 \
 	   file://config-nslu2.h \
-	   file://config-nas100d.h"
+	   file://config-nas100d.h \
+	   file://config-dmsg600.h \
+	   file://config-fsg3.h"
+
 S = ${WORKDIR}/apex-${PV}/arm-kernel-shim
 
 EXTRA_OEMAKE_append = " CROSS_COMPILE=${CROSS_DIR}/bin/${HOST_PREFIX}"
@@ -24,6 +27,16 @@ oe_runmake() {
 	rm -f ${S}/main.o
 	oenote make ${PARALLEL_MAKE} TOOLS=${CROSS_DIR}/bin/${TARGET_PREFIX} PACKAGE=arm-kernel-shim-nas100d
 	make ${PARALLEL_MAKE} TOOLS=${CROSS_DIR}/bin/${TARGET_PREFIX} PACKAGE=arm-kernel-shim-nas100d || die "oe_runmake failed"
+	# DSMG-600
+	cp ${WORKDIR}/config-dsmg600.h ${S}/config.h
+	rm -f ${S}/main.o
+	oenote make ${PARALLEL_MAKE} TOOLS=${CROSS_DIR}/bin/${TARGET_PREFIX} PACKAGE=arm-kernel-shim-dmsg600
+	make ${PARALLEL_MAKE} TOOLS=${CROSS_DIR}/bin/${TARGET_PREFIX} PACKAGE=arm-kernel-shim-dmsg600 || die "oe_runmake failed"
+	# FSG-3
+	cp ${WORKDIR}/config-fsg3.h ${S}/config.h
+	rm -f ${S}/main.o
+	oenote make ${PARALLEL_MAKE} TOOLS=${CROSS_DIR}/bin/${TARGET_PREFIX} PACKAGE=arm-kernel-shim-fsg3
+	make ${PARALLEL_MAKE} TOOLS=${CROSS_DIR}/bin/${TARGET_PREFIX} PACKAGE=arm-kernel-shim-fsg3 || die "oe_runmake failed"
 }
 
 do_populate_staging() {
@@ -31,4 +44,6 @@ do_populate_staging() {
 	. ${CONFIG_SITE}
 	cp ${S}/arm-kernel-shim-nslu2.bin ${STAGING_LOADER_DIR}/
 	cp ${S}/arm-kernel-shim-nas100d.bin ${STAGING_LOADER_DIR}/
+	cp ${S}/arm-kernel-shim-dsmg600.bin ${STAGING_LOADER_DIR}/
+	cp ${S}/arm-kernel-shim-fsg3.bin ${STAGING_LOADER_DIR}/
 }
