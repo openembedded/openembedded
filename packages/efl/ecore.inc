@@ -3,7 +3,7 @@ foundation libraries. It makes makes doing selections, drag and drop, event loop
 timeouts and idle handlers fast, optimized, and convenient."
 LEAD_SONAME = "libecore.so"
 LICENSE = "MIT"
-# can also have openssl, dbus
+# can also have openssl, dbus, iconv
 DEPENDS += "virtual/evas curl eet"
 PROVIDES += "virtual/ecore"
 

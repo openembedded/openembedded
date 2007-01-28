@@ -1,0 +1,13 @@
+Index: bmon-2.1.0/GNUmakefile
+===================================================================
+--- bmon-2.1.0.orig/GNUmakefile
++++ bmon-2.1.0/GNUmakefile
+@@ -50,7 +50,7 @@ distclean: clean
+ install:
+ 	./install-sh -d -m 0755 $(DESTDIR)$(prefix)/bin
+ 	./install-sh -d -m 0755 $(DESTDIR)$(mandir)/man1
+-	./install-sh -c -s -m 0755 src/bmon $(DESTDIR)$(prefix)/bin
++	./install-sh -c -m 0755 src/bmon $(DESTDIR)$(prefix)/bin
+ 	./install-sh -c    -m 0644 man/bmon.1 $(DESTDIR)$(mandir)/man1
+ 
+ show: Makefile.opts

@@ -33,7 +33,7 @@ COMPATIBLE_MACHINE = "(nslu2|ixp4xx)"
 
 inherit module
 
-IX_TARGET = "linux${IXP4XX_MACHINE_ENDIAN}"
+IX_TARGET = "linux${SITEINFO_ENDIANESS}"
 
 EXTRA_OEMAKE = "'CC=${KERNEL_CC}' \
 		'LD=${KERNEL_LD}' \
