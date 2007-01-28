@@ -387,6 +387,7 @@ python populate_packages () {
 		bb.mkdirhier(root)
 		filesvar = bb.data.getVar('FILES', localdata, 1) or ""
 		files = filesvar.split()
+		cleandirs = []
 		for file in files:
 			if os.path.isabs(file):
 				file = '.' + file
@@ -395,6 +396,7 @@ python populate_packages () {
 					newfiles =  [ os.path.join(file,x) for x in os.listdir(file) ]
 					if newfiles:
 						files += newfiles
+						cleandirs = [file] + cleandirs
 						continue
 			globbed = glob.glob(file)
 			if globbed:
@@ -409,6 +411,8 @@ python populate_packages () {
 			ret = bb.movefile(file,fpath)
 			if ret is None or ret == 0:
 				raise bb.build.FuncFailed("File population failed")
+		for dir in cleandirs:
+			os.rmdir(dir)
 		del localdata
 	os.chdir(workdir)
 
