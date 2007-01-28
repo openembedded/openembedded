@@ -3,7 +3,7 @@ SECTION = ""
 PRIORITY = "optional"
 HOMEPAGE = "http://wiki.buici.com/twiki/bin/view/Main/ApexBootloader"
 LICENSE = "GPL"
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "ftp://ftp.buici.com/pub/apex/apex-${PV}.tar.gz \
 	   file://disable-commandline.patch;patch=1 \
@@ -30,8 +30,8 @@ oe_runmake() {
 	# DSMG-600
 	cp ${WORKDIR}/config-dsmg600.h ${S}/config.h
 	rm -f ${S}/main.o
-	oenote make ${PARALLEL_MAKE} TOOLS=${CROSS_DIR}/bin/${TARGET_PREFIX} PACKAGE=arm-kernel-shim-dmsg600
-	make ${PARALLEL_MAKE} TOOLS=${CROSS_DIR}/bin/${TARGET_PREFIX} PACKAGE=arm-kernel-shim-dmsg600 || die "oe_runmake failed"
+	oenote make ${PARALLEL_MAKE} TOOLS=${CROSS_DIR}/bin/${TARGET_PREFIX} PACKAGE=arm-kernel-shim-dsmg600
+	make ${PARALLEL_MAKE} TOOLS=${CROSS_DIR}/bin/${TARGET_PREFIX} PACKAGE=arm-kernel-shim-dsmg600 || die "oe_runmake failed"
 	# FSG-3
 	cp ${WORKDIR}/config-fsg3.h ${S}/config.h
 	rm -f ${S}/main.o
