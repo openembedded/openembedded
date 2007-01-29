@@ -9,5 +9,8 @@ do_svnpatch() {
 	fi
 	rm -rf ${S}/patches
 	cd ${S} && ln -s ${WORKDIR}/patches-${PV} ${S}/patches
+	if [ -f ${WORKDIR}/series ] ; then \
+	  cp ${WORKDIR}/series ${WORKDIR}/patches-${PV}/series ; \
+	fi
 	cd ${S} && rm -rf .pc && ${STAGING_BINDIR_NATIVE}/quilt push -av
 }

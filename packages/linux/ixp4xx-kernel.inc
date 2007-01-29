@@ -149,7 +149,7 @@ SRC_URI  = "${IXP4XX_SRCURI}"
 SRC_URI += "${IXP4XX_PATCHES}"
 
 COMPATIBLE_HOST = 'arm.*-linux.*'
-COMPATIBLE_MACHINE = '(ixp4xx|loft|nslu2|nas100d|dsmg600|fsg3)'
+COMPATIBLE_MACHINE = '(ixp4xx|nslu2)'
 
 inherit kernel
 
@@ -256,20 +256,6 @@ pkg_postrm_kernel-image-nslu2 () {
 	update-alternatives --remove ${KERNEL_IMAGETYPE} /${KERNEL_IMAGEDEST}/${KERNEL_IMAGETYPE}-nslu2${SITEINFO_ENDIANESS}-${KERNEL_VERSION} || true
 }
 
-# The correct settings for Loft:
-loft_MACHID = "849"
-PACKAGES += "kernel-image-loft"
-PKG_kernel-image-loft = "kernel-image-${KERNEL_VERSION}"
-PACKAGE_ARCH_kernel-image-loft = "loft${SITEINFO_ENDIANESS}"
-DESCRIPTION_kernel-image-loft = "Linux kernel for the Giant Shoulder Inc. Loft board"
-FILES_kernel-image-loft = "/${KERNEL_IMAGEDEST}/${KERNEL_IMAGETYPE}-loft${SITEINFO_ENDIANESS}-${KERNEL_VERSION}"
-pkg_postinst_kernel-image-loft () {
-	update-alternatives --install /${KERNEL_IMAGEDEST}/${KERNEL_IMAGETYPE} ${KERNEL_IMAGETYPE} /${KERNEL_IMAGEDEST}/${KERNEL_IMAGETYPE}-loft${SITEINFO_ENDIANESS}-${KERNEL_VERSION} ${KERNEL_PRIORITY} || true
-}
-pkg_postrm_kernel-image-loft () {
-	update-alternatives --remove ${KERNEL_IMAGETYPE} /${KERNEL_IMAGEDEST}/${KERNEL_IMAGETYPE}-loft${SITEINFO_ENDIANESS}-${KERNEL_VERSION} || true
-}
-
 # The correct settings for the NAS100D board:
 nas100d_MACHID = "865"
 PACKAGES += "kernel-image-nas100d"
@@ -357,7 +343,6 @@ do_install_append() {
 
 	# Add the machine specific images, with appropriate suffixes
 	install_image 'nslu2${SITEINFO_ENDIANESS}' '${nslu2_MACHID}'
-	install_image 'loft${SITEINFO_ENDIANESS}' '${loft_MACHID}'
 	install_image 'nas100d${SITEINFO_ENDIANESS}' '${nas100d_MACHID}'
 	install_image 'dsmg600${SITEINFO_ENDIANESS}' '${dsmg600_MACHID}'
 	install_image 'fsg3${SITEINFO_ENDIANESS}' '${fsg3_MACHID}'
@@ -375,7 +360,6 @@ do_deploy() {
 
 	# And the machine specific images
 	deploy_image 'nslu2${SITEINFO_ENDIANESS}' '${nslu2_MACHID}'
-	deploy_image 'loft${SITEINFO_ENDIANESS}' '${loft_MACHID}'
 	deploy_image 'nas100d${SITEINFO_ENDIANESS}' '${nas100d_MACHID}'
 	deploy_image 'dsmg600${SITEINFO_ENDIANESS}' '${dsmg600_MACHID}'
 	deploy_image 'fsg3${SITEINFO_ENDIANESS}' '${fsg3_MACHID}'
