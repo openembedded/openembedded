@@ -1,0 +1,29 @@
+--- ipkg-0.99.163.orig/ipkg_download.c	Thu Apr 20 20:18:29 2006
++++ ipkg-0.99.163/ipkg_download.c	Thu Jan 18 05:54:52 2007
+@@ -108,6 +108,7 @@
+ {
+     int err;
+     char *url;
++    char *filename;
+ 
+     if (pkg->src == NULL) {
+ 	ipkg_message(conf,IPKG_ERROR, "ERROR: Package %s (parent %s) is not available from any configured src.\n",
+@@ -117,11 +118,16 @@
+ 
+     sprintf_alloc(&url, "%s/%s", pkg->src->value, pkg->filename);
+ 
+-    /* XXX: BUG: The pkg->filename might be something like
++    /* The pkg->filename might be something like
+        "../../foo.ipk". While this is correct, and exactly what we
+        want to use to construct url above, here we actually need to
+        use just the filename part, without any directory. */
+-    sprintf_alloc(&pkg->local_filename, "%s/%s", dir, pkg->filename);
++    filename = strrchr(pkg->filename, '/');
++    if(NULL == filename)
++        filename = pkg->filename;
++    else
++        filename++;
++    sprintf_alloc(&pkg->local_filename, "%s/%s", dir, filename);
+ 
+     err = ipkg_download(conf, url, pkg->local_filename);
+     free(url);
