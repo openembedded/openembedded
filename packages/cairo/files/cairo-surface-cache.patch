@@ -1,0 +1,91 @@
+Hi,
+
+Last month, Xan xtraced[1] cairo text drawing (using xlib), and noticed
+that cairo creates (and afterward destroys) a 1x1 pixmap (a cairo
+surface) every time it draws some text. Xft doesn't do this.
+
+Carl and Behdad suggested ways to, like Xft, cache surfaces so as not to
+have to recreate them all the time.
+
+As suggested by Carl in the same thread, I first investigated
+per-pattern caching of acquired surfaces. This didn't work as patterns
+mostly get copied before their surfaces are requested. 
+
+Attached patch adds a simple 16-entry static cache to
+_cairo_pattern_acquire_surface_for_solid(). It still needs work, however
+this already yields a speedup[2] of 12% when drawing text using GTK+
+2.10, exceeding the performance of GTK+ 2.6. Yay!
+
+Comments appreciated,
+
+Jorn
+
+diff --git a/src/cairo-pattern.c b/src/cairo-pattern.c
+index b488d1f..be63faf 100644
+--- a/src/cairo-pattern.c
++++ b/src/cairo-pattern.c
+@@ -1020,6 +1020,8 @@ _cairo_pattern_acquire_surface_for_gradi
+     return status;
+ }
+ 
++#define MAX_CACHE_SIZE 16
++
+ static cairo_int_status_t
+ _cairo_pattern_acquire_surface_for_solid (cairo_solid_pattern_t	     *pattern,
+ 					  cairo_surface_t	     *dst,
+@@ -1030,13 +1032,50 @@ _cairo_pattern_acquire_surface_for_solid
+ 					  cairo_surface_t	     **out,
+ 					  cairo_surface_attributes_t *attribs)
+ {
+-    *out = _cairo_surface_create_similar_solid (dst,
+-						CAIRO_CONTENT_COLOR_ALPHA,
+-						1, 1,
+-						&pattern->color);
+-    if ((*out)->status)
++    /* We have a small cache here, because we don't want to constantly
++     * recreate surfaces for simple solid colors */
++    static struct {
++        cairo_color_t    color;
++        cairo_surface_t *surface;
++    } cache[MAX_CACHE_SIZE];
++    static int cache_size = 0;
++
++    cairo_surface_t *surface;
++    int i;
++
++    /* Check cache first */
++    for (i = 0; i < cache_size; i++)
++        if (cache[i].surface->backend == dst->backend &&
++            memcmp (&cache[i].color,
++                    &pattern->color,
++                    sizeof (cairo_color_t)) == 0)
++            goto DONE;
++
++    /* Not cached, need to create new */
++    surface = _cairo_surface_create_similar_solid (dst,
++						   CAIRO_CONTENT_COLOR_ALPHA,
++						   1, 1,
++						   &pattern->color);
++    if (surface->status)
+ 	return CAIRO_STATUS_NO_MEMORY;
+ 
++    /* Cache new */
++    if (cache_size < MAX_CACHE_SIZE)
++        cache_size++;
++    else {
++        i = random () % MAX_CACHE_SIZE;
++
++        /* Evict old */
++        cairo_surface_destroy (cache[i].surface);
++    }
++
++    cache[i].color   = pattern->color;
++    cache[i].surface = surface;
++
++DONE:
++
++    *out = cairo_surface_reference (cache[i].surface);
++
+     attribs->x_offset = attribs->y_offset = 0;
+     cairo_matrix_init_identity (&attribs->matrix);
+     attribs->extend = CAIRO_EXTEND_REPEAT;
