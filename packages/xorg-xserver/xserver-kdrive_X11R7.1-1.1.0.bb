@@ -1,11 +1,30 @@
 LICENSE = "MIT"
 DEPENDS = "tslib virtual/libsdl xproto libxdmcp xextproto xtrans libxau virtual/libx11 libxext libxrandr fixesproto damageproto libxfont resourceproto compositeproto xcalibrateext recordproto videoproto scrnsaverproto"
 
-PR = "r6"
+PR = "r7"
 
 PROVIDES = "virtual/xserver"
 RPROVIDES = "virtual/xserver"
-PACKAGES =+ "xserver-kdrive-fbdev xserver-kdrive-sdl xserver-kdrive-fake xserver-kdrive-xephyr xserver-kdrive-epson xserver-kdrive-w100"
+PACKAGES =+ "xserver-kdrive-fbdev \
+             xserver-kdrive-sdl \
+             xserver-kdrive-fake \
+             xserver-kdrive-xephyr \
+             xserver-kdrive-epson \
+             xserver-kdrive-w100 \
+             xserver-kdrive-ati \
+             xserver-kdrive-chips \
+             xserver-kdrive-i810 \
+             xserver-kdrive-mach64 \
+             xserver-kdrive-mga \
+             xserver-kdrive-neomagic \
+             xserver-kdrive-nvidia \
+             xserver-kdrive-pm2 \
+             xserver-kdrive-r128 \
+             xserver-kdrive-smi \
+             xserver-kdrive-vesa \
+             xserver-kdrive-via \
+             "
+
 SECTION = "x11/base"
 DESCRIPTION = "X server from freedesktop.org"
 DESCRIPTION_xserver-kdrive-fbdev = "X server from freedesktop.org, supporting generic framebuffer devices"
@@ -14,6 +33,18 @@ DESCRIPTION_xserver-kdrive-xephyr = "X server in an X window"
 DESCRIPTION_xserver-kdrive-epson = "X server from freedesktop.org, supporting Epson S1D13806 devices"
 DESCRIPTION_xserver-kdrive-sdl = "X server from freedesktop.org, SDL version"
 DESCRIPTION_xserver-kdrive-w100 = "X server from freedesktop.org, supporting the ATI imageon w100 chipset"
+DESCRIPTION_xserver-kdrive-ati = "X server from freedesktop.org, supporting ATI devices"
+DESCRIPTION_xserver-kdrive-chips = "X server from freedesktop.org, supporting Chips chipsets"
+DESCRIPTION_xserver-kdrive-i810 = "X server from freedesktop.org, supporting Intel chipsets"
+DESCRIPTION_xserver-kdrive-mach64 = "X server from freedesktop.org, supporting mach64 chipsets"
+DESCRIPTION_xserver-kdrive-mga = "X server from freedesktop.org, supporting mga chipsets"
+DESCRIPTION_xserver-kdrive-neomagic = "X server from freedesktop.org, supporting neomagic chipsets"
+DESCRIPTION_xserver-kdrive-nvidia = "X server from freedesktop.org, supporting nvidia devices"
+DESCRIPTION_xserver-kdrive-pm2 = "X server from freedesktop.org, supporting Permedia2 chipsets"
+DESCRIPTION_xserver-kdrive-r128 = "X server from freedesktop.org, supporting rage128 chipsets"
+DESCRIPTION_xserver-kdrive-smi = "X server from freedesktop.org, supporting Silicon Motion devices"
+DESCRIPTION_xserver-kdrive-vesa = "X server from freedesktop.org, supporting any card with a VESA, VGA or even EGA BIOS. x86 hardware only"
+DESCRIPTION_xserver-kdrive-via = "X server from freedesktop.org, supporting VIA chipsets"
 
 FILES_${PN} += "${libdir}/xserver/SecurityPolicy"
 
@@ -23,6 +54,18 @@ FILES_xserver-kdrive-xephyr = "${bindir}/Xephyr"
 FILES_xserver-kdrive-epson = "${bindir}/Xepson"
 FILES_xserver-kdrive-sdl = "${bindir}/Xsdl"
 FILES_xserver-kdrive-w100 = "${bindir}/Xw100"
+FILES_xserver-kdrive-ati = "${bindir}/Xati"
+FILES_xserver-kdrive-chips = "${bindir}/Xchips"
+FILES_xserver-kdrive-i810 = "${bindir}/Xi810"
+FILES_xserver-kdrive-mach64 = "${bindir}/Xmach64"
+FILES_xserver-kdrive-mga = "${bindir}/Xmga"
+FILES_xserver-kdrive-neomagic = "${bindir}/Xneomagic"
+FILES_xserver-kdrive-nvidia = "${bindir}/Xnvidia"
+FILES_xserver-kdrive-pm2 = "${bindir}/Xpm2"
+FILES_xserver-kdrive-r128 = "${bindir}/Xr128"
+FILES_xserver-kdrive-smi = "${bindir}/Xsmi"
+FILES_xserver-kdrive-vesa = "${bindir}/Xvesa"
+FILES_xserver-kdrive-via = "${bindir}/Xvia"
 
 RDEPENDS_xserver-kdrive-fbdev = "${PN}"
 RDEPENDS_xserver-kdrive-fake = "${PN}"
@@ -30,6 +73,18 @@ RDEPENDS_xserver-kdrive-xephyr = "${PN}"
 RDEPENDS_xserver-kdrive-epson = "${PN}"
 RDEPENDS_xserver-kdrive-sdl = "${PN}"
 RDEPENDS_xserver-kdrive-w100 = "${PN}"
+RDEPENDS_xserver-kdrive-ati = "${PN}"
+RDEPENDS_xserver-kdrive-chips = "${PN}"
+RDEPENDS_xserver-kdrive-i810 = "${PN}"
+RDEPENDS_xserver-kdrive-mach64 = "${PN}"
+RDEPENDS_xserver-kdrive-mga = "${PN}"
+RDEPENDS_xserver-kdrive-neomagic = "${PN}"
+RDEPENDS_xserver-kdrive-nvidia = "${PN}"
+RDEPENDS_xserver-kdrive-pm2 = "${PN}"
+RDEPENDS_xserver-kdrive-r128 = "${PN}"
+RDEPENDS_xserver-kdrive-smi = "${PN}"
+RDEPENDS_xserver-kdrive-vesa = "${PN}"
+RDEPENDS_xserver-kdrive-via = "${PN}"
 
 SRC_URI = "http://ftp.x.org/pub/X11R7.1/src/xserver/xorg-server-X11R7.1-1.1.0.tar.bz2 \
 	file://kmode.patch;patch=1 \
