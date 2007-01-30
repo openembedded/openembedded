@@ -7,6 +7,8 @@ DEPENDS = "libxpm gtk+"
 
 inherit autotools pkgconfig
 
+PARALLEL_MAKE = ""
+
 PACKAGES += "libgnokii libgnokii-dev"
 
 FILES_${PN} = "${bindir} ${sbindir}"

@@ -16,6 +16,10 @@ FILES_libgnokii-dev = "${includedir} ${libdir}/lib*.so ${libdir}/*.la \
 FILES_${PN}-dev = ""
 FILES_libgnokii = "${libdir}/libgnokii.so.*"
 
+do_compile_prepend() {
+	sed -i s:foo::g Makefile.global
+}
+
 do_stage() {
 	autotools_stage_includes
 
