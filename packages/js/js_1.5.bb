@@ -1,14 +1,11 @@
-LICENSE = "GPL"
 DESCRIPTION = "A JavaScript engine"
-SECTION = "libs"
+LICENSE = "GPL"
+SECTION = "libs/network"
 DEPENDS = "readline"
-SRC_URI = "http://ftp.mozilla.org/pub/mozilla.org/js/js-1.5.tar.gz \
-	   file://jsautocfg.h"
 
+SRC_URI = "http://ftp.mozilla.org/pub/mozilla.org/js/older-packages/js-1.5.tar.gz \
+           file://jsautocfg.h"
 S = "${WORKDIR}/js/src"
-
-FILES_${PN} = "${libdir}/lib*.so"
-FILES_${PN}-dev = "${includedir} ${libdir}/lib*.a"
 
 EXTRA_OEMAKE = "'CC=${CC}' 'LD=${LD}' 'XCFLAGS=${CFLAGS}' 'XLDFLAGS=-L${STAGING_LIBDIR} -soname=libjs'"
 
@@ -33,3 +30,6 @@ do_stage() {
 	install -m 0644 ${S}/*.h ${STAGING_INCDIR}/js/
 	oe_libinstall -so -C Linux_All_DBG.OBJ libjs ${STAGING_LIBDIR}
 }
+
+FILES_${PN} = "${libdir}/lib*.so"
+FILES_${PN}-dev = "${includedir} ${libdir}/lib*.a"
