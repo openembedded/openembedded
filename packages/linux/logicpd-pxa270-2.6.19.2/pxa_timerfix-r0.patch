@@ -1,0 +1,77 @@
+PXA Timers: Stop interrupts becomming enabled when they shouldn't be
+
+Calling save_time_delta() from within pxa_pm_enter() isn't allowed as it 
+will reenable interrupts in a function where they should be disabled 
+throughout. These calls can be made safely from the time.c suspend/resume 
+functions instead.
+
+Signed-Off-By: Richard Purdie <rpurdie@rpsys.net>
+
+
+Index: linux-2.6.12/arch/arm/mach-pxa/pm.c
+===================================================================
+--- linux-2.6.12.orig/arch/arm/mach-pxa/pm.c	2005-08-21 20:05:16.000000000 +0100
++++ linux-2.6.12/arch/arm/mach-pxa/pm.c	2005-08-21 20:06:02.000000000 +0100
+@@ -78,7 +78,6 @@
+ {
+ 	unsigned long sleep_save[SLEEP_SAVE_SIZE];
+ 	unsigned long checksum = 0;
+-	struct timespec delta, rtc;
+ 	int i;
+ 	extern void pxa_cpu_pm_enter(suspend_state_t state);
+ 
+@@ -87,11 +86,6 @@
+ 	iwmmxt_task_disable(NULL);
+ #endif
+ 
+-	/* preserve current time */
+-	rtc.tv_sec = RCNR;
+-	rtc.tv_nsec = 0;
+-	save_time_delta(&delta, &rtc);
+-
+ 	SAVE(GPLR0); SAVE(GPLR1); SAVE(GPLR2);
+ 	SAVE(GPDR0); SAVE(GPDR1); SAVE(GPDR2);
+ 	SAVE(GRER0); SAVE(GRER1); SAVE(GRER2);
+@@ -182,10 +176,6 @@
+ 
+ 	RESTORE(PSTR);
+ 
+-	/* restore current time */
+-	rtc.tv_sec = RCNR;
+-	restore_time_delta(&delta, &rtc);
+-
+ #ifdef DEBUG
+ 	printk(KERN_DEBUG "*** made it back from resume\n");
+ #endif
+Index: linux-2.6.12/arch/arm/mach-pxa/time.c
+===================================================================
+--- linux-2.6.12.orig/arch/arm/mach-pxa/time.c	2005-08-21 20:04:39.000000000 +0100
++++ linux-2.6.12/arch/arm/mach-pxa/time.c	2005-08-21 20:05:24.000000000 +0100
+@@ -128,6 +128,7 @@
+ 
+ #ifdef CONFIG_PM
+ static unsigned long osmr[4], oier;
++static struct timespec delta, rtc;
+ 
+ static void pxa_timer_suspend(void)
+ {
+@@ -136,10 +137,19 @@
+ 	osmr[2] = OSMR2;
+ 	osmr[3] = OSMR3;
+ 	oier = OIER;
++
++	/* preserve current time */
++	rtc.tv_sec = RCNR;
++	rtc.tv_nsec = 0;
++	save_time_delta(&delta, &rtc);
+ }
+ 
+ static void pxa_timer_resume(void)
+ {
++	/* restore current time */
++	rtc.tv_sec = RCNR;
++	restore_time_delta(&delta, &rtc);
++
+ 	OSMR0 = osmr[0];
+ 	OSMR1 = osmr[1];
+ 	OSMR2 = osmr[2];

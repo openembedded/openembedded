@@ -1,0 +1,211 @@
+Index: linux-2.6.15-rc1/arch/arm/mach-pxa/Makefile
+===================================================================
+--- linux-2.6.15-rc1.orig/arch/arm/mach-pxa/Makefile	2005-11-19 23:13:40.000000000 +0000
++++ linux-2.6.15-rc1/arch/arm/mach-pxa/Makefile	2005-11-19 23:13:41.000000000 +0000
+@@ -31,6 +31,7 @@
+ 
+ # Misc features
+ obj-$(CONFIG_PM) += pm.o sleep.o
++obj-$(CONFIG_PXA_KEYS) += pxa_keys.o
+ obj-$(CONFIG_PXA_SSP) += ssp.o
+ 
+ ifeq ($(CONFIG_PXA27x),y)
+Index: linux-2.6.15-rc1/arch/arm/mach-pxa/Kconfig
+===================================================================
+--- linux-2.6.15-rc1.orig/arch/arm/mach-pxa/Kconfig	2005-11-19 23:13:40.000000000 +0000
++++ linux-2.6.15-rc1/arch/arm/mach-pxa/Kconfig	2005-11-19 23:13:41.000000000 +0000
+@@ -112,6 +112,10 @@
+ 	help
+ 	  Select code specific to PXA27x variants
+ 
++config PXA_KEYS
++	tristate "PXA25x/27x simple keyboard driver"
++	depends on (PXA25x || PXA27x) && INPUT
++
+ config IWMMXT
+ 	bool
+ 	help
+Index: linux-2.6.15-rc1/arch/arm/mach-pxa/pxa_keys.c
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ linux-2.6.15-rc1/arch/arm/mach-pxa/pxa_keys.c	2005-11-19 23:32:30.000000000 +0000
+@@ -0,0 +1,157 @@
++/*
++ * Driver interface for keys on PXA25x GPIO lines
++ *
++ * Copyright 2005 Phil Blundell
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ */
++
++#include <linux/module.h>
++#include <linux/version.h>
++
++#include <linux/init.h>
++#include <linux/fs.h>
++#include <linux/interrupt.h>
++#include <linux/sched.h>
++#include <linux/pm.h>
++#include <linux/sysctl.h>
++#include <linux/proc_fs.h>
++#include <linux/delay.h>
++#include <linux/platform_device.h>
++#include <linux/input.h>
++
++#include <asm/irq.h>
++#include <asm/arch/hardware.h>
++#include <asm/arch/pxa-regs.h>
++#include <asm/arch/pxa_keys.h>
++
++static irqreturn_t
++pxa_keys_isr (int irq, void *dev_id, struct pt_regs *regs)
++{
++	int i;
++	struct pxa_keys_platform_data *k = dev_id;
++
++	if (k->suspended)
++		return IRQ_HANDLED;
++
++	for (i = 0; i < k->nbuttons; i++) {
++		int gpio = k->buttons[i].gpio;
++		if (irq == IRQ_GPIO(gpio)) {
++			int state = ((GPLR(gpio) & GPIO_bit(gpio)) ? 1 : 0) 
++				^ ((k->buttons[i].flags & PXAKEY_ACTIVE_LOW) != 0);
++			input_report_key (&k->input, k->buttons[i].keycode, state);
++			if ((k->buttons[i].flags & PXAKEY_PWR_KEY)
++				&& time_after(jiffies, k->suspend_jiffies + HZ)) {
++					input_event(&k->input, EV_PWR, k->buttons[i].keycode, state);
++				k->suspend_jiffies=jiffies;
++			}
++
++		}
++	}
++
++	return IRQ_HANDLED;
++}
++
++#ifdef CONFIG_PM
++static int pxa_keys_suspend(struct platform_device *pdev, pm_message_t state)
++{
++	struct pxa_keys_platform_data *k = platform_get_drvdata(pdev);
++	k->suspended = 1;
++	return 0;
++}
++
++static int pxa_keys_resume(struct platform_device *pdev)
++{
++	struct pxa_keys_platform_data *k = platform_get_drvdata(pdev);
++
++	/* Upon resume, ignore the suspend key for a short while */
++	k->suspend_jiffies=jiffies;
++	k->suspended = 0;
++	return 0;
++}
++#else
++#define pxa_keys_suspend	NULL
++#define pxa_keys_resume		NULL
++#endif
++
++static int
++pxa_keys_probe (struct platform_device *pdev)
++{
++	struct pxa_keys_platform_data *k;
++	int i;
++
++	k = pdev->dev.platform_data;
++	platform_set_drvdata(pdev, k);
++
++	init_input_dev (&k->input);
++
++	k->input.evbit[0] = BIT(EV_KEY) | BIT(EV_PWR) | BIT(EV_REP);
++	for (i = 0; i < k->nbuttons; i++) {
++		int code = k->buttons[i].keycode;
++		int irq = IRQ_GPIO (k->buttons[i].gpio);
++		int result;
++
++		set_irq_type (irq, IRQT_BOTHEDGE);
++		result = request_irq (irq, pxa_keys_isr, SA_SAMPLE_RANDOM,
++				      "pxa_keys", k);
++		if (result == 0)
++			set_bit (code, k->input.keybit);
++		else
++			printk("pxa_keys: unable to claim irq %d; error %d\n", irq, result);
++	}
++
++	k->input.name = pdev->name;
++	k->input.private = k;
++
++	k->suspend_jiffies=jiffies;
++	k->suspended=0;
++
++	input_register_device (&k->input);
++
++	return 0;
++}
++
++static int
++pxa_keys_remove (struct platform_device *pdev)
++{
++	struct pxa_keys_platform_data *k = pdev->dev.platform_data;
++	int i;
++	
++	for (i = 0; i < k->nbuttons; i++) {
++		int irq = IRQ_GPIO (k->buttons[i].gpio);
++		free_irq (irq, k);
++	}
++
++	input_unregister_device (&k->input);
++
++	return 0;
++}
++
++struct platform_driver pxa_keys_device_driver = {
++	.probe    = pxa_keys_probe,
++	.remove   = pxa_keys_remove,
++	.suspend  = pxa_keys_suspend,
++	.resume   = pxa_keys_resume,
++	.driver		= {
++		.name     = "pxa2xx-keys",
++	},
++};
++
++static int pxa_keys_init (void)
++{
++	return platform_driver_register(&pxa_keys_device_driver);
++}
++
++static void pxa_keys_cleanup (void)
++{
++	platform_driver_unregister(&pxa_keys_device_driver);
++}
++
++module_init (pxa_keys_init);
++module_exit (pxa_keys_cleanup);
++
++MODULE_LICENSE("GPL");
++MODULE_AUTHOR("Phil Blundell <pb@handhelds.org>");
++MODULE_DESCRIPTION("Keyboard driver for PXA25x/PXA27x GPIOs");
+Index: linux-2.6.15-rc1/include/asm-arm/arch-pxa/pxa_keys.h
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ linux-2.6.15-rc1/include/asm-arm/arch-pxa/pxa_keys.h	2005-11-19 23:13:41.000000000 +0000
+@@ -0,0 +1,17 @@
++#include <linux/input.h>
++
++struct pxa_keys_button {
++	int keycode;
++	int gpio;
++	unsigned long flags;
++};
++#define PXAKEY_ACTIVE_LOW	(1 << 0)	/* Key is Active Low */
++#define PXAKEY_PWR_KEY		(1 << 1)	/* Key is a Power Key */
++
++struct pxa_keys_platform_data {
++	struct pxa_keys_button *buttons;
++	int nbuttons;
++	struct input_dev input;
++	unsigned int suspended;
++	unsigned long suspend_jiffies;
++};

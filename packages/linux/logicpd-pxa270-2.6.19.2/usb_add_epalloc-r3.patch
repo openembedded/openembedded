@@ -1,0 +1,282 @@
+Index: git/drivers/usb/gadget/epautoconf.c
+===================================================================
+--- git.orig/drivers/usb/gadget/epautoconf.c	2006-07-15 09:10:59.000000000 +0100
++++ git/drivers/usb/gadget/epautoconf.c	2006-07-15 10:27:00.000000000 +0100
+@@ -228,14 +228,19 @@
+  *
+  * On failure, this returns a null endpoint descriptor.
+  */
+-struct usb_ep * __devinit usb_ep_autoconfig (
++struct usb_ep * usb_ep_autoconfig (
+ 	struct usb_gadget		*gadget,
+-	struct usb_endpoint_descriptor	*desc
++	struct usb_endpoint_descriptor	*desc,
++	struct usb_endpoint_config *epconfig, int numconfigs
+ )
+ {
+ 	struct usb_ep	*ep;
+ 	u8		type;
+ 
++	/* Use device specific ep allocation code if provided */
++	if (gadget->ops->ep_alloc)
++		return gadget->ops->ep_alloc(gadget, desc, epconfig, numconfigs);
++
+ 	type = desc->bmAttributes & USB_ENDPOINT_XFERTYPE_MASK;
+ 
+ 	/* First, apply chip-specific "best usage" knowledge.
+Index: git/drivers/usb/gadget/ether.c
+===================================================================
+--- git.orig/drivers/usb/gadget/ether.c	2006-07-15 09:10:59.000000000 +0100
++++ git/drivers/usb/gadget/ether.c	2006-07-15 10:25:23.000000000 +0100
+@@ -2195,7 +2195,8 @@
+ 	struct eth_dev		*dev;
+ 	struct net_device	*net;
+ 	u8			cdc = 1, zlp = 1, rndis = 1;
+-	struct usb_ep		*in_ep, *out_ep, *status_ep = NULL;
++	struct usb_ep		*in_ep = NULL , *out_ep = NULL, *status_ep = NULL;
++	struct usb_endpoint_config ep_config[2];
+ 	int			status = -ENOMEM;
+ 	int			gcnum;
+ 
+@@ -2291,7 +2292,26 @@
+ 
+ 	/* all we really need is bulk IN/OUT */
+ 	usb_ep_autoconfig_reset (gadget);
+-	in_ep = usb_ep_autoconfig (gadget, &fs_source_desc);
++
++	ep_config[0].config = DEV_CONFIG_VALUE;
++#if 	defined(DEV_CONFIG_CDC)
++	ep_config[0].interface = data_intf.bInterfaceNumber;
++	ep_config[0].altinterface = data_intf.bAlternateSetting;
++#else 	/* DEV_CONFIG_SUBSET */
++	ep_config[0].interface = subset_data_intf.bInterfaceNumber;
++	ep_config[0].altinterface = subset_data_intf.bAlternateSetting;
++#endif
++
++#ifdef	CONFIG_USB_ETH_RNDIS
++	ep_config[1].config = DEV_RNDIS_CONFIG_VALUE;
++	ep_config[1].interface = rndis_data_intf.bInterfaceNumber;
++	ep_config[1].altinterface = rndis_data_intf.bAlternateSetting;
++
++	in_ep = usb_ep_autoconfig(gadget, &fs_source_desc, &ep_config[0], 2);
++#else
++	in_ep = usb_ep_autoconfig(gadget, &fs_source_desc, &ep_config[0], 1);
++#endif
++
+ 	if (!in_ep) {
+ autoconf_fail:
+ 		dev_err (&gadget->dev,
+@@ -2301,7 +2321,12 @@
+ 	}
+ 	in_ep->driver_data = in_ep;	/* claim */
+ 
+-	out_ep = usb_ep_autoconfig (gadget, &fs_sink_desc);
++#ifdef CONFIG_USB_ETH_RNDIS
++	out_ep = usb_ep_autoconfig(gadget, &fs_sink_desc, &ep_config[0], 2);
++#else
++	out_ep = usb_ep_autoconfig(gadget, &fs_sink_desc, &ep_config[0], 1);
++#endif
++
+ 	if (!out_ep)
+ 		goto autoconf_fail;
+ 	out_ep->driver_data = out_ep;	/* claim */
+@@ -2311,7 +2336,25 @@
+ 	 * Since some hosts expect one, try to allocate one anyway.
+ 	 */
+ 	if (cdc || rndis) {
+-		status_ep = usb_ep_autoconfig (gadget, &fs_status_desc);
++#ifdef DEV_CONFIG_CDC
++		ep_config[0].config = DEV_CONFIG_VALUE;
++		ep_config[0].interface = control_intf.bInterfaceNumber;
++		ep_config[0].altinterface = control_intf.bAlternateSetting;
++#endif
++#ifdef CONFIG_USB_ETH_RNDIS
++		ep_config[1].config = DEV_RNDIS_CONFIG_VALUE;
++		ep_config[1].interface = rndis_control_intf.bInterfaceNumber;
++		ep_config[1].altinterface = rndis_control_intf.bAlternateSetting;
++#endif
++
++#if defined(DEV_CONFIG_CDC) && defined(CONFIG_USB_ETH_RNDIS)
++		status_ep = usb_ep_autoconfig(gadget, &fs_status_desc, &ep_config[0], 2);
++#elif defined(CONFIG_USB_ETH_RNDIS)
++		status_ep = usb_ep_autoconfig(gadget, &fs_status_desc, &ep_config[1], 1);
++#else
++		status_ep = usb_ep_autoconfig(gadget, &fs_status_desc, &ep_config[0], 1);
++#endif
++
+ 		if (status_ep) {
+ 			status_ep->driver_data = status_ep;	/* claim */
+ 		} else if (rndis) {
+Index: git/drivers/usb/gadget/file_storage.c
+===================================================================
+--- git.orig/drivers/usb/gadget/file_storage.c	2006-07-15 09:10:59.000000000 +0100
++++ git/drivers/usb/gadget/file_storage.c	2006-07-15 10:25:23.000000000 +0100
+@@ -3836,6 +3836,7 @@
+ 	struct usb_ep		*ep;
+ 	struct usb_request	*req;
+ 	char			*pathbuf, *p;
++	struct usb_endpoint_config ep_config;
+ 
+ 	fsg->gadget = gadget;
+ 	set_gadget_data(gadget, fsg);
+@@ -3901,21 +3902,25 @@
+ 	}
+ 
+ 	/* Find all the endpoints we will use */
++	ep_config.config = CONFIG_VALUE;
++	ep_config.interface = intf_desc.bInterfaceNumber;
++	ep_config.altinterface = intf_desc.bAlternateSetting;
++
+ 	usb_ep_autoconfig_reset(gadget);
+-	ep = usb_ep_autoconfig(gadget, &fs_bulk_in_desc);
++	ep = usb_ep_autoconfig(gadget, &fs_bulk_in_desc, &ep_config, 1);
+ 	if (!ep)
+ 		goto autoconf_fail;
+ 	ep->driver_data = fsg;		// claim the endpoint
+ 	fsg->bulk_in = ep;
+ 
+-	ep = usb_ep_autoconfig(gadget, &fs_bulk_out_desc);
++	ep = usb_ep_autoconfig(gadget, &fs_bulk_out_desc, &ep_config, 1);
+ 	if (!ep)
+ 		goto autoconf_fail;
+ 	ep->driver_data = fsg;		// claim the endpoint
+ 	fsg->bulk_out = ep;
+ 
+ 	if (transport_is_cbi()) {
+-		ep = usb_ep_autoconfig(gadget, &fs_intr_in_desc);
++		ep = usb_ep_autoconfig(gadget, &fs_intr_in_desc, &ep_config, 1);
+ 		if (!ep)
+ 			goto autoconf_fail;
+ 		ep->driver_data = fsg;		// claim the endpoint
+Index: git/drivers/usb/gadget/serial.c
+===================================================================
+--- git.orig/drivers/usb/gadget/serial.c	2006-07-15 09:10:59.000000000 +0100
++++ git/drivers/usb/gadget/serial.c	2006-07-15 10:25:23.000000000 +0100
+@@ -1354,6 +1354,7 @@
+ 	struct usb_ep *ep;
+ 	struct gs_dev *dev;
+ 	int gcnum;
++	struct usb_endpoint_config ep_config[2];
+ 
+ 	/* Some controllers can't support CDC ACM:
+ 	 * - sh doesn't support multiple interfaces or configs;
+@@ -1374,22 +1375,33 @@
+ 			__constant_cpu_to_le16(GS_VERSION_NUM|0x0099);
+ 	}
+ 
++	ep_config[0].config = GS_BULK_CONFIG_ID;
++	ep_config[0].interface = gs_bulk_interface_desc.bInterfaceNumber;
++	ep_config[0].altinterface = gs_bulk_interface_desc.bAlternateSetting;
++	ep_config[1].config = GS_ACM_CONFIG_ID;
++	ep_config[1].interface = gs_data_interface_desc.bInterfaceNumber;
++	ep_config[1].altinterface = gs_data_interface_desc.bAlternateSetting;
++
+ 	usb_ep_autoconfig_reset(gadget);
+ 
+-	ep = usb_ep_autoconfig(gadget, &gs_fullspeed_in_desc);
++	ep = usb_ep_autoconfig(gadget, &gs_fullspeed_in_desc, &ep_config[0], 2);
+ 	if (!ep)
+ 		goto autoconf_fail;
+ 	EP_IN_NAME = ep->name;
+ 	ep->driver_data = ep;	/* claim the endpoint */
+ 
+-	ep = usb_ep_autoconfig(gadget, &gs_fullspeed_out_desc);
++	ep = usb_ep_autoconfig(gadget, &gs_fullspeed_out_desc, &ep_config[0], 2);
+ 	if (!ep)
+ 		goto autoconf_fail;
+ 	EP_OUT_NAME = ep->name;
+ 	ep->driver_data = ep;	/* claim the endpoint */
+ 
+ 	if (use_acm) {
+-		ep = usb_ep_autoconfig(gadget, &gs_fullspeed_notify_desc);
++		ep_config[0].config = GS_ACM_CONFIG_ID;
++		ep_config[0].interface = gs_control_interface_desc.bInterfaceNumber;
++		ep_config[0].altinterface = gs_control_interface_desc.bAlternateSetting;
++
++		ep = usb_ep_autoconfig(gadget, &gs_fullspeed_notify_desc, &ep_config[0], 1);
+ 		if (!ep) {
+ 			printk(KERN_ERR "gs_bind: cannot run ACM on %s\n", gadget->name);
+ 			goto autoconf_fail;
+Index: git/drivers/usb/gadget/zero.c
+===================================================================
+--- git.orig/drivers/usb/gadget/zero.c	2006-07-15 09:10:59.000000000 +0100
++++ git/drivers/usb/gadget/zero.c	2006-07-15 10:25:23.000000000 +0100
+@@ -1144,6 +1144,7 @@
+ 	struct zero_dev		*dev;
+ 	struct usb_ep		*ep;
+ 	int			gcnum;
++	struct usb_endpoint_config ep_config[2];
+ 
+ 	/* FIXME this can't yet work right with SH ... it has only
+ 	 * one configuration, numbered one.
+@@ -1156,7 +1157,15 @@
+ 	 * but there may also be important quirks to address.
+ 	 */
+ 	usb_ep_autoconfig_reset (gadget);
+-	ep = usb_ep_autoconfig (gadget, &fs_source_desc);
++
++	ep_config[0].config = CONFIG_SOURCE_SINK;
++	ep_config[0].interface = source_sink_intf.bInterfaceNumber;
++	ep_config[0].altinterface = source_sink_intf.bAlternateSetting;
++	ep_config[1].config = CONFIG_LOOPBACK;
++	ep_config[1].interface = loopback_intf.bInterfaceNumber;
++	ep_config[1].altinterface = loopback_intf.bAlternateSetting;
++
++	ep = usb_ep_autoconfig(gadget, &fs_source_desc, &ep_config[0], 2);
+ 	if (!ep) {
+ autoconf_fail:
+ 		printk (KERN_ERR "%s: can't autoconfigure on %s\n",
+@@ -1166,7 +1175,7 @@
+ 	EP_IN_NAME = ep->name;
+ 	ep->driver_data = ep;	/* claim */
+ 	
+-	ep = usb_ep_autoconfig (gadget, &fs_sink_desc);
++	ep = usb_ep_autoconfig(gadget, &fs_sink_desc, &ep_config[0], 2);
+ 	if (!ep)
+ 		goto autoconf_fail;
+ 	EP_OUT_NAME = ep->name;
+Index: git/include/linux/usb_gadget.h
+===================================================================
+--- git.orig/include/linux/usb_gadget.h	2006-07-15 09:11:05.000000000 +0100
++++ git/include/linux/usb_gadget.h	2006-07-15 10:29:40.000000000 +0100
+@@ -445,10 +445,28 @@
+ 
+ struct usb_gadget;
+ 
++/**
++ * struct usb_endpoint_config - possible configurations of a given endpoint
++ * @config: the configuration number
++ * @interface: the interface number
++ * @altinterface: the altinterface number
++ *
++ * Used as an array to pass information about the possible configurations
++ * of a given endpoint to the bus controller.
++ */
++struct usb_endpoint_config {
++	u8	config;
++	u8	interface;
++	u8	altinterface;
++};
++
+ /* the rest of the api to the controller hardware: device operations,
+  * which don't involve endpoints (or i/o).
+  */
+ struct usb_gadget_ops {
++	struct usb_ep* (*ep_alloc)(struct usb_gadget *,
++				struct usb_endpoint_descriptor *,
++				struct usb_endpoint_config *, int);
+ 	int	(*get_frame)(struct usb_gadget *);
+ 	int	(*wakeup)(struct usb_gadget *);
+ 	int	(*set_selfpowered) (struct usb_gadget *, int is_selfpowered);
+@@ -872,7 +890,10 @@
+ /* utility wrapping a simple endpoint selection policy */
+ 
+ extern struct usb_ep *usb_ep_autoconfig (struct usb_gadget *,
+-			struct usb_endpoint_descriptor *) __devinit;
++			struct usb_endpoint_descriptor *,
++			struct usb_endpoint_config *,
++			int numconfigs
++);
+ 
+ extern void usb_ep_autoconfig_reset (struct usb_gadget *) __devinit;
+ 

@@ -1,0 +1,222 @@
+ drivers/input/Kconfig |   15 ++++
+ drivers/input/power.c |  152 ++++++++++++++++++++++++++++++++++----------------
+ 2 files changed, 121 insertions(+), 46 deletions(-)
+
+Index: git/drivers/input/power.c
+===================================================================
+--- git.orig/drivers/input/power.c	2006-10-31 16:31:03.000000000 +0000
++++ git/drivers/input/power.c	2006-10-31 17:38:34.000000000 +0000
+@@ -2,6 +2,7 @@
+  * $Id: power.c,v 1.10 2001/09/25 09:17:15 vojtech Exp $
+  *
+  *  Copyright (c) 2001 "Crazy" James Simmons
++ *  Copyright (c) 2005 Dmitry Torokhov
+  *
+  *  Input driver Power Management.
+  *
+@@ -34,66 +35,125 @@
+ #include <linux/tty.h>
+ #include <linux/delay.h>
+ #include <linux/pm.h>
++#ifdef CONFIG_ACPI
++#include <linux/acpi.h>
++#endif
++#ifdef CONFIG_APM
++#if defined(CONFIG_ARM) && !defined(CONFIG_ARM26)
++#include <asm/apm.h>
++#endif
++#endif
++
+ 
+ static struct input_handler power_handler;
++//static long suspend_time_pressed;
++//static DEFINE_SPINLOCK(suspend_time_lock);
+ 
+-/*
+- * Power management can't be done in a interrupt context. So we have to
+- * use keventd.
+- */
+-static int suspend_button_pushed = 0;
+-static void suspend_button_task_handler(void *data)
++#ifdef CONFIG_ACPI
++/* FIXME: This should be in ACPI */
++static void acpi_queue_event(int suspend)
+ {
+-        udelay(200); /* debounce */
+-        suspend_button_pushed = 0;
+-}
++	struct acpi_device dev;
+ 
+-static DECLARE_WORK(suspend_button_task, suspend_button_task_handler, NULL);
++	sprintf(acpi_device_name(&dev), "%s", suspend ? "KEY_SUSPEND" : "KEY_POWER");
++	sprintf(acpi_device_class(&dev), "button/%s", suspend ? "sleep" : "power");
++	acpi_bus_generate_event(&dev, 1, 1);
++}
++#endif
+ 
+-static void power_event(struct input_handle *handle, unsigned int type,
+-		        unsigned int code, int down)
++static void system_power_event(unsigned int keycode)
+ {
+-	struct input_dev *dev = handle->dev;
++//	unsigned long flags;
+ 
+-	printk("Entering power_event\n");
++	switch (keycode) {
++		case KEY_SUSPEND:
+ 
+-	if (type == EV_PWR) {
+-		switch (code) {
+-			case KEY_SUSPEND:
+-				printk("Powering down entire device\n");
++			/* ignore jitter */
++	//		spin_lock_irqsave(&suspend_time_lock, flags);
++	//		if (time_before(jiffies, suspend_time_pressed + msecs_to_jiffies(200))) {
++	//			spin_unlock_irqrestore(&suspend_time_lock, flags);
++	//			break;
++	//		}
++	//		suspend_time_pressed = jiffies;
++	//		spin_unlock_irqrestore(&suspend_time_lock, flags);
+ 
+-				if (!suspend_button_pushed) {
+-                			suspend_button_pushed = 1;
+-                        		schedule_work(&suspend_button_task);
+-                		}
++	//		if (!PM_IS_ACTIVE()) {
++	//			printk(KERN_INFO "power: PM is not active, ignoring suspend request\n");
++	//			break;
++	//		}
++
++			printk(KERN_INFO "power: requesting system suspend...\n");
++#ifdef CONFIG_ACPI
++			if (!acpi_disabled) {
++				acpi_queue_event(1);
+ 				break;
+-			case KEY_POWER:
+-				/* Hum power down the machine. */
++			}
++#endif
++
++#ifdef CONFIG_APM
++#if defined(CONFIG_ARM) && !defined(CONFIG_ARM26)
++			/* only ARM has apm_queue_event */
++			apm_queue_event(APM_USER_SUSPEND);
++#endif
++#endif
++			break;
++
++		case KEY_POWER:
++
++	//		if (!PM_IS_ACTIVE()) {
++	//			printk(KERN_INFO "power: PM is not active, ignoring shutdown request\n");
++	//			break;
++	//		}
++#ifdef CONFIG_ACPI
++			if (!acpi_disabled) {
++				printk(KERN_INFO "power: requesting system shutdown...\n");
++				acpi_queue_event(0);
+ 				break;
+-			default:
+-				return;
+-		}
++			}
++#endif
++
++#ifdef CONFIG_APM
++			printk(KERN_INFO "power: shutdown via APM is not supported...\n");
++#endif
++			break;
++
++		default:
++			break;
+ 	}
++}
+ 
+-	if (type == EV_KEY) {
+-		switch (code) {
+-			case KEY_SUSPEND:
+-				printk("Powering down input device\n");
+-				/* This is risky. See pm.h for details. */
+-				if (dev->state != PM_RESUME)
+-					dev->state = PM_RESUME;
+-				else
+-					dev->state = PM_SUSPEND;
+-				pm_send(dev->pm_dev, dev->state, dev);
+-				break;
+-			case KEY_POWER:
+-				/* Turn the input device off completely ? */
+-				break;
+-			default:
+-				return;
+-		}
++static void device_power_event(struct input_device *dev, unsigned int keycode)
++{
++	switch (keycode) {
++		case KEY_SUSPEND:
++		case KEY_POWER:
++			printk(KERN_DEBUG "power.c: device-level power management is not supported yet\n");
++			break;
++
++		default:
++			break;
++	}
++}
++
++static void power_event(struct input_handle *handle, unsigned int type,
++		        unsigned int code, int value)
++{
++	/* only react on key down events */
++	if (value != 1)
++		return;
++
++	switch (type) {
++		case EV_PWR:
++			system_power_event(code);
++			break;
++
++		case EV_KEY:
++			device_power_event(handle->dev, code);
++			break;
++
++		default:
++			break;
+ 	}
+-	return;
+ }
+ 
+ static struct input_handle *power_connect(struct input_handler *handler,
+@@ -107,7 +167,7 @@ static struct input_handle *power_connec
+ 
+ 	handle->dev = dev;
+ 	handle->handler = handler;
+-
++	handle->name = "power";
+ 	input_open_device(handle);
+ 
+ 	printk(KERN_INFO "power.c: Adding power management to input layer\n");
+Index: git/drivers/input/Kconfig
+===================================================================
+--- git.orig/drivers/input/Kconfig	2006-10-31 16:31:03.000000000 +0000
++++ git/drivers/input/Kconfig	2006-10-31 16:31:07.000000000 +0000
+@@ -144,6 +144,21 @@ config INPUT_EVBUG
+ 
+ 	  To compile this driver as a module, choose M here: the
+ 	  module will be called evbug.
++	  
++config INPUT_POWER
++	tristate "Power management interface"
++	depends on INPUT
++	---help---
++	  Say Y here if you have an input device (keyboard) that has
++	  sleep/power keys and you would like use these keys to
++	  initiate power management operations. Note that on many
++	  machines power and sleep keys are not part of the input
++	  system and only accessible when using ACPI button driver.
++
++	  If unsure, say N.
++
++	  To compile this driver as a module, choose M here: the
++	  module will be called power.
+ 
+ comment "Input Device Drivers"
+ 

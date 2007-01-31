@@ -1,0 +1,44 @@
+Index: linux-2.6.15/arch/arm/mach-pxa/corgi.c
+===================================================================
+--- linux-2.6.15.orig/arch/arm/mach-pxa/corgi.c	2006-03-04 11:27:13.000000000 +0000
++++ linux-2.6.15/arch/arm/mach-pxa/corgi.c	2006-03-04 11:29:10.000000000 +0000
+@@ -60,6 +60,7 @@
+ static struct scoop_config corgi_scoop_setup = {
+ 	.io_dir 	= CORGI_SCOOP_IO_DIR,
+ 	.io_out		= CORGI_SCOOP_IO_OUT,
++	.suspend_clr    = 0xffff,
+ };
+ 
+ struct platform_device corgiscoop_device = {
+@@ -322,7 +323,7 @@
+ 	PGSR1 = 0x00FF0080;
+ 	PGSR2 = 0x0001C004;
+ 	/* Stop 3.6MHz and drive HIGH to PCMCIA and CS */
+-	PCFR |= PCFR_OPDE;
++	PCFR = PCFR_OPDE;
+ 
+ 	corgi_ssp_set_machinfo(&corgi_ssp_machinfo);
+ 
+Index: linux-2.6.15/arch/arm/mach-pxa/corgi_pm.c
+===================================================================
+--- linux-2.6.15.orig/arch/arm/mach-pxa/corgi_pm.c	2006-03-04 11:26:52.000000000 +0000
++++ linux-2.6.15/arch/arm/mach-pxa/corgi_pm.c	2006-03-04 11:29:10.000000000 +0000
+@@ -97,6 +97,9 @@
+ 	if (!machine_is_corgi())
+ 		wakeup_mask |= GPIO_bit(CORGI_GPIO_MAIN_BAT_LOW);
+ 
++	if (!machine_is_corgi())
++		GPDR0 &= ~(GPIO_bit(15) | GPIO_bit(8)); /* Float n_CS1 */
++
+ 	PWER = wakeup_mask | PWER_RTC;
+ 	PRER = wakeup_mask;
+ 	PFER = wakeup_mask;
+@@ -113,6 +116,8 @@
+ 
+ static void corgi_postsuspend(void)
+ {
++	if (!machine_is_corgi())
++		GPDR0 |= GPIO_bit(15) | GPIO_bit(8); /* Un-Float n_CS1 */
+ }
+ 
+ /*
