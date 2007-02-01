@@ -5,7 +5,7 @@
 DESCRIPTION = "Packages that are compatible with the SlugOS firmware"
 HOMEPAGE = "http://www.nslu2-linux.org"
 LICENSE = "MIT"
-PR = "r15"
+PR = "r16"
 CONFLICTS = "db3"
 PROVIDES += "${SLUGOS_IMAGENAME}-packages"
 
@@ -215,6 +215,7 @@ UCLIBC_BROKEN_PACKAGES = "\
 	bogofilter \
 	boost \
 	linphone \
+	yeaphone \
 	sudo \
 	ushare \
 	"
