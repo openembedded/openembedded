@@ -21,8 +21,8 @@
  install		:	all
 -			$(INSTALL) -c -m  111 -o root -s cron    $(DESTSBIN)/
 -			$(INSTALL) -c -m 4111 -o root -s crontab $(DESTBIN)/
-+			$(INSTALL) -c -m  111 $(INSTALLOWN) -s cron    $(DESTSBIN)/
-+			$(INSTALL) -c -m 4111 $(INSTALLOWN) -s crontab $(DESTBIN)/
++			$(INSTALL) -c -m  111 $(INSTALLOWN) cron    $(DESTSBIN)/
++			$(INSTALL) -c -m 4111 $(INSTALLOWN) crontab $(DESTBIN)/
  			sh putman.sh crontab.1 $(DESTMAN)
  			sh putman.sh cron.8    $(DESTMAN)
  			sh putman.sh crontab.5 $(DESTMAN)
