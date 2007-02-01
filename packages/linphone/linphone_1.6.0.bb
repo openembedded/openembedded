@@ -1,4 +1,4 @@
-# DEFAULT_PREFERENCE = "-1"
+DEFAULT_PREFERENCE = "-1"
 
 DESCRIPTION = "SIP-based IP phone (console edition)"
 HOMEPAGE = "http://www.linphone.org/?lang=us"
