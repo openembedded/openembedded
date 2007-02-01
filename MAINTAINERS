@@ -160,7 +160,7 @@ Recipes:    qpf-unismall, poboxserver, imkit*
 Person:     Shane Volpe
 Mail:       shanevolpe@gmail.com
 Machines:   logicpd-pxa270
-Recipes:    directfb
+Recipes:    directfb, php
 
 Person:     Øyvind Repvik
 Mail:       nail@nslu2-linux.org

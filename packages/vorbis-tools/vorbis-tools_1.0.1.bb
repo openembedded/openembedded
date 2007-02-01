@@ -1,13 +1,14 @@
-LICENSE = "GPL"
-DEPENDS = "libogg libvorbis libao curl"
-DESCRIPTION = " vorbis-tools contains oggenc (an encoder), ogg123 (a playback tool), \
+DESCRIPTION = "vorbis-tools contains oggenc (an encoder), ogg123 (a playback tool), \
 ogginfo (displays ogg information), vcut (ogg file splitter), and \
 vorbiscomment (ogg comment editor)."
-
+LICENSE = "GPL"
+DEPENDS = "libogg libvorbis libao curl"
 SECTION = "console/multimedia"
+PR = "r1"
 
 SRC_URI = "http://www.vorbis.com/files/${PV}/unix/vorbis-tools-${PV}.tar.gz \
-	   file://m4.patch;patch=1"
+           file://m4.patch;patch=1 \
+           file://remove-deprecated-curl-option.patch;patch=1"
 
 inherit autotools
 

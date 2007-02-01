@@ -1,0 +1,81 @@
+--- arch/arm/mach-pxa/lpd270.c~org	2006-11-29 16:57:37.000000000 -0500
++++ arch/arm/mach-pxa/lpd270.c	2006-12-29 12:56:05.000000000 -0500
+@@ -384,6 +384,30 @@
+ 	.pxafb_backlight_power	= lpd270_backlight_power,
+ };
+ 
++/* 2.4" TFT QVGA */
++static struct pxafb_mode_info osd_osd024ttea2_mode = {
++	.pixclock		= 208000, /*280nS is the Min speed, 208000 = 230nS (scoped)*/
++	.xres			= 240,
++	.yres			= 320,
++	.bpp			= 16,
++	.hsync_len		= 10,
++	.left_margin		= 20,
++	.right_margin		= 10,
++	.vsync_len		= 1,
++	.upper_margin		= 0x03,
++	.lower_margin		= 0x06,
++	.sync			= 0,
++};
++
++static struct pxafb_mach_info osd_osd024ttea2 = {
++	.modes			= &osd_osd024ttea2_mode,
++	.num_modes		= 1,
++	.lccr0			= 0x07800080,
++	.lccr3			= 0x04000001,
++	.pxafb_backlight_power	= lpd270_backlight_power,
++};
++
++
+ static struct pxafb_mach_info *lpd270_lcd_to_use;
+ 
+ static int __init lpd270_set_lcd(char *str)
+@@ -400,6 +424,8 @@
+ 		lpd270_lcd_to_use = &sharp_lq10d368;
+ 	} else if (!strnicmp(str, "lq035q7db02-20", 14)) {
+ 		lpd270_lcd_to_use = &sharp_lq035q7db02_20;
++	} else if (!strnicmp(str, "osd024ttea2", 11)) {
++		lpd270_lcd_to_use = &osd_osd024ttea2;
+ 	} else {
+ 		printk(KERN_INFO "lpd270: unknown lcd panel [%s]\n", str);
+ 	}
+--- drivers/video/Kconfig~org	2006-12-29 12:59:13.000000000 -0500
++++ drivers/video/Kconfig	2006-12-29 13:02:17.000000000 -0500
+@@ -1530,6 +1530,35 @@
+ config FB_PXA_LCD_VGA
+         bool "VGA (640x480)"
+
++config FB_PXA_LPD_LQ64D343
++        bool "6.4\" TFT VGA 640x480"
++        depends on FB_PXA
++        ---help---
++          Sharp LQ64D343 LCD panel
++
++config FB_PXA_LPD_LQ035Q7DB02
++        bool "3.5\" TFT QVGA 240x320"
++        depends on FB_PXA
++        ---help---
++          Sharp LQ035Q7DB02 LCD panel
++
++config FB_PXA_LPD_LQ057Q3DC02
++        bool "5.7\" TFT QVGA 240x320"
++        depends on FB_PXA
++        ---help---
++          Sharp LQ057Q3DC02 LCD panel
++
++config FB_PXA_LPD_LQ10D368
++        bool "10.4\" TFT VGA 640x480"
++        depends on FB_PXA
++        ---help---
++          Sharp LQ10D368 LCD panel
++
++config FB_PXA_LPD_OSD024TTEA2
++        bool "2.4\" TFT VGA 320x240"
++        help
++          OSD OSD024TTEA2 LCD panel.
++
+ endchoice
+
+ config FB_PXA_OVERLAY
+ 

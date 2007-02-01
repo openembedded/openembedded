@@ -396,7 +396,8 @@ python populate_packages () {
 					newfiles =  [ os.path.join(file,x) for x in os.listdir(file) ]
 					if newfiles:
 						files += newfiles
-						cleandirs = [file] + cleandirs
+						if file != "./":
+							cleandirs = [file] + cleandirs
 						continue
 			globbed = glob.glob(file)
 			if globbed:
