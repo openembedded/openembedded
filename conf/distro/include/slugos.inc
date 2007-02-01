@@ -178,6 +178,9 @@ SRCDATE_diet-x11 ?= "20060106"
 # Latest wpa-supplicant which supports madwifi-ng
 PREFERRED_VERSION_wpa-supplicant ?= "0.5.1"
 
+# Latest linphone supports yeaphone
+PREFERRED_VERSION_linphone ?= "1.6.0"
+
 # Ensure consistency across all SlugOS builds for the provider of a
 # relational database - use the latest version of the SleepyCat
 # Berkeley database
