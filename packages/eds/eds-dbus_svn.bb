@@ -4,7 +4,7 @@ LICENSE = "LGPL"
 DEPENDS = "intltool-native glib-2.0 gtk+ gconf dbus db gnome-common libglade virtual/libiconv zlib intltool"
 
 PV = "1.4.0+svn${SRCDATE}"
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "svn://svn.o-hand.com/repos/${PN};module=trunk;proto=http \
            file://no_libdb.patch;patch=1 \
@@ -26,8 +26,15 @@ EXTRA_OECONF = "--without-openldap --with-dbus --without-bug-buddy --without-sou
 
 acpaths = " -I ${STAGING_DATADIR}/aclocal/gnome-macros "
 
-PACKAGES =+ "libcamel-provider libcamel libebook libecal libedata-book libedata-cal libedataserver"
+PACKAGES =+ "eds-pixmaps eds-zoneinfo eds-camel-providers eds-camel-lock-helper eds-camel-index-control libcamel-provider libcamel libebook libecal libedata-book libedata-cal libedataserver"
 
+RDEPENDS_${PN} += "eds-pixmaps eds-zoneinfo"
+
+FILES_eds-pixmaps = "${datadir}/pixmaps"
+FILES_eds-zoneinfo = "${datadir}/evolution-data-server-1.4/zoneinfo/"
+FILES_eds-camel-providers = "${libdir}/evolution-data-server-1.2/camel-providers/*.so ${libdir}/evolution-data-server-1.2/camel-providers/*.urls"
+FILES_eds-camel-lock-helper = "${libexecdir}/camel-lock-helper-1.2"
+FILES_eds-camel-index-control = "${libexecdir}/camel-index-control-1.2"
 FILES_libcamel-provider = "${libdir}/libcamel-provider-1.2.so.*"
 FILES_libcamel = "${libdir}/libcamel-1.2.so.*"
 FILES_libebook = "${libdir}/libebook-1.2*"
