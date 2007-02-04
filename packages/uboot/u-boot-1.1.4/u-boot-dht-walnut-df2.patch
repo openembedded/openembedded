@@ -1,4 +1,4 @@
-diff --git a/board/amcc/walnut/walnut.c b/board/amcc/walnut/walnut.c
+diff --git a/board/amcc/walnut/walnut.c b/board/amcc/walnut/walnut.c 
 index f1a96a6..86bcc65 100644
 --- a/board/amcc/walnut/walnut.c
 +++ b/board/amcc/walnut/walnut.c
