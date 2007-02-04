@@ -6,7 +6,7 @@ PR = "r5"
 PROVIDES += "esound"
 RPROVIDES += "esound"
 
-SRCDATE = "${PV}"
+SRCDATE := "${PV}"
 SRC_URI = "svn://projects.linuxtogo.org/svn/gpe/trunk/base/;module=esound;date=20061119 \
 	   file://audiofile-please.patch;patch=1 \
 	   file://configure.patch;patch=1"
@@ -18,6 +18,8 @@ inherit autotools binconfig pkgconfig
 EXTRA_OECONF = "--disable-alsa"
 
 SOV = "0.2.28"
+PV = "${SOV}+cvs${SRCDATE}"
+
 
 do_stage () {
 	install -m 0644 esd.h ${STAGING_INCDIR}/esd.h
