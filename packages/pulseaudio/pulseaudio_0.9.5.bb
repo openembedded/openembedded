@@ -10,9 +10,12 @@ DEPENDS += "alsa-lib"
 
 RPROVIDES = "esound esd"
 
-PR = "r3"
+PR = "r4"
 
 SRC_URI = "http://0pointer.de/lennart/projects/pulseaudio/pulseaudio-${PV}.tar.gz"
+
+SRC_URI += "file://volatiles.04_pulse"
+
 
 inherit autotools pkgconfig
 
@@ -27,19 +30,48 @@ EXTRA_OECONF = "\
 
 PARALLEL_MAKE = ""
 
+
+do_install_append() {
+	install -m 0644 ${WORKDIR}/volatiles.04_pulse  ${D}${sysconfdir}/default/volatiles/volatiles.04_pulse
+}
+
+
 LEAD_SONAME = "libpulse.so"
 
-PACKAGES =+ "${PN}-conf ${PN}-bin"
+PACKAGES =+ "${PN}-bin ${PN}-conf"
 PACKAGES_DYNAMIC = "pulseaudio-module-* pulseaudio-lib-*"
 
 FILES_${PN}-conf = "${sysconfdir}"
-FILES_${PN}-bin = "${bindir}/*"
+FILES_${PN}-bin = "${bindir}/* \
+                   ${sysconfdir}/default/volatiles/volatiles.04_pulse"
 
 CONFFILES_${PN}-conf = "\ 
                        ${sysconfdir}/pulse/default.pa \
 		       ${sysconfdir}/pulse/daemon.conf \
 		       ${sysconfdir}/pulse/client.conf \
 		       "
+pkg_postinst_${PN}-bin() {
+if test "x$D" != "x"; then
+        exit 1
+else
+        grep -q pulse: /etc/group || addgroup pulse
+        grep -q pulse: /etc/passwd || \
+            adduser --disabled-password --home=/var/run/pulse/ --system \
+                    --ingroup pulse --no-create-home -g "Pulse audio daemon" pulse                                            
+        /etc/init.d/populate-volatile.sh update
+fi
+}
+
+pkg_postrm${PN}-bin() {
+if test "x$D" != "x"; then
+        exit 1
+else
+        deluser pulse
+fi
+}
+
+
+
 
 do_stage() {
 	autotools_stage_all
