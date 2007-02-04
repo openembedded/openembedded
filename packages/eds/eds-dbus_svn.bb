@@ -25,6 +25,16 @@ EXTRA_OECONF = "--without-openldap --with-dbus --without-bug-buddy --without-sou
 
 acpaths = " -I ${STAGING_DATADIR}/aclocal/gnome-macros "
 
+PACKAGES =+ "libcamel-provider libcamel libebook libecal libedata-book libedata-cal libedataserver"
+
+FILES_libcamel-provider = "${libdir}/libcamel-provider-1.2.so.*"
+FILES_libcamel = "${libdir}/libcamel-1.2.so.*"
+FILES_libebook = "${libdir}/libebook-1.2*"
+FILES_libecal = "${libdir}/libecal-1.2.so.*"
+FILES_libedata-book = "${libdir}/libedata-book-1.2.so.*"
+FILES_libedata-cal = "${libdir}/libedata-cal-1.2.so.*"
+FILES_libedataserver = "${libdir}/libedataserver-1.2.so.*"
+
 FILES_${PN} += "${libdir}/evolution-data-server-1.2/extensions/*.so \
                 ${libdir}/evolution-data-server-1.2/camel-providers/*.so \
                 ${libdir}/evolution-data-server-1.2/camel-providers/*.urls \
