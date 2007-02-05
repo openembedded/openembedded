@@ -1,0 +1,199 @@
+On the Cirrus Logic ep93xx, system RAM isn't one nice physically
+contiguous region as it is on most SoCs, but it is spread out over
+between one and four memory banks.
+
+What's worse, RAM doesn't necessarily start at any fixed physical
+memory location.  The start of RAM (PHYS_OFFSET) is not only board-
+specific, but on some boards also depends on jumper settings (whether
+async or sync boot mode is selected.)
+
+The attached patch adds the RUNTIME_PHYS_OFFSET config option, which,
+if selected, turns PHYS_OFFSET into a variable which is determined and
+set by __create_page_tables by looking at the current pc.  This allows
+booting a single kernel image on all the different flavors of ep93xx
+boards, reducing user confusion and hopefully pleasing our kautobuild
+admin :-)  If the option isn't selected, there's zero impact.
+
+Signed-off-by: Lennert Buytenhek <buytenh@wantstofly.org>
+===================================================================
+20070202 modified to apply cleanly to linux-2.6.20-rc7 - NZG
+===================================================================
+diff -Naur linux-2.6.20-rc7/arch/arm/Kconfig linux-2.6.20-rc7-e1.0/arch/arm/Kconfig
+--- linux-2.6.20-rc7/arch/arm/Kconfig	2007-02-02 10:26:21.000000000 -0600
++++ linux-2.6.20-rc7-e1.0/arch/arm/Kconfig	2007-02-02 16:23:05.000000000 -0600
+@@ -113,6 +113,9 @@
+ 	help
+ 	  The base address of exception vectors.
+ 
++config RUNTIME_PHYS_OFFSET
++	bool
++
+ source "init/Kconfig"
+ 
+ menu "System Type"
+@@ -187,6 +190,7 @@
+ 	bool "EP93xx-based"
+ 	select ARM_AMBA
+ 	select ARM_VIC
++	select RUNTIME_PHYS_OFFSET
+ 	help
+ 	  This enables support for the Cirrus EP93xx series of CPUs.
+ 
+diff -Naur linux-2.6.20-rc7/arch/arm/boot/compressed/Makefile linux-2.6.20-rc7-e1.0/arch/arm/boot/compressed/Makefile
+--- linux-2.6.20-rc7/arch/arm/boot/compressed/Makefile	2006-11-29 15:57:37.000000000 -0600
++++ linux-2.6.20-rc7-e1.0/arch/arm/boot/compressed/Makefile	2007-02-02 16:23:05.000000000 -0600
+@@ -78,13 +78,10 @@
+ EXTRA_CFLAGS  := -fpic
+ EXTRA_AFLAGS  :=
+ 
+-# Supply ZRELADDR, INITRD_PHYS and PARAMS_PHYS to the decompressor via
+-# linker symbols.  We only define initrd_phys and params_phys if the
+-# machine class defined the corresponding makefile variable.
++# Supply ZRELADDR and PARAMS_PHYS to the decompressor via linker
++# symbols.  We only define params_phys if the machine class defined
++# the corresponding makefile variable.
+ LDFLAGS_vmlinux := --defsym zreladdr=$(ZRELADDR)
+-ifneq ($(INITRD_PHYS),)
+-LDFLAGS_vmlinux += --defsym initrd_phys=$(INITRD_PHYS)
+-endif
+ ifneq ($(PARAMS_PHYS),)
+ LDFLAGS_vmlinux += --defsym params_phys=$(PARAMS_PHYS)
+ endif
+diff -Naur linux-2.6.20-rc7/arch/arm/boot/compressed/head.S linux-2.6.20-rc7-e1.0/arch/arm/boot/compressed/head.S
+--- linux-2.6.20-rc7/arch/arm/boot/compressed/head.S	2006-11-29 15:57:37.000000000 -0600
++++ linux-2.6.20-rc7-e1.0/arch/arm/boot/compressed/head.S	2007-02-02 16:23:05.000000000 -0600
+@@ -156,6 +156,11 @@
+ 		.text
+ 		adr	r0, LC0
+ 		ldmia	r0, {r1, r2, r3, r4, r5, r6, ip, sp}
++#ifdef CONFIG_RUNTIME_PHYS_OFFSET
++		and	r10, pc, #0xf0000000	@ fix up zreladdr
++		add	r4, r4, r10
++#endif
++
+ 		subs	r0, r0, r1		@ calculate the delta offset
+ 
+ 						@ if delta is zero, we are
+diff -Naur linux-2.6.20-rc7/arch/arm/kernel/head.S linux-2.6.20-rc7-e1.0/arch/arm/kernel/head.S
+--- linux-2.6.20-rc7/arch/arm/kernel/head.S	2007-02-02 10:26:21.000000000 -0600
++++ linux-2.6.20-rc7-e1.0/arch/arm/kernel/head.S	2007-02-02 16:36:21.000000000 -0600
+@@ -43,8 +43,8 @@
+ 	.globl	swapper_pg_dir
+ 	.equ	swapper_pg_dir, KERNEL_RAM_VADDR - 0x4000
+ 
+-	.macro	pgtbl, rd
+-	ldr	\rd, =(KERNEL_RAM_PADDR - 0x4000)
++	.macro	pgtbl, rd, phys_offset
++	add	\rd, \phys_offset, #(TEXT_OFFSET - 0x4000)
+ 	.endm
+ 
+ #ifdef CONFIG_XIP_KERNEL
+@@ -206,10 +206,22 @@
+  * Returns:
+  *  r0, r3, r6, r7 corrupted
+  *  r4 = physical page table address
++ *  r5 = PHYS_OFFSET
+  */
+ 	.type	__create_page_tables, %function
+ __create_page_tables:
+-	pgtbl	r4				@ page table address
++#ifdef CONFIG_RUNTIME_PHYS_OFFSET
++	adr	r5, stext
++	sub	r5, r5, #TEXT_OFFSET		@ r5 = phys_offset
++
++	ldr	r4, =(phys_offset - PAGE_OFFSET)
++	add	r4, r4, r5
++	str	r5, [r4]			@ save phys_offset
++#else
++	mov	r5, #PHYS_OFFSET		@ r5 = phys_offset
++#endif
++
++	pgtbl	r4, r5				@ r4 = page table address
+ 
+ 	/*
+ 	 * Clear the 16K level 1 swapper page table
+@@ -255,8 +267,7 @@
+ 	 * Then map first 1MB of ram in case it contains our boot params.
+ 	 */
+ 	add	r0, r4, #PAGE_OFFSET >> 18
+-	orr	r6, r7, #(PHYS_OFFSET & 0xff000000)
+-	orr	r6, r6, #(PHYS_OFFSET & 0x00e00000)
++	orr	r6, r7, r5
+ 	str	r6, [r0]
+ 
+ #ifdef CONFIG_XIP_KERNEL
+diff -Naur linux-2.6.20-rc7/arch/arm/kernel/setup.c linux-2.6.20-rc7-e1.0/arch/arm/kernel/setup.c
+--- linux-2.6.20-rc7/arch/arm/kernel/setup.c	2007-02-02 10:26:21.000000000 -0600
++++ linux-2.6.20-rc7-e1.0/arch/arm/kernel/setup.c	2007-02-02 16:23:05.000000000 -0600
+@@ -59,6 +59,16 @@
+ extern int root_mountflags;
+ extern void _stext, _text, _etext, __data_start, _edata, _end;
+ 
++#ifdef CONFIG_RUNTIME_PHYS_OFFSET
++/*
++ * The assignment is here solely to prevent this variable from ending
++ * up in bss.  As the early startup code writes to it, we don't want it
++ * to be zeroed again later.
++ */
++unsigned long phys_offset = 0xdeadbeef;
++EXPORT_SYMBOL(phys_offset);
++#endif
++
+ unsigned int processor_id;
+ unsigned int __machine_arch_type;
+ EXPORT_SYMBOL(__machine_arch_type);
+@@ -749,7 +759,7 @@
+ 	{ tag_size(tag_core), ATAG_CORE },
+ 	{ 1, PAGE_SIZE, 0xff },
+ 	{ tag_size(tag_mem32), ATAG_MEM },
+-	{ MEM_SIZE, PHYS_OFFSET },
++	{ MEM_SIZE, 0 },
+ 	{ 0, ATAG_NONE }
+ };
+ 
+@@ -770,6 +780,8 @@
+ 	struct machine_desc *mdesc;
+ 	char *from = default_command_line;
+ 
++	init_tags.mem.start = PHYS_OFFSET;
++
+ 	setup_processor();
+ 	mdesc = setup_machine(machine_arch_type);
+ 	machine_name = mdesc->name;
+diff -Naur linux-2.6.20-rc7/arch/arm/mach-ep93xx/Makefile.boot linux-2.6.20-rc7-e1.0/arch/arm/mach-ep93xx/Makefile.boot
+--- linux-2.6.20-rc7/arch/arm/mach-ep93xx/Makefile.boot	2006-11-29 15:57:37.000000000 -0600
++++ linux-2.6.20-rc7-e1.0/arch/arm/mach-ep93xx/Makefile.boot	2007-02-02 16:23:05.000000000 -0600
+@@ -1,2 +1 @@
+    zreladdr-y	:= 0x00008000
+-params_phys-y	:= 0x00000100
+diff -Naur linux-2.6.20-rc7/include/asm-arm/arch-ep93xx/memory.h linux-2.6.20-rc7-e1.0/include/asm-arm/arch-ep93xx/memory.h
+--- linux-2.6.20-rc7/include/asm-arm/arch-ep93xx/memory.h	2006-11-29 15:57:37.000000000 -0600
++++ linux-2.6.20-rc7-e1.0/include/asm-arm/arch-ep93xx/memory.h	2007-02-02 16:23:05.000000000 -0600
+@@ -5,7 +5,9 @@
+ #ifndef __ASM_ARCH_MEMORY_H
+ #define __ASM_ARCH_MEMORY_H
+ 
++#ifndef CONFIG_RUNTIME_PHYS_OFFSET
+ #define PHYS_OFFSET		UL(0x00000000)
++#endif
+ 
+ #define __bus_to_virt(x)	__phys_to_virt(x)
+ #define __virt_to_bus(x)	__virt_to_phys(x)
+diff -Naur linux-2.6.20-rc7/include/asm-arm/memory.h linux-2.6.20-rc7-e1.0/include/asm-arm/memory.h
+--- linux-2.6.20-rc7/include/asm-arm/memory.h	2007-02-02 10:26:27.000000000 -0600
++++ linux-2.6.20-rc7-e1.0/include/asm-arm/memory.h	2007-02-02 16:23:05.000000000 -0600
+@@ -73,6 +73,14 @@
+  */
+ #define IOREMAP_MAX_ORDER	24
+ 
++/*
++ * PHYS_OFFSET determined at run time?
++ */
++#if defined(CONFIG_RUNTIME_PHYS_OFFSET) && !defined(__ASSEMBLY__)
++extern unsigned long phys_offset;
++#define PHYS_OFFSET		(phys_offset)
++#endif
++
+ #else /* CONFIG_MMU */
+ 
+ /*
