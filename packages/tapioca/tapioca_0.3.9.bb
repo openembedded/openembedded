@@ -1,4 +1,3 @@
-PR = "r1"
 HOMEPAGE = "http://tapioca-voip.sourceforge.net/wiki/index.php/Tapioca"
 LICENSE = "LGPL"
 DEPENDS = "glib-2.0 dbus"
