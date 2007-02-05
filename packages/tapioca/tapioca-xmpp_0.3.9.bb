@@ -1,11 +1,12 @@
 HOMEPAGE = "http://tapioca-voip.sourceforge.net/wiki/index.php/Tapioca"
 LICENSE = "LGPL"
-DEPENDS = "gtk+ glib-2.0 dbus gconf tapioca-xmpp tapioca farsight gst-plugins-farsight"
-RDEPENDS = "tapioca-xmpp"
-PR = "r1"
-
+DEPENDS = "glib-2.0 dbus libjingle openssl tapioca"
 inherit autotools pkgconfig
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/tapioca-voip/${P}.tar.gz"
 
-FILES_${PN} += "${datadir}/dbus*"
+FILES_${PN} += "${datadir}/dbus* ${datadir}/tapioca* "
+
+do_stage () {
+        autotools_stage_all
+}
