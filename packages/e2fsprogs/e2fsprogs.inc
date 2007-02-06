@@ -5,7 +5,7 @@ SECTION = "base"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/e2fsprogs/e2fsprogs-${PV}.tar.gz"
 
-inherit autotools
+inherit autotools pkgconfig
 
 EXTRA_OECONF = " --enable-dynamic-e2fsck"
 

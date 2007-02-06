@@ -1,0 +1,15 @@
+#!/bin/sh
+
+# host session applications
+xoo -xd :1 -xn /usr/bin/Xephyr --device gpephone --title GPEPhone &
+
+# start nested session
+
+export DISPLAY=:1
+#. /etc/X11/Xsession
+if [ -x /etc/X11/phonesession ]; then
+	. /etc/X11/phonesession
+fi
+
+
+DISPLAY=:0 exec matchbox-window-manager -use_titlebar yes $@
