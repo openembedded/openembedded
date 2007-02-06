@@ -1,6 +1,6 @@
 SECTION = "x11/network"
 DESCRIPTION = "Mail user agent"
-DEPENDS = "gtk+ gpgme libetpan libgnomeprint aspell"
+DEPENDS = "gtk+ gpgme libetpan libgnomeprint aspell openssl"
 LICENSE = "GPL"
 PR = "r0"
 
@@ -8,7 +8,7 @@ SRC_URI = "${SOURCEFORGE_MIRROR}/sylpheed-claws/claws-mail-${PV}.tar.bz2"
 
 FILES_${PN} = "${bindir} ${datadir}/pixmaps ${datadir}/applications"
 
-EXTRA_OECONF = "--disable-openssl --disable-aspell-test \
+EXTRA_OECONF = "--disable-aspell-test \
  --disable-dillo-viewer-plugin --with-aspell-prefix=${STAGING_DIR}/${HOST_SYS} \
  --enable-aspell"
 
