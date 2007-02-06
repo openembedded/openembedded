@@ -1,0 +1,36 @@
+Index: ecore-0.9.9.037/src/lib/ecore_fb/ecore_fb_private.h
+===================================================================
+--- ecore-0.9.9.037.orig/src/lib/ecore_fb/ecore_fb_private.h
++++ ecore-0.9.9.037/src/lib/ecore_fb/ecore_fb_private.h
+@@ -19,8 +19,8 @@
+  #define kernel_ulong_t unsigned long 
+  #define BITS_PER_LONG 32
+  #include <linux/input.h>
+- #undef kernel_ulong_t <-added
+- #undef BITS_PER_LONG <-added
++ #undef kernel_ulong_t
++ #undef BITS_PER_LONG
+ #else
+  #include <linux/input.h>
+ #endif
+Index: ecore-0.9.9.037/src/lib/ecore_fb/ecore_fb_li.c
+===================================================================
+--- ecore-0.9.9.037.orig/src/lib/ecore_fb/ecore_fb_li.c
++++ ecore-0.9.9.037/src/lib/ecore_fb/ecore_fb_li.c
+@@ -1,6 +1,6 @@
+ #include "Ecore_Fb.h"
+ #include "ecore_fb_private.h"
+-
++/*
+ struct input_absinfo {
+ 	__s32 value;
+ 	__s32 minimum;
+@@ -8,7 +8,7 @@ struct input_absinfo {
+ 	__s32 fuzz;
+ 	__s32 flat;
+ };
+-
++*/
+ 
+ #define EV_SYN			0x00
+ #define EV_PWR			0x16
