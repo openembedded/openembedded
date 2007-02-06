@@ -14,7 +14,7 @@
 #if !defined (__CONFIG_H__)
 #    define   __CONFIG_H__
 
-#define PHYS_PARAMS		0xc0000100 /* Address for the parameter list */
+#define PHYS_PARAMS	   0x00000100 /* Address for the parameter list */
 
 #define RAM_BANK0_START	   0x00000000
 #define RAM_BANK0_LENGTH   0x04000000

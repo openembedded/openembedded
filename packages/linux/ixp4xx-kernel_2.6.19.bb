@@ -23,16 +23,3 @@ require ixp4xx-kernel-svnpatch.inc
 
 SRC_URI += "file://defconfig"
 SRC_URI += "file://series"
-
-# Remove the specific cmdline hacking patches if we are not building for nslu2.
-addtask remove_cmdline_hacks before do_patch after do_unpack
-do_remove_cmdline_hacks() {
-
-#	if [ "${MACHINE}" != "nslu2" ] ; then
-		sed	-e '/88-nas100d-dflt-cmdline.patch/d' \
-			-e '/88-nslu2-dflt-cmdline.patch/d' \
-			'${WORKDIR}/series' > '${WORKDIR}/series.new'
-		mv '${WORKDIR}/series.new' '${WORKDIR}/series'
-#	fi
-
-}

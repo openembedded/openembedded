@@ -50,3 +50,4 @@ DISTRO_CHECK := "${@bb.data.getVar("DISTRO_VERSION",d,1) or bb.fatal('Remove thi
 
 # We want images supporting the following features (for task-base)
 DISTRO_FEATURES = "nfs smbfs wifi ppp alsa bluetooth ext2 irda pcmcia usbgadget usbhost pci"
+DISTRO_FEATURES_nslu2le = "nfs smbfs alsa bluetooth ext2 usbhost pci"
