@@ -3,3 +3,5 @@ HOMEPAGE = "http://www.gnu.org/software/libc/libc.html"
 SECTION = "libs"
 PRIORITY = "required"
 LICENSE = "LGPL"
+
+RPROVIDES += "libc6-dev"

@@ -29,6 +29,35 @@ RDEPENDS = "${PACKAGE_INSTALL}"
 
 export PACKAGE_INSTALL = "\
     ${MACHINE_TASK_PROVIDER} \
+    gpsd \
+    gpsdrive \
+    gcc \
+    gcc-symlinks \
+    binutils \
+    binutils-symlinks \
+    libtool \
+    make \
+    autoconf \
+    automake \
+    perl \
+    python-core \
+    python-stringold \
+    python-distutils \
+    python-lang \
+    libstdc++6 \
+    libstdc++-dev \
+    libc6-dev \
+    linux-libc-headers-dev \
+    cpp \
+    cpp-symlinks \
+    g++ \
+    g++-symlinks \
+    diffutils \
+    coreutils \
+    pcmcia-cs \
+    kernel-module-garmin-gps \
+    perl-module-carp-heavy \
+    ncurses-dev \
     gpe-task-base \
     gpe-task-pim \
     gpe-task-settings \

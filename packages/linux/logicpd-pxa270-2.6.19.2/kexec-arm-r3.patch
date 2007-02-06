@@ -1,0 +1,275 @@
+Index: linux-2.6.17/arch/arm/Kconfig
+===================================================================
+--- linux-2.6.17.orig/arch/arm/Kconfig	2006-06-20 13:22:58.163642800 +0200
++++ linux-2.6.17/arch/arm/Kconfig	2006-06-20 13:22:59.596424984 +0200
+@@ -326,6 +326,23 @@
+ 	depends on CPU_XSCALE && !XSCALE_PMU_TIMER
+ 	default y
+ 
++config KEXEC
++	bool "Kexec system call (EXPERIMENTAL)"
++	depends on EXPERIMENTAL
++	help
++	  kexec is a system call that implements the ability to shutdown your
++	  current kernel, and to start another kernel.  It is like a reboot
++	  but it is indepedent of the system firmware.   And like a reboot
++	  you can start any kernel with it, not just Linux.
++
++	  The name comes from the similiarity to the exec system call.
++
++	  It is an ongoing process to be certain the hardware in a machine
++	  is properly shutdown, so do not be surprised if this code does not
++	  initially work for you.  It may help to enable device hotplugging
++	  support.  As of this writing the exact hardware interface is
++	  strongly in flux, so no good recommendation can be made.
++
+ endmenu
+ 
+ source "arch/arm/common/Kconfig"
+Index: linux-2.6.17/arch/arm/kernel/calls.S
+===================================================================
+--- linux-2.6.17.orig/arch/arm/kernel/calls.S	2006-06-20 13:22:50.813760152 +0200
++++ linux-2.6.17/arch/arm/kernel/calls.S	2006-06-20 13:22:59.596424984 +0200
+@@ -198,7 +198,7 @@
+ 		CALL(sys_sigaltstack_wrapper)
+ 		CALL(sys_sendfile)
+ 		CALL(sys_ni_syscall)
+-		CALL(sys_ni_syscall)
++		CALL(sys_kexec_load)
+ /* 190 */	CALL(sys_vfork_wrapper)
+ 		CALL(sys_getrlimit)
+ 		CALL(sys_mmap2)
+Index: linux-2.6.17/arch/arm/kernel/machine_kexec.c
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ linux-2.6.17/arch/arm/kernel/machine_kexec.c	2006-06-23 11:21:58.195936184 +0200
+@@ -0,0 +1,78 @@
++/*
++ * machine_kexec.c - handle transition of Linux booting another kernel
++ */
++
++#include <linux/mm.h>
++#include <linux/kexec.h>
++#include <linux/delay.h>
++#include <linux/reboot.h>
++#include <asm/pgtable.h>
++#include <asm/pgalloc.h>
++#include <asm/mmu_context.h>
++#include <asm/io.h>
++#include <asm/cacheflush.h>
++#include <asm/mach-types.h>
++
++const extern unsigned char relocate_new_kernel[];
++const extern unsigned int relocate_new_kernel_size;
++
++extern void setup_mm_for_reboot(char mode);
++
++extern unsigned long kexec_start_address;
++extern unsigned long kexec_indirection_page;
++extern unsigned long kexec_mach_type;
++
++/*
++ * Provide a dummy crash_notes definition while crash dump arrives to arm.
++ * This prevents breakage of crash_notes attribute in kernel/ksysfs.c.
++ */
++
++int machine_kexec_prepare(struct kimage *image)
++{
++	return 0;
++}
++
++void machine_kexec_cleanup(struct kimage *image)
++{
++}
++
++void machine_shutdown(void)
++{
++}
++
++void machine_crash_shutdown(struct pt_regs *regs)
++{
++}
++
++void machine_kexec(struct kimage *image)
++{
++	unsigned long page_list;
++	unsigned long reboot_code_buffer_phys;
++	void *reboot_code_buffer;
++
++
++	page_list = image->head & PAGE_MASK;
++
++	/* we need both effective and real address here */
++	reboot_code_buffer_phys =
++	    page_to_pfn(image->control_code_page) << PAGE_SHIFT;
++	reboot_code_buffer = page_address(image->control_code_page);
++
++	/* Prepare parameters for reboot_code_buffer*/
++	kexec_start_address = image->start;
++	kexec_indirection_page = page_list;
++	kexec_mach_type = machine_arch_type;
++
++	/* copy our kernel relocation code to the control code page */
++	memcpy(reboot_code_buffer,
++	       relocate_new_kernel, relocate_new_kernel_size);
++
++
++	flush_icache_range((unsigned long) reboot_code_buffer,
++			   (unsigned long) reboot_code_buffer + KEXEC_CONTROL_CODE_SIZE);
++	printk(KERN_INFO "Bye!\n");
++
++	cpu_proc_fin();
++	setup_mm_for_reboot(0); /* mode is not used, so just pass 0*/
++	cpu_reset(reboot_code_buffer_phys);
++}
+Index: linux-2.6.17/arch/arm/kernel/Makefile
+===================================================================
+--- linux-2.6.17.orig/arch/arm/kernel/Makefile	2006-06-20 13:22:50.814760000 +0200
++++ linux-2.6.17/arch/arm/kernel/Makefile	2006-06-20 13:22:59.597424832 +0200
+@@ -20,6 +20,7 @@
+ obj-$(CONFIG_ISA_DMA)		+= dma-isa.o
+ obj-$(CONFIG_PCI)		+= bios32.o
+ obj-$(CONFIG_SMP)		+= smp.o
++obj-$(CONFIG_KEXEC)		+= machine_kexec.o relocate_kernel.o
+ obj-$(CONFIG_OABI_COMPAT)	+= sys_oabi-compat.o
+ 
+ obj-$(CONFIG_IWMMXT)		+= iwmmxt.o
+Index: linux-2.6.17/arch/arm/kernel/relocate_kernel.S
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ linux-2.6.17/arch/arm/kernel/relocate_kernel.S	2006-06-20 13:22:59.597424832 +0200
+@@ -0,0 +1,74 @@
++/*
++ * relocate_kernel.S - put the kernel image in place to boot
++ */
++
++#include <asm/kexec.h>
++
++	.globl relocate_new_kernel
++relocate_new_kernel:
++
++	ldr	r0,kexec_indirection_page
++	ldr	r1,kexec_start_address
++
++
++0:	/* top, read another word for the indirection page */
++	ldr	r3, [r0],#4
++
++	/* Is it a destination page. Put destination address to r4 */
++	tst	r3,#1,0
++	beq	1f
++	bic	r4,r3,#1
++	b	0b
++1:
++	/* Is it an indirection page */
++	tst	r3,#2,0
++	beq	1f
++	bic	r0,r3,#2
++	b	0b
++1:
++
++	/* are we done ? */
++	tst	r3,#4,0
++	beq	1f
++	b	2f
++
++1:
++	/* is it source ? */
++	tst	r3,#8,0
++	beq	0b
++	bic r3,r3,#8
++	mov r6,#1024
++9:
++	ldr r5,[r3],#4
++	str r5,[r4],#4
++	subs r6,r6,#1
++	bne 9b
++	b 0b
++
++2:
++	/* Jump to relocated kernel */
++	mov lr,r1
++	mov r0,#0
++	ldr r1,kexec_mach_type
++	mov r2,#0
++	mov pc,lr
++
++	.globl kexec_start_address
++kexec_start_address:
++	.long	0x0
++
++	.globl kexec_indirection_page
++kexec_indirection_page:
++	.long	0x0
++
++	.globl kexec_mach_type
++kexec_mach_type:
++	.long	0x0
++
++relocate_new_kernel_end:
++
++	.globl relocate_new_kernel_size
++relocate_new_kernel_size:
++	.long relocate_new_kernel_end - relocate_new_kernel
++
++
+Index: linux-2.6.17/include/asm-arm/kexec.h
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ linux-2.6.17/include/asm-arm/kexec.h	2006-06-20 13:22:59.598424680 +0200
+@@ -0,0 +1,30 @@
++#ifndef _ARM_KEXEC_H
++#define _ARM_KEXEC_H
++
++#ifdef CONFIG_KEXEC
++
++/* Maximum physical address we can use pages from */
++#define KEXEC_SOURCE_MEMORY_LIMIT (-1UL)
++/* Maximum address we can reach in physical address mode */
++#define KEXEC_DESTINATION_MEMORY_LIMIT (-1UL)
++/* Maximum address we can use for the control code buffer */
++#define KEXEC_CONTROL_MEMORY_LIMIT TASK_SIZE
++
++#define KEXEC_CONTROL_CODE_SIZE	4096
++
++#define KEXEC_ARCH KEXEC_ARCH_ARM
++
++#ifndef __ASSEMBLY__
++
++#define MAX_NOTE_BYTES 1024
++
++struct kimage;
++/* Provide a dummy definition to avoid build failures. */
++static inline void crash_setup_regs(struct pt_regs *newregs,
++                                        struct pt_regs *oldregs) { }
++
++#endif /* __ASSEMBLY__ */
++					
++#endif /* CONFIG_KEXEC */
++
++#endif /* _ARM_KEXEC_H */
+Index: linux-2.6.17/include/asm-arm/unistd.h
+===================================================================
+--- linux-2.6.17.orig/include/asm-arm/unistd.h	2006-06-20 13:22:50.815759848 +0200
++++ linux-2.6.17/include/asm-arm/unistd.h	2006-06-20 13:22:59.598424680 +0200
+@@ -216,7 +216,7 @@
+ #define __NR_sigaltstack		(__NR_SYSCALL_BASE+186)
+ #define __NR_sendfile			(__NR_SYSCALL_BASE+187)
+ 					/* 188 reserved */
+-					/* 189 reserved */
++#define __NR_sys_kexec_load		(__NR_SYSCALL_BASE+189)	/* 189 was reserved, temporarily use it for sys_kexec_load */
+ #define __NR_vfork			(__NR_SYSCALL_BASE+190)
+ #define __NR_ugetrlimit			(__NR_SYSCALL_BASE+191)	/* SuS compliant getrlimit */
+ #define __NR_mmap2			(__NR_SYSCALL_BASE+192)
+Index: linux-2.6.17/include/linux/kexec.h
+===================================================================
+--- linux-2.6.17.orig/include/linux/kexec.h	2006-06-20 13:22:50.815759848 +0200
++++ linux-2.6.17/include/linux/kexec.h	2006-06-20 13:22:59.600424376 +0200
+@@ -119,6 +119,7 @@
+ #define KEXEC_ARCH_PPC     (20 << 16)
+ #define KEXEC_ARCH_PPC64   (21 << 16)
+ #define KEXEC_ARCH_IA_64   (50 << 16)
++#define KEXEC_ARCH_ARM     (40 << 16)
+ #define KEXEC_ARCH_S390    (22 << 16)
+ #define KEXEC_ARCH_SH      (42 << 16)
+ 

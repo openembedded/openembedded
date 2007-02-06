@@ -2,12 +2,13 @@ DESCRIPTION = "The GNU internationalization library."
 HOMEPAGE = "http://www.gnu.org/software/gettext/gettext.html"
 SECTION = "libs"
 LICENSE = "GPL"
-PR = "r3"
+PR = "r4"
 PROVIDES = "virtual/libintl"
 
 SRC_URI = "${GNU_MIRROR}/gettext/gettext-${PV}.tar.gz \
 	   file://gettext-vpath.patch;patch=1;pnum=1 \
-	   file://fixchicken.patch;patch=1;pnum=1"
+	   file://fixchicken.patch;patch=1;pnum=1 \
+           file://getline.m4.patch;patch=1"
 
 PARALLEL_MAKE = ""
 

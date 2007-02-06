@@ -5,7 +5,7 @@
 DESCRIPTION = "Packages that are compatible with the SlugOS firmware"
 HOMEPAGE = "http://www.nslu2-linux.org"
 LICENSE = "MIT"
-PR = "r15"
+PR = "r17"
 CONFLICTS = "db3"
 PROVIDES += "${SLUGOS_IMAGENAME}-packages"
 
@@ -22,6 +22,8 @@ ALLOW_EMPTY = "1"
 SLUGOS_PACKAGES = "\
 	alsa-lib \
 	alsa-utils \
+	asterisk \
+	asterisk-sounds \
 	atftp \
 	audiofile \
 	aumix \
@@ -40,6 +42,7 @@ SLUGOS_PACKAGES = "\
 	cdstatus \
 	cherokee \
 	coreutils \
+	cron \
 	ctorrent \
 	cvs \
 	cyrus-sasl \
@@ -170,10 +173,7 @@ SLUGOS_PACKAGES = "\
 
 # Packages currently broken on all platforms
 SLUGOS_BROKEN_PACKAGES = "\
-	asterisk \
-	asterisk-sounds \
 	bwmon \
-	cron \
 	ftpd-topfield \
 	gphoto2 \
 	irssi \
@@ -215,6 +215,7 @@ UCLIBC_BROKEN_PACKAGES = "\
 	bogofilter \
 	boost \
 	linphone \
+	yeaphone \
 	sudo \
 	ushare \
 	"

@@ -1,0 +1,31 @@
+
+Index: arch/arm/kernel/head.S
+===================================================================
+RCS file: /cvs/eps/dev_eng/sw/products/Linux/PXAEngine/pxa/linux-2.6.17-rc5/arch/arm/kernel/head.S,v
+retrieving revision 1.1.1.1
+diff -c -3 -p -r1.1.1.1 head.S
+*** arch/arm/kernel/head.S	29 May 2006 00:53:47 -0000	1.1.1.1
+--- arch/arm/kernel/head.S	1 Jun 2006 17:37:16 -0000
+*************** ENTRY(stext)
+*** 74,79 ****
+--- 74,93 ----
+  	msr	cpsr_c, #PSR_F_BIT | PSR_I_BIT | MODE_SVC @ ensure svc mode
+  						@ and irqs disabled
+  	mrc	p15, 0, r9, c0, c0		@ get processor id
++ 
++ 	/* LPD--
++ 	 * This fakes out the Linux kernel into believing that it is
++ 	 * running on a Mainstone hardware platform. The LogicLoader (LoLo)
++ 	 * doesn't currently pass kernel parameters correctly for 2.6 ARM
++ 	 * kernels. Therefore, we just hardcode it here.
++ 	 *
++ 	 * --LPD
++ 	 */
++ 	mov	r0, #0
++ 	mov	r1, #0x300
++ 	orr	r1, r1, #0x0a0
++ 	orr	r1, r1, #0x002
++ 
+  	bl	__lookup_processor_type		@ r5=procinfo r9=cpuid
+  	movs	r10, r5				@ invalid processor (r5=0)?
+  	beq	__error_p			@ yes, error 'p'

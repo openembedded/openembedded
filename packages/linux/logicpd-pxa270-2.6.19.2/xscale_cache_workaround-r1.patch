@@ -1,0 +1,93 @@
+If PG_dcache_dirty is set for a page, we need to flush the source page 
+before performing any copypage operation using a different virtual address.
+
+This fixes the copypage implementations on XScale, StrongARM and ARMv6.
+
+This patch fixes segmentation faults seen in the dynamic linker under 
+the usage patterns in glibc 2.4/2.5.
+
+Signed-off-by: Richard Purdie <rpurdie@rpsys.net>
+
+---
+ arch/arm/mm/copypage-v4mc.c   |    6 ++++++
+ arch/arm/mm/copypage-v6.c     |    4 ++++
+ arch/arm/mm/copypage-xscale.c |    6 ++++++
+ include/asm-arm/cacheflush.h  |    2 ++
+ 4 files changed, 18 insertions(+)
+
+Index: git/arch/arm/mm/copypage-xscale.c
+===================================================================
+--- git.orig/arch/arm/mm/copypage-xscale.c	2006-12-30 15:04:19.000000000 +0000
++++ git/arch/arm/mm/copypage-xscale.c	2006-12-30 15:04:22.000000000 +0000
+@@ -19,6 +19,7 @@
+ #include <asm/page.h>
+ #include <asm/pgtable.h>
+ #include <asm/tlbflush.h>
++#include <asm/cacheflush.h>
+ 
+ #include "mm.h"
+ 
+@@ -91,6 +92,11 @@ mc_copy_user_page(void *from, void *to)
+ 
+ void xscale_mc_copy_user_page(void *kto, const void *kfrom, unsigned long vaddr)
+ {
++	struct page *page = virt_to_page(kfrom);
++
++	if (test_and_clear_bit(PG_dcache_dirty, &page->flags))
++		__flush_dcache_page(page_mapping(page), page);
++
+ 	spin_lock(&minicache_lock);
+ 
+ 	set_pte_ext(TOP_PTE(COPYPAGE_MINICACHE), pfn_pte(__pa(kfrom) >> PAGE_SHIFT, minicache_pgprot), 0);
+Index: git/arch/arm/mm/copypage-v4mc.c
+===================================================================
+--- git.orig/arch/arm/mm/copypage-v4mc.c	2006-12-30 15:04:19.000000000 +0000
++++ git/arch/arm/mm/copypage-v4mc.c	2006-12-30 15:04:22.000000000 +0000
+@@ -19,6 +19,7 @@
+ #include <asm/page.h>
+ #include <asm/pgtable.h>
+ #include <asm/tlbflush.h>
++#include <asm/cacheflush.h>
+ 
+ #include "mm.h"
+ 
+@@ -69,6 +70,11 @@ mc_copy_user_page(void *from, void *to)
+ 
+ void v4_mc_copy_user_page(void *kto, const void *kfrom, unsigned long vaddr)
+ {
++	struct page *page = virt_to_page(kfrom);
++
++	if (test_and_clear_bit(PG_dcache_dirty, &page->flags))
++		__flush_dcache_page(page_mapping(page), page);
++
+ 	spin_lock(&minicache_lock);
+ 
+ 	set_pte_ext(TOP_PTE(0xffff8000), pfn_pte(__pa(kfrom) >> PAGE_SHIFT, minicache_pgprot), 0);
+Index: git/arch/arm/mm/copypage-v6.c
+===================================================================
+--- git.orig/arch/arm/mm/copypage-v6.c	2006-12-30 15:04:19.000000000 +0000
++++ git/arch/arm/mm/copypage-v6.c	2006-12-30 15:04:22.000000000 +0000
+@@ -53,6 +53,10 @@ static void v6_copy_user_page_aliasing(v
+ {
+ 	unsigned int offset = CACHE_COLOUR(vaddr);
+ 	unsigned long from, to;
++	struct page *page = virt_to_page(kfrom);
++
++	if (test_and_clear_bit(PG_dcache_dirty, &page->flags))
++		__flush_dcache_page(page_mapping(page), page);
+ 
+ 	/*
+ 	 * Discard data in the kernel mapping for the new page.
+Index: git/include/asm-arm/cacheflush.h
+===================================================================
+--- git.orig/include/asm-arm/cacheflush.h	2006-12-30 15:04:19.000000000 +0000
++++ git/include/asm-arm/cacheflush.h	2006-12-30 15:04:22.000000000 +0000
+@@ -355,6 +355,8 @@ extern void flush_ptrace_access(struct v
+  */
+ extern void flush_dcache_page(struct page *);
+ 
++extern void __flush_dcache_page(struct address_space *mapping, struct page *page);
++
+ #define flush_dcache_mmap_lock(mapping) \
+ 	write_lock_irq(&(mapping)->tree_lock)
+ #define flush_dcache_mmap_unlock(mapping) \
