@@ -35,7 +35,7 @@
 #DISTRO_TYPE
 
 # The following may be overridden to make sub-versions
-SLUGOS_VERSION = "4.2"
+SLUGOS_VERSION = "4.3"
 DISTRO_REVISION ?= ""
 DISTRO_VERSION ?= "${SLUGOS_VERSION}${DISTRO_REVISION}-${DISTRO_TYPE}"
 # For release (only):
