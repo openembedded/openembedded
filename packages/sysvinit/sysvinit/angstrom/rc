@@ -23,7 +23,7 @@ startup_progress() {
     step=$(($step + $step_change))
 
     if [ $(($num_steps + $first_step)) -lt 1 ]; then
-        numsteps="1"
+        num_steps="1"
         first_step="0"
     fi
 
