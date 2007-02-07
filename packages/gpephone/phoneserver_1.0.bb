@@ -6,6 +6,6 @@ PR          = "r0"
 
 DEPENDS = "dbus-glib glib-2.0  libmsgenabler libabenabler"
 
-GPE_TARBALL_SUFFIX= "gz"
+GPE_TARBALL_SUFFIX= "bz2"
 inherit gpephone autotools
  

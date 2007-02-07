@@ -6,7 +6,7 @@ PR          = "r0"
 
 DEPENDS = "gtk+ libgpewidget libgpephone libgpelaunch dbus-glib libxsettings-client"
 
-GPE_TARBALL_SUFFIX= "bz2"
+GPE_TARBALL_SUFFIX= "gz"
 inherit gpephone autotools
 
 #EXTRA_OECONF = "--enable-gridlayout"

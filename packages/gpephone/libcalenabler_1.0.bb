@@ -5,9 +5,9 @@ PRIORITY    = "optional"
 DEPENDS     = "glib-2.0 e2fsprogs-libs sqlite3"
 PR          = "r1"
 
-GPE_TARBALL_SUFFIX = "bz2"
+GPE_TARBALL_SUFFIX = "gz"
 
-inherit gpe pkgconfig autotools
+inherit gpephone pkgconfig autotools
 
 LDFLAGS += " -L${STAGING_LIBDIR}"
 

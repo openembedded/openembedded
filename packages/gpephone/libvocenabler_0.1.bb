@@ -5,7 +5,7 @@ PRIORITY    = "optional"
 DEPENDS     = "glib-2.0 dbus-glib linphone"
 PR          = "r0"
 
-GPE_TARBALL_SUFFIX = "bz2"
+GPE_TARBALL_SUFFIX = "gz"
 
 inherit gpephone pkgconfig autotools
 

@@ -5,9 +5,9 @@ PRIORITY    = "optional"
 DEPENDS     = "glib-2.0 sqlite3 librecord"
 PR          = "r0"
 
-GPE_TARBALL_SUFFIX = "bz2"
+GPE_TARBALL_SUFFIX = "gz"
 
-inherit gpe pkgconfig autotools
+inherit gpephone pkgconfig autotools
 
 FILES_${PN} += " ${datadir}/vochistory"
 
