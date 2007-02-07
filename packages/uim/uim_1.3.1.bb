@@ -14,7 +14,7 @@ RDEPENDS_uim = "libuim0"
 RDEPENDS_uim-anthy = "virtual/japanese-font"
 
 DESCRIPTION_libuim0 = "Simple and flexible input method collection and library"
-SECTION_libuim0 = "lib/inputmethods"
+SECTION_libuim0 = "libs/inputmethods"
 FILES_libuim0 = "${libdir}/uim/plugin/libuim-custom-enabler.* \
                  ${libdir}/libuim-custom.so.* \
                  ${datadir}/locale/ja/LC_MESSAGES/uim.mo \
