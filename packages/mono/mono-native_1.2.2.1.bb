@@ -1,6 +1,4 @@
-require mono_${PV}.bb
-
-S = "${WORKDIR}/mono-${PV}"
+require mono.inc
 
 DEPENDS = "glib-2.0-native"
 
