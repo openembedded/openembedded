@@ -1,0 +1,84 @@
+Index: src/callbacks.c
+===================================================================
+--- src/callbacks.c	(revision 1459)
++++ src/callbacks.c	(working copy)
+@@ -37,10 +37,20 @@
+ quit (FakeApp * app)
+ {
+   kill (app->xnest_pid, SIGKILL);
++  system ("killall -9 voicecall && rm -f /tmp/.voc.pid");
++  system ("halt"); /* evil, but it will do the trick */
+   gtk_main_quit ();
+ }
+ 
+ void
++on_take_screenshot_activate (GtkMenuItem * menuitem, FakeApp * app)
++{
++  gchar *cmd = g_strdup_printf("DISPLAY=%s gpe-scap",  app->xnest_dpy_name);
++  system (cmd);
++  g_free (cmd);
++}
++
++void
+ on_quit_activate (GtkMenuItem * menuitem, FakeApp * app)
+ {
+   quit (app);
+Index: src/callbacks.h
+===================================================================
+--- src/callbacks.h	(revision 1459)
++++ src/callbacks.h	(working copy)
+@@ -8,6 +8,8 @@
+ 
+ void on_quit_activate (GtkMenuItem * menuitem, FakeApp * app);
+ 
++void on_take_screenshot_activate (GtkMenuItem * menuitem, FakeApp * app);
++
+ void on_about_activate (GtkMenuItem * menuitem, FakeApp * app);
+ 
+ void on_window_destroy (GtkObject * widget, FakeApp * app);
+Index: src/main.c
+===================================================================
+--- src/main.c	(revision 1459)
++++ src/main.c	(working copy)
+@@ -78,6 +78,9 @@
+   glade_xml_signal_connect_data (glade, "on_quit_activate",
+ 				 (GCallback) on_quit_activate, app);
+ 
++  glade_xml_signal_connect_data (glade, "on_take_screenshot_activate",
++				 (GCallback) on_take_screenshot_activate, app);
++
+   glade_xml_signal_connect_data (glade, "on_about_activate",
+ 				 (GCallback) on_about_activate, app);
+ 
+Index: data/Xoo.glade
+===================================================================
+--- data/Xoo.glade	(revision 1459)
++++ data/Xoo.glade	(working copy)
+@@ -77,11 +77,26 @@
+ 		  </child>
+ 
+ 		  <child>
++		    <widget class="GtkMenuItem" id="take_screenshot">
++		      <property name="visible">True</property>
++		      <property name="label" translatable="yes">_Screenshot</property>
++		      <property name="use_underline">True</property>
++		      <signal name="activate" handler="on_take_screenshot_activate" last_modification_time="Sa, 03 Feb 2007 12:08:36 GMT"/>
++		    </widget>
++		  </child>
++
++		  <child>
++		    <widget class="GtkSeparatorMenuItem" id="separatormenuitem1">
++		      <property name="visible">True</property>
++		    </widget>
++		  </child>
++
++		  <child>
+ 		    <widget class="GtkImageMenuItem" id="quit">
+ 		      <property name="visible">True</property>
+ 		      <property name="label">gtk-quit</property>
+ 		      <property name="use_stock">True</property>
+-		      <signal name="activate" handler="on_quit_activate" last_modification_time="Mon, 08 Nov 2004 12:08:36 GMT"/>
++		      <signal name="activate" handler="on_quit_activate" last_modification_time="Sa, 03 Feb 2007 12:08:36 GMT"/>
+ 		    </widget>
+ 		  </child>
+ 		</widget>
