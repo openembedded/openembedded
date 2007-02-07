@@ -1,0 +1,28 @@
+--- Makefile.orig	2007-02-04 15:34:43.000000000 +0100
++++ Makefile	2007-02-04 15:36:58.000000000 +0100
+@@ -5,9 +5,7 @@
+ SRC = gsm0710.c buffer.c
+ OBJS = gsm0710.o buffer.o
+ 
+-CC = gcc
+-LD = gcc
+-CFLAGS = -Wall
++PACKAGE_CFLAGS = -Wall
+ LDLIBS = -lm
+ 
+ ifeq ($(DEBUG),y)
+@@ -21,9 +19,13 @@
+ 	rm -f $(OBJS) $(TARGET)
+ 
+ %.o: %.c
+-	$(CC) $(CFLAGS) -c -o $@ $<
++	$(CC) $(CFLAGS) $(PACKAGE_CFLAGS) -c -o $@ $<
+ 
+ $(TARGET): $(OBJS)
+ 	$(LD) $(LDLIBS) -o $@ $(OBJS)
+ 
++install: $(TARGET)
++	install -d $(DESTDIR)/$(PREFIX)/bin
++	install -m 755 $(TARGET) $(DESTDIR)/$(PREFIX)/bin 
++
+ .PHONY: all clean

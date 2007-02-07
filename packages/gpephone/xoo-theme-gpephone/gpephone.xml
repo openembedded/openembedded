@@ -1,0 +1,59 @@
+<LiPSrf>
+
+<!-- 
+     first define the window size, image and display geometry for your 
+     'fake' device.
+-->
+
+<device  width='305' height='656' 
+         display_width='240' display_height='320' 
+         display_x='33' display_y='31' 
+	 img='gpephone.png' />
+
+<!-- Buttons ( optional )
+     The define each of the buttons. Note, there are a couple of extra 
+     optional attributes not used here;
+
+     - 'img' - set to an image pathname for the down state of the button
+       
+     - repreat = 'on|off' , Turn key repeat on/off for that key. By default
+       key repeat is on. 
+ -->
+
+<!-- PIM buttons, left to right -->
+<!-- Left softkey-->
+<button x='36' y='370' width='91' height='21' key='F3'/> 
+<!-- Rigth softkey-->
+<button x='177' y='370' width='91' height='21' key='F4'/> 
+
+<!-- Home key-->
+<button x='10' y='408' width='83' height='22' key='k'/> 
+
+<!-- backspace key-->
+<button x='208' y='408' width='83' height='22' key='BackSpace'/> 
+<!-- Call key-->
+<button x='10' y='441' width='83' height='22' key='Page_Up'/> 
+<!-- Hangup key-->
+<button x='208' y='441' width='83' height='22' key='Page_Down'/> 
+
+<button x='133' y='393' width='45' height='23' key='Up'/> 
+<button x='123' y='459' width='57' height='23' key='Down'/> 
+<button x='106' y='417' width='26' height='42' key='Left'/> 
+<button x='178' y='411' width='20' height='53' key='Right'/> 
+
+<button x='133' y='423' width='38' height='30' key='Return'/> 
+
+<button x='24' y='493' width='73' height='26' key='1'/> 
+<button x='24' y='534' width='73' height='26' key='4'/> 
+<button x='24' y='573' width='73' height='26' key='7'/> 
+<button x='24' y='612' width='73' height='26' key='comma'/> 
+<button x='106' y='486' width='90' height='34' key='2'/> 
+<button x='106' y='526' width='90' height='34' key='5'/> 
+<button x='106' y='564' width='90' height='34' key='8'/> 
+<button x='106' y='604' width='90' height='34' key='0'/> 
+<button x='202' y='493' width='73' height='26' key='3'/> 
+<button x='202' y='534' width='73' height='26' key='6'/> 
+<button x='202' y='573' width='73' height='26' key='9'/> 
+<button x='202' y='612' width='73' height='26' key='period'/> 
+
+</LiPSrf>
