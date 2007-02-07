@@ -11,6 +11,8 @@ SRC_URI = "${GPEPHONE_MIRROR}/${P}/lips_im-${PV}.tar.gz"
 
 EXTRA_OECONF = "--with-session-bus-services-dir=${datadir}/dbus-1/services"
 
+PARALLEL_MAKE = ""
+
 S = ${WORKDIR}/lips_im-${PV}
 
 FILES_${PN} += " ${datadir}/dbus-1"
