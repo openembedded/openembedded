@@ -18,7 +18,7 @@ RDEPENDS_libmediastreamer = "speex libogg libasound libortp"
 
 PROVIDES = "linphone linphonec liblinphone"
 
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "http://download.savannah.nongnu.org/releases/linphone/1.6.x/sources/linphone-${PV}.tar.gz \
            http://download.devbase.at/voip/linphone-1.6.0-pl0.patch;patch=1"
@@ -27,8 +27,7 @@ S = "${WORKDIR}/linphone-${PV}"
 
 inherit autotools pkgconfig
 
-#ugly, ugly hack to get around some pkgconfig versioning problems, hopefully the nslu2 people will come up with a proper solution
-export PKG_CONFIG=/usr/bin/pkg-config
+export PKG_CONFIG=${STAGING_BINDIR_NATIVE}/pkg-config
 
 EXTRA_OECONF = "--disable-gtk-doc \
                 --without-ffmpeg --disable-video --without-sdl \
