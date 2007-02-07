@@ -1,0 +1,21 @@
+LICENSE     = "LGPL"
+DESCRIPTION = "LiPS event model library."
+SECTION     = "gpe/libs"
+PRIORITY    = "optional"
+DEPENDS     = "glib-2.0 libgpg-error libgcrypt gnutls libidn iksemel gloox dbus-glib liblipsevent"
+PR          = "r0"
+
+inherit gpephone pkgconfig autotools
+
+SRC_URI = "file://source/lips_im-${PV}.tar.gz"
+
+EXTRA_OECONF = "--with-session-bus-services-dir=${datadir}/dbus-1/services"
+
+S = ${WORKDIR}/lips_im-${PV}
+
+FILES_${PN} += " ${datadir}/dbus-1"
+
+do_stage () {
+	autotools_stage_all
+}
+<
