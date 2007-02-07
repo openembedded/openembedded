@@ -39,8 +39,9 @@ squashfs/squashfs-Makefile.patch
 86-nas100d-rtc-fixup.patch
 87-dsmg600-rtc-fixup.patch
 88-dsmg600-dflt-cmdline.patch
-88-nas100d-dflt-cmdline.patch
-88-nslu2-dflt-cmdline.patch
+# These are now done via arm-kernel-shim
+#88-nas100d-dflt-cmdline.patch
+#88-nslu2-dflt-cmdline.patch
 95-pata-ixp4xx.patch
 96-fsg3-support.patch
 97-avila-setup-pata.patch

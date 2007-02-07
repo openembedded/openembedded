@@ -32,6 +32,7 @@ PARALLEL_MAKE = ""
 
 
 do_install_append() {
+	install -d ${D}${sysconfdir}/default/volatiles
 	install -m 0644 ${WORKDIR}/volatiles.04_pulse  ${D}${sysconfdir}/default/volatiles/volatiles.04_pulse
 }
 

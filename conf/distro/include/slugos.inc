@@ -35,7 +35,7 @@
 #DISTRO_TYPE
 
 # The following may be overridden to make sub-versions
-SLUGOS_VERSION = "4.2"
+SLUGOS_VERSION = "4.3"
 DISTRO_REVISION ?= ""
 DISTRO_VERSION ?= "${SLUGOS_VERSION}${DISTRO_REVISION}-${DISTRO_TYPE}"
 # For release (only):
@@ -169,17 +169,11 @@ PREFERRED_VERSION_glibc ?= "2.3.5+cvs20050627"
 # Select the correct versions of the kernel and modules (these are the
 # defaults, override in the conf/distro top-level distro file).
 PREFERRED_PROVIDER_virtual/kernel ?= "ixp4xx-kernel"
-PREFERRED_VERSION_ixp4xx-kernel ?= "2.6.19"
+PREFERRED_VERSION_ixp4xx-kernel ?= "2.6.20"
 
 # Select the smallest provider of x11 libraries
 PREFERRED_PROVIDER_virtual/libx11 ?= "diet-x11"
 SRCDATE_diet-x11 ?= "20060106"
-
-# Latest wpa-supplicant which supports madwifi-ng
-PREFERRED_VERSION_wpa-supplicant ?= "0.5.1"
-
-# Latest linphone supports yeaphone
-PREFERRED_VERSION_linphone ?= "1.6.0"
 
 # Ensure consistency across all SlugOS builds for the provider of a
 # relational database - use the latest version of the SleepyCat
