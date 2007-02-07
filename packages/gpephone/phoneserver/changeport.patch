@@ -1,0 +1,11 @@
+--- config.h~	2007-02-07 10:43:57.000000000 +0100
++++ config.h	2007-02-07 10:43:57.000000000 +0100
+@@ -22,7 +22,7 @@
+ /* serial port name */
+ #ifndef SERIAL_PORT
+ //#define SERIAL_PORT "/dev/pts/0"        //ttyS1"
+-#define SERIAL_PORT "/dev/ttyS1"        //ttyS1"
++#define SERIAL_PORT "/dev/ttyS0"        //ttyS1"
+ #endif                          /*  */
+ 
+ /* serial port baudrate */

@@ -3,7 +3,7 @@ LICENSE = "GPL"
 SECTION = "base"
 PRIORITY = "optional"
 
-inherit autotools
+inherit autotools pkgconfig
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/e2fsprogs/e2fsprogs-libs-${PV}.tar.gz \
            file://configure.patch;patch=1 \
