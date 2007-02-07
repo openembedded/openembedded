@@ -7,7 +7,7 @@ PR          = "r0"
 
 inherit gpephone pkgconfig autotools
 
-SRC_URI = "file://source/lips_im-${PV}.tar.gz"
+SRC_URI = "${GPEPHONE_MIRROR}/${P}/lips_im-${PV}.tar.gz"
 
 EXTRA_OECONF = "--with-session-bus-services-dir=${datadir}/dbus-1/services"
 
@@ -18,4 +18,3 @@ FILES_${PN} += " ${datadir}/dbus-1"
 do_stage () {
 	autotools_stage_all
 }
-<

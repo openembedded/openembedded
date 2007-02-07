@@ -26,7 +26,7 @@ RDEPENDS_gpephone-task-development := "\
     e2fsprogs"
 
 RDEPENDS_gpephone-task-base := "\
-    cms92-init \
+    cms92init \
     gsmmux \
     connect \
     phoneserver \

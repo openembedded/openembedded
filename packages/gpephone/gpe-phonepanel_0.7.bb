@@ -6,7 +6,7 @@ PR          = "r0"
 
 DEPENDS = "gtk+ libgpephone dbus-glib"
 
-GPE_TARBALL_SUFFIX= "bz2"
+GPE_TARBALL_SUFFIX= "gz"
 inherit gpephone autotools
 
 FILES_${PN} += "${datadir}/themes"

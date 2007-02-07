@@ -7,7 +7,7 @@ PR          = "r0"
 
 inherit gpephone pkgconfig autotools
 
-SRC_URI = "file://source/lips_event-${PV}.tar.gz"
+SRC_URI = "${GPEPHONE_MIRROR}/${P}/lips_event-${PV}.tar.gz"
 
 S = ${WORKDIR}/lips_event-${PV}
 
