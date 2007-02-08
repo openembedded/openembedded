@@ -264,6 +264,12 @@
         </row>
 
         <row>
+          <entry>inputmethods</entry>
+
+          <entry>inputmethods that are neither libs, nor solely for GPE/Opie or the console</entry>
+        </row>
+
+        <row>
           <entry>interpreters</entry>
 
           <entry></entry>
