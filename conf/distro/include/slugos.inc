@@ -3,21 +3,7 @@
 #@DESCRIPTION: SlugOS Linux Distribution for the NSLU2
 
 # WARNING: this file should not be used directly, use one of
-# the supported slugos-derived distributions instead:
-
-# Explanation of the naming
-#
-# slugos - the base distro configuration for an NSLU2
-# slugos-[bl][at][gu] - a specific configuration encoded as follows:
-#
-#  b or l - big or little endian
-#
-#  a or t - ARM or Thumb instructions in the low level libraries
-#         set ARM_INSTRUCTION_SET to match
-#
-#  g or u - glibc or uclibc libc implementation
-#         set TARGET_OS to match
-#
+# the supported slugos-derived distributions instead.
 
 #----------------------------------------------------------------------------------
 # STANDARD SLUGOS DEFINITIONS
@@ -26,6 +12,8 @@
 #
 #DISTRO_NAME
 #DISTRO_TYPE
+#ARM_INSTRUCTION_SET "arm" or "thumb"
+#TARGET_OS "linux" or "linux-uclibc"
 
 # The following may be overridden to make sub-versions
 SLUGOS_VERSION = "4.3"
@@ -38,11 +26,6 @@ DISTRO_FEED ?= "unstable"
 SLUGOS_DISTRO ?= "slugos"
 
 IMAGE_BASENAME = "${SLUGOS_DISTRO}"
-
-# The following must also be set, they define the basic format of the build
-#
-#ARM_INSTRUCTION_SET "arm" or "thumb"
-#TARGET_OS "linux" or "linux-uclibc"
 
 # The following need not be set, the defaults should be adequate
 #USE_NLS = "no" or "yes"
@@ -80,21 +63,9 @@ FULL_OPTIMIZATION = "-Os -fomit-frame-pointer -frename-registers \
 #  when downloading new packages or updating existing packages.  Additional feeds
 #  (such as a local feed) can be defined in local.conf
 #----------------------------------------------------------------------------------
-# Add to the user's feeds from local.conf (there may be none).
-# In general slugos-[bl][at][gu] is sufficient to identify a set of packages which
-# will work on any derived distro.  The slugos-???.conf files set the FEED_URIS to
-# an appropriate ipkg.nslu2-linux.org default if nslu2-linux is actually building
-# such a feed:
 #
-#FEED_URIS_append += "cross##http://ipkg.nslu2-linux.org/feeds/${SLUGOS-foo}/cross/${DISTRO_FEED}"
-#FEED_URIS_append += "native##http://ipkg.nslu2-linux.org/feeds/${SLUGOS-foo}/native/${DISTRO_FEED}"
-#
-# When such a feed exists the corresponding 'unstable' feed will normally also
-# exist - the packages in unstable are the latest but very unlikely to be the
-# greatest.  Use at your own risk!
-# 
-#FEED_URIS_append += "unstable_cross##http://ipkg.nslu2-linux.org/feeds/${SLUGOS-foo}/cross/unstable"
-#FEED_URIS_append += "unstable_native##http://ipkg.nslu2-linux.org/feeds/${SLUGOS-foo}/native/unstable"
+FEED_URIS_append += "cross##http://ipkg.nslu2-linux.org/feeds/${SLUGOS_DISTRO}/cross/${DISTRO_FEED}"
+FEED_URIS_append += "native##http://ipkg.nslu2-linux.org/feeds/${SLUGOS_DISTRO}/native/${DISTRO_FEED}"
 
 #----------------------------------------------------------------------------------
 # FIRMWARE CONFIGURATION
@@ -169,6 +140,8 @@ SRCDATE_irssi ?= "20050930"
 
 CVS_TARBALL_STASH = "http://sources.nslu2-linux.org/sources/"
 INHERIT += "nslu2-mirrors"
+
+PREFERRED_VERSION_nslu2-linksys-firmware ?= "2.3r63"
 
 PREFERRED_VERSION_ipkg ?= "0.99.154"
 PREFERRED_VERSION_ipkg-native ?= "0.99.154"
