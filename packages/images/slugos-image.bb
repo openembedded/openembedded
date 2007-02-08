@@ -6,7 +6,7 @@
 DESCRIPTION = "Generic SlugOS image"
 HOMEPAGE = "http://www.nslu2-linux.org"
 LICENSE = "MIT"
-PR = "r44"
+PR = "r45"
 PROVIDES += "${SLUGOS_DISTRO}-image"
 
 COMPATIBLE_MACHINE = "nslu2"
@@ -37,45 +37,10 @@ IMAGE_PREPROCESS_COMMAND += "install -c -m 644 ${SLUGOS_DEVICE_TABLE} ${IMAGE_RO
 # else.
 ROOTFS_POSTPROCESS_COMMAND += "sed -i '$d' '${IMAGE_ROOTFS}/etc/ipkg/arch.conf';"
 
-# CONFIG:
-# SLUGOS_EXTRA_RDEPENDS: set in conf, things to add to the image
-# SLUGOS_SUPPORT:        set here, see below, added to the image.
-# SLUGOS_KERNEL:         set here, kernel modules added to the image
-#
-# Do not override the last two unless you really know what you
-# are doing - there is more information below.
+SLUGOS_EXTRA_INSTALL ?= ""
 
-# diff, cpio and find are required for reflash and turnup ram.
-# Removing these probably leaves the system bootable, but standard
-# openslug and ucslugc stuff won't work, so only take these out in
-# very non-standard turnkey slugos builds.
-#
-# udev is the default way of handling devices, there is no guarantee
-# that the static device table is completely correct (it is just
-# known to be sufficient for boot.)
-SLUGOS_SUPPORT ?= "diffutils cpio findutils udev"
-
-SLUGOS_KERNEL ?= ""
-
-SLUGOS_EXTRA_RDEPENDS ?= ""
-
-RDEPENDS = "kernel ixp4xx-npe \
-	base-files base-passwd netbase \
-        busybox initscripts-slugos slugos-init \
-        update-modules sysvinit tinylogin \
-	module-init-tools modutils-initscripts \
-        ipkg-collateral ipkg ipkg-link \
-	portmap \
-	dropbear \
-	beep \
-	e2fsprogs-blkid \
-	util-linux-mount \
-	util-linux-umount \
-	util-linux-swaponoff \
-	util-linux-losetup \
-	${SLUGOS_SUPPORT} \
-	${SLUGOS_KERNEL} \
-	${SLUGOS_EXTRA_RDEPENDS}"
+DEPENDS = "task-slugos"
+RDEPENDS = "task-slugos ${SLUGOS_EXTRA_INSTALL}"
 
 PACKAGE_INSTALL = "${RDEPENDS}"
 
