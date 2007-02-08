@@ -1,20 +1,9 @@
-DESCRIPTION = "Common X11 scripts and support files"
-LICENSE = "GPL"
-SECTION = "x11"
-PV = "1.12+svn${SRCDATE}"
-PR = "r0"
-
-PACKAGE_ARCH = "all"
+require xserver-common.inc
 
 DEFAULT_PREFERENCE = "-1"
 
 DEPENDS = "xmodmap xrandr xdpyinfo xtscal"
-RDEPENDS_${PN} = "xmodmap xrandr xdpyinfo xtscal"
-
-
-# we are using a gpe-style Makefile
-inherit gpe
-
+PV = "1.12+svn${SRCDATE}"
 S = "${WORKDIR}/xserver-common"
 
 SRC_URI = "${GPE_SVN} \
