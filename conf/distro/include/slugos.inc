@@ -3,11 +3,11 @@
 #@DESCRIPTION: SlugOS Linux Distribution for the NSLU2
 
 # WARNING: this file should not be used directly, use one of
-# the supported slugos-???.conf instead:
+# the supported slugos-derived distributions instead:
 
 # Explanation of the naming
 #
-# slugos-dist - the base distro configuration for an NSLU2
+# slugos - the base distro configuration for an NSLU2
 # slugos-[bl][at][gu] - a specific configuration encoded as follows:
 #
 #  b or l - big or little endian
