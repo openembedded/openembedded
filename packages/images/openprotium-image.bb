@@ -4,8 +4,6 @@ LICENSE = "MIT"
 PR = "r0"
 
 DEPENDS = "${MACHINE_TASK_PROVIDER}"
-# SLUGOS_IMAGENAME defines the name of the image to be build, if it
-# is not set this package will be skipped!
 EXTRA_IMAGECMD_jffs2 = "--pad --big-endian --eraseblock=0x10000 -D ${SLUGOS_DEVICE_TABLE}"
 IMAGE_LINGUAS = ""
 

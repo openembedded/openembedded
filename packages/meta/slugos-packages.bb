@@ -7,7 +7,7 @@ HOMEPAGE = "http://www.nslu2-linux.org"
 LICENSE = "MIT"
 PR = "r17"
 CONFLICTS = "db3"
-PROVIDES += "${SLUGOS_IMAGENAME}-packages"
+PROVIDES += "${SLUGOS_DISTRO}-packages"
 
 COMPATIBLE_MACHINE = "nslu2"
 EXCLUDE_FROM_WORLD = "1"

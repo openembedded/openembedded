@@ -7,12 +7,10 @@ DESCRIPTION = "Generic SlugOS image"
 HOMEPAGE = "http://www.nslu2-linux.org"
 LICENSE = "MIT"
 PR = "r44"
+PROVIDES += "${SLUGOS_DISTRO}-image"
 
 COMPATIBLE_MACHINE = "nslu2"
 
-# SLUGOS_IMAGENAME defines the name of the image to be build, if it
-# is not set this package will be skipped!
-IMAGE_BASENAME = "${SLUGOS_IMAGENAME}"
 IMAGE_NAME = "${IMAGE_BASENAME}-${MACHINE}-${DISTRO_VERSION}"
 IMAGE_FSTYPES = "jffs2"
 EXTRA_IMAGECMD_jffs2 += " -D ${SLUGOS_DEVICE_TABLE}"
@@ -34,22 +32,10 @@ SLUGOS_DEVICE_TABLE = "${@bb.which(bb.data.getVar('BBPATH', d, 1), 'files/device
 IMAGE_PREPROCESS_COMMAND += "rm ${IMAGE_ROOTFS}/boot/zImage*;"
 IMAGE_PREPROCESS_COMMAND += "install -c -m 644 ${SLUGOS_DEVICE_TABLE} ${IMAGE_ROOTFS}/etc/device_table;"
 
-# Building a full image.  If required do a post-process command which builds
-# the full flash image using slugimage.  At present this only works for NSLU2 images.
-PACK_IMAGE = ""
-IMAGE_POSTPROCESS_COMMAND += "${PACK_IMAGE}"
-PACK_IMAGE_DEPENDS = ""
-EXTRA_IMAGEDEPENDS += "${PACK_IMAGE_DEPENDS}"
-
 # This hack removes '${MACHINE}' from the end of the arch.conf for ipk,
 # preventing _mach.ipk (with no byte sex) taking precedence over everything
 # else.
 ROOTFS_POSTPROCESS_COMMAND += "sed -i '$d' '${IMAGE_ROOTFS}/etc/ipkg/arch.conf';"
-
-# These depends define native utilities - they do not get put in the flash and
-# are not required to build the image.
-IMAGE_TOOLS = ""
-EXTRA_IMAGEDEPENDS += "${IMAGE_TOOLS}"
 
 # CONFIG:
 # SLUGOS_EXTRA_RDEPENDS: set in conf, things to add to the image
@@ -95,25 +81,15 @@ PACKAGE_INSTALL = "${RDEPENDS}"
 
 inherit image
 
-python () {
-    # Don't build slugos images unless the configuration is set up
-    # for an image build!
-    if bb.data.getVar("SLUGOS_IMAGENAME", d, 1) == '':
-        raise bb.parse.SkipPackage("absent or broken SlugOS configuration")
-}
-
-#--------------------------------------------------------------------------------
-# NSLU2 specific
-#
 #NOTE: you do not actually need the boot loader in normal use because it is
 # *not* overwritten by a standard upslug upgrade, so you can make an image with
 # just non-LinkSys software which can be flashed into the NSLU2.  Because
 # LinkSys have made "EraseAll" available, however, (this does overwrite RedBoot)
 # it is a bad idea to produce flash images without a valid RedBoot - that allows
 # an innocent user upgrade attempt to instantly brick the NSLU2.
-PACK_IMAGE += "${@['', 'slugos_pack_image;'][bb.data.getVar('SLUGOS_FLASH_IMAGE', d, 1) == '1']}"
-PACK_IMAGE_DEPENDS += "${@['', 'slugimage-native nslu2-linksys-firmware ixp4xx-npe'][bb.data.getVar('SLUGOS_FLASH_IMAGE', d, 1) == '1']}"
 
+IMAGE_POSTPROCESS_COMMAND += "slugos_pack_image;"
+EXTRA_IMAGEDEPENDS += "slugimage-native nslu2-linksys-firmware ixp4xx-npe upslug2-native"
 NSLU2_SLUGIMAGE_ARGS ?= ""
 
 slugos_pack_image() {
@@ -168,6 +144,3 @@ slugos_pack_image() {
 		-C ${DEPLOY_DIR_IMAGE} firmupgrade
 	rm -rf ${DEPLOY_DIR_IMAGE}/firmupgrade
 }
-
-# upslug2 (in tmp/work/upslug2-native-*) is the program to write the NSLU2 flash
-IMAGE_TOOLS_nslu2 = "upslug2-native"

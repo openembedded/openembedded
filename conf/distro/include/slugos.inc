@@ -18,13 +18,6 @@
 #  g or u - glibc or uclibc libc implementation
 #         set TARGET_OS to match
 #
-# The following names are deprecated:
-#
-# openslug - the historical name of a canonical slugos-bag distro
-#            also the name of a standard slugos-bag distro with a package feed
-# ucslugc  - the historical (and obsolete) name of slugos-btu
-#            also the name of a standard slugos-btu distro with a package feed
-#
 
 #----------------------------------------------------------------------------------
 # STANDARD SLUGOS DEFINITIONS
@@ -41,6 +34,10 @@ DISTRO_VERSION ?= "${SLUGOS_VERSION}${DISTRO_REVISION}-${DISTRO_TYPE}"
 # For release (only):
 # DISTRO_FEED ?= "${SLUGOS_VERSION}-${DISTRO_TYPE}"
 DISTRO_FEED ?= "unstable"
+
+SLUGOS_DISTRO ?= "slugos"
+
+IMAGE_BASENAME = "${SLUGOS_DISTRO}"
 
 # The following must also be set, they define the basic format of the build
 #
@@ -77,18 +74,6 @@ FULL_OPTIMIZATION = "-Os -fomit-frame-pointer -frename-registers \
 	-fno-unroll-loops -fno-inline-functions \
 	-fweb -funit-at-a-time"
 
-# packages/meta/slugos-image.bb generates a binary image of the root file system
-# with a name controlled by the following setting - it defaults to the top level
-# ${DISTRO_NAME} and this should always be correct, but it may be too specific (e.g.
-# if you change the DISTRO from one of the standard ones in a way which does not
-# change the generated image).
-SLUGOS_IMAGENAME ?= "${DISTRO_NAME}"
-
-# pull in the frozen list of bbfiles - this sets BBFILES and this will override any
-# setting in local.conf  Since this depends on ${DISTRO} it doesn't actually do
-# anything by default unless conf/distro/${DISTRO}-packages.conf exists.
-# require conf/distro/include/freeze.conf
-
 #----------------------------------------------------------------------------------
 # FEEDS
 #  The FEED_URIS lines define where on the internet SlugOS looks for packages
@@ -122,20 +107,6 @@ SLUGOS_IMAGENAME ?= "${DISTRO_NAME}"
 # issues in the kernel need to cancel this (set CMDLINE_DEBUG empty in local.conf)
 CMDLINE_DEBUG = "noirqdebug"
 
-# Building a full image.  If you set SLUGOS_FLASH_IMAGE to "nslu2" a complete
-# 8MByte flash image will be built after the rootfs JFFS2 image.  Other options
-# may later be defined for other vendor-flashable image types.
-#
-# If you do this you will need to find a source for the LinkSys software to be
-# placed in the full image - 'RedBoot' (the boot loader), 'Trailer' (just a bunch
-# of bytes to flag the image as valid) and 'SysConf' (actually just a block of
-# unset data - you could modify this to pre-configure the SysConf partition of the
-# image).  If you own an NSLU2 then this data is already in the flash of the NSLU2
-# and you can download it (including new versions) from the LinkSys web site - see
-# packages/meta/slugos-image.bb for information about where to put the downloaded
-# data.
-SLUGOS_FLASH_IMAGE ?= "no"
-
 # EXTRA PACKAGES
 # --------------
 # SlugOS builds an image with no extra packages - to add packages to the
@@ -165,8 +136,7 @@ PREFERRED_PROVIDERS += "virtual/${TARGET_PREFIX}libc-for-gcc:glibc"
 PREFERRED_PROVIDERS += "virtual/${TARGET_PREFIX}depmod:module-init-tools-cross"
 PREFERRED_PROVIDERS += "virtual/${TARGET_PREFIX}libc-for-gcc:glibc"
 
-# compiler/binary/library versions (unslung uses different ones so these
-# cannot be in ${MACHINE}.conf)
+# compiler/binary/library versions
 PREFERRED_VERSION_binutils ?= "2.16"
 PREFERRED_VERSION_binutils-cross ?= "2.16"
 PREFERRED_VERSION_gcc-cross-initial ?= "4.1.1"
