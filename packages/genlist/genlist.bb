@@ -1,14 +1,15 @@
-SECTION = "utility"
 DESCRIPTION = "IP Address List Generator"
+SECTION = "utils"
+LICENSE = "GPL"
+PR = "r1"
 
 SRC_URI = "file://genlist.c \
 	   file://Makefile"
 
 DEFAULT_PREFERENCE="-1"
 
-
 S = "${WORKDIR}"
-LICENSE = "GPL"
+
 do_compile() {
 	oe_runmake all
 }
