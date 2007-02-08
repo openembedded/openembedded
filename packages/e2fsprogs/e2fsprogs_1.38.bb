@@ -1,6 +1,6 @@
 require e2fsprogs.inc
 
-PR = "r6"
+PR = "r7"
 
 SRC_URI += "file://no-hardlinks.patch;patch=1"
 S = "${WORKDIR}/e2fsprogs-${PV}"
@@ -30,6 +30,7 @@ do_stage () {
 	for h in ${ext2fsheaders}; do
 		install -m 0644 lib/ext2fs/$h ${STAGING_INCDIR}/ext2fs/ || die "failed to install $h"
 	done
+	autotools_stage_all
 }
 
 # blkid used to be part of e2fsprogs but is useful outside, add it

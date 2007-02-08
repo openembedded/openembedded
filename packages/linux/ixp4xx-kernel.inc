@@ -26,6 +26,8 @@ SECTION = "kernel"
 DESCRIPTION = "Linux kernel for the Intel IXP4xx device"
 LICENSE = "GPL"
 
+DEPENDS += "arm-kernel-shim"
+
 # Linux kernel source has the general form linux-X.Y.Z-patchP,
 # X.Y is the major version number, Z (which may have multiple
 # parts) is a sub-version and 'patch' is something like 'mm' or
@@ -316,18 +318,20 @@ pkg_postrm_kernel () {
 #	copy the zImage and append the appropriate shim
 #  dest:       where to copy to
 #  cmdline:    command line to pass to image
-#  machine-id: decimal machine id to prepend, empty for none
+#  machine:    machine shim to prepend, empty for none
 copy_image() {
-	local setmach
+	local shim
 
-	setmach=""
-	test -n "$2" && setmach="wb $2 . 256/ 255& 0xe3a01c00+, 4; wb 255& 0xe3811000+, 4;"
+	shim="/dev/null"
+	test -n "$2" && shim="${STAGING_LOADER_DIR}/arm-kernel-shim-$2.bin"
 
-	rm -f "$1".new
-	devio '<<${KERNEL_OUTPUT}' >"$1".new "$setmach"'${FIXUP}' || {
+	rm -f "$1".new "$1".shim
+	cat $shim ${KERNEL_OUTPUT} > "$1".shim
+	devio '<<'"$1"'.shim' >"$1".new '${FIXUP}' || {
 		echo 'ERROR: ${KERNEL_OUTPUT}: failed to copy zImage' >&2
 		return 1
 	}
+	rm -f "$1".shim
 	mv "$1".new "$1"
 }
 
@@ -342,10 +346,10 @@ do_install_append() {
 	install_image '${MACHINE_ARCH}'
 
 	# Add the machine specific images, with appropriate suffixes
-	install_image 'nslu2${SITEINFO_ENDIANESS}' '${nslu2_MACHID}'
-	install_image 'nas100d${SITEINFO_ENDIANESS}' '${nas100d_MACHID}'
-	install_image 'dsmg600${SITEINFO_ENDIANESS}' '${dsmg600_MACHID}'
-	install_image 'fsg3${SITEINFO_ENDIANESS}' '${fsg3_MACHID}'
+	install_image 'nslu2${SITEINFO_ENDIANESS}' 'nslu2'
+	install_image 'nas100d${SITEINFO_ENDIANESS}' 'nas100d'
+	install_image 'dsmg600${SITEINFO_ENDIANESS}' 'dsmg600'
+	install_image 'fsg3${SITEINFO_ENDIANESS}' 'fsg3'
 }
 
 do_deploy[dirs] = "${S}"
@@ -359,10 +363,10 @@ do_deploy() {
 	deploy_image '${MACHINE_ARCH}'
 
 	# And the machine specific images
-	deploy_image 'nslu2${SITEINFO_ENDIANESS}' '${nslu2_MACHID}'
-	deploy_image 'nas100d${SITEINFO_ENDIANESS}' '${nas100d_MACHID}'
-	deploy_image 'dsmg600${SITEINFO_ENDIANESS}' '${dsmg600_MACHID}'
-	deploy_image 'fsg3${SITEINFO_ENDIANESS}' '${fsg3_MACHID}'
+	deploy_image 'nslu2${SITEINFO_ENDIANESS}' 'nslu2'
+	deploy_image 'nas100d${SITEINFO_ENDIANESS}' 'nas100d'
+	deploy_image 'dsmg600${SITEINFO_ENDIANESS}' 'dsmg600'
+	deploy_image 'fsg3${SITEINFO_ENDIANESS}' 'fsg3'
 }
 
 addtask deploy before do_build after do_compile

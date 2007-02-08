@@ -1,0 +1,38 @@
+--- kanjipad-2.0.0.orig/Makefile	2002-08-25 21:00:54 +0200
++++ kanjipad-2.0.0/Makefile	2005-08-07 23:04:03 +0200
+@@ -5,7 +5,7 @@
+ GTKLIBS=$(shell pkg-config --libs gtk+-2.0)
+ GLIBLIBS=$(shell pkg-config --libs glib-2.0)
+ 
+-PREFIX=/usr/local
++PREFIX=/usr
+ DATADIR=$(PREFIX)/share
+ 
+ # location in which binaries are installed
+@@ -28,7 +28,7 @@
+ OBJS = kpengine.o scoring.o util.o
+ CFLAGS = $(OPTIMIZE) $(GTKINC) -DFOR_PILOT_COMPAT -DKP_LIBDIR=\"$(LIBDIR)\" -DBINDIR=\"$(BINDIR)\"
+ 
+-all: kpengine kanjipad jdata.dat
++all: kpengine jdata.dat
+ 
+ scoring.o: jstroke/scoring.c
+ 	$(CC) -c -o scoring.o $(CFLAGS) -Ijstroke jstroke/scoring.c
+@@ -45,9 +45,8 @@
+ jdata.dat: jstroke/strokedata.h conv_jdata.pl
+ 	perl conv_jdata.pl < jstroke/strokedata.h > jdata.dat
+ 
+-install: kanjipad kpengine jdata.dat
++install: kpengine jdata.dat
+ 	install -d $(DESTDIR)$(BINDIR)
+-	install -m 0755 kanjipad $(DESTDIR)$(BINDIR)/kanjipad
+ 	install -m 0755 kpengine $(DESTDIR)$(BINDIR)/kpengine
+ 	install -d $(DESTDIR)$(LIBDIR)
+ 	install -m 0644 jdata.dat $(DESTDIR)$(LIBDIR)/jdata.dat
+@@ -75,4 +74,4 @@
+ 	cd .. &&				\
+ 	rm -rf $$distdir
+ 
+-.PHONY: dist distcheck
+\ No newline at end of file
++.PHONY: dist distcheck

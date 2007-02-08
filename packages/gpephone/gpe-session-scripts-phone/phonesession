@@ -1,0 +1,52 @@
+#!/bin/sh
+export	V_ROOT=/
+export  APP_PATH=/usr
+
+# For GEM enivronment
+export	GEM_PATH=/usr
+
+# For Volume Configuration
+export VOLCOF_RES_PATH=/usr/share/volconf
+
+# For Voc History
+export VOC_DATA_PATH=$V_ROOT/usr/share/vochistory
+
+# For AddressBook
+export	PIM_DATA_PATH=$APP_PATH/share
+export	ABOOK_DATA_PATH=$APP_PATH/share
+
+# For Voicecall
+export	VOC_IMAGE_PATH=$APP_PATH/share/pixmaps
+
+# For SMS
+export	SMS_CONF_PATH=$APP_PATH/share/conf
+export	SMS_GRAPHIC_PATH=$APP_PATH/share/graphic
+export	SMS_RING_TONE_PATH=$APP_PATH/share/chocolate.mp3
+
+# For E-mail
+export	EMAIL_GRAPHIC_PATH=$APP_PATH/share/email-graphic
+export	TINYMAIL_CACHE_DIR=$APP_PATH/share/tinymail.cache
+
+# For Calendar
+export	CAL_RES_PATH=$APP_PATH/share/res
+
+# Start GPE Phone Edition apps through matchbox session
+gpe-applauncher&
+sleep 2
+gpe-phonepanel&
+matchbox-window-manager -use_titlebar no&
+
+# Start E-Sound Server
+esd -nobeeps -as 2&
+esdplay /mnt/sd/sounds/startup.wav
+
+# Start SoundServer
+soundserver &
+
+# Run GSM support stuff
+
+cms92init &
+gsmMux -d -p /dev/ttyS0 -m cms92 -f 128 -b 115200 -c /dev/ptmx /dev/ptmx &
+
+# Start PhoneServer
+phoneserver &

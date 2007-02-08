@@ -1,0 +1,22 @@
+--- gdb-6.1/sim/common/Make-common.in~sim-install.patch	2003-09-08 18:24:59.000000000 +0100
++++ gdb-6.1/sim/common/Make-common.in	2004-07-22 17:56:18.947423032 +0100
+@@ -581,14 +581,14 @@
+ 
+ install-common: installdirs
+ 	n=`echo run | sed '$(program_transform_name)'`; \
+-	$(INSTALL_PROGRAM) run$(EXEEXT) $(bindir)/$$n$(EXEEXT)
++	$(INSTALL_PROGRAM) run$(EXEEXT) $(DESTDIR)$(bindir)/$$n$(EXEEXT)
+ 	n=`echo libsim.a | sed s/libsim.a/lib$(target_alias)-sim.a/`; \
+-	$(INSTALL_DATA) libsim.a $(libdir)/$$n ; \
+-	( cd $(libdir) ; $(RANLIB) $$n )
++	$(INSTALL_DATA) libsim.a $(DESTDIR)$(libdir)/$$n ; \
++	( cd $(DESTDIR)$(libdir) ; $(RANLIB) $$n )
+ 
+ installdirs:
+-	$(SHELL) $(srcdir)/../../mkinstalldirs $(bindir)
+-	$(SHELL) $(srcdir)/../../mkinstalldirs $(libdir)
++	$(SHELL) $(srcdir)/../../mkinstalldirs $(DESTDIR)$(bindir)
++	$(SHELL) $(srcdir)/../../mkinstalldirs $(DESTDIR)$(libdir)
+ 
+ check:
+ 	cd ../testsuite && $(MAKE) check RUNTESTFLAGS="$(RUNTESTFLAGS)"
