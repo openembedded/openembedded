@@ -2,6 +2,7 @@
 DESCRIPTION = "Packages that are to be compiled natively for the SlugOS firmware"
 LICENSE = "MIT"
 PR = "r1"
+PROVIDES += "${SLUGOS_DISTRO}-native-packages"
 
 INHIBIT_DEFAULT_DEPS = "1"
 EXCLUDE_FROM_WORLD = "1"
