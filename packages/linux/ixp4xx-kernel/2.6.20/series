@@ -9,10 +9,10 @@ squashfs/squashfs-force-O2.patch
 squashfs/squashfs-lzma.patch
 squashfs/squashfs-Kconfig.patch
 squashfs/squashfs-Makefile.patch
+00-fix-redboot-bad-code.patch
 07-remove-avila-ixdp425-setup.patch
 08-avila-loft-setup.patch
 09-avila-setup-pata.patch
-11-mtdpart-redboot-config-byteswap.patch
 30-ixp4xx-npe-driver-0.3.1.patch
 37-ixp4xx-net-driver-improve-mac-handling.patch
 39-ixp4xx-net-driver-mtd-load-fw.patch

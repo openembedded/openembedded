@@ -6,7 +6,7 @@
 # http://trac.nslu2-linux.org/kernel/
 #
 # The revision that is pulled from SVN is specified below
-IXP4XX_KERNEL_SVN_REV = "683"
+IXP4XX_KERNEL_SVN_REV = "686"
 #
 # The directory containing the patches to be applied is
 # specified below
