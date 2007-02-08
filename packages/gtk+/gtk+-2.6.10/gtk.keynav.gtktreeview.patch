@@ -1,0 +1,121 @@
+--- /data/zzz/gtk-2.6/gtk+-2.6.10/gtk/gtktreeview.c	2006-06-29 14:06:27.099142881 +0800
++++ gtk/gtktreeview.c	2006-06-29 14:06:53.746305635 +0800
+@@ -4198,6 +4198,118 @@ gtk_tree_view_key_press (GtkWidget   *wi
+       return TRUE;
+     }
+ 
++  GtkTreeViewColumn *focus_column;
++  GtkTreePath *tree_path;
++  gtk_tree_view_get_cursor (tree_view, &tree_path, &focus_column);
++  GtkTreeModel *tree_model = gtk_tree_view_get_model (tree_view);
++
++  if (tree_model && tree_path
++      && (event->keyval == GDK_Up || event->keyval == GDK_KP_Up
++          || event->keyval == GDK_Down || event->keyval == GDK_KP_Down))
++  {
++    GtkTreeIter cur_iter;
++    if (gtk_tree_model_get_iter (tree_model, &cur_iter, tree_path)) 
++    {
++      GtkTreeIter iter;
++      GtkTreePath *path;
++      if ((event->keyval == GDK_Up || event->keyval == GDK_KP_Up)
++          && !gtk_widget_keynav_failed (GTK_WIDGET(tree_view), GTK_DIR_UP))
++      {
++        gtk_tree_model_get_iter_first (tree_model, &iter);
++        path = gtk_tree_model_get_path (tree_model, &iter);   
++        if (gtk_tree_path_compare (tree_path, path) == 0)
++        {
++          gtk_widget_child_focus (gtk_widget_get_toplevel (GTK_WIDGET(tree_view)), GTK_DIR_TAB_BACKWARD);        
++          gtk_tree_path_free (tree_path);        
++          gtk_tree_path_free (path);        
++          return TRUE;
++        }
++        gtk_tree_path_free (path);
++      }
++      if ((event->keyval == GDK_Down || event->keyval == GDK_KP_Down) 
++          && !gtk_widget_keynav_failed (GTK_WIDGET(tree_view), GTK_DIR_DOWN))  
++      {
++        if (!gtk_tree_model_iter_next (tree_model, &cur_iter))//cur_iter is the last one at its level
++        {
++          gtk_tree_model_get_iter (tree_model, &cur_iter, tree_path); 
++
++          if (!gtk_tree_model_iter_parent (tree_model, &iter, &cur_iter))//cur_iter is at toplevel
++          {
++            if (!gtk_tree_model_iter_has_child (tree_model, &cur_iter) || !gtk_tree_view_row_expanded (tree_view, tree_path))
++            {
++              gtk_widget_child_focus (gtk_widget_get_toplevel (GTK_WIDGET(tree_view)), GTK_DIR_TAB_FORWARD);
++              gtk_tree_path_free (tree_path);
++              return TRUE;
++            }
++          }
++          else//check if every ancestor of cur_iter is the last one at its level
++          {
++            path = gtk_tree_model_get_path (tree_model, &iter);
++            int depth = gtk_tree_path_get_depth (path);
++            int i;
++            for (i = 0; i < depth; i++)
++            {
++              if (!gtk_tree_model_iter_next (tree_model, &iter))
++              {
++                gtk_tree_path_up (path);                
++                if (gtk_tree_path_to_string (path))
++                  gtk_tree_model_get_iter (tree_model, &iter, path);                
++              }
++              else
++                break;
++            }
++            if (i == depth)
++            {
++              if (!gtk_tree_model_iter_has_child (tree_model, &cur_iter) || !gtk_tree_view_row_expanded (tree_view, tree_path))
++              {
++                gtk_widget_child_focus (gtk_widget_get_toplevel (GTK_WIDGET(tree_view)), GTK_DIR_TAB_FORWARD);
++                gtk_tree_path_free (path);
++                gtk_tree_path_free (tree_path);
++                return TRUE;
++              }
++            }
++            gtk_tree_path_free (path);
++          }
++        } 
++      }
++    }
++  }
++
++  if (tree_view->priv->columns && tree_path
++      && (event->keyval == GDK_Left || event->keyval == GDK_KP_Left
++          || event->keyval == GDK_Right || event->keyval == GDK_KP_Right))
++  {
++    list = tree_view->priv->columns;
++    guint length = g_list_length (list);
++    guint i = 0;
++    while (list)
++    {  
++      GtkTreeViewColumn *column = GTK_TREE_VIEW_COLUMN (list->data);
++             
++      if (column == focus_column)
++      {
++        if (i == 0 && (event->keyval == GDK_Left || event->keyval == GDK_KP_Left))
++        {
++          list = g_list_last (list);
++          gtk_tree_view_set_cursor (tree_view, tree_path, GTK_TREE_VIEW_COLUMN (list->data), FALSE);
++          gtk_tree_path_free (tree_path);
++          return TRUE;
++        }
++        if (i == length - 1 && (event->keyval == GDK_Right || event->keyval == GDK_KP_Right))
++        {
++          list = g_list_first (list);
++          gtk_tree_view_set_cursor (tree_view, tree_path, GTK_TREE_VIEW_COLUMN (list->data), FALSE);
++          gtk_tree_path_free (tree_path);
++          return TRUE;
++        } 
++      }
++      list = list->next;
++      i++;
++    }
++  }
++
++  gtk_tree_path_free (tree_path);
++
+   if (tree_view->priv->columns && (event->state & GDK_SHIFT_MASK)
+       && (event->keyval == GDK_Left || event->keyval == GDK_KP_Left
+           || event->keyval == GDK_Right || event->keyval == GDK_KP_Right))

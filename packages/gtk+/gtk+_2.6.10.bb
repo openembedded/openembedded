@@ -5,7 +5,7 @@ SECTION = "libs"
 LICENSE = "LGPL"
 PRIORITY = "optional"
 DEPENDS = "glib-2.0 pango atk jpeg libpng libxext libxcursor gtk-doc libgcrypt"
-PR = "r7"
+PR = "r8"
 
 SRC_URI = "ftp://ftp.gtk.org/pub/gtk/v2.6/gtk+-${PV}.tar.bz2 \
            file://help.patch;patch=1 \
@@ -24,7 +24,15 @@ SRC_URI = "ftp://ftp.gtk.org/pub/gtk/v2.6/gtk+-${PV}.tar.bz2 \
            file://migration.patch;patch=1;pnum=0 \
            file://single-click.patch;patch=1 \
            file://menu-styling.patch;patch=1 \
-           file://compile-against-newer-glib.patch;patch=1"
+           file://compile-against-newer-glib.patch;patch=1 \
+           file://gtk.keynav.gtkcombobox.patch;patch=1;pnum=0 \
+           file://gtk.keynav.gtkentry.patch;patch=1;pnum=0 \
+           file://gtk.keynav.gtkiconview.patch;patch=1;pnum=0 \
+           file://gtk.keynav.gtkradiobutton.patch;patch=1;pnum=0 \
+           file://gtk.keynav.gtksettings.patch;patch=1;pnum=0 \
+           file://gtk.keynav.gtktextview.patch;patch=1;pnum=0 \
+           file://gtk.keynav.gtktreeview.patch;patch=1;pnum=0 \
+           file://gtk.keynav.gtkwidget.patch;patch=1;pnum=0"
 
 inherit autotools pkgconfig
 
@@ -53,7 +61,6 @@ EXTRA_OECONF = "--without-libtiff --disable-xkb --disable-glibtest --enable-disp
 # --disable-cruft
 
 LIBV = "2.4.0"
-
 do_configure_prepend() {
         for i in `find . -name "Makefile.am"`   
         do
