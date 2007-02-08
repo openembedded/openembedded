@@ -722,21 +722,9 @@
         </row>
 
         <row>
-          <entry>opie/Shell</entry>
-
-          <entry>Replace with opie/shell</entry>
-        </row>
-
-        <row>
           <entry>unknown</entry>
 
           <entry>Replace with appropriate section</entry>
-        </row>
-
-        <row>
-          <entry>utility</entry>
-
-          <entry>Replace with utils</entry>
         </row>
 
         <row>
@@ -749,12 +737,6 @@
           <entry>x11-misc</entry>
 
           <entry>Replace with appropriate section</entry>
-        </row>
-
-        <row>
-          <entry>console/shells</entry>
-
-          <entry>Replace with base/shell</entry>
         </row>
       </tbody>
     </tgroup>
