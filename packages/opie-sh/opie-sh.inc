@@ -1,9 +1,10 @@
 DESCRIPTION = "A QDialog shell frontend"
-SECTION = "opie/Shell"
+SECTION = "opie/shell"
 PRIORITY = "optional"
 LICENSE = "GPL"
 APPNAME = "opie-sh"
 APPTYPE = "binary"
+PR = "r1"
 
 S = "${WORKDIR}/${APPNAME}"
 
