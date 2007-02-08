@@ -1,0 +1,16 @@
+--- gtk/gtkentry.c	2005-08-18 22:10:57.000000000 +0800
++++ gtk/gtkentry.c	2006-05-29 14:42:55.980731414 +0800
+@@ -2386,6 +2386,13 @@ gtk_entry_move_cursor (GtkEntry       *e
+ 	  break;
+ 	case GTK_MOVEMENT_VISUAL_POSITIONS:
+ 	  new_pos = gtk_entry_move_visually (entry, new_pos, count);
++	  if (entry->current_pos == new_pos && !extend_selection)
++ 	  {
++	    if (!gtk_widget_keynav_failed (GTK_WIDGET(entry), count > 0 ? GTK_DIR_RIGHT : GTK_DIR_LEFT))
++	    {
++		gtk_widget_child_focus (gtk_widget_get_toplevel (GTK_WIDGET(entry)), count > 0 ? GTK_DIR_TAB_FORWARD : GTK_DIR_TAB_BACKWARD);	
++	    }
++	  }	
+ 	  break;
+ 	case GTK_MOVEMENT_WORDS:
+ 	  while (count > 0)

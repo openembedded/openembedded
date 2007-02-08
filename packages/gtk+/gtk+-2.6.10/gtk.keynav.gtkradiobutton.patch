@@ -1,0 +1,32 @@
+--- /data/zzz/gtk-2.6/gtk+-2.6.10/gtk/gtkradiobutton.c	2005-08-18 22:10:58.000000000 +0800
++++ gtk/gtkradiobutton.c	2006-05-26 17:12:35.000000000 +0800
+@@ -522,6 +522,12 @@ gtk_radio_button_focus (GtkWidget       
+ 
+       if (!new_focus)
+ 	{
++            if (!gtk_widget_keynav_failed (widget, direction))
++            {
++              g_slist_free (focus_list);
++              return FALSE;
++            }
++
+ 	  tmp_list = focus_list;
+ 
+ 	  while (tmp_list)
+@@ -542,8 +548,15 @@ gtk_radio_button_focus (GtkWidget       
+ 
+       if (new_focus)
+ 	{
++          GtkSettings *settings = gtk_widget_get_settings (widget);
++          gboolean     cursor_only_focus;
++
++          g_object_get (settings,
++                        "gtk-cursor-only-focus", &cursor_only_focus,
++                        NULL);
+ 	  gtk_widget_grab_focus (new_focus);
+-	  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (new_focus), TRUE);
++	  if (!cursor_only_focus)
++	    gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (new_focus), TRUE);
+ 	}
+ 
+       return TRUE;
