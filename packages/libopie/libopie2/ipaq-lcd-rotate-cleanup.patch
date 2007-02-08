@@ -1,0 +1,39 @@
+Index: libopie2/opiecore/device/odevice_ipaq.cpp
+===================================================================
+--- libopie2.orig/opiecore/device/odevice_ipaq.cpp	2007-02-05 21:40:33.000000000 +0000
++++ libopie2/opiecore/device/odevice_ipaq.cpp	2007-02-05 21:51:43.000000000 +0000
+@@ -317,24 +317,20 @@
+             break;
+         }
+ 
+-        // Rotate cursor keys 180 or 270
++	// QT has strange screen coordinate system, so depending
++	// on native device screen orientation, we need to rotate cursor keys
+         case Key_Left :
+         case Key_Right:
+         case Key_Up   :
+         case Key_Down : {
+-            if (( d->m_model == Model_iPAQ_H31xx ) ||
+-                ( d->m_model == Model_iPAQ_H38xx )) {
+-                newkeycode = Key_Left + ( keycode - Key_Left + 2 ) % 4;
+-            }
+-            // Rotate the cursor keys by 270
+-            // keycode - Key_Left = position of the button starting from left clockwise
+-            // add the rotation to it and modolo. No we've the original offset
+-            // add the offset to the Key_Left key
+-            if (( d->m_model == Model_iPAQ_H5xxx ) ||
+-		( d->m_model == Model_iPAQ_H191x ) ||
+-		( d->m_model == Model_iPAQ_H4xxx ) ||
+-		( d->m_model == Model_iPAQ_H1940 ))
+-                newkeycode = Key_Left + ( keycode - Key_Left + 3 ) % 4;
++	    int quarters;
++	    switch (d->m_rotation) {
++		case Rot0:	quarters = 3/*270deg*/; break;
++		case Rot90:	quarters = 2/*270deg*/; break;
++		case Rot180:	quarters = 1/*270deg*/; break;
++		case Rot270:	quarters = 0/*270deg*/; break;
++	    }
++	    newkeycode = Key_Left + ( keycode - Key_Left + quarters ) % 4;
+             break;
+         }
+ 

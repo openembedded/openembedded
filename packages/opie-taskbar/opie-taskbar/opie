@@ -41,6 +41,12 @@ fi
 case $1 in
 'start')
     #/sbin/getkey 5 "Starting Opie in 5 seconds... press key to interrupt." && exit 0
+
+    # Turn off psplash if any - sleep is required for anti-race
+    if [ -e /mnt/.psplash ]; then
+        TMPDIR=/mnt/.psplash psplash-write "QUIT" || true
+        sleep 1
+    fi
     
     if [ -x "$OPIEDIR/bin/opie-login" ]; then
             echo Starting Opie-login....
