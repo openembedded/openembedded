@@ -686,12 +686,6 @@
         </row>
 
         <row>
-          <entry>libs/inputmethod</entry>
-
-          <entry>Replace with libs/inputmethods</entry>
-        </row>
-
-        <row>
           <entry>media-gfx</entry>
 
           <entry>Replace with appropriate section</entry>
