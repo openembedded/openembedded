@@ -1,10 +1,9 @@
 require kanjipad.inc
 
-SECTION = "libs"
+DESCRIPTION = "Japanese HWR engine used by a number of programs. Original algorithms by Todd Ruddick."
+SECTION = "inputmethods"
+PR = "r1"
 
 SRC_URI += "file://Makefile-kpengine-only.patch;patch=1"
 
-FILES = "${bindir}/kpengine ${datadir}"
-
-# would it be better to make this a part of kanjipad bb?
-S = ${WORKDIR}/kanjipad-2.0.0/
+FILES_${PN} = "${bindir}/kpengine ${datadir}"
