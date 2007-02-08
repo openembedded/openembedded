@@ -46,7 +46,6 @@ DISTRO_FEED ?= "unstable"
 #
 #ARM_INSTRUCTION_SET "arm" or "thumb"
 #TARGET_OS "linux" or "linux-uclibc"
-#SLUGOS_IMAGESEX "big-endian" or "little-endian" (JFFS2 format)
 
 # The following need not be set, the defaults should be adequate
 #USE_NLS = "no" or "yes"

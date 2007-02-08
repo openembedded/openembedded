@@ -15,7 +15,7 @@ COMPATIBLE_MACHINE = "nslu2"
 IMAGE_BASENAME = "${SLUGOS_IMAGENAME}"
 IMAGE_NAME = "${IMAGE_BASENAME}-${MACHINE}-${DISTRO_VERSION}"
 IMAGE_FSTYPES = "jffs2"
-EXTRA_IMAGECMD_jffs2 = "--pad --${SLUGOS_IMAGESEX} --eraseblock=0x20000 -D ${SLUGOS_DEVICE_TABLE}"
+EXTRA_IMAGECMD_jffs2 += " -D ${SLUGOS_DEVICE_TABLE}"
 IMAGE_LINGUAS = ""
 
 # Setting USE_DEVFS prevents *any* entries being created initially
@@ -98,7 +98,7 @@ inherit image
 python () {
     # Don't build slugos images unless the configuration is set up
     # for an image build!
-    if bb.data.getVar("SLUGOS_IMAGENAME", d, 1) == '' or bb.data.getVar("SLUGOS_IMAGESEX", d, 1) == '':
+    if bb.data.getVar("SLUGOS_IMAGENAME", d, 1) == '':
         raise bb.parse.SkipPackage("absent or broken SlugOS configuration")
 }
 
