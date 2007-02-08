@@ -1,8 +1,8 @@
 DESCRIPTION = "OpenPOBox is an open source implementation of a 'Predictive Operation Based On eXample'"
-SECTION = "libs/inputmethods"
+SECTION = "inputmethods"
 LICENSE = "GPL"
 DEPENDS = "perl-native ruby-native nkf-native"
-PR = "r2"
+PR = "r3"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/gakusei/pobox-${PV}.tar.bz2 \
            http://www.vanille.de/mirror/pbserver-${PV}.tar.gz \

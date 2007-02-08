@@ -6,4 +6,6 @@ LICENSE = "GPL"
 
 SRC_URI="http://fishsoup.net/software/kanjipad/kanjipad-2.0.0.tar.gz"
 
+S = ${WORKDIR}/kanjipad-2.0.0/
+
 inherit autotools pkgconfig
