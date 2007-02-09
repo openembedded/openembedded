@@ -10,6 +10,7 @@ ac_cv_sizeof_bool=${ac_cv_sizeof_bool=1}
 ac_cv_sizeof_char=${ac_cv_sizeof_char=1}
 ac_cv_sizeof_double=${ac_cv_sizeof_double=8}
 ac_cv_sizeof_int=${ac_cv_sizeof_int=4}
+ac_cv_sizeof_int_p=${ac_cv_sizeof_int_p=4}
 ac_cv_sizeof_float=${ac_cv_sizeof_float=4}
 ac_cv_sizeof_long=${ac_cv_sizeof_long=4}
 ac_cv_sizeof_long_int=${ac_cv_sizeof_long_int=4}
