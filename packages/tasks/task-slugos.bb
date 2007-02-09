@@ -6,7 +6,9 @@
 DESCRIPTION = "Task packages for the SlugOS distribution"
 HOMEPAGE = "http://www.nslu2-linux.org"
 LICENSE = "MIT"
-PR = "r1"
+PR = "r2"
+PACKAGE_ARCH = "${MACHINE_ARCH}"
+ALLOW_EMPTY = "1"
 
 # CONFIG:
 # SLUGOS_EXTRA_RDEPENDS: set in conf, things to add to the image
