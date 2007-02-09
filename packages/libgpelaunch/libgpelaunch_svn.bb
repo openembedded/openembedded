@@ -1,21 +1,20 @@
-MAINTAINER = "Philippe De Swert <philippedeswert@scarlet.be>"
-LICENSE = "LGPL"
 DESCRIPTION = "GPE program launcher library"
 SECTION = "libs"
+LICENSE = "LGPL"
 DEPENDS = "gtk+ startup-notification"
-PR = "r0"
 PV = "0.14+svn${SRCDATE}"
-
-DEFAULT_PREFERENCE = "-1"
-
-SRC_URI = "svn://projects.linuxtogo.org/svn/gpe/trunk/base;module=${PN}"
-
-S = "${WORKDIR}/${PN}"
+PR = "r0"
 
 inherit autotools pkgconfig
 
-FILES_${PN}-dbg += "/usr/libexec/libgpelaunch/.debug"
+SRC_URI = "${GPE_SVN}"
+
+S = "${WORKDIR}/${PN}"
 
 do_stage() {
-	autotools_stage_all
+ autotools_stage_all
 }
+
+FILES_${PN}-dbg += "${libexecdir}/libgpelaunch/.debug"
+
+DEFAULT_PREFERENCE = "-1"
