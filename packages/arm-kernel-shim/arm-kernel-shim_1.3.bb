@@ -8,13 +8,12 @@ PR = "r1"
 COMPATIBLE_MACHINE = "(ixp4xx|nslu2)"
 
 SRC_URI = "ftp://ftp.buici.com/pub/arm/arm-kernel-shim/arm-kernel-shim-${PV}.tar.gz \
-	   file://place-boot-section.patch;patch=1 \
 	   file://config-nslu2.h \
 	   file://config-nas100d.h \
 	   file://config-dsmg600.h \
 	   file://config-fsg3.h"
 
-S = ${WORKDIR}/arm-kernel-shim-${PV}
+S = ${WORKDIR}/arm-kernel-shim-${PV}/${PV}
 
 EXTRA_OEMAKE_append = " CROSS_COMPILE=${CROSS_DIR}/bin/${HOST_PREFIX}"
 
@@ -23,23 +22,23 @@ oe_runmake() {
 	# NSLU2
 	cp ${WORKDIR}/config-nslu2.h ${S}/config.h
 	rm -f ${S}/main.o
-	oenote make ${PARALLEL_MAKE} TOOLS=${CROSS_DIR}/bin/${TARGET_PREFIX} PACKAGE=arm-kernel-shim-nslu2
-	make ${PARALLEL_MAKE} TOOLS=${CROSS_DIR}/bin/${TARGET_PREFIX} PACKAGE=arm-kernel-shim-nslu2 || die "oe_runmake failed"
+	oenote make ${PARALLEL_MAKE} CROSS_COMPILE=${CROSS_DIR}/bin/${TARGET_PREFIX} PACKAGE=arm-kernel-shim-nslu2
+	make ${PARALLEL_MAKE} CROSS_COMPILE=${CROSS_DIR}/bin/${TARGET_PREFIX} PACKAGE=arm-kernel-shim-nslu2 || die "oe_runmake failed"
 	# NAS100d
 	cp ${WORKDIR}/config-nas100d.h ${S}/config.h
 	rm -f ${S}/main.o
-	oenote make ${PARALLEL_MAKE} TOOLS=${CROSS_DIR}/bin/${TARGET_PREFIX} PACKAGE=arm-kernel-shim-nas100d
-	make ${PARALLEL_MAKE} TOOLS=${CROSS_DIR}/bin/${TARGET_PREFIX} PACKAGE=arm-kernel-shim-nas100d || die "oe_runmake failed"
+	oenote make ${PARALLEL_MAKE} CROSS_COMPILE=${CROSS_DIR}/bin/${TARGET_PREFIX} PACKAGE=arm-kernel-shim-nas100d
+	make ${PARALLEL_MAKE} CROSS_COMPILE=${CROSS_DIR}/bin/${TARGET_PREFIX} PACKAGE=arm-kernel-shim-nas100d || die "oe_runmake failed"
 	# DSMG-600
 	cp ${WORKDIR}/config-dsmg600.h ${S}/config.h
 	rm -f ${S}/main.o
-	oenote make ${PARALLEL_MAKE} TOOLS=${CROSS_DIR}/bin/${TARGET_PREFIX} PACKAGE=arm-kernel-shim-dsmg600
-	make ${PARALLEL_MAKE} TOOLS=${CROSS_DIR}/bin/${TARGET_PREFIX} PACKAGE=arm-kernel-shim-dsmg600 || die "oe_runmake failed"
+	oenote make ${PARALLEL_MAKE} CROSS_COMPILE=${CROSS_DIR}/bin/${TARGET_PREFIX} PACKAGE=arm-kernel-shim-dsmg600
+	make ${PARALLEL_MAKE} CROSS_COMPILE=${CROSS_DIR}/bin/${TARGET_PREFIX} PACKAGE=arm-kernel-shim-dsmg600 || die "oe_runmake failed"
 	# FSG-3
 	cp ${WORKDIR}/config-fsg3.h ${S}/config.h
 	rm -f ${S}/main.o
-	oenote make ${PARALLEL_MAKE} TOOLS=${CROSS_DIR}/bin/${TARGET_PREFIX} PACKAGE=arm-kernel-shim-fsg3
-	make ${PARALLEL_MAKE} TOOLS=${CROSS_DIR}/bin/${TARGET_PREFIX} PACKAGE=arm-kernel-shim-fsg3 || die "oe_runmake failed"
+	oenote make ${PARALLEL_MAKE} CROSS_COMPILE=${CROSS_DIR}/bin/${TARGET_PREFIX} PACKAGE=arm-kernel-shim-fsg3
+	make ${PARALLEL_MAKE} CROSS_COMPILE=${CROSS_DIR}/bin/${TARGET_PREFIX} PACKAGE=arm-kernel-shim-fsg3 || die "oe_runmake failed"
 	mv ${S}/config.h.orig ${S}/config.h
 }
 
