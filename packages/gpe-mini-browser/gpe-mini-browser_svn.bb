@@ -5,7 +5,7 @@ DEFAULT_PREFERENCE = "-1"
 DEPENDS = "sqlite gettext gtk+ glib-2.0 osb-nrcit libgpewidget"
 RRECOMMENDS = "gdk-pixbuf-loader-gif gdk-pixbuf-loader-png gdk-pixbuf-loader-jpeg"
 
-PV = "0.19+svn${SRCDATE}"
+PV = "0.20+svn${SRCDATE}"
 PR = "r0"
 
 SRC_URI = "svn://projects.linuxtogo.org/svn/gpe/trunk/extra;module=${PN}"
