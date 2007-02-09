@@ -22,7 +22,7 @@ EXTRA_OECONF = "--disable-gnome_ui --disable-gtk-doc --without-ffmpeg \
 
 do_configure () {
 	export LIBTOOL="${STAGING_BINDIR_NATIVE}/${TARGET_PREFIX}libtool"
-	oe_runconf SPEEX_LIBS="-lspeex" SPEEX_CFLAGS=""
+	oe_runconf SPEEX_LIBS="-lspeex" SPEEX_CFLAGS=" "
 }
 
 do_compile () {
