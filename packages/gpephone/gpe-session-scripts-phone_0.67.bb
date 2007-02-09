@@ -37,20 +37,7 @@ do_install_append() {
 }
 
 do_install_append_x86() {
-	install -d ${D}${sysconfdir}/gpe/xsettings-default.d
-	if [ "${GUI_MACHINE_CLASS}" != "bigscreen" ]; then
-		echo "Gtk/ToolbarStyle:S:icons" > ${D}${sysconfdir}/gpe/xsettings-default.d/toolbar
-	fi
-	install -d ${D}${sysconfdir}/matchbox
 	install ${WORKDIR}/matchbox-session.vm ${D}${sysconfdir}/matchbox/session
-
-	install -d ${D}${sysconfdir}/gpe/xsettings-default.d
-	install -m 0644 ${WORKDIR}/disable-composite.xsettings ${D}${sysconfdir}/gpe/xsettings-default.d/disable-composite
-
-	mv ${D}/usr/bin/gpe-logout ${D}/usr/bin/gpe-logout.matchbox
-
-	install -d ${D}${sysconfdir}/X11
-	install -m755 ${WORKDIR}/phonesession ${D}${sysconfdir}/X11/phonesession
 }
 
 pkg_postinst_${PN}() {
