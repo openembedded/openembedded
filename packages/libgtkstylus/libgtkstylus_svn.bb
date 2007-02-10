@@ -5,11 +5,11 @@ DEPENDS = "gtk+"
 PV = "0.3+svn${SRCDATE}"
 PR = "r5"
 
-SRC_URI = "svn://projects.linuxtogo.org/svn/gpe/trunk/base;module=${PN}"
+inherit autotools
+
+SRC_URI = "${GPE_SVN}"
 
 S = "${WORKDIR}/${PN}"
-
-inherit autotools
 
 do_install_append() {
        install -d ${D}/${sysconfdir}/X11/Xsession.d

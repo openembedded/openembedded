@@ -6,11 +6,11 @@ DEPENDS = "glib-2.0 sqlite libgpewidget"
 PV = "0.16+svn${SRCDATE}"
 PR = "r0"
 
-SRC_URI = "svn://projects.linuxtogo.org/svn/gpe/trunk/base;module=${PN}"
+inherit autotools pkgconfig gpe
+
+SRC_URI = "${GPE_SVN}"
 
 S = "${WORKDIR}/${PN}"
-
-inherit autotools pkgconfig gpe
 
 do_stage () {
         autotools_stage_all

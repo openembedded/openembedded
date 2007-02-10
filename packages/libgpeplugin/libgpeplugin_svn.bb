@@ -4,11 +4,11 @@ DEPENDS = "gtk+ libgpewidget"
 PV = "0.0+svn${SRCDATE}"
 PR = "r0"
 
-SRC_URI = "svn://projects.linuxtogo.org/svn/gpe/trunk/base;module=${PN}"
+inherit autotools pkgconfig
+
+SRC_URI = "${GPE_SVN}"
 
 S = "${WORKDIR}/${PN}"
-
-inherit autotools pkgconfig
 
 do_stage() {
       autotools_stage_all

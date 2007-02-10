@@ -8,11 +8,11 @@ RPROVIDES = "libgepepimc"
 PV = "0.8+svn${SRCDATE}"
 PR = "r0"
 
-SRC_URI = "svn://projects.linuxtogo.org/svn/gpe/trunk/base;module=${PN}"
+inherit pkgconfig autotools
+
+SRC_URI = "${GPE_SVN}"
 
 S = "${WORKDIR}/${PN}"
-
-inherit pkgconfig autotools
 
 do_stage () {
         oe_libinstall -so libgpepimc ${STAGING_LIBDIR}

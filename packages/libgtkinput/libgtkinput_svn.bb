@@ -1,12 +1,12 @@
 LICENSE = "LGPL"
 PV = "0.3+svn${SRCDATE}"
 
-SRC_URI = "svn://projects.linuxtogo.org/svn/gpe/trunk/base;module=${PN} \
+inherit gpe autotools
+
+SRC_URI = "${GPE_SVN} \
            file://gtkinput.sh"
 
 S = "${WORKDIR}/${PN}"
-
-inherit gpe autotools
 
 do_install_append() {
         install -d ${D}/${sysconfdir}/X11/Xsession.d

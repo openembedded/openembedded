@@ -6,14 +6,14 @@ DEPENDS = "virtual/libx11"
 PV = "0.11+svn${SRCDATE}"
 PR = "r0"
 
-SRC_URI = "svn://projects.linuxtogo.org/svn/gpe/trunk/base;module=${PN} \
+inherit gpe
+
+SRC_URI = "${GPE_SVN} \
            file://libxsettings-svn-makefile-fix.patch;patch=1 \
            file://Makefile.dpkg_ipkg \
            file://Makefile.translation"
 
 S = "${WORKDIR}/${PN}"
-
-inherit gpe
 
 do_install () {
         gpe_do_install

@@ -3,11 +3,11 @@ RRECOMMENDS = "gdk-pixbuf-loader-gif gdk-pixbuf-loader-png gdk-pixbuf-loader-jpe
 PV = "0.20+svn${SRCDATE}"
 PR = "r0"
 
-SRC_URI = "svn://projects.linuxtogo.org/svn/gpe/trunk/extra;module=${PN}"
+inherit autotools
+
+SRC_URI = "${GPE_EXTRA_SVN}"
 
 S = "${WORKDIR}/gpe-mini-browser"
-
-inherit autotools
 
 do_install() {
                 install -d ${D}/usr/share/applications

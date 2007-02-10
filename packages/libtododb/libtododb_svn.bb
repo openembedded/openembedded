@@ -6,11 +6,11 @@ DEPENDS = "libgpewidget libgpepimc sqlite"
 PV = "0.10+svn${SRCDATE}"
 PR = "r0"
 
-SRC_URI = "svn://projects.linuxtogo.org/svn/gpe/trunk/base;module=${PN}"
+inherit pkgconfig gpe autotools
+
+SRC_URI = "${GPE_SVN}"
 
 S = "${WORKDIR}/${PN}"
-
-inherit pkgconfig gpe autotools
 
 do_install () {
         gpe_do_install
