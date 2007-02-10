@@ -2,7 +2,7 @@ DESCRIPTION = "Web server"
 SECTION = "net"
 DEPENDS = "sqlite3 libpcre libxml2"
 LICENSE = "BSD"
-PR = "r3"
+PR = "r4"
 
 SRC_URI = "http://www.lighttpd.net/download/lighttpd-1.4.13.tar.gz \
 	   file://${PV}/configure.in.patch;patch=1;pnum=2 \
