@@ -1,10 +1,5 @@
-require gpe-mini-browser.inc
-
-DEFAULT_PREFERENCE = "-1"
-
 DEPENDS = "sqlite gettext gtk+ glib-2.0 osb-nrcit libgpewidget"
 RRECOMMENDS = "gdk-pixbuf-loader-gif gdk-pixbuf-loader-png gdk-pixbuf-loader-jpeg"
-
 PV = "0.20+svn${SRCDATE}"
 PR = "r0"
 
@@ -39,7 +34,6 @@ pkg_postinst_${PN}-doc () {
         fi
         fi
 }
-
 pkg_postrm_${PN}-doc () {
         #!/bin/sh
         if [ -e /etc/gpe/gpe-help.conf ]; then
@@ -54,3 +48,6 @@ pkg_postrm_${PN}-doc () {
         fi
 }
 
+require gpe-mini-browser.inc
+
+DEFAULT_PREFERENCE = "-1"
