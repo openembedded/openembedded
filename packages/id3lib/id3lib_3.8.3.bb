@@ -1,18 +1,14 @@
 DESCRIPTION = "Library for interacting with ID3 tags."
-SECTION = "libs"
+SECTION = "libs/multimedia"
 PRIORITY = "optional"
 DEPENDS = "zlib"
-DESCRIPTION = "Library for interacting with ID3 tags."
 LICENSE = "GPL"
+PR = "r1"
 
 inherit autotools
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/id3lib/id3lib-${PV}.tar.gz"
 S = "${WORKDIR}/id3lib-${PV}"
-
-do_configure() {
-	oe_runconf
-}
 
 do_stage() {
 	oe_libinstall -a -so -C src libid3 ${STAGING_LIBDIR}
