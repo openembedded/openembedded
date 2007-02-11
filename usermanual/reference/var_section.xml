@@ -650,12 +650,6 @@
         </row>
 
         <row>
-          <entry>dev-lang</entry>
-
-          <entry>Replace with devel</entry>
-        </row>
-
-        <row>
           <entry>gnome/libs</entry>
 
           <entry>Replace with x11/gnome/libs</entry>
