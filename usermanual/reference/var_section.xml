@@ -704,18 +704,6 @@
         </row>
 
         <row>
-          <entry>net-misc</entry>
-
-          <entry>Replace with network/misc</entry>
-        </row>
-
-        <row>
-          <entry>net/misc</entry>
-
-          <entry>Replace with network/misc</entry>
-        </row>
-
-        <row>
           <entry>unknown</entry>
 
           <entry>Replace with appropriate section</entry>
