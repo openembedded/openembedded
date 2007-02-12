@@ -4,9 +4,8 @@ PRIORITY = "optional"
 LICENSE = "LGPL"
 DEPENDS = "xerces-c omniorb libtool-cross"
 PV = "0.0.0+svn${SRCDATE}"
-PR = "r0"
 
-S="${WORKDIR}/ossie"
+S = "${WORKDIR}/ossie"
 
 SRC_URI = "svn://oe:oe@ossie-dev.mprg.org/repos/ossie/ossie/trunk;module=ossie;proto=https"
 

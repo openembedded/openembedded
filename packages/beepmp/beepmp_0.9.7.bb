@@ -3,7 +3,7 @@
 # Released under the MIT license (see packages/COPYING)
 
 DESCRIPTION = "A GTK2 based media player that looks alot like XMMS"
-SECTION =  "x11/multimedia"
+SECTION = "x11/multimedia"
 HOMEPAGE = "http://beepmp.sourceforge.net"
 LICENSE = "GPL"
 

@@ -1,8 +1,7 @@
 DESCRIPTION = "FFTW"
-SECTION =  "libs"
+SECTION = "libs"
 PRIORITY = "optional"
 LICENSE = "GPL"
-PR = "r0"
 
 SRC_URI = "http://www.fftw.org/fftw-${PV}.tar.gz"
 
