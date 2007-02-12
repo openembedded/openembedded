@@ -626,12 +626,6 @@
         </row>
 
         <row>
-          <entry>bootloader</entry>
-
-          <entry>Replace with bootloaders</entry>
-        </row>
-
-        <row>
           <entry>console/net</entry>
 
           <entry>Replace with console/network</entry>
