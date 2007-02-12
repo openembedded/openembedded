@@ -11,7 +11,6 @@ INHIBIT_DEFAULT_DEPS = "1"
 EXCLUDE_FROM_WORLD = "1"
 ALLOW_EMPTY = "1"
 PACKAGES = "${PN}"
-PROVIDES += "${SLUGOS_DISTRO}-native"
 
 # Run-time only (RDEPENDS) stuff - no package explicitly provides
 # these targets.
