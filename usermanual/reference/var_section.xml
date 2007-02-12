@@ -674,12 +674,6 @@
         </row>
 
         <row>
-          <entry>kernel/module</entry>
-
-          <entry>Replace with kernel/modules</entry>
-        </row>
-
-        <row>
           <entry>kde/dev</entry>
 
           <entry>Replace with kde/devel</entry>
