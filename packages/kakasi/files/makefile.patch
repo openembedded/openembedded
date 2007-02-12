@@ -1,0 +1,11 @@
+--- kakasi-2.3.4/Makefile.am.old	2006-04-23 18:11:57.000000000 +0200
++++ kakasi-2.3.4/Makefile.am	2006-04-23 18:12:07.000000000 +0200
+@@ -17,7 +17,7 @@
+ 
+ kanwadict:
+ 	if test -f kakasidict; then \
+-	    ITAIJIDICT="itaijidict" src/mkkanwa$(EXEEXT) $@ kakasidict; \
++	    ITAIJIDICT="itaijidict" mkkanwa$(EXEEXT) $@ kakasidict; \
+ 	fi
+ 
+ dist-hook:

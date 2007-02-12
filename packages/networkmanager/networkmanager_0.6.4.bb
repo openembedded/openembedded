@@ -1,5 +1,5 @@
 DESCRIPTION = "GNOME NetworkManager port"
-SECTION = "net/misc"
+SECTION = "network/misc"
 LICENSE = "GPL"
 HOMEPAGE = "http://www.gnome.org"
 PRIORITY = "optional"

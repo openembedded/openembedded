@@ -141,6 +141,12 @@ Machines:   omap5912osk
 Distros:    openomap
 Recipes:    xerces-c, omniorb
 
+Person:     Philippe De Swert
+Mail:       philippedeswert@scarlet.be
+Recipes:    gpe-*_svn, libgpe*_svn, libgtkstylus_svn, libtododb_svn
+Recipes:    libxsettings*_svn, libgtkinput_svn, libschedule_svn
+Recipes:    blueprobe_svn, detect-stylus_svn.
+
 Person:     Richard Purdie
 Mail:       rpurdie@rpsys.net
 Distros:    poky, openzaurus, Ångström

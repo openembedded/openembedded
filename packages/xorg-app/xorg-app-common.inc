@@ -1,6 +1,6 @@
 DESCRIPTION = "X application"
 HOMEPAGE = "http://www.x.org"
-SECTION = "x11/apps"
+SECTION = "x11/applications"
 LICENSE = "MIT-X"
 
 #DEPENDS = ""
