@@ -4,9 +4,10 @@ MAINTAINER = "Felix Domke <tmbinc@elitdvb.net>"
 
 SRC_URI = "cvs://anoncvs@cvs.tuxbox.org/cvs/tuxbox;module=apps/tuxbox/plugins;method=ext \
 	   file://disable_nonworking.diff;patch=1;pnum=1 \
+	   file://tuxtxt_include_fix.patch;patch=1;pnum=1 \
            file://game_names.diff;patch=1;pnum=1"
 
-SRCDATE = "20060831"
+SRCDATE = "20061009"
 PV = "0.0+cvs${SRCDATE}"
 PR = "r0"
 
