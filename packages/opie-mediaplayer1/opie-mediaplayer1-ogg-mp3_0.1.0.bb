@@ -1,7 +1,0 @@
-DESCRIPTION = "OPIE Mediaplayer1 OGG+MP3 pseudo package."
-LICENSE = "GPL"
-ALLOW_EMPTY = "1"
-PACKAGES = "${PN}"
-PACKAGE_ARCH = "all"
-RDEPENDS = "opie-mediaplayer1 opie-mediaplayer1-libtremorplugin opie-mediaplayer1-libmadplugin"
-PR = "r1"
