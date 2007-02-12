@@ -712,19 +712,13 @@
         <row>
           <entry>net/misc</entry>
 
-          <entry>Replace with nerwork/misc</entry>
+          <entry>Replace with network/misc</entry>
         </row>
 
         <row>
           <entry>unknown</entry>
 
           <entry>Replace with appropriate section</entry>
-        </row>
-
-        <row>
-          <entry>x11/apps</entry>
-
-          <entry>Replace with x11/applications</entry>
         </row>
 
         <row>
