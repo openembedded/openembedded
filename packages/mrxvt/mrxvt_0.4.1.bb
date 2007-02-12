@@ -2,7 +2,7 @@ DESCRIPTION = "MRXVT is a lightweight and powerful X terminal emulator based on 
 HOMEPAGE = "http://materm.sourceforge.net"
 AUTHOR = "Jimmy Zhou <jimmyzhou@users.sf.net>"
 LICENSE = "GPL"
-SECTION = "x11/apps"
+SECTION = "x11/applications"
 DEPENDS = "virtual/libx11 libxext libxpm jpeg libpng"
 PR = "r0"
 

@@ -1,0 +1,16 @@
+--- blueprobe-0.18/blueprobe.init.org	2007-01-11 11:54:09.000000000 +0000
++++ blueprobe-0.18/blueprobe.init	2007-02-11 17:05:51.000000000 +0000
+@@ -65,6 +65,13 @@
+         PROTO=bcsp
+ 	PROBE=yes
+ 	;;
++    "HP iPAQ H4000")
++	BLUETOOTH=yes
++	PORT=/dev/ttyS1
++	SPEED=115200
++	PROTO=texas
++	PROBE=no
++	;;
+     "HP iPAQ HX4700")
+ 	BLUETOOTH=yes
+ 	PORT=/dev/ttyS1

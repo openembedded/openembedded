@@ -1,5 +1,5 @@
 DESCRIPTION = "X mkfontdir app"
-SECTION = "x11/apps"
+SECTION = "x11/applications"
 LICENSE = "MIT-X"
 
 S="${WORKDIR}/mkfontdir-${PV}"
