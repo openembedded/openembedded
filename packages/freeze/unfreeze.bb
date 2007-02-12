@@ -2,7 +2,7 @@
 # configuration fails empty (they just contain a comment).
 #
 DESCRIPTION = "Unfreeze the bitbake files in the build"
-SECTION = "console/networking"
+SECTION = "console/network"
 PRIORITY = "optional"
 LICENSE = "MIT"
 PR = "r1"
