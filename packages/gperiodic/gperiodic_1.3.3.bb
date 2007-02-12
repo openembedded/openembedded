@@ -4,7 +4,7 @@ and view detailed information on each of the elements. \
 118 elements are currently listed."
 LICENSE = "GPL"
 HOMEPAGE = "http://gperiodic.seul.org"
-SECTION = "x11/apps"
+SECTION = "x11/applications"
 DEPENDS = "gtk+-1.2"
 
 SRC_URI = "http://gperiodic.seul.org/downloads/gperiodic-${PV}.tar.gz"
