@@ -23,9 +23,7 @@ DISTRO_VERSION ?= "${SLUGOS_VERSION}${DISTRO_REVISION}-${DISTRO_TYPE}"
 # DISTRO_FEED ?= "${SLUGOS_VERSION}-${DISTRO_TYPE}"
 DISTRO_FEED ?= "unstable"
 
-SLUGOS_DISTRO ?= "slugos"
-
-IMAGE_BASENAME = "${SLUGOS_DISTRO}"
+IMAGE_BASENAME = "${@['slugos${SITEINFO_ENDIANESS}', 'ucslugc'][bb.data.getVar('TARGET_OS', d, 1) == 'linux-uclibc']}"
 
 # The following need not be set, the defaults should be adequate
 #USE_NLS = "no" or "yes"
@@ -41,9 +39,7 @@ TARGET_FPU = "soft"
 # glib-2.0 builds require USE_NLS to be overridden
 USE_NLS_glib-2.0 = "yes"
 
-INHERIT += "package_ipk debian"
-
-DISTRO_BASE = ":slugos"
+INHERIT += "package_ipk debian multimachine"
 
 # FULL_OPTIMIZATION
 #    Optimization settings.  Os works fine and is significantly better than O2.
@@ -64,8 +60,8 @@ FULL_OPTIMIZATION = "-Os -fomit-frame-pointer -frename-registers \
 #  (such as a local feed) can be defined in local.conf
 #----------------------------------------------------------------------------------
 #
-FEED_URIS_append += "cross##http://ipkg.nslu2-linux.org/feeds/${SLUGOS_DISTRO}/cross/${DISTRO_FEED}"
-FEED_URIS_append += "native##http://ipkg.nslu2-linux.org/feeds/${SLUGOS_DISTRO}/native/${DISTRO_FEED}"
+FEED_URIS_append += "cross##http://ipkg.nslu2-linux.org/feeds/${IMAGE_BASENAME}/cross/${DISTRO_FEED}"
+FEED_URIS_append += "native##http://ipkg.nslu2-linux.org/feeds/${IMAGE_BASENAME}/native/${DISTRO_FEED}"
 
 #----------------------------------------------------------------------------------
 # FIRMWARE CONFIGURATION
