@@ -5,9 +5,8 @@
 DESCRIPTION = "Packages that are compatible with the SlugOS firmware"
 HOMEPAGE = "http://www.nslu2-linux.org"
 LICENSE = "MIT"
-PR = "r17"
+PR = "r18"
 CONFLICTS = "db3"
-PROVIDES += "${SLUGOS_DISTRO}-packages"
 
 COMPATIBLE_MACHINE = "nslu2"
 EXCLUDE_FROM_WORLD = "1"
@@ -106,6 +105,7 @@ SLUGOS_PACKAGES = "\
 	make \
 	masqmail \
 	mdadm \
+	mediatomb \
 	memtester \
 	mgetty \
 	miau \

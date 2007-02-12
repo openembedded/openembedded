@@ -40,7 +40,8 @@ def get_siteinfo_list(d):
                "mipsel-linux":            "endian-little bit-32 common-glibc",\
                "mipsel-linux-uclibc":     "endian-little bit-32 common-uclibc",\
                "powerpc-darwin":          "endian-big bit-32 common-darwin",\
-               "powerpc-linux":           "endian-big bit-32 common-glibc",\
+               "ppc-linux":               "endian-big bit-32 common-glibc",\ 
+	       "powerpc-linux":           "endian-big bit-32 common-glibc",\
                "powerpc-linux-uclibc":    "endian-big bit-32 common-uclibc",\
                "sh3-linux":               "endian-little bit-32 common-glibc sh-common",\
                "sh4-linux":               "endian-little bit-32 common-glibc sh-common",\
