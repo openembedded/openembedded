@@ -1,16 +1,13 @@
-DESCRIPTION="DBus-enabled dhcp client"
-SECTION="net"
-LICENSE="GPL"
-HOMEPAGE="http://people.redhat.com/jvdias/dhcdbd/"
-
+DESCRIPTION = "DBus-enabled dhcp client"
+HOMEPAGE = "http://people.redhat.com/jvdias/dhcdbd/"
+SECTION = "net"
+LICENSE = "GPL"
 DEPENDS = "dbus"
 RDEPENDS = "dhcp-client"
 
-PR = "r0"
-
-SRC_URI="http://people.redhat.com/dcantrel/dhcdbd/dhcdbd-${PV}.tar.bz2 \
-         file://no-ext-options.patch;patch=1 \
-         file://dhcdbd"
+SRC_URI = "http://people.redhat.com/dcantrel/dhcdbd/dhcdbd-${PV}.tar.bz2 \
+           file://no-ext-options.patch;patch=1 \
+           file://dhcdbd"
 
 do_compile() {
 	CC=${TARGET_SYS}-gcc DESTDIR=${prefix} make

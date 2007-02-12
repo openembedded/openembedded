@@ -2,21 +2,20 @@
 # Copyright (C) 2004, Advanced Micro Devices, Inc.  All Rights Reserved
 # Released under the MIT license (see packages/COPYING)
 
+DESCRIPTION = "*The* screensaver package for X11"
+HOMEPAGE = "http://www.jwz.org/xscreensaver/"
+SECTION = "x11-misc"
+LICENSE = "BSD"
+DEPENDS = "intltool virtual/libx11 gtk+ libxml2 libglade"
+PR = "r1"
+
 BROKEN = "1"
 # upstream is at 4.22 now - patches do not apply
 
-SRC_URI="http://www.jwz.org/xscreensaver/xscreensaver-${PV}.tar.gz \
-	file://fixes.patch;patch=1 \
-	file://configure.patch;patch=1 \
-	file://XScreenSaver"
-
-DESCRIPTION="*The* screensaver package for X11"
-LICENSE="BSD"
-HOMEPAGE="http://www.jwz.org/xscreensaver/"
-PR = "r1"
-SECTION="x11-misc"
-
-DEPENDS = "intltool virtual/libx11 gtk+ libxml2 libglade"
+SRC_URI = "http://www.jwz.org/xscreensaver/xscreensaver-${PV}.tar.gz \
+           file://fixes.patch;patch=1 \
+           file://configure.patch;patch=1 \
+           file://XScreenSaver"
 
 # xscreensaver-demo is a glade app
 LDFLAGS_append = " -Wl,--export-dynamic"
