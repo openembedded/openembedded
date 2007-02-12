@@ -3,8 +3,8 @@ HOMEPAGE = "http://sourceforge.net/projects/foosh/"
 LICENSE = "GPL"
 DEPENDS = "readline"
 PRIORITY = "optional"
-SECTION = "console/shells"
-PR = "r2"
+SECTION = "base/shell"
+PR = "r3"
 
 RV = "${@bb.data.getVar('PV', d, 1).replace('.', '-')}"
 SRC_URI = "${SOURCEFORGE_MIRROR}/foosh/fush-${RV}.tar.gz \

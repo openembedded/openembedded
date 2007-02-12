@@ -5,7 +5,7 @@ PR = "r1"
 DESCRIPTION = "User-level tools for Reiser4 filesystems"
 HOMEPAGE = "http://www.namesys.com"
 SECTION = "base"
-LICENSE = "GPL-2"
+LICENSE = "GPLv2"
 
 SRC_URI = "ftp://ftp.namesys.com/pub/${PN}/old-versions/${P}.tar.gz \
 		file://oid40.c.patch;patch=1 \

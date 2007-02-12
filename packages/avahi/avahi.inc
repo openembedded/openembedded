@@ -34,6 +34,8 @@ FILES_avahi-dnsconfd = "${sbindir}/avahi-dnsconfd \
                         ${sysconfdir}/init.d/avahi-dnsconfd"
 FILES_libavahi-glib = "${libdir}/libavahi-glib.so.*"
 FILES_avahi-utils = "${bindir}/avahi-*"
+FILES_avahi-autoipd = "${sbindir}/avahi-autoipd \
+                       ${sysconfdir}/avahi/avahi-autoipd.action"
 
 CONFFILES_avahi-daemon = "${sysconfdir}/avahi/avahi-daemon.conf"
 
@@ -63,4 +65,8 @@ pkg_postinst_avahi-daemon () {
 pkg_postrm_avahi-daemon () {
 	deluser avahi || true
 	delgroup avahi || true
+}
+
+do_stage() {
+	autotools_stage_all
 }

@@ -1,16 +1,10 @@
-DESCRIPTION = "Common X11 scripts and support files"
-LICENSE = "GPL"
-SECTION = "x11"
-RDEPENDS_${PN} = "xmodmap xrandr xdpyinfo xtscal"
-PR = "r1"
+require xserver-common.inc
 
-PACKAGE_ARCH = "all"
-
-# we are using a gpe-style Makefile
-inherit gpe
+PR = "r2"
 
 SRC_URI_append = " file://setDPI.sh \
-                   file://xserver-imageon.patch;patch=1"
+                   file://xserver-imageon.patch;patch=1 \
+                   file://calibrate-only-if-ts.patch;patch=1"
 
 do_install_append() {
 	install -m 0755 "${WORKDIR}/setDPI.sh" "${D}/etc/X11/Xinit.d/50setdpi"

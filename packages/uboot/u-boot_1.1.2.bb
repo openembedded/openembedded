@@ -1,8 +1,4 @@
-DESCRIPTION = "U-boot bootloader"
-PROVIDES = "virtual/bootloader"
-SECTION = "bootloader"
-PRIORITY = "optional"
-LICENSE = "GPL"
+require u-boot.inc
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/${PN}/${PN}-${PV}.tar.bz2 \
 	   file://arm_flags.patch;patch=1 "
@@ -13,13 +9,10 @@ SRC_URI_append_mnci   = "file://mnci.patch;patch=1 \
                          file://command-names.patch;patch=1"
 # TODO: SRC_URI_append_rt3000
 
-EXTRA_OEMAKE = "CROSS_COMPILE=${TARGET_PREFIX}"
 TARGET_LDFLAGS = ""
 
-UBOOT_MACHINE ?= "${MACHINE}_config"
 UBOOT_MACHINE_mnci   = "mnci_config"
 UBOOT_MACHINE_vibren = "pxa255_idp_config"
-UBOOT_IMAGE = "u-boot-${MACHINE}-${PV}-${PR}.bin"
 
 inherit base
 
@@ -27,18 +20,6 @@ do_compile () {
 	oe_runmake ${UBOOT_MACHINE}
 	oe_runmake all
 }
-
-do_stage() {
-	install -m755 tools/mkimage ${STAGING_BINDIR_NATIVE}
-}
-
-do_deploy () {
-	install -d ${DEPLOY_DIR_IMAGE}
-	install ${S}/u-boot.bin ${DEPLOY_DIR_IMAGE}/${UBOOT_IMAGE}
-}
-do_deploy[dirs] = "${S}"
-addtask deploy before do_build after do_compile
-
 
 #########################################################
 

@@ -1,0 +1,38 @@
+--- /data/zzz/gtk-2.6/gtk+-2.6.10/gtk/gtksettings.c	2005-08-18 22:10:59.000000000 +0800
++++ gtk/gtksettings.c	2006-05-29 10:29:35.000000000 +0800
+@@ -72,7 +72,8 @@ enum {
+   PROP_XFT_RGBA,
+   PROP_XFT_DPI,
+ #endif
+-  PROP_ALTERNATIVE_BUTTON_ORDER
++  PROP_ALTERNATIVE_BUTTON_ORDER,
++  PROP_CURSOR_ONLY_FOCUS
+ };
+ 
+ 
+@@ -435,6 +436,25 @@ gtk_settings_class_init (GtkSettingsClas
+ 								   G_PARAM_READWRITE),
+                                              NULL);
+   g_assert (result == PROP_ALTERNATIVE_BUTTON_ORDER);
++
++  /**
++   * GtkSettings:gtk-cursor-only-focus:
++   *
++   * When TRUE, keyboard navigation should be able to reach all widgets
++   * by using the cursor keys only. Tab, Shift etc. keys can't be expected
++   * to be present on the used input device.
++   *
++   * Since: 2.10
++   */
++  result = settings_install_property_parser (class,
++                                             g_param_spec_boolean ("gtk-cursor-only-focus",
++                                                                   P_("Cursor Only Focus"),
++                                                                   P_("When TRUE, there are only cursor keys available to navigate widgets"),
++                                                                   FALSE,
++                                                                   G_PARAM_READWRITE),
++                                             NULL);
++
++  g_assert (result == PROP_CURSOR_ONLY_FOCUS);
+ }
+ 
+ static void

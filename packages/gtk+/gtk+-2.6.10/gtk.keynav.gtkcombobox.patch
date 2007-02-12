@@ -1,0 +1,238 @@
+--- /data/zzz/gtk-2.6/gtk+-2.6.10/gtk/gtkcombobox.c	2005-08-18 22:10:57.000000000 +0800
++++ gtk/gtkcombobox.c	2006-06-22 11:24:32.000000000 +0800
+@@ -54,6 +54,11 @@
+ 
+ /* WELCOME, to THE house of evil code */
+ 
++#define HILDON_MENU_COMBO_MAX_WIDTH 406
++#define HILDON_MENU_COMBO_MIN_WIDTH 66
++#define HILDON_MENU_COMBO_MAX_HEIGHT 305
++#define HILDON_MENU_COMBO_MIN_HEIGHT 70
++
+ typedef struct _ComboCellInfo ComboCellInfo;
+ struct _ComboCellInfo
+ {
+@@ -1199,6 +1204,8 @@ gtk_combo_box_menu_position_below (GtkMe
+   gint monitor_num;
+   GdkRectangle monitor;
+   
++  g_message ("%s", __FUNCTION__);
++
+   /* FIXME: is using the size request here broken? */
+    child = GTK_BIN (combo_box)->child;
+    
+@@ -1240,6 +1247,7 @@ gtk_combo_box_menu_position_below (GtkMe
+    *push_in = FALSE;
+ }
+ 
++
+ static void
+ gtk_combo_box_menu_position_over (GtkMenu  *menu,
+ 				  gint     *x,
+@@ -1247,69 +1255,119 @@ gtk_combo_box_menu_position_over (GtkMen
+ 				  gboolean *push_in,
+ 				  gpointer  user_data)
+ {
+-  GtkComboBox *combo_box;
+-  GtkWidget *active;
+   GtkWidget *child;
+   GtkWidget *widget;
++  GtkWidget *active;
+   GtkRequisition requisition;
+-  GList *children;
+-  gint screen_width;
++  gint screen_width, screen_height;
+   gint menu_xpos;
+   gint menu_ypos;
+-  gint menu_width;
++  gint menu_width, menu_height;
++  gint menu_ypad;
++  gint full_menu_height;
++  gint total_y_padding;
+ 
+   g_return_if_fail (GTK_IS_COMBO_BOX (user_data));
+-  
+-  combo_box = GTK_COMBO_BOX (user_data);
+-  widget = GTK_WIDGET (combo_box);
+ 
+-  gtk_widget_get_child_requisition (GTK_WIDGET (menu), &requisition);
++  widget = GTK_WIDGET (user_data);
++  child = GTK_BIN (user_data)->child;
++
++  /* We need to realize the menu, as we are playing with menu item coordinates
++   * inside. */
++  gtk_widget_realize (GTK_WIDGET (menu));
++
++  gtk_widget_get_child_requisition (menu->toplevel, &requisition);
+   menu_width = requisition.width;
++  menu_height = requisition.height;
++
++  gtk_widget_get_child_requisition (GTK_WIDGET (menu), &requisition);
++  full_menu_height = requisition.height;
++
++  screen_width = gdk_screen_get_width (gtk_widget_get_screen (widget));
++  screen_height = gdk_screen_get_height (gtk_widget_get_screen (widget));
++
++  active = gtk_menu_get_active (menu);
+ 
+-  active = gtk_menu_get_active (GTK_MENU (combo_box->priv->popup_widget));
+   gdk_window_get_origin (widget->window, &menu_xpos, &menu_ypos);
+ 
+   menu_xpos += widget->allocation.x;
+-  menu_ypos += widget->allocation.y + widget->allocation.height / 2 - 2;
++  menu_ypos += widget->allocation.y;
+ 
+-  if (active != NULL)
+-    {
+-      gtk_widget_get_child_requisition (active, &requisition);
+-      menu_ypos -= requisition.height / 2;
+-    }
++  /* RTL */
++  if (gtk_widget_get_direction (widget) == GTK_TEXT_DIR_RTL)
++    menu_xpos = menu_xpos + widget->allocation.width - menu_width;
++
++  /* Substract borders */
++  gtk_widget_style_get (GTK_WIDGET (menu),
++                        "vertical-padding", &menu_ypad,
++                        NULL);
+ 
+-  children = GTK_MENU_SHELL (combo_box->priv->popup_widget)->children;
+-  while (children)
++  total_y_padding = menu_ypad + GTK_CONTAINER (menu)->border_width +
++                    GTK_WIDGET (menu)->style->ythickness;
++
++  /* Substract scroll arrow height if needed, and calculate
++   * scroll_offset. */
++  if (full_menu_height > HILDON_MENU_COMBO_MAX_HEIGHT)
+     {
+-      child = children->data;
++      GList *child;
++      int pos;
+ 
+-      if (active == child)
+-	break;
++      child = GTK_MENU_SHELL (menu)->children;
++      pos = 0;
+ 
+-      if (GTK_WIDGET_VISIBLE (child))
+-	{
+-	  gtk_widget_get_child_requisition (child, &requisition);
+-	  menu_ypos -= requisition.height;
+-	}
++      while (child)
++        {
++          GtkWidget *child_widget = GTK_WIDGET (child->data);
++
++          if (active == child_widget)
++            break;
+ 
+-      children = children->next;
++          if (GTK_WIDGET_VISIBLE (child))
++            {
++              pos += child_widget->allocation.height;
++
++              if (pos > HILDON_MENU_COMBO_MAX_HEIGHT)
++                menu->scroll_offset += child_widget->allocation.height;
++            }
++
++          child = child->next;
++        }
+     }
+ 
+-  if (gtk_widget_get_direction (widget) == GTK_TEXT_DIR_RTL)
+-    menu_xpos = menu_xpos + widget->allocation.width - menu_width;
++  /* Try to get active item and widget lined up */
++  if (active != NULL)
++    {
++      gint new_menu_ypos;
++
++      new_menu_ypos = menu_ypos - active->allocation.y - total_y_padding +
++                      menu->scroll_offset;
++      if (new_menu_ypos < 0 || (new_menu_ypos + menu_height) > screen_height)
++        {
++          /* Menu doesn't fit - try to get the last item lined up. */          
++          new_menu_ypos = menu_ypos - menu_height + total_y_padding +
++                          active->allocation.height;
++        }
++
++      menu_ypos = new_menu_ypos;
++    }
++  else
++    menu_ypos -= total_y_padding; /* Line up with first item */
+ 
+   /* Clamp the position on screen */
+-  screen_width = gdk_screen_get_width (gtk_widget_get_screen (widget));
+-  
+   if (menu_xpos < 0)
+     menu_xpos = 0;
+   else if ((menu_xpos + menu_width) > screen_width)
+     menu_xpos -= ((menu_xpos + menu_width) - screen_width);
+ 
++  if (menu_ypos < 0)
++    menu_ypos = 0;
++  else if ((menu_ypos + menu_height) > screen_height)
++    menu_ypos -= ((menu_ypos + menu_height) - screen_height);
++
+   *x = menu_xpos;
+   *y = menu_ypos;
+ 
+-  *push_in = TRUE;
++  *push_in = FALSE;
+ }
+ 
+ static void
+@@ -3481,14 +3539,18 @@ gtk_combo_box_key_press (GtkWidget   *wi
+ 
+   switch (event->keyval) 
+     {
++    case GDK_Return:
++    case GDK_KP_Enter:
++          gtk_combo_box_popup (combo_box);
++          return TRUE;
+     case GDK_Down:
+     case GDK_KP_Down:
+-      if (gtk_combo_box_get_active_iter (combo_box, &iter))
+-	{
+-	  found = tree_next (combo_box, combo_box->priv->model, 
+-			     &iter, &new_iter, FALSE);
+-	  break;
+-	}
++        if (!gtk_widget_keynav_failed (GTK_WIDGET(combo_box), GTK_DIR_RIGHT))
++        {
++	  found = FALSE;
++	  gtk_widget_child_focus (gtk_widget_get_toplevel (GTK_WIDGET(combo_box)), GTK_DIR_TAB_FORWARD);
++        }		
++        break;
+       /* else fall through */
+     case GDK_Page_Up:
+     case GDK_KP_Page_Up:
+@@ -3496,22 +3558,21 @@ gtk_combo_box_key_press (GtkWidget   *wi
+     case GDK_KP_Home:
+       found = tree_first (combo_box, combo_box->priv->model, &new_iter, FALSE);
+       break;
+-
+     case GDK_Up:
+     case GDK_KP_Up:
+-      if (gtk_combo_box_get_active_iter (combo_box, &iter))
+-	{
+-	  found = tree_prev (combo_box, combo_box->priv->model, 
+-			     &iter, &new_iter, FALSE);
+-	  break;
+-	}
++        if (!gtk_widget_keynav_failed (GTK_WIDGET(combo_box), GTK_DIR_LEFT))
++        {
++	  found = FALSE;
++	  gtk_widget_child_focus (gtk_widget_get_toplevel (GTK_WIDGET(combo_box)), GTK_DIR_TAB_BACKWARD);
++        }		
++        break;
+       /* else fall through */      
+     case GDK_Page_Down:
+     case GDK_KP_Page_Down:
+     case GDK_End: 
+     case GDK_KP_End:
+       found = tree_last (combo_box, combo_box->priv->model, &new_iter, FALSE);
+-      break;
++      break;    
+     default:
+       return FALSE;
+     }

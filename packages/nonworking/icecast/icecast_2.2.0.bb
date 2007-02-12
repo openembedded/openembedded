@@ -1,5 +1,5 @@
 PR = "r4"
-LICENSE = "GPL-2"
+LICENSE = "GPLv2"
 
 DEPENDS = "libvorbis libogg libxslt"
 

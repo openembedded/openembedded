@@ -1,0 +1,25 @@
+--- /data/zzz/gtk-2.6/gtk+-2.6.10/gtk/gtktextview.c	2005-08-18 22:10:59.000000000 +0800
++++ gtk/gtktextview.c	2006-07-03 15:34:19.880257250 +0800
+@@ -3855,6 +3855,22 @@ gtk_text_view_key_press_event (GtkWidget
+ 
+   insert = gtk_text_buffer_get_insert (get_buffer (text_view));
+   gtk_text_buffer_get_iter_at_mark (get_buffer (text_view), &iter, insert);
++
++  int lineCount = gtk_text_buffer_get_line_count (get_buffer (text_view));
++  int curLine = gtk_text_iter_get_line (&iter);
++  if (curLine == 0 && (event->keyval == GDK_Up || event->keyval == GDK_KP_Up)
++      && (!gtk_widget_keynav_failed (GTK_WIDGET(text_view), GTK_DIR_UP)))
++  {
++    gtk_text_view_move_focus (text_view,GTK_DIR_TAB_BACKWARD);
++    return TRUE;
++  }
++  else if (curLine == (lineCount - 1) && (event->keyval == GDK_Down || event->keyval == GDK_KP_Down) 
++           && (!gtk_widget_keynav_failed (GTK_WIDGET(text_view), GTK_DIR_DOWN)))
++  {
++    gtk_text_view_move_focus (text_view,GTK_DIR_TAB_FORWARD);
++    return TRUE;
++  }
++
+   can_insert = gtk_text_iter_can_insert (&iter, text_view->editable);
+   if (can_insert &&
+       gtk_im_context_filter_keypress (text_view->im_context, event))

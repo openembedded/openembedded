@@ -1,13 +1,6 @@
-DESCRIPTION = "Common X11 scripts and support files"
-LICENSE = "GPL"
-SECTION = "x11"
-RDEPENDS_${PN} = "xmodmap xrandr xdpyinfo xtscal"
+require xserver-common.inc
+
 PR = "r2"
-
-PACKAGE_ARCH = "all"
-
-# we are using a gpe-style Makefile
-inherit gpe
 
 SRC_URI_append = " file://setDPI.sh \
 		   file://calibrate_zaurusd.patch;patch=1"

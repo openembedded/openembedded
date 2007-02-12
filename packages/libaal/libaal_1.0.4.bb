@@ -5,7 +5,7 @@ PR = "r1"
 DESCRIPTION = "Library for user-level code accessing Reiser4 filesystems"
 HOMEPAGE = "http://www.namesys.com"
 SECTION = "base"
-LICENSE = "GPL-2"
+LICENSE = "GPLv2"
 
 SRC_URI = "ftp://ftp.namesys.com/pub/reiser4progs/old-versions/${P}.tar.gz"
 

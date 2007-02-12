@@ -1,0 +1,91 @@
+--- /data/zzz/gtk-2.6/gtk+-2.6.10/gtk/gtkiconview.c	2005-08-18 22:10:58.000000000 +0800
++++ gtk/gtkiconview.c	2006-05-31 18:12:34.423427466 +0800
+@@ -2678,10 +2678,73 @@ find_item (GtkIconView     *icon_view,
+ 
+   /* FIXME: this could be more efficient 
+    */
+-  row = current->row + row_ofs;
+-  col = current->col + col_ofs;
++  int columns = (icon_view->priv->width - icon_view->priv->margin * 2 + icon_view->priv->column_spacing) / (icon_view->priv->column_spacing + current->width);
++  int rows = g_list_length (icon_view->priv->items) / columns;
++  if (g_list_length (icon_view->priv->items) % columns > 0)	
++    rows++;
+ 
+-  for (items = icon_view->priv->items; items; items = items->next)
++  items = g_list_last(icon_view->priv->items);
++  item = items->data;  
++  if (col_ofs == 1) //right is pressed
++  {
++    if (current->col == item->col && current->row == (rows - 1)) //the current item is the last one, wrap to the first item
++    {
++      row = 0;
++      col = 0;
++    }
++    else if (current->col == (columns - 1)) //the current item is the rightmost one
++    {
++      row = current->row + row_ofs + 1;
++      col = 0;
++    }
++    else 
++    {
++      row = current->row + row_ofs;
++      col = current->col + col_ofs;      
++    }
++  }
++  else if (col_ofs == -1) //left is pressed
++  {
++    if (current->col == 0) //the current item is the leftmost one
++    {
++      if (current->row == 0) //the current item is the first one, wrap to the last item
++      {
++        row = rows - 1;
++        col = item->col;
++      }
++      else
++      {
++        row = current->row + row_ofs - 1;
++        col = columns - 1;
++      }
++    }
++    else
++    {
++      row = current->row + row_ofs;
++      col = current->col + col_ofs;
++    }
++  }
++  else if (row_ofs == 1) //down is pressed
++  {
++    if (current->row == (rows - 2) && item->col < current->col)// at the second last row
++    {
++      row = current->row + row_ofs;
++      col = 0;
++    }
++    else
++    {
++      row = current->row + row_ofs;
++      col = current->col + col_ofs;
++    }
++  }
++  else //up is pressed
++  {
++    row = current->row + row_ofs;
++    col = current->col + col_ofs;
++  }
++
++  g_message ("row:%d, col:%d", row, col);
++   for (items = icon_view->priv->items; items; items = items->next)
+     {
+       item = items->data;
+       if (item->row == row && item->col == col)
+@@ -2819,8 +2882,10 @@ gtk_icon_view_move_cursor_up_down (GtkIc
+ 		      count, 0);
+ 
+   if (!item)
++  {
++    gtk_widget_child_focus (gtk_widget_get_toplevel (GTK_WIDGET(icon_view)), count > 0 ? GTK_DIR_TAB_FORWARD : GTK_DIR_TAB_BACKWARD);
+     return;
+-
++  }
+   if (icon_view->priv->ctrl_pressed ||
+       !icon_view->priv->shift_pressed ||
+       !icon_view->priv->anchor_item ||

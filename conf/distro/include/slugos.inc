@@ -3,28 +3,7 @@
 #@DESCRIPTION: SlugOS Linux Distribution for the NSLU2
 
 # WARNING: this file should not be used directly, use one of
-# the supported slugos-???.conf instead:
-
-# Explanation of the naming
-#
-# slugos-dist - the base distro configuration for an NSLU2
-# slugos-[bl][at][gu] - a specific configuration encoded as follows:
-#
-#  b or l - big or little endian
-#
-#  a or t - ARM or Thumb instructions in the low level libraries
-#         set ARM_INSTRUCTION_SET to match
-#
-#  g or u - glibc or uclibc libc implementation
-#         set TARGET_OS to match
-#
-# The following names are deprecated:
-#
-# openslug - the historical name of a canonical slugos-bag distro
-#            also the name of a standard slugos-bag distro with a package feed
-# ucslugc  - the historical (and obsolete) name of slugos-btu
-#            also the name of a standard slugos-btu distro with a package feed
-#
+# the supported slugos-derived distributions instead.
 
 #----------------------------------------------------------------------------------
 # STANDARD SLUGOS DEFINITIONS
@@ -33,20 +12,18 @@
 #
 #DISTRO_NAME
 #DISTRO_TYPE
+#ARM_INSTRUCTION_SET "arm" or "thumb"
+#TARGET_OS "linux" or "linux-uclibc"
 
 # The following may be overridden to make sub-versions
-SLUGOS_VERSION = "4.2"
+SLUGOS_VERSION = "4.3"
 DISTRO_REVISION ?= ""
 DISTRO_VERSION ?= "${SLUGOS_VERSION}${DISTRO_REVISION}-${DISTRO_TYPE}"
 # For release (only):
 # DISTRO_FEED ?= "${SLUGOS_VERSION}-${DISTRO_TYPE}"
 DISTRO_FEED ?= "unstable"
 
-# The following must also be set, they define the basic format of the build
-#
-#ARM_INSTRUCTION_SET "arm" or "thumb"
-#TARGET_OS "linux" or "linux-uclibc"
-#SLUGOS_IMAGESEX "big-endian" or "little-endian" (JFFS2 format)
+IMAGE_BASENAME = "${@['slugos${SITEINFO_ENDIANESS}', 'ucslugc'][bb.data.getVar('TARGET_OS', d, 1) == 'linux-uclibc']}"
 
 # The following need not be set, the defaults should be adequate
 #USE_NLS = "no" or "yes"
@@ -62,21 +39,19 @@ TARGET_FPU = "soft"
 # glib-2.0 builds require USE_NLS to be overridden
 USE_NLS_glib-2.0 = "yes"
 
-INHERIT += "package_ipk debian"
+INHERIT += "package_ipk debian multimachine"
 
-DISTRO_BASE = ":slugos"
-
-# packages/meta/slugos-image.bb generates a binary image of the root file system
-# with a name controlled by the following setting - it defaults to the top level
-# ${DISTRO_NAME} and this should always be correct, but it may be too specific (e.g.
-# if you change the DISTRO from one of the standard ones in a way which does not
-# change the generated image).
-SLUGOS_IMAGENAME ?= "${DISTRO_NAME}"
-
-# pull in the frozen list of bbfiles - this sets BBFILES and this will override any
-# setting in local.conf  Since this depends on ${DISTRO} it doesn't actually do
-# anything by default unless conf/distro/${DISTRO}-packages.conf exists.
-# require conf/distro/include/freeze.conf
+# FULL_OPTIMIZATION
+#    Optimization settings.  Os works fine and is significantly better than O2.
+#    The other settings are somewhat arbitrary.  The optimisations chosen here
+#    include the ones which 'break' symbolic debugging (because the compiler does
+#    not include enough information to allow the debugger to know where given
+#    values are.)  The -fno options are an attempt to cancel explicit use of space
+#    consuming options found in some packages (this isn't a complete list, this is
+#    just the ones which package writers seem to know about and abuse).
+FULL_OPTIMIZATION = "-Os -fomit-frame-pointer -frename-registers \
+	-fno-unroll-loops -fno-inline-functions \
+	-fweb -funit-at-a-time"
 
 #----------------------------------------------------------------------------------
 # FEEDS
@@ -84,21 +59,9 @@ SLUGOS_IMAGENAME ?= "${DISTRO_NAME}"
 #  when downloading new packages or updating existing packages.  Additional feeds
 #  (such as a local feed) can be defined in local.conf
 #----------------------------------------------------------------------------------
-# Add to the user's feeds from local.conf (there may be none).
-# In general slugos-[bl][at][gu] is sufficient to identify a set of packages which
-# will work on any derived distro.  The slugos-???.conf files set the FEED_URIS to
-# an appropriate ipkg.nslu2-linux.org default if nslu2-linux is actually building
-# such a feed:
 #
-#FEED_URIS_append += "cross##http://ipkg.nslu2-linux.org/feeds/${SLUGOS-foo}/cross/${DISTRO_FEED}"
-#FEED_URIS_append += "native##http://ipkg.nslu2-linux.org/feeds/${SLUGOS-foo}/native/${DISTRO_FEED}"
-#
-# When such a feed exists the corresponding 'unstable' feed will normally also
-# exist - the packages in unstable are the latest but very unlikely to be the
-# greatest.  Use at your own risk!
-# 
-#FEED_URIS_append += "unstable_cross##http://ipkg.nslu2-linux.org/feeds/${SLUGOS-foo}/cross/unstable"
-#FEED_URIS_append += "unstable_native##http://ipkg.nslu2-linux.org/feeds/${SLUGOS-foo}/native/unstable"
+FEED_URIS_append += "cross##http://ipkg.nslu2-linux.org/feeds/${IMAGE_BASENAME}/cross/${DISTRO_FEED}"
+FEED_URIS_append += "native##http://ipkg.nslu2-linux.org/feeds/${IMAGE_BASENAME}/native/${DISTRO_FEED}"
 
 #----------------------------------------------------------------------------------
 # FIRMWARE CONFIGURATION
@@ -110,20 +73,6 @@ SLUGOS_IMAGENAME ?= "${DISTRO_NAME}"
 # remove the messages about unhandled interrupts - people debugging interrupt
 # issues in the kernel need to cancel this (set CMDLINE_DEBUG empty in local.conf)
 CMDLINE_DEBUG = "noirqdebug"
-
-# Building a full image.  If you set SLUGOS_FLASH_IMAGE to "nslu2" a complete
-# 8MByte flash image will be built after the rootfs JFFS2 image.  Other options
-# may later be defined for other vendor-flashable image types.
-#
-# If you do this you will need to find a source for the LinkSys software to be
-# placed in the full image - 'RedBoot' (the boot loader), 'Trailer' (just a bunch
-# of bytes to flag the image as valid) and 'SysConf' (actually just a block of
-# unset data - you could modify this to pre-configure the SysConf partition of the
-# image).  If you own an NSLU2 then this data is already in the flash of the NSLU2
-# and you can download it (including new versions) from the LinkSys web site - see
-# packages/meta/slugos-image.bb for information about where to put the downloaded
-# data.
-SLUGOS_FLASH_IMAGE ?= "no"
 
 # EXTRA PACKAGES
 # --------------
@@ -154,8 +103,7 @@ PREFERRED_PROVIDERS += "virtual/${TARGET_PREFIX}libc-for-gcc:glibc"
 PREFERRED_PROVIDERS += "virtual/${TARGET_PREFIX}depmod:module-init-tools-cross"
 PREFERRED_PROVIDERS += "virtual/${TARGET_PREFIX}libc-for-gcc:glibc"
 
-# compiler/binary/library versions (unslung uses different ones so these
-# cannot be in ${MACHINE}.conf)
+# compiler/binary/library versions
 PREFERRED_VERSION_binutils ?= "2.16"
 PREFERRED_VERSION_binutils-cross ?= "2.16"
 PREFERRED_VERSION_gcc-cross-initial ?= "4.1.1"
@@ -188,6 +136,8 @@ SRCDATE_irssi ?= "20050930"
 
 CVS_TARBALL_STASH = "http://sources.nslu2-linux.org/sources/"
 INHERIT += "nslu2-mirrors"
+
+PREFERRED_VERSION_nslu2-linksys-firmware ?= "2.3r63"
 
 PREFERRED_VERSION_ipkg ?= "0.99.154"
 PREFERRED_VERSION_ipkg-native ?= "0.99.154"

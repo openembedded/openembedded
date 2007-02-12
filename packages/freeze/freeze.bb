@@ -13,7 +13,7 @@
 # as appropriate, directory is the sub-directory of 'packages'.
 #
 DESCRIPTION = "Freeze the bitbake files in the build"
-SECTION = "console/networking"
+SECTION = "console/network"
 PRIORITY = "optional"
 LICENSE = "MIT"
 PR = "r1"
