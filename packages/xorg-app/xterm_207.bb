@@ -1,5 +1,5 @@
 DESCRIPTION = "xterm app"
-SECTION = "x11/apps"
+SECTION = "x11/applications"
 LICENSE = "MIT-X"
 
 DEPENDS = "libxaw xproto virtual/libx11 xextproto xext xau libxpm ncurses"

@@ -1,4 +1,5 @@
 DESCRIPTION = "U-boot bootloader OS env. access tools for PPC"
+SECTION = "bootloaders"
 PRIORITY = "optional"
 LICENSE = "GPL"
 DEPENDS = "mtd-utils"

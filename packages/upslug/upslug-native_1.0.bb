@@ -5,7 +5,7 @@ DESCRIPTION = "NSLU2 binary upload tool"
 HOMEPAGE = "http://www.nslu2-linux.org/wiki/Main/UpSlug"
 SECTION = "console/network"
 PRIORITY = "optional"
-LICENSE = "GPL-2"
+LICENSE = "GPLv2"
 COMPATIBLE_MACHINE = "nslu2"
 
 SRC_TAG = "UPSLUG_${@'_'.join(bb.data.getVar('PV',d,1).split('.'))}"

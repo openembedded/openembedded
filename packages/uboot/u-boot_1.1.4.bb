@@ -1,8 +1,4 @@
-DESCRIPTION = "U-boot bootloader"
-PROVIDES = "virtual/bootloader"
-SECTION = "bootloader"
-PRIORITY = "optional"
-LICENSE = "GPL"
+require u-boot.inc
 
 DEFAULT_PREFERENCE = "-1"
 
@@ -30,12 +26,8 @@ SRC_URI_append_dht-walnut= "\
         file://u-boot-dht-walnut-df2.patch;patch=1"
 
 
-EXTRA_OEMAKE = "CROSS_COMPILE=${TARGET_PREFIX}"
 EXTRA_OEMAKE_gumstix = "CROSS_COMPILE=${TARGET_PREFIX} GUMSTIX_400MHZ=${GUMSTIX_400MHZ}"
 TARGET_LDFLAGS = ""
-
-UBOOT_MACHINE ?= "${MACHINE}_config"
-UBOOT_IMAGE = "u-boot-${MACHINE}-${PV}-${PR}.bin"
 
 UBOOT_MACHINE_dht-walnut = "walnut_config"
 
@@ -55,14 +47,3 @@ do_compile () {
 	oe_runmake ${UBOOT_MACHINE}
 	oe_runmake all
 }
-
-do_stage() {
-	install -m755 tools/mkimage ${STAGING_BINDIR_NATIVE}
-}
-
-do_deploy () {
-	install -d ${DEPLOY_DIR_IMAGE}
-	install ${S}/u-boot.bin ${DEPLOY_DIR_IMAGE}/${UBOOT_IMAGE}
-}
-do_deploy[dirs] = "${S}"
-addtask deploy before do_build after do_compile

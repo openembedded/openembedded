@@ -1,5 +1,5 @@
 DESCRIPTION = "X mkfontscale app"
-SECTION = "x11/apps"
+SECTION = "x11/applications"
 LICENSE = "MIT-X"
 S="${WORKDIR}/mkfontscale-${PV}"
 
