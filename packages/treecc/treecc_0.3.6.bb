@@ -1,6 +1,6 @@
 DESCRIPTION = "Tree Compiler-Compiler from dotGNU"
 SECTION = "devel"
-LICENSE = "GPL-2"
+LICENSE = "GPLv2"
 HOMEPAGE = "http://www.southern-storm.com.au/treecc.html"
 PRIORITY = "optional"
 

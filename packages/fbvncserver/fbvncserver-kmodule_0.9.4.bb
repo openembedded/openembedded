@@ -1,5 +1,5 @@
 DESCRIPTION = "Framebuffer VNC server keyboard events module"
-SECTION = "kernel/module"
+SECTION = "kernel/modules"
 LICENSE = "GPL"
 PR = "r1"
 

@@ -1,6 +1,6 @@
-LICENSE = "LGPL"
 DESCRIPTION = "Library for parsing CORBA IDL files"
-SECTION = "gnome/libs"
+SECTION = "x11/gnome/libs"
+LICENSE = "LGPL"
 DEPENDS = "glib-2.0 libidl-native"
 PR = "r2"
 
