@@ -626,51 +626,9 @@
         </row>
 
         <row>
-          <entry>console/net</entry>
-
-          <entry>Replace with console/network</entry>
-        </row>
-
-        <row>
-          <entry>console/networking</entry>
-
-          <entry>Replace with console/network</entry>
-        </row>
-
-        <row>
-          <entry>console/util</entry>
-
-          <entry>Replace with console/utils</entry>
-        </row>
-
-        <row>
-          <entry>gnome/libs</entry>
-
-          <entry>Replace with x11/gnome/libs</entry>
-        </row>
-
-        <row>
-          <entry>gnome/multimedia</entry>
-
-          <entry>Replace with x11/multimedia</entry>
-        </row>
-
-        <row>
-          <entry>gnome/office</entry>
-
-          <entry>Replace with x11/office</entry>
-        </row>
-
-        <row>
           <entry>gui</entry>
 
           <entry>Replace with appropriate section</entry>
-        </row>
-
-        <row>
-          <entry>kde/dev</entry>
-
-          <entry>Replace with kde/devel</entry>
         </row>
 
         <row>
