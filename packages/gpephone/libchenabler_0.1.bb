@@ -1,6 +1,6 @@
 LICENSE     = "LiPS"
 DESCRIPTION = "LiPS voice call library."
-SECTION     = "gpe/libs"
+SECTION = "gpe/libs"
 PRIORITY    = "optional"
 DEPENDS     = "glib-2.0 sqlite3 librecord"
 PR          = "r0"

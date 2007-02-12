@@ -1,5 +1,5 @@
 DESCRIPTION = "A traditional (german?) boardgame"
-SECTION     = "opie/games"
+SECTION = "opie/games"
 PRIORITY    = "optional"
 LICENSE     = "GPL"
 AUTHOR      = "Helge Plehn"

@@ -1,6 +1,6 @@
 LICENSE     = "LGPL"
 DESCRIPTION = "LiPS event model library."
-SECTION     = "gpe/libs"
+SECTION = "gpe/libs"
 PRIORITY    = "optional"
 DEPENDS     = "glib-2.0 librecord liblipsevent libim sqlite3"
 PR          = "r1"

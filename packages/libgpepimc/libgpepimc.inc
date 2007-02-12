@@ -1,7 +1,7 @@
 LICENSE     = "LGPL"
 PR          = "r0"
 DESCRIPTION = "Common code for GPE PIMs"
-SECTION     = "gpe/libs"
+SECTION = "gpe/libs"
 PRIORITY    = "optional"
 DEPENDS     = "libgpewidget gtk+ sqlite"
 PROVIDES    = "libgepepimc"

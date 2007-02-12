@@ -1,6 +1,6 @@
 LICENSE     = "LGPL"
 DESCRIPTION = "A simple, powerful XML-parsing library written in C."
-SECTION     = "libs"
+SECTION = "libs"
 PRIORITY    = "optional"
 DEPENDS     = "glibc"
 PR          = "r0"

@@ -1,6 +1,6 @@
 LICENSE     = "LGPL"
 DESCRIPTION = "Data interchange library for GPE"
-SECTION     = "gpe/libs"
+SECTION = "gpe/libs"
 PRIORITY    = "optional"
 DEPENDS     = "libmimedir libeventdb"
 PR          = "r0"

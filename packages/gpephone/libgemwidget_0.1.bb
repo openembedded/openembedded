@@ -1,6 +1,6 @@
 LICENSE     = "LiPS"
 DESCRIPTION = "Extended widget library for GPE phone environment."
-SECTION     = "gpe/libs"
+SECTION = "gpe/libs"
 PRIORITY    = "optional"
 DEPENDS     = "gtk+ libiac"
 PR          = "r1"

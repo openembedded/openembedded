@@ -1,5 +1,5 @@
 DESCRIPTION = "Password manager"
-SECTION     = "opie/applications"
+SECTION = "opie/applications"
 PRIORITY    = "optional"
 LICENSE     = "GPL"
 RCONFLICTS  = "opie-zsafe"
