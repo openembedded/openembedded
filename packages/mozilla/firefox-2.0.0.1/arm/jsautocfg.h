@@ -1,7 +1,7 @@
 #ifndef js_cpucfg___
 #define js_cpucfg___
 
-/* Lovingly crafted by hand avoiding Mozilla stupidity */
+/* AUTOMATICALLY GENERATED - DO NOT EDIT */
 
 #define IS_LITTLE_ENDIAN 1
 #undef  IS_BIG_ENDIAN
@@ -43,9 +43,9 @@
 #define JS_ALIGN_OF_POINTER 4L
 #define JS_ALIGN_OF_WORD    4L
 
-#define JS_BYTES_PER_WORD_LOG2   1L
+#define JS_BYTES_PER_WORD_LOG2   2L
 #define JS_BYTES_PER_DWORD_LOG2  3L
-#define JS_WORDS_PER_DWORD_LOG2  2L
+#define JS_WORDS_PER_DWORD_LOG2  1L
 
 #define JS_STACK_GROWTH_DIRECTION (-1)
 
