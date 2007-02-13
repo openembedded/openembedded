@@ -44,6 +44,7 @@ SLUGOS_PACKAGES = "\
 	cron \
 	ctorrent \
 	cvs \
+	cyrus-imapd \
 	cyrus-sasl \
 	db \
 	devlabel \
@@ -100,7 +101,6 @@ SLUGOS_PACKAGES = "\
 	lvm2 \
 	m4 \
 	madplay \
-	madwifi-ng \
 	mailx \
 	make \
 	masqmail \
@@ -123,6 +123,8 @@ SLUGOS_PACKAGES = "\
 	netcat \
 	nmap \
 	ntp \
+	obexftp \
+	obexpush \
 	openobex-apps \
 	openldap \
 	openntpd \
@@ -136,7 +138,6 @@ SLUGOS_PACKAGES = "\
 	pkgconfig \
 	ppp \
 	procps \
-	pvrusb2-mci \
 	python \
 	quilt \
 	reiserfsprogs reiser4progs \
@@ -178,14 +179,14 @@ SLUGOS_BROKEN_PACKAGES = "\
 	gphoto2 \
 	irssi \
 	libgphoto2 \
+	madwifi-ng \
 	netpbm \
-	obexftp \
 	puppy \
+	pvrusb2-mci \
 	qc-usb-messenger \
 	sane-backends \
 	unionfs-modules \
 	unionfs-utils \
-	cyrus-imapd \
 	lirc \
 	pwc \
 	zd1211 \
