@@ -3,13 +3,13 @@ DESCRIPTION = "handoff library for GPE calendar"
 SECTION  = "gpe/libs"
 PRIORITY = "optional"
 DEPENDS  = "glib-2.0"
-PV = "0.1+cvs${SRCDATE}"
+PV = "0.1+svn${SRCDATE}"
 PR = "r0"
 DEFAULT_PREFERENCE = "-1"
 
 inherit pkgconfig gpe autotools
 
-SRC_URI = "${HANDHELDS_CVS};module=gpe/base/${PN}"
+SRC_URI = "${GPE_SVN}"
 
 S = "${WORKDIR}/${PN}"
 
