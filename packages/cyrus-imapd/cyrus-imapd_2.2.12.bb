@@ -1,7 +1,7 @@
 SECTION = "console/network"
 DEPENDS = "cyrus-sasl virtual/db"
 LICENSE = "BSD"
-PR = "r10"
+PR = "r11"
 DEPENDS += "install-native"
 
 SRC_URI = "ftp://ftp.andrew.cmu.edu/pub/cyrus-mail/cyrus-imapd-${PV}.tar.gz \
@@ -13,6 +13,7 @@ SRC_URI = "ftp://ftp.andrew.cmu.edu/pub/cyrus-mail/cyrus-imapd-${PV}.tar.gz \
 	   file://cyrus.conf_2.2 \
 	   file://imapd.conf_2.2 \
 	   file://volatiles \
+           file://remove-install-strip.patch;patch=1 \
 	   "
 
 inherit autotools update-rc.d
