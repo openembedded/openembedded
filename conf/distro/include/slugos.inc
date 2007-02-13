@@ -49,9 +49,7 @@ INHERIT += "package_ipk debian multimachine"
 #    values are.)  The -fno options are an attempt to cancel explicit use of space
 #    consuming options found in some packages (this isn't a complete list, this is
 #    just the ones which package writers seem to know about and abuse).
-FULL_OPTIMIZATION = "-Os -fomit-frame-pointer -frename-registers \
-	-fno-unroll-loops -fno-inline-functions \
-	-fweb -funit-at-a-time"
+FULL_OPTIMIZATION = "-Os -fomit-frame-pointer -frename-registers -fno-unroll-loops -fno-inline-functions -fweb -funit-at-a-time"
 
 #----------------------------------------------------------------------------------
 # FEEDS
