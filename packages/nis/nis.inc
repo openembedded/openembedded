@@ -5,9 +5,9 @@
 # the rpcsvc functionality is not present in uclibc
 DESCRIPTION ?= "NIS Server and Tools"
 HOMEPAGE ?= "http://www.linux-nis.org/nis/"
-SECTION ?= "console/networking"
+SECTION ?= "console/network"
 PRIORITY ?= "optional"
-LICENSE ?= "GPL-2"
+LICENSE ?= "GPLv2"
 
 # Override these *after* the include file if necessary!
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/utils/net/NIS/${P}.tar.bz2"

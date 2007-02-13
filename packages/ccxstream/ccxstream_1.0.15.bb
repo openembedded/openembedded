@@ -1,6 +1,6 @@
 DESCRIPTION = "XStream Server"
 DEPENDS = "readline"
-LICENSE = "GPL-2"
+LICENSE = "GPLv2"
 PR = "r2"
 
 SRC_URI = "http://surfnet.dl.sourceforge.net/sourceforge/xbplayer/${P}.tar.gz \

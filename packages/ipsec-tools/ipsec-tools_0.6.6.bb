@@ -1,10 +1,9 @@
 DESCRIPTION = "IPsec-Tools is a port of KAME's IPsec utilities to the \
 Linux-2.6 IPsec implementation."
 HOMEPAGE = "http://ipsec-tools.sourceforge.net/"
-SECTION = "console/net"
+SECTION = "console/network"
 LICENSE = "BSD"
 DEPENDS = "virtual/kernel openssl readline flex"
-PR = "r0"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/ipsec-tools/ipsec-tools-${PV}.tar.bz2 \
            file://racoon-search-missing.patch;patch=1"

@@ -17,7 +17,7 @@ Administrators' Guide."
 HOMEPAGE = "http://www.kernel.org/pub/linux/libs/pam"
 SECTION = "libs"
 PRIORITY = "optional"
-LICENSE = "GPL-2"
+LICENSE = "GPLv2"
 PR = "r1"
 
 # The project is actually called Linux-PAM but that gives
