@@ -5,15 +5,20 @@ DEPENDS += "glib-2.0 gtk+ libglade eds-dbus gnome-vfs openmoko-libs"
 RDEPENDS = "gnome-vfs-plugin-file"
 RRECOMMENDS = "gnome-vfs-plugin-http"
 PV = "0.1+svn${SRCDATE}"
-PR = "r0"
+PR = "r1"
 
 inherit openmoko
 
 SRC_URI += "\
+  file://intltool-update.in \	
   file://stock_contact.png \
   file://stock_person.png"
 
 EXTRA_OECONF = "--enable-gnome-vfs"
+
+do_configure_prepend() {
+	install -m 644 ${WORKDIR}/intltool-update.in ${S} 
+}
 
 do_install_append () {
 	install -d ${D}/${datadir}/pixmaps
