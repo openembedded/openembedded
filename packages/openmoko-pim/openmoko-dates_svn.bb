@@ -6,7 +6,7 @@ PV = "0.1+svn${SRCDATE}"
 PR = "r1"
 
 SRC_URI = "svn://svn.o-hand.com/repos/dates/branches/private;module=omoko;proto=https \
-  file://compile-fix.patch;patch=1"
+  file://compile-fix.patch;patch=1;maxdate=20070213"
 S = "${WORKDIR}/omoko"
 
 inherit autotools pkgconfig gtk-icon-cache
