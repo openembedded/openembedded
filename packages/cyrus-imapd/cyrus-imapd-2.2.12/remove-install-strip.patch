@@ -1,0 +1,45 @@
+---
+ cyrus-imapd-2.2.12/imtest/Makefile.in       |    2 +-
+ cyrus-imapd-2.2.12/installsieve/Makefile.in |    2 +-
+ cyrus-imapd-2.2.12/netnews/Makefile.in      |    2 +-
+ 3 files changed, 3 insertions(+), 3 deletions(-)
+
+Index: cyrus-imapd-2.2.12/imtest/Makefile.in
+===================================================================
+--- cyrus-imapd-2.2.12.orig/imtest/Makefile.in
++++ cyrus-imapd-2.2.12/imtest/Makefile.in
+@@ -72,7 +72,7 @@
+ all: imtest
+ 
+ install:
+-	$(INSTALL) -s -m 755 imtest $(DESTDIR)$(exec_prefix)/bin
++	$(INSTALL) -m 755 imtest $(DESTDIR)$(exec_prefix)/bin
+ 	ln -f $(DESTDIR)$(exec_prefix)/bin/imtest $(DESTDIR)$(exec_prefix)/bin/pop3test
+ 	ln -f $(DESTDIR)$(exec_prefix)/bin/imtest $(DESTDIR)$(exec_prefix)/bin/nntptest
+ 	ln -f $(DESTDIR)$(exec_prefix)/bin/imtest $(DESTDIR)$(exec_prefix)/bin/lmtptest
+Index: cyrus-imapd-2.2.12/installsieve/Makefile.in
+===================================================================
+--- cyrus-imapd-2.2.12.orig/installsieve/Makefile.in
++++ cyrus-imapd-2.2.12/installsieve/Makefile.in
+@@ -66,7 +66,7 @@
+ all: installsieve
+ 
+ install:
+-	$(INSTALL) -s -m 755 installsieve $(DESTDIR)$(exec_prefix)/bin
++	$(INSTALL) -m 755 installsieve $(DESTDIR)$(exec_prefix)/bin
+ 
+ OBJS=lex.o mystring.o request.o isieve.o
+ 
+Index: cyrus-imapd-2.2.12/netnews/Makefile.in
+===================================================================
+--- cyrus-imapd-2.2.12.orig/netnews/Makefile.in
++++ cyrus-imapd-2.2.12/netnews/Makefile.in
+@@ -69,7 +69,7 @@
+ all: remotepurge
+ 
+ install:
+-	$(INSTALL) -s -m 755 remotepurge $(DESTDIR)$(service_path)
++	$(INSTALL) -m 755 remotepurge $(DESTDIR)$(service_path)
+ 
+ .c.o:
+ 	$(CC) -c $(CPPFLAGS) $(DEFS) $(CFLAGS) $<

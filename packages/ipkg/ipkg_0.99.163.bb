@@ -1,11 +1,11 @@
 include ipkg.inc
-PR = "r1"
+PR = "r2"
 
 S = "${WORKDIR}/ipkg-${PV}"
 
 SRC_URI = "http://www.handhelds.org/pub/packages/ipkg/ipkg-${PV}.tar.gz \
 	file://terse.patch;patch=1 \
-	file://patch-ipkg-localfilename;patch=0"
+	file://is-processing.patch;patch=1"
 
 do_stage() {
 	oe_libinstall -so libipkg ${STAGING_LIBDIR}

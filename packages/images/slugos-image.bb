@@ -6,12 +6,11 @@
 DESCRIPTION = "Generic SlugOS image"
 HOMEPAGE = "http://www.nslu2-linux.org"
 LICENSE = "MIT"
-PR = "r45"
-PROVIDES += "${SLUGOS_DISTRO}-image"
+PR = "r46"
 
 COMPATIBLE_MACHINE = "nslu2"
 
-IMAGE_NAME = "${IMAGE_BASENAME}-${MACHINE}-${DISTRO_VERSION}"
+IMAGE_NAME = "${IMAGE_BASENAME}-${DISTRO_VERSION}"
 IMAGE_FSTYPES = "jffs2"
 EXTRA_IMAGECMD_jffs2 += " -D ${SLUGOS_DEVICE_TABLE}"
 IMAGE_LINGUAS = ""
@@ -31,11 +30,6 @@ SLUGOS_DEVICE_TABLE = "${@bb.which(bb.data.getVar('BBPATH', d, 1), 'files/device
 # root file system), if this is not the case the following must not be done!
 IMAGE_PREPROCESS_COMMAND += "rm ${IMAGE_ROOTFS}/boot/zImage*;"
 IMAGE_PREPROCESS_COMMAND += "install -c -m 644 ${SLUGOS_DEVICE_TABLE} ${IMAGE_ROOTFS}/etc/device_table;"
-
-# This hack removes '${MACHINE}' from the end of the arch.conf for ipk,
-# preventing _mach.ipk (with no byte sex) taking precedence over everything
-# else.
-ROOTFS_POSTPROCESS_COMMAND += "sed -i '$d' '${IMAGE_ROOTFS}/etc/ipkg/arch.conf';"
 
 SLUGOS_EXTRA_INSTALL ?= ""
 
