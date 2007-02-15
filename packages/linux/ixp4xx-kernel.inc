@@ -337,7 +337,7 @@ install_image() {
 do_install_append() {
 	# Overwrite the unshimmed generic image with a shimmed one (but without
 	# any command line or machine id override).
-	rm -f '${D}/${KERNEL_IMAGEDEST}/${KERNEL_IMAGETYPE}-${KERNEL_VERISON}'
+	rm -f '${D}/${KERNEL_IMAGEDEST}/${KERNEL_IMAGETYPE}-${KERNEL_VERSION}'
 	install_image '${MACHINE_ARCH}'
 
 	# Add the machine specific images, with appropriate suffixes
