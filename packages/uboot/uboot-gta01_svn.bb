@@ -48,7 +48,7 @@ do_deploy () {
 			install ${S}/u-boot_${mach}_${type}.bin ${DEPLOY_DIR_IMAGE}/u-boot_${type}-${mach}-${DATETIME}.bin
 		done
 	done
-	install -m 0755 tools/mkimage ${STAGING_BINDIR}/uboot-mkimage
+	install -m 0755 tools/mkimage ${STAGING_BINDIR_NATIVE}/uboot-mkimage
 }
 
 do_deploy[dirs] = "${S}"
