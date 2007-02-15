@@ -1,6 +1,6 @@
 LICENSE     = "LiPS"
 DESCRIPTION = "A neutral cellphone theme for Xoo."
-SECTION     = "gpe"
+SECTION = "gpe"
 PRIORITY    = "optional"
 PR          = "r0"
 

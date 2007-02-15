@@ -1,0 +1,49 @@
+#!/bin/sh
+
+killproc() {            # kill the named process(es)
+        pid=`/bin/ps -e x |
+             /bin/grep $1 |
+             /bin/grep -v grep |
+             /bin/sed -e 's/^  *//' -e 's/ .*//'`
+        [ "$pid" != "" ] && kill $pid
+}
+
+for x in $(cat /proc/cmdline); do
+        case $x in
+        x11=false)
+		echo "X Server disabled" 
+		exit 0;
+                ;;
+        esac
+done
+
+case "$1" in
+  start)
+    # We don't want this script to block the rest of the boot process
+    if [ "$2" != "background" ]; then
+      $0 $1 background &
+    else
+       . /etc/profile
+
+       echo "Starting Xserver"
+       /etc/X11/Xserver &
+    fi 
+  ;;
+
+  stop)
+        echo "Stopping XServer"
+        killproc xinit
+  ;;
+
+  restart)
+	$0 stop
+        sleep 1
+        $0 start
+  ;;
+
+  *)
+        echo "usage: $0 { start | stop | restart }"
+  ;;
+esac
+
+exit 0

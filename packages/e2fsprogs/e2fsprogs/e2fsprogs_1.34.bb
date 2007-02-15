@@ -1,14 +1,14 @@
-DESCRIPTION="EXT2 Filesystem Utilities"
-SECTION="base"
-PRIORITY="optional"
-RDEPENDS="libc6"
-DEPENDS=virtual/libc
+DESCRIPTION = "EXT2 Filesystem Utilities"
+SECTION = "base"
+PRIORITY = "optional"
+DEPENDS = "virtual/libc"
+RDEPENDS = "libc6"
 
-SRC_URI=${SOURCEFORGE_MIRROR}/e2fsprogs/e2fsprogs-${PV}.tar.gz \
-	file://${FILESDIR}/ln.patch;patch=1 \
-	file://${FILESDIR}/configure.patch;patch=1 \
-	file://${FILESDIR}/compile-subst.patch;patch=1 \
-	file://${FILESDIR}/m4.patch;patch=1
+SRC_URI = "${SOURCEFORGE_MIRROR}/e2fsprogs/e2fsprogs-${PV}.tar.gz \
+          file://${FILESDIR}/ln.patch;patch=1 \
+          file://${FILESDIR}/configure.patch;patch=1 \
+          file://${FILESDIR}/compile-subst.patch;patch=1 \
+          file://${FILESDIR}/m4.patch;patch=1
 
 inherit autotools
 

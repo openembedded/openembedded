@@ -1,6 +1,6 @@
 LICENSE     = "LiPS"
 DESCRIPTION = "Voice call application (with wifi support)"
-SECTION     = "gpe"
+SECTION = "gpe"
 PRIORITY    = "optional"
 PR          = "r0"
 

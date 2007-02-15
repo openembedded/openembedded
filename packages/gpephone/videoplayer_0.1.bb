@@ -1,6 +1,6 @@
 LICENSE     = "LiPS"
 DESCRIPTION = "Video player application"
-SECTION     = "gpe"
+SECTION = "gpe"
 PRIORITY    = "optional"
 PR          = "r0"
 

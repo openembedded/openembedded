@@ -1,6 +1,6 @@
 LICENSE     = "GPL"
 DESCRIPTION = "full-featured Jabber/XMPP client library."
-SECTION     = "networking"
+SECTION = "networking"
 PRIORITY    = "optional"
 PR          = "r0"
 

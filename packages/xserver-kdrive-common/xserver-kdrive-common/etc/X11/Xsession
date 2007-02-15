@@ -1,0 +1,26 @@
+#!/bin/sh
+
+HOME_VOLATILE=/home/$USER/ramdisk
+export HOME_VOLATILE
+
+if [ -f /usr/bin/dbus-launch ]; then
+  ## test for an existing bus daemon, just to be safe
+  if test -z "$DBUS_SESSION_BUS_ADDRESS" ; then
+     ## if not found, launch a new one
+     eval `dbus-launch --auto-syntax --exit-with-session`
+     echo "D-BUS per-session daemon address is: $DBUS_SESSION_BUS_ADDRESS"
+  fi
+fi
+
+. /etc/profile
+
+if [ -f $HOME/.profile ]; then
+ . $HOME/.profile
+fi
+
+SYSSESSIONDIR=/etc/X11/Xsession.d
+
+run-parts $SYSSESSIONDIR
+
+exit 0
+

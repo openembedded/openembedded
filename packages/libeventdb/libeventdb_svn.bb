@@ -1,6 +1,6 @@
 DESCRIPTION = "Database access library for GPE calendar"
 LICENSE     = "LGPL"
-SECTION  = "gpe/libs"
+SECTION = "gpe/libs"
 PRIORITY = "optional"
 
 DEPENDS  = "libgpewidget libgpepimc sqlite"

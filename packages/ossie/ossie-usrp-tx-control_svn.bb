@@ -3,11 +3,10 @@ SECTION =  "apps"
 PRIORITY = "optional"
 LICENSE = "GPL"
 PV = "0.0.0+svn${SRCDATE}"
-PR = "r0"
 
 DEPENDS = "ossiecf ossie-standardinterfaces"
 
-S="${WORKDIR}/USRP_TX_Control"
+S = "${WORKDIR}/USRP_TX_Control"
 
 
 SRC_URI = "svn://oe:oe@ossie-dev.mprg.org/repos/ossie/waveforms/USRP_TX_Control/trunk;module=USRP_TX_Control;proto=https"

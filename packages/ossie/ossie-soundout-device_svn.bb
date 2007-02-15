@@ -4,11 +4,10 @@ PRIORITY = "optional"
 MAINTAINER = "Philip Balister philip@balister.org"
 LICENSE = "GPL"
 PV = "0.0.0+svn${SRCDATE}"
-PR = "r0"
 
 DEPENDS = "alsa-lib ossiecf ossie-standardinterfaces"
 
-S="${WORKDIR}/Sound_out"
+S = "${WORKDIR}/Sound_out"
 
 SRC_URI = "svn://oe:oe@ossie-dev.mprg.org/repos/ossie/platform/Sound_out/trunk;module=Sound_out;proto=https"
 

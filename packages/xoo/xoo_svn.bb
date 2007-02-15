@@ -7,7 +7,16 @@ DEPENDS = "virtual/libx11 libxtst gtk+ libglade"
 PV = "0.7+svn${SRCDATE}"
 PR = "r1"
 
-SRC_URI = "svn://svn.o-hand.com/repos/matchbox/trunk;module=Xoo;proto=http"
+SRC_URI = "svn://svn.o-hand.com/repos/matchbox/trunk;module=Xoo;proto=http \
+           file://*.png \
+           file://*.xml"
 S = "${WORKDIR}/Xoo"
 
 inherit autotools
+
+do_install_append() {
+	for i in ${WORKDIR}/*.png ${WORKDIR}/*.xml; do
+		install -m 0644 $i ${D}${datadir}/${PN}/
+	done
+}
+

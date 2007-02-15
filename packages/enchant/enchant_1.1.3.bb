@@ -1,6 +1,6 @@
 DESCRIPTION = "Enchant Spell checker API Library"
 PRIORITY    = "optional"
-SECTION     = "libs"
+SECTION = "libs"
 
 DEPENDS     = "aspell"
 RDEPENDS    = "aspell"

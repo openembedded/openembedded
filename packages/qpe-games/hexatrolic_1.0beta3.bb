@@ -1,5 +1,5 @@
 DESCRIPTION = "Hexatrolic a Ball Game"
-SECTION     = "opie/games"
+SECTION = "opie/games"
 PRIORITY    = "optional"
 LICENSE     = "GPL"
 AUTHOR      = "Helge Plehn"

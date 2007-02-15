@@ -1,6 +1,6 @@
 LICENSE     = "LiPS"
 DESCRIPTION = "An audio player for GPE phone edition."
-SECTION     = "gpe"
+SECTION = "gpe"
 PRIORITY    = "optional"
 PR          = "r0"
 

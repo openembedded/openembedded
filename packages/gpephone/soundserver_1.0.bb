@@ -1,6 +1,6 @@
 LICENSE     = "LiPS"
 DESCRIPTION = "Cellphone alarm daemon"
-SECTION     = "gpe"
+SECTION = "gpe"
 PRIORITY    = "optional"
 PR          = "r0"
 
