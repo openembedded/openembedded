@@ -22,6 +22,6 @@ DEPENDS = "\
 
 RDEPENDS = "${PACKAGE_INSTALL}"
 
-inherit image_ipk
+inherit image
 
 LICENSE = MIT
