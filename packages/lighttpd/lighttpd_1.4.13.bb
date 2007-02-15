@@ -2,12 +2,14 @@ DESCRIPTION = "Web server"
 SECTION = "net"
 DEPENDS = "sqlite3 libpcre libxml2"
 LICENSE = "BSD"
-PR = "r4"
+PR = "r5"
 
 SRC_URI = "http://www.lighttpd.net/download/lighttpd-1.4.13.tar.gz \
-	   file://${PV}/configure.in.patch;patch=1;pnum=2 \
-	   file://${PV}/src-server.c.patch;patch=1;pnum=1 \
-	   file://conf/etc "
+	   file://configure.in.patch;patch=1 \
+	   file://src-server.c.patch;patch=1 \
+	   file://index.html \
+	   file://lighttpd.conf \
+	   file://lighttpd"
 
 EXTRA_OECONF="--without-bzip2 \
 		--without-ldap \
@@ -20,18 +22,20 @@ EXTRA_OECONF="--without-bzip2 \
 		--disable-nls \
 		--disable-static"
 
-inherit autotools pkgconfig
+inherit autotools pkgconfig update-rc.d
+
+INITSCRIPT_NAME = "lighttpd"
+INITSCRIPT_PARAMS = "defaults 70"
 
 do_install_append() {
-	cp -R ${WORKDIR}/conf/etc ${D}/etc
-	rm -fR ${D}/etc/.svn
-	rm -fR ${D}/etc/init.d/.svn
-
-	chmod -R 755 ${D}/etc
+	install -d ${D}${sysconfdir}/init.d ${D}/www/logs ${D}/www/pages/dav ${D}/www/var
+	install -m 0755 ${WORKDIR}/lighttpd ${D}${sysconfdir}/init.d
+	install -m 0755 ${WORKDIR}/lighttpd.conf ${D}${sysconfdir}
+	install -m 0644 ${WORKDIR}/index.html ${D}/www/pages/
 }
 
 do_stage() {
 	autotools_stage_all
 }
 
-FILES_${PN} += "${libdir}/mod_*.so /etc"
+FILES_${PN} += "${libdir}/mod_*.so ${sysconfdir} /www"
