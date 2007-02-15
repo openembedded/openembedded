@@ -7,7 +7,8 @@ PR = "r2"
 
 SRC_URI = "svn://svn.o-hand.com/repos/dates/branches/private;module=omoko;proto=https \
            file://compile-fix.patch;patch=1;maxdate=20070213 \   
-	   file://intltool-update.in"
+           file://remove-bogus-include.patch;patch=1 \
+           file://intltool-update.in"
 
 S = "${WORKDIR}/omoko"
 
