@@ -5,7 +5,7 @@ DEPENDS += "glib-2.0 gtk+ libglade eds-dbus gnome-vfs openmoko-libs"
 RDEPENDS = "gnome-vfs-plugin-file"
 RRECOMMENDS = "gnome-vfs-plugin-http"
 PV = "0.1+svn${SRCDATE}"
-PR = "r1"
+PR = "r2"
 
 inherit openmoko
 

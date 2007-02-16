@@ -3,7 +3,7 @@ SECTION = "openmoko/pim"
 LICENSE = "GPL"
 DEPENDS = "glib-2.0 gtk+ libglade eds-dbus openmoko-libs"
 PV = "0.1+svn${SRCDATE}"
-PR = "r3"
+PR = "r4"
 
 inherit gnome autotools pkgconfig gtk-icon-cache
 

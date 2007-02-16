@@ -2,7 +2,7 @@ LICENSE = "LGPL"
 SECTION = "x11"
 DEPENDS = "glib-2.0 gtk+ libglade libbacon eds-dbus"
 DESCRIPTION = "Contacts is an address-book application."
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "http://projects.o-hand.com/sources/contacts/contacts-0.2.tar.gz \
 	   file://stock_contact.png \
