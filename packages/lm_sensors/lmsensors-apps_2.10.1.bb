@@ -4,7 +4,7 @@
 
 DESCRIPTION = "Hardware health monitoring applications"
 HOMEPAGE = "http://secure.netroedge.com/~lm78/"
-DEPENDS = "sysfsutils"
+DEPENDS = "libsysfs"
 LICENSE = "GPL"
 
 SRC_URI = "http://dl.lm-sensors.org/lm-sensors/releases/lm_sensors-${PV}.tar.gz \
