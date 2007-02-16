@@ -8,18 +8,11 @@ PR = "r3"
 inherit gnome autotools pkgconfig gtk-icon-cache
 
 SRC_URI = "svn://svn.o-hand.com/repos/dates/branches/private;module=omoko;proto=http \
-           file://remove-bogus-include.patch;patch=1 \
-           file://intltool-update.in"
+          "
 
 S = "${WORKDIR}/omoko"
 
-
 EXTRA_OECONF = "--enable-omoko"
-
-do_configure_prepend() {
-        install -m 644 ${WORKDIR}/intltool-update.in ${S}
-}
-	
 
 do_install_append () {
 	install -d ${D}/${datadir}/pixmaps
