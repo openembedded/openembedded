@@ -4,7 +4,7 @@ LICENSE = "LGPL"
 DEPENDS = "intltool-native glib-2.0 gtk+ gconf dbus db gnome-common virtual/libiconv zlib intltool"
 
 PV = "1.4.0+svn${SRCDATE}"
-PR = "r3"
+PR = "r5"
 
 SRC_URI = "svn://svn.o-hand.com/repos/${PN};module=trunk;proto=http \
            file://no_libdb.patch;patch=1 \
@@ -23,13 +23,14 @@ EXTRA_OECONF = "--without-openldap --with-dbus --without-bug-buddy --without-sou
 
 acpaths = " -I ${STAGING_DATADIR}/aclocal/gnome-macros "
 
-PACKAGES =+ "libcamel libcamel-dev libebook libebook-dev libecal libecal-dev libedata-book libedata-book-dev libedata-cal libedata-cal-dev libedataserver libedataserver-dev"
+PACKAGES =+ "libcamel-collateral libcamel libcamel-dev libebook libebook-dev libecal libecal-dev libedata-book libedata-book-dev libedata-cal libedata-cal-dev libedataserver libedataserver-dev"
 
 FILES_${PN}-dev =+ "${libdir}/pkgconfig/evolution-data-server-*.pc"
 FILES_${PN}-dbg =+ "${libdir}/evolution-data-server-*/camel-providers/.debug ${libdir}/evolution-data-server*/extensions/.debug/"
 
-FILES_libcamel = "${libexecdir}/camel-* ${libdir}/libcamel-*.so.* ${libdir}/libcamel-provider-*.so.* ${libdir}/evolution-data-server-*/camel-providers/*.so ${libdir}/evolution-data-server-*/camel-providers/*.urls"
+FILES_libcamel = "${libdir}/libcamel-*.so.* ${libexecdir}/camel-*"
 FILES_libcamel-dev = "${libdir}/libcamel-*.so ${libdir}/libcamel-provider-*.so ${libdir}/pkgconfig/camel*pc ${includedir}/evolution-data-server*/camel"
+FILES_libcamel-collateral = "${libdir}/libcamel-provider-*.so.* ${libdir}/evolution-data-server-*/camel-providers/*.so ${libdir}/evolution-data-server-*/camel-providers/*.urls"
 
 FILES_libebook = "${libdir}/libebook-*.so.*"
 FILES_libebook-dev = "${libdir}/libebook-1.2.so ${libdir}/pkgconfig/libebook-*.pc ${includedir}/evolution-data-server*/libebook/*.h"
