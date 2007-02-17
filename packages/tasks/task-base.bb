@@ -1,5 +1,5 @@
 DESCRIPTION = "Merge machine and distro options to create a basic machine task/package"
-PR = "r16"
+PR = "r17"
 
 PACKAGES = "task-base \
             task-base-minimal \
@@ -62,10 +62,10 @@ RDEPENDS_task-base = "\
     ${@base_contains("COMBINED_FEATURES", "pcmcia", "${task-base-pcmcia-rdepends}", "",d)} \
     ${@base_contains("COMBINED_FEATURES", "usbhost", "${task-base-usbhost-rdepends}", "",d)} \
     ${@base_contains("COMBINED_FEATURES", "bluetooth", "${task-base-bluetooth-rdepends}", "",d)} \
+    ${@base_contains("COMBINED_FEATURES", "wifi", "${task-distro-wifi-rdepends}", "",d)} \
     ${@base_contains("DISTRO_FEATURES", "nfs", "${task-distro-nfs-rdepends}", "",d)} \
     ${@base_contains("DISTRO_FEATURES", "ipsec", "${task-distro-ipsec-rdepends}", "",d)} \
     ${@base_contains("DISTRO_FEATURES", "ppp", "${task-distro-ppp-rdepends}", "",d)} \
-    ${@base_contains("DISTRO_FEATURES", "wifi", "${task-distro-wifi-rdepends}", "",d)} \
     ${MACHINE_ESSENTIAL_EXTRA_RDEPENDS} \
     ${MACHINE_EXTRA_RDEPENDS} \
     ${DISTRO_EXTRA_RDEPENDS}"
