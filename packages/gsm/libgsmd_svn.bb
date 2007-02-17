@@ -4,7 +4,7 @@ LICENSE = "GPL"
 SECTION = "libs/gsm"
 PROVIDES += "gsmd"
 PV = "0.0+svn${SRCDATE}"
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "svn://svn.openmoko.org/trunk/src/target;module=gsm;proto=http"
 S = "${WORKDIR}/gsm"
@@ -17,7 +17,7 @@ do_stage() {
 
 PACKAGES =+ "${PN}-tools gsmd"
 RDEPENDS_${PN} = "gsmd"
-FILES_${PN}-tools = "${bindir}"
+FILES_${PN}-tools = "${bindir}/*"
 FILES_gsmd = "${sbindir}/gsmd"
 
 PACKAGES_DYNAMIC = "libgsmd* gsmd"
