@@ -24,9 +24,30 @@ inherit package
 PACKAGE_DEPENDS += "pax-utils-native"
 PACKAGEFUNCS += " do_package_qa "
 
+#
+#
+# Known Error classes
+# 0 - non dev contains .so
+# 1 - package contains a dangerous RPATH
+# 2 - package depends on debug package
+# 3 - non dbg contains .so
+#
+#
+
 def package_qa_clean_path(path,d):
     import bb
     return path.replace(bb.data.getVar('TMPDIR',d,True),"")
+
+def package_qa_make_fatal_error(error_class, name, path,d):
+    """
+    decide if an error is fatal
+
+    TODO: Load a whitelist of known errors
+    """
+    if error_class == 0:
+        return False
+    else:
+        return True
 
 def package_qa_write_error(error_class, name, path, d):
     import bb, os
@@ -34,9 +55,10 @@ def package_qa_write_error(error_class, name, path, d):
         return
 
     ERROR_NAMES =[
-        "dev/dbg contains .so",
+        "non dev contains .so",
         "package contains RPATH",
         "package depends on debug package",
+        "non dbg contains .debug",
     ]
 
 
@@ -80,13 +102,15 @@ def package_qa_check_devdbg(path, name,d):
         if path[-3:] == ".so":
             package_qa_write_error( 0, name, path, d )
             bb.error("QA Issue: non dev package contains .so: %s path '%s'" % (name, package_qa_clean_path(path,d)))
-            sane = False
+            if package_qa_make_fatal_error( 0, name, path, d ):
+                sane = False
 
     if not "-dbg" in name:
         if '.debug' in path:
-            package_qa_write_error( 0, name, path, d )
+            package_qa_write_error( 3, name, path, d )
             bb.error("QA Issue: non debug package contains .debug directory: %s path %s" % (name, package_qa_clean_path(path,d)))
-            sane = False
+            if package_qa_make_fatal_error( 3, name, path, d ):
+                sane = False
 
     return sane
 
@@ -167,7 +191,8 @@ def package_qa_check_rdepends(pkg, workdir, d):
             if "-dbg" in rdepend:
                 package_qa_write_error( 2, name, rdepend, d )
                 bb.error("QA issue, koen give us a better msg!!!")
-                sane = False
+                if package_qa_make_fatal_error( 2, name, rdepend, d ):
+                    sane = False
 
     return sane
 
