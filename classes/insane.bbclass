@@ -70,7 +70,7 @@ def package_qa_get_elf(path):
 
         def my_assert(expectation, result):
             if not expectation == result:
-                print "'%x','%x'" % (ord(expectation), ord(result))
+                #print "'%x','%x'" % (ord(expectation), ord(result))
                 raise "This does not work as expected"
         my_assert = staticmethod(my_assert)
 
@@ -93,10 +93,8 @@ def package_qa_get_elf(path):
             if self.sex == chr(ELFFile.ELFDATANONE):
                 raise "Can't be"
             elif self.sex == chr(ELFFile.ELFDATA2LSB):
-                print "little"
                 self.sex = "<"
             elif self.sex == chr(ELFFile.ELFDATA2MSB):
-                print "big"
                 self.sex = ">"
             else:
                 raise "Even more worse"
@@ -239,7 +237,6 @@ def package_qa_check_arch(path,name,d):
         elf.open()
     except:
         # just for debbugging to check the parser, remove once convinced...
-        bb.note("ELF reading failed on '%s'" % path)
         return True
 
     sane = True
