@@ -24,6 +24,105 @@ inherit package
 PACKAGE_DEPENDS += "pax-utils-native"
 PACKAGEFUNCS += " do_package_qa "
 
+
+#
+# dictionary for elf headers
+#
+# feel free to add and correct. the ARM EABI needs another column and we
+# need mips, i386 and amd64 input (abi versions)
+#
+#           TARGET_OS  TARGET_ARCH   MACHINE, OSABI, ABIVERSION, Little Endian
+def package_qa_get_machine_dict():
+    return {
+            "linux" : { "arm" :       (40,    97,    0,          True),
+                        "armeb":      (40,    97,    0,          False),
+                        "powerpc":    (20,     0,    0,          False),
+                      },
+            "linux-uclibc" : { "arm" :       (40,    97,    0,          True),
+                        "armeb":      (40,    97,    0,          False),
+                        "powerpc":    (20,     0,    0,          False),
+                      },
+        }
+
+# factory for a class, embedded in a method
+def package_qa_get_elf(path):
+    class ELFFile:
+        EI_NIDENT = 16
+
+        EI_CLASS      = 4
+        EI_DATA       = 5
+        EI_VERSION    = 6
+        EI_OSABI      = 7
+        EI_ABIVERSION = 8
+
+        # possible values for EI_CLASS
+        ELFCLASSNONE = 0
+        ELFCLASS32   = 1
+        ELFCLASS64   = 2
+
+        # possible value for EI_VERSION
+        EV_CURRENT   = 1
+
+        # possible values for EI_DATA
+        ELFDATANONE  = 0
+        ELFDATA2LSB  = 1
+        ELFDATA2MSB  = 2
+
+        def my_assert(expectation, result):
+            if not expectation == result:
+                #print "'%x','%x'" % (ord(expectation), ord(result))
+                raise "This does not work as expected"
+        my_assert = staticmethod(my_assert)
+
+        def __init__(self, name):
+            self.name = name
+
+        def open(self):
+            self.file = file(self.name, "r")
+            self.data = self.file.read(ELFFile.EI_NIDENT+4)
+
+            ELFFile.my_assert(len(self.data), ELFFile.EI_NIDENT+4)
+            ELFFile.my_assert(self.data[0], chr(0x7f) )
+            ELFFile.my_assert(self.data[1], 'E')
+            ELFFile.my_assert(self.data[2], 'L')
+            ELFFile.my_assert(self.data[3], 'F')
+            ELFFile.my_assert(self.data[ELFFile.EI_CLASS], chr(ELFFile.ELFCLASS32)) # only 32 bits
+            ELFFile.my_assert(self.data[ELFFile.EI_VERSION], chr(ELFFile.EV_CURRENT) )
+
+            self.sex = self.data[ELFFile.EI_DATA]
+            if self.sex == chr(ELFFile.ELFDATANONE):
+                raise "Can't be"
+            elif self.sex == chr(ELFFile.ELFDATA2LSB):
+                self.sex = "<"
+            elif self.sex == chr(ELFFile.ELFDATA2MSB):
+                self.sex = ">"
+            else:
+                raise "Even more worse"
+
+        def osAbi(self):
+            return ord(self.data[ELFFile.EI_OSABI])
+
+        def abiVersion(self):
+            return ord(self.data[ELFFile.EI_ABIVERSION])
+
+        def isLittleEndian(self):
+            return self.sex == "<"
+
+        def isBigEngian(self):
+            return self.sex == ">"
+
+        def machine(self):
+            """
+            We know the sex stored in self.sex and we
+            know the position
+            """
+            import struct
+            (a,) = struct.unpack(self.sex+"H", self.data[18:20])
+            return a
+
+    return ELFFile(path)
+
+
 #
 #
 # Known Error classes
@@ -31,6 +130,7 @@ PACKAGEFUNCS += " do_package_qa "
 # 1 - package contains a dangerous RPATH
 # 2 - package depends on debug package
 # 3 - non dbg contains .so
+# 4 - wrong architecture
 #
 #
 
@@ -59,6 +159,7 @@ def package_qa_write_error(error_class, name, path, d):
         "package contains RPATH",
         "package depends on debug package",
         "non dbg contains .debug",
+        "wrong archutecture",
     ]
 
 
@@ -125,7 +226,33 @@ def package_qa_check_arch(path,name,d):
     """
     Check if archs are compatible
     """
+    import bb
+    target_os   = bb.data.getVar('TARGET_OS',   d, True)
+    target_arch = bb.data.getVar('TARGET_ARCH', d, True)
+
+    #this will throw an exception, then fix the dict above
+    (machine, osabi, abiversion, littleendian) = package_qa_get_machine_dict()[target_os][target_arch]
+    elf = package_qa_get_elf(path)
+    try:
+        elf.open()
+    except:
+        # just for debbugging to check the parser, remove once convinced...
+        return True
+
     sane = True
+    if not machine == elf.machine():
+        bb.error("Architecture did not match (%d to %d) on %s", (machine, elf.machine(), package_qa_clean_path(path,d)))
+        sane = package_qa_make_fatal_error( 4, name, path, d )
+    elif not osabi == elf.osAbi():
+        bb.error("OSABI did not match (%d to %d) on %s", (osabi, elf.osAbi(), package_qa_clean_path(path,d)))
+        sane = package_qa_make_fatal_error( 4, name, path, d )
+    elif not abiversion == elf.abiVersion():
+        bb.error("ABI version did not match (%d to %d) on %s", (abiversion, elf.abiVersion(), package_qa_clean_path(path,d)))
+        sane = package_qa_make_fatal_error( 4, name, path, d )
+    elif not littleendian == elf.isLittleEndian():
+        bb.error("Endiannes did not match (%d to %d) on %s", (littleendian, elf.isLittleEndian(), package_qa_clean_path(path,d)))
+        sane = package_qa_make_fatal_error( 4, name, path, d )
+
     return sane
 
 def package_qa_check_pcla(path,name,d):
