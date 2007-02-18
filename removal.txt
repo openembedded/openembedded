@@ -26,3 +26,8 @@ Reason:         Obsoleted by task-base
 Proposed by:    Koen Kooi
 Note:		Moved to packages/obsolete/tasks on 2006-12-22
 
+Package Name:   libmpeg2 (not mpeg2dec!)
+Removal Date:   2007-03-15
+Maintainer:	unknown, checked in from BK repo, no updates after that
+Reason:		mpeg2dec provides libmpeg2, see bug 375
+Proposed by:	Laibsch
