@@ -8,6 +8,9 @@ HOMEPAGE = "http://www.nslu2-linux.org"
 LICENSE = "MIT"
 PR = "r46"
 
+DEPENDS = "task-slugos"
+PACKAGE_INSTALL = "task-slugos"
+
 COMPATIBLE_MACHINE = "nslu2"
 
 IMAGE_NAME = "${IMAGE_BASENAME}-${DISTRO_VERSION}"
@@ -30,12 +33,5 @@ SLUGOS_DEVICE_TABLE = "${@bb.which(bb.data.getVar('BBPATH', d, 1), 'files/device
 # root file system), if this is not the case the following must not be done!
 IMAGE_PREPROCESS_COMMAND += "rm ${IMAGE_ROOTFS}/boot/zImage*;"
 IMAGE_PREPROCESS_COMMAND += "install -c -m 644 ${SLUGOS_DEVICE_TABLE} ${IMAGE_ROOTFS}/etc/device_table;"
-
-SLUGOS_EXTRA_INSTALL ?= ""
-
-DEPENDS = "task-slugos"
-RDEPENDS = "task-slugos ${SLUGOS_EXTRA_INSTALL}"
-
-PACKAGE_INSTALL = "${RDEPENDS}"
 
 inherit image nslu2-image dsmg600-image nas100d-image

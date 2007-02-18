@@ -84,7 +84,9 @@ CMDLINE_DEBUG = "noirqdebug"
 #
 # Everything in this list gets added to the flash image, along with any RDEPENDS
 # it has itself!
-SLUGOS_EXTRA_RDEPENDS ?= ""
+DISTRO_EXTRA_DEPENDS ?= ""
+DISTRO_EXTRA_RDEPENDS ?= ""
+DISTRO_EXTRA_RRECOMMENDS ?= ""
 
 #----------------------------------------------------------------------------------
 # PACKAGE VERSION CONTROL
