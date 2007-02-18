@@ -2001,8 +2001,7 @@ NOTE: package helloworld-0.1-r0: task do_package_write: completed</screen>We
       matched via wildcards. Consider the case where we have three binaries in
       the /usr/bin directory and we want the test program in a separate
       package:<screen>/usr/bin/programa /usr/bin/programb /usr/bin/test</screen>So
-      we define are now package, list the file and included in the list of
-      packages:</para>
+      we define a new package and instruct bitbake to /usr/bin/test in it.</para>
 
       <screen>FILES-${PN}-test = "${bindir}/test"
 PACKAGES += "FILES-${PN}-test"</screen>
@@ -2020,7 +2019,7 @@ PACKAGES += "FILES-${PN}-test"</screen>
       processing of the <emphasis role="bold">${PN}-test</emphasis>
       package.</para>
 
-      <para>To make these work we have two options:</para>
+      <para>To achieve what we are trying to accomplish we have two options:</para>
 
       <orderedlist>
         <listitem>
