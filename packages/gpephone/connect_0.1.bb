@@ -1,6 +1,6 @@
 DESCRIPTION = "GSM/GPRS mux tools"
 LICENSE  = "GPL"
-SECTION  = "gpe"
+SECTION = "gpe"
 PRIORITY = "optional"
 DEPENDS  = "glibc"
 PR = "r0"

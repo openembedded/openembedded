@@ -14,12 +14,10 @@ FROZEN_DIR ?= "/non/-existent/-directory/-for/-security"
 
 # Pull in the frozen definitions (if they exist)  The multiple
 # includes allow the frozen file to be stored alongside local.conf
-# and in the conf/distro directory - the former take precedence over
-# the latter.
-require conf/distro/include/${DISTRO}-packages.inc
+# and in a distro-specific frozen directory - the former take
+# precedence over the latter.
 include conf/${DISTRO}-packages.conf
 include ${FROZEN_DIR}/${DISTRO}-packages.conf
 
-require conf/distro/include/${DISTRO}-bbfiles.inc
 include conf/${DISTRO}-bbfiles.conf
 include ${FROZEN_DIR}/${DISTRO}-bbfiles.conf

@@ -1,6 +1,7 @@
 DESCRIPTION = "Dates is a calendar application."
 SECTION = "x11"
 LICENSE = "LGPL"
+PR = "r1"
 
 DEPENDS = "glib-2.0 gtk+ libglade eds-dbus"
 

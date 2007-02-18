@@ -1,10 +1,9 @@
 DESCRIPTION = "Music Player Daemon (mpd) library"
 HOMEPAGE = "http://www.musicpd.org"
+SECTION = "libs/multimedia"
 LICENSE = "GPLv2"
-SECTION = "lib/multimedia"
 SRCDATE = "20070120"
 PV = "0.0.0+svn${SRCDATE}"
-PR = "r0"
 
 SRC_URI = "svn://svn.musicpd.org/libmpd;module=trunk;proto=https"
 S = "${WORKDIR}/trunk"

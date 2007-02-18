@@ -1,6 +1,6 @@
 LICENSE     = "GPL"
 DESCRIPTION = "A cellphone application launcher."
-SECTION     = "gpe"
+SECTION = "gpe"
 PRIORITY    = "optional"
 PR          = "r0"
 

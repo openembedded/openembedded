@@ -17,7 +17,8 @@ EXTRA_OECONF = " \
 		 --disable-openssl \
 		 --enable-gnutls \
 		 --enable-avahi \
-		 "
+                 --with-samba-includes=${STAGING_INCDIR} \
+               "
 
 FILES_${PN} += " ${libdir}/vfs"
 FILES_${PN}-dev += " ${libdir}/gnome-vfs-2.0/include"

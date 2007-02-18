@@ -1,3 +1,3 @@
 require bluez-utils.inc
 
-PR = "r1"
+PR = "r2"

@@ -1,5 +1,5 @@
 DESCRIPTION = "GPE network security tool"
-SECTION     = "gpe"
+SECTION = "gpe"
 LICENSE     = "GPL"
 
 DEPENDS     = "libgpewidget iptables virtual/kernel"

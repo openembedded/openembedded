@@ -1,12 +1,11 @@
-SECTION = "unknown"
 DESCRIPTION = "Hardware Abstraction Layer"
+HOMEPAGE = "http://freedesktop.org/Software/hal"
+SECTION = "unknown"
+LICENSE = "GPL LGPL AFL"
 DEPENDS = "dbus expat libusb"
 RDEPENDS += "hotplug"
 #RDEPENDS_hal-device-manager = "python hal python-pygnome"
 RRECOMMENDS = "udev-utils"
-HOMEPAGE = "http://freedesktop.org/Software/hal"
-LICENSE = "GPL LGPL AFL"
-PR = "r0"
 
 SRC_URI = "http://freedesktop.org/~david/dist/hal-${PV}.tar.gz \
            file://dbus-fix-api.patch;patch=1"
@@ -28,19 +27,19 @@ do_stage() {
 }
 
 #PACKAGES += "hal-device-manager"
-FILES_${PN} =  "${sysconfdir} \
-		${bindir}/lshal \
-		${bindir}/hal-find-by-capability \
-		${bindir}/hal-find-by-property \
-		${bindir}/hal-device  \
-		${bindir}/hal-get-property \
-		${bindir}/hal-set-property  \
-		${sbindir} \
-		${libdir}/libhal.so* \
-		${libdir}/libhal-storage.so* \
-		${libexecdir} \
-		${datadir}/hal/fdi \
-		${datadir}/hal/scripts"
+FILES_${PN} = "${sysconfdir} \
+               ${bindir}/lshal \
+               ${bindir}/hal-find-by-capability \
+               ${bindir}/hal-find-by-property \
+               ${bindir}/hal-device  \
+               ${bindir}/hal-get-property \
+               ${bindir}/hal-set-property  \
+               ${sbindir} \
+               ${libdir}/libhal.so* \
+               ${libdir}/libhal-storage.so* \
+               ${libexecdir} \
+               ${datadir}/hal/fdi \
+               ${datadir}/hal/scripts"
 #FILES_hal-device-manager = " \
 #		${datadir}/hal/device-manager/ \
 #		${bindir}/hal-device-manager"

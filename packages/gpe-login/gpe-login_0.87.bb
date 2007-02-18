@@ -2,7 +2,7 @@ LICENSE = "GPL"
 inherit gpe
 
 DESCRIPTION = "GPE user login screen"
-SECTION     = "gpe"
+SECTION = "gpe"
 PRIORITY    = "optional"
 DEPENDS     = "gtk+ libgpewidget gpe-ownerinfo xkbd"
 RDEPENDS    = "xkbd"

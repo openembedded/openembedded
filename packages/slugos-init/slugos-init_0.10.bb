@@ -4,7 +4,7 @@ PRIORITY = "required"
 LICENSE = "GPL"
 DEPENDS = "base-files devio"
 RDEPENDS = "busybox devio"
-PR = "r77"
+PR = "r78"
 
 SRC_URI = "file://boot/flash \
 	   file://boot/disk \
@@ -29,7 +29,6 @@ SRC_URI = "file://boot/flash \
 	   file://leds \
 	   file://turnup \
 	   file://reflash \
-	   file://links.conf \
 	   "
 
 SBINPROGS = ""
@@ -95,10 +94,6 @@ do_install() {
 	do
 		install -m 0755 initscripts/$s ${D}${sysconfdir}/init.d/
 	done
-
-	#
-	# Udev configuration files
-	install -m 0644 links.conf ${D}${sysconfdir}/udev
 
 	#
 	# Boot scripts

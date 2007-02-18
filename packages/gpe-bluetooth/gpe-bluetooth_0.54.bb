@@ -1,6 +1,6 @@
 LICENSE     = "GPL"
 DESCRIPTION = "GPE bluetooth support user interface tool."
-SECTION     = "gpe"
+SECTION = "gpe"
 PRIORITY    = "optional"
 PR          = "r1"
 

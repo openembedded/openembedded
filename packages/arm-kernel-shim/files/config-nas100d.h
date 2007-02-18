@@ -23,8 +23,13 @@
 //#define RAM_BANK1_LENGTH   0x10000000
 
 #define COMMANDLINE\
- "init=/linuxrc root=/dev/mtdblock2 rootfstype=jffs rw noirqdebug console=ttyS0,115200n8"
+ "init=/linuxrc root=/dev/mtdblock2 rootfstype=jffs2 rw noirqdebug console=ttyS0,115200n8"
 
 #define MACH_TYPE		   865
+
+/* Uncomment one of these if you need to switch the CPU into a
+   specific mode. */
+//#define FORCE_LITTLEENDIAN
+//#define FORCE_BIGENDIAN
 
 #endif  /* __CONFIG_H__ */

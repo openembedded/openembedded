@@ -25,6 +25,10 @@ Machines:   storcenter
 Recipes:    apache2, apc, gallery, initscripts-openprotium, linux-storcenter*, 
 Recipes:    modphp, sccd, uboot-utils, xfsprogs
 
+Person:     Bernhard Guillon
+Mail:       Bernhard.Guillon@opensimpad.org
+Machines:   simpad
+
 Person:     Cliff Brake
 Mail:       cbrake@bec-systems.com
 Website:    http://bec-systems.com
@@ -114,10 +118,10 @@ Recipes:    mx31ads-kernel*
 Person:     Marcin Juszkiewicz
 Mail:       hrw@openembedded.org
 Website:    http://www.hrw.one.pl/
-Machines:   collie, spitz, tosa
+Machines:   collie, spitz, tosa, progear
 Distros:    OpenZaurus, celinux-test
 Interests:  WiFi, Opie, Qtopia fonts, Native SDK
-Recipes:    hostap*, orinoco*, wpa-supplicant*, wireless-tools, keymaps
+Recipes:    linux, hostap*, orinoco*, wpa-supplicant*, wireless-tools, keymaps
 Recipes:    linux-rp, kdepimpi, subapplet, corsair, gammu, iqnotes, zbedic
 Recipes:    ttf-fonts/* qpf-fonts/*
 
@@ -140,6 +144,12 @@ Website:    http://www.balister.org
 Machines:   omap5912osk
 Distros:    openomap
 Recipes:    xerces-c, omniorb
+
+Person:     Philippe De Swert
+Mail:       philippedeswert@scarlet.be
+Recipes:    gpe-*_svn, libgpe*_svn, libgtkstylus_svn, libtododb_svn
+Recipes:    libxsettings*_svn, libgtkinput_svn, libschedule_svn
+Recipes:    blueprobe_svn, detect-stylus_svn.
 
 Person:     Richard Purdie
 Mail:       rpurdie@rpsys.net

@@ -1,7 +1,7 @@
 DESCRIPTION = "GTK+ Frontend for mpd"
 HOMEPAGE = "http://www.musicpd.org/gmpc.shtml"
+SECTION = "x11/multimedia"
 LICENSE = "GPLv2"
-SECTION = "gnome/multimedia"
 DEPENDS = "gtk+ libglade gnome-vfs"
 PR = "r1"
 

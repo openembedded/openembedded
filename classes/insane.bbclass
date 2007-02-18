@@ -9,6 +9,7 @@
 #  -Check if .la files wrongly point to workdir
 #  -Check if .pc files wrongly point to workdir
 #  -Check if packages contains .debug directories  or .so files where they should be in -dev or -dbg
+#  -Check if config.log contains traces to broken autoconf tests
 #
 
 
@@ -33,12 +34,12 @@ def package_qa_check_rpath(file,name,d):
     if not os.path.exists(scanelf):
         bb.note("Can not check RPATH scanelf not found")
     if not bad_dir in bb.data.getVar('WORKDIR', d, True):
-        bb.error("This class assumed that WORKDIR is ${TMPDIR}/work... Not doing any check")
+        bb.fatal("This class assumed that WORKDIR is ${TMPDIR}/work... Not doing any check")
 
     output = os.popen("%s -Byr %s" % (scanelf,file))
     txt    = output.readline().rsplit()
     if bad_dir in txt:
-        bb.error("QA Issue package %s contains bad RPATH %s in file %s" % (name, txt, file))
+        bb.fatal("QA Issue package %s contains bad RPATH %s in file %s" % (name, txt, file))
 
     pass
 
@@ -55,7 +56,7 @@ def package_qa_check_devdbg(path, name,d):
 
     if not "-dbg" in name:
         if '.debug' in path:
-            bb.error("QA Issue: non debug package contains .debug directory: %s" % name)
+            bb.fatal("QA Issue: non debug package contains .debug directory: %s" % name)
 
 def package_qa_check_perm(path,name,d):
     """
@@ -121,7 +122,7 @@ def package_qa_check_rdepends(pkg, workdir, d):
         # Now do the sanity check!!!
         for rdepend in rdepends:
             if "-dbg" in rdepend:
-                bb.error("QA issue, koen give us a better msg!!!")
+                bb.fatal("QA issue, koen give us a better msg!!!")
 
 # The PACKAGE FUNC to scan each package
 python do_package_qa () {
@@ -148,4 +149,15 @@ python do_qa_staging() {
     bb.note("Staged!")
 
     package_qa_check_staged(bb.data.getVar('STAGING_DIR',d,True), d)
+}
+
+# Check broken config.log files
+addtask qa_configure after do_configure before do_compile
+python do_qa_configure() {
+    bb.note("Checking sanity of the config.log file")
+    import os
+    for root, dirs, files in os.walk(bb.data.getVar('S', d, True)):
+        if "config.log" in files:
+            if os.system("grep 'CROSS COMPILE Badness:' %s > /dev/null" % (os.path.join(root,"config.log"))) == 0:
+                bb.fatal("This autoconf log indicates errors, it looked at host includes")
 }

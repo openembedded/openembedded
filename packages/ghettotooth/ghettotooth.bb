@@ -1,4 +1,4 @@
-SECTION = "net/misc"
+SECTION = "network/misc"
 DESCRIPTION = "Bluetooth scanner"
 LICENSE = "GPL"
 RDEPENDS = "perl"

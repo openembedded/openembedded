@@ -1,0 +1,14 @@
+--- /lib/orig-configure	2007-02-13 16:36:54.000000000 +0200
++++ /lib/configure	2007-02-13 16:37:33.000000000 +0200
+@@ -39,6 +39,11 @@
+ 	sys=linux
+ fi
+ 
++if [ "$host" = "linux--uclibc" ]
++then
++	sys=linux
++fi
++
+ c=config.h
+ m=config.mk
+ echo >$c "#define PCI_ARCH_`echo $cpu | tr 'a-z' 'A-Z'`"

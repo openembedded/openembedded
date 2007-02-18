@@ -1,7 +1,7 @@
-DESCRIPTION =   "a dbus service that listens to desktop notification requests and displays them"
-HOMEPAGE =      "http://www.galago-project.org/"
-LICENSE =       "GPL"
-DEPENDS =       "gettext dbus gtk+ libsexy gconf libwnck"
+DESCRIPTION = "a dbus service that listens to desktop notification requests and displays them"
+HOMEPAGE = "http://www.galago-project.org/"
+LICENSE = "GPL"
+DEPENDS = "gettext dbus gtk+ libsexy gconf libwnck"
 
 PACKAGES = "${PN}"
 FILES_${PN} = "${libexecdir}/notification-daemon \

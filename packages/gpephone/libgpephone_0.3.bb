@@ -1,6 +1,6 @@
 LICENSE     = "LGPL"
 DESCRIPTION = "Base library for GPE phone environment."
-SECTION     = "gpe/libs"
+SECTION = "gpe/libs"
 PRIORITY    = "optional"
 DEPENDS     = "gtk+ gtk-doc dbus-glib"
 PR          = "r1"

@@ -2,13 +2,14 @@ DESCRIPTION = "A TCP/IP Daemon simplifying the communication with GPS devices"
 SECTION = "console/network"
 PRIORITY = "optional"
 LICENSE = "GPL"
-DEPENDS = "dbus-0.23.4 ncurses"
+DEPENDS = "dbus-glib ncurses"
 
 EXTRA_OECONF = "--x-includes=${STAGING_INCDIR}/X11  \
-		--x-libraries=${STAGING_LIBDIR}"
+		--x-libraries=${STAGING_LIBDIR} \
+                --enable-dbus"
 
 SRC_URI = "http://download.berlios.de/gpsd/gpsd-${PV}.tar.gz \
-	file://gpsd"
+           file://gpsd"
 
 inherit autotools update-rc.d
 

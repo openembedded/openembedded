@@ -37,10 +37,6 @@ TARGET_FPU_arm ?= "soft"
 TARGET_FPU_armeb ?= "soft"
 TARGET_FPU_ixp4xx ?= "soft"
 
-
-#Make a LE jffs2 image
-SLUGOS_IMAGESEX = "little-endian"
-
 #Name the generated images in a sane way
 IMAGE_NAME = "${DISTRO_NAME}-${IMAGE_BASENAME}-${DISTRO_VERSION}-${MACHINE}"
 DEPLOY_DIR_IMAGE = "${DEPLOY_DIR}/images/${MACHINE}"
@@ -50,4 +46,4 @@ DISTRO_CHECK := "${@bb.data.getVar("DISTRO_VERSION",d,1) or bb.fatal('Remove thi
 
 # We want images supporting the following features (for task-base)
 DISTRO_FEATURES = "nfs smbfs wifi ppp alsa bluetooth ext2 irda pcmcia usbgadget usbhost pci"
-DISTRO_FEATURES_nslu2le = "nfs smbfs alsa bluetooth ext2 usbhost pci"
+DISTRO_FEATURES_nslu2 = "nfs smbfs alsa bluetooth ext2 usbhost pci"

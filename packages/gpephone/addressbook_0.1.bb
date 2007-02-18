@@ -1,6 +1,6 @@
 LICENSE     = "LiPS"
 DESCRIPTION = "LiPS address book"
-SECTION     = "gpe"
+SECTION = "gpe"
 PRIORITY    = "optional"
 PR          = "r0"
 
