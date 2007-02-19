@@ -55,6 +55,11 @@ do_install_append() {
 	mv ${D}/etc/enigma/* ${D}/usr/share/enigma/default 2> /dev/null || /bin/true
 	rm -R ${D}/etc/enigma 2> /dev/null || /bin/true
 	install -m 0644 ${WORKDIR}/config ${D}/usr/share/enigma/default/
+	if [ "${MACHINE}" = "dm600pvr" ]; then
+		# vulcan-based boxes don't look that well with too much alpha
+		echo "i:/ezap/osd/alpha=00000000" >> ${D}/usr/share/enigma/default/config
+		echo "i:/ezap/osd/simpleMainMenu=00000001" >> ${D}/usr/share/enigma/default/config
+	fi
 	install -m 0644 ${WORKDIR}/userbouquet* ${D}/usr/share/enigma/default/
 	install -m 0755 ${WORKDIR}/enigma.sh ${D}/usr/bin/
 	install -m 0755 ${WORKDIR}/boot-${MACHINE} ${D}/usr/bin/boot
