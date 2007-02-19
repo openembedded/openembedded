@@ -1,5 +1,5 @@
 DESCRIPTION = "DCOP IDL parser"
-SECTION     = "kde/devel"
+SECTION = "kde/devel"
 PRIORITY    = "optional"
 LICENSE     = "GPL"
 DEPENDS     = "uicmoc3-native"

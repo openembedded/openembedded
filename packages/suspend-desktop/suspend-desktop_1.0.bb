@@ -1,4 +1,4 @@
-SECTION     = "gpe"
+SECTION = "gpe"
 PRIORITY    = "optional"
 DESCRIPTION = "Suspend feature for the application launcher menu."
 LICENSE     = "GPL"

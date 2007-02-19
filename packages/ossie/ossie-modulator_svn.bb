@@ -3,11 +3,10 @@ SECTION =  "apps"
 PRIORITY = "optional"
 LICENSE = "GPL"
 PV = "0.0.0+svn${SRCDATE}"
-PR = "r0"
 
 DEPENDS = "ossiecf ossie-standardinterfaces ossie-sigproc"
 
-S="${WORKDIR}/Modulator"
+S = "${WORKDIR}/Modulator"
 
 
 SRC_URI = "svn://oe:oe@ossie-dev.mprg.org/repos/ossie/components/Modulator/trunk;module=Modulator;proto=https"

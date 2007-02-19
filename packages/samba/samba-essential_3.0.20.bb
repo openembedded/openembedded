@@ -1,21 +1,16 @@
+require samba-essential.inc
+inherit update-rc.d
+
 PR = "r5"
 
-SRC_URI = "http://us2.samba.org/samba/ftp/stable/samba-${PV}.tar.gz \
-	   file://configure.patch;patch=1 \
-	   file://cifs.patch;patch=1 \
-	   file://config-lfs.patch;patch=1 \
+SRC_URI = "file://config-lfs.patch;patch=1 \
 	   file://init-essential \
            file://quota.patch;patch=1;pnum=0 \
 	   file://smb-essential.conf \
 	   file://smb-essential-inactive.conf \
 	   file://Managing-Samba.txt"
 
-S := "${WORKDIR}/samba-${PV}/source"
-
 RCONFLICTS = "samba"
-
-require samba-essential.inc
-inherit update-rc.d
 
 INITSCRIPT_NAME = "samba"
 # No dependencies, goes in at level 20 (NOTE: take care with the

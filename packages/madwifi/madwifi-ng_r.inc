@@ -9,12 +9,8 @@ PR="r0"
 SRC_URI = "http://snapshots.madwifi.org/${PN}/${PN}-${PV}.tar.gz \
 	   file://10-xscale-be-elf-copts.patch;patch=1 \
 	   file://10-xscale-le-elf-copts.patch;patch=1 \
-	   file://10-sh4-le-elf-copts.patch;patch=1"
-
-SRC_URI_slugos = "http://snapshots.madwifi.org/${PN}/${PN}-${PV}.tar.gz \
-		  file://slugos-xscale-be-elf-copts.patch;patch=1 \
-		  file://slugos-xscale-le-elf-copts.patch;patch=1 \
-		  file://slugos-VFP-wackelf.patch;patch=1"
+	   file://10-sh4-le-elf-copts.patch;patch=1" \
+	   file://20-xscale-VFP-wackelf.patch;patch=1"
 
 S = "${WORKDIR}/${PN}-${PV}"
 

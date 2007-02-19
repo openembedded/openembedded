@@ -5,7 +5,7 @@
 DESCRIPTION = "Packages that are compatible with the SlugOS firmware"
 HOMEPAGE = "http://www.nslu2-linux.org"
 LICENSE = "MIT"
-PR = "r18"
+PR = "r19"
 CONFLICTS = "db3"
 
 COMPATIBLE_MACHINE = "nslu2"
@@ -44,6 +44,7 @@ SLUGOS_PACKAGES = "\
 	cron \
 	ctorrent \
 	cvs \
+	cyrus-imapd \
 	cyrus-sasl \
 	db \
 	devlabel \
@@ -123,6 +124,8 @@ SLUGOS_PACKAGES = "\
 	netcat \
 	nmap \
 	ntp \
+	obexftp \
+	obexpush \
 	openobex-apps \
 	openldap \
 	openntpd \
@@ -136,7 +139,6 @@ SLUGOS_PACKAGES = "\
 	pkgconfig \
 	ppp \
 	procps \
-	pvrusb2-mci \
 	python \
 	quilt \
 	reiserfsprogs reiser4progs \
@@ -179,13 +181,12 @@ SLUGOS_BROKEN_PACKAGES = "\
 	irssi \
 	libgphoto2 \
 	netpbm \
-	obexftp \
 	puppy \
+	pvrusb2-mci \
 	qc-usb-messenger \
 	sane-backends \
 	unionfs-modules \
 	unionfs-utils \
-	cyrus-imapd \
 	lirc \
 	pwc \
 	zd1211 \

@@ -1,6 +1,6 @@
 LICENSE     = "LiPS"
 DESCRIPTION = "GSM Short message application"
-SECTION     = "gpe"
+SECTION = "gpe"
 PRIORITY    = "optional"
 PR          = "r0"
 

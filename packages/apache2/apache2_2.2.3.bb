@@ -1,5 +1,5 @@
-SECTION = "net"
 DESCRIPTION = "The apache v2 web server"
+SECTION = "net"
 DEPENDS = "apache2-native openssl expat pcre"
 RDEPENDS += "openssl"
 

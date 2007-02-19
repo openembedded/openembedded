@@ -1,6 +1,6 @@
 LICENSE     = "LiPS"
 DESCRIPTION = "Phone services server"
-SECTION     = "gpe"
+SECTION = "gpe"
 PRIORITY    = "optional"
 PR          = "r1"
 

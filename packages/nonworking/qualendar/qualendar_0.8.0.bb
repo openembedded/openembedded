@@ -1,10 +1,10 @@
-DESCRIPTION="DVI Viewer for Opie/Qtopia"
-SECTION="base"
-PRIORITY="optional"
-LICENSE="GPL"
+DESCRIPTION= " DVI Viewer for Opie/Qtopia"
+SECTION = "base"
+PRIORITY = "optional"
+LICENSE = "GPL"
 
-SRC_URI = http://ichitokumei.hp.infoseek.co.jp/${PN}/source/${P}.tar.gz
-S = ${WORKDIR}/${PN}/src
+SRC_URI = "http://ichitokumei.hp.infoseek.co.jp/${PN}/source/${P}.tar.gz"
+S = "${WORKDIR}/${PN}/src"
 
 inherit palmtop
 

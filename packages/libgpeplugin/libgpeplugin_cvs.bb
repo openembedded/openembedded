@@ -3,16 +3,14 @@ AUTHOR = "Luce DeCicco <ldecicco@gmail.com>"
 
 DEPENDS = "gtk+ libgpewidget"
 PV = "0.0+cvs${SRCDATE}"
-PR = "r0"
 
 #put examples in a seperate package
 PACKAGES += "${PN}-examples"
 FILES_${PN}-examples = "${bindir}/* ${libexecdir}/*"
 FILES_${PN} = "${libdir}/*.so.*"
 
-
-SRC_URI =       "${HANDHELDS_CVS};module=gpe/base/${PN}"
-S =				"${WORKDIR}/${PN}"
+SRC_URI = "${HANDHELDS_CVS};module=gpe/base/${PN}"
+S = "${WORKDIR}/${PN}"
 
 inherit autotools pkgconfig
 

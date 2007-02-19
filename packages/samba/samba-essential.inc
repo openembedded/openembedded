@@ -1,10 +1,15 @@
 SECTION = "console/network"
-DEPENDS = "readline"
 LICENSE = "GPL"
+DEPENDS = "readline"
 	       
+SRC_URI = "http://samba.org/samba/ftp/stable/samba-${PV}.tar.gz \
+           file://configure.patch;patch=1 \
+           file://cifs.patch;patch=1"
+S = "${WORKDIR}/samba-${PV}/source"
+
 inherit autotools
 
-EXTRA_OECONF='--disable-cups --with-readline=${STAGING_LIBDIR}/.. \
+EXTRA_OECONF = '--disable-cups --with-readline=${STAGING_LIBDIR}/.. \
 	      --without-ads --without-automount --without-smbmount --without-syslog \
 	      --without-ldapsam --without-quotas --without-nisplus-home \
 	      --without-sys-quotas --without-libsmbclient --without-winbind \

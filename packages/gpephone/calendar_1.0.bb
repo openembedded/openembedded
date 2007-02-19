@@ -1,6 +1,6 @@
 LICENSE     = "LiPS"
 DESCRIPTION = "Calendar application for GPE Phone Edition"
-SECTION     = "gpe"
+SECTION = "gpe"
 PRIORITY    = "optional"
 PR          = "r0"
 

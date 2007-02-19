@@ -1,0 +1,127 @@
+diff -Nur ipkg-0.99.163.orig/ipkg_install.c ipkg-0.99.163/ipkg_install.c
+--- ipkg-0.99.163.orig/ipkg_install.c	2006-03-30 21:50:24.000000000 +0800
++++ ipkg-0.99.163/ipkg_install.c	2006-08-10 09:30:40.000000000 +0800
+@@ -211,6 +211,7 @@
+ 	anyone ever wants to make a nice libipkg. */
+ 
+      ipkg_message(conf, IPKG_DEBUG2,"Function: %s calling ipkg_install_pkg \n",__FUNCTION__);
++     new->is_processing = 1;
+      return ipkg_install_pkg(conf, new,0);
+ }
+ 
+diff -Nur ipkg-0.99.163.orig/pkg.c ipkg-0.99.163/pkg.c
+--- ipkg-0.99.163.orig/pkg.c	2006-04-21 04:29:28.000000000 +0800
++++ ipkg-0.99.163/pkg.c	2006-08-10 09:35:06.000000000 +0800
+@@ -33,6 +33,7 @@
+ #include "xsystem.h"
+ #include "ipkg_conf.h"
+ 
++
+ typedef struct enum_map enum_map_t;
+ struct enum_map
+ {
+@@ -522,6 +523,10 @@
+      strncat(buff ,line, strlen(line));
+      free(line);
+ 
++     line = pkg_formatted_field(pkg, "Installed-Size");
++     strncat(buff ,line, strlen(line));
++     free(line);
++     
+      return buff;
+ }
+ 
+@@ -542,7 +547,6 @@
+      }
+ 
+      temp[0]='\0'; 
+-
+      switch (field[0])
+      {
+      case 'a':
+@@ -690,13 +694,42 @@
+      case 'I': {
+ 	  if (strcasecmp(field, "Installed-Size") == 0) {
+ 	       /* Installed-Size */
+-               temp = (char *)realloc(temp,strlen(pkg->installed_size)+17);
+-               if ( temp == NULL ){
+-	           fprintf(stderr, "%s: out of memory\n", __FUNCTION__);
+-	           return NULL;
+-               }
+-               temp[0]='\0';
+-               snprintf(temp, (strlen(pkg->installed_size)+17), "Installed-Size: %s\n", pkg->installed_size);
++	       if (pkg->installed_size) {
++                  temp = (char *)realloc(temp,strlen(pkg->installed_size)+18);
++                  if ( temp == NULL ){
++	             fprintf(stderr, "%s: out of memory\n", __FUNCTION__);
++	             return NULL;
++                  }
++                  temp[0]='\0';
++                  snprintf(temp, (strlen(pkg->installed_size)+18), "Installed-Size: %s\n", pkg->installed_size);
++	       } else {
++	          /* Caculate installed files size */
++	          str_list_elt_t *iter;
++		  struct stat buf;
++		  int installed_files_length = 0;
++		  if (pkg->installed_files == NULL)
++		     break;
++
++		  if (pkg->is_processing!=1) 
++		     break;
++		  
++	          for (iter = pkg->installed_files->head; iter; iter = iter->next) {
++		     memset(&buf, 0, sizeof(struct stat));
++		     stat(iter->data, &buf);
++		     if (S_ISREG(buf.st_mode))
++		        installed_files_length += buf.st_size;
++	          }
++		  /*printf("installed_files_length:%d\n", installed_files_length);*/
++	          
++		  sprintf_alloc(&pkg->installed_size, "%d", installed_files_length);
++                  temp = (char *)realloc(temp,strlen(pkg->installed_size)+18);
++                  if ( temp == NULL ){
++	             fprintf(stderr, "%s: out of memory\n", __FUNCTION__);
++	             return NULL;
++                  }
++                  temp[0]='\0';
++                  snprintf(temp, (strlen(pkg->installed_size)+18), "Installed-Size: %s\n", pkg->installed_size);
++	       }
+ 	  } else if (strcasecmp(field, "Installed-Time") == 0 && pkg->installed_time) {
+                temp = (char *)realloc(temp,29);
+                if ( temp == NULL ){
+@@ -720,7 +753,7 @@
+ 	              return NULL;
+                    }
+                    temp[0]='\0';
+-                   snprintf(temp, (strlen(pkg->maintainer)+14), "maintainer: %s\n", pkg->maintainer);
++                   snprintf(temp, (strlen(pkg->maintainer)+14), "Maintainer: %s\n", pkg->maintainer);
+ 	       }
+ 	  } else if (strcasecmp(field, "MD5sum") == 0) {
+ 	       /* MD5sum */
+@@ -1016,6 +1049,12 @@
+      pkg_print_field(pkg, file, "Essential"); /* @@@@ should be removed in future release. */
+      pkg_print_field(pkg, file, "Architecture");
+      pkg_print_field(pkg, file, "Conffiles");
++     pkg_print_field(pkg, file, "Description");
++     pkg_print_field(pkg, file, "Maintainer");
++     pkg_print_field(pkg, file, "Section");
++     pkg_print_field(pkg, file, "Size");
++     pkg_print_field(pkg, file, "Filename");
++     pkg_print_field(pkg, file, "Installed-Size");
+      pkg_print_field(pkg, file, "Installed-Time");
+      fputs("\n", file);
+ }
+diff -Nur ipkg-0.99.163.orig/pkg.h ipkg-0.99.163/pkg.h
+--- ipkg-0.99.163.orig/pkg.h	2006-05-30 16:31:08.000000000 +0800
++++ ipkg-0.99.163/pkg.h	2006-08-10 09:19:14.000000000 +0800
+@@ -176,6 +176,10 @@
+      int arch_priority;
+ /* Adding this flag, to "force" ipkg to choose a "provided_by_hand" package, if there are multiple choice */
+      int provided_by_hand;
++
++     /* Check whether this pkg is being removed or installed */
++     int is_processing;
++     
+ };
+ 
+ pkg_t *pkg_new(void);

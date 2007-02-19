@@ -1,0 +1,110 @@
+Index: matchbox-panel-2/applets/windowselector/windowselector.c
+===================================================================
+--- matchbox-panel-2.orig/applets/windowselector/windowselector.c	2007-01-24 19:24:27.000000000 +0100
++++ matchbox-panel-2/applets/windowselector/windowselector.c	2007-01-25 02:34:21.000000000 +0100
+@@ -56,7 +56,7 @@
+                                           applet);
+         }
+ 
+-        g_slice_free (WindowSelectorApplet, applet);
++        g_free (applet);
+ }
+ 
+ /* Retrieves the UTF-8 property @atom from @window */
+@@ -673,7 +673,7 @@
+         GtkWidget *menu_bar, *menu_item, *image;
+ 
+         /* Create applet data structure */
+-        applet = g_slice_new (WindowSelectorApplet);
++        applet = g_new (WindowSelectorApplet,1);
+ 
+         applet->root_window = NULL;
+         applet->menu = NULL;
+Index: matchbox-panel-2/applets/battery/battery.c
+===================================================================
+--- matchbox-panel-2.orig/applets/battery/battery.c	2007-01-24 19:24:28.000000000 +0100
++++ matchbox-panel-2/applets/battery/battery.c	2007-01-25 02:34:21.000000000 +0100
+@@ -24,7 +24,7 @@
+ {
+         g_source_remove (applet->timeout_id);
+ 
+-        g_slice_free (BatteryApplet, applet);
++        g_free (applet);
+ }
+ 
+ /* Called every 5 minutes */
+@@ -97,7 +97,7 @@
+         }
+ 
+         /* Create applet data structure */
+-        applet = g_slice_new (BatteryApplet);
++        applet = g_new (BatteryApplet,1);
+ 
+         applet->last_icon = NULL;
+ 
+Index: matchbox-panel-2/applets/showdesktop/showdesktop.c
+===================================================================
+--- matchbox-panel-2.orig/applets/showdesktop/showdesktop.c	2007-01-24 19:24:28.000000000 +0100
++++ matchbox-panel-2/applets/showdesktop/showdesktop.c	2007-01-25 02:34:21.000000000 +0100
+@@ -36,7 +36,7 @@
+                                           applet);
+         }
+ 
+-        g_slice_free (ShowDesktopApplet, applet);
++        g_free (applet);
+ }
+ 
+ /* Sync @applet with the _NET_SHOWING_DESKTOP root window property */
+@@ -180,7 +180,7 @@
+         GtkWidget *button, *image;
+ 
+         /* Create applet data structure */
+-        applet = g_slice_new (ShowDesktopApplet);
++        applet = g_new (ShowDesktopApplet,1);
+ 
+         applet->block_toggle = FALSE;
+         applet->root_window = NULL;
+Index: matchbox-panel-2/applets/launcher/launcher.c
+===================================================================
+--- matchbox-panel-2.orig/applets/launcher/launcher.c	2007-01-24 19:24:27.000000000 +0100
++++ matchbox-panel-2/applets/launcher/launcher.c	2007-01-25 02:35:40.000000000 +0100
+@@ -36,7 +36,7 @@
+         g_free (applet->name);
+         g_strfreev (applet->argv);
+ 
+-        g_slice_free (LauncherApplet, applet);
++        g_free (applet);
+ }
+ 
+ /* Convert command line to argv array, stripping % conversions on the way */
+@@ -335,7 +335,7 @@
+         gtk_container_add (GTK_CONTAINER (event_box), image);
+ 
+         /* Set up applet structure */
+-        applet = g_slice_new (LauncherApplet);
++        applet = g_new (LauncherApplet,1);
+ 
+         applet->image = GTK_IMAGE (image);
+         
+Index: matchbox-panel-2/applets/clock/clock.c
+===================================================================
+--- matchbox-panel-2.orig/applets/clock/clock.c	2007-01-24 19:24:28.000000000 +0100
++++ matchbox-panel-2/applets/clock/clock.c	2007-01-25 02:35:25.000000000 +0100
+@@ -21,7 +21,7 @@
+ {
+         g_source_remove (applet->timeout_id);
+ 
+-        g_slice_free (ClockApplet, applet);
++        g_free (applet);
+ }
+ 
+ /* Called every minute */
+@@ -67,7 +67,7 @@
+         struct tm *local_time;
+ 
+         /* Create applet data structure */
+-        applet = g_slice_new (ClockApplet);
++        applet = g_new (ClockApplet,1);
+ 
+         /* Create label */
+         label = gtk_label_new (NULL);

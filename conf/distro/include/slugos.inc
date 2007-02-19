@@ -49,9 +49,7 @@ INHERIT += "package_ipk debian multimachine"
 #    values are.)  The -fno options are an attempt to cancel explicit use of space
 #    consuming options found in some packages (this isn't a complete list, this is
 #    just the ones which package writers seem to know about and abuse).
-FULL_OPTIMIZATION = "-Os -fomit-frame-pointer -frename-registers \
-	-fno-unroll-loops -fno-inline-functions \
-	-fweb -funit-at-a-time"
+FULL_OPTIMIZATION = "-Os -fomit-frame-pointer -frename-registers -fno-unroll-loops -fno-inline-functions -fweb -funit-at-a-time"
 
 #----------------------------------------------------------------------------------
 # FEEDS
@@ -86,7 +84,9 @@ CMDLINE_DEBUG = "noirqdebug"
 #
 # Everything in this list gets added to the flash image, along with any RDEPENDS
 # it has itself!
-SLUGOS_EXTRA_RDEPENDS ?= ""
+DISTRO_EXTRA_DEPENDS ?= ""
+DISTRO_EXTRA_RDEPENDS ?= ""
+DISTRO_EXTRA_RRECOMMENDS ?= ""
 
 #----------------------------------------------------------------------------------
 # PACKAGE VERSION CONTROL

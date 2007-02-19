@@ -4,11 +4,10 @@ PRIORITY = "optional"
 MAINTAINER = "Philip Balister philip@balister.org"
 LICENSE = "GPL"
 PV = "0.0.0+svn${SRCDATE}"
-PR = "r0"
 
 DEPENDS = "ossiecf usrp ossie-standardinterfaces"
 
-S="${WORKDIR}/USRP"
+S = "${WORKDIR}/USRP"
 
 SRC_URI = "svn://oe:oe@ossie-dev.mprg.org/repos/ossie/platform/USRP/trunk;module=USRP;proto=https"
 

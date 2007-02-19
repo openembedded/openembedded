@@ -1,6 +1,6 @@
-SECTION="base"
-PRIORITY="required"
-DEPENDS=zlib tslib ncurses
+SECTION = "base"
+PRIORITY = "required"
+DEPENDS = "zlib tslib ncurses"
 
 SRC_URI = "ftp://ftp.xfree86.org/pub/XFree86/4.3.0/source/X430src-1.tgz;"
 SRC_URI_append =" ftp://ftp.xfree86.org/pub/XFree86/4.3.0/source/X430src-2.tgz;"
@@ -9,7 +9,7 @@ SRC_URI_append =" file://${FILESDIR}/tinyx-kbd-enable-fix.patch;patch=1"
 SRC_URI_append =" file://${FILESDIR}/tinyx-tslib-reset-and-vt-switch-fixes.patch;patch=1"
 SRC_URI_append =" file://${FILESDIR}/dirty-3.2-xterm-breakage-fix.patch;patch=1"
 
-S=${WORKDIR}/xc
+S = "${WORKDIR}/xc"
 
 
 do_configure() {

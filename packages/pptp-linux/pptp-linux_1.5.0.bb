@@ -4,7 +4,7 @@ Tunneling Protocol, PPTP. Allows connection to a PPTP based \
 Virtual Private Network (VPN) as used by employers and some \
 cable and ADSL internet service providers."
 LICENSE     = "GPL"
-SECTION     = "network"
+SECTION = "network"
 PRIORITY    = "optional"
 DEPENDS     = "ppp "
 

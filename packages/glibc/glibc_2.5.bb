@@ -2,6 +2,9 @@ require glibc.inc
 
 ARM_INSTRUCTION_SET = "arm"
 
+PACKAGES_DYNAMIC = "libc6*"
+RPROVIDES_${PN}-dev = "libc6-dev"
+
 PR = "r4"
 
 # the -isystem in bitbake.conf screws up glibc do_stage

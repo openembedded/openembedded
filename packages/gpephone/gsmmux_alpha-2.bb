@@ -1,6 +1,6 @@
 LICENSE     = "GPL"
 DESCRIPTION = "A GSM (De-)Multiplexer."
-SECTION     = "gsm"
+SECTION = "gsm"
 PRIORITY    = "optional"
 PR          = "r0"
 

@@ -3,11 +3,13 @@ SECTION = ""
 PRIORITY = "optional"
 HOMEPAGE = "http://wiki.buici.com/twiki/bin/view/Main/ApexBootloader"
 LICENSE = "GPL"
-PR = "r2"
+PR = "r4"
 
 COMPATIBLE_MACHINE = "(ixp4xx|nslu2)"
 
 SRC_URI = "ftp://ftp.buici.com/pub/arm/arm-kernel-shim/arm-kernel-shim-${PV}.tar.gz \
+	   file://passthrough-atags.patch;patch=1 \
+	   file://cmdline_if_none.patch;patch=1 \
 	   file://config-nslu2.h \
 	   file://config-nas100d.h \
 	   file://config-dsmg600.h \

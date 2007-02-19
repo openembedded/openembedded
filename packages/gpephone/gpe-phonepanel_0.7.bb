@@ -1,6 +1,6 @@
 LICENSE     = "GPL"
 DESCRIPTION = "A cellphone status panel to be used with gpe-applauncher."
-SECTION     = "gpe"
+SECTION = "gpe"
 PRIORITY    = "optional"
 PR          = "r0"
 

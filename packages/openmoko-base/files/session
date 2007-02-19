@@ -1,0 +1,17 @@
+#!/bin/sh
+
+SHOWCURSOR="no"
+
+rxvt &
+sleep 2
+
+matchbox-desktop --icon-size 100 \
+                 --icon-padding 60 \
+                 --font sans-16 \
+                 --titlefont sans-20:bold \
+                 --bg img-tiled:/usr/share/themes/openmoko-standard/gtk-2.0/mokopanedwindow-upper-enclosing.png &
+#                 --bg col-gradient-vertical:#000000,#aaaaaa &
+matchbox-panel --orientation north -b /usr/share/openmoko/pixmaps/openmoko-header-background.png &
+matchbox-panel --orientation south -b /usr/share/openmoko/pixmaps/openmoko-footer-background.png -ns -nm --id 2 &
+exec matchbox-window-manager -use_titlebar no -use_cursor $SHOWCURSOR $@
+

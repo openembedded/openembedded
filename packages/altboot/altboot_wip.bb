@@ -9,7 +9,7 @@
 DESCRIPTION = "The altboot bootmanager"
 MAINTAINER = "Matthias 'CoreDump' Hentges <oe@hentges.net>"
 HOMEPAGE = "http://www.hentges.net/misc/openzaurus/index.shtml"
-LICENSE = "GPL"
+LICENSE = "GPL" 
 
 ######################################################################################
 

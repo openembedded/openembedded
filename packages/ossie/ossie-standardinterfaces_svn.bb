@@ -3,11 +3,10 @@ SECTION =  "libs"
 PRIORITY = "optional"
 LICENSE = "LGPL"
 PV = "0.0.0+svn${SRCDATE}"
-PR = "r0"
 
 DEPENDS = "ossiecf"
 
-S="${WORKDIR}/standardInterfaces"
+S = "${WORKDIR}/standardInterfaces"
 
 SRCDATE = "now"
 SRC_URI = "svn://ossie-dev.mprg.org/repos/ossie/standardInterfaces/trunk;module=standardInterfaces;proto=https"

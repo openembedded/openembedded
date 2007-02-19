@@ -6,7 +6,7 @@ For more info visit http://www.poptop.org/"
 
 HOMEPAGE    = "http://www.poptop.org/"
 LICENSE     = "GPL"
-SECTION     = "network"
+SECTION = "network"
 PRIORITY    = "optional"
 DEPENDS     = "ppp"
 RDEPENDS    = "ppp"

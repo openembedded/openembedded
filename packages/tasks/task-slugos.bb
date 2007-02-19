@@ -10,13 +10,14 @@ PR = "r2"
 PACKAGE_ARCH = "${MACHINE_ARCH}"
 ALLOW_EMPTY = "1"
 
-# CONFIG:
-# SLUGOS_EXTRA_RDEPENDS: set in conf, things to add to the image
-# SLUGOS_SUPPORT:        set here, see below, added to the image.
-# SLUGOS_KERNEL:         set here, kernel modules added to the image
-#
-# Do not override the last two unless you really know what you
-# are doing - there is more information below.
+#----------------------------------------------------------------------------------
+# FIRMWARE CONFIGURATION
+#----------------------------------------------------------------------------------
+# EXTRA PACKAGES
+# --------------
+# The standard firmware contents and additional packages built as requirements
+# of the firmware are defined here in SLUGOS_STANDARD_RDEPENDS.
+SLUGOS_STANDARD_RDEPENDS = ""
 
 # diff, cpio and find are required for reflash and turnup ram.
 # Removing these probably leaves the system bootable, but standard
@@ -26,13 +27,71 @@ ALLOW_EMPTY = "1"
 # udev is the default way of handling devices, there is no guarantee
 # that the static device table is completely correct (it is just
 # known to be sufficient for boot.)
-SLUGOS_SUPPORT ?= "diffutils cpio findutils udev"
+SLUGOS_STANDARD_RDEPENDS += "diffutils cpio findutils udev"
 
-SLUGOS_KERNEL ?= ""
+# These lines add support for formatting ext2 and ext3 file systems
+# on a hard disk attached to the NSLU2.  ext3 is the standard Linux
+# file system.
+SLUGOS_STANDARD_RDEPENDS += "e2fsprogs-mke2fs e2fsprogs-fsck e2fsprogs-e2fsck e2fsprogs-badblocks"
 
-SLUGOS_EXTRA_RDEPENDS ?= ""
+# These lines add support for an X/Y/ZModem package called lrzsz
+# (this is of use for people with modified NSLU2 hardware which
+# supports a serial port.)
+SLUGOS_STANDARD_RDEPENDS += "lrzsz"
 
-RDEPENDS = "kernel ixp4xx-npe \
+# Filesystem selection.  Adding entries here adds the module to the
+# image.  The module must be built as part of nslu2-kernel (i.e. it
+# must be specified as a module in the defconfig file).  The NLS
+# support charset modules must be given explicitly and must match
+# the codepage/iocharset and NLS handling for the file systems which
+# require them.  The installed lanugage set is minimal but sufficient
+# for any file system (since it uses utf8).  See
+# http://www.nslu2-linux.orgwiki/HowTo/MountFATFileSystems
+# for more information on the language behaviour of the DOS file
+# systems.
+#
+# KERNEL LEVEL FILE SYSTEM SUPPORT
+# --------------------------------
+# NOTE: removing kernel-module-nfs from this list will prevent NFS
+# boot (however you can do a simple flash file system boot - no
+# attached disk - and install the nfs modules from ssh.)
+SLUGOS_STANDARD_RDEPENDS += "\
+kernel-module-ext2 \
+kernel-module-jbd \
+kernel-module-ext3 \
+kernel-module-vfat \
+kernel-module-ntfs \
+kernel-module-isofs \
+kernel-module-udf \
+kernel-module-nls-cp437 \
+kernel-module-nls-utf8 \
+"
+
+# Add daemon required for HW RNG support
+SLUGOS_STANDARD_RDEPENDS += "\
+rng-tools \
+"
+
+# Add modules required for usb support
+SLUGOS_STANDARD_RDEPENDS += "\
+kernel-module-ohci-hcd \
+kernel-module-uhci-hcd \
+"
+
+# Add modules required for IDE support
+SLUGOS_STANDARD_RDEPENDS += "\
+kernel-module-libata \
+kernel-module-pata-artop \
+"
+
+# Add modules required for Network support
+SLUGOS_STANDARD_RDEPENDS += "\
+kernel-module-via-velocity \
+"
+
+DEPENDS += "${DISTRO_EXTRA_DEPENDS}"
+
+RDEPENDS += "kernel ixp4xx-npe \
 	base-files base-passwd netbase \
         busybox initscripts-slugos slugos-init \
         update-modules sysvinit tinylogin \
@@ -46,6 +105,7 @@ RDEPENDS = "kernel ixp4xx-npe \
 	util-linux-umount \
 	util-linux-swaponoff \
 	util-linux-losetup \
-	${SLUGOS_SUPPORT} \
-	${SLUGOS_KERNEL} \
-	${SLUGOS_EXTRA_RDEPENDS}"
+	${SLUGOS_STANDARD_RDEPENDS} \
+	${DISTRO_EXTRA_RDEPENDS}"
+
+RRECOMMENDS = "${DISTRO_EXTRA_RRECOMMENDS}"

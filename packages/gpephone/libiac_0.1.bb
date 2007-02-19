@@ -1,6 +1,6 @@
 LICENSE     = "LiPS"
 DESCRIPTION = "LiPS IPC library."
-SECTION     = "gpe/libs"
+SECTION = "gpe/libs"
 PRIORITY    = "optional"
 DEPENDS     = "gtk+ gtk-doc"
 PR          = "r1"

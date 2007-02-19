@@ -1,7 +1,7 @@
 LICENSE     = "LGPL"
 PR          = "r0"
 DESCRIPTION = "libgpewidget contains a collection of widgets and other common code shared by many GPE applications."
-SECTION     = "gpe/libs"
+SECTION = "gpe/libs"
 PRIORITY    = "optional"
 DEPENDS     = "gtk+ libxrender gtk-doc intltool-native sdk-default-icons"
 RDEPENDS    = "sdk-default-icons"

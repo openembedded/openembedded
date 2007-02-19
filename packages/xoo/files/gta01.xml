@@ -1,0 +1,7 @@
+<skin>
+  <device
+    img="gta01.png"
+    width="680" height="689"
+    display_width="480" display_height="640" display_depth="16"
+    display_x="98" display_y="22" />
+</skin>
