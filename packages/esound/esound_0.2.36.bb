@@ -12,6 +12,9 @@ EXTRA_OECONF = " \
 		--disable-arts \
 		--disable-artstest \
 		"
+do_configure_prepend() {
+	sed -i -e 's:/usr/include/mme:${STAGING_INCDIR}/mme:g' configure.ac
+}
 
 do_stage() {
 	autotools_stage_all
