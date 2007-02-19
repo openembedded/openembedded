@@ -308,7 +308,7 @@ def package_qa_check_staged(path,d):
                 if installed in file_content or workdir in file_content:
                     bb.error("QA issue: %s failed sanity test (reference to workdir or installed)" % file )
                     if package_qa_make_fatal_error( 5, "staging", path, d):
-                        sane = False
+                        sane = True
             elif file[-2:] == "pc":
                 file_content = open(path).read()
                 if "/usr/include" in file_content or workdir in file_content:
