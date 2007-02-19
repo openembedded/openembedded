@@ -5,7 +5,7 @@ PACKAGE_ARCH = "all"
 LICENSE = "MIT"
 PROVIDES = "task-openmoko-everything"
 
-PR = "r25"
+PR = "r26"
 
 PACKAGES = "\
   task-openmoko-linux \
@@ -80,7 +80,7 @@ RDEPENDS_task-openmoko-ui = "\
   gtk+ \
   matchbox-common \
   matchbox-wm \
-  matchbox-panel \
+  matchbox-panel-2 \
   xserver-kdrive-fbdev \
   xserver-kdrive-common \
   xserver-nodm-init \
@@ -101,9 +101,10 @@ RDEPENDS_task-openmoko-ui = "\
 DESCRIPTION_task-openmoko-base = "OpenMoko: Main-Menu Launcher, Top Panel, and Footer"
 RDEPENDS_task-openmoko-base = "\
   openmoko-mainmenu \
-# matchbox-panel-2 \
+  matchbox-panel-2 \
   openmoko-footer \
   openmoko-taskmanager \
+  openmoko-panel-mainmenu \
 "
 
 #
@@ -114,6 +115,7 @@ RDEPENDS_task-openmoko-phone = "\
   gsmd \
   libgsmd-tools \
   openmoko-dialer \
+  openmoko-panel-gsm \
 # ppp \
 "
 
