@@ -1,0 +1,1439 @@
+From d9e27abf78b3bd714eb9c37c529d0bff7c5403d9 Mon Sep 17 00:00:00 2001
+From: Andrey Volkov <avolkov@varma-el.com>
+Date: Fri, 18 Aug 2006 10:01:38 -0600
+Subject: [PATCH] [PATCH 01/02] MPC5200 Bestcomm platform driver
+
+This is first part of "platformizied" bestcomm/fec drivers.
+
+Signed-Off-By: Andrey Volkov <avolkov at varma-el.com>
+---
+ arch/ppc/Kconfig                            |    5 +
+ arch/ppc/syslib/Makefile                    |    1 +
+ arch/ppc/syslib/bestcomm/Makefile           |    2 +
+ arch/ppc/syslib/bestcomm/bestcomm.c         |  408 +++++++++++++++++++++++
+ arch/ppc/syslib/bestcomm/bestcomm.h         |  473 +++++++++++++++++++++++++++
+ arch/ppc/syslib/bestcomm/fec.c              |  174 ++++++++++
+ arch/ppc/syslib/bestcomm/fec.h              |   71 ++++
+ arch/ppc/syslib/bestcomm/sdma_fec_rx_task.c |   71 ++++
+ arch/ppc/syslib/bestcomm/sdma_fec_tx_task.c |   84 +++++
+ arch/ppc/syslib/mpc52xx_devices.c           |   22 ++
+ arch/ppc/syslib/mpc52xx_sys.c               |    4 +-
+ include/asm-ppc/mpc52xx.h                   |    2 +
+ 12 files changed, 1315 insertions(+), 2 deletions(-)
+
+diff --git a/arch/ppc/Kconfig b/arch/ppc/Kconfig
+index 8eb82ef..d8a561e 100644
+--- a/arch/ppc/Kconfig
++++ b/arch/ppc/Kconfig
+@@ -775,6 +775,11 @@ config EMBEDDEDBOOT
+ config PPC_MPC52xx
+ 	bool
+ 
++config PPC_BESTCOMM
++	bool
++	depends on PPC_MPC52xx
++	default y
++
+ config 8260
+ 	bool "CPM2 Support" if WILLOW
+ 	depends on 6xx
+diff --git a/arch/ppc/syslib/Makefile b/arch/ppc/syslib/Makefile
+index dca23f2..ab015df 100644
+--- a/arch/ppc/syslib/Makefile
++++ b/arch/ppc/syslib/Makefile
+@@ -106,3 +106,4 @@ obj-$(CONFIG_PCI)		+= mpc52xx_pci.o
+ endif
+ 
+ obj-$(CONFIG_PPC_I8259)		+= i8259.o
++obj-$(CONFIG_PPC_BESTCOMM)	+= bestcomm/
+diff --git a/arch/ppc/syslib/bestcomm/Makefile b/arch/ppc/syslib/bestcomm/Makefile
+new file mode 100644
+index 0000000..02cc99a
+--- /dev/null
++++ b/arch/ppc/syslib/bestcomm/Makefile
+@@ -0,0 +1,2 @@
++obj-$(CONFIG_PPC_BESTCOMM) 	+= bestcomm.o
++obj-$(CONFIG_FEC_MPC52xx)	+= sdma_fec_rx_task.o sdma_fec_tx_task.o fec.o
+diff --git a/arch/ppc/syslib/bestcomm/bestcomm.c b/arch/ppc/syslib/bestcomm/bestcomm.c
+new file mode 100644
+index 0000000..ef45e02
+--- /dev/null
++++ b/arch/ppc/syslib/bestcomm/bestcomm.c
+@@ -0,0 +1,408 @@
++/*
++ * arch/ppc/syslib/bestcomm/bestcomm.c
++ *
++ * Driver for MPC52xx processor BestComm peripheral controller
++ *
++ * Author: Dale Farnsworth <dfarnsworth@mvista.com>
++ *
++ * 2003-2004 (c) MontaVista, Software, Inc.  This file is licensed under
++ * the terms of the GNU General Public License version 2.  This program
++ * is licensed "as is" without any warranty of any kind, whether express
++ * or implied.
++ *
++ * HISTORY:
++ *
++ * 2005-08-14	Converted to platform driver by 
++ *		Andrey Volkov <avolkov@varma-el.com>, Varma Electronics Oy
++ */
++
++#include <linux/config.h>
++#include <linux/version.h>
++#include <linux/module.h>
++#include <linux/kernel.h>
++#include <linux/errno.h>
++#include <linux/slab.h>
++#include <linux/spinlock.h>
++#include <linux/string.h>
++#include <linux/device.h>
++
++#include <asm/bug.h>
++#include <asm/io.h>
++#include <asm/mpc52xx.h>
++
++#include "bestcomm.h"
++
++#define DRIVER_NAME		"mpc52xx-sdma"
++
++struct sdma_io sdma;
++
++static spinlock_t sdma_lock = SPIN_LOCK_UNLOCKED;
++
++#ifdef CONFIG_BESTCOMM_DEBUG
++void sdma_dump(void)
++{
++	int i;
++	printk("** SDMA registers: pa = %08x, va = %08x\n", sdma.base_reg_addr, sdma.io);
++	printk("**  taskBar = %08x\n", sdma.io->taskBar);
++	printk("**  currentPointer = %08x\n", sdma.io->currentPointer);
++	printk("**  endPointer = %08x\n", sdma.io->endPointer);
++	printk("**  variablePointer = %08x\n", sdma.io->variablePointer);
++
++	printk("**  IntVect1 = %08x\n", sdma.io->IntVect1);
++	printk("**  IntVect2 = %08x\n", sdma.io->IntVect2);
++	printk("**  PtdCntrl = %08x\n", sdma.io->PtdCntrl);
++
++	printk("**  IntPend = %08x\n", sdma.io->IntPend);
++	printk("**  IntMask = %08x\n", sdma.io->IntMask);
++
++	printk("**  TCR dump:");	
++
++	for (i=0;i<16;i++)  {
++		if(i%8 == 0)
++			printk("\n**   %02X:",i);
++		printk(" %04X",sdma.io->tcr[i]);
++	}
++	printk("\n**  IPR dump:");	
++	for (i=0;i<32;i++)  {
++		if(i%16 == 0)
++			printk("\n**   %02X:",i);
++		printk(" %02X",sdma.io->ipr[i]);
++	}
++	printk("\n**  cReqSelect = %08x\n", sdma.io->cReqSelect);
++	printk("**  task_size0 = %08x\n", sdma.io->task_size0);
++	printk("**  task_size1 = %08x\n", sdma.io->task_size1);
++	printk("**  MDEDebug = %08x\n", sdma.io->MDEDebug);
++	printk("**  ADSDebug = %08x\n", sdma.io->ADSDebug);
++	printk("**  Value1 = %08x\n", sdma.io->Value1);
++	printk("**  Value2 = %08x\n", sdma.io->Value2);
++	printk("**  Control = %08x\n", sdma.io->Control);
++	printk("**  Status = %08x\n", sdma.io->Status);
++	printk("**  PTDDebug = %08x\n", sdma.io->PTDDebug);
++}
++#endif
++
++#ifdef CONFIG_BESTCOMM_DEBUG
++#define SDMA_DUMP_REGS()	sdma_dump()
++#else
++#define SDMA_DUMP_REGS()
++#endif
++
++/*
++ * Use a very simple SRAM allocator.
++ * There is no mechanism for freeing space.
++ * In an attempt to minimize internal fragmentation, the SRAM is
++ * divided into two areas.
++ *
++ * Area 1 is at the beginning of SRAM
++ * and is used for allocations requiring alignments of 16 bytes or less.
++ * Successive allocations return higher addresses.
++ *
++ * Area 2 is at the end of SRAM and is used for the remaining allocations.
++ * Successive allocations return lower addresses.
++ *
++ * I've considered adding routines to support the freeing of SRAM allocations,
++ * but the SRAM is so small (16K) that fragmentation can quickly cause the
++ * SRAM to be unusable.  If you can come up with a slick way to free SRAM
++ * memory without the fragmentation problem, please do so.
++ */
++
++static u8 *area1_end;
++static u8 *area2_begin;
++
++void *sdma_sram_alloc(int size, int alignment, u32 *dma_handle)
++{
++	u8 *a;
++
++	spin_lock(&sdma_lock);
++
++	/* alignment must be a power of 2 */
++	BUG_ON(alignment & (alignment - 1));
++
++	if (alignment < 16) {
++		a = (u8 *)(((u32)area1_end + (alignment-1)) & ~(alignment-1));
++		if (a + size <= area2_begin)
++			area1_end = a + size;
++		else
++			a = 0;				/* out of memory */
++	} else {
++		a = (u8 *)(((u32)area2_begin - size) & ~(alignment - 1));
++		if (a >= area1_end)
++			area2_begin = a;
++		else
++			a = 0;				/* out of memory */
++	}
++	if(a && dma_handle)
++		*dma_handle = sdma_sram_pa(a);
++	spin_unlock(&sdma_lock);
++	return (void *)a;
++}
++
++/* this will need to be updated if Freescale changes their task code FDT */
++static u32 fdt_ops[] = {
++	0xa0045670,	/* FDT[48] */
++	0x80045670,	/* FDT[49] */
++	0x21800000,	/* FDT[50] */
++	0x21e00000,	/* FDT[51] */
++	0x21500000,	/* FDT[52] */
++	0x21400000,	/* FDT[53] */
++	0x21500000,	/* FDT[54] */
++	0x20400000,	/* FDT[55] */
++	0x20500000,	/* FDT[56] */
++	0x20800000,	/* FDT[57] */
++	0x20a00000,	/* FDT[58] */
++	0xc0170000,	/* FDT[59] */
++	0xc0145670,	/* FDT[60] */
++	0xc0345670,	/* FDT[61] */
++	0xa0076540,	/* FDT[62] */
++	0xa0000760,	/* FDT[63] */
++};
++
++static int new_task_number(void)
++{
++	struct sdma_tdt *tdt;
++	int i;
++
++	spin_lock(&sdma_lock);
++
++	tdt = sdma.tdt;
++	for (i=0; i<SDMA_MAX_TASKS; i++, tdt++)
++		if (tdt->start == 0)
++			break;
++	if (i == SDMA_MAX_TASKS)
++		i = -1;
++
++	spin_unlock(&sdma_lock);
++
++	return i;
++}
++
++int sdma_load_task(u32 *task_image)
++{
++	struct sdma_task_header *head = (struct sdma_task_header *)task_image;
++	struct sdma_tdt *tdt;
++	int tasknum;
++	u32 *desc;
++	u32 *var_src, *var_dst;
++	u32 *inc_src;
++	void *start;
++
++	BUG_ON(head->magic != SDMA_TASK_MAGIC);
++
++	tasknum = new_task_number();
++	if (tasknum < 0)
++		return -ENOMEM;
++
++	desc = (u32 *)(head + 1);
++	var_src = desc + head->desc_size;
++	inc_src = var_src + head->var_size;
++
++	tdt = &sdma.tdt[tasknum];
++
++	start = sdma_sram_alloc(head->desc_size * sizeof(u32), 4, &tdt->start);
++	if (!start)
++		return -ENOMEM;
++	tdt->stop = tdt->start + (head->desc_size - 1)*sizeof(u32);
++	var_dst = sdma_sram_va(tdt->var);
++
++	memcpy(start, desc, head->desc_size * sizeof(u32));
++	memcpy(&var_dst[head->first_var], var_src, head->var_size * sizeof(u32));
++	memcpy(&var_dst[SDMA_MAX_VAR], inc_src, head->inc_size * sizeof(u32));
++
++	return tasknum;
++}
++
++void sdma_set_initiator(int task, int initiator)
++{
++	int i;
++	int num_descs;
++	u32 *desc;
++	int next_drd_has_initiator;
++
++	sdma_set_tcr_initiator(task, initiator);
++
++	desc = sdma_task_desc(task);
++	next_drd_has_initiator = 1;
++	num_descs = sdma_task_num_descs(task);
++
++	for (i=0; i<num_descs; i++, desc++) {
++		if (!sdma_desc_is_drd(*desc))
++			continue;
++		if (next_drd_has_initiator)
++			if (sdma_desc_initiator(*desc) != SDMA_INITIATOR_ALWAYS)
++				sdma_set_desc_initiator(desc, initiator);
++		next_drd_has_initiator = !sdma_drd_is_extended(*desc);
++	}
++}
++
++struct sdma *sdma_alloc(int queue_size)
++{
++	struct sdma *s = kmalloc(sizeof(*s), GFP_KERNEL);
++	void **cookie;
++
++	if (!s)
++		return NULL;
++
++	memset(s, 0, sizeof(*s));
++
++	if (queue_size) {
++		cookie = kmalloc(sizeof(*cookie) * queue_size, GFP_KERNEL);
++		if (!cookie) {
++			kfree(s);
++			return NULL;
++		}
++		s->cookie = cookie;
++	}
++
++	s->num_bd = queue_size;
++	return s;
++}
++
++void sdma_free(struct sdma *s)
++{
++	if (s->cookie)
++		kfree(s->cookie);
++	kfree(s);
++}
++
++static int __devinit mpc52xx_sdma_probe(struct device *dev)
++{
++	struct platform_device *pdev = to_platform_device(dev);
++	int task;
++	u32 *context;
++	u32 *fdt;
++	struct sdma_tdt *tdt;
++	struct resource *mem_io, *mem_sram;
++	u32 tdt_pa, var_pa, context_pa, fdt_pa; 
++	int ret = -ENODEV;
++
++	mem_io = platform_get_resource(pdev, IORESOURCE_MEM, 0);
++	mem_sram = platform_get_resource(pdev, IORESOURCE_MEM, 1);
++	if (!mem_io || !mem_sram)
++		goto out;
++
++	if (!request_mem_region(mem_io->start, mem_io->end - mem_io->start + 1, DRIVER_NAME)) {
++		printk(KERN_ERR DRIVER_NAME " - resource unavailable\n");
++		goto out;
++	}
++	sdma.base_reg_addr = mem_io->start;
++
++	sdma.io = ioremap_nocache(mem_io->start, sizeof(struct mpc52xx_sdma));
++
++	if (!sdma.io ) {
++		printk(KERN_ERR DRIVER_NAME " - failed to map sdma regs\n");
++		ret = -ENOMEM;
++		goto map_io_error;
++	}
++
++	SDMA_DUMP_REGS();
++
++	sdma.sram_size = mem_sram->end - mem_sram->start + 1;
++	if (!request_mem_region(mem_sram->start, sdma.sram_size, DRIVER_NAME)) {
++		printk(KERN_ERR DRIVER_NAME " - resource unavailable\n");
++		goto req_sram_error;
++	}
++
++	sdma.base_sram_addr = mem_sram->start;
++	sdma.sram = ioremap_nocache(mem_sram->start, sdma.sram_size);
++	if (!sdma.sram ) {
++		printk(KERN_ERR DRIVER_NAME " - failed to map sdma sram\n");
++		ret = -ENOMEM;
++		goto map_sram_error;
++	}
++
++	area1_end = sdma.sram;
++	area2_begin = area1_end + sdma.sram_size;
++
++	memset(area1_end, 0, sdma.sram_size);
++
++	/* allocate space for task descriptors, contexts, and var tables */
++	sdma.tdt = sdma_sram_alloc(sizeof(struct sdma_tdt) * SDMA_MAX_TASKS, 4, &tdt_pa);
++
++	context = sdma_sram_alloc(SDMA_CONTEXT_SIZE * SDMA_MAX_TASKS,
++							  SDMA_CONTEXT_ALIGN, &context_pa);
++	sdma.var = sdma_sram_alloc( (SDMA_VAR_SIZE + SDMA_INC_SIZE) * SDMA_MAX_TASKS, 
++								SDMA_VAR_ALIGN, &var_pa);
++	fdt = sdma_sram_alloc(SDMA_FDT_SIZE, SDMA_FDT_ALIGN, &fdt_pa);
++	memcpy(&fdt[48], fdt_ops, sizeof(fdt_ops));
++
++	out_be32(&sdma.io->taskBar, tdt_pa);
++
++	tdt = sdma.tdt;
++	for (task=0; task < SDMA_MAX_TASKS; task++) {
++		out_be16(&sdma.io->tcr[task], 0);
++		out_8(&sdma.io->ipr[task], 0);
++
++		tdt->context = context_pa;
++		tdt->var = var_pa;
++		tdt->fdt = fdt_pa;
++		var_pa += (SDMA_MAX_VAR + SDMA_MAX_INC)*sizeof(u32);
++		context_pa += SDMA_MAX_CONTEXT*sizeof(u32);
++		tdt++;
++	}
++
++	out_8(&sdma.io->ipr[SDMA_INITIATOR_ALWAYS], SDMA_IPR_ALWAYS);
++
++	/* Disable COMM Bus Prefetch, apparently it's not reliable yet */
++	out_be16(&sdma.io->PtdCntrl, in_be16(&sdma.io->PtdCntrl) | 1);
++
++	printk(KERN_INFO "MPC52xx BestComm inited\n");
++
++	return 0;
++
++map_sram_error:
++	release_mem_region(mem_sram->start, sdma.sram_size);
++req_sram_error:
++	iounmap(sdma.io);
++map_io_error:
++	release_mem_region(mem_io->start, mem_io->end - mem_io->start + 1);
++out:
++	printk(KERN_ERR "DMA: MPC52xx BestComm init FAILED !!!\n");
++	return ret;
++}
++
++
++static struct device_driver mpc52xx_sdma_driver = {
++	.owner	  = THIS_MODULE,
++	.name	  = DRIVER_NAME,
++	.bus	  = &platform_bus_type,
++	.probe 	  = mpc52xx_sdma_probe,
++/*	.remove	  = mpc52xx_sdma_remove,	TODO */
++#ifdef CONFIG_PM
++/*	.suspend	= mpc52xx_sdma_suspend,	TODO */
++/*	.resume		= mpc52xx_sdma_resume,	TODO */
++#endif
++};
++
++static int __init
++mpc52xx_sdma_init(void)
++{
++	printk(KERN_INFO "DMA: MPC52xx BestComm driver\n");
++	return driver_register(&mpc52xx_sdma_driver);
++}
++
++#ifdef MODULE
++static void __exit
++mpc52xx_sdma_exit(void)
++{
++	driver_unregister(&mpc52xx_sdma_driver);
++}
++#endif
++
++#ifndef MODULE
++ subsys_initcall(mpc52xx_sdma_init);
++#else
++ module_init(mpc52xx_sdma_init);
++ module_exit(mpc52xx_sdma_exit);
++#endif
++
++
++MODULE_DESCRIPTION("Freescale MPC52xx BestComm DMA");
++MODULE_LICENSE("GPL");
++
++EXPORT_SYMBOL(sdma_sram_alloc);
++EXPORT_SYMBOL(sdma_load_task);
++EXPORT_SYMBOL(sdma_set_initiator);
++EXPORT_SYMBOL(sdma_free);
++EXPORT_SYMBOL(sdma);
++
++
+diff --git a/arch/ppc/syslib/bestcomm/bestcomm.h b/arch/ppc/syslib/bestcomm/bestcomm.h
+new file mode 100644
+index 0000000..14bf397
+--- /dev/null
++++ b/arch/ppc/syslib/bestcomm/bestcomm.h
+@@ -0,0 +1,473 @@
++/*
++ * arch/ppc/syslib/bestcomm/bestcomm.h
++ *
++ * Driver for MPC52xx processor BestComm peripheral controller
++ *
++ * Author: Dale Farnsworth <dfarnsworth@mvista.com>
++ *
++ * 2003-2004 (c) MontaVista, Software, Inc.  This file is licensed under
++ * the terms of the GNU General Public License version 2.  This program
++ * is licensed "as is" without any warranty of any kind, whether express
++ * or implied.
++ *
++ * HISTORY:
++ *
++ * 2005-08-14	Converted to platform driver by 
++ *		Andrey Volkov <avolkov@varma-el.com>, Varma Electronics Oy
++ */
++
++#ifndef __BESTCOMM_BESTCOMM_H__
++#define __BESTCOMM_BESTCOMM_H__
++
++/* Buffer Descriptor definitions */
++struct sdma_bd {
++	u32 status;
++	void *data;
++};
++
++struct sdma_bd2 {
++	u32 status;
++	void *data1;
++	void *data2;
++};
++
++struct sdma_io {
++	unsigned long			base_reg_addr;
++	struct mpc52xx_sdma __iomem	*io;
++	unsigned long			base_sram_addr;
++	void __iomem			*sram;
++	size_t				sram_size;
++
++	struct sdma_tdt __iomem  	*tdt;
++	u32 __iomem			*var;
++};
++extern struct sdma_io sdma;
++
++#define	sdma_sram_pa(virt)	(((unsigned long)(((void __iomem *)(virt))-sdma.sram))+sdma.base_sram_addr)
++#define	sdma_sram_va(pa)	((void __iomem *)((((unsigned long)(pa))-sdma.base_sram_addr)+((unsigned long)sdma.sram)))
++
++#define	sdma_io_pa(virt)	(((unsigned long)(((void __iomem *)(virt))-((void __iomem *)sdma.io)))+sdma.base_reg_addr)
++#define	sdma_io_va(pa)	((void __iomem *)((((unsigned long)(pa))-sdma.base_reg_addr)+((unsigned long)sdma.io)))
++
++#define SDMA_LEN_BITS		26
++#define SDMA_LEN_MASK		((1 << SDMA_LEN_BITS) - 1)
++
++#define SDMA_BD_READY		0x40000000UL
++
++#define SDMA_FEC_TX_BD_TFD	0x08000000UL	/* transmit frame done */
++#define SDMA_FEC_TX_BD_INT	0x04000000UL	/* Interrupt */
++#define SDMA_FEC_TX_BD_TFD_INIT	(SDMA_BD_READY | SDMA_FEC_TX_BD_TFD | \
++							SDMA_FEC_TX_BD_INT)
++
++struct sdma {
++	union {
++		struct sdma_bd *bd;
++		struct sdma_bd2 *bd2;
++	};
++	void **cookie;
++	u16 index;
++	u16 outdex;
++	u16 num_bd;
++	s16 tasknum;
++	u32 flags;
++};
++
++#define SDMA_FLAGS_NONE		0x0000
++#define SDMA_FLAGS_ENABLE_TASK	0x0001
++#define SDMA_FLAGS_BD2		0x0002
++
++/* Task Descriptor Table Entry */
++struct sdma_tdt {
++	u32 start;
++	u32 stop;
++	u32 var;
++	u32 fdt;
++	u32 exec_status; /* used internally by SmartComm engine */
++	u32 mvtp;		 /* used internally by SmartComm engine */
++	u32 context;
++	u32 litbase;
++};
++
++//extern struct sdma_tdt *sdma_tdt;
++
++#define SDMA_MAX_TASKS		16
++#define SDMA_MAX_VAR		24
++#define SDMA_MAX_INC		8
++#define SDMA_MAX_FDT		64
++#define SDMA_MAX_CONTEXT	20
++#define SDMA_CONTEXT_SIZE	SDMA_MAX_CONTEXT * sizeof(u32)
++#define SDMA_CONTEXT_ALIGN	0x100
++#define SDMA_VAR_SIZE		SDMA_MAX_VAR * sizeof(u32)
++#define SDMA_VAR_ALIGN		0x80
++#define SDMA_INC_SIZE		SDMA_MAX_INC * sizeof(u32)
++#define SDMA_FDT_SIZE		SDMA_MAX_FDT * sizeof(u32)
++#define SDMA_FDT_ALIGN		0x100
++#define SDMA_BD_ALIGN		0x10
++
++#define TASK_ENABLE		0x8000
++
++#ifndef DPRINK
++	#ifdef CONFIG_BESTCOMM_DEBUG
++	#define DPRINTK(a,b...)	printk(KERN_DEBUG "sdma: %s: " a, __FUNCTION__ , ## b)
++	#else
++	#define DPRINTK(a,b...)
++	#endif
++#endif
++
++static inline void sdma_enable_task(int task)
++{
++	DPRINTK("***DMA enable task (%d): tdt = %08x\n",task, sdma.tdt);
++	DPRINTK("***tdt->start   = %08x\n",sdma.tdt[task].start);
++	DPRINTK("***tdt->stop    = %08x\n",sdma.tdt[task].stop);
++	DPRINTK("***tdt->var     = %08x\n",sdma.tdt[task].var);
++	DPRINTK("***tdt->fdt     = %08x\n",sdma.tdt[task].fdt);
++	DPRINTK("***tdt->status  = %08x\n",sdma.tdt[task].exec_status);
++	DPRINTK("***tdt->mvtp    = %08x\n",sdma.tdt[task].mvtp);
++	DPRINTK("***tdt->context = %08x\n",sdma.tdt[task].context);
++	DPRINTK("***tdt->litbase = %08x\n",sdma.tdt[task].litbase);
++	DPRINTK("***--------------\n");
++
++	u16 reg = in_be16(&sdma.io->tcr[task]);
++	DPRINTK("***enable task: &sdma.io->tcr=%08x, reg = %04x\n", &sdma.io->tcr, reg);
++	out_be16(&sdma.io->tcr[task],  reg | TASK_ENABLE);
++}
++
++static inline void sdma_disable_task(int task)
++{
++	u16 reg = in_be16(&sdma.io->tcr[task]);
++	DPRINTK("***disable task(%d): reg = %04x\n", task, reg);
++	out_be16(&sdma.io->tcr[task], reg & ~TASK_ENABLE);
++}
++
++static inline int sdma_irq(struct sdma *s)
++{
++	return MPC52xx_SDMA_IRQ_BASE + s->tasknum;
++}
++
++static inline void sdma_enable(struct sdma *s)
++{
++	sdma_enable_task(s->tasknum);
++}
++
++static inline void sdma_disable(struct sdma *s)
++{
++	sdma_disable_task(s->tasknum);
++}
++
++static inline int sdma_queue_empty(struct sdma *s)
++{
++	return s->index == s->outdex;
++}
++
++static inline void sdma_clear_irq(struct sdma *s)
++{
++	out_be32(&sdma.io->IntPend, 1 << s->tasknum);
++}
++
++static inline int sdma_next_index(struct sdma *s)
++{
++	return ((s->index + 1) == s->num_bd) ? 0 : s->index + 1;
++}
++
++static inline int sdma_next_outdex(struct sdma *s)
++{
++	return ((s->outdex + 1) == s->num_bd) ? 0 : s->outdex + 1;
++}
++
++static inline int sdma_queue_full(struct sdma *s)
++{
++	return s->outdex == sdma_next_index(s);
++}
++
++static inline int sdma_buffer_done(struct sdma *s)
++{
++#ifdef CONFIG_BESTCOMM_DEBUG
++	BUG_ON(s->flags & SDMA_FLAGS_BD2);
++#endif
++	if (sdma_queue_empty(s))
++		return 0;
++	return (s->bd[s->outdex].status & SDMA_BD_READY) == 0;
++}
++
++static inline int sdma_buffer2_done(struct sdma *s)
++{
++#ifdef CONFIG_BESTCOMM_DEBUG
++	BUG_ON(!(s->flags & SDMA_FLAGS_BD2));
++#endif
++	if (sdma_queue_empty(s))
++		return 0;
++
++	return (s->bd2[s->outdex].status & SDMA_BD_READY) == 0;
++}
++
++static inline u32 *sdma_task_desc(int task)
++{
++	return sdma_sram_va(sdma.tdt[task].start);
++}
++
++static inline u32 sdma_task_num_descs(int task)
++{
++	return (sdma.tdt[task].stop - sdma.tdt[task].start)/sizeof(u32) + 1;
++}
++
++static inline u32 *sdma_task_var(int task)
++{
++	return sdma_sram_va(sdma.tdt[task].var);
++}
++
++static inline u32 *sdma_task_inc(int task)
++{
++	return &sdma_task_var(task)[SDMA_MAX_VAR];
++}
++
++static inline void sdma_set_tcr_initiator(int task, int initiator) {
++	u16 *tcr = &sdma.io->tcr[task];
++	out_be16(tcr, (in_be16(tcr) & ~0x1f00) | (initiator << 8));
++}
++
++#define SDMA_DRD_INITIATOR_SHIFT	21
++
++static inline int sdma_desc_initiator(u32 desc)
++{
++	return (desc >> SDMA_DRD_INITIATOR_SHIFT) & 0x1f;
++}
++
++static inline void sdma_set_desc_initiator(u32 *desc, int initiator)
++{
++	*desc = (*desc & ~(0x1f << SDMA_DRD_INITIATOR_SHIFT)) |
++			((initiator << SDMA_DRD_INITIATOR_SHIFT) & 0x1f);
++}
++
++static inline void sdma_submit_buffer(struct sdma *s, void *cookie, void *data,
++								int length)
++{
++#ifdef CONFIG_BESTCOMM_DEBUG
++	BUG_ON(s->flags & SDMA_FLAGS_BD2);
++#endif
++	s->cookie[s->index] = cookie;
++	s->bd[s->index].data = data;
++	s->bd[s->index].status = SDMA_BD_READY | length;
++	s->index = sdma_next_index(s);
++	if (s->flags & SDMA_FLAGS_ENABLE_TASK)
++		sdma_enable_task(s->tasknum);
++}
++
++/*
++ * Special submit_buffer function to submit last buffer of a frame to
++ * the FEC tx task.  tfd means "transmit frame done".
++ */
++static inline void sdma_fec_tfd_submit_buffer(struct sdma *s, void *cookie,
++							void *data, int length)
++{
++#ifdef CONFIG_BESTCOMM_DEBUG
++	BUG_ON(s->flags & SDMA_FLAGS_BD2);
++#endif
++	s->cookie[s->index] = cookie;
++	s->bd[s->index].data = data;
++	s->bd[s->index].status = SDMA_FEC_TX_BD_TFD_INIT | length;
++	s->index = sdma_next_index(s);
++	sdma_enable_task(s->tasknum);
++}
++
++static inline void *sdma_retrieve_buffer(struct sdma *s, int *length)
++{
++	void *cookie = s->cookie[s->outdex];
++
++#ifdef CONFIG_BESTCOMM_DEBUG
++	BUG_ON(s->flags & SDMA_FLAGS_BD2);
++#endif
++	if (length)
++		*length = s->bd[s->outdex].status & SDMA_LEN_MASK;
++	s->outdex = sdma_next_outdex(s);
++	return cookie;
++}
++
++static inline void sdma_submit_buffer2(struct sdma *s, void *cookie,
++					void *data1, void *data2, int length)
++{
++#ifdef CONFIG_BESTCOMM_DEBUG
++	BUG_ON(!(s->flags & SDMA_FLAGS_BD2));
++#endif
++	s->cookie[s->index] = cookie;
++	s->bd2[s->index].data1 = data1;
++	s->bd2[s->index].data2 = data2;
++	s->bd2[s->index].status = SDMA_BD_READY | length;
++	s->index = sdma_next_index(s);
++	if (s->flags & SDMA_FLAGS_ENABLE_TASK)
++		sdma_enable_task(s->tasknum);
++}
++
++static inline void *sdma_retrieve_buffer2(struct sdma *s, int *length)
++{
++	void *cookie = s->cookie[s->outdex];
++
++#ifdef CONFIG_BESTCOMM_DEBUG
++	BUG_ON(!(s->flags & SDMA_FLAGS_BD2));
++#endif
++	if (length)
++		*length = s->bd2[s->outdex].status & SDMA_LEN_MASK;
++	s->outdex = sdma_next_outdex(s);
++	return cookie;
++}
++
++#define SDMA_TASK_MAGIC		0x4243544B	/* 'BCTK' */
++
++/* the size fields are given in number of 32-bit words */
++struct sdma_task_header {
++	u32	magic;
++	u8	desc_size;
++	u8	var_size;
++	u8	inc_size;
++	u8	first_var;
++	u8	reserved[8];
++};
++
++#define SDMA_DESC_NOP		0x000001f8
++#define SDMA_LCD_MASK		0x80000000
++#define SDMA_DRD_EXTENDED	0x40000000
++
++#define sdma_drd_is_extended(desc) ((desc) & SDMA_DRD_EXTENDED)
++
++static inline int sdma_desc_is_drd(u32 desc) {
++	return !(desc & SDMA_LCD_MASK) && desc != SDMA_DESC_NOP;
++};
++
++#define SDMA_PRAGMA_BIT_RSV		7	/* reserved pragma bit */
++#define SDMA_PRAGMA_BIT_PRECISE_INC	6	/* increment 0=when possible, */
++						/*	1=iter end */
++#define SDMA_PRAGMA_BIT_RST_ERROR_NO	5	/* don't reset errors on */
++						/* task enable */
++#define SDMA_PRAGMA_BIT_PACK		4	/* pack data enable */
++#define SDMA_PRAGMA_BIT_INTEGER		3	/* data alignment */
++						/* 0=frac(msb), 1=int(lsb) */
++#define SDMA_PRAGMA_BIT_SPECREAD	2	/* XLB speculative read */
++#define SDMA_PRAGMA_BIT_CW		1	/* write line buffer enable */
++#define SDMA_PRAGMA_BIT_RL		0	/* read line buffer enable */
++
++#define SDMA_STD_PRAGMA		((0 << SDMA_PRAGMA_BIT_RSV)		| \
++				 (0 << SDMA_PRAGMA_BIT_PRECISE_INC)	| \
++				 (0 << SDMA_PRAGMA_BIT_RST_ERROR_NO)	| \
++				 (0 << SDMA_PRAGMA_BIT_PACK)		| \
++				 (0 << SDMA_PRAGMA_BIT_INTEGER)		| \
++				 (1 << SDMA_PRAGMA_BIT_SPECREAD)	| \
++				 (1 << SDMA_PRAGMA_BIT_CW)		| \
++				 (1 << SDMA_PRAGMA_BIT_RL))
++
++#define SDMA_PCI_PRAGMA		((0 << SDMA_PRAGMA_BIT_RSV)		| \
++				 (0 << SDMA_PRAGMA_BIT_PRECISE_INC)	| \
++				 (0 << SDMA_PRAGMA_BIT_RST_ERROR_NO)	| \
++				 (0 << SDMA_PRAGMA_BIT_PACK)		| \
++				 (1 << SDMA_PRAGMA_BIT_INTEGER)		| \
++				 (1 << SDMA_PRAGMA_BIT_SPECREAD)	| \
++				 (1 << SDMA_PRAGMA_BIT_CW)		| \
++				 (1 << SDMA_PRAGMA_BIT_RL))
++
++#define SDMA_ATA_PRAGMA		SDMA_STD_PRAGMA
++#define SDMA_CRC16_DP_0_PRAGMA	SDMA_STD_PRAGMA
++#define SDMA_CRC16_DP_1_PRAGMA	SDMA_STD_PRAGMA
++#define SDMA_FEC_RX_BD_PRAGMA	SDMA_STD_PRAGMA
++#define SDMA_FEC_TX_BD_PRAGMA	SDMA_STD_PRAGMA
++#define SDMA_GEN_DP_0_PRAGMA	SDMA_STD_PRAGMA
++#define SDMA_GEN_DP_1_PRAGMA	SDMA_STD_PRAGMA
++#define SDMA_GEN_DP_2_PRAGMA	SDMA_STD_PRAGMA
++#define SDMA_GEN_DP_3_PRAGMA	SDMA_STD_PRAGMA
++#define SDMA_GEN_DP_BD_0_PRAGMA	SDMA_STD_PRAGMA
++#define SDMA_GEN_DP_BD_1_PRAGMA	SDMA_STD_PRAGMA
++#define SDMA_GEN_RX_BD_PRAGMA	SDMA_STD_PRAGMA
++#define SDMA_GEN_TX_BD_PRAGMA	SDMA_STD_PRAGMA
++#define SDMA_GEN_LPC_PRAGMA	SDMA_STD_PRAGMA
++#define SDMA_PCI_RX_PRAGMA	SDMA_PCI_PRAGMA
++#define SDMA_PCI_TX_PRAGMA	SDMA_PCI_PRAGMA
++
++static inline void sdma_set_task_pragma(int task, int pragma)
++{
++	u32 *fdt = &sdma.tdt[task].fdt;
++	*fdt = (*fdt & ~0xff) | pragma;
++}
++
++static inline void sdma_set_task_auto_start(int task, int next_task)
++{
++	u16 *tcr = &sdma.io->tcr[task];
++	out_be16(tcr, (in_be16(tcr) & ~0xff) | 0x00c0 | next_task);
++}
++
++#define SDMA_INITIATOR_ALWAYS	 0
++#define SDMA_INITIATOR_SCTMR_0	 1
++#define SDMA_INITIATOR_SCTMR_1	 2
++#define SDMA_INITIATOR_FEC_RX	 3
++#define SDMA_INITIATOR_FEC_TX	 4
++#define SDMA_INITIATOR_ATA_RX	 5
++#define SDMA_INITIATOR_ATA_TX	 6
++#define SDMA_INITIATOR_SCPCI_RX	 7
++#define SDMA_INITIATOR_SCPCI_TX	 8
++#define SDMA_INITIATOR_PSC3_RX	 9
++#define SDMA_INITIATOR_PSC3_TX	10
++#define SDMA_INITIATOR_PSC2_RX	11
++#define SDMA_INITIATOR_PSC2_TX	12
++#define SDMA_INITIATOR_PSC1_RX	13
++#define SDMA_INITIATOR_PSC1_TX	14
++#define SDMA_INITIATOR_SCTMR_2	15
++#define SDMA_INITIATOR_SCLPC	16
++#define SDMA_INITIATOR_PSC5_RX	17
++#define SDMA_INITIATOR_PSC5_TX	18
++#define SDMA_INITIATOR_PSC4_RX	19
++#define SDMA_INITIATOR_PSC4_TX	20
++#define SDMA_INITIATOR_I2C2_RX	21
++#define SDMA_INITIATOR_I2C2_TX	22
++#define SDMA_INITIATOR_I2C1_RX	23
++#define SDMA_INITIATOR_I2C1_TX	24
++#define SDMA_INITIATOR_PSC6_RX	25
++#define SDMA_INITIATOR_PSC6_TX	26
++#define SDMA_INITIATOR_IRDA_RX	25
++#define SDMA_INITIATOR_IRDA_TX	26
++#define SDMA_INITIATOR_SCTMR_3	27
++#define SDMA_INITIATOR_SCTMR_4	28
++#define SDMA_INITIATOR_SCTMR_5	29
++#define SDMA_INITIATOR_SCTMR_6	30
++#define SDMA_INITIATOR_SCTMR_7	31
++
++#define SDMA_IPR_ALWAYS	7
++#define SDMA_IPR_SCTMR_0 	2
++#define SDMA_IPR_SCTMR_1 	2
++#define SDMA_IPR_FEC_RX 	6
++#define SDMA_IPR_FEC_TX 	5
++#define SDMA_IPR_ATA_RX 	4
++#define SDMA_IPR_ATA_TX 	3
++#define SDMA_IPR_SCPCI_RX	2
++#define SDMA_IPR_SCPCI_TX	2
++#define SDMA_IPR_PSC3_RX	2
++#define SDMA_IPR_PSC3_TX	2
++#define SDMA_IPR_PSC2_RX	2
++#define SDMA_IPR_PSC2_TX	2
++#define SDMA_IPR_PSC1_RX	2
++#define SDMA_IPR_PSC1_TX	2
++#define SDMA_IPR_SCTMR_2	2
++#define SDMA_IPR_SCLPC		2
++#define SDMA_IPR_PSC5_RX	2
++#define SDMA_IPR_PSC5_TX	2
++#define SDMA_IPR_PSC4_RX	2
++#define SDMA_IPR_PSC4_TX	2
++#define SDMA_IPR_I2C2_RX	2
++#define SDMA_IPR_I2C2_TX	2
++#define SDMA_IPR_I2C1_RX	2
++#define SDMA_IPR_I2C1_TX	2
++#define SDMA_IPR_PSC6_RX	2
++#define SDMA_IPR_PSC6_TX	2
++#define SDMA_IPR_IRDA_RX	2
++#define SDMA_IPR_IRDA_TX	2
++#define SDMA_IPR_SCTMR_3	2
++#define SDMA_IPR_SCTMR_4	2
++#define SDMA_IPR_SCTMR_5	2
++#define SDMA_IPR_SCTMR_6	2
++#define SDMA_IPR_SCTMR_7	2
++
++extern struct sdma *sdma_alloc(int request_queue_size);
++extern void sdma_free(struct sdma *sdma_struct);
++extern int sdma_load_task(u32 *task_image);
++extern void *sdma_sram_alloc(int size, int alignment, u32 *dma_handle);
++extern void sdma_init_bd(struct sdma *s);
++extern void sdma_init_bd2(struct sdma *s);
++
++#define FIELD_OFFSET(s,f) ((unsigned long)(&(((struct s*)0)->f)))
++
++#endif  /* __BESTCOMM_BESTCOMM_H__ */
+diff --git a/arch/ppc/syslib/bestcomm/fec.c b/arch/ppc/syslib/bestcomm/fec.c
+new file mode 100644
+index 0000000..8756856
+--- /dev/null
++++ b/arch/ppc/syslib/bestcomm/fec.c
+@@ -0,0 +1,174 @@
++/*
++ * arch/ppc/syslib/bestcomm/fec.c
++ *
++ * Driver for MPC52xx processor BestComm FEC controller
++ *
++ * Author: Dale Farnsworth <dfarnsworth@mvista.com>
++ *
++ * 2003-2004 (c) MontaVista, Software, Inc.  This file is licensed under
++ * the terms of the GNU General Public License version 2.  This program
++ * is licensed "as is" without any warranty of any kind, whether express
++ * or implied.
++ *
++ * HISTORY:
++ *
++ * 2005-08-14	Converted to platform driver by 
++ *		Andrey Volkov <avolkov@varma-el.com>, Varma Electronics Oy
++ */
++
++#include <linux/config.h>
++#include <linux/version.h>
++#include <linux/module.h>
++#include <linux/kernel.h>
++#include <linux/string.h>
++#include <linux/types.h>
++#include <asm/errno.h>				  
++#include <asm/io.h>
++
++#include <asm/mpc52xx.h>
++
++#include "bestcomm.h"
++#include "fec.h"
++
++/*
++ * Initialize FEC receive task.
++ * Returns task number of FEC receive task.
++ * Returns -1 on failure
++ */
++int sdma_fec_rx_init(struct sdma *s, phys_addr_t fifo, int maxbufsize)
++{
++	struct sdma_fec_rx_var *var;
++	struct sdma_fec_rx_inc *inc;
++
++	static int tasknum = -1;
++	static struct sdma_bd *bd = 0;
++	static u32 bd_pa;
++
++	if (tasknum < 0) {
++		tasknum = sdma_load_task(sdma_fec_rx_task);
++		if (tasknum < 0)
++			return tasknum;
++	}
++
++	if (!bd) 
++		bd = (struct sdma_bd *)sdma_sram_alloc(sizeof(*bd) * s->num_bd,
++								SDMA_BD_ALIGN, &bd_pa);
++	if (!bd)
++		return -ENOMEM;
++
++	sdma_disable_task(tasknum);
++
++	s->tasknum = tasknum;
++	s->bd = bd;
++	s->flags = SDMA_FLAGS_NONE;
++	s->index = 0;
++	s->outdex = 0;
++	memset(bd, 0, sizeof(*bd) * s->num_bd);
++
++	var = (struct sdma_fec_rx_var *)sdma_task_var(tasknum);
++	var->enable			= sdma_io_pa(&sdma.io->tcr[tasknum]);
++	var->fifo			= fifo;
++	var->bd_base		= bd_pa;
++	var->bd_last		= bd_pa + (s->num_bd - 1)*sizeof(struct sdma_bd);
++	var->bd_start		= bd_pa;
++	var->buffer_size	= maxbufsize;
++
++	/* These are constants, they should have been in the image file */
++	inc = (struct sdma_fec_rx_inc *)sdma_task_inc(tasknum);
++	inc->incr_bytes		= -(s16)sizeof(u32);
++	inc->incr_dst		= sizeof(u32);
++	inc->incr_dst_ma	= sizeof(u8);
++
++	sdma_set_task_pragma(tasknum, SDMA_FEC_RX_BD_PRAGMA);
++	sdma_set_task_auto_start(tasknum, tasknum);
++
++	/* clear pending interrupt bits */
++	out_be32(&sdma.io->IntPend, 1<<tasknum);
++
++	out_8(&sdma.io->ipr[SDMA_INITIATOR_FEC_RX], SDMA_IPR_FEC_RX);
++
++	return tasknum;
++}
++
++/*
++ * Return 2nd to last DRD
++ * This is an ugly hack, but at least it's only done once at initialization
++ */
++static u32 *self_modified_drd(int tasknum)
++{
++	u32 *desc;
++	int num_descs;
++	int drd_count;
++	int i;
++
++	num_descs = sdma_task_num_descs(tasknum);
++	desc = sdma_task_desc(tasknum) + num_descs - 1;
++	drd_count = 0;
++	for (i=0; i<num_descs; i++, desc--)
++		if (sdma_desc_is_drd(*desc) && ++drd_count == 3)
++			break;
++	return desc;
++}
++
++/*
++ * Initialize FEC transmit task.
++ * Returns task number of FEC transmit task.
++ * Returns -1 on failure
++ */
++int sdma_fec_tx_init(struct sdma *s, phys_addr_t fifo)
++{
++	struct sdma_fec_tx_var *var;
++	struct sdma_fec_tx_inc *inc;
++
++	static int tasknum = -1;
++	static struct sdma_bd *bd = 0;
++	static u32 bd_pa;
++
++	if (tasknum < 0) {
++		tasknum = sdma_load_task(sdma_fec_tx_task);
++		if (tasknum < 0)
++			return tasknum;
++	}
++
++	if (!bd)  
++		bd = (struct sdma_bd *)sdma_sram_alloc(sizeof(*bd) * s->num_bd,
++								SDMA_BD_ALIGN, &bd_pa);
++	if (!bd)
++		return -ENOMEM;
++
++	sdma_disable_task(tasknum);
++
++	s->tasknum = tasknum;
++	s->bd = bd;
++	s->flags = SDMA_FLAGS_ENABLE_TASK;
++	s->index = 0;
++	s->outdex = 0;
++	memset(bd, 0, sizeof(*bd) * s->num_bd);
++
++	var = (struct sdma_fec_tx_var *)sdma_task_var(tasknum);
++	var->DRD		= sdma_sram_pa(self_modified_drd(tasknum));
++	var->fifo		= fifo;
++	var->enable		= sdma_io_pa(&sdma.io->tcr[tasknum]);
++	var->bd_base	= bd_pa;
++	var->bd_last	= bd_pa + (s->num_bd - 1)*sizeof(struct sdma_bd);
++	var->bd_start	= bd_pa;
++
++	/* These are constants, they should have been in the image file */
++	inc = (struct sdma_fec_tx_inc *)sdma_task_inc(tasknum);
++	inc->incr_bytes		= -(s16)sizeof(u32);
++	inc->incr_src		= sizeof(u32);
++	inc->incr_src_ma	= sizeof(u8);
++
++	sdma_set_task_pragma(tasknum, SDMA_FEC_TX_BD_PRAGMA);
++	sdma_set_task_auto_start(tasknum, tasknum);
++
++	/* clear pending interrupt bits */
++	out_be32(&sdma.io->IntPend, 1<<tasknum);
++
++	out_8(&sdma.io->ipr[SDMA_INITIATOR_FEC_TX], SDMA_IPR_FEC_TX);
++
++	return tasknum;
++}
++
++EXPORT_SYMBOL(sdma_fec_rx_init);
++EXPORT_SYMBOL(sdma_fec_tx_init);
+diff --git a/arch/ppc/syslib/bestcomm/fec.h b/arch/ppc/syslib/bestcomm/fec.h
+new file mode 100644
+index 0000000..e3abc0f
+--- /dev/null
++++ b/arch/ppc/syslib/bestcomm/fec.h
+@@ -0,0 +1,71 @@
++/*
++ * arch/ppc/syslib/bestcomm/fec.h
++ *
++ * Driver for MPC52xx processor BestComm FEC controller
++ *
++ * Author: Dale Farnsworth <dfarnsworth@mvista.com>
++ *
++ * 2003-2004 (c) MontaVista, Software, Inc.  This file is licensed under
++ * the terms of the GNU General Public License version 2.  This program
++ * is licensed "as is" without any warranty of any kind, whether express
++ * or implied.
++ *
++ * HISTORY:
++ *
++ * 2005-08-14	Converted to platform driver by 
++ *		Andrey Volkov <avolkov@varma-el.com>, Varma Electronics Oy
++ */
++
++#ifndef __BESTCOMM_FEC_H__
++#define __BESTCOMM_FEC_H__
++
++
++/* rx task vars that need to be set before enabling the task */
++struct sdma_fec_rx_var {
++	u32 enable;		/* (u16*) address of task's control register */
++	u32 fifo;		/* (u32*) address of fec's fifo */
++	u32 bd_base;		/* (struct sdma_bd*) beginning of ring buffer */
++	u32 bd_last;		/* (struct sdma_bd*) end of ring buffer */
++	u32 bd_start;		/* (struct sdma_bd*) current bd */
++	u32 buffer_size;	/* size of receive buffer */
++};
++
++/* rx task incs that need to be set before enabling the task */
++struct sdma_fec_rx_inc {
++	u16 pad0;
++	s16 incr_bytes;
++	u16 pad1;
++	s16 incr_dst;
++	u16 pad2;
++	s16 incr_dst_ma;
++};
++
++/* tx task vars that need to be set before enabling the task */
++struct sdma_fec_tx_var {
++	u32 DRD;		/* (u32*) address of self-modified DRD */
++	u32 fifo;		/* (u32*) address of fec's fifo */
++	u32 enable;		/* (u16*) address of task's control register */
++	u32 bd_base;		/* (struct sdma_bd*) beginning of ring buffer */
++	u32 bd_last;		/* (struct sdma_bd*) end of ring buffer */
++	u32 bd_start;		/* (struct sdma_bd*) current bd */
++	u32 buffer_size;	/* set by uCode for each packet */
++};
++
++/* tx task incs that need to be set before enabling the task */
++struct sdma_fec_tx_inc {
++	u16 pad0;
++	s16 incr_bytes;
++	u16 pad1;
++	s16 incr_src;
++	u16 pad2;
++	s16 incr_src_ma;
++};
++
++extern int sdma_fec_rx_init(struct sdma *s, phys_addr_t fifo, int maxbufsize);
++extern int sdma_fec_tx_init(struct sdma *s, phys_addr_t fifo);
++
++extern u32 sdma_fec_rx_task[];
++extern u32 sdma_fec_tx_task[];
++
++
++#endif  /* __BESTCOMM_FEC_H__ */
+diff --git a/arch/ppc/syslib/bestcomm/sdma_fec_rx_task.c b/arch/ppc/syslib/bestcomm/sdma_fec_rx_task.c
+new file mode 100644
+index 0000000..511b036
+--- /dev/null
++++ b/arch/ppc/syslib/bestcomm/sdma_fec_rx_task.c
+@@ -0,0 +1,71 @@
++/*
++ * sdma_fec_rx_task.c
++ *
++ * Automatically created based on BestCommAPI-2.2/code_dma/image_rtos1/dma_image.hex
++ * on Tue Mar 22 11:19:38 2005 GMT
++ */
++
++#include <linux/types.h>
++
++/*
++ * The header consists of the following fields:
++ *	uint32_t	magic;
++ *	uint8_t		desc_size;
++ *	uint8_t		var_size;
++ *	uint8_t		inc_size;
++ *	uint8_t		first_var;
++ *	uint8_t		reserved[8];
++ *
++ * The size fields contain the number of 32-bit words.
++*/
++
++uint32_t sdma_fec_rx_task[] = {
++	/* header */
++	0x4243544b,
++	0x18060709,
++	0x00000000,
++	0x00000000,
++
++	/* Task descriptors */
++	0x808220e3, /* LCD: idx0 = var1, idx1 = var4; idx1 <= var3; idx0 += inc4, idx1 += inc3 */
++	0x10601010, /*   DRD1A: var4 = var2; FN=0 MORE init=3 WS=0 RS=0 */
++	0xb8800264, /*   LCD: idx2 = *idx1, idx3 = var0; idx2 < var9; idx2 += inc4, idx3 += inc4 */
++	0x10001308, /*     DRD1A: var4 = idx1; FN=0 MORE init=0 WS=0 RS=0 */
++	0x60140002, /*     DRD2A: EU0=0 EU1=0 EU2=0 EU3=2 EXT init=0 WS=2 RS=2 */
++	0x0cccfcca, /*     DRD2B1: *idx3 = EU3(); EU3(*idx3,var10)  */
++	0x80004000, /*   LCDEXT: idx2 = 0x00000000; ; */
++	0xb8c58029, /*   LCD: idx3 = *(idx1 + var00000015); idx3 once var0; idx3 += inc5 */
++	0x60000002, /*     DRD2A: EU0=0 EU1=0 EU2=0 EU3=2 EXT init=0 WS=0 RS=0 */
++	0x088cf8cc, /*     DRD2B1: idx2 = EU3(); EU3(idx3,var12)  */
++	0x991982f2, /*   LCD: idx2 = idx2, idx3 = idx3; idx2 > var11; idx2 += inc6, idx3 += inc2 */
++	0x006acf80, /*     DRD1A: *idx3 = *idx0; FN=0 init=3 WS=1 RS=1 */
++	0x80004000, /*   LCDEXT: idx2 = 0x00000000; ; */
++	0x9999802d, /*   LCD: idx3 = idx3; idx3 once var0; idx3 += inc5 */
++	0x70000002, /*     DRD2A: EU0=0 EU1=0 EU2=0 EU3=2 EXT MORE init=0 WS=0 RS=0 */
++	0x034cfc4e, /*     DRD2B1: var13 = EU3(); EU3(*idx1,var14)  */
++	0x00008868, /*     DRD1A: idx2 = var13; FN=0 init=0 WS=0 RS=0 */
++	0x99198341, /*   LCD: idx2 = idx2, idx3 = idx3; idx2 > var13; idx2 += inc0, idx3 += inc1 */
++	0x007ecf80, /*     DRD1A: *idx3 = *idx0; FN=0 init=3 WS=3 RS=3 */
++	0x99198272, /*   LCD: idx2 = idx2, idx3 = idx3; idx2 > var9; idx2 += inc6, idx3 += inc2 */
++	0x046acf80, /*     DRD1A: *idx3 = *idx0; FN=0 INT init=3 WS=1 RS=1 */
++	0x9819002d, /*   LCD: idx2 = idx0; idx2 once var0; idx2 += inc5 */
++	0x0060c790, /*     DRD1A: *idx1 = *idx2; FN=0 init=3 WS=0 RS=0 */
++	0x000001f8, /*   NOP */
++
++	/* VAR[9]-VAR[14] */
++	0x40000000,
++	0x7fff7fff,
++	0x00000000,
++	0x00000003,
++	0x40000008,
++	0x43ffffff,
++
++	/* INC[0]-INC[6] */
++	0x40000000,
++	0xe0000000,
++	0xe0000000,
++	0xa0000008,
++	0x20000000,
++	0x00000000,
++	0x4000ffff,
++};
+diff --git a/arch/ppc/syslib/bestcomm/sdma_fec_tx_task.c b/arch/ppc/syslib/bestcomm/sdma_fec_tx_task.c
+new file mode 100644
+index 0000000..d8d7fd3
+--- /dev/null
++++ b/arch/ppc/syslib/bestcomm/sdma_fec_tx_task.c
+@@ -0,0 +1,84 @@
++/*
++ * sdma_fec_tx_task.c
++ *
++ * Automatically created based on BestCommAPI-2.2/code_dma/image_rtos1/dma_image.hex
++ * on Tue Mar 22 11:19:29 2005 GMT
++ */
++
++#include <linux/types.h>
++
++/*
++ * The header consists of the following fields:
++ *	uint32_t	magic;
++ *	uint8_t		desc_size;
++ *	uint8_t		var_size;
++ *	uint8_t		inc_size;
++ *	uint8_t		first_var;
++ *	uint8_t		reserved[8];
++ *
++ * The size fields contain the number of 32-bit words.
++*/
++
++uint32_t sdma_fec_tx_task[] = {
++	/* header */
++	0x4243544b,
++	0x2407070d,
++	0x00000000,
++	0x00000000,
++
++	/* Task descriptors */
++	0x8018001b, /* LCD: idx0 = var0; idx0 <= var0; idx0 += inc3 */
++	0x60000005, /*   DRD2A: EU0=0 EU1=0 EU2=0 EU3=5 EXT init=0 WS=0 RS=0 */
++	0x01ccfc0d, /*   DRD2B1: var7 = EU3(); EU3(*idx0,var13)  */
++	0x8082a123, /* LCD: idx0 = var1, idx1 = var5; idx1 <= var4; idx0 += inc4, idx1 += inc3 */
++	0x10801418, /*   DRD1A: var5 = var3; FN=0 MORE init=4 WS=0 RS=0 */
++	0xf88103a4, /*   LCDEXT: idx2 = *idx1, idx3 = var2; idx2 < var14; idx2 += inc4, idx3 += inc4 */
++	0x801a6024, /*   LCD: idx4 = var0; ; idx4 += inc4 */
++	0x10001708, /*     DRD1A: var5 = idx1; FN=0 MORE init=0 WS=0 RS=0 */
++	0x60140002, /*     DRD2A: EU0=0 EU1=0 EU2=0 EU3=2 EXT init=0 WS=2 RS=2 */
++	0x0cccfccf, /*     DRD2B1: *idx3 = EU3(); EU3(*idx3,var15)  */
++	0x991a002c, /*   LCD: idx2 = idx2, idx3 = idx4; idx2 once var0; idx2 += inc5, idx3 += inc4 */
++	0x70000002, /*     DRD2A: EU0=0 EU1=0 EU2=0 EU3=2 EXT MORE init=0 WS=0 RS=0 */
++	0x024cfc4d, /*     DRD2B1: var9 = EU3(); EU3(*idx1,var13)  */
++	0x60000003, /*     DRD2A: EU0=0 EU1=0 EU2=0 EU3=3 EXT init=0 WS=0 RS=0 */
++	0x0cccf247, /*     DRD2B1: *idx3 = EU3(); EU3(var9,var7)  */
++	0x80004000, /*   LCDEXT: idx2 = 0x00000000; ; */
++	0xb8c80029, /*   LCD: idx3 = *(idx1 + var0000001a); idx3 once var0; idx3 += inc5 */
++	0x70000002, /*     DRD2A: EU0=0 EU1=0 EU2=0 EU3=2 EXT MORE init=0 WS=0 RS=0 */
++	0x088cf8d1, /*     DRD2B1: idx2 = EU3(); EU3(idx3,var17)  */
++	0x00002f10, /*     DRD1A: var11 = idx2; FN=0 init=0 WS=0 RS=0 */
++	0x99198432, /*   LCD: idx2 = idx2, idx3 = idx3; idx2 > var16; idx2 += inc6, idx3 += inc2 */
++	0x008ac398, /*     DRD1A: *idx0 = *idx3; FN=0 init=4 WS=1 RS=1 */
++	0x80004000, /*   LCDEXT: idx2 = 0x00000000; ; */
++	0x9999802d, /*   LCD: idx3 = idx3; idx3 once var0; idx3 += inc5 */
++	0x70000002, /*     DRD2A: EU0=0 EU1=0 EU2=0 EU3=2 EXT MORE init=0 WS=0 RS=0 */
++	0x048cfc53, /*     DRD2B1: var18 = EU3(); EU3(*idx1,var19)  */
++	0x60000008, /*     DRD2A: EU0=0 EU1=0 EU2=0 EU3=8 EXT init=0 WS=0 RS=0 */
++	0x088cf48b, /*     DRD2B1: idx2 = EU3(); EU3(var18,var11)  */
++	0x99198481, /*   LCD: idx2 = idx2, idx3 = idx3; idx2 > var18; idx2 += inc0, idx3 += inc1 */
++	0x009ec398, /*     DRD1A: *idx0 = *idx3; FN=0 init=4 WS=3 RS=3 */
++	0x991983b2, /*   LCD: idx2 = idx2, idx3 = idx3; idx2 > var14; idx2 += inc6, idx3 += inc2 */
++	0x088ac398, /*     DRD1A: *idx0 = *idx3; FN=0 TFD init=4 WS=1 RS=1 */
++	0x9919002d, /*   LCD: idx2 = idx2; idx2 once var0; idx2 += inc5 */
++	0x60000005, /*     DRD2A: EU0=0 EU1=0 EU2=0 EU3=5 EXT init=0 WS=0 RS=0 */
++	0x0c4cf88e, /*     DRD2B1: *idx1 = EU3(); EU3(idx2,var14)  */
++	0x000001f8, /*   NOP */
++
++	/* VAR[13]-VAR[19] */
++	0x0c000000,
++	0x40000000,
++	0x7fff7fff,
++	0x00000000,
++	0x00000003,
++	0x40000004,
++	0x43ffffff,
++
++	/* INC[0]-INC[6] */
++	0x40000000,
++	0xe0000000,
++	0xe0000000,
++	0xa0000008,
++	0x20000000,
++	0x00000000,
++	0x4000ffff,
++};
+diff --git a/arch/ppc/syslib/mpc52xx_devices.c b/arch/ppc/syslib/mpc52xx_devices.c
+index 7487539..abe6161 100644
+--- a/arch/ppc/syslib/mpc52xx_devices.c
++++ b/arch/ppc/syslib/mpc52xx_devices.c
+@@ -33,6 +33,28 @@ static struct fsl_i2c_platform_data mpc52xx_fsl_i2c_pdata = {
+    possibly using IORESOURCE_DMA. But that's when BestComm is ready ... */
+ 
+ struct platform_device ppc_sys_platform_devices[] = {
++	[MPC52xx_SDMA] = {
++		.name		= "mpc52xx-sdma",
++		.id		= -1,
++		.num_resources	= 3,
++		.resource	= (struct resource[]) {
++			{
++				.start	= 0x1200,
++				.end	= 0x12ff,
++				.flags	= IORESOURCE_MEM,
++			},
++			{
++				.start	= 0x8000,
++				.end	= 0xbfff,
++				.flags	= IORESOURCE_MEM,
++			},
++			{
++				.start	= MPC52xx_SDMA_IRQ,
++				.end	= MPC52xx_SDMA_IRQ,
++				.flags	= IORESOURCE_IRQ,
++			},
++		},
++	},
+ 	[MPC52xx_MSCAN1] = {
+ 		.name		= "mpc52xx-mscan",
+ 		.id		= 0,
+diff --git a/arch/ppc/syslib/mpc52xx_sys.c b/arch/ppc/syslib/mpc52xx_sys.c
+index b4e6f97..a74b19c 100644
+--- a/arch/ppc/syslib/mpc52xx_sys.c
++++ b/arch/ppc/syslib/mpc52xx_sys.c
+@@ -19,10 +19,10 @@ struct ppc_sys_spec ppc_sys_specs[] = {
+ 		.ppc_sys_name	= "5200",
+ 		.mask		= 0xffff0000,
+ 		.value		= 0x80110000,
+-		.num_devices	= 15,
++		.num_devices	= MPC52xx_NUM_DEVICES,
+ 		.device_list	= (enum ppc_sys_devices[])
+ 		{
+-			MPC52xx_MSCAN1, MPC52xx_MSCAN2, MPC52xx_SPI,
++			MPC52xx_SDMA, MPC52xx_MSCAN1, MPC52xx_MSCAN2, MPC52xx_SPI,
+ 			MPC52xx_USB, MPC52xx_BDLC, MPC52xx_PSC1, MPC52xx_PSC2,
+ 			MPC52xx_PSC3, MPC52xx_PSC4, MPC52xx_PSC5, MPC52xx_PSC6,
+ 			MPC52xx_FEC, MPC52xx_ATA, MPC52xx_I2C1, MPC52xx_I2C2,
+diff --git a/include/asm-ppc/mpc52xx.h b/include/asm-ppc/mpc52xx.h
+index d9d21aa..4856b74 100644
+--- a/include/asm-ppc/mpc52xx.h
++++ b/include/asm-ppc/mpc52xx.h
+@@ -34,6 +34,8 @@ struct pt_regs;
+ /* ======================================================================== */
+ 
+ enum ppc_sys_devices {
++	MPC52xx_SDMA,				 /* Must be first device to probe, 
++									else FEC/ATA will failed */
+ 	MPC52xx_MSCAN1,
+ 	MPC52xx_MSCAN2,
+ 	MPC52xx_SPI,
+-- 
+1.4.4.2
+

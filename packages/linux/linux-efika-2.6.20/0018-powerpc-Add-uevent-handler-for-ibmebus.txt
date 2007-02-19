@@ -1,0 +1,50 @@
+From ddc4a7296f3abd28a902f38ae915224d6d93edca Mon Sep 17 00:00:00 2001
+From: Sylvain Munaut <tnt@246tNt.com>
+Date: Sat, 23 Dec 2006 23:20:58 +0100
+Subject: [PATCH] [PATCH] powerpc: Add uevent handler for ibmebus
+
+Adding this handler allow userspace to properly handle the module
+autoloading. The generation of the uevent itself is now common to
+all bus using of_device, so not much code here.
+
+But we still need a small wrapper to filter out the dummy root
+device node used by this bus.
+
+Signed-off-by: Sylvain Munaut <tnt@246tNt.com>
+---
+ arch/powerpc/kernel/ibmebus.c |   16 ++++++++++++++++
+ 1 files changed, 16 insertions(+), 0 deletions(-)
+
+diff --git a/arch/powerpc/kernel/ibmebus.c b/arch/powerpc/kernel/ibmebus.c
+index 82bd2f1..2e8d9fd 100644
+--- a/arch/powerpc/kernel/ibmebus.c
++++ b/arch/powerpc/kernel/ibmebus.c
+@@ -361,9 +361,25 @@ static int ibmebus_bus_match(struct device *dev, struct device_driver *drv)
+ 	return 0;
+ }
+ 
++static int ibmebus_bus_uevent(struct device *dev,
++		char **envp, int num_envp, char *buffer, int buffer_size)
++{
++	struct ibmebus_dev *ebus_dev;
++
++	if (!dev)
++		return -ENODEV;
++
++	ebus_dev = to_ibmebus_dev(dev);
++	if (ebus_dev==ibmebus_bus_device)	/* filter dummy root device */
++		return -ENODEV;
++
++	return of_device_uevent(dev, envp, num_envp, buffer, buffer_size);
++}
++
+ struct bus_type ibmebus_bus_type = {
+ 	.name = "ibmebus",
+ 	.match = ibmebus_bus_match,
++	.uevent = ibmebus_bus_uevent,
+ };
+ EXPORT_SYMBOL(ibmebus_bus_type);
+ 
+-- 
+1.4.4.2
+

@@ -1,0 +1,29 @@
+From 846d6cd8584eee7517543be073c8b3fe9fefd065 Mon Sep 17 00:00:00 2001
+From: Sylvain Munaut <tnt@246tNt.com>
+Date: Sat, 23 Dec 2006 23:16:07 +0100
+Subject: [PATCH] [PATCH] powerpc: Add uevent handler for of_platform_bus
+
+Adding this handler allow userspace to properly handle the module
+autoloading. The generation of the uevent itself is now common to
+all bus using of_device, so not much code here.
+
+Signed-off-by: Sylvain Munaut <tnt@246tNt.com>
+---
+ arch/powerpc/kernel/of_platform.c |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+diff --git a/arch/powerpc/kernel/of_platform.c b/arch/powerpc/kernel/of_platform.c
+index b734517..da78e44 100644
+--- a/arch/powerpc/kernel/of_platform.c
++++ b/arch/powerpc/kernel/of_platform.c
+@@ -133,6 +133,7 @@ static int of_platform_device_resume(struct device * dev)
+ struct bus_type of_platform_bus_type = {
+        .name	= "of_platform",
+        .match	= of_platform_bus_match,
++       .uevent	= of_device_uevent,
+        .probe	= of_platform_device_probe,
+        .remove	= of_platform_device_remove,
+        .suspend	= of_platform_device_suspend,
+-- 
+1.4.4.2
+

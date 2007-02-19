@@ -1,0 +1,28 @@
+From 5145742e15b45e96c623f571dee421306dc95a3e Mon Sep 17 00:00:00 2001
+From: Grant Likely <grant.likely@secretlab.ca>
+Date: Mon, 11 Dec 2006 22:45:39 -0700
+Subject: [PATCH] [POWERPC] Change name of mpc52xx pci support file in Makefile
+
+Oops, missed a bit in the previous patch
+
+Signed-off-by: Grant Likely <grant.likely@secretlab.ca>
+---
+ arch/powerpc/platforms/52xx/Makefile |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/arch/powerpc/platforms/52xx/Makefile b/arch/powerpc/platforms/52xx/Makefile
+index d85ea04..a7c646a 100644
+--- a/arch/powerpc/platforms/52xx/Makefile
++++ b/arch/powerpc/platforms/52xx/Makefile
+@@ -3,7 +3,7 @@
+ #
+ ifeq ($(CONFIG_PPC_MERGE),y)
+ obj-y				+= mpc52xx_pic.o mpc52xx_common.o
+-obj-$(CONFIG_PCI)		+= mpc52xx_pci.o
++obj-$(CONFIG_PCI)		+= pci.o
+ obj-$(CONFIG_PPC_BESTCOMM) 	+= bestcomm.o
+ obj-$(CONFIG_FEC_MPC52xx)	+= sdma_fec_rx_task.o sdma_fec_tx_task.o fec.o
+ endif
+-- 
+1.4.4.2
+

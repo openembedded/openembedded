@@ -1,0 +1,26 @@
+From 4ad1395745f590eba1b5220c8dd3ca6541f49db7 Mon Sep 17 00:00:00 2001
+From: Grant Likely <grant.likely@secretlab.ca>
+Date: Mon, 4 Dec 2006 22:55:49 -0700
+Subject: [PATCH] Add missing function prototype
+
+Signed-off-by: Grant Likely <grant.likely@secretlab.ca>
+---
+ include/asm-powerpc/mpc52xx.h |    2 ++
+ 1 files changed, 2 insertions(+), 0 deletions(-)
+
+diff --git a/include/asm-powerpc/mpc52xx.h b/include/asm-powerpc/mpc52xx.h
+index 4560d72..7afd5bf 100644
+--- a/include/asm-powerpc/mpc52xx.h
++++ b/include/asm-powerpc/mpc52xx.h
+@@ -249,6 +249,8 @@ extern void mpc52xx_declare_of_platform_devices(void);
+ extern void mpc52xx_init_irq(void);
+ extern unsigned int mpc52xx_get_irq(void);
+ 
++extern int __init mpc52xx_add_bridge(struct device_node *node);
++
+ #endif /* __ASSEMBLY__ */
+ 
+ #endif /* __ASM_POWERPC_MPC52xx_H__ */
+-- 
+1.4.4.2
+

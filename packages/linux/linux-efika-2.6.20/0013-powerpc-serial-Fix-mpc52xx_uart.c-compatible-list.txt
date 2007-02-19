@@ -1,0 +1,28 @@
+From f3736d1a7f74d7dec888a8a8d8c593ca08a31000 Mon Sep 17 00:00:00 2001
+From: Sylvain Munaut <tnt@246tNt.com>
+Date: Sat, 23 Dec 2006 22:21:43 +0100
+Subject: [PATCH] [PATCH] powerpc/serial: Fix mpc52xx_uart.c 'compatible' list
+
+The list contained an entry to support a non-standard device-tree,
+this is now handled by fixups in early boot.
+
+Signed-off-by: Sylvain Munaut <tnt@246tNt.com>
+---
+ drivers/serial/mpc52xx_uart.c |    1 -
+ 1 files changed, 0 insertions(+), 1 deletions(-)
+
+diff --git a/drivers/serial/mpc52xx_uart.c b/drivers/serial/mpc52xx_uart.c
+index eef3b02..c20cd81 100644
+--- a/drivers/serial/mpc52xx_uart.c
++++ b/drivers/serial/mpc52xx_uart.c
+@@ -128,7 +128,6 @@ static irqreturn_t mpc52xx_uart_int(int irq,void *dev_id);
+ #if defined(CONFIG_PPC_MERGE)
+ static struct of_device_id mpc52xx_uart_of_match[] = {
+ 	{ .type = "serial", .compatible = "mpc52xx-psc-uart", },
+-	{ .type = "serial", .compatible = "mpc5200-psc", }, /* Efika only! */
+ 	{},
+ };
+ #endif
+-- 
+1.4.4.2
+

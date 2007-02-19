@@ -1,0 +1,27 @@
+From 733239db928c98f4d110fc33f0cf1278cf5385ef Mon Sep 17 00:00:00 2001
+From: Sylvain Munaut <tnt@246tNt.com>
+Date: Mon, 18 Dec 2006 22:48:02 +0100
+Subject: [PATCH] [PATCH] powerpc/serial: Dispose irq mapping when done in mpc52xx_serial.c
+
+Signed-off-by: Sylvain Munaut <tnt@246tNt.com>
+---
+ drivers/serial/mpc52xx_uart.c |    3 +++
+ 1 files changed, 3 insertions(+), 0 deletions(-)
+
+diff --git a/drivers/serial/mpc52xx_uart.c b/drivers/serial/mpc52xx_uart.c
+index 9d11a75..eef3b02 100644
+--- a/drivers/serial/mpc52xx_uart.c
++++ b/drivers/serial/mpc52xx_uart.c
+@@ -997,6 +997,9 @@ mpc52xx_uart_of_remove(struct of_device *op)
+ 	if (port)
+ 		uart_remove_one_port(&mpc52xx_uart_driver, port);
+ 
++	if (port->irq != NO_IRQ)
++		irq_dispose_mapping(port->irq);
++
+ 	return 0;
+ }
+ 
+-- 
+1.4.4.2
+

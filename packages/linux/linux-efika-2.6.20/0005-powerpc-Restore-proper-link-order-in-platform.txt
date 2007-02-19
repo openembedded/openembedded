@@ -1,0 +1,33 @@
+From 720e2caeeff0d9585d5627d29ffd660a5a9d9f88 Mon Sep 17 00:00:00 2001
+From: Sylvain Munaut <tnt@246tNt.com>
+Date: Sat, 23 Dec 2006 20:43:39 +0100
+Subject: [PATCH] [PATCH] powerpc: Restore 'proper' link order in platform
+
+The 52xx was put before CHRP to allow EFIKA to be recognized
+properly. Now the efika tree is fixed up in prom_init so
+no need for this ugly hack. So we restore the 'normal'
+order.
+
+Signed-off-by: Sylvain Munaut <tnt@246tNt.com>
+---
+ arch/powerpc/platforms/Makefile |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/arch/powerpc/platforms/Makefile b/arch/powerpc/platforms/Makefile
+index 507d1b9..44d95ea 100644
+--- a/arch/powerpc/platforms/Makefile
++++ b/arch/powerpc/platforms/Makefile
+@@ -5,9 +5,9 @@ ifeq ($(CONFIG_PPC64),y)
+ obj-$(CONFIG_PPC_PMAC)		+= powermac/
+ endif
+ endif
+-obj-$(CONFIG_PPC_MPC52xx)	+= 52xx/
+ obj-$(CONFIG_PPC_CHRP)		+= chrp/
+ obj-$(CONFIG_4xx)		+= 4xx/
++obj-$(CONFIG_PPC_MPC52xx)	+= 52xx/
+ obj-$(CONFIG_PPC_83xx)		+= 83xx/
+ obj-$(CONFIG_PPC_85xx)		+= 85xx/
+ obj-$(CONFIG_PPC_86xx)		+= 86xx/
+-- 
+1.4.4.2
+

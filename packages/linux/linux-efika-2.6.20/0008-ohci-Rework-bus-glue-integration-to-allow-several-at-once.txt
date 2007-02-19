@@ -1,0 +1,470 @@
+From 51294aa1482ea961a3e51ddac587b70b7c1c8ba0 Mon Sep 17 00:00:00 2001
+From: Sylvain Munaut <tnt@246tNt.com>
+Date: Wed, 13 Dec 2006 20:35:37 +0100
+Subject: [PATCH] [PATCH] ohci: Rework bus glue integration to allow several at once
+
+The previous model had the module_init & module_exit function in the
+bus glue .c files themselves. That's a problem if several glues need
+to be selected at once and the driver is built has module. This case
+is quite common in embedded system where you want to handle both the
+integrated ohci controller and some extra controller on PCI.
+
+The ohci-hcd.c file now provide the module_init & module_exit and
+appropriate driver registering/unregistering is done conditionally,
+using #ifdefs.
+
+Signed-off-by: Sylvain Munaut <tnt@246tNt.com>
+Acked-by: David Brownell <dbrownell@users.sourceforge.net>
+Signed-off-by: Greg Kroah-Hartman <gregkh@suse.de>
+---
+ drivers/usb/host/ohci-at91.c    |   15 ------
+ drivers/usb/host/ohci-au1xxx.c  |   16 ------
+ drivers/usb/host/ohci-ep93xx.c  |   12 -----
+ drivers/usb/host/ohci-hcd.c     |   98 +++++++++++++++++++++++++++++++++------
+ drivers/usb/host/ohci-lh7a404.c |   16 ------
+ drivers/usb/host/ohci-omap.c    |   19 --------
+ drivers/usb/host/ohci-pci.c     |   20 --------
+ drivers/usb/host/ohci-pnx4008.c |   12 -----
+ drivers/usb/host/ohci-pnx8550.c |   16 ------
+ drivers/usb/host/ohci-ppc-soc.c |   16 ------
+ drivers/usb/host/ohci-pxa27x.c  |   16 ------
+ drivers/usb/host/ohci-s3c2410.c |   12 -----
+ drivers/usb/host/ohci-sa1111.c  |   16 ------
+ 13 files changed, 83 insertions(+), 201 deletions(-)
+
+diff --git a/drivers/usb/host/ohci-at91.c b/drivers/usb/host/ohci-at91.c
+index cc40551..53f62cf 100644
+--- a/drivers/usb/host/ohci-at91.c
++++ b/drivers/usb/host/ohci-at91.c
+@@ -320,18 +320,3 @@ static struct platform_driver ohci_hcd_at91_driver = {
+ 	},
+ };
+ 
+-static int __init ohci_hcd_at91_init (void)
+-{
+-	if (usb_disabled())
+-		return -ENODEV;
+-
+-	return platform_driver_register(&ohci_hcd_at91_driver);
+-}
+-
+-static void __exit ohci_hcd_at91_cleanup (void)
+-{
+-	platform_driver_unregister(&ohci_hcd_at91_driver);
+-}
+-
+-module_init (ohci_hcd_at91_init);
+-module_exit (ohci_hcd_at91_cleanup);
+diff --git a/drivers/usb/host/ohci-au1xxx.c b/drivers/usb/host/ohci-au1xxx.c
+index e70b243..663a060 100644
+--- a/drivers/usb/host/ohci-au1xxx.c
++++ b/drivers/usb/host/ohci-au1xxx.c
+@@ -345,19 +345,3 @@ static struct platform_driver ohci_hcd_au1xxx_driver = {
+ 	},
+ };
+ 
+-static int __init ohci_hcd_au1xxx_init (void)
+-{
+-	pr_debug (DRIVER_INFO " (Au1xxx)");
+-	pr_debug ("block sizes: ed %d td %d\n",
+-		sizeof (struct ed), sizeof (struct td));
+-
+-	return platform_driver_register(&ohci_hcd_au1xxx_driver);
+-}
+-
+-static void __exit ohci_hcd_au1xxx_cleanup (void)
+-{
+-	platform_driver_unregister(&ohci_hcd_au1xxx_driver);
+-}
+-
+-module_init (ohci_hcd_au1xxx_init);
+-module_exit (ohci_hcd_au1xxx_cleanup);
+diff --git a/drivers/usb/host/ohci-ep93xx.c b/drivers/usb/host/ohci-ep93xx.c
+index 43ae696..e9974c3 100644
+--- a/drivers/usb/host/ohci-ep93xx.c
++++ b/drivers/usb/host/ohci-ep93xx.c
+@@ -214,15 +214,3 @@ static struct platform_driver ohci_hcd_ep93xx_driver = {
+ 	},
+ };
+ 
+-static int __init ohci_hcd_ep93xx_init(void)
+-{
+-	return platform_driver_register(&ohci_hcd_ep93xx_driver);
+-}
+-
+-static void __exit ohci_hcd_ep93xx_cleanup(void)
+-{
+-	platform_driver_unregister(&ohci_hcd_ep93xx_driver);
+-}
+-
+-module_init(ohci_hcd_ep93xx_init);
+-module_exit(ohci_hcd_ep93xx_cleanup);
+diff --git a/drivers/usb/host/ohci-hcd.c b/drivers/usb/host/ohci-hcd.c
+index c1c1d87..9926b8f 100644
+--- a/drivers/usb/host/ohci-hcd.c
++++ b/drivers/usb/host/ohci-hcd.c
+@@ -855,63 +855,131 @@ MODULE_LICENSE ("GPL");
+ 
+ #ifdef CONFIG_PCI
+ #include "ohci-pci.c"
++#define PCI_DRIVER		ohci_pci_driver
+ #endif
+ 
+ #ifdef CONFIG_SA1111
+ #include "ohci-sa1111.c"
++#define SA1111_DRIVER		ohci_hcd_sa1111_driver
+ #endif
+ 
+ #ifdef CONFIG_ARCH_S3C2410
+ #include "ohci-s3c2410.c"
++#define PLATFORM_DRIVER		ohci_hcd_s3c2410_driver
+ #endif
+ 
+ #ifdef CONFIG_ARCH_OMAP
+ #include "ohci-omap.c"
++#define PLATFORM_DRIVER		ohci_hcd_omap_driver
+ #endif
+ 
+ #ifdef CONFIG_ARCH_LH7A404
+ #include "ohci-lh7a404.c"
++#define PLATFORM_DRIVER		ohci_hcd_lh7a404_driver
+ #endif
+ 
+ #ifdef CONFIG_PXA27x
+ #include "ohci-pxa27x.c"
++#define PLATFORM_DRIVER		ohci_hcd_pxa27x_driver
+ #endif
+ 
+ #ifdef CONFIG_ARCH_EP93XX
+ #include "ohci-ep93xx.c"
++#define PLATFORM_DRIVER		ohci_hcd_ep93xx_driver
+ #endif
+ 
+ #ifdef CONFIG_SOC_AU1X00
+ #include "ohci-au1xxx.c"
++#define PLATFORM_DRIVER		ohci_hcd_au1xxx_driver
+ #endif
+ 
+-#ifdef CONFIG_PNX8550
+-#include "ohci-pnx8550.c"
+-#endif
++#ifdef CONFIG_PNX8550 
++#include "ohci-pnx8550.c" 
++#define PLATFORM_DRIVER		ohci_hcd_pnx8550_driver
++#endif 
+ 
+ #ifdef CONFIG_USB_OHCI_HCD_PPC_SOC
+ #include "ohci-ppc-soc.c"
++#define PLATFORM_DRIVER		ohci_hcd_ppc_soc_driver
+ #endif
+ 
+ #ifdef CONFIG_ARCH_AT91
+ #include "ohci-at91.c"
++#define PLATFORM_DRIVER		ohci_hcd_at91_driver
+ #endif
+ 
+ #ifdef CONFIG_ARCH_PNX4008
+ #include "ohci-pnx4008.c"
++#define PLATFORM_DRIVER		usb_hcd_pnx4008_driver
+ #endif
+ 
+-#if !(defined(CONFIG_PCI) \
+-      || defined(CONFIG_SA1111) \
+-      || defined(CONFIG_ARCH_S3C2410) \
+-      || defined(CONFIG_ARCH_OMAP) \
+-      || defined (CONFIG_ARCH_LH7A404) \
+-      || defined (CONFIG_PXA27x) \
+-      || defined (CONFIG_ARCH_EP93XX) \
+-      || defined (CONFIG_SOC_AU1X00) \
+-      || defined (CONFIG_USB_OHCI_HCD_PPC_SOC) \
+-      || defined (CONFIG_ARCH_AT91) \
+-      || defined (CONFIG_ARCH_PNX4008) \
+-	)
++
++#if	!defined(PCI_DRIVER) &&		\
++	!defined(PLATFORM_DRIVER) &&	\
++	!defined(SA1111_DRIVER)
+ #error "missing bus glue for ohci-hcd"
+ #endif
++
++static int __init ohci_hcd_mod_init(void)
++{
++	int retval = 0;
++	int ls = 0;
++
++	if (usb_disabled())
++		return -ENODEV;
++
++	printk (KERN_DEBUG "%s: " DRIVER_INFO "\n", hcd_name);
++	pr_debug ("%s: block sizes: ed %Zd td %Zd\n", hcd_name,
++		sizeof (struct ed), sizeof (struct td));
++
++#ifdef PLATFORM_DRIVER
++	retval = platform_driver_register(&PLATFORM_DRIVER);
++	if (retval < 0)
++		return retval;
++	ls++;
++#endif
++
++#ifdef SA1111_DRIVER
++	retval = sa1111_driver_register(&SA1111_DRIVER);
++	if (retval < 0)
++		goto error;
++	ls++;
++#endif
++
++#ifdef PCI_DRIVER
++	retval = pci_register_driver(&PCI_DRIVER);
++	if (retval < 0)
++		goto error;
++	ls++;
++#endif
++
++	return retval;
++
++	/* Error path */
++error:
++#ifdef PLATFORM_DRIVER
++	if (ls--)
++		platform_driver_unregister(&PLATFORM_DRIVER);
++#endif
++#ifdef SA1111_DRIVER
++	if (ls--)
++		sa1111_driver_unregister(&SA1111_DRIVER);
++#endif
++	return retval;
++}
++module_init(ohci_hcd_mod_init);
++
++static void __exit ohci_hcd_mod_exit(void)
++{
++#ifdef PCI_DRIVER
++	pci_unregister_driver(&PCI_DRIVER);
++#endif
++#ifdef SA1111_DRIVER
++	sa1111_driver_unregister(&SA1111_DRIVER);
++#endif
++#ifdef PLATFORM_DRIVER
++	platform_driver_unregister(&PLATFORM_DRIVER);
++#endif
++}
++module_exit(ohci_hcd_mod_exit);
++
+diff --git a/drivers/usb/host/ohci-lh7a404.c b/drivers/usb/host/ohci-lh7a404.c
+index e9807cf..4a043ab 100644
+--- a/drivers/usb/host/ohci-lh7a404.c
++++ b/drivers/usb/host/ohci-lh7a404.c
+@@ -251,19 +251,3 @@ static struct platform_driver ohci_hcd_lh7a404_driver = {
+ 	},
+ };
+ 
+-static int __init ohci_hcd_lh7a404_init (void)
+-{
+-	pr_debug (DRIVER_INFO " (LH7A404)");
+-	pr_debug ("block sizes: ed %d td %d\n",
+-		sizeof (struct ed), sizeof (struct td));
+-
+-	return platform_driver_register(&ohci_hcd_lh7a404_driver);
+-}
+-
+-static void __exit ohci_hcd_lh7a404_cleanup (void)
+-{
+-	platform_driver_unregister(&ohci_hcd_lh7a404_driver);
+-}
+-
+-module_init (ohci_hcd_lh7a404_init);
+-module_exit (ohci_hcd_lh7a404_cleanup);
+diff --git a/drivers/usb/host/ohci-omap.c b/drivers/usb/host/ohci-omap.c
+index 27be1f9..5cfa3d1 100644
+--- a/drivers/usb/host/ohci-omap.c
++++ b/drivers/usb/host/ohci-omap.c
+@@ -544,22 +544,3 @@ static struct platform_driver ohci_hcd_omap_driver = {
+ 	},
+ };
+ 
+-static int __init ohci_hcd_omap_init (void)
+-{
+-	printk (KERN_DEBUG "%s: " DRIVER_INFO " (OMAP)\n", hcd_name);
+-	if (usb_disabled())
+-		return -ENODEV;
+-
+-	pr_debug("%s: block sizes: ed %Zd td %Zd\n", hcd_name,
+-		sizeof (struct ed), sizeof (struct td));
+-
+-	return platform_driver_register(&ohci_hcd_omap_driver);
+-}
+-
+-static void __exit ohci_hcd_omap_cleanup (void)
+-{
+-	platform_driver_unregister(&ohci_hcd_omap_driver);
+-}
+-
+-module_init (ohci_hcd_omap_init);
+-module_exit (ohci_hcd_omap_cleanup);
+diff --git a/drivers/usb/host/ohci-pci.c b/drivers/usb/host/ohci-pci.c
+index 292daf0..b331ac4 100644
+--- a/drivers/usb/host/ohci-pci.c
++++ b/drivers/usb/host/ohci-pci.c
+@@ -311,23 +311,3 @@ static struct pci_driver ohci_pci_driver = {
+ 	.shutdown =	usb_hcd_pci_shutdown,
+ };
+ 
+-
+-static int __init ohci_hcd_pci_init (void)
+-{
+-	printk (KERN_DEBUG "%s: " DRIVER_INFO " (PCI)\n", hcd_name);
+-	if (usb_disabled())
+-		return -ENODEV;
+-
+-	pr_debug ("%s: block sizes: ed %Zd td %Zd\n", hcd_name,
+-		sizeof (struct ed), sizeof (struct td));
+-	return pci_register_driver (&ohci_pci_driver);
+-}
+-module_init (ohci_hcd_pci_init);
+-
+-/*-------------------------------------------------------------------------*/
+-
+-static void __exit ohci_hcd_pci_cleanup (void)
+-{
+-	pci_unregister_driver (&ohci_pci_driver);
+-}
+-module_exit (ohci_hcd_pci_cleanup);
+diff --git a/drivers/usb/host/ohci-pnx4008.c b/drivers/usb/host/ohci-pnx4008.c
+index 3a8cbfb..893b172 100644
+--- a/drivers/usb/host/ohci-pnx4008.c
++++ b/drivers/usb/host/ohci-pnx4008.c
+@@ -465,15 +465,3 @@ static struct platform_driver usb_hcd_pnx4008_driver = {
+ 	.remove = usb_hcd_pnx4008_remove,
+ };
+ 
+-static int __init usb_hcd_pnx4008_init(void)
+-{
+-	return platform_driver_register(&usb_hcd_pnx4008_driver);
+-}
+-
+-static void __exit usb_hcd_pnx4008_cleanup(void)
+-{
+-	return platform_driver_unregister(&usb_hcd_pnx4008_driver);
+-}
+-
+-module_init(usb_hcd_pnx4008_init);
+-module_exit(usb_hcd_pnx4008_cleanup);
+diff --git a/drivers/usb/host/ohci-pnx8550.c b/drivers/usb/host/ohci-pnx8550.c
+index 6922b91..de45eb0 100644
+--- a/drivers/usb/host/ohci-pnx8550.c
++++ b/drivers/usb/host/ohci-pnx8550.c
+@@ -240,19 +240,3 @@ static struct platform_driver ohci_hcd_pnx8550_driver = {
+ 	.remove		= ohci_hcd_pnx8550_drv_remove,
+ };
+ 
+-static int __init ohci_hcd_pnx8550_init (void)
+-{
+-	pr_debug (DRIVER_INFO " (pnx8550)");
+-	pr_debug ("block sizes: ed %d td %d\n",
+-		sizeof (struct ed), sizeof (struct td));
+-
+-	return platform_driver_register(&ohci_hcd_pnx8550_driver);
+-}
+-
+-static void __exit ohci_hcd_pnx8550_cleanup (void)
+-{
+-	platform_driver_unregister(&ohci_hcd_pnx8550_driver);
+-}
+-
+-module_init (ohci_hcd_pnx8550_init);
+-module_exit (ohci_hcd_pnx8550_cleanup);
+diff --git a/drivers/usb/host/ohci-ppc-soc.c b/drivers/usb/host/ohci-ppc-soc.c
+index c7ce8e6..1a2e177 100644
+--- a/drivers/usb/host/ohci-ppc-soc.c
++++ b/drivers/usb/host/ohci-ppc-soc.c
+@@ -208,19 +208,3 @@ static struct platform_driver ohci_hcd_ppc_soc_driver = {
+ 	},
+ };
+ 
+-static int __init ohci_hcd_ppc_soc_init(void)
+-{
+-	pr_debug(DRIVER_INFO " (PPC SOC)\n");
+-	pr_debug("block sizes: ed %d td %d\n", sizeof(struct ed),
+-							sizeof(struct td));
+-
+-	return platform_driver_register(&ohci_hcd_ppc_soc_driver);
+-}
+-
+-static void __exit ohci_hcd_ppc_soc_cleanup(void)
+-{
+-	platform_driver_unregister(&ohci_hcd_ppc_soc_driver);
+-}
+-
+-module_init(ohci_hcd_ppc_soc_init);
+-module_exit(ohci_hcd_ppc_soc_cleanup);
+diff --git a/drivers/usb/host/ohci-pxa27x.c b/drivers/usb/host/ohci-pxa27x.c
+index 3bbea84..f1563dc 100644
+--- a/drivers/usb/host/ohci-pxa27x.c
++++ b/drivers/usb/host/ohci-pxa27x.c
+@@ -369,19 +369,3 @@ static struct platform_driver ohci_hcd_pxa27x_driver = {
+ 	},
+ };
+ 
+-static int __init ohci_hcd_pxa27x_init (void)
+-{
+-	pr_debug (DRIVER_INFO " (pxa27x)");
+-	pr_debug ("block sizes: ed %d td %d\n",
+-		sizeof (struct ed), sizeof (struct td));
+-
+-	return platform_driver_register(&ohci_hcd_pxa27x_driver);
+-}
+-
+-static void __exit ohci_hcd_pxa27x_cleanup (void)
+-{
+-	platform_driver_unregister(&ohci_hcd_pxa27x_driver);
+-}
+-
+-module_init (ohci_hcd_pxa27x_init);
+-module_exit (ohci_hcd_pxa27x_cleanup);
+diff --git a/drivers/usb/host/ohci-s3c2410.c b/drivers/usb/host/ohci-s3c2410.c
+index b350d45..6829814 100644
+--- a/drivers/usb/host/ohci-s3c2410.c
++++ b/drivers/usb/host/ohci-s3c2410.c
+@@ -501,15 +501,3 @@ static struct platform_driver ohci_hcd_s3c2410_driver = {
+ 	},
+ };
+ 
+-static int __init ohci_hcd_s3c2410_init (void)
+-{
+-	return platform_driver_register(&ohci_hcd_s3c2410_driver);
+-}
+-
+-static void __exit ohci_hcd_s3c2410_cleanup (void)
+-{
+-	platform_driver_unregister(&ohci_hcd_s3c2410_driver);
+-}
+-
+-module_init (ohci_hcd_s3c2410_init);
+-module_exit (ohci_hcd_s3c2410_cleanup);
+diff --git a/drivers/usb/host/ohci-sa1111.c b/drivers/usb/host/ohci-sa1111.c
+index fe0090e..0f48f2d 100644
+--- a/drivers/usb/host/ohci-sa1111.c
++++ b/drivers/usb/host/ohci-sa1111.c
+@@ -269,19 +269,3 @@ static struct sa1111_driver ohci_hcd_sa1111_driver = {
+ 	.remove		= ohci_hcd_sa1111_drv_remove,
+ };
+ 
+-static int __init ohci_hcd_sa1111_init (void)
+-{
+-	dbg (DRIVER_INFO " (SA-1111)");
+-	dbg ("block sizes: ed %d td %d",
+-		sizeof (struct ed), sizeof (struct td));
+-
+-	return sa1111_driver_register(&ohci_hcd_sa1111_driver);
+-}
+-
+-static void __exit ohci_hcd_sa1111_cleanup (void)
+-{
+-	sa1111_driver_unregister(&ohci_hcd_sa1111_driver);
+-}
+-
+-module_init (ohci_hcd_sa1111_init);
+-module_exit (ohci_hcd_sa1111_cleanup);
+-- 
+1.4.4.2
+

@@ -1,0 +1,28 @@
+diff --git a/arch/powerpc/Makefile b/arch/powerpc/Makefile
+index a00fe72..5b60c05 100644
+--- a/arch/powerpc/Makefile
++++ b/arch/powerpc/Makefile
+@@ -139,6 +139,8 @@ core-$(CONFIG_XMON)		+= arch/powerpc/xmon/
+ 
+ drivers-$(CONFIG_OPROFILE)	+= arch/powerpc/oprofile/
+ 
++libs-y				+= `$(CC) -print-libgcc-file-name`
++
+ # Default to zImage, override when needed
+ defaultimage-y			:= zImage
+ defaultimage-$(CONFIG_PPC_ISERIES) := vmlinux
+diff --git a/arch/powerpc/kernel/ppc_ksyms.c b/arch/powerpc/kernel/ppc_ksyms.c
+index 9179f07..dea8384 100644
+--- a/arch/powerpc/kernel/ppc_ksyms.c
++++ b/arch/powerpc/kernel/ppc_ksyms.c
+@@ -164,6 +164,9 @@ long long __lshrdi3(long long, int);
+ EXPORT_SYMBOL(__ashrdi3);
+ EXPORT_SYMBOL(__ashldi3);
+ EXPORT_SYMBOL(__lshrdi3);
++
++extern void __ucmpdi2(void);
++EXPORT_SYMBOL(__ucmpdi2);
+ #endif
+ 
+ EXPORT_SYMBOL(memcpy);
+

@@ -1,0 +1,133 @@
+From 95f80c44731c46261b0ba334b35ee803f21ef60b Mon Sep 17 00:00:00 2001
+From: Grant Likely <grant.likely@secretlab.ca>
+Date: Mon, 4 Dec 2006 23:01:13 -0700
+Subject: [PATCH] [POWERPC] Misc EFIKA fixups for rtas/chrp
+
+---
+ arch/powerpc/kernel/proc_ppc64.c    |    9 --------
+ arch/powerpc/kernel/rtas-proc.c     |   36 +++++++++++++++++++++++++---------
+ arch/powerpc/platforms/chrp/setup.c |    9 ++++++++
+ 3 files changed, 35 insertions(+), 19 deletions(-)
+
+diff --git a/arch/powerpc/kernel/proc_ppc64.c b/arch/powerpc/kernel/proc_ppc64.c
+index dd7001c..fa54220 100644
+--- a/arch/powerpc/kernel/proc_ppc64.c
++++ b/arch/powerpc/kernel/proc_ppc64.c
+@@ -51,15 +51,6 @@ static int __init proc_ppc64_create(void)
+ 	if (!root)
+ 		return 1;
+ 
+-	if (!of_find_node_by_path("/rtas"))
+-		return 0;
+-
+-	if (!proc_mkdir("rtas", root))
+-		return 1;
+-
+-	if (!proc_symlink("rtas", NULL, "ppc64/rtas"))
+-		return 1;
+-
+ 	return 0;
+ }
+ core_initcall(proc_ppc64_create);
+diff --git a/arch/powerpc/kernel/rtas-proc.c b/arch/powerpc/kernel/rtas-proc.c
+index 2fe82ab..4c06c32 100644
+--- a/arch/powerpc/kernel/rtas-proc.c
++++ b/arch/powerpc/kernel/rtas-proc.c
+@@ -253,43 +253,59 @@ static void get_location_code(struct seq_file *m,
+ static void check_location_string(struct seq_file *m, const char *c);
+ static void check_location(struct seq_file *m, const char *c);
+ 
++static int __init proc_rtas_create(void)
++{
++        struct proc_dir_entry *root;
++
++        root = proc_mkdir("rtas" , NULL);
++        if (!root)
++                return -1;
++
++#ifdef CONFIG_PPC64
++        if (!proc_symlink("rtas", NULL, "ppc64/rtas"))
++                return -1;
++#endif
++
++        return 0;
++}
++
+ static int __init proc_rtas_init(void)
+ {
+ 	struct proc_dir_entry *entry;
+ 
+-	if (!machine_is(pseries))
+-		return -ENODEV;
+-
+ 	rtas_node = of_find_node_by_name(NULL, "rtas");
+ 	if (rtas_node == NULL)
+ 		return -ENODEV;
+ 
+-	entry = create_proc_entry("ppc64/rtas/progress", S_IRUGO|S_IWUSR, NULL);
++	if (proc_rtas_create() != 0)
++		return -ENODEV;
++
++	entry = create_proc_entry("rtas/progress", S_IRUGO|S_IWUSR, NULL);
+ 	if (entry)
+ 		entry->proc_fops = &ppc_rtas_progress_operations;
+ 
+-	entry = create_proc_entry("ppc64/rtas/clock", S_IRUGO|S_IWUSR, NULL);
++	entry = create_proc_entry("rtas/clock", S_IRUGO|S_IWUSR, NULL);
+ 	if (entry)
+ 		entry->proc_fops = &ppc_rtas_clock_operations;
+ 
+-	entry = create_proc_entry("ppc64/rtas/poweron", S_IWUSR|S_IRUGO, NULL);
++	entry = create_proc_entry("rtas/poweron", S_IWUSR|S_IRUGO, NULL);
+ 	if (entry)
+ 		entry->proc_fops = &ppc_rtas_poweron_operations;
+ 
+-	entry = create_proc_entry("ppc64/rtas/sensors", S_IRUGO, NULL);
++	entry = create_proc_entry("rtas/sensors", S_IRUGO, NULL);
+ 	if (entry)
+ 		entry->proc_fops = &ppc_rtas_sensors_operations;
+ 
+-	entry = create_proc_entry("ppc64/rtas/frequency", S_IWUSR|S_IRUGO,
++	entry = create_proc_entry("rtas/frequency", S_IWUSR|S_IRUGO,
+ 				  NULL);
+ 	if (entry)
+ 		entry->proc_fops = &ppc_rtas_tone_freq_operations;
+ 
+-	entry = create_proc_entry("ppc64/rtas/volume", S_IWUSR|S_IRUGO, NULL);
++	entry = create_proc_entry("rtas/volume", S_IWUSR|S_IRUGO, NULL);
+ 	if (entry)
+ 		entry->proc_fops = &ppc_rtas_tone_volume_operations;
+ 
+-	entry = create_proc_entry("ppc64/rtas/rmo_buffer", S_IRUSR, NULL);
++	entry = create_proc_entry("rtas/rmo_buffer", S_IRUSR, NULL);
+ 	if (entry)
+ 		entry->proc_fops = &ppc_rtas_rmo_buf_ops;
+ 
+diff --git a/arch/powerpc/platforms/chrp/setup.c b/arch/powerpc/platforms/chrp/setup.c
+index e1f51d4..ec4515c 100644
+--- a/arch/powerpc/platforms/chrp/setup.c
++++ b/arch/powerpc/platforms/chrp/setup.c
+@@ -580,11 +580,20 @@ static int __init chrp_probe(void)
+ {
+  	char *dtype = of_get_flat_dt_prop(of_get_flat_dt_root(),
+  					  "device_type", NULL);
++
++ 	char *model = of_get_flat_dt_prop(of_get_flat_dt_root(),
++ 					  "model", NULL);
+  	if (dtype == NULL)
+  		return 0;
+  	if (strcmp(dtype, "chrp"))
+ 		return 0;
+ 
++	/*
++	 * Filter out efika because it has its own platform
++	*/
++	if (model && (strcmp(model, "EFIKA5K2") == 0) )
++		return 0;
++
+ 	ISA_DMA_THRESHOLD = ~0L;
+ 	DMA_MODE_READ = 0x44;
+ 	DMA_MODE_WRITE = 0x48;
+-- 
+1.4.4.2
+

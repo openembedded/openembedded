@@ -1,0 +1,47 @@
+From 2086d309f8b8de0b41119596d43f2a7bfe028a89 Mon Sep 17 00:00:00 2001
+From: Grant Likely <grant.likely@secretlab.ca>
+Date: Mon, 11 Dec 2006 22:46:59 -0700
+Subject: [PATCH] [POWERPC] Change link order so mpc52xx-fec always shows up as eth0
+
+Signed-off-by: Grant Likely <grant.likely@secretlab.ca>
+---
+ drivers/net/Makefile          |    2 +-
+ drivers/net/fec_mpc52xx/fec.c |    2 ++
+ 2 files changed, 3 insertions(+), 1 deletions(-)
+
+diff --git a/drivers/net/Makefile b/drivers/net/Makefile
+index e6f903d..95f0963 100644
+--- a/drivers/net/Makefile
++++ b/drivers/net/Makefile
+@@ -24,6 +24,7 @@ ucc_geth_driver-objs := ucc_geth.o ucc_geth_phy.o
+ obj-$(CONFIG_PLIP) += plip.o
+ 
+ obj-$(CONFIG_ROADRUNNER) += rrunner.o
++obj-$(CONFIG_FEC_MPC52xx) += fec_mpc52xx/
+ 
+ obj-$(CONFIG_HAPPYMEAL) += sunhme.o
+ obj-$(CONFIG_SUNLANCE) += sunlance.o
+@@ -196,7 +197,6 @@ obj-$(CONFIG_SMC91X) += smc91x.o
+ obj-$(CONFIG_SMC911X) += smc911x.o
+ obj-$(CONFIG_DM9000) += dm9000.o
+ obj-$(CONFIG_FEC_8XX) += fec_8xx/
+-obj-$(CONFIG_FEC_MPC52xx) += fec_mpc52xx/
+ 
+ obj-$(CONFIG_MACB) += macb.o
+ 
+diff --git a/drivers/net/fec_mpc52xx/fec.c b/drivers/net/fec_mpc52xx/fec.c
+index 894da79..30cef2b 100644
+--- a/drivers/net/fec_mpc52xx/fec.c
++++ b/drivers/net/fec_mpc52xx/fec.c
+@@ -731,6 +731,8 @@ mpc52xx_fec_probe(struct device *dev)
+ 	fec_mii_init(ndev);
+ 	
+ 	/* We're done ! */
++	printk(KERN_INFO "%s: mpc52xx-fec at %#lx,",
++	       ndev->name, (long)mem->start);
+ #if defined(CONFIG_PPC_MERGE)
+ 	dev_set_drvdata(&op->dev, ndev);
+ #else
+-- 
+1.4.4.2
+

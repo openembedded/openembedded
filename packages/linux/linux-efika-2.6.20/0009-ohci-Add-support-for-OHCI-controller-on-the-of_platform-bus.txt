@@ -1,0 +1,349 @@
+From 944afcaa19737396ed514e3e845a3db2de9377f3 Mon Sep 17 00:00:00 2001
+From: Sylvain Munaut <tnt@246tNt.com>
+Date: Wed, 13 Dec 2006 21:03:30 +0100
+Subject: [PATCH] [PATCH] ohci: Add support for OHCI controller on the of_platform bus
+
+PPC embedded systems can have a ohci controller builtin. In the
+new model, it will end up as a driver on the of_platform bus,
+this patches takes care of them.
+
+Signed-off-by: Sylvain Munaut <tnt@246tNt.com>
+Acked-by: David Brownell <dbrownell@users.sourceforge.net>
+Signed-off-by: Greg Kroah-Hartman <gregkh@suse.de>
+---
+ drivers/usb/host/Kconfig       |   23 ++++-
+ drivers/usb/host/ohci-hcd.c    |   20 ++++
+ drivers/usb/host/ohci-ppc-of.c |  232 ++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 274 insertions(+), 1 deletions(-)
+
+diff --git a/drivers/usb/host/Kconfig b/drivers/usb/host/Kconfig
+index faabce8..c49715d 100644
+--- a/drivers/usb/host/Kconfig
++++ b/drivers/usb/host/Kconfig
+@@ -107,9 +107,30 @@ config USB_OHCI_HCD_PPC_SOC
+ 	  Enables support for the USB controller on the MPC52xx or
+ 	  STB03xxx processor chip.  If unsure, say Y.
+ 
++config USB_OHCI_HCD_PPC_OF
++	bool "OHCI support for PPC USB controller on OF platform bus"
++	depends on USB_OHCI_HCD && PPC_OF
++	default y
++	---help---
++	  Enables support for the USB controller PowerPC present on the
++	  OpenFirmware platform bus.
++
++config USB_OHCI_HCD_PPC_OF_BE
++	bool "Support big endian HC"
++	depends on USB_OHCI_HCD_PPC_OF
++	default y
++	select USB_OHCI_BIG_ENDIAN_DESC
++	select USB_OHCI_BIG_ENDIAN_MMIO
++
++config USB_OHCI_HCD_PPC_OF_LE
++	bool "Support little endian HC"
++	depends on USB_OHCI_HCD_PPC_OF
++	default n
++	select USB_OHCI_LITTLE_ENDIAN
++
+ config USB_OHCI_HCD_PCI
+ 	bool "OHCI support for PCI-bus USB controllers"
+-	depends on USB_OHCI_HCD && PCI && (STB03xxx || PPC_MPC52xx)
++	depends on USB_OHCI_HCD && PCI && (STB03xxx || PPC_MPC52xx || USB_OHCI_HCD_PPC_OF)
+ 	default y
+ 	select USB_OHCI_LITTLE_ENDIAN
+ 	---help---
+diff --git a/drivers/usb/host/ohci-hcd.c b/drivers/usb/host/ohci-hcd.c
+index 9926b8f..c6ae1ff 100644
+--- a/drivers/usb/host/ohci-hcd.c
++++ b/drivers/usb/host/ohci-hcd.c
+@@ -914,8 +914,14 @@ MODULE_LICENSE ("GPL");
+ #endif
+ 
+ 
++#ifdef CONFIG_USB_OHCI_HCD_PPC_OF
++#include "ohci-ppc-of.c"
++#define OF_PLATFORM_DRIVER	ohci_hcd_ppc_of_driver
++#endif
++
+ #if	!defined(PCI_DRIVER) &&		\
+ 	!defined(PLATFORM_DRIVER) &&	\
++	!defined(OF_PLATFORM_DRIVER) &&	\
+ 	!defined(SA1111_DRIVER)
+ #error "missing bus glue for ohci-hcd"
+ #endif
+@@ -939,6 +945,13 @@ static int __init ohci_hcd_mod_init(void)
+ 	ls++;
+ #endif
+ 
++#ifdef OF_PLATFORM_DRIVER
++	retval = of_register_platform_driver(&OF_PLATFORM_DRIVER);
++	if (retval < 0)
++		goto error;
++	ls++;
++#endif
++
+ #ifdef SA1111_DRIVER
+ 	retval = sa1111_driver_register(&SA1111_DRIVER);
+ 	if (retval < 0)
+@@ -961,6 +974,10 @@ error:
+ 	if (ls--)
+ 		platform_driver_unregister(&PLATFORM_DRIVER);
+ #endif
++#ifdef OF_PLATFORM_DRIVER
++	if (ls--)
++		of_unregister_platform_driver(&OF_PLATFORM_DRIVER);
++#endif
+ #ifdef SA1111_DRIVER
+ 	if (ls--)
+ 		sa1111_driver_unregister(&SA1111_DRIVER);
+@@ -977,6 +994,9 @@ static void __exit ohci_hcd_mod_exit(void)
+ #ifdef SA1111_DRIVER
+ 	sa1111_driver_unregister(&SA1111_DRIVER);
+ #endif
++#ifdef OF_PLATFORM_DRIVER
++	of_unregister_platform_driver(&OF_PLATFORM_DRIVER);
++#endif
+ #ifdef PLATFORM_DRIVER
+ 	platform_driver_unregister(&PLATFORM_DRIVER);
+ #endif
+diff --git a/drivers/usb/host/ohci-ppc-of.c b/drivers/usb/host/ohci-ppc-of.c
+new file mode 100644
+index 0000000..84b555b
+--- /dev/null
++++ b/drivers/usb/host/ohci-ppc-of.c
+@@ -0,0 +1,232 @@
++/*
++ * OHCI HCD (Host Controller Driver) for USB.
++ *
++ * (C) Copyright 1999 Roman Weissgaerber <weissg@vienna.at>
++ * (C) Copyright 2000-2002 David Brownell <dbrownell@users.sourceforge.net>
++ * (C) Copyright 2002 Hewlett-Packard Company
++ * (C) Copyright 2006 Sylvain Munaut <tnt@246tNt.com>
++ *
++ * Bus glue for OHCI HC on the of_platform bus
++ *
++ * Modified for of_platform bus from ohci-sa1111.c
++ *
++ * This file is licenced under the GPL.
++ */
++
++#include <linux/signal.h>
++
++#include <asm/of_platform.h>
++#include <asm/prom.h>
++
++
++static int __devinit
++ohci_ppc_of_start(struct usb_hcd *hcd)
++{
++	struct ohci_hcd	*ohci = hcd_to_ohci(hcd);
++	int		ret;
++
++	if ((ret = ohci_init(ohci)) < 0)
++		return ret;
++
++	if ((ret = ohci_run(ohci)) < 0) {
++		err("can't start %s", ohci_to_hcd(ohci)->self.bus_name);
++		ohci_stop(hcd);
++		return ret;
++	}
++
++	return 0;
++}
++
++static const struct hc_driver ohci_ppc_of_hc_driver = {
++	.description =		hcd_name,
++	.product_desc =		"OF OHCI",
++	.hcd_priv_size =	sizeof(struct ohci_hcd),
++
++	/*
++	 * generic hardware linkage
++	 */
++	.irq =			ohci_irq,
++	.flags =		HCD_USB11 | HCD_MEMORY,
++
++	/*
++	 * basic lifecycle operations
++	 */
++	.start =		ohci_ppc_of_start,
++	.stop =			ohci_stop,
++	.shutdown = 		ohci_shutdown,
++
++	/*
++	 * managing i/o requests and associated device resources
++	 */
++	.urb_enqueue =		ohci_urb_enqueue,
++	.urb_dequeue =		ohci_urb_dequeue,
++	.endpoint_disable =	ohci_endpoint_disable,
++
++	/*
++	 * scheduling support
++	 */
++	.get_frame_number =	ohci_get_frame,
++
++	/*
++	 * root hub support
++	 */
++	.hub_status_data =	ohci_hub_status_data,
++	.hub_control =		ohci_hub_control,
++	.hub_irq_enable =	ohci_rhsc_enable,
++#ifdef	CONFIG_PM
++	.bus_suspend =		ohci_bus_suspend,
++	.bus_resume =		ohci_bus_resume,
++#endif
++	.start_port_reset =	ohci_start_port_reset,
++};
++
++
++static int __devinit
++ohci_hcd_ppc_of_probe(struct of_device *op, const struct of_device_id *match)
++{
++	struct device_node *dn = op->node;
++	struct usb_hcd *hcd;
++	struct ohci_hcd	*ohci;
++	struct resource res;
++	int irq;
++
++	int rv;
++	int is_bigendian;
++
++	if (usb_disabled())
++		return -ENODEV;
++
++	is_bigendian = 
++		device_is_compatible(dn, "ohci-bigendian") ||
++		device_is_compatible(dn, "ohci-be");;
++
++	dev_dbg(&op->dev, "initializing PPC-OF USB Controller\n");
++
++	rv = of_address_to_resource(dn, 0, &res);
++	if (rv)
++		return rv;
++
++	hcd = usb_create_hcd(&ohci_ppc_of_hc_driver, &op->dev, "PPC-OF USB");
++	if (!hcd)
++		return -ENOMEM;
++
++	hcd->rsrc_start = res.start;
++	hcd->rsrc_len = res.end - res.start + 1;
++
++	if (!request_mem_region(hcd->rsrc_start, hcd->rsrc_len, hcd_name)) {
++		printk(KERN_ERR __FILE__ ": request_mem_region failed\n");
++		rv = -EBUSY;
++		goto err_rmr;
++	}
++
++	irq = irq_of_parse_and_map(dn, 0);
++	if (irq == NO_IRQ) {
++		printk(KERN_ERR __FILE__ ": irq_of_parse_and_map failed\n");
++		rv = -EBUSY;
++		goto err_irq;
++	}
++
++	hcd->regs = ioremap(hcd->rsrc_start, hcd->rsrc_len);
++	if (!hcd->regs) {
++		printk(KERN_ERR __FILE__ ": ioremap failed\n");
++		rv = -ENOMEM;
++		goto err_ioremap;
++	}
++
++	ohci = hcd_to_ohci(hcd);
++	if (is_bigendian)
++		ohci->flags |= OHCI_QUIRK_BE_MMIO | OHCI_QUIRK_BE_DESC;
++
++	ohci_hcd_init(ohci);
++
++	rv = usb_add_hcd(hcd, irq, 0);
++	if (rv == 0)
++		return 0;
++
++	iounmap(hcd->regs);
++err_ioremap:
++	irq_dispose_mapping(irq);
++err_irq:
++	release_mem_region(hcd->rsrc_start, hcd->rsrc_len);
++err_rmr:
++ 	usb_put_hcd(hcd);
++
++	return rv;
++}
++
++static int ohci_hcd_ppc_of_remove(struct of_device *op)
++{
++	struct usb_hcd *hcd = dev_get_drvdata(&op->dev);
++	dev_set_drvdata(&op->dev, NULL);
++
++	dev_dbg(&op->dev, "stopping PPC-OF USB Controller\n");
++
++	usb_remove_hcd(hcd);
++
++	iounmap(hcd->regs);
++	irq_dispose_mapping(hcd->irq);
++	release_mem_region(hcd->rsrc_start, hcd->rsrc_len);
++
++	usb_put_hcd(hcd);
++
++	return 0;
++}
++
++static int ohci_hcd_ppc_of_shutdown(struct of_device *op)
++{
++	struct usb_hcd *hcd = dev_get_drvdata(&op->dev);
++
++        if (hcd->driver->shutdown)
++                hcd->driver->shutdown(hcd);
++
++	return 0;
++}
++
++
++static struct of_device_id ohci_hcd_ppc_of_match[] = {
++#ifdef CONFIG_USB_OHCI_HCD_PPC_OF_BE
++	{
++		.name = "usb",
++		.compatible = "ohci-bigendian",
++	},
++	{
++		.name = "usb",
++		.compatible = "ohci-be",
++	},
++#endif
++#ifdef CONFIG_USB_OHCI_HCD_PPC_OF_LE
++	{
++		.name = "usb",
++		.compatible = "ohci-littledian",
++	},
++	{
++		.name = "usb",
++		.compatible = "ohci-le",
++	},
++#endif
++	{},
++};
++MODULE_DEVICE_TABLE(of, ohci_hcd_ppc_of_match); 
++
++#if	!defined(CONFIG_USB_OHCI_HCD_PPC_OF_BE) && \
++	!defined(CONFIG_USB_OHCI_HCD_PPC_OF_LE)
++#error "No endianess selected for ppc-of-ohci"
++#endif
++
++
++static struct of_platform_driver ohci_hcd_ppc_of_driver = {
++	.name		= "ppc-of-ohci",
++	.match_table	= ohci_hcd_ppc_of_match,
++	.probe		= ohci_hcd_ppc_of_probe,
++	.remove		= ohci_hcd_ppc_of_remove,
++	.shutdown 	= ohci_hcd_ppc_of_shutdown,
++#ifdef CONFIG_PM
++	/*.suspend	= ohci_hcd_ppc_soc_drv_suspend,*/
++	/*.resume	= ohci_hcd_ppc_soc_drv_resume,*/
++#endif
++	.driver		= {
++		.name	= "ppc-of-ohci",
++		.owner	= THIS_MODULE,
++	},
++};
++
+-- 
+1.4.4.2
+

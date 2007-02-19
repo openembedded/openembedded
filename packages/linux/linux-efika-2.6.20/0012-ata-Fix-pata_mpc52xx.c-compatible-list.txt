@@ -1,0 +1,31 @@
+From 20e872b5fed46ba15ed6f2c29cc2adf98657c9a4 Mon Sep 17 00:00:00 2001
+From: Sylvain Munaut <tnt@246tNt.com>
+Date: Sat, 23 Dec 2006 22:20:06 +0100
+Subject: [PATCH] [PATCH] ata: Fix pata_mpc52xx.c 'compatible' list
+
+The list contained an entry to support a non-standard device-tree,
+this is now handled by fixups in early boot.
+
+Signed-off-by: Sylvain Munaut <tnt@246tNt.com>
+---
+ drivers/ata/pata_mpc52xx.c |    4 +---
+ 1 files changed, 1 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/ata/pata_mpc52xx.c b/drivers/ata/pata_mpc52xx.c
+index 8b7019a..ff40016 100644
+--- a/drivers/ata/pata_mpc52xx.c
++++ b/drivers/ata/pata_mpc52xx.c
+@@ -509,9 +509,7 @@ mpc52xx_ata_resume(struct of_device *op)
+ 
+ static struct of_device_id mpc52xx_ata_of_match[] = {
+ 	{
+-		.compatible = "mpc5200-ata",
+-	},
+-	{
++		.type = "ata",
+ 		.compatible = "mpc52xx-ata",
+ 	},
+ 	{},
+-- 
+1.4.4.2
+

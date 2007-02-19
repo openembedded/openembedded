@@ -1,0 +1,1783 @@
+From 6b6e09cca4346ea737db427d568843034eb348fa Mon Sep 17 00:00:00 2001
+From: Andrey Volkov <avolkov@varma-el.com>
+Date: Fri, 18 Aug 2006 10:02:29 -0600
+Subject: [PATCH] [PATCH 02/02] Fec MPC5200 eth driver
+
+Second part. Contain only FEC parts.
+Depended on previous bestcomm patch.
+
+Signed-Off-By: Andrey Volkov <avolkov at varma-el.com>
+---
+ drivers/net/Kconfig               |    1 +
+ drivers/net/Makefile              |    1 +
+ drivers/net/fec_mpc52xx/Kconfig   |   23 ++
+ drivers/net/fec_mpc52xx/Makefile  |    2 +
+ drivers/net/fec_mpc52xx/fec.c     |  768 +++++++++++++++++++++++++++++++++++++
+ drivers/net/fec_mpc52xx/fec.h     |  308 +++++++++++++++
+ drivers/net/fec_mpc52xx/fec_phy.c |  526 +++++++++++++++++++++++++
+ drivers/net/fec_mpc52xx/fec_phy.h |   73 ++++
+ 8 files changed, 1702 insertions(+), 0 deletions(-)
+
+diff --git a/drivers/net/Kconfig b/drivers/net/Kconfig
+index 8aa8dd0..0658e92 100644
+--- a/drivers/net/Kconfig
++++ b/drivers/net/Kconfig
+@@ -1902,6 +1902,7 @@ config NE_H8300
+ 	  controller on the Renesas H8/300 processor.
+ 
+ source "drivers/net/fec_8xx/Kconfig"
++source "drivers/net/fec_mpc52xx/Kconfig"
+ source "drivers/net/fs_enet/Kconfig"
+ 
+ endmenu
+diff --git a/drivers/net/Makefile b/drivers/net/Makefile
+index 4c0d4e5..e6f903d 100644
+--- a/drivers/net/Makefile
++++ b/drivers/net/Makefile
+@@ -196,6 +196,7 @@ obj-$(CONFIG_SMC91X) += smc91x.o
+ obj-$(CONFIG_SMC911X) += smc911x.o
+ obj-$(CONFIG_DM9000) += dm9000.o
+ obj-$(CONFIG_FEC_8XX) += fec_8xx/
++obj-$(CONFIG_FEC_MPC52xx) += fec_mpc52xx/
+ 
+ obj-$(CONFIG_MACB) += macb.o
+ 
+diff --git a/drivers/net/fec_mpc52xx/Kconfig b/drivers/net/fec_mpc52xx/Kconfig
+new file mode 100644
+index 0000000..098c3fa
+--- /dev/null
++++ b/drivers/net/fec_mpc52xx/Kconfig
+@@ -0,0 +1,23 @@
++menu "MPC5200 Networking Options"
++	depends PPC_MPC52xx && NET_ETHERNET
++
++config FEC_MPC52xx
++	bool "FEC Ethernet"
++	depends on NET_ETHERNET
++	select PPC_BESTCOMM
++	select CRC32
++	---help---
++	  This option enables support for the MPC5200's on-chip
++	  Fast Ethernet Controller
++
++config USE_MDIO
++	bool "  Use external Ethernet MII PHY"
++	select MII
++	depends FEC_MPC52xx
++	---help---
++	  The MPC5200's FEC can connect to the Ethernet either with
++	  an external MII PHY chip or 10 Mbps 7-wire interface 
++	  (Motorola? industry standard).
++	  If your board uses an external PHY, say y, else n.
++
++endmenu
+diff --git a/drivers/net/fec_mpc52xx/Makefile b/drivers/net/fec_mpc52xx/Makefile
+new file mode 100644
+index 0000000..b8ae05c
+--- /dev/null
++++ b/drivers/net/fec_mpc52xx/Makefile
+@@ -0,0 +1,2 @@
++obj-$(CONFIG_FEC_MPC52xx) 	+= fec.o
++obj-$(CONFIG_USE_MDIO)		+= fec_phy.o
+diff --git a/drivers/net/fec_mpc52xx/fec.c b/drivers/net/fec_mpc52xx/fec.c
+new file mode 100644
+index 0000000..b5f1559
+--- /dev/null
++++ b/drivers/net/fec_mpc52xx/fec.c
+@@ -0,0 +1,768 @@
++/*
++ * drivers/net/fec_mpc52xx/fec.c
++ *
++ * Driver for the MPC5200 Fast Ethernet Controller
++ *
++ * Author: Dale Farnsworth <dfarnsworth@mvista.com>
++ *
++ * 2003-2004 (c) MontaVista, Software, Inc.  This file is licensed under
++ * the terms of the GNU General Public License version 2.  This program
++ * is licensed "as is" without any warranty of any kind, whether express
++ * or implied.
++ */
++
++#include <linux/module.h>
++
++#include <linux/kernel.h>
++#include <linux/types.h>
++#include <linux/spinlock.h>
++#include <linux/errno.h>
++#include <linux/init.h>
++#include <linux/crc32.h>
++
++#include <linux/netdevice.h>
++#include <linux/etherdevice.h>
++#include <linux/ethtool.h>
++#include <linux/skbuff.h>
++
++#include <asm/io.h>
++#include <asm/delay.h>
++#include <asm/ppcboot.h>
++#include <asm/mpc52xx.h>
++
++#include <syslib/bestcomm/bestcomm.h>
++#include <syslib/bestcomm/fec.h>
++
++#include "fec_phy.h"
++#include "fec.h"
++
++#define DRIVER_NAME "mpc52xx-fec"
++
++static irqreturn_t fec_interrupt(int, void *, struct pt_regs *);
++static irqreturn_t fec_rx_interrupt(int, void *, struct pt_regs *);
++static irqreturn_t fec_tx_interrupt(int, void *, struct pt_regs *);
++static struct net_device_stats *fec_get_stats(struct net_device *);
++static void fec_set_multicast_list(struct net_device *dev);
++static void fec_reinit(struct net_device *dev);
++
++static u8 mpc52xx_fec_mac_addr[6];
++static u8 null_mac[6];
++
++static void fec_tx_timeout(struct net_device *dev)
++{
++	struct fec_priv *priv = (struct fec_priv *)dev->priv;
++
++	priv->stats.tx_errors++;
++
++	if (!priv->tx_full)
++		netif_wake_queue(dev);
++}
++
++static void fec_set_paddr(struct net_device *dev, u8 *mac)
++{
++	struct fec_priv *priv = (struct fec_priv *)dev->priv;
++	struct mpc52xx_fec *fec = priv->fec;
++
++	out_be32(&fec->paddr1, *(u32*)(&mac[0]));
++	out_be32(&fec->paddr2, (*(u16*)(&mac[4]) << 16) | 0x8808);
++}
++
++static void fec_get_paddr(struct net_device *dev, u8 *mac)
++{
++	struct fec_priv *priv = (struct fec_priv *)dev->priv;
++	struct mpc52xx_fec *fec = priv->fec;
++
++	*(u32*)(&mac[0]) = in_be32(&fec->paddr1);
++	*(u16*)(&mac[4]) = in_be32(&fec->paddr2) >> 16;
++}
++
++static int fec_set_mac_address(struct net_device *dev, void *addr)
++{
++	struct sockaddr *sock = (struct sockaddr *)addr;
++
++	memcpy(dev->dev_addr, sock->sa_data, dev->addr_len);
++
++	fec_set_paddr(dev, sock->sa_data);
++	return 0;
++}
++
++/* This function is called to start or restart the FEC during a link
++ * change.  This happens on fifo errors or when switching between half
++ * and full duplex.
++ */
++static void fec_restart(struct net_device *dev, int duplex)
++{
++	struct fec_priv *priv = (struct fec_priv *)dev->priv;
++	struct mpc52xx_fec *fec = priv->fec;
++	u32 rcntrl;
++	u32 tcntrl;
++	int i;
++
++	out_be32(&fec->rfifo_status, in_be32(&fec->rfifo_status) & 0x700000);
++	out_be32(&fec->tfifo_status, in_be32(&fec->tfifo_status) & 0x700000);
++	out_be32(&fec->reset_cntrl, 0x1000000);
++
++	/* Whack a reset.  We should wait for this. */
++	out_be32(&fec->ecntrl, FEC_ECNTRL_RESET);
++	for (i = 0; i < FEC_RESET_DELAY; ++i) {
++		if ((in_be32(&fec->ecntrl) & FEC_ECNTRL_RESET) == 0)
++			break;
++		udelay(1);
++	}
++	if (i == FEC_RESET_DELAY)
++		printk (KERN_ERR DRIVER_NAME ": FEC Reset timeout!\n");
++
++	/* Set station address. */
++	fec_set_paddr(dev, dev->dev_addr);
++
++	fec_set_multicast_list(dev);
++
++	rcntrl = FEC_RX_BUFFER_SIZE << 16;	/* max frame length */
++	rcntrl |= FEC_RCNTRL_FCE;
++	rcntrl |= MII_RCNTL_MODE;
++	if (duplex)
++		tcntrl = FEC_TCNTRL_FDEN;		/* FD enable */
++	else {
++		rcntrl |= FEC_RCNTRL_DRT;
++		tcntrl = 0;
++	}
++	out_be32(&fec->r_cntrl, rcntrl);
++	out_be32(&fec->x_cntrl, tcntrl);
++
++	set_phy_speed(fec, priv->phy_speed);
++
++	priv->full_duplex = duplex;
++
++	/* Clear any outstanding interrupt. */
++	out_be32(&fec->ievent, 0xffffffff);	/* clear intr events */
++
++	/* Enable interrupts we wish to service.
++	*/
++	out_be32(&fec->imask, FEC_IMASK_ENABLE);
++
++	/* And last, enable the transmit and receive processing.
++	*/
++	out_be32(&fec->ecntrl, FEC_ECNTRL_ETHER_EN);
++	out_be32(&fec->r_des_active, 0x01000000);
++
++	/* The tx ring is no longer full. */
++	if (priv->tx_full)
++	{
++		priv->tx_full = 0;
++		netif_wake_queue(dev);
++	}
++}
++
++static void fec_free_rx_buffers(struct sdma *s)
++{
++	struct sk_buff *skb;
++
++	while (!sdma_queue_empty(s)) {
++		skb = sdma_retrieve_buffer(s, NULL);
++		kfree_skb(skb);
++	}
++}
++
++static int fec_open(struct net_device *dev)
++{
++	struct fec_priv *priv = (struct fec_priv *)dev->priv;
++	struct sk_buff *skb;
++	void *data;
++
++	sdma_fec_rx_init(priv->rx_sdma, priv->rx_fifo, FEC_RX_BUFFER_SIZE);
++	sdma_fec_tx_init(priv->tx_sdma, priv->tx_fifo);
++
++	while (!sdma_queue_full(priv->rx_sdma)) {
++		skb = dev_alloc_skb(FEC_RX_BUFFER_SIZE);
++		if (skb == 0)
++			goto eagain;
++
++		/* zero out the initial receive buffers to aid debugging */
++		memset(skb->data, 0, FEC_RX_BUFFER_SIZE);
++		data = (void *)virt_to_phys(skb->data);
++		sdma_submit_buffer(priv->rx_sdma, skb, data, FEC_RX_BUFFER_SIZE);
++	}
++
++	fec_set_paddr(dev, dev->dev_addr);
++
++	if (fec_mii_wait(dev) != 0)
++		return -ENODEV;
++
++	sdma_enable(priv->rx_sdma);
++	sdma_enable(priv->tx_sdma);
++
++	netif_start_queue(dev);
++
++	return 0;
++
++eagain:
++	printk(KERN_ERR "fec_open: failed\n");
++
++	fec_free_rx_buffers(priv->rx_sdma);
++
++	return -EAGAIN;
++}
++
++/* This will only be invoked if your driver is _not_ in XOFF state.
++ * What this means is that you need not check it, and that this
++ * invariant will hold if you make sure that the netif_*_queue()
++ * calls are done at the proper times.
++ */
++static int fec_hard_start_xmit(struct sk_buff *skb, struct net_device *dev)
++{
++	struct fec_priv *priv = (struct fec_priv *)dev->priv;
++	void *data;
++
++	if (sdma_queue_full(priv->tx_sdma))
++		panic("MPC52xx transmit queue overrun\n");
++
++	spin_lock_irq(&priv->lock);
++	dev->trans_start = jiffies;
++
++	data = (void *)virt_to_phys(skb->data);
++	sdma_fec_tfd_submit_buffer(priv->tx_sdma, skb, data, skb->len);
++
++	if (sdma_queue_full(priv->tx_sdma)) {
++		priv->tx_full = 1;
++		netif_stop_queue(dev);
++	}
++	spin_unlock_irq(&priv->lock);
++
++	return 0;
++}
++
++/* This handles BestComm transmit task interrupts
++ */
++static irqreturn_t fec_tx_interrupt(int irq, void *dev_id, struct pt_regs *regs)
++{
++	struct net_device *dev = dev_id;
++	struct fec_priv *priv = (struct fec_priv *)dev->priv;
++	struct sk_buff *skb;
++
++	for (;;) {
++		sdma_clear_irq(priv->tx_sdma);
++		spin_lock(&priv->lock);
++		if (!sdma_buffer_done(priv->tx_sdma)) {
++			spin_unlock(&priv->lock);
++			break;
++		}
++		skb = sdma_retrieve_buffer(priv->tx_sdma, NULL);
++
++		if (priv->tx_full) {
++			priv->tx_full = 0;
++			netif_wake_queue(dev);
++		}
++		spin_unlock(&priv->lock);
++		dev_kfree_skb_irq(skb);
++	}
++
++	return IRQ_HANDLED;
++}
++
++static irqreturn_t fec_rx_interrupt(int irq, void *dev_id, struct pt_regs *regs)
++{
++	struct net_device *dev = dev_id;
++	struct fec_priv *priv = (struct fec_priv *)dev->priv;
++	struct sk_buff *skb;
++	struct sk_buff *rskb;
++	int status;
++
++	for (;;) {
++		sdma_clear_irq(priv->rx_sdma);
++
++		if (!sdma_buffer_done(priv->rx_sdma))
++			break;
++
++		rskb = sdma_retrieve_buffer(priv->rx_sdma, &status);
++
++		/* Test for errors in received frame */
++		if (status & 0x370000) { 
++			/* Drop packet and reuse the buffer */
++			sdma_submit_buffer(
++				priv->rx_sdma, rskb,
++				(void *)virt_to_phys(rskb->data),
++				FEC_RX_BUFFER_SIZE );
++			
++			priv->stats.rx_dropped++;
++
++			continue;
++		}
++
++		/* allocate replacement skb */
++		skb = dev_alloc_skb(FEC_RX_BUFFER_SIZE);
++		if (skb) {
++			/* Process the received skb */
++			int length = (status & ((1<<11) - 1)) - sizeof(u32);
++			skb_put(rskb, length);	/* length included CRC32 */
++
++			rskb->dev = dev;
++			rskb->protocol = eth_type_trans(rskb, dev);
++			netif_rx(rskb);
++			dev->last_rx = jiffies;
++		} else {
++			/* Can't get a new one : reuse the same & drop pkt */
++			printk(KERN_NOTICE
++				"%s: Memory squeeze, dropping packet.\n",
++				dev->name);
++			priv->stats.rx_dropped++;
++
++			skb = rskb;
++		}
++
++		sdma_submit_buffer( priv->rx_sdma, skb,
++			(void *)virt_to_phys(skb->data), FEC_RX_BUFFER_SIZE );
++	}
++
++	return IRQ_HANDLED;
++}
++
++static irqreturn_t fec_interrupt(int irq, void *dev_id, struct pt_regs *regs)
++{
++	struct net_device *dev = (struct net_device *)dev_id;
++	struct fec_priv *priv = (struct fec_priv *)dev->priv;
++	struct mpc52xx_fec *fec = priv->fec;
++	int ievent;
++
++	ievent = in_be32(&fec->ievent);
++	out_be32(&fec->ievent, ievent);		/* clear pending events */
++
++	if (ievent & (FEC_IEVENT_RFIFO_ERROR | FEC_IEVENT_XFIFO_ERROR)) {
++		if (ievent & FEC_IEVENT_RFIFO_ERROR)
++			printk(KERN_WARNING "FEC_IEVENT_RFIFO_ERROR\n");
++		if (ievent & FEC_IEVENT_XFIFO_ERROR)
++			printk(KERN_WARNING "FEC_IEVENT_XFIFO_ERROR\n");
++		fec_reinit(dev);
++	}
++	else if (ievent & FEC_IEVENT_MII)
++		fec_mii(dev);
++	return IRQ_HANDLED;
++}
++
++static int fec_close(struct net_device *dev)
++{
++	struct fec_priv *priv = (struct fec_priv *)dev->priv;
++	unsigned long timeout;
++
++	priv->open_time = 0;
++	priv->sequence_done = 0;
++
++	netif_stop_queue(dev);
++
++	sdma_disable(priv->rx_sdma);		/* disable receive task */
++
++	/* Wait for queues to drain */
++	timeout = jiffies + 2*HZ;
++	while (time_before(jiffies, timeout) &&
++					(!sdma_queue_empty(priv->tx_sdma) ||
++					!sdma_queue_empty(priv->rx_sdma))) {
++		set_current_state(TASK_INTERRUPTIBLE);
++		schedule_timeout(HZ/10);
++	}
++	if (time_after_eq(jiffies, timeout))
++		printk(KERN_ERR "fec_close: queues didn't drain\n");
++
++	sdma_disable(priv->tx_sdma);
++
++	fec_free_rx_buffers(priv->rx_sdma);
++
++	fec_get_stats(dev);
++
++	return 0;
++}
++
++/*
++ * Get the current statistics.
++ * This may be called with the card open or closed.
++ */
++static struct net_device_stats *fec_get_stats(struct net_device *dev)
++{
++	struct fec_priv *priv = (struct fec_priv *)dev->priv;
++	struct net_device_stats *stats = &priv->stats;
++	struct mpc52xx_fec *fec = priv->fec;
++
++	stats->rx_bytes = in_be32(&fec->rmon_r_octets);
++	stats->rx_packets = in_be32(&fec->rmon_r_packets);
++	stats->rx_errors = stats->rx_packets - in_be32(&fec->ieee_r_frame_ok);
++	stats->tx_bytes = in_be32(&fec->rmon_t_octets);
++	stats->tx_packets = in_be32(&fec->rmon_t_packets);
++	stats->tx_errors = stats->tx_packets - (
++					in_be32(&fec->ieee_t_frame_ok) +
++					in_be32(&fec->rmon_t_col) +
++					in_be32(&fec->ieee_t_1col) +
++					in_be32(&fec->ieee_t_mcol) +
++					in_be32(&fec->ieee_t_def));
++	stats->multicast = in_be32(&fec->rmon_r_mc_pkt);
++	stats->collisions = in_be32(&fec->rmon_t_col);
++
++	/* detailed rx_errors: */
++	stats->rx_length_errors = in_be32(&fec->rmon_r_undersize)
++					+ in_be32(&fec->rmon_r_oversize)
++					+ in_be32(&fec->rmon_r_frag)
++					+ in_be32(&fec->rmon_r_jab);
++	stats->rx_over_errors = in_be32(&fec->r_macerr);
++	stats->rx_crc_errors = in_be32(&fec->ieee_r_crc);
++	stats->rx_frame_errors = in_be32(&fec->ieee_r_align);
++	stats->rx_fifo_errors = in_be32(&fec->rmon_r_drop);
++	stats->rx_missed_errors = in_be32(&fec->rmon_r_drop);
++
++	/* detailed tx_errors: */
++	stats->tx_aborted_errors = 0;
++	stats->tx_carrier_errors = in_be32(&fec->ieee_t_cserr);
++	stats->tx_fifo_errors = in_be32(&fec->rmon_t_drop);
++	stats->tx_heartbeat_errors = in_be32(&fec->ieee_t_sqe);
++	stats->tx_window_errors = in_be32(&fec->ieee_t_lcol);
++
++	return stats;
++}
++
++static void fec_update_stat(struct net_device *dev)
++{
++	struct fec_priv *priv = (struct fec_priv *)dev->priv;
++	struct net_device_stats *stats = &priv->stats;
++	struct mpc52xx_fec *fec = priv->fec;
++
++	out_be32(&fec->mib_control, FEC_MIB_DISABLE);
++	memset_io(&fec->rmon_t_drop, 0,
++			(u32)&fec->reserved10 - (u32)&fec->rmon_t_drop);
++	out_be32(&fec->mib_control, 0);
++	memset(stats, 0, sizeof *stats);
++	fec_get_stats(dev);
++}
++
++/*
++ * Set or clear the multicast filter for this adaptor.
++ */
++static void fec_set_multicast_list(struct net_device *dev)
++{
++	struct fec_priv *priv = (struct fec_priv *)dev->priv;
++	struct mpc52xx_fec *fec = priv->fec;
++	u32 rx_control;
++
++	rx_control = in_be32(&fec->r_cntrl);
++
++	if (dev->flags & IFF_PROMISC) {
++		rx_control |= FEC_RCNTRL_PROM;
++		out_be32(&fec->r_cntrl, rx_control);
++	} else {
++		rx_control &= ~FEC_RCNTRL_PROM;
++		out_be32(&fec->r_cntrl, rx_control);
++
++		if (dev->flags & IFF_ALLMULTI) {
++			out_be32(&fec->gaddr1, 0xffffffff);
++			out_be32(&fec->gaddr2, 0xffffffff);
++		} else {
++			u32 crc;
++			int i;
++			struct dev_mc_list *dmi;
++			u32 gaddr1 = 0x00000000;
++			u32 gaddr2 = 0x00000000;
++
++			dmi = dev->mc_list;
++			for (i=0; i<dev->mc_count; i++) {
++				crc = ether_crc_le(6, dmi->dmi_addr) >> 26;
++				if (crc >= 32)
++					gaddr1 |= 1 << (crc-32);
++				else
++					gaddr2 |= 1 << crc;
++				dmi = dmi->next;
++			}
++			out_be32(&fec->gaddr1, gaddr1);
++			out_be32(&fec->gaddr2, gaddr2);
++		}
++	}
++}
++
++static void __init fec_str2mac(char *str, unsigned char *mac)
++{
++	int i;
++	u64 val64;
++
++	val64 = simple_strtoull(str, NULL, 16);
++
++	for (i = 0; i < 6; i++)
++		mac[5-i] = val64 >> (i*8);
++}
++
++int __init mpc52xx_fec_mac_setup(char *mac_address)
++{
++	fec_str2mac(mac_address, mpc52xx_fec_mac_addr);
++	return 0;
++}
++
++__setup("mpc52xx-mac=", mpc52xx_fec_mac_setup);
++
++static void fec_hw_init(struct net_device *dev)
++{
++	struct fec_priv *priv = (struct fec_priv *)dev->priv;
++	struct mpc52xx_fec *fec = priv->fec;
++	bd_t *bd = (bd_t *) &__res;
++
++	out_be32(&fec->op_pause, 0x00010020);
++	out_be32(&fec->rfifo_cntrl, 0x0f000000);
++	out_be32(&fec->rfifo_alarm, 0x0000030c);
++	out_be32(&fec->tfifo_cntrl, 0x0f000000);
++	out_be32(&fec->tfifo_alarm, 0x00000100);
++	out_be32(&fec->x_wmrk, 0x3);		/* xmit fifo watermark = 256 */
++	out_be32(&fec->xmit_fsm, 0x03000000);	/* enable crc generation */
++	out_be32(&fec->iaddr1, 0x00000000);	/* No individual filter */
++	out_be32(&fec->iaddr2, 0x00000000);	/* No individual filter */
++
++	priv->phy_speed = ((bd->bi_ipbfreq >> 20) / 5) << 1;
++
++	fec_restart(dev, 0);	/* always use half duplex mode only */
++	/*
++	 * Read MIB counters in order to reset them,
++	 * then zero all the stats fields in memory
++	 */
++	fec_update_stat(dev);
++}
++
++
++static void fec_reinit(struct net_device *dev)
++{
++	struct fec_priv *priv = (struct fec_priv *)dev->priv;
++	struct mpc52xx_fec *fec = priv->fec;
++	static void fec_update_stat(struct net_device *);
++
++	netif_stop_queue(dev);
++	out_be32(&fec->imask, 0x0);
++
++	/* Disable the rx and tx tasks. */
++	sdma_disable(priv->rx_sdma);
++	sdma_disable(priv->tx_sdma);
++
++	/* Stop FEC */
++	out_be32(&fec->ecntrl, in_be32(&fec->ecntrl) & ~0x2);
++
++	/* Restart the DMA tasks */
++	sdma_fec_rx_init(priv->rx_sdma, priv->rx_fifo, FEC_RX_BUFFER_SIZE);
++	sdma_fec_tx_init(priv->tx_sdma, priv->tx_fifo);
++	fec_hw_init(dev);
++
++	if (priv->sequence_done) {		 /* redo the fec_open() */
++		fec_free_rx_buffers(priv->rx_sdma);
++		fec_open(dev);
++	}
++	return;
++}
++
++
++/* ======================================================================== */
++/* Platform Driver                                                               */
++/* ======================================================================== */
++
++static int __devinit
++mpc52xx_fec_probe(struct device *dev)
++{
++	int ret;
++	struct platform_device *pdev = to_platform_device(dev);
++	struct net_device *ndev;
++	struct fec_priv *priv = NULL;
++	struct resource *mem;
++
++	volatile int dbg=0;
++	while(dbg)
++		__asm("nop");
++	/* Reserve FEC control zone */
++	mem = platform_get_resource(pdev, IORESOURCE_MEM, 0);
++	if ((mem->end - mem->start + 1) != sizeof(struct mpc52xx_fec)) {
++		printk(KERN_ERR DRIVER_NAME 
++			   " - invalid resource size (%lx != %x), check mpc52xx_devices.c\n",
++									mem->end - mem->start + 1, sizeof(struct mpc52xx_fec));
++		return -EINVAL;
++	}
++	
++	if (!request_mem_region(mem->start, sizeof(struct mpc52xx_fec),
++	                        DRIVER_NAME))
++		return -EBUSY;
++
++	/* Get the ether ndev & it's private zone */
++	ndev = alloc_etherdev(sizeof(struct fec_priv));
++	if (!ndev) {
++		ret = -ENOMEM;
++		goto probe_error;
++	}
++	
++	priv = (struct fec_priv *)ndev->priv;
++	
++	/* Init ether ndev with what we have */
++	ndev->open		= fec_open;
++	ndev->stop		= fec_close;
++	ndev->hard_start_xmit	= fec_hard_start_xmit;
++	ndev->do_ioctl		= fec_ioctl;
++	ndev->get_stats		= fec_get_stats;
++	ndev->set_mac_address	= fec_set_mac_address;
++	ndev->set_multicast_list = fec_set_multicast_list;
++	ndev->tx_timeout	= fec_tx_timeout;
++	ndev->watchdog_timeo	= FEC_WATCHDOG_TIMEOUT;
++	ndev->flags &= ~IFF_RUNNING;
++	ndev->base_addr		= mem->start;
++
++	priv->rx_fifo = ndev->base_addr + FIELD_OFFSET(mpc52xx_fec,rfifo_data);
++	priv->tx_fifo = ndev->base_addr + FIELD_OFFSET(mpc52xx_fec,tfifo_data);
++	priv->t_irq = priv->r_irq = ndev->irq = -1; /* IRQ are free for now */
++	
++	spin_lock_init(&priv->lock);
++
++	/* ioremap the zones */
++	priv->fec = (struct mpc52xx_fec *)
++		ioremap(mem->start, sizeof(struct mpc52xx_fec));
++	
++	if (!priv->fec) {
++		ret = -ENOMEM;
++		goto probe_error;
++	}
++
++	/* SDMA init */
++	priv->rx_sdma = sdma_alloc(FEC_RX_NUM_BD);
++	priv->tx_sdma = sdma_alloc(FEC_TX_NUM_BD);
++	
++	if (!priv->rx_sdma || !priv->tx_sdma) {
++		ret = -ENOMEM;
++		goto probe_error;
++	}
++
++	ret = sdma_fec_rx_init(priv->rx_sdma, priv->rx_fifo,FEC_RX_BUFFER_SIZE);
++	if (ret < 0)
++		goto probe_error;
++
++	ret = sdma_fec_tx_init(priv->tx_sdma, priv->tx_fifo);
++	if (ret < 0)
++		goto probe_error;
++
++	/* Get the IRQ we need one by one */
++		/* Control */
++	ndev->irq = platform_get_irq(pdev, 0);
++	if (request_irq(ndev->irq, &fec_interrupt, SA_INTERRUPT,
++	                DRIVER_NAME "_ctrl", ndev)) {
++		printk(KERN_ERR DRIVER_NAME ": ctrl interrupt request failed\n");
++		ret = -EBUSY;
++		ndev->irq = -1;	/* Don't try to free it */
++		goto probe_error;
++	}
++
++		/* RX */
++	priv->r_irq = sdma_irq(priv->rx_sdma);
++	if (request_irq(priv->r_irq, &fec_rx_interrupt, SA_INTERRUPT,
++	                DRIVER_NAME "_rx", ndev)) {
++		printk(KERN_ERR DRIVER_NAME ": rx interrupt request failed\n");
++		ret = -EBUSY;
++		priv->r_irq = -1;	/* Don't try to free it */
++		goto probe_error;
++	}
++
++		/* TX */
++	priv->t_irq = sdma_irq(priv->tx_sdma);
++	if (request_irq(priv->t_irq, &fec_tx_interrupt, SA_INTERRUPT,
++	                DRIVER_NAME "_tx", ndev)) {
++		printk(KERN_ERR DRIVER_NAME ": tx interrupt request failed\n");
++		ret = -EBUSY;
++		priv->t_irq = -1;	/* Don't try to free it */
++		goto probe_error;
++	}
++
++	/* MAC address init */
++	if (memcmp(mpc52xx_fec_mac_addr, null_mac, 6) != 0)
++		memcpy(ndev->dev_addr, mpc52xx_fec_mac_addr, 6);
++	else
++		fec_get_paddr(ndev, ndev->dev_addr);
++
++	/* Hardware init */
++	fec_hw_init(ndev);
++
++	/* Register the new network device */
++	ret = register_netdev(ndev);
++	if(ret < 0)
++		goto probe_error;
++
++	/* MII init : After register ???? */
++	fec_mii_init(ndev);
++	
++	/* We're done ! */
++	dev_set_drvdata(dev, ndev);
++
++	return 0;
++
++
++	/* Error handling - free everything that might be allocated */
++probe_error:
++
++	if (ndev) {
++		if (priv->rx_sdma)	sdma_free(priv->rx_sdma);
++		if (priv->tx_sdma)	sdma_free(priv->tx_sdma);
++		
++		if (ndev->irq >= 0)	free_irq(ndev->irq, ndev);
++		if (priv->r_irq >= 0)	free_irq(priv->r_irq, ndev);
++		if (priv->t_irq >= 0)	free_irq(priv->t_irq, ndev);
++
++		if (priv->fec)		iounmap(priv->fec);
++	
++		free_netdev(ndev);
++	}
++	
++	release_mem_region(mem->start, sizeof(struct mpc52xx_fec));
++
++	return ret;
++}
++
++static int
++mpc52xx_fec_remove(struct device *dev)
++{
++	struct net_device *ndev;
++	struct fec_priv *priv;
++	
++	ndev = (struct net_device *) dev_get_drvdata(dev);
++	if (!ndev)
++		return 0;
++	priv = (struct fec_priv *) ndev->priv;
++
++	unregister_netdev(ndev);
++	
++	free_irq(ndev->irq, ndev);
++	free_irq(priv->r_irq, ndev);
++	free_irq(priv->t_irq, ndev);
++
++	iounmap(priv->fec);
++	
++	release_mem_region(ndev->base_addr, sizeof(struct mpc52xx_fec));
++
++	free_netdev(ndev);
++	
++	dev_set_drvdata(dev, NULL);
++	return 0;
++}
++
++static struct device_driver mpc52xx_fec_driver = {
++	.name	  = DRIVER_NAME,
++	.bus		= &platform_bus_type,
++	.probe		= mpc52xx_fec_probe,
++	.remove		= mpc52xx_fec_remove,
++#ifdef CONFIG_PM
++/*	.suspend	= mpc52xx_fec_suspend,	TODO */
++/*	.resume		= mpc52xx_fec_resume,	TODO */
++#endif
++};
++
++/* ======================================================================== */
++/* Module                                                                   */
++/* ======================================================================== */
++
++static int __init
++mpc52xx_fec_init(void)
++{
++	return driver_register(&mpc52xx_fec_driver);
++}
++
++static void __exit
++mpc52xx_fec_exit(void)
++{
++	driver_unregister(&mpc52xx_fec_driver);
++}
++
++
++module_init(mpc52xx_fec_init);
++module_exit(mpc52xx_fec_exit);
++
++MODULE_LICENSE("GPL");
++MODULE_AUTHOR("Dale Farnsworth");
++MODULE_DESCRIPTION("Ethernet driver for the Freescale MPC52xx FEC");
+diff --git a/drivers/net/fec_mpc52xx/fec.h b/drivers/net/fec_mpc52xx/fec.h
+new file mode 100644
+index 0000000..f9eed36
+--- /dev/null
++++ b/drivers/net/fec_mpc52xx/fec.h
+@@ -0,0 +1,308 @@
++/*
++ * drivers/net/fec_mpc52xx/fec.h
++ *
++ * Driver for the MPC5200 Fast Ethernet Controller
++ *
++ * Author: Dale Farnsworth <dfarnsworth@mvista.com>
++ *
++ * 2003-2004 (c) MontaVista, Software, Inc.  This file is licensed under
++ * the terms of the GNU General Public License version 2.  This program
++ * is licensed "as is" without any warranty of any kind, whether express
++ * or implied.
++ */
++
++#ifndef __DRIVERS_NET_MPC52XX_FEC_H__
++#define __DRIVERS_NET_MPC52XX_FEC_H__
++
++/* Tunable constant */
++/* FEC_RX_BUFFER_SIZE includes 4 bytes for CRC32 */
++#define FEC_RX_BUFFER_SIZE	1522	/* max receive packet size */
++#define FEC_RX_NUM_BD		64
++#define FEC_TX_NUM_BD		64
++
++#define FEC_RESET_DELAY		50 	/* uS */
++
++#define FEC_WATCHDOG_TIMEOUT	((400*HZ)/1000)
++
++struct fec_priv {
++	int full_duplex;
++	int tx_full;
++	int r_irq;
++	int t_irq;
++	u32 last_transmit_time;
++	struct mpc52xx_fec *fec;
++	struct sdma *rx_sdma;
++	struct sdma *tx_sdma;
++	spinlock_t lock;
++	unsigned long open_time;
++	struct net_device_stats stats;
++#ifdef CONFIG_USE_MDIO
++	uint phy_id;
++	uint phy_id_done;
++	uint phy_status;
++	uint phy_speed;
++	phy_info_t *phy;
++	struct tasklet_struct phy_task;
++	uint sequence_done;
++	uint phy_addr;
++	struct timer_list phy_timer_list;
++	u16 old_status;
++	phys_addr_t rx_fifo;
++	phys_addr_t tx_fifo;
++#endif	/* CONFIG_USE_MDIO */
++};
++
++
++/* ======================================================================== */
++/* Hardware register sets & bits                                            */
++/* ======================================================================== */
++
++struct mpc52xx_fec {
++	u32 fec_id;			/* FEC + 0x000 */
++	u32 ievent;			/* FEC + 0x004 */
++	u32 imask;			/* FEC + 0x008 */
++
++	u32 reserved0[1];		/* FEC + 0x00C */
++	u32 r_des_active;		/* FEC + 0x010 */
++	u32 x_des_active;		/* FEC + 0x014 */
++	u32 r_des_active_cl;		/* FEC + 0x018 */
++	u32 x_des_active_cl;		/* FEC + 0x01C */
++	u32 ivent_set;			/* FEC + 0x020 */
++	u32 ecntrl;			/* FEC + 0x024 */
++
++	u32 reserved1[6];		/* FEC + 0x028-03C */
++	u32 mii_data;			/* FEC + 0x040 */
++	u32 mii_speed;			/* FEC + 0x044 */
++	u32 mii_status;			/* FEC + 0x048 */
++
++	u32 reserved2[5];		/* FEC + 0x04C-05C */
++	u32 mib_data;			/* FEC + 0x060 */
++	u32 mib_control;		/* FEC + 0x064 */
++
++	u32 reserved3[6];		/* FEC + 0x068-7C */
++	u32 r_activate;			/* FEC + 0x080 */
++	u32 r_cntrl;			/* FEC + 0x084 */
++	u32 r_hash;			/* FEC + 0x088 */
++	u32 r_data;			/* FEC + 0x08C */
++	u32 ar_done;			/* FEC + 0x090 */
++	u32 r_test;			/* FEC + 0x094 */
++	u32 r_mib;			/* FEC + 0x098 */
++	u32 r_da_low;			/* FEC + 0x09C */
++	u32 r_da_high;			/* FEC + 0x0A0 */
++
++	u32 reserved4[7];		/* FEC + 0x0A4-0BC */
++	u32 x_activate;			/* FEC + 0x0C0 */
++	u32 x_cntrl;			/* FEC + 0x0C4 */
++	u32 backoff;			/* FEC + 0x0C8 */
++	u32 x_data;			/* FEC + 0x0CC */
++	u32 x_status;			/* FEC + 0x0D0 */
++	u32 x_mib;			/* FEC + 0x0D4 */
++	u32 x_test;			/* FEC + 0x0D8 */
++	u32 fdxfc_da1;			/* FEC + 0x0DC */
++	u32 fdxfc_da2;			/* FEC + 0x0E0 */
++	u32 paddr1;			/* FEC + 0x0E4 */
++	u32 paddr2;			/* FEC + 0x0E8 */
++	u32 op_pause;			/* FEC + 0x0EC */
++
++	u32 reserved5[4];		/* FEC + 0x0F0-0FC */
++	u32 instr_reg;			/* FEC + 0x100 */
++	u32 context_reg;		/* FEC + 0x104 */
++	u32 test_cntrl;			/* FEC + 0x108 */
++	u32 acc_reg;			/* FEC + 0x10C */
++	u32 ones;			/* FEC + 0x110 */
++	u32 zeros;			/* FEC + 0x114 */
++	u32 iaddr1;			/* FEC + 0x118 */
++	u32 iaddr2;			/* FEC + 0x11C */
++	u32 gaddr1;			/* FEC + 0x120 */
++	u32 gaddr2;			/* FEC + 0x124 */
++	u32 random;			/* FEC + 0x128 */
++	u32 rand1;			/* FEC + 0x12C */
++	u32 tmp;			/* FEC + 0x130 */
++
++	u32 reserved6[3];		/* FEC + 0x134-13C */
++	u32 fifo_id;			/* FEC + 0x140 */
++	u32 x_wmrk;			/* FEC + 0x144 */
++	u32 fcntrl;			/* FEC + 0x148 */
++	u32 r_bound;			/* FEC + 0x14C */
++	u32 r_fstart;			/* FEC + 0x150 */
++	u32 r_count;			/* FEC + 0x154 */
++	u32 r_lag;			/* FEC + 0x158 */
++	u32 r_read;			/* FEC + 0x15C */
++	u32 r_write;			/* FEC + 0x160 */
++	u32 x_count;			/* FEC + 0x164 */
++	u32 x_lag;			/* FEC + 0x168 */
++	u32 x_retry;			/* FEC + 0x16C */
++	u32 x_write;			/* FEC + 0x170 */
++	u32 x_read;			/* FEC + 0x174 */
++
++	u32 reserved7[2];		/* FEC + 0x178-17C */
++	u32 fm_cntrl;			/* FEC + 0x180 */
++	u32 rfifo_data;			/* FEC + 0x184 */
++	u32 rfifo_status;		/* FEC + 0x188 */
++	u32 rfifo_cntrl;		/* FEC + 0x18C */
++	u32 rfifo_lrf_ptr;		/* FEC + 0x190 */
++	u32 rfifo_lwf_ptr;		/* FEC + 0x194 */
++	u32 rfifo_alarm;		/* FEC + 0x198 */
++	u32 rfifo_rdptr;		/* FEC + 0x19C */
++	u32 rfifo_wrptr;		/* FEC + 0x1A0 */
++	u32 tfifo_data;			/* FEC + 0x1A4 */
++	u32 tfifo_status;		/* FEC + 0x1A8 */
++	u32 tfifo_cntrl;		/* FEC + 0x1AC */
++	u32 tfifo_lrf_ptr;		/* FEC + 0x1B0 */
++	u32 tfifo_lwf_ptr;		/* FEC + 0x1B4 */
++	u32 tfifo_alarm;		/* FEC + 0x1B8 */
++	u32 tfifo_rdptr;		/* FEC + 0x1BC */
++	u32 tfifo_wrptr;		/* FEC + 0x1C0 */
++
++	u32 reset_cntrl;		/* FEC + 0x1C4 */
++	u32 xmit_fsm;			/* FEC + 0x1C8 */
++
++	u32 reserved8[3];		/* FEC + 0x1CC-1D4 */
++	u32 rdes_data0;			/* FEC + 0x1D8 */
++	u32 rdes_data1;			/* FEC + 0x1DC */
++	u32 r_length;			/* FEC + 0x1E0 */
++	u32 x_length;			/* FEC + 0x1E4 */
++	u32 x_addr;			/* FEC + 0x1E8 */
++	u32 cdes_data;			/* FEC + 0x1EC */
++	u32 status;			/* FEC + 0x1F0 */
++	u32 dma_control;		/* FEC + 0x1F4 */
++	u32 des_cmnd;			/* FEC + 0x1F8 */
++	u32 data;			/* FEC + 0x1FC */
++
++	u32 rmon_t_drop;		/* FEC + 0x200 */
++	u32 rmon_t_packets;		/* FEC + 0x204 */
++	u32 rmon_t_bc_pkt;		/* FEC + 0x208 */
++	u32 rmon_t_mc_pkt;		/* FEC + 0x20C */
++	u32 rmon_t_crc_align;		/* FEC + 0x210 */
++	u32 rmon_t_undersize;		/* FEC + 0x214 */
++	u32 rmon_t_oversize;		/* FEC + 0x218 */
++	u32 rmon_t_frag;		/* FEC + 0x21C */
++	u32 rmon_t_jab;			/* FEC + 0x220 */
++	u32 rmon_t_col;			/* FEC + 0x224 */
++	u32 rmon_t_p64;			/* FEC + 0x228 */
++	u32 rmon_t_p65to127;		/* FEC + 0x22C */
++	u32 rmon_t_p128to255;		/* FEC + 0x230 */
++	u32 rmon_t_p256to511;		/* FEC + 0x234 */
++	u32 rmon_t_p512to1023;		/* FEC + 0x238 */
++	u32 rmon_t_p1024to2047;		/* FEC + 0x23C */
++	u32 rmon_t_p_gte2048;		/* FEC + 0x240 */
++	u32 rmon_t_octets;		/* FEC + 0x244 */
++	u32 ieee_t_drop;		/* FEC + 0x248 */
++	u32 ieee_t_frame_ok;		/* FEC + 0x24C */
++	u32 ieee_t_1col;		/* FEC + 0x250 */
++	u32 ieee_t_mcol;		/* FEC + 0x254 */
++	u32 ieee_t_def;			/* FEC + 0x258 */
++	u32 ieee_t_lcol;		/* FEC + 0x25C */
++	u32 ieee_t_excol;		/* FEC + 0x260 */
++	u32 ieee_t_macerr;		/* FEC + 0x264 */
++	u32 ieee_t_cserr;		/* FEC + 0x268 */
++	u32 ieee_t_sqe;			/* FEC + 0x26C */
++	u32 t_fdxfc;			/* FEC + 0x270 */
++	u32 ieee_t_octets_ok;		/* FEC + 0x274 */
++
++	u32 reserved9[2];		/* FEC + 0x278-27C */
++	u32 rmon_r_drop;		/* FEC + 0x280 */
++	u32 rmon_r_packets;		/* FEC + 0x284 */
++	u32 rmon_r_bc_pkt;		/* FEC + 0x288 */
++	u32 rmon_r_mc_pkt;		/* FEC + 0x28C */
++	u32 rmon_r_crc_align;		/* FEC + 0x290 */
++	u32 rmon_r_undersize;		/* FEC + 0x294 */
++	u32 rmon_r_oversize;		/* FEC + 0x298 */
++	u32 rmon_r_frag;		/* FEC + 0x29C */
++	u32 rmon_r_jab;			/* FEC + 0x2A0 */
++
++	u32 rmon_r_resvd_0;		/* FEC + 0x2A4 */
++
++	u32 rmon_r_p64;			/* FEC + 0x2A8 */
++	u32 rmon_r_p65to127;		/* FEC + 0x2AC */
++	u32 rmon_r_p128to255;		/* FEC + 0x2B0 */
++	u32 rmon_r_p256to511;		/* FEC + 0x2B4 */
++	u32 rmon_r_p512to1023;		/* FEC + 0x2B8 */
++	u32 rmon_r_p1024to2047;		/* FEC + 0x2BC */
++	u32 rmon_r_p_gte2048;		/* FEC + 0x2C0 */
++	u32 rmon_r_octets;		/* FEC + 0x2C4 */
++	u32 ieee_r_drop;		/* FEC + 0x2C8 */
++	u32 ieee_r_frame_ok;		/* FEC + 0x2CC */
++	u32 ieee_r_crc;			/* FEC + 0x2D0 */
++	u32 ieee_r_align;		/* FEC + 0x2D4 */
++	u32 r_macerr;			/* FEC + 0x2D8 */
++	u32 r_fdxfc;			/* FEC + 0x2DC */
++	u32 ieee_r_octets_ok;		/* FEC + 0x2E0 */
++
++	u32 reserved10[7];		/* FEC + 0x2E4-2FC */
++
++	u32 reserved11[64];		/* FEC + 0x300-3FF */
++};
++
++#define	FEC_MIB_DISABLE			0x80000000
++
++#define	FEC_IEVENT_HBERR		0x80000000
++#define	FEC_IEVENT_BABR			0x40000000
++#define	FEC_IEVENT_BABT			0x20000000
++#define	FEC_IEVENT_GRA			0x10000000
++#define	FEC_IEVENT_TFINT		0x08000000
++#define	FEC_IEVENT_MII			0x00800000
++#define	FEC_IEVENT_LATE_COL		0x00200000
++#define	FEC_IEVENT_COL_RETRY_LIM	0x00100000
++#define	FEC_IEVENT_XFIFO_UN		0x00080000
++#define	FEC_IEVENT_XFIFO_ERROR		0x00040000
++#define	FEC_IEVENT_RFIFO_ERROR		0x00020000
++
++#define	FEC_IMASK_HBERR			0x80000000
++#define	FEC_IMASK_BABR			0x40000000
++#define	FEC_IMASK_BABT			0x20000000
++#define	FEC_IMASK_GRA			0x10000000
++#define	FEC_IMASK_MII			0x00800000
++#define	FEC_IMASK_LATE_COL		0x00200000
++#define	FEC_IMASK_COL_RETRY_LIM		0x00100000
++#define	FEC_IMASK_XFIFO_UN		0x00080000
++#define	FEC_IMASK_XFIFO_ERROR		0x00040000
++#define	FEC_IMASK_RFIFO_ERROR		0x00020000
++
++#define	FEC_RCNTRL_MAX_FL_SHIFT		16
++#define	FEC_RCNTRL_LOOP			0x01
++#define	FEC_RCNTRL_DRT			0x02
++#define	FEC_RCNTRL_MII_MODE		0x04
++#define	FEC_RCNTRL_PROM			0x08
++#define	FEC_RCNTRL_BC_REJ		0x10
++#define	FEC_RCNTRL_FCE			0x20
++
++#define	FEC_TCNTRL_GTS			0x00000001
++#define	FEC_TCNTRL_HBC			0x00000002
++#define	FEC_TCNTRL_FDEN			0x00000004
++#define	FEC_TCNTRL_TFC_PAUSE		0x00000008
++#define	FEC_TCNTRL_RFC_PAUSE		0x00000010
++
++#define	FEC_ECNTRL_RESET		0x00000001
++#define	FEC_ECNTRL_ETHER_EN		0x00000002
++
++struct mibCounters {
++	unsigned int byteReceived;
++	unsigned int byteSent;
++	unsigned int framesReceived;
++	unsigned int framesSent;
++	unsigned int totalByteReceived;
++	unsigned int totalFramesReceived;
++	unsigned int broadcastFramesReceived;
++	unsigned int multicastFramesReceived;
++	unsigned int cRCError;
++	unsigned int oversizeFrames;
++	unsigned int fragments;
++	unsigned int jabber;
++	unsigned int collision;
++	unsigned int lateCollision;
++	unsigned int frames64;
++	unsigned int frames65_127;
++	unsigned int frames128_255;
++	unsigned int frames256_511;
++	unsigned int frames512_1023;
++	unsigned int frames1024_MaxSize;
++	unsigned int macRxError;
++	unsigned int droppedFrames;
++	unsigned int outMulticastFrames;
++	unsigned int outBroadcastFrames;
++	unsigned int undersizeFrames;
++};
++
++
++#endif	/* __DRIVERS_NET_MPC52XX_FEC_H__ */
+diff --git a/drivers/net/fec_mpc52xx/fec_phy.c b/drivers/net/fec_mpc52xx/fec_phy.c
+new file mode 100644
+index 0000000..2a287de
+--- /dev/null
++++ b/drivers/net/fec_mpc52xx/fec_phy.c
+@@ -0,0 +1,526 @@
++/*
++ * arch/ppc/52xx_io/fec_phy.c
++ *
++ * Driver for the MPC5200 Fast Ethernet Controller
++ * Based heavily on the MII support for the MPC8xx by Dan Malek
++ *
++ * Author: Dale Farnsworth <dfarnsworth@mvista.com>
++ *
++ * 2003-2004 (c) MontaVista, Software, Inc.  This file is licensed under
++ * the terms of the GNU General Public License version 2.  This program
++ * is licensed "as is" without any warranty of any kind, whether express
++ * or implied.
++ */
++
++#include <linux/kernel.h>
++#include <linux/types.h>
++#include <linux/netdevice.h>
++#include <linux/mii.h>
++#include <linux/ethtool.h>
++#include <linux/mii.h>
++#include <asm/io.h>
++#include <asm/mpc52xx.h>
++#include <syslib/bestcomm/bestcomm.h>
++#include <syslib/bestcomm/fec.h>
++#include "fec_phy.h"
++#include "fec.h"
++
++static int mpc52xx_netdev_ethtool_ioctl(struct net_device *dev, void *useraddr);
++
++/* MII processing.  We keep this as simple as possible.  Requests are
++ * placed on the list (if there is room).  When the request is finished
++ * by the MII, an optional function may be called.
++ */
++typedef struct mii_list {
++	uint	mii_regval;
++	void	(*mii_func)(uint val, struct net_device *dev, uint data);
++	struct	mii_list *mii_next;
++	uint	mii_data;
++} mii_list_t;
++
++#define		NMII	20
++mii_list_t	mii_cmds[NMII];
++mii_list_t	*mii_free;
++mii_list_t	*mii_head;
++mii_list_t	*mii_tail;
++
++typedef struct mdio_read_data {
++	__u16 regval;
++	struct task_struct *sleeping_task;
++} mdio_read_data_t;
++
++static int mii_queue(struct net_device *dev, int request,
++		void (*func)(uint, struct net_device *, uint), uint data);
++
++/* Make MII read/write commands for the FEC.
++ * */
++#define mk_mii_read(REG)	(0x60020000 | ((REG & 0x1f) << 18))
++#define mk_mii_write(REG, VAL)	(0x50020000 | ((REG & 0x1f) << 18) | \
++							(VAL & 0xffff))
++#define mk_mii_end	0
++
++/* Register definitions for the PHY.
++*/
++
++#define MII_REG_CR	 0	/* Control Register */
++#define MII_REG_SR	 1	/* Status Register */
++#define MII_REG_PHYIR1	 2	/* PHY Identification Register 1 */
++#define MII_REG_PHYIR2	 3	/* PHY Identification Register 2 */
++#define MII_REG_ANAR	 4	/* A-N Advertisement Register */
++#define MII_REG_ANLPAR	 5	/* A-N Link Partner Ability Register */
++#define MII_REG_ANER	 6	/* A-N Expansion Register */
++#define MII_REG_ANNPTR	 7	/* A-N Next Page Transmit Register */
++#define MII_REG_ANLPRNPR 8	/* A-N Link Partner Received Next Page Reg. */
++
++/* values for phy_status */
++
++#define PHY_CONF_ANE	0x0001	/* 1 auto-negotiation enabled */
++#define PHY_CONF_LOOP	0x0002	/* 1 loopback mode enabled */
++#define PHY_CONF_SPMASK	0x00f0	/* mask for speed */
++#define PHY_CONF_10HDX	0x0010	/* 10 Mbit half duplex supported */
++#define PHY_CONF_10FDX	0x0020	/* 10 Mbit full duplex supported */
++#define PHY_CONF_100HDX	0x0040	/* 100 Mbit half duplex supported */
++#define PHY_CONF_100FDX	0x0080	/* 100 Mbit full duplex supported */
++
++#define PHY_STAT_LINK	0x0100	/* 1 up - 0 down */
++#define PHY_STAT_FAULT	0x0200	/* 1 remote fault */
++#define PHY_STAT_ANC	0x0400	/* 1 auto-negotiation complete	*/
++#define PHY_STAT_SPMASK	0xf000	/* mask for speed */
++#define PHY_STAT_10HDX	0x1000	/* 10 Mbit half duplex selected	*/
++#define PHY_STAT_10FDX	0x2000	/* 10 Mbit full duplex selected	*/
++#define PHY_STAT_100HDX	0x4000	/* 100 Mbit half duplex selected */
++#define PHY_STAT_100FDX	0x8000	/* 100 Mbit full duplex selected */
++
++void fec_mii(struct net_device *dev)
++{
++	struct fec_priv *priv = (struct fec_priv *)dev->priv;
++	struct mpc52xx_fec *fec = priv->fec;
++	mii_list_t	*mip;
++	uint		mii_reg;
++
++	mii_reg = in_be32(&fec->mii_data);
++
++	if ((mip = mii_head) == NULL) {
++		printk(KERN_ERR "MII and no head!\n");
++		return;
++	}
++
++	if (mip->mii_func != NULL)
++		(*(mip->mii_func))(mii_reg, dev, mip->mii_data);
++
++	mii_head = mip->mii_next;
++	mip->mii_next = mii_free;
++	mii_free = mip;
++
++	if ((mip = mii_head) != NULL)
++		out_be32(&fec->mii_data, mip->mii_regval);
++}
++
++static int mii_queue(struct net_device *dev, int regval,
++				void (*func)(uint, struct net_device *, uint),
++				uint data)
++{
++	struct fec_priv *priv = (struct fec_priv *)dev->priv;
++	struct mpc52xx_fec *fec = priv->fec;
++	mii_list_t	*mip;
++	int		retval;
++
++	/* Add PHY address to register command.
++	*/
++	regval |= priv->phy_addr << 23;
++
++	retval = 0;
++
++	if ((mip = mii_free) != NULL) {
++		mii_free = mip->mii_next;
++		mip->mii_regval = regval;
++		mip->mii_func = func;
++		mip->mii_next = NULL;
++		mip->mii_data = data;
++		if (mii_head) {
++			mii_tail->mii_next = mip;
++			mii_tail = mip;
++		} else {
++			mii_head = mii_tail = mip;
++			out_be32(&fec->mii_data, regval);
++		}
++	} else
++		retval = 1;
++
++	return retval;
++}
++
++static void mii_do_cmd(struct net_device *dev, const phy_cmd_t *c)
++{
++	int k;
++
++	if (!c)
++		return;
++
++	for (k = 0; (c+k)->mii_data != mk_mii_end; k++)
++		mii_queue(dev, (c+k)->mii_data, (c+k)->funct, 0);
++}
++
++static void mii_parse_sr(uint mii_reg, struct net_device *dev, uint data)
++{
++	struct fec_priv *priv = (struct fec_priv *)dev->priv;
++	uint s = priv->phy_status;
++
++	s &= ~(PHY_STAT_LINK | PHY_STAT_FAULT | PHY_STAT_ANC);
++
++	if (mii_reg & 0x0004)
++		s |= PHY_STAT_LINK;
++	if (mii_reg & 0x0010)
++		s |= PHY_STAT_FAULT;
++	if (mii_reg & 0x0020)
++		s |= PHY_STAT_ANC;
++
++	priv->phy_status = s;
++}
++
++static void mii_parse_cr(uint mii_reg, struct net_device *dev, uint data)
++{
++	struct fec_priv *priv = (struct fec_priv *)dev->priv;
++	uint s = priv->phy_status;
++
++	s &= ~(PHY_CONF_ANE | PHY_CONF_LOOP);
++
++	if (mii_reg & 0x1000)
++		s |= PHY_CONF_ANE;
++	if (mii_reg & 0x4000)
++		s |= PHY_CONF_LOOP;
++
++	priv->phy_status = s;
++}
++
++static void mii_parse_anar(uint mii_reg, struct net_device *dev, uint data)
++{
++	struct fec_priv *priv = (struct fec_priv *)dev->priv;
++	uint s = priv->phy_status;
++
++	s &= ~(PHY_CONF_SPMASK);
++
++	if (mii_reg & 0x0020)
++		s |= PHY_CONF_10HDX;
++	if (mii_reg & 0x0040)
++		s |= PHY_CONF_10FDX;
++	if (mii_reg & 0x0080)
++		s |= PHY_CONF_100HDX;
++	if (mii_reg & 0x0100)
++		s |= PHY_CONF_100FDX;
++
++	priv->phy_status = s;
++}
++
++/* ------------------------------------------------------------------------- */
++/* Generic PHY support.  Should work for all PHYs, but does not support link
++ * change interrupts.
++ */
++static phy_info_t phy_info_generic = {
++	0x00000000, /* 0-->match any PHY */
++	"GENERIC",
++
++	(const phy_cmd_t []) {	/* config */
++		/* advertise only half-duplex capabilities */
++		{ mk_mii_write(MII_ADVERTISE, MII_ADVERTISE_HALF),
++			mii_parse_anar },
++
++		/* enable auto-negotiation */
++		{ mk_mii_write(MII_BMCR, BMCR_ANENABLE), mii_parse_cr },
++		{ mk_mii_end, }
++	},
++	(const phy_cmd_t []) {	/* startup */
++		/* restart auto-negotiation */
++		{ mk_mii_write(MII_BMCR, (BMCR_ANENABLE | BMCR_ANRESTART)),
++			NULL },
++		{ mk_mii_end, }
++	},
++	(const phy_cmd_t []) { /* ack_int */
++		/* We don't actually use the ack_int table with a generic
++		 * PHY, but putting a reference to mii_parse_sr here keeps
++		 * us from getting a compiler warning about unused static
++		 * functions in the case where we only compile in generic
++		 * PHY support.
++		 */
++		{ mk_mii_read(MII_BMSR), mii_parse_sr },
++		{ mk_mii_end, }
++	},
++	(const phy_cmd_t []) {	/* shutdown */
++		{ mk_mii_end, }
++	},
++};
++/* -------------------------------------------------------------------- */
++
++/* register definitions for the 971 */
++
++#define MII_LXT971_PCR	16	/* Port Control Register	*/
++#define MII_LXT971_SR2	17	/* Status Register 2		*/
++#define MII_LXT971_IER	18	/* Interrupt Enable Register	*/
++#define MII_LXT971_ISR	19	/* Interrupt Status Register	*/
++#define MII_LXT971_LCR	20	/* LED Control Register		*/
++#define MII_LXT971_TCR	30	/* Transmit Control Register	*/
++
++static void mii_parse_lxt971_sr2(uint mii_reg, struct net_device *dev, uint data)
++{
++	struct fec_priv *priv = (struct fec_priv *)dev->priv;
++	uint s = priv->phy_status;
++
++	s &= ~(PHY_STAT_SPMASK);
++
++	if (mii_reg & 0x4000) {
++		if (mii_reg & 0x0200)
++			s |= PHY_STAT_100FDX;
++		else
++			s |= PHY_STAT_100HDX;
++	} else {
++		if (mii_reg & 0x0200)
++			s |= PHY_STAT_10FDX;
++		else
++			s |= PHY_STAT_10HDX;
++	}
++	if (mii_reg & 0x0008)
++		s |= PHY_STAT_FAULT;
++
++	priv->phy_status = s;
++}
++
++static phy_info_t phy_info_lxt971 = {
++	0x0001378e,
++	"LXT971",
++
++	(const phy_cmd_t []) {	/* config */
++		{ mk_mii_write(MII_REG_ANAR, 0x0A1), NULL }, /* 10/100, HD */
++		{ mk_mii_read(MII_REG_CR), mii_parse_cr },
++		{ mk_mii_read(MII_REG_ANAR), mii_parse_anar },
++		{ mk_mii_end, }
++	},
++	(const phy_cmd_t []) {	/* startup - enable interrupts */
++		{ mk_mii_write(MII_LXT971_IER, 0x00f2), NULL },
++		{ mk_mii_write(MII_REG_CR, 0x1200), NULL }, /* autonegotiate */
++
++		/* Somehow does the 971 tell me that the link is down
++		 * the first read after power-up.
++		 * read here to get a valid value in ack_int */
++
++		{ mk_mii_read(MII_REG_SR), mii_parse_sr },
++		{ mk_mii_end, }
++	},
++	(const phy_cmd_t []) { /* ack_int */
++		/* find out the current status */
++
++		{ mk_mii_read(MII_REG_SR), mii_parse_sr },
++		{ mk_mii_read(MII_LXT971_SR2), mii_parse_lxt971_sr2 },
++
++		/* we only need to read ISR to acknowledge */
++
++		{ mk_mii_read(MII_LXT971_ISR), NULL },
++		{ mk_mii_end, }
++	},
++	(const phy_cmd_t []) {	/* shutdown - disable interrupts */
++		{ mk_mii_write(MII_LXT971_IER, 0x0000), NULL },
++		{ mk_mii_end, }
++	},
++};
++
++static phy_info_t *phy_info[] = {
++	&phy_info_lxt971,
++	/* Generic PHY support.  This must be the last PHY in the table.
++	 * It will be used to support any PHY that doesn't match a previous
++	 * entry in the table.
++	 */
++	&phy_info_generic,
++	NULL
++};
++
++static void mii_display_config(struct net_device *dev)
++{
++	struct fec_priv *priv = (struct fec_priv *)dev->priv;
++	uint s = priv->phy_status;
++
++	printk(KERN_INFO "%s: config: auto-negotiation ", dev->name);
++
++	if (s & PHY_CONF_ANE)
++		printk("on");
++	else
++		printk("off");
++
++	if (s & PHY_CONF_100FDX)
++		printk(", 100FDX");
++	if (s & PHY_CONF_100HDX)
++		printk(", 100HDX");
++	if (s & PHY_CONF_10FDX)
++		printk(", 10FDX");
++	if (s & PHY_CONF_10HDX)
++		printk(", 10HDX");
++	if (!(s & PHY_CONF_SPMASK))
++		printk(", No speed/duplex selected?");
++
++	if (s & PHY_CONF_LOOP)
++		printk(", loopback enabled");
++
++	printk(".\n");
++
++	priv->sequence_done = 1;
++}
++
++static void mii_queue_config(uint mii_reg, struct net_device *dev, uint data)
++{
++	struct fec_priv *priv = (struct fec_priv *)dev->priv;
++
++	priv->phy_task.func = (void *)mii_display_config;
++	priv->phy_task.data = (unsigned long)dev;
++	tasklet_schedule(&priv->phy_task);
++}
++
++
++phy_cmd_t phy_cmd_config[] =  { { mk_mii_read(MII_REG_CR), mii_queue_config },
++				{ mk_mii_end, } };
++
++
++/* Read remainder of PHY ID.
++*/
++static void mii_discover_phy3(uint mii_reg, struct net_device *dev, uint data)
++{
++	struct fec_priv *priv = (struct fec_priv *)dev->priv;
++	int	i;
++
++	priv->phy_id |= (mii_reg & 0xffff);
++
++	for (i = 0; phy_info[i]; i++) {
++		if (phy_info[i]->id == (priv->phy_id >> 4) || !phy_info[i]->id)
++			break;
++		if (phy_info[i]->id == 0)	/* check generic entry */
++			break;
++	}
++
++	if (!phy_info[i])
++		panic("%s: PHY id 0x%08x is not supported!\n",
++			dev->name, priv->phy_id);
++
++	priv->phy = phy_info[i];
++	priv->phy_id_done = 1;
++
++	printk(KERN_INFO "%s: Phy @ 0x%x, type %s (0x%08x)\n",
++		dev->name, priv->phy_addr, priv->phy->name, priv->phy_id);
++}
++
++/* Scan all of the MII PHY addresses looking for someone to respond
++ * with a valid ID.  This usually happens quickly.
++ */
++static void mii_discover_phy(uint mii_reg, struct net_device *dev, uint data)
++{
++	struct fec_priv *priv = (struct fec_priv *)dev->priv;
++	uint	phytype;
++
++	if ((phytype = (mii_reg & 0xffff)) != 0xffff) {
++		/* Got first part of ID, now get remainder.
++		*/
++		priv->phy_id = phytype << 16;
++		mii_queue(dev, mk_mii_read(MII_REG_PHYIR2), mii_discover_phy3,
++									0);
++	} else {
++		priv->phy_addr++;
++		if (priv->phy_addr < 32)
++			mii_queue(dev, mk_mii_read(MII_REG_PHYIR1),
++							mii_discover_phy, 0);
++		else
++			printk(KERN_ERR "fec: No PHY device found.\n");
++	}
++}
++
++static int mpc52xx_netdev_ethtool_ioctl(struct net_device *dev, void *useraddr)
++{
++	__u32 ethcmd;
++
++	if (copy_from_user(&ethcmd, useraddr, sizeof ethcmd))
++		return -EFAULT;
++
++	switch (ethcmd) {
++
++		/* Get driver info */
++	case ETHTOOL_GDRVINFO:{
++			struct ethtool_drvinfo info = { ETHTOOL_GDRVINFO };
++			strncpy(info.driver, "MPC5200 FEC",
++				sizeof info.driver - 1);
++			if (copy_to_user(useraddr, &info, sizeof info))
++				return -EFAULT;
++			return 0;
++		}
++		/* get message-level */
++	case ETHTOOL_GMSGLVL:{
++			struct ethtool_value edata = { ETHTOOL_GMSGLVL };
++			edata.data = 0;	/* XXX */
++			if (copy_to_user(useraddr, &edata, sizeof edata))
++				return -EFAULT;
++			return 0;
++		}
++		/* set message-level */
++	case ETHTOOL_SMSGLVL:{
++			struct ethtool_value edata;
++			if (copy_from_user(&edata, useraddr, sizeof edata))
++				return -EFAULT;
++			return 0;
++		}
++	}
++	return -EOPNOTSUPP;
++}
++
++int fec_ioctl(struct net_device *dev, struct ifreq *rq, int cmd)
++{
++	int retval;
++
++	switch (cmd) {
++	case SIOCETHTOOL:
++		retval = mpc52xx_netdev_ethtool_ioctl(
++					dev, (void *) rq->ifr_data);
++		break;
++
++	default:
++		retval = -EOPNOTSUPP;
++		break;
++	}
++	return retval;
++}
++
++void fec_mii_init(struct net_device *dev)
++{
++	struct fec_priv *priv = (struct fec_priv *)dev->priv;
++	int i;
++
++	for (i=0; i<NMII-1; i++)
++		mii_cmds[i].mii_next = &mii_cmds[i+1];
++	mii_free = mii_cmds;
++
++	/* Queue up command to detect the PHY and initialize the
++	 * remainder of the interface.
++	 */
++	priv->phy_id_done = 0;
++	priv->phy_addr = 0;
++	mii_queue(dev, mk_mii_read(MII_REG_PHYIR1), mii_discover_phy, 0);
++
++	priv->old_status = 0;
++}
++
++int fec_mii_wait(struct net_device *dev)
++{
++	struct fec_priv *priv = (struct fec_priv *)dev->priv;
++
++	if (!priv->sequence_done) {
++		if (!priv->phy) {
++			printk("KERN_ERR fec_open: PHY not configured\n");
++			return -ENODEV;		/* No PHY we understand */
++		}
++
++		mii_do_cmd(dev, priv->phy->config);
++		mii_do_cmd(dev, phy_cmd_config); /* display configuration */
++		while(!priv->sequence_done)
++			schedule();
++
++		mii_do_cmd(dev, priv->phy->startup);
++	}
++	return 0;
++}
++
++MODULE_LICENSE("GPL");
++MODULE_AUTHOR("Dale Farnsworth");
++MODULE_DESCRIPTION("PHY driver for Motorola MPC52xx FEC");
+diff --git a/drivers/net/fec_mpc52xx/fec_phy.h b/drivers/net/fec_mpc52xx/fec_phy.h
+new file mode 100644
+index 0000000..5c23bff
+--- /dev/null
++++ b/drivers/net/fec_mpc52xx/fec_phy.h
+@@ -0,0 +1,73 @@
++/*
++ * arch/ppc/52xx_io/fec_phy.h
++ *
++ * Driver for the MPC5200 Fast Ethernet Controller
++ * Based heavily on the MII support for the MPC8xx by Dan Malek
++ *
++ * Author: Dale Farnsworth <dfarnsworth@mvista.com>
++ *
++ * 2003-2004 (c) MontaVista, Software, Inc.  This file is licensed under
++ * the terms of the GNU General Public License version 2.  This program
++ * is licensed "as is" without any warranty of any kind, whether express
++ * or implied.
++ */
++
++#ifdef CONFIG_USE_MDIO
++#define MII_ADVERTISE_HALF	(ADVERTISE_100HALF | ADVERTISE_10HALF | \
++				 ADVERTISE_CSMA)
++
++#define MII_ADVERTISE_ALL	(ADVERTISE_100FULL | ADVERTISE_10FULL | \
++				 MII_ADVERTISE_HALF)
++#ifdef PHY_INTERRUPT
++#define MII_ADVERTISE_DEFAULT	MII_ADVERTISE_ALL
++#else
++#define MII_ADVERTISE_DEFAULT	MII_ADVERTISE_HALF
++#endif
++
++#define MII_RCNTL_MODE		FEC_RCNTRL_MII_MODE
++#define set_phy_speed(fec, s)	out_be32(&fec->mii_speed, s)
++#define FEC_IMASK_ENABLE	0xf0fe0000
++
++typedef struct {
++	uint mii_data;
++	void (*funct)(uint mii_reg, struct net_device *dev, uint data);
++} phy_cmd_t;
++
++typedef struct {
++	uint id;
++	char *name;
++
++	const phy_cmd_t *config;
++	const phy_cmd_t *startup;
++	const phy_cmd_t *ack_int;
++	const phy_cmd_t *shutdown;
++} phy_info_t;
++
++#else
++#define MII_RCNTL_MODE		0
++#define set_phy_speed(fec, s)
++#define FEC_IMASK_ENABLE	0xf07e0000
++#define fec_mii_wait(dev)	0
++#define fec_mii(dev)	printk(KERN_WARNING "unexpected FEC_IEVENT_MII\n")
++#define fec_mii_init(dev)
++#endif	/* CONFIG_USE_MDIO */
++
++/* MII-related definitions */
++#define FEC_MII_DATA_ST		0x40000000	/* Start frame */
++#define FEC_MII_DATA_OP_RD	0x20000000	/* Perform read */
++#define FEC_MII_DATA_OP_WR	0x10000000	/* Perform write */
++#define FEC_MII_DATA_PA_MSK	0x0f800000	/* PHY Address mask */
++#define FEC_MII_DATA_RA_MSK	0x007c0000	/* PHY Register mask */
++#define FEC_MII_DATA_TA		0x00020000	/* Turnaround */
++#define FEC_MII_DATA_DATAMSK	0x00000fff	/* PHY data mask */
++
++#define FEC_MII_DATA_RA_SHIFT	0x12		/* MII reg addr bits */
++#define FEC_MII_DATA_PA_SHIFT	0x17		/* MII PHY addr bits */
++
++#define FEC_MII_SPEED		(5 * 2)
++
++extern void fec_mii_init(struct net_device *dev);
++extern int fec_mii_wait(struct net_device *dev);
++extern void fec_mii(struct net_device *dev);
++
++extern int fec_ioctl(struct net_device *, struct ifreq *rq, int cmd);
+-- 
+1.4.4.2
+

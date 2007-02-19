@@ -1,0 +1,700 @@
+From 3c687b616fee5d7097e965fce80f8f8b2b6e14cf Mon Sep 17 00:00:00 2001
+From: Grant Likely <grant.likely@secretlab.ca>
+Date: Mon, 4 Dec 2006 22:29:03 -0700
+Subject: [PATCH] [POWERPC] Make FEC work on the lite5200
+
+This patch may very well break Eth support on the Efika, and it's not
+very pretty.  But is works well enough for an NFS rootfs.  This also
+makes major bestcomm changes by removing Efika-specific bestcomm
+support and porting the arch/ppc bestcomm support driver which
+was posted to linuxppc-embedded about a year ago.
+
+Signed-off-by: Grant Likely <grant.likely@secretlab.ca>
+---
+ arch/powerpc/Kconfig                   |    5 +
+ arch/powerpc/platforms/52xx/Makefile   |    3 +
+ arch/powerpc/platforms/52xx/bestcomm.c |   98 ++++++++++-------------
+ arch/powerpc/platforms/52xx/bestcomm.h |   13 ++-
+ arch/powerpc/platforms/52xx/fec.c      |    1 -
+ arch/powerpc/platforms/52xx/lite5200.c |    9 ++
+ drivers/net/fec_mpc52xx/Kconfig        |    2 +-
+ drivers/net/fec_mpc52xx/fec.c          |  137 +++++++++++++++++++++++++++----
+ drivers/net/fec_mpc52xx/fec_phy.c      |    6 ++
+ 9 files changed, 196 insertions(+), 78 deletions(-)
+
+diff --git a/arch/powerpc/Kconfig b/arch/powerpc/Kconfig
+index 8699dad..23d7d73 100644
+--- a/arch/powerpc/Kconfig
++++ b/arch/powerpc/Kconfig
+@@ -429,6 +429,11 @@ config PPC_MPC52xx
+ 	bool
+ 	default n
+ 
++config PPC_BESTCOMM
++	bool
++	depends on PPC_MPC52xx
++	default y
++
+ config PPC_EFIKA
+ 	bool "bPlan Efika 5k2. MPC5200B based computer"
+ 	depends on PPC_MULTIPLATFORM && PPC32
+diff --git a/arch/powerpc/platforms/52xx/Makefile b/arch/powerpc/platforms/52xx/Makefile
+index a46184a..d85ea04 100644
+--- a/arch/powerpc/platforms/52xx/Makefile
++++ b/arch/powerpc/platforms/52xx/Makefile
+@@ -3,6 +3,9 @@
+ #
+ ifeq ($(CONFIG_PPC_MERGE),y)
+ obj-y				+= mpc52xx_pic.o mpc52xx_common.o
++obj-$(CONFIG_PCI)		+= mpc52xx_pci.o
++obj-$(CONFIG_PPC_BESTCOMM) 	+= bestcomm.o
++obj-$(CONFIG_FEC_MPC52xx)	+= sdma_fec_rx_task.o sdma_fec_tx_task.o fec.o
+ endif
+ 
+ obj-$(CONFIG_PPC_EFIKA)		+= efika-setup.o efika-pci.o
+diff --git a/arch/powerpc/platforms/52xx/bestcomm.c b/arch/powerpc/platforms/52xx/bestcomm.c
+index ef45e02..9935b01 100644
+--- a/arch/powerpc/platforms/52xx/bestcomm.c
++++ b/arch/powerpc/platforms/52xx/bestcomm.c
+@@ -16,7 +16,6 @@
+  *		Andrey Volkov <avolkov@varma-el.com>, Varma Electronics Oy
+  */
+ 
+-#include <linux/config.h>
+ #include <linux/version.h>
+ #include <linux/module.h>
+ #include <linux/kernel.h>
+@@ -24,17 +23,19 @@
+ #include <linux/slab.h>
+ #include <linux/spinlock.h>
+ #include <linux/string.h>
+-#include <linux/device.h>
+ 
+ #include <asm/bug.h>
+ #include <asm/io.h>
+ #include <asm/mpc52xx.h>
++#include <asm/of_platform.h>
+ 
+ #include "bestcomm.h"
+ 
+-#define DRIVER_NAME		"mpc52xx-sdma"
++#define DRIVER_NAME "mpc52xx-bestcomm"
+ 
+ struct sdma_io sdma;
++struct device_node *sdma_node;
++struct device_node *sram_node;
+ 
+ static spinlock_t sdma_lock = SPIN_LOCK_UNLOCKED;
+ 
+@@ -42,7 +43,8 @@ static spinlock_t sdma_lock = SPIN_LOCK_UNLOCKED;
+ void sdma_dump(void)
+ {
+ 	int i;
+-	printk("** SDMA registers: pa = %08x, va = %08x\n", sdma.base_reg_addr, sdma.io);
++	printk("** SDMA registers: pa = %.8lx, va = %p\n",
++	       sdma.base_reg_addr, sdma.io);
+ 	printk("**  taskBar = %08x\n", sdma.io->taskBar);
+ 	printk("**  currentPointer = %08x\n", sdma.io->currentPointer);
+ 	printk("**  endPointer = %08x\n", sdma.io->endPointer);
+@@ -254,6 +256,7 @@ struct sdma *sdma_alloc(int queue_size)
+ 	}
+ 
+ 	s->num_bd = queue_size;
++	s->node = sdma_node;
+ 	return s;
+ }
+ 
+@@ -264,29 +267,49 @@ void sdma_free(struct sdma *s)
+ 	kfree(s);
+ }
+ 
+-static int __devinit mpc52xx_sdma_probe(struct device *dev)
++static int __init mpc52xx_sdma_init(void)
+ {
+-	struct platform_device *pdev = to_platform_device(dev);
+ 	int task;
+ 	u32 *context;
+ 	u32 *fdt;
+ 	struct sdma_tdt *tdt;
+-	struct resource *mem_io, *mem_sram;
+-	u32 tdt_pa, var_pa, context_pa, fdt_pa; 
++	struct resource mem_io, mem_sram;
++	u32 tdt_pa, var_pa, context_pa, fdt_pa;
+ 	int ret = -ENODEV;
+ 
+-	mem_io = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+-	mem_sram = platform_get_resource(pdev, IORESOURCE_MEM, 1);
+-	if (!mem_io || !mem_sram)
++	/* Find SDMA registers */
++	sdma_node = of_find_compatible_node(NULL, "dma-controller", "mpc52xx-bestcomm");
++	if (!sdma_node) {
++		printk (KERN_ERR DRIVER_NAME ": could not locate SDRAM controller\n");
+ 		goto out;
++	}
++
++	if ((ret = of_address_to_resource(sdma_node, 0, &mem_io)) != 0) {
++		printk(KERN_ERR "Could not get address of SDMA controller\n");
++		goto out;
++	}
++
++	/* Find SRAM location */
++	sram_node = of_find_compatible_node(NULL, "sram", "mpc52xx-sram");
++	if (!sram_node) {
++		printk (KERN_ERR DRIVER_NAME ": could not locate SRAM\n");
++		goto out;
++	}
++
++	if ((ret = of_address_to_resource(sram_node, 0, &mem_sram)) != 0) {
++		printk(KERN_ERR "Could not get address of SRAM\n");
++		goto out;
++	}
+ 
+-	if (!request_mem_region(mem_io->start, mem_io->end - mem_io->start + 1, DRIVER_NAME)) {
++	/* Map register regions */
++	if (!request_mem_region(mem_io.start, mem_io.end - mem_io.start + 1,
++	                        DRIVER_NAME)) {
+ 		printk(KERN_ERR DRIVER_NAME " - resource unavailable\n");
+ 		goto out;
+ 	}
+-	sdma.base_reg_addr = mem_io->start;
++	sdma.base_reg_addr = mem_io.start;
+ 
+-	sdma.io = ioremap_nocache(mem_io->start, sizeof(struct mpc52xx_sdma));
++	sdma.io = ioremap_nocache(mem_io.start, sizeof(struct mpc52xx_sdma));
+ 
+ 	if (!sdma.io ) {
+ 		printk(KERN_ERR DRIVER_NAME " - failed to map sdma regs\n");
+@@ -296,14 +319,14 @@ static int __devinit mpc52xx_sdma_probe(struct device *dev)
+ 
+ 	SDMA_DUMP_REGS();
+ 
+-	sdma.sram_size = mem_sram->end - mem_sram->start + 1;
+-	if (!request_mem_region(mem_sram->start, sdma.sram_size, DRIVER_NAME)) {
++	sdma.sram_size = mem_sram.end - mem_sram.start + 1;
++	if (!request_mem_region(mem_sram.start, sdma.sram_size, DRIVER_NAME)) {
+ 		printk(KERN_ERR DRIVER_NAME " - resource unavailable\n");
+ 		goto req_sram_error;
+ 	}
+ 
+-	sdma.base_sram_addr = mem_sram->start;
+-	sdma.sram = ioremap_nocache(mem_sram->start, sdma.sram_size);
++	sdma.base_sram_addr = mem_sram.start;
++	sdma.sram = ioremap_nocache(mem_sram.start, sdma.sram_size);
+ 	if (!sdma.sram ) {
+ 		printk(KERN_ERR DRIVER_NAME " - failed to map sdma sram\n");
+ 		ret = -ENOMEM;
+@@ -350,50 +373,17 @@ static int __devinit mpc52xx_sdma_probe(struct device *dev)
+ 	return 0;
+ 
+ map_sram_error:
+-	release_mem_region(mem_sram->start, sdma.sram_size);
++	release_mem_region(mem_sram.start, sdma.sram_size);
+ req_sram_error:
+ 	iounmap(sdma.io);
+ map_io_error:
+-	release_mem_region(mem_io->start, mem_io->end - mem_io->start + 1);
++	release_mem_region(mem_io.start, mem_io.end - mem_io.start + 1);
+ out:
+ 	printk(KERN_ERR "DMA: MPC52xx BestComm init FAILED !!!\n");
+ 	return ret;
+ }
+ 
+-
+-static struct device_driver mpc52xx_sdma_driver = {
+-	.owner	  = THIS_MODULE,
+-	.name	  = DRIVER_NAME,
+-	.bus	  = &platform_bus_type,
+-	.probe 	  = mpc52xx_sdma_probe,
+-/*	.remove	  = mpc52xx_sdma_remove,	TODO */
+-#ifdef CONFIG_PM
+-/*	.suspend	= mpc52xx_sdma_suspend,	TODO */
+-/*	.resume		= mpc52xx_sdma_resume,	TODO */
+-#endif
+-};
+-
+-static int __init
+-mpc52xx_sdma_init(void)
+-{
+-	printk(KERN_INFO "DMA: MPC52xx BestComm driver\n");
+-	return driver_register(&mpc52xx_sdma_driver);
+-}
+-
+-#ifdef MODULE
+-static void __exit
+-mpc52xx_sdma_exit(void)
+-{
+-	driver_unregister(&mpc52xx_sdma_driver);
+-}
+-#endif
+-
+-#ifndef MODULE
+- subsys_initcall(mpc52xx_sdma_init);
+-#else
+- module_init(mpc52xx_sdma_init);
+- module_exit(mpc52xx_sdma_exit);
+-#endif
++subsys_initcall(mpc52xx_sdma_init);
+ 
+ 
+ MODULE_DESCRIPTION("Freescale MPC52xx BestComm DMA");
+diff --git a/arch/powerpc/platforms/52xx/bestcomm.h b/arch/powerpc/platforms/52xx/bestcomm.h
+index 14bf397..bd2619d 100644
+--- a/arch/powerpc/platforms/52xx/bestcomm.h
++++ b/arch/powerpc/platforms/52xx/bestcomm.h
+@@ -19,6 +19,8 @@
+ #ifndef __BESTCOMM_BESTCOMM_H__
+ #define __BESTCOMM_BESTCOMM_H__
+ 
++#include "mpc52xx_pic.h"
++
+ /* Buffer Descriptor definitions */
+ struct sdma_bd {
+ 	u32 status;
+@@ -70,6 +72,7 @@ struct sdma {
+ 	u16 num_bd;
+ 	s16 tasknum;
+ 	u32 flags;
++	struct device_node *node;
+ };
+ 
+ #define SDMA_FLAGS_NONE		0x0000
+@@ -116,7 +119,9 @@ struct sdma_tdt {
+ 
+ static inline void sdma_enable_task(int task)
+ {
+-	DPRINTK("***DMA enable task (%d): tdt = %08x\n",task, sdma.tdt);
++	u16 reg;
++
++	DPRINTK("***DMA enable task (%d): tdt = %p\n",task, sdma.tdt);
+ 	DPRINTK("***tdt->start   = %08x\n",sdma.tdt[task].start);
+ 	DPRINTK("***tdt->stop    = %08x\n",sdma.tdt[task].stop);
+ 	DPRINTK("***tdt->var     = %08x\n",sdma.tdt[task].var);
+@@ -127,8 +132,8 @@ static inline void sdma_enable_task(int task)
+ 	DPRINTK("***tdt->litbase = %08x\n",sdma.tdt[task].litbase);
+ 	DPRINTK("***--------------\n");
+ 
+-	u16 reg = in_be16(&sdma.io->tcr[task]);
+-	DPRINTK("***enable task: &sdma.io->tcr=%08x, reg = %04x\n", &sdma.io->tcr, reg);
++	reg = in_be16(&sdma.io->tcr[task]);
++	DPRINTK("***enable task: &sdma.io->tcr=%p, reg = %04x\n", &sdma.io->tcr, reg);
+ 	out_be16(&sdma.io->tcr[task],  reg | TASK_ENABLE);
+ }
+ 
+@@ -141,7 +146,7 @@ static inline void sdma_disable_task(int task)
+ 
+ static inline int sdma_irq(struct sdma *s)
+ {
+-	return MPC52xx_SDMA_IRQ_BASE + s->tasknum;
++	return irq_of_parse_and_map(s->node, s->tasknum);
+ }
+ 
+ static inline void sdma_enable(struct sdma *s)
+diff --git a/arch/powerpc/platforms/52xx/fec.c b/arch/powerpc/platforms/52xx/fec.c
+index 8756856..90df6f4 100644
+--- a/arch/powerpc/platforms/52xx/fec.c
++++ b/arch/powerpc/platforms/52xx/fec.c
+@@ -16,7 +16,6 @@
+  *		Andrey Volkov <avolkov@varma-el.com>, Varma Electronics Oy
+  */
+ 
+-#include <linux/config.h>
+ #include <linux/version.h>
+ #include <linux/module.h>
+ #include <linux/kernel.h>
+diff --git a/arch/powerpc/platforms/52xx/lite5200.c b/arch/powerpc/platforms/52xx/lite5200.c
+index 0f21bab..f1bbe24 100644
+--- a/arch/powerpc/platforms/52xx/lite5200.c
++++ b/arch/powerpc/platforms/52xx/lite5200.c
+@@ -107,6 +107,15 @@ static void __init lite52xx_setup_arch(void)
+ 	mpc52xx_setup_cpu();	/* Generic */
+ 	lite52xx_setup_cpu();	/* Platorm specific */
+ 
++#ifdef CONFIG_PCI
++	np = of_find_node_by_type(np, "pci");
++	if (np)
++		mpc52xx_add_bridge(np);
++
++	//ppc_md.pci_swizzle = common_swizzle;
++	//ppc_md.pci_exclude_device = mpc52xx_exclude_device;
++#endif
++
+ #ifdef CONFIG_BLK_DEV_INITRD
+ 	if (initrd_start)
+ 		ROOT_DEV = Root_RAM0;
+diff --git a/drivers/net/fec_mpc52xx/Kconfig b/drivers/net/fec_mpc52xx/Kconfig
+index 098c3fa..b6bce55 100644
+--- a/drivers/net/fec_mpc52xx/Kconfig
++++ b/drivers/net/fec_mpc52xx/Kconfig
+@@ -11,7 +11,7 @@ config FEC_MPC52xx
+ 	  Fast Ethernet Controller
+ 
+ config USE_MDIO
+-	bool "  Use external Ethernet MII PHY"
++	bool "Use external Ethernet MII PHY"
+ 	select MII
+ 	depends FEC_MPC52xx
+ 	---help---
+diff --git a/drivers/net/fec_mpc52xx/fec.c b/drivers/net/fec_mpc52xx/fec.c
+index b5f1559..894da79 100644
+--- a/drivers/net/fec_mpc52xx/fec.c
++++ b/drivers/net/fec_mpc52xx/fec.c
+@@ -30,17 +30,24 @@
+ #include <asm/ppcboot.h>
+ #include <asm/mpc52xx.h>
+ 
++#if defined(CONFIG_PPC_MERGE)
++#include <asm/of_device.h>
++#include <asm/of_platform.h>
++#include <platforms/52xx/bestcomm.h>
++#include <platforms/52xx/fec.h>
++#else
+ #include <syslib/bestcomm/bestcomm.h>
+ #include <syslib/bestcomm/fec.h>
++#endif
+ 
+ #include "fec_phy.h"
+ #include "fec.h"
+ 
+ #define DRIVER_NAME "mpc52xx-fec"
+ 
+-static irqreturn_t fec_interrupt(int, void *, struct pt_regs *);
+-static irqreturn_t fec_rx_interrupt(int, void *, struct pt_regs *);
+-static irqreturn_t fec_tx_interrupt(int, void *, struct pt_regs *);
++static irqreturn_t fec_interrupt(int, void *);
++static irqreturn_t fec_rx_interrupt(int, void *);
++static irqreturn_t fec_tx_interrupt(int, void *);
+ static struct net_device_stats *fec_get_stats(struct net_device *);
+ static void fec_set_multicast_list(struct net_device *dev);
+ static void fec_reinit(struct net_device *dev);
+@@ -233,7 +240,7 @@ static int fec_hard_start_xmit(struct sk_buff *skb, struct net_device *dev)
+ 
+ /* This handles BestComm transmit task interrupts
+  */
+-static irqreturn_t fec_tx_interrupt(int irq, void *dev_id, struct pt_regs *regs)
++static irqreturn_t fec_tx_interrupt(int irq, void *dev_id)
+ {
+ 	struct net_device *dev = dev_id;
+ 	struct fec_priv *priv = (struct fec_priv *)dev->priv;
+@@ -259,7 +266,7 @@ static irqreturn_t fec_tx_interrupt(int irq, void *dev_id, struct pt_regs *regs)
+ 	return IRQ_HANDLED;
+ }
+ 
+-static irqreturn_t fec_rx_interrupt(int irq, void *dev_id, struct pt_regs *regs)
++static irqreturn_t fec_rx_interrupt(int irq, void *dev_id)
+ {
+ 	struct net_device *dev = dev_id;
+ 	struct fec_priv *priv = (struct fec_priv *)dev->priv;
+@@ -316,7 +323,7 @@ static irqreturn_t fec_rx_interrupt(int irq, void *dev_id, struct pt_regs *regs)
+ 	return IRQ_HANDLED;
+ }
+ 
+-static irqreturn_t fec_interrupt(int irq, void *dev_id, struct pt_regs *regs)
++static irqreturn_t fec_interrupt(int irq, void *dev_id)
+ {
+ 	struct net_device *dev = (struct net_device *)dev_id;
+ 	struct fec_priv *priv = (struct fec_priv *)dev->priv;
+@@ -324,13 +331,18 @@ static irqreturn_t fec_interrupt(int irq, void *dev_id, struct pt_regs *regs)
+ 	int ievent;
+ 
+ 	ievent = in_be32(&fec->ievent);
++	if (!ievent)
++		return IRQ_NONE;
++
+ 	out_be32(&fec->ievent, ievent);		/* clear pending events */
+ 
+ 	if (ievent & (FEC_IEVENT_RFIFO_ERROR | FEC_IEVENT_XFIFO_ERROR)) {
+-		if (ievent & FEC_IEVENT_RFIFO_ERROR)
+-			printk(KERN_WARNING "FEC_IEVENT_RFIFO_ERROR\n");
+-		if (ievent & FEC_IEVENT_XFIFO_ERROR)
+-			printk(KERN_WARNING "FEC_IEVENT_XFIFO_ERROR\n");
++		if (net_ratelimit() && (ievent & FEC_IEVENT_RFIFO_ERROR))
++			printk(KERN_WARNING "FEC_IEVENT_RFIFO_ERROR (%.8x)\n",
++			       ievent);
++		if (net_ratelimit() && (ievent & FEC_IEVENT_XFIFO_ERROR))
++			printk(KERN_WARNING "FEC_IEVENT_XFIFO_ERROR (%.8x)\n",
++			       ievent);
+ 		fec_reinit(dev);
+ 	}
+ 	else if (ievent & FEC_IEVENT_MII)
+@@ -495,7 +507,9 @@ static void fec_hw_init(struct net_device *dev)
+ {
+ 	struct fec_priv *priv = (struct fec_priv *)dev->priv;
+ 	struct mpc52xx_fec *fec = priv->fec;
++#if !defined(CONFIG_PPC_MERGE)
+ 	bd_t *bd = (bd_t *) &__res;
++#endif
+ 
+ 	out_be32(&fec->op_pause, 0x00010020);
+ 	out_be32(&fec->rfifo_cntrl, 0x0f000000);
+@@ -507,7 +521,9 @@ static void fec_hw_init(struct net_device *dev)
+ 	out_be32(&fec->iaddr1, 0x00000000);	/* No individual filter */
+ 	out_be32(&fec->iaddr2, 0x00000000);	/* No individual filter */
+ 
++#if !defined(CONFIG_PPC_MERGE)
+ 	priv->phy_speed = ((bd->bi_ipbfreq >> 20) / 5) << 1;
++#endif
+ 
+ 	fec_restart(dev, 0);	/* always use half duplex mode only */
+ 	/*
+@@ -522,7 +538,6 @@ static void fec_reinit(struct net_device *dev)
+ {
+ 	struct fec_priv *priv = (struct fec_priv *)dev->priv;
+ 	struct mpc52xx_fec *fec = priv->fec;
+-	static void fec_update_stat(struct net_device *);
+ 
+ 	netif_stop_queue(dev);
+ 	out_be32(&fec->imask, 0x0);
+@@ -551,19 +566,38 @@ static void fec_reinit(struct net_device *dev)
+ /* Platform Driver                                                               */
+ /* ======================================================================== */
+ 
++#if defined(CONFIG_PPC_MERGE)
++static int __devinit
++mpc52xx_fec_probe(struct of_device *op, const struct of_device_id *match)
++#else
+ static int __devinit
+ mpc52xx_fec_probe(struct device *dev)
++#endif
+ {
+ 	int ret;
++#if defined(CONFIG_PPC_MERGE)
++	int rv;
++	struct resource __mem;
++	struct resource *mem = &__mem;
++#else
+ 	struct platform_device *pdev = to_platform_device(dev);
++	struct resource *mem;
++#endif
+ 	struct net_device *ndev;
+ 	struct fec_priv *priv = NULL;
+-	struct resource *mem;
+ 
+ 	volatile int dbg=0;
+ 	while(dbg)
+ 		__asm("nop");
+ 	/* Reserve FEC control zone */
++#if defined(CONFIG_PPC_MERGE)
++	rv = of_address_to_resource(op->node, 0, mem);
++	if (rv) {
++		printk(KERN_ERR DRIVER_NAME ": "
++			"Error while parsing device node resource\n" );
++		return rv;
++	}
++#else
+ 	mem = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+ 	if ((mem->end - mem->start + 1) != sizeof(struct mpc52xx_fec)) {
+ 		printk(KERN_ERR DRIVER_NAME 
+@@ -571,7 +605,8 @@ mpc52xx_fec_probe(struct device *dev)
+ 									mem->end - mem->start + 1, sizeof(struct mpc52xx_fec));
+ 		return -EINVAL;
+ 	}
+-	
++#endif
++
+ 	if (!request_mem_region(mem->start, sizeof(struct mpc52xx_fec),
+ 	                        DRIVER_NAME))
+ 		return -EBUSY;
+@@ -579,6 +614,8 @@ mpc52xx_fec_probe(struct device *dev)
+ 	/* Get the ether ndev & it's private zone */
+ 	ndev = alloc_etherdev(sizeof(struct fec_priv));
+ 	if (!ndev) {
++		printk(KERN_ERR DRIVER_NAME ": "
++			"Can not allocate the ethernet device\n" );
+ 		ret = -ENOMEM;
+ 		goto probe_error;
+ 	}
+@@ -609,6 +646,8 @@ mpc52xx_fec_probe(struct device *dev)
+ 		ioremap(mem->start, sizeof(struct mpc52xx_fec));
+ 	
+ 	if (!priv->fec) {
++		printk(KERN_ERR DRIVER_NAME ": "
++			"Can not remap IO memory at 0x%8.8x\n", mem->start );
+ 		ret = -ENOMEM;
+ 		goto probe_error;
+ 	}
+@@ -618,6 +657,8 @@ mpc52xx_fec_probe(struct device *dev)
+ 	priv->tx_sdma = sdma_alloc(FEC_TX_NUM_BD);
+ 	
+ 	if (!priv->rx_sdma || !priv->tx_sdma) {
++		printk(KERN_ERR DRIVER_NAME ": "
++			"Can not init SDMA tasks\n" );
+ 		ret = -ENOMEM;
+ 		goto probe_error;
+ 	}
+@@ -631,8 +672,13 @@ mpc52xx_fec_probe(struct device *dev)
+ 		goto probe_error;
+ 
+ 	/* Get the IRQ we need one by one */
+-		/* Control */
++	/* Control */
++#if defined(CONFIG_PPC_MERGE)
++	ndev->irq = irq_of_parse_and_map(op->node, 0);
++#else
+ 	ndev->irq = platform_get_irq(pdev, 0);
++#endif
++
+ 	if (request_irq(ndev->irq, &fec_interrupt, SA_INTERRUPT,
+ 	                DRIVER_NAME "_ctrl", ndev)) {
+ 		printk(KERN_ERR DRIVER_NAME ": ctrl interrupt request failed\n");
+@@ -641,26 +687,32 @@ mpc52xx_fec_probe(struct device *dev)
+ 		goto probe_error;
+ 	}
+ 
+-		/* RX */
++	/* RX */
+ 	priv->r_irq = sdma_irq(priv->rx_sdma);
+ 	if (request_irq(priv->r_irq, &fec_rx_interrupt, SA_INTERRUPT,
+ 	                DRIVER_NAME "_rx", ndev)) {
+-		printk(KERN_ERR DRIVER_NAME ": rx interrupt request failed\n");
++		printk(KERN_ERR DRIVER_NAME ": rx request_irq(0x%x) failed\n",
++		       priv->r_irq);
+ 		ret = -EBUSY;
+ 		priv->r_irq = -1;	/* Don't try to free it */
+ 		goto probe_error;
+ 	}
+ 
+-		/* TX */
++	/* TX */
+ 	priv->t_irq = sdma_irq(priv->tx_sdma);
+ 	if (request_irq(priv->t_irq, &fec_tx_interrupt, SA_INTERRUPT,
+ 	                DRIVER_NAME "_tx", ndev)) {
+-		printk(KERN_ERR DRIVER_NAME ": tx interrupt request failed\n");
++		printk(KERN_ERR DRIVER_NAME ": tx request_irq(0x%x) failed\n",
++		       priv->t_irq);
+ 		ret = -EBUSY;
+ 		priv->t_irq = -1;	/* Don't try to free it */
+ 		goto probe_error;
+ 	}
+ 
++#if defined(CONFIG_PPC_MERGE)
++	priv->phy_speed = ((mpc52xx_find_ipb_freq(op->node) >> 20) / 5) << 1;
++#endif
++
+ 	/* MAC address init */
+ 	if (memcmp(mpc52xx_fec_mac_addr, null_mac, 6) != 0)
+ 		memcpy(ndev->dev_addr, mpc52xx_fec_mac_addr, 6);
+@@ -679,7 +731,11 @@ mpc52xx_fec_probe(struct device *dev)
+ 	fec_mii_init(ndev);
+ 	
+ 	/* We're done ! */
++#if defined(CONFIG_PPC_MERGE)
++	dev_set_drvdata(&op->dev, ndev);
++#else
+ 	dev_set_drvdata(dev, ndev);
++#endif
+ 
+ 	return 0;
+ 
+@@ -705,13 +761,22 @@ probe_error:
+ 	return ret;
+ }
+ 
++#if defined(CONFIG_PPC_MERGE)
++static int
++mpc52xx_fec_remove(struct of_device *op)
++#else
+ static int
+ mpc52xx_fec_remove(struct device *dev)
++#endif
+ {
+ 	struct net_device *ndev;
+ 	struct fec_priv *priv;
+ 	
++#if defined(CONFIG_PPC_MERGE)
++	ndev = (struct net_device *) dev_get_drvdata(&op->dev);
++#else
+ 	ndev = (struct net_device *) dev_get_drvdata(dev);
++#endif
+ 	if (!ndev)
+ 		return 0;
+ 	priv = (struct fec_priv *) ndev->priv;
+@@ -728,10 +793,37 @@ mpc52xx_fec_remove(struct device *dev)
+ 
+ 	free_netdev(ndev);
+ 	
++#if defined(CONFIG_PPC_MERGE)
++	dev_set_drvdata(&op->dev, NULL);
++#else
+ 	dev_set_drvdata(dev, NULL);
++#endif
+ 	return 0;
+ }
+ 
++#if defined(CONFIG_PPC_MERGE)
++static struct of_device_id mpc52xx_fec_of_match[] = {
++	{ .compatible = "mpc5200-ethernet", },
++	{ .compatible = "mpc52xx-fec", },
++	{},
++};
++
++static struct of_platform_driver mpc52xx_fec_driver = {
++	.name = DRIVER_NAME,
++	.owner = THIS_MODULE,
++	.match_table = mpc52xx_fec_of_match,
++	.probe = mpc52xx_fec_probe,
++	.remove = mpc52xx_fec_remove,
++#ifdef CONFIG_PM
++/*	.suspend = mpc52xx_fec_suspend, TODO */
++/*	.resume = mpc52xx_fec_resume, TODO */
++#endif
++	.driver = {
++		.name = DRIVER_NAME,
++		.owner = THIS_MODULE,
++	},
++};
++#else
+ static struct device_driver mpc52xx_fec_driver = {
+ 	.name	  = DRIVER_NAME,
+ 	.bus		= &platform_bus_type,
+@@ -742,6 +834,7 @@ static struct device_driver mpc52xx_fec_driver = {
+ /*	.resume		= mpc52xx_fec_resume,	TODO */
+ #endif
+ };
++#endif
+ 
+ /* ======================================================================== */
+ /* Module                                                                   */
+@@ -750,13 +843,21 @@ static struct device_driver mpc52xx_fec_driver = {
+ static int __init
+ mpc52xx_fec_init(void)
+ {
++#if defined(CONFIG_PPC_MERGE)
++	return of_register_platform_driver(&mpc52xx_fec_driver);
++#else
+ 	return driver_register(&mpc52xx_fec_driver);
++#endif
+ }
+ 
+ static void __exit
+ mpc52xx_fec_exit(void)
+ {
++#if defined(CONFIG_PPC_MERGE)
++	of_unregister_platform_driver(&mpc52xx_fec_driver);
++#else
+ 	driver_unregister(&mpc52xx_fec_driver);
++#endif
+ }
+ 
+ 
+diff --git a/drivers/net/fec_mpc52xx/fec_phy.c b/drivers/net/fec_mpc52xx/fec_phy.c
+index 2a287de..25e0409 100644
+--- a/drivers/net/fec_mpc52xx/fec_phy.c
++++ b/drivers/net/fec_mpc52xx/fec_phy.c
+@@ -20,8 +20,14 @@
+ #include <linux/mii.h>
+ #include <asm/io.h>
+ #include <asm/mpc52xx.h>
++
++#ifdef CONFIG_PPC_MERGE
++#include <platforms/52xx/bestcomm.h>
++#else
+ #include <syslib/bestcomm/bestcomm.h>
+ #include <syslib/bestcomm/fec.h>
++#endif
++
+ #include "fec_phy.h"
+ #include "fec.h"
+ 
+-- 
+1.4.4.2
+

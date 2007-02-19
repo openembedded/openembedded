@@ -1,0 +1,36 @@
+From: Grant Likely <grant.likely@secretlab.ca>
+Date: Tue, 9 Jan 2007 08:40:11 +0000 (-0700)
+Subject: [POWERPC] Efika: Add missing interrupts from bestcomm node
+X-Git-Url: http://git.secretlab.ca/cgi-bin/gitweb.cgi?p=linux-2.6.git;a=commitdiff;h=7eaf3ab60bdf3b8850f30916e06934f2e1437eb3
+
+[POWERPC] Efika: Add missing interrupts from bestcomm node
+
+The efika device tree does not have the list of bestcomm interrupts which
+are expected by the Linux 52xx bestcomm device driver.  This adds the
+expected properties
+
+Signed-off-by: Grant Likely <grant.likely@secretlab.ca>
+---
+
+--- a/arch/powerpc/kernel/prom_init.c
++++ b/arch/powerpc/kernel/prom_init.c
+@@ -2136,11 +2136,17 @@ static void __init fixup_device_tree_efi
+ 	/* Substitution table */
+ 	#define prop_cstr(x) x, sizeof(x)
+ 	int prop_sound_irq[3] = { 2, 2, 0 };
++	int prop_bestcomm_irq[3*16] = { 3,0,0, 3,1,0, 3,2,0, 3,3,0,
++	                                3,4,0, 3,5,0, 3,6,0, 3,7,0,
++	                                3,8,0, 3,9,0, 3,10,0, 3,11,0,
++	                                3,12,0, 3,13,0, 3,14,0, 3,15,0,
++	                              };
+ 	struct subst_entry efika_subst_table[] = {
+ 		{ "/",			"device_type",	prop_cstr("efika") },
+ 		{ "/builtin",		"compatible",	prop_cstr("soc") },
+ 		{ "/builtin/ata",	"compatible",	prop_cstr("mpc5200b-ata\0mpc52xx-ata"), },
+ 		{ "/builtin/bestcomm",	"compatible",	prop_cstr("mpc5200b-bestcomm\0mpc52xx-bestcomm") },
++		{ "/builtin/bestcomm",	"interrupts",	prop_bestcomm_irq, sizeof(prop_bestcomm_irq) },
+ 		{ "/builtin/ethernet",	"compatible",	prop_cstr("mpc5200b-fec\0mpc52xx-fec") },
+ 		{ "/builtin/pic",	"compatible",	prop_cstr("mpc5200b-pic\0mpc52xx-pic") },
+ 		{ "/builtin/serial",	"compatible",	prop_cstr("mpc5200b-psc-uart\0mpc52xx-psc-uart") },
+--
+

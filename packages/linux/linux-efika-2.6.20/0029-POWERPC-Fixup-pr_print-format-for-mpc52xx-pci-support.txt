@@ -1,0 +1,28 @@
+From 08bb999d4f8b866a570775db5788cd84edafd3f5 Mon Sep 17 00:00:00 2001
+From: Grant Likely <grant.likely@secretlab.ca>
+Date: Mon, 11 Dec 2006 23:00:24 -0700
+Subject: [PATCH] [POWERPC] Fixup pr_print format for mpc52xx pci support
+
+Signed-off-by: Grant Likely <grant.likely@secretlab.ca>
+---
+ arch/powerpc/platforms/52xx/pci.c |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/arch/powerpc/platforms/52xx/pci.c b/arch/powerpc/platforms/52xx/pci.c
+index 14940af..b732fdc 100644
+--- a/arch/powerpc/platforms/52xx/pci.c
++++ b/arch/powerpc/platforms/52xx/pci.c
+@@ -285,8 +285,8 @@ mpc52xx_pci_setup(struct pci_controller *hose,
+ 		return;
+ 	}
+ 	pr_debug(".io_resource={.start=%x,.end=%x,.flags=%lx} "
+-	         ".io_base_phys=%lx\n",
+-	         res->start, res->end, res->flags, hose->io_base_phys);
++	         ".io_base_phys=0x%p\n",
++	         res->start, res->end, res->flags, (void*)hose->io_base_phys);
+ 	out_be32(&pci_regs->iw2btar,
+ 	         MPC52xx_PCI_IWBTAR_TRANSLATION(hose->io_base_phys,
+ 	                                        res->start,
+-- 
+1.4.4.2
+

@@ -1,0 +1,144 @@
+From 65cd4fcc30440e903fd99973918373ee4534b70a Mon Sep 17 00:00:00 2001
+From: Sylvain Munaut <tnt@246tNt.com>
+Date: Sat, 23 Dec 2006 22:39:18 +0100
+Subject: [PATCH] [PATCH] powerpc: Small cleanup of EFIKA platform
+
+This is just some cleanup to remove the efika.h header that just have
+2 lines in it and is not really necessary.
+
+Signed-off-by: Sylvain Munaut <tnt@246tNt.com>
+---
+ arch/powerpc/platforms/52xx/efika-pci.c   |   23 ++++++++++++++++-------
+ arch/powerpc/platforms/52xx/efika-setup.c |    7 ++++---
+ arch/powerpc/platforms/52xx/efika.h       |   19 -------------------
+ 3 files changed, 20 insertions(+), 29 deletions(-)
+
+diff --git a/arch/powerpc/platforms/52xx/efika-pci.c b/arch/powerpc/platforms/52xx/efika-pci.c
+index 62e05b2..3732dec 100644
+--- a/arch/powerpc/platforms/52xx/efika-pci.c
++++ b/arch/powerpc/platforms/52xx/efika-pci.c
+@@ -1,3 +1,13 @@
++/*
++ * Efika 5K2 PCI support thru RTAS
++ *
++ * Copyright (C) 2006 bplan GmbH
++ *
++ * This file is licensed under the terms of the GNU General Public License
++ * version 2. This program is licensed "as is" without any warranty of any
++ * kind, whether express or implied.
++ *
++ */
+ 
+ #include <linux/kernel.h>
+ #include <linux/pci.h>
+@@ -12,7 +22,6 @@
+ #include <asm/pci-bridge.h>
+ #include <asm/rtas.h>
+ 
+-#include "efika.h"
+ 
+ #ifdef CONFIG_PCI
+ /*
+@@ -62,7 +71,7 @@ void __init efika_pcisetup(void)
+ 
+ 	root = of_find_node_by_path("/");
+ 	if (root == NULL) {
+-		printk(KERN_WARNING EFIKA_PLATFORM_NAME
++		printk(KERN_WARNING __FILE__
+ 		       ": Unable to find the root node\n");
+ 		return;
+ 	}
+@@ -76,30 +85,30 @@ void __init efika_pcisetup(void)
+ 	of_node_put(root);
+ 
+ 	if (pcictrl == NULL) {
+-		printk(KERN_WARNING EFIKA_PLATFORM_NAME
++		printk(KERN_WARNING __FILE__
+ 		       ": Unable to find the PCI bridge node\n");
+ 		return;
+ 	}
+ 
+ 	bus_range = get_property(pcictrl, "bus-range", &len);
+ 	if (bus_range == NULL || len < 2 * sizeof(int)) {
+-		printk(KERN_WARNING EFIKA_PLATFORM_NAME
++		printk(KERN_WARNING __FILE__
+ 		       ": Can't get bus-range for %s\n", pcictrl->full_name);
+ 		return;
+ 	}
+ 
+ 	if (bus_range[1] == bus_range[0])
+-		printk(KERN_INFO EFIKA_PLATFORM_NAME ": PCI bus %d",
++		printk(KERN_INFO __FILE__ ": PCI bus %d",
+ 		       bus_range[0]);
+ 	else
+-		printk(KERN_INFO EFIKA_PLATFORM_NAME ": PCI buses %d..%d",
++		printk(KERN_INFO __FILE__ ": PCI buses %d..%d",
+ 		       bus_range[0], bus_range[1]);
+ 	printk(" controlled by %s\n", pcictrl->full_name);
+ 	printk("\n");
+ 
+ 	hose = pcibios_alloc_controller();
+ 	if (!hose) {
+-		printk(KERN_WARNING EFIKA_PLATFORM_NAME
++		printk(KERN_WARNING __FILE__
+ 		       ": Can't allocate PCI controller structure for %s\n",
+ 		       pcictrl->full_name);
+ 		return;
+diff --git a/arch/powerpc/platforms/52xx/efika-setup.c b/arch/powerpc/platforms/52xx/efika-setup.c
+index d61ce84..17bf73a 100644
+--- a/arch/powerpc/platforms/52xx/efika-setup.c
++++ b/arch/powerpc/platforms/52xx/efika-setup.c
+@@ -1,5 +1,4 @@
+ /*
+- *
+  * Efika 5K2 platform setup
+  * Some code really inspired from the lite5200b platform.
+  *
+@@ -32,7 +31,9 @@
+ #include <asm/of_platform.h>
+ #include <asm/mpc52xx.h>
+ 
+-#include "efika.h"
++
++extern void __init efika_pcisetup(void);
++
+ 
+ static void efika_show_cpuinfo(struct seq_file *m)
+ {
+@@ -103,7 +104,7 @@ static int __init efika_probe(void)
+ 
+ define_machine(efika)
+ {
+-	.name			= EFIKA_PLATFORM_NAME,
++	.name			= "Efika",
+ 	.probe			= efika_probe,
+ 	.setup_arch		= efika_setup_arch,
+ 	.init			= mpc52xx_declare_of_platform_devices,
+diff --git a/arch/powerpc/platforms/52xx/efika.h b/arch/powerpc/platforms/52xx/efika.h
+deleted file mode 100644
+index 2f060fd..0000000
+--- a/arch/powerpc/platforms/52xx/efika.h
++++ /dev/null
+@@ -1,19 +0,0 @@
+-/*
+- * Efika 5K2 platform setup - Header file
+- *
+- * Copyright (C) 2006 bplan GmbH
+- *
+- * This file is licensed under the terms of the GNU General Public License
+- * version 2. This program is licensed "as is" without any warranty of any
+- * kind, whether express or implied.
+- *
+- */
+-
+-#ifndef __ARCH_POWERPC_EFIKA__
+-#define __ARCH_POWERPC_EFIKA__
+-
+-#define EFIKA_PLATFORM_NAME "Efika"
+-
+-extern void __init efika_pcisetup(void);
+-
+-#endif
+-- 
+1.4.4.2
+
