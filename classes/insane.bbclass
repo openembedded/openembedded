@@ -212,7 +212,7 @@ def package_qa_check_devdbg(path, name,d):
     non dev packages containing
     """
 
-    import bb
+    import bb, os
     sane = True
 
     if not "-dev" in name:
