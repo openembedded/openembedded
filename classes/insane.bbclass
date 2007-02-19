@@ -37,10 +37,13 @@ def package_qa_get_machine_dict():
             "linux" : { "arm" :       (40,    97,    0,          True),
                         "armeb":      (40,    97,    0,          False),
                         "powerpc":    (20,     0,    0,          False),
+                        "i386":       ( 3,     0,    0,          True),
+                        "x64_64":     (62,     0,    0,          True),
                       },
             "linux-uclibc" : { "arm" :       (40,    97,    0,          True),
                         "armeb":      (40,    97,    0,          False),
                         "powerpc":    (20,     0,    0,          False),
+                        "mipsel":     ( 8,     0,    0,          True),
                       },
         }
 
