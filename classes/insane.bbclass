@@ -52,8 +52,8 @@ def package_qa_get_machine_dict():
                         "mipsel":     ( 8,     0,    0,          True),
                       },
             "linux-gnueabi" : {
-                        "arm" :       (40,     0,    0,          True),	            
-	             },		      
+                        "arm" :       (40,     0,    0,          True),
+                      },
         }
 
 # factory for a class, embedded in a method
