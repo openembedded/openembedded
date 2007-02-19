@@ -143,6 +143,8 @@ def package_qa_get_elf(path):
 # 2 - package depends on debug package
 # 3 - non dbg contains .so
 # 4 - wrong architecture
+# 5 - .la contains installed=yes or reference to the workdir
+# 6 - .pc contains reference to /usr/include or workdir
 #
 #
 
@@ -172,6 +174,8 @@ def package_qa_write_error(error_class, name, path, d):
         "package depends on debug package",
         "non dbg contains .debug",
         "wrong architecture",
+        "evil hides inside the .la",
+        "evil hides inside the .pc",
     ]
 
 
@@ -278,8 +282,40 @@ def package_qa_check_staged(path,d):
     """
     Check staged la and pc files for sanity
       -e.g. installed being false
+
+        As this is run after every stage we should be able
+        to find the one responsible for the errors easily even
+        if we look at every .pc and .la file
     """
+    import os, bb
+
     sane = True
+    workdir = os.path.join(bb.data.getVar('TMPDIR', d, True), "work")
+
+    if bb.data.inherits_class("native", d):
+        installed = "installed=no"
+    else:
+        installed = "installed=yes"
+
+    # find all .la and .pc files
+    # read the content
+    # and check for stuff that looks wrong
+    for root, dirs, files in os.walk(path):
+        for file in files:
+            path = os.path.join(root,file)
+            if file[-2:] == "la":
+                file_content = open(path).read()
+                if installed in file_content or workdir in file_content:
+                    bb.error("QA issue: %s failed sanity test (reference to workdir or installed)" % file )
+                    if package_qa_make_fatal_error( 5, "staging", path, d):
+                        sane = False
+            elif file[-2:] == "pc":
+                file_content = open(path).read()
+                if "/usr/include" in file_content or workdir in file_content:
+                    bb.error("QA issue: %s failed sanity test (reference to /usr/include or workdir)" % file )
+                    if package_qa_make_fatal_error( 6, "staging", path, d):
+                        sane = False
+
     return sane
 
 # Walk over all files in a directory and call func
@@ -364,9 +400,10 @@ python do_package_qa () {
 # The Staging Func, to check all staging
 addtask qa_staging after do_populate_staging before do_build
 python do_qa_staging() {
-    bb.note("Staged!")
+    bb.note("QA checking staging")
 
-    package_qa_check_staged(bb.data.getVar('STAGING_DIR',d,True), d)
+    if not package_qa_check_staged(bb.data.getVar('STAGING_LIBDIR',d,True), d):
+        bb.fatal("QA staging was broken by the package built above")
 }
 
 # Check broken config.log files
