@@ -5,8 +5,9 @@ HOMEPAGE = "http://sourceforge.net/projects/puppy"
 SECTION = "net"
 LICENSE = "MIT"
 
-SRC_URI = "cvs://anonymous@puppy.cvs.sourceforge.net/cvsroot/puppy;method=pserver;module=ftpd-topfield;tag=FTPD_TOPFIELD_0_6_10 \
-	   cvs://anonymous@puppy.cvs.sourceforge.net/cvsroot/puppy;method=pserver;module=libtopfield;tag=FTPD_TOPFIELD_0_6_10 \
+SRC_URI = "cvs://anonymous@puppy.cvs.sourceforge.net/cvsroot/puppy;method=pserver;module=ftpd-topfield;tag=FTPD_TOPFIELD_0_7_0 \
+	   cvs://anonymous@puppy.cvs.sourceforge.net/cvsroot/puppy;method=pserver;module=libtopfield;tag=FTPD_TOPFIELD_0_7_0 \
+	   file://usb-header-name.patch;patch=1 \
 	   file://init"
 
 # The source will end up in the subdirectory 'ftpd-topfield' - no release name
