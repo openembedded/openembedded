@@ -1,16 +1,12 @@
+require samba.inc
+inherit update-rc.d
+
 PR = "r5"
 
-SRC_URI = "http://us2.samba.org/samba/ftp/stable/samba-${PV}.tar.gz \
-	   file://configure.patch;patch=1 \
-	   file://cifs.patch;patch=1 \
-	   file://config-lfs.patch;patch=1 \
+SRC_URI += "file://config-lfs.patch;patch=1 \
 	   file://init \
            file://quota.patch;patch=1;pnum=0 \
 	   "
-S = "${WORKDIR}/${P}/source"
-
-require samba.inc
-inherit update-rc.d
 
 INITSCRIPT_NAME = "samba"
 # No dependencies, goes in at level 20 (NOTE: take care with the
