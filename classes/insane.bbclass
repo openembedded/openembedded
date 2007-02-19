@@ -28,8 +28,7 @@ PACKAGEFUNCS += " do_package_qa "
 #
 # dictionary for elf headers
 #
-# feel free to add and correct. the ARM EABI needs another column and we
-# need mips, i386 and amd64 input (abi versions)
+# feel free to add and correct. 
 #
 #           TARGET_OS  TARGET_ARCH   MACHINE, OSABI, ABIVERSION, Little Endian
 def package_qa_get_machine_dict():
@@ -52,6 +51,9 @@ def package_qa_get_machine_dict():
                         "powerpc":    (20,     0,    0,          False),
                         "mipsel":     ( 8,     0,    0,          True),
                       },
+            "linux-gnueabi" : {
+                        "arm" :       (40,     0,    0,          True),	            
+	             },		      
         }
 
 # factory for a class, embedded in a method
@@ -169,7 +171,7 @@ def package_qa_write_error(error_class, name, path, d):
         "package contains RPATH",
         "package depends on debug package",
         "non dbg contains .debug",
-        "wrong archutecture",
+        "wrong architecture",
     ]
 
 
@@ -251,16 +253,16 @@ def package_qa_check_arch(path,name,d):
 
     sane = True
     if not machine == elf.machine():
-        bb.error("Architecture did not match (%d to %d) on %s", (machine, elf.machine(), package_qa_clean_path(path,d)))
+        bb.error("Architecture did not match (%d to %d) on %s" %(machine, elf.machine(), package_qa_clean_path(path,d)))
         sane = package_qa_make_fatal_error( 4, name, path, d )
     elif not osabi == elf.osAbi():
-        bb.error("OSABI did not match (%d to %d) on %s", (osabi, elf.osAbi(), package_qa_clean_path(path,d)))
+        bb.error("OSABI did not match (%d to %d) on %s" % (osabi, elf.osAbi(), package_qa_clean_path(path,d)))
         sane = package_qa_make_fatal_error( 4, name, path, d )
     elif not abiversion == elf.abiVersion():
-        bb.error("ABI version did not match (%d to %d) on %s", (abiversion, elf.abiVersion(), package_qa_clean_path(path,d)))
+        bb.error("ABI version did not match (%d to %d) on %s" % (abiversion, elf.abiVersion(), package_qa_clean_path(path,d)))
         sane = package_qa_make_fatal_error( 4, name, path, d )
     elif not littleendian == elf.isLittleEndian():
-        bb.error("Endiannes did not match (%d to %d) on %s", (littleendian, elf.isLittleEndian(), package_qa_clean_path(path,d)))
+        bb.error("Endiannes did not match (%d to %d) on %s" % (littleendian, elf.isLittleEndian(), package_qa_clean_path(path,d)))
         sane = package_qa_make_fatal_error( 4, name, path, d )
 
     return sane
