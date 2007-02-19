@@ -377,5 +377,5 @@ python do_qa_configure() {
     for root, dirs, files in os.walk(bb.data.getVar('WORKDIR', d, True)):
         if "config.log" in files:
             if os.system("grep 'CROSS COMPILE Badness:' %s > /dev/null" % (os.path.join(root,"config.log"))) == 0:
-                bb.fatal("This autoconf log indicates errors, it looked at host includes. Rerun configure task after fixing this. Path was '%s'", root)
+                bb.fatal("This autoconf log indicates errors, it looked at host includes. Rerun configure task after fixing this. Path was '%s'" % root)
 }
