@@ -1,6 +1,16 @@
 SECTION = "console/network"
-DEPENDS = "readline"
 LICENSE = "GPL"
+DEPENDS = "readline"
+
+SRC_URI = "http://samba.org/samba/ftp/stable/samba-${PV}.tar.gz \
+           file://configure.patch;patch=1 \
+           file://cifs.patch;patch=1"
+S = "${WORKDIR}/samba-${PV}/source"
+
+inherit autotools
+
+EXTRA_OECONF='--disable-cups --with-readline=${STAGING_LIBDIR}/.. \
+	      --without-ads --without-automount --with-smbmount'
 
 PACKAGES =+ "libsmbclient libsmbclient-dev cifs cifs-doc"
 FILES_cifs = "${bindir}/mount.cifs"
@@ -8,10 +18,6 @@ FILES_cifs-doc = "${docdir}/mount.cifs.8"
 FILES_libsmbclient = "${libdir}/libsmbclient.so.*"
 FILES_libsmbclient-dev = "${libdir}/libsmbclient.so ${includedir}"
 
-inherit autotools
-
-EXTRA_OECONF='--disable-cups --with-readline=${STAGING_LIBDIR}/.. \
-	      --without-ads --without-automount --with-smbmount'
 do_configure_prepend () {
 	./script/mkversion.sh
 	if [ ! -e acinclude.m4 ]; then
