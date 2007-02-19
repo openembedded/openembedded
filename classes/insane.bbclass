@@ -212,9 +212,9 @@ def package_qa_check_devdbg(path, name,d):
     sane = True
 
     if not "-dev" in name:
-        if path[-3:] == ".so":
+        if path[-3:] == ".so" and os.path.islink(path):
             package_qa_write_error( 0, name, path, d )
-            bb.error("QA Issue: non dev package contains .so: %s path '%s'" % (name, package_qa_clean_path(path,d)))
+            bb.error("QA Issue: non -dev package %s contains symlink .so: %s path '%s'" % (name, package_qa_clean_path(path,d)))
             if package_qa_make_fatal_error( 0, name, path, d ):
                 sane = False
 
