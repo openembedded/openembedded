@@ -23,6 +23,7 @@ do_configure () {
 }
 
 pkg_postinst () {
+	touch ${sysconfdir}/shells
 	grep -q "bin/bash" ${sysconfdir}/shells || echo /bin/bash >> ${sysconfdir}/shells
 	grep -q "bin/sh" ${sysconfdir}/shells || echo /bin/sh >> ${sysconfdir}/shells
 }
