@@ -3,7 +3,7 @@ DESCRIPTION = "Enigma is a framebuffer-based frontend for DVB functions"
 MAINTAINER = "Felix Domke <tmbinc@elitedvb.net>"
 LICENSE = "GPL"
 
-SRCDATE = "20070220"
+SRCDATE = "20070221"
 PV = "cvs-${SRCDATE}"
 PN = "enigma"
 PR = "r0"
@@ -17,6 +17,8 @@ SRC_URI = "cvs://anoncvs@cvs.tuxbox.org/cvs/tuxbox;module=apps/tuxbox/enigma;met
            file://enigma_leave_standby.sh \
            file://rotor_fix.diff;patch=1;pnum=1 \
            file://disable_boot.diff;patch=1;pnum=1"
+
+SRC_URI_append_dm600pvr = " http://sources.dreamboxupdate.com/download/opendreambox/enigma/showshutdownpic-${MACHINE}"
 
 S = "${WORKDIR}/enigma"
 
@@ -56,6 +58,7 @@ do_install_append() {
 	rm -R ${D}/etc/enigma 2> /dev/null || /bin/true
 	install -m 0644 ${WORKDIR}/config ${D}/usr/share/enigma/default/
 	if [ "${MACHINE}" = "dm600pvr" ]; then
+		install -m 0755 ${WORKDIR}/showshutdownpic-dm600pvr ${D}/usr/bin/showshutdownpic
 		# vulcan-based boxes don't look that well with too much alpha
 		echo "i:/ezap/osd/alpha=00000000" >> ${D}/usr/share/enigma/default/config
 		echo "i:/ezap/osd/simpleMainMenu=00000001" >> ${D}/usr/share/enigma/default/config
