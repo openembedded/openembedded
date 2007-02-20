@@ -246,7 +246,7 @@ def package_qa_check_arch(path,name,d):
     target_os   = bb.data.getVar('TARGET_OS',   d, True)
     target_arch = bb.data.getVar('TARGET_ARCH', d, True)
 
-    #this will throw an exception, then fix the dict above
+    #if this will throw an exception, then fix the dict above
     (machine, osabi, abiversion, littleendian) = package_qa_get_machine_dict()[target_os][target_arch]
     elf = package_qa_get_elf(path)
     try:
@@ -257,7 +257,7 @@ def package_qa_check_arch(path,name,d):
 
     sane = True
     if not machine == elf.machine():
-        bb.error("Architecture did not match (%d to %d) on %s" %(machine, elf.machine(), package_qa_clean_path(path,d)))
+        bb.fatal("Architecture did not match (%d to %d) on %s" %(machine, elf.machine(), package_qa_clean_path(path,d)))
         sane = package_qa_make_fatal_error( 4, name, path, d )
     elif not osabi == elf.osAbi():
         bb.error("OSABI did not match (%d to %d) on %s" % (osabi, elf.osAbi(), package_qa_clean_path(path,d)))
