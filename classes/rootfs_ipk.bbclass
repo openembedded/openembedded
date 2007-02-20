@@ -13,10 +13,8 @@ IPKG_ARGS = "-f ${T}/ipkg.conf -o ${IMAGE_ROOTFS}"
 
 PACKAGE_INSTALL += "ipkg ipkg-collateral"
 
-fakeroot rootfs_ipk_do_rootfs () {
+rootfs_ipk_do_indexes () {
 	set -x
-		
-	mkdir -p ${IMAGE_ROOTFS}/dev
 
 	ipkgarchs="${PACKAGE_ARCHS}"
 
@@ -33,14 +31,22 @@ fakeroot rootfs_ipk_do_rootfs () {
 			fi
 		fi
 	done
+}
 
+fakeroot rootfs_ipk_do_rootfs () {
+	set -x
+
+	rootfs_ipk_do_indexes
+
+	mkdir -p ${IMAGE_ROOTFS}/dev
 	mkdir -p ${T}
-	priority=1
 
 	#Add deploy/ipk as well for backward compat
 	echo "src oe file:${DEPLOY_DIR_IPK}" > ${T}/ipkg.conf
+	ipkgarchs="${PACKAGE_ARCHS}"
 
-        for arch in $ipkgarchs; do
+	priority=1
+	for arch in $ipkgarchs; do
 		echo "arch $arch $priority" >> ${T}/ipkg.conf
 		priority=$(expr $priority + 5)
 		if [ -e ${DEPLOY_DIR_IPK}/$arch/Packages ] ; then
