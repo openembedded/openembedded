@@ -75,6 +75,9 @@ python do_package_ipk () {
 	if not outdir:
 		bb.error("DEPLOY_DIR_IPK not defined, unable to package")
 		return
+
+	arch = bb.data.getVar('PACKAGE_ARCH', d, 1)
+	outdir = "%s/%s" % (outdir, arch)
 	bb.mkdirhier(outdir)
 
 	dvar = bb.data.getVar('D', d, 1)

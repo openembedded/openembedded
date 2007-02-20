@@ -18,17 +18,34 @@ fakeroot rootfs_ipk_do_rootfs () {
 		
 	mkdir -p ${IMAGE_ROOTFS}/dev
 
-	if [ -z "${DEPLOY_KEEP_PACKAGES}" ]; then
-		touch ${DEPLOY_DIR_IPK}/Packages
-		ipkg-make-index -r ${DEPLOY_DIR_IPK}/Packages -p ${DEPLOY_DIR_IPK}/Packages -l ${DEPLOY_DIR_IPK}/Packages.filelist -m ${DEPLOY_DIR_IPK}
-	fi
-	mkdir -p ${T}
-	echo "src oe file:${DEPLOY_DIR_IPK}" > ${T}/ipkg.conf
 	ipkgarchs="${PACKAGE_ARCHS}"
-	priority=1
+
+        if [ -z "${DEPLOY_KEEP_PACKAGES}" ]; then
+                touch ${DEPLOY_DIR_IPK}/Packages
+                ipkg-make-index -r ${DEPLOY_DIR_IPK}/Packages -p ${DEPLOY_DIR_IPK}/Packages -l ${DEPLOY_DIR_IPK}/Packages.filelist -m ${DEPLOY_DIR_IPK}
+        fi
+
 	for arch in $ipkgarchs; do
+		if [ -z "${DEPLOY_KEEP_PACKAGES}" ]; then
+			if [ -e ${DEPLOY_DIR_IPK}/$arch/ ] ; then 
+				touch ${DEPLOY_DIR_IPK}/$arch/Packages
+				ipkg-make-index -r ${DEPLOY_DIR_IPK}/$arch/Packages -p ${DEPLOY_DIR_IPK}/$arch/Packages -l ${DEPLOY_DIR_IPK}/$arch/Packages.filelist -m ${DEPLOY_DIR_IPK}/$arch/
+			fi
+		fi
+	done
+
+	mkdir -p ${T}
+	priority=1
+
+	#Add deploy/ipk as well for backward compat
+	echo "src oe file:${DEPLOY_DIR_IPK}" > ${T}/ipkg.conf
+
+        for arch in $ipkgarchs; do
 		echo "arch $arch $priority" >> ${T}/ipkg.conf
 		priority=$(expr $priority + 5)
+		if [ -e ${DEPLOY_DIR_IPK}/$arch/Packages ] ; then
+		        echo "src oe-$arch file:${DEPLOY_DIR_IPK}/$arch" >> ${T}/ipkg.conf
+	    fi
 	done
 	ipkg-cl ${IPKG_ARGS} update
 	if [ ! -z "${LINGUAS_INSTALL}" ]; then
