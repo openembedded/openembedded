@@ -1,15 +1,16 @@
-DESCRIPTION = "The apache v2 web server"
 SECTION = "net"
+DESCRIPTION = "The apache v2 web server"
 DEPENDS = "apache2-native openssl expat pcre"
 RDEPENDS += "openssl"
 
-PR = "r4"
+PR = "r5"
 
 SRC_URI = "http://apache.mirrors.tds.net/httpd/httpd-2.2.3.tar.bz2 \
 	   file://dftables-makefile-patch;patch=1 \
 	   file://apr-sockets-patch;patch=1 \
 	   file://configure-patch;patch=1 \
-	   file://server-makefile-patch;patch=1"
+	   file://server-makefile-patch;patch=1 \
+           file://configure-fix-cross-compile-ptr-check.patch;patch=1"
 
 #
 # over-ride needed since apache unpacks into httpd
