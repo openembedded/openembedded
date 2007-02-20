@@ -264,12 +264,6 @@ def package_qa_check_arch(path,name,d):
     if not machine == elf.machine():
         bb.error("Architecture did not match (%d to %d) on %s" %(machine, elf.machine(), package_qa_clean_path(path,d)))
         sane = package_qa_make_fatal_error( 4, name, path, d )
-#    elif not osabi == elf.osAbi():
-#        bb.error("OSABI did not match (%d to %d) on %s" % (osabi, elf.osAbi(), package_qa_clean_path(path,d)))
-#        sane = package_qa_make_fatal_error( 4, name, path, d )
-#    elif not abiversion == elf.abiVersion():
-#        bb.error("ABI version did not match (%d to %d) on %s" % (abiversion, elf.abiVersion(), package_qa_clean_path(path,d)))
-#        sane = package_qa_make_fatal_error( 4, name, path, d )
     elif not littleendian == elf.isLittleEndian():
         bb.error("Endiannes did not match (%d to %d) on %s" % (littleendian, elf.isLittleEndian(), package_qa_clean_path(path,d)))
         sane = package_qa_make_fatal_error( 4, name, path, d )
