@@ -5,7 +5,7 @@ PRIORITY = "required"
 DEPENDS = "makedevs"
 RDEPENDS = "makedevs"
 LICENSE = "GPL"
-PR = "r2"
+PR = "r3"
 
 FILESPATH = "${@base_set_filespath([ '${FILE_DIRNAME}/${P}', '${FILE_DIRNAME}/initscripts-${PV}', '${FILE_DIRNAME}/files', '${FILE_DIRNAME}' ], d)}"
 
@@ -48,7 +48,15 @@ do_install () {
 #
 # Install device dependent scripts
 #
-	install -m 0755 ${WORKDIR}/umountfs	${D}${sysconfdir}/init.d/umountfs
+	if [ "${MACHINE}" = "dm600pvr" ]; then
+		head -n 4 ${WORKDIR}/umountfs > ${D}${sysconfdir}/init.d/umountfs
+		echo "cd /tmp" >> ${D}${sysconfdir}/init.d/umountfs
+		tail -n 14 ${WORKDIR}/umountfs >> ${D}${sysconfdir}/init.d/umountfs
+		chmod 0755 ${D}${sysconfdir}/init.d/umountfs
+		ln -sf /usr/bin/showshutdownpic ${D}${sysconfdir}/rc0.d/S89showshutdownpic
+	else
+		install -m 0755 ${WORKDIR}/umountfs	${D}${sysconfdir}/init.d/umountfs
+	fi
 
 	ln -sf		../init.d/rmnologin	${D}${sysconfdir}/rc2.d/S99rmnologin
 	ln -sf		../init.d/rmnologin	${D}${sysconfdir}/rc3.d/S99rmnologin
