@@ -1,6 +1,6 @@
 DESCRIPTION = "Rebuild the package index"
 LICENSE = "MIT"
-PR = "r1"
+PR = "r2"
 
 DEPENDS = "ipkg-utils-native"
 
@@ -29,5 +29,15 @@ do_build() {
 	set -ex
 	touch Packages
 	ipkg-make-index -r Packages -p Packages -l Packages.filelist -m .
-	set +ex
+
+	ipkgarchs="${PACKAGE_ARCHS}"
+
+        for arch in $ipkgarchs; do
+            if [ -e ${DEPLOY_DIR_IPK}/$arch/ ] ; then
+                 touch ${DEPLOY_DIR_IPK}/$arch/Packages
+                 ipkg-make-index -r ${DEPLOY_DIR_IPK}/$arch/Packages -p ${DEPLOY_DIR_IPK}/$arch/Packages -l ${DEPLOY_DIR_IPK}/$arch/Packages.filelist -m ${DEPLOY_DIR_IPK}/$arch/
+            fi
+        done
+
+        set +ex
 }
