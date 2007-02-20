@@ -2,7 +2,7 @@ DESCRIPTION = "Hack&Dev's Linux kernel for Palm devices."
 HOMEPAGE = "http://www.hackndev.com/"
 SECTION = "kernel"
 LICENSE = "GPL"
-PR = "r2"
+PR = "r3"
 
 COMPATIBLE_MACHINE = "(palmtx|palmld|palmz72)"
 
@@ -18,7 +18,7 @@ S = "${WORKDIR}/trunk"
 
 K_MAJOR = "2"
 K_MINOR = "6"
-K_MICRO = "17"
+K_MICRO = "20"
 HHV="hnd0"
 PV = "${K_MAJOR}.${K_MINOR}.${K_MICRO}-${HHV}"
 
