@@ -1,5 +1,5 @@
 DESCRIPTION = "Task packages for GPE Palmtop Environment Phone Edition"
-PR = "r0"
+PR = "r1"
 LICENSE = "MIT"
 ALLOW_EMPTY = "1"
 
@@ -40,6 +40,7 @@ RDEPENDS_gpephone-task-base := "\
     gpe-applauncher \
     gpe-phonepanel \
     gpe-bootsplash \
+    gpe-bootsplash-theme-gpephone \
     bluez-utils-dbus \
     matchbox \
     xcursor-transparent-theme \
