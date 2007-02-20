@@ -30,39 +30,39 @@ PACKAGEFUNCS += " do_package_qa "
 #
 # feel free to add and correct. 
 #
-#           TARGET_OS  TARGET_ARCH   MACHINE, OSABI, ABIVERSION, Little Endian
+#           TARGET_OS  TARGET_ARCH   MACHINE, OSABI, ABIVERSION, Little Endian, 32bit?
 def package_qa_get_machine_dict():
     return {
             "linux" : { 
-                        "arm" :       (40,    97,    0,          True),
-                        "armeb":      (40,    97,    0,          False),
-                        "powerpc":    (20,     0,    0,          False),
-                        "i386":       ( 3,     0,    0,          True),
-                        "i486":       ( 3,     0,    0,          True),
-                        "i586":       ( 3,     0,    0,          True),
-                        "i686":       ( 3,     0,    0,          True),
-                        "x64_64":     (62,     0,    0,          True),
-                        "ia64":       (50,     0,    0,          True),
-                        "alpha":      (36902,  0,    0,          True),
-                        "hppa":       (15,     3,    0,          False),
-                        "m68k":       ( 4,     0,    0,          False),
-                        "mips":       ( 8,     0,    0,          False),
-                        "s390":       (22,     0,    0,          False),
-                        "sparc":      ( 2,     0,    0,          False),
+                        "arm" :       (40,    97,    0,          True,          True),
+                        "armeb":      (40,    97,    0,          False,         True),
+                        "powerpc":    (20,     0,    0,          False,         True),
+                        "i386":       ( 3,     0,    0,          True,          True),
+                        "i486":       ( 3,     0,    0,          True,          True),
+                        "i586":       ( 3,     0,    0,          True,          True),
+                        "i686":       ( 3,     0,    0,          True,          True),
+                        "x64_64":     (62,     0,    0,          True,          False),
+                        "ia64":       (50,     0,    0,          True,          False),
+                        "alpha":      (36902,  0,    0,          True,          False),
+                        "hppa":       (15,     3,    0,          False,         True),
+                        "m68k":       ( 4,     0,    0,          False,         True),
+                        "mips":       ( 8,     0,    0,          False,         True),
+                        "s390":       (22,     0,    0,          False,         True),
+                        "sparc":      ( 2,     0,    0,          False,         True),
                       },
             "linux-uclibc" : { 
-                        "arm" :       (40,    97,    0,          True),
-                        "armeb":      (40,    97,    0,          False),
-                        "powerpc":    (20,     0,    0,          False),
-                        "mipsel":     ( 8,     0,    0,          True),
+                        "arm" :       (40,    97,    0,          True,          True),
+                        "armeb":      (40,    97,    0,          False,         True),
+                        "powerpc":    (20,     0,    0,          False,         True),
+                        "mipsel":     ( 8,     0,    0,          True,          True),
                       },
             "linux-gnueabi" : {
-                        "arm" :       (40,     0,    0,          True),
+                        "arm" :       (40,     0,    0,          True,          True),
                       },
         }
 
 # factory for a class, embedded in a method
-def package_qa_get_elf(path):
+def package_qa_get_elf(path, bits32):
     class ELFFile:
         EI_NIDENT = 16
 
@@ -103,7 +103,10 @@ def package_qa_get_elf(path):
             ELFFile.my_assert(self.data[1], 'E')
             ELFFile.my_assert(self.data[2], 'L')
             ELFFile.my_assert(self.data[3], 'F')
-            ELFFile.my_assert(self.data[ELFFile.EI_CLASS], chr(ELFFile.ELFCLASS32)) # only 32 bits
+            if bits32 :
+                ELFFile.my_assert(self.data[ELFFile.EI_CLASS], chr(ELFFile.ELFCLASS32)) # only 32 bits
+            else:
+                ELFFile.my_assert(self.data[ELFFile.EI_CLASS], chr(ELFFile.ELFCLASS64)) # only 64 bits
             ELFFile.my_assert(self.data[ELFFile.EI_VERSION], chr(ELFFile.EV_CURRENT) )
 
             self.sex = self.data[ELFFile.EI_DATA]
@@ -252,8 +255,8 @@ def package_qa_check_arch(path,name,d):
     target_arch = bb.data.getVar('TARGET_ARCH', d, True)
 
     #if this will throw an exception, then fix the dict above
-    (machine, osabi, abiversion, littleendian) = package_qa_get_machine_dict()[target_os][target_arch]
-    elf = package_qa_get_elf(path)
+    (machine, osabi, abiversion, littleendian, bits32) = package_qa_get_machine_dict()[target_os][target_arch]
+    elf = package_qa_get_elf(path, bits32)
     try:
         elf.open()
     except:
