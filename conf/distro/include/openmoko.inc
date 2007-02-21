@@ -6,7 +6,6 @@ DISTRO_NAME = "OpenMoKo"
 #
 # Naming schemes
 #
-PARALLEL_INSTALL_MODULES = "1"
 INHERIT += "debian multimachine"
 
 #
