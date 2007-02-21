@@ -250,9 +250,14 @@ def package_qa_check_arch(path,name,d):
     """
     Check if archs are compatible
     """
-    import bb
+    import bb, os
     target_os   = bb.data.getVar('TARGET_OS',   d, True)
     target_arch = bb.data.getVar('TARGET_ARCH', d, True)
+
+    # avoid following links to /usr/bin (e.g. on udev builds)
+    # we will check the files pointed to anyway...
+    if os.path.islink(path):
+        return True
 
     #if this will throw an exception, then fix the dict above
     (machine, osabi, abiversion, littleendian, bits32) = package_qa_get_machine_dict()[target_os][target_arch]
@@ -263,15 +268,14 @@ def package_qa_check_arch(path,name,d):
         # just for debbugging to check the parser, remove once convinced...
         return True
 
-    sane = True
     if not machine == elf.machine():
         bb.error("Architecture did not match (%d to %d) on %s" %(machine, elf.machine(), package_qa_clean_path(path,d)))
-        sane = package_qa_make_fatal_error( 4, name, path, d )
+        return not package_qa_make_fatal_error( 4, name, path, d )
     elif not littleendian == elf.isLittleEndian():
         bb.error("Endiannes did not match (%d to %d) on %s" % (littleendian, elf.isLittleEndian(), package_qa_clean_path(path,d)))
-        sane = package_qa_make_fatal_error( 4, name, path, d )
+        return not package_qa_make_fatal_error( 4, name, path, d )
 
-    return sane
+    return True
 
 def package_qa_check_pcla(path,name,d):
     """
