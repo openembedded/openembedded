@@ -1,6 +1,6 @@
 require xorg-lib-common.inc
 
-PR = "r1"
+PR = "r4"
 
 DESCRIPTION = "Base X libs."
 
