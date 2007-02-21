@@ -1,6 +1,6 @@
 require linux-rp.inc
 
-PR = "r32"
+PR = "r33"
 
 # Handy URLs
 # git://rsync.kernel.org/pub/scm/linux/kernel/git/torvalds/linux-2.6.git \
@@ -41,7 +41,7 @@ SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.17.tar.bz2 \
            ${RPSRC}/pm_changes-r1.patch;patch=1 \
            ${RPSRC}/usb_pxa27x_udc-r0.patch;patch=1 \
            ${RPSRC}/usb_add_epalloc-r1.patch;patch=1 \
-           ${DOSRC}/kexec-arm-r3.patch;patch=1 \
+           ${RPSRC}/kexec-arm-r3a.patch;patch=1 \
            ${RPSRC}/locomo_kbd_tweak-r1.patch;patch=1 \
            ${RPSRC}/poodle_pm-r3.patch;patch=1 \
            ${RPSRC}/pxafb_changeres-r0.patch;patch=1 \
