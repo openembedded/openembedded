@@ -4,8 +4,6 @@ PR = "r0"
 DEPENDS = "libgnome libgnomecanvas libbonoboui gnome-keyring"
 DESCRIPTION = "GNOME User Interface Library"
 
-DEFAULT_PREFERENCE = "-1"
-
 FILES_${PN} += "${libdir}/gtk-2.0/*/filesystems/lib*.so \
 	${libdir}/libglade/*/lib*.so"
 
