@@ -7,10 +7,10 @@ PR = "r4"
 
 inherit gnome autotools pkgconfig gtk-icon-cache
 
-SRC_URI = "svn://svn.o-hand.com/repos/dates/branches/private;module=omoko;proto=http \
+SRC_URI = "svn://svn.o-hand.com/repos/dates/branches/;module=openmoko;proto=http \
           "
 
-S = "${WORKDIR}/omoko"
+S = "${WORKDIR}/openmoko"
 
 EXTRA_OECONF = "--enable-omoko"
 
