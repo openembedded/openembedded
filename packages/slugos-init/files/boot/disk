@@ -21,9 +21,12 @@ then
         # load USB & SCSI storage modules (/proc required!)
         echo "boot: loading modules required for disk boot"
         loaddiskmods
-	# waiting for disk (FIXME)
-	sleep=6
-	test "$sleep" -gt 0 && sleep "$sleep"
+	# waiting for disk
+	if test "$sleep" -gt 0
+	then
+		echo "Waiting $sleep seconds for disk"
+		sleep "$sleep"
+	fi
 	#
 	# fire the boot
 	echo "boot: rootfs: mount $* $device [$UUID]"

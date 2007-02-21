@@ -1,0 +1,11 @@
+--- ../../libtopfield/usb_io.h.orig	2006-01-05 14:55:10.000000000 +1030
++++ ../../libtopfield/usb_io.h	2007-02-20 02:25:43.000000000 +1030
+@@ -34,7 +34,7 @@
+ #include <linux/types.h>
+ #include <linux/version.h>
+ 
+-#include <linux/usb.h>
++#include <linux/usb_ch9.h>
+ #include <linux/usbdevice_fs.h>
+ 
+ #if LINUX_VERSION_CODE < KERNEL_VERSION(2,6,0)

@@ -4,7 +4,7 @@ LICENSE = "BSD"
 SECTION = "devel"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/swig/swig-${PV}.tar.gz"
-S = "${WORKDIR}/SWIG-${PV}"
+S = "${WORKDIR}/swig-${PV}"
 
 inherit autotools
 

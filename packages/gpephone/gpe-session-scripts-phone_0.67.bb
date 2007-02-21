@@ -4,8 +4,8 @@ DESCRIPTION = "GPE session startup scripts hack for GPE Phone Edition"
 LICENSE = "GPL"
 SECTION = "gpe"
 PRIORITY = "optional"
-RDEPENDS_${PN} = "gpe-applauncher gpe-phonepanel gpe-session-starter gpe-bluetooth gpe-question xmodmap xdpyinfo xserver-common"
-DEPENDS = "matchbox-wm gpe-applauncher gpe-phonepanel gpe-bluetooth gpe-question xmodmap xdpyinfo xserver-common"
+RDEPENDS_${PN} = "gpe-applauncher gpe-phonepanel gpe-session-starter gpe-question xmodmap xdpyinfo xserver-common"
+DEPENDS = "matchbox-wm gpe-applauncher gpe-phonepanel gpe-question xmodmap xdpyinfo xserver-common"
 
 SRC_URI = "${GPE_MIRROR}/gpe-session-scripts-${PV}.tar.gz \
            file://matchbox-session \

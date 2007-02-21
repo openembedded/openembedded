@@ -1,6 +1,6 @@
 require linux-rp.inc
 
-PR = "r4"
+PR = "r5"
 
 DEFAULT_PREFERENCE = "-1"
 #up the default pref for the hx2000 machine, since this is the only working kernel for it present in .dev
@@ -16,11 +16,9 @@ DEFAULT_PREFERENCE_hx2000 = "1"
 
 # Patches submitted upstream are towards top of this list 
 # Hacks should clearly named and at the bottom
-SRC_URI = "git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux-2.6.git;protocol=git;tag=v2.6.20-rc2 \
+SRC_URI = "git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux-2.6.git;protocol=git;tag=v2.6.20-rc4 \
            http://opensource.wolfsonmicro.com/~lg/asoc/asoc-v0.13pre1.patch;patch=1;status=merged \
            ${RPSRC}/asoc_13pre1_fix-r0.patch;patch=1 \
-           ${RPSRC}/xscale_cache_workaround-r1.patch;patch=1;status=merged \
-           ${RPSRC}/backlight_parameter_fix-r1.patch;patch=1;status=pending \
            ${RPSRC}/hx2750_base-r28.patch;patch=1 \
            ${RPSRC}/hx2750_bl-r8.patch;patch=1 \
            ${RPSRC}/hx2750_pcmcia-r2.patch;patch=1 \
@@ -34,7 +32,7 @@ SRC_URI = "git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux-2.6.git;
            ${RPSRC}/pm_changes-r1.patch;patch=1 \
            ${RPSRC}/usb_add_epalloc-r3.patch;patch=1 \
            ${RPSRC}/usb_pxa27x_udc-r3.patch;patch=1 \
-           ${RPSRC}/kexec-arm-r4.patch;patch=1 \
+           ${RPSRC}/kexec-arm-r4a.patch;patch=1 \
            ${RPSRC}/locomo_kbd_tweak-r1.patch;patch=1 \
            ${RPSRC}/poodle_pm-r3.patch;patch=1 \
            ${RPSRC}/pxa27x_overlay-r5.patch;patch=1 \

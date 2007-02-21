@@ -5,7 +5,8 @@ DEPENDS = "libxml2"
 LICENSE = "MIT"
 PR = "r2"
 
-SRC_URI = "ftp://xmlsoft.org/libxml2/libxslt-${PV}.tar.gz"
+SRC_URI = "ftp://xmlsoft.org/libxml2/libxslt-${PV}.tar.gz \
+           file://destdir.patch;patch=1"
 S = "${WORKDIR}/libxslt-${PV}"
 
 inherit autotools pkgconfig
