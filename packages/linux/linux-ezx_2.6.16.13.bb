@@ -4,8 +4,8 @@ AUTHOR = "Harald Welte and the OpenEZX Team <openezx-devel@lists.openezx.org>"
 HOMEPAGE = "http://www.openezx.org"
 LICENSE = "GPL"
 DEPENDS += "quilt-native"
-EZX = "ezx8"
-PR = "${EZX}-r1"
+EZX = "ezx9"
+PR = "${EZX}-r0"
 
 inherit kernel
 
@@ -18,11 +18,6 @@ RPSRC = "http://www.rpsys.net/openzaurus/patches/archive"
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.16.tar.bz2 \
            http://www.openezx.org/download/patches-2.6.16-2.6.16.13-${EZX}.tar.bz2 \
            \
-           ${RPSRC}/xscale_cache_workaround-r1.patch;patch=1;status=merged \
-           \
-           file://sa1100-rtc-gcc4.diff;patch=1 \
-	   file://pxa-serial-gcc4.diff;patch=1 \
-	   \
 	   file://logo_linux_clut224.ppm \
            file://defconfig-a780 \
            file://defconfig-e680"
