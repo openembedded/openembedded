@@ -73,8 +73,6 @@ RDEPENDS_gpephone-task-pim := "\
      gpesyncd"
 
 RDEPENDS_gpephone-task-settings := "\
-    gpe-bluetooth \
-    gpe-beam \
     gpe-su \
     gpe-conf \
     gpe-clock \
