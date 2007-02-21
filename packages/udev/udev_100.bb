@@ -9,7 +9,7 @@ used to detect the type of a file system and read its metadata."
 DESCRIPTION_libvolume-id-dev = "libvolume_id development headers, \
 needed to link programs with libvolume_id."
 
-PR = "r5"
+PR = "r6"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/utils/kernel/hotplug/udev-${PV}.tar.gz \
 	   file://noasmlinkage.patch;patch=1 \
@@ -31,7 +31,8 @@ EXTRA_OEMAKE += "libudevdir=/lib/udev libdir=${base_libdir} prefix="
 
 do_install () {
 	install -d ${D}${usrsbindir} \
-		   ${D}${sbindir}
+		   ${D}${sbindir} \
+		   ${D}${sysconfdir}
 	oe_runmake 'DESTDIR=${D}' INSTALL=install install
 	install -d ${D}${sysconfdir}/init.d
 	install -m 0755 ${WORKDIR}/init ${D}${sysconfdir}/init.d/udev
@@ -69,7 +70,6 @@ pkg_postinst_append() {
                 if test "$mp" = "/"
                 then
                         root_partition="$dev"
-			install -d ${sysconfdir}/udev
                         echo "$root_partition" >> ${sysconfdir}/udev/mount.blacklist
                 fi
         done < ${sysconfdir}/fstab
