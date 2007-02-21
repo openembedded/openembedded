@@ -17,6 +17,7 @@ EXTRA_OECONF = " \
 		--enable-browsing \
                 --disable-openssl \
 		--disable-tiff \
+                --without-php \
                "
 
 

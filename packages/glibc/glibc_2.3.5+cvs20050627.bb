@@ -12,6 +12,8 @@ GLIBC_EXTRA_OECONF ?= ""
 
 GLIBC_BROKEN_LOCALES = "sid_ET tr_TR mn_MN"
 
+LIMIT_BUILT_LOCALES = "en_GB"
+
 #
 # For now, we will skip building of a gcc package if it is a uclibc one
 # and our build is not a uclibc one, and we skip a glibc one if our build
@@ -184,3 +186,4 @@ do_stage() {
 }
 
 require glibc-package.bbclass
+include glibc.inc

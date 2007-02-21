@@ -13,7 +13,7 @@ SRC_URI = "http://www.xmms.org/files/1.2.x/xmms-${PV}.tar.bz2 \
 PR = "r3"
 
 RRECOMMENDS_${PN} = "xmms-plugin-output-oss xmms-plugin-output-alsa \
-                    xmms-mad xmms-tremor"
+                    xmms-mad"
 
 inherit autotools binconfig
 

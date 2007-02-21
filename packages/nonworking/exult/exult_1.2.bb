@@ -3,14 +3,17 @@ capable of using the data and graphics files that come with the game. Qt/E based
 SECTION = "opie/games"
 PRIORITY = "optional"
 DEPENDS = "libsdl-qpe libsdl-mixer zlib"
-SRC_URI = "${SOURCEFORGE_MIRROR}/exult/exult-${PV}.tar.gz"
+SRC_URI = "${SOURCEFORGE_MIRROR}/exult/exult-${PV}.tar.gz \
+        file://configure_fix.patch;patch=1"
 
 inherit autotools
 
 #FIXME: Add compatible host or so, it is zaurus specific atm.
 
+export SDL_CONFIG = "${STAGING_BINDIR_CROSS}/sdl-config"
+export FT2CONFIG = "${STAGING_BINDIR_CROSS}/freetype-config"
+
 EXTRA_OECONF = "-host=arm-embeddix-linux-gnu \
-                --with-sdl-prefix=${STAGING_BINDIR}/.. \
                 --disable-exult-studio-support \
                 --disable-debug \
                 --disable-exult-studio \
@@ -22,7 +25,7 @@ EXTRA_OECONF = "-host=arm-embeddix-linux-gnu \
                 --disable-kmid \
                 --with-vorbis-prefix=${STAGING_LIBDIR}/.. \
                 --with-mpeg2-prefix=${STAGING_LIBDIR}/.. \
-                --with-mad-prefix=${STAGING_BINDIR}/.. "
+                --with-mad-prefix=${STAGING_BINDIR_CROSS}/.. "
 
 #CXXFLAGS_append = " -Dmain=SDL_main"
 #CFLAGS_append = " -Dmain=SDL_main"

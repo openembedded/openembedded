@@ -119,8 +119,8 @@ RDEPENDS_gpe-task-desktopapps := "\
     thunderbird \
     galculator \
     gnumeric \
-    gpdf \
-    totem"
+    gpdf"
+#    totem"
 
 RDEPENDS_gpe-task-sectest := "\
     mbmerlin \
@@ -128,11 +128,10 @@ RDEPENDS_gpe-task-sectest := "\
     ettercap \
     stunnel \
     curl \
-    dsniff \
+#    dsniff \
     prismstumbler \
     tcpdump \
     kismet \
     hydra \
     thcrut \
     miniclipboard"
-#	driftnet \
