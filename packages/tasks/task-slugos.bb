@@ -6,7 +6,7 @@
 DESCRIPTION = "Task packages for the SlugOS distribution"
 HOMEPAGE = "http://www.nslu2-linux.org"
 LICENSE = "MIT"
-PR = "r2"
+PR = "r3"
 PACKAGE_ARCH = "${MACHINE_ARCH}"
 ALLOW_EMPTY = "1"
 
@@ -87,6 +87,14 @@ kernel-module-pata-artop \
 # Add modules required for Network support
 SLUGOS_STANDARD_RDEPENDS += "\
 kernel-module-via-velocity \
+"
+
+# Add modules required for Network Console support
+# NOTE: This module is desirable for systems lacking a physical
+# console, but is usually only enabled if specific needs or issues
+# arise.  If space in the flash is at a premium, it can be omitted.
+SLUGOS_STANDARD_RDEPENDS += "\
+kernel-module-netconsole \
 "
 
 DEPENDS += "${DISTRO_EXTRA_DEPENDS}"
