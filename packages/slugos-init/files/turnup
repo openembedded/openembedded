@@ -450,7 +450,7 @@ disk() {
 	local setup_type sleep init device uuid new ffs fst fso
 
 	setup_type=disk
-	sleep=0
+	sleep=10
 	init=
 	while test $# -gt 0
 	do
