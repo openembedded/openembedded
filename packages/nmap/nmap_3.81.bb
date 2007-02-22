@@ -3,11 +3,11 @@ HOMEPAGE = "http://www.insecure.org/nmap/"
 SECTION = "console/network"
 LICENSE = "GPL"
 DEPENDS = "libpcap libpcre"
-PR = "r1"
+PR = "r2"
 
 inherit autotools
 
-SRC_URI = "http://download.insecure.org/nmap/dist/nmap-${PV}.tar.bz2 \
+SRC_URI = "http://download.insecure.org/nmap/dist-old/nmap-${PV}.tar.bz2 \
 	   file://autofoo.patch;patch=1 \
 	   file://remove_gtk.patch;patch=1"
 S = "${WORKDIR}/nmap-${PV}"
