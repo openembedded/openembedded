@@ -1,5 +1,5 @@
 DESCRIPTION = "Merge machine and distro options to create a basic machine task/package"
-PR = "r17"
+PR = "r18"
 
 PACKAGES = "task-base \
             task-base-minimal \
@@ -161,8 +161,7 @@ task-base-ext2-rdepends = "\
 
 task-base-alsa-rdepends = "\
     alsa-utils-alsactl \
-    alsa-utils-alsamixer \
-    alsa-conf"
+    alsa-utils-alsamixer"
 
 task-base-alsa-rrecommends = "\
     kernel-module-snd-mixer-oss \
