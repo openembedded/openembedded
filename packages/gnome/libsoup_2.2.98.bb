@@ -13,7 +13,7 @@ FILES_${PN}-dev = "${includedir}/ ${libdir}/"
 FILES_${PN}-doc = "${datadir}/"
 
 do_stage() {
-	rm -f ${STAGING_DATADIR}/pkgconfig/libsoup*
+	rm -f ${PKG_CONFIG_PATH}/libsoup*
 	autotools_stage_all
-	ln -s ${STAGING_DATADIR}/pkgconfig/libsoup.pc ${STAGING_DATADIR}/pkgconfig/libsoup-2.2.pc
+	ln -sf ${PKG_CONFIG_PATH}/libsoup.pc ${PKG_CONFIG_PATH}/libsoup-2.2.pc
 }
