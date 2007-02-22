@@ -5,7 +5,7 @@ HOMEPAGE = "http://www.openezx.org"
 LICENSE = "GPL"
 DEPENDS += "quilt-native"
 EZX = "ezx9"
-PR = "${EZX}-r0"
+PR = "${EZX}-r1"
 
 inherit kernel
 
