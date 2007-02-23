@@ -29,7 +29,7 @@ PACKAGE_ARCH_mencoder_collie = "collie"
 
 RCONFLICTS_${PN} = "mplayer-atty"
 RREPLACES_${PN} = "mplayer-atty"
-PR = "r6"
+PR = "r7"
 
 PARALLEL_MAKE = ""
 
@@ -171,6 +171,7 @@ EXTRA_OECONF = " \
 
 EXTRA_OECONF_append_c7x0 = " --enable-w100 --enable-imageon "
 EXTRA_OECONF_append_hx4700 = " --enable-imageon "
+EXTRA_OECONF_append_progear = " --disable-sse --disable-3dnow --disable-mmxext --disable-sse2"
 
 do_configure() {
 	cp ${WORKDIR}/vo_w100.c ${S}/libvo
