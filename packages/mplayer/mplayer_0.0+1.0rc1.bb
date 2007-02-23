@@ -29,7 +29,7 @@ PACKAGE_ARCH_mencoder_collie = "collie"
 
 RCONFLICTS_${PN} = "mplayer-atty"
 RREPLACES_${PN} = "mplayer-atty"
-PR = "r5"
+PR = "r6"
 
 PARALLEL_MAKE = ""
 
@@ -40,7 +40,7 @@ S = "${WORKDIR}/MPlayer-1.0rc1"
 
 PACKAGES =+ "mencoder"
 
-FILES_${PN} = "${bindir}/mplayer"
+FILES_${PN} = "${bindir}/mplayer ${libdir}"
 FILES_mencoder = "${bindir}/mencoder"
 
 inherit autotools pkgconfig
