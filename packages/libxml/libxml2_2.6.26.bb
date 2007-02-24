@@ -2,13 +2,13 @@ DESCRIPTION = "GNOME XML Parser library"
 SECTION = "libs"
 PRIORITY = "optional"
 LICENSE = "MIT"
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "ftp://xmlsoft.org/libxml2/libxml2-${PV}.tar.gz"
 
 inherit autotools pkgconfig binconfig
 
-EXTRA_OECONF = "--without-python --without-debug --without-legacy --without-catalog --without-docbook --without-c14n"
+EXTRA_OECONF = "--without-python --without-debug --without-legacy --without-catalog --without-docbook --with-c14n"
 
 export LDFLAGS += "-ldl"
 

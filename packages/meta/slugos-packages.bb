@@ -96,6 +96,7 @@ SLUGOS_PACKAGES = "\
 	libvorbis \
 	libxml2 \
 	litestream \
+	logrotate \
 	lrzsz \
 	lsof \
 	lvm2 \
@@ -124,6 +125,7 @@ SLUGOS_PACKAGES = "\
 	netcat \
 	nmap \
 	ntp \
+	ntpclient \
 	obexftp \
 	obexpush \
 	openobex-apps \

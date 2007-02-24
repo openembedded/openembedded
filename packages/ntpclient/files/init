@@ -1,0 +1,42 @@
+#! /bin/sh 
+#
+# This is an init script for openembedded
+# Copy it to /etc/init.d/ntpclient and type
+# > update-rc.d ntpclient defaults 60
+#
+ntpclient=/sbin/ntpclient
+test -x "$ntpclient" || exit 0
+# Seconds Between Time Checks
+ntpinterval=600
+# Upstream NTP Server Name
+ntpserver=pool.ntp.org
+
+case "$1" in
+  start)
+    echo -n "Starting NTP Client"
+    start-stop-daemon --start --quiet --background --make-pidfile --pidfile /var/run/ntpclient.pid --exec $ntpclient -- -l -i $ntpinterval -h $ntpserver
+    echo "."
+    ;;
+  stop)
+    echo -n "Stopping NTP Client"
+    start-stop-daemon --stop --quiet --pidfile /var/run/ntpclient.pid
+    echo "."
+    ;;
+  reload|force-reload)
+    start-stop-daemon --stop --quiet --signal 1 --exec $ntpclient
+    ;;
+  restart)
+    echo -n "Stopping NTP Client"
+    start-stop-daemon --stop --quiet --pidfile /var/run/ntpclient.pid
+    echo "."
+    sleep 1
+    echo -n "Starting NTP Client"
+    start-stop-daemon --start --quiet --background --make-pidfile --pidfile /var/run/ntpclient.pid --exec $ntpclient -- -l -i $ntpinterval -h $ntpserver
+    echo "."
+    ;;
+  *)
+    echo "Usage: /etc/init.d/ntpclient {start|stop|reload|restart|force-reload}"
+    exit 1
+esac
+
+exit 0
