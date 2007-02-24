@@ -8,7 +8,7 @@ SRC_URI_append_dm7025 = " file://libtuxtxt_bugfix.patch;patch=1"
 
 SRCDATE_dm600pvr = "20061009"
 SRCDATE_dm7025 = "20050912"
-SRCDATE_dm7020 = "20061005"
+SRCDATE_dm7020 = "20061009"
 
 PN = "libtuxtxt"
 PR = "r1"
