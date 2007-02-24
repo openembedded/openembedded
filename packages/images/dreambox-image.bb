@@ -31,7 +31,7 @@ OPENDREAMBOX_EXPERIMENTAL_R = "enigma2-plugin-systemplugins-frontprocessorupgrad
 	python-netserver python-pickle"
 
 # legacy tuxbox stuff (enigma, plugins, ...)
-OPENDREAMBOX_TUXBOX = "enigma ipkgpl enigma-modem"
+OPENDREAMBOX_TUXBOX = "enigma ipkgpl"
 OPENDREAMBOX_TUXBOX_D = "tuxbox-plugins tuxbox-plugins-enigma links-dream"
 OPENDREAMBOX_TUXBOX_R = " \
 	tuxbox-plugin-snake     tuxbox-plugin-tuxmail \
@@ -41,6 +41,14 @@ OPENDREAMBOX_TUXBOX_R = " \
 	tuxbox-plugin-tank  	tuxbox-plugin-pacman    tuxbox-plugin-tetris \
 	tuxbox-plugin-satfind   tuxbox-plugin-tuxcom 	links-dream-plugin \
 	links-dream-plugin enigma-plugin-dreamdata"
+
+OPENDREAMBOX_TUXBOX_R_dm600pvr = " \
+	tuxbox-plugin-snake     tuxbox-plugin-tuxmail \
+	tuxbox-plugin-soko      tuxbox-plugin-tuxtxt \
+	tuxbox-plugin-sol       tuxbox-plugin-vierg  	tuxbox-plugin-master \
+	tuxbox-plugin-solitair  tuxbox-plugin-yahtzee 	tuxbox-plugin-mines  \
+	tuxbox-plugin-tank  	tuxbox-plugin-pacman    tuxbox-plugin-tetris \
+	tuxbox-plugin-tuxcom 	links-dream-plugin"
 
 # dvb api specific stuff
 OPENDREAMBOX_V2_ONLY = "dreambox-dvb-tools tuxbox-stream"
@@ -57,14 +65,20 @@ ENIGMA_LANGUAGE = "enigma-locale-cs enigma-locale-da \
 	enigma-locale-sv enigma-locale-tr"
 
 OPENDREAMBOX_TUXBOX_R += " ${ENIGMA_LANGUAGE}"
+OPENDREAMBOX_TUXBOX_R_dm600pvr += " ${ENIGMA_LANGUAGE}"
+
+MODEM_SUPPORT = "enigma-modem"
+MODEM_SUPPORT_R = "kernel-module-crc-ccitt kernel-module-ppp-async \
+	kernel-module-ppp-generic \
+	kernel-module-slhc update-modules"
 
 # now machine specific:
-OPENDREAMBOX_COMMON_MACHINE_dm600pvr += "${OPENDREAMBOX_V2_ONLY} ${OPENDREAMBOX_TUXBOX}"
-OPENDREAMBOX_COMMON_MACHINE_R_dm600pvr += "${OPENDREAMBOX_TUXBOX_R}"
+OPENDREAMBOX_COMMON_MACHINE_dm600pvr += "${OPENDREAMBOX_V2_ONLY} ${OPENDREAMBOX_TUXBOX} ${MODEM_SUPPORT}"
+OPENDREAMBOX_COMMON_MACHINE_R_dm600pvr += "${OPENDREAMBOX_TUXBOX_R} ${MODEM_SUPPORT_R}"
 OPENDREAMBOX_COMMON_MACHINE_D_dm600pvr += "${OPENDREAMBOX_TUXBOX_D}"
 
-OPENDREAMBOX_COMMON_MACHINE_dm7020 += "${OPENDREAMBOX_V2_ONLY} ${OPENDREAMBOX_TUXBOX}"
-OPENDREAMBOX_COMMON_MACHINE_R_dm7020 += "${OPENDREAMBOX_TUXBOX_R}"
+OPENDREAMBOX_COMMON_MACHINE_dm7020 += "${OPENDREAMBOX_V2_ONLY} ${OPENDREAMBOX_TUXBOX} ${MODEM_SUPPORT}"
+OPENDREAMBOX_COMMON_MACHINE_R_dm7020 += "${OPENDREAMBOX_TUXBOX_R} ${MODEM_SUPPORT_R}"
 OPENDREAMBOX_COMMON_MACHINE_D_dm7020 += "${OPENDREAMBOX_TUXBOX_D}"
 
 OPENDREAMBOX_COMMON_MACHINE_dm7025 += "${OPENDREAMBOX_V3_ONLY} ${OPENDREAMBOX_EXPERIMENTAL}"
