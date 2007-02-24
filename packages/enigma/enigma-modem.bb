@@ -7,7 +7,7 @@ SRC_URI = "http://sources.dreamboxupdate.com/download/opendreambox/enigma/enigma
 
 PV = "0.1"
 PN = "enigma-modem"
-PR = "r1"
+PR = "r2"
 
 PACKAGES = "enigma-modem"
 
@@ -17,6 +17,8 @@ inherit autotools pkgconfig
 
 FILES_${PN} = "/usr/lib/tuxbox/plugins/enigma_modem.so \
 		/usr/lib/tuxbox/plugins/enigma_modem.cfg \
+		/etc/ppp/options \
+		/etc/ppp/pap-secrets \
 		/etc/ppp/dial.modem \
 		/etc/ppp/disconnect.modem \
 		/etc/ppp/ip-up.d/01peerdns /etc/ppp/ip-down.d/01peerdns-remove"
