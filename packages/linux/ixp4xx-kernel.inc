@@ -364,4 +364,4 @@ do_deploy() {
 	deploy_image 'fsg3${SITEINFO_ENDIANESS}' 'fsg3'
 }
 
-addtask deploy before do_build after do_compile
+addtask deploy before do_package after do_install
