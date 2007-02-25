@@ -1,5 +1,15 @@
 BB_DEFAULT_TASK = "build"
 
+# like os.path.join but doesn't treat absolute RHS specially
+def base_path_join(a, *p):
+    path = a
+    for b in p:
+        if path == '' or path.endswith('/'):
+            path +=  b
+        else:
+            path += '/' + b
+    return path
+
 def base_dep_prepend(d):
 	import bb;
 	#
