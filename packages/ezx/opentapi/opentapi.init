@@ -16,7 +16,7 @@ test -x $DAEMON || exit 0
 ENABLED=1
 PARAMS=""
 if [ -e /etc/default/opentapi ]; then
-  . /etc/default/opentapis
+  . /etc/default/opentapi
 fi
 
 test "$ENABLED" != "0" || exit 0
@@ -38,7 +38,7 @@ start_it_up()
 
   echo -n "Starting $DESC: "
   start-stop-daemon --start --quiet --pidfile $PIDFILE \
-    -exec $DAEMON -- --system $PARAMS
+    --exec $DAEMON -- --system $PARAMS
   echo "$NAME."
   if [ -d $EVENTDIR ]; then
       run-parts --arg=start $EVENTDIR
