@@ -1,0 +1,14 @@
+--- zd1211-driver-r74/src/zd1211.c~	2006-04-09 12:28:06.000000000 -0500
++++ zd1211-driver-r74/src/zd1211.c	2006-04-27 12:38:55.000000000 -0500
+@@ -652,7 +652,10 @@
+                 count++;
+ 
+                 if (count > 5) {
+-                        printk(KERN_ERR "1211_readl failed for 5 attempts...Very Serious");
++// You are going to see this often enough on Unslung that we might as well put it in
++// the syslog and fix it so it has a nl on the end.  Sigh.  ~mwester, 27APR06
++//
++                        printk(KERN_ERR "1211_readl failed for 5 attempts...Very Serious\n");
+                         break;
+                 }
+         }
