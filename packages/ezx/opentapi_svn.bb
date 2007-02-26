@@ -2,7 +2,7 @@ DESCRIPTION = "Open implementation of motorola's tapisrc"
 LICENSE = "GPLv2"
 
 PV = "0.0+svn${SRCDATE}"
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "svn://svn.openezx.org/trunk/src/userspace/;module=opentapi;proto=http \
            file://opentapi.init \
