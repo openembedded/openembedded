@@ -19,6 +19,10 @@ OPIE_CVS_PV = "1.2.2+cvs${SRCDATE}"
 
 DEPENDS_prepend = "${@["libopie2 ", ""][(bb.data.getVar('PN', d, 1) == 'libopie2')]}"
 
+FILES_${PN}-dbg += " ${palmtopdir}/lib/.debug \
+                     ${palmtopdir}/bin/.debug \
+                     ${palmtopdir}/plugins/*/.debug "
+
 # to be consistent, put all targets into workdir
 # NOTE: leave one space at the end, other files are expecting that
 EXTRA_QMAKEVARS_POST += "DESTDIR=${S} "
