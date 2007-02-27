@@ -1,7 +1,7 @@
 DESCRIPTION = "Linux Kernel for the EFIKA dev platform"
 SECTION = "kernel"
 LICENSE = "GPL"
-PR = "r0"
+PR = "r1"
 
 COMPATIBLE_MACHINE = "efika"
 
@@ -55,6 +55,20 @@ do_configure() {
 		install -m 644 ${WORKDIR}/defconfig ${S}/.config
 		make ARCH=${ARCH} oldconfig
 }
+
+do_stage_append () {
+#need ppc platforms includes + friends in order for external kernel modules to compile as headers as still split
+
+       install -d ${STAGING_KERNEL_DIR}/arch/
+       cp -a arch/ppc ${STAGING_KERNEL_DIR}/arch/
+       cp -a arch/powerpc ${STAGING_KERNEL_DIR}/arch/
+
+       install -d ${STAGING_KERNEL_DIR}/include/asm
+       cp -a include/asm-powerpc ${STAGING_KERNEL_DIR}/include/
+       cp -a include/asm-ppc ${STAGING_KERNEL_DIR}/include/
+}
+
+
 
 do_deploy() {
         install -d ${DEPLOY_DIR_IMAGE}
