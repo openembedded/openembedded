@@ -29,7 +29,7 @@ PACKAGE_ARCH_mencoder_collie = "collie"
 
 RCONFLICTS_${PN} = "mplayer-atty"
 RREPLACES_${PN} = "mplayer-atty"
-PR = "r5"
+PR = "r7"
 
 PARALLEL_MAKE = ""
 
@@ -40,7 +40,7 @@ S = "${WORKDIR}/MPlayer-1.0rc1"
 
 PACKAGES =+ "mencoder"
 
-FILES_${PN} = "${bindir}/mplayer"
+FILES_${PN} = "${bindir}/mplayer ${libdir}"
 FILES_mencoder = "${bindir}/mencoder"
 
 inherit autotools pkgconfig
@@ -171,6 +171,7 @@ EXTRA_OECONF = " \
 
 EXTRA_OECONF_append_c7x0 = " --enable-w100 --enable-imageon "
 EXTRA_OECONF_append_hx4700 = " --enable-imageon "
+EXTRA_OECONF_append_progear = " --disable-sse --disable-3dnow --disable-mmxext --disable-sse2"
 
 do_configure() {
 	cp ${WORKDIR}/vo_w100.c ${S}/libvo
