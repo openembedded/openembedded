@@ -10,7 +10,7 @@ DEPENDS += "alsa-lib"
 
 RPROVIDES = "esound esd"
 
-PR = "r5"
+PR = "r6"
 
 SRC_URI = "http://0pointer.de/lennart/projects/pulseaudio/pulseaudio-${PV}.tar.gz"
 
@@ -47,6 +47,9 @@ LEAD_SONAME = "libpulse.so"
 PACKAGES =+ "${PN}-bin ${PN}-conf"
 PACKAGES_DYNAMIC = "pulseaudio-module-* pulseaudio-lib-*"
 
+FILES_${PN}-dbg += "${libexecdir}/pulse/.debug \
+                    ${libdir}/pulse-0.9/modules/.debug"
+FILES_${PN}-dev += "${libdir}/pulse-0.9/modules/*.la"		    
 FILES_${PN}-conf = "${sysconfdir}"
 FILES_${PN}-bin = "${bindir}/* \
                    ${sysconfdir}/default/volatiles/volatiles.04_pulse"
