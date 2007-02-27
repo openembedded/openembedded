@@ -51,6 +51,13 @@ def base_conditional(variable, checkvalue, truevalue, falsevalue, d):
 	else:
 		return falsevalue
 
+def base_less_or_equal(variable, checkvalue, truevalue, falsevalue, d):
+	import bb
+	if float(bb.data.getVar(variable,d,1)) <= float(checkvalue):
+		return truevalue
+	else:
+		return falsevalue
+
 def base_contains(variable, checkvalues, truevalue, falsevalue, d):
 	import bb
 	matches = 0
