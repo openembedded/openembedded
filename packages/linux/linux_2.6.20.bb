@@ -1,6 +1,7 @@
 DESCRIPTION = "Linux Kernel"
 SECTION = "kernel"
 LICENSE = "GPL"
+PR = "r1"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-${PV}.tar.bz2 \
            file://defconfig"
@@ -16,7 +17,7 @@ SRC_URI_append_simpad = "\
 inherit kernel
 
 KERNEL_IMAGETYPE = "bzImage"
-KERNEL_IMAGETYPE_simpad = "bzImage"
+KERNEL_IMAGETYPE_simpad = "zImage"
 
 do_configure_prepend() {
 	install -m 0644 ${WORKDIR}/defconfig ${S}/.config
