@@ -3,6 +3,7 @@ SECTION = "opie/inputmethods"
 PRIORITY = "optional"
 LICENSE = "GPL"
 APPNAME = "qhandwriting"
+PR = "r1"
 
 
 S = "${WORKDIR}/handwriting"
@@ -35,9 +36,9 @@ do_install() {
 	done
 }
 
-PACKAGES = " opie-handwriting-classicset opie-handwriting-graffitiset opie-handwriting "
+PACKAGES += " opie-handwriting-classicset opie-handwriting-graffitiset "
 
-FILES_opie-handwriting = "${palmtopdir}/plugins/inputmethods/libqhandwriting.so*"
+FILES_${PN} = "${palmtopdir}/plugins/inputmethods/libqhandwriting.so*"
 FILES_opie-handwriting-classicset = "${palmtopdir}/etc/qimpen/default.conf \
 	${palmtopdir}/etc/qimpen/combining.qpt \
 	${palmtopdir}/etc/qimpen/asciilower.qpt \
