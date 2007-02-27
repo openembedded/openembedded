@@ -4,21 +4,30 @@ PRIORITY = "optional"
 LICENSE = "GPL"
 RDEPENDS = "kernel (${KERNEL_VERSION})"
 DEPENDS = "virtual/kernel"
-PR="r0"
+PR="r1"
 
 SRC_URI = "http://snapshots.madwifi.org/${PN}/${PN}-${PV}.tar.gz \
 	   file://10-xscale-be-elf-copts.patch;patch=1 \
 	   file://10-xscale-le-elf-copts.patch;patch=1 \
-	   file://10-sh4-le-elf-copts.patch;patch=1" \
-	   file://20-xscale-VFP-wackelf.patch;patch=1"
+	   file://10-sh4-le-elf-copts.patch;patch=1"
+
+SRC_URI_slugos = "http://snapshots.madwifi.org/${PN}/${PN}-${PV}.tar.gz \
+		  file://slugos-xscale-be-elf-copts.patch;patch=1 \
+		  file://slugos-xscale-le-elf-copts.patch;patch=1 \
+		  file://slugos-VFP-wackelf.patch;patch=1"
 
 S = "${WORKDIR}/${PN}-${PV}"
 
 inherit module-base
 
+ARCH_efika="powerpc"
+ARCH_dht-walnut="ppc"
+
 EXTRA_OEMAKE = "LDFLAGS= KERNELPATH=${STAGING_KERNEL_DIR} KERNELRELEASE=${KERNEL_VERSION} TOOLPREFIX=${TARGET_PREFIX}"
 
-EXTRA_OEMAKE_prepend_ixp4xx = "TARGET=xscale-${SITEINFO_ENDIANESS}-elf "
+EXTRA_OEMAKE_prepend_ixp4xxle = "TARGET=xscale-le-elf "
+EXTRA_OEMAKE_prepend_ixp4xxbe = "TARGET=xscale-be-elf "
+
 
 do_compile() {
 	oe_runmake all

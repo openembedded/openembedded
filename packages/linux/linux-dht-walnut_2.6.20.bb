@@ -1,7 +1,7 @@
 SECTION = "kernel"
 DESCRIPTION = "Linux kernel for DHT-Walnut (ppc)  machine"
 LICENSE = "GPL"
-PR = "r0"
+PR = "r1"
 DEPENDS = "u-boot"
 
 KERNEL_CCSUFFIX = "-3.4.4"
@@ -29,25 +29,20 @@ do_configure_prepend() {
 	install -m 0644 ${WORKDIR}/dht-walnut_defconfig ${S}/.config
 }
 
-#not sure if we still need this with 2.6.20
-#do_stage_append () {
-#need ppc platforms includes + friends in order for external kernel modules to compile
 
-#       install -d ${STAGING_KERNEL_DIR}/arch/ppc/platforms
-#       install -m 0755  arch/ppc/platforms/*.h ${STAGING_KERNEL_DIR}/arch/ppc/platforms
-#
-#       install -d ${STAGING_KERNEL_DIR}/arch/ppc/platforms/4xx
-#       install -m 0755  arch/ppc/platforms/4xx/*.h ${STAGING_KERNEL_DIR}/arch/ppc/platforms/4xx
-#
-#       install -d ${STAGING_KERNEL_DIR}/arch/ppc/platforms/83xx
-#       install -m 0755  arch/ppc/platforms/83xx/*.h ${STAGING_KERNEL_DIR}/arch/ppc/platforms/83xx
-#
-#       install -d ${STAGING_KERNEL_DIR}/arch/ppc/platforms/85xx
-#       install -m 0755  arch/ppc/platforms/85xx/*.h ${STAGING_KERNEL_DIR}/arch/ppc/platforms/85xx
-#
-#       install -d ${STAGING_KERNEL_DIR}/include/asm-m68k
-#       install -m 0755  include/asm-m68k/*.h ${STAGING_KERNEL_DIR}/include/asm-m68k
-#}
+do_stage_append () {
+#need ppc platforms includes + friends in order for external kernel modules to compile as headers as still split
+
+       install -d ${STAGING_KERNEL_DIR}/arch/
+       cp -a arch/ppc ${STAGING_KERNEL_DIR}/arch/
+       cp -a arch/powerpc ${STAGING_KERNEL_DIR}/arch/
+
+       cp -a include/asm-powerpc ${STAGING_KERNEL_DIR}/include/
+       cp -a include/asm-ppc ${STAGING_KERNEL_DIR}/include/
+}
+
+
+
 
 
 do_install_append () {
