@@ -409,16 +409,16 @@ python populate_packages () {
 			fpath = os.path.join(root,file)
 			dpath = os.path.dirname(fpath)
 			bb.mkdirhier(dpath)
-			if file in cleandirs:
-				cleandirs.remove(file)
+#			if file in cleandirs:
+#				cleandirs.remove(file)
 			ret = bb.movefile(file,fpath)
 			if ret is None or ret == 0:
 				raise bb.build.FuncFailed("File population failed")
-		for dir in cleandirs:
-			if os.path.isdir(dir):
-				os.rmdir(dir)
-			else:
-				bb.note("ERROR: directory %s went away unexpectedly during package population" % dir)
+#		for dir in cleandirs:
+#			if os.path.isdir(dir):
+#				os.rmdir(dir)
+#			else:
+#				bb.note("ERROR: directory %s went away unexpectedly during package population" % dir)
 		del localdata
 	os.chdir(workdir)
 
