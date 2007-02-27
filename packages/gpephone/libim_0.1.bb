@@ -3,11 +3,12 @@ DESCRIPTION = "LiPS event model library."
 SECTION = "gpe/libs"
 PRIORITY    = "optional"
 DEPENDS     = "glib-2.0 libgpg-error libgcrypt gnutls libidn iksemel gloox dbus-glib liblipsevent"
-PR          = "r0"
+PR          = "r1"
 
 inherit gpephone pkgconfig autotools
 
-SRC_URI = "${GPEPHONE_MIRROR}/${P}/lips_im-${PV}.tar.gz"
+SRC_URI = "${GPEPHONE_MIRROR}/${P}/lips_im-${PV}.tar.gz \
+           file://im-dbus-segfault.patch;patch=1;pnum=0"
 
 EXTRA_OECONF = "--with-session-bus-services-dir=${datadir}/dbus-1/services"
 
