@@ -1,7 +1,7 @@
 #
 # Automatically generated make config: don't edit
 # Linux kernel version: 2.6.20
-# Mon Feb 19 13:47:40 2007
+# Tue Feb 27 05:45:18 2007
 #
 # CONFIG_PPC64 is not set
 CONFIG_PPC32=y
@@ -161,10 +161,10 @@ CONFIG_USE_MDIO=y
 #
 # CONFIG_HIGHMEM is not set
 # CONFIG_HZ_100 is not set
-CONFIG_HZ_250=y
+# CONFIG_HZ_250 is not set
 # CONFIG_HZ_300 is not set
-# CONFIG_HZ_1000 is not set
-CONFIG_HZ=250
+CONFIG_HZ_1000=y
+CONFIG_HZ=1000
 CONFIG_PREEMPT_NONE=y
 # CONFIG_PREEMPT_VOLUNTARY is not set
 # CONFIG_PREEMPT is not set
