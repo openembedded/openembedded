@@ -1,0 +1,179 @@
+Index: test/im_proxy.c
+===================================================================
+--- test/im_proxy.c	(Revision 550)
++++ test/im_proxy.c	(Arbeitskopie)
+@@ -26,7 +26,7 @@
+ 
+   open_log_file (IM_DBUS_LOG_FILE);
+ 
+-  bus_conn = dbus_init ();
++  bus_conn = dbus_init_im ();
+   if (!bus_conn)
+   {
+     close_log_file ();
+Index: src/dbus-if.h
+===================================================================
+--- src/dbus-if.h	(Revision 550)
++++ src/dbus-if.h	(Arbeitskopie)
+@@ -25,7 +25,7 @@
+ 
+ #include <dbus/dbus.h>
+ 
+-DBusConnection *dbus_init (void);
++DBusConnection *dbus_init_im (void);
+ void dbus_add_msg_listener (const gchar *interface, const gchar *method,
+                             void (*callback) ());
+ 
+Index: src/im_client_dbus.c
+===================================================================
+--- src/im_client_dbus.c	(Revision 550)
++++ src/im_client_dbus.c	(Arbeitskopie)
+@@ -63,7 +63,6 @@
+  *
+  *@note for inner usage only.
+  */
+-// static DBusMessageIter *_pIter = NULL;
+ 
+ evt_src_t *im_evt_src = NULL;
+ 
+@@ -116,7 +115,6 @@
+   char *cdata;
+   im_presence_t *presence;
+ 
+-  //im_uri_t*user;
+   char *cuser;
+   char *desc;
+   im_presence_state_t state;
+@@ -165,7 +163,6 @@
+   prtl = tdata;
+   g_print ("=============|-evt_data: protocol = %d\n", tdata);
+ 
+-  //  im_uri_new(cuser, prtl, &user);
+   im_presence_new (prtl, NULL, &presence);
+   im_presence_set_from (presence, cuser);
+   im_presence_set_state (presence, state);
+@@ -569,20 +566,12 @@
+ _im_evt_get (evt_src_t *evt_src,
+              sid_t sid, evt_t **evt, int timeout, DBusMessageIter *pIter)
+ {
+-//   int a[10240];
+   dbus_int32_t tdata;
+   evt_type_t evt_type = -1;
+   evt_data_free_t evt_data_free = NULL;
+   int asynch = 0;
+   evt_err_t rt = EVT_ERROR_NONE;
+ 
+-//   int b[10240];
+-
+-/*  a[0] = 1;
+-  a[10239] = 2;
+-  b[0] = 3;
+-  b[10239] = 4;*/
+-//   g_print("=============in %s:%s %d\n", __FILE__, __FUNCTION__, __LINE__);
+   dbus_message_iter_next (pIter);
+   if (dbus_message_iter_get_arg_type (pIter) != DBUS_TYPE_INT32)
+     return IM_ERROR_DBUS;
+@@ -671,51 +660,37 @@
+   if (asynch)
+   {
+     rt = im_client_incoming_asyn_handle (pIter, evt);
+-//     g_print("in %s:%s %d\n", __FILE__, __FUNCTION__, __LINE__);
+   }
+   else
+   {
+     rt = im_client_incoming_evt_handle (pIter, evt);
+-//     g_print("in %s:%s %d\n", __FILE__, __FUNCTION__, __LINE__);
+   }
+-//   g_print("in %s:%s %d\n", __FILE__, __FUNCTION__, __LINE__);
+-//   printf("++++++++++%d\n", rt);
+-//   printf("%d %d %d %d\n",a[0], a[10239], b[0], b[10239]);
+   return rt;
+-//   return EVT_ERROR_NONE;
+ };
+ 
+-// G_LOCK_DEFINE(_pIter);
+ 
+ void
+ im_client_incoming_evt (DBusMessage *message)
+ {
+   DBusMessageIter iter;
+ 
+-//   G_LOCK(_pIter);
+-//   _pIter = &iter;
+   dbus_message_iter_init (message, &iter);
+   if (dbus_message_iter_get_arg_type (&iter) == DBUS_TYPE_UINT32)
+   {
+     dbus_uint32_t sid;
+ 
+     dbus_message_iter_get_basic (&iter, &sid);  //get sid
+-    //evt_process(im_evt_src, sid, -1);
+     evt_t *evt = NULL;
+ 
+     if (_im_evt_get (im_evt_src, sid, &evt, -1, &iter) != EVT_ERROR_NONE)
+     {
+-//       g_print("=============in %s:%s %d\n", __FILE__, __FUNCTION__, __LINE__);
+       g_message ("Error when receiving event: %s:%s %d\n", __FILE__,
+                  __FUNCTION__, __LINE__);
+       return;
+     }
+-//     g_print("=============in %s:%s %d\n", __FILE__, __FUNCTION__, __LINE__);
+     evt_call (im_evt_src, evt);
+     evt_release (im_evt_src, evt);
+   }
+-//   _pIter = NULL;
+-//   G_UNLOCK(_pIter);
+ }
+ 
+ im_err_t
+@@ -759,7 +734,7 @@
+ {
+   im_err_t rt = IM_ERROR_NONE;
+ 
+-  bus_conn = dbus_init ();
++  bus_conn = dbus_init_im ();
+   if (!bus_conn)
+   {
+     return IM_ERROR_DBUS;
+@@ -789,8 +764,6 @@
+   DBusMessage *message = NULL;
+   DBusMessage *reply = NULL;
+ 
+-  // int result;
+-
+   dbus_error_init (&error);
+ 
+   message = dbus_message_new_method_call (IM_DBUS_SERVICE,
+Index: src/Makefile.am
+===================================================================
+--- src/Makefile.am	(Revision 550)
++++ src/Makefile.am	(Arbeitskopie)
+@@ -1,7 +1,7 @@
+ 
+ 
+ # set the include path found by configure
+-INCLUDES = -I$(top_srcdir)/src -I$(top_srcdir)/include \
++INCLUDES = -Wall -I$(top_srcdir)/src -I$(top_srcdir)/include \
+ 	-I$(top_srcdir)/src/log -I$(top_srcdir)/src/xmpp $(all_includes)
+ 
+ # the library search path.
+Index: src/dbus-if.c
+===================================================================
+--- src/dbus-if.c	(Revision 550)
++++ src/dbus-if.c	(Arbeitskopie)
+@@ -118,7 +118,7 @@
+ }
+ 
+ DBusConnection *
+-dbus_init (void)
++dbus_init_im (void)
+ {
+   DBusError error;
+   GMainLoop *mainloop;
+@@ -140,7 +140,6 @@
+ 
+   dbus_connection_add_filter (bus, msg_filter, mainloop, NULL);
+   g_main_loop_unref (mainloop);
+-
+   return bus;
+ }
+ 
