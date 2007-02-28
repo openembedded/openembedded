@@ -46,3 +46,6 @@ am_cv_sys_posix_termios=${am_cv_sys_posix_termios=yes}
 
 # gettext
 am_cv_func_working_getline=${am_cv_func_working_getline=yes}
+
+#glib
+glib_cv_uscore=${glib_cv_uscore=no}
