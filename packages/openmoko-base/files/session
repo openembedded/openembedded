@@ -2,7 +2,7 @@
 
 SHOWCURSOR="no"
 
-matchbox-desktop --icon-size 100 \
+matchbox-desktop --icon-size 96 \
                  --icon-padding 60 \
                  --font sans-16 \
                  --titlefont sans-20:bold \
