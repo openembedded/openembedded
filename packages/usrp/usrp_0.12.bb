@@ -7,9 +7,10 @@ RDEPENDS = "python-core"
 PR = "r0"
 
 SRC_URI = "ftp://ftp.gnu.org/gnu/gnuradio/usrp-${PV}.tar.gz \
-           file://usb11.patch;patch=1 \
            file://fix_compile_h.patch;patch=1;pnum=3 \
            file://install_test.patch;patch=1"
+
+SRC_URI_append_omap5912osk = "file://usb11.patch;patch=1"
 
 S = "${WORKDIR}/usrp-${PV}"
 
@@ -35,5 +36,6 @@ do_stage () {
      install -m 644 firmware/include/usrp_spi_defs.h ${STAGING_INCDIR}
 }
 
-PACKAGES += "python-pyursp"
-FILES_python-pyursp = "${libdir}/python*"
+PACKAGES += "python-pyusrp-dbg python-pyusrp"
+FILES_python-pyusrp-dbg = "${libdir}/python*/site-packages/.debug"
+FILES_python-pyusrp = "${libdir}/python*"
