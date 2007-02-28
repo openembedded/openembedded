@@ -8,6 +8,7 @@ PR="r3"
 
 WACKELF_SRC_URI = ""
 WACKELF_SRC_URI_ixp4xx = " file://20-xscale-VFP-wackelf.patch;patch=1"
+WACKELF_SRC_URI_compulab-pxa270 = " file://20-xscale-VFP-wackelf.patch;patch=1"
 
 SRC_URI = "http://snapshots.madwifi.org/${PN}/${PN}-${PV}.tar.gz \
 	   file://10-xscale-be-elf-copts.patch;patch=1 \
