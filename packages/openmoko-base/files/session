@@ -8,8 +8,11 @@ matchbox-desktop --icon-size 96 \
                  --titlefont sans-20:bold \
                  --bg img-tiled:/usr/share/themes/openmoko-standard/gtk-2.0/mokopanedwindow-upper-enclosing.png &
 #                 --bg col-gradient-vertical:#000000,#aaaaaa &
-matchbox-panel --start-applets=showdesktop,systray,windowselector --end-applets=openmoko-panel-demo-simple,openmoko-panel-battery,openmoko-panel-clock &&
-#can't figure out a way to start a panel-2 at the bottom...
-#matchbox-panel &
+matchbox-panel --start-applets=showdesktop,systray,windowselector --end-applets=openmoko-panel-demo-simple,openmoko-panel-battery,openmoko-panel-clock &
+
+#start some old-style panel plugins to get a keyboard and battery status
+mbinputmgr &
+
+openmoko-footer &
 exec matchbox-window-manager -use_titlebar no -use_cursor $SHOWCURSOR $@
 
