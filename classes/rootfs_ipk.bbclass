@@ -41,6 +41,7 @@ rootfs_create_combined_feed() {
 	# Set DEPLOY_ENABLE_OEFEED=2 to rebuild Packages with ipkg-make-index (very slow)
 	# Set DEPLOY_ENABLE_OEFEED=1 to use the Packages files from ipk/ARCH/ (fast)
 
+	OLD_PWD="$PWD"
 	mkdir -p "${DEPLOY_DIR}/oe-feed"	
 	cd "${DEPLOY_DIR}/oe-feed" || exit 1
 
@@ -74,6 +75,9 @@ rootfs_create_combined_feed() {
 		touch ${DEPLOY_DIR}/oe-feed/Packages
 		ipkg-make-index -r ${DEPLOY_DIR}/oe-feed/Packages -p ${DEPLOY_DIR}/oe-feed/Packages -l ${DEPLOY_DIR}/oe-feed/Packages.filelist -m ${DEPLOY_DIR}/oe-feed/
 	fi
+	
+	# Some *-image.bb's are kinda touchy-feely about a changing $PWD 
+	cd "$OLD_PWD"
 }
 
 fakeroot rootfs_ipk_do_rootfs () {
