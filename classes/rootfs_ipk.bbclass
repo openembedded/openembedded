@@ -46,7 +46,7 @@ rootfs_create_combined_feed() {
 
 	# To catch deleted / changed packages, we have to completly rebuild
 	# the symlinks every time.		
-	test -d "${DEPLOY_DIR}/oe-feed" && rm -rf "${DEPLOY_DIR}/oe-feed/"
+	test -d "${DEPLOY_DIR}/oe-feed" && rm -rf "${DEPLOY_DIR}/oe-feed/*"
 
 	case "${DEPLOY_ENABLE_OEFEED}" in
 	1)	MAKE_INDEX_TYPE="fast" ;;
