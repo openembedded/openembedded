@@ -51,3 +51,10 @@ am_cv_func_working_getline=${am_cv_func_working_getline=yes}
 glib_cv_sizeof_system_thread=${glib_cv_sizeof_system_thread=4}
 glib_cv_sizeof_gmutex=${glib_cv_sizeof_gmutex=24} 
 glib_cv_uscore=${glib_cv_uscore=no}
+glib_cv_stack_grows=${glib_cv_stack_grows=no}
+
+#linux
+ac_cv_linux_vers=${ac_cv_linux_vers=2}
+
+#bash
+bash_cv_have_mbstate_t=${bash_cv_have_mbstate_t=yes}
