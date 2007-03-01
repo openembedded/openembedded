@@ -10,6 +10,7 @@ PR = "r0"
 DEFAULT_PREFERENCE = "-1"
 
 SRC_URI = "ftp://ftp.infradead.org/pub/mtd-utils/mtd-utils-1.0.0.tar.gz"
+S = "${WORKDIR}/mtd-utils-${PV}"
 
 CFLAGS_prepend = "-I${WORKDIR}/mtd-utils-${PV}/include "
 
