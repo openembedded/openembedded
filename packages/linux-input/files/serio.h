@@ -55,6 +55,7 @@
 #define SERIO_SNES232	0x26
 #define SERIO_SEMTECH	0x27
 #define SERIO_LKKBD	0x28
+#define SERIO_ELO       0x29
 
 #define SERIO_ID	0xff00UL
 #define SERIO_EXTRA	0xff0000UL
