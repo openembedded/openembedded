@@ -12,4 +12,4 @@ PACKAGE_INSTALL = "${OSSIE_BASE} ${OSSIE_PLATFORM} ${OSSIE_COMPONENTS} ${OSSIE_W
 OSSIE_BASE = "screen procps xerces-c omniorb usrp"
 OSSIE_PLATFORM = "ossiecf ossie-standardinterfaces ossie-nodebooter ossie-c-wavloader"
 OSSIE_COMPONENTS = "ossie-gpp-device ossie-usrp-device ossie-soundout-device"
-OSSIE_WAVEFORMS = "ossie-demo ossie-tx-random-data"
+OSSIE_WAVEFORMS = "ossie-demo ossie-tx-random-data ossie-log-data"
