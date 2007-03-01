@@ -239,6 +239,7 @@ task-base-usbhost-rrecommends = "\
     kernel-module-uhci-hcd \
     kernel-module-ehci-hcd \
     kernel-module-ohci-hcd \
+    kernel-module-ehci-hcd \
     kernel-module-usbcore \
     kernel-module-usbhid \
     kernel-module-usbnet \
