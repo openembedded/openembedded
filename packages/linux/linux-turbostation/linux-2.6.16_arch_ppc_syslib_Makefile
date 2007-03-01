@@ -1,0 +1,13 @@
+Index: linux-2.6.20.1/arch/ppc/syslib/Makefile
+===================================================================
+--- linux-2.6.20.1.orig/arch/ppc/syslib/Makefile	2007-02-20 07:34:32.000000000 +0100
++++ linux-2.6.20.1/arch/ppc/syslib/Makefile	2007-02-28 20:29:17.000000000 +0100
+@@ -66,7 +66,7 @@
+ obj-$(CONFIG_HARRIER)		+= harrier.o
+ obj-$(CONFIG_PRPMC800)		+= open_pic.o pci_auto.o
+ obj-$(CONFIG_RADSTONE_PPC7D)	+= pci_auto.o
+-obj-$(CONFIG_SANDPOINT)		+= pci_auto.o todc_time.o
++obj-$(CONFIG_SANDPOINT)		+= pci_auto.o
+ obj-$(CONFIG_SBC82xx)		+= todc_time.o
+ obj-$(CONFIG_SPRUCE)		+= cpc700_pic.o pci_auto.o \
+ 				   todc_time.o
