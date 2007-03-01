@@ -42,12 +42,12 @@ rootfs_create_combined_feed() {
 	# Set DEPLOY_ENABLE_OEFEED=1 to use the Packages files from ipk/ARCH/ (fast)
 
 	OLD_PWD="$PWD"
-	mkdir -p "${DEPLOY_DIR}/oe-feed"	
-	cd "${DEPLOY_DIR}/oe-feed" || exit 1
 
 	# To catch deleted / changed packages, we have to completly rebuild
 	# the symlinks every time.		
 	test -d "${DEPLOY_DIR}/oe-feed" && rm -rf "${DEPLOY_DIR}/oe-feed/"
+	mkdir -p "${DEPLOY_DIR}/oe-feed"	
+	cd "${DEPLOY_DIR}/oe-feed" || exit 1
 
 	case "${DEPLOY_ENABLE_OEFEED}" in
 	1)	MAKE_INDEX_TYPE="fast" ;;
