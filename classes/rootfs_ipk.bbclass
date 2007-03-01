@@ -31,53 +31,6 @@ rootfs_ipk_do_indexes () {
 			fi
 		fi
 	done
-	
-	test "${DEPLOY_ENABLE_OEFEED}" -gt 0 && rootfs_create_combined_feed || /bin/true
-}
-
-rootfs_create_combined_feed() {
-
-	# Create deploy/oe-feed which can be used as a feed in ipkg.conf
-	# Set DEPLOY_ENABLE_OEFEED=2 to rebuild Packages with ipkg-make-index (very slow)
-	# Set DEPLOY_ENABLE_OEFEED=1 to use the Packages files from ipk/ARCH/ (fast)
-
-	OLD_PWD="$PWD"
-
-	# To catch deleted / changed packages, we have to completly rebuild
-	# the symlinks every time.		
-	test -d "${DEPLOY_DIR}/oe-feed" && rm -rf "${DEPLOY_DIR}/oe-feed/"
-	mkdir -p "${DEPLOY_DIR}/oe-feed"	
-	cd "${DEPLOY_DIR}/oe-feed" || exit 1
-
-	case "${DEPLOY_ENABLE_OEFEED}" in
-	1)	MAKE_INDEX_TYPE="fast" ;;
-	*)	MAKE_INDEX_TYPE="traditional" ;;
-	esac
-	
-	for arch in $ipkgarchs
-	do
-		if test -d ${DEPLOY_DIR_IPK}/$arch/
-		then			
-			# Note: *.ipk won't work (too many arguments)
-			for ipk in `ls -1 "${DEPLOY_DIR_IPK}/$arch/" | grep ".ipk$"`
-			do
-				ln -s "${DEPLOY_DIR_IPK}/$arch/$ipk" .
-			done
-		fi
-			
-		# Doesn't get faster than that =)	
-		test "$MAKE_INDEX_TYPE" = "fast" && cat ${DEPLOY_DIR_IPK}/$arch/Packages >> ./Packages
-	done
-
-	if test "$MAKE_INDEX_TYPE" = "traditional"
-	then	
-		rm -f ${DEPLOY_DIR}/oe-feed/Packages
-		touch ${DEPLOY_DIR}/oe-feed/Packages
-		ipkg-make-index -r ${DEPLOY_DIR}/oe-feed/Packages -p ${DEPLOY_DIR}/oe-feed/Packages -l ${DEPLOY_DIR}/oe-feed/Packages.filelist -m ${DEPLOY_DIR}/oe-feed/
-	fi
-	
-	# Some *-image.bb's are kinda touchy-feely about a changing $PWD 
-	cd "$OLD_PWD"
 }
 
 fakeroot rootfs_ipk_do_rootfs () {
