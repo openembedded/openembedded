@@ -1,5 +1,5 @@
 DESCRIPTION = "Merge machine and distro options to create a basic machine task/package"
-PR = "r18"
+PR = "r19"
 
 PACKAGES = "task-base \
             task-base-minimal \
@@ -237,6 +237,7 @@ task-base-usbhost-rdepends = "\
 
 task-base-usbhost-rrecommends = "\
     kernel-module-ohci-hcd \
+    kernel-module-ehci-hcd \
     kernel-module-usbcore \
     kernel-module-usbhid \
     kernel-module-usbnet \
