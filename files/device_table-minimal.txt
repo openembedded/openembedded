@@ -1,3 +1,13 @@
+#<path>	<type> <mode>	<uid>	<gid>	<major>	<minor>	<start>	<inc>	<count>
+#/dev/mem    c      640      0       0       1       1       0        0        -
+#
+#type can be one of: 
+#    f	A regular file
+#    d	Directory
+#    c	Character special device file
+#    b	Block special device file
+#    p	Fifo (named pipe)
+
 /dev/initctl	p	600	0	0	-	-	-	-
 /dev/apm_bios	c	660	0	46	10	134	-	-	-
 /dev/fb0	c	600	0	0	29	0	-	-	-
