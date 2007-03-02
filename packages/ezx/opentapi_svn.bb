@@ -1,8 +1,10 @@
-DESCRIPTION = "Open implementation of motorola's tapisrc"
+DESCRIPTION = "Open implementation of motorola's tapisrv"
 LICENSE = "GPLv2"
+SECTION = "devel"
+AUTHOR = "Daniel Willmann"
 
 PV = "0.0+svn${SRCDATE}"
-PR = "r2"
+PR = "r3"
 
 SRC_URI = "svn://svn.openezx.org/trunk/src/userspace/;module=opentapi;proto=http \
            file://opentapi.init \
@@ -11,7 +13,7 @@ SRC_URI = "svn://svn.openezx.org/trunk/src/userspace/;module=opentapi;proto=http
 inherit update-rc.d
 
 INITSCRIPT_NAME = "opentapi"
-INITSCRIPT_PARAMS = "start 04 S ."
+INITSCRIPT_PARAMS = "start 00 S ."
 
 
 S = "${WORKDIR}/${PN}"

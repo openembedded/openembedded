@@ -37,8 +37,10 @@ start_it_up()
   fi
 
   echo -n "Starting $DESC: "
-  start-stop-daemon --start --quiet --pidfile $PIDFILE \
+  start-stop-daemon --start --background --quiet --pidfile $PIDFILE \
     --exec $DAEMON -- --system $PARAMS
+  # We need to sleep here because opening the mux devices takes some time
+  sleep 15
   echo "$NAME."
   if [ -d $EVENTDIR ]; then
       run-parts --arg=start $EVENTDIR
