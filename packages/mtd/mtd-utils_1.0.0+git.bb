@@ -13,9 +13,7 @@ SRC_URI = "git://git.infradead.org/mtd-utils.git;protocol=git;tag=master \
 
 S = "${WORKDIR}/git/"
 
-EXTRA_OEMAKE = "WITHOUT_XATTR=1"
-
-#CFLAGS_prepend = "-I${S}/include "
+EXTRA_OEMAKE = "'CFLAGS=${CFLAGS} -I${S}/include -DWITHOUT_XATTR'"
 
 do_stage () {
 	install -d ${STAGING_INCDIR}/mtd
