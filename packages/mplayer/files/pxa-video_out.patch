@@ -1,0 +1,22 @@
+Index: MPlayer-1.0rc1/libvo/video_out.c
+===================================================================
+--- MPlayer-1.0rc1.orig/libvo/video_out.c
++++ MPlayer-1.0rc1/libvo/video_out.c
+@@ -87,6 +87,7 @@ extern vo_functions_t video_out_fbdev;
+ extern vo_functions_t video_out_fbdev2;
+ extern vo_functions_t video_out_w100;
+ extern vo_functions_t video_out_imageon;
++extern vo_functions_t video_out_pxa;
+ extern vo_functions_t video_out_svga;
+ extern vo_functions_t video_out_png;
+ extern vo_functions_t video_out_ggi;
+@@ -206,6 +207,9 @@ vo_functions_t* video_out_drivers[] =
+ #ifdef HAVE_IMAGEON
+ 	&video_out_imageon,
+ #endif
++#ifdef HAVE_PXA
++    &video_out_pxa,
++#endif
+ #ifdef HAVE_SVGALIB
+ 	&video_out_svga,
+ #endif

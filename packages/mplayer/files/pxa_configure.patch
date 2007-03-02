@@ -1,0 +1,47 @@
+Index: MPlayer-1.0rc1/configure
+===================================================================
+--- MPlayer-1.0rc1.orig/configure
++++ MPlayer-1.0rc1/configure
+@@ -1600,6 +1600,7 @@ _vesa=auto
+ _fbdev=auto
+ _w100=no
+ _imageon=no
++_pxa=no
+ _dvb=auto
+ _dvbhead=auto
+ _dxr2=auto
+@@ -1803,6 +1804,8 @@ for ac_option do
+   --disable-w100)       _w100=no        ;;
+   --enable-imageon)     _imageon=yes    ;;
+   --disable-imageon)    _imageon=no     ;;
++  --enable-pxa)         _pxa=yes        ;;
++  --disable-pxa)        _pxa=no         ;;
+   --enable-dvb)		_dvb=yes	;;
+   --disable-dvb)        _dvb=no		;;
+   --enable-dvbhead)	_dvbhead=yes	;;
+@@ -4296,6 +4299,17 @@ else
+ fi
+ echores "$_imageon"
+ 
++echocheck "PXA27x Overlay Support"
++if test "$_pxa" = yes ; then
++  _def_imageon='#define HAVE_PXA 1'
++  _vosrc="$_vosrc vo_pxa.c"
++  _vomodules="pxa $_vomodules"
++else
++  _def_imageon='#undef HAVE_IMAGEON'
++  _novomodules="pxa $_novomodules"
++fi
++echores "$_pxa"
++
+ 
+ echocheck "DVB"
+ if test "$_dvb" = auto ; then
+@@ -8398,6 +8412,7 @@ $_def_syncfb
+ $_def_fbdev
+ $_def_w100
+ $_def_imageon
++$_def_pxa
+ $_def_dxr2
+ $_def_dxr3
+ $_def_ivtv

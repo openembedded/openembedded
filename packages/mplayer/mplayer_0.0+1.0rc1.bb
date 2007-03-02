@@ -9,6 +9,8 @@ SRC_URI = "http://www1.mplayerhq.hu/MPlayer/releases/MPlayer-1.0rc1.tar.bz2 \
            file://vo_w100.c \
            file://vo_w100_api.h \
            file://vo_w100_fb.h \
+           file://vo_pxa.c \
+           file://vo_pxa.h \
            file://Makefile.patch;patch=1 \
            file://w100-configure.patch;patch=1 \
            file://w100-Makefile.patch;patch=1 \
@@ -17,7 +19,9 @@ SRC_URI = "http://www1.mplayerhq.hu/MPlayer/releases/MPlayer-1.0rc1.tar.bz2 \
            file://pld-onlyarm5.patch;patch=1 \
            file://makefile-nostrip.patch;patch=1 \
            ${SOURCEFORGE_MIRROR}/libw100/mplayer-imageon.patch;patch=1 \
-           file://imageon-video_out.patch;patch=1"
+           file://imageon-video_out.patch;patch=1 \
+           file://pxa_configure.patch;patch=1 \
+           file://pxa-video_out.patch;patch=1 "
 
 # This is required for the collie machine only as all stacks in that
 # machine seem to be set to executable by the toolchain. If someone
@@ -29,7 +33,7 @@ PACKAGE_ARCH_mencoder_collie = "collie"
 
 RCONFLICTS_${PN} = "mplayer-atty"
 RREPLACES_${PN} = "mplayer-atty"
-PR = "r7"
+PR = "r8"
 
 PARALLEL_MAKE = ""
 
@@ -172,11 +176,14 @@ EXTRA_OECONF = " \
 EXTRA_OECONF_append_c7x0 = " --enable-w100 --enable-imageon "
 EXTRA_OECONF_append_hx4700 = " --enable-imageon "
 EXTRA_OECONF_append_progear = " --disable-sse --disable-3dnow --disable-mmxext --disable-sse2"
+EXTRA_OECONF_append_spitz = " --enable-pxa "
 
 do_configure() {
 	cp ${WORKDIR}/vo_w100.c ${S}/libvo
 	cp ${WORKDIR}/vo_w100_api.h ${S}/libvo
 	cp ${WORKDIR}/vo_w100_fb.h ${S}/libvo
+    cp ${WORKDIR}/vo_pxa.c ${S}/libvo
+    cp ${WORKDIR}/vo_pxa.h ${S}/libvo
 
 	sed -i 's|/usr/include|${STAGING_INCDIR}|g' ${S}/configure
 	sed -i 's|/usr/lib|${STAGING_LIBDIR}|g' ${S}/configure
