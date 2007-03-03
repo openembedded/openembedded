@@ -1,0 +1,12 @@
+Only in mdk2-v33-ppcfix: mdk2
+diff -ur mdk2-v33/mdk2.c mdk2-v33-ppcfix/mdk2.c
+--- mdk2-v33/mdk2.c	2007-02-22 13:39:43.000000000 -0500
++++ mdk2-v33-ppcfix/mdk2.c	2007-03-03 15:56:50.000000000 -0500
+@@ -7,6 +7,7 @@
+ #include <sys/ioctl.h>
+ #include <netpacket/packet.h>
+ #include <linux/if_ether.h>
++#include <linux/if.h>
+ #include <linux/wireless.h>
+ #include <unistd.h>
+ #include <string.h>
