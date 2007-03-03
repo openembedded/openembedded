@@ -79,7 +79,7 @@ Recipes:    net-snmp, ebtables, ethtool, arpwatch, lib*-perl
 
 Person:     Joaquim Duran
 Mail:       joaquinduran@adtelecom.es
-Recipes:    fltk
+Recipes:    gtk+, gtkmm
 
 Person:     Justin Patrin
 Mail:       papercrane@reversefold.com
