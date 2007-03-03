@@ -5,7 +5,7 @@ LICENSE = "GPL"
 PROVIDES = "gconf"
 RPROVIDES = "gconf"
 
-PR = "r3"
+PR = "r4"
 
 DEFAULT_PREFERENCE = "-1"
 
@@ -14,6 +14,7 @@ SRC_URI = "http://repository.maemo.org/pool/maemo/ossw/source/g/gconf2/gconf2_${
            file://free-entry-fix.diff;patch=1 \
            file://no-po-no-examples.diff;patch=1 \
            file://service-file.diff;patch=1 \
+	   file://configure-dbus.patch;patch=1 \
            file://gconf-daemon-dbus-oe.sh \
            file://gconf-daemon-oe.sh"
 
