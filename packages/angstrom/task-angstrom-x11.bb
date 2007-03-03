@@ -1,5 +1,5 @@
 DESCRIPTION = "Task packages for the Angstrom distribution"
-PR = "r28"
+PR = "r29"
 ALLOW_EMPTY = "1"
 
 PACKAGE_ARCH = "${MACHINE_ARCH}"
@@ -11,6 +11,7 @@ PACKAGES = "\
     angstrom-gpe-task-pim \
     angstrom-gpe-task-apps \
     angstrom-gpe-task-games \
+    angstrom-ohand-task-pim \
     angstrom-task-office \
     angstrom-task-printing \
     angstrom-task-sectest"
@@ -60,6 +61,12 @@ RDEPENDS_angstrom-gpe-task-pim := "\
     gpe-calendar \
     gpe-contacts \
     gpesyncd"
+
+RDEPENDS_angstrom-ohand-task-pim := "\
+    dates \
+    contacts \
+    tasks \
+"
 
 RDEPENDS_angstrom-gpe-task-settings := "\
     matchbox-panel-manager \
