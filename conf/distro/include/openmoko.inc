@@ -70,7 +70,9 @@ PREFERRED_PROVIDER_gconf = "gconf-dbus"
 #new
 #PREFERRED_PROVIDER_gnome-vfs = "gnome-vfs"
 #old
-PREFERRED_PROVIDER_gnome-vfs = "gnome-vfs-dbus"
+PREFERRED_PROVIDER_gnome-vfs = "gnome-vfs"
+PREFERRED_PROVIDER_gnome-vfs-plugin-file = "gnome-vfs"
+
 PREFERRED_PROVIDER_virtual/xserver = "xserver-kdrive"
 PREFERRED_PROVIDER_bluez-utils = "bluez-utils-dbus"
 
