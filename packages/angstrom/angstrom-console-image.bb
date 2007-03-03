@@ -1,6 +1,6 @@
 #Angstrom bootstrap image
 LICENSE = "MIT"
-PR = "r3"
+PR = "r4"
 
 ANGSTROM_EXTRA_INSTALL ?= ""
 
@@ -10,7 +10,7 @@ RDEPENDS = "task-base-core-default \
 	    ${ANGSTROM_EXTRA_INSTALL} \
 	   "
 
-export IMAGE_BASENAME = "bootstrap-image"
+export IMAGE_BASENAME = "console-image"
 export IMAGE_LINGUAS = ""
 export PACKAGE_INSTALL = "${RDEPENDS}"
 

@@ -1,6 +1,6 @@
-#Angstrom GPE image
+#Angstrom X11 image
 LICENSE = "MIT"
-PR = "r4"
+PR = "r5"
 
 PREFERRED_PROVIDER_libgpewidget 	?= "libgpewidget"
 PREFERRED_PROVIDER_tslib 		?= "tslib"
@@ -11,7 +11,7 @@ PREFERRED_PROVIDER_virtual/libx11       ?= "diet-x11"
 ANGSTROM_EXTRA_INSTALL ?= ""
 XSERVER ?= "xserver-kdrive-fbdev"
 
-export IMAGE_BASENAME = "gpe-image"
+export IMAGE_BASENAME = "x11-image"
 
 DEPENDS = "task-base"
 RDEPENDS = "\
@@ -21,7 +21,6 @@ RDEPENDS = "\
     angstrom-x11-base-depends \
     angstrom-gpe-task-base \
     angstrom-gpe-task-settings \
-    angstrom-gpe-task-pim \
     ${ANGSTROM_EXTRA_INSTALL}"
 
 
