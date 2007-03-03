@@ -1,7 +1,7 @@
 DESCRIPTION = "Miscellaneous files for the base system."
 SECTION = "base"
 PRIORITY = "required"
-PR = "r60"
+PR = "r61"
 LICENSE = "GPL"
 
 SRC_URI = " \
@@ -136,7 +136,7 @@ do_install_append_netbook-pro () {
 }
 
 PACKAGES = "${PN}-doc ${PN}"
-FILES_${PN} = "/"
+FILES_${PN} = "/*"
 FILES_${PN}-doc = "${docdir} ${datadir}/common-licenses"
 
 # M&N specific packaging
