@@ -2,7 +2,7 @@ DESCRIPTION = "Linux Kernel for the QNAP TurboStation platform"
 SECTION = "kernel"
 LICENSE = "GPL"
 DEPENDS = "uboot-utils"
-PR = "r0"
+PR = "r3"
 
 # notes on iom def kernel:
 #
