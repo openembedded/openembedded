@@ -158,6 +158,10 @@ Machines:   poodle, c7x0, spitz, nokia770, qemuarm, qemux86, hx2xxx
 Interests:  Kernels, Bitbake, Core OE infrastructure, Zaurus 2.6
 Recipes:    linux-rp, udev, zaurusd, task-base
 
+Person:     Rick Farina
+Mail:       Zero_Chaos <sidhayn@hotmail.com>
+Recipes:    void11
+
 Person:	    Rolf 'Laibsch' Leggewie
 Mail:       OE-recipes@rolf.leggewie.biz
 Website:    http://oz.leggewie.org
