@@ -1,5 +1,5 @@
 LICENSE = "GPL"
-PR = "r0"
+PR = "r1"
 SECTION = "x11/gnome/libs"
 DESCRIPTION = "Bonobo CORBA interfaces library"
 
@@ -12,8 +12,12 @@ DEPENDS = "glib-2.0 orbit2 intltool-native libxml2"
 ORBIT_IDL_SRC = "${STAGING_BINDIR_NATIVE}/orbit-idl-2"
 
 FILES_${PN} += "${libdir}/orbit-2.0/*.so ${libdir}/bonobo/monikers/*.so"
+FILES_${PN}-dbg += "${libdir}/bonobo/monikers/.debug \
+	${libdir}/bonobo-2.0/samples/.debug ${libdir}/orbit-2.0/.debug"
 FILES_${PN}-dev += "${libdir}/orbit-2.0/* ${libdir}/bonobo/monikers/* \
 	${libdir}/bonobo-2.0/samples"
+
+LEAD_SONAME = "libbonobo-2.so"
 
 PARALLEL_MAKE = ""
 
