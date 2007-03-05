@@ -2,12 +2,15 @@ DESCRIPTION="The Asterisk open source software PBX"
 HOMEPAGE="www.asterisk.org"
 LICENSE="GPL"
 DEPENDS="ncurses zlib openssl curl alsa-lib libogg libvorbis popt"
-PR = "r2"
+SECTION = "telephony"
+PR = "r3"
 
 SRC_URI="http://ftp.digium.com/pub/asterisk/releases/asterisk-${PV}.tar.gz \
 	 file://uclibc-compat-getloadavg.patch;patch=1 \
 	 file://uclibc-dsn.patch;patch=1 \
          file://asterisk.patch;patch=1"
+
+S = "${WORKDIR}/asterisk-${PV}"
 
 
 export CROSS_COMPILE="${CCACHE}${HOST_PREFIX}"
@@ -34,4 +37,7 @@ do_stage () {
         install -m 0644 ${S}/include/asterisk/*.h ${STAGING_INCDIR}/asterisk/
 }
 
+
+FILES_${PN}-dbg += "${libdir}/asterisk/modules/.debug"
+FILES_${PN}-dbg += "/var/lib/asterisk/agi-bin/.debug"
 
