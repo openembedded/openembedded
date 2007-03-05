@@ -4,7 +4,7 @@ AUTHOR = "Harald Welte <laforge@openmoko.org>"
 HOMEPAGE = "N/A"
 LICENSE = "GPL"
 DEPENDS += "uboot-gta01"
-MOKOR = "moko7"
+MOKOR = "moko8"
 PR = "${MOKOR}-r1"
 
 VANILLA_VERSION = "2.6.20"
