@@ -112,6 +112,24 @@ def seppuku_find_bug_report(opener, query, product, component, bugname):
         (number,status) = scanner.result()[0]
         return (status != "CLOSED",number)
 
+def seppuku_reopen_bug(opener, file, product, component, bug_number, bugname, text):
+    """
+    Reopen a bug report and append to the comment
+
+    Same as with opening a new report, some bits need to be inside the url
+
+    http://bugzilla.openmoko.org/cgi-bin/bugzilla/process_bug.cgi?id=239&bug_file_loc=http%3A%2F%2F&version=2007&longdesclength=2&product=OpenMoko&component=autobuilds&comment=bla&priority=P2&bug_severity=normal&op_sys=Linux&rep_platform=Neo1973&knob=reopen&target_milestone=Phase+0&short_desc=foo
+    """
+
+    import urllib
+    param = urllib.urlencode( { "product" : product, "component" : component, "longdesclength" : 2,
+                                "short_desc" : bugname, "comment" : text, "knob" : "reopen" } )
+    result = opener.open( file + param )
+    if result.code != 200:
+        return False
+    else
+        return True
+
 def seppuku_file_bug(opener, file, product, component, bugname, text):
     """
     Create a completely new bug report
