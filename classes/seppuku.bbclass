@@ -123,7 +123,7 @@ def seppuku_reopen_bug(opener, file, product, component, bug_number, bugname, te
 
     import urllib
     param = urllib.urlencode( { "product" : product, "component" : component, "longdesclength" : 2,
-                                "short_desc" : bugname, "comment" : text, "knob" : "reopen" } )
+                                "short_desc" : bugname, "comment" : text, "knob" : "reopen", "id" : bug_number } )
     result = opener.open( file + param )
     if result.code != 200:
         return False
@@ -184,8 +184,8 @@ python seppuku_do_report() {
         opener  = urllib2.build_opener(urllib2.HTTPCookieProcessor(cj))
         login   = bb.data.getVar("SEPPUKU_LOGIN", data, True)
         query   = bb.data.getVar("SEPPUKU_QUERY", data, True)
-        file    = bb.data.getVar("SEPPUKU_FILE",  data, True)
-        post    = bb.data.getVar("SEPPUKU_POST",  data, True)
+        newbug  = bb.data.getVar("SEPPUKU_NEWREPORT",  data, True)
+        reopen  = bb.data.getVar("SEPPUKU_ADDCOMMENT",  data, True)
         user    = bb.data.getVar("SEPPUKU_USER",  data, True)
         pass    = bb.data.getVar("SEPPUKU_PASS",  data, True)
         product = bb.data.getVar("SEPPUKU_PRODUCT", data, True)
@@ -218,9 +218,9 @@ python seppuku_do_report() {
             return NotHandled
 
         if bug_number and not bug_open:
-            if not seppuku_reopen_bug(opener, file, product, component, bug_number, bugname, text):
+            if not seppuku_reopen_bug(opener, reopen, product, component, bug_number, bugname, text):
                 bb.note("Failed to reopen the bug report")
-        else seppuku_file_bug(opener, file, product, component, bugname, text):
+        else seppuku_file_bug(opener, newbug, product, component, bugname, text):
             bb.note("Filing a bugreport failed")
 
     return NotHandled
