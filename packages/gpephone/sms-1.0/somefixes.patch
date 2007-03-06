@@ -1,0 +1,116 @@
+Index: src/callbacks.c
+===================================================================
+--- src/callbacks.c	(Revision 487)
++++ src/callbacks.c	(Arbeitskopie)
+@@ -927,11 +927,15 @@
+ 
+   /* While we have constructed the UI manager we can create the menus as well. */
+   pop_menu_left = gtk_ui_manager_get_widget (ui_manager, menu_left);
+-  g_signal_connect (G_OBJECT (pop_menu_left),
+-                    "key-press-event", G_CALLBACK (popup_key_press_handler),
+-                    NULL);
+-  g_signal_connect (G_OBJECT (pop_menu_left), "unmap",
+-                    G_CALLBACK (popup_mapping_handler), NULL);
++  
++	if (pop_menu_left)
++	{
++	  g_signal_connect (G_OBJECT (pop_menu_left),
++                      "key-press-event", G_CALLBACK (popup_key_press_handler),
++                      NULL);
++    g_signal_connect (G_OBJECT (pop_menu_left), "unmap",
++                      G_CALLBACK (popup_mapping_handler), NULL);
++	}
+ 
+   pop_menu_right = gtk_ui_manager_get_widget (ui_manager, menu_right);
+ 
+Index: configure.ac
+===================================================================
+--- configure.ac	(Revision 487)
++++ configure.ac	(Arbeitskopie)
+@@ -2,7 +2,8 @@
+ # Process this file with autoconf to produce a configure script.
+ 
+ AC_PREREQ(2.59)
+-AC_INIT(sms, 0.1, gpe@handhelds.org)
++
++AC_INIT(sms, 1.0, gpephone-devel@linuxtogo.org)
+ AC_CONFIG_SRCDIR([src/shared.h])
+ AM_INIT_AUTOMAKE(foreign dist-bzip2)
+ AC_CONFIG_HEADER([config.h])
+@@ -48,7 +49,7 @@
+ [  --with-gpe-dir=PATH     specify location of gpephone directory ])
+ 
+ if test "x$with_gpe_dir" = "x" ; then
+-	GPE_DIR='$(prefix)/gpephone'
++	GPE_DIR='$(prefix)'
+ else
+ 	GPE_DIR=$with_gpe_dir
+ fi
+Index: Makefile.am
+===================================================================
+--- Makefile.am	(Revision 487)
++++ Makefile.am	(Arbeitskopie)
+@@ -8,13 +8,7 @@
+ pixmapsdir        = $(GPE_DIR)/share/pixmaps
+ pixmaps_DATA      = sms.png
+ 
+-EXTRA_DIR = sms.desktop.in \
+-            intltool-extract.in \
+-            intltool-merge.in \
+-            intltool-update.in
+-
+-
+-EXTRA_DIST = $(desktop_DATA) \
++EXTRA_DIST = $(desktop_in_files) \
+              $(pixmaps_DATA) \
+              intltool-extract.in \
+              intltool-merge.in \
+Index: autogen.sh
+===================================================================
+--- autogen.sh	(Revision 487)
++++ autogen.sh	(Arbeitskopie)
+@@ -1,40 +1,4 @@
+-# gettext
+-PKG_NAME="libpimenabler"
+-GETTEXTIZE="glib-gettextize"
++intltoolize --copy --automake --force
+ 
+-$GETTEXTIZE --version < /dev/null > /dev/null 2>&1
+-if test $? -ne 0; then
+-  echo
+-  echo "**Error**: You must have \`$GETTEXTIZE' installed" \
+-       "to compile $PKG_NAME."
+-  DIE=1
+-fi
++autoreconf -f -i -s
+ 
+-intltoolize --version < /dev/null > /dev/null 2>&1 || {
+-  echo
+-  echo "**Error**: You must have \`intltoolize' installed" \
+-     "to compile $PKG_NAME."
+-  DIE=1
+-}
+-
+-if test "$GETTEXTIZE"; then
+- echo "Creating $dr/aclocal.m4 ..."
+- test -r aclocal.m4 || touch aclocal.m4
+- echo "Running $GETTEXTIZE...  Ignore non-fatal messages."
+- echo "no" | $GETTEXTIZE --copy
+- echo "Making aclocal.m4 writable ..."
+- test -r aclocal.m4 && chmod u+w aclocal.m4
+-fi
+-echo "Running intltoolize..."
+-intltoolize --copy --automake
+-
+-libtoolize --copy --force
+-
+-autoheader
+-aclocal $ACLOCAL_FLAGS
+-
+-automake -a $am_opt
+-autoconf
+-
+-#echo "Fixing libtool..."
+-#patch -p0 < libtool-cross.patch
+Index: po/sms.pot
+===================================================================
