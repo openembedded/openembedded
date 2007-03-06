@@ -29,6 +29,62 @@ def seppuku_login(opener, login, user, password):
 
     return True
 
+def seppuku_find_bug_report_old():
+    from HTMLParser import HTMLParser
+
+    class BugQueryExtractor(HTMLParser):
+        STATE_NONE             = 0
+        STATE_FOUND_TR         = 1
+        STATE_FOUND_NUMBER     = 2
+        STATE_FOUND_PRIO       = 3
+        STATE_FOUND_PRIO2      = 4
+        STATE_FOUND_NAME       = 5
+        STATE_FOUND_PLATFORM   = 6
+        STATE_FOUND_STATUS     = 7
+        STATE_FOUND_WHATEVER   = 8 # I don't know this field
+        STATE_FOUND_DESCRIPTION =9
+
+        def __init__(self):
+            HTMLParser.__init__(self)
+            self.state = self.STATE_NONE
+            self.bugs = []
+
+        def handle_starttag(self, tag, attr):
+            if self.state == self.STATE_NONE and tag.lower() == "tr":
+                if len(attr) == 1 and attr[0] == ('class', 'bz_normal bz_P2 '):
+                    print "Found tr %s %s" % (tag, attr)
+                    self.state = self.STATE_FOUND_TR
+            elif self.state == self.STATE_FOUND_TR and tag.lower() == "td":
+                self.state += 1
+
+        def handle_endtag(self, tag):
+            if tag.lower() == "tr":
+                print "Going back"
+                if self.state != self.STATE_NONE:
+                    self.bugs.append( (self.bug,self.status) )
+                self.state = self.STATE_NONE
+            if self.state > 1 and tag.lower() == "td":
+                print "Next TD"
+                self.state += 1
+
+        def handle_data(self,data):
+            data = data.strip()
+
+            # skip garbage
+            if len(data) == 0:
+                return
+
+            if self.state == self.STATE_FOUND_NUMBER:
+                self.bug = data
+            elif self.state == self.STATE_FOUND_STATUS:
+                self.status = data
+
+        def result(self):
+            return self.bugs
+
+    return BugQueryExtractor()
+
+
 
 def seppuku_find_bug_report(opener, query, product, component, bugname):
     """
@@ -44,12 +100,42 @@ def seppuku_find_bug_report(opener, query, product, component, bugname):
     https://bugzilla.openmoko.org/cgi-bin/bugzilla/buglist.cgi?short_desc_type=substring&short_desc=manual+test+bug&product=OpenMoko&emailreporter2=1&emailtype2=substring&email2=freyther%40yahoo.com
     but it does not support ctype=csv...
     """
-    pass
+    result = opener.open("%(query)s?product=%(product)s&component=%(component)s&short_desc_type=substring&short_desc=%(bugname)s" % vars())
+    if result.code != 200:
+        raise "Can not query the bugzilla at all"
+    txt = result.read()
+    scanner = seppuku_find_bug_report_old()
+    scanner.feed(txt)
+    if len(scanner.result()) == 0:
+        return (False,None)
+    else: # silently pick the first result
+        (number,status) = scanner.result()[0]
+        return (status != "CLOSED",number)
 
-def seppuku_append_or_file(opener, file, product, component, bugname, text):
+def seppuku_file_bug(opener, file, product, component, bugname, text):
     """
-    Add a comment or open a bug report
+    Create a completely new bug report
+
+
+    http://bugzilla.openmoko.org/cgi-bin/bugzilla/post_bug.cgi?bug_file_loc=http%3A%2F%2F&version=2007&product=OpenMoko&component=autobuilds&short_desc=foo&comment=bla&priority=P2&bug_severity=normal&op_sys=Linux&rep_platform=Neo1973
+
+    You are forced to add some default values to the bugzilla query and stop with '&'
+
+    @param opener  urllib2 opener
+    @param file    The url used to file a bug report
+    @param product Product
+    @param component Component
+    @param bugname  Name of the to be created bug
+    @param text Text
     """
+
+    import urllib
+    param = urllib.urlencode( { "product" : product, "component" : component, "short_desc" : bugname, "comment" : text } )
+    result = opener.open( file + param )
+    if result.code != 200:
+        return False
+    else:
+        return True
 
 
 
@@ -109,11 +195,14 @@ python seppuku_do_report() {
         (bug_open, bug_number) = seppuku_find_bug_report(opener, query, product, component, bugname)
 
         # The bug is present and still open, no need to attach an error log
-        if bug_nunumber and bug_open:
+        if bug_number and bug_open:
+            bb.note("The bug is known as '%s'" % bug_number"
             return NotHandled
 
-
-        if seppuku_append_or_file(opener, file, produuct, component, bugname, text)
+        if bug_number and not bug_open:
+            if not seppuku_reopen_bug(opener, file, product, component, bug_number, bugname, text):
+                bb.note("Failed to reopen the bug report")
+        else seppuku_file_bug(opener, file, product, component, bugname, text):
             bb.note("Filing a bugreport failed")
 
     return NotHandled
