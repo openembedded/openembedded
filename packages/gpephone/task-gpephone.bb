@@ -1,5 +1,5 @@
 DESCRIPTION = "Task packages for GPE Palmtop Environment Phone Edition"
-PR = "r1"
+PR = "r2"
 LICENSE = "MIT"
 ALLOW_EMPTY = "1"
 
@@ -59,7 +59,6 @@ RDEPENDS_gpephone-task-base := "\
     gpe-icons \
     gpe-confd \
     gpe-autostarter \
-    libgtkstylus \
     xauth \
     gdk-pixbuf-loader-png \
     gdk-pixbuf-loader-xpm \
@@ -67,7 +66,10 @@ RDEPENDS_gpephone-task-base := "\
     gdk-pixbuf-loader-gif \
     pango-module-basic-x \
     pango-module-basic-fc \
-    detect-stylus"
+    detect-stylus \
+    ${@base_contains("MACHINE_FEATURES", "touchscreen", "libgtkstylus xtscal", "",d)} \
+    ${@base_contains("MACHINE_FEATURES", "keyboard", "", "libgtkinput",d)} \
+"
 
 RDEPENDS_gpephone-task-pim := "\
      gpesyncd"
