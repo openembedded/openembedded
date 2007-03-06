@@ -165,7 +165,14 @@ make_zimage_symlink_relative () {
 	fi
 }
 
+# Make login manager(s) enable automatic login.
+# Useful for devices where we do not want to log in at all (e.g. phones)
+set_image_autologin () {
+        sed -i 's%^AUTOLOGIN=\"false"%AUTOLOGIN="true"%g' ${IMAGE_ROOTFS}/etc/sysconfig/gpelogin
+}
+
+
 # export the zap_root_password, create_etc_timestamp and remote_init_link
-EXPORT_FUNCTIONS zap_root_password create_etc_timestamp remove_init_link do_rootfs make_zimage_symlink_relative
+EXPORT_FUNCTIONS zap_root_password create_etc_timestamp remove_init_link do_rootfs make_zimage_symlink_relative set_image_autologin
 
 addtask rootfs before do_build after do_install

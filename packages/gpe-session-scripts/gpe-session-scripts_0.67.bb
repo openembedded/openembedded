@@ -4,14 +4,14 @@ DESCRIPTION = "GPE session startup scripts"
 LICENSE = "GPL"
 SECTION = "gpe"
 PRIORITY = "optional"
-RDEPENDS_${PN} = "matchbox-panel (>= 0.9.2-r12) matchbox-desktop (>= 0.9.1-r1) matchbox-common (>= 0.9.1-r2) gpe-session-starter xtscal gpe-question matchbox-applet-inputmanager xmodmap xdpyinfo xserver-common"
-# more rdepends: keylaunch ipaq-sleep apmd blueprobe
-DEPENDS = "matchbox-wm matchbox-panel xtscal gpe-question matchbox-applet-inputmanager xmodmap xdpyinfo xserver-common"
+RDEPENDS_${PN} = "matchbox-panel (>= 0.9.2-r12) matchbox-desktop (>= 0.9.1-r1) matchbox-common (>= 0.9.1-r2) gpe-session-starter xtscal gpe-question matchbox-applet-inputmanager xmodmap xdpyinfo xserver-common ipaq-sleep"
+# more rdepends: keylaunch apmd blueprobe
+DEPENDS = "matchbox-wm matchbox-panel xtscal gpe-question matchbox-applet-inputmanager xmodmap xdpyinfo xserver-common ipaq-sleep"
 
 SRC_URI += "file://matchbox-session \
 	file://disable-composite.xsettings"
 
-PR = "r6"
+PR = "r7"
 
 #apply a patch to set the fontsize for bigdpi (200+) devices to 5
 SRC_URI_append_hx4700 = " file://highdpifontfix.patch;patch=1"

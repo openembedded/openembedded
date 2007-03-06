@@ -45,8 +45,8 @@ soundserver &
 
 # Run GSM support stuff
 
-cms92init &
+#cms92init &
 gsmMux -d -p /dev/ttyS0 -m cms92 -f 128 -b 115200 -c /dev/ptmx /dev/ptmx &
 
 # Start PhoneServer
-phoneserver &
+phoneserver
