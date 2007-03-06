@@ -1,14 +1,14 @@
 gcclibdir ?= "${libdir}/gcc"
 BINV ?= "${PV}"
 
-# libgcc libstdc++ libg2c are listed in our FILES_*, but are actually
-# packaged in the respective cross packages.
-PACKAGES = "${PN} ${PN}-symlinks \
+PACKAGES = "libgcc ${PN} ${PN}-symlinks \
             g++ g++-symlinks \
 	    cpp cpp-symlinks \
             g77 g77-symlinks \
 	    gcov gcov-symlinks \
-            libstdc++-dev libg2c-dev \
+            libmudflap libmudflap-dev \
+	    libstdc++ libg2c \
+	    libstdc++-dev libg2c-dev \
             ${PN}-doc"
 
 FILES_${PN} = "${bindir}/${TARGET_PREFIX}gcc \
@@ -35,7 +35,11 @@ FILES_cpp-symlinks = "${bindir}/cpp"
 FILES_gcov = "${bindir}/${TARGET_PREFIX}gcov"
 FILES_gcov-symlinks = "${bindir}/gcov"
 
+FILES_libgcc = "${base_libdir}/libgcc*.so.*"
+FILES_libgcc-dev = "${base_libdir}/libgcc*.so"
+
 # Called from within gcc-cross, so libdir is set wrong
+FILES_libg2c = "${target_libdir}/libg2c.so.*"
 FILES_libg2c-dev = "${libdir}/libg2c.so \
 		    ${libdir}/libg2c.a \
 		    ${libdir}/libfrtbegin.a"
@@ -45,12 +49,19 @@ FILES_g++ = "${bindir}/${TARGET_PREFIX}g++ \
 FILES_g++-symlinks = "${bindir}/c++ \
 			    ${bindir}/g++"
 
+FILES_libstdc++ = "${libdir}/libstdc++.so.*"
 FILES_libstdc++-dev = "${includedir}/c++/${BINV} \
 		       ${libdir}/libstdc++.so \
 		       ${libdir}/libstdc++.la \
 		       ${libdir}/libstdc++.a \
 		       ${libdir}/libsupc++.la \
 		       ${libdir}/libsupc++.a"
+
+FILES_libmudflap = "${libdir}/libmudflap*.so.*"
+FILES_libmudflap-dev = "${libdir}/libmudflap*.so \
+                        ${libdir}/libmudflap*.a \
+                        ${libdir}/libmudflap*.a"
+
 
 FILES_${PN}-doc = "${infodir} \
 		   ${mandir} \
