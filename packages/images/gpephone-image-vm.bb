@@ -36,4 +36,7 @@ export PACKAGE_INSTALL = "\
 
 inherit image
 
+ROOTFS_POSTPROCESS_COMMAND += "set_image_autologin; "
+
+
 LICENSE = "MIT"
