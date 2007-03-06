@@ -7,8 +7,7 @@ PR          = "r0"
 
 inherit gpephone pkgconfig autotools
 
-SRC_URI = "${GPEPHONE_MIRROR}/${P}/lips_im-${PV}.tar.gz \
-           file://im-dbus-segfault.patch;patch=1;pnum=0"
+SRC_URI = "${GPEPHONE_MIRROR}/${P}/lips_im-${PV}.tar.gz"
 
 EXTRA_OECONF = "--with-session-bus-services-dir=${datadir}/dbus-1/services"
 
