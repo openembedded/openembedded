@@ -8,7 +8,7 @@ PV = "0.12.1+svn${SRCDATE}"
 PR = "r2"
 
 SRC_URI = "svn://svn.musicpd.org/mpd;module=trunk;proto=https \
-           file://fix-mod-support.patch;patch=1"
+           file://fix-mod-support.patch;patch=1;maxdate=20070302"
 #           file://save-volume-state.patch;patch=1"
 S = "${WORKDIR}/trunk"
 

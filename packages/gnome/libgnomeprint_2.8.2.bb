@@ -6,6 +6,8 @@ DEPENDS = "libxml2 libgnomecups glib-2.0 pango libart-lgpl fontconfig popt gnome
 
 inherit flow-lossage pkgconfig gnome
 
+FILES_${PN}-dbg += "${libdir}/libgnomeprint/2.8.2/modules/transports/.debug \
+		    ${libdir}/libgnomeprint/2.8.2/modules/.debug"
 
 do_stage() {
 	install -d ${STAGING_LIBDIR}
