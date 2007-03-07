@@ -1,0 +1,35 @@
+Index: hdparm-6.9/hdparm.c
+===================================================================
+--- hdparm-6.9.orig/hdparm.c	2007-03-05 14:02:03.000000000 +0100
++++ hdparm-6.9/hdparm.c	2007-03-05 14:02:23.000000000 +0100
+@@ -16,7 +16,9 @@
+ #include <sys/times.h>
+ #include <sys/types.h>
+ #include <sys/mount.h>
++#ifndef __UCLIBC__
+ #include <linux/types.h>
++#endif
+ #include <linux/hdreg.h>
+ #include <linux/major.h>
+ #include <byteswap.h>
+Index: hdparm-6.9/hdparm.h
+===================================================================
+--- hdparm-6.9.orig/hdparm.h	2006-04-28 16:33:01.000000000 +0200
++++ hdparm-6.9/hdparm.h	2007-03-05 14:03:10.000000000 +0100
+@@ -1,6 +1,6 @@
+ /* Some prototypes for extern functions. */
+ 
+-#include <linux/types.h>	/* for __u16 */
++#include <stdint.h>
+ 
+ #if !defined(__GNUC__) && !defined(__attribute__)
+ #define __attribute__(x)	/* if not using GCC, turn off the __attribute__
+@@ -11,7 +11,7 @@
+    others, though, were declared in hdparm.c with global scope; since other
+    functions in that file have static (file) scope, I assume the difference is
+    intentional. */
+-extern void identify (__u16 *id_supplied);
++extern void identify (uint16_t *id_supplied);
+ 
+ extern void usage_error(int out)    __attribute__((noreturn));
+ extern int main(int argc, char **argv) __attribute__((noreturn));

@@ -1,0 +1,39 @@
+
+#
+# Patch managed by http://www.holgerschurig.de/patcher.html
+#
+
+Index: hdparm-6.9/hdparm.c
+===================================================================
+--- hdparm-6.9.orig/hdparm.c	2006-10-25 16:41:33.000000000 +0200
++++ hdparm-6.9/hdparm.c	2007-03-05 14:02:03.000000000 +0100
+@@ -19,8 +19,9 @@
+ #include <linux/types.h>
+ #include <linux/hdreg.h>
+ #include <linux/major.h>
+-#include <asm/byteorder.h>
+-//#include <endian.h>
++#include <byteswap.h>
++
++#define le16_to_cpus(x) bswap_16(htons(x))
+ 
+ #include "hdparm.h"
+ 
+@@ -1328,7 +1329,7 @@
+ 			}
+ 		} else {
+ 			for(i = 0; i < 0x100; ++i) {
+-				__le16_to_cpus(&id[i]);
++				le16_to_cpus(&id[i]);
+ 			}
+ 			identify((void *)id);
+ 		}
+@@ -1608,7 +1609,7 @@
+ 		 && ishex(d[++digit] = getchar())
+ 		 && ishex(d[++digit] = getchar())) {
+ 		 	sbuf[wc] = (fromhex(d[0]) << 12) | (fromhex(d[1]) << 8) | (fromhex(d[2]) << 4) | fromhex(d[3]);
+-			__le16_to_cpus((__u16 *)(&sbuf[wc]));
++		 	le16_to_cpus((__u16 *)(&sbuf[wc]));
+ 			++wc;
+ 		} else if (d[digit] == EOF) {
+ 			goto eof;

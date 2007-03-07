@@ -4,7 +4,7 @@ preconfigured Mail Transport Agent (MTA) such as Exim or PostFix."
 LICENSE = "GPL"
 SECTION = "libs/network"
 DEPENDS = "openssl"
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "http://www.stafford.uklinux.net/libesmtp/libesmtp-${PV}.tar.bz2"
 
@@ -17,3 +17,4 @@ do_stage() {
 }
 
 FILES_libesmtp_append = " ${libdir}/esmtp-plugins"
+FILES_${PN}-dbg += "${libdir}/esmtp-plugins/.debug/"

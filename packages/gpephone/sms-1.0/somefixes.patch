@@ -1,0 +1,57 @@
+Index: src/callbacks.c
+===================================================================
+--- src/callbacks.c	(Revision 487)
++++ src/callbacks.c	(Arbeitskopie)
+@@ -927,11 +927,15 @@
+ 
+   /* While we have constructed the UI manager we can create the menus as well. */
+   pop_menu_left = gtk_ui_manager_get_widget (ui_manager, menu_left);
+-  g_signal_connect (G_OBJECT (pop_menu_left),
+-                    "key-press-event", G_CALLBACK (popup_key_press_handler),
+-                    NULL);
+-  g_signal_connect (G_OBJECT (pop_menu_left), "unmap",
+-                    G_CALLBACK (popup_mapping_handler), NULL);
++  
++	if (pop_menu_left)
++	{
++	  g_signal_connect (G_OBJECT (pop_menu_left),
++                      "key-press-event", G_CALLBACK (popup_key_press_handler),
++                      NULL);
++    g_signal_connect (G_OBJECT (pop_menu_left), "unmap",
++                      G_CALLBACK (popup_mapping_handler), NULL);
++	}
+ 
+   pop_menu_right = gtk_ui_manager_get_widget (ui_manager, menu_right);
+ 
+Index: configure.ac
+===================================================================
+--- configure.ac	(Revision 487)
++++ configure.ac	(Arbeitskopie)
+@@ -48,7 +49,7 @@
+ [  --with-gpe-dir=PATH     specify location of gpephone directory ])
+ 
+ if test "x$with_gpe_dir" = "x" ; then
+-	GPE_DIR='$(prefix)/gpephone'
++	GPE_DIR='$(prefix)'
+ else
+ 	GPE_DIR=$with_gpe_dir
+ fi
+Index: Makefile.am
+===================================================================
+--- Makefile.am	(Revision 487)
++++ Makefile.am	(Arbeitskopie)
+@@ -8,13 +8,7 @@
+ pixmapsdir        = $(GPE_DIR)/share/pixmaps
+ pixmaps_DATA      = sms.png
+ 
+-EXTRA_DIR = sms.desktop.in \
+-            intltool-extract.in \
+-            intltool-merge.in \
+-            intltool-update.in
+-
+-
+-EXTRA_DIST = $(desktop_DATA) \
++EXTRA_DIST = $(desktop_in_files) \
+              $(pixmaps_DATA) \
+              intltool-extract.in \
+              intltool-merge.in \
