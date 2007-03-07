@@ -139,4 +139,4 @@ BBINCLUDELOGS = "yes"
 #CVS_TARBALL_STASH = ""
 
 # EDIT THIS FILE and then remove the line below before using!
-REMOVE_THIS_LINE:="${@oe.fatal('Read the comments in your conf/local.conf')}"
+REMOVE_THIS_LINE:="${@bb.fatal('Read the comments in your conf/local.conf')}"

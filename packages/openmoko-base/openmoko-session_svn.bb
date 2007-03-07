@@ -2,7 +2,7 @@ DESCRIPTION = "Matchbox session files for OpenMoko"
 SECTION = "openmoko/base"
 RDEPENDS = "matchbox gconf matchbox-applet-startup-monitor gtk-theme-clearlooks"
 PV = "0.0+svn${SRCDATE}"
-PR = "r5"
+PR = "r6"
 
 inherit openmoko-base
 
