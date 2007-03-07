@@ -188,7 +188,7 @@ OPENTURBOSTATION_EXTRA_PACKAGES ?= ""
 # other control files.
 # openprotium-native \
 DEPENDS = "\
-	openprotium-image \
+	openturbostation-image \
 	${OPENTURBOSTATION_PACKAGES} \
 	${OPENTURBOSTATION_EXTRA_PACKAGES} \
 	package-index \
