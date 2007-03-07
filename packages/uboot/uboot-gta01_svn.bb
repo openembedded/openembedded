@@ -1,5 +1,5 @@
 DESCRIPTION = "U-boot bootloader w/ Neo1973 (GTA01) support"
-AUTHOR = "Harald Welte <laforge@openmoko.org>
+AUTHOR = "Harald Welte <laforge@openmoko.org>"
 LICENSE = "GPL"
 SECTION = "bootloader"
 PRIORITY = "optional"
