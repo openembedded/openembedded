@@ -3,7 +3,7 @@ SECTION = "kernel"
 AUTHOR = "Harald Welte <laforge@openmoko.org>"
 HOMEPAGE = "N/A"
 LICENSE = "GPL"
-DEPENDS += "uboot-gta01"
+DEPENDS += "u-boot-mkimage-gta01-native"
 MOKOR = "moko8"
 PR = "${MOKOR}-r1"
 
