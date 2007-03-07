@@ -1,0 +1,66 @@
+This patch adds the configuration needed for the LCD display on the n30.
+
+Index: linux-2.6.14/arch/arm/mach-s3c2410/mach-n30.c
+===================================================================
+--- linux-2.6.14.orig/arch/arm/mach-s3c2410/mach-n30.c
++++ linux-2.6.14/arch/arm/mach-s3c2410/mach-n30.c
+@@ -44,7 +44,9 @@
+ 
+ #include <asm/arch/regs-serial.h>
+ #include <asm/arch/regs-gpio.h>
++#include <asm/arch/regs-lcd.h>
+ #include <asm/arch/iic.h>
++#include <asm/arch/fb.h>
+ 
+ #include <linux/serial_core.h>
+ 
+@@ -85,6 +87,40 @@ static struct s3c2410_uartcfg n30_uartcf
+ 	},
+ };
+ 
++static struct s3c2410fb_mach_info n30_lcdcfg __initdata = {
++	.fixed_syncs=		1,
++	.regs={
++		.lcdcon1=	S3C2410_LCDCON1_TFT16BPP |
++				S3C2410_LCDCON1_TFT |
++				S3C2410_LCDCON1_CLKVAL(0x0A),
++
++		.lcdcon2=	S3C2410_LCDCON2_VBPD(1) |
++				S3C2410_LCDCON2_LINEVAL(319) |
++				S3C2410_LCDCON2_VFPD(2) |
++				S3C2410_LCDCON2_VSPW(1),
++
++		.lcdcon3=	S3C2410_LCDCON3_HBPD(39) |
++				S3C2410_LCDCON3_HOZVAL(239) |
++				S3C2410_LCDCON3_HFPD(2),
++
++		.lcdcon4=	S3C2410_LCDCON4_MVAL(13) |
++				S3C2410_LCDCON4_HSPW(39),
++
++		.lcdcon5=	S3C2410_LCDCON5_FRM565 |
++				S3C2410_LCDCON5_INVVLINE |
++				S3C2410_LCDCON5_INVVFRAME |
++				S3C2410_LCDCON5_PWREN |
++				S3C2410_LCDCON5_HWSWP,
++	},
++	.lpcsel=	0x06,
++
++	.width=		240,
++	.height=	320,
++	.xres=		{240,240,240},
++	.yres=		{320,320,320},
++	.bpp=		{16,16,16},
++};
++
+ static struct platform_device *n30_devices[] __initdata = {
+ 	&s3c_device_usb,
+ 	&s3c_device_lcd,
+@@ -123,6 +159,8 @@ static void __init n30_init_irq(void)
+ 
+ static void __init n30_init(void)
+ {
++	s3c24xx_fb_set_platdata(&n30_lcdcfg);
++
+ 	s3c_device_i2c.dev.platform_data = &n30_i2ccfg;
+ 
+ 	/* Turn off suspend on both USB ports, and switch the

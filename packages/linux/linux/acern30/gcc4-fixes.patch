@@ -1,0 +1,97 @@
+--- linux-2.6.14/arch/arm/mm/alignment.c.org	2007-03-06 22:50:23.000000000 +0000
++++ linux-2.6.14/arch/arm/mm/alignment.c	2007-03-06 22:49:21.000000000 +0000
+@@ -110,7 +110,7 @@
+ 	return len;
+ }
+ 
+-static int proc_alignment_write(struct file *file, const char __user *buffer,
++static int proc_alignment_write(struct file *file, /*const*/ char __user *buffer,
+ 				unsigned long count, void *data)
+ {
+ 	char mode;
+--- linux-2.6.14/lib/bitmap.c.org	2005-10-28 00:02:08.000000000 +0000
++++ linux-2.6.14/lib/bitmap.c	2007-03-07 00:49:39.000000000 +0000
+@@ -345,11 +345,12 @@
+  * characters and for grouping errors such as "1,,5", ",44", "," and "".
+  * Leading and trailing whitespace accepted, but not embedded whitespace.
+  */
+-int bitmap_parse(const char __user *ubuf, unsigned int ubuflen,
++int bitmap_parse(const char __user *_ubuf, unsigned int ubuflen,
+         unsigned long *maskp, int nmaskbits)
+ {
+ 	int c, old_c, totaldigits, ndigits, nchunks, nbits;
+ 	u32 chunk;
++	char __user *ubuf = _ubuf;
+ 
+ 	bitmap_zero(maskp, nmaskbits);
+ 
+--- linux-2.6.14/arch/arm/nwfpe/fpa11_cpdt.c.org	2005-10-28 00:02:08.000000000 +0000
++++ linux-2.6.14/arch/arm/nwfpe/fpa11_cpdt.c	2007-03-06 22:52:09.000000000 +0000
+@@ -29,14 +29,14 @@
+ 
+ #include <asm/uaccess.h>
+ 
+-static inline void loadSingle(const unsigned int Fn, const unsigned int __user *pMem)
++static inline void loadSingle(const unsigned int Fn, /*const*/ unsigned int __user *pMem)
+ {
+ 	FPA11 *fpa11 = GET_FPA11();
+ 	fpa11->fType[Fn] = typeSingle;
+ 	get_user(fpa11->fpreg[Fn].fSingle, pMem);
+ }
+ 
+-static inline void loadDouble(const unsigned int Fn, const unsigned int __user *pMem)
++static inline void loadDouble(const unsigned int Fn, /*const*/ unsigned int __user *pMem)
+ {
+ 	FPA11 *fpa11 = GET_FPA11();
+ 	unsigned int *p;
+@@ -52,7 +52,7 @@
+ }
+ 
+ #ifdef CONFIG_FPE_NWFPE_XP
+-static inline void loadExtended(const unsigned int Fn, const unsigned int __user *pMem)
++static inline void loadExtended(const unsigned int Fn, /*const*/ unsigned int __user *pMem)
+ {
+ 	FPA11 *fpa11 = GET_FPA11();
+ 	unsigned int *p;
+@@ -64,7 +64,7 @@
+ }
+ #endif
+ 
+-static inline void loadMultiple(const unsigned int Fn, const unsigned int __user *pMem)
++static inline void loadMultiple(const unsigned int Fn, /*const*/ unsigned int __user *pMem)
+ {
+ 	FPA11 *fpa11 = GET_FPA11();
+ 	register unsigned int *p;
+--- linux-2.6.14/fs/proc/proc_misc.c.org	2005-10-28 00:02:08.000000000 +0000
++++ linux-2.6.14/fs/proc/proc_misc.c	2007-03-06 23:17:01.000000000 +0000
+@@ -535,7 +535,7 @@
+ /*
+  * writing 'C' to /proc/sysrq-trigger is like sysrq-C
+  */
+-static ssize_t write_sysrq_trigger(struct file *file, const char __user *buf,
++static ssize_t write_sysrq_trigger(struct file *file, /*const*/ char __user *buf,
+ 				   size_t count, loff_t *ppos)
+ {
+ 	if (count) {
+--- linux-2.6.14/drivers/char/vc_screen.c.org	2007-03-06 22:43:07.000000000 +0000
++++ linux-2.6.14/drivers/char/vc_screen.c	2007-03-07 00:02:25.000000000 +0000
+@@ -419,7 +419,7 @@
+ 			while (this_round > 1) {
+ 				unsigned short w;
+ 
+-				w = get_unaligned(((const unsigned short *)con_buf0));
++				w = get_unaligned(((/*const*/ unsigned short *)con_buf0));
+ 				vcs_scr_writew(vc, w, org++);
+ 				con_buf0 += 2;
+ 				this_round -= 2;
+--- linux-2.6.14/drivers/input/mousedev.c.org	2007-03-07 01:28:18.000000000 +0000
++++ linux-2.6.14/drivers/input/mousedev.c	2007-03-07 01:37:01.000000000 +0000
+@@ -495,7 +495,7 @@
+ }
+ 
+ 
+-static ssize_t mousedev_write(struct file * file, const char __user * buffer, size_t count, loff_t *ppos)
++static ssize_t mousedev_write(struct file * file, /*const*/ char __user * buffer, size_t count, loff_t *ppos)
+ {
+ 	struct mousedev_list *list = file->private_data;
+ 	unsigned char c;

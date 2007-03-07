@@ -1,0 +1,252 @@
+This patch adds a lot of sysfs entries for the different GPIO lines.
+It allows me to poke at different parts of the hardware to see what
+happens.  This allowed me to discover the Bluetooth cutoff switch for
+example.
+
+Index: linux-2.6.14/arch/arm/mach-s3c2410/Makefile
+===================================================================
+--- linux-2.6.14.orig/arch/arm/mach-s3c2410/Makefile
++++ linux-2.6.14/arch/arm/mach-s3c2410/Makefile
+@@ -42,3 +42,5 @@ obj-$(CONFIG_MACH_VR1000)	+= mach-vr1000
+ obj-$(CONFIG_MACH_RX3715)	+= mach-rx3715.o
+ obj-$(CONFIG_MACH_OTOM)		+= mach-otom.o
+ obj-$(CONFIG_MACH_NEXCODER_2440) += mach-nexcoder.o
++
++obj-y += gpio-sysfs.o
+Index: linux-2.6.14/arch/arm/mach-s3c2410/gpio-sysfs.c
+===================================================================
+--- /dev/null
++++ linux-2.6.14/arch/arm/mach-s3c2410/gpio-sysfs.c
+@@ -0,0 +1,232 @@
++#include <linux/version.h>
++#include <linux/module.h>
++#include <linux/init.h>
++#include <linux/device.h>
++#include <linux/backlight.h>
++#include <linux/notifier.h>
++#include <linux/ctype.h>
++#include <linux/err.h>
++#include <linux/fb.h>
++#include <asm/bug.h>
++
++#include <asm/arch/regs-gpio.h>
++
++#include <asm/arch/regs-clock.h>
++
++static ssize_t s3c2410_gpio_name_show(struct device *dev, 
++				      struct device_attribute *attr, char *buf)
++{
++	struct platform_device *pdev = to_platform_device(dev);
++
++	return snprintf(buf, PAGE_SIZE, "%d\n", pdev->id);
++}
++
++static ssize_t s3c2410_gpio_val_show(struct device *dev, 
++				     struct device_attribute *attr, char *buf)
++{
++	struct platform_device *pdev = to_platform_device(dev);
++
++	return snprintf(buf, PAGE_SIZE, "%d\n", 
++			s3c2410_gpio_getpin(pdev->id) ? 1 : 0);
++}
++
++static ssize_t s3c2410_gpio_val_store(struct device *dev, 
++				      struct device_attribute *attr,
++				      const char *buf, size_t count)
++{
++	struct platform_device *pdev = to_platform_device(dev);
++	int val;
++	char *endp;
++
++	val = simple_strtoul(buf, &endp, 0);
++	if (*endp && !isspace(*endp))
++		return -EINVAL;
++
++	s3c2410_gpio_setpin(pdev->id, val ? 1 : 0);
++
++	return count;
++}
++
++static DEVICE_ATTR(name, 0444,
++		   s3c2410_gpio_name_show,
++		   NULL);
++
++static DEVICE_ATTR(val, 0666,
++		   s3c2410_gpio_val_show,
++		   s3c2410_gpio_val_store);
++
++
++static int __init s3c2410_gpio_probe(struct device *dev)
++{
++	device_create_file(dev, &dev_attr_name);
++	device_create_file(dev, &dev_attr_val);
++	return 0;
++}
++
++static int s3c2410_gpio_remove(struct device *dev)
++{
++	return 0;
++}
++
++static struct device_driver s3c2410_gpio_driver = {
++	.name		= "s3c2410-gpio",
++	.bus		= &platform_bus_type,
++	.probe		= s3c2410_gpio_probe,
++	.remove		= s3c2410_gpio_remove,
++};
++
++static struct platform_device s3c_device_gpio[32 * 8];
++
++static ssize_t s3c2410_clkslow_show(struct device *dev, 
++				     struct device_attribute *attr, char *buf)
++{
++	unsigned long clkslow = __raw_readl(S3C2410_CLKSLOW);
++	
++	return snprintf(buf, PAGE_SIZE, "0x%08lx\n", clkslow);
++}
++
++static ssize_t s3c2410_clkslow_store(struct device *dev, 
++					struct device_attribute *attr,
++					const char *buf, size_t count)
++{
++	unsigned long val;
++	char *endp;
++
++	val = simple_strtoul(buf, &endp, 0);
++	if (*endp && !isspace(*endp))
++		return -EINVAL;
++
++	printk("CLKSLOW <= 0x%lx\n", val);
++
++	__raw_writel(val, S3C2410_CLKSLOW);
++
++	return count;
++}
++
++static DEVICE_ATTR(clkslow, 0666,
++		   s3c2410_clkslow_show,
++		   s3c2410_clkslow_store);
++
++static ssize_t s3c2410_clkcon_show(struct device *dev, 
++				     struct device_attribute *attr, char *buf)
++{
++	unsigned long clkclkcon = __raw_readl(S3C2410_CLKCON);
++	
++	return snprintf(buf, PAGE_SIZE, "0x%08lx\n", clkclkcon);
++}
++
++static ssize_t s3c2410_clkcon_store(struct device *dev, 
++					struct device_attribute *attr,
++					const char *buf, size_t count)
++{
++	unsigned long val;
++	char *endp;
++
++	val = simple_strtoul(buf, &endp, 0);
++	if (*endp && !isspace(*endp))
++		return -EINVAL;
++
++	printk("CLKCON <= 0x%lx\n", val);
++
++	__raw_writel(val, S3C2410_CLKCON);
++
++	return count;
++}
++
++static DEVICE_ATTR(clkcon, 0666,
++		   s3c2410_clkcon_show,
++		   s3c2410_clkcon_store);
++
++static ssize_t s3c2410_misccr_show(struct device *dev, 
++				   struct device_attribute *attr, char *buf)
++{
++	unsigned long misccr = __raw_readl(S3C2410_MISCCR);
++	
++	return snprintf(buf, PAGE_SIZE, "0x%08lx\n", misccr);
++}
++
++static ssize_t s3c2410_misccr_store(struct device *dev, 
++				    struct device_attribute *attr,
++				    const char *buf, size_t count)
++{
++	unsigned long val;
++	char *endp;
++
++	val = simple_strtoul(buf, &endp, 0);
++	if (*endp && !isspace(*endp))
++		return -EINVAL;
++
++	printk("MISCCR <= 0x%lx\n", val);
++
++	__raw_writel(val, S3C2410_MISCCR);
++
++	return count;
++}
++
++static DEVICE_ATTR(misccr, 0666,
++		   s3c2410_misccr_show,
++		   s3c2410_misccr_store);
++
++static int __init s3c2410_regs_probe(struct device *dev)
++{
++	device_create_file(dev, &dev_attr_clkslow);
++	device_create_file(dev, &dev_attr_clkcon);
++	device_create_file(dev, &dev_attr_misccr);
++	return 0;
++}
++
++static int s3c2410_regs_remove(struct device *dev)
++{
++	return 0;
++}
++
++
++static struct device_driver s3c2410_regs_driver = {
++	.name		= "s3c2410-regs",
++	.bus		= &platform_bus_type,
++	.probe		= s3c2410_regs_probe,
++	.remove		= s3c2410_regs_remove,
++};
++
++static struct platform_device s3c_device_regs = {
++	.name = "s3c2410-regs",
++	.id = -1,
++};
++
++static int __init s3c2410_gpio_init(void)
++{
++	int i;
++
++	for (i = 0; i < ARRAY_SIZE(s3c_device_gpio); i++) {
++		s3c_device_gpio[i].name = "s3c2410-gpio";
++		s3c_device_gpio[i].id = i;
++		platform_device_register(&s3c_device_gpio[i]);
++	}
++
++	driver_register(&s3c2410_gpio_driver);
++	driver_register(&s3c2410_regs_driver);
++
++	platform_device_register(&s3c_device_regs);
++
++	return 0;
++}
++
++static void __exit s3c2410_gpio_cleanup(void)
++{
++	driver_unregister(&s3c2410_regs_driver);
++	driver_unregister(&s3c2410_gpio_driver);
++}
++
++module_init(s3c2410_gpio_init);
++module_exit(s3c2410_gpio_cleanup);
++
++MODULE_LICENSE("GPL");
++MODULE_AUTHOR("Christer Weinigel <christer@weinigel.se>");
++MODULE_DESCRIPTION("S3C2410 GPIO Driver");
++ 
++/*
++  Local variables:
++  compile-command: "make -k -C ../../../.. linux "
++  c-basic-offset: 8
++  End:
++*/

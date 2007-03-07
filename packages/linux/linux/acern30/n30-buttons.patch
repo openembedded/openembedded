@@ -1,0 +1,100 @@
+Add support for the buttons on the n30.
+
+Index: linux-2.6.14/arch/arm/mach-s3c2410/mach-n30.c
+===================================================================
+--- linux-2.6.14.orig/arch/arm/mach-s3c2410/mach-n30.c
++++ linux-2.6.14/arch/arm/mach-s3c2410/mach-n30.c
+@@ -46,10 +46,12 @@
+ #include <asm/arch/regs-gpio.h>
+ #include <asm/arch/regs-lcd.h>
+ #include <asm/arch/regs-timer.h>
++#include <asm/arch/irqs.h>
+ #include <asm/arch/iic.h>
+ #include <asm/arch/fb.h>
+ #include <asm/arch/lcd.h>
+ #include <asm/arch/ts.h>
++#include <asm/arch/buttons.h>
+ 
+ #include <linux/serial_core.h>
+ 
+@@ -194,11 +196,68 @@ static struct s3c2410_ts_mach_info n30_t
+ 	.oversampling_shift = 6,
+ };
+ 
++static struct s3c2410_button n30_buttons[] = {
++	{ IRQ_EINT0,	S3C2410_GPF0,	S3C2410_GPF0_EINT0,	KEY_POWER,
++	  "Power", 0 },
++
++	{ IRQ_EINT17,	S3C2410_GPG9,	S3C2410_GPG9_EINT17,	KEY_UP,
++	  "Up_arrow", 0 },
++	{ IRQ_EINT16,	S3C2410_GPG8,	S3C2410_GPG8_EINT16,	KEY_DOWN,
++	  "Down_arrow", 0 },
++	{ IRQ_EINT15,	S3C2410_GPG7,   S3C2410_GPG7_EINT15,    KEY_ENTER,
++	  "Select", 0 },
++
++	{ IRQ_EINT7,	S3C2410_GPF7,	S3C2410_GPF7_EINT7,	KEY_HOMEPAGE,
++	  "Home", 0 },
++	{ IRQ_EINT6,	S3C2410_GPF6,	S3C2410_GPF6_EINT6,	KEY_CALENDAR,
++	  "Calendar", 0 },
++	{ IRQ_EINT5,	S3C2410_GPF5,	S3C2410_GPF5_EINT5,	KEY_COFFEE,
++	  "Contacts", 0 },	/* TODO: find a better key :P */
++	{ IRQ_EINT4,	S3C2410_GPF4,	S3C2410_GPF4_EINT4,	KEY_MAIL,
++	  "Mail", 0 },
++};
++
++static struct s3c2410_butt_mach_info n30_buttons_cfg __initdata = {
++	.buttons  = n30_buttons,
++	.size = ARRAY_SIZE(n30_buttons),
++};
++
++static struct s3c2410_button n35_buttons[] = {
++	{ IRQ_EINT0,	S3C2410_GPF0,	S3C2410_GPF0_EINT0,	KEY_POWER,
++	  "Power", 0 },
++
++	{ IRQ_EINT13,	S3C2410_GPG5,	S3C2410_GPG5_EINT13,	KEY_LEFT,
++ 	  "Left_arrow", 0 },
++	{ IRQ_EINT14,	S3C2410_GPG6,	S3C2410_GPG6_EINT14,	KEY_RIGHT,
++	  "Right_arrow", 0 },
++	{ IRQ_EINT17,	S3C2410_GPG9,	S3C2410_GPG9_EINT17,	KEY_UP,
++	  "Up_arrow", 0 },
++	{ IRQ_EINT16,	S3C2410_GPG8,	S3C2410_GPG8_EINT16,	KEY_DOWN,
++	  "Down_arrow", 0 },
++	{ IRQ_EINT15,	S3C2410_GPG7,   S3C2410_GPG7_EINT15,    KEY_ENTER,
++	  "Select", 0 },
++
++	{ IRQ_EINT7,	S3C2410_GPF7,	S3C2410_GPF7_EINT7,	KEY_HOMEPAGE,
++	  "Home", 0 },
++	{ IRQ_EINT6,	S3C2410_GPF6,	S3C2410_GPF6_EINT6,	KEY_CALENDAR,
++	  "Calendar", 0 },
++	{ IRQ_EINT5,	S3C2410_GPF5,	S3C2410_GPF5_EINT5,	KEY_COFFEE,
++	  "Contacts", 0 },	/* TODO: find a better key :P */
++	{ IRQ_EINT4,	S3C2410_GPF4,	S3C2410_GPF4_EINT4,	KEY_MAIL,
++	  "Mail", 0 },
++};
++
++static struct s3c2410_butt_mach_info n35_buttons_cfg __initdata = {
++	.buttons  = n35_buttons,
++	.size = ARRAY_SIZE(n35_buttons),
++};
++
+ static struct platform_device *n30_devices[] __initdata = {
+ 	&s3c_device_usb,
+ 	&s3c_device_lcd,
+ 	&s3c_device_bl,
+ 	&s3c_device_ts,
++	&s3c_device_buttons,
+ 	&s3c_device_wdt,
+ 	&s3c_device_i2c,
+ 	&s3c_device_iis,
+@@ -238,6 +297,11 @@ static void __init n30_init(void)
+ 	set_s3c2410bl_info(&n30_blcfg);
+ 	set_s3c2410ts_info(&n30_ts_cfg);
+ 
++	if (machine_is_n30())
++		s3c24xx_butt_set_platdata(&n30_buttons_cfg);
++	if (machine_is_n35())
++		s3c24xx_butt_set_platdata(&n35_buttons_cfg);
++
+ 	s3c_device_i2c.dev.platform_data = &n30_i2ccfg;
+ 
+ 	/* Turn off suspend on both USB ports, and switch the

@@ -1,0 +1,30 @@
+Clean up some junk from the official kernel.
+
+The s3c2410.h include isn't needed.
+
+The compile-command is something that's only useful for me personally
+and doesn't belong in the mainstream kernel.
+
+Index: linux-2.6.14/arch/arm/mach-s3c2410/mach-n30.c
+===================================================================
+--- linux-2.6.14.orig/arch/arm/mach-s3c2410/mach-n30.c
++++ linux-2.6.14/arch/arm/mach-s3c2410/mach-n30.c
+@@ -39,7 +39,6 @@
+ 
+ #include <linux/serial_core.h>
+ 
+-#include "s3c2410.h"
+ #include "clock.h"
+ #include "devs.h"
+ #include "cpu.h"
+@@ -137,10 +136,3 @@ MACHINE_START(N30, "Acer-N30")
+ 	.init_irq	= n30_init_irq,
+ 	.map_io		= n30_map_io,
+ MACHINE_END
+-
+-/*
+-    Local variables:
+-        compile-command: "make ARCH=arm CROSS_COMPILE=/usr/local/arm/3.3.2/bin/arm-linux- -k -C ../../.."
+-        c-basic-offset: 8
+-    End:
+-*/

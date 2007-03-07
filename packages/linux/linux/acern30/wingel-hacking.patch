@@ -1,0 +1,1146 @@
+This patch contains some hacks that I'm playing around with right now.  
+
+This isn't anything that should be merged into the official kernel.
+
+Index: linux-2.6.14/arch/arm/mach-s3c2410/mach-n30.c
+===================================================================
+--- linux-2.6.14.orig/arch/arm/mach-s3c2410/mach-n30.c
++++ linux-2.6.14/arch/arm/mach-s3c2410/mach-n30.c
+@@ -22,6 +22,12 @@
+  * published by the Free Software Foundation.
+ */
+ 
++// #define USBHACK 1
++#define SPIHACK 1
++
++void s3c2410_capture_regs(void);
++void s3c2410_dump_regs(void);
++
+ #include <linux/kernel.h>
+ #include <linux/types.h>
+ #include <linux/interrupt.h>
+@@ -272,14 +278,18 @@ static struct s3c2410_button n35_buttons
+ 
+ 	{ IRQ_EINT13,	S3C2410_GPG5,	S3C2410_GPG5_EINT13,	KEY_LEFT,
+  	  "Left_arrow", 0 },
++#ifndef SPIHACK
+ 	{ IRQ_EINT14,	S3C2410_GPG6,	S3C2410_GPG6_EINT14,	KEY_RIGHT,
+ 	  "Right_arrow", 0 },
++#endif
+ 	{ IRQ_EINT17,	S3C2410_GPG9,	S3C2410_GPG9_EINT17,	KEY_UP,
+ 	  "Up_arrow", 0 },
+ 	{ IRQ_EINT16,	S3C2410_GPG8,	S3C2410_GPG8_EINT16,	KEY_DOWN,
+ 	  "Down_arrow", 0 },
++#ifndef SPIHACK
+ 	{ IRQ_EINT15,	S3C2410_GPG7,   S3C2410_GPG7_EINT15,    KEY_ENTER,
+ 	  "Select", 0 },
++#endif
+ 
+ 	{ IRQ_EINT7,	S3C2410_GPF7,	S3C2410_GPF7_EINT7,	KEY_HOMEPAGE,
+ 	  "Home", 0 },
+@@ -367,7 +377,6 @@ static struct platform_device *n30_devic
+ 	&s3c_device_usbgadget,
+ 	&s3c_device_sdi,
+ 	&s3c_device_nand,
+-	&s3c_device_spi1,
+ };
+ 
+ static struct s3c2410_platform_i2c n30_i2ccfg = {
+@@ -382,6 +391,27 @@ static struct s3c24xx_board n30_board __
+ 	.devices_count = ARRAY_SIZE(n30_devices)
+ };
+ 
++static struct platform_device *n35_devices[] __initdata = {
++	&s3c_device_lcd,
++	&s3c_device_bl,
++	&s3c_device_ts,
++	&s3c_device_buttons,
++	&s3c_device_wdt,
++	&s3c_device_i2c,
++	&s3c_device_iis,
++	&s3c_device_usbgadget,
++	&s3c_device_sdi,
++	&s3c_device_nand,
++#ifdef SPIHACK
++	&s3c_device_spi1,
++#endif
++};
++
++static struct s3c24xx_board n35_board __initdata = {
++	.devices       = n35_devices,
++	.devices_count = ARRAY_SIZE(n35_devices)
++};
++
+ /* Lots of hardcoded stuff, but it sets up the hardware in a useful
+  * state so that we can boot Linux directly from flash. */
+ static void __init n30_hwinit(void)
+@@ -674,7 +704,10 @@ static void __init n30_map_io(void)
+ 	n30_hwinit();
+ 	s3c24xx_init_clocks(0);
+ 	s3c24xx_init_uarts(n30_uartcfgs, ARRAY_SIZE(n30_uartcfgs));
+-	s3c24xx_set_board(&n30_board);
++	if (machine_is_n30())
++		s3c24xx_set_board(&n30_board);
++	if (machine_is_n35())
++		s3c24xx_set_board(&n35_board);
+ }
+ 
+ static void __init n30_init_irq(void)
+@@ -710,90 +743,6 @@ static int n30_usbstart_thread(void *unu
+ 	return 0;
+ }
+ 
+-static int spi_thread(void *regs)
+-{
+-	unsigned sptdat1 = ~0, sprdat1 = ~0, spsta1 = ~0;
+-	unsigned value;
+-
+-	writel(0x01, regs + S3C2410_SPCON);
+-	writel(0x02, regs + S3C2410_SPPIN);
+-
+-	s3c2410_gpio_cfgpin(S3C2410_GPG6, S3C2410_GPG6_SPIMOSI1);
+-	s3c2410_gpio_cfgpin(S3C2410_GPG7, S3C2410_GPG7_SPICLK1);
+-
+-	s3c2410_gpio_cfgpin(S3C2410_GPG3, 0x3 << 6);
+-
+-	printk("GPGCON=0x%x\n", readl(S3C2410_GPGCON));
+-
+-	msleep(10);
+-
+-	while (1) {
+-		value = readl(regs + S3C2410_SPTDAT);
+-		if (sptdat1 != value) {
+-			printk(KERN_INFO "SPTDAT1=0x%x\n", value);
+-			sptdat1 = value;
+-		}
+-		value = readl(regs + S3C2410_SPRDAT);
+-		if (sprdat1 != value) {
+-			printk(KERN_INFO "SPRDAT1=0x%x\n", value);
+-			sprdat1 = value;
+-		}
+-		value = readl(regs + S3C2410_SPSTA);
+-		if (spsta1 != value) {
+-			printk(KERN_INFO "SPSTA1=0x%x\n", value);
+-			spsta1 = value;
+-		}
+-
+-		msleep(10);
+-	}
+-}
+-
+-static int s3c24xx_spi_probe(struct device *dev)
+-{
+-	struct platform_device *pdev = to_platform_device(dev);
+-	struct resource *res;
+-	int ret;
+-	void *regs;
+-	struct resource		*ioarea;
+-
+-	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+-	if (res == NULL) {
+-		dev_err(dev, "cannot find IO resource\n");
+-		ret = -ENOENT;
+-		goto out;
+-	}
+-
+-	ioarea = request_mem_region(res->start, (res->end-res->start)+1,
+-					 pdev->name);
+-	if (ioarea == NULL) {
+-		dev_err(dev, "cannot request IO\n");
+-		ret = -ENXIO;
+-		goto out;
+-	}
+-
+-	regs = ioremap(res->start, (res->end-res->start)+1);
+-	if (regs == NULL) {
+-		dev_err(dev, "cannot map IO\n");
+-		ret = -ENXIO;
+-		goto out;
+-	}
+-
+-	dev_info(dev, "registers %p (%p, %p)\n", regs, ioarea, res);
+-
+-	kthread_run(spi_thread, regs, "spi_debug");
+-
+-	ret = 0;
+-
+- out:
+-	return ret;
+-}
+-
+-static struct device_driver s3c24xx_spi_driver = {
+-	.name		= "s3c2410-spi",
+-	.bus		= &platform_bus_type,
+-	.probe		= s3c24xx_spi_probe,
+-};
+-
+ #ifdef CONFIG_APM
+ static void n30_get_power_status(struct apm_power_info *info)
+ {
+@@ -825,6 +774,128 @@ static void n30_get_power_status(struct 
+ }
+ #endif
+ 
++#define DEBUG_GPIO 1
++
++#ifdef DEBUG_GPIO
++static int n30_debug_thread(void *unused)
++{
++	int i;
++#define PIN(x) { x, #x }
++	static struct pin {
++		unsigned int pin;
++		const char *name;
++	} pins[] = {
++		PIN(S3C2410_GPA12),
++		PIN(S3C2410_GPB2),
++		PIN(S3C2410_GPB4),
++		PIN(S3C2410_GPB5),
++		PIN(S3C2410_GPB6),
++		PIN(S3C2410_GPB7),
++		PIN(S3C2410_GPC0),
++		PIN(S3C2410_GPC3),
++		PIN(S3C2410_GPC6),
++		PIN(S3C2410_GPC7),
++		PIN(S3C2410_GPC8),
++		PIN(S3C2410_GPD0),
++		PIN(S3C2410_GPD8),
++		PIN(S3C2410_GPD9),
++		PIN(S3C2410_GPD10),
++		PIN(S3C2410_GPE11),
++		PIN(S3C2410_GPE12),
++		PIN(S3C2410_GPE13),
++		PIN(S3C2410_GPF0),
++		PIN(S3C2410_GPF1),
++		PIN(S3C2410_GPF2),
++		PIN(S3C2410_GPF3),
++		PIN(S3C2410_GPG0),
++		PIN(S3C2410_GPG1),
++		PIN(S3C2410_GPG2),
++		PIN(S3C2410_GPG3),
++		PIN(S3C2410_GPG4),
++		PIN(S3C2410_GPH8),
++	};
++#undef PIN
++	enum { PIN_CNT =  (sizeof(pins) / sizeof(struct pin)) };
++	static int values[PIN_CNT];
++	static int changes[PIN_CNT];
++
++	set_current_state(TASK_INTERRUPTIBLE);
++	schedule_timeout(1 * HZ);
++
++//	s3c2410_dump_regs();
++
++	printk("AFTER\n");
++
++	s3c2410_capture_regs();
++
++//	s3c2410_dump_regs();
++
++	for (i = 0; i < PIN_CNT; i++)
++		values[i] = s3c2410_gpio_getpin(pins[i].pin) ? 1 : 0;
++
++	printk("MISCCR=0x%08x\n", readl(S3C2410_MISCCR));
++
++	while (!kthread_should_stop()) {
++		for (i = 0; i < PIN_CNT; i++) {
++			int value = s3c2410_gpio_getpin(pins[i].pin) ? 1 : 0;
++
++			if (values[i] != value && changes[i] < 100) {
++				changes[i]++;
++				values[i] = value;
++				printk(KERN_CRIT "%s: %d (%d)\n", pins[i].name, value, changes[i]);
++			}
++		}
++
++		if (0) {
++			s3c2410_gpio_pullup(S3C2410_GPE15, 1);
++			s3c2410_gpio_cfgpin(S3C2410_GPE15, S3C2410_GPE15_OUTP);
++			s3c2410_gpio_setpin(S3C2410_GPE15, !s3c2410_gpio_getpin(S3C2410_GPE15));
++		}
++
++		if (0)
++			s3c2410_gpio_setpin(S3C2410_GPB3, !s3c2410_gpio_getpin(S3C2410_GPB3));
++
++		if (1) {
++			static int last_f0;
++			int f0 = s3c2410_gpio_getpin(S3C2410_GPF0);
++
++			if (last_f0 != f0) {
++				last_f0 = f0;
++				if (!f0) {
++					int r;
++					printk("entering suspend\n");
++					r = pm_suspend(PM_SUSPEND_MEM);
++					printk("after suspend %d\n", r);
++				}
++			}
++		}
++
++
++		if (0) {
++			static int last_f6;
++			int f6 = s3c2410_gpio_getpin(S3C2410_GPF6);
++
++			if (last_f6 != f6) {
++				last_f6 = f6;
++				if (!f6) {
++					if (s3c2410_gpio_getcfg(S3C2410_GPB6) != S3C2410_GPB6_OUTP) {
++						printk("B6 configured as output");
++						s3c2410_gpio_cfgpin(S3C2410_GPB6, S3C2410_GPB6_OUTP);
++					} else {
++						printk("B6 configured as input");
++						s3c2410_gpio_cfgpin(S3C2410_GPB6, S3C2410_GPB6_INP);
++					}
++				}
++			}
++		}
++
++		msleep(10);
++	}
++
++	return 0;
++}
++#endif
++
+ static void __init n30_init(void)
+ {
+ 	s3c24xx_fb_set_platdata(&n30_lcdcfg);
+@@ -846,9 +917,6 @@ static void __init n30_init(void)
+ 	memcpy_toio(N30_RESUME_VA, (void *)n30_resume,
+ 		    &n30_resume_end - (void *)n30_resume);
+ 
+-	if (driver_register(&s3c24xx_spi_driver) < 0)
+-		printk(KERN_ERR "failed to register spi driver\n");
+-
+ 	/* Clear any locks and write protects on the flash. */
+ 	s3c2410_gpio_setpin(S3C2410_GPC5, 1);
+ 	msleep(1);
+@@ -861,6 +929,8 @@ static void __init n30_init(void)
+ #ifdef CONFIG_APM
+ 	apm_get_power_status = n30_get_power_status;
+ #endif
++
++	kthread_run(n30_debug_thread, NULL, "n30_debug");
+ }
+ 
+ MACHINE_START(N30, "Acer-N30")
+Index: linux-2.6.14/arch/arm/mach-s3c2410/Makefile
+===================================================================
+--- linux-2.6.14.orig/arch/arm/mach-s3c2410/Makefile
++++ linux-2.6.14/arch/arm/mach-s3c2410/Makefile
+@@ -46,3 +46,5 @@ obj-$(CONFIG_MACH_NEXCODER_2440) += mach
+ obj-y += gpio-sysfs.o
+ obj-y += regdump.o
+ 
++obj-m += spi-int.o
++obj-m += spi-dma.o
+Index: linux-2.6.14/arch/arm/mach-s3c2410/spi-int.c
+===================================================================
+--- /dev/null
++++ linux-2.6.14/arch/arm/mach-s3c2410/spi-int.c
+@@ -0,0 +1,261 @@
++#include <linux/kernel.h>
++#include <linux/module.h>
++#include <linux/types.h>
++#include <linux/interrupt.h>
++#include <linux/init.h>
++#include <linux/device.h>
++#include <linux/kthread.h>
++#include <linux/delay.h>
++
++#include <asm/io.h>
++#include <asm/irq.h>
++
++#include <asm/hardware/clock.h>
++
++#include <asm/arch/regs-gpio.h>
++#include <asm/arch/regs-spi.h>
++#include <asm/arch/regs-irq.h>
++
++struct spi_info {
++	void *regs;
++	struct device *dev;
++	struct clk *clk;
++	struct resource *ioarea;
++	struct resource *irq;
++	struct task_struct *debug_thread;
++};
++
++static int spi_debug_thread(void *data)
++{
++	struct spi_info *info = data;
++	unsigned sptdat1 = ~0, sprdat1 = ~0, spsta1 = ~0;
++	unsigned value;
++
++	while (!kthread_should_stop()) {
++		if (1) {
++			value = readl(info->regs + S3C2410_SPTDAT);
++			if (sptdat1 != value) {
++				printk(KERN_INFO "SPTDAT1=0x%x\n", value);
++				sptdat1 = value;
++			}
++			value = readl(info->regs + S3C2410_SPRDAT);
++			if (sprdat1 != value) {
++				printk(KERN_INFO "SPRDAT1=0x%x\n", value);
++				sprdat1 = value;
++			}
++			value = readl(info->regs + S3C2410_SPSTA);
++			if (spsta1 != value) {
++				printk("SRCPND=0x%08x\n", readl(S3C2410_SRCPND));
++				printk("INTMOD=0x%08x\n", readl(S3C2410_INTMOD));
++				printk("INTMSK=0x%08x\n", readl(S3C2410_INTMSK));
++				printk("INTPND=0x%08x\n", readl(S3C2410_INTPND));
++
++				printk(KERN_INFO "SPSTA1=0x%x\n", value);
++				spsta1 = value;
++			}
++		}
++		if (1) {
++			if (readl(info->regs + S3C2410_SPSTA) & S3C2410_SPSTA_READY) {
++				value = readl(info->regs + S3C2410_SPRDAT);
++				printk("DAT=0x%02x\n", value);
++				writel(1, info->regs + S3C2410_SPTDAT);
++			}
++		}
++
++		msleep(1);
++	}
++
++	return 0;
++}
++
++static irqreturn_t spi_int_irq(int irq, void *dev_id, struct pt_regs *regs)
++{
++	struct spi_info *info = dev_id;
++	unsigned long status;
++
++	status = readl(info->regs + S3C2410_SPSTA);
++
++	if (status & S3C2410_SPSTA_READY) {
++		printk("INT %02x\n", readb(info->regs + S3C2410_SPRDAT));
++		writeb(0xff, info->regs + S3C2410_SPTDAT);
++	}
++
++ 	return IRQ_HANDLED;
++}
++
++static void spi_int_free(struct spi_info *info)
++{
++	if (!info)
++		return;
++
++	if (info->debug_thread)
++		kthread_stop(info->debug_thread);
++	if (info->irq)
++		free_irq(info->irq->start, info);
++	if (info->regs)
++		iounmap(info->regs);
++	if (info->ioarea) {
++		release_resource(info->ioarea);
++		kfree(info->ioarea);
++	}
++	if (info->clk) {
++		clk_unuse(info->clk);
++		clk_disable(info->clk);
++	}
++	kfree(info);
++}
++
++static int spi_int_probe(struct device *dev)
++{
++	struct platform_device *pdev = to_platform_device(dev);
++	int ret;
++	struct spi_info *info;
++	struct resource *res;
++
++	printk("spi_int_probe\n");
++
++	info = kmalloc(sizeof(struct spi_info), GFP_KERNEL);
++	if (!info) {
++		dev_err(dev, "failed to allocate info structure\n");
++		ret = -ENOMEM;
++		goto out;
++	}
++	memset(info, 0, sizeof(*info));
++	info->dev = dev;
++
++	dev_info(dev, "got info %p\n", info);
++
++	info->clk = clk_get(dev, "spi");
++	if (IS_ERR(info->clk)) {
++		dev_err(dev, "clk_get failed\n");
++		ret = -ENOENT;
++		goto out;
++	}
++
++	dev_dbg(dev, "clk %p\n", info->clk);
++
++	clk_use(info->clk);
++	clk_enable(info->clk);
++
++	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
++	if (!res) {
++		dev_err(dev, "unable to find registers\n");
++		ret = -ENOENT;
++		goto out;
++	}
++
++	dev_info(dev, "got res %p\n", res);
++
++	info->ioarea = request_mem_region(res->start,
++					  (res->end-res->start)+1,
++					  pdev->name);
++	if (!info->ioarea) {
++		dev_err(dev, "request_mem_region failed\n");
++		ret = -ENXIO;
++		goto out;
++	}
++
++	dev_info(dev, "got ioarea %p\n", info->ioarea);
++
++	info->regs = ioremap(res->start, (res->end-res->start)+1);
++	if (!info->regs) {
++		dev_err(dev, "ioremap failed\n");
++		ret = -ENXIO;
++		goto out;
++	}
++
++	dev_info(dev, "got regs %p\n", info->regs);
++
++	res = platform_get_resource(pdev, IORESOURCE_IRQ, 0);
++	if (!res) {
++		dev_err(dev, "unable to find irq\n");
++		ret = -ENOENT;
++		goto out;
++	}
++
++	writel(S3C2410_SPCON_SMOD_INT /* | S3C2410_SPCON_TAGD */,
++	       info->regs + S3C2410_SPCON);
++	writel(S3C2410_SPPIN_RESERVED, info->regs + S3C2410_SPPIN);
++
++	s3c2410_gpio_cfgpin(S3C2410_GPG5, S3C2410_GPG5_SPIMISO1);
++	s3c2410_gpio_cfgpin(S3C2410_GPG6, S3C2410_GPG6_SPIMOSI1);
++	s3c2410_gpio_cfgpin(S3C2410_GPG7, S3C2410_GPG7_SPICLK1);
++
++	s3c2410_gpio_cfgpin(S3C2410_GPG3, 0x3 << 6);
++
++	ret = request_irq(res->start, spi_int_irq, 0, pdev->name, info);
++	if (ret) {
++		dev_err(dev, "request_irq failed\n");
++		goto out;
++	}
++	info->irq = res;
++
++	dev_info(dev, "got irq %ld\n", info->irq->start);
++
++	dev_info(dev, "SPI driver active\n");
++
++	dev_set_drvdata(dev, info);
++	ret = 0;
++
++	writeb(0x00, info->regs + S3C2410_SPTDAT);
++
++	if (0) {
++		info->debug_thread = kthread_run(spi_debug_thread, info,
++						 "spi_debug_thread");
++	}
++
++	printk("SRCPND=0x%08x\n", readl(S3C2410_SRCPND));
++	printk("INTMOD=0x%08x\n", readl(S3C2410_INTMOD));
++	printk("INTMSK=0x%08x\n", readl(S3C2410_INTMSK));
++	printk("INTPND=0x%08x\n", readl(S3C2410_INTPND));
++	printk("EINTMASK=0x%08x\n", readl(S3C2410_EINTMASK));
++
++	printk("SPCON=0x%08x\n", readl(info->regs + S3C2410_SPCON));
++	__raw_writel(S3C2410_SPCON_SMOD_INT | S3C2410_SPCON_TAGD,
++	       info->regs + S3C2410_SPCON);
++	printk("SPCON=0x%08x\n", readl(info->regs + S3C2410_SPCON));
++	printk("FOO=0x%08x\n", S3C2410_SPCON_SMOD_INT);
++
++ out:
++	if (ret)
++		spi_int_free(info);
++
++	return ret;
++}
++
++static int spi_int_remove(struct device *dev)
++{
++	struct spi_info *info = dev_get_drvdata(dev);
++
++	dev_set_drvdata(dev, NULL);
++
++	spi_int_free(info);
++
++	return 0;
++}
++
++static struct device_driver spi_int_driver = {
++	.name		= "s3c2410-spi",
++	.bus		= &platform_bus_type,
++	.probe		= spi_int_probe,
++	.remove		= spi_int_remove,
++};
++
++static int __init spi_int_init(void)
++{
++	printk("SPI interrput driver loaded\n");
++
++	return driver_register(&spi_int_driver);
++}
++
++static void __exit spi_int_exit(void)
++{
++	driver_unregister(&spi_int_driver);
++}
++
++module_init(spi_int_init);
++module_exit(spi_int_exit);
++
++MODULE_DESCRIPTION("S3C2410 interrupt driven SPI driver");
++MODULE_AUTHOR("Christer Weinigel <christer@weinigel.se>");
++MODULE_LICENSE("GPL");
+Index: linux-2.6.14/arch/arm/mach-s3c2410/devs.c
+===================================================================
+--- linux-2.6.14.orig/arch/arm/mach-s3c2410/devs.c
++++ linux-2.6.14/arch/arm/mach-s3c2410/devs.c
+@@ -400,11 +400,17 @@ static struct resource s3c_spi0_resource
+ 
+ };
+ 
++static u64 s3c_device_spi0_dmamask = 0xffffffffUL;
++
+ struct platform_device s3c_device_spi0 = {
+ 	.name		  = "s3c2410-spi",
+ 	.id		  = 0,
+ 	.num_resources	  = ARRAY_SIZE(s3c_spi0_resource),
+ 	.resource	  = s3c_spi0_resource,
++	.dev              = {
++		.dma_mask = &s3c_device_spi0_dmamask,
++		.coherent_dma_mask = 0xffffffffUL
++	}
+ };
+ 
+ EXPORT_SYMBOL(s3c_device_spi0);
+@@ -425,11 +431,17 @@ static struct resource s3c_spi1_resource
+ 
+ };
+ 
++static u64 s3c_device_spi1_dmamask = 0xffffffffUL;
++
+ struct platform_device s3c_device_spi1 = {
+ 	.name		  = "s3c2410-spi",
+ 	.id		  = 1,
+ 	.num_resources	  = ARRAY_SIZE(s3c_spi1_resource),
+ 	.resource	  = s3c_spi1_resource,
++	.dev              = {
++		.dma_mask = &s3c_device_spi1_dmamask,
++		.coherent_dma_mask = 0xffffffffUL
++	}
+ };
+ 
+ EXPORT_SYMBOL(s3c_device_spi1);
+Index: linux-2.6.14/arch/arm/mach-s3c2410/spi-dma.c
+===================================================================
+--- /dev/null
++++ linux-2.6.14/arch/arm/mach-s3c2410/spi-dma.c
+@@ -0,0 +1,498 @@
++#include <linux/kernel.h>
++#include <linux/module.h>
++#include <linux/types.h>
++#include <linux/interrupt.h>
++#include <linux/init.h>
++#include <linux/device.h>
++#include <linux/kthread.h>
++#include <linux/delay.h>
++#include <linux/dma-mapping.h>
++#include <linux/spinlock.h>
++
++#include <asm/uaccess.h>
++#include <asm/dma.h>
++#include <asm/io.h>
++#include <asm/irq.h>
++
++#include <asm/hardware/clock.h>
++
++#include <asm/arch/dma.h>
++#include <asm/arch/regs-gpio.h>
++#include <asm/arch/regs-spi.h>
++
++#define BUFFER_SIZE (1024*1024)
++#define CHUNK_SIZE (64*1024)
++#define NUM_CHUNKS (BUFFER_SIZE / CHUNK_SIZE)
++
++static char spi_dma_name[] = "s3c2410-spi-dma-reader";
++
++static struct s3c2410_dma_client spi_dma_client = {
++	.name		= spi_dma_name,
++};
++
++struct spi_dma_state {
++	struct spi_dma_info *info;
++	int status;		/* 0=inactive, 1=running, <0 = -errno */
++	unsigned tail;
++};
++
++struct spi_chunk {
++	int index;
++	dma_addr_t handle;
++	struct spi_dma_info *info;
++};
++
++struct spi_dma_info {
++	void *cpu_addr;
++	dma_addr_t handle;
++	size_t size;
++
++	spinlock_t head_lock;
++	unsigned head;
++	wait_queue_head_t wait_q;
++
++	void *regs;
++
++	struct device *dev;
++	struct clk *clk;
++	struct resource *iomem;
++	int major;
++	dmach_t dmach;
++	int dcon;
++	int flushing;
++	char have_dma;
++	struct spi_chunk chunks[NUM_CHUNKS];
++};
++
++static void spi_queue_dma(struct spi_chunk *chunk)
++{
++	s3c2410_dma_enqueue(chunk->info->dmach,
++			    chunk, chunk->handle, CHUNK_SIZE);
++}
++
++static void spi_dma_done_callback(s3c2410_dma_chan_t *dma_ch, void *buf_id,
++				  int size, s3c2410_dma_buffresult_t result)
++{
++	struct spi_chunk *chunk = buf_id;
++	struct spi_dma_info *info = chunk->info;
++
++	if (info->flushing)
++		return;
++
++	spin_lock(&info->head_lock);
++	if ((info->head / CHUNK_SIZE) % NUM_CHUNKS != chunk->index)
++		dev_warn(info->dev, "out of sync, head=0x%x, index=0x%x\n",
++			 info->head, chunk->index);
++
++	info->head += size;
++	spin_unlock(&info->head_lock);
++
++	wake_up_interruptible(&info->wait_q);
++
++	spi_queue_dma(chunk);
++}
++
++static struct spi_dma_info *global_info;
++
++static ssize_t spi_dma_read(struct file *file, char __user *buf,
++			    size_t len, loff_t *ppos)
++{
++	DECLARE_WAITQUEUE(wait, current);
++	struct spi_dma_state *state = file->private_data;
++	struct spi_dma_info *info = state->info;
++	unsigned head;
++	ssize_t start, end;
++	ssize_t n;
++
++	if (state->status <= 0) {
++		if (state->status) {
++			state->status = 0;
++			return state->status;
++		}
++		state->tail = info->head;
++		state->status = 1;
++	}
++
++	add_wait_queue(&info->wait_q, &wait);
++	while (1) {
++		set_current_state(TASK_INTERRUPTIBLE);
++		if ((head = info->head) != state->tail)
++			break;
++		if (signal_pending(current))
++		    break;
++		schedule();
++	}
++	remove_wait_queue(&info->wait_q, &wait);
++	set_current_state(TASK_RUNNING);
++
++	if (signal_pending(current))
++		return -EINTR;
++
++	if ((head - state->tail) > BUFFER_SIZE)
++		return -ENOBUFS;
++
++	start = state->tail % BUFFER_SIZE;
++	end = head % BUFFER_SIZE;
++
++	if (end > start)
++		n = end - start;
++	else
++		n = BUFFER_SIZE - start;
++
++	if (n > len)
++		n = len;
++
++	if (copy_to_user(buf, info->cpu_addr + start, n))
++		return -EFAULT;
++
++	state->tail += n;
++
++	return n;
++}
++
++static int spi_dma_mmap(struct file *file, struct vm_area_struct *vma)
++{
++	struct spi_dma_state *state = file->private_data;
++	struct spi_dma_info *info = state->info;
++
++	return dma_mmap_coherent(info->dev, vma,
++				 info->cpu_addr, info->handle, info->size);
++}
++
++static int spi_dma_get_pos(struct spi_dma_info *info, unsigned *arg)
++{
++	if (put_user(info->head, arg))
++		return -EFAULT;
++
++	return 0;
++}
++
++static int spi_dma_wait_pos(struct spi_dma_info *info, unsigned *arg)
++{
++	DECLARE_WAITQUEUE(wait, current);
++	unsigned pos;
++	int diff;
++
++	if (get_user(pos, arg))
++		return -EFAULT;
++
++	add_wait_queue(&info->wait_q, &wait);
++	while (1) {
++		set_current_state(TASK_INTERRUPTIBLE);
++		if ((diff = info->head - pos) > 0)
++			break;
++		if (signal_pending(current))
++			break;
++		schedule();
++	}
++	remove_wait_queue(&info->wait_q, &wait);
++	set_current_state(TASK_RUNNING);
++
++	if (signal_pending(current))
++		return -EINTR;
++
++	if (diff > BUFFER_SIZE)
++		return -ENOBUFS;
++
++	if (put_user(info->head, arg))
++		return -EFAULT;
++
++	return 0;
++}
++
++#define	SPI_DMA_IOCTL_BASE	('N' ^ 'M')
++#define SPI_DMA_GET_BUFFER_SIZE	_IOR(SPI_DMA_IOCTL_BASE, 0, unsigned)
++#define SPI_DMA_GET_POS		_IOR(SPI_DMA_IOCTL_BASE, 1, unsigned)
++#define SPI_DMA_WAIT_POS	_IOWR(SPI_DMA_IOCTL_BASE, 2, unsigned)
++
++static int spi_dma_ioctl(struct inode *inode, struct file *file,
++			 unsigned int cmd, unsigned long arg)
++{
++	struct spi_dma_state *state = file->private_data;
++	struct spi_dma_info *info = state->info;
++
++	switch (cmd) {
++	case SPI_DMA_GET_BUFFER_SIZE:
++		if (put_user((unsigned)BUFFER_SIZE, (unsigned *)arg))
++			return -EFAULT;
++		return 0;
++
++	case SPI_DMA_GET_POS:
++		return spi_dma_get_pos(info, (unsigned *)arg);
++
++	case SPI_DMA_WAIT_POS:
++		return spi_dma_wait_pos(info, (unsigned *)arg);
++
++	default:
++		return -EINVAL;
++	}
++}
++
++static int spi_dma_open(struct inode *inode, struct file *file)
++{
++	struct spi_dma_info *info = global_info;
++	struct spi_dma_state *state;
++	int ret;
++
++	state = kmalloc(sizeof(struct spi_dma_state), GFP_KERNEL);
++	if (!state)
++		return -ENOMEM;
++	state->info = info;
++	state->status = 0;
++	file->private_data = state;
++
++	ret = nonseekable_open(inode, file);
++
++	if (ret)
++		kfree(state);
++
++	return ret;
++}
++
++static int spi_dma_release(struct inode *inode, struct file *file)
++{
++	kfree(file->private_data);
++	return 0;
++}
++
++static struct file_operations spi_dma_fops = {
++	.owner   = THIS_MODULE,
++	.read    = spi_dma_read,
++	.open    = spi_dma_open,
++	.release = spi_dma_release,
++	.mmap    = spi_dma_mmap,
++	.ioctl   = spi_dma_ioctl,
++};
++
++static void spi_dma_free(struct spi_dma_info *info)
++{
++	if (!info)
++		return;
++
++	if (info->major)
++		unregister_chrdev(info->major, "s3c2410-spi");
++	if (info->have_dma) {
++		int value;
++
++		printk("flush\n");
++		info->flushing = 1;
++		s3c2410_dma_ctrl(info->dmach, S3C2410_DMAOP_FLUSH);
++		msleep(100);
++		printk("stop\n");
++		s3c2410_dma_ctrl(info->dmach, S3C2410_DMAOP_STOP);
++		msleep(100);
++
++		printk("poll\n");
++		writel(S3C2410_SPCON_SMOD_POLL, info->regs + S3C2410_SPCON);
++		value = readb(info->regs + S3C2410_SPRDAT);
++		printk("%02x\n", value);
++
++		s3c2410_dma_free(info->dmach, &spi_dma_client);
++	}
++	if (info->regs)
++		iounmap(info->regs);
++	if (info->iomem) {
++		release_resource(info->iomem);
++		kfree(info->iomem);
++	}
++	if (info->clk) {
++		clk_unuse(info->clk);
++		clk_disable(info->clk);
++	}
++	if (info->cpu_addr) {
++		dma_free_coherent(info->dev,
++				  info->size, info->cpu_addr,
++				  info->handle);
++
++	}
++	kfree(info);
++}
++
++static int spi_dma_probe(struct device *dev)
++{
++	struct platform_device *pdev = to_platform_device(dev);
++	struct spi_dma_info *info;
++	struct resource *res;
++	int ret;
++	int i;
++
++	printk("spi_dma_probe\n");
++
++	info = kmalloc(sizeof(struct spi_dma_info), GFP_KERNEL);
++	if (!info) {
++		dev_err(dev, "failed to allocate info structure\n");
++		ret = -ENOMEM;
++		goto out;
++	}
++	memset(info, 0, sizeof(*info));
++	info->dev = dev;
++
++	dev_info(dev, "got info %p\n", info);
++
++	// TODO figure this out in a better way
++	info->dmach = 3;
++	info->dcon = S3C2410_DCON_CH3_SPI;
++	info->size = BUFFER_SIZE;
++
++	spin_lock_init(&info->head_lock);
++	init_waitqueue_head(&info->wait_q);
++
++	info->cpu_addr = dma_alloc_coherent(dev, info->size, &info->handle, GFP_KERNEL);
++	if (!info->cpu_addr) {
++		dev_err(dev, "failed to allocate DMA buffer\n");
++		ret = -ENOMEM;
++		goto out;
++	}
++
++	dev_info(dev, "got DMA buffer at %p, handle 0x%08lx, size %d\n",
++		 info->cpu_addr, (long)info->handle,
++		 info->size);
++
++	info->clk = clk_get(dev, "spi");
++	if (IS_ERR(info->clk)) {
++		dev_err(dev, "clk_get failed\n");
++		ret = -ENOENT;
++		goto out;
++	}
++
++	dev_dbg(dev, "clk %p\n", info->clk);
++
++	clk_use(info->clk);
++	clk_enable(info->clk);
++
++	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
++	if (!res) {
++		dev_err(dev, "unable to find registers\n");
++		ret = -ENOENT;
++		goto out;
++	}
++
++	dev_info(dev, "got iomem %p\n", res);
++
++	info->iomem = request_mem_region(res->start,
++					  (res->end-res->start)+1,
++					  pdev->name);
++	if (!info->iomem) {
++		dev_err(dev, "request_mem_region failed\n");
++		ret = -ENXIO;
++		goto out;
++	}
++
++	dev_info(dev, "got iomem %p\n", info->iomem);
++
++	dev_info(dev, "res->start=0x%lx, res->end=0x%lx\n", res->start, res->end);
++	dev_info(dev, "iomem->start=0x%lx, iomem->end=0x%lx\n", info->iomem->start, info->iomem->end);
++
++	info->regs = ioremap(res->start, (res->end-res->start)+1);
++	if (!info->regs) {
++		dev_err(dev, "ioremap failed\n");
++		ret = -ENXIO;
++		goto out;
++	}
++
++	dev_info(dev, "got regs %p\n", info->regs);
++
++	if (s3c2410_dma_request(info->dmach, &spi_dma_client, NULL)) {
++		dev_err(dev, "unable to allocate dma channel\n");
++		ret = -ENOENT;
++		goto out;
++	}
++	info->have_dma = 1;
++
++	res = platform_get_resource(pdev, IORESOURCE_IRQ, 0);
++	if (!res) {
++		dev_err(dev, "unable to find irq\n");
++		ret = -ENOENT;
++		goto out;
++	}
++
++	ret = register_chrdev(0, "s3c2410-spi", &spi_dma_fops);
++	if (ret < 0) {
++		dev_err(dev, "unable to register character device\n");
++		goto out;
++	}
++	info->major = ret;
++	global_info = info;
++
++	dev_info(dev, "SPI driver active\n");
++
++	dev_set_drvdata(dev, info);
++
++	writel(S3C2410_SPCON_SMOD_DMA | S3C2410_SPCON_TAGD,
++	       info->regs + S3C2410_SPCON);
++	writel(S3C2410_SPPIN_RESERVED, info->regs + S3C2410_SPPIN);
++
++	// s3c2410_gpio_cfgpin(S3C2410_GPG5, S3C2410_GPG5_SPIMISO1);
++	s3c2410_gpio_cfgpin(S3C2410_GPG6, S3C2410_GPG6_SPIMOSI1);
++	s3c2410_gpio_cfgpin(S3C2410_GPG7, S3C2410_GPG7_SPICLK1);
++
++	s3c2410_gpio_cfgpin(S3C2410_GPG3, 0x3 << 6);
++
++	s3c2410_dma_devconfig(info->dmach, S3C2410_DMASRC_HW,
++			      S3C2410_DISRCC_INC | S3C2410_DISRCC_APB,
++			      info->iomem->start + S3C2410_SPRDAT);
++
++	s3c2410_dma_config(info->dmach, 1, info->dcon);
++
++	s3c2410_dma_set_buffdone_fn(info->dmach, spi_dma_done_callback);
++	s3c2410_dma_setflags(info->dmach, S3C2410_DMAF_AUTOSTART);
++
++	writeb(0, info->regs + S3C2410_SPTDAT);
++	msleep(10);
++
++	for (i = 0; i < NUM_CHUNKS; i++) {
++		int offset = i * CHUNK_SIZE;
++		info->chunks[i].index = i;
++		info->chunks[i].handle = info->handle + offset;
++		info->chunks[i].info = info;
++	}
++
++	for (i = 0; i < NUM_CHUNKS; i++) {
++		spi_queue_dma(&info->chunks[i]);
++	}
++
++	ret = 0;
++
++ out:
++	if (ret)
++		spi_dma_free(info);
++
++	return ret;
++}
++
++static int spi_dma_remove(struct device *dev)
++{
++	struct spi_dma_info *info = dev_get_drvdata(dev);
++
++	dev_set_drvdata(dev, NULL);
++
++	spi_dma_free(info);
++
++	return 0;
++}
++
++static struct device_driver spi_dma_driver = {
++	.name		= "s3c2410-spi",
++	.bus		= &platform_bus_type,
++	.probe		= spi_dma_probe,
++	.remove		= spi_dma_remove,
++};
++
++static int __init spi_dma_init(void)
++{
++	printk("SPI dma driver loaded\n");
++
++	return driver_register(&spi_dma_driver);
++}
++
++static void __exit spi_dma_exit(void)
++{
++	driver_unregister(&spi_dma_driver);
++}
++
++module_init(spi_dma_init);
++module_exit(spi_dma_exit);
++
++MODULE_DESCRIPTION("S3C2410 DMA driven SPI driver");
++MODULE_AUTHOR("Christer Weinigel <christer@weinigel.se>");
++MODULE_LICENSE("GPL");

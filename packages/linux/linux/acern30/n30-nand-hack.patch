@@ -1,0 +1,32 @@
+The flash is locked on the n30 and needs to be unlocked before every
+write.  It should be possible to do one big unlock operation outside
+of the erase and write functions but for some strange reason that
+doesn't seem to work any more, so do this ugly workaround for now.
+
+Index: linux-2.6.14/drivers/mtd/nand/nand_base.c
+===================================================================
+--- linux-2.6.14.orig/drivers/mtd/nand/nand_base.c
++++ linux-2.6.14/drivers/mtd/nand/nand_base.c
+@@ -866,6 +866,10 @@ static int nand_write_page (struct mtd_i
+ 	/* FIXME: Enable cached programming */
+ 	cached = 0;
+ 	
++	/* unlock the page */
++	this->cmdfunc (mtd, 0x23, -1, page);
++	this->cmdfunc (mtd, 0x24, -1, page);
++
+ 	/* Send command to begin auto page programming */
+ 	this->cmdfunc (mtd, NAND_CMD_SEQIN, 0x00, page);
+ 
+@@ -2037,6 +2041,11 @@ out:
+ static void single_erase_cmd (struct mtd_info *mtd, int page)
+ {
+ 	struct nand_chip *this = mtd->priv;
++
++	/* unlock the page */
++	this->cmdfunc (mtd, 0x23, -1, page);
++	this->cmdfunc (mtd, 0x24, -1, page);
++
+ 	/* Send commands to erase a block */
+ 	this->cmdfunc (mtd, NAND_CMD_ERASE1, -1, page);
+ 	this->cmdfunc (mtd, NAND_CMD_ERASE2, -1, -1);

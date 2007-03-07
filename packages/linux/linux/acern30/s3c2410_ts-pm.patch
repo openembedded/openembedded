@@ -1,0 +1,73 @@
+Index: linux-2.6.14/drivers/input/touchscreen/s3c2410_ts.c
+===================================================================
+--- linux-2.6.14.orig/drivers/input/touchscreen/s3c2410_ts.c
++++ linux-2.6.14/drivers/input/touchscreen/s3c2410_ts.c
+@@ -56,6 +56,8 @@
+ /* For ts.dev.id.version */
+ #define S3C2410TSVERSION	0x0101
+ 
++#define TSC_SLEEP  (S3C2410_ADCTSC_PULL_UP_DISABLE | S3C2410_ADCTSC_XY_PST(0))
++
+ #define WAIT4INT(x)  (((x)<<8) | \
+ 		     S3C2410_ADCTSC_YM_SEN | S3C2410_ADCTSC_YP_SEN | S3C2410_ADCTSC_XP_SEN | \
+ 		     S3C2410_ADCTSC_XY_PST(3))
+@@ -321,10 +323,59 @@ static int s3c2410ts_remove(struct devic
+ 	return 0;
+ }
+ 
++#ifdef CONFIG_PM
++
++static int s3c2410ts_suspend(struct device *dev, pm_message_t state)
++{
++	writel(TSC_SLEEP, base_addr+S3C2410_ADCTSC);
++	writel(readl(base_addr+S3C2410_ADCCON) | S3C2410_ADCCON_STDBM, 
++	       base_addr+S3C2410_ADCCON);
++
++	disable_irq(IRQ_ADC);
++	disable_irq(IRQ_TC);
++
++	clk_disable(adc_clock);
++
++	return 0;
++}
++
++static int s3c2410ts_resume(struct device *dev)
++{
++	struct s3c2410_ts_mach_info *info = 
++		(struct s3c2410_ts_mach_info *)dev->platform_data;
++
++	clk_enable(adc_clock);
++	msleep(1);
++
++	enable_irq(IRQ_ADC);
++	enable_irq(IRQ_TC);
++
++	if ((info->presc&0xff) > 0)
++		writel(S3C2410_ADCCON_PRSCEN | S3C2410_ADCCON_PRSCVL(info->presc&0xFF),\
++			     base_addr+S3C2410_ADCCON);
++	else
++		writel(0,base_addr+S3C2410_ADCCON);
++
++	/* Initialise registers */
++	if ((info->delay&0xffff) > 0)
++		writel(info->delay & 0xffff,  base_addr+S3C2410_ADCDLY);
++
++	writel(WAIT4INT(0), base_addr+S3C2410_ADCTSC);
++
++	return 0;
++}
++
++#else
++#define s3c2410ts_suspend NULL
++#define s3c2410ts_resume  NULL
++#endif
++
+ static struct device_driver s3c2410ts_driver = {
+        .name           = "s3c2410-ts",
+        .bus            = &platform_bus_type,
+        .probe          = s3c2410ts_probe,
++       .suspend        = s3c2410ts_suspend,
++       .resume         = s3c2410ts_resume,
+        .remove         = s3c2410ts_remove,
+ };
+ 

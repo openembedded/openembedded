@@ -1,0 +1,97 @@
+This patch adds a nand flash configuration for the n30.
+
+Index: linux-2.6.14/arch/arm/mach-s3c2410/mach-n30.c
+===================================================================
+--- linux-2.6.14.orig/arch/arm/mach-s3c2410/mach-n30.c
++++ linux-2.6.14/arch/arm/mach-s3c2410/mach-n30.c
+@@ -33,6 +33,8 @@
+ #include <linux/kthread.h>
+ 
+ #include <linux/mmc/protocol.h>
++#include <linux/mtd/mtd.h>
++#include <linux/mtd/partitions.h>
+ 
+ #include <asm/mach/arch.h>
+ #include <asm/mach/map.h>
+@@ -55,6 +57,7 @@
+ #include <asm/arch/ts.h>
+ #include <asm/arch/buttons.h>
+ #include <asm/arch/mmc.h>
++#include <asm/arch/nand.h>
+ 
+ #include <linux/serial_core.h>
+ 
+@@ -276,6 +279,50 @@ static struct s3c24xx_mmc_platdata n30_m
+  	.ocr_avail	= MMC_VDD_32_33,
+ };
+ 
++static int chip0_map[] = { 0 };
++
++struct mtd_partition n30_default_nand_part[] = {
++	{
++		.name	= "Whole flash",
++		.offset	= 0,
++		.size	= MTDPART_SIZ_FULL,
++		.mask_flags = MTD_WRITEABLE,
++	},
++	{
++		.name	= "Partition Table",
++		.offset	= 0x28000,
++		.size	= 0x8000,
++	},
++	{
++		.name	= "Kernel",
++		.offset	= 0x30000,
++		.size	= 0x4d0000,
++	},
++	{
++		.name	= "Root",
++		.offset	= 0x500000,
++		.size	= MTDPART_SIZ_FULL,
++	},
++};
++
++static struct s3c2410_nand_set n30_nand_sets[] = {
++	{
++		.name		= "chip0",
++		.nr_chips	= 1,
++		.nr_map		= chip0_map,
++		.nr_partitions	= ARRAY_SIZE(n30_default_nand_part),
++		.partitions	= n30_default_nand_part
++	},
++};
++
++static struct s3c2410_platform_nand n30_nand_info = {
++	.tacls		= 80,
++	.twrph0		= 80,
++	.twrph1		= 80,
++	.nr_sets	= ARRAY_SIZE(n30_nand_sets),
++	.sets		= n30_nand_sets,
++};
++
+ static struct platform_device *n30_devices[] __initdata = {
+ 	&s3c_device_usb,
+ 	&s3c_device_lcd,
+@@ -287,6 +334,7 @@ static struct platform_device *n30_devic
+ 	&s3c_device_iis,
+ 	&s3c_device_usbgadget,
+ 	&s3c_device_sdi,
++	&s3c_device_nand,
+ };
+ 
+ static struct s3c2410_platform_i2c n30_i2ccfg = {
+@@ -329,6 +377,14 @@ static void __init n30_init(void)
+ 
+ 	s3c_device_i2c.dev.platform_data = &n30_i2ccfg;
+ 	s3c_device_sdi.dev.platform_data = &n30_mmc_cfg;
++	s3c_device_nand.dev.platform_data = &n30_nand_info;
++
++	/* Clear any locks and write protects on the flash. */
++	s3c2410_gpio_setpin(S3C2410_GPC5, 1);
++	msleep(1);
++	s3c2410_gpio_setpin(S3C2410_GPC5, 0);
++	msleep(1);
++	s3c2410_gpio_setpin(S3C2410_GPC5, 1);
+ 
+ 	/* Turn off suspend on both USB ports, and switch the
+ 	 * selectable USB port to USB device mode. */

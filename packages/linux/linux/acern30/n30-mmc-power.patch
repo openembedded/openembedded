@@ -1,0 +1,24 @@
+This patch adds power management for the mmc port on the n30.
+
+Index: linux-2.6.14/arch/arm/mach-s3c2410/mach-n30.c
+===================================================================
+--- linux-2.6.14.orig/arch/arm/mach-s3c2410/mach-n30.c
++++ linux-2.6.14/arch/arm/mach-s3c2410/mach-n30.c
+@@ -261,9 +261,16 @@ static struct s3c2410_butt_mach_info n35
+ 	.size = ARRAY_SIZE(n35_buttons),
+ };
+ 
++static void n30_mmc_set_power(unsigned int to)
++{
++	/* TODO This may not be correct.  This needs testing. */
++	if (machine_is_n30())
++		s3c2410_gpio_setpin(S3C2410_GPG4, !to);
++}
++
+ static struct s3c24xx_mmc_platdata n30_mmc_cfg = {
+  	.gpio_detect	= S3C2410_GPF1,
+- 	.set_power	= NULL,
++ 	.set_power	= n30_mmc_set_power,
+  	.f_max		= 3000000,
+  	.ocr_avail	= MMC_VDD_32_33,
+ };

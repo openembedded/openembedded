@@ -1,0 +1,53 @@
+Index: linux-2.6.14/drivers/mtd/nand/s3c2410.c
+===================================================================
+--- linux-2.6.14.orig/drivers/mtd/nand/s3c2410.c
++++ linux-2.6.14/drivers/mtd/nand/s3c2410.c
+@@ -692,11 +692,39 @@ static int s3c2440_nand_probe(struct dev
+ 	return s3c24xx_nand_probe(dev, 1);
+ }
+ 
++#ifdef CONFIG_PM
++
++static int s3c2410_nand_suspend(struct device *dev, pm_message_t state)
++{
++	struct s3c2410_nand_info *info = to_nand_info(dev);
++
++	clk_disable(info->clk);
++
++	return 0;
++}
++
++static int s3c2410_nand_resume(struct device *dev)
++{
++	struct s3c2410_nand_info *info = to_nand_info(dev);
++
++	clk_enable(info->clk);
++	msleep(1);
++
++	return s3c2410_nand_inithw(info, dev);
++}
++
++#else
++#define s3c2410_nand_suspend NULL
++#define s3c2410_nand_resume  NULL
++#endif
++
+ static struct device_driver s3c2410_nand_driver = {
+ 	.name		= "s3c2410-nand",
+ 	.bus		= &platform_bus_type,
+ 	.probe		= s3c2410_nand_probe,
+ 	.remove		= s3c2410_nand_remove,
++	.suspend        = s3c2410_nand_suspend,
++	.resume         = s3c2410_nand_resume,
+ };
+ 
+ static struct device_driver s3c2440_nand_driver = {
+@@ -704,6 +732,8 @@ static struct device_driver s3c2440_nand
+ 	.bus		= &platform_bus_type,
+ 	.probe		= s3c2440_nand_probe,
+ 	.remove		= s3c2410_nand_remove,
++	.suspend        = s3c2410_nand_suspend,
++	.resume         = s3c2410_nand_resume,
+ };
+ 
+ static int __init s3c2410_nand_init(void)

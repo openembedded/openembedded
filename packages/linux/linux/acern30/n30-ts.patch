@@ -1,0 +1,43 @@
+This patch adds the touch screen configuration for the n30.
+
+Index: linux-2.6.14/arch/arm/mach-s3c2410/mach-n30.c
+===================================================================
+--- linux-2.6.14.orig/arch/arm/mach-s3c2410/mach-n30.c
++++ linux-2.6.14/arch/arm/mach-s3c2410/mach-n30.c
+@@ -49,6 +49,7 @@
+ #include <asm/arch/iic.h>
+ #include <asm/arch/fb.h>
+ #include <asm/arch/lcd.h>
++#include <asm/arch/ts.h>
+ 
+ #include <linux/serial_core.h>
+ 
+@@ -184,10 +185,20 @@ static struct s3c2410_bl_mach_info n30_b
+ 	.lcd_power		= n30_lcd_power
+ };
+ 
++/* The touch is very noisy on the n30 so sample often and average many
++ * samples before passing them on to userspace. */
++
++static struct s3c2410_ts_mach_info n30_ts_cfg __initdata = {
++	.delay = 1800,
++	.presc = 49,
++	.oversampling_shift = 6,
++};
++
+ static struct platform_device *n30_devices[] __initdata = {
+ 	&s3c_device_usb,
+ 	&s3c_device_lcd,
+ 	&s3c_device_bl,
++	&s3c_device_ts,
+ 	&s3c_device_wdt,
+ 	&s3c_device_i2c,
+ 	&s3c_device_iis,
+@@ -225,6 +236,7 @@ static void __init n30_init(void)
+ {
+ 	s3c24xx_fb_set_platdata(&n30_lcdcfg);
+ 	set_s3c2410bl_info(&n30_blcfg);
++	set_s3c2410ts_info(&n30_ts_cfg);
+ 
+ 	s3c_device_i2c.dev.platform_data = &n30_i2ccfg;
+ 

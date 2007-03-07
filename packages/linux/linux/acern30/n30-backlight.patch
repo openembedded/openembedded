@@ -1,0 +1,97 @@
+This patch adds a few functions to control the backlight on the n30.
+
+Index: linux-2.6.14/arch/arm/mach-s3c2410/mach-n30.c
+===================================================================
+--- linux-2.6.14.orig/arch/arm/mach-s3c2410/mach-n30.c
++++ linux-2.6.14/arch/arm/mach-s3c2410/mach-n30.c
+@@ -45,8 +45,10 @@
+ #include <asm/arch/regs-serial.h>
+ #include <asm/arch/regs-gpio.h>
+ #include <asm/arch/regs-lcd.h>
++#include <asm/arch/regs-timer.h>
+ #include <asm/arch/iic.h>
+ #include <asm/arch/fb.h>
++#include <asm/arch/lcd.h>
+ 
+ #include <linux/serial_core.h>
+ 
+@@ -121,9 +123,71 @@ static struct s3c2410fb_mach_info n30_lc
+ 	.bpp=		{16,16,16},
+ };
+ 
++static void n30_backlight_power(int on)
++{
++	s3c2410_gpio_pullup(S3C2410_GPB1, 1);
++	s3c2410_gpio_cfgpin(S3C2410_GPB1, S3C2410_GPB1_OUTP);
++	s3c2410_gpio_setpin(S3C2410_GPB1, on);
++}
++
++static void n30_lcd_power(int on)
++{
++	/* Turning these off will save about 10mA */
++	s3c2410_gpio_setpin(S3C2410_GPB8, on); /* CLOCK driver? */
++	s3c2410_gpio_setpin(S3C2410_GPB9, on); /* VSYNC driver? */
++	s3c2410_gpio_setpin(S3C2410_GPB10, on); /* HSYYNC driver? */
++}
++
++#define BRIGHTNESS_MAX 28
++#define BRIGHTNESS_OFFSET 5
++
++static void n30_set_brightness(int level)
++{
++	unsigned long tcmpb0;
++	unsigned long tcon;
++
++	if (level < 0)
++		level = 0;
++
++	if (level > BRIGHTNESS_MAX)
++		level = BRIGHTNESS_MAX;
++
++	tcmpb0 = level ? level + BRIGHTNESS_OFFSET : 0;
++
++	printk("brightness level %d, tcmpb0 %lu\n", level, tcmpb0);
++
++	/* configure power on/off */
++	n30_backlight_power(level ? 1 : 0);
++
++	writel(34, S3C2410_TCNTB(0));
++
++	tcon = readl(S3C2410_TCON);
++	tcon &= ~0x0F;
++	tcon |= S3C2410_TCON_T0RELOAD;
++	tcon |= S3C2410_TCON_T0MANUALUPD;
++
++	writel(tcon, S3C2410_TCON);
++	writel(0x22, S3C2410_TCNTB(0));
++	writel(tcmpb0, S3C2410_TCMPB(0));
++
++	/* start the timer running */
++	tcon |= S3C2410_TCON_T0START;
++	tcon &= ~S3C2410_TCON_T0MANUALUPD;
++	writel(tcon, S3C2410_TCON);
++}
++
++static struct s3c2410_bl_mach_info n30_blcfg __initdata = {
++	.backlight_max          = BRIGHTNESS_MAX,
++	.backlight_default      = BRIGHTNESS_MAX / 2,
++	.backlight_power	= n30_backlight_power,
++	.set_brightness		= n30_set_brightness,
++	.lcd_power		= n30_lcd_power
++};
++
+ static struct platform_device *n30_devices[] __initdata = {
+ 	&s3c_device_usb,
+ 	&s3c_device_lcd,
++	&s3c_device_bl,
+ 	&s3c_device_wdt,
+ 	&s3c_device_i2c,
+ 	&s3c_device_iis,
+@@ -160,6 +224,7 @@ static void __init n30_init_irq(void)
+ static void __init n30_init(void)
+ {
+ 	s3c24xx_fb_set_platdata(&n30_lcdcfg);
++	set_s3c2410bl_info(&n30_blcfg);
+ 
+ 	s3c_device_i2c.dev.platform_data = &n30_i2ccfg;
+ 

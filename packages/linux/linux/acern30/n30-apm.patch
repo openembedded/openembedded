@@ -1,0 +1,73 @@
+Implement a apm_get_power_status handler for the n30.  The handler
+gets the battery charge from the msp430 chip using i2c and sets the ac
+line information based on GPG1 (charger power) and GPC7 (usb power).
+
+Index: linux-2.6.14/arch/arm/mach-s3c2410/mach-n30.c
+===================================================================
+--- linux-2.6.14.orig/arch/arm/mach-s3c2410/mach-n30.c
++++ linux-2.6.14/arch/arm/mach-s3c2410/mach-n30.c
+@@ -31,6 +31,7 @@
+ #include <linux/delay.h>
+ #include <linux/device.h>
+ #include <linux/kthread.h>
++#include <linux/i2c.h>
+ 
+ #include <linux/mmc/protocol.h>
+ #include <linux/mtd/mtd.h>
+@@ -44,6 +45,7 @@
+ #include <asm/hardware/iomd.h>
+ #include <asm/io.h>
+ #include <asm/irq.h>
++#include <asm/apm.h>
+ #include <asm/mach-types.h>
+ 
+ #include <asm/arch/regs-serial.h>
+@@ -527,6 +529,37 @@ static int n30_usbstart_thread(void *unu
+ 	return 0;
+ }
+ 
++#ifdef CONFIG_APM
++static void n30_get_power_status(struct apm_power_info *info)
++{
++#ifdef CONFIG_I2C_S3C2410
++	u8 charge;
++	struct i2c_adapter *adap;
++	struct i2c_msg msg[] = {
++		{ .addr = 0x0b, .flags = I2C_M_RD, .buf = &charge, .len = 1 }
++	};
++
++	if ((adap = i2c_get_adapter(0)) != NULL) {
++		if (i2c_transfer(adap, msg, 1) == 1)
++			info->battery_life = charge;
++		i2c_put_adapter(adap);
++	}
++#endif
++
++	if (s3c2410_gpio_getpin(S3C2410_GPC7))
++		info->ac_line_status = 0x01; /* on charger power */
++	else if (s3c2410_gpio_getpin(S3C2410_GPG1))
++		info->ac_line_status = 0x02; /* on USB power */
++	else
++		info->ac_line_status = 0x00; /* on battery power */
++
++	/* TODO I could put some values in these variables based on
++	 * the battery life and the ac_line_status. --wingel */
++	info->battery_status = 0xff;
++	info->battery_flag   = 0xff;
++}
++#endif
++
+ static void __init n30_init(void)
+ {
+ 	s3c24xx_fb_set_platdata(&n30_lcdcfg);
+@@ -550,6 +583,10 @@ static void __init n30_init(void)
+ 	s3c2410_gpio_setpin(S3C2410_GPC5, 1);
+ 
+ 	kthread_run(n30_usbstart_thread, NULL, "n30_usbstart");
++
++#ifdef CONFIG_APM
++	apm_get_power_status = n30_get_power_status;
++#endif
+ }
+ 
+ MACHINE_START(N30, "Acer-N30")

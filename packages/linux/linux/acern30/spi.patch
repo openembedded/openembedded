@@ -1,0 +1,121 @@
+Index: linux-2.6.14/arch/arm/mach-s3c2410/mach-n30.c
+===================================================================
+--- linux-2.6.14.orig/arch/arm/mach-s3c2410/mach-n30.c
++++ linux-2.6.14/arch/arm/mach-s3c2410/mach-n30.c
+@@ -52,6 +52,7 @@
+ #include <asm/arch/regs-gpio.h>
+ #include <asm/arch/regs-lcd.h>
+ #include <asm/arch/regs-timer.h>
++#include <asm/arch/regs-spi.h>
+ #include <asm/arch/irqs.h>
+ #include <asm/arch/iic.h>
+ #include <asm/arch/fb.h>
+@@ -372,6 +373,7 @@ static struct platform_device *n30_devic
+ 	&s3c_device_usbgadget,
+ 	&s3c_device_sdi,
+ 	&s3c_device_nand,
++	&s3c_device_spi1,
+ };
+ 
+ static struct s3c2410_platform_i2c n30_i2ccfg = {
+@@ -712,6 +714,90 @@ static int n30_usbstart_thread(void *unu
+ 	return 0;
+ }
+ 
++static int spi_thread(void *regs)
++{
++	unsigned sptdat1 = ~0, sprdat1 = ~0, spsta1 = ~0;
++	unsigned value;
++
++	writel(0x01, regs + S3C2410_SPCON);
++	writel(0x02, regs + S3C2410_SPPIN);
++
++	s3c2410_gpio_cfgpin(S3C2410_GPG6, S3C2410_GPG6_SPIMOSI1);
++	s3c2410_gpio_cfgpin(S3C2410_GPG7, S3C2410_GPG7_SPICLK1);
++
++	s3c2410_gpio_cfgpin(S3C2410_GPG3, 0x3 << 6);
++
++	printk("GPGCON=0x%x\n", readl(S3C2410_GPGCON));
++
++	msleep(10);
++
++	while (1) {
++		value = readl(regs + S3C2410_SPTDAT);
++		if (sptdat1 != value) {
++			printk(KERN_INFO "SPTDAT1=0x%x\n", value);
++			sptdat1 = value;
++		}
++		value = readl(regs + S3C2410_SPRDAT);
++		if (sprdat1 != value) {
++			printk(KERN_INFO "SPRDAT1=0x%x\n", value);
++			sprdat1 = value;
++		}
++		value = readl(regs + S3C2410_SPSTA);
++		if (spsta1 != value) {
++			printk(KERN_INFO "SPSTA1=0x%x\n", value);
++			spsta1 = value;
++		}
++
++		msleep(10);
++	}
++}
++
++static int s3c24xx_spi_probe(struct device *dev)
++{
++	struct platform_device *pdev = to_platform_device(dev);
++	struct resource *res;
++	int ret;
++	void *regs;
++	struct resource		*ioarea;
++
++	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
++	if (res == NULL) {
++		dev_err(dev, "cannot find IO resource\n");
++		ret = -ENOENT;
++		goto out;
++	}
++
++	ioarea = request_mem_region(res->start, (res->end-res->start)+1,
++					 pdev->name);
++	if (ioarea == NULL) {
++		dev_err(dev, "cannot request IO\n");
++		ret = -ENXIO;
++		goto out;
++	}
++
++	regs = ioremap(res->start, (res->end-res->start)+1);
++	if (regs == NULL) {
++		dev_err(dev, "cannot map IO\n");
++		ret = -ENXIO;
++		goto out;
++	}
++
++	dev_info(dev, "registers %p (%p, %p)\n", regs, ioarea, res);
++
++	kthread_run(spi_thread, regs, "spi_debug");
++
++	ret = 0;
++
++ out:
++	return ret;
++}
++
++static struct device_driver s3c24xx_spi_driver = {
++	.name		= "s3c2410-spi",
++	.bus		= &platform_bus_type,
++	.probe		= s3c24xx_spi_probe,
++};
++
+ #ifdef CONFIG_APM
+ static void n30_get_power_status(struct apm_power_info *info)
+ {
+@@ -764,6 +850,9 @@ static void __init n30_init(void)
+ 	memcpy_toio(N30_RESUME_VA, (void *)n30_resume,
+ 		    &n30_resume_end - (void *)n30_resume);
+ 
++	if (driver_register(&s3c24xx_spi_driver) < 0)
++		printk(KERN_ERR "failed to register spi driver\n");
++
+ 	/* Clear any locks and write protects on the flash. */
+ 	s3c2410_gpio_setpin(S3C2410_GPC5, 1);
+ 	msleep(1);

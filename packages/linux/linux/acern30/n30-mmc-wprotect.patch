@@ -1,0 +1,54 @@
+This adds support for the write protect switch on the n30.
+
+It also adds some code to the generic s3c2410sdi driver so that the
+write protect switch actually does something.
+
+But I'm not sure if I want to add support for the write protect switch
+since it really protect against anything.  Using the switch is
+entirely up to software, and saying that the card is write protected
+when it really isn't sounds like a bad idea.  "Secure" Digital indeed.
+
+Index: linux-2.6.14/arch/arm/mach-s3c2410/mach-n30.c
+===================================================================
+--- linux-2.6.14.orig/arch/arm/mach-s3c2410/mach-n30.c
++++ linux-2.6.14/arch/arm/mach-s3c2410/mach-n30.c
+@@ -270,6 +270,7 @@ static void n30_mmc_set_power(unsigned i
+ 
+ static struct s3c24xx_mmc_platdata n30_mmc_cfg = {
+  	.gpio_detect	= S3C2410_GPF1,
++	.gpio_wprotect  = S3C2410_GPG10,
+  	.set_power	= n30_mmc_set_power,
+  	.f_max		= 3000000,
+  	.ocr_avail	= MMC_VDD_32_33,
+Index: linux-2.6.14/drivers/mmc/s3c2410mci.c
+===================================================================
+--- linux-2.6.14.orig/drivers/mmc/s3c2410mci.c
++++ linux-2.6.14/drivers/mmc/s3c2410mci.c
+@@ -515,6 +515,17 @@ static void s3c2410sdi_set_ios(struct mm
+ 
+ }
+ 
++static int s3c2410sdi_get_ro(struct mmc_host* mmc)
++{
++ 	struct s3c2410sdi_host *host = mmc_priv(mmc);
++	int r;
++
++	r = s3c2410_gpio_getpin(host->pdata->gpio_wprotect);
++	if (host->pdata->wprotect_polarity)
++	    r = !r;
++	return r;
++}
++
+ static struct mmc_host_ops s3c2410sdi_ops = {
+ 	.request	= s3c2410sdi_request,
+ 	.set_ios	= s3c2410sdi_set_ios,
+@@ -643,6 +654,9 @@ static int s3c2410sdi_probe(struct devic
+ 	mmc->f_max 	= clk_get_rate(host->clk) / 2;
+ 	mmc->caps	= MMC_CAP_4_BIT_DATA;
+ 
++	if (host->pdata->gpio_wprotect)
++	    mmc->ops->get_ro = s3c2410sdi_get_ro;
++
+ 	/* HACK: There seems to be a hardware bug in TomTom GO. */
+ 	/*if(mmc->f_max>3000000) mmc->f_max=3000000;*/
+ 

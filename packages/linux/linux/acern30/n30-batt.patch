@@ -1,0 +1,242 @@
+A battery controller i2c driver for the n30.  
+
+I don't use this driver any more, it was much nicer to use the ARM APM
+emulation to expose this data.
+
+Index: linux-2.6.14/drivers/hwmon/Kconfig
+===================================================================
+--- linux-2.6.14.orig/drivers/hwmon/Kconfig
++++ linux-2.6.14/drivers/hwmon/Kconfig
+@@ -290,6 +290,16 @@
+ 	  This driver can also be built as a module.  If so, the module
+ 	  will be called max1619.
+ 
++config SENSORS_N30_BATT
++	tristate "Acer N30 Battery Controller"
++	depends on HWMON && I2C && MACH_N30
++	help
++	  If you say yes here you get support for the battery controller
++	  found inside the Acer N30 PDA.
++
++	  This driver can also be built as a module.  If so, the module
++	  will be called n30_batt.
++
+ config SENSORS_PC87360
+ 	tristate "National Semiconductor PC87360 family"
+ 	depends on HWMON && I2C && EXPERIMENTAL
+Index: linux-2.6.14/drivers/hwmon/Makefile
+===================================================================
+--- linux-2.6.14.orig/drivers/hwmon/Makefile
++++ linux-2.6.14/drivers/hwmon/Makefile
+@@ -35,6 +35,7 @@
+ obj-$(CONFIG_SENSORS_LM90)	+= lm90.o
+ obj-$(CONFIG_SENSORS_LM92)	+= lm92.o
+ obj-$(CONFIG_SENSORS_MAX1619)	+= max1619.o
++obj-$(CONFIG_SENSORS_N30_BATT)	+= n30_batt.o
+ obj-$(CONFIG_SENSORS_PC87360)	+= pc87360.o
+ obj-$(CONFIG_SENSORS_SIS5595)	+= sis5595.o
+ obj-$(CONFIG_SENSORS_SMSC47B397)+= smsc47b397.o
+Index: linux-2.6.14/drivers/hwmon/n30_batt.c
+===================================================================
+--- linux-2.6.14.orig/drivers/hwmon/n30_batt.c
++++ linux-2.6.14/drivers/hwmon/n30_batt.c
+@@ -0,0 +1,199 @@
++/*
++ * n30_batt.c - Support for the Acer N30 Battery Controller
++ * Copyright (c) 2005 Christer Weinigel <christer@weinigel.se>
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 2 of the License, or
++ * (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write to the Free Software
++ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
++*/
++
++#include <linux/config.h>
++#include <linux/module.h>
++#include <linux/init.h>
++#include <linux/slab.h>
++#include <linux/i2c.h>
++#include <linux/hwmon.h>
++#include <asm/mach-types.h>
++#include <asm/apm.h>
++
++static unsigned short normal_i2c[] = { I2C_CLIENT_END, I2C_CLIENT_END };
++static unsigned short probe[] = { I2C_CLIENT_END, I2C_CLIENT_END };
++static unsigned short ignore[] = { I2C_CLIENT_END, I2C_CLIENT_END };
++static unsigned short force[] = { -1, 0x0b, I2C_CLIENT_END, I2C_CLIENT_END };
++static unsigned short *forces[] = { force, NULL };
++
++static struct i2c_client_address_data addr_data = {
++	.normal_i2c	= normal_i2c,
++	.probe		= probe,
++	.ignore		= ignore,
++	.forces		= forces,
++};
++
++struct n30_batt_data {
++	struct i2c_client client;
++	struct semaphore update_lock;
++	unsigned long last_updated; /* last update in jiffies */
++	u8 charge;
++};
++
++static struct n30_batt_data *n30_batt_update_device(struct device *dev)
++{
++	struct i2c_client *client = to_i2c_client(dev);
++	struct n30_batt_data *data = i2c_get_clientdata(client);
++
++	down(&data->update_lock);
++
++	if (time_after(jiffies, data->last_updated + 3 * HZ)) {
++		int value;
++
++		value = i2c_smbus_read_byte(client);
++
++		if (value == -1)
++			printk(KERN_WARNING "n30-batt: unable to read charge\n");
++		else
++			data->charge = value;
++		data->last_updated = jiffies;
++	}
++
++	up(&data->update_lock);
++
++	return data;
++}
++
++static ssize_t show_charge(struct device *dev, struct device_attribute *attr, char *buf)
++{
++	struct n30_batt_data *data = n30_batt_update_device(dev);
++	return sprintf(buf, "%d\n", data->charge);
++}
++
++static DEVICE_ATTR(charge, S_IRUGO, show_charge, NULL);
++
++static struct i2c_driver n30_batt_driver;
++
++static struct device *n30_batt_dev;
++
++static int n30_batt_detect(struct i2c_adapter *adapter, int address, int kind)
++{
++	struct i2c_client *new_client;
++	struct n30_batt_data *data;
++	int err = 0;
++	int value;
++
++	printk(KERN_INFO "detect n30 Battery controller\n");
++
++	if (!i2c_check_functionality(adapter, I2C_FUNC_SMBUS_BYTE_DATA))
++		goto exit;
++
++	printk(KERN_INFO "kmalloc n30 Battery controller\n");
++
++	if (!(data = kmalloc(sizeof(struct n30_batt_data), GFP_KERNEL))) {
++		err = -ENOMEM;
++		goto exit;
++	}
++	memset(data, 0, sizeof(struct n30_batt_data));
++
++	new_client = &data->client;
++	i2c_set_clientdata(new_client, data);
++	new_client->addr = address;
++	new_client->adapter = adapter;
++	new_client->driver = &n30_batt_driver;
++	new_client->flags = 0;
++	strlcpy(new_client->name, "n30_batt", I2C_NAME_SIZE);
++
++	if ((value = i2c_smbus_read_byte(new_client)) == -1) {
++		printk(KERN_ERR "n30_batt: unable to read charge value\n");
++		err = -ENXIO;
++		goto exit_free;
++	}
++
++	init_MUTEX(&data->update_lock);
++	data->charge = value;
++	data->last_updated = jiffies;
++
++	printk(KERN_DEBUG "n30_batt: battery charge is %d%%\n", data->charge);
++
++	if ((err = i2c_attach_client(new_client)))
++		goto exit_free;
++
++	device_create_file(&new_client->dev, &dev_attr_charge);
++
++	n30_batt_dev = &new_client->dev;
++
++	return 0;
++
++exit_free:
++	kfree(data);
++exit:
++	return err;
++}
++
++static int n30_batt_attach_adapter(struct i2c_adapter *adapter)
++{
++	printk(KERN_INFO "attaching n30 Battery controller\n");
++	return i2c_probe(adapter, &addr_data, n30_batt_detect);
++}
++
++static int n30_batt_detach_client(struct i2c_client *client)
++{
++	n30_batt_dev = NULL;
++	i2c_detach_client(client);
++	kfree(i2c_get_clientdata(client));
++	return 0;
++}
++
++static struct i2c_driver n30_batt_driver = {
++	.owner		= THIS_MODULE,
++	.name		= "n30_batt",
++	.flags		= I2C_DF_NOTIFY,
++	.attach_adapter	= n30_batt_attach_adapter,
++	.detach_client	= n30_batt_detach_client,
++};
++
++static void n30_get_power_status(struct apm_power_info *info)
++{
++	if (n30_batt_dev) {
++		struct n30_batt_data *data = n30_batt_update_device(n30_batt_dev);
++		
++		info->ac_line_status = 0xff;
++		info->battery_status = 0xff;
++		info->battery_flag   = 0xff;
++		info->battery_life   = data->charge;
++		info->time	    = -1;
++		info->units	    = -1;
++	}
++}
++
++static int __init sensors_n30_batt_init(void)
++{
++	printk(KERN_INFO "n30 Battery controller\n");
++
++	if (!machine_is_n30())
++		return -ENODEV;
++	printk(KERN_INFO "adding n30 Battery controller\n");
++
++	apm_get_power_status = n30_get_power_status;
++
++	return i2c_add_driver(&n30_batt_driver);
++}
++
++static void __exit sensors_n30_batt_exit(void)
++{
++	i2c_del_driver(&n30_batt_driver);
++}
++
++MODULE_AUTHOR("Christer Weinigel <christer@weinigel.se>");
++MODULE_DESCRIPTION("Acer n30 Battery Controller");
++MODULE_LICENSE("GPL");
++
++module_init(sensors_n30_batt_init);
++module_exit(sensors_n30_batt_exit);

@@ -1,0 +1,13 @@
+Index: linux-2.6.14/drivers/video/s3c2410fb.c
+===================================================================
+--- linux-2.6.14.orig/drivers/video/s3c2410fb.c
++++ linux-2.6.14/drivers/video/s3c2410fb.c
+@@ -569,7 +569,7 @@ int s3c2410fb_init_registers(struct s3c2
+ 
+ 	local_irq_restore(flags);
+ 
+-	writel(fbi->regs.lcdcon1, S3C2410_LCDCON1);
++	writel(fbi->regs.lcdcon1 & ~S3C2410_LCDCON1_ENVID, S3C2410_LCDCON1);
+ 	writel(fbi->regs.lcdcon2, S3C2410_LCDCON2);
+ 	writel(fbi->regs.lcdcon3, S3C2410_LCDCON3);
+ 	writel(fbi->regs.lcdcon4, S3C2410_LCDCON4);

@@ -1,0 +1,84 @@
+Index: linux-2.6.14/drivers/mmc/s3c2410mci.c
+===================================================================
+--- linux-2.6.14.orig/drivers/mmc/s3c2410mci.c
++++ linux-2.6.14/drivers/mmc/s3c2410mci.c
+@@ -614,7 +614,8 @@ static int s3c2410sdi_probe(struct devic
+ 		goto probe_iounmap;
+ 	}
+ 
+-	s3c2410_gpio_cfgpin(S3C2410_GPF5, S3C2410_GPF5_EINT5);
++	// This should be parametrised
++	// s3c2410_gpio_cfgpin(S3C2410_GPF5, S3C2410_GPF5_EINT5);
+ 	set_irq_type(host->irq_cd, IRQT_BOTHEDGE);
+ 
+ 	if(request_irq(host->irq_cd, s3c2410sdi_irq_cd, 0, DRIVER_NAME, host)) {
+@@ -732,12 +733,57 @@ static int s3c2410sdi_remove(struct devi
+ 	return 0;
+ }
+ 
++#ifdef CONFIG_PM
++static int s3c2410mci_suspend(struct device *dev, pm_message_t state)
++{
++	struct mmc_host *mmc = dev_get_drvdata(dev);
++	int ret = 0;
++
++	if (mmc) {
++		struct s3c2410sdi_host 	*host = mmc_priv(mmc);
++
++		ret = mmc_suspend_host(mmc, state);
++
++		clk_disable(host->clk);
++
++		disable_irq(host->irq_cd);
++		disable_irq(host->irq);
++	}
++
++	return ret;
++}
++
++static int s3c2410mci_resume(struct device *dev)
++{
++	struct mmc_host *mmc = dev_get_drvdata(dev);
++	int ret = 0;
++
++	if (mmc) {
++		struct s3c2410sdi_host 	*host = mmc_priv(mmc);
++
++		enable_irq(host->irq_cd);
++		enable_irq(host->irq);
++
++		clk_enable(host->clk);
++
++		ret = mmc_resume_host(mmc);
++	}
++
++	return ret;
++}
++#else
++#define s3c2410mci_suspend	NULL
++#define s3c2410mci_resume	NULL
++#endif
++
+ static struct device_driver s3c2410sdi_driver =
+ {
+         .name           = "s3c2410-sdi",
+         .bus            = &platform_bus_type,
+         .probe          = s3c2410sdi_probe,
+         .remove         = s3c2410sdi_remove,
++	.suspend	= s3c2410mci_suspend,
++	.resume		= s3c2410mci_resume,
+ };
+ 
+ static int __init s3c2410sdi_init(void)
+Index: linux-2.6.14/drivers/mmc/mmc.c
+===================================================================
+--- linux-2.6.14.orig/drivers/mmc/mmc.c
++++ linux-2.6.14/drivers/mmc/mmc.c
+@@ -1263,6 +1263,7 @@ EXPORT_SYMBOL(mmc_suspend_host);
+  */
+ int mmc_resume_host(struct mmc_host *host)
+ {
++	mmc_power_up(host);
+ 	mmc_detect_change(host, 0);
+ 
+ 	return 0;

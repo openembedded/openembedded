@@ -1,0 +1,296 @@
+Add suspend/resume support for the Acer N30.
+
+Index: linux-2.6.14/arch/arm/mach-s3c2410/mach-n30.c
+===================================================================
+--- linux-2.6.14.orig/arch/arm/mach-s3c2410/mach-n30.c
++++ linux-2.6.14/arch/arm/mach-s3c2410/mach-n30.c
+@@ -66,11 +66,46 @@
+ #include "clock.h"
+ #include "devs.h"
+ #include "cpu.h"
++#include "pm.h"
+ 
+ static struct map_desc n30_iodesc[] __initdata = {
+ 	/* nothing here yet */
+ };
+ 
++/* This code is copied to physical address SDRAM_PA + 0x201000.  The
++ * bootloader will jump there on a watchdog reset or when resuming
++ * from suspend to ram. */
++
++#define N30_RESUME_VA __va(S3C2410_SDRAM_PA + 0x201000)
++
++static void __init n30_resume(void) __attribute__((naked));
++static void __init n30_resume(void)
++{
++	asm(
++		"mov	r1, #0x56000000		\n\t"
++
++		/* load GSTATUS2 and check for a wake from suspend */
++		"ldr	r0, [r1, #0xb4]		\n\t" /* GSTATUS2 */
++		"ands	r0, r0, #2		\n\t" /* OFFRST */
++		"beq	1f			\n\t"
++
++		/* it is a wake reset, so jump to the resume function
++		 * pointed to by GSTATUS3 */
++		"ldr	pc, [r1, #0xb8]		\n\t" /* GSTATUS3 */
++
++		/* Probably a watchdog reset, so fake a power on reset
++		 * by writing PWRST to GSTATUS2 and then jump back to
++		 * the bootloader. */
++		"1:				\n\t"
++		"mov	r0, #1			\n\t" /* PWRST */
++		"str	r0, [r1, #0xb4]		\n\t" /* GSTATUS2 */
++		"mov	pc, #0			\n\t"
++
++		"n30_resume_end:		\n\t"
++		);
++}
++extern void n30_resume_end;
++
+ static struct s3c2410_uartcfg n30_uartcfgs[] = {
+ 	/* Normal serial port */
+ 	[0] = {
+@@ -483,6 +518,154 @@ static void __init n30_hwinit(void)
+ 	__raw_writel(0x0000063f, S3C2410_GPHUP);
+ }
+ 
++void n30_pm_gpio(void)
++{
++	if (machine_is_n35()) {
++		/* Prepare for suspend to ram.  This is what WinCE
++		 * apparently does.  I know where some of these pins
++		 * are connected and ought to be moved to code related
++		 * that hardware, but some stuff is magic so far.  */
++
++		/* All this is magic.  WinCE does this and it brings
++		 * the power consumption in sleep mode down.  */
++
++		/* Drive ADDR0, ADDR16..ADDR23, and ADDR26 low.
++		 * ADDR24 and ADDR 25 are still working.
++		 * nGCS1..nGCS5 are driven low.
++		 * CLE, ALE, nFWE, nFRE, nRSTOUT and nFCW are working. */
++		__raw_writel(0x007e0600, S3C2410_GPACON);
++		__raw_writel(0x00000000, S3C2410_GPADAT);
++		__raw_writel(0x00015556, S3C2410_GPBCON);
++		__raw_writel(0x00000011, S3C2410_GPBDAT);
++		__raw_writel(0x000007ff, S3C2410_GPBUP);
++		__raw_writel(0xaa950618, S3C2410_GPCCON);
++		__raw_writel(0x0000024c, S3C2410_GPCDAT);
++		__raw_writel(0x0000ffb6, S3C2410_GPCUP);
++		__raw_writel(0xaa95aaa5, S3C2410_GPDCON);
++		__raw_writel(0x00000202, S3C2410_GPDDAT);
++		__raw_writel(0x0000fffd, S3C2410_GPDUP);
++		__raw_writel(0xa56aaaaa, S3C2410_GPECON);
++		__raw_writel(0x0000c7c1, S3C2410_GPEDAT);
++		__raw_writel(0x0000ffff, S3C2410_GPEUP);
++		__raw_writel(0x0000aa22, S3C2410_GPFCON);
++		__raw_writel(0x000000f5, S3C2410_GPFDAT);
++		__raw_writel(0x000000fd, S3C2410_GPFUP);
++		__raw_writel(0xff40010a, S3C2410_GPGCON);
++		__raw_writel(0x0000abf5, S3C2410_GPGDAT);
++		__raw_writel(0x0000fcef, S3C2410_GPGUP);
++		__raw_writel(0x0014aaaa, S3C2410_GPHCON);
++		__raw_writel(0x0000062f, S3C2410_GPHDAT);
++		__raw_writel(0x000007ff, S3C2410_GPHUP);
++
++		/* Turn GPB6 into an output and drive it low. */
++		s3c2410_gpio_cfgpin(S3C2410_GPB6, S3C2410_GPB6_OUTP);
++		s3c2410_gpio_setpin(S3C2410_GPB6, 0);
++
++		/* Turn off the pull up on GPB7. */
++		s3c2410_gpio_pullup(S3C2410_GPB7, 1);
++
++		/* Drive GPC8 low */
++		s3c2410_gpio_cfgpin(S3C2410_GPC8, S3C2410_GPC8_OUTP);
++		s3c2410_gpio_setpin(S3C2410_GPC8, 0);
++		s3c2410_gpio_pullup(S3C2410_GPC8, 1);
++
++		/* Drive GPC9/VD[1] high. */
++		s3c2410_gpio_cfgpin(S3C2410_GPC9, S3C2410_GPC9_OUTP);
++		s3c2410_gpio_setpin(S3C2410_GPC9, 1);
++
++		/* Drive GPC10/VD[2] low. */
++		s3c2410_gpio_cfgpin(S3C2410_GPC10, S3C2410_GPC10_OUTP);
++		s3c2410_gpio_setpin(S3C2410_GPC10, 0);
++
++		/* Disable pull up on RS232 DTR? */
++		s3c2410_gpio_pullup(S3C2410_GPC2, 1);
++
++		/* Enable pull up on GPC6. */
++		s3c2410_gpio_pullup(S3C2410_GPC6, 0);
++
++		/* Turn GPD0 into an output and drive it low. */
++		s3c2410_gpio_cfgpin(S3C2410_GPD0, S3C2410_GPD0_OUTP);
++		s3c2410_gpio_setpin(S3C2410_GPD0, 0);
++		s3c2410_gpio_pullup(S3C2410_GPD0, 1);
++
++		/* Drive VD[9] high and enable the pull up. */
++		s3c2410_gpio_cfgpin(S3C2410_GPD1, S3C2410_GPD1_OUTP);
++		s3c2410_gpio_setpin(S3C2410_GPD1, 1);
++		s3c2410_gpio_pullup(S3C2410_GPD1, 0);
++
++		/* Drive DPD10 low. */
++		s3c2410_gpio_setpin(S3C2410_GPD10, 0);
++		s3c2410_gpio_pullup(S3C2410_GPD10, 1);
++
++		/* This may do something about the power planes. */
++		s3c2410_gpio_setpin(S3C2410_GPE11, 0);
++		s3c2410_gpio_setpin(S3C2410_GPE12, 0);
++		s3c2410_gpio_setpin(S3C2410_GPE13, 0);
++
++		/* Disable pull ups on H8.  Don't know why. */
++		s3c2410_gpio_pullup(S3C2410_GPH8, 1);
++
++		/* LCD stuff, ought to be moved to n30_lcd_power.
++		 * GPB8 is still an output and drives 0.
++		 * GPB9 and GPB10 are turned into inputs.
++		 * All pull ups are disabled. */
++		s3c2410_gpio_setpin(S3C2410_GPB8, 0);
++		s3c2410_gpio_pullup(S3C2410_GPB8, 1);
++		s3c2410_gpio_cfgpin(S3C2410_GPB9, S3C2410_GPB9_INP);
++		s3c2410_gpio_pullup(S3C2410_GPB9, 1);
++		s3c2410_gpio_cfgpin(S3C2410_GPB10, S3C2410_GPB10_INP);
++		s3c2410_gpio_pullup(S3C2410_GPB10, 1);
++
++		/* Disable IrDA (not done by WinCE). */
++		s3c2410_gpio_setpin(S3C2410_GPB2, 1);
++
++		/* Disable the GPS. */
++		s3c2410_gpio_setpin(S3C2410_GPB4, 1);
++		s3c2410_gpio_setpin(S3C2410_GPG11, 1);
++
++		/* Turn on flash write protect. */
++		s3c2410_gpio_setpin(S3C2410_GPC5, 0);
++
++		/* Disable pull ups on the SD/MMC port.  This should
++		 * maybe be done after power has been removed from the
++		 * SD/MMC port. */
++		s3c2410_gpio_pullup(S3C2410_GPE5, 1);
++		s3c2410_gpio_pullup(S3C2410_GPE6, 1);
++		s3c2410_gpio_pullup(S3C2410_GPE7, 1);
++		s3c2410_gpio_pullup(S3C2410_GPE8, 1);
++		s3c2410_gpio_pullup(S3C2410_GPE9, 1);
++		s3c2410_gpio_pullup(S3C2410_GPE10, 1);
++
++		/* Disable MMC?  On the N30 this makes a difference,
++		 * on the N35, maybe not. */
++		s3c2410_gpio_setpin(S3C2410_GPG4, 1);
++
++		/* Enable pull up on SD/MMC switch. */
++		s3c2410_gpio_pullup(S3C2410_GPF1, 0);
++
++		/* Disable pull up on thumbwheel.  Why not on the
++		 * other inputs too? */
++		s3c2410_gpio_pullup(S3C2410_GPG7, 1);
++
++		/* Disable pull up on SD write protect switch. */
++		s3c2410_gpio_pullup(S3C2410_GPG10, 1);
++
++		/* Disable pull ups on the bluetooth/gps port. */
++		s3c2410_gpio_pullup(S3C2410_GPH6, 1);
++		s3c2410_gpio_pullup(S3C2410_GPH7, 1);
++
++		/* Drive CLKOUT0 high while sleeping. */
++		s3c2410_gpio_cfgpin(S3C2410_GPH9, S3C2410_GPH9_OUTP);
++		s3c2410_gpio_setpin(S3C2410_GPH9, 1);
++
++		/* Drive CLKOUT1 high while sleeping. */
++		s3c2410_gpio_cfgpin(S3C2410_GPH10, S3C2410_GPH10_OUTP);
++		s3c2410_gpio_setpin(S3C2410_GPH10, 1);
++
++		s3c2410_capture_regs();
++	}
++}
++
+ static void __init n30_map_io(void)
+ {
+ 	s3c24xx_init_io(n30_iodesc, ARRAY_SIZE(n30_iodesc));
+@@ -569,6 +752,12 @@ static void __init n30_init(void)
+ 	s3c_device_sdi.dev.platform_data = &n30_mmc_cfg;
+ 	s3c_device_nand.dev.platform_data = &n30_nand_info;
+ 
++	s3c2410_pm_init();
++	enable_irq_wake(IRQ_EINT0);
++
++	memcpy_toio(N30_RESUME_VA, (void *)n30_resume,
++		    &n30_resume_end - (void *)n30_resume);
++
+ 	/* Clear any locks and write protects on the flash. */
+ 	s3c2410_gpio_setpin(S3C2410_GPC5, 1);
+ 	msleep(1);
+Index: linux-2.6.14/arch/arm/mach-s3c2410/pm.c
+===================================================================
+--- linux-2.6.14.orig/arch/arm/mach-s3c2410/pm.c
++++ linux-2.6.14/arch/arm/mach-s3c2410/pm.c
+@@ -565,6 +565,8 @@ static int s3c2410_pm_enter(suspend_stat
+ 	s3c2410_pm_do_save(core_save, ARRAY_SIZE(core_save));
+ 	s3c2410_pm_do_save(uart_save, ARRAY_SIZE(uart_save));
+ 
++	n30_pm_gpio();
++
+ 	/* set the irq configuration for wake */
+ 
+ 	s3c2410_pm_configure_extint();
+@@ -601,6 +603,8 @@ static int s3c2410_pm_enter(suspend_stat
+ 	tmp &= S3C2410_GSTATUS2_OFFRESET;
+ 	__raw_writel(tmp, S3C2410_GSTATUS2);
+ 
++	s3c2410_capture_regs();
++
+ 	/* restore the system state */
+ 
+ 	s3c2410_pm_do_restore_core(core_save, ARRAY_SIZE(core_save));
+Index: linux-2.6.14/arch/arm/mach-s3c2410/sleep.S
+===================================================================
+--- linux-2.6.14.orig/arch/arm/mach-s3c2410/sleep.S
++++ linux-2.6.14/arch/arm/mach-s3c2410/sleep.S
+@@ -80,6 +80,7 @@ ENTRY(s3c2410_cpu_suspend)
+ 
+ 	orr	r7, r7, #S3C2410_REFRESH_SELF	@ SDRAM sleep command
+ 	orr	r8, r8, #S3C2410_MISCCR_SDSLEEP @ SDRAM power-down signals
++	orr	r8, r8, #3		@ turn on data pull ups
+ 	orr	r9, r9, #S3C2410_CLKCON_POWER	@ power down command
+ 
+ 	teq	pc, #0			@ first as a trial-run to load cache
+Index: linux-2.6.14/arch/arm/Makefile
+===================================================================
+--- linux-2.6.14.orig/arch/arm/Makefile
++++ linux-2.6.14/arch/arm/Makefile
+@@ -99,6 +99,10 @@ textaddr-$(CONFIG_ARCH_FORTUNET)   := 0x
+  machine-$(CONFIG_ARCH_IMX)	   := imx
+  machine-$(CONFIG_ARCH_H720X)	   := h720x
+  machine-$(CONFIG_ARCH_AAEC2000)   := aaec2000
++# The Acer N30/N35 needs to put some code at 0xc0201000 to handle
++# the watchdog interrupt and resume from suspend.
++textaddr-$(CONFIG_MACH_N30)	   := 0xc0208000
++textaddr-$(CONFIG_MACH_N35)	   := 0xc0208000
+ 
+ ifeq ($(CONFIG_ARCH_EBSA110),y)
+ # This is what happens if you forget the IOCS16 line.
+Index: linux-2.6.14/arch/arm/mm/init.c
+===================================================================
+--- linux-2.6.14.orig/arch/arm/mm/init.c
++++ linux-2.6.14/arch/arm/mm/init.c
+@@ -230,6 +230,9 @@ static __init void reserve_node_zero(pg_
+ #endif
+ 	if (res_size)
+ 		reserve_bootmem_node(pgdat, PHYS_OFFSET, res_size);
++
++	if (machine_is_n30() || machine_is_n35())
++		reserve_bootmem_node(pgdat, 0x30201000, PAGE_SIZE);
+ }
+ 
+ void __init build_mem_type_table(void);
+Index: linux-2.6.14/arch/arm/mach-s3c2410/Makefile.boot
+===================================================================
+--- linux-2.6.14.orig/arch/arm/mach-s3c2410/Makefile.boot
++++ linux-2.6.14/arch/arm/mach-s3c2410/Makefile.boot
+@@ -1,3 +1,7 @@
+    zreladdr-y	:= 0x30008000
+ params_phys-y	:= 0x30000100
+ 
++# The N30/N35 needs 0x30201000 for the bootloader interface.  So place
++# the kernel after that.
++zreladdr-$(CONFIG_MACH_N30) := 0x30208000
++zreladdr-$(CONFIG_MACH_N35) := 0x30208000

@@ -1,0 +1,53 @@
+This patch adds configuration for the SD/MMC port on the n30.
+
+Index: linux-2.6.14/arch/arm/mach-s3c2410/mach-n30.c
+===================================================================
+--- linux-2.6.14.orig/arch/arm/mach-s3c2410/mach-n30.c
++++ linux-2.6.14/arch/arm/mach-s3c2410/mach-n30.c
+@@ -32,6 +32,8 @@
+ #include <linux/device.h>
+ #include <linux/kthread.h>
+ 
++#include <linux/mmc/protocol.h>
++
+ #include <asm/mach/arch.h>
+ #include <asm/mach/map.h>
+ #include <asm/mach/irq.h>
+@@ -52,6 +54,7 @@
+ #include <asm/arch/lcd.h>
+ #include <asm/arch/ts.h>
+ #include <asm/arch/buttons.h>
++#include <asm/arch/mmc.h>
+ 
+ #include <linux/serial_core.h>
+ 
+@@ -258,6 +261,13 @@ static struct s3c2410_butt_mach_info n35
+ 	.size = ARRAY_SIZE(n35_buttons),
+ };
+ 
++static struct s3c24xx_mmc_platdata n30_mmc_cfg = {
++ 	.gpio_detect	= S3C2410_GPF1,
++ 	.set_power	= NULL,
++ 	.f_max		= 3000000,
++ 	.ocr_avail	= MMC_VDD_32_33,
++};
++
+ static struct platform_device *n30_devices[] __initdata = {
+ 	&s3c_device_usb,
+ 	&s3c_device_lcd,
+@@ -268,6 +278,7 @@ static struct platform_device *n30_devic
+ 	&s3c_device_i2c,
+ 	&s3c_device_iis,
+ 	&s3c_device_usbgadget,
++	&s3c_device_sdi,
+ };
+ 
+ static struct s3c2410_platform_i2c n30_i2ccfg = {
+@@ -309,6 +320,7 @@ static void __init n30_init(void)
+ 		s3c24xx_butt_set_platdata(&n35_buttons_cfg);
+ 
+ 	s3c_device_i2c.dev.platform_data = &n30_i2ccfg;
++	s3c_device_sdi.dev.platform_data = &n30_mmc_cfg;
+ 
+ 	/* Turn off suspend on both USB ports, and switch the
+ 	 * selectable USB port to USB device mode. */

@@ -1,0 +1,80 @@
+Index: linux-2.6.14/arch/arm/tools/mach-types
+===================================================================
+--- linux-2.6.14.orig/arch/arm/tools/mach-types
++++ linux-2.6.14/arch/arm/tools/mach-types
+@@ -869,3 +869,4 @@ davinci_dvdp		MACH_DAVINCI_DVDP	DAVINCI_
+ htcuniversal		MACH_HTCUNIVERSAL	HTCUNIVERSAL		855
+ tpad			MACH_TPAD		TPAD			856
+ roverp3			MACH_ROVERP3		ROVERP3			857
++n35			MACH_N35		N35			927
+Index: linux-2.6.14/arch/arm/mach-s3c2410/mach-n30.c
+===================================================================
+--- linux-2.6.14.orig/arch/arm/mach-s3c2410/mach-n30.c
++++ linux-2.6.14/arch/arm/mach-s3c2410/mach-n30.c
+@@ -1,5 +1,14 @@
+ /* linux/arch/arm/mach-s3c2410/mach-n30.c
+  *
++ * Machine specific code for the following PDAs:
++ *
++ * Acer N30
++ *
++ * Acer N35
++ * Navman PiN 570
++ * Yakumo AlphaX (untested)
++ * Airis NC05 (untested)
++ *
+  * Copyright (c) 2003-2005 Simtec Electronics
+  *	Ben Dooks <ben@simtec.co.uk>
+  *
+@@ -65,7 +74,8 @@ static struct s3c2410_uartcfg n30_uartcf
+ 		.ulcon	     = 0x43,
+ 		.ufcon	     = 0x51,
+ 	},
+-	/* The BlueTooth controller is connected to port 2 */
++	/* On the N30 the bluetooth controller is connected here.
++	 * On the N35 and variants the GPS receiver is connected here. */
+ 	[2] = {
+ 		.hwport	     = 2,
+ 		.flags	     = 0,
+@@ -136,3 +146,16 @@ MACHINE_START(N30, "Acer-N30")
+ 	.init_irq	= n30_init_irq,
+ 	.map_io		= n30_map_io,
+ MACHINE_END
++
++MACHINE_START(N35, "Acer-N35")
++	/* Maintainer: Christer Weinigel <christer@weinigel.se>
++	*/
++	.phys_ram	= S3C2410_SDRAM_PA,
++	.phys_io	= S3C2410_PA_UART,
++	.io_pg_offst	= (((u32)S3C24XX_VA_UART) >> 18) & 0xfffc,
++	.boot_params	= S3C2410_SDRAM_PA + 0x100,
++	.timer		= &s3c24xx_timer,
++	.init_machine	= n30_init,
++	.init_irq	= n30_init_irq,
++	.map_io		= n30_map_io,
++MACHINE_END
+Index: linux-2.6.14/arch/arm/mach-s3c2410/Kconfig
+===================================================================
+--- linux-2.6.14.orig/arch/arm/mach-s3c2410/Kconfig
++++ linux-2.6.14/arch/arm/mach-s3c2410/Kconfig
+@@ -39,9 +39,18 @@ config MACH_N30
+ 	bool "Acer N30"
+ 	select CPU_S3C2410
+ 	help
+-	  Say Y here if you are using the Acer N30
++	  Say Y here if you want support for the Acer N30 PDA.
+ 
+-	  <http://zoo.weinigel.se/n30>.
++	  <http://www.handhelds.org/moin/moin.cgi/AcerN30>.
++
++config MACH_N35
++	bool "Acer N35/Navman PiN 570"
++	select CPU_S3C2410
++	help
++	  Say Y here if you want support for the Acer N35 or
++	  Navman PiN 570 PDAs.
++
++	  <http://www.handhelds.org/moin/moin.cgi/AcerN30>.
+ 
+ config ARCH_SMDK2410
+ 	bool "SMDK2410/A9M2410"
