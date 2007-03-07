@@ -36,7 +36,6 @@ do_install_append() {
 	# openprotium specific scripts
 	# install -m 0755 ${WORKDIR}/alignment.sh ${D}${sysconfdir}/init.d
 	install -m 0755 ${WORKDIR}/openturbostation/domainname.sh ${D}${sysconfdir}/init.d
-	install -m 0755 ${WORKDIR}/openturbostation/devfs.sh ${D}${sysconfdir}/init.d
 	install -m 0755 ${WORKDIR}/openturbostation/halt     ${D}${sysconfdir}/init.d
 	install -m 0755 ${WORKDIR}/openturbostation/reboot   ${D}${sysconfdir}/init.d
 	install -m 0755 ${WORKDIR}/openturbostation/devices  ${D}${sysconfdir}/init.d
