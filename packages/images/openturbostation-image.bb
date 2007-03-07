@@ -24,13 +24,12 @@ SLUGOS_DEVICE_TABLE = "${@bb.which(bb.data.getVar('BBPATH', d, 1), 'files/device
 #	(since it is documented, in case you were wondering)
 # . make the boot more verbose
 #
-IMAGE_PREPROCESS_COMMAND += "rm ${IMAGE_ROOTFS}/boot/uImage-*;"
 IMAGE_PREPROCESS_COMMAND += "sed -i -es,^id:5:initdefault:,id:3:initdefault:, ${IMAGE_ROOTFS}/etc/inittab;"
 IMAGE_PREPROCESS_COMMAND += "sed -i -es,^root::0,root:BTMzOOAQfESg6:0, ${IMAGE_ROOTFS}/etc/passwd;"
 IMAGE_PREPROCESS_COMMAND += "sed -i -es,^VERBOSE=no,VERBOSE=very, ${IMAGE_ROOTFS}/etc/default/rcS;"
 
 # Always just make a new flash image.
-PACK_IMAGE = 'storcenter_pack_image;'
+PACK_IMAGE = 'turbostation_pack_image;'
 IMAGE_POSTPROCESS_COMMAND += "${PACK_IMAGE}"
 PACK_IMAGE_DEPENDS = ""
 #EXTRA_IMAGEDEPENDS += "${PACK_IMAGE_DEPENDS}"
@@ -46,6 +45,7 @@ PACK_IMAGE_DEPENDS = ""
 # are not required to build the image.
 IMAGE_TOOLS = ""
 #EXTRA_IMAGEDEPENDS += "${IMAGE_TOOLS}"
+OPENTURBOSTATION_KERNEL = ""
 
 # CONFIG:
 # SLUGOS_EXTRA_RDEPENDS: set in conf, things to add to the image
@@ -66,7 +66,7 @@ IMAGE_TOOLS = ""
 # we'ere still on 2.6.12 devfs....
 #OPENPROTIUM_SUPPORT ?= "diffutils cpio findutils udev"
 #
-TURBOSTATION_SUPPORT ?= "diffutils cpio findutils uboot-utils udev"
+OPENTURBOSTATION_SUPPORT ?= "diffutils cpio findutils uboot-utils udev"
 
 # kernel-module-af-packet must be in the image for DHCP to work
 # kernel-module-netconsole is here because it is small and is
@@ -75,10 +75,8 @@ TURBOSTATION_SUPPORT ?= "diffutils cpio findutils uboot-utils udev"
 
 # this gets /lib/modules made....
 
-TURBOSTATION_KERNEL = ""
-
 RDEPENDS = " \
-	kernel base-files base-passwd netbase \
+	base-files base-passwd netbase \
         busybox initscripts-openturbostation openturbostation-init \
         update-modules sysvinit tinylogin \
 	module-init-tools modutils-initscripts \
