@@ -15,7 +15,7 @@ def seppuku_login(opener, login, user, password):
     @param opened = cookie enabled urllib2 opener
     @param login = http://bugzilla.openmoko.org/cgi-bin/bugzilla/query.cgi?
     @param user  = Your username
-    @param pass  = Your password
+    @param password  = Your password
     """
     import urllib
     param = urllib.urlencode( {"GoAheadAndLogIn" : 1, "Bugzilla_login" : user, "Bugzilla_password" : password } )
@@ -52,19 +52,16 @@ def seppuku_find_bug_report_old():
         def handle_starttag(self, tag, attr):
             if self.state == self.STATE_NONE and tag.lower() == "tr":
                 if len(attr) == 1 and attr[0] == ('class', 'bz_normal bz_P2 '):
-                    print "Found tr %s %s" % (tag, attr)
                     self.state = self.STATE_FOUND_TR
             elif self.state == self.STATE_FOUND_TR and tag.lower() == "td":
                 self.state += 1
 
         def handle_endtag(self, tag):
             if tag.lower() == "tr":
-                print "Going back"
                 if self.state != self.STATE_NONE:
                     self.bugs.append( (self.bug,self.status) )
                 self.state = self.STATE_NONE
             if self.state > 1 and tag.lower() == "td":
-                print "Next TD"
                 self.state += 1
 
         def handle_data(self,data):
@@ -110,7 +107,7 @@ def seppuku_find_bug_report(opener, query, product, component, bugname):
         return (False,None)
     else: # silently pick the first result
         (number,status) = scanner.result()[0]
-        return (status != "CLOSED",number)
+        return (not status in ["CLOS", "RESO", "VERI"],number)
 
 def seppuku_reopen_bug(opener, file, product, component, bug_number, bugname, text):
     """
@@ -121,13 +118,19 @@ def seppuku_reopen_bug(opener, file, product, component, bug_number, bugname, te
     http://bugzilla.openmoko.org/cgi-bin/bugzilla/process_bug.cgi?id=239&bug_file_loc=http%3A%2F%2F&version=2007&longdesclength=2&product=OpenMoko&component=autobuilds&comment=bla&priority=P2&bug_severity=normal&op_sys=Linux&rep_platform=Neo1973&knob=reopen&target_milestone=Phase+0&short_desc=foo
     """
 
-    import urllib
+    import urllib, urllib2
     param = urllib.urlencode( { "product" : product, "component" : component, "longdesclength" : 2,
-                                "short_desc" : bugname, "comment" : text, "knob" : "reopen", "id" : bug_number } )
-    result = opener.open( file + param )
+                                "short_desc" : bugname, "knob" : "reopen", "id" : bug_number, "comment" : text } )
+    try:
+        result = opener.open( file + param )
+    except urllib2.HTTPError, e:
+        print e.geturl()
+        print e.info()
+        return False
+
     if result.code != 200:
         return False
-    else
+    else:
         return True
 
 def seppuku_file_bug(opener, file, product, component, bugname, text):
@@ -147,9 +150,16 @@ def seppuku_file_bug(opener, file, product, component, bugname, text):
     @param text Text
     """
 
-    import urllib
+    import urllib,urllib2
     param = urllib.urlencode( { "product" : product, "component" : component, "short_desc" : bugname, "comment" : text } )
-    result = opener.open( file + param )
+    try:
+        result = opener.open( file + param )
+    except urllib2.HTTPError, e:
+        print e.geturl()
+        print e.info()
+        raise e
+        return False
+
     if result.code != 200:
         return False
     else:
@@ -157,8 +167,8 @@ def seppuku_file_bug(opener, file, product, component, bugname, text):
 
 
 
-addhandler seppuku_do_report
-python seppuku_do_report() {
+addhandler seppuku_eventhandler
+python seppuku_eventhandler() {
     """
     Report task failures to the bugzilla
     and succeeded builds to the box
@@ -166,6 +176,8 @@ python seppuku_do_report() {
     from bb.event import NotHandled, getName
     from bb import data, mkdirhier, build
     import bb, os, glob
+
+    bb.note( "Ran" )
 
     try:
         import urllib2, cookielib
@@ -177,7 +189,7 @@ python seppuku_do_report() {
     data = e.data
     name = getName(event)
     if name == "PkgFailed":
-        if not data.getVar('SEPPUKU_AUTOBUILD', data, True) == "0":
+        if not bb.data.getVar('SEPPUKU_AUTOBUILD', data, True) == "0":
             build.exec_task('do_clean', data)
     elif name == "TaskFailed" or name == "NoProvider":
         cj = cookielib.CookieJar()
@@ -187,40 +199,45 @@ python seppuku_do_report() {
         newbug  = bb.data.getVar("SEPPUKU_NEWREPORT",  data, True)
         reopen  = bb.data.getVar("SEPPUKU_ADDCOMMENT",  data, True)
         user    = bb.data.getVar("SEPPUKU_USER",  data, True)
-        pass    = bb.data.getVar("SEPPUKU_PASS",  data, True)
+        passw   = bb.data.getVar("SEPPUKU_PASS",  data, True)
         product = bb.data.getVar("SEPPUKU_PRODUCT", data, True)
         component = bb.data.getVar("SEPPUKU_COMPONENT", data, True)
 
-        if not seppuku_login(opener, login, user, pass):
+        if not seppuku_login(opener, login, user, passw):
             bb.note("Login to bugzilla failed")
             return NotHandled
+        else:
+            print "Logged into the box"
 
         if name == "TaskFailed":
             bugname = "%(package)s-%(pv)s-%(pr)s-%(task)s" % { "package" : bb.data.getVar("PN", data, True),
                                                                "pv"      : bb.data.getVar("PV", data, True),
                                                                "pr"      : bb.data.getVar("PR", data, True),
                                                                "task"    : e.task }
-            log_file = glob.glob("%s/log.%s.*" % (data.getVar('T', event.data, True), event.task))
+            log_file = glob.glob("%s/log.%s.*" % (bb.data.getVar('T', event.data, True), event.task))
             if len(log_file) != 0:
-                to_file  = data.getVar('TINDER_LOG', event.data, True)
+                to_file  = bb.data.getVar('TINDER_LOG', event.data, True)
             text    = "".join(open(log_file[0], 'r').readlines())
         elif name == "NoProvider":
             bugname = "noprovider for %s runtime: %s" % (event.getItem, event.getisRuntime)
             text    = "Please fix it"
-        else
+        else:
             assert False
 
         (bug_open, bug_number) = seppuku_find_bug_report(opener, query, product, component, bugname)
 
+        bb.note("Bug is open: %s and bug number: %s" % (bug_open, bug_number))
+
         # The bug is present and still open, no need to attach an error log
         if bug_number and bug_open:
-            bb.note("The bug is known as '%s'" % bug_number"
+            bb.note("The bug is known as '%s'" % bug_number)
             return NotHandled
 
         if bug_number and not bug_open:
             if not seppuku_reopen_bug(opener, reopen, product, component, bug_number, bugname, text):
                 bb.note("Failed to reopen the bug report")
-        else seppuku_file_bug(opener, newbug, product, component, bugname, text):
+        elif not seppuku_file_bug(opener, newbug, product, component, bugname, text):
             bb.note("Filing a bugreport failed")
 
     return NotHandled
+}
