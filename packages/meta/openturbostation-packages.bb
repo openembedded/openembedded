@@ -90,14 +90,12 @@ OPENTURBOSTATION_PACKAGES = "\
 	flite \
 	gallery \
 	gawk \
-	gcc \
 	gdbm \
 	gnu-config \
 	grep \
 	gtk-doc \
 	gzip \
 	hdparm \
-	ifupdown \
 	ipkg-utils \
 	iptables \
 	ircp \
