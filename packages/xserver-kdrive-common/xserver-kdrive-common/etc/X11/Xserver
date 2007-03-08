@@ -96,7 +96,7 @@ case `module_id` in
                 ;;
         "GTA01")
                 #we set 100 dpi for the time being, should the -dpi 285
-                ARGS="$ARGS -dpi 100 -screen 480x640"
+                ARGS="$ARGS -dpi 100 -screen 480x640" ;;
         *)
 		# Its a device we dont know about - in which case force
                 # kdrive to use the current framebuffer geometry otherwise
