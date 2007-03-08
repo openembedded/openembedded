@@ -5,7 +5,7 @@
 DESCRIPTION = "Packages that are compatible with the SlugOS firmware"
 HOMEPAGE = "http://www.nslu2-linux.org"
 LICENSE = "MIT"
-PR = "r19"
+PR = "r20"
 CONFLICTS = "db3"
 
 COMPATIBLE_MACHINE = "nslu2"
@@ -160,6 +160,7 @@ SLUGOS_PACKAGES = "\
 	tar \
 	thttpd \
 	tiff \
+	tzdata \
 	unzip \
 	usbutils \
 	util-linux \
