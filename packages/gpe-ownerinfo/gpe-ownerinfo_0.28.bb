@@ -5,7 +5,9 @@ SECTION = "gpe"
 PRIORITY = "optional"
 DEPENDS = "gtk+ libgpewidget"
 LICENSE = "GPL"
-PR = "r0"
+PR = "r1"
+
+SRC_URI += "file://compile.patch;patch=1"
 
 do_stage () {
 	oe_libinstall -a libgpe-ownerinfo ${STAGING_LIBDIR}
