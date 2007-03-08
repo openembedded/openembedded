@@ -79,7 +79,7 @@ RDEPENDS = " \
 	base-files base-passwd netbase \
         busybox initscripts-openturbostation openturbostation-init \
         update-modules sysvinit tinylogin \
-	module-init-tools modutils-initscripts \
+	module-init-tools-depmod modutils-initscripts \
         ipkg-collateral ipkg ipkg-link \
 	libgcc1 \
 	portmap \
@@ -88,11 +88,7 @@ RDEPENDS = " \
 	mdadm \
 	hdparm \
 	mtd-utils \
-	sccd \
-	util-linux-mount \
-	util-linux-umount \
-	util-linux-swaponoff \
-	util-linux-losetup \
+	xfs-utils \
 	udev \
 	${OPENTURBOSTATION_SUPPORT} \
 	${OPENTURBOSTATION_KERNEL} "
