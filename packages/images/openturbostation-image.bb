@@ -88,7 +88,7 @@ RDEPENDS = " \
 	mdadm \
 	hdparm \
 	mtd-utils \
-	xfs-utils \
+	xfsprogs \
 	udev \
 	${OPENTURBOSTATION_SUPPORT} \
 	${OPENTURBOSTATION_KERNEL} "
