@@ -3,7 +3,7 @@ SECTION = "bootloaders"
 PRIORITY = "optional"
 LICENSE = "GPL"
 DEPENDS = "mtd-utils"
-PR = "1"
+PR = "2"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/u-boot/u-boot-${PV}.tar.bz2 \
 	 file://fw_env.c.patch;patch=1 \
