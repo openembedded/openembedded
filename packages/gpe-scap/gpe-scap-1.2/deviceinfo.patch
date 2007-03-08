@@ -1,0 +1,22 @@
+Index: src/scr-shot-common.c
+===================================================================
+--- src/scr-shot-common.c	(.../base/gpe-scap/src/scr-shot-common.c)	(Revision 8890)
++++ src/scr-shot-common.c	(.../extra/gpe-scap/src/scr-shot-common.c)	(Arbeitskopie)
+@@ -37,7 +37,7 @@
+ gchar *
+ get_device_model (void)
+ {
+-  gchar *result;
++  gchar *result = NULL;
+   struct utsname uinfo;
+   gchar **strv;
+   gint i = 0;
+@@ -62,6 +62,8 @@
+         }
+       g_strfreev (strv);
+     }
++  if (result)
++    return result;
+ #ifdef __arm__
+   result = g_strdup_printf ("%s,%s",_("ARM"), uinfo.machine);
+ #endif
