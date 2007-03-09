@@ -14,21 +14,30 @@ LICENSE = "GPL"
 
 ######################################################################################
 
-PV = "0.0.1"
+PV = "0.0.2"
 PR = "r0"
 
 ######################################################################################
 
-SRC_URI = "file://asound.state"
+SRC_URI = "file://asound.state \
+	   file://alsa-state"
 
 FILES_${PN} = "/etc/*"
 
 ######################################################################################
 
+inherit update-rc.d
+
+INITSCRIPT_NAME = "alsa-state"
+INITSCRIPT_PARAMS = "defaults 10"
+
+######################################################################################
+
 do_install() {
-	install -d ${D}${sysconfdir}
+	install -d ${D}${sysconfdir}/init.d
 	
 	install -m 0644 ${WORKDIR}/asound.state ${D}${sysconfdir}
+	install -m 0755 ${WORKDIR}/alsa-state ${D}${sysconfdir}/init.d
 }
 
 
@@ -38,3 +47,4 @@ pkg_postinst_${PN}() {
 		/usr/sbin/alsactl -f ${sysconfdir}/asound.state restore
 	fi
 }
+
