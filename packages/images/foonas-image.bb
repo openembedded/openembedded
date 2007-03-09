@@ -1,15 +1,10 @@
-DESCRIPTION = "Turbostation image"
-HOMEPAGE = "http://www.kynisk.com/opents"
-LICENSE = "MIT"
+DESCRIPTION = "Foonas image"
+LICENSE = "GPL"
 PR = "r0"
 
 DEPENDS = "${MACHINE_TASK_PROVIDER}"
 EXTRA_IMAGECMD_jffs2 = "--big-endian --eraseblock=${ERASEBLOCK_SIZE} -D ${SLUGOS_DEVICE_TABLE}"
 IMAGE_LINGUAS = ""
-
-# Setting USE_DEVFS prevents *any* entries being created initially
-# in /dev
-#USE_DEVFS = "1"
 
 # This is passed to the image command to build the correct /dev
 # directory (because only the image program can make actual
@@ -29,55 +24,25 @@ IMAGE_PREPROCESS_COMMAND += "sed -i -es,^root::0,root:BTMzOOAQfESg6:0, ${IMAGE_R
 IMAGE_PREPROCESS_COMMAND += "sed -i -es,^VERBOSE=no,VERBOSE=very, ${IMAGE_ROOTFS}/etc/default/rcS;"
 
 # Always just make a new flash image.
-PACK_IMAGE = 'turbostation_pack_image;'
+PACK_IMAGE = '${MACHINE}_pack_image;'
 IMAGE_POSTPROCESS_COMMAND += "${PACK_IMAGE}"
 PACK_IMAGE_DEPENDS = ""
 #EXTRA_IMAGEDEPENDS += "${PACK_IMAGE_DEPENDS}"
-
-# This hack removes '${MACHINE}' from the end of the arch.conf for ipk,
-# preventing _mach.ipk (with no byte sex) taking precedence over everything
-# else.
-# but we want 'storcenter' in there so kernel modules work correctly.
-#
-#ROOTFS_POSTPROCESS_COMMAND += "sed -i '$d' '${IMAGE_ROOTFS}/etc/ipkg/arch.conf';"
 
 # These depends define native utilities - they do not get put in the flash and
 # are not required to build the image.
 IMAGE_TOOLS = ""
 #EXTRA_IMAGEDEPENDS += "${IMAGE_TOOLS}"
-OPENTURBOSTATION_KERNEL = ""
 
-# CONFIG:
-# SLUGOS_EXTRA_RDEPENDS: set in conf, things to add to the image
-# SLUGOS_SUPPORT:        set to here, see below, added to the image.
-# SLUGOS_KERNEL:         set here, kernel modules added to the image
-#
-# Do not override the last two unless you really know what you
-# are doing - there is more information below.
-
-# diff, cpio and find are required for reflash and turnup ram.
-# Removing these probably leaves the system bootable, but standard
-# openslug and ucslugc stuff won't work, so only take these out in
-# very non-standard turnkey slugos builds.
-#
-# udev is the default way of handling devices, there is no guarantee
-# that the static device table is completely correct (it is just
-# known to be sufficient for boot.)
-# we'ere still on 2.6.12 devfs....
-#OPENPROTIUM_SUPPORT ?= "diffutils cpio findutils udev"
-#
-OPENTURBOSTATION_SUPPORT ?= "diffutils cpio findutils uboot-utils udev"
-
-# kernel-module-af-packet must be in the image for DHCP to work
-# kernel-module-netconsole is here because it is small and is
-# highly useful on minimal systems (which really don't have anywhere
-# other than the network to output error messages!)
+FOONAS_SUPPORT += "diffutils cpio findutils uboot-utils udev"
 
 # this gets /lib/modules made....
+FOONAS_KERNEL = "kernel-module-ext3 kernel-module-minix \
+			kernel-module-usb-storage"
 
 RDEPENDS = " \
 	base-files base-passwd netbase \
-        busybox initscripts-openturbostation openturbostation-init \
+        busybox initscripts foonas-init \
         update-modules sysvinit tinylogin \
 	module-init-tools-depmod modutils-initscripts \
         ipkg-collateral ipkg ipkg-link \
@@ -88,14 +53,15 @@ RDEPENDS = " \
 	mdadm \
 	hdparm \
 	mtd-utils \
-	xfsprogs \
 	udev \
-	${OPENTURBOSTATION_SUPPORT} \
-	${OPENTURBOSTATION_KERNEL} "
+	${FOONAS_SUPPORT} \
+	${FOONAS_KERNEL} "
 
 PACKAGE_INSTALL = "${RDEPENDS}"
 
 inherit image
+
+# At this point you have to make a ${MACHINE}_pack_image for your machine.
 
 turbostation_pack_image() {
 	# find latest kernel

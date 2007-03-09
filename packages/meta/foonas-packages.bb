@@ -1,14 +1,14 @@
-DESCRIPTION = "Packages that are compatible with Openturbostation"
+DESCRIPTION = "Packages that are compatible with FooNAS"
 LICENSE = "MIT"
 PR = "r1"
 CONFLICTS = "db3"
-PROVIDES += "${OPENTURBOSTATION_IMAGENAME}-packages"
+PROVIDES += "${FOONAS_IMAGENAME}-packages"
 
 EXCLUDE_FROM_WORLD = "1"
 INHIBIT_DEFAULT_DEPS = "1"
 ALLOW_EMPTY = "1"
 
-OPENTURBOSTATION_PACKAGES = "\
+FOONAS_PACKAGES = "\
 	alsa-lib \
 	alsa-utils \
 	apache2 \
@@ -127,18 +127,18 @@ OPENTURBOSTATION_PACKAGES = "\
 	vlan \
 	watchdog \
 	wget \
+	wireless-tools \
 	zip \
 	zlib \
 	"
 
-OPENTURBOSTATION_EXTRA_PACKAGES ?= ""
+FOONAS_EXTRA_PACKAGES ?= ""
 
 # The package-index at the end causes regeneration of the Packages.gz and
 # other control files.
-# openprotium-native \
 DEPENDS = "\
-	openturbostation-image \
-	${OPENTURBOSTATION_PACKAGES} \
-	${OPENTURBOSTATION_EXTRA_PACKAGES} \
+	foonas-image \
+	${FOONAS_PACKAGES} \
+	${FOONAS_EXTRA_PACKAGES} \
 	package-index \
 	"

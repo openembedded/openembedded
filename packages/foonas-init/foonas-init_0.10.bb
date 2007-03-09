@@ -1,10 +1,10 @@
-DESCRIPTION = "Turbostation initial boot and config"
+DESCRIPTION = "FooNAS initial boot and config"
 SECTION = "base"
 PRIORITY = "required"
 LICENSE = "GPL"
 DEPENDS = "base-files devio"
 RDEPENDS = "busybox devio"
-PR = "r71"
+PR = "r0"
 
 SRC_URI = "file://boot/flash \
 	   file://boot/disk \
@@ -110,14 +110,10 @@ do_install() {
 	set +ex
 }
 
-# If the package is installed on an NSLU2 $D will be empty, in that
-# case it is normal to run 'start' and 'stop', but because the conf
-# files installed don't actually start or stop anything this is
-# unnecessary, so the package postfoo handling is simplified here.
-#NB: do not use '08' (etc) for the first argument after start/stop,
+# NB: do not use '08' (etc) for the first argument after start/stop,
 # the value is interpreted as an octal number if there is a leading
 # zero.
-pkg_postinst_openturbostation-init() {
+pkg_postinst_foonas-init() {
 	opt=
 	test -n "$D" && opt="-r $D"
 	update-rc.d $opt hwclock.sh		start  8 S . start 45 0 6 .
@@ -131,7 +127,7 @@ pkg_postinst_openturbostation-init() {
 	update-rc.d $opt rmrecovery             start 99 1 2 3 4 5 .
 }
 
-pkg_postrm_openturbostation-init() {
+pkg_postrm_foonas-init() {
 	opt=
 	test -n "$D" && opt="-r $D"
 	for s in ${INITSCRIPTS}
