@@ -14,6 +14,7 @@ MOKOGATEWAY_PACKAGES = "\
 	task-mokogateway-usbnet \
 	task-mokogateway-bluetooth \
 	task-mokogateway-wifi \
+	task-mokogateway-debug \
 "
 
 RDEPENDS_task-mokogateway-everything = "${MOKOGATEWAY_PACKAGES}"
@@ -63,5 +64,14 @@ RRECOMMENDS_task-mokogateway-wifi = "\
 	kernel-module-aes \
 	${@base_contains("COMBINED_FEATURES", "usbhost", "kernel-module-zd1211rw", "",d)} \
 	${@base_contains("COMBINED_FEATURES", "usbhost", "zd1211-firmware", "",d)} \
+"
+
+DESCRIPTION_task-mokogateway-debug = "MokoGateway: Debug"
+RDEPENDS_task-mokogateway-debug = "\
+	dfu-util \
+	ftdi-eeprom \
+	openocd \
+"
+RRECOMMENDS_task-mokogateway-debug = "\
 "
 
