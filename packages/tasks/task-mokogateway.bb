@@ -3,25 +3,20 @@ ALLOW_EMPTY = "1"
 PACKAGE_ARCH = "all"
 LICENSE = "MIT"
 PROVIDES = "task-mokogateway-everything"
+PR = "1"
 
 PACKAGES = "\
 	task-mokogateway-everything \
-	${BASE_PACKAGES} \
+	${MOKOGATEWAY_PACKAGES} \
 "
 
-BASE_PACKAGES = "\
-	task-mokogateway-base \
+MOKOGATEWAY_PACKAGES = "\
 	task-mokogateway-usbnet \
 	task-mokogateway-bluetooth \
 	task-mokogateway-wifi \
 "
 
-RDEPENDS_task-mokogateway-everything = "${BASE_PACKAGES}"
-
-DESCRIPTION_task-mokogateway-base = "MokoGateway: Base"
-RDEPENDS_task-mokogateway-base = "\
-	task-base \
-"
+RDEPENDS_task-mokogateway-everything = "${MOKOGATEWAY_PACKAGES}"
 
 DESCRIPTION_task-mokogateway-usbnet = "MokoGateway: USB Networking"
 RDEPENDS_task-mokogateway-usbnet = "\
