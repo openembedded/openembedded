@@ -78,9 +78,12 @@ SLUGOS_NATIVE = "\
 # even on a thumb system (and this can be set in the tool's .bb file),
 # however even this doesn't work for very large programs at present
 # (only monotone!)
-SLUGOS_NATIVE_THUMB_BROKEN = "\
-	monotone-6 \
-	"
+####### *-*-* TEMPORARY: mwester - remove monotone as it wont' build.
+#SLUGOS_NATIVE_THUMB_BROKEN = "\
+#	monotone-6 \
+#	"
+SLUGOS_NATIVE_THUMB_BROKEN = ""
+###### *-*-*
 
 SLUGOS_NATIVE_THUMB_BROKEN_thumb = ""
 
