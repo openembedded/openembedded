@@ -5,7 +5,7 @@ HOMEPAGE = "http://www.openezx.org"
 LICENSE = "GPL"
 DEPENDS += "quilt-native"
 EZX = "ezx9"
-PR = "${EZX}-r1"
+PR = "${EZX}-r2"
 
 inherit kernel
 
@@ -20,7 +20,8 @@ SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.16.tar.bz2 \
            \
 	   file://logo_linux_clut224.ppm \
            file://defconfig-a780 \
-           file://defconfig-e680"
+           file://defconfig-e680 \
+           file://wyrm-ts.diff;patch=1"
 S = "${WORKDIR}/linux-2.6.16"
 
 ##############################################################
