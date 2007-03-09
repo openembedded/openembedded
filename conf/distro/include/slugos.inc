@@ -144,3 +144,8 @@ PREFERRED_VERSION_ipkg-native ?= "0.99.154"
 
 #FIXME: HACK: REMOVE THIS
 IGNORE_STRIP_ERRORS = ""
+
+# Due to upstream instability, and another OE project with conflicting
+# needs, nail down a specific, known-working version of madwifi-ng.
+# Remove this once the madwifi-ng stuff seems to stabilize once again.
+PREFERRED_VERSION_madwifi-ng ?= "r2156-20070225"
