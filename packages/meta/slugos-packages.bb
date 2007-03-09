@@ -107,7 +107,6 @@ SLUGOS_PACKAGES = "\
 	make \
 	masqmail \
 	mdadm \
-	mediatomb \
 	memtester \
 	mgetty \
 	miau \
@@ -183,6 +182,7 @@ SLUGOS_BROKEN_PACKAGES = "\
 	gphoto2 \
 	irssi \
 	libgphoto2 \
+	mediatomb \
 	netpbm \
 	puppy \
 	pvrusb2-mci \
