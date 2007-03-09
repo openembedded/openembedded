@@ -156,6 +156,7 @@ SLUGOS_PACKAGES = "\
 	sysfsutils \
 	syslog-ng \
 	tar \
+	task-mokogateway-everything \
 	thttpd \
 	tiff \
 	tzdata \
