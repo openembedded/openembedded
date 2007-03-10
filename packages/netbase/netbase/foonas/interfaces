@@ -1,0 +1,13 @@
+# /etc/network/interfaces
+# configuration file for ifup(8), ifdown(8)
+#
+# The loopback interface
+auto lo
+iface lo inet loopback
+
+#
+# The interface used by default during boot
+auto eth0
+iface eth0 inet dhcp
+        address 192.168.1.16
+

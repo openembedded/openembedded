@@ -4,9 +4,10 @@ SECTION = "x11/panels"
 DEPENDS = "gtk+"
 
 RREPLACES = "matchbox-panel"
+RCONFLICTS = "matchbox-panel"
 
 PV = "0.1+svn${SRCDATE}"
-PR = "r2"
+PR = "r3"
 
 SRC_URI = "svn://svn.o-hand.com/repos/matchbox/trunk;module=${PN};proto=http"
 S = "${WORKDIR}/${PN}"

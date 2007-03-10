@@ -211,6 +211,12 @@ do_configure_prepend() {
 
 }
 
+
+# Kernel module dependencies
+
+RDEPENDS_kernel-module-zd1211rw += "zd1211-firmware"
+
+
 # MACHID and LE handling
 #
 # This mach_fixup function adds the required prefix to the image to

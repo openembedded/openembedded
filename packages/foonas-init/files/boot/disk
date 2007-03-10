@@ -1,0 +1,67 @@
+#!/bin/sh
+# boot from the hard disk partition "$1" (which
+# must be given) using options from the rest of
+# the command line.
+#
+# Use the standard init path (see /etc/init.d/rcS)
+export PATH=/sbin:/bin:/usr/sbin:/usr/bin
+#
+# Load the helper functions
+. /etc/default/functions
+. /etc/default/modulefunctions
+#
+#
+if test -n "$1"
+then
+	device="$1"
+	shift
+        # proc is needed for UUID mount and module load
+        mount -t proc proc /proc
+        # load USB & SCSI storage modules (/proc required!)
+	if [ "$(machine)" != "storcenter" ]; then
+		echo "boot: loading modules required for disk boot"
+		loaddiskmods
+		# waiting for disk (FIXME)
+		sleep=6
+		test "$sleep" -gt 0 && sleep "$sleep"
+	else
+		# make the device links so turnup can use short disk names.
+		# probably only necessary on devfs based systems.
+		/etc/init.d/devices start
+		scc -l redflash -f auto
+	fi
+	#
+	# fire the boot
+	echo "boot: rootfs: mount $* $device [$UUID]"
+	#
+	# Mount read-write because before exec'ing init
+	# If a UUID is given (in the environment) this
+	# is used in preference to the device, but if
+	# the UUID mount fails a standard device mount
+	# is attempted.
+	if	test -n "$UUID" &&
+		mount "$@" -U "$UUID" /mnt ||
+		mount "$@" "$device" /mnt
+	then
+		# checkmount checks for sh, chroot, init
+		# and /mnt (i.e. /mnt/mnt in this case)
+		if checkmount /mnt
+		then
+			# if mounted, then move /dev to the new root
+			mount --bind /dev /mnt/dev
+			# pivot to /initrd if available, else /mnt
+			cd /
+			if test -d /mnt/initrd
+			then
+				swivel mnt initrd
+			else
+				swivel mnt mnt
+			fi
+			# swivel failed
+		fi
+		# Failure: unmount the partition
+		umount /mnt
+	fi
+fi
+# fallback - use the flash boot
+exec /boot/flash

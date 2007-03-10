@@ -5,7 +5,7 @@ PACKAGE_ARCH = "all"
 LICENSE = "MIT"
 PROVIDES = "task-openmoko-everything"
 
-PR = "r28"
+PR = "r29"
 
 PACKAGES = "\
   task-openmoko-linux \
@@ -153,16 +153,23 @@ RDEPENDS_task-openmoko-demo = "\
   matchbox-keyboard \
   matchbox-stroke \
   matchbox-config-gtk \
-  matchbox-panel-manager \
+  matchbox-panel-2-applets \
   matchbox-panel-hacks \
   matchbox-themes-extra \
   matchbox-themes-gtk \
   matchbox-applet-inputmanager \
   matchbox-applet-startup-monitor \
+  openmoko-panel-battery \
+  openmoko-panel-clock \
+  openmoko-panel-demo \
+  openmoko-panel-demo-simple \
+  openmoko-panel-gsm \
+  openmoko-panel-mainmenu \
   xcursor-transparent-theme \
   settings-daemon \
   web \
   rxvt-unicode \
+  gpe-terminal \
   mtpaint \
 "
 

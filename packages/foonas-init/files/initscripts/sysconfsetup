@@ -1,0 +1,46 @@
+#!/bin/sh
+# This script is run once when the system first boots.  Its sole
+# purpose is to create /etc/default/sysconf (the overall system
+# configuration file) and other files derived from this.
+#
+# The script runs immediately after S10checkroot.sh - this is the
+# point at which the rootfs will be mounted rw even if the kernel
+# booted with it ro.
+#
+# rm or mv the file (/etc/default/sysconf) to recreate it, run this
+# script with the reload option to overwrite the system files.  The
+# configuration files described in sysconf_reload (in
+# /sbin/sysconf) will be overwritten on reload.
+#
+# start:  standard startup, do a complete (auto) restore if necessary
+# reinit: always do a complete auto restore
+# reload: just reload sysconf (no config files!)
+#
+# /etc/default/functions contains useful utility functions - it's
+# in a separate file so that it can be loaded by any script
+. /etc/default/functions
+load_functions sysconf || exit 1
+#
+case "$1" in
+start)	test -s /etc/default/sysconf || {
+		if sysconf_read
+		then
+			if sysconf_valid
+			then
+				sysconf_restore auto
+			else
+				sysconf_reload
+			fi
+		else
+			sysconf_default
+			sysconf_reload
+		fi
+	};;
+
+reload)	test -s /etc/default/sysconf || sysconf_read || sysconf_default
+	sysconf_reload;;
+
+reinit)	sysconf_restore auto;;
+
+*)	;;
+esac

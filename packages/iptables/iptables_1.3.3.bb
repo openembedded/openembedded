@@ -3,14 +3,15 @@ HOMEPAGE = "http://www.netfilter.org/"
 SECTION = "console/utils"
 LICENSE = "GPL"
 RRECOMMENDS = "kernel-module-ip-tables kernel-module-iptable-filter"
-PR = "r3"
+PR = "r4"
 
 
 
 PACKAGES =+ "${PN}-utils"
 FILES_${PN}-utils = "${sbindir}/iptables-save ${sbindir}/iptables-restore"
 
-SRC_URI = "http://www.netfilter.org/files/iptables-${PV}.tar.bz2"
+SRC_URI = "http://www.netfilter.org/files/iptables-${PV}.tar.bz2 \
+	   file://compile.patch;patch=1"
 
 S = "${WORKDIR}/iptables-${PV}"
 

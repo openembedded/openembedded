@@ -206,7 +206,7 @@ def package_qa_check_rpath(file,name,d):
         bb.fatal("This class assumed that WORKDIR is ${TMPDIR}/work... Not doing any check")
 
     output = os.popen("%s -Byr %s" % (scanelf,file))
-    txt    = output.readline().rsplit()
+    txt    = output.readline().split()
     if bad_dir in txt:
         package_qa_write_error( 1, name, file, d)
         bb.error("QA Issue package %s contains bad RPATH %s in file %s" % (name, txt, file))

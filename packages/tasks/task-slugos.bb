@@ -6,7 +6,7 @@
 DESCRIPTION = "Task packages for the SlugOS distribution"
 HOMEPAGE = "http://www.nslu2-linux.org"
 LICENSE = "MIT"
-PR = "r3"
+PR = "r4"
 PACKAGE_ARCH = "${MACHINE_ARCH}"
 ALLOW_EMPTY = "1"
 
@@ -60,12 +60,18 @@ kernel-module-ext2 \
 kernel-module-jbd \
 kernel-module-ext3 \
 kernel-module-vfat \
-kernel-module-ntfs \
 kernel-module-isofs \
 kernel-module-udf \
+kernel-module-nfs \
 kernel-module-nls-cp437 \
 kernel-module-nls-utf8 \
 "
+
+# Until it becomes clear which of the ntfs drivers is the better
+# solution, the Linux ntfs driver is commented out.
+#SLUGOS_STANDARD_RDEPENDS += "\
+#kernel-module-ntfs \
+#"
 
 # Add daemon required for HW RNG support
 SLUGOS_STANDARD_RDEPENDS += "\

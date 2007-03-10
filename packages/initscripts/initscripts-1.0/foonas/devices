@@ -1,0 +1,70 @@
+#!/bin/sh
+#
+# Devfs handling script.  Since we arent running devfsd due to various reasons
+# which I will not lay out here, we need to create some links for compatibility.
+
+. /etc/default/rcS
+
+# exit without doing anything if udev is active
+if test -e /dev/.udev -o -e /dev/.udevdb; then
+	exit 0
+fi
+
+if test -e /dev/.devfsd
+then
+	if test "$VERBOSE" != "no"; then echo -n "Setting up device links for devfs: "; fi
+	[ -e /dev/.linksmade ] && exit 0
+
+	ln -s /dev/tts/0 /dev/ttySA0
+	ln -s /dev/tts/1 /dev/ttySA1
+
+	ln -s /dev/sound/dsp /dev/dsp
+	ln -s /dev/sound/mixer /dev/mixer
+
+	ln -s /dev/misc/rtc /dev/rtc
+
+	#
+	# some friendly disk links
+	#
+	ln -s /dev/discs/disc0/disc /dev/hda
+	ln -s /dev/discs/disc1/disc /dev/hdb
+	for i in 1 2 3 4; do
+		ln -s /dev/discs/disc0/part$i /dev/hda$i
+		ln -s /dev/discs/disc1/part$i /dev/hdb$i
+	done
+
+	## need this so that ppp will autoload the ppp modules
+	mknod /dev/ppp c 108 0
+	ln -s /dev/zero /dev/.linksmade
+
+	if test "$VERBOSE" != "no"; then echo "done"; fi
+else
+	if test "$VERBOSE" != "no"; then echo -n "Mounting /dev ramdisk: "; fi
+	mount -t ramfs ramfs /dev || mount -t tmpfs ramfs /dev
+	if test $? -ne 0; then
+		if test "$VERBOSE" != "no"; then echo "failed"; fi
+	else
+		if test "$VERBOSE" != "no"; then echo "done"; fi
+	fi
+	if test "$VERBOSE" != "no"; then echo -n "Populating /dev: "; fi
+	cd /
+	mkdir -p dev/input
+	mkdir -p dev/msys
+	mkdir -p dev/pts
+	mkdir -p dev/vc
+	mkdir -p dev/snd
+	mkdir -p dev/tts
+	for i in 0 1 2 3 4 5 6 7 8 9; do
+		ln -s /dev/tty$i /dev/vc/$i
+	done
+	ln -sf /proc/self/fd /dev/fd
+	ln -sf /proc/kcore /dev/core
+	/sbin/makedevs -r / -D /etc/device_table
+	if test $? -ne 0; then
+		if test "$VERBOSE" != "no"; then echo "failed"; fi
+	else
+		if test "$VERBOSE" != "no"; then echo "done"; fi
+	fi
+fi
+
+exit 0

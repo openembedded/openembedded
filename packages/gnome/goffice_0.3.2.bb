@@ -6,6 +6,8 @@ DEFAULT_PREFERENCE = "-1"
 
 DEPENDS="glib-2.0 gtk+ pango cairo libgnomeprint libgsf libglade libxml2 libart-lgpl"
 
+FILES_${PN}-dbg += "${libdir}/goffice/0.2.1/plugins/*/.debug"
+
 inherit gnome pkgconfig
 
 do_stage() {

@@ -3,12 +3,12 @@ SECTION = "openmoko/pim"
 LICENSE = "GPL"
 DEPENDS = "glib-2.0 gtk+ libglade eds-dbus openmoko-libs"
 PV = "0.1+svn${SRCDATE}"
-PR = "r4"
+PR = "r5"
 
 inherit gnome autotools pkgconfig gtk-icon-cache
 
 SRC_URI = "svn://svn.o-hand.com/repos/dates/branches/;module=openmoko;proto=http \
-          "
+          file://om-dates-temp-buildfix_20070308.patch;patch=p1"
 
 S = "${WORKDIR}/openmoko"
 
