@@ -1,0 +1,113 @@
+? 1.diff
+? library/1.diff
+Index: library/qpeapplication.cpp
+===================================================================
+RCS file: /cvs/opie/library/qpeapplication.cpp,v
+retrieving revision 1.115
+diff -u -r1.115 qpeapplication.cpp
+--- library/qpeapplication.cpp	27 Sep 2005 21:04:59 -0000	1.115
++++ library/qpeapplication.cpp	11 Jan 2007 06:12:50 -0000
+@@ -101,6 +101,7 @@
+ 
+ 
+ static bool useBigPixmaps = 0;
++static bool saveWindowsPos = 0;
+ 
+ class HackWidget : public QWidget
+ {
+@@ -129,6 +130,7 @@
+         fontSize = cfg.readNumEntry( "FontSize", 10 );
+         smallIconSize = cfg.readNumEntry( "SmallIconSize", 14 );
+         bigIconSize = cfg.readNumEntry( "BigIconSize", 32 );
++        saveWindowsPos = cfg.readBoolEntry( "AllowWindowed", false );
+ #ifdef OPIE_WITHROHFEEDBACK
+         RoH = 0;
+ #endif
+@@ -250,7 +252,8 @@
+ 
+     static bool read_widget_rect(const QString &app, bool &maximized, QPoint &p, QSize &s)
+     {
+-#ifndef OPIE_NO_WINDOWED
++    if (!saveWindowsPos)
++	return FALSE;
+     maximized = TRUE;
+     // 350 is the trigger in qwsdefaultdecoration for providing a resize button
+     if ( qApp->desktop()->width() <= 350 )
+@@ -272,8 +275,6 @@
+ 
+         return TRUE;
+     }
+-#endif
+-    return FALSE;
+     }
+ 
+ 
+@@ -322,7 +323,8 @@
+     {
+     if( !w )
+     return;
+-#ifndef OPIE_NO_WINDOWED
++    if (!saveWindowsPos)
++    return;
+     // 350 is the trigger in qwsdefaultdecoration for providing a resize button
+     if ( qApp->desktop()->width() <= 350 )
+         return;
+@@ -343,7 +345,6 @@
+     QString s;
+     s.sprintf("%d,%d,%d,%d,%d", r.left() + offsetX, r.top() + offsetY, r.width(), r.height(), w->isMaximized() );
+     cfg.writeEntry( app, s );
+-#endif
+     }
+ 
+     static bool setWidgetCaptionFromAppName( QWidget* /*mw*/, const QString& /*appName*/, const QString& /*appsPath*/ )
+@@ -2207,6 +2208,11 @@
+         quit();
+ }
+ 
++bool QPEApplication::isSaveWindowsPos()
++{
++    return saveWindowsPos;
++}
++
+ #if (__GNUC__ > 2 ) && !defined(_OS_MACX_)
+ extern "C" void __cxa_pure_virtual();
+ 
+Index: library/qpeapplication.h
+===================================================================
+RCS file: /cvs/opie/library/qpeapplication.h,v
+retrieving revision 1.35
+diff -u -r1.35 qpeapplication.h
+--- library/qpeapplication.h	4 Oct 2005 19:38:19 -0000	1.35
++++ library/qpeapplication.h	11 Jan 2007 06:12:50 -0000
+@@ -137,6 +137,8 @@
+ 
+     int exec();
+ 
++    static bool isSaveWindowsPos();
++
+ signals:
+     void clientMoused();
+     void timeChanged();
+Index: library/widget_showing.cpp
+===================================================================
+RCS file: /cvs/opie/library/widget_showing.cpp,v
+retrieving revision 1.4
+diff -u -r1.4 widget_showing.cpp
+--- library/widget_showing.cpp	19 Apr 2005 13:27:29 -0000	1.4
++++ library/widget_showing.cpp	11 Jan 2007 06:12:50 -0000
+@@ -52,13 +52,8 @@
+         return;
+     }
+ 
+-#ifdef OPIE_NO_WINDOWED
+-    Q_UNUSED( nomax )
+-    if ( TRUE ) {
+-#else
+-    if ( !nomax
+-         && ( qApp->desktop()->width() <= 320 ) ){
+-#endif
++    if ( !isSaveWindowsPos() || (!nomax
++         && ( qApp->desktop()->width() <= 30 )) ){
+         wg->showMaximized();
+     } else {
+ #ifdef Q_WS_QWS
