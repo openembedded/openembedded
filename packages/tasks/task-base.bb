@@ -1,8 +1,7 @@
 DESCRIPTION = "Merge machine and distro options to create a basic machine task/package"
-PR = "r19"
+PR = "r20"
 
 PACKAGES = "task-base \
-            task-base-minimal \
             task-base-oh-minimal \
             task-base-core-default"
 
@@ -99,9 +98,8 @@ RDEPENDS_task-base-oh-minimal = "\
     ${@base_contains("COMBINED_FEATURES", "pcmcia", "${PCMCIA_MANAGER}", "",d)} \
     ${MACHINE_ESSENTIAL_EXTRA_RDEPENDS}"
 
-RRECOMMENDS_task-base-minimal = "\
+RRECOMMENDS_task-base-oh-minimal = "\
     ${MACHINE_ESSENTIAL_EXTRA_RRECOMMENDS}"
-
 
 
 HOTPLUG ?= "linux-hotplug"

@@ -182,11 +182,11 @@ Recipes:    directfb, php
 
 Person:     Øyvind Repvik
 Mail:       nail@nslu2-linux.org
-Machines:   nslu2, fsg3, ixp4xx, n2100
-Distros:    debianslug, openslug, slugos
+Machines:   nslu2, fsg3, ixp4xx, n2100, turbostation
+Distros:    foonas, slugos
 Recipes:    bwmon, watchdog, wakelan, libdvb, sane-backends, samba
-Recipes:    ccxstream, eciadsl, ssmtp, gstreamer, ixp4xx-npe, joe
+Recipes:    ccxstream, eciadsl, ssmtp, ixp4xx-npe, joe
 Recipes:    lcdproc, libol, mailx, mysql, musicpd, openntpd, qc-usb
 Recipes:    radlib, scsi-idle, rng-tools, slugos-init, syslog-ng
-Recipes:    vsftpd, zd1211, wpa-supplicant
+Recipes:    vsftpd, zd1211
 

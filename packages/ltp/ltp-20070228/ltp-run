@@ -1,0 +1,4 @@
+#!/bin/sh
+/usr/libexec/ltp/runltp -t 180s > /home/root/testlog.txt
+echo "Benchmark run finished...."
+touch /home/root/testfinished.flag

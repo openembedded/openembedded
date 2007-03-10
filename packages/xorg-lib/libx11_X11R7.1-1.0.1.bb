@@ -3,6 +3,7 @@ require xorg-lib-common.inc
 PR = "r4"
 
 DESCRIPTION = "Base X libs."
+SRC_URI += "file://makekeys.diff;patch=1"
 
 DEPENDS += " bigreqsproto xproto xextproto xtrans libxau xcmiscproto \
 	libxdmcp xf86bigfontproto kbproto inputproto"

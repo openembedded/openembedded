@@ -1,0 +1,91 @@
+#!/bin/sh
+# validate /etc/fstab against the current UUID list in
+# /etc/uuid_by_partition
+#
+. /etc/default/functions
+pfile=/etc/uuid_by_partition
+
+#
+# use debug to find out what is going on
+test "$1" = start -o "$1" = debug || exit 0
+
+#
+# obtain the current list of parititions with UUIDs
+newlist="$(uuid_by_partition)"
+
+if test -r "$pfile"
+then
+	# read the old list
+	oldlist="$(cat "$pfile")"
+	#
+	# if it hasn't changed nothing need be done
+	test "$newlist" = "$oldlist" && exit 0
+	#
+	# it has changed, but this only matters if
+	# a previously existing uuid has moved, build
+	# a list of old device vs new device for every
+	# uuid which has moved
+	changedlist="$(
+		{	echo "$oldlist"
+			echo "$newlist"
+		} | awk 'device[$2] == ""{device[$2] = $1}
+			device[$2] != $1{print device[$2], $1}')"
+
+	if test -n "$changedlist"
+	then
+		# at least one partition has moved, scan the
+		# current fstab to see if it has a reference
+		# to this partition
+		changedfstab="$(
+			{	echo "$changedlist"
+				echo '#fstab'
+				cat /etc/fstab
+			} | awk 'BEGIN{list=1}
+				list==1 && $0=="#fstab"{list=0; continue}
+				list==1{new[$1] = $2; continue}
+				new[$1] != ""{print $1, new[$1]}')"
+
+		# if this list is not empty edit the fstab
+		if test -n "$changedfstab"
+		then
+			rm -f /tmp/fstab.$$
+			# if the edit fails then do not overwrite the old
+			# partition list - just exit with an error
+			{	echo "$changedlist"
+				echo '#fstab'
+				cat /etc/fstab
+			} | awk 'BEGIN{list=1}
+				list==1 && $0=="#fstab"{list=0; continue}
+				list==1{new[$1] = $2; continue}
+				new[$1] != ""{$1 = new[$1]}
+				{print}' >/tmp/fstab.$$ || {
+				if test "$1" = start
+				then
+					logger -s "/etc/init.d/fixfstab: /tmp/fstab.$$: awk failed"
+				else
+					echo "debug: awk script failed with:" >&2
+					echo "$changedlist" >&2
+					echo "output in /tmp/fstab.$$" >&2
+				fi
+				exit 1
+			}
+
+			if test "$1" = start
+			then
+				mv /tmp/fstab.$$ /etc/fstab || {
+					logger -s "/etc/init.d/fixfstab: /tmp/fstab.$$: update failed"
+					exit 1
+				}
+			else
+				echo "debug: fstab changed:"
+				diff -u /etc/fstab /tmp/fstab.$$
+			fi
+		fi
+	fi
+fi
+
+# write the new list to the file, only if we
+# are doing something...
+test "$1" = start && echo "$newlist" >"$pfile"
+
+exit 0

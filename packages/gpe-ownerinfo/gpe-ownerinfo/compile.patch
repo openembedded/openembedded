@@ -1,0 +1,13 @@
+Index: gpe-ownerinfo-0.28/Makefile
+===================================================================
+--- gpe-ownerinfo-0.28.orig/Makefile
++++ gpe-ownerinfo-0.28/Makefile
+@@ -40,7 +40,7 @@ all: $(PACKAGE) all-mo
+ 
+ $(LIB_TARGET): $(LIB_OBJS)
+ 	rm -f $@
+-	ar cq $@ $^
++	$(AR) cq $@ $^
+ 
+ $(PACKAGE): $(OBJS) $(LIB_TARGET)
+ 	$(CC) -o $@ $^ $(LDFLAGS) $(PACKAGE_LDFLAGS) -L. -lgpe-ownerinfo

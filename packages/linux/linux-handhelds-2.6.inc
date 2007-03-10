@@ -3,7 +3,7 @@ DESCRIPTION = "handhelds.org Linux kernel 2.6 for PocketPCs and other consumer h
 LICENSE = "GPL"
 
 COMPATIBLE_HOST = "arm.*-linux"
-COMPATIBLE_MACHINE ?= '(asus730|aximx50|h1910|h2200|h3600|h3800|h3900|h4000|h5000|htcblueangel|htcuniversal|hx4700|jornada56x|magician|simpad|rx3000)'
+COMPATIBLE_MACHINE ?= '(asus730|aximx50|h1910|h2200|h3600|h3800|h3900|h4000|h5000|htcblueangel|htcuniversal|hx4700|jornada56x|magician|simpad|rx3000|htchermes)'
 
 # SRC_URI *must* be overriden in includer, but this is a good reference
 SRC_URI ?= "${HANDHELDS_CVS};module=linux/kernel26;tag=${@'K' + bb.data.getVar('PV',d,1).replace('.', '-')} \
@@ -70,4 +70,4 @@ do_deploy() {
    
 do_deploy[dirs] = "${S}"
 
-addtask deploy before do_build after do_compile
+addtask deploy before do_package after do_install

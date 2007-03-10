@@ -5,7 +5,7 @@ HOMEPAGE = "http://www.openezx.org"
 LICENSE = "GPL"
 DEPENDS += "quilt-native"
 EZX = "ezx0"
-PR = "${EZX}-r1"
+PR = "${EZX}-r2"
 
 DEFAULT_PREFERENCE = "-1"
 DEFAULT_PREFERENCE_rokr-e2 = "1"
@@ -30,7 +30,8 @@ SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.19.tar.bz2 \
 	   ${DMSRC}/sumatra.c.patch;patch=1;pnum=1 \
 	   ${DMSRC}/uncompress.h.patch;patch=1;pnum=5 \
            file://logo_linux_clut224.ppm \ 
-           file://defconfig-${MACHINE}"
+           file://defconfig-${MACHINE} \
+           file://wyrm-ts.diff;patch=1"
 
 S = "${WORKDIR}/linux-2.6.19"
 
