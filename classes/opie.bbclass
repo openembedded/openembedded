@@ -15,7 +15,7 @@
 
 inherit palmtop
 
-OPIE_CVS_PV = "1.2.2+cvs${SRCDATE}"
+OPIE_CVS_PV ?= "1.2.2+cvs${SRCDATE}"
 
 DEPENDS_prepend = "${@["libopie2 ", ""][(bb.data.getVar('PN', d, 1) == 'libopie2')]}"
 
