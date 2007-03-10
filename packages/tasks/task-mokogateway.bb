@@ -67,5 +67,6 @@ RRECOMMENDS_task-mokogateway-wifi = "\
 	kernel-module-michael-mic \
 	kernel-module-aes \
 	${@base_contains("COMBINED_FEATURES", "usbhost", "kernel-module-zd1211rw", "",d)} \
+	${@base_contains("COMBINED_FEATURES", "usbhost", "zd1211-firmware", "",d)} \
 "
 

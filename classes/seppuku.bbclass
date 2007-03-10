@@ -5,6 +5,23 @@
 # This class requires python2.4 because of the urllib2 usage
 #
 
+def seppuku_spliturl(url):
+    """
+    Split GET URL to return the host base and the query
+    as a param dictionary
+    """
+    import urllib
+    (uri,query)  = urllib.splitquery(url)
+    param = {}
+    for par in query.split("&"):
+        (key,value) = urllib.splitvalue(par)
+        key = urllib.unquote(key)
+        value = urllib.unquote(value)
+        param[key] = value
+
+    return (uri,param)
+
+
 
 def seppuku_login(opener, login, user, password):
     """
@@ -109,7 +126,7 @@ def seppuku_find_bug_report(opener, query, product, component, bugname):
         (number,status) = scanner.result()[0]
         return (not status in ["CLOS", "RESO", "VERI"],number)
 
-def seppuku_reopen_bug(opener, file, product, component, bug_number, bugname, text):
+def seppuku_reopen_bug(poster, file, product, component, bug_number, bugname, text):
     """
     Reopen a bug report and append to the comment
 
@@ -118,14 +135,26 @@ def seppuku_reopen_bug(opener, file, product, component, bug_number, bugname, te
     http://bugzilla.openmoko.org/cgi-bin/bugzilla/process_bug.cgi?id=239&bug_file_loc=http%3A%2F%2F&version=2007&longdesclength=2&product=OpenMoko&component=autobuilds&comment=bla&priority=P2&bug_severity=normal&op_sys=Linux&rep_platform=Neo1973&knob=reopen&target_milestone=Phase+0&short_desc=foo
     """
 
-    import urllib, urllib2
-    param = urllib.urlencode( { "product" : product, "component" : component, "longdesclength" : 2,
-                                "short_desc" : bugname, "knob" : "reopen", "id" : bug_number, "comment" : text } )
+    import urllib2
+    (uri, param) = seppuku_spliturl( file )
+
+    # Prepare the post
+    param["product"]        = product
+    param["component"]      = component
+    param["longdesclength"] = 2
+    param["short_desc"]     = bugname
+    param["knob"]           = "reopen"
+    param["id"]             = bug_number
+    param["comment"]        = text
+
     try:
-        result = opener.open( file + param )
+        result = poster.open( uri, param )
     except urllib2.HTTPError, e:
         print e.geturl()
         print e.info()
+        return False
+    except Exception, e:
+        print e
         return False
 
     if result.code != 200:
@@ -133,7 +162,7 @@ def seppuku_reopen_bug(opener, file, product, component, bug_number, bugname, te
     else:
         return True
 
-def seppuku_file_bug(opener, file, product, component, bugname, text):
+def seppuku_file_bug(poster, file, product, component, bugname, text):
     """
     Create a completely new bug report
 
@@ -150,14 +179,21 @@ def seppuku_file_bug(opener, file, product, component, bugname, text):
     @param text Text
     """
 
-    import urllib,urllib2
-    param = urllib.urlencode( { "product" : product, "component" : component, "short_desc" : bugname, "comment" : text } )
+    import urllib2
+    (uri, param) = seppuku_spliturl( file )
+    param["product"]    = product
+    param["component"]  = component
+    param["short_desc"] = bugname
+    param["comment"]    = text
+
     try:
-        result = opener.open( file + param )
+        result = poster.open( uri, param )
     except urllib2.HTTPError, e:
         print e.geturl()
         print e.info()
-        raise e
+        return False
+    except Exception, e:
+        print e
         return False
 
     if result.code != 200:
@@ -165,6 +201,35 @@ def seppuku_file_bug(opener, file, product, component, bugname, text):
     else:
         return True
 
+def seppuku_create_attachment(poster, attach_query, product, component, bug_number, text, file):
+    """
+
+    Create a new attachment for the failed report
+    """
+
+    if not bug_number:
+        import bb
+        bb.note("Can't create an attachment, the bug is not present")
+        return False
+
+    import urllib2
+    param = { "bugid" : bug_number, "action" : "insert", "data" : file, "description" : "Build log", "ispatch" : "0", "contenttypemethod" : "list", "contenttypeselection" : "text/plain", "comment" : text }
+
+    try:
+        result = poster.open( attach_query, param )
+    except urllib2.HTTPError, e:
+        print e.geturl()
+        print e.info()
+        return False
+    except Exception, e:
+        print e
+        return False
+
+    print result.read()
+    if result.code != 200:
+        return False
+    else:
+        return True
 
 
 addhandler seppuku_eventhandler
@@ -177,7 +242,12 @@ python seppuku_eventhandler() {
     from bb import data, mkdirhier, build
     import bb, os, glob
 
-    bb.note( "Ran" )
+    # Try to load our exotic libraries
+    try:
+        import MultipartPostHandler
+    except:
+        bb.note("You need to put the MultipartPostHandler into your PYTHONPATH. Download it from http://pipe.scs.fsu.edu/PostHandler/MultipartPostHandler.py")
+        return NotHandled
 
     try:
         import urllib2, cookielib
@@ -194,10 +264,12 @@ python seppuku_eventhandler() {
     elif name == "TaskFailed" or name == "NoProvider":
         cj = cookielib.CookieJar()
         opener  = urllib2.build_opener(urllib2.HTTPCookieProcessor(cj))
+        poster  = urllib2.build_opener(urllib2.HTTPCookieProcessor(cj),MultipartPostHandler.MultipartPostHandler)
         login   = bb.data.getVar("SEPPUKU_LOGIN", data, True)
         query   = bb.data.getVar("SEPPUKU_QUERY", data, True)
         newbug  = bb.data.getVar("SEPPUKU_NEWREPORT",  data, True)
         reopen  = bb.data.getVar("SEPPUKU_ADDCOMMENT",  data, True)
+        attach  = bb.data.getVar("SEPPUKU_ATTACHMENT", data, True)
         user    = bb.data.getVar("SEPPUKU_USER",  data, True)
         passw   = bb.data.getVar("SEPPUKU_PASS",  data, True)
         product = bb.data.getVar("SEPPUKU_PRODUCT", data, True)
@@ -215,12 +287,12 @@ python seppuku_eventhandler() {
                                                                "pr"      : bb.data.getVar("PR", data, True),
                                                                "task"    : e.task }
             log_file = glob.glob("%s/log.%s.*" % (bb.data.getVar('T', event.data, True), event.task))
-            if len(log_file) != 0:
-                to_file  = bb.data.getVar('TINDER_LOG', event.data, True)
-            text    = "".join(open(log_file[0], 'r').readlines())
+            text     = "The package failed to build at %s" % bb.data.getVar('DATETIME', data, True) 
+            file     = open(log_file[0], 'r')
         elif name == "NoProvider":
             bugname = "noprovider for %s runtime: %s" % (event.getItem, event.getisRuntime)
             text    = "Please fix it"
+            file    = None
         else:
             assert False
 
@@ -234,10 +306,17 @@ python seppuku_eventhandler() {
             return NotHandled
 
         if bug_number and not bug_open:
-            if not seppuku_reopen_bug(opener, reopen, product, component, bug_number, bugname, text):
+            if not seppuku_reopen_bug(poster, reopen, product, component, bug_number, bugname, text):
                 bb.note("Failed to reopen the bug report")
-        elif not seppuku_file_bug(opener, newbug, product, component, bugname, text):
+        elif not seppuku_file_bug(poster, newbug, product, component, bugname, text):
             bb.note("Filing a bugreport failed")
+        else:
+            # get the new bug number and create an attachment
+            (bug_open, bug_number) = seppuku_find_bug_report(opener, query, product, component, bugname)
+
+        if file:
+            if not seppuku_create_attachment(poster, attach, product, component, bug_number, text, file):
+                bb.note("Failed to attach the build log")
 
     return NotHandled
 }
