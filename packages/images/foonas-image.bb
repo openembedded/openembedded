@@ -75,7 +75,7 @@ turbostation_pack_image() {
 	PADFILE=${DEPLOY_DIR_IMAGE}/padfile.zzz
 	HEX_MAX_KERN_SIZE=200000
 	DEC_MAX_KERN_SIZE=`echo "ibase=16; $HEX_MAX_KERN_SIZE" | bc `
-	HEX_MAX_ROOT_SIZE=C80000
+	HEX_MAX_ROOT_SIZE=D00000
 	DEC_MAX_ROOT_SIZE=`echo "ibase=16; $HEX_MAX_ROOT_SIZE" | bc `
 	KERNEL_SIZE=`ls -l $KERNEL | awk '{print $5}'`
 	if [ $KERNEL_SIZE -gt $DEC_MAX_KERN_SIZE ]; then
