@@ -3,7 +3,7 @@ ALLOW_EMPTY = "1"
 PACKAGE_ARCH = "all"
 LICENSE = "MIT"
 PROVIDES = "task-mokogateway-everything"
-PR = "2"
+PR = "r2"
 
 PACKAGES = "\
 	task-mokogateway-everything \
