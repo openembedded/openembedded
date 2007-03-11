@@ -18,6 +18,7 @@ APPTYPE = "binary"
 APPDESKTOP = "${S}"
 
 do_install () {
+	install -d ${D}${palmtopdir}/apps/Games/
 	install -d ${D}${palmtopdir}/pics/${APPNAME}/
 	install -m 0644 ${S}/pics/*.png ${D}${palmtopdir}/pics/${APPNAME}/
 	install -m 0644 ${S}/${APPNAME}.desktop ${D}${palmtopdir}/apps/Games
