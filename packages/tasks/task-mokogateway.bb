@@ -3,7 +3,7 @@ ALLOW_EMPTY = "1"
 PACKAGE_ARCH = "all"
 LICENSE = "MIT"
 PROVIDES = "task-mokogateway-everything"
-PR = "1"
+PR = "2"
 
 PACKAGES = "\
 	task-mokogateway-everything \
@@ -21,10 +21,14 @@ RDEPENDS_task-mokogateway-everything = "${MOKOGATEWAY_PACKAGES}"
 
 DESCRIPTION_task-mokogateway-usbnet = "MokoGateway: USB Networking"
 RDEPENDS_task-mokogateway-usbnet = "\
+	iptables \
 "
 RRECOMMENDS_task-mokogateway-usbnet = "\
 	kernel-module-usbnet \
+	kernel-module-cdc-acm \
 	kernel-module-cdc-ether \
+	kernel-module-iptable-nat \
+	kernel-module-ipt-masquerade \
 "
 
 DESCRIPTION_task-mokogateway-bluetooth = "MokoGateway: Bluetooth"
