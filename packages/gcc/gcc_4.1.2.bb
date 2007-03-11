@@ -1,4 +1,4 @@
-PR = "r0"
+PR = "r1"
 DESCRIPTION = "The GNU cc and gcc C compilers."
 HOMEPAGE = "http://www.gnu.org/software/gcc/"
 SECTION = "devel"
@@ -24,6 +24,7 @@ SRC_URI = "ftp://ftp.gnu.org/pub/gnu/gcc/gcc-4.1.2/gcc-4.1.2.tar.bz2 \
 	file://arm-nolibfloat.patch;patch=1 \
 	file://arm-softfloat.patch;patch=1 \
 	file://gcc41-configure.in.patch;patch=1 \
+	file://gcc-ignore-cache.patch;patch=1 \
 	file://arm-thumb.patch;patch=1 \
 	file://arm-thumb-cache.patch;patch=1 \
 	file://ldflags.patch;patch=1 \
