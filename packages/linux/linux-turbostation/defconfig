@@ -1,7 +1,7 @@
 #
 # Automatically generated make config: don't edit
 # Linux kernel version: 2.6.20.1
-# Wed Mar  7 20:28:41 2007
+# Thu Mar  8 19:11:26 2007
 #
 CONFIG_MMU=y
 CONFIG_GENERIC_HARDIRQS=y
@@ -1526,19 +1526,6 @@ CONFIG_USB_TRANCEVIBRATOR=m
 # USB Gadget Support
 #
 # CONFIG_USB_GADGET is not set
-# CONFIG_USB_GADGET_NET2280 is not set
-# CONFIG_USB_GADGET_PXA2XX is not set
-# CONFIG_USB_GADGET_GOKU is not set
-# CONFIG_USB_GADGET_LH7A40X is not set
-# CONFIG_USB_GADGET_OMAP is not set
-# CONFIG_USB_GADGET_AT91 is not set
-# CONFIG_USB_GADGET_DUMMY_HCD is not set
-# CONFIG_USB_ZERO is not set
-# CONFIG_USB_ETH is not set
-# CONFIG_USB_GADGETFS is not set
-# CONFIG_USB_FILE_STORAGE is not set
-# CONFIG_USB_G_SERIAL is not set
-# CONFIG_USB_MIDI_GADGET is not set
 
 #
 # MMC/SD Card support
@@ -1646,7 +1633,7 @@ CONFIG_XFS_POSIX_ACL=y
 # CONFIG_XFS_RT is not set
 # CONFIG_GFS2_FS is not set
 # CONFIG_OCFS2_FS is not set
-# CONFIG_MINIX_FS is not set
+CONFIG_MINIX_FS=m
 CONFIG_ROMFS_FS=m
 CONFIG_INOTIFY=y
 CONFIG_INOTIFY_USER=y

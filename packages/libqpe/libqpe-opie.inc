@@ -16,10 +16,10 @@ EXTRA_QMAKEVARS_PRE += "CONFIG+=LIBQPE_WITHROHFEEDBACK"
 EXTRA_QMAKEVARS_POST += "DESTDIR= DEFINES+=LIBQPE_NO_INLINE_IMAGES"
 
 CXXFLAGS_append = " -DOPIE_NO_ERASE_RECT_HACKFIX -DOPIE_NEW_MALLOC"
-CXXFLAGS_append_c7x0 =  " -DOPIE_NO_WINDOWED "
-CXXFLAGS_append_tosa =  " -DOPIE_NO_WINDOWED "
-CXXFLAGS_append_spitz = " -DOPIE_NO_WINDOWED "
-CXXFLAGS_append_akita = " -DOPIE_NO_WINDOWED "
+#CXXFLAGS_append_c7x0 =  " -DOPIE_NO_WINDOWED "
+#CXXFLAGS_append_tosa =  " -DOPIE_NO_WINDOWED "
+#CXXFLAGS_append_spitz = " -DOPIE_NO_WINDOWED "
+#CXXFLAGS_append_akita = " -DOPIE_NO_WINDOWED "
 
 do_compile_prepend_mnci () {
 	ln -s custom-ramses.h custom.h
@@ -76,4 +76,4 @@ do_install() {
 FILES_${PN} = "${palmtopdir}/lib/libqpe.so.*"
 FILES_${PN}-dev = "${includedir} ${palmtopdir}/lib/*"
 FILES_${PN}-dbg = "${palmtopdir}/lib/.debug/"
-PACKAGE_ARCH_${PN} = "${MACHINE_ARCH}"
+#PACKAGE_ARCH_${PN} = "${MACHINE_ARCH}"

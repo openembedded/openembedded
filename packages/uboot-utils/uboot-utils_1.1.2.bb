@@ -3,12 +3,13 @@ SECTION = "bootloaders"
 PRIORITY = "optional"
 LICENSE = "GPL"
 DEPENDS = "mtd-utils"
+PR = "r3"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/u-boot/u-boot-${PV}.tar.bz2 \
-	 file://fw_env.h.patch;patch=1 \
 	 file://fw_env.c.patch;patch=1 \
 	 file://tools-Makefile.patch;patch=1 \
-	 file://env-Makefile.patch;patch=1 "
+	 file://env-Makefile.patch;patch=1 \
+	 file://fw_env.config"
 
 S = "${WORKDIR}/u-boot-${PV}"
 EXTRA_OEMAKE = "CROSS_COMPILE=${TARGET_PREFIX}"
@@ -33,7 +34,9 @@ do_stage() {
 }
 
 do_install () {
-	install -d     ${D}/sbin
+	install -d	${D}/sbin
+	install -d	${D}${sysconfdir}
+	install -m 644 ${WORKDIR}/fw_env.config ${D}${sysconfdir}/fw_env.config
 	install -m 755 ${S}/tools/env/fw_printenv ${D}/sbin/fw_printenv
 	install -m 755 ${S}/tools/env/fw_printenv ${D}/sbin/fw_setenv
 }

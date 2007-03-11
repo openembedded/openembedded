@@ -1,4 +1,4 @@
-DESCRIPTION = "SDK packages for Opie and GPE"
+DESCRIPTION = "SDK packages"
 PR = "r5"
 LICENSE = "MIT"
 ALLOW_EMPTY = "1"
@@ -6,7 +6,6 @@ ALLOW_EMPTY = "1"
 PACKAGES = "\
     task-sdk-bare \
     task-sdk-base \
-    task-sdk-opie \
     task-sdk-x11 \
     task-sdk-x11-ext \
     task-sdk-gpe"
@@ -115,15 +114,3 @@ RDEPENDS_task-sdk-gpe := "\
     libgpelaunch-dev \
     libgpewidget-dev \
     libhandoff-dev"
-
-RDEPENDS_task-sdk-opie := "\
-    libopiebluez2 \
-    libopiedb2 \
-    libopiecore2 \
-    libopienet2 \
-    libopiepim2 \
-    libopieui2 \
-    libqpe1 \
-    qte \
-    libqtaux2 \
-    libmailwrapper"

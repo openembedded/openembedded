@@ -6,6 +6,7 @@ proc		/proc		proc	defaults		0  0
 # usb?
 
 # Temporary
+tmpfs		/tmp		tmpfs   defaults        	0  0
 tmpfs		/var		tmpfs   defaults        	0  0
 tmpfs		/media/ram	tmpfs	defaults		0  0
 

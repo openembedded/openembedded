@@ -5,7 +5,7 @@
 DESCRIPTION = "Packages that are compatible with the SlugOS firmware"
 HOMEPAGE = "http://www.nslu2-linux.org"
 LICENSE = "MIT"
-PR = "r20"
+PR = "r22"
 CONFLICTS = "db3"
 
 COMPATIBLE_MACHINE = "nslu2"
@@ -107,14 +107,12 @@ SLUGOS_PACKAGES = "\
 	make \
 	masqmail \
 	mdadm \
-	mediatomb \
 	memtester \
 	mgetty \
 	miau \
 	microcom \
 	minicom \
 	motion \
-	mpd \
 	mt-daapd \
 	mtd-utils \
 	mutt \
@@ -158,6 +156,7 @@ SLUGOS_PACKAGES = "\
 	sysfsutils \
 	syslog-ng \
 	tar \
+	task-mokogateway-everything \
 	thttpd \
 	tiff \
 	tzdata \
@@ -172,6 +171,7 @@ SLUGOS_PACKAGES = "\
 	wget \
 	wireless-tools \
 	wpa-supplicant \
+	zd1211-firmware \
 	zip \
 	zlib \
 	"
@@ -183,6 +183,8 @@ SLUGOS_BROKEN_PACKAGES = "\
 	gphoto2 \
 	irssi \
 	libgphoto2 \
+	mediatomb \
+	mpd \
 	netpbm \
 	puppy \
 	pvrusb2-mci \

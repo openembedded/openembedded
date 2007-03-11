@@ -2,30 +2,11 @@ DESCRIPTION = "Linux Kernel for the QNAP TurboStation platform"
 SECTION = "kernel"
 LICENSE = "GPL"
 DEPENDS = "uboot-utils"
-PR = "r5"
-
-# notes on iom def kernel:
-#
-# can probably remove :
-# BLK_DEV_RAM ?
-# MD_RAID5
-# QUOTA
-# QFMT_V2
-# DNOTIFY?
-# MSDOS_FS, VFAT_FS, NTFS_FS?
-#
-# USB_GADGET? - USB_GADGET_NET2280, USB_ETH, USB_ETH_RNDIS
-#
-#
-# should add:
-#   EXT3_FS
-#   PACKET_MMAP ?
-#   i2c_chardev?
-# usb audio:
-#   USB_EMI62?
-#   USB_EMI26?
+PR = "r6"
 
 COMPATIBLE_MACHINE = "turbostation"
+
+RDEPENDS_kernel-module-zd1211rw += "zd1211-firmware"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-${PV}.tar.bz2 \
 	file://001_r1000.diff;patch=1 \
