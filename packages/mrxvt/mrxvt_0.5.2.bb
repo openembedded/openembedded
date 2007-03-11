@@ -3,7 +3,8 @@ HOMEPAGE = "http://materm.sourceforge.net"
 AUTHOR = "Jimmy Zhou <jimmyzhou@users.sf.net>"
 LICENSE = "GPL"
 SECTION = "x11/applications"
-DEPENDS = "virtual/libx11 libxext libxpm jpeg libpng"
+RDEPENDS = "freetype fontconfig libxft"
+DEPENDS = "freetype fontconfig libxft virtual/libx11"
 PR = "r0"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/materm/mrxvt-${PV}.tar.gz \
@@ -11,4 +12,7 @@ SRC_URI = "${SOURCEFORGE_MIRROR}/materm/mrxvt-${PV}.tar.gz \
 
 inherit autotools
 
-EXTRA_OECONF = "--enable-everything --disable-debug"
+EXTRA_OECONF = "--x-includes=${STAGING_INCDIR}/X11 \
+		--x-libraries=${STAGING_LIBDIR} \
+		--enable-everything \
+		--disable-debug"
