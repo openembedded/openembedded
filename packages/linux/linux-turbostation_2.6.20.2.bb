@@ -2,7 +2,7 @@ DESCRIPTION = "Linux Kernel for the QNAP TurboStation platform"
 SECTION = "kernel"
 LICENSE = "GPL"
 DEPENDS = "uboot-utils"
-PR = "r6"
+PR = "r1"
 
 COMPATIBLE_MACHINE = "turbostation"
 
@@ -11,17 +11,13 @@ RDEPENDS_kernel-module-zd1211rw += "zd1211-firmware"
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-${PV}.tar.bz2 \
 	file://001_r1000.diff;patch=1 \
 	file://linux-2.6.16_arch_ppc_platforms_sandpoint.h;patch=1 \
-	file://linux-2.6.16_drivers_i2c_chips_Makefile;patch=1 \
 	file://002_qnap-pic.diff;patch=1 \
 	file://linux-2.6.16_arch_ppc_syslib_Makefile;patch=1 \
 	file://linux-2.6.16_drivers_mtd_maps_physmap.c;patch=1 \
 	file://linux-2.6.16_arch_ppc_syslib_mpc10x_common.c;patch=1 \
-	file://linux-2.6.16_drivers_net_r8169.c;patch=1 \
 	file://linux-2.6.16_arch_ppc_platforms_Makefile;patch=1 \
-	file://linux-2.6.16_arch_ppc_syslib_open_pic.c;patch=1 \
 	file://linux-2.6.16_include_asm-ppc_mpc10x.h;patch=1 \
 	file://linux-2.6.16_arch_ppc_platforms_sandpoint.c;patch=1 \
-	file://linux-2.6.16_drivers_i2c_chips_Kconfig;patch=1 \
 	file://defconfig"
 
 S = "${WORKDIR}/linux-${PV}"
