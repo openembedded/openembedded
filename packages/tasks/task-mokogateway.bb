@@ -3,7 +3,7 @@ ALLOW_EMPTY = "1"
 PACKAGE_ARCH = "all"
 LICENSE = "MIT"
 PROVIDES = "task-mokogateway-everything"
-PR = "2"
+PR = "r3"
 
 PACKAGES = "\
 	task-mokogateway-everything \
@@ -53,9 +53,10 @@ RRECOMMENDS_task-mokogateway-bluetooth = "\
 
 DESCRIPTION_task-mokogateway-wifi = "MokoGateway: WiFi"
 RDEPENDS_task-mokogateway-wifi = "\
+	bridge-utils \
 	wireless-tools \
-	${@base_contains("COMBINED_FEATURES", "pcmcia", "hostap-utils", "",d)} \
-	${@base_contains("COMBINED_FEATURES", "pci", "hostap-utils", "",d)} \
+	${@base_contains("COMBINED_FEATURES", "pci", "madwifi-ng-modules", "",d)} \
+	${@base_contains("COMBINED_FEATURES", "pci", "madwifi-ng-tools", "",d)} \
 	wpa-supplicant \
 "
 RRECOMMENDS_task-mokogateway-wifi = "\

@@ -1,7 +1,7 @@
 #
 # Automatically generated make config: don't edit
-# Linux kernel version: 2.6.20.1
-# Thu Mar  8 19:11:26 2007
+# Linux kernel version: 2.6.20.2
+# Sun Mar 11 15:29:33 2007
 #
 CONFIG_MMU=y
 CONFIG_GENERIC_HARDIRQS=y
@@ -958,7 +958,6 @@ CONFIG_I2C_MPC=y
 # CONFIG_SENSORS_PCF8591 is not set
 # CONFIG_SENSORS_M41T00 is not set
 # CONFIG_SENSORS_MAX6875 is not set
-# CONFIG_SENSORS_S35390A is not set
 # CONFIG_I2C_DEBUG_CORE is not set
 # CONFIG_I2C_DEBUG_ALGO is not set
 # CONFIG_I2C_DEBUG_BUS is not set

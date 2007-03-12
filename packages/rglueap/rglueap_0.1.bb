@@ -1,10 +1,12 @@
-DESCRIPTION = "Raw Glue AP"
-SECTION = "console/network"
+DESCRIPTION = "Raw Glue AP, wireless intrusion detection"
+AUTHOR = "Laurent Butti"
 HOMEPAGE = "http://rfakeap.tuxfamily.org/#Raw_Glue_AP"
+SECTION = "console/network"
+PRIORITY = "optional"
 LICENSE = "GPLv2"
 DEPENDS = "libpcap"
 
-SRC_URI = "http://rfakeap.tuxfamily.org/rglueap-${PV}.tar.gz"
+SRC_URI = "http://rfakeap.tuxfamily.org/${P}.tar.gz"
 
 LDFLAGS += "-lpcap"
 

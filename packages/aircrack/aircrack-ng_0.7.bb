@@ -2,10 +2,7 @@ SECTION = "console/network"
 DESCRIPTION = "Aircrack-ng is a set of tools for wep key statistical cracking"
 HOMEPAGE = "http://www.aircrack-ng.org/"
 LICENSE = "GPLv2"
-MAINTAINER = "Zero_Chaos <sidhayn@gmail.com>"
-DEPENDS = ""
-RDEPENDS = ""
-PR="r2"
+PR = "r2"
 
 SRC_URI = "http://download.aircrack-ng.org/aircrack-ng-${PV}.tar.gz"
 

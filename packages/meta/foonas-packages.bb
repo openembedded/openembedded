@@ -45,6 +45,7 @@ FOONAS_PACKAGES = "\
 	flite \
 	gallery \
 	gawk \
+	gcc \
 	gdbm \
 	gnu-config \
 	grep \
@@ -119,6 +120,7 @@ FOONAS_PACKAGES = "\
 	syslog-ng \
 	tar \
 	thttpd \
+	tzdata \
 	tiff \
 	unzip \
 	usbutils \

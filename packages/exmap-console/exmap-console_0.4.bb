@@ -1,0 +1,2 @@
+require exmap-console.inc
+
