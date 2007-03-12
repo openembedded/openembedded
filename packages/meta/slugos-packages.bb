@@ -5,7 +5,7 @@
 DESCRIPTION = "Packages that are compatible with the SlugOS firmware"
 HOMEPAGE = "http://www.nslu2-linux.org"
 LICENSE = "MIT"
-PR = "r22"
+PR = "r23"
 CONFLICTS = "db3"
 
 COMPATIBLE_MACHINE = "nslu2"
@@ -136,6 +136,7 @@ SLUGOS_PACKAGES = "\
 	pciutils \
 	libpcre \
 	perl \
+	picocom \
 	pkgconfig \
 	ppp \
 	procps \
