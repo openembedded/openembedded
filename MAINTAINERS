@@ -164,7 +164,7 @@ Website:    http://zerochaos.aircrack-ng.org
 Interests:  wifi, packet injection, security
 Distros:    Angstrom
 Machines:   akita
-Recipes:    aircrack-ng, kismet, mdk2, rfakeap, void11
+Recipes:    aircrack-ng, kismet, mdk2, rfakeap, void11, rglueap
 
 Person:	    Rolf 'Laibsch' Leggewie
 Mail:       OE-recipes@rolf.leggewie.biz
