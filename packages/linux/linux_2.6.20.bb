@@ -13,6 +13,10 @@ SRC_URI_append_simpad = "\
            file://linux-2.6.20.SIMpad.mq200.patch;patch=1 \
            file://linux-2.6.20.SIMpad.ucb1x00-switches.patch;patch=1 \
 	   "
+SRC_URI_append_n2100 = "\
+	   file://n2100-r8169-parity.patch;patch=1 \
+	   file://rtc-rs5c372-n2100.patch;patch=1 \
+	   "
 
 inherit kernel
 
