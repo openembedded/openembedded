@@ -5,7 +5,7 @@
 DESCRIPTION = "Packages that are compatible with the SlugOS firmware"
 HOMEPAGE = "http://www.nslu2-linux.org"
 LICENSE = "MIT"
-PR = "r24"
+PR = "r25"
 CONFLICTS = "db3"
 
 COMPATIBLE_MACHINE = "nslu2"
@@ -97,7 +97,6 @@ SLUGOS_PACKAGES = "\
 	libvorbis \
 	libxml2 \
 	litestream \
-	logrotate \
 	lrzsz \
 	lsof \
 	lvm2 \
@@ -186,6 +185,7 @@ SLUGOS_BROKEN_PACKAGES = "\
 	gphoto2 \
 	irssi \
 	libgphoto2 \
+	logrotate \
 	mediatomb \
 	mpd \
 	netpbm \
