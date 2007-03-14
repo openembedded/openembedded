@@ -165,6 +165,11 @@ pivot_image() {
 
 	mkdir -p /media/image || die "mkdir -p /media/image failed"
 
+	LOOP_MODULE="$(find /lib/modules/`uname -r`/ -name "loop.ko")"
+	test -n "$LOOP_MODULE" &&  ( insmod "$LOOP_MODULE" ; sleep 3 )
+	
+	! test -e /dev/loop0 && mknod /dev/loop0 b 7 0
+	
 	losetup /dev/loop0 $1/$IMAGE_PATH/$IMAGE_NAME || die "losetup /dev/loop0 $1/$IMAGE_PATH/$IMAGE_NAME failed!"
 	check_fs /dev/loop0 $IMAGE_TYPE
 	
@@ -451,6 +456,9 @@ check_fs() {
 		    fi
 		;;
 		esac
+				
+#		debug_echo "check_fs() FSCK / FSTYPE: [$FSCK] / [$FSTYPE]"
+		
 		if [ "$FSCK" = "" ]; then
 		        echo "Could not find fsck for $FSTYPE!"
 		else
@@ -476,9 +484,9 @@ init_rootfs(){
 }
 
 mount_sd(){
-	if mount | grep -q "/media/card"
+	if mount | grep -q "$SD_MOUNTPOINT"
 	then
-		echo "Note: /media/card is already mounted"
+		echo "Note: $SD_MOUNTPOINT is already mounted"
 	else
 		# We can't trust that the SD device file is there when running kernel 2.6 w/ udev
 		# and starting udev at this point may not be the best idea...	
@@ -494,20 +502,54 @@ mount_sd(){
 		# Kernel 2.6 has the SD driver compiled into the kernel
 		if test -n "$SD_KERNEL_MODULE"	
 		then
-			echo -n "Loading SD kernel module..."
-			/sbin/insmod $SD_KERNEL_MODULE >/dev/null 2>&1 && echo ok || die "insmod failed"
+			echo "Loading SD kernel module..."
+			if ( echo "$SD_KERNEL_MODULE" | grep -q "^/" )
+			then
+				echo -e "\t- Using full path for SD module"
+				SD_PATTERN="`basename "$SD_KERNEL_MODULE" | sed "s/\.ko//;s/\.o//"`"
+
+				if ( lsmod | grep -q "^$SD_PATTERN" )
+				then
+					echo -e "\t- Already loaded..."
+				else				
+					echo -e "\t- Loading..."
+					/sbin/insmod $SD_KERNEL_MODULE >/dev/null 2>&1 && echo ok || die "insmod failed"
+				fi
+
+			else
+				echo -e "\t- Searching [$SD_KERNEL_MODULE]"
+				SD_KERNEL_MODULE="$(find /lib/modules/`uname -r`/ -name "$SD_KERNEL_MODULE")"
+				echo -e "\t- Assuming module is [$SD_KERNEL_MODULE]"
+				
+				SD_PATTERN="`basename "$SD_KERNEL_MODULE" | sed "s/\.ko//;s/\.o//"`"
+
+				if ( lsmod | grep -q "^$SD_PATTERN" )
+				then
+					echo -e "\t- Already loaded..."
+				else		
+					echo -e "\t- Loading..."		
+					/sbin/insmod $SD_KERNEL_MODULE >/dev/null 2>&1 && echo ok || die "insmod failed"
+				fi
+			fi
 		fi
 		
-		check_fs "$SD_DEVICE"
-
-		echo -n "Mounting $SD_MOUNTPOINT..."  >"$OUT_TTY"
+		sleep 3
 		
-		if test "$1" = ingore_errors
+		check_fs "$SD_DEVICE"				
+
+		if ! mount | grep -q "$SD_MOUNTPOINT"
 		then
-			/bin/mount -t auto -o defaults,noatime $SD_DEVICE $SD_MOUNTPOINT >/dev/null 2>&1 && echo ok  >"$OUT_TTY" || echo "Could not mount SD card"
+			echo -n "Mounting $SD_MOUNTPOINT..."  >"$OUT_TTY"
+
+			if test "$1" = ingore_errors
+			then
+				/bin/mount -t auto -o defaults,noatime $SD_DEVICE $SD_MOUNTPOINT >/dev/null 2>&1 || echo "Could not mount SD card"
+			else
+				/bin/mount -t auto -o defaults,noatime $SD_DEVICE $SD_MOUNTPOINT >/dev/null 2>&1 || die "/bin/mount -t auto -o defaults,noatime $SD_DEVICE $SD_MOUNTPOINT failed"
+			fi		
 		else
-			/bin/mount -t auto -o defaults,noatime $SD_DEVICE $SD_MOUNTPOINT >/dev/null 2>&1 && echo ok  >"$OUT_TTY"|| die "/bin/mount -t auto -o defaults,noatime $SD_DEVICE $SD_MOUNTPOINT failed"
-		fi		
+			echo "NOTE: Some sort of auto-mounting is going on..."
+		fi
 	fi
 	echo ""	
 	

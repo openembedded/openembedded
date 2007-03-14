@@ -18,6 +18,10 @@ RRECOMMENDS_${PN}_append_c7x0 = " kexec-tools"
 
 RDEPENDS_${PN} = "${PN}-conf"
 
+# Currently the OM image for the Neo is lacking a few basic things...
+RDEPENDS_${PN}_fic-gta01 = "${PN}-conf kernel-module-ext2 kernel-module-loop kernel-module-s3cmci "
+
+
 ######################################################################################
 
 PR = "r51"
@@ -26,7 +30,7 @@ PR = "r51"
 
 PACKAGES = "${PN}-conf ${PN}-doc ${PN}"
 
-PACKAGE_ARCH_${PN} = "all"
+#PACKAGE_ARCH_${PN} = "all"
 PACKAGE_ARCH_${PN}-doc = "all"
 PACKAGE_ARCH_${PN}-conf = "${MACHINE}"
 
