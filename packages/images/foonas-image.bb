@@ -3,7 +3,7 @@ LICENSE = "GPL"
 PR = "r0"
 
 DEPENDS = "${MACHINE_TASK_PROVIDER}"
-EXTRA_IMAGECMD_turbostation = "--bit-endian"
+EXTRA_IMAGECMD_turbostation = "--big-endian"
 EXTRA_IMAGECMD_n2100 = "--little-endian"
 EXTRA_IMAGECMD_jffs2 += " --eraseblock=${ERASEBLOCK_SIZE} -D ${SLUGOS_DEVICE_TABLE}"
 IMAGE_LINGUAS = ""
@@ -36,7 +36,8 @@ PACK_IMAGE_DEPENDS = ""
 IMAGE_TOOLS = ""
 #EXTRA_IMAGEDEPENDS += "${IMAGE_TOOLS}"
 
-FOONAS_SUPPORT += "diffutils cpio findutils uboot-utils udev"
+FOONAS_SUPPORT += "diffutils cpio findutils udev"
+FOONAS_SUPPORT_turbostation += "uboot-utils"
 
 # this gets /lib/modules made....
 FOONAS_KERNEL_turbostation = "kernel-module-ext3 kernel-module-minix \
