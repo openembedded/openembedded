@@ -25,7 +25,7 @@ SRC_URI = "${SOURCEFORGE_MIRROR}/netcat/netcat-${PV}.tar.bz2"
 
 inherit autotools</screen>The header is defined, the location of the source
   code and then the inherit. For the simplest cases this is all that is
-  required. If you need to pass additionol parameters to the configure script,
+  required. If you need to pass additional parameters to the configure script,
   such as for enabling and/or disabling options, then they can be specified
   via the <command>EXTRA_OECONF</command> variable. This example from the lftp
   recipe shows several extra options being passed to the configure
@@ -75,10 +75,108 @@ do_install_append () {
 
     <para>The autotools configuration method has support for caching the
     results of tests. In the cross-compilation case it is sometimes necessary
-    to prime the cache with pre-calculated results (since tests designed to
+    to prime the cache with per-calculated results (since tests designed to
     run on the target cannot be run when cross-compiling). These are defined
-    via the site file for the architecture you are using which is found in
-    <command>org.openembedded.dev/site/&lt;arch&gt;-&lt;target-os&gt;</command>.</para>
+    via the site file(s) for the architecture you are using and may be
+    specific to the package you are building.</para>
+
+    <para>Which site files are used is determined via the
+    <command>classes/siteinfo.bbclass</command> class file and you should
+    check that file to determine the names that apply to your target.
+    Typically the following site files will be checked for, and used if
+    found:</para>
+
+    <variablelist>
+      <varlistentry>
+        <term>endian-(big|little)</term>
+
+        <listitem>
+          <para>Either <command>endian-big</command> or
+          <command>endian-little</command> depending on the endianess of the
+          target. This site file would contain defines that only change based
+          on if the target is little endian or big endian.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>bit-(32|64)</term>
+
+        <listitem>
+          <para>Either <command>bit-32</command> or <command>bit-64</command>
+          depending on the bitsize of the target. This site file would contain
+          defines that only change based on if the target is a 32-bit or
+          64-bit cpu.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>common-(libc|uclibc)</term>
+
+        <listitem>
+          <para>Either <command>common-libc</command> or
+          <command>common-uclibc</command> based on the C library being used
+          for the target. This site file would contain defines the are
+          specific to the C library being used.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>&lt;arch&gt;-common</term>
+
+        <listitem>
+          <para>A common site file for the target architecture. For i386,
+          i485, i586 and i686 this would be <command>x86-common</command>, for
+          sh3 and sh4 this would be <command>sh-common</command> and for
+          various arm targets this would be
+          <command>arm-common</command>.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>common</term>
+
+        <listitem>
+          <para>This is a site file which is common for all targets and
+          contains definitions which remain the same no matter what target is
+          being built.</para>
+        </listitem>
+      </varlistentry>
+    </variablelist>
+
+    <para>Each of the supported site file for a target is checked for in
+    several locations, and each one found will be used in order. The following
+    locations are checked:</para>
+
+    <variablelist>
+      <varlistentry>
+        <term>org.openembedded.dev/packages/&lt;packagename&gt;/site-&lt;version&gt;/</term>
+
+        <listitem>
+          <para>This directory is for site files which are specific to a
+          particular version (where version is the PV of the package) of a
+          package.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>org.openembedded.dev/packages/&lt;packagename&gt;/site/</term>
+
+        <listitem>
+          <para>This directory is for site files which are specific to a
+          particular package, but apply to all versions of the package.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>org.openembedded.dev/site/</term>
+
+        <listitem>
+          <para>This directory is for site files that are common to all
+          packages. Originally this was the only site file directory that was
+          supported.</para>
+        </listitem>
+      </varlistentry>
+    </variablelist>
 
     <para>There are some things that you should keep in mind about the caching
     of configure tests:</para>
@@ -125,27 +223,19 @@ do_install_append () {
     calling configure and it will then not be replaced by the value from the
     site file.</para>
 
-    <para>Sometimes it's useful to manually check values from the site file.
-    This can prove useful in situations where autotools is not used but you
-    still need some of the same information that an autotools configure script
-    would require. The following from the net-snmp recipe shows an example of
-    using the existing site file entries for endianess to pass the required
-    endianess option to the configure script:<screen>do_configure() {
-    # endianness fun.. inspired by openssl.inc
-    . ${CONFIG_SITE}
-    if [ "x$ac_cv_c_bigendian" = "xyes" -o "x$ac_cv_c_littleendian" = "xno" ]; then
-        ENDIANESS=" --with-endianness=big"
-    elif [ "x$ac_cv_c_littleendian" = "xyes" -o "x$ac_cv_c_bigendian" = "xno" ]; then
-        ENDIANESS=" --with-endianness=little"
-    else
-        oefatal do_configure cannot determine endianess
-    fi
-    oe_runconf $ENDIANESS
-}</screen>It is also possible to disable the use of the cached values from the
-    site file by clearing the definition of <command>CONFIG_SITE</command>
-    prior to running the configure script. Doing this will disable the use of
-    the site file entirely. This however should be used as a last resort. The
-    following example from the db recipe shows an example of this:<screen># Cancel the site stuff - it's set for db3 and destroys the
+    <note>
+      <para>Site files are applied in order, so the application specific site
+      files will be applied prior to the top level site file entries. The use
+      of conditional assignment means that the first definition found will
+      apply, while when not using conditionals the last definition found will
+      apply.</para>
+    </note>
+
+    <para>It is possible to disable the use of the cached values from the site
+    file by clearing the definition of <command>CONFIG_SITE</command> prior to
+    running the configure script. Doing this will disable the use of the site
+    file entirely. This however should be used as a last resort. The following
+    example from the db recipe shows an example of this:<screen># Cancel the site stuff - it's set for db3 and destroys the
 # configure.
 CONFIG_SITE = ""
 do_configure() {
