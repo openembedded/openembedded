@@ -80,103 +80,11 @@ do_install_append () {
     via the site file(s) for the architecture you are using and may be
     specific to the package you are building.</para>
 
-    <para>Which site files are used is determined via the
-    <command>classes/siteinfo.bbclass</command> class file and you should
-    check that file to determine the names that apply to your target.
-    Typically the following site files will be checked for, and used if
-    found:</para>
-
-    <variablelist>
-      <varlistentry>
-        <term>endian-(big|little)</term>
-
-        <listitem>
-          <para>Either <command>endian-big</command> or
-          <command>endian-little</command> depending on the endianess of the
-          target. This site file would contain defines that only change based
-          on if the target is little endian or big endian.</para>
-        </listitem>
-      </varlistentry>
-
-      <varlistentry>
-        <term>bit-(32|64)</term>
-
-        <listitem>
-          <para>Either <command>bit-32</command> or <command>bit-64</command>
-          depending on the bitsize of the target. This site file would contain
-          defines that only change based on if the target is a 32-bit or
-          64-bit cpu.</para>
-        </listitem>
-      </varlistentry>
-
-      <varlistentry>
-        <term>common-(libc|uclibc)</term>
-
-        <listitem>
-          <para>Either <command>common-libc</command> or
-          <command>common-uclibc</command> based on the C library being used
-          for the target. This site file would contain defines the are
-          specific to the C library being used.</para>
-        </listitem>
-      </varlistentry>
-
-      <varlistentry>
-        <term>&lt;arch&gt;-common</term>
-
-        <listitem>
-          <para>A common site file for the target architecture. For i386,
-          i485, i586 and i686 this would be <command>x86-common</command>, for
-          sh3 and sh4 this would be <command>sh-common</command> and for
-          various arm targets this would be
-          <command>arm-common</command>.</para>
-        </listitem>
-      </varlistentry>
-
-      <varlistentry>
-        <term>common</term>
-
-        <listitem>
-          <para>This is a site file which is common for all targets and
-          contains definitions which remain the same no matter what target is
-          being built.</para>
-        </listitem>
-      </varlistentry>
-    </variablelist>
-
-    <para>Each of the supported site file for a target is checked for in
-    several locations, and each one found will be used in order. The following
-    locations are checked:</para>
-
-    <variablelist>
-      <varlistentry>
-        <term>org.openembedded.dev/packages/&lt;packagename&gt;/site-&lt;version&gt;/</term>
-
-        <listitem>
-          <para>This directory is for site files which are specific to a
-          particular version (where version is the PV of the package) of a
-          package.</para>
-        </listitem>
-      </varlistentry>
-
-      <varlistentry>
-        <term>org.openembedded.dev/packages/&lt;packagename&gt;/site/</term>
-
-        <listitem>
-          <para>This directory is for site files which are specific to a
-          particular package, but apply to all versions of the package.</para>
-        </listitem>
-      </varlistentry>
-
-      <varlistentry>
-        <term>org.openembedded.dev/site/</term>
-
-        <listitem>
-          <para>This directory is for site files that are common to all
-          packages. Originally this was the only site file directory that was
-          supported.</para>
-        </listitem>
-      </varlistentry>
-    </variablelist>
+    <para>Autoconf uses site files as definied in the
+    <command>CONFIG_SITE</command> variable, which is a space seperate list of
+    files to load in the specified order. Details on how this variable is set
+    is provided in the <xref linkend="siteinfo_class" /> (the class
+    responsbile for setting the variable) section.</para>
 
     <para>There are some things that you should keep in mind about the caching
     of configure tests:</para>
