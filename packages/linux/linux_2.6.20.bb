@@ -1,7 +1,7 @@
 DESCRIPTION = "Linux Kernel"
 SECTION = "kernel"
 LICENSE = "GPL"
-PR = "r3"
+PR = "r4"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-${PV}.tar.bz2 \
            file://defconfig"
@@ -29,5 +29,6 @@ do_configure_prepend() {
 }
 
 do_install_append_n2100() {
+	install -d ${DEPLOY_DIR_IMAGE}
 	install -m 0644 ${S}/arch/${ARCH}/boot/${KERNEL_IMAGETYPE} ${DEPLOY_DIR_IMAGE}/${KERNEL_IMAGETYPE}-${PV}-${MACHINE}-${DATETIME}
 }
