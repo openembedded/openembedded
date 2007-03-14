@@ -1,7 +1,7 @@
 DESCRIPTION = "Linux Kernel"
 SECTION = "kernel"
 LICENSE = "GPL"
-PR = "r4"
+PR = "r3"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-${PV}.tar.bz2 \
            file://defconfig"
@@ -26,9 +26,4 @@ KERNEL_IMAGETYPE_n2100 = "zImage"
 
 do_configure_prepend() {
 	install -m 0644 ${WORKDIR}/defconfig ${S}/.config
-}
-
-do_deploy_n2100() {
-        install -d ${DEPLOY_DIR_IMAGE}
-        install -m 0644 arch/${ARCH}/boot/images/${KERNEL_IMAGETYPE} ${DEPLOY_DIR_IMAGE}/${KERNEL_IMAGETYPE}-${PV}-${MACHINE}-${DATETIME}
 }
