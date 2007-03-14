@@ -24,10 +24,6 @@ PV = "${K_MAJOR}.${K_MINOR}.${K_MICRO}-${HHV}"
 
 inherit kernel
 
-PACKAGE_ARCH_palmtx     = "palmtx"
-PACKAGE_ARCH_palmld	= "palmld"
-PACKAGE_ARCH_palmz72	= "palmz72"
-
 do_configure() {
 
 	if [ -f ${WORKDIR}/defconfig ]; then
