@@ -22,6 +22,7 @@ inherit kernel
 
 KERNEL_IMAGETYPE = "bzImage"
 KERNEL_IMAGETYPE_simpad = "zImage"
+KERNEL_IMAGETYPE_n2100 = "zImage"
 
 do_configure_prepend() {
 	install -m 0644 ${WORKDIR}/defconfig ${S}/.config
