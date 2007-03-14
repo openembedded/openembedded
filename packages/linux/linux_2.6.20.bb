@@ -27,3 +27,7 @@ KERNEL_IMAGETYPE_n2100 = "zImage"
 do_configure_prepend() {
 	install -m 0644 ${WORKDIR}/defconfig ${S}/.config
 }
+
+do_install_append_n2100() {
+	install -m 0644 ${S}/arch/${ARCH}/boot/${KERNEL_IMAGETYPE} ${DEPLOY_DIR_IMAGE}/${KERNEL_IMAGETYPE}-${PV}-${MACHINE}-${DATETIME}
+}
