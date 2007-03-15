@@ -33,7 +33,7 @@ PACKAGE_ARCH_mencoder_collie = "collie"
 
 RCONFLICTS_${PN} = "mplayer-atty"
 RREPLACES_${PN} = "mplayer-atty"
-PR = "r8"
+PR = "r9"
 
 PARALLEL_MAKE = ""
 
