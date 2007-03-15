@@ -13,7 +13,6 @@ FOONAS_PACKAGES = "\
 	alsa-lib \
 	alsa-utils \
 	apache2 \
-	arpwatch \
 	asterisk \
 	audiofile \
 	aumix \
