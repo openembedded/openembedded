@@ -4,7 +4,7 @@ SECTION = "kernel"
 LICENSE = "GPL"
 PR = "r3"
 
-COMPATIBLE_MACHINE = "(palmtx|palmld|palmz72)"
+COMPATIBLE_MACHINE = "(palmtt3|palmtx|palmld|palmz72)"
 
 SRC_URI = "svn://svn.sourceforge.net/svnroot/hackndev/linux4palm/linux;module=trunk;proto=https \
 	   file://defconfig"
@@ -23,10 +23,6 @@ HHV="hnd0"
 PV = "${K_MAJOR}.${K_MINOR}.${K_MICRO}-${HHV}"
 
 inherit kernel
-
-PACKAGE_ARCH_palmtx     = "palmtx"
-PACKAGE_ARCH_palmld	= "palmld"
-PACKAGE_ARCH_palmz72	= "palmz72"
 
 do_configure() {
 

@@ -1,0 +1,39 @@
+http://www.arm.linux.org.uk/developer/patches/viewpatch.php?id=4058/1
+
+From: Lennert Buytenhek
+
+On the n2100, both onboard r8169 ports exhibit PCI parity problems.
+Set the ->broken_parity_status flag for both ports so that the r8169
+drivers knows it should ignore error interrupts.
+
+
+--- linux-2.6.19.orig/arch/arm/mach-iop32x/n2100.c
++++ linux-2.6.19/arch/arm/mach-iop32x/n2100.c
+@@ -123,9 +123,26 @@ static struct hw_pci n2100_pci __initdat
+ 
+ static int __init n2100_pci_init(void)
+ {
+-	if (machine_is_n2100())
++	if (machine_is_n2100()) {
++		int i;
++
+ 		pci_common_init(&n2100_pci);
+ 
++		/*
++		 * Both r8169 chips on the n2100 exhibit PCI parity
++		 * problems.  Set the ->broken_parity_status flag for
++		 * both ports so that the r8169 driver knows it should
++		 * ignore error interrupts.
++		 */
++		for (i = 1; i <= 2; i++) {
++			struct pci_dev *dev;
++
++			dev = pci_get_bus_and_slot(0, PCI_DEVFN(i, 0));
++			if (dev != NULL)
++				dev->broken_parity_status = 1;
++		}
++	}
++
+ 	return 0;
+ }
+

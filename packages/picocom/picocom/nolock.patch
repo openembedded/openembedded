@@ -1,0 +1,35 @@
+diff -Naur picocom-1.4.orig/picocom.c picocom-1.4/picocom.c
+--- picocom-1.4.orig/picocom.c	2004-08-12 13:45:11.000000000 +0200
++++ picocom-1.4/picocom.c	2007-03-12 00:23:01.000000000 +0100
+@@ -790,7 +790,9 @@
+ 		{"escape", required_argument, 0, 'e'},
+ 		{"noinit", no_argument, 0, 'i'},
+ 		{"noreset", no_argument, 0, 'r'},
++#ifdef UUCP_LOCK_DIR
+ 		{"nolock", no_argument, 0, 'l'},
++#endif
+ 		{"flow", required_argument, 0, 'f'},
+ 		{"baud", required_argument, 0, 'b'},
+ 		{"parity", required_argument, 0, 'p'},
+@@ -827,9 +829,11 @@
+ 		case 'r':
+ 			opts.noreset = 1;
+ 			break;
++#ifdef UUCP_LOCK_DIR
+ 		case 'l':
+ 			opts.nolock = 1;
+ 			break;
++#endif
+ 		case 'e':
+ 			if ( isupper(optarg[0]) )
+ 				opts.escape = optarg[0] - 'A' + 1;
+@@ -930,7 +934,9 @@
+ 	printf("escape is      : C-%c\n", 'a' + opts.escape - 1);
+ 	printf("noinit is      : %s\n", opts.noinit ? "yes" : "no");
+ 	printf("noreset is     : %s\n", opts.noreset ? "yes" : "no");
++#ifdef UUCP_LOCK_DIR
+ 	printf("nolock is      : %s\n", opts.nolock ? "yes" : "no");
++#endif
+ 	printf("send_cmd is    : %s\n", opts.send_cmd);
+ 	printf("receive_cmd is : %s\n", opts.receive_cmd);
+ 	printf("\n");

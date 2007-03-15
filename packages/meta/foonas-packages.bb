@@ -9,33 +9,54 @@ INHIBIT_DEFAULT_DEPS = "1"
 ALLOW_EMPTY = "1"
 
 FOONAS_PACKAGES = "\
+	adns \
 	alsa-lib \
 	alsa-utils \
 	apache2 \
+	asterisk \
 	audiofile \
 	aumix \
 	autoconf \
 	automake \
 	bash \
+	bash-completion \
+	bc \
+	beep \
 	bind \
 	binutils \
 	bison \
 	bridge-utils \
+	bonnie++ \
+	bzflag \
 	bzip2 \
 	ccxstream \
 	cdparanoia \
 	cdstatus \
+	cherokee \
+	chillispot \
 	coreutils \
+	cpusage \
+	cpuspeed \
 	cron \
 	ctorrent \
 	cvs \
+	dash \
 	db \
+	dbench \
 	devlabel \
+	dhcpcd \
+	dialog \
 	diffstat \
 	diffutils \
+	dircproxy \
 	dnsmasq \
+	dosfstools \
 	e2fsprogs \
 	e2fsprogs-libs \
+	e2tools \
+	eb \
+	ebtables \
+	elvis \
 	expat \
 	ez-ipupdate \
 	fetchmail \
