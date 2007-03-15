@@ -2,7 +2,7 @@ SECTION = "libs"
 LICENSE = "GD"
 DESCRIPTION = "gd is a library used to create PNG, JPEG, or WBMP images."
 DEPENDS = "libpng jpeg zlib"
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "http://www.boutell.com/gd/http/gd-${PV}.tar.gz"
 S = "${WORKDIR}/gd-${PV}"
@@ -12,6 +12,8 @@ inherit autotools binconfig gettext
 EXTRA_OECONF += " --with-zlib=${STAGING_LIBDIR}/.. \
                   --with-png=${STAGING_LIBDIR}/.. \
                   --with-jpeg=${STAGING_LIBDIR}/.. \
+                  --without-freetype \
+                  --without-fontconfig \
                   --without-xpm \
                   --without-x"
 
