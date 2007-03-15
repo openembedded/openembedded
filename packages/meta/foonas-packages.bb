@@ -64,7 +64,6 @@ FOONAS_PACKAGES = "\
 	findutils \
 	flex \
 	flite \
-	gallery \
 	gawk \
 	gcc \
 	gdbm \
