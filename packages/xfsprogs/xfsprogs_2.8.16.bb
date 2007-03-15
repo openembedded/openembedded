@@ -2,7 +2,8 @@ DESCRIPTION = "XFS Filesystem Utilities"
 HOMEPAGE = "http://oss.sgi.com/projects/xfs"
 LICENSE = "GPL"
 SECTION = "base"
-PR = "r0"
+PR = "r1"
+DEPENDS = "e2fsprogs-libs"
 
 SRC_URI = "ftp://oss.sgi.com/projects/xfs/download/download/cmd_tars/xfsprogs_2.8.16-1.tar.gz"
 
