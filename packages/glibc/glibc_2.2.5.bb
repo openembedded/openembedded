@@ -226,9 +226,6 @@ do_stage() {
 	echo 'GROUP ( libc.so.6 libc_nonshared.a )' > ${CROSS_DIR}/${TARGET_SYS}/lib/libc.so
 }
 
-require glibc-package.bbclass
-
-
 # Unslung distribution specific packages follow ...
 
 PACKAGES_unslung = "libc6-unslung"
