@@ -4,6 +4,7 @@ PRIORITY = "optional"
 LICENSE = "GPL"
 DEPENDS = "libqtaux2 opie-pickboard"
 RDEPENDS = "opie-pics opie-pickboard"
+RRECOMMENDS = "opie-multikeyapplet"
 APPNAME = "qmultikey"
 
 S = "${WORKDIR}/multikey"

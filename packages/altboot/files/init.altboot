@@ -208,7 +208,7 @@ get_kbd_ints(){
 		if test -z "$KBD_INT"
 		then		
 			# find out how the keyboard is called
-			for kbd in Spitzkbd corgikbd locomokbd tosakbd
+			for kbd in Spitzkbd corgikbd locomokbd tosakbd "Neo1973 AUX button"
 			do
 				if ( cat /proc/interrupts | grep -q "$kbd" )
 				then
@@ -242,7 +242,11 @@ run_timer() {
 		#debug_echo "run_timer() old:`echo $key_ints | md5sum`"
 		
 		stty -echo  <"$OUT_TTY" >"$OUT_TTY" 2>&1
-		echo -en "\n\nPlease press any key to launch altboot." > "$OUT_TTY"
+		
+		case "$KBD_INT" in
+		Neo1973*)	echo -en "\n\nPlease press [AUX] to launch altboot." > "$OUT_TTY" ;;
+		*)		echo -en "\n\nPlease press any key to launch altboot." > "$OUT_TTY" ;;
+		esac
 		
 		test -z "$TIMEOUT" && TIMEOUT="3"
 
@@ -337,41 +341,60 @@ launch_selection() {
 
 
 wait_for_input() {
-	while true
-	do
+
+	# Neo has only two buttons: AUX and PWR.
+	# Only AUX is easily readable from userspace, so are touchscreen taps
+	if test "$KBD_INT" = "Neo1973 AUX button"
+	then
+		ints_old="`cat /proc/interrupts | grep "$KBD_INT" | awk '{print $2}'`"
+		ts_ints_old="`cat /proc/interrupts |grep action| tail -1 | awk '{print $2}'`"
 		
+		echo "Please press [AUX] to set a menu number" <"$OUT_TTY" > "$OUT_TTY" 2>&1	
+		echo -e "Press the touchscreen to start\n"			
 		
-		# Do _not_ change the next few lines!
-		# 	
-		# This is required to work around an annoying busybox bug.
-		# Every key you press while this script runs will be
-		# picked up by the next "read $junk".	
-		# So the next read would pick up the "any" key the user pressed
-		# above to launch the altboot menu.		
-				
- 		
-		# Bash throws an ugly error on kill
-		if ! (readlink /bin/sh | grep -q bash)
-		then
-			# This filters an "<ENTER>" from the user as "any key"
-			( while :; do read x< "$OUT_TTY" 2>&1; done; ) > /dev/null 2>&1 &
-			sleep 1; kill $! >/dev/null 2>&1
-		fi
-								
-		echo -n "Please choose one of the above [$last_selection]: " <"$OUT_TTY" > "$OUT_TTY" 2>&1
-		stty echo <"$OUT_TTY" >"$OUT_TTY" 2>&1
-		read junk< "$OUT_TTY" 2>&1
+		x="$last_selection" ; hold_events=0
 		
-		# This filters other chars the user may have used
+		echo -n "Your Choice: [$x / $cnt]"
 		
-		junk="`echo "$junk" | sed "s/[a-zA-Z]//g"`"	
-				
-		if test "$junk" -lt "$cnt" -o "$junk" -eq "$cnt" 
-		then			
-			if test ! -z "$junk" 
+		while true 
+		do
+
+			ts_ints_now="`cat /proc/interrupts |grep action| tail -1 | awk '{print $2}'`"
+
+			if test "$ts_ints_now" = "$ts_ints_old"
 			then
-				parse_module_flags "$junk"				
-	
+				ints_now="`cat /proc/interrupts | grep "$KBD_INT" | awk '{print $2}'`"
+
+				if test "$ints_now" -gt "$ints_old"
+				then
+					# Only react on every second interupt as both PRESS and RELEASE generate
+					# one.
+					if test -n "$tmp"
+					then 
+						#debug_echo "wait_for_input(): PRESS/RELEASE EVENT [$ints_now <-> $ints_old]"				
+						
+						MAX_ENTRIES="$cnt"
+						
+						test "$x" = "$cnt" && x=1 || let x=$x+1
+						
+						#\r : go to beginning of the current line
+						#\033[K : completely clear the current line
+						echo -en "\r\033[KYour Choice: [$x / $cnt]"
+
+												
+						tmp=""
+					else
+						tmp=blahh				
+					fi
+				fi
+			
+				ints_old="$ints_now"
+			else				
+#				debug_echo "wait_for_input(): TOUCHSCREEN EVENT [$ts_ints_now <-> $ts_ints_old]"
+				ts_ints_old="$ts_ints_now"				
+
+				parse_module_flags "$x"				
+
 				if test "$REMEMBER_LAST_SELECTION" != no
 				then								
 					# Don't remount rw if the drive is already mounted rw
@@ -379,20 +402,75 @@ wait_for_input() {
 					if test "`mount|sed -n "/\/dev\/root/s/.*(\(.*\))/\1/p"`" != "rw" 
 					then					
 						mount -o remount,rw / >/dev/null 2>&1
-						echo "$junk" > /etc/altboot.conf
+						echo "$x" > /etc/altboot.conf
 						mount -o remount,ro / >/dev/null 2>&1	
 					else
-						echo "$junk" > /etc/altboot.conf
+						echo "$x" > /etc/altboot.conf
 					fi
 				fi
-			else
-				junk="$last_selection"
-				parse_module_flags "$junk"				
+				
+				junk="$x"
+				break
+				
+			fi		
+		done
+	else
+		while true
+		do		
+
+			# Do _not_ change the next few lines!
+			# 	
+			# This is required to work around an annoying busybox bug.
+			# Every key you press while this script runs will be
+			# picked up by the next "read $junk".	
+			# So the next read would pick up the "any" key the user pressed
+			# above to launch the altboot menu.		
+
+
+			# Bash throws an ugly error on kill
+			if ! (readlink /bin/sh | grep -q bash)
+			then
+				# This filters an "<ENTER>" from the user as "any key"
+				( while :; do read x< "$OUT_TTY" 2>&1; done; ) > /dev/null 2>&1 &
+				sleep 1; kill $! >/dev/null 2>&1
+			fi
+
+			echo -n "Please choose one of the above [$last_selection]: " <"$OUT_TTY" > "$OUT_TTY" 2>&1
+			stty echo <"$OUT_TTY" >"$OUT_TTY" 2>&1
+			read junk< "$OUT_TTY" 2>&1
+
+			# This filters other chars the user may have used
+
+			junk="`echo "$junk" | sed "s/[a-zA-Z]//g"`"	
+
+			if test "$junk" -lt "$cnt" -o "$junk" -eq "$cnt" 
+			then			
+				if test ! -z "$junk" 
+				then
+					parse_module_flags "$junk"				
+
+					if test "$REMEMBER_LAST_SELECTION" != no
+					then								
+						# Don't remount rw if the drive is already mounted rw
+						# Only helpful for testing / debugging
+						if test "`mount|sed -n "/\/dev\/root/s/.*(\(.*\))/\1/p"`" != "rw" 
+						then					
+							mount -o remount,rw / >/dev/null 2>&1
+							echo "$junk" > /etc/altboot.conf
+							mount -o remount,ro / >/dev/null 2>&1	
+						else
+							echo "$junk" > /etc/altboot.conf
+						fi
+					fi
+				else
+					junk="$last_selection"
+					parse_module_flags "$junk"				
+					break
+				fi
 				break
 			fi
-			break
-		fi
-	done
+		done
+	fi
 }
 
 # * * * * * * This is the main function * * * * * *

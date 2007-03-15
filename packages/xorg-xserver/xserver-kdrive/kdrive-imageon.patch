@@ -1,4 +1,3 @@
-
 # Author: Manuel Teira <manuel.teira@telefonica.net> (sirfred in #oe)
 # Description: New driver for the Imageon ATI Card. Implementing:
 # -Hardware solid fills
@@ -12,8 +11,8 @@
 # Patch managed by http://www.holgerschurig.de/patcher.html
 #
 
---- xorg-server-X11R7.1-1.1.0.orig/configure.ac~kdrive-imageon
-+++ xorg-server-X11R7.1-1.1.0.orig/configure.ac
+--- xorg-server-X11R7.1-1.1.0.work/configure.ac~kdrive-imageon
++++ xorg-server-X11R7.1-1.1.0.work/configure.ac
 @@ -435,6 +435,7 @@
  AC_ARG_ENABLE(kdrive,         AS_HELP_STRING([--enable-kdrive], [Build kdrive servers (default: no)]), [KDRIVE=$enableval], [KDRIVE=no])
  AC_ARG_ENABLE(xephyr,         AS_HELP_STRING([--enable-xephyr], [Build the kdrive Xephyr server (default: auto)]), [XEPHYR=$enableval], [XEPHYR=auto])
@@ -42,8 +41,8 @@
  hw/kdrive/i810/Makefile
  hw/kdrive/linux/Makefile
  hw/kdrive/mach64/Makefile
---- xorg-server-X11R7.1-1.1.0.orig/hw/kdrive/Makefile.am~kdrive-imageon
-+++ xorg-server-X11R7.1-1.1.0.orig/hw/kdrive/Makefile.am
+--- xorg-server-X11R7.1-1.1.0.work/hw/kdrive/Makefile.am~kdrive-imageon
++++ xorg-server-X11R7.1-1.1.0.work/hw/kdrive/Makefile.am
 @@ -1,18 +1,9 @@
 -if KDRIVEVESA
 -VESA_SUBDIRS = vesa ati chips epson i810 mach64 mga neomagic nvidia pm2 r128 \
@@ -78,7 +77,7 @@
  DIST_SUBDIRS = vesa ati chips epson i810 mach64 mga neomagic nvidia pm2 r128 \
                 smi via fbdev sdl ephyr src linux fake sis300
 --- /dev/null
-+++ xorg-server-X11R7.1-1.1.0.orig/hw/kdrive/imageon/Makefile.am
++++ xorg-server-X11R7.1-1.1.0.work/hw/kdrive/imageon/Makefile.am
 @@ -0,0 +1,47 @@
 +if KDRIVEFBDEV
 +FBDEV_INCLUDES =-I$(top_srcdir)/hw/kdrive/fbdev
@@ -128,8 +127,8 @@
 +        libimageon.a                    \
 +        $(FBDEV_LIBS) 
 --- /dev/null
-+++ xorg-server-X11R7.1-1.1.0.orig/hw/kdrive/imageon/imageon.c
-@@ -0,0 +1,523 @@
++++ xorg-server-X11R7.1-1.1.0.work/hw/kdrive/imageon/imageon.c
+@@ -0,0 +1,607 @@
 +/*
 + * Copyright © 2007 Manuel Teira
 + *
@@ -157,19 +156,69 @@
 +#endif
 +#include "imageon.h"
 +#include "imageon_regs.h"
++#include "imageon_support.h"
 +
-+struct pci_id_entry w100_pci_ids[] = {
-+    {0x1002, 0x5644, 0, "ATI Imageon 3200"},
-+    {0x1002, 0x5741, 0, "ATI Imageon 100"},
-+    {0x1002, 0x5744, 0, "ATI Imageon 3220"},
-+    {0, 0, 0, NULL}
++W100CardEntry w100_cards[] = {
++    {0x1002, 0x5644, 0,             "ATI Imageon 3200"},
++    {0x1002, 0x5741, W100XVSupport, "ATI Imageon 100"},
++    {0x1002, 0x5744, 0,             "ATI Imageon 3220"},
++    {0,      0,      0,             NULL}
 +};
++
++W100ModeSpec w100_modes[] = {
++    {800, 600, 16, W100_EXTMEM, FALSE},
++    {640, 480, 16, W100_EXTMEM, FALSE},
++    {320, 240, 16, W100_INTMEM, FALSE},
++    {  0,   0,  0,           0, FALSE}    
++};
++
++W100StartupInfo w100StartupInfo;
++
++extern void (*tslib_transform_coords)(long *x, long *y, void *closure);
++extern void *tslib_transform_closure;
++
++static void
++W100Startup(W100CardInfo *w100c)
++{
++    int i;
++    DBG_IMAGEON(("--W100Startup\n"));
++    W100ModeSpec *modes;
++    /* Take the current graphics mode */
++    if (!W100GetFbMode(w100c, &w100StartupInfo.mode)) {
++        ErrorF("(E) Unable to get current mode\n");
++    }
++    w100StartupInfo.randr = W100GetRotation(w100c);
++    w100StartupInfo.portrait = w100StartupInfo.mode.width < w100StartupInfo.mode.height;
++
++    /* Test the valid modes  */
++    for (modes = w100_modes; modes->width; modes++) {
++        modes->supported = W100CheckFbMode(w100c, modes);
++    }
++
++    DBG_IMAGEON(("Startup Mode: %dx%d@%d, rot: %d, portrait: %s\n", 
++                 w100StartupInfo.mode.width,
++                 w100StartupInfo.mode.height,
++                 w100StartupInfo.mode.bpp,
++                 w100StartupInfo.randr,
++                 w100StartupInfo.portrait ? "Yes" : "No"));
++
++    /* Tell the kernel to never switch off external memory  */
++    W100SysFsSet(w100c, W100_SYSFS_BASE "extmem", "1");
++
++    /* Disable framebuffer accel */
++    W100SysFsSet(w100c, W100_SYSFS_BASE "accel", "0");
++
++    /* Enable fastsysclk */
++    W100SysFsSet(w100c, W100_SYSFS_BASE "fastpllclk", "1");
++
++}
++
 +
 +static Bool
 +W100Map(KdCardInfo * card, W100CardInfo *w100c)
 +{
-+    w100c->mem_base = (CARD8 *) KdMapDevice(W100_MEM_BASE,
-+                                            W100_MEM_SIZE);
++    DBG_IMAGEON(("--W100Map\n"));
++    w100c->mem_base = (CARD8 *) KdMapDevice(W100_MEM_BASE, W100_MEM_SIZE);
 +
 +    if (w100c->mem_base == NULL) {
 +        return FALSE;
@@ -182,8 +231,7 @@
 +     * There's only difference when HAVE_ASM_MTRR_H is defined.
 +     * So, this call is doing nothing.
 +     */
-+    KdSetMappedMode(W100_MEM_BASE, W100_MEM_SIZE,
-+                    KD_MAPPED_MODE_REGISTERS);
++    KdSetMappedMode(W100_MEM_BASE, W100_MEM_SIZE, KD_MAPPED_MODE_REGISTERS);
 +
 +    return TRUE;
 +}
@@ -191,77 +239,108 @@
 +static void
 +W100Unmap(KdCardInfo * card, W100CardInfo *w100c)
 +{
++    DBG_IMAGEON(("--W100Unmap\n"));
 +    if (w100c->mem_base) {
-+        KdResetMappedMode(W100_MEM_BASE, W100_MEM_SIZE,
++        KdResetMappedMode(W100_MEM_BASE, W100_MEM_SIZE, 
 +                          KD_MAPPED_MODE_REGISTERS);
 +        KdUnmapDevice((void *) w100c->mem_base, W100_MEM_SIZE);
 +        w100c->mem_base = w100c->reg_base = 0;
 +    }
 +}
 +
++static void W100MemSetup(W100CardInfo *w100c)
++{
++    int reg_value;
++    int int_start, int_size;
++    int ext_start, ext_size;
++    int i;
++    DBG_IMAGEON(("--W100MemSetup\n"));
++
++    for (i = 0; i < w100c->num_memareas; i++) {
++        xfree(w100c->memareas[i]);
++    }
++    xfree(w100c->memareas);
++
++    reg_value = MMIO_IN32(mmMC_FB_LOCATION);
++    int_start = (reg_value & 0xffff) << 8;
++    int_size =  (((reg_value >> 16) & 0xffff) - (reg_value & 0xffff)) << 8;
++    DBG_IMAGEON(("(I) MC_FB_LOCATION: 0x%08x. Start: 0x%08x, size: %d\n",
++                 reg_value, int_start, int_size));
++
++    reg_value = MMIO_IN32(mmMC_EXT_MEM_LOCATION);
++    ext_start = (reg_value & 0xffff) << 8;
++    ext_size =  (((reg_value >> 16) & 0xffff) - (reg_value & 0xffff)) << 8;
++    DBG_IMAGEON(("(I) MC_EXT_MEM_LOCATION: 0x%08x. Start: 0x%08x, size: %d\n",
++                 reg_value, ext_start, ext_size));
++
++    w100c->num_memareas = (ext_size > 0) ? 2 : 1;
++    w100c->memareas = xcalloc(sizeof(W100MemArea *), w100c->num_memareas);
++
++    w100c->memareas[W100_INTMEM] = xcalloc(sizeof(W100MemArea), 1);
++    w100c->memareas[W100_INTMEM]->priority = KD_VIDMEM_MAXPRIO;
++    w100c->memareas[W100_INTMEM]->start = (CARD8 *) int_start;
++    w100c->memareas[W100_INTMEM]->size = int_size;
++
++    if (w100c->num_memareas == 2) {
++        w100c->memareas[W100_EXTMEM] = xcalloc(sizeof(W100MemArea), 1);
++        w100c->memareas[W100_EXTMEM]->priority = KD_VIDMEM_MINPRIO;
++        w100c->memareas[W100_EXTMEM]->start = (CARD8 *) ext_start;
++        w100c->memareas[W100_EXTMEM]->size = ext_size;
++    }
++
++    for (i = 0; i < w100c->num_memareas; i++) {
++        DBG_IMAGEON(("(I) Memory mapped at 0x%08x(0x%08x), size %d bytes\n",
++                     W100_CARD2HOST(w100c->memareas[i]->start),
++                     w100c->memareas[i]->start,
++                     w100c->memareas[i]->size));
++    }
++
++}
++
 +static Bool
 +W100CardInit(KdCardInfo * card)
 +{
 +    W100CardInfo *w100c;
-+    int i;
-+    int ext_mem;
-+    int int_mem;
-+    Bool initialized = FALSE;
++
++    W100CardEntry *model = &w100_cards[0];
++    static Bool initialized = FALSE;
++
++    DBG_IMAGEON(("--W100CardInit\n"));
 +
 +    w100c = xcalloc(sizeof(W100CardInfo), 1);
 +    if (w100c == NULL)
 +        return FALSE;
 +
-+    if (!initialized && fbdevInitialize(card, &w100c->fbdev)) {
-+        initialized = TRUE;
++    if (!fbdevInitialize(card, &w100c->fbdev)) {
++        return FALSE;
 +    }
 +
-+    if (!initialized || !W100Map(card, w100c)) {
++    if (!W100Map(card, w100c)) {
 +        xfree(w100c);
 +        return FALSE;
 +    }
 +    card->driver = w100c;
 +
-+    for (i = 0; w100_pci_ids[i].name != NULL; i++) {
-+        if (w100_pci_ids[i].device == card->attr.deviceID) {
-+            w100c->pci_id = &w100_pci_ids[i];
++    while (model->name) {
++        if (model->device == card->attr.deviceID) {
++            w100c->card_id = model;
 +            break;
 +        }
++        model++;
 +    }
-+    ErrorF("Using ATI card: %s\n", w100c->pci_id->name);
 +
-+    ext_mem = MMIO_IN32(mmMC_EXT_MEM_LOCATION);
-+    int_mem = MMIO_IN32(mmMC_FB_LOCATION);
++    ErrorF("(I) Using ATI card: %s\n", w100c->card_id->name);
 +
-+    w100c->memareas[0].priority = KD_VIDMEM_MAXPRIO;
-+    w100c->memareas[0].start = (CARD8 *) ((int_mem & 0xffff) << 8);
-+    w100c->memareas[0].size = 
-+        (((int_mem >> 16) & 0xffff) - (int_mem & 0xffff)) << 8;
++    if (!initialized) {
++        initialized = TRUE;
++        W100Startup(w100c);
++    }
 +
++    w100c->hw_window.mode  = W100GetModeSpec(w100c, &w100StartupInfo.mode);
++    w100c->hw_window.randr = w100StartupInfo.randr;
 +
-+    w100c->memareas[1].priority = KD_VIDMEM_MINPRIO;
-+    w100c->memareas[1].start = (CARD8 *)((ext_mem & 0xffff) << 8);
-+    w100c->memareas[1].size = 
-+        (((ext_mem >> 16) & 0xffff) - (ext_mem & 0xffff)) << 8;
-+
-+    /* Get some register values */
-+    w100c->regs.ENG_CNTL =       MMIO_IN32(mmENG_CNTL);
-+    w100c->regs.VIDEO_CTRL =     MMIO_IN32(mmVIDEO_CTRL);
-+    w100c->regs.GRAPHIC_H_DISP = MMIO_IN32(mmGRAPHIC_H_DISP);
-+    w100c->regs.GRAPHIC_V_DISP = MMIO_IN32(mmGRAPHIC_V_DISP);
-+
-+    DBG_IMAGEON(("Internal memory at 0x%08x(0x%08x), size %d bytes\n"
-+                 "External memory at 0x%08x(0x%08x), size %d bytes\n",
-+                 w100c->memareas[0].start, 
-+                 W100_CARD2HOST(w100c->memareas[0].start),
-+                 w100c->memareas[0].size,
-+                 w100c->memareas[1].start, 
-+                 W100_CARD2HOST(w100c->memareas[1].start),
-+                 w100c->memareas[1].size));
-+
-+    /* TODO: Change this to honour the framebuffer initial orientation? */
-+    w100c->defaultRandR = RR_Rotate_90;
-+    w100c->hwScreen.randr = w100c->defaultRandR;
++    tslib_transform_closure = w100c;
++    tslib_transform_coords = W100TransformTsLibCoordinates;
 +    return TRUE;
 +}
 +
@@ -271,16 +350,35 @@
 +{
 +    W100CardInfo *w100c = (W100CardInfo *) card->driver;
 +
++    DBG_IMAGEON(("--W100CardFini\n"));
 +    W100Unmap(card, w100c);
 +    fbdevCardFini(card);
 +}
 +
 +static void
-+W100MemSetup(KdScreenInfo *screen)
++W100Setup(KdScreenInfo *screen)
 +{
 +    W100CardInfo(screen);
 +    W100MemArea *mem;
++    KdMouseMatrix m;
 +    int fb_size, i;
++
++    DBG_IMAGEON(("--W100Setup\n"));
++
++    /* Adjust mode */
++    w100c->hw_window.width = screen->width;
++    w100c->hw_window.height = screen->height;
++    w100c->hw_window.bpp =  screen->fb[0].bitsPerPixel;
++    W100SetupGraphicWindow(w100c);
++
++    /* Get some register values */
++    w100c->regs.ENG_CNTL =       MMIO_IN32(mmENG_CNTL);
++    w100c->regs.VIDEO_CTRL =     MMIO_IN32(mmVIDEO_CTRL);
++    w100c->regs.GRAPHIC_H_DISP = MMIO_IN32(mmGRAPHIC_H_DISP);
++    w100c->regs.GRAPHIC_V_DISP = MMIO_IN32(mmGRAPHIC_V_DISP);
++    w100c->regs.DISP_DEBUG2    = MMIO_IN32(mmDISP_DEBUG2);
++
++    W100MemSetup(w100c);
 +
 +    /* Clear the VideoMemAreas set up by the framebuffer initialization */
 +    for (i = 0; i < screen->num_videomem_areas; i++) {
@@ -288,28 +386,27 @@
 +    }
 +    xfree(screen->videomem_areas);
 +    
-+    screen->videomem_areas = xcalloc(sizeof(KdVideoMemArea *),
-+                                     W100_MEMAREAS);
-+    screen->num_videomem_areas = W100_MEMAREAS;
++    screen->videomem_areas = xcalloc(sizeof(KdVideoMemArea *), 
++                                     w100c->num_memareas);
++    screen->num_videomem_areas = w100c->num_memareas;
 +
++    screen->fb[0].byteStride = screen->width * screen->fb[0].bitsPerPixel / 8;
 +    fb_size = screen->fb[0].byteStride * screen->height;
-+    DBG_IMAGEON(("Framebuffer required size: %d bytes\n", fb_size));
-+    /* Try to place the framebuffer in the best VideoMemArea */
-+    for (i = 0; i < W100_MEMAREAS; i++) {
-+        mem = &w100c->memareas[i];
++
++    DBG_IMAGEON(("(I) Framebuffer required size: %d bytes\n", fb_size));
++    
++    for (i = 0; i < w100c->num_memareas; i++) {
++        mem = w100c->memareas[i];
 +        screen->videomem_areas[i] = xcalloc(sizeof(KdVideoMemArea), 1);
-+        if (fb_size <= mem->size) {
-+            DBG_IMAGEON(("Setting FrameBuffer to w100 address 0x%08x\n", 
-+                          mem->start));
-+            screen->fb[0].frameBuffer = W100_CARD2HOST(mem->start);
-+            screen->videomem_areas[i]->priority = mem->priority;
-+            screen->videomem_areas[i]->base = W100_CARD2HOST(mem->start);
-+            screen->videomem_areas[i]->size = mem->size;
++        screen->videomem_areas[i]->priority = mem->priority;
++        screen->videomem_areas[i]->base = W100_CARD2HOST(mem->start);
++        screen->videomem_areas[i]->size = mem->size;
++        if (w100c->hw_window.mode->fbpool == i) {
++            DBG_IMAGEON(("(I) FrameBuffer in w100 memzone 0x%08x(0x%08x)\n", 
++                         W100_CARD2HOST(mem->start), mem->start));
 +            screen->videomem_areas[i]->available_offset = fb_size;
++            screen->fb[0].frameBuffer = W100_CARD2HOST(mem->start);
 +        } else {
-+            screen->videomem_areas[i]->priority = mem->priority;
-+            screen->videomem_areas[i]->base = W100_CARD2HOST(mem->start);
-+            screen->videomem_areas[i]->size = mem->size;
 +            screen->videomem_areas[i]->available_offset = 0;
 +        }
 +        DBG_IMAGEON(("New videomem_area(priority:%d, start:0x%08x, size:%d, available_offset:%d\n",
@@ -319,24 +416,29 @@
 +                     screen->videomem_areas[i]->available_offset));
 +    }
 +
-+    w100c->hwScreen.x = 0;
-+    w100c->hwScreen.y = 0;
-+    w100c->hwScreen.width = screen->width;
-+    w100c->hwScreen.height = screen->height;
-+    w100c->hwScreen.bpp = screen->fb[0].bitsPerPixel;
-+    w100c->hwScreen.offset = W100_HOST2CARD(screen->fb[0].frameBuffer);
++
++    w100c->hw_window.offset = W100_HOST2CARD(screen->fb[0].frameBuffer);
 +
 +
-+    DBG_IMAGEON(("HWScreen(x:%d,y:%d,width:%d,height:%d,bpp:%d,offset:0x%08x"
++    W100ComputeMouseMatrix(&m, screen->randr, 
++                           w100StartupInfo.portrait ? 
++                           W100_MIN(screen->width, screen->height) :
++                           W100_MAX(screen->width, screen->height),
++                           w100StartupInfo.portrait ? 
++                           W100_MAX(screen->width, screen->height) :
++                           W100_MIN(screen->width, screen->height));
++
++    KdSetMouseMatrix(&m);
++
++    DBG_IMAGEON(("Window(width:%d,height:%d,bpp:%d,offset:0x%08x"
 +                 "(0x%08x), randr:%d)\n",
-+                 w100c->hwScreen.x,
-+                 w100c->hwScreen.y,
-+                 w100c->hwScreen.width,
-+                 w100c->hwScreen.height,
-+                 w100c->hwScreen.bpp,
-+                 w100c->hwScreen.offset,
++                 w100c->hw_window.width,
++                 w100c->hw_window.height,
++                 w100c->hw_window.bpp,
++                 w100c->hw_window.offset,
 +                 screen->fb[0].frameBuffer,
-+                 w100c->hwScreen.randr));
++                 w100c->hw_window.randr));
++
 +}
 +
 +static Bool
@@ -346,6 +448,7 @@
 +    W100CardInfo(screen);
 +    Bool success = FALSE;
 +
++    DBG_IMAGEON(("--W100ScreenInit\n"));
 +    w100s = xcalloc(sizeof(W100ScreenInfo), 1);
 +    if (w100s == NULL)
 +        return FALSE;
@@ -353,10 +456,6 @@
 +    w100s->w100c = w100c;
 +    w100s->screen = screen;
 +    screen->driver = w100s;
-+
-+    if (screen->fb[0].depth == 0) {
-+        screen->fb[0].depth = 16;
-+    }
 +
 +    success = fbdevScreenInitialize(screen, &w100s->fbdev);
 +
@@ -366,7 +465,7 @@
 +        return FALSE;
 +    }
 +
-+    W100MemSetup(screen);
++    W100Setup(screen);
 +
 +    return TRUE;
 +}
@@ -375,8 +474,7 @@
 +W100ScreenFini(KdScreenInfo * screen)
 +{
 +    W100ScreenInfo *w100s = (W100ScreenInfo *) screen->driver;
-+    W100CardInfo *w100c = screen->card->driver;
-+
++    DBG_IMAGEON(("--W100ScreenFini\n"));
 +    fbdevScreenFini(screen);
 +    xfree(w100s);
 +    screen->driver = 0;
@@ -388,7 +486,10 @@
 +    KdScreenPriv(pScreen);
 +    W100CardInfo(pScreenPriv);
 +
-+    W100InitVideo(pScreen);
++    DBG_IMAGEON(("--W100InitScreen\n"));
++    if (w100c->card_id->caps & W100XVSupport) {
++        W100InitVideo(pScreen);
++    }
 +    return fbdevInitScreen(pScreen);
 +}
 +
@@ -403,35 +504,42 @@
 +    KdScreenInfo *screen = pScreenPriv->screen;
 +    W100CardInfo(pScreenPriv);
 +    Bool screenEnabled = pScreenPriv->enabled;
-+    KdMouseMatrix m;
 +
-+    DBG_IMAGEON(("W100RandRSetConfig(randr:%d,pSize:%dx%d)\n",
++    DBG_IMAGEON(("--W100RandRSetConfig(randr:%d,pSize:%dx%d)\n",
 +                 randr, pSize->width, pSize->height));
-+
 +
 +    if (screenEnabled) {
 +        KdDisableScreen(pScreen);
 +    }
-+    KdOffscreenSwapOut(screen->pScreen);
 +
 +    if (randr & (RR_Rotate_0|RR_Rotate_180)) {
-+        pScreen->width    = w100c->fbdev.var.xres;
-+        pScreen->height   = w100c->fbdev.var.yres;
 +        pScreen->mmWidth  = screen->width_mm;
 +        pScreen->mmHeight = screen->height_mm;
++        pScreen->width = pSize->width;
++        pScreen->height = pSize->height;
 +    } else {
-+        pScreen->width    = w100c->fbdev.var.yres;
-+	pScreen->height   = w100c->fbdev.var.xres;
 +	pScreen->mmWidth  = screen->height_mm;
 +	pScreen->mmHeight = screen->width_mm;
++        pScreen->width = pSize->height;
++        pScreen->height = pSize->width;
 +    }
 +
-+    KdComputeMouseMatrix(&m, randr, screen->width, screen->height);
-+    KdSetMouseMatrix(&m);
-+
++    screen->randr = randr;
 +    screen->width = pScreen->width;
 +    screen->height = pScreen->height;
-+    screen->fb[0].byteStride = screen->width * screen->fb[0].bitsPerPixel / 8;
++    w100c->hw_window.randr = KdAddRotation(randr, w100StartupInfo.randr);
++    w100c->hw_window.mode = W100GetBestMode(w100c, pScreen->width, pScreen->height);
++
++    KdOffscreenSwapOut(screen->pScreen);
++
++    W100Setup(screen);
++
++    DBG_IMAGEON(("ModifyPixMapHeader(width:%d,height:%d,depth:%d,bpp:%d,bs:%d,fb:0x%08x)\n", pScreen->width, pScreen->height, 
++                 screen->fb[0].depth,
++                 screen->fb[0].bitsPerPixel,
++                 screen->fb[0].byteStride,
++                 screen->fb[0].frameBuffer));
++
 +
 +    (*pScreen->ModifyPixmapHeader) (fbGetScreenPixmap(pScreen),
 +                                    pScreen->width,
@@ -442,76 +550,37 @@
 +                                    screen->fb[0].frameBuffer);
 +
 +
-+    w100c->hwScreen.randr &= ~RR_Rotate_All;
-+    switch (randr & RR_Rotate_All) {
-+    case RR_Rotate_0:
-+        switch (w100c->defaultRandR) {
-+        case RR_Rotate_0:
-+            w100c->hwScreen.randr |= RR_Rotate_0;
-+            break;
-+        case RR_Rotate_90:
-+            w100c->hwScreen.randr |= RR_Rotate_90;
-+            break;
-+        case RR_Rotate_180:
-+            w100c->hwScreen.randr |= RR_Rotate_180;
-+            break;
-+        case RR_Rotate_270:
-+            w100c->hwScreen.randr |= RR_Rotate_270;
-+            break;
-+        }
-+        break;
-+    case RR_Rotate_90:
-+        switch (w100c->defaultRandR) {
-+        case RR_Rotate_0:
-+            w100c->hwScreen.randr |= RR_Rotate_90;
-+            break;
-+        case RR_Rotate_90:
-+            w100c->hwScreen.randr |= RR_Rotate_0;
-+            break;
-+        case RR_Rotate_180:
-+            w100c->hwScreen.randr |= RR_Rotate_270;
-+            break;
-+        case RR_Rotate_270:
-+            w100c->hwScreen.randr |= RR_Rotate_180;
-+            break;
-+        }
-+        break;
-+    case RR_Rotate_180:
-+        switch (w100c->defaultRandR) {
-+        case RR_Rotate_0:
-+            w100c->hwScreen.randr |= RR_Rotate_180;
-+            break;
-+        case RR_Rotate_90:
-+            w100c->hwScreen.randr |= RR_Rotate_270;
-+            break;
-+        case RR_Rotate_180:
-+            w100c->hwScreen.randr |= RR_Rotate_0;
-+            break;
-+        case RR_Rotate_270:
-+            w100c->hwScreen.randr |= RR_Rotate_90;
-+            break;
-+        }
-+        break;
-+    case RR_Rotate_270:
-+        switch (w100c->defaultRandR) {
-+        case RR_Rotate_0:
-+            w100c->hwScreen.randr |= RR_Rotate_270;
-+            break;
-+        case RR_Rotate_90:
-+            w100c->hwScreen.randr |= RR_Rotate_180;
-+            break;
-+        case RR_Rotate_180:
-+            w100c->hwScreen.randr |= RR_Rotate_90;
-+            break;
-+        case RR_Rotate_270:
-+            w100c->hwScreen.randr |= RR_Rotate_0;
-+            break;
-+        }
-+        break;
-+    }
-+
 +    if (screenEnabled) {
 +        KdEnableScreen(pScreen);
++    }
++    return TRUE;
++}
++
++static Bool W100RandRGetInfo(ScreenPtr pScreen, Rotation *rotations)
++{
++    KdScreenPriv(pScreen);
++    KdScreenInfo *screen = pScreenPriv->screen;
++    W100CardInfo(pScreenPriv);
++    RRScreenSizePtr pSize;
++    Rotation randr;
++    W100ModeSpec *modes;
++    int i;
++
++    DBG_IMAGEON(("--W100RandRGetInfo\n"));
++
++    *rotations = RR_Rotate_All;
++
++    for (modes = w100_modes; modes->width; modes++) {
++        if (modes->supported) {
++            pSize = RRRegisterSize(pScreen, 
++                                   modes->width,
++                                   modes->height,
++                                   screen->width_mm,
++                                   screen->height_mm);
++            if (modes == w100c->hw_window.mode) {
++                RRSetCurrentConfig(pScreen, screen->randr, 0, pSize);
++            }
++        }
 +    }
 +
 +    return TRUE;
@@ -520,8 +589,9 @@
 +static Bool W100RandRInit(ScreenPtr pScreen)
 +{
 +    rrScrPrivPtr pScrPriv = rrGetScrPriv(pScreen);
-+
++    DBG_IMAGEON(("--W100RandRInit\n"));
 +    pScrPriv->rrSetConfig = W100RandRSetConfig;
++    pScrPriv->rrGetInfo   = W100RandRGetInfo;
 +    return TRUE;
 +}
 +
@@ -532,7 +602,7 @@
 +{
 +    KdScreenPriv(pScreen);
 +    W100CardInfo(pScreenPriv);
-+
++    DBG_IMAGEON(("--W100FinishInitScreen\n"));
 +    if (!fbdevFinishInitScreen(pScreen))
 +        return FALSE;
 +
@@ -556,6 +626,7 @@
 +W100Preserve(KdCardInfo * card)
 +{
 +    W100CardInfo *w100c = card->driver;
++    DBG_IMAGEON(("--W100Preserve\n"));
 +
 +    fbdevPreserve(card);
 +}
@@ -564,6 +635,7 @@
 +W100Restore(KdCardInfo * card)
 +{
 +    W100CardInfo *w100c = card->driver;
++    DBG_IMAGEON(("--W100Restore\n"));
 +    fbdevRestore(card);
 +}
 +
@@ -572,7 +644,7 @@
 +{
 +    KdScreenPriv(pScreen);
 +    W100CardInfo(pScreenPriv);
-+
++    DBG_IMAGEON(("--W100DPMS\n"));
 +    return fbdevDPMS(pScreen, mode);
 +}
 +
@@ -582,17 +654,28 @@
 +    KdScreenPriv(pScreen);
 +    W100CardInfo(pScreenPriv);
 +
-+    DBG_IMAGEON(("W100Enable\n"));
++    DBG_IMAGEON(("--W100Enable\n"));
 +
++    /*
 +    if (!fbdevEnable(pScreen))
 +        return FALSE;
++    */
 +
 +    if (w100c->mem_base == NULL) {
 +        if (!W100Map(pScreenPriv->screen->card, w100c)) {
 +            return FALSE;
 +        }
-+        W100MemSetup(pScreenPriv->screen);
++        W100Setup(pScreenPriv->screen);
 +    }
++    W100SetupGraphicEngine(w100c);
++
++    graphic_offset_u go;
++    go.val = MMIO_IN32(mmGRAPHIC_OFFSET);
++    DBG_IMAGEON(("Graphic offset is 0x%08x(0x%08x)\n",
++                 go.f.graphic_offset,
++                 W100_CARD2HOST(go.f.graphic_offset)));
++
++
 +    return TRUE;
 +}
 +
@@ -601,8 +684,8 @@
 +{
 +    KdScreenPriv(pScreen);
 +    W100CardInfo(pScreenPriv);
-+    DBG_IMAGEON(("W100Disable\n"));
-+    W100Unmap(pScreenPriv->card, w100c);
++    DBG_IMAGEON(("--W100Disable\n"));
++    //W100Unmap(pScreenPriv->card, w100c);
 +
 +    fbdevDisable(pScreen);
 +}
@@ -654,7 +737,7 @@
 +    W100PutColors,               /* putColors */
 +};
 --- /dev/null
-+++ xorg-server-X11R7.1-1.1.0.orig/hw/kdrive/imageon/imageon_const.h
++++ xorg-server-X11R7.1-1.1.0.work/hw/kdrive/imageon/imageon_const.h
 @@ -0,0 +1,161 @@
 +/*
 + * Copyright © 2007 Manuel Teira
@@ -818,8 +901,8 @@
 +
 +#endif
 --- /dev/null
-+++ xorg-server-X11R7.1-1.1.0.orig/hw/kdrive/imageon/imageon_cursor.c
-@@ -0,0 +1,571 @@
++++ xorg-server-X11R7.1-1.1.0.work/hw/kdrive/imageon/imageon_cursor.c
+@@ -0,0 +1,563 @@
 +/*
 + * Copyright © 2007 Manuel Teira
 + *
@@ -949,7 +1032,7 @@
 +        x1 = 0;
 +        y1 = 0;
 +        for (y2 = W100_CURSOR_HEIGHT - 1; y2 >= 0; --y2) {
-+            for (x2 = W100_CURSOR_WIDTH - 1; x2 >= 0; --x2) {
++            for (x2 = 0; x2 < W100_CURSOR_WIDTH; x2++) {
 +                SetPixelVal(dst, x2, y2, PixelVal(src, x1, y1));
 +                ++x1;
 +                if (x1 >= W100_CURSOR_WIDTH) {
@@ -963,7 +1046,7 @@
 +        x1 = 0; 
 +        y1 = 0;
 +        for (x2 = 0; x2 < W100_CURSOR_WIDTH; x2++) {
-+            for (y2 = W100_CURSOR_HEIGHT - 1; y2 >= 0; --y2) {
++            for (y2 = 0; y2 < W100_CURSOR_HEIGHT; y2++) {
 +                SetPixelVal(dst, x2, y2, PixelVal(src, x1, y1));
 +                ++x1;
 +                if (x1 >= W100_CURSOR_WIDTH) {
@@ -1030,9 +1113,6 @@
 +    int line, i;
 +    int h, w;
 +
-+    DBG_IMAGEON(("W100LoadCursor(xhot:%d,yhot:%d,width:%d,height:%d)\n",
-+                 bits->xhot, bits->yhot, 
-+                 bits->width, bits->height));
 +    
 +    pCurPriv->pCursor = pCursor;
 +    pCurPriv->xhot = bits->xhot;
@@ -1073,13 +1153,18 @@
 +    }
 +
 +    /* Rotate the pixmap to get the correct orientation */
-+    W100RotateCursor(w100c->hwScreen.randr, 
++    W100RotateCursor(w100c->hw_window.randr,
 +                     (CARD32*) tmpCursor0,
 +                     (CARD32*) tmpCursor1);
 +
 +    /* Correct endianness */
 +    src = (CARD32*) tmpCursor1;
 +    dst = (CARD32*) (pCurPriv->area->vidmem->base + pCurPriv->area->offset);
++    DBG_IMAGEON(("W100LoadCursor(xhot:%d,yhot:%d,width:%d,height:%d) dst(0x%08x)\n",
++                 bits->xhot, bits->yhot, 
++                 bits->width, bits->height,
++                 dst));
++
 +    for (line = 0; line < h; line++) {
 +        for (i = 0; i < lwsrc; i++) {
 +            dst[i] = BigEndian(src[i]);
@@ -1087,6 +1172,7 @@
 +        src += lwsrc;
 +        dst += lwsrc;
 +    }
++
 +    W100SetCursorColors(pScreen);
 +}
 +
@@ -1117,13 +1203,14 @@
 +    W100CardInfo(pScreenPriv);
 +    W100ScreenInfo(pScreenPriv);
 +    W100Cursor *pCurPriv = &w100s->cursor;
-+    CARD16 xoffs, yoffs;
++    int xoffs, yoffs;
 +    cursor_offset_u cursor_offset;
 +    cursor_h_pos_u hpos;
 +    cursor_v_pos_u vpos;
 +    graphic_h_disp_u graphic_hdisp;
 +    graphic_v_disp_u graphic_vdisp;
-+    int tx, ty;
++    int tx, ty, tw, th;
++
 +
 +    if (!pCurPriv->has_cursor) {
 +        return;
@@ -1132,60 +1219,42 @@
 +        return;
 +    }
 +
-+    DBG_IMAGEON(("W100MoveCursor(x:%d,y:%d)\n", x, y));
-+
 +    graphic_hdisp.val = w100c->regs.GRAPHIC_H_DISP;
 +    graphic_vdisp.val = w100c->regs.GRAPHIC_V_DISP;
-+
 +    xoffs = 0;
 +    yoffs = 0;
-+
 +    x -= pCurPriv->xhot;
-+    if (x < 0) {
-+        switch(w100c->hwScreen.randr & RR_Rotate_All) {
-+        case RR_Rotate_0:
-+        case RR_Rotate_180:
-+            xoffs = -x;
-+            break;
-+        case RR_Rotate_90:
-+        case RR_Rotate_270:
-+            yoffs = -y;
-+            break;
-+        }
-+        x = 0;
-+    }
 +    y -= pCurPriv->yhot;
-+    if (y < 0) {
-+        switch(w100c->hwScreen.randr & RR_Rotate_All) {
-+        case RR_Rotate_0:
-+        case RR_Rotate_180:
-+            yoffs = -y;
-+            break;
-+        case RR_Rotate_90:
-+        case RR_Rotate_270:
-+            xoffs = -y;
-+            break;
-+        }
-+        y = 0;
-+    }
-+
 +    tx = W100MapToHWX(w100c, x, y, pCurPriv->width, pCurPriv->height);
 +    ty = W100MapToHWY(w100c, x, y, pCurPriv->width, pCurPriv->height);
++    tw = W100MapToHWW(w100c, x, y, pCurPriv->width, pCurPriv->height);
++    th = W100MapToHWH(w100c, x, y, pCurPriv->width, pCurPriv->height);
 +
-+    DBG_IMAGEON(("W100MoveCursor dst(x:%d,y:%d),"
-+                 "mapped(x:%d,y:%d,xoffs:%d,yoffs:%d\n",
-+                 x, y, tx, ty, xoffs, yoffs));
++    if (tx < 0) {
++        xoffs = -tx;
++        tw -= xoffs;
++        tx = 0;
++    }
 +
++    if (ty < 0) {
++        yoffs = -ty;
++        th -= yoffs;
++        ty = 0;
++    }
++
++    hpos.f.cur_h_start = graphic_hdisp.f.graphic_h_start + tx;
++    hpos.f.cur_h_end   = hpos.f.cur_h_start + tw;
++    hpos.f.cur_en = 1;
++    vpos.f.cur_v_start = graphic_vdisp.f.graphic_v_start + ty;
++    vpos.f.cur_v_end   = vpos.f.cur_v_start + th;
 +    cursor_offset.f.cur_x_offset = xoffs;
 +    cursor_offset.f.cur_y_offset = yoffs;
 +    cursor_offset.f.cur_offset = (CARD32) 
 +        W100_HOST2CARD(pCurPriv->area->vidmem->base
 +                       + pCurPriv->area->offset);
-+    hpos.f.cur_en = 1;
-+    hpos.f.cur_h_start = graphic_hdisp.f.graphic_h_start + tx;
-+    hpos.f.cur_h_end   = hpos.f.cur_h_start + pCurPriv->width;
-+    vpos.f.cur_v_start = graphic_vdisp.f.graphic_v_start + ty;
-+    vpos.f.cur_v_end   = vpos.f.cur_v_start + pCurPriv->height;
++    DBG_IMAGEON(("W100MoveCursor dst(x:%d,y:%d),"
++                 "mapped(x:%d,y:%d,xoffs:%d,yoffs:%d)\n",
++                 x, y, tx, ty, xoffs, yoffs));
 +
 +    W100DisableDisplayUpdate(w100c);
 +    MMIO_OUT32(mmCURSOR1_OFFSET, cursor_offset.val);
@@ -1198,7 +1267,6 @@
 +    pCurPriv->coffset = cursor_offset.val;
 +
 +}
-+
 +
 +static Bool
 +W100RealizeCursor(ScreenPtr pScreen, CursorPtr pCursor)
@@ -1320,6 +1388,11 @@
 +    }
 +    if (pCurPriv->area == NULL) {
 +        FatalError("Couldn't allocate offscreen memory for cursor.\n");
++    } else {
++        DBG_IMAGEON(("Cursor memory at 0x%08x(0x%08x)\n", 
++                     pCurPriv->area->vidmem->base + pCurPriv->area->offset,
++                     W100_HOST2CARD(pCurPriv->area->vidmem->base
++                                    + pCurPriv->area->offset)));
 +    }
 +    if (pCurPriv->pCursor) {
 +        int x, y;
@@ -1348,6 +1421,8 @@
 +    if (pCurPriv->pCursor) {
 +        W100UnloadCursor(pScreen);
 +    }
++
++    pCurPriv->area = NULL;
 +}
 +
 +Bool
@@ -1392,8 +1467,8 @@
 +    pCurPriv->pCursor = NULL;
 +}
 --- /dev/null
-+++ xorg-server-X11R7.1-1.1.0.orig/hw/kdrive/imageon/imageon_draw.c
-@@ -0,0 +1,241 @@
++++ xorg-server-X11R7.1-1.1.0.work/hw/kdrive/imageon/imageon_draw.c
+@@ -0,0 +1,237 @@
 +/*
 + * Copyright © 2007 Manuel Teira
 + *
@@ -1574,7 +1649,7 @@
 +    W100ScreenInfo(pScreenPriv);
 +
 +
-+    DBG_IMAGEON(("W100InitAccel: %d/%d depth/bpp\n", 
++    DBG_IMAGEON(("--W100InitAccel: %d/%d depth/bpp\n", 
 +                 pScreenPriv->screen->fb[0].depth,
 +                 pScreenPriv->screen->fb[0].bitsPerPixel));
 +
@@ -1588,7 +1663,7 @@
 +    w100s->kaa.DoneCopy = W100DoneCopy;
 +
 +    w100s->kaa.flags |= KAA_OFFSCREEN_PIXMAPS;
-+    /* Offset alignment, not sure if this is enough */
++    /* Offset alignment, not sure if this is enought */
 +    w100s->kaa.offsetAlign = 0;
 +    w100s->kaa.pitchAlign  = 16;
 +
@@ -1606,7 +1681,7 @@
 +    W100ScreenInfo(pScreenPriv);
 +    W100CardInfo(pScreenPriv);
 +
-+    DBG_IMAGEON(("W100EnableAccel\n"));
++    DBG_IMAGEON(("--W100EnableAccel\n"));
 +
 +    w100s->kaa.PrepareBlend = NULL;
 +    w100s->kaa.Blend = NULL;
@@ -1617,27 +1692,23 @@
 +    w100s->kaa.DoneComposite = NULL;
 +    w100s->kaa.UploadToScreen = NULL;
 +    w100s->kaa.UploadToScratch = NULL;
-+
-+    W100SetupGraphicEngine(w100c);
-+    W100SetupGraphicWindow(w100c);
-+
 +    kaaMarkSync(pScreen);
 +}
 +
 +void
 +W100DisableAccel(ScreenPtr pScreen)
 +{
-+    DBG_IMAGEON(("W100DisableAccel\n"));
++    DBG_IMAGEON(("--W100DisableAccel\n"));
 +}
 +
 +void
 +W100FiniAccel(ScreenPtr pScreen)
 +{
-+    DBG_IMAGEON(("W100FiniAccel\n"));
++    DBG_IMAGEON(("--W100FiniAccel\n"));
 +}
 --- /dev/null
-+++ xorg-server-X11R7.1-1.1.0.orig/hw/kdrive/imageon/imageon.h
-@@ -0,0 +1,229 @@
++++ xorg-server-X11R7.1-1.1.0.work/hw/kdrive/imageon/imageon.h
+@@ -0,0 +1,261 @@
 +/*
 + * Copyright © 2007 Manuel Teira
 + *
@@ -1689,12 +1760,18 @@
 +#define W100_CARD2HOST(x) (w100c->mem_base + (CARD32)(x))
 +#define W100_HOST2CARD(x) ((x) - (CARD32)(w100c->mem_base))
 +#define W100_MEMAREAS   (2)
++#define W100_INTMEM     (0)
++#define W100_EXTMEM     (1)
++
++#define W100_SYSFS_BASE "/sys/bus/platform/devices/w100fb/"
 +
 +#define MMIO_OUT32(a, v)   (*(VOL32 *)((w100c->reg_base) + (a)) = (v))
 +#define MMIO_IN32(a)       (*(VOL32 *)((w100c->reg_base) + (a)))
 +
 +#define W100_MAX(x, y) ((x) > (y) ? x : y)
 +#define W100_MIN(x, y) ((x) < (y) ? x : y)
++
++#define W100_ALIGN(q, a) ((q + a - 1) & ~(a - 1))
 +
 +#define TIMEOUT_LOCALS struct timeval _target, _curtime;
 +
@@ -1722,12 +1799,31 @@
 +typedef volatile CARD16	VOL16;
 +typedef volatile CARD32	VOL32;
 +
-+struct pci_id_entry {
++typedef struct _W100CardEntry {
 +    CARD16 vendor;
 +    CARD16 device;
 +    CARD8 caps;
 +    char *name;
-+};
++} W100CardEntry;
++
++
++typedef enum _W100Caps {
++    W100XVSupport = 1
++} W100Caps;
++
++typedef struct _W100ModeSpec {
++    CARD16 width;
++    CARD16 height;
++    CARD8  bpp;
++    CARD8  fbpool;
++    Bool   supported;
++} W100ModeSpec;
++
++typedef struct _W100Mode {
++    CARD16 width;
++    CARD16 height;
++    CARD8  bpp;
++} W100Mode;
 +
 +typedef struct _W100MemArea {
 +    CARD8 *start;
@@ -1735,29 +1831,36 @@
 +    CARD8 priority;
 +} W100MemArea;
 +
++typedef struct _W100StartupInfo {
++    W100CardEntry *card_id;
++    W100Mode mode;
++    Bool portrait;
++    int randr;
++} W100StartupInfo;
++
 +typedef struct _W100CardInfo {
 +    FbdevPriv fbdev;
-+    struct pci_id_entry *pci_id;
++    W100CardEntry    *card_id;
 +    CARD8 *mem_base;
 +    CARD8 *reg_base;
-+    W100MemArea memareas[W100_MEMAREAS];
++    W100MemArea **memareas;
++    int num_memareas;
 +    int cmdfifo_entries;
 +    struct {
 +        CARD32  ENG_CNTL;
 +        CARD32  VIDEO_CTRL;
 +        CARD32  GRAPHIC_H_DISP;
 +        CARD32  GRAPHIC_V_DISP;
++        CARD32  DISP_DEBUG2;
 +    } regs;
 +    struct {
 +        CARD8 *offset;
-+        CARD16 x;
-+        CARD16 y;
 +        CARD16 width;
 +        CARD16 height;
 +        int randr;
++        W100ModeSpec *mode;
 +        CARD8 bpp;
-+    } hwScreen;
-+    int defaultRandR;
++    } hw_window;
 +    CARD8 last_dst_videomem;
 +    CARD8 last_src_videomem;
 +    struct {
@@ -1868,7 +1971,7 @@
 +
 +#endif /* _IMAGEON_H_ */
 --- /dev/null
-+++ xorg-server-X11R7.1-1.1.0.orig/hw/kdrive/imageon/imageon_regs.h
++++ xorg-server-X11R7.1-1.1.0.work/hw/kdrive/imageon/imageon_regs.h
 @@ -0,0 +1,4155 @@
 +/*
 + * Copyright © 2007 Manuel Teira
@@ -6026,7 +6129,7 @@
 +
 +#endif
 --- /dev/null
-+++ xorg-server-X11R7.1-1.1.0.orig/hw/kdrive/imageon/imageon_stub.c
++++ xorg-server-X11R7.1-1.1.0.work/hw/kdrive/imageon/imageon_stub.c
 @@ -0,0 +1,95 @@
 +/*
 + * Copyright © 2007 Manuel Teira
@@ -6057,10 +6160,10 @@
 +#include "imageon_regs.h"
 +#include "klinux.h"
 +
-+extern struct pci_id_entry w100_pci_ids[];
++extern W100CardEntry w100_cards[];
 +
 +static Bool
-+FindW100(CARD16 vendor, CARD16 device, CARD32 count, KdCardAttr * attr)
++FindW100(CARD16 vendor, CARD16 device, KdCardAttr * attr)
 +{
 +    CARD8 *mmio;
 +    CARD32 chip_id;
@@ -6072,7 +6175,7 @@
 +
 +    chip_id = (*(VOL32 *)(mmio + mmCHIP_ID));
 +    if ((vendor | (device << 16)) == chip_id) {
-+        ErrorF("Found W100 Chip ID: %08x\n\n", chip_id);
++        ErrorF("(I) Found W100 Chip ID: %08x\n\n", chip_id);
 +        attr->deviceID = device;
 +        attr->vendorID = vendor;
 +        found = TRUE;
@@ -6085,12 +6188,12 @@
 +void
 +InitCard(char *name)
 +{
-+    struct pci_id_entry *id;
++    int i;
++    W100CardEntry *entry;
 +    KdCardAttr attr;
 +
-+    for (id = w100_pci_ids; id->name != NULL; id++) {
-+        int j = 0;
-+        if (FindW100(id->vendor, id->device, j++, &attr)) {
++    for (entry = w100_cards; entry->name; entry++) {
++        if (FindW100(entry->vendor, entry->device, &attr)) {
 +            KdCardInfoAdd(&W100Funcs, &attr, 0);
 +            break;
 +        }
@@ -6124,8 +6227,8 @@
 +    return KdProcessArgument(argc, argv, i);
 +}
 --- /dev/null
-+++ xorg-server-X11R7.1-1.1.0.orig/hw/kdrive/imageon/imageon_support.c
-@@ -0,0 +1,1306 @@
++++ xorg-server-X11R7.1-1.1.0.work/hw/kdrive/imageon/imageon_support.c
+@@ -0,0 +1,1477 @@
 +/*
 + * Copyright © 2007 Manuel Teira
 + *
@@ -6196,6 +6299,9 @@
 +    /* GXset          */ 0xff,    /* 1 */
 +};
 +
++extern W100ModeSpec w100_modes[];
++extern W100StartupInfo w100StartupInfo;
++
 +void W100DisableDisplayUpdate(W100CardInfo *w100c)
 +{
 +    disp_db_buf_cntl_wr_u disp_db_buf_cntl;
@@ -6234,8 +6340,8 @@
 +    dp_datatype_u dp_datatype;
 +
 +    DBG_IMAGEON(("W100SetupGraphicEngine(offset:%p, pitch:%d)\n",
-+                 w100c->hwScreen.offset, 
-+                 w100c->hwScreen.width));
++                 w100c->hw_window.offset, 
++                 w100c->hw_window.width));
 +
 +    eng_cntl.val = MMIO_IN32(mmENG_CNTL);
 +    eng_cntl.f.erc_reg_wr_ws = 0;
@@ -6253,18 +6359,18 @@
 +    MMIO_OUT32(mmDEFAULT_SC_BOTTOM_RIGHT, bottomright.val);
 +
 +    dpitch.val = 0;
-+    dpitch.f.dst_pitch = w100c->hwScreen.width;
++    dpitch.f.dst_pitch = w100c->hw_window.width;
 +    MMIO_OUT32(mmDST_PITCH, dpitch.val);
 +
 +    doffset.val = 0;
-+    doffset.f.dst_offset = (CARD32) w100c->hwScreen.offset;
++    doffset.f.dst_offset = (CARD32) w100c->hw_window.offset;
 +    MMIO_OUT32(mmDST_OFFSET, doffset.val);
 +
 +    spitch.val = 0;
-+    spitch.f.src_pitch = w100c->hwScreen.width;
++    spitch.f.src_pitch = w100c->hw_window.width;
 +    MMIO_OUT32(mmSRC_PITCH, spitch.val);
 +    soffset.val = 0;
-+    soffset.f.src_offset = (CARD32) w100c->hwScreen.offset;
++    soffset.f.src_offset = (CARD32) w100c->hw_window.offset;
 +    MMIO_OUT32(mmSRC_OFFSET, soffset.val);
 +
 +    tl.f.sc_left = tl.f.sc_top = 0;
@@ -6340,90 +6446,126 @@
 +    ErrorF("<-W100ResetGraphicEngine\n");
 +}
 +
++W100ModeSpec *W100GetModeSpec(W100CardInfo *w100c, W100Mode *mode)
++{
++    W100ModeSpec *modes;
++    for (modes = w100_modes; modes->width; modes++) {
++        if ((modes->bpp == mode->bpp) &&
++            (((modes->width == mode->width) &&
++              (modes->height == mode->height)) ||
++             ((modes->width == mode->height) &&
++              (modes->height == mode->width)))) {
++            return modes;
++        }
++    }
++    ErrorF("No matching mode spec for %dx%d@%d\n", 
++           mode->width, mode->height, mode->bpp);
++    return NULL;
++}
++
++W100ModeSpec *W100GetBestMode(W100CardInfo *w100c, int width, int height)
++{
++    unsigned int best_x = 0xffffffff;
++    unsigned int best_y = 0xffffffff;
++    W100ModeSpec *modes, *best_mode = NULL;
++    for (modes = w100_modes; modes->width; modes++) {
++        if (modes->supported) {
++            if (((modes->width >= width) && (modes->width < best_x)) &&
++                ((modes->height >= height) && (modes->height < best_y))) {
++                best_mode = modes;
++                best_x = modes->width;
++                best_y = modes->height;
++            } else if (((modes->width >= height) && (modes->width < best_y)) &&
++                       ((modes->height >= width) && (modes->height < best_x))) {
++                best_mode = modes;
++                best_x = modes->height;
++                best_y = modes->width;
++            }
++        }
++    }
++    if (!best_mode) {
++        ErrorF("No matching mode spec for %dx%d\n", width, height);
++    }
++    return best_mode;
++}
++
++Bool W100GetFbMode(W100CardInfo *w100c, W100Mode *mode)
++{
++    struct fb_var_screeninfo vinfo;
++    int i;
++
++    if (ioctl(w100c->fbdev.fd, FBIOGET_VSCREENINFO, &vinfo) != 0) {
++        ErrorF("Unable to get framebuffer mode\n");
++        return FALSE;
++    }
++
++    mode->width = vinfo.xres;
++    mode->height = vinfo.yres;
++    mode->bpp = vinfo.bits_per_pixel;
++}
++
++Bool W100CheckFbMode(W100CardInfo *w100c, W100ModeSpec *modes)
++{
++    struct fb_var_screeninfo vinfo;
++
++    vinfo.xres = vinfo.xres_virtual = modes->width;
++    vinfo.yres = vinfo.yres_virtual = modes->height;
++    vinfo.bits_per_pixel            = modes->bpp;
++    vinfo.activate = FB_ACTIVATE_TEST;
++    
++    if (ioctl(w100c->fbdev.fd, FBIOPUT_VSCREENINFO, &vinfo) != 0) {
++        ErrorF("(W) Mode %dx%d@%d not supported\n", 
++               vinfo.xres,
++               vinfo.yres,
++               vinfo.bits_per_pixel);
++        return FALSE;
++    }
++    DBG_IMAGEON(("(I) Mode %dx%d@%d supported\n", 
++                 vinfo.xres,
++                 vinfo.yres,
++                 vinfo.bits_per_pixel));
++    return TRUE;
++}
++
++Bool W100SetFbMode(W100CardInfo *w100c)
++{
++    struct fb_var_screeninfo vinfo;
++    int randr = KdSubRotation(w100c->hw_window.randr, w100StartupInfo.randr);
++
++    if (randr & (RR_Rotate_0 | RR_Rotate_180)) {
++        vinfo.xres = vinfo.xres_virtual = w100c->hw_window.mode->width;
++        vinfo.yres = vinfo.yres_virtual = w100c->hw_window.mode->height;
++    } else {
++        vinfo.xres = vinfo.xres_virtual = w100c->hw_window.mode->height;
++        vinfo.yres = vinfo.yres_virtual = w100c->hw_window.mode->width;
++    }
++    vinfo.bits_per_pixel            = w100c->hw_window.mode->bpp;
++    vinfo.activate = FB_ACTIVATE_NOW;
++    int flip = (w100c->hw_window.randr > RR_Rotate_90) ? 1 : 0;
++
++    DBG_IMAGEON(("Asking framebuffer for mode %dx%d@%d. Flipped:%d\n",
++                 vinfo.xres, vinfo.yres, vinfo.bits_per_pixel, flip));
++    if (ioctl(w100c->fbdev.fd, FBIOPUT_VSCREENINFO, &vinfo) != 0) {
++        ErrorF("Error setting mode %dx%d@%d\n", 
++               vinfo.xres,
++               vinfo.yres,
++               vinfo.bits_per_pixel);
++        return FALSE;
++    }
++    W100SysFsSet(w100c, W100_SYSFS_BASE "flip", flip ? "1" : "0");
++    return TRUE;
++}
++
 +void W100SetupGraphicWindow(W100CardInfo *w100c)
 +{
-+    CARD32 offset = 0;
-+    graphic_ctrl_u gc;
-+    graphic_pitch_u gp;
-+    graphic_offset_u go;
-+    pclk_cntl_u pclk_cntl;
++    DBG_IMAGEON(("W100SetupGraphicWindow(width:%d,height:%d,randr:%d)\n",
++                 w100c->hw_window.width,
++                 w100c->hw_window.height,
++                 w100c->hw_window.randr));
 +
-+    DBG_IMAGEON(("W100SetupGraphicWindow(offset:%p, x:%d, y:%d, "
-+                 "width:%d, height:%d, randr:%d)\n",
-+                 w100c->hwScreen.offset, 
-+                 w100c->hwScreen.x,
-+                 w100c->hwScreen.y,
-+                 w100c->hwScreen.width,
-+                 w100c->hwScreen.height,
-+                 w100c->hwScreen.randr));
-+
-+    gc.val = 0;
-+    gc.f.color_depth = COLOR_DEPTH_A555;
-+    gc.f.en_crtc = 1;
-+    gc.f.en_graphic_crtc = 1;
-+    gc.f.en_graphic_req = 1;
-+    gc.f.lcd_pclk_on = 1;
-+    gc.f.lcd_sclk_on = 1;
-+    gc.f.low_power_on = 0;
-+
-+    pclk_cntl.val = 0;
-+
-+    switch (w100c->hwScreen.width) {
-+    case 240:
-+    case 320:
-+        gc.f.total_req_graphic = 0xa0;
-+        gc.f.req_freq = 0;
-+        pclk_cntl.f.pclk_post_div = 1;
-+        pclk_cntl.f.pclk_src_sel = W100_CLK_SRC_XTAL;
-+        break;
-+    case 480:
-+    case 640:
-+        pclk_cntl.f.pclk_src_sel = W100_CLK_SRC_PLL;
-+        gc.f.total_req_graphic = 0xf0;
-+        if (w100c->hwScreen.randr & (RR_Rotate_0 | RR_Rotate_180)) {
-+            gc.f.low_power_on = 1;
-+            gc.f.req_freq = 5;
-+            pclk_cntl.f.pclk_post_div = 2; 
-+        } else {
-+            gc.f.req_freq = 4;
-+            pclk_cntl.f.pclk_post_div = 6;
-+        }
-+        break;
++    if (!W100SetFbMode(w100c)) {
++        ErrorF("Error Setting Graphic Window\n");
 +    }
-+
-+    gp.val = 0;
-+    gp.f.graphic_pitch = w100c->hwScreen.width * w100c->hwScreen.bpp / 8;
-+    
-+    go.val = 0;
-+    go.f.graphic_offset = (CARD32) w100c->hwScreen.offset;
-+
-+    switch(w100c->hwScreen.randr & RR_Rotate_All) {
-+    case RR_Rotate_0:
-+        gc.f.portrait_mode = 0;
-+        offset = 0;
-+        break;
-+    case RR_Rotate_90:
-+        gc.f.portrait_mode = 1;
-+        offset = w100c->hwScreen.width * (w100c->hwScreen.height - 1);
-+        break;
-+    case RR_Rotate_180:
-+        gc.f.portrait_mode = 3;
-+        offset = w100c->hwScreen.width * w100c->hwScreen.height - 1;
-+        break;
-+    case RR_Rotate_270:
-+        gc.f.portrait_mode = 2;
-+        offset = w100c->hwScreen.width - 1;
-+        break;
-+    }
-+    offset = (offset * w100c->hwScreen.bpp / 8) & ~0x03;
-+    go.f.graphic_offset += offset;
-+
-+    W100DisableDisplayUpdate(w100c);
-+    MMIO_OUT32(mmPCLK_CNTL, pclk_cntl.val);
-+    MMIO_OUT32(mmGRAPHIC_CTRL,   gc.val);
-+    MMIO_OUT32(mmGRAPHIC_OFFSET, go.val);
-+    MMIO_OUT32(mmGRAPHIC_PITCH,  gp.val);
-+    W100EnableDisplayUpdate(w100c);
 +}
 +
 +void W100EnableGraphicWindow(W100CardInfo *w100c)
@@ -6817,19 +6959,19 @@
 +                              pPix->drawable.bitsPerPixel);
 +}
 +
-+CARD16 W100MapToHWX(W100CardInfo *w100c,
-+                    CARD16 x, CARD16 y, CARD16 w, CARD16 h)
++int W100MapToHWX(W100CardInfo *w100c,
++                 int x, int y, int w, int h)
 +{
-+    CARD16 tx;
-+    switch (w100c->hwScreen.randr & RR_Rotate_All) {
++    int tx;
++    switch (w100c->hw_window.randr & RR_Rotate_All) {
 +    case RR_Rotate_0:
 +        tx = x;
 +        break;
 +    case RR_Rotate_90:
-+        tx = w100c->hwScreen.height - (y + w - 1);
++        tx = w100c->hw_window.height - (y + h);
 +        break;
 +    case RR_Rotate_180:
-+        tx = w100c->hwScreen.width - (x + w);
++        tx = w100c->hw_window.width - (x + w);
 +        break;
 +    case RR_Rotate_270:
 +        tx = y;
@@ -6840,11 +6982,11 @@
 +    return tx;
 +}
 +
-+CARD16 W100MapToHWY(W100CardInfo *w100c,
-+                    CARD16 x, CARD16 y, CARD16 w, CARD16 h)
++int W100MapToHWY(W100CardInfo *w100c,
++                 int x, int y, int w, int h)
 +{
-+    CARD16 ty;
-+    switch (w100c->hwScreen.randr & RR_Rotate_All) {
++    int ty;
++    switch (w100c->hw_window.randr & RR_Rotate_All) {
 +    case RR_Rotate_0:
 +        ty = y;
 +        break;
@@ -6852,15 +6994,49 @@
 +        ty = x;
 +        break;
 +    case RR_Rotate_180:
-+        ty = w100c->hwScreen.height - (y + h - 1);
++        ty = w100c->hw_window.height - (y + h);
 +        break;
 +    case RR_Rotate_270:
-+        ty = w100c->hwScreen.width - (x + w);
++        ty = w100c->hw_window.width - (x + w);
 +        break;
 +    default:
 +        ty = y;
 +    }
 +    return ty;
++}
++
++int W100MapToHWW(W100CardInfo *w100c,
++                 int x, int y, int w, int h)
++{
++    int tw;
++    switch (w100c->hw_window.randr & RR_Rotate_All) {
++    case RR_Rotate_0:
++    case RR_Rotate_180:
++        tw = w;
++        break;
++    case RR_Rotate_90:
++    case RR_Rotate_270:
++        tw = h;
++        break;
++    }
++    return tw;
++}
++
++int W100MapToHWH(W100CardInfo *w100c,
++                 int x, int y, int w, int h)
++{
++    int th;
++    switch (w100c->hw_window.randr & RR_Rotate_All) {
++    case RR_Rotate_0:
++    case RR_Rotate_180:
++        th = h;
++        break;
++    case RR_Rotate_90:
++    case RR_Rotate_270:
++        th = w;
++        break;
++    }
++    return th;
 +}
 +
 +CARD16 W100XformX(W100CardInfo *w100c,
@@ -7432,9 +7608,107 @@
 +    return brightness.f.brightness;
 +}
 +
++int W100GetRotation(W100CardInfo *w100c)
++{
++    graphic_ctrl_u gc;
++    int randr;
++
++    gc.val = MMIO_IN32(mmGRAPHIC_CTRL);
++
++    switch (gc.f.portrait_mode) {
++    case 0:
++        randr = RR_Rotate_0;
++        break;
++    case 1:
++        randr = RR_Rotate_90;
++        break;
++    case 2:
++        randr = RR_Rotate_270;
++        break;
++    case 3:
++        randr = RR_Rotate_180;
++        break;
++    }
++    return randr;
++}
++
++Bool W100SysFsSet(W100CardInfo *w100c, const char *path, const char *value)
++{
++    FILE *fd;
++    if ((fd = fopen(path, "w")) == NULL) {
++        ErrorF("(E) Error in W100SysFsSet: Unable to open '%s'\n", path);
++        return FALSE;
++    }
++    fprintf(fd, "%s", value);
++    fclose(fd);
++    return TRUE;
++}
++
++Bool W100SysFsGet(W100CardInfo *w100c, const char *path, char *value)
++{
++    FILE *fd;
++    if ((fd = fopen(path, "r")) == NULL) {
++        ErrorF("(E) Error in W100SysFsGet: Unable to open '%s'\n", path);
++        return FALSE;
++    }
++    fscanf(fd, "%s", value);
++    fclose(fd);
++    return TRUE;
++}
++
++void
++W100ComputeMouseMatrix(KdMouseMatrix *m, Rotation randr, int width, int height)
++{
++    int		    x_dir = 1, y_dir = 1;
++    int		    i, j;
++    int		    size[2];
++
++    size[0] = width; size[1] = height;
++    if (randr & RR_Reflect_X)
++	x_dir = -1;
++    if (randr & RR_Reflect_Y)
++	y_dir = -1;
++    switch (randr & (RR_Rotate_All)) {
++    case RR_Rotate_0:
++	m->matrix[0][0] = x_dir; m->matrix[0][1] = 0;
++	m->matrix[1][0] = 0; m->matrix[1][1] = y_dir;
++	break;
++    case RR_Rotate_90:
++	m->matrix[0][0] = 0; m->matrix[0][1] = x_dir;
++	m->matrix[1][0] = -y_dir; m->matrix[1][1] = 0;
++	break;
++    case RR_Rotate_180:
++	m->matrix[0][0] = -x_dir; m->matrix[0][1] = 0;
++	m->matrix[1][0] = 0; m->matrix[1][1] = -y_dir;
++	break;
++    case RR_Rotate_270:
++	m->matrix[0][0] = 0; m->matrix[0][1] = -x_dir;
++	m->matrix[1][0] = y_dir; m->matrix[1][1] = 0;
++	break;
++    }
++    for (i = 0; i < 2; i++)
++    {
++	m->matrix[i][2] = 0;
++	for (j = 0 ; j < 2; j++)
++	    if (m->matrix[i][j] < 0)
++		m->matrix[i][2] = size[j] - 1;
++    }
++}
++
++void W100TransformTsLibCoordinates(long *x, long *y, void *closure)
++{
++    W100CardInfo *w100c = closure;
++
++    if (w100c->hw_window.mode->width == 320) {
++        *x >>= 1;
++        *y >>= 1;
++    }
++}
++        
++        
 --- /dev/null
-+++ xorg-server-X11R7.1-1.1.0.orig/hw/kdrive/imageon/imageon_video.c
-@@ -0,0 +1,1056 @@
++++ xorg-server-X11R7.1-1.1.0.work/hw/kdrive/imageon/imageon_video.c
+@@ -0,0 +1,1051 @@
 +/*
 + * Copyright © 2007 Manuel Teira
 + *
@@ -7589,7 +7863,6 @@
 +    W100CardInfo(screen);
 +    W100PortPrivPtr pPortPriv = w100s->pAdaptor->pPortPrivates[0].ptr;
 +
-+    CARD32           disp_debug = 0;
 +    video_ctrl_u     video_ctrl;
 +    video_y_offset_u video_y_offset;
 +    video_y_pitch_u  video_y_pitch;
@@ -7607,7 +7880,7 @@
 +
 +    DBG_IMAGEON(("W100OverlaySetup(ovlX:%d,ovlY:%d,ovlWidth:%d,ovlHeight:%d,"
 +                 "videoHorExp:%d,videoVerExp:%d,YPlane:0x%08x,UPlane:0x%08x,"
-+                 "VPlane:0x%08x\n",
++                 "VPlane:0x%08x)\n",
 +                 pPortPriv->ovlX, pPortPriv->ovlY,
 +                 pPortPriv->ovlWidth, pPortPriv->ovlHeight,
 +                 pPortPriv->videoHorExp, pPortPriv->videoVerExp,
@@ -7618,8 +7891,8 @@
 +        return;
 +    }
 +
-+    w = pPortPriv->ovlWidth  * (pPortPriv->videoHorExp + 1);
-+    h = pPortPriv->ovlHeight * (pPortPriv->videoVerExp + 1);
++    w = pPortPriv->ovlWidth  << pPortPriv->videoHorExp;
++    h = pPortPriv->ovlHeight << pPortPriv->videoVerExp;
 +
 +    video_ctrl.val = w100c->regs.VIDEO_CTRL;
 +
@@ -7660,12 +7933,10 @@
 +    graphic_v_disp.val = w100c->regs.GRAPHIC_V_DISP;
 +
 +    video_hpos.f.video_h_start = graphic_h_disp.f.graphic_h_start 
-+        + W100MapToHWX(w100c,
-+                       pPortPriv->ovlX, pPortPriv->ovlY, w, h);
++        + pPortPriv->ovlX;
 +    video_hpos.f.video_h_end = video_hpos.f.video_h_start + w;
 +    video_vpos.f.video_v_start = graphic_v_disp.f.graphic_v_start 
-+        + W100MapToHWY(w100c,
-+                       pPortPriv->ovlX, pPortPriv->ovlY, w, h);
++        + pPortPriv->ovlY;
 +    video_vpos.f.video_v_end = video_vpos.f.video_v_start + h;
 +    if (video_hpos.f.video_h_end > graphic_h_disp.f.graphic_h_end) {
 +        w = graphic_h_disp.f.graphic_h_end - video_hpos.f.video_h_start;
@@ -7675,6 +7946,10 @@
 +    video_ctrl.f.total_req_video = (w + 3) / 4;
 +
 +    W100DisableDisplayUpdate(w100c);
++    //This need to be tuned deeply, to get an stable
++    //overlay image
++    MMIO_OUT32(mmDISP_DEBUG2, 
++               (w100c->regs.DISP_DEBUG2 & ~0xff000000) | 0x80000000 );
 +    MMIO_OUT32(mmGRAPHIC_KEY, graphic_key.val);
 +    MMIO_OUT32(mmVIDEO_Y_OFFSET, video_y_offset.val);
 +    MMIO_OUT32(mmVIDEO_Y_PITCH, video_y_pitch.val);
@@ -8075,7 +8350,7 @@
 +    W100ScreenInfo(pScreenPriv);
 +    W100PortPrivPtr pPortPriv = (W100PortPrivPtr)data;
 +    CARD32 baseAddr;
-+    int randr = w100c->hwScreen.randr;
++    int randr = w100c->hw_window.randr;
 +    int offWidth, offHeight;
 +    int ovlWidth, ovlHeight;
 +    int ovlX, ovlY;
@@ -8129,47 +8404,41 @@
 +    offWidth  = src_w;
 +    offHeight = src_h;
 +
-+    ovlX = drw_x;
-+    ovlY = drw_y;
++    ovlX = W100MapToHWX(w100c, drw_x, drw_y, drw_w, drw_h);
++    ovlY = W100MapToHWY(w100c, drw_x, drw_y, drw_w, drw_h);
 +
 +    for (i = 0; i < NUM_OVL_RESIZERS; i++) {
-+        CARD16 candidate_w;
-+        CARD16 candidate_h;
++        CARD16 candidate_w = drw_w >> ovlResizers[i].xfactor;
++        CARD16 candidate_h = drw_h >> ovlResizers[i].yfactor;
 +        
-+        pPortPriv->videoHorExp = ovlResizers[i].xfactor;
-+        pPortPriv->videoVerExp = ovlResizers[i].yfactor;
-+
-+        candidate_w = drw_w >> ovlResizers[i].xfactor;
-+        candidate_h = drw_h >> ovlResizers[i].yfactor;
-+
 +        switch (randr & RR_Rotate_All) {
 +        case RR_Rotate_0:
-+            ovlWidth  = (candidate_w + OVL_W_ALIGN - 1) & ~(OVL_W_ALIGN - 1);
-+            ovlHeight = (candidate_h + OVL_H_ALIGN - 1) & ~(OVL_H_ALIGN - 1);
++            ovlWidth  = W100_ALIGN(candidate_w, OVL_W_ALIGN);
++            ovlHeight = W100_ALIGN(candidate_h, OVL_H_ALIGN);
 +            dstX = 0;
 +            dstY = 0;
 +            pPortPriv->videoHorExp = ovlResizers[i].xfactor;
 +            pPortPriv->videoVerExp = ovlResizers[i].yfactor;
 +            break;
 +        case RR_Rotate_180:
-+            ovlWidth  = (candidate_w + OVL_W_ALIGN - 1) & ~(OVL_W_ALIGN - 1);
-+            ovlHeight = (candidate_h + OVL_H_ALIGN - 1) & ~(OVL_H_ALIGN - 1);
++            ovlWidth  = W100_ALIGN(candidate_w, OVL_W_ALIGN);
++            ovlHeight = W100_ALIGN(candidate_h, OVL_H_ALIGN);
 +            dstX = ovlWidth  - candidate_w;
 +            dstY = ovlHeight - candidate_h;
 +            pPortPriv->videoHorExp = ovlResizers[i].xfactor;
 +            pPortPriv->videoVerExp = ovlResizers[i].yfactor;
 +            break;
 +        case RR_Rotate_90:
-+            ovlWidth  = (candidate_h + OVL_W_ALIGN - 1) & ~(OVL_W_ALIGN - 1);
-+            ovlHeight = (candidate_w + OVL_H_ALIGN - 1) & ~(OVL_H_ALIGN - 1);
-+            dstX = ovlWidth  - candidate_h;
-+            dstY = 0;
++            ovlWidth  = W100_ALIGN(candidate_h, OVL_W_ALIGN);
++            ovlHeight = W100_ALIGN(candidate_w, OVL_H_ALIGN);
++            dstX = (ovlWidth  - candidate_h) / 2;
++            dstY = (ovlHeight - candidate_w) / 2;
 +            pPortPriv->videoHorExp = ovlResizers[i].yfactor;
 +            pPortPriv->videoVerExp = ovlResizers[i].xfactor;
 +            break;
 +        case RR_Rotate_270:
-+            ovlWidth  = (candidate_h + OVL_W_ALIGN - 1) & ~(OVL_W_ALIGN - 1);
-+            ovlHeight = (candidate_w + OVL_H_ALIGN - 1) & ~(OVL_H_ALIGN - 1);
++            ovlWidth  = W100_ALIGN(candidate_h, OVL_W_ALIGN);
++            ovlHeight = W100_ALIGN(candidate_w, OVL_H_ALIGN);
 +            dstX = 0;
 +            dstY = ovlHeight - candidate_w;
 +            pPortPriv->videoHorExp = ovlResizers[i].yfactor;
@@ -8492,8 +8761,8 @@
 +}
 +
 --- /dev/null
-+++ xorg-server-X11R7.1-1.1.0.orig/hw/kdrive/imageon/imageon_support.h
-@@ -0,0 +1,87 @@
++++ xorg-server-X11R7.1-1.1.0.work/hw/kdrive/imageon/imageon_support.h
+@@ -0,0 +1,98 @@
 +/*
 + * Copyright © 2007 Manuel Teira
 + *
@@ -8546,10 +8815,14 @@
 +                        CARD32 dstOffset, CARD8 bpp);
 +Bool W100SetSourcePixmap(PixmapPtr pPix);
 +Bool W100SetDestinationPixmap(PixmapPtr pPix);
-+CARD16 W100MapToHWX(W100CardInfo *w100c, 
-+                    CARD16 x, CARD16 y, CARD16 w, CARD16 h);
-+CARD16 W100MapToHWY(W100CardInfo *w100c,
-+                    CARD16 x, CARD16 y, CARD16 w, CARD16 h);
++int W100MapToHWX(W100CardInfo *w100c, 
++                 int x, int y, int w, int h);
++int W100MapToHWY(W100CardInfo *w100c,
++                 int x, int y, int w, int h);
++int W100MapToHWW(W100CardInfo *w100c,
++                 int x, int y, int w, int h);
++int W100MapToHWH(W100CardInfo *w100c,
++                 int x, int y, int w, int h);
 +CARD16 W100XformX(W100CardInfo *w100c, CARD16 x, CARD16 y, CARD16 w, CARD16 h);
 +CARD16 W100XformY(W100CardInfo *w100c, CARD16 x, CARD16 y, CARD16 w, CARD16 h);
 +CARD16 W100XformW(W100CardInfo *w100c, CARD16 x, CARD16 y, CARD16 w, CARD16 h);
@@ -8579,5 +8852,36 @@
 +                   int dstX, int dstY);
 +CARD8 W100GetBrightness(W100CardInfo *w100c);
 +void W100SetBrightness(W100CardInfo *w100c, CARD8 value);
-+
++int W100GetRotation(W100CardInfo *w100c);
++W100ModeSpec *W100GetModeSpec(W100CardInfo *w100c, W100Mode *mode);
++Bool W100GetFbMode(W100CardInfo *w100c, W100Mode *mode);
++Bool W100CheckFbMode(W100CardInfo *w100c, W100ModeSpec *modes);
++W100ModeSpec *W100GetBestMode(W100CardInfo *w100c, int width, int height);
++void W100TransformTsLibCoordinates(long *x, long *y, void *closure);
++Bool W100SysFsGet(W100CardInfo *w100c, const char *path, char *value);
++Bool W100SysFsSet(W100CardInfo *w100c, const char *path, const char *value);
 +#endif
+--- xorg-server-X11R7.1-1.1.0.work/hw/kdrive/linux/tslib.c~kdrive-imageon
++++ xorg-server-X11R7.1-1.1.0.work/hw/kdrive/linux/tslib.c
+@@ -92,6 +92,10 @@
+ void (*tslib_raw_event_hook)(int x, int y, int pressure, void *closure);
+ void *tslib_raw_event_closure;
+ 
++/* To support randr hot resolution change */
++void (*tslib_transform_coords)(long *x, long *y, void *closure);
++void *tslib_transform_closure;
++
+ int TsInputType = 0;
+ int KdTsPhyScreen = 0; 		/* XXX Togo .. */
+ 
+@@ -121,7 +125,9 @@
+ 	flags = (event.pressure) ? KD_BUTTON_1 : 0;
+ 	x = event.x;
+ 	y = event.y;
+-	
++	if (tslib_transform_coords) {
++		tslib_transform_coords(&x, &y, tslib_transform_closure);
++	}
+ 	KdEnqueueMouseEvent (mi, flags, x, y);
+       }
+ }

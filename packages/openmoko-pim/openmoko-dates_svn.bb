@@ -2,8 +2,9 @@ DESCRIPTION = "Dates is a calendar application."
 SECTION = "openmoko/pim"
 LICENSE = "GPL"
 DEPENDS = "glib-2.0 gtk+ libglade eds-dbus openmoko-libs"
+RDEPENDS = "libedata-cal"
 PV = "0.1+svn${SRCDATE}"
-PR = "r5"
+PR = "r6"
 
 inherit gnome autotools pkgconfig gtk-icon-cache
 

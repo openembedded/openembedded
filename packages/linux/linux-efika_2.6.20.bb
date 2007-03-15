@@ -1,7 +1,7 @@
 DESCRIPTION = "Linux Kernel for the EFIKA dev platform"
 SECTION = "kernel"
 LICENSE = "GPL"
-PR = "r1"
+PR = "r2"
 
 COMPATIBLE_MACHINE = "efika"
 
@@ -37,6 +37,7 @@ SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-${PV}.tar.bz2 \
            file://0030-POWERPC-Add-mpc52xx-lite5200-PCI-support.txt;p=1;patch=1 \
            file://0031-sound-Add-support-for-the-MPC52xx-PSC-AC97-Link.txt;p=1;patch=1 \
            file://0032-POWERPC-EFIKA-Adds-missing-interrupts-from-bestcomm-node.txt;p=1;patch=1 \
+           file://0033-EFIKA-fullduplex-prpl_aln.txt;p=1;patch=1 \
            file://v4l.diff;p=1;patch=1 \
 
            file://defconfig \
