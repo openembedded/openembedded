@@ -1212,8 +1212,8 @@ NOTE: package helloworld-0.1-r0: task do_package: started
 NOTE: package helloworld-0.1-r0: task do_package: completed
 NOTE: package helloworld-0.1-r0: task do_package_write: started
 NOTE: Not creating empty archive for helloworld-dbg-0.1-r0
-Packaged contents of helloworld into /home/lenehan/devel/oe/build/titan-glibc-25/tmp/deploy/ipk/helloworld_0.1-r0_sh4.ipk
-Packaged contents of helloworld-doc into /home/lenehan/devel/oe/build/titan-glibc-25/tmp/deploy/ipk/helloworld-doc_0.1-r0_sh4.ipk
+Packaged contents of helloworld into /home/lenehan/devel/oe/build/titan-glibc-25/tmp/deploy/ipk/sh4/helloworld_0.1-r0_sh4.ipk
+Packaged contents of helloworld-doc into /home/lenehan/devel/oe/build/titan-glibc-25/tmp/deploy/ipk/sh4/helloworld-doc_0.1-r0_sh4.ipk
 NOTE: Not creating empty archive for helloworld-dev-0.1-r0
 NOTE: Not creating empty archive for helloworld-locale-0.1-r0
 NOTE: package helloworld-0.1-r0: task do_package_write: completed
@@ -1228,9 +1228,9 @@ Build statistics:
 
       <para>The package was successfully built, the output consists of two
       .ipkg files, which are ready to be installed on the target. One contains
-      the binary and the other contains the readme file:<screen>~/oe%&gt; ls -l tmp/deploy/ipk/helloworld*
--rw-r--r--  1 lenehan lenehan 3040 Jan 12 14:46 tmp/deploy/ipk/helloworld_0.1-r0_sh4.ipk
--rw-r--r--  1 lenehan lenehan  768 Jan 12 14:46 tmp/deploy/ipk/helloworld-doc_0.1-r0_sh4.ipk
+      the binary and the other contains the readme file:<screen>~/oe%&gt; ls -l tmp/deploy/ipk/*/helloworld*
+-rw-r--r--  1 lenehan lenehan 3040 Jan 12 14:46 tmp/deploy/ipk/sh4/helloworld_0.1-r0_sh4.ipk
+-rw-r--r--  1 lenehan lenehan  768 Jan 12 14:46 tmp/deploy/ipk/sh4/helloworld-doc_0.1-r0_sh4.ipk
 ~/oe%&gt;</screen></para>
 
       <para>It's worthwhile looking at the working directory to see where
@@ -1714,8 +1714,8 @@ inherit autotools</screen></para>
     example of the packaging output from the helloworld example above shows
     this packaging in action:<screen>[NOTE: package helloworld-0.1-r0: task do_package_write: started
 NOTE: Not creating empty archive for helloworld-dbg-0.1-r0
-Packaged contents of helloworld into /home/lenehan/devel/oe/build/titan-glibc-25/tmp/deploy/ipk/helloworld_0.1-r0_sh4.ipk
-Packaged contents of helloworld-doc into /home/lenehan/devel/oe/build/titan-glibc-25/tmp/deploy/ipk/helloworld-doc_0.1-r0_sh4.ipk
+Packaged contents of helloworld into /home/lenehan/devel/oe/build/titan-glibc-25/tmp/deploy/ipk/sh4/helloworld_0.1-r0_sh4.ipk
+Packaged contents of helloworld-doc into /home/lenehan/devel/oe/build/titan-glibc-25/tmp/deploy/ipk/sh4/helloworld-doc_0.1-r0_sh4.ipk
 NOTE: Not creating empty archive for helloworld-dev-0.1-r0
 NOTE: Not creating empty archive for helloworld-locale-0.1-r0
 NOTE: package helloworld-0.1-r0: task do_package_write: completed</screen>We
