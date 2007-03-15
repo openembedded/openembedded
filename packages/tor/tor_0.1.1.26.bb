@@ -1,10 +1,9 @@
 DESCRIPTION = "Tor is a network of virtual tunnels that allows people and groups \
               to improve their privacy and security on the Internet."
+HOMEPAGE = "http://tor.eff.org"
 SECTION = "console/network"
 PRIORITY = "optional"
-HOMEPAGE = "http://tor.eff.org"
 LICENSE = "BSD"
-PR="r0"
 DEPENDS = "libevent openssl zlib"
 
 SRC_URI = "http://tor.eff.org/dist/${P}.tar.gz \
