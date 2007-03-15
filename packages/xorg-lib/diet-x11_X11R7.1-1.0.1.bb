@@ -10,5 +10,4 @@ SRC_URI += "file://X18NCMSstubs.diff;patch=1 \
 	    file://fix-disable-xlocale.diff;patch=1 \
             file://fix-utf8-wrong-define.patch;patch=1 \
 	    file://xim.patch;patch=1 \
-	    file://xchar2b.patch;patch=1 \
-	    file://makekeys.diff;patch=1"
+	    file://xchar2b.patch;patch=1"
