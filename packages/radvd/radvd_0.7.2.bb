@@ -1,9 +1,7 @@
-SECTION = "console/network"
-DESCRIPTION = "IPv6 router advertisement daemon"
-LICENSE = "BSD"
-SRC_URI = "http://v6web.litech.org/radvd/dist/radvd-${PV}.tar.gz \
-	   file://automake.patch;patch=1"
-S = "${WORKDIR}/radvd-${PV}"
-DEPENDS = "flex"
+PR = "r2"
 
-inherit autotools
+SRC_URI_append += "file://automake.patch;patch=1 "
+
+require radvd.inc
+
+MD5SUM = "26ea468b2323e44cf827ae5f84d18dc8"

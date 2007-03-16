@@ -9,10 +9,7 @@ squashfs/squashfs-force-O2.patch
 squashfs/squashfs-lzma.patch
 squashfs/squashfs-Kconfig.patch
 squashfs/squashfs-Makefile.patch
-00-linux-2.6.20.1.patch
-01-fix-redboot-parse-oops.patch
-02-fix-redboot-parse-regression.patch
-03-improve-byteswap-redboot-parse.patch
+00-linux-2.6.20.2.patch
 07-remove-avila-ixdp425-setup.patch
 08-avila-loft-setup.patch
 09-avila-setup-pata.patch

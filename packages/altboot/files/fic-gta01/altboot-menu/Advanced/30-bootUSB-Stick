@@ -1,0 +1,47 @@
+# !/bin/sh
+#
+# Copyright Matthias Hentges (c) 2005
+#
+# License: GPL (see http://www.gnu.org/licenses/gpl.txt for a copy of the GPL)
+
+
+M_TITLE="Boot USB Storage"
+
+test "$USB_HOST_AVAILABLE" = "yes" || exit 0
+       
+# This function is activated by init.altboot by calling this script with the "run" option
+run_module() {
+	
+	test -e /etc/altboot.func && . /etc/altboot.func || die "ERROR: /etc/altboot.func not found. Check your installation!"
+	
+	# Mount /proc, etc
+	init_rootfs
+
+	echo "Starting USB..."
+	
+	for module in $USB_STORAGE_MODULES
+	do
+		echo -en "\t - $module: "
+		modprobe "$module" >/dev/null 2>&1 && echo ok || die "Failed to modprobe [$module]"
+	done
+		
+	echo -n "Mounting $USB_STORAGE_PARTITION..."  >/dev/tty0
+	
+	mkdir -p /media/usb-storage >/dev/null 2>&1
+	
+	sleep "$USB_STORAGE_WAIT"
+	
+	/bin/mount -t auto -o defaults,noatime $USB_STORAGE_PARTITION /media/usb-storage >/dev/null 2>&1 && echo ok  >/dev/tty0|| die "/bin/mount -t auto -o defaults,noatime $SD_DEVICE $SD_MOUNTPOINT failed"
+		
+	echo ""	
+	
+	# Check for a real fs and loop-images.
+	check_target "/media/usb-storage" >/dev/tty0		
+}
+
+
+case "$1" in
+title)	echo "$M_TITLE";;
+run)	run_module "$2";;
+esac
+

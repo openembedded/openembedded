@@ -3,7 +3,7 @@ SECTION = "libs"
 LICENSE = "BSD"
 HOMEPAGE = "http://www.speex.org"
 DEPENDS = "libogg"
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "http://downloads.us.xiph.org/releases/speex/speex-1.2beta1.tar.gz"
 S = "${WORKDIR}/${PN}-1.2beta1"
@@ -22,6 +22,7 @@ inherit autotools pkgconfig
 EXTRA_OECONF_append_openmn = " --enable-arm5e-asm --enable-fixed-point"
 EXTRA_OECONF_append_amsdelta = " --enable-arm4-asm --enable-fixed-point"
 EXTRA_OECONF_append_arm = " --enable-fixed-point "
+EXTRA_OECONF_append_dht-walnut = " --enable-fixed-point "
 
 do_configure_append() {
 	sed -i s/"^OGG_CFLAGS.*$"/"OGG_CFLAGS = "/g Makefile */Makefile */*/Makefile

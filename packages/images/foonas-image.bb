@@ -3,7 +3,9 @@ LICENSE = "GPL"
 PR = "r0"
 
 DEPENDS = "${MACHINE_TASK_PROVIDER}"
-EXTRA_IMAGECMD_jffs2 = "--big-endian --eraseblock=${ERASEBLOCK_SIZE} -D ${SLUGOS_DEVICE_TABLE}"
+EXTRA_IMAGECMD_turbostation = "--big-endian"
+EXTRA_IMAGECMD_n2100 = "--little-endian"
+EXTRA_IMAGECMD_jffs2 += " --eraseblock=${ERASEBLOCK_SIZE} -D ${SLUGOS_DEVICE_TABLE}"
 IMAGE_LINGUAS = ""
 
 # This is passed to the image command to build the correct /dev
@@ -34,11 +36,14 @@ PACK_IMAGE_DEPENDS = ""
 IMAGE_TOOLS = ""
 #EXTRA_IMAGEDEPENDS += "${IMAGE_TOOLS}"
 
-FOONAS_SUPPORT += "diffutils cpio findutils uboot-utils udev"
+FOONAS_SUPPORT += "diffutils cpio findutils udev"
+FOONAS_SUPPORT_turbostation += "uboot-utils"
 
 # this gets /lib/modules made....
-FOONAS_KERNEL = "kernel-module-ext3 kernel-module-minix \
+FOONAS_KERNEL_turbostation = "kernel-module-ext3 kernel-module-minix \
 			kernel-module-usb-storage"
+
+FOONAS_KERNEL_n2100 = "kernel-module-ext2 kernel-module-usb-storage"
 
 RDEPENDS = " \
 	base-files base-passwd netbase \
@@ -92,4 +97,35 @@ turbostation_pack_image() {
 	cat $KERNEL $PADFILE $ROOTFS > $OUTPUT
 	rm -f $PADFILE
 	ls -l $OUTPUT
+}
+
+n2100_pack_image() {
+        # find latest kernel
+        KERNEL=`ls -tr ${DEPLOY_DIR_IMAGE}/zImage* | tail -1`
+        if [ -z "$KERNEL" ]; then
+                oefatal "No kernel found in ${DEPLOY_DIR_IMAGE}. Bitbake linux to create one."
+                exit 1
+        fi
+        ROOTFS=${DEPLOY_DIR_IMAGE}/${IMAGE_NAME}.rootfs.jffs2
+        OUTPUT=${DEPLOY_DIR_IMAGE}/${IMAGE_NAME}.flash.img
+        PADFILE=${DEPLOY_DIR_IMAGE}/padfile.zzz
+        HEX_MAX_KERN_SIZE=1C0000
+        DEC_MAX_KERN_SIZE=`echo "ibase=16; $HEX_MAX_KERN_SIZE" | bc `
+        HEX_MAX_ROOT_SIZE=DC0000
+        DEC_MAX_ROOT_SIZE=`echo "ibase=16; $HEX_MAX_ROOT_SIZE" | bc `
+        KERNEL_SIZE=`ls -l $KERNEL | awk '{print $5}'`
+        if [ $KERNEL_SIZE -gt $DEC_MAX_KERN_SIZE ]; then
+                oefatal "Kernel too large at $KERNEL_SIZE bytes.  Max is $DEC_MAX_KERN_SIZE."
+                exit 1
+        fi
+        ROOT_SIZE=`ls -l $ROOTFS | awk '{print $5}'`
+        if [ $ROOT_SIZE -gt $DEC_MAX_ROOT_SIZE ]; then
+                oefatal "Rootfs is too large at $ROOT_SIZE bytes.  Max is $DEC_MAX_ROOT_SIZE."
+                exit 1
+        fi
+        PAD_SIZE=`echo "$DEC_MAX_KERN_SIZE - $KERNEL_SIZE" | bc `
+        dd if=/dev/zero of=$PADFILE bs=$PAD_SIZE count=1 2>>/dev/null
+        cat $KERNEL $PADFILE $ROOTFS > $OUTPUT
+        rm -f $PADFILE
+        ls -l $OUTPUT
 }

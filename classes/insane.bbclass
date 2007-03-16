@@ -48,6 +48,7 @@ def package_qa_get_machine_dict():
                         "m68k":       ( 4,     0,    0,          False,         True),
                         "mips":       ( 8,     0,    0,          False,         True),
                         "s390":       (22,     0,    0,          False,         True),
+                        "sh4":        (42,     0,    0,          True,          True),
                         "sparc":      ( 2,     0,    0,          False,         True),
                       },
             "linux-uclibc" : { 

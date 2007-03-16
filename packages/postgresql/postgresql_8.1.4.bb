@@ -5,7 +5,7 @@ DEPENDS = "zlib readline"
 
 #WARNING: this recipe assumes you have the timezone compiler present in /usr/sbin/zic
 
-SRC_URI = "ftp://ftp.nl.postgresql.org/pub/mirror/postgresql/source/v${PV}/${P}.tar.bz2"
+SRC_URI = "ftp://ftp-archives.postgresql.org/pub/source/v${PV}/${P}.tar.bz2"
 
 
 inherit autotools pkgconfig

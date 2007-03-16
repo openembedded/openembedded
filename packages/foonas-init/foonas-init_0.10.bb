@@ -4,14 +4,9 @@ PRIORITY = "required"
 LICENSE = "GPL"
 DEPENDS = "base-files devio"
 RDEPENDS = "busybox devio"
-PR = "r0"
+PR = "r1"
 
-SRC_URI = "file://boot/flash \
-	   file://boot/disk \
-	   file://boot/nfs \
-	   file://boot/network \
-	   file://boot/udhcpc.script \
-	   file://initscripts/fixfstab \
+SRC_URI = "file://initscripts/fixfstab \
 	   file://initscripts/syslog.buffer \
 	   file://initscripts/syslog.file \
 	   file://initscripts/syslog.network \
@@ -32,7 +27,6 @@ SBINPROGS = ""
 USRSBINPROGS = ""
 CPROGS = "${USRSBINPROGS} ${SBINPROGS}"
 SCRIPTS = "turnup reflash sysconf"
-BOOTSCRIPTS = "flash disk nfs network udhcpc.script"
 INITSCRIPTS = "syslog.buffer syslog.file syslog.network \
 	rmrecovery sysconfsetup umountinitrd.sh \
 	fixfstab loadmodules.sh"
@@ -62,11 +56,6 @@ do_install() {
 		   ${D}${sbindir} \
 		   ${D}${base_sbindir} \
 		   ${D}/initrd \
-		   ${D}/boot
-
-	# linuxrc
-	rm -f ${D}/linuxrc
-	ln -s boot/flash ${D}/linuxrc
 
 	# C programs
 	for p in ${USRSBINPROGS}
@@ -96,13 +85,6 @@ do_install() {
 	#
 	# Udev configuration files
 	install -m 0644 links.conf ${D}${sysconfdir}/udev
-
-	#
-	# Boot scripts
-	for p in ${BOOTSCRIPTS}
-	do
-		install -m 0755 boot/$p ${D}/boot
-	done
 
 	# Configuration files
 	install -m 0644 conffiles ${D}${sysconfdir}/default
@@ -138,7 +120,3 @@ pkg_postrm_foonas-init() {
 
 PACKAGES = "${PN}"
 FILES_${PN} = "/"
-
-# It is bad to overwrite /linuxrc as it puts the system back to
-# a flash boot (and the flash has potentially not been upgraded!)
-CONFFILES_${PN} = "/linuxrc ${sysconfdir}/default/conffiles"

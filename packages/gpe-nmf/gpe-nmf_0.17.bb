@@ -1,9 +1,6 @@
-LICENSE = "GPL"
-inherit gpe pkgconfig
+require gpe-nmf.inc
 
-DESCRIPTION = "GPE audio player"
-DEPENDS = "gtk+ libgpewidget gstreamer gst-plugins"
-SECTION = "gpe"
-PRIORITY = "optional"
+RDEPENDS = ""
+RRECOMMENDS = ""
 
 SRC_URI += "file://fix_makefiles.patch;patch=1"
