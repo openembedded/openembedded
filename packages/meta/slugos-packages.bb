@@ -156,7 +156,6 @@ SLUGOS_PACKAGES = "\
 	strace \
 	streamripper \
 	sysfsutils \
-	syslog-ng \
 	tar \
 	task-mokogateway-everything \
 	thttpd \
@@ -192,6 +191,7 @@ SLUGOS_BROKEN_PACKAGES = "\
 	puppy \
 	pvrusb2-mci \
 	qc-usb-messenger \
+	syslog-ng \
 	sane-backends \
 	unionfs-modules \
 	unionfs-utils \

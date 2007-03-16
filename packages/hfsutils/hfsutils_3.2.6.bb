@@ -1,7 +1,7 @@
 DESCRIPTION = "HFS file system utilities"
 SECTION = "base"
 LICENSE = "GPL"
-PR = "r1"
+PR = "r2"
 
 inherit autotools pkgconfig
 
@@ -20,22 +20,13 @@ do_compile () {
 }
 
 do_install () {
-	install -d ${D}/usr/bin
-	install -m 755 hfsutil ${D}/usr/bin/hfsutil
-	install -m 755 hfsck/hfsck ${D}/usr/bin/hfsck
+	install -d ${D}/${bindir}
+	install -m 755 hfsutil ${D}/${bindir}/hfsutil
+	install -m 755 hfsck/hfsck ${D}/${bindir}/hfsck
 
-	ln -sf /usr/bin/hfsutil ${D}/usr/bin/hattrib
-	ln -sf /usr/bin/hfsutil ${D}/usr/bin/hcd
-	ln -sf /usr/bin/hfsutil ${D}/usr/bin/hcopy
-	ln -sf /usr/bin/hfsutil ${D}/usr/bin/hdel
-	ln -sf /usr/bin/hfsutil ${D}/usr/bin/hdir
-	ln -sf /usr/bin/hfsutil ${D}/usr/bin/hformat
-	ln -sf /usr/bin/hfsutil ${D}/usr/bin/his
-	ln -sf /usr/bin/hfsutil ${D}/usr/bin/hmkdir
-	ln -sf /usr/bin/hfsutil ${D}/usr/bin/hmount
-	ln -sf /usr/bin/hfsutil ${D}/usr/bin/hpwd
-	ln -sf /usr/bin/hfsutil ${D}/usr/bin/hrename
-	ln -sf /usr/bin/hfsutil ${D}/usr/bin/hrmdir
-	ln -sf /usr/bin/hfsutil ${D}/usr/bin/humount
-	ln -sf /usr/bin/hfsutil ${D}/usr/bin/hvol
+	for util in hattrib hcd hcopy hdel hdir hformat \
+		    his hmkdir hmount hpwd hrename hrmdir \
+		    humount hvol; do 
+		ln -sf hfsutil ${D}/${bindir}/${util}
+	done
 }
