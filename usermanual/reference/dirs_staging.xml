@@ -79,7 +79,7 @@
         <row>
           <entry>STAGING_BINDIR</entry>
 
-          <entry>${STAGING_DIR}/${BUILD_SYS}/bin</entry>
+          <entry>${STAGING_DIR}/${HOST_SYS}/bin</entry>
         </row>
 
         <row>
@@ -139,7 +139,7 @@
         <row>
           <entry>PKG_CONFIG_PATH</entry>
 
-          <entry>${STAGING_DATADIR}/pkgconfig</entry>
+          <entry>${STAGING_LIBDIR}/pkgconfig</entry>
         </row>
 
         <row>
