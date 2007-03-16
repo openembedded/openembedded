@@ -33,7 +33,7 @@ PACKAGE_ARCH_mencoder_collie = "collie"
 
 RCONFLICTS_${PN} = "mplayer-atty"
 RREPLACES_${PN} = "mplayer-atty"
-PR = "r10"
+PR = "r11"
 
 PARALLEL_MAKE = ""
 
@@ -172,6 +172,9 @@ EXTRA_OECONF = " \
         \
         --disable-runtime-cpudetection \
         "
+
+EXTRA_OECONF_append_arm = " --disable-decoder=vorbis_decoder \
+			    --disable-encoder=vorbis_encoder"
 
 EXTRA_OECONF_append_c7x0 = " --enable-w100 --enable-imageon "
 EXTRA_OECONF_append_hx4700 = " --enable-imageon "
