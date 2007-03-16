@@ -1,4 +1,4 @@
-PR = "r1"
+PR = "r2"
 
 SRC_URI_append += "file://automake.patch;patch=1 "
 
