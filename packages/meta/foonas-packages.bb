@@ -125,6 +125,7 @@ FOONAS_PACKAGES = "\
 	libpcre \
 	perl \
 	pkgconfig \
+	postgresql \
 	ppp \
 	procps \
 	quilt \
