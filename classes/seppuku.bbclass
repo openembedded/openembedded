@@ -15,6 +15,8 @@ def seppuku_spliturl(url):
     param = {}
     for par in query.split("&"):
         (key,value) = urllib.splitvalue(par)
+        if not key or len(key) == 0 or not value:
+            continue
         key = urllib.unquote(key)
         value = urllib.unquote(value)
         param[key] = value
@@ -289,6 +291,7 @@ python seppuku_eventhandler() {
         else:
             print "Logged into the box"
 
+        file = None
         if name == "TaskFailed":
             bugname = "%(package)s-%(pv)s-%(pr)s-%(task)s" % { "package" : bb.data.getVar("PN", data, True),
                                                                "pv"      : bb.data.getVar("PV", data, True),
@@ -296,11 +299,11 @@ python seppuku_eventhandler() {
                                                                "task"    : e.task }
             log_file = glob.glob("%s/log.%s.*" % (bb.data.getVar('T', event.data, True), event.task))
             text     = "The package failed to build at %s" % bb.data.getVar('DATETIME', data, True) 
-            file     = open(log_file[0], 'r')
+            if len(log_file) != 0:
+                file     = open(log_file[0], 'r')
         elif name == "NoProvider":
             bugname = "noprovider for %s runtime: %s" % (event.getItem, event.getisRuntime)
             text    = "Please fix it"
-            file    = None
         else:
             assert False
 
