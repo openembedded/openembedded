@@ -5,7 +5,7 @@
 DESCRIPTION = "Packages that are compatible with the SlugOS firmware"
 HOMEPAGE = "http://www.nslu2-linux.org"
 LICENSE = "MIT"
-PR = "r22"
+PR = "r25"
 CONFLICTS = "db3"
 
 COMPATIBLE_MACHINE = "nslu2"
@@ -63,6 +63,7 @@ SLUGOS_PACKAGES = "\
 	flac \
 	flex \
 	flite \
+	fuse \
 	gawk \
 	gcc \
 	gdb \
@@ -96,7 +97,6 @@ SLUGOS_PACKAGES = "\
 	libvorbis \
 	libxml2 \
 	litestream \
-	logrotate \
 	lrzsz \
 	lsof \
 	lvm2 \
@@ -122,6 +122,7 @@ SLUGOS_PACKAGES = "\
 	ncurses \
 	netcat \
 	nmap \
+	ntfs-3g \
 	ntp \
 	ntpclient \
 	obexftp \
@@ -136,6 +137,7 @@ SLUGOS_PACKAGES = "\
 	pciutils \
 	libpcre \
 	perl \
+	picocom \
 	pkgconfig \
 	ppp \
 	procps \
@@ -154,7 +156,6 @@ SLUGOS_PACKAGES = "\
 	strace \
 	streamripper \
 	sysfsutils \
-	syslog-ng \
 	tar \
 	task-mokogateway-everything \
 	thttpd \
@@ -183,12 +184,14 @@ SLUGOS_BROKEN_PACKAGES = "\
 	gphoto2 \
 	irssi \
 	libgphoto2 \
+	logrotate \
 	mediatomb \
 	mpd \
 	netpbm \
 	puppy \
 	pvrusb2-mci \
 	qc-usb-messenger \
+	syslog-ng \
 	sane-backends \
 	unionfs-modules \
 	unionfs-utils \
