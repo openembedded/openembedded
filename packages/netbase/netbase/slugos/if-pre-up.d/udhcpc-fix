@@ -1,0 +1,12 @@
+#!/bin/sh
+
+# This works around a problem where udhcpc times out w/o getting a lease
+# due to slow auto-negotiate.
+
+if test "$IFACE" = "eth0" -a "$METHOD" = "dhcp"
+then
+	echo -n "[sleeping 5s]..."
+	ifconfig eth0 up
+	sleep 5
+fi
+
