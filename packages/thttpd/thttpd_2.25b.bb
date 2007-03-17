@@ -1,12 +1,13 @@
 DESCRIPTION = "A simple, small, portable, fast, and secure HTTP server."
 LICENSE = "BSD"
 HOMEPAGE = "http://www.acme.com/software/thttpd/"
-PR="r5"
+PR="r6"
 
 SRC_URI = "http://www.acme.com/software/thttpd/thttpd-2.25b.tar.gz \
 	   file://install.patch;patch=1 \
 	   file://acinclude.m4 \
-	   file://init"
+	   file://init \
+	   file://htpasswd_shared.diff;patch=1"
 S = "${WORKDIR}/thttpd-${PV}"
 
 INITSCRIPT_NAME = "thttpd"
