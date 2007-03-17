@@ -3,7 +3,7 @@ SECTION = "bootloaders"
 PRIORITY = "optional"
 LICENSE = "GPL"
 DEPENDS = "mtd-utils"
-PR = "r3"
+PR = "r4"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/u-boot/u-boot-${PV}.tar.bz2 \
 	 file://fw_env.c.patch;patch=1 \
@@ -30,7 +30,8 @@ do_compile () {
 
 # install mkimage for the kernel makefile
 do_stage() {
-	install -m 755 ${S}/tools/mkimage ${STAGING_BINDIR_NATIVE}
+	install -d ${STAGING_BINDIR_NATIVE}
+	install -m 755 ${S}/tools/mkimage ${STAGING_BINDIR_NATIVE}/
 }
 
 do_install () {

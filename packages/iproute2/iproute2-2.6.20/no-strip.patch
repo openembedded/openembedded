@@ -1,0 +1,36 @@
+--- iproute-2.6.20-070313/ip/Makefile	2007/03/17 05:17:30	1.1
++++ iproute-2.6.20-070313/ip/Makefile	2007/03/17 05:17:37
+@@ -16,7 +16,7 @@
+ rtmon: $(RTMONOBJ) $(LIBNETLINK)
+ 
+ install: all
+-	install -m 0755 -s $(TARGETS) $(DESTDIR)$(SBINDIR)
++	install -m 0755 $(TARGETS) $(DESTDIR)$(SBINDIR)
+ 	install -m 0755 $(SCRIPTS) $(DESTDIR)$(SBINDIR)
+ 
+ clean:
+--- iproute-2.6.20-070313/misc/Makefile	2007/03/17 05:18:20	1.1
++++ iproute-2.6.20-070313/misc/Makefile	2007/03/17 05:18:26
+@@ -27,7 +27,7 @@
+ lnstat: $(LNSTATOBJ)
+ 
+ install: all
+-	install -m 0755 -s $(TARGETS) $(DESTDIR)$(SBINDIR)
++	install -m 0755 $(TARGETS) $(DESTDIR)$(SBINDIR)
+ 	ln -sf lnstat $(DESTDIR)$(SBINDIR)/rtstat
+ 	ln -sf lnstat $(DESTDIR)$(SBINDIR)/ctstat
+ 
+--- iproute-2.6.20-070313/tc/Makefile	2007/03/17 05:17:42	1.1
++++ iproute-2.6.20-070313/tc/Makefile	2007/03/17 05:17:54
+@@ -70,9 +70,9 @@
+ 
+ install: all
+ 	mkdir -p $(DESTDIR)/usr/lib/tc
+-	install -m 0755 -s tc $(DESTDIR)$(SBINDIR)
++	install -m 0755 tc $(DESTDIR)$(SBINDIR)
+ 	for i in $(TCSO); \
+-	do install -m 755 -s $$i $(DESTDIR)/usr/lib/tc; \
++	do install -m 755 $$i $(DESTDIR)/usr/lib/tc; \
+ 	done
+ 
+ clean:
