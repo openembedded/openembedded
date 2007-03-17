@@ -4,7 +4,7 @@ PR = "r0"
 
 inherit image
 
-DEPENDS = "${MACHINE_TASK_PROVIDER}"
+DEPENDS = "${MACHINE_TASK_PROVIDER} makedevs-native mtd-utils-native"
 DEPENDS_n2100 += "openssl-native"
 
 
@@ -14,7 +14,6 @@ PACK_IMAGE = '${MACHINE}_pack_image;'
 IMAGE_PREPROCESS_COMMAND += "sed -i -es,^id:5:initdefault:,id:3:initdefault:, ${IMAGE_ROOTFS}/etc/inittab;"
 IMAGE_PREPROCESS_COMMAND += "sed -i -es,^root::0,root:BTMzOOAQfESg6:0, ${IMAGE_ROOTFS}/etc/passwd;"
 IMAGE_PREPROCESS_COMMAND += "sed -i -es,^VERBOSE=no,VERBOSE=very, ${IMAGE_ROOTFS}/etc/default/rcS;"
-IMAGE_PREPROCESS_COMMAND += "cp ${IMAGE_ROOTFS}/usr/sbin/fis-static ${DEPLOY_DIR_IMAGE}/; rm -f ${IMAGE_ROOTFS}/usr/sbin/fis-static"
 FOONAS_DEVICE_TABLE = "${@bb.which(bb.data.getVar('BBPATH', d, 1), 'files/device_table-slugos.txt')}"
 EXTRA_IMAGECMD_jffs2 += " --eraseblock=${ERASEBLOCK_SIZE} -D ${FOONAS_DEVICE_TABLE}"
 IMAGE_LINGUAS = ""
