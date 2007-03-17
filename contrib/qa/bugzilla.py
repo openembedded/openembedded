@@ -25,11 +25,16 @@ class BugQueryExtractor(HTMLParser):
     def __init__(self):
         HTMLParser.__init__(self)
         self.state = self.STATE_NONE
+        self.bug  = None
         self.bugs = []
 
     def handle_starttag(self, tag, attr):
         if self.state == self.STATE_NONE and tag.lower() == "tr":
-            if len(attr) == 1 and attr[0] == ('class', 'bz_normal bz_P2 '):
+            # check for bz_normal and bz_P2 as indicator in buglist.cgi
+            # use 'all' and 'map' on python2.5
+            if len(attr) == 1 and attr[0][0] == 'class' and \
+               ('bz_normal' in attr[0][1] or 'bz_blocker' in attr[0][1] or 'bz_enhancement' in attr[0][1] or 'bz_major' in attr[0][1] or 'bz_minor' in attr[0][1] or 'bz_trivial' in attr[0][1] or 'bz_critical' in attr[0][1] or 'bz_wishlist' in attr[0][1]) \
+               and 'bz_P' in attr[0][1]:
                 print "Found tr %s %s" % (tag, attr)
                 self.state = self.STATE_FOUND_TR
         elif self.state == self.STATE_FOUND_TR and tag.lower() == "td":
@@ -41,6 +46,7 @@ class BugQueryExtractor(HTMLParser):
             if self.state != self.STATE_NONE:
                 self.bugs.append( (self.bug,self.status) )
             self.state = self.STATE_NONE
+            self.bug = None
         if self.state > 1 and tag.lower() == "td":
             print "Next TD"
             self.state += 1
@@ -51,11 +57,17 @@ class BugQueryExtractor(HTMLParser):
         # skip garbage
         if len(data) == 0:
             return
-    
+
         if self.state == self.STATE_FOUND_NUMBER:
+            """
+            #1995 in bugs.oe.org has [SEC] additionally to the number and we want to ignore it
+            """
             print "Bug Number '%s'" % data.strip()
+            if self.bug:
+                print "Ignoring bug data"
+                return
             self.bug = data
-           
+
         elif self.state == self.STATE_FOUND_STATUS:
             print "Status Name '%s'" % data.strip()
             self.status = data
@@ -65,267 +77,7 @@ class BugQueryExtractor(HTMLParser):
         return self.bugs
 
 #
-site = """<!-- 1.0@bugzilla.org -->
-
-
-
-
-
-
-
-
-
-
-
-<!-- 1.0@bugzilla.org -->
-
-
-
-
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<html>
-  <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <title>Bug List</title>
-
-
-    
-    
-    
-    <link href="/style/style.css" rel="stylesheet" type="text/css" />
-    
-        <link href="/bugzilla/css/buglist.css" rel="stylesheet" type="text/css">
-  
-  </head>
-  
-
-
-  <body bgcolor="#FFFFFF" onload="">
-
-
-<!-- 1.0@bugzilla.org -->
-
-
-
-
-        <div id="header">
-                <a href="http://bugzilla.openmoko.org/cgi-bin/bugzilla/" id="site_logo"><img src="/style/images/openmoko_logo.png" alt="openmoko.org" /></a>
-                
-                <div id="main_navigation">
-                        <ul>
-                                <li><a href="http://www.openmoko.org/" class="nav_home"><span>Home</span></a></li>
-                                <li><a href="http://wiki.openmoko.org/" class="nav_wiki"><span>Wiki</span></a></li>
-                                <li><a href="http://bugzilla.openmoko.org/" class="nav_bugzilla selected"><span>Bugzilla</span></a></li>
-                                <li><a href="http://planet.openmoko.org/" class="nav_planet"><span>Planet</span></a></li>
-                                <li><a href="http://projects.openmoko.org/" class="nav_projects"><span>Projects</span></a></li>
-                                <li><a href="http://lists.openmoko.org/" class="nav_lists"><span>Lists</span></a></li>
-                        </ul>
-                </div>
-        </div>
-
-        <div class="page_title">
-                <strong>Bug List</strong> 
-        </div>
-    
- <div class="container">
-
-<div align="center">
-  <b>Tue Mar  6 19:01:13 CET 2007</b><br>
-
-
-    <a href="quips.cgi"><i>Free your problems
-</i></a>
-
-</div>
-
-
-<hr>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<!-- 1.0@bugzilla.org -->
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  
-  <table class="bz_buglist" cellspacing="0" cellpadding="4" width="100%">
-    <colgroup>
-      <col class="bz_id_column">
-      <col class="bz_severity_column">
-      <col class="bz_priority_column">
-      <col class="bz_platform_column">
-      <col class="bz_owner_column">
-      <col class="bz_status_column">
-      <col class="bz_resolution_column">
-      <col class="bz_summary_column">
-    </colgroup>
-
-    <tr align="left">
-      <th colspan="1">
-        <a href="buglist.cgi?short_desc_type=substring&amp;short_desc=manual+test+bug&amp;product=OpenMoko&amp;component=autobuilds&amp;order=bugs.bug_id">ID</a>
-      </th>
-
-<th colspan="1">
-    <a href="buglist.cgi?short_desc_type=substring&amp;short_desc=manual+test+bug&amp;product=OpenMoko&amp;component=autobuilds&amp;order=bugs.bug_severity,bugs.bug_id">Sev</a>
-  </th><th colspan="1">
-    <a href="buglist.cgi?short_desc_type=substring&amp;short_desc=manual+test+bug&amp;product=OpenMoko&amp;component=autobuilds&amp;order=bugs.priority,bugs.bug_id">Pri</a>
-  </th><th colspan="1">
-    <a href="buglist.cgi?short_desc_type=substring&amp;short_desc=manual+test+bug&amp;product=OpenMoko&amp;component=autobuilds&amp;order=bugs.rep_platform,bugs.bug_id">Plt</a>
-  </th><th colspan="1">
-    <a href="buglist.cgi?short_desc_type=substring&amp;short_desc=manual+test+bug&amp;product=OpenMoko&amp;component=autobuilds&amp;order=map_assigned_to.login_name,bugs.bug_id">Owner</a>
-  </th><th colspan="1">
-    <a href="buglist.cgi?short_desc_type=substring&amp;short_desc=manual+test+bug&amp;product=OpenMoko&amp;component=autobuilds&amp;order=bugs.bug_status,bugs.bug_id">State</a>
-  </th><th colspan="1">
-    <a href="buglist.cgi?short_desc_type=substring&amp;short_desc=manual+test+bug&amp;product=OpenMoko&amp;component=autobuilds&amp;order=bugs.resolution,bugs.bug_id">Result</a>
-  </th><th colspan="1">
-    <a href="buglist.cgi?short_desc_type=substring&amp;short_desc=manual+test+bug&amp;product=OpenMoko&amp;component=autobuilds&amp;order=bugs.short_desc,bugs.bug_id">Summary</a>
-  </th>
-
-
-    </tr>
-
-  <tr class="bz_normal bz_P2 ">
-
-    <td>
-      <a href="show_bug.cgi?id=238">238</a>
-    </td>
-
-    <td><nobr>nor</nobr>
-    </td>
-    <td><nobr>P2</nobr>
-    </td>
-    <td><nobr>Mac</nobr>
-    </td>
-    <td><nobr>mickey@vanille-media.de</nobr>
-    </td>
-    <td><nobr>NEW</nobr>
-    </td>
-    <td><nobr></nobr>
-    </td>
-    <td>manual test bug
-    </td>
-
-  </tr>
-
-  
-    </table>
-
-
-
-
-
-  One bug found.
-
-
-<br>
-
-
-
-
-
-
-
-
-
-
-
-
-  <form method="post" action="long_list.cgi">
-    <input type="hidden" name="buglist" value="238">
-    <input type="submit" value="Long Format">
-
-    <a href="query.cgi">Query Page</a> &nbsp;&nbsp;
-    <a href="enter_bug.cgi">Enter New Bug</a> &nbsp;&nbsp;
-    <a href="colchange.cgi?short_desc_type=substring&amp;short_desc=manual+test+bug&amp;product=OpenMoko&amp;component=autobuilds">Change Columns</a> &nbsp;&nbsp;
-
-
-
-    <a href="query.cgi?short_desc_type=substring&amp;short_desc=manual+test+bug&amp;product=OpenMoko&amp;component=autobuilds">Edit this Query</a> &nbsp;&nbsp;
-
-  </form>
-
-
-
-
-
-
-<!-- 1.0@bugzilla.org -->
-
-
-
-  
-
-  
-</div>
-
-<div class="footer">
-        <div class="group">This is <b>Bugzilla</b>: the Mozilla bug system.  For more information about what Bugzilla is and what it can do, see <a href="http://www.bugzilla.org/">bugzilla.org</a>.</div>
-        <!-- 1.0@bugzilla.org -->
-
-
-
-
-
-
-<form method="get" action="show_bug.cgi">
-        <div class="group">
-                <a href="enter_bug.cgi">New</a> | <a href="query.cgi">Query</a> | <input type="submit" value="Find"> bug # <input name="id" size="6"> | <a href="reports.cgi">Reports</a> | <a href="votes.cgi?action=show_user">My Votes</a> 
-        </div>
- 
-        <div class="group">
-        Edit <a href="userprefs.cgi">prefs</a> 
-        | <a href="relogin.cgi">Log&nbsp;out</a>&nbsp;&nbsp;freyther@yahoo.com
-        </div>
-
-    
-    
-      
-    <div class="group">
-                  Preset&nbsp;Queries:
-
-          <a href="buglist.cgi?bug_status=NEW&amp;bug_status=ASSIGNED&amp;bug_status=REOPENED&amp;email1=freyther%40yahoo.com&amp;emailtype1=exact&amp;emailassigned_to1=1&amp;emailreporter1=1">My&nbsp;Bugs</a>
-
-    </div>
-</form>
-</div>  
-
-</body>
-</html>
-"""
-
-all_bugs = """<!-- 1.0@bugzilla.org -->
+bugs_openmoko = """<!-- 1.0@bugzilla.org -->
 
 
 
@@ -390,10 +142,10 @@ all_bugs = """<!-- 1.0@bugzilla.org -->
  <div class="container">
 
 <div align="center">
-  <b>Tue Mar  6 20:23:16 CET 2007</b><br>
+  <b>Fri Mar 16 20:51:52 CET 2007</b><br>
 
 
-    <a href="quips.cgi"><i>Free your problems
+    <a href="quips.cgi"><i>It was a time of great struggle and heroic deeds
 </i></a>
 
 </div>
@@ -405,7 +157,7 @@ all_bugs = """<!-- 1.0@bugzilla.org -->
 
 
 
-228 bugs found.
+282 bugs found.
 
 
 
@@ -454,23 +206,23 @@ all_bugs = """<!-- 1.0@bugzilla.org -->
 
     <tr align="left">
       <th colspan="1">
-        <a href="buglist.cgi?product=OpenMoko&amp;order=bugs.bug_id">ID</a>
+        <a href="buglist.cgi?short_desc_type=allwordssubstr&amp;short_desc=&amp;long_desc_type=allwordssubstr&amp;long_desc=&amp;bug_file_loc_type=allwordssubstr&amp;bug_file_loc=&amp;bug_status=UNCONFIRMED&amp;bug_status=NEW&amp;bug_status=ASSIGNED&amp;bug_status=REOPENED&amp;bug_status=RESOLVED&amp;bug_status=VERIFIED&amp;bug_status=CLOSED&amp;emailassigned_to1=1&amp;emailtype1=substring&amp;email1=&amp;emailassigned_to2=1&amp;emailreporter2=1&amp;emailcc2=1&amp;emailtype2=substring&amp;email2=&amp;bugidtype=include&amp;bug_id=&amp;votes=&amp;changedin=&amp;chfieldfrom=&amp;chfieldto=Now&amp;chfieldvalue=&amp;field0-0-0=noop&amp;type0-0-0=noop&amp;value0-0-0=&amp;order=bugs.bug_id">ID</a>
       </th>
 
 <th colspan="1">
-    <a href="buglist.cgi?product=OpenMoko&amp;order=bugs.bug_severity,bugs.bug_id">Sev</a>
+    <a href="buglist.cgi?short_desc_type=allwordssubstr&amp;short_desc=&amp;long_desc_type=allwordssubstr&amp;long_desc=&amp;bug_file_loc_type=allwordssubstr&amp;bug_file_loc=&amp;bug_status=UNCONFIRMED&amp;bug_status=NEW&amp;bug_status=ASSIGNED&amp;bug_status=REOPENED&amp;bug_status=RESOLVED&amp;bug_status=VERIFIED&amp;bug_status=CLOSED&amp;emailassigned_to1=1&amp;emailtype1=substring&amp;email1=&amp;emailassigned_to2=1&amp;emailreporter2=1&amp;emailcc2=1&amp;emailtype2=substring&amp;email2=&amp;bugidtype=include&amp;bug_id=&amp;votes=&amp;changedin=&amp;chfieldfrom=&amp;chfieldto=Now&amp;chfieldvalue=&amp;field0-0-0=noop&amp;type0-0-0=noop&amp;value0-0-0=&amp;order=bugs.bug_severity,bugs.bug_id">Sev</a>
   </th><th colspan="1">
-    <a href="buglist.cgi?product=OpenMoko&amp;order=bugs.priority,bugs.bug_id">Pri</a>
+    <a href="buglist.cgi?short_desc_type=allwordssubstr&amp;short_desc=&amp;long_desc_type=allwordssubstr&amp;long_desc=&amp;bug_file_loc_type=allwordssubstr&amp;bug_file_loc=&amp;bug_status=UNCONFIRMED&amp;bug_status=NEW&amp;bug_status=ASSIGNED&amp;bug_status=REOPENED&amp;bug_status=RESOLVED&amp;bug_status=VERIFIED&amp;bug_status=CLOSED&amp;emailassigned_to1=1&amp;emailtype1=substring&amp;email1=&amp;emailassigned_to2=1&amp;emailreporter2=1&amp;emailcc2=1&amp;emailtype2=substring&amp;email2=&amp;bugidtype=include&amp;bug_id=&amp;votes=&amp;changedin=&amp;chfieldfrom=&amp;chfieldto=Now&amp;chfieldvalue=&amp;field0-0-0=noop&amp;type0-0-0=noop&amp;value0-0-0=&amp;order=bugs.priority,bugs.bug_id">Pri</a>
   </th><th colspan="1">
-    <a href="buglist.cgi?product=OpenMoko&amp;order=bugs.rep_platform,bugs.bug_id">Plt</a>
+    <a href="buglist.cgi?short_desc_type=allwordssubstr&amp;short_desc=&amp;long_desc_type=allwordssubstr&amp;long_desc=&amp;bug_file_loc_type=allwordssubstr&amp;bug_file_loc=&amp;bug_status=UNCONFIRMED&amp;bug_status=NEW&amp;bug_status=ASSIGNED&amp;bug_status=REOPENED&amp;bug_status=RESOLVED&amp;bug_status=VERIFIED&amp;bug_status=CLOSED&amp;emailassigned_to1=1&amp;emailtype1=substring&amp;email1=&amp;emailassigned_to2=1&amp;emailreporter2=1&amp;emailcc2=1&amp;emailtype2=substring&amp;email2=&amp;bugidtype=include&amp;bug_id=&amp;votes=&amp;changedin=&amp;chfieldfrom=&amp;chfieldto=Now&amp;chfieldvalue=&amp;field0-0-0=noop&amp;type0-0-0=noop&amp;value0-0-0=&amp;order=bugs.rep_platform,bugs.bug_id">Plt</a>
   </th><th colspan="1">
-    <a href="buglist.cgi?product=OpenMoko&amp;order=map_assigned_to.login_name,bugs.bug_id">Owner</a>
+    <a href="buglist.cgi?short_desc_type=allwordssubstr&amp;short_desc=&amp;long_desc_type=allwordssubstr&amp;long_desc=&amp;bug_file_loc_type=allwordssubstr&amp;bug_file_loc=&amp;bug_status=UNCONFIRMED&amp;bug_status=NEW&amp;bug_status=ASSIGNED&amp;bug_status=REOPENED&amp;bug_status=RESOLVED&amp;bug_status=VERIFIED&amp;bug_status=CLOSED&amp;emailassigned_to1=1&amp;emailtype1=substring&amp;email1=&amp;emailassigned_to2=1&amp;emailreporter2=1&amp;emailcc2=1&amp;emailtype2=substring&amp;email2=&amp;bugidtype=include&amp;bug_id=&amp;votes=&amp;changedin=&amp;chfieldfrom=&amp;chfieldto=Now&amp;chfieldvalue=&amp;field0-0-0=noop&amp;type0-0-0=noop&amp;value0-0-0=&amp;order=map_assigned_to.login_name,bugs.bug_id">Owner</a>
   </th><th colspan="1">
-    <a href="buglist.cgi?product=OpenMoko&amp;order=bugs.bug_status,bugs.bug_id">State</a>
+    <a href="buglist.cgi?short_desc_type=allwordssubstr&amp;short_desc=&amp;long_desc_type=allwordssubstr&amp;long_desc=&amp;bug_file_loc_type=allwordssubstr&amp;bug_file_loc=&amp;bug_status=UNCONFIRMED&amp;bug_status=NEW&amp;bug_status=ASSIGNED&amp;bug_status=REOPENED&amp;bug_status=RESOLVED&amp;bug_status=VERIFIED&amp;bug_status=CLOSED&amp;emailassigned_to1=1&amp;emailtype1=substring&amp;email1=&amp;emailassigned_to2=1&amp;emailreporter2=1&amp;emailcc2=1&amp;emailtype2=substring&amp;email2=&amp;bugidtype=include&amp;bug_id=&amp;votes=&amp;changedin=&amp;chfieldfrom=&amp;chfieldto=Now&amp;chfieldvalue=&amp;field0-0-0=noop&amp;type0-0-0=noop&amp;value0-0-0=&amp;order=bugs.bug_status,bugs.bug_id">State</a>
   </th><th colspan="1">
-    <a href="buglist.cgi?product=OpenMoko&amp;order=bugs.resolution,bugs.bug_id">Result</a>
+    <a href="buglist.cgi?short_desc_type=allwordssubstr&amp;short_desc=&amp;long_desc_type=allwordssubstr&amp;long_desc=&amp;bug_file_loc_type=allwordssubstr&amp;bug_file_loc=&amp;bug_status=UNCONFIRMED&amp;bug_status=NEW&amp;bug_status=ASSIGNED&amp;bug_status=REOPENED&amp;bug_status=RESOLVED&amp;bug_status=VERIFIED&amp;bug_status=CLOSED&amp;emailassigned_to1=1&amp;emailtype1=substring&amp;email1=&amp;emailassigned_to2=1&amp;emailreporter2=1&amp;emailcc2=1&amp;emailtype2=substring&amp;email2=&amp;bugidtype=include&amp;bug_id=&amp;votes=&amp;changedin=&amp;chfieldfrom=&amp;chfieldto=Now&amp;chfieldvalue=&amp;field0-0-0=noop&amp;type0-0-0=noop&amp;value0-0-0=&amp;order=bugs.resolution,bugs.bug_id">Result</a>
   </th><th colspan="1">
-    <a href="buglist.cgi?product=OpenMoko&amp;order=bugs.short_desc,bugs.bug_id">Summary</a>
+    <a href="buglist.cgi?short_desc_type=allwordssubstr&amp;short_desc=&amp;long_desc_type=allwordssubstr&amp;long_desc=&amp;bug_file_loc_type=allwordssubstr&amp;bug_file_loc=&amp;bug_status=UNCONFIRMED&amp;bug_status=NEW&amp;bug_status=ASSIGNED&amp;bug_status=REOPENED&amp;bug_status=RESOLVED&amp;bug_status=VERIFIED&amp;bug_status=CLOSED&amp;emailassigned_to1=1&amp;emailtype1=substring&amp;email1=&amp;emailassigned_to2=1&amp;emailreporter2=1&amp;emailcc2=1&amp;emailtype2=substring&amp;email2=&amp;bugidtype=include&amp;bug_id=&amp;votes=&amp;changedin=&amp;chfieldfrom=&amp;chfieldto=Now&amp;chfieldvalue=&amp;field0-0-0=noop&amp;type0-0-0=noop&amp;value0-0-0=&amp;order=bugs.short_desc,bugs.bug_id">Summary</a>
   </th>
 
 
@@ -535,6 +287,34 @@ all_bugs = """<!-- 1.0@bugzilla.org -->
   <tr class="bz_normal bz_P2 ">
 
     <td>
+      <a href="show_bug.cgi?id=3">3</a>
+    </td>
+
+    <td><nobr>nor</nobr>
+    </td>
+    <td><nobr>P2</nobr>
+    </td>
+    <td><nobr>Neo</nobr>
+    </td>
+    <td><nobr>sean_chiang@fic.com.tw</nobr>
+    </td>
+    <td><nobr>CLOS</nobr>
+    </td>
+    <td><nobr>FIXE</nobr>
+    </td>
+    <td>Debug Board trying to control GSM_EN / FA_19
+    </td>
+
+  </tr>
+
+  
+
+
+  
+
+  <tr class="bz_normal bz_P2 ">
+
+    <td>
       <a href="show_bug.cgi?id=4">4</a>
     </td>
 
@@ -546,9 +326,9 @@ all_bugs = """<!-- 1.0@bugzilla.org -->
     </td>
     <td><nobr>laforge@openmoko.org</nobr>
     </td>
-    <td><nobr>ASSI</nobr>
+    <td><nobr>RESO</nobr>
     </td>
-    <td><nobr></nobr>
+    <td><nobr>FIXE</nobr>
     </td>
     <td>random crashes of gsmd
     </td>
@@ -579,6 +359,34 @@ all_bugs = """<!-- 1.0@bugzilla.org -->
     <td><nobr>FIXE</nobr>
     </td>
     <td>call progress information is lacking
+    </td>
+
+  </tr>
+
+  
+
+
+  
+
+  <tr class="bz_normal bz_P2 ">
+
+    <td>
+      <a href="show_bug.cgi?id=6">6</a>
+    </td>
+
+    <td><nobr>nor</nobr>
+    </td>
+    <td><nobr>P2</nobr>
+    </td>
+    <td><nobr>Neo</nobr>
+    </td>
+    <td><nobr>sean_chiang@fic.com.tw</nobr>
+    </td>
+    <td><nobr>NEW</nobr>
+    </td>
+    <td><nobr></nobr>
+    </td>
+    <td>GSM_EN should be called nGSM_EN
     </td>
 
   </tr>
@@ -831,6 +639,62 @@ all_bugs = """<!-- 1.0@bugzilla.org -->
     <td><nobr></nobr>
     </td>
     <td>kernel oops when unloading g_ether
+    </td>
+
+  </tr>
+
+  
+
+
+  
+
+  <tr class="bz_blocker bz_P2 ">
+
+    <td>
+      <a href="show_bug.cgi?id=16">16</a>
+    </td>
+
+    <td><nobr>blo</nobr>
+    </td>
+    <td><nobr>P2</nobr>
+    </td>
+    <td><nobr>Neo</nobr>
+    </td>
+    <td><nobr>sean_chiang@fic.com.tw</nobr>
+    </td>
+    <td><nobr>RESO</nobr>
+    </td>
+    <td><nobr>FIXE</nobr>
+    </td>
+    <td>bluetooth pullup / pulldown resistors
+    </td>
+
+  </tr>
+
+  
+
+
+  
+
+  <tr class="bz_normal bz_P2 ">
+
+    <td>
+      <a href="show_bug.cgi?id=17">17</a>
+    </td>
+
+    <td><nobr>nor</nobr>
+    </td>
+    <td><nobr>P2</nobr>
+    </td>
+    <td><nobr>Neo</nobr>
+    </td>
+    <td><nobr>sean_chiang@fic.com.tw</nobr>
+    </td>
+    <td><nobr>RESO</nobr>
+    </td>
+    <td><nobr>FIXE</nobr>
+    </td>
+    <td>microSD socket still has mechanical contact problems
     </td>
 
   </tr>
@@ -1274,9 +1138,9 @@ all_bugs = """<!-- 1.0@bugzilla.org -->
     </td>
     <td><nobr>laforge@openmoko.org</nobr>
     </td>
-    <td><nobr>ASSI</nobr>
+    <td><nobr>RESO</nobr>
     </td>
-    <td><nobr></nobr>
+    <td><nobr>FIXE</nobr>
     </td>
     <td>incoming call status report causes gsmd to crash.
     </td>
@@ -1302,9 +1166,9 @@ all_bugs = """<!-- 1.0@bugzilla.org -->
     </td>
     <td><nobr>laforge@openmoko.org</nobr>
     </td>
-    <td><nobr>ASSI</nobr>
+    <td><nobr>RESO</nobr>
     </td>
-    <td><nobr></nobr>
+    <td><nobr>WORK</nobr>
     </td>
     <td>Need to decide if lgsm_handle is still valid.
     </td>
@@ -2786,9 +2650,9 @@ all_bugs = """<!-- 1.0@bugzilla.org -->
     </td>
     <td><nobr>laforge@openmoko.org</nobr>
     </td>
-    <td><nobr>NEW</nobr>
+    <td><nobr>RESO</nobr>
     </td>
-    <td><nobr></nobr>
+    <td><nobr>FIXE</nobr>
     </td>
     <td>define and implement how headphone jack routing/signallin...
     </td>
@@ -3160,9 +3024,45 @@ all_bugs = """<!-- 1.0@bugzilla.org -->
   </tr>
 
   
+    </table>
 
 
   
+  <table class="bz_buglist" cellspacing="0" cellpadding="4" width="100%">
+    <colgroup>
+      <col class="bz_id_column">
+      <col class="bz_severity_column">
+      <col class="bz_priority_column">
+      <col class="bz_platform_column">
+      <col class="bz_owner_column">
+      <col class="bz_status_column">
+      <col class="bz_resolution_column">
+      <col class="bz_summary_column">
+    </colgroup>
+
+    <tr align="left">
+      <th colspan="1">
+        <a href="buglist.cgi?short_desc_type=allwordssubstr&amp;short_desc=&amp;long_desc_type=allwordssubstr&amp;long_desc=&amp;bug_file_loc_type=allwordssubstr&amp;bug_file_loc=&amp;bug_status=UNCONFIRMED&amp;bug_status=NEW&amp;bug_status=ASSIGNED&amp;bug_status=REOPENED&amp;bug_status=RESOLVED&amp;bug_status=VERIFIED&amp;bug_status=CLOSED&amp;emailassigned_to1=1&amp;emailtype1=substring&amp;email1=&amp;emailassigned_to2=1&amp;emailreporter2=1&amp;emailcc2=1&amp;emailtype2=substring&amp;email2=&amp;bugidtype=include&amp;bug_id=&amp;votes=&amp;changedin=&amp;chfieldfrom=&amp;chfieldto=Now&amp;chfieldvalue=&amp;field0-0-0=noop&amp;type0-0-0=noop&amp;value0-0-0=&amp;order=bugs.bug_id">ID</a>
+      </th>
+
+<th colspan="1">
+    <a href="buglist.cgi?short_desc_type=allwordssubstr&amp;short_desc=&amp;long_desc_type=allwordssubstr&amp;long_desc=&amp;bug_file_loc_type=allwordssubstr&amp;bug_file_loc=&amp;bug_status=UNCONFIRMED&amp;bug_status=NEW&amp;bug_status=ASSIGNED&amp;bug_status=REOPENED&amp;bug_status=RESOLVED&amp;bug_status=VERIFIED&amp;bug_status=CLOSED&amp;emailassigned_to1=1&amp;emailtype1=substring&amp;email1=&amp;emailassigned_to2=1&amp;emailreporter2=1&amp;emailcc2=1&amp;emailtype2=substring&amp;email2=&amp;bugidtype=include&amp;bug_id=&amp;votes=&amp;changedin=&amp;chfieldfrom=&amp;chfieldto=Now&amp;chfieldvalue=&amp;field0-0-0=noop&amp;type0-0-0=noop&amp;value0-0-0=&amp;order=bugs.bug_severity,bugs.bug_id">Sev</a>
+  </th><th colspan="1">
+    <a href="buglist.cgi?short_desc_type=allwordssubstr&amp;short_desc=&amp;long_desc_type=allwordssubstr&amp;long_desc=&amp;bug_file_loc_type=allwordssubstr&amp;bug_file_loc=&amp;bug_status=UNCONFIRMED&amp;bug_status=NEW&amp;bug_status=ASSIGNED&amp;bug_status=REOPENED&amp;bug_status=RESOLVED&amp;bug_status=VERIFIED&amp;bug_status=CLOSED&amp;emailassigned_to1=1&amp;emailtype1=substring&amp;email1=&amp;emailassigned_to2=1&amp;emailreporter2=1&amp;emailcc2=1&amp;emailtype2=substring&amp;email2=&amp;bugidtype=include&amp;bug_id=&amp;votes=&amp;changedin=&amp;chfieldfrom=&amp;chfieldto=Now&amp;chfieldvalue=&amp;field0-0-0=noop&amp;type0-0-0=noop&amp;value0-0-0=&amp;order=bugs.priority,bugs.bug_id">Pri</a>
+  </th><th colspan="1">
+    <a href="buglist.cgi?short_desc_type=allwordssubstr&amp;short_desc=&amp;long_desc_type=allwordssubstr&amp;long_desc=&amp;bug_file_loc_type=allwordssubstr&amp;bug_file_loc=&amp;bug_status=UNCONFIRMED&amp;bug_status=NEW&amp;bug_status=ASSIGNED&amp;bug_status=REOPENED&amp;bug_status=RESOLVED&amp;bug_status=VERIFIED&amp;bug_status=CLOSED&amp;emailassigned_to1=1&amp;emailtype1=substring&amp;email1=&amp;emailassigned_to2=1&amp;emailreporter2=1&amp;emailcc2=1&amp;emailtype2=substring&amp;email2=&amp;bugidtype=include&amp;bug_id=&amp;votes=&amp;changedin=&amp;chfieldfrom=&amp;chfieldto=Now&amp;chfieldvalue=&amp;field0-0-0=noop&amp;type0-0-0=noop&amp;value0-0-0=&amp;order=bugs.rep_platform,bugs.bug_id">Plt</a>
+  </th><th colspan="1">
+    <a href="buglist.cgi?short_desc_type=allwordssubstr&amp;short_desc=&amp;long_desc_type=allwordssubstr&amp;long_desc=&amp;bug_file_loc_type=allwordssubstr&amp;bug_file_loc=&amp;bug_status=UNCONFIRMED&amp;bug_status=NEW&amp;bug_status=ASSIGNED&amp;bug_status=REOPENED&amp;bug_status=RESOLVED&amp;bug_status=VERIFIED&amp;bug_status=CLOSED&amp;emailassigned_to1=1&amp;emailtype1=substring&amp;email1=&amp;emailassigned_to2=1&amp;emailreporter2=1&amp;emailcc2=1&amp;emailtype2=substring&amp;email2=&amp;bugidtype=include&amp;bug_id=&amp;votes=&amp;changedin=&amp;chfieldfrom=&amp;chfieldto=Now&amp;chfieldvalue=&amp;field0-0-0=noop&amp;type0-0-0=noop&amp;value0-0-0=&amp;order=map_assigned_to.login_name,bugs.bug_id">Owner</a>
+  </th><th colspan="1">
+    <a href="buglist.cgi?short_desc_type=allwordssubstr&amp;short_desc=&amp;long_desc_type=allwordssubstr&amp;long_desc=&amp;bug_file_loc_type=allwordssubstr&amp;bug_file_loc=&amp;bug_status=UNCONFIRMED&amp;bug_status=NEW&amp;bug_status=ASSIGNED&amp;bug_status=REOPENED&amp;bug_status=RESOLVED&amp;bug_status=VERIFIED&amp;bug_status=CLOSED&amp;emailassigned_to1=1&amp;emailtype1=substring&amp;email1=&amp;emailassigned_to2=1&amp;emailreporter2=1&amp;emailcc2=1&amp;emailtype2=substring&amp;email2=&amp;bugidtype=include&amp;bug_id=&amp;votes=&amp;changedin=&amp;chfieldfrom=&amp;chfieldto=Now&amp;chfieldvalue=&amp;field0-0-0=noop&amp;type0-0-0=noop&amp;value0-0-0=&amp;order=bugs.bug_status,bugs.bug_id">State</a>
+  </th><th colspan="1">
+    <a href="buglist.cgi?short_desc_type=allwordssubstr&amp;short_desc=&amp;long_desc_type=allwordssubstr&amp;long_desc=&amp;bug_file_loc_type=allwordssubstr&amp;bug_file_loc=&amp;bug_status=UNCONFIRMED&amp;bug_status=NEW&amp;bug_status=ASSIGNED&amp;bug_status=REOPENED&amp;bug_status=RESOLVED&amp;bug_status=VERIFIED&amp;bug_status=CLOSED&amp;emailassigned_to1=1&amp;emailtype1=substring&amp;email1=&amp;emailassigned_to2=1&amp;emailreporter2=1&amp;emailcc2=1&amp;emailtype2=substring&amp;email2=&amp;bugidtype=include&amp;bug_id=&amp;votes=&amp;changedin=&amp;chfieldfrom=&amp;chfieldto=Now&amp;chfieldvalue=&amp;field0-0-0=noop&amp;type0-0-0=noop&amp;value0-0-0=&amp;order=bugs.resolution,bugs.bug_id">Result</a>
+  </th><th colspan="1">
+    <a href="buglist.cgi?short_desc_type=allwordssubstr&amp;short_desc=&amp;long_desc_type=allwordssubstr&amp;long_desc=&amp;bug_file_loc_type=allwordssubstr&amp;bug_file_loc=&amp;bug_status=UNCONFIRMED&amp;bug_status=NEW&amp;bug_status=ASSIGNED&amp;bug_status=REOPENED&amp;bug_status=RESOLVED&amp;bug_status=VERIFIED&amp;bug_status=CLOSED&amp;emailassigned_to1=1&amp;emailtype1=substring&amp;email1=&amp;emailassigned_to2=1&amp;emailreporter2=1&amp;emailcc2=1&amp;emailtype2=substring&amp;email2=&amp;bugidtype=include&amp;bug_id=&amp;votes=&amp;changedin=&amp;chfieldfrom=&amp;chfieldto=Now&amp;chfieldvalue=&amp;field0-0-0=noop&amp;type0-0-0=noop&amp;value0-0-0=&amp;order=bugs.short_desc,bugs.bug_id">Summary</a>
+  </th>
+
+
+    </tr>
 
   <tr class="bz_major bz_P2 ">
 
@@ -3272,45 +3172,9 @@ all_bugs = """<!-- 1.0@bugzilla.org -->
   </tr>
 
   
-    </table>
 
 
   
-  <table class="bz_buglist" cellspacing="0" cellpadding="4" width="100%">
-    <colgroup>
-      <col class="bz_id_column">
-      <col class="bz_severity_column">
-      <col class="bz_priority_column">
-      <col class="bz_platform_column">
-      <col class="bz_owner_column">
-      <col class="bz_status_column">
-      <col class="bz_resolution_column">
-      <col class="bz_summary_column">
-    </colgroup>
-
-    <tr align="left">
-      <th colspan="1">
-        <a href="buglist.cgi?product=OpenMoko&amp;order=bugs.bug_id">ID</a>
-      </th>
-
-<th colspan="1">
-    <a href="buglist.cgi?product=OpenMoko&amp;order=bugs.bug_severity,bugs.bug_id">Sev</a>
-  </th><th colspan="1">
-    <a href="buglist.cgi?product=OpenMoko&amp;order=bugs.priority,bugs.bug_id">Pri</a>
-  </th><th colspan="1">
-    <a href="buglist.cgi?product=OpenMoko&amp;order=bugs.rep_platform,bugs.bug_id">Plt</a>
-  </th><th colspan="1">
-    <a href="buglist.cgi?product=OpenMoko&amp;order=map_assigned_to.login_name,bugs.bug_id">Owner</a>
-  </th><th colspan="1">
-    <a href="buglist.cgi?product=OpenMoko&amp;order=bugs.bug_status,bugs.bug_id">State</a>
-  </th><th colspan="1">
-    <a href="buglist.cgi?product=OpenMoko&amp;order=bugs.resolution,bugs.bug_id">Result</a>
-  </th><th colspan="1">
-    <a href="buglist.cgi?product=OpenMoko&amp;order=bugs.short_desc,bugs.bug_id">Summary</a>
-  </th>
-
-
-    </tr>
 
   <tr class="bz_enhancement bz_P2 ">
 
@@ -4304,7 +4168,7 @@ all_bugs = """<!-- 1.0@bugzilla.org -->
     </td>
     <td><nobr>Neo</nobr>
     </td>
-    <td><nobr>mickey@vanille-media.de</nobr>
+    <td><nobr>stefan@openmoko.org</nobr>
     </td>
     <td><nobr>NEW</nobr>
     </td>
@@ -4698,9 +4562,9 @@ all_bugs = """<!-- 1.0@bugzilla.org -->
     </td>
     <td><nobr>sunzhiyong@fic-sh.com.cn</nobr>
     </td>
-    <td><nobr>ASSI</nobr>
+    <td><nobr>RESO</nobr>
     </td>
-    <td><nobr></nobr>
+    <td><nobr>FIXE</nobr>
     </td>
     <td>mainmenu crashes when clicking wheel the 2nd time
     </td>
@@ -5723,6 +5587,34 @@ all_bugs = """<!-- 1.0@bugzilla.org -->
   <tr class="bz_enhancement bz_P2 ">
 
     <td>
+      <a href="show_bug.cgi?id=191">191</a>
+    </td>
+
+    <td><nobr>enh</nobr>
+    </td>
+    <td><nobr>P2</nobr>
+    </td>
+    <td><nobr>Neo</nobr>
+    </td>
+    <td><nobr>sean_chiang@fic.com.tw</nobr>
+    </td>
+    <td><nobr>NEW</nobr>
+    </td>
+    <td><nobr></nobr>
+    </td>
+    <td>investigate if we can set CPU voltage to 1.8V on 200MHz o...
+    </td>
+
+  </tr>
+
+  
+
+
+  
+
+  <tr class="bz_enhancement bz_P2 ">
+
+    <td>
       <a href="show_bug.cgi?id=192">192</a>
     </td>
 
@@ -5748,6 +5640,34 @@ all_bugs = """<!-- 1.0@bugzilla.org -->
 
   
 
+  <tr class="bz_enhancement bz_P3 ">
+
+    <td>
+      <a href="show_bug.cgi?id=193">193</a>
+    </td>
+
+    <td><nobr>enh</nobr>
+    </td>
+    <td><nobr>P3</nobr>
+    </td>
+    <td><nobr>Neo</nobr>
+    </td>
+    <td><nobr>sean_chiang@fic.com.tw</nobr>
+    </td>
+    <td><nobr>NEW</nobr>
+    </td>
+    <td><nobr></nobr>
+    </td>
+    <td>Information about current charging status when AC is online
+    </td>
+
+  </tr>
+
+  
+
+
+  
+
   <tr class="bz_minor bz_P2 ">
 
     <td>
@@ -5760,7 +5680,7 @@ all_bugs = """<!-- 1.0@bugzilla.org -->
     </td>
     <td><nobr>Neo</nobr>
     </td>
-    <td><nobr>laforge@openmoko.org</nobr>
+    <td><nobr>stefan@openmoko.org</nobr>
     </td>
     <td><nobr>NEW</nobr>
     </td>
@@ -5940,9 +5860,45 @@ all_bugs = """<!-- 1.0@bugzilla.org -->
   </tr>
 
   
+    </table>
 
 
   
+  <table class="bz_buglist" cellspacing="0" cellpadding="4" width="100%">
+    <colgroup>
+      <col class="bz_id_column">
+      <col class="bz_severity_column">
+      <col class="bz_priority_column">
+      <col class="bz_platform_column">
+      <col class="bz_owner_column">
+      <col class="bz_status_column">
+      <col class="bz_resolution_column">
+      <col class="bz_summary_column">
+    </colgroup>
+
+    <tr align="left">
+      <th colspan="1">
+        <a href="buglist.cgi?short_desc_type=allwordssubstr&amp;short_desc=&amp;long_desc_type=allwordssubstr&amp;long_desc=&amp;bug_file_loc_type=allwordssubstr&amp;bug_file_loc=&amp;bug_status=UNCONFIRMED&amp;bug_status=NEW&amp;bug_status=ASSIGNED&amp;bug_status=REOPENED&amp;bug_status=RESOLVED&amp;bug_status=VERIFIED&amp;bug_status=CLOSED&amp;emailassigned_to1=1&amp;emailtype1=substring&amp;email1=&amp;emailassigned_to2=1&amp;emailreporter2=1&amp;emailcc2=1&amp;emailtype2=substring&amp;email2=&amp;bugidtype=include&amp;bug_id=&amp;votes=&amp;changedin=&amp;chfieldfrom=&amp;chfieldto=Now&amp;chfieldvalue=&amp;field0-0-0=noop&amp;type0-0-0=noop&amp;value0-0-0=&amp;order=bugs.bug_id">ID</a>
+      </th>
+
+<th colspan="1">
+    <a href="buglist.cgi?short_desc_type=allwordssubstr&amp;short_desc=&amp;long_desc_type=allwordssubstr&amp;long_desc=&amp;bug_file_loc_type=allwordssubstr&amp;bug_file_loc=&amp;bug_status=UNCONFIRMED&amp;bug_status=NEW&amp;bug_status=ASSIGNED&amp;bug_status=REOPENED&amp;bug_status=RESOLVED&amp;bug_status=VERIFIED&amp;bug_status=CLOSED&amp;emailassigned_to1=1&amp;emailtype1=substring&amp;email1=&amp;emailassigned_to2=1&amp;emailreporter2=1&amp;emailcc2=1&amp;emailtype2=substring&amp;email2=&amp;bugidtype=include&amp;bug_id=&amp;votes=&amp;changedin=&amp;chfieldfrom=&amp;chfieldto=Now&amp;chfieldvalue=&amp;field0-0-0=noop&amp;type0-0-0=noop&amp;value0-0-0=&amp;order=bugs.bug_severity,bugs.bug_id">Sev</a>
+  </th><th colspan="1">
+    <a href="buglist.cgi?short_desc_type=allwordssubstr&amp;short_desc=&amp;long_desc_type=allwordssubstr&amp;long_desc=&amp;bug_file_loc_type=allwordssubstr&amp;bug_file_loc=&amp;bug_status=UNCONFIRMED&amp;bug_status=NEW&amp;bug_status=ASSIGNED&amp;bug_status=REOPENED&amp;bug_status=RESOLVED&amp;bug_status=VERIFIED&amp;bug_status=CLOSED&amp;emailassigned_to1=1&amp;emailtype1=substring&amp;email1=&amp;emailassigned_to2=1&amp;emailreporter2=1&amp;emailcc2=1&amp;emailtype2=substring&amp;email2=&amp;bugidtype=include&amp;bug_id=&amp;votes=&amp;changedin=&amp;chfieldfrom=&amp;chfieldto=Now&amp;chfieldvalue=&amp;field0-0-0=noop&amp;type0-0-0=noop&amp;value0-0-0=&amp;order=bugs.priority,bugs.bug_id">Pri</a>
+  </th><th colspan="1">
+    <a href="buglist.cgi?short_desc_type=allwordssubstr&amp;short_desc=&amp;long_desc_type=allwordssubstr&amp;long_desc=&amp;bug_file_loc_type=allwordssubstr&amp;bug_file_loc=&amp;bug_status=UNCONFIRMED&amp;bug_status=NEW&amp;bug_status=ASSIGNED&amp;bug_status=REOPENED&amp;bug_status=RESOLVED&amp;bug_status=VERIFIED&amp;bug_status=CLOSED&amp;emailassigned_to1=1&amp;emailtype1=substring&amp;email1=&amp;emailassigned_to2=1&amp;emailreporter2=1&amp;emailcc2=1&amp;emailtype2=substring&amp;email2=&amp;bugidtype=include&amp;bug_id=&amp;votes=&amp;changedin=&amp;chfieldfrom=&amp;chfieldto=Now&amp;chfieldvalue=&amp;field0-0-0=noop&amp;type0-0-0=noop&amp;value0-0-0=&amp;order=bugs.rep_platform,bugs.bug_id">Plt</a>
+  </th><th colspan="1">
+    <a href="buglist.cgi?short_desc_type=allwordssubstr&amp;short_desc=&amp;long_desc_type=allwordssubstr&amp;long_desc=&amp;bug_file_loc_type=allwordssubstr&amp;bug_file_loc=&amp;bug_status=UNCONFIRMED&amp;bug_status=NEW&amp;bug_status=ASSIGNED&amp;bug_status=REOPENED&amp;bug_status=RESOLVED&amp;bug_status=VERIFIED&amp;bug_status=CLOSED&amp;emailassigned_to1=1&amp;emailtype1=substring&amp;email1=&amp;emailassigned_to2=1&amp;emailreporter2=1&amp;emailcc2=1&amp;emailtype2=substring&amp;email2=&amp;bugidtype=include&amp;bug_id=&amp;votes=&amp;changedin=&amp;chfieldfrom=&amp;chfieldto=Now&amp;chfieldvalue=&amp;field0-0-0=noop&amp;type0-0-0=noop&amp;value0-0-0=&amp;order=map_assigned_to.login_name,bugs.bug_id">Owner</a>
+  </th><th colspan="1">
+    <a href="buglist.cgi?short_desc_type=allwordssubstr&amp;short_desc=&amp;long_desc_type=allwordssubstr&amp;long_desc=&amp;bug_file_loc_type=allwordssubstr&amp;bug_file_loc=&amp;bug_status=UNCONFIRMED&amp;bug_status=NEW&amp;bug_status=ASSIGNED&amp;bug_status=REOPENED&amp;bug_status=RESOLVED&amp;bug_status=VERIFIED&amp;bug_status=CLOSED&amp;emailassigned_to1=1&amp;emailtype1=substring&amp;email1=&amp;emailassigned_to2=1&amp;emailreporter2=1&amp;emailcc2=1&amp;emailtype2=substring&amp;email2=&amp;bugidtype=include&amp;bug_id=&amp;votes=&amp;changedin=&amp;chfieldfrom=&amp;chfieldto=Now&amp;chfieldvalue=&amp;field0-0-0=noop&amp;type0-0-0=noop&amp;value0-0-0=&amp;order=bugs.bug_status,bugs.bug_id">State</a>
+  </th><th colspan="1">
+    <a href="buglist.cgi?short_desc_type=allwordssubstr&amp;short_desc=&amp;long_desc_type=allwordssubstr&amp;long_desc=&amp;bug_file_loc_type=allwordssubstr&amp;bug_file_loc=&amp;bug_status=UNCONFIRMED&amp;bug_status=NEW&amp;bug_status=ASSIGNED&amp;bug_status=REOPENED&amp;bug_status=RESOLVED&amp;bug_status=VERIFIED&amp;bug_status=CLOSED&amp;emailassigned_to1=1&amp;emailtype1=substring&amp;email1=&amp;emailassigned_to2=1&amp;emailreporter2=1&amp;emailcc2=1&amp;emailtype2=substring&amp;email2=&amp;bugidtype=include&amp;bug_id=&amp;votes=&amp;changedin=&amp;chfieldfrom=&amp;chfieldto=Now&amp;chfieldvalue=&amp;field0-0-0=noop&amp;type0-0-0=noop&amp;value0-0-0=&amp;order=bugs.resolution,bugs.bug_id">Result</a>
+  </th><th colspan="1">
+    <a href="buglist.cgi?short_desc_type=allwordssubstr&amp;short_desc=&amp;long_desc_type=allwordssubstr&amp;long_desc=&amp;bug_file_loc_type=allwordssubstr&amp;bug_file_loc=&amp;bug_status=UNCONFIRMED&amp;bug_status=NEW&amp;bug_status=ASSIGNED&amp;bug_status=REOPENED&amp;bug_status=RESOLVED&amp;bug_status=VERIFIED&amp;bug_status=CLOSED&amp;emailassigned_to1=1&amp;emailtype1=substring&amp;email1=&amp;emailassigned_to2=1&amp;emailreporter2=1&amp;emailcc2=1&amp;emailtype2=substring&amp;email2=&amp;bugidtype=include&amp;bug_id=&amp;votes=&amp;changedin=&amp;chfieldfrom=&amp;chfieldto=Now&amp;chfieldvalue=&amp;field0-0-0=noop&amp;type0-0-0=noop&amp;value0-0-0=&amp;order=bugs.short_desc,bugs.bug_id">Summary</a>
+  </th>
+
+
+    </tr>
 
   <tr class="bz_normal bz_P2 ">
 
@@ -5991,6 +5947,62 @@ all_bugs = """<!-- 1.0@bugzilla.org -->
     <td><nobr>FIXE</nobr>
     </td>
     <td>Start using NAND hardware ECC support
+    </td>
+
+  </tr>
+
+  
+
+
+  
+
+  <tr class="bz_major bz_P2 ">
+
+    <td>
+      <a href="show_bug.cgi?id=203">203</a>
+    </td>
+
+    <td><nobr>maj</nobr>
+    </td>
+    <td><nobr>P2</nobr>
+    </td>
+    <td><nobr>All</nobr>
+    </td>
+    <td><nobr>mickey@vanille-media.de</nobr>
+    </td>
+    <td><nobr>RESO</nobr>
+    </td>
+    <td><nobr>FIXE</nobr>
+    </td>
+    <td>fix the web site: http://openmoko.com/
+    </td>
+
+  </tr>
+
+  
+
+
+  
+
+  <tr class="bz_minor bz_P2 ">
+
+    <td>
+      <a href="show_bug.cgi?id=204">204</a>
+    </td>
+
+    <td><nobr>min</nobr>
+    </td>
+    <td><nobr>P2</nobr>
+    </td>
+    <td><nobr>All</nobr>
+    </td>
+    <td><nobr>buglog@lists.openmoko.org</nobr>
+    </td>
+    <td><nobr>NEW</nobr>
+    </td>
+    <td><nobr></nobr>
+    </td>
+    <td>Fatal error in Special:Newimages
     </td>
 
   </tr>
@@ -6108,45 +6120,9 @@ all_bugs = """<!-- 1.0@bugzilla.org -->
   </tr>
 
   
-    </table>
 
 
   
-  <table class="bz_buglist" cellspacing="0" cellpadding="4" width="100%">
-    <colgroup>
-      <col class="bz_id_column">
-      <col class="bz_severity_column">
-      <col class="bz_priority_column">
-      <col class="bz_platform_column">
-      <col class="bz_owner_column">
-      <col class="bz_status_column">
-      <col class="bz_resolution_column">
-      <col class="bz_summary_column">
-    </colgroup>
-
-    <tr align="left">
-      <th colspan="1">
-        <a href="buglist.cgi?product=OpenMoko&amp;order=bugs.bug_id">ID</a>
-      </th>
-
-<th colspan="1">
-    <a href="buglist.cgi?product=OpenMoko&amp;order=bugs.bug_severity,bugs.bug_id">Sev</a>
-  </th><th colspan="1">
-    <a href="buglist.cgi?product=OpenMoko&amp;order=bugs.priority,bugs.bug_id">Pri</a>
-  </th><th colspan="1">
-    <a href="buglist.cgi?product=OpenMoko&amp;order=bugs.rep_platform,bugs.bug_id">Plt</a>
-  </th><th colspan="1">
-    <a href="buglist.cgi?product=OpenMoko&amp;order=map_assigned_to.login_name,bugs.bug_id">Owner</a>
-  </th><th colspan="1">
-    <a href="buglist.cgi?product=OpenMoko&amp;order=bugs.bug_status,bugs.bug_id">State</a>
-  </th><th colspan="1">
-    <a href="buglist.cgi?product=OpenMoko&amp;order=bugs.resolution,bugs.bug_id">Result</a>
-  </th><th colspan="1">
-    <a href="buglist.cgi?product=OpenMoko&amp;order=bugs.short_desc,bugs.bug_id">Summary</a>
-  </th>
-
-
-    </tr>
 
   <tr class="bz_normal bz_P2 ">
 
@@ -6235,6 +6211,34 @@ all_bugs = """<!-- 1.0@bugzilla.org -->
   <tr class="bz_normal bz_P2 ">
 
     <td>
+      <a href="show_bug.cgi?id=212">212</a>
+    </td>
+
+    <td><nobr>nor</nobr>
+    </td>
+    <td><nobr>P2</nobr>
+    </td>
+    <td><nobr>Oth</nobr>
+    </td>
+    <td><nobr>werner@openmoko.org</nobr>
+    </td>
+    <td><nobr>NEW</nobr>
+    </td>
+    <td><nobr></nobr>
+    </td>
+    <td>Charging seems completely broken
+    </td>
+
+  </tr>
+
+  
+
+
+  
+
+  <tr class="bz_normal bz_P2 ">
+
+    <td>
       <a href="show_bug.cgi?id=213">213</a>
     </td>
 
@@ -6302,9 +6306,9 @@ all_bugs = """<!-- 1.0@bugzilla.org -->
     </td>
     <td><nobr>mickey@vanille-media.de</nobr>
     </td>
-    <td><nobr>NEW</nobr>
+    <td><nobr>RESO</nobr>
     </td>
-    <td><nobr></nobr>
+    <td><nobr>FIXE</nobr>
     </td>
     <td>fingerwheel crashes mainmenu when touching the black part
     </td>
@@ -6694,9 +6698,9 @@ all_bugs = """<!-- 1.0@bugzilla.org -->
     </td>
     <td><nobr>davewu01@seed.net.tw</nobr>
     </td>
-    <td><nobr>ASSI</nobr>
+    <td><nobr>RESO</nobr>
     </td>
-    <td><nobr></nobr>
+    <td><nobr>FIXE</nobr>
     </td>
     <td>outgoing call/incoming call/talking status should be more...
     </td>
@@ -6764,6 +6768,34 @@ all_bugs = """<!-- 1.0@bugzilla.org -->
 
   
 
+  <tr class="bz_normal bz_P2 ">
+
+    <td>
+      <a href="show_bug.cgi?id=232">232</a>
+    </td>
+
+    <td><nobr>nor</nobr>
+    </td>
+    <td><nobr>P2</nobr>
+    </td>
+    <td><nobr>Oth</nobr>
+    </td>
+    <td><nobr>buglog@lists.openmoko.org</nobr>
+    </td>
+    <td><nobr>NEW</nobr>
+    </td>
+    <td><nobr></nobr>
+    </td>
+    <td>n-plicate buglog mails 
+    </td>
+
+  </tr>
+
+  
+
+
+  
+
   <tr class="bz_critical bz_P2 ">
 
     <td>
@@ -6778,9 +6810,9 @@ all_bugs = """<!-- 1.0@bugzilla.org -->
     </td>
     <td><nobr>werner@openmoko.org</nobr>
     </td>
-    <td><nobr>NEW</nobr>
+    <td><nobr>RESO</nobr>
     </td>
-    <td><nobr></nobr>
+    <td><nobr>FIXE</nobr>
     </td>
     <td>power-off timer should be halted in DFU mode
     </td>
@@ -6832,11 +6864,11 @@ all_bugs = """<!-- 1.0@bugzilla.org -->
     </td>
     <td><nobr>PC</nobr>
     </td>
-    <td><nobr>mickey@vanille-media.de</nobr>
+    <td><nobr>laforge@openmoko.org</nobr>
     </td>
-    <td><nobr>NEW</nobr>
+    <td><nobr>RESO</nobr>
     </td>
-    <td><nobr></nobr>
+    <td><nobr>FIXE</nobr>
     </td>
     <td>Deploy openocd-native, not openocd, and make openocd-nati...
     </td>
@@ -6890,9 +6922,9 @@ all_bugs = """<!-- 1.0@bugzilla.org -->
     </td>
     <td><nobr>mickey@vanille-media.de</nobr>
     </td>
-    <td><nobr>NEW</nobr>
+    <td><nobr>RESO</nobr>
     </td>
-    <td><nobr></nobr>
+    <td><nobr>FIXE</nobr>
     </td>
     <td>Fix remaining https urls in bitbake recipes.
     </td>
@@ -6918,11 +6950,1243 @@ all_bugs = """<!-- 1.0@bugzilla.org -->
     </td>
     <td><nobr>mickey@vanille-media.de</nobr>
     </td>
+    <td><nobr>RESO</nobr>
+    </td>
+    <td><nobr>LATE</nobr>
+    </td>
+    <td>manual test bug
+    </td>
+
+  </tr>
+
+  
+
+
+  
+
+  <tr class="bz_normal bz_P2 ">
+
+    <td>
+      <a href="show_bug.cgi?id=239">239</a>
+    </td>
+
+    <td><nobr>nor</nobr>
+    </td>
+    <td><nobr>P2</nobr>
+    </td>
+    <td><nobr>Neo</nobr>
+    </td>
+    <td><nobr>mickey@vanille-media.de</nobr>
+    </td>
+    <td><nobr>RESO</nobr>
+    </td>
+    <td><nobr>LATE</nobr>
+    </td>
+    <td>foo
+    </td>
+
+  </tr>
+
+  
+
+
+  
+
+  <tr class="bz_normal bz_P2 ">
+
+    <td>
+      <a href="show_bug.cgi?id=240">240</a>
+    </td>
+
+    <td><nobr>nor</nobr>
+    </td>
+    <td><nobr>P2</nobr>
+    </td>
+    <td><nobr>Neo</nobr>
+    </td>
+    <td><nobr>mickey@vanille-media.de</nobr>
+    </td>
+    <td><nobr>RESO</nobr>
+    </td>
+    <td><nobr>INVA</nobr>
+    </td>
+    <td>broken-1.0-r0-do_fetch
+    </td>
+
+  </tr>
+
+  
+
+
+  
+
+  <tr class="bz_normal bz_P2 ">
+
+    <td>
+      <a href="show_bug.cgi?id=241">241</a>
+    </td>
+
+    <td><nobr>nor</nobr>
+    </td>
+    <td><nobr>P2</nobr>
+    </td>
+    <td><nobr>Neo</nobr>
+    </td>
+    <td><nobr>mickey@vanille-media.de</nobr>
+    </td>
+    <td><nobr>CLOS</nobr>
+    </td>
+    <td><nobr>LATE</nobr>
+    </td>
+    <td>broken-1.0-r0-do_fetch
+    </td>
+
+  </tr>
+
+  
+
+
+  
+
+  <tr class="bz_normal bz_P2 ">
+
+    <td>
+      <a href="show_bug.cgi?id=242">242</a>
+    </td>
+
+    <td><nobr>nor</nobr>
+    </td>
+    <td><nobr>P2</nobr>
+    </td>
+    <td><nobr>Neo</nobr>
+    </td>
+    <td><nobr>mickey@vanille-media.de</nobr>
+    </td>
+    <td><nobr>RESO</nobr>
+    </td>
+    <td><nobr>INVA</nobr>
+    </td>
+    <td>broken-1.0-r0-do_compile
+    </td>
+
+  </tr>
+
+  
+
+
+  
+
+  <tr class="bz_normal bz_P2 ">
+
+    <td>
+      <a href="show_bug.cgi?id=243">243</a>
+    </td>
+
+    <td><nobr>nor</nobr>
+    </td>
+    <td><nobr>P2</nobr>
+    </td>
+    <td><nobr>Neo</nobr>
+    </td>
+    <td><nobr>mickey@vanille-media.de</nobr>
+    </td>
+    <td><nobr>RESO</nobr>
+    </td>
+    <td><nobr>INVA</nobr>
+    </td>
+    <td>broken-1.0-r0-do_configure
+    </td>
+
+  </tr>
+
+  
+
+
+  
+
+  <tr class="bz_major bz_P2 ">
+
+    <td>
+      <a href="show_bug.cgi?id=244">244</a>
+    </td>
+
+    <td><nobr>maj</nobr>
+    </td>
+    <td><nobr>P2</nobr>
+    </td>
+    <td><nobr>PC</nobr>
+    </td>
+    <td><nobr>mickey@vanille-media.de</nobr>
+    </td>
     <td><nobr>NEW</nobr>
     </td>
     <td><nobr></nobr>
     </td>
-    <td>manual test bug
+    <td>I can't build Xorg7.1 from MokoMakefile
+    </td>
+
+  </tr>
+
+  
+
+
+  
+
+  <tr class="bz_normal bz_P2 ">
+
+    <td>
+      <a href="show_bug.cgi?id=245">245</a>
+    </td>
+
+    <td><nobr>nor</nobr>
+    </td>
+    <td><nobr>P2</nobr>
+    </td>
+    <td><nobr>Neo</nobr>
+    </td>
+    <td><nobr>laforge@openmoko.org</nobr>
+    </td>
+    <td><nobr>RESO</nobr>
+    </td>
+    <td><nobr>FIXE</nobr>
+    </td>
+    <td>Neo crashes when writing large amounts of data to SD
+    </td>
+
+  </tr>
+
+  
+
+
+  
+
+  <tr class="bz_normal bz_P2 ">
+
+    <td>
+      <a href="show_bug.cgi?id=246">246</a>
+    </td>
+
+    <td><nobr>nor</nobr>
+    </td>
+    <td><nobr>P2</nobr>
+    </td>
+    <td><nobr>PC</nobr>
+    </td>
+    <td><nobr>sean_chiang@fic.com.tw</nobr>
+    </td>
+    <td><nobr>NEW</nobr>
+    </td>
+    <td><nobr></nobr>
+    </td>
+    <td>Debug board needs to be recognized by mainline linux kernel.
+    </td>
+
+  </tr>
+
+  
+
+
+  
+
+  <tr class="bz_major bz_P2 ">
+
+    <td>
+      <a href="show_bug.cgi?id=247">247</a>
+    </td>
+
+    <td><nobr>maj</nobr>
+    </td>
+    <td><nobr>P2</nobr>
+    </td>
+    <td><nobr>Neo</nobr>
+    </td>
+    <td><nobr>thomas@openedhand.com</nobr>
+    </td>
+    <td><nobr>RESO</nobr>
+    </td>
+    <td><nobr>FIXE</nobr>
+    </td>
+    <td>openmoko-dates svn rev. 335 does no longer build
+    </td>
+
+  </tr>
+
+  
+
+
+  
+
+  <tr class="bz_normal bz_P2 ">
+
+    <td>
+      <a href="show_bug.cgi?id=248">248</a>
+    </td>
+
+    <td><nobr>nor</nobr>
+    </td>
+    <td><nobr>P2</nobr>
+    </td>
+    <td><nobr>PC</nobr>
+    </td>
+    <td><nobr>buglog@lists.openmoko.org</nobr>
+    </td>
+    <td><nobr>NEW</nobr>
+    </td>
+    <td><nobr></nobr>
+    </td>
+    <td>Buttons disappear under zoom
+    </td>
+
+  </tr>
+
+  
+
+
+  
+
+  <tr class="bz_enhancement bz_P2 ">
+
+    <td>
+      <a href="show_bug.cgi?id=249">249</a>
+    </td>
+
+    <td><nobr>enh</nobr>
+    </td>
+    <td><nobr>P2</nobr>
+    </td>
+    <td><nobr>All</nobr>
+    </td>
+    <td><nobr>laforge@openmoko.org</nobr>
+    </td>
+    <td><nobr>NEW</nobr>
+    </td>
+    <td><nobr></nobr>
+    </td>
+    <td>add command to print gsmd version number
+    </td>
+
+  </tr>
+
+  
+
+
+  
+
+  <tr class="bz_normal bz_P2 ">
+
+    <td>
+      <a href="show_bug.cgi?id=250">250</a>
+    </td>
+
+    <td><nobr>nor</nobr>
+    </td>
+    <td><nobr>P2</nobr>
+    </td>
+    <td><nobr>Neo</nobr>
+    </td>
+    <td><nobr>mickey@vanille-media.de</nobr>
+    </td>
+    <td><nobr>RESO</nobr>
+    </td>
+    <td><nobr>INVA</nobr>
+    </td>
+    <td>broken-1.0-r0-do_compile
+    </td>
+
+  </tr>
+
+  
+
+
+  
+
+  <tr class="bz_normal bz_P2 ">
+
+    <td>
+      <a href="show_bug.cgi?id=251">251</a>
+    </td>
+
+    <td><nobr>nor</nobr>
+    </td>
+    <td><nobr>P2</nobr>
+    </td>
+    <td><nobr>Neo</nobr>
+    </td>
+    <td><nobr>mickey@vanille-media.de</nobr>
+    </td>
+    <td><nobr>RESO</nobr>
+    </td>
+    <td><nobr>INVA</nobr>
+    </td>
+    <td>broken-1.0-r0-do_compile
+    </td>
+
+  </tr>
+
+  
+
+
+  
+
+  <tr class="bz_normal bz_P2 ">
+
+    <td>
+      <a href="show_bug.cgi?id=252">252</a>
+    </td>
+
+    <td><nobr>nor</nobr>
+    </td>
+    <td><nobr>P2</nobr>
+    </td>
+    <td><nobr>Neo</nobr>
+    </td>
+    <td><nobr>mickey@vanille-media.de</nobr>
+    </td>
+    <td><nobr>REOP</nobr>
+    </td>
+    <td><nobr></nobr>
+    </td>
+    <td>openmoko-devel-image-1.0-r0-do_rootfs
+    </td>
+
+  </tr>
+
+  
+
+
+  
+
+  <tr class="bz_normal bz_P2 ">
+
+    <td>
+      <a href="show_bug.cgi?id=253">253</a>
+    </td>
+
+    <td><nobr>nor</nobr>
+    </td>
+    <td><nobr>P2</nobr>
+    </td>
+    <td><nobr>Neo</nobr>
+    </td>
+    <td><nobr>mickey@vanille-media.de</nobr>
+    </td>
+    <td><nobr>NEW</nobr>
+    </td>
+    <td><nobr></nobr>
+    </td>
+    <td>Mount /tmp as tmpfs
+    </td>
+
+  </tr>
+
+  
+
+
+  
+
+  <tr class="bz_normal bz_P2 ">
+
+    <td>
+      <a href="show_bug.cgi?id=254">254</a>
+    </td>
+
+    <td><nobr>nor</nobr>
+    </td>
+    <td><nobr>P2</nobr>
+    </td>
+    <td><nobr>Oth</nobr>
+    </td>
+    <td><nobr>mickey@vanille-media.de</nobr>
+    </td>
+    <td><nobr>NEW</nobr>
+    </td>
+    <td><nobr></nobr>
+    </td>
+    <td>bug with &quot;patch&quot; on arklinux 2006.1??
+    </td>
+
+  </tr>
+
+  
+
+
+  
+
+  <tr class="bz_normal bz_P2 ">
+
+    <td>
+      <a href="show_bug.cgi?id=255">255</a>
+    </td>
+
+    <td><nobr>nor</nobr>
+    </td>
+    <td><nobr>P2</nobr>
+    </td>
+    <td><nobr>Neo</nobr>
+    </td>
+    <td><nobr>tony_tu@fiwin.com.tw</nobr>
+    </td>
+    <td><nobr>NEW</nobr>
+    </td>
+    <td><nobr></nobr>
+    </td>
+    <td>battery voltage scale is not correct
+    </td>
+
+  </tr>
+
+  
+
+
+  
+
+  <tr class="bz_critical bz_P2 ">
+
+    <td>
+      <a href="show_bug.cgi?id=256">256</a>
+    </td>
+
+    <td><nobr>cri</nobr>
+    </td>
+    <td><nobr>P2</nobr>
+    </td>
+    <td><nobr>PC</nobr>
+    </td>
+    <td><nobr>sean_chiang@fic.com.tw</nobr>
+    </td>
+    <td><nobr>NEW</nobr>
+    </td>
+    <td><nobr></nobr>
+    </td>
+    <td>GSM Modem doesn't seem to work on some devices
+    </td>
+
+  </tr>
+
+  
+
+
+  
+
+  <tr class="bz_normal bz_P2 ">
+
+    <td>
+      <a href="show_bug.cgi?id=257">257</a>
+    </td>
+
+    <td><nobr>nor</nobr>
+    </td>
+    <td><nobr>P2</nobr>
+    </td>
+    <td><nobr>Oth</nobr>
+    </td>
+    <td><nobr>sean_chiang@fic.com.tw</nobr>
+    </td>
+    <td><nobr>NEW</nobr>
+    </td>
+    <td><nobr></nobr>
+    </td>
+    <td>AUX button sticking
+    </td>
+
+  </tr>
+
+  
+
+
+  
+
+  <tr class="bz_major bz_P2 ">
+
+    <td>
+      <a href="show_bug.cgi?id=258">258</a>
+    </td>
+
+    <td><nobr>maj</nobr>
+    </td>
+    <td><nobr>P2</nobr>
+    </td>
+    <td><nobr>All</nobr>
+    </td>
+    <td><nobr>cj_steven@fic-sh.com.cn</nobr>
+    </td>
+    <td><nobr>NEW</nobr>
+    </td>
+    <td><nobr></nobr>
+    </td>
+    <td>Main Menu needs to have Single Instance functionality
+    </td>
+
+  </tr>
+
+  
+
+
+  
+
+  <tr class="bz_normal bz_P2 ">
+
+    <td>
+      <a href="show_bug.cgi?id=259">259</a>
+    </td>
+
+    <td><nobr>nor</nobr>
+    </td>
+    <td><nobr>P2</nobr>
+    </td>
+    <td><nobr>Neo</nobr>
+    </td>
+    <td><nobr>stefan@openmoko.org</nobr>
+    </td>
+    <td><nobr>NEW</nobr>
+    </td>
+    <td><nobr></nobr>
+    </td>
+    <td>implement 500mA charging in u-boot
+    </td>
+
+  </tr>
+
+  
+
+
+  
+
+  <tr class="bz_normal bz_P2 ">
+
+    <td>
+      <a href="show_bug.cgi?id=260">260</a>
+    </td>
+
+    <td><nobr>nor</nobr>
+    </td>
+    <td><nobr>P2</nobr>
+    </td>
+    <td><nobr>Neo</nobr>
+    </td>
+    <td><nobr>stefan@openmoko.org</nobr>
+    </td>
+    <td><nobr>NEW</nobr>
+    </td>
+    <td><nobr></nobr>
+    </td>
+    <td>implement 100mA charging in Linux
+    </td>
+
+  </tr>
+
+  
+
+
+  
+
+  <tr class="bz_normal bz_P2 ">
+
+    <td>
+      <a href="show_bug.cgi?id=261">261</a>
+    </td>
+
+    <td><nobr>nor</nobr>
+    </td>
+    <td><nobr>P2</nobr>
+    </td>
+    <td><nobr>Neo</nobr>
+    </td>
+    <td><nobr>stefan@openmoko.org</nobr>
+    </td>
+    <td><nobr>NEW</nobr>
+    </td>
+    <td><nobr></nobr>
+    </td>
+    <td>Implement 500mA charging using wall-outlet charger
+    </td>
+
+  </tr>
+
+  
+
+
+  
+
+  <tr class="bz_enhancement bz_P2 ">
+
+    <td>
+      <a href="show_bug.cgi?id=262">262</a>
+    </td>
+
+    <td><nobr>enh</nobr>
+    </td>
+    <td><nobr>P2</nobr>
+    </td>
+    <td><nobr>Neo</nobr>
+    </td>
+    <td><nobr>buglog@lists.openmoko.org</nobr>
+    </td>
+    <td><nobr>NEW</nobr>
+    </td>
+    <td><nobr></nobr>
+    </td>
+    <td>Indicate different charging mode in battery applet
+    </td>
+
+  </tr>
+
+  
+
+
+  
+
+  <tr class="bz_blocker bz_P2 ">
+
+    <td>
+      <a href="show_bug.cgi?id=263">263</a>
+    </td>
+
+    <td><nobr>blo</nobr>
+    </td>
+    <td><nobr>P2</nobr>
+    </td>
+    <td><nobr>Neo</nobr>
+    </td>
+    <td><nobr>laforge@openmoko.org</nobr>
+    </td>
+    <td><nobr>RESO</nobr>
+    </td>
+    <td><nobr>FIXE</nobr>
+    </td>
+    <td>gsmd doesn't receive AT reply from the modem properly.
+    </td>
+
+  </tr>
+
+  
+
+
+  
+
+  <tr class="bz_normal bz_P2 ">
+
+    <td>
+      <a href="show_bug.cgi?id=264">264</a>
+    </td>
+
+    <td><nobr>nor</nobr>
+    </td>
+    <td><nobr>P2</nobr>
+    </td>
+    <td><nobr>PC</nobr>
+    </td>
+    <td><nobr>mickey@vanille-media.de</nobr>
+    </td>
+    <td><nobr>NEW</nobr>
+    </td>
+    <td><nobr></nobr>
+    </td>
+    <td>package libelf-0.8.6-r0: task do_populate_staging: failed
+    </td>
+
+  </tr>
+
+  
+
+
+  
+
+  <tr class="bz_normal bz_P2 ">
+
+    <td>
+      <a href="show_bug.cgi?id=265">265</a>
+    </td>
+
+    <td><nobr>nor</nobr>
+    </td>
+    <td><nobr>P2</nobr>
+    </td>
+    <td><nobr>PC</nobr>
+    </td>
+    <td><nobr>mickey@vanille-media.de</nobr>
+    </td>
+    <td><nobr>NEW</nobr>
+    </td>
+    <td><nobr></nobr>
+    </td>
+    <td>MokoMakefile: perl-native fix
+    </td>
+
+  </tr>
+
+  
+
+
+  
+
+  <tr class="bz_normal bz_P2 ">
+
+    <td>
+      <a href="show_bug.cgi?id=266">266</a>
+    </td>
+
+    <td><nobr>nor</nobr>
+    </td>
+    <td><nobr>P2</nobr>
+    </td>
+    <td><nobr>PC</nobr>
+    </td>
+    <td><nobr>mickey@vanille-media.de</nobr>
+    </td>
+    <td><nobr>RESO</nobr>
+    </td>
+    <td><nobr>FIXE</nobr>
+    </td>
+    <td>ftdi-eeprom-native missing confuse-native dependency
+    </td>
+
+  </tr>
+
+  
+
+
+  
+
+  <tr class="bz_enhancement bz_P4 ">
+
+    <td>
+      <a href="show_bug.cgi?id=267">267</a>
+    </td>
+
+    <td><nobr>enh</nobr>
+    </td>
+    <td><nobr>P4</nobr>
+    </td>
+    <td><nobr>PC</nobr>
+    </td>
+    <td><nobr>buglog@lists.openmoko.org</nobr>
+    </td>
+    <td><nobr>RESO</nobr>
+    </td>
+    <td><nobr>FIXE</nobr>
+    </td>
+    <td>internal function duplicates strstr(3)
+    </td>
+
+  </tr>
+
+  
+
+
+  
+
+  <tr class="bz_normal bz_P2 ">
+
+    <td>
+      <a href="show_bug.cgi?id=268">268</a>
+    </td>
+
+    <td><nobr>nor</nobr>
+    </td>
+    <td><nobr>P2</nobr>
+    </td>
+    <td><nobr>PC</nobr>
+    </td>
+    <td><nobr>buglog@lists.openmoko.org</nobr>
+    </td>
+    <td><nobr>NEW</nobr>
+    </td>
+    <td><nobr></nobr>
+    </td>
+    <td>openmoko-today crashes when one of the buttons is pressed
+    </td>
+
+  </tr>
+
+  
+
+
+  
+
+  <tr class="bz_normal bz_P2 ">
+
+    <td>
+      <a href="show_bug.cgi?id=269">269</a>
+    </td>
+
+    <td><nobr>nor</nobr>
+    </td>
+    <td><nobr>P2</nobr>
+    </td>
+    <td><nobr>Neo</nobr>
+    </td>
+    <td><nobr>mickey@vanille-media.de</nobr>
+    </td>
+    <td><nobr>RESO</nobr>
+    </td>
+    <td><nobr>FIXE</nobr>
+    </td>
+    <td>openmoko-contacts-0.1+svnnow-r3_0_200703151745-do_unpack
+    </td>
+
+  </tr>
+
+  
+
+
+  
+
+  <tr class="bz_normal bz_P2 ">
+
+    <td>
+      <a href="show_bug.cgi?id=270">270</a>
+    </td>
+
+    <td><nobr>nor</nobr>
+    </td>
+    <td><nobr>P2</nobr>
+    </td>
+    <td><nobr>Neo</nobr>
+    </td>
+    <td><nobr>mickey@vanille-media.de</nobr>
+    </td>
+    <td><nobr>NEW</nobr>
+    </td>
+    <td><nobr></nobr>
+    </td>
+    <td>does our xserver need security updates?
+    </td>
+
+  </tr>
+
+  
+
+
+  
+
+  <tr class="bz_normal bz_P2 ">
+
+    <td>
+      <a href="show_bug.cgi?id=271">271</a>
+    </td>
+
+    <td><nobr>nor</nobr>
+    </td>
+    <td><nobr>P2</nobr>
+    </td>
+    <td><nobr>Neo</nobr>
+    </td>
+    <td><nobr>laforge@openmoko.org</nobr>
+    </td>
+    <td><nobr>NEW</nobr>
+    </td>
+    <td><nobr></nobr>
+    </td>
+    <td>It would be nice if ppp was supported by kernel
+    </td>
+
+  </tr>
+
+  
+
+
+  
+
+  <tr class="bz_normal bz_P2 ">
+
+    <td>
+      <a href="show_bug.cgi?id=272">272</a>
+    </td>
+
+    <td><nobr>nor</nobr>
+    </td>
+    <td><nobr>P2</nobr>
+    </td>
+    <td><nobr>Neo</nobr>
+    </td>
+    <td><nobr>mickey@vanille-media.de</nobr>
+    </td>
+    <td><nobr>RESO</nobr>
+    </td>
+    <td><nobr>FIXE</nobr>
+    </td>
+    <td>openmoko-contacts-0.1+svnnow-r3_0_200703152250-do_unpack
+    </td>
+
+  </tr>
+
+  
+
+
+  
+
+  <tr class="bz_normal bz_P2 ">
+
+    <td>
+      <a href="show_bug.cgi?id=273">273</a>
+    </td>
+
+    <td><nobr>nor</nobr>
+    </td>
+    <td><nobr>P2</nobr>
+    </td>
+    <td><nobr>Neo</nobr>
+    </td>
+    <td><nobr>mickey@vanille-media.de</nobr>
+    </td>
+    <td><nobr>RESO</nobr>
+    </td>
+    <td><nobr>FIXE</nobr>
+    </td>
+    <td>openmoko-contacts-0.1+svnnow-r3_0_200703160254-do_unpack
+    </td>
+
+  </tr>
+
+  
+
+
+  
+
+  <tr class="bz_normal bz_P2 ">
+
+    <td>
+      <a href="show_bug.cgi?id=274">274</a>
+    </td>
+
+    <td><nobr>nor</nobr>
+    </td>
+    <td><nobr>P2</nobr>
+    </td>
+    <td><nobr>Neo</nobr>
+    </td>
+    <td><nobr>mickey@vanille-media.de</nobr>
+    </td>
+    <td><nobr>RESO</nobr>
+    </td>
+    <td><nobr>FIXE</nobr>
+    </td>
+    <td>openmoko-contacts-0.1+svnnow-r3_0_200703160321-do_unpack
+    </td>
+
+  </tr>
+
+  
+
+
+  
+
+  <tr class="bz_normal bz_P2 ">
+
+    <td>
+      <a href="show_bug.cgi?id=275">275</a>
+    </td>
+
+    <td><nobr>nor</nobr>
+    </td>
+    <td><nobr>P2</nobr>
+    </td>
+    <td><nobr>Neo</nobr>
+    </td>
+    <td><nobr>mickey@vanille-media.de</nobr>
+    </td>
+    <td><nobr>RESO</nobr>
+    </td>
+    <td><nobr>FIXE</nobr>
+    </td>
+    <td>openmoko-contacts-0.1+svnnow-r3_0_200703160350-do_unpack
+    </td>
+
+  </tr>
+
+  
+
+
+  
+
+  <tr class="bz_normal bz_P3 ">
+
+    <td>
+      <a href="show_bug.cgi?id=276">276</a>
+    </td>
+
+    <td><nobr>nor</nobr>
+    </td>
+    <td><nobr>P3</nobr>
+    </td>
+    <td><nobr>Neo</nobr>
+    </td>
+    <td><nobr>songcw@fic-sh.com.cn</nobr>
+    </td>
+    <td><nobr>NEW</nobr>
+    </td>
+    <td><nobr></nobr>
+    </td>
+    <td>The open file window is too ugly
+    </td>
+
+  </tr>
+
+  
+
+
+  
+
+  <tr class="bz_normal bz_P2 ">
+
+    <td>
+      <a href="show_bug.cgi?id=277">277</a>
+    </td>
+
+    <td><nobr>nor</nobr>
+    </td>
+    <td><nobr>P2</nobr>
+    </td>
+    <td><nobr>Neo</nobr>
+    </td>
+    <td><nobr>mickey@vanille-media.de</nobr>
+    </td>
+    <td><nobr>RESO</nobr>
+    </td>
+    <td><nobr>FIXE</nobr>
+    </td>
+    <td>openmoko-contacts-0.1+svnnow-r3_0_200703160712-do_unpack
+    </td>
+
+  </tr>
+
+  
+
+
+  
+
+  <tr class="bz_normal bz_P2 ">
+
+    <td>
+      <a href="show_bug.cgi?id=278">278</a>
+    </td>
+
+    <td><nobr>nor</nobr>
+    </td>
+    <td><nobr>P2</nobr>
+    </td>
+    <td><nobr>Neo</nobr>
+    </td>
+    <td><nobr>mickey@vanille-media.de</nobr>
+    </td>
+    <td><nobr>RESO</nobr>
+    </td>
+    <td><nobr>FIXE</nobr>
+    </td>
+    <td>openmoko-contacts-0.1+svnnow-r3_0_200703160805-do_unpack
+    </td>
+
+  </tr>
+
+  
+
+
+  
+
+  <tr class="bz_normal bz_P2 ">
+
+    <td>
+      <a href="show_bug.cgi?id=279">279</a>
+    </td>
+
+    <td><nobr>nor</nobr>
+    </td>
+    <td><nobr>P2</nobr>
+    </td>
+    <td><nobr>Neo</nobr>
+    </td>
+    <td><nobr>buglog@lists.openmoko.org</nobr>
+    </td>
+    <td><nobr>RESO</nobr>
+    </td>
+    <td><nobr>FIXE</nobr>
+    </td>
+    <td>Appmanager crush when install packages
+    </td>
+
+  </tr>
+
+  
+
+
+  
+
+  <tr class="bz_normal bz_P2 ">
+
+    <td>
+      <a href="show_bug.cgi?id=280">280</a>
+    </td>
+
+    <td><nobr>nor</nobr>
+    </td>
+    <td><nobr>P2</nobr>
+    </td>
+    <td><nobr>Neo</nobr>
+    </td>
+    <td><nobr>songcw@fic-sh.com.cn</nobr>
+    </td>
+    <td><nobr>NEW</nobr>
+    </td>
+    <td><nobr></nobr>
+    </td>
+    <td>openmoko-appmanager not refresh the packages list after r...
+    </td>
+
+  </tr>
+
+  
+
+
+  
+
+  <tr class="bz_normal bz_P3 ">
+
+    <td>
+      <a href="show_bug.cgi?id=281">281</a>
+    </td>
+
+    <td><nobr>nor</nobr>
+    </td>
+    <td><nobr>P3</nobr>
+    </td>
+    <td><nobr>PC</nobr>
+    </td>
+    <td><nobr>buglog@lists.openmoko.org</nobr>
+    </td>
+    <td><nobr>NEW</nobr>
+    </td>
+    <td><nobr></nobr>
+    </td>
+    <td>implicit declaration of function `strdup'
+    </td>
+
+  </tr>
+
+  
+
+
+  
+
+  <tr class="bz_normal bz_P2 ">
+
+    <td>
+      <a href="show_bug.cgi?id=282">282</a>
+    </td>
+
+    <td><nobr>nor</nobr>
+    </td>
+    <td><nobr>P2</nobr>
+    </td>
+    <td><nobr>Neo</nobr>
+    </td>
+    <td><nobr>buglog@lists.openmoko.org</nobr>
+    </td>
+    <td><nobr>NEW</nobr>
+    </td>
+    <td><nobr></nobr>
+    </td>
+    <td>microSD Problem
     </td>
 
   </tr>
@@ -6933,7 +8197,7 @@ all_bugs = """<!-- 1.0@bugzilla.org -->
 
 
 
-228 bugs found.
+282 bugs found.
 
 
 <br>
@@ -6950,20 +8214,16 @@ all_bugs = """<!-- 1.0@bugzilla.org -->
 
 
   <form method="post" action="long_list.cgi">
-    <input type="hidden" name="buglist" value="1,2,4,5,7,8,9,10,11,12,13,14,15,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,96,97,98,99,100,101,102,103,104,105,106,107,108,109,110,111,112,113,114,115,116,117,118,119,120,121,122,123,124,125,126,127,128,129,130,131,132,133,134,135,136,137,138,139,140,141,142,143,144,145,146,147,148,149,150,151,152,153,154,155,156,157,158,159,160,161,162,163,164,165,166,167,168,169,170,171,172,173,174,175,176,177,178,179,180,181,182,183,184,185,186,187,188,189,190,192,194,195,196,197,198,199,200,201,202,205,206,207,208,209,210,211,213,214,215,216,217,218,219,220,221,222,223,224,225,226,227,228,229,230,231,233,234,235,236,237,238">
+    <input type="hidden" name="buglist" value="1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,96,97,98,99,100,101,102,103,104,105,106,107,108,109,110,111,112,113,114,115,116,117,118,119,120,121,122,123,124,125,126,127,128,129,130,131,132,133,134,135,136,137,138,139,140,141,142,143,144,145,146,147,148,149,150,151,152,153,154,155,156,157,158,159,160,161,162,163,164,165,166,167,168,169,170,171,172,173,174,175,176,177,178,179,180,181,182,183,184,185,186,187,188,189,190,191,192,193,194,195,196,197,198,199,200,201,202,203,204,205,206,207,208,209,210,211,212,213,214,215,216,217,218,219,220,221,222,223,224,225,226,227,228,229,230,231,232,233,234,235,236,237,238,239,240,241,242,243,244,245,246,247,248,249,250,251,252,253,254,255,256,257,258,259,260,261,262,263,264,265,266,267,268,269,270,271,272,273,274,275,276,277,278,279,280,281,282">
     <input type="submit" value="Long Format">
 
     <a href="query.cgi">Query Page</a> &nbsp;&nbsp;
     <a href="enter_bug.cgi">Enter New Bug</a> &nbsp;&nbsp;
-    <a href="colchange.cgi?product=OpenMoko">Change Columns</a> &nbsp;&nbsp;
+    <a href="colchange.cgi?short_desc_type=allwordssubstr&amp;short_desc=&amp;long_desc_type=allwordssubstr&amp;long_desc=&amp;bug_file_loc_type=allwordssubstr&amp;bug_file_loc=&amp;bug_status=UNCONFIRMED&amp;bug_status=NEW&amp;bug_status=ASSIGNED&amp;bug_status=REOPENED&amp;bug_status=RESOLVED&amp;bug_status=VERIFIED&amp;bug_status=CLOSED&amp;emailassigned_to1=1&amp;emailtype1=substring&amp;email1=&amp;emailassigned_to2=1&amp;emailreporter2=1&amp;emailcc2=1&amp;emailtype2=substring&amp;email2=&amp;bugidtype=include&amp;bug_id=&amp;votes=&amp;changedin=&amp;chfieldfrom=&amp;chfieldto=Now&amp;chfieldvalue=&amp;field0-0-0=noop&amp;type0-0-0=noop&amp;value0-0-0=">Change Columns</a> &nbsp;&nbsp;
 
-      <a href="buglist.cgi?product=OpenMoko&amp;order=bugs.bug_id&amp;tweak=1">Change Several 
-        Bugs at Once</a>
-      &nbsp;&nbsp;
 
-      <a href="mailto:stefan@openmoko.org,sean_mosko@fic.com.tw,songcw@fic-sh.com.cn,buglog@lists.openmoko.org,henryk@ploetzli.ch,davewu01@seed.net.tw,thomas@openedhand.com,ken_zhao@fic-sh.com.cn,gordon_hsu@fic-sh.com.cn,teddy@fic-sh.com.cn,marcel@holtmann.org,cj_steven@fic-sh.com.cn,mickey@vanille-media.de,laforge@openmoko.org,tonyguan@fic-sh.com.cn,sean_chiang@fic.com.tw,werner@openmoko.org,sunzhiyong@fic-sh.com.cn,graeme.gregory@wolfsonmicro.com">Send Mail to Bug Owners</a> &nbsp;&nbsp;
 
-    <a href="query.cgi?product=OpenMoko">Edit this Query</a> &nbsp;&nbsp;
+    <a href="query.cgi?short_desc_type=allwordssubstr&amp;short_desc=&amp;long_desc_type=allwordssubstr&amp;long_desc=&amp;bug_file_loc_type=allwordssubstr&amp;bug_file_loc=&amp;bug_status=UNCONFIRMED&amp;bug_status=NEW&amp;bug_status=ASSIGNED&amp;bug_status=REOPENED&amp;bug_status=RESOLVED&amp;bug_status=VERIFIED&amp;bug_status=CLOSED&amp;emailassigned_to1=1&amp;emailtype1=substring&amp;email1=&amp;emailassigned_to2=1&amp;emailreporter2=1&amp;emailcc2=1&amp;emailtype2=substring&amp;email2=&amp;bugidtype=include&amp;bug_id=&amp;votes=&amp;changedin=&amp;chfieldfrom=&amp;chfieldto=Now&amp;chfieldvalue=&amp;field0-0-0=noop&amp;type0-0-0=noop&amp;value0-0-0=">Edit this Query</a> &nbsp;&nbsp;
 
   </form>
 
@@ -6992,191 +8252,12 @@ all_bugs = """<!-- 1.0@bugzilla.org -->
 
 <form method="get" action="show_bug.cgi">
     <div class="group">
-        <a href="enter_bug.cgi">New</a> | <a href="query.cgi">Query</a> | <input type="submit" value="Find"> bug # <input name="id" size="6"> | <a href="reports.cgi">Reports</a> | <a href="votes.cgi?action=show_user">My Votes</a> 
+        <a href="enter_bug.cgi">New</a> | <a href="query.cgi">Query</a> | <input type="submit" value="Find"> bug # <input name="id" size="6"> | <a href="reports.cgi">Reports</a> 
     </div>
- 
-    <div class="group">
-        Edit <a href="userprefs.cgi">prefs</a> 
-        | <a href="relogin.cgi">Log&nbsp;out</a>&nbsp;&nbsp;freyther@yahoo.com
-    </div>
-
     
-    
-      
-    <div class="group">
-          Preset&nbsp;Queries:
-
-          <a href="buglist.cgi?bug_status=NEW&amp;bug_status=ASSIGNED&amp;bug_status=REOPENED&amp;email1=freyther%40yahoo.com&amp;emailtype1=exact&amp;emailassigned_to1=1&amp;emailreporter1=1">My&nbsp;Bugs</a>
-
-    </div>
-</form>
-</div>  
-
-</body>
-</html>
-"""
-
-no_bugs = """<!-- 1.0@bugzilla.org -->
-
-
-
-
-
-
-
-
-
-
-
-<!-- 1.0@bugzilla.org -->
-
-
-
-
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<html>
-  <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <title>Bug List</title>
-
-
-    
-    
-    
-    <link href="/style/style.css" rel="stylesheet" type="text/css" />
-    
-        <link href="/bugzilla/css/buglist.css" rel="stylesheet" type="text/css">
-  
-  </head>
-  
-
-
-  <body bgcolor="#FFFFFF" onload="">
-
-
-<!-- 1.0@bugzilla.org -->
-
-
-
-
-        <div id="header">
-                <a href="http://bugzilla.openmoko.org/cgi-bin/bugzilla/" id="site_logo"><img src="/style/images/openmoko_logo.png" alt="openmoko.org" /></a>
-                
-                <div id="main_navigation">
-                        <ul>
-                                <li><a href="http://www.openmoko.org/" class="nav_home"><span>Home</span></a></li>
-                                <li><a href="http://wiki.openmoko.org/" class="nav_wiki"><span>Wiki</span></a></li>
-                                <li><a href="http://bugzilla.openmoko.org/" class="nav_bugzilla selected"><span>Bugzilla</span></a></li>
-                                <li><a href="http://planet.openmoko.org/" class="nav_planet"><span>Planet</span></a></li>
-                                <li><a href="http://projects.openmoko.org/" class="nav_projects"><span>Projects</span></a></li>
-                                <li><a href="http://lists.openmoko.org/" class="nav_lists"><span>Lists</span></a></li>
-                        </ul>
-                </div>
+        <div>
+            <a href="createaccount.cgi">New&nbsp;Account</a> | <a href="query.cgi?GoAheadAndLogIn=1">Log&nbsp;In</a>
         </div>
-
-        <div class="page_title">
-                <strong>Bug List</strong> 
-        </div>
-    
- <div class="container">
-
-<div align="center">
-  <b>Tue Mar  6 20:13:26 CET 2007</b><br>
-
-
-    <a href="quips.cgi"><i>GOT THE MESSAGE OF no match
-</i></a>
-
-</div>
-
-
-<hr>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<!-- 1.0@bugzilla.org -->
-
-
-
-
-
-  Zarro Boogs found.
-  <p>
-    <a href="query.cgi">Query Page</a>
-    &nbsp;&nbsp;<a href="enter_bug.cgi">Enter New Bug</a>
-    <a href="query.cgi?short_desc_type=substring&amp;short_desc=foo+test+bug&amp;product=OpenMoko&amp;component=autobuilds">Edit this query</a>
-  </p>
-
-
-<br>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<!-- 1.0@bugzilla.org -->
-
-
-
-  
-
-  
-</div>
-
-<div class="footer">
-        <div class="group">This is <b>Bugzilla</b>: the Mozilla bug system.  For more information about what Bugzilla is and what it can do, see <a href="http://www.bugzilla.org/">bugzilla.org</a>.</div>
-        <!-- 1.0@bugzilla.org -->
-
-
-
-
-
-
-<form method="get" action="show_bug.cgi">
-        <div class="group">
-                <a href="enter_bug.cgi">New</a> | <a href="query.cgi">Query</a> | <input type="submit" value="Find"> bug # <input name="id" size="6"> | <a href="reports.cgi">Reports</a> | <a href="votes.cgi?action=show_user">My Votes</a> 
-        </div>
- 
-        <div class="group">
-        Edit <a href="userprefs.cgi">prefs</a> 
-        | <a href="relogin.cgi">Log&nbsp;out</a>&nbsp;&nbsp;freyther@yahoo.com
-        </div>
-
-    
-    
-      
-    <div class="group">
-                  Preset&nbsp;Queries:
-
-          <a href="buglist.cgi?bug_status=NEW&amp;bug_status=ASSIGNED&amp;bug_status=REOPENED&amp;email1=freyther%40yahoo.com&amp;emailtype1=exact&amp;emailassigned_to1=1&amp;emailreporter1=1">My&nbsp;Bugs</a>
-
-    </div>
 </form>
 </div>  
 
@@ -7185,7 +8266,14 @@ no_bugs = """<!-- 1.0@bugzilla.org -->
 """
 
 bugfinder =BugQueryExtractor()
-#bugfinder.feed(site)
-bugfinder.feed(all_bugs)
-#bugfinder.feed(no_bugs)
+bugfinder.feed(bugs_openmoko)
 print bugfinder.result()
+print len(bugfinder.result())
+
+seen_numbers = {}
+for (number,_) in bugfinder.result():
+    seen_numbers[number] = "Yes"
+
+for i in range(1,283):
+    if not seen_numbers.has_key(str(i)):
+        print "Not seen %d" % i

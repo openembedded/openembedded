@@ -15,6 +15,8 @@ def seppuku_spliturl(url):
     param = {}
     for par in query.split("&"):
         (key,value) = urllib.splitvalue(par)
+        if not key or len(key) == 0 or not value:
+            continue
         key = urllib.unquote(key)
         value = urllib.unquote(value)
         param[key] = value
@@ -65,10 +67,13 @@ def seppuku_find_bug_report_old():
             HTMLParser.__init__(self)
             self.state = self.STATE_NONE
             self.bugs = []
+            self.bug  = None
 
         def handle_starttag(self, tag, attr):
             if self.state == self.STATE_NONE and tag.lower() == "tr":
-                if len(attr) == 1 and attr[0] == ('class', 'bz_normal bz_P2 '):
+                if len(attr) == 1 and attr[0][0] == 'class' and \
+                    ('bz_normal' in attr[0][1] or 'bz_blocker' in attr[0][1] or 'bz_enhancement' in attr[0][1] or 'bz_major' in attr[0][1] or 'bz_minor' in attr[0][1] or 'bz_trivial' in attr[0][1] or 'bz_critical' in attr[0][1] or 'bz_wishlist' in attr[0][1]) \
+                    and 'bz_P' in attr[0][1]:
                     self.state = self.STATE_FOUND_TR
             elif self.state == self.STATE_FOUND_TR and tag.lower() == "td":
                 self.state += 1
@@ -78,6 +83,7 @@ def seppuku_find_bug_report_old():
                 if self.state != self.STATE_NONE:
                     self.bugs.append( (self.bug,self.status) )
                 self.state = self.STATE_NONE
+                self.bug  = None
             if self.state > 1 and tag.lower() == "td":
                 self.state += 1
 
@@ -89,7 +95,11 @@ def seppuku_find_bug_report_old():
                 return
 
             if self.state == self.STATE_FOUND_NUMBER:
-                self.bug = data
+                """
+                #1995 in bugs.oe.org has [SEC] additionally to the number and we want to ignore it
+                """
+                if not self.bug:
+                    self.bug = data
             elif self.state == self.STATE_FOUND_STATUS:
                 self.status = data
 
@@ -281,6 +291,7 @@ python seppuku_eventhandler() {
         else:
             print "Logged into the box"
 
+        file = None
         if name == "TaskFailed":
             bugname = "%(package)s-%(pv)s-%(pr)s-%(task)s" % { "package" : bb.data.getVar("PN", data, True),
                                                                "pv"      : bb.data.getVar("PV", data, True),
@@ -288,11 +299,11 @@ python seppuku_eventhandler() {
                                                                "task"    : e.task }
             log_file = glob.glob("%s/log.%s.*" % (bb.data.getVar('T', event.data, True), event.task))
             text     = "The package failed to build at %s" % bb.data.getVar('DATETIME', data, True) 
-            file     = open(log_file[0], 'r')
+            if len(log_file) != 0:
+                file     = open(log_file[0], 'r')
         elif name == "NoProvider":
             bugname = "noprovider for %s runtime: %s" % (event.getItem, event.getisRuntime)
             text    = "Please fix it"
-            file    = None
         else:
             assert False
 

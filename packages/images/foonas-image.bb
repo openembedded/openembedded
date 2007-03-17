@@ -2,48 +2,21 @@ DESCRIPTION = "Foonas image"
 LICENSE = "GPL"
 PR = "r0"
 
-DEPENDS = "${MACHINE_TASK_PROVIDER}"
-EXTRA_IMAGECMD_turbostation = "--big-endian"
-EXTRA_IMAGECMD_n2100 = "--little-endian"
-EXTRA_IMAGECMD_jffs2 += " --eraseblock=${ERASEBLOCK_SIZE} -D ${SLUGOS_DEVICE_TABLE}"
-IMAGE_LINGUAS = ""
+inherit image
 
-# This is passed to the image command to build the correct /dev
-# directory (because only the image program can make actual
-# dev entries!)
-SLUGOS_DEVICE_TABLE = "${@bb.which(bb.data.getVar('BBPATH', d, 1), 'files/device_table-slugos.txt')}"
+DEPENDS = "${MACHINE_TASK_PROVIDER} makedevs-native mtd-utils-native"
+DEPENDS_n2100 += "openssl-native"
 
-# IMAGE_PREPROCESS_COMMAND is run before making the image.
-# We use this to do a few things:
-# . remove the uImage, which is in a separate part of the flash already.
-# . adjust the default run level (sysvinit is 5 by default, we like 3)
-# . set a default root password, which is no more secure than a blank one
-#	(since it is documented, in case you were wondering)
-# . make the boot more verbose
-#
+
+IMAGE_POSTPROCESS_COMMAND += "${PACK_IMAGE}"
+PACK_IMAGE_DEPENDS = ""
+PACK_IMAGE = '${MACHINE}_pack_image;'
 IMAGE_PREPROCESS_COMMAND += "sed -i -es,^id:5:initdefault:,id:3:initdefault:, ${IMAGE_ROOTFS}/etc/inittab;"
 IMAGE_PREPROCESS_COMMAND += "sed -i -es,^root::0,root:BTMzOOAQfESg6:0, ${IMAGE_ROOTFS}/etc/passwd;"
 IMAGE_PREPROCESS_COMMAND += "sed -i -es,^VERBOSE=no,VERBOSE=very, ${IMAGE_ROOTFS}/etc/default/rcS;"
-
-# Always just make a new flash image.
-PACK_IMAGE = '${MACHINE}_pack_image;'
-IMAGE_POSTPROCESS_COMMAND += "${PACK_IMAGE}"
-PACK_IMAGE_DEPENDS = ""
-#EXTRA_IMAGEDEPENDS += "${PACK_IMAGE_DEPENDS}"
-
-# These depends define native utilities - they do not get put in the flash and
-# are not required to build the image.
-IMAGE_TOOLS = ""
-#EXTRA_IMAGEDEPENDS += "${IMAGE_TOOLS}"
-
-FOONAS_SUPPORT += "diffutils cpio findutils udev"
-FOONAS_SUPPORT_turbostation += "uboot-utils"
-
-# this gets /lib/modules made....
-FOONAS_KERNEL_turbostation = "kernel-module-ext3 kernel-module-minix \
-			kernel-module-usb-storage"
-
-FOONAS_KERNEL_n2100 = "kernel-module-ext2 kernel-module-usb-storage"
+FOONAS_DEVICE_TABLE = "${@bb.which(bb.data.getVar('BBPATH', d, 1), 'files/device_table-slugos.txt')}"
+EXTRA_IMAGECMD_jffs2 += " --eraseblock=${ERASEBLOCK_SIZE} -D ${FOONAS_DEVICE_TABLE}"
+IMAGE_LINGUAS = ""
 
 RDEPENDS = " \
 	base-files base-passwd netbase \
@@ -51,7 +24,7 @@ RDEPENDS = " \
         update-modules sysvinit tinylogin \
 	module-init-tools-depmod modutils-initscripts \
         ipkg-collateral ipkg ipkg-link \
-	libgcc1 \
+	libgcc1 diffutils cpio findutils\
 	portmap \
 	dropbear \
 	e2fsprogs-blkid \
@@ -63,8 +36,6 @@ RDEPENDS = " \
 	${FOONAS_KERNEL} "
 
 PACKAGE_INSTALL = "${RDEPENDS}"
-
-inherit image
 
 # At this point you have to make a ${MACHINE}_pack_image for your machine.
 

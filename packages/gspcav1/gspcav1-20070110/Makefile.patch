@@ -1,0 +1,11 @@
+--- gspcav1-20070110/Makefile.orig	2007-03-16 23:20:18.000000000 +0000
++++ gspcav1-20070110/Makefile	2007-03-16 23:20:44.000000000 +0000
+@@ -41,7 +41,7 @@
+ MODULE_INSTALLDIR2 = /lib/modules/$(KERNEL_VERSION)/kernel/drivers/media/video/
+ 
+ default:
+-	$(MAKE) -C $(KERNELDIR) SUBDIRS=$(PWD) CC=$(CC) modules
++	$(MAKE) -C $(KERNELDIR) SUBDIRS=$(PWD) CC="$(CC)" modules
+ 
+ install:
+ 	mkdir -p $(MODULE_INSTALLDIR)
