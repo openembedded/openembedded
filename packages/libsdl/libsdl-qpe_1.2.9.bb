@@ -3,10 +3,10 @@ SECTION = "opie/libs"
 PRIORITY = "optional"
 DEPENDS = "virtual/libqpe1 libopie2"
 PROVIDES = "virtual/libsdl"
+RPROVIDES = "libsdl-1.2-0"
 LICENSE = "LGPL"
 
-# NOTE: make sure to keep PR in sync with libsdl-x11
-PR = "r0"
+PR = "r2"
 
 SRC_URI = "http://www.libsdl.org/release/SDL-${PV}.tar.gz \
            file://agawa-piro-mickey-1.2.9.patch;patch=1 \
@@ -32,6 +32,8 @@ EXTRA_OECONF = "--disable-static --disable-debug --enable-cdrom --enable-threads
 
 FILES_${PN} = "${libdir}/lib*.so.*"
 FILES_${PN}-dev += "${bindir}/*config"
+DEBIAN_NOAUTONAME_${PN} = "1"
+DEBIAN_NOAUTONAME_${PN}-dbg = "1"
 
 do_compile_prepend() {
         rm -f ${S}/acinclude.m4
