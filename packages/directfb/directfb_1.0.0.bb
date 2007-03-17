@@ -10,24 +10,23 @@ DEPENDS = "jpeg libpng freetype zlib tslib"
 PR = "r1"
 RV = "1.0-0"
 
-SRC_URI = "http://www.directfb.org/download/DirectFB/DirectFB-1.0.0-rc3.tar.gz \
-           file://fix-pkgconfig-specs.patch;patch=1 \
+SRC_URI = "http://www.directfb.org/download/DirectFB/DirectFB-${PV}.tar.gz \
+           file://fix-pkgconfig-cflags.patch;patch=1 \
 	   file://mkdfiff.patch;patch=1"
 
-S = "${WORKDIR}/DirectFB-1.0.0-rc3"
+S = "${WORKDIR}/DirectFB-1.0.0"
 
 LDFLAGS_append =" -lts -lm"
 
 inherit autotools pkgconfig
 
-EXTRA_OECONF = "--with-gfxdrivers=none --enable-libmpeg3=no --enable-freetype=yes --enable-sdl=no"
-PARALLEL_MAKE = ""
+EXTRA_OECONF = "--with-gfxdrivers=none \
+		--enable-libmpeg3=no \
+		--enable-freetype=yes \
+		--enable-sdl=no \
+		"
 
 do_stage() {
-	autotools_stage_all
-}
-
-do_install() {
         oe_runmake 'DESTDIR=${D}' install
 }
 
@@ -45,5 +44,5 @@ FILES_directfb_append = " ${libdir}/directfb-${RV}/systems/*.so \
                           ${libdir}/directfb-${RV}/inputdrivers/*.so \
                           ${libdir}/directfb-${RV}/interfaces/*/*.so \
                           ${libdir}/directfb-${RV}/wm/*.so \
-                          ${datadir}/directfb-1.0.0-rc3 \
+                          ${datadir}/directfb-1.0.0 \
 			  "
