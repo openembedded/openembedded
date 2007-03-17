@@ -345,7 +345,7 @@ mv fixed.recipe.bb myrecipe.bb</screen></para>
         <para>The PR value should never be decremented. If you accidentally
         submit a large PR value for example then it should be left at the
         value and just increased for new releases, not reset back to a lower
-        version. </para>
+        version.</para>
       </note></para>
 
     <para>When a recipe is being processed some variables are automatically
@@ -2155,13 +2155,79 @@ NOTE: package helloworld-0.1-r0: task do_package: completed</screen>Except in
     <section>
       <title>Debian naming</title>
 
-      <para>This section is to be completed</para>
+      <para>A special <emphasis>debian library name</emphasis> policy can be
+      applied for packages that contain a single shared library. When enabled
+      packages will be renamed to match the debian policy for such
+      packages.</para>
 
-      <itemizedlist>
-        <listitem>
-          <para>inherit += "debian"</para>
-        </listitem>
-      </itemizedlist>
+      <para>Debian naming is enabled by including the debian class via either
+      <command>local.conf</command> or your distributions configuration
+      file:<screen>INHERIT += "debian"</screen></para>
+
+      <para>The policy works by looking at the shared library name and version
+      and will automatically rename the package to
+      <emphasis>&lt;libname&gt;&lt;lib-major-version&gt;</emphasis>. For
+      example if the package name (PN) is <command>foo</command> and the
+      package ships a file named <command>libfoo.so.1.2.3</command> then the
+      package will be renamed to <command>libfoo1</command> to follow the
+      debian policy.</para>
+
+      <para>If we look at the <emphasis>lzo_1.08.bb</emphasis> recipe,
+      currently at release 14, it generates a package containing a single
+      shared library :<screen>~oe/build/titan-glibc-25%&gt; find tmp/work/lzo-1.08-r14/install/
+tmp/work/lzo-1.08-r14/install/lzo
+tmp/work/lzo-1.08-r14/install/lzo/usr
+tmp/work/lzo-1.08-r14/install/lzo/usr/lib
+tmp/work/lzo-1.08-r14/install/lzo/usr/lib/liblzo.so.1
+tmp/work/lzo-1.08-r14/install/lzo/usr/lib/liblzo.so.1.0.0</screen>Without
+      debian naming this package would have been called
+      <command>lzo_1.08-r14_sh4.ipk</command> (and the corresponding dev and
+      dbg packages would have been called
+      <command>lzo-dbg_1.08-r14_sh4.ipk</command> and
+      <command>lzo-dev_1.08-r14_sh4.ipk</command>). However with debian naming
+      enabled the package is renamed based on the name of the shared library,
+      which is <command>liblzo.so.1.0.0</command> in this case. So the name
+      <command>lzo</command> is replaced with
+      <command>liblzo1</command>:<screen>~oe/build/titan-glibc-25%&gt; find tmp/deploy/ipk/ -name '*lzo*'  
+tmp/deploy/ipk/sh4/liblzo1_1.08-r14_sh4.ipk
+tmp/deploy/ipk/sh4/liblzo-dev_1.08-r14_sh4.ipk
+tmp/deploy/ipk/sh4/liblzo-dbg_1.08-r14_sh4.ipk</screen></para>
+
+      <para>Some variables are available which effect the operation of the
+      debian renaming class:</para>
+
+      <variablelist>
+        <varlistentry>
+          <term>LEAD_SONAME</term>
+
+          <listitem>
+            <para>If the package actually contains multiple shared libraries
+            then one will be selected automatically and a warning will be
+            generated. This variable is a regular expression which is used to
+            select which shared library from those available is to be used for
+            debian renaming.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>DEBIAN_NOAUTONAME_&lt;pkgname&gt;</term>
+
+          <listitem>
+            <para>If this variable is set to 1 for a package then debian
+            renaming will not be applied for the package.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>AUTO_LIBNAME_PKGS</term>
+
+          <listitem>
+            <para>If set this variable specifies the prefix of packages which
+            will be subject to debian renaming. This can be used to prevent
+            all of the packages being renamed via the renaming policy.</para>
+          </listitem>
+        </varlistentry>
+      </variablelist>
     </section>
 
     <section>
