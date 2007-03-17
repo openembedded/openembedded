@@ -1,7 +1,8 @@
-DESCRIPTION = "Equivalent for Expenses on the Palm. Supports payment types, categories, expense types (mileage, meals, parking, etc.), notes, currency selection etc."
+DESCRIPTION = "Simple expense record keeper for GPE. Equivalent for Expenses on the Palm."
+AUTHOR = "Neil Williams"
+HOMEPAGE = "http://gpe-expenses.sf.net"
 LICENSE = "GPL"
-
-DEPENDS = "qof libgpewidget"
+DEPENDS = "qof libgpewidget popt-native libgpepimc"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/${PN}/${P}.tar.gz \
 	  "
