@@ -5,12 +5,24 @@ PR = "r0"
 inherit image
 
 DEPENDS = "${MACHINE_TASK_PROVIDER} makedevs-native mtd-utils-native"
+
+# Various defines for Thecus N2100
 DEPENDS_n2100 += "openssl-native"
+EXTRA_IMAGECMD_n2100 = "--little-endian"
+ERASEBLOCK_SIZE_n2100 = "0x20000"
+IMAGE_FSTYPES_n2100 = "jffs2"
+IMAGE_POSTPROCESS_COMMAND_n2100 += '${MACHINE}_pack_image;'
 
+# Various defines for QNAP Turbostation TS[12]01
+EXTRA_IMAGECMD_turbostation = "--big-endian"
+ERASEBLOCK_SIZE_turbostation = "0x20000"
+IMAGE_FSTYPES_turbostation = "jffs2"
+IMAGE_POSTPROCESS_COMMAND_turbostation += '${MACHINE}_pack_image;'
 
-IMAGE_POSTPROCESS_COMMAND += "${PACK_IMAGE}"
-PACK_IMAGE_DEPENDS = ""
-PACK_IMAGE = '${MACHINE}_pack_image;'
+# Various defines for Buffalo Linkstations
+IMAGE_POSTPROCESS_COMMAND_lsppchd += ""
+IMAGE_POSTPROCESS_COMMAND_lsppchg += "${IMAGE_POSTPROCESS_COMMAND_lsppchd}"
+
 IMAGE_PREPROCESS_COMMAND += "sed -i -es,^id:5:initdefault:,id:3:initdefault:, ${IMAGE_ROOTFS}/etc/inittab;"
 IMAGE_PREPROCESS_COMMAND += "sed -i -es,^root::0,root:BTMzOOAQfESg6:0, ${IMAGE_ROOTFS}/etc/passwd;"
 IMAGE_PREPROCESS_COMMAND += "sed -i -es,^VERBOSE=no,VERBOSE=very, ${IMAGE_ROOTFS}/etc/default/rcS;"
