@@ -3,9 +3,8 @@ DESCRIPTION = "A server-side, HTML-embedded scripting language. This package pro
 LICENSE = "PHP"
 DEPENDS = "zlib libxml2 mysql libiconv"
 SRC_URI = "http://us2.php.net/distributions/php-${PV}.tar.bz2\
-	       	file://autotools.patch;patch=1 \
-		file://acinclude-xml2-config.patch;patch=1 \
 	 "
+
 S = "${WORKDIR}/php-${PV}"
 PR = "r0"
 
@@ -15,6 +14,7 @@ export THREADS="pthread"
 export LIBS=" -lpthread "
 
 CFLAGS += " -DPTYS_ARE_GETPT -DPTYS_ARE_SEARCHED"
+
 EXTRA_OECONF = "    --without-iconv \
  		    --enable-discard-path \
 		    --enable-sockets \
@@ -30,6 +30,12 @@ export LD_LIBRARY_PATH = "${STAGING_LIBDIR}"
 #DEPENDS += " php-native"
 
 acpaths = ""
+
+do_configure () {
+	autoreconf
+ac_cv_php_xml2_config_path=${STAGING_BINDIR_CROSS}/xml2-config oe_runconf
+}
+
 
 do_configure_append() {
     find ${S} -type f | xargs sed -i 's:I/usr/include:I${STAGING_INCDIR}:g'
