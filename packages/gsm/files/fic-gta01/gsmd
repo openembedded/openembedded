@@ -21,7 +21,7 @@ prog="gsmd"
 start() {
 	# FIXME add check whether GSM_POW is set at all, otherwise don't try to power on
 	# Power on GSM device
-	if [ -e "${GSM_POW} ]
+	if [ -e "${GSM_POW}" ]
 	then
 		echo -n "Powering up GSM device..."
 		echo "1" > ${GSM_POW}
