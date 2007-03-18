@@ -6,23 +6,6 @@ inherit image
 
 DEPENDS = "${MACHINE_TASK_PROVIDER} makedevs-native mtd-utils-native"
 
-# Various defines for Thecus N2100
-DEPENDS_n2100 += "openssl-native"
-EXTRA_IMAGECMD_n2100 = "--little-endian"
-ERASEBLOCK_SIZE_n2100 = "0x20000"
-IMAGE_FSTYPES_n2100 = "jffs2"
-IMAGE_POSTPROCESS_COMMAND_n2100 += '${MACHINE}_pack_image;'
-
-# Various defines for QNAP Turbostation TS[12]01
-EXTRA_IMAGECMD_turbostation = "--big-endian"
-ERASEBLOCK_SIZE_turbostation = "0x20000"
-IMAGE_FSTYPES_turbostation = "jffs2"
-IMAGE_POSTPROCESS_COMMAND_turbostation += '${MACHINE}_pack_image;'
-
-# Various defines for Buffalo Linkstations
-IMAGE_POSTPROCESS_COMMAND_lsppchd += ""
-IMAGE_POSTPROCESS_COMMAND_lsppchg += "${IMAGE_POSTPROCESS_COMMAND_lsppchd}"
-
 IMAGE_PREPROCESS_COMMAND += "sed -i -es,^id:5:initdefault:,id:3:initdefault:, ${IMAGE_ROOTFS}/etc/inittab;"
 IMAGE_PREPROCESS_COMMAND += "sed -i -es,^root::0,root:BTMzOOAQfESg6:0, ${IMAGE_ROOTFS}/etc/passwd;"
 IMAGE_PREPROCESS_COMMAND += "sed -i -es,^VERBOSE=no,VERBOSE=very, ${IMAGE_ROOTFS}/etc/default/rcS;"
@@ -37,78 +20,11 @@ RDEPENDS = " \
 	module-init-tools-depmod modutils-initscripts \
         ipkg-collateral ipkg ipkg-link \
 	libgcc1 diffutils cpio findutils\
-	portmap \
-	dropbear \
-	e2fsprogs-blkid \
-	mdadm \
-	hdparm \
-	mtd-utils \
-	udev \
+	portmap dropbear e2fsprogs-blkid \
+	mdadm hdparm mtd-utils udev \
 	${FOONAS_SUPPORT} \
 	${FOONAS_KERNEL} "
 
 PACKAGE_INSTALL = "${RDEPENDS}"
 
-# At this point you have to make a ${MACHINE}_pack_image for your machine.
-
-turbostation_pack_image() {
-	# find latest kernel
-	KERNEL=`ls -tr ${DEPLOY_DIR_IMAGE}/uImage* | tail -1`
-	if [ -z "$KERNEL" ]; then
-		oefatal "No kernel found in ${DEPLOY_DIR_IMAGE}. Bitbake linux-turbostation to create one."
-		exit 1
-	fi
-	ROOTFS=${DEPLOY_DIR_IMAGE}/${IMAGE_NAME}.rootfs.jffs2
-	OUTPUT=${DEPLOY_DIR_IMAGE}/${IMAGE_NAME}.flash.img
-	PADFILE=${DEPLOY_DIR_IMAGE}/padfile.zzz
-	HEX_MAX_KERN_SIZE=200000
-	DEC_MAX_KERN_SIZE=`echo "ibase=16; $HEX_MAX_KERN_SIZE" | bc `
-	HEX_MAX_ROOT_SIZE=D00000
-	DEC_MAX_ROOT_SIZE=`echo "ibase=16; $HEX_MAX_ROOT_SIZE" | bc `
-	KERNEL_SIZE=`ls -l $KERNEL | awk '{print $5}'`
-	if [ $KERNEL_SIZE -gt $DEC_MAX_KERN_SIZE ]; then
-	        oefatal "Kernel too large at $KERNEL_SIZE bytes.  Max is $DEC_MAX_KERN_SIZE."
-		exit 1
-	fi
-	ROOT_SIZE=`ls -l $ROOTFS | awk '{print $5}'`
-	if [ $ROOT_SIZE -gt $DEC_MAX_ROOT_SIZE ]; then
-		oefatal "Rootfs is too large at $ROOT_SIZE bytes.  Max is $DEC_MAX_ROOT_SIZE."
-		exit 1
-	fi
-	PAD_SIZE=`echo "$DEC_MAX_KERN_SIZE - $KERNEL_SIZE" | bc `
-	dd if=/dev/zero of=$PADFILE bs=$PAD_SIZE count=1 2>>/dev/null
-	cat $KERNEL $PADFILE $ROOTFS > $OUTPUT
-	rm -f $PADFILE
-	ls -l $OUTPUT
-}
-
-n2100_pack_image() {
-        # find latest kernel
-        KERNEL=`ls -tr ${DEPLOY_DIR_IMAGE}/zImage* | tail -1`
-        if [ -z "$KERNEL" ]; then
-                oefatal "No kernel found in ${DEPLOY_DIR_IMAGE}. Bitbake linux to create one."
-                exit 1
-        fi
-        ROOTFS=${DEPLOY_DIR_IMAGE}/${IMAGE_NAME}.rootfs.jffs2
-        OUTPUT=${DEPLOY_DIR_IMAGE}/${IMAGE_NAME}.flash.img
-        PADFILE=${DEPLOY_DIR_IMAGE}/padfile.zzz
-        HEX_MAX_KERN_SIZE=1C0000
-        DEC_MAX_KERN_SIZE=`echo "ibase=16; $HEX_MAX_KERN_SIZE" | bc `
-        HEX_MAX_ROOT_SIZE=DC0000
-        DEC_MAX_ROOT_SIZE=`echo "ibase=16; $HEX_MAX_ROOT_SIZE" | bc `
-        KERNEL_SIZE=`ls -l $KERNEL | awk '{print $5}'`
-        if [ $KERNEL_SIZE -gt $DEC_MAX_KERN_SIZE ]; then
-                oefatal "Kernel too large at $KERNEL_SIZE bytes.  Max is $DEC_MAX_KERN_SIZE."
-                exit 1
-        fi
-        ROOT_SIZE=`ls -l $ROOTFS | awk '{print $5}'`
-        if [ $ROOT_SIZE -gt $DEC_MAX_ROOT_SIZE ]; then
-                oefatal "Rootfs is too large at $ROOT_SIZE bytes.  Max is $DEC_MAX_ROOT_SIZE."
-                exit 1
-        fi
-        PAD_SIZE=`echo "$DEC_MAX_KERN_SIZE - $KERNEL_SIZE" | bc `
-        dd if=/dev/zero of=$PADFILE bs=$PAD_SIZE count=1 2>>/dev/null
-        cat $KERNEL $PADFILE $ROOTFS > $OUTPUT
-        rm -f $PADFILE
-        ls -l $OUTPUT
-}
+inherit n2100-image turbostation-image lsppchg-image lsppchd-image
