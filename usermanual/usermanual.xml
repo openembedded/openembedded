@@ -17,6 +17,7 @@
 <!ENTITY class-pkgconfig SYSTEM "reference/class_pkgconfig.xml">
 <!ENTITY class-rootfs_ipkg SYSTEM "reference/class_rootfs_ipkg.xml">
 <!ENTITY var-section SYSTEM "reference/var_section.xml">
+<!ENTITY class-siteinfo SYSTEM "reference/class_siteinfo.xml">
 <!ENTITY var-src-uri SYSTEM "reference/var_src_uri.xml">
 <!ENTITY class-update-alternatives SYSTEM "reference/class_update-alternatives.xml">
 <!ENTITY class-update-rcd SYSTEM "reference/class_update-rc.d.xml">
@@ -864,6 +865,8 @@ NOTE: Couldn't find shared library provider for libm.so.6
     &class-rootfs_ipkg;
 
     &var-section;
+
+    &class-siteinfo;
 
     &var-src-uri;
 
