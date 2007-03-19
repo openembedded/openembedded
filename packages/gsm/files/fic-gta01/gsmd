@@ -48,7 +48,7 @@ start() {
 	if [ -e "${GSM_DEV}" ]
 	then
 		chown uucp.uucp ${GSM_DEV}
-		mkdir -fp /usr/spool/uucp
+		mkdir -p /usr/spool/uucp
 		chown uucp.uucp /usr/spool/uucp
 		stty -F /dev/ttySAC0 crtscts
 		gsmd -p ${GSM_DEV} ${GSMD_OPTS} >/tmp/gsm.log 2>&1 &
