@@ -1,0 +1,27 @@
+diff -uNr orig-drivers/net/fec_mpc52xx/fec.c drivers/net/fec_mpc52xx/fec.c
+--- /orig-drivers/net/fec_mpc52xx/fec.c	2007-03-10 13:34:46.000000000 +0200
++++ /drivers/net/fec_mpc52xx/fec.c	2007-03-10 13:45:45.000000000 +0200
+@@ -525,7 +525,7 @@
+ 	priv->phy_speed = ((bd->bi_ipbfreq >> 20) / 5) << 1;
+ #endif
+ 
+-	fec_restart(dev, 0);	/* always use half duplex mode only */
++	fec_restart(dev, 1);	/* always use full duplex mode only */
+ 	/*
+ 	 * Read MIB counters in order to reset them,
+ 	 * then zero all the stats fields in memory
+diff -uNr orig-drivers/net/fec_mpc52xx/fec_phy.c drivers/net/fec_mpc52xx/fec_phy.c
+--- /orig-drivers/net/fec_mpc52xx/fec_phy.c	2007-03-10 13:34:47.000000000 +0200
++++ /drivers/net/fec_mpc52xx/fec_phy.c	2007-03-10 13:44:56.000000000 +0200
+@@ -227,8 +227,8 @@
+ 	"GENERIC",
+ 
+ 	(const phy_cmd_t []) {	/* config */
+-		/* advertise only half-duplex capabilities */
+-		{ mk_mii_write(MII_ADVERTISE, MII_ADVERTISE_HALF),
++		/* advertise only full-duplex capabilities */
++               { mk_mii_write(MII_ADVERTISE, MII_ADVERTISE_ALL), 
+ 			mii_parse_anar },
+ 
+ 		/* enable auto-negotiation */
+
