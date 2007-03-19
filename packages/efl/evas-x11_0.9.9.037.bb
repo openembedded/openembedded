@@ -1,6 +1,6 @@
 require evas.inc
 DEPENDS += "edb virtual/libx11 libxext freetype"
-PR = "r7"
+PR = "r8"
 
 EXTRA_OECONF = "--x-includes=${STAGING_INCDIR}/X11  \
 		--x-libraries=${STAGING_LIBDIR} \
