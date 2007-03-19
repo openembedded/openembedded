@@ -6,11 +6,8 @@
 # description: Gsmd manages access to a serial- or USB-connected GSM
 # processname: gsmd
 
-# If you must specify special options, uncomment and modify the next line
-GSMD_OPTS="-s 115200 -F"
-# If your GSM device needs to be powered up, uncommend and modify the next line
-GSM_POW="/sys/bus/platform/devices/gta01-pm-gsm.0/power_on"
-GSM_DEV="/dev/ttySAC0"
+# Source configuration
+. /etc/default/gsmd
 
 # Source function library.
 #. /etc/rc.d/init.d/functions
@@ -47,10 +44,7 @@ start() {
 	#
 	if [ -e "${GSM_DEV}" ]
 	then
-		chown uucp.uucp ${GSM_DEV}
-		mkdir -p /usr/spool/uucp
-		chown uucp.uucp /usr/spool/uucp
-		stty -F /dev/ttySAC0 crtscts
+		stty -F ${GSM_DEV} crtscts
 		gsmd -p ${GSM_DEV} ${GSMD_OPTS} >/tmp/gsm.log 2>&1 &
 		echo "success"
 	else

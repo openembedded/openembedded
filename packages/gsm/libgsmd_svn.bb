@@ -7,7 +7,8 @@ PV = "0.0+svn${SRCDATE}"
 PR = "r6"
 
 SRC_URI = "svn://svn.openmoko.org/trunk/src/target;module=gsm;proto=http \
-           file://gsmd"
+           file://gsmd \
+           file://default"
 S = "${WORKDIR}/gsm"
 
 inherit autotools pkgconfig update-rc.d
@@ -22,6 +23,8 @@ do_stage() {
 do_install_append() {
 	install -d ${D}/${sysconfdir}/init.d
 	install -m 0755 ${WORKDIR}/gsmd ${D}/${sysconfdir}/init.d/
+	install -d ${D}/${sysconfdir}/default
+	install ${WORKDIR}/default ${D}/${sysconfdir}/default/gsmd
 }
 
 PACKAGES =+ "${PN}-tools gsmd"
