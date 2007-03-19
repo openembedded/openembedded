@@ -1,7 +1,7 @@
 DESCRIPTION = "E17 - the Enlightenment Window Mananger"
 DEPENDS = "evas-x11 ecore-x11 edje eet embryo"
 LICENSE = "MIT"
-PR = "r4"
+PR = "r5"
 
 inherit e update-alternatives
 
@@ -23,7 +23,9 @@ EXTRA_OECONF = "--with-profile=${PROFILE} \
                 --x-includes=${STAGING_INCDIR}/X11 \
                 --x-libraries=${STAGING_LIBDIR}"
 
-FILES_${PN} = "${bindir}/* ${libdir}/* ${datadir} ${sysconfdir}"
+FILES_${PN} = "${bindir}/* ${libdir}/enlightenment/modules/*/*.edj ${libdir}/enlightenment/modules/*/*.desktop ${libdir}/enlightenment/modules/*/*/*.so ${libdir}/enlightenment/preload/*.so ${datadir} ${sysconfdir} ${libdir}/enlightenment/modules/cpufreq/*/freqset"
+FILES_${PN}-dev += "${libdir}/enlightenment/modules/*/*/*.a ${libdir}/enlightenment/modules/*/*/*.la ${libdir}/enlightenment/preload/*.a ${libdir}/enlightenment/preload/*.la"
+FILES_${PN}-dbg += "${libdir}/enlightenment/modules/*/*/.debug/ ${libdir}/enlightenment/preload/.debug/"
 
 do_compile_prepend() {
         find ${S} -name Makefile | xargs sed -i 's:/usr/include:${STAGING_INCDIR}:'

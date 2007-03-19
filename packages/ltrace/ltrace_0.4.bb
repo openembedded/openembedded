@@ -6,7 +6,8 @@ LICENSE = "GPL"
 PR = "r0"
 
 SRC_URI = "ftp://ftp.debian.org/debian/pool/main/l/ltrace/ltrace_0.4.orig.tar.gz \
-           ftp://ftp.debian.org/debian/pool/main/l/ltrace/ltrace_0.4-1.diff.gz;patch=1"
+           ftp://ftp.debian.org/debian/pool/main/l/ltrace/ltrace_0.4-1.diff.gz;patch=1 \
+           file://no-usr-include.patch;patch=1"
 inherit autotools
 
 PARALLEL_MAKE = ""
