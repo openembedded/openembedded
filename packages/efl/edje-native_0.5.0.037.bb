@@ -13,7 +13,7 @@ do_configure_prepend() {
 }
 
 do_stage_append() {
-	edje_data_dir=`${STAGING_BINDIR}/edje-config-native --datadir`
+	edje_data_dir=`edje-config --datadir`
 	# could also use ${STAGING_DATADIR}/edje/include
 	install -d $edje_data_dir/include
 	install -m 0644 data/include/edje.inc $edje_data_dir/include
