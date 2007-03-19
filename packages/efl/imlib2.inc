@@ -47,10 +47,12 @@ do_install() {
         done
 }
 
-PACKAGES =+ "imlib2-loaders imlib2-filters"
+PACKAGES =+ "imlib2-loaders-dbg imlib2-filters-dbg imlib2-loaders imlib2-filters"
 FILES_${PN} = "${libdir}/lib*.so.* ${libdir}/imlib2/*/*.so"
-FILES_${PN}-dbg = "${libdir}/imlib2/*/.debug ${libdir}/.debug/"
+FILES_${PN}-dbg = "${libdir}/.debug/"
 FILES_${PN}-dev += "${bindir}/imlib2-config ${libdir}/*.so ${includedir}"
 FILES_imlib2-bin = "${bindir}"
 FILES_imlib2-loaders = "${libdir}/imlib2/loaders/*.so"
 FILES_imlib2-filters = "${libdir}/imlib2/filters/*.so"
+FILES_imlib2-loaders-dbg += "${libdir}/imlib2/loaders/.debug"
+FILES_imlib2-filters-dbg += "${libdir}/imlib2/filters/.debug"
