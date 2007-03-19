@@ -1,0 +1,28 @@
+DESCRIPTION = "Python GTK+ Bindings"
+SECTION = "devel/python"
+# needs gtk+-2.6.x
+DEPENDS = "gtk+ libglade"
+RDEPENDS = "python-shell"
+SRCNAME = "pygtk"
+LICENSE = "LGPL"
+PR = "ml0"
+
+SRC_URI = "ftp://ftp.gnome.org/pub/gnome/sources/pygtk/2.6/${SRCNAME}-${PV}.tar.bz2 \
+           file://acinclude.m4"
+S = "${WORKDIR}/${SRCNAME}-${PV}"
+
+inherit autotools pkgconfig distutils-base
+
+PACKAGES = "${PN}-dbg ${PN}-dev ${PN}-doc ${PN}"
+FILES_${PN}-dbg += "${libdir}/python2.4/site-packages/gtk-2.0/gtk/.debug \
+		    ${libdir}/python2.4/site-packages/gtk-2.0/.debug"
+FILES_${PN}-dev += "${bindir} ${datadir}/pygtk ${libdir}/pygtk"
+
+do_configure_prepend() {
+	install -m 0644 ${WORKDIR}/acinclude.m4 ${S}/
+}
+
+do_stage() {
+	autotools_stage_includes
+	install -m 0755 codegen/pygtk-codegen-2.0 ${STAGING_BINDIR_NATIVE}/
+}
