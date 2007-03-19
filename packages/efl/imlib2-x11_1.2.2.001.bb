@@ -1,6 +1,6 @@
 require imlib2.inc
 DEPENDS += "virtual/libx11 libxext"
-PR = "r1"
+PR = "r2"
 
 EXTRA_OECONF = "--disable-mmx \
                 --with-x \
