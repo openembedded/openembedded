@@ -226,7 +226,7 @@
           <entry>gpe</entry>
 
           <entry>GPE GUI enviroment. For the anything that provides or uses
-          the GPE UI. Nore that development and documentation related files
+          the GPE UI. Note that development and documentation related files
           should be in the appropriate devel and doc section, not under
           GPE.</entry>
         </row>
@@ -351,10 +351,52 @@
         </row>
 
         <row>
+          <entry>openmoko</entry>
+
+          <entry>Anything related to openmoko.org</entry>
+        </row>
+
+        <row>
+          <entry>openmoko/applications</entry>
+
+          <entry></entry>
+        </row>
+
+        <row>
+          <entry>openmoko/base</entry>
+
+          <entry></entry>
+        </row>
+
+        <row>
+          <entry>openmoko/examples</entry>
+
+          <entry></entry>
+        </row>
+
+        <row>
+          <entry>openmoko/libs</entry>
+
+          <entry></entry>
+        </row>
+
+        <row>
+          <entry>openmoko/pim</entry>
+
+          <entry></entry>
+        </row>
+
+        <row>
+          <entry>openmoko/tools</entry>
+
+          <entry></entry>
+        </row>
+
+        <row>
           <entry>opie</entry>
 
           <entry>OPIE GUI enviroment. For the anything that provides or uses
-          the OPIE UI. Nore that development and documentation related files
+          the OPIE UI. Note that development and documentation related files
           should be in the appropriate devel and doc section, not under
           OPIE.</entry>
         </row>
@@ -491,9 +533,9 @@
         <row>
           <entry>x11</entry>
 
-          <entry>X11 GUI enviroment. For the anything that provides or uses
-          the X11 UI. Nore that development and documentation related files
-          should be in the appropriate devel and doc section, not under
+          <entry>X11 GUI platform. For anything that provides or uses the X11 
+          UI and is not GPE. Note that development and documentation related 
+          files should be in the appropriate devel and doc section, not under
           X11.</entry>
         </row>
 
