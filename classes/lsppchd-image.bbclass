@@ -1,1 +1,3 @@
-IMAGE_POSTPROCESS_COMMAND += ""
+lsppchd_pack_image() {
+:
+}

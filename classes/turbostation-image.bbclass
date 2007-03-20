@@ -1,8 +1,3 @@
-EXTRA_IMAGECMD = "--big-endian"
-ERASEBLOCK_SIZE = "0x20000"
-IMAGE_FSTYPES = "jffs2"
-IMAGE_POSTPROCESS_COMMAND += '${MACHINE}_pack_image;'
-
 turbostation_pack_image() {
         # find latest kernel
         KERNEL=`ls -tr ${DEPLOY_DIR_IMAGE}/uImage* | tail -1`
