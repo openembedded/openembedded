@@ -3,11 +3,13 @@ SECTION = "base"
 PRIORITY = "optional"
 DEPENDS = "tzcode-native"
 
+PR = "r1"
+
 PROVIDES = "tzdata tzdata-misc tzdata-posix tzdata-right tzdata-africa \
             tzdata-americas tzdata-antarctica tzdata-arctic tzdata-asia \
             tzdata-atlantic tzdata-australia tzdata-europe tzdata-pacific"
 RPROVIDES = "tzdata"
-RCONFLICTS= "timezone-africa timezone-america timezone-antarctica \
+RCONFLICTS= "timezones timezone-africa timezone-america timezone-antarctica \
              timezone-arctic timezone-asia timezone-atlantic \
              timezone-australia timezone-europe timezone-indian \
              timezone-iso3166.tab timezone-pacific timezone-zone.tab"
