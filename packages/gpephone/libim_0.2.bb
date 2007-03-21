@@ -1,5 +1,5 @@
 LICENSE     = "LGPL"
-DESCRIPTION = "LiPS event model library."
+DESCRIPTION = "LiPS instant messenger library."
 SECTION = "gpe/libs"
 PRIORITY    = "optional"
 DEPENDS     = "glib-2.0 libgpg-error libgcrypt gnutls libidn iksemel gloox dbus-glib liblipsevent"

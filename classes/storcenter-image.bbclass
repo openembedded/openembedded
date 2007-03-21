@@ -1,16 +1,16 @@
-n2100_pack_image() {
+storcenter_pack_image() {
         # find latest kernel
-        KERNEL=`ls -tr ${DEPLOY_DIR_IMAGE}/zImage* | tail -1`
+        KERNEL=`ls -tr ${DEPLOY_DIR_IMAGE}/uImage* | tail -1`
         if [ -z "$KERNEL" ]; then
-                oefatal "No kernel found in ${DEPLOY_DIR_IMAGE}. Bitbake linux to create one."
+                oefatal "No kernel found in ${DEPLOY_DIR_IMAGE}. Bitbake linux-storcenter to create one."
                 exit 1
         fi
         ROOTFS=${DEPLOY_DIR_IMAGE}/${IMAGE_NAME}.rootfs.jffs2
         OUTPUT=${DEPLOY_DIR_IMAGE}/${IMAGE_NAME}.flash.img
         PADFILE=${DEPLOY_DIR_IMAGE}/padfile.zzz
-        HEX_MAX_KERN_SIZE=1C0000
+        HEX_MAX_KERN_SIZE=170000
         DEC_MAX_KERN_SIZE=`echo "ibase=16; $HEX_MAX_KERN_SIZE" | bc `
-        HEX_MAX_ROOT_SIZE=DC0000
+        HEX_MAX_ROOT_SIZE=590000
         DEC_MAX_ROOT_SIZE=`echo "ibase=16; $HEX_MAX_ROOT_SIZE" | bc `
         KERNEL_SIZE=`ls -l $KERNEL | awk '{print $5}'`
         if [ $KERNEL_SIZE -gt $DEC_MAX_KERN_SIZE ]; then
