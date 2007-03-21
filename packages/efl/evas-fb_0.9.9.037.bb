@@ -1,5 +1,5 @@
 require evas.inc
-PR = "r5"
+PR = "r6"
 
 EXTRA_OECONF = "--enable-fb         \
 		--disable-directfb          \

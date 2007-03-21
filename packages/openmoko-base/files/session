@@ -14,5 +14,6 @@ matchbox-panel --start-applets=showdesktop,systray,windowselector --end-applets=
 mbinputmgr &
 
 openmoko-footer &
+openmoko-dialer &
 exec matchbox-window-manager -use_titlebar no -use_cursor $SHOWCURSOR $@
 

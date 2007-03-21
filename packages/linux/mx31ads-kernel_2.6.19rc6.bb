@@ -28,7 +28,7 @@ RPROVIDES_kernel-image += "hostap-modules"
 do_configure_prepend() {
 	install -m 0644 ${WORKDIR}/imx31ads_defconfig ${S}/defconfig
 
-        if [ "${TARGET_OS}" == "linux-gnueabi" -o  "${TARGET_OS}" == "linux-uclibcgnueabi" ]; then
+        if [ "${TARGET_OS}" = "linux-gnueabi" -o  "${TARGET_OS}" = "linux-uclibcgnueabi" ]; then
                 echo "CONFIG_AEABI=y"                   >> ${S}/.config
                 echo "CONFIG_OABI_COMPAT=y"             >> ${S}/.config
         else

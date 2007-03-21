@@ -33,11 +33,13 @@ RRECOMMENDS_${PN}_openzaurus = "glibc-gconv-iso8859-1 ttf-dejavu-sans gdk-pixbuf
 
 EXTRA_OECONF = "--without-libtiff --disable-xkb --disable-glibtest --enable-display-migration"
 
+export GDKTARGET="x11"
+
 LIBV = "2.10.0"
 
 do_stage () {
-	oe_libinstall -so -C gtk libgtk-x11-2.0 ${STAGING_LIBDIR}
-	oe_libinstall -so -C gdk libgdk-x11-2.0 ${STAGING_LIBDIR}
+	oe_libinstall -so -C gtk libgtk-$GDKTARGET-2.0 ${STAGING_LIBDIR}
+	oe_libinstall -so -C gdk libgdk-$GDKTARGET-2.0 ${STAGING_LIBDIR}
 	oe_libinstall -so -C contrib/gdk-pixbuf-xlib libgdk_pixbuf_xlib-2.0 ${STAGING_LIBDIR}
 	oe_libinstall -so -C gdk-pixbuf libgdk_pixbuf-2.0 ${STAGING_LIBDIR}
 

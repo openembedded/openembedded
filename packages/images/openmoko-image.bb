@@ -14,7 +14,9 @@ export PACKAGE_INSTALL = "\
   task-openmoko-phone \
   task-openmoko-finger \
   task-openmoko-pim \
-"
+  task-openmoko-demo \
+  "
+
 DEPENDS = "\
   ${MACHINE_TASK_PROVIDER} \
   task-openmoko \

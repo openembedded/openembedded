@@ -4,21 +4,33 @@ LICENSE = "GPL"
 SECTION = "libs/gsm"
 PROVIDES += "gsmd"
 PV = "0.0+svn${SRCDATE}"
-PR = "r2"
+PR = "r7"
 
-SRC_URI = "svn://svn.openmoko.org/trunk/src/target;module=gsm;proto=http"
+SRC_URI = "svn://svn.openmoko.org/trunk/src/target;module=gsm;proto=http \
+           file://gsmd \
+           file://default"
 S = "${WORKDIR}/gsm"
 
-inherit autotools pkgconfig
+inherit autotools pkgconfig update-rc.d
+
+INITSCRIPT_NAME = "gsmd"
+INITSCRIPT_PARAMS = "defaults 35"
 
 do_stage() {
     autotools_stage_all
 }
 
+do_install_append() {
+	install -d ${D}/${sysconfdir}/init.d
+	install -m 0755 ${WORKDIR}/gsmd ${D}/${sysconfdir}/init.d/
+	install -d ${D}/${sysconfdir}/default
+	install ${WORKDIR}/default ${D}/${sysconfdir}/default/gsmd
+}
+
 PACKAGES =+ "${PN}-tools gsmd"
 RDEPENDS_${PN} = "gsmd"
 FILES_${PN}-tools = "${bindir}/*"
-FILES_gsmd = "${sbindir}/gsmd"
+FILES_gsmd = "${sbindir}/gsmd ${sysconfdir}"
 
 PACKAGES_DYNAMIC = "libgsmd* gsmd"
 

@@ -28,6 +28,10 @@ do_configure_prepend() {
 	fi
 }
 
+#do_install_append() {
+#    find "${S}" -name .debug -type d | xargs -iBLAH rm -rf "BLAH"
+#}
+
 do_stage_append() {
 	cd src
 	modules=`find modules -name ".libs"`
@@ -40,4 +44,6 @@ do_stage_append() {
 
 headers = "<override me>"
 libraries = "libevas"
-FILES_${PN} += "/usr/lib/evas/"
+FILES_${PN} += "/usr/lib/evas/modules/*/*/*/*.so"
+FILES_${PN}-dev += "/usr/lib/evas/modules/*/*/*/*.a /usr/lib/evas/modules/*/*/*/*.la"
+FILES_${PN}-dbg += "/usr/lib/evas/modules/*/*/*/.debug/"
