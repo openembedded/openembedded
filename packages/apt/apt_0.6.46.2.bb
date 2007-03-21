@@ -1,7 +1,6 @@
 require apt.inc
 
-SRC_URI += "file://autofoo.patch;patch=1 \
-            file://nodoc.patch;patch=1"
+SRC_URI += "file://nodoc.patch;patch=1"
 
 require apt-package.inc
 
