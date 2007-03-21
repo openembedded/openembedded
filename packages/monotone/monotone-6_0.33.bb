@@ -42,7 +42,7 @@ do_install_append() {
         install -d ${D}${tsd}
         install -c -m 755 testsuite ${D}${tsd}/testsuite
         cp -pPR tests ${D}${tsd}/tests
-	rm -f ${D}/home/monotone/monotone-6/tests/tests/diff_a_binary_file/binary
+	rm ${D}/home/monotone/monotone-6/tests/diff_a_binary_file/binary
 }
 
 PACKAGES = "${PN} ${PN}-doc ${PN}-testsuite"
