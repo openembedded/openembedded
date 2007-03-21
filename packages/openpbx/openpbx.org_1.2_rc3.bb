@@ -3,14 +3,16 @@ HOMEPAGE = "http://www.openpbx.org"
 #RDEPENDS = "ssmtp"
 SECTION = "voip"
 LICENSE = "GPL"
-DEPENDS = "openssl zlib tiff libcap spandsp speex readline js"
+DEPENDS = "openssl zlib tiff libcap spandsp speex readline js \
+           sox-native findutils-native"
 DEPENDS_${PN}-ldap = "openldap"
 RRECOMMENDS = "logrotate"
-RRECOMMENDS_${PN}-ogi = "perl perl-module-strict"
+RRECOMMENDS_${PN}-ogi = "perl perl-module-strict openpbx.org-perl"
 PV = "1.2_rc3"
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "http://www.openpbx.org/releases/${P}.tar.gz \
+           svn://svn.openpbx.org/openpbx-sounds/trunk/sounds/en_US;module=MelanieTaylor;proto=svn \
            file://bootstrap.patch;patch=1 \
            file://openssl.m4.patch;patch=1 \
            file://logrotate \
@@ -45,17 +47,34 @@ do_install_append() {
     install -c -D -m 755 ${WORKDIR}/init ${D}${sysconfdir}/init.d/openpbx
     install -c -D -m 644 ${WORKDIR}/logrotate ${D}${sysconfdir}/logrotate.d/openpbx
     install -c -D -m 644 ${WORKDIR}/volatiles ${D}${sysconfdir}/default/volatiles/openpbx
+    # And now for sounds...
+    for file in `find ${WORKDIR}/MelanieTaylor -name \*.wav`; do
+        echo $file
+        sox -V $file -t raw -s -r 8000 -c 1 -w `echo $file|sed -e s/\.wav$/.sln/` resample -ql;
+        sox -V $file -t raw -U -r 8000 -c 1 -b `echo $file|sed -e s/\.wav$/.ulaw/` resample -ql;
+        sox -V $file -t raw -A -r 8000 -c 1 -b `echo $file|sed -e s/\.wav$/.alaw/` resample -ql;
+        sox -V $file -t gsm -r 8000 -c 1 -b `echo $file|sed -e s/\.wav$/.gsm/` resample -ql;
+        relfile=`echo $file|sed -e s:^${WORKDIR}/MelanieTaylor/::`
+        relfile2=`echo $relfile|sed -e s:\.wav$::`
+        install -c -D -m 644 ${WORKDIR}/MelanieTaylor/$relfile2.sln ${D}${datadir}/openpbx.org/sounds/$relfile2.sln
+        install -c -D -m 644 ${WORKDIR}/MelanieTaylor/$relfile2.ulaw ${D}${datadir}/openpbx.org/sounds/$relfile2.ulaw
+        install -c -D -m 644 ${WORKDIR}/MelanieTaylor/$relfile2.alaw ${D}${datadir}/openpbx.org/sounds/$relfile2.alaw
+        install -c -D -m 644 ${WORKDIR}/MelanieTaylor/$relfile2.gsm ${D}${datadir}/openpbx.org/sounds/$relfile2.gsm
+    done
 }
 
-PACKAGES =+ "${PN}-fax ${PN}-ogi ${PN}-musiconhold ${PN}-ldap"
+PACKAGES = "${PN}-sounds ${PN}-fax ${PN}-ogi ${PN}-ldap ${PN}-doc ${PN}-dev ${PN}"
 
-FILES_${PN}-fax = "${libdir}/openpbx.org/modules/chan_fax.* \
-                   ${libdir}/openpbx.org/modules/app_rxfax.* \
-                   ${libdir}/openpbx.org/modules/app_txfax.* \
+FILES_${PN}-sounds = "${datadir}/openpbx.org/sounds/*"
+FILES_${PN}-dev = "${libdir}/openpbx.org/modules/*.la \
+                   ${libdir}/openpbx.org/*.la \
+                   ${includedir}/openpbx/*"
+FILES_${PN}-fax = "${libdir}/openpbx.org/modules/chan_fax.so \
+                   ${libdir}/openpbx.org/modules/app_rxfax.so \
+                   ${libdir}/openpbx.org/modules/app_txfax.so \
+                   ${libdir}/openpbx.org/modules/app_faxdetect.so \
                    ${sysconfdir}/openpbx.org/chan_fax.conf"
-FILES_${PN}-musiconhold = "${libdir}/openpbx.org/modules/res_musiconhold.* \
-                   ${sysconfdir}/openpbx.org/musiconhold.conf"
-FILES_${PN}-ogi = "${libdir}/openpbx.org/modules/res_ogi.* \
+FILES_${PN}-ogi = "${libdir}/openpbx.org/modules/res_ogi.so \
                    ${datadir}/openpbx.org/ogi/*"
 FILES_${PN}-ldap = "${libdir}/openpbx.org/modules/app_ldap.*"
 
@@ -67,7 +86,7 @@ pkg_postinst_prepend() {
 }
 
 CONFFILES_${PN}-fax += "${sysconfdir}/openpbx.org/chan_fax.conf"
-CONFFILES_${PN}-musiconhold += "${sysconfdir}/openpbx.org/musiconhold.conf"
+CONFFILES_${PN} += "${sysconfdir}/openpbx.org/musiconhold.conf"
 CONFFILES_${PN} += "${sysconfdir}/openpbx.org/adsi.conf"
 CONFFILES_${PN} += "${sysconfdir}/openpbx.org/adtranvofr.conf"
 CONFFILES_${PN} += "${sysconfdir}/openpbx.org/agents.conf"
