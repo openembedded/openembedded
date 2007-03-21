@@ -1,5 +1,5 @@
 LICENSE     = "LiPS"
-DESCRIPTION = "LiPS event model library."
+DESCRIPTION = "LiPS calendar database backend library."
 SECTION = "gpe/libs"
 PRIORITY    = "optional"
 DEPENDS     = "glib-2.0 e2fsprogs-libs sqlite3"
