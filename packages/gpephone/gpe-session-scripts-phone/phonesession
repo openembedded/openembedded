@@ -48,5 +48,8 @@ soundserver &
 #cms92init &
 gsmMux -d -p /dev/ttyS0 -m cms92 -f 128 -b 115200 -c /dev/ptmx /dev/ptmx &
 
-# Start PhoneServer
+#save session bus address to a file
+echo $DBUS_SESSION_BUS_ADDRESS > /tmp/dbusaddress
+
+# Start PhoneServer - do not stop, it keeps the session running
 phoneserver

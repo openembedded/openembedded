@@ -43,13 +43,7 @@ INHERIT += "package_ipk debian multimachine"
 
 # FULL_OPTIMIZATION
 #    Optimization settings.  Os works fine and is significantly better than O2.
-#    The other settings are somewhat arbitrary.  The optimisations chosen here
-#    include the ones which 'break' symbolic debugging (because the compiler does
-#    not include enough information to allow the debugger to know where given
-#    values are.)  The -fno options are an attempt to cancel explicit use of space
-#    consuming options found in some packages (this isn't a complete list, this is
-#    just the ones which package writers seem to know about and abuse).
-FULL_OPTIMIZATION = "-Os -fomit-frame-pointer -frename-registers -fno-unroll-loops -fno-inline-functions -fweb -funit-at-a-time"
+FULL_OPTIMIZATION = "-fexpensive-optimizations -fomit-frame-pointer -frename-registers -Os"
 
 #----------------------------------------------------------------------------------
 # FEEDS
