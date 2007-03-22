@@ -5,7 +5,7 @@
 DESCRIPTION = "Packages that are compatible with the SlugOS firmware"
 HOMEPAGE = "http://www.nslu2-linux.org"
 LICENSE = "MIT"
-PR = "r26"
+PR = "r27"
 CONFLICTS = "db3"
 
 COMPATIBLE_MACHINE = "nslu2"
@@ -71,6 +71,7 @@ SLUGOS_PACKAGES = "\
 	glib-2.0 \
 	gnu-config \
 	grep \
+	gspcav1 \
 	gtk-doc \
 	gzip \
 	hdparm \
@@ -167,8 +168,10 @@ SLUGOS_PACKAGES = "\
 	vim \
 	vlan \
 	vsftpd \
+	w3cam \
 	wakelan \
 	watchdog \
+	webcam-server \
 	wget \
 	wireless-tools \
 	wireshark \
