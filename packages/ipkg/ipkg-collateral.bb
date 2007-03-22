@@ -1,7 +1,7 @@
 DESCRIPTION = "ipkg configuration files"
 SECTION = "base"
 LICENSE = "MIT"
-PR = "r5"
+PR = "r6"
 PACKAGE_ARCH = "all"
 
 SRC_URI = " \

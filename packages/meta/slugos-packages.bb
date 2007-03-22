@@ -5,7 +5,7 @@
 DESCRIPTION = "Packages that are compatible with the SlugOS firmware"
 HOMEPAGE = "http://www.nslu2-linux.org"
 LICENSE = "MIT"
-PR = "r25"
+PR = "r26"
 CONFLICTS = "db3"
 
 COMPATIBLE_MACHINE = "nslu2"
@@ -171,6 +171,7 @@ SLUGOS_PACKAGES = "\
 	watchdog \
 	wget \
 	wireless-tools \
+	wireshark \
 	wpa-supplicant \
 	zd1211-firmware \
 	zip \

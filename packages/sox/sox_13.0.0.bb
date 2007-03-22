@@ -1,15 +1,13 @@
-# sox OE build file
-# Copyright (C) 2005, Advanced Micro Devices, Inc.  All Rights Reserved
-# Released under the MIT license (see packages/COPYING)
-
 DESCRIPTION="SoX is the Swiss Army knife of sound processing tools. \
 It converts audio files among various standard audio file formats \
 and can apply different effects and filters to the audio data." 
-LICENSE="GPL"
-HOMEPAGE="http://sox.sourceforge.net"
+HOMEPAGE = "http://sox.sourceforge.net"
+SECTION = "audio"
+LICENSE = "GPL"
+PR = "r0"
 
-SRC_URI="${SOURCEFORGE_MIRROR}/sox/sox-${PV}.tar.gz; \
-	file://uclibc-fixes.patch;patch=1"
+SRC_URI = "${SOURCEFORGE_MIRROR}/sox/sox-${PV}.tar.gz \
+         file://src-Makefile.am.patch;patch=1"
 
 inherit autotools
 
