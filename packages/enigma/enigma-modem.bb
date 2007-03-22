@@ -3,11 +3,11 @@ DESCRIPTION = "Enigma Modem Plugin"
 MAINTAINER = "Andreas Monzner <ghost@dream-multimedia-tv.de>"
 LICENSE = "GPL"
 
-SRC_URI = "http://sources.dreamboxupdate.com/download/opendreambox/enigma/enigma-modem-${PV}-r1.tar.gz"
+SRC_URI = "http://sources.dreamboxupdate.com/download/opendreambox/enigma/enigma-modem-${PV}.tar.gz"
 
-PV = "0.1"
+PV = "0.2"
 PN = "enigma-modem"
-PR = "r2"
+PR = "r1"
 
 PACKAGES = "enigma-modem"
 
