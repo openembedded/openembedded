@@ -1,5 +1,5 @@
 DESCRIPTION = "Merge machine and distro options to create a basic machine task/package"
-PR = "r20"
+PR = "r21"
 
 PACKAGES = "task-base \
             task-base-oh-minimal \
@@ -273,6 +273,7 @@ task-distro-wifi-rrecommends = "\
     kernel-module-ieee80211-crypt-ccmp \
     kernel-module-ieee80211-crypt-tkip \
     kernel-module-ieee80211-crypt-wep \
+    kernel-module-ecb \
     kernel-module-arc4 \
     kernel-module-michael-mic \
     kernel-module-aes"
