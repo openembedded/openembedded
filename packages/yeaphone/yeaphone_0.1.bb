@@ -5,15 +5,16 @@ LICENSE = "GPLv2"
 PRIORITY = "optional"
 DEPENDS = "liblinphone"
 RDEPENDS = "liblinphone"
-PR = "r1"
+RRECOMMENDS = "\
+	kernel-module-yealink \
+	kernel-module-usbhid \
+	kernel-module-snd-usb-audio \
+	"
+
+PR = "r2"
 
 SRC_URI = "http://download.devbase.at/voip/yeaphone-${PV}.tar.gz"
 
 S = "${WORKDIR}/yeaphone-${PV}"
 
 inherit autotools
-
-#EXTRA_OECONF = ""
-
-#do_install_append() {
-#}
