@@ -13,6 +13,8 @@ S = "${WORKDIR}/${SRCNAME}-${PV}"
 
 inherit autotools pkgconfig distutils-base
 
+EXTRA_OECONF += "--with-python-includes=${STAGING_INCDIR}/../"
+
 PACKAGES = "${PN}-dbg ${PN}-dev ${PN}-doc ${PN}"
 FILES_${PN}-dbg += "${libdir}/python2.4/site-packages/gtk-2.0/gtk/.debug \
 		    ${libdir}/python2.4/site-packages/gtk-2.0/.debug"
