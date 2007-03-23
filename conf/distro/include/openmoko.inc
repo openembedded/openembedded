@@ -89,6 +89,20 @@ PREFERRED_VERSION_gtk-engines = "2.6.5"
 
 PREFERRED_VERSION_fontconfig = "2.4.1"
 
+# we don't ship gtk-directfb by default
+PREFERRED_PROVIDER_gdk-pixbuf-loader-ani  ?= "gtk+"
+PREFERRED_PROVIDER_gdk-pixbuf-loader-bmpg ?= "gtk+"
+PREFERRED_PROVIDER_gdk-pixbuf-loader-gif  ?= "gtk+"
+PREFERRED_PROVIDER_gdk-pixbuf-loader-ico  ?= "gtk+"
+PREFERRED_PROVIDER_gdk-pixbuf-loader-jpeg ?= "gtk+"
+PREFERRED_PROVIDER_gdk-pixbuf-loader-pcx  ?= "gtk+"
+PREFERRED_PROVIDER_gdk-pixbuf-loader-png  ?= "gtk+"
+PREFERRED_PROVIDER_gdk-pixbuf-loader-pnm  ?= "gtk+"
+PREFERRED_PROVIDER_gdk-pixbuf-loader-ras  ?= "gtk+"
+PREFERRED_PROVIDER_gdk-pixbuf-loader-tga  ?= "gtk+"
+PREFERRED_PROVIDER_gdk-pixbuf-loader-wbmp ?= "gtk+"
+PREFERRED_PROVIDER_gdk-pixbuf-loader-xbm  ?= "gtk+"
+PREFERRED_PROVIDER_gdk-pixbuf-loader-xpm  ?= "gtk+"
 #
 # GPE
 #
