@@ -13,6 +13,7 @@ SRC_URI = "ftp://ftp.gnome.org/pub/gnome/sources/pygtk/2.10/${SRCNAME}-${PV}.tar
 S = "${WORKDIR}/${SRCNAME}-${PV}"
 
 EXTRA_OECONF = "--disable-docs"
+EXTRA_OECONF += "--with-python-includes=${STAGING_INCDIR}/../"
 
 inherit autotools pkgconfig distutils-base
 
