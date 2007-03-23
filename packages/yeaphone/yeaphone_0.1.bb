@@ -6,12 +6,13 @@ PRIORITY = "optional"
 DEPENDS = "liblinphone"
 RDEPENDS = "liblinphone"
 RRECOMMENDS = "\
+	linphonec \
 	kernel-module-yealink \
 	kernel-module-usbhid \
 	kernel-module-snd-usb-audio \
 	"
 
-PR = "r2"
+PR = "r3"
 
 SRC_URI = "http://download.devbase.at/voip/yeaphone-${PV}.tar.gz"
 
