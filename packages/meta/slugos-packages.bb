@@ -5,7 +5,7 @@
 DESCRIPTION = "Packages that are compatible with the SlugOS firmware"
 HOMEPAGE = "http://www.nslu2-linux.org"
 LICENSE = "MIT"
-PR = "r27"
+PR = "r28"
 CONFLICTS = "db3"
 
 COMPATIBLE_MACHINE = "nslu2"
@@ -63,6 +63,7 @@ SLUGOS_PACKAGES = "\
 	flac \
 	flex \
 	flite \
+	ftpd-topfield \
 	fuse \
 	gawk \
 	gcc \
@@ -142,6 +143,7 @@ SLUGOS_PACKAGES = "\
 	pkgconfig \
 	ppp \
 	procps \
+	puppy \
 	python \
 	quilt \
 	reiserfsprogs reiser4progs \
@@ -184,7 +186,6 @@ SLUGOS_PACKAGES = "\
 # Packages currently broken on all platforms
 SLUGOS_BROKEN_PACKAGES = "\
 	bwmon \
-	ftpd-topfield \
 	gphoto2 \
 	irssi \
 	libgphoto2 \
@@ -192,7 +193,6 @@ SLUGOS_BROKEN_PACKAGES = "\
 	mediatomb \
 	mpd \
 	netpbm \
-	puppy \
 	pvrusb2-mci \
 	qc-usb-messenger \
 	syslog-ng \
@@ -202,6 +202,9 @@ SLUGOS_BROKEN_PACKAGES = "\
 	lirc \
 	pwc \
 	zd1211 \
+	mysql \
+        wview-sim-mysql wview-vpro-mysql \
+        wview-wxt510-mysql \
 	"
 
 # These packages will never build because uclibc lacks (and always will lack)
@@ -247,18 +250,10 @@ SLUGOS_PACKAGES_append_linux = "\
 	screen \
 	timezones \
         wview-sim wview-vpro wview-wxt510 \
-        wview-sim-mysql wview-vpro-mysql \
-        wview-wxt510-mysql \
 	xinetd \
 	"
 
 SLUGOS_PACKAGES_append_linux-uclibc = "\
-	"
-
-# These packages are not in the build because they have a significant compilation
-# time, add them to SLUGOS_EXTRA_PACKAGES if required
-SLUGOS_OPTIONAL_PACKAGES = "\
-	mysql \
 	"
 
 SLUGOS_EXTRA_PACKAGES ?= ""
