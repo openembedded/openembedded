@@ -38,7 +38,7 @@ PACKAGE_ARCH_${PN}-conf = "${MACHINE}"
 
 TAG = "${@'v' + bb.data.getVar('PV',d,1).replace('.', '-').replace('+', '-')}"
 
-SRC_URI = "svn://hentges.net/altboot/tags/;module=${TAG};rev=6"
+SRC_URI = "svn://hentges.net/altboot/tags/;module=${TAG};proto=svn"
 
 S = "${WORKDIR}/${TAG}/"
 
