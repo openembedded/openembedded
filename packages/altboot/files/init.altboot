@@ -20,12 +20,6 @@ test -z "$INIT_RUNLEVEL" && INIT_RUNLEVEL=5
 # If this step fails the results are fatal. Seen on Collie / kernel 2.4 (where else...)
 OUT_TTY="`tty`" ; test -z "$OUT_TTY" && OUT_TTY="/dev/tty1"
 
-if test -z "$OUT_TTY"
-then
-	OUT_TTY="/dev/tty1"
-	echo "WARNING: Assgnment of OUT_TTY failed!" > "$OUT_TTY"
-fi
-
 if ( echo "$OUT_TTY" | grep -q "not" )
 then
 	OUT_TTY="/dev/tty1"
@@ -47,7 +41,7 @@ then
 	rm "${ALTBOOT_CFG_FILE}.next-reboot"
 fi
 
-test "$ENABLE_DEBUGGING" = "yes" && ENABLE_DEBUG="yes"
+ENABLE_DEBUG="$ENABLE_DEBUGGING"
 
 C_RED="\033[31m"
 C_YELLOW="\033[33m"
@@ -81,10 +75,9 @@ debug_shell() {
 show_menu() {
 	test -z "$1" && die "DEBUG: Parameter 1 is empty in show_menu"
 	! test -d "$1" && die "show_menu: [$1] not found or no directory."
-
+	
 	echo "" 
-	echo -e "altboot v$VERSION\n" 
-
+	echo -e "altboot v$VERSION\n" 	
 	
 	m_entry=""
 
@@ -93,6 +86,7 @@ show_menu() {
 	cnt=0 ; reset_pref "menu_filelist"
 	for file in `ls -1`
 	do	
+#		debug_echo "show_menu(): file = [$file]"
 		if ! test -d "$1/$file"
 		then			
 			# NOTE: It is important to use "." here so that the script inherits
@@ -165,11 +159,7 @@ show_menu() {
 		fi
 	done
 
-	echo ""
-	
-# 	export_pref "$menu_filelist" /tmp/menu_filelist.cache
-# 	export_pref "$menu_fileflags" /tmp/menu_fileflags.cache
-	
+	echo ""		
 }
 
 # This function is used to display the content of directories below
@@ -178,11 +168,7 @@ show_sub_menu() {
 	dirname="`basename "$1"`"
 		
 	d_entries="`dump_pref "menu_filelist" | grep "$dirname/"`"
-	
-	#dump_pref "menu_filelist"
-	#dump_pref "menu_fileflags"
-	#echo "[$d_entries]"
-	
+		
 	echo -e "\naltboot v$VERSION: $dirname menu\n" 
 		
 	for d_entry in $d_entries
@@ -190,11 +176,7 @@ show_sub_menu() {
 		d_entry_number="`echo "$d_entry"| sed -n "s/\(.*\)\#\#\(.*\)\#\#\#/\1/p"`"
 		d_entry_file="`echo "$d_entry"| sed -n "s/\(.*\)\#\#\(.*\)\#\#\#/\2/p"`"
 		d_entry_title="`$d_entry_file title`"
-		
-#		echo "number: [$d_entry_number]"
-#		echo "file: [$d_entry_file]"
-#		echo "title: [$d_entry_title]"
-		
+				
 		echo -e "\t\t[$d_entry_number] $d_entry_title"
 	done
 		
@@ -231,7 +213,7 @@ get_kbd_ints(){
 
 # Shows the timer and sets $launch_altboot to yes if a keypress was detected
 run_timer() {
-	if test "$TIMEOUT" != 0
+	if test "$TIMEOUT" != 0 -a "$TIMEOUT" != "[none]"
 	then			
 			
 		mount -t proc proc /proc >/dev/null 2>&1
@@ -278,6 +260,17 @@ run_timer() {
 	else
 		launch_altboot=yes
 	fi
+	
+	if test "$TIMEOUT" = "[none]"
+	then
+		echo "" 
+		echo -e "altboot v$VERSION ($MACHINE)\n" 
+		
+		echo "NOTE: The menu is not available on this device"
+		echo "Use \"set-bootdev\" to change the boot device"
+		
+		launch_altboot=no
+	fi
 } 
 
 # $1 = ID
@@ -313,7 +306,7 @@ launch_selection() {
 		file="`echo "$file_" | sed -n "s/\(.*\)\:\(.*\)/\1/p"`"
 		test -z "$file" && file="$file_"
 				
-		#echo "[$file_]: [$type] : [$flags] / [$file] ($junk)"
+#		debug_echo "[$file_]: [$type] : [$flags] / [$file] ($junk)"
 		
 		# The selected menu-item points to a directory
 		if test "$type" = DIR
@@ -494,10 +487,29 @@ fi
 # Note: this is positively ugly. If someone knows a better way to detect whether
 # we are already booted into a runlevel _without_ reading /var and / or using `runlevel`
 # PLEASE let me know.
+#
+# The NSLU2 is an exception as it uses the way-ugly busybox "ps"
+#
 
-if test -f /proc/cmdline -a "`ps ax|wc -l|tr -d " "`" -gt 30 -a "$1" != "-force" -a "$1" != "+force"
+MACHINE="`cat /proc/cpuinfo | sed -n "/^Hardware/s/.*\:\ \(.*\)/\1/p"`"
+
+case "$MACHINE" in
+	*NSLU2)	if test -f /proc/cmdline -a "`ps |wc -l|tr -d " "`" -gt 25 -a "$1" != "-force" -a "$1" != "+force" 
+		then			
+	   		user_called=1
+		fi			
+		;;
+		
+	*)	if test -f /proc/cmdline -a "`ps ax|wc -l|tr -d " "`" -gt 30 -a "$1" != "-force" -a "$1"!= "+force" >/dev/null 2>&1	
+	   	then
+	   		user_called=1
+	   	fi
+	   	;;
+esac
+
+if test "$user_called" = "1"
 then
-	echo "altboot: Using real init [$REAL_INIT] [$*] [`ps ax|wc -l|tr -d " "`] *" >"$OUT_TTY"
+	echo "altboot: Using real init [$REAL_INIT] [$*] [`ps |wc -l|tr -d " "`] *" >"$OUT_TTY"
 	exec $REAL_INIT $*
 #	exec $SH_SHELL </dev/tty0 >/dev/tty0 2>&1
 	exit 0
@@ -543,7 +555,8 @@ else
 		echo "Booting last selection: [$last_selection]" >"$OUT_TTY"
 		
 		# Set up the wanna-be array of available menu entries and their numbers
-		show_menu /etc/altboot-menu >/dev/null
+		show_menu /etc/altboot-menu >/dev/null 2>&1
+
 		junk="$last_selection"
 		launch_selection /etc/altboot-menu >"$OUT_TTY"
 	fi

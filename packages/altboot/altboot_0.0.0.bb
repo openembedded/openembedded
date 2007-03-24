@@ -8,6 +8,7 @@
 DESCRIPTION = "The altboot bootmanager"
 HOMEPAGE = "http://www.hentges.net/misc/openzaurus/index.shtml"
 LICENSE = "GPL"
+INHIBIT_PACKAGE_STRIP = "1"
 
 ######################################################################################
 
@@ -24,7 +25,7 @@ RDEPENDS_${PN}_fic-gta01 = "${PN}-conf kernel-module-ext2 kernel-module-loop ker
 
 ######################################################################################
 
-PR = "r51"
+PR = "r52"
 
 ######################################################################################
 
@@ -68,7 +69,10 @@ do_install() {
 
 	install -m 0755 ${WORKDIR}/altboot-menu/*-* ${D}/etc/altboot-menu
 
-	install -m 0755 ${WORKDIR}/altboot-menu/Advanced/*-* ${D}/etc/altboot-menu/Advanced
+	if test -d ${WORKDIR}/altboot-menu/Advanced
+	then
+		install -m 0755 ${WORKDIR}/altboot-menu/Advanced/*-* ${D}/etc/altboot-menu/Advanced
+	fi
 
 	install -m 0755 ${WORKDIR}/altboot.rc/*.sh ${D}/etc/altboot.rc
 	install -m 0644 ${WORKDIR}/altboot.rc/*.txt ${D}/etc/altboot.rc

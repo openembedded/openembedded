@@ -20,7 +20,7 @@ PACKAGE_ARCH = "${MACHINE}"
 
 TAG = "${@'v' + bb.data.getVar('PV',d,1).replace('.', '-')}"
 
-SRC_URI = "svn://hentges.net/altboot/tags/;module=${TAG};rev=4"
+SRC_URI = "svn://hentges.net/altboot/tags/;module=${TAG};proto=svn"
 
 S = "${WORKDIR}/${TAG}/"
 
