@@ -1,0 +1,10 @@
+--- gpstk-1.2/configure.ac~	2006-12-21 06:59:41.000000000 +1030
++++ gpstk-1.2/configure.ac	2007-03-24 14:59:42.000000000 +1030
+@@ -53,6 +53,7 @@
+                  apps/ionosphere/Makefile
+                  apps/MDPtools/Makefile
+                  apps/mergetools/Makefile
++                 apps/multipath/Makefile
+                  apps/reszilla/Makefile
+                  apps/time/Makefile
+                  apps/positioning/Makefile
