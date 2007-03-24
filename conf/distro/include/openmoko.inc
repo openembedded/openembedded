@@ -90,6 +90,7 @@ PREFERRED_VERSION_gtk-engines = "2.6.5"
 PREFERRED_VERSION_fontconfig = "2.4.1"
 
 # we don't ship gtk-directfb by default
+PREFERRED_PROVIDER_gtk+                   ?= "gtk+"
 PREFERRED_PROVIDER_gdk-pixbuf-loader-ani  ?= "gtk+"
 PREFERRED_PROVIDER_gdk-pixbuf-loader-bmpg ?= "gtk+"
 PREFERRED_PROVIDER_gdk-pixbuf-loader-gif  ?= "gtk+"
