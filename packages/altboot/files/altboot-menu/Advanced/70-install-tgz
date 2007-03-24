@@ -2,6 +2,8 @@
 M_TITLE="Install RootFS from tar.gz"
 M_FLAGS="noRemember"
 
+test "$DISABLE_INSTTGZ_BOOT" = yes && exit 0
+
 run_module(){
 	test -e /etc/altboot.func && . /etc/altboot.func || die "ERROR: /etc/altboot.func not found. Check your installation!"	
 	
