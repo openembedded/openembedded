@@ -5,7 +5,7 @@
 DESCRIPTION = "Packages that are compatible with the SlugOS firmware"
 HOMEPAGE = "http://www.nslu2-linux.org"
 LICENSE = "MIT"
-PR = "r28"
+PR = "r29"
 CONFLICTS = "db3"
 
 COMPATIBLE_MACHINE = "nslu2"
@@ -47,6 +47,7 @@ SLUGOS_PACKAGES = "\
 	cyrus-imapd \
 	cyrus-sasl \
 	db \
+	devio \
 	devlabel \
 	diffstat \
 	diffutils \
@@ -154,6 +155,7 @@ SLUGOS_PACKAGES = "\
 	setpwc \
 	setserial \
 	sipsak \
+	slugimage \
 	smartmontools \
 	ssmtp \
 	strace \
@@ -165,6 +167,7 @@ SLUGOS_PACKAGES = "\
 	tiff \
 	tzdata \
 	unzip \
+	upslug2 \
 	usbutils \
 	util-linux \
 	vim \
