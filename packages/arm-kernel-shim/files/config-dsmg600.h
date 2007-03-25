@@ -23,7 +23,7 @@
 //#define RAM_BANK1_LENGTH   0x10000000
 
 #define COMMANDLINE \
- "init=/linuxrc root=/dev/mtdblock2 rootfstype=jffs2 rw noirqdebug console=ttyS0,115200n8"
+ "console=ttyS0,115200n8 root=/dev/mtdblock2 rootfstype=jffs2 init=/linuxrc rw noirqdebug"
 
 #define MACH_TYPE		   964
 
