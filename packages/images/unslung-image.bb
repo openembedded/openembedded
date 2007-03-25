@@ -1,5 +1,5 @@
 LICENSE = "MIT"
-PR = "r25"
+PR = "r26"
 COMPATIBLE_MACHINE = "nslu2"
 
 IMAGE_BASENAME = "unslung"
