@@ -4,10 +4,10 @@ PRIORITY = "optional"
 LICENSE = "GPL"
 
 DEPENDS = "gtk+ esound audiofile libgpewidget libxsettings libxsettings-client libxrandr"
-RDEPENDS_${PN} = "xst xset ntpdate gpe-login gpe-icons timezones xrandr"
+RDEPENDS_${PN} = "xst xset ntpdate gpe-login gpe-icons tzdata xrandr"
 RDEPENDS_gpe-conf-panel = "gpe-conf"
 
-PR = "r1"
+PR = "r2"
 
 GPE_TARBALL_SUFFIX = "bz2"
 

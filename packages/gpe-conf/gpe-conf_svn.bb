@@ -6,13 +6,13 @@ PRIORITY = "optional"
 LICENSE = "GPL"
 
 DEPENDS = "gtk+ libgpewidget libxsettings libxsettings-client pcmcia-cs xst xset ntp gpe-login gpe-icons"
-RDEPENDS_${PN} = "xst xset ntpdate gpe-login gpe-icons"
+RDEPENDS_${PN} = "xst tzdata xset ntpdate gpe-login gpe-icons"
 RDEPENDS_gpe-conf-panel = "gpe-conf"
 
 inherit autotools gpe
 
 PV = "0.2.5+svn${SRCDATE}"
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "${GPE_SVN}"
 S = "${WORKDIR}/${PN}"
