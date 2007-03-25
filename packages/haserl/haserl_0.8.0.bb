@@ -4,6 +4,6 @@ DEPENDS = ""
 PR = "r0"
 LICENSE = "GPL"
 
-SRC_URI = "http://puzzle.dl.sourceforge.net/sourceforge/haserl/haserl-0.8.0.tar.gz"
+SRC_URI = "${SOURCEFORGE_MIRROR}/sourceforge/haserl/haserl-${PV}.tar.gz"
 
 inherit autotools gettext
