@@ -16,5 +16,5 @@ nslu2_pack_image () {
 	rm -rf ${DEPLOY_DIR_IMAGE}/slug
 }
 
-EXTRA_IMAGEDEPENDS += 'slugimage-native nslu2-linksys-firmware ixp4xx-npe upslug2-native'
-IMAGE_POSTPROCESS_COMMAND += "nslu2_pack_image; "
+EXTRA_IMAGEDEPENDS_nslu2 += 'slugimage-native nslu2-linksys-firmware ixp4xx-npe upslug2-native'
+IMAGE_POSTPROCESS_COMMAND_nslu2 += "nslu2_pack_image; "

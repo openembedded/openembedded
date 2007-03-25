@@ -182,9 +182,7 @@ if ! [ -d $targ/public ] || ! [ -f $targconf/.dongle ] || ! [ -f $targconf/passw
     echo "the device, or the formatting of the device."
     exit 1
 fi
-# /usr/bin/find / -xdev -print | /usr/bin/cpio -p -d -m -u $targ
-# rm -rf $targ/dev ; mv $targ/dev.state $targ/dev
-# rm -rf $targ/var ; mv $targ/var.state $targ/var
+
 echo "./var/tmp" > /tmp/xfile
 echo "./dev.state" >> /tmp/xfile
 echo "./var.state" >> /tmp/xfile
