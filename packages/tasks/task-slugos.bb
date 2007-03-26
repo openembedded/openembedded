@@ -6,7 +6,7 @@
 DESCRIPTION = "Task packages for the SlugOS distribution"
 HOMEPAGE = "http://www.nslu2-linux.org"
 LICENSE = "MIT"
-PR = "r5"
+PR = "r6"
 PACKAGE_ARCH = "${MACHINE_ARCH}"
 ALLOW_EMPTY = "1"
 
@@ -68,9 +68,12 @@ kernel-module-nls-cp437 \
 kernel-module-nls-utf8 \
 "
 
+
 # Add daemon required for HW RNG support
+SLUGOS_RNG_TOOLS_PACKAGE = "rng-tools"
+SLUGOS_RNG_TOOLS_PACKAGE_linux-uclibc = ""
 SLUGOS_STANDARD_RRECOMMENDS += "\
-rng-tools \
+${SLUGOS_RNG_TOOLS_PACKAGE} \
 "
 
 # Add modules required for usb support
