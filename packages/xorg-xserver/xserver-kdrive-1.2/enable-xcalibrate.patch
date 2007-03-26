@@ -1,0 +1,24 @@
+Index: xorg-server-1.2.0/mi/miinitext.c
+===================================================================
+--- xorg-server-1.2.0.orig/mi/miinitext.c	2007-03-29 11:32:40.000000000 +0200
++++ xorg-server-1.2.0/mi/miinitext.c	2007-03-29 11:33:22.000000000 +0200
+@@ -372,6 +372,9 @@
+ #ifdef DMXEXT
+ extern void DMXExtensionInit(INITARGS);
+ #endif
++#ifdef XCALIBRATE
++extern void XCalibrateExtensionInit(INITARGS);
++#endif
+ #ifdef XEVIE
+ extern void XevieExtensionInit(INITARGS);
+ #endif
+@@ -663,6 +666,9 @@
+ #ifdef DAMAGE
+     if (!noDamageExtension) DamageExtensionInit();
+ #endif
++#ifdef  XCALIBRATE
++    XCalibrateExtensionInit ();
++#endif
+ }
+ 
+ void

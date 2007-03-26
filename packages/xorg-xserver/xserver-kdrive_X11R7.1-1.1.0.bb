@@ -8,10 +8,7 @@ PACKAGES =+ "xserver-kdrive-w100"
 
 SRC_URI = "${XORG_MIRROR}/X11R7.1/src/xserver/xorg-server-${PV}.tar.bz2 \
 	${KDRIVE_COMMON_PATCHES} \
-	file://disable-xf86-dga-xorgcfg.patch;patch=1 \
 	file://xcalibrate.patch;patch=1 \
-	file://enable-epson.patch;patch=1 \
-	file://enable-tslib.patch;patch=1 \
 	file://w100.patch;patch=1 \
 	"
 
