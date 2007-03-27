@@ -3,7 +3,7 @@ SECTION = "base"
 PRIORITY = "optional"
 DEPENDS = "tzcode-native"
 
-PR = "r1"
+PR = "r0"
 
 PROVIDES = "tzdata tzdata-misc tzdata-posix tzdata-right tzdata-africa \
             tzdata-americas tzdata-antarctica tzdata-arctic tzdata-asia \
