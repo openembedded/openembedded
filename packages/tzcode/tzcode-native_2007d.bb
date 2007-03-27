@@ -1,6 +1,6 @@
 DESCRIPTION = "tzcode, timezone zoneinfo utils -- zic, zdump, tzselect"
 
-PR = "r2"
+PR = "r0"
 
 SRC_URI = "ftp://elsie.nci.nih.gov/pub/tzcode${PV}.tar.gz \
            ftp://elsie.nci.nih.gov/pub/tzdata${PV}.tar.gz"
