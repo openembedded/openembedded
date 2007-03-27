@@ -8,3 +8,8 @@ S = "${WORKDIR}/apt-${PV}"
 inherit autotools gettext
 
 EXTRA_AUTORECONF = "--exclude=autopoint,autoheader"
+
+# Apt wants to know the glibc version by running a binary file, which will fail, so we have to tell configure which version to use
+# Since I don't know the impliations of setting a wrong value I only provide one for angstrom, which uses glibc 2.5 (which claims to be 2.4)
+# Koen - 20070327
+EXTRA_OECONF_angstrom += " ac_cv_glibc_ver=libc6.4"
