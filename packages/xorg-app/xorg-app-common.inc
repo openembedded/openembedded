@@ -3,7 +3,7 @@ HOMEPAGE = "http://www.x.org"
 SECTION = "x11/applications"
 LICENSE = "MIT-X"
 
-#DEPENDS = ""
+DEPENDS = "util-macros"
 XORG_PN = "${PN}"
 XORG_RELEASE = "${@["individual",bb.data.getVar('PV', d, 1)[0:7]+"/src"][bb.data.getVar('PV', d, 1)[0:4] == "X11R"]}"
 SRC_URI = "${XORG_MIRROR}/${XORG_RELEASE}/app/${XORG_PN}-${PV}.tar.bz2"
