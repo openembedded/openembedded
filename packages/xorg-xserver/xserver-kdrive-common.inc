@@ -97,9 +97,6 @@ KDRIVE_COMMON_PATCHES = " \
 	file://fbdev-not-fix.patch;patch=1  \
 	file://enable-builtin-fonts.patch;patch=1 \
 	file://optional-xkb.patch;patch=1 \
-	file://enable-epson.patch;patch=1 \
-	file://enable-tslib.patch;patch=1 \
-	file://xcalibrate.patch;patch=1 \
 	file://kmode-palm.patch;patch=1 \
 	"
 
