@@ -1,14 +1,13 @@
-DESCRIPTION = "Linux Kernel for the Buffalo Linkstation HG 2.6.21-rc4"
+DESCRIPTION = "Linux Kernel for the Buffalo Linkstation HG 2.6.21-rc5"
 SECTION = "kernel"
 LICENSE = "GPL"
 PR = "r0"
 
 DEPENDS = "dtc-native"
-
-COMPATIBLE_MACHINE = "linkstationppc"
+COMPATIBLE_MACHINE = "(lsppchd|lsppchg)"
 
 SRC_URI = "http://kernel.org/pub/linux/kernel/v2.6/linux-2.6.20.tar.bz2 \
-	   http://www.kernel.org/pub/linux/kernel/v2.6/testing/patch-2.6.21-rc4.bz2;patch=1 \
+	   http://www.kernel.org/pub/linux/kernel/v2.6/testing/patch-2.6.21-rc5.bz2;patch=1 \
 	   file://defconfig \
 		"
 
@@ -20,7 +19,7 @@ export ARCH="powerpc"
 
 KERNEL_IMAGETYPE = "uImage"
 
-FILES_kernel += "/boot/kuroboxHG.dtb \
+FILES_kernel-image += "/boot/kuroboxHG.dtb \
 		 /boot/kuroboxHD.dtb"
 
 do_configure() {

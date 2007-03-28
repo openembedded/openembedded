@@ -90,7 +90,7 @@ show_menu() {
 		if ! test -d "$1/$file"
 		then			
 			# NOTE: It is important to use "." here so that the script inherits
-			# the shell environment / all set variables!						
+			# the shell environment / all set variables!					
 			M_TITLE="`. $1/$file title`"
 			FLAGS="`$1/$file flags`"
 			
@@ -108,6 +108,8 @@ show_menu() {
 			M_TITLE=""
 		fi
 	done
+
+#	debug_echo "FILES READ"
 
 	# Display directories below /etc/altboot-menu as menu-item
 	# and add all scripts inside the directory to m_entry
@@ -158,6 +160,8 @@ show_menu() {
 			M_TITLE=""
 		fi
 	done
+
+#	debug_echo "DIRS READ"
 
 	echo ""		
 }
@@ -491,6 +495,7 @@ fi
 # The NSLU2 is an exception as it uses the way-ugly busybox "ps"
 #
 
+mount | grep -q "^/proc" || mount -t proc proc /proc
 MACHINE="`cat /proc/cpuinfo | sed -n "/^Hardware/s/.*\:\ \(.*\)/\1/p"`"
 
 case "$MACHINE" in
@@ -506,6 +511,12 @@ case "$MACHINE" in
 	   	fi
 	   	;;
 esac
+
+if test "`basename "$0"`" = "altboot"
+then
+	show_menu /etc/altboot-menu 
+	exit 0
+fi
 
 if test "$user_called" = "1"
 then

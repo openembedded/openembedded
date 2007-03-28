@@ -50,3 +50,5 @@ PREFERRED_VERSION_glibc-intermediate = "2.5"
 PREFERRED_VERSION_glibc-initial = "2.5"
 
 PREFERRED_VERSION_openlink = "svn"
+PREFERRED_VERSION_dtc = "20070216"
+PREFERRED_VERSION_dtc-native = "20070216"
