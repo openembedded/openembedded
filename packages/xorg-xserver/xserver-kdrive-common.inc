@@ -9,7 +9,6 @@ PACKAGES =+ "xserver-kdrive-fbdev \
              xserver-kdrive-fake \
              xserver-kdrive-xephyr \
              xserver-kdrive-epson \
-             xserver-kdrive-w100 \
              xserver-kdrive-ati \
              xserver-kdrive-chips \
              xserver-kdrive-i810 \
@@ -35,6 +34,7 @@ DESCRIPTION_xserver-kdrive-w100 = "X server from freedesktop.org, supporting the
 DESCRIPTION_xserver-kdrive-ati = "X server from freedesktop.org, supporting ATI devices"
 DESCRIPTION_xserver-kdrive-chips = "X server from freedesktop.org, supporting Chips chipsets"
 DESCRIPTION_xserver-kdrive-i810 = "X server from freedesktop.org, supporting Intel chipsets"
+DESCRIPTION_xserver-kdrive-imageon = "X server from freedesktop.org, supporting the ATI imageon 100 chipset"
 DESCRIPTION_xserver-kdrive-mach64 = "X server from freedesktop.org, supporting mach64 chipsets"
 DESCRIPTION_xserver-kdrive-mga = "X server from freedesktop.org, supporting mga chipsets"
 DESCRIPTION_xserver-kdrive-neomagic = "X server from freedesktop.org, supporting neomagic chipsets"
@@ -56,6 +56,7 @@ FILES_xserver-kdrive-w100 = "${bindir}/Xw100"
 FILES_xserver-kdrive-ati = "${bindir}/Xati"
 FILES_xserver-kdrive-chips = "${bindir}/Xchips"
 FILES_xserver-kdrive-i810 = "${bindir}/Xi810"
+FILES_xserver-kdrive-imageon = "${bindir}/Ximageon"
 FILES_xserver-kdrive-mach64 = "${bindir}/Xmach64"
 FILES_xserver-kdrive-mga = "${bindir}/Xmga"
 FILES_xserver-kdrive-neomagic = "${bindir}/Xneomagic"
@@ -97,7 +98,6 @@ KDRIVE_COMMON_PATCHES = " \
 	file://enable-builtin-fonts.patch;patch=1 \
 	file://optional-xkb.patch;patch=1 \
 	file://enable-epson.patch;patch=1 \
-	file://w100.patch;patch=1 \
 	file://enable-tslib.patch;patch=1 \
 	file://xcalibrate.patch;patch=1 \
 	file://kmode-palm.patch;patch=1 \
@@ -114,16 +114,13 @@ inherit autotools pkgconfig
 
 ARM_INSTRUCTION_SET = "arm"
 
-W100_OECONF = "--disable-w100"
-W100_OECONF_arm = "--enable-w100"
-
 EXTRA_OECONF = "--enable-composite --enable-kdrive \
                 --disable-dga --disable-dri --disable-xinerama \
                 --disable-xf86misc --disable-xf86vidmode \
                 --disable-xorg --disable-xorgcfg \
                 --disable-xkb --disable-xnest --disable-xvfb \
                 --disable-xevie --disable-xprint --disable-xtrap \
-                --disable-dmx ${W100_OECONF} \
+                --disable-dmx ${W100_OECONF} ${IMAGEON_OECONF} \
                 --with-default-font-path=built-ins \
                 --enable-tslib --enable-xcalibrate \
                 ac_cv_file__usr_share_X11_sgml_defs_ent=no"
