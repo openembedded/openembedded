@@ -6,3 +6,6 @@ require apt-package.inc
 
 FILES_${PN} += "${bindir}/apt-key"
 apt-manpages += "doc/apt-key.8"
+
+PR = "r1"
+
