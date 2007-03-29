@@ -3,6 +3,8 @@ LICENSE = "LGPL"
 SECTION = "x11"
 DEPENDS = "glib-2.0 gtk+ libglade eds-dbus"
 RDEPENDS = "libedata-cal"
+RCONFLICTS = "openmoko-dates"
+RREPLACES = "openmoko-dates"
 
 inherit autotools pkgconfig gtk-icon-cache
 
@@ -15,3 +17,4 @@ do_install_append () {
 	install -m 0644 ${D}/${datadir}/icons/hicolor/48x48/apps/dates.png ${D}/${datadir}/pixmaps/
 }
 
+PRIVATE_LIBS = "libgtkdatesview.so.0"
