@@ -598,7 +598,7 @@ python package_do_shlibs() {
 						m = re.match("\s+SONAME\s+([^\s]*)", l)
 						if m and not m.group(1) in sonames:
 							# if library is private (only used by package) then do not build shlib for it
-							if private_libs == '' or -1 == private_libs.find(m.group(1)):
+							if not private_libs or -1 == private_libs.find(m.group(1)):
 								sonames.append(m.group(1))
 						if m and libdir_re.match(root):
 							needs_ldconfig = True
