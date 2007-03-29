@@ -748,6 +748,7 @@ CONFIG_UNIX98_PTYS=y
 # CONFIG_SA1100_RTC is not set
 # CONFIG_DTLK is not set
 # CONFIG_R3964 is not set
+CONFIG_TIHTC=m
 # CONFIG_RAW_DRIVER is not set
 
 #
