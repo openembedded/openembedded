@@ -5,7 +5,7 @@ PACKAGE_ARCH = "all"
 LICENSE = "MIT"
 PROVIDES = "task-openmoko-everything"
 
-PR = "r31"
+PR = "r32"
 
 PACKAGES = "\
   task-openmoko-linux \
@@ -141,6 +141,7 @@ DESCRIPTION_task-openmoko-demo = "OpenMoko: Demo Applications"
 RDEPENDS_task-openmoko-demo = "\
   matchbox-desktop \
   matchbox-keyboard \
+  openmoko-keyboard \
   matchbox-stroke \
   matchbox-config-gtk \
   matchbox-panel-2-applets \
