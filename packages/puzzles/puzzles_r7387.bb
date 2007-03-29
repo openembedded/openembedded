@@ -1,5 +1,5 @@
 
-DEPENDS = "gtk+"
+DEPENDS = "gtk+ libxt"
 PR = "r2"
 
 SRC_URI = "http://www.chiark.greenend.org.uk/~sgtatham/puzzles/puzzles-${PV}.tar.gz \
