@@ -13,7 +13,7 @@ Index: xorg-server-1.2.0/hw/kdrive/fbdev/Makefile.am
  libfbdev_a_SOURCES =	\
  	fbdev.c		\
  	fbdev.h
-@@ -16,7 +20,10 @@
+@@ -16,7 +20,8 @@
  Xfbdev_LDADD = 						\
  	libfbdev.a					\
  	@KDRIVE_LIBS@					\
@@ -22,7 +22,16 @@ Index: xorg-server-1.2.0/hw/kdrive/fbdev/Makefile.am
 +	$(TSLIB_FLAG)
  
  Xfbdev_DEPENDENCIES =					\
--	libfbdev.a
-+	libfbdev.a					\
-+	@KDRIVE_LIBS@					
-+
+ 	libfbdev.a
+Index: xorg-server-1.2.0/configure.ac
+===================================================================
+--- xorg-server-1.2.0.orig/configure.ac	2007-03-29 13:28:10.000000000 +0200
++++ xorg-server-1.2.0/configure.ac	2007-03-29 13:28:35.000000000 +0200
+@@ -1517,6 +1517,7 @@
+             AC_MSG_ERROR([tslib must be installed to build the tslib driver. See http://tslib.berlios.de/])
+         fi
+         AC_DEFINE(TSLIB, 1, [Have tslib support])
++        AC_DEFINE(TOUCHSCREEN, 1, [Have touchscreen support])
+     fi
+ 
+     # damage shadow extension glx (NOTYET) fb mi
