@@ -96,7 +96,10 @@ KDRIVE_COMMON_PATCHES = " \
 	file://kdrive-use-evdev.patch;patch=1  \
 	file://fbdev-not-fix.patch;patch=1  \
 	file://enable-builtin-fonts.patch;patch=1 \
+	file://disable-xf86-dga-xorgcfg.patch;patch=1 \
 	file://optional-xkb.patch;patch=1 \
+	file://enable-epson.patch;patch=1 \
+	file://enable-tslib.patch;patch=1 \
 	file://kmode-palm.patch;patch=1 \
 	"
 
