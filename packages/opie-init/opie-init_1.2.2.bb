@@ -1,5 +1,4 @@
 require ${PN}.inc
-PV = "${OPIE_CVS_PV}"
 PR = "r0"
 
 SRC_URI = "file://opie-reorgfiles \
