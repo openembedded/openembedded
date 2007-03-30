@@ -65,6 +65,8 @@ do_install() {
 	install -m 0644 ${S}/altbootctl.conf ${D}/etc
 	install -m 0755 ${S}/init.altboot ${D}/sbin
 	install -m 0755 ${S}/altbootctl ${D}/sbin
+	
+	ln -s /sbin/init.altboot ${D}/sbin/altboot
 
 	install -m 0755 ${S}/altboot-menu/*-* ${D}/etc/altboot-menu
 

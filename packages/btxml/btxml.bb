@@ -1,9 +1,9 @@
 DESCRIPTION = "Bluetooh Download Data from remote phones"
-PRIORITY = "optional"
-SECTIONS = "apps"
-DEPENDS = "bluez-libs"
 HOMEPAGE = "http://www.saftware.de"
+SECTION = "apps"
+PRIORITY = "optional"
 LICENSE = "GPL"
+DEPENDS = "bluez-libs"
 
 SRC_URI = "http://www.saftware.de/bluetooth/btxml.c"
 S = "${WORKDIR}"

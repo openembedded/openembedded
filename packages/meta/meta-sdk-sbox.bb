@@ -1,15 +1,14 @@
 DESCRIPTION = "Meta package for a Scratchbox SDK"
 LICENSE = "MIT"
-PR = "r0"
+PR = "r1"
 
 PACKAGES = ""
-PACKAGES = ""
 
-inherit sdk debian
+inherit rootfs_ipk sdk debian
 
 SDK_DIR = "${WORKDIR}/sdk"
 SDK_OUTPUT = "${SDK_DIR}/image"
-SDK_DEPLOY = "${TMPDIR}/deploy/sdk"
+SDK_DEPLOY = "${DEPLOY_DIR}/sdk"
 prefix = "/"
 exec_prefix = "${prefix}"
 base_prefix = "${exec_prefix}"
@@ -28,28 +27,11 @@ BUILD_ALL_DEPS = "1"
 
 IPKG_TARGET = "ipkg-cl -f ${SDK_DIR}/ipkg-target.conf -o ${SDK_OUTPUT}/${prefix}"
 
-ipk_do_indexes () {
-	set -x
-
-	ipkgarchs="${PACKAGE_ARCHS}"
-
-        if [ -z "${DEPLOY_KEEP_PACKAGES}" ]; then
-                touch ${DEPLOY_DIR_IPK}/Packages
-                ipkg-make-index -r ${DEPLOY_DIR_IPK}/Packages -p ${DEPLOY_DIR_IPK}/Packages -l ${DEPLOY_DIR_IPK}/Packages.filelist -m ${DEPLOY_DIR_IPK}
-        fi
-
-	for arch in $ipkgarchs; do
-		if [ -z "${DEPLOY_KEEP_PACKAGES}" ]; then
-			if [ -e ${DEPLOY_DIR_IPK}/$arch/ ] ; then 
-				touch ${DEPLOY_DIR_IPK}/$arch/Packages
-				ipkg-make-index -r ${DEPLOY_DIR_IPK}/$arch/Packages -p ${DEPLOY_DIR_IPK}/$arch/Packages -l ${DEPLOY_DIR_IPK}/$arch/Packages.filelist -m ${DEPLOY_DIR_IPK}/$arch/
-			fi
-		fi
-	done
-}
-
 do_populate_sdk() {
-	ipk_do_indexes
+
+        set -ex
+        rootfs_ipk_do_indexes
+        set +ex
 
 	rm -rf ${SDK_OUTPUT}
 	mkdir -p ${SDK_OUTPUT}
@@ -99,9 +81,6 @@ EOF
 
 	# fix pkgconfig data files
 	cd ${SDK_OUTPUT}/${prefix}/usr/lib/pkgconfig
-	#for f in *.pc ; do
-	#	sed -i 's%=/usr%=${prefix}/arm-linux%g' "$f"
-	#done
 	for f in *.pc ; do
 		sed -i 's%${STAGING_DIR}%/usr/%g' "$f"
 	done
