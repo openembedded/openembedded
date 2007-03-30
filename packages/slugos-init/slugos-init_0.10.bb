@@ -4,7 +4,7 @@ PRIORITY = "required"
 LICENSE = "GPL"
 DEPENDS = "base-files devio"
 RDEPENDS = "busybox devio"
-PR = "r81"
+PR = "r82"
 
 SRC_URI = "file://boot/flash \
 	   file://boot/disk \
@@ -101,9 +101,6 @@ do_install() {
 	do
 		install -m 0755 boot/$p ${D}/boot
 	done
-
-	# Support for altboot
-	ln -s /sbin/init.altboot ${D}/boot/altboot
 
 	# Configuration files
 	install -m 0644 conffiles ${D}${sysconfdir}/default
