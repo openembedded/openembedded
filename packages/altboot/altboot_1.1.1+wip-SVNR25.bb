@@ -23,8 +23,7 @@ RDEPENDS_${PN}-conf = "${PN}"
 
 ######################################################################################
 
-SRCDATE="20070331"
-PV = "1.1.1+wip-${SRCDATE}"
+SVN_REV = "25"
 PR = "r0"
 
 ######################################################################################
@@ -35,7 +34,7 @@ PACKAGE_ARCH_${PN} = "${MACHINE}"
 PACKAGE_ARCH_${PN}-doc = "all"
 PACKAGE_ARCH_${PN}-conf = "${MACHINE}"
 
-SRC_URI = "svn://hentges.net/altboot;module=trunk;proto=svn"
+SRC_URI = "svn://hentges.net/altboot;module=trunk;rev=${SVN_REV}"
 
 S = "${WORKDIR}/trunk/"
 
