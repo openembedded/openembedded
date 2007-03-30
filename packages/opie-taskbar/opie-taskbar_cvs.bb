@@ -1,6 +1,6 @@
 require ${PN}.inc
 PV = "${OPIE_CVS_PV}"
-PR = "r6"
+PR = "r7"
 
 SRC_URI = "${HANDHELDS_CVS};module=opie/core/apps/calibrate \
            ${HANDHELDS_CVS};module=opie/noncore/settings/mediummount \
@@ -11,10 +11,4 @@ SRC_URI = "${HANDHELDS_CVS};module=opie/core/apps/calibrate \
            ${HANDHELDS_CVS};module=opie/etc \
            file://nomax.patch;patch=1;pnum=3 \
            file://server.pro \
-           file://opie-reorgfiles \
-           file://opie \
-           file://qpe.conf \
-           file://locale.conf \
-           file://opie_defaults"
-
-SRC_URI_append_c7x0 = " file://qpe-suspend-resume"
+          "

@@ -8,7 +8,7 @@ PROVIDES = "virtual/xserver"
 MESA_VER ?= "6.5"
 
 DEPENDS = "fontconfig freetype flex-native lbxutil kbproto \
-xf86driproto drm glproto randrproto renderproto fixesproto damageproto \
+xf86driproto libdrm glproto randrproto renderproto fixesproto damageproto \
 xcmiscproto xextproto xproto xf86miscproto xf86vidmodeproto xf86bigfontproto \
 scrnsaverproto bigreqsproto resourceproto fontsproto inputproto \
 xf86dgaproto videoproto compositeproto trapproto recordproto dmxproto \

@@ -4,7 +4,7 @@ HOMEPAGE = "http://avahi.org"
 SECTION = "network"
 PRIORITY = "optional"
 LICENSE = "GPL"
-PR="r1"
+PR="r2"
 
 DEPENDS = "expat libdaemon dbus glib-2.0"
 RRECOMMENDS = "libnss-mdns"
@@ -55,8 +55,8 @@ pkg_postinst_avahi-daemon () {
 	if [ "x$D" != "x" ]; then
 		exit 1
 	fi
-	grep avahi /etc/group || addgroup avahi
-	grep avahi /etc/passwd || adduser --disabled-password --system --home /var/run/avahi-daemon --no-create-home avahi --ingroup avahi -g Avahi
+	grep "^avahi:" /etc/group > /dev/null || addgroup avahi
+	grep "^avahi:" /etc/passwd > /dev/null || adduser --disabled-password --system --home /var/run/avahi-daemon --no-create-home avahi --ingroup avahi -g Avahi
 
 	DBUSPID=`pidof dbus-daemon`
 
@@ -70,8 +70,8 @@ pkg_postinst_avahi-autoipd () {
 	if [ "x$D" != "x" ]; then
 		exit 1
 	fi
-	grep avahi-autoipd /etc/group || addgroup avahi-autoipd
-	grep avahi-autoipd /etc/passwd || adduser --disabled-password --system --home /var/lib/avahi-autoipd --no-create-home avahi-autoipd --ingroup avahi-autoipd -g "Avahi autoip daemon"
+	grep "^avahi-autoipd:" /etc/group > /dev/null || addgroup avahi-autoipd
+	grep "^avahi-autoipd:" /etc/passwd > /dev/null || adduser --disabled-password --system --home /var/lib/avahi-autoipd --no-create-home avahi-autoipd --ingroup avahi-autoipd -g "Avahi autoip daemon"
 }
 
 pkg_postrm_avahi-daemon () {

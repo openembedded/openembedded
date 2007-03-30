@@ -27,10 +27,7 @@ PIXMAP_SIZE_asus730     = "-480x640"
 PIXMAP_SIZE_htcuniversal= "-480x640"
 PIXMAP_SIZE_hx4700      = "-480x640"
 
-inherit opie update-rc.d
-
-INITSCRIPT_NAME = "opie"
-INITSCRIPT_PARAMS = "start 99 5 . stop 20 0 1 6 ."
+inherit opie
 
 do_configure_prepend() {
 	ln -s ${WORKDIR}/calibrate ${S}/calibrate
@@ -56,16 +53,13 @@ do_install() {
 	install -d ${D}${palmtopdir}/pics/launcher
 	install -d ${D}${palmtopdir}/pics/logo
 	install -d ${D}${palmtopdir}/pics/RoH/star/
-	install -d ${D}${sysconfdir}/init.d
-	install -d ${D}${sysconfdir}/profile.d	
 	install -d ${D}${palmtopdir}/etc/colors
 	install -d ${D}${palmtopdir}/etc/skel
+	install -d ${D}${sysconfdir}
 
 	install -m 0755 ${S}/qpe ${D}${palmtopdir}/bin/qpe
-	install -m 0755 ${WORKDIR}/opie-reorgfiles ${D}${palmtopdir}/bin/
 	install -m 0644 ${WORKDIR}/apps/Settings/calibrate.desktop ${D}${palmtopdir}/apps/Settings/
 	install -m 0644 ${WORKDIR}/apps/Settings/quit.desktop ${D}${palmtopdir}/apps/Settings/
-	install -m 0644 ${WORKDIR}/opie_defaults ${D}${sysconfdir}/profile.d/
 
 	for p in ${PICS}
 	do
@@ -80,33 +74,8 @@ do_install() {
 	install -m 0644 ${WORKDIR}/etc/colors/*.scheme ${D}${palmtopdir}/etc/colors/
 	install -m 0644 ${WORKDIR}/etc/mime.types ${D}${sysconfdir}/
 
-	install -m 0755 ${WORKDIR}/opie ${D}${sysconfdir}/init.d/opie
-	install -m 0644 ${WORKDIR}/qpe.conf ${D}${palmtopdir}/etc/skel/
-
-	if [ -s ${WORKDIR}/locale.conf ]; then
-	    install -m 0644 ${WORKDIR}/locale.conf ${D}${palmtopdir}/etc/skel/
-	fi
-
         install -m 0644 ${WORKDIR}/pics/capslock.xpm ${D}${palmtopdir}/pics/
         install -m 0644 ${WORKDIR}/pics/numlock.xpm ${D}${palmtopdir}/pics/
-
-	case ${MACHINE} in
-	c7x0)
-		install -d ${D}${sysconfdir}/apm/event.d/
-		install -m 0755 ${WORKDIR}/qpe-suspend-resume ${D}${sysconfdir}/apm/event.d/00-qpe-suspend-resume.sh
-                ;;
-        *)
-                ;;
-        esac	
-}
-
-updatercd_postinst_mnci() {
-if test "x$D" != "x"; then
-        D="-r $D"
-else
-        D=""	# do not autostart at installation time
-fi
-update-rc.d $D ${INITSCRIPT_NAME} ${INITSCRIPT_PARAMS}
 }
 
 FILES_opie-taskbar_append = " ${sysconfdir} ${palmtopdir}/apps ${palmtopdir}/pics"

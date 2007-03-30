@@ -16,21 +16,21 @@ RETVAL=0
 prog="gsmd"
 
 start() {
-	# FIXME add check whether GSM_POW is set at all, otherwise don't try to power on
-	# Power on GSM device
-	
 	# Hack for broken uboot and/or kernel on the neo1973
 	dmesg -n1
 
-	if [ -e "${GSM_POW}" ]
+	if [ -n "${GSM_POW}" ]
 	then
-		echo -n "Powering up GSM device..."
-		echo "1" > ${GSM_POW}
-		sleep 1
-		echo "done"
-	else
-		echo "GSM device not found. Aborting startup"
-		return false
+		if [ -e "${GSM_POW}" ]
+		then
+			echo -n "Powering up GSM device..."
+			echo "1" > ${GSM_POW}
+			sleep 1
+			echo "done"
+		else
+			echo "GSM device not found. Aborting startup"
+			return false
+		fi
 	fi
 	# Start daemons.
 	echo -n "Starting $prog: "

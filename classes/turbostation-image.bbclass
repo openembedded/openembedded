@@ -28,3 +28,5 @@ turbostation_pack_image() {
         rm -f $PADFILE
         ls -l $OUTPUT
 }
+
+IMAGE_POSTPROCESS_COMMAND += "turbostation_pack_image; "
