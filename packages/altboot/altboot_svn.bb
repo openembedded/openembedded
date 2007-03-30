@@ -24,7 +24,7 @@ RDEPENDS_${PN}-conf = "${PN}"
 ######################################################################################
 
 PV = "1.1.1+wip-${SRCDATE}"
-PR = "r0"
+PR = "r1"
 
 ######################################################################################
 
@@ -44,6 +44,9 @@ FILES_${PN}-conf = "/etc/altboot*cfg"
 
 ######################################################################################
 
+MACHINE_DIR = "${MACHINE}"
+MACHINE_DIR_nslu2be = "nslu2le"
+
 do_install() {
 	install -d ${D}/sbin
 	install -d ${D}/etc/altboot-menu
@@ -52,9 +55,9 @@ do_install() {
 	install -d ${D}/usr/share/doc/altboot
 	install -d ${D}/usr/share/sounds
 
-	if test -d ${S}/${MACHINE}
+	if test -d ${S}/${MACHINE_DIR}
 	then
-		install -m 0644 ${S}/${MACHINE}/altboot*.cfg ${D}/etc/
+		install -m 0644 ${S}/${MACHINE_DIR}/altboot*.cfg ${D}/etc/
 	else
 		install -m 0644 ${S}/altboot*.cfg ${D}/etc/
 	fi
@@ -68,13 +71,13 @@ do_install() {
 	
 	ln -s /sbin/init.altboot ${D}/sbin/altboot
 
-	if test -d ${S}/${MACHINE}/altboot-menu
+	if test -d ${S}/${MACHINE_DIR}/altboot-menu
 	then
-		install -m 0755 ${S}/${MACHINE}/altboot-menu/*-* ${D}/etc/altboot-menu
+		install -m 0755 ${S}/${MACHINE_DIR}/altboot-menu/*-* ${D}/etc/altboot-menu
 		
-		if test -d ${S}/${MACHINE}/altboot-menu/Advanced
+		if test -d ${S}/${MACHINE_DIR}/altboot-menu/Advanced
 		then
-			install -m 0755 ${S}/${MACHINE}/altboot-menu/Advanced/*-* ${D}/etc/altboot-menu/Advanced
+			install -m 0755 ${S}/${MACHINE_DIR}/altboot-menu/Advanced/*-* ${D}/etc/altboot-menu/Advanced
 		fi
 	else
 		install -m 0755 ${S}/altboot-menu/*-* ${D}/etc/altboot-menu
@@ -85,10 +88,10 @@ do_install() {
 		fi
 	fi
 	
-	if test -d ${S}/${MACHINE}/altboot.rc
+	if test -d ${S}/${MACHINE_DIR}/altboot.rc
 	then
-		install -m 0755 ${S}/${MACHINE}/altboot.rc/*.sh ${D}/etc/altboot.rc
-		install -m 0644 ${S}/${MACHINE}/altboot.rc/*.txt ${D}/etc/altboot.rc	
+		install -m 0755 ${S}/${MACHINE_DIR}/altboot.rc/*.sh ${D}/etc/altboot.rc
+		install -m 0644 ${S}/${MACHINE_DIR}/altboot.rc/*.txt ${D}/etc/altboot.rc	
 	else
 		install -m 0755 ${S}/altboot.rc/*.sh ${D}/etc/altboot.rc
 		install -m 0644 ${S}/altboot.rc/*.txt ${D}/etc/altboot.rc
