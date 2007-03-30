@@ -1,6 +1,10 @@
 DESCRIPTION = "A flexible VOIP soft switch/PBX."
+DESCRIPTION_${PN}-ogi = "OpenPBX Gateway Inerface for scripted PBX call processing"
+DESCRIPTION_${PN}-fax = "Fax send/receive file and T.38 support for OpenPBX"
+DESCRIPTION_${PN}-ldap = "LDAP Directory services interface for OpenPBX"
+DESCRIPTION_${PN}-sounds = "Standard set of audio prompts for OpenPBX"
 HOMEPAGE = "http://www.openpbx.org"
-#RDEPENDS = "ssmtp"
+RDEPENDS = "ssmtp"
 SECTION = "voip"
 LICENSE = "GPL"
 DEPENDS = "openssl zlib tiff libcap spandsp speex readline js \
@@ -9,7 +13,7 @@ DEPENDS_${PN}-ldap = "openldap"
 RRECOMMENDS = "logrotate"
 RRECOMMENDS_${PN}-ogi = "perl perl-module-strict openpbx.org-perl"
 PV = "1.2_rc3"
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "http://www.openpbx.org/releases/${P}.tar.gz \
            svn://svn.openpbx.org/openpbx-sounds/trunk/sounds/en_US;module=MelanieTaylor;proto=svn \
@@ -26,10 +30,10 @@ INITSCRIPT_PARAMS = "defaults 60"
 inherit autotools update-rc.d
 
 EXTRA_OECONF = " --with-ssl=${STAGING_DIR}/${HOST_SYS} --enable-low_memory \
-        --disable-zaptel --with-directory-layout=lsb --with-chan_fax \
+        --disable-zaptel --with-directory-layout=lsb --enable-t38 \
         --with-codec-speex=${STAGING_DIR}/${HOST_SYS} --with-app_ldap \
         --with-perl-shebang='#!${bindir}/perl' --with-jabber --with-res_jabber \
-        --enable-t38 --with-javascript --with-res_js \
+        --with-javascript --with-res_js \
         --bindir=${bindir} --datadir=${datadir} --sysconfdir=${sysconfdir} \
         --includedir=${includedir} --infodir=${infodir} --mandir=${mandir} \
         --localstatedir=${localstatedir} --libdir=${libdir}"
@@ -69,11 +73,10 @@ FILES_${PN}-sounds = "${datadir}/openpbx.org/sounds/*"
 FILES_${PN}-dev = "${libdir}/openpbx.org/modules/*.la \
                    ${libdir}/openpbx.org/*.la \
                    ${includedir}/openpbx/*"
-FILES_${PN}-fax = "${libdir}/openpbx.org/modules/chan_fax.so \
-                   ${libdir}/openpbx.org/modules/app_rxfax.so \
-                   ${libdir}/openpbx.org/modules/app_txfax.so \
+FILES_${PN}-fax = "${libdir}/openpbx.org/modules/app_backgrounddetect.so \
                    ${libdir}/openpbx.org/modules/app_faxdetect.so \
-                   ${sysconfdir}/openpbx.org/chan_fax.conf"
+                   ${libdir}/openpbx.org/modules/app_rxfax.so \
+                   ${libdir}/openpbx.org/modules/app_txfax.so"
 FILES_${PN}-ogi = "${libdir}/openpbx.org/modules/res_ogi.so \
                    ${datadir}/openpbx.org/ogi/*"
 FILES_${PN}-ldap = "${libdir}/openpbx.org/modules/app_ldap.*"
@@ -81,11 +84,22 @@ FILES_${PN}-ldap = "${libdir}/openpbx.org/modules/app_ldap.*"
 pkg_postinst_prepend() {
     grep -q openpbx ${sysconfdir}/group || addgroup --system openpbx
     grep -q openpbx ${sysconfdir}/passwd || adduser --system --home ${localstatedir}/run/openpbx.org --no-create-home --disabled-password --ingroup openpbx -s ${base_bindir}/false openpbx
-    chown -R openpbx:openpbx ${localstatedir}/lib/openpbx.org ${localstatedir}/spool/openpbx.org ${localstatedir}/log/openpbx.org ${localstatedir}/run/openpbx.org ${sysconfdir}/openpbx.org ${datadir}/openpbx.org
+    chown -R openpbx:openpbx ${libdir}/openpbx.org ${localstatedir}/lib/openpbx.org  ${localstatedir}/spool/openpbx.org ${localstatedir}/log/openpbx.org ${localstatedir}/run/openpbx.org ${sysconfdir}/openpbx.org ${datadir}/openpbx.org
     /etc/init.d/populate-volatile.sh update
 }
 
-CONFFILES_${PN}-fax += "${sysconfdir}/openpbx.org/chan_fax.conf"
+pkg_postinst_${PN}-fax () {
+    chown -R openpbx:openpbx ${libdir}/openpbx.org
+}
+
+pkg_postinst_${PN}-ldap () {
+    chown -R openpbx:openpbx ${libdir}/openpbx.org
+}
+
+pkg_postinst_${PN}-sounds () {
+    chown -R openpbx:openpbx ${datadir}/openpbx.org
+}
+
 CONFFILES_${PN} += "${sysconfdir}/openpbx.org/musiconhold.conf"
 CONFFILES_${PN} += "${sysconfdir}/openpbx.org/adsi.conf"
 CONFFILES_${PN} += "${sysconfdir}/openpbx.org/adtranvofr.conf"
@@ -99,6 +113,7 @@ CONFFILES_${PN} += "${sysconfdir}/openpbx.org/dnsmgr.conf"
 CONFFILES_${PN} += "${sysconfdir}/openpbx.org/dundi.conf"
 CONFFILES_${PN} += "${sysconfdir}/openpbx.org/enum.conf"
 CONFFILES_${PN} += "${sysconfdir}/openpbx.org/extconfig.conf"
+CONFFILES_${PN} += "${sysconfdir}/openpbx.org/extensions.conf"
 CONFFILES_${PN} += "${sysconfdir}/openpbx.org/extensions.ael"
 CONFFILES_${PN} += "${sysconfdir}/openpbx.org/features.conf"
 CONFFILES_${PN} += "${sysconfdir}/openpbx.org/iax.conf"

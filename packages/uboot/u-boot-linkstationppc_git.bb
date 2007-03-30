@@ -3,15 +3,16 @@ PROVIDES = "virtual/bootloader"
 SECTION = "bootloader"
 PRIORITY = "optional"
 LICENSE = "GPL"
+PR = "r1"
 
 DEFAULT_PREFERENCE = "-1"
-COMPATIBLE_MACHINE = "linkstationppc"
+COMPATIBLE_MACHINE = "(lsppchd|lsppchg)"
 
 SRC_URI = "git://www.jdl.com/software/u-boot-86xx.git;protocol=git \
 	   file://u-boot-kurobox.patch;patch=1 \
 	   file://u-boot-kurobox-fdt.patch;patch=1 \
-	   file://defconfig_linkstationppchg \
-	   file://defconfig_linkstationppchd \
+	   file://defconfig_lsppchg \
+	   file://defconfig_lsppchd \
 		"
 
 S = "${WORKDIR}/git"

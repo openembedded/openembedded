@@ -1,7 +1,7 @@
 DESCRIPTION = "Standard Gtk+ theme for the OpenMoko distribution"
 SECTION = "openmoko/base"
 PV = "0.0+svn${SRCDATE}"
-PR = "r3"
+PR = "r4"
 
 inherit openmoko-base
 
@@ -21,4 +21,5 @@ do_install() {
 	echo 'include "${datadir}/themes/openmoko-standard/gtk-2.0/gtkrc"' >> ${D}${sysconfdir}/gtk-2.0/gtkrc
 }
 
+PACKAGE_ARCH = "all"
 FILES_${PN} = "${datadir} ${sysconfdir}"

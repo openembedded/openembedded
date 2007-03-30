@@ -1,6 +1,17 @@
 #
 # binutils and compilers
 #
+# Can be "glibc" and "uclibc"
+FOONAS_MODE ?= "glibc"
+
+#DEPLOY_DIR = "${TMPDIR}/deploy/${FOONAS_MODE}"
+require conf/distro/include/foonas-${FOONAS_MODE}.inc
+
+INHERIT += "package_ipk debian sanity devshell"
+
+#Generate locales on the buildsystem instead of on the target. Speeds up first boot, set to "1" to enable
+PREFERRED_PROVIDER_qemu-native = "qemu-native"
+ENABLE_BINARY_LOCALE_GENERATION ?= "0"
 
 PREFERRED_PROVIDER_virtual/${TARGET_PREFIX}libc-for-gcc = "glibc-intermediate"
 PREFERRED_PROVIDER_virtual/arm-foonas-linux-gnueabi-libc-for-gcc = "glibc-intermediate"
@@ -12,20 +23,6 @@ PREFERRED_PROVIDER_virtual/powerpc-foonas-linux-libc-for-gcc = "glibc-intermedia
 #PREFERRED_PROVIDER_virtual/armeb-foonas-linux-gnueabi-libc-for-gcc = "glibc-intermediate"
 #PREFERRED_PROVIDER_virtual/mipsel-foonas-linux-libc-for-gcc = "glibc-intermediate"
 
-TARGET_OS = "linux${@['','-gnueabi'][bb.data.getVar('TARGET_ARCH',d,1) in ['arm', 'armeb']]}"
-
-#mess with compiler flags to use -Os instead of -O2
-#Please see http://free-electrons.com/doc/embedded_linux_optimizations/img47.html for some more info
-# perl has some problems, see http://bugs.openembedded.org/show_bug.cgi?id=1616
-
-FULL_OPTIMIZATION = "-fexpensive-optimizations -fomit-frame-pointer -frename-registers -Os"
-FULL_OPTIMIZATION_pn-perl = "-fexpensive-optimizations -fomit-frame-pointer -frename-registers -O1"
-
-BUILD_OPTIMIZATION = "-Os"
-BUILD_OPTIMIZATION_pn-perl = "-O1"
-
-CXXFLAGS += "-fvisibility-inlines-hidden"
-
 PREFERRED_PROVIDERS += "virtual/${TARGET_PREFIX}gcc-initial:gcc-cross-initial"
 PREFERRED_PROVIDERS += "virtual/${TARGET_PREFIX}gcc:gcc-cross"
 PREFERRED_PROVIDERS += "virtual/${TARGET_PREFIX}g++:gcc-cross"
@@ -36,8 +33,6 @@ PREFERRED_PROVIDERS += "virtual/${TARGET_PREFIX}depmod:module-init-tools-cross"
 PREFERRED_PROVIDERS += "virtual/${TARGET_PREFIX}libc-for-gcc:glibc-intermediate"
 
 PREFERRED_PROVIDER_virtual/libx11 = "libx11"
-PREFERRED_PROVIDER_virtual/libiconv = "glibc"
-PREFERRED_PROVIDER_virtual/libintl = "glibc"
 
 PREFERRED_PROVIDER_virtual/db = "db"
 PREFERRED_PROVIDER_virtual/db-native = "db-native"
@@ -53,8 +48,7 @@ PREFERRED_VERSION_gcc-cross-initial = "4.1.1"
 PREFERRED_VERSION_glibc = "2.5"
 PREFERRED_VERSION_glibc-intermediate = "2.5"
 PREFERRED_VERSION_glibc-initial = "2.5"
-GLIBC_EXTRA_OECONF = "--with-tls"
 
-PREFERRED_VERSION_linux-libc-headers ?= "2.6.18"
-GLIBC_ADDONS ?= "ports,nptl,libidn"
-
+PREFERRED_VERSION_openlink = "svn"
+PREFERRED_VERSION_dtc = "20070216"
+PREFERRED_VERSION_dtc-native = "20070216"

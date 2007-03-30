@@ -1,0 +1,95 @@
+#! /bin/sh
+#
+# Copyright Matthias Hentges <devel@hentges.net> (c) 2006
+# License: GPL (see http://www.gnu.org/licenses/gpl.txt for a copy of the license)
+#
+# Filename: altboot_1.0.5-rc2.bb
+# Date: 21-Feb-06
+
+DESCRIPTION = "The altboot bootmanager"
+MAINTAINER = "Matthias 'CoreDump' Hentges <oe@hentges.net>"
+HOMEPAGE = "http://www.hentges.net/misc/openzaurus/index.shtml"
+LICENSE = "GPL" 
+
+######################################################################################
+
+RRECOMMENDS_${PN} = "e2fsprogs-e2fsck dosfstools"
+RRECOMMENDS_${PN}_append_akita = " kexec-tools"
+RRECOMMENDS_${PN}_append_spitz = " kexec-tools"
+RRECOMMENDS_${PN}_append_c7x0 = " kexec-tools"
+
+RDEPENDS_${PN} = "${PN}-conf"
+RDEPENDS_${PN}-conf = "${PN}"
+
+######################################################################################
+
+PV = "1.1.1+wip-${SRCDATE}"
+PR = "r0"
+
+######################################################################################
+
+PACKAGES = "${PN}-conf ${PN}-doc ${PN}"
+
+PACKAGE_ARCH_${PN} = "all"
+PACKAGE_ARCH_${PN}-doc = "all"
+PACKAGE_ARCH_${PN}-conf = "${MACHINE}"
+
+SRC_URI = "svn://hentges.net/altboot;module=trunk;proto=svn"
+
+S = "${WORKDIR}/trunk/"
+
+######################################################################################
+
+FILES_${PN}-conf = "/etc/altboot*cfg"
+
+######################################################################################
+
+do_install() {
+	install -d ${D}/sbin
+	install -d ${D}/etc/altboot-menu
+	install -d ${D}/etc/altboot-menu/Advanced
+	install -d ${D}/etc/altboot.rc
+	install -d ${D}/usr/share/doc/altboot
+	install -d ${D}/usr/share/sounds
+	install -d ${D}/etc/skel/altboot
+
+	if test -d ${S}/${MACHINE}
+	then
+		install -m 0644 ${S}/${MACHINE}/altboot*.cfg ${D}/etc/
+	else
+		install -m 0644 ${S}/altboot*.cfg ${D}/etc/
+	fi
+
+	install -m 0644 ${S}/beep.raw ${D}/usr/share/sounds
+	install -m 0644 ${S}/altboot.func ${D}/etc
+	install -m 0644 ${S}/altbootctl.conf ${D}/etc
+	install -m 0755 ${S}/init.altboot ${D}/sbin
+	install -m 0755 ${S}/altbootctl ${D}/sbin
+
+	install -m 0755 ${S}/altboot-menu/*-* ${D}/etc/altboot-menu
+
+	install -m 0755 ${S}/altboot-menu/Advanced/*-* ${D}/etc/altboot-menu/Advanced
+
+	install -m 0755 ${S}/altboot.rc/*.sh ${D}/etc/altboot.rc
+	install -m 0644 ${S}/altboot.rc/*.txt ${D}/etc/altboot.rc
+}
+
+######################################################################################
+
+do_configure() {
+	cat ${S}/init.altboot | sed "s/^VERSION=.*/VERSION=\"${PV}-${PR}\"/" > ${S}/init.altboot_
+	mv ${S}/init.altboot_ ${S}/init.altboot
+}
+
+######################################################################################
+
+pkg_postinst_${PN}() {
+	update-alternatives --install /sbin/init init /sbin/init.altboot 55
+}
+
+######################################################################################
+
+pkg_postrm_${PN}() {
+	update-alternatives --remove init /sbin/init.altboot
+}
+

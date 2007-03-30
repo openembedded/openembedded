@@ -1,6 +1,7 @@
 DESCRIPTION = "UUCP is used to transfer mail, news and random files between systems which are not connected by more modern networks. The communication can be made via modems, direct (hard-wired) serial connections or via an IP connection."
 LICENSE = "GPLv2"
 SECTION = "console"
+PR = "r1"
 
 inherit autotools
 
@@ -11,6 +12,9 @@ do_configure() {
 	oe_runconf
 }
 
+do_install_append() {
+    fakeroot install -d -g uucp -o uucp ${D}/usr/spool/uucp
+}
 
 PACKAGES =+ "cu"
-FILES_cu = "${bindir}/cu"
+FILES_cu = "${bindir}/cu /usr/spool"

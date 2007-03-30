@@ -11,6 +11,10 @@ SRC_URI = "svn://svn.openmoko.org/trunk/src/target;module=gsm;proto=http \
            file://default"
 S = "${WORKDIR}/gsm"
 
+SRC_URI_append_magician = " file://vendor-tihtc.patch;patch=1 \
+                            file://interpreter-ready.patch;patch=1 \
+                            file://ldisc.patch;patch=1"
+
 inherit autotools pkgconfig update-rc.d
 
 INITSCRIPT_NAME = "gsmd"

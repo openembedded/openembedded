@@ -48,7 +48,6 @@ start() {
 	#
 	if [ -e "${GSM_DEV}" ]
 	then
-		stty -F ${GSM_DEV} crtscts
 		gsmd -p ${GSM_DEV} ${GSMD_OPTS} >/tmp/gsm.log 2>&1 &
 		echo "success"
 	else

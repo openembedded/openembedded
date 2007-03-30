@@ -1,5 +1,7 @@
 require dates.inc
 
+PR = "r1"
+
 DEFAULT_PREFERENCE = "-1"
 
 PV = "0.3.1+svn${SRCDATE}"

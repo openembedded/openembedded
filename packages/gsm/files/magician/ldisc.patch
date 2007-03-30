@@ -1,0 +1,66 @@
+Index: gsm/src/gsmd/gsmd.c
+===================================================================
+--- gsm.orig/src/gsmd/gsmd.c	2007-03-29 15:29:31.000000000 +0200
++++ gsm/src/gsmd/gsmd.c	2007-03-29 15:33:07.000000000 +0200
+@@ -32,6 +32,7 @@
+ #define _GNU_SOURCE
+ #include <getopt.h>
+ 
++#include <sys/ioctl.h>
+ #include <sys/types.h>
+ #include <sys/stat.h>
+ 
+@@ -150,6 +151,7 @@
+ 	{ "speed", 1, NULL, 's' },
+ 	{ "logfile", 1, NULL, 'l' },
+ 	{ "hwflow", 0, NULL, 'F' },
++	{ "ldisc", 1, NULL, 'D' },
+ 	{ "leak-report", 0, NULL, 'L' },
+ 	{ 0, 0, 0, 0 }
+ };
+@@ -165,6 +167,7 @@
+ 	       "\t-p dev\t--device dev\tSpecify serial device to be used\n"
+ 	       "\t-s spd\t--speed spd\tSpecify speed in bps (9600,38400,115200,...)\n"
+ 	       "\t-F\t--hwflow\tHardware Flow Control (RTS/CTS)\n"
++	       "\t-D\t--ldisc num\tSet line discipline (0=N_TTY,...)\n"
+ 	       "\t-L\t--leak-report\tLeak Report of talloc memory allocator\n"
+ 	       "\t-l file\t--logfile file\tSpecify a logfile to log to\n"
+ 	       );
+@@ -191,6 +194,7 @@
+ 	int daemonize = 0;
+ 	int bps = 115200;
+ 	int hwflow = 0;
++	int ldisc = 0;
+ 	char *device = "/dev/ttyUSB0";
+ 	char *logfile = "syslog";
+ 
+@@ -202,7 +206,7 @@
+ 	gsmd_tallocs = talloc_named_const(NULL, 1, "GSMD");
+ 
+ 	/*FIXME: parse commandline, set daemonize, device, ... */
+-	while ((argch = getopt_long(argc, argv, "FVLdhp:s:l:", opts, NULL)) != -1) {
++	while ((argch = getopt_long(argc, argv, "FVLdhp:s:l:D:", opts, NULL)) != -1) {
+ 		switch (argch) {
+ 		case 'V':
+ 			/* FIXME */
+@@ -232,6 +236,8 @@
+ 				fprintf(stderr, "can't open logfile `%s'\n", optarg);
+ 				exit(2);
+ 			}
++		case 'D':
++			ldisc = atoi(optarg);
+ 			break;
+ 		}
+ 	}
+@@ -249,6 +255,11 @@
+ 		exit(1);
+ 	}
+ 
++	if (ldisc && ioctl(fd, TIOCSETD, &ldisc) < 0) {
++		fprintf(stderr, "can't set line discipline\n");
++		exit(1);
++	}
++
+ 	if (gsmd_initialize(&g) < 0) {
+ 		fprintf(stderr, "internal error\n");
+ 		exit(1);

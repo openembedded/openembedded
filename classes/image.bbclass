@@ -93,7 +93,7 @@ fakeroot do_rootfs () {
 		fi
 
 		cd ${DEPLOY_DIR_IMAGE}/
-		rm -f ${DEPLOY_DIR_IMAGE}/${IMAGE_LINK_NAME}.*
+		rm -f ${DEPLOY_DIR_IMAGE}/${IMAGE_LINK_NAME}.$type
 		ln -s ${IMAGE_NAME}.rootfs.$type ${DEPLOY_DIR_IMAGE}/${IMAGE_LINK_NAME}.$type
 	done
 

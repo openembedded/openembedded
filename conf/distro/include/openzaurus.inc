@@ -21,3 +21,5 @@ INHERIT += "sanity"
 
 # We want images supporting the following features (for task-base)
 DISTRO_FEATURES = "nfs smbfs wifi ppp alsa bluetooth ext2 irda pcmcia usbgadget usbhost"
+
+PREFERRED_PROVIDER_qemu-native ?= "qemu-native"

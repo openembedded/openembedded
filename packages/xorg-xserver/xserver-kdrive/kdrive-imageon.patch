@@ -6,6 +6,7 @@
 # -XV Extension
 # -Internal and External Imageon offscreen memory support
 # -Hardware RandR rotation (without using a shadow framebuffer)
+# -Support for RandR mode changing
 
 #
 # Patch managed by http://www.holgerschurig.de/patcher.html
@@ -128,7 +129,7 @@
 +        $(FBDEV_LIBS) 
 --- /dev/null
 +++ xorg-server-X11R7.1-1.1.0.work/hw/kdrive/imageon/imageon.c
-@@ -0,0 +1,607 @@
+@@ -0,0 +1,606 @@
 +/*
 + * Copyright © 2007 Manuel Teira
 + *
@@ -419,14 +420,13 @@
 +
 +    w100c->hw_window.offset = W100_HOST2CARD(screen->fb[0].frameBuffer);
 +
-+
-+    W100ComputeMouseMatrix(&m, screen->randr, 
-+                           w100StartupInfo.portrait ? 
-+                           W100_MIN(screen->width, screen->height) :
-+                           W100_MAX(screen->width, screen->height),
-+                           w100StartupInfo.portrait ? 
-+                           W100_MAX(screen->width, screen->height) :
-+                           W100_MIN(screen->width, screen->height));
++    KdComputeMouseMatrix(&m, screen->randr, 
++                         w100StartupInfo.portrait ? 
++                         W100_MIN(screen->width, screen->height) :
++                         W100_MAX(screen->width, screen->height),
++                         w100StartupInfo.portrait ? 
++                         W100_MAX(screen->width, screen->height) :
++                         W100_MIN(screen->width, screen->height));
 +
 +    KdSetMouseMatrix(&m);
 +
@@ -527,7 +527,7 @@
 +    screen->randr = randr;
 +    screen->width = pScreen->width;
 +    screen->height = pScreen->height;
-+    w100c->hw_window.randr = KdAddRotation(randr, w100StartupInfo.randr);
++    w100c->hw_window.randr = KdSubRotation(w100StartupInfo.randr, randr);
 +    w100c->hw_window.mode = W100GetBestMode(w100c, pScreen->width, pScreen->height);
 +
 +    KdOffscreenSwapOut(screen->pScreen);
@@ -902,7 +902,7 @@
 +#endif
 --- /dev/null
 +++ xorg-server-X11R7.1-1.1.0.work/hw/kdrive/imageon/imageon_cursor.c
-@@ -0,0 +1,563 @@
+@@ -0,0 +1,566 @@
 +/*
 + * Copyright © 2007 Manuel Teira
 + *
@@ -1157,6 +1157,7 @@
 +                     (CARD32*) tmpCursor0,
 +                     (CARD32*) tmpCursor1);
 +
++    DUMP_CURSOR((CARD32*)tmpCursor1);
 +    /* Correct endianness */
 +    src = (CARD32*) tmpCursor1;
 +    dst = (CARD32*) (pCurPriv->area->vidmem->base + pCurPriv->area->offset);
@@ -1275,6 +1276,7 @@
 +    W100CardInfo(pScreenPriv);
 +    W100ScreenInfo(pScreenPriv);
 +    W100Cursor *pCurPriv = &w100s->cursor;
++    DBG_IMAGEON(("W100RealizeCursor\n"));
 +
 +    if (!pScreenPriv->enabled) {
 +        return TRUE;
@@ -1293,6 +1295,7 @@
 +static Bool
 +W100UnrealizeCursor(ScreenPtr pScreen, CursorPtr pCursor)
 +{
++    DBG_IMAGEON(("W100UnrealizeCursor\n"));
 +    return TRUE;
 +}
 +
@@ -6228,7 +6231,7 @@
 +}
 --- /dev/null
 +++ xorg-server-X11R7.1-1.1.0.work/hw/kdrive/imageon/imageon_support.c
-@@ -0,0 +1,1477 @@
+@@ -0,0 +1,1438 @@
 +/*
 + * Copyright © 2007 Manuel Teira
 + *
@@ -7654,45 +7657,6 @@
 +    fscanf(fd, "%s", value);
 +    fclose(fd);
 +    return TRUE;
-+}
-+
-+void
-+W100ComputeMouseMatrix(KdMouseMatrix *m, Rotation randr, int width, int height)
-+{
-+    int		    x_dir = 1, y_dir = 1;
-+    int		    i, j;
-+    int		    size[2];
-+
-+    size[0] = width; size[1] = height;
-+    if (randr & RR_Reflect_X)
-+	x_dir = -1;
-+    if (randr & RR_Reflect_Y)
-+	y_dir = -1;
-+    switch (randr & (RR_Rotate_All)) {
-+    case RR_Rotate_0:
-+	m->matrix[0][0] = x_dir; m->matrix[0][1] = 0;
-+	m->matrix[1][0] = 0; m->matrix[1][1] = y_dir;
-+	break;
-+    case RR_Rotate_90:
-+	m->matrix[0][0] = 0; m->matrix[0][1] = x_dir;
-+	m->matrix[1][0] = -y_dir; m->matrix[1][1] = 0;
-+	break;
-+    case RR_Rotate_180:
-+	m->matrix[0][0] = -x_dir; m->matrix[0][1] = 0;
-+	m->matrix[1][0] = 0; m->matrix[1][1] = -y_dir;
-+	break;
-+    case RR_Rotate_270:
-+	m->matrix[0][0] = 0; m->matrix[0][1] = -x_dir;
-+	m->matrix[1][0] = y_dir; m->matrix[1][1] = 0;
-+	break;
-+    }
-+    for (i = 0; i < 2; i++)
-+    {
-+	m->matrix[i][2] = 0;
-+	for (j = 0 ; j < 2; j++)
-+	    if (m->matrix[i][j] < 0)
-+		m->matrix[i][2] = size[j] - 1;
-+    }
 +}
 +
 +void W100TransformTsLibCoordinates(long *x, long *y, void *closure)

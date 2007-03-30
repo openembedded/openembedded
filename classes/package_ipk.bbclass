@@ -142,7 +142,11 @@ python do_package_ipk () {
 			raise bb.build.FuncFailed("unable to open control file for writing.")
 
 		fields = []
-		fields.append(["Version: %s-%s\n", ['PV', 'PR']])
+		pe = bb.data.getVar('PE', d, 1)
+		if pe and int(pe) > 0:
+			fields.append(["Version: %s:%s-%s\n", ['PE', 'PV', 'PR']])
+		else:
+			fields.append(["Version: %s-%s\n", ['PV', 'PR']])
 		fields.append(["Description: %s\n", ['DESCRIPTION']])
 		fields.append(["Section: %s\n", ['SECTION']])
 		fields.append(["Priority: %s\n", ['PRIORITY']])

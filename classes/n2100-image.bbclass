@@ -26,5 +26,5 @@ n2100_pack_image() {
         dd if=/dev/zero of=$PADFILE bs=$PAD_SIZE count=1 2>>/dev/null
         cat $KERNEL $PADFILE $ROOTFS > $OUTPUT
         rm -f $PADFILE
-        ls -l $OUTPUT
+	ls -l $OUTPUT
 }

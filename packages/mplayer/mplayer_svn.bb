@@ -167,13 +167,24 @@ EXTRA_OECONF = " \
         --disable-runtime-cpudetection \
         "
 
+EXTRA_OECONF_append_progear = " --disable-sse --disable-3dnow --disable-mmxext --disable-sse2"
+
+#enable support for the ati imageon series (w100 and w3220)
 EXTRA_OECONF_append_c7x0 = " --enable-w100 "
 EXTRA_OECONF_append_hx4700 = " --enable-imageon "
-EXTRA_OECONF_append_progear = " --disable-sse --disable-3dnow --disable-mmxext --disable-sse2"
-EXTRA_OECONF_append_spitz = " --enable-pxa "
 
+#enable pxa270 overlay support
+EXTRA_OECONF_append_spitz = " --enable-pxa "
+EXTRA_OECONF_append_a780 = " --enable-pxa "
+
+#build with support for the iwmmxt instruction support (pxa270 and up) 
 TARGET_CC_ARCH_spitz = "-march=iwmmxt -mtune=iwmmxt"
 PACKAGE_ARCH_spitz = "iwmmxt"
+TARGET_CC_ARCH_a780 = "-march=iwmmxt -mtune=iwmmxt"
+PACKAGE_ARCH_a780 = "iwmmxt"
+TARGET_CC_ARCH_hx4700 = "-march=iwmmxt -mtune=iwmmxt"
+PACKAGE_ARCH_hx4700= "iwmmxt"
+
 
 do_configure() {
 	cp ${WORKDIR}/vo_w100.c ${S}/libvo

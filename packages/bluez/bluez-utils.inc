@@ -1,7 +1,7 @@
 DESCRIPTION = "Linux Bluetooth Stack Userland Utilities."
 SECTION = "console"
 PRIORITY = "optional"
-DEPENDS = "bluez-libs-${PV} dbus"
+DEPENDS = "bluez-libs-${PV} dbus cups"
 PROVIDES = "bluez-utils-dbus"
 RPROVIDES_${PN} = "bluez-pan bluez-sdp bluez-utils-dbus"
 RREPLACES = "bluez-utils-dbus"
@@ -20,7 +20,7 @@ SRC_URI += " file://default-manfid-0x0-to-bcps.patch;patch=1"
 
 S = "${WORKDIR}/bluez-utils-${PV}"
 
-EXTRA_OECONF = "--enable-initscripts --enable-bcm203x --enable-hid2hci"
+EXTRA_OECONF = "--enable-initscripts --enable-bcm203x --enable-hid2hci --enable-cups"
 #  --enable-obex           enable OBEX support
 #  --enable-alsa           enable ALSA support
 #  --enable-cups           install CUPS backend support
@@ -48,7 +48,10 @@ do_install_append() {
 CONFFILES_${PN} = "${sysconfdir}/bluetooth/hcid.conf ${sysconfdir}/bluetooth/rfcomm.conf \
 	${sysconfdir}/default/bluetooth"
 
-PACKAGES =+ "${PN}-ciptool"
+PACKAGES =+ "${PN}-ciptool bluez-cups-backend"
 FILES_${PN}-ciptool = "/bin/ciptool"
 RREPLACES_${PN}-ciptool = "bluez-utils-dbus-ciptool"
 RCONFLICTS_${PN}-ciptool = "bluez-utils-dbus-ciptool bluez-utils-nodbus"
+
+FILES_bluez-cups-backend = "${libdir}/cups/backend/bluetooth"
+RDEPENDS_bluez-cups-backend = "cups"
