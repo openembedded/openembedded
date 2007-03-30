@@ -6,3 +6,5 @@ IMAGE_PREPROCESS_COMMAND_lsppchd += "sed -i -es,^VERBOSE=no,VERBOSE=very, ${IMAG
 lsppchd_pack_image() {
 :
 }
+
+IMAGE_POSTPROCESS_COMMAND += "lsppchd_pack_image; "
