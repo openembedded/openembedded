@@ -372,6 +372,8 @@ boot_rootfs() {
 	nfs)	shift 2;;
 	flash)	;;
 	ram)	;;
+	altboot)
+		;;
 	*)	echo "turnup: boot_rootfs($type, $ffs, $device): unknown type" >&2
 		return 1;;
 	esac
@@ -403,6 +405,11 @@ boot_rootfs() {
 		} >"$ffs"/linuxrc.new &&
 		chmod 744 "$ffs"/linuxrc.new || {
 			echo "turnup: boot_rootfs: failed to write $ffs/linuxrc.new" >&2
+			return 1
+		};;
+	altboot)
+		ln -s "boot/altboot" "$ffs"/linuxrc.new || {
+			echo "turnup: boot_rootfs: failed to create $ffs/linuxrc.new" >&2
 			return 1
 		};;
 	*)	{	echo '#!/bin/sh'
@@ -572,7 +579,7 @@ boot_reset() {
 	local ffs typ status
 
 	case "$1" in
-	flash|ram)type="$1"
+	flash|ram|altboot)type="$1"
 		shift;;
 	*)	echo "turnup: boot_reset($1): invalid type" >&2
 		return 1;;
@@ -799,6 +806,8 @@ nfs)	shift
 	nfs "$@";;
 flash)	boot_reset flash;;
 ram)	boot_reset ram;;
+altboot)
+	boot_reset altboot;;
 preserve)
 	shift
 	sysconf save "$@";;
@@ -841,6 +850,8 @@ usage: turnup command [options]
   ram
     Boot (once) into a ramdisk, subsequent boots will be to
     the flash file system.
+  altboot
+    Hand over boot control to the altboot utility.
   preserve
     Save the system configuration to the SysConf partition, you
     will need to create the SysConf partition from the boot loader
