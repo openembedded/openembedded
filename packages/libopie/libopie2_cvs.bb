@@ -1,7 +1,7 @@
 require ${PN}.inc
 
 PV = "1.2.2+cvs${SRCDATE}"
-PR = "r6"
+PR = "r7"
 
 DEFAULT_PREFERENCE = "-1"
 
