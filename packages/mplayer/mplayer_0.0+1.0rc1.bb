@@ -20,6 +20,7 @@ SRC_URI = "http://www1.mplayerhq.hu/MPlayer/releases/MPlayer-1.0rc1.tar.bz2 \
            file://makefile-nostrip.patch;patch=1 \
            ${SOURCEFORGE_MIRROR}/libw100/mplayer-imageon.patch;patch=1 \
            file://imageon-video_out.patch;patch=1 \
+	   file://powerpc-is-ppc.diff;patch=1 \
            file://pxa_configure.patch;patch=1 \
            file://pxa-video_out.patch;patch=1 "
 
@@ -33,7 +34,7 @@ PACKAGE_ARCH_mencoder_collie = "collie"
 
 RCONFLICTS_${PN} = "mplayer-atty"
 RREPLACES_${PN} = "mplayer-atty"
-PR = "r11"
+PR = "r12"
 
 PARALLEL_MAKE = ""
 
