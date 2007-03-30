@@ -2,24 +2,26 @@ DESCRIPTION = "GNU All Mobile Managment Utilities"
 SECTION = "console/network"
 DEPENDS = "bluez-libs"
 LICENSE = "GPL"
-HOMEPAGE = "http://mwiacek.com/gsm/soft/gammu.html"
-AUTHOR = "Marcin Wiacek <marcin@mwiacek.com>"
+HOMEPAGE = "http://www.gammu.org/"
 
-SRC_URI = "http://www.mwiacek.com/zips/gsm/gammu/stable/1_0x/gammu-${PV}.tar.gz "
+SRC_URI = "http://dl.cihar.com/gammu/releases/gammu-${PV}.tar.bz2 \
+           file://ldflags-again.patch;patch=1"
 
-EXTRA_OECONF = "--disable-mysql"
+EXTRA_OECONF = "--disable-mysql --with-bluedir=${STAGING_DIR}"
+
+EXTRA_LDFLAGS = "-lbluetooth2"
 
 inherit autotools
 
 do_compile () {
-        oe_runmake shared
+        oe_runmake shared LDFLAGS='-L${STAGING_LIBDIR} -lbluetooth'
 }
 
 do_stage() {
         install -d ${STAGING_INCDIR}/gammu/misc  ${STAGING_INCDIR}/gammu/misc/coding \
                    ${STAGING_INCDIR}/gammu/phone ${STAGING_INCDIR}/gammu/phone/at \
                    ${STAGING_INCDIR}/gammu/phone/obex ${STAGING_INCDIR}/gammu/phone/nokia \
-                   ${STAGING_INCDIR}/gammu/phone/nokia/dct3 ${STAGING_INCDIR}/gammu/phone/nokia/dct4tiku \
+                   ${STAGING_INCDIR}/gammu/phone/nokia/dct3 ${STAGING_INCDIR}/gammu/phone/nokia/dct4s40 \
                    ${STAGING_INCDIR}/gammu/phone/symbian ${STAGING_INCDIR}/gammu/phone/alcatel \
                    ${STAGING_INCDIR}/gammu/service ${STAGING_INCDIR}/gammu/service/sms \
                    ${STAGING_INCDIR}/gammu/service/backup ${STAGING_INCDIR}/gammu/device \
@@ -39,7 +41,7 @@ do_stage() {
         install -m 0644 common/phone/obex/*.h           ${STAGING_INCDIR}/gammu/phone/obex
         install -m 0644 common/phone/nokia/*.h          ${STAGING_INCDIR}/gammu/phone/nokia
         install -m 0644 common/phone/nokia/dct3/*.h     ${STAGING_INCDIR}/gammu/phone/nokia/dct3
-        install -m 0644 common/phone/nokia/dct4tiku/*.h     ${STAGING_INCDIR}/gammu/phone/nokia/dct4tiku
+        install -m 0644 common/phone/nokia/dct4s40/*.h     ${STAGING_INCDIR}/gammu/phone/nokia/dct4s40
         install -m 0644 common/phone/symbian/*.h        ${STAGING_INCDIR}/gammu/phone/symbian
         install -m 0644 common/phone/alcatel/*.h        ${STAGING_INCDIR}/gammu/phone/alcatel
         install -m 0644 common/service/*.h              ${STAGING_INCDIR}/gammu/service
