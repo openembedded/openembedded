@@ -1,0 +1,9 @@
+[Desktop Entry]
+Version=0.3.3
+Type=Application
+Name=Xournal
+Comment=Notetaking tool
+Exec=/usr/bin/xournal
+Icon=/usr/share/xournal/pixmaps/xournal.png
+Terminal=false
+

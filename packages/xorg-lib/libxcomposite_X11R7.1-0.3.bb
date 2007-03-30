@@ -3,7 +3,7 @@ require xorg-lib-common.inc
 DESCRIPTION = "X Composite extension library."
 LICENSE= "BSD-X"
 
-DEPENDS += " compositeproto virtual/libx11 libxfixes"
+DEPENDS += " compositeproto virtual/libx11 libxfixes libxext"
 PROVIDES = "xcomposite"
 
 XORG_PN = "libXcomposite"

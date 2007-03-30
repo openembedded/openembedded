@@ -3,10 +3,9 @@ SECTION = "openmoko/pim"
 LICENSE = "GPL"
 DEPENDS = "glib-2.0 gtk+ libglade eds-dbus openmoko-libs"
 RDEPENDS = "libedata-cal"
-RCONFLICTS = "dates"
-RREPLACES = "dates"
+RCONFLICTS_${PN} = "dates"
 PV = "0.1+svn${SRCDATE}"
-PR = "r7"
+PR = "r8"
 
 inherit gnome autotools pkgconfig gtk-icon-cache
 
