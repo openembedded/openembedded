@@ -1,7 +1,7 @@
 Index: xorg-server-1.2.0/mi/miinitext.c
 ===================================================================
---- xorg-server-1.2.0.orig/mi/miinitext.c	2007-03-29 11:32:40.000000000 +0200
-+++ xorg-server-1.2.0/mi/miinitext.c	2007-03-29 11:33:22.000000000 +0200
+--- xorg-server-1.2.0.orig/mi/miinitext.c	2007-01-23 06:39:17.000000000 +0100
++++ xorg-server-1.2.0/mi/miinitext.c	2007-03-30 11:28:44.000000000 +0200
 @@ -372,6 +372,9 @@
  #ifdef DMXEXT
  extern void DMXExtensionInit(INITARGS);
@@ -22,3 +22,17 @@ Index: xorg-server-1.2.0/mi/miinitext.c
  }
  
  void
+Index: xorg-server-1.2.0/include/kdrive-config.h.in
+===================================================================
+--- xorg-server-1.2.0.orig/include/kdrive-config.h.in	2007-03-30 11:31:07.000000000 +0200
++++ xorg-server-1.2.0/include/kdrive-config.h.in	2007-03-30 11:34:09.000000000 +0200
+@@ -22,6 +22,9 @@
+ /* Support tslib touchscreen abstraction library */
+ #undef TSLIB
+ 
++/* Build XCalibrate extension */
++#undef XCALIBRATE
++
+ /* Verbose debugging output hilarity */
+ #undef DEBUG
+ 
