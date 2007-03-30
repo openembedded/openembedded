@@ -1,7 +1,7 @@
 DESCRIPTION = "openmoko-libs is a set of libraries implementing a Gtk+ based application framework for mobile communication applications"
 SECTION = "openmoko/libs"
 LICENSE = "LGPL"
-DEPENDS += "gtk+"
+DEPENDS += "gtk+ eds-dbus"
 PV = "0.0.1+svn${SRCDATE}"
 PR = "r2"
 
