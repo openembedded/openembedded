@@ -5,7 +5,7 @@ PACKAGE_ARCH = "all"
 LICENSE = "MIT"
 PROVIDES = "task-openmoko-everything"
 
-PR = "r32"
+PR = "r33"
 
 PACKAGES = "\
   task-openmoko-linux \
@@ -145,11 +145,8 @@ RDEPENDS_task-openmoko-demo = "\
   matchbox-stroke \
   matchbox-config-gtk \
   matchbox-panel-2-applets \
-  matchbox-panel-hacks \
   matchbox-themes-extra \
   matchbox-themes-gtk \
-  matchbox-applet-inputmanager \
-  matchbox-applet-startup-monitor \
   openmoko-panel-battery \
   openmoko-panel-clock \
   openmoko-panel-demo \
