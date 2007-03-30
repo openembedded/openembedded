@@ -1,0 +1,11 @@
+--- /tmp/configure	2007-03-30 19:40:34.000000000 +0200
++++ MPlayer-1.0rc1/configure	2007-03-30 19:40:58.795251000 +0200
+@@ -1213,7 +1213,7 @@
+     _optimizing=''
+     ;;
+ 
+-  ppc)
++  ppc|powerpc)
+     _def_arch='#define ARCH_POWERPC 1'
+     _def_dcbzl='#define NO_DCBZL 1'
+     _target_arch='TARGET_ARCH_POWERPC = yes'
