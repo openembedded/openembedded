@@ -36,3 +36,16 @@ Index: xorg-server-1.2.0/include/kdrive-config.h.in
  /* Verbose debugging output hilarity */
  #undef DEBUG
  
+Index: xorg-server-1.2.0/configure.ac
+===================================================================
+--- xorg-server-1.2.0.orig/configure.ac	2007-03-30 12:47:25.000000000 +0200
++++ xorg-server-1.2.0/configure.ac	2007-03-30 12:39:01.000000000 +0200
+@@ -1540,7 +1540,7 @@
+ 	    ;;
+     esac
+     KDRIVE_STUB_LIB='$(top_builddir)/hw/kdrive/src/libkdrivestubs.a'
+-    KDRIVE_LIBS="$DIX_LIB $KDRIVE_LIB $KDRIVE_OS_LIB $KDRIVE_PURE_LIBS $KDRIVE_STUB_LIB $TSLIB_LIBS"
++    KDRIVE_LIBS="$DIX_LIB $KDRIVE_LIB $KDRIVE_PURE_LIBS $KDRIVE_OS_LIB $KDRIVE_STUB_LIB $TSLIB_LIBS"
+ 
+     # check if we can build Xephyr
+     PKG_CHECK_MODULES(XEPHYR, x11 xext xfont xau xdmcp, [xephyr="yes"], [xephyr="no"])
