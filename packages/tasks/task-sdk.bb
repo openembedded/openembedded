@@ -1,5 +1,5 @@
 DESCRIPTION = "SDK packages"
-PR = "r5"
+PR = "r6"
 LICENSE = "MIT"
 ALLOW_EMPTY = "1"
 
@@ -21,73 +21,67 @@ RDEPENDS_task-sdk-base := "\
     glibc-dev \
     libgcc1 \
     alsa-dev \
-    audiofile-dev \
-    bluez-libs-dev \
+    libaudiofile-dev \
+    libbluetooth-dev \
     dbus-dev \
     expat-dev \
     fontconfig-dev \
     freetype-dev \
-    glib-2.0-dev \
+    libglib-2.0-dev \
     gstreamer-dev \
     libice-dev \
     ipkg-dev \
-    jpeg-dev \
+    libjpeg-dev \
     libapm-dev \
-    libasound \
+    libasound2 \
     libdisplaymigration-dev \
     libetpan-dev \
     libgcrypt-dev \
-    libglade-dev \
-    gnutls-dev \
+    libglade-2.0-dev \
+    libgnutls-dev \
     libgpg-error-dev \
-    libidl-dev \
+    libidl-2-dev \
     libiw-dev \
-    libmimedir-dev \
+    libmimedir-0.4-dev \
     libpcap-dev \
     libpixman-dev \
     libpng-dev \
     libschedule-dev \
     libsm-dev \
     libsoundgen-dev \
-    libsoup-dev \
+    libsoup-2.2-dev \
     libsvg-dev \
     libtododb-dev \
     libts-dev \
     libxml2-dev \
     ncurses-dev \
-    openobex-dev \
-    popt-dev \
-    readline-dev \
-    sqlite-dev \
+    libopenobex-dev \
+    libpopt-dev \
+    libreadline-dev \
+    libsqlite-dev \
     zlib-dev \
     libxmu-dev"
 
 RDEPENDS_task-sdk-x11 := "\
-    atk-dev \
-    cairo-dev \
+    libatk-1.0-dev \
+    libcairo-dev \
     gconf-dbus-dev \
     gtk+-dev \
     gtk-engines-dev \
     libsvg-cairo-dev \
-    libmatchbox-dev \
+    libmb-dev \
     matchbox-desktop-dev \
     pango-dev \
-    startup-notification-dev"
+    libstartup-notification-1-dev"
 
 RDEPENDS_task-sdk-x11-ext := "\
-    compositeext-dev \
-    damageext-dev \
-    fixesext-dev \
     libxcursor-dev \
     libxdmcp-dev \
-    libxfixes-dev \
     libxft-dev \
     libxrandr-dev \
     libxrender-dev \
     libxsettings-client-dev \
     randrext-dev \
-    recordext-dev \
-    renderext-dev \
     resourceext-dev \
     libx11-dev \
     libxau-dev \
@@ -103,14 +97,15 @@ RDEPENDS_task-sdk-x11-ext := "\
     libxt-dev \
     xtrans-dev \
     libxtst-dev"
-#    libxss-dev \
+
 
 RDEPENDS_task-sdk-gpe := "\
     libcontactsdb-dev \
-    esound-dev \
+    libesd-dev \
     libeventdb-dev \
     libgpepimc-dev \
     libgpevtype-dev \
     libgpelaunch-dev \
     libgpewidget-dev \
     libhandoff-dev"
+

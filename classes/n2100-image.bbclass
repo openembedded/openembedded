@@ -28,3 +28,5 @@ n2100_pack_image() {
         rm -f $PADFILE
 	ls -l $OUTPUT
 }
+
+IMAGE_POSTPROCESS_COMMAND += "n2100_pack_image; "

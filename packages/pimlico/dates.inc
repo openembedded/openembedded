@@ -3,8 +3,7 @@ LICENSE = "LGPL"
 SECTION = "x11"
 DEPENDS = "glib-2.0 gtk+ libglade eds-dbus"
 RDEPENDS = "libedata-cal"
-RCONFLICTS = "openmoko-dates"
-RREPLACES = "openmoko-dates"
+RCONFLICTS_${PN} = "openmoko-dates"
 
 inherit autotools pkgconfig gtk-icon-cache
 

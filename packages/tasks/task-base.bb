@@ -1,5 +1,5 @@
 DESCRIPTION = "Merge machine and distro options to create a basic machine task/package"
-PR = "r21"
+PR = "r20"
 
 PACKAGES = "task-base \
             task-base-oh-minimal \
@@ -38,8 +38,11 @@ PACKAGE_ARCH = "${MACHINE_ARCH}"
 # irda
 # pci
 # pcmcia
+# redboot
+# uboot
 # usbgadget
 # usbhost
+
 
 DISTRO_CORE_PACKAGE ?= "task-base-core-default"
 
@@ -62,9 +65,12 @@ RDEPENDS_task-base = "\
     ${@base_contains("COMBINED_FEATURES", "usbhost", "${task-base-usbhost-rdepends}", "",d)} \
     ${@base_contains("COMBINED_FEATURES", "bluetooth", "${task-base-bluetooth-rdepends}", "",d)} \
     ${@base_contains("COMBINED_FEATURES", "wifi", "${task-distro-wifi-rdepends}", "",d)} \
+    ${@base_contains("COMBINED_FEATURES", "uboot", "${task-base-uboot-rdepends}", "",d)} \
+    ${@base_contains("COMBINED_FEATURES", "redboot", "${task-base-redboot-rdepends}", "",d)} \
     ${@base_contains("DISTRO_FEATURES", "nfs", "${task-distro-nfs-rdepends}", "",d)} \
     ${@base_contains("DISTRO_FEATURES", "ipsec", "${task-distro-ipsec-rdepends}", "",d)} \
     ${@base_contains("DISTRO_FEATURES", "ppp", "${task-distro-ppp-rdepends}", "",d)} \
+    ${@base_contains("DISTRO_FEATURES", "raid", "${task-distro-raid-rdepends}", "",d)} \
     ${MACHINE_ESSENTIAL_EXTRA_RDEPENDS} \
     ${MACHINE_EXTRA_RDEPENDS} \
     ${DISTRO_EXTRA_RDEPENDS}"
@@ -247,6 +253,12 @@ task-base-usbhost-rrecommends = "\
     kernel-module-usbserial \
     kernel-module-usb-storage "
 
+task-base-uboot-rdepends = "\
+        uboot-utils"
+
+task-base-redboot-rdepends = "\
+        fis"
+
 task-distro-ppp-rdepends = "\
     ppp \
     ppp-dialin"
@@ -293,6 +305,8 @@ task-distro-nfs-rrecommends = "\
     kernel-module-lockd \
     kernel-module-sunrpc"
 
+task-distro-raid-rdepends = "\
+	"
 
 # Tosort
 # kernel-module-ipv6

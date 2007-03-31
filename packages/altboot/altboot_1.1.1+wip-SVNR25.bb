@@ -23,24 +23,20 @@ RDEPENDS_${PN}-conf = "${PN}"
 
 ######################################################################################
 
-WIP_DATE = "20070323"
-
-PV = "1.1.1+wip-${WIP_DATE}"
+SVN_REV = "25"
 PR = "r0"
 
 ######################################################################################
 
 PACKAGES = "${PN}-conf ${PN}-doc ${PN}"
 
-PACKAGE_ARCH_${PN} = "all"
+PACKAGE_ARCH_${PN} = "${MACHINE}"
 PACKAGE_ARCH_${PN}-doc = "all"
 PACKAGE_ARCH_${PN}-conf = "${MACHINE}"
 
-TAG = "${@'v' + bb.data.getVar('PV',d,1).replace('.', '-').replace('+', '-')}"
+SRC_URI = "svn://hentges.net/altboot;module=trunk;rev=${SVN_REV}"
 
-SRC_URI = "svn://hentges.net/altboot/tags/;module=${TAG};proto=svn"
-
-S = "${WORKDIR}/${TAG}/"
+S = "${WORKDIR}/trunk/"
 
 ######################################################################################
 
@@ -55,7 +51,6 @@ do_install() {
 	install -d ${D}/etc/altboot.rc
 	install -d ${D}/usr/share/doc/altboot
 	install -d ${D}/usr/share/sounds
-	install -d ${D}/etc/skel/altboot
 
 	if test -d ${S}/${MACHINE}
 	then
@@ -66,16 +61,38 @@ do_install() {
 
 	install -m 0644 ${S}/beep.raw ${D}/usr/share/sounds
 	install -m 0644 ${S}/altboot.func ${D}/etc
+	install -m 0644 ${S}/altboot.sbin ${D}/etc
 	install -m 0644 ${S}/altbootctl.conf ${D}/etc
 	install -m 0755 ${S}/init.altboot ${D}/sbin
 	install -m 0755 ${S}/altbootctl ${D}/sbin
+	
+	ln -s /sbin/init.altboot ${D}/sbin/altboot
 
-	install -m 0755 ${S}/altboot-menu/*-* ${D}/etc/altboot-menu
+	if test -d ${S}/${MACHINE}/altboot-menu
+	then
+		install -m 0755 ${S}/${MACHINE}/altboot-menu/*-* ${D}/etc/altboot-menu
+		
+		if test -d ${S}/${MACHINE}/altboot-menu/Advanced
+		then
+			install -m 0755 ${S}/${MACHINE}/altboot-menu/Advanced/*-* ${D}/etc/altboot-menu/Advanced
+		fi
+	else
+		install -m 0755 ${S}/altboot-menu/*-* ${D}/etc/altboot-menu
 
-	install -m 0755 ${S}/altboot-menu/Advanced/*-* ${D}/etc/altboot-menu/Advanced
-
-	install -m 0755 ${S}/altboot.rc/*.sh ${D}/etc/altboot.rc
-	install -m 0644 ${S}/altboot.rc/*.txt ${D}/etc/altboot.rc
+		if test -d ${S}/altboot-menu/Advanced
+		then		
+			install -m 0755 ${S}/altboot-menu/Advanced/*-* ${D}/etc/altboot-menu/Advanced
+		fi
+	fi
+	
+	if test -d ${S}/${MACHINE}/altboot.rc
+	then
+		install -m 0755 ${S}/${MACHINE}/altboot.rc/*.sh ${D}/etc/altboot.rc
+		install -m 0644 ${S}/${MACHINE}/altboot.rc/*.txt ${D}/etc/altboot.rc	
+	else
+		install -m 0755 ${S}/altboot.rc/*.sh ${D}/etc/altboot.rc
+		install -m 0644 ${S}/altboot.rc/*.txt ${D}/etc/altboot.rc
+	fi
 }
 
 ######################################################################################
@@ -88,12 +105,16 @@ do_configure() {
 ######################################################################################
 
 pkg_postinst_${PN}() {
+	test -L /linuxrc && update-alternatives --install /linuxrc linuxrc /sbin/init.altboot 55
+	
 	update-alternatives --install /sbin/init init /sbin/init.altboot 55
 }
 
 ######################################################################################
 
 pkg_postrm_${PN}() {
+	test -L /linuxrc && update_alternatives --remove linuxrc /sbin/init.altboot
+	
 	update-alternatives --remove init /sbin/init.altboot
 }
 

@@ -1,0 +1,13 @@
+Index: gammu-1.10.0/cfg/Makefile.glo
+===================================================================
+--- gammu-1.10.0.orig/cfg/Makefile.glo	2007-03-30 17:55:18.000000000 +0200
++++ gammu-1.10.0/cfg/Makefile.glo	2007-03-30 17:55:46.000000000 +0200
+@@ -152,7 +152,7 @@
+  
+ $(TOPDIR)/gammu/gammu-shared: $(COMMON) $(GAMMU) $(TOPDIR)/common/$(LIBGAMMU_FULLNAME)
+ 	@echo Linking gammu-shared
+-	@$(CC) -L$(TOPDIR)/common -lGammu $(GAMMU_CFLAGS) $(GAMMU_LIBS) $(SMSD_LIBS) $(GAMMU) -o $(TOPDIR)/gammu/gammu-shared
++	@$(CC) -L$(TOPDIR)/common -lGammu $(LDLIBS) $(GAMMU_CFLAGS) $(GAMMU_LIBS) $(SMSD_LIBS) $(GAMMU) -o $(TOPDIR)/gammu/gammu-shared
+ 
+ shared: $(TOPDIR)/common/$(LIBGAMMU_FULLNAME) $(TOPDIR)/common/$(LIBGAMMU_STATIC) $(TOPDIR)/gammu/gammu-shared
+  
