@@ -1,5 +1,5 @@
 require edje_${PV}.bb
-PR = "r3"
+PR = "r4"
 
 inherit native
 
@@ -13,7 +13,7 @@ do_configure_prepend() {
 }
 
 do_install_append() {
-	edje_data_dir=`edje-config --datadir`
+	edje_data_dir=`${S}/edje-config --datadir`
 	# could also use ${STAGING_DATADIR}/edje/include
 	install -d $edje_data_dir/include
 	install -m 0644 data/include/edje.inc $edje_data_dir/include
