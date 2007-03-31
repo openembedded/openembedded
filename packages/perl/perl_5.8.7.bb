@@ -44,6 +44,7 @@ do_configure() {
 	cp ${WORKDIR}/config.sh-sh4-linux .
 	#perl insists on an extra config.sh for arm EABI
 	cp config.sh-arm-linux config.sh-arm-linux-gnueabi
+	cp config.sh-armeb-linux config.sh-armeb-linux-gnueabi
 	# nslu2 LE uclibc builds do not work with the default config.sh
 	if test "${MACHINE}" = nslu2
 	then
