@@ -59,6 +59,7 @@ def package_qa_get_machine_dict():
                       },
             "linux-gnueabi" : {
                         "arm" :       (40,     0,    0,          True,          True),
+                        "armeb" :     (40,     0,    0,          False,         True),
                       },
         }
 
