@@ -3,10 +3,20 @@
 def patch_init(d):
 	import os, sys
 
+	class NotFoundError(Exception):
+		def __init__(self, path):
+			self.path = path
+		def __str__(self):
+			return "Error: %s not found." % self.path
+
 	def md5sum(fname):
 		import md5, sys
 
-		f = file(fname, 'rb')
+		try:
+			f = file(fname, 'rb')
+		except IOError:
+			raise NotFoundError(fname)
+
 		m = md5.new()
 		while True:
 			d = f.read(8096)
@@ -24,11 +34,6 @@ def patch_init(d):
 		def __str__(self):
 			return "Command Error: exit status: %d  Output:\n%s" % (self.status, self.output)
 
-	class NotFoundError(Exception):
-		def __init__(self, path):
-			self.path = path
-		def __str__(self):
-			return "Error: %s not found." % self.path
 
 	def runcmd(args, dir = None):
 		import commands
@@ -482,7 +487,7 @@ python patch_do_patch() {
 		bb.note("Applying patch '%s'" % pname)
 		try:
 			patchset.Import({"file":unpacked, "remote":url, "strippath": pnum}, True)
-		except NotFoundError:
+		except:
 			import sys
 			raise bb.build.FuncFailed(str(sys.exc_value))
 		resolver.Resolve()
