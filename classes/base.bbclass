@@ -12,15 +12,16 @@ def base_path_join(a, *p):
 
 # for MD5/SHA handling
 def base_chk_load_parser(config_path):
-    import ConfigParser, os
+    import ConfigParser, os, bb
     parser = ConfigParser.ConfigParser()
     if not len(parser.read(config_path)) == 1:
+        bb.note("Can not open the '%s' ini file" % config_path)
         raise Exception("Can not open the '%s'" % config_path)
 
     return parser
 
 def base_chk_file(parser, pn, pv, src_uri, localpath):
-    import os
+    import os, bb
     # Try PN-PV-SRC_URI first and then try PN-SRC_URI
     # we rely on the get method to create errors
     pn_pv_src = "%s-%s-%s" % (pn,pv,src_uri)
@@ -37,6 +38,7 @@ def base_chk_file(parser, pn, pv, src_uri, localpath):
 
     # md5 and sha256 should be valid now
     if not os.path.exists(localpath):
+        bb.note("The locapath does not exist '%s'" % localpath)
         raise Exception("The path does not exist '%s'" % localpath)
 
 
@@ -56,9 +58,11 @@ def base_chk_file(parser, pn, pv, src_uri, localpath):
         raise Exception("Executing shasum failed")
 
     if not md5 == md5data:
+        bb.note("The MD5Sums did not match. Wanted: '%s' and Got: '%s'" % (md5,md5data))
         raise Exception("MD5 Sums do not match. Wanted: '%s' Got: '%s'" % (md5, md5data))
 
     if not sha256 == shadata:
+        bb.note("The SHA256 Sums do not match. Wanted: '%s' Got: '%s'" % (sha256,shadata))
         raise Exception("SHA256 Sums do not match. Wanted: '%s' Got: '%s'" % (sha256, shadata))
 
     return True
@@ -472,7 +476,7 @@ python base_do_fetch() {
 		return
 
 	try:
-		parser = base_chk_load_parser(ckeck_sum)
+		parser = base_chk_load_parser(check_sum)
 	except:
 		bb.note("Creating the CheckSum parser failed")
 		return
@@ -484,13 +488,12 @@ python base_do_fetch() {
 	for url in src_uri.split():
 		localpath = bb.fetch.localpath(url,localdata)
 		(type,host,path,_,_,_) = bb.decodeurl(url)
-		print type, host, path
 		uri = "%s://%s%s" % (type,host,path)
 		try:
-			if not base_chk_file(parser, pn, pv,uri, localpath):
-				bb.note("%s-%s-%s has no section, not checking URI" % pn,pv,uri)
-		except Exception, e:
-			raise bb.func.FuncFailed("Checksum of '%s' failed", uri)
+		    if not base_chk_file(parser, pn, pv,uri, localpath):
+			    bb.note("%s-%s-%s has no section, not checking URI" % (pn,pv,uri))
+		except Exception:
+			raise bb.build.FuncFailed("Checksum of '%s' failed" % uri)
 }
 
 addtask fetchall after do_fetch
