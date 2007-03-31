@@ -10,6 +10,60 @@ def base_path_join(a, *p):
             path += '/' + b
     return path
 
+# for MD5/SHA handling
+def base_chk_load_parser(config_path):
+    import ConfigParser, os
+    parser = ConfigParser.ConfigParser()
+    if not len(parser.read(config_path)) == 1:
+        raise Exception("Can not open the '%s'" % config_path)
+
+    return parser
+
+def base_chk_file(parser, pn, pv, src_uri, localpath):
+    import os
+    # Try PN-PV-SRC_URI first and then try PN-SRC_URI
+    # we rely on the get method to create errors
+    pn_pv_src = "%s-%s-%s" % (pn,pv,src_uri)
+    pn_src    = "%s-%s" % (pn,src_uri)
+    if parser.has_section(pn_pv_src):
+        md5    = parser.get(pn_pv_src, "md5")
+        sha256 = parser.get(pn_pv_src, "sha256")
+    elif parser.has_section(pn_src):
+        md5    = parser.get(pn_src, "md5")
+        sha256 = parser.get(pn_src, "sha256")
+    else:
+        return False
+        #raise Exception("Can not find a section for '%s' '%s' and '%s'" % (pn,pv,src_uri))
+
+    # md5 and sha256 should be valid now
+    if not os.path.exists(localpath):
+        raise Exception("The path does not exist '%s'" % localpath)
+
+
+    # call md5(sum) and shasum
+    try:
+        md5pipe = os.popen('md5sum ' + localpath)
+        md5data = (md5pipe.readline().split() or [ "" ])[0]
+        md5pipe.close()
+    except OSError:
+        raise Exception("Executing md5sum failed")
+
+    try:
+        shapipe = os.popen('shasum -a256 -p ' + localpath)
+        shadata = (shapipe.readline().split() or [ "" ])[0]
+        shapipe.close()
+    except OSError:
+        raise Exception("Executing shasum failed")
+
+    if not md5 == md5data:
+        raise Exception("MD5 Sums do not match. Wanted: '%s' Got: '%s'" % (md5, md5data))
+
+    if not sha256 == shadata:
+        raise Exception("SHA256 Sums do not match. Wanted: '%s' Got: '%s'" % (sha256, shadata))
+
+    return True
+
+
 def base_dep_prepend(d):
 	import bb;
 	#
@@ -402,6 +456,41 @@ python base_do_fetch() {
 	except bb.fetch.FetchError:
 		(type, value, traceback) = sys.exc_info()
 		raise bb.build.FuncFailed("Fetch failed: %s" % value)
+	except bb.fetch.MD5SumError:
+		(type, value, traceback) = sys.exc_info()
+		raise bb.build.FuncFailed("MD5  failed: %s" % value)
+	except:
+		(type, value, traceback) = sys.exc_info()
+		raise bb.build.FuncFailed("Unknown fetch Error: %s" % value)
+
+
+	# Verify the SHA and MD5 sums we have in OE and check what do
+	# in
+	check_sum = bb.which(bb.data.getVar('BBPATH', d, True), "conf/checksums.ini")
+	if not check_sum:
+		bb.note("No conf/checksums.ini found, not checking checksums")
+		return
+
+	try:
+		parser = base_chk_load_parser(ckeck_sum)
+	except:
+		bb.note("Creating the CheckSum parser failed")
+		return
+
+	pv = bb.data.getVar('PV', d, True)
+	pn = bb.data.getVar('PN', d, True)
+
+	# Check each URI
+	for url in src_uri.split():
+		localpath = bb.fetch.localpath(url,localdata)
+		(type,host,path,_,_,_) = bb.decodeurl(url)
+		print type, host, path
+		uri = "%s://%s%s" % (type,host,path)
+		try:
+			if not base_chk_file(parser, pn, pv,uri, localpath):
+				bb.note("%s-%s-%s has no section, not checking URI" % pn,pv,uri)
+		except Exception, e:
+			raise bb.func.FuncFailed("Checksum of '%s' failed", uri)
 }
 
 addtask fetchall after do_fetch
