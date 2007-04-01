@@ -21,7 +21,8 @@ PACKAGES =+ "xserver-kdrive-fbdev \
              xserver-kdrive-smi \
              xserver-kdrive-vesa \
              xserver-kdrive-via \
-             "
+             xserver-kdrive-w100 \	
+ 	"
 
 SECTION = "x11/base"
 DESCRIPTION = "X server from freedesktop.org"
