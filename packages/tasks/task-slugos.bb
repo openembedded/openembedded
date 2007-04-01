@@ -6,7 +6,7 @@
 DESCRIPTION = "Task packages for the SlugOS distribution"
 HOMEPAGE = "http://www.nslu2-linux.org"
 LICENSE = "MIT"
-PR = "r7"
+PR = "r8"
 PACKAGE_ARCH = "${MACHINE_ARCH}"
 ALLOW_EMPTY = "1"
 
@@ -106,7 +106,7 @@ DEPENDS += "${DISTRO_EXTRA_DEPENDS}"
 RDEPENDS += "\
 	kernel ixp4xx-npe \
 	base-files base-passwd netbase \
-        busybox initscripts-slugos slugos-init altboot \
+        busybox initscripts-slugos slugos-init \
         update-modules sysvinit tinylogin \
 	module-init-tools modutils-initscripts \
         ipkg-collateral ipkg ipkg-link \
