@@ -9,7 +9,9 @@ DEPENDS = "libpcap gtk+ wireless-tools sqlite zlib dbus-glib gpsd"
 RDEPENDS = "wireless-tools"
 RRECOMMENDS = "gpsd"
 
-SRC_URI = "http://projects.linuxtogo.org/frs/download.php/14/${PN}-${PV}.tar.gz"
+SRC_URI = "http://projects.linuxtogo.org/frs/download.php/14/${PN}-0.7.4pre1.tar.gz"
+
+S = "${WORKDIR}/${PN}-0.7.4pre1"
 
 inherit autotools pkgconfig
 
