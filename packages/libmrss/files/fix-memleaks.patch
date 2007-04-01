@@ -1,0 +1,17 @@
+Index: libmrss-0.17/src/mrss_parser.c
+===================================================================
+--- libmrss-0.17.orig/src/mrss_parser.c	2007-04-01 22:23:22.000000000 +0200
++++ libmrss-0.17/src/mrss_parser.c	2007-04-01 22:23:42.000000000 +0200
+@@ -186,10 +186,10 @@
+   cat->allocated = 1;
+   cat->category = c;
+ 
+-  if (!(c = nxmle_find_attribute (cur, "scheme", NULL)))
++  if (c = nxmle_find_attribute (cur, "scheme", NULL))
+     cat->domain = c;
+ 
+-  if (!(c = nxmle_find_attribute (cur, "label", NULL)))
++  if (c = nxmle_find_attribute (cur, "label", NULL))
+     cat->label = c;
+ 
+   if (!*category)
