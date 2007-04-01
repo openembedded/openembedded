@@ -3,12 +3,14 @@ LICENSE = "LGPL"
 HOMEPAGE = "http://www2.autistici.org/bakunin/codes.php"
 
 DEPENDS = "libnxml curl"
+PR      = "r1"
 
 inherit autotools pkgconfig
 
 SRC_URI = "http://www2.autistici.org/bakunin/libmrss/libmrss-${PV}.tar.gz \
            file://atom-changes.patch;patch=1                              \
            file://fix_atom_date_locale.patch;patch=1                      \
+           file://fix-memleaks.patch;patch=1                              \
            file://bump-version.patch;patch=1 "
 
 do_stage() {
