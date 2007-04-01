@@ -6,7 +6,7 @@ DEPENDS = "curl"
 
 inherit autotools pkgconfig
 
-SRC_URI = "http://www2.autistici.org/bakunin/libnxml/libnxml-${PV}.tar.gz;md5sum=85b6a42a9e17a23c01b2f2ed0ece0563"
+SRC_URI = "http://www2.autistici.org/bakunin/libnxml/libnxml-${PV}.tar.gz"
 
 
 do_stage() {
