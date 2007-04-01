@@ -6,8 +6,8 @@ to create a right RFC822 date.
 
 Index: libmrss-0.17/src/mrss.h
 ===================================================================
---- libmrss-0.17.orig/src/mrss.h	2007-04-01 00:29:06.000000000 +0200
-+++ libmrss-0.17/src/mrss.h	2007-04-01 01:22:25.000000000 +0200
+--- libmrss-0.17.orig/src/mrss.h	2007-02-02 12:23:49.000000000 +0100
++++ libmrss-0.17/src/mrss.h	2007-04-01 19:46:41.000000000 +0200
 @@ -364,6 +364,9 @@
    mrss_element_t element;
    int allocated;
@@ -20,8 +20,8 @@ Index: libmrss-0.17/src/mrss.h
    char *file;
 Index: libmrss-0.17/src/mrss_free.c
 ===================================================================
---- libmrss-0.17.orig/src/mrss_free.c	2007-04-01 00:32:56.000000000 +0200
-+++ libmrss-0.17/src/mrss_free.c	2007-04-01 15:45:44.000000000 +0200
+--- libmrss-0.17.orig/src/mrss_free.c	2007-02-02 12:47:46.000000000 +0100
++++ libmrss-0.17/src/mrss_free.c	2007-04-01 19:46:41.000000000 +0200
 @@ -22,9 +22,14 @@
  # error Use configure; make; make install
  #endif
@@ -49,8 +49,8 @@ Index: libmrss-0.17/src/mrss_free.c
  }
 Index: libmrss-0.17/src/mrss_parser.c
 ===================================================================
---- libmrss-0.17.orig/src/mrss_parser.c	2007-03-30 01:07:56.000000000 +0200
-+++ libmrss-0.17/src/mrss_parser.c	2007-04-01 16:40:57.000000000 +0200
+--- libmrss-0.17.orig/src/mrss_parser.c	2007-04-01 19:46:41.000000000 +0200
++++ libmrss-0.17/src/mrss_parser.c	2007-04-01 20:38:06.000000000 +0200
 @@ -22,9 +22,13 @@
  # error Use configure; make; make install
  #endif
@@ -74,7 +74,7 @@ Index: libmrss-0.17/src/mrss_parser.c
  {
    char *ret = NULL;
    if (datestr)
-@@ -150,8 +154,14 @@
+@@ -150,8 +154,13 @@
  	  stm.tm_year -= 1900;
  	  char datebuf[256];
  	  free (datestr);
@@ -82,7 +82,6 @@ Index: libmrss-0.17/src/mrss_parser.c
 -		    &stm);
 +
 +      if (!data->c_locale) {
-+        printf( "Creating the locale\n" );
 +         data->c_locale = newlocale(LC_ALL_MASK,"C",NULL);
 +      }
 +
@@ -91,7 +90,7 @@ Index: libmrss-0.17/src/mrss_parser.c
  	  ret = strdup (datebuf);
  	}
      }
-@@ -269,16 +279,16 @@
+@@ -269,16 +278,16 @@
  	  else if (!strcmp (cur->value, "published") && !item->pubDate
  		   && data->version == MRSS_VERSION_ATOM_1_0)
  	    item->pubDate =
@@ -111,7 +110,7 @@ Index: libmrss-0.17/src/mrss_parser.c
  
  	  /* id -> guid */
  	  else if (!strcmp (cur->value, "id") && !item->guid
-@@ -701,7 +711,7 @@
+@@ -701,7 +710,7 @@
  	  /* updated -> lastBuildDate */
  	  else if (!strcmp (cur->value, "updated"))
  	    data->lastBuildDate =
