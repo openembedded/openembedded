@@ -32,6 +32,9 @@ def base_chk_file(parser, pn, pv, src_uri, localpath):
     elif parser.has_section(pn_src):
         md5    = parser.get(pn_src, "md5")
         sha256 = parser.get(pn_src, "sha256")
+    elif parser.has_section(src_uri):
+        md5    = parser.get(src_uri, "md5")
+        sha256 = parser.get(src_uri, "sha256")
     else:
         return False
         #raise Exception("Can not find a section for '%s' '%s' and '%s'" % (pn,pv,src_uri))
