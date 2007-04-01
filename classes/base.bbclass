@@ -54,7 +54,7 @@ def base_chk_file(parser, pn, pv, src_uri, localpath):
         raise Exception("Executing md5sum failed")
 
     try:
-        shapipe = os.popen('shasum -a256 -p ' + localpath)
+        shapipe = os.popen('sha256sum -b ' + localpath)
         shadata = (shapipe.readline().split() or [ "" ])[0]
         shapipe.close()
     except OSError:
