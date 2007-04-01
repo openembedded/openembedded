@@ -26,6 +26,12 @@ cpan_do_compile () {
 	if test ${TARGET_ARCH} = "sh3" -o ${TARGET_ARCH} = "sh4"; then
 		OPTIONS="LD=${TARGET_ARCH}-${TARGET_OS}-gcc"
 	fi
+
+	if test ${TARGET_ARCH} = "powerpc" ; then
+		OPTIONS="LD=${TARGET_ARCH}-${TARGET_OS}-gcc"
+	fi
+
+
         oe_runmake PASTHRU_INC="${CFLAGS}" CCFLAGS="${CFLAGS}" $OPTIONS
 }
 

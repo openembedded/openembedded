@@ -46,6 +46,14 @@ do_compile() {
 	if test ${TARGET_ARCH} = "sh3" -o ${TARGET_ARCH} = "sh4"; then
 		OPTIONS="LD=${TARGET_ARCH}-${TARGET_OS}-gcc"
 	fi
+
+         # You must use gcc to link on powerpc also 
+ 	 OPTIONS="" 
+ 	 if test ${TARGET_ARCH} = "powerpc" ; then 
+ 	        OPTIONS="LD=${TARGET_ARCH}-${TARGET_OS}-gcc" 
+  	 fi 
+
+
 	oe_runmake perl $OPTIONS
 }
 

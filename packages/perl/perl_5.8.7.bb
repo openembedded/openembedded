@@ -21,10 +21,12 @@ SRC_URI_append_sh4 += "file://override-generate-sh.patch;patch=1"
 SRC_URI_append_sh4 += "file://makefile-usegcc-to-link.patch;patch=1"
 SRC_URI_append_sh3 += "file://override-generate-sh.patch;patch=1"
 SRC_URI_append_sh3 += "file://makefile-usegcc-to-link.patch;patch=1"
+SRC_URI_append_powerpc += "file://override-generate-sh.patch;patch=1"
+SRC_URI_append_powerpc += "file://makefile-usegcc-to-link.patch;patch=1"
 
 PARALLEL_MAKE = ""
 
-PR = "r21"
+PR = "r22"
 
 do_configure() {
 	ln -sf ${HOSTPERL} ${STAGING_BINDIR_NATIVE}/hostperl
