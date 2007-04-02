@@ -19,6 +19,11 @@ INITSCRIPT_PARAMS = "defaults 35"
 
 export LDFLAGS = "-L${STAGING_LIBDIR} -lm"
 
+do_compile_prepend() {
+    export BUILD_SYS="${BUILD_SYS}"
+    export HOST_SYS="${HOST_SYS}"
+}
+
 do_stage() {
         oe_libinstall -so -C ${S}/.libs libgps ${STAGING_LIBDIR}
         install -m 0655 ${S}/libgps.la ${STAGING_LIBDIR}
