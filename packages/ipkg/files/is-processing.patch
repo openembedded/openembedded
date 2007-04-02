@@ -1,6 +1,6 @@
 diff -Nur ipkg-0.99.163.orig/ipkg_install.c ipkg-0.99.163/ipkg_install.c
 --- ipkg-0.99.163.orig/ipkg_install.c	2006-03-30 21:50:24.000000000 +0800
-+++ ipkg-0.99.163/ipkg_install.c	2006-08-10 09:30:40.000000000 +0800
++++ ipkg-0.99.163/ipkg_install.c	2007-03-15 08:01:20.000000000 +0800
 @@ -211,6 +211,7 @@
  	anyone ever wants to make a nice libipkg. */
  
@@ -9,9 +9,35 @@ diff -Nur ipkg-0.99.163.orig/ipkg_install.c ipkg-0.99.163/ipkg_install.c
       return ipkg_install_pkg(conf, new,0);
  }
  
+diff -Nur ipkg-0.99.163.orig/libbb/unzip.c ipkg-0.99.163/libbb/unzip.c
+--- ipkg-0.99.163.orig/libbb/unzip.c	2006-02-06 16:13:02.000000000 +0800
++++ ipkg-0.99.163/libbb/unzip.c	2007-03-15 08:03:45.000000000 +0800
+@@ -1028,13 +1028,15 @@
+  */
+ extern void gz_close(int gunzip_pid)
+ {
+-	if (kill(gunzip_pid, SIGTERM) == -1) {
+-		error_msg_and_die("***  Couldnt kill old gunzip process *** aborting");
+-	}
++	if (kill(gunzip_pid, 0) == 0) {
++		if (kill(gunzip_pid, SIGTERM) == -1) {
++			error_msg_and_die("***  Couldnt kill old gunzip process *** aborting");
++		}
+ 
+-	if (waitpid(gunzip_pid, NULL, 0) == -1) {
+-		printf("Couldnt wait ?");
++		if (waitpid(gunzip_pid, NULL, 0) == -1) {
++			printf("Couldnt wait ?");
++		}
+ 	}
+-		free(window);
+-		free(crc_table);
++	free(window);
++	free(crc_table);
+ }
 diff -Nur ipkg-0.99.163.orig/pkg.c ipkg-0.99.163/pkg.c
 --- ipkg-0.99.163.orig/pkg.c	2006-04-21 04:29:28.000000000 +0800
-+++ ipkg-0.99.163/pkg.c	2006-08-10 09:35:06.000000000 +0800
++++ ipkg-0.99.163/pkg.c	2007-03-20 15:11:32.845064480 +0800
 @@ -33,6 +33,7 @@
  #include "xsystem.h"
  #include "ipkg_conf.h"
@@ -98,7 +124,32 @@ diff -Nur ipkg-0.99.163.orig/pkg.c ipkg-0.99.163/pkg.c
  	       }
  	  } else if (strcasecmp(field, "MD5sum") == 0) {
  	       /* MD5sum */
-@@ -1016,6 +1049,12 @@
+@@ -871,6 +904,24 @@
+                    }
+                    temp[0]='\0';
+                    snprintf(temp, (strlen(pkg->size)+8), "Size: %s\n", pkg->size);
++	       } else {
++                  if ( pkg->local_filename ) {
++                     struct stat buf;
++		     memset(&buf, 0, sizeof(struct stat));
++		     
++		     if ( stat(pkg->local_filename, &buf) == 0 ) {
++
++		        sprintf_alloc(&pkg->size, "%d", buf.st_size);
++                        temp = (char *)realloc(temp, strlen(pkg->size)+8);
++                        if ( temp == NULL ){
++                           fprintf(stderr, "%s: out of memory\n", __FUNCTION__);
++                           return NULL;
++                        }
++                        temp[0]='\0';
++                        snprintf(temp, (strlen(pkg->size)+8), "Size: %s\n", pkg->size);
++		     }
++                  }
++		       
+ 	       }
+ 	  } else if (strcasecmp(field, "Source") == 0) {
+ 	       /* Source */
+@@ -1016,6 +1067,12 @@
       pkg_print_field(pkg, file, "Essential"); /* @@@@ should be removed in future release. */
       pkg_print_field(pkg, file, "Architecture");
       pkg_print_field(pkg, file, "Conffiles");
@@ -113,7 +164,7 @@ diff -Nur ipkg-0.99.163.orig/pkg.c ipkg-0.99.163/pkg.c
  }
 diff -Nur ipkg-0.99.163.orig/pkg.h ipkg-0.99.163/pkg.h
 --- ipkg-0.99.163.orig/pkg.h	2006-05-30 16:31:08.000000000 +0800
-+++ ipkg-0.99.163/pkg.h	2006-08-10 09:19:14.000000000 +0800
++++ ipkg-0.99.163/pkg.h	2007-03-15 08:01:20.000000000 +0800
 @@ -176,6 +176,10 @@
       int arch_priority;
  /* Adding this flag, to "force" ipkg to choose a "provided_by_hand" package, if there are multiple choice */
@@ -125,3 +176,4 @@ diff -Nur ipkg-0.99.163.orig/pkg.h ipkg-0.99.163/pkg.h
  };
  
  pkg_t *pkg_new(void);
+
