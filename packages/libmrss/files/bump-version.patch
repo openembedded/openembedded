@@ -1,0 +1,16 @@
+Bump the version info, specially as I changed the struct in a binary
+incompatible way.
+
+Index: libmrss-0.17/src/Makefile.am
+===================================================================
+--- libmrss-0.17.orig/src/Makefile.am	2007-04-01 16:43:58.000000000 +0200
++++ libmrss-0.17/src/Makefile.am	2007-04-01 16:44:10.000000000 +0200
+@@ -10,7 +10,7 @@
+ 	mrss_options.c \
+ 	mrss_search.c
+ 
+-libmrss_la_LDFLAGS = -version-info 0:16:0
++libmrss_la_LDFLAGS = -version-info 0:17:0
+ 
+ EXTRA_DIST = mrss.h mrss_internal.h
+ 

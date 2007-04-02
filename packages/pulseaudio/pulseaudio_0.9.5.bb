@@ -8,9 +8,8 @@ DEPENDS = "liboil avahi libsamplerate0 libsndfile1 libtool"
 # optional
 DEPENDS += "alsa-lib"
 
-RPROVIDES = "esound esd"
 
-PR = "r6"
+PR = "r7"
 
 SRC_URI = "http://0pointer.de/lennart/projects/pulseaudio/pulseaudio-${PV}.tar.gz"
 

@@ -1,6 +1,6 @@
 DESCRIPTION = "Matchbox session files for OpenMoko"
 SECTION = "openmoko/base"
-RDEPENDS = "matchbox gconf matchbox-applet-startup-monitor gtk-theme-clearlooks"
+RDEPENDS = "matchbox-panel-2 matchbox-wm  gconf matchbox-applet-startup-monitor gtk-theme-clearlooks"
 PV = "0.0+svn${SRCDATE}"
 PR = "r8"
 

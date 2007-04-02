@@ -10,7 +10,7 @@ RDEPENDS = "gpe-icons"
 inherit autotools gpe
 
 
-PV = "0.72+svn${SRCDATE}"
+PV = "0.90+svn${SRCDATE}"
 PR = "r0"
 
 SRC_URI = "${GPE_SVN}"

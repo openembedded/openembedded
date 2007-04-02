@@ -3,6 +3,8 @@ SECTION = "gpe/base"
 LICENSE = "GPL"
 DEPENDS = "audiofile"
 
+PR = "r1"
+
 inherit gnome binconfig
 
 SRC_URI = "ftp://ftp.gnome.org/pub/GNOME/sources/esound/0.2/esound-0.2.36.tar.bz2"
