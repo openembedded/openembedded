@@ -5,7 +5,7 @@ PRIORITY = "optional"
 
 DEFAULT_PREFERENCE = "-1"
 
-PV = "0.5.0+svn${SRCDATE}"
+PV = "0.5.2+svn${SRCDATE}"
 PR = "r0"
 
 SRC_URI = "svn://gtk-webcore.svn.sourceforge.net/svnroot/gtk-webcore/trunk;module=JavaScriptCore;proto=https \
