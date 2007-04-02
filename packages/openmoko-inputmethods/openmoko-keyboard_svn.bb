@@ -7,7 +7,7 @@ PR = "r1"
 
 inherit openmoko autotools pkgconfig gettext
 
-SRC_URI = "${OPENMOKO_MIRROR}/src/target/${OPENMOKO_RELEASE}/applications;module=${PN};proto=http"
+SRC_URI = "${OPENMOKO_MIRROR}/src/target/${OPENMOKO_RELEASE}/inputmethods;module=${PN};proto=http"
 
 S = "${WORKDIR}/${PN}"
 
