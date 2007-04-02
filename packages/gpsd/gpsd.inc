@@ -2,7 +2,7 @@ DESCRIPTION = "A TCP/IP Daemon simplifying the communication with GPS devices"
 SECTION = "console/network"
 PRIORITY = "optional"
 LICENSE = "GPL"
-DEPENDS = "dbus-glib ncurses"
+DEPENDS = "dbus-glib ncurses python"
 
 EXTRA_OECONF = "--x-includes=${STAGING_INCDIR}/X11  \
 		--x-libraries=${STAGING_LIBDIR} \
@@ -20,6 +20,11 @@ INITSCRIPT_PARAMS = "defaults 35"
 export LDFLAGS = "-L${STAGING_LIBDIR} -lm"
 
 do_compile_prepend() {
+    export BUILD_SYS="${BUILD_SYS}"
+    export HOST_SYS="${HOST_SYS}"
+}
+
+do_install_prepend() {
     export BUILD_SYS="${BUILD_SYS}"
     export HOST_SYS="${HOST_SYS}"
 }
