@@ -1,13 +1,11 @@
 DESCRIPTION = "Tool to edit the Redboot FIS partition layout from userspace"
-PR = "r1"
-DEPENDS = "boost"
+PR = "r2"
 
-SRC_URI = "http://svn.chezphil.org/utils/trunk/fis.cc \
+SRC_URI = "http://svn.chezphil.org/utils/trunk/fis.c \
 	   svn://svn.chezphil.org/;module=libpbe;proto=http"
 
 do_compile() {
-	${CXX} -Os -W -I${STAGING_INCDIR} -I${WORKDIR}/libpbe/trunk/include -o fis ${WORKDIR}/fis.cc \
-	${WORKDIR}/libpbe/trunk/src/Exception.cc ${WORKDIR}/libpbe/trunk/src/utils.cc
+	${CC} --std=c99 -Os -W -o fis ${WORKDIR}/fis.c
 }
 
 do_install() {
