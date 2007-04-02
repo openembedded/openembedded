@@ -8,7 +8,7 @@ inherit openmoko-base
 SRC_URI = "${OPENMOKO_MIRROR}/src/target/${OPENMOKO_RELEASE}/artwork;module=themes;proto=http"
 S = "${WORKDIR}"
 
-dirs = "themes/openmoko-standard"
+dirs = "themes/openmoko-standard-qvga"
 
 do_install() {
 	find ${WORKDIR} -name ".svn" | xargs rm -rf
