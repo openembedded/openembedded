@@ -9,8 +9,6 @@ DEPENDS = "gtk+ libgpewidget libgpephone libgpelaunch dbus-glib libxsettings-cli
 GPE_TARBALL_SUFFIX= "gz"
 inherit gpephone autotools
 
-SRC_URI += " file://default-icon.patch;patch=1;pnum=0"
-
 #EXTRA_OECONF = "--enable-gridlayout"
 
 FILES_${PN} += '${datadir}/themes'
