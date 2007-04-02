@@ -9,6 +9,7 @@ def openmoko_base_get_subdir(d):
     if section == 'base' or section == 'libs': return ""
     elif section in 'apps tools pim'.split(): return "applications"
     elif section == "panel-plugin": return "panel-plugins"
+    elif section == "inputmethods": return "inputmethods"
     else: return section
 
 SUBDIR = "${@openmoko_base_get_subdir(d)}"
