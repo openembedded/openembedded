@@ -1,6 +1,8 @@
 SUMMARY = "A simple tool to create sha256 hashes from a file"
 LICENSE = "LGPL"
 
+PR      = "r1"
+
 S = "${WORKDIR}"
 
 
@@ -14,5 +16,5 @@ do_configure() {
 }
 
 do_compile() {
-    $CC $CFLAGS $CPPFLAGS -o sha256sum main.c sha256.c
+    $CC $CFLAGS $CPPFLAGS -o oe_sha256sum main.c sha256.c
 }

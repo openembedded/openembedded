@@ -20,7 +20,7 @@ def base_chk_load_parser(config_path):
 
     return parser
 
-def base_chk_file(parser, pn, pv, src_uri, localpath):
+def base_chk_file(parser, pn, pv, src_uri, localpath, data):
     import os, bb
     # Try PN-PV-SRC_URI first and then try PN-SRC_URI
     # we rely on the get method to create errors
@@ -54,7 +54,7 @@ def base_chk_file(parser, pn, pv, src_uri, localpath):
         raise Exception("Executing md5sum failed")
 
     try:
-        shapipe = os.popen('sha256sum -b ' + localpath)
+        shapipe = os.popen('PATH=%s oe_sha256sum %s' % (bb.data.getVar('PATH', data, True), localpath))
         shadata = (shapipe.readline().split() or [ "" ])[0]
         shapipe.close()
     except OSError:
@@ -78,16 +78,22 @@ def base_dep_prepend(d):
 	# the case where host == build == target, for now we don't work in
 	# that case though.
 	#
-	deps = ""
+	if bb.data.getVar('PN', d, True) == "shasum-native":
+		deps = ""
+	else:
+		deps = "shasum-native "
+
+	# INHIBIT_PATCH_TOOL don't apply the patch tool dependency
+	inhibit_patch = (bb.data.getVar("INHIBIT_PATCH_TOOL", d, True) == "1") or False
 
 	# INHIBIT_DEFAULT_DEPS doesn't apply to the patch command.  Whether or  not
 	# we need that built is the responsibility of the patch function / class, not
 	# the application.
 	patchdeps = bb.data.getVar("PATCHTOOL", d, 1)
-        if patchdeps:
+        if patchdeps and not inhibit_patch:
 		patchdeps = "%s-native" % patchdeps
 		if not patchdeps in bb.data.getVar("PROVIDES", d, 1):
-			deps = patchdeps
+			deps += patchdeps
 
 	if not bb.data.getVar('INHIBIT_DEFAULT_DEPS', d):
 		if (bb.data.getVar('HOST_SYS', d, 1) !=
@@ -439,6 +445,7 @@ python base_do_mrproper() {
 
 addtask fetch
 do_fetch[dirs] = "${DL_DIR}"
+do_fetch[depends] = "shasum-native:do_populate_staging"
 python base_do_fetch() {
 	import sys
 
@@ -493,7 +500,7 @@ python base_do_fetch() {
 		(type,host,path,_,_,_) = bb.decodeurl(url)
 		uri = "%s://%s%s" % (type,host,path)
 		try:
-		    if not base_chk_file(parser, pn, pv,uri, localpath):
+		    if not base_chk_file(parser, pn, pv,uri, localpath, d):
 			    bb.note("%s-%s-%s has no section, not checking URI" % (pn,pv,uri))
 		except Exception:
 			raise bb.build.FuncFailed("Checksum of '%s' failed" % uri)
