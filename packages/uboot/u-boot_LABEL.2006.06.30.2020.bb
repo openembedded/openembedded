@@ -1,6 +1,7 @@
 require u-boot.inc
 
 PR = "r2"
+DEFAULT_PREFERENCE = "-1"
 
 TAG = "${@bb.data.getVar('PV',d,1).replace('.', '_')}"
 
