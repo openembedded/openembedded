@@ -5,7 +5,7 @@
 DESCRIPTION = "Packages that are compatible with the SlugOS firmware"
 HOMEPAGE = "http://www.nslu2-linux.org"
 LICENSE = "MIT"
-PR = "r30"
+PR = "r31"
 CONFLICTS = "db3"
 
 COMPATIBLE_MACHINE = "nslu2"
@@ -104,7 +104,6 @@ SLUGOS_PACKAGES = "\
 	lsof \
 	lvm2 \
 	m4 \
-	madfu \
 	madplay \
 	madwifi-ng \
 	mailx \
@@ -195,6 +194,7 @@ SLUGOS_BROKEN_PACKAGES = "\
 	irssi \
 	libgphoto2 \
 	logrotate \
+	madfu \
 	mediatomb \
 	mpd \
 	netpbm \
