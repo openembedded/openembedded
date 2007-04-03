@@ -2,7 +2,7 @@ DESCRIPTION = "Extract information from Bluetooth devices in range."
 SECTION = "libs"
 PRIORITY = "optional"
 HOMEPAGE = "http://www.pentest.co.uk/cgi-bin/viewcat.cgi?cat=downloads&section=01_bluetooth"
-DEPENDS = "bluez-libs gdbm ncurses"
+DEPENDS = "bluez-libs gdbm ncurses libxml2"
 PR = "r0"
 LICENSE = "GPLv2"
 
