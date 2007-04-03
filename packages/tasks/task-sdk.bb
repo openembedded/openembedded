@@ -21,58 +21,58 @@ RDEPENDS_task-sdk-base := "\
     glibc-dev \
     libgcc1 \
     alsa-dev \
-    libaudiofile-dev \
-    libbluetooth-dev \
+    audiofile-dev \
+    bluez-libs-dev \
     dbus-dev \
     expat-dev \
     fontconfig-dev \
     freetype-dev \
-    libglib-2.0-dev \
+    glib-2.0-dev \
     gstreamer-dev \
     libice-dev \
     ipkg-dev \
-    libjpeg-dev \
+    jpeg-dev \
     libapm-dev \
-    libasound2 \
+    alsa-lib-dev \
     libdisplaymigration-dev \
     libetpan-dev \
     libgcrypt-dev \
-    libglade-2.0-dev \
-    libgnutls-dev \
+    libglade-dev \
+    gnutls-dev \
     libgpg-error-dev \
-    libidl-2-dev \
+    libidl-dev \
     libiw-dev \
-    libmimedir-0.4-dev \
+    libmimedir-dev \
     libpcap-dev \
     libpixman-dev \
     libpng-dev \
     libschedule-dev \
     libsm-dev \
     libsoundgen-dev \
-    libsoup-2.2-dev \
+    libsoup-dev \
     libsvg-dev \
     libtododb-dev \
     libts-dev \
     libxml2-dev \
     ncurses-dev \
-    libopenobex-dev \
-    libpopt-dev \
-    libreadline-dev \
+    openobex-dev \
+    popt-dev \
+    readline-dev \
     libsqlite-dev \
     zlib-dev \
     libxmu-dev"
 
 RDEPENDS_task-sdk-x11 := "\
-    libatk-1.0-dev \
-    libcairo-dev \
+    atk-dev \
+    cairo-dev \
     gconf-dbus-dev \
     gtk+-dev \
     gtk-engines-dev \
     libsvg-cairo-dev \
-    libmb-dev \
+    libmatchbox-dev \
     matchbox-desktop-dev \
     pango-dev \
-    libstartup-notification-1-dev"
+    startup-notification-dev"
 
 RDEPENDS_task-sdk-x11-ext := "\
     libxcursor-dev \
@@ -101,7 +101,7 @@ RDEPENDS_task-sdk-x11-ext := "\
 
 RDEPENDS_task-sdk-gpe := "\
     libcontactsdb-dev \
-    libesd-dev \
+    esound-dev \
     libeventdb-dev \
     libgpepimc-dev \
     libgpevtype-dev \
