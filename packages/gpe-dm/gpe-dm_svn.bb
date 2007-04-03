@@ -14,3 +14,5 @@ S = "${WORKDIR}/${PN}"
 
 INITSCRIPT_NAME = "gpe-dm"
 INITSCRIPT_PARAMS = "start 99 5 2 . stop 20 0 1 6 ."
+
+DEFAULT_PREFERENCE = "-1"
