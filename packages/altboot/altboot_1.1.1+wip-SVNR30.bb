@@ -23,7 +23,7 @@ RDEPENDS_${PN}-conf = "${PN}"
 
 ######################################################################################
 
-SVN_REV = "28"
+SVN_REV = "30"
 PR = "r1"
 
 ######################################################################################
@@ -49,8 +49,7 @@ MACHINE_DIR_nslu2be = "nslu2le"
 
 do_install() {
 	install -d ${D}/sbin
-	install -d ${D}/etc/altboot-menu
-	install -d ${D}/etc/altboot-menu/Advanced
+	install -d ${D}/etc/altboot-menu	
 	install -d ${D}/etc/altboot.rc
 	install -d ${D}/usr/share/doc/altboot
 	install -d ${D}/usr/share/sounds
@@ -77,6 +76,7 @@ do_install() {
 		
 		if test -d ${S}/${MACHINE_DIR}/altboot-menu/Advanced
 		then
+			install -d ${D}/etc/altboot-menu/Advanced
 			install -m 0755 ${S}/${MACHINE_DIR}/altboot-menu/Advanced/*-* ${D}/etc/altboot-menu/Advanced
 		fi
 	else
@@ -84,6 +84,7 @@ do_install() {
 
 		if test -d ${S}/altboot-menu/Advanced
 		then		
+			install -d ${D}/etc/altboot-menu/Advanced
 			install -m 0755 ${S}/altboot-menu/Advanced/*-* ${D}/etc/altboot-menu/Advanced
 		fi
 	fi
