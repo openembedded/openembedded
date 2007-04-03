@@ -5,7 +5,7 @@
 DESCRIPTION = "Packages that are compatible with the SlugOS firmware"
 HOMEPAGE = "http://www.nslu2-linux.org"
 LICENSE = "MIT"
-PR = "r31"
+PR = "r32"
 CONFLICTS = "db3"
 
 COMPATIBLE_MACHINE = "nslu2"
@@ -162,7 +162,6 @@ SLUGOS_PACKAGES = "\
 	streamripper \
 	sysfsutils \
 	tar \
-	task-native-sdk \
 	task-mokogateway-everything \
 	thttpd \
 	tiff \
@@ -206,6 +205,7 @@ SLUGOS_BROKEN_PACKAGES = "\
 	unionfs-utils \
 	lirc \
 	pwc \
+	task-native-sdk \
 	zd1211 \
 	mysql \
         wview-sim-mysql wview-vpro-mysql \
