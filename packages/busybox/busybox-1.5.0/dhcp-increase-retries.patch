@@ -1,0 +1,11 @@
+--- busybox-1.5.0/networking/udhcp/dhcpc.c~	2007-04-01 08:42:41.000000000 -0500
++++ busybox-1.5.0/networking/udhcp/dhcpc.c	2007-04-01 21:03:42.000000000 -0500
+@@ -188,7 +188,7 @@
+ 	/* Default options. */
+ 	client_config.interface = "eth0";
+ 	client_config.script = DEFAULT_SCRIPT;
+-	client_config.retries = 3;
++	client_config.retries = 5;
+ 	client_config.timeout = 3;
+ 
+ 	/* Parse command line */

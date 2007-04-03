@@ -1,0 +1,20 @@
+--- busybox-1.5.0/networking/udhcp/dhcpc.c~	2007-03-22 15:21:23.000000000 -0500
++++ busybox-1.5.0/networking/udhcp/dhcpc.c	2007-04-01 08:42:41.000000000 -0500
+@@ -136,6 +136,7 @@
+ 	int retval;
+ 	int len;
+ 	int no_clientid = 0;
++	char hostbuf[256];     /* (default hostname patch) */
+ 	fd_set rfds;
+ 	struct timeval tv;
+ 	struct dhcpMessage packet;
+@@ -214,6 +215,9 @@
+ 		client_config.background_if_no_lease = 1;
+ 	if (opt & OPT_h)
+ 		client_config.hostname = alloc_dhcp_option(DHCP_HOST_NAME, str_h, 0);
++	else /* (default hostname patch) default hostname is our hostname as set */
++		if (gethostname(hostbuf, sizeof(hostbuf)) == 0)
++			client_config.hostname = alloc_dhcp_option(DHCP_HOST_NAME, hostbuf, 0);
+ 	if (opt & OPT_F) {
+ 		client_config.fqdn = alloc_dhcp_option(DHCP_FQDN, str_F, 3);
+ 		/* Flags: 0000NEOS
