@@ -6,17 +6,16 @@ ALLOW_EMPTY = "1"
 RDEPENDS := "\
     libidn-dev \
     libim-dev \
-    libgloox-dev \
+    gloox-dev \
     libabenabler-dev \
-    libcalenebler-dev \
+    libcalenabler-dev \
     libchenabler-dev \
     libgemwidget-dev \
     libiac-dev \
-    liblips_im-dev \
+    libim-dev \
     liblipsevent-dev \
     libmsgenabler-dev \
     librecord-dev \
     libvocenabler-dev \
-    liblinphone-dev \
+    linphone-dev \
     "
-
