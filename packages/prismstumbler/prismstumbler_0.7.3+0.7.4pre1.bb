@@ -1,5 +1,5 @@
 SECTION = "x11/network"
-PR = "r0"
+PR = "r1"
 
 PACKAGES = "prismstumbler prismstumbler-frontend prismstumbler-doc"
 DESCRIPTION = "Prismstumbler wireless LAN scanner"
@@ -9,7 +9,8 @@ DEPENDS = "libpcap gtk+ wireless-tools sqlite zlib dbus-glib gpsd"
 RDEPENDS = "wireless-tools"
 RRECOMMENDS = "gpsd"
 
-SRC_URI = "http://projects.linuxtogo.org/frs/download.php/14/${PN}-0.7.4pre1.tar.gz"
+SRC_URI = "http://projects.linuxtogo.org/frs/download.php/14/${PN}-0.7.4pre1.tar.gz \
+           file://gpsapi.patch;patch=1"
 
 S = "${WORKDIR}/${PN}-0.7.4pre1"
 
@@ -21,7 +22,8 @@ EXTRA_OECONF = "--x-includes=${STAGING_INCDIR}/X11 \
 		--with-libpcap=${STAGING_DIR}/${HOST_SYS} \
 		--with-sqlite-includes=${STAGING_INCDIR} \
 		--with-sqlite-libs=${STAGING_LIBDIR} \
-		--without-athena --enable-dbus"
+		--without-athena --enable-dbus \
+                --with-libiw=${STAGING_DIR}/${HOST_SYS}"
 
 CFLAGS =+ "-I${S}/include"
 LDFLAGS += "-lz"
