@@ -1,0 +1,39 @@
+From 5927769216ec15b725f224e3e60ed9884c192704 Mon Sep 17 00:00:00 2001
+From: Graeme Gregory <gg@a10082.wolfsonmicro.main>
+Date: Mon, 26 Mar 2007 15:18:27 +0100
+Subject: [PATCH] Export ac97_dai
+
+This is required so that machine drivers can use this codec.
+
+Signed-off-by: Graeme Gregory <gg@opensource.wolfsonmicro.com>
+---
+ sound/soc/codecs/ac97.c |    1 +
+ sound/soc/codecs/ac97.h |    1 +
+ 2 files changed, 2 insertions(+), 0 deletions(-)
+
+diff --git a/sound/soc/codecs/ac97.c b/sound/soc/codecs/ac97.c
+index 55bc55e..0cdef97 100644
+--- a/sound/soc/codecs/ac97.c
++++ b/sound/soc/codecs/ac97.c
+@@ -60,6 +60,7 @@ static struct snd_soc_codec_dai ac97_dai = {
+ 	.ops = {
+ 		.prepare = ac97_prepare,},
+ };
++EXPORT_SYMBOL_GPL(ac97_dai);
+ 
+ static unsigned int ac97_read(struct snd_soc_codec *codec,
+ 	unsigned int reg)
+diff --git a/sound/soc/codecs/ac97.h b/sound/soc/codecs/ac97.h
+index 930ddfc..2bf6d69 100644
+--- a/sound/soc/codecs/ac97.h
++++ b/sound/soc/codecs/ac97.h
+@@ -14,5 +14,6 @@
+ #define __LINUX_SND_SOC_AC97_H
+ 
+ extern struct snd_soc_codec_device soc_codec_dev_ac97;
++extern struct snd_soc_codec_dai ac97_dai;
+ 
+ #endif
+-- 
+1.5.0.3
+
