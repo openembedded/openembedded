@@ -1,6 +1,6 @@
 DESCRIPTION = "Meta package for a Scratchbox SDK"
 LICENSE = "MIT"
-PR = "r1"
+PR = "r2"
 
 PACKAGES = ""
 
@@ -18,7 +18,8 @@ TARGET_INSTALL = "\
     task-sdk-base \
     task-sdk-x11 \
     task-sdk-x11-ext \
-    task-sdk-gpe"
+    task-sdk-gpe \
+    task-sdk-gpephone"
 
 DEPENDS = "ipkg-native ipkg-utils-native fakeroot-native sed-native"
 RDEPENDS = "${TARGET_INSTALL}"
