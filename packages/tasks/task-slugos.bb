@@ -6,7 +6,7 @@
 DESCRIPTION = "Task packages for the SlugOS distribution"
 HOMEPAGE = "http://www.nslu2-linux.org"
 LICENSE = "MIT"
-PR = "r8"
+PR = "r9"
 PACKAGE_ARCH = "${MACHINE_ARCH}"
 ALLOW_EMPTY = "1"
 
@@ -56,6 +56,7 @@ SLUGOS_STANDARD_RRECOMMENDS += "lrzsz"
 # NOTE: removing kernel-module-nfs from this list will prevent NFS
 # boot (however you can do a simple flash file system boot - no
 # attached disk - and install the nfs modules from ssh.)
+# The altboot mechanism requires kernel-module-loop.
 SLUGOS_STANDARD_RRECOMMENDS += "\
 kernel-module-ext2 \
 kernel-module-jbd \
@@ -64,6 +65,7 @@ kernel-module-vfat \
 kernel-module-isofs \
 kernel-module-udf \
 kernel-module-nfs \
+kernel-module-loop \
 kernel-module-nls-cp437 \
 kernel-module-nls-utf8 \
 "
