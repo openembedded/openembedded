@@ -135,8 +135,9 @@ Recipes:    python*, qt*, qte*, sip*
 Person:     Paul Sokolovsky
 Mail:       pmiscml@gmail.com
 Machines:   h3900, h4000, hx4700
-Interests:  handelds-pxa-2.6, PocketPC and Palm devices support
-Recipes:    opie-*
+Interests:  PocketPC and Palm devices support, Win32 support
+Interests:  Cross-machine unification
+Recipes:    linux-handhelds-2.6, opie-*
 
 Person:     Philip Balister
 Mail:       Crofton@balister.org
