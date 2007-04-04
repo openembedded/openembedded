@@ -15,4 +15,4 @@ SRC_URI = "${GPE_SVN} \
 S = "${WORKDIR}/${PN}"
 
 FILES_${PN} += " ${datadir}/gpe"
-DEFAULT_PREFERENCE = "1"
+DEFAULT_PREFERENCE = "-1"
