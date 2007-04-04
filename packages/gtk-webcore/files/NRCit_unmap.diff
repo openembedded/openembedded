@@ -1,0 +1,39 @@
+Index: NRCit/src/gtk/webi.cc
+===================================================================
+--- NRCit/src/gtk/webi.cc	(リビジョン 55)
++++ NRCit/src/gtk/webi.cc	(作業コピー)
+@@ -50,6 +50,7 @@
+ static void _webi_finalize (GObject * self) G_GNUC_UNUSED;
+ static void _webi_realize (GtkWidget * widget) G_GNUC_UNUSED;
+ static void _webi_map (GtkWidget * widget) G_GNUC_UNUSED;
++static void _webi_unmap (GtkWidget * widget) G_GNUC_UNUSED;
+ static gboolean _webi_expose_event (GtkWidget * widget, GdkEventExpose * event) G_GNUC_UNUSED;
+ static void _webi_size_allocate (GtkWidget * widget, GtkAllocation * allocation) G_GNUC_UNUSED;
+ 
+@@ -305,6 +306,7 @@
+     g_object_class->finalize = _webi_finalize;
+     gtk_widget_class->realize = _webi_realize;
+     gtk_widget_class->map = _webi_map;
++    gtk_widget_class->unmap = _webi_unmap;
+     gtk_widget_class->expose_event = _webi_expose_event;
+     gtk_widget_class->size_allocate = _webi_size_allocate;
+     return;
+@@ -736,6 +738,18 @@
+ }
+ #undef PARENT_HANDLER
+ 
++static void
++_webi_unmap (GtkWidget * widget)
++{
++
++    g_return_if_fail(widget != NULL);
++    g_return_if_fail(WEBI_IS_WEBI (widget));
++
++    GTK_WIDGET_UNSET_FLAGS(widget, GTK_MAPPED);
++
++    gdk_window_hide(widget->window);
++}
++
+ static gboolean
+ _webi_expose_event (GtkWidget * widget, GdkEventExpose * event)
+ #define PARENT_HANDLER(___widget,___event) \
