@@ -1,0 +1,132 @@
+Index: NRCit/src/Http.cpp
+===================================================================
+--- NRCit/src/Http.cpp	(revision 55)
++++ NRCit/src/Http.cpp	(working copy)
+@@ -299,3 +299,9 @@
+ {
+ 
+ }
++
++HttpHeaderWWWAuthenticate::HttpHeaderWWWAuthenticate(const gchar * value)
++    : HttpHeader(WWWAuthenticate, "WWW-Authenticate", value)
++{
++
++}
+Index: NRCit/src/HttpCurl.cpp
+===================================================================
+--- NRCit/src/HttpCurl.cpp	(revision 55)
++++ NRCit/src/HttpCurl.cpp	(working copy)
+@@ -69,7 +69,7 @@
+     void setPostData(const gchar * contentType, GByteArray *);
+ 
+ protected:
+-    bool shouldAuthenticate() { return m_authenticate; }
++    bool shouldAuthenticate() { return m_need_authenticate; }
+ 
+     /** Authenticates the request. */
+     void doAuth();
+@@ -89,7 +89,7 @@
+ 
+     GByteArray * postData;
+     bool headerEnd;
+-    bool m_authenticate;
++    bool m_need_authenticate;
+ 
+     gchar * proxy;
+     CurlFactory* parent;
+@@ -374,7 +374,7 @@
+     ,curl_post_last(NULL)
+     ,postData(NULL)
+     ,headerEnd(false)
+-    ,m_authenticate(true)
++    ,m_need_authenticate(true)
+     ,proxy(NULL)
+     ,parent(aParent)
+     ,status(-1)
+@@ -438,7 +438,8 @@
+ }
+ 
+ void CurlRequest::doAuth() {
+-    m_authenticate = m_listener->authenticate(this);
++    m_listener->authenticate(this);
++    m_need_authenticate = false; // set false to go on processing data in CurlRequest::data
+ }
+ 
+ void CurlRequest::execute()
+@@ -457,6 +458,8 @@
+     curl_easy_setopt(handle, CURLOPT_FOLLOWLOCATION, 1);
+     curl_easy_setopt(handle, CURLOPT_MAXREDIRS, 10);
+ 
++    curl_easy_setopt(handle, CURLOPT_AUTOREFERER, 1);
++
+     // url ptr must remain valid through the request
+     curl_easy_setopt(handle, CURLOPT_URL, m_url);
+ 
+@@ -534,7 +537,7 @@
+ 
+ 
+     // if we are in middle of authenticating, do nothing.
+-    if (status != HTTP_AUTH_REQUIRED || !m_authenticate) {
++    if (status != HTTP_AUTH_REQUIRED || !m_need_authenticate) {
+ 		m_listener->data(this, data, len);
+     }
+ }
+@@ -570,6 +573,8 @@
+ 		header = new HttpHeaderRefresh(value);
+     } else if (!strcmp(key, HTTP_SET_COOKIE)) {
+ 		header = new HttpHeaderSetCookie(value);
++    } else if (!strcmp(key, HTTP_WWW_AUTHENTICATE)) {
++		header = new HttpHeaderWWWAuthenticate(value);
+     } else {
+ 		header = new HttpHeader(HttpHeader::Unknown, key, value);
+     }
+@@ -584,7 +589,7 @@
+ {
+     HttpHeader *hdr = parseHeader(data, len);
+     if (hdr) {
+-		if (hdr->key() == HTTP_WWW_AUTHENTICATE && hdr->value())
++		if (!strcmp(hdr->key(), HTTP_WWW_AUTHENTICATE) && hdr->value())
+ 		{
+ 			const gchar * value = hdr->value();
+ 			char * realm = g_strrstr(value, "realm=" );
+Index: NRCit/src/PageLoadListener.cpp
+===================================================================
+--- NRCit/src/PageLoadListener.cpp	(revision 55)
++++ NRCit/src/PageLoadListener.cpp	(working copy)
+@@ -206,8 +206,9 @@
+             creds->setCredential(newcred, space);
+             request->authenticate(newcred.user(), newcred.password());
+         }
+-        if (user) g_free(user);
+-        if (password) g_free(password);
++        // Do not free these values which are owned by Webi.
++        // if (user) g_free(user);
++        // if (password) g_free(password);
+         return ret;
+     }
+ 
+Index: NRCit/src/Http.h
+===================================================================
+--- NRCit/src/Http.h	(revision 55)
++++ NRCit/src/Http.h	(working copy)
+@@ -165,6 +165,7 @@
+ 		ContentLength,
+ 		Refresh,
+ 		SetCookie,
++		WWWAuthenticate,
+ 		Unknown,
+ 		Invalid
+ 	};
+@@ -236,6 +237,12 @@
+ 	~HttpHeaderSetCookie() {}
+ };
+ 
++class HttpHeaderWWWAuthenticate : public HttpHeader
++{
++public:
++	HttpHeaderWWWAuthenticate(const gchar* value);
++	~HttpHeaderWWWAuthenticate() {}
++};
+ 
+ 
+ #endif
