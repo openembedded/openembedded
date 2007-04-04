@@ -1,0 +1,54 @@
+--- madfuload-1.2/configure.org	2007-04-04 13:30:55.186393000 +0200
++++ madfuload-1.2/configure	2007-04-04 13:33:26.286393000 +0200
+@@ -2831,50 +2831,7 @@
+ else
+   udev_dir="/etc/udev"
+ fi;
+-as_ac_File=`echo "ac_cv_file_$udev_dir/udev.conf" | $as_tr_sh`
+-echo "$as_me:$LINENO: checking for $udev_dir/udev.conf" >&5
+-echo $ECHO_N "checking for $udev_dir/udev.conf... $ECHO_C" >&6
+-if eval "test \"\${$as_ac_File+set}\" = set"; then
+-  echo $ECHO_N "(cached) $ECHO_C" >&6
+-else
+-  test "$cross_compiling" = yes &&
+-  { { echo "$as_me:$LINENO: error: cannot check for file existence when cross compiling" >&5
+-echo "$as_me: error: cannot check for file existence when cross compiling" >&2;}
+-   { (exit 1); exit 1; }; }
+-if test -r "$udev_dir/udev.conf"; then
+-  eval "$as_ac_File=yes"
+-else
+-  eval "$as_ac_File=no"
+-fi
+-fi
+-echo "$as_me:$LINENO: result: `eval echo '${'$as_ac_File'}'`" >&5
+-echo "${ECHO_T}`eval echo '${'$as_ac_File'}'`" >&6
+-if test `eval echo '${'$as_ac_File'}'` = yes; then
+-  udev_conf="$udev_dir/udev.conf"
+-else
+-  udev_conf=""
+-fi
+-
+-
+-echo "$as_me:$LINENO: checking for udev rules directory" >&5
+-echo $ECHO_N "checking for udev rules directory... $ECHO_C" >&6
+-udev_rules=""
+-if test -r "$udev_conf"; then
+-  udev_rules=`. "$udev_conf"; echo "$udev_rules"`
+-fi
+-if test -n "$udev_rules"; then
+-  echo "$as_me:$LINENO: result: $udev_rules" >&5
+-echo "${ECHO_T}$udev_rules" >&6
+-else
+-  udev_rules="$udev_dir/rules.d"
+-  echo "$as_me:$LINENO: result: not found; assuming $udev_rules" >&5
+-echo "${ECHO_T}not found; assuming $udev_rules" >&6
+-fi
+-if test ! -d "$udev_rules"; then
+-  { { echo "$as_me:$LINENO: error: $udev_rules not found" >&5
+-echo "$as_me: error: $udev_rules not found" >&2;}
+-   { (exit 1); exit 1; }; }
+-fi
++udev_rules="$udev_dir/rules.d"
+ UDEV_RULES_DIR=$udev_rules
+ 
+ 

@@ -5,7 +5,7 @@
 DESCRIPTION = "Packages that are compatible with the SlugOS firmware"
 HOMEPAGE = "http://www.nslu2-linux.org"
 LICENSE = "MIT"
-PR = "r29"
+PR = "r30"
 CONFLICTS = "db3"
 
 COMPATIBLE_MACHINE = "nslu2"
@@ -104,6 +104,7 @@ SLUGOS_PACKAGES = "\
 	lsof \
 	lvm2 \
 	m4 \
+	madfu \
 	madplay \
 	madwifi-ng \
 	mailx \
@@ -162,6 +163,7 @@ SLUGOS_PACKAGES = "\
 	streamripper \
 	sysfsutils \
 	tar \
+	task-native-sdk \
 	task-mokogateway-everything \
 	thttpd \
 	tiff \
