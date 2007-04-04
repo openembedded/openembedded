@@ -104,6 +104,7 @@ SLUGOS_PACKAGES = "\
 	lsof \
 	lvm2 \
 	m4 \
+	madfu \
 	madplay \
 	madwifi-ng \
 	mailx \
