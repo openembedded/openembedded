@@ -1,0 +1,324 @@
+From nobody Mon Sep 17 00:00:00 2001
+From: Cliff Brake <cbrake@happy.dev.bec-systems.com>
+Date: Tue Apr 3 11:38:59 2007 -0400
+Subject: [PATCH] nand driver
+
+2.6.20 NAND flash driver for cm-x270
+
+---
+
+ drivers/mtd/nand/Kconfig       |    4 +
+ drivers/mtd/nand/Makefile      |    1 
+ drivers/mtd/nand/cmx270-nand.c |  271 ++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 276 insertions(+), 0 deletions(-)
+ create mode 100644 drivers/mtd/nand/cmx270-nand.c
+
+base a34beb5936e5819d8b2d51b153434825700463ef
+last deaa2960bd8fb1f706a935cd7a87321977e6f568
+diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
+index 358f55a82dbe4ebb73b1b0ee460063a6145e3f0e..c80272bcc69b6e13ab0c4403e4635a8a4076dc6c 100644
+--- a/drivers/mtd/nand/Kconfig
++++ b/drivers/mtd/nand/Kconfig
+@@ -247,6 +247,10 @@ config MTD_NAND_AT91
+ 	help
+ 	  Enables support for NAND Flash / Smart Media Card interface
+ 	  on Atmel AT91 processors.
++ 
++config MTD_NAND_CM_X270
++  	tristate "Support for NAND Flash on CompuLab CM-X270"
++  	depends on MTD_NAND && ARCH_PXA
+ 
+ config MTD_NAND_NANDSIM
+ 	tristate "Support for NAND Flash Simulator"
+diff --git a/drivers/mtd/nand/Makefile b/drivers/mtd/nand/Makefile
+index f7a53f0b70177451680402a2c2cce4c98991cd6e..d5abbca6d5ae18e287af0b02075f99838d35dc85 100644
+--- a/drivers/mtd/nand/Makefile
++++ b/drivers/mtd/nand/Makefile
+@@ -24,6 +24,7 @@ obj-$(CONFIG_MTD_NAND_NANDSIM)		+= nandsim.o
+ obj-$(CONFIG_MTD_NAND_CS553X)		+= cs553x_nand.o
+ obj-$(CONFIG_MTD_NAND_NDFC)		+= ndfc.o
+ obj-$(CONFIG_MTD_NAND_AT91)		+= at91_nand.o
++obj-$(CONFIG_MTD_NAND_CM_X270)		+= cmx270-nand.o
+ 
+ nand-objs := nand_base.o nand_bbt.o
+ cafe_nand-objs := cafe.o cafe_ecc.o
+diff --git a/drivers/mtd/nand/cmx270-nand.c b/drivers/mtd/nand/cmx270-nand.c
+new file mode 100644
+index 0000000000000000000000000000000000000000..1cd531e610dee846e246b4b1d56bb4119939682b
+--- /dev/null
++++ b/drivers/mtd/nand/cmx270-nand.c
+@@ -0,0 +1,271 @@
++/*
++ *  drivers/mtd/nand/cmx270-nand.c
++ *
++ *  Copyright (C) 2005 Compulab, Ltd. (mike@compulab.co.il)
++ *                2007 BEC Systems, LLC (cbrake@bec-systems.com)
++ *                     - updated to 2.6.20 NAND API
++ *
++ *  Derived from drivers/mtd/nand/h1910.c
++ *       Copyright (C) 2002 Marius Gröger (mag@sysgo.de)
++ *       Copyright (c) 2001 Thomas Gleixner (gleixner@autronix.de)
++ *
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ *
++ *  Overview:
++ *   This is a device driver for the NAND flash device found on the
++ *   CM-X270 board.
++ */
++
++#include <linux/slab.h>
++#include <linux/init.h>
++#include <linux/module.h>
++#include <linux/mtd/mtd.h>
++#include <linux/mtd/nand.h>
++#include <linux/mtd/partitions.h>
++
++#include <asm/io.h>
++#include <asm/irq.h>
++#include <asm/arch/hardware.h>
++#include <asm/arch/pxa-regs.h>
++
++#define GPIO_NAND_CS	(11)
++#define GPIO_NAND_RB	(89)
++
++#define DRAIN_WB() \
++	do { \
++		unsigned char dummy; \
++		asm volatile ("mcr p15, 0, r0, c7, c10, 4":::"r0"); \
++		dummy=*((volatile unsigned char*)UNCACHED_ADDR); \
++	} while(0);
++
++/*
++ * MTD structure for CM-X270 board
++ */
++static struct mtd_info *cmx270_nand_mtd = NULL;
++
++/*
++ * Module stuff
++ */
++
++#ifdef CONFIG_MTD_PARTITIONS
++/*
++ * Define static partitions for flash device
++ */
++static struct mtd_partition partition_info[] = {
++	{
++		.name = "app",
++		.offset = 0,
++		.size = 64*1024*1024
++	},
++	{
++		.name = "data",
++		.offset = MTDPART_OFS_APPEND,
++		.size = MTDPART_SIZ_FULL
++	}
++};
++
++#define NUM_PARTITIONS ARRAY_SIZE(partition_info)
++
++#endif
++
++
++static 	u_char cmx270_read_byte(struct mtd_info *mtd)
++{
++	struct nand_chip *this = mtd->priv;
++	return (readl(this->IO_ADDR_R) >> 16);
++}
++
++static void cmx270_write_byte(struct mtd_info *mtd, u_char byte)
++{
++	struct nand_chip *this = mtd->priv;
++	writel((byte << 16), this->IO_ADDR_W);
++}
++
++static void cmx270_write_buf(struct mtd_info *mtd, const u_char *buf, int len)
++{
++	int i;
++	struct nand_chip *this = mtd->priv;
++
++	for (i=0; i<len; i++) {
++		writel((*buf++ << 16), this->IO_ADDR_W);
++	}
++}
++
++static void cmx270_read_buf(struct mtd_info *mtd, u_char *buf, int len)
++{
++	int i;
++	struct nand_chip *this = mtd->priv;
++
++	for (i=0; i<len; i++) {
++		*buf++ = readl(this->IO_ADDR_R) >> 16;
++	}
++}
++
++static int cmx270_verify_buf(struct mtd_info *mtd, const u_char *buf, int len)
++{
++	int i;
++	struct nand_chip *this = mtd->priv;
++
++	for (i=0; i<len; i++) {
++		if ( buf[i] != (u_char)(readl(this->IO_ADDR_R) >> 16) )
++			return -EFAULT;
++	}
++
++	return 0;
++}
++
++static inline void nand_cs_on(void)
++{
++	GPCR(GPIO_NAND_CS) = GPIO_bit(GPIO_NAND_CS);
++}
++
++static void nand_cs_off(void)
++{
++	DRAIN_WB();
++
++	GPSR(GPIO_NAND_CS) = GPIO_bit(GPIO_NAND_CS);
++}
++
++/*
++ *	hardware specific access to control-lines
++ *
++ *	NAND_NCE: bit 0 - GPIO_NAND_CS
++ *	NAND_CLE: bit 1 - address bit 2
++ *	NAND_ALE: bit 2 - address bit 3
++ */
++static void cmx270_hwcontrol(struct mtd_info *mtd, int cmd, unsigned int ctrl)
++{
++	struct nand_chip* chip = mtd->priv;
++
++	DRAIN_WB();
++
++	if (ctrl & NAND_CTRL_CHANGE) {
++		if (ctrl & NAND_NCE) nand_cs_on();
++		else nand_cs_off();
++	}
++
++
++	if (cmd != NAND_CMD_NONE) {
++		writel(cmd << 16, (unsigned int)(chip->IO_ADDR_W) | ((ctrl & 0x6) << 1 ));
++	}
++
++	DRAIN_WB();
++}
++
++/*
++ *	read device ready pin
++ */
++static int cmx270_device_ready(struct mtd_info *mtd)
++{
++	DRAIN_WB();
++	return ( GPLR(GPIO_NAND_RB) & GPIO_bit(GPIO_NAND_RB) );
++}
++
++/*
++ * Main initialization routine
++ */
++static int __init cmx270_init (void)
++{
++	struct nand_chip *this;
++	const char *part_type = 0;
++	int mtd_parts_nb = 0;
++	struct mtd_partition *mtd_parts = 0;
++	static unsigned int nandaddr = 0;
++
++
++	/* Allocate memory for MTD device structure and private data */
++	cmx270_nand_mtd = kmalloc(sizeof(struct mtd_info) +
++				    sizeof(struct nand_chip),
++				    GFP_KERNEL);
++	if (!cmx270_nand_mtd) {
++		printk("Unable to allocate CM-X270 NAND MTD device structure.\n");
++		return -ENOMEM;
++	}
++
++	nandaddr = (volatile unsigned int)ioremap(PXA_CS1_PHYS, 100);
++
++	/* Get pointer to private data */
++	this = (struct nand_chip *) (&cmx270_nand_mtd[1]);
++
++	/* Initialize structures */
++	memset((char *) cmx270_nand_mtd, 0, sizeof(struct mtd_info));
++	memset((char *) this, 0, sizeof(struct nand_chip));
++
++	/* Link the private data with the MTD structure */
++	cmx270_nand_mtd->priv = this;
++	cmx270_nand_mtd->owner = THIS_MODULE;
++
++	/* insert callbacks */
++	this->IO_ADDR_R = (void __iomem *)nandaddr;
++	this->IO_ADDR_W = (void __iomem *)nandaddr;
++	this->cmd_ctrl = cmx270_hwcontrol;
++/* 	this->dev_ready = cmx270_device_ready;	/\* unknown whether that was correct or not so we will just do it like this *\/ */
++
++	/* 15 us command delay time */
++	this->chip_delay = 50;
++	this->ecc.mode = NAND_ECC_SOFT;
++
++	/* read/write functions */
++	this->read_byte = cmx270_read_byte;
++	//this->write_byte = cmx270_write_byte;
++	this->read_buf = cmx270_read_buf;
++	this->write_buf = cmx270_write_buf;
++	this->verify_buf = cmx270_verify_buf;
++
++	/* Scan to find existence of the device */
++	if (nand_scan (cmx270_nand_mtd, 1)) {
++		printk(KERN_NOTICE "No NAND device - returning -ENXIO\n");
++		iounmap((void*)nandaddr);
++		kfree (cmx270_nand_mtd);
++		return -ENXIO;
++	}
++
++//#ifdef CONFIG_MTD_CMDLINE_PARTS
++#if 0
++	mtd_parts_nb = parse_cmdline_partitions(cmx270_nand_mtd, &mtd_parts,
++						"cmx270");
++	if (mtd_parts_nb > 0)
++	  part_type = "command line";
++	else
++	  mtd_parts_nb = 0;
++#endif
++	if (mtd_parts_nb == 0)
++	{
++		mtd_parts = partition_info;
++		mtd_parts_nb = NUM_PARTITIONS;
++		part_type = "static";
++	}
++
++	/* Register the partitions */
++	printk(KERN_NOTICE "Using %s partition definition\n", part_type);
++	add_mtd_partitions(cmx270_nand_mtd, mtd_parts, mtd_parts_nb);
++
++	/* Return happy */
++	return 0;
++}
++module_init(cmx270_init);
++
++/*
++ * Clean up routine
++ */
++static void __exit cmx270_cleanup (void)
++{
++	struct nand_chip *this;
++
++	this = (struct nand_chip *) (&cmx270_nand_mtd[1]);
++	iounmap(this->IO_ADDR_R);
++
++	/* Release resources, unregister device */
++	nand_release (cmx270_nand_mtd);
++
++	/* Free the MTD device structure */
++	kfree (cmx270_nand_mtd);
++}
++module_exit(cmx270_cleanup);
++
++MODULE_LICENSE("GPL");
++MODULE_AUTHOR("Mike Rapoport <mike at compulab dot co dot il>");
++MODULE_DESCRIPTION("NAND flash driver for Compulab CM-X270 Core");
+-- 
+1.4.4.4
+
