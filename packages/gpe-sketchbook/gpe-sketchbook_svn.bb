@@ -4,6 +4,7 @@ SECTION = "gpe"
 PRIORITY = "optional"
 LICENSE = "GPL"
 DEPENDS = "libgpewidget"
+PV = "0.2.9+svn-${SRCDATE}"
 
 inherit pkgconfig autotools
 
