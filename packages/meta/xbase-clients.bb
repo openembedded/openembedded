@@ -1,4 +1,5 @@
 DESCRIPTION = "Basic X clients (meta package)"
+LICENSE = "MIT"
 PR = "r1"
 
 ALLOW_EMPTY = "1"
@@ -9,4 +10,4 @@ RDEPENDS = 'xauth \
 	xmodmap \
 	xrdb \
 	xset'
-LICENSE = "MIT"
+
