@@ -8,7 +8,7 @@ RDEPENDS += "udev hal-info"
 #RDEPENDS_hal-device-manager = "python hal python-pygnome"
 RRECOMMENDS = "udev-utils"
 
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "http://freedesktop.org/~david/dist/hal-${PV}.tar.gz \
         file://99_hal"
