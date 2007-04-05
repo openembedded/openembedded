@@ -2,9 +2,7 @@ DESCRIPTION = "Meta package for a Scratchbox SDK"
 LICENSE = "MIT"
 PR = "r2"
 
-PACKAGES = ""
-
-inherit rootfs_ipk sdk debian
+inherit rootfs_ipk sdk meta
 
 SDK_DIR = "${WORKDIR}/sdk"
 SDK_OUTPUT = "${SDK_DIR}/image"
@@ -23,8 +21,6 @@ TARGET_INSTALL = "\
 
 DEPENDS = "ipkg-native ipkg-utils-native fakeroot-native sed-native"
 RDEPENDS = "${TARGET_INSTALL}"
-BUILD_ALL_DEPS = "1"
-
 
 IPKG_TARGET = "ipkg-cl -f ${SDK_DIR}/ipkg-target.conf -o ${SDK_OUTPUT}/${prefix}"
 
@@ -92,4 +88,5 @@ EOF
 }
 
 do_populate_sdk[nostamp] = "1"
+do_populate_sdk[recrdeptask] = "do_package_write"
 addtask populate_sdk before do_build after do_install

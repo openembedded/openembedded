@@ -14,19 +14,3 @@ Index: configure.in
  LDFLAGS="$LDFLAGS $PACKAGE_LIBS $X_LIBS $JSCORE_LIBS \
  -nodefaultlibs -lgcc -lc"
  
-Index: kwiq/KWQEvent.cpp
-===================================================================
---- kwiq/KWQEvent.cpp	(revision 46)
-+++ kwiq/KWQEvent.cpp	(working copy)
-@@ -759,10 +759,10 @@
- #if 0
-     if (state & GDK_MOD1_MASK)
- 		qstate |= Qt::AltButton;
--#endif
- 
-     if (state & GDK_META_MASK)
- 		qstate |= Qt::MetaButton;
-+#endif
- 
-     if (isKeypadEvent(event))
- 		qstate |= Qt::Keypad;

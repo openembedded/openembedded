@@ -10,6 +10,8 @@ PR = "r0"
 DEPENDS = "curl librsvg osb-nrcore"
 
 SRC_URI = "svn://gtk-webcore.svn.sourceforge.net/svnroot/gtk-webcore/trunk;module=NRCit;proto=https \
+	   file://NRCit_unmap.diff;patch=1 \
+           file://NRCit_HTTP_auth.diff;patch=1 \  
            file://gcc4-fno-threadsafe-statics-NRCit.patch;patch=1"
 S = "${WORKDIR}/NRCit"
 

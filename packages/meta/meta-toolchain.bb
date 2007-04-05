@@ -3,9 +3,7 @@ LICENSE = "MIT"
 DEPENDS = "ipkg-native ipkg-utils-native fakeroot-native sed-native"
 PR = "r0"
 
-PACKAGES = ""
-
-inherit sdk
+inherit sdk meta
 
 SDK_DIR = "${WORKDIR}/sdk"
 SDK_OUTPUT = "${SDK_DIR}/image"
@@ -23,7 +21,6 @@ TARGET_INSTALL = "\
     "
 
 RDEPENDS = "${TARGET_INSTALL} ${HOST_INSTALL}"
-BUILD_ALL_DEPS = "1"
 
 do_populate_sdk() {
 	touch ${DEPLOY_DIR_IPK}/Packages
@@ -96,4 +93,5 @@ EOF
 }
 
 do_populate_sdk[nostamp] = "1"
+do_populate_sdk[recrdeptask] = "do_package_write"
 addtask populate_sdk before do_build after do_install
