@@ -16,14 +16,13 @@ SRC_URI += "file://config.sh-armeb-linux \
 	    file://config.sh-sh3-linux \
 	    file://config.sh-sh4-linux"
 
-# Patches for sh3/sh4, use gcc to link and override generaet.sh to
-# use PIC mode for compiling shared library objects.
-SRC_URI_append_sh4 += "file://override-generate-sh.patch;patch=1"
-SRC_URI_append_sh4 += "file://makefile-usegcc-to-link.patch;patch=1"
-SRC_URI_append_sh3 += "file://override-generate-sh.patch;patch=1"
-SRC_URI_append_sh3 += "file://makefile-usegcc-to-link.patch;patch=1"
-SRC_URI_append_powerpc += "file://override-generate-sh.patch;patch=1"
-SRC_URI_append_powerpc += "file://makefile-usegcc-to-link.patch;patch=1"
+# Use gcc to link and use PIC mode for compiling shared libs
+GCCLINK_SRC = "file://override-generate-sh.patch;patch=1 \
+               file://makefile-usegcc-to-link.patch;patch=1"
+
+SRC_URI_append_sh4 += " ${GCCLINK_SRC}"
+SRC_URI_append_sh3 += " ${GCCLINK_SRC}"
+SRC_URI_append_powerpc += " ${GCCLINK_SRC}"
 
 PARALLEL_MAKE = ""
 
