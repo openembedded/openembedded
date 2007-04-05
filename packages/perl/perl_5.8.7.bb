@@ -7,6 +7,7 @@ require perl.inc
 SRC_URI += "file://config.sh-armeb-linux \
 	    file://config.sh-arm-linux \
 	    file://config.sh-powerpc-linux \
+	    file://config.sh-mipsel-linux \
 	    file://config.sh-i386-linux \
 	    file://config.sh-i486-linux \
 	    file://config.sh-i586-linux \

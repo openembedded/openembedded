@@ -9,10 +9,7 @@ SRC_URI = "ftp://ftp.funet.fi/pub/CPAN/src/perl-${PV}.tar.gz \
 	file://Makefile.patch;patch=1 \
 	file://config.sh-arm-linux.patch;patch=1 \
 	file://libperl-5.8.3-create-libperl-soname.patch;patch=1;pnum=0 \
-	file://uclibc.patch;patch=1 \
-	file://Makefile.SH.patch \
-	file://config.sh-mipsel-linux \
-	file://config.sh-i686-linux"
+	file://Makefile.SH.patch"
 
 HOSTPERL="${STAGING_BINDIR_NATIVE}/perl${PV}"
 
