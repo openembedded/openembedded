@@ -7,4 +7,4 @@ GSMD_OPTS="-s 115200 -F"
 
 # this should be in a common /etc/default/serial, together
 # with BT_DEV, and IR_DEV
-GSM_DEV="/dev/ttyS1"
+GSM_DEV="/dev/ttyS0"
