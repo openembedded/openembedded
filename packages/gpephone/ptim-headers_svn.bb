@@ -1,7 +1,7 @@
 DESCRIPTION = "Phone input method - shared headers"
 SECTION = "gpephone"
 PRIORITY = "optional"
-LICENSE = "GPL"
+LICENSE = "LiPS"
 DEPENDS = "gtk+"
 PV = "0.1+svn-${SRCDATE}"
 

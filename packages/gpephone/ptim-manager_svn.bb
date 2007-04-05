@@ -1,7 +1,7 @@
 DESCRIPTION = "Phone input method manager module"
 SECTION = "gpephone"
 PRIORITY = "optional"
-LICENSE = "GPL"
+LICENSE = "LiPS"
 DEPENDS = "gtk+ ptim-headers libiac"
 PV = "0.1+svn-${SRCDATE}"
 

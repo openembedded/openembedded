@@ -1,7 +1,7 @@
 DESCRIPTION = "Phone input method helper module"
 SECTION = "gpephone"
 PRIORITY = "optional"
-LICENSE = "GPL"
+LICENSE = "LiPS"
 DEPENDS = "gtk+ ptim-headers"
 PV = "0.1+svn-${SRCDATE}"
 
