@@ -13,6 +13,6 @@ S = "${WORKDIR}/imheaders"
 
 DEFAULT_PREFERENCE = "-1"
 
-do_starge () {
+do_stage () {
     autotools_do_stage_all
 }
