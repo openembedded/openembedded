@@ -1,0 +1,22 @@
+--- src/Makefile.am~	2007-04-05 16:40:45.000000000 +0200
++++ src/Makefile.am	2007-04-05 16:40:45.000000000 +0200
+@@ -3,7 +3,7 @@
+ GTK_PREFIX=`pkg-config gtk+-2.0 --variable=libdir`
+ GTK_BINARY_VERSION=`pkg-config gtk+-2.0 --variable=gtk_binary_version`
+ 
+-moduledir = $(GTK_PREFIX)/gtk-2.0/$(GTK_BINARY_VERSION)/immodules/ptim/helper
++moduledir = $(libdir)/gtk-2.0/$(GTK_BINARY_VERSION)/immodules/ptim/helper
+ 
+ INCLUDES		= -DPACKAGE_LOCALE_DIR=\"@datadir@/locale/@PACKAGE_NAME@\" -DSN_API_NOT_YET_FROZEN \
+ 							-I. $(IMHELPER_CFLAGS)
+--- pixmaps/Makefile.am~	2007-04-05 16:43:16.000000000 +0200
++++ pixmaps/Makefile.am	2007-04-05 16:43:16.000000000 +0200
+@@ -1,7 +1,7 @@
+ GTK_PREFIX=`pkg-config gtk+-2.0 --variable=libdir`
+ GTK_BINARY_VERSION=`pkg-config gtk+-2.0 --variable=gtk_binary_version`
+ 
+-pixmapsdir		= $(GTK_PREFIX)/gtk-2.0/$(GTK_BINARY_VERSION)/immodules/ptim/pixmaps
++pixmapsdir		= $(libdir)/gtk-2.0/$(GTK_BINARY_VERSION)/immodules/ptim/pixmaps
+ pixmaps_DATA	= \
+ 	next.png \
+ 	prev.png \

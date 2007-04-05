@@ -1,5 +1,5 @@
 DESCRIPTION = "Task packages for GPE Palmtop Environment Phone Edition"
-PR = "r3"
+PR = "r4"
 LICENSE = "MIT"
 ALLOW_EMPTY = "1"
 
@@ -67,7 +67,9 @@ RDEPENDS_gpephone-task-base := "\
     pango-module-basic-x \
     pango-module-basic-fc \
     detect-stylus \
-    libgtkinput \
+    ptim-manager \
+    ptim-helper \
+    ptim-engine \
     ${@base_contains("MACHINE_FEATURES", "touchscreen", "libgtkstylus xtscal", "",d)} \
 "
 
