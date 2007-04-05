@@ -8,10 +8,11 @@ COMPATIBLE_HOST = "sh.*-linux"
 
 SRC_URI = "git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux-2.6.git;protocol=git;tag=v2.6.21-rc5 \
            file://git-20070405-2.patch;patch=1 \
-           file://defconfig"
+           file://hp6xx-IRQ3.patch=0 \
+	   file://defconfig"
 	   
 
-S = "${WORKDIR}/linux-${PV}"
+S = "${WORKDIR}/git"
 
 inherit kernel
 
