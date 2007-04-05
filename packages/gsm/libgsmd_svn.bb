@@ -4,17 +4,17 @@ LICENSE = "GPL"
 SECTION = "libs/gsm"
 PROVIDES += "gsmd"
 PV = "0.0+svn${SRCDATE}"
-PR = "r8"
+PR = "r10"
 
 SRC_URI = "svn://svn.openmoko.org/trunk/src/target;module=gsm;proto=http \
            file://gsmd \
            file://default"
 S = "${WORKDIR}/gsm"
 
-SRC_URI_append_htcuniversal = " file://interpreter-ready.patch;patch=1"
-SRC_URI_append_magician = " file://vendor-tihtc.patch;patch=1 \
-                            file://interpreter-ready.patch;patch=1 \
-                            file://ldisc.patch;patch=1"
+SRC_URI_append_magician = "file://numeric.patch;patch=1 \
+                           file://plugin.patch;patch=1"
+SRC_URI_append_htcuniversal = "file://numeric.patch;patch=1 \
+                               file://plugin.patch;patch=1"
 
 inherit autotools pkgconfig update-rc.d
 
@@ -32,10 +32,12 @@ do_install_append() {
 	install ${WORKDIR}/default ${D}/${sysconfdir}/default/gsmd
 }
 
-PACKAGES =+ "${PN}-tools gsmd"
+PACKAGES =+ "${PN}-tools gsmd gsmd-plugins"
 RDEPENDS_${PN} = "gsmd"
+RRECOMMENDS_gsmd = "gsmd-plugins"
 FILES_${PN}-tools = "${bindir}/*"
 FILES_gsmd = "${sbindir}/gsmd ${sysconfdir}"
+FILES_gsmd-plugins = "${libdir}/gsmd/*.so*"
 
 PACKAGES_DYNAMIC = "libgsmd* gsmd"
 
