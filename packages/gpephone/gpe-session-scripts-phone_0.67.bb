@@ -13,7 +13,7 @@ SRC_URI = "${GPE_MIRROR}/gpe-session-scripts-${PV}.tar.gz \
            file://phonesession \
 	   file://disable-composite.xsettings"
 
-PR = "r3"
+PR = "r4"
 
 S = "${WORKDIR}/gpe-session-scripts-${PV}"
 
