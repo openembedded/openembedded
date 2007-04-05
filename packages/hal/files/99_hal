@@ -1,1 +1,2 @@
 d root root 0700 /var/run/hald none
+d root root 0700 /var/cache/hald none
