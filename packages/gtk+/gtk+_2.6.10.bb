@@ -38,7 +38,6 @@ SRC_URI = "ftp://ftp.gtk.org/pub/gtk/v2.6/gtk+-${PV}.tar.bz2 \
 inherit autotools pkgconfig
 
 FILES_${PN} = "${bindir}/gdk-pixbuf-query-loaders \
-	${sysconfdir}/gtk-2.0 \
 	${bindir}/gtk-update-icon-cache \
 	${bindir}/gtk-query-immodules-2.0 \
 	${libdir}/lib*.so.* \
