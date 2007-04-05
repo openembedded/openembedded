@@ -1,6 +1,7 @@
 DESCRIPTION = "Meta package for a Scratchbox SDK"
 LICENSE = "MIT"
-PR = "r2"
+PACKAGES = ""
+PR = "r4"
 
 inherit rootfs_ipk sdk meta
 
@@ -14,6 +15,7 @@ FILES_${PN} = "${prefix}"
 
 TARGET_INSTALL = "\
     task-sdk-base \
+    task-sdk-sbox \
     task-sdk-x11 \
     task-sdk-x11-ext \
     task-sdk-gpe \
@@ -21,6 +23,7 @@ TARGET_INSTALL = "\
 
 DEPENDS = "ipkg-native ipkg-utils-native fakeroot-native sed-native"
 RDEPENDS = "${TARGET_INSTALL}"
+
 
 IPKG_TARGET = "ipkg-cl -f ${SDK_DIR}/ipkg-target.conf -o ${SDK_OUTPUT}/${prefix}"
 
@@ -73,8 +76,12 @@ EOF
 	# remove unwanted executables
 	rm -rf ${SDK_OUTPUT}/${prefix}/sbin ${SDK_OUTPUT}/${prefix}/etc
 
-	# remove broken .la files
-	#rm ${SDK_OUTPUT}/${prefix}/lib/*.la
+	# fixup libtool files
+	cd  ${SDK_OUTPUT}/${prefix}/lib/
+	for f in *.la ; do
+                sed -i 's%${STAGING_DIR}${TARGET_SYS}%/usr/%g' "$f"
+        done
+
 
 	# fix pkgconfig data files
 	cd ${SDK_OUTPUT}/${prefix}/usr/lib/pkgconfig
