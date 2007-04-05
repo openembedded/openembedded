@@ -1,0 +1,7 @@
+To create your own check
+    - Copy the example directory which is inside modules
+    - Give your module a name
+    - Add the name of your directory to __all_tests__ in
+       lib/bittest/__init__.py 
+
+Now have fun to write a clever test!

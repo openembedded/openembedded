@@ -1,0 +1,9 @@
+# Point to the OpenEmbedded packages
+BBFILES := "${HOME}/org.openembedded.dev/packages/*/*.bb"
+
+# Configurations to run tests for
+# Each configurations consists out of a three tuple
+# (TARGET_ARCH,TARGET_OS,DISTRO,[MACHINE1.MACHINE2])
+TEST_CONFIGS = "(arm,linux,angstrom-2007.1,[h3600.h3900]) (arm,linux,openzaurus-unstable,[collie.c7x0])"
+
+

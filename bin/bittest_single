@@ -1,0 +1,138 @@
+#!/usr/bin/env python
+# ex:ts=4:sw=4:sts=4:et
+# -*- tab-width: 4; c-basic-offset: 4; indent-tabs-mode: nil -*-
+#
+#
+# Copyright (C)       2005, 2006 Holger Hans Peter Freyther
+# All rights reserved.
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions are met:
+#
+#   Redistributions of source code must retain the above copyright notice,
+#   this list of conditions and the following disclaimer.
+#
+#   Redistributions in binary form must reproduce the above copyright
+#   notice, this list of conditions and the following disclaimer in the
+#   documentation and/or other materials provided with the distribution.
+#
+#   Neither the name Holger Hans Peter Freyther nor the names of its
+#   contributors may be used to endorse or promote products derived
+#   from this software without specific prior written permission.
+#
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+# "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+# LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+# FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+# COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
+# INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+# (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+# SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+# HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
+# STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING
+# IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+# POSSIBILITY OF SUCH DAMAGE.
+
+import sys, os, optparse
+
+# append the lib subdir and modules subdir to the system python path
+sys.path.append(os.path.join(os.path.dirname(os.path.dirname(sys.argv[0])), 'lib'))
+sys.path.append(os.path.join(os.path.dirname(os.path.dirname(sys.argv[0])), 'modules'))
+
+
+def which(path, item):
+    """Useful function for locating a file in a PATH"""
+    found = None
+    for p in (path or "").split(':'):
+        if os.path.exists(os.path.join(p, item)):
+            found = os.path.join(p, item)
+            break
+    return found
+
+
+# Code to try hard to find the BitBake libraries
+try:
+    import bb
+    import bb.data
+    import bb.parse
+except:
+    print "Trying hard to find the BitBake libraries"
+    path = which(os.environ['PATH'], "bitbake")
+    if not path:
+        print "ERROR can't find bitbake in the $PATH. Either place bitbake/bin there or point PYTHONPATH to bitbake/lib."
+        sys.exit(-1)
+
+    sys.path.append(os.path.join(os.path.dirname(os.path.dirname(path)), 'lib'))
+    import bb
+    import bb.data
+    import bb.parse
+
+
+from bittest import *
+
+
+# Start it up now
+if __name__ == "__main__":
+    """
+    In contrast to bittest we will try to update the BBPATH, load local conf to
+    get the TARGET_ARCH, TARGET_OS, DISTRO and MACHINE from the configuration file
+    """
+   
+    options, args = handle_options( sys.argv )
+    tests = []
+    if len(args) == 0:
+        tests = __all_tests__
+    else:
+        for mode in args:
+            if not mode in __all_tests__ and not mode == "example":
+                bb.note("Test %s does not exist" % mode)
+            else:
+                tests.append(mode)
+
+    if len(tests) == 0:
+        bb.note("No tests to run exiting")
+        sys.exit(0)
+
+    bb.note("Running the following tests: %s" % tests )
+
+    # Parse the test configuration - use local.conf here the one in the old BBPATH
+    test_config = _load_config('local.conf')
+    if test_config == None:
+        bb.error("Could not parse the local.conf configuration file")
+
+    # extract information from the current setup
+    arch   = bb.data.getVar('TARGET_ARCH', test_config, True)
+    tos    = bb.data.getVar('TARGET_OS'  , test_config, True)
+    distro = bb.data.getVar('DISTRO'     , test_config, True)
+    machine= bb.data.getVar('MACHINE'    , test_config, True)
+    test_options = [(arch,os,distro,[machine])]
+
+    # Check for issues
+    if None in [arch,tos,distro,machine]:
+        bb.error("Error in your configuration. TARGET_ARCH=%(arch)s, TARGET_OS=%(tos)s, DISTRO=%(distro)s, MACHINE=%(machine)s" % locals() )
+        sys.exit(-3)
+    else:
+        bb.note("Your configuration: TARGET_ARCH=%(arch)s, TARGET_OS=%(tos)s, DISTRO=%(distro)s, MACHINE=%(machine)s" % locals() )
+
+
+    
+    # Update the BBPATH now
+    new_path = os.path.dirname(os.path.dirname(sys.argv[0]))+":"+os.environ['BBPATH']
+    os.environ['BBPATH'] = new_path
+    
+    # Now start with the real deal
+    # Parse the default config
+    data = _load_config('bitbake.conf')
+    if data == None:
+        bb.error("Could not parse the bitbake.conf")
+    elif bb.data.getVar('BITBAKETEST_BITBAKE_CONF', data ) == None:
+        bb.error("You are not using the bitbake.conf from bittest please check your BBPATH")
+
+    bb.data.inheritFromOS(data)
+
+
+    # start running the test
+    results = run_tests(data, test_config, test_options, tests, options)
+    generate_results(results, options)
+
+
