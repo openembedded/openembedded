@@ -41,7 +41,7 @@ do_install () {
        # the packaging.
        if [ "x${OLD_INHIBIT_PACKAGE_STRIP}" != "x1" ]; then
                ${TARGET_PREFIX}strip ${D}${libdir}/libstdc++.so.*
-               ${TARGET_PREFIX}strip ${D}${libdir}/libg2c.so.*
+               ${TARGET_PREFIX}strip ${D}${libdir}/libg2c.so.* || true
                ${TARGET_PREFIX}strip ${D}${base_libdir}/libgcc_s.so.*
        fi
 }
