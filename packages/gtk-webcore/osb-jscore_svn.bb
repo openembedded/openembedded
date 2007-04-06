@@ -35,5 +35,7 @@ do_stage () {
 	install -d ${STAGING_INCDIR}/osb/JavaScriptCore
 	for i in ${S}/kjs/*.h ${S}/kjs/new; do
 		install -m 0644 $i ${STAGING_INCDIR}/osb/JavaScriptCore
+	install -d ${STAGING_INCDIR}/../share/osb-jscore
+	install -m 0755 ${S}/kjs/create_hash_table  ${STAGING_INCDIR}/../share/osb-jscore
 	done
 }
