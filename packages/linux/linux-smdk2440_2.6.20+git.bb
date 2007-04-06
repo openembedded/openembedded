@@ -5,13 +5,11 @@ PR = "r1"
 
 GGSRC = "http://www.xora.org.uk/oe/patches/"
 
-SRC_URI = "ftp://ftp.kernel.org/pub/linux/kernel/v2.6/linux-${PV}.tar.bz2 \
-           ${GGSRC}smdk2440-cs89x0-r1.patch;patch=1 \
-           file://smdk2440-touchscreen-r3.patch;patch=1 \
-           http://opensource.wolfsonmicro.com/~lg/asoc/asoc-v0.12.6.patch;patch=1 \
+SRC_URI = "git://opensource.wolfsonmicro.com/linux-2.6-asoc-ggdev;protocol=git;tag=asoc-merge-0002 \
+           file://0001-Enable-cs8900A-network-device-for-smdk2440-board.patch;patch=1 \
            file://defconfig-smdk2440"
 
-S = "${WORKDIR}/linux-${PV}"
+S = "${WORKDIR}/git"
 
 inherit kernel
 
@@ -30,10 +28,11 @@ do_deploy() {
         install -m 0644 arch/${ARCH}/boot/${KERNEL_IMAGETYPE} ${DEPLOY_DIR_IMAGE}/${KERNEL_IMAGETYPE}-${PV}-${MACHINE}-${DATETIME}.bin
         rm -f ${DEPLOY_DIR_IMAGE}/${KERNEL_IMAGETYPE}-${MACHINE}.bin
         ln -s ${DEPLOY_DIR_IMAGE}/${KERNEL_IMAGETYPE}-${PV}-${MACHINE}-${DATETIME}.bin ${DEPLOY_DIR_IMAGE}/${KERNEL_IMAGETYPE}-${MACHINE}.bin
-        tar -cvzf ${DEPLOY_DIR_IMAGE}/modules-${KERNEL_VERSION}-${MACHINE}.tgz -C ${D} lib
+        tar -cvzf ${DEPLOY_DIR_IMAGE}/modules-${KERNEL_RELEASE}-${MACHINE}.tgz -C ${D} lib
 }
 
 do_deploy[dirs] = "${S}"
 
 addtask deploy before do_package after do_install
 
+KERNEL_RELEASE = "2.6.21"

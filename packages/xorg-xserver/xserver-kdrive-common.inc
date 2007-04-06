@@ -107,9 +107,6 @@ KDRIVE_COMMON_PATCHES = " \
 SRC_URI_append_mnci   = " file://onlyfb.patch;patch=1"
 SRC_URI_append_poodle = " file://xserver-kdrive-poodle.patch;patch=1"
 PACKAGE_ARCH_poodle = "poodle"
-PACKAGE_ARCH_palmtx = "palmtx"
-PACKAGE_ARCH_palmld = "palmld"
-PACKAGE_ARCH_palmz72 = "palmz72"
 
 inherit autotools pkgconfig
 
