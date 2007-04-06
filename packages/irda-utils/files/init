@@ -3,10 +3,10 @@
 NAME="irattach"
 
 module_id() {
-        awk 'BEGIN { FS=": " } /Hardware/ { print $2 } ' </proc/cpuinfo
+	awk 'BEGIN { FS=": " } /Hardware/ { print $2 } ' </proc/cpuinfo
 }
 cpuid_id() {
-        awk '/Processor/ { print $3; exit; }' /proc/cpuinfo
+	awk '/Processor/ { print $3; exit; }' /proc/cpuinfo
 }
 
 if [ ! -f /etc/sysconfig/irda ]; then
@@ -37,8 +37,8 @@ fi
 
 . /etc/sysconfig/irda
 
-# Check that irda is up.
-[ ${IRDA} = "no" ] && exit 0
+# Check if irda is present.
+[ $IRDA = "no" ] && exit 0
 
 [ -f /usr/sbin/irattach ] || exit 0
 
@@ -52,26 +52,26 @@ fi
 
 case "$1" in
   start)
-        echo -n "Starting IrDA: "
+	echo -n "Starting IrDA: "
 	irattach ${DEVICE} ${ARGS} > /dev/null 2>&1
-        echo "$NAME."
-        ;;
+	echo "$NAME."
+	;;
   stop)
-        echo -n "Stopping IrDA: "
+	echo -n "Stopping IrDA: "
 	killall irattach > /dev/null 2>&1
-        echo "$NAME."
-        ;;
+	echo "$NAME."
+	;;
   restart|force-reload)
-        echo -n "Restarting IrDA: "
+	echo -n "Restarting IrDA: "
 	irattach ${DEVICE} ${ARGS} > /dev/null 2>&1
-        sleep 1
+	sleep 1
 	killall irattach > /dev/null 2>&1
-        echo "$NAME."
-        ;;
+	echo "$NAME."
+	;;
   *)
-        N=/etc/init.d/$NAME
-        echo "Usage: $N {start|stop|restart|force-reload}" >&2
-        exit 1
-        ;;
+	N=/etc/init.d/$NAME
+	echo "Usage: $N {start|stop|restart|force-reload}" >&2
+	exit 1
+	;;
 esac
 
