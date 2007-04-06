@@ -62,7 +62,7 @@ EOF
 
 	mv ${SDK_OUTPUT}/${prefix}/${TARGET_SYS}/lib/gcc* ${SDK_OUTPUT}/${prefix}/lib
 
-	cp -pPR ${TMPDIR}/cross/${TARGET_SYS}/include/${TARGET_OS}/ ${SDK_OUTPUT}/${prefix}/${TARGET_SYS}/include/
+	cp -pPR ${TMPDIR}/cross/${TARGET_SYS}/include/linux/ ${SDK_OUTPUT}/${prefix}/${TARGET_SYS}/include/
         cp -pPR ${TMPDIR}/cross/${TARGET_SYS}/include/asm/ ${SDK_OUTPUT}/${prefix}/${TARGET_SYS}/include/
 	chmod -R a+r ${SDK_OUTPUT}/${prefix}/${TARGET_SYS}/include/
 	find ${SDK_OUTPUT}/${prefix}/${TARGET_SYS}/include/ -type d | xargs chmod +x
