@@ -1,4 +1,4 @@
-PR = "r12"
+PR = "r13"
 DESCRIPTION = "The GNU cc and gcc C compilers."
 HOMEPAGE = "http://www.gnu.org/software/gcc/"
 SECTION = "devel"
@@ -35,7 +35,6 @@ SRC_URI = "http://ftp.gnu.org/pub/gnu/gcc/gcc-4.1.1/gcc-4.1.1.tar.bz2 \
         file://gcc-ignore-cache.patch;patch=1 \
 	"
 
-SRC_URI_append_fail-fast = " file://zecke-no-host-includes.patch;patch=1 "
 SRC_URI_append_sh3  = " file://sh3-installfix-fixheaders.patch;patch=1 "
 
 SRC_URI_append_powerpc = " file://ppc-gcc-41-20060515.patch;patch=1 \
