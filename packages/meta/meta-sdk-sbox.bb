@@ -1,7 +1,7 @@
 DESCRIPTION = "Meta package for a Scratchbox SDK"
 LICENSE = "MIT"
 PACKAGES = ""
-PR = "r4"
+PR = "r5"
 
 inherit rootfs_ipk sdk meta
 
@@ -16,10 +16,7 @@ FILES_${PN} = "${prefix}"
 TARGET_INSTALL = "\
     task-sdk-base \
     task-sdk-sbox \
-    task-sdk-x11 \
-    task-sdk-x11-ext \
-    task-sdk-gpe \
-    task-sdk-gpephone"
+    "
 
 DEPENDS = "ipkg-native ipkg-utils-native fakeroot-native sed-native"
 RDEPENDS = "${TARGET_INSTALL}"
@@ -62,7 +59,7 @@ EOF
         #cp -pPR ${SDK_OUTPUT}/${prefix}/lib/* ${SDK_OUTPUT}/${prefix}/${TARGET_SYS}/lib
         #rm -rf ${SDK_OUTPUT}/${prefix}/lib/*
 
-	cp -pPR ${TMPDIR}/cross/${TARGET_SYS}/include/linux/ ${SDK_OUTPUT}/${prefix}/usr/include/
+	cp -pPR ${TMPDIR}/cross/${TARGET_SYS}/include/${TARGET_OS}/ ${SDK_OUTPUT}/${prefix}/usr/include/
         cp -pPR ${TMPDIR}/cross/${TARGET_SYS}/include/asm/ ${SDK_OUTPUT}/${prefix}/usr/include/
 	chmod -R a+r ${SDK_OUTPUT}/${prefix}/usr/include/
 	find ${SDK_OUTPUT}/${prefix}/usr/include/ -type d | xargs chmod +x
