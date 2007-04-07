@@ -1,6 +1,8 @@
 require qte-common_${PV}.inc
 PR = "r4"
 
+DEFAULT_PREFERENCE = "-1"
+
 EXTRA_OECONF += "-static -thread"
 
 do_stage() {

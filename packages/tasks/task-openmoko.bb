@@ -5,7 +5,7 @@ PACKAGE_ARCH = "all"
 LICENSE = "MIT"
 PROVIDES = "task-openmoko-everything"
 
-PR = "r29"
+PR = "r33"
 
 PACKAGES = "\
   task-openmoko-linux \
@@ -19,7 +19,6 @@ PACKAGES = "\
   task-openmoko-demo \
   task-openmoko-examples \
   task-openmoko-debug \
-  task-openmoko-native-sdk \
 "
 
 RDEPENDS_task-openmoko-everything := "${PACKAGES}"
@@ -30,21 +29,9 @@ RDEPENDS_task-openmoko-everything := "${PACKAGES}"
 DESCRIPTION_task-openmoko-linux = "OpenMoko: Linux Core Services"
 RDEPENDS_task-openmoko-linux = "\
   task-base \
-  base-files \
-  base-passwd \
-  busybox \
-  dropbear \
-  fuser \
-  initscripts \
-  netbase \
   sysfsutils \
-  setserial \
-  sysvinit \
-  sysvinit-pidof \
-  tinylogin \
   modutils-initscripts \
   module-init-tools-depmod \
-  udev \
   rsync \
 #  update-alternatives \
 "
@@ -92,6 +79,8 @@ RDEPENDS_task-openmoko-ui = "\
   openmoko-common \
   openmoko-session \
   openmoko-theme-standard \
+  openmoko-icon-theme-standard \
+  settings-daemon \
 #  psplash \
 "
 
@@ -134,6 +123,7 @@ RDEPENDS_task-openmoko-pim = "\
   eds-dbus \
   openmoko-contacts \
   openmoko-dates \
+  openmoko-today \
 "
 
 #
@@ -151,22 +141,22 @@ DESCRIPTION_task-openmoko-demo = "OpenMoko: Demo Applications"
 RDEPENDS_task-openmoko-demo = "\
   matchbox-desktop \
   matchbox-keyboard \
+  openmoko-keyboard \
   matchbox-stroke \
   matchbox-config-gtk \
   matchbox-panel-2-applets \
-  matchbox-panel-hacks \
   matchbox-themes-extra \
   matchbox-themes-gtk \
-  matchbox-applet-inputmanager \
-  matchbox-applet-startup-monitor \
   openmoko-panel-battery \
   openmoko-panel-clock \
   openmoko-panel-demo \
   openmoko-panel-demo-simple \
   openmoko-panel-gsm \
   openmoko-panel-mainmenu \
+  openmoko-rssreader \
+  openmoko-messages \
+  openmoko-today \
   xcursor-transparent-theme \
-  settings-daemon \
   web \
   rxvt-unicode \
   gpe-terminal \

@@ -2,11 +2,6 @@ DESCRIPTION = "Meta-package for GPE Security Testing Image"
 LICENSE = "MIT"
 PR = "r6"
 
-ALLOW_EMPTY = "1"
-BUILD_ALL_DEPS = "1"
-
-DEPENDS = "task-gpe"
-
 RDEPENDS = "\
     gpe-task-base \
     gpe-base-depends \
@@ -14,3 +9,5 @@ RDEPENDS = "\
     gpe-task-settings \
     gpe-task-pim \
     gpe-task-sectest"
+
+inherit meta

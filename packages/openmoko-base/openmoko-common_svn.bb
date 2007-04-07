@@ -5,7 +5,7 @@ PR = "r1"
 
 inherit openmoko-base
 
-SRC_URI = "${OPENMOKO_MIRROR}/src/target/${OPENMOKO_RELEASE}/artwork;module=images;proto=https"
+SRC_URI = "${OPENMOKO_MIRROR}/src/target/${OPENMOKO_RELEASE}/artwork;module=images;proto=http"
 S = "${WORKDIR}"
 
 dirs = "images/pixmaps"

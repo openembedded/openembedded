@@ -3,8 +3,9 @@ SECTION = "openmoko/pim"
 LICENSE = "GPL"
 DEPENDS = "glib-2.0 gtk+ libglade eds-dbus openmoko-libs"
 RDEPENDS = "libedata-cal"
+RCONFLICTS_${PN} = "dates"
 PV = "0.1+svn${SRCDATE}"
-PR = "r6"
+PR = "r8"
 
 inherit gnome autotools pkgconfig gtk-icon-cache
 
@@ -23,3 +24,4 @@ do_install_append () {
 FILES_${PN} += "${datadir}/pixmaps/dates.png \
                 ${datadir}/dates/"
 
+PRIVATE_LIBS = "libgtkdatesview.so.0"

@@ -1,5 +1,5 @@
 require edje_${PV}.bb
-PR = "r3"
+PR = "r4"
 
 inherit native
 
@@ -12,8 +12,8 @@ do_configure_prepend() {
 	sed -i 's:gcc -I:/usr/bin/gcc -I:' ${S}/src/bin/edje_cc_parse.c
 }
 
-do_stage_append() {
-	edje_data_dir=`edje-config --datadir`
+do_install_append() {
+	edje_data_dir=`${S}/edje-config --datadir`
 	# could also use ${STAGING_DATADIR}/edje/include
 	install -d $edje_data_dir/include
 	install -m 0644 data/include/edje.inc $edje_data_dir/include

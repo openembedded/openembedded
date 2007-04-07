@@ -40,7 +40,7 @@ FILES_glibc-dev_append = " ${libdir}/*.o ${bindir}/rpcgen"
 FILES_nscd = "${sbindir}/nscd*"
 FILES_glibc-utils = "${bindir}/* ${sbindir}/*"
 FILES_glibc-gconv = "${libdir}/gconv/*"
-FILES_${PN}-dbg += " ${libdir}/gconv/.debug"
+FILES_${PN}-dbg += "${libexecdir}/getconf/.debug ${libdir}/gconv/.debug"
 FILES_catchsegv = "${bindir}/catchsegv"
 RDEPENDS_catchsegv = "libsegfault"
 FILES_glibc-pcprofile = "/lib/libpcprofile.so"
@@ -202,9 +202,14 @@ python package_do_split_gconvs () {
 	do_split_packages(d, locales_dir, file_regex='(.*)', output_pattern='glibc-localedata-%s', description='locale definition for %s', hook=calc_locale_deps, extra_depends='')
 	bb.data.setVar('PACKAGES', bb.data.getVar('PACKAGES', d) + ' glibc-gconv', d)
 
-	f = open(os.path.join(bb.data.getVar('WORKDIR', d, 1), "SUPPORTED"), "r")
-	supported = f.readlines()
-	f.close()
+	supported = bb.data.getVar('GLIBC_GENERATE_LOCALES', d, 1)
+	if not supported or supported == "all":
+	    f = open(os.path.join(bb.data.getVar('WORKDIR', d, 1), "SUPPORTED"), "r")
+	    supported = f.readlines()
+	    f.close()
+	else:
+	    supported = supported.split()
+	    supported = map(lambda s:s.replace(".", " ") + "\n", supported)
 
 	dot_re = re.compile("(.*)\.(.*)")
 

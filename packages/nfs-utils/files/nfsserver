@@ -53,7 +53,7 @@ create_directories(){
 #mountd
 start_mountd(){
 	echo -n 'starting mountd: '
-	start-stop-daemon --start --exec "$NFS_MOUNTD" -- "$@"
+	start-stop-daemon --start --exec "$NFS_MOUNTD" -- "-f /etc/exports $@"
 	echo done
 }
 stop_mountd(){

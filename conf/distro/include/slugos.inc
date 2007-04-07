@@ -43,13 +43,7 @@ INHERIT += "package_ipk debian multimachine"
 
 # FULL_OPTIMIZATION
 #    Optimization settings.  Os works fine and is significantly better than O2.
-#    The other settings are somewhat arbitrary.  The optimisations chosen here
-#    include the ones which 'break' symbolic debugging (because the compiler does
-#    not include enough information to allow the debugger to know where given
-#    values are.)  The -fno options are an attempt to cancel explicit use of space
-#    consuming options found in some packages (this isn't a complete list, this is
-#    just the ones which package writers seem to know about and abuse).
-FULL_OPTIMIZATION = "-Os -fomit-frame-pointer -frename-registers -fno-unroll-loops -fno-inline-functions -fweb -funit-at-a-time"
+FULL_OPTIMIZATION = "-fexpensive-optimizations -fomit-frame-pointer -frename-registers -Os"
 
 #----------------------------------------------------------------------------------
 # FEEDS
@@ -139,8 +133,8 @@ INHERIT += "nslu2-mirrors"
 
 PREFERRED_VERSION_nslu2-linksys-firmware ?= "2.3r63"
 
-PREFERRED_VERSION_ipkg ?= "0.99.154"
-PREFERRED_VERSION_ipkg-native ?= "0.99.154"
+PREFERRED_VERSION_ipkg ?= "0.99.163"
+PREFERRED_VERSION_ipkg-native ?= "0.99.163"
 
 #FIXME: HACK: REMOVE THIS
 IGNORE_STRIP_ERRORS = ""
@@ -149,3 +143,5 @@ IGNORE_STRIP_ERRORS = ""
 # needs, nail down a specific, known-working version of madwifi-ng.
 # Remove this once the madwifi-ng stuff seems to stabilize once again.
 PREFERRED_VERSION_madwifi-ng ?= "r2156-20070225"
+
+PREFERRED_VERSION_linux-libc-headers = "2.6.18"

@@ -5,7 +5,7 @@ PRIORITY = "optional"
 
 DEFAULT_PREFERENCE = "-1"
 
-PV = "0.5.0+svn${SRCDATE}"
+PV = "0.5.2+svn${SRCDATE}"
 PR = "r0"
 
 SRC_URI = "svn://gtk-webcore.svn.sourceforge.net/svnroot/gtk-webcore/trunk;module=JavaScriptCore;proto=https \
@@ -35,5 +35,7 @@ do_stage () {
 	install -d ${STAGING_INCDIR}/osb/JavaScriptCore
 	for i in ${S}/kjs/*.h ${S}/kjs/new; do
 		install -m 0644 $i ${STAGING_INCDIR}/osb/JavaScriptCore
+	install -d ${STAGING_INCDIR}/../share/osb-jscore
+	install -m 0755 ${S}/kjs/create_hash_table  ${STAGING_INCDIR}/../share/osb-jscore
 	done
 }

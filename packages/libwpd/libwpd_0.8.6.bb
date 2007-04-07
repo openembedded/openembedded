@@ -3,7 +3,7 @@ DESCRIPTION = "libwpd is a C++ library designed to help process WordPerfect docu
 HOMEPAGE = "http://libwpd.sourceforge.net/index.html"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/${PN}/${P}.tar.gz"
-
+DEPENDS = "libgsf"
 
 inherit autotools pkgconfig
 

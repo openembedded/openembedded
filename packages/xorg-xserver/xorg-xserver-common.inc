@@ -8,7 +8,7 @@ PROVIDES = "virtual/xserver"
 MESA_VER ?= "6.5"
 
 DEPENDS = "fontconfig freetype flex-native lbxutil kbproto \
-xf86driproto drm glproto randrproto renderproto fixesproto damageproto \
+xf86driproto libdrm glproto randrproto renderproto fixesproto damageproto \
 xcmiscproto xextproto xproto xf86miscproto xf86vidmodeproto xf86bigfontproto \
 scrnsaverproto bigreqsproto resourceproto fontsproto inputproto \
 xf86dgaproto videoproto compositeproto trapproto recordproto dmxproto \
@@ -19,7 +19,8 @@ libxkbui libxxf86misc libxi libdmx libxtst libxres mesa mkfontscale-native"
 RDEPENDS_${PN} = "rgb"
 
 XORG_PN = "xorg-server"
-SRC_URI = "${XORG_MIRROR}/${@bb.data.getVar('PV', d, 1)[0:7]}/src/xserver/${XORG_PN}-${PV}.tar.bz2 \
+XORG_RELEASE = "${@["individual",bb.data.getVar('PV', d, 1)[0:7]+"/src"][bb.data.getVar('PV', d, 1)[0:4] == "X11R"]}"
+SRC_URI = "${XORG_MIRROR}/${XORG_RELEASE}/xserver/${XORG_PN}-${PV}.tar.bz2 \
 	${SOURCEFORGE_MIRROR}/mesa3d/MesaLib-${MESA_VER}.tar.bz2 \
 	file://xorg.conf"
 

@@ -1,5 +1,5 @@
 DESCRIPTION = "Merge machine and distro options to create a basic machine task/package"
-PR = "r20"
+PR = "r22"
 
 PACKAGES = "task-base \
             task-base-oh-minimal \
@@ -38,8 +38,11 @@ PACKAGE_ARCH = "${MACHINE_ARCH}"
 # irda
 # pci
 # pcmcia
+# redboot
+# uboot
 # usbgadget
 # usbhost
+
 
 DISTRO_CORE_PACKAGE ?= "task-base-core-default"
 
@@ -62,9 +65,12 @@ RDEPENDS_task-base = "\
     ${@base_contains("COMBINED_FEATURES", "usbhost", "${task-base-usbhost-rdepends}", "",d)} \
     ${@base_contains("COMBINED_FEATURES", "bluetooth", "${task-base-bluetooth-rdepends}", "",d)} \
     ${@base_contains("COMBINED_FEATURES", "wifi", "${task-distro-wifi-rdepends}", "",d)} \
+    ${@base_contains("COMBINED_FEATURES", "uboot", "${task-base-uboot-rdepends}", "",d)} \
+    ${@base_contains("COMBINED_FEATURES", "redboot", "${task-base-redboot-rdepends}", "",d)} \
     ${@base_contains("DISTRO_FEATURES", "nfs", "${task-distro-nfs-rdepends}", "",d)} \
     ${@base_contains("DISTRO_FEATURES", "ipsec", "${task-distro-ipsec-rdepends}", "",d)} \
     ${@base_contains("DISTRO_FEATURES", "ppp", "${task-distro-ppp-rdepends}", "",d)} \
+    ${@base_contains("DISTRO_FEATURES", "raid", "${task-distro-raid-rdepends}", "",d)} \
     ${MACHINE_ESSENTIAL_EXTRA_RDEPENDS} \
     ${MACHINE_EXTRA_RDEPENDS} \
     ${DISTRO_EXTRA_RDEPENDS}"
@@ -221,6 +227,8 @@ task-base-irda-rrecommends = "\
     ${@base_contains("DISTRO_FEATURES", "ppp", "kernel-module-irnet", "",d)} \
     kernel-module-irport \
     kernel-module-irtty \
+    kernel-module-irtty-sir \
+    kernel-module-sir-dev \
     ${@base_contains("COMBINED_FEATURES", "usbhost", "kernel-module-ir-usb", "",d)} "
 
 task-base-usbgadget-rrecommends = "\
@@ -246,6 +254,12 @@ task-base-usbhost-rrecommends = "\
     kernel-module-mousedev \
     kernel-module-usbserial \
     kernel-module-usb-storage "
+
+task-base-uboot-rdepends = "\
+        uboot-utils"
+
+task-base-redboot-rdepends = "\
+        fis"
 
 task-distro-ppp-rdepends = "\
     ppp \
@@ -273,6 +287,7 @@ task-distro-wifi-rrecommends = "\
     kernel-module-ieee80211-crypt-ccmp \
     kernel-module-ieee80211-crypt-tkip \
     kernel-module-ieee80211-crypt-wep \
+    kernel-module-ecb \
     kernel-module-arc4 \
     kernel-module-michael-mic \
     kernel-module-aes"
@@ -292,6 +307,8 @@ task-distro-nfs-rrecommends = "\
     kernel-module-lockd \
     kernel-module-sunrpc"
 
+task-distro-raid-rdepends = "\
+	"
 
 # Tosort
 # kernel-module-ipv6

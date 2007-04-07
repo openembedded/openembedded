@@ -5,7 +5,7 @@
 DESCRIPTION = "Packages that are compatible with the SlugOS firmware"
 HOMEPAGE = "http://www.nslu2-linux.org"
 LICENSE = "MIT"
-PR = "r25"
+PR = "r32"
 CONFLICTS = "db3"
 
 COMPATIBLE_MACHINE = "nslu2"
@@ -47,6 +47,7 @@ SLUGOS_PACKAGES = "\
 	cyrus-imapd \
 	cyrus-sasl \
 	db \
+	devio \
 	devlabel \
 	diffstat \
 	diffutils \
@@ -63,6 +64,7 @@ SLUGOS_PACKAGES = "\
 	flac \
 	flex \
 	flite \
+	ftpd-topfield \
 	fuse \
 	gawk \
 	gcc \
@@ -71,6 +73,7 @@ SLUGOS_PACKAGES = "\
 	glib-2.0 \
 	gnu-config \
 	grep \
+	gspcav1 \
 	gtk-doc \
 	gzip \
 	hdparm \
@@ -141,6 +144,7 @@ SLUGOS_PACKAGES = "\
 	pkgconfig \
 	ppp \
 	procps \
+	puppy \
 	python \
 	quilt \
 	reiserfsprogs reiser4progs \
@@ -151,6 +155,7 @@ SLUGOS_PACKAGES = "\
 	setpwc \
 	setserial \
 	sipsak \
+	slugimage \
 	smartmontools \
 	ssmtp \
 	strace \
@@ -162,15 +167,19 @@ SLUGOS_PACKAGES = "\
 	tiff \
 	tzdata \
 	unzip \
+	upslug2 \
 	usbutils \
 	util-linux \
 	vim \
 	vlan \
 	vsftpd \
+	w3cam \
 	wakelan \
 	watchdog \
+	webcam-server \
 	wget \
 	wireless-tools \
+	wireshark \
 	wpa-supplicant \
 	zd1211-firmware \
 	zip \
@@ -180,15 +189,14 @@ SLUGOS_PACKAGES = "\
 # Packages currently broken on all platforms
 SLUGOS_BROKEN_PACKAGES = "\
 	bwmon \
-	ftpd-topfield \
 	gphoto2 \
 	irssi \
 	libgphoto2 \
 	logrotate \
+	madfu \
 	mediatomb \
 	mpd \
 	netpbm \
-	puppy \
 	pvrusb2-mci \
 	qc-usb-messenger \
 	syslog-ng \
@@ -197,7 +205,11 @@ SLUGOS_BROKEN_PACKAGES = "\
 	unionfs-utils \
 	lirc \
 	pwc \
+	task-native-sdk \
 	zd1211 \
+	mysql \
+        wview-sim-mysql wview-vpro-mysql \
+        wview-wxt510-mysql \
 	"
 
 # These packages will never build because uclibc lacks (and always will lack)
@@ -243,18 +255,10 @@ SLUGOS_PACKAGES_append_linux = "\
 	screen \
 	timezones \
         wview-sim wview-vpro wview-wxt510 \
-        wview-sim-mysql wview-vpro-mysql \
-        wview-wxt510-mysql \
 	xinetd \
 	"
 
 SLUGOS_PACKAGES_append_linux-uclibc = "\
-	"
-
-# These packages are not in the build because they have a significant compilation
-# time, add them to SLUGOS_EXTRA_PACKAGES if required
-SLUGOS_OPTIONAL_PACKAGES = "\
-	mysql \
 	"
 
 SLUGOS_EXTRA_PACKAGES ?= ""

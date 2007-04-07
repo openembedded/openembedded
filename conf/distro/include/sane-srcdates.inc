@@ -36,14 +36,13 @@ SRCDATE_matchbox-themes-extra ?= "20060612"
 SRCDATE_matchbox-wm ?= "20060612"
 SRCDATE_libmatchbox ?= "20060612"
 SRCDATE_libfakekey ?= "20051101"
-SRCDATE_psplash ?= "20061207"
+SRCDATE_psplash ?= "20070330"
 SRCDATE_web ?= "20060613"
 SRCDATE_zaurusd ?= "20060628"
 
 # GPE
 SRCDATE_dasher-gpe  ?= "20060814"
 SRCDATE_rosetta ?= "20060804"
-SRCDATE_libmimedir ?= "20060804"
 SRCDATE_gpesyncd ?= "20061128"
 
 # GNOME

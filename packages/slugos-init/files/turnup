@@ -153,7 +153,7 @@ copy_rootfs() {
 	#   /var/*
 	echo "turnup: copying root file system" >&2
 	(	cd "$1"
-		find . -mount -print |
+		find . -xdev -print |
 		sed '\@^./dev/@d;\@^./boot/@d;\@^./boot$@d;\@^./linuxrc@d;\@^./var/@d' |
 		cpio -p -d -m -u "$2"
 	) || {

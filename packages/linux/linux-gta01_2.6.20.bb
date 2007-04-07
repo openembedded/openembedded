@@ -5,7 +5,7 @@ HOMEPAGE = "N/A"
 LICENSE = "GPL"
 DEPENDS += "u-boot-mkimage-gta01-native"
 MOKOR = "moko8"
-PR = "${MOKOR}-r1"
+PR = "${MOKOR}-r2"
 
 VANILLA_VERSION = "2.6.20"
 
@@ -29,7 +29,7 @@ ALLOW_EMPTY = "1"
 
 COMPATIBLE_MACHINE = 'fic-gta01'
 
-CMDLINE_CON = "console=ttySAC0,115200n8"
+CMDLINE_CON = ""
 #CMDLINE_ROOT = "root=/dev/mmcblk0p1 rootfstype=ext3 rootdelay=5"
 # uncomment if you want to boot over NFS
 #CMDLINE_ROOT = "root=/dev/nfs nfsroot=192.168.1.10:/export/opie-image rootdelay=5 3"

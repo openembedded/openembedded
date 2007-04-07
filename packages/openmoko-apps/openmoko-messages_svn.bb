@@ -1,7 +1,7 @@
-DESCRIPTION = "The OpenMoko Application Manager"
+DESCRIPTION = "The OpenMoko Messaging Application"
 SECTION = "openmoko/applications"
-DEPENDS += "ipkg"
+
 PV = "0.0.1+svn${SRCDATE}"
+PR = "r2"
 
 inherit openmoko
-

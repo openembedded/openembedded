@@ -3,7 +3,7 @@ IrDA allows communication over Infrared with other devices \
 such as phones and laptops."
 SECTION = "base"
 LICENSE = "GPL"
-PR = "r7"
+PR = "r8"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/irda/irda-utils-${PV}.tar.gz \
 	   file://configure.patch;patch=1 \
@@ -12,7 +12,7 @@ SRC_URI = "${SOURCEFORGE_MIRROR}/irda/irda-utils-${PV}.tar.gz \
 
 export SYS_INCLUDES="-I${STAGING_INCDIR}"
 
-inherit autotools update-rc.d
+inherit autotools
 
 INITSCRIPT_NAME = "irattach"
 INITSCRIPT_PARAMS = "defaults 20"

@@ -11,6 +11,9 @@ SRC_URI = "ftp://ftp.gimp.org/pub/gimp/v2.3/gimp-${PV}.tar.bz2 \
 
 inherit autotools pkgconfig
 
+FILES_gimp-dbg =+ "${libdir}/gimp/2.0/modules/.debug \
+                   ${libdir}/gimp/2.0/plug-ins/.debug"
+
 #Don't laugh, this just builds a threaded gimp
 EXTRA_OECONF = " --disable-gtktest \
                 --disable-print \

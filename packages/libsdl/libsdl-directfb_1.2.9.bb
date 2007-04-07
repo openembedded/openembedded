@@ -6,6 +6,7 @@ PROVIDES = "virtual/libsdl"
 LICENSE = "LGPL"
 
 PR = "r1"
+DEFAULT_PREFERENCE = "-1"
 
 SRC_URI = "http://www.libsdl.org/release/SDL-${PV}.tar.gz \
 	   file://extra-keys.patch;patch=1 \

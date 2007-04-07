@@ -1,0 +1,11 @@
+--- /tmp/gpe-login.c	2007-04-01 11:40:29.000000000 +0200
++++ gpe-login-0.88/gpe-login.c	2007-04-01 11:40:58.205251000 +0200
+@@ -59,7 +59,7 @@
+ #define GPE_OWNERINFO_DONTSHOW_FILE "/etc/gpe/gpe-ownerinfo.dontshow"
+ /* Number of milliseconds to hold the stylus down before recalibration is called */
+ #define RECALIBRATION_TIMEOUT 5000
+-#define XTSCAL_PATH "/usr/bin/gpe-xcalibrate.sh"
++#define XTSCAL_PATH "/usr/bin/xtscal"
+ #ifndef DEBUG
+ #define DEBUG 0
+ #endif

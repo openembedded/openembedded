@@ -1,4 +1,3 @@
-FEED_URIS_append_familiar   = " x11##http://familiar.handhelds.org/releases/${DISTRO_VERSION}/feed/x11"
 
 PR = "r20"
 

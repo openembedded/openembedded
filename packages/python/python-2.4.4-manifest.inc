@@ -12,6 +12,10 @@ PROVIDES+="python-profile python-threading python-distutils python-textutils pyt
 
 PACKAGES="python-profile python-threading python-distutils python-textutils python-codecs python-pickle python-datetime python-core python-io python-compiler python-compression python-re python-xmlrpc python-terminal python-email python-image python-resource python-devel python-math python-hotshot python-unixadmin python-tkinter python-gdbm python-fcntl python-netclient python-pprint python-netserver python-curses python-syslog python-html python-readline python-subprocess python-pydoc python-logging python-mailbox python-xml python-mime python-tests python-unittest python-stringold python-lib-old-and-deprecated python-compile python-shell python-bsddb python-mmap python-zlib python-db python-crypt python-idle python-lang python-audio python-misc"
 
+DESCRIPTION_python-misc-dbg="Misc Python debug files"
+FILES_python-misc-dbg="${libdir}/python2.4/lib-dynload/.debug"
+RDEPENDS_python-misc-dbg="python-core"
+
 DESCRIPTION_python-misc="Misc Python files"
 FILES_python-misc="${libdir}/python2.4/"
 RDEPENDS_python-misc="python-core"

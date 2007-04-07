@@ -1,0 +1,21 @@
+--- src/Makefile.am~	2007-04-05 16:01:29.000000000 +0200
++++ src/Makefile.am	2007-04-05 16:01:29.000000000 +0200
+@@ -3,7 +3,7 @@
+ GTK_PREFIX=`pkg-config gtk+-2.0 --variable=libdir`
+ GTK_BINARY_VERSION=`pkg-config gtk+-2.0 --variable=gtk_binary_version`
+ 
+-moduledir = $(GTK_PREFIX)/gtk-2.0/$(GTK_BINARY_VERSION)/immodules
++moduledir = $(libdir)/gtk-2.0/$(GTK_BINARY_VERSION)/immodules
+ 
+ INCLUDES		= -DPACKAGE_LOCALE_DIR=\"@datadir@/locale/@PACKAGE_NAME@\" -DSN_API_NOT_YET_FROZEN \
+ 							-I. $(IMMANAGER_CFLAGS)
+--- Makefile.am~	2007-04-05 16:21:36.000000000 +0200
++++ Makefile.am	2007-04-05 16:21:36.000000000 +0200
+@@ -3,6 +3,6 @@
+ GTK_PREFIX=`pkg-config gtk+-2.0 --variable=libdir`
+ GTK_BINARY_VERSION=`pkg-config gtk+-2.0 --variable=gtk_binary_version`
+ 
+-confdir		= $(GTK_PREFIX)/gtk-2.0/$(GTK_BINARY_VERSION)/immodules/ptim/
++confdir		= $(libdir)/gtk-2.0/$(GTK_BINARY_VERSION)/immodules/ptim/
+ conf_DATA	= \
+ 	conf/imconfig

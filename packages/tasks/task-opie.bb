@@ -5,7 +5,7 @@ ALLOW_EMPTY = "1"
 LICENSE = "MIT"
 PROVIDES = "task-opie-everything"
 
-PR = "r5"
+PR = "r6"
 
 PACKAGES = "task-opie-applets task-opie-apps task-opie-base \
             task-opie-base-applets task-opie-base-apps \
@@ -27,7 +27,7 @@ PACKAGES += "task-opie-everything"
 #
 # Dependencies to get the launcher up and running
 #
-RDEPENDS_task-opie-base = "opie-alarm opie-qcop opie-quicklauncher opie-taskbar \
+RDEPENDS_task-opie-base = "opie-init opie-alarm opie-qcop opie-quicklauncher opie-taskbar \
                            opie-pics opie-sounds opie-freetype ttf-dejavu-sans \
 			   ttf-dejavu-sans-mono"
 

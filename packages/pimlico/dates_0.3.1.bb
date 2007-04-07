@@ -1,13 +1,5 @@
-DESCRIPTION = "Dates is a calendar application."
-SECTION = "x11"
-LICENSE = "LGPL"
-PR = "r1"
+require dates.inc
 
-DEPENDS = "glib-2.0 gtk+ libglade eds-dbus"
+PR = "r3"
 
-SRC_URI = "http://projects.o-hand.com/sources/dates/${P}.tar.gz"
-
-inherit autotools pkgconfig gtk-icon-cache
-
-FILES_${PN} += "${datadir}/pixmaps/dates.png"
-
+SRC_URI = "http://projects.o-hand.com/sources/dates/dates-${PV}.tar.gz"

@@ -1,0 +1,48 @@
+From 129287fa3ed3c4caf14e9d9f70bec2f3a42ea00d Mon Sep 17 00:00:00 2001
+From: Graeme Gregory <gg@a10082.wolfsonmicro.main>
+Date: Mon, 26 Mar 2007 15:31:30 +0100
+Subject: [PATCH] Move s3c24xx_i2s_dai and add dma_size
+
+move s3c24xx_i2s_dai from pcm.h to i2s.h where it should be
+
+add a dma_size parameter to the dma params as I2S and AC97 use different
+writing widths to the FIFO.
+
+Signed-off-by: Graeme Gregory <gg@opensource.wolfsonmicro.com>
+---
+ sound/soc/s3c24xx/s3c24xx-i2s.h |    2 ++
+ sound/soc/s3c24xx/s3c24xx-pcm.h |    3 +--
+ 2 files changed, 3 insertions(+), 2 deletions(-)
+
+diff --git a/sound/soc/s3c24xx/s3c24xx-i2s.h b/sound/soc/s3c24xx/s3c24xx-i2s.h
+index f9ca04e..537b4ec 100644
+--- a/sound/soc/s3c24xx/s3c24xx-i2s.h
++++ b/sound/soc/s3c24xx/s3c24xx-i2s.h
+@@ -32,4 +32,6 @@
+ 
+ u32 s3c24xx_i2s_get_clockrate(void);
+ 
++extern struct snd_soc_cpu_dai s3c24xx_i2s_dai;
++
+ #endif /*S3C24XXI2S_H_*/
+diff --git a/sound/soc/s3c24xx/s3c24xx-pcm.h b/sound/soc/s3c24xx/s3c24xx-pcm.h
+index 5dced4a..5619fdc 100644
+--- a/sound/soc/s3c24xx/s3c24xx-pcm.h
++++ b/sound/soc/s3c24xx/s3c24xx-pcm.h
+@@ -19,12 +19,11 @@ struct s3c24xx_pcm_dma_params {
+ 	struct s3c2410_dma_client *client;			/* stream identifier */
+ 	int channel;						/* Channel ID */
+ 	dma_addr_t dma_addr;
++	int dma_size;					/* Size of the DMA transfer */
+ };
+ 
+ #define S3C24XX_DAI_I2S			0
+ 
+-extern struct snd_soc_cpu_dai s3c24xx_i2s_dai;
+-
+ /* platform data */
+ extern struct snd_soc_platform s3c24xx_soc_platform;
+ extern struct snd_ac97_bus_ops s3c24xx_ac97_ops;
+-- 
+1.5.0.3
+

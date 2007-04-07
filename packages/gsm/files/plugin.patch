@@ -1,0 +1,935 @@
+Index: gsm/include/gsmd/gsmd.h
+===================================================================
+--- gsm.orig/include/gsmd/gsmd.h	2007-04-02 09:58:55.000000000 +0200
++++ gsm/include/gsmd/gsmd.h	2007-04-02 11:03:41.000000000 +0200
+@@ -7,6 +7,7 @@
+ 
+ #include <common/linux_list.h>
+ 
++#include <gsmd/machineplugin.h>
+ #include <gsmd/vendorplugin.h>
+ #include <gsmd/select.h>
+ #include <gsmd/state.h>
+@@ -58,12 +59,14 @@
+ 
+ struct gsmd {
+ 	unsigned int flags;
++	int interpreter_ready;
+ 	struct gsmd_fd gfd_uart;
+ 	struct gsmd_fd gfd_sock;
+ 	struct llparser llp;
+ 	struct llist_head users;
+ 	struct llist_head pending_atcmds;	/* our busy gsmd_atcmds */
+ 	struct llist_head busy_atcmds;	/* our busy gsmd_atcmds */
++	struct gsmd_machine_plugin *machinepl;
+ 	struct gsmd_vendor_plugin *vendorpl;
+ 	struct gsmd_device_state dev_state;
+ 
+Index: gsm/include/gsmd/machineplugin.h
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ gsm/include/gsmd/machineplugin.h	2007-04-02 11:03:41.000000000 +0200
+@@ -0,0 +1,24 @@
++#ifndef _GSMD_MACHINEPLUG_H
++#define _GSMD_MACHINEPLUG_H
++
++#ifdef __GSMD__
++
++#include <common/linux_list.h>
++#include <gsmd/gsmd.h>
++
++struct gsmd;
++
++struct gsmd_machine_plugin {
++	struct llist_head list;
++	unsigned char *name;
++	int (*detect)(struct gsmd *g);
++	int (*init)(struct gsmd *g, int fd);
++};
++
++extern int gsmd_machine_plugin_register(struct gsmd_machine_plugin *pl);
++extern void gsmd_machine_plugin_unregister(struct gsmd_machine_plugin *pl);
++extern int gsmd_machine_plugin_find(struct gsmd *g);
++
++#endif /* __GSMD__ */
++
++#endif
+Index: gsm/src/gsmd/machine_tihtc.c
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ gsm/src/gsmd/machine_tihtc.c	2007-04-02 11:03:41.000000000 +0200
+@@ -0,0 +1,71 @@
++/* TI [Calypso] with HTC firmware machine plugin
++ *
++ * Written by Philipp Zabel <philipp.zabel@gmail.com>
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 2 of the License, or
++ * (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License along
++ * with this program; if not, write to the Free Software Foundation, Inc.,
++ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
++ *
++ */
++
++#include <stdlib.h>
++#include <unistd.h>
++#include <string.h>
++#include <stdio.h>
++#include <errno.h>
++#include <sys/ioctl.h>
++
++#include "gsmd.h"
++
++#include <gsmd/gsmd.h>
++#include <gsmd/usock.h>
++#include <gsmd/event.h>
++#include <gsmd/talloc.h>
++#include <gsmd/extrsp.h>
++#include <gsmd/machineplugin.h>
++
++#define N_TIHTC 17
++
++static int tihtc_detect(struct gsmd *g)
++{
++	/* FIXME: do actual detection of machine if we have multiple machines */
++	return 1;
++}
++
++static int tihtc_init(struct gsmd *g, int fd)
++{
++	int ldisc = N_TIHTC;
++	int rc;
++
++	/*
++	 * Himalaya, Blueangel, Alpine and Magican
++	 * power up their GSM chipsets when the
++	 * tty is opened. Wait for the "AT-Command
++	 * Interpreter ready" message before trying
++	 * to send commands.
++	 */
++	g->interpreter_ready = 0;
++
++	/* Set the line discipline to N_TIHTC */
++	rc = ioctl(fd, TIOCSETD, &ldisc);
++	if (rc < 0)
++		fprintf(stderr, "can't set line discipline\n");
++
++	return rc;
++}
++
++struct gsmd_machine_plugin gsmd_machine_plugin = {
++	.name = "TI Calypso / HTC firmware",
++	.detect = &tihtc_detect,
++	.init = &tihtc_init,
++};
+Index: gsm/src/gsmd/machine_generic.c
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ gsm/src/gsmd/machine_generic.c	2007-04-02 11:03:41.000000000 +0200
+@@ -0,0 +1,61 @@
++/* generic machine plugin
++ *
++ * Written by Philipp Zabel <philipp.zabel@gmail.com>
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 2 of the License, or
++ * (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License along
++ * with this program; if not, write to the Free Software Foundation, Inc.,
++ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
++ *
++ */
++
++#include <stdlib.h>
++#include <unistd.h>
++#include <string.h>
++#include <stdio.h>
++#include <errno.h>
++
++#include "gsmd.h"
++
++#include <gsmd/gsmd.h>
++#include <gsmd/usock.h>
++#include <gsmd/event.h>
++#include <gsmd/talloc.h>
++#include <gsmd/extrsp.h>
++#include <gsmd/machineplugin.h>
++
++static int generic_detect(struct gsmd *g)
++{
++	/* FIXME: do actual detection of machine if we have multiple machines */
++	return 1;
++}
++
++static int generic_init(struct gsmd *g, int fd)
++{
++	int rc;
++
++	/*
++	 * We assume that the GSM chipset can take
++	 * input immediately, so we don't have to
++	 * wait for the "AT-Command Interpreter ready"
++	 * message before trying to send commands.
++	 */
++	g->interpreter_ready = 1;
++
++	return 0;
++}
++
++struct gsmd_machine_plugin gsmd_machine_plugin = {
++	.name = "generic",
++	.detect = &generic_detect,
++	.init = &generic_init,
++};
+Index: gsm/src/gsmd/machine.c
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ gsm/src/gsmd/machine.c	2007-04-02 13:43:04.000000000 +0200
+@@ -0,0 +1,140 @@
++/* gsmd machine plugin core
++ *
++ * Written by Philipp Zabel <philipp.zabel@gmail.com>
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 2 of the License, or
++ * (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License along
++ * with this program; if not, write to the Free Software Foundation, Inc.,
++ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
++ *
++ */
++
++#include <dlfcn.h>
++#include <errno.h>
++#include <stdio.h>
++#include <string.h>
++
++#include <common/linux_list.h>
++
++#include "gsmd.h"
++
++#include <gsmd/gsmd.h>
++#include <gsmd/machineplugin.h>
++
++static LLIST_HEAD(machinepl_list);
++
++int gsmd_machine_plugin_register(struct gsmd_machine_plugin *pl)
++{
++	llist_add(&pl->list, &machinepl_list);
++
++	return 0;
++}
++
++void gsmd_machine_plugin_unregister(struct gsmd_machine_plugin *pl)
++{
++	llist_del(&pl->list);
++}
++
++int gsmd_machine_plugin_find(struct gsmd *g)
++{
++	struct gsmd_machine_plugin *pl;
++
++	if (g->machinepl)
++		return -EEXIST;
++
++	llist_for_each_entry(pl, &machinepl_list, list) {
++		if (pl->detect(g) == 1) {
++			DEBUGP("selecting machine plugin \"%s\"\n", pl->name);
++			g->machinepl = pl;
++			return 1;
++		}
++	}
++
++	return 0;
++}
++
++int gsmd_machine_plugin_load(char *name)
++{
++	int rc = -1;
++	void *plugin;
++	struct gsmd_machine_plugin *pl;
++	char buf[128];
++
++	DEBUGP("loading machine plugin \"%s\"\n", name);
++
++	snprintf(buf, sizeof(buf), PLUGINDIR"/libgsmd-machine_%s.so", name);
++
++	plugin = dlopen(buf, RTLD_LAZY);
++	if (!plugin) {
++		fprintf(stderr, "gsmd_machine_plugin_load: %s\n", dlerror());
++		return -1;
++	}
++
++	pl = dlsym(plugin, "gsmd_machine_plugin");
++	if (pl)
++		rc = gsmd_machine_plugin_register(pl);
++	else
++		dlclose(plugin);
++
++	return rc;
++}
++
++/* maybe /etc/gsmd/cpuinfo */
++struct machines {
++	char *cpuinfo;
++	char *machine;
++	char *vendor;
++} machines[] = {
++	{ "GTA01",		"generic",	"ti" },
++	{ "HTC Blueangel",	"tihtc",	"tihtc" },
++	{ "HTC Himalaya",	"tihtc",	"tihtc" },
++	{ "HTC Magician",	"tihtc",	"tihtc" },
++	{ "HTC Universal",	"generic",	"qc" },
++	{ NULL, NULL, NULL },
++};
++
++int gsmd_machine_plugin_init(struct gsmd *g, int fd)
++{
++	FILE *cpuinfo;
++	char buf[1024];
++	char *line, *machine = NULL;
++	int i, rc;
++
++	cpuinfo = fopen("/proc/cpuinfo", "r");
++	fread(buf, sizeof(buf), 1, cpuinfo);
++	fclose(cpuinfo);
++
++	line = strtok(buf, "\n");
++	while (line = strtok(NULL, "\n")) {
++		if (strncmp(line, "Hardware\t: ", 11) == 0) {
++			machine = line+11;
++			break;
++		}
++	}
++	/* FIXME: do this dynamically */
++	if (machine) {
++		for (i = 0; machines[i].cpuinfo; i++) {
++			if (strcmp(machine, machines[i].cpuinfo) == 0) {
++				DEBUGP("detected %s\n", machine);
++				rc = gsmd_machine_plugin_load(machines[i].machine);
++				rc |= gsmd_vendor_plugin_load(machines[i].vendor);
++				return rc;
++			}
++		}
++	}
++	/* load generic machine and all vendor plugins */
++	rc = gsmd_machine_plugin_load("generic");
++	gsmd_vendor_plugin_load("ti");
++	gsmd_vendor_plugin_load("tihtc");
++	gsmd_vendor_plugin_load("qc");
++	return rc;
++}
+Index: gsm/src/gsmd/vendor_qc.c
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ gsm/src/gsmd/vendor_qc.c	2007-04-02 11:03:41.000000000 +0200
+@@ -0,0 +1,104 @@
++/* Qualcomm [msm6250] gsmd plugin
++ *
++ * Written by Philipp Zabel <philipp.zabel@gmail.com>
++ * based on vendor_ti.c
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 2 of the License, or
++ * (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License along
++ * with this program; if not, write to the Free Software Foundation, Inc.,
++ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
++ *
++ */
++
++#include <stdlib.h>
++#include <unistd.h>
++#include <string.h>
++#include <stdio.h>
++#include <errno.h>
++
++#include "gsmd.h"
++
++#include <gsmd/gsmd.h>
++#include <gsmd/usock.h>
++#include <gsmd/event.h>
++#include <gsmd/talloc.h>
++#include <gsmd/extrsp.h>
++#include <gsmd/atcmd.h>
++#include <gsmd/vendorplugin.h>
++#include <gsmd/unsolicited.h>
++
++static int htccsq_parse(char *buf, int len, const char *param,
++		     struct gsmd *gsmd)
++{
++	char *tok;
++	struct gsmd_evt_auxdata *aux;
++	struct gsmd_ucmd *ucmd = usock_build_event(GSMD_MSG_EVENT, GSMD_EVT_SIGNAL,
++					     sizeof(*aux));
++	static int rssi_table[] = { 0,5,10,15,20,25,99 }; /* FIXME */
++	unsigned int i;
++
++	DEBUGP("entering htccsq_parse param=`%s'\n", param);
++	if (!ucmd)
++		return -EINVAL;
++
++
++	aux = (struct gsmd_evt_auxdata *) ucmd->buf;
++
++	i = atoi(buf);
++	if (i > 6)
++		i = 6;
++	aux->u.signal.sigq.rssi = rssi_table[atoi(buf)];
++	aux->u.signal.sigq.ber = 99;
++
++	DEBUGP("sending EVT_SIGNAL\n");
++	usock_evt_send(gsmd, ucmd, GSMD_EVT_SIGNAL);
++
++	return 0;
++
++out_free_io:
++	free(ucmd);
++	return -EIO;
++}
++
++static const struct gsmd_unsolicit qc_unsolicit[] = {
++	{ "@HTCCSQ",	&htccsq_parse },	/* Signal Quality */
++
++	/* FIXME: parse the below and generate the respective events */
++
++	/* %CGREG: reports extended information about GPRS registration state */
++};
++
++static int qc_detect(struct gsmd *g)
++{
++	/* FIXME: do actual detection of vendor if we have multiple vendors */
++	/* open /proc/cpuinfo and check for HTC Universal? */
++	return 1;
++}
++
++static int qc_initsettings(struct gsmd *g)
++{
++	int rc;
++	struct gsmd_atcmd *cmd;
++
++	/* enable @HTCCSQ: signal quality reports */
++	rc |= gsmd_simplecmd(g, "AT@HTCCSQ=1");
++
++	return rc;
++}
++
++struct gsmd_vendor_plugin gsmd_vendor_plugin = {
++	.name = "Qualcomm msm6250",
++	.num_unsolicit = ARRAY_SIZE(qc_unsolicit),
++	.unsolicit = qc_unsolicit,
++	.detect = &qc_detect,
++	.initsettings = &qc_initsettings,
++};
+Index: gsm/src/gsmd/Makefile.am
+===================================================================
+--- gsm.orig/src/gsmd/Makefile.am	2007-04-02 09:58:55.000000000 +0200
++++ gsm/src/gsmd/Makefile.am	2007-04-02 13:33:11.000000000 +0200
+@@ -1,11 +1,26 @@
+ INCLUDES = $(all_includes) -I$(top_srcdir)/include
+ AM_CFLAGS = -std=gnu99
++plugindir = $(libdir)/gsmd
+ 
+ sbin_PROGRAMS = gsmd
+ 
+-gsmd_SOURCES = gsmd.c atcmd.c select.c vendor.c usock.c unsolicited.c log.c \
+-	       vendor_ti.c talloc.c operator_cache.c ext_response.c
+-#gsmd_LDADD = ../libgsmd/libgsmd.la
+-#gsmd_LDFLAGS = -dynamic
++gsmd_CFLAGS = -D PLUGINDIR=\"$(plugindir)\"
++gsmd_SOURCES = gsmd.c atcmd.c select.c machine.c vendor.c unsolicited.c log.c \
++	       usock.c talloc.c operator_cache.c ext_response.c
++gsmd_LDADD = -ldl
++gsmd_LDFLAGS = -Wl,--export-dynamic
++
++plugin_LTLIBRARIES = libgsmd-machine_generic.la \
++		     libgsmd-machine_tihtc.la \
++		     libgsmd-vendor_ti.la \
++		     libgsmd-vendor_tihtc.la \
++		     libgsmd-vendor_qc.la
++
++libgsmd_machine_generic_la_SOURCES = machine_generic.c
++libgsmd_machine_tihtc_la_SOURCES = machine_tihtc.c
++
++libgsmd_vendor_ti_la_SOURCES = vendor_ti.c
++libgsmd_vendor_tihtc_la_SOURCES = vendor_tihtc.c
++libgsmd_vendor_qc_la_SOURCES = vendor_qc.c
+ 
+ noinst_HEADERS = gsmd.h
+Index: gsm/src/gsmd/atcmd.c
+===================================================================
+--- gsm.orig/src/gsmd/atcmd.c	2007-04-02 11:03:40.000000000 +0200
++++ gsm/src/gsmd/atcmd.c	2007-04-02 11:03:41.000000000 +0200
+@@ -183,6 +183,7 @@
+ 	 * an empty string or that 'ready' string, we need to init the modem */
+ 	if (strlen(buf) == 0 ||
+ 	    !strcmp(buf, "AT-Command Interpreter ready")) {
++		g->interpreter_ready = 1;
+ 		gsmd_initsettings(g);
+ 		return 0;
+ 	}
+@@ -370,7 +371,7 @@
+ 	}
+ 
+ 	/* write pending commands to UART */
+-	if (what & GSMD_FD_WRITE) {
++	if ((what & GSMD_FD_WRITE) && g->interpreter_ready) {
+ 		struct gsmd_atcmd *pos, *pos2;
+ 		llist_for_each_entry_safe(pos, pos2, &g->pending_atcmds, list) {
+ 			len = strlen(pos->buf);
+Index: gsm/src/gsmd/vendor_tihtc.c
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ gsm/src/gsmd/vendor_tihtc.c	2007-04-02 13:16:45.000000000 +0200
+@@ -0,0 +1,305 @@
++/* TI [Calypso] with HTC firmware gsmd plugin
++ *
++ * Written by Philipp Zabel <philipp.zabel@gmail.com>
++ * based on vendor_ti.c
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 2 of the License, or
++ * (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License along
++ * with this program; if not, write to the Free Software Foundation, Inc.,
++ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
++ *
++ */
++
++#include <stdlib.h>
++#include <unistd.h>
++#include <string.h>
++#include <stdio.h>
++#include <errno.h>
++
++#include "gsmd.h"
++
++#include <gsmd/gsmd.h>
++#include <gsmd/usock.h>
++#include <gsmd/event.h>
++#include <gsmd/talloc.h>
++#include <gsmd/extrsp.h>
++#include <gsmd/atcmd.h>
++#include <gsmd/vendorplugin.h>
++#include <gsmd/unsolicited.h>
++
++static int gsmd_test_atcb(struct gsmd_atcmd *cmd, void *ctx, char *resp)
++{
++	printf("`%s' returned `%s'\n", cmd->buf, resp);
++	return 0;
++}
++
++int gsmd_simplecmd(struct gsmd *gsmd, char *cmdtxt)
++{
++	struct gsmd_atcmd *cmd;
++	cmd = atcmd_fill(cmdtxt, strlen(cmdtxt)+1, &gsmd_test_atcb, NULL, 0);
++	if (!cmd)
++		return -ENOMEM;
++
++	return atcmd_submit(gsmd, cmd);
++}
++
++
++#if 0
++#include "vendorplugin.h"
++
++static int
++ti_getopt(struct gsmd *gh, int optname, void *optval, int *optlen)
++{
++ 	switch (optname) {
++	case GSMD_OPT_CIPHER_IND:
++		/* FIXME: send AT%CPRI=? */
++		break;
++	default:
++		return -EINVAL;
++	}
++}
++
++static int
++ti_setopt(struct gsmd *gh, int optname, const void *optval, int optlen)
++{
++	switch (optname) {
++	case GSMD_OPT_CIPHER_IND:
++		/* FIXME: send AT%CPRI= */
++		break;
++	default:
++		return -EINVAL;
++	}
++}
++
++#endif
++
++
++static int htccsq_parse(char *buf, int len, const char *param,
++		     struct gsmd *gsmd)
++{
++	char *tok;
++	struct gsmd_evt_auxdata *aux;
++	struct gsmd_ucmd *ucmd = usock_build_event(GSMD_MSG_EVENT, GSMD_EVT_SIGNAL,
++					     sizeof(*aux));
++
++	DEBUGP("entering htccsq_parse param=`%s'\n", param);
++	if (!ucmd)
++		return -EINVAL;
++
++
++	aux = (struct gsmd_evt_auxdata *) ucmd->buf;
++
++	/* FIXME: contains values 1-5, should be mapped to 0-31 somehow? */
++	/* 2 --> 11 */
++	aux->u.signal.sigq.rssi = atoi(buf);
++	aux->u.signal.sigq.ber = 99;
++
++	DEBUGP("sending EVT_SIGNAL\n");
++	usock_evt_send(gsmd, ucmd, GSMD_EVT_SIGNAL);
++
++	return 0;
++
++out_free_io:
++	free(ucmd);
++	return -EIO;
++}
++
++static int cpri_parse(char *buf, int len, const char *param, struct gsmd *gsmd)
++{
++	char *tok1, *tok2;
++
++	tok1 = strtok(buf, ",");
++	if (!tok1)
++		return -EIO;
++
++	tok2 = strtok(NULL, ",");
++	if (!tok2) {
++		switch (atoi(tok1)) {
++		case 0:
++			gsmd->dev_state.ciph_ind.flags &= ~GSMD_CIPHIND_ACTIVE;
++			break;
++		case 1:
++			gsmd->dev_state.ciph_ind.flags |= GSMD_CIPHIND_ACTIVE;
++			break;
++		case 2:
++			gsmd->dev_state.ciph_ind.flags |= GSMD_CIPHIND_DISABLED_SIM;
++			break;
++		}
++	} else {
++		struct gsmd_evt_auxdata *aux;
++		struct gsmd_ucmd *ucmd = usock_build_event(GSMD_MSG_EVENT,
++							   GSMD_EVT_CIPHER,
++							   sizeof(*aux));
++		if (!ucmd)
++			return -ENOMEM;
++
++		aux = (struct gsmd_evt_auxdata *) ucmd->buf;
++
++		aux->u.cipher.net_state_gsm = atoi(tok1);
++		aux->u.cipher.net_state_gsm = atoi(tok2);
++
++		usock_evt_send(gsmd, ucmd, GSMD_EVT_CIPHER);
++	}
++
++	return 0;
++}
++
++/* Call Progress Information */
++static int cpi_parse(char *buf, int len, const char *param, struct gsmd *gsmd)
++{
++	char *tok;
++	struct gsmd_evt_auxdata *aux;
++	struct gsmd_ucmd *ucmd = usock_build_event(GSMD_MSG_EVENT,
++						   GSMD_EVT_OUT_STATUS,
++						   sizeof(*aux));
++
++	DEBUGP("entering cpi_parse param=`%s'\n", param);
++	if (!ucmd)
++		return -EINVAL;
++
++	aux = (struct gsmd_evt_auxdata *) ucmd->buf;
++
++	/* Format: cId, msgType, ibt, tch, dir,[mode],[number],[type],[alpha],[cause],line */
++
++	/* call ID */
++	tok = strtok(buf, ",");
++	if (!tok)
++		goto out_free_io;
++
++	/* message type (layer 3) */
++	tok = strtok(NULL, ",");
++	if (!tok)
++		goto out_free_io;
++	aux->u.call_status.prog = atoi(tok);
++
++	/* in-band tones */
++	tok = strtok(NULL, ",");
++	if (!tok)
++		goto out_free_io;
++
++	if (*tok == '1')
++		aux->u.call_status.ibt = 1;
++	else
++		aux->u.call_status.ibt = 0;
++
++	/* TCH allocated */
++	tok = strtok(NULL, ",");
++	if (!tok)
++		goto out_free_io;
++
++	if (*tok == '1')
++		aux->u.call_status.tch = 1;
++	else
++		aux->u.call_status.tch = 0;
++
++	/* direction */
++	tok = strtok(NULL, ",");
++	if (!tok)
++		goto out_send;
++
++	switch (*tok) {
++	case '0':
++	case '1':
++	case '2':
++	case '3':
++		aux->u.call_status.dir = (*tok - '0');
++		break;
++	default:
++		break;
++	}
++
++	/* mode */
++	tok = strtok(NULL, ",");
++	if (!tok)
++		goto out_send;
++
++out_send:
++	usock_evt_send(gsmd, ucmd, GSMD_EVT_OUT_STATUS);
++
++	return 0;
++
++out_free_io:
++	talloc_free(ucmd);
++	return -EIO;
++}
++
++static const struct gsmd_unsolicit tihtc_unsolicit[] = {
++	{ "%HTCCSQ",	&htccsq_parse },	/* Signal Quality */
++	{ "%CPRI",	&cpri_parse },	/* Ciphering Indication */
++	{ "%CPI",	&cpi_parse },	/* Call Progress Information */
++
++	/* FIXME: parse the below and generate the respective events */
++
++	/* %CGREG: reports extended information about GPRS registration state */
++};
++
++static int cpi_detect_cb(struct gsmd_atcmd *cmd, void *ctx, char *resp)
++{
++	struct gsmd *g = ctx;
++	struct gsm_extrsp *er;
++
++	if (strncmp(resp, "%CPI: ", 6))
++		return -EINVAL;
++	resp += 6;
++
++	er = extrsp_parse(cmd, resp);
++	if (!er)
++		return -EINVAL;
++
++	if (extrsp_supports(er, 0, 3))
++		return gsmd_simplecmd(g, "AT%CPI=3");
++	else if (extrsp_supports(er, 0, 2))
++		return gsmd_simplecmd(g, "AT%CPI=2");
++	else
++		DEBUGP("Call Progress Indication mode 2 or 3 not supported!!\n");
++
++	talloc_free(er);
++	return 0;
++}
++
++static int tihtc_detect(struct gsmd *g)
++{
++	/* FIXME: do actual detection of vendor if we have multiple vendors */
++	/* open /proc/cpuinfo and check for HTC Magician or HTC Blueangel? */
++	/* check for N_TIHTC ldisc? or set it ourselves? */
++	return 1;
++}
++
++static int tihtc_initsettings(struct gsmd *g)
++{
++	int rc;
++	struct gsmd_atcmd *cmd;
++
++	/* use %CGREG */
++	//rc |= gsmd_simplecmd(g, "AT%CGREG=3");
++	/* enable %CPRI: ciphering indications */
++	rc |= gsmd_simplecmd(g, "AT%CPRI=1");
++	/* enable %HTCCSQ: signal quality reports */
++	rc |= gsmd_simplecmd(g, "AT%HTCCSQ=1");
++	/* send unsolicited commands at any time */
++	rc |= gsmd_simplecmd(g, "AT%CUNS=0");
++
++	/* enable %CPI: call progress indication */
++	cmd = atcmd_fill("AT%CPI=?", 9, &cpi_detect_cb, g, 0);
++	if (cmd)
++		atcmd_submit(g, cmd);
++
++	return rc;
++}
++
++struct gsmd_vendor_plugin gsmd_vendor_plugin = {
++	.name = "TI Calypso / HTC firmware",
++	.num_unsolicit = ARRAY_SIZE(tihtc_unsolicit),
++	.unsolicit = tihtc_unsolicit,
++	.detect = &tihtc_detect,
++	.initsettings = &tihtc_initsettings,
++};
+Index: gsm/src/gsmd/vendor_ti.c
+===================================================================
+--- gsm.orig/src/gsmd/vendor_ti.c	2007-04-02 09:58:55.000000000 +0200
++++ gsm/src/gsmd/vendor_ti.c	2007-04-02 11:03:41.000000000 +0200
+@@ -301,16 +301,10 @@
+ 	return rc;
+ }
+ 
+-static struct gsmd_vendor_plugin plugin_ticalypso = {
++struct gsmd_vendor_plugin gsmd_vendor_plugin = {
+ 	.name = "TI Calypso",
+ 	.num_unsolicit = ARRAY_SIZE(ticalypso_unsolicit),
+ 	.unsolicit = ticalypso_unsolicit,
+ 	.detect = &ticalypso_detect,
+ 	.initsettings = &ticalypso_initsettings,
+ };
+- 
+-/* FIXME: this will be _init() when we make this a plugin */
+-int ticalypso_init(void)
+-{
+-	return gsmd_vendor_plugin_register(&plugin_ticalypso);
+-}
+Index: gsm/src/gsmd/gsmd.c
+===================================================================
+--- gsm.orig/src/gsmd/gsmd.c	2007-04-02 09:58:55.000000000 +0200
++++ gsm/src/gsmd/gsmd.c	2007-04-02 13:39:40.000000000 +0200
+@@ -254,6 +254,21 @@
+ 		exit(1);
+ 	}
+ 
++	if (gsmd_machine_plugin_init(&g) < 0) {
++		fprintf(stderr, "no machine plugins found\n");
++		exit(1);
++	}
++
++	/* select a machine plugin and load possible vendor plugins */
++	gsmd_machine_plugin_find(&g);
++
++	/* initialize the machine plugin */
++	if (g.machinepl->init)
++		if (g.machinepl->init(&g, fd) < 0) {
++			fprintf(stderr, "couldn't initialize machine plugin\n");
++			exit(1);
++		}
++
+ 	if (atcmd_init(&g, fd) < 0) {
+ 		fprintf(stderr, "can't initialize UART device\n");
+ 		exit(1);
+@@ -275,12 +290,11 @@
+ 		setsid();
+ 	}
+ 
+-	/* FIXME: do this dynamically */
+-	ticalypso_init();
+-
++	/* select a vendor plugin */
+ 	gsmd_vendor_plugin_find(&g);
+ 
+-	gsmd_initsettings(&g);
++	if (g.interpreter_ready)
++		gsmd_initsettings(&g);
+ 
+ 	gsmd_opname_init(&g);
+ 
+Index: gsm/src/gsmd/vendor.c
+===================================================================
+--- gsm.orig/src/gsmd/vendor.c	2007-04-02 09:58:55.000000000 +0200
++++ gsm/src/gsmd/vendor.c	2007-04-02 13:38:38.000000000 +0200
+@@ -20,7 +20,10 @@
+  *
+  */ 
+ 
++#include <dlfcn.h>
+ #include <errno.h>
++#include <stdio.h>
++#include <string.h>
+ 
+ #include <common/linux_list.h>
+ 
+@@ -52,6 +55,7 @@
+ 	
+ 	llist_for_each_entry(pl, &vendorpl_list, list) {
+ 		if (pl->detect(g) == 1) {
++			DEBUGP("selecting vendor plugin \"%s\"\n", pl->name);
+ 			g->vendorpl = pl;
+ 			return 1;
+ 		}
+@@ -59,3 +63,29 @@
+ 
+ 	return 0;
+ }
++
++int gsmd_vendor_plugin_load(char *name)
++{
++	int rc = -1;
++	void *lib;
++	struct gsmd_vendor_plugin *pl;
++	char buf[128];
++
++	DEBUGP("loading vendor plugin \"%s\"\n", name);
++
++	snprintf(buf, sizeof(buf), PLUGINDIR"/libgsmd-vendor_%s.so", name);
++
++	lib = dlopen(buf, RTLD_LAZY);
++	if (!lib) {
++		fprintf(stderr, "gsmd_vendor_plugin_load: %s\n", dlerror());
++		return -1;
++	}
++
++	pl = dlsym(lib, "gsmd_vendor_plugin");
++	if (pl)
++		rc = gsmd_vendor_plugin_register(pl);
++	else
++		dlclose(lib);
++
++	return rc;
++}

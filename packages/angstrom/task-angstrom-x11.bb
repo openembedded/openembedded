@@ -1,5 +1,5 @@
 DESCRIPTION = "Task packages for the Angstrom distribution"
-PR = "r29"
+PR = "r30"
 ALLOW_EMPTY = "1"
 
 PACKAGE_ARCH = "${MACHINE_ARCH}"
@@ -75,6 +75,7 @@ RDEPENDS_angstrom-gpe-task-settings := "\
     gpe-package \
     gpe-shield \
     gpe-taskmanager \
+    keylaunch \
     minilite \
     minimix \
     xmonobut"

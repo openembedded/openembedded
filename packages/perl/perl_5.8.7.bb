@@ -7,6 +7,7 @@ require perl.inc
 SRC_URI += "file://config.sh-armeb-linux \
 	    file://config.sh-arm-linux \
 	    file://config.sh-powerpc-linux \
+	    file://config.sh-mipsel-linux \
 	    file://config.sh-i386-linux \
 	    file://config.sh-i486-linux \
 	    file://config.sh-i586-linux \
@@ -15,16 +16,17 @@ SRC_URI += "file://config.sh-armeb-linux \
 	    file://config.sh-sh3-linux \
 	    file://config.sh-sh4-linux"
 
-# Patches for sh3/sh4, use gcc to link and override generaet.sh to
-# use PIC mode for compiling shared library objects.
-SRC_URI_append_sh4 += "file://override-generate-sh.patch;patch=1"
-SRC_URI_append_sh4 += "file://makefile-usegcc-to-link.patch;patch=1"
-SRC_URI_append_sh3 += "file://override-generate-sh.patch;patch=1"
-SRC_URI_append_sh3 += "file://makefile-usegcc-to-link.patch;patch=1"
+# Use gcc to link and use PIC mode for compiling shared libs
+GCCLINK_SRC = "file://override-generate-sh.patch;patch=1 \
+               file://makefile-usegcc-to-link.patch;patch=1"
+
+SRC_URI_append_sh4 += " ${GCCLINK_SRC}"
+SRC_URI_append_sh3 += " ${GCCLINK_SRC}"
+SRC_URI_append_powerpc += " ${GCCLINK_SRC}"
 
 PARALLEL_MAKE = ""
 
-PR = "r21"
+PR = "r22"
 
 do_configure() {
 	ln -sf ${HOSTPERL} ${STAGING_BINDIR_NATIVE}/hostperl
@@ -44,6 +46,7 @@ do_configure() {
 	cp ${WORKDIR}/config.sh-sh4-linux .
 	#perl insists on an extra config.sh for arm EABI
 	cp config.sh-arm-linux config.sh-arm-linux-gnueabi
+	cp config.sh-armeb-linux config.sh-armeb-linux-gnueabi
 	# nslu2 LE uclibc builds do not work with the default config.sh
 	if test "${MACHINE}" = nslu2
 	then

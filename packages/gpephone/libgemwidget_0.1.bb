@@ -2,7 +2,7 @@ LICENSE     = "LiPS"
 DESCRIPTION = "Extended widget library for GPE phone environment."
 SECTION = "gpe/libs"
 PRIORITY    = "optional"
-DEPENDS     = "gtk+ libiac"
+DEPENDS     = "gtk+ libiac libgpephone"
 PR          = "r1"
 
 GPE_TARBALL_SUFFIX = "bz2"

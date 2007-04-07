@@ -1,5 +1,5 @@
 LICENSE = "MIT"
-PR = "r25"
+PR = "r26"
 COMPATIBLE_MACHINE = "nslu2"
 
 IMAGE_BASENAME = "unslung"
@@ -12,17 +12,11 @@ DEPENDS  = "virtual/kernel \
 	${UNSLUNG_EXTRA_DEPENDS}"
 
 RDEPENDS  = "kernel update-modules unslung-rootfs \
-	libc6-unslung slingbox ipkg \
-	libipkg \
-#	cpio \
-#	findutils \
+	libc6-unslung slingbox ipkg libipkg \
 	${UNSLUNG_EXTRA_RDEPENDS}"
 
 PACKAGE_INSTALL = "kernel update-modules unslung-rootfs \
-	libc6-unslung slingbox ipkg \
-	libipkg \
-#	cpio \
-#	findutils \
+	libc6-unslung slingbox ipkg libipkg \
 	kernel-module-netconsole \
 	${UNSLUNG_EXTRA_INSTALL}"
 
@@ -76,27 +70,6 @@ unslung_clean_image () {
 	${STRIP} ${IMAGE_ROOTFS}/lib/libgcc_s.so.1
 	chmod ugo+x ${IMAGE_ROOTFS}/lib/libgcc_s.so.1
 
-# MJW - experimental right now, but no longer need cpio and find
-	# We need cpio and find, but we don't need any of the other stuff in
-	# the packages (users can install the full package with ipkg after
-	# unsling).  Remove the extra files and executables, and clean up
-	# the entries from the ipkg database manually.
-
-	#-- these are for cpio:
-#	rm -f ${IMAGE_ROOTFS}/usr/bin/mt
-#	rm -rf ${IMAGE_ROOTFS}/usr/libexec
-#	rm -f ${IMAGE_ROOTFS}${libdir}/ipkg/info/cpio.*
-#	rm -f ${IMAGE_ROOTFS}${libdir}/ipkg/alternatives/rmt
-#	sed -i -e '/^Package: cpio/,/^$/d' ${IMAGE_ROOTFS}${libdir}/ipkg/status
-
-	#-- and these for find:
-#	rm -f ${IMAGE_ROOTFS}/usr/bin/locate
-#	rm -f ${IMAGE_ROOTFS}/usr/bin/updatedb
-#	rm -f ${IMAGE_ROOTFS}/usr/bin/xargs
-#	rm -f ${IMAGE_ROOTFS}/usr/bin/xargs.findutils
-#	rm -f ${IMAGE_ROOTFS}${libdir}/ipkg/info/findutils.*
-#	sed -i -e '/^Package: findutils/,/^$/d' ${IMAGE_ROOTFS}${libdir}/ipkg/status
-
 	# FIXME: change made 24 Jul 2006 by the OE folks changes the "strip"
 	# behavior to create an extra file named .debug/<filename> containing
 	# the stripped symbols.  These files are supposed to be packaged
@@ -120,20 +93,3 @@ unslung_clean_image () {
 #	#### End of Hack!
 
 }
-
-nslu2_pack_image () {
-	install -d ${DEPLOY_DIR_IMAGE}/slug
-	install -m 0644 ${STAGING_LIBDIR}/nslu2-binaries/RedBoot \
-			${STAGING_LIBDIR}/nslu2-binaries/Trailer \
-			${STAGING_LIBDIR}/nslu2-binaries/SysConf \
-			${DEPLOY_DIR_IMAGE}/slug/
-	install -m 0644 ${DEPLOY_DIR_IMAGE}/zImage-${IMAGE_BASENAME} ${DEPLOY_DIR_IMAGE}/slug/vmlinuz
-	install -m 0644 ${DEPLOY_DIR_IMAGE}/${IMAGE_NAME}.rootfs.jffs2 ${DEPLOY_DIR_IMAGE}/slug/flashdisk.jffs2
-	cd ${DEPLOY_DIR_IMAGE}/slug
-	slugimage -p -b RedBoot -s SysConf -r Ramdisk:1,Flashdisk:flashdisk.jffs2 -t Trailer \
-	  -o ${DEPLOY_DIR_IMAGE}/${IMAGE_NAME}.flashdisk.img
-	rm -rf ${DEPLOY_DIR_IMAGE}/slug
-}
-
-EXTRA_IMAGEDEPENDS += 'slugimage-native nslu2-linksys-firmware'
-IMAGE_POSTPROCESS_COMMAND += "nslu2_pack_image; "

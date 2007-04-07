@@ -1,9 +1,3 @@
-DEPENDS += "openssl-native"
-EXTRA_IMAGECMD = "--little-endian"
-ERASEBLOCK_SIZE = "0x20000"
-IMAGE_FSTYPES = "jffs2"
-IMAGE_POSTPROCESS_COMMAND += '${MACHINE}_pack_image;'
-
 n2100_pack_image() {
         # find latest kernel
         KERNEL=`ls -tr ${DEPLOY_DIR_IMAGE}/zImage* | tail -1`
@@ -32,5 +26,7 @@ n2100_pack_image() {
         dd if=/dev/zero of=$PADFILE bs=$PAD_SIZE count=1 2>>/dev/null
         cat $KERNEL $PADFILE $ROOTFS > $OUTPUT
         rm -f $PADFILE
-        ls -l $OUTPUT
+	ls -l $OUTPUT
 }
+
+IMAGE_POSTPROCESS_COMMAND += "n2100_pack_image; "

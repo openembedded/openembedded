@@ -2,7 +2,7 @@ export IMAGE_BASENAME = "opie-image"
 export IMAGE_LINGUAS = ""
 
 LICENSE = "MIT"
-PR = "r21"
+PR = "r22"
 
 DEPENDS = "${MACHINE_TASK_PROVIDER} task-opie"
 RDEPENDS = "${INSTALL_PACKAGES}"
@@ -13,9 +13,6 @@ INSTALL_PACKAGES = "${MACHINE_TASK_PROVIDER} task-opie-base task-opie-base-apple
 		    task-opie-base-styles task-opie-base-pim \
 		    task-opie-extra-settings \
 		    task-opie-bluetooth task-opie-irda "
-
-INSTALL_PACKAGES_spitz_append = "task-opie-extra-games task-opie-extra-apps task-opie-extra-styles"
-INSTALL_PACKAGES_akita_append = "task-opie-extra-games task-opie-extra-apps task-opie-extra-styles"
 
 export PACKAGE_INSTALL = "${INSTALL_PACKAGES}"
 

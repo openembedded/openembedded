@@ -2,7 +2,6 @@ DESCRIPTION = "Plugins for GStreamer"
 SECTION = "multimedia"
 PRIORITY = "optional"
 DEPENDS = "gstreamer libmikmod libmad liboil libogg tremor libvorbis libid3tag esound"
-PR = "r1"
 
 PACKAGES_DYNAMIC = "gst-plugin-*"
 

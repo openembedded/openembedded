@@ -1,8 +1,9 @@
 require ipkg-utils_${PV}.bb
-SRC_URI += "file://ipkg-utils-fix.patch;patch=1"
+SRC_URI += "file://ipkg-utils-fix.patch;patch=1 \
+            file://ipkg-py-sane-vercompare.patch;patch=1"
 
 RDEPENDS = ""
-PR = "r8"
+PR = "r9"
 
 inherit native
 

@@ -1,7 +1,7 @@
 SECTION = "kernel"
 DESCRIPTION = "Linux kernel for the Compulab PXA270 system"
 LICENSE = "GPL"
-PR = "r2"
+PR = "r3"
 
 # Note, the compulab package contains a binary NAND driver that is not
 # EABI compatible
@@ -29,8 +29,23 @@ do_configure_prepend() {
 }
 
 do_deploy() {
+	KNAME=${DEPLOY_DIR_IMAGE}/${KERNEL_IMAGETYPE}-${MACHINE}.bin
         install -d ${DEPLOY_DIR_IMAGE}
-        install -m 0644 arch/${ARCH}/boot/${KERNEL_IMAGETYPE} ${DEPLOY_DIR_IMAGE}/${KERNEL_IMAGETYPE}-${MACHINE}-${DATETIME}.bin
+        install -m 0644 arch/${ARCH}/boot/${KERNEL_IMAGETYPE} ${KNAME}
+	# Create an image file that has the size prepended (used by cm-x270 BL)
+	# The following can only be done on a little endian machine
+	# the following does not work on all computers as it requires a recent
+	# version of coreutils (>= 6.0).  We will eventually replace the following
+	# with python code.
+	#size=$(stat --printf=%s ${KNAME})
+	#size_=$(printf '\%03o'\
+	#$((size & 0x000000FF))\
+	#$((size>>8 & 0x000000FF))\
+	#$((size>>16 & 0x000000FF))\
+	#$((size>>24 & 0x000000FF)))
+	#size_=${size_}'\c'
+	#echo -e $size_ > ${DEPLOY_DIR_IMAGE}/${KERNEL_IMAGETYPE}-${MACHINE}-${DATETIME}.img
+	#cat ${KNAME} >> ${DEPLOY_DIR_IMAGE}/${KERNEL_IMAGETYPE}-${MACHINE}-${DATETIME}.img
 }
 
 do_deploy[dirs] = "${S}"
