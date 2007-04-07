@@ -16,4 +16,5 @@ nas100d_pack_image () {
 	rm -rf ${DEPLOY_DIR_IMAGE}/firmupgrade
 }
 
-IMAGE_POSTPROCESS_COMMAND += "nas100d_pack_image; "
+# nas100d is not a separate machine - use the nslu2 machine override.
+IMAGE_POSTPROCESS_COMMAND_nslu2 += "nas100d_pack_image; "
