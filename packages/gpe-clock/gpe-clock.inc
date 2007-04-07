@@ -3,6 +3,6 @@ SECTION = "gpe"
 PRIORITY = "optional"
 LICENSE = "GPL"
 DEPENDS = "gtk+ libschedule libgpewidget gpe-announce atd libgpelaunch"
-RDEPENDS = "gpe-announce atd"
+RDEPENDS = "gpe-announce"
 
 inherit gpe

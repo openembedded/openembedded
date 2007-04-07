@@ -7,7 +7,7 @@ SECTION = "libs"
 LICENSE = "LGPL"
 HOMEPAGE = "http://directfb.org"
 DEPENDS = "jpeg libpng freetype zlib tslib"
-PR = "r1"
+PR = "r2"
 RV = "1.0-0"
 
 SRC_URI = "http://www.directfb.org/download/DirectFB/DirectFB-${PV}.tar.gz \
@@ -27,8 +27,13 @@ EXTRA_OECONF = "--with-gfxdrivers=none \
 		"
 
 do_stage() {
+        autotools_stage_all
+}
+
+do_install() {
         oe_runmake 'DESTDIR=${D}' install
 }
+
 
 FILES_directfb-dbg_append = " ${libdir}/directfb-${RV}/*/*/.debug/*.so \
 			      ${libdir}/directfb-${RV}/*/.debug/*.so \

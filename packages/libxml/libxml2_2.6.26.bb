@@ -2,7 +2,8 @@ DESCRIPTION = "GNOME XML Parser library"
 SECTION = "libs"
 PRIORITY = "optional"
 LICENSE = "MIT"
-PR = "r2"
+DEPENDS = "libiconv"
+PR = "r3"
 
 SRC_URI = "ftp://xmlsoft.org/libxml2/libxml2-${PV}.tar.gz"
 

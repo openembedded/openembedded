@@ -4,7 +4,6 @@ PRIORITY = "optional"
 HOMEPAGE = "http://www.trolltech.com"
 LICENSE = "GPL"
 DEPENDS = "zlib libpng jpeg tslib uicmoc-native"
-DEPENDS_mnci = "zlib libpng jpeg uicmoc-native"
 DEPENDS_append_c7x0 = " sharp-aticore-oss"
 PROVIDES = "virtual/libqte2"
 
@@ -47,6 +46,7 @@ SRC_URI = "ftp://ftp.trolltech.com/pub/qt/source/qt-embedded-${PV}-free.tar.gz;m
 	   file://simpad-defaultkbd.patch;patch=1 \
 	   file://fix-errno-exception-spec.patch;patch=1 \
            file://keyboardless-buttonmap.patch;patch=1 \
+           file://kernel-keymap.patch;patch=1 \
 	   file://sharp_char.h \
 	   file://switches.h "
 
@@ -54,24 +54,15 @@ SRC_URI = "ftp://ftp.trolltech.com/pub/qt/source/qt-embedded-${PV}-free.tar.gz;m
 # add device specific patches here
 #
 SRC_URI_append_simpad       = "file://devfs.patch;patch=1 "
-SRC_URI_append_c7x0         = "file://kernel-keymap.patch;patch=1 file://kernel-keymap-corgi.patch;patch=1 \
+SRC_URI_append_c7x0         = "file://kernel-keymap-corgi.patch;patch=1 \
                                file://c7x0-w100-accel.patch;patch=1 file://suspend-resume-hooks.patch;patch=1 "
-SRC_URI_append_spitz        = "file://kernel-keymap.patch;patch=1 file://kernel-keymap-corgi.patch;patch=1 \
+SRC_URI_append_spitz        = "file://kernel-keymap-corgi.patch;patch=1 \
                                file://kernel-keymap-CXK.patch;patch=1 "
-SRC_URI_append_akita        = "file://kernel-keymap.patch;patch=1 file://kernel-keymap-corgi.patch;patch=1 \
+SRC_URI_append_akita        = "file://kernel-keymap-corgi.patch;patch=1 \
                                file://kernel-keymap-CXK.patch;patch=1 "
-SRC_URI_append_poodle       = "file://kernel-keymap.patch;patch=1 "
-SRC_URI_append_a780         = "file://kernel-keymap.patch;patch=1 "
-SRC_URI_append_e680         = "file://kernel-keymap.patch;patch=1 "
-SRC_URI_append_tosa         = "file://kernel-keymap.patch;patch=1 file://kernel-keymap-tosa.patch;patch=1 "
-SRC_URI_append_jornada6xx   = "file://kernel-keymap.patch;patch=1 "
-SRC_URI_append_jornada7xx   = "file://kernel-keymap.patch;patch=1 file://ipaq_sound_fix.patch;patch=1 "
-SRC_URI_append_jornada56x   = "file://kernel-keymap.patch;patch=1 file://ipaq_sound_fix.patch;patch=1 "
-SRC_URI_append_mnci         = "file://devfs.patch;patch=1 \
-                               file://mnci.patch;patch=1 \
-                               file://mnci-touchscreen.patch;patch=1 \
-                               file://qkeyboard_qws.h \
-                               file://qkeyboard_qws.cpp "
+SRC_URI_append_tosa         = "file://kernel-keymap-tosa.patch;patch=1 "
+SRC_URI_append_jornada7xx   = "file://ipaq_sound_fix.patch;patch=1 "
+SRC_URI_append_jornada56x   = "file://ipaq_sound_fix.patch;patch=1 "
 #SRC_URI_append_h1910        = "file://ipaq-keyboard.patch;patch=1 file://ipaq_sound_fix.patch;patch=1 "
 #SRC_URI_append_h1940        = "file://ipaq-keyboard.patch;patch=1 file://ipaq_sound_fix.patch;patch=1 "
 #SRC_URI_append_h2200        = "file://ipaq-keyboard.patch;patch=1 file://ipaq_sound_fix.patch;patch=1 "
@@ -136,7 +127,6 @@ EXTRA_DEFINES_akita             = "-DQT_QWS_TSLIB -DQT_QWS_CUSTOM -DQT_QWS_SL5XX
 EXTRA_DEFINES_collie 		= "-DQT_QWS_TSLIB -DQT_QWS_CUSTOM -DQT_QWS_SL5XXX"
 EXTRA_DEFINES_poodle		= "-DQT_QWS_TSLIB -DQT_QWS_CUSTOM -DQT_QWS_SL5XXX"
 EXTRA_DEFINES_tosa		= "-DQT_QWS_TSLIB -DQT_QWS_CUSTOM -DQT_QWS_SL5XXX -DQT_QWS_SL6000"
-EXTRA_DEFINES_mnci 		= "                               -DQT_QWS_RAMSES                 -DQT_QWS_DEVFS"
 
 #
 # don't touch anything below here
@@ -151,18 +141,8 @@ export SYSCONF_CXXFLAGS = "${CXXFLAGS} -pipe -DQWS -fno-exceptions -frtti -DNO_D
 # enable if gcc supports visibility
 #export SYSCONF_CXXFLAGS = "${CXXFLAGS} -pipe -DQWS -fno-exceptions -frtti -fvisibility=hidden -DGCC_SUPPORTS_VISIBILITY -DNO_DEBUG ${EXTRA_DEFINES} -DUSE_BIDI"
 export SYSCONF_LFLAGS = "${LDFLAGS} -lts"
-export SYSCONF_LFLAGS_mnci = "${LDFLAGS}"
 export SYSCONF_MOC = "${STAGING_BINDIR_NATIVE}/moc"
 export SYSCONF_UIC = "${STAGING_BINDIR_NATIVE}/uic"
-
-do_configure_prepend_mnci() {
-	chmod -R a+w ${S}/src/kernel
-	cp ${WORKDIR}/qkeyboard_qws.h ${S}/src/kernel
-	cp ${WORKDIR}/qkeyboard_qws.cpp ${S}/src/kernel
-	mkdir bin
-	ln -sf ${STAGING_BINDIR_NATIVE}/moc bin/moc
-	ln -sf ${STAGING_BINDIR_NATIVE}/uic bin/uic
-}
 
 # generate uclibc and eabi configurations
 do_configure() {
