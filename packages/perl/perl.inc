@@ -19,11 +19,11 @@ do_compile() {
 	# You must use gcc to link on sh
 	OPTIONS=""
 	if test ${TARGET_ARCH} = "sh3" -o ${TARGET_ARCH} = "sh4"; then
-		OPTIONS="LD=${TARGET_ARCH}-${TARGET_OS}-gcc"
+		OPTIONS="LD=${TARGET_SYS}-gcc"
 	fi
 	# You must use gcc to link on powerpc also 
 	if test ${TARGET_ARCH} = "powerpc" ; then 
-		OPTIONS="LD=${TARGET_ARCH}-${TARGET_OS}-gcc" 
+		OPTIONS="LD=${TARGET_SYS}-gcc" 
 	fi 
 
 	oe_runmake perl $OPTIONS
