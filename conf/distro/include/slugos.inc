@@ -133,8 +133,8 @@ INHERIT += "nslu2-mirrors"
 
 PREFERRED_VERSION_nslu2-linksys-firmware ?= "2.3r63"
 
-PREFERRED_VERSION_ipkg ?= "0.99.154"
-PREFERRED_VERSION_ipkg-native ?= "0.99.154"
+PREFERRED_VERSION_ipkg ?= "0.99.163"
+PREFERRED_VERSION_ipkg-native ?= "0.99.163"
 
 #FIXME: HACK: REMOVE THIS
 IGNORE_STRIP_ERRORS = ""

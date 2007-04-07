@@ -1,7 +1,7 @@
 DESCRIPTION = "Meta package for a Scratchbox SDK"
 LICENSE = "MIT"
 PACKAGES = ""
-PR = "r4"
+PR = "r5"
 
 inherit rootfs_ipk sdk meta
 
@@ -16,10 +16,7 @@ FILES_${PN} = "${prefix}"
 TARGET_INSTALL = "\
     task-sdk-base \
     task-sdk-sbox \
-    task-sdk-x11 \
-    task-sdk-x11-ext \
-    task-sdk-gpe \
-    task-sdk-gpephone"
+    "
 
 DEPENDS = "ipkg-native ipkg-utils-native fakeroot-native sed-native"
 RDEPENDS = "${TARGET_INSTALL}"
