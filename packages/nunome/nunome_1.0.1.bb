@@ -4,7 +4,7 @@ PRIORITY = "optional"
 LICENSE = "GPL"
 HOMEPAGE = "http://www.sikigami.com/nunome-Qtopia-1.0/"
 RDEPENDS = "virtual/japanese-font"
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/gakusei/nunome-Qtopia-src-cleaned.tar.bz2 \
 	file://nunome.patch;patch=1"
@@ -34,8 +34,8 @@ do_install() {
 
 	oe_libinstall -so libNnmlib ${D}${palmtopdir}/lib
         install -m 644 nunome_uni.dic  		${D}${palmtopdir}/share/nunome
-        install -m 755 server/nnmsrv        	${D}${palmtopdir}/bin
-        install -m 755 dicman/nnmDicman		${D}${palmtopdir}/bin
+        install -m 755 server.bin        	${D}${palmtopdir}/bin/nnmsrv
+        install -m 755 dicman.bin		${D}${palmtopdir}/bin/nnmDicman
         install -m 644 ui/nunome.qm		${D}${palmtopdir}/i18n/ja
         install -m 644 dicman/nnmDicman.qm  	${D}${palmtopdir}/i18n/ja
 }
