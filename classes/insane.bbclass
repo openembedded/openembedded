@@ -255,6 +255,10 @@ def package_qa_check_arch(path,name,d):
     import bb, os
     target_os   = bb.data.getVar('TARGET_OS',   d, True)
     target_arch = bb.data.getVar('TARGET_ARCH', d, True)
+  
+    # FIXME: Cross package confuse this check, so just skip them
+    if bb.data.inherits_class('cross', d):
+        return True
 
     # avoid following links to /usr/bin (e.g. on udev builds)
     # we will check the files pointed to anyway...
