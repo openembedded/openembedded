@@ -1,0 +1,11 @@
+--- autofs-4.1.4/samples/auto.net~	2005-04-05 08:02:09.000000000 -0500
++++ autofs-4.1.4/samples/auto.net	2007-04-07 14:41:19.000000000 -0500
+@@ -37,7 +37,7 @@
+ # Newer distributions get this right
+ SHOWMOUNT="$SMNT --no-headers -e $key"
+ 
+-$SHOWMOUNT | LC_ALL=C sort +0 | \
++$SHOWMOUNT | LC_ALL=C sort | \
+ 	awk -v key="$key" -v opts="$opts" -- '
+ 	BEGIN	{ ORS=""; first=1 }
+ 		{ if (first) { print opts; first=0 }; print " \\\n\t" $1, key ":" $1 }
