@@ -1,9 +1,18 @@
 
 DEPENDS = "gtk+ libxt"
-PR = "r2"
 
-SRC_URI = "http://www.chiark.greenend.org.uk/~sgtatham/puzzles/puzzles-${PV}.tar.gz \
+PR = "r3"
+
+SVN_REV = "${@bb.data.getVar('PV',d,1).replace('r', '')}"
+
+SRC_URI = "svn://ixion.tartarus.org/main;module=puzzles;proto=svn;rev=${SVN_REV} \
            file://game.png"
+
+S = "${WORKDIR}/puzzles"
+
+do_configure () {
+	./mkfiles.pl
+}
 
 do_compile_prepend = " \
         export XLDFLAGS='${LDFLAGS} `${STAGING_BINDIR_NATIVE}/pkg-config gtk+-2.0 --libs`'; \
