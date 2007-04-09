@@ -798,9 +798,9 @@ python read_subpackage_metadata () {
 			bb.data.setVar(key, sdata[key], d)
 }
 
-def base_after_parse_two(d):
-    import bb
-    import exceptions
+def base_after_parse(d):
+    import bb, os, exceptions
+
     source_mirror_fetch = bb.data.getVar('SOURCE_MIRROR_FETCH', d, 0)
     if not source_mirror_fetch:
         need_host = bb.data.getVar('COMPATIBLE_HOST', d, 1)
@@ -828,9 +828,6 @@ def base_after_parse_two(d):
     if use_nls != None:
         bb.data.setVar('USE_NLS', use_nls, d)
 
-def base_after_parse(d):
-    import bb, os
-
     # Make sure MACHINE *isn't* exported
     bb.data.delVarFlag('MACHINE', 'export', d)
     bb.data.setVarFlag('MACHINE', 'unexport', 1, d)
@@ -855,7 +852,6 @@ def base_after_parse(d):
 
 
 python () {
-    base_after_parse_two(d)
     base_after_parse(d)
 }
 
