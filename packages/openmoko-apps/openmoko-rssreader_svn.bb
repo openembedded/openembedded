@@ -1,6 +1,6 @@
 DESCRIPTION = "The OpenMoko RSS Reader"
 SECTION = "openmoko/applications"
-DEPENDS += "libmrss"
+DEPENDS += "libmrss check"
 
 PV = "0.0.1+svn${SRCDATE}"
 PR = "r1"
