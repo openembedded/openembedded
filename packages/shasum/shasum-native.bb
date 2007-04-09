@@ -3,7 +3,7 @@ require shasum.inc
 inherit native
 
 INHIBIT_DEFAULT_DEPS = "1"
-INHIBIT_PATCH_TOOL   = "1"
+PATCHTOOL = "patch"
 
 do_fetch[depends] = ""
 do_populate_staging() {
