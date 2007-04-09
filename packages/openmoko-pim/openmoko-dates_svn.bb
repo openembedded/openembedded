@@ -10,7 +10,7 @@ PR = "r8"
 inherit gnome autotools pkgconfig gtk-icon-cache
 
 SRC_URI = "svn://svn.o-hand.com/repos/dates/branches/;module=openmoko;proto=http \
-          file://om-dates-temp-buildfix_20070308.patch;patch=p1"
+          file://om-dates-temp-buildfix_20070308.patch;maxdate=20070406;patch=p1"
 
 S = "${WORKDIR}/openmoko"
 
