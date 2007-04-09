@@ -5,7 +5,7 @@ PACKAGE_ARCH = "all"
 LICENSE = "MIT"
 PROVIDES = "task-openmoko-everything"
 
-PR = "r33"
+PR = "r34"
 
 PACKAGES = "\
   task-openmoko-linux \
@@ -149,8 +149,6 @@ RDEPENDS_task-openmoko-demo = "\
   matchbox-themes-gtk \
   openmoko-panel-battery \
   openmoko-panel-clock \
-  openmoko-panel-demo \
-  openmoko-panel-demo-simple \
   openmoko-panel-gsm \
   openmoko-panel-mainmenu \
   openmoko-rssreader \
@@ -168,11 +166,6 @@ RDEPENDS_task-openmoko-demo = "\
 #
 DESCRIPTION_task-openmoko-examples = "OpenMoko: Example Applications"
 RDEPENDS_task-openmoko-examples = "\
-  openmoko-stylus-demo-simple \
-  openmoko-stylus-demo \
-  openmoko-finger-demo \
-  openmoko-panel-demo-simple \
-  openmoko-panel-demo \
   openmoko-chordmaster"
 
 #
