@@ -9,4 +9,5 @@ RDEPENDS := "\
     sbrsh \
     fakeroot \
     ipkg \
+    gettext-dev \
     "
