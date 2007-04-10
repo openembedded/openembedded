@@ -1,7 +1,7 @@
-DESCRIPTION = "Meta package for SDK including GPE and Opie"
+DESCRIPTION = "Meta package for bare SDK package"
 LICENSE = "MIT"
 DEPENDS = "ipkg-native ipkg-utils-native fakeroot-native sed-native"
-PR = "r12"
+PR = "r13"
 
 inherit sdk meta
 
@@ -18,7 +18,7 @@ HOST_INSTALL = "\
     gdb-cross"
 
 TARGET_INSTALL = "\
-    task-sdk-base \
+    task-sdk-bare \
     "
 
 RDEPENDS = "${TARGET_INSTALL} ${HOST_INSTALL}"
