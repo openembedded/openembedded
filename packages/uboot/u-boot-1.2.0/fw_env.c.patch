@@ -1,0 +1,13 @@
+--- u-boot-1.1.2.orig/tools/env/fw_env.c	2004-12-31 01:32:54.000000000 -0800
++++ u-boot-1.1.2/tools/env/fw_env.c	2006-11-08 12:43:41.000000000 -0800
+@@ -31,7 +31,9 @@
+ #include <sys/ioctl.h>
+ #include <sys/stat.h>
+ #include <unistd.h>
+-#include <linux/mtd/mtd.h>
++#include <stdint.h>
++#include <mtd/mtd-abi.h>
++#include <mtd/mtd-user.h>
+ #include "fw_env.h"
+ 
+ typedef unsigned char uchar;

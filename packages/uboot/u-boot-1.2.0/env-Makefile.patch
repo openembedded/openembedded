@@ -1,0 +1,24 @@
+--- u-boot-1.1.2.orig/tools/env/Makefile	2003-06-27 14:32:48.000000000 -0700
++++ u-boot-1.1.2/tools/env/Makefile	2006-11-08 12:33:43.000000000 -0800
+@@ -27,7 +27,7 @@
+ all:	fw_printenv
+ 
+ fw_printenv:	$(SOURCES) $(HEADERS)
+-	$(CROSS_COMPILE)gcc -Wall -DUSE_HOSTCC $(SOURCES) -o fw_printenv
++	$(CROSS_COMPILE)gcc $(TARGET_CFLAGS) -idirafter ../../include -Wall -DUSE_HOSTCC $(SOURCES) -o fw_printenv
+ 
+ clean:
+ 	rm -f fw_printenv crc32.c
+@@ -37,9 +37,9 @@
+ 
+ #########################################################################
+ 
+-.depend:	Makefile $(SOURCES)
+-		$(CC) -M $(HOST_CFLAGS) $(CPPFLAGS) -DUSE_HOSTCC $(SOURCES) > $@
++#.depend:	Makefile $(SOURCES)
++#		$(CC) -M $(HOST_CFLAGS) $(TARGET_CPPFLAGS) -DUSE_HOSTCC $(SOURCES) > $@
+ 
+-sinclude .depend
++#sinclude .depend
+ 
+ #########################################################################
