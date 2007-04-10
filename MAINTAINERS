@@ -51,6 +51,7 @@ Interests:  GPEPhone, OpenSync, GPE, Matchbox, *dbus*, X, sqlite
 Recipes:    gpe-*, libgpe*, libeventdb, libtododb, libcontactsdb, xserver-common
 Recipes:    gomunicator, mbmerlin, prismstumbler gkdial, fbreader, networkmanager
 Recipes:    minimix, minilite, miniclipboard, gpephone*
+Recipes:    task-sdk-sbox, meta-sdk-sbox
 
 Person:     Graeme Gregory
 Mail:       dp@xora.org.uk
