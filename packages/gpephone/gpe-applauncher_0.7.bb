@@ -2,15 +2,14 @@ LICENSE     = "GPL"
 DESCRIPTION = "A cellphone application launcher."
 SECTION = "gpe"
 PRIORITY    = "optional"
-PR          = "r2"
+PR          = "r1"
 
 DEPENDS = "gtk+ libgpewidget libgpephone libgpelaunch dbus-glib libxsettings-client"
 
 GPE_TARBALL_SUFFIX= "gz"
 inherit gpephone autotools
 
-SRC_URI += " file://default-icon.patch;patch=1;pnum=0 \
-             file://fixfree.patch;patch=1"
+SRC_URI += " file://default-icon.patch;patch=1;pnum=0"
 
 #EXTRA_OECONF = "--enable-gridlayout"
 
