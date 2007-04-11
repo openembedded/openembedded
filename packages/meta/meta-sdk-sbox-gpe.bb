@@ -93,7 +93,7 @@ EOF
 
         mkdir -p ${SDK_DEPLOY}
 	cd ${SDK_OUTPUT}
-	fakeroot tar cfz ${SDK_DEPLOY}/${DISTRO}-${DISTRO_VERSION}-${TARGET_ARCH}-sbox-sdk-${DATE}.tar.gz .
+	fakeroot tar cfz ${SDK_DEPLOY}/sbox-gpesdk-${DISTRO}-${DISTRO_VERSION}-${TARGET_ARCH}.tar.gz .
 }
 
 do_populate_sdk[nostamp] = "1"
