@@ -1,7 +1,7 @@
-DESCRIPTION = "Meta package for bare SDK package"
+DESCRIPTION = "Meta package for SDK including GPE"
 LICENSE = "MIT"
 DEPENDS = "ipkg-native ipkg-utils-native fakeroot-native sed-native"
-PR = "r13"
+PR = "r0"
 
 inherit sdk meta
 
@@ -18,8 +18,11 @@ HOST_INSTALL = "\
     gdb-cross"
 
 TARGET_INSTALL = "\
-    task-sdk-bare \
-    "
+    task-sdk-base \
+    task-sdk-x11 \
+    task-sdk-x11-ext \
+    task-sdk-gpe \
+    task-sdk-gpephone"
 
 RDEPENDS = "${TARGET_INSTALL} ${HOST_INSTALL}"
 
