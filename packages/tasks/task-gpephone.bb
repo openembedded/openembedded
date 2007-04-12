@@ -12,11 +12,11 @@ PACKAGES = "\
     gpephone-task-apps \
     gpephone-task-development"
 
-RDEPENDS_gpephone-base-depends := "\
+RDEPENDS_gpephone-base-depends = "\
     diet-x11 \
     virtual/xserver"
 
-RDEPENDS_gpephone-task-development := "\
+RDEPENDS_gpephone-task-development = "\
     rxvt-unicode \
     xmonobut \
     gpe-terminal \
@@ -25,7 +25,7 @@ RDEPENDS_gpephone-task-development := "\
     strace \
     e2fsprogs"
 
-RDEPENDS_gpephone-task-base := "\
+RDEPENDS_gpephone-task-base = "\
     cms92init \
     gsmmux \
     connect \
@@ -73,10 +73,10 @@ RDEPENDS_gpephone-task-base := "\
     ${@base_contains("MACHINE_FEATURES", "touchscreen", "libgtkstylus xtscal", "",d)} \
 "
 
-RDEPENDS_gpephone-task-pim := "\
+RDEPENDS_gpephone-task-pim = "\
      gpesyncd"
 
-RDEPENDS_gpephone-task-settings := "\
+RDEPENDS_gpephone-task-settings = "\
     gpe-su \
     gpe-conf \
     gpe-clock \
@@ -85,12 +85,12 @@ RDEPENDS_gpephone-task-settings := "\
     keylaunch \
     minilite"
 
-RDEPENDS_gpephone-task-apps := "\
+RDEPENDS_gpephone-task-apps = "\
     gpe-watch \
     gpe-what \
     matchbox-panel-hacks \
     gpe-scap \
     gpe-windowlist"
 
-RDEPENDS_gpephone-task-connectivity := "\
+RDEPENDS_gpephone-task-connectivity = "\
 "
