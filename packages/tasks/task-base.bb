@@ -1,5 +1,5 @@
 DESCRIPTION = "Merge machine and distro options to create a basic machine task/package"
-PR = "r22"
+PR = "r23"
 
 PACKAGES = "task-base \
             task-base-oh-minimal \
@@ -185,6 +185,7 @@ task-base-pcmcia-rrecommends = "\
     kernel-module-pcnet-cs \
     kernel-module-serial-cs \
     kernel-module-ide-cs \
+    kernel-module-ide-disk \
     ${@base_contains("MACHINE_FEATURES", "kernel26", "${task-base-pcmcia26-rrecommends}", "${task-base-pcmcia24-rrecommends}",d)} "
 
 task-base-pcmcia24-rrecommends = "\
