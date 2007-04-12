@@ -4,9 +4,8 @@ PRIORITY = "optional"
 LICENSE = "GPL"
 HOMEPAGE = "http://www.sikigami.com/nunome-Qtopia-1.0/"
 RDEPENDS = "virtual/japanese-font"
-PR = "r2"
 
-SRC_URI = "${SOURCEFORGE_MIRROR}/gakusei/nunome-Qtopia-src-cleaned.tar.bz2 \
+SRC_URI = "${SOURCEFORGE_MIRROR}/gakusei/nunome-${PV}.tar.bz2 \
 	file://nunome.patch;patch=1"
 S = "${WORKDIR}/nunome"
 
