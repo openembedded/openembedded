@@ -103,8 +103,10 @@ SLUGOS_STANDARD_RRECOMMENDS += "\
 kernel-module-netconsole \
 "
 
+DISTRO_EXTRA_DEPENDS ?= ""
 DEPENDS += "${DISTRO_EXTRA_DEPENDS}"
 
+DISTRO_EXTRA_RDEPENDS ?= ""
 RDEPENDS += "\
 	kernel ixp4xx-npe \
 	base-files base-passwd netbase \
