@@ -5,6 +5,8 @@ PR = "r1"
 
 inherit gnome
 
+EXTRA_OECONF = "--disable-scrollkeeper"
+
 FILES_${PN} += "${datadir}/xml*"
 
 do_stage() {
