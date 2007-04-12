@@ -46,7 +46,7 @@ SRCDATE_rosetta ?= "20060804"
 SRCDATE_gpesyncd ?= "20061128"
 
 # GNOME
-SRCDATE_gconf-dbus ?= "20060719"
+SRCDATE_gconf-dbus ?= "20070412"
 SRCDATE_gnome-vfs ?= "20060119"
 SRCDATE_gtkhtml2 ?= "20060323"
 
