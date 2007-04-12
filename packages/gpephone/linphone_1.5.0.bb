@@ -41,7 +41,4 @@ do_install_append() {
 do_stage() {
 	export LIBTOOL="${STAGING_BINDIR_NATIVE}/${TARGET_PREFIX}libtool"
 	autotools_stage_all
-	cp ${S}/mediastreamer2/src/libquickstream.la ${STAGING_LIBDIR}
-	cp ${S}/mediastreamer2/src/libmediastreamer.la ${STAGING_LIBDIR}
-	cp ${S}/coreapi/liblinphone.la ${STAGING_LIBDIR}
 }
