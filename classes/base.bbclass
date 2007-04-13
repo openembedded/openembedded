@@ -1,4 +1,75 @@
-PATCHES_DIR="${S}"
+BB_DEFAULT_TASK = "build"
+
+# like os.path.join but doesn't treat absolute RHS specially
+def base_path_join(a, *p):
+    path = a
+    for b in p:
+        if path == '' or path.endswith('/'):
+            path +=  b
+        else:
+            path += '/' + b
+    return path
+
+# for MD5/SHA handling
+def base_chk_load_parser(config_path):
+    import ConfigParser, os, bb
+    parser = ConfigParser.ConfigParser()
+    if not len(parser.read(config_path)) == 1:
+        bb.note("Can not open the '%s' ini file" % config_path)
+        raise Exception("Can not open the '%s'" % config_path)
+
+    return parser
+
+def base_chk_file(parser, pn, pv, src_uri, localpath, data):
+    import os, bb
+    # Try PN-PV-SRC_URI first and then try PN-SRC_URI
+    # we rely on the get method to create errors
+    pn_pv_src = "%s-%s-%s" % (pn,pv,src_uri)
+    pn_src    = "%s-%s" % (pn,src_uri)
+    if parser.has_section(pn_pv_src):
+        md5    = parser.get(pn_pv_src, "md5")
+        sha256 = parser.get(pn_pv_src, "sha256")
+    elif parser.has_section(pn_src):
+        md5    = parser.get(pn_src, "md5")
+        sha256 = parser.get(pn_src, "sha256")
+    elif parser.has_section(src_uri):
+        md5    = parser.get(src_uri, "md5")
+        sha256 = parser.get(src_uri, "sha256")
+    else:
+        return False
+        #raise Exception("Can not find a section for '%s' '%s' and '%s'" % (pn,pv,src_uri))
+
+    # md5 and sha256 should be valid now
+    if not os.path.exists(localpath):
+        bb.note("The locapath does not exist '%s'" % localpath)
+        raise Exception("The path does not exist '%s'" % localpath)
+
+
+    # call md5(sum) and shasum
+    try:
+        md5pipe = os.popen('md5sum ' + localpath)
+        md5data = (md5pipe.readline().split() or [ "" ])[0]
+        md5pipe.close()
+    except OSError:
+        raise Exception("Executing md5sum failed")
+
+    try:
+        shapipe = os.popen('PATH=%s oe_sha256sum %s' % (bb.data.getVar('PATH', data, True), localpath))
+        shadata = (shapipe.readline().split() or [ "" ])[0]
+        shapipe.close()
+    except OSError:
+        raise Exception("Executing shasum failed")
+
+    if not md5 == md5data:
+        bb.note("The MD5Sums did not match. Wanted: '%s' and Got: '%s'" % (md5,md5data))
+        raise Exception("MD5 Sums do not match. Wanted: '%s' Got: '%s'" % (md5, md5data))
+
+    if not sha256 == shadata:
+        bb.note("The SHA256 Sums do not match. Wanted: '%s' Got: '%s'" % (sha256,shadata))
+        raise Exception("SHA256 Sums do not match. Wanted: '%s' Got: '%s'" % (sha256, shadata))
+
+    return True
+
 
 def base_dep_prepend(d):
 	import bb;
@@ -7,14 +78,22 @@ def base_dep_prepend(d):
 	# the case where host == build == target, for now we don't work in
 	# that case though.
 	#
-	deps = ""
+	if bb.data.getVar('PN', d, True) == "shasum-native":
+		deps = ""
+	else:
+		deps = "shasum-native "
+
+	# INHIBIT_PATCH_TOOL don't apply the patch tool dependency
+	inhibit_patch = (bb.data.getVar("INHIBIT_PATCH_TOOL", d, True) == "1") or False
 
 	# INHIBIT_DEFAULT_DEPS doesn't apply to the patch command.  Whether or  not
 	# we need that built is the responsibility of the patch function / class, not
 	# the application.
-	patchdeps = bb.data.getVar("PATCH_DEPENDS", d, 1)
-	if patchdeps and not patchdeps in bb.data.getVar("PROVIDES", d, 1):
-		deps = patchdeps
+	patchdeps = bb.data.getVar("PATCHTOOL", d, 1)
+        if patchdeps and not inhibit_patch:
+		patchdeps = "%s-native" % patchdeps
+		if not patchdeps in bb.data.getVar("PROVIDES", d, 1):
+			deps += patchdeps
 
 	if not bb.data.getVar('INHIBIT_DEFAULT_DEPS', d):
 		if (bb.data.getVar('HOST_SYS', d, 1) !=
@@ -39,6 +118,32 @@ def base_conditional(variable, checkvalue, truevalue, falsevalue, d):
 	else:
 		return falsevalue
 
+def base_less_or_equal(variable, checkvalue, truevalue, falsevalue, d):
+	import bb
+	if float(bb.data.getVar(variable,d,1)) <= float(checkvalue):
+		return truevalue
+	else:
+		return falsevalue
+
+def base_contains(variable, checkvalues, truevalue, falsevalue, d):
+	import bb
+	matches = 0
+	if type(checkvalues).__name__ == "str":
+		checkvalues = [checkvalues]
+	for value in checkvalues:
+		if bb.data.getVar(variable,d,1).find(value) != -1:	
+			matches = matches + 1
+	if matches == len(checkvalues):
+		return truevalue		
+	return falsevalue
+
+def base_both_contain(variable1, variable2, checkvalue, d):
+       import bb
+       if bb.data.getVar(variable1,d,1).find(checkvalue) != -1 and bb.data.getVar(variable2,d,1).find(checkvalue) != -1:
+               return checkvalue
+       else:
+               return ""
+
 DEPENDS_prepend="${@base_dep_prepend(d)} "
 
 def base_set_filespath(path, d):
@@ -49,7 +154,7 @@ def base_set_filespath(path, d):
 		overrides = overrides + ":"
 		for o in overrides.split(":"):
 			filespath.append(os.path.join(p, o))
-	bb.data.setVar("FILESPATH", ":".join(filespath), d)
+	return ":".join(filespath)
 
 FILESPATH = "${@base_set_filespath([ "${FILE_DIRNAME}/${PF}", "${FILE_DIRNAME}/${P}", "${FILE_DIRNAME}/${PN}", "${FILE_DIRNAME}/files", "${FILE_DIRNAME}" ], d)}"
 
@@ -172,11 +277,18 @@ oe_libinstall() {
 		dir=`pwd`
 	fi
 	dotlai=$libname.lai
-	dir=$dir`(cd $dir; find -name "$dotlai") | sed "s/^\.//;s/\/$dotlai\$//;q"`
+	dir=$dir`(cd $dir;find . -name "$dotlai") | sed "s/^\.//;s/\/$dotlai\$//;q"`
 	olddir=`pwd`
 	__runcmd cd $dir
 
 	lafile=$libname.la
+
+	# If such file doesn't exist, try to cut version suffix
+	if [ ! -f "$lafile" ]; then
+		libname=`echo "$libname" | sed 's/-[0-9.]*$//'`
+		lafile=$libname.la
+	fi
+
 	if [ -f "$lafile" ]; then
 		# libtool archive
 		eval `cat $lafile|grep "^library_names="`
@@ -308,6 +420,16 @@ python base_do_clean() {
 	os.system('rm -f '+ dir)
 }
 
+addtask rebuild
+do_rebuild[dirs] = "${TOPDIR}"
+do_rebuild[nostamp] = "1"
+do_rebuild[bbdepcmd] = ""
+python base_do_rebuild() {
+	"""rebuild a package"""
+	bb.build.exec_task('do_clean', d)
+	bb.build.exec_task('do_' + bb.data.getVar('BB_DEFAULT_TASK', d, 1), d)
+}
+
 addtask mrproper
 do_mrproper[dirs] = "${TOPDIR}"
 do_mrproper[nostamp] = "1"
@@ -323,7 +445,7 @@ python base_do_mrproper() {
 
 addtask fetch
 do_fetch[dirs] = "${DL_DIR}"
-do_fetch[nostamp] = "1"
+do_fetch[depends] = "shasum-native:do_populate_staging"
 python base_do_fetch() {
 	import sys
 
@@ -348,6 +470,46 @@ python base_do_fetch() {
 	except bb.fetch.FetchError:
 		(type, value, traceback) = sys.exc_info()
 		raise bb.build.FuncFailed("Fetch failed: %s" % value)
+	except bb.fetch.MD5SumError:
+		(type, value, traceback) = sys.exc_info()
+		raise bb.build.FuncFailed("MD5  failed: %s" % value)
+	except:
+		(type, value, traceback) = sys.exc_info()
+		raise bb.build.FuncFailed("Unknown fetch Error: %s" % value)
+
+
+	# Verify the SHA and MD5 sums we have in OE and check what do
+	# in
+	check_sum = bb.which(bb.data.getVar('BBPATH', d, True), "conf/checksums.ini")
+	if not check_sum:
+		bb.note("No conf/checksums.ini found, not checking checksums")
+		return
+
+	try:
+		parser = base_chk_load_parser(check_sum)
+	except:
+		bb.note("Creating the CheckSum parser failed")
+		return
+
+	pv = bb.data.getVar('PV', d, True)
+	pn = bb.data.getVar('PN', d, True)
+
+	# Check each URI
+	for url in src_uri.split():
+		localpath = bb.fetch.localpath(url,localdata)
+		(type,host,path,_,_,_) = bb.decodeurl(url)
+		uri = "%s://%s%s" % (type,host,path)
+		try:
+		    if not base_chk_file(parser, pn, pv,uri, localpath, d):
+			    bb.note("%s-%s-%s has no section, not checking URI" % (pn,pv,uri))
+		except Exception:
+			raise bb.build.FuncFailed("Checksum of '%s' failed" % uri)
+}
+
+addtask fetchall after do_fetch
+do_fetchall[recrdeptask] = "do_fetch"
+base_do_fetchall() {
+	:
 }
 
 def oe_unpack_file(file, data, url = None):
@@ -362,7 +524,7 @@ def oe_unpack_file(file, data, url = None):
 	cmd = None
 	if file.endswith('.tar'):
 		cmd = 'tar x --no-same-owner -f %s' % file
-	elif file.endswith('.tgz') or file.endswith('.tar.gz'):
+	elif file.endswith('.tgz') or file.endswith('.tar.gz') or file.endswith('.tar.Z'):
 		cmd = 'tar xz --no-same-owner -f %s' % file
 	elif file.endswith('.tbz') or file.endswith('.tar.bz2'):
 		cmd = 'bzip2 -dc %s | tar x --no-same-owner -f -' % file
@@ -437,86 +599,6 @@ python base_do_unpack() {
 			raise bb.build.FuncFailed()
 }
 
-addtask patch after do_unpack
-do_patch[dirs] = "${WORKDIR}"
-python base_do_patch() {
-	import re
-	import bb.fetch
-
-	src_uri = (bb.data.getVar('SRC_URI', d, 1) or '').split()
-	if not src_uri:
-		return
-
-	patchcleancmd = bb.data.getVar('PATCHCLEANCMD', d, 1)
-	if patchcleancmd:
-		bb.data.setVar("do_patchcleancmd", patchcleancmd, d)
-		bb.data.setVarFlag("do_patchcleancmd", "func", 1, d)
-		bb.build.exec_func("do_patchcleancmd", d)
-
-	workdir = bb.data.getVar('WORKDIR', d, 1)
-	for url in src_uri:
-
-		(type, host, path, user, pswd, parm) = bb.decodeurl(url)
-		if not "patch" in parm:
-			continue
-
-		bb.fetch.init([url],d)
-		url = bb.encodeurl((type, host, path, user, pswd, []))
-		local = os.path.join('/', bb.fetch.localpath(url, d))
-
-		# did it need to be unpacked?
-		dots = os.path.basename(local).split(".")
-		if dots[-1] in ['gz', 'bz2', 'Z']:
-			unpacked = os.path.join(bb.data.getVar('WORKDIR', d),'.'.join(dots[0:-1]))
-		else:
-			unpacked = local
-		unpacked = bb.data.expand(unpacked, d)
-
-		if "pnum" in parm:
-			pnum = parm["pnum"]
-		else:
-			pnum = "1"
-
-		if "pname" in parm:
-			pname = parm["pname"]
-		else:
-			pname = os.path.basename(unpacked)
-
-		if "mindate" in parm:
-			mindate = parm["mindate"]
-		else:
-			mindate = 0
-
-		if "maxdate" in parm:
-			maxdate = parm["maxdate"]
-		else:
-			maxdate = "20711226"
-
-		pn = bb.data.getVar('PN', d, 1)
-		srcdate = bb.data.getVar('SRCDATE_%s' % pn, d, 1)
-
-		if not srcdate:
-			srcdate = bb.data.getVar('SRCDATE', d, 1)
-
-		if srcdate == "now": 
-			srcdate = bb.data.getVar('DATE', d, 1)
-
-		if (maxdate < srcdate) or (mindate > srcdate):
-			if (maxdate < srcdate):
-				bb.note("Patch '%s' is outdated" % pname)
-
-			if (mindate > srcdate):
-				bb.note("Patch '%s' is predated" % pname)
-
-			continue
-
-		bb.note("Applying patch '%s'" % pname)
-		bb.data.setVar("do_patchcmd", bb.data.getVar("PATCHCMD", d, 1) % (pnum, pname, unpacked), d)
-		bb.data.setVarFlag("do_patchcmd", "func", 1, d)
-		bb.data.setVarFlag("do_patchcmd", "dirs", "${WORKDIR} ${S}", d)
-		bb.build.exec_func("do_patchcmd", d)
-}
-
 
 addhandler base_eventhandler
 python base_eventhandler() {
@@ -543,7 +625,8 @@ python base_eventhandler() {
 		msg += messages.get(name[5:]) or name[5:]
 	elif name == "UnsatisfiedDep":
 		msg += "package %s: dependency %s %s" % (e.pkg, e.dep, name[:-3].lower())
-	note(msg)
+	if msg:
+		note(msg)
 
 	if name.startswith("BuildStarted"):
 		bb.data.setVar( 'BB_VERSION', bb.__version__, e.data )
@@ -552,6 +635,9 @@ python base_eventhandler() {
 		monotone_revision = "<unknown>"
 		try:
 			monotone_revision = file( "%s/_MTN/revision" % path_to_packages ).read().strip()
+			if monotone_revision.startswith( "format_version" ):
+				monotone_revision_words = monotone_revision.split()
+				monotone_revision = monotone_revision_words[ monotone_revision_words.index( "old_revision" )+1][1:-1]
 		except IOError:
 			pass
 		bb.data.setVar( 'OE_REVISION', monotone_revision, e.data )
@@ -584,6 +670,7 @@ python base_eventhandler() {
 addtask configure after do_unpack do_patch
 do_configure[dirs] = "${S} ${B}"
 do_configure[bbdepcmd] = "do_populate_staging"
+do_configure[deptask] = "do_populate_staging"
 base_do_configure() {
 	:
 }
@@ -599,8 +686,6 @@ base_do_compile() {
 	fi
 }
 
-
-addtask stage after do_compile
 base_do_stage () {
 	:
 }
@@ -612,14 +697,14 @@ do_populate_staging[dirs] = "${STAGING_DIR}/${TARGET_SYS}/bin ${STAGING_DIR}/${T
 			     ${STAGING_DATADIR} \
 			     ${S} ${B}"
 
-addtask populate_staging after do_compile
+addtask populate_staging after do_package_write
 
 python do_populate_staging () {
 	bb.build.exec_func('do_stage', d)
 }
 
 addtask install after do_compile
-do_install[dirs] = "${S} ${B}"
+do_install[dirs] = "${D} ${S} ${B}"
 
 base_do_install() {
 	:
@@ -635,9 +720,6 @@ do_build[func] = "1"
 
 # Functions that update metadata based on files outputted
 # during the build process.
-
-SHLIBS = ""
-RDEPENDS_prepend = " ${SHLIBS}"
 
 def explode_deps(s):
 	r = []
@@ -656,113 +738,191 @@ def explode_deps(s):
 			r.append(i)
 	return r
 
-python read_shlibdeps () {
-	packages = (bb.data.getVar('PACKAGES', d, 1) or "").split()
-	for pkg in packages:
-		rdepends = explode_deps(bb.data.getVar('RDEPENDS_' + pkg, d, 0) or bb.data.getVar('RDEPENDS', d, 0) or "")
-		shlibsfile = bb.data.expand("${WORKDIR}/install/" + pkg + ".shlibdeps", d)
-		if os.access(shlibsfile, os.R_OK):
-			fd = file(shlibsfile)
-			lines = fd.readlines()
-			fd.close()
-			for l in lines:
-				rdepends.append(l.rstrip())
-		pcfile = bb.data.expand("${WORKDIR}/install/" + pkg + ".pcdeps", d)
-		if os.access(pcfile, os.R_OK):
-			fd = file(pcfile)
-			lines = fd.readlines()
-			fd.close()
-			for l in lines:
-				rdepends.append(l.rstrip())
-		bb.data.setVar('RDEPENDS_' + pkg, " " + " ".join(rdepends), d)
-}
+def packaged(pkg, d):
+	import os, bb
+	return os.access(bb.data.expand('${STAGING_DIR}/pkgdata/runtime/%s.packaged' % pkg, d), os.R_OK)
 
-python read_subpackage_metadata () {
-	import re
+def read_pkgdatafile(fn):
+	pkgdata = {}
 
 	def decode(str):
 		import codecs
 		c = codecs.getdecoder("string_escape")
 		return c(str)[0]
 
-	data_file = bb.data.expand("${WORKDIR}/install/${PN}.package", d)
-	if os.access(data_file, os.R_OK):
-		f = file(data_file, 'r')
+	import os
+	if os.access(fn, os.R_OK):
+		import re
+		f = file(fn, 'r')
 		lines = f.readlines()
 		f.close()
 		r = re.compile("([^:]+):\s*(.*)")
 		for l in lines:
 			m = r.match(l)
 			if m:
-				bb.data.setVar(m.group(1), decode(m.group(2)), d)
+				pkgdata[m.group(1)] = decode(m.group(2))
+
+	return pkgdata
+
+def has_subpkgdata(pkg, d):
+	import bb, os
+	fn = bb.data.expand('${STAGING_DIR}/pkgdata/runtime/%s' % pkg, d)
+	return os.access(fn, os.R_OK)
+
+def read_subpkgdata(pkg, d):
+	import bb, os
+	fn = bb.data.expand('${STAGING_DIR}/pkgdata/runtime/%s' % pkg, d)
+	return read_pkgdatafile(fn)
+
+
+def has_pkgdata(pn, d):
+	import bb, os
+	fn = bb.data.expand('${STAGING_DIR}/pkgdata/%s' % pn, d)
+	return os.access(fn, os.R_OK)
+
+def read_pkgdata(pn, d):
+	import bb, os
+	fn = bb.data.expand('${STAGING_DIR}/pkgdata/%s' % pn, d)
+	return read_pkgdatafile(fn)
+
+python read_subpackage_metadata () {
+	import bb
+	data = read_pkgdata(bb.data.getVar('PN', d, 1), d)
+
+	for key in data.keys():
+		bb.data.setVar(key, data[key], d)
+
+	for pkg in bb.data.getVar('PACKAGES', d, 1).split():
+		sdata = read_subpkgdata(pkg, d)
+		for key in sdata.keys():
+			bb.data.setVar(key, sdata[key], d)
 }
 
-python __anonymous () {
-	import exceptions
-	need_host = bb.data.getVar('COMPATIBLE_HOST', d, 1)
-	if need_host:
-		import re
-		this_host = bb.data.getVar('HOST_SYS', d, 1)
-		if not re.match(need_host, this_host):
-			raise bb.parse.SkipPackage("incompatible with host %s" % this_host)
+def base_after_parse_two(d):
+    import bb
+    import exceptions
+    source_mirror_fetch = bb.data.getVar('SOURCE_MIRROR_FETCH', d, 0)
+    if not source_mirror_fetch:
+        need_host = bb.data.getVar('COMPATIBLE_HOST', d, 1)
+        if need_host:
+            import re
+            this_host = bb.data.getVar('HOST_SYS', d, 1)
+            if not re.match(need_host, this_host):
+                raise bb.parse.SkipPackage("incompatible with host %s" % this_host)
 
-	need_machine = bb.data.getVar('COMPATIBLE_MACHINE', d, 1)
-	if need_machine:
-		import re
-		this_machine = bb.data.getVar('MACHINE', d, 1)
-		if this_machine and not re.match(need_machine, this_machine):
-			raise bb.parse.SkipPackage("incompatible with machine %s" % this_machine)
+        need_machine = bb.data.getVar('COMPATIBLE_MACHINE', d, 1)
+        if need_machine:
+            import re
+            this_machine = bb.data.getVar('MACHINE', d, 1)
+            if this_machine and not re.match(need_machine, this_machine):
+                raise bb.parse.SkipPackage("incompatible with machine %s" % this_machine)
 
-	pn = bb.data.getVar('PN', d, 1)
+    pn = bb.data.getVar('PN', d, 1)
 
-	srcdate = bb.data.getVar('SRCDATE_%s' % pn, d, 1)
-	if srcdate != None:
-		bb.data.setVar('SRCDATE', srcdate, d)
+    # OBSOLETE in bitbake 1.7.4
+    srcdate = bb.data.getVar('SRCDATE_%s' % pn, d, 1)
+    if srcdate != None:
+        bb.data.setVar('SRCDATE', srcdate, d)
 
-	use_nls = bb.data.getVar('USE_NLS_%s' % pn, d, 1)
-	if use_nls != None:
-		bb.data.setVar('USE_NLS', use_nls, d)
-}
+    use_nls = bb.data.getVar('USE_NLS_%s' % pn, d, 1)
+    if use_nls != None:
+        bb.data.setVar('USE_NLS', use_nls, d)
+
+def base_after_parse(d):
+    import bb, os
+
+    # Make sure MACHINE *isn't* exported
+    bb.data.delVarFlag('MACHINE', 'export', d)
+    bb.data.setVarFlag('MACHINE', 'unexport', 1, d)
+
+    mach_arch = bb.data.getVar('MACHINE_ARCH', d, 1)
+    old_arch = bb.data.getVar('PACKAGE_ARCH', d, 1)
+    if (old_arch == mach_arch):
+        # Nothing to do
+        return
+    if (bb.data.getVar('SRC_URI_OVERRIDES_PACKAGE_ARCH', d, 1) == '0'):
+        return
+    paths = []
+    for p in [ "${FILE_DIRNAME}/${PF}", "${FILE_DIRNAME}/${P}", "${FILE_DIRNAME}/${PN}", "${FILE_DIRNAME}/files", "${FILE_DIRNAME}" ]:
+        paths.append(bb.data.expand(os.path.join(p, mach_arch), d))
+    for s in bb.data.getVar('SRC_URI', d, 1).split():
+        local = bb.data.expand(bb.fetch.localpath(s, d), d)
+        for mp in paths:
+            if local.startswith(mp):
+                #bb.note("overriding PACKAGE_ARCH from %s to %s" % (old_arch, mach_arch))
+                bb.data.setVar('PACKAGE_ARCH', mach_arch, d)
+                return
+
 
 python () {
-	import bb, os
-	mach_arch = bb.data.getVar('MACHINE_ARCH', d, 1)
-	old_arch = bb.data.getVar('PACKAGE_ARCH', d, 1)
-	if (old_arch == mach_arch):
-		# Nothing to do
-		return
-	if (bb.data.getVar('SRC_URI_OVERRIDES_PACKAGE_ARCH', d, 1) == '0'):
-		return
-	paths = []
-	for p in [ "${FILE_DIRNAME}/${PF}", "${FILE_DIRNAME}/${P}", "${FILE_DIRNAME}/${PN}", "${FILE_DIRNAME}/files", "${FILE_DIRNAME}" ]:
-		paths.append(bb.data.expand(os.path.join(p, mach_arch), d))
-	for s in bb.data.getVar('SRC_URI', d, 1).split():
-		local = bb.data.expand(bb.fetch.localpath(s, d), d)
-		for mp in paths:
-			if local.startswith(mp):
-#				bb.note("overriding PACKAGE_ARCH from %s to %s" % (old_arch, mach_arch))
-				bb.data.setVar('PACKAGE_ARCH', mach_arch, d)
-				return
+    base_after_parse_two(d)
+    base_after_parse(d)
 }
 
-EXPORT_FUNCTIONS do_clean do_mrproper do_fetch do_unpack do_configure do_compile do_install do_package do_patch do_populate_pkgs do_stage
+
+# Patch handling
+inherit patch
+
+# Configuration data from site files
+# Move to autotools.bbclass?
+inherit siteinfo
+
+EXPORT_FUNCTIONS do_clean do_mrproper do_fetch do_unpack do_configure do_compile do_install do_package do_populate_pkgs do_stage do_rebuild do_fetchall
 
 MIRRORS[func] = "0"
 MIRRORS () {
 ${DEBIAN_MIRROR}/main	http://snapshot.debian.net/archive/pool
 ${DEBIAN_MIRROR}	ftp://ftp.de.debian.org/debian/pool
+${DEBIAN_MIRROR}	ftp://ftp.au.debian.org/debian/pool
+${DEBIAN_MIRROR}	ftp://ftp.cl.debian.org/debian/pool
+${DEBIAN_MIRROR}	ftp://ftp.hr.debian.org/debian/pool
+${DEBIAN_MIRROR}	ftp://ftp.fi.debian.org/debian/pool
+${DEBIAN_MIRROR}	ftp://ftp.hk.debian.org/debian/pool
+${DEBIAN_MIRROR}	ftp://ftp.hu.debian.org/debian/pool
+${DEBIAN_MIRROR}	ftp://ftp.ie.debian.org/debian/pool
+${DEBIAN_MIRROR}	ftp://ftp.it.debian.org/debian/pool
+${DEBIAN_MIRROR}	ftp://ftp.jp.debian.org/debian/pool
+${DEBIAN_MIRROR}	ftp://ftp.no.debian.org/debian/pool
+${DEBIAN_MIRROR}	ftp://ftp.pl.debian.org/debian/pool
+${DEBIAN_MIRROR}	ftp://ftp.ro.debian.org/debian/pool
+${DEBIAN_MIRROR}	ftp://ftp.si.debian.org/debian/pool
+${DEBIAN_MIRROR}	ftp://ftp.es.debian.org/debian/pool
+${DEBIAN_MIRROR}	ftp://ftp.se.debian.org/debian/pool
+${DEBIAN_MIRROR}	ftp://ftp.tr.debian.org/debian/pool
 ${GNU_MIRROR}	ftp://mirrors.kernel.org/gnu
-ftp://ftp.kernel.org/pub	http://www.kernel.org/pub
-ftp://ftp.kernel.org/pub	ftp://ftp.us.kernel.org/pub
+${GNU_MIRROR}	ftp://ftp.matrix.com.br/pub/gnu
+${GNU_MIRROR}	ftp://ftp.cs.ubc.ca/mirror2/gnu
+${GNU_MIRROR}	ftp://sunsite.ust.hk/pub/gnu
+${GNU_MIRROR}	ftp://ftp.ayamura.org/pub/gnu
+${KERNELORG_MIRROR}	http://www.kernel.org/pub
+${KERNELORG_MIRROR}	ftp://ftp.us.kernel.org/pub
+${KERNELORG_MIRROR}	ftp://ftp.uk.kernel.org/pub
+${KERNELORG_MIRROR}	ftp://ftp.hk.kernel.org/pub
+${KERNELORG_MIRROR}	ftp://ftp.au.kernel.org/pub
+${KERNELORG_MIRROR}	ftp://ftp.jp.kernel.org/pub
 ftp://ftp.gnupg.org/gcrypt/     ftp://ftp.franken.de/pub/crypt/mirror/ftp.gnupg.org/gcrypt/
 ftp://ftp.gnupg.org/gcrypt/     ftp://ftp.surfnet.nl/pub/security/gnupg/
+ftp://ftp.gnupg.org/gcrypt/     http://gulus.USherbrooke.ca/pub/appl/GnuPG/
 ftp://dante.ctan.org/tex-archive ftp://ftp.fu-berlin.de/tex/CTAN
+ftp://dante.ctan.org/tex-archive http://sunsite.sut.ac.jp/pub/archives/ctan/
+ftp://dante.ctan.org/tex-archive http://ctan.unsw.edu.au/
 ftp://ftp.gnutls.org/pub/gnutls ftp://ftp.gnutls.org/pub/gnutls/
+ftp://ftp.gnutls.org/pub/gnutls ftp://ftp.gnupg.org/gcrypt/gnutls/
+ftp://ftp.gnutls.org/pub/gnutls http://www.mirrors.wiretapped.net/security/network-security/gnutls/
+ftp://ftp.gnutls.org/pub/gnutls ftp://ftp.mirrors.wiretapped.net/pub/security/network-security/gnutls/
 ftp://ftp.gnutls.org/pub/gnutls http://josefsson.org/gnutls/releases/
+http://ftp.info-zip.org/pub/infozip/src/ http://mirror.switch.ch/ftp/mirror/infozip/src/
+http://ftp.info-zip.org/pub/infozip/src/ ftp://sunsite.icm.edu.pl/pub/unix/archiving/info-zip/src/
+ftp://lsof.itap.purdue.edu/pub/tools/unix/lsof/  ftp://ftp.cerias.purdue.edu/pub/tools/unix/sysutils/lsof/
+ftp://lsof.itap.purdue.edu/pub/tools/unix/lsof/  ftp://ftp.tau.ac.il/pub/unix/admin/
+ftp://lsof.itap.purdue.edu/pub/tools/unix/lsof/  ftp://ftp.cert.dfn.de/pub/tools/admin/lsof/
+ftp://lsof.itap.purdue.edu/pub/tools/unix/lsof/  ftp://ftp.fu-berlin.de/pub/unix/tools/lsof/
+ftp://lsof.itap.purdue.edu/pub/tools/unix/lsof/  ftp://ftp.kaizo.org/pub/lsof/
+ftp://lsof.itap.purdue.edu/pub/tools/unix/lsof/  ftp://ftp.tu-darmstadt.de/pub/sysadmin/lsof/
+ftp://lsof.itap.purdue.edu/pub/tools/unix/lsof/  ftp://ftp.tux.org/pub/sites/vic.cc.purdue.edu/tools/unix/lsof/
+ftp://lsof.itap.purdue.edu/pub/tools/unix/lsof/  ftp://gd.tuwien.ac.at/utils/admin-tools/lsof/
+ftp://lsof.itap.purdue.edu/pub/tools/unix/lsof/  ftp://sunsite.ualberta.ca/pub/Mirror/lsof/
+ftp://lsof.itap.purdue.edu/pub/tools/unix/lsof/  ftp://the.wiretapped.net/pub/security/host-security/lsof/
 
-
-
-ftp://.*/.*/	http://www.oesources.org/source/current/
-http://.*/.*/	http://www.oesources.org/source/current/
 }
 
