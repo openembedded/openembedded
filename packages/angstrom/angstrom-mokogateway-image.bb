@@ -1,12 +1,12 @@
 #Angstrom moko gateway image
 # tries to be a companion for openmoko based phones
 LICENSE = "MIT"
-PR = "r0"
+PR = "r1"
 
 ANGSTROM_EXTRA_INSTALL ?= ""
 
 DEPENDS = "task-base"
-RDEPENDS = "task-base-core-default \
+RDEPENDS = " \
 	    task-base \
 	    bluez-utils \
 	    blue-probe \
