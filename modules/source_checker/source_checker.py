@@ -58,13 +58,12 @@ class TestCase:
 
         try:
             bb.fetch.init(src_uri.split(), data)
+            bb.fetch.go(data)
         except bb.fetch.NoMethodError:
             return TestCase.generate_error(file,"""No Method Exception %s
 Type: %s
 Traceback: %s
 """)
-        try:
-            bb.fetch.go(data)
         except bb.fetch.MissingParameterError:
             return TestCase.generate_error(file,"""Missing Parameter Error %s
 Type: %s
