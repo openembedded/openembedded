@@ -104,16 +104,16 @@ def start_testing():
     cook.parseConfigurationFile( os.path.join( "conf", "bitbake.conf" ) )
     data = _load_config('bitbake.conf')
     if data == None:
-        bb.error("Could not parse the bitbake.conf")
+        bb.fatal("Could not parse the bitbake.conf")
     elif bb.data.getVar('BITBAKETEST_BITBAKE_CONF', data ) == None:
-        bb.error("You are not using the bitbake.conf from bittest please check your BBPATH")
+        bb.fatal("You are not using the bitbake.conf from bittest please check your BBPATH")
 
     bb.data.inheritFromOS(data)
 
     # Parse the test configuration
     test_config = _load_config('testrun.conf')
     if test_config == None:
-        bb.error("Could not parse the bittest configuration file")
+        bb.fatal("Could not parse the bittest configuration file")
     test_options = parse_test_options(test_config)
 
     # start running the test
