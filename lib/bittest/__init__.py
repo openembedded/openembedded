@@ -112,7 +112,7 @@ def run_tests(data,test_config,test_options, tests,  options):
     """
     Run tests using 'data' as base
     """
-    
+
     bbfiles = fileparser.find_files(bb.data.getVar('BBFILES', test_config).split(' '))
     bb.note("Collected %d BitBake files" % len(bbfiles) )
 
@@ -145,6 +145,8 @@ def run_tests(data,test_config,test_options, tests,  options):
             for machine in machines:
                 machine_data = bb.data.createCopy(test_data)
                 bb.data.setVar('MACHINE', machine, machine_data)
+                bb.data.setVar('TMPDIR', tmp_dir, machine_data)
+                bb.data.setVar('DL_DIR', src_dir, machine_data)
 
                 try:
                     bb.parse.handle(os.path.join('conf/machine',machine+'.conf'),machine_data,1)
