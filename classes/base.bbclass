@@ -446,6 +446,7 @@ python base_do_mrproper() {
 addtask fetch
 do_fetch[dirs] = "${DL_DIR}"
 do_fetch[depends] = "shasum-native:do_populate_staging"
+do_fetch[nostamp] = "1"
 python base_do_fetch() {
 	import sys
 
