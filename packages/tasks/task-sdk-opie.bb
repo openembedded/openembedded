@@ -5,7 +5,7 @@ ALLOW_EMPTY = "1"
 
 PACKAGES = "task-sdk-opie"
 
-RDEPENDS_task-sdk-opie := "\
+RDEPENDS_task-sdk-opie = "\
     libopiebluez2 \
     libopiedb2 \
     libopiecore2 \

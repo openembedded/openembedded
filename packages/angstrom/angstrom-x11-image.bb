@@ -1,6 +1,6 @@
 #Angstrom X11 image
 LICENSE = "MIT"
-PR = "r5"
+PR = "r6"
 
 PREFERRED_PROVIDER_libgpewidget 	?= "libgpewidget"
 PREFERRED_PROVIDER_tslib 		?= "tslib"
@@ -16,7 +16,6 @@ export IMAGE_BASENAME = "x11-image"
 DEPENDS = "task-base"
 RDEPENDS = "\
     ${XSERVER} \
-    task-base-core-default \
     task-base \
     angstrom-x11-base-depends \
     angstrom-gpe-task-base \

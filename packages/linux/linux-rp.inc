@@ -11,6 +11,7 @@ RPSRC = "http://www.rpsys.net/openzaurus/patches/archive"
 JLSRC = "http://www.cs.wisc.edu/~lenz/zaurus/files"
 BASRC = "http://www.orca.cx/zaurus/patches"
 CHSRC = "http://oz.drigon.com/patches"
+TKSRC = "http://www.informatik.hu-berlin.de/~tkunze/zaurus/patches"
 
 ##############################################################
 # Compensate for sucky bootloader on all Sharp Zaurus models
@@ -58,6 +59,8 @@ module_autoload_snd-soc-corgi_c7x0 = "snd-soc-corgi"
 module_autoload_snd-soc-spitz_akita = "snd-soc-spitz"
 module_autoload_snd-soc-spitz_spitz = "snd-soc-spitz"
 module_autoload_snd-soc-poodle_poodle = "snd-soc-poodle"
+module_autoload_locomo-spi_collie = "locomo-spi"
+module_autoload_mmc_block_collie = "mmc_block"
 
 do_configure() {
 	rm -f ${S}/.config

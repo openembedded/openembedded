@@ -5,7 +5,7 @@ ALLOW_EMPTY = "1"
 
 DEPENDS = "task-sdk"
 
-RDEPENDS := "\
+RDEPENDS = "\
     task-sdk-bare \
     glibc \
     glibc-dev \

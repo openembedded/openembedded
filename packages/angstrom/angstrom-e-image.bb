@@ -1,6 +1,6 @@
 #Angstrom e image
 LICENSE = "MIT"
-PR = "r0"
+PR = "r1"
 
 
 PREFERRED_PROVIDER_virtual/evas   ?= "evas-x11"
@@ -21,7 +21,6 @@ export IMAGE_BASENAME = "e-image"
 DEPENDS = "task-base"
 RDEPENDS = "\
     ${XSERVER} \
-    task-base-core-default \
     task-base \
     angstrom-e-base-depends \
     angstrom-e-depends \

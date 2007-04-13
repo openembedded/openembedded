@@ -7,7 +7,7 @@ PACKAGES = "\
     task-sdk-bare \
     "
 
-RDEPENDS_task-sdk-bare := "\
+RDEPENDS_task-sdk-bare = "\
     glibc \
     glibc-dev \
     libgcc1 \

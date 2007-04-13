@@ -8,7 +8,7 @@ PACKAGES = "\
     task-sdk-x11-ext \
     task-sdk-gpe"
 
-RDEPENDS_task-sdk-x11 := "\
+RDEPENDS_task-sdk-x11 = "\
     atk-dev \
     cairo-dev \
     gconf-dbus-dev \
@@ -20,7 +20,7 @@ RDEPENDS_task-sdk-x11 := "\
     pango-dev \
     startup-notification-dev"
 
-RDEPENDS_task-sdk-x11-ext := "\
+RDEPENDS_task-sdk-x11-ext = "\
     libxcursor-dev \
     libxdmcp-dev \
     libxft-dev \
@@ -45,7 +45,7 @@ RDEPENDS_task-sdk-x11-ext := "\
     libxtst-dev"
 
 
-RDEPENDS_task-sdk-gpe := "\
+RDEPENDS_task-sdk-gpe = "\
     libcontactsdb-dev \
     esound-dev \
     libeventdb-dev \
