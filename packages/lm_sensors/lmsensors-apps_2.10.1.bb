@@ -4,10 +4,12 @@
 
 DESCRIPTION = "Hardware health monitoring applications"
 HOMEPAGE = "http://secure.netroedge.com/~lm78/"
-DEPENDS = "libsysfs"
+DEPENDS = "libsysfs virtual/libiconv"
 LICENSE = "GPL"
+PR = "r1"
 
 SRC_URI = "http://dl.lm-sensors.org/lm-sensors/releases/lm_sensors-${PV}.tar.gz \
+           file://iconv.patch;patch=1 \
            file://add-sysfs-ldflags.patch;patch=1"
 
 S = "${WORKDIR}/lm_sensors-${PV}"
