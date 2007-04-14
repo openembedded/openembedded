@@ -34,6 +34,8 @@
 
 from bittest import TestItem
 
+import bb, os
+
 class TestCase:
     """
     A simple test case
@@ -45,12 +47,18 @@ class TestCase:
         """
 
     def setup(self, config):
-        print "Create"
-        pass
+        self.checksum_tuple_dict = {}
 
     def finish(self, config):
-        print "Finish"
-        pass
+        f = file("checksums.ini", "w+")
+        keys = self.checksum_tuple_dict.keys()
+        keys.sort()
+        for fi in keys:
+            (md5,sha) = self.checksum_tuple_dict[fi]
+            print >> f, "[%s]" % fi
+            print >> f, "md5=%s" % md5
+            print >> f, "sha256=%s" % sha
+            print >> f, ""
 
     def test(self,file_name, file_data):
         """
@@ -58,7 +66,21 @@ class TestCase:
         You can use whatever you want
         """
 
-        return TestItem(file_name,False,"The Test Failed")
+        uris = (bb.data.getVar("SRC_URI", file_data, True) or "").split()
+        bb.fetch.init(uris, file_data)
+        for uri in uris:
+            localpath = bb.fetch.localpath(uri, file_data)
+            (type,host,path,_,_,_) = bb.decodeurl(uri)
+            uri = "%s://%s%s" % (type,host,path)
+
+            if not type in ["http", "ftp", "https"]:
+                continue
+            if not uri in self.checksum_tuple_dict and os.path.exists(localpath):
+                md5sum = os.popen("md5sum    %s" % localpath).read().split()[0]
+                shasum = os.popen("sha256sum %s" % localpath).read().split()[0]
+                self.checksum_tuple_dict[uri] = (md5sum,shasum)
+
+        return TestItem(file_name,True, "Psst, we did not test at all")
 
     def test_name(self):
         """
