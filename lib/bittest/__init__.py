@@ -42,7 +42,8 @@ __all_tests__ = ["patch_checker",
                  "source_checker",
                  "doc_checker",
                  "content_checker",
-                 "depends_checker" ]
+                 "depends_checker",
+                 "chksum_checker" ]
 
 # known reporting classes
 __all_reports__ = {
@@ -128,6 +129,8 @@ def run_tests(data,test_config,test_options, tests,  options):
     # Create the TestResult container and initialize the Report
     for test in test_instances:
         test_results[test] = TestResult(test_instances[test].test_name(), __all_reports__[options.report](test_config, test, options.output) )
+        if hasattr(test_instances[test],"setup"):
+            test_instances[test].setup(test_config)
 
     for bbfile in bbfiles:
 
@@ -175,4 +178,7 @@ def run_tests(data,test_config,test_options, tests,  options):
 #                    print "Running test for %s with machine: %s and distro: %s" % (bb.data.getVar('PN', test_run, True), machine, distro)
                     test_results[test].insert_result(test_instances[test].test(bbfile, test_run))
 
+    for test in test_instances:
+        if hasattr(test_instances[test],"finish"):
+            test_instances[test].finish(test_config)
     return test_results
