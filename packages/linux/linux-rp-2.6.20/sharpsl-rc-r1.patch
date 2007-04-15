@@ -62,7 +62,7 @@ Index: linux-2.6.20/drivers/input/keyboard/sharpsl_rc.c
 ===================================================================
 --- /dev/null
 +++ linux-2.6.20/drivers/input/keyboard/sharpsl_rc.c
-@@ -0,0 +1,263 @@
+@@ -0,0 +1,291 @@
 +/*
 + *  Keyboard driver for Sharp Clamshell Models (SL-Cxx00)
 + *
@@ -86,7 +86,13 @@ Index: linux-2.6.20/drivers/input/keyboard/sharpsl_rc.c
 +#include <linux/module.h>
 +#include <linux/slab.h>
 +
++#ifdef CONFIG_MACH_SPITZ
 +#include <asm/arch/spitz.h>
++#endif
++#ifdef CONFIG_MACH_CORGI
++#include <asm/arch/corgi.h>
++#endif
++
 +#include <asm/arch/hardware.h>
 +#include <asm/arch/pxa-regs.h>
 +#include <asm/hardware/scoop.h>
@@ -101,7 +107,12 @@ Index: linux-2.6.20/drivers/input/keyboard/sharpsl_rc.c
 +	unsigned char key;
 +};
 +
-+static struct remote_control_key spitz_remote_keys[] = {
++#ifdef CONFIG_MACH_SPITZ
++#define REMOTE_AKIN_PULLUP SPITZ_SCP2_AKIN_PULLUP
++#define REMOTE_SCOOP_DEVICE spitzscoop2_device
++#define REMOTE_GPIO_INT SPITZ_GPIO_AK_INT
++#define REMOTE_IRQ_INT SPITZ_IRQ_GPIO_AK_INT
++static struct remote_control_key remote_keys[] = {
 +	{ 25, 35, KEY_STOPCD},
 +	{ 55, 65, KEY_PLAYPAUSE},
 +	{ 85, 95, KEY_NEXTSONG},
@@ -110,6 +121,23 @@ Index: linux-2.6.20/drivers/input/keyboard/sharpsl_rc.c
 +	{ 180, 190, KEY_MUTE},
 +	{ 215, 225, KEY_VOLUMEDOWN},
 +};
++#endif
++#ifdef CONFIG_MACH_CORGI
++#define REMOTE_AKIN_PULLUP CORGI_SCP_AKIN_PULLUP
++#define REMOTE_SCOOP_DEVICE corgiscoop_device
++#define REMOTE_GPIO_INT CORGI_GPIO_AK_INT
++#define REMOTE_IRQ_INT CORGI_IRQ_GPIO_AK_INT
++static struct remote_control_key remote_keys[] = {
++    //These need to be fixed for the CE-RH1's values
++	{ 25, 35, KEY_STOPCD},
++	{ 55, 65, KEY_PLAYPAUSE},
++	{ 85, 95, KEY_NEXTSONG},
++	{ 115, 125, KEY_VOLUMEUP},
++	{ 145, 155, KEY_PREVIOUSSONG},
++	{ 180, 190, KEY_MUTE},
++	{ 215, 225, KEY_VOLUMEDOWN},
++};
++#endif
 +
 +#define RELEASE_HI      230
 +#define MAX_EARPHONE    6
@@ -137,11 +165,11 @@ Index: linux-2.6.20/drivers/input/keyboard/sharpsl_rc.c
 +	int i, val;
 +
 +	val = sharpsl_pm_pxa_read_max1111(MAX1111_REMCOM);
-+	for (i = 0; i < ARRAY_SIZE(spitz_remote_keys); ++i) {
-+		if (val >= spitz_remote_keys[i].min
-+			&& val <= spitz_remote_keys[i].max) {
-+			printk("get_remocon_raw: VAL=%i, KEY=%i\n", val, spitz_remote_keys[i].key);
-+			return spitz_remote_keys[i].key;
++	for (i = 0; i < ARRAY_SIZE(remote_keys); ++i) {
++		if (val >= remote_keys[i].min
++			&& val <= remote_keys[i].max) {
++			printk("get_remocon_raw: VAL=%i, KEY=%i\n", val, remote_keys[i].key);
++			return remote_keys[i].key;
 +		}
 +	}
 +	return 0;
@@ -158,7 +186,7 @@ Index: linux-2.6.20/drivers/input/keyboard/sharpsl_rc.c
 +		data->state = 0;
 +		data->last_key = 0;
 +
-+		reset_scoop_gpio(&spitzscoop2_device.dev, SPITZ_SCP2_AKIN_PULLUP);
++		reset_scoop_gpio(&REMOTE_SCOOP_DEVICE.dev, REMOTE_AKIN_PULLUP);
 +
 +		mod_timer(&data->rctimer, jiffies + msecs_to_jiffies(RC_POLL_MS));
 +	}
@@ -219,7 +247,7 @@ Index: linux-2.6.20/drivers/input/keyboard/sharpsl_rc.c
 +	if (timer) {
 +		mod_timer(&data->rctimer, jiffies + msecs_to_jiffies(RC_POLL_MS));
 +	} else {
-+		set_scoop_gpio(&spitzscoop2_device.dev, SPITZ_SCP2_AKIN_PULLUP);
++		set_scoop_gpio(&REMOTE_SCOOP_DEVICE.dev, REMOTE_AKIN_PULLUP);
 +		data->handling_press = 0;
 +	}
 +}
@@ -251,7 +279,7 @@ Index: linux-2.6.20/drivers/input/keyboard/sharpsl_rc.c
 +	sharpsl_rc->rctimer.function = sharpsl_rc_timer_callback;
 +	sharpsl_rc->rctimer.data = (unsigned long) sharpsl_rc;
 +
-+	input_dev->name = "Spitz Remote Control";
++	input_dev->name = "Sharp Remote Control CE-RHX";
 +	input_dev->phys = "sharpsl_rc/input0";
 +	input_dev->id.bustype = BUS_HOST;
 +	input_dev->id.vendor = 0x0001;
@@ -262,13 +290,13 @@ Index: linux-2.6.20/drivers/input/keyboard/sharpsl_rc.c
 +
 +	input_dev->evbit[0] = BIT(EV_KEY);
 +
-+	for (i = 0; i <= ARRAY_SIZE(spitz_remote_keys); i++)
-+	  set_bit(spitz_remote_keys[i].key, input_dev->keybit);
++	for (i = 0; i <= ARRAY_SIZE(remote_keys); i++)
++	  set_bit(remote_keys[i].key, input_dev->keybit);
 +
 +	input_register_device(sharpsl_rc->input);
 +
-+	pxa_gpio_mode(SPITZ_GPIO_AK_INT | GPIO_IN);
-+	ret = request_irq(SPITZ_IRQ_GPIO_AK_INT,
++	pxa_gpio_mode(REMOTE_GPIO_INT | GPIO_IN);
++	ret = request_irq(REMOTE_IRQ_INT,
 +					  sharpsl_rc_interrupt,
 +					  IRQF_DISABLED | IRQF_TRIGGER_RISING | IRQF_SHARED,
 +					  "sharpsl_rc",
@@ -289,7 +317,7 @@ Index: linux-2.6.20/drivers/input/keyboard/sharpsl_rc.c
 +
 +	dev_dbg(&pdev->dev, "sharpsl_rc_remove\n");
 +
-+	free_irq(SPITZ_IRQ_GPIO_AK_INT, sharpsl_rc);
++	free_irq(REMOTE_IRQ_INT, sharpsl_rc);
 +	del_timer_sync(&sharpsl_rc->rctimer);
 +	input_unregister_device(sharpsl_rc->input);
 +	kfree(sharpsl_rc);
