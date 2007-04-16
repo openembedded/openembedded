@@ -1,0 +1,26 @@
+Index: Makefile
+===================================================================
+--- Makefile	(Revision 9102)
++++ Makefile	(Arbeitskopie)
+@@ -6,16 +6,16 @@
+ 
+ MEMBERS = miniclipboard mbpixbuf mbtray
+ 
+-CFLAGS += -Wall
++PACKAGE_CFLAGS += -Wall `pkg-config --cflags x11`
+ ifeq ($(DEBUG),yes)
+-CFLAGS += -O2 -g
+-LDFLAGS = -g #-lefence
++PACKAGE_CFLAGS += -O2 -g
++LDFLAGS = -g 
+ else
+-CFLAGS += -Os -fomit-frame-pointer
++PACKAGE_CFLAGS += -Os -fomit-frame-pointer
+ endif
+ CPPFLAGS += -DPACKAGE=\"$(PACKAGE)\" -DPREFIX=\"$(PREFIX)\" -DPACKAGE_LOCALE_DIR=\"$(PREFIX)/share/locale\"
+ 
+-PACKAGE_LDFLAGS += $(STANDARD_LDFLAGS) -L/usr/X11R6/lib -lX11 -lXpm -lXext
++PACKAGE_LDFLAGS += $(STANDARD_LDFLAGS) $(`pkg-config --libs x11`) -lXpm -lXext
+ 
+ OBJS = $(patsubst %,%.o,$(MEMBERS))
+ 
