@@ -11,10 +11,10 @@ SRC_URI = "svn://svn.openmoko.org/trunk/src/target;module=gsm;proto=http \
            file://default"
 S = "${WORKDIR}/gsm"
 
-SRC_URI_append_magician = "file://numeric.patch;patch=1 \
-                           file://plugin.patch;patch=1"
-SRC_URI_append_htcuniversal = "file://numeric.patch;patch=1 \
-                               file://plugin.patch;patch=1"
+SRC_URI_append_magician = " file://numeric.patch;patch=1 \
+                            file://plugin.patch;patch=1"
+SRC_URI_append_htcuniversal = " file://numeric.patch;patch=1 \
+                                file://plugin.patch;patch=1"
 
 inherit autotools pkgconfig update-rc.d
 
