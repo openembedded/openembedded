@@ -26,7 +26,7 @@ do_configure () {
 }
 
 do_compile () {
-	oe_runmake "LIBTOOL=${STAGING_BINDIR_NATIVE}/${TARGET_PREFIX}libtool" LIBTOOL="${STAGING_BINDIR_NATIVE}/${TARGET_PREFIX}libtool"
+	oe_runmake LIBTOOL="${STAGING_BINDIR_NATIVE}/${TARGET_PREFIX}libtool" SPEEX_LIBS="-lspeex" SPEEX_CFLAGS=" "
 }
 
 do_install () {
