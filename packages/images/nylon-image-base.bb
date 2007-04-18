@@ -1,15 +1,15 @@
-inherit image
-inherit nylon-image
-LICENSE = "MIT"
+inherit image_ipk 
+inherit nylon_image
+LICENSE = MIT
 
 export IMAGE_BASENAME = "nylon-base"
-
+ 
 NYLON_BASE = "base-files base-passwd bash busybox \
 	ipkg initscripts less \
 	mtd-utils \
 	nano ncurses netbase \
 	openssh sysvinit \
-	timezones tinylogin"
+	timezones tinylogin udev"
 
 DEPENDS += "virtual/kernel less nano"
 RDEPENDS = "kernel less nano elvis-tiny \
@@ -20,8 +20,9 @@ RDEPENDS_append_mtx-1 = " modutils modutils-initscripts modutils-depmod modutils
 RDEPENDS_append_mtx-2 = " modutils modutils-initscripts modutils-depmod modutils-modinfo"
 ## kernel 2.6 ##
 RDEPENDS_append_mtx-3 = " module-init-tools udev"
+RDEPENDS_append_mtx-3a = " module-init-tools"
 
-export PACKAGE_INSTALL = "${RDEPENDS}"
+export IPKG_INSTALL = "${RDEPENDS}" 
 
 IMAGE_LINGUAS = ""
 
