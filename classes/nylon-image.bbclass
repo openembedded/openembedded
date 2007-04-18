@@ -20,4 +20,7 @@ nylon_create_imgz() {
 	rm -r ${DEPLOY_DIR_IMAGE}/tmp
 }
 
-IMAGE_POSTPROCESS_COMMAND += "nylon_create_imgz;"
+IMAGE_POSTPROCESS_COMMAND += "kldsköa"
+IMAGE_POSTPROCESS_COMMAND_mtx-1 += "nylon_create_imgz;"
+IMAGE_POSTPROCESS_COMMAND_mtx-2 += "nylon_create_imgz;"
+IMAGE_POSTPROCESS_COMMAND_mtx-3a += "nylon_create_initrd_uimage;"

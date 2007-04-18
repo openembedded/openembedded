@@ -36,6 +36,7 @@ SRC_URI = "cvs://cvs:cvs@ftp.linux-mips.org/home/cvs;module=linux;tag=linux_2_4_
 	file://27-usbd-amd-pb1x00-kit-23may2003-usbd.diff;patch=1 \
 	file://29-au1000-pci-config-clear-errors.diff;patch=1 \
 	file://42-usb-ohci-fixes.patch;patch=1 \
+	file://48-pptp.patch;patch=1 \
 	file://defconfig-mtx-1"
 
 S = "${WORKDIR}/linux"

@@ -1,0 +1,10 @@
+--- ifplugd-0.25/src/interface.c-orig	2007-04-18 14:57:33.106790279 +0200
++++ ifplugd-0.25/src/interface.c	2007-04-18 14:57:42.591211214 +0200
+@@ -18,6 +18,7 @@
+  * Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
+  */
+ 
++#define __KERNEL_STRICT_NAMES
+ #include <linux/sockios.h>
+ #include <linux/if_ether.h>
+ #include <sys/types.h>

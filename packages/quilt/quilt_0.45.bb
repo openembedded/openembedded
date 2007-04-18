@@ -1,3 +1,4 @@
+DEPENDS = "autoconf-native (>= 2.61)"
 RDEPENDS_${PN} += "patch diffstat bzip2 util-linux"
 
 require quilt_${PV}.inc

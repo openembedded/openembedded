@@ -29,13 +29,16 @@ DEPENDS = "${NYLON_FEED} \
     rp-pppoe \
     simple-firewall \
     thttpd \
-    vsftpd \
     wget \
     wlan-ng-modules \
     zlib \
 "
 
+# vsftpd \
+#
+
 do_index() {
+	touch ${DEPLOY_DIR_IPK}/Packages
 	ipkg-make-index -r ${DEPLOY_DIR_IPK}/Packages -p ${DEPLOY_DIR_IPK}/Packages -l ${DEPLOY_DIR_IPK}/Packages.filelist -m ${DEPLOY_DIR_IPK}
 }
 
