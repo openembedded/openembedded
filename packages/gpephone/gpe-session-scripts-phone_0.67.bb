@@ -11,9 +11,10 @@ SRC_URI = "${GPE_MIRROR}/gpe-session-scripts-${PV}.tar.gz \
            file://matchbox-session \
            file://matchbox-session.vm \
            file://phonesession \
-	   file://disable-composite.xsettings"
+	   file://disable-composite.xsettings \
+           file://standard-apps.patch;patch=1"
 
-PR = "r4"
+PR = "r5"
 
 S = "${WORKDIR}/gpe-session-scripts-${PV}"
 
