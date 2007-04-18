@@ -1,0 +1,13 @@
+Index: gsm/src/gsmd/atcmd.c
+===================================================================
+--- gsm.orig/src/gsmd/atcmd.c	2007-04-02 09:59:16.000000000 +0200
++++ gsm/src/gsmd/atcmd.c	2007-04-02 10:10:54.000000000 +0200
+@@ -207,7 +207,7 @@
+ 	 *    TBD
+ 	 */
+ 
+-	if (buf[0] == '+' || buf[0] == '%') {
++	if (buf[0] == '+' || buf[0] == '%' || buf[0] == '@') {
+ 		/* an extended response */
+ 		const char *colon = strchr(buf, ':');
+ 		if (!colon) {

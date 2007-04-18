@@ -7,7 +7,7 @@ SECTION = "gpe"
 PV = "0.5.2+svn${SRCDATE}"
 PR = "r0"
 
-DEPENDS = "curl librsvg osb-nrcore"
+DEPENDS = "curl librsvg osb-nrcore pango"
 
 SRC_URI = "svn://gtk-webcore.svn.sourceforge.net/svnroot/gtk-webcore/trunk;module=NRCit;proto=https \
            file://gcc4-fno-threadsafe-statics-NRCit.patch;patch=1"
@@ -16,6 +16,8 @@ S = "${WORKDIR}/NRCit"
 DEFAULT_PREFERENCE = "-1"
 
 inherit autotools pkgconfig
+
+EXTRA_OECONF = " --enable-pango "
 
 do_configure () {
 	autotools_do_configure

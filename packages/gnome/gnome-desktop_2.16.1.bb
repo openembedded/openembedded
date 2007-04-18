@@ -6,6 +6,9 @@ inherit gnome pkgconfig
 
 DEPENDS = "gnome-common gnome-doc-utils libgnomeui"
 
+SRC_URI += "file://scrollkeeper.patch;patch=1"
+
+EXTRA_OECONF = "--disable-scrollkeeper"
 EXTRA_AUTORECONF = "-I ${STAGING_DIR}/${HOST_SYS}/share/aclocal/gnome2-macros"
 
 do_configure_prepend () {

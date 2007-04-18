@@ -1,7 +1,7 @@
 DESCRIPTION = "Poppler is a PDF rendering library based on the xpdf-3.0 code base."
 DEPENDS = "fontconfig jpeg zlib gtk+ cairo"
 LICENSE = "GPL"
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "http://poppler.freedesktop.org/${PN}-${PV}.tar.gz"
 
@@ -9,7 +9,7 @@ inherit autotools pkgconfig
 
 EXTRA_OECONF = " --enable-xpdf-headers \
 		 --disable-gtk-test \
-		 --disable-poppler-qt \
+		 --disable-poppler-qt --disable-poppler-qt4 \
 		 --enable-zlib \
 	       "
 

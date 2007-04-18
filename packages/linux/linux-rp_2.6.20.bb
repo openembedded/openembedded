@@ -1,6 +1,6 @@
 require linux-rp.inc
 
-PR = "r7"
+PR = "r13"
 
 # Handy URLs
 # git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux-2.6.git;protocol=git;tag=ef7d1b244fa6c94fb76d5f787b8629df64ea4046
@@ -14,6 +14,7 @@ PR = "r7"
 # Patches submitted upstream are towards top of this list 
 # Hacks should clearly named and at the bottom
 SRC_URI = "http://www.kernel.org/pub/linux/kernel/v2.6/linux-2.6.20.tar.bz2 \
+           http://www.kernel.org/pub/linux/kernel/v2.6/patch-2.6.20.6.bz2;patch=1 \
            http://opensource.wolfsonmicro.com/~lg/asoc/asoc-v0.13.3.patch;patch=1;status=merged \
            ${RPSRC}/oprofile_always_bt_arm-r0.patch;patch=1 \
            ${RPSRC}/lzo_kernel-r0.patch;patch=1 \
@@ -53,7 +54,7 @@ SRC_URI = "http://www.kernel.org/pub/linux/kernel/v2.6/linux-2.6.20.tar.bz2 \
            file://connectplus-remove-ide-HACK.patch;patch=1;status=hack \
            file://squashfs3.0-2.6.15.patch;patch=1;status=external \
            file://vesafb-tng-1.0-rc2-2.6.20-rc2.patch;patch=1;status=external \
-           file://sharpsl-rc-r0.patch;patch=1 \
+           file://sharpsl-rc-r1.patch;patch=1 \
            file://defconfig-c7x0 \
            file://defconfig-hx2000 \
            file://defconfig-collie \
@@ -76,14 +77,17 @@ SRC_URI = "http://www.kernel.org/pub/linux/kernel/v2.6/linux-2.6.20.tar.bz2 \
 
 # These patches are extracted from Pavel Machek's git tree
 # (diff against vanilla kernel)
+
 SRC_URI_append_collie = "\
-           ${DOSRC}/collie/mtd-sharp-flash-hack-r0.patch;patch=1 \
-           ${DOSRC}/collie/collie-r0.patch;patch=1 \
-           ${DOSRC}/collie/locomolcd-backlight-r0.patch;patch=1 \
-           ${DOSRC}/collie/ucb1x00-touch-audio-r0.patch;patch=1 \
-           file://collie-mcp-r1.patch;patch=1 \
-           ${DOSRC}/collie/sa1100-udc-r0.patch;patch=1 \
-#          ${DOSRC}/collie/collie-pm-r1.patch;patch=1 \
+ 	   ${TKSRC}/mtd-sharp-flash-hack-r2.patch;patch=1 \
+ 	   ${TKSRC}/collie-r3.patch;patch=1 \
+           ${TKSRC}/ucb1x00-touch-audio-r1.patch;patch=1 \
+ 	   ${TKSRC}/mcp-sa11x0-r0.patch;patch=1 \
+ 	   ${TKSRC}/sa1100-udc-r2.patch;patch=1 \
+ 	   ${TKSRC}/mmc_spi-r3.patch;patch=1 \
+ 	   ${TKSRC}/locomo-r0.patch;patch=1 \
+ 	   ${TKSRC}/collie-kexec.patch;patch=1 \
+ 	   ${TKSRC}/locomo_spi-r2.patch;patch=1 \
 "
 
 SRC_URI_append_tosa = "\

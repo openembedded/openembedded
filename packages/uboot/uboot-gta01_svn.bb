@@ -18,7 +18,9 @@ TARGET_LDFLAGS = ""
 UBOOT_MACHINES = "gta01v3 gta01v4 gta01bv2 gta01bv3"
 
 do_quilt() {
-        mv ${WORKDIR}/patches ${S}/patches && cd ${S} && quilt push -av
+        mv ${WORKDIR}/patches ${S}/patches 
+        cd ${S}
+        quilt push -av
         rm -Rf patches .pc
 }
 

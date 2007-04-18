@@ -1,7 +1,7 @@
 #! /bin/sh
 #
 # Copyright Matthias Hentges <devel@hentges.net> (c) 2006
-# License: GPL (see http://www.gnu.org/licenses/gpl.txt for a copy of the license)
+# License: MIT (see COPYING.MIT)
 #
 # Filename: altboot_1.0.5-rc2.bb
 # Date: 21-Feb-06

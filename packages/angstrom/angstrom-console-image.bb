@@ -5,8 +5,7 @@ PR = "r4"
 ANGSTROM_EXTRA_INSTALL ?= ""
 
 DEPENDS = "task-base"
-RDEPENDS = "task-base-core-default \
-	    task-base \
+RDEPENDS = "task-base \
 	    ${ANGSTROM_EXTRA_INSTALL} \
 	   "
 

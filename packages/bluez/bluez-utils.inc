@@ -12,7 +12,7 @@ SRC_URI = "http://bluez.sourceforge.net/download/bluez-utils-${PV}.tar.gz \
 	file://hcid.conf \
 	file://02dtl1_cs.sh \
 	file://hciattach-ti-bts.patch;patch=1 \
-        file://handle-eintr.patch;patch=1"
+        file://handle-eintr.patch;patch=1;status=applied"
 
 # Almost all serial CF cards w/ manfid 0x0000,0x0000 seem to use the bcs protocol
 # Let's default to that instead of 'any' until further notice...
@@ -20,7 +20,7 @@ SRC_URI += " file://default-manfid-0x0-to-bcps.patch;patch=1"
 
 S = "${WORKDIR}/bluez-utils-${PV}"
 
-EXTRA_OECONF = "--enable-initscripts --enable-bcm203x --enable-hid2hci --enable-cups"
+EXTRA_OECONF = "--enable-initscripts --enable-bccmd   --enable-bcm203x --enable-hid2hci --enable-cups"
 #  --enable-obex           enable OBEX support
 #  --enable-alsa           enable ALSA support
 #  --enable-cups           install CUPS backend support

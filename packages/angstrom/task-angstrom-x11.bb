@@ -109,12 +109,13 @@ RDEPENDS_angstrom-task-office := "\
     gnumeric \
     abiword \
     imposter \
-#    evince \
+    evince \
     gqview"
 
 RDEPENDS_angstrom-task-printing := "\
     cups \
-    gnome-cups-manager"
+#    gnome-cups-manager \
+    "
 
 RDEPENDS_angstrom-task-sectest := "\
     nmap \
