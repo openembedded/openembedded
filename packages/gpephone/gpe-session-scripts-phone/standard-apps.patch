@@ -1,0 +1,23 @@
+--- gpe-session-scripts/X11/Xsession.d/98standard-apps~	2007-04-18 18:54:59.000000000 +0200
++++ gpe-session-scripts/X11/Xsession.d/98standard-apps	2007-04-18 18:54:59.000000000 +0200
+@@ -7,20 +7,3 @@
+ else
+   time_set_already=no
+ fi
+-
+-# No action if .mbdock exists
+-if [ ! -f $HOME/.matchbox/mbdock.session ]; then
+-  mkdir -p $HOME/.matchbox
+-  cp /etc/gpe/gpe.mbdock $HOME/.matchbox/mbdock.session
+-
+-  if [ "$time_set_already" = "no" ]; then
+-    gpe-conf time user_only &
+-  fi
+-
+-  gpe-question --icon !gtk-dialog-info --question "<b>Welcome to GPE!</b>
+-
+-I have added some standard programs to the panel at the bottom of the screen.
+-
+-To remove these, or add more,  tap and hold on an empty area of the panel." --buttons !gtk-ok &
+-fi
+-
