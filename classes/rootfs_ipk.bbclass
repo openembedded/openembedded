@@ -5,12 +5,11 @@
 # See image.bbclass for a usage of this.
 #
 
-DEPENDS_prepend="ipkg-native ipkg-utils-native fakeroot-native "
-DEPENDS_append=" ${EXTRA_IMAGEDEPENDS}"
-RDEPENDS += "ipkg ipkg-collateral"
+do_rootfs[depends] += "ipkg-native:do_populate_staging ipkg-utils-native:do_populate_staging"
 
 IPKG_ARGS = "-f ${T}/ipkg.conf -o ${IMAGE_ROOTFS}"
 
+RDEPENDS += "ipkg ipkg-collateral"
 PACKAGE_INSTALL += "ipkg ipkg-collateral"
 
 rootfs_ipk_do_indexes () {
