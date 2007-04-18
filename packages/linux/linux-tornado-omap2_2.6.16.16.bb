@@ -14,8 +14,6 @@ inherit kernel
 
 do_configure() {
 
-#	cd ${S} && oe_runmake tornado_defconfig
-
         rm -f ${S}/.config
 
         if [ ! -e ${WORKDIR}/defconfig ]; then
@@ -38,15 +36,6 @@ do_configure() {
         yes '' | oe_runmake oldconfig
 
 }
-
-
-#do_compile_prepend() {
-#	if [ -f ${WORKDIR}/initramfs_list ]; then
-#                cd ${WORKDIR}/busybox-1.1.0
-#                oe_runmake 'CC=${CC}' 'CROSS=${HOST_PREFIX}'
-#                cd -
-#	fi
-#}
 
 do_deploy() {
 	install -d ${DEPLOY_DIR_IMAGE}
