@@ -1,0 +1,2148 @@
+From: Chris Wilson <chris@chris-wilson.co.uk>
+Date: Wed, 18 Apr 2007 17:34:44 +0000 (+0100)
+Subject: Cache freed GCs
+X-Git-Url: http://gitweb.freedesktop.org/?p=users/ickle/cairo;a=commitdiff;h=3126c3948691cf7a6c0fc0f9cc6a7eca43c3553b
+
+Cache freed GCs
+
+Maintain a cache of freed GCs, one for each used depth.
+---
+
+--- a/src/Makefile.am
++++ b/src/Makefile.am
+@@ -46,7 +46,11 @@ endif
+ 
+ if CAIRO_HAS_XLIB_SURFACE
+ libcairo_xlib_headers = cairo-xlib.h cairo-xlib-xrender.h
+-libcairo_xlib_sources = cairo-xlib-surface.c cairo-xlib-screen.c cairo-xlib-private.h cairo-xlib-test.h
++libcairo_xlib_sources = cairo-xlib-surface.c \
++			cairo-xlib-display.c \
++			cairo-xlib-screen.c \
++			cairo-xlib-private.h \
++			cairo-xlib-test.h
+ backend_pkgconfigs += cairo-xlib.pc
+ endif
+ 
+--- a/src/cairo-clip.c
++++ b/src/cairo-clip.c
+@@ -404,7 +404,8 @@ _cairo_clip_intersect_mask (cairo_clip_t
+ 						   CAIRO_CONTENT_ALPHA,
+ 						   surface_rect.width,
+ 						   surface_rect.height,
+-						   CAIRO_COLOR_WHITE);
++						   CAIRO_COLOR_WHITE,
++						   NULL);
+     if (surface->status)
+ 	return CAIRO_STATUS_NO_MEMORY;
+ 
+--- a/src/cairo-debug.c
++++ b/src/cairo-debug.c
+@@ -59,10 +59,6 @@
+ void
+ cairo_debug_reset_static_data (void)
+ {
+-#if CAIRO_HAS_XLIB_SURFACE
+-    _cairo_xlib_screen_reset_static_data ();
+-#endif
+-
+     _cairo_font_reset_static_data ();
+ 
+ #if CAIRO_HAS_FT_FONT
+--- a/src/cairo-directfb-surface.c
++++ b/src/cairo-directfb-surface.c
+@@ -1511,6 +1511,16 @@ _cairo_directfb_surface_show_glyphs ( vo
+ #endif /* DFB_SHOW_GLYPHS */
+ 
+ 
++static cairo_bool_t
++_cairo_directfb_surface_is_compatible (void *surface_a,
++	                               void *surface_b)
++{
++    cairo_directfb_surface_t *a = (cairo_directfb_surface_t *) surface_a;
++    cairo_directfb_surface_t *b = (cairo_directfb_surface_t *) surface_b;
++
++    return a->dfb == b->dfb;
++}
++
+ static cairo_surface_backend_t cairo_directfb_surface_backend = {
+          CAIRO_SURFACE_TYPE_DIRECTFB, /*type*/
+         _cairo_directfb_surface_create_similar,/*create_similar*/
+@@ -1560,7 +1570,8 @@ static cairo_surface_backend_t cairo_dir
+ #else
+         NULL, /* show_glyphs */
+ #endif
+-        NULL /* snapshot */
++        NULL, /* snapshot */
++	_cairo_directfb_is_compatible
+ };
+ 
+ 
+--- a/src/cairo-glitz-surface.c
++++ b/src/cairo-glitz-surface.c
+@@ -1002,7 +1002,8 @@ _cairo_glitz_surface_fill_rectangles (vo
+ 	    _cairo_surface_create_similar_solid (&dst->base,
+ 						 CAIRO_CONTENT_COLOR_ALPHA,
+ 						 1, 1,
+-						 (cairo_color_t *) color);
++						 (cairo_color_t *) color,
++						 NULL);
+ 	if (src->base.status)
+ 	    return CAIRO_STATUS_NO_MEMORY;
+ 
+@@ -2171,6 +2172,19 @@ _cairo_glitz_surface_flush (void *abstra
+     return CAIRO_STATUS_SUCCESS;
+ }
+ 
++static cairo_bool_t
++_cairo_glitz_surface_is_compatible (void *surface_a,
++	                            void *surface_b)
++{
++    cairo_glitz_surface_t *a = (cairo_glitz_surface_t *) surface_a;
++    cairo_glitz_surface_t *b = (cairo_glitz_surface_t *) surface_b;
++
++    glitz_drawable_t *drawable_a = glitz_surface_get_drawable (a->surface);
++    glitz_drawable_t *drawable_b = glitz_surface_get_drawable (b->surface);
++
++    return drawable_a == drawable_b;
++}
++
+ static const cairo_surface_backend_t cairo_glitz_surface_backend = {
+     CAIRO_SURFACE_TYPE_GLITZ,
+     _cairo_glitz_surface_create_similar,
+@@ -2193,7 +2207,16 @@ static const cairo_surface_backend_t cai
+     _cairo_glitz_surface_flush,
+     NULL, /* mark_dirty_rectangle */
+     _cairo_glitz_surface_scaled_font_fini,
+-    _cairo_glitz_surface_scaled_glyph_fini
++    _cairo_glitz_surface_scaled_glyph_fini,
++
++    NULL, /* paint */
++    NULL, /* mask */
++    NULL, /* stroke */
++    NULL, /* fill */
++    NULL, /* show_glyphs */
++
++    NULL, /* snapshot */
++    _cairo_glitz_surface_is_compatible
+ };
+ 
+ static const cairo_surface_backend_t *
+--- a/src/cairo-mutex-list-private.h
++++ b/src/cairo-mutex-list-private.h
+@@ -34,7 +34,8 @@
+ #ifndef CAIRO_MUTEX_LIST_PRIVATE_H
+ #define CAIRO_MUTEX_LIST_PRIVATE_H
+ 
+-CAIRO_MUTEX_DECLARE (_cairo_pattern_solid_cache_lock);
++CAIRO_MUTEX_DECLARE (_cairo_pattern_solid_pattern_cache_lock);
++CAIRO_MUTEX_DECLARE (_cairo_pattern_solid_surface_cache_lock);
+ 
+ CAIRO_MUTEX_DECLARE (_cairo_font_face_mutex);
+ CAIRO_MUTEX_DECLARE (_cairo_scaled_font_map_mutex);
+@@ -44,7 +45,7 @@ CAIRO_MUTEX_DECLARE (_cairo_ft_unscaled_
+ #endif
+ 
+ #if CAIRO_HAS_XLIB_SURFACE
+-CAIRO_MUTEX_DECLARE (_cairo_xlib_screen_mutex);
++CAIRO_MUTEX_DECLARE (_cairo_xlib_display_mutex);
+ #endif
+ 
+ #endif
+--- a/src/cairo-pattern.c
++++ b/src/cairo-pattern.c
+@@ -282,7 +282,7 @@ _cairo_pattern_create_solid (const cairo
+ {
+     cairo_solid_pattern_t *pattern = NULL;
+ 
+-    CAIRO_MUTEX_LOCK (_cairo_pattern_solid_cache_lock);
++    CAIRO_MUTEX_LOCK (_cairo_pattern_solid_pattern_cache_lock);
+ 
+     if (solid_pattern_cache.size) {
+ 	int i = --solid_pattern_cache.size %
+@@ -291,7 +291,7 @@ _cairo_pattern_create_solid (const cairo
+ 	solid_pattern_cache.patterns[i] = NULL;
+     }
+ 
+-    CAIRO_MUTEX_UNLOCK (_cairo_pattern_solid_cache_lock);
++    CAIRO_MUTEX_UNLOCK (_cairo_pattern_solid_pattern_cache_lock);
+ 
+     if (pattern == NULL) {
+ 	/* None cached, need to create a new pattern. */
+@@ -306,12 +306,12 @@ _cairo_pattern_create_solid (const cairo
+     return &pattern->base;
+ }
+ 
+-void
+-_cairo_pattern_reset_static_data (void)
++static void
++_cairo_pattern_reset_solid_pattern_cache (void)
+ {
+     int i;
+ 
+-    CAIRO_MUTEX_LOCK (_cairo_pattern_solid_cache_lock);
++    CAIRO_MUTEX_LOCK (_cairo_pattern_solid_pattern_cache_lock);
+ 
+     for (i = 0; i < MIN (ARRAY_LENGTH (solid_pattern_cache.patterns), solid_pattern_cache.size); i++) {
+ 	free (solid_pattern_cache.patterns[i]);
+@@ -319,7 +319,7 @@ _cairo_pattern_reset_static_data (void)
+     }
+     solid_pattern_cache.size = 0;
+ 
+-    CAIRO_MUTEX_UNLOCK (_cairo_pattern_solid_cache_lock);
++    CAIRO_MUTEX_UNLOCK (_cairo_pattern_solid_pattern_cache_lock);
+ }
+ 
+ static const cairo_pattern_t *
+@@ -630,7 +630,7 @@ cairo_pattern_destroy (cairo_pattern_t *
+     if (pattern->type == CAIRO_PATTERN_TYPE_SOLID) {
+ 	int i;
+ 
+-	CAIRO_MUTEX_LOCK (_cairo_pattern_solid_cache_lock);
++	CAIRO_MUTEX_LOCK (_cairo_pattern_solid_pattern_cache_lock);
+ 
+ 	i = solid_pattern_cache.size++ %
+ 	    ARRAY_LENGTH (solid_pattern_cache.patterns);
+@@ -640,7 +640,7 @@ cairo_pattern_destroy (cairo_pattern_t *
+ 
+ 	solid_pattern_cache.patterns[i] = (cairo_solid_pattern_t *) pattern;
+ 
+-	CAIRO_MUTEX_UNLOCK (_cairo_pattern_solid_cache_lock);
++	CAIRO_MUTEX_UNLOCK (_cairo_pattern_solid_pattern_cache_lock);
+     } else {
+ 	free (pattern);
+     }
+@@ -1235,6 +1235,17 @@ _cairo_pattern_acquire_surface_for_gradi
+     return status;
+ }
+ 
++/* We maintain a small cache here, because we don't want to constantly
++ * recreate surfaces for simple solid colors. */
++#define MAX_SURFACE_CACHE_SIZE 16
++static struct {
++    struct {
++	cairo_color_t    color;
++	cairo_surface_t *surface;
++    } cache[MAX_SURFACE_CACHE_SIZE];
++    int size;
++} solid_surface_cache;
++
+ static cairo_int_status_t
+ _cairo_pattern_acquire_surface_for_solid (cairo_solid_pattern_t	     *pattern,
+ 					  cairo_surface_t	     *dst,
+@@ -1245,12 +1256,54 @@ _cairo_pattern_acquire_surface_for_solid
+ 					  cairo_surface_t	     **out,
+ 					  cairo_surface_attributes_t *attribs)
+ {
+-    *out = _cairo_surface_create_similar_solid (dst,
+-						CAIRO_CONTENT_COLOR_ALPHA,
+-						1, 1,
+-						&pattern->color);
+-    if ((*out)->status)
+-	return CAIRO_STATUS_NO_MEMORY;
++    static int i;
++
++    cairo_surface_t *surface;
++    cairo_status_t   status;
++
++    CAIRO_MUTEX_LOCK (_cairo_pattern_solid_surface_cache_lock);
++
++    /* Check cache first */
++    if (i < solid_surface_cache.size &&
++	    _cairo_color_equal (&solid_surface_cache.cache[i].color,
++		                &pattern->color) &&
++	    _cairo_surface_is_compatible (solid_surface_cache.cache[i].surface, dst))
++	    goto DONE;
++
++    for (i = 0 ; i < solid_surface_cache.size; i++) {
++	if (_cairo_color_equal (&solid_surface_cache.cache[i].color,
++		                &pattern->color) &&
++	    _cairo_surface_is_compatible (solid_surface_cache.cache[i].surface, dst))
++	    goto DONE;
++    }
++
++    /* Not cached, need to create new */
++    surface = _cairo_surface_create_similar_solid (dst,
++						   CAIRO_CONTENT_COLOR_ALPHA,
++						   1, 1,
++						   &pattern->color,
++						   pattern);
++    assert (_cairo_surface_is_compatible (surface, dst));
++    if (surface->status) {
++	status = surface->status;
++	goto UNLOCK;
++    }
++
++    /* Cache new */
++    if (solid_surface_cache.size < MAX_SURFACE_CACHE_SIZE) {
++	solid_surface_cache.size++;
++    } else {
++	i = rand () % MAX_SURFACE_CACHE_SIZE;
++
++	/* Evict old */
++	cairo_surface_destroy (solid_surface_cache.cache[i].surface);
++    }
++
++    solid_surface_cache.cache[i].color = pattern->color;
++    solid_surface_cache.cache[i].surface = surface;
++
++DONE:
++    *out = cairo_surface_reference (solid_surface_cache.cache[i].surface);
+ 
+     attribs->x_offset = attribs->y_offset = 0;
+     cairo_matrix_init_identity (&attribs->matrix);
+@@ -1258,7 +1311,26 @@ _cairo_pattern_acquire_surface_for_solid
+     attribs->filter = CAIRO_FILTER_NEAREST;
+     attribs->acquired = FALSE;
+ 
+-    return CAIRO_STATUS_SUCCESS;
++    status = CAIRO_STATUS_SUCCESS;
++
++UNLOCK:
++    CAIRO_MUTEX_UNLOCK (_cairo_pattern_solid_surface_cache_lock);
++
++    return status;
++}
++
++static void
++_cairo_pattern_reset_solid_surface_cache (void)
++{
++    int i;
++
++    CAIRO_MUTEX_LOCK (_cairo_pattern_solid_surface_cache_lock);
++
++    for (i = 0; i < solid_surface_cache.size; i++)
++	cairo_surface_destroy (solid_surface_cache.cache[i].surface);
++    solid_surface_cache.size = 0;
++
++    CAIRO_MUTEX_UNLOCK (_cairo_pattern_solid_surface_cache_lock);
+ }
+ 
+ /**
+@@ -2049,3 +2121,10 @@ cairo_pattern_get_radial_circles (cairo_
+ 
+     return CAIRO_STATUS_SUCCESS;
+ }
++
++void
++_cairo_pattern_reset_static_data (void)
++{
++    _cairo_pattern_reset_solid_pattern_cache ();
++    _cairo_pattern_reset_solid_surface_cache ();
++}
+--- a/src/cairo-surface.c
++++ b/src/cairo-surface.c
+@@ -288,7 +288,8 @@ cairo_surface_create_similar (cairo_surf
+ 
+     return _cairo_surface_create_similar_solid (other, content,
+ 						width, height,
+-						CAIRO_COLOR_TRANSPARENT);
++						CAIRO_COLOR_TRANSPARENT,
++						NULL);
+ }
+ slim_hidden_def (cairo_surface_create_similar);
+ 
+@@ -297,7 +298,8 @@ _cairo_surface_create_similar_solid (cai
+ 				     cairo_content_t	  content,
+ 				     int		  width,
+ 				     int		  height,
+-				     const cairo_color_t *color)
++				     const cairo_color_t *color,
++				     cairo_pattern_t     *pattern)
+ {
+     cairo_status_t status;
+     cairo_surface_t *surface;
+@@ -310,19 +312,23 @@ _cairo_surface_create_similar_solid (cai
+ 	return (cairo_surface_t*) &_cairo_surface_nil;
+     }
+ 
+-    source = _cairo_pattern_create_solid (color);
+-    if (source->status) {
+-	cairo_surface_destroy (surface);
+-	_cairo_error (CAIRO_STATUS_NO_MEMORY);
+-	return (cairo_surface_t*) &_cairo_surface_nil;
+-    }
++    if (pattern == NULL) {
++	source = _cairo_pattern_create_solid (color);
++	if (source->status) {
++	    cairo_surface_destroy (surface);
++	    _cairo_error (CAIRO_STATUS_NO_MEMORY);
++	    return (cairo_surface_t*) &_cairo_surface_nil;
++	}
++    } else
++	source = pattern;
+ 
+     status = _cairo_surface_paint (surface,
+ 				   color == CAIRO_COLOR_TRANSPARENT ?
+ 				   CAIRO_OPERATOR_CLEAR :
+ 				   CAIRO_OPERATOR_SOURCE, source);
+ 
+-    cairo_pattern_destroy (source);
++    if (source != pattern)
++	cairo_pattern_destroy (source);
+ 
+     if (status) {
+ 	cairo_surface_destroy (surface);
+@@ -1056,6 +1062,32 @@ _cairo_surface_snapshot (cairo_surface_t
+     return _cairo_surface_fallback_snapshot (surface);
+ }
+ 
++/**
++ * _cairo_surface_is_compatible
++ * @surface_a: a #cairo_surface_t
++ * @surface_b: a #cairo_surface_t
++ *
++ * Find out whether the given surfaces share the same backend,
++ * and if so, whether they can be considered compatible.
++ *
++ * The definition of "compatible" depends on the backend. In the
++ * xlib case, it means the surface share the same display.
++ *
++ * Return value: TRUE if the surfaces are compatible.
++ **/
++cairo_bool_t
++_cairo_surface_is_compatible (cairo_surface_t *surface_a,
++	                      cairo_surface_t *surface_b)
++{
++    if (surface_a->backend != surface_b->backend)
++	return FALSE;
++
++    if (surface_a->backend->is_compatible != NULL)
++	return surface_a->backend->is_compatible (surface_a, surface_b);
++
++    return TRUE;
++}
++
+ cairo_status_t
+ _cairo_surface_composite (cairo_operator_t	op,
+ 			  cairo_pattern_t	*src,
+--- a/src/cairo-win32-surface.c
++++ b/src/cairo-win32-surface.c
+@@ -1854,6 +1854,16 @@ cairo_win32_surface_get_image (cairo_sur
+     return ((cairo_win32_surface_t*)surface)->image;
+ }
+ 
++static cairo_bool_t
++_cairo_win32_surface_is_compatible (void *surface_a,
++	                            void *surface_b)
++{
++    cairo_win32_surface_t *a = (cairo_win32_surface_t *) surface_a;
++    cairo_win32_surface_t *b = (cairo_win32_surface_t *) surface_b;
++
++    return a->dc == b->dc;
++}
++
+ static const cairo_surface_backend_t cairo_win32_surface_backend = {
+     CAIRO_SURFACE_TYPE_WIN32,
+     _cairo_win32_surface_create_similar,
+@@ -1884,7 +1894,8 @@ static const cairo_surface_backend_t cai
+     NULL, /* fill */
+     _cairo_win32_surface_show_glyphs,
+ 
+-    NULL  /* snapshot */
++    NULL,  /* snapshot */
++    _cairo_win32_surface_is_compatible
+ };
+ 
+ /* Notes:
+--- a/src/cairo-xcb-surface.c
++++ b/src/cairo-xcb-surface.c
+@@ -1577,6 +1577,16 @@ _cairo_xcb_surface_show_glyphs (void    
+ 				 int		      num_glyphs,
+ 				 cairo_scaled_font_t *scaled_font);
+ 
++static cairo_bool_t
++_cairo_xcb_surface_is_compatible (void *surface_a,
++	                          void *surface_b)
++{
++    cairo_xcb_surface_t *a = (cairo_xcb_surface_t *) surface_a;
++    cairo_xcb_surface_t *b = (cairo_xcb_surface_t *) surface_b;
++
++    return _cairo_xcb_surface_same_screen (dst, src);
++}
++
+ /* XXX: move this to the bottom of the file, XCB and Xlib */
+ 
+ static const cairo_surface_backend_t cairo_xcb_surface_backend = {
+@@ -1608,7 +1618,8 @@ static const cairo_surface_backend_t cai
+     NULL, /* stroke */
+     NULL, /* fill */
+     _cairo_xcb_surface_show_glyphs,
+-    NULL  /* snapshot */
++    NULL,  /* snapshot */
++    _cairo_xcb_surface_is_compatible
+ };
+ 
+ /**
+--- /dev/null
++++ b/src/cairo-xlib-display.c
+@@ -0,0 +1,490 @@
++/* Cairo - a vector graphics library with display and print output
++ *
++ * Copyright Â© 2007 Chris Wilson
++ *
++ * This library is free software; you can redistribute it and/or
++ * modify it either under the terms of the GNU Lesser General Public
++ * License version 2.1 as published by the Free Software Foundation
++ * (the "LGPL") or, at your option, under the terms of the Mozilla
++ * Public License Version 1.1 (the "MPL"). If you do not alter this
++ * notice, a recipient may use your version of this file under either
++ * the MPL or the LGPL.
++ *
++ * You should have received a copy of the LGPL along with this library
++ * in the file COPYING-LGPL-2.1; if not, write to the Free Software
++ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
++ * You should have received a copy of the MPL along with this library
++ * in the file COPYING-MPL-1.1
++ *
++ * The contents of this file are subject to the Mozilla Public License
++ * Version 1.1 (the "License"); you may not use this file except in
++ * compliance with the License. You may obtain a copy of the License at
++ * http://www.mozilla.org/MPL/
++ *
++ * This software is distributed on an "AS IS" basis, WITHOUT WARRANTY
++ * OF ANY KIND, either express or implied. See the LGPL or the MPL for
++ * the specific language governing rights and limitations.
++ *
++ * The Original Code is the cairo graphics library.
++ *
++ * The Initial Developer of the Original Code is Chris Wilson.
++ *
++ */
++
++#include "cairoint.h"
++
++#include "cairo-xlib-private.h"
++
++#include <fontconfig/fontconfig.h>
++
++#include <X11/Xlibint.h>	/* For XESetCloseDisplay */
++#include <X11/extensions/Xrender.h>
++
++typedef int (*cairo_xlib_error_func_t) (Display     *display,
++					XErrorEvent *event);
++
++struct _cairo_xlib_job {
++    cairo_xlib_job_t *next;
++    enum {
++	RESOURCE,
++	WORK
++    } type;
++    union {
++	struct {
++	    cairo_xlib_notify_resource_func notify;
++	    XID xid;
++	} resource;
++	struct {
++	    cairo_xlib_notify_func notify;
++	    void *data;
++	    void (*destroy) (void *);
++	} work;
++    } func;
++};
++
++static cairo_xlib_display_t *_cairo_xlib_display_list = NULL;
++
++static void
++_cairo_xlib_call_close_display_hooks (cairo_xlib_display_t *info)
++{
++    cairo_xlib_screen_info_t	    *screen;
++    cairo_xlib_hook_t		    *hooks;
++
++    /* call all registered shutdown routines */
++    CAIRO_MUTEX_LOCK (info->mutex);
++
++    for (screen = info->screens; screen != NULL; screen = screen->next)
++	_cairo_xlib_screen_info_close_display (screen);
++
++    hooks = info->close_display_hooks;
++    while (hooks != NULL) {
++	info->close_display_hooks = NULL;
++	CAIRO_MUTEX_UNLOCK (info->mutex);
++
++	do {
++	    cairo_xlib_hook_t *hook = hooks;
++	    hooks = hook->next;
++
++	    hook->func (info->display, hook->data);
++
++	    free (hook);
++	} while (hooks != NULL);
++
++	CAIRO_MUTEX_LOCK (info->mutex);
++	hooks = info->close_display_hooks;
++    }
++    info->closed = TRUE;
++
++    CAIRO_MUTEX_UNLOCK (info->mutex);
++}
++
++cairo_xlib_display_t *
++_cairo_xlib_display_reference (cairo_xlib_display_t *info)
++{
++    if (info == NULL)
++	return NULL;
++
++    /* use our mutex until we get a real atomic inc */
++    CAIRO_MUTEX_LOCK (info->mutex);
++
++    assert (info->ref_count > 0);
++    info->ref_count++;
++
++    CAIRO_MUTEX_UNLOCK (info->mutex);
++
++    return info;
++}
++
++void
++_cairo_xlib_display_destroy (cairo_xlib_display_t *info)
++{
++    if (info == NULL)
++	return;
++
++    CAIRO_MUTEX_LOCK (info->mutex);
++    assert (info->ref_count > 0);
++    if (--info->ref_count == 0) {
++	assert (info->closed == TRUE);
++	assert (info->screens == NULL);
++
++	/* destroy all outstanding notifies */
++	while (info->workqueue != NULL) {
++	    cairo_xlib_job_t *job = info->workqueue;
++	    info->workqueue = job->next;
++
++	    if (job->type == WORK && job->func.work.destroy != NULL)
++		job->func.work.destroy (job->func.work.data);
++
++	    _cairo_freelist_free (&info->wq_freelist, job);
++	}
++	_cairo_freelist_fini (&info->wq_freelist);
++
++	CAIRO_MUTEX_UNLOCK (info->mutex);
++
++	free (info);
++    } else
++	CAIRO_MUTEX_UNLOCK (info->mutex);
++}
++
++static int
++_noop_error_handler (Display     *display,
++		     XErrorEvent *event)
++{
++    return False;		/* return value is ignored */
++}
++static int
++_cairo_xlib_close_display (Display *dpy, XExtCodes *codes)
++{
++    cairo_xlib_display_t *info, **prev, *next;
++
++    /*
++     * Unhook from the global list
++     */
++    CAIRO_MUTEX_LOCK (_cairo_xlib_display_mutex);
++    prev = &_cairo_xlib_display_list;
++    for (info = _cairo_xlib_display_list; info; info = next) {
++	next = info->next;
++	if (info->display == dpy) {
++	    cairo_xlib_error_func_t old_handler;
++
++	    /* drop the list mutex whilst triggering the hooks */
++	    CAIRO_MUTEX_UNLOCK (_cairo_xlib_display_mutex);
++
++	    /* protect the notifies from triggering XErrors */
++	    old_handler = XSetErrorHandler (_noop_error_handler);
++
++	    _cairo_xlib_display_notify (info);
++	    _cairo_xlib_call_close_display_hooks (info);
++
++	    /* catch any that arrived before marking the display as closed */
++	    _cairo_xlib_display_notify (info);
++
++	    XSync (dpy, False);
++	    XSetErrorHandler (old_handler);
++
++	    CAIRO_MUTEX_LOCK (_cairo_xlib_display_mutex);
++	    _cairo_xlib_display_destroy (info);
++	    *prev = next;
++	    break;
++	} else
++	    prev = &info->next;
++    }
++    CAIRO_MUTEX_UNLOCK (_cairo_xlib_display_mutex);
++
++    /* Return value in accordance with requirements of
++     * XESetCloseDisplay */
++    return 0;
++}
++
++cairo_xlib_display_t *
++_cairo_xlib_display_get (Display *dpy)
++{
++    cairo_xlib_display_t *info;
++    cairo_xlib_display_t **prev;
++    XExtCodes *codes;
++
++    /* There is an apparent deadlock between this mutex and the
++     * mutex for the display, but it's actually safe. For the
++     * app to call XCloseDisplay() while any other thread is
++     * inside this function would be an error in the logic
++     * app, and the CloseDisplay hook is the only other place we
++     * acquire this mutex.
++     */
++    CAIRO_MUTEX_LOCK (_cairo_xlib_display_mutex);
++
++    for (prev = &_cairo_xlib_display_list; (info = *prev); prev = &(*prev)->next)
++    {
++	if (info->display == dpy) {
++	    /*
++	     * MRU the list
++	     */
++	    if (prev != &_cairo_xlib_display_list) {
++		*prev = info->next;
++		info->next = _cairo_xlib_display_list;
++		_cairo_xlib_display_list = info;
++	    }
++	    break;
++	}
++    }
++
++    if (info != NULL) {
++	info = _cairo_xlib_display_reference (info);
++	goto UNLOCK;
++    }
++
++    info = malloc (sizeof (cairo_xlib_display_t));
++    if (info == NULL)
++	goto UNLOCK;
++
++    codes = XAddExtension (dpy);
++    if (codes == NULL) {
++	free (info);
++	info = NULL;
++	goto UNLOCK;
++    }
++
++    XESetCloseDisplay (dpy, codes->extension, _cairo_xlib_close_display);
++
++    _cairo_freelist_init (&info->wq_freelist, sizeof (cairo_xlib_job_t));
++    info->ref_count = 2; /* add one for the CloseDisplay */
++    CAIRO_MUTEX_INIT (&info->mutex);
++    info->display = dpy;
++    info->screens = NULL;
++    info->workqueue = NULL;
++    info->close_display_hooks = NULL;
++    info->closed = FALSE;
++
++    info->next = _cairo_xlib_display_list;
++    _cairo_xlib_display_list = info;
++
++UNLOCK:
++    CAIRO_MUTEX_UNLOCK (_cairo_xlib_display_mutex);
++    return info;
++}
++
++cairo_bool_t
++_cairo_xlib_add_close_display_hook (Display *dpy, void (*func) (Display *, void *), void *data, const void *key)
++{
++    cairo_xlib_display_t *info;
++    cairo_xlib_hook_t *hook;
++    cairo_bool_t ret = FALSE;
++
++    info = _cairo_xlib_display_get (dpy);
++    if (info == NULL)
++	return FALSE;
++
++    hook = malloc (sizeof (cairo_xlib_hook_t));
++    if (hook != NULL) {
++	hook->func = func;
++	hook->data = data;
++	hook->key = key;
++
++	CAIRO_MUTEX_LOCK (info->mutex);
++	if (info->closed == FALSE) {
++	    hook->next = info->close_display_hooks;
++	    info->close_display_hooks = hook;
++	    ret = TRUE;
++	}
++	CAIRO_MUTEX_UNLOCK (info->mutex);
++    }
++
++    _cairo_xlib_display_destroy (info);
++
++    return ret;
++}
++
++void
++_cairo_xlib_remove_close_display_hooks (Display *dpy, const void *key)
++{
++    cairo_xlib_display_t *info;
++    cairo_xlib_hook_t *hook, *next, **prev;
++
++    info = _cairo_xlib_display_get (dpy);
++    if (info == NULL)
++	return;
++
++    CAIRO_MUTEX_LOCK (info->mutex);
++    prev = &info->close_display_hooks;
++    for (hook = info->close_display_hooks; hook != NULL; hook = next) {
++	next = hook->next;
++	if (hook->key == key) {
++	    *prev = hook->next;
++	    free (hook);
++	} else
++	    prev = &hook->next;
++    }
++    *prev = NULL;
++    CAIRO_MUTEX_UNLOCK (info->mutex);
++
++    _cairo_xlib_display_destroy (info);
++}
++
++void
++_cairo_xlib_display_cancel_resource (cairo_xlib_display_t *display,
++				     XID xid)
++{
++    cairo_xlib_job_t *job, *next, **prev;
++
++    CAIRO_MUTEX_LOCK (display->mutex);
++    prev = &display->workqueue;
++    for (job = display->workqueue; job != NULL; job = next) {
++	next = job->next;
++	if (job->type == RESOURCE && job->func.resource.xid == xid) {
++	    _cairo_freelist_free (&display->wq_freelist, job);
++
++	    *prev = next;
++	    break;
++	}
++	prev = &job->next;
++    }
++    CAIRO_MUTEX_UNLOCK (display->mutex);
++}
++
++static cairo_xlib_job_t *
++_cairo_xlib_display_find_resource (cairo_xlib_display_t *display, XID xid)
++{
++    cairo_xlib_job_t *job;
++
++    CAIRO_MUTEX_LOCK (display->mutex);
++    for (job = display->workqueue; job != NULL; job = job->next) {
++	if (job->type == RESOURCE && job->func.resource.xid == xid)
++	    break;
++    }
++    CAIRO_MUTEX_UNLOCK (display->mutex);
++
++    return job;
++}
++
++cairo_status_t
++_cairo_xlib_display_queue_resource (cairo_xlib_display_t *display,
++	                            cairo_xlib_notify_resource_func notify,
++				    XID xid)
++{
++    cairo_xlib_job_t *job;
++    cairo_status_t status = CAIRO_STATUS_SUCCESS;
++
++    assert (_cairo_xlib_display_find_resource (display, xid) == NULL);
++
++    job = _cairo_freelist_alloc (&display->wq_freelist);
++    if (job == NULL)
++	return CAIRO_STATUS_NO_MEMORY;
++
++    job->type = RESOURCE;
++    job->func.resource.xid = xid;
++    job->func.resource.notify = notify;
++
++    CAIRO_MUTEX_LOCK (display->mutex);
++    if (display->closed == FALSE) {
++	job->next = display->workqueue;
++	display->workqueue = job;
++    } else {
++	_cairo_freelist_free (&display->wq_freelist, job);
++	job = NULL;
++	status = CAIRO_STATUS_NO_MEMORY;
++    }
++    CAIRO_MUTEX_UNLOCK (display->mutex);
++
++    return status;
++}
++
++void
++_cairo_xlib_display_cancel_work (cairo_xlib_display_t *display,
++				 void *data)
++{
++    cairo_xlib_job_t *job, *next, **prev;
++
++    CAIRO_MUTEX_LOCK (display->mutex);
++    prev = &display->workqueue;
++    for (job = display->workqueue; job != NULL; job = next) {
++	next = job->next;
++	if (job->type == WORK && job->func.work.data == data) {
++	    if (job->func.work.destroy != NULL)
++		job->func.work.destroy (job->func.work.data);
++	    _cairo_freelist_free (&display->wq_freelist, job);
++
++	    *prev = next;
++	    break;
++	}
++	prev = &job->next;
++    }
++    CAIRO_MUTEX_UNLOCK (display->mutex);
++}
++
++cairo_status_t
++_cairo_xlib_display_queue_work (cairo_xlib_display_t *display,
++	                        cairo_xlib_notify_func notify,
++				void *data,
++				void (*destroy) (void *))
++{
++    cairo_xlib_job_t *job;
++    cairo_status_t status = CAIRO_STATUS_SUCCESS;
++
++    job = _cairo_freelist_alloc (&display->wq_freelist);
++    if (job == NULL)
++	return CAIRO_STATUS_NO_MEMORY;
++
++    job->type = WORK;
++    job->func.work.data    = data;
++    job->func.work.notify  = notify;
++    job->func.work.destroy = destroy;
++
++    CAIRO_MUTEX_LOCK (display->mutex);
++    if (display->closed == FALSE) {
++	job->next = display->workqueue;
++	display->workqueue = job;
++    } else {
++	_cairo_freelist_free (&display->wq_freelist, job);
++	job = NULL;
++	status = CAIRO_STATUS_NO_MEMORY;
++    }
++    CAIRO_MUTEX_UNLOCK (display->mutex);
++
++    return status;
++}
++
++void
++_cairo_xlib_display_notify (cairo_xlib_display_t *display)
++{
++    cairo_xlib_job_t *jobs, *job;
++
++    CAIRO_MUTEX_LOCK (display->mutex);
++    jobs = display->workqueue;
++    while (jobs != NULL) {
++	display->workqueue = NULL;
++	CAIRO_MUTEX_UNLOCK (display->mutex);
++
++	/* reverse the list to obtain FIFO order */
++	job = NULL;
++	do {
++	    cairo_xlib_job_t *next = jobs->next;
++	    jobs->next = job;
++	    job = jobs;
++	    jobs = next;
++	} while (jobs != NULL);
++	jobs = job;
++
++	do {
++	    job = jobs;
++	    jobs = job->next;
++
++	    switch (job->type){
++	    case WORK:
++		job->func.work.notify (display->display, job->func.work.data);
++		if (job->func.work.destroy != NULL)
++		    job->func.work.destroy (job->func.work.data);
++		break;
++
++	    case RESOURCE:
++		job->func.resource.notify (display->display,
++			                   job->func.resource.xid);
++		break;
++	    }
++
++	    _cairo_freelist_free (&display->wq_freelist, job);
++	} while (jobs != NULL);
++
++	CAIRO_MUTEX_LOCK (display->mutex);
++	jobs = display->workqueue;
++    }
++    CAIRO_MUTEX_UNLOCK (display->mutex);
++}
+--- a/src/cairo-xlib-private.h
++++ b/src/cairo-xlib-private.h
+@@ -35,30 +35,82 @@
+ 
+ #include "cairoint.h"
+ #include "cairo-xlib.h"
++#include "cairo-freelist-private.h"
+ 
++typedef struct _cairo_xlib_display cairo_xlib_display_t;
+ typedef struct _cairo_xlib_screen_info cairo_xlib_screen_info_t;
+ typedef struct _cairo_xlib_hook cairo_xlib_hook_t;
++typedef struct _cairo_xlib_job cairo_xlib_job_t;
++typedef void (*cairo_xlib_notify_func) (Display *, void *);
++typedef void (*cairo_xlib_notify_resource_func) (Display *, XID);
+ 
+ struct _cairo_xlib_hook {
+     cairo_xlib_hook_t *next;
+     void (*func) (Display *display, void *data);
+     void *data;
+-    void *key;
++    const void *key;
++};
++
++struct _cairo_xlib_display {
++    cairo_xlib_display_t *next;
++    unsigned int ref_count;
++    cairo_mutex_t mutex;
++
++    Display *display;
++    cairo_xlib_screen_info_t *screens;
++
++    cairo_xlib_job_t *workqueue;
++    cairo_freelist_t wq_freelist;
++
++    cairo_xlib_hook_t *close_display_hooks;
++    unsigned int closed :1;
+ };
+ 
+ struct _cairo_xlib_screen_info {
+     cairo_xlib_screen_info_t *next;
+     unsigned int ref_count;
+ 
+-    Display *display;
++    cairo_xlib_display_t *display;
+     Screen *screen;
+     cairo_bool_t has_render;
+ 
+     cairo_font_options_t font_options;
+ 
+-    cairo_xlib_hook_t *close_display_hooks;
++    GC gc[6];
+ };
+ 
++cairo_private cairo_xlib_display_t *
++_cairo_xlib_display_get (Display *display);
++
++cairo_private cairo_xlib_display_t *
++_cairo_xlib_display_reference (cairo_xlib_display_t *info);
++cairo_private void
++_cairo_xlib_display_destroy (cairo_xlib_display_t *info);
++
++cairo_private cairo_bool_t
++_cairo_xlib_add_close_display_hook (Display *display, void (*func) (Display *, void *), void *data, const void *key);
++cairo_private void
++_cairo_xlib_remove_close_display_hooks (Display *display, const void *key);
++
++cairo_private cairo_status_t
++_cairo_xlib_display_queue_work (cairo_xlib_display_t *display,
++	                        cairo_xlib_notify_func notify,
++				void *data,
++				void (*destroy)(void *));
++cairo_private cairo_status_t
++_cairo_xlib_display_queue_resource (cairo_xlib_display_t *display,
++	                           cairo_xlib_notify_resource_func notify,
++				   XID resource);
++cairo_private void
++_cairo_xlib_display_cancel_work (cairo_xlib_display_t *display,
++				 void *data);
++cairo_private void
++_cairo_xlib_display_cancel_resource (cairo_xlib_display_t *display,
++				     XID resource);
++
++cairo_private void
++_cairo_xlib_display_notify (cairo_xlib_display_t *display);
++
+ cairo_private cairo_xlib_screen_info_t *
+ _cairo_xlib_screen_info_get (Display *display, Screen *screen);
+ 
+@@ -67,10 +119,14 @@ _cairo_xlib_screen_info_reference (cairo
+ cairo_private void
+ _cairo_xlib_screen_info_destroy (cairo_xlib_screen_info_t *info);
+ 
+-cairo_private cairo_bool_t
+-_cairo_xlib_add_close_display_hook (Display *display, void (*func) (Display *, void *), void *data, void *key);
+ cairo_private void
+-_cairo_xlib_remove_close_display_hook (Display *display, void *key);
++_cairo_xlib_screen_info_close_display (cairo_xlib_screen_info_t *info);
++
++
++cairo_private GC
++_cairo_xlib_screen_get_gc (cairo_xlib_screen_info_t *info, int depth);
++cairo_private void
++_cairo_xlib_screen_put_gc (cairo_xlib_screen_info_t *info, int depth, GC gc);
+ 
+ #if CAIRO_HAS_XLIB_XRENDER_SURFACE
+ 
+--- a/src/cairo-xlib-screen.c
++++ b/src/cairo-xlib-screen.c
+@@ -58,7 +58,6 @@
+ 
+ #include <fontconfig/fontconfig.h>
+ 
+-#include <X11/Xlibint.h>	/* For XESetCloseDisplay */
+ #include <X11/extensions/Xrender.h>
+ 
+ static int
+@@ -133,7 +132,7 @@ get_integer_default (Display    *dpy,
+ #endif
+ 
+ static void
+-_cairo_xlib_init_screen_font_options (cairo_xlib_screen_info_t *info)
++_cairo_xlib_init_screen_font_options (Display *dpy, cairo_xlib_screen_info_t *info)
+ {
+     cairo_bool_t xft_hinting;
+     cairo_bool_t xft_antialias;
+@@ -143,23 +142,23 @@ _cairo_xlib_init_screen_font_options (ca
+     cairo_subpixel_order_t subpixel_order;
+     cairo_hint_style_t hint_style;
+ 
+-    if (!get_boolean_default (info->display, "antialias", &xft_antialias))
++    if (!get_boolean_default (dpy, "antialias", &xft_antialias))
+ 	xft_antialias = TRUE;
+ 
+-    if (!get_boolean_default (info->display, "hinting", &xft_hinting))
++    if (!get_boolean_default (dpy, "hinting", &xft_hinting))
+ 	xft_hinting = TRUE;
+ 
+-    if (!get_integer_default (info->display, "hintstyle", &xft_hintstyle))
++    if (!get_integer_default (dpy, "hintstyle", &xft_hintstyle))
+ 	xft_hintstyle = FC_HINT_FULL;
+ 
+-    if (!get_integer_default (info->display, "rgba", &xft_rgba))
++    if (!get_integer_default (dpy, "rgba", &xft_rgba))
+     {
+ 	xft_rgba = FC_RGBA_UNKNOWN;
+ 
+ #if RENDER_MAJOR > 0 || RENDER_MINOR >= 6
+ 	if (info->has_render)
+ 	{
+-	    int render_order = XRenderQuerySubpixelOrder (info->display,
++	    int render_order = XRenderQuerySubpixelOrder (dpy,
+ 							  XScreenNumberOfScreen (info->screen));
+ 
+ 	    switch (render_order)
+@@ -243,285 +242,165 @@ _cairo_xlib_init_screen_font_options (ca
+     cairo_font_options_set_hint_metrics (&info->font_options, CAIRO_HINT_METRICS_ON);
+ }
+ 
+-static cairo_xlib_screen_info_t *_cairo_xlib_screen_list = NULL;
+-
+-/* NOTE: This function must be called with _cairo_xlib_screen_mutex held. */
+-static void
+-_cairo_xlib_call_close_display_hooks (cairo_xlib_screen_info_t *info)
+-{
+-    /* call all registered shutdown routines */
+-    while (info->close_display_hooks != NULL) {
+-	cairo_xlib_hook_t *hooks = info->close_display_hooks;
+-	info->close_display_hooks = NULL;
+-
+-	/* drop the list mutex whilst calling the hooks */
+-	CAIRO_MUTEX_UNLOCK (_cairo_xlib_screen_mutex);
+-	do {
+-	    cairo_xlib_hook_t *hook = hooks;
+-	    hooks = hook->next;
+-
+-	    hook->func (info->display, hook->data);
+-
+-	    free (hook);
+-	} while (hooks != NULL);
+-	CAIRO_MUTEX_LOCK (_cairo_xlib_screen_mutex);
+-    }
+-}
+-
+-static void
+-_cairo_xlib_screen_info_reference_lock_held (cairo_xlib_screen_info_t *info)
+-{
+-    assert (info->ref_count > 0);
+-    info->ref_count++;
+-}
+-
+ cairo_xlib_screen_info_t *
+ _cairo_xlib_screen_info_reference (cairo_xlib_screen_info_t *info)
+ {
+     if (info == NULL)
+ 	return NULL;
+ 
+-    /* use our global mutex until we get a real atomic inc */
+-    CAIRO_MUTEX_LOCK (_cairo_xlib_screen_mutex);
+-
+-    _cairo_xlib_screen_info_reference_lock_held (info);
+-
+-    CAIRO_MUTEX_UNLOCK (_cairo_xlib_screen_mutex);
++    assert (info->ref_count > 0);
++    info->ref_count++;
+ 
+     return info;
+ }
+ 
+-static void
+-_cairo_xlib_screen_info_destroy_lock_held (cairo_xlib_screen_info_t *info)
++void
++_cairo_xlib_screen_info_close_display (cairo_xlib_screen_info_t *info)
+ {
+-    assert (info->ref_count > 0);
+-    if (--info->ref_count)
+-	return;
++    int i;
+ 
+-    _cairo_xlib_call_close_display_hooks (info);
+-    free (info);
++    for (i = 0; i < ARRAY_LENGTH (info->gc); i++) {
++	if (info->gc[i] != NULL) {
++	    XFreeGC (info->display->display, info->gc[i]);
++	    info->gc[i] = NULL;
++	}
++    }
+ }
+ 
+ void
+ _cairo_xlib_screen_info_destroy (cairo_xlib_screen_info_t *info)
+ {
++    cairo_xlib_screen_info_t **prev;
++    cairo_xlib_screen_info_t *list;
++
+     if (info == NULL)
+ 	return;
+ 
+-    CAIRO_MUTEX_LOCK (_cairo_xlib_screen_mutex);
+-
+-    _cairo_xlib_screen_info_destroy_lock_held (info);
+-
+-    CAIRO_MUTEX_UNLOCK (_cairo_xlib_screen_mutex);
+-}
+-
+-static int
+-_cairo_xlib_close_display (Display *dpy, XExtCodes *codes)
+-{
+-    cairo_xlib_screen_info_t *info, **prev, *next;
++    assert (info->ref_count > 0);
++    if (--info->ref_count)
++	return;
+ 
+-    /*
+-     * Unhook from the global list
+-     */
+-    CAIRO_MUTEX_LOCK (_cairo_xlib_screen_mutex);
+-
+-    prev = &_cairo_xlib_screen_list;
+-    for (info = _cairo_xlib_screen_list; info; info = next) {
+-	next = info->next;
+-	if (info->display == dpy) {
+-	    /* trigger the hooks explicitly as we know the display is closing */
+-	    _cairo_xlib_call_close_display_hooks (info);
+-	    _cairo_xlib_screen_info_destroy_lock_held (info);
+-	    *prev = next;
+-	} else {
+-	    prev = &info->next;
++    CAIRO_MUTEX_LOCK (info->display->mutex);
++    for (prev = &info->display->screens; (list = *prev); prev = &list->next) {
++	if (list == info) {
++	    *prev = info->next;
++	    break;
+ 	}
+     }
+-    *prev = NULL;
+-    CAIRO_MUTEX_UNLOCK (_cairo_xlib_screen_mutex);
+-
+-    /* Return value in accordance with requirements of
+-     * XESetCloseDisplay */
+-    return 0;
+-}
+-
+-static void
+-_cairo_xlib_screen_info_reset (void)
+-{
+-    /*
+-     * Delete everything in the list.
+-     */
+-    CAIRO_MUTEX_LOCK (_cairo_xlib_screen_mutex);
++    assert (list != NULL);
++    CAIRO_MUTEX_UNLOCK (info->display->mutex);
+ 
+-    while (_cairo_xlib_screen_list != NULL) {
+-	cairo_xlib_screen_info_t *info = _cairo_xlib_screen_list;
+-	_cairo_xlib_screen_list = info->next;
+-	_cairo_xlib_screen_info_destroy_lock_held (info);
+-    }
++    _cairo_xlib_screen_info_close_display (info);
+ 
+-    CAIRO_MUTEX_UNLOCK (_cairo_xlib_screen_mutex);
++    _cairo_xlib_display_destroy (info->display);
+ 
++    free (info);
+ }
+ 
+-static cairo_xlib_screen_info_t *
+-_cairo_xlib_screen_info_get_lock_held (Display *dpy, Screen *screen)
++cairo_xlib_screen_info_t *
++_cairo_xlib_screen_info_get (Display *dpy, Screen *screen)
+ {
+-    cairo_xlib_screen_info_t *info;
+-    cairo_xlib_screen_info_t **prev;
+-    int event_base, error_base;
+-    XExtCodes *codes;
+-    cairo_bool_t seen_display = FALSE;
++    cairo_xlib_display_t *display;
++    cairo_xlib_screen_info_t *info = NULL, **prev;
+ 
+-    for (prev = &_cairo_xlib_screen_list; (info = *prev); prev = &(*prev)->next)
+-    {
+-	if (info->display == dpy) {
+-	    seen_display = TRUE;
+-	    if (info->screen == screen) {
+-		/*
+-		 * MRU the list
+-		 */
+-		if (prev != &_cairo_xlib_screen_list) {
+-		    *prev = info->next;
+-		    info->next = _cairo_xlib_screen_list;
+-		    _cairo_xlib_screen_list = info;
+-		}
+-		break;
+-	    }
+-	}
+-    }
+-
+-    if (info)
+-	return info;
+-
+-    info = malloc (sizeof (cairo_xlib_screen_info_t));
+-    if (!info)
++    display = _cairo_xlib_display_get (dpy);
++    if (display == NULL)
+ 	return NULL;
+ 
+-    if (!seen_display) {
+-	codes = XAddExtension (dpy);
+-	if (!codes) {
+-	    free (info);
+-	    return NULL;
+-	}
++    CAIRO_MUTEX_LOCK (display->mutex);
++    if (display->closed) {
++	CAIRO_MUTEX_UNLOCK (display->mutex);
++	goto DONE;
++    }
+ 
+-	XESetCloseDisplay (dpy, codes->extension, _cairo_xlib_close_display);
++    for (prev = &display->screens; (info = *prev); prev = &(*prev)->next) {
++	if (info->screen == screen) {
++	    /*
++	     * MRU the list
++	     */
++	    if (prev != &display->screens) {
++		*prev = info->next;
++		info->next = display->screens;
++		display->screens = info;
++	    }
++	    break;
++	}
+     }
++    CAIRO_MUTEX_UNLOCK (display->mutex);
+ 
+-    info->ref_count = 1;
+-    info->display = dpy;
+-    info->screen = screen;
+-    info->close_display_hooks = NULL;
+-    info->has_render = FALSE;
+-    _cairo_font_options_init_default (&info->font_options);
++    if (info != NULL) {
++	info = _cairo_xlib_screen_info_reference (info);
++    } else {
++	info = malloc (sizeof (cairo_xlib_screen_info_t));
++	if (info != NULL) {
++	    info->ref_count = 1;
++	    info->display = _cairo_xlib_display_reference (display);
++	    info->screen = screen;
++	    info->has_render = FALSE;
++	    _cairo_font_options_init_default (&info->font_options);
++	    memset (info->gc, 0, sizeof (info->gc));
++
++	    if (screen) {
++		int event_base, error_base;
++		info->has_render = (XRenderQueryExtension (dpy, &event_base, &error_base) &&
++			(XRenderFindVisualFormat (dpy, DefaultVisual (dpy, DefaultScreen (dpy))) != 0));
++		_cairo_xlib_init_screen_font_options (dpy, info);
++	    }
+ 
+-    if (screen) {
+-	info->has_render = (XRenderQueryExtension (dpy, &event_base, &error_base) &&
+-			    (XRenderFindVisualFormat (dpy, DefaultVisual (dpy, DefaultScreen (dpy))) != 0));
+-	_cairo_xlib_init_screen_font_options (info);
++	    CAIRO_MUTEX_LOCK (display->mutex);
++	    info->next = display->screens;
++	    display->screens = info;
++	    CAIRO_MUTEX_UNLOCK (display->mutex);
++	}
+     }
+ 
+-    info->next = _cairo_xlib_screen_list;
+-    _cairo_xlib_screen_list = info;
++DONE:
++    _cairo_xlib_display_destroy (display);
+ 
+     return info;
+ }
+-cairo_xlib_screen_info_t *
+-_cairo_xlib_screen_info_get (Display *dpy, Screen *screen)
+-{
+-    cairo_xlib_screen_info_t *info;
+ 
+-    /* There is an apparent deadlock between this mutex and the
+-     * mutex for the display, but it's actually safe. For the
+-     * app to call XCloseDisplay() while any other thread is
+-     * inside this function would be an error in the logic
+-     * app, and the CloseDisplay hook is the only other place we
+-     * acquire this mutex.
+-     */
+-    CAIRO_MUTEX_LOCK (_cairo_xlib_screen_mutex);
+-
+-    info = _cairo_xlib_screen_info_get_lock_held (dpy, screen);
+-    if (info != NULL)
+-	_cairo_xlib_screen_info_reference_lock_held (info);
+-
+-    CAIRO_MUTEX_UNLOCK (_cairo_xlib_screen_mutex);
+-
+-    return info;
++static int
++depth_to_index (int depth)
++{
++    switch(depth){
++	case 1:  return 0;
++	case 8:  return 1;
++	case 15: return 2;
++	case 16: return 3;
++	case 24: return 4;
++	case 32: return 5;
++    }
++    return 0;
+ }
+ 
+-cairo_bool_t
+-_cairo_xlib_add_close_display_hook (Display *dpy, void (*func) (Display *, void *), void *data, void *key)
++GC
++_cairo_xlib_screen_get_gc (cairo_xlib_screen_info_t *info, int depth)
+ {
+-    cairo_xlib_screen_info_t *info;
+-    cairo_xlib_hook_t *hook;
+-    cairo_xlib_hook_t **prev;
+-    cairo_bool_t success = FALSE;
+ 
+-    CAIRO_MUTEX_LOCK (_cairo_xlib_screen_mutex);
++    GC gc;
+ 
+-    info = _cairo_xlib_screen_info_get_lock_held (dpy,  NULL);
+-    if (!info)
+-	goto unlock;
++    depth = depth_to_index (depth);
+ 
+-    for (prev = &info->close_display_hooks; (hook = *prev); prev = &hook->next)
+-    {
+-	if (hook->key == key) {
+-	    /*
+-	     * MRU the list
+-	     */
+-	    if (prev != &info->close_display_hooks) {
+-		*prev = hook->next;
+-		hook->next = info->close_display_hooks;
+-		info->close_display_hooks = hook;
+-	    }
+-	    break;
+-	}
+-    }
++    gc = info->gc[depth];
++    info->gc[depth] = NULL;
+ 
+-    if (!hook) {
+-	hook = malloc (sizeof (cairo_xlib_hook_t));
+-	if (!hook)
+-	    goto unlock;
+-	hook->func = func;
+-	hook->data = data;
+-	hook->key = key;
+-	hook->next = info->close_display_hooks;
+-	info->close_display_hooks = hook;
+-    }
+-
+-    success = TRUE;
+- unlock:
+-    CAIRO_MUTEX_UNLOCK (_cairo_xlib_screen_mutex);
+-    return success;
++    return gc;
+ }
+ 
+ void
+-_cairo_xlib_remove_close_display_hook (Display *dpy, void *key)
++_cairo_xlib_screen_put_gc (cairo_xlib_screen_info_t *info, int depth, GC gc)
+ {
+-    cairo_xlib_screen_info_t *info;
+-    cairo_xlib_hook_t *hook;
+-    cairo_xlib_hook_t **prev;
+-
+-    CAIRO_MUTEX_LOCK (_cairo_xlib_screen_mutex);
++    depth = depth_to_index (depth);
+ 
+-    info = _cairo_xlib_screen_info_get_lock_held (dpy, NULL);
+-    if (!info)
+-	goto unlock;
+-
+-    for (prev = &info->close_display_hooks; (hook = *prev); prev = &hook->next)
+-    {
+-	if (hook->key == key) {
+-	    *prev = hook->next;
+-	    free (hook);
+-	    break;
+-	}
++    if (info->gc[depth] != NULL) {
++	cairo_status_t status;
++	status = _cairo_xlib_display_queue_work (info->display,
++		                               (cairo_xlib_notify_func) XFreeGC,
++					       info->gc[depth],
++					       NULL);
++	(void) status;
+     }
+ 
+-unlock:
+-    CAIRO_MUTEX_UNLOCK (_cairo_xlib_screen_mutex);
+-}
+-
+-void
+-_cairo_xlib_screen_reset_static_data (void)
+-{
+-    _cairo_xlib_screen_info_reset ();
++    info->gc[depth] = gc;
+ }
+--- a/src/cairo-xlib-surface.c
++++ b/src/cairo-xlib-surface.c
+@@ -127,8 +127,17 @@ struct _cairo_xlib_surface {
+     int num_clip_rects;
+ 
+     XRenderPictFormat *xrender_format;
++    cairo_filter_t filter;
++    int repeat;
++    XTransform xtransform;
+ };
+ 
++static const XTransform identity = { {
++    { 1 << 16, 0x00000, 0x00000 },
++    { 0x00000, 1 << 16, 0x00000 },
++    { 0x00000, 0x00000, 1 << 16 },
++} };
++
+ #define CAIRO_SURFACE_RENDER_AT_LEAST(surface, major, minor)	\
+ 	(((surface)->render_major > major) ||			\
+ 	 (((surface)->render_major == major) && ((surface)->render_minor >= minor)))
+@@ -281,6 +290,8 @@ _cairo_xlib_surface_create_similar (void
+     cairo_xlib_surface_t *surface;
+     Pixmap pix;
+ 
++    _cairo_xlib_display_notify (src->screen_info->display);
++
+     /* Start by examining the surface's XRenderFormat, or if it
+      * doesn't have one, then look one up through its visual (in the
+      * case of a bitmap, it won't even have that). */
+@@ -322,21 +333,75 @@ _cairo_xlib_surface_create_similar (void
+     return &surface->base;
+ }
+ 
++static void
++_cairo_xlib_reset_clip_mask (Display *dpy, GC gc)
++{
++    XSetClipMask(dpy, gc, None);
++}
++
+ static cairo_status_t
+ _cairo_xlib_surface_finish (void *abstract_surface)
+ {
+     cairo_xlib_surface_t *surface = abstract_surface;
+-    if (surface->dst_picture != None)
+-	XRenderFreePicture (surface->dpy, surface->dst_picture);
+-
+-    if (surface->src_picture != None)
+-	XRenderFreePicture (surface->dpy, surface->src_picture);
+-
+-    if (surface->owns_pixmap)
+-	XFreePixmap (surface->dpy, surface->drawable);
+-
+-    if (surface->gc != NULL)
+-	XFreeGC (surface->dpy, surface->gc);
++    cairo_xlib_display_t *display = surface->screen_info ?
++	                            surface->screen_info->display :
++				    NULL;
++    cairo_status_t        status  = CAIRO_STATUS_SUCCESS;
++
++    if (surface->dst_picture != None) {
++	cairo_status_t status2;
++	assert (display != NULL);
++	status2 = _cairo_xlib_display_queue_resource (display,
++		                                      XRenderFreePicture,
++						      surface->dst_picture);
++	if (status2 == CAIRO_STATUS_SUCCESS)
++	    surface->dst_picture = None;
++	else if (status == CAIRO_STATUS_SUCCESS)
++	    status = status2;
++    }
++
++    if (surface->src_picture != None) {
++	cairo_status_t status2;
++	assert (display != NULL);
++	status2 = _cairo_xlib_display_queue_resource (display,
++		                                      XRenderFreePicture,
++						      surface->src_picture);
++	if (status2 == CAIRO_STATUS_SUCCESS)
++	    surface->src_picture = None;
++	else if (status == CAIRO_STATUS_SUCCESS)
++	    status = status2;
++    }
++
++    if (surface->owns_pixmap) {
++	cairo_status_t status2;
++	assert (display != NULL);
++	status2 = _cairo_xlib_display_queue_resource (display,
++		                           (cairo_xlib_notify_resource_func) XFreePixmap,
++					   surface->drawable);
++	if (status2 == CAIRO_STATUS_SUCCESS) {
++	    surface->owns_pixmap = FALSE;
++	    surface->drawable = None;
++	} else if (status == CAIRO_STATUS_SUCCESS)
++	    status = status2;
++    }
++
++    if (surface->gc != NULL) {
++	_cairo_xlib_screen_put_gc (surface->screen_info,
++		                   surface->depth,
++				   surface->gc);
++	if (surface->have_clip_rects) {
++	    cairo_status_t status2;
++	    assert (display != NULL);
++	    status2 = _cairo_xlib_display_queue_work (display,
++		           (cairo_xlib_notify_func) _cairo_xlib_reset_clip_mask,
++			   surface->gc,
++			   NULL);
++	    if (status2 == CAIRO_STATUS_SUCCESS)
++		surface->gc = NULL;
++	    else if (status == CAIRO_STATUS_SUCCESS)
++		status = status2;
++	}
++    }
+ 
+     if (surface->clip_rects != NULL)
+ 	free (surface->clip_rects);
+@@ -344,9 +409,12 @@ _cairo_xlib_surface_finish (void *abstra
+     if (surface->screen_info != NULL)
+ 	_cairo_xlib_screen_info_destroy (surface->screen_info);
+ 
+-    surface->dpy = NULL;
++    if (surface->dpy != NULL) {
++	_cairo_xlib_remove_close_display_hooks (surface->dpy, surface);
++	surface->dpy = NULL;
++    }
+ 
+-    return CAIRO_STATUS_SUCCESS;
++    return status;
+ }
+ 
+ static int
+@@ -747,11 +815,15 @@ _cairo_xlib_surface_ensure_gc (cairo_xli
+     if (surface->gc)
+ 	return CAIRO_STATUS_SUCCESS;
+ 
+-    gcv.graphics_exposures = False;
+-    surface->gc = XCreateGC (surface->dpy, surface->drawable,
+-			     GCGraphicsExposures, &gcv);
+-    if (!surface->gc)
+-	return CAIRO_STATUS_NO_MEMORY;
++    surface->gc = _cairo_xlib_screen_get_gc (surface->screen_info,
++	                                     surface->depth);
++    if (surface->gc == NULL) {
++	gcv.graphics_exposures = False;
++	surface->gc = XCreateGC (surface->dpy, surface->drawable,
++				 GCGraphicsExposures, &gcv);
++	if (!surface->gc)
++	    return CAIRO_STATUS_NO_MEMORY;
++    }
+ 
+     _cairo_xlib_surface_set_gc_clip_rects (surface);
+ 
+@@ -814,6 +886,8 @@ _cairo_xlib_surface_acquire_source_image
+     cairo_image_surface_t *image;
+     cairo_status_t status;
+ 
++    _cairo_xlib_display_notify (surface->screen_info->display);
++
+     status = _get_image_surface (surface, NULL, &image, NULL);
+     if (status)
+ 	return status;
+@@ -843,6 +917,8 @@ _cairo_xlib_surface_acquire_dest_image (
+     cairo_image_surface_t *image;
+     cairo_status_t status;
+ 
++    _cairo_xlib_display_notify (surface->screen_info->display);
++
+     status = _get_image_surface (surface, interest_rect, &image, image_rect_out);
+     if (status)
+ 	return status;
+@@ -894,6 +970,8 @@ _cairo_xlib_surface_clone_similar (void	
+     cairo_xlib_surface_t *clone;
+     cairo_status_t status;
+ 
++    _cairo_xlib_display_notify (surface->screen_info->display);
++
+     if (src->backend == surface->base.backend ) {
+ 	cairo_xlib_surface_t *xlib_src = (cairo_xlib_surface_t *)src;
+ 
+@@ -952,19 +1030,17 @@ _cairo_xlib_surface_set_matrix (cairo_xl
+ 
+     if (!CAIRO_SURFACE_RENDER_HAS_PICTURE_TRANSFORM (surface))
+     {
+-	static const XTransform identity = { {
+-	    { 1 << 16, 0x00000, 0x00000 },
+-	    { 0x00000, 1 << 16, 0x00000 },
+-	    { 0x00000, 0x00000, 1 << 16 },
+-	} };
+-
+ 	if (memcmp (&xtransform, &identity, sizeof (XTransform)) == 0)
+ 	    return CAIRO_STATUS_SUCCESS;
+ 
+ 	return CAIRO_INT_STATUS_UNSUPPORTED;
+     }
+ 
++    if (memcmp (&xtransform, &surface->xtransform, sizeof (XTransform)) == 0)
++	return CAIRO_STATUS_SUCCESS;
++
+     XRenderSetPictureTransform (surface->dpy, surface->src_picture, &xtransform);
++    surface->xtransform = xtransform;
+ 
+     return CAIRO_STATUS_SUCCESS;
+ }
+@@ -978,6 +1054,9 @@ _cairo_xlib_surface_set_filter (cairo_xl
+     if (!surface->src_picture)
+ 	return CAIRO_STATUS_SUCCESS;
+ 
++    if (surface->filter == filter)
++	return CAIRO_STATUS_SUCCESS;
++
+     if (!CAIRO_SURFACE_RENDER_HAS_FILTERS (surface))
+     {
+ 	if (filter == CAIRO_FILTER_FAST || filter == CAIRO_FILTER_NEAREST)
+@@ -1015,6 +1094,7 @@ _cairo_xlib_surface_set_filter (cairo_xl
+ 
+     XRenderSetPictureFilter (surface->dpy, surface->src_picture,
+ 			     (char *) render_filter, NULL, 0);
++    surface->filter = filter;
+ 
+     return CAIRO_STATUS_SUCCESS;
+ }
+@@ -1028,10 +1108,14 @@ _cairo_xlib_surface_set_repeat (cairo_xl
+     if (!surface->src_picture)
+ 	return CAIRO_STATUS_SUCCESS;
+ 
++    if (surface->repeat == repeat)
++	return CAIRO_STATUS_SUCCESS;
++
+     mask = CPRepeat;
+     pa.repeat = repeat;
+ 
+     XRenderChangePicture (surface->dpy, surface->src_picture, mask, &pa);
++    surface->repeat = repeat;
+ 
+     return CAIRO_STATUS_SUCCESS;
+ }
+@@ -1327,6 +1411,8 @@ _cairo_xlib_surface_composite (cairo_ope
+     int				itx, ity;
+     cairo_bool_t		is_integer_translation;
+ 
++    _cairo_xlib_display_notify (dst->screen_info->display);
++
+     if (!CAIRO_SURFACE_RENDER_HAS_COMPOSITE (dst))
+ 	return CAIRO_INT_STATUS_UNSUPPORTED;
+ 
+@@ -1466,6 +1552,8 @@ _cairo_xlib_surface_fill_rectangles (voi
+     cairo_xlib_surface_t *surface = abstract_surface;
+     XRenderColor render_color;
+ 
++    _cairo_xlib_display_notify (surface->screen_info->display);
++
+     if (!CAIRO_SURFACE_RENDER_HAS_FILL_RECTANGLE (surface))
+ 	return CAIRO_INT_STATUS_UNSUPPORTED;
+ 
+@@ -1598,6 +1686,8 @@ _cairo_xlib_surface_composite_trapezoids
+     int				render_src_x, render_src_y;
+     XRenderPictFormat		*pict_format;
+ 
++    _cairo_xlib_display_notify (dst->screen_info->display);
++
+     if (!CAIRO_SURFACE_RENDER_HAS_TRAPEZOIDS (dst))
+ 	return CAIRO_INT_STATUS_UNSUPPORTED;
+ 
+@@ -1707,6 +1797,8 @@ _cairo_xlib_surface_set_clip_region (voi
+ {
+     cairo_xlib_surface_t *surface = (cairo_xlib_surface_t *) abstract_surface;
+ 
++    _cairo_xlib_display_notify (surface->screen_info->display);
++
+     if (surface->clip_rects) {
+ 	free (surface->clip_rects);
+ 	surface->clip_rects = NULL;
+@@ -1793,6 +1885,16 @@ static void
+ _cairo_xlib_surface_scaled_glyph_fini (cairo_scaled_glyph_t *scaled_glyph,
+ 				       cairo_scaled_font_t  *scaled_font);
+ 
++static cairo_bool_t
++_cairo_xlib_surface_is_compatible (void *surface_a,
++	                           void *surface_b)
++{
++    cairo_xlib_surface_t *a = (cairo_xlib_surface_t *) surface_a;
++    cairo_xlib_surface_t *b = (cairo_xlib_surface_t *) surface_b;
++
++    return _cairo_xlib_surface_same_screen (a, b);
++}
++
+ static const cairo_surface_backend_t cairo_xlib_surface_backend = {
+     CAIRO_SURFACE_TYPE_XLIB,
+     _cairo_xlib_surface_create_similar,
+@@ -1822,7 +1924,8 @@ static const cairo_surface_backend_t cai
+     NULL, /* stroke */
+     NULL, /* fill */
+     _cairo_xlib_surface_show_glyphs,
+-    NULL  /* snapshot */
++    NULL,  /* snapshot */
++    _cairo_xlib_surface_is_compatible,
+ };
+ 
+ /**
+@@ -1839,6 +1942,44 @@ _cairo_surface_is_xlib (cairo_surface_t 
+     return surface->backend == &cairo_xlib_surface_backend;
+ }
+ 
++static void
++_cairo_xlib_surface_detach_display (Display *dpy, void *data)
++{
++    cairo_xlib_surface_t *surface = data;
++
++    surface->dpy = NULL;
++
++    if (surface->dst_picture != None) {
++	XRenderFreePicture (dpy, surface->dst_picture);
++	_cairo_xlib_display_cancel_resource (surface->screen_info->display,
++		                             surface->dst_picture);
++	surface->dst_picture = None;
++    }
++
++    if (surface->src_picture != None) {
++	XRenderFreePicture (dpy, surface->src_picture);
++	_cairo_xlib_display_cancel_resource (surface->screen_info->display,
++		                             surface->src_picture);
++	surface->src_picture = None;
++    }
++
++    if (surface->owns_pixmap) {
++	XFreePixmap (dpy, surface->drawable);
++	_cairo_xlib_display_cancel_resource (surface->screen_info->display,
++		                             surface->drawable);
++	surface->drawable = None;
++	surface->owns_pixmap = FALSE;
++    }
++
++    if (surface->gc != NULL) {
++	assert (surface->screen_info != NULL);
++	XFreeGC (dpy, surface->gc);
++	_cairo_xlib_display_cancel_work (surface->screen_info->display,
++		                         surface->gc);
++	surface->gc = NULL;
++    }
++}
++
+ static cairo_surface_t *
+ _cairo_xlib_surface_create_internal (Display		       *dpy,
+ 				     Drawable		        drawable,
+@@ -1865,6 +2006,14 @@ _cairo_xlib_surface_create_internal (Dis
+ 	return (cairo_surface_t*) &_cairo_surface_nil;
+     }
+ 
++    if (! _cairo_xlib_add_close_display_hook (dpy,
++	    _cairo_xlib_surface_detach_display, surface, surface)) {
++	free (surface);
++	_cairo_xlib_screen_info_destroy (screen_info);
++	_cairo_error (CAIRO_STATUS_NO_MEMORY);
++	return (cairo_surface_t*) &_cairo_surface_nil;
++    }
++
+     if (xrender_format) {
+ 	depth = xrender_format->depth;
+     } else if (visual) {
+@@ -1935,6 +2084,9 @@ _cairo_xlib_surface_create_internal (Dis
+     surface->visual = visual;
+     surface->xrender_format = xrender_format;
+     surface->depth = depth;
++    surface->filter = (cairo_filter_t) -1; /* XXX XRender default? */
++    surface->repeat = FALSE;
++    surface->xtransform = identity;
+ 
+     surface->have_clip_rects = FALSE;
+     surface->clip_rects = NULL;
+@@ -2125,14 +2277,26 @@ cairo_xlib_surface_set_drawable (cairo_s
+ 	return;
+ 
+     if (surface->drawable != drawable) {
+-	if (surface->dst_picture)
+-	    XRenderFreePicture (surface->dpy, surface->dst_picture);
++	if (surface->dst_picture != None) {
++	    cairo_status_t status;
++	    status = _cairo_xlib_display_queue_resource (
++		                                  surface->screen_info->display,
++						  XRenderFreePicture,
++						  surface->dst_picture);
++	    (void) status;
++	    surface->dst_picture = None;
++	}
++
++	if (surface->src_picture != None) {
++	    cairo_status_t status;
++	    status = _cairo_xlib_display_queue_resource (
++		                                  surface->screen_info->display,
++						  XRenderFreePicture,
++						  surface->src_picture);
++	    (void) status;
+ 
+-	if (surface->src_picture)
+-	    XRenderFreePicture (surface->dpy, surface->src_picture);
+-
+-	surface->dst_picture = None;
+-	surface->src_picture = None;
++	    surface->src_picture = None;
++	}
+ 
+ 	surface->drawable = drawable;
+     }
+@@ -2310,7 +2474,7 @@ typedef struct _cairo_xlib_surface_font_
+ 
+ static void
+ _cairo_xlib_surface_remove_scaled_font (Display *dpy,
+-	                               void    *data)
++	                                void    *data)
+ {
+     cairo_scaled_font_t *scaled_font = data;
+     cairo_xlib_surface_font_private_t	*font_private;
+@@ -2322,8 +2486,18 @@ _cairo_xlib_surface_remove_scaled_font (
+     _cairo_scaled_font_reset_cache (scaled_font);
+     CAIRO_MUTEX_UNLOCK (scaled_font->mutex);
+ 
+-    if (font_private) {
++    if (font_private != NULL) {
++	cairo_xlib_display_t *display;
++
+ 	XRenderFreeGlyphSet (font_private->dpy, font_private->glyphset);
++
++	display = _cairo_xlib_display_get (dpy);
++	if (display != NULL) {
++	    _cairo_xlib_display_cancel_resource (display,
++		                                 font_private->glyphset);
++	    _cairo_xlib_display_destroy (display);
++	}
++
+ 	free (font_private);
+     }
+ }
+@@ -2363,12 +2537,34 @@ _cairo_xlib_surface_scaled_font_fini (ca
+     cairo_xlib_surface_font_private_t	*font_private = scaled_font->surface_private;
+ 
+     if (font_private) {
+-	_cairo_xlib_remove_close_display_hook (font_private->dpy, scaled_font);
+-	XRenderFreeGlyphSet (font_private->dpy, font_private->glyphset);
++	cairo_xlib_display_t *display;
++
++	_cairo_xlib_remove_close_display_hooks (font_private->dpy, scaled_font);
++
++	display = _cairo_xlib_display_get (font_private->dpy);
++	if (display != NULL) {
++	    cairo_status_t status = _cairo_xlib_display_queue_resource (display,
++					                XRenderFreeGlyphSet,
++					                font_private->glyphset);
++	    (void) status; /* cannot propagate failure */
++	    _cairo_xlib_display_destroy (display);
++	}
++
+ 	free (font_private);
+     }
+ }
+ 
++struct _cairo_xlib_render_free_glyphs {
++    GlyphSet glyphset;
++    unsigned long glyph_index;
++};
++static void _cairo_xlib_render_free_glyphs (Display *dpy, struct _cairo_xlib_render_free_glyphs *arg)
++{
++    XRenderFreeGlyphs (dpy,
++	               arg->glyphset,
++	               &arg->glyph_index, 1);
++}
++
+ static void
+ _cairo_xlib_surface_scaled_glyph_fini (cairo_scaled_glyph_t *scaled_glyph,
+ 				       cairo_scaled_font_t  *scaled_font)
+@@ -2376,10 +2572,23 @@ _cairo_xlib_surface_scaled_glyph_fini (c
+     cairo_xlib_surface_font_private_t	*font_private = scaled_font->surface_private;
+ 
+     if (font_private != NULL && scaled_glyph->surface_private != NULL) {
+-	unsigned long	glyph_index = _cairo_scaled_glyph_index(scaled_glyph);
+-	XRenderFreeGlyphs (font_private->dpy,
+-			   font_private->glyphset,
+-			   &glyph_index, 1);
++	cairo_xlib_display_t *display = _cairo_xlib_display_get (font_private->dpy);
++	if (display != NULL) {
++	    struct _cairo_xlib_render_free_glyphs *arg = malloc (sizeof (*arg));
++	    if (arg != NULL) {
++		cairo_status_t status;
++		arg->glyphset = font_private->glyphset;
++		arg->glyph_index = _cairo_scaled_glyph_index (scaled_glyph);
++		status = _cairo_xlib_display_queue_work (display,
++			(cairo_xlib_notify_func) _cairo_xlib_render_free_glyphs,
++			arg,
++			free);
++		(void) status; /* cannot propagate failure */
++	    }
++
++	    _cairo_xlib_display_destroy (display);
++
++	}
+     }
+ }
+ 
+@@ -2990,6 +3199,7 @@ _cairo_xlib_surface_show_glyphs (void   
+ 	_cairo_pattern_fini (&solid_pattern.base);
+   BAIL0:
+     _cairo_scaled_font_thaw_cache (scaled_font);
++    _cairo_xlib_display_notify (dst->screen_info->display);
+ 
+     return status;
+ }
+--- a/src/cairoint.h
++++ b/src/cairoint.h
+@@ -172,6 +172,11 @@ do {					\
+     assert (NOT_REACHED);		\
+ } while (0)
+ 
++/* Performs a compile time assert */
++#define CAIRO_STATIC_ASSERT(condition) _CAIRO_STATIC_ASSERT_IMPL(condition, __LINE__)
++#define _CAIRO_STATIC_ASSERT_IMPL(condition, line) _CAIRO_STATIC_ASSERT_IMPL2(condition, line)
++#define _CAIRO_STATIC_ASSERT_IMPL2(condition, line) typedef int _cairo_static_assert_line_##line[(condition) ? 1 : -1]
++
+ #define CAIRO_REF_COUNT_INVALID ((unsigned int) -1)
+ 
+ #include "cairo-mutex-private.h"
+@@ -591,12 +596,6 @@ _cairo_font_reset_static_data (void);
+ cairo_private void
+ _cairo_ft_font_reset_static_data (void);
+ 
+-cairo_private void
+-_cairo_xlib_surface_reset_static_data (void);
+-
+-cairo_private void
+-_cairo_xlib_screen_reset_static_data (void);
+-
+ /* the font backend interface */
+ 
+ struct _cairo_unscaled_font_backend {
+@@ -974,6 +973,10 @@ struct _cairo_surface_backend {
+ 
+     cairo_surface_t *
+     (*snapshot)			(void			*surface);
++
++    cairo_bool_t
++    (*is_compatible)		(void			*surface_a,
++	                         void			*surface_b);
+ };
+ 
+ typedef struct _cairo_format_masks {
+@@ -1848,7 +1851,8 @@ _cairo_surface_create_similar_solid (cai
+ 				     cairo_content_t	  content,
+ 				     int		  width,
+ 				     int		  height,
+-				     const cairo_color_t *color);
++				     const cairo_color_t *color,
++				     cairo_pattern_t	 *pattern);
+ 
+ cairo_private void
+ _cairo_surface_init (cairo_surface_t			*surface,
+@@ -1993,6 +1997,10 @@ _cairo_surface_clone_similar (cairo_surf
+ cairo_private cairo_surface_t *
+ _cairo_surface_snapshot (cairo_surface_t *surface);
+ 
++cairo_private cairo_bool_t
++_cairo_surface_is_compatible (cairo_surface_t *surface_a,
++	                      cairo_surface_t *surface_b);
++
+ cairo_private unsigned int
+ _cairo_surface_get_current_clip_serial (cairo_surface_t *surface);
+ 
+--- a/test/create-for-stream.c
++++ b/test/create-for-stream.c
+@@ -177,12 +177,14 @@ test_surface (const char		 *filename,
+     if (fread (file_contents, 1, wc.index, fp) != wc.index) {
+ 	cairo_test_log ("Failed to read %s: %s\n",
+ 			filename, strerror (errno));
++	fclose (fp);
+ 	return CAIRO_TEST_FAILURE;
+     }
+ 
+     if (memcmp (file_contents, wc.buffer, wc.index) != 0) {
+ 	cairo_test_log ("Stream based output differ from file output for %s\n",
+ 			filename);
++	fclose (fp);
+ 	return CAIRO_TEST_FAILURE;
+     }
+ 
+@@ -195,35 +197,36 @@ test_surface (const char		 *filename,
+ int
+ main (void)
+ {
+-    cairo_test_status_t status;
++    cairo_test_status_t status = CAIRO_TEST_SUCCESS;
++    cairo_test_status_t test_status;
+ 
+     cairo_test_init ("create-for-stream");
+ 
+ #if CAIRO_HAS_PS_SURFACE
+-    status = test_surface ("create-for-stream.ps",
+-			   cairo_ps_surface_create,
+-			   cairo_ps_surface_create_for_stream);
+-    if (status != CAIRO_TEST_SUCCESS)
+-	return status;
++    test_status = test_surface ("create-for-stream.ps",
++			        cairo_ps_surface_create,
++			        cairo_ps_surface_create_for_stream);
++    if (status == CAIRO_TEST_SUCCESS)
++	status = test_status;
+ #endif
+ 
+ #if CAIRO_HAS_PDF_SURFACE
+-    status = test_surface ("create-for-stream.pdf",
+-			   cairo_pdf_surface_create,
+-			   cairo_pdf_surface_create_for_stream);
+-    if (status != CAIRO_TEST_SUCCESS)
+-	return status;
++    test_status = test_surface ("create-for-stream.pdf",
++			        cairo_pdf_surface_create,
++			        cairo_pdf_surface_create_for_stream);
++    if (status == CAIRO_TEST_SUCCESS)
++	status = test_status;
+ #endif
+ 
+ #if CAIRO_HAS_SVG_SURFACE
+-    status = test_surface ("create-for-stream.svg",
+-			   cairo_svg_surface_create,
+-			   cairo_svg_surface_create_for_stream);
+-    if (status != CAIRO_TEST_SUCCESS)
+-	return status;
++    test_status = test_surface ("create-for-stream.svg",
++			        cairo_svg_surface_create,
++			        cairo_svg_surface_create_for_stream);
++    if (status == CAIRO_TEST_SUCCESS)
++	status = test_status;
+ #endif
+ 
+     cairo_test_fini ();
+ 
+-    return CAIRO_TEST_SUCCESS;
++    return status;
+ }
