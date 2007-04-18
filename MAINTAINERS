@@ -45,9 +45,10 @@ Recipes:    at76c503a, dropbear, handhelds-sa, handhelds-pxa
 Person:     Florian Boor
 Mail:       fb@kernelconcepts.de
 Website:    http://fl0rian.wordpress.com, http://www.kernelconcepts.de/~fuchs/
-Machines:   nokia770, netvista, htcuniversal, netbook-pro
+Machines:   nokia770, netvista, htcuniversal, netbook-pro, htctornado
 Distros:  
-Interests:  GPEPhone, OpenSync, GPE, Matchbox, *dbus*, X, sqlite
+Interests:  GPEPhone, OpenSync, GPE, Matchbox, *dbus*, X, sqlite, Palm TX,
+interests:  phone devices
 Recipes:    gpe-*, libgpe*, libeventdb, libtododb, libcontactsdb, xserver-common
 Recipes:    gomunicator, mbmerlin, prismstumbler gkdial, fbreader, networkmanager
 Recipes:    minimix, minilite, miniclipboard, gpephone*
