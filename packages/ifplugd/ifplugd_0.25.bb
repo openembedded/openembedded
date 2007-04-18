@@ -6,6 +6,8 @@ LICENSE = "GPL"
 
 SRC_URI = "http://0pointer.de/lennart/projects/ifplugd/ifplugd-${PV}.tar.gz"
 
+SRC_URI_append_nylon = " file://kernel-types.patch;patch=1"
+
 inherit autotools update-rc.d pkgconfig
 
 EXTRA_OECONF = "--disable-lynx"

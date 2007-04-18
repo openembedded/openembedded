@@ -74,3 +74,11 @@ do_stage () {
 	# compile with kernel headers that work with EABI on ARM
 	echo '#define UTS_RELEASE "2.6.18"' >> ${CROSS_DIR}/${TARGET_SYS}/include/linux/version.h
 }
+
+do_stage_append_nylon () {
+	cp -pPR include/asm-${ARCH}/* ${STAGING_INCDIR}/asm/
+	cp -pPR include/asm-${ARCH}/* ${CROSS_DIR}/${TARGET_SYS}/include/asm/
+	cp -pPR include/linux/* ${STAGING_INCDIR}/linux/
+	cp -pPR include/linux/* ${CROSS_DIR}/${TARGET_SYS}/include/linux/
+}
+
