@@ -1,0 +1,52 @@
+diff -Naur tuxtxt.org/tuxtxt.c tuxtxt/tuxtxt.c
+--- tuxtxt.org/tuxtxt.c	2007-03-27 20:57:46.000000000 +0200
++++ tuxtxt/tuxtxt.c	2007-03-27 21:03:35.000000000 +0200
+@@ -4000,6 +4000,28 @@
+ 		ioctl(pig, VIDIOC_S_FMT, &format);
+ 		ioctl(pig, VIDIOC_OVERLAY, &sm);
+ #endif
++		// Video picture scale/pos for 7025
++		int i;
++		for (i=0; i<4; ++i)
++		{
++			char *targets[]={"left", "top", "width", "height"};
++			char filename[128];
++			snprintf(filename, 128, "/proc/stb/vmpeg/%d/dst_%s", 0, targets[i]);
++			FILE *f = fopen(filename, "w");
++			if (!f)
++				break;
++			int val = 0;
++			switch (i)
++			{
++			case 0: val = tx; break;
++			case 1: val = ty; break;
++			case 2: val = tw; break;
++			case 3: val = th; break;
++			}
++			fprintf(f, "%08x\n", val);
++			fclose(f);
++		}
++		
+ 		writeproc("/proc/stb/avs/0/sb", fncmodes[screen_mode2]);
+ 		writeproc("/proc/stb/denc/0/wss", saamodes[screen_mode2]);
+ 	}
+@@ -4010,6 +4032,19 @@
+ #else
+ 		ioctl(pig, VIDIOC_OVERLAY, &screenmode);
+ #endif
++		// Video picture scale/pos for 7025
++		int i;
++		for (i=0; i<4; ++i)
++		{
++			char *targets[]={"left", "top", "width", "height"};
++			char filename[128];
++			snprintf(filename, 128, "/proc/stb/vmpeg/%d/dst_%s", 0, targets[i]);
++			FILE *f = fopen(filename, "w");
++			if (!f)
++				break;
++			fprintf(f, "%08x\n", 0);
++			fclose(f);
++		}
+ 
+ 		setfontwidth(fontwidth_normal);
+ 		displaywidth= (ex-sx);
