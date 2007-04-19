@@ -16,7 +16,6 @@ COMPATIBLE_HOST = 'arm.*-linux'
 COMPATIBLE_MACHINE = "mx31ads"
 
 inherit kernel
-inherit package
 
 ARCH = "arm"
 KERNEL_IMAGETYPE = "zImage"
@@ -55,3 +54,5 @@ do_deploy() {
 do_deploy[dirs] = "${S}"
 
 addtask deploy before do_build after do_compile
+
+KERNEL_RELEASE = "2.6.19-rc6"
