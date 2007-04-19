@@ -41,7 +41,7 @@ def base_chk_file(parser, pn, pv, src_uri, localpath, data):
 
     # md5 and sha256 should be valid now
     if not os.path.exists(localpath):
-        bb.note("The locapath does not exist '%s'" % localpath)
+        bb.note("The localpath does not exist '%s'" % localpath)
         raise Exception("The path does not exist '%s'" % localpath)
 
 
@@ -483,7 +483,7 @@ python base_do_fetch() {
 
 	# Check each URI
 	for url in src_uri.split():
-		localpath = bb.fetch.localpath(url,localdata)
+		localpath = bb.data.expand(bb.fetch.localpath(url, localdata), localdata)
 		(type,host,path,_,_,_) = bb.decodeurl(url)
 		uri = "%s://%s%s" % (type,host,path)
 		try:

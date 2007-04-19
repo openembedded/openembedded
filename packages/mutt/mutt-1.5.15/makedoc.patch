@@ -1,0 +1,26 @@
+Index: mutt-1.5.15/makedoc.c
+===================================================================
+--- mutt-1.5.15.orig/makedoc.c	2007-04-01 22:58:56.000000000 +0100
++++ mutt-1.5.15/makedoc.c	2007-04-19 09:33:17.000000000 +0100
+@@ -49,7 +49,7 @@
+ #ifndef HAVE_STRERROR
+ #ifndef STDC_HEADERS
+ extern int sys_nerr;
+-extern char *sys_errlist[];
++extern __const char *__const sys_errlist[];
+ #endif
+ 
+ #define strerror(x) ((x) > 0 && (x) < sys_nerr) ? sys_errlist[(x)] : 0
+Index: mutt-1.5.15/Makefile.am
+===================================================================
+--- mutt-1.5.15.orig/Makefile.am	2007-04-19 09:33:30.000000000 +0100
++++ mutt-1.5.15/Makefile.am	2007-04-19 09:33:54.000000000 +0100
+@@ -49,6 +49,8 @@
+ # 	@rm -rf makedoc
+ # 	$(HOST_CC) $(AM_CFLAGS) $(LDFLAGS) $(makedoc_LDFLAGS) $(makedoc_OBJECTS) $(makedoc_LDADD) -o makedoc
+ 
++makedoc : $(makedoc_SOURCES)
++
+ DEFS=-DPKGDATADIR=\"$(pkgdatadir)\" -DSYSCONFDIR=\"$(sysconfdir)\" \
+ 	-DBINDIR=\"$(bindir)\" -DMUTTLOCALEDIR=\"$(datadir)/locale\" \
+ 	-DHAVE_CONFIG_H=1
