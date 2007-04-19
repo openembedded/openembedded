@@ -1,6 +1,6 @@
-inherit image_ipk 
-inherit nylon_image
-LICENSE = MIT
+inherit image
+inherit nylon-image
+LICENSE = "MIT"
 
 export IMAGE_BASENAME = "nylon-base"
  
@@ -22,7 +22,7 @@ RDEPENDS_append_mtx-2 = " modutils modutils-initscripts modutils-depmod modutils
 RDEPENDS_append_mtx-3 = " module-init-tools udev"
 RDEPENDS_append_mtx-3a = " module-init-tools"
 
-export IPKG_INSTALL = "${RDEPENDS}" 
+export PACKAGE_INSTALL = "${RDEPENDS}"
 
 IMAGE_LINGUAS = ""
 
