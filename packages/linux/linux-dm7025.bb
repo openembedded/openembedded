@@ -9,7 +9,7 @@ PR = "r6"
 SRC_URI += "ftp://ftp.kernel.org/pub/linux/kernel/v2.6/linux-${PV}.tar.bz2 \
 	http://sources.dreamboxupdate.com/download/kernel-patches/linuxmips-${KV}-dream-r6.patch.bz2;patch=1;pnum=1 \
 	http://sources.dreamboxupdate.com/download/kernel-patches/linux-${KV}-update_dvbapi-r1.patch.bz2;patch=1;pnum=1 \
-	http://sources.dreamboxupdate.com/download/kernel-patches/linuxmips-${KV}-dm7025-r4.conf \
+	http://sources.dreamboxupdate.com/download/kernel-patches/linuxmips-${KV}-dm7025-r5.conf \
 	http://dreamboxupdate.com/download/kernel-patches/linux-2.6.12-dvb-multipid-r4.patch.bz2;patch=1;pnum=1"
 
 S = "${WORKDIR}/linux-${PV}"
@@ -24,7 +24,7 @@ KERNEL_OUTPUT = "vmlinux"
 KERNEL_OBJECT_SUFFIX = "ko"
 
 do_configure_prepend() {
-	oe_machinstall -m 0644 ${WORKDIR}/linuxmips-${KV}-dm7025-r4.conf ${S}/.config
+	oe_machinstall -m 0644 ${WORKDIR}/linuxmips-${KV}-dm7025-r5.conf ${S}/.config
 	oe_runmake oldconfig
 }
 
