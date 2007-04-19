@@ -1,7 +1,7 @@
 require avahi.inc
-PR="r0"
+PR="r1"
 
-DEPENDS =+ "gtk+"
+DEPENDS =+ "gtk+ libglade"
 
 PACKAGES =+ "libavahi-ui"
 FILES_libavahi-ui = "${libdir}/libavahi-ui.so.*"
