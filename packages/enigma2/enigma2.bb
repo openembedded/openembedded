@@ -20,7 +20,7 @@ PACKAGES_DYNAMIC = "enigma2-plugin-*"
 
 PN = "enigma2"
 PR = "r0"
-SRCDATE = "20070120"
+SRCDATE = "20070420"
 
 REL_MAJOR="2"
 REL_MINOR="2"
