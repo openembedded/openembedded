@@ -3,9 +3,9 @@ DESCRIPTION = "Enigma Modem Plugin"
 MAINTAINER = "Andreas Monzner <ghost@dream-multimedia-tv.de>"
 LICENSE = "GPL"
 
-SRC_URI = "http://sources.dreamboxupdate.com/download/opendreambox/enigma/enigma-modem-${PV}-r1.tar.gz"
+SRC_URI = "http://sources.dreamboxupdate.com/download/opendreambox/enigma/enigma-modem-${PV}.tar.gz"
 
-PV = "0.1"
+PV = "0.2"
 PN = "enigma-modem"
 PR = "r1"
 
@@ -17,6 +17,8 @@ inherit autotools pkgconfig
 
 FILES_${PN} = "/usr/lib/tuxbox/plugins/enigma_modem.so \
 		/usr/lib/tuxbox/plugins/enigma_modem.cfg \
+		/etc/ppp/options \
+		/etc/ppp/pap-secrets \
 		/etc/ppp/dial.modem \
 		/etc/ppp/disconnect.modem \
 		/etc/ppp/ip-up.d/01peerdns /etc/ppp/ip-down.d/01peerdns-remove"
