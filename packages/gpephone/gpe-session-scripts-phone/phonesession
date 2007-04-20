@@ -39,9 +39,8 @@ export PTIM_ENGINE_PATH=$PTIM_PATH/engine
 export GTK_IM_MODULE=ptim
 
 # Start GPE Phone Edition apps through matchbox session
-gpe-applauncher&
-sleep 2
 gpe-phonepanel&
+gpe-applauncher&
 matchbox-window-manager -use_titlebar no&
 
 # Start E-Sound Server
@@ -60,4 +59,4 @@ gsmMux -d -p /dev/ttyS0 -m cms92 -f 128 -b 115200 -c /dev/ptmx /dev/ptmx &
 echo $DBUS_SESSION_BUS_ADDRESS > /tmp/dbusaddress
 
 # Start PhoneServer - do not stop, it keeps the session running
-phoneserver
+exec phoneserver
