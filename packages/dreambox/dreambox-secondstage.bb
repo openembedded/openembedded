@@ -3,7 +3,7 @@ SECTION = "base"
 PRIORITY = "required"
 MAINTAINER = "Felix Domke <tmbinc@elitedvb.net>"
 PV_dm7020 = "35"
-PV_dm7025 = "45"
+PV_dm7025 = "51"
 PV_dm600pvr = "51"
 PR = "r0"
 
