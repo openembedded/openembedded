@@ -1,0 +1,24 @@
+diff -Naur gkrellm-2.2.7-orig/server/Makefile gkrellm-2.2.7/server/Makefile
+--- gkrellm-2.2.7-orig/server/Makefile	2004-04-12 15:30:48.000000000 +0200
++++ gkrellm-2.2.7/server/Makefile	2007-04-06 12:48:08.000000000 +0200
+@@ -129,7 +129,7 @@
+ 
+ install:
+ 	$(INSTALL) -d -m $(INSTALLDIRMODE) $(SINSTALLDIR)
+-	$(INSTALL) -c $(STRIP) -m $(BINMODE) gkrellmd $(SINSTALLDIR)/$(PACKAGE_D)
++	$(INSTALL) -c $(STRIP) -m $(BINMODE) gkrellmd $(SINSTALLDIR)
+ 	$(INSTALL) -d -m $(INCLUDEDIRMODE) $(INCLUDEDIR)/gkrellm2
+ 	$(INSTALL) -c -m $(INCLUDEMODE) $(GKRELLMD_INCLUDES) $(INCLUDEDIR)/gkrellm2
+ 	$(INSTALL) -d -m $(MANDIRMODE) $(SMANDIR)
+diff -Naur gkrellm-2.2.7-orig/src/Makefile gkrellm-2.2.7/src/Makefile
+--- gkrellm-2.2.7-orig/src/Makefile	2005-05-09 18:54:03.000000000 +0200
++++ gkrellm-2.2.7/src/Makefile	2007-04-06 12:48:24.000000000 +0200
+@@ -144,7 +144,7 @@
+ 
+ install:
+ 	$(INSTALL) -d -m $(INSTALLDIRMODE) $(INSTALLDIR)
+-	$(INSTALL) -c $(STRIP) -m $(BINMODE) gkrellm $(INSTALLDIR)/$(PACKAGE)
++	$(INSTALL) -c $(STRIP) -m $(BINMODE) gkrellm $(INSTALLDIR)
+ 	$(INSTALL) -d -m $(INCLUDEDIRMODE) $(INCLUDEDIR)/gkrellm2
+ 	$(INSTALL) -c -m $(INCLUDEMODE) $(GKRELLM_INCLUDES) $(INCLUDEDIR)/gkrellm2
+ 	$(INSTALL) -d -m $(MANDIRMODE) $(MANDIR)
