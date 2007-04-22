@@ -1,4 +1,5 @@
 require ${PN}.inc
+PR = "r1"
 
 PV = "${OPIE_CVS_PV}"
 
