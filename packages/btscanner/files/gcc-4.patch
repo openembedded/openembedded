@@ -1,0 +1,12 @@
+diff -Naur btscanner-2.0.orig/configure.in btscanner-2.0/configure.in
+--- btscanner-2.0.orig/configure.in	2004-11-01 12:56:02.000000000 +0100
++++ btscanner-2.0/configure.in	2007-03-11 14:58:09.000000000 +0100
+@@ -64,7 +64,7 @@
+ 
+ # CFLAGS
+ CFLAGS="$CFLAGS -Wall -pthread -Wshadow -Wbad-function-cast \
+-  -Wformat -Wimplicit-function-dec -Wparentheses -Wsign-compare \
++  -Wformat -Wparentheses -Wsign-compare \
+   -Wstrict-prototypes -Wtrigraphs -Wundef -Wuninitialized \
+   -W -Wunused -Wformat-security -Wmissing-braces -Wbad-function-cast \
+   -Wcast-qual -falign-functions -falign-labels -falign-loops\
