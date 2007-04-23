@@ -1,88 +1,4 @@
-
-
-
-
-
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN"
-"http://www.w3.org/TR/REC-html40/loose.dtd">
-<!-- ViewCVS - http://viewcvs.sourceforge.net/
-by Greg Stein - mailto:gstein@lyra.org -->
-<html>
-<head>
-<title>svn.openezx.org Repository - markup - svn.openezx.org: branches/kernel-2.6.20.7-patches/defconfig-a780</title>
-<meta name="generator" content="ViewCVS 1.0-dev">
-<link rel="stylesheet" href="/viewcvs/styles.css" type="text/css">
-</head>
-<body>
-<div class="vc_navheader">
-<table width="100%" border="0" cellpadding="0" cellspacing="0">
-<tr>
-<td align="left"><a href="/cgi-bin/viewcvs.cgi/?rev=1981#dirlist">[svn.openezx.org]</a> / <a href="/cgi-bin/viewcvs.cgi/branches/?rev=1981#dirlist">branches</a> / <a href="/cgi-bin/viewcvs.cgi/branches/kernel-2.6.20.7-patches/?rev=1981#dirlist">kernel-2.6.20.7-patches</a> / defconfig-a780</td>
-<td align="right">
-
-<form method=get action="/cgi-bin/viewcvs.cgi/">
-
-<b>Project Root:</b>
-<select name="root" onchange="submit()">
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<optgroup label="CVS Repositories"><option>cvs</option></optgroup>
-
-
-<optgroup label="Subversion Repositories"><option selected>svn.openezx.org</option></optgroup>
-
-</select>
-<input type=submit value="Go">
-</form>
-
-</td>
-</tr>
-</table>
-</div>
-<h1>svn.openezx.org: branches/kernel-2.6.20.7-patches/defconfig-a780</h1>
-
-<div class="vc_summary">
-File: <a href="/cgi-bin/viewcvs.cgi/?rev=1981#dirlist">[svn.openezx.org]</a> / <a href="/cgi-bin/viewcvs.cgi/branches/?rev=1981#dirlist">branches</a> / <a href="/cgi-bin/viewcvs.cgi/branches/kernel-2.6.20.7-patches/?rev=1981#dirlist">kernel-2.6.20.7-patches</a> / defconfig-a780
-(<a href="/cgi-bin/viewcvs.cgi/*checkout*/branches/kernel-2.6.20.7-patches/defconfig-a780?rev=1981"><b>download</b></a>)
-
-<br>
-
-Revision: <b>1981</b>,
-<i>Sun Apr 22 20:32:25 2007 UTC</i> (16 hours, 45 minutes ago) by <i>wyrm</i>
-
-
-
-
-
-<br>File size: 25011 byte(s)
-
-
-<pre class="vc_log">latest .config
-
-</pre>
-
-</div>
-<pre>#
+#
 # Automatically generated make config: don't edit
 # Linux kernel version: 2.6.20.7
 # Sun Apr 22 15:03:36 2007
@@ -434,7 +350,7 @@ CONFIG_FW_LOADER=m
 # CONFIG_SYS_HYPERVISOR is not set
 
 #
-# Connector - unified userspace &lt;-&gt; kernelspace linker
+# Connector - unified userspace <-> kernelspace linker
 #
 CONFIG_CONNECTOR=m
 
@@ -1331,22 +1247,3 @@ CONFIG_LIBCRC32C=m
 CONFIG_ZLIB_INFLATE=y
 CONFIG_PLIST=y
 CONFIG_IOMAP_COPY=y
-</pre>
-
-<hr noshade>
-<table width="100%" border="0" cellpadding="0" cellspacing="0">
-<tr>
-<td align="left">
-<address><a href="mailto:svn-admin@openezx.org">CVS Admin</a></address><br />
-Powered by <a href="http://viewcvs.sourceforge.net/">ViewCVS 1.0-dev</a>
-</td>
-<td align="right">
-<img src="/doc/viewcvs/images/logo.png" alt="(Powered by ViewCVS)" border="0"
-width="128" height="48" /><br />
-<h3><a target="_blank" href="/viewcvs/help_rootview.html">ViewCVS and CVS Help</a></h3>
-</td>
-</tr>
-</table>
-</body>
-</html>
-
