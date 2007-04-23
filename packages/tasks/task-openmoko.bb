@@ -5,7 +5,7 @@ PACKAGE_ARCH = "all"
 LICENSE = "MIT"
 PROVIDES = "task-openmoko-everything"
 
-PR = "r34"
+PR = "r35"
 
 PACKAGES = "\
   task-openmoko-linux \
@@ -94,6 +94,11 @@ RDEPENDS_task-openmoko-base = "\
   openmoko-footer \
   openmoko-taskmanager \
   openmoko-panel-mainmenu \
+  openmoko-panel-battery \
+  openmoko-panel-bt \
+  openmoko-panel-clock \
+  openmoko-panel-usb \
+  openmoko-panel-gps \
 "
 
 #
