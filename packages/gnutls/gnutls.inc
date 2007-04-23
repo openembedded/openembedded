@@ -25,6 +25,7 @@ do_stage() {
 
     install -d ${STAGING_DATADIR}/aclocal
     cp ${S}/lib/libgnutls.m4 ${STAGING_DATADIR}/aclocal/
+    cp ${S}/libextra/libgnutls-extra.m4 ${STAGING_DATADIR}/aclocal/
 }
 
 PACKAGES =+ "${PN}-openssl ${PN}-extra ${PN}-bin ${PN}-xx"

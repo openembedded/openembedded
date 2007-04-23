@@ -47,6 +47,7 @@ def package_qa_get_machine_dict():
                         "hppa":       (15,     3,    0,          False,         True),
                         "m68k":       ( 4,     0,    0,          False,         True),
                         "mips":       ( 8,     0,    0,          False,         True),
+                        "mipsel":     ( 8,     0,    0,          True,          True),
                         "s390":       (22,     0,    0,          False,         True),
                         "sh4":        (42,     0,    0,          True,          True),
                         "sparc":      ( 2,     0,    0,          False,         True),

@@ -13,6 +13,7 @@ PROVIDES = "libnet-1.0"
 SRC_URI = "${DEBIAN_MIRROR}/main/libn/libnet0/libnet0_${PV}.orig.tar.gz \
 	   file://configure.patch;patch=1 \
 	   file://configure.uclibc.patch;patch=1 \
+	   file://configure_x86-64-host.patch;patch=1 \
 	   "
 S = "${WORKDIR}/libnet-${PV}.orig"
 
