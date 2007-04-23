@@ -1,5 +1,5 @@
 DESCRIPTION = "Merge machine and distro options to create a basic machine task/package"
-PR = "r27"
+PR = "r28"
 
 PACKAGES = 'task-boot \
             task-base \
@@ -41,6 +41,7 @@ PACKAGE_ARCH = "all"
 # packages which content depend on MACHINE_FEATURES need to be MACHINE_ARCH
 #
 PACKAGE_ARCH_task-base = "${MACHINE_ARCH}"
+PACKAGE_ARCH_task-boot = "${MACHINE_ARCH}"
 PACKAGE_ARCH_task-machine-base = "${MACHINE_ARCH}"
 PACKAGE_ARCH_task-base-apm = "${MACHINE_ARCH}"
 PACKAGE_ARCH_task-base-pcmcia = "${MACHINE_ARCH}"
@@ -199,7 +200,7 @@ RDEPENDS_task-base-pcmcia = "\
     ${@base_contains('DISTRO_FEATURES', 'wifi', 'prism3-support', '',d)} \
     ${@base_contains('DISTRO_FEATURES', 'wifi', 'spectrum-fw', '',d)} \
     ${@base_contains('DISTRO_FEATURES', 'wifi', 'hostap-conf', '',d)} \
-    ${@base_contains('DISTRO_FEATURES', 'wifi', 'orinoco-conf', '',d)}"
+    "
 
 RRECOMMENDS_task-base-pcmcia = "\
     ${@base_contains('MACHINE_FEATURES', 'kernel26', '${task-base-pcmcia26}', '${task-base-pcmcia24}',d)} \
@@ -213,11 +214,10 @@ RRECOMMENDS_task-base-pcmcia = "\
 
 task-base-pcmcia24 = "\
     ${@base_contains('DISTRO_FEATURES', 'wifi', 'hostap-modules-cs', '',d)} \
-    ${@base_contains('DISTRO_FEATURES', 'wifi', 'orinoco-modules-cs', '',d)}"
+    "
 
 task-base-pcmcia26 = "\
     ${@base_contains('DISTRO_FEATURES', 'wifi', 'kernel-module-hostap-cs', '',d)} \
-    ${@base_contains('DISTRO_FEATURES', 'wifi', 'kernel-module-orinoco-cs', '',d)} \
     ${@base_contains('DISTRO_FEATURES', 'wifi', 'kernel-module-spectrum-cs', '',d)}"
 
 RDEPENDS_task-base-bluetooth = "\ 
