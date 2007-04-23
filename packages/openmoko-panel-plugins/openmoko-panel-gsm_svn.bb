@@ -1,4 +1,4 @@
-DESCRIPTION = "Shows the current time in the OpenMoko panel"
+DESCRIPTION = "Shows the GSM status in the OpenMoko panel"
 PV = "0.0.1+svn${SRCDATE}"
 PR = "r1"
 
