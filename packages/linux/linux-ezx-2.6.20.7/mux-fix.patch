@@ -1,0 +1,164 @@
+Index: linux-2.6.20.7/drivers/char/ts0710_mux_usb.c
+===================================================================
+--- linux-2.6.20.7.orig/drivers/char/ts0710_mux_usb.c	2007-04-21 18:07:45.000000000 +0200
++++ linux-2.6.20.7/drivers/char/ts0710_mux_usb.c	2007-04-21 20:55:13.000000000 +0200
+@@ -626,7 +626,6 @@
+ 	}
+
+ 	interface = &intf->cur_altsetting->desc;
+-	endpoint = &intf->cur_altsetting->endpoint[0].desc;
+ 	/* Start checking for two bulk endpoints or ... FIXME: This is a future
+ 	 * enhancement...*/
+ 	bvd_dbg("usb_ipc_probe: Number of Endpoints:%d",
+@@ -638,30 +637,26 @@
+
+ 	ep_cnt = have_bulk_in_mux = have_bulk_out_mux = 0;
+
+-	bvd_dbg("usb_ipc_probe: endpoint[0] is:%x",
+-		(&endpoint[0])->bEndpointAddress);
+-	bvd_dbg("usb_ipc_probe: endpoint[1] is:%x ",
+-		(&endpoint[1])->bEndpointAddress);
+-
+ 	while (ep_cnt < interface->bNumEndpoints) {
+-
+-		if (!have_bulk_in_mux && IS_EP_BULK_IN(endpoint[ep_cnt])) {
+-			bvd_dbg("usb_ipc_probe: bEndpointAddress(IN) is:%x ",
+-				(&endpoint[ep_cnt])->bEndpointAddress);
+-			have_bulk_in_mux =
+-					(&endpoint[ep_cnt])->bEndpointAddress;
+-			readsize = (&endpoint[ep_cnt])->wMaxPacketSize;
++		endpoint = &intf->cur_altsetting->endpoint[ep_cnt].desc;
++		bvd_dbg("usb_ipc_probe: endpoint[%i] is: %x", ep_cnt,
++			endpoint->bEndpointAddress);
++
++		if (!have_bulk_in_mux && IS_EP_BULK_IN(*endpoint)) {
++			bvd_dbg("usb_ipc_probe: bEndpointAddress(IN) is: %x ",
++				endpoint->bEndpointAddress);
++			have_bulk_in_mux =  endpoint->bEndpointAddress;
++			readsize = endpoint->wMaxPacketSize;
+ 			bvd_dbg("usb_ipc_probe: readsize=%d", readsize);
+ 			ep_cnt++;
+ 			continue;
+ 		}
+
+-		if (!have_bulk_out_mux && IS_EP_BULK_OUT(endpoint[ep_cnt])) {
+-			bvd_dbg("usb_ipc_probe: bEndpointAddress(OUT) is:%x ",
+-				(&endpoint[ep_cnt])->bEndpointAddress);
+-			have_bulk_out_mux =
+-				(&endpoint[ep_cnt])->bEndpointAddress;
+-			writesize = (&endpoint[ep_cnt])->wMaxPacketSize;
++		if (!have_bulk_out_mux && IS_EP_BULK_OUT(*endpoint)) {
++			bvd_dbg("usb_ipc_probe: bEndpointAddress(OUT) is: %x ",
++				endpoint->bEndpointAddress);
++			have_bulk_out_mux = endpoint->bEndpointAddress;
++			writesize = endpoint->wMaxPacketSize;
+ 			bvd_dbg("usb_ipc_probe: writesize=%d", writesize);
+ 			ep_cnt++;
+ 			continue;
+@@ -718,21 +713,27 @@
+ 	bvd_ipc->bh_bp.func = usbipc_bh_bp_func;
+ 	bvd_ipc->bh_bp.data = (unsigned long) bvd_ipc;
+
++	bvd_dbg("after assignements");
+ 	/*Build a write urb*/
++	usb_init_urb(&bvd_ipc->writeurb_mux);
+ 	usb_fill_bulk_urb(&bvd_ipc->writeurb_mux, usbdev,
+ 			  usb_sndbulkpipe(bvd_ipc->ipc_dev,
+ 			  		  bvd_ipc->bulk_out_ep_mux),
+ 			  bvd_ipc->obuf, writesize, usb_ipc_write_bulk,
+ 			  bvd_ipc);
+ 	//bvd_ipc->writeurb_mux.transfer_flags |= USB_ASYNC_UNLINK;
++	bvd_dbg("after write urb");
+
+ 	/*Build a read urb and send a IN token first time*/
++	usb_init_urb(&bvd_ipc->readurb_mux);
+ 	usb_fill_bulk_urb(&bvd_ipc->readurb_mux, usbdev,
+ 			  usb_rcvbulkpipe(usbdev, bvd_ipc->bulk_in_ep_mux),
+ 			  bvd_ipc->ibuf, readsize, usb_ipc_read_bulk, bvd_ipc);
+ 	//bvd_ipc->readurb_mux.transfer_flags |= USB_ASYNC_UNLINK;
++	bvd_dbg("after read urb");
+
+-	usb_driver_claim_interface(&usb_ipc_driver, intf, bvd_ipc);
++	//usb_driver_claim_interface(&usb_ipc_driver, intf, bvd_ipc);
++	bvd_dbg("after claim interface");
+ 	//usb_driver_claim_interface(&usb_ipc_driver, &ipccfg->interface[1], bvd_ipc);
+
+         // a2590c: dsplog is not supported by this driver
+@@ -740,6 +741,8 @@
+ 	//				   &ipccfg->interface[2], bvd_ipc);
+ 	/*send a IN token first time*/
+ 	bvd_ipc->readurb_mux.dev = bvd_ipc->ipc_dev;
++	bvd_dbg("after assignement");
++
+ 	if (usb_submit_urb(&bvd_ipc->readurb_mux, GFP_ATOMIC))
+ 		printk("usb_ipc_prob: usb_submit_urb(read mux bulk) failed!\n");
+
+@@ -750,7 +753,7 @@
+ 		tasklet_schedule(&bvd_ipc->bh);
+ 	}
+
+-	printk("usb_ipc_probe: completed probe!");
++	printk("usb_ipc_probe: completed probe!\n");
+ 	usb_set_intfdata(intf, &bvd_ipc);
+ 	return 0;
+ }
+@@ -760,21 +763,23 @@
+ 	//struct usb_device *usbdev = interface_to_usbdev(intf);
+ 	struct ipc_usb_data *bvd_ipc_disconnect = usb_get_intfdata(intf);
+
+-	printk("usb_ipc_disconnect:*** \n");
+
++	printk("usb_ipc_disconnect. bvd_ipc_disconnect address: %p\n", bvd_ipc_disconnect);
++
++	//FIXME: Memory leak?
+ 	if ((UHCRHPS3 & 0x4) == 0)
+-		usb_unlink_urb(&bvd_ipc_disconnect->readurb_mux);
++	//	usb_unlink_urb(&bvd_ipc_disconnect->readurb_mux);
+
+-	usb_unlink_urb(&bvd_ipc_disconnect->writeurb_mux);
++	//usb_unlink_urb(&bvd_ipc_disconnect->writeurb_mux);
+
+ 	bvd_ipc_disconnect->ipc_flag = IPC_USB_PROBE_NOT_READY;
+ 	kfree(bvd_ipc_disconnect->ibuf);
+ 	kfree(bvd_ipc_disconnect->obuf);
+
+-	usb_driver_release_interface(&usb_ipc_driver,
+-			bvd_ipc_disconnect->ipc_dev->actconfig->interface[0]);
+-        usb_driver_release_interface(&usb_ipc_driver,
+-			bvd_ipc_disconnect->ipc_dev->actconfig->interface[1]);
++	//usb_driver_release_interface(&usb_ipc_driver,
++	//		bvd_ipc_disconnect->ipc_dev->actconfig->interface[0]);
++        //usb_driver_release_interface(&usb_ipc_driver,
++	//		bvd_ipc_disconnect->ipc_dev->actconfig->interface[1]);
+
+ 	//a2590c: dsplog interface is not supported by this driver
+ 	//usb_driver_release_interface(&usb_ipc_driver, &bvd_ipc_disconnect->ipc_dev->actconfig->interface[2]);
+@@ -803,13 +808,6 @@
+ 	int result;
+
+ 	bvd_dbg("init usb_ipc");
+-	/* register driver at the USB subsystem */
+-	result = usb_register(&usb_ipc_driver);
+-	if (result < 0) {
+-		err ("usb ipc driver could not be registered");
+-		return result;
+-	}
+-
+ 	/*init the related mux interface*/
+ 	if (!(bvd_ipc = kzalloc(sizeof(struct ipc_usb_data), GFP_KERNEL))) {
+ 		err("usb_ipc_init: Out of memory.");
+@@ -836,6 +834,14 @@
+ 	usb_for_mux_driver = &ipcusb_tty_driver;
+ 	usb_for_mux_tty = &ipcusb_tty;
+
++	/* register driver at the USB subsystem */
++	// this was called before bvd_ipc was allocated
++	result = usb_register(&usb_ipc_driver);
++	if (result < 0) {
++		err ("usb ipc driver could not be registered");
++		return result;
++	}
++
+ 	/* init timers for ipcusb read process and usb suspend */
+ 	init_timer(&ipcusb_timer);
+ 	ipcusb_timer.function = ipcusb_timeout;
