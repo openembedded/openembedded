@@ -5,7 +5,7 @@ LICENSE = "Artistic|GPL"
 PRIORITY = "optional"
 # We need gnugrep (for -I)
 DEPENDS = "virtual/db perl-native grep-native"
-PR = "r0"
+PR = "r1"
 
 DEFAULT_PREFERENCE = "-1"
 
@@ -15,6 +15,7 @@ SRC_URI = "ftp://ftp.funet.fi/pub/CPAN/src/perl-${PV}.tar.gz \
         file://perl-dynloader.patch;patch=1 \
         file://perl-moreconfig.patch;patch=1 \
         file://generate-sh.patch;patch=1 \
+        file://config.sh \
         file://config.sh-32 \
         file://config.sh-32-le \
         file://config.sh-32-be \
@@ -45,10 +46,11 @@ do_configure() {
         # Generate configuration
         rm -f config.sh-${TARGET_ARCH}-${TARGET_OS}
         touch config.sh-${TARGET_ARCH}-${TARGET_OS}
-        cat ${WORKDIR}/config.sh-${@siteinfo_get_bits(d)} \
-                >> config.sh-${TARGET_ARCH}-${TARGET_OS}
-        cat ${WORKDIR}/config.sh-${@siteinfo_get_bits(d)}-${@siteinfo_get_endianess(d)} \
-                >> config.sh-${TARGET_ARCH}-${TARGET_OS}
+        for i in ${WORKDIR}/config.sh \
+                 ${WORKDIR}/config.sh-${@siteinfo_get_bits(d)} \
+                 ${WORKDIR}/config.sh-${@siteinfo_get_bits(d)}-${@siteinfo_get_endianess(d)}; do
+            cat $i >> config.sh-${TARGET_ARCH}-${TARGET_OS}
+        done
 
         # uclibc not checked with this version yet
         # uclicb fixups
