@@ -5,7 +5,10 @@ LICENSE = "Artistic|GPL"
 PRIORITY = "optional"
 # We need gnugrep (for -I)
 DEPENDS = "virtual/db perl-native grep-native"
-PR = "r1"
+PR = "r2"
+
+# Major part of version
+PVM = "5.8"
 
 DEFAULT_PREFERENCE = "-1"
 
@@ -15,6 +18,10 @@ SRC_URI = "ftp://ftp.funet.fi/pub/CPAN/src/perl-${PV}.tar.gz \
         file://perl-dynloader.patch;patch=1 \
         file://perl-moreconfig.patch;patch=1 \
         file://generate-sh.patch;patch=1 \
+        file://53_debian_mod_paths.patch;patch=1 \
+        file://54_debian_perldoc-r.patch;patch=1 \
+        file://62_debian_cpan_definstalldirs.patch;patch=1 \
+        file://64_debian_enc2xs_inc.patch;patch=1 \
         file://config.sh \
         file://config.sh-32 \
         file://config.sh-32-le \
@@ -25,9 +32,6 @@ SRC_URI = "ftp://ftp.funet.fi/pub/CPAN/src/perl-${PV}.tar.gz \
 
 # Where to find the native perl
 HOSTPERL = "${STAGING_BINDIR_NATIVE}/perl${PV}"
-
-# Architecture specific libdir (for .so's)
-ARCHLIBDIR = "${TARGET_ARCH}-${TARGET_OS}-thread-multi"
 
 # Where to find .so files - use the -native versions not those from the target build
 export PERLHOSTLIB = "${STAGING_DIR}/${BUILD_SYS}/lib/perl5/${PV}/${BUILD_ARCH}-${BUILD_OS}-thread-multi/"
@@ -89,11 +93,23 @@ do_compile() {
 }
 do_install() {
         oe_runmake install
-        mv -f ${D}/${libdir}/perl5/${PV}/${ARCHLIBDIR}/CORE/libperl.so ${D}/${libdir}/libperl.so.${PV}
+
+        # Add versioned perl interpereter
         ln -sf perl${PV} ${D}/usr/bin/perl
+
+        # Fix up versioned directories
+        mv ${D}/${libdir}/perl/${PVM} ${D}/${libdir}/perl/${PV}
+        mv ${D}/${datadir}/perl/${PVM} ${D}/${datadir}/perl/${PV}
+        ln -sf ${PV} ${D}/${libdir}/perl/${PVM}
+        ln -sf ${PV}  ${D}/${datadir}/perl/${PVM}
+
+        # Fix up shared library
+        mv -f ${D}/${libdir}/perl/${PV}/CORE/libperl.so ${D}/${libdir}/libperl.so.${PV}
         ln -sf libperl.so.${PV} ${D}/${libdir}/libperl.so.5
+
+        # Fix up installed configuration
         if test "${MACHINE}" != "native"; then
-            sed -i -e "s,${D},,g" ${D}/${libdir}/perl5/${PV}/${ARCHLIBDIR}/Config_heavy.pl
+            sed -i -e "s,${D},,g" ${D}/${libdir}/perl/${PV}/Config_heavy.pl
         fi
 }
 do_stage() {
@@ -102,29 +118,36 @@ do_stage() {
 }
 
 PACKAGES = "perl-dbg perl perl-misc perl-lib perl-dev perl-pod"
-FILES_${PN} = "/usr/bin/perl /usr/bin/perl${PV}"
-FILES_${PN}-lib = "/usr/lib/libperl.so*"
-FILES_${PN}-dev = "/usr/lib/perl5/${PV}/${ARCHLIBDIR}/CORE/"
-FILES_${PN}-pod = "/usr/lib/perl5/${PV}/pod"
-FILES_perl-misc = "/usr/bin/*"
-FILES_${PN}-dbg += " ${libdir}/perl5/${PV}/${ARCHLIBDIR}/auto/*/.debug \
-                     ${libdir}/perl5/${PV}/${ARCHLIBDIR}/auto/*/*/.debug \
-                     ${libdir}/perl5/${PV}/${ARCHLIBDIR}/auto/*/*/*/.debug"
-
-python populate_packages_prepend () {
-        libdir = bb.data.expand('${libdir}/perl5/${PV}', d)
-        archlibdir =  bb.data.expand('${libdir}/perl5/${PV}/${ARCHLIBDIR}', d)
-        do_split_packages(d, archlibdir, 'auto/(.*)(?!\.debug)/', 'perl-module-%s', 'perl module %s', recursive=True, allow_dirs=False, match_path=True)
-        do_split_packages(d, archlibdir, '(.*)\.(pm|pl)', 'perl-module-%s', 'perl module %s', recursive=True, allow_dirs=False, match_path=True)
-        do_split_packages(d, libdir, '(.*)\.(pm|pl)', 'perl-module-%s', 'perl module %s', recursive=True, allow_dirs=False, match_path=True)
-}
+FILES_${PN} = "${bindir}/perl ${bindir}/perl${PV}"
+FILES_${PN}-lib = "${libdir}/libperl.so* ${libdir}/perl/${PVM} ${datadir}/perl/${PVM}"
+FILES_${PN}-dev = "${libdir}/perl/${PV}/CORE"
+FILES_${PN}-pod = "${datadir}/perl/${PV}/pod"
+FILES_perl-misc = "${bindir}/*"
+FILES_${PN}-dbg += "${libdir}/perl/${PV}/auto/*/.debug \
+                    ${libdir}/perl/${PV}/auto/*/*/.debug \
+                    ${libdir}/perl/${PV}/auto/*/*/*/.debug \
+                    ${datadir}/perl/${PV}/auto/*/.debug \
+                    ${datadir}/perl/${PV}/auto/*/*/.debug \
+                    ${datadir}/perl/${PV}/auto/*/*/*/.debug \
+                    ${libdir}/perl/${PV}/CORE/.debug"
+DEBIAN_NOAUTONAME_perl-lib = "1"
+RPROVIDES_perl-lib = "perl-lib"
 
 # Create a perl-modules package recommending all the other perl
 # packages (actually the non modules packages and not created too)
 ALLOW_EMPTY_perl-modules = "1"
 PACKAGES_append = " perl-modules "
 RRECOMMENDS_perl-modules = "${@bb.data.getVar('PACKAGES', d, 1).replace('perl-modules ', '').replace('perl-dbg ', '').replace('perl-misc ', '').replace('perl-dev ', '').replace('perl-pod ', '')}"
-RPROVIDES_perl-lib = "perl-lib"
+
+python populate_packages_prepend () {
+        libdir = bb.data.expand('${libdir}/perl/${PV}', d)
+        do_split_packages(d, libdir, 'auto/(.*)(?!\.debug)/', 'perl-module-%s', 'perl module %s', recursive=True, allow_dirs=False, match_path=True)
+        do_split_packages(d, libdir, '(.*)\.(pm|pl)', 'perl-module-%s', 'perl module %s', recursive=True, allow_dirs=False, match_path=True)
+        datadir = bb.data.expand('${datadir}/perl/${PV}', d)
+        do_split_packages(d, datadir, 'auto/(.*)(?!\.debug)/', 'perl-module-%s', 'perl module %s', recursive=True, allow_dirs=False, match_path=True)
+        do_split_packages(d, datadir, '(.*)\.(pm|pl)', 'perl-module-%s', 'perl module %s', recursive=True, allow_dirs=False, match_path=True)
+}
+
 
 require perl-rdepends_${PV}.inc
 
