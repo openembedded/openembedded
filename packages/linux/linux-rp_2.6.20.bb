@@ -1,6 +1,6 @@
 require linux-rp.inc
 
-PR = "r13"
+PR = "r14"
 
 # Handy URLs
 # git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux-2.6.git;protocol=git;tag=ef7d1b244fa6c94fb76d5f787b8629df64ea4046
@@ -84,10 +84,10 @@ SRC_URI_append_collie = "\
            ${TKSRC}/ucb1x00-touch-audio-r1.patch;patch=1 \
  	   ${TKSRC}/mcp-sa11x0-r0.patch;patch=1 \
  	   ${TKSRC}/sa1100-udc-r2.patch;patch=1 \
- 	   ${TKSRC}/mmc_spi-r3.patch;patch=1 \
+ 	   ${TKSRC}/mmc_spi-r4.patch;patch=1 \
  	   ${TKSRC}/locomo-r0.patch;patch=1 \
  	   ${TKSRC}/collie-kexec.patch;patch=1 \
- 	   ${TKSRC}/locomo_spi-r2.patch;patch=1 \
+ 	   ${TKSRC}/locomo_spi-r3.patch;patch=1 \
 "
 
 SRC_URI_append_tosa = "\
