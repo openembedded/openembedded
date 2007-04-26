@@ -5,7 +5,7 @@ LICENSE = "Artistic|GPL"
 PRIORITY = "optional"
 # We need gnugrep (for -I)
 DEPENDS = "virtual/db perl-native grep-native"
-PR = "r4"
+PR = "r5"
 
 # Major part of version
 PVM = "5.8"
@@ -20,6 +20,8 @@ SRC_URI = "ftp://ftp.funet.fi/pub/CPAN/src/perl-${PV}.tar.gz \
         file://generate-sh.patch;patch=1 \
         file://53_debian_mod_paths.patch;patch=1 \
         file://54_debian_perldoc-r.patch;patch=1 \
+        file://58_debian_cpan_config_path.patch;patch=1 \
+        file://60_debian_libnet_config_path.patch;patch=1 \
         file://62_debian_cpan_definstalldirs.patch;patch=1 \
         file://64_debian_enc2xs_inc.patch;patch=1 \
         file://config.sh \
@@ -49,7 +51,6 @@ do_configure() {
 
         # Generate configuration
         rm -f config.sh-${TARGET_ARCH}-${TARGET_OS}
-        touch config.sh-${TARGET_ARCH}-${TARGET_OS}
         for i in ${WORKDIR}/config.sh \
                  ${WORKDIR}/config.sh-${@siteinfo_get_bits(d)} \
                  ${WORKDIR}/config.sh-${@siteinfo_get_bits(d)}-${@siteinfo_get_endianess(d)}; do
@@ -66,9 +67,10 @@ do_configure() {
         #done
 
         # Update some paths in the configuration
-        sed -i -e 's,@DESTDIR@,${D},g' config.sh-${TARGET_ARCH}-${TARGET_OS}
-        sed -i -e 's,@ARCH@,${TARGET_ARCH}-${TARGET_OS},g' config.sh-${TARGET_ARCH}-${TARGET_OS}
-        sed -i -e "s%/usr/include/%${STAGING_INCDIR}/%g" config.sh-${TARGET_ARCH}-${TARGET_OS}
+        sed -i -e 's,@DESTDIR@,${D},g' \
+               -e 's,@ARCH@,${TARGET_ARCH}-${TARGET_OS},g' \
+               -e "s%/usr/include/%${STAGING_INCDIR}/%g" \
+            config.sh-${TARGET_ARCH}-${TARGET_OS}
 
         if test "${MACHINE}" != "native"; then
             # These are strewn all over the source tree
