@@ -210,11 +210,11 @@ def package_qa_check_rpath(file,name,d):
 
     output = os.popen("%s -Byr %s" % (scanelf,file))
     txt    = output.readline().split()
-    if bad_dir in txt:
-        package_qa_write_error( 1, name, file, d)
-        bb.error("QA Issue package %s contains bad RPATH %s in file %s" % (name, txt, file))
-        return False
-
+    for line in txt:
+        if bad_dir in line:
+            package_qa_write_error( 1, name, file, d)
+            bb.error("QA Issue package %s contains bad RPATH %s in file %s" % (name, line, file))
+            return False
     return True
 
 def package_qa_check_devdbg(path, name,d):
