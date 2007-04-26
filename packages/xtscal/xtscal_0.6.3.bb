@@ -1,5 +1,5 @@
 require xtscal.inc
 
-PR = "r2"
+PR = "r3"
 
 SRC_URI += "file://xtscal-cxk.patch;patch=1"

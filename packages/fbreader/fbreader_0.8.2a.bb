@@ -4,15 +4,15 @@ HOMEPAGE = "http://only.mawhrin.net/fbreader/"
 SECTION = "x11/utils"
 PRIORITY = "optional"
 DEPENDS = "gtk+ enca expat bzip2 libgpewidget"
-PR = "r2"
+PR = "r3"
 
 # The RESOLUTION is defined at compile time which makes
 # this package MACHINE specific.
 PACKAGE_ARCH_${PN} = "${MACHINE}"
 
 SRC_URI = "http://only.mawhrin.net/fbreader/fbreader-sources-${PV}.tgz \
-	file://fbreader-0.8.2a_buildsys_oe.patch;patch=1 \
-	file://480x640-buildfix.patch;patch=1"
+	   file://fbreader-0.8.2a_buildsys_oe.patch;patch=1 \
+	   file://480x640-buildfix.patch;patch=1"
 
 # Set the defaults
 READER_RESOLUTION = "240x320"
@@ -39,10 +39,12 @@ do_configure() {
 	echo "TARGET_STATUS = ${READER_STATUS}" >> makefiles/target.mk
 	
 	cd fbreader/data/help
+	
+	# FIXME: Add native _480x640 file with propper linebreaks
 	ln -s MiniHelp.240x320.fb2 MiniHelp.openzaurus_480x640.fb2
 }
 
 do_install () {
-        cd fbreader/openzaurus; oe_runmake .builddir RESOLUTION=${RESOLUTION}
+        cd fbreader/${READER_ARCH}; oe_runmake .builddir RESOLUTION=${RESOLUTION}
 	cp -r data/* ${D}
 }
