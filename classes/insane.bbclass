@@ -213,7 +213,7 @@ def package_qa_check_rpath(file,name,d):
     if not bad_dir in bb.data.getVar('WORKDIR', d, True):
         bb.fatal("This class assumed that WORKDIR is ${TMPDIR}/work... Not doing any check")
 
-    bb.note("%s -F%%r#F %s" % (scanelf,file))
+    #bb.note("%s -F%%r#F %s" % (scanelf,file))
     output = os.popen("%s -F%%r#F %s" % (scanelf,file))
     txt    = output.readline().split()
     for line in txt:
