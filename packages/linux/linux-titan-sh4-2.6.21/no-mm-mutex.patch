@@ -1,0 +1,47 @@
+Patch out the use of mutex's to protect the copy/clear user page
+operations. These functions sleep, and therefore the mutex's cause
+scheduling while atomic errors. Now this actually opens up the
+possiblity of some corruption (not actually seen in practice, but
+theoretically possible) and therefore is not the correct fix, but all
+proposed replacements have so far been even more problematic.
+
+diff --git a/arch/sh/mm/pg-sh4.c b/arch/sh/mm/pg-sh4.c
+index df69da9..7bc36a4 100644
+--- a/arch/sh/mm/pg-sh4.c
++++ b/arch/sh/mm/pg-sh4.c
+@@ -37,7 +37,7 @@ void clear_user_page(void *to, unsigned 
+ 		unsigned long flags;
+ 
+ 		entry = pfn_pte(phys_addr >> PAGE_SHIFT, PAGE_KERNEL);
+-		mutex_lock(&p3map_mutex[(address & CACHE_ALIAS)>>12]);
++//		mutex_lock(&p3map_mutex[(address & CACHE_ALIAS)>>12]);
+ 		set_pte(pte, entry);
+ 		local_irq_save(flags);
+ 		flush_tlb_one(get_asid(), p3_addr);
+@@ -45,7 +45,7 @@ void clear_user_page(void *to, unsigned 
+ 		update_mmu_cache(NULL, p3_addr, entry);
+ 		__clear_user_page((void *)p3_addr, to);
+ 		pte_clear(&init_mm, p3_addr, pte);
+-		mutex_unlock(&p3map_mutex[(address & CACHE_ALIAS)>>12]);
++//		mutex_unlock(&p3map_mutex[(address & CACHE_ALIAS)>>12]);
+ 	}
+ }
+ 
+@@ -73,7 +73,7 @@ void copy_user_page(void *to, void *from
+ 		unsigned long flags;
+ 
+ 		entry = pfn_pte(phys_addr >> PAGE_SHIFT, PAGE_KERNEL);
+-		mutex_lock(&p3map_mutex[(address & CACHE_ALIAS)>>12]);
++//		mutex_lock(&p3map_mutex[(address & CACHE_ALIAS)>>12]);
+ 		set_pte(pte, entry);
+ 		local_irq_save(flags);
+ 		flush_tlb_one(get_asid(), p3_addr);
+@@ -81,7 +81,7 @@ void copy_user_page(void *to, void *from
+ 		update_mmu_cache(NULL, p3_addr, entry);
+ 		__copy_user_page((void *)p3_addr, from, to);
+ 		pte_clear(&init_mm, p3_addr, pte);
+-		mutex_unlock(&p3map_mutex[(address & CACHE_ALIAS)>>12]);
++//		mutex_unlock(&p3map_mutex[(address & CACHE_ALIAS)>>12]);
+ 	}
+ }
+ 

@@ -5,7 +5,7 @@ LICENSE = "Artistic|GPL"
 PRIORITY = "optional"
 # We need gnugrep (for -I)
 DEPENDS = "virtual/db perl-native grep-native"
-PR = "r4"
+PR = "r6"
 
 # Major part of version
 PVM = "5.8"
@@ -18,8 +18,12 @@ SRC_URI = "ftp://ftp.funet.fi/pub/CPAN/src/perl-${PV}.tar.gz \
         file://perl-dynloader.patch;patch=1 \
         file://perl-moreconfig.patch;patch=1 \
         file://generate-sh.patch;patch=1 \
+        file://09_fix_installperl.patch;patch=1 \
+        file://52_debian_extutils_hacks.patch;patch=1 \
         file://53_debian_mod_paths.patch;patch=1 \
         file://54_debian_perldoc-r.patch;patch=1 \
+        file://58_debian_cpan_config_path.patch;patch=1 \
+        file://60_debian_libnet_config_path.patch;patch=1 \
         file://62_debian_cpan_definstalldirs.patch;patch=1 \
         file://64_debian_enc2xs_inc.patch;patch=1 \
         file://config.sh \
@@ -49,7 +53,6 @@ do_configure() {
 
         # Generate configuration
         rm -f config.sh-${TARGET_ARCH}-${TARGET_OS}
-        touch config.sh-${TARGET_ARCH}-${TARGET_OS}
         for i in ${WORKDIR}/config.sh \
                  ${WORKDIR}/config.sh-${@siteinfo_get_bits(d)} \
                  ${WORKDIR}/config.sh-${@siteinfo_get_bits(d)}-${@siteinfo_get_endianess(d)}; do
@@ -66,9 +69,10 @@ do_configure() {
         #done
 
         # Update some paths in the configuration
-        sed -i -e 's,@DESTDIR@,${D},g' config.sh-${TARGET_ARCH}-${TARGET_OS}
-        sed -i -e 's,@ARCH@,${TARGET_ARCH}-${TARGET_OS},g' config.sh-${TARGET_ARCH}-${TARGET_OS}
-        sed -i -e "s%/usr/include/%${STAGING_INCDIR}/%g" config.sh-${TARGET_ARCH}-${TARGET_OS}
+        sed -i -e 's,@DESTDIR@,${D},g' \
+               -e 's,@ARCH@,${TARGET_ARCH}-${TARGET_OS},g' \
+               -e "s%/usr/include/%${STAGING_INCDIR}/%g" \
+            config.sh-${TARGET_ARCH}-${TARGET_OS}
 
         if test "${MACHINE}" != "native"; then
             # These are strewn all over the source tree
@@ -101,7 +105,10 @@ do_install() {
         mv ${D}/${libdir}/perl/${PVM} ${D}/${libdir}/perl/${PV}
         mv ${D}/${datadir}/perl/${PVM} ${D}/${datadir}/perl/${PV}
         ln -sf ${PV} ${D}/${libdir}/perl/${PVM}
-        ln -sf ${PV}  ${D}/${datadir}/perl/${PVM}
+        ln -sf ${PV} ${D}/${datadir}/perl/${PVM}
+
+        # Remove unwanted file
+        rm -f ${D}/${libdir}/perl/${PV}/.packlist
 
         # Fix up shared library
         mv -f ${D}/${libdir}/perl/${PV}/CORE/libperl.so ${D}/${libdir}/libperl.so.${PV}
@@ -121,11 +128,14 @@ do_stage() {
         install config.sh ${STAGING_DIR}/${HOST_SYS}/perl/
 }
 
-PACKAGES = "perl-dbg perl perl-misc perl-lib perl-dev perl-pod"
+PACKAGES = "perl-dbg perl perl-misc perl-lib perl-dev perl-pod perl-doc"
 FILES_${PN} = "${bindir}/perl ${bindir}/perl${PV}"
 FILES_${PN}-lib = "${libdir}/libperl.so* ${libdir}/perl/${PVM} ${datadir}/perl/${PVM}"
 FILES_${PN}-dev = "${libdir}/perl/${PV}/CORE"
-FILES_${PN}-pod = "${datadir}/perl/${PV}/pod"
+FILES_${PN}-pod = "${datadir}/perl/${PV}/pod \
+                   ${datadir}/perl/${PV}/*/*.pod \
+                   ${datadir}/perl/${PV}/*/*/*.pod \
+                   ${libdir}/perl/${PV}/*.pod"
 FILES_perl-misc = "${bindir}/*"
 FILES_${PN}-dbg += "${libdir}/perl/${PV}/auto/*/.debug \
                     ${libdir}/perl/${PV}/auto/*/*/.debug \
@@ -134,6 +144,26 @@ FILES_${PN}-dbg += "${libdir}/perl/${PV}/auto/*/.debug \
                     ${datadir}/perl/${PV}/auto/*/*/.debug \
                     ${datadir}/perl/${PV}/auto/*/*/*/.debug \
                     ${libdir}/perl/${PV}/CORE/.debug"
+FILES_${PN}-doc = "${datadir}/perl/${PV}/*/*.txt \
+                   ${datadir}/perl/${PV}/*/*/*.txt \
+                   ${datadir}/perl/${PV}/Net/*.eg \
+                   ${datadir}/perl/${PV}/CGI/eg \
+                   ${datadir}/perl/${PV}/ExtUtils/PATCHING \
+                   ${datadir}/perl/${PV}/ExtUtils/NOTES \
+                   ${datadir}/perl/${PV}/ExtUtils/typemap \
+                   ${datadir}/perl/${PV}/ExtUtils/MANIFEST.SKIP \
+                   ${datadir}/perl/${PV}/CPAN/SIGNATURE \
+                   ${datadir}/perl/${PV}/CPAN/PAUSE2003.pub \
+                   ${datadir}/perl/${PV}/B/assemble \
+                   ${datadir}/perl/${PV}/B/makeliblinks \
+                   ${datadir}/perl/${PV}/B/disassemble \
+                   ${datadir}/perl/${PV}/B/cc_harness \
+                   ${datadir}/perl/${PV}/ExtUtils/xsubpp \
+                   ${datadir}/perl/${PV}/Encode/encode.h \
+                   ${datadir}/perl/${PV}/unicore/mktables \
+                   ${datadir}/perl/${PV}/unicore/mktables.lst \
+                   ${datadir}/perl/${PV}/unicore/version"
+
 DEBIAN_NOAUTONAME_perl-lib = "1"
 RPROVIDES_perl-lib = "perl-lib"
 
@@ -141,15 +171,15 @@ RPROVIDES_perl-lib = "perl-lib"
 # packages (actually the non modules packages and not created too)
 ALLOW_EMPTY_perl-modules = "1"
 PACKAGES_append = " perl-modules "
-RRECOMMENDS_perl-modules = "${@bb.data.getVar('PACKAGES', d, 1).replace('perl-modules ', '').replace('perl-dbg ', '').replace('perl-misc ', '').replace('perl-dev ', '').replace('perl-pod ', '')}"
+RRECOMMENDS_perl-modules = "${@bb.data.getVar('PACKAGES', d, 1).replace('perl-modules ', '').replace('perl-dbg ', '').replace('perl-misc ', '').replace('perl-dev ', '').replace('perl-pod ', '').replace('perl-doc ', '')}"
 
 python populate_packages_prepend () {
         libdir = bb.data.expand('${libdir}/perl/${PV}', d)
         do_split_packages(d, libdir, 'auto/(.*)(?!\.debug)/', 'perl-module-%s', 'perl module %s', recursive=True, allow_dirs=False, match_path=True)
-        do_split_packages(d, libdir, '(.*)\.(pm|pl)', 'perl-module-%s', 'perl module %s', recursive=True, allow_dirs=False, match_path=True)
+        do_split_packages(d, libdir, '(.*)\.(pm|pl|e2x)', 'perl-module-%s', 'perl module %s', recursive=True, allow_dirs=False, match_path=True)
         datadir = bb.data.expand('${datadir}/perl/${PV}', d)
         do_split_packages(d, datadir, 'auto/(.*)(?!\.debug)/', 'perl-module-%s', 'perl module %s', recursive=True, allow_dirs=False, match_path=True)
-        do_split_packages(d, datadir, '(.*)\.(pm|pl)', 'perl-module-%s', 'perl module %s', recursive=True, allow_dirs=False, match_path=True)
+        do_split_packages(d, datadir, '(.*)\.(pm|pl|e2x)', 'perl-module-%s', 'perl module %s', recursive=True, allow_dirs=False, match_path=True)
 }
 
 require perl-rdepends_${PV}.inc
