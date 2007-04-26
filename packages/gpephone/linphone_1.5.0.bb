@@ -3,7 +3,7 @@ DESCRIPTION = "SIP-based IP phone"
 HOMEPAGE = "http://www.linphone.org/?lang=us"
 LICENSE = "GPLv2"
 DEPENDS = "libosip2 speex libogg alsa-lib readline"
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "http://download.savannah.nongnu.org/releases/linphone/1.5.x/source/linphone-${PV}.tar.gz \
            file://linphone-1.5.0.patch;patch=1 \
@@ -41,4 +41,7 @@ do_install_append() {
 do_stage() {
 	export LIBTOOL="${STAGING_BINDIR_NATIVE}/${TARGET_PREFIX}libtool"
 	autotools_stage_all
+	rm ${STAGING_LIBDIR}/libquickstream.la	
+	rm ${STAGING_LIBDIR}/libmediastreamer.la 
+	rm ${STAGING_LIBDIR}/liblinphone.la 
 }

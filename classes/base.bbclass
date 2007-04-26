@@ -804,6 +804,8 @@ def base_after_parse(d):
             if this_machine and not re.match(need_machine, this_machine):
                 raise bb.parse.SkipPackage("incompatible with machine %s" % this_machine)
 
+
+
     pn = bb.data.getVar('PN', d, 1)
 
     use_nls = bb.data.getVar('USE_NLS_%s' % pn, d, 1)
@@ -874,7 +876,7 @@ def base_oldbitbake_workarounds(d):
         if bb.data.inherits_class('package_deb', d):
             depends = "dpkg-native " + depends
         if bb.data.inherits_class('package', d):
-            depends = "${PACKAGE_DEPENDS} fakeroot-native" + depends
+            depends = "${PACKAGE_DEPENDS} fakeroot-native " + depends
 
     bb.data.setVar('DEPENDS', depends, d)
 

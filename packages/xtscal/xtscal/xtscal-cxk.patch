@@ -6,7 +6,7 @@
  module_id() {
 -    # Get model name
 -    echo `grep "^Hardware" /proc/cpuinfo | sed -e "s/.*: *//" | tr a-z A-Z`
-+        awk 'BEGIN { FS=": " } /Hardware/ { print $2 } ' </proc/cpuinfo
++        awk 'BEGIN { FS=": " } /Hardware/ { print $2 }' </proc/cpuinfo
  }
  
  case `module_id` in
