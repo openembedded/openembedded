@@ -203,6 +203,7 @@ def package_qa_check_rpath(file,name,d):
     import bb, os
     scanelf = os.path.join(bb.data.getVar('STAGING_BINDIR_NATIVE',d,True),'scanelf')
     bad_dir = bb.data.getVar('TMPDIR', d, True) + "/work"
+    bad_dir_test = bb.data.getVar('TMPDIR', d, True)
     if not os.path.exists(scanelf):
         bb.fatal("Can not check RPATH scanelf not found")
     if not bad_dir in bb.data.getVar('WORKDIR', d, True):
@@ -211,7 +212,7 @@ def package_qa_check_rpath(file,name,d):
     output = os.popen("%s -Byr %s" % (scanelf,file))
     txt    = output.readline().split()
     for line in txt:
-        if bad_dir in line:
+        if bad_dir_test in line:
             package_qa_write_error( 1, name, file, d)
             bb.error("QA Issue package %s contains bad RPATH %s in file %s" % (name, line, file))
             return False
@@ -405,7 +406,7 @@ python do_package_qa () {
             rdepends_sane = False
 
     if not walk_sane or not rdepends_sane:
-        bb.fatal("QA ran found fatal errors. Please consider fixing them")
+        bb.fatal("QA run found fatal errors. Please consider fixing them.")
     bb.note("DONE with PACKAGE QA")
 }
 
