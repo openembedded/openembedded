@@ -21,7 +21,7 @@
 
 # We play a special package function
 inherit package
-PACKAGE_DEPENDS += "pax-utils-native"
+PACKAGE_DEPENDS += "pax-utils-native chrpath-native"
 PACKAGEFUNCS += " do_package_qa "
 
 
