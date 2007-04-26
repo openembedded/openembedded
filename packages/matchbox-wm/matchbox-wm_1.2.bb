@@ -1,6 +1,6 @@
 require matchbox-wm.inc
 
-DEPENDS = "libmatchbox virtual/libx11 libxext libxcomposite libxfixes libxdamage libxrender startup-notification expat gconf matchbox-common"
+DEPENDS = "libmatchbox virtual/libx11 libxext libxcomposite libxfixes libxdamage libxrender startup-notification expat gconf gconf-native matchbox-common"
 RDEPENDS = "matchbox-common"
 
 PR="r0"
