@@ -5,7 +5,7 @@ LICENSE = "Artistic|GPL"
 PRIORITY = "optional"
 # We need gnugrep (for -I)
 DEPENDS = "virtual/db perl-native grep-native"
-PR = "r6"
+PR = "r7"
 
 # Major part of version
 PVM = "5.8"
@@ -59,14 +59,15 @@ do_configure() {
             cat $i >> config.sh-${TARGET_ARCH}-${TARGET_OS}
         done
 
-        # uclibc not checked with this version yet
-        # uclicb fixups
-        #for i in config.sh-*-linux; do
-        #        a="`echo $i|sed -e 's,^config.sh-,,; s,-linux$,,'`"
-        #        newfile="`echo $i|sed -e 's,-linux$,-linux-uclibc,g'`"
-        #        cat $i | sed -e "s,${a}-linux,${a}-linux-uclibc,g; \
-        #        s,d_sockatmark='define',d_sockatmark='undef',g;" > $newfile
-        #done
+        # Fixups for uclibc
+        if [ "${TARGET_OS}" = "linux-uclibc" -o "${TARGET_OS}" = "linux-uclibcgnueabi" ]; then
+                sed -i -e "s,\(d_crypt_r=\)'define',\1'undef',g" \
+                       -e "s,\(d_getnetbyname_r=\)'define',\1'undef',g" \
+                       -e "s,\(d_getnetbyaddr_r=\)'define',\1'undef',g" \
+                       -e "s,\(d_getnetent_r=\)'define',\1'undef',g" \
+                       -e "s,\(d_sockatmark=\)'define',\1'undef',g" \
+                    config.sh-${TARGET_ARCH}-${TARGET_OS}
+        fi
 
         # Update some paths in the configuration
         sed -i -e 's,@DESTDIR@,${D},g' \
