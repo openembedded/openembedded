@@ -2,10 +2,10 @@ DESCRIPTION = "XCB: an X protocol C binding"
 SECTION = "x11/libs"
 LICENSE = "MIT-X"
 HOMEPAGE = "http://xcb.freedesktop.org"
-PR = "r0"
+PR = "r1"
 
 PARALLEL_MAKE = ""
-DEPENDS = "xcb-proto libxau"
+DEPENDS = "xcb-proto libxau libxslt-native"
 # DEPENDS += "xsltproc-native gperf-native"
 
 SRC_URI = "http://xcb.freedesktop.org/dist/libxcb-${PV}.tar.bz2"

@@ -1,0 +1,20 @@
+Index: linux-2.6.16/drivers/char/ts0710_mux_usb.c
+===================================================================
+--- linux-2.6.16.orig/drivers/char/ts0710_mux_usb.c	2007-01-17 00:10:32.000000000 +0100
++++ linux-2.6.16/drivers/char/ts0710_mux_usb.c	2007-01-17 00:42:23.000000000 +0100
+@@ -811,7 +811,6 @@
+ 	/*init the related mux interface*/
+ 	if (!(bvd_ipc = kzalloc(sizeof(struct ipc_usb_data), GFP_KERNEL))) {
+ 		err("usb_ipc_init: Out of memory.");
+-		usb_deregister(&usb_ipc_driver);
+ 		return -ENOMEM;
+ 	}
+ 	bvd_dbg("usb_ipc_init: Address of bvd_ipc:%p", bvd_ipc);
+@@ -819,7 +818,6 @@
+ 	if (!(bvd_ipc->xmit.buf = kmalloc(IPC_USB_XMIT_SIZE, GFP_KERNEL))) {
+ 		err("usb_ipc_init: Not enough memory for the input buffer.");
+ 		kfree(bvd_ipc);
+-		usb_deregister(&usb_ipc_driver);
+ 		return -ENOMEM;
+ 	}
+ 	bvd_dbg("usb_ipc_init: bvd_ipc->xmit.buf address:%p",

@@ -1,5 +1,8 @@
 export IMAGE_BASENAME = "nylon-mini"
 
+inherit image
+LICENSE = "MIT"
+
 NYLON_BASE = "base-files base-passwd busybox \
 	dropbear \
 	miniinit \
@@ -8,12 +11,9 @@ NYLON_BASE = "base-files base-passwd busybox \
 	netbase \
 	wireless-tools"
 
-RDEPENDS = "kernel \
+RDEPENDS += "kernel \
 	${NYLON_BASE} ${BOOTSTRAP_EXTRA_RDEPENDS}"
 
 export PACKAGE_INSTALL = "${RDEPENDS}"
 
 IMAGE_LINGUAS = ""
-
-inherit image
-LICENSE = "MIT"

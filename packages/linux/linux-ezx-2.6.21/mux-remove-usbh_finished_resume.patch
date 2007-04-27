@@ -1,0 +1,22 @@
+Index: linux-2.6.16/drivers/char/ts0710_mux_usb.c
+===================================================================
+--- linux-2.6.16.orig/drivers/char/ts0710_mux_usb.c	2007-01-17 01:12:23.000000000 +0100
++++ linux-2.6.16/drivers/char/ts0710_mux_usb.c	2007-01-17 01:12:37.000000000 +0100
+@@ -97,7 +97,6 @@
+ static int sumbit_times = 0;
+ static int callback_times = 0;
+ //static unsigned long last_jiff = 0;
+-extern int usbh_finished_resume;
+ /*end global values defined*/
+
+ MODULE_AUTHOR(DRIVER_AUTHOR);
+@@ -546,9 +545,6 @@
+ void usb_send_readurb(void)
+ {
+ 	//printk("usb_send_readurb: begining!UHCRHPS3=0x%x, usbh_finished_resume=%d\n", UHCRHPS3, usbh_finished_resume);
+-
+-	if (usbh_finished_resume == 0)
+-		return;
+
+ 	tasklet_schedule(&bvd_ipc->bh_bp);
+ }
