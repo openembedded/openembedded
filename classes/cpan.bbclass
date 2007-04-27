@@ -31,7 +31,18 @@ def is_new_perl(d):
 		return "no"
 	return "yes"
 
+# Determine where the library directories are
+def perl_get_libdirs(d):
+	import bb
+	libdir = bb.data.getVar('libdir', d, 1)
+	if is_new_perl(d) == "yes":
+		libdirs = libdir + '/perl5'
+	else:
+		libdirs = libdir + '/*/*/perl5'
+	return libdirs
+
 IS_NEW_PERL = "${@is_new_perl(d)}"
+PERLLIBDIRS = "${@perl_get_libdirs(d)}"
 
 cpan_do_configure () {
 	perl Makefile.PL ${EXTRA_CPANFLAGS}
