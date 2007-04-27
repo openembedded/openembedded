@@ -163,7 +163,7 @@ index 04e6b85..bc6de31 100644
 +		status_ep = usb_ep_autoconfig (gadget, &fs_status_desc,
 +			DEV_CONFIG_VALUE,
 +			(int)control_intf.bInterfaceNumber,
-+			int)control_intf.bAlternateSetting);
++			(int)control_intf.bAlternateSetting);
 +#endif /* CONFIG_USB_ETH_RNDIS */
  		if (status_ep) {
  			status_ep->driver_data = status_ep;	/* claim */
