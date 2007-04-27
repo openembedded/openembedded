@@ -3,7 +3,7 @@ HOMEPAGE = "http://mission-control.sourceforge.net/"
 LICENSE = "LGPL"
 SECTION = "libs"
 DEPENDS = "libtelepathy dbus-glib gconf"
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/mission-control/telepathy-mission-control-${PV}.tar.gz"
 
@@ -21,6 +21,8 @@ PACKAGES =+ " \
 	libmissioncontrol-server-dbg \
 "
 
+FILES_${PN} += "${datadir}/dbus*"
+
 FILES_libmissioncontrol = "${libdir}/libmissioncontrol.so.*"
 FILES_libmissioncontrol-config = "${libdir}/libmissioncontrol-config.so.*"
 FILES_libmissioncontrol-server = "${libdir}/libmissioncontrol-server.so.*"
@@ -37,4 +39,4 @@ FILES_libmissioncontrol-server-dbg = "${libdir}/.debug/libmissioncontrol-server.
 
 do_stage() {
         autotools_stage_all
-	}
+}
