@@ -68,7 +68,7 @@ cpan_do_configure () {
 
 cpan_do_compile () {
 	if [ "${IS_NEW_PERL}" = "yes" ]; then
-		oe_runmake PASTHRU_INC="${CFLAGS}" CCFLAGS="${CFLAGS}" LD=${TARGET_SYS}-gcc
+		oe_runmake PASTHRU_INC="${CFLAGS}" CCFLAGS="${CFLAGS}" LD="${CCLD}"
 	else
 		# You must use gcc to link on sh
 		OPTIONS=""
