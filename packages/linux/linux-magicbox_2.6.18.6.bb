@@ -1,7 +1,7 @@
 SECTION = "kernel"
 DESCRIPTION = "Linux kernel for Magicbox ver 1.1 and 2.0 router boards"
 LICENSE = "GPL"
-PR = "r0"
+PR = "r1"
 #DEPENDS = "u-boot"
 
 KERNEL_CCSUFFIX = "-3.4.4"
@@ -53,8 +53,7 @@ do_stage_append () {
 
 do_install_append () {
         install -d  ${DEPLOY_DIR}/images
-        install -m 0755 arch/ppc/boot/images/zImage.elf 
-${DEPLOY_DIR}/images/${KERNEL_IMAGETYPE}-${PV}-${MACHINE}-${DATETIME}.elf
+        install -m 0755 arch/ppc/boot/images/zImage.elf ${DEPLOY_DIR}/images/${KERNEL_IMAGETYPE}-${PV}-${MACHINE}-${DATETIME}.elf
         install -m 0755 vmlinux ${DEPLOY_DIR}/images/
         powerpc-${TARGET_OS}-objcopy -O binary -R .note -R .comment -S ${DEPLOY_DIR}/images/vmlinux ${DEPLOY_DIR}/images/linux.bin
         gzip -f -9 ${DEPLOY_DIR}/images/linux.bin
