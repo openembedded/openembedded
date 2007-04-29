@@ -1,0 +1,28 @@
+
+#
+# Patch managed by http://www.holgerschurig.de/patcher.html
+#
+
+--- snes9x-sdl-1.39/dsp1.h~gcc-4.1
++++ snes9x-sdl-1.39/dsp1.h
+@@ -233,8 +233,8 @@
+ void S9xResetDSP1 ();
+ uint8 S9xGetDSP (uint16 Address);
+ void S9xSetDSP (uint8 Byte, uint16 Address);
+-END_EXTERN_C
+ 
+ extern struct SDSP1 DSP1;
++END_EXTERN_C
+ 
+ #endif
+--- snes9x-sdl-1.39/unix/unix.cpp~gcc-4.1
++++ snes9x-sdl-1.39/unix/unix.cpp
+@@ -1046,7 +1046,7 @@
+ {
+ }
+ 
+-static uint8 Buf[MAX_BUFFER_SIZE];
++static uint8 Buf[MAX_BUFFER_SIZE] __attribute__((aligned(4)));
+ 
+ #define FIXED_POINT 0x10000
+ #define FIXED_POINT_SHIFT 16
