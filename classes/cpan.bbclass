@@ -41,8 +41,17 @@ def perl_get_libdirs(d):
 		libdirs = libdir + '/*/*/perl5'
 	return libdirs
 
+def is_target(d):
+    import bb
+    if not bb.data.inherits_class('native', d):
+        return "yes"
+    return "no"
+
 IS_NEW_PERL = "${@is_new_perl(d)}"
 PERLLIBDIRS = "${@perl_get_libdirs(d)}"
+
+# Env var which tells perl if it should use host (no) or target (yes) settings
+export PERLCONFIGTARGET = "${@is_target(d)}"
 
 cpan_do_configure () {
 	perl Makefile.PL ${EXTRA_CPANFLAGS}

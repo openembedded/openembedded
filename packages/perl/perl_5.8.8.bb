@@ -5,7 +5,7 @@ LICENSE = "Artistic|GPL"
 PRIORITY = "optional"
 # We need gnugrep (for -I)
 DEPENDS = "virtual/db perl-native grep-native"
-PR = "r7"
+PR = "r8"
 
 # Major part of version
 PVM = "5.8"
@@ -127,6 +127,7 @@ do_install() {
 do_stage() {
         install -d ${STAGING_DIR}/${HOST_SYS}/perl/
         install config.sh ${STAGING_DIR}/${HOST_SYS}/perl/
+        install lib/Config_heavy.pl ${STAGING_DIR}/${BUILD_SYS}/lib/perl5/${PV}/Config_heavy-target.pl
 }
 
 PACKAGES = "perl-dbg perl perl-misc perl-lib perl-dev perl-pod perl-doc"
