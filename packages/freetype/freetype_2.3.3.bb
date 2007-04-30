@@ -1,12 +1,13 @@
 DESCRIPTION = "Freetype font rendering library"
 SECTION = "libs"
 LICENSE = "freetype"
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/freetype/freetype-${PV}.tar.bz2 \
-           file://fix-x86_64-build.patch;patch=1"
-#           file://no-hardcode.patch;patch=1"
-#	   file://configure.patch;patch=1 \
+           file://fix-x86_64-build.patch;patch=1 \
+           file://no-hardcode.patch;patch=1 \
+	  "
+
 S = "${WORKDIR}/freetype-${PV}"
 
 inherit autotools pkgconfig binconfig

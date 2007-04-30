@@ -183,6 +183,14 @@ Mail:       shanevolpe@gmail.com
 Machines:   logicpd-pxa270
 Recipes:    directfb, php
 
+Person:     Stelios Koroneos
+Mail:       skoroneos@digital-opsis.com
+Website:    http://www.digital-opsis.com
+Distros:    OPLinux, Angstrom
+Machines:   Dht-walnut, Efika, Magicbox,Sequoia,Xilinx-ML403,RB5XX
+Interest:   Cross-machine development
+Recipes:    icecc.bbclass, ppc toolchain, asterisk,perl,php
+
 Person:     Øyvind Repvik
 Mail:       nail@nslu2-linux.org
 Machines:   nslu2, fsg3, ixp4xx, n2100, turbostation

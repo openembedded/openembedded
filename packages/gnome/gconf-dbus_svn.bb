@@ -1,5 +1,5 @@
 SECTION = "x11/utils"
-DEPENDS = "gtk+ glib-2.0 dbus dbus-glib libxml2 popt"
+DEPENDS = "gtk+ glib-2.0 dbus dbus-glib libxml2 popt intltool-native"
 DESCRIPTION = "Settings daemon using DBUS for communication."
 LICENSE = "GPL"
 PROVIDES = "gconf"

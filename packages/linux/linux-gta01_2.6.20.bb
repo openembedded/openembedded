@@ -17,7 +17,7 @@ FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/linux-gta01"
 # source and patches
 #
 SRC_URI = "http://ftp.de.kernel.org/pub/linux/kernel/v2.6/linux-${VANILLA_VERSION}.tar.bz2 \
-           svn://svn.openmoko.org/trunk/src/target/kernel;module=patches;proto=http \
+           svn://svn.openmoko.org/branches/src/target/kernel/2.6.20.x;module=patches;proto=http \
            file://defconfig-${VANILLA_VERSION}-${MACHINE}"
 S = "${WORKDIR}/linux-${VANILLA_VERSION}"
 

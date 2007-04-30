@@ -1,0 +1,22 @@
+--- /tmp/configure.ac	2007-04-30 13:34:39.000000000 +0200
++++ tracker-0.5.4/configure.ac	2007-04-30 13:37:48.405251000 +0200
+@@ -513,19 +513,6 @@
+ 
+ AC_MSG_CHECKING([[checking ioprio support]])
+ ioprio_support=no
+-AC_RUN_IFELSE([ AC_LANG_PROGRAM([[
+-#include <stdlib.h>
+-#include <errno.h> 
+-#include <sys/syscall.h>
+-#include <unistd.h>
+-inline int ioprio_get (int which, int who)
+-{
+-	return syscall (__NR_ioprio_get, which, who);
+-}
+-   ]], [[
+-exit(ioprio_get(1,0));
+-   ]]) ], 
+-   [ AC_DEFINE(IOPRIO_SUPPORT,[],[Define ioprio support]) ioprio_support=yes ])
+ AC_MSG_RESULT([$ioprio_support])
+ 
+ #####################################################

@@ -3,12 +3,15 @@ HOMEPAGE = "http://www.perl.org/"
 SECTION = "libs"
 LICENSE = "Artistic|GPL"
 DEPENDS = "virtual/db-native gdbm-native"
-PR = "r0"
+PR = "r1"
+
+FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/perl-${PV}"
 
 DEFAULT_PREFERENCE = "-1"
 
 SRC_URI = "http://ftp.funet.fi/pub/CPAN/src/perl-${PV}.tar.gz \
-           file://Configure-multilib.patch;patch=1"
+           file://Configure-multilib.patch;patch=1 \
+           file://perl-configpm-switch.patch;patch=1"
 
 S = "${WORKDIR}/perl-${PV}"
 

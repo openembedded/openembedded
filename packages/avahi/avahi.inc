@@ -4,7 +4,7 @@ HOMEPAGE = "http://avahi.org"
 SECTION = "network"
 PRIORITY = "optional"
 LICENSE = "GPL"
-PR="r2"
+PR="r3"
 
 DEPENDS = "expat libdaemon dbus glib-2.0"
 RRECOMMENDS = "libnss-mdns"

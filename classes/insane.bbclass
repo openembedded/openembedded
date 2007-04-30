@@ -22,6 +22,7 @@
 # We play a special package function
 inherit package
 PACKAGE_DEPENDS += "pax-utils-native"
+#PACKAGE_DEPENDS += chrpath-native"
 PACKAGEFUNCS += " do_package_qa "
 
 
@@ -202,19 +203,28 @@ def package_qa_check_rpath(file,name,d):
     """
     import bb, os
     scanelf = os.path.join(bb.data.getVar('STAGING_BINDIR_NATIVE',d,True),'scanelf')
+    #chrpath = os.path.join(bb.data.getVar('STAGING_BINDIR_NATIVE',d,True),'chrpath')
     bad_dir = bb.data.getVar('TMPDIR', d, True) + "/work"
+    bad_dir_test = bb.data.getVar('TMPDIR', d, True)
     if not os.path.exists(scanelf):
-        bb.fatal("Can not check RPATH scanelf not found")
+        bb.fatal("Can not check RPATH, scanelf (part of pax-utils-native) not found")
+    #if not os.path.exists(chrpath):
+    #    bb.fatal("Can not fix RPATH, chrpath (part of chrpath-native) not found")
     if not bad_dir in bb.data.getVar('WORKDIR', d, True):
         bb.fatal("This class assumed that WORKDIR is ${TMPDIR}/work... Not doing any check")
 
-    output = os.popen("%s -Byr %s" % (scanelf,file))
+    #bb.note("%s -B -F%%r#F %s" % (scanelf,file))
+    output = os.popen("%s -B -F%%r#F %s" % (scanelf,file))
     txt    = output.readline().split()
-    if bad_dir in txt:
-        package_qa_write_error( 1, name, file, d)
-        bb.error("QA Issue package %s contains bad RPATH %s in file %s" % (name, txt, file))
-        return False
-
+    #bb.note("???%s???" % bad_dir_test)
+    for line in txt:
+        #bb.note("===%s===" % line)
+        if bad_dir_test in line:
+            package_qa_write_error( 1, name, file, d)
+            bb.error("QA Issue package %s contains bad RPATH %s in file %s" % (name, line, file))
+            #bb.note("Fixing RPATH for you in %s" % file)
+            #os.popen("%s -r /lib %s" % (chrpath,file))
+            return False
     return True
 
 def package_qa_check_devdbg(path, name,d):
@@ -405,7 +415,7 @@ python do_package_qa () {
             rdepends_sane = False
 
     if not walk_sane or not rdepends_sane:
-        bb.fatal("QA ran found fatal errors. Please consider fixing them")
+        bb.fatal("QA run found fatal errors. Please consider fixing them.")
     bb.note("DONE with PACKAGE QA")
 }
 

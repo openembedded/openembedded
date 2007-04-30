@@ -1,0 +1,16 @@
+Don't time out and give up re-trying PPPoE. We want PPPD to control
+if we give up or not. From debian. This fixes lots of bugs and makes
+it compatible with the default debian version.
+
+
+--- rp-pppoe-3.8.orig/configs/pppoe.conf
++++ rp-pppoe-3.8/configs/pppoe.conf
+@@ -66,7 +66,7 @@
+ # to connect forever after pppoe-start is called.  Otherwise, it will
+ # give out after CONNECT_TIMEOUT seconds and will not attempt to
+ # connect again, making it impossible to reach.
+-CONNECT_TIMEOUT=30
++CONNECT_TIMEOUT=0
+ 
+ # How often in seconds pppoe-start polls to check if link is up
+ CONNECT_POLL=2

@@ -1,0 +1,221 @@
+
+#
+# Patch managed by http://www.holgerschurig.de/patcher.html
+#
+
+--- asterisk-1.2.9.1/./Makefile~asterisk
++++ asterisk-1.2.9.1/./Makefile
+@@ -331,7 +331,7 @@
+ ASTCFLAGS+= $(TRACE_FRAMES)
+ ASTCFLAGS+= $(MALLOC_DEBUG)
+ ASTCFLAGS+= $(BUSYDETECT)
+-ASTCFLAGS+= $(OPTIONS)
++#ASTCFLAGS+= $(OPTIONS)
+ ifneq ($(findstring dont-optimize,$(MAKECMDGOALS)),dont-optimize)
+ ASTCFLAGS+= -fomit-frame-pointer 
+ endif
+@@ -347,12 +347,12 @@
+ 	netsock.o slinfactory.o ast_expr2.o ast_expr2f.o \
+ 	cryptostub.o
+ 
+-ifeq ($(wildcard $(CROSS_COMPILE_TARGET)/usr/include/sys/poll.h),)
++ifeq ($(wildcard $(CROSS_COMPILE_TARGET)/include/sys/poll.h),)
+   OBJS+= poll.o
+   ASTCFLAGS+=-DPOLLCOMPAT
+ endif
+ 
+-ifeq ($(wildcard $(CROSS_COMPILE_TARGET)/usr/include/dlfcn.h),)
++ifeq ($(wildcard $(CROSS_COMPILE_TARGET)/include/dlfcn.h),)
+   OBJS+= dlfcn.o
+   ASTCFLAGS+=-DDLFCNCOMPAT
+ endif
+@@ -397,7 +397,7 @@
+ endif
+ 
+ ifeq ($(MAKETOPLEVEL),$(MAKELEVEL))
+-  CFLAGS+=$(ASTCFLAGS)
++override CFLAGS+=$(ASTCFLAGS)
+ endif
+ 
+ # This is used when generating the doxygen documentation
+@@ -519,7 +519,7 @@
+ 	fi
+ 	rm -f include/asterisk/build.h.tmp
+ 	$(CC) -c -o buildinfo.o $(CFLAGS) buildinfo.c
+-	$(CC) $(DEBUG) $(ASTOBJ) $(ASTLINK) $(OBJS) buildinfo.o $(LIBEDIT) db1-ast/libdb1.a stdtime/libtime.a $(LIBS)
++	$(CC) $(DEBUG) $(ASTOBJ) $(ASTLINK) $(OBJS) buildinfo.o $(LIBEDIT) db1-ast/libdb1.a stdtime/libtime.a $(LDFLAGS) $(LIBS)
+ 
+ muted: muted.o
+ 	$(CC) $(AUDIO_LIBS) -o muted muted.o
+--- asterisk-1.2.9.1/codecs/gsm/Makefile~asterisk
++++ asterisk-1.2.9.1/codecs/gsm/Makefile
+@@ -51,7 +51,7 @@
+            ifneq (${PROC},ppc)
+             ifneq (${PROC},ppc64)
+              ifneq (${PROC},s390)
+-OPTIMIZE+=-march=$(PROC)
++#OPTIMIZE+=-march=$(PROC)
+              endif
+             endif
+            endif
+@@ -243,7 +243,7 @@
+ ifneq (${PROC},arm)
+ ifneq ($(shell uname -m), parisc)
+ ifneq ($(shell uname -m),s390)
+-GSM_SOURCES+= $(SRC)/k6opt.s
++#GSM_SOURCES+= $(SRC)/k6opt.s
+ endif
+ endif
+ endif
+@@ -309,7 +309,7 @@
+ ifneq ($(shell uname -m), armv4l)
+ ifneq ($(shell uname -m), parisc)
+ ifneq ($(shell uname -m),s390)
+-GSM_OBJECTS+= $(SRC)/k6opt.o
++#GSM_OBJECTS+= $(SRC)/k6opt.o
+ endif
+ endif
+ endif
+--- asterisk-1.2.9.1/res/Makefile~asterisk
++++ asterisk-1.2.9.1/res/Makefile
+@@ -89,7 +89,7 @@
+ 	fi
+ 
+ res_crypto.so: res_crypto.o
+-	$(CC) $(SOLINK) -o $@ ${CYGSOLINK} $< ${CYGSOLIB} $(CRYPTO_LIBS)
++	$(CC) $(SOLINK) -o $@ ${CYGSOLINK} $< $(LDFLAGS) ${CYGSOLIB} $(CRYPTO_LIBS)
+ 
+ clean:
+ 	rm -f *.so *.o .depend
+--- asterisk-1.2.9.1/channels/Makefile~asterisk
++++ asterisk-1.2.9.1/channels/Makefile
+@@ -73,7 +73,7 @@
+   SOLINK+=-lrt
+ endif
+ 
+-ifneq ($(wildcard $(CROSS_COMPILE_TARGET)/usr/include/linux/ixjuser.h)$(wildcard $(CROSS_COMPILE_TARGET)/usr/local/include/ixjuser.h),)
++ifneq ($(wildcard $(CROSS_COMPILE_TARGET)/include/linux/ixjuser.h),)
+   CHANNEL_LIBS+=chan_phone.so
+ endif
+ 
+@@ -88,16 +88,16 @@
+ 
+ CFLAGS+=-Wno-missing-prototypes -Wno-missing-declarations
+ 
+-ifneq ($(wildcard $(CROSS_COMPILE_TARGET)/usr/include/alsa/asoundlib.h),)
++ifneq ($(wildcard $(CROSS_COMPILE_TARGET)/include/alsa/asoundlib.h),)
+   CHANNEL_LIBS+=chan_alsa.so
+ endif
+ 
+-ifneq ($(wildcard $(CROSS_COMPILE_TARGET)/usr/lib/libpri.so.1)$(wildcard $(CROSS_COMPILE_TARGET)/usr/local/lib/libpri.so.1),)
++ifneq ($(wildcard $(CROSS_COMPILE_TARGET)/lib/libpri.so.1),)
+   CFLAGS+=-DZAPATA_PRI
+   ZAPPRI=-lpri
+ endif
+ 
+-ifneq ($(wildcard $(CROSS_COMPILE_TARGET)/usr/lib/libmfcr2.so.1)$(wildcard $(CROSS_COMPILE_TARGET)/usr/local/lib/libmfcr2.so.1),)
++ifneq ($(wildcard $(CROSS_COMPILE_TARGET)/lib/libmfcr2.so.1),)
+   CFLAGS+=-DZAPATA_R2
+   ZAPR2=-lmfcr2
+ endif
+@@ -110,7 +110,7 @@
+ endif
+ 
+ ifndef WITHOUT_ZAPTEL
+-ifneq ($(wildcard $(CROSS_COMPILE_TARGET)/usr/include/linux/zaptel.h)$(wildcard $(CROSS_COMPILE_TARGET)/usr/local/include/zaptel.h)$(wildcard $(CROSS_COMPILE_TARGET)/usr/pkg/include/zaptel.h),)
++ifneq ($(wildcard $(CROSS_COMPILE_TARGET)/include/linux/zaptel.h),)
+   ifeq (${OSARCH},NetBSD)
+     SOLINK+=-L$(CROSS_COMPILE_TARGET)/usr/pkg/lib
+   endif
+@@ -122,7 +122,7 @@
+ endif
+ endif # WITHOUT_ZAPTEL
+ 
+-ifneq ($(wildcard $(CROSS_COMPILE_TARGET)/usr/include/vpbapi.h),)
++ifneq ($(wildcard $(CROSS_COMPILE_TARGET)/include/vpbapi.h),)
+   CHANNEL_LIBS+=chan_vpb.so
+   CFLAGS+=-DLINUX
+ endif
+@@ -137,7 +137,7 @@
+ 
+ ZAPDIR=/usr/lib
+ 
+-ifneq ($(wildcard $(CROSS_COMPILE_TARGET)/usr/include/nbs.h),)
++ifneq ($(wildcard $(CROSS_COMPILE_TARGET)/include/nbs.h),)
+   CHANNEL_LIBS+=chan_nbs.so
+ endif
+ 
+@@ -158,7 +158,7 @@
+ 	rm -f busy.h ringtone.h gentone gentone-ulaw
+ 
+ %.so : %.o
+-	$(CC) $(SOLINK) -o $@ ${CYGSOLINK} $< ${CYGSOLIB} ${LIBS}
++	$(CC) $(SOLINK) -o $@ ${CYGSOLINK} $< $(LDFLAGS) ${CYGSOLIB} ${LIBS}
+ 
+ ifneq ($(wildcard .depend),)
+   include .depend
+@@ -215,7 +215,7 @@
+ chan_alsa.o: $(ALSA_SRC)
+ 
+ chan_alsa.so: chan_alsa.o
+-	$(CC) $(SOLINK) -o $@ $< -lasound -lm -ldl
++	$(CC) $(SOLINK) -o $@ $< -lasound -lm -ldl $(LDFLAGS)
+ 
+ chan_nbs.so: chan_nbs.o
+ 	$(CC) $(SOLINK) -o $@ $< -lnbs
+--- asterisk-1.2.9.1/pbx/Makefile~asterisk
++++ asterisk-1.2.9.1/pbx/Makefile
+@@ -59,7 +59,7 @@
+ 	$(CC) $(SOLINK) -o $@ $(KDE_CONSOLE_OBJS) $(KDE_LIBS)
+ 
+ pbx_dundi.so: dundi-parser.o pbx_dundi.o
+-	$(CC) $(SOLINK) -o $@ ${CYGSOLINK} pbx_dundi.o dundi-parser.o -lz ${CYGSOLIB}
++	$(CC) $(SOLINK) -o $@ ${CYGSOLINK} pbx_dundi.o dundi-parser.o -lz ${CYGSOLIB} $(LDFLAGS)
+ 
+ %.moc : %.h
+ 	$(MOC) $< -o $@
+--- asterisk-1.2.9.1/formats/Makefile~asterisk
++++ asterisk-1.2.9.1/formats/Makefile
+@@ -25,7 +25,7 @@
+ #
+ # OGG/Vorbis format
+ #
+-ifneq ($(wildcard $(CROSS_COMPILE_TARGET)/usr/include/vorbis/codec.h),)
++ifneq ($(wildcard $(CROSS_COMPILE_TARGET)/include/vorbis/codec.h),)
+   FORMAT_LIBS+=format_ogg_vorbis.so
+ endif
+ 
+@@ -57,7 +57,7 @@
+ 	$(CC) $(SOLINK) -o $@ ${CYGSOLINK} $< ${CYGSOLIB} -lm
+ 
+ format_ogg_vorbis.so : format_ogg_vorbis.o
+-	$(CC) $(SOLINK) -o $@ ${CYGSOLINK} $< ${CYGSOLIB} -logg -lvorbis -lvorbisenc -lm
++	$(CC) $(SOLINK) -o $@ ${CYGSOLINK} $< ${CYGSOLIB} -logg -lvorbis -lvorbisenc -lm $(LDFLAGS)
+ 
+ install: all
+ 	for x in $(FORMAT_LIBS); do $(INSTALL) -m 755 $$x $(DESTDIR)$(MODULES_DIR) ; done
+--- asterisk-1.2.9.1/utils/Makefile~asterisk
++++ asterisk-1.2.9.1/utils/Makefile
+@@ -22,11 +22,11 @@
+ 
+ TARGET=stereorize streamplayer
+ 
+-ifneq ($(wildcard $(CROSS_COMPILE_TARGET)/usr/include/popt.h)$(wildcard -f $(CROSS_COMPILE_TARGET)/usr/local/include/popt.h),)
++ifneq ($(wildcard $(CROSS_COMPILE_TARGET)/include/popt.h),)
+   TARGET+=smsq
+ endif
+ 
+-ifneq ($(wildcard $(CROSS_COMPILE_TARGET)/usr/include/newt.h)$(wildcard -f $(CROSS_COMPILE_TARGET)/usr/local/include/newt.h),)
++ifneq ($(wildcard $(CROSS_COMPILE_TARGET)/include/newt.h),)
+   TARGET+=astman
+ endif
+ 
+@@ -64,7 +64,7 @@
+ 	$(CC) $(CFLAGS) -o $@ $^
+ 
+ smsq: smsq.o
+-	$(CC) $(CFLAGS) -o smsq ${SOL} smsq.o -lpopt
++	$(CC) $(CFLAGS) -o smsq ${SOL} smsq.o -lpopt $(LDFLAGS)
+ 
+ streamplayer: streamplayer.o
+ 	$(CC) $(CFLAGS) -o streamplayer ${SOL} streamplayer.o ${SOLLIBS}

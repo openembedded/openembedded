@@ -5,7 +5,10 @@ LICENSE = "Artistic|GPL"
 PRIORITY = "optional"
 # We need gnugrep (for -I)
 DEPENDS = "virtual/db perl-native grep-native"
-PR = "r0"
+PR = "r8"
+
+# Major part of version
+PVM = "5.8"
 
 DEFAULT_PREFERENCE = "-1"
 
@@ -15,6 +18,15 @@ SRC_URI = "ftp://ftp.funet.fi/pub/CPAN/src/perl-${PV}.tar.gz \
         file://perl-dynloader.patch;patch=1 \
         file://perl-moreconfig.patch;patch=1 \
         file://generate-sh.patch;patch=1 \
+        file://09_fix_installperl.patch;patch=1 \
+        file://52_debian_extutils_hacks.patch;patch=1 \
+        file://53_debian_mod_paths.patch;patch=1 \
+        file://54_debian_perldoc-r.patch;patch=1 \
+        file://58_debian_cpan_config_path.patch;patch=1 \
+        file://60_debian_libnet_config_path.patch;patch=1 \
+        file://62_debian_cpan_definstalldirs.patch;patch=1 \
+        file://64_debian_enc2xs_inc.patch;patch=1 \
+        file://config.sh \
         file://config.sh-32 \
         file://config.sh-32-le \
         file://config.sh-32-be \
@@ -24,9 +36,6 @@ SRC_URI = "ftp://ftp.funet.fi/pub/CPAN/src/perl-${PV}.tar.gz \
 
 # Where to find the native perl
 HOSTPERL = "${STAGING_BINDIR_NATIVE}/perl${PV}"
-
-# Architecture specific libdir (for .so's)
-ARCHLIBDIR = "${TARGET_ARCH}-${TARGET_OS}-thread-multi"
 
 # Where to find .so files - use the -native versions not those from the target build
 export PERLHOSTLIB = "${STAGING_DIR}/${BUILD_SYS}/lib/perl5/${PV}/${BUILD_ARCH}-${BUILD_OS}-thread-multi/"
@@ -44,25 +53,27 @@ do_configure() {
 
         # Generate configuration
         rm -f config.sh-${TARGET_ARCH}-${TARGET_OS}
-        touch config.sh-${TARGET_ARCH}-${TARGET_OS}
-        cat ${WORKDIR}/config.sh-${@siteinfo_get_bits(d)} \
-                >> config.sh-${TARGET_ARCH}-${TARGET_OS}
-        cat ${WORKDIR}/config.sh-${@siteinfo_get_bits(d)}-${@siteinfo_get_endianess(d)} \
-                >> config.sh-${TARGET_ARCH}-${TARGET_OS}
+        for i in ${WORKDIR}/config.sh \
+                 ${WORKDIR}/config.sh-${@siteinfo_get_bits(d)} \
+                 ${WORKDIR}/config.sh-${@siteinfo_get_bits(d)}-${@siteinfo_get_endianess(d)}; do
+            cat $i >> config.sh-${TARGET_ARCH}-${TARGET_OS}
+        done
 
-        # uclibc not checked with this version yet
-        # uclicb fixups
-        #for i in config.sh-*-linux; do
-        #        a="`echo $i|sed -e 's,^config.sh-,,; s,-linux$,,'`"
-        #        newfile="`echo $i|sed -e 's,-linux$,-linux-uclibc,g'`"
-        #        cat $i | sed -e "s,${a}-linux,${a}-linux-uclibc,g; \
-        #        s,d_sockatmark='define',d_sockatmark='undef',g;" > $newfile
-        #done
+        # Fixups for uclibc
+        if [ "${TARGET_OS}" = "linux-uclibc" -o "${TARGET_OS}" = "linux-uclibcgnueabi" ]; then
+                sed -i -e "s,\(d_crypt_r=\)'define',\1'undef',g" \
+                       -e "s,\(d_getnetbyname_r=\)'define',\1'undef',g" \
+                       -e "s,\(d_getnetbyaddr_r=\)'define',\1'undef',g" \
+                       -e "s,\(d_getnetent_r=\)'define',\1'undef',g" \
+                       -e "s,\(d_sockatmark=\)'define',\1'undef',g" \
+                    config.sh-${TARGET_ARCH}-${TARGET_OS}
+        fi
 
         # Update some paths in the configuration
-        sed -i -e 's,@DESTDIR@,${D},g' config.sh-${TARGET_ARCH}-${TARGET_OS}
-        sed -i -e 's,@ARCH@,${TARGET_ARCH}-${TARGET_OS},g' config.sh-${TARGET_ARCH}-${TARGET_OS}
-        sed -i -e "s%/usr/include/%${STAGING_INCDIR}/%g" config.sh-${TARGET_ARCH}-${TARGET_OS}
+        sed -i -e 's,@DESTDIR@,${D},g' \
+               -e 's,@ARCH@,${TARGET_ARCH}-${TARGET_OS},g' \
+               -e "s%/usr/include/%${STAGING_INCDIR}/%g" \
+            config.sh-${TARGET_ARCH}-${TARGET_OS}
 
         if test "${MACHINE}" != "native"; then
             # These are strewn all over the source tree
@@ -87,52 +98,93 @@ do_compile() {
 }
 do_install() {
         oe_runmake install
-        mv -f ${D}/${libdir}/perl5/${PV}/${ARCHLIBDIR}/CORE/libperl.so ${D}/${libdir}/libperl.so.${PV}
+
+        # Add perl pointing at current version
         ln -sf perl${PV} ${D}/usr/bin/perl
+
+        # Fix up versioned directories
+        mv ${D}/${libdir}/perl/${PVM} ${D}/${libdir}/perl/${PV}
+        mv ${D}/${datadir}/perl/${PVM} ${D}/${datadir}/perl/${PV}
+        ln -sf ${PV} ${D}/${libdir}/perl/${PVM}
+        ln -sf ${PV} ${D}/${datadir}/perl/${PVM}
+
+        # Remove unwanted file
+        rm -f ${D}/${libdir}/perl/${PV}/.packlist
+
+        # Fix up shared library
+        mv -f ${D}/${libdir}/perl/${PV}/CORE/libperl.so ${D}/${libdir}/libperl.so.${PV}
         ln -sf libperl.so.${PV} ${D}/${libdir}/libperl.so.5
+
+        # Fix up installed configuration
         if test "${MACHINE}" != "native"; then
-            sed -i -e "s,${D},,g" ${D}/${libdir}/perl5/${PV}/${ARCHLIBDIR}/Config_heavy.pl
+            sed -i -e "s,${D},,g" \
+                   -e "s,-isystem${STAGING_INCDIR} ,,g" \
+                   -e "s,${STAGING_LIBDIR},${libdir},g" \
+                   -e "s,${STAGING_INCDIR},${includedir},g" \
+                ${D}/${libdir}/perl/${PV}/Config_heavy.pl
         fi
 }
 do_stage() {
         install -d ${STAGING_DIR}/${HOST_SYS}/perl/
         install config.sh ${STAGING_DIR}/${HOST_SYS}/perl/
+        install lib/Config_heavy.pl ${STAGING_DIR}/${BUILD_SYS}/lib/perl5/${PV}/Config_heavy-target.pl
 }
 
-PACKAGES = "perl-dbg perl perl-misc perl-lib perl-dev perl-pod"
-FILES_${PN} = "/usr/bin/perl /usr/bin/perl${PV}"
-FILES_${PN}-lib = "/usr/lib/libperl.so*"
-FILES_${PN}-dev = "/usr/lib/perl5/${PV}/${ARCHLIBDIR}/CORE/"
-FILES_${PN}-pod = "/usr/lib/perl5/${PV}/pod"
-FILES_perl-misc = "/usr/bin/*"
-FILES_${PN}-dbg += " ${libdir}/perl5/${PV}/${ARCHLIBDIR}/auto/*/.debug \
-                     ${libdir}/perl5/${PV}/${ARCHLIBDIR}/auto/*/*/.debug \
-                     ${libdir}/perl5/${PV}/${ARCHLIBDIR}/auto/*/*/*/.debug"
+PACKAGES = "perl-dbg perl perl-misc perl-lib perl-dev perl-pod perl-doc"
+FILES_${PN} = "${bindir}/perl ${bindir}/perl${PV}"
+FILES_${PN}-lib = "${libdir}/libperl.so* ${libdir}/perl/${PVM} ${datadir}/perl/${PVM}"
+FILES_${PN}-dev = "${libdir}/perl/${PV}/CORE"
+FILES_${PN}-pod = "${datadir}/perl/${PV}/pod \
+                   ${datadir}/perl/${PV}/*/*.pod \
+                   ${datadir}/perl/${PV}/*/*/*.pod \
+                   ${libdir}/perl/${PV}/*.pod"
+FILES_perl-misc = "${bindir}/*"
+FILES_${PN}-dbg += "${libdir}/perl/${PV}/auto/*/.debug \
+                    ${libdir}/perl/${PV}/auto/*/*/.debug \
+                    ${libdir}/perl/${PV}/auto/*/*/*/.debug \
+                    ${datadir}/perl/${PV}/auto/*/.debug \
+                    ${datadir}/perl/${PV}/auto/*/*/.debug \
+                    ${datadir}/perl/${PV}/auto/*/*/*/.debug \
+                    ${libdir}/perl/${PV}/CORE/.debug"
+FILES_${PN}-doc = "${datadir}/perl/${PV}/*/*.txt \
+                   ${datadir}/perl/${PV}/*/*/*.txt \
+                   ${datadir}/perl/${PV}/Net/*.eg \
+                   ${datadir}/perl/${PV}/CGI/eg \
+                   ${datadir}/perl/${PV}/ExtUtils/PATCHING \
+                   ${datadir}/perl/${PV}/ExtUtils/NOTES \
+                   ${datadir}/perl/${PV}/ExtUtils/typemap \
+                   ${datadir}/perl/${PV}/ExtUtils/MANIFEST.SKIP \
+                   ${datadir}/perl/${PV}/CPAN/SIGNATURE \
+                   ${datadir}/perl/${PV}/CPAN/PAUSE2003.pub \
+                   ${datadir}/perl/${PV}/B/assemble \
+                   ${datadir}/perl/${PV}/B/makeliblinks \
+                   ${datadir}/perl/${PV}/B/disassemble \
+                   ${datadir}/perl/${PV}/B/cc_harness \
+                   ${datadir}/perl/${PV}/ExtUtils/xsubpp \
+                   ${datadir}/perl/${PV}/Encode/encode.h \
+                   ${datadir}/perl/${PV}/unicore/mktables \
+                   ${datadir}/perl/${PV}/unicore/mktables.lst \
+                   ${datadir}/perl/${PV}/unicore/version"
 
-python populate_packages_prepend () {
-        libdir = bb.data.expand('${libdir}/perl5/${PV}', d)
-        archlibdir =  bb.data.expand('${libdir}/perl5/${PV}/${ARCHLIBDIR}', d)
-        do_split_packages(d, archlibdir, 'auto/(.*)(?!\.debug)/', 'perl-module-%s', 'perl module %s', recursive=True, allow_dirs=False, match_path=True)
-        do_split_packages(d, archlibdir, '(.*)\.(pm|pl)', 'perl-module-%s', 'perl module %s', recursive=True, allow_dirs=False, match_path=True)
-        do_split_packages(d, libdir, '(.*)\.(pm|pl)', 'perl-module-%s', 'perl module %s', recursive=True, allow_dirs=False, match_path=True)
-}
+DEBIAN_NOAUTONAME_perl-lib = "1"
+RPROVIDES_perl-lib = "perl-lib"
 
 # Create a perl-modules package recommending all the other perl
 # packages (actually the non modules packages and not created too)
 ALLOW_EMPTY_perl-modules = "1"
 PACKAGES_append = " perl-modules "
-RRECOMMENDS_perl-modules = "${@bb.data.getVar('PACKAGES', d, 1).replace('perl-modules ', '').replace('perl-dbg ', '').replace('perl-misc ', '').replace('perl-dev ', '').replace('perl-pod ', '')}"
-RPROVIDES_perl-lib = "perl-lib"
+RRECOMMENDS_perl-modules = "${@bb.data.getVar('PACKAGES', d, 1).replace('perl-modules ', '').replace('perl-dbg ', '').replace('perl-misc ', '').replace('perl-dev ', '').replace('perl-pod ', '').replace('perl-doc ', '')}"
+
+python populate_packages_prepend () {
+        libdir = bb.data.expand('${libdir}/perl/${PV}', d)
+        do_split_packages(d, libdir, 'auto/(.*)(?!\.debug)/', 'perl-module-%s', 'perl module %s', recursive=True, allow_dirs=False, match_path=True)
+        do_split_packages(d, libdir, '(.*)\.(pm|pl|e2x)', 'perl-module-%s', 'perl module %s', recursive=True, allow_dirs=False, match_path=True)
+        datadir = bb.data.expand('${datadir}/perl/${PV}', d)
+        do_split_packages(d, datadir, 'auto/(.*)(?!\.debug)/', 'perl-module-%s', 'perl module %s', recursive=True, allow_dirs=False, match_path=True)
+        do_split_packages(d, datadir, '(.*)\.(pm|pl|e2x)', 'perl-module-%s', 'perl module %s', recursive=True, allow_dirs=False, match_path=True)
+}
 
 require perl-rdepends_${PV}.inc
-
-# To create/update the perl-rdepends_${PV}.inc use this piece of ugly script (modified for your arch/paths etc):
-# daka@DaKa2:/home/slug/slugos/tmp/work/perl-5.8.7-r14/install$ egrep -r "use|require" * | grep ";$" | egrep ".pm:use |.pm:require " | grep -v v5.6.0 | grep -v 5.00 | grep -v \$module | sed -e "s, \+, ,g" | cut -f1,2 -d" " | sed -e "s,;, ,g" | sed -e "s,(), ,g" | sed -e "s,::,-,g" | sort | uniq | tr [:upper:] [:lower:] | sed -e "s,/[^ ]\+ , += \"perl-module-,g" | sed -e "s, \?$, \",g" | sed -e "s,_,-,g" | sed -e "s,^,RDEPENDS_,g" | sed -e "s,armeb-linux,\$\{TARGET_ARCH\}-\$\{TARGET_OS\},g" | egrep -v "perl-module-5|perl-module-tk|perl-module-mac-internetconfig|perl-module-ndbm-file|perl-module-html-treebuilder|perl-module-lwp-simple|perl-module-vms-filespec|perl-module-fcgi|perl-module-vms-stdio|perl-module-mac-buildtools" > /home/slug/openembedded/packages/perl/perl-rdepends_5.8.7.inc
-
-# Some additional dependencies that the above doesn't manage to figure out
-DEPENDS_perl-module-math-bigint += "perl-module-math-bigint-calc "
-DEPENDS_perl-module-math-bigint-calc += "perl-module-integer "
-
 require perl-rprovides.inc
 
 PARALLEL_MAKE = ""
