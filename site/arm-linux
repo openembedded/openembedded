@@ -151,7 +151,7 @@ samba_cv_USE_SETUIDX=${samba_cv_USE_SETUIDX=yes}
 samba_cv_LINUX_LFS_SUPPORT=${samba_cv_LINUX_LFS_SUPPORT=yes}
 
 # dpkg
-dpkg_cv_va_copy=${ac_cv_va_copy=no}
+dpkg_cv_va_copy=${ac_cv_va_copy=yes}
 dpkg_cv___va_copy=${ac_cv___va_copy=yes}
 
 # enca
