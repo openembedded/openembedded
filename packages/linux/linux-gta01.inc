@@ -4,10 +4,6 @@ AUTHOR = "Harald Welte <laforge@openmoko.org>"
 HOMEPAGE = "N/A"
 LICENSE = "GPL"
 DEPENDS += "u-boot-mkimage-gta01-native"
-MOKOR = "moko8"
-PR = "${MOKOR}-r2"
-
-VANILLA_VERSION = "2.6.20"
 
 inherit kernel
 
@@ -16,8 +12,7 @@ FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/linux-gta01"
 ##############################################################
 # source and patches
 #
-SRC_URI = "http://ftp.de.kernel.org/pub/linux/kernel/v2.6/linux-${VANILLA_VERSION}.tar.bz2 \
-           svn://svn.openmoko.org/branches/src/target/kernel/2.6.20.x;module=patches;proto=http \
+SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-${VANILLA_VERSION}.tar.bz2 \
            file://defconfig-${VANILLA_VERSION}-${MACHINE}"
 S = "${WORKDIR}/linux-${VANILLA_VERSION}"
 
@@ -53,8 +48,6 @@ do_prepatch() {
 }
 
 do_configure() {
-	#install -m 0644 ${WORKDIR}/logo_linux_clut224.ppm drivers/video/logo/logo_linux_clut224.ppm
-
 	if [ ! -e ${WORKDIR}/defconfig-${VANILLA_VERSION}-${MACHINE} ]; then
 		die "No default configuration for ${MACHINE} available."
 	fi
