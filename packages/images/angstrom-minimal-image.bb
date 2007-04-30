@@ -4,8 +4,12 @@ LICENSE = "MIT"
 PR = "r0"
 
 ANGSTROM_EXTRA_INSTALL ?= ""
+DISTRO_SSH_DAEMON ?= "dropbear"
 
-DEPENDS = "task-base"
+DEPENDS = "task-base \
+           ${DISTRO_SSH_DAEMON} \
+	  "
+
 RDEPENDS = "task-boot \
             ${DISTRO_SSH_DAEMON} \
 	   "
