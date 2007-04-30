@@ -1,0 +1,86 @@
+--- rp-pppoe-3.8/src/configure.in	2007/04/30 07:21:25	1.1
++++ rp-pppoe-3.8/src/configure.in	2007/04/30 07:22:06
+@@ -5,6 +5,12 @@
+ dnl pppd directory for kernel-mode PPPoE
+ PPPD_DIR=ppp-2.4.1.pppoe2
+ 
++dnl hard code some paths
++PPPD=/usr/sbin/pppd
++ID=/usr/bin/id
++AC_ARG_VAR(PPPD)
++AC_ARG_VAR(ID)
++
+ AC_CONFIG_HEADER(config.h)
+ 
+ AC_PREFIX_DEFAULT(/usr)
+@@ -131,15 +137,10 @@
+ AC_CHECK_SIZEOF(unsigned int)
+ AC_CHECK_SIZEOF(unsigned long)
+ 
+-dnl Check for location of pppd
+-AC_PATH_PROG(PPPD, pppd, NOTFOUND, $PATH:/sbin:/usr/sbin:/usr/local/sbin)
+ AC_PATH_PROG(ECHO, echo, echo)
+ 
+-dnl Check for setsid (probably Linux-specific)
+-AC_PATH_PROG(SETSID, setsid, "", $PATH:/sbin:/usr/sbin:/usr/local/sbin)
+-
+ dnl Check for an "id" which accepts "-u" option -- hack for Solaris.
+-AC_PATH_PROG(ID, id, "", /usr/xpg4/bin:$PATH)
++dnl AC_PATH_PROG(ID, id, "", /usr/xpg4/bin:$PATH)
+ 
+ dnl Check for Linux-specific kernel support for PPPoE
+ AC_MSG_CHECKING(for Linux 2.4.X kernel-mode PPPoE support)
+@@ -183,44 +184,8 @@
+ 	CFLAGS="$CFLAGS -Wall -Wstrict-prototypes -ansi"
+ fi
+ 
+-dnl If we couldn't find pppd, die
+-if test "$PPPD" = "NOTFOUND"; then
+-        AC_MSG_WARN([*** Oops!  I couldn't find pppd, the PPP daemon anywhere.])
+-	AC_MSG_WARN([*** You must install pppd, version 2.3.10 or later.])
+-	AC_MSG_WARN([*** I will keep going, but it may not work.])
+-	PPPD=pppd
+-fi
+-
+-dnl Figure out pppd version.  2.3.7 to 2.3.9 -- issue warning.  Less than
+-dnl 2.3.7 -- stop
+-
+-PPPD_VERSION=`$PPPD --version 2>&1 | awk ' /version/ {print $NF}'`
+-
+-case "$PPPD_VERSION" in
+-1.*|2.0.*|2.1.*|2.2.*|2.3.0|2.3.1|2.3.2|2.3.3|2.3.4|2.3.5|2.3.6)
+-	AC_MSG_WARN([*** Oops! Your version of pppd is $PPPD_VERSION, which is too old.])
+-	AC_MSG_WARN([*** You need at least 2.3.7 (2.3.10 or newer recommended.])
+-	AC_MSG_WARN([*** I will keep going, but it may not work.])
+-	;;
+-
+-2.3.7|2.3.8|2.3.9)
+-	AC_MSG_WARN([*** Warning.  Your version of pppd is $PPPD_VERSION.  You will])
+-	AC_MSG_WARN([*** not be able to use connect-on-demand.  Upgrade to pppd])
+-	AC_MSG_WARN([*** 2.3.10 or newer if you need connect-on-demand.])
+-	;;
+-
+-2*|3*|4*|5*|6*|7*|8*|9*)
+-	;;
+-
+-*)
+-	AC_MSG_WARN([*** Oops.  I cannot figure out what version of pppd you have.])
+-	AC_MSG_WARN([*** All I got back was '$PPPD_VERSION'])
+-	AC_MSG_WARN([*** I will keep going, but it may not work.])
+-	;;
+-esac
+-
+ dnl Figure out packing order of structures
+-AC_MSG_CHECKING([packing order of bit fields])
++AC_CACHE_CHECK([packing order of bit fields],rpppoe_cv_pack_bitfields,[
+ AC_TRY_RUN([
+ union foo {
+     struct bar {
+@@ -245,6 +210,7 @@
+     }
+ }], rpppoe_cv_pack_bitfields=normal, rpppoe_cv_pack_bitfields=rev,
+ $ECHO "no defaults for cross-compiling"; exit 0)
++])
+ 
+ if test "$rpppoe_cv_pack_bitfields" = "rev" ; then
+ 	AC_MSG_RESULT(reversed)
