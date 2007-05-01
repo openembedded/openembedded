@@ -5,7 +5,7 @@ LICENSE = "Artistic|GPL"
 PRIORITY = "optional"
 # We need gnugrep (for -I)
 DEPENDS = "virtual/db perl-native grep-native"
-PR = "r9"
+PR = "r10"
 
 # Major part of version
 PVM = "5.8"
@@ -184,6 +184,8 @@ python populate_packages_prepend () {
         do_split_packages(d, datadir, 'auto/(.*)(?!\.debug)/', 'perl-module-%s', 'perl module %s', recursive=True, allow_dirs=False, match_path=True)
         do_split_packages(d, datadir, '(.*)\.(pm|pl|e2x)', 'perl-module-%s', 'perl module %s', recursive=True, allow_dirs=False, match_path=True)
 }
+
+PACKAGES_DYNAMIC = "perl-module-*"
 
 require perl-rdepends_${PV}.inc
 require perl-rprovides.inc
