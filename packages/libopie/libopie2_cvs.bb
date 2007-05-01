@@ -1,12 +1,13 @@
 require ${PN}.inc
 
 PV = "1.2.2+cvs${SRCDATE}"
-PR = "r7"
+PR = "r8"
 
 DEFAULT_PREFERENCE = "-1"
 
 SRC_URI = "${HANDHELDS_CVS};module=opie/libopie2 \
-           file://include.pro"
+           file://include.pro \
+	   file://wireless.patch;patch=1"
 
 # Patches merged upstream, keep for reference (for 1.2.2)
 #           file://ipaq-lcd-rotate-cleanup.patch;patch=1 \
