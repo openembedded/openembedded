@@ -1,10 +1,13 @@
 SECTION = "libs"
 LICENSE = "Artistic"
-PR = "r3"
+DEPENDS += "expat-native"
+PR = "r4"
 
 SRC_URI = "http://www.cpan.org/modules/by-module/XML/XML-Parser-${PV}.tar.gz"
 
 S = "${WORKDIR}/XML-Parser-${PV}"
+
+EXTRA_CPANFLAGS = "EXPATLIBPATH=${STAGING_LIBDIR} EXPATINCPATH=${STAGING_INCDIR}"
 
 inherit cpan
 

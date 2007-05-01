@@ -9,7 +9,7 @@ inherit autotools
 
 EXTRA_OECONF = "--host=${HOST_SYS} \
 		--backend=sdl \
-		--with-sdl-prefix=${STAGING_BINDIR}/.. \
+		--with-sdl-prefix=${STAGING_BINDIR_NATIVE}/.. \
 		--disable-alsa \
 		--with-ogg-prefix=${STAGING_LIBDIR}/.. \
 		--with-vorbis-prefix=${STAGING_LIBDIR}/.. \

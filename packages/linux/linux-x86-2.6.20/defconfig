@@ -702,7 +702,7 @@ CONFIG_S2IO=m
 #
 # Wireless LAN (non-hamradio)
 #
-# CONFIG_NET_RADIO is not set
+CONFIG_NET_RADIO=y
 
 #
 # Wan interfaces

@@ -5,7 +5,7 @@ HOMEPAGE = "http://www.openezx.org"
 LICENSE = "GPL"
 DEPENDS += "quilt-native"
 EZX = "ezx0"
-PR = "${EZX}-r0"
+PR = "${EZX}-r1"
 
 DEFAULT_PREFERENCE = "-1"
 
@@ -35,7 +35,7 @@ SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-${PV}.tar.bz2 \
 	file://mux-remove-usbh_finished_resume.patch;patch=1 \
 	file://mux-fix-makefile.patch;patch=1 \
 	file://mux-fix-tty-driver.patch;patch=1 \
-	file://mux-linux-2.6.20.7-fix.patch;patch=1 \
+	file://mux-linux-2.6.21-fix.patch;patch=1 \
 	file://mux-ifdef-ezx-features.patch;patch=1 \
 	file://mux_debug.patch;patch=1 \
 
