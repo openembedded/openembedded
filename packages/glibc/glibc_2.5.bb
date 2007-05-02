@@ -76,6 +76,9 @@ SRC_URI_append_powerpc= " file://ppc-sfp-machine.patch;patch=1 \
                           file://ppc-ports-ld-nofpu-20070114.patch;patch=1 \
                           file://powerpc-sqrt-hack.diff;patch=1""
 
+#armeb needs an extra define
+SRC_URI_append_armeb = " file://armeb-strlen.patch;patch=1 "
+
 S = "${WORKDIR}/glibc-${PV}"
 B = "${WORKDIR}/build-${TARGET_SYS}"
 

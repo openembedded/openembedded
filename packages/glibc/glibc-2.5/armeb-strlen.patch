@@ -1,0 +1,11 @@
+--- /tmp/strlen.S	2007-05-01 18:32:48.000000000 +0200
++++ glibc-2.5/ports/sysdeps/arm/strlen.S	2007-05-01 18:33:29.665251000 +0200
+@@ -24,6 +24,8 @@
+  * exit: r0 = len
+  */
+ 
++#define __ARMEB__
++
+ ENTRY(strlen)
+ 	bic     r1, r0, $3              @ addr of word containing first byte
+ 	ldr     r2, [r1], $4            @ get the first word
