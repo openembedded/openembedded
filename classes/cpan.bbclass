@@ -4,7 +4,7 @@
 FILES_${PN} += '${libdir}/perl5 ${datadir}/perl5'
 EXTRA_CPANFLAGS ?= ""
 
-DEPENDS  += "perl-native"
+DEPENDS  += "perl perl-native"
 RDEPENDS += "perl"
 
 # Determine the staged version of perl from the perl configuration file
@@ -54,7 +54,7 @@ PERLLIBDIRS = "${@perl_get_libdirs(d)}"
 export PERLCONFIGTARGET = "${@is_target(d)}"
 
 cpan_do_configure () {
-	perl Makefile.PL ${EXTRA_CPANFLAGS}
+	yes '' | perl Makefile.PL ${EXTRA_CPANFLAGS}
 	if [ "${BUILD_SYS}" != "${HOST_SYS}" ]; then
 		. ${STAGING_DIR}/${TARGET_SYS}/perl/config.sh
 		if [ "${IS_NEW_PERL}" = "yes" ]; then

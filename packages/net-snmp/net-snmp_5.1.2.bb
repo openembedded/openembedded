@@ -2,7 +2,7 @@ DESCRIPTION = "Various tools relating to the Simple Network Management Protocol"
 HOMEPAGE = "http://www.net-snmp.org/"
 LICENSE = "BSD"
 DEPENDS = "openssl"
-PR = "r2"
+PR = "r3"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/net-snmp/net-snmp-${PV}.tar.gz \
 	file://uclibc-fix.patch;patch=1 \
@@ -13,7 +13,7 @@ SRC_URI = "${SOURCEFORGE_MIRROR}/net-snmp/net-snmp-${PV}.tar.gz \
 inherit autotools
 
 PARALLEL_MAKE = ""
-EXTRA_OECONF = "--enable-shared --disable-manuals"
+EXTRA_OECONF = "--enable-shared --disable-manuals --with-defaults"
 EXTRA_OEMAKE = "INSTALL_PREFIX=${D}"
 
 do_configure() {

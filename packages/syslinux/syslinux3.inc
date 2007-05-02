@@ -8,6 +8,7 @@ do_stage() {
 
 	install -d ${STAGING_BINDIR}
 	install -m 755 ${STAGE_TEMP}/usr/bin/syslinux ${STAGING_BINDIR}
+	install -m 755 ${STAGE_TEMP}/sbin/extlinux ${STAGING_BINDIR}
 
 	# When building media, the syslinux binary isn't nearly as useful
 	# as the DOS data files, so we copy those into a special location
