@@ -10,7 +10,7 @@ RDEPENDS_gpe-conf-panel = "gpe-conf"
 RPROVIDES_${PN} += " bl"
 RCONFLICTS_${PN} = "bl"
 
-PR = "r3"
+PR = "r4"
 
 GPE_TARBALL_SUFFIX = "bz2"
 
@@ -23,4 +23,5 @@ FILES_${PN} = "${sysconfdir} ${bindir} ${datadir}/pixmaps \
                 ${datadir}/gpe-conf"
 FILES_gpe-conf-panel = "${datadir}/applications/gpe-conf.desktop"
 
-SRC_URI += "file://backlight-bugfix.patch;patch=1"
+SRC_URI += "file://backlight-bugfix.patch;patch=1 \
+            file://wireless.patch;patch=1"
