@@ -4,7 +4,7 @@
 FILES_${PN} += '${libdir}/perl5 ${datadir}/perl5'
 EXTRA_CPANFLAGS ?= ""
 
-DEPENDS  += "perl-native"
+DEPENDS  += "perl perl-native"
 RDEPENDS += "perl"
 
 # Determine the staged version of perl from the perl configuration file
