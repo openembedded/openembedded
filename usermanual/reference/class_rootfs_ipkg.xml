@@ -8,8 +8,8 @@
   the root filesystem of the target device.</para>
 
   <para>This class is normally not used directly, but instead used from the
-  <xref linkend="image_ipkg_class" /> which creates images from a set of
-  <command>.ipkg</command> files.</para>
+  <xref linkend="image_class" /> which creates images from a set of package 
+  (typically <command>.ipkg</command>) files.</para>
 
   <para>Summary of actions performed by the <emphasis>rootfs_ipkg</emphasis>
   class:</para>
@@ -210,6 +210,6 @@
 
   <para>The class also provides a function <command>real_do_rootfs</command>
   which is executed without <xref linkend="fakeroot" /> and therefore can be
-  used from other classes, such as <xref linkend="image_ipkg_class" />, that
+  used from other classes, such as <xref linkend="image_class" />, that
   are already running under the control of <xref linkend="fakeroot" />.</para>
 </section>

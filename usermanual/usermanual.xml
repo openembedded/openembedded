@@ -13,7 +13,7 @@
 <!ENTITY dirs-staging SYSTEM "reference/dirs_staging.xml">
 <!ENTITY class-distutils SYSTEM "reference/class_distutils.xml">
 <!ENTITY fakeroot SYSTEM "reference/fakeroot.xml">
-<!ENTITY class-image_ipkg SYSTEM "reference/class_image_ipkg.xml">
+<!ENTITY class-image SYSTEM "reference/class_image.xml">
 <!ENTITY image-types SYSTEM "reference/image_types.xml">
 <!ENTITY class-pkgconfig SYSTEM "reference/class_pkgconfig.xml">
 <!ENTITY class-rootfs_ipkg SYSTEM "reference/class_rootfs_ipkg.xml">
@@ -857,7 +857,7 @@ NOTE: Couldn't find shared library provider for libm.so.6
 
     &fakeroot;
 
-    &class-image_ipkg;
+    &class-image;
 
     &image-types;
 

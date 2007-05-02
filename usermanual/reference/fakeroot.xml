@@ -5,7 +5,7 @@
   <para>The fakeroot program is designed to allow non-root users to perform
   actions that would normally require root privileges as part of the package
   generation process. It is used by the <xref linkend="rootfs_ipkg_class" />
-  for root filesystem creation and by the <xref linkend="image_ipkg_class" />
+  for root filesystem creation and by the <xref linkend="image_class" />
   for the creation of filesystem images. Some recipes also use fakeroot to
   assist with parts of the package installation (usually) or building where
   root privligeses are expected by the package.</para>
@@ -32,7 +32,7 @@
     the command will fail, telling is that we do not have permission to create
     device nodes:<screen>~%&gt; mknod hdc b 22 0
 mknod: `hdc': Operation not permitted</screen>Yet the <xref
-    linkend="image_ipkg_class" /> is able to create device nodes and include
+    linkend="image_class" /> is able to create device nodes and include
     them in the final images, all without the need to have root
     privileges.</para>
 
