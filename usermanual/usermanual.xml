@@ -5,6 +5,7 @@
 -->
 <!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.2//EN"
 "http://www.oasis-open.org/docbook/xml/4.2/docbookx.dtd" [
+<!ENTITY chapter-usage SYSTEM "chapters/usage.xml">
 <!ENTITY chapter-recipes SYSTEM "chapters/recipes.xml">
 <!ENTITY class-autotools SYSTEM "reference/class_autotools.xml">
 <!ENTITY class-binconfig SYSTEM "reference/class_binconfig.xml">
@@ -833,7 +834,7 @@ NOTE: Couldn't find shared library provider for libm.so.6
 
   <!-- Bitbake usage chapter -->
 
-  <!--    &chapter-usage; - this is not ready yet -->
+  <!-- &chapter-usage; - this is not ready yet -->
 
   <!-- Bitbake recipies chapter -->
 
