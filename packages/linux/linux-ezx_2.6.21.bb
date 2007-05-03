@@ -5,10 +5,7 @@ HOMEPAGE = "http://www.openezx.org"
 LICENSE = "GPL"
 DEPENDS += "quilt-native"
 EZX = "ezx0"
-PR = "${EZX}-r2"
-
-DEFAULT_PREFERENCE = "-1"
-
+PR = "${EZX}-r3"
 
 inherit kernel
 
@@ -129,4 +126,4 @@ do_deploy() {
 
 do_deploy[dirs] = "${S}"
 
-addtask deploy before do_package after do_install
+addtask deploy before do_populate_staging after do_package
