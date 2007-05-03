@@ -47,6 +47,7 @@ SRC_URI = "ftp://ftp.trolltech.com/pub/qt/source/qt-embedded-${PV}-free.tar.gz;m
 	   file://fix-errno-exception-spec.patch;patch=1 \
            file://keyboardless-buttonmap.patch;patch=1 \
            file://kernel-keymap.patch;patch=1 \
+	   file://kernel-asm-page.patch;patch=1 \
 	   file://sharp_char.h \
 	   file://switches.h "
 
@@ -88,7 +89,8 @@ EXTRA_OECONF_CONFIG = "-qconfig qpe"
 EXTRA_OECONF_CONFIG_c7x0 = "-qconfig qpe -accel-w100"
 EXTRA_OECONF_CONFIG_native = "-qconfig qpe -qvfb"
 EXTRA_OECONF = "-system-jpeg -system-libpng -system-zlib -no-qvfb -no-xft -no-vnc -gif \
-		-xplatform ${TARGET_OS}-${QTE_ARCH}-g++ ${EXTRA_OECONF_CONFIG} -depths 8,16,32"
+		-xplatform ${TARGET_OS}-${QTE_ARCH}-g++ ${EXTRA_OECONF_CONFIG} -depths 8,16,32 \
+		-I${STAGING_KERNEL_DIR}/include"
 EXTRA_OEMAKE = "-e"
 
 #
