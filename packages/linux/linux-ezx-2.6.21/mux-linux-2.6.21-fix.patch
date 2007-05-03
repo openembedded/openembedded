@@ -202,7 +202,7 @@ Index: linux-2.6.21/drivers/char/ts0710_mux.c
 Index: linux-2.6.21/drivers/char/ts0710_mux_usb.c
 ===================================================================
 --- linux-2.6.21.orig/drivers/char/ts0710_mux_usb.c	2007-04-27 20:35:44.000000000 -0300
-+++ linux-2.6.21/drivers/char/ts0710_mux_usb.c	2007-04-27 22:28:55.000000000 -0300
++++ linux-2.6.21/drivers/char/ts0710_mux_usb.c	2007-04-27 22:34:31.000000000 -0300
 @@ -188,7 +188,8 @@
  	buf_list_t *inbuf;
  	int count = urb->actual_length;
@@ -213,6 +213,15 @@ Index: linux-2.6.21/drivers/char/ts0710_mux_usb.c
  	if (!inbuf) {
  		printk("append_to_inbuf_list: (%d) out of memory!\n",
  			sizeof(buf_list_t));
+@@ -196,7 +197,7 @@
+ 	}
+ 
+ 	inbuf->size = count;
+-	inbuf->body = kmalloc(sizeof(char)*count, GFP_KERNEL);
++	inbuf->body = kmalloc(sizeof(char)*count, GFP_ATOMIC);
+ 	if (!inbuf->body) {
+ 		kfree(inbuf);
+ 		printk("append_to_inbuf_list: (%d) out of memory!\n",
 @@ -222,7 +223,7 @@
  		inbuf = list_entry(ptr, buf_list_t, list);
  		src_count = inbuf->size;
