@@ -65,7 +65,7 @@ case $1 in
         echo Starting Opie....
         $SSHAGENT $OPIEDIR/bin/qpe -terminal 3
 	sleep 1
-	$OPIEDIR/bin/qss >/var/log/opie-qss.log 2>&1
+	$OPIEDIR/bin/qss </dev/null >/var/log/opie-qss.log 2>&1 &
     fi
 
     ;;
