@@ -89,8 +89,7 @@ EXTRA_OECONF_CONFIG = "-qconfig qpe"
 EXTRA_OECONF_CONFIG_c7x0 = "-qconfig qpe -accel-w100"
 EXTRA_OECONF_CONFIG_native = "-qconfig qpe -qvfb"
 EXTRA_OECONF = "-system-jpeg -system-libpng -system-zlib -no-qvfb -no-xft -no-vnc -gif \
-		-xplatform ${TARGET_OS}-${QTE_ARCH}-g++ ${EXTRA_OECONF_CONFIG} -depths 8,16,32 \
-		-I${STAGING_KERNEL_DIR}/include"
+		-xplatform ${TARGET_OS}-${QTE_ARCH}-g++ ${EXTRA_OECONF_CONFIG} -depths 8,16,32"
 EXTRA_OEMAKE = "-e"
 
 #
