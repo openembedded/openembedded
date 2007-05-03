@@ -93,17 +93,21 @@
           <para>Creates jffs2 <emphasis>"Journaling flash file system
           2"</emphasis> images. This is a read/write, compressed filesystem
           for mtd (flash) devices. It is not supported for block
-          devices.<screen>IMAGE_CMD_jffs2 = "mkfs.jffs2 --root=${IMAGE_ROOTFS} \
+          devices.<screen>IMAGE_CMD_jffs2 = "mkfs.jffs2 \
+  -x lzo \
+  --root=${IMAGE_ROOTFS} \
   --faketime \
   --output=${DEPLOY_DIR_IMAGE}/${IMAGE_NAME}.rootfs.jffs2 \
   ${EXTRA_IMAGECMD}"</screen></para>
 
-          <para>The <command>EXTRA_IMAGECMD</command> variable for jffs2 is
-          passed to <command>mkfs.jffs2</command> and by default is used to
-          enabled pad, to define the endianess and to specify the block
-          size:</para>
+          <para>The <command>EXTRA_IMAGECMD</command> variable for jffs2
+          passed to <command>mkfs.jffs2</command> and is left empty by
+          default:<screen>EXTRA_IMAGECMD_jffs2 = ""</screen></para>
 
-          <para><screen>EXTRA_IMAGECMD_jffs2 = "--pad --little-endian --eraseblock=0x40000"</screen></para>
+          <para>This was not always empty, prior to 2007/05/02 the
+          <command>EXTRA_IMAGECMD</command> variable for jffs2 was set to
+          enable padding, to define the endianess and to specify the block
+          size:<screen><emphasis>EXTRA_IMAGECMD_jffs2 = "--pad --little-endian --eraseblock=0x40000"</emphasis></screen></para>
         </listitem>
       </varlistentry>
 
@@ -121,8 +125,8 @@
   ${EXTRA_IMAGECMD}"</screen></para>
 
           <para>The <command>EXTRA_IMAGECMD</command> variable for cramfs is
-          passed to <command>mkcramfs</command> and is not used by
-          default.</para>
+          passed to <command>mkcramfs</command> and is left empty by
+          default:<screen>EXTRA_IMAGECMD_cramfs = ""</screen></para>
         </listitem>
       </varlistentry>
 
@@ -137,12 +141,33 @@
   ${EXTRA_IMAGECMD}"</screen></para>
 
           <para>The <command>EXTRA_IMAGECMD</command> variable for ext2 is
-          passed to <command>genext2fs</command> and is not used by
-          default.</para>
+          passed to <command>genext2fs</command> and is left empty by
+          default:<screen>EXTRA_IMAGECMD_ext2 = ""</screen></para>
 
           <para>The <command>IMAGE_ROOTS_SIZE</command> variable is used to
           specify the size of the ext2 image and is set to 64k by
           default:<screen>IMAGE_ROOTFS_SIZE_ext2 = "65536"</screen></para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>ext3</term>
+
+        <listitem>
+          <para>Creates an <emphasis>"Extended Filesystem 3"</emphasis> image
+          file. This is the standard Linux journaling file system.<screen>IMAGE_CMD_ext3 = "genext2fs -b ${IMAGE_ROOTFS_SIZE} \
+  -d ${IMAGE_ROOTFS} \
+  ${DEPLOY_DIR_IMAGE}/${IMAGE_NAME}.rootfs.ext3 \
+  ${EXTRA_IMAGECMD}; \
+tune2fs -j ${DEPLOY_DIR_IMAGE}/tmp.gz/${IMAGE_NAME}.rootfs.ext3"</screen></para>
+
+          <para>The <command>EXTRA_IMAGECMD</command> variable for ext3 is
+          passed to <command>genext2fs</command> and is left empty by
+          default:<screen>EXTRA_IMAGECMD_ext3 = ""</screen></para>
+
+          <para>The <command>IMAGE_ROOTS_SIZE</command> variable is used to
+          specify the size of the ext3 image and is set to 64k by
+          default:<screen>IMAGE_ROOTFS_SIZE_ext3 = "65536"</screen></para>
         </listitem>
       </varlistentry>
 
@@ -153,7 +178,8 @@
           <para>Creates a version of the ext2 filesystem image compressed with
           <command>gzip</command>.</para>
 
-          <para><screen>IMAGE_CMD_ext2.gz = "mkdir ${DEPLOY_DIR_IMAGE}/tmp.gz; \
+          <para><screen>IMAGE_CMD_ext2.gz = "rm -rf ${DEPLOY_DIR_IMAGE}/tmp.gz &amp;&amp; \
+mkdir ${DEPLOY_DIR_IMAGE}/tmp.gz; \
 genext2fs -b ${IMAGE_ROOTFS_SIZE} -d ${IMAGE_ROOTFS} \
   ${DEPLOY_DIR_IMAGE}/tmp.gz/${IMAGE_NAME}.rootfs.ext2 \
   ${EXTRA_IMAGECMD}; \
@@ -163,14 +189,44 @@ mv ${DEPLOY_DIR_IMAGE}/tmp.gz/${IMAGE_NAME}.rootfs.ext2.gz \
 rmdir ${DEPLOY_DIR_IMAGE}/tmp.gz"</screen></para>
 
           <para>The <command>EXTRA_IMAGECMD</command> variable for ext2.gz is
-          passed to <command>genext2fs</command> and is not used by
-          default.</para>
+          passed to <command>genext2fs</command> and is left empty by
+          default:<screen>EXTRA_IMAGECMD_ext2.gz = ""</screen></para>
 
           <para>The <command>IMAGE_ROOTS_SIZE</command> variable is used to
           specify the size of the ext2 image and is set to 64k by
           default:</para>
 
           <para><screen>IMAGE_ROOTFS_SIZE_ext2.gz = "65536"</screen></para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>ext3.gz</term>
+
+        <listitem>
+          <para>Creates a version of the ext3 filesystem image compressed with
+          <command>gzip</command>.</para>
+
+          <para><screen>IMAGE_CMD_ext3.gz = "rm -rf ${DEPLOY_DIR_IMAGE}/tmp.gz &amp;&amp; \
+mkdir ${DEPLOY_DIR_IMAGE}/tmp.gz; \
+genext2fs -b ${IMAGE_ROOTFS_SIZE} -d ${IMAGE_ROOTFS} \
+  ${DEPLOY_DIR_IMAGE}/tmp.gz/${IMAGE_NAME}.rootfs.ext3 \
+  ${EXTRA_IMAGECMD}; \
+tune2fs -j ${DEPLOY_DIR_IMAGE}/tmp.gz/${IMAGE_NAME}.rootfs.ext3; \
+gzip -f -9 ${DEPLOY_DIR_IMAGE}/tmp.gz/${IMAGE_NAME}.rootfs.ext3; \
+mv ${DEPLOY_DIR_IMAGE}/tmp.gz/${IMAGE_NAME}.rootfs.ext3.gz \
+  ${DEPLOY_DIR_IMAGE}/${IMAGE_NAME}.rootfs.ext3.gz; \
+rmdir ${DEPLOY_DIR_IMAGE}/tmp.gz"</screen></para>
+
+          <para>The <command>EXTRA_IMAGECMD</command> variable for ext3.gz is
+          passed to <command>genext2fs</command> and is left empty by
+          default:<screen>EXTRA_IMAGECMD_ext3.gz = ""</screen></para>
+
+          <para>The <command>IMAGE_ROOTS_SIZE</command> variable is used to
+          specify the size of the ext2 image and is set to 64k by
+          default:</para>
+
+          <para><screen>IMAGE_ROOTFS_SIZE_ext3.gz = "65536"</screen></para>
         </listitem>
       </varlistentry>
 
@@ -193,10 +249,12 @@ rmdir ${DEPLOY_DIR_IMAGE}/tmp.gz"</screen></para>
   ${EXTRA_IMAGECMD} -noappend"</screen></para>
 
           <para>The <command>EXTRA_IMAGECMD</command> variable for squashfs is
-          passed to <command>mksquashfs</command> and by default is used
-          specify the endianess and block size of the filesystem:</para>
+          passed to <command>mksquashfs</command> and is left empty by
+          default:<screen>EXTRA_IMAGECMD_squashfs = ""</screen></para>
 
-          <para><screen>EXTRA_IMAGECMD_squashfs = "-le -b 16384"</screen></para>
+          <para>This was not always empty, prior to 2007/05/02 the
+          <command>EXTRA_IMAGECMD</command> variable for squashfs specified
+          the endianess and block size of the filesystem:<screen><emphasis>EXTRA_IMAGECMD_squashfs = "-le -b 16384"</emphasis></screen></para>
         </listitem>
       </varlistentry>
 
@@ -220,10 +278,12 @@ rmdir ${DEPLOY_DIR_IMAGE}/tmp.gz"</screen></para>
   ${EXTRA_IMAGECMD} -noappend"</screen></para>
 
           <para>The <command>EXTRA_IMAGECMD</command> variable for squashfs is
-          passed to <command>mksquashfs-lzma</command> and by default is used
-          specify the endianess and block size of the filesystem:</para>
+          passed to <command>mksquashfs-lzma</command> and is left empty by
+          default:<screen>EXTRA_IMAGECMD_squashfs-lzma = ""</screen></para>
 
-          <para><screen>EXTRA_IMAGECMD_squashfs-lzma = "-le -b 16384"</screen></para>
+          <para>This was not always empty, prior to 2007/05/02 the
+          <command>EXTRA_IMAGECMD</command> variable for squashfs specified
+          the endianess and block size of the filesystem:<screen><emphasis>EXTRA_IMAGECMD_squashfs-lzma = "-le -b 16384"</emphasis></screen></para>
         </listitem>
       </varlistentry>
 
@@ -231,8 +291,7 @@ rmdir ${DEPLOY_DIR_IMAGE}/tmp.gz"</screen></para>
         <term>tar</term>
 
         <listitem>
-          <para>Creates a <command>bzip2</command> compressed .tar
-          archive.</para>
+          <para>Creates a .tar archive.</para>
 
           <para><screen>IMAGE_CMD_tar = "cd ${IMAGE_ROOTFS} &amp;&amp; \
   tar -jcvf ${DEPLOY_DIR_IMAGE}/${IMAGE_NAME}.rootfs.tar.bz2 ."</screen></para>
@@ -269,6 +328,31 @@ rmdir ${DEPLOY_DIR_IMAGE}/tmp.gz"</screen></para>
 
           <para>The <command>EXTRA_IMAGECMD</command> variable in not
           supported for tar.bz2 images.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>cpio</term>
+
+        <listitem>
+          <para>Creates a .cpio archive:<screen>IMAGE_CMD_cpio = "cd ${IMAGE_ROOTFS} &amp;&amp; \
+  (find . | cpio -o -H newc &gt;${DEPLOY_DIR_IMAGE}/${IMAGE_NAME}.rootfs.cpio)"</screen></para>
+
+          <para>The <command>EXTRA_IMAGECMD</command> variable in not
+          supported for cpio images.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>cpio.gz</term>
+
+        <listitem>
+          <para>Creates a <command>gzip</command> compressed .cpio
+          archive.<screen>IMAGE_CMD_cpio.gz = cd ${IMAGE_ROOTFS} &amp;&amp; \
+  (find . | cpio -o -H newc | gzip -c -9 &gt;${DEPLOY_DIR_IMAGE}/${IMAGE_NAME}.rootfs.cpio.gz)"</screen></para>
+
+          <para>The <command>EXTRA_IMAGECMD</command> variable in not
+          supported for cpio.gz images.</para>
         </listitem>
       </varlistentry>
     </variablelist>
