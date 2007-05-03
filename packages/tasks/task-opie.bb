@@ -5,7 +5,7 @@ ALLOW_EMPTY = "1"
 LICENSE = "MIT"
 PROVIDES = "task-opie-everything"
 
-PR = "r6"
+PR = "r7"
 
 PACKAGES = "task-opie-applets task-opie-apps task-opie-base \
             task-opie-base-applets task-opie-base-apps \
@@ -27,9 +27,9 @@ PACKAGES += "task-opie-everything"
 #
 # Dependencies to get the launcher up and running
 #
-RDEPENDS_task-opie-base = "opie-init opie-alarm opie-qcop opie-quicklauncher opie-taskbar \
-                           opie-pics opie-sounds opie-freetype ttf-dejavu-sans \
-			   ttf-dejavu-sans-mono"
+RDEPENDS_task-opie-base = "opie-init opie-alarm opie-qcop opie-qss opie-quicklauncher \
+                           opie-taskbar opie-pics opie-sounds opie-freetype \
+                           ttf-dejavu-sans ttf-dejavu-sans-mono"
 
 #
 # things for reasonable bootstrap image
