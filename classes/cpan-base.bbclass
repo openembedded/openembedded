@@ -1,8 +1,8 @@
 #
-# This is for perl modules that use the old Makefile.PL build system
+# cpan-base providers various perl related information needed for building
+# cpan modules
 #
-FILES_${PN} += '${libdir}/perl5 ${datadir}/perl5'
-EXTRA_CPANFLAGS ?= ""
+FILES_${PN} += "${libdir}/perl5 ${datadir}/perl5"
 
 DEPENDS  += "perl perl-native"
 RDEPENDS += "perl"
@@ -49,3 +49,7 @@ def is_target(d):
 
 IS_NEW_PERL = "${@is_new_perl(d)}"
 PERLLIBDIRS = "${@perl_get_libdirs(d)}"
+
+FILES_${PN}-dbg += "${PERLLIBDIRS}/auto/*/.debug \
+                    ${PERLLIBDIRS}/auto/*/*/.debug \
+                    ${PERLLIBDIRS}/auto/*/*/*/.debug"
