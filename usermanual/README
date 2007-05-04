@@ -1,1 +1,18 @@
-use 'docbook2pdf usermanual.xml' to generate a pdf version, because doing it via the Makefile doesn't work
+To generate the user-manual, run:
+
+  make <type>
+
+in this directory, where type is one of:
+
+ xhtml
+ html
+ dvi
+ pdf
+ ps
+ rtf
+ tex
+ texi
+ txt
+
+For html and xhtml you need xsltproc installed.
+For the other you need docbook-utils installed.
