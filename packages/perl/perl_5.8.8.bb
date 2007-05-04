@@ -5,7 +5,7 @@ LICENSE = "Artistic|GPL"
 PRIORITY = "optional"
 # We need gnugrep (for -I)
 DEPENDS = "virtual/db perl-native grep-native"
-PR = "r10"
+PR = "r11"
 
 # Major part of version
 PVM = "5.8"
@@ -42,9 +42,6 @@ HOSTPERL = "${STAGING_BINDIR_NATIVE}/perl${PV}"
 export PERLHOSTLIB = "${STAGING_DIR}/${BUILD_SYS}/lib/perl5/${PV}/${BUILD_ARCH}-${BUILD_OS}-thread-multi/"
 
 do_configure() {
-        # Put a hostperl in staging - should probably be part of do_deploy for native
-        ln -sf ${HOSTPERL} ${STAGING_BINDIR_NATIVE}/hostperl
-
         # Make hostperl in build directory be the native perl
         cp -f ${HOSTPERL} hostperl
 

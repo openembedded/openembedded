@@ -3,7 +3,7 @@ HOMEPAGE = "http://www.perl.org/"
 SECTION = "libs"
 LICENSE = "Artistic|GPL"
 DEPENDS = "virtual/db-native gdbm-native"
-PR = "r2"
+PR = "r3"
 
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/perl-${PV}"
 
@@ -46,6 +46,10 @@ do_configure () {
     sed 's!${STAGING_DIR}/bin!${STAGING_BINDIR}!;
          s!${STAGING_DIR}/lib!${STAGING_LIBDIR}!' < config.sh > config.sh.new
     mv config.sh.new config.sh
+}
+do_stage_append() {
+        # We need a hostperl link for building perl
+        ln -sf ${STAGING_BINDIR_NATIVE}/perl${PV} ${STAGING_BINDIR_NATIVE}/hostperl
 }
 
 PARALLEL_MAKE = ""
