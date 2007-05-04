@@ -43,6 +43,9 @@
       <holder>Jamie Lenehan</holder>
 
       <holder>Marcin Juszkiewicz</holder>
+
+      <holder>Rolf Leggewie</holder>
+
     </copyright>
 
     <legalnotice>
@@ -298,8 +301,7 @@ wget http://openembedded.org/snapshots/OE.mtn.bz2 http://openembedded.org/snapsh
 wget http://www.openembedded.org/snapshots/OE-this-is-for-mtn-0.30.mtn.bz2 
 wget http://www.openembedded.org/snapshots/OE-this-is-for-mtn-0.30.mtn.bz2.md5
 </screen> Then verify integrity of snapshot by checking md5sum. <screen>
-cat OE.mtn.bz2.md5sum
-md5sum OE.mtn.bz2
+md5sum -c OE.mtn.bz2.md5sum
 </screen> Then unpack database. <screen>
 bunzip OE.mtn.bz2
 </screen> Finally checkout the development branch. <screen>
