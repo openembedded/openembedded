@@ -5,6 +5,7 @@
 -->
 <!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.2//EN"
 "http://www.oasis-open.org/docbook/xml/4.2/docbookx.dtd" [
+<!ENTITY chapter-usage SYSTEM "chapters/usage.xml">
 <!ENTITY chapter-recipes SYSTEM "chapters/recipes.xml">
 <!ENTITY class-autotools SYSTEM "reference/class_autotools.xml">
 <!ENTITY class-binconfig SYSTEM "reference/class_binconfig.xml">
@@ -12,11 +13,12 @@
 <!ENTITY dirs-staging SYSTEM "reference/dirs_staging.xml">
 <!ENTITY class-distutils SYSTEM "reference/class_distutils.xml">
 <!ENTITY fakeroot SYSTEM "reference/fakeroot.xml">
-<!ENTITY class-image_ipkg SYSTEM "reference/class_image_ipkg.xml">
+<!ENTITY class-image SYSTEM "reference/class_image.xml">
 <!ENTITY image-types SYSTEM "reference/image_types.xml">
 <!ENTITY class-pkgconfig SYSTEM "reference/class_pkgconfig.xml">
 <!ENTITY class-rootfs_ipkg SYSTEM "reference/class_rootfs_ipkg.xml">
 <!ENTITY var-section SYSTEM "reference/var_section.xml">
+<!ENTITY class-siteinfo SYSTEM "reference/class_siteinfo.xml">
 <!ENTITY var-src-uri SYSTEM "reference/var_src_uri.xml">
 <!ENTITY class-update-alternatives SYSTEM "reference/class_update-alternatives.xml">
 <!ENTITY class-update-rcd SYSTEM "reference/class_update-rc.d.xml">
@@ -834,7 +836,7 @@ NOTE: Couldn't find shared library provider for libm.so.6
 
   <!-- Bitbake usage chapter -->
 
-  <!--    &chapter-usage; - this is not ready yet -->
+  <!-- &chapter-usage; - this is not ready yet -->
 
   <!-- Bitbake recipies chapter -->
 
@@ -857,7 +859,7 @@ NOTE: Couldn't find shared library provider for libm.so.6
 
     &fakeroot;
 
-    &class-image_ipkg;
+    &class-image;
 
     &image-types;
 
@@ -866,6 +868,8 @@ NOTE: Couldn't find shared library provider for libm.so.6
     &class-rootfs_ipkg;
 
     &var-section;
+
+    &class-siteinfo;
 
     &var-src-uri;
 
