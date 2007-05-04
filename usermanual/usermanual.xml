@@ -834,7 +834,7 @@ NOTE: Couldn't find shared library provider for libm.so.6
 
   <!-- Bitbake usage chapter -->
 
-  <!-- &chapter-usage; - this is not ready yet -->
+  &chapter-usage;
 
   <!-- Bitbake recipies chapter -->
 

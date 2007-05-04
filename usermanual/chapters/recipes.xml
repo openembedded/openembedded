@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<chapter id="chapter_recipes">
+<chapter id="chapter_recipes" xreflabel="Recipes chapter">
   <title>Recipes</title>
 
   <section id="recipes_introduction" xreflabel="introduction">
