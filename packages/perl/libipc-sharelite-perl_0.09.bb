@@ -1,7 +1,7 @@
 DESCRIPTION = "IPC::ShareLite - Light-weight interface to shared memory"
 SECTION = "libs"
 LICENSE = "Artistic|GPL"
-PR = "r8"
+PR = "r10"
 
 SRC_URI = "http://search.cpan.org/CPAN/authors/id/M/MA/MAURICE/IPC-ShareLite-${PV}.tar.gz"
 
@@ -10,6 +10,4 @@ S = "${WORKDIR}/IPC-ShareLite-${PV}"
 inherit cpan
 
 FILES_${PN} = "${PERLLIBDIRS}/auto/IPC/ShareLite/* \
-                ${PERLLIBDIRS}/auto/IPC/ShareLite/.packlist \
                 ${PERLLIBDIRS}/IPC"
-FILES_${PN}-dbg += "${PERLLIBDIRS}/auto/IPC/ShareLite/.debug"

@@ -5,7 +5,7 @@ LICENSE = "Artistic|GPL"
 PRIORITY = "optional"
 # We need gnugrep (for -I)
 DEPENDS = "virtual/db perl-native grep-native"
-PR = "r8"
+PR = "r11"
 
 # Major part of version
 PVM = "5.8"
@@ -17,6 +17,7 @@ SRC_URI = "ftp://ftp.funet.fi/pub/CPAN/src/perl-${PV}.tar.gz \
         file://Makefile.SH.patch \
         file://perl-dynloader.patch;patch=1 \
         file://perl-moreconfig.patch;patch=1 \
+        file://letgcc-find-errno.patch;patch=1 \
         file://generate-sh.patch;patch=1 \
         file://09_fix_installperl.patch;patch=1 \
         file://52_debian_extutils_hacks.patch;patch=1 \
@@ -41,9 +42,6 @@ HOSTPERL = "${STAGING_BINDIR_NATIVE}/perl${PV}"
 export PERLHOSTLIB = "${STAGING_DIR}/${BUILD_SYS}/lib/perl5/${PV}/${BUILD_ARCH}-${BUILD_OS}-thread-multi/"
 
 do_configure() {
-        # Put a hostperl in staging - should probably be part of do_deploy for native
-        ln -sf ${HOSTPERL} ${STAGING_BINDIR_NATIVE}/hostperl
-
         # Make hostperl in build directory be the native perl
         cp -f ${HOSTPERL} hostperl
 
@@ -183,6 +181,8 @@ python populate_packages_prepend () {
         do_split_packages(d, datadir, 'auto/(.*)(?!\.debug)/', 'perl-module-%s', 'perl module %s', recursive=True, allow_dirs=False, match_path=True)
         do_split_packages(d, datadir, '(.*)\.(pm|pl|e2x)', 'perl-module-%s', 'perl module %s', recursive=True, allow_dirs=False, match_path=True)
 }
+
+PACKAGES_DYNAMIC = "perl-module-*"
 
 require perl-rdepends_${PV}.inc
 require perl-rprovides.inc

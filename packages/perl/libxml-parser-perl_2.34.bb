@@ -1,7 +1,7 @@
 SECTION = "libs"
 LICENSE = "Artistic"
 DEPENDS += "expat-native"
-PR = "r4"
+PR = "r6"
 
 SRC_URI = "http://www.cpan.org/modules/by-module/XML/XML-Parser-${PV}.tar.gz"
 
@@ -12,6 +12,4 @@ EXTRA_CPANFLAGS = "EXPATLIBPATH=${STAGING_LIBDIR} EXPATINCPATH=${STAGING_INCDIR}
 inherit cpan
 
 FILES_${PN} = "${PERLLIBDIRS}/auto/XML/Parser/Expat/* \
-                ${PERLLIBDIRS}/auto/XML/Parser/.packlist \
                 ${PERLLIBDIRS}/XML"
-FILES_${PN}-dbg += "${PERLLIBDIRS}/auto/XML/Parser/Expat/.debug"

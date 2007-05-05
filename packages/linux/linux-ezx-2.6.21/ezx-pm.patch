@@ -1,0 +1,58 @@
+Index: linux-2.6.21/arch/arm/mach-pxa/pxa27x.c
+===================================================================
+--- linux-2.6.21.orig/arch/arm/mach-pxa/pxa27x.c	2007-04-26 00:08:32.000000000 -0300
++++ linux-2.6.21/arch/arm/mach-pxa/pxa27x.c	2007-04-30 18:29:49.000000000 -0300
+@@ -22,6 +22,10 @@
+ #include <asm/arch/pxa-regs.h>
+ #include <asm/arch/ohci.h>
+ 
++#ifdef CONFIG_PXA_EZX
++#include <asm/arch/ezx.h>
++#endif
++
+ #include "generic.h"
+ 
+ /* Crystal clock: 13MHz */
+@@ -156,7 +160,13 @@
+ 		break;
+ 	case PM_SUSPEND_MEM:
+ 		/* set resume return address */
++#ifdef CONFIG_PXA_EZX
++		/* set EZX flags for blob - WM */
++		*(unsigned long *)(phys_to_virt(RESUME_ADDR)) = virt_to_phys(pxa_cpu_resume);
++		*(unsigned long *)(phys_to_virt(FLAG_ADDR)) = SLEEP_FLAG;
++#else
+ 		PSPR = virt_to_phys(pxa_cpu_resume);
++#endif
+ 		pxa_cpu_suspend(PWRMODE_SLEEP);
+ 		break;
+ 	}
+Index: linux-2.6.21/arch/arm/mach-pxa/pm.c
+===================================================================
+--- linux-2.6.21.orig/arch/arm/mach-pxa/pm.c	2007-04-26 00:08:32.000000000 -0300
++++ linux-2.6.21/arch/arm/mach-pxa/pm.c	2007-04-30 18:29:49.000000000 -0300
+@@ -24,6 +24,10 @@
+ #include <asm/arch/lubbock.h>
+ #include <asm/mach/time.h>
+ 
++#ifdef CONFIG_PXA_EZX
++#include <asm/arch/ezx.h>
++#endif
++
+ 
+ /*
+  * Debug macros
+@@ -152,8 +156,12 @@
+ 	}
+ 
+ 	/* ensure not to come back here if it wasn't intended */
++#ifdef CONFIG_PXA_EZX
++        *(unsigned long *)(phys_to_virt(RESUME_ADDR)) = 0;
++        *(unsigned long *)(phys_to_virt(FLAG_ADDR)) = OFF_FLAG;
++#else
+ 	PSPR = 0;
+-
++#endif
+ 	/* restore registers */
+ 	RESTORE_GPLEVEL(0); RESTORE_GPLEVEL(1); RESTORE_GPLEVEL(2);
+ 	RESTORE(GPDR0); RESTORE(GPDR1); RESTORE(GPDR2);

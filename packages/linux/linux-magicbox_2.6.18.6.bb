@@ -1,8 +1,8 @@
 SECTION = "kernel"
 DESCRIPTION = "Linux kernel for Magicbox ver 1.1 and 2.0 router boards"
 LICENSE = "GPL"
-PR = "r1"
-#DEPENDS = "u-boot"
+PR = "r2"
+DEPENDS = "u-boot"
 
 KERNEL_CCSUFFIX = "-3.4.4"
 
@@ -13,6 +13,7 @@ SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-${PV}.tar.bz2 \
           file://010-load-ramdisk-even-if-rootdev-equals-ramdisk.patch;patch=1 \
           file://magicbox2-ide-cf_2.6.18.patch;patch=1 \
           file://squashfs3.1-patch;patch=1 \
+          file://squashfs-lzma-support.patch;patch=1 \
           file://kernel-2.6.18-layer7-2.6.patch;patch=1 \
           file://config-2.6.18-magicbox2\
 "

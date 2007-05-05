@@ -47,6 +47,7 @@ SRC_URI = "ftp://ftp.trolltech.com/pub/qt/source/qt-embedded-${PV}-free.tar.gz;m
 	   file://fix-errno-exception-spec.patch;patch=1 \
            file://keyboardless-buttonmap.patch;patch=1 \
            file://kernel-keymap.patch;patch=1 \
+	   file://kernel-asm-page.patch;patch=1 \
 	   file://sharp_char.h \
 	   file://switches.h "
 
