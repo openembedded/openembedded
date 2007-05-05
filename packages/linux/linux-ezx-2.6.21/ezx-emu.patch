@@ -1,7 +1,7 @@
 Index: linux-2.6.21/arch/arm/mach-pxa/ezx-emu.c
 ===================================================================
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ linux-2.6.21/arch/arm/mach-pxa/ezx-emu.c	2007-05-01 03:58:42.000000000 -0300
++++ linux-2.6.21/arch/arm/mach-pxa/ezx-emu.c	2007-05-02 23:30:15.000000000 -0300
 @@ -0,0 +1,215 @@
 +/*
 + *  EMU Driver for Motorola EZX phones
@@ -151,7 +151,7 @@ Index: linux-2.6.21/arch/arm/mach-pxa/ezx-emu.c
 +	return 0;
 +}
 +
-+static int ezx_emu_suspend(struct platform_device *dev)
++static int ezx_emu_suspend(struct platform_device *dev, pm_message_t state)
 +{
 +	emu_switch_to_nothing();
 +	return 0;
@@ -220,8 +220,8 @@ Index: linux-2.6.21/arch/arm/mach-pxa/ezx-emu.c
 +MODULE_LICENSE("GPL");
 Index: linux-2.6.21/arch/arm/mach-pxa/Kconfig
 ===================================================================
---- linux-2.6.21.orig/arch/arm/mach-pxa/Kconfig	2007-05-01 01:39:12.000000000 -0300
-+++ linux-2.6.21/arch/arm/mach-pxa/Kconfig	2007-05-01 02:07:23.000000000 -0300
+--- linux-2.6.21.orig/arch/arm/mach-pxa/Kconfig	2007-05-02 21:31:22.000000000 -0300
++++ linux-2.6.21/arch/arm/mach-pxa/Kconfig	2007-05-02 23:26:53.000000000 -0300
 @@ -94,6 +94,27 @@
  
  endchoice
@@ -252,8 +252,8 @@ Index: linux-2.6.21/arch/arm/mach-pxa/Kconfig
  endmenu
 Index: linux-2.6.21/arch/arm/mach-pxa/Makefile
 ===================================================================
---- linux-2.6.21.orig/arch/arm/mach-pxa/Makefile	2007-05-01 02:07:23.000000000 -0300
-+++ linux-2.6.21/arch/arm/mach-pxa/Makefile	2007-05-01 04:10:48.000000000 -0300
+--- linux-2.6.21.orig/arch/arm/mach-pxa/Makefile	2007-05-02 23:26:52.000000000 -0300
++++ linux-2.6.21/arch/arm/mach-pxa/Makefile	2007-05-03 17:41:40.000000000 -0300
 @@ -19,6 +19,7 @@
  obj-$(CONFIG_MACH_POODLE)	+= poodle.o corgi_ssp.o
  obj-$(CONFIG_MACH_TOSA)         += tosa.o
@@ -264,8 +264,8 @@ Index: linux-2.6.21/arch/arm/mach-pxa/Makefile
  led-y := leds.o
 Index: linux-2.6.21/arch/arm/mach-pxa/ezx.c
 ===================================================================
---- linux-2.6.21.orig/arch/arm/mach-pxa/ezx.c	2007-05-01 02:07:23.000000000 -0300
-+++ linux-2.6.21/arch/arm/mach-pxa/ezx.c	2007-05-01 02:07:23.000000000 -0300
+--- linux-2.6.21.orig/arch/arm/mach-pxa/ezx.c	2007-05-02 23:26:52.000000000 -0300
++++ linux-2.6.21/arch/arm/mach-pxa/ezx.c	2007-05-03 17:25:08.000000000 -0300
 @@ -35,6 +35,7 @@
  #include <asm/arch/ohci.h>
  #include <asm/arch/pxa-regs.h>

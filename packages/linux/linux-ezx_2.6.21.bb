@@ -5,7 +5,7 @@ HOMEPAGE = "http://www.openezx.org"
 LICENSE = "GPL"
 DEPENDS += "quilt-native"
 EZX = "ezx0"
-PR = "${EZX}-r3"
+PR = "${EZX}-r4"
 
 inherit kernel
 
@@ -18,6 +18,7 @@ RPSRC = "http://www.rpsys.net/openzaurus/patches/archive"
 SRC_URI = " \
         ${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-${PV}.tar.bz2 \
 	file://ezx-core.patch;patch=1 \
+	file://ezx-pm.patch;patch=1 \
 	file://ezx-pcap.patch;patch=1 \
 	file://ezx-mci.patch;patch=1 \
  	file://pxa27x-udc-support.2.patch;patch=1 \
@@ -26,7 +27,7 @@ SRC_URI = " \
 	file://ezx-serial-bug-workaround.patch;patch=1 \
 	file://pxa-kbd.patch;patch=1 \
 	file://ezx-kbd.patch;patch=1 \
-	file://ezx-pm.patch;patch=1 \
+	file://pcap-ts.patch;patch=1 \
 	file://mux_cli.patch;patch=1 \
 	file://mux-fix.patch;patch=1 \
 	file://mux-fix-init-errorpath.patch;patch=1 \
@@ -38,9 +39,6 @@ SRC_URI = " \
 	file://mux-linux-2.6.21-fix.patch;patch=1 \
 	file://mux-ifdef-ezx-features.patch;patch=1 \
 	file://mux_debug.patch;patch=1 \
-	file://ezx-ts.patch;patch=1 \
-	file://pcap_ts.c.patch;patch=1 \
-	file://touchscreen-fix-r0.patch;patch=1 \
         file://logo_linux_clut224.ppm \
         file://defconfig-a780 \
         file://defconfig-e680 \
