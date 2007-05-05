@@ -1,4 +1,4 @@
-PR = "r13"
+PR = "r14"
 DESCRIPTION = "The GNU cc and gcc C compilers."
 HOMEPAGE = "http://www.gnu.org/software/gcc/"
 SECTION = "devel"
@@ -37,8 +37,11 @@ SRC_URI = "http://ftp.gnu.org/pub/gnu/gcc/gcc-4.1.1/gcc-4.1.1.tar.bz2 \
 
 SRC_URI_append_sh3  = " file://sh3-installfix-fixheaders.patch;patch=1 "
 
-SRC_URI_append_powerpc = " file://ppc-gcc-41-20060515.patch;patch=1 \
-                           file://ppc-sfp-long-double-gcc411-7.patch;patch=1 "
+#This is a dirty hack to get gcc 4.1.1 to compile for glibc AND uclibc on ppc
+#the patch that is need it to get gcc support soft-floats with glibc, makes gcc fail with uclibc
+SRC_URI_append_linux = " file://ppc-gcc-41-20060515.patch;patch=1 \
+                         file://ppc-sfp-long-double-gcc411-7.patch;patch=1 "
+
 
 #Set the fortran bits
 # 'fortran' or '', not 'f77' like gcc3 had

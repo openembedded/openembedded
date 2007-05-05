@@ -1,4 +1,4 @@
-PR = "r1"
+PR = "r2"
 DESCRIPTION = "The GNU cc and gcc C compilers."
 HOMEPAGE = "http://www.gnu.org/software/gcc/"
 SECTION = "devel"
@@ -20,7 +20,6 @@ SRC_URI = "ftp://ftp.gnu.org/pub/gnu/gcc/gcc-4.1.2/gcc-4.1.2.tar.bz2 \
 	file://602-sdk-libstdc++-includes.patch;patch=1 \
 	file://740-sh-pr24836.patch;patch=1 \
 	file://800-arm-bigendian.patch;patch=1 \
-	file://801-arm-bigendian-eabi.patch;patch=1 \
 	file://arm-nolibfloat.patch;patch=1 \
 	file://arm-softfloat.patch;patch=1 \
 	file://gcc41-configure.in.patch;patch=1 \
