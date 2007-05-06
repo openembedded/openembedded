@@ -1,8 +1,8 @@
 Index: linux-2.6.21/arch/arm/mach-pxa/ezx-pcap.c
 ===================================================================
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ linux-2.6.21/arch/arm/mach-pxa/ezx-pcap.c	2007-05-01 14:00:50.000000000 -0300
-@@ -0,0 +1,411 @@
++++ linux-2.6.21/arch/arm/mach-pxa/ezx-pcap.c	2007-05-04 03:07:37.000000000 -0300
+@@ -0,0 +1,425 @@
 +/* Driver for Motorola PCAP2 as present in EZX phones
 + *
 + * This is both a SPI device driver for PCAP itself, as well as
@@ -51,7 +51,7 @@ Index: linux-2.6.21/arch/arm/mach-pxa/ezx-pcap.c
 +	ezx_ssp_pcap_putget(value);
 +	local_irq_enable();
 +
-+	DEBUGP("pcap write r%x: 0x%08x\n", reg_num, value);
++//	DEBUGP("pcap write r%x: 0x%08x\n", reg_num, value);
 +	return 0;
 +}
 +EXPORT_SYMBOL_GPL(ezx_pcap_write);
@@ -65,7 +65,7 @@ Index: linux-2.6.21/arch/arm/mach-pxa/ezx-pcap.c
 +	*value = ezx_ssp_pcap_putget(frame);
 +	local_irq_enable();
 +
-+	DEBUGP("pcap read r%x:  0x%08x\n", reg_num, *value);
++//	DEBUGP("pcap read r%x:  0x%08x\n", reg_num, *value);
 +	return 0;
 +}
 +EXPORT_SYMBOL_GPL(ezx_pcap_read);
@@ -121,12 +121,14 @@ Index: linux-2.6.21/arch/arm/mach-pxa/ezx-pcap.c
 +        /* FIXME: this should be board-level, not chip-level */
 +	/* implement a per board pcap init reg array? */
 +
-+	ezx_pcap_bit_set(SSP_PCAP_ADJ_BIT_ISR_USB4VI, 1);
-+        ezx_pcap_bit_set(SSP_PCAP_ADJ_BIT_MSR_USB4VM, 0);
-+        ezx_pcap_bit_set(SSP_PCAP_ADJ_BIT_ISR_USB1VI, 1);
-+        ezx_pcap_bit_set(SSP_PCAP_ADJ_BIT_MSR_USB1VM, 0);
++//	ezx_pcap_bit_set(SSP_PCAP_ADJ_BIT_ISR_USB4VI, 1);
++//        ezx_pcap_bit_set(SSP_PCAP_ADJ_BIT_MSR_USB4VM, 0);
++//        ezx_pcap_bit_set(SSP_PCAP_ADJ_BIT_ISR_USB1VI, 1);
++//        ezx_pcap_bit_set(SSP_PCAP_ADJ_BIT_MSR_USB1VM, 0);
 +	// disable all interrupts
-+	//ezx_pcap_write(SSP_PCAP_ADJ_MSR_REGISTER, 0x03ffffff);
++	ezx_pcap_write(SSP_PCAP_ADJ_MSR_REGISTER, PCAP_MASK_ALL_INTERRUPT);
++	// clear all interrupts
++	ezx_pcap_write(SSP_PCAP_ADJ_ISR_REGISTER, PCAP_MASK_ALL_INTERRUPT);
 +
 +        ezx_pcap_bit_set(SSP_PCAP_ADJ_BIT_AUD_RX_AMPS_A1CTRL, 1);
 +        ezx_pcap_vibrator_level(PCAP_VIBRATOR_VOLTAGE_LEVEL3);
@@ -288,11 +290,11 @@ Index: linux-2.6.21/arch/arm/mach-pxa/ezx-pcap.c
 +{
 +        int i;
 +        const unsigned int cpu = smp_processor_id();
-+        u_int32_t reg;
-+
-+        DEBUGP("pcap_irq_demux_handler(%u,,) entered\n", irq);
++        u_int32_t reg, mask;
 +
 +	spin_lock(&desc->lock);
++
++        DEBUGP("pcap_irq_demux_handler(%u,,) entered\n", irq);
 +
 +        desc->status &= ~(IRQ_REPLAY | IRQ_WAITING);
 +
@@ -305,6 +307,7 @@ Index: linux-2.6.21/arch/arm/mach-pxa/ezx-pcap.c
 +	}
 +
 +        kstat_cpu(cpu).irqs[irq]++;
++	desc->chip->ack(irq);
 +	desc->status |= IRQ_INPROGRESS;
 +
 +        do {
@@ -317,30 +320,27 @@ Index: linux-2.6.21/arch/arm/mach-pxa/ezx-pcap.c
 +                }
 +
 +		desc->status &= ~IRQ_PENDING;
-+		spin_unlock(&desc->lock);
 +
-+                ezx_pcap_read(SSP_PCAP_ADJ_ISR_REGISTER, &reg);
-+                DEBUGP("pcap_irq_demux_handler: ISR=0x%08x\n", reg);
++		ezx_pcap_read(SSP_PCAP_ADJ_ISR_REGISTER, &reg);
++		ezx_pcap_read(SSP_PCAP_ADJ_MSR_REGISTER, &mask);
++                DEBUGP("pcap_irq_demux_handler: ISR=0x%08x MSR=0x%08x\n", reg, mask);
 +
 +                for (i = ARRAY_SIZE(pcap2irq)-1; i >= 0; i--) {
 +                        unsigned int pirq = pcap2irq[i];
 +                        if (pirq == 0)
 +                                continue;
 +
-+                        if (reg & (1 << i)) {
++                        if ((reg & (1 << i)) && !(mask & (1 << i))) {
 +                                struct irq_desc *subdesc;
 +                                DEBUGP("found irq %u\n", pirq);
 +                                subdesc = irq_desc + pirq;
-+
-+				// acknowledge pcap irq
-+				// do just one pcap irq each time
 +        			subdesc->chip->ack(pirq);
-+				i = 0;
 +
++				spin_unlock(&desc->lock);
 +				handle_IRQ_event(pirq, subdesc->action);
++				spin_lock(&desc->lock);
 +                        }
 +                }
-+		spin_lock(&desc->lock);
 +
 +        } while ((desc->status & (IRQ_PENDING | IRQ_DISABLED)) == IRQ_PENDING);
 +
@@ -387,9 +387,23 @@ Index: linux-2.6.21/arch/arm/mach-pxa/ezx-pcap.c
 +        return 0;
 +}
 +
++static int ezx_pcap_suspend(struct platform_device *dev, pm_message_t state)
++{
++	DEBUGP("pcap suspend!\n");
++        return 0;
++}
++
++static int ezx_pcap_resume(struct platform_device *dev)
++{
++	DEBUGP("pcap resume!\n");
++        return 0;
++}
++
 +static struct platform_driver ezxpcap_driver = {
 +	.probe          = ezx_pcap_probe,
 +	.remove         = ezx_pcap_remove,
++	.suspend	= ezx_pcap_suspend,
++	.resume		= ezx_pcap_resume,
 +	.driver         = {
 +		.name   = "ezx-pcap",
 +		.owner	= THIS_MODULE,
@@ -417,7 +431,7 @@ Index: linux-2.6.21/arch/arm/mach-pxa/ezx-pcap.c
 Index: linux-2.6.21/include/asm-arm/arch-pxa/ezx-pcap.h
 ===================================================================
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ linux-2.6.21/include/asm-arm/arch-pxa/ezx-pcap.h	2007-05-01 14:00:50.000000000 -0300
++++ linux-2.6.21/include/asm-arm/arch-pxa/ezx-pcap.h	2007-05-03 17:43:48.000000000 -0300
 @@ -0,0 +1,665 @@
 +/* (c) Copyright Motorola Beijing 2002 all rights reserved.
 +
@@ -1086,8 +1100,8 @@ Index: linux-2.6.21/include/asm-arm/arch-pxa/ezx-pcap.h
 +#endif
 Index: linux-2.6.21/include/asm-arm/arch-pxa/irqs.h
 ===================================================================
---- linux-2.6.21.orig/include/asm-arm/arch-pxa/irqs.h	2007-05-01 14:00:24.000000000 -0300
-+++ linux-2.6.21/include/asm-arm/arch-pxa/irqs.h	2007-05-01 14:00:50.000000000 -0300
+--- linux-2.6.21.orig/include/asm-arm/arch-pxa/irqs.h	2007-05-03 17:41:55.000000000 -0300
++++ linux-2.6.21/include/asm-arm/arch-pxa/irqs.h	2007-05-03 17:43:48.000000000 -0300
 @@ -176,7 +176,8 @@
  #define NR_IRQS			(IRQ_LOCOMO_SPI_TEND + 1)
  #elif defined(CONFIG_ARCH_LUBBOCK) || \
@@ -1117,8 +1131,8 @@ Index: linux-2.6.21/include/asm-arm/arch-pxa/irqs.h
 +
 Index: linux-2.6.21/arch/arm/mach-pxa/Makefile
 ===================================================================
---- linux-2.6.21.orig/arch/arm/mach-pxa/Makefile	2007-05-01 14:00:48.000000000 -0300
-+++ linux-2.6.21/arch/arm/mach-pxa/Makefile	2007-05-01 14:00:50.000000000 -0300
+--- linux-2.6.21.orig/arch/arm/mach-pxa/Makefile	2007-05-03 17:42:02.000000000 -0300
++++ linux-2.6.21/arch/arm/mach-pxa/Makefile	2007-05-04 04:17:33.000000000 -0300
 @@ -18,7 +18,7 @@
  obj-$(CONFIG_MACH_AKITA)	+= akita-ioexp.o
  obj-$(CONFIG_MACH_POODLE)	+= poodle.o corgi_ssp.o
@@ -1130,8 +1144,8 @@ Index: linux-2.6.21/arch/arm/mach-pxa/Makefile
  led-y := leds.o
 Index: linux-2.6.21/arch/arm/mach-pxa/ezx.c
 ===================================================================
---- linux-2.6.21.orig/arch/arm/mach-pxa/ezx.c	2007-05-01 14:00:48.000000000 -0300
-+++ linux-2.6.21/arch/arm/mach-pxa/ezx.c	2007-05-01 14:00:50.000000000 -0300
+--- linux-2.6.21.orig/arch/arm/mach-pxa/ezx.c	2007-05-03 17:42:02.000000000 -0300
++++ linux-2.6.21/arch/arm/mach-pxa/ezx.c	2007-05-04 04:17:33.000000000 -0300
 @@ -72,6 +72,24 @@
  	.clk_pcap	= 1,
  };

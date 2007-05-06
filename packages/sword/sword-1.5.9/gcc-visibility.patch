@@ -1,0 +1,26 @@
+diff --git a/include/rawtext.h b/include/rawtext.h
+index 32986fe..1304bf7 100644
+--- a/include/rawtext.h
++++ b/include/rawtext.h
+@@ -43,7 +43,7 @@ public:
+ 	virtual ~RawText();
+ 	virtual SWBuf &getRawEntryBuf();
+ 	virtual void increment(int steps = 1);
+-	virtual void decrement(int steps = 1) { increment(-steps); }
++	virtual __attribute__((visibility("default"))) void decrement(int steps = 1) { increment(-steps); }
+ 	virtual signed char createSearchFramework(
+ 			void (*percent) (char, void *) = &nullPercent,
+ 			void *percentUserData = 0);
+diff --git a/include/versekey.h b/include/versekey.h
+index 0ca5e47..53084d9 100644
+--- a/include/versekey.h
++++ b/include/versekey.h
+@@ -253,7 +253,7 @@ public:
+ 	*/
+ 	virtual const char *getText() const;
+ 	virtual const char *getShortText() const;
+-	virtual void setText(const char *ikey) { SWKey::setText(ikey); parse (); }
++	virtual __attribute__((visibility("default"))) void setText(const char *ikey) { SWKey::setText(ikey); parse (); }
+ 	virtual void copyFrom(const SWKey &ikey);
+ 	
+ 	/** Equates this VerseKey to another VerseKey

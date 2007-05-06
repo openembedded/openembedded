@@ -1,0 +1,15 @@
+DESCRIPTION = "Matchbox window manager Sato theme"
+LICENSE = "GPL"
+DEPENDS = "matchbox-wm"
+SECTION = "x11/wm"
+
+PV = "0.0.1+svn${SRCDATE}"
+PR = "r0"
+
+SRC_URI = "svn://svn.o-hand.com/repos/sato/trunk;module=matchbox-sato;proto=http"
+S = "${WORKDIR}/matchbox-sato"
+FILES_${PN} = "${datadir}/themes/Sato"
+
+inherit autotools pkgconfig
+
+

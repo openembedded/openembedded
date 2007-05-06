@@ -1,10 +1,3 @@
-DESCRIPTION = "chrpath allows you to change the rpath (where the application looks for libraries) in an application. It does not (yet) allow you to add an rpath if there isn't one already."
-LICENSE = "GPL"
+require chrpath.inc
 
-SRC_URI = "http://ftp.debian.org/debian/pool/main/c/chrpath/chrpath_0.13.orig.tar.gz"
-
-inherit autotools native
-
-S = "${WORKDIR}/chrpath-${PV}"
-
-
+inherit native
