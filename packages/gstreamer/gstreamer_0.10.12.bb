@@ -6,11 +6,6 @@ LICENSE = "LGPL"
 HOMEPAGE = "http://www.gstreamer.net/"
 DEPENDS = "libxml2 glib-2.0 gettext-native popt"
 
-# until we have decided a final naming scheme,
-# don't use this package as a replacement for
-# version 0.8
-DEFAULT_PREFERENCE = "-1"
-
 inherit autotools pkgconfig
 
 SRC_URI = "http://gstreamer.freedesktop.org/src/gstreamer/gstreamer-${PV}.tar.bz2"
