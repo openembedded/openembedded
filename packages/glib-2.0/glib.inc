@@ -15,7 +15,10 @@ PR = "r1"
 LEAD_SONAME = "libglib-2.0.*"
 FILES_glib-2.0-utils = "${bindir}/*"
 
-EXTRA_OECONF = "--disable-debug --enable-included-printf=no"
+EXTRA_OECONF = "--disable-debug "
+
+# Add and entry for your favourite arch if your (g)libc has a sane printf
+EXTRA_OECONF_append_glibc_arm = "  --enable-included-printf=no "
 
 S = "${WORKDIR}/glib-${PV}"
 

@@ -219,7 +219,7 @@ def package_qa_check_rpath(file,name,d):
     #bb.note("???%s???" % bad_dir_test)
     for line in txt:
         #bb.note("===%s===" % line)
-        if bad_dir_test in line:
+        if bad_dir in line:
             package_qa_write_error( 1, name, file, d)
             bb.error("QA Issue package %s contains bad RPATH %s in file %s" % (name, line, file))
             #bb.note("Fixing RPATH for you in %s" % file)

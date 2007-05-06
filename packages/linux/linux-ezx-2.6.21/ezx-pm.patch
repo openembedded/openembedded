@@ -1,7 +1,7 @@
 Index: linux-2.6.21/arch/arm/mach-pxa/pxa27x.c
 ===================================================================
---- linux-2.6.21.orig/arch/arm/mach-pxa/pxa27x.c	2007-04-26 00:08:32.000000000 -0300
-+++ linux-2.6.21/arch/arm/mach-pxa/pxa27x.c	2007-04-30 18:29:49.000000000 -0300
+--- linux-2.6.21.orig/arch/arm/mach-pxa/pxa27x.c	2007-05-03 17:41:39.000000000 -0300
++++ linux-2.6.21/arch/arm/mach-pxa/pxa27x.c	2007-05-03 17:43:42.000000000 -0300
 @@ -22,6 +22,10 @@
  #include <asm/arch/pxa-regs.h>
  #include <asm/arch/ohci.h>
@@ -29,8 +29,8 @@ Index: linux-2.6.21/arch/arm/mach-pxa/pxa27x.c
  	}
 Index: linux-2.6.21/arch/arm/mach-pxa/pm.c
 ===================================================================
---- linux-2.6.21.orig/arch/arm/mach-pxa/pm.c	2007-04-26 00:08:32.000000000 -0300
-+++ linux-2.6.21/arch/arm/mach-pxa/pm.c	2007-04-30 18:29:49.000000000 -0300
+--- linux-2.6.21.orig/arch/arm/mach-pxa/pm.c	2007-05-03 17:41:39.000000000 -0300
++++ linux-2.6.21/arch/arm/mach-pxa/pm.c	2007-05-04 03:51:15.000000000 -0300
 @@ -24,6 +24,10 @@
  #include <asm/arch/lubbock.h>
  #include <asm/mach/time.h>

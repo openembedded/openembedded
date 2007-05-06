@@ -1,7 +1,7 @@
 Index: linux-2.6.21/arch/arm/boot/compressed/head-xscale.S
 ===================================================================
---- linux-2.6.21.orig/arch/arm/boot/compressed/head-xscale.S	2007-05-01 14:00:25.000000000 -0300
-+++ linux-2.6.21/arch/arm/boot/compressed/head-xscale.S	2007-05-01 14:00:48.000000000 -0300
+--- linux-2.6.21.orig/arch/arm/boot/compressed/head-xscale.S	2007-05-03 17:41:57.000000000 -0300
++++ linux-2.6.21/arch/arm/boot/compressed/head-xscale.S	2007-05-03 17:42:02.000000000 -0300
 @@ -53,3 +53,6 @@
  		str	r1, [r0, #0x18]
  #endif
@@ -11,8 +11,8 @@ Index: linux-2.6.21/arch/arm/boot/compressed/head-xscale.S
 +#endif
 Index: linux-2.6.21/arch/arm/mach-pxa/Kconfig
 ===================================================================
---- linux-2.6.21.orig/arch/arm/mach-pxa/Kconfig	2007-05-01 14:00:25.000000000 -0300
-+++ linux-2.6.21/arch/arm/mach-pxa/Kconfig	2007-05-01 23:02:56.000000000 -0300
+--- linux-2.6.21.orig/arch/arm/mach-pxa/Kconfig	2007-05-03 17:41:57.000000000 -0300
++++ linux-2.6.21/arch/arm/mach-pxa/Kconfig	2007-05-04 04:17:33.000000000 -0300
 @@ -37,6 +37,10 @@
  	bool "Keith und Koep Trizeps4 DIMM-Module"
  	select PXA27x
@@ -60,8 +60,8 @@ Index: linux-2.6.21/arch/arm/mach-pxa/Kconfig
  endif
 Index: linux-2.6.21/arch/arm/mach-pxa/Makefile
 ===================================================================
---- linux-2.6.21.orig/arch/arm/mach-pxa/Makefile	2007-05-01 14:00:25.000000000 -0300
-+++ linux-2.6.21/arch/arm/mach-pxa/Makefile	2007-05-01 23:03:58.000000000 -0300
+--- linux-2.6.21.orig/arch/arm/mach-pxa/Makefile	2007-05-03 17:41:57.000000000 -0300
++++ linux-2.6.21/arch/arm/mach-pxa/Makefile	2007-05-04 04:17:42.000000000 -0300
 @@ -18,6 +18,7 @@
  obj-$(CONFIG_MACH_AKITA)	+= akita-ioexp.o
  obj-$(CONFIG_MACH_POODLE)	+= poodle.o corgi_ssp.o
@@ -73,7 +73,7 @@ Index: linux-2.6.21/arch/arm/mach-pxa/Makefile
 Index: linux-2.6.21/arch/arm/mach-pxa/ezx.c
 ===================================================================
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ linux-2.6.21/arch/arm/mach-pxa/ezx.c	2007-05-01 23:03:58.000000000 -0300
++++ linux-2.6.21/arch/arm/mach-pxa/ezx.c	2007-05-04 04:17:42.000000000 -0300
 @@ -0,0 +1,378 @@
 +/*
 + *  linux/arch/arm/mach-ezx/a780.c
@@ -456,7 +456,7 @@ Index: linux-2.6.21/arch/arm/mach-pxa/ezx.c
 Index: linux-2.6.21/include/asm-arm/arch-pxa/ezx.h
 ===================================================================
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ linux-2.6.21/include/asm-arm/arch-pxa/ezx.h	2007-05-01 14:00:48.000000000 -0300
++++ linux-2.6.21/include/asm-arm/arch-pxa/ezx.h	2007-05-03 17:42:02.000000000 -0300
 @@ -0,0 +1,225 @@
 +/*
 + *  linux/include/asm-arm/arch-pxa/ezx.h
@@ -685,8 +685,8 @@ Index: linux-2.6.21/include/asm-arm/arch-pxa/ezx.h
 +
 Index: linux-2.6.21/include/asm-arm/arch-pxa/pxa-regs.h
 ===================================================================
---- linux-2.6.21.orig/include/asm-arm/arch-pxa/pxa-regs.h	2007-05-01 14:00:24.000000000 -0300
-+++ linux-2.6.21/include/asm-arm/arch-pxa/pxa-regs.h	2007-05-01 23:02:53.000000000 -0300
+--- linux-2.6.21.orig/include/asm-arm/arch-pxa/pxa-regs.h	2007-05-03 17:41:57.000000000 -0300
++++ linux-2.6.21/include/asm-arm/arch-pxa/pxa-regs.h	2007-05-04 04:17:32.000000000 -0300
 @@ -849,6 +849,8 @@
  #define UP2OCR_HXOE		(1 << 17)	/* Host Port 2 Transceiver Output Enable */
  #define UP2OCR_SEOS		(1 << 24)	/* Single-Ended Output Select */
@@ -802,8 +802,8 @@ Index: linux-2.6.21/include/asm-arm/arch-pxa/pxa-regs.h
  #define PGSR2		__REG(0x40F00028)  /* Power Manager GPIO Sleep State Register for GP[84-64] */
 Index: linux-2.6.21/arch/arm/boot/compressed/head.S
 ===================================================================
---- linux-2.6.21.orig/arch/arm/boot/compressed/head.S	2007-05-01 14:00:25.000000000 -0300
-+++ linux-2.6.21/arch/arm/boot/compressed/head.S	2007-05-01 14:00:48.000000000 -0300
+--- linux-2.6.21.orig/arch/arm/boot/compressed/head.S	2007-05-03 17:41:57.000000000 -0300
++++ linux-2.6.21/arch/arm/boot/compressed/head.S	2007-05-03 17:42:02.000000000 -0300
 @@ -117,6 +117,9 @@
  		mov	r0, r0
  		.endr
@@ -816,8 +816,8 @@ Index: linux-2.6.21/arch/arm/boot/compressed/head.S
  		.word	start			@ absolute load/run zImage address
 Index: linux-2.6.21/include/asm-arm/arch-pxa/uncompress.h
 ===================================================================
---- linux-2.6.21.orig/include/asm-arm/arch-pxa/uncompress.h	2007-05-01 14:00:24.000000000 -0300
-+++ linux-2.6.21/include/asm-arm/arch-pxa/uncompress.h	2007-05-01 14:00:48.000000000 -0300
+--- linux-2.6.21.orig/include/asm-arm/arch-pxa/uncompress.h	2007-05-03 17:41:57.000000000 -0300
++++ linux-2.6.21/include/asm-arm/arch-pxa/uncompress.h	2007-05-03 17:42:02.000000000 -0300
 @@ -14,14 +14,14 @@
  #define STUART		((volatile unsigned long *)0x40700000)
  #define HWUART		((volatile unsigned long *)0x41600000)
@@ -839,7 +839,7 @@ Index: linux-2.6.21/include/asm-arm/arch-pxa/uncompress.h
 Index: linux-2.6.21/arch/arm/mach-pxa/ezx_ssp.c
 ===================================================================
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ linux-2.6.21/arch/arm/mach-pxa/ezx_ssp.c	2007-05-01 14:00:48.000000000 -0300
++++ linux-2.6.21/arch/arm/mach-pxa/ezx_ssp.c	2007-05-03 17:42:02.000000000 -0300
 @@ -0,0 +1,126 @@
 +/*
 + *  SSP control code for Motorola EZX phones
@@ -970,7 +970,7 @@ Index: linux-2.6.21/arch/arm/mach-pxa/ezx_ssp.c
 Index: linux-2.6.21/arch/arm/mach-pxa/ezx.h
 ===================================================================
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ linux-2.6.21/arch/arm/mach-pxa/ezx.h	2007-05-01 14:00:48.000000000 -0300
++++ linux-2.6.21/arch/arm/mach-pxa/ezx.h	2007-05-03 17:42:02.000000000 -0300
 @@ -0,0 +1,9 @@
 +#include <asm/arch/ezx.h>
 +
@@ -984,7 +984,7 @@ Index: linux-2.6.21/arch/arm/mach-pxa/ezx.h
 Index: linux-2.6.21/arch/arm/mach-pxa/ezx_lcd.c
 ===================================================================
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ linux-2.6.21/arch/arm/mach-pxa/ezx_lcd.c	2007-05-01 22:53:54.000000000 -0300
++++ linux-2.6.21/arch/arm/mach-pxa/ezx_lcd.c	2007-05-03 17:42:02.000000000 -0300
 @@ -0,0 +1,113 @@
 +/*
 + *  linux/arch/arm/mach-ezx/a780.c
@@ -1101,13 +1101,13 @@ Index: linux-2.6.21/arch/arm/mach-pxa/ezx_lcd.c
 +arch_initcall(__ezx_lcd_init);
 Index: linux-2.6.21/arch/arm/mm/init.c
 ===================================================================
---- linux-2.6.21.orig/arch/arm/mm/init.c	2007-05-01 14:00:25.000000000 -0300
-+++ linux-2.6.21/arch/arm/mm/init.c	2007-05-01 14:00:48.000000000 -0300
+--- linux-2.6.21.orig/arch/arm/mm/init.c	2007-05-03 17:41:57.000000000 -0300
++++ linux-2.6.21/arch/arm/mm/init.c	2007-05-04 03:48:30.000000000 -0300
 @@ -241,6 +241,10 @@
  	 */
  	reserve_bootmem_node(pgdat, boot_pfn << PAGE_SHIFT,
  			     boot_pages << PAGE_SHIFT);
-+#ifdef CONFIG_ARCH_EZX
++#ifdef CONFIG_PXA_EZX
 +	/* reserve the first page memory for exiting sleep and user off */
 +	reserve_bootmem_node(pgdat, PHYS_OFFSET, PAGE_SIZE);
 +#endif
