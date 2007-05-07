@@ -2,7 +2,7 @@ DESCRIPTION = "XCB: an X protocol C binding"
 SECTION = "x11/libs"
 LICENSE = "MIT-X"
 HOMEPAGE = "http://xcb.freedesktop.org"
-PR = "r1"
+PR = "r2"
 
 PARALLEL_MAKE = ""
 DEPENDS = "xcb-proto libxau libxslt-native"
@@ -18,7 +18,7 @@ PACKAGES =+ "libxcb-composite libxcb-damage libxcb-dpms libxcb-glx \
 
 FILES_${PN} = "${libdir}/libxcb.so.*"
 #FILES_${PN}-dev = "${libdir}/libxcb.* ${libdir}/pkgconfig/*.pc ${includedir}/xcb/*.h"
-FILES_libxcb-composite = "${libdir}/libxcb-composite.so*"
+FILES_libxcb-composite = "${libdir}/libxcb-composite.so.*"
 FILES_libxcb-damage = "${libdir}/libxcb-damage.so.*"
 FILES_libxcb-dpms = "${libdir}/libxcb-dpms.so.*"
 FILES_libxcb-glx = "${libdir}/libxcb-glx.so.*"
