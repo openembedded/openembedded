@@ -294,7 +294,7 @@ rmdir ${DEPLOY_DIR_IMAGE}/tmp.gz"</screen></para>
           <para>Creates a .tar archive.</para>
 
           <para><screen>IMAGE_CMD_tar = "cd ${IMAGE_ROOTFS} &amp;&amp; \
-  tar -jcvf ${DEPLOY_DIR_IMAGE}/${IMAGE_NAME}.rootfs.tar.bz2 ."</screen></para>
+  tar -cvf ${DEPLOY_DIR_IMAGE}/${IMAGE_NAME}.rootfs.tar ."</screen></para>
 
           <para>The <command>EXTRA_IMAGECMD</command> variable in not
           supported for tar images.</para>

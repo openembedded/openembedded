@@ -409,8 +409,8 @@ MACHINE_FEATURES = "kernel26 apm alsa pcmcia bluetooth irda usbgadget"
     <section id="commonuse_new_distro">
       <title>Creating a new Distribution</title>
 
-      <para>Creating a new distribution is not complicated. Config need to be
-      created in /conf/distro directory. What has to be inside? <itemizedlist>
+      <para>Creating a new distribution is not complicated, however we urge you to try existing distributions first, because it's also very easy to do wrong. The config need to be
+      created in /conf/distro directory. So what has to be inside? <itemizedlist>
           <listitem>
             <para><command>DISTRO_VERSION</command> so users will know which
             version of distribution they use.</para>
@@ -510,28 +510,28 @@ SRCDATE = "20061014"
       <para>Creating own image is easy - only few variables needs to be set:
       <itemizedlist>
           <listitem>
-            <para><command>IMAGE_BASENAME</command> to give name for own
+            <para><command>IMAGE_BASENAME</command> to give a name for your own
             image</para>
           </listitem>
 
           <listitem>
-            <para><command>IPKG_INSTALL</command> to give list of packages to
-            install into image</para>
+            <para><command>PACKAGE_INSTALL</command> to give a list of packages to
+            install into the image</para>
           </listitem>
 
           <listitem>
-            <para><command>RDEPENDS</command> to give list of packages which
-            are needed to be build to create image</para>
+            <para><command>RDEPENDS</command> to give a list of recipes which
+            are needed to be built to create this image</para>
           </listitem>
 
           <listitem>
-            <para><command>IMAGE_LINGUAS</command> is optional list of
-            languages which has to be installed into image</para>
+            <para><command>IMAGE_LINGUAS</command> is an optional list of
+            languages which has to be installed into the image</para>
           </listitem>
-        </itemizedlist> Then adding of <emphasis>image_ipk</emphasis> class
+        </itemizedlist> Then adding of the <emphasis>image</emphasis> class
       use: <screen>
-inherit image_ipk
-</screen> And image recipe is ready for usage.</para>
+inherit image
+</screen> And the image recipe is ready for usage.</para>
     </section>
 
     <section id="commonuse_prebuilt_toolchain">
