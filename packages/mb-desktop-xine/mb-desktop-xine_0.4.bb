@@ -1,8 +1,6 @@
 DESCRIPTION = "foo"
-LICENSE = "GPL"
 HOMEPAGE = "http://projects.o-hand.com/matchbox/"
-
-SRC_URI="http://projects.o-hand.com/matchbox/sources/mb-desktop-xine/0.4/mb-desktop-xine-${PV}.tar.bz2"
+LICENSE = "GPL"
 DEPENDS = "matchbox-desktop libxine-x11"
 RDEPENDS = "libxine-plugin-vo-out-xshm \
             libxine-plugin-vo-out-none \
@@ -27,10 +25,11 @@ RDEPENDS = "libxine-plugin-vo-out-xshm \
             libxine-plugin-dmx-avi \
 	    libxine-plugin-ao-out-oss \
 	    matchbox-desktop	"
+PR = "r1"
 
+SRC_URI="http://projects.o-hand.com/matchbox/sources/mb-desktop-xine/0.4/mb-desktop-xine-${PV}.tar.bz2"
 
 FILES_${PN} += " /usr/share/themes/mbmediabox/matchbox/ \
 		/usr/share/matchbox/desktop/modules/*.so"
-
 
 inherit autotools pkgconfig
