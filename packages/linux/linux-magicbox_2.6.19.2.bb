@@ -4,6 +4,8 @@ LICENSE = "GPL"
 PR = "r0"
 DEPENDS = "u-boot"
 
+COMPATIBLE_MACHINE = "magicbox"
+
 #KERNEL_CCSUFFIX = "-3.4.4"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-${PV}.tar.bz2 \
