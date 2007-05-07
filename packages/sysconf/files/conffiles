@@ -20,7 +20,6 @@
 #   preserve  Preserve this file unconditionally
 #   diff      Compare file with the new version, ask if different
 #
-preserve	linuxrc
 preserve	etc/.configured
 preserve	etc/TZ
 diff		etc/default/conffiles
