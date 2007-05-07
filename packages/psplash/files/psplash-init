@@ -9,8 +9,13 @@ for x in $(cat /proc/cmdline); do
         esac
 done
 
+psplash_args=''
+case "`grep ^Hardware /proc/cpuinfo|cut -d: -f2 |tr A-Z a-z`" in
+ "hp ipaq h3100"|"hp ipaq h3800") pspash_args='-a 90' ;;
+ "hp ipaq 3600"|"hp ipaq 3700"|"hp ipaq h3900"|"htc universal"|*collie|*poodle|*akita|*spitz|*borzoi) psplash_args='-a 270' ;;
+esac
+
 export TMPDIR=/mnt/.psplash
 mount tmpfs -t tmpfs $TMPDIR -o,size=40k
 
-/usr/bin/psplash &
-
+/usr/bin/psplash $psplash_args &
