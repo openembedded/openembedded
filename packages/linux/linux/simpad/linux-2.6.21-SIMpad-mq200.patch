@@ -1,0 +1,2511 @@
+diff -uNr linux-2.6.21.vanilla/drivers/video/Kconfig linux-2.6.21/drivers/video/Kconfig
+--- linux-2.6.21.vanilla/drivers/video/Kconfig	2007-05-01 16:40:48.000000000 +0200
++++ linux-2.6.21/drivers/video/Kconfig	2007-05-01 17:02:17.000000000 +0200
+@@ -139,7 +139,7 @@
+ 	 This is particularly important to one driver, matroxfb.  If
+ 	 unsure, say N.
+ 
+-comment "Frame buffer hardware drivers"
++comment "Frambuffer hardware drivers"
+ 	depends on FB
+ 
+ config FB_CIRRUS
+@@ -1120,6 +1120,15 @@
+ 	---help---
+ 	  Driver for graphics boards with S3 Trio / S3 Virge chip.
+ 
++config FB_MQ200
++        bool "MQ200 Driver"
++        depends on (FB = y) && ARM && ARCH_SA1100
++        select FB_CFB_FILLRECT
++        select FB_CFB_COPYAREA
++        select FB_CFB_IMAGEBLIT
++        help
++         This is a MQ200 driver tested only on Siemens SIMpads. 
++
+ config FB_SAVAGE
+ 	tristate "S3 Savage support"
+ 	depends on FB && PCI && EXPERIMENTAL
+diff -uNr linux-2.6.21.vanilla/drivers/video/Makefile linux-2.6.21/drivers/video/Makefile
+--- linux-2.6.21.vanilla/drivers/video/Makefile	2007-05-01 16:40:48.000000000 +0200
++++ linux-2.6.21/drivers/video/Makefile	2007-05-01 17:02:17.000000000 +0200
+@@ -29,6 +29,7 @@
+ obj-$(CONFIG_FB_PM2)              += pm2fb.o
+ obj-$(CONFIG_FB_PM3)		  += pm3fb.o
+ 
++obj-$(CONFIG_FB_MQ200)            += mq200/
+ obj-$(CONFIG_FB_MATROX)		  += matrox/
+ obj-$(CONFIG_FB_RIVA)		  += riva/ vgastate.o
+ obj-$(CONFIG_FB_NVIDIA)		  += nvidia/
+diff -uNr linux-2.6.21.vanilla/drivers/video/backlight/Kconfig linux-2.6.21/drivers/video/backlight/Kconfig
+--- linux-2.6.21.vanilla/drivers/video/backlight/Kconfig	2007-05-01 16:40:48.000000000 +0200
++++ linux-2.6.21/drivers/video/backlight/Kconfig	2007-05-01 17:02:17.000000000 +0200
+@@ -63,3 +63,20 @@
+ 	help
+ 	  If you have a Frontpath ProGear say Y to enable the
+ 	  backlight driver.
++
++config BACKLIGHT_SIMPAD
++        tristate "SIMpad MQ200 Backlight driver"
++        depends on SA1100_SIMPAD && BACKLIGHT_CLASS_DEVICE
++	default y
++        help
++          If you have a Siemens SIMpad say Y to enable the
++          backlight driver.
++
++config LCD_SIMPAD
++        tristate "SIMpad MQ200 LCD driver"
++        depends on SA1100_SIMPAD && LCD_CLASS_DEVICE
++	default y
++        help
++          If you have a Siemens SIMpad say Y to enable the
++          LCD driver.
++
+diff -uNr linux-2.6.21.vanilla/drivers/video/backlight/Makefile linux-2.6.21/drivers/video/backlight/Makefile
+--- linux-2.6.21.vanilla/drivers/video/backlight/Makefile	2007-05-01 16:40:48.000000000 +0200
++++ linux-2.6.21/drivers/video/backlight/Makefile	2007-05-01 17:02:17.000000000 +0200
+@@ -6,3 +6,5 @@
+ obj-$(CONFIG_BACKLIGHT_HP680)	+= hp680_bl.o
+ obj-$(CONFIG_BACKLIGHT_LOCOMO)	+= locomolcd.o
+ obj-$(CONFIG_BACKLIGHT_PROGEAR) += progear_bl.o
++obj-$(CONFIG_BACKLIGHT_SIMPAD)	+= simpad_bl.o
++obj-$(CONFIG_LCD_SIMPAD)	+= simpad_lcd.o
+diff -uNr linux-2.6.21.vanilla/drivers/video/backlight/simpad_bl.c linux-2.6.21/drivers/video/backlight/simpad_bl.c
+--- linux-2.6.21.vanilla/drivers/video/backlight/simpad_bl.c	1970-01-01 01:00:00.000000000 +0100
++++ linux-2.6.21/drivers/video/backlight/simpad_bl.c	2007-05-01 17:02:17.000000000 +0200
+@@ -0,0 +1,208 @@
++/*
++ * GPLv2 <zecke@handhelds.org
++ *
++ * Implementation of the backlight_driver for
++ * the mq200 framebuffer
++ *
++ * 2007/03/17 mrdata:
++ *            - small changes simpad_bl_get_brightness()
++ *                            simpad_bl_set_brightness()
++ *            - new function simpad_bl_update_status()
++ *            - changed struct backlight_properties simpad_bl_props()
++ *              to new one
++ *            - changed __init simpad_bl_init() -> backlight_device_register
++ *
++ * 2007/03/24 mrdata
++ *            - added .brightness=127 in
++ *              struct backlight_properties simpad_bl_props() 
++ */ 
++#include <linux/module.h>
++#include <linux/kernel.h>
++#include <linux/init.h>
++#include <linux/platform_device.h>
++#include <linux/spinlock.h>
++#include <linux/fb.h>
++#include <linux/backlight.h>
++
++#include <asm/types.h>
++#include <asm/hardware.h>
++#include <asm/io.h>
++
++#include "../mq200/mq200_data.h"
++
++#define SIMPAD_BACKLIGHT_MASK 0x00a10044
++#define SIMPAD_DEFAULT_INTENSITY 127
++#define SIMPAD_MAX_INTENSITY 254
++#define REGISTER_BASE 0xf2e00000
++
++static int simpad_bl_suspended;
++static int current_intensity = 0;
++
++static void simpad_bl_send_intensity(struct backlight_device *bd)
++{
++	int intensity = bd->props.brightness;
++    
++	union fp0fr fp0fr;
++	unsigned long dutyCycle, pwmcontrol;
++    
++	if (intensity > SIMPAD_MAX_INTENSITY)
++    		intensity = SIMPAD_MAX_INTENSITY;
++
++	if (bd->props.power != FB_BLANK_UNBLANK)
++		intensity = 0;
++		
++	if (bd->props.fb_blank != FB_BLANK_UNBLANK)
++		intensity = 0;
++	
++	if (simpad_bl_suspended)
++		intensity = 0;
++	
++	if (intensity != current_intensity)
++	{	
++	    /*
++            * Determine dutyCycle.
++            * Note: the lower the value, the brighter the display!
++            */
++
++	    dutyCycle = SIMPAD_MAX_INTENSITY - intensity;
++
++    	    /*
++            * Configure PWM0 (source clock = oscillator clock, pwm always enabled,
++	    * zero, clock pre-divider = 4) pwm frequency = 12.0kHz
++	    */
++	 
++	    fp0fr.whole = readl(FP0FR(REGISTER_BASE));
++	    pwmcontrol = fp0fr.whole & 0xffff00ff;
++	    fp0fr.whole &= 0xffffff00;
++	    fp0fr.whole |= 0x00000044;
++	    writel(fp0fr.whole, FP0FR(REGISTER_BASE));
++
++	    /* Write to pwm duty cycle register.  */
++	    fp0fr.whole = dutyCycle << 8;
++	    fp0fr.whole &= 0x0000ff00;
++	    fp0fr.whole |= pwmcontrol;
++	    writel(fp0fr.whole, FP0FR(REGISTER_BASE));
++	    
++	    current_intensity = intensity;
++	}
++}
++
++
++#ifdef CONFIG_PM
++static int simpad_bl_suspend(struct platform_device *pdev, pm_message_t state)
++{
++	struct backlight_device *bd = platform_get_drvdata(pdev);
++
++	simpad_bl_suspended = 1;
++	simpad_bl_send_intensity(bd);
++	return 0;
++}
++
++static int simpad_bl_resume(struct platform_device *pdev)
++{
++	struct backlight_device *bd = platform_get_drvdata(pdev);
++
++	simpad_bl_suspended = 0;
++	simpad_bl_send_intensity(bd);
++	return 0;
++}
++#else
++#define simpad_bl_suspend NULL
++#define simpad_bl_resume  NULL
++#endif
++
++
++static int simpad_bl_set_intensity(struct backlight_device *bd)
++{
++	simpad_bl_send_intensity(bd);
++	return 0;
++}
++
++
++static int simpad_bl_get_intensity(struct backlight_device *bd)
++{
++	return current_intensity;
++}
++
++
++static struct backlight_ops simpad_bl_ops = {
++        .get_brightness = simpad_bl_get_intensity,
++	.update_status	= simpad_bl_set_intensity,
++};
++
++
++static int __init simpad_bl_probe(struct platform_device *pdev)
++{
++	struct backlight_device *bd;
++
++	bd = backlight_device_register("simpad-mq200-bl", &pdev->dev, NULL, &simpad_bl_ops);
++	
++	if (IS_ERR (bd))
++		return PTR_ERR (bd);
++	
++	platform_set_drvdata(pdev, bd);
++	
++	bd->props.max_brightness = SIMPAD_MAX_INTENSITY;
++	bd->props.brightness = SIMPAD_DEFAULT_INTENSITY;
++	simpad_bl_send_intensity(bd);
++	
++	return 0;
++}
++
++
++static int simpad_bl_remove(struct platform_device *pdev)
++{
++	struct backlight_device *bd = platform_get_drvdata(pdev);
++	
++	bd->props.brightness = 0;
++	bd->props.power = 0;
++	simpad_bl_send_intensity(bd);
++	
++	backlight_device_unregister(bd);
++	
++	return 0;
++}
++
++static struct platform_driver simpad_bl_driver = {
++	.probe		= simpad_bl_probe,
++	.remove		= simpad_bl_remove,
++	.suspend	= simpad_bl_suspend,
++	.resume		= simpad_bl_resume,
++	.driver		= {
++		.name	= "simpad-mq200-bl",
++	},
++};
++
++static struct platform_device *simpad_bl_device = NULL;
++
++static int __init simpad_bl_init(void)
++{
++	int ret;
++    
++	ret = platform_driver_register(&simpad_bl_driver);
++	if (!ret) {
++	        simpad_bl_device = platform_device_alloc("simpad-mq200-bl", -1);
++		if (!simpad_bl_device)
++		        return -ENOMEM;
++	    
++		ret = platform_device_add(simpad_bl_device);
++	    
++		if (ret) {
++		        platform_device_put(simpad_bl_device);
++			platform_driver_unregister(&simpad_bl_driver);
++		}
++	}
++	return ret;
++}
++
++static void __exit simpad_bl_exit(void)
++{
++	platform_device_unregister(simpad_bl_device);
++	platform_driver_unregister(&simpad_bl_driver);
++}
++
++
++module_init(simpad_bl_init);
++module_exit(simpad_bl_exit);
++MODULE_AUTHOR("Holger Hans Peter Freyther");
++MODULE_LICENSE("GPL");
+diff -uNr linux-2.6.21.vanilla/drivers/video/backlight/simpad_lcd.c linux-2.6.21/drivers/video/backlight/simpad_lcd.c
+--- linux-2.6.21.vanilla/drivers/video/backlight/simpad_lcd.c	1970-01-01 01:00:00.000000000 +0100
++++ linux-2.6.21/drivers/video/backlight/simpad_lcd.c	2007-05-01 17:02:17.000000000 +0200
+@@ -0,0 +1,170 @@
++/*
++ * GPLv2 <zecke@handhelds.org
++ *
++ * Implementation of the lcd_driver for the mq200 framebuffer
++ *
++ * 2007/03/24 mrdata:
++ *            - added simpad_lcd_get_contrast()
++ *            - added simpad_lcd_set_contrast()
++ *            - modify struct lcd_properties simpad_lcd_props
++ */
++#include <linux/module.h>
++#include <linux/kernel.h>
++#include <linux/init.h>
++#include <linux/platform_device.h>
++#include <linux/fb.h>
++#include <linux/lcd.h>
++
++#include <asm/arch/simpad.h>
++#include <asm/hardware.h>
++
++extern long get_cs3_shadow(void);
++extern void set_cs3_bit(int);
++extern void clear_cs3_bit(int);
++
++#define UNUSED(x) x=x
++
++static int simpad_lcd_get_power(struct lcd_device* dev)
++{
++	UNUSED(dev);
++
++	return (get_cs3_shadow() & DISPLAY_ON) ? 0 : 4;
++}
++
++static int simpad_lcd_set_power(struct lcd_device* dev, int power)
++{
++	UNUSED(dev);
++
++	if( power == 4 )
++		clear_cs3_bit(DISPLAY_ON);
++	else
++		set_cs3_bit(DISPLAY_ON);
++
++	return 0;
++}
++
++static int simpad_lcd_get_contrast(struct lcd_device* dev)
++{
++	UNUSED(dev);
++
++	return 0;
++}
++
++static int simpad_lcd_set_contrast(struct lcd_device* dev, int contrast)
++{
++	UNUSED(dev);
++
++	UNUSED(contrast);
++
++	return 0;
++}
++
++#ifdef CONFIG_PM
++static int simpad_lcd_suspend(struct platform_device *pdev, pm_message_t state)
++{
++	UNUSED(state);
++	static int ret;
++	
++	struct lcd_device* ld;
++	
++	ld = platform_get_drvdata(pdev);
++	
++	ret = simpad_lcd_set_power(ld, 4);
++	
++	return ret;
++}
++
++static int simpad_lcd_resume(struct platform_device *pdev)
++{
++	struct lcd_device *ld;
++	static int ret;
++	
++	ld = platform_get_drvdata(pdev);
++	
++	ret = simpad_lcd_set_power(ld, 0);
++	
++	return ret;
++}
++#else
++#define simpad_lcd_suspend NULL
++#define simpad_lcd_resume  NULL
++#endif
++
++static struct lcd_properties simpad_lcd_props = {
++	.max_contrast = 0,
++};
++
++
++static struct lcd_ops simpad_lcd_ops = {
++	.get_power    = simpad_lcd_get_power,
++	.set_power    = simpad_lcd_set_power,
++	.get_contrast = simpad_lcd_get_contrast,
++	.set_contrast = simpad_lcd_set_contrast,
++};
++
++static int __init simpad_lcd_probe(struct platform_device *pdev)
++{
++	struct lcd_device *ld;
++	
++	ld = lcd_device_register ("simpad-mq200-lcd", &pdev->dev, &simpad_lcd_ops);
++	
++	if (IS_ERR(ld))
++		return PTR_ERR(ld);
++		
++	platform_set_drvdata(pdev, ld);
++	
++	ld->props.max_contrast = 0;
++	
++	return 0;
++}
++
++static int simpad_lcd_remove(struct platform_device *pdev)
++{
++	struct lcd_device *ld = platform_get_drvdata(pdev);
++	
++	lcd_device_unregister(ld);
++	
++	return 0;
++}	
++
++static struct platform_driver simpad_lcd_driver = {
++	.probe		= simpad_lcd_probe,
++	.remove		= simpad_lcd_remove,
++	.suspend	= simpad_lcd_suspend,
++	.resume		= simpad_lcd_resume,
++	.driver		= {
++		.name	= "simpad-mq200-lcd",
++	},
++};
++
++static struct platform_device *simpad_lcd_device = NULL;
++
++static int __init simpad_lcd_init(void)
++{
++	int ret;
++	
++	ret = platform_driver_register(&simpad_lcd_driver);
++	if (!ret) {
++		simpad_lcd_device = platform_device_alloc("simpad-mq200-lcd", -1);
++		if (!simpad_lcd_device)
++			return -ENOMEM;
++			
++		ret = platform_device_add(simpad_lcd_device);
++		
++		if (ret) {
++			platform_device_put(simpad_lcd_device);
++			platform_driver_unregister(&simpad_lcd_driver);
++		}
++	}
++	return ret;
++}
++
++static void __exit simpad_lcd_exit(void) {
++	platform_driver_unregister(&simpad_lcd_driver);
++	platform_device_unregister(simpad_lcd_device);
++}
++
++module_init(simpad_lcd_init);
++module_exit(simpad_lcd_exit);
++MODULE_AUTHOR("Holger Hans Peter Freyther");
++MODULE_LICENSE("GPL");
+diff -uNr linux-2.6.21.vanilla/drivers/video/mq200/Makefile linux-2.6.21/drivers/video/mq200/Makefile
+--- linux-2.6.21.vanilla/drivers/video/mq200/Makefile	1970-01-01 01:00:00.000000000 +0100
++++ linux-2.6.21/drivers/video/mq200/Makefile	2007-05-01 17:02:17.000000000 +0200
+@@ -0,0 +1,6 @@
++# Makefile for mq200 video driver
++# 4 Aug 2003, Holger Hans Peter Freyther
++#
++
++obj-$(CONFIG_FB_MQ200)           += mq_skeleton.o mq_external.o
++
+diff -uNr linux-2.6.21.vanilla/drivers/video/mq200/mq200_data.h linux-2.6.21/drivers/video/mq200/mq200_data.h
+--- linux-2.6.21.vanilla/drivers/video/mq200/mq200_data.h	1970-01-01 01:00:00.000000000 +0100
++++ linux-2.6.21/drivers/video/mq200/mq200_data.h	2007-05-01 17:02:17.000000000 +0200
+@@ -0,0 +1,1120 @@
++/*
++ * From ucLinux mq200fb.c and mq200fb.h
++ *
++ * 2007/03/11 mrdata:
++ *            insert registers for graphics controller 2 module
++ */
++
++#ifndef __MQ200_FB_H__
++#define __MQ200_FB_H__
++
++struct mq200_io_regions {
++	u32 fb_size;                    /* framebuffer size                  */
++	unsigned long phys_mmio_base;   /* physical register memory base     */
++	unsigned long virt_mmio_base;    /* virtual start of registers       */
++	unsigned long phys_fb_base;     /* physical address of frame buffer  */
++	unsigned long virt_fb_base;     /* virtual start of the framebuffer  */
++};
++
++#define MQ200_MONITOR_HORI_RES(info)    info->monitor_info.horizontal_res
++#define MQ200_MONITOR_VERT_RES(info)    info->monitor_info.vertical_res
++#define MQ200_MONITOR_DEPTH(info)       info->monitor_info.depth
++#define MQ200_MONITOR_LINE_LENGTH(info) info->monitor_info.line_length
++
++struct mq200_monitor_info {
++	unsigned int horizontal_res;
++	unsigned int vertical_res;
++	unsigned int depth;
++	unsigned int refresh;
++	unsigned int line_length;
++	unsigned long flags;
++};
++
++
++/**
++ * Addresses of Module
++ */
++#define MQ200_FB_BASE  (x) (x + 0x1800000) /* framebuffer */
++#define MQ200_FB_SIZE      0x200000 /* framebuffer size in bytes */
++#define MQ200_REGS_BASE(x) (x + 0x1e00000) /* start of registers area */
++#define MQ200_REGS_SIZE    0x200000 /* registers area size */
++
++#define PMU_OFFSET 0x00000     /* power management */
++#define CPU_OFFSET 0x02000     /* CPU interface */
++#define MIU_OFFSET 0x04000     /* memory controller */
++#define IN_OFFSET  0x08000     /* interrupt controller */
++#define GC_OFFSET  0x0a000     /* graphics controller 1&2 */
++#define GE_OFFSET  0x0c000     /* graphics engine */
++#define FPI_OFFSET 0x0e000     /* flat panel controller */
++#define CP1_OFFSET 0x10000     /* color palette 1 */
++#define DC_OFFSET  0x14000     /* device configuration */
++#define PCI_OFFSET 0x16000     /* PCI configuration */
++#define PSF_OFFSET 0x18000     /* ??? */
++
++
++/****
++ * Registers
++ */
++
++/* power management unit */
++#define PMR(addr) (addr + PCI_OFFSET + 0x40)/* power management
++					     register */
++#define PMR_VALUE 0x06210001   /* expected read value of PMR register */
++#define PM00R(addr) (addr + PMU_OFFSET + 0x00) /* power management unit
++						configuration
++						register */
++#define PM01R(addr) (addr + PMU_OFFSET + 0x04) /* D1 state control */
++#define PM02R(addr) (addr + PMU_OFFSET + 0x08) /* d2 state control */
++#define PM06R(addr) (addr + PMU_OFFSET + 0x18) /* PLL 2 programming */
++#define PM07R(addr) (addr + PMU_OFFSET + 0x1c) /* PLL 3 programming */
++
++#define PMCSR(addr) (addr + PCI_OFFSET + 0x44) /* power management
++						  control/status
++						  register */
++
++/* memory interface unit */
++#define MM00R(addr) (addr + MIU_OFFSET + 0x00)/* MIU interface control
++						  0 */
++#define MM01R(addr) (addr + MIU_OFFSET + 0x04) /* MIU interface control
++						  1 */
++#define MM02R(addr) (addr + MIU_OFFSET + 0x08) /* memory interface
++						  control 2 */
++#define MM03R(addr) (addr + MIU_OFFSET + 0x0c) /* memory interface
++						  control 3 */
++#define MM04R(addr) (addr + MIU_OFFSET + 0x10) /* memory interface
++						  control 4 */
++/* graphics controller 1 module */
++#define GC00R(addr) (addr + GC_OFFSET + 0x00) /* graphics controller 1
++                                                 control */
++#define GC01R(addr) (addr + GC_OFFSET + 0x04) /* graphics controller
++                                                 CRT control */
++#define GC02R(addr) (addr + GC_OFFSET + 0x08) /* horizontal display 1
++                                                 control */
++#define GC03R(addr) (addr + GC_OFFSET + 0x0c) /* vertical display 1
++                                                 control */
++#define GC04R(addr) (addr + GC_OFFSET + 0x10) /* horizontal sync 1
++                                                 control */
++#define GC05R(addr) (addr + GC_OFFSET + 0x14) /* vertical sync 1
++                                                 control */
++#define GC07R(addr) (addr + GC_OFFSET + 0x1c) /* vertical display 1
++                                                 count */
++#define GC08R(addr) (addr + GC_OFFSET + 0x20) /* horizontal window 1
++                                                 control */
++#define GC09R(addr) (addr + GC_OFFSET + 0x24) /* vertical window 1
++                                                 control */
++#define GC0AR(addr) (addr + GC_OFFSET + 0x28) /* alternate horizontal
++                                                 window 1 control */
++#define GC0BR(addr) (addr + GC_OFFSET + 0x2c) /* alternate vertical
++                                                 window 1 control */
++#define GC0CR(addr) (addr + GC_OFFSET + 0x30) /* window 1 
++                                                 start address */
++#define GC0DR(addr) (addr + GC_OFFSET + 0x34) /* alternate window 1
++                                                 start address */
++#define GC0ER(addr) (addr + GC_OFFSET + 0x38) /* alternate window 1 
++                                                 stride */
++#define GC0FR(addr) (addr + GC_OFFSET + 0x3c) /* alternate window 1
++                                                 line size */
++#define GC10R(addr) (addr + GC_OFFSET + 0x40) /* hardware cursor 1
++                                                 position */
++#define GC11R(addr) (addr + GC_OFFSET + 0x44) /* hardware cursor 1
++                                                 start address and
++                                                 offset */
++#define GC12R(addr) (addr + GC_OFFSET + 0x48) /* hardware cursor 1
++                                                 foreground color */
++#define GC13R(addr) (addr + GC_OFFSET + 0x4c) /* hardware cursor 1
++                                                 background color */
++
++/* graphics controller 2 module */
++#define GC20R(addr) (addr + GC_OFFSET + 0x80) /* graphics controller 2
++                                                 control */
++#define GC21R(addr) (addr + GC_OFFSET + 0x84) /* graphics controller
++                                                 CRC control */
++#define GC22R(addr) (addr + GC_OFFSET + 0x88) /* horizontal display 2
++                                                 control */
++#define GC23R(addr) (addr + GC_OFFSET + 0x8c) /* vertical display 2
++                                                 control */
++#define GC24R(addr) (addr + GC_OFFSET + 0x90) /* horizontal sync 2
++                                                 control */
++#define GC25R(addr) (addr + GC_OFFSET + 0x94) /* vertical sync 2
++                                                 control */
++#define GC27R(addr) (addr + GC_OFFSET + 0x9c) /* vertical display 2
++                                                 count */
++#define GC28R(addr) (addr + GC_OFFSET + 0xa0) /* horizontal window 2
++                                                 control */
++#define GC29R(addr) (addr + GC_OFFSET + 0xa4) /* vertical window 2
++                                                 control */
++#define GC2AR(addr) (addr + GC_OFFSET + 0xa8) /* alternate horizontal
++                                                 window 2 control */
++#define GC2BR(addr) (addr + GC_OFFSET + 0xac) /* alternate vertical
++                                                 window 2 control */
++#define GC2CR(addr) (addr + GC_OFFSET + 0xb0) /* window 2 
++                                                 start address */
++#define GC2DR(addr) (addr + GC_OFFSET + 0xb4) /* alternate window 2
++                                                 start address */
++#define GC2ER(addr) (addr + GC_OFFSET + 0xb8) /* alternate window 2
++                                                 stride */
++#define GC2FR(addr) (addr + GC_OFFSET + 0xbc) /* alternate window 2
++                                                 line size */
++#define GC30R(addr) (addr + GC_OFFSET + 0xc0) /* hardware cursor 2
++                                                 position */
++#define GC31R(addr) (addr + GC_OFFSET + 0xc4) /* hardware cursor 2
++                                                 start address and
++                                                 offset */
++#define GC32R(addr) (addr + GC_OFFSET + 0xc8) /* hardware cursor 2
++                                                 foreground color */
++#define GC33R(addr) (addr + GC_OFFSET + 0xcc) /* hardware cursor 2
++                                                 background color */
++
++/* graphics engine */
++#define ROP_SRCCOPY     0xCC    /* dest = source */
++#define ROP_SRCPAINT    0xEE    /* dest = source OR dest */
++#define ROP_SRCAND      0x88    /* dest = source AND dest */
++#define ROP_SRCINVERT   0x66    /* dest = source XOR dest */
++#define ROP_SRCERASE    0x44    /* dest = source AND (NOT dest) */
++#define ROP_NOTSRCCOPY  0x33    /* dest = NOT source */
++#define ROP_NOTSRCERASE 0x11    /* dest = (NOT source) AND (NOT dest) */
++#define ROP_MERGECOPY   0xC0    /* dest = source AND pattern */
++#define ROP_MERGEPAINT  0xBB    /* dest = (NOT source) OR dest */
++#define ROP_PATCOPY     0xF0    /* dest = pattern */
++#define ROP_PATPAINT    0xFB    /* dest = DPSnoo */
++#define ROP_PATINVERT   0x5A    /* dest = pattern XOR dest */
++#define ROP_DSTINVERT   0x55    /* dest = NOT dest */
++#define ROP_BLACKNESS   0x00    /* dest = BLACK */
++#define ROP_WHITENESS   0xFF    /* dest = WHITE */
++
++#define GE00R(addr) (addr + GE_OFFSET + 0x00) /* primary drawing command
++						 register */
++#define GE01R(addr) (addr + GE_OFFSET + 0x04) /* primary width and
++						 height register */
++#define GE02R(addr) (addr + GE_OFFSET + 0x08) /* primary destination
++						 address register */
++#define GE03R(addr) (addr + GE_OFFSET + 0x0c) /* primary source XY
++						 register */
++#define GE04R(addr) (addr + GE_OFFSET + 0x10) /* primary color compare
++						 register */
++#define GE05R(addr) (addr + GE_OFFSET + 0x14) /* primary clip left/top
++						 register */
++#define GE06R(addr) (addr + GE_OFFSET + 0x18) /* primary clip
++						 right/bottom register
++                                                  */
++#define GE07R(addr) (addr + GE_OFFSET + 0x1c) /* primary source and
++						 pattern offset
++						 register */
++#define GE08R(addr) (addr + GE_OFFSET + 0x20) /* primary foreground
++						 color
++						 register/rectangle
++						 fill register */
++#define GE09R(addr) (addr + GE_OFFSET + 0x24) /* source stride/offset
++						 register */
++#define GE0AR(addr) (addr + GE_OFFSET + 0x28) /* destination stride
++						 register and color
++						 depth */
++#define GE0BR(addr) (addr + GE_OFFSET + 0x2c) /* image base address
++						 register */
++#define GE40R(addr) (addr + GE_OFFSET + 0x100) /* mono pattern register
++						  0 */
++#define GE41R(addr) (addr + GE_OFFSET + 0x104) /* mono pattern register
++						  1 */
++#define GE42R(addr) (addr + GE_OFFSET + 0x108) /* foreground color
++						  register */
++#define GE43R(addr) (addr + GE_OFFSET + 0x10c) /* background color
++                                                  register */
++/* color palette */
++#define C1xxR(addr, regno) \
++       (addr + CP1_OFFSET + (regno) * 4) /* graphics controller color
++					    palette 1 */
++/* device configuration */
++#define DC00R(addr) (addr + DC_OFFSET + 0x00)  /* device configuration
++						  register 0 */
++#define DC_RESET 0x4000
++/* PCI configuration space */
++#define PC00R(addr) (addr + PCI_OFFSET + 0x00)/* device ID/vendor ID
++						 register */
++/* Flatpanel Control */
++#define FP00R(addr) (addr + FPI_OFFSET + 0x00) /* Flat Panel Control 0       */
++#define FP01R(addr) (addr + FPI_OFFSET + 0x04) /* Flat Panel Output Pin      */
++#define FP02R(addr) (addr + FPI_OFFSET + 0x08) /* Flat Panel Gener Purpose
++						  Outout Control Register    */
++#define FP03R(addr) (addr + FPI_OFFSET + 0x0c) /* General Purpose I/O Port
++						  Control Register           */
++#define FP04R(addr) (addr + FPI_OFFSET + 0x10) /* STN Panel Control Register */
++#define FP05R(addr) (addr + FPI_OFFSET + 0x14) /* D-STN Half Frame Buffer
++						  Control Register -By Guess */
++#define FP0FR(addr) (addr + FPI_OFFSET + 0x3c) /* Pulse Width Modulation
++						  Control Register           */
++#define FRCTL_PATTERN_COUNT 32
++#define FP10R(addr) (addr + FPI_OFFSET + 0x40) /* Frame-Rate Control Pattern
++						  Register */
++#define FP11R(addr) (addr + FPI_OFFSET + 0x44)
++#define FP2FR(addr) (addr + FPI_OFFSET + 0xc0) /* Frame-Rate Control Weight
++						  Registers */
++
++
++
++
++/* power management miscellaneous control */
++union pm00r {
++    struct {
++       u32 pll1_n_b5   :1;     /* PLL 1 N parameter bit 5 is 0 */
++       u32 reserved_1  :1;
++       u32 pll2_enbl   :1;     /* PLL 2 enable */
++       u32 pll3_enbl   :1;     /* PLL 3 enable */
++       u32 reserved_2  :1;
++       u32 pwr_st_ctrl :1;     /* power state status control */
++       u32 reserved_3  :2;
++
++       u32 ge_enbl     :1;     /* graphics engine enable */
++       u32 ge_bsy_gl   :1;     /* graphics engine force busy (global) */
++       u32 ge_bsy_lcl  :1;     /* graphics engine force busy (local) */
++       u32 ge_clock    :2;     /* graphics engine clock select */
++       u32 ge_cmd_fifo :1;     /* graphics engine command FIFO reset */
++       u32 ge_src_fifo :1;     /* graphics engine CPU source FIFO reset */
++       u32 miu_pwr_seq :1;     /* memory interface unit power sequencing
++                                  enable */
++
++       u32 d3_mem_rfsh :1;     /* D3 memory refresh */
++       u32 d4_mem_rfsh :1;     /* D4 memory refresh */
++       u32 gpwr_intrvl :2;     /* general power sequencing interval */
++       u32 fppwr_intrvl:2;     /* flat panel power sequencing interval */
++       u32 gpwr_seq_ctr:1;     /* general power sequencing interval control */
++       u32 pmu_tm      :1;     /* PMU test mode */
++
++       u32 pwr_state   :2;     /* power state (read only) */
++       u32 pwr_seq_st  :1;     /* power sequencing active status (read
++                                  only) */
++       u32 reserved_4  :5;
++    }  part;
++    u32 whole;
++};
++
++/* D1 state control */
++union pm01r {
++    struct {
++       u32 osc_enbl    :1;     /* D1 oscillator enable */
++       u32 pll1_enbl   :1;     /* D1 PLL 1 enable */
++       u32 pll2_enbl   :1;     /* D1 PLL 2 enable */
++       u32 pll3_enbl   :1;     /* D1 PLL 3 enable */
++       u32 miu_enbl    :1;     /* D1 Memory Interface Unit (MIU) enable */
++       u32 mem_rfsh    :1;     /* D1 memory refresh enable */
++       u32 ge_enbl     :1;     /* D1 Graphics Engine (GE) enable */
++       u32 reserved_1  :1;
++
++       u32 crt_enbl    :1;     /* D1 CRT enable */
++       u32 fpd_enbl    :1;     /* D1 Flat Panel enable */
++       u32 reserved_2  :6;
++
++       u32 ctl1_enbl   :1;     /* D1 controller 1 enable */
++       u32 win1_enbl   :1;     /* D1 window 1 enable */
++       u32 awin1_enbl  :1;     /* D1 alternate window 1 enable */
++       u32 cur1_enbl   :1;     /* D1 cursor 1 enable */
++      u32 reserved_3  :4;
++
++       u32 ctl2_enbl   :1;     /* D1 controller 2 enable */
++       u32 win2_enbl   :1;     /* D1 window 2 enable */
++       u32 awin2_enbl  :1;     /* D1 alternate window 2 enable */
++       u32 cur2_enbl   :1;     /* D1 cursor 2 enable */
++       u32 reserved_4  :4;
++    }  part;
++    u32 whole;
++};
++
++/* D2 state control */
++union pm02r {
++    struct {
++       u32 osc_enbl    :1;     /* D2 oscillator enable */
++       u32 pll1_enbl   :1;     /* D2 PLL 1 enable */
++       u32 pll2_enbl   :1;     /* D2 PLL 2 enable */
++       u32 pll3_enbl   :1;     /* D2 PLL 3 enable */
++       u32 miu_enbl    :1;     /* D2 Memory Interface Unit (MIU) enable */
++       u32 mem_rfsh    :1;     /* D2 memory refresh enable */
++       u32 ge_enbl     :1;     /* D2 Graphics Engine (GE) enable */
++       u32 reserved_1  :1;
++
++       u32 crt_enbl    :1;     /* D2 CRT enable */
++       u32 fpd_enbl    :1;     /* D2 Flat Panel enable */
++       u32 reserved_2  :6;
++
++       u32 ctl1_enbl   :1;     /* D2 controller 1 enable */
++       u32 win1_enbl   :1;     /* D2 window 1 enable */
++       u32 awin1_enbl  :1;     /* D2 alternate window 1 enable */
++       u32 cur1_enbl   :1;     /* D2 cursor 1 enable */
++       u32 reserved_3  :4;
++
++       u32 ctl2_enbl   :1;     /* D2 controller 2 enable */
++       u32 win2_enbl   :1;     /* D2 window 2 enable */
++       u32 awin2_enbl  :1;     /* D2 alternate window 2 enable */
++       u32 cur2_enbl   :1;     /* D2 cursor 2 enable */
++       u32 reserved_4  :4;
++    }  part;
++    u32 whole;
++};
++
++/* PLL 2 programming */
++union pm06r {
++    struct {
++       u32 clk_src     :1;     /* PLL 2 reference clock source */
++       u32 bypass      :1;     /* PLL 2 bypass */
++       u32 reserved_1  :2;
++       u32 p_par       :3;     /* PLL 2 P parameter */
++       u32 reserved_2  :1;
++
++       u32 n_par       :5;     /* PLL 2 N parameter */
++       u32 reserved_3  :3;
++
++       u32 m_par       :8;     /* PLL 2 M parameter */
++
++       u32 reserved_4  :4;
++       u32 trim        :4;     /* PLL 2 trim value */
++    }  part;
++    u32 whole;
++};
++
++/* PLL 3 programming */
++union pm07r {
++    struct {
++       u32 clk_src     :1;     /* PLL 3 reference clock source */
++       u32 bypass      :1;     /* PLL 3 bypass */
++       u32 reserved_1  :2;
++       u32 p_par       :3;     /* PLL 3 P parameter */
++       u32 reserved_2  :1;
++
++       u32 n_par       :5;     /* PLL 3 N parameter */
++       u32 reserved_3  :3;
++
++       u32 m_par       :8;     /* PLL 3 M parameter */
++
++       u32 reserved_4  :4;
++       u32 trim        :4;     /* PLL 3 trim value */
++    }  part;
++    u32 whole;
++};
++
++
++
++/* MIU interface control 1 */
++union mm00r {
++    struct {
++       u32 miu_enbl    :1;     /* MIU enable bit */
++       u32 mr_dsbl     :1;     /* MIU reset disable bit */
++       u32 edr_dsbl    :1;     /* embedded DRAM reset disable bit */
++       u32 reserved_1  :29;
++    }  part;
++    u32 whole;
++};
++
++/* MIU interface control 2 */
++union mm01r {
++    struct {
++       u32 mc_src      :1;     /* memory clock source */
++       u32 msr_enbl    :1;     /* memory slow refresh enable bit */
++       u32 pb_cpu      :1;     /* page break enable for CPU */
++       u32 pb_gc1      :1;     /* page break enable for GC1 */
++       u32 pb_gc2      :1;     /* page break enable for GC2 */
++       u32 pb_stn_r    :1;     /* page break enable for STN read */
++       u32 pb_stn_w    :1;     /* page break enable for STN write */
++       u32 pb_ge       :1;     /* page break enable for GE */
++       u32 reserved_1  :4;
++       u32 mr_interval :14;    /* normal memory refresh time interval */
++       u32 reserved_2  :4;
++       u32 edarm_enbl  :1;     /* embedded DRAM auto-refresh mode enable */
++       u32 eds_enbl    :1;     /* EDRAM standby enable for EDRAM normal
++                                  mode operation */
++    }  part;
++    u32 whole;
++};
++
++/* memory interface control 3 */
++union mm02r {
++    struct {
++       u32 bs_         :2;
++       u32 bs_stnr     :2;     /* burst count for STN read memory cycles */
++       u32 bs_stnw     :2;     /* burst count for STN write memroy cycles */
++       u32 bs_ge       :2;     /* burst count for graphics engine
++                                  read/write memroy cycles */
++       u32 bs_cpuw     :2;     /* burst count for CPU write memory cycles */
++       u32 fifo_gc1    :4;     /* GC1 display refresh FIFO threshold */
++       u32 fifo_gc2    :4;     /* GC2 display refresh FIFO threshold */
++       u32 fifo_stnr   :4;     /* STN read FIFO threshold */
++       u32 fifo_stnw   :4;     /* STN write FIFO threshold */
++       u32 fifo_ge_src :3;     /* GE source read FIFO threshold */
++       u32 fifo_ge_dst :3;     /* GE destination read FIFO threshold */
++    }  part;
++    u32 whole;
++};
++
++/* memory interface control 4 */
++union mm03r {
++    struct {
++       u32 rd_late_req :1;     /* read latency request */
++       u32 reserved_1  :31;
++    }  part;
++    u32 whole;
++};
++
++/* memory interface control 5 */
++union mm04r {
++    struct {
++       u32 latency     :3;     /* EDRAM latency */
++       u32 dmm_cyc     :1;     /* enable for the dummy cycle insertion
++                                  between read and write cycles */
++       u32 pre_dmm_cyc :1;     /* enable for the dummy cycle insertion
++                                  between read/write and precharge cycles
++                                  for the same bank */
++       u32 reserved_1  :3;
++       u32 bnk_act_cls :2;     /* bank activate command to bank close
++                                  command timing interval control */
++       u32 bnk_act_rw  :1;     /* bank activate command to read/wirte
++                                  command timing interval control */
++       u32 bnk_cls_act :1;     /* bank close command to bank activate
++                                  command timing interval control */
++       u32 trc         :1;     /* row cycle time */
++       u32 reserved_2  :3;
++       u32 delay_r     :2;     /* programmable delay for read clock */
++       u32 delay_m     :2;     /* programmable delay for internal memory
++                                  clock */
++    }  part;
++    u32 whole;
++};
++
++/* graphics controller 1 register */
++union gc00r {
++    struct {
++       u32 ctl_enbl    :1;     /* Controller 1 Enable */
++       u32 hc_reset    :1;     /* Horizontal Counter 1 Reset */
++       u32 vc_reset    :1;     /* Vertical Counter 1 Reset */
++       u32 iwin_enbl   :1;     /* Image Window 1 Enable */
++       u32 gcd         :4;     /* Graphics Color Depth (GCD) */
++
++       u32 hc_enbl     :1;     /* Hardware Cursor 1 Enable */
++       u32 reserved_1  :2;
++       u32 aiwin_enbl  :1;     /* Alternate Image Window Enable */
++       u32 agcd        :4;     /* Alternate Graphics Color Depth (AGCD) */
++
++       u32 g1rclk_src  :2;     /* G1RCLK Source */
++       u32 tm0         :1;     /* Test Mode 0 */
++       u32 tm1         :1;     /* Test Mode 1 */
++       u32 fd          :3;     /* G1MCLK First Clock Divisor (FD1) */
++       u32 reserved_2  :1;
++
++       u32 sd          :8;     /* G1MCLK Second Clock Divisor (SD1) */
++    }  part;
++    u32 whole;
++};
++
++/* graphics controller CRT control */
++union gc01r {
++    struct {
++       u32 dac_enbl    :2;     /* CRT DAC enable */
++       u32 hsync_out   :1;     /* CRT HSYNC output during power down mode */
++       u32 vsync_out   :1;     /* CRT VSYNC output during power down mode */
++       u32 hsync_ctl   :2;     /* CRT HSYNC control */
++       u32 vsync_ctl   :2;     /* CRT VSYNC control */
++       /**/
++       u32 hsync_pol   :1;     /* CRT HSYNC polarity */
++       u32 vsync_pol   :1;     /* CRT VSYNC polarity */
++       u32 sync_p_enbl :1;     /* sync pedestal enable */
++       u32 blnk_p_enbl :1;     /* blank pedestal enable */
++       u32 c_sync_enbl :1;     /* composite sync enable */
++       u32 vref_sel    :1;     /* VREF select */
++       u32 mn_sns_enbl :1;     /* monitor sense enable */
++       u32 ct_out_enbl :1;     /* constant output enable */
++       /**/
++       u32 dac_out_lvl :8;     /* monitor sense DAC output level */
++       /**/
++       u32 blue_dac_r  :1;     /* blue DAC sense result */
++       u32 green_dac_r :1;     /* green DAC sense result */
++       u32 red_dac_r   :1;     /* red DAC sense result */
++       u32 reserved_1  :1;
++       u32 mon_col_sel :1;     /* mono/color monitor select */
++       u32 reserved_2  :3;
++    }  part;
++    u32 whole;
++};
++
++/* horizontal display 1 control */
++union gc02r {
++    struct {
++       u32 hd1t        :12;    /* horizontal display 1 total */
++       u32 reserved_1  :4;
++
++       u32 hd1e        :12;    /* horizontal display 1 end */
++       u32 reserved_2  :4;
++    }  part;
++    u32 whole;
++};
++
++/* vertical display 1 control */
++union gc03r {
++    struct {
++       u32 vd1t        :12;    /* vertical display 1 total */
++       u32 reserved_1  :4;
++
++       u32 vd1e        :12;    /* vertical display 1 end */
++       u32 reserved_2  :4;
++    }  part;
++    u32 whole;
++};
++
++/* horizontal sync 1 control */
++union gc04r {
++    struct {
++       u32 hs1s        :12;    /* horizontal sync 1 start */
++       u32 reserved_1  :4;
++
++       u32 hs1e        :12;    /* horizontal sync 1 end */
++       u32 reserved_2  :4;
++    }  part;
++    u32 whole;
++};
++
++/* vertical sync 1 control */
++union gc05r {
++    struct {
++       u32 vs1s        :12;    /* vertical sync 1 start */
++       u32 reserved_1  :4;
++
++       u32 vs1e        :12;    /* vertical sync 1 end */
++       u32 reserved_2  :4;
++    }  part;
++    u32 whole;
++};
++
++/* vertical display 1 count */
++union gc07r {
++    struct {
++       u32 vd_cnt      :12;    /* vertical display 1 count */
++       u32 reverved_1  :20;
++    }  part;
++    u32 whole;
++};
++
++/* horizontal window 1 control */
++union gc08r {
++    struct {
++       u32 hw1s        :12;    /* horizontal window 1 start (HW1S) */
++       u32 reserved_1  :4;
++
++       u32 hw1w        :12;    /* horizontal window 1 width (HW1W) */
++       u32 w1ald       :4;     /* window 1 additional line data */
++    }  part;
++    u32 whole;
++};
++
++/* vertical window 1 control */
++union gc09r {
++    struct {
++       u32 vw1s        :12;    /* vertical window 1 start */
++       u32 reserved_1  :4;
++       u32 vw1h        :12;    /* vertical window 1 height */
++       u32 reserved_2  :4;
++    }  part;
++    u32 whole;
++};
++
++/* window 1 start address */
++union gc0cr {
++    struct {
++       u32 w1sa        :21;    /* window 1 start address */
++       u32 reserved_1  :11;
++    }  part;
++    u32 whole;
++};
++
++/* window 1 stride */
++union gc0er {
++    struct {
++       s16 w1st;               /* window 1 stride */
++       s16 aw1st;              /* alternate window 1 stride */
++    }  part;
++    u32 whole;
++};
++
++/* hardware cursor 1 position */
++union gc10r {
++    struct {
++       u32 hc1s        :12;    /* horizontal cursor 1 start */
++       u32 reserved_1  :4;
++       u32 vc1s        :12;    /* vertical cursor 1 start */
++       u32 reserved_2  :4;
++    }  part;
++    u32 whole;
++};
++
++/* hardware cursor 1 start address and offset */
++union gc11r {
++    struct {
++       u32 hc1sa       :11;    /* hardware cursor 1 start address */
++       u32 reserved_1  :5;
++       u32 hc1o        :6;     /* horizontal cursor 1 offset */
++       u32 reserved_2  :2;
++       u32 vc1o        :6;     /* vertical cursor 1 offset */
++       u32 reserved_3  :2;
++    }  part;
++    u32 whole;
++};
++
++/* hardware cursor 1 foreground color */
++union gc12r {
++    struct {
++       u32 hc1fc       :24;    /* hardware cursor 1 foreground color */
++       u32 reserved_1  :8;
++    }  part;
++    u32 whole;
++};
++
++/* hardware cursor 1 background color */
++union gc13r {
++    struct {
++       u32 hc1bc       :24;    /* hardware cursor 1 background color */
++       u32 reserved_1  :8;
++    }  part;
++    u32 whole;
++};
++
++
++/* graphics controller 2 register */
++union gc20r {
++    struct {
++       u32 ctl_enbl    :1;     /* Controller 2 Enable */
++       u32 hc_reset    :1;     /* Horizontal Counter 2 Reset */
++       u32 vc_reset    :1;     /* Vertical Counter 2 Reset */
++       u32 iwin_enbl   :1;     /* Image Window 2 Enable */
++       u32 gcd         :4;     /* Graphics Color Depth (GCD) */
++
++       u32 hc_enbl     :1;     /* Hardware Cursor 2 Enable */
++       u32 reserved_1  :2;
++       u32 aiwin_enbl  :1;     /* Alternate Image Window Enable */
++       u32 agcd        :4;     /* Alternate Graphics Color Depth (AGCD) */
++
++       u32 g2rclk_src  :2;     /* G2RCLK Source */
++       u32 tm0         :1;     /* Test Mode 0 */
++       u32 tm1         :1;     /* Test Mode 1 */
++       u32 fd          :3;     /* G2MCLK First Clock Divisor (FD1) */
++       u32 reserved_2  :1;
++
++       u32 sd          :8;     /* G2MCLK Second Clock Divisor (SD1) */
++    }  part;
++    u32 whole;
++};
++
++/* graphics controller CRC control */
++union gc21r {
++    struct {
++       u32 crc_enbl    :1;     /* CRC enable */
++       u32 vsync_wait  :1;     /* CRC input data control waitime of VSYNC  */
++       u32 crc_o_sel   :2;     /* CRC output select */
++       u32 reserved_1  :4;  
++       u32 crc_result  :22;    /* CRC result (read only) */
++       u32 reserved_2  :2;     
++    }  part;
++    u32 whole;
++};
++
++/* horizontal display 2 control */
++union gc22r {
++    struct {
++       u32 hd2t        :12;    /* horizontal display 2 total */
++       u32 reserved_1  :4;
++
++       u32 hd2e        :12;    /* horizontal display 2 end */
++       u32 reserved_2  :4;
++    }  part;
++    u32 whole;
++};
++
++/* vertical display 2 control */
++union gc23r {
++    struct {
++       u32 vd2t        :12;    /* vertical display 2 total */
++       u32 reserved_1  :4;
++
++       u32 vd2e        :12;    /* vertical display 2 end */
++       u32 reserved_2  :4;
++    }  part;
++    u32 whole;
++};
++
++/* horizontal sync 2 control */
++union gc24r {
++    struct {
++       u32 hs2s        :12;    /* horizontal sync 2 start */
++       u32 reserved_1  :4;
++
++       u32 hs2e        :12;    /* horizontal sync 2 end */
++       u32 reserved_2  :4;
++    }  part;
++    u32 whole;
++};
++
++/* vertical sync 2 control */
++union gc25r {
++    struct {
++       u32 vs2s        :12;    /* vertical sync 2 start */
++       u32 reserved_1  :4;
++
++       u32 vs2e        :12;    /* vertical sync 2 end */
++       u32 reserved_2  :4;
++    }  part;
++    u32 whole;
++};
++
++/* vertical display 2 count */
++union gc27r {
++    struct {
++       u32 vd_cnt      :12;    /* vertical display 2 count */
++       u32 reverved_1  :20;
++    }  part;
++    u32 whole;
++};
++
++/* horizontal window 2 control */
++union gc28r {
++    struct {
++       u32 hw2s        :12;    /* horizontal window 2 start (HW2S) */
++       u32 reserved_1  :4;
++
++       u32 hw2w        :12;    /* horizontal window 2 width (HW2W) */
++       u32 w2ald       :4;     /* window 2 additional line data */
++    }  part;
++    u32 whole;
++};
++
++/* vertical window 2 control */
++union gc29r {
++    struct {
++       u32 vw2s        :12;    /* vertical window 2 start */
++       u32 reserved_1  :4;
++       u32 vw2h        :12;    /* vertical window 2 height */
++       u32 reserved_2  :4;
++    }  part;
++    u32 whole;
++};
++
++/* window 2 start address */
++union gc2cr {
++    struct {
++       u32 w2sa        :21;    /* window 2 start address */
++       u32 reserved_1  :11;
++    }  part;
++    u32 whole;
++};
++
++/* window 2 stride */
++union gc2er {
++    struct {
++       s16 w2st;               /* window 2 stride */
++       s16 aw2st;              /* alternate window 2 stride */
++    }  part;
++    u32 whole;
++};
++
++/* hardware cursor 2 position */
++union gc30r {
++    struct {
++       u32 hc2s        :12;    /* horizontal cursor 2 start */
++       u32 reserved_1  :4;
++       u32 vc2s        :12;    /* vertical cursor 2 start */
++       u32 reserved_2  :4;
++    }  part;
++    u32 whole;
++};
++
++/* hardware cursor 2 start address and offset */
++union gc31r {
++    struct {
++       u32 hc2sa       :11;    /* hardware cursor 2 start address */
++       u32 reserved_1  :5;
++       u32 hc2o        :6;     /* horizontal cursor 2 offset */
++       u32 reserved_2  :2;
++       u32 vc2o        :6;     /* vertical cursor 2 offset */
++       u32 reserved_3  :2;
++    }  part;
++    u32 whole;
++};
++
++/* hardware cursor 2 foreground color */
++union gc32r {
++    struct {
++       u32 hc2fc       :24;    /* hardware cursor 2 foreground color */
++       u32 reserved_1  :8;
++    }  part;
++    u32 whole;
++};
++
++/* hardware cursor 2 background color */
++union gc33r {
++    struct {
++       u32 hc2bc       :24;    /* hardware cursor 2 background color */
++       u32 reserved_1  :8;
++    }  part;
++    u32 whole;
++};
++
++
++/* primary drawing command register */
++union ge00r {
++    struct {
++       u32 rop         :8;     /* raster operation */
++       /**/
++       u32 cmd_typ     :3;     /* command type */
++       u32 x_dir       :1;     /* x direction */
++       u32 y_dir       :1;     /* y direction */
++       u32 src_mem     :1;     /* source memory */
++       u32 mon_src     :1;     /* mono source */
++       u32 mon_ptn     :1;     /* mono pattern */
++       /**/
++       u32 dst_trns_e  :1;     /* destination transparency enable */
++       u32 dst_trns_p  :1;     /* destination transparency polarity */
++       u32 mon_trns_e  :1;     /* mono source or mono pattern transparency
++                                  enable */
++       u32 mon_trns_p  :1;     /* mono transparency polarity */
++       u32 mod_sel     :1;     /* memory to screen or off screen to screen
++                                  mode select */
++       u32 alpha_sel   :2;     /* Alpha byte mask selection */
++       u32 sol_col     :1;     /* solid color */
++       /**/
++       u32 stride_eq   :1;     /* source stride is equal to destination
++                                  stride */
++       u32 rop2_sel    :1;     /* ROP2 code selection */
++       u32 clipping    :1;     /* enable clipping */
++       u32 auto_exec   :1;     /* auto execute */
++       u32 reserved_1  :4;
++    }  part;
++    u32 whole;
++};
++
++/* primary width and height register */
++union ge01r {
++    struct {
++       u32 width       :12;    /* source/destination window width */
++       u32 reserved_1  :4;
++
++       u32 height      :12;    /* source/destination window height */
++       u32 reserved_2  :1;
++       u32 reserved_3  :3;
++    }  bitblt;
++    struct {
++       u32 dm          :17;
++       u32 axis_major  :12;
++       u32 x_y         :1;     /* x-major or y-major */
++       u32 last_pix    :1;     /* decision to draw or not to draw the last
++                                  pixel of the line */
++       u32 reserved_1  :1;
++    }  bresenham;
++    u32 whole;
++};
++
++/* primary destination address register */
++union ge02r {
++    struct {
++       u32 dst_x       :12;    /* destination x position */
++       u32 reserved_1  :1;
++       u32 h_offset    :3;     /* mono/color pattern horizontal offset */
++
++       u32 dst_y       :12;    /* destination y position */
++       u32 reserved_2  :1;
++       u32 v_offset    :3;     /* mono/color pattern vertical offset */
++    }  window;
++    struct {
++       u32 x           :12;    /* starting x coordinate */
++       u32 dm          :17;    /* 17 bits major-axis delta */
++       u32 reserved_1  :3;
++    }  line;
++    u32 whole;
++};
++
++/* source XY register/line draw starting Y coordinate and mintor axis delta */
++union ge03r {
++    struct {
++       u32 src_x       :12;    /* source X position */
++       u32 reserved_1  :4;
++
++       u32 src_y       :12;    /* source Y position */
++       u32 reserved_2  :4;
++    }  window;
++    struct {
++       u32 start_y     :12;    /* starting Y coordinate */
++       u32 dn          :17;    /* 17 bits minor-axis delta */
++       u32 reserved_1  :3;
++    }  line;
++    u32 whole;
++};
++
++/* clip left/top register */
++union ge05r {
++    struct {
++       u32 left        :12;    /* left edge of clipping rectangle */
++       u32 reserved_1  :4;
++
++       u32 top         :12;    /* top edge of clipping rectangle */
++       u32 reserved_2  :4;
++    }  part;
++    u32 whole;
++};
++
++/* source stride/offset register */
++union ge09r {
++    struct {
++       u32 src_strid   :12;    /* source line stride */
++       u32 reserved_1  :13;
++       u32 strt_bit    :3;     /* initial mono source bit offset */
++       u32 strt_byte   :3;     /* initial mono/color source byte offset */
++       u32 reserved_2  :1;
++    }  line;
++    struct {
++       u32 strt_bit    :5;     /* initial mono source bit offset */
++       u32 reserved_1  :1;
++       u32 amount      :10;    /* number of 16 bytes amount that MIU need
++                                  to fetch from frame buffer */
++
++       u32 reserved_2  :9;
++       u32 bit_spc     :7;     /* bit space between lines */
++    }  pack_mono;
++    struct {
++       u32 strt_bit    :3;     /* initial mono source bit offset */
++       u32 strt_byte   :3;     /* initial mono/color source byte offset */
++       u32 amount      :10;    /* number of 16 bytes amount that MIU need
++                                  to fetch from frame buffer */
++
++       u32 reserved_1  :9;
++       u32 bit_spc     :3;     /* bit space between lines */
++       u32 byt_spc     :4;     /* byte space between lines */
++    }  pack_color;
++    u32 whole;
++};
++
++/* destination stride register and color depth */
++union ge0ar {
++    struct {
++       u32 dst_strid   :12;    /* destination line stride and color depth */
++       u32 reserved_1  :18;
++       u32 col_dpth    :2;     /* color depth */
++    }  part;
++    u32 whole;
++};
++
++/* graphics controller color pallete */
++union c1xxr {
++    struct {
++       u8 red;                 /* red color pallete */
++       u8 green;               /* green/gray color pallete */
++       u8 blue;                /* blue color palette */
++       u8 reserved_1;
++    }  part;
++    u32 whole;
++};
++
++/* devicee configuration register 0 */
++union dc00r {
++    struct {
++       u32 osc_bypass  :1;     /* oscillator bypass */
++       u32 osc_enbl    :1;     /* oscillator enable */
++       u32 pll1_bypass :1;     /* PLL1 bypass */
++       u32 pll1_enbl   :1;     /* PLL1 enable */
++       u32 pll1_p_par  :3;     /* PLL1 P parameter */
++       u32 cpu_div     :1;     /* CPU interface clock divisor */
++       u32 pll1_n_par  :5;     /* PLL1 N parameter */
++       u32 saisc       :1;     /* StrongARM interface synchronizer control */
++       u32 s_chp_reset :1;     /* software chip reset */
++       u32 mem_enbl    :1;     /* memory standby enable */
++       u32 pll1_m_par  :8;     /* PLL 1 M parameter */
++       u32 osc_shaper  :1;     /* oscillator shaper disable */
++       u32 fast_pwr    :1;     /* fast power sequencing */
++       u32 osc_frq     :2;     /* oscillator frequency select */
++       u32 pll1_trim   :4;     /* PLL 1 trim value */
++    }  part;
++    u32 whole;
++};
++
++/* device ID/vendor ID register */
++union pc00r {
++    struct {
++       u16 device;       /* device ID */
++       u16 vendor;       /* vendor ID */
++    }  part;
++    u32 whole;
++};
++
++/* Flat Panel Control Register */
++union fp00r {
++    struct {
++	u32  flatp_enbl : 2;   /* Flat Panel Interface Enable */
++	u32  flatp_type : 2;   /* Flat Panel Type */
++	u32  mono       : 1;   /* Mono/Color Panel Select */
++	u32  flatp_intf : 3;   /* Flat Panel Interface */
++	u32  dither_pat : 2;   /* Dither Pattern */
++	u32  reserved   : 2;   /* Reserved Must Be 0*/
++	u32  dither_col : 3;   /* Dither Base Color */
++	u32  alt_win_ctl: 1;   /* Alternate Window Control */
++	u32  frc_ctl    : 2;   /* FRC Control */
++	u32  dither_adj1: 6;   /* Dither Pattern Adjust 1 */
++	u32  dither_adj2: 3;   /* Dither Pattern Adjust 2 */
++	u32  dither_adj3: 1;   /* Dither Pattern Adjust 3 */
++	u32  test_mode0 : 1;   /* Test Mode 0 */
++	u32  test_mode1 : 1;   /* Test Mode 1 */
++	u32  test_mode2 : 1;   /* Test Mode 2 */
++	u32  test_mode3 : 1;   /* Test Mode 3 */
++    } part;
++    u32 whole;
++};
++
++union fp01r {
++    struct {
++	u32 dummy;
++    } part;
++    u32 whole;
++};
++
++union fp02r {
++    struct {
++	u32 dummy;
++    } part;
++    u32 whole;
++};
++
++union fp03r {
++    struct {
++	u32 dummy;
++    } part;
++    u32 whole;
++};
++
++union fp04r {
++    struct {
++	u32 dummy;
++    } part;
++    u32 whole;
++};
++
++union fp05r {
++    struct {
++	u32 dummy;
++    } part;
++    u32 whole;
++};
++
++union fp0fr {
++    struct {
++	u32 dummy;
++    } part;
++    u32 whole;
++};
++
++
++
++
++/****
++ * Others
++ */
++
++#define CHIPNAME "MQ-200"
++
++extern void mq200_external_setpal(unsigned regno, unsigned long color, unsigned long addr);
++extern void mq200_external_setqmode(struct mq200_monitor_info*, unsigned long, spinlock_t *);
++extern void mq200_external_offdisplay(unsigned long);
++extern void mq200_external_ondisplay (unsigned long);
++extern int  mq200_external_probe(unsigned long);
++
++
++
++#endif
+diff -uNr linux-2.6.21.vanilla/drivers/video/mq200/mq_external.c linux-2.6.21/drivers/video/mq200/mq_external.c
+--- linux-2.6.21.vanilla/drivers/video/mq200/mq_external.c	1970-01-01 01:00:00.000000000 +0100
++++ linux-2.6.21/drivers/video/mq200/mq_external.c	2007-05-01 17:02:17.000000000 +0200
+@@ -0,0 +1,513 @@
++/*
++ * Copyright (C) 2005 Holger Hans Peter Freyther
++ *
++ * Based ON:
++ *
++ * linux/drivers/video/mq200fb.c -- MQ-200 for a frame buffer device
++ * based on linux/driver/video/pm2fb.c
++ *
++ * 2007/03/11 mrdata:
++ *            bug found in gc1_reset(), renaming to gc1_gc2_reset()
++ *            extend mq200_external_ondisplay() -> LCD for GC2 and CRT for GC1
++ *
++ * Copyright (C) 2000 Lineo, Japan
++ *
++ * This file is subject to the terms and conditions of the GNU General Public
++ * License.  See the file COPYING in the main directory of this archive
++ * for more details.
++ */
++
++#include <asm/types.h>
++#include <asm/io.h>
++#include <linux/delay.h>
++#include <linux/spinlock.h>
++
++#include <asm/hardware.h>
++
++#include "mq200_data.h"
++
++
++#if 1
++#define PRINTK(args...) printk(args)
++#else
++#define PRINTK(args...)
++#endif
++
++
++/****
++ * power state transition to "state".
++ */
++static void
++power_state_transition(unsigned long register_base, int state)
++{
++    int i;
++    writel(state, PMCSR(register_base));
++    mdelay(300);
++    for (i = 1; ; i++) {
++       udelay(100);
++       if ((readl(PMCSR(register_base)) & 0x3) == state) {
++	   break;
++       }
++    }
++}
++
++
++/****
++ * device configuration initialization.
++ */
++static void
++dc_reset(unsigned long register_base)
++{
++    union dc00r dc00r;
++
++    /* Reset First */
++    dc00r.whole       = DC_RESET;
++    writel(dc00r.whole, DC00R(register_base));
++    mdelay(100);
++
++    dc00r.whole = 0xEF2082A;
++    writel(dc00r.whole, DC00R(register_base));
++    mdelay(300);
++    PRINTK(CHIPNAME ": DC00R = 0x%08X\n", readl(DC00R(register_base)));
++}
++
++
++/****
++ * initialize memory interface unit.
++ */
++static void
++miu_reset(unsigned long register_base)
++{
++    union mm00r mm00r;
++    union mm01r mm01r;
++    union mm02r mm02r;
++    union mm03r mm03r;
++    union mm04r mm04r;
++
++    /* MIU interface control 1 */
++    mm00r.whole = 0x4;
++    writel(mm00r.whole, MM00R(register_base));
++    mdelay(50);
++    writel(0, MM00R(register_base));
++    mdelay(50);
++
++    /* MIU interface control 2
++     * o PLL 1 output is used as memory clock source.
++     */
++    mm01r.whole = 0x4143e086; 
++    writel(mm01r.whole, MM01R(register_base));
++
++    /* memory interface control 3 */
++    mm02r.whole = 0x6d6aabff;
++    writel(mm02r.whole, MM02R(register_base));
++
++    /* memory interface control 5 */
++    mm04r.whole = 0x10d;
++    writel(mm04r.whole, MM04R(register_base));
++
++    /* memory interface control 4 */
++    mm03r.whole = 0x1;
++    writel(mm03r.whole, MM03R(register_base));
++    mdelay(50);
++
++    /* MIU interface control 1 */
++    mm00r.whole = 0x3;
++    writel(mm00r.whole, MM00R(register_base));
++    mdelay(50);
++}
++
++/****
++ *
++ */
++static
++void fpctrl_reset(unsigned long addr)
++{
++   /*
++     * We're in D0 State, let us set the FPCTRL
++     */
++    union fp00r fp00r;
++    union fp01r fp01r;
++    union fp02r fp02r;
++    union fp03r fp03r;
++    union fp04r fp04r;
++    union fp0fr fp0fr;
++
++    fp00r.whole = 0x6320;
++    writel(fp00r.whole, FP00R(addr));
++
++    fp01r.whole = 0x20;
++    writel(fp01r.whole, FP01R(addr));
++
++    fp04r.whole = 0xBD0001;
++    writel(fp04r.whole, FP04R(addr));
++
++    /* Set Flat Panel General Purpose register first */
++    fp02r.whole = 0x0;
++    writel(fp02r.whole, FP02R(addr));
++
++    fp03r.whole = 0x0;
++    writel(fp03r.whole, FP03R(addr));
++
++    fp0fr.whole = 0xA16c44;
++    writel(fp0fr.whole, FP0FR(addr));
++
++    /* Set them again */
++    fp02r.whole = 0x0;
++    writel(fp02r.whole, FP02R(addr));
++
++    fp03r.whole = 0x0;
++    writel(fp03r.whole, FP03R(addr));
++}
++
++
++/****
++ * initialize power management unit.
++ */
++static void
++pmu_reset(unsigned long register_base)
++{
++    union pm00r pm00r;
++    union pm01r pm01r;
++    union pm02r pm02r;
++
++    /* power management miscellaneous control
++     * o GE is driven by PLL 1 clock.
++     */
++    pm00r.whole = 0xc0900;
++    writel(pm00r.whole, PM00R(register_base));
++
++    /* D1 state control */
++    pm01r.whole = 0x5000271;
++    writel(pm01r.whole, PM01R(register_base));
++
++    /* D2 state control */
++    pm02r.whole = 0x271;
++    writel(pm02r.whole, PM02R(register_base));
++}
++
++/****
++ * initialize graphics controller 1
++ *        and graphics controller 2
++ */
++static void
++gc1_gc2_reset(unsigned long register_base, spinlock_t *lock )
++{
++    unsigned long flags;
++    union gc00r gc00r;
++    union gc01r gc01r;
++    union gc02r gc02r;
++    union gc03r gc03r;
++    union gc04r gc04r;
++    union gc05r gc05r;
++    union gc08r gc08r;
++    union gc09r gc09r;
++    union gc0cr gc0cr;
++    union gc0er gc0er;
++    union gc20r gc20r;
++    union gc22r gc22r;
++    union gc23r gc23r;
++    union gc24r gc24r;
++    union gc25r gc25r;
++    union gc28r gc28r;
++    union gc29r gc29r;
++    union gc2cr gc2cr;
++    union gc2er gc2er;
++
++    union pm00r pm00r;
++    union pm06r pm06r;
++    union pm06r pm07r;
++
++    spin_lock_irqsave(lock, flags);
++
++    /* alternate window 1 stride */
++    gc0er.whole = 0x640;
++    writel(gc0er.whole, GC0ER(register_base));
++    
++    /* image window 1 start address */
++    gc0cr.whole = 0x0;
++    writel(gc0cr.whole, GC0CR(register_base));
++
++    /* alternate window 2 stride */
++    gc2er.whole = 0x640;
++    writel(gc0er.whole, GC2ER(register_base));
++        
++    /* image window 2 start address */
++    gc2cr.whole = 0x0;
++    writel(gc2cr.whole, GC2CR(register_base));
++
++    /* read PM Register */
++    pm00r.whole = readl(PM00R(register_base));
++
++    /* horizontal window 1 control */
++    gc08r.whole = 0x131f0000;
++    writel(gc08r.whole, GC08R(register_base));
++
++    /* vertical window 1 control */
++    gc09r.whole = 0x12570000;
++    writel(gc09r.whole, GC09R(register_base));
++
++    /* horizontal display 1 control */
++    gc02r.whole = 0x320041e;
++    writel(gc02r.whole, GC02R(register_base));
++
++    /* vertical display 1 control */
++    gc03r.whole = 0x2570273;
++    writel(gc03r.whole, GC03R(register_base));
++
++    /* horizontal sync 1 control */
++    gc04r.whole = 0x3c70347;
++    writel(gc04r.whole, GC04R(register_base));
++
++    /* vertical sync 1 control */
++    gc05r.whole = 0x25d0259;
++    writel(gc05r.whole, GC05R(register_base));
++
++    /* graphics controller CRT control */
++    gc01r.whole = 0x800;
++    writel(gc01r.whole, GC01R(register_base));
++
++    /* PLL 2 programming */
++    pm06r.whole = 0xE90830;
++    writel(pm06r.whole, PM06R(register_base));
++
++    /* graphics controller 1 register
++     * o GC1 clock source is PLL 2.
++     * o hardware cursor is disabled.
++     */
++    gc00r.whole = 0x10000C8 | 0x20000;
++    writel(gc00r.whole, GC00R(register_base));
++
++#if 0
++    /* alternate horizontal window 1 control */
++    writel(0, GC0AR(register_base));
++
++    /* alternate vertical window 1 control */
++    writel(0, GC0BR(register_base));
++
++    /* window 1 start address */
++    writel(0x2004100, GC0CR(register_base));
++
++    /* alternate window 1 start address */
++    writel(0, GC0DR(register_base));
++
++    /* window 1 stride */
++    gc0er.whole = 0x5100048;
++    writel(gc0er.whole, GC0ER(register_base));
++
++    /* reserved register - ??? - */
++    writel(0x31f, GC0FR(register_base));
++#endif
++
++#if 0
++    /* hardware cursor 1 position */
++    writel(0, GC10R(register_base));
++
++    /* hardware cursor 1 start address and offset */
++    gc11r.whole = 0x5100048;
++    writel(gc11r.whole, GC11R(register_base));
++
++    /* hardware cursor 1 foreground color */
++    writel(0x00ffffff, GC12R(register_base));
++
++    /* hardware cursor 1 background color */
++    writel(0x00000000, GC13R(register_base));
++#endif
++
++    /* horizontal window 2 control */
++    gc28r.whole = 0x31f0000;
++    writel(gc28r.whole, GC28R(register_base));
++
++    /* vertical window 2 control */
++    gc29r.whole = 0x2570000;
++    writel(gc29r.whole, GC29R(register_base));
++
++    /* horizontal display 2 control */
++    gc22r.whole = 0x320041e;
++    writel(gc22r.whole, GC22R(register_base));
++
++    /* vertical display 2 control */
++    gc23r.whole = 0x2570273;
++    writel(gc23r.whole, GC23R(register_base));
++
++    /* horizontal sync 2 control */
++    gc24r.whole = 0x3c70347;
++    writel(gc24r.whole, GC24R(register_base));
++
++    /* vertical sync 2 control */
++    gc25r.whole = 0x25d0259;
++    writel(gc25r.whole, GC25R(register_base));
++
++    /* graphics controller CRT control */
++    gc01r.whole = 0x800;
++    writel(gc01r.whole, GC01R(register_base));
++
++    /* PLL 3 programming */
++    pm07r.whole = 0xE90830;
++    writel(pm07r.whole, PM07R(register_base));
++
++    /* graphics controller 2 register
++     * o GC2 clock source is PLL 3.
++     * o hardware cursor is disabled.
++     */
++    gc20r.whole = 0x10000C8 | 0x30000;
++    writel(gc20r.whole, GC20R(register_base));
++
++    /*
++     * Enable PLL2 and PLL3 in the PM Register
++     */
++    pm00r.part.pll2_enbl = 0x1;
++    pm00r.part.pll3_enbl = 0x1;
++    writel(pm00r.whole, PM00R(register_base));
++
++    spin_unlock_irqrestore(lock, flags);
++}
++
++
++/****
++ * initialize graphics engine.
++ */
++static void
++ge_reset(unsigned long register_base)
++{
++    /* drawing command register */
++    writel(0, GE00R(register_base));
++
++    /* promary width and height register */
++    writel(0, GE01R(register_base));
++
++    /* primary destination address register */
++    writel(0, GE02R(register_base));
++
++    /* primary source XY register */
++    writel(0, GE03R(register_base));
++
++    /* primary color compare register */
++    writel(0, GE04R(register_base));
++
++    /* primary clip left/top register */
++    writel(0, GE05R(register_base));
++
++    /* primary clip right/bottom register */
++    writel(0, GE06R(register_base));
++
++    /* primary source and pattern offset register */
++    writel(0, GE07R(register_base));
++
++    /* primary foreground color register/rectangle fill color depth */
++    writel(0, GE08R(register_base));
++
++    /* source stride/offset register */
++    writel(0, GE09R(register_base));
++
++    /* destination stride register and color depth */
++    writel(0, GE0AR(register_base));
++
++    /* image base address register */
++    writel(0, GE0BR(register_base));
++}
++
++/****
++ * initialize Color Palette 1.
++ */
++static void
++cp1_reset(unsigned long addr_info)
++{
++    int i;
++
++    for (i = 0; i < 256; i++)
++       writel(0, C1xxR(addr_info, i));
++}
++
++
++/*
++ * Below functions are called from the skeleton
++ */
++void mq200_external_setpal(unsigned regno, unsigned long color, unsigned long addr)
++{
++    writel(color,C1xxR(addr,regno));
++}
++
++void mq200_external_setqmode(struct mq200_monitor_info* info,
++			     unsigned long addr, spinlock_t *lock)
++{
++    dc_reset(addr);     /* device configuration */
++
++    power_state_transition(addr, 0);       /* transition to D0 state */
++
++    pmu_reset(addr);    /* power management unit */
++
++    miu_reset(addr);    /* memory interface unit */
++
++    ge_reset(addr);     /* graphics engine */
++
++    fpctrl_reset(addr); /* reset the panel settings */
++
++    gc1_gc2_reset(addr, lock); /* graphics controller 1 and 2 */
++
++    cp1_reset(addr);    /* color palette 1 */
++
++    mq200_external_ondisplay(addr);  /* LCD and CRT */
++}
++
++void mq200_external_offdisplay(unsigned long addr)
++{
++    /*
++     * Move the MQ200 to D3 mode
++     */
++    power_state_transition(addr, 3);
++}
++
++/**
++ * to be called after mq200_external_setqmode
++ */
++void mq200_external_ondisplay (unsigned long addr)
++{
++    /*
++     * Set the framebuffer details
++     */
++    union gc00r gc00r;
++    union gc01r gc01r;
++    union gc20r gc20r;
++    union fp00r fp00r;
++
++    /* enable LCD for GC2 */
++    fp00r.whole = readl(FP00R(addr));    
++    fp00r.whole &= 0xfffffffc;
++    
++    gc20r.whole = readl(GC20R(addr));
++
++    if(!(gc20r.whole & 0x1)) {
++	gc20r.whole |= 0x1;
++	writel(gc20r.whole, GC20R(addr));
++    }
++
++    fp00r.whole |= 0x3;
++    writel(fp00r.whole, FP00R(addr));
++
++    /* enable CRT for GC1 */
++    gc00r.whole = readl(GC00R(addr));
++
++    if(!(gc00r.whole & 0x1)) {
++	gc00r.whole |= 0x1;
++	writel(gc00r.whole, GC00R(addr));
++    }
++    
++    gc01r.whole = readl(GC01R(addr));
++    gc01r.whole &= 0xfffffffc;
++
++    gc01r.whole |= 0x1;
++    writel(gc01r.whole, GC01R(addr));
++    
++}
++
++int mq200_external_probe(unsigned long addr)
++{
++    union pc00r pc00r;
++    if(readl(PMR(addr)) != PMR_VALUE)
++       return 0;
++
++    pc00r.whole = readl(PC00R(addr));
++    printk(KERN_INFO "mq200 video driver found Vendor: 0x%X Device: 0x%X\n",
++	   pc00r.part.device, pc00r.part.vendor);
++    return 1;
++}
+diff -uNr linux-2.6.21.vanilla/drivers/video/mq200/mq_skeleton.c linux-2.6.21/drivers/video/mq200/mq_skeleton.c
+--- linux-2.6.21.vanilla/drivers/video/mq200/mq_skeleton.c	1970-01-01 01:00:00.000000000 +0100
++++ linux-2.6.21/drivers/video/mq200/mq_skeleton.c	2007-05-01 17:02:17.000000000 +0200
+@@ -0,0 +1,398 @@
++/*
++ * Author: Holger Hans Peter Freyther
++ *
++ *
++ * This implements the frame buffer driver interface to communicate
++ * with the kernel.
++ * It uses the mq200 routines from the ucLinux driver from Lineo
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ */
++
++#include <linux/autoconf.h>
++#include <linux/platform_device.h>
++#include <linux/module.h>
++#include <linux/fb.h>
++#include <linux/types.h>
++#include <linux/spinlock.h>
++
++#include "mq200_data.h"
++
++#if CONFIG_SA1100_SIMPAD
++/*
++ * Siemens SIMpad specefic data
++ */
++#include <asm/arch/simpad.h>
++#include <asm/arch/hardware.h>
++
++#define MQ200_REGIONS simpad_mq200_regions
++#define MQ200_MONITOR simpad_mq200_panel
++
++static struct mq200_io_regions simpad_mq200_regions = {
++	.fb_size        = MQ200_FB_SIZE,
++	.phys_mmio_base = 0x4be00000,
++	.virt_mmio_base = 0xf2e00000,
++	.phys_fb_base   = 0x4b800000,
++	.virt_fb_base   = 0xf2800000,
++};
++
++static struct mq200_monitor_info simpad_mq200_panel = {
++	.horizontal_res = 800,
++	.vertical_res   = 600,
++	.depth          = 16,
++	.refresh        = 60,
++	.line_length    = 1600,
++	.flags          = 0x00130004,
++};
++
++extern long get_cs3_shadow(void);
++extern void set_cs3_bit(int value);
++extern void clear_cs3_bit(int value);
++#endif
++
++
++
++struct mq200_info {
++	struct fb_info fb_info;
++	struct mq200_io_regions io_regions;
++	struct mq200_monitor_info monitor_info;
++
++        /* palette */
++	u32	pseudo_palette[17]; /* 16 colors + 1 in reserve not that well documented... */
++	spinlock_t lock;
++};
++
++
++
++static int mq200_blank( int blank_mode, struct fb_info *info )
++{
++#ifdef CONFIG_SA1100_SIMPAD
++	if(blank_mode ){
++		clear_cs3_bit(DISPLAY_ON);
++	}else {
++		set_cs3_bit(DISPLAY_ON);
++	}
++#endif
++	return 0;
++}
++
++
++static int mq200_check_var(struct fb_var_screeninfo *var,
++			   struct fb_info *info )
++{	/* TODO do we need sanity checks here */
++	return 0;
++}
++
++
++static int mq200_set_par( struct fb_info *info )
++{
++	/* TODO set paraemeter */
++	return 0;
++}
++
++static int mq200_setcolreg(unsigned regno, unsigned red, unsigned green,
++			   unsigned blue, unsigned transp,
++			   struct fb_info *info )
++{
++	struct mq200_info *p;
++	unsigned long color;
++	u32* pal = info->pseudo_palette;
++
++	p = info->par;
++
++	if(regno > 255 )
++		return 1;
++
++	switch( info->var.bits_per_pixel ){
++	case 16:
++		pal[regno] =
++			((red & 0xf800) >> 0) |
++			((green & 0xf800) >> 5) | ((blue & 0xf800) >> 11);
++		break;
++	case 24:
++		pal[regno] =
++			((red & 0xff00) << 8) |
++			((green & 0xff00)) | ((blue & 0xff00) >> 8);
++		break;
++	case 32:
++		pal[regno] =
++			((red & 0xff00) >> 8) |
++			((green & 0xff00)) | ((blue & 0xff00) << 8);
++		break;
++	default:
++		break;
++	}
++
++	red &= 0xFF;
++	green &= 0xFF;
++	blue &= 0xFF;
++
++	color = red | (green << 8) | (blue << 16);
++	mq200_external_setpal(regno, color, p->io_regions.virt_mmio_base);
++
++	return 0;
++}
++
++
++static struct fb_ops mq200_ops = {
++	.owner		= THIS_MODULE,
++	.fb_check_var	= mq200_check_var,
++	.fb_set_par	= mq200_set_par,
++	.fb_setcolreg	= mq200_setcolreg,
++#ifdef FB_SOFT_CURSOR
++	.fb_cursor	= soft_cursor, /*  FIXME use hardware cursor */
++#endif
++	.fb_fillrect	= cfb_fillrect,
++	.fb_copyarea	= cfb_copyarea,
++	.fb_imageblit	= cfb_imageblit,
++	.fb_blank	= mq200_blank,
++};
++
++
++/*********************************************************************
++ *
++ * Device driver and module init code
++ * this will register to the fb layer later
++ *
++ *********************************************************************/
++static void mq200_internal_init_color( struct fb_bitfield* red,
++				       struct fb_bitfield* green,
++				       struct fb_bitfield* blue,
++				       int bpp )
++{
++	switch ( bpp )
++	{
++	case 16:
++		red->offset	= 11;
++		green->offset	= 5;
++		blue->offset	= 0;
++
++		red->length	= 5;
++		green->length	= 6;
++		blue->length	= 5;
++		break;
++	case 24:
++		red->offset	= 16;
++		green->offset	= 8;
++		blue->offset	= 0;
++
++		red->length	= 8;
++		green->length	= 8;
++		blue->length	= 8;
++		break;
++	case 32:
++		red->offset	= 0;
++		green->offset	= 8;
++		blue->offset	= 16;
++
++		red->length	= 8;
++		green->length	= 8;
++		blue->length	= 8;
++	case 8: /* fall through */
++	default:
++		red->offset = green->offset = blue->offset = 0;
++		red->length = green->length = blue->length = bpp;
++		break;
++	}
++
++}
++
++
++static struct mq200_info* __init mq200_internal_init_fbinfo(void)
++{
++	struct mq200_info	*info = NULL;
++
++	info = (struct mq200_info*)kmalloc(sizeof(*info), GFP_KERNEL);
++	if(!info)
++		return NULL;
++
++        /*
++	 * Initialize memory
++	 */
++	memset(info, 0, sizeof(struct mq200_info) );
++	spin_lock_init(&info->lock);
++
++        /* set the base IO addresses */
++	info->io_regions   = MQ200_REGIONS;
++	info->monitor_info = MQ200_MONITOR;
++
++	info->fb_info.screen_base = (char *)info->io_regions.virt_fb_base;
++
++	/* fb_fix_screeninfo filling */
++	strcpy(info->fb_info.fix.id, "MQ200_FB" );
++	info->fb_info.fix.smem_start	= info->io_regions.phys_fb_base;
++	info->fb_info.fix.smem_len	= info->io_regions.fb_size; /* - CURSOR_IMAGE */
++	info->fb_info.fix.mmio_start	= info->io_regions.phys_mmio_base;
++	info->fb_info.fix.mmio_len	= MQ200_REGS_SIZE;
++	info->fb_info.fix.type		= FB_TYPE_PACKED_PIXELS;
++	info->fb_info.fix.accel		= FB_ACCEL_NONE;
++	info->fb_info.fix.line_length	= MQ200_MONITOR_LINE_LENGTH(info);
++
++	if(MQ200_MONITOR_DEPTH(info) <= 8 )
++		info->fb_info.fix.visual = FB_VISUAL_PSEUDOCOLOR;
++	else if( MQ200_MONITOR_DEPTH(info) >= 16 )
++		info->fb_info.fix.visual = FB_VISUAL_DIRECTCOLOR;
++	else
++		panic("Calling mq200 with wrong display data\n");
++
++	/* set the variable screen info */
++	info->fb_info.var.xres	= MQ200_MONITOR_HORI_RES(info);
++	info->fb_info.var.yres	= MQ200_MONITOR_VERT_RES(info);
++	info->fb_info.var.xres_virtual = MQ200_MONITOR_HORI_RES(info);
++	info->fb_info.var.yres_virtual = MQ200_MONITOR_VERT_RES(info);
++	info->fb_info.var.bits_per_pixel = MQ200_MONITOR_DEPTH(info);
++
++	mq200_internal_init_color(&info->fb_info.var.red,
++				  &info->fb_info.var.green,
++				  &info->fb_info.var.blue,
++				  MQ200_MONITOR_DEPTH(info) );
++
++	info->fb_info.var.transp.length = info->fb_info.var.transp.offset = 0;
++	info->fb_info.var.height = info->fb_info.var.width = -1;
++
++	info->fb_info.var.vmode = FB_VMODE_NONINTERLACED;
++	info->fb_info.var.pixclock = 10000;
++	info->fb_info.var.left_margin = info->fb_info.var.right_margin = 16;
++	info->fb_info.var.upper_margin = info->fb_info.var.lower_margin = 16;
++	info->fb_info.var.hsync_len = info->fb_info.var.vsync_len = 8;
++
++	info->fb_info.var.nonstd	= 0;
++	info->fb_info.var.activate	= FB_ACTIVATE_NOW;
++	info->fb_info.var.accel_flags	= 0;
++
++	return info;
++}
++
++
++extern void mq200_register_attributes(struct device* );
++/*
++ * gets called from the bus
++ * we will register our framebuffer from here
++ */
++static int __init mq200_probe(struct device *dev)
++{
++	struct mq200_info	*info = NULL;
++	int retv= 0;
++
++	info = mq200_internal_init_fbinfo();
++	if(!mq200_external_probe(info->io_regions.virt_mmio_base))
++	    goto error_out;
++
++	GPDR |=  (1<<3);
++	GAFR &= ~(1<<3);
++	GPSR |=  (1<<3);
++
++	mq200_external_setqmode(&info->monitor_info,
++				info->io_regions.virt_mmio_base,
++				&info->lock);
++
++	info->fb_info.fbops = &mq200_ops;
++	info->fb_info.flags = FBINFO_FLAG_DEFAULT;
++
++	mq200_check_var(&info->fb_info.var, &info->fb_info );
++
++	fb_alloc_cmap(&info->fb_info.cmap, 1 << MQ200_MONITOR_DEPTH(info), 0 );
++
++	info->fb_info.pseudo_palette = (void*)info->pseudo_palette;
++
++	/* save the pointer to the mq200 struct in var */
++	info->fb_info.par = info;
++
++	retv = register_framebuffer(&info->fb_info );
++	if(retv < 0)
++		goto error_out;
++
++
++	/* will get unset if retv != 0 */
++	dev_set_drvdata(dev, info );
++	return retv;
++
++/*
++ * Free the info and exit
++ */
++error_out:
++	kfree(info);
++	return -EINVAL;
++}
++
++#ifdef CONFIG_PM
++static struct mq200_info* get_mq200_info( struct device *dev)
++{
++	return dev_get_drvdata(dev);
++}
++
++static unsigned long  get_mmio_base( struct device *dev )
++{
++	struct mq200_info *info = get_mq200_info(dev);
++	return info->io_regions.virt_mmio_base;
++}
++
++static struct mq200_monitor_info* get_monitor_info( struct device *dev)
++{
++	struct mq200_info *info = get_mq200_info(dev);
++	return &info->monitor_info;
++}
++
++static spinlock_t* get_spinlock( struct device *dev)
++{
++	return &get_mq200_info(dev)->lock;
++}
++
++/*
++ * FIXME: make sure we only call mq200_external_offdisplay only once
++ * a 2nd time will hang the kernel -zecke
++ *
++ * FIXME: save the content of the framebuffer inside dev->saved_state
++ *        so on resume we can memcpy it back into the buffer and userspace
++ *        does not need to redraw
++ *
++ * functions for suspending and resuming
++ */
++static int mq200_suspend(struct device *dev, pm_message_t state)
++{
++
++    mq200_external_offdisplay( get_mmio_base(dev) );
++    clear_cs3_bit(DISPLAY_ON);
++
++
++    return 0;
++}
++
++static int mq200_resume(struct device *dev)
++{
++    unsigned long mem = get_mmio_base(dev);
++    struct mq200_monitor_info *monitor = get_monitor_info(dev);
++    mq200_external_setqmode(monitor, mem, get_spinlock(dev) );
++
++
++    /*
++     * Set display on if it was on
++     */
++	set_cs3_bit(DISPLAY_ON);
++
++	return 0;
++}
++
++
++#endif
++
++
++static struct device_driver mq200fb_driver = {
++	.name		= "simpad-mq200",
++	.bus		= &platform_bus_type,
++	.probe		= mq200_probe, /* will be called after we've registered the driver */
++	.suspend	= mq200_suspend,
++	.resume		= mq200_resume
++};
++
++int __devinit mq200_init(void)
++{
++	return driver_register(&mq200fb_driver);
++}
++
++module_init(mq200_init);
++MODULE_DESCRIPTION("MQ200 framebuffer driver");
++MODULE_LICENSE("GPL");
++MODULE_AUTHOR("Holger Hans Peter Freyther");
