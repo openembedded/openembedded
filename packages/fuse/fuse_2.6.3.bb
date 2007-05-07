@@ -1,22 +1,20 @@
-DESCRIPTION = "With FUSE it is possible to implement a fully functional filesystem in a userspace program"
-HOMEPAGE = "http://fuse.sf.net"
-LICENSE = "GPL"
-DEPENDS = "fakeroot-native"
-PR = "r0"
+require fuse.inc
 
-SRC_URI = "${SOURCEFORGE_MIRROR}/fuse/${P}.tar.gz \
-          file://not-run-updaterc.d-on-host.patch;patch=1"
+PR = "r2"
 
-inherit autotools pkgconfig
+SRC_URI += "file://not-run-updaterc.d-on-host.patch;patch=1"
 
 EXTRA_OECONF = " --disable-kernel-module"
 
+#package utils in a sperate package and stop debian.bbclass renaming it to libfuse-utils, we want it to be fuse-utils
+PACKAGES += "fuse-utils"
+FILES_${PN} = "${libdir}/*.so.*"
+FILES_${PN}-dev += "${libdir}/*.la"
+FILES_fuse-utils = "${bindir} ${base_sbindir}"
+DEBIAN_NOAUTONAME_fuse-utils = "1"
+
 fakeroot do_stage() {
-	autotools_stage_all
+        autotools_stage_all
 }
 
-# Package the fuse utils and libs in seperate packages
-PACKAGES += "lib${PN} libulockmgr"
-FILES_${PN}-dev += 	"${libdir}/*.la"
-FILES_lib${PN} = 	"${libdir}/libfuse*.so.*"
-FILES_libulockmgr = 	"${libdir}/libulockmgr.so.*"
+
