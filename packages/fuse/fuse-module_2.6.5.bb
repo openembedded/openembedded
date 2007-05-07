@@ -5,7 +5,7 @@ PR = "r1"
 
 S = "${WORKDIR}/fuse-${PV}"
 FILES_${PN} = "/dev ${base_libdir}/modules ${sysconfdir}"
-EXTRA_OECONF = "  --with-kernel=${STAGING_KERNEL_DIR}"
+EXTRA_OECONF = " --enable-kernel-module  --with-kernel=${STAGING_KERNEL_DIR}"
 
 inherit module
 
