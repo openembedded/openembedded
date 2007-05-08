@@ -7,7 +7,7 @@ ANGSTROM_EXTRA_INSTALL ?= ""
 DEPENDS = "task-base  psplash-zap"
 RDEPENDS = "task-base \
 	    ${ANGSTROM_EXTRA_INSTALL} \
-	    psplash-zap
+	    psplash-zap \
 	   "
 
 export IMAGE_BASENAME = "console-image"
