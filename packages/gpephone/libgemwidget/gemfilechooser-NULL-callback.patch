@@ -1,0 +1,12 @@
+--- /tmp/gemfilechooser.c	2007-05-08 10:05:21.000000000 +0200
++++ libgemwidget-0.1/src/gemfilechooser.c	2007-05-08 10:13:59.015251000 +0200
+@@ -640,7 +640,8 @@
+ 	folder = gtk_file_system_get_folder(filechooser->file_system,
+ 																			path,
+ 																			GTK_FILE_INFO_ALL,
+-																			&error);
++																			NULL,
++                                      &error);
+ 	if (folder == NULL)
+ 	{
+ 		g_print("%s(): get folder error: %s\n",
