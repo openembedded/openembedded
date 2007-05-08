@@ -5,7 +5,7 @@ LICENSE = "Artistic|GPL"
 PRIORITY = "optional"
 # We need gnugrep (for -I)
 DEPENDS = "virtual/db perl-native grep-native"
-PR = "r13"
+PR = "r15"
 
 # Major part of version
 PVM = "5.8"
@@ -164,7 +164,6 @@ FILES_${PN}-doc = "${datadir}/perl/${PV}/*/*.txt \
                    ${datadir}/perl/${PV}/unicore/mktables.lst \
                    ${datadir}/perl/${PV}/unicore/version"
 
-DEBIAN_NOAUTONAME_perl-lib = "1"
 RPROVIDES_perl-lib = "perl-lib"
 
 # Create a perl-modules package recommending all the other perl
