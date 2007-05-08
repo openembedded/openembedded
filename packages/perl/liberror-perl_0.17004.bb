@@ -1,7 +1,7 @@
 DESCRIPTION = "Error - Error/exception handling in an OO-ish way"
 SECTION = "libs"
 LICENSE = "Artistic|GPL"
-PR = "r5"
+PR = "r6"
 
 SRC_URI = "http://search.cpan.org/CPAN/authors/id/P/PE/PEVANS/Error-${PV}.tar.gz"
 
