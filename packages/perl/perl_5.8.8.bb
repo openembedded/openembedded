@@ -5,12 +5,10 @@ LICENSE = "Artistic|GPL"
 PRIORITY = "optional"
 # We need gnugrep (for -I)
 DEPENDS = "virtual/db perl-native grep-native"
-PR = "r15"
+PR = "r16"
 
 # Major part of version
 PVM = "5.8"
-
-DEFAULT_PREFERENCE = "-1"
 
 SRC_URI = "ftp://ftp.funet.fi/pub/CPAN/src/perl-${PV}.tar.gz \
         file://Makefile.patch;patch=1 \
