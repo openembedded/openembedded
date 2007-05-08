@@ -3,7 +3,7 @@ DESCRIPTION = "multi-protocol instant messaging client"
 LICENSE = "GPL"
 
 DEPENDS = "gtk+ ncurses gnutls virtual/libintl gstreamer dbus"
-RRECOMMENDS_${PN} = "pidgin-protocol-irc pidgin-protocol-jabber pidgin-plugin-docklet"
+RRECOMMENDS_${PN} = "libpurple-protocol-irc libpurple-protocol-jabber"
 
 EXTRA_OECONF = " \
                 --disable-audio \
