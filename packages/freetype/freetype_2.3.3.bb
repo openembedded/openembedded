@@ -1,7 +1,7 @@
 DESCRIPTION = "Freetype font rendering library"
 SECTION = "libs"
 LICENSE = "freetype"
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/freetype/freetype-${PV}.tar.bz2 \
            file://fix-x86_64-build.patch;patch=1 \
@@ -33,7 +33,7 @@ do_compile_prepend() {
 
 do_stage() {
      export LIBTOOL='${LIBTOOL}'
-	 autotools_stage_includes
+	 autotools_stage_all
 	 oe_libinstall -so -a -C objs libfreetype ${STAGING_LIBDIR}
 }
 
