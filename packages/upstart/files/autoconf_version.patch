@@ -1,0 +1,12 @@
+Index: upstart-0.3.8/configure.ac
+===================================================================
+--- upstart-0.3.8.orig/configure.ac	2007-05-09 22:02:14.000000000 +0200
++++ upstart-0.3.8/configure.ac	2007-05-09 22:02:24.000000000 +0200
+@@ -1,6 +1,6 @@
+ # Process this file with autoconf to produce a configure script.
+ 
+-AC_PREREQ(2.60)
++AC_PREREQ(2.59)
+ AC_INIT([upstart], [0.3.8], [upstart-devel@lists.ubuntu.com])
+ AC_COPYRIGHT([[Copyright © 2007 Canonical Ltd.]])
+ AC_CONFIG_SRCDIR([init/main.c])
