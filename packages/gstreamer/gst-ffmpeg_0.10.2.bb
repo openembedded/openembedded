@@ -4,11 +4,12 @@ PRIORITY = "optional"
 LICENSE = "LGPL"
 HOMEPAGE = "http://www.gstreamer.net/"
 DEPENDS = "gstreamer zlib"
-PR = "r0"
+PR = "r1"
 
 inherit autotools pkgconfig
 
-SRC_URI = "http://gstreamer.freedesktop.org/src/${PN}/${PN}-${PV}.tar.bz2"
+SRC_URI = "http://gstreamer.freedesktop.org/src/${PN}/${PN}-${PV}.tar.bz2 \
+	   file://armv5.patch;patch=1"
 
 FILES_${PN} += "${libdir}/gstreamer-0.10/*.so"
 FILES_${PN}-dbg += "${libdir}/gstreamer-0.10/.debug"
@@ -25,10 +26,5 @@ EXTRA_OECONF = "--disable-sdltest --disable-ffplay --disable-freetypetest \
 PATH_prepend="${CROSS_DIR}/${TARGET_SYS}/bin:"
 
 # Hack to get STAGING_LIBDIR into the linker path when building ffmpeg
-CC = "${CCACHE} ${HOST_PREFIX}gcc -L${STAGING_LIBDIR}"
-
-do_configure () {
-        cd ${S}
-        oe_runconf
-}
+CC = "${CCACHE} ${HOST_PREFIX}gcc ${TARGET_CC_ARCH} -L${STAGING_LIBDIR}"
 
