@@ -1,7 +1,7 @@
-diff -uNr linux-2.6.20.vanilla/drivers/mfd/Kconfig linux-2.6.20/drivers/mfd/Kconfig
---- linux-2.6.20.vanilla/drivers/mfd/Kconfig	2007-02-10 19:01:56.000000000 +0100
-+++ linux-2.6.20/drivers/mfd/Kconfig	2007-02-28 16:36:01.000000000 +0100
-@@ -23,4 +23,7 @@
+diff -uNr linux-2.6.21.vanilla/drivers/mfd/Kconfig linux-2.6.21/drivers/mfd/Kconfig
+--- linux-2.6.21.vanilla/drivers/mfd/Kconfig	2007-05-01 16:40:45.000000000 +0200
++++ linux-2.6.21/drivers/mfd/Kconfig	2007-05-01 16:55:38.000000000 +0200
+@@ -37,4 +37,7 @@
  	tristate "Touchscreen interface support"
  	depends on MCP_UCB1200 && INPUT
  
@@ -9,10 +9,10 @@ diff -uNr linux-2.6.20.vanilla/drivers/mfd/Kconfig linux-2.6.20/drivers/mfd/Kcon
 +        tristate "SIMpad Switches support"
 +        depends on MCP_UCB1200 && INPUT
  endmenu
-diff -uNr linux-2.6.20.vanilla/drivers/mfd/Makefile linux-2.6.20/drivers/mfd/Makefile
---- linux-2.6.20.vanilla/drivers/mfd/Makefile	2007-02-10 19:01:56.000000000 +0100
-+++ linux-2.6.20/drivers/mfd/Makefile	2007-02-28 16:36:01.000000000 +0100
-@@ -6,7 +6,7 @@
+diff -uNr linux-2.6.21.vanilla/drivers/mfd/Makefile linux-2.6.21/drivers/mfd/Makefile
+--- linux-2.6.21.vanilla/drivers/mfd/Makefile	2007-05-01 16:40:45.000000000 +0200
++++ linux-2.6.21/drivers/mfd/Makefile	2007-05-01 16:55:38.000000000 +0200
+@@ -8,7 +8,7 @@
  obj-$(CONFIG_MCP_SA11X0)	+= mcp-sa11x0.o
  obj-$(CONFIG_MCP_UCB1200)	+= ucb1x00-core.o
  obj-$(CONFIG_MCP_UCB1200_TS)	+= ucb1x00-ts.o
@@ -21,9 +21,9 @@ diff -uNr linux-2.6.20.vanilla/drivers/mfd/Makefile linux-2.6.20/drivers/mfd/Mak
  ifeq ($(CONFIG_SA1100_ASSABET),y)
  obj-$(CONFIG_MCP_UCB1200)	+= ucb1x00-assabet.o
  endif
-diff -uNr linux-2.6.20.vanilla/drivers/mfd/ucb1x00-switches.c linux-2.6.20/drivers/mfd/ucb1x00-switches.c
---- linux-2.6.20.vanilla/drivers/mfd/ucb1x00-switches.c	1970-01-01 01:00:00.000000000 +0100
-+++ linux-2.6.20/drivers/mfd/ucb1x00-switches.c	2007-02-28 16:36:43.000000000 +0100
+diff -uNr linux-2.6.21.vanilla/drivers/mfd/ucb1x00-switches.c linux-2.6.21/drivers/mfd/ucb1x00-switches.c
+--- linux-2.6.21.vanilla/drivers/mfd/ucb1x00-switches.c	1970-01-01 01:00:00.000000000 +0100
++++ linux-2.6.21/drivers/mfd/ucb1x00-switches.c	2007-05-01 16:55:38.000000000 +0200
 @@ -0,0 +1,162 @@
 +/*
 + *  linux/drivers/mfd/ucb1x00-switches.c

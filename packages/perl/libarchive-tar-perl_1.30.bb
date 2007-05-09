@@ -3,7 +3,7 @@ SECTION = "libs"
 LICENSE = "Artistic|GPL"
 DEPENDS += "libio-zlib-perl-native"
 RDEPENDS += "libio-zlib-perl"
-PR = "r2"
+PR = "r3"
 
 SRC_URI = "http://search.cpan.org/CPAN/authors/id/K/KA/KANE/Archive-Tar-${PV}.tar.gz"
 

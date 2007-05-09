@@ -5,12 +5,10 @@ LICENSE = "Artistic|GPL"
 PRIORITY = "optional"
 # We need gnugrep (for -I)
 DEPENDS = "virtual/db perl-native grep-native"
-PR = "r13"
+PR = "r16"
 
 # Major part of version
 PVM = "5.8"
-
-DEFAULT_PREFERENCE = "-1"
 
 SRC_URI = "ftp://ftp.funet.fi/pub/CPAN/src/perl-${PV}.tar.gz \
         file://Makefile.patch;patch=1 \
@@ -164,7 +162,6 @@ FILES_${PN}-doc = "${datadir}/perl/${PV}/*/*.txt \
                    ${datadir}/perl/${PV}/unicore/mktables.lst \
                    ${datadir}/perl/${PV}/unicore/version"
 
-DEBIAN_NOAUTONAME_perl-lib = "1"
 RPROVIDES_perl-lib = "perl-lib"
 
 # Create a perl-modules package recommending all the other perl

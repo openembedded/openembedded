@@ -4,11 +4,11 @@ SECTION = "libs"
 LICENSE = "LGPL"
 DEPENDS = "zlib libxml2 expat time"
 
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "http://www.webdav.org/${PN}/${P}.tar.gz"
 
-inherit autotools binconfig lib_package
+inherit autotools binconfig lib_package pkgconfig
 
 EXTRA_OECONF = "--without-ssl --with-libxml2 --with-expat --enable-shared"
 

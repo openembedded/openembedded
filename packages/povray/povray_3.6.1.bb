@@ -3,11 +3,10 @@ HOMEPAGE = "http://www.povray.org"
 SECTION = "console/graphics"
 #Make this a weak assigment to allow branding of the povray binary
 LICENSE = "povray"
-
 DEPENDS = "virtual/libx11 zlib jpeg libpng tiff"
 RDEPENDS = ""
 
-PR = "r1"
+PR = "r2"
 
 #We apply a patch that subverts the checks for jpeg, zlib, png and tiff because we know OE has the required versions, but it is still a hack.
 SRC_URI = "http://www.povray.org/redirect/www.povray.org/ftp/pub/povray/Official/Unix/${P}.tar.bz2 \

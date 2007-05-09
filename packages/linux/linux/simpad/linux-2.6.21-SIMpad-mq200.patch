@@ -1,9 +1,18 @@
-diff -uNr linux-2.6.20.vanilla/drivers/video/Kconfig linux-2.6.20/drivers/video/Kconfig
---- linux-2.6.20.vanilla/drivers/video/Kconfig	2007-03-24 21:25:52.000000000 +0100
-+++ linux-2.6.20/drivers/video/Kconfig	2007-03-28 22:53:44.000000000 +0200
-@@ -1147,6 +1147,15 @@
- 	help
- 	  If you have a S3 Trio say Y. Say N for S3 Virge.
+diff -uNr linux-2.6.21.vanilla/drivers/video/Kconfig linux-2.6.21/drivers/video/Kconfig
+--- linux-2.6.21.vanilla/drivers/video/Kconfig	2007-05-01 16:40:48.000000000 +0200
++++ linux-2.6.21/drivers/video/Kconfig	2007-05-01 17:02:17.000000000 +0200
+@@ -139,7 +139,7 @@
+ 	 This is particularly important to one driver, matroxfb.  If
+ 	 unsure, say N.
+ 
+-comment "Frame buffer hardware drivers"
++comment "Frambuffer hardware drivers"
+ 	depends on FB
+ 
+ config FB_CIRRUS
+@@ -1120,6 +1120,15 @@
+ 	---help---
+ 	  Driver for graphics boards with S3 Trio / S3 Virge chip.
  
 +config FB_MQ200
 +        bool "MQ200 Driver"
@@ -17,10 +26,10 @@ diff -uNr linux-2.6.20.vanilla/drivers/video/Kconfig linux-2.6.20/drivers/video/
  config FB_SAVAGE
  	tristate "S3 Savage support"
  	depends on FB && PCI && EXPERIMENTAL
-diff -uNr linux-2.6.20.vanilla/drivers/video/Makefile linux-2.6.20/drivers/video/Makefile
---- linux-2.6.20.vanilla/drivers/video/Makefile	2007-03-24 21:25:52.000000000 +0100
-+++ linux-2.6.20/drivers/video/Makefile	2007-03-28 22:53:44.000000000 +0200
-@@ -30,6 +30,7 @@
+diff -uNr linux-2.6.21.vanilla/drivers/video/Makefile linux-2.6.21/drivers/video/Makefile
+--- linux-2.6.21.vanilla/drivers/video/Makefile	2007-05-01 16:40:48.000000000 +0200
++++ linux-2.6.21/drivers/video/Makefile	2007-05-01 17:02:17.000000000 +0200
+@@ -29,6 +29,7 @@
  obj-$(CONFIG_FB_PM2)              += pm2fb.o
  obj-$(CONFIG_FB_PM3)		  += pm3fb.o
  
@@ -28,33 +37,43 @@ diff -uNr linux-2.6.20.vanilla/drivers/video/Makefile linux-2.6.20/drivers/video
  obj-$(CONFIG_FB_MATROX)		  += matrox/
  obj-$(CONFIG_FB_RIVA)		  += riva/ vgastate.o
  obj-$(CONFIG_FB_NVIDIA)		  += nvidia/
-diff -uNr linux-2.6.20.vanilla/drivers/video/backlight/Kconfig linux-2.6.20/drivers/video/backlight/Kconfig
---- linux-2.6.20.vanilla/drivers/video/backlight/Kconfig	2007-03-24 21:25:53.000000000 +0100
-+++ linux-2.6.20/drivers/video/backlight/Kconfig	2007-03-28 22:53:44.000000000 +0200
-@@ -66,3 +66,10 @@
- 	  If you have a HP Jornada 680, say y to enable the
+diff -uNr linux-2.6.21.vanilla/drivers/video/backlight/Kconfig linux-2.6.21/drivers/video/backlight/Kconfig
+--- linux-2.6.21.vanilla/drivers/video/backlight/Kconfig	2007-05-01 16:40:48.000000000 +0200
++++ linux-2.6.21/drivers/video/backlight/Kconfig	2007-05-01 17:02:17.000000000 +0200
+@@ -63,3 +63,20 @@
+ 	help
+ 	  If you have a Frontpath ProGear say Y to enable the
  	  backlight driver.
- 
-+config FB_MQ200_LCD
-+        bool "MQ200 LCD class implemetation"
-+        depends on SA1100_SIMPAD && LCD_DEVICE
 +
-+config FB_MQ200_BACKLIGHT
-+        bool "MQ200 Backlight class implementation"
-+        depends on SA1100_SIMPAD && BACKLIGHT_DEVICE
-diff -uNr linux-2.6.20.vanilla/drivers/video/backlight/Makefile linux-2.6.20/drivers/video/backlight/Makefile
---- linux-2.6.20.vanilla/drivers/video/backlight/Makefile	2007-03-24 21:25:53.000000000 +0100
-+++ linux-2.6.20/drivers/video/backlight/Makefile	2007-03-28 22:53:44.000000000 +0200
-@@ -5,3 +5,5 @@
- obj-$(CONFIG_BACKLIGHT_CORGI)	+= corgi_bl.o
++config BACKLIGHT_SIMPAD
++        tristate "SIMpad MQ200 Backlight driver"
++        depends on SA1100_SIMPAD && BACKLIGHT_CLASS_DEVICE
++	default y
++        help
++          If you have a Siemens SIMpad say Y to enable the
++          backlight driver.
++
++config LCD_SIMPAD
++        tristate "SIMpad MQ200 LCD driver"
++        depends on SA1100_SIMPAD && LCD_CLASS_DEVICE
++	default y
++        help
++          If you have a Siemens SIMpad say Y to enable the
++          LCD driver.
++
+diff -uNr linux-2.6.21.vanilla/drivers/video/backlight/Makefile linux-2.6.21/drivers/video/backlight/Makefile
+--- linux-2.6.21.vanilla/drivers/video/backlight/Makefile	2007-05-01 16:40:48.000000000 +0200
++++ linux-2.6.21/drivers/video/backlight/Makefile	2007-05-01 17:02:17.000000000 +0200
+@@ -6,3 +6,5 @@
  obj-$(CONFIG_BACKLIGHT_HP680)	+= hp680_bl.o
  obj-$(CONFIG_BACKLIGHT_LOCOMO)	+= locomolcd.o
-+obj-$(CONFIG_FB_MQ200_BACKLIGHT) += simpad_bl.o
-+obj-$(CONFIG_FB_MQ200_LCD)       += simpad_lcd.o
-diff -uNr linux-2.6.20.vanilla/drivers/video/backlight/simpad_bl.c linux-2.6.20/drivers/video/backlight/simpad_bl.c
---- linux-2.6.20.vanilla/drivers/video/backlight/simpad_bl.c	1970-01-01 01:00:00.000000000 +0100
-+++ linux-2.6.20/drivers/video/backlight/simpad_bl.c	2007-03-28 22:53:44.000000000 +0200
-@@ -0,0 +1,109 @@
+ obj-$(CONFIG_BACKLIGHT_PROGEAR) += progear_bl.o
++obj-$(CONFIG_BACKLIGHT_SIMPAD)	+= simpad_bl.o
++obj-$(CONFIG_LCD_SIMPAD)	+= simpad_lcd.o
+diff -uNr linux-2.6.21.vanilla/drivers/video/backlight/simpad_bl.c linux-2.6.21/drivers/video/backlight/simpad_bl.c
+--- linux-2.6.21.vanilla/drivers/video/backlight/simpad_bl.c	1970-01-01 01:00:00.000000000 +0100
++++ linux-2.6.21/drivers/video/backlight/simpad_bl.c	2007-05-01 17:02:17.000000000 +0200
+@@ -0,0 +1,208 @@
 +/*
 + * GPLv2 <zecke@handhelds.org
 + *
@@ -73,90 +92,189 @@ diff -uNr linux-2.6.20.vanilla/drivers/video/backlight/simpad_bl.c linux-2.6.20/
 + *            - added .brightness=127 in
 + *              struct backlight_properties simpad_bl_props() 
 + */ 
++#include <linux/module.h>
++#include <linux/kernel.h>
++#include <linux/init.h>
++#include <linux/platform_device.h>
++#include <linux/spinlock.h>
++#include <linux/fb.h>
++#include <linux/backlight.h>
++
 +#include <asm/types.h>
 +#include <asm/hardware.h>
 +#include <asm/io.h>
 +
-+#include <linux/device.h>
-+#include <linux/backlight.h>
-+#include <linux/fb.h>
-+
 +#include "../mq200/mq200_data.h"
 +
 +#define SIMPAD_BACKLIGHT_MASK 0x00a10044
-+#define MAX_BRIGHT 254
++#define SIMPAD_DEFAULT_INTENSITY 127
++#define SIMPAD_MAX_INTENSITY 254
 +#define REGISTER_BASE 0xf2e00000
 +
++static int simpad_bl_suspended;
++static int current_intensity = 0;
 +
-+static int simpad_bl_get_brightness(struct backlight_device *dev)
++static void simpad_bl_send_intensity(struct backlight_device *bd)
 +{
-+    u32 pwmctl;
++	int intensity = bd->props.brightness;
++    
++	union fp0fr fp0fr;
++	unsigned long dutyCycle, pwmcontrol;
++    
++	if (intensity > SIMPAD_MAX_INTENSITY)
++    		intensity = SIMPAD_MAX_INTENSITY;
 +
-+    pwmctl = readl(FP0FR(REGISTER_BASE));
-+    pwmctl &= ~SIMPAD_BACKLIGHT_MASK;
-+    pwmctl = pwmctl >> 8;
-+    pwmctl = MAX_BRIGHT - pwmctl;
++	if (bd->props.power != FB_BLANK_UNBLANK)
++		intensity = 0;
++		
++	if (bd->props.fb_blank != FB_BLANK_UNBLANK)
++		intensity = 0;
++	
++	if (simpad_bl_suspended)
++		intensity = 0;
++	
++	if (intensity != current_intensity)
++	{	
++	    /*
++            * Determine dutyCycle.
++            * Note: the lower the value, the brighter the display!
++            */
 +
-+    return pwmctl;
++	    dutyCycle = SIMPAD_MAX_INTENSITY - intensity;
++
++    	    /*
++            * Configure PWM0 (source clock = oscillator clock, pwm always enabled,
++	    * zero, clock pre-divider = 4) pwm frequency = 12.0kHz
++	    */
++	 
++	    fp0fr.whole = readl(FP0FR(REGISTER_BASE));
++	    pwmcontrol = fp0fr.whole & 0xffff00ff;
++	    fp0fr.whole &= 0xffffff00;
++	    fp0fr.whole |= 0x00000044;
++	    writel(fp0fr.whole, FP0FR(REGISTER_BASE));
++
++	    /* Write to pwm duty cycle register.  */
++	    fp0fr.whole = dutyCycle << 8;
++	    fp0fr.whole &= 0x0000ff00;
++	    fp0fr.whole |= pwmcontrol;
++	    writel(fp0fr.whole, FP0FR(REGISTER_BASE));
++	    
++	    current_intensity = intensity;
++	}
 +}
 +
-+static int simpad_bl_set_brightness(int bright)
++
++#ifdef CONFIG_PM
++static int simpad_bl_suspend(struct platform_device *pdev, pm_message_t state)
 +{
-+    union fp0fr fp0fr;
-+    unsigned long dutyCycle, pwmcontrol;
++	struct backlight_device *bd = platform_get_drvdata(pdev);
 +
-+    if(bright > MAX_BRIGHT)
-+        bright = MAX_BRIGHT;
-+
-+    /*
-+     * Determine dutyCycle.
-+     * Note: the lower the value, the brighter the display!
-+     */
-+
-+    dutyCycle = MAX_BRIGHT - bright;
-+
-+    /*
-+     *Configure PWM0 (source clock = oscillator clock, pwm always enabled,
-+     *zero, clock pre-divider = 4) pwm frequency = 12.0kHz
-+     */
-+    fp0fr.whole = readl(FP0FR(REGISTER_BASE));
-+    pwmcontrol = fp0fr.whole & 0xffff00ff;
-+    fp0fr.whole &= 0xffffff00;
-+    fp0fr.whole |= 0x00000044;
-+    writel(fp0fr.whole, FP0FR(REGISTER_BASE));
-+
-+    /* Write to pwm duty cycle register.  */
-+    fp0fr.whole = dutyCycle << 8;
-+    fp0fr.whole &= 0x0000ff00;
-+    fp0fr.whole |= pwmcontrol;
-+    writel(fp0fr.whole, FP0FR(REGISTER_BASE));
-+
-+    return 0;
++	simpad_bl_suspended = 1;
++	simpad_bl_send_intensity(bd);
++	return 0;
 +}
 +
-+static int simpad_bl_update_status(struct backlight_device *dev)
++static int simpad_bl_resume(struct platform_device *pdev)
 +{
-+    return simpad_bl_set_brightness(dev->props->brightness);
++	struct backlight_device *bd = platform_get_drvdata(pdev);
++
++	simpad_bl_suspended = 0;
++	simpad_bl_send_intensity(bd);
++	return 0;
++}
++#else
++#define simpad_bl_suspend NULL
++#define simpad_bl_resume  NULL
++#endif
++
++
++static int simpad_bl_set_intensity(struct backlight_device *bd)
++{
++	simpad_bl_send_intensity(bd);
++	return 0;
 +}
 +
-+static struct backlight_properties simpad_bl_props = {
-+    .owner = THIS_MODULE,
-+    .update_status = simpad_bl_update_status,
-+    .get_brightness = simpad_bl_get_brightness,
-+    .brightness=127,
-+    .max_brightness = MAX_BRIGHT,
++
++static int simpad_bl_get_intensity(struct backlight_device *bd)
++{
++	return current_intensity;
++}
++
++
++static struct backlight_ops simpad_bl_ops = {
++        .get_brightness = simpad_bl_get_intensity,
++	.update_status	= simpad_bl_set_intensity,
 +};
 +
-+static struct backlight_device *simpad_bl_device = NULL;
 +
-+static int __init simpad_bl_init(void) {
-+    simpad_bl_device = backlight_device_register("mq200_fb0", NULL,
-+                                                 NULL, &simpad_bl_props);
-+    return simpad_bl_device != NULL;
++static int __init simpad_bl_probe(struct platform_device *pdev)
++{
++	struct backlight_device *bd;
++
++	bd = backlight_device_register("simpad-mq200-bl", &pdev->dev, NULL, &simpad_bl_ops);
++	
++	if (IS_ERR (bd))
++		return PTR_ERR (bd);
++	
++	platform_set_drvdata(pdev, bd);
++	
++	bd->props.max_brightness = SIMPAD_MAX_INTENSITY;
++	bd->props.brightness = SIMPAD_DEFAULT_INTENSITY;
++	simpad_bl_send_intensity(bd);
++	
++	return 0;
 +}
 +
-+static void __exit simpad_bl_exit(void) {
-+    backlight_device_unregister(simpad_bl_device);
++
++static int simpad_bl_remove(struct platform_device *pdev)
++{
++	struct backlight_device *bd = platform_get_drvdata(pdev);
++	
++	bd->props.brightness = 0;
++	bd->props.power = 0;
++	simpad_bl_send_intensity(bd);
++	
++	backlight_device_unregister(bd);
++	
++	return 0;
++}
++
++static struct platform_driver simpad_bl_driver = {
++	.probe		= simpad_bl_probe,
++	.remove		= simpad_bl_remove,
++	.suspend	= simpad_bl_suspend,
++	.resume		= simpad_bl_resume,
++	.driver		= {
++		.name	= "simpad-mq200-bl",
++	},
++};
++
++static struct platform_device *simpad_bl_device = NULL;
++
++static int __init simpad_bl_init(void)
++{
++	int ret;
++    
++	ret = platform_driver_register(&simpad_bl_driver);
++	if (!ret) {
++	        simpad_bl_device = platform_device_alloc("simpad-mq200-bl", -1);
++		if (!simpad_bl_device)
++		        return -ENOMEM;
++	    
++		ret = platform_device_add(simpad_bl_device);
++	    
++		if (ret) {
++		        platform_device_put(simpad_bl_device);
++			platform_driver_unregister(&simpad_bl_driver);
++		}
++	}
++	return ret;
++}
++
++static void __exit simpad_bl_exit(void)
++{
++	platform_device_unregister(simpad_bl_device);
++	platform_driver_unregister(&simpad_bl_driver);
 +}
 +
 +
@@ -164,10 +282,10 @@ diff -uNr linux-2.6.20.vanilla/drivers/video/backlight/simpad_bl.c linux-2.6.20/
 +module_exit(simpad_bl_exit);
 +MODULE_AUTHOR("Holger Hans Peter Freyther");
 +MODULE_LICENSE("GPL");
-diff -uNr linux-2.6.20.vanilla/drivers/video/backlight/simpad_lcd.c linux-2.6.20/drivers/video/backlight/simpad_lcd.c
---- linux-2.6.20.vanilla/drivers/video/backlight/simpad_lcd.c	1970-01-01 01:00:00.000000000 +0100
-+++ linux-2.6.20/drivers/video/backlight/simpad_lcd.c	2007-03-28 22:58:41.000000000 +0200
-@@ -0,0 +1,80 @@
+diff -uNr linux-2.6.21.vanilla/drivers/video/backlight/simpad_lcd.c linux-2.6.21/drivers/video/backlight/simpad_lcd.c
+--- linux-2.6.21.vanilla/drivers/video/backlight/simpad_lcd.c	1970-01-01 01:00:00.000000000 +0100
++++ linux-2.6.21/drivers/video/backlight/simpad_lcd.c	2007-05-01 17:02:17.000000000 +0200
+@@ -0,0 +1,170 @@
 +/*
 + * GPLv2 <zecke@handhelds.org
 + *
@@ -178,11 +296,15 @@ diff -uNr linux-2.6.20.vanilla/drivers/video/backlight/simpad_lcd.c linux-2.6.20
 + *            - added simpad_lcd_set_contrast()
 + *            - modify struct lcd_properties simpad_lcd_props
 + */
++#include <linux/module.h>
++#include <linux/kernel.h>
++#include <linux/init.h>
++#include <linux/platform_device.h>
++#include <linux/fb.h>
++#include <linux/lcd.h>
++
 +#include <asm/arch/simpad.h>
 +#include <asm/hardware.h>
-+
-+#include <linux/device.h>
-+#include <linux/lcd.h>
 +
 +extern long get_cs3_shadow(void);
 +extern void set_cs3_bit(int);
@@ -192,65 +314,151 @@ diff -uNr linux-2.6.20.vanilla/drivers/video/backlight/simpad_lcd.c linux-2.6.20
 +
 +static int simpad_lcd_get_power(struct lcd_device* dev)
 +{
-+    UNUSED(dev);
++	UNUSED(dev);
 +
-+    return (get_cs3_shadow() & DISPLAY_ON) ? 0 : 4;
++	return (get_cs3_shadow() & DISPLAY_ON) ? 0 : 4;
 +}
 +
 +static int simpad_lcd_set_power(struct lcd_device* dev, int power)
 +{
-+    UNUSED(dev);
++	UNUSED(dev);
 +
-+    if( power == 4 )
-+	clear_cs3_bit(DISPLAY_ON);
-+    else
-+	set_cs3_bit(DISPLAY_ON);
++	if( power == 4 )
++		clear_cs3_bit(DISPLAY_ON);
++	else
++		set_cs3_bit(DISPLAY_ON);
 +
-+    return 0;
++	return 0;
 +}
 +
 +static int simpad_lcd_get_contrast(struct lcd_device* dev)
 +{
-+    UNUSED(dev);
++	UNUSED(dev);
 +
-+    return 0;
++	return 0;
 +}
 +
 +static int simpad_lcd_set_contrast(struct lcd_device* dev, int contrast)
 +{
-+    UNUSED(dev);
++	UNUSED(dev);
 +
-+    UNUSED(contrast);
++	UNUSED(contrast);
 +
-+    return 0;
++	return 0;
 +}
 +
++#ifdef CONFIG_PM
++static int simpad_lcd_suspend(struct platform_device *pdev, pm_message_t state)
++{
++	UNUSED(state);
++	static int ret;
++	
++	struct lcd_device* ld;
++	
++	ld = platform_get_drvdata(pdev);
++	
++	ret = simpad_lcd_set_power(ld, 4);
++	
++	return ret;
++}
++
++static int simpad_lcd_resume(struct platform_device *pdev)
++{
++	struct lcd_device *ld;
++	static int ret;
++	
++	ld = platform_get_drvdata(pdev);
++	
++	ret = simpad_lcd_set_power(ld, 0);
++	
++	return ret;
++}
++#else
++#define simpad_lcd_suspend NULL
++#define simpad_lcd_resume  NULL
++#endif
++
 +static struct lcd_properties simpad_lcd_props = {
-+    .owner      = THIS_MODULE,
-+    .get_power    = simpad_lcd_get_power,
-+    .set_power    = simpad_lcd_set_power,
-+    .get_contrast = simpad_lcd_get_contrast,
-+    .set_contrast = simpad_lcd_set_contrast,
-+    .max_contrast = 0
++	.max_contrast = 0,
 +};
 +
-+static struct lcd_device* simpad_lcd_device = NULL;
 +
-+static int __init simpad_lcd_init(void) {
-+    simpad_lcd_device = lcd_device_register("mq200_fb0", NULL,
-+                                            &simpad_lcd_props);
-+    return simpad_lcd_device != NULL;
++static struct lcd_ops simpad_lcd_ops = {
++	.get_power    = simpad_lcd_get_power,
++	.set_power    = simpad_lcd_set_power,
++	.get_contrast = simpad_lcd_get_contrast,
++	.set_contrast = simpad_lcd_set_contrast,
++};
++
++static int __init simpad_lcd_probe(struct platform_device *pdev)
++{
++	struct lcd_device *ld;
++	
++	ld = lcd_device_register ("simpad-mq200-lcd", &pdev->dev, &simpad_lcd_ops);
++	
++	if (IS_ERR(ld))
++		return PTR_ERR(ld);
++		
++	platform_set_drvdata(pdev, ld);
++	
++	ld->props.max_contrast = 0;
++	
++	return 0;
++}
++
++static int simpad_lcd_remove(struct platform_device *pdev)
++{
++	struct lcd_device *ld = platform_get_drvdata(pdev);
++	
++	lcd_device_unregister(ld);
++	
++	return 0;
++}	
++
++static struct platform_driver simpad_lcd_driver = {
++	.probe		= simpad_lcd_probe,
++	.remove		= simpad_lcd_remove,
++	.suspend	= simpad_lcd_suspend,
++	.resume		= simpad_lcd_resume,
++	.driver		= {
++		.name	= "simpad-mq200-lcd",
++	},
++};
++
++static struct platform_device *simpad_lcd_device = NULL;
++
++static int __init simpad_lcd_init(void)
++{
++	int ret;
++	
++	ret = platform_driver_register(&simpad_lcd_driver);
++	if (!ret) {
++		simpad_lcd_device = platform_device_alloc("simpad-mq200-lcd", -1);
++		if (!simpad_lcd_device)
++			return -ENOMEM;
++			
++		ret = platform_device_add(simpad_lcd_device);
++		
++		if (ret) {
++			platform_device_put(simpad_lcd_device);
++			platform_driver_unregister(&simpad_lcd_driver);
++		}
++	}
++	return ret;
 +}
 +
 +static void __exit simpad_lcd_exit(void) {
-+    lcd_device_unregister(simpad_lcd_device);
++	platform_driver_unregister(&simpad_lcd_driver);
++	platform_device_unregister(simpad_lcd_device);
 +}
 +
 +module_init(simpad_lcd_init);
 +module_exit(simpad_lcd_exit);
-diff -uNr linux-2.6.20.vanilla/drivers/video/mq200/Makefile linux-2.6.20/drivers/video/mq200/Makefile
---- linux-2.6.20.vanilla/drivers/video/mq200/Makefile	1970-01-01 01:00:00.000000000 +0100
-+++ linux-2.6.20/drivers/video/mq200/Makefile	2007-03-28 22:53:44.000000000 +0200
++MODULE_AUTHOR("Holger Hans Peter Freyther");
++MODULE_LICENSE("GPL");
+diff -uNr linux-2.6.21.vanilla/drivers/video/mq200/Makefile linux-2.6.21/drivers/video/mq200/Makefile
+--- linux-2.6.21.vanilla/drivers/video/mq200/Makefile	1970-01-01 01:00:00.000000000 +0100
++++ linux-2.6.21/drivers/video/mq200/Makefile	2007-05-01 17:02:17.000000000 +0200
 @@ -0,0 +1,6 @@
 +# Makefile for mq200 video driver
 +# 4 Aug 2003, Holger Hans Peter Freyther
@@ -258,9 +466,9 @@ diff -uNr linux-2.6.20.vanilla/drivers/video/mq200/Makefile linux-2.6.20/drivers
 +
 +obj-$(CONFIG_FB_MQ200)           += mq_skeleton.o mq_external.o
 +
-diff -uNr linux-2.6.20.vanilla/drivers/video/mq200/mq200_data.h linux-2.6.20/drivers/video/mq200/mq200_data.h
---- linux-2.6.20.vanilla/drivers/video/mq200/mq200_data.h	1970-01-01 01:00:00.000000000 +0100
-+++ linux-2.6.20/drivers/video/mq200/mq200_data.h	2007-03-28 22:53:44.000000000 +0200
+diff -uNr linux-2.6.21.vanilla/drivers/video/mq200/mq200_data.h linux-2.6.21/drivers/video/mq200/mq200_data.h
+--- linux-2.6.21.vanilla/drivers/video/mq200/mq200_data.h	1970-01-01 01:00:00.000000000 +0100
++++ linux-2.6.21/drivers/video/mq200/mq200_data.h	2007-05-01 17:02:17.000000000 +0200
 @@ -0,0 +1,1120 @@
 +/*
 + * From ucLinux mq200fb.c and mq200fb.h
@@ -1382,9 +1590,9 @@ diff -uNr linux-2.6.20.vanilla/drivers/video/mq200/mq200_data.h linux-2.6.20/dri
 +
 +
 +#endif
-diff -uNr linux-2.6.20.vanilla/drivers/video/mq200/mq_external.c linux-2.6.20/drivers/video/mq200/mq_external.c
---- linux-2.6.20.vanilla/drivers/video/mq200/mq_external.c	1970-01-01 01:00:00.000000000 +0100
-+++ linux-2.6.20/drivers/video/mq200/mq_external.c	2007-03-28 22:53:44.000000000 +0200
+diff -uNr linux-2.6.21.vanilla/drivers/video/mq200/mq_external.c linux-2.6.21/drivers/video/mq200/mq_external.c
+--- linux-2.6.21.vanilla/drivers/video/mq200/mq_external.c	1970-01-01 01:00:00.000000000 +0100
++++ linux-2.6.21/drivers/video/mq200/mq_external.c	2007-05-01 17:02:17.000000000 +0200
 @@ -0,0 +1,513 @@
 +/*
 + * Copyright (C) 2005 Holger Hans Peter Freyther
@@ -1899,9 +2107,9 @@ diff -uNr linux-2.6.20.vanilla/drivers/video/mq200/mq_external.c linux-2.6.20/dr
 +	   pc00r.part.device, pc00r.part.vendor);
 +    return 1;
 +}
-diff -uNr linux-2.6.20.vanilla/drivers/video/mq200/mq_skeleton.c linux-2.6.20/drivers/video/mq200/mq_skeleton.c
---- linux-2.6.20.vanilla/drivers/video/mq200/mq_skeleton.c	1970-01-01 01:00:00.000000000 +0100
-+++ linux-2.6.20/drivers/video/mq200/mq_skeleton.c	2007-03-28 22:53:44.000000000 +0200
+diff -uNr linux-2.6.21.vanilla/drivers/video/mq200/mq_skeleton.c linux-2.6.21/drivers/video/mq200/mq_skeleton.c
+--- linux-2.6.21.vanilla/drivers/video/mq200/mq_skeleton.c	1970-01-01 01:00:00.000000000 +0100
++++ linux-2.6.21/drivers/video/mq200/mq_skeleton.c	2007-05-01 17:02:17.000000000 +0200
 @@ -0,0 +1,398 @@
 +/*
 + * Author: Holger Hans Peter Freyther

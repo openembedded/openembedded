@@ -1,9 +1,11 @@
 DESCRIPTION = "Bluetooth firmware poker for bccm2035 chips (motorola phones and palms)"
 LICENSE = "GPLv2"
 
-SRC_URI = "http://people.openezx.org/wyrm/bcm2035-tool.tgz"
+PR = "r1"
 
-# Note: everyone will have the same BDADDR for the time being 
+SRC_URI = "http://people.openezx.org/wyrm/bcm2035-tool.tgz \
+           file://addr-as-arg.patch;patch=1 \
+	   "
 
 S = "${WORKDIR}/${PN}"
 

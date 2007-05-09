@@ -1,0 +1,14 @@
+DESCRIPTION = "The 'Open Free Fiasco Firmware Flasher' aka 0xFFFF utility aims to implement a free (GPL'd) userspace handler for the NOLO bootloader."
+LICENSE = "GPLv2"
+
+SRC_URI = "http://www.nopcode.org/0xFFFF/get/0xFFFF-${PV}.tar.gz"
+
+S = "${WORKDIR}/0xFFFF-${PV}/src"
+
+CFLAGS += '-DVERSION="${PV}"'
+BUILD_CFLAGS += '-DVERSION="${PV}"'
+
+do_compile() {
+       oe_runmake 
+}
+

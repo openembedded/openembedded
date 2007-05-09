@@ -5,8 +5,10 @@ SRC_URI = "http://ftp.mozilla.org/pub/mozilla.org/firefox/releases/${PV}/source/
 	file://jsautocfg.h \
 	file://extensions-hack.patch;patch=1 \
     file://security-cross.patch;patch=1 \
-    file://jsautocfg-dontoverwrite.patch;patch=1"
-
+    file://jsautocfg-dontoverwrite.patch;patch=1 \
+    file://xptcinvoke-arm.patch;patch=1 \
+    file://mozilla-eabi.patch;patch=1;pnum=2 \
+    "
 S = "${WORKDIR}/mozilla"
 DEFAULT_PREFERENCE = "-1"
 
@@ -27,7 +29,7 @@ do_stage() {
         headers=`find . -name "*.h"`
         for f in $headers
         do
-                install -m 0644 $f ${STAGING_INCDIR}/${P}/$f
+                install -D -m 0644 $f ${STAGING_INCDIR}/${P}/$f
         done
         # removes 2 lines that call absent headers
         sed -e '178,179d' ${STAGING_INCDIR}/${P}/nsIServiceManager.h

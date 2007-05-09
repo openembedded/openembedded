@@ -1,8 +1,8 @@
 DESCRIPTION = "Entice is the E17 picture viewer"
 # can also depend on GIMP for editing
-DEPENDS = "edb evas-x11 ecore-x11 edje epsilon esmart-x11"
 LICENSE = "MIT"
-PR = "r0"
+DEPENDS = "edb evas-x11 ecore-x11 edje epsilon esmart-x11"
+PR = "r1"
 
 inherit e
 
