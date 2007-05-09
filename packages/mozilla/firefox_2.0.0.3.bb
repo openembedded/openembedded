@@ -1,4 +1,4 @@
-PR = "r1"
+PR = "r2"
 SRC_URI = "http://ftp.mozilla.org/pub/mozilla.org/firefox/releases/${PV}/source/firefox-${PV}-source.tar.bz2 \
 	file://xptcstubs.patch;patch=1 \
 	file://no-xmb.patch;patch=1 \
@@ -7,8 +7,10 @@ SRC_URI = "http://ftp.mozilla.org/pub/mozilla.org/firefox/releases/${PV}/source/
     file://security-cross.patch;patch=1 \
     file://jsautocfg-dontoverwrite.patch;patch=1 \
     file://xptcinvoke-arm.patch;patch=1 \
-    file://mozilla-eabi.patch;patch=1;pnum=2 \
-    "
+    file://eabi-fix.patch;patch=1 \
+    file://eabi-fix2.patch;patch=1 \
+    file://eabi-fix3.patch;patch=1 \
+       "
 S = "${WORKDIR}/mozilla"
 DEFAULT_PREFERENCE = "-1"
 
