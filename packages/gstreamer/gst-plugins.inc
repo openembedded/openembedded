@@ -9,12 +9,11 @@ PACKAGES_DYNAMIC = "gst-plugin-*"
 # keep using version 0.8
 DEFAULT_PREFERENCE = "-1"
 
-inherit autotools pkgconfig gconf
+inherit autotools pkgconfig 
 
 SRC_URI = "http://gstreamer.freedesktop.org/src/${PN}/${PN}-${PV}.tar.bz2"
 
-EXTRA_OECONF = "--disable-x --disable-aalib --disable-shout2 \
-		--disable-sdl"
+EXTRA_OECONF = "--disable-aalib --disable-shout2 --disable-sdl"
 
 acpaths = "-I ${S}/common/m4 -I ${S}/m4"
 
