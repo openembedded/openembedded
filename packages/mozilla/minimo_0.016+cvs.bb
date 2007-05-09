@@ -11,12 +11,15 @@ BRTAG = "MOZILLA_1_8_BRANCH"
 MOZDATE = "20060720"
 
 PV = "0.016+cvs${MOZDATE}"
-PR = "r4"
+PR = "r5"
 
 SRC_URI = "cvs://anonymous@${CVSSVR}/cvsroot;module=mozilla;tag=${BRTAG};date=${MOZDATE} \
 	   file://minimo.patch;patch=1 \
            file://bug-322806.diff;patch=1 \
 	   file://mozconfig file://minimo \
+	   file://eabi-fix.patch;patch=1 \
+	   file://eabi-fix2.patch;patch=1 \
+	   file://eabi-fix3.patch;patch=1 \
            file://minimo.desktop file://minimo.png"
 
 inherit autotools
