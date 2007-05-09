@@ -1,0 +1,23 @@
+diff --git a/macros/neon.m4 b/macros/neon.m4
+index 01072b9..6d3258f 100644
+--- a/macros/neon.m4
++++ b/macros/neon.m4
+@@ -886,15 +886,11 @@ yes|openssl)
+    NEON_EXTRAOBJS="$NEON_EXTRAOBJS ne_openssl"
+    ;;
+ gnutls)
+-   AC_MSG_ERROR([GNU TLS support is not yet complete])
++   dnl AC_MSG_ERROR([GNU TLS support is not yet complete])
+ 
+-   AC_PATH_PROG(GNUTLS_CONFIG, libgnutls-config, no)
++   GNUTLS_CONFIG="pkg-config gnutls"
+ 
+-   if test "$GNUTLS_CONFIG" = "no"; then
+-     AC_MSG_ERROR([could not find libgnutls-config in \$PATH])
+-   fi
+-
+-   ne_gnutls_ver=`$GNUTLS_CONFIG --version`
++   ne_gnutls_ver=`$GNUTLS_CONFIG --modversion`
+    case $ne_gnutls_ver in
+    1.0.?|1.0.1?|1.0.20|1.0.21) 
+       AC_MSG_ERROR([GNU TLS version $ne_gnutls_ver is too old -- 1.0.22 or later required]) ;;
