@@ -4,7 +4,7 @@ PROVIDES = ""
 TARGET_LDFLAGS = ""
 
 do_compile () {
-	chmod +x board/neo1973/split_by_variant.sh
+	chmod +x board/neo1973/gta01/split_by_variant.sh
 	oe_runmake gta01bv3_config
 	oe_runmake clean
 	oe_runmake tools
