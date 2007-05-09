@@ -12,6 +12,20 @@ INHERIT += "multimachine"
 INHERIT += "sanity"
 
 
+#
+# Naming schemes
+#
+PARALLEL_INSTALL_MODULES = "1"
+INHERIT += "package_ipk debian"
+
+#
+# Packaging and output format
+
+IMAGE_FSTYPES = "tar jffs2 ext2 cramfs squashfs squashfs-lzma cpio.gz"
+
+
+
+
 # Specifies a location to search for pre-generated tarballs when fetching
 # a cvs:// URI. Outcomment this, if you always want to pull directly from CVS.
 #CVS_TARBALL_STASH = "http://www.digital-opsis.com/oplinux/source/current/"
@@ -35,7 +49,8 @@ PREFERRED_PROVIDER_task-bootstrap = "task-base"
 DISTRO_FEATURES = "nfs smbfs ext2 pcmcia usbgadget usbhost pci"
 
 
-OPLINUX_URI = "http://www.ifaistos.awmn"
+OPLINUX_URI = "http://www.ifaistos.awmn/oplinux"
+OPLINUX-uCLIBC_URI = "http://www.ifaistos.awmn/oplinux-uclibc"
 
 #Dir config
 IMAGE_ROOTFS = "${TMPDIR}/rootfs/${MACHINE}"
