@@ -1,11 +1,11 @@
 DESCRIPTION = "GmailFS provides a mountable Linux filesystem which uses your Gmail account as its storage medium."
 HOMEPAGE = "http://richard.jones.name/google-hacks/gmail-filesystem/gmail-filesystem.html"
-LICENSE = "GPL"
+LICENSE = "GPLv2"
 
 DEPENDS = "fuse python-libgmail python-fuse"
 RDEPENDS = "fuse python-libgmail python-fuse python-unixadmin  python-lang python-textutils python-core"
 
-SRC_URI = "http://richard.jones.name/google-hacks/gmail-filesystem/gmailfs-0.7.2.tar.gz"
+SRC_URI = "http://richard.jones.name/google-hacks/gmail-filesystem/${PN}-${PV}.tar.gz"
 
 
 do_install() {
