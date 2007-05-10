@@ -3,5 +3,3 @@
 # Released under the MIT license (see packages/COPYING)
 
 require ${PN}.inc
-PR = "r1"
-
