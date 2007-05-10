@@ -820,7 +820,7 @@ mv fixed.recipe.bb myrecipe.bb</screen></para>
       role="bold">&lt;packagename&gt;-&lt;version&gt;</emphasis> in the
       <emphasis role="bold">WORKDIR</emphasis> directory. This is the
       directory in which it will change into before patching, compiling and
-      installation the package.</para>
+      installating the package.</para>
 
       <para>For example, we have a package called <emphasis
       role="bold">widgets_1.2.bb</emphasis> which we are extracting from the
