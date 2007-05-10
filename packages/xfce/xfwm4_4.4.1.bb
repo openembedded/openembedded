@@ -1,5 +1,6 @@
-# xfce-mixer-plugin OE build file
+# xfwm4 OE build file
 # Copyright (C) 2004, Advanced Micro Devices, Inc.  All Rights Reserved
 # Released under the MIT license (see packages/COPYING)
 
+PR="r1"
 require ${PN}.inc

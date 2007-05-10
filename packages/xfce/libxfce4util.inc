@@ -24,8 +24,6 @@ do_stage() {
 
 	oe_libinstall -C libxfce4util -so libxfce4util ${STAGING_LIBDIR}
 
-        install -d ${STAGING_DATADIR}/aclocal/
-        install -m 0644 ${MACROS} ${STAGING_DATADIR}/aclocal/
 }
 
 FILES_${PN}-dev += " ${datadir}/xfce4/m4"
