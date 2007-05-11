@@ -377,7 +377,7 @@ def patch_init(d):
  				os.environ['TERMWINDOWTITLE'] = "Bitbake: Please fix patch rejects manually"
  				os.environ['TERMRCFILE'] = rcfile
  				rc = os.system(bb.data.getVar('TERMCMDRUN', d, 1))
-				if os.WIFEXITED(rc) and os.WEXITSTATUS(rc) == 127:
+				if os.WIFEXITED(rc) and os.WEXITSTATUS(rc) != 0:
  					bb.msg.fatal(bb.msg.domain.Build, ("Cannot proceed with manual patch resolution - '%s' not found. " \
 					    + "Check TERMCMDRUN variable.") % bb.data.getVar('TERMCMDRUN', d, 1))
 

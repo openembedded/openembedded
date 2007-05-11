@@ -6,7 +6,7 @@ do_devshell[nostamp] = "1"
 devshell_do_devshell() {
 	export TERMWINDOWTITLE="Bitbake Developer Shell"
 	${TERMCMD}
-	if [ $? -eq 127 ]; then
+	if [ $? -ne 0 ]; then
 	    echo "Fatal: '${TERMCMD}' not found. Check TERMCMD variable."
 	    exit 1
 	fi
