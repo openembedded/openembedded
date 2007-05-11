@@ -6,6 +6,10 @@ do_devshell[nostamp] = "1"
 devshell_do_devshell() {
 	export TERMWINDOWTITLE="Bitbake Developer Shell"
 	${TERMCMD}
+	if [ $? -eq 127 ]; then
+	    echo "Fatal: '${TERMCMD}' not found. Check TERMCMD variable."
+	    exit 1
+	fi
 }
 addtask devshell after do_patch
 
