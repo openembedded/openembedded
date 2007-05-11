@@ -3,9 +3,8 @@ PRIORITY = "optional"
 HOMEPAGE = "http://www.trolltech.com"
 SECTION = "devel"
 LICENSE = "GPL QPL"
-PR = "r2"
 
-QTVER = "qt-x11-opensource-src-4.1.1"
+QTVER = "qt-x11-opensource-src-4.2.3"
 
 SRC_URI = "ftp://ftp.trolltech.com/pub/qt/source/${QTVER}.tar.gz \
            file://linux-oe-qmake.conf"
@@ -40,6 +39,7 @@ do_compile() {
 
 do_stage() {
 	install -m 0755 bin/qmake ${STAGING_BINDIR}/qmake2
+	install -m 0755 bin/qmake ${STAGING_BINDIR}/qmake-qt4
 	install -d ${STAGING_DIR}/${CROSS_SYS}/qt4/
 	cp -PfR mkspecs ${STAGING_DIR}/${CROSS_SYS}/qt4/
 }
