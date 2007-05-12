@@ -24,10 +24,15 @@ COMPATIBLE_HOST = "(arm|i.86).*-linux"
 COMPATIBLE_MACHINE = '(collie|poodle|c7x0|akita|spitz|tosa|hx2000|qemuarm|qemux86)'
 KERNEL_IMAGETYPE_qemux86 = "bzImage"
 
+KERNEL_CUSTOM_NAME = '${@bb.data.getVar("KERNEL_CUSTOM_NAME_OVERRIDE",d,1) or ""}'
+KERNEL_DEPLOY_NAME = '${@bb.data.getVar("KERNEL_DEPLOY_NAME_OVERRIDE",d,1) or "${KERNEL_IMAGETYPE}-${PV}-${KERNEL_CUSTOM_NAME}${MACHINE}-${DATETIME}.bin"}'
+KERNEL_SYMLINK_NAME =  '${@bb.data.getVar("KERNEL_SYMLINK_NAME_OVERRIDE",d,1) or "${KERNEL_IMAGETYPE}-${KERNEL_CUSTOM_NAME}${MACHINE}.bin"}'
+KERNEL_DEFCONFIG = '${@bb.data.getVar("KERNEL_DEFCONFIG_OVERRIDE",d,1) or "defconfig-${MACHINE}"}' 
+
 CMDLINE_CON = "console=ttyS0,115200n8 console=tty1 noinitrd"
 CMDLINE_CON_collie = "console=ttySA0,115200n8 console=tty1 noinitrd"
-CMDLINE_ROOT = "root=/dev/mtdblock2 rootfstype=jffs2"
-CMDLINE_ROOT_spitz = "root=/dev/hda1 rootfstype=ext3 rootdelay=1 rw"
+CMDLINE_ROOT = '${@bb.data.getVar("CMDLINE_ROOT_OVERRIDE",d,1) or "root=/dev/mtdblock2 rootfstype=jffs2"}'
+CMDLINE_ROOT_spitz = '${@bb.data.getVar("CMDLINE_ROOT_OVERRIDE",d,1) or "root=/dev/hda1 rootfstype=ext3 rootdelay=1 rw"}'
 CMDLINE_OTHER = "dyntick=enable"
 CMDLINE_DEBUG = '${@base_conditional("DISTRO_TYPE", "release", "quiet", "debug",d)}'
 
@@ -72,7 +77,7 @@ do_configure() {
 		fi
 	fi
 
-	if [ ! -e ${WORKDIR}/defconfig-${MACHINE} ]; then
+	if [ ! -e ${WORKDIR}/${KERNEL_DEFCONFIG} ]; then
 		die "No default configuration for ${MACHINE} available."
 	fi
 
@@ -163,7 +168,7 @@ do_configure() {
 	    -e '/CONFIG_LOGO_OZ240_CLUT224=/d' \
 	    -e '/CONFIG_LOGO_OZ480_CLUT224=/d' \
 	    -e '/CONFIG_LOGO_OZ640_CLUT224=/d' \
-	    '${WORKDIR}/defconfig-${MACHINE}' >>'${S}/.config'
+	    '${WORKDIR}/${KERNEL_DEFCONFIG}' >>'${S}/.config'
 
 	yes '' | oe_runmake oldconfig
 }
@@ -193,10 +198,11 @@ do_compile_append() {
 }
 
 do_deploy() {
+	
         install -d ${DEPLOY_DIR_IMAGE}
-        install -m 0644 arch/${ARCH}/boot/${KERNEL_IMAGETYPE} ${DEPLOY_DIR_IMAGE}/${KERNEL_IMAGETYPE}-${PV}-${MACHINE}-${DATETIME}.bin
-	rm -f ${DEPLOY_DIR_IMAGE}/${KERNEL_IMAGETYPE}-${MACHINE}.bin
-	ln -s ${DEPLOY_DIR_IMAGE}/${KERNEL_IMAGETYPE}-${PV}-${MACHINE}-${DATETIME}.bin ${DEPLOY_DIR_IMAGE}/${KERNEL_IMAGETYPE}-${MACHINE}.bin
+        install -m 0644 arch/${ARCH}/boot/${KERNEL_IMAGETYPE} ${DEPLOY_DIR_IMAGE}/${KERNEL_DEPLOY_NAME}
+	rm -f ${DEPLOY_DIR_IMAGE}/${KERNEL_SYMLINK_NAME}
+	ln -s ${DEPLOY_DIR_IMAGE}/${KERNEL_DEPLOY_NAME} ${DEPLOY_DIR_IMAGE}/${KERNEL_SYMLINK_NAME}
         tar -cvzf ${DEPLOY_DIR_IMAGE}/modules-${KERNEL_VERSION}-${MACHINE}.tgz -C ${D} lib	
 }
 
