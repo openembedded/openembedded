@@ -26,7 +26,7 @@ DEPENDS = "virtual/${TARGET_PREFIX}binutils \
 INHIBIT_DEFAULT_DEPS = "1"
 PARALLEL_MAKE = ""
 
-PACKAGES =+ "ldd uclibc-utils uclibc-gconv uclibc-thread-db"
+PACKAGES =+ "ldd uclibc-utils-dbg uclibc-utils uclibc-gconv uclibc-thread-db"
 
 uclibc_baselibs = "/lib/libcrypt*.so* /lib/libdl*.so \
 		   /lib/libintl*.so* /lib/libm*.so \
@@ -41,6 +41,7 @@ FILES_${PN} = "${sysconfdir} ${uclibc_baselibs} /sbin/ldconfig \
 FILES_ldd = "${bindir}/ldd"
 FILES_uclibc-dev += "${libdir}/*.o"
 FILES_uclibc-utils = "${bindir} ${sbindir}"
+FILES_uclibc-utils-dbg += "${bindir}/.debug ${sbindir}/.debug"
 FILES_uclibc-gconv = "${libdir}/gconv"
 FILES_uclibc-thread-db = "/lib/libthread_db*"
 RPROVIDES_uclibc-dev += "libc-dev"
@@ -73,6 +74,11 @@ EXTRA_OEMAKE_task_do_package = "${OEMAKE_NO_CC}"
 
 KERNEL_SOURCE = "${CROSS_DIR}/${TARGET_SYS}/include"
 KERNEL_HEADERS = "${CROSS_DIR}/${TARGET_SYS}/include"
+
+# Lets munge this via siteinfo.bbclass as well:
+# ARCH_BIG_ENDIAN=y
+# ARCH_WANTS_BIG_ENDIAN=y
+# ARCH_WANTS_LITTLE_ENDIAN is not set
 
 configmangle = 's,^KERNEL_SOURCE=.*,KERNEL_SOURCE="${KERNEL_SOURCE}",g; \
 		s,^KERNEL_HEADERS=.*,KERNEL_HEADERS="${KERNEL_HEADERS}",g; \
