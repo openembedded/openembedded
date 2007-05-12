@@ -4,6 +4,8 @@
 
 # set minimal version of BitBake needed
 BB_MIN_VERSION = "1.6.3"
+#OPLinux and OPLinux-uclibc source mirrors
+INHERIT += "oplinux-mirrors"
 
 #oplinux is a multimachine distro
 INHERIT += "multimachine"
