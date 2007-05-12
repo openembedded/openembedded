@@ -8,8 +8,8 @@ DEFAULT_PREFERENCE = "-1"
 
 K_MAJOR = "2"
 K_MINOR = "6"
-K_MICRO = "20"
-HHV     = "6"
+K_MICRO = "21"
+HHV     = "2"
 
 SRC_URI = "${HANDHELDS_CVS};module=linux/kernel26  \
            file://defconfig"

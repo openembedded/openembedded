@@ -1,6 +1,6 @@
 #Angstrom X11 image
 LICENSE = "MIT"
-PR = "r8"
+PR = "r9"
 
 PREFERRED_PROVIDER_libgpewidget 	?= "libgpewidget"
 PREFERRED_PROVIDER_tslib 		?= "tslib"
@@ -8,7 +8,7 @@ PREFERRED_PROVIDER_virtual/libsdl 	?= "libsdl-x11"
 PREFERRED_PROVIDER_virtual/libxine 	?= "libxine-x11"
 PREFERRED_PROVIDER_virtual/libx11       ?= "diet-x11"
 
-ANGSTROM_EXTRA_INSTALL ?= "hal gstreamer"
+ANGSTROM_EXTRA_INSTALL += " "
 XSERVER ?= "xserver-kdrive-fbdev"
 
 export IMAGE_BASENAME = "x11-image"
