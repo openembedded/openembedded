@@ -1,8 +1,8 @@
 require git.inc
 DEPENDS = "openssl curl"
-RDEPENDS = "perl perl-module-file-path cpio findutils"
+RDEPENDS = "perl perl-module-file-path cpio findutils sed"
 
-PR="r1"
+PR="r2"
 
 do_install() {
 	oe_runmake install DESTDIR="${D}" bindir="${bindir}" \
