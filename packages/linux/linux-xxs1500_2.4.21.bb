@@ -13,6 +13,8 @@ S = "${WORKDIR}/linux"
 
 inherit kernel
 
+COMPATIBLE_MACHINE = "xxs1500"
+
 PACKAGE_ARCH = "xxs1500"
 ARCH = "mips"
 KERNEL_OUTPUT = "arch/mips/zboot/images/xxs1500.flash.srec"
