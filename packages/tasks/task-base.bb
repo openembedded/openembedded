@@ -1,5 +1,5 @@
 DESCRIPTION = "Merge machine and distro options to create a basic machine task/package"
-PR = "r28"
+PR = "r29"
 
 PACKAGES = 'task-boot \
             task-base \
@@ -160,7 +160,11 @@ RRECOMMENDS_task-base-kernel24 = "\
 
 RRECOMMENDS_task-base-kernel26 = "\
     kernel-module-input \
-    kernel-module-uinput"
+    kernel-module-uinput \
+    kernel-module-rtc-dev \
+    kernel-module-rtc-proc \
+    kernel-module-rtc-sysfs \
+    kernel-module-rtc-sa1100"
 
 RDEPENDS_task-base-keyboard = "\
     keymaps"
