@@ -2,6 +2,8 @@
 # Copyright (C) 2005, Advanced Micro Devices, Inc.  All Rights Reserved
 # Released under the MIT license (see packages/COPYING)
 
+COMPATIBLE_MACHINE = "geodegx"
+
 KV = "2.4.24"
 DESCRIPTION = "Linux kernel for the AMD Geode GX processor"
 LICENSE = "GPL"
