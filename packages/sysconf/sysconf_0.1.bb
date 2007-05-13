@@ -3,7 +3,7 @@ SECTION = "base"
 PRIORITY = "optional"
 LICENSE = "GPL"
 RDEPENDS = "devio cpio findutils diffutils"
-PR = "r8"
+PR = "r9"
 
 # Currently, the scripts only support ixp4xx machines.
 # Feel free to add to the scripts ...
