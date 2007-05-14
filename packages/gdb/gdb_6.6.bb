@@ -4,12 +4,13 @@ LICENSE="GPL"
 SECTION = "devel"
 PRIORITY = "optional"
 DEPENDS = "ncurses readline"
-PR = "r0"
+PR = "r1"
 
 PACKAGES =+ 'gdbserver '
 FILES_gdbserver = '${bindir}/gdbserver'
 
-RRECOMMENDS_gdb = "glibc-thread-db"
+#only append it for glib, not for uclibcc
+RRECOMMENDS_gdb_append_linux = " glibc-thread-db "
 
 inherit autotools gettext
 
