@@ -8,7 +8,7 @@ SRC_URI = "http://bluez.sourceforge.net/download/bluez-utils-${PV}.tar.gz \
            file://hcid.conf \
            file://02dtl1_cs.sh \
           "
-PR = "r1"
+PR = "r2"
 
 EXTRA_OECONF = " \
                  --enable-bccmd \
@@ -25,6 +25,8 @@ EXTRA_OECONF = " \
 	         --enable-echo \
                  --enable-configfile \
 	         --enable-initscripts \
+		 --enable-test \
+		" 
 
 # The config options are explained below:
 
@@ -81,6 +83,7 @@ FILES_${PN} = " \
                ${sysconfdir}/bluetooth/hcid.conf \
                ${sysconfdir}/default \
                ${sysconfdir}/dbus-1 \
+	       ${bindir}/hciattach \
               " 	
 
 FILES_${PN}-compat = " \
@@ -96,7 +99,6 @@ FILES_${PN}-compat = " \
 		    ${bindir}/l2ping \
 		    ${bindir}/hciconfig \
                     ${bindir}/bccmd \
-		    ${bindir}/hciattach \
 		    ${bindir}/hciemu \
 		    ${sysconfdir}/bluetooth/rfcomm.conf \
 		   " 
