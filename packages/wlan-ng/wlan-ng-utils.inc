@@ -3,6 +3,7 @@ HOMEPAGE = "http://www.linux-wlan.org"
 SECTION = "kernel/userland"
 LICENSE = "GPL"
 DEPENDS = "virtual/kernel"
+S = "${WORKDIR}/linux-wlan-ng-${PV}"
 
 SRC_URI = "ftp://ftp.linux-wlan.org/pub/linux-wlan-ng/linux-wlan-ng-${PV}.tar.bz2 \
 	file://only-the-utils.patch;patch=1 \
