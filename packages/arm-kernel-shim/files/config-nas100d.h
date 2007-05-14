@@ -19,16 +19,9 @@
 #define RAM_BANK0_START	   0x00000000
 #define RAM_BANK0_LENGTH   0x04000000
 
-//#define RAM_BANK1_START	   0xd0000000
-//#define RAM_BANK1_LENGTH   0x10000000
-
-#define COMMANDLINE\
- "console=ttyS0,115200n8 root=/dev/mtdblock2 rootfstype=jffs2 init=/linuxrc rw noirqdebug"
-
 #define MACH_TYPE		   865
 
-/* Uncomment one of these if you need to switch the CPU into a
-   specific mode. */
+/* Uncomment one of these to switch the CPU into a specific mode. */
 //#define FORCE_LITTLEENDIAN
 //#define FORCE_BIGENDIAN
 
