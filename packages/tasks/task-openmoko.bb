@@ -199,7 +199,7 @@ RDEPENDS_task-openmoko-debug = "\
   usbutils \
   uucp \
   cu \
-  sensors-i2cdetect sensors-i2cdump sensors-i2cset \
+#  sensors-i2cdetect sensors-i2cdump sensors-i2cset \
   xev \
 "
 
