@@ -5,13 +5,17 @@ SRC_URI = "http://ftp.mozilla.org/pub/mozilla.org/firefox/releases/${PV}/source/
 	file://firefox-cc-fix.patch;patch=1 \
 	file://jsautocfg.h \
 	file://extensions-hack.patch;patch=1 \
-	file://firefox-1.0-gcc4-compile.patch;patch=1;pnum=0"
+	file://firefox-1.0-gcc4-compile.patch;patch=1;pnum=0 \
+	file://xptcinvoke-arm.patch;patch=1 \
+	file://mozilla-eabi.patch;patch=1"
 
 S = "${WORKDIR}/mozilla"
 
 inherit mozilla
 
 require firefox.inc
+
+EXTRA_OECONF += " --with-gssapi=${STAGINGLIBDIR}/../"
 
 do_compile_prepend() {
 	cp ${WORKDIR}/jsautocfg.h ${S}/js/src/

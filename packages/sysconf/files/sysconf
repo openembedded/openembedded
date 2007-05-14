@@ -640,9 +640,6 @@ umountflash(){
 		return 1
 	fi
 	#
-	# The function is currently always used interactively, so output 
-	echo "$0: umounting any existing mount of $ffsdev" >&2
-	#
 	# check each mount point, do this last first because otherwise nested
 	# mounts of ffsdev cannot be umounted.
 	ffs_umount() {

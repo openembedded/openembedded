@@ -4,12 +4,28 @@
 
 # set minimal version of BitBake needed
 BB_MIN_VERSION = "1.6.3"
+#OPLinux and OPLinux-uclibc source mirrors
+INHERIT += "oplinux-mirrors"
 
 #oplinux is a multimachine distro
 INHERIT += "multimachine"
 
 # check for required tools and minimal BitBake version
 INHERIT += "sanity"
+
+
+#
+# Naming schemes
+#
+PARALLEL_INSTALL_MODULES = "1"
+INHERIT += "package_ipk debian"
+
+#
+# Packaging and output format
+
+IMAGE_FSTYPES = "tar jffs2 ext2 cramfs squashfs squashfs-lzma cpio.gz"
+
+
 
 
 # Specifies a location to search for pre-generated tarballs when fetching
@@ -35,7 +51,8 @@ PREFERRED_PROVIDER_task-bootstrap = "task-base"
 DISTRO_FEATURES = "nfs smbfs ext2 pcmcia usbgadget usbhost pci"
 
 
-OPLINUX_URI = "http://www.ifaistos.awmn"
+OPLINUX_URI = "http://www.ifaistos.awmn/oplinux"
+OPLINUX-uCLIBC_URI = "http://www.ifaistos.awmn/oplinux-uclibc"
 
 #Dir config
 IMAGE_ROOTFS = "${TMPDIR}/rootfs/${MACHINE}"

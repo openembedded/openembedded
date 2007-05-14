@@ -16,6 +16,7 @@ do_compile () {
 }
 
 do_install () {
+	install -d ${D}${bindir} 
 	oe_runmake 'INSTPREFIX=${D}' install
 	install -d ${D}${sysconfdir}/init.d
 	cat ${WORKDIR}/init | sed -e's,/usr/sbin,${sbindir},g' > ${D}${sysconfdir}/init.d/acpid

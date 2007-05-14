@@ -2,6 +2,8 @@
 # Copyright (C) 2005-2006, Advanced Micro Devices, Inc.  All Rights Reserved
 # Released under the MIT license (see packages/COPYING)
 
+COMPATIBLE_MACHINE = "geodelx"
+
 DESCRIPTION = "Linux kernel for the AMD Geode GX5535/LX5536"
 HOMEPAGE = "http://www.amd.com/embedded"
 LICENSE = "GPL"

@@ -3,9 +3,8 @@ HOMEPAGE = "http://www.fltk.org"
 SECTION = "libs"
 PRIORITY = "optional"
 LICENSE = "LGPL"
-PR= "r1"
-
 DEPENDS = "zlib jpeg libpng libxext libxft"
+PR = "r2"
 
 SRC_URI = "ftp://ftp.rz.tu-bs.de/pub/mirror/ftp.easysw.com/ftp/pub/fltk/${PV}/fltk-${PV}-source.tar.bz2"
 

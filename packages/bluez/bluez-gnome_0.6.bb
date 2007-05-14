@@ -5,6 +5,7 @@ DEPENDS = "bluez-libs dbus-glib gconf libnotify gtk+ openobex"
 
 SRC_URI = "http://bluez.sourceforge.net/download/${P}.tar.gz"
 
-inherit autotools pkgconfig
+inherit autotools pkgconfig gconf
 
+FILES_${PN} += "${datadir}/gconf"
 

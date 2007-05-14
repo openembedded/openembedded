@@ -2,15 +2,16 @@ DESCRIPTION = "neon is an HTTP and WebDAV client library, with a C interface."
 HOMEPAGE = "http://www.webdav.org/neon"
 SECTION = "libs"
 LICENSE = "LGPL"
-DEPENDS = "zlib libxml2 expat time"
+DEPENDS = "zlib libxml2 expat time gnutls"
 
-PR = "r1"
+PR = "r3"
 
-SRC_URI = "http://www.webdav.org/${PN}/${P}.tar.gz"
+SRC_URI = "http://www.webdav.org/${PN}/${P}.tar.gz \
+	file://gnutls-force-and-detect.patch;patch=1"
 
-inherit autotools binconfig lib_package
+inherit autotools binconfig lib_package pkgconfig
 
-EXTRA_OECONF = "--without-ssl --with-libxml2 --with-expat --enable-shared"
+EXTRA_OECONF = "--with-ssl=gnutls --with-libxml2 --with-expat --enable-shared"
 
 do_stage() {
 	autotools_stage_all

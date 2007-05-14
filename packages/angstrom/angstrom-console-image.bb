@@ -1,12 +1,16 @@
 #Angstrom bootstrap image
 LICENSE = "MIT"
-PR = "r4"
+PR = "r6"
 
 ANGSTROM_EXTRA_INSTALL ?= ""
 
-DEPENDS = "task-base"
+DEPENDS = "task-base \
+           ${@base_contains("MACHINE_FEATURES", "screen", "psplash-zap", "",d)} \
+	   "
+
 RDEPENDS = "task-base \
 	    ${ANGSTROM_EXTRA_INSTALL} \
+	    ${@base_contains("MACHINE_FEATURES", "screen", "psplash-zap", "",d)} \
 	   "
 
 export IMAGE_BASENAME = "console-image"

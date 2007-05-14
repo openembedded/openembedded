@@ -1,0 +1,44 @@
+diff -aur libtool-1.5.22.orig/libtool.m4 libtool-1.5.22/libtool.m4
+--- libtool-1.5.22.orig/libtool.m4	2005-12-18 16:53:17.000000000 -0500
++++ libtool-1.5.22/libtool.m4	2007-05-05 15:47:41.000000000 -0400
+@@ -67,7 +67,8 @@
+ LIBTOOL_DEPS="$ac_aux_dir/ltmain.sh"
+ 
+ # Always use our own libtool.
+-LIBTOOL='$(SHELL) $(top_builddir)/libtool'
++LIBTOOL='$(SHELL) $(top_builddir)'
++LIBTOOL="$LIBTOOL/$host_alias-libtool"
+ AC_SUBST(LIBTOOL)dnl
+ 
+ # Prevent multiple expansion
+@@ -134,7 +135,7 @@
+ rm="rm -f"
+ 
+ # Global variables:
+-default_ofile=libtool
++default_ofile=${host_alias}-libtool
+ can_build_shared=yes
+ 
+ # All known linkers require a `.a' archive for static linking (except MSVC,
+Only in libtool-1.5.22: libtool.m4.orig
+diff -aur libtool-1.5.22.orig/Makefile.am libtool-1.5.22/Makefile.am
+--- libtool-1.5.22.orig/Makefile.am	2005-08-12 13:21:09.000000000 -0400
++++ libtool-1.5.22/Makefile.am	2007-05-05 15:49:25.000000000 -0400
+@@ -30,7 +30,7 @@
+ aclocal_DATA = $(aclocal_macros)
+ 
+ # The standalone libtool script, and the libtool distributor.
+-bin_SCRIPTS = libtool libtoolize
++bin_SCRIPTS = $(host_alias)-libtool libtoolize
+ 
+ ## These are installed as a subdirectory of pkgdatadir so that
+ ## libtoolize --ltdl can find them later:
+@@ -55,7 +55,7 @@
+ 	libltdl/configure \
+ 	libltdl/config-h.in
+ 
+-libtool: $(srcdir)/ltmain.sh $(top_builddir)/configure.ac
++$(host_alias)-libtool: $(srcdir)/ltmain.sh $(top_builddir)/configure.ac
+ 	$(SHELL) $(top_builddir)/config.status --recheck
+ 	chmod +x $@
+

@@ -376,7 +376,10 @@ def patch_init(d):
  
  				os.environ['TERMWINDOWTITLE'] = "Bitbake: Please fix patch rejects manually"
  				os.environ['TERMRCFILE'] = rcfile
- 				os.system(bb.data.getVar('TERMCMDRUN', d, 1))
+ 				rc = os.system(bb.data.getVar('TERMCMDRUN', d, 1))
+				if os.WIFEXITED(rc) and os.WEXITSTATUS(rc) != 0:
+ 					bb.msg.fatal(bb.msg.domain.Build, ("Cannot proceed with manual patch resolution - '%s' not found. " \
+					    + "Check TERMCMDRUN variable.") % bb.data.getVar('TERMCMDRUN', d, 1))
 
 				# Construct a new PatchSet after the user's changes, compare the
 				# sets, checking patches for modifications, and doing a remote

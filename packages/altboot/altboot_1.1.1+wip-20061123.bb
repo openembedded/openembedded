@@ -26,7 +26,7 @@ RDEPENDS_${PN}-conf = "${PN}"
 WIP_DATE = "20061123"
 
 PV = "1.1.1+wip-${WIP_DATE}"
-PR = "r0"
+PR = "r1"
 
 ######################################################################################
 
@@ -38,7 +38,7 @@ PACKAGE_ARCH_${PN}-conf = "${MACHINE}"
 
 TAG = "${@'v' + bb.data.getVar('PV',d,1).replace('.', '-').replace('+', '-')}"
 
-SRC_URI = "svn://hentges.net/altboot/tags/;module=${TAG};rev=2"
+SRC_URI = "svn://hentges.net/public/altboot/tags/;module=${TAG};rev=2"
 
 S = "${WORKDIR}/${TAG}/"
 

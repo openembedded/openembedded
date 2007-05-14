@@ -51,6 +51,7 @@ do_deploy() {
 
 do_deploy[dirs] = "${S}"
 
-addtask deploy before do_build after do_compile
+addtask deploy before do_package after do_install
+
 
 
