@@ -1,0 +1,107 @@
+require bluez-utils.inc
+
+DEPENDS += "glib-2.0"
+
+DEFAULT_PREFERENCE = "-1"
+
+SRC_URI = "http://bluez.sourceforge.net/download/bluez-utils-${PV}.tar.gz \
+           file://hcid.conf \
+           file://02dtl1_cs.sh \
+          "
+PR = "r1"
+
+EXTRA_OECONF = " \
+                 --enable-bccmd \
+		 --enable-bcm203x \
+		 --disable-hid2hci \
+                 --disable-alsa \ 
+		 --enable-cups \
+		 --enable-glib \
+		 --disable-sdpd \
+	         --enable-network \
+	         --enable-serial \
+	         --enable-input \
+	         --enable-audio \
+	         --enable-echo \
+                 --enable-configfile \
+	         --enable-initscripts \
+
+# The config options are explained below:
+
+#  --enable-obex           enable OBEX support
+#  --enable-alsa           enable ALSA support, not needed for nokia770, nokia800 and fic-gtao1
+#  --enable-cups           install CUPS backend support
+#  --enable-bccmd          install BCCMD interface utility
+#  --enable-avctrl         install Audio/Video control utility
+#  --enable-hid2hci        install HID mode switching utility
+#  --enable-dfutool        install DFU firmware upgrade utility
+
+#  --enable-glib           For systems that use and install GLib anyway
+#  --disable-sdpd          The sdpd is obsolete and should no longer be used. This of course requires that hcid will be started with -s to enable the
+SDP server
+
+#Following services can be enabled so far:
+#	--enable-network
+#	--enable-serial
+#	--enable-input
+#	--enable-audio
+#	--enable-echo
+
+#There is no need to modify any init script. They will be started
+#automatically or on demand. Only /etc/bluetooth/*.service files should
+#be patched to change name or the autostart value.
+#	--enable-configfile
+#	--enable-initscripts
+
+#For even smaller -doc packages
+#	--disable-manpages
+#	--disable-pcmciarules
+
+#I haven't seen any embedded device with HID proxy support. So simply
+#disable it:
+#	--disable-hid2hci
+
+
+PACKAGES =+ "${PN}-compat bluez-cups-backend"
+
+CONFFILES_${PN} = " \
+                   ${sysconfdir}/bluetooth/hcid.conf \
+                   ${sysconfdir}/default/bluetooth \
+                  "
+
+CONFFILES_${PN}-compat = " \
+                          ${sysconfdir}/bluetooth/rfcomm.conf \
+			 " 
+
+FILES_${PN} = " \
+               ${sbindir}/hcid \
+               ${libdir}/bluetooth \
+               ${sysconfdir}/init.d/bluetooth \
+               ${sysconfdir}/bluetooth/*.service \
+               ${sysconfdir}/bluetooth/hcid.conf \
+               ${sysconfdir}/default \
+               ${sysconfdir}/dbus-1 \
+              " 	
+
+FILES_${PN}-compat = " \
+                    ${bindir}/sdptool \
+                    ${bindir}/dund \
+		    ${bindir}/rctest \
+		    ${bindir}/ciptool \
+		    ${bindir}/l2test \
+		    ${bindir}/rfcomm \
+		    ${bindir}/hcitool \
+		    ${bindir}/pand \
+		    ${bindir}/hidd \
+		    ${bindir}/l2ping \
+		    ${bindir}/hciconfig \
+                    ${bindir}/bccmd \
+		    ${bindir}/hciattach \
+		    ${bindir}/hciemu \
+		    ${sysconfdir}/bluetooth/rfcomm.conf \
+		   " 
+
+FILES_bluez-cups-backend = "${libdir}/cups/backend/bluetooth"
+RDEPENDS_bluez-cups-backend = "cups"
+
+
