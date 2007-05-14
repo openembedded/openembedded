@@ -39,8 +39,7 @@ EXTRA_OECONF = " \
 #  --enable-dfutool        install DFU firmware upgrade utility
 
 #  --enable-glib           For systems that use and install GLib anyway
-#  --disable-sdpd          The sdpd is obsolete and should no longer be used. This of course requires that hcid will be started with -s to enable the
-SDP server
+#  --disable-sdpd          The sdpd is obsolete and should no longer be used. This of course requires that hcid will be started with -s to enable the SDP server
 
 #Following services can be enabled so far:
 #	--enable-network
