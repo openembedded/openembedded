@@ -5,6 +5,7 @@ PREFERRED_PROVIDER_virtual/libiconv ?= "libiconv"
 PREFERRED_PROVIDER_virtual/libintl ?= "gettext"
 
 USE_NLS ?= "no"
+USE_NLS_glib-2.0 = "yes"
 
 TARGET_OS = "linux${@['-uclibc','-uclibcgnueabi'][bb.data.getVar('TARGET_ARCH',d,1) in ['arm', 'armeb']]}"
 
