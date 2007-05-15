@@ -4,11 +4,12 @@ HOMEPAGE = "http://avahi.org"
 SECTION = "network"
 PRIORITY = "optional"
 LICENSE = "GPL"
-PR="r3"
+PR="r4"
 
 DEPENDS = "expat libdaemon dbus glib-2.0"
 RRECOMMENDS = "libnss-mdns"
 RRECOMMENDS_avahi-daemon = "libnss-mdns"
+RDEPENDS_avahi-daemon = "sysvinit-pidof"
 
 SRC_URI = "http://avahi.org/download/avahi-${PV}.tar.gz \
 	   file://00avahi-autoipd file://99avahi-autoipd"
