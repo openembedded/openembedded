@@ -8,11 +8,10 @@ SRC_URI = "http://bluez.sourceforge.net/download/bluez-utils-${PV}.tar.gz \
            file://hcid.conf \
            file://02dtl1_cs.sh \
           "
-PR = "r2"
+PR = "r3"
 
 EXTRA_OECONF = " \
                  --enable-bccmd \
-		 --enable-bcm203x \
 		 --disable-hid2hci \
                  --disable-alsa \ 
 		 --enable-cups \
@@ -63,7 +62,7 @@ EXTRA_OECONF = " \
 #	--disable-hid2hci
 
 
-PACKAGES =+ "${PN}-compat bluez-cups-backend"
+PACKAGES =+ "${PN}-compat"
 
 CONFFILES_${PN} = " \
                    ${sysconfdir}/bluetooth/hcid.conf \
@@ -75,30 +74,38 @@ CONFFILES_${PN}-compat = " \
 			 " 
 
 FILES_${PN} = " \
-               ${sbindir}/hcid \
+               ${base_sbindir}/hcid \
                ${libdir}/bluetooth \
                ${sysconfdir}/init.d/bluetooth \
                ${sysconfdir}/bluetooth/*.service \
                ${sysconfdir}/bluetooth/hcid.conf \
                ${sysconfdir}/default \
                ${sysconfdir}/dbus-1 \
-	       ${bindir}/hciattach \
-              " 	
+	       ${base_sbindir}/hciattach \
+              "
+
+#Package 02dtl1_cs.sh, which is a nasty hack to get dtl1c_cs cards working with suspend/resume 
+FILES_${PN} += "${sysconfdir}/apm/"
+
+FILES_${PN}-dbg += " \
+                   ${libdir}/bluetooth/.debug \
+		  " 
 
 FILES_${PN}-compat = " \
-                    ${bindir}/sdptool \
-                    ${bindir}/dund \
-		    ${bindir}/rctest \
-		    ${bindir}/ciptool \
-		    ${bindir}/l2test \
-		    ${bindir}/rfcomm \
-		    ${bindir}/hcitool \
-		    ${bindir}/pand \
-		    ${bindir}/hidd \
-		    ${bindir}/l2ping \
-		    ${bindir}/hciconfig \
-                    ${bindir}/bccmd \
-		    ${bindir}/hciemu \
+                    ${base_bindir}/sdptool \
+                    ${base_bindir}/dund \
+		    ${base_bindir}/rctest \
+		    ${base_bindir}/ciptool \
+		    ${base_bindir}/l2test \
+		    ${base_bindir}/rfcomm \
+		    ${base_bindir}/hcitool \
+		    ${base_bindir}/pand \
+		    ${base_bindir}/hidd \
+		    ${base_bindir}/l2ping \
+		    ${base_sbindir}/hciconfig \
+                    ${base_sbindir}/bccmd \
+		    ${base_sbindir}/hciemu \
+		    ${base_bindir}/passkey-agent \
 		    ${sysconfdir}/bluetooth/rfcomm.conf \
 		   " 
 
