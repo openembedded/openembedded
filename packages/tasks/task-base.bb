@@ -1,5 +1,5 @@
 DESCRIPTION = "Merge machine and distro options to create a basic machine task/package"
-PR = "r29"
+PR = "r30"
 
 PACKAGES = 'task-boot \
             task-base \
@@ -139,6 +139,7 @@ RDEPENDS_task-boot = "\
     initscripts \
     modutils-initscripts \
     netbase \
+    update-alternatives \
     ${DISTRO_DEV_MANAGER} \
     ${DISTRO_INIT_MANAGER} \
     ${DISTRO_LOGIN_MANAGER} \
@@ -204,7 +205,6 @@ RDEPENDS_task-base-pcmcia = "\
     ${@base_contains('DISTRO_FEATURES', 'wifi', 'prism3-support', '',d)} \
     ${@base_contains('DISTRO_FEATURES', 'wifi', 'spectrum-fw', '',d)} \
     ${@base_contains('DISTRO_FEATURES', 'wifi', 'hostap-conf', '',d)} \
-    ${@base_contains('DISTRO_FEATURES', 'wifi', 'orinoco-conf', '',d)} \
     "
 
 RRECOMMENDS_task-base-pcmcia = "\
@@ -224,7 +224,6 @@ task-base-pcmcia24 = "\
 
 task-base-pcmcia26 = "\
     ${@base_contains('DISTRO_FEATURES', 'wifi', 'kernel-module-hostap-cs', '',d)} \
-    ${@base_contains('DISTRO_FEATURES', 'wifi', 'kernel-module-orinoco-cs', '',d)} \
     ${@base_contains('DISTRO_FEATURES', 'wifi', 'kernel-module-spectrum-cs', '',d)}"
 
 RDEPENDS_task-base-bluetooth = "\ 
