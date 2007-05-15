@@ -15,6 +15,10 @@ def autotools_dep_prepend(d):
 
 	if not pn in ['libtool', 'libtool-native', 'libtool-cross']:
 		deps += 'libtool-native '
+		if not bb.data.inherits_class('native', d) \
+                        and not bb.data.inherits_class('cross', d) \
+                        and not bb.data.getVar('INHIBIT_DEFAULT_DEPS', d, 1):
+                    deps += 'libtool-cross '
 
 	return deps + 'gnu-config-native '
 
