@@ -34,7 +34,7 @@ PACKAGE_ARCH_${PN} = "${MACHINE}"
 PACKAGE_ARCH_${PN}-doc = "all"
 PACKAGE_ARCH_${PN}-conf = "${MACHINE}"
 
-SRC_URI = "svn://hentges.net/altboot;module=trunk;proto=svn"
+SRC_URI = "svn://hentges.net/public/altboot;module=trunk;proto=svn"
 
 S = "${WORKDIR}/trunk/"
 
