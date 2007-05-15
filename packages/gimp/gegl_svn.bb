@@ -1,6 +1,6 @@
 DESCRIPTION = "GEGL (Generic Graphics Library) is a graph based image processing framework."
 LICENSE = "LGPL"
-DEPENDS = "babl"
+DEPENDS = "babl glib-2.0 gtk+ pango cairo expat zlib libpng jpeg virtual/libsdl"
 
 PV = "0.0.12+svn${SRCDATE}"
 
