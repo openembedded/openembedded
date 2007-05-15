@@ -63,5 +63,6 @@ do_install() {
 	install -m 0644 ${S}/man/*.1 ${D}${mandir}/man1/
 }
 
-FILES_${PN}_dbg += "/sbin/.debug/"
+FILES_${PN}-doc += "/usr/local/man"
+FILES_${PN}-dbg += "/sbin/.debug"
 FILES_${PN} = "/etc /sbin"
