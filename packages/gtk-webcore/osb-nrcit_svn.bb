@@ -29,7 +29,7 @@ do_configure () {
 }
 
 do_stage () {
-	oe_libinstall -so -C src libnrcit ${STAGING_LIBDIR}
+	oe_libinstall -so -C src libgtk_webcore_nrcit ${STAGING_LIBDIR}
 
 	autotools_stage_includes
 
