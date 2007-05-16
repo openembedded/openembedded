@@ -1,4 +1,5 @@
 FILES_${PN} += "${datadir}/icons/hicolor"
+RDEPENDS += " hicolor-icon-theme "
 
 gtk-icon-cache_postinst() {
 if [ "x$D" != "x" ]; then
