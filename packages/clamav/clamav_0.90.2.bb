@@ -1,8 +1,9 @@
 require clamav.inc
-PR = "r0"
+PR = "r1"
 
 # 0.9x requires curl for incremental database updates
 DEPENDS += "curl"
+DEPENDS += "virtual/libintl"
 
 # Don't check for clamav uid/gid - they don't exist on the host
 # Put virus definitions in /var/lib not /usr/lib
