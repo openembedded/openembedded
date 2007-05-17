@@ -7,8 +7,10 @@ LICENSE = "GPL"
 PR="r4"
 
 DEPENDS = "expat libdaemon dbus glib-2.0"
-RRECOMMENDS = "libnss-mdns"
-RRECOMMENDS_avahi-daemon = "libnss-mdns"
+
+# uclibc has no nss
+RRECOMMENDS_append_linux = "libnss-mdns"
+RRECOMMENDS_avahi-daemon_append_linux = "libnss-mdns"
 RDEPENDS_avahi-daemon = "sysvinit-pidof"
 
 SRC_URI = "http://avahi.org/download/avahi-${PV}.tar.gz \
