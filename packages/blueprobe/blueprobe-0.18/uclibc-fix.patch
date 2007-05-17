@@ -1,0 +1,30 @@
+Uclibc doesn't define or support speeds above 115200. So check the existence
+of the defines before allowing them to actually be used.
+
+Index: blueprobe-0.18/blueprobe.c
+===================================================================
+--- blueprobe-0.18.orig/blueprobe.c	2006-10-12 20:33:01.000000000 +1000
++++ blueprobe-0.18/blueprobe.c	2007-05-17 12:29:20.000000000 +1000
+@@ -25,14 +25,22 @@
+     return B57600;
+   case 115200:
+     return B115200;
++#ifdef B230400
+   case 230400:
+     return B230400;
++#endif
++#ifdef B460800
+   case 460800:
+     return B460800;
++#endif
++#ifdef B921600
+   case 921600:
+     return B921600;
++#endif
++#ifdef B1000000
+   case 1000000:
+     return B1000000;
++#endif
+   default:
+     return B57600;
+   }
