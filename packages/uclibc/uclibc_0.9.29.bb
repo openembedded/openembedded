@@ -15,6 +15,7 @@ require uclibc.inc
 PROVIDES += "virtual/${TARGET_PREFIX}libc-for-gcc"
 
 SRC_URI += "file://uClibc.machine file://uClibc.distro"
+SRC_URI += "http://svn.exactcode.de/t2/trunk/package/base/uclibc/error_print_progname.patch;patch=1;p=1"
 
 #recent versions uclibc require real kernel headers
 PACKAGE_ARCH = "${MACHINE_ARCH}"
