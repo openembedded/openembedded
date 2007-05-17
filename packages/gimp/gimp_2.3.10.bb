@@ -2,7 +2,7 @@ DESCRIPTION = "The GIMP is the GNU Image Manipulation Program."
 HOMEPAGE = "http://www.gimp.org"
 SECTION = "x11/graphics"
 LICENSE = "GPL"
-PR = "r1"
+PR = "r2"
 
 DEPENDS = "sed-native libart-lgpl gtk+ jpeg libpng libexif tiff"
 
@@ -24,4 +24,12 @@ EXTRA_OECONF = " --disable-gtktest \
 do_configure_append() {
         find ${S} -name Makefile | xargs sed -i s:'-I$(includedir)':'-I.':g
 }
+
+
+FILES_${PN} += "${datadir}/icons \
+                ${datadir}/mime-info \
+		${datadir}/application-registry "
+
+FILES_${PN}-dbg += "${libdir}/gimp/2.0/plug-ins/.debug \
+                    ${libdir}/gimp/2.0/modules/.debug"
 

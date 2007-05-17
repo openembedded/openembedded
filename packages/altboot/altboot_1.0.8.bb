@@ -22,7 +22,7 @@ RDEPENDS_${PN}-conf = "${PN}"
 
 ######################################################################################
 
-PR = "r1"
+PR = "r2"
 
 ######################################################################################
 
@@ -34,7 +34,7 @@ PACKAGE_ARCH_${PN}-conf = "${MACHINE}"
 
 TAG = "${@'v' + bb.data.getVar('PV',d,1).replace('.', '-')}"
 
-SRC_URI = "svn://hentges.net/altboot/tags/;module=${TAG};proto=svn"
+SRC_URI = "svn://hentges.net/public/altboot/tags/;module=${TAG};proto=svn"
 
 S = "${WORKDIR}/${TAG}/"
 

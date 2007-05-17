@@ -48,10 +48,10 @@ do_install_append() {
 CONFFILES_${PN} = "${sysconfdir}/bluetooth/hcid.conf ${sysconfdir}/bluetooth/rfcomm.conf \
 	${sysconfdir}/default/bluetooth"
 
-PACKAGES =+ "${PN}-ciptool bluez-cups-backend"
-FILES_${PN}-ciptool = "/bin/ciptool"
-RREPLACES_${PN}-ciptool = "bluez-utils-dbus-ciptool"
-RCONFLICTS_${PN}-ciptool = "bluez-utils-dbus-ciptool bluez-utils-nodbus"
+PACKAGES =+ " bluez-cups-backend"
+
+FILES_${PN} += " ${libdir}/alsa-lib/*.so "
+FILES_${PN}-dev += " ${libdir}/alsa-lib/*.la "
 
 FILES_bluez-cups-backend = "${libdir}/cups/backend/bluetooth"
 RDEPENDS_bluez-cups-backend = "cups"

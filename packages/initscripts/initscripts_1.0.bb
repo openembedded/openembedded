@@ -4,7 +4,7 @@ PRIORITY = "required"
 DEPENDS = "makedevs"
 RDEPENDS = "makedevs"
 LICENSE = "GPL"
-PR = "r90"
+PR = "r91"
 
 SRC_URI = "file://halt \
            file://ramdisk \

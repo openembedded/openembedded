@@ -1,0 +1,133 @@
+Add some caching of values which can't be determined when
+cross-compiling. This lets us define the values via the site files.
+
+Also check for libintl and add it to ldflags if required.
+
+Index: clamav-0.90.2/configure.in
+===================================================================
+--- clamav-0.90.2.orig/configure.in	2007-04-13 09:10:37.000000000 +1000
++++ clamav-0.90.2/configure.in	2007-05-16 14:19:01.000000000 +1000
+@@ -60,19 +60,21 @@
+ 
+ dnl Check for broken snprintf (code by Phil Oleson <oz*nixil.net>)
+ if test "x$ac_cv_func_snprintf" = "xyes" ; then
+-        AC_MSG_CHECKING([whether snprintf correctly terminates long strings])
++        AC_CACHE_CHECK([whether snprintf correctly terminates long strings],
++	[ac_cv_have_broken_snprintf], [
+         AC_TRY_RUN(
+                 [
+ #include <stdio.h>
+ int main(void){char b[5];snprintf(b,5,"123456789");return(b[4]!='\0');}
+                 ],
+-                [AC_MSG_RESULT(yes)],
+-                [
+-                        AC_MSG_RESULT(no)
+-                        AC_DEFINE(BROKEN_SNPRINTF,1,[Define if your snprintf is busted])
+-                        AC_MSG_WARN([****** Your snprintf() function is broken, complain to your vendor])
+-                ]
+-        )
++		[ ac_cv_have_broken_snprintf="no" ],
++		[ ac_cv_have_broken_snprintf="yes" ]
++	)
++	])
++	if test "$ac_cv_have_broken_snprintf" = "yes"; then
++		AC_DEFINE(BROKEN_SNPRINTF,1,[Define if your snprintf is busted])
++                AC_MSG_WARN([****** Your snprintf() function is broken, complain to your vendor])
++	fi
+ fi
+ 
+ have_pthreads=no
+@@ -370,18 +372,28 @@
+ AC_DEFINE_UNQUOTED(CONFDIR,"$cfg_dir",[where to look for the config file])
+ 
+ dnl check for in_port_t definition
++AC_CACHE_CHECK([for in_port_t], [clamav_av_have_in_port_t], [
+ AC_TRY_RUN([
+ #include <sys/types.h>
+ #include <netinet/in.h>
+ int main(int argc, char **argv) { in_port_t pt; pt = 0; return pt; }
+-], AC_DEFINE(HAVE_IN_PORT_T,1,[in_port_t is defined]), AC_MSG_RESULT(in_port_t is not defined))
++], [ clamav_av_have_in_port_t="yes" ], [ clamav_av_have_in_port_t="no" ])
++])
++if test "$clamav_av_have_in_port_t" = "yes"; then
++    AC_DEFINE(HAVE_IN_PORT_T,1,[in_port_t is defined])
++fi
+ 
+ dnl check for in_addr_t definition
++AC_CACHE_CHECK([for in_addr_t], [clamav_av_have_in_addr_t], [
+ AC_TRY_RUN([
+ #include <sys/types.h>
+ #include <netinet/in.h>
+ int main(int argc, char **argv) { in_addr_t pt; pt = 0; return pt; }
+-], AC_DEFINE(HAVE_IN_ADDR_T,1,[in_addr_t is defined]), AC_MSG_RESULT(in_addr_t is not defined))
++], [ clamav_av_have_in_addr_t="yes" ], [ clamav_av_have_in_addr_t="no" ])
++])
++if test "$clamav_av_have_in_addr_t" = "yes"; then
++    AC_DEFINE(HAVE_IN_ADDR_T,1,[in_addr_t is defined])
++fi
+ 
+ case "$target_os" in
+ linux*)
+@@ -1100,6 +1112,10 @@
+ AC_MSG_RESULT($DEFAULT_FD_SETSIZE)
+ AC_DEFINE_UNQUOTED(DEFAULT_FD_SETSIZE, $DEFAULT_FD_SETSIZE, "default FD_SETSIZE value")
+ 
++dnl Do we need to link with -lintl?
++AM_GNU_GETTEXT([external])
++AM_GNU_GETTEXT_VERSION([0.14.1])
++
+ AC_OUTPUT([
+ libclamav/Makefile
+ clamscan/Makefile
+Index: clamav-0.90.2/clamd/Makefile.am
+===================================================================
+--- clamav-0.90.2.orig/clamd/Makefile.am	2007-05-16 14:22:46.000000000 +1000
++++ clamav-0.90.2/clamd/Makefile.am	2007-05-16 14:23:08.000000000 +1000
+@@ -60,5 +60,5 @@
+ 
+ endif
+ 
+-LIBS = $(top_builddir)/libclamav/libclamav.la @CLAMD_LIBS@ @THREAD_LIBS@
++LIBS = $(top_builddir)/libclamav/libclamav.la @CLAMD_LIBS@ @THREAD_LIBS@ @LIBINTL@
+ INCLUDES = -I$(top_srcdir) -I$(top_srcdir)/shared -I$(top_srcdir)/libclamav
+Index: clamav-0.90.2/clamdscan/Makefile.am
+===================================================================
+--- clamav-0.90.2.orig/clamdscan/Makefile.am	2007-05-16 14:24:02.000000000 +1000
++++ clamav-0.90.2/clamdscan/Makefile.am	2007-05-16 14:24:18.000000000 +1000
+@@ -40,4 +40,4 @@
+ 
+ DEFS = @DEFS@ -DCL_NOTHREADS
+ INCLUDES = -I$(top_srcdir) -I$(top_srcdir)/clamscan -I$(top_srcdir)/shared -I$(top_srcdir)/libclamav
+-LIBS = $(top_builddir)/libclamav/libclamav.la @FRESHCLAM_LIBS@ @THREAD_LIBS@
++LIBS = $(top_builddir)/libclamav/libclamav.la @FRESHCLAM_LIBS@ @THREAD_LIBS@ @LIBINTL@
+Index: clamav-0.90.2/clamscan/Makefile.am
+===================================================================
+--- clamav-0.90.2.orig/clamscan/Makefile.am	2007-05-16 14:20:23.000000000 +1000
++++ clamav-0.90.2/clamscan/Makefile.am	2007-05-16 14:20:39.000000000 +1000
+@@ -41,5 +41,5 @@
+     treewalk.h
+ 
+ DEFS = @DEFS@ -DCL_NOTHREADS
+-LIBS = $(top_builddir)/libclamav/libclamav.la @THREAD_LIBS@
++LIBS = $(top_builddir)/libclamav/libclamav.la @THREAD_LIBS@ @LIBINTL@
+ INCLUDES = -I$(top_srcdir) -I$(top_srcdir)/shared -I$(top_srcdir)/libclamav
+Index: clamav-0.90.2/freshclam/Makefile.am
+===================================================================
+--- clamav-0.90.2.orig/freshclam/Makefile.am	2007-05-16 14:25:10.000000000 +1000
++++ clamav-0.90.2/freshclam/Makefile.am	2007-05-16 14:25:25.000000000 +1000
+@@ -48,4 +48,4 @@
+ 
+ DEFS = @DEFS@ -DCL_NOTHREADS
+ INCLUDES = -I$(top_srcdir) -I$(top_srcdir)/shared -I$(top_srcdir)/libclamav
+-LIBS = $(top_builddir)/libclamav/libclamav.la @FRESHCLAM_LIBS@ @THREAD_LIBS@
++LIBS = $(top_builddir)/libclamav/libclamav.la @FRESHCLAM_LIBS@ @THREAD_LIBS@ @LIBINTL@
+Index: clamav-0.90.2/sigtool/Makefile.am
+===================================================================
+--- clamav-0.90.2.orig/sigtool/Makefile.am	2007-05-16 14:26:18.000000000 +1000
++++ clamav-0.90.2/sigtool/Makefile.am	2007-05-16 14:26:29.000000000 +1000
+@@ -39,4 +39,4 @@
+ 
+ DEFS = @DEFS@ -DCL_NOTHREADS
+ INCLUDES = -I$(top_srcdir) -I$(top_srcdir)/shared -I$(top_srcdir)/libclamav
+-LIBS = $(top_builddir)/libclamav/libclamav.la @FRESHCLAM_LIBS@ @THREAD_LIBS@
++LIBS = $(top_builddir)/libclamav/libclamav.la @FRESHCLAM_LIBS@ @THREAD_LIBS@ @LIBINTL@
