@@ -20,7 +20,11 @@ prefix = "/usr/local/${SDK_NAME}"
 exec_prefix = "${prefix}"
 base_prefix = "${exec_prefix}"
 
-FILES_${PN} = "${prefix}"
+PACKAGES =+ "${PN}-dbg"
 
+FILES_${PN} = "${prefix}"
+FILES_${PN}-dbg += "${prefix}/bin/.debug \
+                    ${prefix}/sbin/.debug \
+                   "
 
 

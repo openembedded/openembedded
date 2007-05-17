@@ -9,6 +9,8 @@ PR = "r1"
 
 SRC_URI = "file://install-sh"
 
+inherit native
+
 PACKAGES = ""
 S = "${WORKDIR}"
 

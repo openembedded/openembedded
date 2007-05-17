@@ -15,7 +15,7 @@ LICENSE = "GPL"
 
 RRECOMMENDS_${PN} = "e2fsprogs-e2fsck dosfstools"
 RRECOMMENDS_${PN}_append_akita = " kexec-tools"
-RRECOMMENDS_${PN}_append_spitz = " kexec-tools"
+RRECOMMENDS_${PN}_append_spitz = " kexec-tools kernel-module-jffs2"
 RRECOMMENDS_${PN}_append_c7x0 = " kexec-tools"
 
 RDEPENDS_${PN} = "${PN}-conf"
@@ -23,8 +23,8 @@ RDEPENDS_${PN}-conf = "${PN}"
 
 ######################################################################################
 
-SVN_REV = "30"
-PR = "r1"
+SVN_REV = "48"
+PR = "r0"
 
 ######################################################################################
 

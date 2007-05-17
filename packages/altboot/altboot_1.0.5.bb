@@ -12,7 +12,7 @@ LICENSE = "GPL"
 
 ######################################################################################
 
-PR = "r0"
+PR = "r1"
 
 ######################################################################################
 
@@ -20,7 +20,7 @@ PACKAGE_ARCH = "${MACHINE}"
 
 TAG = "${@'v' + bb.data.getVar('PV',d,1).replace('.', '-')}"
 
-SRC_URI = "svn://hentges.net/altboot/tags/;module=${TAG};proto=svn"
+SRC_URI = "svn://hentges.net/public/altboot/tags/;module=${TAG};proto=svn"
 
 S = "${WORKDIR}/${TAG}/"
 
@@ -33,7 +33,7 @@ do_install() {
 	install -d ${D}/etc/altboot.rc
 	install -d ${D}/usr/share/doc/altboot
 
-	if test -d ${WORKDIR}/altboot/${MACHINE}
+	if test -d ${S}/${MACHINE}
 	then
 		install -m 0644 ${S}/${MACHINE}/altboot*.cfg ${D}/etc
 	else
