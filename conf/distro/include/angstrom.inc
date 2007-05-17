@@ -21,7 +21,8 @@ MAINTAINER = "Angstrom Developers <angstrom-distro-devel@linuxtogo.org>"
 
 #use ipkg package format with debian style naming
 #use multimachine buildrules 
-INHERIT += "package_ipk debian multimachine sanity devshell angstrom-mirrors insane"
+INHERIT += "package_ipk debian multimachine sanity devshell angstrom-mirrors"
+#INHERIT += "insane"
 
 #Generate locales on the buildsystem instead of on the target. Speeds up first boot, set to "1" to enable
 PREFERRED_PROVIDER_qemu-native = "qemu-native"
