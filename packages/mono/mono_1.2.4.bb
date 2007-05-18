@@ -1,4 +1,4 @@
-require mono4.inc
+require mono_1.2.4.inc
 DEPENDS = "mono-native glib-2.0"
 
 PR = "r3"
