@@ -73,7 +73,7 @@ DEBIAN_NOAUTONAME_tslib-calibrate = "1"
 
 RDEPENDS_${PN} = "tslib-conf"
 # Ship calibration data if it exists 
-RRECOMMENDS_${PN}_append_angstrom = "pointercal"
+RRECOMMENDS_angstrom = " pointercal "
 
 FILES_${PN}-dbg += "${libdir}/ts/.debug*"
 FILES_tslib-conf = "${sysconfdir}/ts.conf ${sysconfdir}/profile.d/tslib.sh ${datadir}/tslib"
