@@ -112,3 +112,11 @@ ac_cv_func_fnmatch_works=${ac_cv_func_fnmatch_works=yes}
 
 #lmbench
 ac_cv_uint=${ac_cv_unit=yes}
+
+# D-BUS
+ac_cv_func_posix_getpwnam_r=${ac_cv_func_posix_getpwnam_r=yes}
+
+#mono
+cv_mono_sizeof_sunpath=108
+mono_cv_uscore=${mono_cv_uscore=no}
+
