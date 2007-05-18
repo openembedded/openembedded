@@ -1,19 +1,21 @@
 require xorg-lib-common.inc
-
-PR = "r4"
+PE = "1"
+PR = "r0"
 
 DESCRIPTION = "Base X libs."
-SRC_URI += "file://makekeys.diff;patch=1"
 
 DEPENDS += " bigreqsproto xproto xextproto xtrans libxau xcmiscproto \
-	libxdmcp xf86bigfontproto kbproto inputproto"
+	libxcb libxdmcp xf86bigfontproto kbproto inputproto"
 PROVIDES = "virtual/libx11"
 RPROVIDES = "virtual/libx11"
 
 XORG_PN = "libX11"
 
+PACKAGES =+ "libx11-xcb"
+
 FILES_${PN} += "${datadir}/X11/XKeysymDB ${datadir}/X11/XErrorDB ${libdir}/X11/Xcms.txt"
 FILES_${PN}-locale += "${datadir}/X11/locale ${libdir}/X11/locale"
+FILES_${PN}-xcb = "${libdir}/libX11-xcb.so.*"
 
 do_compile() {
 	(
