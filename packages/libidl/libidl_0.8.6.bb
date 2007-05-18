@@ -2,25 +2,19 @@ DESCRIPTION = "Library for parsing CORBA IDL files"
 SECTION = "x11/gnome/libs"
 LICENSE = "LGPL"
 DEPENDS = "glib-2.0 libidl-native"
-PR = "r2"
+PR = "r3"
 
 SRC_URI = "http://ftp.gnome.org/pub/GNOME/sources/libIDL/0.8/libIDL-${PV}.tar.bz2"
 S = "${WORKDIR}/libIDL-${PV}"
 
-inherit autotools pkgconfig
+BINCONFIG_GLOB = "*-config-2"
+inherit autotools pkgconfig binconfig
 
 # Firefox uses the libIDL-config-2 script instead of pkgconfig (for some
 # strange reason - so we do some sed fu to fix the path there
 
 do_stage() {
 	autotools_stage_all
-
-	cat ${S}/libIDL-config-2 | sed -e 's:${includedir}:${STAGING_INCDIR}:' > ${STAGING_BINDIR}/libIDL-config-2
-
-	if [ "${STAGING_BINDIR}" != "${STAGING_BINDIR_CROSS}" ]; then
-		mv ${STAGING_BINDIR}/libIDL-config-2 ${STAGING_BINDIR_CROSS}/libIDL-config-2
-	fi
-			 
 }
 
 FILES_${PN} = "${libdir}/*.so.*"

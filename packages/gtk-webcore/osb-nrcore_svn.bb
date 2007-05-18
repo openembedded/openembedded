@@ -11,3 +11,14 @@ SRC_URI = "svn://gtk-webcore.svn.sourceforge.net/svnroot/gtk-webcore/trunk;modul
 
 S = "${WORKDIR}/NRCore"
 
+do_stage () {
+        oe_libinstall -so libgtk_webcore_nrcore ${STAGING_LIBDIR}
+        oe_libinstall -so -C kwiq libgtk_webcore_nrcore_kwiq_gtk ${STAGING_LIBDIR}
+
+        autotools_stage_includes
+ 
+        install -d ${STAGING_INCDIR}/osb/NRCore
+        for i in ${S}/kwiq/WebCore*.h ${S}/kwiq/KWIQ*.h; do
+                install -m 0644 $i ${STAGING_INCDIR}/osb/NRCore
+        done
+}

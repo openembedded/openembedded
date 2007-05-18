@@ -1,3 +1,5 @@
 require clamav.inc
 
-PR = "r0"
+PR = "r1"
+
+SRC_URI_append += " file://libtool-fix.patch;patch=1"

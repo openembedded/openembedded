@@ -15,7 +15,7 @@ RDEPENDS_lirc-x = "lirc"
 RDEPENDS_lirc-exec = "lirc"
 RDEPENDS_lirc-nslu2example = "lirc lirc-exec"
 RRECOMMENDS_lirc = "lirc-exec"
-PR = "r0"
+PR = "r1"
 
 DEFAULT_PREFERENCE = "-1"
 
@@ -63,6 +63,7 @@ do_install_append_nslu2() {
 PACKAGES =+ "lirc-x lirc-exec lirc-remotes"
 PACKAGES_prepend_nslu2 = "lirc-nslu2example "
 
+FILES_${PN}-dbg += "${bindir}/.debug ${sbindir}/.debug"
 FILES_${PN} = "${bindir} ${sbindir} ${libdir} ${sysconfdir}/init.d"
 FILES_lirc-x = "${bindir}/irxevent ${bindir}/xmode2"
 FILES_lirc-exec = "${bindir}/irexec ${sysconfdir}/init.d/lircexec"

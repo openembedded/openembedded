@@ -1,12 +1,16 @@
-
-#
-# Patch managed by http://www.mn-logistik.de/unsupported/pxa250/patcher
-#
-
-Index: sudo-1.6.8p6/configure.in
+Index: sudo-1.6.8p12/configure.in
 ===================================================================
---- sudo-1.6.8p6.orig/configure.in	2004-11-25 12:31:20.000000000 -0500
-+++ sudo-1.6.8p6/configure.in	2005-01-21 19:09:27.248233336 -0500
+--- sudo-1.6.8p12.orig/configure.in	2004-11-26 04:31:20.000000000 +1100
++++ sudo-1.6.8p12/configure.in	2007-05-16 16:45:20.000000000 +1000
+@@ -1670,7 +1670,7 @@
+ SUDO_TYPE_INO_T
+ SUDO_FULL_VOID
+ SUDO_UID_T_LEN
+-SUDO_LONG_LONG
++SUDO_TYPE_LONG_LONG
+ SUDO_SOCK_SA_LEN
+ dnl
+ dnl only set RETSIGTYPE if it is not set already
 @@ -1700,12 +1700,14 @@
  if test -z "$BROKEN_GETCWD"; then
      AC_REPLACE_FUNCS(getcwd)
@@ -23,15 +27,15 @@ Index: sudo-1.6.8p6/configure.in
 +
 +AC_CHECK_FUNCS(lsearch, , [AC_CHECK_LIB(compat, lsearch, [AC_CHECK_HEADER(search.h, [AC_DEFINE(HAVE_LSEARCH) LIBS="$LIBS -lcompat"], [AC_LIBOBJ([lsearch])])], [AC_LIBOBJ([lsearch])])])
 +
-+AC_CHECK_FUNCS(utime, [SUDO_FUNC_UTIME_POSIX], [AC_LIBOBJ([utime])])
++AC_CHECK_FUNCS(utimes)
 +SUDO_FUNC_FNMATCH([AC_DEFINE([HAVE_FNMATCH], [1], [Define if you have the 'fnmatch' function.])], [AC_LIBOBJ([fnmatch])])
  SUDO_FUNC_ISBLANK
  AC_REPLACE_FUNCS(strerror strcasecmp sigaction strlcpy strlcat closefrom)
  AC_CHECK_FUNCS(snprintf vsnprintf asprintf vasprintf, , [NEED_SNPRINTF=1])
-Index: sudo-1.6.8p6/aclocal.m4
+Index: sudo-1.6.8p12/aclocal.m4
 ===================================================================
---- sudo-1.6.8p6.orig/aclocal.m4	2004-09-07 13:14:51.000000000 -0400
-+++ sudo-1.6.8p6/aclocal.m4	2005-01-21 19:17:00.029400136 -0500
+--- sudo-1.6.8p12.orig/aclocal.m4	2004-09-08 03:14:51.000000000 +1000
++++ sudo-1.6.8p12/aclocal.m4	2007-05-16 16:45:08.000000000 +1000
 @@ -9,7 +9,7 @@
  dnl
  dnl check for sendmail
@@ -171,24 +175,33 @@ Index: sudo-1.6.8p6/aclocal.m4
  [AC_REQUIRE([AC_TYPE_UID_T])
  AC_MSG_CHECKING(max length of uid_t)
  AC_CACHE_VAL(sudo_cv_uid_t_len,
-@@ -303,15 +303,21 @@
+@@ -301,17 +301,29 @@
+ 
+ dnl
  dnl check for "long long"
- dnl XXX hard to cache since it includes 2 tests
+-dnl XXX hard to cache since it includes 2 tests
  dnl
 -AC_DEFUN(SUDO_LONG_LONG, [AC_MSG_CHECKING(for long long support)
 -AC_TRY_LINK(, [long long foo = 1000; foo /= 10;], AC_DEFINE(HAVE_LONG_LONG, 1, [Define if your compiler supports the "long long" type.])
 -[AC_TRY_RUN([main() {if (sizeof(long long) == sizeof(long)) exit(0); else exit(1);}], AC_DEFINE(LONG_IS_QUAD, 1, [Define if sizeof(long) == sizeof(long long).]))]
 -AC_MSG_RESULT(yes), AC_MSG_RESULT(no))])
-+
-+AC_DEFUN([SUDO_LONG_LONG], [AC_MSG_CHECKING(for long long support)
-+AC_LINK_IFELSE([AC_LANG_PROGRAM([long long foo = 1000; foo /= 10;]),]
-+	[AC_DEFINE(HAVE_LONG_LONG, 1, [Define if your compiler supports the "long long" type.])
-+	AC_CHECK_SIZEOF([long])
-+	AC_CHECK_SIZEOF([long long])
-+	if x"$ac_cv_sizeof_long" = x"$ac_cv_sizeof_long_long"; then
-+	    AC_DEFINE(LONG_IS_QUAD, 1, [Define if sizeof(long) == sizeof(long long).])
-+	fi]
-+, AC_MSG_RESULT(yes), AC_MSG_RESULT(no))])
++AC_DEFUN([SUDO_TYPE_LONG_LONG],
++[AC_CHECK_TYPES(long long, [AC_DEFINE(HAVE_LONG_LONG, 1, [Define if your
++compiler supports the "long long" type.])]
++[AC_MSG_CHECKING(for long and long long equivalence)
++AC_CACHE_VAL(sudo_cv_type_long_is_quad,
++[AC_TRY_RUN([
++main() {
++if (sizeof(long long) == sizeof(long)) exit(0);
++else exit(1);
++}], [sudo_cv_type_long_is_quad=yes],
++[sudo_cv_type_long_is_quad=no], [sudo_cv_type_long_is_quad=no])
++rm -f core core.* *.core])dnl
++AC_MSG_RESULT($sudo_cv_type_long_is_quad)
++if test $sudo_cv_type_long_is_quad = yes; then
++  AC_DEFINE(LONG_IS_QUAD, 1, [Define if sizeof(long) == sizeof(long long).])
++fi
++])])
  
  dnl
  dnl append a libpath to an LDFLAGS style variable

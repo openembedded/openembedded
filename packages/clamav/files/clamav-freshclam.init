@@ -3,70 +3,38 @@ PATH=/sbin:/bin:/usr/sbin:/usr/bin
 DAEMON=/usr/bin/freshclam
 NAME=freshclam
 DESC="ClamAV virus database updater"
-CLAMAV_CONF_FILE=/etc/clamd.conf
-FRESHCLAM_CONF_FILE=/etc/freshclam.conf
-pidfile=/var/run/clamav/freshclam.pid
+FRESHCLAM_CONF=/etc/freshclam.conf
+CLAMAV_CONF=/etc/clamd.conf
+PID=/var/run/clamav/freshclam.pid
 
 set -e
 
-test -r /etc/default/clamav-freshclam && . /etc/default/clamav-freshclam
 test -x "$DAEMON" || exit 0
-test ! -r "$CLAMAV_CONF_FILE" && exit 0
-
-slurp_config()
-{
-  CLAMAVCONF="$1"
-
-  if [ -e "$CLAMAVCONF" ]; then
-    for variable in `egrep -v '^[[:space:]]*(#|$)' "$CLAMAVCONF" | awk '{print $1}'`; do
-      if [ "$variable" = 'DatabaseMirror' ]; then
-        if [ -z "$DatabaseMirror" ]; then
-          for i in `grep ^$variable $CLAMAVCONF | awk '{print $2}'`; do
-            value="$i $value"
-          done
-        else
-          continue
-        fi
-      elif [ "$variable" = 'VirusEvent' -o "$variable" = 'OnUpdateExecute' -o "$variable" = 'OnErrorExecute' ]; then
-        value=`grep ^$variable $CLAMAVCONF | head -n1 | sed -e s/$variable\ //`
-      else
-        value=`grep ^$variable $CLAMAVCONF | head -n1 | awk '{print $2}'`
-      fi
-      if ! [ "$value" = "$variable" -o "$value" = "" ]; then
-        export "$variable"="$value"
-      else
-        export "$variable"="true"
-      fi
-      unset value
-    done
-  fi
-}
-
-slurp_config "$FRESHCLAM_CONF_FILE"
-
-[ -z "$UpdateLogFile" ] && UpdateLogFile=/var/log/clamav/freshclam.log
-
-if [ -z "$DatabaseDirectory" ]; then
-  [ -r "$CLAMAV_CONF_FILE" ] && DatabaseDirectory=$(grep 'DataDirectory' "$CLAMAV_CONF_FILE" | awk '{print $2}')
-  [ -z "$DatabaseDirectory" ] && DatabaseDirectory=/var/lib/clamav/
+if [ ! -r "$CLAMAV_CONF" ]; then
+  echo "ClamAV configuration file $CLAMAV_CONF not found. Exiting"
+  exit 0
+fi
+if [ ! -r "$FRESHCLAM_CONF" ]; then
+  echo "Freshclam configuration file $FRESHCLAM_CONF not found. Exiting"
+  exit 0
 fi
 
 
 case "$1" in
   no-daemon)
     echo "It takes freshclam ~3min to timeout and try the next mirror in the list"
-    freshclam -l "$UpdateLogFile" --datadir "$DatabaseDirectory"
+    freshclam
     ;;
 
   start)
     echo -n "Starting $DESC: "
-    start-stop-daemon -S -x $DAEMON -- -d --quiet -p $pidfile
+    start-stop-daemon -S -x $DAEMON -- -d --quiet -p $PID
     echo "$NAME."
     ;;
 
   stop)
     echo -n "Stopping $DESC: "
-    start-stop-daemon -K -p $pidfile
+    start-stop-daemon -K -p $PID
     ;;
 
   restart|force-reload)
