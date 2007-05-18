@@ -1,0 +1,32 @@
+--- mono-1.2.3.50.20070416.orig/configure.in	2007-04-16 07:02:59.000000000 +0200
++++ mono-1.2.3.50.20070416/configure.in	2007-04-16 18:36:00.000000000 +0200
+@@ -806,7 +806,9 @@ if test x$platform_win32 = xno; then
+ 			large_offt=yes
+ 		], [
+ 			AC_MSG_RESULT(no)
+-		], "")
++		], [
++			AC_MSG_RESULT(no)
++		])
+ 		CPPFLAGS=$large_CPPFLAGS
+ 	])
+ 
+@@ -1131,6 +1133,8 @@ if test x$platform_win32 = xno; then
+ 		], [
+ 				AC_MSG_RESULT(no)
+ 				with_tls=pthread
++		], [
++				AC_MSG_RESULT(yes)
+ 		])
+ 	fi
+ 
+@@ -1233,6 +1237,9 @@ if test x$platform_win32 = xno; then
+ 		], [
+ 				with_sigaltstack=no
+ 				AC_MSG_RESULT(no)
++		], [
++				AC_MSG_RESULT(yes)
++				AC_DEFINE(HAVE_WORKING_SIGALTSTACK)
+ 		])
+ 	fi
+ 
