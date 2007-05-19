@@ -24,7 +24,7 @@ RDEPENDS_${PN}-conf = "${PN}"
 ######################################################################################
 
 SVN_REV = "48"
-PR = "r0"
+PR = "r1"
 
 ######################################################################################
 
@@ -34,7 +34,7 @@ PACKAGE_ARCH_${PN} = "${MACHINE}"
 PACKAGE_ARCH_${PN}-doc = "all"
 PACKAGE_ARCH_${PN}-conf = "${MACHINE}"
 
-SRC_URI = "svn://hentges.net/altboot;module=trunk;rev=${SVN_REV}"
+SRC_URI = "svn://hentges.net/public/altboot;module=trunk;rev=${SVN_REV}"
 
 S = "${WORKDIR}/trunk/"
 
@@ -121,4 +121,3 @@ pkg_postrm_${PN}() {
 	
 	update-alternatives --remove init /sbin/init.altboot
 }
-
