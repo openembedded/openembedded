@@ -1,7 +1,7 @@
 #
 # Automatically generated make config: don't edit
 # Linux kernel version: 2.6.21
-# Tue May  8 15:14:00 2007
+# Tue May  8 14:31:50 2007
 #
 CONFIG_ARM=y
 CONFIG_SYS_SUPPORTS_APM_EMULATION=y
@@ -146,8 +146,8 @@ CONFIG_ARCH_PXA=y
 # CONFIG_PXA_SHARPSL is not set
 # CONFIG_MACH_TRIZEPS4 is not set
 CONFIG_PXA_EZX=y
-# CONFIG_PXA_EZX_E680 is not set
-CONFIG_PXA_EZX_A780=y
+CONFIG_PXA_EZX_E680=y
+# CONFIG_PXA_EZX_A780 is not set
 # CONFIG_PXA_EZX_E2 is not set
 CONFIG_EZX_BP=y
 CONFIG_EZX_PCAP=y
@@ -664,8 +664,7 @@ CONFIG_HW_RANDOM=y
 # TPM devices
 #
 # CONFIG_TCG_TPM is not set
-CONFIG_TS0710_MUX=y
-CONFIG_TS0710_MUX_USB=y
+# CONFIG_TS0710_MUX is not set
 
 #
 # I2C support
@@ -755,10 +754,8 @@ CONFIG_LEDS_CLASS=y
 #
 # LED Triggers
 #
-CONFIG_LEDS_TRIGGERS=y
-CONFIG_LEDS_A780=y
-CONFIG_LEDS_TRIGGER_TIMER=y
-CONFIG_LEDS_TRIGGER_HEARTBEAT=y
+# CONFIG_LEDS_TRIGGERS is not set
+CONFIG_LEDS_E680=y
 
 #
 # Multimedia devices

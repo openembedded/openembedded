@@ -1,7 +1,7 @@
 Index: linux-2.6.21/arch/arm/mach-pxa/generic.c
 ===================================================================
---- linux-2.6.21.orig/arch/arm/mach-pxa/generic.c	2007-04-30 19:19:58.000000000 -0300
-+++ linux-2.6.21/arch/arm/mach-pxa/generic.c	2007-04-30 19:45:20.000000000 -0300
+--- linux-2.6.21.orig/arch/arm/mach-pxa/generic.c	2007-05-17 20:04:53.000000000 +0200
++++ linux-2.6.21/arch/arm/mach-pxa/generic.c	2007-05-17 20:06:02.000000000 +0200
 @@ -42,6 +42,7 @@
  #include <asm/arch/mmc.h>
  #include <asm/arch/irda.h>
@@ -51,8 +51,8 @@ Index: linux-2.6.21/arch/arm/mach-pxa/generic.c
  static int __init pxa_init(void)
 Index: linux-2.6.21/drivers/input/keyboard/Kconfig
 ===================================================================
---- linux-2.6.21.orig/drivers/input/keyboard/Kconfig	2007-04-30 19:15:26.000000000 -0300
-+++ linux-2.6.21/drivers/input/keyboard/Kconfig	2007-04-30 19:43:53.000000000 -0300
+--- linux-2.6.21.orig/drivers/input/keyboard/Kconfig	2007-05-17 20:04:53.000000000 +0200
++++ linux-2.6.21/drivers/input/keyboard/Kconfig	2007-05-17 20:06:02.000000000 +0200
 @@ -229,4 +229,11 @@
  	  To compile this driver as a module, choose M here: the
  	  module will be called gpio-keys.
@@ -67,8 +67,8 @@ Index: linux-2.6.21/drivers/input/keyboard/Kconfig
  endif
 Index: linux-2.6.21/drivers/input/keyboard/Makefile
 ===================================================================
---- linux-2.6.21.orig/drivers/input/keyboard/Makefile	2007-04-30 19:17:25.000000000 -0300
-+++ linux-2.6.21/drivers/input/keyboard/Makefile	2007-04-30 19:46:54.000000000 -0300
+--- linux-2.6.21.orig/drivers/input/keyboard/Makefile	2007-05-17 20:04:53.000000000 +0200
++++ linux-2.6.21/drivers/input/keyboard/Makefile	2007-05-17 20:06:02.000000000 +0200
 @@ -19,4 +19,4 @@
  obj-$(CONFIG_KEYBOARD_OMAP)		+= omap-keypad.o
  obj-$(CONFIG_KEYBOARD_AAED2000)		+= aaed2000_kbd.o
@@ -78,7 +78,7 @@ Index: linux-2.6.21/drivers/input/keyboard/Makefile
 Index: linux-2.6.21/include/asm-arm/arch-pxa/kbd.h
 ===================================================================
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ linux-2.6.21/include/asm-arm/arch-pxa/kbd.h	2007-04-30 19:27:58.000000000 -0300
++++ linux-2.6.21/include/asm-arm/arch-pxa/kbd.h	2007-05-17 20:06:02.000000000 +0200
 @@ -0,0 +1,28 @@
 +/*
 + *  kbd_pxa.h
@@ -111,12 +111,15 @@ Index: linux-2.6.21/include/asm-arm/arch-pxa/kbd.h
 Index: linux-2.6.21/drivers/input/keyboard/pxakbd.c
 ===================================================================
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ linux-2.6.21/drivers/input/keyboard/pxakbd.c	2007-04-30 19:48:13.000000000 -0300
-@@ -0,0 +1,332 @@
++++ linux-2.6.21/drivers/input/keyboard/pxakbd.c	2007-05-18 16:59:36.000000000 +0200
+@@ -0,0 +1,385 @@
 +/*
 + * Driver for Motorola EZX phone "keyboard"
 + *
 + * (C) 2006 by Harald Welte <laforge@openezx.org>
++ *
++ * May, 2007 - Daniel Ribeiro <drwyrm@gmail.com>
++ * 		pm callbacks
 + */
 +
 +#include <linux/kernel.h>
@@ -134,7 +137,7 @@ Index: linux-2.6.21/drivers/input/keyboard/pxakbd.c
 +#include <asm/arch/irqs.h>
 +#include <asm/arch/pxa-regs.h>
 +
-+#if 1
++#if 0
 +#define DEBUGP(x, args ...) printk(x, ## args)
 +#else
 +#define DEBUGP(x, args ...)
@@ -148,6 +151,8 @@ Index: linux-2.6.21/drivers/input/keyboard/pxakbd.c
 +
 +	struct resource *res;
 +	unsigned int irq;
++	u_int32_t kpc;
++	u_int32_t kpkdi;
 +
 +	struct pxakbd_platform_data *pd;
 +};
@@ -320,6 +325,8 @@ Index: linux-2.6.21/drivers/input/keyboard/pxakbd.c
 +	int i;
 +	int ret = -ENOMEM;
 +
++	int rows, cols, n_direct;
++
 +	pxakbd = kzalloc(sizeof(*pxakbd), GFP_KERNEL);
 +	if (!pxakbd)
 +		goto out;
@@ -328,6 +335,7 @@ Index: linux-2.6.21/drivers/input/keyboard/pxakbd.c
 +	if (!input_dev)
 +		goto out_pxa;
 +
++	spin_lock_init(&pxakbd->lock);
 +	pxakbd->irq = platform_get_irq(pdev, 0);
 +	r = platform_get_resource(pdev, IORESOURCE_MEM, 0);
 +	if (!r || pxakbd->irq == NO_IRQ) {
@@ -343,7 +351,11 @@ Index: linux-2.6.21/drivers/input/keyboard/pxakbd.c
 +	pxakbd->pd = pdev->dev.platform_data;
 +	pxakbd->res = r;
 +
-+	input_dev->name = "PXA Keyboard";
++	rows = pxakbd->pd->matrix.rows;
++	cols = pxakbd->pd->matrix.cols;
++	n_direct = pxakbd->pd->direct.num;
++
++	input_dev->name = "pxa-keyboard";
 +	input_dev->phys = "pxakbd/input0";
 +	input_dev->id.bustype = BUS_HOST;
 +	input_dev->id.vendor = 0x0001;
@@ -353,13 +365,28 @@ Index: linux-2.6.21/drivers/input/keyboard/pxakbd.c
 +	input_dev->private = pxakbd;
 +
 +	input_dev->evbit[0] = BIT(EV_KEY)|BIT(EV_REP);
-+	input_dev->keycode = pxakbd->pd->matrix.keycode;
-+	input_dev->keycodesize = sizeof(unsigned char);
-+	input_dev->keycodemax = pxakbd->pd->matrix.rows
-+				*pxakbd->pd->matrix.cols;
 +
-+	for (i = 0; i < input_dev->keycodemax; i++)
++	input_dev->keycodesize = sizeof(unsigned char);
++	input_dev->keycodemax = (rows*cols)+n_direct;
++	input_dev->keycode = kmalloc(input_dev->keycodemax*input_dev->keycodesize,
++		      GFP_KERNEL);
++	if (!input_dev->keycode){
++	       ret = -ENOMEM;
++	       goto out_idev;
++	}
++
++	memcpy(input_dev->keycode, pxakbd->pd->matrix.keycode, rows*cols);
++
++	memcpy(input_dev->keycode+(rows*cols),
++		      pxakbd->pd->direct.keycode,
++		      n_direct);
++
++	for (i = 0; i < rows*cols; i++)
 +		set_bit(pxakbd->pd->matrix.keycode[i], input_dev->keybit);
++
++	for (i = 0; i < n_direct; i++)
++		set_bit(pxakbd->pd->direct.keycode[i], input_dev->keybit);
++
 +	clear_bit(0, input_dev->keybit);
 +
 +	if (request_irq(pxakbd->irq, pxakbd_interrupt, 0, "pxakbd", pxakbd)) {
@@ -403,6 +430,7 @@ Index: linux-2.6.21/drivers/input/keyboard/pxakbd.c
 +out_irq:
 +	free_irq(pxakbd->irq, pxakbd);
 +out_idev:
++	kfree(input_dev->keycode);
 +	input_free_device(input_dev);
 +out_pxa:
 +	kfree(pxakbd);
@@ -413,17 +441,42 @@ Index: linux-2.6.21/drivers/input/keyboard/pxakbd.c
 +static int pxakbd_remove(struct platform_device *pdev)
 +{
 +	struct pxakbd *pxakbd = platform_get_drvdata(pdev);
++
++	kfree(pxakbd->input->keycode);
 +	input_unregister_device(pxakbd->input);
 +	platform_set_drvdata(pdev, NULL);
 +	release_resource(pxakbd->res);
 +	free_irq(pxakbd->irq, pxakbd);
 +	kfree(pxakbd);
++
 +	return 0;
++}
++
++static int pxakbd_suspend(struct platform_device *pdev, pm_message_t state)
++{
++       struct pxakbd *pxakbd = platform_get_drvdata(pdev);
++
++       pxakbd->kpc = KPC;
++       pxakbd->kpkdi = KPKDI;
++
++       return 0;
++}
++
++static int pxakbd_resume(struct platform_device *pdev)
++{
++       struct pxakbd *pxakbd = platform_get_drvdata(pdev);
++
++       KPC = pxakbd->kpc;
++       KPKDI = pxakbd->kpkdi;
++
++       return 0;
 +}
 +
 +static struct platform_driver pxakbd_driver = {
 +	.probe		= &pxakbd_probe,
 +	.remove		= &pxakbd_remove,
++	.suspend	= &pxakbd_suspend,
++	.resume		= &pxakbd_resume,
 +	.driver		= {
 +		.name	= "pxa-keyboard",
 +	},
@@ -447,8 +500,8 @@ Index: linux-2.6.21/drivers/input/keyboard/pxakbd.c
 +MODULE_LICENSE("GPL");
 Index: linux-2.6.21/include/asm-arm/arch-pxa/pxa-regs.h
 ===================================================================
---- linux-2.6.21.orig/include/asm-arm/arch-pxa/pxa-regs.h	2007-04-30 19:39:30.000000000 -0300
-+++ linux-2.6.21/include/asm-arm/arch-pxa/pxa-regs.h	2007-04-30 19:42:34.000000000 -0300
+--- linux-2.6.21.orig/include/asm-arm/arch-pxa/pxa-regs.h	2007-05-17 20:06:01.000000000 +0200
++++ linux-2.6.21/include/asm-arm/arch-pxa/pxa-regs.h	2007-05-17 20:06:02.000000000 +0200
 @@ -2165,6 +2165,11 @@
  #define KPMK_MKP        (0x1 << 31)
  #define KPAS_SO         (0x1 << 31)

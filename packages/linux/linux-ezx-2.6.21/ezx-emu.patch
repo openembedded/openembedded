@@ -1,7 +1,7 @@
 Index: linux-2.6.21/arch/arm/mach-pxa/ezx-emu.c
 ===================================================================
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ linux-2.6.21/arch/arm/mach-pxa/ezx-emu.c	2007-05-02 23:30:15.000000000 -0300
++++ linux-2.6.21/arch/arm/mach-pxa/ezx-emu.c	2007-05-08 02:31:16.000000000 -0300
 @@ -0,0 +1,215 @@
 +/*
 + *  EMU Driver for Motorola EZX phones
@@ -28,9 +28,9 @@ Index: linux-2.6.21/arch/arm/mach-pxa/ezx-emu.c
 +extern int ezx_pcap_bit_set(u_int32_t, u_int8_t);
 +extern int ezx_pcap_read_bit(u_int32_t);
 +
-+#if defined CONFIG_PXA_EZX_EMU_USB
++#if defined CONFIG_EZX_EMU_USB
 +#define emu_switch_to_default() emu_switch_to_usb()
-+#elif defined CONFIG_PXA_EZX_EMU_UART
++#elif defined CONFIG_EZX_EMU_UART
 +#define emu_switch_to_default() emu_switch_to_uart()
 +#else
 +#define emu_switch_to_default() emu_switch_to_nothing()
@@ -220,27 +220,36 @@ Index: linux-2.6.21/arch/arm/mach-pxa/ezx-emu.c
 +MODULE_LICENSE("GPL");
 Index: linux-2.6.21/arch/arm/mach-pxa/Kconfig
 ===================================================================
---- linux-2.6.21.orig/arch/arm/mach-pxa/Kconfig	2007-05-02 21:31:22.000000000 -0300
-+++ linux-2.6.21/arch/arm/mach-pxa/Kconfig	2007-05-02 23:26:53.000000000 -0300
-@@ -94,6 +94,27 @@
+--- linux-2.6.21.orig/arch/arm/mach-pxa/Kconfig	2007-05-08 02:28:47.000000000 -0300
++++ linux-2.6.21/arch/arm/mach-pxa/Kconfig	2007-05-08 02:31:16.000000000 -0300
+@@ -73,6 +73,7 @@
  
  endchoice
  
-+config PXA_EZX_EMU
-+	bool "Motorola Enchanced Mini Usb"
 +
-+if PXA_EZX_EMU
+ endif
+ 
+ if PXA_EZX
+@@ -100,6 +101,28 @@
+ config EZX_PCAP
+ 	bool "PCAP Support"
+ 
++config EZX_EMU
++	bool "Motorola Enchanced Mini Usb"
++	depends on EZX_PCAP
++
++if EZX_EMU
 +
 +choice
 +	prompt "Select default EMU mode"
 +
-+config PXA_EZX_EMU_USB
++config EZX_EMU_USB
 +	bool "USB"
 +
-+config PXA_EZX_EMU_UART
++config EZX_EMU_UART
 +	bool "UART"
 +
-+config PXA_EZX_EMU_NOTHING
++config EZX_EMU_NOTHING
 +	bool "nothing"
 +
 +endchoice
@@ -250,31 +259,11 @@ Index: linux-2.6.21/arch/arm/mach-pxa/Kconfig
  endif
  
  endmenu
-Index: linux-2.6.21/arch/arm/mach-pxa/Makefile
-===================================================================
---- linux-2.6.21.orig/arch/arm/mach-pxa/Makefile	2007-05-02 23:26:52.000000000 -0300
-+++ linux-2.6.21/arch/arm/mach-pxa/Makefile	2007-05-03 17:41:40.000000000 -0300
-@@ -19,6 +19,7 @@
- obj-$(CONFIG_MACH_POODLE)	+= poodle.o corgi_ssp.o
- obj-$(CONFIG_MACH_TOSA)         += tosa.o
- obj-$(CONFIG_PXA_EZX)		+= ezx.o ezx_lcd.o ezx_ssp.o ezx-pcap.o ezx-mci.o
-+obj-$(CONFIG_PXA_EZX_EMU)	+= ezx-emu.o
- 
- # Support for blinky lights
- led-y := leds.o
 Index: linux-2.6.21/arch/arm/mach-pxa/ezx.c
 ===================================================================
---- linux-2.6.21.orig/arch/arm/mach-pxa/ezx.c	2007-05-02 23:26:52.000000000 -0300
-+++ linux-2.6.21/arch/arm/mach-pxa/ezx.c	2007-05-03 17:25:08.000000000 -0300
-@@ -35,6 +35,7 @@
- #include <asm/arch/ohci.h>
- #include <asm/arch/pxa-regs.h>
- 
-+
- #include "ezx.h"
- #include "generic.h"
- #include <linux/tty.h>
-@@ -91,6 +92,30 @@
+--- linux-2.6.21.orig/arch/arm/mach-pxa/ezx.c	2007-05-08 02:28:47.000000000 -0300
++++ linux-2.6.21/arch/arm/mach-pxa/ezx.c	2007-05-08 02:31:16.000000000 -0300
+@@ -150,11 +150,35 @@
  	.resource	= ezxpcap_resources,
  };
  
@@ -301,15 +290,24 @@ Index: linux-2.6.21/arch/arm/mach-pxa/ezx.c
 +	.num_resources	= ARRAY_SIZE(ezxemu_resources),
 +	.resource	= ezxemu_resources,
 +};
-+
- /* OHCI Controller */
  
- static int ezx_ohci_init(struct device *dev)
-@@ -316,6 +341,7 @@
+ static struct platform_device *devices[] __initdata = {
  	&ezxssp_device,
- 	&ezxpcap_device,
  	&ezxbp_device,
+ 	&ezxpcap_device,
 +	&ezxemu_device,
  };
  
- static void __init a780_init(void)
+ /* PM */
+Index: linux-2.6.21/arch/arm/mach-pxa/Makefile
+===================================================================
+--- linux-2.6.21.orig/arch/arm/mach-pxa/Makefile	2007-05-08 02:28:47.000000000 -0300
++++ linux-2.6.21/arch/arm/mach-pxa/Makefile	2007-05-08 02:31:16.000000000 -0300
+@@ -24,6 +24,7 @@
+ obj-$(CONFIG_PXA_EZX_E2)	+= ezx-e2.o
+ obj-$(CONFIG_EZX_BP)		+= ezx-bp.o
+ obj-$(CONFIG_EZX_PCAP)		+= ezx-pcap.o
++obj-$(CONFIG_EZX_EMU)		+= ezx-emu.o
+ 
+ # Support for blinky lights
+ led-y := leds.o
