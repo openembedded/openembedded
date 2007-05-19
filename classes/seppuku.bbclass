@@ -116,12 +116,12 @@ def seppuku_find_bug_report(opener, query, product, component, bugname):
     and the status.
 
     @param opener = urllib2 opener
-    @param query  = e.g. https://bugzilla.openmoko.org/cgi-bin/bugzilla/query.cgi?
+    @param query  = e.g. http://bugs.openembedded.org/query.cgi?
     @param product = search for this product
     @param component = search for this component
     @param bugname = the bug to search for
 
-    https://bugzilla.openmoko.org/cgi-bin/bugzilla/buglist.cgi?short_desc_type=substring&short_desc=manual+test+bug&product=OpenMoko&emailreporter2=1&emailtype2=substring&email2=freyther%40yahoo.com
+    http://bugs.openembedded.org/buglist.cgi?short_desc_type=substring&short_desc=manual+test+bug&product=Openembedded&emailreporter2=1&emailtype2=substring&email2=freyther%40yahoo.com
     but it does not support ctype=csv...
     """
     result = opener.open("%(query)s?product=%(product)s&component=%(component)s&short_desc_type=substring&short_desc=%(bugname)s" % vars())
@@ -142,7 +142,7 @@ def seppuku_reopen_bug(poster, file, product, component, bug_number, bugname, te
 
     Same as with opening a new report, some bits need to be inside the url
 
-    http://bugs.openembedded.org/process_bug.cgi?id=239&bug_file_loc=http%3A%2F%2F&version=2007&longdesclength=2&product=OpenMoko&component=autobuilds&comment=bla&priority=P2&bug_severity=normal&op_sys=Linux&rep_platform=Neo1973&knob=reopen&target_milestone=Phase+0&short_desc=foo
+    http://bugs.openembedded.org/process_bug.cgi?id=239&bug_file_loc=http%3A%2F%2F&version=Angstrom&longdesclength=2&product=Openembedded&component=Build&comment=bla&priority=P2&bug_severity=normal&op_sys=Linux&rep_platform=Other&knob=reopen&short_desc=foo
     """
 
     import urllib2
@@ -177,7 +177,7 @@ def seppuku_file_bug(poster, file, product, component, bugname, text):
     Create a completely new bug report
 
 
-    http://bugs.openembedded.org/post_bug.cgi?bug_file_loc=http%3A%2F%2F&version=2007&product=OpenMoko&component=autobuilds&short_desc=foo&comment=bla&priority=P2&bug_severity=normal&op_sys=Linux&rep_platform=Neo1973
+    http://bugs.openembedded.org/post_bug.cgi?bug_file_loc=http%3A%2F%2F&version=Angstrom&product=Openembedded&component=Build&short_desc=foo&comment=bla&priority=P2&bug_severity=normal&op_sys=Linux&rep_platform=Other
 
     You are forced to add some default values to the bugzilla query and stop with '&'
 
