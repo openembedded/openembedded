@@ -1,13 +1,14 @@
 Index: linux-2.6.21/drivers/char/Kconfig
 ===================================================================
---- linux-2.6.21.orig/drivers/char/Kconfig	2007-04-26 20:07:19.000000000 +0200
-+++ linux-2.6.21/drivers/char/Kconfig	2007-04-26 20:09:29.000000000 +0200
-@@ -1071,5 +1071,17 @@
+--- linux-2.6.21.orig/drivers/char/Kconfig	2007-05-06 17:07:33.000000000 -0300
++++ linux-2.6.21/drivers/char/Kconfig	2007-05-06 17:10:53.000000000 -0300
+@@ -1071,5 +1071,18 @@
  	  /sys/devices/platform/telco_clock, with a number of files for
  	  controlling the behavior of this hardware.
  
 +config TS0710_MUX
 +	tristate "GSM TS 07.10 Multiplex driver"
++	depends on EZX_BP
 +	help
 +	  This implements the GSM 07.10 multiplex.
 +
@@ -22,8 +23,8 @@ Index: linux-2.6.21/drivers/char/Kconfig
  
 Index: linux-2.6.21/drivers/char/Makefile
 ===================================================================
---- linux-2.6.21.orig/drivers/char/Makefile	2007-04-26 20:07:19.000000000 +0200
-+++ linux-2.6.21/drivers/char/Makefile	2007-04-26 20:09:29.000000000 +0200
+--- linux-2.6.21.orig/drivers/char/Makefile	2007-05-06 17:07:33.000000000 -0300
++++ linux-2.6.21/drivers/char/Makefile	2007-05-06 17:10:21.000000000 -0300
 @@ -104,6 +104,9 @@
  obj-$(CONFIG_HANGCHECK_TIMER)	+= hangcheck-timer.o
  obj-$(CONFIG_TCG_TPM)		+= tpm/
@@ -37,7 +38,7 @@ Index: linux-2.6.21/drivers/char/Makefile
 Index: linux-2.6.21/drivers/char/ts0710.h
 ===================================================================
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ linux-2.6.21/drivers/char/ts0710.h	2007-04-26 20:09:29.000000000 +0200
++++ linux-2.6.21/drivers/char/ts0710.h	2007-05-06 17:10:21.000000000 -0300
 @@ -0,0 +1,368 @@
 +/*
 + * File: ts0710.h
@@ -410,7 +411,7 @@ Index: linux-2.6.21/drivers/char/ts0710.h
 Index: linux-2.6.21/drivers/char/ts0710_mux.c
 ===================================================================
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ linux-2.6.21/drivers/char/ts0710_mux.c	2007-04-26 20:09:29.000000000 +0200
++++ linux-2.6.21/drivers/char/ts0710_mux.c	2007-05-06 17:10:21.000000000 -0300
 @@ -0,0 +1,3966 @@
 +/*
 + * File: mux_driver.c
@@ -4381,7 +4382,7 @@ Index: linux-2.6.21/drivers/char/ts0710_mux.c
 Index: linux-2.6.21/drivers/char/ts0710_mux.h
 ===================================================================
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ linux-2.6.21/drivers/char/ts0710_mux.h	2007-04-26 20:09:29.000000000 +0200
++++ linux-2.6.21/drivers/char/ts0710_mux.h	2007-05-06 17:10:21.000000000 -0300
 @@ -0,0 +1,103 @@
 +/*
 + * mux_macro.h
@@ -4489,7 +4490,7 @@ Index: linux-2.6.21/drivers/char/ts0710_mux.h
 Index: linux-2.6.21/drivers/char/ts0710_mux_usb.c
 ===================================================================
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ linux-2.6.21/drivers/char/ts0710_mux_usb.c	2007-04-26 20:09:29.000000000 +0200
++++ linux-2.6.21/drivers/char/ts0710_mux_usb.c	2007-05-06 17:10:21.000000000 -0300
 @@ -0,0 +1,868 @@
 +/*
 + * linux/drivers/usb/ipcusb.c
@@ -5362,7 +5363,7 @@ Index: linux-2.6.21/drivers/char/ts0710_mux_usb.c
 Index: linux-2.6.21/drivers/char/ts0710_mux_usb.h
 ===================================================================
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ linux-2.6.21/drivers/char/ts0710_mux_usb.h	2007-04-26 20:09:29.000000000 +0200
++++ linux-2.6.21/drivers/char/ts0710_mux_usb.h	2007-05-06 17:10:21.000000000 -0300
 @@ -0,0 +1,29 @@
 +/*
 + * linux/drivers/usb/ipcusb.h

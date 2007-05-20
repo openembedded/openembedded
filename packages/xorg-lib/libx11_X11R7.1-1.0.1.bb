@@ -20,6 +20,5 @@ do_compile() {
 	 unset CC LD CXX CCLD CFLAGS CPPFLAGS LDFLAGS CXXFLAGS
 	 cd src/util; touch makekeys-makekeys.o ; ${BUILD_CC} ${BUILD_CFLAGS} makekeys.c -o makekeys
 	) || exit 1
-		rm -f ${STAGING_INCDIR}/X11/Xlib.h
 	oe_runmake
 }

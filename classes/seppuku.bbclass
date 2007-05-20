@@ -32,7 +32,7 @@ def seppuku_login(opener, login, user, password):
     the resulting page then
 
     @param opened = cookie enabled urllib2 opener
-    @param login = http://bugzilla.openmoko.org/cgi-bin/bugzilla/query.cgi?
+    @param login = http://bugs.openembedded.org/query.cgi?
     @param user  = Your username
     @param password  = Your password
     """
@@ -110,20 +110,25 @@ def seppuku_find_bug_report_old():
 
 
 
-def seppuku_find_bug_report(opener, query, product, component, bugname):
+def seppuku_find_bug_report(debug_file, opener, query, product, component, bugname):
     """
     Find a bug report with the sane name and return the bug id
     and the status.
 
     @param opener = urllib2 opener
-    @param query  = e.g. https://bugzilla.openmoko.org/cgi-bin/bugzilla/query.cgi?
+    @param query  = e.g. http://bugs.openembedded.org/query.cgi?
     @param product = search for this product
     @param component = search for this component
     @param bugname = the bug to search for
 
-    https://bugzilla.openmoko.org/cgi-bin/bugzilla/buglist.cgi?short_desc_type=substring&short_desc=manual+test+bug&product=OpenMoko&emailreporter2=1&emailtype2=substring&email2=freyther%40yahoo.com
+    http://bugs.openembedded.org/buglist.cgi?short_desc_type=substring&short_desc=manual+test+bug&product=Openembedded&emailreporter2=1&emailtype2=substring&email2=freyther%40yahoo.com
     but it does not support ctype=csv...
     """
+    import urllib
+    product   = urllib.quote(product)
+    component = urllib.quote(component)
+    bugname   = urllib.quote(bugname)
+
     result = opener.open("%(query)s?product=%(product)s&component=%(component)s&short_desc_type=substring&short_desc=%(bugname)s" % vars())
     if result.code != 200:
         raise "Can not query the bugzilla at all"
@@ -131,8 +136,13 @@ def seppuku_find_bug_report(opener, query, product, component, bugname):
     scanner = seppuku_find_bug_report_old()
     scanner.feed(txt)
     if len(scanner.result()) == 0:
+        print >> debug_file, "Scanner failed to scan the html site"
+        print >> debug_file, "%(query)s?product=%(product)s&component=%(component)s&short_desc_type=substring&short_desc=%(bugname)s" % vars()
+        print >> debug_file, txt
         return (False,None)
     else: # silently pick the first result
+        print >> debug_file, "Result of bug search is "
+        print >> debug_file, txt
         (number,status) = scanner.result()[0]
         return (not status in ["CLOS", "RESO", "VERI"],number)
 
@@ -142,7 +152,7 @@ def seppuku_reopen_bug(poster, file, product, component, bug_number, bugname, te
 
     Same as with opening a new report, some bits need to be inside the url
 
-    http://bugzilla.openmoko.org/cgi-bin/bugzilla/process_bug.cgi?id=239&bug_file_loc=http%3A%2F%2F&version=2007&longdesclength=2&product=OpenMoko&component=autobuilds&comment=bla&priority=P2&bug_severity=normal&op_sys=Linux&rep_platform=Neo1973&knob=reopen&target_milestone=Phase+0&short_desc=foo
+    http://bugs.openembedded.org/process_bug.cgi?id=239&bug_file_loc=http%3A%2F%2F&version=Angstrom&longdesclength=2&product=Openembedded&component=Build&comment=bla&priority=P2&bug_severity=normal&op_sys=Linux&rep_platform=Other&knob=reopen&short_desc=foo
     """
 
     import urllib2
@@ -177,7 +187,7 @@ def seppuku_file_bug(poster, file, product, component, bugname, text):
     Create a completely new bug report
 
 
-    http://bugzilla.openmoko.org/cgi-bin/bugzilla/post_bug.cgi?bug_file_loc=http%3A%2F%2F&version=2007&product=OpenMoko&component=autobuilds&short_desc=foo&comment=bla&priority=P2&bug_severity=normal&op_sys=Linux&rep_platform=Neo1973
+    http://bugs.openembedded.org/post_bug.cgi?bug_file_loc=http%3A%2F%2F&version=Angstrom&product=Openembedded&component=Build&short_desc=foo&comment=bla&priority=P2&bug_severity=normal&op_sys=Linux&rep_platform=Other
 
     You are forced to add some default values to the bugzilla query and stop with '&'
 
@@ -206,12 +216,17 @@ def seppuku_file_bug(poster, file, product, component, bugname, text):
         print e
         return False
 
-    if result.code != 200:
-        return False
+    # scan the result for a bug number
+    # it will look like 
+    # '<a href="show_bug.cgi?id=308">Back To BUG# 308</a>'
+    import re
+    res = re.findall(("\>Back To BUG\# (?P<int>\d+)\</a\>"), result.read() )
+    if result.code != 200 or len(res) != 1:
+        return None 
     else:
-        return True
+        return res[0] 
 
-def seppuku_create_attachment(poster, attach_query, product, component, bug_number, text, file):
+def seppuku_create_attachment(debug, poster, attach_query, product, component, bug_number, text, file):
     """
 
     Create a new attachment for the failed report
@@ -235,7 +250,7 @@ def seppuku_create_attachment(poster, attach_query, product, component, bug_numb
         print e
         return False
 
-    print result.read()
+    print >> debug, result.read()
     if result.code != 200:
         return False
     else:
@@ -284,12 +299,15 @@ python seppuku_eventhandler() {
         passw   = bb.data.getVar("SEPPUKU_PASS",  data, True)
         product = bb.data.getVar("SEPPUKU_PRODUCT", data, True)
         component = bb.data.getVar("SEPPUKU_COMPONENT", data, True)
+        # evil hack to figure out what is going on
+        debug_file = open(os.path.join(bb.data.getVar("TMPDIR", data, True),"..","seppuku-log"),"a")
 
         if not seppuku_login(opener, login, user, passw):
             bb.note("Login to bugzilla failed")
+            print >> debug_file, "Login to bugzilla failed"
             return NotHandled
         else:
-            print "Logged into the box"
+            print >> debug_file, "Logged into the box"
 
         file = None
         if name == "TaskFailed":
@@ -300,34 +318,44 @@ python seppuku_eventhandler() {
             log_file = glob.glob("%s/log.%s.*" % (bb.data.getVar('T', event.data, True), event.task))
             text     = "The package failed to build at %s" % bb.data.getVar('DATETIME', data, True) 
             if len(log_file) != 0:
-                file     = open(log_file[0], 'r')
+                print >> debug_file, "Adding log file %s" % log_file[0]
+                file = open(log_file[0], 'r')
+            else:
+                print >> debug_file, "No log file found for the glob"
         elif name == "NoProvider":
             bugname = "noprovider for %s runtime: %s" % (event.getItem, event.getisRuntime)
             text    = "Please fix it"
         else:
+            print >> debug_file, "Unknown name '%s'" % name
             assert False
 
-        (bug_open, bug_number) = seppuku_find_bug_report(opener, query, product, component, bugname)
-
-        bb.note("Bug is open: %s and bug number: %s" % (bug_open, bug_number))
+        (bug_open, bug_number) = seppuku_find_bug_report(debug_file, opener, query, product, component, bugname)
+        print >> debug_file, "Bug is open: %s and bug number: %s" % (bug_open, bug_number)
 
         # The bug is present and still open, no need to attach an error log
         if bug_number and bug_open:
-            bb.note("The bug is known as '%s'" % bug_number)
+            print >> debug_file, "The bug is known as '%s'" % bug_number
             return NotHandled
 
         if bug_number and not bug_open:
             if not seppuku_reopen_bug(poster, reopen, product, component, bug_number, bugname, text):
-                bb.note("Failed to reopen the bug report")
-        elif not seppuku_file_bug(poster, newbug, product, component, bugname, text):
-            bb.note("Filing a bugreport failed")
+                print >> debug_file, "Failed to reopen the bug report"
+            else:
+                print >> debug_file, "Reopened the bug report"
+        else:	
+            bug_number = seppuku_file_bug(poster, newbug, product, component, bugname, text)
+            if not bug_number:
+                print >> debug_file, "Filing a bugreport failed"
         else:
-            # get the new bug number and create an attachment
-            (bug_open, bug_number) = seppuku_find_bug_report(opener, query, product, component, bugname)
+            print >> debug_file, "The new bug_number: '%s'" % bug_number
 
         if file:
-            if not seppuku_create_attachment(poster, attach, product, component, bug_number, text, file):
-                bb.note("Failed to attach the build log")
+            if not seppuku_create_attachment(debug_file, poster, attach, product, component, bug_number, text, file):
+                print >> debug_file, "Failed to attach the build log"
+            else:
+                print >> debug_file, "Created an attachment for '%s' '%s' '%s'" % (product, component, bug_number)
+        else:
+            print >> debug_file, "Not trying to create an attachment"
 
     return NotHandled
 }

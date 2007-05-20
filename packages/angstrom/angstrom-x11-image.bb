@@ -1,6 +1,6 @@
 #Angstrom X11 image
 LICENSE = "MIT"
-PR = "r9"
+PR = "r10"
 
 PREFERRED_PROVIDER_libgpewidget 	?= "libgpewidget"
 PREFERRED_PROVIDER_tslib 		?= "tslib"
@@ -8,7 +8,9 @@ PREFERRED_PROVIDER_virtual/libsdl 	?= "libsdl-x11"
 PREFERRED_PROVIDER_virtual/libxine 	?= "libxine-x11"
 PREFERRED_PROVIDER_virtual/libx11       ?= "diet-x11"
 
-ANGSTROM_EXTRA_INSTALL += " "
+ANGSTROM_EXTRA_INSTALL += " \
+                           ${@base_contains("MACHINE_FEATURES", "phone", "openmoko-dialer", "",d)} \
+			  " 
 XSERVER ?= "xserver-kdrive-fbdev"
 
 export IMAGE_BASENAME = "x11-image"

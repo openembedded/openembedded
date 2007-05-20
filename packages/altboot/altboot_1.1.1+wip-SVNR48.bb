@@ -15,7 +15,7 @@ LICENSE = "GPL"
 
 RRECOMMENDS_${PN} = "e2fsprogs-e2fsck dosfstools"
 RRECOMMENDS_${PN}_append_akita = " kexec-tools"
-RRECOMMENDS_${PN}_append_spitz = " kexec-tools"
+RRECOMMENDS_${PN}_append_spitz = " kexec-tools kernel-module-jffs2"
 RRECOMMENDS_${PN}_append_c7x0 = " kexec-tools"
 
 RDEPENDS_${PN} = "${PN}-conf"
@@ -23,8 +23,8 @@ RDEPENDS_${PN}-conf = "${PN}"
 
 ######################################################################################
 
-SVN_REV = "44"
-PR = "r0"
+SVN_REV = "48"
+PR = "r1"
 
 ######################################################################################
 
@@ -34,7 +34,7 @@ PACKAGE_ARCH_${PN} = "${MACHINE}"
 PACKAGE_ARCH_${PN}-doc = "all"
 PACKAGE_ARCH_${PN}-conf = "${MACHINE}"
 
-SRC_URI = "svn://hentges.net/altboot;module=trunk;rev=${SVN_REV}"
+SRC_URI = "svn://hentges.net/public/altboot;module=trunk;rev=${SVN_REV}"
 
 S = "${WORKDIR}/trunk/"
 
@@ -121,4 +121,3 @@ pkg_postrm_${PN}() {
 	
 	update-alternatives --remove init /sbin/init.altboot
 }
-

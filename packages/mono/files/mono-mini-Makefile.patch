@@ -1,0 +1,11 @@
+--- mono-1.2.3.20070219.orig/mono/mini/Makefile.am	2007-02-20 01:21:57.000000000 +0100
++++ mono-1.2.3.20070219/mono/mini/Makefile.am	2007-02-20 01:22:45.000000000 +0100
+@@ -409,7 +409,7 @@
+ 	$(GENMDESC_PRG) $(srcdir)/cpu-mips.md cpu-mips.h mips_desc
+ 
+ inssel.c inssel.h: $(BURGSRC)
+-	$(monodir)/mono/monoburg/monoburg -c 1 -p -e $(BURGSRC) -d inssel.h -s inssel.c
++	monoburg -c 1 -p -e $(BURGSRC) -d inssel.h -s inssel.c
+ 
+ testi: mono test.exe
+ 	$(RUNTIME) -v -v --ncompile 1 --compile Test:$(mtest) test.exe
