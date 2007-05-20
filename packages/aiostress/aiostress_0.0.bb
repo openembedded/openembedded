@@ -1,8 +1,9 @@
 DESCRIPTION = "Asynchronous I/O stress util"
 LICENSE = "GPLv2"
 DEPENDS = "libaio"
+PR="r1"
 
-SRC_URI = "ftp://ftp.suse.com/pub/people/mason/utils/aio-stress.c;md5sum=727e5fc3566837b3ea72f887d048769b"
+SRC_URI = "http://mirrors.easynews.com/linux/suse/people/mason/utils/aio-stress.c"
 
 S = "${WORKDIR}"
 
