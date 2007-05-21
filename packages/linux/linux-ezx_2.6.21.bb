@@ -63,7 +63,10 @@ ALLOW_EMPTY  = "1"
 COMPATIBLE_HOST = "arm.*-linux"
 COMPATIBLE_MACHINE = '(a780|e680)'
 
-CMDLINE_CON = "console=ttyS2,115200n8 console=tty1 noinitrd"
+# For now the code for serial console is disabled in compress.c
+#CMDLINE_CON = "console=ttyS2,115200n8 console=tty1 noinitrd"
+CMDLINE_CON = "console=tty1 noinitrd"
+
 CMDLINE_ROOT = "root=/dev/mmcblk0p1 rootfstype=ext3 rootdelay=5"
 # uncomment if you want to boot over NFS
 #CMDLINE_ROOT = "root=/dev/nfs nfsroot=192.168.1.10:/export/opie-image rootdelay=5 3"
