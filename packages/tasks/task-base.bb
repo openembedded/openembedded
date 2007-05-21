@@ -1,5 +1,5 @@
 DESCRIPTION = "Merge machine and distro options to create a basic machine task/package"
-PR = "r30"
+PR = "r31"
 
 PACKAGES = 'task-boot \
             task-base \
@@ -54,7 +54,7 @@ DISTRO_DEV_MANAGER ?= "${@base_contains("MACHINE_FEATURES", "kernel26",  "udev",
 #
 # sysvinit, upstart
 #
-DISTRO_INIT_MANAGER ?= "sysvinit"
+DISTRO_INIT_MANAGER ?= "sysvinit sysvinit-pidof"
 
 #
 # tinylogin, getty
