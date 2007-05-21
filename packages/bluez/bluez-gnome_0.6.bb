@@ -1,7 +1,7 @@
 DESCRIPTION = "BLuetooth configuration applet"
 LICENSE = "GPL+LGPL"
 
-DEPENDS = "bluez-libs dbus-glib gconf libnotify gtk+ openobex"
+DEPENDS = "dbus-glib gconf libnotify gtk+"
 
 SRC_URI = "http://bluez.sourceforge.net/download/${P}.tar.gz"
 
