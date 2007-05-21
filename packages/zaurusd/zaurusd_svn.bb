@@ -4,12 +4,14 @@ LICENSE = "GPL"
 DEPENDS = "tslib"
 RDEPENDS = "procps"
 PV = "0.0+svn${SRCDATE}"
-PR = "r7"
+PR = "r8"
 
 SRC_URI = "svn://svn.o-hand.com/repos/misc/trunk;module=zaurusd;proto=http \
            file://zaurus-hinge.in \
 	   file://add-poodle.patch;patch=1 \
-	   file://zaurus-hinge.matchbox-portrait \
+	   file://alsa-cxx00-default.state.patch;patch=1 \
+	   file://disable-alsa-handling.patch;patch=1 \
+	   file://zaurus-hinge.matchbox-portrait \	   
 	   file://zaurus-hinge.matchbox-landscape"
 
 
