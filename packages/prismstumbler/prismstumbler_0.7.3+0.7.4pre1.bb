@@ -1,5 +1,5 @@
 SECTION = "x11/network"
-PR = "r1"
+PR = "r2"
 
 PACKAGES = "prismstumbler prismstumbler-frontend prismstumbler-doc"
 DESCRIPTION = "Prismstumbler wireless LAN scanner"
@@ -10,7 +10,8 @@ RDEPENDS = "wireless-tools"
 RRECOMMENDS = "gpsd"
 
 SRC_URI = "http://projects.linuxtogo.org/frs/download.php/14/${PN}-0.7.4pre1.tar.gz \
-           file://gpsapi.patch;patch=1"
+           file://gpsapi.patch;patch=1 \
+           file://wireless.patch;patch=1"
 
 S = "${WORKDIR}/${PN}-0.7.4pre1"
 
