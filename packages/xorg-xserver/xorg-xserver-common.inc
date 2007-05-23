@@ -47,6 +47,10 @@ PACKAGES =+ "${PN}-multimedia ${PN}-configtools"
 FILES_${PN}-multimedia = "${libdir}/xorg/modules/multimedia/*.so"
 FILES_${PN}-configtools = "${bindir}/xorgconfig ${bindir}/xorgcfg"
 
+do_configure_prepend() {
+        sed -i -e s:/usr/include/drm:${STAGING_INCDIR}/drm:g hw/xfree86/os-support/linux/Makefile.am 
+}
+
 do_stage() {
 	autotools_stage_all
 }
