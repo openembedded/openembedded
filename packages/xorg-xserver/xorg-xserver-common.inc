@@ -42,6 +42,15 @@ FILES_${PN}-doc += "${libdir}/X11/doc /usr/share/X11/xkb/compiled/README.compile
 FILES_${PN}-dbg += "${libdir}/xorg/modules/.debug ${libdir}/xorg/modules/*/.debug"
 FILES_${PN}-dev += "${libdir}/xorg/modules/*.la ${libdir}/xorg/modules/*/*.la"
 
+PACKAGES =+ "${PN}-multimedia ${PN}-configtools"
+
+FILES_${PN}-multimedia = "${libdir}/xorg/modules/multimedia/*.so"
+FILES_${PN}-configtools = "${bindir}/xorgconfig ${bindir}/xorgcfg"
+
+do_configure_prepend() {
+        sed -i -e s:/usr/include/drm:${STAGING_INCDIR}/drm:g hw/xfree86/os-support/linux/Makefile.am 
+}
+
 do_stage() {
 	autotools_stage_all
 }
