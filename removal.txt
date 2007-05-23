@@ -25,3 +25,10 @@ Maintainer:     None
 Reason:         Obsoleted by task-base
 Proposed by:    Koen Kooi
 Note:		Moved to packages/obsolete/tasks on 2006-12-22
+
+Package Name:   gtkmm-2.4.8
+Removal Date:   2007-06-10
+Maintainer:     Joaquim Duran (joaquinduran@adtelecom.es)
+Reason:         fails compilation for at least half a year
+                newer version available
+Note:           Will contact Joaquim before dropping.
