@@ -3,6 +3,7 @@ HOMEPAGE = "http://www.gnu.org/software/classpath/"
 LICENSE = "Classpath"
 PRIORITY = "optional"
 SECTION = "libs"
+PR = "r1"
 
 SRCDATE_${PN} ?= "20070501"
 PV = "0.93+cvs${SRCDATE}"
@@ -12,7 +13,7 @@ RDEPENDS_${PN} = "classpath-common (>= ${PV})"
 RCONFLICTS_${PN} = "classpath-minimal"
 
 SRC_URI = "cvs://anonymous@cvs.savannah.gnu.org/sources/classpath;module=classpath \
-           file://disable-automake-checks.patch;patch=1"
+           file://disable-automake-checks-v2.patch;patch=1"
 
 S = "${WORKDIR}/classpath"
 
