@@ -14,41 +14,41 @@ ALLOW_EMPTY = "1"
 
 python __anonymous () {
 
-   import bb
+	import bb
 
    #Get all the packages we can build/exist in OE
-   package_list =  bb.data.getVar('PACKAGES_LIST', d) or "none"
-   package_list=package_list.split()
+	package_list =  bb.data.getVar('PACKAGES_LIST', d) or "none"
+	package_list=package_list.split()
 
    #Get the packages that are broken on all architectures
-   broken_package_list =  bb.data.expand('${OPLINUX_BROKEN_PACKAGES}', d)
+	broken_package_list =  bb.data.expand('${OPLINUX_BROKEN_PACKAGES}', d)
 
    # Get the arch we are building for
-   building_arch = bb.data.getVar('FEED_ARCH',d) 
+	building_arch = bb.data.getVar('FEED_ARCH',d) 
 
    #Now add the broken packages list the ones that fail for the arch we build now
-   if (building_arch=="i468") or (building_arch=="i568") or (building_arch=="i668"):
-       broken_package_list = broken_package_list + bb.data.expand('${OPLINUX_BROKEN_PACKAGES_ARCH_x8}', d)
+	if (building_arch=="i468") or (building_arch=="i568") or (building_arch=="i668"):
+		broken_package_list = broken_package_list + bb.data.expand('${OPLINUX_BROKEN_PACKAGES_ARCH_x8}', d)
 
-   elif  (building_arch=="ppc405"):
-        broken_package_list = broken_package_list + bb.data.expand('${OPLINUX_BROKEN_PACKAGES_ARCH_PPC}', d)
+	elif  (building_arch=="ppc405"):
+		broken_package_list = broken_package_list + bb.data.expand('${OPLINUX_BROKEN_PACKAGES_ARCH_PPC}', d)
 
-   else:       
-        broken_package_list = broken_package_list + bb.data.expand('${OPLINUX_BROKEN_PACKAGES_ARCH_POWERPC}', d)
+	elif (building_arch=="ppc603e"):       
+		broken_package_list = broken_package_list + bb.data.expand('${OPLINUX_BROKEN_PACKAGES_ARCH_POWERPC}', d)
 
 
-   for chk_package in package_list :
-       build_package="yes"
-       if chk_package in broken_package_list:
-          build_package="no"
-       else :
-             bb.data.setVar('DEPENDS', (bb.data.getVar('DEPENDS', d) + chk_package +" "), d)   
+	for chk_package in package_list :
+		build_package="yes"
+		if chk_package in broken_package_list:
+			build_package="no"
+		else :
+			bb.data.setVar('DEPENDS', (bb.data.getVar('DEPENDS', d) + chk_package +" "), d)   
 
 #add the OPLinux extra packages to the DEPENDS list
-   bb.data.setVar('DEPENDS', (bb.data.getVar('DEPENDS', d) + bb.data.getVar('OPLINUX_EXTRA_PACKAGES', d)), d)   
+	bb.data.setVar('DEPENDS', (bb.data.getVar('DEPENDS', d) + bb.data.getVar('OPLINUX_EXTRA_PACKAGES', d)), d)   
 
 
-   bb.data.setVar('DEPENDS', (bb.data.getVar('DEPENDS', d) + "package-index"), d)   
+	bb.data.setVar('DEPENDS', (bb.data.getVar('DEPENDS', d) + "package-index"), d)   
 }
 
 
