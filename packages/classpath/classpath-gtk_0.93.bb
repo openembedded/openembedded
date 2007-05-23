@@ -4,6 +4,8 @@ DEPENDS = "glib-2.0 gtk+ cairo gconf libart-lgpl pango libxtst jikes-native zip-
 RDEPENDS_${PN} = "classpath-common (>= ${PV})"
 RCONFLICTS_${PN} = "classpath-minimal"
 
+SRC_URI += "file://gconf_version.patch;patch=1"
+
 EXTRA_OECONF = "--with-jikes --disable-plugin --disable-dssi"
 
 PACKAGES = "classpath-dev classpath-doc classpath-common classpath-examples classpath-tools ${PN}"

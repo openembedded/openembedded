@@ -1,7 +1,10 @@
-inherit native
 require classpath.inc
 
 DEPENDS = "glib-2.0 libart-lgpl pango libxtst jikes-native zip-native"
+
+SRC_URI += "file://gconf_version.patch;patch=1"
+
+inherit native
 
 EXTRA_OECONF = "--with-jikes --disable-gconf-peer --disable-gtk-peer --disable-plugin --disable-dssi --disable-examples"
 

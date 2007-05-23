@@ -8,7 +8,7 @@ PBN = "classpath"
 
 SRC_URI = "${GNU_MIRROR}/classpath/${PBN}-${PV}.tar.gz \
            file://disable-automake-checks.patch;patch=1 \
-	   file://gconf_version.patch;patch=1"
+           file://fix-endian-arm-floats.patch;patch=1"
 
 S = "${WORKDIR}/${PBN}-${PV}"
 
