@@ -173,10 +173,10 @@ Person:	    Rolf 'Laibsch' Leggewie
 Mail:       OE-recipes@rolf.leggewie.biz
 Website:    http://oz.leggewie.org
 Interests:  Japanese on the Zaurus
-Distros:    openzaurus
-Machines:   collie
+Distros:    Ångström
+Machines:   collie, spitz
 Recipes:    anthy, nunome, uim*, granule, qpobox*, qte-font-unifont*
-Recipes:    qpf-unismall, poboxserver, imkit*
+Recipes:    qpf-unismall, qpobox, poboxserver, imkit*, scim
 
 Person:     Shane Volpe
 Mail:       shanevolpe@gmail.com
