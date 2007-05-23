@@ -8,7 +8,7 @@ SRC_URI = "http://www.kismetwireless.net/code/kismet-2007-01-R1b.tar.gz \
            file://no-chmod.patch;patch=1"
 
 
-EXTRA_OECONF = "--with-pcap=linux --disable-setuid --with-linuxheaders=${STAGING_KERNEL_DIR}/include"
+EXTRA_OECONF = "--with-pcap=linux --disable-setuid --with-linuxheaders=${STAGING_KERNEL_DIR}/include --disable-gpsmap"
 
 inherit autotools
 
