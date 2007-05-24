@@ -1,7 +1,8 @@
 #! /bin/sh
 #
 # Copyright Matthias Hentges <devel@hentges.net> (c) 2007
-# License: GPL (see http://www.gnu.org/licenses/gpl.txt for a copy of the license)
+# License: MIT (see http://www.opensource.org/licenses/mit-license.php 
+#               for a copy of the license)
 #
 # Filename: hentges-console-image.bb
 # Date: 20070516 (YMD)
