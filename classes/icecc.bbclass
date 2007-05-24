@@ -253,10 +253,11 @@ def icc_path(bb,d,compile):
 
     #"system" package blacklist contains a list of packages that can not distribute compile tasks
     #for one reason or the other
-    system_package_blacklist = [ "uclibc", "glibc", "qemu" ]
+    system_package_blacklist = [ "uclibc", "glibc-intermediate", "qemu" ]
 
     for black in system_package_blacklist:
       if black in package_tmp:
+         bb.data.setVar('PARALLEL_MAKE' , '', d) 
          return ""
 
     #user defined exclusion list
@@ -265,6 +266,7 @@ def icc_path(bb,d,compile):
 
     for black in user_package_blacklist:
       if black in package_tmp:
+         bb.data.setVar('PARALLEL_MAKE' , '', d) 
          return ""
 
 
