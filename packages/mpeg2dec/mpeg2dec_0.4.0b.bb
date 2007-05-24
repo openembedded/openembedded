@@ -1,14 +1,14 @@
 DESCRIPTION = "Library and test program for decoding mpeg-2 and mpeg-1 video streams"
 HOMEPAGE = "http://libmpeg2.sourceforge.net/"
-LICENSE = "GPL"
-PRIORITY = "optional"
 SECTION = "libs"
-PR = "r2"
-
+PRIORITY = "optional"
+LICENSE = "GPL"
 DEPENDS = "virtual/libsdl"
+PROVIDES += "libmpeg2"
+RPROVIDES += "libmpeg2"
+PR = "r3"
 
 SRC_URI = "http://libmpeg2.sourceforge.net/files/mpeg2dec-${PV}.tar.gz"
-S = "${WORKDIR}/mpeg2dec-0.4.0"
 
 inherit autotools pkgconfig
 
