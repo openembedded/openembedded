@@ -1,5 +1,5 @@
 require scummvm.inc
-DEPENDS = "libsdl-qpe libmad tremor libogg zlib libmpeg2"
+DEPENDS = "libsdl-qpe libmad tremor libogg zlib mpeg2dec"
 
 S="${WORKDIR}/scummvm-${PV}/"
 

@@ -96,7 +96,7 @@ case `module_id` in
                 ;;
         "GTA01")
                 ARGS="$ARGS -dpi 285 -screen 480x640" ;;
-        Nokia N800")
+        "Nokia N800")
 		ARGS="$ARGS -dpi 225 -screen 800x480x16 -mouse tslib" ;;
 	*)
 		# Its a device we dont know about - in which case force
