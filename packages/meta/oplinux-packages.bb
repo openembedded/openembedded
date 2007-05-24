@@ -4,7 +4,7 @@
 DESCRIPTION = "Packages that are compatible with the OPLinux distro"
 HOMEPAGE = "http://www.digital-opsis/oplinux"
 LICENSE = "MIT"
-PR = "r0"
+PR = "r1"
 PROVIDES += "${OPLINUX_IMAGENAME}-packages"
 
 EXCLUDE_FROM_WORLD = "1"
@@ -16,36 +16,37 @@ python __anonymous () {
 
     import bb
 
-#Get all the packages we can build/exist in OE
+   #Get all the packages we can build/exist in OE
     package_list =  bb.data.getVar('PACKAGES_LIST', d) or "none"
-    package_list = package_list.split()
- 
-#Get the packages that are broken on all architectures
+    package_list=package_list.split()
+
+   #Get the packages that are broken on all architectures
     broken_package_list =  bb.data.expand('${OPLINUX_BROKEN_PACKAGES}', d)
 
-#Get the arch we are building for
+   # Get the arch we are building for
     building_arch = bb.data.getVar('FEED_ARCH',d) 
 
-#Now add the broken packages list the ones that fail for the arch we build now
+   #Now add the broken packages list the ones that fail for the arch we build now
     if (building_arch=="i486") or (building_arch=="i586") or (building_arch=="i686"):
-        broken_package_list = broken_package_list + bb.data.expand('${OPLINUX_BROKEN_PACKAGES_ARCH_x8}', d)
+       broken_package_list = broken_package_list + bb.data.expand('${OPLINUX_BROKEN_PACKAGES_ARCH_x86}', d)
 
     elif  (building_arch=="ppc405"):
-        broken_package_list = broken_package_list + bb.data.expand('${OPLINUX_BROKEN_PACKAGES_ARCH_PPC}', d)
+           broken_package_list = broken_package_list + bb.data.expand('${OPLINUX_BROKEN_PACKAGES_ARCH_PPC}', d)
 
     elif (building_arch=="ppc603e"):       
-        broken_package_list = broken_package_list + bb.data.expand('${OPLINUX_BROKEN_PACKAGES_ARCH_POWERPC}', d)
+           broken_package_list = broken_package_list + bb.data.expand('${OPLINUX_BROKEN_PACKAGES_ARCH_POWERPC}', d)
+
 
     for chk_package in package_list :
         build_package="yes"
-
-    if chk_package in broken_package_list:
-        build_package="no"
-    else :
-        bb.data.setVar('DEPENDS', (bb.data.getVar('DEPENDS', d) + chk_package +" "), d)   
+        if chk_package in broken_package_list:
+           build_package="no"
+        else :
+              bb.data.setVar('DEPENDS', (bb.data.getVar('DEPENDS', d) + chk_package +" "), d)   
 
 #add the OPLinux extra packages to the DEPENDS list
     bb.data.setVar('DEPENDS', (bb.data.getVar('DEPENDS', d) + bb.data.getVar('OPLINUX_EXTRA_PACKAGES', d)), d)   
+
 
     bb.data.setVar('DEPENDS', (bb.data.getVar('DEPENDS', d) + "package-index"), d)   
 }
@@ -453,7 +454,7 @@ OPLINUX_BROKEN_PACKAGES_ARCH_x86 =" \
 "
 #
 #ppc405
-OPLINUX_BROKEN_PACKAGES_ARC_PPC = " \
+OPLINUX_BROKEN_PACKAGES_ARCH_PPC = " \
         aircrack \
         appweb \
         apt \
