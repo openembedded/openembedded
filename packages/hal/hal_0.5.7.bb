@@ -1,17 +1,11 @@
-DESCRIPTION = "Hardware Abstraction Layer"
-HOMEPAGE = "http://freedesktop.org/Software/hal"
-SECTION = "unknown"
-LICENSE = "GPL LGPL AFL"
+require hal.inc
+
 DEPENDS = "dbus expat libusb"
 RDEPENDS += "hotplug"
 #RDEPENDS_hal-device-manager = "python hal python-pygnome"
 RRECOMMENDS = "udev-utils"
 
-SRC_URI = "http://freedesktop.org/~david/dist/hal-${PV}.tar.gz \
-           file://dbus-fix-api.patch;patch=1"
-S = "${WORKDIR}/hal-${PV}"
-
-inherit autotools pkgconfig
+SRC_URI += "file://dbus-fix-api.patch;patch=1"
 
 EXTRA_OECONF = "--with-hwdata=${datadir}/hwdata \
 		--with-expat=${STAGING_LIBDIR}/.. \

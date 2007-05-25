@@ -2,7 +2,7 @@ Index: elfutils-0.108/configure.ac
 ===================================================================
 --- elfutils-0.108.orig/configure.ac	2006-04-10 19:18:34.000000000 +0100
 +++ elfutils-0.108/configure.ac	2006-04-10 19:19:33.000000000 +0100
-@@ -49,6 +49,10 @@
+@@ -55,6 +55,10 @@
  dnl Add all the languages for which translations are available.
  ALL_LINGUAS=
  
@@ -17,7 +17,7 @@ Index: elfutils-0.108/lib/Makefile.am
 ===================================================================
 --- elfutils-0.108.orig/lib/Makefile.am	2006-04-10 19:18:34.000000000 +0100
 +++ elfutils-0.108/lib/Makefile.am	2006-04-10 19:19:33.000000000 +0100
-@@ -21,7 +21,7 @@
+@@ -30,7 +30,7 @@
  else
  AM_CFLAGS =
  endif
@@ -28,15 +28,16 @@ Index: elfutils-0.108/lib/Makefile.am
  noinst_LIBRARIES = libeu.a
 Index: elfutils-0.108/libasm/Makefile.am
 ===================================================================
---- elfutils-0.108.orig/libasm/Makefile.am	2006-04-10 19:18:34.000000000 +0100
-+++ elfutils-0.108/libasm/Makefile.am	2006-04-10 19:19:33.000000000 +0100
-@@ -18,7 +18,7 @@
+--- elfutils-0.127.orig/libasm/Makefile.am	2006-04-10 19:18:34.000000000 +0100
++++ elfutils-0.127/libasm/Makefile.am	2006-04-10 19:19:33.000000000 +0100
+@@ -30,7 +30,7 @@
  else
  AM_CFLAGS =
  endif
--AM_CFLAGS += -Wall -Wshadow -Werror -Wunused -Wextra -Wformat=2
-+AM_CFLAGS += -Wshadow -Wunused -Wformat=2
- INCLUDES = -I. -I$(srcdir) -I.. -I$(top_srcdir)/libelf -I$(top_srcdir)/libebl \
+-AM_CFLAGS += -std=gnu99 -Wall -Wshadow -Werror -Wunused -Wextra -Wformat=2
++AM_CFLAGS += -std=gnu99 -Wshadow -Wunused -Wformat=2
+ INCLUDES = -I. -I$(srcdir) -I.. \
+            -I$(top_srcdir)/libelf -I$(top_srcdir)/libebl -I$(top_srcdir)/libdw\
  	   -I$(top_srcdir)/lib
  GCC_INCLUDE = -I$(shell $(CC) -print-file-name=include)
 Index: elfutils-0.108/libcpu/Makefile.am
@@ -91,28 +92,6 @@ Index: elfutils-0.108/libelf/Makefile.am
  	     $($(*F)_CFLAGS)
  INCLUDES = -I$(srcdir) -I$(top_srcdir)/lib -I..
  GCC_INCLUDE = -I$(shell $(CC) -print-file-name=include)
-Index: elfutils-0.108/src/Makefile.am
-===================================================================
---- elfutils-0.108.orig/src/Makefile.am	2006-04-10 19:18:34.000000000 +0100
-+++ elfutils-0.108/src/Makefile.am	2006-04-10 19:20:19.000000000 +0100
-@@ -15,14 +15,12 @@
- DEFS = -D_GNU_SOURCE -DHAVE_CONFIG_H $(YYDEBUG) \
-        -DSRCDIR=\"$(shell cd $(srcdir);pwd)\" -DOBJDIR=\"$(shell pwd)\"
- if MUDFLAP
--AM_CFLAGS = -Wall -Wshadow -Wunused -Wextra -std=gnu99 -fmudflap \
-+AM_CFLAGS = -Wshadow -Wunused -std=gnu99 -fmudflap \
- 	    $(native_ld_cflags) $(if $($(*F)_no_Wunused),,-Wunused) \
- 	    $(if $($(*F)_no_Wformat),,-Wformat=2)
- else
--AM_CFLAGS = -Wall -Wshadow -std=gnu99 $(native_ld_cflags) \
--	    $(if $($(*F)_no_Werror),,-Werror) \
--	    $(if $($(*F)_no_Wunused),,-Wunused -Wextra) \
--	    $(if $($(*F)_no_Wformat),,-Wformat=2)
-+AM_CFLAGS = -Wshadow -std=gnu99 $(native_ld_cflags) \
-+	    $(if $($(*F)_no_Werror),,-Werror)	    
- endif
- if MUDFLAP
- libmudflap = -lmudflap
 Index: elfutils-0.108/tests/Makefile.am
 ===================================================================
 --- elfutils-0.108.orig/tests/Makefile.am	2006-04-10 19:18:34.000000000 +0100
@@ -121,12 +100,13 @@ Index: elfutils-0.108/tests/Makefile.am
  ##
  DEFS = -DHAVE_CONFIG_H -D_GNU_SOURCE
  if MUDFLAP
--AM_CFLAGS = -Wall -Werror -std=gnu99 -fmudflap\
+-AM_CFLAGS = -Wall -Werror -Wextra -std=gnu99 -fmudflap\
 +AM_CFLAGS = -std=gnu99 -fmudflap\
  	    $(if $($(*F)_no_Wformat),-Wno-format,-Wformat=2)
+ BUILD_RPATH = \$$ORIGIN/../backends
  else
--AM_CFLAGS = -Wall -Werror -std=gnu99 \
+-AM_CFLAGS = -Wall -Werror -Wextra -std=gnu99 \
 +AM_CFLAGS = -std=gnu99 \
  	    $(if $($(*F)_no_Wformat),-Wno-format,-Wformat=2)
- AM_LDFLAGS = -Wl,-rpath,\$$ORIGIN/../libasm:\$$ORIGIN/../libdw:\$$ORIGIN/../libebl:\$$ORIGIN/../libelf
+ BUILT_RPATH = \$$ORIGIN/../libasm:\$$ORIGIN/../libdw:\$$ORIGIN/../backends:\$$ORIGIN/../libelf
  endif

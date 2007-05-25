@@ -3,7 +3,7 @@ HOMEPAGE = "http://www.gtkmm.org/"
 SECTION = "libs"
 PRIORITY = "optional"
 LICENSE = "LGPL"
-DEPENDS = "glibmm"
+DEPENDS = "glibmm gtk+"
 
 inherit autotools pkgconfig flow-lossage
 

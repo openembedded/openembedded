@@ -1,12 +1,7 @@
-DESCRIPTION = "GPE time tracker"
-SECTION = "gpe"
-LICENSE = "GPL"
-DEPENDS = "libgpewidget gtk+ sqlite libtododb"
-RDEPENDS = "gpe-icons"
+require gpe-timesheet.inc
+
 PR = "r1"
 PV = "0.31+svn-${SRCDATE}"
-
-inherit autotools 
 
 SRC_URI = "${GPE_SVN}"
 

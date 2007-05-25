@@ -1,9 +1,4 @@
-LICENSE = "GPL"
-SECTION = "gpe"
-inherit gpe
-
-DESCRIPTION = "GPE modal help"
-DEPENDS = "virtual/libx11"
+require gpe-what.inc
 
 do_compile_prepend() {
 	rm *.d
