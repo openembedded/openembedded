@@ -3,8 +3,9 @@ HOMEPAGE = "http://www.abiword.org""
 SECTION = "x11/office"
 LICENSE = "GPLv2"
 DEPENDS     = "perl-native libgsf libgnomeprint libgnomeprintui libglade libfribidi enchant jpeg libpng libxml2"
-RDEPENDS    = "enchant glibc-gconv-ibm850 glibc-gconv-cp1252 \
-               glibc-gconv-iso8859-15 glibc-gconv-iso8859-1"
+RDEPENDS    = "enchant "
+RDEPENDS_linux += "glibc-gconv-ibm850 glibc-gconv-cp1252 \
+                   glibc-gconv-iso8859-15 glibc-gconv-iso8859-1"
 PR = "r2"
 
 SRC_URI = "http://www.abiword.org/downloads/abiword/${PV}/source/abiword-${PV}.tar.gz"
