@@ -1,17 +1,10 @@
-SECTION = "unknown"
-DESCRIPTION = "Hardware Abstraction Layer"
+require hal.inc
+
 DEPENDS = "dbus expat libusb"
 RDEPENDS += "hotplug"
 RDEPENDS_hal-device-manager = "python hal python-pygnome"
 RRECOMMENDS = "udev-utils"
-HOMEPAGE = "http://freedesktop.org/Software/hal"
-LICENSE = "GPL LGPL AFL"
 PR = "r1"
-
-SRC_URI = "http://freedesktop.org/~david/dist/hal-${PV}.tar.gz"
-S = "${WORKDIR}/hal-${PV}"
-
-inherit autotools pkgconfig
 
 EXTRA_OECONF = "--with-hwdata=${datadir}/hwdata \
 		--with-expat=${STAGING_LIBDIR}/.. \

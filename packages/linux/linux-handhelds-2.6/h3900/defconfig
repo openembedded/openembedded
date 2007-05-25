@@ -1,7 +1,7 @@
 #
 # Automatically generated make config: don't edit
-# Linux kernel version: 2.6.21-hh2
-# Thu May 17 14:41:30 2007
+# Linux kernel version: 2.6.21-hh4
+# Fri May 25 06:28:50 2007
 #
 CONFIG_ARM=y
 CONFIG_SYS_SUPPORTS_APM_EMULATION=y
@@ -402,14 +402,15 @@ CONFIG_IRDA=y
 # IrDA protocols
 #
 CONFIG_IRLAN=y
+# CONFIG_IRNET is not set
 CONFIG_IRCOMM=y
-# CONFIG_IRDA_ULTRA is not set
+CONFIG_IRDA_ULTRA=y
 
 #
 # IrDA options
 #
-# CONFIG_IRDA_CACHE_LAST_LSAP is not set
-# CONFIG_IRDA_FAST_RR is not set
+CONFIG_IRDA_CACHE_LAST_LSAP=y
+CONFIG_IRDA_FAST_RR=y
 CONFIG_IRDA_DEBUG=y
 
 #
@@ -479,7 +480,8 @@ CONFIG_FW_LOADER=y
 # Memory Technology Devices (MTD)
 #
 CONFIG_MTD=y
-# CONFIG_MTD_DEBUG is not set
+CONFIG_MTD_DEBUG=y
+CONFIG_MTD_DEBUG_VERBOSE=0
 # CONFIG_MTD_CONCAT is not set
 CONFIG_MTD_PARTITIONS=y
 # CONFIG_MTD_REDBOOT_PARTS is not set
@@ -609,7 +611,55 @@ CONFIG_MTD_CFI_I2=y
 #
 # Network device support
 #
-# CONFIG_NETDEVICES is not set
+CONFIG_NETDEVICES=y
+# CONFIG_DUMMY is not set
+# CONFIG_BONDING is not set
+# CONFIG_EQUALIZER is not set
+# CONFIG_TUN is not set
+
+#
+# PHY device support
+#
+
+#
+# Ethernet (10 or 100Mbit)
+#
+# CONFIG_NET_ETHERNET is not set
+
+#
+# Ethernet (1000 Mbit)
+#
+
+#
+# Ethernet (10000 Mbit)
+#
+
+#
+# Token Ring devices
+#
+
+#
+# Wireless LAN (non-hamradio)
+#
+# CONFIG_NET_RADIO is not set
+
+#
+# Wan interfaces
+#
+# CONFIG_WAN is not set
+CONFIG_PPP=m
+# CONFIG_PPP_MULTILINK is not set
+# CONFIG_PPP_FILTER is not set
+CONFIG_PPP_ASYNC=m
+# CONFIG_PPP_SYNC_TTY is not set
+CONFIG_PPP_DEFLATE=m
+CONFIG_PPP_BSDCOMP=m
+CONFIG_PPP_MPPE=m
+# CONFIG_PPPOE is not set
+# CONFIG_SLIP is not set
+CONFIG_SLHC=m
+# CONFIG_SHAPER is not set
+# CONFIG_NETCONSOLE is not set
 # CONFIG_NETPOLL is not set
 # CONFIG_NET_POLL_CONTROLLER is not set
 
@@ -659,9 +709,6 @@ CONFIG_INPUT_TOUCHSCREEN=y
 # CONFIG_TOUCHSCREEN_ELO is not set
 # CONFIG_TOUCHSCREEN_MTOUCH is not set
 # CONFIG_TOUCHSCREEN_MK712 is not set
-# CONFIG_TOUCHSCREEN_WM9705 is not set
-# CONFIG_TOUCHSCREEN_WM9712 is not set
-# CONFIG_TOUCHSCREEN_WM9713 is not set
 # CONFIG_TOUCHSCREEN_PENMOUNT is not set
 # CONFIG_TOUCHSCREEN_TOUCHRIGHT is not set
 # CONFIG_TOUCHSCREEN_TOUCHWIN is not set
@@ -797,21 +844,6 @@ CONFIG_I2C_PXA=m
 # CONFIG_L3 is not set
 
 #
-# SoC drivers
-#
-# CONFIG_SOC_MQ11XX is not set
-# CONFIG_SOC_T7L66XB is not set
-# CONFIG_SOC_TC6387XB is not set
-# CONFIG_SOC_TC6393XB is not set
-# CONFIG_SOC_SAMCOP is not set
-# CONFIG_SOC_HAMCOP is not set
-CONFIG_HTC_ASIC2=y
-CONFIG_HTC_ASIC3=y
-# CONFIG_HTC_ASIC3_DS1WM is not set
-# CONFIG_SOC_TSC2101 is not set
-# CONFIG_SOC_TSC2200 is not set
-
-#
 # Misc devices
 #
 
@@ -828,6 +860,17 @@ CONFIG_ADC_ASIC2=y
 # Multifunction device drivers
 #
 # CONFIG_MFD_SM501 is not set
+CONFIG_HTC_ASIC2=y
+CONFIG_HTC_ASIC3=y
+# CONFIG_HTC_ASIC3_DS1WM is not set
+# CONFIG_SOC_SAMCOP is not set
+# CONFIG_SOC_HAMCOP is not set
+# CONFIG_SOC_MQ11XX is not set
+# CONFIG_SOC_T7L66XB is not set
+# CONFIG_SOC_TC6387XB is not set
+# CONFIG_SOC_TC6393XB is not set
+# CONFIG_SOC_TSC2101 is not set
+# CONFIG_SOC_TSC2200 is not set
 
 #
 # LED devices
@@ -1117,8 +1160,7 @@ CONFIG_NFS_COMMON=y
 CONFIG_SUNRPC=y
 # CONFIG_RPCSEC_GSS_KRB5 is not set
 # CONFIG_RPCSEC_GSS_SPKM3 is not set
-CONFIG_SMB_FS=m
-# CONFIG_SMB_NLS_DEFAULT is not set
+# CONFIG_SMB_FS is not set
 # CONFIG_CIFS is not set
 # CONFIG_NCP_FS is not set
 # CONFIG_CODA_FS is not set
@@ -1247,7 +1289,7 @@ CONFIG_CRYPTO_SHA1=y
 # CONFIG_CRYPTO_WP512 is not set
 # CONFIG_CRYPTO_TGR192 is not set
 # CONFIG_CRYPTO_GF128MUL is not set
-# CONFIG_CRYPTO_ECB is not set
+CONFIG_CRYPTO_ECB=m
 # CONFIG_CRYPTO_CBC is not set
 CONFIG_CRYPTO_PCBC=m
 # CONFIG_CRYPTO_LRW is not set
@@ -1260,7 +1302,7 @@ CONFIG_CRYPTO_DES=y
 # CONFIG_CRYPTO_CAST5 is not set
 # CONFIG_CRYPTO_CAST6 is not set
 # CONFIG_CRYPTO_TEA is not set
-# CONFIG_CRYPTO_ARC4 is not set
+CONFIG_CRYPTO_ARC4=m
 # CONFIG_CRYPTO_KHAZAD is not set
 # CONFIG_CRYPTO_ANUBIS is not set
 CONFIG_CRYPTO_DEFLATE=y

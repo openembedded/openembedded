@@ -1,9 +1,5 @@
-LICENSE = "GPL"
-DESCRIPTION = "GPE modal help"
-DEPENDS = "virtual/libx11 gtk+"
-PR = "r1"
+require gpe-what.inc
 
-GPE_TARBALL_SUFFIX= "bz2"
-inherit autotools gpe
+PR = "r1"
 
 SRC_URI += " file://set-wm-hint.patch;patch=1;pnum=0"

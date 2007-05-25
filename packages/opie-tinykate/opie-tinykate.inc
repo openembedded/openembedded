@@ -4,7 +4,7 @@ PRIORITY = "optional"
 LICENSE = "GPL"
 DEPENDS = "libqtaux2"
 APPNAME = "tinykate"
-
+PR = "r1"
 
 S = "${WORKDIR}/tinykate"
 
@@ -23,7 +23,7 @@ do_install() {
 	install -m 0644 ${WORKDIR}/share/${APPNAME}/syntax/*.* ${D}${palmtopdir}/share/${APPNAME}/syntax/
 }
 
-PACKAGES = " \
+PACKAGES += " \
 	opie-tinykate-syntax-commondev \
 	opie-tinykate-syntax-documentation \
 	opie-tinykate-syntax-misc \

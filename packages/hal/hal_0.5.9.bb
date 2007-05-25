@@ -1,7 +1,4 @@
-DESCRIPTION = "Hardware Abstraction Layer"
-HOMEPAGE = "http://freedesktop.org/Software/hal"
-SECTION = "unknown"
-LICENSE = "GPL LGPL AFL"
+require hal.inc
 
 DEPENDS = "virtual/kernel dbus-glib udev intltool expat libusb"
 RDEPENDS += "udev hal-info"
@@ -10,12 +7,7 @@ RRECOMMENDS = "udev-utils"
 
 PR = "r1"
 
-SRC_URI = "http://freedesktop.org/~david/dist/hal-${PV}.tar.gz \
-        file://99_hal"
-
-S = "${WORKDIR}/hal-${PV}"
-
-inherit autotools pkgconfig
+SRC_URI += "file://99_hal"
 
 EXTRA_OECONF = "--with-hwdata=${datadir}/hwdata \
                 --with-expat=${STAGING_LIBDIR}/.. \

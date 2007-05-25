@@ -1,6 +1,3 @@
-LICENSE = "GPL"
-SECTION = "gpe"
-inherit gpe
+require gpe-what.inc
 
-DESCRIPTION = "GPE modal help"
 DEPENDS = "virtual/libx11 libxpm libmatchbox"

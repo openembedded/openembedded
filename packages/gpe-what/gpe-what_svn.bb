@@ -1,9 +1,6 @@
-DESCRIPTION = "GPE modal help"
-LICENSE = "GPL"
-DEPENDS = "virtual/libx11 gtk+"
-PV = "0.41+svn${SRCDATE}"
+require gpe-what.inc
 
-inherit autotools
+PV = "0.41+svn${SRCDATE}"
 
 SRC_URI = "${GPE_SVN}"
 
