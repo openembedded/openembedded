@@ -34,7 +34,7 @@ do_install_append() {
 	mv ${D}/usr/bin/gpe-logout ${D}/usr/bin/gpe-logout.matchbox
 
 	install -d ${D}${sysconfdir}/X11
-	install -m755 ${WORKDIR}/phonesession ${D}${sysconfdir}/X11/phonesession
+	install -m 755 ${WORKDIR}/phonesession ${D}${sysconfdir}/X11/phonesession
 }
 
 do_install_append_x86() {
