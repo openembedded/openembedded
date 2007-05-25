@@ -1,7 +1,8 @@
 DESCRIPTION = "Linux Kernel"
 SECTION = "kernel"
 LICENSE = "GPL"
-PR = "r2"
+DEPENDS_kb9202 = "u-boot"
+PR = "r3"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-${PV}.tar.bz2 \
            file://defconfig \
@@ -20,7 +21,7 @@ inherit kernel
 
 KERNEL_IMAGETYPE_progear = "bzImage"
 KERNEL_IMAGETYPE_simpad = "zImage"
-KERNEL_IMAGETYPE_kb9202 = "zImage"
+KERNEL_IMAGETYPE_kb9202 = "uImage"
 
 do_configure_prepend() {
         if [ "${TARGET_OS}" == "linux-gnueabi" -o  "${TARGET_OS}" == "linux-uclibcgnueabi" ]; then
