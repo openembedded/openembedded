@@ -23,6 +23,18 @@ KERNEL_IMAGETYPE_simpad = "zImage"
 KERNEL_IMAGETYPE_kb9202 = "zImage"
 
 do_configure_prepend() {
-	install -m 0644 ${WORKDIR}/defconfig ${S}/.config
+        if [ "${TARGET_OS}" == "linux-gnueabi" -o  "${TARGET_OS}" == "linux-uclibcgnueabi" ]; then
+                echo "CONFIG_AEABI=y"                   >> ${S}/.config
+                echo "CONFIG_OABI_COMPAT=y"             >> ${S}/.config
+        else
+                echo "# CONFIG_AEABI is not set"        >> ${S}/.config
+                echo "# CONFIG_OABI_COMPAT is not set"  >> ${S}/.config
+        fi
+
+        sed -e '/CONFIG_AEABI/d' \
+            -e '/CONFIG_OABI_COMPAT=/d' \
+            '${WORKDIR}/defconfig' >>'${S}/.config'
+
+        yes '' | oe_runmake oldconfig
 }
 
