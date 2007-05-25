@@ -17,7 +17,8 @@ RDEPENDS_lirc-nslu2example = "lirc lirc-exec"
 RRECOMMENDS_lirc = "lirc-exec"
 PR = "r1"
 
-DEFAULT_PREFERENCE = "-1"
+# enable cvs version since until compilation issues for other packages have been fixed (cf. bug 2284 et al).
+#DEFAULT_PREFERENCE = "-1"
 
 SRCDATE=${@bb.data.getVar('PV', d, 1)[9:]}
 
