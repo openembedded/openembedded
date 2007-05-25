@@ -6,7 +6,7 @@ PROVIDES = "virtual/libsdl"
 LICENSE = "LGPL"
 
 # NOTE: make sure to keep PR in sync with libsdl-x11
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "http://www.libsdl.org/release/SDL-${PV}.tar.gz \
            file://agawa-piro-mickey-1.2.9.patch;patch=1 \
@@ -16,6 +16,8 @@ SRC_URI = "http://www.libsdl.org/release/SDL-${PV}.tar.gz \
 	   file://ipaq-1.2.9.patch;patch=1 \
 	   file://SDL-Akita-1.2.9.patch;patch=1 \
 	   file://fixlibs-1.2.9.patch;patch=1 \
+	   file://no-PAGE_SIZE.patch;patch=1 \
+	   file://explicit-extern-C.patch;patch=1 \
 	   file://acinclude.m4"
 S = "${WORKDIR}/SDL-${PV}"
 
