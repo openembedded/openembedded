@@ -13,11 +13,18 @@ S = "${WORKDIR}/libiconv-${PV}"
 
 inherit autotools pkgconfig
 
-EXTRA_OECONF += "--enable-shared --enable-static"
+EXTRA_OECONF += "--enable-shared --enable-static --enable-relocatable"
 
 do_configure () {
 	rm -f m4/libtool.m4 libcharset/m4/libtool.m4
 	autotools_do_configure
+
+	# As we do not really regenerate the Makefiles... and they have stale deps to this file
+	touch m4/libtool.m4
+
+	# Fix stupid libtool... handling. rpath handling can't be disabled and the Makefile's can't be regenerated..
+	# (GNU sed required)
+	sed -i s/^hardcode_libdir_flag_spec/#hardcode_libdir_flag_spec/ ${S}/*-libtool
 }
 
 do_stage () {
