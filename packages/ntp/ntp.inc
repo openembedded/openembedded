@@ -16,6 +16,10 @@ SRC_URI = "http://www.eecis.udel.edu/~ntp/ntp_spool/ntp4/ntp-4.2/${P}.tar.gz \
 
 inherit autotools update-rc.d
 
+INITSCRIPT_NAME = "ntpd"
+# No dependencies, so just go in at the standard level (20)
+INITSCRIPT_PARAMS = "defaults"
+
 # The ac_cv_header_readline_history is to stop ntpdc depending on either
 # readline or curses
 EXTRA_OECONF = "--without-openssl --without-crypto ac_cv_header_readline_history_h=no"

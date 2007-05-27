@@ -7,10 +7,6 @@ SRC_URI = "http://www.eecis.udel.edu/~ntp/ntp_spool/ntp4/ntp-4.2/${P}.tar.gz \
 	file://ntpdate"
 
 
-INITSCRIPT_NAME = "ntpd"
-# No dependencies, so just go in at the standard level (20)
-INITSCRIPT_PARAMS = "defaults"
-
 # ntp originally includes tickadj. It's split off for inclusion in small firmware images on platforms
 # with wonky clocks (e.g. OpenSlug)
 RDEPENDS_${PN} = "${PN}-tickadj"

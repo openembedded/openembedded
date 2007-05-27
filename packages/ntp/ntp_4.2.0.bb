@@ -10,11 +10,6 @@ SRC_URI = "http://www.eecis.udel.edu/~ntp/ntp_spool/ntp4/ntp-4.2/${P}.tar.gz \
 	file://ntp.conf \
 	file://ntpdate"
 
-
-INITSCRIPT_NAME = "ntpd"
-# No dependencies, so just go in at the standard level (20)
-INITSCRIPT_PARAMS = "defaults"
-
 PROVIDES = "ntpdate-${PV} ntpdate-${PV}-${PR} ntpdate"
 
 #This is too painful - perl is only needed for ntp-wait and ntptrace, which are
