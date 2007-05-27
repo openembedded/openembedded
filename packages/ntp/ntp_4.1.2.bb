@@ -1,11 +1,5 @@
-DESCRIPTION = "The Network Time Protocol (NTP) is used to \
-synchronize the time of a computer client or server to \
-another server or reference time source, such as a radio \
-or satellite receiver or modem."
-HOMEPAGE = "http://ntp.isc.org/bin/view/Main/WebHome"
-SECTION = "console/network"
-PRIORITY = "optional"
-LICENSE = "ntp"
+require ntp.inc
+
 PR = "r4"
 
 SRC_URI = "http://www.eecis.udel.edu/~ntp/ntp_spool/ntp4/ntp-4.1/ntp-${PV}.tar.gz \
@@ -13,15 +7,6 @@ SRC_URI = "http://www.eecis.udel.edu/~ntp/ntp_spool/ntp4/ntp-4.1/ntp-${PV}.tar.g
 	   file://readline.patch;patch=1 \
 	   file://ntpdate \
 	   file://ntp"
-
-inherit autotools
-
-EXTRA_OECONF = "--without-openssl"
-CFLAGS_append = " -DPTYS_ARE_GETPT -DPTYS_ARE_SEARCHED"
-
-PACKAGES =+ "ntpdate"
-
-FILES_ntpdate = "${bindir}/ntpdate /etc/init.d/ntpdate"
 
 do_install_append() {
 	install -d ${D}${sysconfdir}/init.d
