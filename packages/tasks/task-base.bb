@@ -1,9 +1,10 @@
 DESCRIPTION = "Merge machine and distro options to create a basic machine task/package"
-PR = "r33"
+PR = "r34"
 
 PROVIDES = "${PACKAGES}"
 PACKAGES = 'task-boot \
             task-base \
+            task-base-extended \
             task-distro-base \
             task-machine-base \
             \
@@ -127,17 +128,21 @@ ADD_WIFI = ""
 ADD_BT = ""
 
 python __anonymous () {
-    import bb
     # If Distro want wifi and machine feature wifi/pci/pcmcia/usbhost (one of them)
     # then include task-base-wifi in task-base
 
-    distro_features = bb.data.getVar("DISTRO_FEATURES", d, 1)
-    machine_features= bb.data.getVar("MACHINE_FEATURES", d, 1)
+    import bb
 
-    if distro_features.find("bluetooth") and not machine_features.find("bluetooth") and (machine_features.find("pcmcia") or machine_features.find("pci")  or  machine_features.find("usbhost")):
+    if not hasattr(__builtins__, 'set'):
+	from sets import Set as set
+
+    distro_features = set(bb.data.getVar("DISTRO_FEATURES", d, 1).split())
+    machine_features= set(bb.data.getVar("MACHINE_FEATURES", d, 1).split())
+
+    if "bluetooth" in distro_features and not "bluetooth" in machine_features and ("pcmcia" in machine_features or "pci" in machine_features or "usbhost" in machine_features):
 	bb.data.setVar("ADD_BT", "task-base-bluetooth", d)
 
-    if distro_features.find("wifi") and not machine_features.find("wifi") and (machine_features.find("pcmcia") or machine_features.find("pci")  or  machine_features.find("usbhost")):
+    if "wifi" in distro_features and not "wifi" in machine_features and ("pcmcia" in machine_features or "pci" in machine_features or "usbhost" in machine_features):
 	bb.data.setVar("ADD_WIFI", "task-base-wifi", d)
 }
 
