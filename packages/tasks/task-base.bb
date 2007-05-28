@@ -1,5 +1,5 @@
 DESCRIPTION = "Merge machine and distro options to create a basic machine task/package"
-PR = "r31"
+PR = "r32"
 
 PACKAGES = 'task-boot \
             task-base \
@@ -115,6 +115,30 @@ RDEPENDS_task-base = "\
     ${@base_contains('DISTRO_FEATURES', 'ppp', 'task-base-ppp', '',d)} \
     ${@base_contains('DISTRO_FEATURES', 'raid', 'task-base-raid', '',d)} \
     "
+
+RDEPENDS_task-base-extended = "\
+    task-base \
+    ${ADD_WIFI} \
+    ${ADD_BT} \
+    "
+
+ADD_WIFI = ""
+ADD_BT = ""
+
+python __anonymous () {
+    import bb
+    # If Distro want wifi and machine feature wifi/pci/pcmcia/usbhost (one of them)
+    # then include task-base-wifi in task-base
+
+    distro_features = bb.data.getVar("DISTRO_FEATURES", d, 1)
+    machine_features= bb.data.getVar("MACHINE_FEATURES", d, 1)
+
+    if distro_features.find("bluetooth") and not machine_features.find("bluetooth") and (machine_features.find("pcmcia") or machine_features.find("pci")  or  machine_features.find("usbhost")):
+	bb.data.setVar("ADD_BT", "task-base-bluetooth", d)
+
+    if distro_features.find("wifi") and not machine_features.find("wifi") and (machine_features.find("pcmcia") or machine_features.find("pci")  or  machine_features.find("usbhost")):
+	bb.data.setVar("ADD_WIFI", "task-base-wifi", d)
+}
 
 #
 # packages added by distribution
