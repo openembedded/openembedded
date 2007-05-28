@@ -8,7 +8,8 @@ SRC_URI_append = " file://libdir-la.patch;patch=1 \
                    file://prefix.patch;patch=1 \
                    file://tag.patch;patch=1 \
                    file://tag1.patch;patch=1 \
-                   file://install-path-check.patch;patch=1"
+                   file://install-path-check.patch;patch=1 \
+                   file://never-ever-do-rpath.patch;patch=1 "
 S = "${WORKDIR}/libtool-${PV}"
 
 prefix = "${STAGING_DIR}"
