@@ -1,6 +1,7 @@
 DESCRIPTION = "Merge machine and distro options to create a basic machine task/package"
-PR = "r32"
+PR = "r33"
 
+PROVIDES = "${PACKAGES}"
 PACKAGES = 'task-boot \
             task-base \
             task-distro-base \
