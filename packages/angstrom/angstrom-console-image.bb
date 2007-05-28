@@ -1,10 +1,10 @@
 #Angstrom bootstrap image
 LICENSE = "MIT"
-PR = "r6"
+PR = "r7"
 
 ANGSTROM_EXTRA_INSTALL ?= ""
 
-DEPENDS = "task-base \
+DEPENDS = "task-base-extended \
            ${@base_contains("MACHINE_FEATURES", "screen", "psplash-zap", "",d)} \
 	   "
 
