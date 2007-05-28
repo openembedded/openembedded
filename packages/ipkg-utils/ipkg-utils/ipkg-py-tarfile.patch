@@ -131,7 +131,7 @@ Index: ipkg-utils/arfile.py
 +        tarf = tarfile.open("control.tar.gz", "r", tarStream)
 +        #tarf.list()
 +
-+        f2 = tarf.extractfile("control")
++        f2 = tarf.extractfile("./control")
 +        print f2.read()
 Index: ipkg-utils/setup.py
 ===================================================================
@@ -232,7 +232,7 @@ Index: ipkg-utils/ipkg.py
 +            tarStream = ar.open("control.tar.gz")
 +            tarf = tarfile.open("control.tar.gz", "r", tarStream)
 +
-+            control = tarf.extractfile("control")
++            control = tarf.extractfile("./control")
 +            self.read_control(control)
              control.close()
 -            if self.isdeb:
