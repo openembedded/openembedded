@@ -53,17 +53,15 @@ case $1 in
             $OPIEDIR/bin/opie-login -terminal 3
     else
         $OPIEDIR/bin/opie-reorgfiles
-        if [ -x /usr/bin/ssh-agent ]; then
-             SSHAGENT=/usr/bin/ssh-agent
-        else
-             SSHAGENT=""
-        fi
         
         if [ -x "$OPIEDIR/bin/opie-sh-ssh-askpass.sh" ]; then
             export SSH_ASKPASS=$OPIEDIR/bin/opie-sh-ssh-askpass.sh
         fi           
         echo Starting Opie....
-        $SSHAGENT $OPIEDIR/bin/qpe -terminal 3
+	(
+	 test -x /usr/bin/ssh-agent && eval $(/usr/bin/ssh-agent -s) && echo $SSH_AGENT_PID>/var/run/opie-ssh-agent.pid ;
+         $OPIEDIR/bin/qpe -terminal 3
+	)
 	echo -n >/var/log/opie-qss.log
 	test -x $OPIEDIR/bin/qpe && { for attempt in 0 1 2 3 4 5 6 7 8 9 a b c d e f ; do
 	    sleep 1
@@ -83,6 +81,7 @@ case $1 in
     killall qpe 2>/dev/null
     killall opie-login 2>/dev/null
     killall quicklauncher 2>/dev/null
+    test -r /var/run/opie-ssh-agent.pid && kill $(cat /var/run/opie-ssh-agent.pid) 2>/dev/null
     true
 
     ;;
