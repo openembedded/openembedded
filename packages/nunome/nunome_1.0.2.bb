@@ -1,11 +1,13 @@
 DESCRIPTION = "Japanese input method plugin"
+HOMEPAGE = "http://www.sikigami.com/nunome-Qtopia-1.0/"
 SECTION = "opie/inputmethods"
 PRIORITY = "optional"
 LICENSE = "GPL"
-HOMEPAGE = "http://www.sikigami.com/nunome-Qtopia-1.0/"
 RDEPENDS = "virtual/japanese-font"
+PR = "r1"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/gakusei/nunome-${PV}.tar.bz2 \
+	file://timer.patch;patch=1 \
 	file://nunome.patch;patch=1"
 S = "${WORKDIR}/nunome"
 
