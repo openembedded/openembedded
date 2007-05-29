@@ -1,7 +1,7 @@
 #
 # Automatically generated make config: don't edit
-# Linux kernel version: 2.6.21-hh4
-# Fri May 25 06:28:56 2007
+# Linux kernel version: 2.6.21-hh5
+# Mon May 28 20:35:27 2007
 #
 CONFIG_ARM=y
 CONFIG_SYS_SUPPORTS_APM_EMULATION=y
@@ -255,6 +255,7 @@ CONFIG_ZBOOT_ROM_BSS=0x0
 CONFIG_CMDLINE="keepinitrd"
 # CONFIG_XIP_KERNEL is not set
 CONFIG_KEXEC=y
+# CONFIG_TXTOFFSET_DELTA is not set
 
 #
 # CPU Frequency scaling
@@ -1239,7 +1240,7 @@ CONFIG_USB_PXA27X=y
 # CONFIG_USB_GADGET_DUALSPEED is not set
 # CONFIG_USB_ZERO is not set
 CONFIG_USB_ETH=y
-# CONFIG_USB_ETH_RNDIS is not set
+CONFIG_USB_ETH_RNDIS=y
 # CONFIG_USB_GADGETFS is not set
 # CONFIG_USB_FILE_STORAGE is not set
 # CONFIG_USB_G_SERIAL is not set
