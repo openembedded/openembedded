@@ -1,4 +1,4 @@
-DEPENDS = "flex-native icu uicmoc4-native qmake2-native libxml2 sqlite3 cairo gtk+"
+DEPENDS = "flex-native curl icu uicmoc4-native qmake2-native libxml2 sqlite3 cairo gtk+"
 
 # Yes, this is wrong...
 PV = "0.0+svn${SRCDATE}"
@@ -22,14 +22,13 @@ SRC_URI = "\
 S = "${WORKDIR}/"
 
 
-do_configure() {
-        qmake2 CONFIG+=gdk-port CONFIG-=qt CONFIG-=release CONFIG+=debug
+do_configure_append() {
+        qmake2 -spec ${QMAKESPEC} CONFIG+=gdk-port CONFIG-=qt CONFIG-=release CONFIG+=debug
 	mkdir -p WebKitBuilds/Debug
 	cd WebKitBuilds/Debug
-	PWD=`pwd` qmake2 -r OUTPUT_DIR=$PWD/ CONFIG-=qt CONFIG+=gdk-port $PWD/../../WebKit.pro
+	PWD=`pwd` qmake2 -spec ${QMAKESPEC} -r OUTPUT_DIR=$PWD/ CONFIG-=qt CONFIG+=gdk-port $PWD/../../WebKit.pro
 }
 
-do_compile() {
+do_compile_prepend() {
         cd ${S}/WebKitBuilds/Debug
-	oe_runmake
 }
