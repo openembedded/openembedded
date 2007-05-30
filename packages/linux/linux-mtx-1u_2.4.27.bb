@@ -1,5 +1,7 @@
 include linux-mtx-1_2.4.27.bb
 
+COMPATIBLE_MACHINE = "mtx-1u"
+
 PR = "r11"
 
 SRC_URI += "\

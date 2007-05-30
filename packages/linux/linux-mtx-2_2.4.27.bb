@@ -51,6 +51,7 @@ S = "${WORKDIR}/linux"
 
 inherit kernel
 
+COMPATIBLE_MACHINE = "mtx-2"
 COMPATIBLE_HOST = "mipsel.*-linux"
 ARCH = "mips"
 KERNEL_OUTPUT = "arch/mips/zboot/images/mtx-2.flash.bin"
