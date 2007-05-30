@@ -3,7 +3,7 @@ HOMEPAGE = "http://www.perl.org/"
 SECTION = "libs"
 LICENSE = "Artistic|GPL"
 DEPENDS = "virtual/db-native gdbm-native"
-PR = "r7"
+PR = "r8"
 
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/perl-${PV}"
 
@@ -26,7 +26,16 @@ do_configure () {
         -Dcf_by="Open Embedded" \
         -Dprefix=${prefix} \
         -Dvendorprefix=${prefix} \
-        -Dsiteprefix=${prefix}/local \
+        -Dvendorprefix=${prefix} \
+        -Dsiteprefix=${prefix} \
+        \
+        -Dprivlib=${STAGING_LIBDIR}/perl/${PV} \
+        -Darchlib=${STAGING_LIBDIR}/perl/${PV} \
+        -Dvendorlib=${STAGING_LIBDIR}/perl/${PV} \
+        -Dvendorarch=${STAGING_LIBDIR}/perl/${PV} \
+        -Dsitelib=${STAGING_LIBDIR}/perl/${PV} \
+        -Dsitearch=${STAGING_LIBDIR}/perl/${PV} \
+        \
         -Duseshrplib \
         -Dusethreads \
         -Duseithreads \
@@ -50,6 +59,9 @@ do_configure () {
 do_stage_append() {
         # We need a hostperl link for building perl
         ln -sf ${STAGING_BINDIR_NATIVE}/perl${PV} ${STAGING_BINDIR_NATIVE}/hostperl
+        # Store native config in non-versioned directory
+        install -d ${STAGING_DIR}/${HOST_SYS}/perl
+        install config.sh ${STAGING_DIR}/${HOST_SYS}/perl
 }
 
 PARALLEL_MAKE = ""
