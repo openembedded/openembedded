@@ -34,7 +34,7 @@ PACKAGE_ARCH_mencoder_collie = "collie"
 
 RCONFLICTS_${PN} = "mplayer-atty"
 RREPLACES_${PN} = "mplayer-atty"
-PR = "r12"
+PR = "r13"
 
 PARALLEL_MAKE = ""
 
@@ -177,13 +177,24 @@ EXTRA_OECONF = " \
 EXTRA_OECONF_append_arm = " --disable-decoder=vorbis_decoder \
 			    --disable-encoder=vorbis_encoder"
 
-EXTRA_OECONF_append_c7x0 = " --enable-w100 --enable-imageon "
-EXTRA_OECONF_append_hx4700 = " --enable-imageon "
 EXTRA_OECONF_append_progear = " --disable-sse --disable-3dnow --disable-mmxext --disable-sse2"
-EXTRA_OECONF_append_spitz = " --enable-pxa "
 
+#enable support for the ati imageon series (w100 and w3220)
+EXTRA_OECONF_append_c7x0 = " --enable-w100 "
+EXTRA_OECONF_append_hx4700 = " --enable-imageon "
+
+#enable pxa270 overlay support
+EXTRA_OECONF_append_spitz = " --enable-pxa "
+EXTRA_OECONF_append_a780 = " --enable-pxa "
+
+#build with support for the iwmmxt instruction support (pxa270 and up)
 TARGET_CC_ARCH_spitz = "-march=iwmmxt -mtune=iwmmxt"
 PACKAGE_ARCH_spitz = "iwmmxt"
+TARGET_CC_ARCH_a780 = "-march=iwmmxt -mtune=iwmmxt"
+PACKAGE_ARCH_a780 = "iwmmxt"
+TARGET_CC_ARCH_hx4700 = "-march=iwmmxt -mtune=iwmmxt"
+PACKAGE_ARCH_hx4700= "iwmmxt"
+
 
 do_configure() {
 	cp ${WORKDIR}/vo_w100.c ${S}/libvo

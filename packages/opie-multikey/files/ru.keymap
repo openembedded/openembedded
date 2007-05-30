@@ -1,0 +1,255 @@
+# Created by Anton Kachalov (mouse@altlinux.ru)
+title = Russian
+sw = RU
+
+1 0x1000    0       2 # and you can write whatever you want after the last element
+
+
+    "9 9 2 1"
+    ". c None"
+    "a c #000000"
+    "........."
+    "........."
+    ".aa.aa.aa"
+    ".a..a..a."
+    ".aa.aa.a."
+    ".a...a.a."
+    ".aa.aa.aa"
+    "........."
+    "........."
+
+1 0	    0x0451  2   # CYRILLIC SMALL LETTER IO
+1 0         0x31    2   # 1
+1 0         0x32    2	# 2
+1 0         0x33    2   # 3
+1 0         0x34    2   # 4
+1 0         0x35    2   # 5
+1 0         0x36    2   # 6
+1 0         0x37    2   # 7
+1 0         0x38    2   # 8
+1 0         0x39    2   # 9
+1 0	    0x30    2	# 0
+1 0	    0x2d    2	# -
+1 0	    0x3d    2	# =
+1 0x1003    0       2
+
+        "9 9 2 1"
+        ". c None"
+        "a c #000000"
+        "........."
+        "........."
+        "...a....."
+        "..aa....."
+        ".aaaaaaaa"
+        "..aa....."
+        "...a....."
+        "........."
+        "........."
+
+
+2 0x1001    0x9     3 # tab char, but why doesnt this work...?
+
+
+        "11 9 2 1"
+        ". c None"
+        "a c #000000"
+        "..........."
+        "..........."
+        ".....a..a.."
+        ".....aa.a.."
+        ".aaaaaaaa.."
+        ".....aa.a.."
+        ".....a..a.."
+        "..........."
+        "..........."
+2 0         0x0439    2  # CYRILLIC SMALL LETTER SHORT I
+2 0         0x0446    2  # CYRILLIC SMALL LETTER TSE
+2 0         0x0443    2  # CYRILLIC SMALL LETTER U
+2 0         0x043a    2  # CYRILLIC SMALL LETTER KA
+2 0         0x0435    2  # CYRILLIC SMALL LETTER IE
+2 0         0x043d    2  # CYRILLIC SMALL LETTER EN
+2 0         0x0433    2  # CYRILLIC SMALL LETTER GHE
+2 0         0x0448    2  # CYRILLIC SMALL LETTER SHA
+2 0         0x0449    2  # CYRILLIC SMALL LETTER SHCHA
+2 0         0x0437    2  # CYRILLIC SMALL LETTER ZE
+2 0         0x0445    2  # CYRILLIC SMALL LETTER HA
+2 0         0x044a    2  # CYRILLIC SMALL LETTER HARD SIGN
+2 0         0x2f      4  # /
+
+3 0x1024    0       4
+        "17 7 2 1"
+        "   c None"
+        ".  c #000000"
+        "                 "
+        "  ..  .  ..   .. "
+        " .   . . . . .   "
+        " .   ... ..   .  "
+        " .   . . .     . "
+        "  .. . . .   ..  "
+        "                 "
+3 0         0x0444    2 # CYRILLIC SMALL LETTER EF
+3 0         0x044b    2 # CYRILLIC SMALL LETTER YERU
+3 0         0x0432    2 # CYRILLIC SMALL LETTER VE
+3 0         0x0430    2 # CYRILLIC SMALL LETTER A
+3 0         0x043f    2 # CYRILLIC SMALL LETTER PE
+3 0         0x0440    2 # CYRILLIC SMALL LETTER ER
+3 0         0x043e    2 # CYRILLIC SMALL LETTER O
+3 0         0x043b    2 # CYRILLIC SMALL LETTER EL
+3 0         0x0434    2 # CYRILLIC SMALL LETTER DE
+3 0         0x0436    2 # CYRILLIC SMALL LETTER ZHE
+3 0         0x044d    2 # CYRILLIC SMALL LETTER E
+3 0x1004    0         5 # ENTER
+        "16 9 2 1"
+        ". c None"
+        "a c #000000"
+        "................"
+        "................"
+        "...........a...."
+        "....aa.....a...."
+        "...aa......a...."
+        "..aaaaaaaaaa...."
+        "...aa..........."
+        "....aa.........."
+        "................"
+
+4 0x1020    0       5
+        "21 7 2 1"
+        "   c None"
+        ".  c #000000"
+        "                     "
+        "  .. . . ... ... ... "
+        " .   . .  .  .    .  "
+        "  .  ...  .  ..   .  "
+        "   . . .  .  .    .  "
+        " ..  . . ... .    .  "
+        "                     "
+4 0         0x044f    2 # CYRILLIC SMALL LETTER YA
+4 0         0x0447    2 # CYRILLIC SMALL LETTER CHE
+4 0         0x0441    2 # CYRILLIC SMALL LETTER ES
+4 0         0x043c    2 # CYRILLIC SMALL LETTER EM
+4 0         0x0438    2 # CYRILLIC SMALL LETTER I
+4 0         0x0442    2 # CYRILLIC SMALL LETTER TE
+4 0         0x044c    2 # CYRILLIC SMALL LETTER SOFT SIGN
+4 0         0x0431    2 # CYRILLIC SMALL LETTER BE
+4 0         0x044e    2 # CYRILLIC SMALL LETTER YU
+4 0         0x2e      2 # .
+4 0x1020    0         5 # SHIFT
+        "21 7 2 1"
+        "   c None"
+        ".  c #000000"
+        "                     "
+        "  .. . . ... ... ... "
+        " .   . .  .  .    .  "
+        "  .  ...  .  ..   .  "
+        "   . . .  .  .    .  "
+        " ..  . . ... .    .  "
+        "                     "
+
+5 0x1021    0       3
+        "17 7 2 1"
+        "   c None"
+        ".  c #000000"
+        "                 "
+        "  .. ... ..  .   "
+        " .    .  . . .   "
+        " .    .  ..  .   "
+        " .    .  . . .   "
+        "  ..  .  . . ... "
+        "                 "
+5 0x1023    0       3
+        "13 7 2 1"
+        "   c None"
+        ".  c #000000"
+        "             "
+        "  .  .   ... "
+        " . . .    .  "
+        " ... .    .  "
+        " . . .    .  "
+        " . . ...  .  "
+        "             "
+5 0         0x20    16
+5 0x1023    0       3
+        "13 7 2 1"
+        "   c None"
+        ".  c #000000"
+        "             "
+        "  .  .   ... "
+        " . . .    .  "
+        " ... .    .  "
+        " . . .    .  "
+        " . . ...  .  "
+        "             "
+5 0x1021    0       3 
+        "17 7 2 1"
+        "   c None"
+        ".  c #000000"
+        "                 "
+        "  .. ... ..  .   "
+        " .    .  . . .   "
+        " .    .  ..  .   "
+        " .    .  . . .   "
+        "  ..  .  . . ... "
+        "                 "
+5 0x1030    0       2 #original code is F1, but i'll use it for turning on/off the config dialog
+        "13 7 2 1"
+        "   c None"
+        ".  c #000000"
+        "             "
+        "      .      "
+        "     ...     "
+        "    .....    "
+        "      .      "
+        "      .      "
+        "             "
+
+# shift table
+0x0451  0x0401 # CYRILLIC SMALL LETTER IO -> CYRILLIC CAPITAL LETTER IO
+0x31  0x21 # 1 -> !
+0x32  0x22 # 2 -> "
+0x33  0x4e # 3 -> N
+0x34  0x3b # 4 -> ;
+0x35  0x25 # 5 -> %
+0x36  0x3a # 6 -> :
+0x37  0x3f # 7 -> ?
+0x38  0x2a # 8 -> *
+0x39  0x28 # 9 -> (
+0x30  0x29 # 0 -> )
+0x2d  0x5f # - -> _
+0x3d  0x2b # = -> +
+
+0x0439  0x0419  # CYRILLIC SMALL LETTER SHORT I   -> CYRILLIC CAPITAL LETTER SHORT I
+0x0446  0x0426  # CYRILLIC SMALL LETTER TSE       -> CYRILLIC CAPITAL LETTER TSE
+0x0443  0x0423  # CYRILLIC SMALL LETTER U         -> CYRILLIC CAPITAL LETTER U
+0x043a  0x041a  # CYRILLIC SMALL LETTER KA        -> CYRILLIC CAPITAL LETTER KA
+0x0435  0x0415  # CYRILLIC SMALL LETTER IE        -> CYRILLIC CAPITAL LETTER IE
+0x043d  0x041d  # CYRILLIC SMALL LETTER EN        -> CYRILLIC CAPITAL LETTER EN
+0x0433  0x0413  # CYRILLIC SMALL LETTER GHE       -> CYRILLIC CAPITAL LETTER GHE
+0x0448  0x0428  # CYRILLIC SMALL LETTER SHA       -> CYRILLIC CAPITAL LETTER SHA
+0x0449  0x0429  # CYRILLIC SMALL LETTER SHCHA     -> CYRILLIC CAPITAL LETTER SHCHA
+0x0437  0x0417  # CYRILLIC SMALL LETTER ZE        -> CYRILLIC CAPITAL LETTER ZE
+0x0445  0x0425  # CYRILLIC SMALL LETTER HA        -> CYRILLIC CAPITAL LETTER HA
+0x044a  0x042a  # CYRILLIC SMALL LETTER HARD SIGN -> CYRILLIC CAPITAL LETTER HARD SIGN
+
+0x0444  0x0424 # CYRILLIC SMALL LETTER EF         -> CYRILLIC CAPITAL LETTER EF
+0x044b  0x042b # CYRILLIC SMALL LETTER YERU       -> CYRILLIC CAPITAL LETTER YERU
+0x0432  0x0412 # CYRILLIC SMALL LETTER VE         -> CYRILLIC CAPITAL LETTER VE
+0x0430  0x0410 # CYRILLIC SMALL LETTER A          -> CYRILLIC CAPITAL LETTER A
+0x043f  0x041f # CYRILLIC SMALL LETTER PE         -> CYRILLIC CAPITAL LETTER PE
+0x0440  0x0420 # CYRILLIC SMALL LETTER ER         -> CYRILLIC CAPITAL LETTER ER
+0x043e  0x041e # CYRILLIC SMALL LETTER O          -> CYRILLIC CAPITAL LETTER O
+0x043b  0x041b # CYRILLIC SMALL LETTER EL         -> CYRILLIC CAPITAL LETTER EL
+0x0434  0x0414 # CYRILLIC SMALL LETTER DE         -> CYRILLIC CAPITAL LETTER DE
+0x0436  0x0416 # CYRILLIC SMALL LETTER ZHE        -> CYRILLIC CAPITAL LETTER ZHE
+0x044d  0x042d # CYRILLIC SMALL LETTER E          -> CYRILLIC CAPITAL LETTER E
+
+0x044f  0x042f # CYRILLIC SMALL LETTER YA         -> CYRILLIC CAPITAL LETTER YA
+0x0447  0x0427 # CYRILLIC SMALL LETTER CHE        -> CYRILLIC CAPITAL LETTER CHE
+0x0441  0x0421 # CYRILLIC SMALL LETTER ES         -> CYRILLIC CAPITAL LETTER ES
+0x043c  0x041c # CYRILLIC SMALL LETTER EM         -> CYRILLIC CAPITAL LETTER EM
+0x0438  0x0418 # CYRILLIC SMALL LETTER I          -> CYRILLIC CAPITAL LETTER I
+0x0442  0x0422 # CYRILLIC SMALL LETTER TE         -> CYRILLIC CAPITAL LETTER TE
+0x044c  0x042c # CYRILLIC SMALL LETTER SOFT SIGN  -> CYRILLIC CAPITAL LETTER SOFT SIGN
+0x0431  0x0411 # CYRILLIC SMALL LETTER BE         -> CYRILLIC CAPITAL LETTER BE
+0x044e  0x042e # CYRILLIC SMALL LETTER YU         -> CYRILLIC CAPITAL LETTER YU
+0x2f    0x7c   # / -> |
+0x2e    0x2c   # . -> ,
