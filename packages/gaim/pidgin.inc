@@ -5,8 +5,6 @@ LICENSE = "GPL"
 DEPENDS = "gtk+ ncurses gnutls virtual/libintl gstreamer dbus"
 RRECOMMENDS_${PN} = "libpurple-protocol-irc libpurple-protocol-jabber"
 
-PR = "r1"
-
 EXTRA_OECONF = " \
                 --disable-audio \
 		--disable-perl \
@@ -58,22 +56,22 @@ python populate_packages_prepend () {
 	do_split_packages(d, root, '^([^l][^i][^b].*)\.so$',
 			   output_pattern='pidgin-plugin-%s',
 			   description='Pidgin plugin %s',
-			   prepend=True)
+			   prepend=True, extra_depends='')
 
         do_split_packages(d, purple, '^lib(.*)\.so$',
 			   output_pattern='libpurple-protocol-%s',
 			   description='Libpurple protocol plugin for %s',
-			   prepend=True)
+			   prepend=True, extra_depends='')
 
         do_split_packages(d, purple, '^([^l][^i][^b].*)\.so$',
                            output_pattern='libpurple-plugin-%s',
                            description='libpurple plugin %s',
-                           prepend=True)
+                           prepend=True, extra_depends='')
 
         do_split_packages(d, finch, '^([^l][^i][^b].*)\.so$', 
                            output_pattern='finch-plugin-%s',
                            description='Finch plugin %s',
-                           prepend=True)
+                           prepend=True, extra_depends='')
 
 
 }
