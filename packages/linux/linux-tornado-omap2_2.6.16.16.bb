@@ -12,6 +12,8 @@ S = "${WORKDIR}/linux-2.6.16"
 
 inherit kernel
 
+COMPATIBLE_MACHINE = "htctornado"
+
 do_configure() {
 
         rm -f ${S}/.config
