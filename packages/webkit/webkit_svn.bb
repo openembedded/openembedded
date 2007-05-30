@@ -2,6 +2,7 @@ DEPENDS = "flex-native gperf-native gperf perl-native curl icu uicmoc4-native qm
 
 # Yes, this is wrong...
 PV = "0.0+svn${SRCDATE}"
+PR = "r1"
 
 inherit qmake pkgconfig
 
@@ -39,8 +40,8 @@ do_install() {
 	install -d ${D}${libdir}/pkgconfig
 
 	install -m 0755 ${S}/WebKitBuilds/Debug/WebKitTools/GdkLauncher/GdkLauncher ${D}${bindir}
-	cp WebKitBuilds/Debug/lib/*.so* ${D}${libdir} 
-	cp WebKitBuilds/Debug/lib/*.pc ${D}${libdir}/pkgconfig/
+	cp -pPR WebKitBuilds/Debug/lib/*.so* ${D}${libdir} 
+	cp -pPR WebKitBuilds/Debug/lib/*.pc ${D}${libdir}/pkgconfig/
 }
 
 
