@@ -15,7 +15,7 @@ DESCRIPTION = "A small utility for binding commands to a hot key.\
  program is already running, keylaunch can bring its window to the front\
  rather than just running another copy."
 PACKAGE_ARCH = "${MACHINE_ARCH}"
-PR = "r9"
+PR = "r10"
 
 SRC_URI += " file://keylaunchrc"
 SRC_URI += " file://makefile-fix.patch;patch=1"
