@@ -1,9 +1,9 @@
-DEPENDS = "flex-native curl icu uicmoc4-native qmake2-native libxml2 sqlite3 cairo gtk+"
+DEPENDS = "flex-native gperf-native gperf perl-native curl icu uicmoc4-native qmake2-native libxml2 sqlite3 cairo gtk+"
 
 # Yes, this is wrong...
 PV = "0.0+svn${SRCDATE}"
 
-inherit qmake
+inherit qmake pkgconfig
 
 SRC_URI = "\
            svn://svn.webkit.org/repository/webkit/trunk/;module=JavaScriptCore;proto=http \
@@ -32,3 +32,22 @@ do_configure_append() {
 do_compile_prepend() {
         cd ${S}/WebKitBuilds/Debug
 }
+
+do_install() {
+	install -d ${D}${bindir}
+	install -d ${D}${libdir}
+	install -d ${D}${libdir}/pkgconfig
+
+	install -m 0755 ${S}/WebKitBuilds/Debug/WebKitTools/GdkLauncher/GdkLauncher ${D}${bindir}
+	cp WebKitBuilds/Debug/lib/*.so* ${D}${libdir} 
+	cp WebKitBuilds/Debug/lib/*.pc ${D}${libdir}/pkgconfig/
+}
+
+
+PACKAGES =+ "webkit-gdklauncher-dbg webkit-gdklauncher"
+
+FILES_webkit-gdklauncher = "${bindir}/GdkLauncher"
+FILES_webkit-gdklauncher-dbg = "${bindir}/.debug/GdkLauncher"
+
+
+
