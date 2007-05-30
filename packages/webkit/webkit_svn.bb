@@ -1,4 +1,4 @@
-DEPENDS = "flex-native gperf-native gperf perl-native curl icu uicmoc4-native qmake2-native libxml2 sqlite3 cairo libxslt libidn gnutlsgtk+"
+DEPENDS = "flex-native gperf-native gperf perl-native curl icu uicmoc4-native qmake2-native libxml2 sqlite3 cairo libxslt libidn gnutls gtk+"
 
 # Yes, this is wrong...
 PV = "0.0+svn${SRCDATE}"
