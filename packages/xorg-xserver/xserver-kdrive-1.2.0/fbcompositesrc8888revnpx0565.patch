@@ -1,0 +1,194 @@
+Hello all,
+
+The attached patch provides a fast path for the case of performing
+a8b8g8r8 non-premultiplied (aka the GdkPixbuf format) OVER r5g6b5 via
+a new function called fbCompositeSrc_8888RevNPx0565. Basically, it's
+just an adaptation of the previous work I talked about here:
+
+http://lists.freedesktop.org/archives/xorg/2007-April/023763.html
+
+On my Nokia N800, I get a 3.4x speedup when running this little gdk
+benchmark program:
+
+http://amelang.net/composite_pixbuf.c
+
+The source file is kinda large (4.5MB) due to an embedded GdkPixbuf.
+
+Dan Amelang
+-------------- next part --------------
+From 63bdc0476c09669cabccffe4b35f8f56aff965a5 Mon Sep 17 00:00:00 2001
+From: Dan Amelang <dan at amelang.net>
+Date: Mon, 30 Apr 2007 03:22:52 -0700
+Subject: [PATCH] Implement fbCompositeSrc_8888RevNPx0565
+
+This provides a fast path for the common case of compositing GdkPixmaps
+with r5g6b5 images. On a simple GDK benchmark application, I get a
+3.4x increase in performance on the Nokia N800 (which currently is
+running xserver 1.1.99.3).
+
+All of the optimizations used here are already explained in the following
+post to the Xorg mailing list:
+
+  http://lists.freedesktop.org/archives/xorg/2007-April/023763.html
+---
+ fb/fbpict.c |  139 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 files changed, 139 insertions(+), 0 deletions(-)
+
+diff --git a/fb/fbpict.c b/fb/fbpict.c
+index a735967..3bd57fb 100644
+--- a/fb/fbpict.c
++++ b/fb/fbpict.c
+@@ -781,6 +781,143 @@ fbCompositeSrc_8888x0565 (CARD8      op,
+     fbFinishAccess (pSrc->pDrawable);
+ }
+ 
++
++#define cvt8888Revto0565(s) ((((s) >> 19) & 0x001f) | \
++			     (((s) >>  5) & 0x07e0) | \
++			     (((s) <<  8) & 0xf800))
++
++#define FbOverU_8888RevNPx565(s, d) \
++        \
++        /* Extract alpha */ \
++        s_a = (s) >> 24; \
++        \
++        /* Extract r8g8b8 color channels */ \
++        s_r  = ( (s)        & 0xff); \
++        s_g  = (((s) >>  8) & 0xff); \
++        s_b  = (((s) >> 16) & 0xff); \
++        \
++        /* Extract r5g6b5 color channels */ \
++        d_r = ((d) >> 8) & 0xf8; \
++        d_g = ((d) >> 3) & 0xfc; \
++        d_b = ((d) << 3) & 0xf8; \
++        \
++        /* Use the higher bits of the channel to fill out the bottom */ \
++        d_r |= (d_r >> 5); \
++        d_g |= (d_g >> 6); \
++        d_b |= (d_b >> 5); \
++        \
++        /* Blend */ \
++        d_r = (s_r - d_r) * s_a + (d_r << 8); \
++        d_g = (s_g - d_g) * s_a + (d_g << 8); \
++        d_b = (s_b - d_b) * s_a + (d_b << 8); \
++        \
++        /* Pack result as r5g6b5 */ \
++        (d) = (d_r & 0xf800) | ((d_g & 0xfc00) >> 5) | (d_b >> 11)
++
++void
++fbCompositeSrc_8888RevNPx0565 (FbComposeData *params)
++{
++    CARD16	*dstLine, *dst;
++    CARD32	*srcLine, *src;
++    FbStride	dstStride, srcStride;
++    int         w, h;
++
++    fbComposeGetStart (params->src, params->xSrc, params->ySrc, CARD32,
++                       srcStride, srcLine, 1);
++    fbComposeGetStart (params->dest, params->xDest, params->yDest, CARD16,
++                       dstStride, dstLine, 1);
++    h = params->height;
++
++    while (h--)
++    {
++        CARD32 s1, s2, s3, s4;
++        int d_r, d_g, d_b, s_r, s_g, s_b, s_a;
++        CARD32 *dst_2px_wide;
++
++        src = srcLine;
++        srcLine += srcStride;
++        dst_2px_wide = (CARD32 *) dstLine;
++        dstLine += dstStride;
++	w = params->width - 4;
++
++        while (w >= 0)
++        {
++            s1 = *src;
++            s2 = *(src + 1);
++            s3 = *(src + 2);
++            s4 = *(src + 3);
++
++            w -= 4;
++            src += 4;
++
++            /* Check if the next 4 pixels are opaque */
++            if ((s1 & s2 & s3 & s4) > 0xfeffffff)
++            {
++                /* In this case, we just perform a SOURCE for all 4 pixels */
++#if X_BYTE_ORDER == X_BIG_ENDIAN
++                *dst_2px_wide++ = (cvt8888Revto0565 (s1) << 16) |
++                                   cvt8888Revto0565 (s2);
++                *dst_2px_wide++ = (cvt8888Revto0565 (s3) << 16) |
++                                   cvt8888Revto0565 (s4);
++#else
++                *dst_2px_wide++ =  cvt8888Revto0565 (s1) |
++                                  (cvt8888Revto0565 (s2) << 16);
++                *dst_2px_wide++ =  cvt8888Revto0565 (s3) |
++                                  (cvt8888Revto0565 (s4) << 16);
++#endif
++            }
++            /* Next, check if the next 4 pixels have any alpha in them at all */
++            else if ((s1 | s2 | s3 | s4) > 0x00ffffff)
++            {
++                /* In which case, we perform OVER on each one of them */
++                CARD32 d1, d2, d3, d4;
++
++#if X_BYTE_ORDER == X_BIG_ENDIAN
++                d1 = (*dst_2px_wide >> 16);
++                d2 = (*dst_2px_wide & 0xffff);
++                FbOverU_8888RevNPx565 (s1, d1);
++                FbOverU_8888RevNPx565 (s2, d2);
++                *dst_2px_wide++ = (d1 << 16) | d2;
++#else
++                d2 = (*dst_2px_wide >> 16);
++                d1 = (*dst_2px_wide & 0xffff);
++                FbOverU_8888RevNPx565 (s1, d1);
++                FbOverU_8888RevNPx565 (s2, d2);
++                *dst_2px_wide++ = d1 | (d2 << 16);
++#endif
++
++#if X_BYTE_ORDER == X_BIG_ENDIAN
++                d3 = (*dst_2px_wide >> 16);
++                d4 = (*dst_2px_wide & 0xffff);
++                FbOverU_8888RevNPx565 (s3, d3);
++                FbOverU_8888RevNPx565 (s4, d4);
++                *dst_2px_wide++ = (d3 << 16) | d4;
++#else
++                d4 = (*dst_2px_wide >> 16);
++                d3 = (*dst_2px_wide & 0xffff);
++                FbOverU_8888RevNPx565 (s3, d3);
++                FbOverU_8888RevNPx565 (s4, d4);
++                *dst_2px_wide++ = d3 | (d4 << 16);
++#endif
++            }
++            else
++            {
++                /* Do nothing, since the source pixels are all transparent */
++                dst_2px_wide += 2;
++            }
++        }
++
++        /* Deal with left over pixels */
++        for (dst = (CARD16 *) dst_2px_wide; w > -4; w--)
++        {
++            CARD32 d = *dst;
++            CARD32 s = *src++;
++            FbOverU_8888RevNPx565 (s, d);
++            *dst++ = d;
++        }
++    }
++}
++
+ void
+ fbCompositeSrcAdd_8000x8000 (CARD8	op,
+ 			     PicturePtr pSrc,
+@@ -1669,7 +1806,9 @@ fbComposite (CARD8      op,
+ #ifdef USE_MMX
+ 				if (fbHaveMMX())
+ 				    func = fbCompositeSrc_8888RevNPx0565mmx;
++                                else
+ #endif
++                                    func = fbCompositeSrc_8888RevNPx0565;
+ 				break;
+ 			    default:
+ 				break;

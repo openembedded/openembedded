@@ -4,10 +4,11 @@ PR = "r1"
 
 do_configure_append() {
         for i in */Makefile */*.inc */*/Makefile */*/*.inc ; do
-		sed -i -e 's:$(INVOKE) $(BINDIR)/:$(INVOKE) :g' $i
-		sed -i -e 's:$(BINDIR)/::g' $i
+		sed -i -e 's:$(INVOKE) $(BINDIR)/:$(INVOKE) :g' $i 
+		sed -i -e 's:$(BINDIR)/::g' $i 
         done
-	sed -i -e 's:$(BINDIR)/::g' extra/uconv/pkgdata.inc
+	sed -i -e 's:$(BINDIR)/::g' extra/uconv/pkgdata.inc || true
+	sed -i -e 's:$(BINDIR)/::g' extra/uconv/pkgdata.inc.in || true
 }
 
 
