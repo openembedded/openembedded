@@ -1,5 +1,5 @@
-key=....F9:-:gpe-contacts
-key=....F10:-:gpe-calendar
+key=....F9:-:gpe-calendar
+key=....F10:-:gpe-contacts
 key=....F13:-:sylpheed
 key=....F12:-:~matchbox-remote -next
 key=...*F12:-:~matchbox-remote -desktop

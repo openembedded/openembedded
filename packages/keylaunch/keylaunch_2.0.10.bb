@@ -1,7 +1,10 @@
 inherit gpe
 
-DEPENDS = "virtual/xserver libxtst libxau libxpm libgpelaunch"
-RDEPENDS_append_openzaurus = " display-brightness"
+DEPENDS = "virtual/xserver libxtst libxau libxpm libgpelaunch display-brightness"
+
+RDEPENDS_append_spitz = " display-brightness"
+RDEPENDS_append_akita = " display-brightness"
+RDEPENDS_append_c7x0 = " display-brightness"
 
 SECTION = "gpe"
 LICENSE = "GPL"
@@ -12,7 +15,7 @@ DESCRIPTION = "A small utility for binding commands to a hot key.\
  program is already running, keylaunch can bring its window to the front\
  rather than just running another copy."
 PACKAGE_ARCH = "${MACHINE_ARCH}"
-PR = "r7"
+PR = "r9"
 
 SRC_URI += " file://keylaunchrc"
 SRC_URI += " file://makefile-fix.patch;patch=1"
