@@ -1,4 +1,4 @@
-DESCRIPTION = "Nabi is an easy and powerful GNU XIM"
+DESCRIPTION = "Nabi is an easy and powerful GNU XIM for the Korean language"
 HOMEPAGE = "http://nabi.kldp.net/"
 SECTION = "x11/input"
 LICENSE = "GPL"
