@@ -10,7 +10,7 @@ DESCRIPTION_${PN}-daemon = "An on-demand file scanning service for Clam AntiViru
 HOMEPAGE = "http://www.clamav.net/"
 SECTION = "network"
 LICENSE = "GPL"
-DEPENDS = "zlib bzip2 gmp"
+DEPENDS = "zlib bzip2 gmp curl virtual/libintl"
 RDEPENDS_${PN} = "${PN}-data"
 RDEPENDS_${PN}-daemon = "${PN}-data ${PN}-conf"
 RDEPENDS_${PN}-freshclam = "${PN}-conf"
@@ -33,6 +33,8 @@ inherit autotools update-rc.d binconfig
 # Don't check for clamav uid/gid - they don't exist on the host
 # Put virus definitions in /var/lib not /usr/lib
 EXTRA_OECONF = "--disable-clamav \
+                --with-zlib=${STAGING_DIR}/${HOST_SYS} \
+                --with-libcurl \
                 --with-dbdir=${localstatedir}/lib/clamav"
 
 do_install_append() {
@@ -62,13 +64,15 @@ do_stage () {
         install -m 0644 libclamav/clamav.h ${STAGING_INCDIR}
 }
 
-PACKAGES += "${PN}-freshclam ${PN}-daemon ${PN}-conf ${PN}-data ${PN}-lib"
+PACKAGES += "${PN}-freshclam ${PN}-daemon ${PN}-conf ${PN}-data ${PN}-lib \
+             ${PN}-clamconf"
 
 FILES_${PN} = "${bindir}/clamscan \
                ${bindir}/sigtool \
                ${bindir}/clamdscan"
 FILES_${PN}-lib = "${libdir}/libclamav.so.*"
 FILES_${PN}-conf = "${sysconfdir}/clamd.conf"
+FILES_${PN}-clamconf = "${bindir}/clamconf"
 FILES_${PN}-freshclam = "${bindir}/freshclam \
                          ${sysconfdir}/freshclam.conf \
                          ${sysconfdir}/init.d/clamav-freshclam \
