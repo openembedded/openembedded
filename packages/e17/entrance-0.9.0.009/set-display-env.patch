@@ -1,0 +1,11 @@
+diff -Nur entrance~/src/daemon/spawner.c entrance/src/daemon/spawner.c
+--- entrance~/src/daemon/spawner.c	2005-09-02 14:00:29.000000000 -0700
++++ entrance/src/daemon/spawner.c	2005-09-02 15:53:31.000000000 -0700
+@@ -199,6 +199,7 @@
+       free(d->client.homedir);
+    d->client.homedir = NULL;
+ 
++   setenv("DISPLAY", d->name, 1);
+    snprintf(entrance_cmd, PATH_MAX, "%s -d %s", ENTRANCE, d->name);
+    if (d->config)
+       snprintf(entrance_cmd, PATH_MAX, "%s -d %s -c \"%s\" -z %d", 

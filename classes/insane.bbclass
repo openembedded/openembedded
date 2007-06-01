@@ -54,10 +54,11 @@ def package_qa_get_machine_dict():
                         "sparc":      ( 2,     0,    0,          False,         True),
                       },
             "linux-uclibc" : { 
-                        "arm" :       (40,    97,    0,          True,          True),
-                        "armeb":      (40,    97,    0,          False,         True),
-                        "powerpc":    (20,     0,    0,          False,         True),
-                        "mipsel":     ( 8,     0,    0,          True,          True),
+                        "arm" :       (  40,    97,    0,          True,          True),
+                        "armeb":      (  40,    97,    0,          False,         True),
+                        "powerpc":    (  20,     0,    0,          False,         True),
+                        "mipsel":     (   8,     0,    0,          True,          True),
+			"avr32":      (6317,     0,    0,          False,         True), 
                       },
             "linux-gnueabi" : {
                         "arm" :       (40,     0,    0,          True,          True),
