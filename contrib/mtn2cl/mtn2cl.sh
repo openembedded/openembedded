@@ -2,7 +2,7 @@
 
 # This script takes the last 1000 revs and writes a ChangeLog
 
-for i in `mtn log --brief --no-graph --no-merges --to 57d2b2fc5c8e07d46b3aff668037c245742efd52 | awk '{print $2 ":" $1}'` ; do \
+for i in `mtn log --brief --no-graph --no-merges --last 1000 | awk '{print $2 ":" $1}'` ; do \
         export REV=`echo $i | awk -F: '{print $2}'`
         export AUTHOR=`echo $i | awk -F: '{print $1}'`
         export CL=`mtn ls certs ${REV} | grep -A 1 changelog | grep -v changelog | gawk -F'Value : '  '{ print $2 }'`
