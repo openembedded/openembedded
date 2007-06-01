@@ -1,5 +1,7 @@
 require icu-3.6.inc
 
+DEPENDS += "icu-native"
+
 PR = "r1"
 
 do_configure_append() {

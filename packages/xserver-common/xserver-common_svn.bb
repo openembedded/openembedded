@@ -6,8 +6,16 @@ DEPENDS = "xmodmap xrandr xdpyinfo xtscal"
 PV = "1.12+svn${SRCDATE}"
 S = "${WORKDIR}/xserver-common"
 
+PR = "r1"
+
 SRC_URI = "${GPE_SVN} \
             file://Makefile.translation \
             file://Makefile.dpkg_ipkg \
 	    file://svn_makefiles.patch;patch=1 \
-	    file://keyboardless-buttonmap.patch;patch=1"
+	    file://keyboardless-buttonmap.patch;patch=1 \
+	    file://softkeys-slcxxxx-xmodmap.patch;patch=1 \
+	    file://softkeys-c7x0.patch;patch=1 \
+	    file://at-fix-slcxxxx.patch;patch=1 \
+	    file://load-xmodmap-k26.patch;patch=1 \
+	    file://Xserver-udev-input-helper.patch;patch=1"
+	    

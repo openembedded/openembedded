@@ -1,0 +1,11 @@
+--- xserver-common-1.8/X11/Xserver.orig	2006-05-07 17:40:10.540539080 +0200
++++ xserver-common-1.8/X11/Xserver	2006-05-07 17:40:35.187792128 +0200
+@@ -27,7 +27,7 @@
+ 
+ export USER=root
+ 
+-ARGS="-br -pn"
++ARGS="-br -pn $INPUT_EXTRA_ARGS"
+ 
+ # use ucb 1x00 touchscreen if present
+ if [ -z "$TSLIB_TSDEVICE" ] && [ -e /dev/touchscreen/ucb1x00 ]; then
