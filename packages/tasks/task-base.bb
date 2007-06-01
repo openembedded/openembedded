@@ -1,5 +1,5 @@
 DESCRIPTION = "Merge machine and distro options to create a basic machine task/package"
-PR = "r34"
+PR = "r35"
 
 PROVIDES = "${PACKAGES}"
 PACKAGES = 'task-boot \
@@ -234,7 +234,6 @@ RDEPENDS_task-base-pcmcia = "\
     ${@base_contains('DISTRO_FEATURES', 'wifi', 'prism3-firmware', '',d)} \
     ${@base_contains('DISTRO_FEATURES', 'wifi', 'prism3-support', '',d)} \
     ${@base_contains('DISTRO_FEATURES', 'wifi', 'spectrum-fw', '',d)} \
-    ${@base_contains('DISTRO_FEATURES', 'wifi', 'hostap-conf', '',d)} \
     "
 
 RRECOMMENDS_task-base-pcmcia = "\
