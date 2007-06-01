@@ -20373,37 +20373,6 @@ diff -Nrup --ignore-space-change gcc-4.0.2/gcc/tree-ssa-operands.c gcc-4.0.2-atm
  	    s_ann->has_volatile_ops = true; 
  	  get_expr_operands (stmt, &TREE_OPERAND (expr, 2), opf_none);
  	}
-diff -Nrup --ignore-space-change gcc-4.0.2/gcc/version.c gcc-4.0.2-atmel.0.99.2/gcc/version.c
---- gcc-4.0.2/gcc/version.c	2005-09-21 05:58:56.000000000 +0200
-+++ gcc-4.0.2-atmel.0.99.2/gcc/version.c	2006-12-01 12:45:38.000000000 +0100
-@@ -5,7 +5,7 @@
-    please modify this string to indicate that, e.g. by putting your
-    organization's name in parentheses at the end of the string.  */
- 
--const char version_string[] = "4.0.2";
-+const char version_string[] = "4.0.2-atmel.0.99.2";
- 
- /* This is the location of the online document giving instructions for
-    reporting bugs.  If you distribute a modified version of GCC,
-@@ -14,4 +14,4 @@ const char version_string[] = "4.0.2";
-    forward us bugs reported to you, if you determine that they are
-    not bugs in your modifications.)  */
- 
--const char bug_report_url[] = "<URL:http://gcc.gnu.org/bugs.html>";
-+const char bug_report_url[] = "<URL:http://www.atmel.com/avr32/>";
-diff -Nrup --ignore-space-change gcc-4.0.2/LAST_UPDATED gcc-4.0.2-atmel.0.99.2/LAST_UPDATED
---- gcc-4.0.2/LAST_UPDATED	2005-09-28 08:16:39.000000000 +0200
-+++ gcc-4.0.2-atmel.0.99.2/LAST_UPDATED	1970-01-01 01:00:00.000000000 +0100
-@@ -1 +0,0 @@
--Obtained from CVS: -rgcc_4_0_2_release 
-Binary files gcc-4.0.2/libcpp/po/ca.gmo and gcc-4.0.2-atmel.0.99.2/libcpp/po/ca.gmo differ
-Binary files gcc-4.0.2/libcpp/po/da.gmo and gcc-4.0.2-atmel.0.99.2/libcpp/po/da.gmo differ
-Binary files gcc-4.0.2/libcpp/po/de.gmo and gcc-4.0.2-atmel.0.99.2/libcpp/po/de.gmo differ
-Binary files gcc-4.0.2/libcpp/po/es.gmo and gcc-4.0.2-atmel.0.99.2/libcpp/po/es.gmo differ
-Binary files gcc-4.0.2/libcpp/po/fr.gmo and gcc-4.0.2-atmel.0.99.2/libcpp/po/fr.gmo differ
-Binary files gcc-4.0.2/libcpp/po/ja.gmo and gcc-4.0.2-atmel.0.99.2/libcpp/po/ja.gmo differ
-Binary files gcc-4.0.2/libcpp/po/nl.gmo and gcc-4.0.2-atmel.0.99.2/libcpp/po/nl.gmo differ
-Binary files gcc-4.0.2/libcpp/po/sv.gmo and gcc-4.0.2-atmel.0.99.2/libcpp/po/sv.gmo differ
 diff -Nrup --ignore-space-change gcc-4.0.2/libcpp/po/sv.po gcc-4.0.2-atmel.0.99.2/libcpp/po/sv.po
 --- gcc-4.0.2/libcpp/po/sv.po	2005-09-04 14:30:22.000000000 +0200
 +++ gcc-4.0.2-atmel.0.99.2/libcpp/po/sv.po	2006-01-20 10:54:31.000000000 +0100
