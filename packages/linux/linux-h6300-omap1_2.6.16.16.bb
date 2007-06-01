@@ -12,6 +12,8 @@ S = "${WORKDIR}/linux-2.6.16"
 
 inherit kernel
 
+COMPATIBLE_MACHINE = "h6300"
+
 do_configure_prepend() {
 	install -m 0644 ${WORKDIR}/defconfig ${S}/.config
         oe_runmake oldconfig

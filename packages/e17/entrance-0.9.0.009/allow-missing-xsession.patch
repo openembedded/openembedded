@@ -1,0 +1,19 @@
+Index: entrance-0.9.0.009/configure.in
+===================================================================
+--- entrance-0.9.0.009.orig/configure.in
++++ entrance-0.9.0.009/configure.in
+@@ -184,10 +184,10 @@ AC_ARG_WITH(xsession,
+ 	    fi
+ 	]
+ )
+-if test ! -x "$xsession" ; then
+-    AC_MSG_WARN([** $xsession does not exist or is not executable **])
+-    AC_MSG_WARN([** Please consider overriding with --with-xsession **])
+-fi
++#if test ! -x "$xsession" ; then
++#    AC_MSG_WARN([** $xsession does not exist or is not executable **])
++#    AC_MSG_WARN([** Please consider overriding with --with-xsession **])
++#fi
+ 
+ AC_DEFINE_UNQUOTED(ENTRANCE_XSESSION, "$xsession", [Xsession script])
+ AC_SUBST(xsession)

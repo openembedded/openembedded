@@ -7,7 +7,7 @@ Index: lighttpd-1.4.13/configure.in
  AC_MSG_RESULT([$WITH_PCRE])
  
 -if test "x$cross_compiling" = xno -a "$WITH_PCRE" != "no"; then
-+#if test "x$cross_compiling" = xno -a "$WITH_PCRE" != "no"; then
++if test "$WITH_PCRE" != "no"; then
    AC_PATH_PROG(PCRECONFIG, pcre-config)
  
 -  if test x"$PCRECONFIG" != x; then
@@ -28,7 +28,7 @@ Index: lighttpd-1.4.13/configure.in
 -  fi
 -fi
 +#  fi
-+#fi
++fi
  
  AC_SUBST(PCRE_LIB)
  

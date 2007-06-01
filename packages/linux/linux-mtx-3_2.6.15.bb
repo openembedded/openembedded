@@ -18,6 +18,7 @@ S = "${WORKDIR}/linux"
 
 inherit kernel
 
+COMPATIBLE_MACHINE = "mtx-3"
 COMPATIBLE_HOST = "arm.*-linux"
 ARCH = "arm"
 KERNEL_OUTPUT = "arch/arm/zboot/images/mtx-3.flash.bin"

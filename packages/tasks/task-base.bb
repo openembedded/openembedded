@@ -1,8 +1,10 @@
 DESCRIPTION = "Merge machine and distro options to create a basic machine task/package"
-PR = "r31"
+PR = "r35"
 
+PROVIDES = "${PACKAGES}"
 PACKAGES = 'task-boot \
             task-base \
+            task-base-extended \
             task-distro-base \
             task-machine-base \
             \
@@ -116,6 +118,34 @@ RDEPENDS_task-base = "\
     ${@base_contains('DISTRO_FEATURES', 'raid', 'task-base-raid', '',d)} \
     "
 
+RDEPENDS_task-base-extended = "\
+    task-base \
+    ${ADD_WIFI} \
+    ${ADD_BT} \
+    "
+
+ADD_WIFI = ""
+ADD_BT = ""
+
+python __anonymous () {
+    # If Distro want wifi and machine feature wifi/pci/pcmcia/usbhost (one of them)
+    # then include task-base-wifi in task-base
+
+    import bb
+
+    if not hasattr(__builtins__, 'set'):
+	from sets import Set as set
+
+    distro_features = set(bb.data.getVar("DISTRO_FEATURES", d, 1).split())
+    machine_features= set(bb.data.getVar("MACHINE_FEATURES", d, 1).split())
+
+    if "bluetooth" in distro_features and not "bluetooth" in machine_features and ("pcmcia" in machine_features or "pci" in machine_features or "usbhost" in machine_features):
+	bb.data.setVar("ADD_BT", "task-base-bluetooth", d)
+
+    if "wifi" in distro_features and not "wifi" in machine_features and ("pcmcia" in machine_features or "pci" in machine_features or "usbhost" in machine_features):
+	bb.data.setVar("ADD_WIFI", "task-base-wifi", d)
+}
+
 #
 # packages added by distribution
 #
@@ -204,7 +234,6 @@ RDEPENDS_task-base-pcmcia = "\
     ${@base_contains('DISTRO_FEATURES', 'wifi', 'prism3-firmware', '',d)} \
     ${@base_contains('DISTRO_FEATURES', 'wifi', 'prism3-support', '',d)} \
     ${@base_contains('DISTRO_FEATURES', 'wifi', 'spectrum-fw', '',d)} \
-    ${@base_contains('DISTRO_FEATURES', 'wifi', 'hostap-conf', '',d)} \
     "
 
 RRECOMMENDS_task-base-pcmcia = "\

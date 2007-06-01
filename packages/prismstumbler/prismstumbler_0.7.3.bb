@@ -4,7 +4,7 @@ PR = "r5"
 PACKAGES = "prismstumbler prismstumbler-frontend prismstumbler-doc"
 DESCRIPTION = "Prismstumbler wireless LAN scanner"
 LICENSE = "GPL"
-DEPENDS = "libpcap gtk+ wireless-tools sqlite zlib"
+DEPENDS = "libpcap gtk+ wireless-tools sqlite zlib libxpm"
 RDEPENDS = "wireless-tools"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/prismstumbler/${PN}-${PV}.tar.bz2 \

@@ -1,7 +1,7 @@
 DESCRIPTION = "Web server"
 SECTION = "net"
 LICENSE = "BSD"
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "http://www.lighttpd.net/download/lighttpd-1.4.15.tar.gz \
 	   file://configure.in.patch;patch=1 \
