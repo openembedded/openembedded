@@ -21,6 +21,7 @@ SRC_URI += "\
         http://avr32linux.org/twiki/pub/Main/DevelopmentTools/500-avr32.patch.gz;patch=1 \
         http://avr32linux.org/twiki/pub/Main/DevelopmentTools/501-avr32-sreldyn-fix.patch.gz;patch=1 \
 	http://avr32linux.org/twiki/pub/Main/DevelopmentTools/502-avr32-bfd-dont-allow-direct-refs-to-bss.patch.gz;patch=1 \
+        file://avr32-config.sub.patch;patch=1 \
 "
 
 # Zecke's OSX fixes
