@@ -29,6 +29,8 @@ def get_siteinfo_list(d):
                "arm-linux-gnueabi":       "endian-little bit-32 common-glibc arm-common arm-linux",\
                "arm-linux-uclibc":        "endian-little bit-32 common-uclibc arm-common",\
                "arm-linux-uclibcgnueabi": "endian-little bit-32 common-uclibc arm-common arm-linux-uclibc",\
+               "avr32-linux":             "endian-big bit-32 common-glibc",\ 
+               "avr32-linux-uclibc":      "endian-big bit-32 common-uclibc",\
                "i386-linux":              "endian-little bit-32 common-glibc ix86-common",\
                "i486-linux":              "endian-little bit-32 common-glibc ix86-common",\
                "i586-linux":              "endian-little bit-32 common-glibc ix86-common",\
