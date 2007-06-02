@@ -22,6 +22,7 @@ inherit kernel
 KERNEL_IMAGETYPE_progear = "bzImage"
 KERNEL_IMAGETYPE_simpad = "zImage"
 KERNEL_IMAGETYPE_kb9202 = "uImage"
+KERNEL_IMAGETYPE_at32stk1000 = "uImage"
 
 do_configure_prepend() {
         if [ "${TARGET_OS}" == "linux-gnueabi" -o  "${TARGET_OS}" == "linux-uclibcgnueabi" ]; then
