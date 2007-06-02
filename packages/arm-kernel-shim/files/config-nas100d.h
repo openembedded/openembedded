@@ -21,6 +21,10 @@
 
 #define MACH_TYPE		   865
 
+#define CREATE_ATAGS
+
+#define GUARANTEE_ATAG_CMDLINE
+
 /* Uncomment one of these to switch the CPU into a specific mode. */
 //#define FORCE_LITTLEENDIAN
 //#define FORCE_BIGENDIAN

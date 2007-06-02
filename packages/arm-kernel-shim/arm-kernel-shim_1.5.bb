@@ -3,26 +3,24 @@ SECTION = ""
 PRIORITY = "optional"
 HOMEPAGE = "http://wiki.buici.com/twiki/bin/view/Main/ApexBootloader"
 LICENSE = "GPL"
-PR = "r2"
+# PR = "r1"
 
 COMPATIBLE_MACHINE = "(ixp4xx|nslu2)"
 
 SRC_URI = "ftp://ftp.buici.com/pub/arm/arm-kernel-shim/arm-kernel-shim-${PV}.tar.gz \
-	   file://passthrough-atags.patch;patch=1 \
-	   file://cmdline_if_none.patch;patch=1 \
 	   file://config-nslu2.h \
 	   file://config-nas100d.h \
 	   file://config-dsmg600.h \
 	   file://config-fsg3.h"
 
-S = ${WORKDIR}/arm-kernel-shim-${PV}/1.3
+S = ${WORKDIR}/arm-kernel-shim-${PV}
 
 CMDLINE_CONSOLE = "console=${@bb.data.getVar("KERNEL_CONSOLE",d,1) or "ttyS0"}"
 
-CMDLINE_ROOT_DSMG600 = "root=/dev/mtdblock2 rootfstype=jffs2 rw"
-CMDLINE_ROOT_NAS100D = "root=/dev/mtdblock2 rootfstype=jffs2 rw"
-CMDLINE_ROOT_NSLU2   = "root=/dev/mtdblock4 rootfstype=jffs2 rw"
-CMDLINE_ROOT_FSG3    = "root=/dev/mtdblock2 rootfstype=jffs2 rw"
+CMDLINE_ROOT_DSMG600 = "root=/dev/mtdblock2 rootfstype=jffs2 rw init=/linuxrc"
+CMDLINE_ROOT_NAS100D = "root=/dev/mtdblock2 rootfstype=jffs2 rw init=/linuxrc"
+CMDLINE_ROOT_NSLU2   = "root=/dev/mtdblock4 rootfstype=jffs2 rw init=/linuxrc"
+CMDLINE_ROOT_FSG3    = "root=/dev/mtdblock2 rootfstype=jffs2 rw init=/linuxrc"
 
 EXTRA_OEMAKE_append = " CROSS_COMPILE=${CROSS_DIR}/bin/${HOST_PREFIX}"
 
