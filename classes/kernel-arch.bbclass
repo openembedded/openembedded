@@ -11,7 +11,8 @@ valid_archs = "alpha cris ia64 \
                arm  arm26 \
                m32r mips \
 	       sh sh64 um h8300   \
-	       parisc s390  v850"
+	       parisc s390  v850 \
+	       avr32"
 
 def map_kernel_arch(a, d):
 	import bb, re
