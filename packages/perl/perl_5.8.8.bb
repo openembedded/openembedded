@@ -5,7 +5,7 @@ LICENSE = "Artistic|GPL"
 PRIORITY = "optional"
 # We need gnugrep (for -I)
 DEPENDS = "virtual/db perl-native grep-native"
-PR = "r19"
+PR = "r20"
 
 # Major part of version
 PVM = "5.8"
@@ -17,6 +17,7 @@ SRC_URI = "ftp://ftp.funet.fi/pub/CPAN/src/perl-${PV}.tar.gz \
         file://perl-moreconfig.patch;patch=1 \
         file://letgcc-find-errno.patch;patch=1 \
         file://generate-sh.patch;patch=1 \
+        file://perl-5.8.8-gcc-4.2.patch;patch=1 \
         file://09_fix_installperl.patch;patch=1 \
         file://52_debian_extutils_hacks.patch;patch=1 \
         file://53_debian_mod_paths.patch;patch=1 \
