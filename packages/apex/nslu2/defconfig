@@ -1,7 +1,7 @@
 #
 # Automatically generated make config: don't edit
 # Linux kernel version: 
-# Wed May 30 22:29:37 2007
+# Fri Jun  1 17:35:34 2007
 #
 CONFIG_ARM=y
 CONFIG_CPU_ARMV5=y
@@ -113,9 +113,10 @@ CONFIG_USES_IXP4XX_NPE_ETH=y
 # Environment
 #
 CONFIG_ENV=y
-CONFIG_ENV_MUTABLE=y
 CONFIG_ENV_LINK=y
+CONFIG_ENV_MUTABLE=y
 CONFIG_ENV_REGION="nor:0x7f8000+16k"
+# CONFIG_ENV_SAVEATONCE is not set
 CONFIG_ENV_CHECK_LEN=1024
 # CONFIG_VARIATIONS is not set
 # CONFIG_NO_BOOTSTRAP is not set

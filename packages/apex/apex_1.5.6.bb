@@ -3,13 +3,12 @@ SECTION = ""
 PRIORITY = "optional"
 HOMEPAGE = "http://wiki.buici.com/twiki/bin/view/Main/ApexBootloader"
 LICENSE = "GPL"
-PR = "r1"
+# PR = "r1"
 
 # Note that this recipe only works for the NSLU2 at the moment.
 # Patches to make it more generic are welcome.
 
 SRC_URI = "ftp://ftp.buici.com/pub/apex/apex-${PV}.tar.gz \
-	   file://fix-compiler-inlining.patch;patch=1 \
 	   file://defconfig"
 
 CMDLINE_CONSOLE = "console=${@bb.data.getVar("KERNEL_CONSOLE",d,1) or "ttyS0"}"
