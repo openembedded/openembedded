@@ -21,6 +21,8 @@
 
 #define MACH_TYPE		   1091
 
+#define CREATE_ATAGS
+
 /* Uncomment one of these to switch the CPU into a specific mode. */
 //#define FORCE_LITTLEENDIAN
 //#define FORCE_BIGENDIAN
