@@ -16,12 +16,6 @@
 # reinit: always do a complete auto restore
 # reload: just reload sysconf (no config files!)
 #
-# /etc/default/functions contains useful utility functions - it's
-# in a separate file so that it can be loaded by any script
-# load_functions "source"
-#  load the functions in '/sbin/source' - relies on /sbin/source being
-#  a shell script and having support for this function.
-
 # load_functions "source"
 #  load the functions in '/sbin/source' - relies on /sbin/source being
 #  a shell script and having support for this function.
