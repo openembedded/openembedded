@@ -393,9 +393,9 @@ def package_qa_check_rdepends(pkg, workdir, d):
         # Now do the sanity check!!!
         for rdepend in rdepends:
             if "-dbg" in rdepend:
-                package_qa_write_error( 2, name, rdepend, d )
-                bb.error("QA issue, koen give us a better msg!!!")
-                if package_qa_make_fatal_error( 2, name, rdepend, d ):
+                package_qa_write_error( 2, pkgname, rdepend, d )
+                bb.error("QA issue: %s rdepends on %s" % (pkgname,rdepend))
+                if package_qa_make_fatal_error( 2, pkgname, rdepend, d ):
                     sane = False
 
     return sane
