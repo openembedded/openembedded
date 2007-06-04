@@ -25,18 +25,7 @@ export QTDIR = "${S}"
 STAGING_QT_DIR = "${STAGING_DIR}/${TARGET_SYS}/qt4"
 EXTRA_OEMAKE = "-e"
 
-def qt_arch(d):
-	import bb, re
-	arch = bb.data.getVar('TARGET_ARCH', d, 1)
-	if re.match("^i.86$", arch):
-		arch = "x86"
-	elif re.match("^arm.*", arch):
-		arch = "arm"
-	elif arch == "x86_64":
-		arch = "x86"
-	elif arch == "mipsel":
-		arch = "mips"
-	return arch
+require qt4_arch.inc
 
 QT_ARCH := "${@qt_arch(d)}"
 

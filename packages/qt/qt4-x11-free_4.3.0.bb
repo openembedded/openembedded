@@ -5,12 +5,16 @@ LICENSE = "GPL QPL"
 DEPENDS = "uicmoc4-native qmake2-native freetype jpeg virtual/libx11 xft libxext libxrender libxrandr libxcursor dbus"
 PROVIDES = "qt4x11"
 
+PR = "r2"
+
 SRC_URI = "ftp://ftp.trolltech.com/qt/source/qt-x11-opensource-src-${PV}.tar.gz \
            file://0001-cross-compile.patch;patch=1 \
            file://0002-fix-resinit-declaration.patch;patch=1 \
            file://0003-no-tools.patch;patch=1 \
            file://0004-no-qmake.patch;patch=1 \
-           file://0005-fix-mkspecs.patch;patch=1"
+           file://0005-fix-mkspecs.patch;patch=1 \
+           file://0006-freetype-host-includes.patch;patch=1 \
+           file://0007-openssl-host-includes.patch;patch=1"
 S = "${WORKDIR}/qt-x11-opensource-src-${PV}"
 
 PARALLEL_MAKE = ""
@@ -21,18 +25,7 @@ export QTDIR = "${S}"
 STAGING_QT_DIR = "${STAGING_DIR}/${TARGET_SYS}/qt4"
 EXTRA_OEMAKE = "-e"
 
-def qt_arch(d):
-	import bb, re
-	arch = bb.data.getVar('TARGET_ARCH', d, 1)
-	if re.match("^i.86$", arch):
-		arch = "x86"
-	elif re.match("^arm.*", arch):
-		arch = "arm"
-	elif arch == "x86_64":
-		arch = "x86"
-	elif arch == "mipsel":
-		arch = "mips"
-	return arch
+require qt4_arch.inc
 
 QT_ARCH := "${@qt_arch(d)}"
 
@@ -43,7 +36,8 @@ QT_CONFIG_FLAGS = "-release -shared -qt-zlib -system-libjpeg -no-nas-sound -no-s
                    -no-sse -no-sse2 -no-mmx -no-3dnow \
                    -no-sql-ibase -no-sql-mysql -no-sql-odbc -no-sql-psql -no-sql-sqlite -no-sql-sqlite2 \
 		   -qdbus \
-                   -verbose -stl -no-accessibility"
+                   -verbose -stl -no-accessibility \
+		   -pch -no-glib"
 
 EXTRA_ENV = 'QMAKE="${STAGING_BINDIR_NATIVE}/qmake2 -after DEFINES+=QT_NO_XIM INCPATH+=${STAGING_INCDIR} \
              INCPATH+=${STAGING_INCDIR}/freetype2 LIBS+=-L${STAGING_LIBDIR}" \
@@ -117,11 +111,16 @@ do_install() {
 	do
 		install -m 0755 $binary ${D}${bindir}/qt4-demos/
 	done
+	rm ${D}${bindir}/rcc ${D}${bindir}/uic ${D}${bindir}/moc
 }
 
-QTPACKAGES = "libqtcore4 libqtgui4 libqtnetwork4 libqtsql4 libqtsvg4 libqttest4 libqtxml4 \
-             libqtdesigner4 libqtdesignercomponents4 libqt3support4 \
-	     libqtassistantclient4 libqtscript4 libqtdbus4 \
+QTPACKAGES = "libqtcore4 libqtcore4-dev libqtgui4 libqtgui4-dev libqtnetwork4 libqtnetwork4-dev \
+	     libqtsql4 libqtsql4-dev libqtsvg4 libqtsvg4-dev libqttest4 libqttest4-dev \
+	     libqtxml4 libqtxml4-dev \
+             libqtdesigner4 libqtdesigner4-dev libqtdesignercomponents4 libqtdesignercomponents4-dev \
+	     libqt3support4 libqt3support4-dev \
+	     libqtassistantclient4 libqtassistantclient4-dev libqtscript4 libqtscript4-dev \
+	     libqtdbus4 libqtdbus4-dev \
              qt4-assistant qt4-common qt4-designer qt4-demos qt4-examples qt4-linguist \
 	     qt4-pixeltool qt4-dbus \
              qt4-plugins-accessible qt4-plugins-codecs qt4-plugins-designer qt4-plugins-imageformats qt4-plugins-sqldrivers \
@@ -132,19 +131,32 @@ ALLOW_EMPTY = "1"
 FILES_${PN} = ""
 RDEPENDS_${PN} = "${QTPACKAGES}"
 
-FILES_libqtcore4               = "${libdir}/libQtCore.so.*"
-FILES_libqtgui4                = "${libdir}/libQtGui.so.*"
-FILES_libqtnetwork4            = "${libdir}/libQtNetwork.so.*"
-FILES_libqtsql4                = "${libdir}/libQtSql.so.*"
-FILES_libqtsvg4                = "${libdir}/libQtSvg.so.*"
-FILES_libqttest4               = "${libdir}/libQtTest.so.*"
-FILES_libqtxml4                = "${libdir}/libQtXml.so.*"
-FILES_libqtdesigner4           = "${libdir}/libQtDesigner.so.*"
-FILES_libqtdesignercomponents4 = "${libdir}/libQtDesignerComponents.so.*"
-FILES_libqt3support4           = "${libdir}/libQt3Support.so.*"
-FILES_libqtassistantclient4    = "${libdir}/libQtAssistantClient.so.*"
-FILES_libqtscript4	       = "${libdir}/libQtScript.so.*"
-FILES_libqtdbus4	       = "${libdir}/libQtDBus.so.*"
+FILES_libqtcore4                   = "${libdir}/libQtCore.so.*"
+FILES_libqtcore4-dev               = "${libdir}/libQtCore.so"
+FILES_libqtgui4                    = "${libdir}/libQtGui.so.*"
+FILES_libqtgui4-dev                = "${libdir}/libQtGui.so"
+FILES_libqtnetwork4                = "${libdir}/libQtNetwork.so.*"
+FILES_libqtnetwork4-dev            = "${libdir}/libQtNetwork.so"
+FILES_libqtsql4                    = "${libdir}/libQtSql.so.*"
+FILES_libqtsql4-dev                = "${libdir}/libQtSql.so"
+FILES_libqtsvg4                    = "${libdir}/libQtSvg.so.*"
+FILES_libqtsvg4-dev                = "${libdir}/libQtSvg.so"
+FILES_libqttest4                   = "${libdir}/libQtTest.so.*"
+FILES_libqttest4-dev               = "${libdir}/libQtTest.so"
+FILES_libqtxml4                    = "${libdir}/libQtXml.so.*"
+FILES_libqtxml4-dev                = "${libdir}/libQtXml.so"
+FILES_libqtdesigner4               = "${libdir}/libQtDesigner.so.*"
+FILES_libqtdesigner4-dev           = "${libdir}/libQtDesigner.so"
+FILES_libqtdesignercomponents4     = "${libdir}/libQtDesignerComponents.so.*"
+FILES_libqtdesignercomponents4-dev = "${libdir}/libQtDesignerComponents.so"
+FILES_libqt3support4               = "${libdir}/libQt3Support.so.*"
+FILES_libqt3support4-dev           = "${libdir}/libQt3Support.so"
+FILES_libqtassistantclient4        = "${libdir}/libQtAssistantClient.so.*"
+FILES_libqtassistantclient4-dev    = "${libdir}/libQtAssistantClient.so"
+FILES_libqtscript4	           = "${libdir}/libQtScript.so.*"
+FILES_libqtscript4-dev	           = "${libdir}/libQtScript.so"
+FILES_libqtdbus4	           = "${libdir}/libQtDBus.so.*"
+FILES_libqtdbus4-dev	           = "${libdir}/libQtDBus.so"
 
 FILES_qt4-plugins-accessible   = "${libdir}/plugins/accessible/*.so"
 FILES_qt4-plugins-codecs       = "${libdir}/plugins/codecs/*.so"
