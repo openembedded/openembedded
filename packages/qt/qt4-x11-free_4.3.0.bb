@@ -2,19 +2,19 @@ SECTION = "x11/libs"
 PRIORITY = "optional"
 HOMEPAGE = "http://www.trolltech.com"
 LICENSE = "GPL QPL"
-DEPENDS = "uicmoc4-native qmake2-native freetype jpeg virtual/libx11 xft libxext libxrender libxrandr libxcursor"
+DEPENDS = "uicmoc4-native qmake2-native freetype jpeg virtual/libx11 xft libxext libxrender libxrandr libxcursor dbus"
 PROVIDES = "qt4x11"
-PR = "r1"
+
+PR = "r2"
 
 SRC_URI = "ftp://ftp.trolltech.com/qt/source/qt-x11-opensource-src-${PV}.tar.gz \
-           file://cross-compile.patch;patch=1 \
-           file://fix-resinit-declaration.patch;patch=1 \
-           file://no-tools.patch;patch=1 \
-           file://no-qmake.patch;patch=1 \
-           file://gcc4_1.patch;patch=1 \
-           file://configurable-cpu-extensions.patch;patch=1 \
-           file://fix-mkspecs.patch;patch=1 \
-           file://fix-asm-constraints.patch;patch=1"
+           file://0001-cross-compile.patch;patch=1 \
+           file://0002-fix-resinit-declaration.patch;patch=1 \
+           file://0003-no-tools.patch;patch=1 \
+           file://0004-no-qmake.patch;patch=1 \
+           file://0005-fix-mkspecs.patch;patch=1 \
+           file://0006-freetype-host-includes.patch;patch=1 \
+           file://0007-openssl-host-includes.patch;patch=1"
 S = "${WORKDIR}/qt-x11-opensource-src-${PV}"
 
 PARALLEL_MAKE = ""
@@ -33,9 +33,11 @@ QT_ARCH := "${@qt_arch(d)}"
 # * add missing options
 QT_CONFIG_FLAGS = "-release -shared -qt-zlib -system-libjpeg -no-nas-sound -no-sm -no-libmng -qt-libpng -no-gif -no-xinerama \
                    -no-tablet -no-xkb -no-nis -no-cups -no-opengl \
-                   -nosse \
+                   -no-sse -no-sse2 -no-mmx -no-3dnow \
                    -no-sql-ibase -no-sql-mysql -no-sql-odbc -no-sql-psql -no-sql-sqlite -no-sql-sqlite2 \
-                   -verbose -stl -no-accessibility"
+		   -qdbus \
+                   -verbose -stl -no-accessibility \
+		   -pch -no-glib"
 
 EXTRA_ENV = 'QMAKE="${STAGING_BINDIR_NATIVE}/qmake2 -after DEFINES+=QT_NO_XIM INCPATH+=${STAGING_INCDIR} \
              INCPATH+=${STAGING_INCDIR}/freetype2 LIBS+=-L${STAGING_LIBDIR}" \
@@ -64,16 +66,24 @@ do_compile() {
 	install -m 0755 ${STAGING_BINDIR_NATIVE}/uic4 ${S}/bin/uic
 
 	oe_runmake ${EXTRA_ENV}
+
+	# FIXME: this is not the way to go, I think.
+	for pc in ${S}/lib/*.pc ; do
+		sed -i \
+			-e 's,-L${S}/lib,,g' \
+			-e 's,^moc_location=.*,^moc_location=${TARGING_BINDIR}/moc4,g' \
+			-e 's,^uic_location=.*,^moc_location=${TARGING_BINDIR}/uic4,g' \
+			$pc
+	done
 }
 
-PARTS = "3Support Core Designer DesignerComponents Gui Network Sql Svg Test Xml"
+PARTS = "3Support AssistantClient Core DBus Designer DesignerComponents Gui Network Script Sql Svg Test Xml"
 
 do_stage() {
 	oe_runmake install INSTALL_ROOT=/
 	install -m 0755 ${STAGING_BINDIR_NATIVE}/rcc4 ${STAGING_QT_DIR}/bin/rcc
 	install -m 0755 ${STAGING_BINDIR_NATIVE}/moc4 ${STAGING_QT_DIR}/bin/moc
 	install -m 0755 ${STAGING_BINDIR_NATIVE}/uic4 ${STAGING_QT_DIR}/bin/uic
-
 }
 
 # FIXME: Might want to call oe_runmake install INSTALL_ROOT=${D}/${prefix} as well...
@@ -81,12 +91,13 @@ do_stage() {
 do_install() {
 	install -d ${D}${libdir}
 	install -d ${D}${bindir}
+	install -d ${D}${includedir}
 	for part in ${PARTS}
 	do
 		oe_libinstall -so -C lib libQt$part ${D}${libdir}
 	done
-	oe_libinstall -a -C lib libQtAssistantClient ${STAGING_QT_DIR}
-	cp -pPR include/* ${D}${incdir}
+	oe_libinstall -a -C lib libQtUiTools ${STAGING_QT_DIR}
+	cp -pPR include/* ${D}${includedir}
 	cp -pPR plugins ${D}${libdir}
 	cp -pPR bin/* ${D}${bindir}
 
@@ -100,37 +111,66 @@ do_install() {
 	do
 		install -m 0755 $binary ${D}${bindir}/qt4-demos/
 	done
+	rm ${D}${bindir}/rcc ${D}${bindir}/uic ${D}${bindir}/moc
 }
 
-PACKAGES =+ "libqtcore4 libqtgui4 libqtnetwork4 libqtsql4 libqtsvg4 libqttest4 libqtxml4 \
-             libqtdesigner4 libqtdesignercomponents4 libqt3support4 \
+QTPACKAGES = "libqtcore4 libqtcore4-dev libqtgui4 libqtgui4-dev libqtnetwork4 libqtnetwork4-dev \
+	     libqtsql4 libqtsql4-dev libqtsvg4 libqtsvg4-dev libqttest4 libqttest4-dev \
+	     libqtxml4 libqtxml4-dev \
+             libqtdesigner4 libqtdesigner4-dev libqtdesignercomponents4 libqtdesignercomponents4-dev \
+	     libqt3support4 libqt3support4-dev \
+	     libqtassistantclient4 libqtassistantclient4-dev libqtscript4 libqtscript4-dev \
+	     libqtdbus4 libqtdbus4-dev \
              qt4-assistant qt4-common qt4-designer qt4-demos qt4-examples qt4-linguist \
-             qt4-plugins-accessible qt4-plugins-codecs qt4-plugins-designer qt4-plugins-imageformats qt4-plugins-sqldrivers"
+	     qt4-pixeltool qt4-dbus \
+             qt4-plugins-accessible qt4-plugins-codecs qt4-plugins-designer qt4-plugins-imageformats qt4-plugins-sqldrivers \
+	     qt4-plugins-inputmethods qt4-plugins-iconengines"
+PACKAGES += "${QTPACKAGES}"
 
 ALLOW_EMPTY = "1"
 FILES_${PN} = ""
-RDEPENDS_${PN} = "${PACKAGES}"
+RDEPENDS_${PN} = "${QTPACKAGES}"
 
-FILES_libqtcore4               = "${libdir}/libQtCore.so*"
-FILES_libqtgui4                = "${libdir}/libQtGui.so*"
-FILES_libqtnetwork4            = "${libdir}/libQtNetwork.so*"
-FILES_libqtsql4                = "${libdir}/libQtSql.so*"
-FILES_libqtsvg4                = "${libdir}/libQtSvg.so*"
-FILES_libqttest4               = "${libdir}/libQtTest.so*"
-FILES_libqtxml4                = "${libdir}/libQtXml.so*"
-FILES_libqtdesigner4           = "${libdir}/libQtDesigner.so*"
-FILES_libqtdesignercomponents4 = "${libdir}/libQtDesignerComponents.so*"
-FILES_libqt3support4           = "${libdir}/libQt3Support.so*"
+FILES_libqtcore4                   = "${libdir}/libQtCore.so.*"
+FILES_libqtcore4-dev               = "${libdir}/libQtCore.so"
+FILES_libqtgui4                    = "${libdir}/libQtGui.so.*"
+FILES_libqtgui4-dev                = "${libdir}/libQtGui.so"
+FILES_libqtnetwork4                = "${libdir}/libQtNetwork.so.*"
+FILES_libqtnetwork4-dev            = "${libdir}/libQtNetwork.so"
+FILES_libqtsql4                    = "${libdir}/libQtSql.so.*"
+FILES_libqtsql4-dev                = "${libdir}/libQtSql.so"
+FILES_libqtsvg4                    = "${libdir}/libQtSvg.so.*"
+FILES_libqtsvg4-dev                = "${libdir}/libQtSvg.so"
+FILES_libqttest4                   = "${libdir}/libQtTest.so.*"
+FILES_libqttest4-dev               = "${libdir}/libQtTest.so"
+FILES_libqtxml4                    = "${libdir}/libQtXml.so.*"
+FILES_libqtxml4-dev                = "${libdir}/libQtXml.so"
+FILES_libqtdesigner4               = "${libdir}/libQtDesigner.so.*"
+FILES_libqtdesigner4-dev           = "${libdir}/libQtDesigner.so"
+FILES_libqtdesignercomponents4     = "${libdir}/libQtDesignerComponents.so.*"
+FILES_libqtdesignercomponents4-dev = "${libdir}/libQtDesignerComponents.so"
+FILES_libqt3support4               = "${libdir}/libQt3Support.so.*"
+FILES_libqt3support4-dev           = "${libdir}/libQt3Support.so"
+FILES_libqtassistantclient4        = "${libdir}/libQtAssistantClient.so.*"
+FILES_libqtassistantclient4-dev    = "${libdir}/libQtAssistantClient.so"
+FILES_libqtscript4	           = "${libdir}/libQtScript.so.*"
+FILES_libqtscript4-dev	           = "${libdir}/libQtScript.so"
+FILES_libqtdbus4	           = "${libdir}/libQtDBus.so.*"
+FILES_libqtdbus4-dev	           = "${libdir}/libQtDBus.so"
 
 FILES_qt4-plugins-accessible   = "${libdir}/plugins/accessible/*.so"
 FILES_qt4-plugins-codecs       = "${libdir}/plugins/codecs/*.so"
 FILES_qt4-plugins-designer     = "${libdir}/plugins/designer/*.so"
 FILES_qt4-plugins-imageformats = "${libdir}/plugins/imageformats/*.so"
 FILES_qt4-plugins-sqldrivers   = "${libdir}/plugins/sqldrivers/*.so"
+FILES_qt4-plugins-inputmethods = "${libdir}/plugins/inputmethods/*.so"
+FILES_qt4-plugins-iconengines  = "${libdir}/plugins/iconengines/*.so"
 
 FILES_qt4-assistant            = "${bindir}/*assistant*"
 FILES_qt4-designer             = "${bindir}/*designer*"
 FILES_qt4-linguist             = "${bindir}/*linguist* ${bindir}/lrelease ${bindir}/lupdate ${bindir}/qm2ts"
+FILES_qt4-pixeltool	       = "${bindir}/pixeltool"
+FILES_qt4-dbus		       = "${bindir}/qdbus ${bindir}/qdbusxml2cpp ${bindir}/qdbuscpp2xml ${bindir}/qdbusviewer"
 
 FILES_qt4-common               = "${bindir}/qtconfig"
 FILES_qt4-examples             = "${bindir}/qt4-examples/*"
