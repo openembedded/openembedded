@@ -3,7 +3,9 @@ PRIORITY = "optional"
 HOMEPAGE = "http://www.trolltech.com"
 LICENSE = "GPL QPL"
 DEPENDS = "uicmoc4-native qmake2-native freetype jpeg virtual/libx11 xft libxext libxrender libxrandr libxcursor dbus"
+RDEPENDS_${PN} = "${QTPACKAGES}"
 PROVIDES = "qt4x11"
+PR = "r1"
 
 SRC_URI = "ftp://ftp.trolltech.com/qt/source/qt-x11-opensource-src-${PV}.tar.gz \
            file://0001-cross-compile.patch;patch=1 \
@@ -130,7 +132,6 @@ PACKAGES += "${QTPACKAGES}"
 
 ALLOW_EMPTY = "1"
 FILES_${PN} = ""
-RDEPENDS_${PN} = "${QTPACKAGES}"
 
 FILES_libqtcore4               = "${libdir}/libQtCore.so.*"
 FILES_libqtgui4                = "${libdir}/libQtGui.so.*"
@@ -166,3 +167,4 @@ FILES_qt4-demos                = "${bindir}/qtdemo ${bindir}/qt4-demos/*"
 
 FILES_${PN}-dev               += "${bindir}/rcc ${bindir}/uic* ${bindir}/moc ${bindir}/qmake ${bindir}/syncqt \
                                   ${bindir}/qt3to4 ${bindir}/findtr"
+FILE_${PN}-dbg                += "${bindir}/*/.debug ${plugindir}/.debug"
