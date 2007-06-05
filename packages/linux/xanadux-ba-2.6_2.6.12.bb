@@ -6,6 +6,7 @@ SRC_URI = "cvs://anonymous@xanadux.cvs.sourceforge.net/cvsroot/xanadux;method=ps
 S = "${WORKDIR}/linux-2.6-xda"
 
 COMPATIBLE_HOST = "arm.*-linux"
+COMPATIBLE_MACHINE = "blueangel"
 
 inherit kernel
 
