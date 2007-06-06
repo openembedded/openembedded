@@ -1,5 +1,5 @@
 DESCRIPTION = "Merge machine and distro options to create a basic machine task/package"
-PR = "r35"
+PR = "r36"
 
 PROVIDES = "${PACKAGES}"
 PACKAGES = 'task-boot \
@@ -295,7 +295,8 @@ RRECOMMENDS_task-base-usbgadget = "\
     kernel-module-gadgetfs \
     kernel-module-g-file-storage \
     kernel-module-g-serial \
-    kernel-module-g-ether"
+    kernel-module-g-ether \
+    usb-gadget-mode"
 
 RDEPENDS_task-base-usbhost = "\
     usbutils "
