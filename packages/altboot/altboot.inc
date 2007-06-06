@@ -3,10 +3,8 @@ HOMEPAGE = "http://www.hentges.net/misc/openzaurus/index.shtml"
 LICENSE = "GPL" 
 RDEPENDS_${PN} = "${PN}-conf"
 RDEPENDS_${PN}-conf = "${PN}"
-RRECOMMENDS_${PN} = "e2fsprogs-e2fsck dosfstools"
-RRECOMMENDS_${PN}_append_akita = " kexec-tools"
-RRECOMMENDS_${PN}_append_spitz = " kexec-tools kernel-module-jffs2"
-RRECOMMENDS_${PN}_append_c7x0 = " kexec-tools"
+RRECOMMENDS_${PN} = "e2fsprogs-e2fsck dosfstools kexec-tools" 
+RRECOMMENDS_${PN}_spitz += " kernel-module-jffs2" 
 
 S = "${WORKDIR}/trunk/"
 
