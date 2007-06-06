@@ -6,7 +6,7 @@ DEPENDS = "uicmoc4-native qmake2-native freetype jpeg virtual/libx11 xft libxext
 RDEPENDS_${PN} = "${QTPACKAGES}"
 PROVIDES = "qt4x11"
 
-PR = "r2"
+PR = "r3"
 
 SRC_URI = "ftp://ftp.trolltech.com/qt/source/qt-x11-opensource-src-${PV}.tar.gz \
            file://0001-cross-compile.patch;patch=1 \
@@ -178,4 +178,4 @@ FILES_qt4-demos                = "${bindir}/qtdemo ${bindir}/qt4-demos/*"
 
 FILES_${PN}-dev               += "${bindir}/rcc ${bindir}/uic* ${bindir}/moc ${bindir}/qmake ${bindir}/syncqt \
                                   ${bindir}/qt3to4 ${bindir}/findtr"
-FILE_${PN}-dbg                += "${bindir}/*/.debug ${plugindir}/.debug"
+FILES_${PN}-dbg                += "${bindir}/*/.debug ${plugindir}/.debug"
