@@ -15,7 +15,7 @@ LICENSE = "GPL"
 ######################################################################################
 
 PV = "0.0.1"
-PR = "r0"
+PR = "r1"
 
 ######################################################################################
 
@@ -34,7 +34,7 @@ do_install() {
 	install -d ${D}/etc/init.d	
 	install -d ${D}/usr/bin
 
-	install -m 0644 ${WORKDIR}/usb-gadget.conf ${D}/etc
+	install -m 0644 ${WORKDIR}/usb-gadget.conf ${D}/etc/default/usb-gadget
 	install -m 0755 ${WORKDIR}/usb-gadget.init ${D}/etc/init.d/usb-gadget
 	install -m 0755 ${WORKDIR}/usb-gadget ${D}/usr/bin
 }
