@@ -16,6 +16,7 @@ inherit palmtop
 
 QMAKE_PROFILES = "qpegps.pro"
 EXTRA_QMAKEVARS_POST = "LIBS=-lqpe LIBS+=-lgps"
+OE_QMAKE_CFLAGS += " -DQWS "
 
 do_install() {
         install -d ${D}${palmtopdir}/bin \

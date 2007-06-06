@@ -23,7 +23,7 @@ export OE_QMAKE_RPATH="-Wl,-rpath-link,"
 # default to qte2 via bb.conf, inherit qt3x11 to configure for qt3x11
 export OE_QMAKE_INCDIR_QT="${QTDIR}/include"
 export OE_QMAKE_LIBDIR_QT="${QTDIR}/lib"
-export OE_QMAKE_LIBS_QT="qte"
+export OE_QMAKE_LIBS_QT="${QT_LIBRARY}"
 export OE_QMAKE_LIBS_X11=""
 
 oe_qmake_mkspecs () {
