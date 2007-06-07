@@ -102,12 +102,12 @@
 +!   The Menu key generates F12 when pressed with Fn or Shift.
 +
 +! "Calendar" label and icon, "Sync" label beneath it:
-+keycode  67 = F13 F14 F14
++keycode  67 = F9 F14 F14
 +! "Address" label and icon:
-+keycode  68 = F15 F15 F15
++keycode  68 = F10 F15 F15
 +! "Mail" label and icon, "Check" label beneath it:
-+keycode  76 = F16 F17 F17
++keycode  76 = F13 F17 F17
 +! "Home" label and icon:
-+keycode 107 = F18 F18 F18
++keycode 107 = F12 F18 F18
 +! "Menu" label and icon:
-+keycode  96 = F19 F12 F12
++keycode  96 = F11 F12 F12
