@@ -51,11 +51,11 @@ do_configure() {
 	echo "DEFINES += QT_NO_XIM" >>src/qbase.pri
 	unset QMAKESPEC
 	ln -sf ${STAGING_BINDIR_NATIVE}/qmake2 bin/qmake
-	ln -sf ./linux-g++ mkspecs/linux-gnueabi-g++
+	ln -s linux-g++ mkspecs/${TARGET_OS}-oe-g++
 	#export QMAKESPEC="linux-oe-g++"
 	#rm -rf ./mkspecs
 	#ln -sf ${QMAKE_MKSPEC_PATH} ./mkspecs
-	echo yes | ./configure -prefix / -platform ${TARGET_OS}-g++ -crossarch ${QT_ARCH} ${QT_CONFIG_FLAGS} -fast \
+	echo yes | ./configure -prefix / -platform ${TARGET_OS}-oe-g++ -crossarch ${QT_ARCH} ${QT_CONFIG_FLAGS} -fast \
 		-L${STAGING_LIBDIR} -I${STAGING_INCDIR} -I${STAGING_INCDIR}/freetype2 -I${STAGING_INCDIR}/mysql
 }
 
@@ -85,6 +85,7 @@ do_stage() {
 	install -m 0755 ${STAGING_BINDIR_NATIVE}/rcc4 ${STAGING_QT_DIR}/bin/rcc
 	install -m 0755 ${STAGING_BINDIR_NATIVE}/moc4 ${STAGING_QT_DIR}/bin/moc
 	install -m 0755 ${STAGING_BINDIR_NATIVE}/uic4 ${STAGING_QT_DIR}/bin/uic
+	sed -i -e 's,^QMAKE_RPATHDIR.*,QMAKE_RPATHDIR=${STAGING_QT_DIR}/lib,g'  ${STAGING_QT_DIR}/mkspecs/qconfig.pri
 }
 
 # FIXME: Might want to call oe_runmake install INSTALL_ROOT=${D}/${prefix} as well...
@@ -97,7 +98,7 @@ do_install() {
 	do
 		oe_libinstall -so -C lib libQt$part ${D}${libdir}
 	done
-	oe_libinstall -a -C lib libQtUiTools ${STAGING_QT_DIR}
+	oe_libinstall -a -C lib libQtUiTools ${D}${libdir}
 	cp -pPR include/* ${D}${includedir}
 	cp -pPR plugins ${D}${libdir}
 	cp -pPR bin/* ${D}${bindir}
