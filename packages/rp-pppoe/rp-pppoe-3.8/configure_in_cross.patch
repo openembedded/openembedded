@@ -1,7 +1,7 @@
 Index: src/configure.in
 ===================================================================
---- rp-pppoe-3.8.org/src/configure.in	2006-04-03 00:29:42.000000000 +1000
-+++ rp-pppoe-3.8/src/configure.in	2007-06-07 20:00:48.000000000 +1000
+--- rp-pppoe-3.8.orig/src/configure.in	2006-04-03 00:29:42.000000000 +1000
++++ rp-pppoe-3.8/src/configure.in	2007-06-07 22:19:36.000000000 +1000
 @@ -5,6 +5,13 @@
  dnl pppd directory for kernel-mode PPPoE
  PPPD_DIR=ppp-2.4.1.pppoe2
@@ -16,6 +16,40 @@ Index: src/configure.in
  AC_CONFIG_HEADER(config.h)
  
  AC_PREFIX_DEFAULT(/usr)
+@@ -44,7 +51,7 @@
+ AC_MSG_RESULT($ac_cv_struct_sockaddr_ll)
+ 
+ if test "$ac_cv_struct_sockaddr_ll" = yes ; then
+-AC_DEFINE(HAVE_STRUCT_SOCKADDR_LL)
++AC_DEFINE([HAVE_STRUCT_SOCKADDR_LL], [], [Have struct SOCKADDR_LL])
+ fi
+ 
+ dnl Check for N_HDLC line discipline
+@@ -55,7 +62,7 @@
+ 	ac_cv_n_hdlc=no)
+ AC_MSG_RESULT($ac_cv_n_hdlc)
+ if test "$ac_cv_n_hdlc" = yes ; then
+-AC_DEFINE(HAVE_N_HDLC)
++AC_DEFINE([HAVE_N_HDLC], [], [Have N_HDLC])
+ fi
+ 
+ AC_ARG_ENABLE(plugin, [  --enable-plugin=pppd_src_path   build pppd plugin], ac_cv_pluginpath=$enableval, ac_cv_pluginpath=no)
+@@ -100,13 +107,13 @@
+ if test "$ac_cv_header_linux_if_pppox_h" = yes ; then
+ 	if test "$ac_cv_pluginpath" != no ; then
+ 		LINUX_KERNELMODE_PLUGIN=rp-pppoe.so
+-		AC_DEFINE(HAVE_LINUX_KERNEL_PPPOE)
++		AC_DEFINE([HAVE_LINUX_KERNEL_PPPOE], [], [Have kernel PPPoE])
+ 		PPPD_INCDIR=$ac_cv_pluginpath
+ 	fi
+ fi
+ 
+ if test "$ac_cv_debugging" = "yes" ; then
+-   AC_DEFINE(DEBUGGING_ENABLED)
++   AC_DEFINE([DEBUGGING_ENABLED], [], [Debugging enabled])
+ fi
+ 
+ AC_SUBST(LINUX_KERNELMODE_PLUGIN)
 @@ -131,15 +138,8 @@
  AC_CHECK_SIZEOF(unsigned int)
  AC_CHECK_SIZEOF(unsigned long)
@@ -79,7 +113,7 @@ Index: src/configure.in
  AC_TRY_RUN([
  union foo {
      struct bar {
-@@ -245,6 +209,7 @@
+@@ -245,10 +209,11 @@
      }
  }], rpppoe_cv_pack_bitfields=normal, rpppoe_cv_pack_bitfields=rev,
  $ECHO "no defaults for cross-compiling"; exit 0)
@@ -87,3 +121,16 @@ Index: src/configure.in
  
  if test "$rpppoe_cv_pack_bitfields" = "rev" ; then
  	AC_MSG_RESULT(reversed)
+-	AC_DEFINE(PACK_BITFIELDS_REVERSED)
++	AC_DEFINE([PACK_BITFIELDS_REVERSED], [], [Reversed bitfields])
+ else
+ 	AC_MSG_RESULT(normal)
+ fi
+@@ -312,6 +277,7 @@
+ AC_SUBST(RDYNAMIC)
+ AC_SUBST(LIBEVENT)
+ AC_SUBST(ECHO)
++AC_SUBST(HAVE_STRUCT_SOCKADDR_LL)
+ 
+ datadir_evaluated=`eval echo $datadir`
+ AC_SUBST(datadir_evaluated)
