@@ -10,7 +10,7 @@
 #
 # 20070606 - v0.0.1	- Initial release
 
-CONF_FILE="/etc/usb-gadget.conf"
+CONF_FILE="/etc/default/usb-gadget"
 
 die() {
 	echo "ERROR: $1"
