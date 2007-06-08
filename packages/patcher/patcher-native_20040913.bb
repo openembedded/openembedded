@@ -4,7 +4,6 @@ LICENSE = "Perl"
 DEPENDS = ""
 SECTION = "base"
 PRIORITY = "optional"
-MAINTAINER = "Holger Schurig <hs4233@mail.mn-solutions.de>"
 PACKAGES = ""
 PR = "r1"
 

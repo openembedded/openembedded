@@ -1,7 +1,6 @@
 DESCRIPTION = "Jtag utility to interface w/ a S3C2410 device"
 SECTION = "devel"
 AUTHOR = "Harald Welte"
-MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 LICENSE = "GPL"
 PR = "r1"
 

@@ -8,7 +8,6 @@
 # Date: 20070522 (YMD)
 
 DESCRIPTION = "Hentges X11 Image"
-MAINTAINER = "Matthias 'CoreDump' Hentges <oe@hentges.net>"
 HOMEPAGE = "http://www.hentges.net/misc/openzaurus/index.shtml"
 LICENSE = "MIT"
 

@@ -3,10 +3,10 @@ PRIORITY = "optional"
 HOMEPAGE = "http://www.trolltech.com"
 LICENSE = "GPL QPL"
 DEPENDS = "uicmoc4-native qmake2-native freetype jpeg virtual/libx11 xft libxext libxrender libxrandr libxcursor dbus"
-RDEPENDS_${PN} = "${QTPACKAGES}"
+RDEPENDS_${PN} = "${QT-NONDEV-PACKAGES}"
 PROVIDES = "qt4x11"
 
-PR = "r3"
+PR = "r4"
 
 SRC_URI = "ftp://ftp.trolltech.com/qt/source/qt-x11-opensource-src-${PV}.tar.gz \
            file://0001-cross-compile.patch;patch=1 \
@@ -36,9 +36,9 @@ QT_CONFIG_FLAGS = "-release -shared -qt-zlib -system-libjpeg -no-nas-sound -no-s
                    -no-tablet -no-xkb -no-nis -no-cups -no-opengl \
                    -no-sse -no-sse2 -no-mmx -no-3dnow \
                    -no-sql-ibase -no-sql-mysql -no-sql-odbc -no-sql-psql -no-sql-sqlite -no-sql-sqlite2 \
-		   -qdbus \
+                   -qdbus \
                    -verbose -stl -no-accessibility \
-		   -pch -no-glib"
+                   -pch -no-glib"
 
 EXTRA_ENV = 'QMAKE="${STAGING_BINDIR_NATIVE}/qmake2 -after DEFINES+=QT_NO_XIM INCPATH+=${STAGING_INCDIR} \
              INCPATH+=${STAGING_INCDIR}/freetype2 LIBS+=-L${STAGING_LIBDIR}" \
@@ -117,16 +117,29 @@ do_install() {
 }
 
 QTPACKAGES = "libqtcore4 libqtcore4-dev libqtgui4 libqtgui4-dev libqtnetwork4 libqtnetwork4-dev \
-	     libqtsql4 libqtsql4-dev libqtsvg4 libqtsvg4-dev libqttest4 libqttest4-dev \
-	     libqtxml4 libqtxml4-dev \
+             libqtsql4 libqtsql4-dev libqtsvg4 libqtsvg4-dev libqttest4 libqttest4-dev \
+             libqtxml4 libqtxml4-dev \
              libqtdesigner4 libqtdesigner4-dev libqtdesignercomponents4 libqtdesignercomponents4-dev \
-	     libqt3support4 libqt3support4-dev \
-	     libqtassistantclient4 libqtassistantclient4-dev libqtscript4 libqtscript4-dev \
-	     libqtdbus4 libqtdbus4-dev \
+             libqt3support4 libqt3support4-dev \
+             libqtassistantclient4 libqtassistantclient4-dev libqtscript4 libqtscript4-dev \
+             libqtdbus4 libqtdbus4-dev \
              qt4-assistant qt4-common qt4-designer qt4-demos qt4-examples qt4-linguist \
-	     qt4-pixeltool qt4-dbus \
+             qt4-pixeltool qt4-dbus \
              qt4-plugins-accessible qt4-plugins-codecs qt4-plugins-designer qt4-plugins-imageformats qt4-plugins-sqldrivers \
-	     qt4-plugins-inputmethods qt4-plugins-iconengines"
+             qt4-plugins-inputmethods qt4-plugins-iconengines"
+
+QT-NONDEV-PACKAGES = "libqtcore4 libqtgui4 libqtnetwork4  \
+             libqtsql4 libqtsvg4 libqttest4 \
+             libqtxml4 \
+             libqtdesigner4 libqtdesignercomponents4 \
+             libqt3support4 \
+             libqtassistantclient4 libqtscript4 \
+             libqtdbus4 \
+             qt4-assistant qt4-common qt4-designer qt4-demos qt4-examples qt4-linguist \
+             qt4-pixeltool qt4-dbus \
+             qt4-plugins-accessible qt4-plugins-codecs qt4-plugins-designer qt4-plugins-imageformats qt4-plugins-sqldrivers \
+             qt4-plugins-inputmethods qt4-plugins-iconengines"
+
 PACKAGES += "${QTPACKAGES}"
 
 ALLOW_EMPTY = "1"
@@ -154,10 +167,10 @@ FILES_libqt3support4               = "${libdir}/libQt3Support.so.*"
 FILES_libqt3support4-dev           = "${libdir}/libQt3Support.so"
 FILES_libqtassistantclient4        = "${libdir}/libQtAssistantClient.so.*"
 FILES_libqtassistantclient4-dev    = "${libdir}/libQtAssistantClient.so"
-FILES_libqtscript4	           = "${libdir}/libQtScript.so.*"
-FILES_libqtscript4-dev	           = "${libdir}/libQtScript.so"
-FILES_libqtdbus4	           = "${libdir}/libQtDBus.so.*"
-FILES_libqtdbus4-dev	           = "${libdir}/libQtDBus.so"
+FILES_libqtscript4                 = "${libdir}/libQtScript.so.*"
+FILES_libqtscript4-dev             = "${libdir}/libQtScript.so"
+FILES_libqtdbus4                   = "${libdir}/libQtDBus.so.*"
+FILES_libqtdbus4-dev               = "${libdir}/libQtDBus.so"
 
 FILES_qt4-plugins-accessible   = "${libdir}/plugins/accessible/*.so"
 FILES_qt4-plugins-codecs       = "${libdir}/plugins/codecs/*.so"
@@ -170,8 +183,8 @@ FILES_qt4-plugins-iconengines  = "${libdir}/plugins/iconengines/*.so"
 FILES_qt4-assistant            = "${bindir}/*assistant*"
 FILES_qt4-designer             = "${bindir}/*designer*"
 FILES_qt4-linguist             = "${bindir}/*linguist* ${bindir}/lrelease ${bindir}/lupdate ${bindir}/qm2ts"
-FILES_qt4-pixeltool	       = "${bindir}/pixeltool"
-FILES_qt4-dbus		       = "${bindir}/qdbus ${bindir}/qdbusxml2cpp ${bindir}/qdbuscpp2xml ${bindir}/qdbusviewer"
+FILES_qt4-pixeltool            = "${bindir}/pixeltool"
+FILES_qt4-dbus                 = "${bindir}/qdbus ${bindir}/qdbusxml2cpp ${bindir}/qdbuscpp2xml ${bindir}/qdbusviewer"
 
 FILES_qt4-common               = "${bindir}/qtconfig"
 FILES_qt4-examples             = "${bindir}/qt4-examples/*"

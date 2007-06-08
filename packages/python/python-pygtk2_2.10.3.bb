@@ -5,7 +5,7 @@ DEPENDS = "gtk+ libglade python-pycairo python-pygobject"
 RDEPENDS = "python-shell"
 SRCNAME = "pygtk"
 LICENSE = "LGPL"
-PR = "ml3"
+PR = "ml4"
 
 SRC_URI = "ftp://ftp.gnome.org/pub/gnome/sources/pygtk/2.10/${SRCNAME}-${PV}.tar.bz2 \
            file://fix-gtkunixprint.patch;patch=1 \
@@ -20,6 +20,8 @@ inherit autotools pkgconfig distutils-base
 do_configure_prepend() {
 	install -m 0644 ${WORKDIR}/acinclude.m4 ${S}/
 }
+
+require fix-path.inc
 
 FILES_${PN}-dbg += "${libdir}/python2.4/site-packages/gtk-2.0/*/.debug"
 FILES_${PN}-dbg += "${libdir}/python2.4/site-packages/gtk-2.0/.debug"

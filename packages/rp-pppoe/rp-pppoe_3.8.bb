@@ -5,25 +5,21 @@ LICENSE = "GPLv2"
 RDEPENDS_${PN} = "ppp"
 RDEPENDS_${PN}-server = "${PN}"
 RRECOMMENDS_${PN} = "ppp-oe"
-PR = "r3"
+PR = "r4"
 
 SRC_URI = "http://www.roaringpenguin.com/files/download/${P}.tar.gz \
-           file://configure_in_cross.patch;patch=1;pnum=2 \
-           file://pppoe-src-restrictions.patch;patch=1;pnum=2 \
+           file://top-autoconf.patch;patch=1 \
+           file://configure_in_cross.patch;patch=1 \
+           file://pppoe-src-restrictions.patch;patch=1 \
+           file://update-config.patch;patch=1 \
            file://pppoe-server.default \
            file://pppoe-server.init"
 
-S = "${WORKDIR}/${P}/src"
+S = "${WORKDIR}/${P}"
 
 inherit autotools update-rc.d
 
 do_install() {
-        # Set timeout to 0. Fixes lots of reconnect issues
-        # No need for full path to the PPPoE plugin, and it's in a different 
-        # Can't patch this in because it's outside of what we have {S} set to.
-        sed -i -e 's,\(CONNECT_TIMEOUT=\)30,\10,g' \
-               -e 's,\(LINUX_PLUGIN=\)/etc/ppp/plugins/rp-pppoe.so,\1rp-pppoe.so,g' \
-               ${S}/../configs/pppoe.conf
         # Install init script and default settings
         install -m 0755 -d ${D}${sysconfdir}/default ${D}${sysconfdir}/init.d
         install -m 0644 ${WORKDIR}/pppoe-server.default ${D}${sysconfdir}/default/pppoe-server

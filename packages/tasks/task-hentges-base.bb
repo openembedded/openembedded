@@ -7,7 +7,6 @@
 # Date: 20070516 (YMD)
 
 DESCRIPTION = "task-hentges-base"
-MAINTAINER = "Matthias 'CoreDump' Hentges <oe@hentges.net>"
 HOMEPAGE = "http://www.hentges.net/misc/openzaurus/index.shtml"
 LICENSE = "MIT"
 

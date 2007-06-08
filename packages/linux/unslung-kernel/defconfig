@@ -758,11 +758,11 @@ CONFIG_SCSI_MULTI_LUN=y
 #
 # Input core support
 #
-# CONFIG_INPUT is not set
+CONFIG_INPUT=m
 # CONFIG_INPUT_KEYBDEV is not set
 # CONFIG_INPUT_MOUSEDEV is not set
 # CONFIG_INPUT_JOYDEV is not set
-# CONFIG_INPUT_EVDEV is not set
+CONFIG_INPUT_EVDEV=m
 
 #
 # Character devices
@@ -1126,13 +1126,13 @@ CONFIG_USB_PRINTER=m
 #
 # USB Human Interface Devices (HID)
 #
-# CONFIG_USB_HID is not set
+CONFIG_USB_HID=m
 
 #
 #     Input core support is needed for USB HID input layer or HIDBP support
 #
-# CONFIG_USB_HIDINPUT is not set
-# CONFIG_USB_HIDDEV is not set
+CONFIG_USB_HIDINPUT=y
+CONFIG_USB_HIDDEV=y
 # CONFIG_USB_KBD is not set
 # CONFIG_USB_MOUSE is not set
 # CONFIG_USB_AIPTEK is not set
