@@ -31,7 +31,6 @@ SRC_URI = "file://usb-gadget.conf \
 
 do_install() {
 	install -d ${D}/etc
-        install -d ${D}/etc/default
 	install -d ${D}/etc/init.d	
 	install -d ${D}/usr/bin
 
