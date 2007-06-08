@@ -3,10 +3,10 @@ PRIORITY = "optional"
 HOMEPAGE = "http://www.trolltech.com"
 LICENSE = "GPL QPL"
 DEPENDS = "uicmoc4-native qmake2-native freetype jpeg virtual/libx11 xft libxext libxrender libxrandr libxcursor dbus"
-RDEPENDS_${PN} = "${QTPACKAGES}"
+RDEPENDS_${PN} = "${QT-NONDEV-PACKAGES}"
 PROVIDES = "qt4x11"
 
-PR = "r3"
+PR = "r4"
 
 SRC_URI = "ftp://ftp.trolltech.com/qt/source/qt-x11-opensource-src-${PV}.tar.gz \
            file://0001-cross-compile.patch;patch=1 \
@@ -127,6 +127,20 @@ QTPACKAGES = "libqtcore4 libqtcore4-dev libqtgui4 libqtgui4-dev libqtnetwork4 li
 	     qt4-pixeltool qt4-dbus \
              qt4-plugins-accessible qt4-plugins-codecs qt4-plugins-designer qt4-plugins-imageformats qt4-plugins-sqldrivers \
 	     qt4-plugins-inputmethods qt4-plugins-iconengines"
+
+QT-NONDEV-PACKAGES = "libqtcore4 libqtgui4 libqtnetwork4  \
+             libqtsql4 libqtsvg4 libqttest4 \
+             libqtxml4 \
+             libqtdesigner4 libqtdesignercomponents4 \
+             libqt3support4 \
+             libqtassistantclient4 libqtscript4 \
+             libqtdbus4 \
+             qt4-assistant qt4-common qt4-designer qt4-demos qt4-examples qt4-linguist \
+             qt4-pixeltool qt4-dbus \
+             qt4-plugins-accessible qt4-plugins-codecs qt4-plugins-designer qt4-plugins-imageformats qt4-plugins-sqldrivers \
+             qt4-plugins-inputmethods qt4-plugins-iconengines"
+"
+
 PACKAGES += "${QTPACKAGES}"
 
 ALLOW_EMPTY = "1"
