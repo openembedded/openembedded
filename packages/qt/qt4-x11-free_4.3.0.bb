@@ -139,7 +139,6 @@ QT-NONDEV-PACKAGES = "libqtcore4 libqtgui4 libqtnetwork4  \
              qt4-pixeltool qt4-dbus \
              qt4-plugins-accessible qt4-plugins-codecs qt4-plugins-designer qt4-plugins-imageformats qt4-plugins-sqldrivers \
              qt4-plugins-inputmethods qt4-plugins-iconengines"
-"
 
 PACKAGES += "${QTPACKAGES}"
 
