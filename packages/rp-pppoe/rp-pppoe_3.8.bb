@@ -3,9 +3,9 @@ HOMEPAGE = "http://www.roaringpenguin.com/en/penguin/openSourceProducts/rpPppoe"
 SECTION = "console/network"
 LICENSE = "GPLv2"
 RDEPENDS_${PN} = "ppp"
-RDEPENDS_${PN}-server = "ppp"
+RDEPENDS_${PN}-server = "${PN}"
 RRECOMMENDS_${PN} = "ppp-oe"
-PR = "r2"
+PR = "r3"
 
 SRC_URI = "http://www.roaringpenguin.com/files/download/${P}.tar.gz \
            file://configure_in_cross.patch;patch=1;pnum=2 \
