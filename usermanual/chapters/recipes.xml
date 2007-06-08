@@ -1079,11 +1079,11 @@ ${FILE_DIRNAME}/${PN}:${FILE_DIRNAME}/files:${FILE_DIRNAME}"</screen></para>
       it's a useful example because it doesn't depend on any of the helper
       classes which can sometime hide a lot of what is going on.</para>
 
-      <para>First we'll create the helloworld.c file and a readme file. We'll
-      place this in the files subdirectory, which is one of the places that is
-      searched for file:// URI's:<screen>mkdir packages/helloworld
-mkdir pacakges/helloworld/files
-cat &gt; pacakges/helloworld/files/helloworld.c
+      <para>First we'll create the myhelloworld.c file and a readme file.
+      We'll place this in the files subdirectory, which is one of the places
+      that is searched for file:// URI's:<screen>mkdir packages/myhelloworld
+mkdir pacakges/myhelloworld/files
+cat &gt; pacakges/myhelloworld/files/myhelloworld.c
 #include &lt;stdio.h&gt;
 
 int main(int argc, char** argv)
@@ -1092,11 +1092,11 @@ int main(int argc, char** argv)
         return 0;
 }
 ^D
-cat &gt; pacakges/helloworld/files/README.txt
-Readme file for helloworld.
+cat &gt; pacakges/myhelloworld/files/README.txt
+Readme file for myhelloworld.
 ^D</screen></para>
 
-      <para>Now we have a directory for our recipe, packages/helloworld, and
+      <para>Now we have a directory for our recipe, packages/myhelloworld, and
       we've created a files subdirectory in there to store our local files.
       We've created two local files, the C source code for our helloworld
       program and a readme file. Now we need to create the bitbake
@@ -1104,11 +1104,11 @@ Readme file for helloworld.
 
       <para>First we need the header section, which will contain a description
       of the package and the release number. We'll leave the other header
-      variables out for now:<screen>DESCRIPTION = "Hello world program"
+      variables out for now:<screen>DESCRIPTION = "My hello world program"
 PR = "r0"</screen></para>
 
       <para>Next we need to tell it which files we want to be included in the
-      recipe, which we do via file:// URI's and the SRC_URI variable:<screen>SRC_URI = "file://helloworld.c \
+      recipe, which we do via file:// URI's and the SRC_URI variable:<screen>SRC_URI = "file://myhelloworld.c \
            file://README.txt"</screen></para>
 
       <para>Note the use of the \ to continue a file and the file of file://
@@ -1119,7 +1119,7 @@ PR = "r0"</screen></para>
       the recipe and providing the appropriate commands:</para>
 
       <para><screen>do_compile() {
-        ${CC} ${CFLAGS} ${LDFLAGS} ${WORKDIR}/helloworld.c -o helloworld
+        ${CC} ${CFLAGS} ${LDFLAGS} ${WORKDIR}/myhelloworld.c -o myhelloworld
 }</screen></para>
 
       <para>Note the:</para>
@@ -1146,9 +1146,9 @@ PR = "r0"</screen></para>
       the destination directory so that it'll be packaged up correctly. This
       is done via the install task, so we need to define a do_install function
       in the recipe to describe how to install the package:<screen>do_install() {
-        install -m 0755 -d ${D}${bindir} ${D}${docdir}/helloworld
-        install -m 0644 ${S}/helloworld ${D}${bindir}
-        install -m 0644 ${WORKDIR}/README.txt ${D}${docdir}/helloworld
+        install -m 0755 -d ${D}${bindir} ${D}${docdir}/myhelloworld
+        install -m 0644 ${S}/myhelloworld ${D}${bindir}
+        install -m 0644 ${WORKDIR}/README.txt ${D}${docdir}/myhelloworld
 }</screen></para>
 
       <para>Note the:</para>
@@ -1186,120 +1186,120 @@ PR = "r0"</screen></para>
       </itemizedlist>
 
       <para>We'll consider this release 0 and version 0.1 of a program called
-      helloworld. So we'll name the recipe helloworld_0.1.bb:<screen>cat &gt; packages/helloworld/helloworld_0.1.bb
+      helloworld. So we'll name the recipe myhelloworld_0.1.bb:<screen>cat &gt; packages/myhelloworld/myhelloworld_0.1.bb
 DESCRIPTION = "Hello world program"
 PR = "r0"
 
-SRC_URI = "file://helloworld.c \
+SRC_URI = "file://myhelloworld.c \
            file://README.txt"
 
 do_compile() {
-        ${CC} ${CFLAGS} ${LDFLAGS} ${WORKDIR}/helloworld.c -o helloworld
+        ${CC} ${CFLAGS} ${LDFLAGS} ${WORKDIR}/myhelloworld.c -o myhelloworld
 }
 
 do_install() {
-        install -m 0755 -d ${D}${bindir} ${D}${docdir}/helloworld
-        install -m 0644 ${S}/helloworld ${D}${bindir}
-        install -m 0644 ${WORKDIR}/README.txt ${D}${docdir}/helloworld
+        install -m 0755 -d ${D}${bindir} ${D}${docdir}/myhelloworld
+        install -m 0644 ${S}/myhelloworld ${D}${bindir}
+        install -m 0644 ${WORKDIR}/README.txt ${D}${docdir}/myhelloworld
 }
 ^D</screen>Now we are ready to build our package, hopefully it'll all work
-      since it's such a simple example:<screen>~/oe%&gt; bitbake -b packages/helloworld/helloworld_0.1.bb
-NOTE: package helloworld-0.1: started
-NOTE: package helloworld-0.1-r0: task do_fetch: started
-NOTE: package helloworld-0.1-r0: task do_fetch: completed
-NOTE: package helloworld-0.1-r0: task do_unpack: started
-NOTE: Unpacking /home/lenehan/devel/oe/local-packages/helloworld/files/helloworld.c to /home/lenehan/devel/oe/build/titan-glibc-25/tmp/work/helloworld-0.1-r0/
-NOTE: Unpacking /home/lenehan/devel/oe/local-packages/helloworld/files/README.txt to /home/lenehan/devel/oe/build/titan-glibc-25/tmp/work/helloworld-0.1-r0/
-NOTE: package helloworld-0.1-r0: task do_unpack: completed
-NOTE: package helloworld-0.1-r0: task do_patch: started
-NOTE: package helloworld-0.1-r0: task do_patch: completed
-NOTE: package helloworld-0.1-r0: task do_configure: started
-NOTE: package helloworld-0.1-r0: task do_configure: completed
-NOTE: package helloworld-0.1-r0: task do_compile: started
-NOTE: package helloworld-0.1-r0: task do_compile: completed
-NOTE: package helloworld-0.1-r0: task do_install: started
-NOTE: package helloworld-0.1-r0: task do_install: completed
-NOTE: package helloworld-0.1-r0: task do_package: started
-NOTE: package helloworld-0.1-r0: task do_package: completed
-NOTE: package helloworld-0.1-r0: task do_package_write: started
-NOTE: Not creating empty archive for helloworld-dbg-0.1-r0
-Packaged contents of helloworld into /home/lenehan/devel/oe/build/titan-glibc-25/tmp/deploy/ipk/sh4/helloworld_0.1-r0_sh4.ipk
-Packaged contents of helloworld-doc into /home/lenehan/devel/oe/build/titan-glibc-25/tmp/deploy/ipk/sh4/helloworld-doc_0.1-r0_sh4.ipk
-NOTE: Not creating empty archive for helloworld-dev-0.1-r0
-NOTE: Not creating empty archive for helloworld-locale-0.1-r0
-NOTE: package helloworld-0.1-r0: task do_package_write: completed
-NOTE: package helloworld-0.1-r0: task do_populate_staging: started
-NOTE: package helloworld-0.1-r0: task do_populate_staging: completed
-NOTE: package helloworld-0.1-r0: task do_build: started
-NOTE: package helloworld-0.1-r0: task do_build: completed
-NOTE: package helloworld-0.1: completed
+      since it's such a simple example:<screen>~/oe%&gt; bitbake -b packages/myhelloworld/myhelloworld_0.1.bb
+NOTE: package myhelloworld-0.1: started
+NOTE: package myhelloworld-0.1-r0: task do_fetch: started
+NOTE: package myhelloworld-0.1-r0: task do_fetch: completed
+NOTE: package myhelloworld-0.1-r0: task do_unpack: started
+NOTE: Unpacking /home/lenehan/devel/oe/local-packages/myhelloworld/files/helloworld.c to /home/lenehan/devel/oe/build/titan-glibc-25/tmp/work/myhelloworld-0.1-r0/
+NOTE: Unpacking /home/lenehan/devel/oe/local-packages/myhelloworld/files/README.txt to /home/lenehan/devel/oe/build/titan-glibc-25/tmp/work/myhelloworld-0.1-r0/
+NOTE: package myhelloworld-0.1-r0: task do_unpack: completed
+NOTE: package myhelloworld-0.1-r0: task do_patch: started
+NOTE: package myhelloworld-0.1-r0: task do_patch: completed
+NOTE: package myhelloworld-0.1-r0: task do_configure: started
+NOTE: package myhelloworld-0.1-r0: task do_configure: completed
+NOTE: package myhelloworld-0.1-r0: task do_compile: started
+NOTE: package myhelloworld-0.1-r0: task do_compile: completed
+NOTE: package myhelloworld-0.1-r0: task do_install: started
+NOTE: package myhelloworld-0.1-r0: task do_install: completed
+NOTE: package myhelloworld-0.1-r0: task do_package: started
+NOTE: package myhelloworld-0.1-r0: task do_package: completed
+NOTE: package myhelloworld-0.1-r0: task do_package_write: started
+NOTE: Not creating empty archive for myhelloworld-dbg-0.1-r0
+Packaged contents of myhelloworld into /home/lenehan/devel/oe/build/titan-glibc-25/tmp/deploy/ipk/sh4/myhelloworld_0.1-r0_sh4.ipk
+Packaged contents of myhelloworld-doc into /home/lenehan/devel/oe/build/titan-glibc-25/tmp/deploy/ipk/sh4/myhelloworld-doc_0.1-r0_sh4.ipk
+NOTE: Not creating empty archive for myhelloworld-dev-0.1-r0
+NOTE: Not creating empty archive for myhelloworld-locale-0.1-r0
+NOTE: package myhelloworld-0.1-r0: task do_package_write: completed
+NOTE: package myhelloworld-0.1-r0: task do_populate_staging: started
+NOTE: package myhelloworld-0.1-r0: task do_populate_staging: completed
+NOTE: package myhelloworld-0.1-r0: task do_build: started
+NOTE: package myhelloworld-0.1-r0: task do_build: completed
+NOTE: package myhelloworld-0.1: completed
 Build statistics:
   Attempted builds: 1
 ~/oe%&gt;</screen></para>
 
       <para>The package was successfully built, the output consists of two
       .ipkg files, which are ready to be installed on the target. One contains
-      the binary and the other contains the readme file:<screen>~/oe%&gt; ls -l tmp/deploy/ipk/*/helloworld*
--rw-r--r--  1 lenehan lenehan 3040 Jan 12 14:46 tmp/deploy/ipk/sh4/helloworld_0.1-r0_sh4.ipk
--rw-r--r--  1 lenehan lenehan  768 Jan 12 14:46 tmp/deploy/ipk/sh4/helloworld-doc_0.1-r0_sh4.ipk
+      the binary and the other contains the readme file:<screen>~/oe%&gt; ls -l tmp/deploy/ipk/*/myhelloworld*
+-rw-r--r--  1 lenehan lenehan 3040 Jan 12 14:46 tmp/deploy/ipk/sh4/myhelloworld_0.1-r0_sh4.ipk
+-rw-r--r--  1 lenehan lenehan  768 Jan 12 14:46 tmp/deploy/ipk/sh4/myhelloworld-doc_0.1-r0_sh4.ipk
 ~/oe%&gt;</screen></para>
 
       <para>It's worthwhile looking at the working directory to see where
-      various files ended up:<screen>~/oe%&gt; find tmp/work/helloworld-0.1-r0
-tmp/work/helloworld-0.1-r0
-tmp/work/helloworld-0.1-r0/helloworld-0.1
-tmp/work/helloworld-0.1-r0/helloworld-0.1/patches
-tmp/work/helloworld-0.1-r0/helloworld-0.1/helloworld
-tmp/work/helloworld-0.1-r0/temp
-tmp/work/helloworld-0.1-r0/temp/run.do_configure.21840
-tmp/work/helloworld-0.1-r0/temp/log.do_stage.21840
-tmp/work/helloworld-0.1-r0/temp/log.do_install.21840
-tmp/work/helloworld-0.1-r0/temp/log.do_compile.21840
-tmp/work/helloworld-0.1-r0/temp/run.do_stage.21840
-tmp/work/helloworld-0.1-r0/temp/log.do_configure.21840
-tmp/work/helloworld-0.1-r0/temp/run.do_install.21840
-tmp/work/helloworld-0.1-r0/temp/run.do_compile.21840
-tmp/work/helloworld-0.1-r0/install
-tmp/work/helloworld-0.1-r0/install/helloworld-locale
-tmp/work/helloworld-0.1-r0/install/helloworld-dbg
-tmp/work/helloworld-0.1-r0/install/helloworld-dev
-tmp/work/helloworld-0.1-r0/install/helloworld-doc
-tmp/work/helloworld-0.1-r0/install/helloworld-doc/usr
-tmp/work/helloworld-0.1-r0/install/helloworld-doc/usr/share
-tmp/work/helloworld-0.1-r0/install/helloworld-doc/usr/share/doc
-tmp/work/helloworld-0.1-r0/install/helloworld-doc/usr/share/doc/helloworld
-tmp/work/helloworld-0.1-r0/install/helloworld-doc/usr/share/doc/helloworld/README.txt
-tmp/work/helloworld-0.1-r0/install/helloworld
-tmp/work/helloworld-0.1-r0/install/helloworld/usr
-tmp/work/helloworld-0.1-r0/install/helloworld/usr/bin
-tmp/work/helloworld-0.1-r0/install/helloworld/usr/bin/helloworld
-tmp/work/helloworld-0.1-r0/image
-tmp/work/helloworld-0.1-r0/image/usr
-tmp/work/helloworld-0.1-r0/image/usr/bin
-tmp/work/helloworld-0.1-r0/image/usr/share
-tmp/work/helloworld-0.1-r0/image/usr/share/doc
-tmp/work/helloworld-0.1-r0/image/usr/share/doc/helloworld
-tmp/work/helloworld-0.1-r0/helloworld.c
-tmp/work/helloworld-0.1-r0/README.txt
+      various files ended up:<screen>~/oe%&gt; find tmp/work/myhelloworld-0.1-r0
+tmp/work/myhelloworld-0.1-r0
+tmp/work/myhelloworld-0.1-r0/myhelloworld-0.1
+tmp/work/myhelloworld-0.1-r0/myhelloworld-0.1/patches
+tmp/work/myhelloworld-0.1-r0/myhelloworld-0.1/myhelloworld
+tmp/work/myhelloworld-0.1-r0/temp
+tmp/work/myhelloworld-0.1-r0/temp/run.do_configure.21840
+tmp/work/myhelloworld-0.1-r0/temp/log.do_stage.21840
+tmp/work/myhelloworld-0.1-r0/temp/log.do_install.21840
+tmp/work/myhelloworld-0.1-r0/temp/log.do_compile.21840
+tmp/work/myhelloworld-0.1-r0/temp/run.do_stage.21840
+tmp/work/myhelloworld-0.1-r0/temp/log.do_configure.21840
+tmp/work/myhelloworld-0.1-r0/temp/run.do_install.21840
+tmp/work/myhelloworld-0.1-r0/temp/run.do_compile.21840
+tmp/work/myhelloworld-0.1-r0/install
+tmp/work/myhelloworld-0.1-r0/install/myhelloworld-locale
+tmp/work/myhelloworld-0.1-r0/install/myhelloworld-dbg
+tmp/work/myhelloworld-0.1-r0/install/myhelloworld-dev
+tmp/work/myhelloworld-0.1-r0/install/myhelloworld-doc
+tmp/work/myhelloworld-0.1-r0/install/myhelloworld-doc/usr
+tmp/work/myhelloworld-0.1-r0/install/myhelloworld-doc/usr/share
+tmp/work/myhelloworld-0.1-r0/install/myhelloworld-doc/usr/share/doc
+tmp/work/myhelloworld-0.1-r0/install/myhelloworld-doc/usr/share/doc/myhelloworld
+tmp/work/myhelloworld-0.1-r0/install/myhelloworld-doc/usr/share/doc/myhelloworld/README.txt
+tmp/work/myhelloworld-0.1-r0/install/myhelloworld
+tmp/work/myhelloworld-0.1-r0/install/myhelloworld/usr
+tmp/work/myhelloworld-0.1-r0/install/myhelloworld/usr/bin
+tmp/work/myhelloworld-0.1-r0/install/myhelloworld/usr/bin/myhelloworld
+tmp/work/myhelloworld-0.1-r0/image
+tmp/work/myhelloworld-0.1-r0/image/usr
+tmp/work/myhelloworld-0.1-r0/image/usr/bin
+tmp/work/myhelloworld-0.1-r0/image/usr/share
+tmp/work/myhelloworld-0.1-r0/image/usr/share/doc
+tmp/work/myhelloworld-0.1-r0/image/usr/share/doc/myhelloworld
+tmp/work/myhelloworld-0.1-r0/myhelloworld.c
+tmp/work/myhelloworld-0.1-r0/README.txt
 ~/oe%&gt;</screen>Things to note here are:</para>
 
       <itemizedlist>
         <listitem>
           <para>The two source files are in <emphasis
-          role="bold">tmp/work/helloworld-0.1-r0</emphasis>, which is the
+          role="bold">tmp/work/myhelloworld-0.1-r0</emphasis>, which is the
           working directory as specified via the <emphasis
           role="bold">${WORKDIR}</emphasis> variable;</para>
         </listitem>
 
         <listitem>
           <para>There's logs of the various tasks in <emphasis
-          role="bold">tmp/work/helloworld-0.1-r0/temp</emphasis> which you can
-          look at for more details on what was done in each task;</para>
+          role="bold">tmp/work/myhelloworld-0.1-r0/temp</emphasis> which you
+          can look at for more details on what was done in each task;</para>
         </listitem>
 
         <listitem>
           <para>There's an image directory at <emphasis
-          role="bold">tmp/work/helloworld-0.1-r0/image</emphasis> which
+          role="bold">tmp/work/myhelloworld-0.1-r0/image</emphasis> which
           contains just the directories that were to be packaged up. This is
           actually the destination directory, as specified via the <emphasis
           role="bold">${D}</emphasis> variable. The two files that we
@@ -1311,28 +1311,28 @@ tmp/work/helloworld-0.1-r0/README.txt
 
         <listitem>
           <para>The program was actually compiled in the <emphasis
-          role="bold">tmp/work/helloworld-0.1-r0/helloworld-0.1</emphasis>
+          role="bold">tmp/work/myhelloworld-0.1-r0/myhelloworld-0.1</emphasis>
           directory, this is the source directory as specified via the
           <emphasis role="bold">${S}</emphasis> variable.</para>
         </listitem>
 
         <listitem>
           <para>There's an install directory at <emphasis
-          role="bold">tmp/work/helloworld-0.1-r0/install</emphasis> which
+          role="bold">tmp/work/myhelloworld-0.1-r0/install</emphasis> which
           contains the packages that were being generated and the files that
-          go in the package. So we can see that the helloworld-doc package
+          go in the package. So we can see that the myhelloworld-doc package
           contains the single file <emphasis
-          role="bold">/usr/share/doc/helloworld/README.txt</emphasis>, the
-          helloworld package contains the single file <emphasis
-          role="bold">/usr/bin/helloworld</emphasis> and the -dev, -dbg and
+          role="bold">/usr/share/doc/myhelloworld/README.txt</emphasis>, the
+          myhelloworld package contains the single file <emphasis
+          role="bold">/usr/bin/myhelloworld</emphasis> and the -dev, -dbg and
           -local packages are all empty.</para>
         </listitem>
       </itemizedlist>
 
       <para>At this stage it's good to verify that we really did produce a
       binary for the target and not for our host system. We can check that
-      with the file command:<screen>~/oe%&gt; file tmp/work/helloworld-0.1-r0/install/helloworld/usr/bin/helloworld
-tmp/work/helloworld-0.1-r0/install/helloworld/usr/bin/helloworld: ELF 32-bit LSB executable, Hitachi SH, version 1 (SYSV), for GNU/Linux 2.4.0, dynamically linked (uses shared libs), for GNU/Linux 2.4.0, not stripped
+      with the file command:<screen>~/oe%&gt; file tmp/work/myhelloworld-0.1-r0/install/myhelloworld/usr/bin/myhelloworld
+tmp/work/myhelloworld-0.1-r0/install/myhelloworld/usr/bin/myhelloworld: ELF 32-bit LSB executable, Hitachi SH, version 1 (SYSV), for GNU/Linux 2.4.0, dynamically linked (uses shared libs), for GNU/Linux 2.4.0, not stripped
 ~/oe%&gt; file /bin/ls
 /bin/ls: ELF 64-bit LSB executable, AMD x86-64, version 1 (SYSV), for GNU/Linux 2.4.0, dynamically linked (uses shared libs), for GNU/Linux 2.4.0, stripped
 ~/oe%&gt;</screen>This shows us that the helloworld program is for an SH
