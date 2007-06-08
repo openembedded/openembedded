@@ -1,8 +1,9 @@
 DESCRIPTION = "Merge machine and distro options to create a basic machine task/package"
 PR = "r36"
 
+DEPENDS = "task-boot"
 PROVIDES = "${PACKAGES}"
-PACKAGES = 'task-boot \
+PACKAGES = ' \
             task-base \
             task-base-extended \
             task-distro-base \
@@ -43,25 +44,9 @@ PACKAGE_ARCH = "all"
 # packages which content depend on MACHINE_FEATURES need to be MACHINE_ARCH
 #
 PACKAGE_ARCH_task-base = "${MACHINE_ARCH}"
-PACKAGE_ARCH_task-boot = "${MACHINE_ARCH}"
 PACKAGE_ARCH_task-machine-base = "${MACHINE_ARCH}"
 PACKAGE_ARCH_task-base-apm = "${MACHINE_ARCH}"
 PACKAGE_ARCH_task-base-pcmcia = "${MACHINE_ARCH}"
-
-#
-# udev, devfsd, mdev (from busybox) or none
-#
-DISTRO_DEV_MANAGER ?= "${@base_contains("MACHINE_FEATURES", "kernel26",  "udev","",d)} "
-
-#
-# sysvinit, upstart
-#
-DISTRO_INIT_MANAGER ?= "sysvinit sysvinit-pidof"
-
-#
-# tinylogin, getty
-#
-DISTRO_LOGIN_MANAGER ?= "tinylogin"
 
 #
 # linux-hotplug or none
@@ -157,26 +142,6 @@ RRECOMMENDS_task-distro-base = "${DISTRO_EXTRA_RRECOMMENDS}"
 #
 RDEPENDS_task-machine-base = "${MACHINE_EXTRA_RDEPENDS}"
 RRECOMMENDS_task-machine-base = "${MACHINE_EXTRA_RRECOMMENDS}"
-
-#
-# minimal set of packages - needed to boot
-#
-RDEPENDS_task-boot = "\
-    kernel \
-    base-files \
-    base-passwd \
-    busybox \
-    initscripts \
-    modutils-initscripts \
-    netbase \
-    update-alternatives \
-    ${DISTRO_DEV_MANAGER} \
-    ${DISTRO_INIT_MANAGER} \
-    ${DISTRO_LOGIN_MANAGER} \
-    ${MACHINE_ESSENTIAL_EXTRA_RDEPENDS}"
-
-RRECOMMENDS_task-boot = "\
-    ${MACHINE_ESSENTIAL_EXTRA_RRECOMMENDS}"
 
 RDEPENDS_task-base-kernel24 = "\
     modutils-depmod"
