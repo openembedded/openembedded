@@ -8,7 +8,6 @@
 # Date: 20070317 (YMD)
 
 DESCRIPTION = "webcam_server is a program that allows others to view your webcam from a web browser."
-MAINTAINER = "Matthias 'CoreDump' Hentges <oe@hentges.net>"
 HOMEPAGE = "http://webcamserver.sourceforge.net/"
 LICENSE = "GPL"
 

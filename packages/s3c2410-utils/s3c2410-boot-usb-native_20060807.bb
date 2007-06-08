@@ -2,7 +2,6 @@ DESCRIPTION = "Boots a S3C2410 device with a user supplied kernel zImage"
 DEPENDS = "libusb-native"
 SECTION = "devel"
 AUTHOR = "Harald Welte"
-MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 LICENSE = "GPL"
 PR = "r0"
 

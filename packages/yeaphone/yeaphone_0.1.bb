@@ -1,6 +1,5 @@
 DESCRIPTION = "A VoIP SIP phone for the Yealink USB handset"
 HOMEPAGE = "http://www.devbase.at/voip/"
-MAINTAINER = "Thomas Reitmayr <treitmayr@yahoo.com>"
 LICENSE = "GPLv2"
 PRIORITY = "optional"
 DEPENDS = "liblinphone"

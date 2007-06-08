@@ -1,5 +1,4 @@
 DESCRIPTION = "Linux kernel for MTX-3 (Surfbox3)"
-MAINTAINER = "Bruno Randolf <bruno.randolf@4g-systems.biz>"
 HOMEPAGE = "http://meshcube.org/meshwiki/"
 LICENSE = "GPL"
 KV = "${PV}"
