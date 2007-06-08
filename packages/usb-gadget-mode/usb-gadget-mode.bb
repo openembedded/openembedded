@@ -8,8 +8,6 @@
 # Date: 20070606 (YMD)
 
 DESCRIPTION = "Manage the default USB gadget mode"
-MAINTAINER = "Matthias 'CoreDump' Hentges <oe@hentges.net>"
-HOMEPAGE = "<homepage>"
 LICENSE = "GPL"
 
 ######################################################################################
