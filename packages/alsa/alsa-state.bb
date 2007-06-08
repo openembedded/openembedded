@@ -8,30 +8,18 @@
 # Date: 20070308 (YMD)
 
 DESCRIPTION = "Default ALSA configuration"
-MAINTAINER = "Matthias 'CoreDump' Hentges <oe@hentges.net>"
-HOMEPAGE = "<homepage>"
 LICENSE = "GPL"
-
-######################################################################################
 
 PV = "0.0.3"
 PR = "r0"
 
-######################################################################################
-
 SRC_URI = "file://asound.state \
 	   file://alsa-state"
-
-FILES_${PN} = "/etc/*"
-
-######################################################################################
 
 inherit update-rc.d
 
 INITSCRIPT_NAME = "alsa-state"
 INITSCRIPT_PARAMS = "defaults 10"
-
-######################################################################################
 
 do_install() {
 	install -d ${D}${sysconfdir}/init.d
@@ -40,6 +28,7 @@ do_install() {
 	install -m 0755 ${WORKDIR}/alsa-state ${D}${sysconfdir}/init.d
 }
 
+FILES_${PN} = "${sysconfdir}/*"
 
 pkg_postinst_${PN}() {
 	if test -x /usr/sbin/alsactl
