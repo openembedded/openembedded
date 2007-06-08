@@ -2370,21 +2370,79 @@ addtask unpack_extra after do_unpack before do_patch</screen></para>
   <section id="recipes_classes" xreflabel="classes">
     <title>Classes: The separation of common functionality</title>
 
-    <para>This section is to be completed.</para>
+    <para>Often a certain pattern is followed in more than one recipe, or
+    maybe some complex python based functionality is required to achieve the
+    desired end result. This is achieved through the use of classes, which can
+    be found in the classes subdirectory at the top-level of on OE
+    checkout.</para>
+
+    <para>Being aware of the available classes and understanding their
+    functionality is important because classes:</para>
 
     <itemizedlist>
       <listitem>
-        <para>What are classes</para>
+        <para>Save developers time being performing actions that they would
+        otherwise need to perform themselves;</para>
       </listitem>
 
       <listitem>
-        <para>How you use classes</para>
+        <para>Perform a lot of actions in the background making a lot of
+        recipes difficult to understand unless you are aware of classes and
+        how they work;</para>
       </listitem>
 
       <listitem>
-        <para>Some example - autotools, update-r.d, distutils</para>
+        <para>A lot of detail on how things work can be learnt for looking at
+        how classes are implement.</para>
       </listitem>
     </itemizedlist>
+
+    <para>A class is used via the inherit method. The following is an example
+    for the <emphasis>curl</emphasis> recipe showing that it uses three
+    classes:<screen>inherit autotools pkgconfig binconfig</screen>In this case
+    it is utilising the services of three separate classes:</para>
+
+    <variablelist>
+      <varlistentry>
+        <term>autotools</term>
+
+        <listitem>
+          <para>The <xref linkend="autotools_class" /> is used by programs
+          that use the GNU configuration tools and takes care of the
+          configuration and compilation of the software;</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>pkgconfig</term>
+
+        <listitem>
+          <para>The <xref linkend="pkgconfig_class" /> is used to stage the
+          <emphasis>.pc</emphasis> files which are used by the <emphasis
+          role="bold">pkg-config</emphasis> program to provide information
+          about the package to other software that wants to link to this
+          software;</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>binconfig</term>
+
+        <listitem>
+          <para>The <xref linkend="binconfig_class" /> is used to stage the
+          <emphasis>&lt;name&gt;-config</emphasis> files which are used to
+          provide information about the package to other software that wants
+          to link to this software;</para>
+        </listitem>
+      </varlistentry>
+    </variablelist>
+
+    <para>Each class is implemented via the file in the <emphasis
+    role="bold">classes</emphasis> subdirectory named <emphasis
+    role="bold">&lt;classname&gt;.bbclass</emphasis> and these can be examined
+    for further details on a particular class, although sometimes it's not
+    easy to understand everything that's happening. Many of the classes are
+    covered in detail in various sections in this user manual.</para>
   </section>
 
   <section id="recipes_staging" xreflabel="staging">
