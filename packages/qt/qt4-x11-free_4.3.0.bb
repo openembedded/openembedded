@@ -67,15 +67,6 @@ do_compile() {
 	install -m 0755 ${STAGING_BINDIR_NATIVE}/uic4 ${S}/bin/uic
 
 	oe_runmake ${EXTRA_ENV}
-
-	# FIXME: this is not the way to go, I think.
-	for pc in ${S}/lib/pkgconfig/*.pc ; do
-		sed -i \
-			-e 's,-L${S}/lib,,g' \
-			-e 's,^moc_location=.*,^moc_location=${TARGING_BINDIR}/moc4,g' \
-			-e 's,^uic_location=.*,^moc_location=${TARGING_BINDIR}/uic4,g' \
-			$pc
-	done
 }
 
 PARTS = "3Support AssistantClient Core DBus Designer DesignerComponents Gui Network Script Sql Svg Test Xml"
