@@ -3,6 +3,8 @@ SECTION = "x11/applications"
 PRIORITY = "optional"
 LICENSE = "GPL"
 
+inherit opie
+
 RRECOMMENDS="${PN}-filter-html"
 
 S = "${WORKDIR}/opie-reader"
