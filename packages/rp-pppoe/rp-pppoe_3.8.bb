@@ -5,7 +5,7 @@ LICENSE = "GPLv2"
 RDEPENDS_${PN} = "ppp"
 RDEPENDS_${PN}-server = "${PN}"
 RRECOMMENDS_${PN} = "ppp-oe"
-PR = "r4"
+PR = "r5"
 
 SRC_URI = "http://www.roaringpenguin.com/files/download/${P}.tar.gz \
            file://top-autoconf.patch;patch=1 \
@@ -14,8 +14,6 @@ SRC_URI = "http://www.roaringpenguin.com/files/download/${P}.tar.gz \
            file://update-config.patch;patch=1 \
            file://pppoe-server.default \
            file://pppoe-server.init"
-
-S = "${WORKDIR}/${P}"
 
 inherit autotools update-rc.d
 
