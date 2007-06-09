@@ -2,11 +2,11 @@ SECTION = "x11/libs"
 PRIORITY = "optional"
 HOMEPAGE = "http://www.trolltech.com"
 LICENSE = "GPL QPL"
-DEPENDS = "uicmoc4-native qmake2-native freetype jpeg virtual/libx11 xft libxext libxrender libxrandr libxcursor dbus"
-RDEPENDS_${PN} = "${QT-NONDEV-PACKAGES}"
+DEPENDS = "pkgconfig-native uicmoc4-native qmake2-native freetype jpeg virtual/libx11 xft libxext libxrender libxrandr libxcursor dbus openssl"
+RDEPENDS_${PN} = "${NONDEV_PACKAGES}"
 PROVIDES = "qt4x11"
 
-PR = "r4"
+PR = "r5"
 
 SRC_URI = "ftp://ftp.trolltech.com/qt/source/qt-x11-opensource-src-${PV}.tar.gz \
            file://0001-cross-compile.patch;patch=1 \
@@ -20,7 +20,7 @@ S = "${WORKDIR}/qt-x11-opensource-src-${PV}"
 
 PARALLEL_MAKE = ""
 
-inherit qmake-base qt4x11 pkgconfig
+inherit qmake-base qt4x11
 
 export QTDIR = "${S}"
 STAGING_QT_DIR = "${STAGING_DIR}/${TARGET_SYS}/qt4"
@@ -67,15 +67,6 @@ do_compile() {
 	install -m 0755 ${STAGING_BINDIR_NATIVE}/uic4 ${S}/bin/uic
 
 	oe_runmake ${EXTRA_ENV}
-
-	# FIXME: this is not the way to go, I think.
-	for pc in ${S}/lib/*.pc ; do
-		sed -i \
-			-e 's,-L${S}/lib,,g' \
-			-e 's,^moc_location=.*,^moc_location=${TARGING_BINDIR}/moc4,g' \
-			-e 's,^uic_location=.*,^moc_location=${TARGING_BINDIR}/uic4,g' \
-			$pc
-	done
 }
 
 PARTS = "3Support AssistantClient Core DBus Designer DesignerComponents Gui Network Script Sql Svg Test Xml"
@@ -86,6 +77,12 @@ do_stage() {
 	install -m 0755 ${STAGING_BINDIR_NATIVE}/moc4 ${STAGING_QT_DIR}/bin/moc
 	install -m 0755 ${STAGING_BINDIR_NATIVE}/uic4 ${STAGING_QT_DIR}/bin/uic
 	sed -i -e 's,^QMAKE_RPATHDIR.*,QMAKE_RPATHDIR=${STAGING_QT_DIR}/lib,g'  ${STAGING_QT_DIR}/mkspecs/qconfig.pri
+	for pc in ${STAGING_QT_DIR}/lib/pkgconfig/Qt{AssistantClient,DBus,Test,UiTools}.pc ; do
+		sed -i -e 's,${S}/lib,${STAGING_QT_DIR}/lib,g' $pc
+	done
+        for pc in ${STAGING_QT_DIR}/lib/pkgconfig/*.pc ; do
+                install -m 0644 $pc ${PKG_CONFIG_PATH}/
+        done
 }
 
 # FIXME: Might want to call oe_runmake install INSTALL_ROOT=${D}/${prefix} as well...
@@ -116,19 +113,7 @@ do_install() {
 	rm ${D}${bindir}/rcc ${D}${bindir}/uic ${D}${bindir}/moc
 }
 
-QTPACKAGES = "libqtcore4 libqtcore4-dev libqtgui4 libqtgui4-dev libqtnetwork4 libqtnetwork4-dev \
-             libqtsql4 libqtsql4-dev libqtsvg4 libqtsvg4-dev libqttest4 libqttest4-dev \
-             libqtxml4 libqtxml4-dev \
-             libqtdesigner4 libqtdesigner4-dev libqtdesignercomponents4 libqtdesignercomponents4-dev \
-             libqt3support4 libqt3support4-dev \
-             libqtassistantclient4 libqtassistantclient4-dev libqtscript4 libqtscript4-dev \
-             libqtdbus4 libqtdbus4-dev \
-             qt4-assistant qt4-common qt4-designer qt4-demos qt4-examples qt4-linguist \
-             qt4-pixeltool qt4-dbus \
-             qt4-plugins-accessible qt4-plugins-codecs qt4-plugins-designer qt4-plugins-imageformats qt4-plugins-sqldrivers \
-             qt4-plugins-inputmethods qt4-plugins-iconengines"
-
-QT-NONDEV-PACKAGES = "libqtcore4 libqtgui4 libqtnetwork4  \
+NONDEV_PACKAGES = "libqtcore4 libqtgui4 libqtnetwork4  \
              libqtsql4 libqtsvg4 libqttest4 \
              libqtxml4 \
              libqtdesigner4 libqtdesignercomponents4 \
@@ -140,7 +125,10 @@ QT-NONDEV-PACKAGES = "libqtcore4 libqtgui4 libqtnetwork4  \
              qt4-plugins-accessible qt4-plugins-codecs qt4-plugins-designer qt4-plugins-imageformats qt4-plugins-sqldrivers \
              qt4-plugins-inputmethods qt4-plugins-iconengines"
 
-PACKAGES += "${QTPACKAGES}"
+PACKAGES += "libqtcore4-dev libqtgui4-dev libqtnetwork4-dev libqtsql4-dev libqtsvg4-dev libqttest4-dev \
+             libqtxml4-dev libqtdesigner4-dev libqtdesignercomponents4-dev libqt3support4-dev \
+             libqtassistantclient4-dev libqtscript4-dev libqtdbus4-dev \
+	     ${NONDEV_PACKAGES}"
 
 ALLOW_EMPTY = "1"
 FILES_${PN} = ""

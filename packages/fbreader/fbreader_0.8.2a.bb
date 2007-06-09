@@ -8,7 +8,7 @@ PR = "r3"
 
 # The RESOLUTION is defined at compile time which makes
 # this package MACHINE specific.
-PACKAGE_ARCH_${PN} = "${MACHINE}"
+PACKAGE_ARCH_${PN} = "${MACHINE_ARCH}"
 
 SRC_URI = "http://only.mawhrin.net/fbreader/fbreader-sources-${PV}.tgz \
 	   file://fbreader-0.8.2a_buildsys_oe.patch;patch=1 \
@@ -21,11 +21,11 @@ READER_GUI	  = "gpe"
 READER_STATUS	  = "release"
 
 # Set device specific overrides
-RESOLUTION_fic-gta01 = "480x640"
+READER_RESOLUTION_fic-gta01 = "480x640"
 
 FILES_${PN} += "${datadir}/FBReader ${datadir}/zlibrary"
 
-CFLAGS_append = " RESOLUTION=${RESOLUTION} INSTALLDIR=/usr"
+CFLAGS_append = " RESOLUTION=${READER_RESOLUTION} INSTALLDIR=/usr"
 EXTRA_OEMAKE = "CC='${CXX}' LD='${CXX}' OE_CFLAGS='${CXXFLAGS}' INCPATH='${STAGING_INCDIR}' LIBPATH='${STAGING_LIBDIR}'"
 
 inherit pkgconfig
@@ -45,6 +45,6 @@ do_configure() {
 }
 
 do_install () {
-        cd fbreader/${READER_ARCH}; oe_runmake .builddir RESOLUTION=${RESOLUTION}
+        cd fbreader/${READER_ARCH}; oe_runmake .builddir RESOLUTION=${READER_RESOLUTION}
 	cp -r data/* ${D}
 }
