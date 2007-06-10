@@ -8,7 +8,7 @@ DEPENDS = "libatomics-ops liboil avahi libsamplerate0 libsndfile1 libtool"
 # optional
 DEPENDS += "alsa-lib"
 
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "http://0pointer.de/lennart/projects/pulseaudio/pulseaudio-${PV}.tar.gz"
 
@@ -71,7 +71,7 @@ CONFFILES_pulseaudio-server = "\
 		       ${sysconfdir}/pulse/daemon.conf \
 		       ${sysconfdir}/pulse/client.conf \
 		       "
-pkg_postinst_${PN}-bin() {
+pkg_postinst_libppulse() {
 if test "x$D" != "x"; then
         exit 1
 else
@@ -83,7 +83,7 @@ else
 fi
 }
 
-pkg_postrm${PN}-bin() {
+pkg_postrm_libpulse() {
 if test "x$D" != "x"; then
         exit 1
 else
