@@ -27,20 +27,36 @@ index 45aa045..c67db9e 100644
  
  Bkmk::Bkmk(const tchar* _nm, const tchar* _anno, unsigned int _p) : m_position(_p)
 diff --git a/BuffDoc.cpp b/BuffDoc.cpp
-index 355d14d..8c1eadc 100644
+index 355d14d..170ed43 100644
 --- a/BuffDoc.cpp
 +++ b/BuffDoc.cpp
-@@ -682,7 +682,8 @@ int BuffDoc::openfile(QWidget* _parent, const char *src)
+@@ -23,6 +23,8 @@
+ #include "Reb.h"
  #endif
-   codecpath += "/plugins/reader/codecs";
+ 
++#include "uqtcommon.h"
++
+ 
+ linkType BuffDoc::hyperlink(unsigned int n, unsigned int noff, QString& wrd, QString& nm)
+ {
+@@ -674,35 +676,19 @@ int BuffDoc::openfile(QWidget* _parent, const char *src)
+     }
+     //        //qDebug("Doing final open:%x:%x",exp,filt);
  #else
+-#ifdef USEQPE
+-#ifdef OPIE
+-  QString codecpath(getenv("OPIEDIR"));
+-#else
+-  QString codecpath(getenv("QTDIR"));
+-#endif
+-  codecpath += "/plugins/reader/codecs";
+-#else
 -  QString codecpath(getenv("READERDIR"));
-+  const char *rd = getenv("READERDIR");
-+  QString codecpath(rd?rd:"/usr/lib/uqtreader");
-   codecpath += "/codecs";
- #endif
-   QDir d(codecpath, "*.so");
-@@ -690,19 +691,14 @@ int BuffDoc::openfile(QWidget* _parent, const char *src)
+-  codecpath += "/codecs";
+-#endif
+-  QDir d(codecpath, "*.so");
++  QDir d(uqt_codecspath(), "*.so");
+ 
    if (d.exists())
      {
  
@@ -217,19 +233,37 @@ index 78d3eeb..c74c560 100644
      QComboBox* colorbox;
   public:
 diff --git a/CFilter.cpp b/CFilter.cpp
-index a4ea60a..4baa890 100644
+index a4ea60a..84fa451 100644
 --- a/CFilter.cpp
 +++ b/CFilter.cpp
-@@ -673,7 +673,8 @@ ExternFilter::ExternFilter(const QString& nm, const QString& optional) : filt(NU
- #endif
-   filterpath += "/plugins/reader/filters/lib";
- #else
+@@ -9,6 +9,7 @@
+ #include "CDrawBuffer.h"
+ #include "CFilter.h"
+ #include "hrule.h"
++#include "uqtcommon.h"
+ 
+ #include <qregexp.h>
+ #include <qimage.h>
+@@ -665,17 +666,8 @@ class ErrorFilter : public CFilter
+ #ifndef __STATIC
+ ExternFilter::ExternFilter(const QString& nm, const QString& optional) : filt(NULL), handle(NULL)
+ {
+-#ifdef USEQPE
+-#ifdef OPIE
+-  QString filterpath(getenv("OPIEDIR"));
+-#else
+-  QString filterpath(getenv("QTDIR"));
+-#endif
+-  filterpath += "/plugins/reader/filters/lib";
+-#else
 -  QString filterpath(getenv("READERDIR"));
-+  const char *rd = getenv("READERDIR");
-+  QString filterpath(rd?rd:"/usr/lib/uqtreader");
-   filterpath += "/filters/lib";
- #endif
+-  filterpath += "/filters/lib";
+-#endif
++  QString filterpath = uqt_filterspath();
++  filterpath += "lib";
    filterpath += nm;
+   filterpath += ".so";
+   if (QFile::exists(filterpath))
 diff --git a/CHM.cpp b/CHM.cpp
 index ace5abc..3c325bb 100644
 --- a/CHM.cpp
@@ -281,7 +315,7 @@ index 54aaf1c..84609f5 100644
  class QVBoxLayout; 
  class QHBoxLayout; 
 diff --git a/FontControl.cpp b/FontControl.cpp
-index 08b8c52..b80dd6e 100644
+index 08b8c52..0be54ba 100644
 --- a/FontControl.cpp
 +++ b/FontControl.cpp
 @@ -1,4 +1,5 @@
@@ -302,6 +336,63 @@ index 08b8c52..b80dd6e 100644
      if (sizes.count() == 0)
      {
  	return false;
+@@ -65,3 +66,25 @@ bool FontControl::ChangeFont(QString& n, int tgt)
+     }
+     return true;
+ }
++
++void FontControl::setCourier() {
++    setCourier(m_fontname);
++}
++void FontControl::setCourier(const QString fn) {
++    QFontDatabase fdb;
++    QStringList fl = fdb.families();
++    setCourier(fn,fl);
++}
++void FontControl::setCourier(const QString fn,const QStringList fl) {
++    QString fp;
++    int sp = fn.indexOf(' ');
++    if(sp>=0) fp = fn.left(sp);
++    for(QStringList::const_iterator i=fl.begin();i!=fl.end();++i) {
++	if(
++		( i->startsWith(fn,Qt::CaseInsensitive)
++		 || ( (!fp.isEmpty()) && i->startsWith(fp,Qt::CaseInsensitive) ) )
++		&& ( i->endsWith("mono",Qt::CaseInsensitive)
++		    || i->endsWith("Fixed") ) )
++	    hasCourier(true,*i);
++    }
++}
+diff --git a/FontControl.h b/FontControl.h
+index 563e1a8..c7a54ab 100644
+--- a/FontControl.h
++++ b/FontControl.h
+@@ -2,6 +2,7 @@
+ #define __FONTCONTROL_H
+ 
+ #include <qfontmetrics.h>
++#include <QFontDatabase>
+ #include "StyleConsts.h"
+ 
+ class FontControl
+@@ -32,6 +33,7 @@ class FontControl
+       m_fontsizes(NULL), m_hasCourier(false), m_leading(0), m_extraspace(0), m_fixgraphics(true)
+     {
+ 	ChangeFont(n, size);
++	setCourier();
+     }
+     ~FontControl()
+ 	{
+@@ -167,6 +169,10 @@ class FontControl
+ 	{
+ 	    return m_extraspace;
+ 	}
++
++    void setCourier();
++    void setCourier(const QString fn);
++    void setCourier(const QString fn,const QStringList fl);
+ };
+ 
+ #endif
 diff --git a/GraphicWin.h b/GraphicWin.h
 index 70d5f7e..a6c556a 100644
 --- a/GraphicWin.h
@@ -335,10 +426,18 @@ index 70d5f7e..a6c556a 100644
        m_picture = new QWidget(viewport());
        addChild(m_picture);
 diff --git a/Prefs.cpp b/Prefs.cpp
-index 6c4d45b..f3df856 100644
+index 6c4d45b..d20dc00 100644
 --- a/Prefs.cpp
 +++ b/Prefs.cpp
-@@ -27,6 +27,7 @@
+@@ -7,6 +7,7 @@
+ ** WARNING! All changes made in this file will be lost!
+ ****************************************************************************/
+ #include "Prefs.h"
++#include "uqtcommon.h"
+ 
+ #include <stdlib.h>
+ 
+@@ -27,6 +28,7 @@
  #include <qpe/menubutton.h>
  #endif
  #include <qfontdatabase.h>
@@ -346,7 +445,7 @@ index 6c4d45b..f3df856 100644
  
  #ifdef USECOMBO
  void populate_colours(QComboBox *mb)
-@@ -58,7 +59,7 @@ CLayoutPrefs::CLayoutPrefs( QWidget* parent,  const char* name, WFlags fl )
+@@ -58,7 +60,7 @@ CLayoutPrefs::CLayoutPrefs( QWidget* parent,  const char* name, WFlags fl )
      : QWidget( parent, name, fl )
  {
      QHBoxLayout* hb = new QHBoxLayout(this);
@@ -355,7 +454,7 @@ index 6c4d45b..f3df856 100644
      hb->addWidget(bg);
  
      StripCR = new QCheckBox( bg );
-@@ -592,7 +593,7 @@ CMiscPrefs::CMiscPrefs( QWidget* parent,  const char* name, WFlags fl )
+@@ -592,7 +594,7 @@ CMiscPrefs::CMiscPrefs( QWidget* parent,  const char* name, WFlags fl )
      vl->setMargin( 0 );
      hl->setMargin( 0 );
  
@@ -364,7 +463,7 @@ index 6c4d45b..f3df856 100644
      hl->addWidget( gb );
  
      annotation = new QCheckBox( gb );
-@@ -607,7 +608,7 @@ CMiscPrefs::CMiscPrefs( QWidget* parent,  const char* name, WFlags fl )
+@@ -607,7 +609,7 @@ CMiscPrefs::CMiscPrefs( QWidget* parent,  const char* name, WFlags fl )
      boutput = new QCheckBox( gb );
      boutput->setText( tr( "Output" ) );
  
@@ -373,7 +472,7 @@ index 6c4d45b..f3df856 100644
      hl->addWidget( bg );
  
      Depluck = new QCheckBox( bg );
-@@ -618,7 +619,7 @@ CMiscPrefs::CMiscPrefs( QWidget* parent,  const char* name, WFlags fl )
+@@ -618,7 +620,7 @@ CMiscPrefs::CMiscPrefs( QWidget* parent,  const char* name, WFlags fl )
  
      Continuous = new QCheckBox( bg );
      Continuous->setText( tr( "Continuous" ) );
@@ -382,7 +481,7 @@ index 6c4d45b..f3df856 100644
      vl->addWidget( bg );
  
  //    QLabel* TextLabel = new QLabel( bg );
-@@ -662,7 +663,7 @@ CScrollPrefs::CScrollPrefs( QWidget* parent,  const char* name, WFlags fl )
+@@ -662,7 +664,7 @@ CScrollPrefs::CScrollPrefs( QWidget* parent,  const char* name, WFlags fl )
  
      hl->setMargin( 0 );
  
@@ -391,17 +490,28 @@ index 6c4d45b..f3df856 100644
      hl->addWidget( bg );
  
      //    scrollinplace = new QCheckBox( bg );
-@@ -715,7 +716,8 @@ CScrollPrefs::CScrollPrefs( QWidget* parent,  const char* name, WFlags fl )
- #endif
-       codecpath += "/plugins/reader/outcodecs";
+@@ -707,18 +709,8 @@ CScrollPrefs::CScrollPrefs( QWidget* parent,  const char* name, WFlags fl )
  #else
--      QString codecpath(getenv("READERDIR"));
-+      const char *rd = getenv("READERDIR");
-+      QString codecpath(rd?rd:"/usr/lib/uqtreader");
-       codecpath += "/outcodecs";
+     outcodec = new MenuButton( this);
  #endif
-       QDir ocd(codecpath, "lib*.so");
-@@ -772,7 +774,7 @@ CInterPrefs::CInterPrefs( QWidget* parent,  const char* name, WFlags fl )
+-#ifdef USEQPE
+-#ifdef OPIE
+-      QString codecpath(getenv("OPIEDIR"));
+-#else
+-      QString codecpath(getenv("QTDIR"));
+-#endif
+-      codecpath += "/plugins/reader/outcodecs";
+-#else
+-      QString codecpath(getenv("READERDIR"));
+-      codecpath += "/outcodecs";
+-#endif
+-      QDir ocd(codecpath, "lib*.so");
++    QString codecpath = uqt_outcodecspath();
++      QDir ocd(uqt_outcodecspath(), "lib*.so");
+       for (int i = 0; i < ocd.count(); ++i)
+ 	{
+ 	  QString tmp(ocd[i]);
+@@ -772,7 +764,7 @@ CInterPrefs::CInterPrefs( QWidget* parent,  const char* name, WFlags fl )
  {
      QHBoxLayout* hb = new QHBoxLayout(this);
  
@@ -410,7 +520,7 @@ index 6c4d45b..f3df856 100644
  
      hb->addWidget(gb);
  
-@@ -784,7 +786,7 @@ CInterPrefs::CInterPrefs( QWidget* parent,  const char* name, WFlags fl )
+@@ -784,7 +776,7 @@ CInterPrefs::CInterPrefs( QWidget* parent,  const char* name, WFlags fl )
      TextLabel = new QLabel( gb );
      TextLabel->setText( tr( "Ideogram Width" ) );
      ideogramwidth = new QSpinBox( gb );
@@ -419,7 +529,7 @@ index 6c4d45b..f3df856 100644
      ideogramwidth->setRange(1,200);
  
      propfontchange = new QCheckBox( gb );
-@@ -809,7 +811,7 @@ CInterPrefs::CInterPrefs( QWidget* parent,  const char* name, WFlags fl )
+@@ -809,7 +801,7 @@ CInterPrefs::CInterPrefs( QWidget* parent,  const char* name, WFlags fl )
  
      QVBoxLayout* vb = new QVBoxLayout;
  
@@ -530,7 +640,7 @@ index 9daa07a..6afa3e7 100644
  
  class CDrawBuffer;
 diff --git a/QTReaderApp.cpp b/QTReaderApp.cpp
-index b985094..b525435 100644
+index b985094..529ec9e 100644
 --- a/QTReaderApp.cpp
 +++ b/QTReaderApp.cpp
 @@ -20,7 +20,9 @@
@@ -538,7 +648,7 @@ index b985094..b525435 100644
  #include <qregexp.h>
  #include <qclipboard.h>
 -#include <qwidgetstack.h>
-+#include <Qt3Support/Q3WidgetStack>
++#include <QStackedWidget>
 +#include <Qt3Support/Q3Action>
 +#include <qdesktopwidget.h>
  #ifdef USEQPE
@@ -559,17 +669,35 @@ index b985094..b525435 100644
  #include <qstatusbar.h>
  #ifdef USEQPE
  #include <qpe/global.h>
-@@ -106,7 +107,8 @@ bool CheckVersion(int&, int&, char&, QWidget*);
- //#define PICDIR "/home/tim/uqtreader/pics/"
- QString picdir()
- {
+@@ -66,6 +67,7 @@
+ #include "FixedFont.h"
+ #include "URLDialog.h"
+ #include "util.h"
++#include "uqtcommon.h"
+ #include <qfontdatabase.h>
+ 
+ #ifdef USEQPE
+@@ -103,18 +105,10 @@ bool CheckVersion(int&, int&, char&, QWidget*);
+ #define USEMSGS
+ #define PICDIR "opie-reader/"
+ #else
+-//#define PICDIR "/home/tim/uqtreader/pics/"
+-QString picdir()
+-{
 -  QString hd(getenv("READERDIR"));
-+    const char *rd = getenv("READERDIR");
-+  QString hd(rd?rd:"/usr/share/uqtreader");
-   return hd + "/pics";
- }
- #define PICDIR picdir()
-@@ -156,16 +158,9 @@ void QTReaderApp::listBkmkFiles()
+-  return hd + "/pics";
+-}
+-#define PICDIR picdir()
++#define PICDIR uqt_picspath()
+ #endif
+ #endif
+ 
+-unsigned long QTReaderApp::m_uid = 0;
+-
+ void QTReaderApp::setScrollState(bool _b) { m_scrollButton->setOn(_b); }
+ 
+ #ifdef USEQPE
+@@ -156,16 +150,9 @@ void QTReaderApp::listBkmkFiles()
          d.setFilter( QDir::Files | QDir::NoSymLinks );
  //        d.setSorting( QDir::Size | QDir::Reversed );
  
@@ -589,7 +717,16 @@ index b985094..b525435 100644
   
  #else /* USEQPE */
      int cnt = 0;
-@@ -207,6 +202,8 @@ void QTReaderApp::hidetoolbars()
+@@ -192,7 +179,7 @@ void QTReaderApp::listBkmkFiles()
+ //tjw        menu->hide();
+ 
+ 
+-        editorStack->raiseWidget( bkmkselector );
++        editorStack->setCurrentWidget( bkmkselector );
+         hidetoolbars();
+ 	m_nBkmkAction = cRmBkmkFile;
+       }
+@@ -207,6 +194,8 @@ void QTReaderApp::hidetoolbars()
  
  #if defined(USEQPE)
      menubar->hide();
@@ -598,7 +735,7 @@ index b985094..b525435 100644
  #endif
  
      if (m_scrollbar != NULL) m_scrollbar->hide();
-@@ -233,7 +230,7 @@ void QTReaderApp::hidetoolbars()
+@@ -233,7 +222,7 @@ void QTReaderApp::hidetoolbars()
  }
  
  QTReaderApp::QTReaderApp( QWidget *parent, const char *name, WFlags f )
@@ -607,7 +744,7 @@ index b985094..b525435 100644
        fileBar(NULL), navBar(NULL), viewBar(NULL), markBar(NULL), m_scrollbar(NULL), m_localscroll(2), m_hidebars(false), m_kmapchanged(false)
  {
    {
-@@ -337,41 +334,41 @@ QTReaderApp::QTReaderApp( QWidget *parent, const char *name, WFlags f )
+@@ -337,41 +326,41 @@ QTReaderApp::QTReaderApp( QWidget *parent, const char *name, WFlags f )
  //    QToolBar* markBar = new QToolBar("File", this);
  
  #if defined(USEQPE)
@@ -658,18 +795,63 @@ index b985094..b525435 100644
      connect( a, SIGNAL( activated() ), this, SLOT( fileNew() ) );
      a->addTo( bar );
      a->addTo( file );
-@@ -384,7 +381,7 @@ QTReaderApp::QTReaderApp( QWidget *parent, const char *name, WFlags f )
+@@ -379,34 +368,35 @@ QTReaderApp::QTReaderApp( QWidget *parent, const char *name, WFlags f )
+     QWidget* widge = new QWidget(this);
+     setCentralWidget( widge );
+     QVBoxLayout* vlayout = new QVBoxLayout(widge);
++    vlayout->setMargin(0);
+     m_layout = new QBoxLayout(QBoxLayout::LeftToRight);
+     m_prog = new QLabel(widge);
      vlayout->addLayout(m_layout, 1);
      vlayout->addWidget(m_prog);
  
 -    editorStack = new QWidgetStack( widge );
-+    editorStack = new Q3WidgetStack( widge );
++    editorStack = new QStackedWidget( widge );
      //    setCentralWidget( editorStack );
  
      searchVisible = FALSE;
-@@ -574,137 +571,137 @@ QTReaderApp::QTReaderApp( QWidget *parent, const char *name, WFlags f )
+     regVisible = FALSE;
+     m_fontVisible = false;
+ 
+-    m_buttonprefs = new CButtonPrefs(&kmap, this);
+-    editorStack->addWidget(m_buttonprefs, get_unique_id());
++    m_buttonprefs = new CButtonPrefs(&kmap, editorStack);
++    editorStack->addWidget(m_buttonprefs);
+     connect( m_buttonprefs, SIGNAL( Closed() ), this, SLOT( infoClose() ) );
+ 
+ 
+     m_annoWin = new CAnnoEdit(editorStack);
+-    editorStack->addWidget(m_annoWin, get_unique_id());
++    editorStack->addWidget(m_annoWin);
+     connect( m_annoWin, SIGNAL( finished(const QString&, const QString&) ), this, SLOT( addAnno(const QString&, const QString&) ) );
+     connect( m_annoWin, SIGNAL( cancelled() ), this, SLOT( infoClose() ) );
+ 
+     m_infoWin = new infowin(editorStack);
+-    editorStack->addWidget(m_infoWin, get_unique_id());
++    editorStack->addWidget(m_infoWin);
+     connect( m_infoWin, SIGNAL( Close() ), this, SLOT( infoClose() ) );
+ 
+     m_graphicwin = new GraphicWin(editorStack);
+-    editorStack->addWidget(m_graphicwin, get_unique_id());
++    editorStack->addWidget(m_graphicwin);
+     connect( m_graphicwin, SIGNAL( Closed() ), this, SLOT( infoClose() ) );
+ 
+ //    bkmkselector = new QListBox(editorStack, "Bookmarks");
+@@ -414,7 +404,7 @@ QTReaderApp::QTReaderApp( QWidget *parent, const char *name, WFlags f )
+     //    connect(bkmkselector, SIGNAL( selected(const QString&) ), this, SLOT( gotobkmk(const QString&) ) );
+     connect(bkmkselector, SIGNAL( selected(int) ), this, SLOT( gotobkmk(int) ) );
+     connect(bkmkselector, SIGNAL( cancelled() ), this, SLOT( cancelbkmk() ) );
+-    editorStack->addWidget( bkmkselector, get_unique_id() );
++    editorStack->addWidget( bkmkselector);
+ 
+ /*
+     importSelector = new FileSelector( "*", editorStack, "importselector", false );
+@@ -572,139 +562,139 @@ QTReaderApp::QTReaderApp( QWidget *parent, const char *name, WFlags f )
+     connect( reader, SIGNAL( HandleKeyRequest(QKeyEvent*) ), this, SLOT( handlekey(QKeyEvent*) ) );
+     connect( reader, SIGNAL( SetScrollState(bool) ), this, SLOT( setScrollState(bool) ) );
      connect( reader, SIGNAL(RefreshBitmap()), this, SLOT(setBackgroundBitmap()));
-     editorStack->addWidget( reader, get_unique_id() );
+-    editorStack->addWidget( reader, get_unique_id() );
++    editorStack->addWidget( reader );
  
 -    m_preferences_action = new QAction( tr( "Configuration" ), geticon( "SettingsIcon" ), QString::null, 0, this, NULL);
 +    m_preferences_action = new Q3Action( tr( "Configuration" ), geticon( "SettingsIcon" ), QString::null, 0, this, NULL);
@@ -835,7 +1017,7 @@ index b985094..b525435 100644
      //    connect( a, SIGNAL( activated() ), this, SLOT( pagedn() ) );
      a->addTo( file );
      */
-@@ -715,13 +712,13 @@ QTReaderApp::QTReaderApp( QWidget *parent, const char *name, WFlags f )
+@@ -715,13 +705,13 @@ QTReaderApp::QTReaderApp( QWidget *parent, const char *name, WFlags f )
  
      QActionGroup* ag = new QActionGroup(this);
      ag->setExclusive(false);
@@ -852,7 +1034,7 @@ index b985094..b525435 100644
      connect( a, SIGNAL( toggled(bool) ), this, SLOT( setpause(bool) ) );
      a->setOn(reader->m_pauseAfterEachPara);
  
-@@ -731,64 +728,64 @@ QTReaderApp::QTReaderApp( QWidget *parent, const char *name, WFlags f )
+@@ -731,64 +721,64 @@ QTReaderApp::QTReaderApp( QWidget *parent, const char *name, WFlags f )
  #endif
  
  /*
@@ -930,7 +1112,7 @@ index b985094..b525435 100644
  
  
  
-@@ -796,57 +793,57 @@ QTReaderApp::QTReaderApp( QWidget *parent, const char *name, WFlags f )
+@@ -796,57 +786,57 @@ QTReaderApp::QTReaderApp( QWidget *parent, const char *name, WFlags f )
  //     view->insertSeparator();
  
  /*
@@ -1000,7 +1182,7 @@ index b985094..b525435 100644
      connect( m_endBlock_action, SIGNAL( activated() ), this, SLOT( editCopy() ) );
      m_endBlock_action->addTo( marks );
  
-@@ -868,10 +865,10 @@ QTReaderApp::QTReaderApp( QWidget *parent, const char *name, WFlags f )
+@@ -868,10 +858,10 @@ QTReaderApp::QTReaderApp( QWidget *parent, const char *name, WFlags f )
        }
  
  
@@ -1013,7 +1195,7 @@ index b985094..b525435 100644
  
      searchBar->setHorizontalStretchable( TRUE );
  
-@@ -890,17 +887,17 @@ QTReaderApp::QTReaderApp( QWidget *parent, const char *name, WFlags f )
+@@ -890,17 +880,17 @@ QTReaderApp::QTReaderApp( QWidget *parent, const char *name, WFlags f )
      connect( searchEdit, SIGNAL( returnPressed( ) ),
  	     this, SLOT( search( ) ) );
  #endif
@@ -1034,7 +1216,7 @@ index b985094..b525435 100644
      connect(regBar, SIGNAL( OnHide() ), this, SLOT( restoreFocus() ));
  
      regBar->setHorizontalStretchable( TRUE );
-@@ -913,17 +910,17 @@ QTReaderApp::QTReaderApp( QWidget *parent, const char *name, WFlags f )
+@@ -913,17 +903,17 @@ QTReaderApp::QTReaderApp( QWidget *parent, const char *name, WFlags f )
      connect( regEdit, SIGNAL( returnPressed( ) ),
  	     this, SLOT( do_regaction() ) );
  
@@ -1055,7 +1237,18 @@ index b985094..b525435 100644
  
      m_fontBar->setHorizontalStretchable( TRUE );
  
-@@ -965,7 +962,7 @@ QTReaderApp::QTReaderApp( QWidget *parent, const char *name, WFlags f )
+@@ -940,9 +930,9 @@ QTReaderApp::QTReaderApp( QWidget *parent, const char *name, WFlags f )
+ 	    {
+ 		realfont = true;
+ 	    }
+-	    if ((*nm).contains(FIXEDFONT,false)) reader->m_fontControl.hasCourier(true, *nm);
+ 	}
+ 	if (!realfont) reader->m_fontname = flist[0];
++	reader->m_fontControl.setCourier(reader->m_fontname,flist);
+     } // delete the FontDatabase!!!
+     connect( m_fontSelector, SIGNAL( activated(const QString& ) ),
+ 	     this, SLOT( do_setfont(const QString&) ) );
+@@ -965,7 +955,7 @@ QTReaderApp::QTReaderApp( QWidget *parent, const char *name, WFlags f )
  
  	m_scrollbar->setVerticalStretchable( TRUE );
  	*/
@@ -1064,7 +1257,7 @@ index b985094..b525435 100644
  	m_layout->addWidget(scrollbar);
  	scrollbar->setTracking(false);
  	//	connect(scrollbar, SIGNAL(sliderMoved(int)), this, SLOT(actionscroll(int)) );
-@@ -1226,7 +1223,7 @@ void QTReaderApp::addtoolbars(Config* config)
+@@ -1226,7 +1216,7 @@ void QTReaderApp::addtoolbars(Config* config)
      {
  	if (m_bkmkAvail == NULL)
  	{
@@ -1073,7 +1266,7 @@ index b985094..b525435 100644
  	    connect( m_bkmkAvail, SIGNAL( activated() ), this, SLOT( showAnnotation() ) );
  	
  	    m_bkmkAvail->setEnabled(false);
-@@ -1253,7 +1250,7 @@ bool QTReaderApp::checkbar(Config* _config, const QString& key)
+@@ -1253,7 +1243,7 @@ bool QTReaderApp::checkbar(Config* _config, const QString& key)
  }
  
  
@@ -1082,7 +1275,7 @@ index b985094..b525435 100644
  {
      if (fileBar == NULL)
      {
-@@ -1270,21 +1267,21 @@ QToolBar* QTReaderApp::filebar()
+@@ -1270,21 +1260,21 @@ QToolBar* QTReaderApp::filebar()
  	    case cesMenuTool:
  	    case cesMultiple:
  //		qDebug("Creating new file bar");
@@ -1107,7 +1300,7 @@ index b985094..b525435 100644
  		break;
  	    default:
  		qDebug("Incorrect toolbar policy set");
-@@ -1298,7 +1295,7 @@ QToolBar* QTReaderApp::viewbar()
+@@ -1298,7 +1288,7 @@ QToolBar* QTReaderApp::viewbar()
      }
      return viewBar;
  }
@@ -1116,7 +1309,7 @@ index b985094..b525435 100644
  {
      if (navBar == NULL)
      {
-@@ -1306,7 +1303,7 @@ QToolBar* QTReaderApp::navbar()
+@@ -1306,7 +1296,7 @@ QToolBar* QTReaderApp::navbar()
  	{
  	    case cesMultiple:
  //		qDebug("Creating new nav bar");
@@ -1125,7 +1318,7 @@ index b985094..b525435 100644
  		break;
  	    default:
  		qDebug("Incorrect toolbar policy set");
-@@ -1321,14 +1318,14 @@ QToolBar* QTReaderApp::navbar()
+@@ -1321,14 +1311,14 @@ QToolBar* QTReaderApp::navbar()
      }
      return navBar;
  }
@@ -1142,7 +1335,7 @@ index b985094..b525435 100644
  		break;
  	    default:
  		qDebug("Incorrect toolbar policy set");
-@@ -1343,26 +1340,26 @@ QToolBar* QTReaderApp::markbar()
+@@ -1343,26 +1333,26 @@ QToolBar* QTReaderApp::markbar()
      return markBar;
  }
  
@@ -1174,7 +1367,7 @@ index b985094..b525435 100644
  {
  #ifndef USEMSGS
    return;
-@@ -1787,7 +1784,7 @@ void QTReaderApp::setfullscreen(bool sfs)
+@@ -1787,7 +1777,7 @@ void QTReaderApp::setfullscreen(bool sfs)
      reader->update();
  }
  /*
@@ -1183,7 +1376,42 @@ index b985094..b525435 100644
  {
  ////    qDebug("es:%x : %s (%u)", _a, (const char *)(_a->text()), ActNameToInt(_a->text()));
      m_spaceTarget = ActNameToInt(_a->text());
-@@ -2658,7 +2655,7 @@ void QTReaderApp::findNext()
+@@ -2007,14 +1997,14 @@ QString QTReaderApp::usefilebrowser()
+ void QTReaderApp::showgraphic(QImage& pm)
+ {
+     m_graphicwin->setImage(pm);
+-    editorStack->raiseWidget( m_graphicwin );
++    editorStack->setCurrentWidget(  m_graphicwin );
+     hidetoolbars();
+     m_graphicwin->setFocus();
+ }
+ 
+ void QTReaderApp::showbuttonprefs()
+ {
+-    editorStack->raiseWidget( m_buttonprefs );
++    editorStack->setCurrentWidget( m_buttonprefs );
+     hidetoolbars();
+     m_buttonprefs->setFocus();
+     m_kmapchanged = true;
+@@ -2366,7 +2356,7 @@ void QTReaderApp::showinfo()
+ 	  }
+ 	m_infoWin->setZoom(reader->m_fontControl.currentsize()*10);
+ 	m_infoWin->setAbout(QString("\nApplication (c) Tim Wentford\n")+reader->about());
+-	editorStack->raiseWidget( m_infoWin );
++	editorStack->setCurrentWidget( m_infoWin );
+ 	hidetoolbars();
+ 	m_infoWin->setFocus();
+     }
+@@ -2482,7 +2472,7 @@ void QTReaderApp::addanno()
+ 	m_annoWin->setAnno("");
+ 	m_annoWin->setPosn(reader->pagelocate());
+ 	m_annoIsEditing = true;
+-	editorStack->raiseWidget( m_annoWin );
++	editorStack->setCurrentWidget( m_annoWin );
+ 	hidetoolbars();
+ #ifdef USEQPE
+ 	Global::showInputMethod();
+@@ -2658,7 +2648,7 @@ void QTReaderApp::findNext()
  #ifdef __ISEARCH
    QString arg = searchEdit->text();
  #else
@@ -1192,7 +1420,7 @@ index b985094..b525435 100644
  #endif
    CDrawBuffer test(&(reader->m_fontControl));
    size_t start = reader->pagelocate();
-@@ -2722,7 +2719,7 @@ bool QTReaderApp::dosearch(size_t start, CDrawBuffer& test, const QRegExp& arg)
+@@ -2722,7 +2712,7 @@ bool QTReaderApp::dosearch(size_t start, CDrawBuffer& test, const QRegExp& arg)
        while (strstr(test.data(),(const tchar*)arg) == NULL)
  #else
  #ifdef _UNICODE
@@ -1201,7 +1429,61 @@ index b985094..b525435 100644
  #else
        while (arg.match(test.data()) == -1)
  #endif
-@@ -3799,7 +3796,7 @@ void QTReaderApp::do_autogen(const QString& regText)
+@@ -2962,7 +2952,7 @@ void QTReaderApp::handlekey(QKeyEvent* e)
+ #if defined(USEQPE) && defined(USENEWFULLSCREEN)
+ void QTReaderApp::focusInEvent(QFocusEvent *)
+ {
+-  if (m_usenewfullscreen && m_fullscreen && (editorStack->visibleWidget() == reader))
++  if (m_usenewfullscreen && m_fullscreen && (editorStack->currentWidget() == reader))
+     {
+       m_usenewfullscreen = false;
+       reader->bDoUpdates = false;
+@@ -2975,7 +2965,7 @@ void QTReaderApp::focusInEvent(QFocusEvent *)
+ 
+ void QTReaderApp::resizeEvent(QResizeEvent *)
+ {
+-  if (m_usenewfullscreen && m_fullscreen && (editorStack->visibleWidget() == reader))
++  if (m_usenewfullscreen && m_fullscreen && (editorStack->currentWidget() == reader))
+     {
+       m_usenewfullscreen = false;
+       reader->bDoUpdates = false;
+@@ -3078,7 +3068,7 @@ void QTReaderApp::showEditTools()
+     //    qDebug("uc");
+     updateCaption();
+     //    qDebug("rw");
+-    editorStack->raiseWidget( reader );
++    editorStack->setCurrentWidget( reader );
+     //    qDebug("sf");
+     reader->setFocus();
+     //    qDebug("ref");
+@@ -3156,7 +3146,7 @@ void QTReaderApp::closeEvent( QCloseEvent *e )
+ 	showEditTools();
+ 	e->ignore();
+     }
+-    else if (editorStack->visibleWidget() == m_buttonprefs)
++    else if (editorStack->currentWidget() == m_buttonprefs)
+       {
+ 	int ret = QMessageBox::warning(this, PROGNAME,
+ tr("Do you wish to map this key?\n\nIf you proceed you will map\nthe escape key and you will\nneed to press the close box\ntwice to exit this program\n\nContinue?"), tr("Yes"), tr("No"), QString::null, 0, 1);
+@@ -3172,7 +3162,7 @@ tr("Do you wish to map this key?\n\nIf you proceed you will map\nthe escape key
+     }
+     else
+     {
+-	if (editorStack->visibleWidget() == reader)
++	if (editorStack->currentWidget() == reader)
+ 	{
+ 	    if ((kmap.find(orKey(Qt::NoButton,Key_Escape,false)) != kmap.end()) && m_bcloseDisabled)
+ 	    {
+@@ -3277,7 +3267,7 @@ bool QTReaderApp::listbkmk(CList<Bkmk>* plist, const QString& _lab, bool presel)
+     if (cnt > 0)
+       {
+ 	  hidetoolbars();
+-        editorStack->raiseWidget( bkmkselector );
++        editorStack->setCurrentWidget( bkmkselector );
+ 	if (slt != -1) bkmkselector->setCurrentItem(slt);
+ 	return true;
+       }
+@@ -3799,7 +3789,7 @@ void QTReaderApp::do_autogen(const QString& regText)
        }
        i = reader->buffdoc.getpara(buff);
  #ifdef _UNICODE
@@ -1210,7 +1492,25 @@ index b985094..b525435 100644
  #else
        if (re.match(buff.data()) != -1)
  #endif
-@@ -4738,17 +4735,9 @@ bool QTReaderApp::PopulateConfig(const char* tgtdir, bool usedirs)
+@@ -4113,7 +4103,7 @@ void QTReaderApp::showAnnotation()
+ #ifdef USEQPE
+     Global::showInputMethod();
+ #endif
+-    editorStack->raiseWidget( m_annoWin );
++    editorStack->setCurrentWidget( m_annoWin );
+     hidetoolbars();
+     m_annoWin->setFocus();
+ }
+@@ -4152,7 +4142,7 @@ void QTReaderApp::OnWordSelected(const QString& wrd, size_t posn, size_t posn2,
+ #ifdef USEQPE
+ 	Global::showInputMethod();
+ #endif
+-	editorStack->raiseWidget( m_annoWin );
++	editorStack->setCurrentWidget( m_annoWin );
+ 	hidetoolbars();
+     }
+ #ifdef USEQPE
+@@ -4738,17 +4728,9 @@ bool QTReaderApp::PopulateConfig(const char* tgtdir, bool usedirs)
      d.setFilter( ((usedirs) ? QDir::Dirs : QDir::Files) | QDir::NoSymLinks );
  //        d.setSorting( QDir::Size | QDir::Reversed );
  
@@ -1231,8 +1531,44 @@ index b985094..b525435 100644
   
  #else /* USEQPE */
      int cnt = 0;
+@@ -4782,7 +4764,7 @@ void QTReaderApp::LoadTheme()
+ {
+     if (PopulateConfig("Themes", true))
+       {
+-        editorStack->raiseWidget( bkmkselector );
++        editorStack->setCurrentWidget( bkmkselector );
+         hidetoolbars();
+ 	m_nBkmkAction = cLdTheme;
+       }
+@@ -4794,7 +4776,7 @@ void QTReaderApp::LoadConfig()
+ {
+     if (PopulateConfig("configs"))
+       {
+-        editorStack->raiseWidget( bkmkselector );
++        editorStack->setCurrentWidget( bkmkselector );
+         hidetoolbars();
+ 	m_nBkmkAction = cLdConfig;
+       }
+@@ -4806,7 +4788,7 @@ void QTReaderApp::TidyConfig()
+ {
+     if (PopulateConfig("configs"))
+       {
+-        editorStack->raiseWidget( bkmkselector );
++        editorStack->setCurrentWidget( bkmkselector );
+         hidetoolbars();
+ 	m_nBkmkAction = cRmConfig;
+       }
+@@ -4818,7 +4800,7 @@ void QTReaderApp::ExportLinks()
+ {
+     if (PopulateConfig("urls"))
+       {
+-        editorStack->raiseWidget( bkmkselector );
++        editorStack->setCurrentWidget( bkmkselector );
+         hidetoolbars();
+ 	m_nBkmkAction = cExportLinks;
+       }
 diff --git a/QTReaderApp.h b/QTReaderApp.h
-index ab1b7ad..26c7695 100644
+index ab1b7ad..502079f 100644
 --- a/QTReaderApp.h
 +++ b/QTReaderApp.h
 @@ -35,7 +35,15 @@
@@ -1245,7 +1581,7 @@ index ab1b7ad..26c7695 100644
 +#include <Qt3Support/Q3ProgressBar>
 +#include <Qt3Support/Q3MainWindow>
 +#include <Qt3Support/Q3Action>
-+#include <Qt3Support/Q3WidgetStack>
++#include <QStackedWidget>
 +#include <qcombobox.h>
 +#include <qnamespace.h>
 +using namespace Qt;
@@ -1351,12 +1687,12 @@ index ab1b7ad..26c7695 100644
  
      CBkmkSelector* bkmkselector;
  
-@@ -418,21 +426,21 @@ private slots:
+@@ -418,27 +426,25 @@ private slots:
  #else
      bool dosearch(size_t start, CDrawBuffer& test, const QRegExp& arg);
  #endif
 -    QWidgetStack *editorStack;
-+    Q3WidgetStack *editorStack;
++    QStackedWidget *editorStack;
      QTReader* reader;
      QComboBox* m_fontSelector;
  //    QPEToolBar /* *menu,*/ *fileBar;
@@ -1377,7 +1713,13 @@ index ab1b7ad..26c7695 100644
      QLineEdit *searchEdit, *regEdit;
      bool searchVisible;
      bool regVisible;
-@@ -451,7 +459,7 @@ private slots:
+     bool m_fontVisible, m_twoTouch;
+-    static unsigned long m_uid;
+-    long unsigned get_unique_id() { return m_uid++; }
+     /*
+       void resizeEvent( QResizeEvent * r)
+       {
+@@ -451,7 +457,7 @@ private slots:
      CList<Bkmk>* pOpenlist;
      infowin*  m_infoWin;
      GraphicWin* m_graphicwin;
@@ -1717,33 +2059,65 @@ index ec0c6e8..e36d31a 100644
      grid->addWidget(bkmkselector,1);
      grid->addLayout(hgrid);
 diff --git a/decompress.cpp b/decompress.cpp
-index 6034e01..1c51e5b 100644
+index 6034e01..979b642 100644
 --- a/decompress.cpp
 +++ b/decompress.cpp
-@@ -68,7 +68,8 @@ size_t (*getdecompressor(char* _s))(UInt8*, size_t, UInt8*, size_t)
- #endif
-   codecpath += "/plugins/reader/support/libpluckerdecompress.so";
- #else
+@@ -2,6 +2,7 @@
+ #include "decompress.h"
+ #include <zlib.h>
+ #include <stdlib.h>
++#include "uqtcommon.h"
+ 
+ size_t UnZip(UInt8* compressedbuffer, size_t reclen, UInt8* tgtbuffer, size_t bsize)
+ {
+@@ -60,17 +61,7 @@ size_t (*getdecompressor(char* _s))(UInt8*, size_t, UInt8*, size_t)
+ 
+ size_t (*getdecompressor(char* _s))(UInt8*, size_t, UInt8*, size_t)
+ {
+-#ifdef USEQPE
+-#ifdef OPIE
+-  QString codecpath(getenv("OPIEDIR"));
+-#else
+-  QString codecpath(getenv("QTDIR"));
+-#endif
+-  codecpath += "/plugins/reader/support/libpluckerdecompress.so";
+-#else
 -  QString codecpath(getenv("READERDIR"));
-+  const char *rd = getenv("READERDIR");
-+  QString codecpath(rd?rd:"/usr/lib/uqtreader");
-   codecpath += "/support/libpluckerdecompress.so";
- #endif
+-  codecpath += "/support/libpluckerdecompress.so";
+-#endif
++    QString codecpath = uqt_supportpath()+"/libpluckerdecompress.so";
    qDebug("Codec:%s", (const char*)codecpath);
+   if (QFile::exists(codecpath))
+     {
 diff --git a/ebookcodec.h b/ebookcodec.h
-index 4229fb9..a7767c7 100644
+index 4229fb9..091894a 100644
 --- a/ebookcodec.h
 +++ b/ebookcodec.h
-@@ -30,7 +30,8 @@ class ebookcodec : public CExpander_Interface
- #endif
-       codecpath += "/plugins/reader/codecs/";
- #else
+@@ -1,4 +1,5 @@
+ #include "CExpander.h"
++#include "uqtcommon.h"
+ 
+ #include <qfileinfo.h>
+ #include <qdir.h>
+@@ -22,17 +23,7 @@ class ebookcodec : public CExpander_Interface
+     }
+   ebookcodec(const QString& _s) : codec(NULL), handle(NULL), status(0)
+     {
+-#ifdef USEQPE
+-#ifdef OPIE
+-      QString codecpath(getenv("OPIEDIR"));
+-#else
+-		QString codecpath(getenv("QTDIR"));
+-#endif
+-      codecpath += "/plugins/reader/codecs/";
+-#else
 -      QString codecpath(getenv("READERDIR"));
-+      const char *rd = getenv("READER");
-+      QString codecpath(rd?rd:"/usr/lib/uqtreader");
-       codecpath += "/codecs/";
- #endif
+-      codecpath += "/codecs/";
+-#endif
++	QString codecpath = uqt_codecspath();
        codecpath += _s;
+       if (QFile::exists(codecpath))
+ 	{
 diff --git a/fileBrowser.cpp b/fileBrowser.cpp
 index c8c371a..688f035 100644
 --- a/fileBrowser.cpp
@@ -1953,10 +2327,10 @@ index c003998..92cff3a 100644
      void setFileSize(int sz) { fileSize->setNum(sz); }
 diff --git a/opiedir/include.pro b/opiedir/include.pro
 new file mode 100644
-index 0000000..8e1cc2b
+index 0000000..44c572b
 --- /dev/null
 +++ b/opiedir/include.pro
-@@ -0,0 +1,7 @@
+@@ -0,0 +1,15 @@
 +DEFINES -= OPIE USEQPE
 +DEFINES += QT3_SUPPORT
 +
@@ -1964,20 +2338,47 @@ index 0000000..8e1cc2b
 +LIBS += -L${OPIEDIR}/lib
 +
 +QT += core gui qt3support
++
++isEmpty(UQT_LIBDIR) {
++ UQT_LIBDIR = /usr/lib/uqtreader
++}
++isEmpty(UQT_DATADIR) {
++ UQT_DATADIR = /usr/share/uqtreader
++}
++DEFINES += UQT_LIBDIR='\\"$$UQT_LIBDIR\\"' UQT_DATADIR='\\"$$UQT_DATADIR\\"'
 diff --git a/outputcodec.h b/outputcodec.h
-index 727575c..6a0bdfe 100644
+index 727575c..dfba5a2 100644
 --- a/outputcodec.h
 +++ b/outputcodec.h
-@@ -37,7 +37,8 @@ class outputcodec : public COutput
+@@ -2,6 +2,8 @@
+ #include <qfileinfo.h>
+ #include <qdir.h>
+ 
++#include "uqtcommon.h"
++
+ #ifdef USEQPE
+ #include <qpe/global.h>
  #endif
-       codecpath += "/plugins/reader/outcodecs/lib";
- #else
+@@ -29,17 +31,8 @@ class outputcodec : public COutput
+     }
+   outputcodec(const QString& _s) : codec(NULL), handle(NULL), status(-1)
+     {
+-#ifdef USEQPE
+-#ifdef OPIE
+-      QString codecpath(getenv("OPIEDIR"));
+-#else
+-      QString codecpath(getenv("QTDIR"));
+-#endif
+-      codecpath += "/plugins/reader/outcodecs/lib";
+-#else
 -      QString codecpath(getenv("READERDIR"));
-+      const char *rd = getenv("READERDIR");
-+      QString codecpath(rd?rd:"/usr/lib/uqtreader");
-       codecpath += "/outcodecs/lib";
- #endif
+-      codecpath += "/outcodecs/lib";
+-#endif
++	QString codecpath = uqt_outcodecspath();
++	codecpath += "lib";
        codecpath += _s;
+       codecpath += ".so";
+       if (QFile::exists(codecpath))
 diff --git a/preferences.cpp b/preferences.cpp
 index 67960ed..044a003 100755
 --- a/preferences.cpp
@@ -2016,10 +2417,18 @@ index dc6a5dd..7552bd1 100644
  INTERFACES	= 
  DESTDIR		= $(OPIEDIR)/bin
 diff --git a/striphtml.cpp b/striphtml.cpp
-index a2ad56b..6dba68e 100644
+index a2ad56b..1346dc3 100644
 --- a/striphtml.cpp
 +++ b/striphtml.cpp
-@@ -209,14 +209,14 @@ QString striphtml::dehtml(const QString& _info)
+@@ -8,6 +8,7 @@
+ #include "CDrawBuffer.h"
+ #include "striphtml.h"
+ #include "hrule.h"
++#include "uqtcommon.h"
+ 
+ #include <qregexp.h>
+ #include <qimage.h>
+@@ -209,14 +210,14 @@ QString striphtml::dehtml(const QString& _info)
    QString info;
    for (int i = 0; i < _info.length(); i++)
    {
@@ -2036,7 +2445,7 @@ index a2ad56b..6dba68e 100644
  	    if ('0' <= ch1 && ch1 <= '9')
  	      {
  		ch += ch1 - '0';
-@@ -285,7 +285,7 @@ bool striphtml::findanchor(const QString& _info)
+@@ -285,7 +286,7 @@ bool striphtml::findanchor(const QString& _info)
        while (1)
  	{
  	  //	  qApp->processEvents();
@@ -2045,17 +2454,26 @@ index a2ad56b..6dba68e 100644
  #ifdef USEQPE
  	  if ((offset = id.match(toQString(test.data()))) != -1) break;
  #endif
-@@ -333,7 +333,8 @@ void striphtml::initentmap()
- #endif
-   fname += "/plugins/reader/data";
- #else
+@@ -325,17 +326,7 @@ striphtml::~striphtml()
+ void striphtml::initentmap()
+ {
+   entmap = new QMap<QString, tchar>;
+-#ifdef USEQPE
+-#ifdef OPIE
+-  QString fname(getenv("OPIEDIR"));
+-#else
+-  QString fname(getenv("QTDIR"));
+-#endif
+-  fname += "/plugins/reader/data";
+-#else
 -  QString fname(getenv("READERDIR"));
-+  const char *rd = getenv("READERDIR");
-+  QString fname(rd?rd:"/usr/share/uqtreader");
-   fname += "/data";
- #endif  
+-  fname += "/data";
+-#endif  
++  QString fname = uqt_datapath();
    QFileInfo fi;
-@@ -347,7 +348,7 @@ void striphtml::initentmap()
+   fi.setFile(fname, "HTMLentities");
+   if (fi.exists())
+@@ -347,7 +338,7 @@ void striphtml::initentmap()
  	{
  	  QTextStream t(&fl);
  	  QString key, value;
@@ -2064,6 +2482,69 @@ index a2ad56b..6dba68e 100644
  	    {
  	      QString data = t.readLine();
  	      int colon = data.find(':');
+diff --git a/uqtcommon.h b/uqtcommon.h
+new file mode 100644
+index 0000000..e551740
+--- /dev/null
++++ b/uqtcommon.h
+@@ -0,0 +1,57 @@
++#ifndef __UQTCOMMON_H
++#define __UQTCOMMON_H
++
++#include <qstring.h>
++
++#ifdef USEQPE
++# ifdef OPIE
++#  define Q_DIR_ENV "OPIEDIR"
++# else
++#  define Q_DIR_ENV "QTDIR"
++# endif
++#endif
++
++inline QString uqt_libdir() {
++#   ifdef USEQPE
++    return QString(getenv(Q_DIR_ENV))+"/plugins/reader";
++#   else
++    const char *rd = getenv("READERDIR");
++    if(rd) return rd;
++    return UQT_LIBDIR;
++#   endif
++}
++inline QString uqt_datadir() {
++#   ifdef USEQPE
++    return QString(geenv(Q_DIR_ENV));
++#   else
++    const char *rd = getenv("READERDIR");
++    if(rd) return rd;
++    return UQT_DATADIR;
++#   endif
++}
++
++inline QString uqt_codecspath() {
++    return uqt_libdir()+"/codecs/";
++}
++inline QString uqt_outcodecspath() {
++    return uqt_libdir()+"/outcodecs/";
++}
++inline QString uqt_filterspath() {
++    return uqt_libdir()+"/filters/";
++}
++inline QString uqt_supportpath() {
++    return uqt_libdir()+"/support/";
++}
++
++inline QString uqt_picspath() {
++    return uqt_datadir()+"/pics/";
++}
++inline QString uqt_datapath() {
++#   ifdef QPE
++    return uqt_datadir()+"/plugins/reader/data";
++#   else
++    return uqt_datadir()+"/data";
++#   endif
++}
++
++#endif /* __UQTCOMMON_H */
 diff --git a/version.cpp b/version.cpp
 index aafb3d8..743ef38 100644
 --- a/version.cpp
