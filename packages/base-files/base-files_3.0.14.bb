@@ -1,7 +1,7 @@
 DESCRIPTION = "Miscellaneous files for the base system."
 SECTION = "base"
 PRIORITY = "required"
-PR = "r67"
+PR = "r68"
 LICENSE = "GPL"
 
 SRC_URI = " \
@@ -79,6 +79,8 @@ do_install () {
 	else
 		echo ${hostname} > ${D}${sysconfdir}/hostname
 	fi
+
+        install -m 644 ${WORKDIR}/issue*  ${D}${sysconfdir}  
 
         if [ -n "${DISTRO_NAME}" ]; then
 		echo -n "${DISTRO_NAME} " >> ${D}${sysconfdir}/issue
