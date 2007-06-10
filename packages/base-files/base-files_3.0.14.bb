@@ -1,7 +1,7 @@
 DESCRIPTION = "Miscellaneous files for the base system."
 SECTION = "base"
 PRIORITY = "required"
-PR = "r66"
+PR = "r67"
 LICENSE = "GPL"
 
 SRC_URI = " \
@@ -81,8 +81,8 @@ do_install () {
 	fi
 
         if [ -n "${DISTRO_NAME}" ]; then
-		echo -n "${DISTRO_NAME} " > ${D}${sysconfdir}/issue
-		echo -n "${DISTRO_NAME} " > ${D}${sysconfdir}/issue.net
+		echo -n "${DISTRO_NAME} " >> ${D}${sysconfdir}/issue
+		echo -n "${DISTRO_NAME} " >> ${D}${sysconfdir}/issue.net
 		if [ -n "${DISTRO_VERSION}" ]; then
 			echo -n "${DISTRO_VERSION} " >> ${D}${sysconfdir}/issue
 			echo -n "${DISTRO_VERSION} " >> ${D}${sysconfdir}/issue.net
