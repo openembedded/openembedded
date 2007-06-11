@@ -3,10 +3,16 @@ for extending applications."
 LICENSE = "MIT"
 HOMEPAGE = "http://www.lua.org/"
 
-PACKAGES = "${PN} liblua ${PN}-doc liblua-dev \
-	    liblualib liblualib-dev"
-FILES_${PN} = "${bindir}/lua ${bindir}/luac"
-FILES_${PN}-doc = "${mandir}/man1/lua.1 ${mandir}/man1/luac.1"
+PACKAGES = "liblua-dbg liblualib-dbg ${PN}-dbg \
+liblua-dev liblua liblualib-dev liblualib ${PN}-doc ${PN}"
+
+FILES_${PN}-dbg = "${bindir}/.debug"
+FILES_liblua-dbg = "${libdir}/.debug/liblua.so.*"
+FILES_liblualib-dbg = "${libdir}/.debug/liblualib.so.*"
+
+FILES_${PN} = "${bindir}"
+FILES_${PN}-doc = "${mandir}"
+
 FILES_liblua = "${libdir}/liblua.so.*"
 FILES_liblua-dev = "${libdir}/liblua.so ${libdir}/liblua.a \
 		    ${includedir}/lua.h"

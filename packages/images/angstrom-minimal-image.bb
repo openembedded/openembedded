@@ -1,14 +1,10 @@
 #Angstrom minimalist image
 #gives you a small images with ssh access
 LICENSE = "MIT"
-PR = "r0"
+PR = "r1"
 
 ANGSTROM_EXTRA_INSTALL ?= ""
 DISTRO_SSH_DAEMON ?= "dropbear"
-
-DEPENDS = "task-base \
-           ${DISTRO_SSH_DAEMON} \
-	  "
 
 RDEPENDS = "task-boot \
             ${DISTRO_SSH_DAEMON} \
