@@ -1,8 +1,11 @@
 DESCRIPTION = "matchbox-keyboard layouts control application"
 AUTHOR = "Sergey Lapin"
-SRC_URI = "git://ossfans.org/home/slapin/git/mk-layouts-gui.git;protocol=git"
+SECTION = "x11"
 LICENSE = "GPL"
-PR = "r2"
+DEPENDS = "gtk+"
+PR = "r3"
+
+SRC_URI = "git://ossfans.org/home/slapin/git/mk-layouts-gui.git;protocol=git"
 
 S = "${WORKDIR}/git"
 
