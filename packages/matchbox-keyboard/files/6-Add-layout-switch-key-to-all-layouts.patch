@@ -1,0 +1,111 @@
+# HG changeset patch
+# User pfalcon@localhost
+# Date 1181568553 0
+# Node ID edc3fd8303a394bccadde2f427ab25ebda4fcbc8
+# Parent  869314ae90f46a8c2d34080005d4079cb0d0fcf4
+Add layout switch key to all layouts.
+
+diff -r 869314ae90f4 -r edc3fd8303a3 layouts/keyboard-dvorak.xml
+--- a/layouts/keyboard-dvorak.xml	Mon Jun 11 13:07:08 2007 +0000
++++ b/layouts/keyboard-dvorak.xml	Mon Jun 11 13:29:13 2007 +0000
+@@ -271,6 +271,10 @@ Contributed by Leon Matthews http://www.
+ <!-- Bottom Row -->
+ <row>
+ 	<space width="500" extended="true"/>
++    <key>
++	  <default display="[->]" action="modifier:layout"/>                
++    </key>
++
+ 	<key>
+ 		<default display="äëö" action="modifier:mod1"/>
+ 	</key>
+diff -r 869314ae90f4 -r edc3fd8303a3 layouts/keyboard-extended.xml
+--- a/layouts/keyboard-extended.xml	Mon Jun 11 13:07:08 2007 +0000
++++ b/layouts/keyboard-extended.xml	Mon Jun 11 13:29:13 2007 +0000
+@@ -304,6 +304,10 @@
+  </row>
+   <row>
+     <key>
++	  <default display="[->]" action="modifier:layout"/>                
++    </key>
++
++    <key>
+ 	  <default display="aeo" action="modifier:mod1"/>                
+     </key>
+ 
+diff -r 869314ae90f4 -r edc3fd8303a3 layouts/keyboard-fi.xml
+--- a/layouts/keyboard-fi.xml	Mon Jun 11 13:07:08 2007 +0000
++++ b/layouts/keyboard-fi.xml	Mon Jun 11 13:29:13 2007 +0000
+@@ -329,6 +329,10 @@
+     <space width="500" extended="true"/>
+ 
+ 
++    <key>
++	  <default display="[->]" action="modifier:layout"/>                
++    </key>
++
+     <key fill="true">
+ 	  <default display="Ctrl" action="modifier:ctrl"/>
+     </key>
+diff -r 869314ae90f4 -r edc3fd8303a3 layouts/keyboard-numpad.xml
+--- a/layouts/keyboard-numpad.xml	Mon Jun 11 13:07:08 2007 +0000
++++ b/layouts/keyboard-numpad.xml	Mon Jun 11 13:29:13 2007 +0000
+@@ -54,6 +54,13 @@
+     </key>
+   </row>
+ 
++  <row>
++    <key>
++	  <default display="[->]" action="modifier:layout"/>                
++    </key>
++  </row>
++
++
+ </layout>
+ 
+ 
+diff -r 869314ae90f4 -r edc3fd8303a3 layouts/keyboard-ru.xml
+--- a/layouts/keyboard-ru.xml	Mon Jun 11 13:07:08 2007 +0000
++++ b/layouts/keyboard-ru.xml	Mon Jun 11 13:29:13 2007 +0000
+@@ -302,10 +302,10 @@
+     <space width="500" extended="true"/>
+ 
+     <key>
++	  <default display="[->]" action="modifier:layout"/>                
++    </key>
++    <key>
+ 	  <default display="äëö" action="modifier:mod1"/>                
+-    </key>
+-    <key>
+-	  <default display="EN" action="modifier:mod2"/>                
+     </key>
+ 
+     <key fill="true">
+diff -r 869314ae90f4 -r edc3fd8303a3 layouts/keyboard-us.xml
+--- a/layouts/keyboard-us.xml	Mon Jun 11 13:07:08 2007 +0000
++++ b/layouts/keyboard-us.xml	Mon Jun 11 13:29:13 2007 +0000
+@@ -326,6 +326,10 @@
+     <space width="500" extended="true"/>
+ 
+     <key>
++	  <default display="[->]" action="modifier:layout"/>                
++    </key>
++
++    <key>
+ 	  <default display="äëö" action="modifier:mod1"/>                
+     </key>
+ 
+diff -r 869314ae90f4 -r edc3fd8303a3 layouts/keyboard.xml
+--- a/layouts/keyboard.xml	Mon Jun 11 13:07:08 2007 +0000
++++ b/layouts/keyboard.xml	Mon Jun 11 13:29:13 2007 +0000
+@@ -324,6 +324,10 @@
+     <space width="500" extended="true"/>
+ 
+     <key>
++	  <default display="[->]" action="modifier:layout"/>                
++    </key>
++
++    <key>
+ 	  <default display="äëö" action="modifier:mod1"/>                
+     </key>
+ 

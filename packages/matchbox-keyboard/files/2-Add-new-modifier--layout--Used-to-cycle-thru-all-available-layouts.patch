@@ -1,0 +1,91 @@
+# HG changeset patch
+# User pfalcon@localhost
+# Date 1176076569 0
+# Node ID ff9cf1fd8177dded04b9fc81ba630203848fc3ca
+# Parent  96305d94eb31f06f5618c99310192c47c68a1f21
+Add new modifier: layout. Used to cycle thru all available layouts.
+
+diff -r 96305d94eb31 -r ff9cf1fd8177 src/config-parser.c
+--- a/src/config-parser.c	Sun Apr 08 23:28:43 2007 +0000
++++ b/src/config-parser.c	Sun Apr 08 23:56:09 2007 +0000
+@@ -113,7 +113,8 @@ ModLookup[] =
+   { "mod1",    MBKeyboardKeyModMod1 },
+   { "mod2",    MBKeyboardKeyModMod2 },
+   { "mod3",    MBKeyboardKeyModMod3 },
+-  { "caps",    MBKeyboardKeyModCaps }
++  { "caps",    MBKeyboardKeyModCaps },
++  { "layout",  MBKeyboardKeyModLayout },
+ };
+ 
+ typedef struct MBKeyboardConfigState
+diff -r 96305d94eb31 -r ff9cf1fd8177 src/matchbox-keyboard-key.c
+--- a/src/matchbox-keyboard-key.c	Sun Apr 08 23:28:43 2007 +0000
++++ b/src/matchbox-keyboard-key.c	Sun Apr 08 23:56:09 2007 +0000
+@@ -493,6 +493,16 @@ mb_kbd_key_press(MBKeyboardKey *key)
+ 	  case MBKeyboardKeyModAlt:
+ 	    mb_kbd_toggle_state(key->kbd, MBKeyboardStateAlt);
+ 	    break;
++	  case MBKeyboardKeyModLayout:
++	    key->kbd->selected_layout_no++;
++	    if (key->kbd->selected_layout_no >= util_list_length(key->kbd->layouts))
++	      key->kbd->selected_layout_no = 0;
++	    key->kbd->selected_layout = 
++	      (MBKeyboardLayout *)util_list_get_nth_data(key->kbd->layouts, 
++							 key->kbd->selected_layout_no);
++	    mb_kbd_ui_recalc_ui_layout(key->kbd->ui);
++	    queue_full_kbd_redraw = True;
++	    break;
+ 	  default:
+ 	    DBG("unknown modifier action");
+ 	    break;
+diff -r 96305d94eb31 -r ff9cf1fd8177 src/matchbox-keyboard-ui.c
+--- a/src/matchbox-keyboard-ui.c	Sun Apr 08 23:28:43 2007 +0000
++++ b/src/matchbox-keyboard-ui.c	Sun Apr 08 23:56:09 2007 +0000
+@@ -505,6 +505,15 @@ mb_kbd_ui_allocate_ui_layout(MBKeyboardU
+     }
+   
+   *width = max_row_width;
++}
++
++void
++mb_kbd_ui_recalc_ui_layout(MBKeyboardUI *ui)
++{
++  mb_kbd_ui_allocate_ui_layout(ui,
++                               &ui->base_alloc_width, &ui->base_alloc_height);
++
++  mb_kbd_ui_resize(ui, ui->xwin_width, ui->xwin_height); 
+ }
+ 
+ void
+diff -r 96305d94eb31 -r ff9cf1fd8177 src/matchbox-keyboard.c
+--- a/src/matchbox-keyboard.c	Sun Apr 08 23:28:43 2007 +0000
++++ b/src/matchbox-keyboard.c	Sun Apr 08 23:56:09 2007 +0000
+@@ -85,6 +85,7 @@ mb_kbd_new (int argc, char **argv)
+ 
+   kb->selected_layout 
+     = (MBKeyboardLayout *)util_list_get_nth_data(kb->layouts, 0);
++  kb->selected_layout_no = 0;
+ 
+   if (want_embedding)
+     mb_kbd_ui_set_embeded( kb->ui, True );
+diff -r 96305d94eb31 -r ff9cf1fd8177 src/matchbox-keyboard.h
+--- a/src/matchbox-keyboard.h	Sun Apr 08 23:28:43 2007 +0000
++++ b/src/matchbox-keyboard.h	Sun Apr 08 23:56:09 2007 +0000
+@@ -148,6 +148,7 @@ struct MBKeyboard
+ 
+   List                  *layouts;
+   MBKeyboardLayout      *selected_layout;
++  int                    selected_layout_no;
+ 
+   int                    key_border, key_pad, key_margin;
+   int                    row_spacing, col_spacing;
+@@ -177,6 +178,9 @@ int
+ int
+ mb_kbd_ui_init(MBKeyboard *kbd);
+ 
++void
++mb_kbd_ui_recalc_ui_layout(MBKeyboardUI *ui);
++
+ int
+ mb_kbd_ui_realize(MBKeyboardUI  *ui);
+ 
