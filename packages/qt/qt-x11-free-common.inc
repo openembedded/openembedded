@@ -84,5 +84,4 @@ FILES_qt-x11-designer = "${bindir}/designer"
 FILES_qt-x11-assistant = "${bindir}/assistant"
 FILES_qt-x11-qvfb = "${bindir}/qvfb"
 FILES_qt-x11-qtconfig = "${bindir}/qtconfig"
-FILES_qt-x11-plugins-debug += "${prefix}/plugins/*/.debug"
-
+FILES_qt-x11-plugins-debug += "${prefix}/plugins/*/.debug ${D}/qt-x11-plugins-debug"
