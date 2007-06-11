@@ -4,6 +4,8 @@ PRIORITY = "optional"
 SECTION = "kernel/modules"
 LICENSE = "GPL"
 
+DEFAULT_PREFERENCE = "-1"
+
 PR = "r1"
 
 SRC_URI = "http://mxhaard.free.fr/spca50x/Download/oldrelease/${PN}-${PV}.tar.gz \

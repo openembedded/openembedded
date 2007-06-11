@@ -132,6 +132,11 @@ Recipes:    linux, hostap*, orinoco*, wpa-supplicant*, wireless-tools, keymaps
 Recipes:    linux-rp, gammu
 Recipes:    ttf-fonts/* 
 
+Person:     Matthias 'CoreDump' Hentges
+Website:    http://www.hentges.net
+Machines:   collie, spitz
+Recipes:    altboot, webcam-server
+
 Person:     Michael 'Mickey' Lauer
 Mail:       mlauer@vanille-media.de
 Distros:    Ångström, generic
