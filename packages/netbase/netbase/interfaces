@@ -28,7 +28,7 @@ iface wlan0 inet dhcp
 #	wireless-key s:My-PlainText-Password
 #	wireless-mode managed                  
 #
-# A WPA encrypted connection locked to a specific access point.
+# A WPA1 or WPA2 encrypted connection locked to a specific access point.
 # The WLAN cards firmware is updated temporarily to allow WPA
 # connections. Your card may or may not need the update.
 #

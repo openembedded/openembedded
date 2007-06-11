@@ -1,0 +1,23 @@
+--- qsvn-0.3.0/qsvn.pro	2007-06-11 00:47:22.514013379 +0200
++++ qsvn-0.3.0/qsvn.pro	2007-06-11 00:47:49.206941206 +0200
+@@ -7,9 +7,6 @@
+   UI_DIR = .ui
+   OBJECTS_DIR = .obj
+ 
+-  INCLUDEPATH += /usr/include/subversion-1 \
+-                 /usr/include/apr-0
+-
+   LIBS += -lsvn_client-1 \
+           -lsvn_delta-1 \
+           -lsvn_diff-1 \
+@@ -18,8 +15,8 @@
+           -lsvn_repos-1 \
+           -lsvn_subr-1 \
+           -lsvn_wc-1 \
+-          -lapr-0 \
+-          -laprutil-0
++          -lapr-1 \
++          -laprutil-1
+ }
+ 
+ win32 {
