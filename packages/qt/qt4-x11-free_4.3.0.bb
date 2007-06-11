@@ -2,7 +2,7 @@ SECTION = "x11/libs"
 PRIORITY = "optional"
 HOMEPAGE = "http://www.trolltech.com"
 LICENSE = "GPL QPL"
-DEPENDS = "uicmoc4-native qmake2-native freetype jpeg virtual/libx11 xft libxext libxrender libxrandr libxcursor dbus openssl"
+DEPENDS = "pkgconfig-native uicmoc4-native qmake2-native freetype jpeg virtual/libx11 xft libxext libxrender libxrandr libxcursor dbus openssl"
 RDEPENDS_${PN} = "${NONDEV_PACKAGES}"
 PROVIDES = "qt4x11"
 
@@ -20,7 +20,7 @@ S = "${WORKDIR}/qt-x11-opensource-src-${PV}"
 
 PARALLEL_MAKE = ""
 
-inherit qmake-base qt4x11 pkgconfig
+inherit qmake-base qt4x11
 
 export QTDIR = "${S}"
 STAGING_QT_DIR = "${STAGING_DIR}/${TARGET_SYS}/qt4"
@@ -67,15 +67,6 @@ do_compile() {
 	install -m 0755 ${STAGING_BINDIR_NATIVE}/uic4 ${S}/bin/uic
 
 	oe_runmake ${EXTRA_ENV}
-
-	# FIXME: this is not the way to go, I think.
-	for pc in ${S}/lib/pkgconfig/*.pc ; do
-		sed -i \
-			-e 's,-L${S}/lib,,g' \
-			-e 's,^moc_location=.*,^moc_location=${TARGING_BINDIR}/moc4,g' \
-			-e 's,^uic_location=.*,^moc_location=${TARGING_BINDIR}/uic4,g' \
-			$pc
-	done
 }
 
 PARTS = "3Support AssistantClient Core DBus Designer DesignerComponents Gui Network Script Sql Svg Test Xml"
@@ -86,6 +77,12 @@ do_stage() {
 	install -m 0755 ${STAGING_BINDIR_NATIVE}/moc4 ${STAGING_QT_DIR}/bin/moc
 	install -m 0755 ${STAGING_BINDIR_NATIVE}/uic4 ${STAGING_QT_DIR}/bin/uic
 	sed -i -e 's,^QMAKE_RPATHDIR.*,QMAKE_RPATHDIR=${STAGING_QT_DIR}/lib,g'  ${STAGING_QT_DIR}/mkspecs/qconfig.pri
+	for pc in ${STAGING_QT_DIR}/lib/pkgconfig/Qt{AssistantClient,DBus,Test,UiTools}.pc ; do
+		sed -i -e 's,${S}/lib,${STAGING_QT_DIR}/lib,g' $pc
+	done
+        for pc in ${STAGING_QT_DIR}/lib/pkgconfig/*.pc ; do
+                install -m 0644 $pc ${PKG_CONFIG_PATH}/
+        done
 }
 
 # FIXME: Might want to call oe_runmake install INSTALL_ROOT=${D}/${prefix} as well...

@@ -1,7 +1,9 @@
+# Copyright (C) 2007, Stelios Koroneos - Digital OPSiS, All Rights Reserved
+# Released under the MIT license (see packages/COPYING)
 SECTION = "kernel"
 DESCRIPTION = "Linux kernel for Magicbox ver 1.1 and 2.0 router boards"
 LICENSE = "GPL"
-PR = "r2"
+PR = "r3"
 DEPENDS = "u-boot"
 
 COMPATIBLE_MACHINE = "magicbox"
@@ -86,16 +88,17 @@ do_stage_append () {
 
 
 do_install_append () {
-        install -d  ${DEPLOY_DIR}/images
-        install -m 0755 arch/ppc/boot/images/zImage.elf ${DEPLOY_DIR}/images/${KERNEL_IMAGETYPE}-${PV}-${MACHINE}-${DATETIME}.elf
-        install -m 0755 vmlinux ${DEPLOY_DIR}/images/
-        powerpc${TARGET_VENDOR}-${TARGET_OS}-objcopy -O binary -R .note -R .comment -S ${DEPLOY_DIR}/images/vmlinux ${DEPLOY_DIR}/images/linux.bin
-        gzip -f -9 ${DEPLOY_DIR}/images/linux.bin
-        cp -a ${DEPLOY_DIR}/images/linux.bin.gz ${DEPLOY_DIR}/images/linux-${PV}-${MACHINE}-${DATETIME}.bin.gz        
+        install -d  ${DEPLOY_DIR_IMAGE}
+        install -m 0755 arch/ppc/boot/images/zImage.elf ${DEPLOY_DIR_IMAGE}/${KERNEL_IMAGETYPE}-${PV}-${MACHINE}-${DATETIME}.elf
+        install -m 0755 vmlinux ${DEPLOY_DIR_IMAGE}/
+        powerpc${TARGET_VENDOR}-${TARGET_OS}-objcopy -O binary -R .note -R .comment -S ${DEPLOY_DIR_IMAGE}/vmlinux \ 
+                 ${DEPLOY_DIR_IMAGE}/linux.bin
+        gzip -f -9 ${DEPLOY_DIR_IMAGE}/linux.bin
+        cp -a ${DEPLOY_DIR_IMAGE}/linux.bin.gz ${DEPLOY_DIR_IMAGE}/linux-${PV}-${MACHINE}-${DATETIME}.bin.gz        
         mkimage -A ppc -O linux -T kernel -C gzip -a 00000000 -e 00000000 -n "magicbox"-${PV} \
-                -d ${DEPLOY_DIR}/images/linux.bin.gz ${DEPLOY_DIR}/images/uImage-${PV}-${MACHINE}-${DATETIME}.bin        
-        rm ${DEPLOY_DIR}/images/vmlinux
-        rm ${DEPLOY_DIR}/images/linux.bin.gz
+                -d ${DEPLOY_DIR_IMAGE}/linux.bin.gz ${DEPLOY_DIR_IMAGE}/uImage-${PV}-${MACHINE}-${DATETIME}.bin        
+        rm ${DEPLOY_DIR_IMAGE}/vmlinux
+        rm ${DEPLOY_DIR_IMAGE}/linux.bin.gz
 
 
 }

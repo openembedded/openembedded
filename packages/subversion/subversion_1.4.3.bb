@@ -5,7 +5,7 @@ RDEPENDS = "neon"
 LICENSE = "Apache/BSD"
 HOMEPAGE = "http://subversion.tigris.org"
 
-DEFAULT_PREFERENCE = "-1"
+PR = "r1"
 
 SRC_URI = "http://subversion.tigris.org/downloads/${P}.tar.bz2 \
            file://disable-revision-install.patch;patch=1 \
@@ -26,4 +26,8 @@ do_configure() {
 	libtoolize --force
 	aclocal -I build/ -I build/ac-macros/ && autoconf
 	oe_runconf
+}
+
+do_stage() {
+	autotools_stage_all
 }
