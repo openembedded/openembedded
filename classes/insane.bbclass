@@ -58,7 +58,8 @@ def package_qa_get_machine_dict():
                         "armeb":      (  40,    97,    0,          False,         True),
                         "powerpc":    (  20,     0,    0,          False,         True),
                         "mipsel":     (   8,     0,    0,          True,          True),
-			"avr32":      (6317,     0,    0,          False,         True), 
+			"avr32":      (6317,     0,    0,          False,         True),
+                        "bfin":       (   0,     0,    0,          True,         True), 
                       },
             "linux-gnueabi" : {
                         "arm" :       (40,     0,    0,          True,          True),

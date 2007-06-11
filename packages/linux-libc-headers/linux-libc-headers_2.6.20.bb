@@ -26,6 +26,7 @@ set_arch() {
 		sparc*)   ARCH=sparc ;;
 		x86_64*)  ARCH=x86_64 ;;
 	        avr32*)   ARCH=avr32 ;;
+                bfin*)    ARCH=blackfin ;;
 	esac
 }
 
