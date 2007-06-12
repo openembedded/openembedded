@@ -59,8 +59,10 @@ def package_qa_get_machine_dict():
                         "powerpc":    (  20,     0,    0,          False,         True),
                         "mipsel":     (   8,     0,    0,          True,          True),
 			"avr32":      (6317,     0,    0,          False,         True),
-                        "bfin":       (   0,     0,    0,          True,         True), 
                       },
+            "uclinux-uclibc" : {
+                        "bfin":       (   0,     0,    0,          True,         True),
+                      }, 
             "linux-gnueabi" : {
                         "arm" :       (40,     0,    0,          True,          True),
                         "armeb" :     (40,     0,    0,          False,         True),
