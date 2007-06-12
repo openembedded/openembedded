@@ -2,4 +2,4 @@ require gpsd.inc
 
 DEPENDS = "ncurses"
 
-PR = "r0"
+PR = "r2"

@@ -7,7 +7,8 @@ DEPENDS = "virtual/kernel fakeroot-native setserial"
 RDEPENDS_nslu2 = "setserial"
 PR = "r0"
 
-DEFAULT_PREFERENCE = "-1"
+# enable this bb file until the other packages compile again
+#DEFAULT_PREFERENCE = "-1"
 
 SRCDATE=${@bb.data.getVar('PV', d, 1)[9:]}
 

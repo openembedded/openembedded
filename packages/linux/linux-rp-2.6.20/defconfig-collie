@@ -254,7 +254,7 @@ CONFIG_PM=y
 # CONFIG_PM_LEGACY is not set
 # CONFIG_PM_DEBUG is not set
 # CONFIG_PM_SYSFS_DEPRECATED is not set
-CONFIG_APM=m
+CONFIG_APM=y
 
 #
 # Networking
@@ -1394,7 +1394,7 @@ CONFIG_USB_EZUSB=y
 #
 # USB Gadget Support
 #
-CONFIG_USB_GADGET=y
+# CONFIG_USB_GADGET is not set
 # CONFIG_USB_GADGET_DEBUG_FILES is not set
 # CONFIG_USB_GADGET_NET2280 is not set
 # CONFIG_USB_GADGET_PXA2XX is not set

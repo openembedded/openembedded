@@ -4,8 +4,6 @@ LICENSE = "GPL"
 SRC_URI = "${GNU_MIRROR}/m4/m4-${PV}.tar.gz"
 S = "${WORKDIR}/m4-${PV}"
 
-DEFAULT_PREFERENCE = "-1"
-
 inherit autotools
 
 EXTRA_OEMAKE += "'infodir=${infodir}'"

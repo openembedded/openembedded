@@ -11,7 +11,8 @@ valid_archs = "alpha cris ia64 \
                arm  arm26 \
                m32r mips \
 	       sh sh64 um h8300   \
-	       parisc s390  v850"
+	       parisc s390  v850 \
+	       avr32 blackfin"
 
 def map_kernel_arch(a, d):
 	import bb, re
@@ -23,7 +24,8 @@ def map_kernel_arch(a, d):
 	elif re.match('armeb$', a):		return 'arm'
 	elif re.match('mipsel$', a):		return 'mips'
 	elif re.match('sh(3|4)$', a):		return 'sh'
-	elif a in valid_archs:			return a
+	elif re.match('bfin', a):               return 'blackfin'
+        elif a in valid_archs:			return a
 	else:
 		bb.error("cannot map '%s' to a linux kernel architecture" % a)
 

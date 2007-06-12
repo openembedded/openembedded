@@ -1,48 +1,10 @@
-#! /bin/sh
-#
-# Copyright Matthias Hentges <devel@hentges.net> (c) 2006
-# License: MIT (see COPYING.MIT)
-#
-# Filename: altboot_1.0.5-rc2.bb
-# Date: 21-Feb-06
-
-DESCRIPTION = "The altboot bootmanager"
-HOMEPAGE = "http://www.hentges.net/misc/openzaurus/index.shtml"
-LICENSE = "GPL"
-
-######################################################################################
-
-RRECOMMENDS_${PN} = "e2fsprogs-e2fsck dosfstools"
-RRECOMMENDS_${PN}_append_akita = " kexec-tools"
-RRECOMMENDS_${PN}_append_spitz = " kexec-tools"
-RRECOMMENDS_${PN}_append_c7x0 = " kexec-tools"
-
-RDEPENDS_${PN} = "${PN}-conf"
-RDEPENDS_${PN}-conf = "${PN}"
-
-######################################################################################
+require altboot.inc
 
 PR = "r2"
 
-######################################################################################
-
-PACKAGES = "${PN}-conf ${PN}-doc ${PN}"
-
-PACKAGE_ARCH_${PN} = "all"
-PACKAGE_ARCH_${PN}-doc = "all"
-PACKAGE_ARCH_${PN}-conf = "${MACHINE}"
-
 TAG = "${@'v' + bb.data.getVar('PV',d,1).replace('.', '-')}"
-
 SRC_URI = "svn://hentges.net/public/altboot/tags/;module=${TAG};proto=svn"
-
 S = "${WORKDIR}/${TAG}/"
-
-######################################################################################
-
-FILES_${PN}-conf = "/etc/altboot*.cfg"
-
-######################################################################################
 
 do_install() {
 	install -d ${D}/sbin
@@ -71,22 +33,17 @@ do_install() {
 	install -m 0644 ${S}/altboot.rc/*.txt ${D}/etc/altboot.rc
 }
 
-######################################################################################
-
 do_configure() {
 	cat ${S}/init.altboot | sed "s/^VERSION=.*/VERSION=\"${PV}\"/" > ${S}/init.altboot_
 	mv ${S}/init.altboot_ ${S}/init.altboot
 }
 
-######################################################################################
-
 pkg_postinst_${PN}() {
 	update-alternatives --install /sbin/init init /sbin/init.altboot 55
 }
-
-######################################################################################
 
 pkg_postrm_${PN}() {
 	update-alternatives --remove init /sbin/init.altboot
 }
 
+PACKAGE_ARCH_${PN} = "all"

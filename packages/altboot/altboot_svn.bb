@@ -1,51 +1,9 @@
-#! /bin/sh
-#
-# Copyright Matthias Hentges <devel@hentges.net> (c) 2006
-# License: MIT (see COPYING.MIT)
-#
-# Filename: altboot_1.0.5-rc2.bb
-# Date: 21-Feb-06
-
-DESCRIPTION = "The altboot bootmanager"
-MAINTAINER = "Matthias 'CoreDump' Hentges <oe@hentges.net>"
-HOMEPAGE = "http://www.hentges.net/misc/openzaurus/index.shtml"
-LICENSE = "GPL" 
-
-######################################################################################
-
-RRECOMMENDS_${PN} = "e2fsprogs-e2fsck dosfstools"
-RRECOMMENDS_${PN}_append_akita = " kexec-tools"
-RRECOMMENDS_${PN}_append_spitz = " kexec-tools kernel-module-jffs2"
-RRECOMMENDS_${PN}_append_c7x0 = " kexec-tools"
-
-RDEPENDS_${PN} = "${PN}-conf"
-RDEPENDS_${PN}-conf = "${PN}"
-
-######################################################################################
+require altboot.inc
 
 PV = "1.1.1+wip-${SRCDATE}"
 PR = "r2"
 
-######################################################################################
-
-PACKAGES = "${PN}-conf ${PN}-doc ${PN}"
-
-PACKAGE_ARCH_${PN} = "${MACHINE}"
-PACKAGE_ARCH_${PN}-doc = "all"
-PACKAGE_ARCH_${PN}-conf = "${MACHINE}"
-
 SRC_URI = "svn://hentges.net/public/altboot;module=trunk;proto=svn"
-
-S = "${WORKDIR}/trunk/"
-
-######################################################################################
-
-FILES_${PN}-conf = "/etc/altboot*cfg"
-
-######################################################################################
-
-MACHINE_DIR = "${MACHINE}"
-MACHINE_DIR_nslu2be = "nslu2le"
 
 do_install() {
 	install -d ${D}/sbin
@@ -98,22 +56,16 @@ do_install() {
 	fi
 }
 
-######################################################################################
-
 do_configure() {
 	cat ${S}/init.altboot | sed "s/^VERSION=.*/VERSION=\"${PV}-${PR}\"/" > ${S}/init.altboot_
 	mv ${S}/init.altboot_ ${S}/init.altboot
 }
-
-######################################################################################
 
 pkg_postinst_${PN}() {
 	test -L /linuxrc && update-alternatives --install /linuxrc linuxrc /sbin/init.altboot 55
 	
 	update-alternatives --install /sbin/init init /sbin/init.altboot 55
 }
-
-######################################################################################
 
 pkg_postrm_${PN}() {
 	test -L /linuxrc && update_alternatives --remove linuxrc /sbin/init.altboot

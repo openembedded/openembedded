@@ -16,6 +16,11 @@ Recipes:    Maintained recipes (should match package names, can include wildcard
 
 -----------------------------------------------------------------------------
 
+Person:     Andreas Holzer
+Mail:       a.holzer@cheese.at
+Website:    http://members.cheese.at/woody/zaurus/
+Recipes:    gnuchess, fltk-chess
+
 Person:     Andy Wilcox
 Mail:       andy@protium.com
 Website:    http://www.openprotium.com
@@ -127,6 +132,11 @@ Recipes:    linux, hostap*, orinoco*, wpa-supplicant*, wireless-tools, keymaps
 Recipes:    linux-rp, gammu
 Recipes:    ttf-fonts/* 
 
+Person:     Matthias 'CoreDump' Hentges
+Website:    http://www.hentges.net
+Machines:   collie, spitz
+Recipes:    altboot, webcam-server
+
 Person:     Michael 'Mickey' Lauer
 Mail:       mlauer@vanille-media.de
 Distros:    Ångström, generic
@@ -167,16 +177,18 @@ Website:    http://zerochaos.aircrack-ng.org
 Interests:  wifi, packet injection, security
 Distros:    Angstrom
 Machines:   akita
-Recipes:    aircrack-ng, kismet, mdk2, rfakeap, rglueap, void11
+Recipes:    aircrack-ng, kismet, lorcon, mdk, rfakeap, rglueap, 
+Recipes:    rt2570-k2wrlz, void11
 
 Person:	    Rolf 'Laibsch' Leggewie
 Mail:       OE-recipes@rolf.leggewie.biz
 Website:    http://oz.leggewie.org
 Interests:  Japanese on the Zaurus
-Distros:    openzaurus
-Machines:   collie
+Distros:    Ångström
+Machines:   collie, spitz
 Recipes:    anthy, nunome, uim*, granule, qpobox*, qte-font-unifont*
-Recipes:    qpf-unismall, poboxserver, imkit*
+Recipes:    qpf-unismall, qpobox, poboxserver, imkit*, scim, zten
+Recipes:    eb, eblook
 
 Person:     Shane Volpe
 Mail:       shanevolpe@gmail.com

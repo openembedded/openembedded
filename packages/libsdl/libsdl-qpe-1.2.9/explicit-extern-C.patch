@@ -1,0 +1,22 @@
+--- SDL-1.2.9-orig/src/video/SDL_sysvideo.h.org	2005-04-17 10:40:41.000000000 +0000
++++ SDL-1.2.9-orig/src/video/SDL_sysvideo.h	2007-05-25 07:34:38.000000000 +0000
+@@ -332,6 +332,9 @@
+ 	SDL_VideoDevice *(*create)(int devindex);
+ } VideoBootStrap;
+ 
++#ifdef __cplusplus
++extern "C" {
++#endif
+ #ifdef ENABLE_X11
+ extern VideoBootStrap X11_bootstrap;
+ #endif
+@@ -417,6 +420,9 @@
+ #ifdef ENABLE_RISCOS
+ extern VideoBootStrap RISCOS_bootstrap;
+ #endif
++#ifdef __cplusplus
++};
++#endif
+ /* This is the current video device */
+ extern SDL_VideoDevice *current_video;
+ 

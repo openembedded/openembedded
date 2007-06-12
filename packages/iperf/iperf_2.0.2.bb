@@ -13,6 +13,7 @@ S="${WORKDIR}/iperf-${PV}"
 
 # --disable-threads is needed on epia/x86 with uclibc
 do_configure() {
+	gnu-configize
 	oe_runconf --exec-prefix=${STAGING_DIR}  --disable-threads
 }
 

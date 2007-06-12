@@ -9,7 +9,8 @@ PR = "r1"
 inherit gnome pkgconfig gtk-icon-cache
 
 SRC_URI = "http://ftp.gnome.org/pub/GNOME/sources/evince/0.9/${PN}-${PV}.tar.bz2 \
-           file://no-icon-theme.diff;patch=1;pnum=0"
+           file://no-icon-theme.diff;patch=1;pnum=0 \
+           file://no-help-dir.patch;patch=1"
 
-EXTRA_OECONF = "--without-libgnome --disable-thumbnailer"
+EXTRA_OECONF = "--without-libgnome --disable-thumbnailer --disable-scrollkeeper"
 

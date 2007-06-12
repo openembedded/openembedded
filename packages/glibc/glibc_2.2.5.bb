@@ -23,7 +23,7 @@ python __anonymous () {
                                    bb.data.getVar('TARGET_OS', d, 1))
 }
 
-PROVIDES_unslung = "virtual/libc virtual/${TARGET_PREFIX}libc-for-gcc"
+PROVIDES_unslung = "virtual/libc virtual/${TARGET_PREFIX}libc-for-gcc libc6-unslung"
 
 libc_baselibs = "/lib/libc* /lib/libm* /lib/ld* /lib/libpthread* /lib/libresolv* /lib/librt* /lib/libutil* /lib/libnsl* /lib/libnss_files* /lib/libnss_compat* /lib/libnss_dns* /lib/libdl* /lib/libanl* /lib/libBrokenLocale*"
 

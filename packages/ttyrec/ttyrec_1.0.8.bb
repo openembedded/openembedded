@@ -8,7 +8,6 @@
 # Date: 20070403 (YMD)
 
 DESCRIPTION = "ttyrec is a tty recorder. Recorded data can be played back with the included ttyplay command."
-MAINTAINER = "Matthias 'CoreDump' Hentges <oe@hentges.net>"
 HOMEPAGE = "http://0xcc.net/ttyrec/index.html.en"
 
 ######################################################################################

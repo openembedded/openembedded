@@ -1,0 +1,13 @@
+#!/bin/sh
+#
+# Fix obscure problem - redirect stdout iff mkfs.ext3
+# is being invoked by the Linksys GUI format utility.
+#
+u=`/bin/pidof utility.cgi`
+if [ ! -f "/tmp/Preparing" -o "x${u}" = "x" -o \
+     "y${1}" != "y-m" -o "z${2}" != "z1" ]
+then
+  /usr/bin/mke2fs -j $@
+else
+  /usr/bin/mke2fs -j $@ >/tmp/mkfs.$$.log
+fi

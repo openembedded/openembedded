@@ -10,10 +10,10 @@ PROVIDES += "virtual/ecore"
 inherit efl
 
 SRC_URI = "http://enlightenment.freedesktop.org/files/ecore-${PV}.tar.gz \
-           file://configure.patch;patch=1 \
-           file://fix-tslib-configure.patch;patch=1 \
            file://ecore_kernel_input_header.patch;patch=1 \
-           ${E_CVS};module=e17/libs/ecore/m4;date=20060101"
+           ${E_CVS};module=e17/libs/ecore/m4;date=20070501"
+#           file://fix-tslib-configure.patch;patch=1 \
+#           file://configure.patch;patch=1 \
 
 S = "${WORKDIR}/ecore-${PV}"
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/ecore"
@@ -39,7 +39,8 @@ do_stage_append() {
 		oe_libinstall -C src/lib/$dir lib$dir ${STAGING_LIBDIR}/
 	done
 	install -m 0644 ${S}/src/lib/ecore/Ecore_Data.h ${STAGING_INCDIR}/
-	install -m 0644 ${S}/ecore.m4 ${STAGING_DATADIR}/aclocal/
+#	install -m 0644 ${S}/ecore.m4 ${STAGING_DATADIR}/aclocal/
 }
 
-FILES_${PN} += "${libdir}/libecore*.so* ${libdir}/ecore_config_ipc_ecore.so"
+FILES_${PN} += "${libdir}/ecore_config_ipc_ecore.so.*"
+FILES_${PN}-dev += "${libdir}/ecore_config_ipc_ecore.so"

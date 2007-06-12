@@ -54,11 +54,15 @@ def package_qa_get_machine_dict():
                         "sparc":      ( 2,     0,    0,          False,         True),
                       },
             "linux-uclibc" : { 
-                        "arm" :       (40,    97,    0,          True,          True),
-                        "armeb":      (40,    97,    0,          False,         True),
-                        "powerpc":    (20,     0,    0,          False,         True),
-                        "mipsel":     ( 8,     0,    0,          True,          True),
+                        "arm" :       (  40,    97,    0,          True,          True),
+                        "armeb":      (  40,    97,    0,          False,         True),
+                        "powerpc":    (  20,     0,    0,          False,         True),
+                        "mipsel":     (   8,     0,    0,          True,          True),
+			"avr32":      (6317,     0,    0,          False,         True),
                       },
+            "uclinux-uclibc" : {
+                        "bfin":       (   0,     0,    0,          True,         True),
+                      }, 
             "linux-gnueabi" : {
                         "arm" :       (40,     0,    0,          True,          True),
                         "armeb" :     (40,     0,    0,          False,         True),
@@ -219,7 +223,7 @@ def package_qa_check_rpath(file,name,d):
         bb.fatal("This class assumed that WORKDIR is ${TMPDIR}/work... Not doing any check")
 
     #bb.note("%s -B -F%%r#F %s" % (scanelf,file))
-    output = os.popen("%s -B -F%%r#F %s" % (scanelf,file))
+    output = os.popen("%s -B -F%%r#F '%s'" % (scanelf,file))
     txt    = output.readline().split()
     #bb.note("???%s???" % bad_dir_test)
     for line in txt:
@@ -392,9 +396,9 @@ def package_qa_check_rdepends(pkg, workdir, d):
         # Now do the sanity check!!!
         for rdepend in rdepends:
             if "-dbg" in rdepend:
-                package_qa_write_error( 2, name, rdepend, d )
-                bb.error("QA issue, koen give us a better msg!!!")
-                if package_qa_make_fatal_error( 2, name, rdepend, d ):
+                package_qa_write_error( 2, pkgname, rdepend, d )
+                bb.error("QA issue: %s rdepends on %s" % (pkgname,rdepend))
+                if package_qa_make_fatal_error( 2, pkgname, rdepend, d ):
                     sane = False
 
     return sane

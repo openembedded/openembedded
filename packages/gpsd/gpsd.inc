@@ -10,6 +10,7 @@ EXTRA_OECONF = "--x-includes=${STAGING_INCDIR}/X11  \
 		--disable-python  "
 
 SRC_URI = "http://download.berlios.de/gpsd/gpsd-${PV}.tar.gz \
+           file://gpsd-default \
            file://gpsd"
 
 inherit autotools update-rc.d
@@ -40,9 +41,12 @@ do_install_append() {
         install -d ${D}/${sysconfdir}/init.d
         install -d ${D}/dev
         install -m 0755 ${WORKDIR}/gpsd ${D}/${sysconfdir}/init.d/
+        install -d ${D}/${sysconfdir}/default
+        install -m 0644 ${WORKDIR}/gpsd-default ${D}/${sysconfdir}/default/gpsd
 }
 
 PACKAGES =+ "libgps"
 
 FILES_${PN} += "${sysconfdir}"
 FILES_libgps = "${libdir}/*.so*"
+CONFFILES_${PN} = "${sysconfdir}/default/gpsd"

@@ -4,7 +4,9 @@ PRIORITY = "optional"
 SECTION = "kernel/modules"
 LICENSE = "GPL"
 
-SRC_URI = "http://mxhaard.free.fr/spca50x/Download/${PN}-${PV}.tar.gz \
+PR = "r1"
+
+SRC_URI = "http://mxhaard.free.fr/spca50x/Download/oldrelease/${PN}-${PV}.tar.gz \
            file://Makefile.patch;patch=1 \
 	   file://MS.patch;patch=1"
 

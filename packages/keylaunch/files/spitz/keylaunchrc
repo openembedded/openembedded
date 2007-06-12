@@ -1,5 +1,5 @@
-key=....F9:-:gpe-contacts
-key=....F10:-:gpe-calendar
+key=....F9:-:gpe-calendar
+key=....F10:-:gpe-contacts
 key=....F13:-:sylpheed
 key=....F12:-:~matchbox-remote -next
 key=...*F12:-:~matchbox-remote -desktop
@@ -11,17 +11,17 @@ key=...*4:-:~display-brightness.sh up
                                                                                 
 # LCD Softkeys                                                                  
 # Please note that the space _between_ two softkeys can be used, too ;)         
-#key=....F5:-:                                                                  
-key=....F15:-:~matchbox-remote -next                                            
-#key=....F6:-:                                                                  
-key=....F16:-:sylpheed                                                          
-#key=....F7:-:                                                                  
-key=....F17:-:gpe-contacts                                                      
-#key=....F8:-:                                                                  
-key=....F18:-:gpe-calendar                                                      
-#key=....F19:-:                                                                 
-#key=....F19:-:                                                                 
-#key=....F10:-:                                                                 
+#key=....F20:-:                                                                  
+key=....F21:-:~matchbox-remote -next                                            
+#key=....F22:-:                                                                  
+key=....F23:-:sylpheed                                                          
+#key=....F24:-:                                                                  
+key=....F25:-:gpe-contacts                                                      
+#key=....F26:-:                                                                  
+key=....F27:-:gpe-calendar                                                      
+#key=....F28:-:                                                                 
+#key=....F29:-:                                                                 
+#key=....F30:-:                                                                 
 
 # VT changing
 key=...*Left:-:~chvt 1

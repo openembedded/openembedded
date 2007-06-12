@@ -1,11 +1,15 @@
---- /tmp/Makefile	2006-07-26 09:31:43.000000000 +0200
-+++ keylaunch-2.0.10/Makefile	2006-07-26 09:32:23.464411000 +0200
-@@ -31,7 +31,7 @@
+--- keylaunch-2.0.10/Makefile.orig	2007-05-25 18:13:39.000000000 +0200
++++ keylaunch-2.0.10/Makefile	2007-05-25 18:15:47.000000000 +0200
+@@ -31,8 +31,10 @@
  	$(CC) $(LDFLAGS) $(OBJS) $(LIBS) -o $@
  
  install-program: all
 -	install -sD $(PROG) $(DESTDIR)$(PREFIX)/bin/$(PROG)
-+	install -s -D $(PROG) $(DESTDIR)$(PREFIX)/bin/$(PROG)
- 	install -D -m 644 $(PROG)rc $(DESTDIR)/etc/$(PROG)rc
+-	install -D -m 644 $(PROG)rc $(DESTDIR)/etc/$(PROG)rc
++	install -d $(DESTDIR)$(PREFIX)/bin
++	install -s $(PROG) $(DESTDIR)$(PREFIX)/bin/$(PROG)
++	install -d $(DESTDIR)/etc
++	install -m 644 $(PROG)rc $(DESTDIR)/etc/$(PROG)rc
  	install -d $(DESTDIR)/etc/X11/Xsession.d
  	install 90$(PROG)  $(DESTDIR)/etc/X11/Xsession.d/90$(PROG)
+ 	install -d $(DESTDIR)/etc/X11/Xinit.d

@@ -5,6 +5,8 @@ PRIORITY = "optional"
 LICENSE = "GPL"
 PROVIDES = "virtual/bootloader"
 
+PARALLEL_MAKE=""
+
 EXTRA_OEMAKE = "CROSS_COMPILE=${TARGET_PREFIX}"
 
 UBOOT_MACHINE ?= "${MACHINE}_config"
@@ -27,5 +29,5 @@ addtask deploy before do_build after do_compile
 
 do_stage() {
 	install -d ${STAGING_BINDIR_NATIVE}
-	install -m755 tools/mkimage ${STAGING_BINDIR_NATIVE}/
+	install -m 755 tools/mkimage ${STAGING_BINDIR_NATIVE}/
 }

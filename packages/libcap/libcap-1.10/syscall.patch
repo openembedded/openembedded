@@ -1,0 +1,20 @@
+Index: libcap-1.10/libcap/cap_sys.c
+===================================================================
+--- libcap-1.10.orig/libcap/cap_sys.c	2007-05-24 10:59:24.000000000 +0200
++++ libcap-1.10/libcap/cap_sys.c	2007-05-24 11:01:42.000000000 +0200
+@@ -11,6 +11,7 @@
+ #define __LIBRARY__
+ #include <linux/unistd.h>
+ 
++#if 0
+ _syscall2(int, capget,
+ 	  cap_user_header_t, header,
+ 	  cap_user_data_t, data)
+@@ -18,6 +19,7 @@
+ _syscall2(int, capset,
+ 	  cap_user_header_t, header,
+ 	  const cap_user_data_t, data)
++#endif
+ 
+ /*
+  * $Log: cap_sys.c,v $

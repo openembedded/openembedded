@@ -2,7 +2,7 @@ DESCRIPTION = "Data interchange library for GPE"
 SECTION = "gpe/libs"
 PRIORITY = "optional"
 LICENSE = "LGPL"
-DEPENDS = "libmimedir libeventdb"
+DEPENDS = "libmimedir libeventdb libtododb"
 PV = "0.50+svn${SRCDATE}"
 PR = "r1"
 

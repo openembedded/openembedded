@@ -2,7 +2,7 @@ require linux-libc-headers.inc
 
 INHIBIT_DEFAULT_DEPS = "1"
 DEPENDS = "unifdef-native"
-PR = "r6"
+PR = "r7"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-${PV}.tar.bz2 \
            file://procinfo.h"
@@ -25,6 +25,8 @@ set_arch() {
 		sparc64*) ARCH=sparc64 ;;
 		sparc*)   ARCH=sparc ;;
 		x86_64*)  ARCH=x86_64 ;;
+	        avr32*)   ARCH=avr32 ;;
+                bfin*)    ARCH=blackfin ;;
 	esac
 }
 

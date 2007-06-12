@@ -21,7 +21,7 @@ export IMAGE_BASENAME = "e-image"
 DEPENDS = "task-base"
 RDEPENDS = "\
     ${XSERVER} \
-    task-base \
+    task-base-extended \
     angstrom-e-base-depends \
     angstrom-e-depends \
     angstrom-gpe-task-settings \

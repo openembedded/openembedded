@@ -41,5 +41,17 @@ then
 	swapon -a 2> /dev/null
 fi
 
+# A missing homedirectory for root can cause all sorts of problems.
+# This can happen after user formats his /home partition for example
+
+if test -e /etc/passwd
+then
+	ROOT_HOME="`cat /etc/passwd|grep ^root | awk '{split($0,x,":");printf("%s\n",x[6])}'`"
+	
+	if test -n "$ROOT_HOME"
+	then
+		! test -d "$ROOT_HOME" && mkdir -p "$ROOT_HOME"
+	fi
+fi
 : exit 0
 

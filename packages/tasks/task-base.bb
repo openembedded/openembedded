@@ -1,8 +1,11 @@
 DESCRIPTION = "Merge machine and distro options to create a basic machine task/package"
-PR = "r31"
+PR = "r36"
 
-PACKAGES = 'task-boot \
+DEPENDS = "task-boot"
+PROVIDES = "${PACKAGES}"
+PACKAGES = ' \
             task-base \
+            task-base-extended \
             task-distro-base \
             task-machine-base \
             \
@@ -41,25 +44,9 @@ PACKAGE_ARCH = "all"
 # packages which content depend on MACHINE_FEATURES need to be MACHINE_ARCH
 #
 PACKAGE_ARCH_task-base = "${MACHINE_ARCH}"
-PACKAGE_ARCH_task-boot = "${MACHINE_ARCH}"
 PACKAGE_ARCH_task-machine-base = "${MACHINE_ARCH}"
 PACKAGE_ARCH_task-base-apm = "${MACHINE_ARCH}"
 PACKAGE_ARCH_task-base-pcmcia = "${MACHINE_ARCH}"
-
-#
-# udev, devfsd, mdev (from busybox) or none
-#
-DISTRO_DEV_MANAGER ?= "${@base_contains("MACHINE_FEATURES", "kernel26",  "udev","",d)} "
-
-#
-# sysvinit, upstart
-#
-DISTRO_INIT_MANAGER ?= "sysvinit sysvinit-pidof"
-
-#
-# tinylogin, getty
-#
-DISTRO_LOGIN_MANAGER ?= "tinylogin"
 
 #
 # linux-hotplug or none
@@ -116,6 +103,34 @@ RDEPENDS_task-base = "\
     ${@base_contains('DISTRO_FEATURES', 'raid', 'task-base-raid', '',d)} \
     "
 
+RDEPENDS_task-base-extended = "\
+    task-base \
+    ${ADD_WIFI} \
+    ${ADD_BT} \
+    "
+
+ADD_WIFI = ""
+ADD_BT = ""
+
+python __anonymous () {
+    # If Distro want wifi and machine feature wifi/pci/pcmcia/usbhost (one of them)
+    # then include task-base-wifi in task-base
+
+    import bb
+
+    if not hasattr(__builtins__, 'set'):
+	from sets import Set as set
+
+    distro_features = set(bb.data.getVar("DISTRO_FEATURES", d, 1).split())
+    machine_features= set(bb.data.getVar("MACHINE_FEATURES", d, 1).split())
+
+    if "bluetooth" in distro_features and not "bluetooth" in machine_features and ("pcmcia" in machine_features or "pci" in machine_features or "usbhost" in machine_features):
+	bb.data.setVar("ADD_BT", "task-base-bluetooth", d)
+
+    if "wifi" in distro_features and not "wifi" in machine_features and ("pcmcia" in machine_features or "pci" in machine_features or "usbhost" in machine_features):
+	bb.data.setVar("ADD_WIFI", "task-base-wifi", d)
+}
+
 #
 # packages added by distribution
 #
@@ -127,26 +142,6 @@ RRECOMMENDS_task-distro-base = "${DISTRO_EXTRA_RRECOMMENDS}"
 #
 RDEPENDS_task-machine-base = "${MACHINE_EXTRA_RDEPENDS}"
 RRECOMMENDS_task-machine-base = "${MACHINE_EXTRA_RRECOMMENDS}"
-
-#
-# minimal set of packages - needed to boot
-#
-RDEPENDS_task-boot = "\
-    kernel \
-    base-files \
-    base-passwd \
-    busybox \
-    initscripts \
-    modutils-initscripts \
-    netbase \
-    update-alternatives \
-    ${DISTRO_DEV_MANAGER} \
-    ${DISTRO_INIT_MANAGER} \
-    ${DISTRO_LOGIN_MANAGER} \
-    ${MACHINE_ESSENTIAL_EXTRA_RDEPENDS}"
-
-RRECOMMENDS_task-boot = "\
-    ${MACHINE_ESSENTIAL_EXTRA_RRECOMMENDS}"
 
 RDEPENDS_task-base-kernel24 = "\
     modutils-depmod"
@@ -204,7 +199,6 @@ RDEPENDS_task-base-pcmcia = "\
     ${@base_contains('DISTRO_FEATURES', 'wifi', 'prism3-firmware', '',d)} \
     ${@base_contains('DISTRO_FEATURES', 'wifi', 'prism3-support', '',d)} \
     ${@base_contains('DISTRO_FEATURES', 'wifi', 'spectrum-fw', '',d)} \
-    ${@base_contains('DISTRO_FEATURES', 'wifi', 'hostap-conf', '',d)} \
     "
 
 RRECOMMENDS_task-base-pcmcia = "\
@@ -266,7 +260,8 @@ RRECOMMENDS_task-base-usbgadget = "\
     kernel-module-gadgetfs \
     kernel-module-g-file-storage \
     kernel-module-g-serial \
-    kernel-module-g-ether"
+    kernel-module-g-ether \
+    usb-gadget-mode"
 
 RDEPENDS_task-base-usbhost = "\
     usbutils "

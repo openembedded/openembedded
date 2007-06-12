@@ -1,0 +1,94 @@
+# HG changeset patch
+# User pfalcon@localhost
+# Date 1176077194 0
+# Node ID b010d54a6c5020a68855e60e5a423ee3c18ed700
+# Parent  ff9cf1fd8177dded04b9fc81ba630203848fc3ca
+Changes to improve layout rendering, especially after adding support for
+multiple layouts:
+1. Add --hfactor option which presets keyboard to the specified percentage
+of screen height. This is required for multiple layouts, as otherwise
+height is calculated on specific layout, but in such a way that it is
+affected by previous layout, which leads to rendering artifacts.
+2. Also st default font height to 6, after all.
+
+diff -r ff9cf1fd8177 -r b010d54a6c50 src/matchbox-keyboard-ui.c
+--- a/src/matchbox-keyboard-ui.c	Sun Apr 08 23:56:09 2007 +0000
++++ b/src/matchbox-keyboard-ui.c	Mon Apr 09 00:06:34 2007 +0000
+@@ -744,9 +744,15 @@ mb_kbd_ui_resources_create(MBKeyboardUI 
+ 	       */
+ 	      if (desk_width > ui->xwin_width)
+ 		{
++		  int win_height;
++		  if (ui->kbd->hfactor != 0)
++		    win_height = desk_height * ui->kbd->hfactor / 100;
++		  else
++		    win_height = ( desk_width * ui->xwin_height ) / ui->xwin_width;
++
+ 		  mb_kbd_ui_resize(ui, 
+ 				   desk_width, 
+-				   ( desk_width * ui->xwin_height ) / ui->xwin_width);
++				   win_height);
+ 		}
+ 	      
+ 	      wm_struct_vals[2]  = desk_y + desk_height - ui->xwin_height;
+@@ -818,8 +824,11 @@ mb_kbd_ui_resize(MBKeyboardUI *ui, int w
+   width_diff  = width  - ui->base_alloc_width; 
+   height_diff = height - ui->base_alloc_height; 
+ 
++/* It's better to have some "clipped" keys, than busted layout. */
++#if 0
+   if (width_diff < 0 || height_diff < 0)
+     return;  /* dont go smaller than our int request - get clipped */
++#endif
+ 
+   layout   = mb_kbd_get_selected_layout(ui->kbd);
+   row_item = mb_kbd_layout_rows(layout);
+diff -r ff9cf1fd8177 -r b010d54a6c50 src/matchbox-keyboard.c
+--- a/src/matchbox-keyboard.c	Sun Apr 08 23:56:09 2007 +0000
++++ b/src/matchbox-keyboard.c	Mon Apr 09 00:06:34 2007 +0000
+@@ -23,8 +23,9 @@ mb_kbd_usage (char *progname)
+ mb_kbd_usage (char *progname)
+ {
+   fprintf(stderr, "Usage:\n   %s [Options ] [ Layout Variant ]\n", progname);
+-  fprintf(stderr, "\nOptions are;\n"
+-	  "   -xid,--xid            Print window ID to stdout ( for embedding )\n");
++  fprintf(stderr, "\nOptions are:\n"
++	  "   -xid,--xid            Print window ID to stdout ( for embedding )\n"
++	  "   --hfactor <percent>   Fix keyboard window size in percentage of desktop height\n");
+   fprintf(stderr, "\nmatchbox-keyboard %s \nCopyright (C) 2005 Matthew Allum, OpenedHand Ltd.\n", VERSION);
+ 
+   exit(-1);
+@@ -58,6 +59,13 @@ mb_kbd_new (int argc, char **argv)
+ 	  want_embedding = True;
+ 	  continue;
+ 	}
++      if (streq ("-hfactor", argv[i]) || streq ("--hfactor", argv[i])) 
++	{
++	  if (i + 1 < argc) {
++	    kb->hfactor = atoi(argv[i + 1]);
++	  }
++	  continue;
++	}
+ 
+       if (i == (argc-1) && argv[i][0] != '-')
+ 	variant = argv[i];
+@@ -77,7 +85,7 @@ mb_kbd_new (int argc, char **argv)
+       kb->key_pad      = 0;
+       kb->col_spacing  = 0;
+       kb->row_spacing  = 0;
+-      kb->font_pt_size = 5;
++      kb->font_pt_size = 6;
+     }
+ 
+   if (!mb_kbd_config_load(kb, variant))
+diff -r ff9cf1fd8177 -r b010d54a6c50 src/matchbox-keyboard.h
+--- a/src/matchbox-keyboard.h	Sun Apr 08 23:56:09 2007 +0000
++++ b/src/matchbox-keyboard.h	Mon Apr 09 00:06:34 2007 +0000
+@@ -143,6 +143,7 @@ struct MBKeyboard
+   char                  *font_family;
+   int                    font_pt_size;
+   char                  *font_variant;
++  int                    hfactor;
+ 
+   char                  *config_file;
+ 
