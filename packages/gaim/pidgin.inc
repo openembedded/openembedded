@@ -3,7 +3,7 @@ DESCRIPTION = "multi-protocol instant messaging client"
 LICENSE = "GPL"
 
 DEPENDS = "gtk+ ncurses gnutls virtual/libintl gstreamer dbus"
-RRECOMMENDS_${PN} = "libpurple-protocol-irc libpurple-protocol-xmpp"
+RRECOMMENDS_${PN} = "libpurple-plugin-ssl-gnutls libpurple-protocol-irc libpurple-protocol-xmpp"
 
 EXTRA_OECONF = " \
                 --disable-audio \
