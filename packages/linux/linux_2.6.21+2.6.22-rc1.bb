@@ -59,3 +59,8 @@ do_configure_prepend() {
         yes '' | oe_runmake oldconfig
 }
 
+do_install_prepend() {
+        if test -e arch/${ARCH}/boot/Image ; then
+             ln -f arch/arm/boot/Image arch/arm/boot/uImage
+        fi
+}

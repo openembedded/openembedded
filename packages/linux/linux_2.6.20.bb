@@ -43,6 +43,12 @@ do_configure_prepend() {
         yes '' | oe_runmake oldconfig
 }
 
+do_install_prepend() {
+        if test -e arch/${ARCH}/boot/Image ; then
+             ln -f arch/arm/boot/Image arch/arm/boot/uImage
+        fi
+}
+
 do_install_append_n2100() {
 	install -d ${DEPLOY_DIR_IMAGE}
 	install -m 0644 ${S}/arch/${ARCH}/boot/${KERNEL_IMAGETYPE} ${DEPLOY_DIR_IMAGE}/${KERNEL_IMAGETYPE}-${PV}-${MACHINE}-${DATETIME}
