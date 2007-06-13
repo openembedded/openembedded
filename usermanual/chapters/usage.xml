@@ -129,7 +129,7 @@
     these variables.</para>
   </section>
 
-  <section>
+  <section id="usage_configuration" xreflabel="configuration">
     <title>Configuration</title>
 
     <para>Configuration covers basic items such as where the various files can
