@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <chapter id="chapter_using_bitbake_and_oe">
-  <title>Using bitbake and OE</title>
+  <title>Using bitbake and OpenEmbedded</title>
 
   <section id="usage_introduction" xreflabel="introduction">
     <title>Introduction</title>
@@ -127,6 +127,67 @@
     directories or change the behaviour of some part of the build process. You
     should refer to <xref linkend="chapter_recipes" /> for full details on
     these variables.</para>
+  </section>
+
+  <section>
+    <title>Configuration</title>
+
+    <para>Configuration covers basic items such as where the various files can
+    be found and where output should be placed to more specific items such as
+    which hardware is being targeted and what features you want to have
+    included in the final image. The main configuration areas in OE
+    are:</para>
+
+    <variablelist>
+      <varlistentry>
+        <term>conf/machine</term>
+
+        <listitem>
+          <para>This directory contains machine configuration information. For
+          each physical device a configuration file is required in this
+          directory that describes various aspects of the device, such as
+          architecture of the device, hardware features of the device (does it
+          have usb? a keyboard? etc), the type of flash or disk images needed
+          for the device, the serial console settings (if any) etc. If you are
+          adding support for a new device you would need to create a machine
+          configuration in this directory for the device.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>conf/distro</term>
+
+        <listitem>
+          <para>This directory contains distribution related files. A
+          distribution decides how various activities are handled in the final
+          image, such as how networking configured, if usb devices will be
+          supported, what packaging system is used, which libc is used
+          etc.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>conf/bitbake.conf</term>
+
+        <listitem>
+          <para>This is the main bitbake configuration file. This file is not
+          to be edited but it is useful to look at it since it declares a
+          larger number of the predefined variables used by OE and controls a
+          lot of the base functionality provided by OE.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>conf/local.conf</term>
+
+        <listitem>
+          <para>This is the end-user specific configuration. This file needs
+          to be copied and edited and is used to specify the various working
+          directories, the machine to build for and the distribution to
+          use.</para>
+        </listitem>
+      </varlistentry>
+    </variablelist>
   </section>
 
   <section id="usage_workspace" xreflabel="workspace">
