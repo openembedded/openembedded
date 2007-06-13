@@ -47,6 +47,10 @@ do_install_prepend() {
         if test -e arch/${ARCH}/boot/Image ; then
              ln -f arch/arm/boot/Image arch/arm/boot/uImage
         fi
+
+        if test -e arch/${ARCH}/boot/images/uImage ; then
+             ln -f arch/arm/boot/images/uImage arch/arm/boot/uImage
+        fi
 }
 
 do_install_append_n2100() {
