@@ -8,7 +8,7 @@ SECTION = "network"
 LICENSE = "GPL"
 RDEPENDS_${PN} = "ppp"
 RDEPENDS_${PN}-logwtmp-plugin = "${PN}"
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/poptop/pptpd-${PV}.tar.gz \
            file://fix-plugins-install.patch;patch=1 \
@@ -26,12 +26,13 @@ do_install_append() {
         install -d ${D}${sbindir} ${D}/${sysconfdir} ${D}/${sysconfdir}/ppp
         install -m 0644 samples/options.pptpd ${D}/${sysconfdir}/ppp/
         install -m 0644 samples/pptpd.conf ${D}/${sysconfdir}/
+        # broken
+        rm -f ${D}${libdir}/pptpd/pptpd-logwtmp.so
 }
 
-PACKAGES = "${PN}-dbg ${PN}-bcrelay ${PN}-logwtmp-plugin ${PN} ${PN}-doc"
+PACKAGES = "${PN}-dbg ${PN}-bcrelay ${PN} ${PN}-doc"
 
 FILES_${PN}-bcrelay = "${sbindir}/bcrelay"
-FILES_${PN}-logwtmp-plugin = "${libdir}/pptpd/pptpd-logwtmp.so"
 
 CONFFILES_${PN} = "${sysconfdir}/pptpd.conf \
                    ${sysconfdir}/ppp/options.pptpd"
