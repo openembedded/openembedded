@@ -8,6 +8,8 @@ DEPENDS_at32stk1000 = "u-boot-mkimage-gta01-native"
 DEPENDS_atngw100 = "u-boot-mkimage-gta01-native"
 DEPENDS_at91sam9263ek = "u-boot-mkimage-gta01-native"
 
+DEFAULT_PREFERENCE_at91sam9263ek = "-1"
+
 PR = "r3"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-${PV}.tar.bz2 \
@@ -47,5 +49,15 @@ do_configure_prepend() {
             '${WORKDIR}/defconfig' >>'${S}/.config'
 
         yes '' | oe_runmake oldconfig
+}
+
+do_install_prepend() {
+        if test -e arch/${ARCH}/boot/Image ; then
+             ln -f arch/arm/boot/Image arch/arm/boot/uImage
+        fi
+
+        if test -e arch/${ARCH}/boot/images/uImage ; then
+             ln -f arch/arm/boot/images/uImage arch/arm/boot/uImage
+        fi
 }
 
