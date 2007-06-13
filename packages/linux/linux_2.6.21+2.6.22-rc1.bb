@@ -2,6 +2,9 @@ DESCRIPTION = "Linux Kernel"
 SECTION = "kernel"
 LICENSE = "GPL"
 
+DEFAULT_PREFERENCE = "-1"
+
+
 # These devices need mkimage to generate a kernel image 
 DEPENDS_kb9202 = "u-boot-mkimage-gta01-native"
 DEPENDS_at32stk1000 = "u-boot-mkimage-gta01-native" 
@@ -10,9 +13,10 @@ DEPENDS_at91sam9263ek = "u-boot-mkimage-gta01-native"
 
 DEFAULT_PREFERENCE_at91sam9263ek = "-1"
 
-PR = "r3"
+PR = "r0"
 
-SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-${PV}.tar.bz2 \
+SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.21.tar.bz2 \
+           ${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/testing/patch-2.6.22-rc1.bz2;patch=1 \
            file://defconfig \
 	   "
 
@@ -23,8 +27,12 @@ SRC_URI_append_simpad = "\
            file://linux-2.6.21-SIMpad-ucb1x00-switches.patch;patch=1 \
            file://linux-2.6.21-pcmcia-device-to-platform-driver.patch;patch=1 \
            "
-SRC_URI_append_kb9202 = " http://maxim.org.za/AT91RM9200/2.6/2.6.21-at91.patch.gz;patch=1 "
-SRC_URI_append_at91sam9263ek = " http://maxim.org.za/AT91RM9200/2.6/2.6.21-at91.patch.gz;patch=1 "
+SRC_URI_append_kb9202 = " http://maxim.org.za/AT91RM9200/2.6/2.6.22-rc1-at91.patch.gz;patch=1 \
+                          file://at91-mmcfix.patch;patch=1"
+SRC_URI_append_at91sam9263ek = " http://maxim.org.za/AT91RM9200/2.6/2.6.22-rc1-at91.patch.gz;patch=1 \
+                                 file://at91-mmcfix.patch;patch=1"
+
+S = "${WORKDIR}/linux-2.6.21"
 
 inherit kernel
 
