@@ -3,7 +3,7 @@ SECTION = "libs"
 PRIORITY = "optional"
 LICENSE = "LGPL"
 DEPENDS = "intltool-native"
-PR = "r2"
+PR = "r3"
 
 DEFAULT_PREFERENCE = "1"
 
@@ -21,4 +21,4 @@ autotools_stage_all
 
 PACKAGES += "libmimedir-utils"
 FILES_libmimedir-utils = "${bindir}"
-FILES_${PN} = "${libdir}"
+FILES_${PN} = "${libdir}/*.so.*"
