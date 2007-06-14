@@ -12,16 +12,11 @@ SRC_URI += " \
 	   file://local.rules \
            file://init"
 
-UDEV_DEVFS_RULES ?= "0"
-
-PACKAGES =+ "udev-utils libvolume-id libvolume-id-dev"
-PKG_libvolume-id-dev = "libvolume-id-dev"
-
-FILES_libvolume-id-dev = "${includedir}/libvolume_id.h ${libdir}/libvolume_id.a ${libdir}/libvolume_id.so ${libdir}/pkgconfig/libvolume_id.pc"
-FILES_udev-utils = "${usrbindir}/udevinfo ${usrbindir}/udevtest"
-FILES_libvolume-id = "${base_libdir}/libvolume_id.so.*"
-
 inherit update-rc.d autotools pkgconfig
+
+PARALLEL_MAKE = ""
+UDEV_DEVFS_RULES ?= "0"
+PKG_libvolume-id-dev = "libvolume-id-dev"
 
 INITSCRIPT_NAME = "udev"
 INITSCRIPT_PARAMS = "start 04 S ."
@@ -37,8 +32,6 @@ bindir = "/bin"
 sbindir = "/sbin"
 
 UDEV_EXTRAS = "<override me>"
-FILES_${PN} += "${usrbindir}/* ${usrsbindir}/*"
-FILES_${PN}-dbg += "${usrbindir}/.debug ${usrsbindir}/.debug"
 EXTRA_OEMAKE = "-e \
 		'EXTRAS=${UDEV_EXTRAS}' \
 		'STRIP=echo'"
@@ -68,3 +61,10 @@ do_install () {
 do_stage () {
 	autotools_stage_all
 }
+
+PACKAGES =+ "udev-utils libvolume-id libvolume-id-dev"
+FILES_libvolume-id-dev = "${includedir}/libvolume_id.h ${libdir}/libvolume_id.a ${libdir}/libvolume_id.so ${libdir}/pkgconfig/libvolume_id.pc"
+FILES_udev-utils = "${usrbindir}/udevinfo ${usrbindir}/udevtest"
+FILES_libvolume-id = "${base_libdir}/libvolume_id.so.*"
+FILES_${PN} += "${usrbindir}/* ${usrsbindir}/*"
+FILES_${PN}-dbg += "${usrbindir}/.debug ${usrsbindir}/.debug"
