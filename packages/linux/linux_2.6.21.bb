@@ -1,12 +1,4 @@
-DESCRIPTION = "Linux Kernel"
-SECTION = "kernel"
-LICENSE = "GPL"
-
-# These devices need mkimage to generate a kernel image 
-DEPENDS_kb9202 = "u-boot-mkimage-gta01-native"
-DEPENDS_at32stk1000 = "u-boot-mkimage-gta01-native" 
-DEPENDS_atngw100 = "u-boot-mkimage-gta01-native"
-DEPENDS_at91sam9263ek = "u-boot-mkimage-gta01-native"
+require linux.inc
 
 DEFAULT_PREFERENCE_at91sam9263ek = "-1"
 
@@ -25,39 +17,4 @@ SRC_URI_append_simpad = "\
            "
 SRC_URI_append_kb9202 = " http://maxim.org.za/AT91RM9200/2.6/2.6.21-at91.patch.gz;patch=1 "
 SRC_URI_append_at91sam9263ek = " http://maxim.org.za/AT91RM9200/2.6/2.6.21-at91.patch.gz;patch=1 "
-
-inherit kernel
-
-KERNEL_IMAGETYPE_progear = "bzImage"
-KERNEL_IMAGETYPE_simpad = "zImage"
-KERNEL_IMAGETYPE_kb9202 = "uImage"
-KERNEL_IMAGETYPE_atngw100 = "uImage"
-KERNEL_IMAGETYPE_at32stk1000 = "uImage"
-KERNEL_IMAGETYPE_at91sam9263ek = "uImage"
-
-do_configure_prepend() {
-        if [ "${TARGET_OS}" == "linux-gnueabi" -o  "${TARGET_OS}" == "linux-uclibcgnueabi" ]; then
-                echo "CONFIG_AEABI=y"                   >> ${S}/.config
-                echo "CONFIG_OABI_COMPAT=y"             >> ${S}/.config
-        else
-                echo "# CONFIG_AEABI is not set"        >> ${S}/.config
-                echo "# CONFIG_OABI_COMPAT is not set"  >> ${S}/.config
-        fi
-
-        sed -e '/CONFIG_AEABI/d' \
-            -e '/CONFIG_OABI_COMPAT=/d' \
-            '${WORKDIR}/defconfig' >>'${S}/.config'
-
-        yes '' | oe_runmake oldconfig
-}
-
-do_install_prepend() {
-        if test -e arch/${ARCH}/boot/Image ; then
-             ln -f arch/arm/boot/Image arch/arm/boot/uImage
-        fi
-
-        if test -e arch/${ARCH}/boot/images/uImage ; then
-             ln -f arch/arm/boot/images/uImage arch/arm/boot/uImage
-        fi
-}
 
