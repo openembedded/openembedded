@@ -6,4 +6,4 @@ LICENSE = "LGPL"
 
 inherit autotools pkgconfig
 
-SRC_URI = "http://prdownloads.sourceforge.jp/tomoe/17172/uim-tomoe-gtk-0.2.0.tar.gz"
+SRC_URI = "http://keihanna.dl.sourceforge.jp/tomoe/17172/uim-tomoe-gtk-0.2.0.tar.gz"
