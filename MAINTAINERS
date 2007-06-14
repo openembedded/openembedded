@@ -188,7 +188,7 @@ Distros:    Ångström
 Machines:   collie, spitz
 Recipes:    anthy, nunome, uim*, granule, qpobox*, qte-font-unifont*
 Recipes:    qpf-unismall, qpobox, poboxserver, imkit*, scim, zten
-Recipes:    eb, eblook
+Recipes:    eb, eblook, tomoe
 
 Person:     Shane Volpe
 Mail:       shanevolpe@gmail.com
