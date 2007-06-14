@@ -7,7 +7,7 @@ DEPENDS = "intltool-native"
 DEFAULT_PREFERENCE = "-1"
 
 PV = "0.4.1+svn${SRCDATE}"
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "${GPE_SVN}"
 
@@ -24,4 +24,5 @@ do_stage() {
 PACKAGES += "libmimedir-utils"
 
 FILES_libmimedir-utils = "${bindir}"
+FILES_${PN} = "${libdir}/*.so.*"
 

@@ -1,17 +1,16 @@
 require gpe-mini-browser.inc
 
+SRC_URI = "http://gpe.linuxtogo.org/download/source/gpe-mini-browser-${PV}.tar.gz"
+DEPENDS = "osb-nrcit sqlite libgpewidget"
+RRECOMMENDS = "gdk-pixbuf-loader-gif gdk-pixbuf-loader-png gdk-pixbuf-loader-jpeg"
+
 PR = "r0"
 
-SRC_URI = "http://handhelds.org/~philippe/gpe-mini-browser-${PV}.tar.bz2"
-DEPENDS = "osb-nrcit"
-
-S = "${WORKDIR}/gpe-mini-browser"
+S = "${WORKDIR}/gpe-mini-browser-${PV}"
 
 inherit autotools
 
 do_install() {
-	#	install -d ${D}${docdir}/gpe
-	#	install -m 0644 ${S}/gpe-mini-browser.html  ${D}${docdir}/gpe/
 		install -d ${D}/usr/share/applications
 		install -m 0644 ${S}/gpe-mini-browser.desktop ${D}/usr/share/applications/gpe-mini-browser.desktop
 		install -d ${D}/usr/share/pixmaps
@@ -50,5 +49,4 @@ pkg_postrm_${PN}-doc () {
                 echo not generating index for gpe-mini-browser
         fi
 }
-
 

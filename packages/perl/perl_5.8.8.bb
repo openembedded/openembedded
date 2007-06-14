@@ -5,14 +5,15 @@ LICENSE = "Artistic|GPL"
 PRIORITY = "optional"
 # We need gnugrep (for -I)
 DEPENDS = "virtual/db perl-native grep-native"
-PR = "r20"
+PR = "r22"
 
 # Major part of version
 PVM = "5.8"
 
 SRC_URI = "ftp://ftp.funet.fi/pub/CPAN/src/perl-${PV}.tar.gz \
         file://Makefile.patch;patch=1 \
-        file://Makefile.SH.patch \
+        file://Makefile.SH.patch;patch=1 \
+        file://installperl.patch;patch=1 \
         file://perl-dynloader.patch;patch=1 \
         file://perl-moreconfig.patch;patch=1 \
         file://letgcc-find-errno.patch;patch=1 \
@@ -44,9 +45,8 @@ do_configure() {
         # Make hostperl in build directory be the native perl
         cp -f ${HOSTPERL} hostperl
 
-        # This is silly - should just patch Makefile.SH directly
+        # Do out work in the cross subdir
         cd Cross
-        cp -f ${WORKDIR}/Makefile.SH.patch .
 
         # Generate configuration
         rm -f config.sh-${TARGET_ARCH}-${TARGET_OS}
@@ -88,8 +88,6 @@ do_configure() {
         rm -f config
         echo "ARCH = ${TARGET_ARCH}" > config
         echo "OS = ${TARGET_OS}" >> config
-
-        oe_runmake patch
 }
 do_compile() {
         if test "${MACHINE}" != "native"; then
