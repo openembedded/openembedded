@@ -1,8 +1,8 @@
-DESCRIPTION = "Linux kernel for Dreambox DM7020"
+DESCRIPTION = "Linux kernel for Dreambox DM500PLUS"
 LICENSE = "GPL"
-PN = "linux-dm600pvr"
+PN = "linux-dm500plus"
 PV = "2.6.12"
-PR = "r3"
+PR = "r0"
 
 # -rX is the patch revision - it's not related to this package's PR
 SRC_URI = "ftp://ftp.kernel.org/pub/linux/kernel/v2.6/linux-2.6.12.tar.bz2 \
@@ -20,7 +20,7 @@ KERNEL_IMAGETYPE = "zImage"
 KERNEL_OUTPUT = "arch/ppc/boot/images/zImage.elf"
 
 do_configure_prepend() {
-	oe_machinstall -m 0644 ${S}/arch/ppc/configs/dm600pvr_defconfig ${S}/.config || die "no default configuration for ${MACHINE} available."
+	oe_machinstall -m 0644 ${S}/arch/ppc/configs/dm500plus_defconfig ${S}/.config || die "no default configuration for ${MACHINE} available."
 	oe_runmake oldconfig
 }
 

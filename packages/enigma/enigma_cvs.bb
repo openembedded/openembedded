@@ -3,7 +3,7 @@ DESCRIPTION = "Enigma is a framebuffer-based frontend for DVB functions"
 MAINTAINER = "Felix Domke <tmbinc@elitedvb.net>"
 LICENSE = "GPL"
 
-SRCDATE = "20070327"
+SRCDATE = "20070615"
 PV = "cvs-${SRCDATE}"
 PN = "enigma"
 PR = "r0"
@@ -18,7 +18,9 @@ SRC_URI = "cvs://anoncvs@cvs.tuxbox.org/cvs/tuxbox;module=apps/tuxbox/enigma;met
            file://rotor_fix.diff;patch=1;pnum=1 \
            file://disable_boot.diff;patch=1;pnum=1"
 
+# dm600pvr and dm500plus don't have a FP, so they can't really switch of. Show a shutdown pic instead.
 SRC_URI_append_dm600pvr = " http://sources.dreamboxupdate.com/download/opendreambox/enigma/showshutdownpic-${MACHINE}"
+SRC_URI_append_dm500plus = " http://sources.dreamboxupdate.com/download/opendreambox/enigma/showshutdownpic-${MACHINE}"
 
 S = "${WORKDIR}/enigma"
 
@@ -57,8 +59,8 @@ do_install_append() {
 	mv ${D}/etc/enigma/* ${D}/usr/share/enigma/default 2> /dev/null || /bin/true
 	rm -R ${D}/etc/enigma 2> /dev/null || /bin/true
 	install -m 0644 ${WORKDIR}/config ${D}/usr/share/enigma/default/
-	if [ "${MACHINE}" = "dm600pvr" ]; then
-		install -m 0755 ${WORKDIR}/showshutdownpic-dm600pvr ${D}/usr/bin/showshutdownpic
+	if [ "${MACHINE}" = "dm600pvr" -o "${MACHINE}" = "dm500plus" ]; then
+		install -m 0755 ${WORKDIR}/showshutdownpic-${MACHINE} ${D}/usr/bin/showshutdownpic
 		# vulcan-based boxes don't look that well with too much alpha
 		echo "i:/ezap/osd/alpha=00000000" >> ${D}/usr/share/enigma/default/config
 		echo "i:/ezap/osd/simpleMainMenu=00000001" >> ${D}/usr/share/enigma/default/config

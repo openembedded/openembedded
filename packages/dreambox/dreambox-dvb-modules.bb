@@ -18,6 +18,9 @@ PV_dm7025 = "${KV}-20070420${@get_modules_extension(bb, d)}"
 KV_dm600pvr = "2.6.12"
 PV_dm600pvr = "${KV}-20070403"
 
+KV_dm500plus = "2.6.12"
+PV_dm500plus = "${KV}-20070614"
+
 RDEPENDS = "kernel (${KV})"
 PR = "r0"
 
@@ -34,6 +37,13 @@ do_install_dm600pvr() {
 }
 
 do_install_dm7020() {
+	install -d ${D}/lib/modules/${KV}/extra
+	for f in head; do
+		install -m 0644 $f.ko ${D}/lib/modules/${KV}/extra/$f.ko;
+	done
+}
+
+do_install_dm500plus() {
 	install -d ${D}/lib/modules/${KV}/extra
 	for f in head; do
 		install -m 0644 $f.ko ${D}/lib/modules/${KV}/extra/$f.ko;

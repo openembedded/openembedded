@@ -48,7 +48,7 @@ do_install () {
 #
 # Install device dependent scripts
 #
-	if [ "${MACHINE}" = "dm600pvr" ]; then
+	if [ "${MACHINE}" = "dm600pvr" -o "${MACHINE}" = "dm500plus" ]; then
 		head -n 4 ${WORKDIR}/umountfs > ${D}${sysconfdir}/init.d/umountfs
 		echo "cd /tmp" >> ${D}${sysconfdir}/init.d/umountfs
 		tail -n 14 ${WORKDIR}/umountfs >> ${D}${sysconfdir}/init.d/umountfs

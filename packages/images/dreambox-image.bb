@@ -50,6 +50,14 @@ OPENDREAMBOX_TUXBOX_R_dm600pvr = " \
 	tuxbox-plugin-tank  	tuxbox-plugin-pacman    tuxbox-plugin-tetris \
 	tuxbox-plugin-tuxcom 	links-dream-plugin"
 
+OPENDREAMBOX_TUXBOX_R_dm500plus = " \
+	tuxbox-plugin-snake     tuxbox-plugin-tuxmail \
+	tuxbox-plugin-soko      tuxbox-plugin-tuxtxt \
+	tuxbox-plugin-sol       tuxbox-plugin-vierg  	tuxbox-plugin-master \
+	tuxbox-plugin-solitair  tuxbox-plugin-yahtzee 	tuxbox-plugin-mines  \
+	tuxbox-plugin-tank  	tuxbox-plugin-pacman    tuxbox-plugin-tetris \
+	tuxbox-plugin-tuxcom 	links-dream-plugin"
+
 # dvb api specific stuff
 OPENDREAMBOX_V2_ONLY = "dreambox-dvb-tools tuxbox-stream"
 OPENDREAMBOX_V3_ONLY = "dreambox-dvb-tools-v3 sctzap dvbtraffic"
@@ -66,6 +74,7 @@ ENIGMA_LANGUAGE = "enigma-locale-cs enigma-locale-da \
 
 OPENDREAMBOX_TUXBOX_R += " ${ENIGMA_LANGUAGE}"
 OPENDREAMBOX_TUXBOX_R_dm600pvr += " ${ENIGMA_LANGUAGE}"
+OPENDREAMBOX_TUXBOX_R_dm500plus += " ${ENIGMA_LANGUAGE}"
 
 MODEM_SUPPORT = "enigma-modem"
 MODEM_SUPPORT_R = "kernel-module-crc-ccitt kernel-module-ppp-async \
@@ -76,6 +85,10 @@ MODEM_SUPPORT_R = "kernel-module-crc-ccitt kernel-module-ppp-async \
 OPENDREAMBOX_COMMON_MACHINE_dm600pvr += "${OPENDREAMBOX_V2_ONLY} ${OPENDREAMBOX_TUXBOX} ${MODEM_SUPPORT}"
 OPENDREAMBOX_COMMON_MACHINE_R_dm600pvr += "${OPENDREAMBOX_TUXBOX_R} ${MODEM_SUPPORT_R}"
 OPENDREAMBOX_COMMON_MACHINE_D_dm600pvr += "${OPENDREAMBOX_TUXBOX_D}"
+
+OPENDREAMBOX_COMMON_MACHINE_dm500plus += "${OPENDREAMBOX_V2_ONLY} ${OPENDREAMBOX_TUXBOX} ${MODEM_SUPPORT}"
+OPENDREAMBOX_COMMON_MACHINE_R_dm500plus += "${OPENDREAMBOX_TUXBOX_R} ${MODEM_SUPPORT_R}"
+OPENDREAMBOX_COMMON_MACHINE_D_dm500plus += "${OPENDREAMBOX_TUXBOX_D}"
 
 OPENDREAMBOX_COMMON_MACHINE_dm7020 += "${OPENDREAMBOX_V2_ONLY} ${OPENDREAMBOX_TUXBOX} ${MODEM_SUPPORT}"
 OPENDREAMBOX_COMMON_MACHINE_R_dm7020 += "${OPENDREAMBOX_TUXBOX_R} ${MODEM_SUPPORT_R}"

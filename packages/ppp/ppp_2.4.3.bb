@@ -40,7 +40,7 @@ do_install_append () {
 	install -m 0755 ${WORKDIR}/08setupdns ${D}${sysconfdir}/ppp/ip-up.d/
 	install -m 0755 ${WORKDIR}/92removedns ${D}${sysconfdir}/ppp/ip-down.d/
 	rm -rf ${D}/${mandir}/man8/man8
-	if [ ${MACHINE} = "dm600pvr" -o ${MACHINE} = "dm7020" ]; then
+	if [ ${DISTRO} = "opendreambox" ]; then
 		for i in pap-secrets options; do
 			rm ${D}/etc/ppp/$i
 		done
@@ -48,8 +48,7 @@ do_install_append () {
 }
 
 CONFFILES_${PN} = "${sysconfdir}/ppp/pap-secrets ${sysconfdir}/ppp/chap-secrets ${sysconfdir}/ppp/options"
-CONFFILES_${PN}_dm600pvr = "${sysconfdir}/ppp/chap-secrets"
-CONFFILES_${PN}_dm7020 = "${sysconfdir}/ppp/chap-secrets"
+CONFFILES_${PN}_opendreambox = "${sysconfdir}/ppp/chap-secrets"
 PACKAGES += "ppp-oa ppp-oe ppp-radius ppp-winbind ppp-minconn ppp-password ppp-tools"
 FILES_${PN}        = "/etc /usr/bin /usr/sbin/chat /usr/sbin/pppd"
 FILES_ppp-oa       = "/usr/lib/pppd/2.4.3/pppoatm.so"
