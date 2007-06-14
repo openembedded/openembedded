@@ -4,15 +4,17 @@ LICENSE = "GPL"
 SECTION = "libs/gsm"
 PROVIDES += "gsmd"
 PV = "0.0+svn${SRCDATE}"
-PR = "r13"
+PR = "r14"
 
 SRC_URI = "svn://svn.openmoko.org/trunk/src/target;module=gsm;proto=http \
            file://gsmd \
            file://default \
            file://extreplychars.patch;patch=1 \
            file://getopt-wait-interpreter-ready.patch;patch=1 \
-	   file://alive-start-if-interpreter-ready.patch;patch=1 \
-	   file://tihtc-csq-fix.patch;patch=1"
+           file://alive-start-if-interpreter-ready.patch;patch=1 \
+           file://tihtc-csq-fix.patch;patch=1 \
+           file://vendor-qc-v0.patch;patch=1 \
+           file://universal-wcdma.patch;patch=1"
 
 S = "${WORKDIR}/gsm"
 
