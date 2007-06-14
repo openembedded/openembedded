@@ -6,29 +6,30 @@ LICENSE = "LGPL"
 
 DEPENDS = "libatomics-ops liboil avahi libsamplerate0 libsndfile1 libtool"
 # optional
-DEPENDS += "alsa-lib"
+DEPENDS += "alsa-lib glib-2.0"
 
-PR = "r2"
-
-SRC_URI = "http://0pointer.de/lennart/projects/pulseaudio/pulseaudio-${PV}.tar.gz"
-
-SRC_URI += "file://volatiles.04_pulse"
-
+SRC_URI = "http://0pointer.de/lennart/projects/pulseaudio/pulseaudio-${PV}.tar.gz \
+           file://gcc4-compile-fix.patch;patch=1 \
+           file://volatiles.04_pulse"
 
 inherit autotools pkgconfig
 
 EXTRA_OECONF = "\
-                --disable-lynx \
+		--disable-lynx \
 		--without-x \
-		--without-glib \
 		--without-jack \
+		--with-glib \
 		--with-alsa \
 		--with-oss \
 		"
 
 PARALLEL_MAKE = ""
 
-export TARGET_PFPU="${TARGET_FPU}"
+export TARGET_PFPU = "${TARGET_FPU}"
+
+do_stage() {
+	autotools_stage_all
+}
 
 do_install_append() {
 	install -d ${D}${sysconfdir}/default/volatiles
@@ -39,16 +40,13 @@ do_install_append() {
 	fi
 }
 
-
-PACKAGES =+ "libpulsecore libpulse libpulse-simple libpulse-browse libpulse-mainloop-glib pulseaudio-server \
-  	     pulseaudio-misc pulseaudio-gconf-helper"
+PACKAGES =+ "libpulsecore libpulse libpulse-simple libpulse-browse libpulse-mainloop-glib \
+             pulseaudio-server pulseaudio-misc pulseaudio-gconf-helper"
 
 #upgrade path:
 RREPLACES_pulseaudio-server = "libpulse-bin libpulse-conf"
 
-
 PACKAGES_DYNAMIC = "pulseaudio-lib* pulseaudio-module* libpulse-lib* libpulse-module* "
-
 
 FILES_libpulsecore = "${libdir}/libpulsecore.so.*"
 FILES_libpulse = "${libdir}/libpulse.so.*"
@@ -91,18 +89,10 @@ else
 fi
 }
 
-
-
-
-do_stage() {
-	autotools_stage_all
-}
-
-
 python populate_packages_prepend() {
         #bb.data.setVar('PKG_pulseaudio', 'pulseaudio', d)
 
         plugindir = bb.data.expand('${libdir}/pulse-0.9/modules/', d)
         do_split_packages(d, plugindir, '^module-(.*)\.so$', 'pulseaudio-module-%s', 'PulseAudio module for %s', extra_depends='' )
-	do_split_packages(d, plugindir, '^lib(.*)\.so$', 'pulseaudio-lib-%s', 'PulseAudio library for %s', extra_depends='' )
+        do_split_packages(d, plugindir, '^lib(.*)\.so$', 'pulseaudio-lib-%s', 'PulseAudio library for %s', extra_depends='' )
 }

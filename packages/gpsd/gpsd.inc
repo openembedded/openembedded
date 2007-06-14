@@ -49,3 +49,4 @@ PACKAGES =+ "libgps"
 
 FILES_${PN} += "${sysconfdir}"
 FILES_libgps = "${libdir}/*.so*"
+CONFFILES_${PN} = "${sysconfdir}/default/gpsd"

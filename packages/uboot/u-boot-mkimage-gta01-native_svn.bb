@@ -1,5 +1,7 @@
 require uboot-gta01_svn.bb
 
+DEFAULT_PREFERENCE = "-1"
+
 PROVIDES = ""
 TARGET_LDFLAGS = ""
 

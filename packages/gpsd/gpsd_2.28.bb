@@ -1,2 +1,2 @@
 require gpsd.inc
-PR = "r2"
+PR = "r3"
