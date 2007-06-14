@@ -1,6 +1,6 @@
 require gtk-2.10.inc
 
-PR = "r0"
+PR = "r1"
 
 # disable per default - untested and not all patches included.
 DEFAULT_PREFERENCE = "-1"
@@ -21,6 +21,7 @@ SRC_URI = "ftp://ftp.gtk.org/pub/gtk/v2.10/gtk+-${PV}.tar.bz2 \
            file://single-click.patch;patch=1 \
            file://spinbutton.patch;patch=1 \
            file://gtk+-handhelds.patch;patch=1 \
+           file://filesel-fix-segfault.patch;patch=1 \
 	   "
 
 #check for TARGET_FPU=soft and inform configure of the result so it can disable some floating points

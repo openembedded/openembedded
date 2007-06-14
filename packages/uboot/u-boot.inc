@@ -5,6 +5,8 @@ PRIORITY = "optional"
 LICENSE = "GPL"
 PROVIDES = "virtual/bootloader"
 
+PARALLEL_MAKE=""
+
 EXTRA_OEMAKE = "CROSS_COMPILE=${TARGET_PREFIX}"
 
 UBOOT_MACHINE ?= "${MACHINE}_config"
