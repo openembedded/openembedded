@@ -1,7 +1,7 @@
 DESCRIPTION = "matchbox-panel-2 is a lightweight dock (system tray) application based on Gtk+"
 LICENSE = "GPL"
 SECTION = "x11/panels"
-DEPENDS = "gtk+"
+DEPENDS = "gtk+ apmd startup-notification"
 
 PV = "0.1+svn${SRCDATE}"
 PR = "r6"
@@ -11,7 +11,7 @@ S = "${WORKDIR}/${PN}"
 
 inherit autotools pkgconfig
 
-EXTRA_OECONF = "--disable-startup-notification --disable-libnotify"
+EXTRA_OECONF = "--enable-startup-notification --disable-libnotify"
 
 # matchbox-<anything>-2 aims to replace their -1 counterpart, but at this point in time it's unfinished and unusable,  so make it parallel installable
 do_install_append() {
