@@ -902,7 +902,7 @@
 +#endif
 --- /dev/null
 +++ xorg-server-X11R7.1-1.1.0.work/hw/kdrive/imageon/imageon_cursor.c
-@@ -0,0 +1,565 @@
+@@ -0,0 +1,569 @@
 +/*
 + * Copyright © 2007 Manuel Teira
 + *
@@ -1253,8 +1253,12 @@
 +        W100_HOST2CARD(pCurPriv->area->vidmem->base
 +                       + pCurPriv->area->offset);
 +    DBG_IMAGEON(("W100MoveCursor dst(x:%d,y:%d),"
++                 "hwpos(hpos.start:%d,hpos.end:%d,vpos.start:%d,vpos.end:%d),"
 +                 "mapped(x:%d,y:%d,xoffs:%d,yoffs:%d)\n",
-+                 x, y, deviceBox.x1, deviceBox.y1, xoffs, yoffs));
++                 x, y, 
++                 hpos.f.cur_h_start, hpos.f.cur_h_end,
++                 vpos.f.cur_v_start, vpos.f.cur_v_end,
++                 deviceBox.x1, deviceBox.y1, xoffs, yoffs));
 +
 +    W100DisableDisplayUpdate(w100c);
 +    MMIO_OUT32(mmCURSOR1_OFFSET, cursor_offset.val);
@@ -7009,7 +7013,7 @@
 +        dst->x1 = src->y1;
 +        dst->y1 = w100c->hw_window.width - src->x2 - 1;
 +        dst->x2 = src->y2;
-+        dst->y2 = w100c->hw_window.height - src->x1 - 1;
++        dst->y2 = w100c->hw_window.width - src->x1 - 1;
 +        break;
 +    }
 +    DBG_IMAGEON(("MapToDevice (x1:%d,y1:%d,x2:%d,y2:%d)->(x1:%d,y1:%d,x2:%d,y2:%d)\n",
@@ -7731,7 +7735,7 @@
 +        
 --- /dev/null
 +++ xorg-server-X11R7.1-1.1.0.work/hw/kdrive/imageon/imageon_video.c
-@@ -0,0 +1,1170 @@
+@@ -0,0 +1,1172 @@
 +/*
 + * Copyright © 2007 Manuel Teira
 + *
@@ -8625,12 +8629,14 @@
 +    for (i = 0; i < NUM_OVL_RESIZERS; i++) {
 +        w = (ovlBox.x2 - x + 1) >> ovlResizers[i].xfactor;
 +        h = (ovlBox.y2 - y + 1) >> ovlResizers[i].yfactor;
-+        DBG_IMAGEON(("Before aligning w=%d, h=%d\n", w, h));
 +        w = W100_ALIGN(w, OVL_W_ALIGN);
 +        h = W100_ALIGN(h, OVL_H_ALIGN);
-+        DBG_IMAGEON(("Trying overlay surface (%d,%d,%d,%d)\n",
-+                     x, y, w, h));
 +        port->ovl.size = W100SurfaceSize(port, w, h);
++        DBG_IMAGEON(("Trying overlay surface (x:%d,y:%d,w:%d,h:%d). Size %d."
++                     " xfactor:%d, yfactor:%d\n",
++                     x, y, w, h, port->ovl.size,
++                     ovlResizers[i].xfactor,
++                     ovlResizers[i].yfactor));
 +        if (port->ovl.size <= port->ovl.maxSize) {
 +            ErrorF("Using (x=%d,y=%d,w=%d,h=%d) overlay surface (%d bytes). "
 +                   "Resizer(xfactor:%d,yfactor:%d)\n",
