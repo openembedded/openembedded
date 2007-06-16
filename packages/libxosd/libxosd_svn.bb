@@ -3,10 +3,11 @@ SECTION = "libs/x11"
 DEPENDS = "virtual/libx11 libxext"
 LICENSE = "LGPL"
 PV = "2.2.15+svn${SRCDATE}"
-PR = "r0"
+PR = "r3"
 
 SRC_URI = "svn://libxosd.svn.sourceforge.net/svnroot/libxosd/source;module=current;proto=https \
-           file://autofoo.patch;patch=1"
+           file://autofoo.patch;patch=1 \
+           file://use-sane-default-font.patch;patch=1"
 S = "${WORKDIR}/current"
 
 inherit autotools binconfig
