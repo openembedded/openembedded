@@ -1,4 +1,4 @@
-LICENSE = "GPL/LGPL"
+LICENSE = "GPL LGPL"
 DEPENDS = "libxml2 libxslt"
 
 PR = "r0"
