@@ -14,8 +14,11 @@ SRC_URI = "cvs://anonymous@cvs.savannah.nongnu.org/sources/qemu;method=pserver;r
            file://compiler.patch;patch=1 \
            file://qemu-usb-wacom-0.8.2.patch;patch=1 \
            file://qemu-usb-wacom-pressure.patch;patch=1 \
-           file://qemu-usb-wacom-buttons.patch;patch=1"
+           file://qemu-usb-wacom-buttons.patch;patch=1 \
+           http://www.busybox.net/downloads/qemu/qemu-gcc-4-all.patch;patch=1"
 S = "${WORKDIR}/qemu"
+
+EXTRA_OECONF="--disable-gcc-check"
 
 inherit autotools
 
