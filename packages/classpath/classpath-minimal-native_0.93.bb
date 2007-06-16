@@ -1,8 +1,9 @@
 require classpath.inc
 
 DEPENDS = "glib-2.0 libart-lgpl pango libxtst jikes-native zip-native"
+PR = "r1"
 
-SRC_URI += "file://gconf_version.patch;patch=1"
+S = "${WORKDIR}/classpath-${PV}"
 
 inherit native
 
