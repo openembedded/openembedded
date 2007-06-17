@@ -16,6 +16,5 @@ do_stage() {
 	autotools_stage_all
 }
 
-PACKAGES =+ "${PN}-examples"
+PACKAGES =+ "${PN}-dbg ${PN}-examples"
 FILES_${PN}-examples = "${bindir}"
-
