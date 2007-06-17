@@ -4,10 +4,10 @@ PRIORITY = "optional"
 LICENSE = "GPL"
 DEPENDS = "dbus-glib ncurses python"
 
-EXTRA_OECONF = "--x-includes=${STAGING_INCDIR}/X11  \
-		--x-libraries=${STAGING_LIBDIR} \
+EXTRA_OECONF = "--x-includes=${STAGING_INCDIR}/X11 \
+                --x-libraries=${STAGING_LIBDIR} \
                 --enable-dbus \
-		--disable-python  "
+                --enable-python"
 
 SRC_URI = "http://download.berlios.de/gpsd/gpsd-${PV}.tar.gz \
            file://gpsd-default \
@@ -45,8 +45,13 @@ do_install_append() {
         install -m 0644 ${WORKDIR}/gpsd-default ${D}/${sysconfdir}/default/gpsd
 }
 
-PACKAGES =+ "libgps"
+PACKAGES =+ "libgps python-pygps"
 
 FILES_${PN} += "${sysconfdir}"
 FILES_libgps = "${libdir}/*.so*"
 CONFFILES_${PN} = "${sysconfdir}/default/gpsd"
+
+DESCRIPTION_python-pygps = "Python bindings to gpsd"
+FILES_python-pygps = "${libdir}/*/site-packages/*"
+RDEPENDS_python-pygps = "python-core gpsd"
+
