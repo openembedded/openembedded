@@ -27,7 +27,8 @@ export IMLIB2_CONFIG		= "${STAGING_BINDIR_CROSS}/imlib2-config"
 #	find ${S} -name Makefile | xargs sed -i 's:/usr/X11R6/include:${STAGING_INCDIR}:'
 #}
 
-PACKAGES = "${PN}-dbg ${PN} ${PN}-themes ${PN}-dev"
-FILES_${PN} = "${libdir}/lib*.so*"
+PACKAGES = "${PN}-dbg ${PN}-themes ${PN} ${PN}-dev"
+FILES_${PN} += "${libdir}/lib*.so.*"
 FILES_${PN}-themes = "${datadir}/${PN}/themes ${datadir}/${PN}/data ${datadir}/${PN}/fonts ${datadir}/${PN}/pointers ${datadir}/${PN}/images ${datadir}/${PN}/users ${datadir}/${PN}/images ${datadir}/${PN}/styles"
-FILES_${PN}-dev += "${includedir}"
+FILES_${PN}-dev += "${includedir} ${libdir}/lib*.so"
+

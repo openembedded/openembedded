@@ -1,5 +1,5 @@
 DESCRIPTION = "Basic SDK development packages"
-PR = "r0"
+PR = "r1"
 LICENSE = "MIT"
 ALLOW_EMPTY = "1"
 
@@ -9,7 +9,7 @@ RDEPENDS = "\
     task-sdk-bare \
     glibc \
     glibc-dev \
-    libgcc1 \
+    libgcc \
     alsa-dev \
     audiofile-dev \
     bluez-libs-dev \

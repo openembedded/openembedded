@@ -8,8 +8,6 @@ SRC_URI = "${SOURCEFORGE_MIRROR}/icewm/icewm-${PV}.tar.gz \
 	   file://makefile.patch;patch=1 \
 	   file://configure.patch;patch=1"
 
-S = "${WORKDIR}/icewm-${PV}"
-
 inherit autotools pkgconfig
 
 EXTRA_OECONF = "--disable-i18n --without-imlib --with-xpm --with-gnome-menus \

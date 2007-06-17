@@ -11,7 +11,7 @@ DEPENDS = "tslib xproto libxdmcp xextproto xtrans libxau virtual/libx11 libxext 
 PROVIDES = "virtual/xserver"
 RPROVIDES = "virtual/xserver"
 
-PR = "r1"
+PR = "r3"
 
 FILESPATH = "${FILE_DIRNAME}/xserver-kdrive"
 

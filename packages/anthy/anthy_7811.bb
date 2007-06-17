@@ -4,7 +4,7 @@ HOMEPAGE = "http://anthy.sourceforge.jp"
 LICENSE = "GPL"
 DEPENDS = "anthy-native"
 SECTION = "inputmethods"
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "http://osdn.dl.sourceforge.jp/anthy/20510/anthy-7811.tar.gz \
 	   file://not_build_elc.patch;patch=1 \
@@ -13,8 +13,6 @@ SRC_URI = "http://osdn.dl.sourceforge.jp/anthy/20510/anthy-7811.tar.gz \
 	   file://native-mkanthydic-mkdepgraph.patch;patch=1"
 
 inherit autotools pkgconfig
-
-PACKAGES = "${PN} ${PN}-el libanthy0 libanthy-dev"
 
 DESCRIPTION_anthy = "A Japanese input method (backend, dictionary and utility)"
 DESCRIPTION_libanthy0 = "Anthy runtime library"
@@ -27,6 +25,12 @@ SECTION_libanthy-dev = "devel/libs"
 LEAD_SONAME = "libanthy.so.0"
 RDEPENDS_anthy = "libanthy0"
 
+do_stage() {
+	autotools_stage_all
+}
+
+PACKAGES += "${PN}-el libanthy0 libanthy-dev"
+FILES_${PN}-dbg += "${libdir}/.debug"
 FILES_libanthy0 = "${libdir}/libanthy.so.*	\
            		   ${libdir}/libanthydic.so.*	\
 		           ${libdir}/libanthyinput.so.*"
@@ -39,8 +43,3 @@ FILES_${PN}-el = "${datadir}/emacs/*"
 FILES_${PN} = "${datadir}/* \
                ${bindir}/* \
                ${sysconfdir}/anthy-conf"
-
-
-do_stage() {
-	autotools_stage_all
-}

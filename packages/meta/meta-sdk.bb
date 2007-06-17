@@ -32,7 +32,6 @@ do_populate_sdk() {
 
 	cat <<EOF >${SDK_DIR}/ipkg-host.conf
 src oe file:${DEPLOY_DIR_IPK}
-arch ${BUILD_ARCH} 1
 EOF
         cat <<EOF >${SDK_DIR}/ipkg-target.conf
 src oe file:${DEPLOY_DIR_IPK}
@@ -41,6 +40,7 @@ EOF
         priority=1
         for arch in $ipkgarchs; do
                 echo "arch $arch $priority" >> ${SDK_DIR}/ipkg-target.conf
+		echo "arch ${BUILD_ARCH}-$arch-sdk $priority" >> ${SDK_DIR}/ipkg-host.conf
 	        priority=$(expr $priority + 5)
         done
 

@@ -2,8 +2,10 @@
 # or indirectly via dependency.  No need to be in 'world'.
 EXCLUDE_FROM_WORLD = "1"
 
-SDK_NAME = "${TARGET_ARCH}/oe"
-PACKAGE_ARCH = "${BUILD_ARCH}"
+SDK_NAME = "${DISTRO}/${TARGET_ARCH}"
+
+OLD_PACKAGE_ARCH := ${PACKAGE_ARCH}
+PACKAGE_ARCH = "${BUILD_ARCH}-${OLD_PACKAGE_ARCH}-sdk"
 
 HOST_ARCH = "${BUILD_ARCH}"
 HOST_VENDOR = "${BUILD_VENDOR}"
@@ -20,11 +22,7 @@ prefix = "/usr/local/${SDK_NAME}"
 exec_prefix = "${prefix}"
 base_prefix = "${exec_prefix}"
 
-PACKAGES =+ "${PN}-dbg"
-
 FILES_${PN} = "${prefix}"
 FILES_${PN}-dbg += "${prefix}/bin/.debug \
                     ${prefix}/sbin/.debug \
                    "
-
-

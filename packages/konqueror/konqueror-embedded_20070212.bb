@@ -3,7 +3,7 @@ SECTION = "opie/applications"
 PRIORITY = "optional"
 HOMEPAGE = "http://www.konqueror.org/"
 DEPENDS = "openssl libpcre virtual/libqte2 dcopidl-native dcopidl2cpp-native"
-LICENSE = "LGPL/GPL"
+LICENSE = "LGPL GPL"
 PR = "r4"
 
 # this Konqueror needs the KDEDIR set and the font helvetica installed on the target
@@ -11,6 +11,7 @@ PR = "r4"
 inherit autotools
 
 SRC_URI = "http://www.basyskom.de/uploads/175/35/kdenox_snapshot_Qt2_2007.02.12.tar.bz2 \
+	   file://dont-use-kde-config.patch;patch=1 \
            file://konqe_new_opie.patch;patch=1 \
 	   file://konqe-kapplication.patch;patch=1"
 S = "${WORKDIR}/kdenox"

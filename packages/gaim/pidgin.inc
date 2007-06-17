@@ -63,6 +63,11 @@ python populate_packages_prepend () {
 			   description='Libpurple protocol plugin for %s',
 			   prepend=True, extra_depends='')
 
+	do_split_packages(d, purple, '^(ssl-.*)\.so$',
+                           output_pattern='libpurple-plugin-%s',
+                           description='libpurple plugin %s',
+                           prepend=True, extra_depends='libpurple-plugin-ssl')
+
         do_split_packages(d, purple, '^([^l][^i][^b].*)\.so$',
                            output_pattern='libpurple-plugin-%s',
                            description='libpurple plugin %s',

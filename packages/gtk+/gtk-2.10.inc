@@ -28,10 +28,10 @@ FILES_${PN}-dbg += " \
 
 
 RRECOMMENDS_${PN} = " ttf-dejavu-sans"
-RRECOMMENDS_${PN}_angstrom += " gdk-pixbuf-loader-png gdk-pixbuf-loader-jpeg gdk-pixbuf-loader-gif gdk-pixbuf-loader-xpm"
-RRECOMMENDS_${PN}_openzaurus += " gdk-pixbuf-loader-png gdk-pixbuf-loader-jpeg gdk-pixbuf-loader-gif gdk-pixbuf-loader-xpm"
-RRECOMMENDS_${PN}_linux += " glibc-gconv-iso8859-1"
-
+RRECOMMENDS_${PN}_append_angstrom = " gdk-pixbuf-loader-png gdk-pixbuf-loader-jpeg gdk-pixbuf-loader-gif gdk-pixbuf-loader-xpm"
+RRECOMMENDS_${PN}_append_openzaurus = " gdk-pixbuf-loader-png gdk-pixbuf-loader-jpeg gdk-pixbuf-loader-gif gdk-pixbuf-loader-xpm"
+RRECOMMENDS_${PN}_append_linux = " glibc-gconv-iso8859-1"
+RRECOMMENDS_${PN}_append_linux-gnueabi = " glibc-gconv-iso8859-1"
 
 EXTRA_OECONF = "--without-libtiff --disable-xkb --disable-glibtest --enable-display-migration"
 

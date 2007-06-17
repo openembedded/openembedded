@@ -1,6 +1,6 @@
 DESCRIPTION = "A minimal version of the Mozilla web browser for mobile devices"
 SECTION = "x11/network"
-LICENSE = "MPL/GPL/LGPL"
+LICENSE = "MPL GPL LGPL"
 HOMEPAGE = "http://www.mozilla.org/projects/minimo/"
 PRIORITY = "optional"
 
