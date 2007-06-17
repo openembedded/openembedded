@@ -1,7 +1,7 @@
 DESCRIPTION = "Fluendo Streaming Server"
 LICENSE = "GPL"
 DEPENDS = "gstreamer python-gst twisted python-pygtk2"
-RDEPENDS = " python-compression python-fcntl  python-pygobject python-pickle python-netclient python-datetime python-crypt python-twisted-core python-twisted-web python-lang python-zopeinterface  python-textutils python-core python-gst"
+RDEPENDS = " python-compression python-fcntl  python-pygobject python-pickle python-netclient python-datetime python-crypt python-twisted-core python-twisted-web python-lang python-zopeinterface  python-textutils python-core python-gst python-misc"
 RDEPENDS_${PN}-gui = "${PN} python-pygtk2"
 PR = "r6"
 
