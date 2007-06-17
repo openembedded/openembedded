@@ -4,7 +4,7 @@ PRIORITY = "optional"
 DEPENDS = "python"
 RDEPENDS = "python-core python-shell"
 LICENSE = "ZPL"
-PR = "r2"
+PR = "r3"
 
 SRC_URI = "http://www.zope.org/Products/Zope3/${PV}/Zope-${PV}.tgz"
 
@@ -18,8 +18,12 @@ do_compile() {
 	oe_runmake HOST_SYS=${HOST_SYS} BUILD_SYS=${BUILD_SYS}
 }
 
+PYTHON_MAJMIN = "2.4"
+
 do_install() {
+	install -d ${D}${libdir}/python${PYTHON_MAJMIN}
 	oe_runmake install prefix=${D}${prefix} HOST_SYS=${HOST_SYS} BUILD_SYS=${BUILD_SYS}
+	mv ${D}${libdir}/python/* ${D}${libdir}/python${PYTHON_MAJMIN} 
 }
 
 PACKAGES =+ "python-zopeinterface python-zopeinterface-dbg"
@@ -27,15 +31,15 @@ PACKAGES =+ "python-zopeinterface python-zopeinterface-dbg"
 FILES_${PN} = "${prefix}"
 FILES_${PN}_doc = "${prefix}/doc"
 FILES_${PN}-dbg += "\
-${libdir}/python/BTrees/.debug \
-${libdir}/python/persistent/.debug \
-${libdir}/python/zope/proxy/.debug \
-${libdir}/python/zope/thread/.debug \
-${libdir}/python/zope/security/.debug \
-${libdir}/python/zope/hookable/.debug \
-${libdir}/python/zope/app/container/.debug \
-${libdir}/python/zope/i18nmessageid/.debug \
-${libdir}/python/ZODB/.debug"
-FILES_python-zopeinterface-dbg += "${libdir}/python/zope/interface/.debug "
+${libdir}/python${PYTHON_MAJMIN}/BTrees/.debug \
+${libdir}/python${PYTHON_MAJMIN}/persistent/.debug \
+${libdir}/python${PYTHON_MAJMIN}/zope/proxy/.debug \
+${libdir}/python${PYTHON_MAJMIN}/zope/thread/.debug \
+${libdir}/python${PYTHON_MAJMIN}/zope/security/.debug \
+${libdir}/python${PYTHON_MAJMIN}/zope/hookable/.debug \
+${libdir}/python${PYTHON_MAJMIN}/zope/app/container/.debug \
+${libdir}/python${PYTHON_MAJMIN}/zope/i18nmessageid/.debug \
+${libdir}/python${PYTHON_MAJMIN}/ZODB/.debug"
+FILES_python-zopeinterface-dbg += "${libdir}/python${PYTHON_MAJMIN}/zope/interface/.debug "
 
-FILES_python-zopeinterface = "${libdir}/python/zope/interface/*.* ${libdir}/python/zope/interface/common"
+FILES_python-zopeinterface = "${libdir}/python${PYTHON_MAJMIN}/zope/interface/*.* ${libdir}/python${PYTHON_MAJMIN}/zope/interface/common"
