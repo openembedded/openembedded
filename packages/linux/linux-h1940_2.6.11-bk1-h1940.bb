@@ -3,6 +3,7 @@ SECTION = "kernel"
 LICENSE = "GPL"
 
 COMPATIBLE_HOST = "arm.*-linux"
+COMPATIBLE_MACHINE = "h1940"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.11.tar.bz2 \
            ${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/snapshots/old/patch-2.6.11-bk1.gz;patch=1 \
