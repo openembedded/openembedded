@@ -3,7 +3,7 @@ SECTION = "libs/x11"
 DEPENDS = "virtual/libx11 libxext"
 LICENSE = "LGPL"
 PV = "2.2.15+svn${SRCDATE}"
-PR = "r3"
+PR = "r4"
 
 SRC_URI = "svn://libxosd.svn.sourceforge.net/svnroot/libxosd/source;module=current;proto=https \
            file://autofoo.patch;patch=1 \
