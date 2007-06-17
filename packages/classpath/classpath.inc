@@ -8,6 +8,7 @@ RPROVIDES = "classpath"
 
 SRC_URI = "${GNU_MIRROR}/classpath/classpath-${PV}.tar.gz \
            file://disable-automake-checks.patch;patch=1 \
+           file://gconf_version.patch;patch=1 \
            file://fix-endian-arm-floats.patch;patch=1"
 
 inherit autotools

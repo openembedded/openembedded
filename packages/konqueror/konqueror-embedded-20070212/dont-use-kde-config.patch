@@ -1,7 +1,5 @@
-diff --git a/devscripts/acinclude.m4.in.qt2 b/devscripts/acinclude.m4.in.qt2
-index 500e75f..e8d9758 100644
---- a/devscripts/acinclude.m4.in.qt2
-+++ b/devscripts/acinclude.m4.in.qt2
+--- ./acinclude.m4
++++ ./acinclude.m4
 @@ -4937,31 +4937,11 @@ AC_DEFUN([KDE_SET_PREFIX],
    AC_PREFIX_DEFAULT(${KDEDIR:-the kde prefix})
  
