@@ -1,5 +1,7 @@
 require linux.inc
 
+DEFAULT_PREFERENCE_at91sam9263ek = "20"
+
 PR = "r7"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-${PV}.tar.bz2 \
