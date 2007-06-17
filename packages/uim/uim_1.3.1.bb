@@ -7,7 +7,7 @@ SRC_URI += "file://uim-module-manager.patch;patch=1"
 
 inherit autotools pkgconfig
 
-PACKAGES = "uim-xim uim-utils uim-skk uim-gtk2.0 uim-fep uim-common uim-anthy libuim0 libuim-dev"
+PACKAGES += "uim-xim uim-utils uim-skk uim-gtk2.0 uim-fep uim-common uim-anthy libuim0 libuim-dev"
 
 LEAD_SONAME = "libuim.so.1"
 RDEPENDS_uim = "libuim0"
