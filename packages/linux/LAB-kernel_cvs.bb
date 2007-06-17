@@ -9,6 +9,7 @@ PV = "${K_MAJOR}.${K_MINOR}.${K_MICRO}-hh${HHV}+cvs${SRCDATE}"
 DEFAULT_PREFERENCE = "-1"
 
 COMPATIBLE_HOST = "arm.*-linux"
+COMPATIBLE_MACHINE = "h2200"
 
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/handhelds-pxa-${PV}"
 
@@ -27,8 +28,8 @@ ALLOW_EMPTY_kernel-image_h2200  = "1"
 
 K_MAJOR = "2"
 K_MINOR = "6"
-K_MICRO = "16"
-HHV     = "0"
+K_MICRO = "21"
+HHV     = "8"
 #
 
 KERNEL_PRIORITY = "${@'%d' % (int(bb.data.getVar('K_MAJOR',d,1)) * 100000000 + int(bb.data.getVar('K_MINOR',d,1)) * 1000000 + int(bb.data.getVar('K_MICRO',d,1)) * 10000 + float(bb.data.getVar('HHV',d,1)))}"
