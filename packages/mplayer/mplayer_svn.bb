@@ -167,6 +167,9 @@ EXTRA_OECONF = " \
         --disable-runtime-cpudetection \
         "
 
+EXTRA_OECONF_append_arm = " --disable-decoder=vorbis_decoder \
+			    --disable-encoder=vorbis_encoder"
+
 EXTRA_OECONF_append_progear = " --disable-sse --disable-3dnow --disable-mmxext --disable-sse2"
 
 #enable support for the ati imageon series (w100 and w3220)
@@ -176,15 +179,20 @@ EXTRA_OECONF_append_hx4700 = " --enable-imageon "
 #enable pxa270 overlay support
 EXTRA_OECONF_append_spitz = " --enable-pxa "
 EXTRA_OECONF_append_a780 = " --enable-pxa "
+EXTRA_OECONF_append_magician = " --enable-pxa "
+EXTRA_OECONF_append_htcuniversal = " --enable-pxa "
 
-#build with support for the iwmmxt instruction support (pxa270 and up) 
+#build with support for the iwmmxt instruction support (pxa270 and up)
 TARGET_CC_ARCH_spitz = "-march=iwmmxt -mtune=iwmmxt"
 PACKAGE_ARCH_spitz = "iwmmxt"
 TARGET_CC_ARCH_a780 = "-march=iwmmxt -mtune=iwmmxt"
 PACKAGE_ARCH_a780 = "iwmmxt"
 TARGET_CC_ARCH_hx4700 = "-march=iwmmxt -mtune=iwmmxt"
-PACKAGE_ARCH_hx4700= "iwmmxt"
-
+PACKAGE_ARCH_hx4700 = "iwmmxt"
+TARGET_CC_ARCH_magician = "-march=iwmmxt -mtune=iwmmxt"
+PACKAGE_ARCH_magician = "iwmmxt"
+TARGET_CC_ARCH_htcuniversal = "-march=iwmmxt -mtune=iwmmxt"
+PACKAGE_ARCH_htcuniversal = "iwmmxt"
 
 do_configure() {
 	cp ${WORKDIR}/vo_w100.c ${S}/libvo
