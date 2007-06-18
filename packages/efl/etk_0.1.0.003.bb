@@ -1,7 +1,7 @@
 DESCRIPTION = "Etk is an advanced widget toolkit based on the Enlightenment Foundation Libraries."
 DEPENDS = "evas-x11 ecore-x11 edje"
 LICENSE = "MIT"
-PR = "r1"
+PR = "r0"
 
 inherit efl
 
