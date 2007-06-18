@@ -8,7 +8,7 @@ PR = "r1"
 SRCDATE_${PN} ?= "20070501"
 PV = "0.93+cvs${SRCDATE}"
 
-DEPENDS = "glib-2.0 gtk+ cairo gconf ecj-native zip-native"
+DEPENDS = "glib-2.0 gtk+ cairo gconf ecj-native zip-native virtual/java-native"
 RDEPENDS_${PN} = "classpath-common (>= ${PV})"
 RCONFLICTS_${PN} = "classpath-minimal"
 
