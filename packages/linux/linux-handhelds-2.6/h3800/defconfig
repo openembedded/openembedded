@@ -1,7 +1,7 @@
 #
 # Automatically generated make config: don't edit
-# Linux kernel version: 2.6.21-hh7
-# Wed Jun 13 14:53:05 2007
+# Linux kernel version: 2.6.21-hh8
+# Mon Jun 18 13:14:54 2007
 #
 CONFIG_ARM=y
 CONFIG_SYS_SUPPORTS_APM_EMULATION=y
@@ -820,6 +820,7 @@ CONFIG_ADC_ASIC2=y
 # CONFIG_IPAQ_MICRO is not set
 CONFIG_HTC_ASIC2=y
 # CONFIG_HTC_ASIC3 is not set
+# CONFIG_HTC_EGPIO is not set
 # CONFIG_HTC_ASIC3_DS1WM is not set
 # CONFIG_SOC_SAMCOP is not set
 # CONFIG_SOC_HAMCOP is not set
