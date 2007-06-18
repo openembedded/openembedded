@@ -2,7 +2,7 @@ DESCRIPTION = "gpe-snes is a gpe frontend for the snes9x SNES emulator"
 SECTION = "games"
 LICENSE = "GPLv2"
 PRIORITY = "optional"
-DEPENDS = "libgpe"
+DEPENDS = "gtk+ libgpewidget libxrandr"
 
 inherit autotools
 
