@@ -10,5 +10,5 @@ PACKAGES = "\
 RDEPENDS_task-sdk-bare = "\
     glibc \
     glibc-dev \
-    libgcc1 \
+    libgcc \
     "
