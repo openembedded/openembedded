@@ -1,0 +1,12 @@
+diff --git a/nls/locale.alias.pre b/nls/locale.alias.pre
+index a74ca75..ff5bc3f 100644
+--- a/nls/locale.alias.pre
++++ b/nls/locale.alias.pre
+@@ -898,6 +898,7 @@ ru_RU.cp1251:					ru_RU.CP1251
+ ru_RU.microsoftcp1251:				ru_RU.CP1251
+ ru_RU.microsoft-cp1251:				ru_RU.CP1251
+ ru_RU.MICROSOFT-CP1251:				ru_RU.CP1251
++ru_RU.utf8:					ru_RU.UTF-8
+ #if defined(INCLUDE_ru_SU)
+ XCOMM ru_SU is redundant now
+ ru_SU:						ru_RU.KOI8-R
