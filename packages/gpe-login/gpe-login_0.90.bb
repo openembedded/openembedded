@@ -3,9 +3,9 @@ SECTION = "gpe"
 PRIORITY = "optional"
 LICENSE = "GPL"
 DEPENDS = "gtk+ libgpewidget gpe-ownerinfo xkbd"
-RDEPENDS = "xkbd"
+RDEPENDS = "xkbd gpe-theme-clearlooks"
 RPROVIDES = "gpe-session-starter"
-PR = "r0"
+PR = "r1"
 
 PACKAGE_ARCH = "${MACHINE_ARCH}"
 
