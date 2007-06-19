@@ -1,8 +1,8 @@
 DESCRIPTION = "Fluendo Streaming Server"
 LICENSE = "GPL"
-DEPENDS = "gstreamer python-gst twisted python-pygtk2"
-RDEPENDS = " python-xml python-curses python-compression python-fcntl  python-pygobject python-pickle python-netclient python-datetime python-crypt python-twisted-core python-twisted-web python-lang python-zopeinterface  python-textutils python-core python-gst python-misc"
-RDEPENDS_${PN}-gui = "${PN} python-pygtk2 python-pycairo libgnome"
+DEPENDS = "gstreamer python-imaging python-gst twisted python-pygtk2"
+RDEPENDS = " python-resource python-pprint python-threading  python-imaging python-xml python-curses python-compression python-fcntl  python-pygobject python-pickle python-netclient python-datetime python-crypt python-twisted-core python-twisted-web python-lang python-zopeinterface  python-textutils python-core python-gst python-misc"
+RDEPENDS_${PN}-gui = "${PN} python-pygtk2 python-pycairo "
 PR = "r7"
 
 SRC_URI = "http://www.flumotion.net/src/flumotion/flumotion-${PV}.tar.bz2 \
