@@ -18,8 +18,8 @@ S = "${WORKDIR}/trunk"
 
 K_MAJOR = "2"
 K_MINOR = "6"
-K_MICRO = "20"
-HHV="hnd0"
+K_MICRO = "21"
+HHV="hnd1"
 PV = "${K_MAJOR}.${K_MINOR}.${K_MICRO}-${HHV}"
 
 inherit kernel
