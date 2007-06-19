@@ -3,7 +3,7 @@ LICENSE = "MIT"
 DEPENDS = "ipkg-native ipkg-utils-native fakeroot-native sed-native"
 PR = "r0"
 
-inherit sdk meta
+inherit rootfs_ipk sdk meta
 
 SDK_DIR = "${WORKDIR}/sdk"
 SDK_OUTPUT = "${SDK_DIR}/image"
