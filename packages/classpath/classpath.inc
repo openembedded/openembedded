@@ -28,3 +28,16 @@ FILES_classpath-common += "${datadir}/classpath/glibj.zip"
 FILES_classpath-examples += "${datadir}/classpath/examples"
 FILES_classpath-tools += "${datadir}/classpath/tools.zip ${datadir}/classpath/tools"
 FILES_classpath-dev += "${libdir}/*.so"
+FILES_classpath-dbg += "${libdir}/classpath/.debug"
+
+do_stage() {
+	install -d ${STAGING_INCDIR}/classpath
+	install -m 0755 include/jni* ${STAGING_INCDIR}/classpath/
+	install -d ${STAGING_DATADIR}/classpath
+	install -m 0755 lib/glibj.zip ${STAGING_DATADIR}/classpath/
+}
+
+do_install() {
+	autotools_do_install
+	mv ${D}${libdir}/security ${D}${libdir}/${PN}
+}

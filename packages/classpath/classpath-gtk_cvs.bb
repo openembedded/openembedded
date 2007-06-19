@@ -1,12 +1,12 @@
 require classpath.inc
 
-PR = "r1"
+PR = "r2"
 
 SRCDATE_${PN} ?= "20070501"
 PV = "0.93+cvs${SRCDATE}"
 
 ### note from Laibsch: bug 2523 has information on how to build this package
-DEPENDS = "glib-2.0 gtk+ cairo gconf ecj-native zip-native virtual/java-native"
+DEPENDS = "glib-2.0 gtk+ cairo gconf ecj-native zip-native virtual/java-native libxtst"
 RDEPENDS_${PN} = "classpath-common (>= ${PV})"
 RCONFLICTS_${PN} = "classpath-minimal"
 
@@ -16,15 +16,6 @@ SRC_URI = "cvs://anonymous@cvs.savannah.gnu.org/sources/classpath;module=classpa
 S = "${WORKDIR}/classpath"
 
 EXTRA_OECONF = "--with-ecj=${STAGING_BINDIR_NATIVE}/ecj --with-ecj-jar=${STAGING_BINDIR_NATIVE}/ecj.jar --disable-plugin --disable-dssi --disable-alsa"
-
-PACKAGES = "classpath-dev classpath-doc classpath-common classpath-examples classpath-tools ${PN}"
-
-FILES_classpath-doc = "${datadir}/info ${datadir}/man"
-FILES_classpath-dev = "${includedir}"
-FILES_${PN} = "${libdir} ${bindir}"
-FILES_classpath-common = "${datadir}/classpath/glibj.zip"
-FILES_classpath-examples = "${datadir}/classpath/examples"
-FILES_classpath-tools = "${datadir}/classpath/tools.zip"
 
 do_stage() {
 	install -d ${STAGING_INCDIR}/classpath
