@@ -1,6 +1,6 @@
 require evas.inc
 DEPENDS += "edb virtual/libx11 libxext freetype"
-PR = "r8"
+PR = "r9"
 
 EXTRA_OECONF = "--x-includes=${STAGING_INCDIR}/X11  \
 		--x-libraries=${STAGING_LIBDIR} \
@@ -9,6 +9,7 @@ EXTRA_OECONF = "--x-includes=${STAGING_INCDIR}/X11  \
 		--enable-buffer			\
 		--disable-software-qtopia	\
 		--enable-software-x11		\
+		--enable-software-16-x11        \
 		--disable-gl-x11		\
 		--enable-image-loader-eet	\
 		--enable-image-loader-edb	\
@@ -20,7 +21,7 @@ EXTRA_OECONF = "--x-includes=${STAGING_INCDIR}/X11  \
 		--enable-scale-sample		\
 		--enable-scale-smooth		\
 		--enable-convert-yuv		\
-        --disable-image-loader-svg  \
+                --disable-image-loader-svg  \
 		--disable-convert-8-rgb-332	\
 		--disable-convert-8-rgb-666	\
 		--disable-convert-8-rgb-232	\
@@ -33,14 +34,14 @@ EXTRA_OECONF = "--x-includes=${STAGING_INCDIR}/X11  \
 		--disable-convert-16-rgb-444	\
 		--disable-convert-16-rgb-ipq	\
 		--enable-convert-16-rgb-rot-0	\
-		--disable-convert-16-rgb-rot-90	\
+		--enable-convert-16-rgb-rot-90	\
 		--enable-convert-16-rgb-rot-270	\
 		--disable-convert-24-rgb-888	\
 		--disable-convert-24-bgr-888	\
 		--disable-convert-32-rgb-8888	\
 		--disable-convert-32-rgbx-8888	\
-		--disable-convert-32-bgr-8888	\
-		--disable-convert-32-bgrx-8888	\
+		--enable-convert-32-bgr-8888	\
+		--enable-convert-32-bgrx-8888	\
 		--disable-convert-32-rgb-rot-0	\
 		--disable-convert-32-rgb-rot-90	\
 		--disable-convert-32-rgb-rot-270"
