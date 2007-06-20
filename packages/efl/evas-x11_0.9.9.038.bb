@@ -1,6 +1,6 @@
 require evas.inc
 DEPENDS += "edb virtual/libx11 libxext freetype"
-PR = "r9"
+PR = "r10"
 
 EXTRA_OECONF = "--x-includes=${STAGING_INCDIR}/X11  \
 		--x-libraries=${STAGING_LIBDIR} \
@@ -47,6 +47,7 @@ EXTRA_OECONF = "--x-includes=${STAGING_INCDIR}/X11  \
 		--disable-convert-32-rgb-rot-270"
 
 headers = "../modules/engines/software_x11/Evas_Engine_Software_X11.h \
+           ../modules/engines/software_16_x11/Evas_Engine_Software_16_X11.h \
            ../modules/engines/xrender_x11/Evas_Engine_XRender_X11.h \
            ../modules/engines/buffer/Evas_Engine_Buffer.h \
            ../modules/engines/fb/Evas_Engine_FB.h \
