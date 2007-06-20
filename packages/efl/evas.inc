@@ -7,7 +7,7 @@ LICENSE = "MIT"
 DEPENDS = "freetype libpng jpeg eet"
 PROVIDES += "virtual/evas"
 
-inherit efl
+inherit efl lib_package
 
 export FREETYPE_CONFIG = "${STAGING_BINDIR_CROSS}/freetype-config"
 
