@@ -1,5 +1,5 @@
 DESCRIPTION = "Basic task to get a device booting"
-PR = "r36"
+PR = "r37"
 
 PROVIDES = "${PACKAGES}"
 PACKAGES = 'task-boot'
