@@ -68,3 +68,7 @@ RPROVIDES_python-core = "python"
 RPROVIDES_python-curses = "python"
 PACKAGES =+ "libpython2"
 FILES_libpython2 = "${libdir}/libpython*"
+
+# catch all the rest (unsorted)
+PACKAGES += "python-misc"
+FILES_python-misc = "${libdir}/python2.4"
