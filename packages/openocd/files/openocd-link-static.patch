@@ -1,0 +1,20 @@
+--- openocd/src/Makefile.am.orig	2007-03-01 11:51:41.000000000 -0300
++++ openocd/src/Makefile.am	2007-03-01 11:58:08.000000000 -0300
+@@ -7,7 +7,7 @@
+ 	-I$(top_srcdir)/src/flash -I$(top_srcdir)/src/pld $(all_includes)
+ 
+ # the library search path.
+-openocd_LDFLAGS = $(all_libraries) 
++openocd_LDFLAGS = -static $(all_libraries)
+ SUBDIRS = helper jtag xsvf target server flash pld
+ 
+ if IS_MINGW
+@@ -17,7 +17,7 @@
+ endif
+ 
+ if FT2232_LIBFTDI
+-FTDI2232LIB = -lftdi
++FTDI2232LIB = -lftdi -lusb
+ else
+ FTDI2232LIB =
+ endif

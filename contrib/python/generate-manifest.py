@@ -10,7 +10,7 @@ import time
 
 VERSION = "2.4.4"
 # increase when touching python-core
-BASEREV = 1
+BASEREV = 2
 
 __author__ = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 __version__ = "20070721"
@@ -158,7 +158,7 @@ if __name__ == "__main__":
     "lib/python2.4/lib-dynload/binascii.so lib/python2.4/lib-dynload/struct.so lib/python2.4/lib-dynload/time.so " +
     "lib/python2.4/lib-dynload/xreadlines.so lib/python2.4/types.* bin/python*" )
 
-    m.addPackage( 0, "python-core-debug", "Python core module debug information", "python-core",
+    m.addPackage( 0, "python-core-dbg", "Python core module debug information", "python-core",
     "lib/python2.4/lib-dynload/.debug bin/.debug lib/.debug" )
 
     m.addPackage( 0, "python-devel", "Python Development Package", "python-core",
