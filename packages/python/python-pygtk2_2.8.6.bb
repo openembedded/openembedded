@@ -1,7 +1,8 @@
 DESCRIPTION = "Python GTK+ Bindings"
 SECTION = "devel/python"
 PRIORITY = "optional"
-DEPENDS = "gtk+ libglade"
+# needs gtk+ 2.8.x
+DEPENDS = "gtk+-2.8.16 libglade"
 RDEPENDS = "python-shell"
 SRCNAME = "pygtk"
 LICENSE = "LGPL"
