@@ -1,19 +1,33 @@
-diff -Nur entrance~/src/client/entrance_session.c entrance/src/client/entrance_session.c
---- entrance~/src/client/entrance_session.c	2006-02-02 19:51:40.000000000 -0800
-+++ entrance/src/client/entrance_session.c	2006-02-02 19:59:24.000000000 -0800
-@@ -495,7 +495,7 @@
-    entrance_session_free(e);
-    /* replace this process with a clean small one that just waits for its */
-    /* child to exit.. passed on the cmd-line */
--   execl("/bin/sh", "/bin/sh", "-l", "-c", buf, NULL);
-+   execl("/bin/bash", "/bin/bash", "-l", "-c", buf, NULL);
- }
+Index: entrance-0.9.0.009/src/client/entrance_session.c
+===================================================================
+--- entrance-0.9.0.009.orig/src/client/entrance_session.c
++++ entrance-0.9.0.009/src/client/entrance_session.c
+@@ -854,7 +854,7 @@ _entrance_session_execute_in_shell(char 
+    if (shell && (strlen(shell) > 0))
+       shell_cmd = shell;
+    else
+-      shell_cmd = strdup("/bin/sh");
++      shell_cmd = strdup("/bin/bash");
  
+    if (session_name)
+       snprintf(buf, sizeof(buf), "%s %s", session_cmd, session_name);
+@@ -869,9 +869,9 @@ _entrance_session_execute_in_shell(char 
+    if (res == -1)
+       /* TODO: should actually hit the user in the face with this message */
+       syslog(LOG_NOTICE,
+-             "Neither '%s' or '/bin/sh' are working login shells for user '%s'. Your session may not function properly. ",
++             "Neither '%s' or '/bin/bash' are working login shells for user '%s'. Your session may not function properly. ",
+              shell, user);
+-      shell_cmd = strdup("/bin/sh");
++      shell_cmd = strdup("/bin/bash");
+    
+    res = execlp(shell_cmd, shell_cmd, "-c", buf, NULL);
  
-diff -Nur entrance~/src/client/main.c entrance/src/client/main.c
---- entrance~/src/client/main.c	2006-02-02 19:51:40.000000000 -0800
-+++ entrance/src/client/main.c	2006-02-02 19:57:24.000000000 -0800
-@@ -392,7 +392,7 @@
+Index: entrance-0.9.0.009/src/client/main.c
+===================================================================
+--- entrance-0.9.0.009.orig/src/client/main.c
++++ entrance-0.9.0.009/src/client/main.c
+@@ -453,7 +453,7 @@ reboot_cb(void *data, Evas_Object * o, c
        {
          case 0:
             if (execl
@@ -22,7 +36,7 @@ diff -Nur entrance~/src/client/main.c entrance/src/client/main.c
             {
                syslog(LOG_CRIT,
                       "Reboot failed: Unable to execute /sbin/shutdown");
-@@ -434,7 +434,7 @@
+@@ -495,7 +495,7 @@ shutdown_cb(void *data, Evas_Object * o,
        {
          case 0:
             if (execl
@@ -31,24 +45,13 @@ diff -Nur entrance~/src/client/main.c entrance/src/client/main.c
             {
                syslog(LOG_CRIT,
                       "Shutdown failed: Unable to execute /sbin/shutdown");
-diff -Nur entrance~/src/daemon/entrance_wrapper.in entrance/src/daemon/entrance_wrapper.in
---- entrance~/src/daemon/entrance_wrapper.in	2006-02-02 19:51:40.000000000 -0800
-+++ entrance/src/daemon/entrance_wrapper.in	2006-02-02 19:56:43.000000000 -0800
+Index: entrance-0.9.0.009/src/daemon/entrance_wrapper.in
+===================================================================
+--- entrance-0.9.0.009.orig/src/daemon/entrance_wrapper.in
++++ entrance-0.9.0.009/src/daemon/entrance_wrapper.in
 @@ -1,4 +1,4 @@
 -#!/bin/sh
 +#!/bin/bash
  # Wrapper script to set up login environment:
  # Load up all the junk in /etc/profile first, and then
  # pass control to entrance proper.
-diff -Nur entrance~/src/daemon/spawner.c entrance/src/daemon/spawner.c
---- entrance~/src/daemon/spawner.c	2006-02-02 19:51:40.000000000 -0800
-+++ entrance/src/daemon/spawner.c	2006-02-02 19:57:10.000000000 -0800
-@@ -162,7 +162,7 @@
-         sigaction(SIGUSR1, &_entrance_x_sa, NULL);
-       /* FIXME: need to parse command and NOT go thru /bin/sh!!!! */
-       /* why? some /bin/sh's wont pass on this SIGUSR1 thing... */
--        execl("/bin/sh", "/bin/sh", "-c", x_cmd, NULL);
-+        execl("/bin/bash", "/bin/bash", "-c", x_cmd, NULL);
-         syslog(LOG_WARNING, "Could not execute X server.");
-         exit(1);
-      default:
