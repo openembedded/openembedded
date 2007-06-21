@@ -4,7 +4,7 @@ down to using normal X11 primitives such as pixmaps, lines and rectangles if \
 your CPU or graphics hardware are too slow."
 LICENSE = "MIT"
 # can also depend on valgrind (?)
-DEPENDS = "directfb eet freetype jpeg virtual/libx11 libxext"
+DEPENDS = " eet freetype jpeg virtual/libx11 libxext"
 
 inherit efl1
 
