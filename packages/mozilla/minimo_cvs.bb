@@ -4,7 +4,7 @@ LICENSE = "MPL GPL LGPL"
 HOMEPAGE = "http://www.mozilla.org/projects/minimo/"
 PRIORITY = "optional"
 
-DEPENDS = "libxrender xt xft fontconfig freetype libidl dbus-glib pango atk gtk+ libidl-native"
+DEPENDS = "libxrender xt xft fontconfig freetype libidl dbus-glib pango atk gtk+ libidl-native zip-native"
 
 CVSSVR="cvs-mirror.mozilla.org"
 BRTAG = "MOZILLA_1_8_BRANCH"

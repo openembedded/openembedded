@@ -1,0 +1,15 @@
+
+#
+# Patch managed by http://www.holgerschurig.de/patcher.html
+#
+
+--- epsilon-0.3.0.004/src/lib/exiftags/exif.c~compile-fix
++++ epsilon-0.3.0.004/src/lib/exiftags/exif.c
+@@ -48,7 +48,6 @@
+ #include <stdlib.h>
+ #include <string.h>
+ #include <errno.h>
+-#include <math.h>
+ #include <float.h>
+ #include <ctype.h>
+ 
