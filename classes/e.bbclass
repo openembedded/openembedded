@@ -1,5 +1,6 @@
 HOMEPAGE = "http://www.enlightenment.org"
 SECTION = "e/apps"
+SRC_URI = "http://download.enlightenment.org/snapshots/2007-06-17/${PN}-${PV}.tar.gz"
 
 inherit autotools pkgconfig binconfig
 
