@@ -1,0 +1,13 @@
+Index: ecore-0.9.9.038/src/lib/ecore_directfb/Ecore_DirectFB.h
+===================================================================
+--- ecore-0.9.9.038.orig/src/lib/ecore_directfb/Ecore_DirectFB.h
++++ ecore-0.9.9.038/src/lib/ecore_directfb/Ecore_DirectFB.h
+@@ -23,7 +23,7 @@
+ #endif
+ 
+ #include <Ecore_Data.h>
+-#include <directfb.h>
++#include <directfb/directfb.h>
+ 
+ 
+ #ifdef __cplusplus

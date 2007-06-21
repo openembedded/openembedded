@@ -1,0 +1,16 @@
+Index: ecore-0.9.9.038/configure.in
+===================================================================
+--- ecore-0.9.9.038.orig/configure.in
++++ ecore-0.9.9.038/configure.in
+@@ -541,10 +541,7 @@ AC_ARG_ENABLE(abstract-sockets,
+   [ want_abstract_sockets="yes"]
+ )
+ if test "x$want_abstract_sockets" = "xyes"; then
+-  AC_ABSTRACT_SOCKET_TEST(
+-    [AC_DEFINE(HAVE_ABSTRACT_SOCKETS, 1, [Have abstract sockets namespace])],
+-    []
+-  )
++  HAVE_ABSTRACT_SOCKETS = 1
+ fi
+ 
+ ECORE_CHECK_MODULE([Con], [yes])
