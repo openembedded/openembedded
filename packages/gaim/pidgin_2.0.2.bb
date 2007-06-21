@@ -6,4 +6,4 @@ SRC_URI = "${SOURCEFORGE_MIRROR}/pidgin/pidgin-${PV}.tar.bz2 \
 	   file://pidgin.desktop-set-icon.patch;patch=1 \
 	  " 
 
-PR = "r4"
+PR = "r0"
