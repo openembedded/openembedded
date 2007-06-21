@@ -72,3 +72,8 @@ FILES_libpython2 = "${libdir}/libpython*"
 # catch all the rest (unsorted)
 PACKAGES += "python-misc"
 FILES_python-misc = "${libdir}/python2.4"
+
+# catch manpage
+PACKAGES += "python-man"
+FILES_python-man = "${datadir}/man"
+
