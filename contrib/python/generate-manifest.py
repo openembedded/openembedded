@@ -10,10 +10,10 @@ import time
 
 VERSION = "2.4.4"
 # increase when touching python-core
-BASEREV = 0
+BASEREV = 1
 
 __author__ = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
-__version__ = "$Revision: 1.21 $"
+__version__ = "20070721"
 
 class MakefileMaker:
 
@@ -122,15 +122,6 @@ class MakefileMaker:
 
             line += '"'
             self.out( line )
-
-#            for source, target in files:
-#                if ( source.find( "lib-dynload" ) != -1 ) or \
-#                  ( source.endswith( "python" ) ) or \
-#                   ( source.endswith( "pydoc" ) ): # MACHDEP
-#                    self.out( "\t cp -dfR $(STAGING_LIBDIR)/..%s $(IPKTMP_DIR)%s/;" % ( source, os.path.dirname( target ) ) )
-#                else:
-#                    self.out( "\t cp -dfR $(STAGING_DIR)%s $(IPKTMP_DIR)%s/;" % ( source, os.path.dirname( target ) ) )
-#
             self.out( "" )
 
     def doEpilog( self ):
@@ -165,10 +156,10 @@ if __name__ == "__main__":
     "lib/python2.4/warnings.* lib/python2.4/site.* lib/python2.4/stat.* " +
     "lib/python2.4/UserDict.* lib/python2.4/UserList.* lib/python2.4/UserString.* " +
     "lib/python2.4/lib-dynload/binascii.so lib/python2.4/lib-dynload/struct.so lib/python2.4/lib-dynload/time.so " +
-    "lib/python2.4/lib-dynload/xreadlines.so lib/python2.4/types.* bin/python" )
+    "lib/python2.4/lib-dynload/xreadlines.so lib/python2.4/types.* bin/python*" )
 
     m.addPackage( 0, "python-core-debug", "Python core module debug information", "python-core",
-    "lib/python2.4/lib-dynload/.debug" ) # package
+    "lib/python2.4/lib-dynload/.debug bin/.debug lib/.debug" )
 
     m.addPackage( 0, "python-devel", "Python Development Package", "python-core",
     "include lib/python2.4/config" ) # package
@@ -178,6 +169,9 @@ if __name__ == "__main__":
 
     m.addPackage( 0, "python-pydoc", "Python Interactive Help Support", "python-core, python-lang, python-stringold, python-re",
     "bin/pydoc lib/python2.4/pydoc.*" )
+
+    m.addPackage( 0, "python-smtpd", "Python Simple Mail Transport Daemon", "python-core python-netserver python-email python-mime",
+    "bin/smtpd.*" )
 
     m.setPrefix( "/lib/python2.4/", "${libdir}/python2.4/" )
 
