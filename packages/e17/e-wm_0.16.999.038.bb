@@ -1,7 +1,7 @@
 DESCRIPTION = "E17 - the Enlightenment Window Mananger"
-DEPENDS = "evas-x11 ecore-x11 edje eet embryo efreet"
+DEPENDS = "eet evas ecore edje efreet"
 LICENSE = "MIT"
-PR = "r5"
+PR = "r6"
 
 inherit e update-alternatives
 
@@ -28,8 +28,8 @@ FILES_${PN}-dev += "${libdir}/enlightenment/modules/*/*/*.a ${libdir}/enlightenm
 FILES_${PN}-dbg += "${libdir}/enlightenment/modules/*/*/.debug/ ${libdir}/enlightenment/preload/.debug/"
 
 do_compile_prepend() {
-        find ${S} -name Makefile | xargs sed -i 's:/usr/include:${STAGING_INCDIR}:'
-	find ${S} -name Makefile | xargs sed -i 's:/usr/X11R6/include:${STAGING_INCDIR}:'
+    find ${S} -name Makefile | xargs sed -i 's:/usr/include:${STAGING_INCDIR}:'
+    find ${S} -name Makefile | xargs sed -i 's:/usr/X11R6/include:${STAGING_INCDIR}:'
 }
 
 do_install_append() {
