@@ -50,7 +50,24 @@ SRCDATE_gconf-dbus ?= "20070512"
 SRCDATE_gnome-vfs ?= "20060119"
 SRCDATE_gtkhtml2 ?= "20060323"
 
-#Misc apps, sorted by alphabet
+# Enlightenment (libs)
+SRCDATE_edb ?= "20070601"
+SRCDATE_enhanve ?= "20070601"
+SRCDATE_engrave ?= "20070601"
+SRCDATE_exml ?= "20070601"
+
+# Enlightenment (apps)
+SRCDATE_edje-viewer = "20070601"
+SRCDATE_emphasis = "20070601"
+SRCDATE_ephoto = "20070601"
+SRCDATE_examine = "20070601"
+SRCDATE_expedite = "20070601"
+SRCDATE_elitaire = "20070504"
+SRCDATE_entice = "20070601"
+SRCDATE_e-utils = "20070601"
+SRCDTE_exhibit = "20070601"
+
+# Misc apps, sorted by alphabet
 SRCDATE_avetanabt ?= "20060814"
 SRCDATE_bl ?= "20060814"
 SRCDATE_dvbstream ?= "20060814"
@@ -71,6 +88,7 @@ SRCDATE_madwifi-modules ?= "20060814"
 SRCDATE_maemo-mapper-nohildon ?= "20061114"
 SRCDATE_mileage ?= "20060814"
 SRCDATE_minimo ?= "20050401"
+SRCDATE_mpd ?= "20070210"
 SRCDATE_mystun-server ?= "20060814"
 SRCDATE_olsrd ?= "20060814"
 SRCDATE_opencvs ?= "20060814"
