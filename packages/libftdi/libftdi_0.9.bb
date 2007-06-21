@@ -8,7 +8,7 @@ SRC_URI = "http://www.intra2net.com/de/produkte/opensource/ftdi/TGZ/libftdi-${PV
            file://doxygen-configure.patch;patch=1"
 S = "${WORKDIR}/libftdi-${PV}"
 
-inherit autotools binconfig pkgconfig lib_package
+inherit autotools
 
 EXTRA_OECONF = "--disable-docs"
 
