@@ -1,7 +1,7 @@
 DESCRIPTION= "Everything Python"
 HOMEPAGE = "http://www.vanille.de/projects/python.spy"
 LICENSE = "MIT"
-PR = "ml11"
+PR = "ml12"
 
 BROKEN_BECAUSE_GCC4 = "\
 		python-egenix-mx-base"
@@ -57,6 +57,7 @@ RDEPENDS = "\
 		python-scapy		\
 		python-scons		\
 		python-setuptools	\
+		python-simplejson	\
 		python-sip		\
 		python-sgmlop		\
 		python-snmplib		\
