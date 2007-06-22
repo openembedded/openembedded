@@ -1,6 +1,7 @@
-SECTION = "devel"
 inherit native
 require jikes_${PV}.bb
+
+PROVIDES = "virtual/javac-native"
 S = "${WORKDIR}/jikes-${PV}"
 
 do_stage() {

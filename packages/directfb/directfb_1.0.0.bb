@@ -7,7 +7,7 @@ SECTION = "libs"
 LICENSE = "LGPL"
 HOMEPAGE = "http://directfb.org"
 DEPENDS = "jpeg libpng freetype zlib tslib"
-PR = "r4"
+PR = "r5"
 RV = "1.0-0"
 
 SRC_URI = "http://www.directfb.org/download/DirectFB/DirectFB-${PV}.tar.gz \
@@ -38,18 +38,18 @@ do_install() {
 
 
 FILES_directfb-dbg_append = " ${libdir}/directfb-${RV}/*/*/.debug/*.so \
-			      ${libdir}/directfb-${RV}/*/.debug/*.so \
-			  "
+                            ${libdir}/directfb-${RV}/*/.debug/*.so \
+"
 
 FILES_directfb-dev_append = " ${libdir}/directfb-${RV}/systems/*.la \
                               ${libdir}/directfb-${RV}/inputdrivers/*.la \
                               ${libdir}/directfb-${RV}/interfaces/*/*.la \
-                              ${libdir}/directfb-${RV}/wm/*.la"
-
+                              ${libdir}/directfb-${RV}/wm/*.la \
+"
 
 FILES_directfb_append = " ${libdir}/directfb-${RV}/systems/*.so \
                           ${libdir}/directfb-${RV}/inputdrivers/*.so \
                           ${libdir}/directfb-${RV}/interfaces/*/*.so \
                           ${libdir}/directfb-${RV}/wm/*.so \
                           ${datadir}/directfb-1.0.0 \
-			  "
+"

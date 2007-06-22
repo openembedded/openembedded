@@ -9,7 +9,7 @@ DESCRIPTION = "The Fluxbox WindowManager"
 HOMEPAGE = "http://fluxbox.sourceforge.net"
 LICENSE = "MIT"
 REALPV = "1.0rc"
-PR = "r4"
+PR = "r5"
 
 ######################################################################################
 
@@ -29,7 +29,7 @@ SRC_URI = "${SOURCEFORGE_MIRROR}/fluxbox/fluxbox-${REALPV}.tar.gz \
 
 ######################################################################################
 
-PACKAGES = "${PN}-gpe ${PN}-styles ${PN}-doc ${PN}"
+PACKAGES = "${PN}-dbg ${PN}-gpe ${PN}-styles ${PN}-doc ${PN}"
 
 DESCRIPTION_${PN}-styles = "The default styles for fluxbox"
 DESCRIPTION_${PN}-gpe = "The Fluxbox WindowManager for use with GPE"

@@ -1,13 +1,12 @@
 DESCRIPTION = "Expedite is a comprehensive benchmarking suite for evas"
-DEPENDS = "evas-x11"
+DEPENDS = "evas"
 LICENSE = "MIT"
-PV = "0.0+cvs${SRCDATE}"
+PV = "0.0.0+cvs${SRCDATE}"
 PR = "r0"
 
 inherit e
 
 SRC_URI = "cvs://anonymous@anoncvs.enlightenment.org/var/cvs/e;module=e17/apps/expedite"
-
 S = "${WORKDIR}/${PN}"
 
 do_configure_append() {

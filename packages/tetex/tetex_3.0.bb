@@ -49,7 +49,7 @@ do_configure() {
 install:
 	echo "mickey _is_ cool - he tamed the tetex buildsystem"
 all:
-	echo "mickeys suck - he adds easter eggs in output that no one will ever read..."
+	echo "mickey suck - he adds easter eggs in output that no one will ever read..."
 EOF
 }
 # NOTE: Make sure it is using _our_ libtool and nothing else :/
