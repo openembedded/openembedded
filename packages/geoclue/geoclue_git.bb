@@ -1,19 +1,19 @@
 DESCRIPTION = "GeoClue is a project that provide all kinds of geography information to an application"
 HOMEPAGE = "http://live.gnome.org/GeoClue"
 
-DEPENDS = "gpsd libsoup dbus-glib"
+DEPENDS = "gpsd ilibxml2 libsoup dbus-glib"
 
-PV = "0.0+svn${SRCDATE}"
-PR = "r1"
+PV = "0.0+git${SRCDATE}"
+PR = "r0"
+PE = "1"
 
 inherit autotools pkgconfig
 
-SRC_URI = "svn://svn.foinse-project.org/geoclue;module=trunk;proto=http"
+SRC_URI = "git://anongit.freedesktop.org/git/geoclue;protocol=git"
 
-S = "${WORKDIR}/trunk"
+S = "${WORKDIR}/git"
 
-
-EXTRA_OECONF = "--disable-panel-applet"
+EXTRA_OECONF = "--enable-panel-applet=no"
 
 do_install_append() {
 	mkdir -p ${D}/usr/share/
