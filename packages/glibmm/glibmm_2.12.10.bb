@@ -4,9 +4,9 @@ SECTION = "libs"
 PRIORITY = "optional"
 LICENSE = "LGPL"
 DEPENDS = "glib-2.0 libsigc++-2.0"
-PR = "r2"
+PR = "r0"
 
-SRC_URI = "ftp://ftp.gnome.org/pub/GNOME/sources/glibmm/2.8/glibmm-${PV}.tar.bz2"
+SRC_URI = "ftp://ftp.gnome.org/pub/GNOME/sources/glibmm/2.12/glibmm-${PV}.tar.bz2"
 
 inherit autotools pkgconfig flow-lossage
 
@@ -19,6 +19,5 @@ do_stage () {
 	autotools_stage_all
 
 	install -m 0644 glib/glibmmconfig.h ${STAGING_INCDIR}/glibmm-2.4
-
 	install -m 0644 scripts/glibmm_check_perl.m4 ${STAGING_DATADIR}/aclocal/
 }
