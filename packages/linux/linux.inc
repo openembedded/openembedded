@@ -18,7 +18,11 @@ KERNEL_IMAGETYPE_at32stk1000 = "uImage"
 KERNEL_IMAGETYPE_at91sam9263ek = "uImage"
 
 # Specify the commandline for you device here:
+
+#boot from mmc
 CMDLINE_at91sam9263ek = "mem=64M console=ttyS0,115200 root=/dev/mmcblk0p1 rootfstype=ext2 rootdelay=5"
+#boot from nfs
+#CMDLINE_at91sam9263ek = "mem=64M console=ttyS0,115200 root=301 root=/dev/nfs nfsroot=172.20.3.1:/data/at91 ip=172.20.0.5:::255.255.0.0"
 
 do_configure_prepend() {
         echo "" > ${S}/.config
@@ -43,11 +47,11 @@ do_configure_prepend() {
 
 do_install_prepend() {
         if test -e arch/${ARCH}/boot/Image ; then
-             ln -f arch/arm/boot/Image arch/arm/boot/uImage
+             ln -f arch/${ARCH}/boot/Image arch/${ARCH}/boot/uImage
         fi
 
         if test -e arch/${ARCH}/boot/images/uImage ; then
-             ln -f arch/arm/boot/images/uImage arch/arm/boot/uImage
+             ln -f arch/${ARCH}/boot/images/uImage arch/${ARCH}/boot/uImage
         fi
 }
 

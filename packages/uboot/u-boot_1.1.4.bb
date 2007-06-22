@@ -25,11 +25,15 @@ SRC_URI_append_amsdelta = "\
 SRC_URI_append_dht-walnut= "\
         file://u-boot-dht-walnut-df2.patch;patch=1"
 
+SRC_URI_append_avr32= "\
+             http://avr32linux.org/twiki/pub/Main/UbootPatches/u-boot-1.1.4-avr1.patch.bz2;patch=1"
+
 
 EXTRA_OEMAKE_gumstix = "CROSS_COMPILE=${TARGET_PREFIX} GUMSTIX_400MHZ=${GUMSTIX_400MHZ}"
 TARGET_LDFLAGS = ""
 
 UBOOT_MACHINE_dht-walnut = "walnut_config"
+UBOOT_MACHINE_atngw100 = "atngw_config"
 
 def gumstix_mhz(d):
 	import bb

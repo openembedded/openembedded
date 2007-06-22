@@ -1,0 +1,51 @@
+# Makefile used to build binary images of OpenEZX kernels
+#
+# If you are currently in the linux kernel toplevel dir,
+# you can call this Makefile with:
+#   $ make -f path_to/Makefile.OpenEZX
+#
+# Note that you can set the CROSS_COMPILE and QUILT_PATCHES variable
+# in your environment.
+#
+
+PHONES = a780 e680 a1200 e2 e6
+
+CROSS_COMPILE ?= /home/wyrm/ezx/dev/cross/bin/arm-angstrom-linux-gnueabi-
+QUILT_PATCHES ?= patches
+
+DATE = $(shell date +%Y%m%d)
+
+all: $(foreach p, $(PHONES), zImage-$(p) modules-$(p).tar.gz)
+
+zImages: $(foreach p, $(PHONES), zImage-$(p))
+
+modules: $(foreach p, $(PHONES), modules-$(p).tar.gz)
+
+release: $(foreach p, $(PHONES), tag-$(p))
+	cat md5sums.tmp | gpg --clearsign > md5sums
+	tar -rf ezxrelease.tar md5sums
+	rm -f md5sums.tmp md5sums
+	mv ezxrelease.tar ezxrelease-$(DATE).tar
+
+tag-%: zImage-% modules-%.tar.gz
+	p=$(patsubst tag-%,%,$@) && \
+	tag=$(shell cat include/config/kernel.release)-$(DATE) && \
+	cp zImage-$$p zImage-$$tag-$$p && \
+	cp modules-$$p.tar.gz modules-$$tag-$$p.tar.gz && \
+	tar -rf ezxrelease.tar zImage-$$tag-$$p modules-$$tag-$$p.tar.gz && \
+	md5sum zImage-$$tag-$$p modules-$$tag-$$p.tar.gz >> md5sums.tmp && \
+	rm -f zImage-$$tag-$$p modules-$$tag-$$p.tar.gz
+
+zImage-%: $(QUILT_PATCHES)/defconfig-%
+	cp $< ./.config
+	make ARCH=arm CROSS_COMPILE=$(CROSS_COMPILE) zImage
+	mv arch/arm/boot/zImage $@
+
+modules-%.tar.gz: $(QUILT_PATCHES)/defconfig-%
+	cp $< ./.config
+	-find . -name "*.ko" -print0 | xargs -r0 rm
+	mkdir /tmp/$@
+	make ARCH=arm CROSS_COMPILE=$(CROSS_COMPILE) \
+		INSTALL_MOD_PATH=/tmp/$@ modules modules_install
+	tar -C /tmp/$@ -czf $@ .
+	rm -rf /tmp/$@
