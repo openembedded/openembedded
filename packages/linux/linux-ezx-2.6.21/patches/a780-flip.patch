@@ -1,0 +1,44 @@
+Index: linux-2.6.21/arch/arm/mach-pxa/ezx-a780.c
+===================================================================
+--- linux-2.6.21.orig/arch/arm/mach-pxa/ezx-a780.c	2007-06-08 18:38:47.000000000 +0200
++++ linux-2.6.21/arch/arm/mach-pxa/ezx-a780.c	2007-06-08 18:38:50.000000000 +0200
+@@ -17,6 +17,7 @@
+ #include <linux/mmc/host.h>
+ #include <linux/irq.h>
+ #include <linux/input.h>
++#include <linux/gpio_keys.h>
+ 
+ #include <asm/mach-types.h>
+ #include <asm/mach/arch.h>
+@@ -214,8 +215,31 @@
+        },
+ };
+ 
++static struct gpio_keys_button a780flip_buttons[] = {
++       [0] = {
++               .keycode        = KEY_SLEEP,
++               .gpio           = GPIO_FLIP_PIN,
++               .desc           = "A780 flip",
++       },
++};
++
++static struct gpio_keys_platform_data a780flip_platform_data = {
++       .buttons        = a780flip_buttons,
++       .nbuttons       = 1,
++};
++
++static struct platform_device a780flip_device = {
++       .name           = "gpio-keys",
++       .id             = -1,
++       .dev            = {
++               .platform_data  = &a780flip_platform_data,
++       },
++};
++
++
+ static struct platform_device *devices[] __initdata = {
+ 	&pcap_ts_device,
++	&a780flip_device,
+ };
+ 
+ static void __init a780_init(void)

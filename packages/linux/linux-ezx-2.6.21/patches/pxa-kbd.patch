@@ -1,0 +1,534 @@
+Index: linux-2.6.21/arch/arm/mach-pxa/generic.c
+===================================================================
+--- linux-2.6.21.orig/arch/arm/mach-pxa/generic.c	2007-06-01 20:04:10.000000000 +0200
++++ linux-2.6.21/arch/arm/mach-pxa/generic.c	2007-06-01 20:04:45.000000000 +0200
+@@ -42,6 +42,7 @@
+ #include <asm/arch/mmc.h>
+ #include <asm/arch/irda.h>
+ #include <asm/arch/i2c.h>
++#include <asm/arch/kbd.h>
+ 
+ #include "generic.h"
+ 
+@@ -430,6 +431,30 @@
+ 	.id		= -1,
+ };
+ 
++static struct resource pxa_kbd_resources[] = {
++	{
++		.start	= IRQ_KEYPAD,
++		.end	= IRQ_KEYPAD,
++		.flags	= IORESOURCE_IRQ,
++	}, {
++		.start	= 0x41500000,
++		.end	= 0x4150004c,
++		.flags	= IORESOURCE_MEM,
++	},
++};
++
++static struct platform_device kbd_device = {
++	.name		= "pxa-keyboard",
++	.id		= -1,
++	.resource	= pxa_kbd_resources,
++	.num_resources	= ARRAY_SIZE(pxa_kbd_resources),
++};
++
++void __init pxa_set_kbd_info(struct pxakbd_platform_data *info)
++{
++	kbd_device.dev.platform_data = info;
++}
++
+ static struct platform_device *devices[] __initdata = {
+ 	&pxamci_device,
+ 	&udc_device,
+@@ -444,6 +469,7 @@
+ #endif
+ 	&i2s_device,
+ 	&pxartc_device,
++	&kbd_device,
+ };
+ 
+ static int __init pxa_init(void)
+Index: linux-2.6.21/drivers/input/keyboard/Kconfig
+===================================================================
+--- linux-2.6.21.orig/drivers/input/keyboard/Kconfig	2007-06-01 20:04:10.000000000 +0200
++++ linux-2.6.21/drivers/input/keyboard/Kconfig	2007-06-01 20:04:45.000000000 +0200
+@@ -229,4 +229,11 @@
+ 	  To compile this driver as a module, choose M here: the
+ 	  module will be called gpio-keys.
+ 
++config KEYBOARD_PXA
++	tristate "Intel PXA keyboard support"
++	depends on ARCH_PXA
++	help
++	  This add support for a driver of the Intel PXA2xx keyboard
++	  controller.
++
+ endif
+Index: linux-2.6.21/drivers/input/keyboard/Makefile
+===================================================================
+--- linux-2.6.21.orig/drivers/input/keyboard/Makefile	2007-06-01 20:04:10.000000000 +0200
++++ linux-2.6.21/drivers/input/keyboard/Makefile	2007-06-01 20:04:45.000000000 +0200
+@@ -19,4 +19,4 @@
+ obj-$(CONFIG_KEYBOARD_OMAP)		+= omap-keypad.o
+ obj-$(CONFIG_KEYBOARD_AAED2000)		+= aaed2000_kbd.o
+ obj-$(CONFIG_KEYBOARD_GPIO)		+= gpio_keys.o
+-
++obj-$(CONFIG_KEYBOARD_PXA)		+= pxakbd.o
+Index: linux-2.6.21/include/asm-arm/arch-pxa/kbd.h
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ linux-2.6.21/include/asm-arm/arch-pxa/kbd.h	2007-06-01 20:04:45.000000000 +0200
+@@ -0,0 +1,28 @@
++/*
++ *  kbd_pxa.h
++ *
++ *  Copyright (C) 2006 Harald Welte <laforge@openezx.org>
++ *
++ *  This program is free software; you can redistribute it and/or modify
++ *  it under the terms of the GNU General Public License version 2 as
++ *  published by the Free Software Foundation.
++ *
++ */
++#ifndef _KBD_PXA_H_
++#define _KBD_PXA_H_
++
++struct pxakbd_platform_data {
++	int (*init)(void);			/* init gpio, etc. */
++	unsigned int scan_interval;
++	struct {
++		unsigned int rows;
++		unsigned int cols;
++		unsigned char *keycode;
++	} matrix;
++	struct {
++		unsigned int num;
++		unsigned char *keycode;
++	} direct;
++};
++
++#endif
+Index: linux-2.6.21/drivers/input/keyboard/pxakbd.c
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ linux-2.6.21/drivers/input/keyboard/pxakbd.c	2007-06-02 10:41:13.000000000 +0200
+@@ -0,0 +1,403 @@
++/*
++ * Driver for Motorola EZX phone "keyboard"
++ *
++ * (C) 2006 by Harald Welte <laforge@openezx.org>
++ *
++ * May, 2007 - Daniel Ribeiro <drwyrm@gmail.com>
++ * 		pm callbacks
++ */
++
++#include <linux/kernel.h>
++#include <linux/module.h>
++#include <linux/interrupt.h>
++#include <linux/input.h>
++#include <linux/spinlock.h>
++#include <linux/platform_device.h>
++
++#include <asm/hardware.h>
++#include <asm/io.h>
++#include <asm/irq.h>
++
++#include <asm/arch/kbd.h>
++#include <asm/arch/irqs.h>
++#include <asm/arch/pxa-regs.h>
++
++#if 0
++#define DEBUGP(x, args ...) printk(x, ## args)
++#else
++#define DEBUGP(x, args ...)
++#endif
++
++/* per-keyboard private data structure */
++struct pxakbd {
++	struct input_dev *input;
++	struct timer_list timer;
++	spinlock_t lock;
++
++	struct resource *res;
++	unsigned int irq;
++	u_int32_t kpc;
++	u_int32_t kpkdi;
++
++	struct pxakbd_platform_data *pd;
++};
++
++static int pxakbd_scan_direct(struct pxakbd *pxakbd)
++{
++	u_int32_t kpdk;
++	unsigned int i;
++	int num_pressed = 0;
++
++	kpdk = KPDK & 0x000000ff;
++	for (i = 0; i < pxakbd->pd->direct.num; i++) {
++		int pressed = 0;
++
++		if (kpdk & (1 << i)) {
++			pressed = 1;
++			num_pressed++;
++			DEBUGP("pxakbd: pressed: direct %u\n", i);
++		}
++		if (pxakbd->pd->direct.keycode[i] != KEY_RESERVED) {
++			DEBUGP( "pxakbd: sending to input layer: keycode = %d, pressed = %d\n", pxakbd->pd->direct.keycode[i], pressed );
++			input_report_key(pxakbd->input, pxakbd->pd->direct.keycode[i],
++			pressed);
++		}
++	}
++	return num_pressed;
++}
++
++/* read the full 8x8 matrix from the PXA27x keypad controller */
++static inline void __read_matrix(u_int8_t *matrix)
++{
++	u_int32_t tmp;
++	u_int8_t row;
++
++	/* Fill the matrix by rows */
++
++	tmp = KPASMKP0;
++	for (row=0; row<8; row++) {
++		/* zero the matrix on the first time, then keep ORing */
++		matrix[row] = ((tmp >> row) & 1);
++		matrix[row] |= ((tmp >> (16 + row)) & 1) << 1;
++	}
++
++	tmp = KPASMKP1;
++	for (row=0; row<8; row++) {
++		matrix[row] |= ((tmp >> row) & 1) << 2;
++		matrix[row] |= ((tmp >> (16 + row)) & 1) << 3;
++	}
++
++	tmp = KPASMKP2;
++	for (row=0; row<8; row++) {
++		matrix[row] |= ((tmp >> row) & 1) << 4;
++		matrix[row] |= ((tmp >> (16 + row)) & 1) << 5;
++	}
++
++	tmp = KPASMKP3;
++	for (row=0; row<8; row++) {
++		matrix[row] |= ((tmp >> row) & 1) << 6;
++		matrix[row] |= ((tmp >> (16 + row)) & 1) << 7;
++	}
++}
++
++/* compare current matrix with last, generate 'diff' events */
++static int __cmp_matrix_gen_events(struct pxakbd *pxakbd, u_int8_t *matrix)
++{
++	unsigned int i;
++	int num_pressed = 0;
++
++	/* iterate over the matrix */
++	for (i = 0; i < pxakbd->pd->matrix.rows; i++) {
++		unsigned int j;
++		for (j = 0; j < pxakbd->pd->matrix.cols; j++) {
++			u_int32_t scancode =
++				(i * pxakbd->pd->matrix.cols) + j;
++			int pressed = matrix[i] & (1 << j);
++
++			if (pressed) {
++				DEBUGP("pxakbd: pressed: %u/%u\n", i, j);
++				num_pressed++;
++			}
++
++			input_report_key(pxakbd->input,
++					 pxakbd->pd->matrix.keycode[scancode], pressed);
++		}
++	}
++
++	return num_pressed;
++}
++
++/* scan the matrix keypad */
++static int pxakbd_scan_matrix(struct pxakbd *pxakbd)
++{
++	int num_pressed;
++	u_int32_t kpas;
++	u_int8_t matrix[8];
++
++	kpas = KPAS;
++
++	if ((kpas & KPAS_MUKP) == KPAS_MUKP_NONE) {
++		/* no keys pressed */
++		memset(matrix, 0, sizeof(matrix));
++	} else if ((kpas & KPAS_MUKP) == KPAS_MUKP_ONE) {
++		/* one key pressed */
++		u_int8_t row = (kpas & KPAS_RP) >> 4;
++		u_int8_t col = kpas & KPAS_CP;
++
++		if (row == 0x0f || col == 0x0f) {
++			printk(KERN_WARNING "pxakbd: col or row invalid!\n");
++			return -1;
++		}
++
++		/* clear the matrix and set the single pressed key */
++		memset(matrix, 0, sizeof(matrix));
++		matrix[row] |= (1 << col);
++	} else {
++		/* multiple keys pressed */
++		__read_matrix(matrix);
++	}
++
++	num_pressed = __cmp_matrix_gen_events(pxakbd, matrix);
++
++	return num_pressed;
++}
++
++static void pxakbd_timer_callback(unsigned long data)
++{
++	unsigned long flags;
++	struct pxakbd *pxakbd = (struct pxakbd *) data;
++	unsigned int num_pressed;
++
++	spin_lock_irqsave(&pxakbd->lock, flags);
++
++	num_pressed = pxakbd_scan_direct(pxakbd);
++	num_pressed += pxakbd_scan_matrix(pxakbd);
++
++	spin_unlock_irqrestore(&pxakbd->lock, flags);
++
++	/* propagate events up the input stack */
++	input_sync(pxakbd->input);
++}
++
++static irqreturn_t pxakbd_interrupt(int irq, void *dummy)
++{
++	struct pxakbd *pxakbd = dummy;
++	u_int32_t kpc;
++	int handled = 0;
++	int num_pressed = 0;
++
++	/* read and clear interrupt */
++	kpc = KPC;
++
++	if (kpc & KPC_DI) {
++		num_pressed += pxakbd_scan_direct(pxakbd);
++		handled = 1;
++	}
++
++	if (kpc & KPC_MI) {
++		while (KPAS & KPAS_SO) {
++			/* wait for scan to complete beforereading scan regs */
++			cpu_relax();
++		}
++		num_pressed += pxakbd_scan_matrix(pxakbd);
++		handled = 1;
++	}
++
++	/* If any keys are currently pressed, we need to start the timer to detect
++	 * key release. */
++	if (num_pressed)
++		mod_timer(&pxakbd->timer, jiffies + pxakbd->pd->scan_interval);
++
++	/* propagate events up the input stack */
++	input_sync(pxakbd->input);
++
++	return IRQ_RETVAL(handled);
++}
++
++static int __init pxakbd_probe(struct platform_device *pdev)
++{
++	struct pxakbd *pxakbd;
++	struct input_dev *input_dev;
++	struct resource *r;
++	int i;
++	int ret = -ENOMEM;
++
++	int rows, cols, n_direct;
++
++	if (!pdev->dev.platform_data) {
++		printk(KERN_ERR "pxakbd: platform data not set\n");
++		ret = -ENODEV;
++		goto out;
++	}
++
++	pxakbd = kzalloc(sizeof(*pxakbd), GFP_KERNEL);
++	if (!pxakbd)
++		goto out;
++
++	input_dev = input_allocate_device();
++	if (!input_dev)
++		goto out_pxa;
++
++	spin_lock_init(&pxakbd->lock);
++	pxakbd->irq = platform_get_irq(pdev, 0);
++	r = platform_get_resource(pdev, IORESOURCE_MEM, 0);
++	if (!r || pxakbd->irq == NO_IRQ) {
++		printk(KERN_ERR "pxakbd: invalid resources\n");
++		ret = -EBUSY;
++		goto out_idev;
++	}
++
++	pxakbd->input = input_dev;
++	init_timer(&pxakbd->timer);
++	pxakbd->timer.function = pxakbd_timer_callback;
++	pxakbd->timer.data = (unsigned long) pxakbd;
++	pxakbd->pd = pdev->dev.platform_data;
++	pxakbd->res = r;
++
++	rows = pxakbd->pd->matrix.rows;
++	cols = pxakbd->pd->matrix.cols;
++	n_direct = pxakbd->pd->direct.num;
++
++	input_dev->name = "pxa-keyboard";
++	input_dev->phys = "pxakbd/input0";
++	input_dev->id.bustype = BUS_HOST;
++	input_dev->id.vendor = 0x0001;
++	input_dev->id.product = 0x0001;
++	input_dev->id.version = 0x0001;
++	input_dev->cdev.dev = &pdev->dev;
++	input_dev->private = pxakbd;
++
++	input_dev->evbit[0] = BIT(EV_KEY)|BIT(EV_REP);
++
++	input_dev->keycodesize = sizeof(unsigned char);
++	input_dev->keycodemax = (rows*cols)+n_direct;
++	input_dev->keycode = kmalloc(input_dev->keycodemax*input_dev->keycodesize,
++		      GFP_KERNEL);
++	if (!input_dev->keycode){
++	       ret = -ENOMEM;
++	       goto out_idev;
++	}
++
++	memcpy(input_dev->keycode, pxakbd->pd->matrix.keycode, rows*cols);
++
++	memcpy(input_dev->keycode+(rows*cols),
++		      pxakbd->pd->direct.keycode,
++		      n_direct);
++
++	for (i = 0; i < rows*cols; i++)
++		set_bit(pxakbd->pd->matrix.keycode[i], input_dev->keybit);
++
++	for (i = 0; i < n_direct; i++)
++		set_bit(pxakbd->pd->direct.keycode[i], input_dev->keybit);
++
++	clear_bit(0, input_dev->keybit);
++
++	if (request_irq(pxakbd->irq, pxakbd_interrupt, 0, "pxakbd", pxakbd)) {
++		printk(KERN_ERR "pxakbd: can't request irq %d\n", pxakbd->irq);
++		ret = -EBUSY;
++		goto out_idev;
++	}
++
++	r = request_mem_region(r->start, 0x4c, "pxakbd");
++	if (!r) {
++		printk(KERN_ERR "pxakbd: can't request memregion\n");
++		ret = -EBUSY;
++		goto out_irq;
++	}
++
++	/* set up gpio */
++	pxakbd->pd->init();
++
++	/* set keypad control register */
++	KPC = (KPC_ASACT |         /* automatic scan on activity */
++		KPC_ME | KPC_DE |   /* matrix and direct keypad enabled */
++		((pxakbd->pd->matrix.cols-1)<<23) | /* columns */
++		((pxakbd->pd->matrix.rows-1)<<26) | /* rows */
++		((pxakbd->pd->direct.num-1)<<6) | /* direct keys */
++		KPC_MS_ALL); /* scan all columns */
++
++	pxa_set_cken(CKEN19_KEYPAD, 1);
++
++	KPC |= (KPC_DIE | KPC_MIE); /* enable matrix and direct keyboard */
++
++	KPKDI = 0x40;	/* matrix key debounce interval: 0x40 */
++
++	platform_set_drvdata(pdev, pxakbd);
++
++	return input_register_device(pxakbd->input);
++
++out_drvdata:
++	platform_set_drvdata(pdev, NULL);
++out_mem:
++	release_resource(r);
++out_irq:
++	free_irq(pxakbd->irq, pxakbd);
++out_idev:
++	kfree(input_dev->keycode);
++	input_free_device(input_dev);
++out_pxa:
++	kfree(pxakbd);
++out:
++	return ret;
++}
++
++static int pxakbd_remove(struct platform_device *pdev)
++{
++	struct pxakbd *pxakbd = platform_get_drvdata(pdev);
++
++	kfree(pxakbd->input->keycode);
++	input_unregister_device(pxakbd->input);
++	platform_set_drvdata(pdev, NULL);
++	release_resource(pxakbd->res);
++	free_irq(pxakbd->irq, pxakbd);
++	kfree(pxakbd);
++
++	return 0;
++}
++
++static int pxakbd_suspend(struct platform_device *pdev, pm_message_t state)
++{
++       struct pxakbd *pxakbd = platform_get_drvdata(pdev);
++
++       pxakbd->kpc = KPC;
++       pxakbd->kpkdi = KPKDI;
++
++       return 0;
++}
++
++static int pxakbd_resume(struct platform_device *pdev)
++{
++       struct pxakbd *pxakbd = platform_get_drvdata(pdev);
++
++       KPC = pxakbd->kpc;
++       KPKDI = pxakbd->kpkdi;
++
++       return 0;
++}
++
++static struct platform_driver pxakbd_driver = {
++	.probe		= &pxakbd_probe,
++	.remove		= &pxakbd_remove,
++	.suspend	= &pxakbd_suspend,
++	.resume		= &pxakbd_resume,
++	.driver		= {
++		.name	= "pxa-keyboard",
++	},
++};
++
++static int __devinit pxakbd_init(void)
++{
++	return platform_driver_register(&pxakbd_driver);
++}
++
++static void __exit pxakbd_exit(void)
++{
++	platform_driver_unregister(&pxakbd_driver);
++}
++
++module_init(pxakbd_init);
++module_exit(pxakbd_exit);
++
++MODULE_AUTHOR("Harald Welte <laforge@openezx.org>");
++MODULE_DESCRIPTION("Driver for Intel PXA27x keypad controller");
++MODULE_LICENSE("GPL");
+Index: linux-2.6.21/include/asm-arm/arch-pxa/pxa-regs.h
+===================================================================
+--- linux-2.6.21.orig/include/asm-arm/arch-pxa/pxa-regs.h	2007-06-01 20:04:45.000000000 +0200
++++ linux-2.6.21/include/asm-arm/arch-pxa/pxa-regs.h	2007-06-01 20:04:45.000000000 +0200
+@@ -2165,6 +2165,11 @@
+ #define KPMK_MKP        (0x1 << 31)
+ #define KPAS_SO         (0x1 << 31)
+ #define KPASMKPx_SO     (0x1 << 31)
++#define KPAS_RP		(0x000000f0)
++#define KPAS_CP		(0x0000000f)
++#define KPAS_MUKP	(0x7c000000)
++#define KPAS_MUKP_ONE	(0x04000000)
++#define KPAS_MUKP_NONE	(0x00000000)
+ 
+ /*
+  * UHC: USB Host Controller (OHCI-like) register definitions
