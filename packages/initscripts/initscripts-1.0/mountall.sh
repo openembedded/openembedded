@@ -14,7 +14,7 @@ fi
 # about this. So we mount "proc" filesystems without -v.
 #
 test "$VERBOSE" != no && echo "Mounting local filesystems..."
-mount -a $MOUNTALL 2>/dev/null
+mount -a $MOUNTALL 2>&1 | logger -s -p user.err
 
 #
 # We might have mounted something over /dev, see if /dev/initctl is there.
