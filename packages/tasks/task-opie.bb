@@ -36,7 +36,7 @@ RDEPENDS_task-opie-base = "opie-init opie-alarm opie-qcop opie-qss opie-quicklau
 #
 RDEPENDS_task-opie-base-applets = "opie-aboutapplet opie-clockapplet opie-suspendapplet \
                                    opie-homeapplet opie-rotateapplet \
-		   opie-brightnessapplet opie-volumeapplet \
+		                   opie-brightnessapplet opie-volumeapplet \
                                    opie-screenshotapplet \
     ${@base_contains("COMBINED_FEATURES", "irda", "opie-irdaapplet", "",d)} \
     ${@base_contains("COMBINED_FEATURES", "apm", "opie-batteryapplet", "",d)} \
