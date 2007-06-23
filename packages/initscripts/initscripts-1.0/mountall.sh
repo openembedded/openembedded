@@ -4,6 +4,9 @@
 # Version:	@(#)mountall.sh  2.83-2  01-Nov-2001  miquels@cistron.nl
 #
 . /etc/default/rcS
+if test -f /etc/default/mountall; then
+    . /etc/default/mountall
+fi
 
 #
 # Mount local filesystems in /etc/fstab. For some reason, people
@@ -11,7 +14,7 @@
 # about this. So we mount "proc" filesystems without -v.
 #
 test "$VERBOSE" != no && echo "Mounting local filesystems..."
-mount -at nonfs,nosmbfs,noncpfs 2>/dev/null
+mount -a $MOUNTALL 2>/dev/null
 
 #
 # We might have mounted something over /dev, see if /dev/initctl is there.
