@@ -5,18 +5,18 @@ ALLOW_EMPTY = "1"
 LICENSE = "MIT"
 PROVIDES = "task-opie-everything"
 
-PR = "r7"
+PR = "r8"
 
-PACKAGES = "task-opie-applets task-opie-apps task-opie-base \
+PACKAGES = "task-opie-applets task-opie-base \
             task-opie-base-applets task-opie-base-apps \
             task-opie-base-decorations task-opie-base-inputmethods \
             task-opie-base-pim task-opie-base-settings \
             task-opie-base-styles task-opie-bluetooth \
             task-opie-base-todayplugins \
             task-opie-datebookplugins task-opie-decorations \
-            task-opie-extra-apps task-opie-extra-settings \
-            task-opie-extra-styles task-opie-extra-games \
-            task-opie-games task-opie-inputmethods task-opie-irda \
+            task-opie-extra-settings \
+            task-opie-extra-styles \
+            task-opie-inputmethods task-opie-irda \
             task-opie-multimedia task-opie-pim task-opie-settings \
             task-opie-styles task-opie-todayplugins task-opie-wlan"
 
@@ -99,22 +99,7 @@ RDEPENDS_task-opie-applets = "opie-aboutapplet opie-autorotateapplet opie-batter
                      opie-screenshotapplet opie-suspendapplet opie-vmemo \
                      opie-volumeapplet opie-vtapplet opie-zkbapplet \
                      "
-RDEPENDS_task-opie-apps = "opie-advancedfm opie-bartender opie-calculator \
-                  opie-checkbook opie-clock \
-                  opie-console opie-dagger opie-embeddedkonsole \
-                  opie-euroconv opie-eye opie-ftp opie-gutenbrowser \
-                  opie-helpbrowser opie-irc opie-keypebble opie-odict \
-                  opie-oxygen opie-rdesktop opie-reader opie-remote \
-                  opie-sheet opie-tableviewer opie-tinykate \
-                  opie-wellenreiter opie-write opie-zsafe"
-
 RDEPENDS_task-opie-decorations = "opie-deco-flat opie-deco-liquid opie-deco-polished"
-
-RDEPENDS_task-opie-games = "opie-backgammon opie-bounce opie-buzzword opie-fifteen \
-                   opie-go opie-kbill opie-kcheckers opie-kpacman opie-mindbreaker \
-                   opie-minesweep opie-oyatzee opie-parashoot opie-qasteroids \
-                   opie-sfcave opie-snake opie-solitaire opie-tetrix opie-tictac \
-                   opie-wordgame opie-zlines opie-zsame"
 
 RDEPENDS_task-opie-inputmethods = "opie-dasher opie-dvorak opie-handwriting \
                           opie-handwriting-classicset opie-jumpx opie-keyboard \
@@ -161,17 +146,3 @@ RDEPENDS_task-opie-bluetooth = "bluez-utils obexftp obexpush libopieobex0 \
 RDEPENDS_task-opie-wlan = "wireless-tools opie-wellenreiter opie-networksettings-wlanplugin"
 
 RDEPENDS_task-opie-irda = "irda-utils libopieobex0 obexftp obexpush"
-
-#
-# additional things for a >= 24mb distribution
-#
-
-RDEPENDS_task-opie-extra-apps = "opie-calculator opie-checkbook opie-mail opie-eye \
-                        opie-rdesktop opie-wellenreiter opie-irc \
-                        opie-mediaplayer2 \
-                        qpdf2"
-# konqueror-embedded
-
-RDEPENDS_task-opie-extra-games = "opie-parashoot opie-mindbreaker opie-fifteen opie-tictac \
-                         opie-tetrix"
-
