@@ -2,12 +2,14 @@ export IMAGE_BASENAME = "opie-image-16mb"
 export IMAGE_LINGUAS = ""
 
 LICENSE = "MIT"
-PR = "r0"
+PR = "r1"
 
 DEPENDS = "${MACHINE_TASK_PROVIDER} task-opie-16mb"
 RDEPENDS = "${INSTALL_PACKAGES}"
 
-INSTALL_PACKAGES = "${MACHINE_TASK_PROVIDER} \
+INSTALL_PACKAGES = "task-boot \
+                    ipkg ipkg-collateral \
+                    dropbear \
                     task-opie-16mb-base \
                     task-opie-16mb-applets \
                     task-opie-16mb-inputmethods \
