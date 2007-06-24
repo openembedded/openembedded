@@ -1,0 +1,11 @@
+--- python_2.5.1/setup.py.org	2007-06-22 20:07:56.000000000 +0200
++++ python_2.5.1/setup.py	2007-06-22 20:03:44.000000000 +0200
+@@ -571,7 +626,7 @@
+ 
+         #print 'openssl_ver = 0x%08x' % openssl_ver
+ 
+-        if (ssl_incs is not None and
++        if 0 and (ssl_incs is not None and
+             ssl_libs is not None and
+             openssl_ver >= 0x00907000):
+             # The _hashlib module wraps optimized implementations

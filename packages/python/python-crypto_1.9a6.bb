@@ -7,5 +7,6 @@ SRCNAME = "pycrypto"
 LICENSE = "python-crypto"
 SRC_URI = "http://www.amk.ca/files/python/crypto/${SRCNAME}-${PV}.tar.gz"
 S = "${WORKDIR}/${SRCNAME}-${PV}"
+PR = "r1"
 
 inherit distutils

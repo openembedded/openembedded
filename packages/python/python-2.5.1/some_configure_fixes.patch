@@ -1,0 +1,68 @@
+--- configure.in.org	2007-03-12 11:50:51.000000000 +0100
++++ configure.in	2007-06-18 16:06:00.000000000 +0200
+@@ -3345,62 +3345,11 @@
+   AC_MSG_RESULT(no)
+ )
+ 
+-AC_MSG_CHECKING(for /dev/ptmx)
++AC_CHECK_FILE(/dev/ptmx, AC_DEFINE(HAVE_DEV_PTMX, 1, [Define if we have /dev/ptmx.]))
+ 
+-if test -r /dev/ptmx
+-then
+-  AC_MSG_RESULT(yes)
+-  AC_DEFINE(HAVE_DEV_PTMX, 1,
+-  [Define if we have /dev/ptmx.])
+-else
+-  AC_MSG_RESULT(no)
+-fi
+-
+-AC_MSG_CHECKING(for /dev/ptc)
+-
+-if test -r /dev/ptc
+-then
+-  AC_MSG_RESULT(yes)
+-  AC_DEFINE(HAVE_DEV_PTC, 1,
+-  [Define if we have /dev/ptc.])
+-else
+-  AC_MSG_RESULT(no)
+-fi
+-
+-AC_MSG_CHECKING(for %zd printf() format support)
+-AC_TRY_RUN([#include <stdio.h>
+-#include <stddef.h>
+-#include <string.h>
+-
+-int main()
+-{
+-    char buffer[256];
+-
+-#ifdef HAVE_SSIZE_T
+-typedef ssize_t Py_ssize_t;
+-#elif SIZEOF_VOID_P == SIZEOF_LONG
+-typedef long Py_ssize_t;
+-#else
+-typedef int Py_ssize_t;
+-#endif
+-
+-    if(sprintf(buffer, "%zd", (size_t)123) < 0)
+-       	return 1;
+-
+-    if (strcmp(buffer, "123"))
+-	return 1;
+-
+-    if (sprintf(buffer, "%zd", (Py_ssize_t)-123) < 0)
+-       	return 1;
++AC_CHECK_FILE(/dev/ptc, AC_DEFINE(HAVE_DEV_PTC, 1, [Define if we have /dev/ptc.]))
+ 
+-    if (strcmp(buffer, "-123"))
+-	return 1;
+-
+-    return 0;
+-}],
+-[AC_MSG_RESULT(yes)
+- AC_DEFINE(PY_FORMAT_SIZE_T, "z", [Define to printf format modifier for Py_ssize_t])],
+- AC_MSG_RESULT(no))
++AC_DEFINE(PY_FORMAT_SIZE_T, "z", [Define to printf format modifier for Py_ssize_t])
+ 
+ AC_CHECK_TYPE(socklen_t,,
+   AC_DEFINE(socklen_t,int,
