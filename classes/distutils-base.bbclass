@@ -7,6 +7,7 @@ def python_dir(d):
 	staging_incdir = bb.data.getVar( "STAGING_INCDIR", d, 1 )
 	if os.path.exists( "%s/python2.3" % staging_incdir ): return "python2.3"
 	if os.path.exists( "%s/python2.4" % staging_incdir ): return "python2.4"
+	if os.path.exists( "%s/python2.5" % staging_incdir ): return "python2.5"
 	raise "No Python in STAGING_INCDIR. Forgot to build python-native ?"
 
 PYTHON_DIR = "${@python_dir(d)}"
