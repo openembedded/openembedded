@@ -51,7 +51,8 @@ EXTRA_OEMAKE += "'INSTALL=install' \
 		 'usrbindir=${bindir}' \
 		 'usrsbindir=${sbindir}' \
 		 'includedir=${includedir}' \
-		 'mandir=${mandir}'"
+		 'mandir=${mandir}' \
+		 DISTRO=''"
 
 do_install () {
 	oe_runmake 'ROOT=${D}' install
