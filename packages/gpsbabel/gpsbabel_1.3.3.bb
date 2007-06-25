@@ -4,7 +4,7 @@ DEPENDS = "expat libusb"
 HOMEPAGE = "http://gpsbabel.sf.net"
 LICENSE = "GPL"
 
-PR = "r1"
+PR = "r0"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/gpsbabel/gpsbabel-${PV}.tar.gz"
 
