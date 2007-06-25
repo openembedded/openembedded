@@ -1,0 +1,18 @@
+diff -Naur liboil-0.3.9-org/configure.ac liboil-0.3.9/configure.ac
+--- liboil-0.3.9-org/configure.ac	2007-02-26 20:06:52.000000000 +0100
++++ liboil-0.3.9/configure.ac	2007-02-26 20:16:35.000000000 +0100
+@@ -99,14 +99,6 @@
+ 
+ AS_HOST_DEFINES()
+ 
+-AS_GCC_ASM_POWERPC_FPU([HAVE_GCC_ASM_POWERPC_FPU=yes],
+-  [HAVE_GCC_ASM_POWERPC_FPU=no])
+-if test x$HAVE_GCC_ASM_POWERPC_FPU = xyes ; then
+-  AC_DEFINE(HAVE_GCC_ASM_POWERPC_FPU, 1,
+-    [Define if compiler supports PowerPC FPU instructions])
+-fi
+-AM_CONDITIONAL(HAVE_GCC_ASM_POWERPC_FPU,
+-  test "x$HAVE_GCC_ASM_POWERPC" = "xyes")
+ 
+ AC_C_BIGENDIAN
+ AS_UNALIGNED_ACCESS
