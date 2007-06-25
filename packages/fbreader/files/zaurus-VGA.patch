@@ -1,0 +1,13 @@
+--- fbreader-0.8.2a/fbreader/data/default/styles.gpe640x480.xml.orig	2007-06-24 23:55:56.000000000 +0000
++++ fbreader-0.8.2a/fbreader/data/default/styles.gpe640x480.xml	2007-06-24 23:56:22.000000000 +0000
+@@ -1,8 +1,8 @@
+ <?xml version="1.0" encoding="UTF-8"?>
+ <DefaultStyles>
+-	<base family="Sans" fontSize="16"/>
++	<base family="Sans" fontSize="8"/>
+ 	<style id="0" name="Regular Paragraph" firstLineIndentDelta="22" allowHyphenations="true"/>
+-	<style id="1" name="Title" fontSizeDelta="10" bold="true" spaceBefore="2" spaceAfter="7" alignment="center" allowHyphenations="false"/>
++	<style id="1" name="Title" fontSizeDelta="5" bold="true" spaceBefore="2" spaceAfter="7" alignment="center" allowHyphenations="false"/>
+ 	<style id="3" name="Poem Title" fontSizeDelta="2" bold="true" spaceBefore="6" spaceAfter="6" leftIndent="40" allowHyphenations="false"/>
+ 	<style id="2" name="Section Title" fontSizeDelta="6" bold="true" spaceAfter="5" alignment="center" allowHyphenations="false"/>
+ 	<style id="31" name="Header 1" fontSizeDelta="6" bold="true" spaceAfter="5" alignment="center" allowHyphenations="false"/>
