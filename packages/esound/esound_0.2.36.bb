@@ -2,6 +2,7 @@ DESCRIPTION = "Enlightened Sound Daemon"
 SECTION = "gpe/base"
 LICENSE = "GPL"
 DEPENDS = "audiofile"
+PE = "1"
 PR = "r2"
 
 inherit gnome binconfig

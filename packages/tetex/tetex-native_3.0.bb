@@ -1,7 +1,7 @@
 require tetex_${PV}.bb
 inherit native
 DEPENDS = ""
-PR = "r1"
+PR = "r2"
 
 PACKAGES=""
 RRECOMMENDS_${PN}=""
@@ -27,4 +27,9 @@ do_stage() {
 do_install () {
 	:
 }
+
+
+do_rm_work () {
+        :
+}	
 

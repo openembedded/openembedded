@@ -26,6 +26,7 @@ EXTRA_OECONF = "\
 		--enable-libmpeg3=no \
 		--enable-freetype=yes \
 		--enable-sdl=no \
+        --enable-vnc=no \
 		"
 
 do_stage() {

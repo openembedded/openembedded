@@ -1,0 +1,197 @@
+Index: git/lib_arm/div0.c
+===================================================================
+--- git.orig/lib_arm/div0.c
++++ git/lib_arm/div0.c
+@@ -22,9 +22,3 @@
+  */
+ 
+ /* Replacement (=dummy) for GNU/Linux division-by zero handler */
+-void __div0 (void)
+-{
+-	extern void hang (void);
+-
+-	hang();
+-}
+Index: git/board/neo1973/common/bootmenu.c
+===================================================================
+--- git.orig/board/neo1973/common/bootmenu.c
++++ git/board/neo1973/common/bootmenu.c
+@@ -118,3 +118,14 @@ void neo1973_bootmenu(void)
+ 	bootmenu_add("Factory reset", factory_reset, NULL);
+ 	bootmenu();
+ }
++
++void raise()
++{
++    serial_printf( "*** something's wrong... please reset ***\n" );
++}
++
++void abort()
++{
++    serial_printf( "*** something's wrong... please reset ***\n" );
++}
++
+Index: git/board/neo1973/gta01/u-boot.lds
+===================================================================
+--- git.orig/board/neo1973/gta01/u-boot.lds
++++ git/board/neo1973/gta01/u-boot.lds
+@@ -39,6 +39,10 @@ SECTIONS
+ 
+ 	. = ALIGN(4);
+ 	.rodata : { *(.rodata) }
++	.ARM.extab   : { *(.ARM.extab* .gnu.linkonce.armextab.*) }
++	__exidx_start = .;
++	.ARM.exidx   : { *(.ARM.exidx* .gnu.linkonce.armexidx.*) }
++	__exidx_end = .;
+ 
+ 	. = ALIGN(4);
+ 	.data : { *(.data) }
+Index: git/board/neo1973/gta02/u-boot.lds
+===================================================================
+--- git.orig/board/neo1973/gta02/u-boot.lds
++++ git/board/neo1973/gta02/u-boot.lds
+@@ -39,6 +39,10 @@ SECTIONS
+ 
+ 	. = ALIGN(4);
+ 	.rodata : { *(.rodata) }
++	.ARM.extab   : { *(.ARM.extab* .gnu.linkonce.armextab.*) }
++	__exidx_start = .;
++	.ARM.exidx   : { *(.ARM.exidx* .gnu.linkonce.armexidx.*) }
++	__exidx_end = .;
+ 
+ 	. = ALIGN(4);
+ 	.data : { *(.data) }
+Index: git/board/neo1973/common/lowlevel_foo.lds
+===================================================================
+--- git.orig/board/neo1973/common/lowlevel_foo.lds
++++ git/board/neo1973/common/lowlevel_foo.lds
+@@ -37,6 +37,10 @@ SECTIONS
+ 
+ 	. = ALIGN(4);
+ 	.rodata : { *(.rodata) }
++	.ARM.extab   : { *(.ARM.extab* .gnu.linkonce.armextab.*) }
++	__exidx_start = .;
++	.ARM.exidx   : { *(.ARM.exidx* .gnu.linkonce.armexidx.*) }
++	__exidx_end = .;
+ 
+ 	. = ALIGN(4);
+ 	.data : { *(.data) }
+Index: git/board/hxd8/hxd8.c
+===================================================================
+--- git.orig/board/hxd8/hxd8.c
++++ git/board/hxd8/hxd8.c
+@@ -187,3 +187,6 @@ unsigned int dynpart_size[] = {
+ char *dynpart_names[] = {
+     "u-boot", "u-boot_env", "kernel", "splash", "rootfs", NULL };
+ 
++void raise() {}
++
++void abort() {}
+Index: git/board/hxd8/u-boot.lds
+===================================================================
+--- git.orig/board/hxd8/u-boot.lds
++++ git/board/hxd8/u-boot.lds
+@@ -39,6 +39,10 @@ SECTIONS
+ 
+ 	. = ALIGN(4);
+ 	.rodata : { *(.rodata) }
++	.ARM.extab   : { *(.ARM.extab* .gnu.linkonce.armextab.*) }
++	__exidx_start = .;
++	.ARM.exidx   : { *(.ARM.exidx* .gnu.linkonce.armexidx.*) }
++	__exidx_end = .;
+ 
+ 	. = ALIGN(4);
+ 	.data : { *(.data) }
+Index: git/board/hxd8/lowlevel_foo.lds
+===================================================================
+--- git.orig/board/hxd8/lowlevel_foo.lds
++++ git/board/hxd8/lowlevel_foo.lds
+@@ -37,6 +37,10 @@ SECTIONS
+ 
+ 	. = ALIGN(4);
+ 	.rodata : { *(.rodata) }
++	.ARM.extab   : { *(.ARM.extab* .gnu.linkonce.armextab.*) }
++	__exidx_start = .;
++	.ARM.exidx   : { *(.ARM.exidx* .gnu.linkonce.armexidx.*) }
++	__exidx_end = .;
+ 
+ 	. = ALIGN(4);
+ 	.data : { *(.data) }
+Index: git/board/qt2410/qt2410.c
+===================================================================
+--- git.orig/board/qt2410/qt2410.c
++++ git/board/qt2410/qt2410.c
+@@ -156,3 +156,7 @@ unsigned int dynpart_size[] = {
+ char *dynpart_names[] = {
+     "u-boot", "u-boot_env", "kernel", "splash", "rootfs", NULL };
+ 
++void raise() {}
++
++void abort() {}
++
+Index: git/board/qt2410/u-boot.lds
+===================================================================
+--- git.orig/board/qt2410/u-boot.lds
++++ git/board/qt2410/u-boot.lds
+@@ -39,6 +39,10 @@ SECTIONS
+ 
+ 	. = ALIGN(4);
+ 	.rodata : { *(.rodata) }
++	.ARM.extab   : { *(.ARM.extab* .gnu.linkonce.armextab.*) }
++	__exidx_start = .;
++	.ARM.exidx   : { *(.ARM.exidx* .gnu.linkonce.armexidx.*) }
++	__exidx_end = .;
+ 
+ 	. = ALIGN(4);
+ 	.data : { *(.data) }
+Index: git/Makefile
+===================================================================
+--- git.orig/Makefile
++++ git/Makefile
+@@ -225,7 +225,7 @@ LIBS := $(addprefix $(obj),$(LIBS))
+ .PHONY : $(LIBS)
+ 
+ # Add GCC lib
+-PLATFORM_LIBS += -L $(shell dirname `$(CC) $(CFLAGS) -print-libgcc-file-name`) -lgcc
++PLATFORM_LIBS += -L $(shell dirname `$(CC) $(CFLAGS) -print-libgcc-file-name`) -lgcc -lgcc_eh
+ 
+ # The "tools" are needed early, so put this first
+ # Don't include stuff already done in $(LIBS)
+Index: git/board/smdk2440/smdk2440.c
+===================================================================
+--- git.orig/board/smdk2440/smdk2440.c
++++ git/board/smdk2440/smdk2440.c
+@@ -150,3 +150,6 @@ char *dynpart_names[] = {
+     "u-boot", "u-boot_env", "kernel", "splash", "rootfs", NULL };
+ 
+ 
++void raise() {}
++void abort() {}
++
+Index: git/board/smdk2440/u-boot.lds
+===================================================================
+--- git.orig/board/smdk2440/u-boot.lds
++++ git/board/smdk2440/u-boot.lds
+@@ -39,6 +39,10 @@ SECTIONS
+ 
+ 	. = ALIGN(4);
+ 	.rodata : { *(.rodata) }
++	.ARM.extab   : { *(.ARM.extab* .gnu.linkonce.armextab.*) }
++	__exidx_start = .;
++	.ARM.exidx   : { *(.ARM.exidx* .gnu.linkonce.armexidx.*) }
++	__exidx_end = .;
+ 
+ 	. = ALIGN(4);
+ 	.data : { *(.data) }
+Index: git/board/neo1973/gta02/gta02.c
+===================================================================
+--- git.orig/board/neo1973/gta02/gta02.c
++++ git/board/neo1973/gta02/gta02.c
+@@ -321,3 +321,7 @@ int neo1973_set_charge_mode(enum neo1973
+ 	/* FIXME */
+ 	return 0;
+ }
++
++void raise() {}
++void abort() {}
++

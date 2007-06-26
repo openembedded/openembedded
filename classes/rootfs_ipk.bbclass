@@ -9,8 +9,7 @@ do_rootfs[depends] += "ipkg-native:do_populate_staging ipkg-utils-native:do_popu
 
 IPKG_ARGS = "-f ${T}/ipkg.conf -o ${IMAGE_ROOTFS} ${@base_conditional("PACKAGE_INSTALL_NO_DEPS", "1", "-nodeps", "", d)}"
 
-RDEPENDS += "ipkg ipkg-collateral"
-PACKAGE_INSTALL += "ipkg ipkg-collateral"
+DISTRO_EXTRA_RDEPENDS += " ipkg ipkg-collateral "
 PACKAGE_INSTALL_NO_DEPS ?= "0"
 
 rootfs_ipk_do_indexes () {

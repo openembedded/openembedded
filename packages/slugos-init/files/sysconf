@@ -8,7 +8,6 @@
 # to load these functions!)
 test "$1" != sysconf && . /etc/default/functions
 
-# NSLU2 flash layout is non-standard.
 case "$(machine)" in
 nslu2)
 	kpart="Kernel"
@@ -493,6 +492,8 @@ sysconf_test_restore(){
 sysconf_save(){
 	local sysdev ffsdev ffsdir saved list size status
 	ffsdev="$(mtblockdev $ffspart)"
+	[ -n "$ffsdev" ] || \
+	ffsdev="$(mtblockdev rootfs)"
 	sysdev="$(mtblockdev $syspart)"
 	status=1
 	if test -n "$sysdev" -a -b "$sysdev" -a -n "$ffsdev" -a -b "$ffsdev"
@@ -622,6 +623,8 @@ sysconf_restore(){
 	test "$1" = auto && sysconf_noninteractive=1
 
 	ffsdev="$(mtblockdev $ffspart)"
+	[ -n "$ffsdev" ] || \
+	ffsdev="$(mtblockdev rootfs)"
 	sysdev="$(mtblockdev $syspart)"
 	status=1
 	if test -n "$sysdev" -a -b "$sysdev" -a -n "$ffsdev" -a -b "$ffsdev" &&
