@@ -1,5 +1,5 @@
 DESCRIPTION = "Merge machine and distro options to create a basic machine task/package"
-PR = "r36"
+PR = "r37"
 
 DEPENDS = "task-boot"
 PROVIDES = "${PACKAGES}"
@@ -196,8 +196,7 @@ RRECOMMENDS_task-base-alsa = "\
 
 RDEPENDS_task-base-pcmcia = "\
     ${PCMCIA_MANAGER} \
-    ${@base_contains('DISTRO_FEATURES', 'wifi', 'prism3-firmware', '',d)} \
-    ${@base_contains('DISTRO_FEATURES', 'wifi', 'prism3-support', '',d)} \
+    ${@base_contains('DISTRO_FEATURES', 'wifi', 'prism-firmware', '',d)} \
     ${@base_contains('DISTRO_FEATURES', 'wifi', 'spectrum-fw', '',d)} \
     "
 
