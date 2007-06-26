@@ -4,7 +4,8 @@ LICENSE = "GPL"
 HOMEPAGE = "http://www.lyx.org"
 DEPENDS = "boost qt4-x11-free"
 RRECOMMENDS = "tetex"
-PR = "r0"
+RDEPENDS = "python-shell"
+PR = "r1"
 
 DEFAULT_PREFERENCE = "-1"
 
