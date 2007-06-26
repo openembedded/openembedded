@@ -159,7 +159,7 @@ fsoptions() {
 # get_flash <directory> {mount options}
 #  mount the flash device, writeable, on the given directory
 get_flash() {
-	local ffsdir ffsdev
+	local ffsdir ffspart ffsdev
 
 	ffsdir="$1"
 	shift
@@ -169,9 +169,12 @@ get_flash() {
 	}
 
 	case "$(machine)" in
-	nslu2)	ffsdev="$(mtblockdev Flashdisk)";;
-	*)	ffsdev="$(mtblockdev filesystem)";;
+	nslu2)	ffspart="Flashdisk";;
+	*)	ffspart="filesystem";;
 	esac
+	ffsdev="$(mtblockdev $ffspart)"
+	[ -n "$ffsdev" ] || \
+	ffsdev="$(mtblockdev rootfs)"
 	umountflash "$ffsdev" &&
 	mountflash "$ffsdev" "$ffsdir" "$@"
 }
