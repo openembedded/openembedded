@@ -4,7 +4,7 @@ HOMEPAGE = "http://only.mawhrin.net/fbreader/"
 SECTION = "x11/utils"
 PRIORITY = "optional"
 DEPENDS = "gtk+ enca expat bzip2 libgpewidget"
-PR = "r3"
+PR = "r4"
 
 # The RESOLUTION is defined at compile time which makes
 # this package MACHINE specific.
@@ -13,6 +13,12 @@ PACKAGE_ARCH_${PN} = "${MACHINE_ARCH}"
 SRC_URI = "http://only.mawhrin.net/fbreader/fbreader-sources-${PV}.tgz \
 	   file://fbreader-0.8.2a_buildsys_oe.patch;patch=1 \
 	   file://480x640-buildfix.patch;patch=1"
+	   
+SRC_URI_append_spitz = "\
+		  file://zaurus-VGA.patch;patch=1"
+
+SRC_URI_append_akita = "\
+		  file://zaurus-VGA.patch;patch=1"
 
 # Set the defaults
 READER_RESOLUTION = "240x320"
@@ -22,6 +28,8 @@ READER_STATUS	  = "release"
 
 # Set device specific overrides
 READER_RESOLUTION_fic-gta01 = "480x640"
+READER_RESOLUTION_spitz = "640x480"
+READER_RESOLUTION_akita = "640x480"
 
 FILES_${PN} += "${datadir}/FBReader ${datadir}/zlibrary"
 
