@@ -169,3 +169,6 @@ ac_cv_have_abstract_sockets=${ac_cv_have_abstract_sockets=no}
 # lftp
 ac_cv_file___dev_ptc_=yes
 
+#mono
+mono_cv_uscore=${mono_cv_uscore=no}
+
