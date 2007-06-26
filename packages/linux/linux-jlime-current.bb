@@ -13,7 +13,7 @@ inherit kernel
 
 PR = "r1"
 
-SRC_URI = "git://filip.eu.org/jlime-current.git;protocol=git; \
-           git://filip.eu.org/jlime.git;protocol=git;"
+SRC_URI = "git://filip.eu.org/jlime-current.git;protocol=git \
+           git://filip.eu.org/jlime.git;protocol=git"
 
 S = "${WORKDIR}/jlime-current"
