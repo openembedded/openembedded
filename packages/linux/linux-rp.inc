@@ -21,18 +21,19 @@ ALLOW_EMPTY = "1"
 
 EXTRA_OEMAKE = "OPENZAURUS_RELEASE=-${DISTRO_VERSION}"
 COMPATIBLE_HOST = "(arm|i.86).*-linux"
-COMPATIBLE_MACHINE = '(collie|poodle|c7x0|akita|spitz|tosa|hx2000|qemuarm|qemux86)'
+COMPATIBLE_MACHINE = '(collie|poodle|c7x0|akita|spitz|tosa|hx2000|qemuarm|qemux86|bootcdx86)'
 KERNEL_IMAGETYPE_qemux86 = "bzImage"
+KERNEL_IMAGETYPE_bootcdx86 = "bzImage"
 
-KERNEL_CUSTOM_NAME = '${@bb.data.getVar("KERNEL_CUSTOM_NAME_OVERRIDE",d,1) or ""}'
-KERNEL_DEPLOY_NAME = '${@bb.data.getVar("KERNEL_DEPLOY_NAME_OVERRIDE",d,1) or "${KERNEL_IMAGETYPE}-${PV}-${KERNEL_CUSTOM_NAME}${MACHINE}-${DATETIME}.bin"}'
-KERNEL_SYMLINK_NAME =  '${@bb.data.getVar("KERNEL_SYMLINK_NAME_OVERRIDE",d,1) or "${KERNEL_IMAGETYPE}-${KERNEL_CUSTOM_NAME}${MACHINE}.bin"}'
-KERNEL_DEFCONFIG = '${@bb.data.getVar("KERNEL_DEFCONFIG_OVERRIDE",d,1) or "defconfig-${MACHINE}"}' 
+KERNEL_CUSTOM_NAME ?= ""
+KERNEL_DEPLOY_NAME ?= "${KERNEL_IMAGETYPE}-${PV}-${KERNEL_CUSTOM_NAME}${MACHINE}-${DATETIME}.bin"
+KERNEL_SYMLINK_NAME ?=  "${KERNEL_IMAGETYPE}-${KERNEL_CUSTOM_NAME}${MACHINE}.bin"
+KERNEL_DEFCONFIG ?= "defconfig-${MACHINE}"
 
 CMDLINE_CON = "console=ttyS0,115200n8 console=tty1 noinitrd"
 CMDLINE_CON_collie = "console=ttySA0,115200n8 console=tty1 noinitrd"
-CMDLINE_ROOT = '${@bb.data.getVar("CMDLINE_ROOT_OVERRIDE",d,1) or "root=/dev/mtdblock2 rootfstype=jffs2"}'
-CMDLINE_ROOT_spitz = '${@bb.data.getVar("CMDLINE_ROOT_OVERRIDE",d,1) or "root=/dev/hda1 rootfstype=ext3 rootdelay=1 rw"}'
+CMDLINE_ROOT ?= "root=/dev/mtdblock2 rootfstype=jffs2"
+CMDLINE_ROOT_spitz ?= "root=/dev/hda1 rootfstype=ext3 rootdelay=1 rw"
 CMDLINE_OTHER = "dyntick=enable"
 CMDLINE_DEBUG = '${@base_conditional("DISTRO_TYPE", "release", "quiet", "debug",d)}'
 
