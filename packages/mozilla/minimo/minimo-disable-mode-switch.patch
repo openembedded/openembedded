@@ -1,0 +1,11 @@
+--- mozilla/widget/src/gtk2/nsWindow.cpp.orig	2007-06-12 22:19:35.000000000 +0900
++++ mozilla/widget/src/gtk2/nsWindow.cpp	2007-06-12 22:19:02.000000000 +0900
+@@ -1859,6 +1859,7 @@ 
+         || aEvent->keyval == GDK_Shift_R
+         || aEvent->keyval == GDK_Control_L
+         || aEvent->keyval == GDK_Control_R
++        || aEvent->keyval == GDK_Mode_switch
+         || aEvent->keyval == GDK_Alt_L
+         || aEvent->keyval == GDK_Alt_R
+         || aEvent->keyval == GDK_Meta_L
+
