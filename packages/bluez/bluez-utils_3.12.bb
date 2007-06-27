@@ -6,7 +6,7 @@ SRC_URI = "http://bluez.sourceforge.net/download/bluez-utils-${PV}.tar.gz \
            file://hcid.conf \
            file://02dtl1_cs.sh \
           "
-PR = "r1"
+PR = "r2"
 
 EXTRA_OECONF = " \
                  --enable-bccmd \
@@ -103,6 +103,7 @@ FILES_${PN}-compat = " \
 		    ${base_sbindir}/hciconfig \
                     ${base_sbindir}/bccmd \
 		    ${base_sbindir}/hciemu \
+		    ${base_sbindir}/hid2hci \
 		    ${base_bindir}/passkey-agent \
 		    ${sysconfdir}/bluetooth/rfcomm.conf \
 		   " 
