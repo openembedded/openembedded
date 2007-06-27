@@ -10,7 +10,7 @@
 DESCRIPTION = "Default ALSA configuration"
 LICENSE = "GPL"
 
-PV = "0.0.3"
+PV = "0.0.4"
 PR = "r0"
 
 SRC_URI = "file://asound.state \
