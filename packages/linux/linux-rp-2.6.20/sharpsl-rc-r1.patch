@@ -298,7 +298,7 @@ Index: linux-2.6.20/drivers/input/keyboard/sharpsl_rc.c
 +	pxa_gpio_mode(REMOTE_GPIO_INT | GPIO_IN);
 +	ret = request_irq(REMOTE_IRQ_INT,
 +					  sharpsl_rc_interrupt,
-+					  IRQF_DISABLED | IRQF_TRIGGER_RISING | IRQF_SHARED,
++					  IRQF_DISABLED | IRQF_TRIGGER_RISING | IRQF_TRIGGER_FALLING | IRQF_SHARED,
 +					  "sharpsl_rc",
 +					  sharpsl_rc);
 +	if (ret < 0) {
