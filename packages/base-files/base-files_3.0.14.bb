@@ -1,7 +1,7 @@
 DESCRIPTION = "Miscellaneous files for the base system."
 SECTION = "base"
 PRIORITY = "required"
-PR = "r54"
+PR = "r55"
 LICENSE = "GPL"
 
 SRC_URI = " \
@@ -138,8 +138,9 @@ do_install_append_netbook-pro () {
 do_install_append_opendreambox() {
 	> ${D}/${sysconfdir}/resolv.conf
 	rm -r ${D}/mnt
-	ln -s /media/hdd ${D}/hdd
-	ln -s /media ${D}/mnt
+	set CUR = `pwd`
+	ln -s media/hdd ${D}/hdd
+	ln -s media ${D}/mnt
 }
 
 PACKAGES = "${PN}-doc ${PN}"
