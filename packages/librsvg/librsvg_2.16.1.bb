@@ -3,7 +3,7 @@ SECTION = "x11/utils"
 DEPENDS = "gtk+ libcroco cairo libart-lgpl libxml2 popt"
 LICENSE = "LGPL"
 
-PR = "r1"
+PR = "r2"
 
 inherit autotools pkgconfig gnome
 
@@ -23,6 +23,13 @@ FILES_librsvg-gtk-dev += "${libdir}/gtk-2.0/*.la \
 			  "
 FILES_librsvg-gtk-dbg += "${libdir}/gtk-2.0/.debug \
                           ${libdir}/gtk-2.0/*/*/.debug"
+
+pkg_postinst_librsvg-gtk() {
+if [ "x$D" != "x" ]; then
+        exit 1
+fi
+        gdk-pixbuf-query-loaders > /etc/gtk-2.0/gdk-pixbuf.loaders
+}
 
 do_stage() {
 	autotools_stage_all
