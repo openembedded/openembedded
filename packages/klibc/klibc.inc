@@ -65,6 +65,10 @@ do_stage() {
 			install
 	# The following is sufficient, at least in klibc 1.1.1 to make klcc
 	# use the staged libraries and include files.
+
+	if [ -f ${STAGING_BINDIR}/klcc ]; then 
+		mv ${STAGING_BINDIR}/klcc ${STAGING_BINDIR}/${TARGET_PREFIX}klcc; 
+	fi
 	sed -i -e 's@^\$prefix = .*$@\$prefix = "${STAGING_KLIBC_DIR}/lib/klibc";@' \
 		'${STAGING_BINDIR}/${TARGET_PREFIX}klcc'
 }
