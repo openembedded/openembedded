@@ -32,7 +32,7 @@ do_stage() {
         headers=`find . -name "*.h"`
         for f in $headers
         do
-                install -m 0644 $f ${STAGING_INCDIR}/agg2/$f
+                install -m 0644 $f ${STAGING_INCDIR}/agg2/
         done
 }
 
