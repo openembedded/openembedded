@@ -18,6 +18,8 @@ EXTRA_OEMAKE = "'ARCH=${KLIBC_ARCH}' \
 		'LD=${HOST_PREFIX}ld' \
 		'AR=${AR}' \
 		'RANLIB=${RANLIB}' \
+		'OBJDUMP=${HOST_PREFIX}objdump' \
+		'OBJCOPY=${HOST_PREFIX}objcopy' \
 		'NM=${TARGET_PREFIX}nm' \
 		'STRIP=echo' \
 		'SHLIBDIR=/lib' \
