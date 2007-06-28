@@ -44,7 +44,9 @@ do_compile() {
 		   HOSTPYTHON=${STAGING_BINDIR}/python \
 		   STAGING_LIBDIR=${STAGING_LIBDIR} \
 		   STAGING_INCDIR=${STAGING_INCDIR} \
-		   BUILD_SYS=${BUILD_SYS} HOST_SYS=${HOST_SYS}
+		   PYTHON_LIBDIR=${S} \
+		   BUILD_SYS=${BUILD_SYS} \
+		   HOST_SYS=${HOST_SYS}
 }
 
 do_stage() {
@@ -57,7 +59,8 @@ do_install() {
         oe_runmake HOSTPGEN=${STAGING_BINDIR}/pgen \
                    HOSTPYTHON=${STAGING_BINDIR}/python \
                    STAGING_LIBDIR=${STAGING_LIBDIR} \
-                   STAGING_INCDIR=${STAGING_INCDIR} \
+		   STAGING_INCDIR=${STAGING_INCDIR} \
+		   PYTHON_LIBDIR=${S} \
 		   BUILD_SYS=${BUILD_SYS} HOST_SYS=${HOST_SYS} \
 		   DESTDIR=${D} install
 }

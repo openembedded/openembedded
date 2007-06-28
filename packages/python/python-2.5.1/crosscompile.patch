@@ -103,3 +103,17 @@ diff -Naur Python-2.5/setup.py Python-2.5-patched/setup.py
          #
          # The following modules are all pretty straightforward, and compile
          # on pretty much any POSIXish platform.
+--- Python-2.5.1/setup.py	2007-06-27 18:22:04.000000000 +0200
++++ Python-2.5.1/setup.py	2007-06-27 20:29:23.000000000 +0200
+@@ -1138,6 +1139,11 @@
+ 
+         # Call the method for detecting whether _tkinter can be compiled
+         self.detect_tkinter(inc_dirs, lib_dirs)
++	
++	additional_dir = os.getenv( "PYTHON_LIBDIR" )
++	for x in self.extensions:
++	    x.library_dirs.append(additional_dir)
++	    x.runtime_library_dirs.append(additional_dir)
+ 
+     def detect_tkinter_darwin(self, inc_dirs, lib_dirs):
+         # The _tkinter module, using frameworks. Since frameworks are quite
