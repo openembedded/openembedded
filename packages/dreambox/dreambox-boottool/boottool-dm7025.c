@@ -11,7 +11,7 @@
 
 #define PREFIX
 //#define PREFIX "/boot"
-#define SQUASHFS_FILENAME PREFIX"/flash/squashfs"
+#define SQUASHFS_FILENAME PREFIX"/mnt/flash/squashfs"
 
 #define streq(a,b) (strcmp((a),(b)) == 0)
 
@@ -91,12 +91,12 @@ int main(int argc, char *argv[], char *envp[])
 {
 	int res, x;
 
-	printf("Hello world!\n");
-	
 		/* first, load some needed kernel modules located in the root of our boot partition */
 	const char *modules[] = { "fs/squashfs/unlzma.ko", "fs/squashfs/sqlzma.ko", "fs/squashfs/squashfs.ko", "fs/unionfs.ko", "drivers/block/loop.ko", 0 };
 	const char *modules_path = PREFIX"/lib/modules/2.6.12.6/kernel/";
 	char path[255];
+
+	printf("Hello world!\n");
 
 	x=0;
 	while(modules[x]) {
@@ -109,7 +109,7 @@ int main(int argc, char *argv[], char *envp[])
 	
 		/* mount the RW jffs2 partition, which contains the squashfs image (in /squashfs) and the deltas (in /delta) */
 	printf("mounting mtd...\n");
-	res = mount("/dev/mtdblock/3", PREFIX"/flash", "jffs2", 0, 0);
+	res = mount("/dev/mtdblock/3", PREFIX"/mnt/flash", "jffs2", 0, 0);
 
 	if (res)
 	{
@@ -155,7 +155,7 @@ int main(int argc, char *argv[], char *envp[])
 	printf("mounting squashfs..\n");
 
 		/* and then mounting the loop device. */
-	if (mount("/dev/loop/0", PREFIX"/squashfs", "squashfs", MS_MGC_VAL|MS_RDONLY, "") < 0)
+	if (mount("/dev/loop/0", PREFIX"/mnt/squashfs", "squashfs", MS_MGC_VAL|MS_RDONLY, "") < 0)
 	{
 		perror("mounting squashfs");
 		return 1;
@@ -173,32 +173,33 @@ int main(int argc, char *argv[], char *envp[])
 	
 	
 	printf("mounting unionfs..\n");
-	res = mount("none", PREFIX"/root", "unionfs", MS_MGC_VAL, "dirs="PREFIX"/flash/delta=rw:"PREFIX"/squashfs=ro");
+	res = mount("none", PREFIX"/mnt/root", "unionfs", MS_MGC_VAL, "dirs="PREFIX"/mnt/flash/delta=rw:"PREFIX"/mnt/squashfs=ro");
 	if (res < 0)
 	{
 		perror("mounting unionfs");
 		return 1;
 	}
 
-	printf("chroot\n");
-	if (chroot(PREFIX"/root") < 0)
+	printf("pivot_root\n");
+	if ( pivot_root(PREFIX"/mnt/root", PREFIX"/mnt/root/boot") < 0)
 	{
-		perror("chroot");
+		perror("pivot_root");
 		return 1;
 	}
 
-	printf("mouting devfs..\n");
+	printf("mounting devfs..\n");
 	res = mount("none", "/dev", "devfs", 0, 0);
 	if (res)
 	{
 		perror("mounting /dev");
 		return res;
 	}
+	
+	printf("try umount old devfs..\n");
+	res = umount("/boot/dev");
+	perror("umount /boot/dev");
 
 	printf("call init!\n");
-	
-	sleep(1); 
-
 	execve("/sbin/init", argv, envp);
 	perror("/sbin/init");
 	
