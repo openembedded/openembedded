@@ -1,13 +1,13 @@
 DESCRIPTION = "Phalanx is a chess playing engine."
 SECTION = "opie/libs"
 PRIORITY = "optional"
-PR = "r3"
+PR = "r4"
 LICENSE = "GPL"
-SRC_URI = "ftp://ftp.math.muni.cz/pub/math/people/Dobes/phalanx-22.tar.gz \
+SRC_URI = "http://ftp.debian.org/debian/pool/main/p/phalanx/phalanx_22.orig.tar.gz \
            file://gcc3.patch;patch=1 \
            file://capabilities \
            file://description"
-S = "${WORKDIR}/Phalanx-XXII"
+S = "${WORKDIR}/phalanx-22.orig"
 
 do_compile() {
 	oe_runmake CC="${CC}" CFLAGS="${CFLAGS}" STRIP=echo LD="${CC}"
@@ -24,3 +24,4 @@ do_install() {
 }
 
 FILES_${PN} = "${palmtopdir}/chess"
+FILES_${PN}-dbg += "${palmtopdir}/chess/engines/Phalanx/.debug"
