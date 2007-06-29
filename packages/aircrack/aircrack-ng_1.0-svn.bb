@@ -6,10 +6,12 @@ DEPENDS = "openssl"
 PV = "0.9.99+svn${SRCDATE}"
 PR = "r0"
 SRC_URI = "svn://trac.aircrack-ng.org/svn/branch;module=1.0-dev;proto=http \
-           file://makefile-ldflags.patch;patch=1 "
+           file://makefile-ldflags.patch;patch=1;maxdate=20070629 "
  
 S="${WORKDIR}/1.0-dev"
  
+DEFAULT_PREFERENCE = "-1"
+
 export TOOL_PREFIX = "${HOST_SYS}-"
 
 do_install() {
