@@ -5,7 +5,7 @@ RDEPENDS = "hostap-utils"
 RREPLACES = "prism3-firmware prism3-support"
 RCONFLICTS = "prism3-firmware prism3-support"
 PACKAGE_ARCH = "all"
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "http://www.red-bean.com/~proski/firmware/Latest-prism.tar.bz2 \
            file://prism-fw.sh \

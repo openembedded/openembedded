@@ -28,6 +28,5 @@ if grep -q no_pri=1 $DIR/debug; then
     /usr/sbin/prism2_srec -gp wlan0 $PRI 
 fi
 
-if grep -q pri_only=0 $DIR/debug; then
-    /usr/sbin/prism2_srec -rp wlan0 $STA
-fi
+/usr/sbin/prism2_srec -rp wlan0 $STA
+
