@@ -1,19 +1,20 @@
-DESCRIPTION = "Enlightened Sound Daemon - GPE version"
+DESCRIPTION = "Enlightened Sound Daemon"
 SECTION = "gpe/base"
 LICENSE = "GPL"
 DEPENDS = "audiofile"
-
-PR = "r1"
+PE = "1"
+PR = "r2"
 
 inherit gnome binconfig
 
-SRC_URI = "ftp://ftp.gnome.org/pub/GNOME/sources/esound/0.2/esound-0.2.36.tar.bz2"
+SRC_URI = "ftp://ftp.gnome.org/pub/GNOME/sources/esound/0.2/esound-0.2.36.tar.bz2 \
+           file://no-docs.patch;patch=1"
 
 EXTRA_OECONF = " \
-                --disable-alsa \
-		--disable-arts \
-		--disable-artstest \
-		"
+    --disable-alsa \
+    --disable-arts \
+    --disable-artstest \
+"
 do_configure_prepend() {
 	sed -i -e 's:/usr/include/mme:${STAGING_INCDIR}/mme:g' configure.ac
 }

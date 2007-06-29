@@ -3,7 +3,7 @@ HOMEPAGE = "http://www.tug.org/tetex"
 LICENSE = "GPL"
 SECTION = "console/utils"
 DEPENDS = "tetex-native flex gd ncurses libpng t1lib virtual/libx11 libxau libxext libxt zlib"
-PR = "r5"
+PR = "r6"
 
 SRC_URI = "ftp://dante.ctan.org/tex-archive/systems/unix/teTeX/current/distrib/tetex-src-${PV}.tar.gz \
            file://configure.patch;patch=1"
@@ -26,7 +26,7 @@ EXTRA_OECONF = "--with-system-libgd \
                 --with-system-zlib \
                 --without-dialog \
                 --without-xdvik \
-                --without-x11 \
+                --with-x11 \
                 --without-mf-x-toolkit"
 
 # NOTE:  In theory, teTeX has a good buildsystem, which automatically detects
@@ -49,7 +49,7 @@ do_configure() {
 install:
 	echo "mickey _is_ cool - he tamed the tetex buildsystem"
 all:
-	echo "mickeys suck - he adds easter eggs in output that no one will ever read..."
+	echo "mickey sucks - he adds easter eggs in output that no one will ever read..."
 EOF
 }
 # NOTE: Make sure it is using _our_ libtool and nothing else :/
@@ -83,10 +83,16 @@ do_install() {
 	DESTDIR="" \
 	LIBTOOL="${STAGING_BINDIR_NATIVE}/${HOST_SYS}-libtool"
 	MAKE="make -e" oe_runmake -e install
+        ln -sf ${bindir}/pdfetex ${D}${bindir}/latex
+	mv ${D}${libdir}/.libs/* ${D}${libdir}/ -f || true
 }
 
-RRECOMMENDS_${PN} = "tetex-texmf-dvips tetex-texmf-texconfig tetex-texmf-fonts"
-PACKAGES =+ "tetex-texmf-dvips tetex-texmf-texconfig tetex-texi2html"
+RRECOMMENDS_${PN} = "tetex-bin tetex-texmf-dvips tetex-texmf-texconfig tetex-texmf-fonts"
+PACKAGES =+ "libkpathsea tetex-bin tetex-texmf-dvips tetex-texmf-texconfig tetex-texi2html"
+
+FILES_libkpathsea = "${libdir}/libkpathsea.so.*"
+FILES_tetex-bin = "${bindir}/*"
+
 FILES_${PN} += "${localstatedir} ${datadir}"
 FILES_${PN}-doc += "${datadir}/texinfo ${datadir}/man ${datadir}/info"
 FILES_tetex-texmf-dvips = "${datadir}/texmf/dvips"

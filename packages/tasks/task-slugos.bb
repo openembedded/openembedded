@@ -6,7 +6,7 @@
 DESCRIPTION = "Task packages for the SlugOS distribution"
 HOMEPAGE = "http://www.nslu2-linux.org"
 LICENSE = "MIT"
-PR = "r9"
+PR = "r10"
 PACKAGE_ARCH = "${MACHINE_ARCH}"
 ALLOW_EMPTY = "1"
 
@@ -93,6 +93,11 @@ kernel-module-pata-artop \
 # Add modules required for Network support
 SLUGOS_STANDARD_RRECOMMENDS += "\
 kernel-module-via-velocity \
+"
+
+# Add modules required for Wifi support
+SLUGOS_STANDARD_RRECOMMENDS += "\
+madwifi-ng-modules madwifi-ng-tools \
 "
 
 # Add modules required for Network Console support

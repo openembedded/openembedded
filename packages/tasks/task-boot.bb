@@ -1,5 +1,5 @@
 DESCRIPTION = "Basic task to get a device booting"
-PR = "r36"
+PR = "r37"
 
 PROVIDES = "${PACKAGES}"
 PACKAGES = 'task-boot'
@@ -46,11 +46,9 @@ RDEPENDS_task-boot = "\
     ${DISTRO_DEV_MANAGER} \
     ${DISTRO_INIT_MANAGER} \
     ${DISTRO_LOGIN_MANAGER} \
-    ${DISTRO_EXTRA_RDEPENDS} \
     ${MACHINE_ESSENTIAL_EXTRA_RDEPENDS} \
-    ${MACHINE_EXTRA_RDEPENDS}"
+    "
 
 RRECOMMENDS_task-boot = "\
     ${MACHINE_ESSENTIAL_EXTRA_RRECOMMENDS} \
-    ${MACHINE_EXTRA_RRECOMMENDS} \
-    ${DISTRO_EXTRA_RRECOMMENDS} "
+    "

@@ -4,8 +4,10 @@ DESCRIPTION = "Network Packet Capture Library"
 HOMEPAGE = "http://www.tcpdump.org/"
 LICENSE = "BSD"
 SECTION = "libs/network"
-PR = "r0"
+PR = "r1"
 
+
+# Don't forget to edit shared.patch to have the correct version number inside
 SRC_URI = "http://www.tcpdump.org/release/libpcap-${PV}.tar.gz \
            file://shared.patch;patch=1"
 

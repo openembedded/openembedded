@@ -1,6 +1,8 @@
---- xserver-common-1.16/X11/slcXXXX.xmodmap.orig	2007-06-05 01:31:20.000000000 +0000
-+++ xserver-common-1.16/X11/slcXXXX.xmodmap	2007-06-05 01:31:29.000000000 +0000
-@@ -1,5 +1,106 @@
+Index: xserver-common-1.16/X11/slcXXXX.xmodmap
+===================================================================
+--- xserver-common-1.16.orig/X11/slcXXXX.xmodmap	2006-10-12 11:19:42.000000000 +0100
++++ xserver-common-1.16/X11/slcXXXX.xmodmap	2007-06-27 12:31:33.000000000 +0100
+@@ -1,5 +1,111 @@
 -keycode 88 = XF86Calendar
 -keycode 89 = telephone
 -keycode 40 = XF86Start
@@ -35,7 +37,7 @@
 +! These should be bound to Japanese keysims for use with Japanese
 +! IME's at a later date.
 +! =======================================================================
- 
++
 +! The Euro character is not printed as a label, but as
 +!   the 5 doesn't have a blue Fn label, this is a nice extra
 +!   as a normal European keyboard has it on the 5 as third level
@@ -111,3 +113,8 @@
 +keycode 107 = F12 F18 F18
 +! "Menu" label and icon:
 +keycode  96 = F11 F12 F12
++
++! Shift the Mode_switch definition to a different mod so mozilla stuff works
++add    mod5 = Mode_switch
++remove mod4 = Mode_switch
+ 

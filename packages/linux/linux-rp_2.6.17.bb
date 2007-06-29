@@ -1,6 +1,6 @@
 require linux-rp.inc
 
-PR = "r33"
+PR = "r35"
 
 # Handy URLs
 # git://rsync.kernel.org/pub/scm/linux/kernel/git/torvalds/linux-2.6.git \
@@ -27,7 +27,7 @@ SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.17.tar.bz2 \
            ${RPSRC}/spectrumcs_fix-r0.patch;patch=1 \
            file://00-hostap.patch;patch=1;status=merged \
            file://10-pcnet.patch;patch=1;status=merged \
- 	   file://asoc-v0.12.4_2.6.17.patch;patch=1 \
+           file://asoc-v0.12.4_2.6.17.patch;patch=1 \
            ${RPSRC}/hx2750_base-r27.patch;patch=1 \
            ${RPSRC}/hx2750_bl-r7.patch;patch=1 \
            ${RPSRC}/hx2750_pcmcia-r2.patch;patch=1 \

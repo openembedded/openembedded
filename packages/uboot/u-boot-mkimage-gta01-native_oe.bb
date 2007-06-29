@@ -74,6 +74,7 @@ do_compile () {
 
 do_deploy () {
         install -m 0755 tools/mkimage ${STAGING_BINDIR_NATIVE}/uboot-mkimage
+        ln -sf ${STAGING_BINDIR_NATIVE}/uboot-mkimage ${STAGING_BINDIR_NATIVE}/mkimage
 }
 
 do_deploy[dirs] = "${S}"

@@ -5,7 +5,7 @@ SECTION = "devel/python"
 PRIORITY = "optional"
 DEPENDS = "python-native readline zlib gdbm openssl tcl tk"
 DEPENDS_sharprom = "python-native readline zlib gdbm openssl"
-PR = "ml1"
+PR = "ml2"
 
 PYTHON_MAJMIN = "2.4"
 
@@ -68,3 +68,12 @@ RPROVIDES_python-core = "python"
 RPROVIDES_python-curses = "python"
 PACKAGES =+ "libpython2"
 FILES_libpython2 = "${libdir}/libpython*"
+
+# catch all the rest (unsorted)
+PACKAGES += "python-misc"
+FILES_python-misc = "${libdir}/python2.4"
+
+# catch manpage
+PACKAGES += "python-man"
+FILES_python-man = "${datadir}/man"
+

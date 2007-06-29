@@ -34,7 +34,7 @@ PACKAGE_ARCH_mencoder_collie = "collie"
 
 RCONFLICTS_${PN} = "mplayer-atty"
 RREPLACES_${PN} = "mplayer-atty"
-PR = "r13"
+PR = "r14"
 
 PARALLEL_MAKE = ""
 
@@ -185,13 +185,17 @@ EXTRA_OECONF_append_hx4700 = " --enable-imageon "
 
 #enable pxa270 overlay support
 EXTRA_OECONF_append_spitz = " --enable-pxa "
+EXTRA_OECONF_append_akita = " --enable-pxa "
 EXTRA_OECONF_append_a780 = " --enable-pxa "
 EXTRA_OECONF_append_magician = " --enable-pxa "
 EXTRA_OECONF_append_htcuniversal = " --enable-pxa "
+EXTRA_OECONF_append_palmld = " --enable-pxa "
 
 #build with support for the iwmmxt instruction support (pxa270 and up)
 TARGET_CC_ARCH_spitz = "-march=iwmmxt -mtune=iwmmxt"
 PACKAGE_ARCH_spitz = "iwmmxt"
+TARGET_CC_ARCH_akita = "-march=iwmmxt -mtune=iwmmxt"
+PACKAGE_ARCH_akita = "iwmmxt"
 TARGET_CC_ARCH_a780 = "-march=iwmmxt -mtune=iwmmxt"
 PACKAGE_ARCH_a780 = "iwmmxt"
 TARGET_CC_ARCH_hx4700 = "-march=iwmmxt -mtune=iwmmxt"
@@ -200,6 +204,8 @@ TARGET_CC_ARCH_magician = "-march=iwmmxt -mtune=iwmmxt"
 PACKAGE_ARCH_magician = "iwmmxt"
 TARGET_CC_ARCH_htcuniversal = "-march=iwmmxt -mtune=iwmmxt"
 PACKAGE_ARCH_htcuniversal = "iwmmxt"
+TARGET_CC_ARCH_palmld = "-march=iwmmxt -mtune=iwmmxt"
+PACKAGE_ARCH_palmld = "iwmmxt"
 
 do_configure() {
 	cp ${WORKDIR}/vo_w100.c ${S}/libvo

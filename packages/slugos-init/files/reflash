@@ -146,7 +146,7 @@ then
 			then
 				imgksize="$size"
 				imgkoffset="$base"
-			elif test "$name" = "$ffspart"
+			elif test "$name" = "$ffspart" -o "$name" = "rootfs"
 			then
 				imgffssize="$size"
 				imgffsoffset="$base"
@@ -320,6 +320,8 @@ ffssize=0
 if test -n "$ffsfile"
 then
 	ffsdev="$(mtblockdev $ffspart)"
+	[ -n "$ffsdev" ] || \
+	ffsdev="$(mtblockdev rootfs)"
 	test -n "$ffsdev" -a -b "$ffsdev" || {
 		echo "reflash: $ffspart($ffsdev): cannot find $ffspart mtd partition." >&2
 		echo "  check /proc/mtd, either the partition does not exist or there is no" >&2

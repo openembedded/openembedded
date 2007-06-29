@@ -3,7 +3,7 @@ SECTION = ""
 PRIORITY = "optional"
 HOMEPAGE = "http://wiki.buici.com/twiki/bin/view/Main/ApexBootloader"
 LICENSE = "GPL"
-# PR = "r1"
+PR = "r1"
 
 COMPATIBLE_MACHINE = "(ixp4xx|nslu2)"
 

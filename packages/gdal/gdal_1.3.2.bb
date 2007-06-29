@@ -5,7 +5,7 @@ DEPENDS = "zlib"
 
 SRC_URI = "http://www.gdal.org/dl/${P}.tar.gz"
 
-inherit autotools pkgconfig
+inherit autotools pkgconfig binconfig
 
 PARALLEL_MAKE = ""
 
@@ -35,4 +35,8 @@ do_package_prepend() {
 	# the brokenness....
 	os.system('cp -pPR ${D}${D}* ${D}../')
 }
+
+do_stage() {
+        autotools_stage_all
+}	
 

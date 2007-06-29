@@ -1,0 +1,99 @@
+Index: linux-2.6.21/arch/arm/boot/compressed/head.S
+===================================================================
+--- linux-2.6.21.orig/arch/arm/boot/compressed/head.S	2007-05-19 11:22:56.000000000 -0300
++++ linux-2.6.21/arch/arm/boot/compressed/head.S	2007-05-19 11:50:29.000000000 -0300
+@@ -10,6 +10,7 @@
+  */
+ #include <linux/linkage.h>
+ 
++#define DEBUG
+ /*
+  * Debugging stuff
+  *
+@@ -117,6 +118,8 @@
+ 		mov	r0, r0
+ 		.endr
+ 
++		inituart r10, r11
++
+ 		mov     r1, #0x300              @ mach_id 0x363 is official EZX
+ 		orr     r1, r1, #0x63           @ bootloader JUMP doesn't set r1
+ 
+Index: linux-2.6.21/include/asm-arm/arch-pxa/uncompress.h
+===================================================================
+--- linux-2.6.21.orig/include/asm-arm/arch-pxa/uncompress.h	2007-05-19 11:22:56.000000000 -0300
++++ linux-2.6.21/include/asm-arm/arch-pxa/uncompress.h	2007-05-19 11:30:38.000000000 -0300
+@@ -19,9 +19,9 @@
+ 
+ static inline void putc(char c)
+ {
+-/*	while (!(UART[5] & 0x40))
++	while (!(UART[5] & 0x40))
+ 		barrier();
+-	UART[0] = c;*/
++	UART[0] = c;
+ }
+ 
+ /*
+Index: linux-2.6.21/include/asm-arm/arch-pxa/debug-macro.S
+===================================================================
+--- linux-2.6.21.orig/include/asm-arm/arch-pxa/debug-macro.S	2007-05-19 11:30:54.000000000 -0300
++++ linux-2.6.21/include/asm-arm/arch-pxa/debug-macro.S	2007-05-19 11:49:35.000000000 -0300
+@@ -14,11 +14,52 @@
+ #include "hardware.h"
+ 
+ 		.macro	addruart,rx
+-		mrc	p15, 0, \rx, c1, c0
+-		tst	\rx, #1			@ MMU enabled?
+-		moveq	\rx, #0x40000000		@ physical
+-		movne	\rx, #io_p2v(0x40000000)	@ virtual
+-		orr	\rx, \rx, #0x00100000
++@		mrc	p15, 0, \rx, c1, c0
++@		tst	\rx, #1			@ MMU enabled?
++		mov	\rx, #0x40000000
++@		moveq	\rx, #0x40000000		@ physical
++@		movne	\rx, #io_p2v(0x40000000)	@ virtual
++		orr	\rx, \rx, #0x00700000
++		.endm
++
++		.macro	inituart,rd,rx
++		ldr	\rd, =0x41300004	@ CKEN
++		ldr	\rx, [\rd]
++		orr	\rx, \rx, #0x20
++		str	\rx, [\rd]
++
++		ldr	\rd, =0x40E0005C
++		ldr	\rx, [\rd]
++		bic	\rx, \rx, #0xF0000000	@ clear GPIO46/47 config
++		orr	\rx, \rx, #0x60000000	@ set GPIO46: AF2, GPIO47: AF1
++		str	\rx, [\rd]
++		ldr	\rd, =0x40E00010
++		ldr	\rx, [\rd]
++		bic	\rx, \rx, #0x0000c000	@ clear GPIO46/47 direction
++		orr	\rx, \rx, #0x00008000	@ set GPIO 47 out, 46 in
++		str	\rx, [\rd]
++
++		addruart \rd
++		mov	\rx, #0x83		@ DLAB = 1
++		strb	\rx, [\rd, #0x0c]
++
++		mov	\rx, #0x08		@ Divisor 8 => 115200 bps
++		strb	\rx, [\rd, #0x00]
++
++		mov 	\rx, #0x00
++		strb	\rx, [\rd, #0x04]	@ Divisor high = 0
++
++		mov	\rx, #0x03
++		strb	\rx, [\rd, #0x0c]	@ DLAB = 0, n81
++
++		mov	\rx, #0x00
++		strb	\rx, [\rd, #0x10]	@ MCR = 0
++
++		mov	\rx, #0x00
++		strb	\rx, [\rd, #0x28]	@ disable autobaud
++
++		mov	\rx, #0x40
++		strb	\rx, [\rd, #0x04]	@ IER UUE (UART Enable)
+ 		.endm
+ 
+ #define UART_SHIFT	2

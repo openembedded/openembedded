@@ -14,7 +14,7 @@ HOMEPAGE = "http://www.sleepycat.com"
 LICENSE = "BSD Sleepycat"
 VIRTUAL_NAME ?= "virtual/db"
 CONFLICTS = "db3"
-PR = "r7"
+PR = "r8"
 
 SRC_URI = "http://downloads.sleepycat.com/db-${PV}.tar.gz"
 #SRC_URI_MD5 = "http://downloads.sleepycat.com/db-${PV}.tar.gz.md5"
@@ -71,6 +71,7 @@ EXTRA_OECONF += "${MUTEX}"
 # configure.
 CONFIG_SITE = ""
 do_configure() {
+	( cd ${WORKDIR}/db-${PV}/dist ; gnu-configize ) 
 	oe_runconf
 }
 

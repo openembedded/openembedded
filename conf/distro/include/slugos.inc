@@ -111,7 +111,7 @@ PREFERRED_VERSION_glibc ?= "2.3.5+cvs20050627"
 # Select the correct versions of the kernel and modules (these are the
 # defaults, override in the conf/distro top-level distro file).
 PREFERRED_PROVIDER_virtual/kernel ?= "ixp4xx-kernel"
-PREFERRED_VERSION_ixp4xx-kernel ?= "2.6.21.1"
+PREFERRED_VERSION_ixp4xx-kernel ?= "2.6.21.5"
 
 # Select the smallest provider of x11 libraries
 PREFERRED_PROVIDER_virtual/libx11 ?= "diet-x11"
@@ -142,6 +142,6 @@ IGNORE_STRIP_ERRORS = ""
 # Due to upstream instability, and another OE project with conflicting
 # needs, nail down a specific, known-working version of madwifi-ng.
 # Remove this once the madwifi-ng stuff seems to stabilize once again.
-PREFERRED_VERSION_madwifi-ng ?= "r2156-20070225"
+#PREFERRED_VERSION_madwifi-ng ?= "r2156-20070225"
 
 PREFERRED_VERSION_linux-libc-headers = "2.6.18"

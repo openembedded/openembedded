@@ -8,7 +8,7 @@ DEPENDS = "libxrender xt xft fontconfig freetype libidl dbus-glib pango atk gtk+
 
 CVSSVR="cvs-mirror.mozilla.org"
 BRTAG = "MOZILLA_1_8_BRANCH"
-MOZDATE = "20070510"
+MOZDATE = "20070626"
 
 PV = "0.02+cvs${MOZDATE}"
 PE = "1"
@@ -20,6 +20,8 @@ SRC_URI = "cvs://anonymous@${CVSSVR}/cvsroot;module=mozilla;tag=${BRTAG};date=${
 	   file://eabi-fix.patch;patch=1 \
 	   file://eabi-fix2.patch;patch=1 \
 	   file://eabi-fix3.patch;patch=1 \
+	   file://minimo-components-ssr-only.patch;patch=1 \
+	   file://minimo-disable-mode-switch.patch;patch=1 \
            file://minimo.desktop file://minimo.png"
 
 inherit autotools
