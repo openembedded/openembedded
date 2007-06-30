@@ -5,9 +5,11 @@ DEPENDS = "freetype libpng jpeg"
 
 inherit efl1
 
+PR = "r1"
+
 PACKAGES =+ "imlib2-loaders-dbg imlib2-filters-dbg imlib2-loaders imlib2-filters"
 FILES_${PN} = "${libdir}/lib*.so.* ${libdir}/imlib2/*/*.so"
-FILES_${PN}-dbg = "${libdir}/.debug/"
+FILES_${PN}-dbg = "${libdir}/.debug/ ${bindir}/.debug/"
 FILES_${PN}-dev += "${bindir}/imlib2-config ${libdir}/*.so ${includedir}"
 FILES_${PN}-bin = "${bindir}"
 FILES_imlib2-loaders = "${libdir}/imlib2/loaders/*.so"
