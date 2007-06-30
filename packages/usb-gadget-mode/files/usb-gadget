@@ -9,6 +9,7 @@
 #################################################################################
 #
 # 20070606 - v0.0.1	- Initial release
+# 20070630 - v0.0.2	- Add forgotten host mode
 
 CONF_FILE="/etc/default/usb-gadget"
 
@@ -23,6 +24,8 @@ go() {
 	case "$USB_MODE" in
 	networking)	setup_usb g_ether "$MODULE_OPTIONS" ;;
 	storage)	setup_usb g_file_storage "$MODULE_OPTIONS" ;;
+	hostmode)	unload_usb_gadgets
+			setup_usb ohci_hcd "$MODULE_OPTIONS" ;;
 	none)		unload_usb_gadgets ;;
 	esac		
 		
