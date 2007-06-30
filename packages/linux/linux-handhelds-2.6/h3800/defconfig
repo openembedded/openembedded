@@ -1,7 +1,7 @@
 #
 # Automatically generated make config: don't edit
-# Linux kernel version: 2.6.21-hh9
-# Fri Jun 22 18:35:20 2007
+# Linux kernel version: 2.6.21-hh10
+# Sat Jun 30 18:46:46 2007
 #
 CONFIG_ARM=y
 CONFIG_SYS_SUPPORTS_APM_EMULATION=y
@@ -148,12 +148,13 @@ CONFIG_ARCH_SA1100=y
 # CONFIG_SA1100_CERF is not set
 # CONFIG_SA1100_COLLIE is not set
 # CONFIG_SA1100_H3100 is not set
-CONFIG_SA1100_H3600=y
-# CONFIG_SA1100_H3800 is not set
+# CONFIG_SA1100_H3600 is not set
+CONFIG_SA1100_H3800=y
 CONFIG_SA1100_H3XXX=y
 # CONFIG_SA1100_BADGE4 is not set
 # CONFIG_SA1100_JORNADA56X is not set
 # CONFIG_SA1100_JORNADA720 is not set
+# CONFIG_SA1100_JORNADA820 is not set
 # CONFIG_SA1100_XDA is not set
 # CONFIG_SA1100_HACKKIT is not set
 # CONFIG_SA1100_LART is not set
@@ -161,11 +162,9 @@ CONFIG_SA1100_H3XXX=y
 # CONFIG_SA1100_SHANNON is not set
 # CONFIG_SA1100_SIMPAD is not set
 # CONFIG_SA1100_SSP is not set
-# CONFIG_H3600_SLEEVE is not set
 CONFIG_SA1100_USB=y
 # CONFIG_SA1100_USB_NETLINK is not set
 # CONFIG_SA1100_USB_CHAR is not set
-# CONFIG_IPAQ_H3600_LCD is not set
 
 #
 # Linux As Bootloader
@@ -820,7 +819,6 @@ CONFIG_ADC_ASIC2=y
 # Multifunction device drivers
 #
 # CONFIG_MFD_SM501 is not set
-# CONFIG_IPAQ_MICRO is not set
 CONFIG_HTC_ASIC2=y
 # CONFIG_HTC_ASIC3 is not set
 # CONFIG_HTC_EGPIO is not set
