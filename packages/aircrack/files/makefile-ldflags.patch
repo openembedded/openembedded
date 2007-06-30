@@ -1,0 +1,13 @@
+Index: 1.0-dev/src/Makefile
+===================================================================
+--- 1.0-dev.orig/src/Makefile	2007-06-29 21:16:15.000000000 +0100
++++ 1.0-dev/src/Makefile	2007-06-29 21:16:32.000000000 +0100
+@@ -36,7 +36,7 @@
+ endif
+ LIBOSD		= $(OSD)/lib$(OSD).a
+ 
+-LIBSSL		= -lssl -lcrypto
++LIBSSL		= -lssl -lcrypto $(LDFLAGS)
+ 
+ all: osd userland $(SBINFILES)
+ 

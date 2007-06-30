@@ -13,6 +13,7 @@ PACKAGES =+ "${PN}-textentry \
              ${PN}-file-dialog \
              ${PN}-draggies \
              ${PN}-trans-x11"
+FILES_${PN}-dbg += "${libdir}/.debug/ ${libdir}/esmart/*/.debug/"
 FILES_${PN}-textentry = "${libdir}/libesmart_text_entry*.so*"
 FILES_${PN}-thumb = "${libdir}/libesmart_thumb*.so*"
 FILES_${PN}-container = "${libdir}/libesmart_container*"
