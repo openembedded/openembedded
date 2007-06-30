@@ -11,7 +11,7 @@ DESCRIPTION = "Default ALSA configuration"
 LICENSE = "GPL"
 
 PV = "0.0.4"
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "file://asound.state \
 	   file://alsa-state"
@@ -31,9 +31,12 @@ do_install() {
 FILES_${PN} = "${sysconfdir}/*"
 
 pkg_postinst_${PN}() {
-	if test -x /usr/sbin/alsactl
+	if test -z "$D"
 	then
-		/usr/sbin/alsactl -f ${sysconfdir}/asound.state restore
+		if test -x /usr/sbin/alsactl
+		then
+			/usr/sbin/alsactl -f ${sysconfdir}/asound.state restore
+		fi	
 	fi
 }
 
