@@ -6,7 +6,7 @@ LICENSE = "LGPL"
 DEPENDS = "atk glibmm gtk+"
 PR = "r0"
 
-inherit autotools pkgconfig flow-lossage
+inherit gnome autotools pkgconfig flow-lossage
 
 FILES_${PN} = "${libdir}/lib*.so.*"
 FILES_${PN}-dev += "${libdir}/glibmm-2.4/include/"
