@@ -1,15 +1,19 @@
 SECTION = "kernel"
 DESCRIPTION = "Linux kernel for the Compulab PXA270 system"
 LICENSE = "GPL"
-PR = "r5"
+PR = "r6"
 
 # Note, the compulab package contains a binary NAND driver that is not
 # EABI compatible
+# if you get a md5 sum error on x270-linux-drv.zip, compulab has probably
+# changed the binary.  Remove it and the md5 file from your tmp directory, 
+# and rebuild the kernel.  If you still get md5 failures, contact cbrake
+# on the #oe IRC channel -- this recipe probably needs updated.
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.16.tar.bz2 \
            file://linux-2.6.16.patch;patch=1 \
            file://defconfig \
-	   http://www.compulab.co.il/x270/download/x270-linux-drv.zip;md5sum=6b8c1bda1dd066674b7a9f614976a715"
+	   http://www.compulab.co.il/x270/download/x270-linux-drv.zip;md5sum=05989295a5f99055c2f60f8b6f7abb6b"
 
 S = "${WORKDIR}/linux-2.6.16"
 
