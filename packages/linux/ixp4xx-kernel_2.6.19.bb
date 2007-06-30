@@ -22,4 +22,3 @@ require ixp4xx-kernel.inc
 require ixp4xx-kernel-svnpatch.inc
 
 SRC_URI += "file://defconfig"
-SRC_URI += "file://series"
