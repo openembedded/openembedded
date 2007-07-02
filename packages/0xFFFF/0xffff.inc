@@ -5,8 +5,8 @@ SRC_URI = "http://www.nopcode.org/0xFFFF/get/0xFFFF-${PV}.tar.gz"
 
 S = "${WORKDIR}/0xFFFF-${PV}/src"
 
-CFLAGS += '-DVERSION="${PV}"'
-BUILD_CFLAGS += '-DVERSION="${PV}"'
+CFLAGS += '-DVERSION="${PV}" -I.'
+BUILD_CFLAGS += '-DVERSION="${PV}" -I.'
 
 do_compile() {
        oe_runmake 
