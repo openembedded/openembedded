@@ -41,7 +41,7 @@ do_install() {
 
 	install -m 0755 ${S}/WebKitBuilds/Debug/WebKitTools/GdkLauncher/GdkLauncher ${D}${bindir}
 	cp -pPR WebKitBuilds/Debug/lib/*.so* ${D}${libdir} 
-	cp -pPR WebKitBuilds/Debug/lib/*.pc ${D}${libdir}/pkgconfig/
+	cp -pPR WebKitBuilds/Debug/lib/*.pc ${D}${libdir}/pkgconfig/ || true
 }
 
 
