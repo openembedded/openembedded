@@ -8,6 +8,11 @@
 # function!
 . /etc/default/functions
 #
+# We may need to load the network driver modules here
+. /etc/default/modulefunctions
+loadnetmods
+#
+#
 # Now all the information for booting should be in the configuration
 # file.  Config the loopback and network interfaces.
 ifconfig lo 127.0.0.1 up

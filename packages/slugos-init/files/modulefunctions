@@ -21,7 +21,14 @@ loaddiskmods(){
 }
 
 loadnetmods(){
-	true
+	case "$(machine)" in
+            dsmg600)
+                modprobe via-velocity
+                ;;
+	    *)
+		true
+		;;
+	esac
 }
 
 loadmiscmods(){
