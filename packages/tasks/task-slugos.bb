@@ -6,7 +6,7 @@
 DESCRIPTION = "Task packages for the SlugOS distribution"
 HOMEPAGE = "http://www.nslu2-linux.org"
 LICENSE = "MIT"
-PR = "r11"
+PR = "r12"
 PACKAGE_ARCH = "${MACHINE_ARCH}"
 ALLOW_EMPTY = "1"
 
@@ -97,12 +97,12 @@ kernel-module-via-velocity \
 
 # Add modules required for Wifi support
 SLUGOS_STANDARD_RRECOMMENDS += "\
-madwifi-ng-modules madwifi-ng-tools \
+madwifi-ng-modules madwifi-ng-tools wireless-tools \
 "
 
 ## Other wireless tools that should be considered
 ## should space be available in the rootfs
-# wireless-tools wpa-supplicant \
+# wpa-supplicant \
 # zd1211-firmware kernel-module-zd1211rw \
 
 # Add kexec tools for rebooting alternate kernels
