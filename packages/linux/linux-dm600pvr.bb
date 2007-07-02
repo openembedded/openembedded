@@ -2,11 +2,11 @@ DESCRIPTION = "Linux kernel for Dreambox DM7020"
 LICENSE = "GPL"
 PN = "linux-dm600pvr"
 PV = "2.6.12"
-PR = "r3"
+PR = "r4"
 
 # -rX is the patch revision - it's not related to this package's PR
 SRC_URI = "ftp://ftp.kernel.org/pub/linux/kernel/v2.6/linux-2.6.12.tar.bz2 \
-	http://sources.dreamboxupdate.com/download/kernel-patches/linux-2.6.12-dream-ppc-r4.patch.gz;patch=1;pnum=1"
+	http://sources.dreamboxupdate.com/download/kernel-patches/linux-2.6.12-dream-ppc-r5.patch.bz2;patch=1;pnum=1"
 
 S = "${WORKDIR}/linux-2.6.12"
 
