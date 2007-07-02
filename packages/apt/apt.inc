@@ -15,3 +15,5 @@ EXTRA_AUTORECONF = "--exclude=autopoint,autoheader"
 # Koen - 20070327
 EXTRA_OECONF_append_angstrom = " ac_cv_glibc_ver=libc6.4"
 
+FILES_${PN}-dbg += "${libdir}/apt/methods/.debug" 
+
