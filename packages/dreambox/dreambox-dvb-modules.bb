@@ -16,10 +16,10 @@ KV_dm7025 = "2.6.12.6"
 PV_dm7025 = "${KV}-20070420${@get_modules_extension(bb, d)}"
 
 KV_dm600pvr = "2.6.12"
-PV_dm600pvr = "${KV}-20070403"
+PV_dm600pvr = "${KV}-20070702"
 
 KV_dm500plus = "2.6.12"
-PV_dm500plus = "${KV}-20070614"
+PV_dm500plus = "${KV}-20070702"
 
 RDEPENDS = "kernel (${KV})"
 PR = "r0"
