@@ -1,7 +1,7 @@
 DESCRIPTION = "Linux Kernel for x86 compatible machines"
 SECTION = "kernel"
 LICENSE = "GPL"
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-${PV}.tar.bz2 " 
 
