@@ -1943,18 +1943,6 @@ diff -Nurp ../u-boot-1.1.6/include/at91rm9200_net.h ./include/at91rm9200_net.h
  
  } AT91S_PhyOps,*AT91PS_PhyOps;
  
-diff -Nurp ../u-boot-1.1.6/include/configs/pxa255_idp.h ./include/configs/pxa255_idp.h
---- ../u-boot-1.1.6/include/configs/pxa255_idp.h	2006-11-02 15:15:01.000000000 +0100
-+++ ./include/configs/pxa255_idp.h	2007-03-07 23:00:57.000000000 +0100
-@@ -41,7 +41,7 @@
-  * If we are developing, we might want to start armboot from ram
-  * so we MUST NOT initialize critical regs like mem-timing ...
-  */
--#define CONFIG_INIT_CRITICAL			/* undef for developing */
-+#undef CONFIG_INIT_CRITICAL			/* undef for developing */
- 
- /*
-  * define the following to enable debug blinks.  A debug blink function
 diff -Nurp ../u-boot-1.1.6/include/configs/sarge.h ./include/configs/sarge.h
 --- ../u-boot-1.1.6/include/configs/sarge.h	1970-01-01 01:00:00.000000000 +0100
 +++ ./include/configs/sarge.h	2007-05-10 00:02:56.000000000 +0200
@@ -3336,40 +3324,3 @@ diff -Nurp ../u-boot-1.1.6/net/net.c ./net/net.c
  }
  
  ushort getenv_VLAN(char *var)
-diff -Nurp ../u-boot-1.1.6/patches/devkit-idp.patch ./patches/devkit-idp.patch
---- ../u-boot-1.1.6/patches/devkit-idp.patch	1970-01-01 01:00:00.000000000 +0100
-+++ ./patches/devkit-idp.patch	2007-03-07 23:00:56.000000000 +0100
-@@ -0,0 +1,28 @@
-+Index: u-boot-1.1.6/board/pxa255_idp/memsetup.S
-+===================================================================
-+--- u-boot-1.1.6.orig/board/pxa255_idp/memsetup.S
-++++ u-boot-1.1.6/board/pxa255_idp/memsetup.S
-+@@ -41,8 +41,8 @@ DRAM_SIZE:  .long   CFG_DRAM_SIZE
-+ /*
-+  * 	Memory setup
-+  */
-+-.globl memsetup
-+-memsetup:
-++.globl lowlevel_init
-++lowlevel_init:
-+ 
-+ 	mov      r10, lr
-+ 
-+Index: u-boot-1.1.6/include/configs/pxa255_idp.h
-+===================================================================
-+--- u-boot-1.1.6.orig/include/configs/pxa255_idp.h
-++++ u-boot-1.1.6/include/configs/pxa255_idp.h
-+@@ -41,7 +41,7 @@
-+  * If we are developing, we might want to start armboot from ram
-+  * so we MUST NOT initialize critical regs like mem-timing ...
-+  */
-+-#define CONFIG_INIT_CRITICAL			/* undef for developing */
-++#undef CONFIG_INIT_CRITICAL			/* undef for developing */
-+ 
-+ /*
-+  * define the following to enable debug blinks.  A debug blink function
-diff -Nurp ../u-boot-1.1.6/patches/series ./patches/series
---- ../u-boot-1.1.6/patches/series	1970-01-01 01:00:00.000000000 +0100
-+++ ./patches/series	2007-03-07 23:00:56.000000000 +0100
-@@ -0,0 +1 @@
-+devkit-idp.patch -p1
