@@ -7,7 +7,7 @@ case "$MACHINE" in
 *Poodle)	test "$KVER" = "2.6" && export QWS_CURSOR_ROTATION=90;;
 esac
 
-export QTDIR="/opt/QtPalmtop"
+export QTDIR="@palmtopdir@"
 export OPIEDIR="$QTDIR"
 export QPEDIR="$QTDIR"
 export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:$OPIEDIR/lib"

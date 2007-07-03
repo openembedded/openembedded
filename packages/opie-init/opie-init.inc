@@ -18,8 +18,10 @@ do_install() {
 	install -d ${D}${palmtopdir}/bin
 	install -d ${D}${palmtopdir}/etc/skel
 
-	install -m 0755 ${WORKDIR}/opie ${D}${sysconfdir}/init.d/opie
-	install -m 0644 ${WORKDIR}/opie_defaults ${D}${sysconfdir}/profile.d/
+	sed -s "s|@palmtopdir@|${palmtopdir}|" ${WORKDIR}/opie >${WORKDIR}/opie.tmp
+	sed -s "s|@palmtopdir@|${palmtopdir}|" ${WORKDIR}/opie_defaults >${WORKDIR}/opie_defaults.tmp
+	install -m 0755 ${WORKDIR}/opie.tmp ${D}${sysconfdir}/init.d/opie
+	install -m 0644 ${WORKDIR}/opie_defaults.tmp ${D}${sysconfdir}/profile.d/
 
 	install -m 0755 ${WORKDIR}/opie-reorgfiles ${D}${palmtopdir}/bin/
 	install -m 0644 ${WORKDIR}/qpe.conf ${D}${palmtopdir}/etc/skel/
@@ -38,6 +40,6 @@ do_install() {
         esac	
 }
 
-FILES_opie-init_append = " ${sysconfdir} ${palmtopdir}"
+FILES_opie-init_append = " ${sysconfdir} ${palmtopdir}/bin"
 
 PACKAGE_ARCH = "${MACHINE_ARCH}"

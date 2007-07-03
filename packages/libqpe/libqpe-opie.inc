@@ -74,6 +74,6 @@ do_install() {
 }
 
 FILES_${PN} = "${palmtopdir}/lib/libqpe.so.*"
-FILES_${PN}-dev = "${includedir} ${palmtopdir}/lib/*"
+FILES_${PN}-dev = "${includedir} ${palmtopdir}/lib/*.so"
 FILES_${PN}-dbg = "${palmtopdir}/lib/.debug/"
 #PACKAGE_ARCH_${PN} = "${MACHINE_ARCH}"

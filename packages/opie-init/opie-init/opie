@@ -3,9 +3,9 @@
 [ -z $LOGNAME ] && export LOGNAME=root && export HOME=/home/root
 [ -z $HOME ] && export HOME=/home/$LOGNAME
 
-export QTDIR=/opt/QtPalmtop
-export OPIEDIR=/opt/QtPalmtop
-export QPEDIR=/opt/QtPalmtop
+export QTDIR="@palmtopdir@"
+export OPIEDIR="$QTDIR"
+export QPEDIR="$QTDIR"
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$OPIEDIR/lib
 export PATH=$PATH:$OPIEDIR/bin
 
