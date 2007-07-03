@@ -7,7 +7,7 @@ DEPENDS_kb9202 = "u-boot-mkimage-gta01-native"
 DEPENDS_at32stk1000 = "u-boot-mkimage-gta01-native" 
 DEPENDS_atngw100 = "u-boot-mkimage-gta01-native"
 DEPENDS_at91sam9263ek = "u-boot-mkimage-gta01-native"
-DEPENDS_sarge-at91 = "u-boot"
+DEPENDS_sarge-at91 = "u-boot-mkimage-gta01-native"
 
 inherit kernel
 
