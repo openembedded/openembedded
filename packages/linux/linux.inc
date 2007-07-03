@@ -7,6 +7,7 @@ DEPENDS_kb9202 = "u-boot-mkimage-gta01-native"
 DEPENDS_at32stk1000 = "u-boot-mkimage-gta01-native" 
 DEPENDS_atngw100 = "u-boot-mkimage-gta01-native"
 DEPENDS_at91sam9263ek = "u-boot-mkimage-gta01-native"
+DEPENDS_sarge-at91 = "u-boot"
 
 inherit kernel
 
@@ -16,6 +17,7 @@ KERNEL_IMAGETYPE_kb9202 = "uImage"
 KERNEL_IMAGETYPE_atngw100 = "uImage"
 KERNEL_IMAGETYPE_at32stk1000 = "uImage"
 KERNEL_IMAGETYPE_at91sam9263ek = "uImage"
+KERNEL_IMAGETYPE_sarge-at91 = "uImage"
 
 # Specify the commandline for you device here:
 
