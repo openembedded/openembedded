@@ -1,5 +1,7 @@
 require 0xffff.inc
 
+DEPENDS = "libusb-native"
+
 inherit native
 
 do_stage() {
