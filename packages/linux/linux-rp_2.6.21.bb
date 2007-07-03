@@ -1,6 +1,6 @@
 require linux-rp.inc
 
-PR = "r6"
+PR = "r7"
 
 # Handy URLs
 # git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux-2.6.git;protocol=git;tag=ef7d1b244fa6c94fb76d5f787b8629df64ea4046
@@ -81,8 +81,8 @@ SRC_URI_append_collie = "\
  	   ${TKSRC}/mmc_spi-r4.patch;patch=1 \
  	   ${TKSRC}/locomo-r0.patch;patch=1 \
  	   ${TKSRC}/collie-kexec.patch;patch=1 \
- 	   file://locomo_spi-r4.patch;patch=1 \
- 	   file://sharpsl_pm-r1.patch;patch=1 \
+ 	   ${TKSRC}/locomo_spi-4.patch;patch=1 \
+ 	   ${TKSRC}/sharpsl_pm-2.patch;patch=1 \
  	   ${TKSRC}/collie_pm-2.patch;patch=1 \
  	   ${TKSRC}/locomokeyb_suspendkey.patch;patch=1 \
  	   ${TKSRC}/pcmcia_suspend.patch;patch=1 \
