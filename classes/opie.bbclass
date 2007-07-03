@@ -79,7 +79,7 @@ python opie_do_opie_install() {
 	S = bb.data.getVar( "S", d, 1 )
 	D = "%s/image" % bb.data.getVar( "WORKDIR", d, True )
 	WORKDIR = bb.data.getVar( "WORKDIR", d, True )
-	palmtopdir = bb.data.getVar( "palmtopdir", d )
+	palmtopdir = bb.data.getVar( "palmtopdir", d, True )
 	APPDESKTOP = bb.data.getVar( "APPDESKTOP", d, True ) or "%s/%s" % ( WORKDIR, desktopdir )
 
 	if desktopdir is not None:
