@@ -1,4 +1,4 @@
-DESCRIPTION = "Opie Oxygen"
+DESCRIPTION = "Opie Oxygen - Periodic table of elements (Chemistry)"
 SECTION = "opie/applications"
 PRIORITY = "optional"
 LICENSE = "GPL"
