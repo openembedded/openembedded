@@ -8,6 +8,12 @@ export OPIEDIR="$QTDIR"
 export QPEDIR="$QTDIR"
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$OPIEDIR/lib
 export PATH=$PATH:$OPIEDIR/bin
+# Following is from c7x0 override, check for validity, etc.
+## we need to tinker directly with qws_display until the ODevice 
+## default (which is now W100:Rot0:0) works flawlessly with rotation 
+## and survives a suspend/resume cycle 
+#export QWS_DISPLAY=Transformed:Rot0:0
+## export QWS_DISPLAY=W100:Rot0:0 
 
 if [ -z `which qpe` ] ; then 
     echo Opie not installed
