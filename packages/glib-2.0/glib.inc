@@ -8,12 +8,13 @@ SECTION = "libs"
 PRIORITY = "optional"
 DEPENDS += "glib-2.0-native gtk-doc"
 DEPENDS += "virtual/libiconv virtual/libintl"
-PACKAGES =+ "glib-2.0-utils "
+PACKAGES =+ "${PN}-dev glib-2.0-utils "
 
 PR = "r1"
 
 LEAD_SONAME = "libglib-2.0.*"
 FILES_glib-2.0-utils = "${bindir}/*"
+FILES_${PN}-dev += "${libdir}/glib-2.0 ${datadir}/glib-2.0"
 
 EXTRA_OECONF = "--disable-debug "
 
