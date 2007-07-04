@@ -19,8 +19,7 @@ DEPENDS_prepend = "${@["virtual/libqpe1 uicmoc-native ", ""][(bb.data.getVar('PN
 QT_LIBRARY = '${@base_conditional("PALMTOP_USE_MULTITHREADED_QT", "yes", "qte-mt", "qte", d)}'
 
 PACKAGES = "${PN}-dbg ${PN}-dev ${PN} ${PN}-doc ${PN}-locale"
-FILES_${PN} = " ${palmtopdir} "
-FILES_${PN}-dev += " ${palmtopdir}/lib/lib*.so "
+FILES_${PN} += " ${palmtopdir} "
 FILES_${PN}-dbg += " ${palmtopdir}/lib/.debug \
                      ${palmtopdir}/bin/.debug \
                      ${palmtopdir}/plugins/*/.debug "
