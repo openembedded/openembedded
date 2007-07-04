@@ -10,7 +10,6 @@ LICENSE = "GPL"
 
 SRC_URI = "http://bluez.sourceforge.net/download/bluez-utils-${PV}.tar.gz \
 	file://hcid.conf \
-	file://02dtl1_cs.sh \
 	file://hciattach-ti-bts.patch;patch=1 \
         file://handle-eintr.patch;patch=1;status=applied"
 
@@ -41,7 +40,6 @@ do_install_append() {
 	rmdir ${D}${bindir} ${D}${sbindir}
 	chmod u+s ${D}${base_sbindir}/hciattach ${D}${base_sbindir}/hciconfig
 	install -m 0644 ${WORKDIR}/hcid.conf ${D}${sysconfdir}/bluetooth/
-	install -m 0755 ${WORKDIR}/02dtl1_cs.sh ${D}${sysconfdir}/apm/event.d/
         install -m 0755 ${S}/daemon/.libs/passkey-agent ${D}${base_bindir}/
 }
 

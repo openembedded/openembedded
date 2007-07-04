@@ -6,9 +6,8 @@ DEPENDS += "glib-2.0"
 
 SRC_URI = "http://bluez.sourceforge.net/download/bluez-utils-${PV}.tar.gz \
            file://hcid.conf \
-           file://02dtl1_cs.sh \
           "
-PR = "r0"
+PR = "r1"
 
 EXTRA_OECONF = " \
                  --enable-bccmd \
@@ -83,9 +82,6 @@ FILES_${PN} = " \
                ${sysconfdir}/dbus-1 \
 	       ${base_sbindir}/hciattach \
               "
-
-#Package 02dtl1_cs.sh, which is a nasty hack to get dtl1c_cs cards working with suspend/resume 
-FILES_${PN} += "${sysconfdir}/apm/"
 
 FILES_${PN}-dbg += " \
                    ${libdir}/bluetooth/.debug \
