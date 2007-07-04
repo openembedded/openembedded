@@ -80,6 +80,7 @@ python opie_do_opie_install() {
 	D = "%s/image" % bb.data.getVar( "WORKDIR", d, True )
 	WORKDIR = bb.data.getVar( "WORKDIR", d, True )
 	palmtopdir = bb.data.getVar( "palmtopdir", d, True )
+	gnubindir = bb.data.getVar( "bindir", d, True )
 	APPDESKTOP = bb.data.getVar( "APPDESKTOP", d, True ) or "%s/%s" % ( WORKDIR, desktopdir )
 
 	if desktopdir is not None:
@@ -89,11 +90,12 @@ python opie_do_opie_install() {
 	os.system( "install -d %s%s%s/" % ( D, palmtopdir, bindir ) )
 
 	if APPTYPE == "binary":
-		os.system( "install -m 0755 %s/%s %s%s%s/" % ( S, APPNAME, D, palmtopdir, bindir ) )
+		os.system( "install -d %s%s/" % ( D, gnubindir ) )
+		os.system( "install -m 0755 %s/%s %s%s/" % ( S, APPNAME, D, gnubindir ) )
 	elif APPTYPE == "quicklaunch":
 		os.system( "install -m 0755 %s/lib%s.so %s%s%s/" % ( S, APPNAME, D, palmtopdir, bindir ) )
-		os.system( "install -d %s%s/bin/" % ( D, palmtopdir ) )
-		os.system( "ln -sf %s/bin/quicklauncher %s%s/bin/%s" % ( palmtopdir, D, palmtopdir, APPNAME ) )
+		os.system( "install -d %s%s/" % ( D, gnubindir ) )
+		os.system( "ln -sf %s/quicklauncher %s%s/%s" % ( gnubindir, D, gnubindir, APPNAME ) )
 	elif APPTYPE == "plugin":
 		os.system( "install -m 0755 %s/lib%s.so %s%s%s/" % ( S, APPNAME, D, palmtopdir, bindir ) )
 }
