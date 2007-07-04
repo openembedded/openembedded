@@ -1,6 +1,6 @@
 FILESPATH =. "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/qemu-${PV}:"
 # prefix = "${STAGING_DIR}/${BUILD_SYS}"
-DEPENDS = "libsdl-native"
+DEPENDS = "libsdl-native zlib-native"
 
 python __anonymous() {
     from bb import which, data
