@@ -31,7 +31,7 @@ do_install() {
 	install -m 0644 ${WORKDIR}/pics/${APPNAME}/*.* ${D}${palmtopdir}/pics/${APPNAME}/
 	install -m 0644 ${WORKDIR}/pics/Network/*.* ${D}${palmtopdir}/pics/Network/
 	install -d ${D}${palmtopdir}/lib/
-	oe_libinstall -so libinterfaces ${D}${palmtopdir}/lib
+	oe_libinstall -so libinterfaces ${D}${libdir}
 	install -d ${D}${palmtopdir}/plugins/networksettings/
 	for plugin in kppp wlan
 	do
