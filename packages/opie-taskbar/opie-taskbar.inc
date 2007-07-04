@@ -44,7 +44,7 @@ SECTIONS = "1Pim Applications Examples Games Opie-SH Python Settings"
 PICS = "opielogo32x32.png start_button.png new_wait.png opielogo16x16.png sidebar.png"
 
 do_install() {
-	install -d ${D}${palmtopdir}/bin
+	install -d ${D}${bindir}
 	for i in ${SECTIONS}
 	do
 		install -d ${D}${palmtopdir}/apps/$i/
@@ -57,7 +57,7 @@ do_install() {
 	install -d ${D}${palmtopdir}/etc/skel
 	install -d ${D}${sysconfdir}
 
-	install -m 0755 ${S}/qpe ${D}${palmtopdir}/bin/qpe
+	install -m 0755 ${S}/qpe ${D}${bindir}/qpe
 	install -m 0644 ${WORKDIR}/apps/Settings/calibrate.desktop ${D}${palmtopdir}/apps/Settings/
 	install -m 0644 ${WORKDIR}/apps/Settings/quit.desktop ${D}${palmtopdir}/apps/Settings/
 
