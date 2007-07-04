@@ -43,7 +43,7 @@ SRCDATE_zaurusd ?= "20060628"
 # GPE
 SRCDATE_dasher-gpe  ?= "20060814"
 SRCDATE_rosetta ?= "20060804"
-SRCDATE_gpesyncd ?= "20061128"
+SRCDATE_gpesyncd ?= "20070701"
 
 # GNOME
 SRCDATE_gconf-dbus ?= "20070512"

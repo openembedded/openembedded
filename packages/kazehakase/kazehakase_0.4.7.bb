@@ -7,5 +7,3 @@ SRC_URI = "http://iij.dl.sourceforge.jp/kazehakase/25610/kazehakase-${PV}.tar.gz
 
 inherit autotools pkgconfig
 
-DEFAULT_PREFERENCE = "-1"
-

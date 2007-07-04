@@ -26,3 +26,23 @@ FILES_${PN} = "${prefix}"
 FILES_${PN}-dbg += "${prefix}/bin/.debug \
                     ${prefix}/sbin/.debug \
                    "
+
+sdk_ipk_do_indexes () {
+	set -x
+
+	ipkgarchs="${PACKAGE_ARCHS}"
+
+        if [ -z "${DEPLOY_KEEP_PACKAGES}" ]; then
+                touch ${DEPLOY_DIR_IPK}/Packages
+                ipkg-make-index -r ${DEPLOY_DIR_IPK}/Packages -p ${DEPLOY_DIR_IPK}/Packages -l ${DEPLOY_DIR_IPK}/Packages.filelist -m ${DEPLOY_DIR_IPK}
+        fi
+
+	for arch in $ipkgarchs; do
+		if [ -z "${DEPLOY_KEEP_PACKAGES}" ]; then
+			if [ -e ${DEPLOY_DIR_IPK}/${BUILD_ARCH}-$arch-sdk/ ] ; then 
+				touch ${DEPLOY_DIR_IPK}/${BUILD_ARCH}-$arch-sdk/Packages
+				ipkg-make-index -r ${DEPLOY_DIR_IPK}/${BUILD_ARCH}-$arch-sdk/Packages -p ${DEPLOY_DIR_IPK}/${BUILD_ARCH}-$arch-sdk/Packages -l ${DEPLOY_DIR_IPK}/${BUILD_ARCH}-$arch-sdk/Packages.filelist -m ${DEPLOY_DIR_IPK}/${BUILD_ARCH}-$arch-sdk/
+			fi
+		fi
+	done
+}

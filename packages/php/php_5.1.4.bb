@@ -1,7 +1,7 @@
 SECTION = "console/network"
 DESCRIPTION = "A server-side, HTML-embedded scripting language. This package provides the CGI."
 LICENSE = "PHP"
-DEPENDS = "zlib libxml2 mysql libiconv"
+DEPENDS = "zlib libxml2 mysql virtual/libiconv"
 
 SRC_URI =     "http://us2.php.net/distributions/php-${PV}.tar.bz2\
 	       file://autotools.patch;patch=1 \

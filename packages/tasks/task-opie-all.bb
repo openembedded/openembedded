@@ -2,9 +2,12 @@ DESCRIPTION = "Tasks for OPIE stuff"
 SECTION = "opie/base"
 ALLOW_EMPTY = "1"
 LICENSE = "MIT"
+PR = "r1"
 
 PACKAGES = "task-opie-applets task-opie-inputmethods task-opie-styles \
-            task-opie-decorations task-opie-multimedia"
+            task-opie-decorations task-opie-multimedia task-opie-wlan \
+            task-opie-settings task-opie-pim task-opie-datebookplugins \
+            task-opie-todayplugins"
 
 #
 # all OPIE stuff
@@ -52,7 +55,7 @@ RDEPENDS_task-opie-settings = "opie-appearance opie-aqpkg opie-backup opie-butto
 RDEPENDS_task-opie-pim = "task-opie-base-pim task-opie-todayplugins task-opie-datebookplugins \
                  opie-mail opie-pimconverter"
 
-RDEPENDS_task-opie-datebookplugins= "opie-datebook-birthdayplugin \
+RDEPENDS_task-opie-datebookplugins = "opie-datebook-birthdayplugin \
                             opie-datebook-chrisholidayplugin \
                             opie-datebook-nationalholidayplugin"
 

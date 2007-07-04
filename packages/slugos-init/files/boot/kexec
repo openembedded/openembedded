@@ -1,0 +1,202 @@
+#!/bin/sh
+#
+# Loads the specified kernel and kexecs it.
+
+# The access method and path from which to fetch the kernel
+# is specified in "$1" and "$2":
+#
+# flash      /boot/zImage-ixp4xxbe
+# nfs        spike:/home/slug/vmlinuz
+# wget       http://devserv/kernels/vmlinuzbe
+# wget       ftp://ftpserv/pub/zImage
+# /dev/sda1  /kernels/zImage-test
+# UUID       /kernels/zImage-test
+# tftp       server:/pub/kernels/vmlinuz
+#
+# Command-line options for the new kernel are in "$3".
+
+
+# In order to use this, you must exec this script from the /linuxrc file.
+#
+# This sample linuxrc script boots from external disk.  The last line of
+# this example (exec /boot/flash) is a fallback; it will not normally be
+# executed unless /boot/kexec is missing or damaged.
+#--------------------
+#  #!/bin/sh
+#  sleep=8 exec /boot/kexec /dev/sda1 /boot/zImage-ixp4xxbe \
+#  "console=ttyS0,115200n8 root=/dev/sda1 rootfstype=ext3 rw init=/linuxrc"
+#  exec /boot/flash
+#--------------------
+#
+# This one boots from flash in the normal fashion, except the kernel is
+# loaded using wget.  This is common for kernel debugging.
+#--------------------
+#  #!/bin/sh
+#  exec /boot/kexec wget http://myserver/boot/zImage-ixp4xxbe \
+#  "console=ttyS0,115200n8 root=/dev/mtdblock4 rootfstype=jffs2 rw \
+#    init=/boot/flash noirqdebug"
+#  exec /boot/flash
+#--------------------
+
+
+# Use the standard init path (see /etc/init.d/rcS)
+export PATH=/sbin:/bin:/usr/sbin:/usr/bin
+
+# Wait at least a short while for the disks...
+if [ ! "$sleep" -gt 0 ] ; then
+    sleep=1
+fi
+
+# Load the helper functions
+. /etc/default/functions
+. /etc/default/modulefunctions
+
+# Print a distinctive banner to make it easy to separate the in-flash
+# kernel boot from the kexec'd kernel boot when looking at logs, etc.
+echo '###########################################################'
+echo '######################     KEXEC     ######################'
+
+leds boot system
+
+if [ -n "$1" -a -n "$2" ] ; then
+
+	method="$1"
+	shift
+	kpath="$1"
+	shift
+	if [ -n "$1" ] ; then
+	    kcmdline="$1"
+	    shift
+	fi
+	kexec_image=
+	need_umount=0
+	do_kexec=0
+
+	mount -t proc proc /proc
+
+	case "$method" in
+
+	    flash )
+		echo "Loading kexec kernel directly from \"$kpath\"..."
+		kexec_image="$kpath"
+		;;
+
+	    wget )
+		if /boot/network ; then
+		    echo "mounting tmpfs partition..."
+		    if mount -t tmpfs tmpfs /mnt ; then
+			need_umount=1
+			echo "Loading kexec kernel using wget \"$kpath\"..."
+			wget -P /mnt "$kpath"
+			t=`basename "$kpath"`
+			kexec_image="/mnt/$t"
+		    fi
+		fi
+		;;
+
+	    nfs )
+		if /boot/network ; then
+		    echo "Loading kexec kernel using nfs \"$kpath\"..."
+		    echo "mounting nfs partition..."
+		    if mount -o ro,nolock -t nfs `dirname "$kpath"` /mnt ; then
+			need_umount=1
+			t=`basename "$kpath"`
+			kexec_image="/mnt/$t"
+		    fi
+		fi
+		;;
+
+	    /dev/* )
+		echo "Loading kexec kernel using disk \"$kpath\"..."
+		loaddiskmods
+		sleep "$sleep"
+		echo "mounting partition \"$method\"..."
+		if mount -o ro "$method" /mnt ; then
+		    need_umount=1
+		    kexec_image="/mnt/$kpath"
+		fi
+		;;
+
+	    UUID )
+		echo "Loading kexec kernel using disk UUID \"$kpath\"..."
+		loaddiskmods
+		sleep "$sleep"
+		if [ -n "$UUID" ] ; then
+		echo "mounting partition UUID \"$UUID\"..."
+		    if mount -o ro -U "$UUID" /mnt ; then
+			need_umount=1
+			kexec_image="/mnt/$kpath"
+		    fi
+		fi
+		;;
+
+	    tftp )
+		if /boot/network ; then
+		    echo "mounting tmpfs partition..."
+		    if mount -t tmpfs tmpfs /mnt ; then
+			need_umount=1
+			t=`basename "$kpath"`
+			kexec_image="/mnt/$t"
+			echo "Loading kexec kernel using tftp \"$kpath\"..."
+			tftp -g -l "$kexec_image" -r "${kpath#*:}" "${kpath%%:*}"
+		    fi
+		fi
+		;;
+
+	    * )
+		echo "Unrecognized method: \"$method\""
+		;;
+
+	esac
+
+	if [ -n "$kexec_image" -a -f "$kexec_image" ] ; then
+	    if kexec -l "$kexec_image" ; then
+		do_kexec=1
+	    fi
+	else
+	    echo "Unable to load \"$kexec_image\""
+	fi
+
+	if [ $do_kexec -eq 1 -a -n "$kcmdline" ] ; then
+	    echo "Attempting to mount /sys (sysfs)..."
+	    if mount -t sysfs sysfs /sys ; then
+		echo "Setting command line:"
+		echo " \"$kcmdline\""
+		echo "$kcmdline" > /sys/kernel/kexec_cmdline
+		echo "unmounting /sys..."
+		umount /sys
+	    else
+		do_kexec=0
+	    fi
+	fi
+
+	if [ $need_umount -eq 1 ] ; then
+	    echo "unmounting /mnt..."
+	    umount /mnt
+	fi
+
+	if [ $do_kexec -eq 1 ] ; then
+	    echo "Remounting root as read-only..."
+	    mount -o remount,ro /
+	    echo "Invoking \"kexec -f -e\" ..."
+	    kexec -f -e
+	    echo "ERROR!"
+	    # We should never return here!  At this point, things are not
+	    # too well.  Remount the root as rw, and fallback.
+	    echo "Remounting root as read-write..."
+	    mount -o remount,rw /
+	fi
+else
+	echo "Usage: $0 flash|nfs|wget|UUID|/dev/<partition> <path-or-URL> [cmdline]"
+fi
+
+# fallback - use the flash boot
+echo "Falling back to flash boot..."
+leds beep -f 1000 -r 2
+exec /boot/flash
+
+# fallback to the fallback
+leds boot system panic
+exec <>/dev/console >&0 2>&0
+test -x /bin/sh && exec /bin/sh
+exit 1
