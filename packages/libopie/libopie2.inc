@@ -71,29 +71,29 @@ do_stage() {
 }
 
 do_install() {
-	install -d ${D}${palmtopdir}/lib
+	install -d ${D}${libdir}
 	for f in ${LIBS}
 	do
-		oe_libinstall -so libopie$f ${D}${palmtopdir}/lib
+		oe_libinstall -so libopie$f ${D}${libdir}
 	done
 }
 
 PACKAGES_prepend = " libopiecore2 libopiedb2 libopiesecurity2 libopiemm2 libopienet2 libopiepim2 libopieui2 libopiebluez2 "
 
 DESCRIPTION_libopiecore2 = "Opie Development Platform 1.x Core Library"
-FILES_libopiecore2 = "${palmtopdir}/lib/libopiecore2.so.*"
+FILES_libopiecore2 = "${libdir}/libopiecore2.so.*"
 DESCRIPTION_libopiedb2 = "Opie Development Platform 1.x Database Library"
-FILES_libopiedb2 = "${palmtopdir}/lib/libopiedb2.so.*"
+FILES_libopiedb2 = "${libdir}/libopiedb2.so.*"
 DESCRIPTION_libopiemm2 = "Opie Development Platform 1.x Multimedia Library"
-FILES_libopiemm2 = "${palmtopdir}/lib/libopiemm2.so.*"
+FILES_libopiemm2 = "${libdir}/libopiemm2.so.*"
 DESCRIPTION_libopienet2 = "Opie Development Platform 1.x Network Library"
-FILES_libopienet2 = "${palmtopdir}/lib/libopienet2.so.*"
+FILES_libopienet2 = "${libdir}/libopienet2.so.*"
 DESCRIPTION_libopiepim2 = "Opie Development Platform 1.x PIM Library"
-FILES_libopiepim2 = "${palmtopdir}/lib/libopiepim2.so.*"
+FILES_libopiepim2 = "${libdir}/libopiepim2.so.*"
 DESCRIPTION_libopieui2 = "Opie Development Platform 1.x User Interface Library"
-FILES_libopieui2 = "${palmtopdir}/lib/libopieui2.so.*"
+FILES_libopieui2 = "${libdir}/libopieui2.so.*"
 DESCRIPTION_libopiesecurity2 = "Opie Development Platform 1.x Security Library"
-FILES_libopiesecurity2 = "${palmtopdir}/lib/libopiesecurity2.so.*"
+FILES_libopiesecurity2 = "${libdir}/libopiesecurity2.so.*"
 DESCRIPTION_libopiebluez2 = "Opie Development Platform 1.x Bluetooth Library"
-FILES_libopiebluez2 = "${palmtopdir}/lib/libopiebluez2.so.*"
+FILES_libopiebluez2 = "${libdir}/libopiebluez2.so.*"
 
