@@ -54,7 +54,7 @@ elseif(!empty($pkgname))
 {
 	$ipkgoutput = pkgdetails($pkgname);
 }
-elseif(!empty($pkgsearch))
+elseif(!empty($pkgsearch) OR !empty($arch))
 {
 	$ipkgoutput = searchpkg("%{$pkgsearch}%", $arch);
 }
