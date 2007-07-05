@@ -19,6 +19,9 @@ EXTRA_OECONF = " \
 		--with-gnutls-libs=${STAGING_LIBDIR} \
 		"
 
+OE_LT_RPATH_ALLOW=":${libdir}/purple-2:"
+OE_LT_RPATH_ALLOW[export]="1"
+
 PACKAGES =+ "libpurple libpurple-dev libpurple-dbg libpurple-liboscar libpurple-libjabber libpurple-logreader finch finch-dev finch-dbg"
 
 
