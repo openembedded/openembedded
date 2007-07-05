@@ -129,6 +129,17 @@ function searchpkg ($searchword)
 	}
 }
 
+
+function searchpkgarch ($searchword, $searcharch)
+{
+	if($result = db_query("SELECT DISTINCT p_name,p_desc,p_section  FROM packages WHERE p_name LIKE '$searchword' AND p_arch LIKE '$searcharch'  ORDER BY p_name ASC"))
+	{   
+		return generate_list_of_packages($result);
+	}
+}
+
+
+
 function generate_list_of_packages($query_result)
 {
 	$ipkgoutput = "<table>\n";
@@ -443,7 +454,7 @@ function check_database()
 				f_name       varchar(32),
 				f_uri        varchar(100),
 				f_type		 varchar(16)
-		)");
+				f_comments   varchar(500))");
 
 			insert_feeds ($db) ;
 		}

@@ -49,6 +49,12 @@ if(isset($_GET['action']))
 	$action = $_GET['action'];
 }
 
+if(isset($_GET['arch']))
+{
+	$arch = $_GET['arch'];
+}
+
+
 switch($action)
 {
 	case "details":
@@ -56,7 +62,12 @@ switch($action)
 		break;
 
 	case "search":
-		$ipkgoutput = searchpkg ("%{$name}%");
+		if ( $arch == "" ) {
+		    $ipkgoutput = searchpkg ("%{$name}%");
+		    }
+		else {
+		    $ipkgoutput = searchpkgarch ("%{$name}%", "{$arch}");
+		    }
 		break;
 
 	case "section":
@@ -65,8 +76,13 @@ switch($action)
 
 	case "letter":
 		$letter = $_GET['g'];
-		$ipkgoutput = searchpkg ("{$letter}%");
-		break;
+		if ( $arch == "" ) {
+		     $ipkgoutput = searchpkg ("{$letter}%");
+		}
+                else {
+                    $ipkgoutput = searchpkgarch ("{$letter}%", "{$arch}");
+                    }
+                break;
 
 	default:
 		$ipkgoutput = searchpkg("a");
@@ -89,6 +105,23 @@ switch($action)
 				<fieldset>
 					<label for="name">Package name</label>
 					<input type="text" name="name" value="<?php echo $name; ?>" />
+					<select name="arch">
+					   <option value="" selected="selected">all architectures</option>
+					   <option value="all">noarch</option>
+					   <option value="arm-oabi">arm OABI</option>
+					   <option value="armv4t">armv4t EABI</option>
+					   <option value="armv5te">armv5te EABI</option>
+					   <option value="armv5teb">armv5teb EABI</option>
+					   <option value="armv6">armv6 EABI</option>
+					   <option value="avr32">avr32</option>
+					   <option value="bfin">blackfin</option>
+					   <option value="i486">i486</option>
+					   <option value="i586">i586</option>
+					   <option value="i686">i686</option>
+					   <option value="iwmmxt">iwmmxt</option>
+					   <option value="ppc603e">ppc603e</option>
+					   <option value="sparc">sparc</option>
+					</select>
 					<input type="hidden" name="action" value="search" />
 					<input type="submit" value="Search" />
 				</fieldset>
