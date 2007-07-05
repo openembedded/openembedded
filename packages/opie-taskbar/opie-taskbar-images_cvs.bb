@@ -1,6 +1,5 @@
 require ${PN}.inc
 PV = "${OPIE_CVS_PV}"
-PR = "r1.2"
+PR = "r2"
 
-SRC_URI = "${HANDHELDS_CVS};module=opie/pics \
-          "
+SRC_URI = "${HANDHELDS_CVS};module=opie/pics"
