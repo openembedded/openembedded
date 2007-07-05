@@ -1,8 +1,8 @@
 <?php
 
 /*
- * (c) Koen Kooi 2006
- * (c) Marcin Juszkiewicz 2006
+ * (c) Koen Kooi 2006, 2007
+ * (c) Marcin Juszkiewicz 2006, 2007
  *
  * This php script is intended to do the following:
  *
