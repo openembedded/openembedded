@@ -185,7 +185,7 @@ ALLOW_EMPTY_kernel-image = "1"
 
 # Userspace workarounds for kernel modules issues
 # This is shame, fix the kernel instead!
-RDEPENDS_kernel-module-dtl1-cs = "bluez-dtl1-workaround"
+DEPENDS_kernel-module-dtl1-cs = "bluez-dtl1-workaround"
 
 pkg_postinst_kernel-image () {
 if [ ! -e "$D/lib/modules/${KERNEL_VERSION}" ]; then
