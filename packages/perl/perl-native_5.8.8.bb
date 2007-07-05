@@ -14,7 +14,7 @@ SRC_URI = "http://ftp.funet.fi/pub/CPAN/src/perl-${PV}.tar.gz \
            file://native-nopacklist.patch;patch=1 \
            file://native-no-gdbminc.patch;patch=1 \
            file://native-perlinc.patch;patch=1 \
-           file://native-makedepend-dash.patch;patch=1"
+           file://makedepend-dash.patch;patch=1"
 
 # This sloppy patch breaks normal gcc
 #           file://native-ssp.patch;patch=1
