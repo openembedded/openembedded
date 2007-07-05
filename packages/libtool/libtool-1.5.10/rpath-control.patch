@@ -1,0 +1,21 @@
+diff --git a/ltmain.in b/ltmain.in
+--- a/ltmain.in
++++ b/ltmain.in
+@@ -3688,6 +3705,7 @@ EOF
+ 	  rpath="$finalize_rpath"
+ 	  test "$mode" != relink && rpath="$compile_rpath$rpath"
+ 	  for libdir in $rpath; do
++	   if test "$OE_LT_RPATH_ALLOW" = "any" -o "${OE_LT_RPATH_ALLOW/:${libdir}:/}" != "$OE_LT_RPATH_ALLOW" ; then
+ 	    if test -n "$hardcode_libdir_flag_spec"; then
+ 	      if test -n "$hardcode_libdir_separator"; then
+ 		if test -z "$hardcode_libdirs"; then
+@@ -3712,6 +3730,9 @@ EOF
+ 	      *) perm_rpath="$perm_rpath $libdir" ;;
+ 	      esac
+ 	    fi
++	   else
++	    echo "OE: Not hardcoding '$libdir' into rpath"
++	   fi
+ 	  done
+ 	  # Substitute the hardcoded libdirs into the rpath.
+ 	  if test -n "$hardcode_libdir_separator" &&
