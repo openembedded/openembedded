@@ -6,7 +6,7 @@ LICENSE = "GPL"
 DEPENDS = "virtual/libx11 libxtst gtk+ libglade"
 SRCDATE = 20070204
 PV = "0.7+svn${SRCDATE}"
-PR = "r2"
+PR = "r3"
 
 SRC_URI = "svn://svn.o-hand.com/repos/matchbox/trunk;module=Xoo;proto=http \
            file://gpephone-vm.patch;patch=1;pnum=0"
@@ -14,3 +14,5 @@ SRC_URI = "svn://svn.o-hand.com/repos/matchbox/trunk;module=Xoo;proto=http \
 S = "${WORKDIR}/Xoo"
 
 inherit autotools
+
+FILES_${PN} += "${datadir}/xoo"

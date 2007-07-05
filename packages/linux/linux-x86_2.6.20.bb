@@ -1,7 +1,7 @@
 DESCRIPTION = "Linux Kernel for x86 compatible machines"
 SECTION = "kernel"
 LICENSE = "GPL"
-PR = "r1"
+PR = "r3"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-${PV}.tar.bz2 " 
 
@@ -29,3 +29,12 @@ do_configure_prepend_i686() {
 	install -m 0644 ${WORKDIR}/i686-defconfig ${S}/.config
 }
 
+
+do_deploy() {
+        install -d ${DEPLOY_DIR_IMAGE}
+        install -m 0644 arch/i386/boot/${KERNEL_IMAGETYPE}  ${DEPLOY_DIR_IMAGE}/${KERNEL_IMAGETYPE}-${PV}-${MACHINE}-${DATETIME} 
+}   
+
+do_deploy[dirs] = "${S}"
+
+addtask deploy before do_populate_staging after do_compile

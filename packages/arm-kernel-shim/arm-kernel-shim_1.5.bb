@@ -3,7 +3,7 @@ SECTION = ""
 PRIORITY = "optional"
 HOMEPAGE = "http://wiki.buici.com/twiki/bin/view/Main/ApexBootloader"
 LICENSE = "GPL"
-PR = "r1"
+PR = "r2"
 
 COMPATIBLE_MACHINE = "(ixp4xx|nslu2)"
 
@@ -20,7 +20,7 @@ CMDLINE_CONSOLE = "console=${@bb.data.getVar("KERNEL_CONSOLE",d,1) or "ttyS0"}"
 CMDLINE_ROOT_DSMG600 = "root=/dev/mtdblock2 rootfstype=jffs2 rw init=/linuxrc"
 CMDLINE_ROOT_NAS100D = "root=/dev/mtdblock2 rootfstype=jffs2 rw init=/linuxrc"
 CMDLINE_ROOT_NSLU2   = "root=/dev/mtdblock4 rootfstype=jffs2 rw init=/linuxrc"
-CMDLINE_ROOT_FSG3    = "root=/dev/mtdblock2 rootfstype=jffs2 rw init=/linuxrc"
+# CMDLINE is passed correctly on the Freecom FSG-3 from the bootloader.
 
 EXTRA_OEMAKE_append = " CROSS_COMPILE=${CROSS_DIR}/bin/${HOST_PREFIX}"
 
@@ -70,7 +70,6 @@ oe_runmake() {
 		sed -e 's|//#define FORCE_LITTLEENDIAN|#define FORCE_LITTLEENDIAN|' \
 			${WORKDIR}/config-fsg3.h > ${S}/config.h
 	fi
-	echo "#define COMMANDLINE \"${CMDLINE_CONSOLE} ${CMDLINE_ROOT_FSG3} ${CMDLINE_DEBUG}\"" >> ${S}/config.h
 	rm -f ${S}/main.o
 	oenote make ${PARALLEL_MAKE} CROSS_COMPILE=${CROSS_DIR}/bin/${TARGET_PREFIX} PACKAGE=arm-kernel-shim-fsg3
 	make ${PARALLEL_MAKE} CROSS_COMPILE=${CROSS_DIR}/bin/${TARGET_PREFIX} PACKAGE=arm-kernel-shim-fsg3 || die "oe_runmake failed"

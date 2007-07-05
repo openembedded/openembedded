@@ -3,14 +3,15 @@ HOMEPAGE = "http://www.trolltech.com"
 SECTION = "devel"
 PRIORITY = "optional"
 LICENSE = "GPL QPL"
-PR = "r2"
+PR = "r3"
 
 SRC_URI = "ftp://ftp.trolltech.com/pub/qt/source/qt-embedded-${PV}-free.tar.gz \
            file://fix-makefile.patch;patch=1 \
            file://gcc3_4.patch;patch=1" \
            file://gcc4.patch;patch=1 \
            file://gcc4_1.patch;patch=1 \
-           file://64bit-cleanup.patch;patch=1"
+           file://64bit-cleanup.patch;patch=1 \
+	   file://kernel-asm-page.patch;patch=1"
 S = "${WORKDIR}/qt-${PV}"
 
 inherit native qmake-base
