@@ -480,4 +480,8 @@ function read_vars_from_get($array_of_vars)
     }
 }
 
+function get_arch_list()
+{
+    return db_query('SELECT DISTINCT p_arch FROM packages WHERE p_arch NOT IN (NULL, "", "all") ORDER BY p_arch ASC');
+}
 ?>

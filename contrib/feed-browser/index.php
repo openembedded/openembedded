@@ -59,6 +59,8 @@ elseif(!empty($pkgsearch))
 	$ipkgoutput = searchpkg("%{$pkgsearch}%", $arch);
 }
 
+$archs_list = get_arch_list();
+
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
@@ -77,20 +79,15 @@ elseif(!empty($pkgsearch))
 					<input type="text" name="pkgsearch" value="<?php echo $name; ?>" />
 					<select name="arch">
 					   <option value="" selected="selected">all architectures</option>
-					   <option value="all">noarch</option>
-					   <option value="arm-oabi">arm OABI</option>
-					   <option value="armv4t">armv4t EABI</option>
-					   <option value="armv5te">armv5te EABI</option>
-					   <option value="armv5teb">armv5teb EABI</option>
-					   <option value="armv6">armv6 EABI</option>
-					   <option value="avr32">avr32</option>
-					   <option value="bfin">blackfin</option>
-					   <option value="i486">i486</option>
-					   <option value="i586">i586</option>
-					   <option value="i686">i686</option>
-					   <option value="iwmmxt">iwmmxt</option>
-					   <option value="ppc603e">ppc603e</option>
-					   <option value="sparc">sparc</option>
+					   <option value="all">no arch</option>
+<?php
+
+foreach($archs_list as $arch)
+{
+    echo "<option value='{$arch['p_arch']}'>{$arch['p_arch']}</option>";
+}
+
+?>
 					</select>
 					<input type="submit" value="Search" />
 				</fieldset>
