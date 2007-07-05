@@ -2,7 +2,7 @@ def qt_arch(d):
 	import bb, re
 	arch = bb.data.getVar('TARGET_ARCH', d, 1)
 	if re.match("^i.86$", arch):
-		arch = "x86"
+		arch = "i386"
 	elif re.match("^arm.*", arch):
 		arch = "arm"
 	elif arch == "x86_64":
