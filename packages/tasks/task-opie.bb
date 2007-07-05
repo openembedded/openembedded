@@ -5,7 +5,7 @@ ALLOW_EMPTY = "1"
 LICENSE = "MIT"
 PROVIDES = "task-opie-everything"
 
-PR = "r9"
+PR = "r10"
 
 PACKAGES = "task-opie-base \
             task-opie-base-applets task-opie-base-apps \
@@ -26,8 +26,10 @@ PACKAGES += "task-opie-everything"
 # Dependencies to get the launcher up and running
 #
 RDEPENDS_task-opie-base = "opie-init opie-alarm opie-qcop opie-qss opie-quicklauncher \
-                           opie-taskbar opie-pics opie-sounds opie-freetype \
+                           opie-taskbar opie-taskbar-images-240x320 opie-pics opie-sounds opie-freetype \
                            ttf-dejavu-sans ttf-dejavu-sans-mono"
+# TODO: Instead of opie-taskbar-images-240x320 version for target machine should be used, pending
+# mechanism to specify screen size for all machines.
 
 #
 # things for reasonable bootstrap image
