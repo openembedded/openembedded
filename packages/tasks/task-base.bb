@@ -1,5 +1,5 @@
 DESCRIPTION = "Merge machine and distro options to create a basic machine task/package"
-PR = "r37"
+PR = "r38"
 
 DEPENDS = "task-boot"
 PROVIDES = "${PACKAGES}"
@@ -46,7 +46,10 @@ PACKAGE_ARCH = "all"
 PACKAGE_ARCH_task-base = "${MACHINE_ARCH}"
 PACKAGE_ARCH_task-machine-base = "${MACHINE_ARCH}"
 PACKAGE_ARCH_task-base-apm = "${MACHINE_ARCH}"
+PACKAGE_ARCH_task-base-bluetooth = "${MACHINE_ARCH}"
+PACKAGE_ARCH_task-base-irda = "${MACHINE_ARCH}"
 PACKAGE_ARCH_task-base-pcmcia = "${MACHINE_ARCH}"
+PACKAGE_ARCH_task-base-wifi = "${MACHINE_ARCH}"
 
 #
 # linux-hotplug or none
