@@ -8,10 +8,16 @@ export OPIEDIR="$QTDIR"
 export QPEDIR="$QTDIR"
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$OPIEDIR/lib
 export PATH=$PATH:$OPIEDIR/bin
+# Following is from c7x0 override, check for validity, etc.
+## we need to tinker directly with qws_display until the ODevice 
+## default (which is now W100:Rot0:0) works flawlessly with rotation 
+## and survives a suspend/resume cycle 
+#export QWS_DISPLAY=Transformed:Rot0:0
+## export QWS_DISPLAY=W100:Rot0:0 
 
-if [ ! -x "$OPIEDIR/bin/qpe" ] ; then 
+if [ -z `which qpe` ] ; then 
     echo Opie not installed
-    exit 0 
+    exit 0
 fi
 
 . /etc/profile
@@ -34,14 +40,8 @@ if [ ! -e "$HOME/systeminfo/linkver" ] ; then
     echo "1.13" >$HOME/systeminfo/linkver
 fi
 
-if [ ! -e "/opt/Qtopia" ] ; then
-    ln -sf /opt/QtPalmtop /opt/Qtopia
-fi
-
 case $1 in
 'start')
-    #/sbin/getkey 5 "Starting Opie in 5 seconds... press key to interrupt." && exit 0
-
     # Turn off psplash if any - sleep is required for anti-race
     if [ -e /mnt/.psplash ]; then
         TMPDIR=/mnt/.psplash psplash-write "QUIT" || true
@@ -52,7 +52,7 @@ case $1 in
             echo Starting Opie-login....
             $OPIEDIR/bin/opie-login -terminal 3
     else
-        $OPIEDIR/bin/opie-reorgfiles
+        opie-reorgfiles
         
         if [ -x "$OPIEDIR/bin/opie-sh-ssh-askpass.sh" ]; then
             export SSH_ASKPASS=$OPIEDIR/bin/opie-sh-ssh-askpass.sh
@@ -60,15 +60,15 @@ case $1 in
         echo Starting Opie....
 	(
 	 test -x /usr/bin/ssh-agent && eval $(/usr/bin/ssh-agent -s) && echo $SSH_AGENT_PID>/var/run/opie-ssh-agent.pid ;
-         $OPIEDIR/bin/qpe -terminal 3
+         qpe -terminal 3
 	)
 	echo -n >/var/log/opie-qss.log
-	test -x $OPIEDIR/bin/qpe && { for attempt in 0 1 2 3 4 5 6 7 8 9 a b c d e f ; do
+	{ for attempt in 0 1 2 3 4 5 6 7 8 9 a b c d e f ; do
 	    sleep 1
 	    echo "Waiting for qcop to startup: $attempt ..." >>/var/log/opie-qss.log
-	    $OPIEDIR/bin/qcop QPE/System 'ping()' || continue
+	    qcop QPE/System 'ping()' || continue
 	    echo "Starting qss" >>/var/log/opie-qss.log
-	    $OPIEDIR/bin/qss </dev/null >>/var/log/opie-qss.log 2>&1
+	    qss </dev/null >>/var/log/opie-qss.log 2>&1
 	    echo "qss exited, will try to restart" >>/var/log/opie-qss.log
 	done; rm /var/run/opie-qss-loop.pid; } &
 	echo $! >/var/run/opie-qss-loop.pid

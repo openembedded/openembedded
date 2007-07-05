@@ -152,8 +152,10 @@ do_configure() {
 			> `dirname $f`/`basename $f | sed -e 's,linux-,linux-uclibc-,'`
 		sed -e 's,-linux-,-linux-gnueabi-,g' < $f \
 			> `dirname $f`/`basename $f | sed -e 's,linux-,linux-gnueabi-,'`
+		sed -e 's,-linux-,-linux-uclibcgnueabi-,g' < $f \
+			> `dirname $f`/`basename $f | sed -e 's,linux-,linux-uclibcgnueabi-,'`
 	done
-	echo yes | ./configure ${EXTRA_OECONF} || die "Configuring qt failed. EXTRA_OECONF was ${EXTRA_OECONF}"
+	echo yes | ./configure ${EXTRA_OECONF} || die "Configuring qte failed. EXTRA_OECONF was ${EXTRA_OECONF}"
 }
 
 do_compile() {
@@ -179,12 +181,12 @@ do_stage() {
 }
 
 do_install() {
-	oe_libinstall -so -C lib lib${PN} ${D}${palmqtdir}/lib/
+	oe_libinstall -so -C lib lib${PN} ${D}${libdir}
 
 	install -d ${D}/${includedir}/qte
 	install -m 0644 include/*.h ${D}/${includedir}/qte/
 }
 
-FILES_${PN} = "${palmqtdir}/lib/lib${PN}.so.*"
-FILES_${PN}-dev = "${includedir}/* ${palmqtdir}/lib/lib${PN}.so"
-FILES_${PN}-dbg = "${palmtopdir}/lib/.debug/"
+FILES_${PN} = "${libdir}/lib${PN}.so.*"
+FILES_${PN}-dev = "${includedir}/* ${libdir}/lib${PN}.so"
+FILES_${PN}-dbg = "${libdir}/.debug/"

@@ -1,0 +1,35 @@
+--- launcher/taskbar.h.org	2004-08-23 00:35:22.000000000 +0300
++++ launcher/taskbar.h	2007-07-04 19:23:54.000000000 +0300
+@@ -84,6 +84,7 @@
+     LockKeyState* lockState;
+     StartMenu *sm;
+     bool resizeRunningApp;
++    bool showKbdLockState;
+ };
+ 
+ 
+--- launcher/taskbar.cpp.org	2005-07-04 01:13:00.000000000 +0300
++++ launcher/taskbar.cpp	2007-07-04 19:24:48.000000000 +0300
+@@ -213,12 +213,9 @@
+ 	(void)new SafeMode( this );
+ #endif
+ 
+-    // ## make customizable in some way?
+-#ifdef OPIE_TASKBAR_LOCK_KEY_STATE
+-    lockState = new LockKeyState( this );
+-#else
+     lockState = 0;
+-#endif
++    if ( showKbdLockState )
++	lockState = new LockKeyState( this );
+ 
+ #if defined(Q_WS_QWS)
+ #if !defined(QT_NO_COP)
+@@ -388,6 +385,7 @@
+     Config cfg( "Launcher" );
+     cfg.setGroup( "InputMethods" );
+     resizeRunningApp = cfg.readBoolEntry( "Resize", true );
++    showKbdLockState = cfg.readBoolEntry( "ShowKbdLocks", true );
+ }
+ 
+ #include "taskbar.moc"

@@ -3,7 +3,7 @@ DESCRIPTION = "udev is a daemon which dynamically creates and removes device nod
 the hotplug package and requires a kernel not older than 2.6.12."
 RPROVIDES_${PN} = "hotplug"
 
-PR = "r19"
+PR = "r20"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/utils/kernel/hotplug/udev-${PV}.tar.gz \
 	   file://noasmlinkage.patch;patch=1 \
@@ -13,9 +13,6 @@ SRC_URI = "${KERNELORG_MIRROR}/pub/linux/utils/kernel/hotplug/udev-${PV}.tar.gz 
            file://arm_inotify_fix.patch;patch=1 \
 	   file://mount.blacklist \
 	   "
-
-SRC_URI_append_h2200 = " file://50-hostap_cs.rules "
-PACKAGE_ARCH_h2200 = "h2200"
 
 require udev.inc
 
@@ -53,10 +50,6 @@ do_install () {
 	install -d ${D}${base_libdir}/udev/
 	install -m 0755 ${S}/udevsynthesize ${D}${base_libdir}/udev/udevsynthesize
 	install -m 0755 ${WORKDIR}/udevsynthesize.sh ${D}${sbindir}/udevsynthesize
-}
-
-do_install_append_h2200() {
-	install -m 0644 ${WORKDIR}/50-hostap_cs.rules         ${D}${sysconfdir}/udev/rules.d/50-hostap_cs.rules
 }
 
 pkg_postinst_append() {

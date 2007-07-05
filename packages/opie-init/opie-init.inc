@@ -15,15 +15,15 @@ INITSCRIPT_PARAMS = "start 99 5 . stop 20 0 1 6 ."
 do_install() {
 	install -d ${D}${sysconfdir}/init.d
 	install -d ${D}${sysconfdir}/profile.d	
-	install -d ${D}${palmtopdir}/bin
+	install -d ${D}${bindir}
 	install -d ${D}${palmtopdir}/etc/skel
 
 	sed -s "s|@palmtopdir@|${palmtopdir}|" ${WORKDIR}/opie >${WORKDIR}/opie.tmp
 	sed -s "s|@palmtopdir@|${palmtopdir}|" ${WORKDIR}/opie_defaults >${WORKDIR}/opie_defaults.tmp
 	install -m 0755 ${WORKDIR}/opie.tmp ${D}${sysconfdir}/init.d/opie
-	install -m 0644 ${WORKDIR}/opie_defaults.tmp ${D}${sysconfdir}/profile.d/
+	install -m 0644 ${WORKDIR}/opie_defaults.tmp ${D}${sysconfdir}/profile.d/opie_defaults
 
-	install -m 0755 ${WORKDIR}/opie-reorgfiles ${D}${palmtopdir}/bin/
+	install -m 0755 ${WORKDIR}/opie-reorgfiles ${D}${bindir}/
 	install -m 0644 ${WORKDIR}/qpe.conf ${D}${palmtopdir}/etc/skel/
 
 	if [ -s ${WORKDIR}/locale.conf ]; then
@@ -40,6 +40,6 @@ do_install() {
         esac	
 }
 
-FILES_opie-init_append = " ${sysconfdir} ${palmtopdir}/bin"
+#FILES_opie-init_append = " ${sysconfdir} ${palmtopdir}/bin"
 
 PACKAGE_ARCH = "${MACHINE_ARCH}"

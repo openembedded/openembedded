@@ -7,15 +7,6 @@ APPNAME = "qpe"
 
 S = "${WORKDIR}/launcher"
 
-# Caps/Numlock icons for devices with keyboard
-EXTRA_QMAKEVARS_POST_append_collie 	= "DEFINES+=OPIE_TASKBAR_LOCK_KEY_STATE"
-EXTRA_QMAKEVARS_POST_append_poodle 	= "DEFINES+=OPIE_TASKBAR_LOCK_KEY_STATE"
-EXTRA_QMAKEVARS_POST_append_c7x0 	= "DEFINES+=OPIE_TASKBAR_LOCK_KEY_STATE"
-EXTRA_QMAKEVARS_POST_append_tosa 	= "DEFINES+=OPIE_TASKBAR_LOCK_KEY_STATE"
-EXTRA_QMAKEVARS_POST_append_spitz	= "DEFINES+=OPIE_TASKBAR_LOCK_KEY_STATE"
-EXTRA_QMAKEVARS_POST_append_akita	= "DEFINES+=OPIE_TASKBAR_LOCK_KEY_STATE"
-EXTRA_QMAKEVARS_POST_append_htcuniversal= "DEFINES+=OPIE_TASKBAR_LOCK_KEY_STATE"
-
 # Wallpaper and welcome splash
 PIXMAP_SIZE 		= ""
 PIXMAP_SIZE_c7x0 	= "-640x480"
@@ -44,7 +35,7 @@ SECTIONS = "1Pim Applications Examples Games Opie-SH Python Settings"
 PICS = "opielogo32x32.png start_button.png new_wait.png opielogo16x16.png sidebar.png"
 
 do_install() {
-	install -d ${D}${palmtopdir}/bin
+	install -d ${D}${bindir}
 	for i in ${SECTIONS}
 	do
 		install -d ${D}${palmtopdir}/apps/$i/
@@ -57,7 +48,7 @@ do_install() {
 	install -d ${D}${palmtopdir}/etc/skel
 	install -d ${D}${sysconfdir}
 
-	install -m 0755 ${S}/qpe ${D}${palmtopdir}/bin/qpe
+	install -m 0755 ${S}/qpe ${D}${bindir}/qpe
 	install -m 0644 ${WORKDIR}/apps/Settings/calibrate.desktop ${D}${palmtopdir}/apps/Settings/
 	install -m 0644 ${WORKDIR}/apps/Settings/quit.desktop ${D}${palmtopdir}/apps/Settings/
 
