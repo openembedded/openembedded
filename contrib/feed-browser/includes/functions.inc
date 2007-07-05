@@ -112,33 +112,31 @@ function searchletter($searchletter = '')
 		}
 		else
 		{
-			$ipkgoutput .= sprintf(" <a href='?action=letter&amp;letter=%s' title='packages which names begins with \"%s\"'>%s</a> |", $letter, $letter, $letter );
+			$ipkgoutput .= sprintf(" <a href='?letter=%s' title='packages which names begins with \"%s\"'>%s</a> |", $letter, $letter, $letter );
 		}
 	}
 
-	$ipkgoutput .= " <a href='?action=letter&amp;letter=z' title='packages which names begins with \"z\"'>z</a></div>";
+	$ipkgoutput .= " <a href='?letter=z' title='packages which names begins with \"z\"'>z</a></div>";
 
 	return $ipkgoutput;
 }
 
-function searchpkg ($searchword)
+function searchpkg ($searchword, $searcharch = '')
 {
-	if($result = db_query("SELECT DISTINCT p_name,p_desc,p_section  FROM packages WHERE p_name LIKE '$searchword' ORDER BY p_name ASC"))
+	$query = "SELECT DISTINCT p_name,p_desc,p_section FROM packages WHERE p_name LIKE '$searchword' ";
+	
+	if(!empty($searcharch))
+	{
+		$query .= " AND p_arch='{$searcharch}' ";
+	}
+
+	$query .= 'ORDER BY p_name ASC';
+	
+	if($result = db_query($query))
 	{
 	    return generate_list_of_packages($result);
 	}
 }
-
-
-function searchpkgarch ($searchword, $searcharch)
-{
-	if($result = db_query("SELECT DISTINCT p_name,p_desc,p_section  FROM packages WHERE p_name LIKE '$searchword' AND p_arch LIKE '$searcharch'  ORDER BY p_name ASC"))
-	{   
-		return generate_list_of_packages($result);
-	}
-}
-
-
 
 function generate_list_of_packages($query_result)
 {
@@ -160,7 +158,7 @@ function generate_list_of_packages($query_result)
 			}
 
 			$ipkgoutput .= sprintf
-				("<tr><td><a href='?action=details&amp;pnm=%s'>%s</a></td><td><a href=\"?action=section&amp;section=%s\">%s</a></td><td> %s</td></tr>\n",
+				("<tr><td><a href='?pkgname=%s'>%s</a></td><td><a href=\"?section=%s\">%s</a></td><td> %s</td></tr>\n",
 				urlencode($package['p_name']), $package['p_name'], $package['p_section'], $package['p_section'], htmlentities($package['p_desc']));
 		}
 
@@ -205,7 +203,7 @@ function pkgdetails ($package)
 
 		if($package['packages.p_section'])
 		{
-			$details .= sprintf ("\n<dt>Section:</dt><dd><a href='?action=section&amp;section=%s'>%s</a></dd>", $package['packages.p_section'],$package['packages.p_section']);
+			$details .= sprintf ("\n<dt>Section:</dt><dd><a href='?section=%s'>%s</a></dd>", $package['packages.p_section'],$package['packages.p_section']);
 		}
 		
 		if($package['packages.p_depends'])
@@ -321,7 +319,7 @@ function addlinks ($input)
 		{
 			// find position of string in line
 			$pos = strpos ($input, $element, $offset);
-			$link = sprintf("<a href=\"?action=details&amp;pnm=%s\">$element</a>", urlencode ($element));
+			$link = sprintf("<a href=\"?pkgname=%s\">$element</a>", urlencode ($element));
 
 			// replace element with a link
 			$input = substr_replace ($input, $link, $pos, strlen ($element));
@@ -372,7 +370,7 @@ function sectionslist()
 
 		foreach($sections as $section_name1=>$item)
 		{
-			$output .= sprintf ("<li><a href='?action=section&amp;section=%s' title='%s'>%s</a>",
+			$output .= sprintf ("<li><a href='?section=%s' title='%s'>%s</a>",
 				urlencode($section_name1),
 				urlencode($section_name1),
 				$section_name1);
@@ -384,7 +382,7 @@ function sectionslist()
 				foreach($item as $section_name2=>$subitem)
 				{
 					$section_name = "{$section_name1}/{$section_name2}";
-					$output .= sprintf ("<li><a href='?action=section&amp;section=%s' title='%s'>%s</a>",
+					$output .= sprintf ("<li><a href='?section=%s' title='%s'>%s</a>",
 						urlencode($section_name),
 						urlencode($section_name),
 						$section_name2);
@@ -396,7 +394,7 @@ function sectionslist()
 						foreach($subitem as $section_name3=>$subitem2)
 						{
 							$section_name = "{$section_name1}/{$section_name2}/{$section_name3}";
-							$output .= sprintf ("<li><a href='?action=section&amp;section=%s' title='%s'>%s</a></li>",
+							$output .= sprintf ("<li><a href='?section=%s' title='%s'>%s</a></li>",
 								urlencode($section_name),
 								urlencode($section_name),
 								$section_name3);

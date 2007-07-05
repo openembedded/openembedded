@@ -38,39 +38,25 @@ if(!check_database())
 	die("Database not found and cannot be created.");
 }
 
-read_vars_from_get(array('name', 'arch', 'action', 'letter', 'pnm', 'section'));
+read_vars_from_get(array('name', 'arch', 'pkgsearch', 'letter', 'pkgname', 'section'));
 
-switch($action)
+$ipkgoutput = '';
+
+if(!empty($section))
 {
-	case "details":
-		$ipkgoutput = pkgdetails ($pnm);
-		break;
-
-	case "search":
-		if ( $arch == "" ) {
-		    $ipkgoutput = searchpkg ("%{$name}%");
-		    }
-		else {
-		    $ipkgoutput = searchpkgarch ("%{$name}%", "{$arch}");
-		    }
-		break;
-
-	case "section":
-		$ipkgoutput = searchsection($section);
-		break;
-
-	case "letter":
-		if ( $arch == "" ) {
-		     $ipkgoutput = searchpkg ("{$letter}%");
-		}
-                else {
-                    $ipkgoutput = searchpkgarch ("{$letter}%", "{$arch}");
-                    }
-                break;
-
-	default:
-		$ipkgoutput = searchpkg("a");
-		break;
+	$ipkgoutput = searchsection($section);
+}
+elseif(!empty($letter))
+{
+	$ipkgoutput = searchpkg("{$letter}%", $arch);
+}
+elseif(!empty($pkgname))
+{
+	$ipkgoutput = pkgdetails($pkgname);
+}
+elseif(!empty($pkgsearch))
+{
+	$ipkgoutput = searchpkg("%{$pkgsearch}%", $arch);
 }
 
 ?>
@@ -88,7 +74,7 @@ switch($action)
 			<form action="" method="get">
 				<fieldset>
 					<label for="name">Package name</label>
-					<input type="text" name="name" value="<?php echo $name; ?>" />
+					<input type="text" name="pkgsearch" value="<?php echo $name; ?>" />
 					<select name="arch">
 					   <option value="" selected="selected">all architectures</option>
 					   <option value="all">noarch</option>
@@ -106,7 +92,6 @@ switch($action)
 					   <option value="ppc603e">ppc603e</option>
 					   <option value="sparc">sparc</option>
 					</select>
-					<input type="hidden" name="action" value="search" />
 					<input type="submit" value="Search" />
 				</fieldset>
 			</form>
