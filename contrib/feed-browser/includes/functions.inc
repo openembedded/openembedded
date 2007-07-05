@@ -422,8 +422,12 @@ function sectionslist()
 
 function check_database()
 {
-	if($db = sqlite_open(DB_FILENAME))
+	$db_exists = FALSE;
+
+	if(file_exists(DB_FILENAME) AND $db = sqlite_open(DB_FILENAME))
 	{
+		$db_exists = TRUE;
+
 		//initialize db
 		if (db_table_exists ($db, 'packages') === FALSE)
 		{  
@@ -461,6 +465,8 @@ function check_database()
 
 		sqlite_close($db);
 	}
+
+	return $db_exists;
 }
 
 

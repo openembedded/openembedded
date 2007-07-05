@@ -37,7 +37,10 @@ require_once 'includes/functions.inc';
    Description: IPv4 link-local address allocator
  */
 
-check_database();
+if(!check_database())
+{
+	die("Database not found and cannot be created.");
+}
 
 $feeds = db_query("SELECT f_id, f_name, f_uri FROM feeds");
 

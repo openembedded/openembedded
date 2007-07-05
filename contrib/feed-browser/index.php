@@ -33,7 +33,10 @@
 require_once 'includes/config.inc';
 require_once 'includes/functions.inc';
 
-check_database();
+if(!check_database())
+{
+	die("Database not found and cannot be created.");
+}
 
 $name = '';
 
