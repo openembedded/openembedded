@@ -76,15 +76,21 @@ $archs_list = get_arch_list();
 			<form action="" method="get">
 				<fieldset>
 					<label for="name">Package name</label>
-					<input type="text" name="pkgsearch" value="<?php echo $name; ?>" />
+					<input type="text" name="pkgsearch" value="<?php echo $pkgsearch; ?>" />
 					<select name="arch">
 					   <option value="" selected="selected">all architectures</option>
 					   <option value="all">no arch</option>
 <?php
 
-foreach($archs_list as $arch)
+foreach($archs_list as $architecture)
 {
-    echo "<option value='{$arch['p_arch']}'>{$arch['p_arch']}</option>";
+    echo "<option value='{$architecture['p_arch']}'";
+
+    if($architecture['p_arch'] == $arch)
+    {
+	echo ' selected="selected"';
+    }
+    echo ">{$architecture['p_arch']}</option>";
 }
 
 ?>
