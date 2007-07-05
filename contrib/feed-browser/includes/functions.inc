@@ -112,11 +112,11 @@ function searchletter($searchletter = '')
 		}
 		else
 		{
-			$ipkgoutput .= sprintf(" <a href='?action=letter&amp;g=%s' title='packages which names begins with \"%s\"'>%s</a> |", $letter, $letter, $letter );
+			$ipkgoutput .= sprintf(" <a href='?action=letter&amp;letter=%s' title='packages which names begins with \"%s\"'>%s</a> |", $letter, $letter, $letter );
 		}
 	}
 
-	$ipkgoutput .= " <a href='?action=letter&amp;g=z' title='packages which names begins with \"z\"'>z</a></div>";
+	$ipkgoutput .= " <a href='?action=letter&amp;letter=z' title='packages which names begins with \"z\"'>z</a></div>";
 
 	return $ipkgoutput;
 }
@@ -469,6 +469,17 @@ function check_database()
 	return $db_exists;
 }
 
+function read_vars_from_get($array_of_vars)
+{
+    foreach($array_of_vars as $name_of_var)
+    {
+	$GLOBALS[$name_of_var] = '';
 
+	if(isset($_GET[$name_of_var]))
+	{
+	    $GLOBALS[$name_of_var] = $_GET[$name_of_var];
+	}
+    }
+}
 
 ?>

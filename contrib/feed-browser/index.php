@@ -38,30 +38,12 @@ if(!check_database())
 	die("Database not found and cannot be created.");
 }
 
-$name = '';
-
-if(isset($_GET['name']))
-{
-	$name = $_GET['name'];
-}
-
-$action = '';
-
-if(isset($_GET['action']))
-{
-	$action = $_GET['action'];
-}
-
-if(isset($_GET['arch']))
-{
-	$arch = $_GET['arch'];
-}
-
+read_vars_from_get(array('name', 'arch', 'action', 'letter', 'pnm', 'section'));
 
 switch($action)
 {
 	case "details":
-		$ipkgoutput = pkgdetails ($_GET['pnm']);
+		$ipkgoutput = pkgdetails ($pnm);
 		break;
 
 	case "search":
@@ -74,11 +56,10 @@ switch($action)
 		break;
 
 	case "section":
-		$ipkgoutput = searchsection($_GET['section']);
+		$ipkgoutput = searchsection($section);
 		break;
 
 	case "letter":
-		$letter = $_GET['g'];
 		if ( $arch == "" ) {
 		     $ipkgoutput = searchpkg ("{$letter}%");
 		}
