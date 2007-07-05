@@ -182,7 +182,7 @@ function pkgdetails ($package)
 	$result = db_query("SELECT * FROM packages,feeds
 				WHERE (packages.p_name='$package' OR packages.p_provides='$package')
 				    AND feeds.f_id = packages.p_feed 
-				ORDER BY packages.p_version DESC, feeds.f_name ASC, packages.p_arch DESC ");
+				ORDER BY packages.p_version DESC, packages.p_arch ASC ");
 	
 	// display first result
 
