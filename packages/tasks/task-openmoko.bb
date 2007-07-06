@@ -2,7 +2,7 @@ DESCRIPTION = "OpenMoko: Tasks for the OpenMoko Linux Distribution"
 SECTION = "openmoko/base"
 LICENSE = "MIT"
 PROVIDES = "task-openmoko-everything"
-PR = "r46"
+PR = "r47"
 
 ALLOW_EMPTY = "1"
 PACKAGE_ARCH = "all"
@@ -80,7 +80,6 @@ RDEPENDS_task-openmoko-ui = "\
 DESCRIPTION_task-openmoko-base = "OpenMoko: Main-Menu Launcher, Top Panel, and Footer"
 RDEPENDS_task-openmoko-base = "\
   openmoko-terminal \
-  openmoko-mainmenu \
   matchbox-panel-2 \
   matchbox-panel-2-applets \
   matchbox-applet-inputmanager \
