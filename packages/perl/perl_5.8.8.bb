@@ -5,7 +5,7 @@ LICENSE = "Artistic|GPL"
 PRIORITY = "optional"
 # We need gnugrep (for -I)
 DEPENDS = "virtual/db perl-native grep-native"
-PR = "r24"
+PR = "r25"
 
 # Major part of version
 PVM = "5.8"
@@ -122,8 +122,18 @@ do_install() {
             sed -i -e "s,${D},,g" \
                    -e "s,-isystem${STAGING_INCDIR} ,,g" \
                    -e "s,${STAGING_LIBDIR},${libdir},g" \
+                   -e "s,${STAGING_BINDIR},${bindir},g" \
                    -e "s,${STAGING_INCDIR},${includedir},g" \
-                ${D}/${libdir}/perl/${PV}/Config_heavy.pl
+                   -e "s,${CROSS_DIR}${base_bindir}/,,g" \
+                ${D}${bindir}/h2xs \
+                ${D}${bindir}/h2ph \
+                ${D}${datadir}/perl/${PV}/pod/*.pod \
+                ${D}${datadir}/perl/${PV}/cacheout.pl \
+                ${D}${datadir}/perl/${PV}/FileCache.pm \
+                ${D}${libdir}/perl/${PV}/Config.pm \
+                ${D}${libdir}/perl/${PV}/Config_heavy.pl \
+                ${D}${libdir}/perl/${PV}/CORE/perl.h \
+                ${D}${libdir}/perl/${PV}/CORE/pp.h
         fi
 }
 do_stage() {
