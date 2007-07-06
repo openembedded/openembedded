@@ -11,7 +11,7 @@ CONFLICTS = "db"
 # a build to select the desired one.
 PROVIDES += "${VIRTUAL_NAME}"
 
-SRC_URI = "ftp://sleepycat1.inetu.net/releases/db-${PV}.tar.gz \
+SRC_URI = "http://download-west.oracle.com/berkeley-db/db-${PV}.tar.gz \
 	   file://autofoo.patch;patch=1"
 S = "${WORKDIR}/db-${PV}/dist"
 B = "${WORKDIR}/db-${PV}/build_unix"
