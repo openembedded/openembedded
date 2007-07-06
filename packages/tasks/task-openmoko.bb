@@ -1,11 +1,11 @@
 DESCRIPTION = "OpenMoko: Tasks for the OpenMoko Linux Distribution"
 SECTION = "openmoko/base"
-ALLOW_EMPTY = "1"
-PACKAGE_ARCH = "all"
 LICENSE = "MIT"
 PROVIDES = "task-openmoko-everything"
+PR = "r46"
 
-PR = "r35"
+ALLOW_EMPTY = "1"
+PACKAGE_ARCH = "all"
 
 PACKAGES = "\
   task-openmoko-linux \
@@ -19,6 +19,7 @@ PACKAGES = "\
   task-openmoko-demo \
   task-openmoko-examples \
   task-openmoko-debug \
+  task-openmoko-native-sdk \
 "
 
 RDEPENDS_task-openmoko-everything := "${PACKAGES}"
@@ -29,28 +30,13 @@ RDEPENDS_task-openmoko-everything := "${PACKAGES}"
 DESCRIPTION_task-openmoko-linux = "OpenMoko: Linux Core Services"
 RDEPENDS_task-openmoko-linux = "\
   task-base \
+  netbase \
   sysfsutils \
   modutils-initscripts \
   module-init-tools-depmod \
   rsync \
+  screen \
 #  update-alternatives \
-"
-
-#
-# task-openmoko-base
-#
-DESCRIPTION_task-openmoko-base = "OpenMoko: Main-Menu Launcher, and Panel"
-RDEPENDS_task-openmoko-base = "\
-"
-
-#
-# task-openmoko-phone
-#
-DESCRIPTION_task-openmoko-phone = "OpenMoko: GSM Phone Services"
-RDEPENDS_task-openmoko-phone = "\
-  gsmd \
-  libgsmd-tools \
-  openmoko-dialer \
 "
 
 #
@@ -65,22 +51,26 @@ RDEPENDS_task-openmoko-ui = "\
   pango-module-basic-x \
   pango-module-basic-fc \
   gtk+ \
+  libgtkstylus \
+  libgtkinput \
   matchbox-common \
   matchbox-wm \
-  matchbox-panel-2 \
   xserver-kdrive-fbdev \
   xserver-kdrive-common \
   xserver-nodm-init \
+#  x11-c-locale \
   ttf-bitstream-vera \
   xauth \
   xhost \
   xset \
   xrandr \
+  settings-daemon \
   openmoko-common \
   openmoko-session \
   openmoko-theme-standard \
   openmoko-icon-theme-standard \
-  settings-daemon \
+  openmoko-sound-system \
+  openmoko-sound-theme-standard \
 #  psplash \
 "
 
@@ -89,8 +79,13 @@ RDEPENDS_task-openmoko-ui = "\
 #
 DESCRIPTION_task-openmoko-base = "OpenMoko: Main-Menu Launcher, Top Panel, and Footer"
 RDEPENDS_task-openmoko-base = "\
+  openmoko-terminal \
   openmoko-mainmenu \
   matchbox-panel-2 \
+  matchbox-panel-2-applets \
+  matchbox-applet-inputmanager \
+  openmoko-appmanager \
+  openmoko-keyboard \
   openmoko-footer \
   openmoko-taskmanager \
   openmoko-panel-mainmenu \
@@ -110,7 +105,7 @@ RDEPENDS_task-openmoko-phone = "\
   libgsmd-tools \
   openmoko-dialer \
   openmoko-panel-gsm \
-# ppp \
+#  ppp \
 "
 
 #
@@ -118,6 +113,7 @@ RDEPENDS_task-openmoko-phone = "\
 #
 DESCRIPTION_task-openmoko-finger = "OpenMoko: Finger UI Applications"
 RDEPENDS_task-openmoko-finger = "\
+  openmoko-calculator \
 "
 
 #
@@ -128,7 +124,10 @@ RDEPENDS_task-openmoko-pim = "\
   eds-dbus \
   openmoko-contacts \
   openmoko-dates \
+  openmoko-tasks \
   openmoko-today \
+  openmoko-messages \
+  openmoko-rssreader \
 "
 
 #
@@ -137,6 +136,7 @@ RDEPENDS_task-openmoko-pim = "\
 DESCRIPTION_task-openmoko-net = "OpenMoko: Linux Advanced Networking"
 RDEPENDS_task-openmoko-net = "\
   bluez-utils \
+  bridge-utils \
 "
 
 #
@@ -144,25 +144,12 @@ RDEPENDS_task-openmoko-net = "\
 #
 DESCRIPTION_task-openmoko-demo = "OpenMoko: Demo Applications"
 RDEPENDS_task-openmoko-demo = "\
-  matchbox-desktop \
+  matchbox-desktop-2 \
   matchbox-keyboard \
-  openmoko-keyboard \
   matchbox-stroke \
   matchbox-config-gtk \
-  matchbox-panel-2-applets \
-  matchbox-themes-extra \
-  matchbox-themes-gtk \
-  openmoko-panel-battery \
-  openmoko-panel-clock \
-  openmoko-panel-gsm \
-  openmoko-panel-mainmenu \
-  openmoko-rssreader \
-  openmoko-messages \
-  openmoko-today \
   xcursor-transparent-theme \
   web \
-  rxvt-unicode \
-  gpe-terminal \
   mtpaint \
 "
 
@@ -171,6 +158,11 @@ RDEPENDS_task-openmoko-demo = "\
 #
 DESCRIPTION_task-openmoko-examples = "OpenMoko: Example Applications"
 RDEPENDS_task-openmoko-examples = "\
+  openmoko-stylus-demo-simple \
+  openmoko-stylus-demo \
+  openmoko-finger-demo \
+  openmoko-panel-demo-simple \
+  openmoko-panel-demo \
   openmoko-chordmaster"
 
 #
@@ -178,6 +170,7 @@ RDEPENDS_task-openmoko-examples = "\
 #
 DESCRIPTION_task-openmoko-debug = "OpenMoko: Debugging Tools"
 RDEPENDS_task-openmoko-debug = "\
+  alsa-state \
   alsa-utils-amixer \
   alsa-utils-aplay \
   alsa-utils-aconnect \
@@ -186,12 +179,13 @@ RDEPENDS_task-openmoko-debug = "\
   madplay \
   vorbis-tools \
   strace \
-#  ltrace \
+  ltrace \
   gdb \
   gdbserver \
   tcpdump \
   tslib-calibrate \
   tslib-tests \
+  fbgrab \
   fstests \
   lsof \
   lrzsz \
@@ -201,10 +195,13 @@ RDEPENDS_task-openmoko-debug = "\
   cu \
 #  sensors-i2cdetect sensors-i2cdump sensors-i2cset \
   xev \
+  bonnie++ \
+  memtester \
+  dbench \
 "
 
 #
-# task-openmoko-sdk-native
+# task-openmoko-native-sdk
 #
 DESCRIPTION_task-openmoko-native-sdk = "OpenMoko: Native SDK"
 RDEPENDS_task-openmoko-native-sdk = "\
@@ -214,9 +211,9 @@ RDEPENDS_task-openmoko-native-sdk = "\
   gcc-symlinks \
   cpp \
   cpp-symlinks \
+  cvs \
   libc6-dev \
   libgcc-dev \
-  libgcc-s-dev \
   glibc-utils \
   ldd \
   g++ \
