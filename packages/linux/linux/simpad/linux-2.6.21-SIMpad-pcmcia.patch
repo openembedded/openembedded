@@ -1,0 +1,162 @@
+diff -uNr linux-2.6.21.vanilla/drivers/pcmcia/cs.c linux-2.6.21/drivers/pcmcia/cs.c
+--- linux-2.6.21.vanilla/drivers/pcmcia/cs.c	2007-05-30 18:00:30.000000000 +0200
++++ linux-2.6.21/drivers/pcmcia/cs.c	2007-05-30 18:10:20.000000000 +0200
+@@ -10,6 +10,8 @@
+  * are Copyright (C) 1999 David A. Hinds.  All Rights Reserved.
+  *
+  * (C) 1999		David A. Hinds
++ *
++ * mrdata: -added suspend fix
+  */
+ 
+ #include <linux/module.h>
+@@ -60,6 +62,10 @@
+ INT_MODULE_PARM(unreset_delay,	10);		/* centiseconds */
+ INT_MODULE_PARM(unreset_check,	10);		/* centiseconds */
+ INT_MODULE_PARM(unreset_limit,	30);		/* unreset_check's */
++// INT_MODULE_PARM(unreset_delay,	20);		/* centiseconds */
++// INT_MODULE_PARM(unreset_check,	100);		/* centiseconds */
++// INT_MODULE_PARM(unreset_limit,	300);		/* unreset_check's */
++
+ 
+ /* Access speed for attribute memory windows */
+ INT_MODULE_PARM(cis_speed,	300);		/* ns */
+@@ -365,6 +371,7 @@
+ 	skt->ops->set_socket(skt, &skt->socket);
+ 
+ 	msleep(unreset_delay * 10);
++	
+ 	for (i = 0; i < unreset_limit; i++) {
+ 		skt->ops->get_status(skt, &status);
+ 
+@@ -430,7 +437,7 @@
+ 
+ 	msleep(initial_delay * 10);
+ 
+-	for (i = 0; i < 100; i++) {
++	for (i = 0; i < 100; i++) {	
+ 		skt->ops->get_status(skt, &status);
+ 		if (!(status & SS_DETECT))
+ 			return CS_NO_CARD;
+diff -uNr linux-2.6.21.vanilla/drivers/pcmcia/sa1100_generic.c linux-2.6.21/drivers/pcmcia/sa1100_generic.c
+--- linux-2.6.21.vanilla/drivers/pcmcia/sa1100_generic.c	2007-05-30 18:00:30.000000000 +0200
++++ linux-2.6.21/drivers/pcmcia/sa1100_generic.c	2007-05-30 18:00:40.000000000 +0200
+@@ -28,6 +28,9 @@
+     the provisions above, a recipient may use your version of this
+     file under either the MPL or the GPL.
+     
++    2007 mrnice: added thesings changes from device_driver
++            to platform_driver - many thx to thesing
++
+ ======================================================================*/
+ 
+ #include <linux/module.h>
+@@ -81,13 +84,15 @@
+ 	return ret;
+ }
+ 
+-static struct device_driver sa11x0_pcmcia_driver = {
+-	.probe		= sa11x0_drv_pcmcia_probe,
+-	.remove		= soc_common_drv_pcmcia_remove,
+-	.name		= "sa11x0-pcmcia",
+-	.bus		= &platform_bus_type,
+-	.suspend 	= pcmcia_socket_dev_suspend,
+-	.resume 	= pcmcia_socket_dev_resume,
++static struct platform_driver sa11x0_pcmcia_driver = {
++       .driver        = {
++              .name   = "sa11x0-pcmcia",
++              .probe = sa11x0_drv_pcmcia_probe,
++              .remove        = soc_common_drv_pcmcia_remove,
++              .suspend= pcmcia_socket_dev_suspend,
++              .resume        = pcmcia_socket_dev_resume,
++              //.bus = &platform_bus_type,
++       },
+ };
+ 
+ /* sa11x0_pcmcia_init()
+@@ -100,7 +105,7 @@
+  */
+ static int __init sa11x0_pcmcia_init(void)
+ {
+-	return driver_register(&sa11x0_pcmcia_driver);
++        return platform_driver_register(&sa11x0_pcmcia_driver);
+ }
+ 
+ /* sa11x0_pcmcia_exit()
+@@ -110,7 +115,7 @@
+  */
+ static void __exit sa11x0_pcmcia_exit(void)
+ {
+-	driver_unregister(&sa11x0_pcmcia_driver);
++        platform_driver_unregister(&sa11x0_pcmcia_driver);
+ }
+ 
+ MODULE_AUTHOR("John Dorsey <john+@cs.cmu.edu>");
+diff -uNr linux-2.6.21.vanilla/drivers/pcmcia/sa1100_simpad.c linux-2.6.21/drivers/pcmcia/sa1100_simpad.c
+--- linux-2.6.21.vanilla/drivers/pcmcia/sa1100_simpad.c	2007-05-30 18:00:30.000000000 +0200
++++ linux-2.6.21/drivers/pcmcia/sa1100_simpad.c	2007-05-30 18:08:53.000000000 +0200
+@@ -3,6 +3,8 @@
+  *
+  * PCMCIA implementation routines for simpad
+  *
++ * mrdata: -added cs3_ro stuff to get fix voltage issue 
++ *
+  */
+ #include <linux/module.h>
+ #include <linux/kernel.h>
+@@ -14,7 +16,8 @@
+ #include <asm/irq.h>
+ #include <asm/arch/simpad.h>
+ #include "sa1100_generic.h"
+- 
++
++extern long get_cs3_ro(void); 
+ extern long get_cs3_shadow(void);
+ extern void set_cs3_bit(int value); 
+ extern void clear_cs3_bit(int value);
+@@ -25,7 +28,6 @@
+ 
+ static int simpad_pcmcia_hw_init(struct soc_pcmcia_socket *skt)
+ {
+-
+ 	clear_cs3_bit(VCC_3V_EN|VCC_5V_EN|EN0|EN1);
+ 
+ 	skt->irq = IRQ_GPIO_CF_IRQ;
+@@ -47,21 +49,15 @@
+ 			   struct pcmcia_state *state)
+ {
+ 	unsigned long levels = GPLR;
+-	long cs3reg = get_cs3_shadow();
++	long cs3_ro_reg = get_cs3_ro();
+ 
+-	state->detect=((levels & GPIO_CF_CD)==0)?1:0;
+-	state->ready=(levels & GPIO_CF_IRQ)?1:0;
+-	state->bvd1=1; /* Not available on Simpad. */
+-	state->bvd2=1; /* Not available on Simpad. */
+-	state->wrprot=0; /* Not available on Simpad. */
+-  
+-	if((cs3reg & 0x0c) == 0x0c) {
+-		state->vs_3v=0;
+-		state->vs_Xv=0;
+-	} else {
+-		state->vs_3v=1;
+-		state->vs_Xv=0;
+-	}
++	state->detect = ((levels & GPIO_CF_CD) == 0) ? 1 : 0 ;
++	state->ready  = (levels & GPIO_CF_IRQ) ? 1 : 0 ;
++	state->bvd1   = (cs3_ro_reg & PCMCIA_BVD1) ? 1 : 0 ; /* alt: =1 Not available on Simpad. */
++	state->bvd2   = (cs3_ro_reg & PCMCIA_BVD2) ? 1 : 0 ; /* alt: =1 Not available on Simpad. */
++	state->wrprot = 0 ; /* Not available on Simpad. */  
++	state->vs_3v = (cs3_ro_reg & PCMCIA_VS1) ? 0 : 1 ;
++	state->vs_Xv = (cs3_ro_reg & PCMCIA_VS2) ? 0 : 1 ;
+ }
+ 
+ static int
+@@ -104,6 +100,7 @@
+ 
+ static void simpad_pcmcia_socket_init(struct soc_pcmcia_socket *skt)
+ {
++	clear_cs3_bit(PCMCIA_RESET);
+ 	soc_pcmcia_enable_irqs(skt, irqs, ARRAY_SIZE(irqs));
+ }
+ 
