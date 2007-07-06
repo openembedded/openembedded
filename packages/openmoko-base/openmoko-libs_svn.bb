@@ -2,8 +2,8 @@ DESCRIPTION = "openmoko-libs is a set of libraries implementing a Gtk+ based app
 SECTION = "openmoko/libs"
 LICENSE = "LGPL"
 DEPENDS += "gtk+ eds-dbus libgsmd libxosd"
-PV = "0.0.1+svn${SRCDATE}"
-PR = "r5"
+PV = "0.4+svn${SRCDATE}"
+PR = "r0"
 
 inherit openmoko
 
@@ -11,12 +11,12 @@ do_stage() {
 	autotools_stage_all
 }
 
-PACKAGES =+ " \
-             libmokojournal libmokojournal-dev libmokojournal-dbg \
-	     libmokogsmd libmokogsmd-dev libmokogsmd-dbg \
-	     libmokocore libmokocore-dev libmokocore-dbg \
-	     libmokoui libmokoui-dev libmokoui-dbg \
-	     "
+PACKAGES =+ "\
+  libmokojournal libmokojournal-dev libmokojournal-dbg \
+  libmokogsmd libmokogsmd-dev libmokogsmd-dbg \
+  libmokocore libmokocore-dev libmokocore-dbg \
+  libmokoui libmokoui-dev libmokoui-dbg \
+"
 
 FILES_libmokojournal = "${libdir}/libmokojournal.so.*"
 FILES_libmokojournal-dev = "${libdir}/libmokojournal.so ${libdir}/libmokojournal.*a ${includedir}/${PN}/libmokojournal"

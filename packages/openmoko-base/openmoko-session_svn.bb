@@ -1,8 +1,8 @@
 DESCRIPTION = "Matchbox session files for OpenMoko"
 SECTION = "openmoko/base"
-RDEPENDS = "matchbox-panel-2 matchbox-wm openmoko-today gconf matchbox-applet-startup-monitor gtk-theme-clearlooks"
-PV = "0.0+svn${SRCDATE}"
-PR = "r11"
+RDEPENDS = "matchbox-panel-2 matchbox-wm openmoko-today gconf"
+PV = "0.1+svn${SRCDATE}"
+PR = "r0"
 
 inherit openmoko-base
 
@@ -15,7 +15,7 @@ do_install() {
 	rm -fR ${D}/${sysconfdir}/.svn
 	rm -fR ${D}/${sysconfdir}/matchbox/.svn
 	chmod -R 755 ${D}/${sysconfdir}
-        # DEMO only!
+    # DEMO only. Need to handle this differently in actual production images
 	install -m 0755 ${WORKDIR}/session ${D}/${sysconfdir}/matchbox/session
 }
 
@@ -25,5 +25,8 @@ if [ "x$D" != "x" ]; then
     exit 1
 fi
 
-gconftool-2 --config-source=xml::$D${sysconfdir}/gconf/gconf.xml.defaults --direct --type string --set /desktop/openmoko/interface/theme Clearlooks
+gconftool-2 --config-source=xml::$D${sysconfdir}/gconf/gconf.xml.defaults --direct --type string --set /desktop/openmoko/interface/theme openmoko-standard
 }
+
+PACKAGE_ARCH = "all"
+
