@@ -5,7 +5,7 @@ LICENSE = "Artistic|GPL"
 PRIORITY = "optional"
 # We need gnugrep (for -I)
 DEPENDS = "virtual/db perl-native grep-native"
-PR = "r23"
+PR = "r24"
 
 # Major part of version
 PVM = "5.8"
@@ -13,7 +13,7 @@ PVM = "5.8"
 SRC_URI = "ftp://ftp.funet.fi/pub/CPAN/src/perl-${PV}.tar.gz \
         file://Makefile.patch;patch=1 \
         file://Makefile.SH.patch;patch=1 \
-	file://makedepend-dash.patch;patch=1 \
+        file://makedepend-dash.patch;patch=1 \
         file://installperl.patch;patch=1 \
         file://perl-dynloader.patch;patch=1 \
         file://perl-moreconfig.patch;patch=1 \
@@ -28,6 +28,7 @@ SRC_URI = "ftp://ftp.funet.fi/pub/CPAN/src/perl-${PV}.tar.gz \
         file://60_debian_libnet_config_path.patch;patch=1 \
         file://62_debian_cpan_definstalldirs.patch;patch=1 \
         file://64_debian_enc2xs_inc.patch;patch=1 \
+        file://asm-pageh-fix.patch;patch=1 \
         file://config.sh \
         file://config.sh-32 \
         file://config.sh-32-le \
