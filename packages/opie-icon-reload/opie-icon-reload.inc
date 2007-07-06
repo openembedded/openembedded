@@ -9,7 +9,7 @@ SRC_URI = "file://icon-reload.desktop \
 	   file://icon-reload.sh \
 	   file://reload.png"
 
-FILES_${PN} += "/opt"
+FILES_${PN} += "${palmtopdir}"
 
 do_install() {		
 	install -d ${D}${palmtopdir}/apps/Settings
