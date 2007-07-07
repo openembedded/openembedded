@@ -1,0 +1,13 @@
+diff --git a/keyboard.pro b/keyboard.pro
+index 3a9e075..52bc10d 100644
+--- a/keyboard.pro
++++ b/keyboard.pro
+@@ -9,7 +9,7 @@ DESTDIR		= ../../plugins/inputmethods
+ INCLUDEPATH += $(OPIEDIR)/include
+ DEPENDPATH      +=  ../../launcher
+ LIBS            += -lqpe -L$(OPIEDIR)/plugins/inputmethods -lqpickboard
+-QMAKE_LFLAGS	+= -Wl,-rpath,/opt/QtPalmtop/plugins/inputmethods
++QMAKE_LFLAGS	+= -Wl,-rpath,${palmtopdir}/plugins/inputmethods
+ VERSION		= 1.0.0
+ 
+ include( $(OPIEDIR)/include.pro )
