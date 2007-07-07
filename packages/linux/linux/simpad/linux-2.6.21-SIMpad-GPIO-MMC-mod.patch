@@ -1,0 +1,1650 @@
+diff -uNr linux-2.6.21.vanilla/drivers/mmc/Kconfig linux-2.6.21/drivers/mmc/Kconfig
+--- linux-2.6.21.vanilla/drivers/mmc/Kconfig	2007-05-30 18:00:30.000000000 +0200
++++ linux-2.6.21/drivers/mmc/Kconfig	2007-05-30 18:26:18.000000000 +0200
+@@ -4,6 +4,12 @@
+ 
+ menu "MMC/SD Card support"
+ 
++config MMC_SPI_BLOCK
++	tristate "MMC support for SIMpad over GPIO"
++	help
++	  Say Y here to enable MMC block device over GPIO
++	  if you have done the MMC-Mod. For Module say M.
++
+ config MMC
+ 	tristate "MMC support"
+ 	help
+diff -uNr linux-2.6.21.vanilla/drivers/mmc/Makefile linux-2.6.21/drivers/mmc/Makefile
+--- linux-2.6.21.vanilla/drivers/mmc/Makefile	2007-05-30 18:00:30.000000000 +0200
++++ linux-2.6.21/drivers/mmc/Makefile	2007-05-30 18:26:18.000000000 +0200
+@@ -2,6 +2,8 @@
+ # Makefile for the kernel mmc device drivers.
+ #
+ 
++obj-$(CONFIG_MMC_SPI_BLOCK)	+= mmc_spi_block.o
++
+ #
+ # Core
+ #
+diff -uNr linux-2.6.21.vanilla/drivers/mmc/mmc_spi_block.c linux-2.6.21/drivers/mmc/mmc_spi_block.c
+--- linux-2.6.21.vanilla/drivers/mmc/mmc_spi_block.c	1970-01-01 01:00:00.000000000 +0100
++++ linux-2.6.21/drivers/mmc/mmc_spi_block.c	2007-05-30 18:30:58.000000000 +0200
+@@ -0,0 +1,1618 @@
++/*
++ * Copyright (c) Cl�ent Ballabriga, 2005 - GPL
++ * Copyright (c) Guylhem Aznar, 2005 - GPL
++ *
++ * Please check http://externe.net/zaurus/simpad-bluetooth reference design first.
++ *
++ * Based on Madsuk/Rohde work on a MMC driver for the WRT54G.
++ *
++ * This is an ugly hack of a driver. I am surprised if it ever works!
++ * So please use a real driver or contribute one to the 2.4/2.6 mmc framework
++ *
++ * mrdata: ported to 2.6
++ */
++
++#include <linux/module.h>
++#include <linux/init.h>
++
++#include <linux/sched.h>
++#include <linux/kernel.h>
++#include <linux/fs.h>
++#include <linux/errno.h>
++#include <linux/hdreg.h>
++#include <linux/kdev_t.h>
++#include <linux/blkdev.h>
++#include <linux/spinlock.h>
++#include <linux/time.h>
++#include <linux/delay.h>
++#include <linux/timer.h>
++
++#include <linux/platform_device.h>
++
++#include <asm/hardware.h>
++#include <asm/arch/simpad.h>
++#include <asm/arch/gpio.h>
++
++static int major = 121;
++
++#define DEVICE_NAME "mmc_spi"
++
++static int hd_sizes[1<<6];
++static int hd_blocksizes[1<<6];
++static int hd_hardsectsizes[1<<6];
++static int hd_maxsect[1<<6];
++static struct hd_struct hd[1<<6];
++
++static struct gendisk *mmc_disk;
++
++static struct platform_device *mmc_dev; /* the one and only instance */
++
++static spinlock_t mmc_spi_lock;
++
++/*
++ * *******************************************************************
++ *
++ *                This is the only configurable part.
++ *
++ * *******************************************************************
++ *
++ */
++
++// #define DEBUG 1
++// #define DEBUG_HD 1
++// #define CHECK_MEDIA_CHANGE  // for developement ONLY, not working yet
++
++/* Let that include where it is or compilation fails on INIT_REQUEST/CURRENT */
++
++
++/*
++ * If you are using different GPIOs in your hardware hack, you must
++ * first make sure they are unused for other functions and then
++ * configure them here.
++ *
++ * On the simpad I use spare pins from the UART1 (internal serial port -> DECT 20-polig):
++ * 
++ *   Funktion  PIN  ##  Original direction  GPIO  ##  SPI function                New direction  SD/MMC   
++ * - DCD       PIN  08  (in)                GPIO  23  DO  - new name: DI -> MISO  (in)           PIN  7  Data Out
++ * - DTR       PIN  11  (out)               GPIO  07  CS                          (out)          PIN  1  Chip Select
++ * - RI        PIN  14  (in)                GPIO  19  CLK                         (out)          PIN  5  Clock
++ * - DSR       PIN  16  (in)                GPIO  06  DI  - new name: DO -> MOSI  (out)          PIN  2  Data In
++ * 
++ *
++ * SPI: MISO = Master In / Slave OUT   MOSI = Master Out / Slave In
++ *
++ * Don't worry about in/out original function - the GPIOs will be
++ * reprogrammed.
++ */
++
++#define GPIO_SD_DI   23
++#define GPIO_SD_CS   7
++#define GPIO_SD_CLK  19
++#define GPIO_SD_DO   6
++
++// #define FAST_GPIO_SD_DI		GPIO_GPIO23
++// #define FAST_GPIO_SD_CS		GPIO_GPIO7
++// #define FAST_GPIO_SD_CLK		GPIO_GPIO19
++// #define FAST_GPIO_SD_DO		GPIO_GPIO6
++
++#define FAST_GPIO_SD_DI   GPIO_UART1_DCD
++#define FAST_GPIO_SD_CS   GPIO_UART1_DTR
++#define FAST_GPIO_SD_CLK  GPIO_UART1_RI
++#define FAST_GPIO_SD_DO   GPIO_UART1_DSR
++
++/*
++ * *******************************************************************
++ *
++ *               Do not change anything below !
++ *
++ * *******************************************************************
++ *
++ */
++
++/* GPIO states */
++#define LOW 0
++#define HIGH 1
++
++#define INPUT 0
++#define OUTPUT 1
++
++#define PRESENT 1
++#define ABSENT 0
++
++typedef unsigned int   uint32;
++typedef unsigned long  u32_t;
++typedef unsigned short u16_t;
++typedef unsigned char  u8_t;
++
++static struct timer_list mmc_timer;
++
++// static struct timeval s_zeit, e_zeit;
++
++/* start with no card */
++static int mmc_media_detect = 0;
++static int mmc_media_changed = 1;
++
++
++/////////////////////
++// prototypes
++static int mmc_open(struct inode *inode, struct file *filp);
++static int mmc_release(struct inode *inode, struct file *filp);
++static int mmc_ioctl(struct inode *inode, struct file *filp, unsigned int cmd, unsigned long arg);
++static void mmc_request(request_queue_t *q);
++
++
++/*
++ * *******************************************************************
++ *
++ *             Begin GPIO hardware access functions.
++ *
++ * *******************************************************************
++ *
++ */
++
++#define gpio_read(a)		((GPLR & a) ? 1 : 0)
++#define gpio_write_high(a)	GPSR = a
++#define gpio_write_low(a)	GPCR = a
++
++/* set MMC_Chip_Select to HIGH (MMC/SD-Card inaktiv) */
++#define MMC_Disable() gpio_write_high( FAST_GPIO_SD_CS)
++
++/* set MMC_Chip_Select to LOW (MMC/SD-Card aktiv) */
++#define MMC_Enable() gpio_write_low( FAST_GPIO_SD_CS)
++
++/*
++ * *******************************************************************
++ *
++ *             Begin SPI hardware access functions.
++ *
++ * *******************************************************************
++ *
++ */
++static int mmc_spi_media_detect(void)
++{
++// FIXME: add card detection/test by SPI
++
++    return 1;
++}
++
++static int mmc_spi_hardware_init(void)
++{
++	printk("\nmmc: GPIO init\n");
++
++	/* cut existing functions */
++	gpio_set_alternative_function(GPIO_SD_CLK, 0);
++	gpio_set_alternative_function(GPIO_SD_DI, 0);
++	gpio_set_alternative_function(GPIO_SD_DO, 0);
++	gpio_set_alternative_function(GPIO_SD_CS, 0);
++
++	/* remap directions and set state of spi pins */
++	gpio_direction_output(GPIO_SD_CLK, 0);
++	gpio_direction_input(GPIO_SD_DI);	
++	gpio_direction_output(GPIO_SD_DO, 0);
++	gpio_direction_output(GPIO_SD_CS, 0);
++
++	printk("mmc: initialising MMC\n");
++
++	/* Start */
++	MMC_Disable();
++	gpio_write_low( FAST_GPIO_SD_CLK);
++	gpio_write_high( FAST_GPIO_SD_DO);
++	return 0;
++}
++
++/* return what has been read, write the parameter */
++/* Clockrate round about 1,2 MHz                  */
++
++static unsigned char mmc_spi_readwrite(unsigned char data_out)
++{
++    unsigned char i;
++    unsigned char result = 0;
++
++    for(i = 0x80 ; i != 0 ; i >>= 1)
++    {
++        if (data_out & i)
++        {
++            gpio_write_high( FAST_GPIO_SD_DO);
++        }
++	  else
++        {
++            gpio_write_low( FAST_GPIO_SD_DO);
++        }
++
++        gpio_write_high( FAST_GPIO_SD_CLK);
++	
++        if (gpio_read( FAST_GPIO_SD_DI) == 1)
++        {
++            result |= i;
++        }
++
++        gpio_write_low( FAST_GPIO_SD_CLK);
++	
++    }
++
++    gpio_write_high( FAST_GPIO_SD_DO);
++
++    return (result);
++}
++
++/* return what has been read, write the parameter */
++/* Clockrate round 200 kHz                        */
++ 
++static unsigned char mmc_spi_readwrite_slow(unsigned char data_out)
++{
++    unsigned char i;
++    unsigned char result = 0;
++
++    for(i = 0x80 ; i != 0 ; i >>= 1)
++    {	
++        if (data_out & i)
++        {
++            gpio_write_high( FAST_GPIO_SD_DO);
++        }
++        else
++        {
++            gpio_write_low( FAST_GPIO_SD_DO);
++        }
++
++        udelay(10);
++
++        gpio_write_high( FAST_GPIO_SD_CLK);
++
++        udelay(10);
++
++        if (gpio_read( FAST_GPIO_SD_DI) == 1)
++        {
++            result |= i;
++        }
++
++        udelay(10);
++	
++        gpio_write_low( FAST_GPIO_SD_CLK);
++
++        udelay(10);
++	
++    }
++
++    gpio_write_high( FAST_GPIO_SD_DO);
++
++    udelay(10);
++
++    // printk("Send Byte = 0x%2X   Receive Byte = 0x%2X \n", data_out, result);
++
++    return (result);
++}
++
++/* return what has been read */
++
++static unsigned char mmc_spi_read_only(void)
++{
++    unsigned char i;
++    unsigned char result = 0;
++
++    for(i = 0x80 ; i != 0 ; i >>= 1)
++    {
++
++        gpio_write_high( FAST_GPIO_SD_CLK);
++	
++        if (gpio_read( FAST_GPIO_SD_DI) == 1)
++        {
++            result |= i;
++        }
++
++        gpio_write_low( FAST_GPIO_SD_CLK);
++	
++    }
++
++    return (result);
++}
++
++/* write the parameter */
++/* Clockrate round about 3,6 MHz                  */
++
++static unsigned char mmc_spi_write_only(unsigned char data_out)
++{
++    unsigned char i;
++    unsigned char result = 0;
++
++    for(i = 0x80 ; i != 0 ; i >>= 1)
++    {
++    
++        if (data_out & i)
++        {
++            gpio_write_high( FAST_GPIO_SD_DO);
++        }
++	  else
++        {
++            gpio_write_low( FAST_GPIO_SD_DO);
++        }
++
++        gpio_write_high( FAST_GPIO_SD_CLK);
++	
++        gpio_write_low( FAST_GPIO_SD_CLK);
++	
++    }
++
++    gpio_write_high( FAST_GPIO_SD_DO);
++
++    return (result);
++}
++
++
++/**
++ * this function was contributed by: rcichielo from openwrt forums
++ *
++ * Comments added by Marc DENTY on 2007-03-20
++ *
++ * Sequence to read a card's "CID" bytes (name, serial number etc)
++ *
++ * Send: 4ah,00h,00h,00h,00h,00h  - CMD10, no args, null CRC
++ * Read: xx                       - NCR Time
++ * Read: xx                       - Command Response (Should be 00h)
++ * Read: until FEh is received    - Wait for Data token
++ * Read: yy  * 16                 - Get 16 bytes from CID
++ * Read: zz                       - Read CRC lo byte
++ * Read: zz                       - Read CRC hi byte
++ *
++ * Useful locations in the returned data packet:
++ *
++ * 03h-08h Manufacturers's name in ascii
++ * 0ah-0dh Card's 32 bit serial number 
++ */
++/**
++ * Comments added by Cyril CATTIAUX on 2007-03-21
++ *
++ * CID format specification (from Sandisk SD Product Manual v1.9)
++ *
++ * cid[00   ] Manufacturer ID (unsigned byte)
++ * cid[01-02] OEM/Application ID (ASCII)
++ * cid[03-07] Product Name (ASCII)
++ * cid[08   ] Product Revistion (BCD coded number)
++ * cid[09-12] Serial Number (32-bit unsigned int)
++ * cid[13-14] Reserved(bit 12->15) - Manufacture Date(bit 0->11)
++ * cid[15   ] CRC7(bit 1->7) - Not used, allways 1 (bit 0)
++*/
++static int mmc_read_cid(unsigned char *cid)
++{
++	unsigned char result = 0;
++        int i;
++
++        MMC_Enable();
++	
++	/* wait */
++	for (i = 0; i < 4; i++)
++	{
++ 		result=mmc_spi_readwrite(0xff);
++	}
++
++	/* issue CID (card identification data) read request */
++	mmc_spi_readwrite(0xff);
++	mmc_spi_readwrite(0x40 | 10);
++	mmc_spi_readwrite(0x00);
++	mmc_spi_readwrite(0x00);
++	mmc_spi_readwrite(0x00);
++	mmc_spi_readwrite(0x00);
++	mmc_spi_readwrite(0x95);
++	
++	for (i = 0; i < 8; i++)
++	{
++ 		result=mmc_spi_readwrite(0xff);
++
++		if(result == 0x00)
++			break;
++	}
++
++	if (result != 0x00) {
++		MMC_Disable();
++		mmc_spi_readwrite(0xff);
++		return(1);
++	}
++
++	for (i = 0; i < 8; i++) {
++		result = mmc_spi_readwrite(0xff);
++		if (result == 0xfe) break;
++	}
++
++	if (result != 0xfe) {
++		MMC_Disable();
++		mmc_spi_readwrite(0xff);
++		return(2);
++	}
++
++	for (i = 0; i < 16; i++) {
++		result = mmc_spi_readwrite(0xff);
++		cid[i] = result;
++	}
++	
++	mmc_spi_readwrite(0xff);
++	mmc_spi_readwrite(0xff);
++	
++	MMC_Disable();
++	mmc_spi_readwrite(0xff);
++
++	return 0;
++}
++
++
++/**
++ * Comments added by Cyril CATTIAUX on 2007-03-21
++ *
++ * CID format specification (from Sandisk SD Product Manual v1.9)
++ *
++ * cid[00   ] Manufacturer ID (unsigned byte)
++ * cid[01-02] OEM/Application ID (ASCII)
++ * cid[03-07] Product Name (ASCII)
++ * cid[08   ] Product Revision (BCD coded 2 digit number)
++ * cid[09-12] Serial Number (32-bit unsigned int)
++ * cid[13-14] Manufacture Date(bit 0->11) (BCD coded 3 digit number YYM offset from 2000) - Reserved(bit 12->15)
++ * cid[15   ] Not used, allways 1 (bit 0) - CRC7(bit 1->7)
++*/
++static void mmc_show_cid_info(void)
++{
++	int i, result;
++	unsigned short tmps;
++	unsigned char  cid[16];
++	
++	char           manufacturer_id;
++	char           oem_id[3];
++	char           product_name[6];
++	unsigned char  product_revision_h, product_revision_l;
++	unsigned int   product_sn;
++	unsigned short product_date_y;
++	unsigned char  product_date_m;
++
++	result = mmc_read_cid(cid);
++
++	if (result == 0)
++	{
++		printk("mmc_init: MMC/SD Card ID: ");
++		for (i=0; i<16; i++) {
++			printk("%02X ", cid[i]);
++		}
++		manufacturer_id=cid[0];
++		strncpy(oem_id,       &cid[1], 2);
++		oem_id[2]='\0';
++		strncpy(product_name, &cid[3], 5);
++		product_name[5]='\0';
++		product_revision_h=(cid[8] >> 4) & 0xf;
++		product_revision_l=cid[8] & 0xf;
++		product_sn=(cid[9]<<24) + (cid[10]<<16) + (cid[11]<<8) + cid[12];
++		tmps=((cid[13]<<8) + cid[14]) & 0x0fff;
++		product_date_y=2000 + (((tmps >> 8) & 0xf) * 10) + ((tmps >> 4) & 0xf);
++		product_date_m=tmps & 0xf;
++		
++		printk("\nManufacturer ID   : %02X\n",  manufacturer_id);
++		printk("OEM/Application ID: %s\n",      oem_id);
++		printk("Product name      : %s\n",      product_name);
++		printk("Product revision  : %d.%d\n",   product_revision_h, product_revision_l);
++		printk("Product SN        : %08X\n",    product_sn);
++		printk("Product Date      : %d-%d\n",   product_date_y, product_date_m);
++		
++	} else {
++		printk("mmc_init: impossible to get card indentification info for reason code: %02x", result);
++	}
++}
++
++
++/*
++static int mmc_spi_hw_test(void)
++{
++    unsigned char result, k;
++    
++    unsigned int i, j, t;
++    
++    printk("mmc_spi_hw_test -> \n\n");
++    k = 0x55;
++    for ( i = 0 ; i < 5; i++) {
++
++	printk("\n0x%2X - ", k);
++	for ( j = 0 ; j < 8; j++ ) {
++            do_gettimeofday( &s_zeit );
++	    result = mmc_spi_readwrite_slow(k);
++            do_gettimeofday( &e_zeit );
++	    	    
++	    if ( result != k ) {
++		printk("!>ERROR<! Transfer = 0x%2X Receive = 0x%2X Trail = %d \n", k, result, j);
++		// i = 255; j = 1000;
++	    }
++	    
++            t = (e_zeit.tv_sec-s_zeit.tv_sec)*1000000+(e_zeit.tv_usec-s_zeit.tv_usec);
++            printk("Durchlauf: %i Versuch: %i von 8 -> Laufzeit: 0x%X s\n", i , j, t);
++	    udelay(200);
++	}
++	printk("ready  ");
++
++	// k++;
++    }
++    printk("ready  ");
++    printk("\n\n");
++    return (0);
++}
++*/
++	
++/*
++static int mmc_spi_speed_test(void)
++{
++    unsigned int i, j, k, l, t;
++    
++    MMC_Disable();
++    
++    for (k = 1; k < 6; k++)
++    {
++        l = 10000 * k;
++        for (j = 0; j < 5; j++)
++        {
++            do_gettimeofday( &s_zeit );
++            for (i = 0; i < l; i++)
++	        mmc_spi_readwrite(0xff);	
++            do_gettimeofday( &e_zeit );
++            t = (e_zeit.tv_sec-s_zeit.tv_sec)*1000000+(e_zeit.tv_usec-s_zeit.tv_usec);
++            printk("mmc_spi_readwrite: Laufzeit %u x : 0x%X \n", l, t);
++        }
++    }
++    
++    for (k = 1; k < 1; k++)
++    {
++        l = 10000 * k;
++        for (j = 0; j < 1; j++)
++        {
++            do_gettimeofday( &s_zeit );
++            for (i = 0; i < l; i++)
++	        mmc_spi_readwrite_slow(0xff);	
++            do_gettimeofday( &e_zeit );
++            t = (e_zeit.tv_sec-s_zeit.tv_sec)*1000000+(e_zeit.tv_usec-s_zeit.tv_usec);
++            printk("mmc_spi_readwrite_slow: Laufzeit %u x : 0x%X \n", l, t);
++        }
++    }
++
++    for (k = 1; k < 6; k++)
++    {
++        l = 10000 * k;
++        for (j = 0; j < 5; j++)
++        {
++            do_gettimeofday( &s_zeit );
++            for (i = 0; i < l; i++)
++	        mmc_spi_read_only();	
++            do_gettimeofday( &e_zeit );
++            t = (e_zeit.tv_sec-s_zeit.tv_sec)*1000000+(e_zeit.tv_usec-s_zeit.tv_usec);
++            printk("mmc_spi_read_only: Laufzeit %u x : 0x%X \n", l, t);
++        }
++    }
++
++    for (k = 1; k < 6; k++)
++    {
++        l = 10000 * k;
++        for (j = 0; j < 5; j++)
++        {
++            do_gettimeofday( &s_zeit );
++            for (i = 0; i < l; i++)
++	        mmc_spi_write_only(0xff);	
++            do_gettimeofday( &e_zeit );
++            t = (e_zeit.tv_sec-s_zeit.tv_sec)*1000000+(e_zeit.tv_usec-s_zeit.tv_usec);
++            printk("mmc_spi_write_only: Laufzeit %u x : 0x%X \n", l, t);
++        }
++    }
++        
++    return (1); 
++    	
++}
++*/
++	
++
++static int mmc_spi_card_init(void)
++{
++    unsigned char result = 0;
++    short i, j;
++
++//     unsigned long flags;
++
++    // save_flags(flags);
++    // cli();
++
++/*
++    printk("GPIO_SD_CS dir: %u alt: %u\n", gpio_getdir(&gp, GPIO_SD_CS), gpio_getalt(&gp, GPIO_SD_CS));
++    printk("GPIO_SD_DI dir: %u alt: %u\n", gpio_getdir(&gp, GPIO_SD_DI), gpio_getalt(&gp, GPIO_SD_DI));
++    printk("GPIO_SD_DO dir: %u alt: %u\n", gpio_getdir(&gp, GPIO_SD_DO), gpio_getalt(&gp, GPIO_SD_DO));
++    printk("GPIO_SD_CS dir: %u alt: %u\n", gpio_getdir(&gp, GPIO_SD_CLK), gpio_getalt(&gp, GPIO_SD_CLK));
++*/
++
++    // printk("\nmmc: mmc_spi_hw_test() *START*\n");
++
++    // mmc_spi_hw_test();
++
++    printk("\nmmc: card init 1/2 (CMD0)\n");
++
++    for (j = 0; j < 10; j++)
++    {
++        MMC_Disable();
++	
++        for (i = 0; i < 10; i++)
++	    mmc_spi_readwrite_slow(0xff);
++
++        MMC_Enable();
++	
++	mmc_spi_readwrite_slow(0xff);
++	
++        mmc_spi_readwrite_slow(0x40);
++
++        for (i = 0; i < 4; i++) {
++
++	    mmc_spi_readwrite_slow(0x00);
++
++	}
++
++        mmc_spi_readwrite_slow(0x95);
++
++        for (i = 0; i < 8; i++) {
++
++	    result = mmc_spi_readwrite_slow(0xff);
++
++#ifdef DEBUG_HD	    
++            if (result != 0xff) {
++ 	        if (result > 0x1F && result < 0x80)
++	            printk("mmc: resp. (CMD0) Versuch(%d) BYTE: %d  result = 0x%X  Zeichen = %c\n", j, i, result, result);
++                else
++  	            printk("mmc: resp. (CMD0) Versuch(%d) BYTE: %d  result = 0x%X\n", j, i, result);
++	    }
++#endif
++	    if (result == 0x01)
++	        break;
++        }
++    		
++	if (result == 0x01)
++	    break;
++
++        MMC_Disable();
++        mmc_spi_readwrite_slow(0xff);
++	    
++	mdelay(60);
++    }
++    
++    if (result != 0x01) {
++
++        printk("mmc: card init 1/2 error: %d (CMD0) failed\n", result);
++	printk(" -> Hint: MMC/SD-Card realy (fully) inserted ?\n");
++	
++	return (1);
++    }
++
++    printk("mmc: card init 1/2 (CMD0) success\n\n");
++
++    mdelay(1);
++
++    printk("mmc: card init 2/2 (CMD1)\n");
++    for (j = 0; j < 10; j++) {
++
++	mmc_spi_readwrite_slow(0xff);			
++	mmc_spi_readwrite_slow(0x41);
++	for (i = 0; i < 4; i++)
++	    mmc_spi_readwrite_slow(0x00);
++	mmc_spi_readwrite_slow(0x95);
++	for (i = 0; i < 8; i++) {
++	    result = mmc_spi_readwrite_slow(0xff);
++#ifdef DEBUG_HD
++ 	    // if (result >= 32 && result <= 127)
++	    //     printk("mmc: response (CMD1) Versuch(%d) start token BYTE: %d  result = 0x%X  Zeichen = %c\n", j, i, result, result);
++            // else
++  	    //     printk("mmc: response (CMD1) Versuch(%d) start token BYTE: %d  result = 0x%X\n", j, i, result);
++#endif
++	    if (result == 0x00)
++		break;
++	}
++
++	mmc_spi_readwrite_slow(0xff);
++
++	if (result == 0x00) {
++	    printk("mmc: card init 2/2 (CMD1) success\n\n");
++
++	    mmc_spi_readwrite_slow(0xff);
++	    mmc_spi_readwrite_slow(0x4d);
++	    mmc_spi_readwrite_slow(0x00);
++	    mmc_spi_readwrite_slow(0x00);
++	    mmc_spi_readwrite_slow(0x00);
++	    mmc_spi_readwrite_slow(0x00);
++	    mmc_spi_readwrite_slow(0x95);
++ 	    for (i = 0; i < 6; i++) {
++		result = mmc_spi_readwrite_slow(0xff);
++#ifdef DEBUG_HD
++ 		// if (result > 31 && result < 128)
++	    	//     printk("mmc: response (CMD13) Versuch(%d) start token BYTE: %d  result = 0x%X  Zeichen = %c\n", j, i, result, result);
++        	// else
++  	    	//     printk("mmc: response (CMD13) Versuch(%d) start token BYTE: %d  result = 0x%X\n", j, i, result);
++#endif
++		// if (result == 0x00)
++		// break;
++	    }
++	    // mdelay(60);
++	    MMC_Disable();
++	    mmc_spi_readwrite_slow(0xff);
++	    // mmc_spi_readwrite_slow(0xff);
++	    // mdelay(10);
++
++    	    // restore_flags(flags);
++	    
++	    return (0);
++	}
++        mdelay(60);	
++    }
++    return (2);
++}
++
++
++static int mmc_spi_card_config(void)
++{
++    unsigned char result = 0;
++    short i, j;
++    unsigned char csd[32];
++    unsigned int c_size;
++    unsigned int c_size_mult;
++    unsigned int mult;
++    unsigned int read_bl_len;
++    unsigned int blocknr = 0;
++    unsigned int block_len = 0;
++    unsigned int size = 0;
++    unsigned char rd_buffer[528];
++//    unsigned long flags;
++    
++    MMC_Enable();
++    
++    mmc_spi_readwrite_slow(0xff);
++    result = mmc_spi_readwrite_slow(0x51); 
++    // mmc_spi_readwrite_slow(0x4A);
++    // mmc_spi_readwrite_slow(0x40+0x0D);
++    // mmc_spi_readwrite_slow(0x42);
++    for (i = 0; i < 4; i++)
++	mmc_spi_readwrite_slow(0x00);
++    mmc_spi_readwrite_slow(0x95);
++
++    // printk("mmc: (CMD17) response von 0x51 result = 0x%X\n", result);
++
++    for (i = 0; i < 8; i++) {
++	result = mmc_spi_readwrite_slow(0xff);
++#ifdef DEBUG_HD
++	// printk("mmc: (CMD17) response (start token) result = 0x%X\n", result);
++#endif
++	if (result == 0x00)
++	    break;
++    }
++    if (result != 0x00) {
++	MMC_Disable();
++	mmc_spi_readwrite_slow(0xff);
++	// restore_flags(flags);
++	// mmc_spi_readwrite_slow(0xff);
++	return (1);
++    }
++    // restore_flags(flags);
++    for (i = 0; i < 8; i++) {
++	result = mmc_spi_readwrite_slow(0xff);
++	rd_buffer[i] = result;
++#ifdef DEBUG_HD
++        /*
++	if (result >= 32 && result <= 127)
++	    printk("mmc: CMD17 response (start token) result = 0x%X  Zeichen = %c\n", result, result);
++        else
++  	    printk("mmc: CMD17 response (start token) result = 0x%X\n", result);
++	*/
++#endif
++	// if (result == 0xfe)
++	//    break;
++    }
++    /*
++    if (result != 0xfe) {
++        MMC_Disable();
++	mmc_spi_readwrite_slow(0xff);
++	mmc_spi_readwrite_slow(0xff);
++	return(1);
++    }
++    */
++
++    for (i = 8; i < 520; i++) {
++	result = mmc_spi_readwrite_slow(0xff);
++	rd_buffer[i] = result;
++    }
++    for (i = 0; i < 2; i++) {
++	result = mmc_spi_readwrite_slow(0xff);
++    }
++    MMC_Disable();
++    mmc_spi_readwrite_slow(0xff);
++    // mmc_spi_readwrite_slow(0xff);
++
++    printk("Buffer - Start\n");
++    
++    for ( i = 0 ; i < 33 ; i++) {
++	printk("\r\n%4X - ", i*16);
++	for ( j = 0 ; j < 16 ; j++) {
++	    if ( rd_buffer[i*16+j] < 16)
++		printk("0%X ", rd_buffer[i*16+j]);
++	    else
++		printk("%2X ", rd_buffer[i*16+j]);
++	}
++	for ( j = 0 ; j < 16 ; j++) {
++	    if ( rd_buffer[i*16+j] < ' ')
++		printk(".");
++	    else
++		printk("%c", rd_buffer[i*16+j]);
++	}
++    }
++
++    printk("\nBuffer - Ende\n");
++
++    mmc_show_cid_info();
++    
++    for(j = 0 ; j < 1; j++) {
++    MMC_Enable();
++
++    // mdelay(1);
++    
++    // save_flags(flags);
++    // cli();
++    mmc_spi_readwrite_slow(0xff);
++    mmc_spi_readwrite_slow(0x49); 
++    // mmc_spi_readwrite_slow(0x4A);
++    // mmc_spi_readwrite_slow(0x40+0x0D);
++    // mmc_spi_readwrite_slow(0x42);
++    for (i = 0; i < 4; i++)
++	mmc_spi_readwrite_slow(0x00);
++    mmc_spi_readwrite_slow(0x95);
++    for (i = 0; i < 8; i++) {
++	result = mmc_spi_readwrite_slow(0xff);
++#ifdef DEBUG_HD
++	// printk("mmc: (CMD9) response (start token) result = 0x%X\n", result);
++#endif
++	if (result == 0x00)
++	    break;
++    }
++    // restore_flags(flags);
++    if (result != 0x00) {
++	MMC_Disable();
++	mmc_spi_readwrite_slow(0xff);
++	// mmc_spi_readwrite_slow(0xff);
++	return (1);
++    }
++    for (i = 0; i < 22; i++) {
++	result = mmc_spi_readwrite_slow(0xff);
++#ifdef DEBUG_HD
++	if (result >= 32 && result <= 127)
++	    printk("mmc: response (start token) result = 0x%X  Zeichen = %c\n", result, result);
++        else
++  	    printk("mmc: response (start token) result = 0x%X\n", result);
++#endif
++	if (result == 0xfe)
++	    break;
++    }
++    if (result == 0xfe)
++	break;
++        
++    if (result != 0xfe) {
++        MMC_Disable();
++	mmc_spi_readwrite_slow(0xff);
++	// mmc_spi_readwrite_slow(0xff);
++    }
++    mdelay(60);
++    }	
++    
++    if (result != 0xfe) {
++	MMC_Disable();
++	mmc_spi_readwrite_slow(0xff);
++	printk("mmc: mmc card config (CMD9) failed result = 0x%X\n\n", result);	
++	return (2);
++    }
++    for (i = 0; i < 16; i++) {
++	result = mmc_spi_readwrite_slow(0xff);
++	csd[i] = result;
++    }
++    for (i = 0; i < 2; i++) {
++	result = mmc_spi_readwrite_slow(0xff);
++    }
++    MMC_Disable();
++    mmc_spi_readwrite_slow(0xff);
++    // mmc_spi_readwrite_slow(0xff);
++    
++    if (result == 0x00)
++	return (3);
++
++    c_size = (csd[8] & 0xC0) + (csd[7] << 8) + ((csd[6] & 0x03) << 16);
++    c_size >>= 6;
++    c_size_mult = (csd[10] & 0x80) + ((csd[9] & 0x03) << 8);
++    c_size_mult >>= 7;
++    read_bl_len = csd[5] & 0x0f;
++    mult = 1;
++    mult <<= c_size_mult + 2;
++    blocknr = (c_size + 1) * mult;
++    block_len = 1;
++    block_len <<= read_bl_len;
++    size = block_len * blocknr;
++    size >>= 10;
++
++    for (i = 0; i < (1 << 6); i++) {
++	hd_blocksizes[i] = 1024;
++	hd_hardsectsizes[i] = block_len;
++	hd_maxsect[i] = 256;
++    }
++    hd_sizes[0] = size;
++    hd[0].nr_sects = blocknr;
++
++    printk("Size = %d, hardsectsize = %d, sectors = %d\n",
++	   size, block_len, blocknr);
++
++    return 0;
++}
++
++
++/*
++ * *******************************************************************
++ *
++ *             End of SPI hardware access functions.
++ *
++ * *******************************************************************
++ */
++
++
++static int mmc_spi_write_block(unsigned int dest_addr, unsigned char *data)
++{
++    unsigned int address;
++    unsigned char result = 0;
++    unsigned char ab0, ab1, ab2, ab3;
++    int i;
++
++    address = dest_addr;
++
++    ab3 = 0xff & (address >> 24);
++    ab2 = 0xff & (address >> 16);
++    ab1 = 0xff & (address >> 8);
++    ab0 = 0xff & address;
++
++    MMC_Enable();
++
++    mmc_spi_readwrite(0xff);
++
++    mmc_spi_readwrite(0x58);
++    mmc_spi_readwrite(ab3);		/* msb */
++    mmc_spi_readwrite(ab2);
++    mmc_spi_readwrite(ab1);
++    mmc_spi_readwrite(ab0);		/* lsb */
++    mmc_spi_readwrite(0xff);
++
++    for (i = 0; i < 8; i++) 
++    {
++        result = mmc_spi_readwrite(0xff);
++        if (result == 0x00)
++        {
++            break;
++        }
++    }
++
++    if (result != 0x00) 
++    {
++        MMC_Disable();
++        mmc_spi_readwrite(0xff);
++        return (1);
++    }
++
++    mmc_spi_readwrite(0xfe);
++
++    for (i = 0; i < 512; i += 32)
++    {
++        mmc_spi_write_only(data[i]);
++        mmc_spi_write_only(data[i+1]);
++        mmc_spi_write_only(data[i+2]);
++        mmc_spi_write_only(data[i+3]);
++        mmc_spi_write_only(data[i+4]);
++        mmc_spi_write_only(data[i+5]);
++        mmc_spi_write_only(data[i+6]);
++        mmc_spi_write_only(data[i+7]);
++        mmc_spi_write_only(data[i+8]);
++        mmc_spi_write_only(data[i+9]);
++        mmc_spi_write_only(data[i+10]);
++        mmc_spi_write_only(data[i+11]);
++        mmc_spi_write_only(data[i+12]);
++        mmc_spi_write_only(data[i+13]);
++        mmc_spi_write_only(data[i+14]);
++        mmc_spi_write_only(data[i+15]);
++        mmc_spi_write_only(data[i+16]);
++        mmc_spi_write_only(data[i+17]);
++        mmc_spi_write_only(data[i+18]);
++        mmc_spi_write_only(data[i+19]);
++        mmc_spi_write_only(data[i+20]);
++        mmc_spi_write_only(data[i+21]);
++        mmc_spi_write_only(data[i+22]);
++        mmc_spi_write_only(data[i+23]);
++        mmc_spi_write_only(data[i+24]);
++        mmc_spi_write_only(data[i+25]);
++        mmc_spi_write_only(data[i+26]);
++        mmc_spi_write_only(data[i+27]);
++        mmc_spi_write_only(data[i+28]);
++        mmc_spi_write_only(data[i+29]);
++        mmc_spi_write_only(data[i+30]);
++        mmc_spi_write_only(data[i+31]);
++    }
++
++    mmc_spi_readwrite(0xff);
++    mmc_spi_readwrite(0xff);    
++
++    for (i = 0; i < 1000000; i++) 
++    {
++        result = mmc_spi_readwrite(0xff);
++        if (result == 0xff)
++        {
++            break;
++        }
++    }
++
++    if (result != 0xff) 
++    {
++        MMC_Disable();
++        mmc_spi_readwrite(0xff);
++        return (3);
++    }
++
++    MMC_Disable();
++    mmc_spi_readwrite(0xff);
++    return (0);
++}
++
++static int mmc_spi_read_block(unsigned char *data, unsigned int src_addr)
++{
++    unsigned int address;
++    unsigned char result = 0;
++    unsigned char ab0, ab1, ab2, ab3;
++    unsigned long flags;
++    int i, j;
++
++    address = src_addr;
++
++    ab3 = 0xff & (address >> 24);
++    ab2 = 0xff & (address >> 16);
++    ab1 = 0xff & (address >> 8);
++    ab0 = 0xff & address;
++
++    MMC_Enable();
++
++    mmc_spi_readwrite(0xff);
++
++    mmc_spi_readwrite(0x51);
++    mmc_spi_readwrite(ab3);		/* msb */
++    mmc_spi_readwrite(ab2);
++    mmc_spi_readwrite(ab1);
++    mmc_spi_readwrite(ab0);		/* lsb */
++    mmc_spi_readwrite(0xff);
++    
++    for (i = 0; i < 8; i++) 
++    {
++        result = mmc_spi_readwrite(0xff);
++        if (result == 0x00)
++        {
++            break;
++        }
++    }
++
++    if (result != 0x00) 
++    {
++        MMC_Disable();
++        mmc_spi_readwrite(0xff);
++        return (1);
++    }
++
++    for (i = 0; i < 100000; i++) 
++    {
++        result = mmc_spi_readwrite(0xff);
++        if (result == 0xfe)
++        {
++            break;
++        }
++    }
++
++    if (result != 0xfe) 
++    {
++        MMC_Disable();
++        mmc_spi_readwrite(0xff);
++        return (2);
++    }
++
++    for (i = 0; i < 512; i += 32 ) 
++    {
++    	    data[i] = mmc_spi_read_only();
++    	    data[i+1] = mmc_spi_read_only();
++    	    data[i+2] = mmc_spi_read_only();
++    	    data[i+3] = mmc_spi_read_only();
++    	    data[i+4] = mmc_spi_read_only();
++    	    data[i+5] = mmc_spi_read_only();
++    	    data[i+6] = mmc_spi_read_only();
++    	    data[i+7] = mmc_spi_read_only();
++    	    data[i+8] = mmc_spi_read_only();
++    	    data[i+9] = mmc_spi_read_only();
++    	    data[i+10] = mmc_spi_read_only();
++    	    data[i+11] = mmc_spi_read_only();
++    	    data[i+12] = mmc_spi_read_only();
++    	    data[i+13] = mmc_spi_read_only();
++    	    data[i+14] = mmc_spi_read_only();
++    	    data[i+15] = mmc_spi_read_only();
++    	    data[i+16] = mmc_spi_read_only();
++    	    data[i+17] = mmc_spi_read_only();
++    	    data[i+18] = mmc_spi_read_only();
++    	    data[i+19] = mmc_spi_read_only();
++    	    data[i+20] = mmc_spi_read_only();
++    	    data[i+21] = mmc_spi_read_only();
++    	    data[i+22] = mmc_spi_read_only();
++    	    data[i+23] = mmc_spi_read_only();
++    	    data[i+24] = mmc_spi_read_only();
++    	    data[i+25] = mmc_spi_read_only();
++    	    data[i+26] = mmc_spi_read_only();
++    	    data[i+27] = mmc_spi_read_only();
++    	    data[i+28] = mmc_spi_read_only();
++    	    data[i+29] = mmc_spi_read_only();
++    	    data[i+30] = mmc_spi_read_only();
++    	    data[i+31] = mmc_spi_read_only();
++    }
++
++    result = mmc_spi_readwrite(0xff);
++    result = mmc_spi_readwrite(0xff);	
++
++    MMC_Disable();
++    mmc_spi_readwrite(0xff);
++
++    return (0);
++}
++
++/*
++static int mmc_revalidate(kdev_t dev)
++{
++    int target, max_p, start, i;
++
++    mmc_media_detect = mmc_spi_media_detect();
++
++    if (mmc_media_detect == 0)
++    {
++        return -ENODEV;
++    }
++
++    target = DEVICE_NR(dev);
++
++    max_p = hd_gendisk.max_p;
++    start = target << 6;
++    for (i = max_p - 1; i >= 0; i--) 
++    {
++        int minor = start + i;
++        invalidate_device(MKDEV(MAJOR_NR, minor), 1);
++        hd_gendisk.part[minor].start_sect = 0;
++        hd_gendisk.part[minor].nr_sects = 0;
++    }
++
++    grok_partitions(&hd_gendisk, target, 1 << 6, hd_sizes[0] * 2);
++
++    return 0;
++}
++*/
++
++
++static int mmc_ioctl(struct inode *inode, struct file *filp, unsigned int cmd,
++		     unsigned long arg)
++{
++	if (!inode || !inode->i_rdev)
++		return -EINVAL;
++
++	switch (cmd) {
++#if 0
++	case BLKGETSIZE:
++		return put_user(hd[MINOR(inode->i_rdev)].nr_sects,
++				(unsigned long *)arg);
++	case BLKGETSIZE64:
++		return put_user((u64) hd[MINOR(inode->i_rdev)].
++				nr_sects, (u64 *) arg);
++	case BLKRRPART:
++		if (!capable(CAP_SYS_ADMIN))
++			return -EACCES;
++
++		return mmc_revalidate(inode->i_rdev);
++#endif
++	case HDIO_GETGEO:
++		{
++			struct block_device *bdev = inode->i_bdev;
++			struct hd_geometry *loc, g;
++			loc = (struct hd_geometry *)arg;
++			if (!loc)
++				return -EINVAL;
++			memset(loc, 0, sizeof(struct hd_geometry));
++			g.heads = 4;
++			g.sectors = 16;
++			g.cylinders = get_capacity(bdev->bd_disk) / (4*16);
++			g.start = get_start_sect(bdev);
++			return copy_to_user(loc, &g, sizeof(g)) ? -EFAULT : 0;
++		}
++	default:
++		return -ENOTTY;
++	}
++}
++
++
++/*
++static int mmc_check_media_change(kdev_t dev)
++{
++    (void) dev;
++    if (mmc_media_changed == 1) 
++    {
++        mmc_media_changed = 0;
++        return 1;
++    } 
++    else
++    {
++        return 0;
++    }
++}
++*/
++
++
++/*
++static int mmc_init(void)
++{
++    int result;
++
++    result = mmc_spi_hardware_init();
++
++    if (result != 0) 
++    {
++        printk("mmc: error %d in mmc_spi_hardware_init\n", result);
++        return -1;
++    }
++
++
++    result = mmc_spi_hw_test();
++
++    if (result != 0) 
++    {
++        printk("\n mmc: mmc_spi_hw_test i.O. \n\n");
++        return -1;
++    }
++
++
++    result = mmc_spi_speed_test();
++
++    if (result != 0) 
++    {
++        printk("\n mmc: mmc_spi_speed_test i.O. \n\n");
++        return -1;
++    }
++
++
++    result = mmc_spi_card_init();
++    mdelay(50);
++    if (result != 0) 
++    {
++        // Give it an extra shot
++        // result = mmc_spi_card_init();
++        if (result != 0) 
++        {
++            printk("mmc: error %d in mmc_card_init\n", result);
++            return -1;
++        }
++    }
++
++    result = mmc_spi_card_config();
++    if (result != 0) 
++    {
++        printk("mmc: error %d in mmc_card_config\n", result);
++        return -1;
++    }
++
++
++    return 0;
++}
++*/
++
++/*
++static void mmc_exit(void)
++{
++}
++*/
++
++
++/*
++static void mmc_check_media(void)
++{
++    int old_state, new_state;
++    int result;
++
++    old_state = mmc_media_detect;
++    new_state = mmc_spi_media_detect();
++
++    if (old_state != new_state) 
++    {
++        mmc_media_changed = 1;
++        if (new_state == PRESENT) 
++        {
++            result = mmc_init();
++            if (result != 0)
++            {
++                printk("mmc: error %d in mmc_init\n", result);
++            } 
++            else 
++            {
++                mmc_exit();
++            }
++        }
++    }
++
++#ifdef CHECK_MEDIA_CHANGE
++    del_timer(&mmc_timer);
++    mmc_timer.expires = jiffies + 10*HZ;
++    add_timer(&mmc_timer);
++#endif
++
++}
++*/
++
++
++/* NB: There might be several requests in the queue, simply dequeuing only one
++	and not checking for more will cause a stall because the block subsystem
++	will not call this function again unless the queue is "plugged" which can
++	only happen if it runs empty... */
++static void mmc_spi_request(struct request_queue *q)
++{
++	struct request *req;
++	int ret;
++	
++	unsigned int mmc_address;
++	unsigned char *buffer_address;
++	int nr_sectors;
++	int i;
++	int result, success;
++
++	if (blk_queue_plugged(q)) {
++		return;
++	}
++
++	spin_lock(&mmc_spi_lock);
++	for(;;) {
++		req = elv_next_request(q);
++		if (!req)
++			break;
++		
++		if (!blk_fs_request(req)) {
++			printk("not a blk_fs_request\n");
++			spin_unlock(&mmc_spi_lock);
++			continue;
++		}
++
++		mmc_address = req->sector * hd_hardsectsizes[0];
++		buffer_address = req->buffer;
++		nr_sectors = req->current_nr_sectors;
++		success = 1;
++		if (rq_data_dir(req) == READ) {
++			spin_unlock_irq(q->queue_lock);
++			for (i = 0; i < nr_sectors; i++) {
++				result = mmc_spi_read_block(buffer_address, mmc_address);
++				if (unlikely(result < 0)) {
++					printk(KERN_ERR "mmi_spi_block: error reading block (%d)\n", result);
++					success = 0;
++					break;
++				}
++				mmc_address += hd_hardsectsizes[0];
++				buffer_address += hd_hardsectsizes[0];
++			}
++			spin_lock_irq(q->queue_lock);
++		} else {
++			spin_unlock_irq(q->queue_lock);
++			for (i = 0; i < nr_sectors; i++) {
++				result = mmc_spi_write_block(mmc_address, buffer_address);
++				if (unlikely(result < 0)) {
++					printk(KERN_ERR "mmi_spi_block: error writing block (%d)\n", result);
++					success = 0;
++					break;
++				}
++				mmc_address += hd_hardsectsizes[0];
++				buffer_address += hd_hardsectsizes[0];
++			}
++			spin_lock_irq(q->queue_lock);
++		}
++		ret = end_that_request_chunk(req, success, nr_sectors * hd_hardsectsizes[0]);
++		if (!ret) {
++			blkdev_dequeue_request(req);
++			end_that_request_last(req, 0);
++		}
++	}
++	spin_unlock(&mmc_spi_lock);
++}
++
++
++static int mmc_open(struct inode *inode, struct file *filp)
++{
++    // int device;
++    (void) filp;
++    mmc_media_detect = mmc_spi_media_detect();
++
++    if (mmc_media_detect == 0)
++        return -ENODEV;
++
++    return 0;
++}
++
++static int mmc_release(struct inode *inode, struct file *filp)
++{
++    return 0;
++}
++
++
++static struct block_device_operations mmc_spi_bdops = {
++	.open = mmc_open,
++	.release = mmc_release,
++	.ioctl = mmc_ioctl,
++	.owner = THIS_MODULE,
++#if 0
++	.check_media_change = mmc_check_media_change,
++	.revalidate = mmc_revalidate,
++#endif
++};
++
++static int detect_card(void)
++{
++	int result;
++
++	result = mmc_spi_card_init();
++	if (result != 0) {
++		// Give it an extra shot
++		result = mmc_spi_card_init();
++		if (result != 0) {
++			printk(KERN_ERR "mmc_spi_block: error in mmc_card_init (%d)\n", result);
++			return -ENODEV;
++		}
++	}
++
++	result = mmc_spi_card_config();
++	// result = mmc_spi_speed_test();
++	if (result != 0) {
++		printk(KERN_ERR "mmc_spi_block: error in mmc_card_config (%d)\n", result);
++		return -ENODEV;
++	}
++
++	return 0;
++}
++
++/* Fills in the gendisk structure from the received card
++   data.  */
++static int gendisk_init(struct device *dev, struct gendisk *gd)
++{
++	if (!gd)
++		return -EINVAL;
++
++	gd->major = major;
++	gd->first_minor = 0; /* only one device supported */
++	gd->fops = &mmc_spi_bdops;
++	gd->driverfs_dev = dev;
++
++	gd->queue = blk_init_queue(mmc_spi_request,NULL);
++
++	if (!gd->queue)
++		return -ENOMEM;
++
++	sprintf(gd->disk_name, "mmcblk");
++
++	blk_queue_hardsect_size(gd->queue, hd_hardsectsizes[0]);
++
++	set_capacity(gd, hd_sizes[0]<<1);
++
++	return 0;
++}
++
++static int gendisk_fini(struct gendisk *gd)
++{
++	BUG_ON(!gd);
++
++	if (gd->queue)
++		blk_cleanup_queue(gd->queue);
++
++	del_gendisk(gd);
++}
++
++/* platform driver device instance routines */
++static int mmc_spi_probe(struct platform_device *pdev)
++{
++	int result;
++	printk("$Id: mmc_spi_block.c,v 1.04 2007/05/25 23:27:16 mrdata Exp $\n");
++
++	result = mmc_spi_hardware_init();
++	if (result != 0) {
++		printk(KERN_ERR "mmc_spi_block: error in mmc_spi_hardware_init (%d)\n", result);
++		result = -ENODEV;
++		return result;
++	}
++	
++	result = detect_card();
++	if (result < 0)
++		return result;
++
++	mmc_media_detect = 1;
++
++	result = register_blkdev(major, DEVICE_NAME);
++	if (result < 0)
++		return result;
++
++	if (!major)
++		major = result;
++
++	/* allow 8 partitions per device */
++	BUG_ON(mmc_disk!=NULL);
++	mmc_disk = alloc_disk(1 << 3);
++	if (!mmc_disk) {
++		result = -ENOMEM;
++		goto out;
++	}
++
++	result = gendisk_init(&pdev->dev, mmc_disk);
++	if (result < 0)
++		goto out;
++
++	add_disk(mmc_disk);
++	
++	/*init_timer(&mmc_timer);
++	   mmc_timer.expires = jiffies + HZ;
++	   mmc_timer.function = (void *)mmc_check_media;
++	   add_timer(&mmc_timer); */
++	return 0;
++
++out:
++	if (mmc_disk)
++		put_disk(mmc_disk);
++		
++	unregister_blkdev(major, DEVICE_NAME);
++	return result;
++}
++
++static int mmc_spi_remove(struct platform_device *dev)
++{
++	int ret;
++
++	if (mmc_disk) {
++		gendisk_fini(mmc_disk);
++		put_disk(mmc_disk);
++	}
++
++	ret = unregister_blkdev(major, DEVICE_NAME);
++	return ret;
++}
++
++struct platform_driver mmc_spi_driver = {
++	.probe		= mmc_spi_probe,
++	.remove		= mmc_spi_remove,
++	.driver		= {
++		.name	= "mmc_spi",
++		.owner	= THIS_MODULE,
++	},
++};
++
++
++/* module init/exit */
++static int __init mmc_block_spi_init(void)
++{
++	int ret;
++	spin_lock_init(&mmc_spi_lock);
++	
++	ret = platform_driver_register(&mmc_spi_driver);
++	if (ret < 0)
++		return ret;
++	
++	/* we just support one device */
++	mmc_dev = platform_device_register_simple("mmc_spi", -1, NULL, 0);
++	if (IS_ERR(mmc_dev))
++		return PTR_ERR(mmc_dev);
++	
++	return 0;
++}
++
++
++static void __exit mmc_block_spi_exit(void)
++{
++	platform_driver_unregister(&mmc_spi_driver);
++	if (mmc_dev)
++		platform_device_unregister(mmc_dev);
++}
++
++
++module_init(mmc_block_spi_init);
++module_exit(mmc_block_spi_exit);
++
++MODULE_AUTHOR("Madsuk,Rohde,TaGana,Carsten Juttner <carjay@gmx.net>,Guylhem Aznar <mmc-driver@externe.net>,mrdata");
++MODULE_DESCRIPTION("Driver for MMC/SD-Cards in SPI mode by GPIO");
++MODULE_SUPPORTED_DEVICE("SIMpad");
++MODULE_LICENSE("GPL");
++
++module_param(major, int, 0444);
++MODULE_PARM_DESC(major, "specify the major device number for the MMC/SD SPI driver");
