@@ -52,10 +52,7 @@ do_install_dm500plus() {
 
 do_install_dm7025() {
 	install -d ${D}/lib/modules/${KV}/extra
-	for f in alps_bsbe1.ko avs.ko cu1216mk3.ko dreambox_rc2.ko \
-		dreambox_keyboard.ko fe_common.ko fp.ko lcd.ko  \
-		rfmod.ko stb-proc.ko tu1216.ko xilleon.ko \
-		LICENSE; do
+	for f in *.ko LICENSE; do
 		install -m 0644 ${WORKDIR}/$f ${D}/lib/modules/${KV}/extra/$f;
 	done
 	install -d ${D}${sbindir}
