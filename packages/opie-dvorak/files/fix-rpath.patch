@@ -1,0 +1,13 @@
+diff --git a/dvorak.pro b/dvorak.pro
+index b659ab5..c1cf861 100644
+--- a/dvorak.pro
++++ b/dvorak.pro
+@@ -9,7 +9,7 @@ DESTDIR		= ../../plugins/inputmethods
+ INCLUDEPATH += $(OPIEDIR)/include
+ DEPENDPATH      +=  ../../launcher
+ LIBS            += -lqpe -L$(OPIEDIR)/plugins/inputmethods -lqpickboard
+-QMAKE_LFLAGS	+= -Wl,-rpath,/opt/QtPalmtop/plugins/inputmethods
++QMAKE_LFLAGS	+= -Wl,-rpath,${palmtopdir}/plugins/inputmethods
+ VERSION		= 1.0.0
+ 
+ include( $(OPIEDIR)/include.pro )
