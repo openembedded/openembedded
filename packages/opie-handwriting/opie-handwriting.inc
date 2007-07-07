@@ -3,7 +3,6 @@ SECTION = "opie/inputmethods"
 PRIORITY = "optional"
 LICENSE = "GPL"
 APPNAME = "qhandwriting"
-PR = "r1"
 
 
 S = "${WORKDIR}/handwriting"
