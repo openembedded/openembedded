@@ -28,19 +28,23 @@ do_install() {
 	install -m 0644 ${WORKDIR}/pics/launcher/firstuse.jpg ${D}${palmtopdir}/pics/launcher/firstuse-240x320.jpg
 	install -m 0644 ${WORKDIR}/pics/launcher/opie-background.jpg ${D}${palmtopdir}/pics/launcher/opie-background-240x320.jpg
 
-	install -m 0644 ${WORKDIR}/pics/launcher/firstuse-480x640.jpg ${D}${palmtopdir}/pics/launcher/firstuse-480x640.jpg
-	install -m 0644 ${WORKDIR}/pics/launcher/opie-background-480x640.jpg ${D}${palmtopdir}/pics/launcher/opie-background-480x640.jpg
-
-	install -m 0644 ${WORKDIR}/pics/launcher/firstuse-640x480.jpg ${D}${palmtopdir}/pics/launcher/firstuse-640x480.jpg
-	install -m 0644 ${WORKDIR}/pics/launcher/opie-background-640x480.jpg ${D}${palmtopdir}/pics/launcher/opie-background-640x480.jpg
-
-	install -m 0644 ${WORKDIR}/pics/launcher/firstuse-800x600.jpg ${D}${palmtopdir}/pics/launcher/firstuse-800x600.jpg
-	install -m 0644 ${WORKDIR}/pics/launcher/opie-background-800x600.jpg ${D}${palmtopdir}/pics/launcher/opie-background-800x600.jpg
+        for res in 480x640 640x480 800x600 ; do
+         install -m 0644 ${WORKDIR}/pics/launcher/firstuse-${res}.jpg ${D}${palmtopdir}/pics/launcher/firstuse-${res}.jpg
+         install -m 0644 ${WORKDIR}/pics/launcher/opie-background-${res}.jpg ${D}${palmtopdir}/pics/launcher/opie-background-${res}.jpg
+        done
 }
 
-FILES_${PN}-240x320 += " ${palmtopdir}/pics/*/*-240x320.*"
-FILES_${PN}-480x640 += " ${palmtopdir}/pics/*/*-480x640.*"
-FILES_${PN}-640x480 += " ${palmtopdir}/pics/*/*-640x480.*"
-FILES_${PN}-800x600 += " ${palmtopdir}/pics/*/*-800x600.*"
+python do_package_prepend () {
+        reslist = ['240x320','480x640','640x480', '800x600']
+        dir = bb.data.expand('${palmtopdir}/pics/launcher/', d)
+        ft = bb.data.expand('${palmtopdir}/pics/*/*-%s.*', d)
+        pn = bb.data.getVar('PN', d, 1)
+        for res in reslist:
+         bb.data.setVar('FILES_%s-%s' % (pn,res), ft % res, d )
+         postinst = ''
+         postinst = 'update-alternatives --install %sfirstuse.jpg opie-firstuse-pixmap %sfirstuse-%s.jpg 50\n' % (dir,dir,res)
+         postinst += 'update-alternatives --install %sopie-background.jpg opie-background-pixmap %sopie-background-%s.jpg 50\n' % (dir,dir,res)
+         bb.data.setVar('pkg_postinst_%s-%s' % (pn,res),postinst, d)
+}
 
 PACKAGE_ARCH = "all"

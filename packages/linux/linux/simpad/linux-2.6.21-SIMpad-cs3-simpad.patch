@@ -1,6 +1,6 @@
 diff -uNr linux-2.6.21.vanilla/arch/arm/mach-sa1100/Makefile linux-2.6.21/arch/arm/mach-sa1100/Makefile
---- linux-2.6.21.vanilla/arch/arm/mach-sa1100/Makefile	2007-05-01 16:40:44.000000000 +0200
-+++ linux-2.6.21/arch/arm/mach-sa1100/Makefile	2007-05-01 16:52:10.000000000 +0200
+--- linux-2.6.21.vanilla/arch/arm/mach-sa1100/Makefile	2007-05-29 21:34:59.000000000 +0200
++++ linux-2.6.21/arch/arm/mach-sa1100/Makefile	2007-05-30 17:44:04.000000000 +0200
 @@ -40,6 +40,7 @@
  obj-$(CONFIG_SA1100_SHANNON)		+= shannon.o
  
@@ -11,10 +11,10 @@ diff -uNr linux-2.6.21.vanilla/arch/arm/mach-sa1100/Makefile linux-2.6.21/arch/a
  # LEDs support
 diff -uNr linux-2.6.21.vanilla/arch/arm/mach-sa1100/cs3-simpad.c linux-2.6.21/arch/arm/mach-sa1100/cs3-simpad.c
 --- linux-2.6.21.vanilla/arch/arm/mach-sa1100/cs3-simpad.c	1970-01-01 01:00:00.000000000 +0100
-+++ linux-2.6.21/arch/arm/mach-sa1100/cs3-simpad.c	2007-05-01 16:52:10.000000000 +0200
-@@ -0,0 +1,300 @@
++++ linux-2.6.21/arch/arm/mach-sa1100/cs3-simpad.c	2007-05-30 17:45:51.000000000 +0200
+@@ -0,0 +1,169 @@
 +/*
-+ *  cs3-simpad.c
++ *  simpad-cs3.c
 + *
 + *  This driver shows the GPIO states of the cs3 latch. You can also
 + *  switch some GPIOS.
@@ -25,6 +25,9 @@ diff -uNr linux-2.6.21.vanilla/arch/arm/mach-sa1100/cs3-simpad.c linux-2.6.21/ar
 + *
 + *  Some parts are based on battery.c
 + *
++ *  mrdata: -added cs3_ro support 
++ *          -added preprocessor stuff
++ *
 + */
 +
 +#include <linux/module.h>
@@ -34,245 +37,97 @@ diff -uNr linux-2.6.21.vanilla/arch/arm/mach-sa1100/cs3-simpad.c linux-2.6.21/ar
 +
 +#include <asm/arch/simpad.h>
 +
++extern long get_cs3_ro(void);
 +extern long get_cs3_shadow(void);
 +extern void set_cs3_bit(int value);
 +extern void clear_cs3_bit(int value);
 +
 +struct cs3 {
-+	struct class_device class_dev;
-+	const char *name;
-+	char *id;
-+	int type;
++ struct class_device class_dev;
++ const char *name;
++ char *id;
++ int type;
 +};
 +
 +struct cs3 cs3 ={
 +        .name = "latch_cs3",
 +};
 +
-+static ssize_t get_VCC_5V_EN (struct class_device *class_dev, char *buf) {
-+    if (get_cs3_shadow() & VCC_5V_EN ) 
-+        return sprintf(buf, "1\n");
-+    else 
-+        return sprintf(buf, "0\n");
-+} 
 +
-+static ssize_t get_VCC_3V_EN (struct class_device *class_dev, char *buf) {
-+    if (get_cs3_shadow() & VCC_3V_EN) 
-+        return sprintf(buf, "1\n");
-+    else 
-+        return sprintf(buf, "0\n");
-+} 
-+
-+static ssize_t get_EN1 (struct class_device *class_dev, char *buf) {
-+    if (get_cs3_shadow() & EN1) 
-+        return sprintf(buf, "1\n");
-+    else 
-+        return sprintf(buf, "0\n");
-+} 
-+
-+static ssize_t get_EN0 (struct class_device *class_dev, char *buf) {
-+    if (get_cs3_shadow() & EN0) 
-+        return sprintf(buf, "1\n");
-+    else 
-+        return sprintf(buf, "0\n");
-+} 
-+
-+static ssize_t get_DISPLAY_ON (struct class_device *class_dev, char *buf) {
-+    if (get_cs3_shadow() & DISPLAY_ON) 
-+        return sprintf(buf, "1\n");
-+    else 
-+        return sprintf(buf, "0\n");
-+} 
-+
-+static ssize_t get_PCMCIA_BUFF_DIS (struct class_device *class_dev, char *buf) {
-+    if (get_cs3_shadow() & PCMCIA_BUFF_DIS) 
-+        return sprintf(buf, "1\n");
-+    else 
-+        return sprintf(buf, "0\n");
-+} 
-+
-+static ssize_t get_MQ_RESET (struct class_device *class_dev, char *buf) {
-+    if (get_cs3_shadow() & MQ_RESET) 
-+        return sprintf(buf, "1\n");
-+    else 
-+        return sprintf(buf, "0\n");
-+} 
-+
-+static ssize_t get_PCMCIA_RESET (struct class_device *class_dev, char *buf) {
-+    if (get_cs3_shadow() & PCMCIA_RESET) 
-+        return sprintf(buf, "1\n");
-+    else 
-+        return sprintf(buf, "0\n");
++#define CS3_STORE_ATTR(namek,nameg) 								\
++static ssize_t namek##_store (struct class_device *cdev, const char * buf, size_t count) 	\
++{ 												\
++    char val; 											\
++        if (sscanf(buf, "%c",&val) != 1) 							\
++            return -EINVAL; 									\
++        if (val == '1') 									\
++            set_cs3_bit(nameg); 								\
++        else if (val == '0') 									\
++            clear_cs3_bit(nameg); 								\
++        return strlen(buf); 									\
 +}
 +
-+static ssize_t get_DECT_POWER_ON (struct class_device *class_dev, char *buf) {
-+    if (get_cs3_shadow() & DECT_POWER_ON) 
-+        return sprintf(buf, "1\n");
-+    else 
-+        return sprintf(buf, "0\n");
-+} 
-+
-+static ssize_t get_IRDA_SD (struct class_device *class_dev, char *buf) {
-+    if (get_cs3_shadow() & IRDA_SD) 
-+        return sprintf(buf, "1\n");
-+    else 
-+        return sprintf(buf, "0\n");
-+} 
-+
-+static ssize_t get_RS232_ON (struct class_device *class_dev, char *buf) {
-+    if (get_cs3_shadow() & RS232_ON) 
-+        return sprintf(buf, "1\n");
-+    else 
-+        return sprintf(buf, "0\n");
-+} 
-+
-+static ssize_t get_SD_MEDIAQ (struct class_device *class_dev, char *buf) {
-+    if (get_cs3_shadow() & SD_MEDIAQ) 
-+        return sprintf(buf, "1\n");
-+    else 
-+        return sprintf(buf, "0\n");
-+}
-+
-+static ssize_t get_LED2_ON (struct class_device *class_dev, char *buf) {
-+    if (get_cs3_shadow() & LED2_ON) 
-+        return sprintf(buf, "1\n");
-+    else 
-+        return sprintf(buf, "0\n");
-+} 
-+
-+static ssize_t get_IRDA_MODE (struct class_device *class_dev, char *buf) {
-+    if (get_cs3_shadow() & IRDA_MODE) 
-+        return sprintf(buf, "1\n");
-+    else 
-+        return sprintf(buf, "0\n");
-+}
-+
-+static ssize_t get_ENABLE_5V (struct class_device *class_dev, char *buf) {
-+    if (get_cs3_shadow() & ENABLE_5V) 
-+        return sprintf(buf, "1\n");
-+    else 
-+        return sprintf(buf, "0\n");
-+} 
-+
-+static ssize_t get_RESET_SIMCARD (struct class_device *class_dev, char *buf) {
-+    if (get_cs3_shadow() & RESET_SIMCARD) 
-+        return sprintf(buf, "1\n");
-+    else 
-+        return sprintf(buf, "0\n");
-+}
++CS3_STORE_ATTR(display_on, DISPLAY_ON);
++CS3_STORE_ATTR(dect_power_on, DECT_POWER_ON);
++CS3_STORE_ATTR(irda_sd, IRDA_SD);
++CS3_STORE_ATTR(sd_mediaq, SD_MEDIAQ);
++CS3_STORE_ATTR(led2_on, LED2_ON);
++CS3_STORE_ATTR(irda_mode, IRDA_MODE);
++CS3_STORE_ATTR(reset_simcard, RESET_SIMCARD);
 +
 +
-+static ssize_t write_DISPLAY_ON (struct class_device *cdev, const char * buf, size_t count){
-+    char val;
-+        if (sscanf(buf, "%c",&val) !=1)
-+            return -EINVAL;
-+        if (val=='1')
-+            set_cs3_bit(DISPLAY_ON);
-+        else if (val=='0')
-+            clear_cs3_bit(DISPLAY_ON);
-+        return strlen(buf);
-+}
++#define CS3_ATTR(shadro,namek,nameg,mode,store) 			\
++static ssize_t namek##_show(struct class_device *class_dev, char *buf) 	\
++{ 									\
++    if (get_cs3_##shadro() & nameg ) 					\
++        return sprintf(buf, "1\n"); 					\
++    else 								\
++        return sprintf(buf, "0\n"); 					\
++} 									\
++static CLASS_DEVICE_ATTR(namek, mode, namek##_show, store)
 +
-+static ssize_t write_DECT_POWER_ON (struct class_device *cdev, const char * buf, size_t count){
-+    char val;
-+        if (sscanf(buf, "%c",&val) !=1)
-+            return -EINVAL;
-+        if (val=='1')
-+            set_cs3_bit(DECT_POWER_ON);
-+        else if (val=='0')
-+            clear_cs3_bit(DECT_POWER_ON);
-+        return strlen(buf);
-+}
-+
-+static ssize_t write_IRDA_SD (struct class_device *cdev, const char * buf, size_t count){
-+    char val;
-+        if (sscanf(buf, "%c",&val) !=1)
-+            return -EINVAL;
-+        if (val=='1')
-+            set_cs3_bit(IRDA_SD);
-+        else if (val=='0')
-+            clear_cs3_bit(IRDA_SD);
-+        return strlen(buf);
-+}
-+
-+static ssize_t write_SD_MEDIAQ (struct class_device *cdev, const char * buf, size_t count){
-+    char val;
-+        if (sscanf(buf, "%c",&val) !=1)
-+            return -EINVAL;
-+        if (val=='1')
-+            set_cs3_bit(SD_MEDIAQ);
-+        else if (val=='0')
-+            clear_cs3_bit(SD_MEDIAQ);
-+        return strlen(buf);
-+}
-+
-+static ssize_t write_LED2_ON (struct class_device *cdev, const char * buf, size_t count){
-+    char val;
-+        if (sscanf(buf, "%c",&val) !=1)
-+            return -EINVAL;
-+        if (val=='1')
-+            set_cs3_bit(LED2_ON);
-+        else if (val=='0')
-+            clear_cs3_bit(LED2_ON);
-+        return strlen(buf);
-+}
-+
-+static ssize_t write_IRDA_MODE (struct class_device *cdev, const char * buf, size_t count){
-+    char val;
-+        if (sscanf(buf, "%c",&val) !=1)
-+            return -EINVAL;
-+        if (val=='1')
-+            set_cs3_bit(IRDA_MODE);
-+        else if (val=='0')
-+            clear_cs3_bit(IRDA_MODE);
-+        return strlen(buf);
-+}
-+
-+static ssize_t write_RESET_SIMCARD (struct class_device *cdev, const char * buf, size_t count){
-+    char val;
-+        if (sscanf(buf, "%c",&val) !=1)
-+            return -EINVAL;
-+        if (val=='1')
-+            set_cs3_bit(RESET_SIMCARD);
-+        else if (val=='0')
-+            clear_cs3_bit(RESET_SIMCARD);
-+        return strlen(buf);
-+}
-+
-+static CLASS_DEVICE_ATTR(vcc_5v_en, 0444, get_VCC_5V_EN, NULL);
-+static CLASS_DEVICE_ATTR(vcc_3v_en, 0444, get_VCC_3V_EN, NULL);
-+static CLASS_DEVICE_ATTR(en1, 0444, get_EN1, NULL);
-+static CLASS_DEVICE_ATTR(en0, 0444, get_EN0, NULL);
-+static CLASS_DEVICE_ATTR(display_on, 0664, get_DISPLAY_ON, write_DISPLAY_ON);
-+static CLASS_DEVICE_ATTR(pcmcia_buff_dis, 0444, get_PCMCIA_BUFF_DIS, NULL);
-+static CLASS_DEVICE_ATTR(mq_reset, 0444, get_MQ_RESET, NULL);
-+static CLASS_DEVICE_ATTR(pcmcia_reset, 0444, get_PCMCIA_RESET, NULL);
-+static CLASS_DEVICE_ATTR(dect_power_on, 0664, get_DECT_POWER_ON, write_DECT_POWER_ON);
-+static CLASS_DEVICE_ATTR(irda_sd, 0664, get_IRDA_SD, write_IRDA_SD);
-+static CLASS_DEVICE_ATTR(rs232_on, 0444, get_RS232_ON, NULL);
-+static CLASS_DEVICE_ATTR(sd_mediaq, 0664, get_SD_MEDIAQ, write_SD_MEDIAQ);
-+static CLASS_DEVICE_ATTR(led2_on, 0664, get_LED2_ON, write_LED2_ON);
-+static CLASS_DEVICE_ATTR(irda_mode, 0664, get_IRDA_MODE, write_IRDA_MODE);
-+static CLASS_DEVICE_ATTR(enable_5v, 0444, get_ENABLE_5V, NULL);
-+static CLASS_DEVICE_ATTR(reset_simcard, 0664, get_RESET_SIMCARD, write_RESET_SIMCARD);
++CS3_ATTR(shadow, vcc_5v_en, VCC_5V_EN, 0444, NULL);
++CS3_ATTR(shadow, vcc_3v_en, VCC_3V_EN, 0444, NULL);
++CS3_ATTR(shadow, en1, EN1, 0444, NULL);
++CS3_ATTR(shadow, en0, EN0, 0444, NULL);
++CS3_ATTR(shadow, display_on, DISPLAY_ON, 0664, display_on_store);
++CS3_ATTR(shadow, pcmcia_buff_dis, PCMCIA_BUFF_DIS, 0444, NULL);
++CS3_ATTR(shadow, mq_reset, MQ_RESET, 0444, NULL);
++CS3_ATTR(shadow, pcmcia_reset, PCMCIA_RESET, 0444, NULL);
++CS3_ATTR(shadow, dect_power_on, DECT_POWER_ON, 0664, dect_power_on_store);
++CS3_ATTR(shadow, irda_sd, IRDA_SD, 0664, irda_sd_store);
++CS3_ATTR(shadow, rs232_on, RS232_ON, 0444, NULL);
++CS3_ATTR(shadow, sd_mediaq, SD_MEDIAQ, 0664, sd_mediaq_store);
++CS3_ATTR(shadow, led2_on, LED2_ON, 0664, led2_on_store);
++CS3_ATTR(shadow, irda_mode, IRDA_MODE, 0664, irda_mode_store);
++CS3_ATTR(shadow, enable_5v, ENABLE_5V, 0444, NULL);
++CS3_ATTR(shadow, reset_simcard, RESET_SIMCARD, 0664, reset_simcard_store);
++CS3_ATTR(ro, pcmcia_bvd1, PCMCIA_BVD1, 0444, NULL);
++CS3_ATTR(ro, pcmcia_bvd2, PCMCIA_BVD2, 0444, NULL);
++CS3_ATTR(ro, pcmcia_vs1, PCMCIA_VS1, 0444, NULL);
++CS3_ATTR(ro, pcmcia_vs2, PCMCIA_VS2, 0444, NULL);
++CS3_ATTR(ro, lock_ind, LOCK_IND, 0444, NULL);
++CS3_ATTR(ro, charging_state, CHARGING_STATE, 0444, NULL);
++CS3_ATTR(ro, pcmcia_short, PCMCIA_SHORT, 0444, NULL);
 +
 +static struct class simpad_gpios_class = {
-+        .name = "simpad"
++        .name = "simpad",
 +};
 +
-+#define create_entry_conditional(name) \
-+	rc = class_device_create_file(&cs3->class_dev, &class_device_attr_##name); \
-+	if (rc) goto out; \
++#define create_entry_conditional(namek) 					\
++    rc = class_device_create_file(&cs3->class_dev, &class_device_attr_##namek); \
++    if (rc) goto out; 								\
 +
-+static int register_cs3_latch(struct cs3 *cs3){
++static int register_cs3_latch(struct cs3 *cs3)
++{
 +    int rc = 0;
-+	cs3->class_dev.class = &simpad_gpios_class;
-+	strcpy(cs3->class_dev.class_id, cs3->name);
-+	rc = class_device_register(&cs3->class_dev);
-+	if(rc)
-+		goto out;
++    cs3->class_dev.class = &simpad_gpios_class;
++    strcpy(cs3->class_dev.class_id, cs3->name);
++    rc = class_device_register(&cs3->class_dev);
++    if(rc)
++         goto out;
 +
-+	create_entry_conditional(vcc_5v_en);
++    create_entry_conditional(vcc_5v_en);
 +    create_entry_conditional(vcc_3v_en);
 +    create_entry_conditional(en1);
 +    create_entry_conditional(en0);
@@ -288,28 +143,42 @@ diff -uNr linux-2.6.21.vanilla/arch/arm/mach-sa1100/cs3-simpad.c linux-2.6.21/ar
 +    create_entry_conditional(irda_mode);
 +    create_entry_conditional(enable_5v);
 +    create_entry_conditional(reset_simcard);
-+    
++    create_entry_conditional(pcmcia_bvd1);
++    create_entry_conditional(pcmcia_bvd2);
++    create_entry_conditional(pcmcia_vs1);
++    create_entry_conditional(pcmcia_vs2);
++    create_entry_conditional(lock_ind);
++    create_entry_conditional(charging_state);
++    create_entry_conditional(pcmcia_short);
++
 +out:
 +    return rc;
 +}
 +
 +static int __init simpad_gpios_class_init(void)
 +{
-+    if (class_register(&simpad_gpios_class) != 0)
-+    printk(KERN_ERR "cs3 latch class failed "
-+                    "to register properly\n");
-+    register_cs3_latch(&cs3);
-+	return 0;
++    int rc = 0;
++    
++    rc = class_register(&simpad_gpios_class);
++    
++    if(rc != 0)
++    {
++        printk(KERN_ERR "cs3 latch class failed to register properly\n");
++        return rc;
++    }
++    
++    rc = register_cs3_latch(&cs3);
++    return rc;
 +}
 +
 +static void __exit simpad_gpios_class_exit(void)
 +{
-+	class_unregister(&simpad_gpios_class);
++    class_unregister(&simpad_gpios_class);
 +}
 +
 +module_init(simpad_gpios_class_init);
 +module_exit(simpad_gpios_class_exit);
-+                                                                                
-+MODULE_DESCRIPTION("CS3_latch driver");
++
 +MODULE_AUTHOR("Bernhard Guillon");
++MODULE_DESCRIPTION("CS3_latch driver");
 +MODULE_LICENSE("GPL");
