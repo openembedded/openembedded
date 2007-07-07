@@ -41,5 +41,6 @@ do_install() {
 }
 
 #FILES_opie-init_append = " ${sysconfdir} ${palmtopdir}/bin"
+FILES_${PN} += "${palmtopdir}"
 
 PACKAGE_ARCH = "${MACHINE_ARCH}"
