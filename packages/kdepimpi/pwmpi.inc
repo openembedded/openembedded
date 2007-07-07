@@ -23,7 +23,7 @@ do_unstage() {
 }
 
 do_install() {
-    install -d ${D}${palmtopdir}/bin \
+    install -d ${D}${bindir} \
                ${D}${palmtopdir}/apps/Applications \
                ${D}${palmtopdir}/pics/kdepim/pwmanager/icons16 \
                ${D}${palmtopdir}/pics/kdepim/pwmanager/icons22
@@ -33,8 +33,8 @@ do_install() {
     install -m 0644 ${S}/bin/kdepim/pwmanager/icons22/*.png ${D}${palmtopdir}/pics/kdepim/pwmanager/icons22
     install -m 0644 pwmanager/pwmanager/pwmanager.desktop ${D}${palmtopdir}/apps/Applications/pwmanager.desktop
 
-    install -m 0755 ${S}/dest/pwmpi ${D}${palmtopdir}/bin/
+    install -m 0755 ${S}/dest/pwmpi ${D}${bindir}
 }
 
 PACKAGES = "${PN}"
-FILES_${PN} = "${palmtopdir}"
+FILES_${PN} = "${palmtopdir} ${bindir}"
