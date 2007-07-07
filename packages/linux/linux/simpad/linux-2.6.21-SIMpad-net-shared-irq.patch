@@ -1,0 +1,63 @@
+diff -uNr linux-2.6.21.vanilla/drivers/net/pcmcia/pcnet_cs.c linux-2.6.21/drivers/net/pcmcia/pcnet_cs.c
+--- linux-2.6.21.vanilla/drivers/net/pcmcia/pcnet_cs.c	2007-05-29 21:35:00.000000000 +0200
++++ linux-2.6.21/drivers/net/pcmcia/pcnet_cs.c	2007-05-30 17:51:21.000000000 +0200
+@@ -26,6 +26,8 @@
+     CCAE support.  Drivers merged back together, and shared-memory
+     Socket EA support added, by Ken Raeburn, September 1995.
+ 
++    mrdata: -added shared irq
++
+ ======================================================================*/
+ 
+ #include <linux/kernel.h>
+@@ -254,7 +256,7 @@
+     info->p_dev = link;
+     link->priv = dev;
+ 
+-    link->irq.Attributes = IRQ_TYPE_EXCLUSIVE;
++    link->irq.Attributes = IRQ_TYPE_DYNAMIC_SHARING;
+     link->irq.IRQInfo1 = IRQ_LEVEL_ID;
+     link->conf.Attributes = CONF_ENABLE_IRQ;
+     link->conf.IntType = INT_MEMORY_AND_IO;
+diff -uNr linux-2.6.21.vanilla/drivers/net/wireless/hostap/hostap_cs.c linux-2.6.21/drivers/net/wireless/hostap/hostap_cs.c
+--- linux-2.6.21.vanilla/drivers/net/wireless/hostap/hostap_cs.c	2007-05-29 21:35:00.000000000 +0200
++++ linux-2.6.21/drivers/net/wireless/hostap/hostap_cs.c	2007-05-30 17:53:20.000000000 +0200
+@@ -1,3 +1,8 @@
++/*
++ *
++ * mrdata: -added shared irq
++ */
++
+ #define PRISM2_PCCARD
+ 
+ #include <linux/module.h>
+@@ -695,7 +700,7 @@
+ 	 * irq structure is initialized.
+ 	 */
+ 	if (link->conf.Attributes & CONF_ENABLE_IRQ) {
+-		link->irq.Attributes = IRQ_TYPE_EXCLUSIVE | IRQ_HANDLE_PRESENT;
++		link->irq.Attributes = IRQ_TYPE_DYNAMIC_SHARING | IRQ_FIRST_SHARED | IRQ_HANDLE_PRESENT;
+ 		link->irq.IRQInfo1 = IRQ_LEVEL_ID;
+ 		link->irq.Handler = prism2_interrupt;
+ 		link->irq.Instance = dev;
+diff -uNr linux-2.6.21.vanilla/drivers/net/wireless/orinoco_cs.c linux-2.6.21/drivers/net/wireless/orinoco_cs.c
+--- linux-2.6.21.vanilla/drivers/net/wireless/orinoco_cs.c	2007-05-29 21:35:00.000000000 +0200
++++ linux-2.6.21/drivers/net/wireless/orinoco_cs.c	2007-05-30 17:52:19.000000000 +0200
+@@ -8,6 +8,8 @@
+  * cards such as the 3Com AirConnect and Ericsson WLAN.
+  * 
+  * Copyright notice & release notes in file orinoco.c
++ *
++ * mrdata: added shared irq
+  */
+ 
+ #define DRIVER_NAME "orinoco_cs"
+@@ -120,7 +122,7 @@
+ 	link->priv = dev;
+ 
+ 	/* Interrupt setup */
+-	link->irq.Attributes = IRQ_TYPE_EXCLUSIVE | IRQ_HANDLE_PRESENT;
++	link->irq.Attributes = IRQ_TYPE_DYNAMIC_SHARING | IRQ_FIRST_SHARED | IRQ_HANDLE_PRESENT;
+ 	link->irq.IRQInfo1 = IRQ_LEVEL_ID;
+ 	link->irq.Handler = orinoco_interrupt;
+ 	link->irq.Instance = dev; 

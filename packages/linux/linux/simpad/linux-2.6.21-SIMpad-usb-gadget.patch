@@ -1,0 +1,3329 @@
+diff -uNr linux-2.6.21.vanilla/drivers/usb/gadget/Kconfig linux-2.6.21/drivers/usb/gadget/Kconfig
+--- linux-2.6.21.vanilla/drivers/usb/gadget/Kconfig	2007-04-26 05:08:32.000000000 +0200
++++ linux-2.6.21/drivers/usb/gadget/Kconfig	2007-06-05 11:58:28.000000000 +0200
+@@ -205,6 +205,21 @@
+ 	depends on USB_GADGET_AT91
+ 	default USB_GADGET
+ 
++config USB_GADGET_SA1100
++	boolean "SA1100 USB Device Port"
++	depends on ARCH_SA1100
++	select USB_GADGET_SELECTED
++	help
++
++	   Say "y" to link the driver statically, or "m" to build a
++	   dynamically linked module called "sa1100_udc" and force all
++	   gadget drivers to also be dynamically linked.
++
++config USB_SA1100
++	tristate
++	depends on USB_GADGET_SA1100
++	default USB_GADGET
++	
+ config USB_GADGET_DUMMY_HCD
+ 	boolean "Dummy HCD (DEVELOPMENT)"
+ 	depends on (USB=y || (USB=m && USB_GADGET=m)) && EXPERIMENTAL
+diff -uNr linux-2.6.21.vanilla/drivers/usb/gadget/Makefile linux-2.6.21/drivers/usb/gadget/Makefile
+--- linux-2.6.21.vanilla/drivers/usb/gadget/Makefile	2007-04-26 05:08:32.000000000 +0200
++++ linux-2.6.21/drivers/usb/gadget/Makefile	2007-06-05 11:58:28.000000000 +0200
+@@ -8,6 +8,7 @@
+ obj-$(CONFIG_USB_OMAP)		+= omap_udc.o
+ obj-$(CONFIG_USB_LH7A40X)	+= lh7a40x_udc.o
+ obj-$(CONFIG_USB_AT91)		+= at91_udc.o
++obj-$(CONFIG_USB_SA1100)	+= sa1100_udc.o
+ 
+ #
+ # USB gadget drivers
+diff -uNr linux-2.6.21.vanilla/drivers/usb/gadget/ether.c linux-2.6.21/drivers/usb/gadget/ether.c
+--- linux-2.6.21.vanilla/drivers/usb/gadget/ether.c	2007-04-26 05:08:32.000000000 +0200
++++ linux-2.6.21/drivers/usb/gadget/ether.c	2007-06-05 11:59:24.000000000 +0200
+@@ -1456,7 +1456,7 @@
+ 			goto done_set_intf;
+ 		}
+ 
+-#ifdef DEV_CONFIG_CDC
++//#ifdef DEV_CONFIG_CDC
+ 		switch (wIndex) {
+ 		case 0:		/* control/master intf */
+ 			if (wValue != 0)
+@@ -1498,12 +1498,12 @@
+ 			value = 0;
+ 			break;
+ 		}
+-#else
++//#else
+ 		/* FIXME this is wrong, as is the assumption that
+ 		 * all non-PXA hardware talks real CDC ...
+ 		 */
+-		dev_warn (&gadget->dev, "set_interface ignored!\n");
+-#endif /* DEV_CONFIG_CDC */
++//		dev_warn (&gadget->dev, "set_interface ignored!\n");
++//#endif /* DEV_CONFIG_CDC */
+ 
+ done_set_intf:
+ 		spin_unlock (&dev->lock);
+diff -uNr linux-2.6.21.vanilla/drivers/usb/gadget/sa1100_udc.c linux-2.6.21/drivers/usb/gadget/sa1100_udc.c
+--- linux-2.6.21.vanilla/drivers/usb/gadget/sa1100_udc.c	1970-01-01 01:00:00.000000000 +0100
++++ linux-2.6.21/drivers/usb/gadget/sa1100_udc.c	2007-06-05 11:58:29.000000000 +0200
+@@ -0,0 +1,2591 @@
++/*
++ * SA1100 USB Device Controller (UDC) driver.
++ *
++ * Copyright (C) Compaq Computer Corporation, 1998, 1999
++ * Copyright (C) Extenex Corporation, 2001
++ * Copyright (C) David Brownell, 2003
++ * Copyright (C) Nick Bane, 2005, 2006
++ *   Many fragments from pxa2xx_udc.c and mach-sa1100 driver with various 
++ *   GPL Copyright authors incl Russel king and Nicolas Pitre
++ *   Port to 2.6.12 by N C Bane
++ *
++ * This file provides interrupt routing and overall coordination for the
++ * sa1100 USB endpoints: ep0, ep1out-bulk, ep2out-bulk, as well as device
++ * initialization and some parts of USB "Chapter 9" device behavior.
++ *
++ * It implements the "USB gadget controller" API, abstracting most hardware
++ * details so that drivers running on top of this API are mostly independent
++ * of hardware.  A key exception is that ep0 logic needs to understand which
++ * endpoints a given controller has, and their capabilities.  Also, hardware
++ * that doesn't fully support USB (like sa1100) may need workarounds in the
++ * protocols implemented by device functions.
++ *
++ * See linux/Documentation/arm/SA1100/SA1100_USB for more info, or the
++ * kerneldoc for the API exposed to gadget drivers.
++ *
++ */
++#define DEBUG	1
++#define	VERBOSE	1
++
++//#define SA1100_USB_DEBUG
++#ifdef SA1100_USB_DEBUG
++static int sa1100_usb_debug=0;
++#endif
++
++#define NCB_DMA_FIX
++#ifdef NCB_DMA_FIX
++#include <linux/slab.h>
++#define SEND_BUFFER_SIZE 4096	/* this is probably a bit big */
++#define RECEIVE_BUFFER_SIZE 256	/* 64 may be all that is necessary */
++static char *send_buffer=NULL;
++static char *receive_buffer=NULL;
++#endif
++
++#include <linux/module.h>
++#include <linux/kernel.h>
++#include <linux/delay.h>
++#include <linux/ioport.h>
++#include <linux/sched.h>
++#include <linux/slab.h>
++#include <linux/smp_lock.h>
++#include <linux/errno.h>
++#include <linux/init.h>
++#include <linux/timer.h>
++#include <linux/list.h>
++#include <linux/interrupt.h>
++#include <linux/version.h>
++#include <linux/device.h>
++#include <linux/platform_device.h>
++
++#include <asm/byteorder.h>
++#include <asm/io.h>
++#include <asm/irq.h>
++#include <asm/dma.h>
++#include <asm/system.h>
++#include <asm/mach-types.h>
++#include <asm/unaligned.h>
++
++#include <linux/usb.h>
++#include <linux/usb_ch9.h>
++#include <linux/usb_gadget.h>
++
++#if CONFIG_PROC_FS
++#include <linux/proc_fs.h>
++#endif
++
++#if defined(CONFIG_SA1100_BALLOON)
++#include <asm/arch/balloon.h>
++#endif
++
++#define	DRIVER_VERSION		__DATE__
++
++#define	DMA_ADDR_INVALID (~(dma_addr_t)0)
++
++
++static const char driver_name [] = "sa1100_udc";
++static const char driver_desc [] = "SA-1110 USB Device Controller";
++
++static const char ep0name [] = "ep0";
++
++#ifdef	DEBUG
++static char *type_string (u8 bmAttributes)
++{
++	switch ( (bmAttributes) & USB_ENDPOINT_XFERTYPE_MASK) {
++	case USB_ENDPOINT_XFER_BULK:	return "bulk";
++	//case USB_ENDPOINT_XFER_ISOC:	return "iso";
++	case USB_ENDPOINT_XFER_INT:	return "intr";
++	};
++	return "control";
++}
++#endif
++
++#include <linux/dma-mapping.h>
++struct usb_stats_t {
++	 unsigned long ep0_fifo_write_failures;
++	 unsigned long ep0_bytes_written;
++	 unsigned long ep0_fifo_read_failures;
++	 unsigned long ep0_bytes_read;
++};
++
++struct usb_info_t
++{
++	dma_regs_t *dmaregs_tx, *dmaregs_rx;
++	int state;
++	unsigned char address;
++	struct usb_stats_t stats;
++};
++
++enum { kError=-1, kEvSuspend=0, kEvReset=1,
++	   kEvResume=2, kEvAddress=3, kEvConfig=4, kEvDeConfig=5 };
++int usbctl_next_state_on_event( int event ) {
++    return 0;
++}
++static struct usb_info_t usbd_info;
++
++/* receiver */
++void ep1_reset(void);
++void ep1_stall(void);
++int sa1100_usb_recv (struct usb_request *req, void (*callback) (int,int));
++
++/* xmitter */
++void ep2_reset(void);
++void ep2_stall(void);
++int sa1100_usb_send (struct usb_request *req, void (*callback) (int,int));
++
++/* UDC register utility functions */
++#define UDC_write(reg, val) { \
++	int i = 10000; \
++	do { \
++	  	(reg) = (val); \
++		if (i-- <= 0) { \
++			printk( "%s [%d]: write %#x to %p (%#x) failed\n", \
++				__FUNCTION__, __LINE__, (val), &(reg), (reg)); \
++			break; \
++		} \
++	} while((reg) != (val)); \
++}
++
++#define UDC_set(reg, val) { \
++	int i = 10000; \
++	do { \
++		(reg) |= (val); \
++		if (i-- <= 0) { \
++			printk( "%s [%d]: set %#x of %p (%#x) failed\n", \
++				__FUNCTION__, __LINE__, (val), &(reg), (reg)); \
++			break; \
++		} \
++	} while(!((reg) & (val))); \
++}
++
++#define UDC_clear(reg, val) { \
++	int i = 10000; \
++	do { \
++		(reg) &= ~(val); \
++		if (i-- <= 0) { \
++			printk( "%s [%d]: clear %#x of %p (%#x) failed\n", \
++				__FUNCTION__, __LINE__, (val), &(reg), (reg)); \
++			break; \
++		} \
++	} while((reg) & (val)); \
++}
++
++#define UDC_flip(reg, val) { \
++	int i = 10000; \
++	(reg) = (val); \
++	do { \
++		(reg) = (val); \
++		if (i-- <= 0) { \
++			printk( "%s [%d]: flip %#x of %p (%#x) failed\n", \
++				__FUNCTION__, __LINE__, (val), &(reg), (reg)); \
++			break; \
++		} \
++	} while(((reg) & (val))); \
++}
++
++#include "sa1100_udc.h"
++
++static struct sa1100_udc	*the_controller;
++static void nuke (struct sa1100_ep *, int status);
++static void done (struct sa1100_ep *ep, struct sa1100_request *req, int status);
++static inline void ep0_idle (struct sa1100_udc *dev)
++{
++	dev->ep0state = EP0_IDLE;
++}
++
++// ep0 handlers
++
++// 1 == lots of trace noise,  0 = only "important' stuff
++//#define VERBOSITY 1
++
++#ifndef MIN
++#define MIN( a, b ) ((a)<(b)?(a):(b))
++#endif
++
++#if 1 && !defined( ASSERT )
++#  define ASSERT(expr) \
++          if(!(expr)) { \
++          printk( "Assertion failed! %s,%s,%s,line=%d\n",\
++          #expr,__FILE__,__FUNCTION__,__LINE__); \
++          }
++#else
++#  define ASSERT(expr)
++#endif
++
++#if VERBOSITY
++#define PRINTKD(fmt, args...) printk( fmt , ## args)
++#else
++#define PRINTKD(fmt, args...)
++#endif
++
++/* USB Device Requests */
++typedef struct
++{
++    __u8 bmRequestType;
++    __u8 bRequest;
++    __u16 wValue;
++    __u16 wIndex;
++    __u16 wLength;
++} usb_dev_request_t  __attribute__ ((packed));
++
++/* other subroutines */
++unsigned int (*wrint)(void);
++void	ep0_int_hndlr( void );
++static void ep0_queue(void *buf, unsigned int req, unsigned int act);
++static void write_fifo( void );
++static int read_fifo( struct usb_ctrlrequest * p );
++
++/* some voodo helpers  01Mar01ww */
++static void set_cs_bits( __u32 set_bits );
++static void set_de( void );
++static void set_ipr( void );
++static void set_ipr_and_de( void );
++static bool clear_opr( void );
++
++/***************************************************************************
++Inline Helpers
++***************************************************************************/
++
++/* Data extraction from usb_request_t fields */
++enum { kTargetDevice=0, kTargetInterface=1, kTargetEndpoint=2 };
++static inline int request_target( __u8 b ) { return (int) ( b & 0x0F); }
++
++static inline int windex_to_ep_num( __u16 w ) { return (int) ( w & 0x000F); }
++inline int type_code_from_request( __u8 by ) { return (( by >> 4 ) & 3); }
++
++/* following is hook for self-powered flag in GET_STATUS. Some devices
++   .. might like to override and return real info */
++static inline bool self_powered_hook( void ) { return true; }
++
++#if VERBOSITY
++/* "pcs" == "print control status" */
++static inline void pcs( void )
++{
++	 __u32 foo = Ser0UDCCS0;
++	 printk( "%8.8X: %s %s %s %s\n",
++			 foo,
++			 foo & UDCCS0_SE ? "SE" : "",
++			 foo & UDCCS0_OPR ? "OPR" : "",
++			 foo & UDCCS0_IPR ? "IPR" : "",
++			 foo & UDCCS0_SST ? "SST" : ""
++	 );
++}
++static inline void preq( struct usb_ctrlrequest * pReq )
++{
++	 static char * tnames[] = { "dev", "intf", "ep", "oth" };
++	 static char * rnames[] = { "std", "class", "vendor", "???" };
++	 char * psz;
++	 switch( pReq->bRequest ) {
++	 case USB_REQ_GET_STATUS: psz = "get stat"; break;
++	 case USB_REQ_CLEAR_FEATURE: psz = "clr feat"; break;
++	 case USB_REQ_SET_FEATURE: psz = "set feat"; break;
++	 case USB_REQ_SET_ADDRESS: psz = "set addr"; break;
++	 case USB_REQ_GET_DESCRIPTOR: psz = "get desc"; break;
++	 case USB_REQ_SET_DESCRIPTOR: psz = "set desc"; break;
++	 case USB_REQ_GET_CONFIGURATION: psz = "get cfg"; break;
++	 case USB_REQ_SET_CONFIGURATION: psz = "set cfg"; break;
++	 case USB_REQ_GET_INTERFACE: psz = "get intf"; break;
++	 case USB_REQ_SET_INTERFACE: psz = "set intf"; break;
++	 default: psz = "unknown"; break;
++	 }
++	 printk( "- [%s: %s req to %s. dir=%s]\n", psz,
++			 rnames[ (pReq->bRequestType >> 5) & 3 ],
++			 tnames[ pReq->bRequestType & 3 ],
++			 ( pReq->bRequestType & 0x80 ) ? "in" : "out" );
++}
++
++static inline void usbctl_dump_request(const char *prefix, const struct usb_ctrlrequest *req)
++{
++	printk("%s: bRequestType=0x%02x bRequest=0x%02x "
++		"wValue=0x%04x wIndex=0x%04x wLength=0x%04x\n",
++		prefix, req->bRequestType, req->bRequest,
++		le16_to_cpu(req->wValue), le16_to_cpu(req->wIndex),
++		le16_to_cpu(req->wLength));
++}
++#else
++static inline void pcs( void ){}
++//static inline void preq( void ){}
++static inline void preq( void *x ){}
++static inline void usbctl_dump_request(const char *prefix, const struct usb_ctrlrequest *req) {}
++#endif
++
++/***************************************************************************
++Globals
++***************************************************************************/
++static const char pszMe[] = "usbep0: ";
++
++
++/* global write struct to keep write
++   ..state around across interrupts */
++static struct {
++		unsigned char *p;
++		int bytes_left;
++} wr;
++
++/***************************************************************************
++Public Interface
++***************************************************************************/
++
++/* reset received from HUB (or controller just went nuts and reset by itself!)
++  so udc core has been reset, track this state here  */
++void
++ep0_reset(void)
++{
++	 /* reset state machine */
++	 wr.p = NULL;
++	 wr.bytes_left = 0;
++	 usbd_info.address=0;
++// needed?  Ser0UDCAR = 0;
++}
++
++
++/* handle interrupt for endpoint zero */
++
++inline void ep0_clear_write(void) {
++	wr.p=NULL;
++	wr.bytes_left=0;
++}
++
++/* this is a config packet parser based on that from the updated HH 2.6 udc */
++static void
++ep0_read_packet( void )
++{
++	 unsigned char status_buf[2];  /* returned in GET_STATUS */
++	 struct usb_ctrlrequest req;
++	 int request_type;
++	 int n;
++	 __u32 address;
++
++	 /* reset previous count */
++	 the_controller->ep0_req_len=-1;
++
++	 /* read the setup request */
++	 n = read_fifo( &req );
++	 usbctl_dump_request("ep0_read_packet",&req);
++
++	 if ( n != sizeof( req ) ) {
++		  printk( "%ssetup begin: fifo READ ERROR wanted %d bytes got %d. "
++				  " Stalling out...\n",
++				  pszMe, sizeof( req ), n );
++		  /* force stall, serviced out */
++		  set_cs_bits( UDCCS0_FST | UDCCS0_SO  );
++		  goto sh_sb_end;
++	 }
++
++	 /* Is it a standard request? (not vendor or class request) */
++	 request_type = type_code_from_request( req.bRequestType );
++	 if ( request_type != 0 ) {
++		  printk( "%ssetup begin: unsupported bRequestType: %d ignored\n",
++				  pszMe, request_type );
++		  set_cs_bits( UDCCS0_DE | UDCCS0_SO );
++		  goto sh_sb_end;
++	 }
++
++	/* save requested reply size */
++	the_controller->ep0_req_len=le16_to_cpu(req.wLength);
++	PRINTKD("%s: request length is %d\n",__FUNCTION__,the_controller->ep0_req_len);
++
++#if VERBOSITY
++	 {
++	 unsigned char * pdb = (unsigned char *) &req;
++	 PRINTKD( "%2.2X %2.2X %2.2X %2.2X %2.2X %2.2X %2.2X %2.2X ",
++			 pdb[0], pdb[1], pdb[2], pdb[3], pdb[4], pdb[5], pdb[6], pdb[7]
++		  );
++	 preq( &req );
++	 }
++#endif
++
++	 /* Handle it */
++	 switch( req.bRequest ) {
++
++		  /* This first bunch have no data phase */
++
++	 case USB_REQ_SET_ADDRESS:
++		  address = (__u32) (req.wValue & 0x7F);
++		  /* when SO and DE sent, UDC will enter status phase and ack,
++			 ..propagating new address to udc core. Next control transfer
++			 ..will be on the new address. You can't see the change in a
++			 ..read back of CAR until then. (about 250us later, on my box).
++			 ..The original Intel driver sets S0 and DE and code to check
++			 ..that address has propagated here. I tried this, but it
++			 ..would only work sometimes! The rest of the time it would
++			 ..never propagate and we'd spin forever. So now I just set
++			 ..it and pray...
++		  */
++		  Ser0UDCAR = address;
++		  usbd_info.address = address;
++		  usbctl_next_state_on_event( kEvAddress );
++		  set_cs_bits( UDCCS0_SO | UDCCS0_DE );  /* no data phase */
++		  printk( "%sI have been assigned address: %d\n", pszMe, address );
++		  break;
++
++
++	 case USB_REQ_SET_CONFIGURATION:
++		  if ( req.wValue == 1 ) {
++			   /* configured */
++			   if (usbctl_next_state_on_event( kEvConfig ) != kError) {
++				/* (re)set the out and in max packet sizes */
++				PRINTKD( "%s: calling the_controller.driver->setup with SET_CONFIGURATION\n", __FUNCTION__ );
++				the_controller->driver->setup(&the_controller->gadget, &req);
++					__u32 in  = __le16_to_cpu( the_controller->ep[1].ep.maxpacket );
++					__u32 out = __le16_to_cpu( the_controller->ep[2].ep.maxpacket );
++					Ser0UDCOMP = ( out - 1 );
++					Ser0UDCIMP = ( in - 1 );
++				// we are configured
++				usbd_info.state = USB_STATE_CONFIGURED;
++				// enable rx and tx interrupts
++				Ser0UDCCR &= ~(UDCCR_RIM | UDCCR_TIM);
++
++				printk( "%sConfigured (OMP=%8.8X IMP=%8.8X)\n", pszMe, out, in );
++				break;
++			   }
++		  } else if ( req.wValue == 0 ) {
++			   /* de-configured */
++			   if (usbctl_next_state_on_event( kEvDeConfig ) != kError )
++					printk( "%sDe-Configured\n", pszMe );
++			usbd_info.state = 0;
++			Ser0UDCCR |= UDCCR_RIM | UDCCR_TIM;
++			ep1_reset ();
++			ep2_reset ();
++			printk("%s: de-configured. Tx and Rx interrupts disabled. ep1 and ep2 reset\n",__FUNCTION__);
++		  } else {
++			   printk( "%ssetup phase: Unknown "
++					   "\"set configuration\" data %d\n",
++					   pszMe, req.wValue );
++		  }
++		  set_cs_bits( UDCCS0_SO | UDCCS0_DE );  /* no data phase */
++		  break;
++
++	 case USB_REQ_CLEAR_FEATURE:
++		  /* could check data length, direction...26Jan01ww */
++		  if ( req.wValue == 0 ) { /* clearing ENDPOINT_HALT/STALL */
++			   int ep = windex_to_ep_num( req.wIndex );
++			   if ( ep == 1 ) {
++					printk( "%sclear feature \"endpoint halt\" "
++							" on receiver\n", pszMe );
++					ep1_reset();
++			   }
++			   else if ( ep == 2 ) {
++					printk( "%sclear feature \"endpoint halt\" "
++							"on xmitter\n", pszMe );
++					ep2_reset();
++			   } else {
++					printk( "%sclear feature \"endpoint halt\" "
++							"on unsupported ep # %d\n",
++							pszMe, ep );
++			   }
++		  } else {
++			   printk( "%sUnsupported feature selector (%d) "
++					   "in clear feature. Ignored.\n" ,
++					   pszMe, req.wValue );
++		  }
++		  set_cs_bits( UDCCS0_SO | UDCCS0_DE );  /* no data phase */
++		  break;
++
++	 case USB_REQ_SET_FEATURE:
++		  if ( req.wValue == 0 ) { /* setting ENDPOINT_HALT/STALL */
++			   int ep = windex_to_ep_num( req.wValue );
++			   if ( ep == 1 ) {
++					printk( "%set feature \"endpoint halt\" "
++							"on receiver\n", pszMe );
++					ep1_stall();
++			   }
++			   else if ( ep == 2 ) {
++					printk( "%sset feature \"endpoint halt\" "
++							" on xmitter\n", pszMe );
++					ep2_stall();
++			   } else {
++					printk( "%sset feature \"endpoint halt\" "
++							"on unsupported ep # %d\n",
++							pszMe, ep );
++			   }
++		  }
++		  else {
++			   printk( "%sUnsupported feature selector "
++					   "(%d) in set feature\n",
++					   pszMe, req.wValue );
++		  }
++		  set_cs_bits( UDCCS0_SO | UDCCS0_DE );  /* no data phase */
++		  break;
++
++		  /* The rest have a data phase that writes back to the host */
++	 case USB_REQ_GET_STATUS:
++		  /* return status bit flags */
++		  status_buf[0] = status_buf[1] = 0;
++		  n = request_target(req.bRequestType);
++		  switch( n ) {
++		  case kTargetDevice:
++			   if ( self_powered_hook() )
++					status_buf[0] |= 1;
++			   break;
++		  case kTargetInterface:
++			   break;
++		  case kTargetEndpoint:
++			   /* return stalled bit */
++			   n = windex_to_ep_num( req.wIndex );
++			   if ( n == 1 )
++					status_buf[0] |= (Ser0UDCCS1 & UDCCS1_FST) >> 4;
++			   else if ( n == 2 )
++					status_buf[0] |= (Ser0UDCCS2 & UDCCS2_FST) >> 5;
++			   else {
++					printk( "%sUnknown endpoint (%d) "
++							"in GET_STATUS\n", pszMe, n );
++			   }
++			   break;
++		  default:
++			   printk( "%sUnknown target (%d) in GET_STATUS\n",
++					   pszMe, n );
++			   /* fall thru */
++			   break;
++		  }
++		  PRINTKD("%s: GET_STATUS writing %d\n",__FUNCTION__,req.wLength);
++		  ep0_queue( status_buf, req.wLength, sizeof( status_buf ));
++		  break;
++	 case USB_REQ_GET_DESCRIPTOR:
++		  PRINTKD( "%s: calling the_controller.driver->setup with GET_DESCRIPTOR\n", __FUNCTION__ );
++		  the_controller->driver->setup(&the_controller->gadget, &req);
++		  break;
++	 case USB_REQ_GET_CONFIGURATION:
++		  PRINTKD( "%s: calling the_controller.driver->setup with GET_CONFIGURATION\n", __FUNCTION__ );
++		  the_controller->driver->setup(&the_controller->gadget, &req);
++		  break;
++	 case USB_REQ_GET_INTERFACE:
++		  PRINTKD( "%s: calling the_controller->driver->setup with GET_INTERFACE\n", __FUNCTION__ );
++		  the_controller->driver->setup(&the_controller->gadget, &req);
++		  break;
++	 case USB_REQ_SET_INTERFACE:
++		  PRINTKD( "%s: calling the_controller->driver->setup with SET_INTERFACE\n", __FUNCTION__ );
++		  the_controller->driver->setup(&the_controller->gadget, &req);
++		  break;
++	 default :
++		  printk("%sunknown request 0x%x\n", pszMe, req.bRequest);
++		  break;
++	 } /* switch( bRequest ) */
++
++sh_sb_end:
++	 return;
++
++}
++
++void
++ep0_int_hndlr( void )
++{
++	u32 cs_reg_in;
++
++	pcs();
++
++	cs_reg_in = Ser0UDCCS0;
++
++
++	/*
++	 * If "setup end" has been set, the usb controller has terminated
++	 * a setup transaction before we set DE. This happens during
++	 * enumeration with some hosts. For example, the host will ask for
++	 * our device descriptor and specify a return of 64 bytes. When we
++	 * hand back the first 8, the host will know our max packet size
++	 * and turn around and issue a new setup immediately. This causes
++	 * the UDC to auto-ack the new setup and set SE. We must then
++	 * "unload" (process) the new setup, which is what will happen
++	 * after this preamble is finished executing.
++	 */
++	if (cs_reg_in & UDCCS0_SE) {
++		PRINTKD("UDC: early termination of setup\n");
++
++		/*
++		 * Clear setup end
++		 */
++		set_cs_bits(UDCCS0_SSE);
++
++		/*
++		 * Clear any pending write.
++		 */
++		ep0_clear_write();
++	}
++
++	/*
++	 * UDC sent a stall due to a protocol violation.
++	 */
++	if (cs_reg_in & UDCCS0_SST) {
++//		usb->ep0_stall_sent++;
++
++		PRINTKD("UDC: write_preamble: UDC sent stall\n");
++
++		/*
++		 * Clear sent stall
++		 */
++		set_cs_bits(UDCCS0_SST);
++
++		/*
++		 * Clear any pending write.
++		 */
++		ep0_clear_write();
++	}
++
++	switch (cs_reg_in & (UDCCS0_OPR | UDCCS0_IPR)) {
++	case UDCCS0_OPR | UDCCS0_IPR:
++		PRINTKD("UDC: write_preamble: see OPR. Stopping write to "
++			"handle new SETUP\n");
++
++		/*
++		 * very rarely, you can get OPR and
++		 * leftover IPR. Try to clear
++		 */
++		UDC_clear(Ser0UDCCS0, UDCCS0_IPR);
++
++		/*
++		 * Clear any pending write.
++		 */
++		ep0_clear_write();
++
++		/*FALLTHROUGH*/
++	case UDCCS0_OPR:
++		/*
++		 * A new setup request is pending.  Handle
++		 * it. Note that we don't try to read a
++		 * packet if SE was set and OPR is clear.
++		 */
++		ep0_read_packet();
++		break;
++
++	case 0:
++		// if data pending ...
++		if (wr.p) {
++			unsigned int cs_bits = 0;
++			if (wr.bytes_left != 0) {
++				/*
++				 * More data to go
++				 */
++				write_fifo();
++				// packet ready
++				cs_bits |= UDCCS0_IPR;
++			}
++
++			if (wr.bytes_left == 0) {
++				/*
++				 * All data sent.
++				 */
++				cs_bits |= wrint();
++				// a null packet may be following
++				if (!wrint)
++				    ep0_clear_write();				
++			}
++			set_cs_bits(cs_bits);
++		}
++		else
++		    PRINTKD("%s: No data - probably an ACK\n",__FUNCTION__);
++		break;
++
++	case UDCCS0_IPR:
++		PRINTKD("UDC: IPR set, not writing\n");
++//		usb->ep0_early_irqs++;
++		break;
++	}
++
++	pcs();
++	PRINTKD( "-end-\n" );
++}
++
++static unsigned int ep0_sh_write_data(void)
++{
++	/*
++	 * If bytes left is zero, we are coming in on the
++	 * interrupt after the last packet went out. And
++	 * we know we don't have to empty packet this
++	 * transfer so just set DE and we are done
++	 */
++	PRINTKD("UDC: normal packet ended\n");
++	wrint=NULL;
++	return UDCCS0_DE;
++}
++
++static unsigned int ep0_sh_write_with_empty_packet(void)
++{
++	/*
++	 * If bytes left is zero, we are coming in on the
++	 * interrupt after the last packet went out.
++	 * We must do short packet suff, so set DE and IPR
++	 */
++	PRINTKD("UDC: short packet sent\n");
++	wrint=NULL;
++	return UDCCS0_IPR | UDCCS0_DE;
++}
++
++static unsigned int ep0_sh_write_data_then_empty_packet(void)
++{
++	PRINTKD("UDC: last packet full. Send empty packet next\n");
++	wrint=ep0_sh_write_with_empty_packet;
++	return 0;
++}
++
++static void ep0_queue(void *buf, unsigned int len, unsigned int req_len)
++{
++	__u32 cs_reg_bits = UDCCS0_IPR;
++
++	PRINTKD("a=%d r=%d\n", len, req_len);
++
++	if (len == 0) {
++	    // no output packet to wait for
++	    printk("%s: zero byte packet being queued. Setting DE and OPR end exiting\n",__FUNCTION__);
++	    set_cs_bits(UDCCS0_DE | UDCCS0_SO);
++	    return;
++	}
++	
++	/*
++	 * thou shalt not enter data phase until
++	 * Out Packet Ready is clear
++	 */
++	if (!clear_opr()) {
++		printk("UDC: SO did not clear OPR\n");
++		set_cs_bits(UDCCS0_DE | UDCCS0_SO);
++		return;
++	}
++
++	// note data to xmit stored
++	wr.p=buf;
++	wr.bytes_left=min(len, req_len);
++
++	// write the first block
++	write_fifo();
++
++	// done already?
++	if (wr.bytes_left == 0) {
++		/*
++		 * out in one, so data end
++		 */
++		cs_reg_bits |= UDCCS0_DE;
++		ep0_clear_write();
++	// rest is a shorter than expected reply?
++	} else if (len < req_len) {
++		/*
++		 * we are going to short-change host
++		 * so need nul to not stall
++		 */
++		 if (len % 8) {
++		    PRINTKD("%s: %d more to go ending in a short packet.\n",__FUNCTION__,wr.bytes_left);
++		    wrint=ep0_sh_write_with_empty_packet;
++		}
++		// unless we are on a packet boundary. Then send full packet plus null packet.
++		else {
++		    PRINTKD("%s: %d more to go then add empty packet.\n",__FUNCTION__,wr.bytes_left);
++		    wrint=ep0_sh_write_data_then_empty_packet;
++		}
++	} else {
++		/*
++		 * we have as much or more than requested
++		 */
++		PRINTKD("%s: %d more to go.\n",__FUNCTION__,wr.bytes_left);
++		wrint=ep0_sh_write_data;
++	}
++
++	/*
++	 * note: IPR was set uncondtionally at start of routine
++	 */
++	set_cs_bits(cs_reg_bits);
++}
++
++/*
++ * write_fifo()
++ * Stick bytes in the 8 bytes endpoint zero FIFO.
++ * This version uses a variety of tricks to make sure the bytes
++ * are written correctly. 1. The count register is checked to
++ * see if the byte went in, and the write is attempted again
++ * if not. 2. An overall counter is used to break out so we
++ * don't hang in those (rare) cases where the UDC reverses
++ * direction of the FIFO underneath us without notification
++ * (in response to host aborting a setup transaction early).
++ *
++ */
++static void write_fifo( void )
++{
++	int bytes_this_time = MIN( wr.bytes_left, 8 );
++	int bytes_written = 0;
++
++	PRINTKD( "WF=%d: ", bytes_this_time );
++
++	while( bytes_this_time-- ) {
++		unsigned int cwc;
++		int i;
++		 PRINTKD( "%2.2X ", *wr.p );
++		cwc = Ser0UDCWC & 15;
++		 i = 10;
++		 do {
++			  Ser0UDCD0 = *wr.p;
++			  udelay( 20 );  /* voodo 28Feb01ww */
++		 } while( (Ser0UDCWC &15) == cwc && --i );
++		 
++		 if ( i == 0 ) {
++			  printk( "%swrite_fifo: write failure\n", pszMe );
++			  usbd_info.stats.ep0_fifo_write_failures++;
++		 }
++
++		 wr.p++;
++		 bytes_written++;
++	}
++	wr.bytes_left -= bytes_written;
++
++	/* following propagation voodo so maybe caller writing IPR in
++	   ..a moment might actually get it to stick 28Feb01ww */
++	udelay( 300 );
++
++	usbd_info.stats.ep0_bytes_written += bytes_written;
++	PRINTKD( "L=%d WCR=%8.8X\n", wr.bytes_left, Ser0UDCWC );
++}
++/*
++ * read_fifo()
++ * Read 1-8 bytes out of FIFO and put in request.
++ * Called to do the initial read of setup requests
++ * from the host. Return number of bytes read.
++ *
++ * Like write fifo above, this driver uses multiple
++ * reads checked agains the count register with an
++ * overall timeout.
++ *
++ */
++static int
++read_fifo( struct usb_ctrlrequest * request )
++{
++	int bytes_read = 0;
++	int fifo_count;
++
++	unsigned char * pOut = (unsigned char*) request;
++
++	fifo_count = ( Ser0UDCWC & 0xFF );
++
++	ASSERT( fifo_count <= 8 );
++	PRINTKD( "RF=%d ", fifo_count );
++
++	while( fifo_count-- ) {
++		unsigned int cwc;
++		int i;
++		
++		cwc = Ser0UDCWC & 15;
++		
++		 i = 10;
++		 do {
++			  *pOut = (unsigned char) Ser0UDCD0;
++			  udelay( 20 );
++		 } while( ( Ser0UDCWC & 15 ) == cwc && --i );
++		 
++		 if ( i == 0 ) {
++			  printk( "%sread_fifo(): read failure\n", pszMe );
++			  usbd_info.stats.ep0_fifo_read_failures++;
++		 }
++		 pOut++;
++		 bytes_read++;
++	}
++
++	PRINTKD( "fc=%d\n", bytes_read );
++	usbd_info.stats.ep0_bytes_read++;
++	return bytes_read;
++}
++
++/* some voodo I am adding, since the vanilla macros just aren't doing it  1Mar01ww */
++
++#define ABORT_BITS ( UDCCS0_SST | UDCCS0_SE )
++#define OK_TO_WRITE (!( Ser0UDCCS0 & ABORT_BITS ))
++#define BOTH_BITS (UDCCS0_IPR | UDCCS0_DE)
++
++static void set_cs_bits( __u32 bits )
++{
++	 if ( bits & ( UDCCS0_SO | UDCCS0_SSE | UDCCS0_FST | UDCCS0_SST) )
++		  Ser0UDCCS0 = bits;
++	 else if ( (bits & BOTH_BITS) == BOTH_BITS )
++		  set_ipr_and_de();
++	 else if ( bits & UDCCS0_IPR )
++		  set_ipr();
++	 else if ( bits & UDCCS0_DE )
++		  set_de();
++}
++
++static void set_de( void )
++{
++	 int i = 1;
++	 while( 1 ) {
++		  if ( OK_TO_WRITE ) {
++				Ser0UDCCS0 |= UDCCS0_DE;
++		  } else {
++			   PRINTKD( "%sQuitting set DE because SST or SE set\n", pszMe );
++			   break;
++		  }
++		  if ( Ser0UDCCS0 & UDCCS0_DE )
++			   break;
++		  udelay( i );
++		  if ( ++i == 50  ) {
++			   printk( "%sDangnabbbit! Cannot set DE! (DE=%8.8X CCS0=%8.8X)\n",
++					   pszMe, UDCCS0_DE, Ser0UDCCS0 );
++			   break;
++		  }
++	 }
++}
++
++static void set_ipr( void )
++{
++	 int i = 1;
++	 while( 1 ) {
++		  if ( OK_TO_WRITE ) {
++				Ser0UDCCS0 |= UDCCS0_IPR;
++		  } else {
++			   PRINTKD( "%sQuitting set IPR because SST or SE set\n", pszMe );
++			   break;
++		  }
++		  if ( Ser0UDCCS0 & UDCCS0_IPR )
++			   break;
++		  udelay( i );
++		  if ( ++i == 50  ) {
++			   printk( "%sDangnabbbit! Cannot set IPR! (IPR=%8.8X CCS0=%8.8X)\n",
++					   pszMe, UDCCS0_IPR, Ser0UDCCS0 );
++			   break;
++		  }
++	 }
++}
++
++static void set_ipr_and_de( void )
++{
++	 int i = 1;
++	 while( 1 ) {
++		  if ( OK_TO_WRITE ) {
++			   Ser0UDCCS0 |= BOTH_BITS;
++		  } else {
++			   PRINTKD( "%sQuitting set IPR/DE because SST or SE set\n", pszMe );
++			   break;
++		  }
++		  if ( (Ser0UDCCS0 & BOTH_BITS) == BOTH_BITS)
++			   break;
++		  udelay( i );
++		  if ( ++i == 50  ) {
++			   printk( "%sDangnabbbit! Cannot set DE/IPR! (DE=%8.8X IPR=%8.8X CCS0=%8.8X)\n",
++					   pszMe, UDCCS0_DE, UDCCS0_IPR, Ser0UDCCS0 );
++			   break;
++		  }
++	 }
++}
++
++static bool clear_opr( void )
++{
++	 int i = 10000;
++	 bool is_clear;
++	 do {
++		  Ser0UDCCS0 = UDCCS0_SO;
++		  is_clear  = ! ( Ser0UDCCS0 & UDCCS0_OPR );
++		  if ( i-- <= 0 ) {
++			   printk( "%sclear_opr(): failed\n", pszMe );
++			   break;
++		  }
++	 } while( ! is_clear );
++	 return is_clear;
++}
++
++
++
++// ep1 handlers
++
++static char *ep1_buf;
++static int ep1_len;
++static void (*ep1_callback)(int flag, int size);
++static char *ep1_curdmabuf;
++static dma_addr_t ep1_curdmapos;
++static int ep1_curdmalen;
++static int ep1_remain;
++static int ep1_used;
++
++static dma_regs_t *dmaregs_rx = NULL;
++static int rx_pktsize;
++
++static int naking;
++
++static void
++ep1_start(void)
++{
++	sa1100_reset_dma(dmaregs_rx);
++	if (!ep1_curdmalen) {
++	  	ep1_curdmalen = rx_pktsize;
++		if (ep1_curdmalen > ep1_remain)
++			ep1_curdmalen = ep1_remain;
++		ep1_curdmapos = dma_map_single(NULL, ep1_curdmabuf, ep1_curdmalen,
++					       DMA_FROM_DEVICE);
++	}
++
++	UDC_write( Ser0UDCOMP, ep1_curdmalen-1 );
++	
++	sa1100_start_dma(dmaregs_rx, ep1_curdmapos, ep1_curdmalen);
++
++	if ( naking ) {
++		/* turn off NAK of OUT packets, if set */
++		UDC_flip( Ser0UDCCS1, UDCCS1_RPC );
++		naking = 0;
++	}
++}
++
++static void
++ep1_done(int flag)
++{
++	int size = ep1_len - ep1_remain;
++
++	if (!ep1_len)
++		return;
++	if (ep1_curdmalen)
++		dma_unmap_single(NULL, ep1_curdmapos, ep1_curdmalen,
++				 DMA_FROM_DEVICE);
++	ep1_len = ep1_curdmalen = 0;
++	if (ep1_callback)
++		ep1_callback(flag, size);
++}
++
++void
++ep1_state_change_notify( int new_state )
++{
++
++}
++
++void
++ep1_stall( void )
++{
++	/* SET_FEATURE force stall at UDC */
++	UDC_set( Ser0UDCCS1, UDCCS1_FST );
++}
++
++int
++ep1_init(dma_regs_t *dmaregs)
++{
++	dmaregs_rx = dmaregs;
++	sa1100_reset_dma(dmaregs_rx);
++	ep1_done(-EAGAIN);
++	return 0;
++}
++
++void
++ep1_reset(void)
++{
++	if (dmaregs_rx)
++	    sa1100_reset_dma(dmaregs_rx);
++	UDC_clear(Ser0UDCCS1, UDCCS1_FST);
++	ep1_done(-EINTR);
++}
++
++void
++ep1_int_hndlr(int udcsr)
++{
++	dma_addr_t dma_addr;
++	unsigned int len;
++	int status = Ser0UDCCS1;
++
++	if ( naking ) printk( "%sEh? in ISR but naking = %d\n", "usbrx: ", naking );
++
++	if (status & UDCCS1_RPC) {
++
++		if (!ep1_curdmalen) {
++			printk("usb_recv: RPC for non-existent buffer\n");
++			naking=1;
++			return;
++		}
++
++		sa1100_stop_dma(dmaregs_rx);
++
++		if (status & UDCCS1_SST) {
++			printk("usb_recv: stall sent OMP=%d\n",Ser0UDCOMP);
++			UDC_flip(Ser0UDCCS1, UDCCS1_SST);
++			ep1_done(-EIO); // UDC aborted current transfer, so we do
++			return;
++		}
++
++		if (status & UDCCS1_RPE) {
++			printk("usb_recv: RPError %x\n", status);
++			UDC_flip(Ser0UDCCS1, UDCCS1_RPC);
++			ep1_done(-EIO);
++			return;
++		}
++
++		dma_addr=sa1100_get_dma_pos(dmaregs_rx);
++		dma_unmap_single(NULL, ep1_curdmapos, ep1_curdmalen,
++				 DMA_FROM_DEVICE);
++		len = dma_addr - ep1_curdmapos;
++#ifdef SA1100_USB_DEBUG
++		if (sa1100_usb_debug) {
++		    int i;
++		    printk("usb rx %d :\n  ",len);
++		    if (sa1100_usb_debug>1) {
++			for (i=0; i<len; i++) {
++			    if ((i % 32)==31)
++				printk("\n  ");
++//			    printk("%2.2x ",((char *)ep1_buf)[ep1_used+i]);
++			    printk("%2.2x ",((char *)ep1_curdmapos)[i]);
++			}
++		    }
++		    printk("\n");
++		}
++#endif
++		if (len < ep1_curdmalen) {
++			char *buf = ep1_curdmabuf + len;
++			while (Ser0UDCCS1 & UDCCS1_RNE) {
++				if (len >= ep1_curdmalen) {
++					printk("usb_recv: too much data in fifo\n");
++					break;
++				}
++				*buf++ = Ser0UDCDR;
++				len++;
++			}
++		} else if (Ser0UDCCS1 & UDCCS1_RNE) {
++			printk("usb_recv: fifo screwed, shouldn't contain data\n");
++			len = 0;
++		}
++
++#if defined(NCB_DMA_FIX)
++//		if (len && (ep1_buf != ep1_curdmabuf))
++//		    memcpy(ep1_buf,ep1_curdmabuf,len);
++		if (len)
++		    memcpy(&(((unsigned char *)ep1_buf)[ep1_used]),ep1_curdmabuf,len);
++#endif
++
++		ep1_curdmalen = 0;  /* dma unmap already done */
++		ep1_remain -= len;
++		ep1_used += len;
++//		ep1_curdmabuf += len;	// use same buffer again
++		naking = 1;
++//printk("%s: received %d, %d remaining\n",__FUNCTION__,len,ep1_remain);
++		if (len && (len == rx_pktsize))
++		    ep1_start();
++		else
++		ep1_done((len) ? 0 : -EPIPE);
++	}
++	/* else, you can get here if we are holding NAK */
++}
++
++int
++sa1100_usb_recv(struct usb_request *req, void (*callback)(int flag, int size))
++{
++	unsigned long flags;
++	char *buf=req->buf;
++	int len=req->length;
++
++	if (ep1_len)
++		return -EBUSY;
++
++	local_irq_save(flags);
++	ep1_buf = buf;
++	ep1_len = len;
++	ep1_callback = callback;
++	ep1_remain = len;
++	ep1_used = 0;
++#ifdef NCB_DMA_FIX
++//	if (((size_t)buf)&3)
++ 	if (1)
++	    ep1_curdmabuf = receive_buffer;
++	else
++#else
++	ep1_curdmabuf = buf;
++#endif
++	ep1_curdmalen = 0;
++	ep1_start();
++	local_irq_restore(flags);
++
++	return 0;
++}
++
++// ep2 handlers
++
++static char *ep2_buf;
++static int ep2_len;
++static void (*ep2_callback)(int status, int size);
++static dma_addr_t ep2_dma;
++static dma_addr_t ep2_curdmapos;
++static int ep2_curdmalen;
++static int ep2_remain;
++static dma_regs_t *dmaregs_tx = NULL;
++static int tx_pktsize;
++
++/* device state is changing, async */
++void
++ep2_state_change_notify( int new_state )
++{
++}
++
++/* set feature stall executing, async */
++void
++ep2_stall( void )
++{
++	UDC_set( Ser0UDCCS2, UDCCS2_FST );  /* force stall at UDC */
++}
++
++static void
++ep2_start(void)
++{
++	if (!ep2_len)
++		return;
++		
++	ep2_curdmalen = tx_pktsize;
++	if (ep2_curdmalen > ep2_remain)
++		ep2_curdmalen = ep2_remain;
++
++	/* must do this _before_ queue buffer.. */
++	UDC_flip( Ser0UDCCS2,UDCCS2_TPC );  /* stop NAKing IN tokens */
++	UDC_write( Ser0UDCIMP, ep2_curdmalen-1 );
++
++#if 0
++	/* Remove if never seen...8Mar01ww */
++	{
++		 int massive_attack = 20;
++		 while ( Ser0UDCIMP != ep2_curdmalen-1 && massive_attack-- ) {
++			  printk( "usbsnd: Oh no you don't! Let me spin..." );
++			  udelay( 500 );
++			  printk( "and try again...\n" );
++			  UDC_write( Ser0UDCIMP, ep2_curdmalen-1 );
++		 }
++		 if ( massive_attack != 20 ) {
++			  if ( Ser0UDCIMP != ep2_curdmalen-1 )
++				   printk( "usbsnd: Massive attack FAILED :-( %d\n",
++						   20 - massive_attack );
++			  else
++				   printk( "usbsnd: Massive attack WORKED :-) %d\n",
++						   20 - massive_attack );
++		 }
++	}
++	/* End remove if never seen... 8Mar01ww */
++#endif
++
++	Ser0UDCAR = usbd_info.address; // fighting stupid silicon bug
++	sa1100_start_dma(dmaregs_tx, ep2_curdmapos, ep2_curdmalen);
++}
++
++static void
++ep2_done(int flag)
++{
++	int size = ep2_len - ep2_remain;
++	if (ep2_len) {
++		dma_unmap_single(NULL, ep2_dma, ep2_len, DMA_TO_DEVICE);
++		ep2_len = 0;
++		if (ep2_callback)
++			ep2_callback(flag, size);
++	}
++}
++
++int
++ep2_init(dma_regs_t *dmaregs)
++{
++	dmaregs_tx = dmaregs;
++	sa1100_reset_dma(dmaregs_tx);
++	ep2_done(-EAGAIN);
++	return 0;
++}
++
++void
++ep2_reset(void)
++{
++	UDC_clear(Ser0UDCCS2, UDCCS2_FST);
++	if (dmaregs_tx)
++	    sa1100_reset_dma(dmaregs_tx);
++	ep2_done(-EINTR);
++}
++
++void
++ep2_int_hndlr(int udcsr)
++{
++	int status = Ser0UDCCS2;
++
++	if (Ser0UDCAR != usbd_info.address) // check for stupid silicon bug.
++		Ser0UDCAR = usbd_info.address;
++
++	if (status & UDCCS2_TPC) {
++
++		UDC_flip(Ser0UDCCS2, UDCCS2_SST);
++
++		sa1100_reset_dma(dmaregs_tx);
++
++		if (status & (UDCCS2_TPE | UDCCS2_TUR)) {
++			printk("usb_send: transmit error %x\n", status);
++			ep2_done(-EIO);
++		} else {
++#if 1 // 22Feb01ww/Oleg
++			ep2_curdmapos += ep2_curdmalen;
++			ep2_remain -= ep2_curdmalen;
++#else
++			ep2_curdmapos += Ser0UDCIMP + 1; // this is workaround
++			ep2_remain -= Ser0UDCIMP + 1;    // for case when setting of Ser0UDCIMP was failed
++#endif
++
++			if (ep2_remain != 0)
++				ep2_start();
++			else
++				ep2_done(0);
++		}
++	} else {
++		printk("usb_send: Not TPC: UDCCS2 = %x\n", status);
++	}
++}
++
++int
++sa1100_usb_send(struct usb_request *req, void (*callback)(int status, int size))
++{
++	char *buf=req->buf;
++	int len=req->length;
++	unsigned long flags;
++
++	if (usbd_info.state != USB_STATE_CONFIGURED) {
++		PRINTKD("%s: return -ENODEV\n",__FUNCTION__);
++		return -ENODEV;
++	}
++
++	if (ep2_len) {
++		PRINTKD("%s: return -EBUSY\n",__FUNCTION__);
++		return -EBUSY;
++	}
++
++	local_irq_save(flags);
++#ifdef NCB_DMA_FIX
++	// if misaligned, copy to aligned buffer
++//	if (((size_t)buf)&3) {
++	if (1) {
++	    PRINTKD("%s: copying %d bytes to send_buffer\n",__FUNCTION__,len);
++	    memcpy(send_buffer,buf,len);
++	    ep2_buf = send_buffer;
++	}
++	else 
++#endif
++	ep2_buf = buf;
++		
++	ep2_len = len;
++	ep2_dma = dma_map_single(NULL, ep2_buf, len,DMA_TO_DEVICE);
++	PRINTKD("%s: mapped dma to buffer(%p0\n",__FUNCTION__,buf);
++
++	ep2_callback = callback;
++	ep2_remain = len;
++	ep2_curdmapos = ep2_dma;
++
++	PRINTKD("%s: calling ep2_start\n",__FUNCTION__);
++	ep2_start();
++	local_irq_restore(flags);
++
++	return 0;
++}
++/*-------------------------------------------------------------------------*/
++
++static int
++sa1100_enable (struct usb_ep *_ep, const struct usb_endpoint_descriptor *desc)
++{
++	struct sa1100_udc	*dev;
++	struct sa1100_ep	*ep;
++	u32			max;
++	int			type;
++
++	ep = container_of (_ep, struct sa1100_ep, ep);
++	if (!_ep || !desc || ep->desc || _ep->name == ep0name
++			|| desc->bDescriptorType != USB_DT_ENDPOINT) {
++		PRINTKD("%s: _ep = %p, desc = %p\n",__FUNCTION__,_ep,desc);
++		if (_ep && desc)
++		    PRINTKD("%s: ep->desc = %p, _ep->name = %s desc->bDescriptorType = %s\n",__FUNCTION__,ep->desc,_ep->name, 
++			(desc->bDescriptorType == USB_DT_ENDPOINT) ? "USB_DT_ENDPOINT":"bad!!");
++		return -EINVAL;
++	}
++
++	dev = ep->dev;
++	if (!dev->driver || dev->gadget.speed == USB_SPEED_UNKNOWN) 
++		return -ESHUTDOWN;
++
++	type = desc->bmAttributes & USB_ENDPOINT_XFERTYPE_MASK;
++	max = le16_to_cpu (desc->wMaxPacketSize);
++	switch (max) {
++	case 64: case 32:
++	/* note:  maxpacket > 16 means DMA might overrun/underrun */
++	case 16: case 8:
++		break;
++	default:
++		if (type == USB_ENDPOINT_XFER_INT && max < 64)
++			break;
++		return -EDOM;
++	}
++
++	switch (type) {
++	case USB_ENDPOINT_XFER_BULK:
++	case USB_ENDPOINT_XFER_INT:
++		if (ep == &dev->ep[2]) {
++			if (desc->bEndpointAddress != (USB_DIR_IN|2)) {
++				PRINTKD("%s: ep[2] has invalid endpoint\n",__FUNCTION__);
++				return -EINVAL;
++			}
++			tx_pktsize = max;
++			Ser0UDCOMP = max - 1;
++			PRINTKD("%s: ep2 max packet size is %d\n",__FUNCTION__,max);
++			break;
++		} else if (ep == &dev->ep[1]) {
++			if (desc->bEndpointAddress != (USB_DIR_OUT|1)) {
++				PRINTKD("%s: ep[1] has invalid endpoint\n",__FUNCTION__);
++				return -EINVAL;
++			}
++			rx_pktsize = max;
++			Ser0UDCIMP = max - 1;
++			PRINTKD("%s: ep1 max packet size is %d\n",__FUNCTION__,max);
++			break;
++		}
++		// FALLTHROUGH
++	default:
++		PRINTKD("%s: Invalid endpoint\n",__FUNCTION__);
++		return -EINVAL;
++	}
++
++	_ep->maxpacket = max;
++	ep->desc = desc;
++
++	DEBUG (dev, "enabled %s %s max %04x\n", _ep->name,
++		type_string (desc->bmAttributes), max);
++
++	return 0;
++}
++
++static int sa1100_disable (struct usb_ep *_ep)
++{
++	struct sa1100_ep	*ep;
++
++	ep = container_of (_ep, struct sa1100_ep, ep);
++	if (!_ep || !ep->desc || _ep->name == ep0name)
++		return -EINVAL;
++
++	nuke (ep, -ESHUTDOWN);
++
++	DEBUG (ep->dev, "disabled %s\n", _ep->name);
++
++	ep->desc = NULL;
++	ep->stopped = 1;
++	return 0;
++}
++
++/*-------------------------------------------------------------------------*/
++
++static struct usb_request *
++sa1100_alloc_request (struct usb_ep *_ep, int gfp_flags)
++{
++	struct sa1100_request	*req;
++
++	if (!_ep)
++		return 0;
++
++	req = kmalloc (sizeof *req, gfp_flags);
++	if (!req)
++		return 0;
++
++	memset (req, 0, sizeof *req);
++	req->req.dma = DMA_ADDR_INVALID;
++	INIT_LIST_HEAD (&req->queue);
++	return &req->req;
++}
++
++static void
++sa1100_free_request (struct usb_ep *_ep, struct usb_request *_req)
++{
++	struct sa1100_request	*req;
++
++#if 0 // NCB
++	struct sa1100_ep	*ep;
++	ep = container_of (_ep, struct sa1100_ep, ep);
++	if (!ep || !_req || (!ep->desc && _ep->name != ep0name))
++		return;
++#endif
++
++	req = container_of (_req, struct sa1100_request, req);
++	WARN_ON (!list_empty (&req->queue));
++	kfree(req);	//NCB - see pxa2xx_udc
++}
++
++/*-------------------------------------------------------------------------*/
++
++/* allocate buffers this way to eliminate per-io buffer copies  */
++
++static void *
++sa1100_alloc_buffer (
++	struct usb_ep		*_ep,
++	unsigned		bytes,
++	dma_addr_t		*dma,
++	int			gfp_flags
++)
++{
++	void			*retval;
++#if 1 // NCB see pxa2xx_udc
++	retval = kmalloc (bytes, gfp_flags & ~(__GFP_DMA|__GFP_HIGHMEM));
++	if (retval)
++// used in pxa ..		*dma = virt_to_bus (retval);
++		*dma = virt_to_phys (retval);
++#else
++	struct sa1100_ep	*ep;
++
++	ep = container_of (_ep, struct sa1100_ep, ep);
++	if (!ep || (!ep->desc && _ep->name != ep0name))
++		return 0;
++
++	*dma = DMA_ADDR_INVALID;
++	retval = kmalloc (bytes, GFP_DMA | gfp_flags);
++	if (retval)
++		*dma = virt_to_phys (retval);
++#endif
++	return retval;
++}
++
++static void
++sa1100_free_buffer (
++	struct usb_ep *_ep,
++	void *buf,
++	dma_addr_t dma,
++	unsigned bytes
++) {
++	kfree (buf);
++}
++
++/*-------------------------------------------------------------------------*/
++
++static void
++done (struct sa1100_ep *ep, struct sa1100_request *req, int status)
++{
++	unsigned		stopped = ep->stopped;
++
++
++	list_del_init (&req->queue);
++
++	if (req->req.status == -EINPROGRESS)
++		req->req.status = status;
++	else
++		status = req->req.status;
++
++	if (status && status != -ESHUTDOWN)
++		VDEBUG (ep->dev, "complete %s req %p stat %d len %u/%u\n",
++			ep->ep.name, &req->req, status,
++			req->req.actual, req->req.length);
++
++	/* don't modify queue heads during completion callback */
++	ep->stopped = 1;
++	PRINTKD("%s: calling complete on req\n",__FUNCTION__);
++	req->req.complete (&ep->ep, &req->req);
++	ep->stopped = stopped;
++}
++
++#if 0 // NCB
++void control_done (int value)
++{
++	struct list_head	*entry, *tmp;
++	struct sa1100_request	*req;
++
++	list_for_each_safe (entry, tmp, &the_controller.ep[0].queue) {
++		req = list_entry (entry, struct sa1100_request, queue);
++
++		/* HACK -- assume no control errors */
++		if (value == 0)
++			req->req.actual = req->req.length;
++#if 1
++		PRINTKD("%s: calling done with ep=%p, req=%p\n",__FUNCTION__,&the_udc.ep[0],req);
++		done (&the_udc.ep[0], req, value);
++#else
++		done (&the_udc.ep0, req, value);
++#endif
++		value = -EPROTO;
++	}
++}
++#endif
++
++/*-------------------------------------------------------------------------*/
++
++/* FIXME move away from the old non-queued api.
++ * - forces extra work on us
++ * - stores request state twice
++ * - doesn't let gadget driver handle dma mapping
++ * - status codes need mapping
++ */
++
++static int map_status (int status)
++{
++	switch (status) {
++	case 0:
++	case -EIO:	/* ep[12]_int_handler */
++		return status;
++	case -EPIPE:	/* ep1_int_handler */
++		return 0;
++	//  case -EAGAIN: 	/* ep[12]_init */
++	//  case -EINTR:	/* ep[12]_reset */
++	default:
++		return -ESHUTDOWN;
++	}
++}
++
++static void tx_callback (int status, int size)
++{
++	struct sa1100_ep	*ep = &the_controller->ep[2];
++	struct sa1100_request	*req;
++
++//	PRINTKD("%s: doing ...\n",__FUNCTION__);
++PRINTKD("%s: doing ... status=%d size=%d\n",__FUNCTION__,status,size);
++//PRINTKD("%s: doing ... status=%d\n",__FUNCTION__,status);
++	if (list_empty (&ep->queue)) {
++		if (status != -EAGAIN)
++			DEBUG (ep->dev, "%s, bogus tx callback %d/%d\n",
++				ep->ep.name, status, size);
++//			DEBUG (ep->dev, "%s, bogus tx callback %d\n",
++//				ep->ep.name, status);
++else
++PRINTKD("%s: list empty.\n",__FUNCTION__);
++		return;
++	}
++	req = list_entry (ep->queue.next, struct sa1100_request, queue);
++	req->req.actual = size;
++	done (ep, req, map_status (status));
++
++PRINTKD("%s: ep->stopped=%s\n",__FUNCTION__,ep->stopped ? "true":"false");
++	if (ep->stopped || list_empty (&ep->queue))
++		return;
++	req = list_entry (ep->queue.next, struct sa1100_request, queue);
++PRINTKD("%s: calling sa1100_usb_send\n",__FUNCTION__);
++	sa1100_usb_send (&req->req, tx_callback);
++}
++
++static void rx_callback (int status, int size)
++{
++	struct sa1100_ep	*ep = &the_controller->ep[1];
++	struct sa1100_request	*req;
++
++//	PRINTKD("%s: doing ...\n",__FUNCTION__);
++PRINTKD("%s: doing ... status=%d\n",__FUNCTION__,status);
++	if (list_empty (&ep->queue)) {
++		if (status != -EAGAIN)
++			DEBUG (ep->dev, "%s, bogus tx callback %d/%d\n",
++				ep->ep.name, status, size);
++		return;
++	}
++	req = list_entry (ep->queue.next, struct sa1100_request, queue);
++	req->req.actual = size;
++	done (ep, req, map_status (status));
++
++	if (ep->stopped || list_empty (&ep->queue))
++		return;
++	req = list_entry (ep->queue.next, struct sa1100_request, queue);
++	sa1100_usb_recv (&req->req, rx_callback);
++}
++
++
++static int
++sa1100_queue (struct usb_ep *_ep, struct usb_request *_req, int gfp_flags)
++{
++	struct sa1100_request	*req;
++	struct sa1100_ep	*ep;
++	struct sa1100_udc	*dev;
++	unsigned long		flags;
++
++	req = container_of (_req, struct sa1100_request, req);
++	if (!_req || !_req->complete || !_req->buf
++			|| !list_empty (&req->queue))
++		return -EINVAL;
++
++	ep = container_of (_ep, struct sa1100_ep, ep);
++	if (!_ep || (!ep->desc && _ep->name != ep0name))
++		return -EINVAL;
++	dev = ep->dev;
++
++	// handle ep0
++	if (_ep->name == ep0name) {
++	    ep0_queue( _req->buf, _req->length, dev->ep0_req_len >=0 ? dev->ep0_req_len: _req->length );
++	    return 0;
++	} 
++	
++	if (!dev->driver || dev->gadget.speed == USB_SPEED_UNKNOWN)
++		return -ESHUTDOWN;
++
++	/* sa1100 udc can't write zlps */
++	if (ep == &dev->ep[2] && _req->length == 0)
++		return -ERANGE;
++
++	/* the old sa1100 api doesn't use 'unsigned' for lengths */
++	if (_req->length > INT_MAX)
++		return -ERANGE;
++
++#if 0
++	VDEBUG (dev, "%s queue req %p, len %d buf %p\n",
++			_ep->name, _req, _req->length, _req->buf);
++#endif
++
++	local_irq_save (flags);
++
++	_req->status = -EINPROGRESS;
++	_req->actual = 0;
++
++// NCB	if (list_empty) {
++	if (list_empty (&ep->queue) && !ep->stopped) {
++		/* FIXME this does DMA mapping wrong.  caller is allowed
++		 * to provide buffers that don't need mapping, but this
++		 * doesn't use them.
++		 */
++		if (ep == &ep->dev->ep[2]) {
++			PRINTKD("%s: sa1100_usb_send buf %p length %d\n",__FUNCTION__,_req->buf,_req->length);
++			sa1100_usb_send (_req, tx_callback);
++		}
++		else if (ep == &ep->dev->ep[1]) {
++			PRINTKD("%s: sa1100_usb_recv buf %p length %d\n",__FUNCTION__,_req->buf,_req->length);
++			sa1100_usb_recv (_req, rx_callback);
++		}
++		/* ep0 rx/tx is handled separately */
++	}
++	list_add_tail (&req->queue, &ep->queue);
++
++	local_irq_restore (flags);
++
++	return 0;
++}
++
++/* dequeue ALL requests */
++static void nuke (struct sa1100_ep *ep, int status)
++{
++	struct sa1100_request	*req;
++
++	/* called with irqs blocked */
++	ep->stopped = 1;
++	if (ep == &ep->dev->ep[1])
++		ep1_reset ();
++	else if (ep == &ep->dev->ep[2])
++		ep2_reset ();
++	while (!list_empty (&ep->queue)) {
++		req = list_entry (ep->queue.next,
++				struct sa1100_request,
++				queue);
++		done (ep, req, status);
++	}
++}
++
++/* dequeue JUST ONE request */
++static int sa1100_dequeue (struct usb_ep *_ep, struct usb_request *_req)
++{
++	struct sa1100_ep	*ep;
++	struct sa1100_request	*req;
++	unsigned long		flags;
++
++	ep = container_of (_ep, struct sa1100_ep, ep);
++	req = container_of (_req, struct sa1100_request, req);
++	if (!_ep || (!ep->desc && _ep->name != ep0name) || !_req)
++		return -EINVAL;
++
++	local_irq_save (flags);
++
++	/* make sure it's actually queued on this endpoint */
++	list_for_each_entry (req, &ep->queue, queue) {
++		if (&req->req == _req)
++			break;
++	}
++	if (&req->req != _req) {
++		local_irq_restore(flags);
++		return -EINVAL;
++	}
++
++#if 0
++//#ifdef	USE_DMA
++	if (ep->dma >= 0 && ep->queue.next == &req->queue && !ep->stopped) {
++		cancel_dma(ep);
++		done(ep, req, -ECONNRESET);
++		/* restart i/o */
++		if (!list_empty(&ep->queue)) {
++			req = list_entry(ep->queue.next,
++					struct pxa2xx_request, queue);
++			kick_dma(ep, req);
++		}
++	} else
++//#endif
++#endif
++	done(ep, req, -ECONNRESET);
++
++	local_irq_restore(flags);
++
++	return 0;
++}
++
++/*-------------------------------------------------------------------------*/
++
++static int
++sa1100_set_halt (struct usb_ep *_ep, int value)
++{
++	struct sa1100_ep	*ep;
++
++	ep = container_of (_ep, struct sa1100_ep, ep);
++	if (!_ep || (!ep->desc && _ep->name != ep0name))
++		return -EINVAL;
++	if (!ep->dev->driver || ep->dev->gadget.speed == USB_SPEED_UNKNOWN)
++		return -ESHUTDOWN;
++	if ( (ep->desc->bmAttributes & 0x03) == USB_ENDPOINT_XFER_ISOC)
++		return -EINVAL;
++
++	VDEBUG (ep->dev, "%s %s halt\n", _ep->name, value ? "set" : "clear");
++
++	/* set/clear, then synch memory views with the device */
++	if (value) {
++		if (ep == &ep->dev->ep[1])
++			ep1_stall ();
++		else
++			ep2_stall ();
++	} else {
++		if (ep == &ep->dev->ep[1])
++			ep1_reset ();
++		else
++			ep2_reset ();
++	}
++
++	return 0;
++}
++
++static struct usb_ep_ops sa1100_ep_ops = {
++	.enable		= sa1100_enable,
++	.disable	= sa1100_disable,
++
++	.alloc_request	= sa1100_alloc_request,
++	.free_request	= sa1100_free_request,
++
++	.alloc_buffer	= sa1100_alloc_buffer,
++	.free_buffer	= sa1100_free_buffer,
++
++	.queue		= sa1100_queue,
++	.dequeue	= sa1100_dequeue,
++
++	.set_halt	= sa1100_set_halt,
++	// .fifo_status	= sa1100_fifo_status,
++	// .fifo_flush	= sa1100_fifo_flush,
++};
++
++/*-------------------------------------------------------------------------*/
++
++static int sa1100_get_frame (struct usb_gadget *_gadget)
++{
++	return -EOPNOTSUPP;
++}
++
++static int sa1100_wakeup (struct usb_gadget *_gadget)
++{
++	struct sa1100_udc	*dev;
++
++	if (!_gadget)
++		return 0;
++	dev = container_of (_gadget, struct sa1100_udc, gadget);
++
++	// FIXME
++
++	return 0;
++}
++
++static const struct usb_gadget_ops sa1100_ops = {
++	.get_frame	= sa1100_get_frame,
++	.wakeup		= sa1100_wakeup,
++
++	// .set_selfpowered = sa1100_set_selfpowered,
++};
++
++/*-------------------------------------------------------------------------*/
++
++static inline void enable_resume_mask_suspend (void)
++{
++	 int i = 0;
++
++	 while (1) {
++		  Ser0UDCCR |= UDCCR_SUSIM; // mask future suspend events
++		  udelay (i);
++		  if ( (Ser0UDCCR & UDCCR_SUSIM) || (Ser0UDCSR & UDCSR_RSTIR))
++			   break;
++		  if (++i == 50) {
++			   WARN (&the_controller, "%s Could not set SUSIM %8.8X\n",
++			   		__FUNCTION__, Ser0UDCCR);
++			   break;
++		  }
++	 }
++
++	 i = 0;
++	 while (1) {
++		  Ser0UDCCR &= ~UDCCR_RESIM;
++		  udelay (i);
++		  if ( (Ser0UDCCR & UDCCR_RESIM) == 0
++			   	|| (Ser0UDCSR & UDCSR_RSTIR))
++			   break;
++		  if (++i == 50) {
++			   WARN (&the_controller, "%s Could not clear RESIM %8.8X\n",
++			   		__FUNCTION__, Ser0UDCCR);
++			   break;
++		  }
++	 }
++}
++
++static inline void enable_suspend_mask_resume (void)
++{
++	 int i = 0;
++	 while (1) {
++		  Ser0UDCCR |= UDCCR_RESIM; // mask future resume events
++		  udelay (i);
++		  if (Ser0UDCCR & UDCCR_RESIM || (Ser0UDCSR & UDCSR_RSTIR))
++			   break;
++		  if (++i == 50) {
++			   WARN (&the_controller, "%s could not set RESIM %8.8X\n",
++			   		__FUNCTION__, Ser0UDCCR);
++			   break;
++		  }
++	 }
++	 i = 0;
++	 while (1) {
++		  Ser0UDCCR &= ~UDCCR_SUSIM;
++		  udelay (i);
++		  if ( (Ser0UDCCR & UDCCR_SUSIM) == 0
++			   	|| (Ser0UDCSR & UDCSR_RSTIR))
++			   break;
++		  if (++i == 50) {
++			   WARN (&the_controller, "%s Could not clear SUSIM %8.8X\n",
++			   		__FUNCTION__, Ser0UDCCR);
++			   break;
++		  }
++	 }
++}
++
++// HACK DEBUG  3Mar01ww
++// Well, maybe not, it really seems to help!  08Mar01ww
++static void core_kicker (void)
++{
++	u32 car = Ser0UDCAR;
++	u32 imp = Ser0UDCIMP;
++	u32 omp = Ser0UDCOMP;
++
++	UDC_set (Ser0UDCCR, UDCCR_UDD);
++	udelay (300);
++	UDC_clear (Ser0UDCCR, UDCCR_UDD);
++
++	Ser0UDCAR = car;
++	Ser0UDCIMP = imp;
++	Ser0UDCOMP = omp;
++}
++
++// NCB static void
++static irqreturn_t
++udc_int_hndlr (int irq, void *_dev, struct pt_regs *regs)
++{
++	struct sa1100_udc	*dev = _dev;
++  	u32			status = Ser0UDCSR;
++
++  	u32			control = Ser0UDCCR;
++	PRINTKD("%s: status = 0x%x and control = 0x%x\n",__FUNCTION__,status,control);
++	/* ReSeT Interrupt Request - UDC has been reset */
++	if (status & UDCSR_RSTIR) {
++	PRINTKD("%s: processing UDCSR_RSTIR\n",__FUNCTION__);
++		if (usbctl_next_state_on_event (kEvReset) != kError) {
++			/* starting 20ms or so reset sequence now... */
++			INFO (dev, "Resetting\n");
++			ep0_reset ();  // just set state to idle
++			ep1_reset ();  // flush dma, clear false stall
++			ep2_reset ();  // flush dma, clear false stall
++		}
++		// mask reset ints, they flood during sequence, enable
++		// suspend and resume
++		Ser0UDCCR |= UDCCR_REM;    // mask reset
++		Ser0UDCCR &= ~ (UDCCR_SUSIM | UDCCR_RESIM); // enable suspend and resume
++		UDC_flip ( Ser0UDCSR, status);	// clear all pending sources
++		PRINTKD("%s: setting USB_FULL_SPEED\n",__FUNCTION__);
++		dev->gadget.speed = USB_SPEED_FULL;
++		return IRQ_HANDLED;	// NCB
++	}
++
++	/* else we have done something other than reset,
++	 * so be sure reset enabled
++	 */
++	UDC_clear (Ser0UDCCR, UDCCR_REM);
++
++	/* RESume Interrupt Request */
++	if (status & UDCSR_RESIR) {
++		struct usb_gadget_driver	*driver = dev->driver;
++
++		PRINTKD("%s: processing UDCSR_RESIR\n",__FUNCTION__);
++		if (driver->resume)
++			driver->resume (&dev->gadget);
++		core_kicker ();
++		enable_suspend_mask_resume ();
++	}
++
++	/* SUSpend Interrupt Request */
++	if (status & UDCSR_SUSIR) {
++		struct usb_gadget_driver	*driver = dev->driver;
++
++		PRINTKD("%s: processing UDCSR_SUSIR\n",__FUNCTION__);
++		if (driver->suspend)
++			driver->suspend (&dev->gadget);
++		enable_resume_mask_suspend ();
++	}
++
++	UDC_flip (Ser0UDCSR, status); // clear all pending sources
++
++	if (status & UDCSR_EIR)
++		 ep0_int_hndlr ();
++
++
++	if (status & UDCSR_RIR) {
++		PRINTKD("%s: processing ep1_int_hndlr\n",__FUNCTION__);
++		ep1_int_hndlr (status);
++	}
++	if (status & UDCSR_TIR) {
++		PRINTKD("%s: processing ep2_int_hndlr\n",__FUNCTION__);
++		ep2_int_hndlr (status);
++	}
++		
++	return IRQ_HANDLED;	// NCB
++		
++}
++
++/* soft_connect_hook ()
++ * Some devices have platform-specific circuitry to make USB
++ * not seem to be plugged in, even when it is. This allows
++ * software to control when a device 'appears' on the USB bus
++ * (after Linux has booted and this driver has loaded, for
++ * example). If you have such a circuit, control it here.
++ */
++#ifdef CONFIG_SA1100_EXTENEX1
++static void soft_connect_hook (int enable)
++{
++	if (machine_is_extenex1 ()) {
++		if (enable) {
++			PPDR |= PPC_USB_SOFT_CON;
++			PPSR |= PPC_USB_SOFT_CON;
++		} else {
++			PPSR &= ~PPC_USB_SOFT_CON;
++			PPDR &= ~PPC_USB_SOFT_CON;
++		}
++	}
++}
++#elif defined(CONFIG_SA1100_BALLOON)
++static void soft_connect_hook (int enable)
++{
++	if (machine_is_balloon()) {
++	    if (enable)
++		balloon_udc_connect();
++	    else
++		balloon_udc_disconnect();
++	}
++}
++#else
++#define soft_connect_hook(x) do { } while (0);
++#endif
++
++/* "function" sysfs attribute */
++static ssize_t
++show_function (struct device *_dev, char *buf)
++{
++	struct sa1100_udc	*dev = dev_get_drvdata (_dev);
++
++	if (!dev->driver
++			|| !dev->driver->function
++			|| strlen (dev->driver->function) > PAGE_SIZE)
++		return 0;
++	return scnprintf (buf, PAGE_SIZE, "%s\n", dev->driver->function);
++}
++static DEVICE_ATTR (function, S_IRUGO, show_function, NULL);
++
++/* disable the UDC at the source */
++static void udc_disable (struct sa1100_udc *dev)
++{
++	soft_connect_hook (0);
++	UDC_set (Ser0UDCCR, UDCCR_UDD);
++	dev->gadget.speed = USB_SPEED_UNKNOWN;
++	ep0_idle(dev);
++}
++
++static void udc_reinit(struct sa1100_udc *dev) {
++    
++	u32	i;
++
++	/* Initialize the gadget controller data structure */
++	INIT_LIST_HEAD (&dev->gadget.ep_list);
++	INIT_LIST_HEAD (&dev->gadget.ep0->ep_list);
++	ep0_idle(dev);
++	for ( i = 0 ; i < 3 ; i++) {
++		struct sa1100_ep *ep = &dev->ep[i];
++		if (i != 0) 
++			list_add_tail(&ep->ep.ep_list, &dev->gadget.ep_list);
++		ep->desc     = NULL;
++		ep->stopped  = 0;
++		INIT_LIST_HEAD(&ep->queue);
++	}
++}
++
++/*  enable the udc at the source */
++static void udc_enable (struct sa1100_udc *dev)
++{
++	UDC_clear (Ser0UDCCR, UDCCR_UDD);
++	ep0_idle(dev);
++}
++
++static void ep0_start (struct sa1100_udc *dev)
++{
++	udc_enable (dev);
++	udelay (100);
++
++	/* clear stall - receiver seems to start stalled? 19Jan01ww */
++	/* also clear other stuff just to be thurough 22Feb01ww */
++	UDC_clear(Ser0UDCCS1, UDCCS1_FST | UDCCS1_RPE | UDCCS1_RPC );
++	UDC_clear(Ser0UDCCS2, UDCCS2_FST | UDCCS2_TPE | UDCCS2_TPC );
++
++	/* mask everything */
++	Ser0UDCCR = 0xFC;
++
++	/* flush DMA and fire through some -EAGAINs */
++	ep1_init (dev->ep[1].dmaregs);
++	ep2_init (dev->ep[2].dmaregs);
++
++	/* enable any platform specific hardware */
++	soft_connect_hook (1);
++
++	/* clear all top-level sources */
++	Ser0UDCSR = UDCSR_RSTIR | UDCSR_RESIR | UDCSR_EIR   |
++		         UDCSR_RIR   | UDCSR_TIR   | UDCSR_SUSIR ;
++
++	/* EXERIMENT - a short line in the spec says toggling this
++	 * bit diddles the internal state machine in the udc to
++	 * expect a suspend
++	 */
++	Ser0UDCCR  |= UDCCR_RESIM;
++	/* END EXPERIMENT 10Feb01ww */
++
++	/* enable any platform specific hardware */
++	soft_connect_hook (1);
++
++	/* Enable interrupts. If you are unplugged you will immediately
++	 * get a suspend interrupt. If you are plugged and have a soft
++	 * connect-circuit, you will get a reset.  If you are plugged
++	 * without a soft-connect, I think you also get suspend. In short,
++	 * start with suspend masked and everything else enabled
++	 */
++	UDC_write( Ser0UDCCR, UDCCR_SUSIM );
++}
++
++
++/* when a driver is successfully registered, it will receive
++ * control requests including set_configuration (), which enables
++ * non-control requests.  then usb traffic follows until a
++ * disconnect is reported.  then a host may connect again, or
++ * the driver might get unbound.
++ */
++int usb_gadget_register_driver (struct usb_gadget_driver *driver)
++{
++	struct sa1100_udc	*dev = the_controller;
++	int			retval;
++
++	if (!driver
++			|| !driver->bind
++			|| !driver->unbind
++			|| !driver->setup)
++		return -EINVAL;
++	if (!dev)
++		return -ENODEV;
++	if (dev->driver)
++		return -EBUSY;
++
++	/* hook up the driver ... */
++	dev->driver = driver;
++	dev->gadget.dev.driver = &driver->driver;
++	
++//	device_add (&dev->gadget.dev);
++	retval = driver->bind (&dev->gadget);
++	if (retval) {
++		DEBUG (dev, "bind to driver %s --> %d\n",
++				driver->driver.name, retval);
++		device_del(&dev->gadget.dev);
++		dev->driver = NULL;
++		dev->gadget.dev.driver = NULL;
++		return retval;
++	}
++	device_create_file(dev->dev, &dev_attr_function);
++
++	/* ... then enable host detection and ep0; and we're ready
++	 * for set_configuration as well as eventual disconnect.
++	 */
++	ep0_start (dev);
++
++	DEBUG (dev, "%s ready\n", driver->driver.name);
++
++	return 0;
++}
++EXPORT_SYMBOL (usb_gadget_register_driver);
++
++static void
++stop_activity (struct sa1100_udc *dev, struct usb_gadget_driver *driver)
++{
++	int i;
++
++	/* don't disconnect if it's not connected */
++	if (dev->gadget.speed == USB_SPEED_UNKNOWN)
++		driver = NULL;
++	dev->gadget.speed = USB_SPEED_UNKNOWN;
++
++	/* mask everything */
++	Ser0UDCCR = 0xFC;
++
++	/* stop hardware; prevent new request submissions;
++	 * and kill any outstanding requests.
++	 */
++	for (i = 0; i < 3; i++) {
++		struct sa1100_ep *ep = &dev->ep[i];
++
++		ep->stopped = 1;
++		nuke(ep, -ESHUTDOWN);
++	}
++	udc_disable (dev);
++
++	/* report disconnect; the driver is already quiesced */
++	if (driver) {
++//		spin_unlock (&dev->lock);
++		driver->disconnect (&dev->gadget);
++//		spin_lock (&dev->lock);
++	}
++	/* re-init driver-visible data structures */
++	udc_reinit(dev);
++}
++
++int usb_gadget_unregister_driver (struct usb_gadget_driver *driver)
++{
++	struct sa1100_udc	*dev = the_controller;
++
++	if (!dev)
++		return -ENODEV;
++	if (!driver || driver != dev->driver)
++		return -EINVAL;
++
++	local_irq_disable();
++	stop_activity (dev, driver);
++	local_irq_enable();
++	driver->unbind (&dev->gadget);
++	dev->driver = 0;
++
++//printk("%s: deleting device\n",__FUNCTION__);
++//	device_del (&dev->gadget.dev);
++	device_remove_file(dev->dev, &dev_attr_function);
++
++	DEBUG (dev, "unregistered driver '%s'\n", driver->driver.name);
++	return 0;
++}
++EXPORT_SYMBOL (usb_gadget_unregister_driver);
++
++
++/*-------------------------------------------------------------------------*/
++
++/*-------------------------------------------------------------------------*/
++
++//////////////////////////////////////////////////////////////////////////////
++// Proc Filesystem Support
++//////////////////////////////////////////////////////////////////////////////
++
++#if CONFIG_PROC_FS
++
++#define SAY(fmt,args...)  p += sprintf (p, fmt, ## args)
++#define SAYV(num)         p += sprintf (p, num_fmt, "Value", num)
++#define SAYC(label,yn)    p += sprintf (p, yn_fmt, label, yn)
++#define SAYS(label,v)     p += sprintf (p, cnt_fmt, label, v)
++
++static int usbctl_read_proc (char *page, char **start, off_t off,
++			    int count, int *eof, void *data)
++{
++	 const char * num_fmt   = "%25.25s: %8.8lX\n";
++	 const char * cnt_fmt   = "%25.25s: %lu\n";
++	 const char * yn_fmt    = "%25.25s: %s\n";
++	 const char * yes       = "YES";
++	 const char * no        = "NO";
++	 unsigned long v;
++	 char * p = page;
++	 int len;
++
++ 	 SAY ("SA1100 USB Controller Core\n");
++
++	 SAYS ("ep0 bytes read", usbd_info.stats.ep0_bytes_read);
++	 SAYS ("ep0 bytes written", usbd_info.stats.ep0_bytes_written);
++	 SAYS ("ep0 FIFO read failures", usbd_info.stats.ep0_fifo_read_failures);
++	 SAYS ("ep0 FIFO write failures", usbd_info.stats.ep0_fifo_write_failures);
++
++	 SAY ("\n");
++
++	 v = Ser0UDCAR;
++	 SAY ("%25.25s: 0x%8.8lX - %ld\n", "Address Register", v, v);
++	 v = Ser0UDCIMP;
++	 SAY ("%25.25s: %ld (%8.8lX)\n", "IN  max packet size", v+1, v);
++	 v = Ser0UDCOMP;
++	 SAY ("%25.25s: %ld (%8.8lX)\n", "OUT max packet size", v+1, v);
++
++	 v = Ser0UDCCR;
++	 SAY ("\nUDC Mask Register\n");
++	 SAYV (v);
++	 SAYC ("UDC Active", (v & UDCCR_UDA) ? yes : no);
++	 SAYC ("Suspend interrupts masked", (v & UDCCR_SUSIM) ? yes : no);
++	 SAYC ("Resume interrupts masked", (v & UDCCR_RESIM) ? yes : no);
++	 SAYC ("Reset interrupts masked", (v & UDCCR_REM) ? yes : no);
++
++	 v = Ser0UDCSR;
++	 SAY ("\nUDC Interrupt Request Register\n");
++	 SAYV (v);
++	 SAYC ("Reset pending", (v & UDCSR_RSTIR) ? yes : no);
++	 SAYC ("Suspend pending", (v & UDCSR_SUSIR) ? yes : no);
++	 SAYC ("Resume pending", (v & UDCSR_RESIR) ? yes : no);
++	 SAYC ("ep0 pending", (v & UDCSR_EIR)   ? yes : no);
++	 SAYC ("receiver pending", (v & UDCSR_RIR)   ? yes : no);
++	 SAYC ("tramsitter pending", (v & UDCSR_TIR)   ? yes : no);
++
++#ifdef CONFIG_SA1100_EXTENEX1
++	 SAYC ("\nSoft connect", (PPSR & PPC_USB_SOFT_CON) ? "Visible" : "Hidden");
++#endif
++
++#if 1
++	 SAY ("\nDMA Tx registers\n");
++	 {
++	 dma_regs_t *r=the_controller->ep[2].dmaregs;
++	 SAY (" DDAR");
++	 SAYV(r->DDAR);
++	 SAY (" DCSR");
++	 SAYV(r->RdDCSR);
++	 SAY (" DBSA (address buf A) ");
++	 SAYV(r->DBSA);
++	 SAY (" DBTA (transfer count A) ");
++	 SAYV(r->DBTA);
++	 SAY (" DBSB (address buf B) ");
++	 SAYV(r->DBSB);
++	 SAY (" DBTB (transfer count B) ");
++	 SAYV(r->DBTB);
++	 
++	 }
++	 SAY ("\nDMA Rx registers\n");
++	 {
++	 dma_regs_t *r=the_controller->ep[1].dmaregs;
++	 SAY (" DDAR");
++	 SAYV(r->DDAR);
++	 SAY (" DCSR");
++	 SAYV(r->RdDCSR);
++	 SAY (" DBSA (address buf A) ");
++	 SAYV(r->DBSA);
++	 SAY (" DBTA (transfer count A) ");
++	 SAYV(r->DBTA);
++	 SAY (" DBSB (address buf B) ");
++	 SAYV(r->DBSB);
++	 SAY (" DBTB (transfer count B) ");
++	 SAYV(r->DBTB);
++	 
++	 }
++#endif
++#if 1
++	 v = Ser0UDCCS0;
++	 SAY ("\nUDC Endpoint Zero Status Register\n");
++	 SAYV (v);
++	 SAYC ("Out Packet Ready", (v & UDCCS0_OPR) ? yes : no);
++	 SAYC ("In Packet Ready", (v & UDCCS0_IPR) ? yes : no);
++	 SAYC ("Sent Stall", (v & UDCCS0_SST) ? yes : no);
++	 SAYC ("Force Stall", (v & UDCCS0_FST) ? yes : no);
++	 SAYC ("Data End", (v & UDCCS0_DE)  ? yes : no);
++	 SAYC ("Data Setup End", (v & UDCCS0_SE)  ? yes : no);
++	 SAYC ("Serviced (SO)", (v & UDCCS0_SO)  ? yes : no);
++
++	 v = Ser0UDCCS1;
++	 SAY ("\nUDC Receiver Status Register\n");
++	 SAYV (v);
++	 SAYC ("Receive Packet Complete", (v & UDCCS1_RPC) ? yes : no);
++	 SAYC ("Sent Stall", (v & UDCCS1_SST) ? yes : no);
++	 SAYC ("Force Stall", (v & UDCCS1_FST) ? yes : no);
++	 SAYC ("Receive Packet Error", (v & UDCCS1_RPE) ? yes : no);
++	 SAYC ("Receive FIFO not empty", (v & UDCCS1_RNE) ? yes : no);
++
++	 v = Ser0UDCCS2;
++	 SAY ("\nUDC Transmitter Status Register\n");
++	 SAYV (v);
++	 SAYC ("FIFO has < 8 of 16 chars", (v & UDCCS2_TFS) ? yes : no);
++	 SAYC ("Transmit Packet Complete", (v & UDCCS2_TPC) ? yes : no);
++	 SAYC ("Transmit FIFO underrun", (v & UDCCS2_TUR) ? yes : no);
++	 SAYC ("Transmit Packet Error", (v & UDCCS2_TPE) ? yes : no);
++	 SAYC ("Sent Stall", (v & UDCCS2_SST) ? yes : no);
++	 SAYC ("Force Stall", (v & UDCCS2_FST) ? yes : no);
++#endif
++
++	 len = (p - page) - off;
++	 if (len < 0)
++		  len = 0;
++	 *eof = (len <=count) ? 1 : 0;
++	 *start = page + off;
++	 return len;
++}
++
++static inline void register_proc_entry (void)
++{
++	create_proc_read_entry (driver_name, 0, NULL,
++		usbctl_read_proc, NULL);
++}
++
++static inline void unregister_proc_entry (void)
++{
++	remove_proc_entry (driver_name, NULL);
++}
++
++#else
++
++#define register_proc_entry() do {} while (0)
++#define unregister_proc_entry() do {} while (0)
++
++#endif  /* CONFIG_PROC_FS */
++
++/*-------------------------------------------------------------------------*/
++
++MODULE_DESCRIPTION ("sa1100_udc");
++MODULE_AUTHOR ("Various");
++MODULE_LICENSE ("GPL");
++
++static struct sa1100_udc memory = {
++	.gadget = {
++		.ops		= &sa1100_ops,
++		.ep0		= &memory.ep[0].ep,
++		.name		= driver_name,
++/*
++		.dev = {
++			.bus_id		= "gadget",
++			.release	= nop_release,
++		},
++*/
++	},
++
++	/* control endpoint */
++	.ep[0] = {
++		.ep = {
++			.name		= ep0name,
++			.ops		= &sa1100_ep_ops,
++			.maxpacket	= EP0_FIFO_SIZE,
++//			.maxpacket	= 8,
++		},
++		.dev		= &memory,
++/*
++		.reg_udccs	= &UDCCS0,
++		.reg_uddr	= &UDDR0,
++*/
++	},
++
++	/* first group of endpoints */
++	.ep[1] = {
++		.ep = {
++			.name		= "ep1out-bulk",
++			.ops		= &sa1100_ep_ops,
++			.maxpacket	= BULK_FIFO_SIZE,
++//			.maxpacket	= 64,
++		},
++		.dev		= &memory,
++/*
++		.fifo_size	= BULK_FIFO_SIZE,
++		.bEndpointAddress = USB_DIR_IN | 1,
++		.bmAttributes	= USB_ENDPOINT_XFER_BULK,
++		.reg_udccs	= &UDCCS1,
++		.reg_uddr	= &UDDR1,
++		drcmr (25)
++*/
++	},
++	.ep[2] = {
++		.ep = {
++			.name		= "ep2in-bulk",
++			.ops		= &sa1100_ep_ops,
++			.maxpacket	= BULK_FIFO_SIZE,
++//			.maxpacket	= 64,
++		},
++		.dev		= &memory,
++/*
++		.fifo_size	= BULK_FIFO_SIZE,
++		.bEndpointAddress = 2,
++		.bmAttributes	= USB_ENDPOINT_XFER_BULK,
++		.reg_udccs	= &UDCCS2,
++		.reg_ubcr	= &UBCR2,
++		.reg_uddr	= &UDDR2,
++		drcmr (26)
++*/
++	}
++};
++
++static int __init sa1100_udc_probe ( struct device *_dev)
++{
++	struct sa1100_udc *dev=&memory;
++	int retval = 0;
++
++	/* setup dev */
++	dev->dev = _dev;
++//	dev->mach = _dev->platform_data;
++
++	device_initialize(&dev->gadget.dev);
++	dev->gadget.dev.parent = _dev;
++	dev->gadget.dev.dma_mask = _dev->dma_mask;
++
++	the_controller = dev;
++	dev_set_drvdata(_dev, dev);
++
++	/* controller stays disabled until gadget driver is bound */
++	udc_disable (dev);
++	udc_reinit(dev);
++
++//	spin_lock_init(&the_udc.lock);
++	register_proc_entry ();
++
++	/* setup dma channels and IRQ */
++	retval = sa1100_request_dma(DMA_Ser0UDCRd, "USB receive",
++				    NULL, NULL, &dev->ep[1].dmaregs);
++	if (retval) {
++		ERROR (dev, "couldn't get rx dma, err %d\n", retval);
++		goto err_rx_dma;
++	}
++	retval = sa1100_request_dma(DMA_Ser0UDCWr, "USB transmit",
++				    NULL, NULL, &dev->ep[2].dmaregs);
++	if (retval) {
++		ERROR (dev, "couldn't get tx dma, err %d\n", retval);
++		goto err_tx_dma;
++	}
++	retval = request_irq (IRQ_Ser0UDC, udc_int_hndlr, SA_INTERRUPT,
++		driver_name, dev);
++	if (retval) {
++		ERROR (dev, "couldn't get irq, err %d\n", retval);
++		goto err_irq;
++	}
++
++	INFO (dev, "initialized, rx %p tx %p irq %d\n",
++		dev->ep[1].dmaregs, dev->ep[2].dmaregs, IRQ_Ser0UDC);
++	return 0;
++
++err_irq:
++	sa1100_free_dma (dev->ep[2].dmaregs);
++	usbd_info.dmaregs_rx = 0;
++err_tx_dma:
++	sa1100_free_dma (dev->ep[1].dmaregs);
++	usbd_info.dmaregs_tx = 0;
++err_rx_dma:
++	return retval;
++}
++
++static int __exit sa1100_udc_remove (struct device *_dev)
++{
++	struct sa1100_udc *dev = dev_get_drvdata(_dev);
++	
++	udc_disable (dev);
++	unregister_proc_entry ();
++	usb_gadget_unregister_driver (dev->driver);
++	sa1100_free_dma (dev->ep[1].dmaregs);
++	sa1100_free_dma (dev->ep[2].dmaregs);
++	free_irq (IRQ_Ser0UDC, dev);
++	dev_set_drvdata(_dev,NULL);
++	the_controller = NULL;
++	return 0;
++}
++
++static struct device_driver udc_driver = {
++	.name		= "sa11x0-udc",
++	.bus		= &platform_bus_type,
++	.probe		= sa1100_udc_probe,
++	.remove		= __exit_p(sa1100_udc_remove),
++//	.suspend	= sa1100_udc_suspend,
++//	.resume		= sa1100_udc_resume,
++};
++
++static int __init udc_init(void)
++{
++	printk(KERN_INFO "%s: version %s\n", driver_name, DRIVER_VERSION);
++#ifdef NCB_DMA_FIX
++	send_buffer = (char*) kmalloc( SEND_BUFFER_SIZE, GFP_KERNEL | GFP_DMA );
++	receive_buffer = (char*) kmalloc( RECEIVE_BUFFER_SIZE, GFP_KERNEL | GFP_DMA );
++#endif
++	return driver_register(&udc_driver);
++}
++module_init(udc_init);
++
++static void __exit udc_exit(void)
++{
++#ifdef NCB_DMA_FIX
++	if (send_buffer) {
++	    kfree(send_buffer);
++	    send_buffer=NULL;
++	}
++	if (receive_buffer) {
++	    kfree(receive_buffer);
++	    receive_buffer=NULL;
++	}
++#endif
++	driver_unregister(&udc_driver);
++}
++module_exit(udc_exit);
++
+diff -uNr linux-2.6.21.vanilla/drivers/usb/gadget/sa1100_udc.h linux-2.6.21/drivers/usb/gadget/sa1100_udc.h
+--- linux-2.6.21.vanilla/drivers/usb/gadget/sa1100_udc.h	1970-01-01 01:00:00.000000000 +0100
++++ linux-2.6.21/drivers/usb/gadget/sa1100_udc.h	2007-06-05 11:58:29.000000000 +0200
+@@ -0,0 +1,107 @@
++/*
++ * internals of "new style" UDC controller
++ * <linux/usb_gadget.h> replaces ARM-specific "sa1100_usb.h".
++ */
++
++struct sa1100_ep {
++	struct usb_ep				ep;
++	struct sa1100_udc			*dev;
++	//unsigned long				irqs;
++
++	const struct usb_endpoint_descriptor	*desc;
++	struct list_head			queue;
++	dma_regs_t 				*dmaregs;
++	unsigned 				stopped : 1;
++};
++
++struct sa1100_request {
++	struct usb_request			req;
++	struct list_head			queue;
++// NCB	unsigned				mapped : 1;
++};
++
++enum ep0_state { 
++	EP0_IDLE,
++	EP0_IN_DATA_PHASE,
++	EP0_OUT_DATA_PHASE,
++	EP0_END_XFER,
++	EP0_STALL,
++};
++
++//#define EP0_FIFO_SIZE	((unsigned)16)
++#define EP0_FIFO_SIZE	((unsigned)8)
++#define BULK_FIFO_SIZE	((unsigned)64)
++//#define ISO_FIFO_SIZE	((unsigned)256)
++//#define INT_FIFO_SIZE	((unsigned)8)
++
++struct udc_stats {
++	struct ep0stats {
++		unsigned long		ops;
++		unsigned long		bytes;
++	} read, write;
++	unsigned long			irqs;
++};
++
++struct sa1100_udc {
++	struct usb_gadget			gadget;
++	struct usb_gadget_driver 		*driver;
++	struct device				*dev;
++	enum ep0_state				ep0state;
++	struct udc_stats			stats;
++// NCB	spinlock_t				lock;
++// NCB	dma_regs_t 				*dmaregs_tx, *dmaregs_rx;
++	unsigned				got_irq : 1,
++						vbus : 1,
++						pullup : 1,
++						has_cfr : 1,
++						req_pending : 1,
++						req_std : 1,
++						req_config : 1;
++
++#define start_watchdog(dev) mod_timer(&dev->timer, jiffies + (HZ/200))
++	struct timer_list			timer;
++	u64 dma_mask;
++	unsigned char				address;
++	struct sa1100_ep			ep[3];
++	int					ep0_req_len;
++};
++
++/*-------------------------------------------------------------------------*/
++
++#define xprintk(dev,level,fmt,args...) \
++	printk(level "%s: " fmt , driver_name , ## args)
++
++#ifdef DEBUG
++#undef DEBUG
++#define DEBUG(dev,fmt,args...) \
++	xprintk(dev , KERN_DEBUG , fmt , ## args)
++#else
++#define DEBUG(dev,fmt,args...) \
++	do { } while (0)
++#endif /* DEBUG */
++
++#ifdef VERBOSE
++#define VDEBUG DEBUG
++#else
++#define VDEBUG(dev,fmt,args...) \
++	do { } while (0)
++#endif	/* VERBOSE */
++
++#define ERROR(dev,fmt,args...) \
++	xprintk(dev , KERN_ERR , fmt , ## args)
++#define WARN(dev,fmt,args...) \
++	xprintk(dev , KERN_WARNING , fmt , ## args)
++#define INFO(dev,fmt,args...) \
++	xprintk(dev , KERN_INFO , fmt , ## args)
++
++/*-------------------------------------------------------------------------*/
++
++#ifndef	container_of
++#define container_of list_entry
++#endif
++
++#ifndef WARN_ON
++#define	WARN_ON(x)	do { } while (0)
++#endif
++
++
+diff -uNr linux-2.6.21.vanilla/include/linux/usb_ch9.h linux-2.6.21/include/linux/usb_ch9.h
+--- linux-2.6.21.vanilla/include/linux/usb_ch9.h	1970-01-01 01:00:00.000000000 +0100
++++ linux-2.6.21/include/linux/usb_ch9.h	2007-06-05 11:58:29.000000000 +0200
+@@ -0,0 +1,555 @@
++/*
++ * This file holds USB constants and structures that are needed for USB
++ * device APIs.  These are used by the USB device model, which is defined
++ * in chapter 9 of the USB 2.0 specification.  Linux has several APIs in C
++ * that need these:
++ *
++ * - the master/host side Linux-USB kernel driver API;
++ * - the "usbfs" user space API; and
++ * - the Linux "gadget" slave/device/peripheral side driver API.
++ *
++ * USB 2.0 adds an additional "On The Go" (OTG) mode, which lets systems
++ * act either as a USB master/host or as a USB slave/device.  That means
++ * the master and slave side APIs benefit from working well together.
++ *
++ * There's also "Wireless USB", using low power short range radios for
++ * peripheral interconnection but otherwise building on the USB framework.
++ */
++
++#ifndef __LINUX_USB_CH9_H
++#define __LINUX_USB_CH9_H
++
++#include <linux/types.h>	/* __u8 etc */
++
++/*-------------------------------------------------------------------------*/
++
++/* CONTROL REQUEST SUPPORT */
++
++/*
++ * USB directions
++ *
++ * This bit flag is used in endpoint descriptors' bEndpointAddress field.
++ * It's also one of three fields in control requests bRequestType.
++ */
++#define USB_DIR_OUT			0		/* to device */
++#define USB_DIR_IN			0x80		/* to host */
++
++/*
++ * USB types, the second of three bRequestType fields
++ */
++#define USB_TYPE_MASK			(0x03 << 5)
++#define USB_TYPE_STANDARD		(0x00 << 5)
++#define USB_TYPE_CLASS			(0x01 << 5)
++#define USB_TYPE_VENDOR			(0x02 << 5)
++#define USB_TYPE_RESERVED		(0x03 << 5)
++
++/*
++ * USB recipients, the third of three bRequestType fields
++ */
++#define USB_RECIP_MASK			0x1f
++#define USB_RECIP_DEVICE		0x00
++#define USB_RECIP_INTERFACE		0x01
++#define USB_RECIP_ENDPOINT		0x02
++#define USB_RECIP_OTHER			0x03
++
++/*
++ * Standard requests, for the bRequest field of a SETUP packet.
++ *
++ * These are qualified by the bRequestType field, so that for example
++ * TYPE_CLASS or TYPE_VENDOR specific feature flags could be retrieved
++ * by a GET_STATUS request.
++ */
++#define USB_REQ_GET_STATUS		0x00
++#define USB_REQ_CLEAR_FEATURE		0x01
++#define USB_REQ_SET_FEATURE		0x03
++#define USB_REQ_SET_ADDRESS		0x05
++#define USB_REQ_GET_DESCRIPTOR		0x06
++#define USB_REQ_SET_DESCRIPTOR		0x07
++#define USB_REQ_GET_CONFIGURATION	0x08
++#define USB_REQ_SET_CONFIGURATION	0x09
++#define USB_REQ_GET_INTERFACE		0x0A
++#define USB_REQ_SET_INTERFACE		0x0B
++#define USB_REQ_SYNCH_FRAME		0x0C
++
++#define USB_REQ_SET_ENCRYPTION		0x0D	/* Wireless USB */
++#define USB_REQ_GET_ENCRYPTION		0x0E
++#define USB_REQ_SET_HANDSHAKE		0x0F
++#define USB_REQ_GET_HANDSHAKE		0x10
++#define USB_REQ_SET_CONNECTION		0x11
++#define USB_REQ_SET_SECURITY_DATA	0x12
++#define USB_REQ_GET_SECURITY_DATA	0x13
++#define USB_REQ_SET_WUSB_DATA		0x14
++#define USB_REQ_LOOPBACK_DATA_WRITE	0x15
++#define USB_REQ_LOOPBACK_DATA_READ	0x16
++#define USB_REQ_SET_INTERFACE_DS	0x17
++
++/*
++ * USB feature flags are written using USB_REQ_{CLEAR,SET}_FEATURE, and
++ * are read as a bit array returned by USB_REQ_GET_STATUS.  (So there
++ * are at most sixteen features of each type.)
++ */
++#define USB_DEVICE_SELF_POWERED		0	/* (read only) */
++#define USB_DEVICE_REMOTE_WAKEUP	1	/* dev may initiate wakeup */
++#define USB_DEVICE_TEST_MODE		2	/* (wired high speed only) */
++#define USB_DEVICE_BATTERY		2	/* (wireless) */
++#define USB_DEVICE_B_HNP_ENABLE		3	/* (otg) dev may initiate HNP */
++#define USB_DEVICE_WUSB_DEVICE		3	/* (wireless)*/
++#define USB_DEVICE_A_HNP_SUPPORT	4	/* (otg) RH port supports HNP */
++#define USB_DEVICE_A_ALT_HNP_SUPPORT	5	/* (otg) other RH port does */
++#define USB_DEVICE_DEBUG_MODE		6	/* (special devices only) */
++
++#define USB_ENDPOINT_HALT		0	/* IN/OUT will STALL */
++
++
++/**
++ * struct usb_ctrlrequest - SETUP data for a USB device control request
++ * @bRequestType: matches the USB bmRequestType field
++ * @bRequest: matches the USB bRequest field
++ * @wValue: matches the USB wValue field (le16 byte order)
++ * @wIndex: matches the USB wIndex field (le16 byte order)
++ * @wLength: matches the USB wLength field (le16 byte order)
++ *
++ * This structure is used to send control requests to a USB device.  It matches
++ * the different fields of the USB 2.0 Spec section 9.3, table 9-2.  See the
++ * USB spec for a fuller description of the different fields, and what they are
++ * used for.
++ *
++ * Note that the driver for any interface can issue control requests.
++ * For most devices, interfaces don't coordinate with each other, so
++ * such requests may be made at any time.
++ */
++struct usb_ctrlrequest {
++	__u8 bRequestType;
++	__u8 bRequest;
++	__le16 wValue;
++	__le16 wIndex;
++	__le16 wLength;
++} __attribute__ ((packed));
++
++/*-------------------------------------------------------------------------*/
++
++/*
++ * STANDARD DESCRIPTORS ... as returned by GET_DESCRIPTOR, or
++ * (rarely) accepted by SET_DESCRIPTOR.
++ *
++ * Note that all multi-byte values here are encoded in little endian
++ * byte order "on the wire".  But when exposed through Linux-USB APIs,
++ * they've been converted to cpu byte order.
++ */
++
++/*
++ * Descriptor types ... USB 2.0 spec table 9.5
++ */
++#define USB_DT_DEVICE			0x01
++#define USB_DT_CONFIG			0x02
++#define USB_DT_STRING			0x03
++#define USB_DT_INTERFACE		0x04
++#define USB_DT_ENDPOINT			0x05
++#define USB_DT_DEVICE_QUALIFIER		0x06
++#define USB_DT_OTHER_SPEED_CONFIG	0x07
++#define USB_DT_INTERFACE_POWER		0x08
++/* these are from a minor usb 2.0 revision (ECN) */
++#define USB_DT_OTG			0x09
++#define USB_DT_DEBUG			0x0a
++#define USB_DT_INTERFACE_ASSOCIATION	0x0b
++/* these are from the Wireless USB spec */
++#define USB_DT_SECURITY			0x0c
++#define USB_DT_KEY			0x0d
++#define USB_DT_ENCRYPTION_TYPE		0x0e
++#define USB_DT_BOS			0x0f
++#define USB_DT_DEVICE_CAPABILITY	0x10
++#define USB_DT_WIRELESS_ENDPOINT_COMP	0x11
++
++/* conventional codes for class-specific descriptors */
++#define USB_DT_CS_DEVICE		0x21
++#define USB_DT_CS_CONFIG		0x22
++#define USB_DT_CS_STRING		0x23
++#define USB_DT_CS_INTERFACE		0x24
++#define USB_DT_CS_ENDPOINT		0x25
++
++/* All standard descriptors have these 2 fields at the beginning */
++struct usb_descriptor_header {
++	__u8  bLength;
++	__u8  bDescriptorType;
++} __attribute__ ((packed));
++
++
++/*-------------------------------------------------------------------------*/
++
++/* USB_DT_DEVICE: Device descriptor */
++struct usb_device_descriptor {
++	__u8  bLength;
++	__u8  bDescriptorType;
++
++	__le16 bcdUSB;
++	__u8  bDeviceClass;
++	__u8  bDeviceSubClass;
++	__u8  bDeviceProtocol;
++	__u8  bMaxPacketSize0;
++	__le16 idVendor;
++	__le16 idProduct;
++	__le16 bcdDevice;
++	__u8  iManufacturer;
++	__u8  iProduct;
++	__u8  iSerialNumber;
++	__u8  bNumConfigurations;
++} __attribute__ ((packed));
++
++#define USB_DT_DEVICE_SIZE		18
++
++
++/*
++ * Device and/or Interface Class codes
++ * as found in bDeviceClass or bInterfaceClass
++ * and defined by www.usb.org documents
++ */
++#define USB_CLASS_PER_INTERFACE		0	/* for DeviceClass */
++#define USB_CLASS_AUDIO			1
++#define USB_CLASS_COMM			2
++#define USB_CLASS_HID			3
++#define USB_CLASS_PHYSICAL		5
++#define USB_CLASS_STILL_IMAGE		6
++#define USB_CLASS_PRINTER		7
++#define USB_CLASS_MASS_STORAGE		8
++#define USB_CLASS_HUB			9
++#define USB_CLASS_CDC_DATA		0x0a
++#define USB_CLASS_CSCID			0x0b	/* chip+ smart card */
++#define USB_CLASS_CONTENT_SEC		0x0d	/* content security */
++#define USB_CLASS_VIDEO			0x0e
++#define USB_CLASS_WIRELESS_CONTROLLER	0xe0
++#define USB_CLASS_APP_SPEC		0xfe
++#define USB_CLASS_VENDOR_SPEC		0xff
++
++/*-------------------------------------------------------------------------*/
++
++/* USB_DT_CONFIG: Configuration descriptor information.
++ *
++ * USB_DT_OTHER_SPEED_CONFIG is the same descriptor, except that the
++ * descriptor type is different.  Highspeed-capable devices can look
++ * different depending on what speed they're currently running.  Only
++ * devices with a USB_DT_DEVICE_QUALIFIER have any OTHER_SPEED_CONFIG
++ * descriptors.
++ */
++struct usb_config_descriptor {
++	__u8  bLength;
++	__u8  bDescriptorType;
++
++	__le16 wTotalLength;
++	__u8  bNumInterfaces;
++	__u8  bConfigurationValue;
++	__u8  iConfiguration;
++	__u8  bmAttributes;
++	__u8  bMaxPower;
++} __attribute__ ((packed));
++
++#define USB_DT_CONFIG_SIZE		9
++
++/* from config descriptor bmAttributes */
++#define USB_CONFIG_ATT_ONE		(1 << 7)	/* must be set */
++#define USB_CONFIG_ATT_SELFPOWER	(1 << 6)	/* self powered */
++#define USB_CONFIG_ATT_WAKEUP		(1 << 5)	/* can wakeup */
++#define USB_CONFIG_ATT_BATTERY		(1 << 4)	/* battery powered */
++
++/*-------------------------------------------------------------------------*/
++
++/* USB_DT_STRING: String descriptor */
++struct usb_string_descriptor {
++	__u8  bLength;
++	__u8  bDescriptorType;
++
++	__le16 wData[1];		/* UTF-16LE encoded */
++} __attribute__ ((packed));
++
++/* note that "string" zero is special, it holds language codes that
++ * the device supports, not Unicode characters.
++ */
++
++/*-------------------------------------------------------------------------*/
++
++/* USB_DT_INTERFACE: Interface descriptor */
++struct usb_interface_descriptor {
++	__u8  bLength;
++	__u8  bDescriptorType;
++
++	__u8  bInterfaceNumber;
++	__u8  bAlternateSetting;
++	__u8  bNumEndpoints;
++	__u8  bInterfaceClass;
++	__u8  bInterfaceSubClass;
++	__u8  bInterfaceProtocol;
++	__u8  iInterface;
++} __attribute__ ((packed));
++
++#define USB_DT_INTERFACE_SIZE		9
++
++/*-------------------------------------------------------------------------*/
++
++/* USB_DT_ENDPOINT: Endpoint descriptor */
++struct usb_endpoint_descriptor {
++	__u8  bLength;
++	__u8  bDescriptorType;
++
++	__u8  bEndpointAddress;
++	__u8  bmAttributes;
++	__le16 wMaxPacketSize;
++	__u8  bInterval;
++
++	/* NOTE:  these two are _only_ in audio endpoints. */
++	/* use USB_DT_ENDPOINT*_SIZE in bLength, not sizeof. */
++	__u8  bRefresh;
++	__u8  bSynchAddress;
++} __attribute__ ((packed));
++
++#define USB_DT_ENDPOINT_SIZE		7
++#define USB_DT_ENDPOINT_AUDIO_SIZE	9	/* Audio extension */
++
++
++/*
++ * Endpoints
++ */
++#define USB_ENDPOINT_NUMBER_MASK	0x0f	/* in bEndpointAddress */
++#define USB_ENDPOINT_DIR_MASK		0x80
++
++#define USB_ENDPOINT_XFERTYPE_MASK	0x03	/* in bmAttributes */
++#define USB_ENDPOINT_XFER_CONTROL	0
++#define USB_ENDPOINT_XFER_ISOC		1
++#define USB_ENDPOINT_XFER_BULK		2
++#define USB_ENDPOINT_XFER_INT		3
++#define USB_ENDPOINT_MAX_ADJUSTABLE	0x80
++
++
++/*-------------------------------------------------------------------------*/
++
++/* USB_DT_DEVICE_QUALIFIER: Device Qualifier descriptor */
++struct usb_qualifier_descriptor {
++	__u8  bLength;
++	__u8  bDescriptorType;
++
++	__le16 bcdUSB;
++	__u8  bDeviceClass;
++	__u8  bDeviceSubClass;
++	__u8  bDeviceProtocol;
++	__u8  bMaxPacketSize0;
++	__u8  bNumConfigurations;
++	__u8  bRESERVED;
++} __attribute__ ((packed));
++
++
++/*-------------------------------------------------------------------------*/
++
++/* USB_DT_OTG (from OTG 1.0a supplement) */
++struct usb_otg_descriptor {
++	__u8  bLength;
++	__u8  bDescriptorType;
++
++	__u8  bmAttributes;	/* support for HNP, SRP, etc */
++} __attribute__ ((packed));
++
++/* from usb_otg_descriptor.bmAttributes */
++#define USB_OTG_SRP		(1 << 0)
++#define USB_OTG_HNP		(1 << 1)	/* swap host/device roles */
++
++/*-------------------------------------------------------------------------*/
++
++/* USB_DT_DEBUG:  for special highspeed devices, replacing serial console */
++struct usb_debug_descriptor {
++	__u8  bLength;
++	__u8  bDescriptorType;
++
++	/* bulk endpoints with 8 byte maxpacket */
++	__u8  bDebugInEndpoint;
++	__u8  bDebugOutEndpoint;
++};
++
++/*-------------------------------------------------------------------------*/
++
++/* USB_DT_INTERFACE_ASSOCIATION: groups interfaces */
++struct usb_interface_assoc_descriptor {
++	__u8  bLength;
++	__u8  bDescriptorType;
++
++	__u8  bFirstInterface;
++	__u8  bInterfaceCount;
++	__u8  bFunctionClass;
++	__u8  bFunctionSubClass;
++	__u8  bFunctionProtocol;
++	__u8  iFunction;
++} __attribute__ ((packed));
++
++
++/*-------------------------------------------------------------------------*/
++
++/* USB_DT_SECURITY:  group of wireless security descriptors, including
++ * encryption types available for setting up a CC/association.
++ */
++struct usb_security_descriptor {
++	__u8  bLength;
++	__u8  bDescriptorType;
++
++	__le16 wTotalLength;
++	__u8  bNumEncryptionTypes;
++};
++
++/*-------------------------------------------------------------------------*/
++
++/* USB_DT_KEY:  used with {GET,SET}_SECURITY_DATA; only public keys
++ * may be retrieved.
++ */
++struct usb_key_descriptor {
++	__u8  bLength;
++	__u8  bDescriptorType;
++
++	__u8  tTKID[3];
++	__u8  bReserved;
++	__u8  bKeyData[0];
++};
++
++/*-------------------------------------------------------------------------*/
++
++/* USB_DT_ENCRYPTION_TYPE:  bundled in DT_SECURITY groups */
++struct usb_encryption_descriptor {
++	__u8  bLength;
++	__u8  bDescriptorType;
++
++	__u8  bEncryptionType;
++#define	USB_ENC_TYPE_UNSECURE		0
++#define	USB_ENC_TYPE_WIRED		1	/* non-wireless mode */
++#define	USB_ENC_TYPE_CCM_1		2	/* aes128/cbc session */
++#define	USB_ENC_TYPE_RSA_1		3	/* rsa3072/sha1 auth */
++	__u8  bEncryptionValue;		/* use in SET_ENCRYPTION */
++	__u8  bAuthKeyIndex;
++};
++
++
++/*-------------------------------------------------------------------------*/
++
++/* USB_DT_BOS:  group of wireless capabilities */
++struct usb_bos_descriptor {
++	__u8  bLength;
++	__u8  bDescriptorType;
++
++	__le16 wTotalLength;
++	__u8  bNumDeviceCaps;
++};
++
++/*-------------------------------------------------------------------------*/
++
++/* USB_DT_DEVICE_CAPABILITY:  grouped with BOS */
++struct usb_dev_cap_header {
++	__u8  bLength;
++	__u8  bDescriptorType;
++	__u8  bDevCapabilityType;
++};
++
++#define	USB_CAP_TYPE_WIRELESS_USB	1
++
++struct usb_wireless_cap_descriptor {	/* Ultra Wide Band */
++	__u8  bLength;
++	__u8  bDescriptorType;
++	__u8  bDevCapabilityType;
++
++	__u8  bmAttributes;
++#define	USB_WIRELESS_P2P_DRD		(1 << 1)
++#define	USB_WIRELESS_BEACON_MASK	(3 << 2)
++#define	USB_WIRELESS_BEACON_SELF	(1 << 2)
++#define	USB_WIRELESS_BEACON_DIRECTED	(2 << 2)
++#define	USB_WIRELESS_BEACON_NONE	(3 << 2)
++	__le16 wPHYRates;	/* bit rates, Mbps */
++#define	USB_WIRELESS_PHY_53		(1 << 0)	/* always set */
++#define	USB_WIRELESS_PHY_80		(1 << 1)
++#define	USB_WIRELESS_PHY_107		(1 << 2)	/* always set */
++#define	USB_WIRELESS_PHY_160		(1 << 3)
++#define	USB_WIRELESS_PHY_200		(1 << 4)	/* always set */
++#define	USB_WIRELESS_PHY_320		(1 << 5)
++#define	USB_WIRELESS_PHY_400		(1 << 6)
++#define	USB_WIRELESS_PHY_480		(1 << 7)
++	__u8  bmTFITXPowerInfo;	/* TFI power levels */
++	__u8  bmFFITXPowerInfo;	/* FFI power levels */
++	__le16 bmBandGroup;
++	__u8  bReserved;
++};
++
++/*-------------------------------------------------------------------------*/
++
++/* USB_DT_WIRELESS_ENDPOINT_COMP:  companion descriptor associated with
++ * each endpoint descriptor for a wireless device
++ */
++struct usb_wireless_ep_comp_descriptor {
++	__u8  bLength;
++	__u8  bDescriptorType;
++
++	__u8  bMaxBurst;
++	__u8  bMaxSequence;
++	__le16 wMaxStreamDelay;
++	__le16 wOverTheAirPacketSize;
++	__u8  bOverTheAirInterval;
++	__u8  bmCompAttributes;
++#define USB_ENDPOINT_SWITCH_MASK	0x03	/* in bmCompAttributes */
++#define USB_ENDPOINT_SWITCH_NO		0
++#define USB_ENDPOINT_SWITCH_SWITCH	1
++#define USB_ENDPOINT_SWITCH_SCALE	2
++};
++
++/*-------------------------------------------------------------------------*/
++
++/* USB_REQ_SET_HANDSHAKE is a four-way handshake used between a wireless
++ * host and a device for connection set up, mutual authentication, and
++ * exchanging short lived session keys.  The handshake depends on a CC.
++ */
++struct usb_handshake {
++	__u8 bMessageNumber;
++	__u8 bStatus;
++	__u8 tTKID[3];
++	__u8 bReserved;
++	__u8 CDID[16];
++	__u8 nonce[16];
++	__u8 MIC[8];
++};
++
++/*-------------------------------------------------------------------------*/
++
++/* USB_REQ_SET_CONNECTION modifies or revokes a connection context (CC).
++ * A CC may also be set up using non-wireless secure channels (including
++ * wired USB!), and some devices may support CCs with multiple hosts.
++ */
++struct usb_connection_context {
++	__u8 CHID[16];		/* persistent host id */
++	__u8 CDID[16];		/* device id (unique w/in host context) */
++	__u8 CK[16];		/* connection key */
++};
++
++/*-------------------------------------------------------------------------*/
++
++/* USB 2.0 defines three speeds, here's how Linux identifies them */
++
++enum usb_device_speed {
++	USB_SPEED_UNKNOWN = 0,			/* enumerating */
++	USB_SPEED_LOW, USB_SPEED_FULL,		/* usb 1.1 */
++	USB_SPEED_HIGH,				/* usb 2.0 */
++	USB_SPEED_VARIABLE,			/* wireless (usb 2.5) */
++};
++
++enum usb_device_state {
++	/* NOTATTACHED isn't in the USB spec, and this state acts
++	 * the same as ATTACHED ... but it's clearer this way.
++	 */
++	USB_STATE_NOTATTACHED = 0,
++
++	/* chapter 9 and authentication (wireless) device states */
++	USB_STATE_ATTACHED,
++	USB_STATE_POWERED,			/* wired */
++	USB_STATE_UNAUTHENTICATED,		/* auth */
++	USB_STATE_RECONNECTING,			/* auth */
++	USB_STATE_DEFAULT,			/* limited function */
++	USB_STATE_ADDRESS,
++	USB_STATE_CONFIGURED,			/* most functions */
++
++	USB_STATE_SUSPENDED
++
++	/* NOTE:  there are actually four different SUSPENDED
++	 * states, returning to POWERED, DEFAULT, ADDRESS, or
++	 * CONFIGURED respectively when SOF tokens flow again.
++	 */
++};
++
++#endif	/* __LINUX_USB_CH9_H */
