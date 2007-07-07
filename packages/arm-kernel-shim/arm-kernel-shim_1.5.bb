@@ -5,7 +5,7 @@ HOMEPAGE = "http://wiki.buici.com/twiki/bin/view/Main/ApexBootloader"
 LICENSE = "GPL"
 PR = "r2"
 
-COMPATIBLE_MACHINE = "(ixp4xx|nslu2)"
+COMPATIBLE_MACHINE = "(ixp4xx|nslu2|fsg3)"
 
 SRC_URI = "ftp://ftp.buici.com/pub/arm/arm-kernel-shim/arm-kernel-shim-${PV}.tar.gz \
 	   file://config-nslu2.h \
