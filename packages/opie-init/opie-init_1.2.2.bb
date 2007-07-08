@@ -1,5 +1,5 @@
 require ${PN}.inc
-PR = "r7"
+PR = "r8"
 
 SRC_URI = "file://opie-reorgfiles \
            file://opie \

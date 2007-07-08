@@ -1,0 +1,13 @@
+diff --git a/../pbserver/Makefile b/../pbserver/Makefile
+index 27847c1..d6ffff3 100755
+--- a/../pbserver/Makefile
++++ b/../pbserver/Makefile
+@@ -15,7 +15,7 @@ configure:
+ dic:	staticdic learndic
+ 
+ staticdic:	fugodic.txt
+-	nkf -e $< | ruby dicfilter.rb | sort |uniq > $@
++	nkf -w $< | ruby dicfilter.rb | sort |uniq > $@
+ 
+ learndic:
+ 	touch $@

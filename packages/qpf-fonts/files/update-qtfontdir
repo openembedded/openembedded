@@ -41,7 +41,7 @@ if [ -z "$1" ]; then
 	if [ -n "$QTDIR" ]; then
 		fontdir=$QTDIR/lib/fonts
 	else
-		fontdir=/opt/QtPalmtop/lib/fonts
+		fontdir=@palmtopdir@/lib/fonts
 	fi
 else
 	fontdir=$1

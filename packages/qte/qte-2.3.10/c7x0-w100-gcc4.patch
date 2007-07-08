@@ -1,0 +1,31 @@
+diff --git a/src/kernel/qgfxw100_qws.cpp b/src/kernel/qgfxw100_qws.cpp
+index cbc42d6..b5dfe31 100644
+--- a/src/kernel/qgfxw100_qws.cpp
++++ b/src/kernel/qgfxw100_qws.cpp
+@@ -1250,7 +1250,7 @@ void QGfxW100< depth, type>::dDrawPolyline( const QPointArray &a,
+     points[ npoints ] = points[ npoints - 1 ];
+ 
+ 
+-    GFX_START( clipbounds );
++    GFX_START( this->clipbounds );
+     driver.setFrgColour( this->cpen.color().rgb() );
+     driver.setRopOperation( ROP3_PATCOPY );
+     for ( int loopc = 0; loopc < this->ncliprect; loopc++ ) {
+@@ -1341,7 +1341,7 @@ void QGfxW100< depth, type>::dDrawPoint( int x, int y )
+     point.XCoord = x + this->xoffs;
+     point.YCoord = y + this->yoffs;
+ 
+-    GFX_START( clipbounds );
++    GFX_START( this->clipbounds );
+     driver.setFrgColour( this->cpen.color().rgb() );
+     driver.setRopOperation( ROP3_PATCOPY );
+     for ( int loopc = 0; loopc < this->ncliprect; loopc++ ) {
+@@ -1413,7 +1413,7 @@ void QGfxW100< depth, type>::dDrawPoints( const QPointArray &a,
+         points[i].YCoord = a[i+index].y() + this->yoffs;
+     }
+ 
+-    GFX_START( clipbounds );
++    GFX_START( this->clipbounds );
+     driver.setFrgColour( this->cpen.color().rgb() );
+     driver.setRopOperation( ROP3_PATCOPY );
+     for ( int loopc = 0; loopc < this->ncliprect; loopc++ ) {

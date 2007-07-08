@@ -56,7 +56,8 @@ SRC_URI = "ftp://ftp.trolltech.com/pub/qt/source/qt-embedded-${PV}-free.tar.gz;m
 #
 SRC_URI_append_simpad       = "file://devfs.patch;patch=1 "
 SRC_URI_append_c7x0         = "file://kernel-keymap-corgi.patch;patch=1 \
-                               file://c7x0-w100-accel.patch;patch=1 file://suspend-resume-hooks.patch;patch=1 "
+                               file://c7x0-w100-accel.patch;patch=1 file://suspend-resume-hooks.patch;patch=1 \
+                               file://c7x0-w100-gcc4.patch;patch=1 "
 SRC_URI_append_spitz        = "file://kernel-keymap-corgi.patch;patch=1 \
                                file://kernel-keymap-CXK.patch;patch=1 "
 SRC_URI_append_akita        = "file://kernel-keymap-corgi.patch;patch=1 \

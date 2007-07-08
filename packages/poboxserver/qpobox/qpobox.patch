@@ -7,7 +7,7 @@ diff -Naur qpobox.orig/pbclient.cpp qpobox/pbclient.cpp
    m_sock = new QSocket(this);
 -  m_conv = QTextCodec::codecForName("EUC-JP");
 +  //m_conv = QTextCodec::codecForName("EUC-JP");
-+  m_conv = QTextCodec::codecForName("eucJP");
++  m_conv = QTextCodec::codecForName("utf8");
  
    connect(m_sock, SIGNAL(readyRead()), this, SLOT(socketReadyRead()));
    connect(m_sock, SIGNAL(error(int)), this, SLOT(socketError(int)));
