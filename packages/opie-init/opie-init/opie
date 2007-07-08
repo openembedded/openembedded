@@ -70,7 +70,7 @@ case $1 in
 	    echo "Starting qss" >>/var/log/opie-qss.log
 	    qss </dev/null >>/var/log/opie-qss.log 2>&1
 	    echo "qss exited, will try to restart" >>/var/log/opie-qss.log
-	done; rm /var/run/opie-qss-loop.pid; } &
+	done; rm /var/run/opie-qss-loop.pid; } </dev/null >/dev/null 2>&1 &
 	echo $! >/var/run/opie-qss-loop.pid
     fi
 
@@ -78,12 +78,12 @@ case $1 in
 
 'stop')
     echo "Stopping Opie..."
-    test -r /var/run/opie-qss-loop.pid && kill $(cat /var/run/opie-qss-loop.pid) 2>/dev/null ; rm /var/run/opie-qss-loop.pid
+    test -r /var/run/opie-qss-loop.pid && kill $(cat /var/run/opie-qss-loop.pid) 2>/dev/null ; rm -f /var/run/opie-qss-loop.pid
     killall qss 2>/dev/null
     killall qpe 2>/dev/null
     killall opie-login 2>/dev/null
     killall quicklauncher 2>/dev/null
-    test -r /var/run/opie-ssh-agent.pid && kill $(cat /var/run/opie-ssh-agent.pid) 2>/dev/null ; rm /var/run/opie-ssh-agent.pid
+    test -r /var/run/opie-ssh-agent.pid && kill $(cat /var/run/opie-ssh-agent.pid) 2>/dev/null ; rm -f /var/run/opie-ssh-agent.pid
     true
 
     ;;

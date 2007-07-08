@@ -110,7 +110,7 @@ do_stage() {
 }
 
 do_install() {
-    install -d ${D}${palmtopdir}/bin \
+    install -d ${D}${bindir} \
                ${D}${palmtopdir}/lib \
                ${D}${palmtopdir}/apps/1Pim \
                ${D}${palmtopdir}/pics/kdepim/korganizer/icons16 \
@@ -136,10 +136,10 @@ do_install() {
         oe_libinstall -so -C ${S}/dest/ $f ${D}${palmtopdir}/lib
     done
 
-    install -m 0755 ${S}/dest/kopi ${D}${palmtopdir}/bin/kopi
-    install -m 0755 ${S}/dest/kapi ${D}${palmtopdir}/bin/kapi
+    install -m 0755 ${S}/dest/kopi ${D}${bindir}/kopi
+    install -m 0755 ${S}/dest/kapi ${D}${bindir}/kapi
     
-    install -d ${D}${bindir} ${D}${libdir}
+    install -d ${D}${libdir}
     install -m 0755 ${S}/dest/kammu ${D}${bindir}/kammu
     oe_libinstall -so -C ${S}/dest/ libmicrokammu ${D}${libdir}
 
@@ -152,11 +152,11 @@ do_install() {
 
 PACKAGES = "libmicrokcal libmicrokabc kopi-applet kopi kapi libmicrokdelibs kammu libmicrokammu"
 
-FILES_kopi = "${palmtopdir}/bin/kopi ${palmtopdir}/apps/1Pim/korganizer.desktop ${palmtopdir}/pics/kdepim/korganizer/* "
-FILES_kapi = "${palmtopdir}/bin/kapi ${palmtopdir}/apps/1Pim/kaddressbook.desktop ${palmtopdir}/pics/kdepim/kaddressbook/* ${palmtopdir}/lib/libmicrokabc_* ${palmtopdir}/lib/libmicrokabcformat_binary*"
+FILES_kopi = "${bindir}/kopi ${palmtopdir}/apps/1Pim/korganizer.desktop ${palmtopdir}/pics/kdepim/korganizer/* "
+FILES_kapi = "${bindir}/kapi ${palmtopdir}/apps/1Pim/kaddressbook.desktop ${palmtopdir}/pics/kdepim/kaddressbook/* ${palmtopdir}/lib/libmicrokabc_* ${palmtopdir}/lib/libmicrokabcformat_binary*"
 FILES_kopi-applet = "${palmtopdir}/plugins/applets/* ${palmtopdir}/pics/ko16.png ${palmtopdir}/pics/ko24.png"
-FILES_libmicrokabc = "${palmtopdir}/lib/libmicrokabc*"
-FILES_libmicrokcal = "${palmtopdir}/lib/libmicrokcal*"
-FILES_libmicrokdelibs = "${palmtopdir}/lib/*"
+FILES_libmicrokabc = "${palmtopdir}/lib/libmicrokabc.so.*"
+FILES_libmicrokcal = "${palmtopdir}/lib/libmicrokcal.so.*"
+FILES_libmicrokdelibs = "${palmtopdir}/lib/*.so.*"
 FILES_kammu = "${bindir}/kammu"
 FILES_libmicrokammu = "${libdir}/libmicrokammu*"

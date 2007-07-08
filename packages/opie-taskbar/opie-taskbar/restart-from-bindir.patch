@@ -1,0 +1,12 @@
+diff --git a/serverapp.cpp b/serverapp.cpp
+index 0e92040..b933340 100644
+--- a/serverapp.cpp
++++ b/serverapp.cpp
+@@ -763,6 +763,7 @@ void ServerApplication::restart()
+         for ( int fd = 3; fd < 100; fd++ )
+         close( fd );
+         execl( ( qpeDir() + "/bin/qpe" ).local8Bit(), "qpe", NULL );
++        execl( OPIE_BINDIR "/qpe", "qpe", NULL );
+         exit( 1 );
+ #endif
+     }

@@ -4,7 +4,7 @@ PRIORITY = "optional"
 HOMEPAGE = "http://www.konqueror.org/"
 DEPENDS = "openssl libpcre virtual/libqte2 dcopidl-native dcopidl2cpp-native"
 LICENSE = "LGPL GPL"
-PR = "r4"
+PR = "r5"
 
 # this Konqueror needs the KDEDIR set and the font helvetica installed on the target
 
@@ -19,7 +19,7 @@ S = "${WORKDIR}/kdenox"
 export QMAKE = "${STAGING_BINDIR_NATIVE}/qmake"
 export MOC = "${STAGING_BINDIR_NATIVE}/moc"
 export UIC = "${STAGING_BINDIR_NATIVE}/uic"
-export exec_prefix = "${palmtopdir}"
+#export exec_prefix = "${palmtopdir}"
 #export CXXFLAGS = "-fexceptions -frtti -DKJS_VERBOSE=1 -DQT_THREAD_SUPPORT -DQ_OS_UNIX -DQT_NO_DOM -DENABLE_BOOKMARKS"
 export CXXFLAGS = "-fexceptions -fno-rtti -DKJS_VERBOSE=1 -DQT_THREAD_SUPPORT -DQ_OS_UNIX -DENABLE_BOOKMARKS"
 export PCRE_CONFIG = "invalid"
@@ -86,10 +86,10 @@ do_install_append() {
 	install -m 0644 ${FILESDIR}/konqueror.desktop ${D}${palmtopdir}/apps/Applications/
 	install -d ${D}${palmtopdir}/pics/konqueror
 	install -m 0644 ${FILESDIR}/konqueror.png ${D}${palmtopdir}/pics/konqueror/
-	mv ${D}${palmtopdir}/bin/konqueror ${D}${palmtopdir}/bin/konqueror.bin
-	{ echo '#!/bin/sh' ; echo "KDEDIR=/usr exec ${palmtopdir}/bin/konqueror.bin" ; } > ${D}${palmtopdir}/bin/konqueror
-	chmod 0755 ${D}${palmtopdir}/bin/konqueror
+	mv ${D}${palmtopdir}/bin ${D}${bindir}
+	mv ${D}${bindir}/konqueror ${D}${bindir}/konqueror.bin
+	{ echo '#!/bin/sh' ; echo "KDEDIR=/usr exec ${bindir}/konqueror.bin" ; } > ${D}${bindir}/konqueror
+	chmod 0755 ${D}${bindir}/konqueror
 }
 
-FILES_${PN} = "${palmtopdir} ${datadir}"
-
+FILES_${PN} = "${palmtopdir} ${datadir} ${bindir}/konqueror* ${libdir}/libkonq*"
