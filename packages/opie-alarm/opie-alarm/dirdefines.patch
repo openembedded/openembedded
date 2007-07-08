@@ -1,0 +1,21 @@
+diff --git a/opiealarm.c b/opiealarm.c
+index 422865c..b948ef2 100644
+--- a/opiealarm.c
++++ b/opiealarm.c
+@@ -367,13 +367,13 @@ int resume ( int resuspend )
+ 				
+ 				setenv ( "LOGNAME", "root", 1 );
+ 				setenv ( "HOME", "/root", 1 );
+-				setenv ( "LD_LIBRARY_PATH", "/opt/QtPalmtop/lib", 1 );
+-				setenv ( "QTDIR", "/opt/QtPalmtop", 1 );
++				setenv ( "LD_LIBRARY_PATH", OPIE_LIBDIR, 1 );
++				setenv ( "QTDIR", OPIE_QTDIR, 1 );
+ 			
+ 				remove_pidfile ( );
+ 			
+ 				// no need for system() since this process is no longer useful anyway				
+-				execv ( "/opt/QtPalmtop/bin/qcop", argv );
++				execv ( OPIE_BINDIR "/qcop", argv );
+ 				
+ 				perror ( "exec for qcop failed" );
+ 				return 5;

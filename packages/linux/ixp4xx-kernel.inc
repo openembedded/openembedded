@@ -151,7 +151,7 @@ SRC_URI  = "${IXP4XX_SRCURI}"
 SRC_URI += "${IXP4XX_PATCHES}"
 
 COMPATIBLE_HOST = 'arm.*-linux.*'
-COMPATIBLE_MACHINE = '(ixp4xx|nslu2)'
+COMPATIBLE_MACHINE = '(ixp4xx|nslu2|fsg3)'
 
 inherit kernel
 
