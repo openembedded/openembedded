@@ -21,7 +21,7 @@ start)
     echo -n "Start pbserver"
     # make sure lo interface is configured (otherwise qpobox will not bind to pbserver)
     ifconfig lo|grep 127.0.0.1 >/dev/null || ifconfig lo 127.0.0.1
-    cd /opt/QtPalmtop/pobox; ./pbserver > /dev/null &
+    cd @palmtopdir@/pobox; ./pbserver > /dev/null &
     echo
     sleep 1
     ;;

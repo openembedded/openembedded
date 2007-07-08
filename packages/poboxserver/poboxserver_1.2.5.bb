@@ -2,7 +2,7 @@ DESCRIPTION = "OpenPOBox is an open source implementation of a 'Predictive Opera
 SECTION = "inputmethods"
 LICENSE = "GPL"
 DEPENDS = "perl-native ruby-native nkf-native"
-PR = "r4"
+PR = "r5"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/gakusei/pobox-${PV}.tar.bz2 \
            http://www.vanille.de/mirror/pbserver-${PV}.tar.gz \
@@ -36,4 +36,5 @@ do_install() {
 	install -m 0644 ${WORKDIR}/pbserver/learndic ${D}${palmtopdir}/pobox/
 	install -d ${D}${sysconfdir}/init.d/
 	install -m 0755 ${WORKDIR}/pbserver.sh ${D}${sysconfdir}/init.d/pbserver
+	sed -i -e 's,@palmtopdir@,${palmtopdir},g' ${D}${sysconfdir}/init.d/pbserver
 }
