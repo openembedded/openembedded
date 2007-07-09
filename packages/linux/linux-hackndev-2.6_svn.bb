@@ -2,7 +2,7 @@ DESCRIPTION = "Hack&Dev's Linux kernel for Palm devices."
 HOMEPAGE = "http://www.hackndev.com/"
 SECTION = "kernel"
 LICENSE = "GPL"
-PR = "r4"
+PR = "r5"
 
 COMPATIBLE_MACHINE = "(palmtt3|palmtx|palmld|palmz72)"
 
