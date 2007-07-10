@@ -1,5 +1,5 @@
 DESCRIPTION = "Task packages for GPE Palmtop Environment Phone Edition"
-PR = "r4"
+PR = "r5"
 LICENSE = "MIT"
 ALLOW_EMPTY = "1"
 
@@ -18,12 +18,13 @@ RDEPENDS_gpephone-base-depends = "\
 
 RDEPENDS_gpephone-task-development = "\
     rxvt-unicode \
-    xmonobut \
     gpe-terminal \
     gpe-edit \
     gdb \
     strace \
-    e2fsprogs"
+    e2fsprogs \
+    bluez-utils-compat \
+    minicom"
 
 RDEPENDS_gpephone-task-base = "\
     cms92init \
