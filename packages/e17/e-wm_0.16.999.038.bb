@@ -1,14 +1,16 @@
 DESCRIPTION = "E17 - the Enlightenment Window Mananger"
 DEPENDS = "eet evas ecore edje efreet"
 LICENSE = "MIT"
-PR = "r6"
+PR = "r7"
 
 inherit e update-alternatives
 
 SRC_URI = "${E_URI}/enlightenment-${PV}.tar.gz \
            file://fix-configure.patch;patch=1 \
            file://set-autoscroll-defaults.patch;patch=1 \
-           file://Xsession.d/98enlightenment"
+           file://Xsession.d/98enlightenment \
+           file://applications.menu \
+          "
 
 S = "${WORKDIR}/enlightenment-${PV}"
 
@@ -35,9 +37,12 @@ do_compile_prepend() {
 do_install_append() {
 	install -d ${D}/${sysconfdir}/X11/Xsession.d
 	install -m 755 ${WORKDIR}/Xsession.d/98enlightenment ${D}/${sysconfdir}/X11/Xsession.d
+
+        install -d ${D}/${sysconfdir}/xdg/menus
+        install -m 644 ${WORKDIR}/applications.menu ${D}/${sysconfdir}/xdg/menus/
 }
 
-ALTERNATIVE_PATH = "${bindir}/enlightenment"
+ALTERNATIVE_PATH = "${bindir}/enlightenment_start"
 ALTERNATIVE_NAME = "x-window-manager"
 ALTERNATIVE_LINK = "${bindir}/x-window-manager"
 ALTERNATIVE_PRIORITY = "16"
