@@ -16,7 +16,7 @@ SRC_URI += "ftp://ftp.kernel.org/pub/linux/kernel/v2.6/linux-${PV}.tar.bz2 \
 #squashfs-lzma stuff
 	http://squashfs-lzma.org/dl/sqlzma3.2-r2b.tar.bz2 \
 	http://dreamboxupdate.com/download/kernel-patches/sqlzma2k-3.2-r2-2.6.12.6.patch.bz2 \
-	http://dreamboxupdate.com/download/patches/fix_lzma_squashfs_makefiles_for_oe.patch.bz2 \
+	http://dreamboxupdate.com/download/patches/fix_lzma_squashfs_makefiles_for_oe-r1.patch.bz2 \
 	${SOURCEFORGE_MIRROR}/squashfs/squashfs3.2-r2.tar.gz \
 	${SOURCEFORGE_MIRROR}/sevenzip/lzma443.tar.bz2 \
 	file://${WORKDIR}/squashfs-lzma/kernel-patches/linux-2.6.12/squashfs3.2-patch;pnum=1;patch=1 "
@@ -38,7 +38,7 @@ do_munge () {
 	if [ -d ${WORKDIR}/squashfs3.2-r2 ]; then
 		mv ${WORKDIR}/squashfs3.2-r2/* ${WORKDIR}
 		rm -R ${WORKDIR}/squashfs3.2-r2
-		for i in sqlzma1-443.patch sqlzma2u-3.2-r2.patch fix_lzma_squashfs_makefiles_for_oe.patch; 
+		for i in sqlzma1-443.patch sqlzma2u-3.2-r2.patch fix_lzma_squashfs_makefiles_for_oe-r1.patch; 
 		do
 	    		echo "Applying $i"
 			patch -d ${WORKDIR} -p1 < ${WORKDIR}/$i
@@ -61,10 +61,26 @@ do_munge () {
 	cd $CUR
 }
 
+do_compile_prepend () {
+	if [ -f ${S}/.patched ];
+	then
+		patch -R -d ${S} -p1 < ${WORKDIR}/squashfs-lzma/sqlzma2k-3.2-r2-2.6.12.6.patch
+		rm ${S}/.patched
+	fi
+}
+
 do_compile_append () {
 	patch -d ${S} -p1 < ${WORKDIR}/squashfs-lzma/sqlzma2k-3.2-r2-2.6.12.6.patch
+	touch ${S}/.patched
+	oe_runmake -C ${WORKDIR}/squashfs-lzma KDir=${S} BUILD_CC="${CC}" BUILD_CXX="${CXX}" BUILD_LD="${LD}" BUILD_AR="${AR}" BUILD_LDFLAGS="${TARGET_LDFLAGS}" BUILD_CFLAGS="${TARGET_CFLAGS}" BUILD_CXXFLAGS="${TARGET_CXXFLAGS}"
+	for i in mksquashfs unsquashfs; 
+	do
+		mv ${WORKDIR}/squashfs-lzma/squashfs-tools/$i ${WORKDIR}/squashfs-lzma/squashfs-tools/$i-${ARCH}
+	done
+	oe_runmake -C ${WORKDIR}/squashfs-lzma KDir=${S} clean
 	oe_runmake -C ${WORKDIR}/squashfs-lzma KDir=${S}
 	patch -R -d ${S} -p1 < ${WORKDIR}/squashfs-lzma/sqlzma2k-3.2-r2-2.6.12.6.patch
+	rm ${S}/.patched
 }
 
 do_configure_prepend () {
@@ -88,7 +104,16 @@ do_install_append () {
 	do 
 		install -m 0644 ${WORKDIR}/squashfs-lzma/C/7zip/Compress/LZMA_C/kmod/$i ${D}/lib/modules/2.6.12.6/kernel/fs/squashfs
 	done;
+	install -d ${D}/usr/bin
+	for i in mksquashfs unsquashfs;
+	do
+		install ${WORKDIR}/squashfs-lzma/squashfs-tools/$i-${ARCH} ${D}/usr/bin/$i
+	done;
 }
+
+PACKAGES_append = " unsquashfs mksquashfs"
+FILES_mksquashfs = "/usr/bin/mksquashfs"
+FILES_unsquashfs = "/usr/bin/unsquashfs"
 
 do_stage_append() {
 	install ${WORKDIR}/squashfs-lzma/C/7zip/Compress/LZMA_Alone/lzma ${STAGING_BINDIR}
