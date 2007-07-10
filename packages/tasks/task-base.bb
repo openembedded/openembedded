@@ -1,5 +1,5 @@
 DESCRIPTION = "Merge machine and distro options to create a basic machine task/package"
-PR = "r39"
+PR = "r40"
 
 DEPENDS = "task-boot"
 PROVIDES = "${PACKAGES}"
@@ -190,10 +190,11 @@ RDEPENDS_task-base-alsa = "\
     alsa-utils-alsamixer"
 
 #
-# alsa-state is machine related so can be missing in feed, OSS support is optional
+# alsa-states are machine related so can be missing in feed, OSS support is optional
 #
 RRECOMMENDS_task-base-alsa = "\
     alsa-state \
+    alsa-states \
     kernel-module-snd-mixer-oss \
     kernel-module-snd-pcm-oss"
 

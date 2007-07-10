@@ -1,0 +1,12 @@
+diff -ur gparted-0.3.3.org/configure.in gparted-0.3.3/configure.in
+--- gparted-0.3.3.org/configure.in	2006-12-06 15:23:35.000000000 +0200
++++ gparted-0.3.3/configure.in	2007-07-10 02:10:59.000000000 +0300
+@@ -37,7 +37,7 @@
+ AC_MSG_CHECKING(for libparted >= $LIBPARTED_VERSION)
+ LIBS_save="$LIBS"
+ LIBS="-lparted -luuid -ldl"
+-AC_TRY_RUN(
++AC_TRY_LINK(
+ #include <stdio.h>
+ #include <parted/parted.h>
+ 

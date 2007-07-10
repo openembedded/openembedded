@@ -1,0 +1,10 @@
+--- parted-1.8.7/libparted/arch/linux.c.org	2007-05-09 23:40:13.000000000 +0300
++++ parted-1.8.7/libparted/arch/linux.c	2007-07-10 18:20:27.000000000 +0300
+@@ -32,6 +32,7 @@
+ #include <stdio.h>
+ #include <syscall.h>
+ #include <unistd.h>
++#include "syscalls.h"
+ #include <dirent.h>
+ #include <sys/ioctl.h>
+ #include <sys/stat.h>
