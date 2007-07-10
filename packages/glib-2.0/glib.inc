@@ -8,7 +8,7 @@ SECTION = "libs"
 PRIORITY = "optional"
 DEPENDS += "glib-2.0-native gtk-doc"
 DEPENDS += "virtual/libiconv virtual/libintl"
-PACKAGES =+ "${PN}-dev glib-2.0-utils "
+PACKAGES =+ " glib-2.0-utils "
 
 PR = "r1"
 
