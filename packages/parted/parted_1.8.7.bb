@@ -3,7 +3,7 @@ HOMEPAGE = "http://www.gnu.org/software/parted/parted.html"
 LICENSE = "GPLv2"
 SECTION = "console/tools"
 DEPENDS = "readline e2fsprogs-libs"
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "${GNU_MIRROR}/parted/parted-${PV}.tar.gz"
            
@@ -20,3 +20,8 @@ do_configure() {
 do_stage() {
 	autotools_stage_all
 }
+
+# Requires autoconf 2.61. Without it, will build, but there
+# will be link errors when some other package will link against
+# libparted.
+DEFAULT_PREFERENCE = "-1"
