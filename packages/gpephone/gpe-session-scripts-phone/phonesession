@@ -31,7 +31,12 @@ export	TINYMAIL_CACHE_DIR=$APP_PATH/share/tinymail.cache
 export	CAL_RES_PATH=$APP_PATH/share/res
 
 # For GTK input engine
-export PTIM_PATH=/usr/lib/gtk-2.0/2.4.0/immodules/ptim
+if [ -d /usr/lib/gtk-2.0/2.10.0 ]; then
+	export PTIM_PATH=/usr/lib/gtk-2.0/2.10.0/immodules/ptim
+else
+	export PTIM_PATH=/usr/lib/gtk-2.0/2.4.0/immodules/ptim
+fi
+
 export PTIM_PIXMAPS_PATH=$PTIM_PATH/pixmaps
 export PTIM_CONFIG_FILE=$PTIM_PATH/imconfig 
 export PTIM_HELPER_PATH=$PTIM_PATH/helper
@@ -42,6 +47,9 @@ export GTK_IM_MODULE=ptim
 gpe-phonepanel&
 gpe-applauncher&
 matchbox-window-manager -use_titlebar no&
+
+# start device support daemon
+machined
 
 # Start E-Sound Server
 esd -nobeeps -as 2&
