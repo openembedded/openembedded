@@ -4,7 +4,7 @@ SECTION = "console/utils"
 LICENSE = "BSD-ADV"
 DEPENDS = "file-native"
 
-SRC_URI = "ftp://ftp.astron.com/pub/file/file-${PV}.tar.gz" 
+SRC_URI = "ftp://ftp.fi.debian.org/pub/gentoo/distfiles/file-${PV}.tar.gz"
 S = "${WORKDIR}/file-${PV}"
 
 inherit autotools

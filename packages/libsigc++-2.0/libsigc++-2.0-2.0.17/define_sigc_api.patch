@@ -1,0 +1,15 @@
+Index: libsigc++-2.0.17/configure.ac
+===================================================================
+--- libsigc++-2.0.17.orig/configure.ac	2005-12-20 08:41:21.000000000 +0000
++++ libsigc++-2.0.17/configure.ac	2007-07-11 11:33:55.000000000 +0100
+@@ -105,6 +105,10 @@
+ SIGC_CXX_HAS_NAMESPACE_STD()
+ SIGC_CXX_HAS_SUN_REVERSE_ITERATOR()
+ 
++dnl FIXME Define this here since it does not seem to be defined elsewhere
++AC_DEFINE(SIGC_API, [], [Empty specifier])
++AC_DEFINE(SIGC_USING_STD(Symbol), [], [Empty specifier])
++
+ if test "X$config_error" = "Xyes" ; then
+   AC_ERROR(
+ [One or more of the required compiler features is missing.
