@@ -1,7 +1,7 @@
 #
 # Automatically generated make config: don't edit
-# Linux kernel version: 2.6.21-hh9
-# Fri Jun 22 18:35:18 2007
+# Linux kernel version: 2.6.21-hh11
+# Wed Jul 11 07:04:13 2007
 #
 CONFIG_ARM=y
 CONFIG_SYS_SUPPORTS_APM_EMULATION=y
@@ -154,6 +154,7 @@ CONFIG_SA1100_H3XXX=y
 # CONFIG_SA1100_BADGE4 is not set
 # CONFIG_SA1100_JORNADA56X is not set
 # CONFIG_SA1100_JORNADA720 is not set
+# CONFIG_SA1100_JORNADA820 is not set
 # CONFIG_SA1100_XDA is not set
 # CONFIG_SA1100_HACKKIT is not set
 # CONFIG_SA1100_LART is not set
@@ -468,7 +469,7 @@ CONFIG_FW_LOADER=y
 CONFIG_MTD=y
 CONFIG_MTD_DEBUG=y
 CONFIG_MTD_DEBUG_VERBOSE=0
-# CONFIG_MTD_CONCAT is not set
+CONFIG_MTD_CONCAT=y
 CONFIG_MTD_PARTITIONS=y
 # CONFIG_MTD_REDBOOT_PARTS is not set
 # CONFIG_MTD_CMDLINE_PARTS is not set
@@ -477,10 +478,9 @@ CONFIG_MTD_PARTITIONS=y
 #
 # User Modules And Translation Layers
 #
-# CONFIG_MTD_CHAR is not set
-# CONFIG_MTD_BLKDEVS is not set
-# CONFIG_MTD_BLOCK is not set
-# CONFIG_MTD_BLOCK_RO is not set
+CONFIG_MTD_CHAR=m
+CONFIG_MTD_BLKDEVS=y
+CONFIG_MTD_BLOCK=y
 # CONFIG_FTL is not set
 # CONFIG_NFTL is not set
 # CONFIG_INFTL is not set
