@@ -1,7 +1,7 @@
 #
 # Automatically generated make config: don't edit
-# Linux kernel version: 2.6.21-hh9
-# Fri Jun 22 18:35:24 2007
+# Linux kernel version: 2.6.21-hh11
+# Wed Jul 11 07:31:39 2007
 #
 CONFIG_ARM=y
 CONFIG_SYS_SUPPORTS_APM_EMULATION=y
@@ -161,6 +161,7 @@ CONFIG_MACH_H4300=y
 CONFIG_IPAQ_H4000_IRDA=y
 CONFIG_IPAQ_H4000_LCD=y
 CONFIG_IPAQ_H4000_BACKLIGHT=y
+CONFIG_IPAQ_H4000_PCMCIA=y
 CONFIG_IPAQ_H4000_BUTTONS=y
 CONFIG_IPAQ_H4000_LEDS=y
 CONFIG_IPAQ_H4000_BT=m
@@ -188,6 +189,7 @@ CONFIG_IPAQ_H4300_KBD=y
 # CONFIG_MACH_RECON is not set
 # CONFIG_MACH_GHI270HG is not set
 # CONFIG_MACH_GHI270 is not set
+# CONFIG_MACH_LOOXC550 is not set
 # CONFIG_PXA_SHARPSL is not set
 # CONFIG_MACH_TRIZEPS4 is not set
 CONFIG_PXA25x=y
@@ -226,7 +228,16 @@ CONFIG_XSCALE_PMU=y
 #
 # PCCARD (PCMCIA/CardBus) support
 #
-# CONFIG_PCCARD is not set
+CONFIG_PCCARD=y
+CONFIG_PCMCIA_DEBUG=y
+CONFIG_PCMCIA=y
+CONFIG_PCMCIA_LOAD_CIS=y
+CONFIG_PCMCIA_IOCTL=y
+
+#
+# PC-card bridges
+#
+CONFIG_PCMCIA_PXA2XX=y
 
 #
 # Kernel Features
@@ -466,6 +477,10 @@ CONFIG_BT_HIDP=m
 CONFIG_BT_HCIUART=m
 CONFIG_BT_HCIUART_H4=y
 CONFIG_BT_HCIUART_BCSP=y
+# CONFIG_BT_HCIDTL1 is not set
+# CONFIG_BT_HCIBT3C is not set
+# CONFIG_BT_HCIBLUECARD is not set
+# CONFIG_BT_HCIBTUART is not set
 # CONFIG_BT_HCIVHCI is not set
 # CONFIG_IEEE80211 is not set
 CONFIG_WIRELESS_EXT=y
@@ -495,7 +510,7 @@ CONFIG_FW_LOADER=y
 CONFIG_MTD=y
 CONFIG_MTD_DEBUG=y
 CONFIG_MTD_DEBUG_VERBOSE=0
-# CONFIG_MTD_CONCAT is not set
+CONFIG_MTD_CONCAT=y
 CONFIG_MTD_PARTITIONS=y
 # CONFIG_MTD_REDBOOT_PARTS is not set
 # CONFIG_MTD_CMDLINE_PARTS is not set
@@ -504,10 +519,9 @@ CONFIG_MTD_PARTITIONS=y
 #
 # User Modules And Translation Layers
 #
-# CONFIG_MTD_CHAR is not set
-# CONFIG_MTD_BLKDEVS is not set
-# CONFIG_MTD_BLOCK is not set
-# CONFIG_MTD_BLOCK_RO is not set
+CONFIG_MTD_CHAR=m
+CONFIG_MTD_BLKDEVS=y
+CONFIG_MTD_BLOCK=y
 # CONFIG_FTL is not set
 # CONFIG_NFTL is not set
 # CONFIG_INFTL is not set
@@ -673,10 +687,35 @@ CONFIG_NET_RADIO=y
 # Obsolete Wireless cards support (pre-802.11)
 #
 # CONFIG_STRIP is not set
+# CONFIG_PCMCIA_WAVELAN is not set
+# CONFIG_PCMCIA_NETWAVE is not set
+
+#
+# Wireless 802.11 Frequency Hopping cards support
+#
+# CONFIG_PCMCIA_RAYCS is not set
+
+#
+# Wireless 802.11b ISA/PCI cards support
+#
+# CONFIG_HERMES is not set
+# CONFIG_ATMEL is not set
+
+#
+# Wireless 802.11b Pcmcia/Cardbus cards support
+#
+# CONFIG_AIRO_CS is not set
+# CONFIG_PCMCIA_WL3501 is not set
 # CONFIG_HOSTAP is not set
 CONFIG_ACX=m
-CONFIG_ACX_MEM=y
-CONFIG_ACX_H4000=m
+# CONFIG_ACX_MEM is not set
+CONFIG_ACX_CS=y
+CONFIG_NET_WIRELESS=y
+
+#
+# PCMCIA network device support
+#
+# CONFIG_NET_PCMCIA is not set
 
 #
 # Wan interfaces
@@ -802,6 +841,13 @@ CONFIG_LEGACY_PTY_COUNT=32
 # CONFIG_DTLK is not set
 # CONFIG_R3964 is not set
 # CONFIG_TIHTC is not set
+
+#
+# PCMCIA character devices
+#
+# CONFIG_SYNCLINK_CS is not set
+# CONFIG_CARDMAN_4000 is not set
+# CONFIG_CARDMAN_4040 is not set
 # CONFIG_RAW_DRIVER is not set
 
 #
@@ -1027,6 +1073,12 @@ CONFIG_SND_H4000=m
 CONFIG_SND_PXA2xx_I2SOUND=m
 # CONFIG_SND_PXA2XX_AC97 is not set
 # CONFIG_SND_RECON is not set
+
+#
+# PCMCIA devices
+#
+# CONFIG_SND_VXPOCKET is not set
+# CONFIG_SND_PDAUDIOCF is not set
 
 #
 # SoC audio support

@@ -1,7 +1,7 @@
 #
 # Automatically generated make config: don't edit
-# Linux kernel version: 2.6.21-hh9
-# Fri Jun 22 18:35:29 2007
+# Linux kernel version: 2.6.21-hh11
+# Wed Jul 11 07:04:16 2007
 #
 CONFIG_ARM=y
 CONFIG_SYS_SUPPORTS_APM_EMULATION=y
@@ -184,6 +184,7 @@ CONFIG_MAGICIAN_PHONE=m
 # CONFIG_MACH_RECON is not set
 # CONFIG_MACH_GHI270HG is not set
 # CONFIG_MACH_GHI270 is not set
+# CONFIG_MACH_LOOXC550 is not set
 # CONFIG_PXA_SHARPSL is not set
 # CONFIG_MACH_TRIZEPS4 is not set
 CONFIG_PXA27x=y
@@ -499,10 +500,10 @@ CONFIG_FW_LOADER=y
 CONFIG_MTD=y
 CONFIG_MTD_DEBUG=y
 CONFIG_MTD_DEBUG_VERBOSE=0
-# CONFIG_MTD_CONCAT is not set
+CONFIG_MTD_CONCAT=y
 CONFIG_MTD_PARTITIONS=y
 # CONFIG_MTD_REDBOOT_PARTS is not set
-CONFIG_MTD_CMDLINE_PARTS=y
+# CONFIG_MTD_CMDLINE_PARTS is not set
 # CONFIG_MTD_AFS_PARTS is not set
 
 #

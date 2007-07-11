@@ -1,7 +1,7 @@
 #
 # Automatically generated make config: don't edit
-# Linux kernel version: 2.6.21-hh9
-# Fri Jun 22 18:35:28 2007
+# Linux kernel version: 2.6.21-hh11
+# Wed Jul 11 07:04:15 2007
 #
 CONFIG_ARM=y
 CONFIG_SYS_SUPPORTS_APM_EMULATION=y
@@ -187,6 +187,7 @@ CONFIG_HX4700_POWER2=y
 # CONFIG_MACH_RECON is not set
 # CONFIG_MACH_GHI270HG is not set
 # CONFIG_MACH_GHI270 is not set
+# CONFIG_MACH_LOOXC550 is not set
 # CONFIG_PXA_SHARPSL is not set
 # CONFIG_MACH_TRIZEPS4 is not set
 CONFIG_PXA27x=y
@@ -518,13 +519,13 @@ CONFIG_MTD_DEBUG_VERBOSE=0
 CONFIG_MTD_CONCAT=y
 CONFIG_MTD_PARTITIONS=y
 # CONFIG_MTD_REDBOOT_PARTS is not set
-CONFIG_MTD_CMDLINE_PARTS=y
+# CONFIG_MTD_CMDLINE_PARTS is not set
 # CONFIG_MTD_AFS_PARTS is not set
 
 #
 # User Modules And Translation Layers
 #
-# CONFIG_MTD_CHAR is not set
+CONFIG_MTD_CHAR=m
 CONFIG_MTD_BLKDEVS=y
 CONFIG_MTD_BLOCK=y
 # CONFIG_FTL is not set
@@ -744,6 +745,7 @@ CONFIG_NET_RADIO=y
 CONFIG_ACX=m
 # CONFIG_ACX_USB is not set
 CONFIG_ACX_MEM=y
+# CONFIG_ACX_CS is not set
 CONFIG_ACX_HX4700=m
 CONFIG_NET_WIRELESS=y
 
