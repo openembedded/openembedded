@@ -1,7 +1,7 @@
 #
 # Automatically generated make config: don't edit
-# Linux kernel version: 2.6.21-hnd0
-# Mon May 28 00:02:13 2007
+# Linux kernel version: 2.6.21-hnd2
+# Thu Jul 12 20:16:06 2007
 #
 CONFIG_ARM=y
 CONFIG_SYS_SUPPORTS_APM_EMULATION=y
@@ -187,6 +187,8 @@ CONFIG_PALMT5_PM=y
 # CONFIG_MACH_ZIRE31 is not set
 CONFIG_GPIOED=m
 CONFIG_GPIOEDNG=m
+# CONFIG_MACH_GHI270HG is not set
+# CONFIG_MACH_GHI270 is not set
 # CONFIG_PXA_SHARPSL is not set
 # CONFIG_MACH_TRIZEPS4 is not set
 CONFIG_PXA27x=y
@@ -225,7 +227,16 @@ CONFIG_XSCALE_PMU=y
 #
 # PCCARD (PCMCIA/CardBus) support
 #
-# CONFIG_PCCARD is not set
+CONFIG_PCCARD=m
+# CONFIG_PCMCIA_DEBUG is not set
+CONFIG_PCMCIA=m
+CONFIG_PCMCIA_LOAD_CIS=y
+CONFIG_PCMCIA_IOCTL=y
+
+#
+# PC-card bridges
+#
+CONFIG_PCMCIA_PXA2XX=m
 
 #
 # Kernel Features
@@ -431,7 +442,11 @@ CONFIG_BT_HIDP=m
 CONFIG_BT_HCIUART=m
 CONFIG_BT_HCIUART_H4=y
 # CONFIG_BT_HCIUART_BCSP is not set
+# CONFIG_BT_HCIDTL1 is not set
+# CONFIG_BT_HCIBT3C is not set
 CONFIG_BT_BCM2035UART=m
+# CONFIG_BT_HCIBLUECARD is not set
+# CONFIG_BT_HCIBTUART is not set
 # CONFIG_BT_HCIVHCI is not set
 # CONFIG_IEEE80211 is not set
 
@@ -629,6 +644,12 @@ CONFIG_NETDEVICES=y
 # Wireless LAN (non-hamradio)
 #
 # CONFIG_NET_RADIO is not set
+# CONFIG_LIBERTAS is not set
+
+#
+# PCMCIA network device support
+#
+# CONFIG_NET_PCMCIA is not set
 
 #
 # Wan interfaces
@@ -674,6 +695,7 @@ CONFIG_INPUT_TSDEV_SCREEN_X=320
 CONFIG_INPUT_TSDEV_SCREEN_Y=480
 CONFIG_INPUT_EVDEV=y
 # CONFIG_INPUT_EVBUG is not set
+# CONFIG_INPUT_LED_TRIGGER is not set
 
 #
 # Input Device Drivers
@@ -729,6 +751,7 @@ CONFIG_HW_CONSOLE=y
 # Serial drivers
 #
 CONFIG_SERIAL_8250=m
+# CONFIG_SERIAL_8250_CS is not set
 CONFIG_SERIAL_8250_NR_UARTS=4
 CONFIG_SERIAL_8250_RUNTIME_UARTS=4
 # CONFIG_SERIAL_8250_EXTENDED is not set
@@ -758,10 +781,16 @@ CONFIG_LEGACY_PTY_COUNT=256
 # CONFIG_WATCHDOG is not set
 CONFIG_HW_RANDOM=m
 # CONFIG_NVRAM is not set
-
 # CONFIG_DTLK is not set
 # CONFIG_R3964 is not set
 # CONFIG_TIHTC is not set
+
+#
+# PCMCIA character devices
+#
+# CONFIG_SYNCLINK_CS is not set
+# CONFIG_CARDMAN_4000 is not set
+# CONFIG_CARDMAN_4040 is not set
 # CONFIG_RAW_DRIVER is not set
 
 #
@@ -790,14 +819,11 @@ CONFIG_HW_RANDOM=m
 #
 # CONFIG_HWMON is not set
 # CONFIG_HWMON_VID is not set
-
-#
-# Hardware Monitoring - external power and batteries
-#
-CONFIG_EXTERNAL_POWER=m
-CONFIG_BATTERY=m
+CONFIG_POWER_SUPPLY=m
+# CONFIG_POWER_SUPPLY_DEBUG is not set
 CONFIG_PDA_POWER=m
 CONFIG_APM_POWER=m
+# CONFIG_BATTERY_DS2760 is not set
 
 #
 # L3 serial bus support
@@ -820,6 +846,7 @@ CONFIG_APM_POWER=m
 # CONFIG_MFD_SM501 is not set
 # CONFIG_HTC_ASIC2 is not set
 # CONFIG_HTC_ASIC3 is not set
+# CONFIG_HTC_EGPIO is not set
 # CONFIG_HTC_ASIC3_DS1WM is not set
 # CONFIG_SOC_SAMCOP is not set
 # CONFIG_SOC_HAMCOP is not set
@@ -827,7 +854,6 @@ CONFIG_APM_POWER=m
 # CONFIG_SOC_T7L66XB is not set
 # CONFIG_SOC_TC6387XB is not set
 # CONFIG_SOC_TC6393XB is not set
-# CONFIG_SOC_TSC2101 is not set
 # CONFIG_SOC_TSC2200 is not set
 
 #
@@ -948,6 +974,12 @@ CONFIG_SND_AC97_CODEC=m
 # CONFIG_SND_PXA2xx_I2SOUND is not set
 CONFIG_SND_PXA2XX_PCM=m
 CONFIG_SND_PXA2XX_AC97=m
+
+#
+# PCMCIA devices
+#
+# CONFIG_SND_VXPOCKET is not set
+# CONFIG_SND_PDAUDIOCF is not set
 
 #
 # SoC audio support
@@ -1104,6 +1136,7 @@ CONFIG_RAMFS=y
 #
 # CONFIG_ADFS_FS is not set
 # CONFIG_AFFS_FS is not set
+# CONFIG_AUFS is not set
 # CONFIG_HFS_FS is not set
 # CONFIG_HFSPLUS_FS is not set
 # CONFIG_BEFS_FS is not set
