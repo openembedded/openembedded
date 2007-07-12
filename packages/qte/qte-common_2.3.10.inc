@@ -62,18 +62,11 @@ SRC_URI_append_spitz        = "file://kernel-keymap-corgi.patch;patch=1 \
 SRC_URI_append_akita        = "file://kernel-keymap-corgi.patch;patch=1 \
                                file://kernel-keymap-CXK.patch;patch=1 "
 SRC_URI_append_tosa         = "file://kernel-keymap-tosa.patch;patch=1 "
-SRC_URI_append_jornada7xx   = "file://ipaq_sound_fix.patch;patch=1 "
-SRC_URI_append_jornada56x   = "file://ipaq_sound_fix.patch;patch=1 "
-#SRC_URI_append_h1910        = "file://ipaq_sound_fix.patch;patch=1 "
-#SRC_URI_append_h1940        = "file://ipaq_sound_fix.patch;patch=1 "
-#SRC_URI_append_h2200        = "file://ipaq_sound_fix.patch;patch=1 "
-#SRC_URI_append_h3600        = "file://ipaq_sound_fix.patch;patch=1 "
-#SRC_URI_append_h3900        = "file://ipaq_sound_fix.patch;patch=1 "
-#SRC_URI_append_h4000        = "file://ipaq_sound_fix.patch;patch=1 "
-#SRC_URI_append_h5000        = "file://ipaq_sound_fix.patch;patch=1 "
-#SRC_URI_append_h6300        = "file://ipaq_sound_fix.patch;patch=1 "
-#SRC_URI_append_hx2000       = "file://ipaq_sound_fix.patch;patch=1 "
-#SRC_URI_append_hx4700       = "file://ipaq_sound_fix.patch;patch=1 "
+
+# "ipaqs" used to have this, but later were proven to at least work
+# without it. Review again and see if has interesting bits to be applied
+# universally.
+#SRC_URI_append   = "file://ipaq_sound_fix.patch;patch=1 "
 
 
 S = "${WORKDIR}/qt-${PV}"
