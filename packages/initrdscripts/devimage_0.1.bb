@@ -1,5 +1,5 @@
 SRC_URI = "file://devimage.sh file://passwd file://dropbear_rsa_host_key"
-PR = "r0.7"
+PR = "r1"
 
 do_install() {
         install -m 0755 ${WORKDIR}/devimage.sh ${D}/init
