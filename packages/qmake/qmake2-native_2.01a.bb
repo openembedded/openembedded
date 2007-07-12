@@ -4,7 +4,7 @@ HOMEPAGE = "http://www.trolltech.com"
 SECTION = "devel"
 LICENSE = "GPL QPL"
 
-PR = "r1"
+PR = "r2"
 
 QTVER = "qt-x11-opensource-src-4.3.0"
 
@@ -58,6 +58,8 @@ do_stage() {
 	install -m 0755 bin/qmake ${STAGING_BINDIR}/qmake-qt4
 	install -d ${STAGING_DIR}/${CROSS_SYS}/qt4/
 	cp -PfR mkspecs ${STAGING_DIR}/${CROSS_SYS}/qt4/
+	install -d ${STAGING_DIR}/${HOST_SYS}/qt4/
+	cp -PfR mkspecs ${STAGING_DIR}/${HOST_SYS}/qt4/
 }
 
 do_install() {

@@ -6,7 +6,7 @@ PR = "r5"
 
 COMPATIBLE_MACHINE = "(palmtt3|palmtx|palmld|palmz72)"
 
-SRC_URI = "svn://svn.sourceforge.net/svnroot/hackndev/linux4palm/linux;module=trunk;proto=https \
+SRC_URI = "svn://hackndev.svn.sourceforge.net/svnroot/hackndev/linux4palm/linux;module=trunk;proto=https \
 	   file://defconfig"
 
 SRC_URI_append_palmtx += "http://www.busybox.net/downloads/busybox-1.1.0.tar.bz2 \
