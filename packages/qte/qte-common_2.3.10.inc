@@ -47,6 +47,7 @@ SRC_URI = "ftp://ftp.trolltech.com/pub/qt/source/qt-embedded-${PV}-free.tar.gz;m
 	   file://fix-errno-exception-spec.patch;patch=1 \
            file://keyboardless-buttonmap.patch;patch=1 \
            file://kernel-keymap.patch;patch=1 \
+	   file://kernel-keymap-corgi.patch;patch=1 \
 	   file://kernel-asm-page.patch;patch=1 \
 	   file://sharp_char.h \
 	   file://switches.h "
@@ -54,27 +55,20 @@ SRC_URI = "ftp://ftp.trolltech.com/pub/qt/source/qt-embedded-${PV}-free.tar.gz;m
 #
 # add device specific patches here
 #
-SRC_URI_append_simpad       = "file://devfs.patch;patch=1 "
-SRC_URI_append_c7x0         = "file://kernel-keymap-corgi.patch;patch=1 \
-                               file://c7x0-w100-accel.patch;patch=1 file://suspend-resume-hooks.patch;patch=1 \
-                               file://c7x0-w100-gcc4.patch;patch=1 "
-SRC_URI_append_spitz        = "file://kernel-keymap-corgi.patch;patch=1 \
-                               file://kernel-keymap-CXK.patch;patch=1 "
-SRC_URI_append_akita        = "file://kernel-keymap-corgi.patch;patch=1 \
-                               file://kernel-keymap-CXK.patch;patch=1 "
+
+W100_ACCEL_PATCHES = "file://c7x0-w100-accel.patch;patch=1 \
+                      file://c7x0-w100-gcc4.patch;patch=1 \
+		      file://suspend-resume-hooks.patch;patch=1"
+
+SRC_URI_append_c7x0         = "${W100_ACCEL_PATCHES} "
+SRC_URI_append_spitz        = "file://kernel-keymap-CXK.patch;patch=1 "
+SRC_URI_append_akita        = "file://kernel-keymap-CXK.patch;patch=1 "
 SRC_URI_append_tosa         = "file://kernel-keymap-tosa.patch;patch=1 "
-SRC_URI_append_jornada7xx   = "file://ipaq_sound_fix.patch;patch=1 "
-SRC_URI_append_jornada56x   = "file://ipaq_sound_fix.patch;patch=1 "
-#SRC_URI_append_h1910        = "file://ipaq-keyboard.patch;patch=1 file://ipaq_sound_fix.patch;patch=1 "
-#SRC_URI_append_h1940        = "file://ipaq-keyboard.patch;patch=1 file://ipaq_sound_fix.patch;patch=1 "
-#SRC_URI_append_h2200        = "file://ipaq-keyboard.patch;patch=1 file://ipaq_sound_fix.patch;patch=1 "
-#SRC_URI_append_h3600        = "file://ipaq-keyboard.patch;patch=1 file://ipaq_sound_fix.patch;patch=1 "
-#SRC_URI_append_h3900        = "file://ipaq-keyboard.patch;patch=1 file://ipaq_sound_fix.patch;patch=1 "
-#SRC_URI_append_h4000        = "file://ipaq-keyboard.patch;patch=1 file://ipaq_sound_fix.patch;patch=1 "
-#SRC_URI_append_h5000        = "file://ipaq-keyboard.patch;patch=1 file://ipaq_sound_fix.patch;patch=1 "
-#SRC_URI_append_h6300        = "file://ipaq-keyboard.patch;patch=1 file://ipaq_sound_fix.patch;patch=1 "
-#SRC_URI_append_hx2000       = "file://ipaq-keyboard.patch;patch=1 file://ipaq_sound_fix.patch;patch=1 "
-#SRC_URI_append_hx4700       = "file://ipaq-keyboard.patch;patch=1 file://ipaq_sound_fix.patch;patch=1 "
+
+# "ipaqs" used to have this, but later were proven to at least work
+# without it. Review again and see if has interesting bits to be applied
+# universally.
+#SRC_URI_append   = "file://ipaq_sound_fix.patch;patch=1 "
 
 
 S = "${WORKDIR}/qt-${PV}"
