@@ -1,0 +1,12 @@
+diff -Naru launcher.orig/serverinterface.cpp launcher/serverinterface.cpp
+--- launcher.orig/serverinterface.cpp	2003-08-28 16:45:00.000000000 +0200
++++ launcher/serverinterface.cpp	2007-07-05 13:02:08.000000000 +0200
+@@ -113,7 +113,7 @@
+ 		mwr.setTop( w->geometry().bottom() + 1 );
+ 		break;
+ 	    case ServerInterface::Bottom:
+-                w->setGeometry( mwr.left(), mwr.bottom() - sh.height(),
++                w->setGeometry( mwr.left(), mwr.bottom() - sh.height() + 1,
+                                 mwr.width(), sh.height() );
+ 		mwr.setBottom( w->geometry().top() - 1 );
+ 		break;
