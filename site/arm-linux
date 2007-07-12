@@ -172,3 +172,7 @@ ac_cv_file___dev_ptc_=yes
 #mono
 mono_cv_uscore=${mono_cv_uscore=no}
 
+# gnet
+ac_cv_member_struct_sockaddr_sa_len=${ac_cv_member_struct_sockaddr_sa_len=no}
+ac_cv_gnet_have_abstract_sockets=${ac_cv_gnet_have_abstract_sockets=no}
+gnet_sockaddr_family_field_name=${gnet_sockaddr_family_field_name=ss_family}

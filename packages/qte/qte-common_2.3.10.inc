@@ -47,6 +47,7 @@ SRC_URI = "ftp://ftp.trolltech.com/pub/qt/source/qt-embedded-${PV}-free.tar.gz;m
 	   file://fix-errno-exception-spec.patch;patch=1 \
            file://keyboardless-buttonmap.patch;patch=1 \
            file://kernel-keymap.patch;patch=1 \
+	   file://kernel-keymap-corgi.patch;patch=1 \
 	   file://kernel-asm-page.patch;patch=1 \
 	   file://sharp_char.h \
 	   file://switches.h "
@@ -54,13 +55,14 @@ SRC_URI = "ftp://ftp.trolltech.com/pub/qt/source/qt-embedded-${PV}-free.tar.gz;m
 #
 # add device specific patches here
 #
-SRC_URI_append_c7x0         = "file://kernel-keymap-corgi.patch;patch=1 \
-                               file://c7x0-w100-accel.patch;patch=1 file://suspend-resume-hooks.patch;patch=1 \
-                               file://c7x0-w100-gcc4.patch;patch=1 "
-SRC_URI_append_spitz        = "file://kernel-keymap-corgi.patch;patch=1 \
-                               file://kernel-keymap-CXK.patch;patch=1 "
-SRC_URI_append_akita        = "file://kernel-keymap-corgi.patch;patch=1 \
-                               file://kernel-keymap-CXK.patch;patch=1 "
+
+W100_ACCEL_PATCHES = "file://c7x0-w100-accel.patch;patch=1 \
+                      file://c7x0-w100-gcc4.patch;patch=1 \
+		      file://suspend-resume-hooks.patch;patch=1"
+
+SRC_URI_append_c7x0         = "${W100_ACCEL_PATCHES} "
+SRC_URI_append_spitz        = "file://kernel-keymap-CXK.patch;patch=1 "
+SRC_URI_append_akita        = "file://kernel-keymap-CXK.patch;patch=1 "
 SRC_URI_append_tosa         = "file://kernel-keymap-tosa.patch;patch=1 "
 
 # "ipaqs" used to have this, but later were proven to at least work
