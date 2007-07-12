@@ -1,6 +1,6 @@
 require ${PN}.inc
 PV = "${OPIE_CVS_PV}"
-PR = "r13"
+PR = "r14"
 
 SRC_URI = "${HANDHELDS_CVS};module=opie/core/apps/calibrate \
            ${HANDHELDS_CVS};module=opie/noncore/settings/mediummount \
@@ -12,6 +12,7 @@ SRC_URI = "${HANDHELDS_CVS};module=opie/core/apps/calibrate \
            file://nomax.patch;patch=1;pnum=3 \
            file://no-builtin-qss-startup.patch;patch=1 \
            file://kbdlocks-runtime.patch;patch=1 \
-           file://server.pro \
 	   file://restart-from-bindir.patch;patch=1 \
+	   file://01-1px-gap.patch;patch=1 \
+           file://server.pro \
           "
