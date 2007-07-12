@@ -1,5 +1,5 @@
 require qte-common_${PV}.inc
-PR = "r7"
+PR = "r8"
 
 EXTRA_OECONF += "-static -thread"
 
@@ -18,4 +18,3 @@ do_install() {
 }
 
 PACKAGE_ARCH = "${MACHINE_ARCH}"
-FILES_${PN} = "${palmqtdir}"
