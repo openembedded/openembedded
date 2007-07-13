@@ -15,12 +15,6 @@ S = "${WORKDIR}/kernel26"
 
 inherit kernel
 
-FILES_kernel-image_hx4700 = ""
-ALLOW_EMPTY_hx4700 = "1"
-FILES_kernel-image_htcuniversal = ""
-ALLOW_EMPTY_htcuniversal = "1"
-
-
 
 K_MAJOR ?= "${@bb.data.getVar('PV',d,1).split('-')[0].split('.')[0]}"
 K_MINOR ?= "${@bb.data.getVar('PV',d,1).split('-')[0].split('.')[1]}"
