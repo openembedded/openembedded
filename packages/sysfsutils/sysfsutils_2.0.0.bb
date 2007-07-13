@@ -2,6 +2,7 @@ DESCRIPTION = "System Utilities Based on Sysfs"
 HOMEPAGE = "http://linux-diag.sourceforge.net/Sysfsutils.html"
 LICENSE = "GPLv2"
 PROVIDES = "libsysfs"
+PR = "r1"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/linux-diag/sysfsutils-${PV}.tar.gz"
 S = "${WORKDIR}/sysfsutils-${PV}"
@@ -18,5 +19,5 @@ do_stage () {
 }
 
 PACKAGES_prepend = "libsysfs "
-FILES_libsysfs = "${libdir}/*.so.2.0.0"
+FILES_libsysfs = "${libdir}/*.so.*"
 
