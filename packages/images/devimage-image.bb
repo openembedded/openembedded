@@ -1,11 +1,16 @@
 # Image for kernel debugging and development testing
-# Contains minimal userspace shim (no udev, etc.), but all useful 
-# "kernel userspace" utilities (feel free to add missing).
+# It includes all useful "kernel userspace" utilities, but
+# only shell and dropbear are loaded by default.
 # Allows to login via serial and real console or SSH
 LICENSE = "MIT"
-PR = "r1"
+PR = "r2"
 
-RDEPENDS = "devimage busybox dropbear module-init-tools wireless-tools wpa-supplicant irda-utils acx-firmware"
+DEVIMAGE_EXTRA_RDEPENDS ?= ""
+RDEPENDS = "devimage busybox dropbear udev \
+            module-init-tools pcmciautils \
+	    wireless-tools wpa-supplicant \
+	    irda-utils acx-firmware \
+	    ${DEVIMAGE_EXTRA_RDEPENDS}"
 
 export IMAGE_BASENAME = "devimage"
 export IMAGE_LINGUAS = ""
