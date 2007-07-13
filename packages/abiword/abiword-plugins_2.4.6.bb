@@ -13,7 +13,7 @@ inherit autotools
 
 PARALLEL_MAKE=""
 
-EXTRA_OECONF = "--without-libwmf"
+EXTRA_OECONF = "--without-libwmf --without-inter7eps"
 
 PACKAGES_DYNAMIC = "abiword-plugin-*"
 
