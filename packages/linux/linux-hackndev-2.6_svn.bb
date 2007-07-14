@@ -2,9 +2,9 @@ DESCRIPTION = "Hack&Dev's Linux kernel for Palm devices."
 HOMEPAGE = "http://www.hackndev.com/"
 SECTION = "kernel"
 LICENSE = "GPL"
-PR = "r6"
+PR = "r7"
 
-COMPATIBLE_MACHINE = "(palmtt3|palmtx|palmld|palmz72|palmtt5|palmt650)"
+COMPATIBLE_MACHINE = "(palmtt3|palmtx|palmld|palmz72|palmtt5|palmt650|palmtc)"
 
 SRC_URI = "svn://hackndev.svn.sourceforge.net/svnroot/hackndev/linux4palm/linux;module=trunk;proto=https \
 	   file://defconfig"
