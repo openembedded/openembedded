@@ -11,7 +11,7 @@ inherit autotools pkgconfig
 FILES_${PN} += " /usr/lib/X11"
 
 #EXTRA_OERECONF = " -I${S}/xterm.m4"
-EXTRA_OECONF = " --x-includes=${STAGING_INCDIR} --x-libraries=${STAGING_LIBDIR} FREETYPE_CONFIG=${STAGING_DIR}/${BUILD_SYS}/bin/freetype-config"
+EXTRA_OECONF = " --x-includes=${STAGING_INCDIR} --x-libraries=${STAGING_LIBDIR} FREETYPE_CONFIG=${STAGING_DIR}/${BUILD_SYS}/bin/freetype-config --disable-imake"
 
 #do_configure_prepend () {
 #	mv ${S}/aclocal.m4 ${S}/xterm.m4
