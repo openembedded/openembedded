@@ -1,0 +1,24 @@
+diff -Naur Python-2.5.1-org/configure Python-2.5.1/configure
+--- Python-2.5.1-org/configure	2007-03-12 11:50:51.000000000 +0100
++++ Python-2.5.1/configure	2007-07-14 01:30:20.000000000 +0200
+@@ -10569,7 +10569,7 @@
+   echo $ECHO_N "(cached) $ECHO_C" >&6
+ else
+   if test "$cross_compiling" = yes; then
+-  ac_cv_sizeof_off_t=4
++  ac_cv_sizeof_off_t=8
+ else
+   cat >conftest.$ac_ext <<_ACEOF
+ /* confdefs.h.  */
+diff -Naur Python-2.5.1-org/configure.in Python-2.5.1/configure.in
+--- Python-2.5.1-org/configure.in	2007-03-12 11:50:51.000000000 +0100
++++ Python-2.5.1/configure.in	2007-07-14 01:29:32.000000000 +0200
+@@ -1223,7 +1223,7 @@
+ }],
+ ac_cv_sizeof_off_t=`cat conftestval`,
+ ac_cv_sizeof_off_t=0,
+-ac_cv_sizeof_off_t=4)
++ac_cv_sizeof_off_t=8)
+ ])
+ AC_MSG_RESULT($ac_cv_sizeof_off_t)
+ AC_DEFINE_UNQUOTED(SIZEOF_OFF_T, $ac_cv_sizeof_off_t,
