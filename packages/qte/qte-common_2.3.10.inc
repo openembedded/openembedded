@@ -63,7 +63,6 @@ W100_ACCEL_PATCHES = "file://c7x0-w100-accel.patch;patch=1 \
 SRC_URI_append_c7x0         = "${W100_ACCEL_PATCHES} "
 SRC_URI_append_spitz        = "file://kernel-keymap-CXK.patch;patch=1 "
 SRC_URI_append_akita        = "file://kernel-keymap-CXK.patch;patch=1 "
-SRC_URI_append_tosa         = "file://kernel-keymap-tosa.patch;patch=1 "
 
 # "ipaqs" used to have this, but later were proven to at least work
 # without it. Review again and see if has interesting bits to be applied
