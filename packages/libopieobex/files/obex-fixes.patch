@@ -1,0 +1,68 @@
+diff --git a/obex.pro b/obex.pro
+index 05118ab..2372d12 100644
+--- a/obex.pro
++++ b/obex.pro
+@@ -7,7 +7,7 @@ DESTDIR		= $(OPIEDIR)/plugins/obex
+ INTERFACES  = obexsendbase.ui
+ INCLUDEPATH += $(OPIEDIR)/include $(OPIEDIR)/core/launcher 
+ DEPENDPATH  += 
+-LIBS        += -lqpe -lopiecore2 
++LIBS        += -lqpe -lopiecore2 -lopenobex
+ VERSION		= 0.0.4
+ 
+ include( $(OPIEDIR)/include.pro )
+@@ -19,6 +19,6 @@ contains( CONFTEST, y ){
+ HEADERS     += btobex.h
+ SOURCES     += btobex.cpp
+ INCLUDEPATH += $(OPIEDIR)/noncore/net/opietooth/lib
+-LIBS        += -lopietooth1 -lbluetooth -lopenobex
++LIBS        += -lopietooth1 -lbluetooth
+ DEFINES     += BLUETOOTH
+ }
+diff --git a/obexserver.cpp b/obexserver.cpp
+index f1fb205..786e9f7 100644
+--- a/obexserver.cpp
++++ b/obexserver.cpp
+@@ -207,7 +207,18 @@ static void obex_conn_event (obex_t *handle, obex_object_t *object,
+             /* Comes when a server-request has been received. */
+             handle_request (handle, object, event, obex_cmd);
+             break;
+-
++	case OBEX_EV_REQDONE:
++	    switch(obex_cmd) {
++		case OBEX_CMD_PUT:
++		case OBEX_CMD_CONNECT:
++		    break;
++		case OBEX_CMD_DISCONNECT:
++		    OBEX_TransportDisconnect(handle);
++		    break;
++		default:
++		    break;
++	    }
++	    break;
+         case OBEX_EV_LINKERR:
+             break;
+     }
+@@ -424,20 +435,12 @@ bool ObexServer::start(RunMode runmode, Communication comm)
+ 
+         if (initObex() == 0) {
+             do {
+-                int result; //Connection result
+                 if ( fd[ 1 ] ) {
+                     ::close(fd[1]);
+                     fd[1] = 0;
+                 }
+-                if ((result = OBEX_HandleInput(m_obex, 60)) < 0) {
+-                    if (errno != ECONNRESET) {
+-                        printf("OBEX_HandleInput error %d\n", errno);
+-                        fflush(stdout);
+-                        _exit(-1);
+-                    }
+-                    else
+-                        _exit(0);
+-                }
++                if (OBEX_HandleInput(m_obex, 10) < 0)
++                    _exit(0);
+             } while(1);
+         }
+         char resultByte = 1;
