@@ -17,7 +17,7 @@ PARALLEL_MAKE = ""
 
 inherit autotools
 
-EXTRA_OECONF += "--without-lisp"
+EXTRA_OECONF += "--without-lisp --disable-csharp"
 acpaths = '-I ${S}/autoconf-lib-link/m4/ \
 	   -I ${S}/gettext-runtime/m4 \
 	   -I ${S}/gettext-tools/m4'
