@@ -5,7 +5,7 @@ LICENSE = "GPL"
 SECTION = "opie/applications"
 APPTYPE = "binary"
 APPNAME = "Xqt"
-PR = "r1"
+PR = "r2"
 
 inherit palmtop
 
@@ -102,8 +102,6 @@ do_install() {
 
 	install -d ${D}${palmtopdir}/apps/Applications/
 	install -m 0644 ${WORKDIR}/xqt2/xfree86/files/Xqt.desktop ${D}${palmtopdir}/apps/Applications
-	install -d ${D}${palmtopdir}/bin/
-	install -m 0755 ${D}${bindir}/Xqt ${D}${palmtopdir}/bin/Xqt
 	install -d ${D}${palmtopdir}/pics
 	install -m 0644 programs/Xserver/hw/xqt/Xqt.png ${D}${palmtopdir}/pics
 }
