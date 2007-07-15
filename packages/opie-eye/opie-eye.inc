@@ -19,8 +19,8 @@ do_compile_append() {
 }
 
 do_install() {
-	install -d ${D}${palmtopdir}/bin
-	install -m 0755 opie-eye_slave ${D}${palmtopdir}/bin/
+	install -d ${D}${bindir}
+	install -m 0755 opie-eye_slave ${D}${bindir}
         install -d ${D}${palmtopdir}/pics/${APPNAME}/
         install -m 0644 ${WORKDIR}/pics/${APPNAME}/*.png ${D}${palmtopdir}/pics/${APPNAME}/
 }
