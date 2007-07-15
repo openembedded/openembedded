@@ -2,7 +2,7 @@ DESCRIPTION = "An Internet printing system for Unix."
 SECTION = "console/utils"
 LICENSE = "GPL LGPL"
 DEPENDS = "gnutls jpeg dbus dbus-glib libpng zlib install-native fakeroot-native"
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "ftp://ftp3.easysw.com/pub/cups/${PV}/cups-${PV}-source.tar.bz2 \
 	  "
@@ -46,6 +46,9 @@ do_compile () {
 
 fakeroot do_install () {
 	oe_runmake "DSTROOT=${D}" install
+
+   # This directory gets installed with perms 511, which makes packaging fail
+   chmod 0711 "${D}/${localstatedir}/run/cups/certs"
 }
 
 do_stage () {
@@ -54,6 +57,12 @@ do_stage () {
 	install ${S}/filter/*.h ${STAGING_INCDIR}/cups/
 	oe_libinstall -C cups -so libcups ${STAGING_LIBDIR}
 	oe_libinstall -C filter -so libcupsimage ${STAGING_LIBDIR}
+}
+
+python do_package_append() {
+	# Change permissions back the way they were, they probably had a reason...
+	workdir = bb.data.getVar('WORKDIR', d, 1)
+	os.system('chmod 0511 %s/install/cups/var/run/cups/certs' % workdir)
 }
 
 FILES_${PN}-dbg += "${libdir}/cups/backend/.debug \
@@ -71,6 +80,4 @@ FILES_${PN} += "${datadir}/doc/cups/images \
                 ${datadir}/icons/ \
 	       "
 
-
-
-
+LEAD_SONAME = "libcups.so.*"
