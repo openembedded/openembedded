@@ -13,3 +13,5 @@ clamav_av_have_in_port_t=${clamav_av_have_in_port_t=yes}
 clamav_av_have_in_addr_t=${clamav_av_have_in_addr_t=yes}
 ac_cv_func_mmap_fixed_mapped=${ac_cv_func_mmap_fixed_mapped=yes}
 
+# gnucash
+am_cv_scanf_lld=${am_cv_scanf_lld=yes}

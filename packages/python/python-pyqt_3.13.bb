@@ -7,7 +7,7 @@ LICENSE = "GPL"
 DEPENDS = "virtual/libqte2 virtual/libqpe1"
 RDEPENDS = "python-core python-sip"
 SRCNAME = "pyqt"
-PR = "ml4"
+PR = "r5"
 
 SRC_URI = "http://www.vanille.de/mirror/PyQt-x11-gpl-${PV}.tar.gz \
            file://qt2-fix.patch;patch=1 \
@@ -55,4 +55,5 @@ do_install() {
     done
 }
 
-FILES_${PN} = "${libdir}/${PYTHON_DIR}/site-packages"
+FILES_${PN} += "${libdir}/${PYTHON_DIR}/site-packages"
+FILES_${PN}-dbg += "${libdir}/python2.4/site-packages/.debug"
