@@ -4,10 +4,10 @@ PRIORITY = "optional"
 LICENSE = "GPL"
 DEPENDS = "ncurses"
 
-S = "${WORKDIR}/me040301"
+S = "${WORKDIR}/me060909"
 
-SRC_URI = "http://www.jasspa.com/release_040301/jasspa-mesrc-20040301.tar.gz \
-           http://www.jasspa.com/release_040301/jasspa-memacros-20040301.tar.gz \
+SRC_URI = "http://www.jasspa.com/release_${PV}/jasspa-mesrc-${PV}-2.tar.gz \
+           http://www.jasspa.com/release_${PV}/jasspa-memacros-${PV}.tar.gz \
            file://${FILESDIR}/zaurus_make.patch;patch=1"
 
 do_compile () {

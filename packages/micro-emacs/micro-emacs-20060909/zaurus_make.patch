@@ -3,8 +3,8 @@
 # Patch managed by http://www.mn-logistik.de/unsupported/pxa250/patcher
 #
 
---- me040301/src/zaurus.gmk~zaurus_make	2004-03-27 10:02:09.000000000 -0700
-+++ me040301/src/zaurus.gmk	2004-03-29 17:23:12.000000000 -0700
+--- me060909/src/zaurus.gmk~zaurus_make	2004-03-27 10:02:09.000000000 -0700
++++ me060909/src/zaurus.gmk	2004-03-29 17:23:12.000000000 -0700
 @@ -67,7 +67,7 @@
  # termcap
  test = $(shell echo "main() { printf(\"HW\n\"); }" > _t.c ; $(LD) $(LDFLAGS) -o /dev/null -ltermcap _t.c 2>&1 ; rm _t.c)
