@@ -15,7 +15,7 @@ RDEPENDS_gtk-theme-industrial = "gtk-engine-industrial"
 
 SRC_URI = "${GNOME_MIRROR}/${PN}/2.6/${PN}-${PV}.tar.bz2"
 
-inherit autotools pkgconfig
+inherit autotools pkgconfig gtk-binver
 
 PACKAGES_DYNAMIC = "gtk-engine-* gtk-theme-*"
 
