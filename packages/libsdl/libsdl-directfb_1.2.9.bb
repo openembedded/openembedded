@@ -5,7 +5,7 @@ DEPENDS = "alsa-lib directfb"
 PROVIDES = "virtual/libsdl"
 LICENSE = "LGPL"
 
-PR = "r2"
+PR = "r3"
 DEFAULT_PREFERENCE = "-1"
 
 SRC_URI = "http://www.libsdl.org/release/SDL-${PV}.tar.gz \
@@ -52,7 +52,7 @@ do_configure_append () {
 	# prevent libtool from linking libs against libstdc++, libgcc, ...
 	cat ${TARGET_PREFIX}libtool | sed -e 's/postdeps=".*"/postdeps=""/' > ${TARGET_PREFIX}libtool.tmp
 	mv ${TARGET_PREFIX}libtool.tmp ${TARGET_PREFIX}libtool
-#    	find ${S} -type f | xargs sed -i 's:I/usr/include:I${STAGING_INCDIR}:g'
+    	find ${S} -type f | xargs sed -i 's:I/usr/include:I${STAGING_INCDIR}:g'
 
 }
 
