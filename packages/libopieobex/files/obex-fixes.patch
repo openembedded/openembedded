@@ -20,10 +20,10 @@ index 05118ab..2372d12 100644
  DEFINES     += BLUETOOTH
  }
 diff --git a/obexserver.cpp b/obexserver.cpp
-index f1fb205..786e9f7 100644
+index f1fb205..a98c64f 100644
 --- a/obexserver.cpp
 +++ b/obexserver.cpp
-@@ -207,7 +207,18 @@ static void obex_conn_event (obex_t *handle, obex_object_t *object,
+@@ -207,7 +207,19 @@ static void obex_conn_event (obex_t *handle, obex_object_t *object,
              /* Comes when a server-request has been received. */
              handle_request (handle, object, event, obex_cmd);
              break;
@@ -35,6 +35,7 @@ index f1fb205..786e9f7 100644
 +		    break;
 +		case OBEX_CMD_DISCONNECT:
 +		    OBEX_TransportDisconnect(handle);
++		    _exit(0);
 +		    break;
 +		default:
 +		    break;
@@ -43,15 +44,20 @@ index f1fb205..786e9f7 100644
          case OBEX_EV_LINKERR:
              break;
      }
-@@ -424,20 +435,12 @@ bool ObexServer::start(RunMode runmode, Communication comm)
+@@ -423,21 +435,15 @@ bool ObexServer::start(RunMode runmode, Communication comm)
+             fcntl( fd[ 1 ], F_SETFD, FD_CLOEXEC );
  
          if (initObex() == 0) {
++	    if ( fd[ 1 ] ) {
++		::close(fd[1]);
++		fd[1] = 0;
++	    }
              do {
 -                int result; //Connection result
-                 if ( fd[ 1 ] ) {
-                     ::close(fd[1]);
-                     fd[1] = 0;
-                 }
+-                if ( fd[ 1 ] ) {
+-                    ::close(fd[1]);
+-                    fd[1] = 0;
+-                }
 -                if ((result = OBEX_HandleInput(m_obex, 60)) < 0) {
 -                    if (errno != ECONNRESET) {
 -                        printf("OBEX_HandleInput error %d\n", errno);
@@ -61,8 +67,10 @@ index f1fb205..786e9f7 100644
 -                    else
 -                        _exit(0);
 -                }
-+                if (OBEX_HandleInput(m_obex, 10) < 0)
-+                    _exit(0);
++                if (OBEX_HandleInput(m_obex, 60) < 0) {
++		    fprintf(stderr,"failed to OBEX_HandleInput(), errno=%d\n");
++                    _exit(errno?errno:-1);
++		}
              } while(1);
          }
          char resultByte = 1;
