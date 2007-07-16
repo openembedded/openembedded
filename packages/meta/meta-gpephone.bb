@@ -7,6 +7,6 @@ RDEPENDS = "\
     gpephone-task-base \
     gpephone-task-settings \
     gpephone-task-pim \
-    gpeph-task-connectivity"
+    gpephone-task-connectivity"
 
 inherit meta
