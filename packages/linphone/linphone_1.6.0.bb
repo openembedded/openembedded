@@ -16,9 +16,9 @@ RDEPENDS_liblinphone = "libquickstream libmediastreamer libortp libosip2"
 RDEPENDS_libquickstream = "speex libmediastreamer libasound"
 RDEPENDS_libmediastreamer = "speex libogg libasound libortp"
 
-PROVIDES = "linphone linphonec liblinphone"
+PROVIDES += "linphone linphonec liblinphone"
 
-PR = "r2"
+PR = "r3"
 
 SRC_URI = "http://download.savannah.nongnu.org/releases/linphone/1.6.x/sources/linphone-${PV}.tar.gz \
            http://download.devbase.at/voip/linphone-1.6.0-pl0.patch;patch=1"
@@ -61,9 +61,9 @@ PACKAGES += "linphonec linphone-rings liblinphone libquickstream libmediastreame
 FILES_${PN} = "${bindir}/linphone ${datadir}/pixmaps ${datadir}/applications ${datadir}/gnome/apps"
 FILES_${PN}c = "${bindir}/linphonec ${bindir}/sipomatic ${datadir}/sounds/linphone/ringback.wav"
 FILES_${PN}-rings = "${datadir}/sounds/linphone/rings"
-FILES_liblinphone = "${libdir}/liblinphone.so*"
-FILES_libquickstream = "${libdir}/libquickstream.so*"
-FILES_libmediastreamer = "${libdir}/libmediastreamer.so*"
-FILES_libortp = "${libdir}/libortp.so*"
-FILES_${PN}-dev = "${libdir}/*.a ${libdir}/*.la ${libdir}/pkgconfig ${includedir}"
+FILES_liblinphone = "${libdir}/liblinphone.so.*"
+FILES_libquickstream = "${libdir}/libquickstream.so.*"
+FILES_libmediastreamer = "${libdir}/libmediastreamer.so.*"
+FILES_libortp = "${libdir}/libortp.so.*"
+FILES_${PN}-dev += "${libdir}/*.a ${libdir}/*.la ${libdir}/pkgconfig ${includedir}"
 
