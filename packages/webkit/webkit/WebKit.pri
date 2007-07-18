@@ -1,7 +1,10 @@
 # Include file to make it easy to include WebKit into Qt projects
 
 
-isEmpty(OUTPUT_DIR):OUTPUT_DIR=$$PWD/WebKitBuild/Release
+isEmpty(OUTPUT_DIR) {
+    CONFIG(release):OUTPUT_DIR=$$PWD/WebKitBuild/Release
+    CONFIG(debug):OUTPUT_DIR=$$PWD/WebKitBuild/Debug
+}
 
 !gdk-port:CONFIG += qt-port
 qt-port:DEFINES += BUILDING_QT__=1
@@ -32,6 +35,7 @@ INCLUDEPATH += \
     $$BASE_DIR/JavaScriptCore/bindings \
     $$BASE_DIR/JavaScriptCore/bindings/c \
     $$BASE_DIR/JavaScriptCore/wtf \
+    $$BASE_DIR/JavaScriptCore/ForwardingHeaders \
     $$BASE_DIR/WebCore \
     $$BASE_DIR/WebCore/ForwardingHeaders \
     $$BASE_DIR/WebCore/platform \
