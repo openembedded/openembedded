@@ -7,5 +7,3 @@ LICENSE = "BSD"
 PR = "r0"
 
 inherit efl1
-
-SRC_URI = "http://download.enlightenment.org/snapshots/2007-05-06/eet-${PV}.tar.gz"

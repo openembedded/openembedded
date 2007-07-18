@@ -7,8 +7,6 @@ PR = "r0"
 
 inherit efl1
 
-SRC_URI = "http://download.enlightenment.org/snapshots/2007-06-17/emotion-${PV}.tar.gz"
-
 EXTRA_OECONF = "--disable-xine --enable-gstreamer"
 
 PACKAGES =+ "emotion-backend-gstreamer emotion-test"
