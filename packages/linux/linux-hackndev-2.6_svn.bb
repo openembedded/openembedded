@@ -4,7 +4,7 @@ SECTION = "kernel"
 LICENSE = "GPL"
 PR = "r7"
 
-COMPATIBLE_MACHINE = "(palmtt3|palmtx|palmld|palmz72|palmtt5|palmt650|palmtc)"
+COMPATIBLE_MACHINE = "(palmld|palmtc|palmtt3|palmtt5|palmtx|palmz31|palmz72|palmt650)"
 
 SRC_URI = "svn://hackndev.svn.sourceforge.net/svnroot/hackndev/linux4palm/linux;module=trunk;proto=https \
 	   file://defconfig"
