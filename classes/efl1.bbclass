@@ -8,7 +8,7 @@ addtask prepsources after do_fetch before do_unpack
 SECTION = "e/libs"
 HOMEPAGE = "http://www.enlightenment.org"
 SRCNAME = "${@bb.data.getVar('PN', d, 1).replace('-native', '')}"
-SRC_URI = "http://download.enlightenment.org/snapshots/2007-06-17/${SRCNAME}-${PV}.tar.gz"
+SRC_URI = "http://download.enlightenment.org/snapshots/2007-07-10/${SRCNAME}-${PV}.tar.gz"
 S = "${WORKDIR}/${SRCNAME}-${PV}"
 
 libdirectory = "src/lib"
