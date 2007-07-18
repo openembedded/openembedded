@@ -3,7 +3,7 @@ LICENSE = "GPL"
 PN = "linux-dm7025"
 KV = "2.6.12"
 PV = "2.6.12.6"
-PR = "r7"
+PR = "r8"
 
 DEPENDS = "zlib-native"
 
@@ -16,7 +16,7 @@ SRC_URI += "ftp://ftp.kernel.org/pub/linux/kernel/v2.6/linux-${PV}.tar.bz2 \
 #squashfs-lzma stuff
 	http://squashfs-lzma.org/dl/sqlzma3.2-r2b.tar.bz2 \
 	http://dreamboxupdate.com/download/kernel-patches/sqlzma2k-3.2-r2-2.6.12.6.patch.bz2 \
-	http://dreamboxupdate.com/download/patches/fix_lzma_squashfs_makefiles_for_oe-r1.patch.bz2 \
+	http://dreamboxupdate.com/download/patches/fix_lzma_squashfs_makefiles_for_oe-r2.patch.bz2 \
 	${SOURCEFORGE_MIRROR}/squashfs/squashfs3.2-r2.tar.gz \
 	${SOURCEFORGE_MIRROR}/sevenzip/lzma443.tar.bz2 \
 	file://${WORKDIR}/squashfs-lzma/kernel-patches/linux-2.6.12/squashfs3.2-patch;pnum=1;patch=1 "
@@ -38,7 +38,7 @@ do_munge () {
 	if [ -d ${WORKDIR}/squashfs3.2-r2 ]; then
 		mv ${WORKDIR}/squashfs3.2-r2/* ${WORKDIR}
 		rm -R ${WORKDIR}/squashfs3.2-r2
-		for i in sqlzma1-443.patch sqlzma2u-3.2-r2.patch fix_lzma_squashfs_makefiles_for_oe-r1.patch; 
+		for i in sqlzma1-443.patch sqlzma2u-3.2-r2.patch fix_lzma_squashfs_makefiles_for_oe-r2.patch; 
 		do
 	    		echo "Applying $i"
 			patch -d ${WORKDIR} -p1 < ${WORKDIR}/$i
