@@ -1,6 +1,6 @@
 require clutter.inc
 
-PV = "0.2.0+svn${SRCDATE}"
+PV = "0.3.1+svn${SRCDATE}"
 
 SRC_URI = "svn://svn.o-hand.com/repos/clutter/trunk;module=clutter;proto=http"
 
