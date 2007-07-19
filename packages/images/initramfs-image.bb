@@ -1,11 +1,13 @@
 # Sample initramfs image
 LICENSE = "MIT"
-PR = "r0"
+PR = "r1"
 
 #RDEPENDS = "initramfs-boot busybox kernel-module-uinput uclibc libgcc1"
-RDEPENDS = "initramfs initramfs-module-nfs initramfs-module-loop"
-RDEPENDS += " busybox-static kernel-module-uinput kernel-module-fat"
-RDEPENDS += " kernel-module-vfat kernel-module-loop"
+RDEPENDS = "initramfs initramfs-module-nfs initramfs-module-loop \
+            busybox-static"
+
+RRECOMENDS = "kernel-module-uinput kernel-module-fat \
+              kernel-module-vfat kernel-module-loop"
 
 export IMAGE_BASENAME = "initramfs-image"
 export IMAGE_LINGUAS = ""
