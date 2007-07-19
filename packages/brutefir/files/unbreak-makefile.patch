@@ -1,0 +1,38 @@
+--- /tmp/Makefile	2007-07-19 18:54:47.000000000 +0200
++++ brutefir-1.0i/Makefile	2007-07-19 18:55:44.775215000 +0200
+@@ -36,8 +36,6 @@
+ BRUTEFIR_LIBS	= $(FFTW_LIB) -lm
+ BRUTEFIR_OBJS	= brutefir.o fftw_convolver.o bfconf.o bfrun.o firwindow.o \
+ emalloc.o shmalloc.o dai.o bfconf_lexical.o inout.o dither.o delay.o 
+-BRUTEFIR_IA32_OBJS = convolver_sse2.o convolver_sse.o \
+-convolver_3dnow.o convolver_x87.o
+ 
+ BFIO_FILE_OBJS	= bfio_file.fpic.o
+ 
+@@ -46,8 +44,6 @@
+ 
+ BFIO_OSS_OBJS	= bfio_oss.fpic.o emalloc.fpic.o
+ 
+-BFIO_JACK_LIBS	= -ljack
+-BFIO_JACK_OBJS	= bfio_jack.fpic.o emalloc.fpic.o inout.fpic.o
+ 
+ BFLOGIC_CLI_OBJS = bflogic_cli.fpic.o inout.fpic.o
+ BFLOGIC_EQ_OBJS	= bflogic_eq.fpic.o emalloc.fpic.o shmalloc.fpic.o
+@@ -78,7 +74,6 @@
+ # assume that we have alsa, osss and jack
+ LIB_TARGETS	+= alsa.bfio
+ LIB_TARGETS	+= oss.bfio
+-LIB_TARGETS	+= jack.bfio
+ endif
+ 
+ # Solaris
+@@ -133,9 +128,6 @@
+ oss.bfio: $(BFIO_OSS_OBJS)
+ 	$(LD) $(LD_SHARED) $(CC_FPIC) $(LIBPATHS) -o $@ $(BFIO_OSS_OBJS) -lc
+ 
+-jack.bfio: $(BFIO_JACK_OBJS)
+-	$(LD) $(LD_SHARED) $(CC_FPIC) $(LIBPATHS) -o $@ $(BFIO_JACK_OBJS) $(BFIO_JACK_LIBS) -lc
+-
+ file.bfio: $(BFIO_FILE_OBJS)
+ 	$(LD) $(LD_SHARED) $(CC_FPIC) $(LIBPATHS) -o $@ $(BFIO_FILE_OBJS) -lc
+ 
