@@ -112,7 +112,7 @@ RDEPENDS_gpe-task-apps-extra = "\
 RDEPENDS_gpe-task-web = "\
     gpe-irc \
     minimo \
-    gaim"
+    pidgin"
 
 RDEPENDS_gpe-task-desktopapps = "\
     firefox \
