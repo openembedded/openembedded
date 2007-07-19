@@ -1,0 +1,50 @@
+Index: git/configure.in
+===================================================================
+--- git.orig/configure.in	2007-07-17 17:25:52.000000000 +0100
++++ git/configure.in	2007-07-17 17:25:52.000000000 +0100
+@@ -75,6 +75,10 @@
+ AC_SUBST(OPENOBEX_CFLAGS)
+ AC_SUBST(OPENOBEX_LIBS)
+ 
++PKG_CHECK_MODULES(GTHREAD, gthread-2.0 >= 2.10, dummy=yes, dummy=no)
++AC_SUBST(GTHREAD_CFLAGS)
++AC_SUBST(GTHREAD_LIBS)
++
+ AC_ARG_BLUEZ
+ 
+ AC_OUTPUT(Makefile compat/Makefile common/Makefile applet/Makefile properties/Makefile sendto/Makefile wizard/Makefile proximity/Makefile po/Makefile.in)
+Index: git/applet/Makefile.am
+===================================================================
+--- git.orig/applet/Makefile.am	2007-07-17 17:25:52.000000000 +0100
++++ git/applet/Makefile.am	2007-07-17 17:25:52.000000000 +0100
+@@ -4,12 +4,12 @@
+ bluetooth_applet_SOURCES = main.c
+ 
+ bluetooth_applet_LDADD = $(top_builddir)/compat/libcompat.a $(top_builddir)/common/libcommon.a \
+-	@NOTIFY_LIBS@ @GCONF_LIBS@ @GTK_LIBS@ @HAL_LIBS@ @DBUS_LIBS@
++	@NOTIFY_LIBS@ @GCONF_LIBS@ @GTK_LIBS@ @HAL_LIBS@ @DBUS_LIBS@ @GTHREAD_LIBS@
+ 
+ nodist_bluetooth_applet_SOURCES = $(top_builddir)/common/passkey-agent-glue.h \
+ 					$(top_builddir)/common/auth-agent-glue.h
+ 
+-AM_CFLAGS = @DBUS_CFLAGS@ @HAL_CFLAGS@ @GTK_CFLAGS@ @GCONF_CFLAGS@ @NOTIFY_CFLAGS@ -DSYSCONFDIR=\"$(sysconfdir)\"
++AM_CFLAGS = @DBUS_CFLAGS@ @HAL_CFLAGS@ @GTK_CFLAGS@ @GCONF_CFLAGS@ @NOTIFY_CFLAGS@ @GTHREAD_CFLAGS@ -DSYSCONFDIR=\"$(sysconfdir)\"
+ 
+ INCLUDES = -I$(top_builddir)/common -I$(top_srcdir)/compat
+ 
+Index: git/properties/Makefile.am
+===================================================================
+--- git.orig/properties/Makefile.am	2007-07-17 17:28:11.000000000 +0100
++++ git/properties/Makefile.am	2007-07-17 17:28:44.000000000 +0100
+@@ -4,9 +4,9 @@
+ bluetooth_properties_SOURCES = main.c
+ 
+ bluetooth_properties_LDADD = $(top_builddir)/common/libcommon.a \
+-			@GCONF_LIBS@ @GTK_LIBS@ @HAL_LIBS@ @DBUS_LIBS@
++			@GCONF_LIBS@ @GTK_LIBS@ @HAL_LIBS@ @DBUS_LIBS@ @GTHREAD_LIBS@
+ 
+-AM_CFLAGS = @DBUS_CFLAGS@ @HAL_CFLAGS@ @GTK_CFLAGS@ @GCONF_CFLAGS@
++AM_CFLAGS = @DBUS_CFLAGS@ @HAL_CFLAGS@ @GTK_CFLAGS@ @GCONF_CFLAGS@ @GTHREAD_CFLAGS@
+ 
+ INCLUDES = -I$(top_srcdir)/common
+ 

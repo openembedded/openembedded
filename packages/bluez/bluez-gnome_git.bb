@@ -3,10 +3,11 @@ LICENSE = "GPL+LGPL"
 
 DEPENDS = "dbus-glib gconf libnotify gtk+"
 
-SRC_URI = "cvs://anonymous@cvs.bluez.org/cvsroot/bluez;module=gnome"
+SRC_URI = "git://people.freedesktop.org/~hadess/bluez-gnome;protocol=git \
+           file://pkgconfig-add-gthread.patch;patch=1 "
 
-PV = "0.6+cvs${SRCDATE}"
-S = "${WORKDIR}/gnome"
+PV = "0.9+git${SRCDATE}"
+S = "${WORKDIR}/git"
 
 inherit autotools pkgconfig gconf
 

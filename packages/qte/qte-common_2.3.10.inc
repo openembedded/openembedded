@@ -25,12 +25,10 @@ SRC_URI = "ftp://ftp.trolltech.com/pub/qt/source/qt-embedded-${PV}-free.tar.gz;m
 	   file://no-moc.patch;patch=1 \
 	   file://gcc3.patch;patch=1 \
 	   file://gcc4.patch;patch=1 \
-	   file://c700-hardware.patch;patch=1 \
 	   file://encoding.patch;patch=1 \
 	   file://fix-qgfxraster.patch;patch=1 \
 	   file://qt-visibility.patch;patch=1 \
 	   file://tslib.patch;patch=1 \
-	   file://simpad.patch;patch=1 \
 	   file://handhelds.patch;patch=1 \
 	   file://qiconview-speed.patch;patch=1 \
 	   file://qtabbar.patch;patch=1 \
@@ -43,7 +41,6 @@ SRC_URI = "ftp://ftp.trolltech.com/pub/qt/source/qt-embedded-${PV}-free.tar.gz;m
 	   file://key.patch;patch=1 \
 	   file://bidimetrics.patch;patch=5 \
 	   file://fix-native-build.patch;patch=1 \
-	   file://simpad-defaultkbd.patch;patch=1 \
 	   file://fix-errno-exception-spec.patch;patch=1 \
            file://keyboardless-buttonmap.patch;patch=1 \
            file://kernel-keymap.patch;patch=1 \
@@ -61,8 +58,8 @@ W100_ACCEL_PATCHES = "file://c7x0-w100-accel.patch;patch=1 \
 		      file://suspend-resume-hooks.patch;patch=1"
 
 SRC_URI_append_c7x0         = "${W100_ACCEL_PATCHES} "
-SRC_URI_append_spitz        = "file://kernel-keymap-CXK.patch;patch=1 "
-SRC_URI_append_akita        = "file://kernel-keymap-CXK.patch;patch=1 "
+SRC_URI_append_spitz        = "file://spitz-adhoc-keypad-rotate.patch;patch=1 "
+SRC_URI_append_akita        = "file://spitz-adhoc-keypad-rotate.patch;patch=1 "
 
 # "ipaqs" used to have this, but later were proven to at least work
 # without it. Review again and see if has interesting bits to be applied
@@ -117,13 +114,13 @@ EXTRA_DEFINES_palmld		= "-DQT_QWS_TSLIB -DQT_QWS_CUSTOM -DQT_QWS_IPAQ"
 EXTRA_DEFINES_palmt650		= "-DQT_QWS_TSLIB -DQT_QWS_CUSTOM -DQT_QWS_IPAQ"
 EXTRA_DEFINES_palmtx		= "-DQT_QWS_TSLIB -DQT_QWS_CUSTOM -DQT_QWS_IPAQ"
 EXTRA_DEFINES_palmz72		= "-DQT_QWS_TSLIB -DQT_QWS_CUSTOM -DQT_QWS_IPAQ"
-EXTRA_DEFINES_simpad		= "-DQT_QWS_TSLIB -DQT_QWS_CUSTOM -DQT_QWS_IPAQ   -DQT_QWS_SIMPAD -DQT_QWS_DEVFS"
-EXTRA_DEFINES_c7x0		= "-DQT_QWS_TSLIB -DQT_QWS_CUSTOM -DQT_QWS_SL5XXX -DQT_QWS_SLC700"
-EXTRA_DEFINES_spitz		= "-DQT_QWS_TSLIB -DQT_QWS_CUSTOM -DQT_QWS_SL5XXX -DQT_QWS_SLC700 -DQT_QWS_SLCXK"
-EXTRA_DEFINES_akita             = "-DQT_QWS_TSLIB -DQT_QWS_CUSTOM -DQT_QWS_SL5XXX -DQT_QWS_SLC700 -DQT_QWS_SLCXK"
+EXTRA_DEFINES_simpad		= "-DQT_QWS_TSLIB -DQT_QWS_CUSTOM -DQT_QWS_IPAQ"
+EXTRA_DEFINES_c7x0		= "-DQT_QWS_TSLIB -DQT_QWS_CUSTOM -DQT_QWS_SL5XXX"
+EXTRA_DEFINES_spitz		= "-DQT_QWS_TSLIB -DQT_QWS_CUSTOM -DQT_QWS_SL5XXX -DQT_QWS_SLCXK"
+EXTRA_DEFINES_akita             = "-DQT_QWS_TSLIB -DQT_QWS_CUSTOM -DQT_QWS_SL5XXX -DQT_QWS_SLCXK"
 EXTRA_DEFINES_collie 		= "-DQT_QWS_TSLIB -DQT_QWS_CUSTOM -DQT_QWS_SL5XXX"
 EXTRA_DEFINES_poodle		= "-DQT_QWS_TSLIB -DQT_QWS_CUSTOM -DQT_QWS_SL5XXX"
-EXTRA_DEFINES_tosa		= "-DQT_QWS_TSLIB -DQT_QWS_CUSTOM -DQT_QWS_SL5XXX -DQT_QWS_SL6000"
+EXTRA_DEFINES_tosa		= "-DQT_QWS_TSLIB -DQT_QWS_CUSTOM -DQT_QWS_SL5XXX"
 
 #
 # don't touch anything below here
