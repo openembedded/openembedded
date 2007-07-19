@@ -1,6 +1,11 @@
 #!/bin/sh
 
 if [ "$ROOT_DEVICE" = "/dev/nfs" ]; then
+
+    # These correspond to what kernel itself uses
+    # DO NOT CHANGE!
+    NFS_OPTIONS="-o nfsvers=2,nolock"
+
     for arg in $CMDLINE; do
         echo $arg
         optarg=`expr "x$arg" : 'x[^=]*=\(.*\)'`
@@ -33,6 +38,6 @@ if [ "$ROOT_DEVICE" = "/dev/nfs" ]; then
     )
 
     echo "booting from NFS: $nfsroot"
-    mount -t nfs $nfsroot /mnt
+    mount -t nfs $NFS_OPTIONS $nfsroot /mnt
     BOOT_ROOT=/mnt
 fi
