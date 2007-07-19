@@ -72,19 +72,3 @@ Index: qt-2.3.10/src/kernel/qkeyboard_qws.cpp
      }
  #ifndef QT_QWS_USE_KEYCODES
      extended = 0;
-@@ -2056,6 +2062,7 @@
-             press ? "press" : "release",
-             repeatable ? "true":"false" );
- 
-+#if defined(QT_QWS_IPAQ) || defined(QT_QWS_SL5XXX)
-     if ( qt_screen->isTransformed() && k >= Qt::Key_Left && k <= Qt::Key_Down )
-     {
-         qDebug( "SimpadButtonsHandler() - We are transformed! Correcting..." );
-@@ -2063,6 +2070,7 @@
-         k = xform_dirkey( k );
-         qDebug( "SimpadButtonsHandler() - Old Key: %d - New Key %d", oldK, k );
-     }
-+#endif
- 
-     if ( repeatable && press )
-         repeater->start( repeatdelay, true );

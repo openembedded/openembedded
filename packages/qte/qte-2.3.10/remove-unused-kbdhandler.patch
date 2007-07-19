@@ -1,0 +1,420 @@
+--- qt-2.3.10.orig/src/kernel/qkeyboard_qws.cpp.org	2007-07-19 11:00:39.000000000 +0300
++++ qt-2.3.10/src/kernel/qkeyboard_qws.cpp	2007-07-19 12:14:48.000000000 +0300
+@@ -853,417 +853,6 @@
+ 
+ void QWSPC101KeyboardHandler::doKey(uchar code)
+ {
+-    const QWSServer::KeyMap *currentKey = 0;
+-    int keyCode = Qt::Key_unknown;
+-    bool release = false;
+-    int keypad = 0;
+-
+-#if defined(QT_QWS_IPAQ) || defined(QT_QWS_SL5XXX) // need autorepeat implemented here?
+-        bool repeatable = TRUE;
+-
+-#ifndef QT_QWS_USE_KEYCODES
+-#if defined(QT_QWS_IPAQ)
+-    // map ipaq 'action' key (0x60, 0xe0)
+-    if ((code & 0x7f) == 0x60) {
+-#if defined(QT_KEYPAD_MODE)
+-	// to keycode for select (keypad mode)
+-	code = (code & 0x80) | 116;
+-#else
+-	// to keycode for space. (no keypad mode0
+-	code = (code & 0x80) | 57;
+-#endif
+-    }
+-#endif
+-
+-#if !defined(QT_QWS_SL5XXX)
+-    if (code == 224
+-#if defined(QT_QWS_IPAQ) 
+-	&& !ipaq_return_pressed
+-#endif
+-	) {
+-	// extended
+-	extended = 1;
+-	return;
+-    }
+-    else if (code == 225) {
+-    	// extended 2
+-    	extended = 2;
+-    	return;
+-    }
+-#endif
+-#endif
+-
+-
+-    /*------------------------------------------------------------------
+-      First find the Qt KeyCode
+-      ------------------------------------------------------------------*/
+-
+-    if (code & 0x80) {
+-	release = true;
+-	code &= 0x7f;
+-    }
+-
+-#ifndef QT_QWS_USE_KEYCODES
+-    if (extended == 1) {
+-	currentKey = overrideMap ? overrideMap->find( code+0xe000 ) : 0;
+-	if ( currentKey )
+-	    keyCode = currentKey->key_code;
+-	else
+-	    switch (code) {
+-	    case 72:
+-		keyCode = Qt::Key_Up;
+-		break;
+-	    case 75:
+-		keyCode = Qt::Key_Left;
+-		break;
+-	    case 77:
+-		keyCode = Qt::Key_Right;
+-		break;
+-	    case 80:
+-		keyCode = Qt::Key_Down;
+-		break;
+-	    case 82:
+-		keyCode = Qt::Key_Insert;
+-		break;
+-	    case 71:
+-		keyCode = Qt::Key_Home;
+-		break;
+-	    case 73:
+-		keyCode = Qt::Key_Prior;
+-		break;
+-	    case 83:
+-		keyCode = Qt::Key_Delete;
+-		break;
+-	    case 79:
+-		keyCode = Qt::Key_End;
+-		break;
+-	    case 81:
+-		keyCode = Qt::Key_Next;
+-		break;
+-	    case 28:
+-		keyCode = Qt::Key_Enter;
+-		break;
+-	    case 53:
+-		keyCode = Qt::Key_Slash;
+-		break;
+-	    case 0x1d:
+-		keyCode = Qt::Key_Control;
+-		break;
+-	    case 0x2a:
+-		keyCode = Qt::Key_SysReq;
+-		break;
+-	    case 0x38:
+-		keyCode = Qt::Key_Alt;
+-		break;
+-	    case 0x5b:
+-		keyCode = Qt::Key_Super_L;
+-		break;
+-	    case 0x5c:
+-		keyCode = Qt::Key_Super_R;
+-		break;
+-	    case 0x5d:
+-		keyCode = Qt::Key_Menu;
+-		break;
+-	    }
+-    } else if ( extended == 2 ) {
+-	switch (code) {
+-	case 0x1d: 
+-	    return;
+-	case 0x45:
+-	    keyCode = Qt::Key_Pause;
+-	    break;
+-	}
+-    } else
+-#endif
+-    {
+-#if defined(QT_QWS_SL5XXX)
+-	if ( fn && !meta && (code >= 0x42 && code <= 0x52) ) {
+-	    ushort unicode=0xffff;
+-	    int scan=0;
+-	    if ( code == 0x42 ) { unicode='X'-'@'; scan=Key_X; } // Cut
+-	    else if ( code == 0x43 ) { unicode='C'-'@'; scan=Key_C; } // Copy
+-	    else if ( code == 0x44 ) { unicode='V'-'@'; scan=Key_V; } // Paste
+-	    else if ( code == 0x52 ) { unicode='Z'-'@'; scan=Key_Z; } // Undo
+-	    if ( scan ) {
+-		processKeyEvent( unicode, scan, ControlButton, !release, FALSE );
+-		return;
+-	    }
+-	}
+-#endif
+-	currentKey = overrideMap ? overrideMap->find( code ) : 0;
+-	if ( !currentKey && code < keyMSize ) {
+-	    currentKey = &QWSServer::keyMap()[code];
+-	}
+-	if ( currentKey )
+-	    keyCode = currentKey->key_code;
+-
+-#if defined(QT_QWS_IPAQ)
+-	switch (code) {
+-#if defined(QT_QWS_SL5XXX)
+-#if defined(QT_KEYPAD_MODE)
+-	case 0x7a:
+-	    keyCode = Key_Call;
+-	    repeatable = FALSE;
+-	    break;
+-	case 0x7b:
+-	    keyCode = Key_Context1;
+-	    repeatable = FALSE;
+-	    break;
+-	case 0x7c:
+-	    keyCode = Key_Back;
+-	    repeatable = FALSE;
+-	    break;
+-	case 0x7d:
+-	    keyCode = Key_Hangup;
+-	    repeatable = FALSE;
+-	    break;
+-#else
+-	case 0x7a: case 0x7b: case 0x7c: case 0x7d:
+-	    keyCode = code - 0x7a + Key_F9;
+-	    repeatable = FALSE;
+-	    break;
+-#endif
+-	case 0x79:
+-	    keyCode = Key_F34;
+-	    repeatable = FALSE;
+-	    break;
+-#endif
+-
+-	case 0x74: // kernel KEY_POWER
+-	    keyCode = Key_F34;
+-	    repeatable = FALSE;
+-	    break;
+-	case 89: // kernel KEY_RO
+-	    keyCode = Key_F24;
+-	    repeatable = FALSE;
+-	    break;
+-
+-	case 0x78:
+-# if defined(QT_QWS_IPAQ)
+-	    keyCode = Key_F24;  // record
+-# else
+-	    keyCode = Key_Escape;
+-# endif
+-	    repeatable = FALSE;
+-	    break;
+-	case 0x60:
+-	    keyCode = Key_Return;
+-# ifdef QT_QWS_IPAQ
+-	    ipaq_return_pressed = !release;
+-# endif
+-	    break;
+-	case 0x67:
+-	    keyCode = Key_Right;
+-	    break;
+-	case 0x69:
+-	    keyCode = Key_Up;
+-	    break;
+-	case 0x6a:
+-	    keyCode = Key_Down;
+-	    break;
+-	case 0x6c:
+-	    keyCode = Key_Left;
+-	    break;
+-	}
+-#endif
+-
+-	/*------------------------------------------------------------------
+-	  Then do special processing of magic keys
+-	  ------------------------------------------------------------------*/
+-
+-
+-#if defined(QT_QWS_SL5XXX)
+-	if ( release && ( keyCode == Key_F34 || keyCode == Key_F35 ) )
+-	    return; // no release for power and light keys
+-	if ( keyCode >= Key_F1 && keyCode <= Key_F35
+-	     || keyCode == Key_Escape || keyCode == Key_Home
+-	     || keyCode == Key_Shift || keyCode == Key_Meta )
+-	    repeatable = FALSE;
+-#endif
+-
+-#if defined(QT_QWS_IPAQ) || defined(QT_QWS_SL5XXX)
+-	if ( qt_screen->isTransformed()
+-	     && keyCode >= Qt::Key_Left && keyCode <= Qt::Key_Down )
+-	    {
+-		keyCode = xform_dirkey(keyCode);
+-	    }
+-#endif
+-	
+-#endif
+-	/*
+-	  Translate shift+Key_Tab to Key_Backtab
+-	*/
+-	if (( keyCode == Key_Tab ) && shift )
+-	    keyCode = Key_Backtab;
+-#if defined(QT_QWS_IPAQ) || defined(QT_QWS_SL5XXX)
+-    }
+-#endif
+-
+-#ifndef QT_QWS_USE_KEYCODES
+-    /*
+-      Keypad consists of extended keys 53 and 28,
+-      and non-extended keys 55 and 71 through 83.
+-    */
+-    if (( extended == 1 ) ? (code == 53 || code == 28) :
+-	(code == 55 || ( code >= 71 && code <= 83 )) )
+-	keypad = Qt::Keypad;
+-#else
+-    if ( code == 55 || code >= 71 && code <= 83 || code == 96
+-	    || code == 98 || code == 118 )
+-	keypad = Qt::Keypad;
+-#endif
+-
+-    // Virtual console switching
+-    int term = 0;
+-    if (ctrl && alt && keyCode >= Qt::Key_F1 && keyCode <= Qt::Key_F10)
+-	term = keyCode - Qt::Key_F1 + 1;
+-    else if (ctrl && alt && keyCode == Qt::Key_Left)
+-	term = QMAX(vtQws - 1, 1);
+-    else if (ctrl && alt && keyCode == Qt::Key_Right)
+-	term = QMIN(vtQws + 1, 10);
+-    if (term && !release) {
+-	ctrl = false;
+-	alt = false;
+-#if !defined(_OS_FREEBSD_) && !defined(_OS_SOLARIS_)
+-	ioctl(kbdFD, VT_ACTIVATE, term);
+-#endif
+-	return;
+-    }
+-
+-#if defined(QT_QWS_SL5XXX)
+-    // Ctrl-Alt-Delete exits qws
+-    if (ctrl && alt && keyCode == Qt::Key_Delete) {
+-	qApp->quit();
+-    }
+-#else
+-    // Ctrl-Alt-Backspace exits qws
+-    if (ctrl && alt && keyCode == Qt::Key_Backspace) {
+-	qApp->quit();
+-    }
+-#endif
+-
+-#if defined(QT_QWS_SL5XXX)
+-    if (keyCode == Qt::Key_F22) { /* Fn key */
+-	fn = !release;
+-    } else if ( keyCode == Key_NumLock ) {
+-	if ( release )
+-	    numLock = !numLock;
+-    } else
+-#endif
+-
+-	if (keyCode == Qt::Key_Alt) {
+-	    alt = !release;
+-	} else if (keyCode == Qt::Key_Control) {
+-	    ctrl = !release;
+-	} else if (keyCode == Qt::Key_Shift) {
+-	    shift = !release;
+-#if defined(QT_QWS_SL5XXX)
+-	} else if (keyCode == Qt::Key_Meta) {
+-	    meta = !release;
+-#endif
+-	} else if ( keyCode == Qt::Key_CapsLock && release ) {
+-	    caps = !caps;
+-#if defined(_OS_LINUX_) && !defined(QT_QWS_SL5XXX)
+-	    char leds;
+-	    ioctl(0, KDGETLED, &leds);
+-	    leds = leds & ~LED_CAP;
+-	    if ( caps ) leds |= LED_CAP;
+-	    ioctl(0, KDSETLED, leds);
+-#endif
+-	}
+-
+-    /*------------------------------------------------------------------
+-      Then find the Unicode value and send the event
+-      ------------------------------------------------------------------*/
+-    //If we map the keyboard to a non-latin1 layout, we may have
+-    //valid keys with unknown key codes.
+-    if ( currentKey || keyCode != Qt::Key_unknown ) {
+-	bool bAlt = alt;
+-	bool bCtrl = ctrl;
+-	bool bShift = shift;
+-	int unicode = 0xffff;
+-	if ( currentKey ) {
+-#if !defined(QT_QWS_SL5XXX)
+-	    bool bCaps = shift ||
+-			 (caps ? QChar(QWSServer::keyMap()[code].unicode).isLetter() : FALSE);
+-#else
+-	    bool bCaps = caps ^ shift;
+-	    if (fn) {
+-		if ( shift ) {
+-		    bCaps = bShift = FALSE;
+-		    bCtrl = TRUE;
+-		}
+-		if ( meta ) {
+-		    bCaps = bShift = TRUE;
+-		    bAlt = TRUE;
+-		}
+-	    } else if ( meta ) {
+-		bCaps = bShift = TRUE;
+-	    }
+-	    if ( code > 40 && caps ) {
+-		// fn-keys should only react to shift, not caps
+-		bCaps = bShift = shift;
+-	    }
+-	    if ( numLock ) {
+-		if ( keyCode != Key_Space && keyCode != Key_Tab )
+-		    bCaps = bShift = FALSE;
+-	    }
+-	    if ( keyCode == Key_Delete && (bAlt || bCtrl) ) {
+-		keyCode = Key_BraceLeft;
+-		unicode = '[';
+-		bCaps = bShift = bAlt = bCtrl = FALSE;
+-	    } else if (keyCode == Qt::Key_F31 && bCtrl) {
+-		keyCode = Key_QuoteLeft;
+-		unicode = '`';
+-	    } else
+-#endif
+-		
+-		if (bCtrl)
+-		    unicode = currentKey->ctrl_unicode;
+-		else if (bCaps)
+-		    unicode = currentKey->shift_unicode;
+-		else
+-		    unicode = currentKey->unicode;
+-#ifndef QT_QWS_USE_KEYCODES
+-	} else if ( extended == 1 ) {
+-	    if ( keyCode == Qt::Key_Slash )
+-		unicode = '/';
+-	    else if ( keyCode == Qt::Key_Enter )
+-		unicode = 0xd;
+-#endif
+-	}
+-
+-	modifiers = 0;
+-	if ( bAlt ) modifiers |= AltButton;
+-	if ( bCtrl ) modifiers |= ControlButton;
+-	if ( bShift ) modifiers |= ShiftButton;
+-	if ( keypad ) modifiers |= Keypad;
+-
+-	// looks wrong -- WWA
+-	bool repeat = FALSE;
+-	if (prevuni == unicode && prevkey == keyCode && !release)
+-	    repeat = TRUE;
+-
+-	processKeyEvent( unicode, keyCode, modifiers, !release, repeat );
+-
+-	if (!release) {
+-	    prevuni = unicode;
+-	    prevkey = keyCode;
+-	} else {
+-	    prevkey = prevuni = 0;
+-	}
+-
+-#ifdef QT_QWS_AUTOREPEAT_MANUALLY
+-        if ( repeatable && !release )
+-            rep->start(prevuni,prevkey,modifiers);
+-        else
+-            rep->stop();
+-#endif
+-
+-    }
+-#ifndef QT_QWS_USE_KEYCODES
+-    extended = 0;
+-#endif
+ }
+ 
+ 
