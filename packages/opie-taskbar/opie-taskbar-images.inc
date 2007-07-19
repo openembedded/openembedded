@@ -5,7 +5,7 @@ LICENSE = "GPL"
 RPROVIDES = "${PN}"
 APPNAME = "qpe"
 
-S = "${WORKDIR}/launcher"
+S = "${WORKDIR}/pics"
 
 # Wallpaper and welcome splash
 PIXMAP_SIZE 		= ""
@@ -18,24 +18,28 @@ PIXMAP_SIZE_asus730     = "-480x640"
 PIXMAP_SIZE_htcuniversal= "-480x640"
 PIXMAP_SIZE_hx4700      = "-480x640"
 
-PACKAGES = "${PN}-480x640 ${PN}-640x480 ${PN}-800x600 ${PN}-240x320"
-
-#inherit opie
+PACKAGES = "${PN}-480x640 ${PN}-640x480 ${PN}-800x600 ${PN}-600x800 ${PN}-320x240 ${PN}-240x320"
 
 do_install() {
 	install -d ${D}${palmtopdir}/pics/launcher
 
 	install -m 0644 ${WORKDIR}/pics/launcher/firstuse.jpg ${D}${palmtopdir}/pics/launcher/firstuse-240x320.jpg
 	install -m 0644 ${WORKDIR}/pics/launcher/opie-background.jpg ${D}${palmtopdir}/pics/launcher/opie-background-240x320.jpg
+	# TODO: those should be correct images for the resolution:
+	install -m 0644 ${WORKDIR}/pics/launcher/firstuse.jpg ${D}${palmtopdir}/pics/launcher/firstuse-320x240.jpg
+	install -m 0644 ${WORKDIR}/pics/launcher/opie-background.jpg ${D}${palmtopdir}/pics/launcher/opie-background-320x240.jpg
 
         for res in 480x640 640x480 800x600 ; do
          install -m 0644 ${WORKDIR}/pics/launcher/firstuse-${res}.jpg ${D}${palmtopdir}/pics/launcher/firstuse-${res}.jpg
          install -m 0644 ${WORKDIR}/pics/launcher/opie-background-${res}.jpg ${D}${palmtopdir}/pics/launcher/opie-background-${res}.jpg
         done
+	# TODO: those should be correct images for the resoltion:
+        install -m 0644 ${WORKDIR}/pics/launcher/firstuse-800x600.jpg ${D}${palmtopdir}/pics/launcher/firstuse-600x800.jpg
+        install -m 0644 ${WORKDIR}/pics/launcher/opie-background-800x600.jpg ${D}${palmtopdir}/pics/launcher/opie-background-600x800.jpg
 }
 
 python do_package_prepend () {
-        reslist = ['240x320','480x640','640x480', '800x600']
+        reslist = ['240x320','320x240', '480x640','640x480', '800x600','600x800']
         dir = bb.data.expand('${palmtopdir}/pics/launcher/', d)
         ft = bb.data.expand('${palmtopdir}/pics/*/*-%s.*', d)
         pn = bb.data.getVar('PN', d, 1)

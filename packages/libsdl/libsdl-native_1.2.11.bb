@@ -2,10 +2,11 @@ DESCRIPTION = "Simple DirectMedia Layer - native Edition"
 HOMEPAGE = "http://www.libsdl.org"
 SECTION = "libs"
 LICENSE = "LGPL"
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "http://www.libsdl.org/release/SDL-${PV}.tar.gz \
-	   file://acinclude.m4"
+	   file://acinclude.m4 \
+	   file://kernel-asm-page.patch;patch=1 "
 S = "${WORKDIR}/SDL-${PV}"
 
 inherit autotools binconfig pkgconfig native
