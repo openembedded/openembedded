@@ -5,11 +5,11 @@ SECTION = "libs"
 PROVIDES = "openobex-apps"
 DEPENDS = "libusb bluez-libs"
 LICENSE = "GPL"
-PR = "r5"
+PR = "r0"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/openobex/openobex-${PV}.tar.gz \
            file://disable-cable-test.patch;patch=1 \
-	   file://libusb_crosscompile_check.patch;patch=1"
+           file://libusb_crosscompile_check.patch;patch=1"
 
 inherit autotools binconfig pkgconfig
 
