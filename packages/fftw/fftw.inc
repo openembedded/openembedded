@@ -16,7 +16,7 @@ do_stage () {
 }
 
 
-PACKAGES += "lib${PN}"
+PACKAGES =+ "lib${PN}"
 
 FILES_lib${PN} = "${libdir}/lib*.so.*"
 
