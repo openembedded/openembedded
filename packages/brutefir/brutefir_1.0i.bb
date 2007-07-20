@@ -3,6 +3,9 @@ LICENSE = "GPLv2"
 
 DEPENDS = "fftw"
 
+# The unbreak-makefile disables the SSE2, MMX and jack support, feel free 
+# to add back SSE and MMX after fixing the makefile to not use uname to check for cpu 
+
 SRC_URI = "http://www.ludd.luth.se/~torger/files/brutefir-${PV}.tar.gz \
            file://unbreak-makefile.patch;patch=1 \
 	   "
