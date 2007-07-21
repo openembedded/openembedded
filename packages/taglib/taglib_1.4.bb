@@ -28,11 +28,11 @@ do_stage_append() {
 	do
 		install $i ${STAGING_INCDIR}/taglib/
 	done
-    for i in `find taglib -name "*.tcc"`
-    do
-        install $i ${STAGING_INCDIR}/taglib/
-    done
-    oe_libinstall -so -C taglib libtag ${STAGING_LIBDIR}
+	for i in `find taglib -name "*.tcc"`
+	do
+		install $i ${STAGING_INCDIR}/taglib/
+	done
+	oe_libinstall -so -C taglib libtag ${STAGING_LIBDIR}
 }
 
 do_install() {

@@ -29,5 +29,5 @@ do_stage_append() {
 }
 
 do_install() {
-    oe_libinstall -so -C bindings/c libtag_c ${D}${libdir}
+	oe_libinstall -so -C bindings/c libtag_c ${D}${libdir}
 }
