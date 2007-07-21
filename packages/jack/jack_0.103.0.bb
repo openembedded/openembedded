@@ -7,6 +7,8 @@ PRIORITY = "optional"
 LICENSE = "GPL LGPL"
 PR = "r0"
 
+DEPENDS = "alsa-lib"
+
 SRC_URI = "${SOURCEFORGE_MIRROR}/jackit/jack-audio-connection-kit-${PV}.tar.gz"
 S = "${WORKDIR}/jack-audio-connection-kit-${PV}"
 
@@ -16,18 +18,15 @@ EXTRA_OECONF = "--enable-timestamps --disable-capabilities --disable-oldtrans \
 		--disable-portaudio --disable-coreaudio --enable-oss --enable-alsa"
 
 EXTRA_OEMAKE = 'transform="s,^,,"'
+LDFLAGS_append = " -L${STAGING_LIBDIR}"
 
-do_configure() {
-	gnu-configize
-	oe_runconf
-}
+PACKAGES =+ "libjack jack-server jack-examples"
 
-do_install_append() {
-	install -d ${D}${docdir}
-	mv -f ${D}${datadir}/jack-audio-connection-kit ${D}${docdir}/
-}
-
-PACKAGES = "libjack jack-server jack-examples jack-doc jack-dev"
 FILES_libjack = "${libdir}/*.so.* ${libdir}/jack/*.so"
 FILES_jack-server = "${bindir}/jackd"
-FILES_jack-examples = "${bindir}"
+FILES_jack-examples = "${bindir}/*"
+
+do_stage() {
+       autotools_stage_all
+}
+

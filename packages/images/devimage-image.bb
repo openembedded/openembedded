@@ -3,7 +3,7 @@
 # only shell and dropbear are loaded by default.
 # Allows to login via serial and real console or SSH
 LICENSE = "MIT"
-PR = "r2"
+PR = "r2.2"
 
 DEVIMAGE_EXTRA_RDEPENDS ?= ""
 RDEPENDS = "devimage busybox dropbear udev \

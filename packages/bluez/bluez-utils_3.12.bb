@@ -5,12 +5,12 @@ DEPENDS += "glib-2.0"
 SRC_URI = "http://bluez.sourceforge.net/download/bluez-utils-${PV}.tar.gz \
            file://hcid.conf \
           "
-PR = "r3"
+PR = "r4"
 
 EXTRA_OECONF = " \
                  --enable-bccmd \
 		 --enable-hid2hci \
-                 --disable-alsa \ 
+                 --enable-alsa \ 
 		 --enable-cups \
 		 --enable-glib \
 		 --disable-sdpd \
@@ -59,7 +59,7 @@ EXTRA_OECONF = " \
 #	--disable-hid2hci
 
 
-PACKAGES =+ "${PN}-compat"
+PACKAGES =+ "${PN}-compat ${PN}-alsa"
 
 CONFFILES_${PN} = " \
                    ${sysconfdir}/bluetooth/hcid.conf \
@@ -83,6 +83,8 @@ FILES_${PN} = " \
 
 FILES_${PN}-dbg += " \
                    ${libdir}/bluetooth/.debug \
+		   ${libdir}/cups/backend/.debug \
+		   ${libdir}/alsa-lib/.debug \
 		  " 
 
 FILES_${PN}-compat = " \
@@ -103,6 +105,8 @@ FILES_${PN}-compat = " \
 		    ${base_bindir}/passkey-agent \
 		    ${sysconfdir}/bluetooth/rfcomm.conf \
 		   " 
+
+FILES_${PN}-alsa = "${libdir}/alsa-lib/libasound*"
 
 FILES_bluez-cups-backend = "${libdir}/cups/backend/bluetooth"
 RDEPENDS_bluez-cups-backend = "cups"
