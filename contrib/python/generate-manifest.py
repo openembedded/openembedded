@@ -208,6 +208,9 @@ if __name__ == "__main__":
     m.addPackage( 0, "python-db", "Python File-Based Database Support", "python-core",
     "anydbm.* dumbdbm.* whichdb.* " )
 
+    m.addPackage( 0, "python-debugger", "Python Debugger", "python-core, python-io, python-lang, python-re, python-stringold, python-shell",
+    "bdb.* pdb.*" )
+
     m.addPackage( 0, "python-distutils", "Python Distribution Utilities", "python-core",
     "config distutils" ) # package
 
@@ -286,7 +289,7 @@ if __name__ == "__main__":
     "lib-dynload/resource.so" )
 
     m.addPackage( 0, "python-shell", "Python Shell-Like Functionality", "python-core, python-re",
-    "commands.* dircache.* fnmatch.* glob.* popen2.* shutil.*" )
+    "cmd.* commands.* dircache.* fnmatch.* glob.* popen2.* shutil.*" )
 
     m.addPackage( 0, "python-robotparser", "Python robots.txt parser", "python-core, python-netclient",
     "robotparser.*")
