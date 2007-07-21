@@ -1,21 +1,20 @@
 require evas.inc
-inherit native
-DEPENDS = "freetype-native libpng-native jpeg-native eet-native"
-PR = "r9"
+PR = "r0"
 
 EXTRA_OECONF = "\
 		--x-includes=${STAGING_INCDIR}/X11  \
 		--x-libraries=${STAGING_LIBDIR} \
-		--disable-fb					\
-		--disable-directfb			\
+		--enable-fb					\
+		--enable-directfb			\
+		--enable-sdl				\
 		--enable-buffer				\
 		--disable-software-ddraw	\
 		--disable-software-qtopia	\
-		--disable-software-x11		\
+		--enable-software-x11		\
 		--disable-software-16-x11	\
 		--disable-software-xcb		\
 		--disable-gl-x11			\
-		--disable-xrender-x11		\
+		--enable-xrender-x11		\
 		--disable-xrender-xcb		\
 		--disable-glitz-x11			\
 		--enable-image-loader-eet	\
@@ -25,7 +24,7 @@ EXTRA_OECONF = "\
 		--enable-image-loader-jpeg	\
 		--enable-image-loader-tiff	\
 		--enable-image-loader-xpm	\
-		--disable-image-loader-svg	\
+		--enable-image-loader-svg	\
 		--enable-cpu-c				\
 		--enable-fontconfig			\
 		--enable-font-loader-eet	\

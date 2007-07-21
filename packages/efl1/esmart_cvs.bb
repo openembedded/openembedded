@@ -1,10 +1,9 @@
 DESCRIPTION = "ESmart is a collection of smart Evas objects"
 LICENSE = "MIT"
 DEPENDS = "evas ecore edje imlib2 epsilon libtool"
+PV = "0.9.0+cvs${SRCDATE}"
 
-inherit efl1
-
-S = "${WORKDIR}/esmart-${PV}"
+inherit efl_library
 
 PACKAGES =+ "${PN}-textentry \
              ${PN}-thumb \
@@ -13,6 +12,7 @@ PACKAGES =+ "${PN}-textentry \
              ${PN}-file-dialog \
              ${PN}-draggies \
              ${PN}-trans-x11"
+
 FILES_${PN}-dbg += "${libdir}/.debug/ ${libdir}/esmart/*/.debug/"
 FILES_${PN}-textentry = "${libdir}/libesmart_text_entry*.so*"
 FILES_${PN}-thumb = "${libdir}/libesmart_thumb*.so*"

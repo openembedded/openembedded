@@ -4,7 +4,7 @@ LICENSE = "BSD"
 DEPENDS = "freetype libpng jpeg"
 PR = "r0"
 
-inherit efl1
+inherit efl_library
 
 PACKAGES =+ "imlib2-loaders-dbg imlib2-filters-dbg imlib2-loaders imlib2-filters"
 FILES_${PN} = "${libdir}/lib*.so.* ${libdir}/imlib2/*/*.so"

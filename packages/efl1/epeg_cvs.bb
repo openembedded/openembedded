@@ -1,8 +1,7 @@
 DESCRIPTION = "Epeg is a small library for handling thumbnails."
 LICENSE = "MIT"
 DEPENDS = "jpeg"
+PV = "0.9.0+cvs${SRCDATE}"
+PR = "r0"
 
-inherit efl1
-
-FILES_${PN} = "${libdir}/lib*.so*"
-FILES_${PN}-dev += "${bindir}/*-config"
+inherit efl_library

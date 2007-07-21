@@ -4,15 +4,14 @@ down to using normal X11 primitives such as pixmaps, lines and rectangles if \
 your CPU or graphics hardware are too slow."
 LICENSE = "MIT"
 # can also depend on valgrind (?)
-DEPENDS = "directfb eet freetype jpeg virtual/libx11 libxext"
+DEPENDS = "libsdl-x11 directfb eet freetype jpeg virtual/libx11 libxext"
+PV = "0.9.9+cvs${SRCDATE}"
 
-inherit efl1
+inherit efl_library
 
 export FREETYPE_CONFIG = "${STAGING_BINDIR_CROSS}/freetype-config"
 
 SRC_URI += "file://fix-configure.patch;patch=1"
-
-S = "${WORKDIR}/evas-${PV}"
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/evas"
 
 EXTRA_OECONF = "<override me>"
@@ -25,7 +24,7 @@ python populate_packages_prepend () {
             do_split_packages(d, basedir, '^(.*)',
             output_pattern = 'evas-' + plugin_type[:-1] + "-%s",
             description = 'Evas module %s',
-            allow_dirs=True, recursive=False )
+            allow_dirs=True, recursive=False, extra_depends="" )
 }
 
 do_install_append() {

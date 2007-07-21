@@ -4,8 +4,7 @@ CompuPhase's Small language that was introduced in Dr Dobb's Journal in 1999. \
 Embryo allows scripting capabilities in places that otherwise wouldn't support \
 basic programming structures such as in Edje EDCs."
 LICENSE = "MIT"
+PV = "0.9.1+cvs${SRCDATE}"
 PR = "r0"
 
-inherit efl1 lib_package
-
-FILES_${PN}-examples = "${datadir}/${PN}/examples"
+inherit efl_library

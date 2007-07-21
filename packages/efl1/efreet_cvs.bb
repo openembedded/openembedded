@@ -2,9 +2,11 @@ DESCRIPTION = "An implementation of freedesktop.org specs for the \
 Enlightenment Foundation Libraries"
 DEPENDS = "ecore"
 LICENSE = "BSD"
+PV = "0.0.3+cvs${SRCDATE}"
 PR = "r0"
 
-inherit efl1
+inherit efl_library
 
-PACKAGES =+ "efreet-tests"
-FILES_efreet-tests = "${bindir}/*_* ${datadir}"
+PACKAGES =+ "${PN}-mime"
+FILES_${PN}-mime = "${libdir}/libefreet_mime.so.*"
+

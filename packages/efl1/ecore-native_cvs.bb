@@ -1,14 +1,15 @@
 require ecore.inc
 inherit native
 DEPENDS = "eet-native evas-native"
-PR = "r1"
+PR = "r2"
 
 EXTRA_OECONF = "\
                 --enable-ecore-txt \
                 --disable-ecore-x-xcb \
                 --disable-ecore-x \
                 --enable-ecore-job \
-                --enable-ecore-directfb \
+                --disable-ecore-directfb \
+                --disable-ecore-sdl \
                 --enable-ecore-fb \
                 --enable-ecore-evas \
                 --disable-ecore-evas-gl \
@@ -18,7 +19,6 @@ EXTRA_OECONF = "\
                 --enable-abstract-sockets \
                 --enable-ecore-con \
                 --enable-ecore-ipc \
-                --enable-ecore-dbus \
                 --enable-ecore-file \
                 --enable-inotify \
                 --disable-poll \

@@ -1,5 +1,5 @@
 require ecore.inc
-PR = "r4"
+PR = "r5"
 
 EXTRA_OECONF = "\
 		--enable-ecore-txt \
@@ -7,6 +7,7 @@ EXTRA_OECONF = "\
 		--enable-ecore-x \
 		--enable-ecore-job \
 		--enable-ecore-directfb \
+		--enable-ecore-sdl \
 		--enable-ecore-fb \
 		--enable-ecore-evas \
 		--disable-ecore-evas-gl \
@@ -16,7 +17,6 @@ EXTRA_OECONF = "\
 		--enable-abstract-sockets \
 		--enable-ecore-con \
 		--enable-ecore-ipc \
-		--enable-ecore-dbus \
 		--enable-ecore-file \
 		--enable-inotify \
 		--disable-poll \

@@ -1,9 +1,12 @@
 DESCRIPTION = "Etk is an advanced widget toolkit based on the Enlightenment Foundation Libraries."
 DEPENDS = "evas ecore edje"
 LICENSE = "MIT"
-PR = "r2"
+PV = "0.1.0+cvs${SRCDATE}"
+PR = "r0"
 
-inherit efl1
+inherit efl_library
+
+# TODO package engines seperatly (do_split_packages)
 
 PACKAGES =+ "etk-engines"
 FILES_${PN} = "${libdir}/libetk.so*"
