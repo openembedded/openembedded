@@ -1,7 +1,7 @@
 DESCRIPTION = "GeoClue is a project that provide all kinds of geography information to an application"
 HOMEPAGE = "http://live.gnome.org/GeoClue"
 
-DEPENDS = "gpsd libxml2 libsoup dbus-glib"
+DEPENDS = "libgpsmgr libgpsbt  gtk+ gpsd libxml2 gconf-dbus libsoup dbus-glib"
 
 PV = "0.0+git${SRCDATE}"
 PR = "r0"
@@ -12,6 +12,11 @@ inherit autotools pkgconfig
 SRC_URI = "git://anongit.freedesktop.org/git/geoclue;protocol=git"
 
 S = "${WORKDIR}/git"
+
+
+LDFLAGS_append = " -lgthread-2.0 "
+
+EXTRA_OECONF = " --enable-applet=no "
 
 do_install_append() {
 	mkdir -p ${D}/usr/share/
