@@ -92,6 +92,7 @@ SRCDATE_expedite ?= "20070601"
 SRCDATE_elitaire ?= "20070504"
 SRCDATE_entice ?= "20070601"
 SRCDATE_e-utils ?= "20070601"
+SRCDATE_enna ?= "20070721"
 
 # Misc apps, sorted by alphabet
 SRCDATE_avetanabt ?= "20060814"

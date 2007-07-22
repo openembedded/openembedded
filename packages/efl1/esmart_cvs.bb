@@ -5,6 +5,8 @@ PV = "0.9.0+cvs${SRCDATE}"
 
 inherit efl_library
 
+EXTRA_OECONF = "--with-edje-cc=${STAGING_BINDIR_NATIVE}/edje_cc"
+
 PACKAGES =+ "${PN}-textentry \
              ${PN}-thumb \
              ${PN}-container \
