@@ -9,6 +9,8 @@ S = "${WORKDIR}/libsigc++-${PV}"
 
 inherit autotools pkgconfig
 
+EXTRA_AUTORECONF = "--exclude=autoheader"
+
 FILES_${PN}-dev += "${libdir}/sigc++-*/"
 
 # acpaths = ""
