@@ -80,6 +80,7 @@ SRCDATE_enhance ?= "20070721"
 SRCDATE_engrave ?= "20070721"
 SRCDATE_evolve-native ?= "20070721"
 SRCDATE_evolve ?= "20070721"
+SRCDATE_eflpp ?= "20070721"
 
 # Enlightenment Applications
 SRCDATE_edje-viewer ?= "20070601"
