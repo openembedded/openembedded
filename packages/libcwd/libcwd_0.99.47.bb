@@ -7,12 +7,17 @@ LICENSE = "QPL"
 HOMEPAGE = "http://libcwd.sourceforge.net"
 PR = "r0"
 
-SRC_URI = "http://puzzle.dl.sourceforge.net/sourceforge/libcwd/libcwd-${PV}.tar.gz"
+SRC_URI = "${SOURCEFORGE_MIRROR}/libcwd/libcwd-${PV}.tar.gz"
 
-inherit autotools
+inherit autotools pkgconfig
 
 do_configure() {
+	gnu-configize
 	oe_runconf
+}
+
+do_stage() {
+	autotools_stage_all
 }
 
 PARALLEL_MAKE = ""
