@@ -7,7 +7,7 @@ LICENSE = "GPL"
 DEPENDS = "virtual/libqte2 virtual/libqpe1"
 RDEPENDS = "python-core python-sip"
 SRCNAME = "pyqt"
-PR = "r5"
+PR = "ml5"
 
 SRC_URI = "http://www.vanille.de/mirror/PyQt-x11-gpl-${PV}.tar.gz \
            file://qt2-fix.patch;patch=1 \
