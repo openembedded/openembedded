@@ -25,7 +25,7 @@ EXTRA_OECONF = " \
 
 S = "${WORKDIR}/NETWORKMANAGER_0_6_0_RELEASE"
 
-inherit autotools
+inherit autotools pkgconfig
 
 do_staging () {
 	autotools_stage_includes
@@ -45,22 +45,26 @@ do_install () {
 	install -d ${D}/${datadir}/
 }
 
-pkg_postinst () {
-	/etc/init.d/populate-volatile.sh update
+pkg_postinst_${PN} () {
+if [ "x$D" != "x" ]; then
+        exit 1
+fi
+/etc/init.d/populate-volatile.sh update
 }
 
+PACKAGES =+ "libnmutil libnmglib" 
+
+FILES_libnmutil += "${libdir}/libnm-util.so.*"
+FILES_libnmglib += "${libdir}/libnm_glib.so.*"
+
 FILES_${PN} += "${datadir} \
-		${libdir}/*.so* \
-		${libdir}/*.la \
-		${sbindir} \
-		${bindir} \
+		${sbindir}/* \
+		${bindir}/* \
 		${sysconfdir} \
 		${libexecdir}"
 
-FILES_${PN}-dev = "${incdir} \
+FILES_${PN}-dev += "${incdir} \
 		   ${libdir}/*.a \
+		   ${libdir}/*.la \
 		   ${libdir}/pkgconfig"
 
-# The networkmanager package needs to be split into app/lib/dev packages. For
-# now, silence insane.
-INSANE_SKIP_${PN} = "1"
