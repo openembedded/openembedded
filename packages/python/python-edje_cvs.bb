@@ -1,4 +1,4 @@
 require python-efl.inc
 
-DEPENDS += "edje"
+DEPENDS += "edje python-evas"
 
