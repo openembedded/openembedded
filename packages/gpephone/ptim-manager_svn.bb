@@ -4,6 +4,7 @@ PRIORITY = "optional"
 LICENSE = "LiPS"
 DEPENDS = "gtk+ ptim-headers libiac"
 PV = "0.1+svn-${SRCDATE}"
+PR = "r1"
 
 DEFAULT_PREFERENCE = "-1"
 
@@ -17,6 +18,14 @@ S = "${WORKDIR}/immanager"
 FILES_${PN} += "${libdir}/gtk-2.0/*/immodules/*.so ${libdir}/gtk-2.0/*/immodules/ptim"
 FILES_${PN}-dbg += "${libdir}/gtk-2.0/*/immodules/.debug/*.so"
 FILES_${PN}-dev += "${libdir}/gtk-2.0/*/immodules/*.la"
+
+
+do_install_append () {
+	# That's evil... 
+	install -m 644 ${S}/conf/imconfig ${D}/${libdir}/gtk-2.0/*/immodules/ptim
+}
+
+
 
 do_stage () {
     autotools_stage_all
