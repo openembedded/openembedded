@@ -5,7 +5,7 @@ PRIORITY = "optional"
 LICENSE = "MIT-like"
 RDEPENDS = "python-core python-zlib"
 SRCNAME = "setuptools"
-PR = "r0"
+PR = "ml1"
 
 SRC_URI = "http://cheeseshop.python.org/packages/source/s/setuptools/${SRCNAME}-${PV}.tar.gz"
 S = "${WORKDIR}/${SRCNAME}-${PV}"
@@ -20,7 +20,3 @@ do_stage() {
     BUILD_SYS=${BUILD_SYS} HOST_SYS=${HOST_SYS} \
       ${STAGING_BINDIR_NATIVE}/python setup.py install 
 }
-
-# Deal with .pth file error 
-export PYTHONPATH="${D}/${libdir}/${PYTHON_DIR}/site-packages"
-

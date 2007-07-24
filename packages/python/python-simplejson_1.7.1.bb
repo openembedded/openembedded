@@ -8,17 +8,9 @@ DEPENDS = "python-setuptools"
 # python-zlib is needed to unpack egg created by setuptools
 RDEPENDS = "python-core python-re python-io python-netserver python-zlib"
 SRCNAME = "simplejson"
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "http://cheeseshop.python.org/packages/source/s/simplejson/${SRCNAME}-${PV}.tar.gz"
 S = "${WORKDIR}/${SRCNAME}-${PV}"
 
 inherit distutils
-
-do_install_prepend() {
-    install -d ${D}/${libdir}/${PYTHON_DIR}/site-packages
-}
-
-# Deal with .pth file error
-export PYTHONPATH="${D}/${libdir}/python2.4/site-packages"
-
