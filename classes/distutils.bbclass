@@ -2,8 +2,17 @@ inherit distutils-base
 
 distutils_do_compile() {
          BUILD_SYS=${BUILD_SYS} HOST_SYS=${HOST_SYS} \
+         ${STAGING_BINDIR_NATIVE}/python setup.py build_ext --include-dirs=${STAGING_INCDIR}/${PYTHON_DIR} || \
+         oefatal "python setup.py build_ext execution failed."
+         BUILD_SYS=${BUILD_SYS} HOST_SYS=${HOST_SYS} \
          ${STAGING_BINDIR_NATIVE}/python setup.py build || \
-         oefatal "python setup.py build execution failed."
+         oefatal "python setup.py build_ext execution failed."
+}
+
+distutils_stage_headers() {
+        BUILD_SYS=${BUILD_SYS} HOST_SYS=${HOST_SYS} \
+        ${STAGING_BINDIR_NATIVE}/python setup.py install_headers --install-dir=${STAGING_INCDIR}/${PYTHON_DIR} || \
+        oefatal "python setup.py install execution failed."
 }
 
 distutils_do_install() {
