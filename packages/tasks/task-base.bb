@@ -1,5 +1,5 @@
 DESCRIPTION = "Merge machine and distro options to create a basic machine task/package"
-PR = "r40"
+PR = "r41"
 
 DEPENDS = "task-boot"
 PROVIDES = "${PACKAGES}"
@@ -223,9 +223,13 @@ task-base-pcmcia26 = "\
     ${@base_contains('DISTRO_FEATURES', 'wifi', 'kernel-module-hostap-cs', '',d)} \
     ${@base_contains('DISTRO_FEATURES', 'wifi', 'kernel-module-spectrum-cs', '',d)}"
 
+# Provide bluez-utils-compat utils for the time being, the binaries in that package will vanish soon from upstream releases, so beware! 
+
 RDEPENDS_task-base-bluetooth = "\ 
     blueprobe \
-    bluez-utils"
+    bluez-utils \
+    bluez-utils-compat \  
+    "
 
 RRECOMMENDS_task-base-bluetooth = "\
     kernel-module-bluetooth \
