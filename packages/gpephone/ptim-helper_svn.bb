@@ -14,7 +14,7 @@ SRC_URI = "svn://projects.linuxtogo.org/svn/gpephone/trunk/source/ptim;module=im
 
 S = "${WORKDIR}/imhelper"
 
-FILES_${PN} += " ${libdir}/gtk-2.0/*/immodules/ptim/helper/*.so ${libdir}/gtk-2.0/*/immodules/ptim/pixmaps"
+FILES_${PN} += " ${libdir}/gtk-2.0/*/immodules/ptim/helper/*.so ${libdir}/gtk-2.0/*/immodules/ptim/pixmaps/*"
 FILES_${PN}-dbg += "${libdir}/gtk-2.0/*/immodules/ptim/helper/.debug/*.so"
 FILES_${PN}-dev += "${libdir}/gtk-2.0/*/immodules/ptim/helper/*.la"
 
