@@ -1,4 +1,9 @@
+DESCRIPTION = "${PN} bindings"
+LICENSE = "BSD"
+AUTHOR = "Gustavo Sverzut Barbieri <barbieri@gmail.com>"
+HOMEPAGE = "http://www.enlightenment.org"
 DEPENDS = "python-pyrex-native python-numeric"
+PV = "0.0.0+cvs${SRCDATE}"
 
 inherit distutils
 

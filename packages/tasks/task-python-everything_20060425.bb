@@ -1,7 +1,7 @@
 DESCRIPTION= "Everything Python"
 HOMEPAGE = "http://www.vanille.de/projects/python.spy"
 LICENSE = "MIT"
-PR = "ml13"
+PR = "ml14"
 
 BROKEN_BECAUSE_GCC4 = "\
 		python-egenix-mx-base"
@@ -12,6 +12,10 @@ RDEPENDS = "\
 		python-constraint	\
 		python-crypto		\
 		python-dialog		\
+		python-evas			\
+		python-ecore		\
+		python-emotion		\
+		python-edje			\
 		python-pycurl		\
 		python-fam			\
 		python-fnorb		\
