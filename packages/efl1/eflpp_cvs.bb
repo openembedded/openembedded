@@ -7,4 +7,6 @@ PV = "0.1.0+cvs${SRCDATE}"
 
 inherit efl_library
 
+EXTRA_OECONF = "--with-edje-cc=${STAGING_BINDIR_NATIVE}/edje_cc"
+
 SRC_URI = "${E_CVS};module=e17/proto/${SRCNAME}"
