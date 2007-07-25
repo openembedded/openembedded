@@ -1,0 +1,391 @@
+diff -u -r phoneserver-1.0/config.h phoneserver-1.0-mine/config.h
+--- phoneserver-1.0/config.h	2007-02-02 13:20:13.000000000 +0100
++++ phoneserver-1.0-mine/config.h	2007-07-10 15:06:28.000000000 +0200
+@@ -21,8 +21,7 @@
+ 
+ /* serial port name */
+ #ifndef SERIAL_PORT
+-//#define SERIAL_PORT "/dev/pts/0"        //ttyS1"
+-#define SERIAL_PORT "/dev/ttyS1"        //ttyS1"
++#define SERIAL_PORT "/dev/ttySAC0"        /* NEO1973 */
+ #endif                          /*  */
+ 
+ /* serial port baudrate */
+@@ -30,6 +29,8 @@
+ #define SERIAL_BAUDRATE B115200
+ #endif                          /*  */
+ 
++#define CRTSCTS 1	/* NEO needs RTS/CTS flow control */
++
+ /* buffer to hold AT command response */
+ #ifndef ATCOMMAND_BUFFER_SIZE
+ #define ATCOMMAND_BUFFER_SIZE 10240
+diff -u -r phoneserver-1.0/Makefile.am phoneserver-1.0-mine/Makefile.am
+--- phoneserver-1.0/Makefile.am	2007-02-02 13:20:13.000000000 +0100
++++ phoneserver-1.0-mine/Makefile.am	2007-07-10 13:14:47.000000000 +0200
+@@ -3,7 +3,7 @@
+ 
+ INCLUDES = @DEPS_CFLAGS@ -DPREFIX=\"@prefix@\" -D_GNU_SOURCE -Wall \
+            -DDBUS_API_SUBJECT_TO_CHANGE \
+-           -DDEBUG -DXTHREADS -D_REENTRANT -DXUSE_MTSAFE_API -DCELLON_PLATFORM 
++           -DDEBUG -DXTHREADS -D_REENTRANT -DXUSE_MTSAFE_API -DT39_PLATFORM -DNEO1973 
+ LDADD = @DEPS_LIBS@
+ 
+ 
+diff -u -r phoneserver-1.0/Makefile.in phoneserver-1.0-mine/Makefile.in
+--- phoneserver-1.0/Makefile.in	2007-02-02 13:25:43.000000000 +0100
++++ phoneserver-1.0-mine/Makefile.in	2007-07-10 13:07:16.000000000 +0200
+@@ -158,7 +158,7 @@
+ target_alias = @target_alias@
+ INCLUDES = @DEPS_CFLAGS@ -DPREFIX=\"@prefix@\" -D_GNU_SOURCE -Wall \
+            -DDBUS_API_SUBJECT_TO_CHANGE \
+-           -DDEBUG -DXTHREADS -D_REENTRANT -DXUSE_MTSAFE_API -DCELLON_PLATFORM 
++           -DDEBUG -DXTHREADS -D_REENTRANT -DXUSE_MTSAFE_API -DT39_PLATFORM 
+ 
+ LDADD = @DEPS_LIBS@
+ phoneserver_SOURCES = phoneserver.c phone-server-voc.c phone-server-sms.c phone-server-mul.c phone-server-pbk.c \
+diff -u -r phoneserver-1.0/phoneserver.c phoneserver-1.0-mine/phoneserver.c
+--- phoneserver-1.0/phoneserver.c	2007-02-02 13:20:13.000000000 +0100
++++ phoneserver-1.0-mine/phoneserver.c	2007-07-10 13:43:57.000000000 +0200
+@@ -324,22 +324,31 @@
+                             phonebook_update_entry_handler);
+ #endif
+ 
++#ifdef NEO1973
++  system("echo 1 > /sys/devices/platform/gta01-pm-gsm.0/power_on");
++  sleep(1);
++#endif
++
+   // tapi begins
+   // Initialize
+   result = tapi_initialize ();
+ 
+   // Get file descripter
+-  if (result == TEL_ERR_NONE)
+-  {
++  if (result == TEL_ERR_NONE) {
+     result = tel_get_fd (sid, (UInt32 *) & g_fd);
++  } else {
++    /* without modem there is nothing we can do */
++    exit(1);
+   }
++
+   // Open session
+-  if (result == TEL_ERR_NONE)
+-  {
++  if (result == TEL_ERR_NONE) {
+     result = tel_open_session (&sid);
++  } else {
++    /* without fd we are as well useless */
++    exit(1);
+   }
+ 
+-
+   if (result == TEL_ERR_NONE)
+   {
+     /* pbk section */
+@@ -357,6 +366,9 @@
+     tel_evt_register (sid, TEL_EVENT_MTSMS, sms_incoming_cb, NULL);
+     tel_evt_register (sid, TEL_EVENT_STATUS_REPORT, sta_report_cb, NULL);
+ 
++  } else {
++    /* without session we are also lost */
++    exit(1);
+   }
+   // tapi ends
+ #if 1
+diff -u -r phoneserver-1.0/phone-server-voc.c phoneserver-1.0-mine/phone-server-voc.c
+--- phoneserver-1.0/phone-server-voc.c	2007-02-02 13:20:13.000000000 +0100
++++ phoneserver-1.0-mine/phone-server-voc.c	2007-07-10 16:38:12.000000000 +0200
+@@ -1028,6 +1028,7 @@
+     g_print ("$$$$$$$$$$$$$$$$$$$notify VOC about the %s, and call_id = %d\n",
+              pmethod, call_id);
+ 
++#if 0
+     //0803
+ 
+     guint index;
+@@ -1038,7 +1039,7 @@
+       ("###The held call which is going to be hungup is equal to: %d, index=%d,cid=%d",
+        call_id, index, cid_dbus);
+     //0803
+-
++#endif
+ 
+     if (!strcmp (pmethod, "accept"))
+     {
+diff -u -r phoneserver-1.0/serial.c phoneserver-1.0-mine/serial.c
+--- phoneserver-1.0/serial.c	2007-02-02 13:20:13.000000000 +0100
++++ phoneserver-1.0-mine/serial.c	2007-07-10 15:07:14.000000000 +0200
+@@ -124,7 +124,7 @@
+ 
+ 
+ /* Open a device with standard options.
+- *Use value (-1) for "with_hw_handshake" if its specification is required from the user.
++ * Use value (-1) for "with_hw_handshake" if its specification is required from the user.
+  */
+ int
+ serial_opendevice (const Int8 *file, Int32 with_odd_parity, Int32 with_async)
+@@ -148,8 +148,7 @@
+ 
+   /* Set port settings for canonical input processing */
+   tp.c_cflag = B0 | CS8 | CLOCAL | CREAD | HUPCL;
+-  if (with_odd_parity)
+-  {
++  if (with_odd_parity) {
+     tp.c_cflag |= (PARENB | PARODD);
+     tp.c_iflag = 0;
+   }
+@@ -157,35 +156,36 @@
+     tp.c_iflag = IGNPAR;
+ 
+ #ifdef CRTSCTS
++  tp.c_cflag |= CRTSCTS;
++#else
+   tp.c_cflag &= ~CRTSCTS;
+-
+-#endif /*  */
++#endif
+   tp.c_oflag = 0;
+   tp.c_lflag = 0;
+   tp.c_cc[VMIN] = 1;
+   tp.c_cc[VTIME] = 0;
++
+   retcode = tcflush (fd, TCIFLUSH);
+-  if (retcode == -1)
+-  {
++  if (retcode == -1) {
+     perror ("Gnokii serial_opendevice: tcflush");
+     serial_close (fd);
+     return -1;
+   }
++
+   retcode = tcsetattr (fd, TCSANOW, &tp);
+-  if (retcode == -1)
+-  {
++  if (retcode == -1) {
+     perror ("Gnokii serial_opendevice: tcsetattr");
+     serial_close (fd);
+     return -1;
+   }
++
+   serial_changespeed (fd, 115200);
+ 
+   /* We need to turn off O_NONBLOCK now (we have CLOCAL set so it is safe).
+    *When we run some device script it really doesn't expect NONBLOCK!
+    */
+   retcode = fcntl (fd, F_SETFL, 0);
+-  if (retcode == -1)
+-  {
++  if (retcode == -1) {
+     perror ("Gnokii serial_opendevice: fnctl(F_SETFL)");
+     serial_close (fd);
+     return -1;
+@@ -195,8 +195,7 @@
+ 
+ #if !(__unices__)
+   retcode = fcntl (fd, F_SETOWN, getpid ());
+-  if (retcode == -1)
+-  {
++  if (retcode == -1) {
+     perror ("Gnokii serial_opendevice: fnctl(F_SETOWN)");
+     serial_close (fd);
+     return -1;
+@@ -223,12 +222,12 @@
+ 
+ #  endif
+ #endif /*  */
+-  if (retcode == -1)
+-  {
++  if (retcode == -1) {
+     perror ("Gnokii serial_opendevice: fnctl(F_SETFL)");
+     serial_close (fd);
+     return -1;
+   }
++
+   return fd;
+ }
+ 
+@@ -240,15 +239,16 @@
+   unsigned int flags;
+ 
+   flags = TIOCM_DTR;
++
+   if (dtr)
+     ioctl (fd, TIOCMBIS, &flags);
+-
+   else
+     ioctl (fd, TIOCMBIC, &flags);
++
+   flags = TIOCM_RTS;
++
+   if (rts)
+     ioctl (fd, TIOCMBIS, &flags);
+-
+   else
+     ioctl (fd, TIOCMBIC, &flags);
+ }
+@@ -262,6 +262,7 @@
+   FD_SET (fd, &readfds);
+   return select (fd + 1, &readfds, NULL, NULL, timeout);
+ }
++
+ static int
+ serial_wselect (int fd, struct timeval *timeout)
+ {
+@@ -361,12 +362,9 @@
+   {
+     bs = n;
+     got = write (fd, buf + r, bs);
+-    if (got == 0)
+-    {
+-      g_print ("Serial write: oops, zero byte has written!\n");
+-    }
+-    else if (got < 0)
+-    {
++    if (got == 0) {
++      g_print ("Serial write: oops, zero byte written!\n");
++    } else if (got < 0) {
+       if (errno == EINTR)
+         continue;
+       if (errno != EAGAIN)
+diff -u -r phoneserver-1.0/tapi.c phoneserver-1.0-mine/tapi.c
+--- phoneserver-1.0/tapi.c	2007-02-02 13:20:13.000000000 +0100
++++ phoneserver-1.0-mine/tapi.c	2007-07-10 16:51:22.000000000 +0200
+@@ -112,6 +112,7 @@
+ /************************************************************************/
+ /* Initialization Function Block                                        */
+ /************************************************************************/
++tel_err_t tapi_Init_PowerOn ();
+ tel_err_t tapi_Init_SoftReset ();
+ tel_err_t tapi_Init_SetNoEcho ();
+ tel_err_t tapi_Init_SetCharset ();
+@@ -287,6 +288,7 @@
+   
+  ****************/
+ static init_function init_func_table[] = {
++  tapi_Init_PowerOn,
+   tapi_Init_SoftReset,
+   tapi_Init_SetNoEcho,
+   tapi_Init_SetCharset,
+@@ -477,6 +479,18 @@
+ 
+ 
+ tel_err_t
++tapi_Init_PowerOn ()
++{
++  tel_err_t result;
++  Int8 *CommandStr;
++
++  /* AT+CFUN=1 */
++  CommandStr = AT_Builder_ExeCmd ((Int8 *) CMD_CFUN, (Int8 *) "=1", (Int8 *) NULL);
++  result = tapi_init_general (CommandStr);
++  return result;
++}
++
++tel_err_t
+ tapi_Init_SoftReset ()
+ {
+   tel_err_t result;
+@@ -516,7 +530,7 @@
+   //TODO: This phone does not support "HEX", we should set it to HEX
+ #ifdef T39_PLATFORM
+   CommandStr =
+-    AT_Builder_SetCmd ((Int8 *) CMD_CSCS, (Int8 *) "\"UTF-8\"", (Int8 *) NULL);
++    AT_Builder_SetCmd ((Int8 *) CMD_CSCS, (Int8 *) "\"8859-1\"", (Int8 *) NULL);
+ #endif
+ #ifdef CELLON_PLATFORM
+   CommandStr =
+@@ -689,8 +703,8 @@
+                        (Int8 *) "0", (Int8 *) "1", (Int8 *) "0", (Int8 *) NULL);
+ #else
+   CommandStr =
+-    AT_Builder_SetCmd ((Int8 *) CMD_CNMI, (Int8 *) "3", (Int8 *) "1",
+-                       (Int8 *) "0", (Int8 *) "0", (Int8 *) "0", (Int8 *) NULL);
++    AT_Builder_SetCmd ((Int8 *) CMD_CNMI, (Int8 *) "2", (Int8 *) "1",
++                       (Int8 *) "0", (Int8 *) "1", (Int8 *) "0", (Int8 *) NULL);
+ #endif
+   result = tapi_init_general (CommandStr);
+   return result;
+@@ -1737,7 +1751,7 @@
+   (*evt)->evt_data.async_data.cb = tel_ctx.cur_async_evt.cb;
+   (*evt)->evt_data.async_data.user_data = tel_ctx.cur_async_evt.user_data;
+ #ifdef DEBUG
+-  //g_print("sms data is --> %s\n", data->user_data[0].text);
++  g_print("sms data is --> %s\n", data->user_data[0].text);
+ #endif
+   return TEL_ERR_NONE;
+ }
+@@ -1979,14 +1993,14 @@
+     sscanf (param_str, "%d", &index);
+     entry->index = index;
+ #ifdef DEBUG
+-    //g_print("index -> %d\n", index);
++    g_print("index -> %d\n", index);
+ #endif
+     /* number */
+     param_str = (Int8 *) g_ptr_array_index (param, 1);
+     //exclude the quotation
+     memcpy (entry->number.number, param_str + 1, strlen (param_str) - 2);
+ #ifdef DEBUG
+-    //g_print("number -> %s\n", entry->number.number);
++    g_print("number -> %s\n", entry->number.number);
+ #endif
+     /* type */
+     param_str = (Int8 *) g_ptr_array_index (param, 2);
+@@ -1994,7 +2008,7 @@
+     entry->number.npi = index & 0xF;
+     entry->number.ton = (index & 0x70) >> 4;
+ #ifdef DEBUG
+-    //g_print("type -> %s\n", param_str);
++    g_print("type -> %s\n", param_str);
+ #endif
+     /* text */
+     param_str = (Int8 *) g_ptr_array_index (param, 3);
+@@ -2015,7 +2029,7 @@
+     char_unicode_decode (entry->text, entry_textbuffer, len);
+ #endif
+ #ifdef DEBUG
+-    //g_print("text -> %s\n", entry->text);
++    g_print("text -> %s\n", entry->text);
+ #endif
+     AT_Parser_Free (param);
+     /* add the entry into array */
+@@ -2524,11 +2538,11 @@
+   tel_call_info_change_t *call_status = g_new0 (tel_call_info_change_t, 1);
+   at_command_buffer_t *cmd_buffer;
+ 
+-  //g_print("AT_UNSO_PPURC_Handler called\n");
+-//              cmd_buffer = tapi_get_cmd_buffer(in_buffer, CMD_PPURC, 0, NULL);
++  g_print("AT_UNSO_PPURC_Handler called\n");
++              cmd_buffer = tapi_get_cmd_buffer(in_buffer, CMD_PPURC, 0, NULL);
+ #ifdef DEBUG
+-  //g_print("====cur parser pos is ---> %d\n", tel_ctx.cur_parser_pos);
+-  //g_print("====total parser item is ---> %d\n", tel_ctx.cur_resp.cmd->len);
++  g_print("====cur parser pos is ---> %d\n", tel_ctx.cur_parser_pos);
++  g_print("====total parser item is ---> %d\n", tel_ctx.cur_resp.cmd->len);
+ #endif
+   cmd_buffer =
+     tapi_get_cmd_buffer (in_buffer, CMD_PPURC, tel_ctx.cur_parser_pos - 1,
+@@ -3749,8 +3763,10 @@
+       break;
+     case TEL_HANGUPALL:
+       /* +CHUP */
++      //CommandStr =
++      //  AT_Builder_ExeCmd ((Int8 *) CMD_CHUP, (Int8 *) NULL, (Int8 *) NULL);
+       CommandStr =
+-        AT_Builder_ExeCmd ((Int8 *) CMD_CHUP, (Int8 *) NULL, (Int8 *) NULL);
++        AT_Builder_ExeCmd ((Int8 *) "H", (Int8 *) NULL, (Int8 *) NULL);
+       break;
+     case TEL_HANGUPACTIVE_ACCEPTOTHER:
+       /* +CHLD=1 */
+@@ -3859,7 +3875,8 @@
+         break;
+       case TEL_HANGUPALL:
+         /* +CHUP */
+-        AT_Builder_AppendCmd ((Int8 *) CMD_CHUP, (Int8 *) NULL, (Int8 *) NULL);
++        //AT_Builder_AppendCmd ((Int8 *) CMD_CHUP, (Int8 *) NULL, (Int8 *) NULL);
++        AT_Builder_AppendCmd ((Int8 *) "H", (Int8 *) NULL, (Int8 *) NULL);
+         break;
+       case TEL_HANGUPACTIVE_ACCEPTOTHER:
+         /* +CHLD=1 */
