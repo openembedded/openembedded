@@ -17,7 +17,16 @@ def get_pkgconfig_mangle(d):
 		s += " -e 's:OEDATADIR:${STAGING_DATADIR}:'"
 		s += " -e 's:OEPREFIX:${STAGING_LIBDIR}/..:'"
 		s += " -e 's:OEEXECPREFIX:${STAGING_LIBDIR}/..:'"
+		s += " -e 's:-L${WORKDIR}\S*: :g'"
+		s += " -e 's:-I${WORKDIR}\S*: :g'"
+
 	return s
+
+do_install_append () {
+        for pc in `find ${D} -name '*.pc' -type f | grep -v -- '-uninstalled.pc$'`; do
+                sed -i ${@get_pkgconfig_mangle(d)} ${pc}
+        done
+}
 
 do_stage_append () {
 	for pc in `find ${S} -name '*.pc' -type f | grep -v -- '-uninstalled.pc$'`; do
