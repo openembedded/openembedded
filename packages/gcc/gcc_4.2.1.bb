@@ -10,7 +10,7 @@ require gcc-package.inc
 
 SRC_URI = "ftp://ftp.gnu.org/pub/gnu/gcc/gcc-${PV}/gcc-${PV}.tar.bz2 \
 	file://100-uclibc-conf.patch;patch=1 \
-	file://200-uclibc-locale.patch;patch=1 \
+#	file://200-uclibc-locale.patch;patch=1 \
 	file://300-libstdc++-pic.patch;patch=1 \
 	file://301-missing-execinfo_h.patch;patch=1 \
 	file://302-c99-snprintf.patch;patch=1 \
