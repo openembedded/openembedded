@@ -2,9 +2,9 @@ LICENSE     = "LiPS"
 DESCRIPTION = "Phone services server"
 SECTION = "gpe"
 PRIORITY    = "optional"
-PR          = "r2"
+PR          = "r3"
 
-PACKAGE_ARCH = "${MACHINE}"
+PACKAGE_ARCH = "${MACHINE_ARCH}"
 
 DEPENDS = "dbus-glib glib-2.0  libmsgenabler libabenabler"
 
