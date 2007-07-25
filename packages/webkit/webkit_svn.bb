@@ -1,4 +1,4 @@
-DEPENDS = "libpcre flex-native gperf-native gperf perl-native curl icu uicmoc4-native qmake2-native libxml2 sqlite3 cairo libxslt libidn gnutls gtk+"
+DEPENDS = "flex-native gperf-native gperf perl-native curl icu uicmoc4-native qmake2-native libxml2 sqlite3 cairo libxslt libidn gnutls gtk+"
 
 # Yes, this is wrong...
 PV = "0.0+svn${SRCDATE}"
@@ -32,7 +32,9 @@ do_configure_append() {
 
 do_compile_prepend() {
          mkdir -p ${S}/WebKitBuilds/Debug/JavaScriptCore/pcre/tmp/
-	 cp ${STAGING_BINDIR_NATIVE}/dftables ${S}/WebKitBuilds/Debug/JavaScriptCore/pcre/tmp/
+         cd ${S}/JavaScriptCore/pcre 
+	 ${BUILD_CC} dftables.c -o dftables -I. -I../wtf
+	 cp dftables ${S}/WebKitBuilds/Debug/JavaScriptCore/pcre/tmp/
          cd ${S}/WebKitBuilds/Debug
 }
 
