@@ -143,7 +143,10 @@ kernel_do_install() {
 	install -m 0644 System.map ${D}/boot/System.map-${KERNEL_VERSION}
 	install -m 0644 .config ${D}/boot/config-${KERNEL_VERSION}
 	install -d ${D}/etc/modutils
-
+	if [ "${KERNEL_MAJOR_VERSION}" = "2.6" ]; then
+		install -d ${D}/etc/modprobe.d
+	fi
+	
         # Check if scripts/genksyms exists and if so, build it
         if [ -e scripts/genksyms/ ]; then
                 oe_runmake SUBDIRS="scripts/genksyms"
@@ -345,13 +348,16 @@ python populate_packages_prepend () {
 		# Write out any modconf fragment
 		modconf = bb.data.getVar('module_conf_%s' % basename, d, 1)
 		if modconf:
-			name = '%s/etc/modutils/%s.conf' % (dvar, basename)
+			if bb.data.getVar("KERNEL_MAJOR_VERSION", d, 1) == "2.6":
+				name = '%s/etc/modprobe.d/%s.conf' % (dvar, basename)
+			else:
+				name = '%s/etc/modutils/%s.conf' % (dvar, basename)
 			f = open(name, 'w')
 			f.write("%s\n" % modconf)
 			f.close()
 
 		files = bb.data.getVar('FILES_%s' % pkg, d, 1)
-		files = "%s /etc/modutils/%s /etc/modutils/%s.conf" % (files, basename, basename)
+		files = "%s /etc/modutils/%s /etc/modutils/%s.conf /etc/modprobe.d/%s.conf" % (files, basename, basename, basename)
 		bb.data.setVar('FILES_%s' % pkg, files, d)
 
 		if vals.has_key("description"):
