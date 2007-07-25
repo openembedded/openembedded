@@ -1082,8 +1082,8 @@ ${FILE_DIRNAME}/${PN}:${FILE_DIRNAME}/files:${FILE_DIRNAME}"</screen></para>
       <para>First we'll create the myhelloworld.c file and a readme file.
       We'll place this in the files subdirectory, which is one of the places
       that is searched for file:// URI's:<screen>mkdir packages/myhelloworld
-mkdir pacakges/myhelloworld/files
-cat &gt; pacakges/myhelloworld/files/myhelloworld.c
+mkdir packages/myhelloworld/files
+cat &gt; packages/myhelloworld/files/myhelloworld.c
 #include &lt;stdio.h&gt;
 
 int main(int argc, char** argv)
@@ -1092,7 +1092,7 @@ int main(int argc, char** argv)
         return 0;
 }
 ^D
-cat &gt; pacakges/myhelloworld/files/README.txt
+cat &gt; packages/myhelloworld/files/README.txt
 Readme file for myhelloworld.
 ^D</screen></para>
 
