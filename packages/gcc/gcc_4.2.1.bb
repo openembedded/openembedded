@@ -10,7 +10,7 @@ require gcc-package.inc
 
 SRC_URI = "ftp://ftp.gnu.org/pub/gnu/gcc/gcc-${PV}/gcc-${PV}.tar.bz2 \
 	file://100-uclibc-conf.patch;patch=1 \
-#	file://200-uclibc-locale.patch;patch=1 \
+	file://200-uclibc-locale.patch;patch=1 \
 	file://300-libstdc++-pic.patch;patch=1 \
 	file://301-missing-execinfo_h.patch;patch=1 \
 	file://302-c99-snprintf.patch;patch=1 \
@@ -19,6 +19,7 @@ SRC_URI = "ftp://ftp.gnu.org/pub/gnu/gcc/gcc-${PV}/gcc-${PV}.tar.bz2 \
 	file://602-sdk-libstdc++-includes.patch;patch=1 \
 	file://740-sh-pr24836.patch;patch=1 \
 	file://800-arm-bigendian.patch;patch=1 \
+	file://904-flatten-switch-stmt-00.patch;patch=1 \
 	file://arm-nolibfloat.patch;patch=1 \
 	file://arm-softfloat.patch;patch=1 \
 	file://gcc41-configure.in.patch;patch=1 \
