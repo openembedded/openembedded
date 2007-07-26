@@ -1,14 +1,15 @@
 DESCRIPTION="The Asterisk open source software PBX"
 HOMEPAGE="www.asterisk.org"
 LICENSE="GPL"
-DEPENDS="ncurses zlib openssl curl alsa-lib libogg libvorbis popt"
+DEPENDS="ncurses zlib openssl curl alsa-lib libogg libvorbis speex"
 SECTION = "console/telephony"
-PR = "r4"
+PR = "r0"
 
 SRC_URI="http://ftp.digium.com/pub/asterisk/releases/asterisk-${PV}.tar.gz \
 	 file://uclibc-compat-getloadavg.patch;patch=1 \
-	 file://uclibc-dsn.patch;patch=1 \
-         file://asterisk.patch;patch=1"
+	 file://uclibc-dns.patch;patch=1 \
+         file://asterisk.patch;patch=1 \
+         file://enable-speex.patch;patch=1"
 
 S = "${WORKDIR}/asterisk-${PV}"
 
