@@ -2,9 +2,12 @@ DESCRIPTION = "GNU Radio"
 SECTION =  "apps"
 PRIORITY = "optional"
 LICENSE = "GPL"
-DEPENDS = "fftw python boost cppunit sdcc-native swig swig-native"
-RDEPENDS = "fftw python swig"
+DEPENDS = "fftwf python boost cppunit sdcc-native swig swig-native"
+RDEPENDS = "libfftwf python swig"
+
+PV = "0.0+svn${SRCDATE}"
 PR = "r0"
+
 
 SRC_URI = "svn://gnuradio.org/svn/gnuradio;module=trunk;proto=http"
 
