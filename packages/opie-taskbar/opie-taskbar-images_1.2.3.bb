@@ -1,5 +1,5 @@
 require ${PN}.inc
-PR = "r0"
+PR = "r1"
 
 TAG = "${@'v' + bb.data.getVar('PV',d,1).replace('.', '_')}"
 
