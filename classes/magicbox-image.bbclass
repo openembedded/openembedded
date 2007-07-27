@@ -1,6 +1,6 @@
 magicbox_gen_images() {
         # find latest kernel
-        KERNEL=`ls -tr ${DEPLOY_DIR_IMAGE}/uImage* | tail -1`
+        KERNEL=`ls -tr ${DEPLOY_DIR_IMAGE}/uImage* | tail -n 1`
         if [ -z "$KERNEL" ]; then
                 oefatal "No kernel found in ${DEPLOY_DIR_IMAGE}. Exiting !"
                 exit 1
