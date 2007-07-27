@@ -7,3 +7,14 @@
 -SUBDIRS = src doc
 +SUBDIRS = src
  
+--- /tmp/Makefile.am	2007-07-27 19:18:00.000000000 +0200
++++ trunk/usrp/Makefile.am	2007-07-27 19:18:20.995215000 +0200
+@@ -20,7 +20,7 @@
+ # 
+ 
+ EXTRA_DIST = usrp.pc.in usrp.iss.in usrp.inf
+-SUBDIRS = host firmware fpga doc
++SUBDIRS = host firmware fpga 
+ 
+ pkgconfigdir = $(libdir)/pkgconfig
+ pkgconfig_DATA = usrp.pc
