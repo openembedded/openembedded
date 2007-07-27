@@ -62,7 +62,7 @@ do_configure() {
 
 	echo "CONFIG_CMDLINE=\"${CMDLINE}\"" >> ${S}/.config
 
-	if [ "${TARGET_OS}" == "linux-gnueabi" ]; then
+	if [ "${TARGET_OS}" = "linux-gnueabi" ]; then
 		echo "CONFIG_AEABI=y"                   >> ${S}/.config
 		echo "CONFIG_OABI_COMPAT=y"             >> ${S}/.config
 	else 

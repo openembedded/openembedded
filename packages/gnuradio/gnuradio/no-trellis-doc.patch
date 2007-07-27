@@ -1,0 +1,9 @@
+--- /tmp/Makefile.am	2007-07-27 13:44:31.000000000 +0200
++++ trunk/gr-trellis/Makefile.am	2007-07-27 13:50:06.795215000 +0200
+@@ -21,5 +21,5 @@
+ 
+ include $(top_srcdir)/Makefile.common
+ 
+-SUBDIRS = src doc
++SUBDIRS = src
+ 

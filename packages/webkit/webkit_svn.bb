@@ -1,4 +1,4 @@
-DEPENDS = "libpcre flex-native gperf-native gperf perl-native curl icu uicmoc4-native qmake2-native libxml2 sqlite3 cairo libxslt libidn gnutls gtk+"
+DEPENDS = "flex-native gperf-native gperf perl-native curl icu uicmoc4-native qmake2-native libxml2 sqlite3 cairo libxslt libidn gnutls gtk+"
 
 # Yes, this is wrong...
 PV = "0.0+svn${SRCDATE}"
@@ -27,12 +27,14 @@ do_configure_append() {
         qmake2 -spec ${QMAKESPEC} CONFIG+=gdk-port CONFIG-=qt CONFIG-=release CONFIG+=debug
 	mkdir -p WebKitBuilds/Debug
 	cd WebKitBuilds/Debug
-	PWD=`pwd` qmake2 -spec ${QMAKESPEC} -r OUTPUT_DIR=$PWD/ CONFIG-=qt CONFIG+=gdk-port $PWD/../../WebKit.pro
+	PWD=`pwd` qmake2 -spec ${QMAKESPEC} -r OUTPUT_DIR=$PWD/ CONFIG-=qt CONFIG+=gdk-port $PWD/../../WebKit.pro WEBKIT_INC_DIR=${prefix}/include WEBKIT_LIB_DIR=${libdir}
 }
 
 do_compile_prepend() {
          mkdir -p ${S}/WebKitBuilds/Debug/JavaScriptCore/pcre/tmp/
-	 cp ${STAGING_BINDIR_NATIVE}/dftables ${S}/WebKitBuilds/Debug/JavaScriptCore/pcre/tmp/
+         cd ${S}/JavaScriptCore/pcre 
+	 ${BUILD_CC} dftables.c -o dftables -I. -I../wtf
+	 cp dftables ${S}/WebKitBuilds/Debug/JavaScriptCore/pcre/tmp/
          cd ${S}/WebKitBuilds/Debug
 }
 
@@ -42,10 +44,19 @@ do_install() {
 	install -d ${D}${libdir}/pkgconfig
 
 	install -m 0755 ${S}/WebKitBuilds/Debug/WebKitTools/GdkLauncher/GdkLauncher ${D}${bindir}
-	cp -pPR WebKitBuilds/Debug/lib/*.so* ${D}${libdir} 
-	cp -pPR WebKitBuilds/Debug/lib/*.pc ${D}${libdir}/pkgconfig/ || true
+        cd ${S}/WebKitBuilds/Debug
+	PWD=`pwd` qmake2 -spec ${QMAKESPEC} -r OUTPUT_DIR=$PWD/ CONFIG-=qt CONFIG+=gdk-port $PWD/../../WebKit.pro WEBKIT_INC_DIR=${D}${prefix}/include WEBKIT_LIB_DIR=${D}${libdir}
+        oe_runmake install
 }
 
+
+do_stage() {
+        install -d ${STAGING_LIBDIR}
+        install -d ${STAGING_INCDIR}
+        cd ${S}/WebKitBuilds/Debug
+	PWD=`pwd` qmake2 -spec ${QMAKESPEC} -r OUTPUT_DIR=$PWD/ CONFIG-=qt CONFIG+=gdk-port $PWD/../../WebKit.pro WEBKIT_INC_DIR=${STAGING_INCDIR} WEBKIT_LIB_DIR=${STAGING_LIBDIR}
+        oe_runmake install
+}
 
 PACKAGES =+ "webkit-gdklauncher-dbg webkit-gdklauncher"
 
