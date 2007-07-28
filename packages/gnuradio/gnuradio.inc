@@ -5,6 +5,7 @@ LICENSE = "GPL"
 DEPENDS = " guile-native fftwf python libusb virtual/libsdl alsa-lib jack boost cppunit sdcc-native swig-native"
 
 RDEPENDS_${PN} = "python-core python-audio python-codecs python-lang python-textutils"
+RDEPENDS_gnuradio-usrp = "python-core"
 
 inherit autotools pkgconfig
 
