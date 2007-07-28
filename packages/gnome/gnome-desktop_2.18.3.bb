@@ -4,7 +4,7 @@ PR = "r2"
 DESCRIPTION = "GNOME library for reading .desktop files"
 inherit gnome pkgconfig
 
-DEPENDS = "gnome-common gnome-doc-utils libgnomeui"
+DEPENDS = "gnome-common gnome-doc-utils gnome-vfs libgnomeui"
 
 SRC_URI += "file://scrollkeeper.patch;patch=1 \
             file://no-desktop-docs.patch;patch=1;pnum=0"
