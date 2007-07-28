@@ -18,7 +18,7 @@ EXTRA_OECONF = "--enable-timestamps --disable-capabilities --disable-oldtrans \
 		--disable-portaudio --disable-coreaudio --enable-oss --enable-alsa"
 
 EXTRA_OEMAKE = 'transform="s,^,,"'
-LDFLAGS_append = " -L${STAGING_LIBDIR}"
+LDFLAGS_append = " -ldl -L${STAGING_LIBDIR}"
 
 PACKAGES =+ "libjack jack-server jack-examples"
 
