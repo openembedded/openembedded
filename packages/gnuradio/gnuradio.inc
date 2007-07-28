@@ -54,8 +54,8 @@ FILES_${PN}-dbg += "${libdir}/python*/site-packages/gnuradio/.debug \
 		   "
 
 FILES_gnuradio-usrp = "${libdir}/python*/site-packages/usrpm/* \
-                       ${datadir}/usrp""
-FILES_gnuradio-usrp-dbg = ${libdir}/python*/site-packages/usrpm/.debug"
+                       ${datadir}/usrp"
+FILES_gnuradio-usrp-dbg = "${libdir}/python*/site-packages/usrpm/.debug"
 
 
 
