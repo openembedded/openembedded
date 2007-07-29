@@ -91,7 +91,7 @@ fakeroot do_rootfs () {
 		if test -z "$FAKEROOTKEY"; then
 			fakeroot -i ${TMPDIR}/fakedb.image bbimage -t $type -e ${FILE}
 		else
-			bbimage -n "${IMAGE_NAME}" -t "$type" -e "${FILE}"
+			${PYTHON} `which bbimage` -n "${IMAGE_NAME}" -t "$type" -e "${FILE}"
 		fi
 
 		cd ${DEPLOY_DIR_IMAGE}/
