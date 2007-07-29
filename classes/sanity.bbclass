@@ -89,7 +89,7 @@ def check_sanity(e):
 	if not check_app_exists('${BUILD_PREFIX}g++', e.data):
 		missing = missing + "C++ Compiler (${BUILD_PREFIX}g++),"
 
-	required_utilities = "patch help2man diffstat texi2html makeinfo cvs svn git bzip2 tar gzip gawk md5sum bison"
+	required_utilities = "patch diffstat texi2html makeinfo cvs svn git bzip2 tar gzip gawk md5sum bison"
 
 	for util in required_utilities.split():
 		if not check_app_exists( util, e.data ):
@@ -110,6 +110,16 @@ addhandler check_sanity_eventhandler
 python check_sanity_eventhandler() {
     from bb import note, error, data, __version__
     from bb.event import getName
+
+    try:
+        from distutils.version import LooseVersion
+    except ImportError:
+        def LooseVersion(v): print "WARNING: sanity.bbclass can't compare versions without python-distutils"; return 1
+
+    if (LooseVersion(bb.__version__) > LooseVersion("1.8.6")):
+        if getName(e) == "ConfigParsed":
+            check_sanity(e)
+        return NotHandled
 
     if getName(e) == "BuildStarted":
         check_sanity(e)
