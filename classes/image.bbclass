@@ -89,7 +89,7 @@ fakeroot do_rootfs () {
 
 	for type in ${IMAGE_FSTYPES}; do
 		if test -z "$FAKEROOTKEY"; then
-			fakeroot -i ${TMPDIR}/fakedb.image bbimage -t $type -e ${FILE}
+			fakeroot -i ${TMPDIR}/fakedb.image ${PYTHON} `which bbimage` -t $type -e ${FILE}
 		else
 			${PYTHON} `which bbimage` -n "${IMAGE_NAME}" -t "$type" -e "${FILE}"
 		fi
