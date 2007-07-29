@@ -825,8 +825,11 @@ def base_after_parse(d):
     if (old_arch == mach_arch):
         # Nothing to do
         return
-    if (bb.data.getVar('SRC_URI_OVERRIDES_PACKAGE_ARCH', d, 1) == '0'):
+    override = bb.data.getVar('SRC_URI_OVERRIDES_PACKAGE_ARCH', d, 1)
+	
+    if not override or override == '0':
         return
+
     paths = []
     for p in [ "${FILE_DIRNAME}/${PF}", "${FILE_DIRNAME}/${P}", "${FILE_DIRNAME}/${PN}", "${FILE_DIRNAME}/files", "${FILE_DIRNAME}" ]:
         paths.append(bb.data.expand(os.path.join(p, mach_arch), d))
