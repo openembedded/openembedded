@@ -8,7 +8,7 @@ DEPENDS = "dbus-glib gconf libnotify gtk+"
 SRC_URI = "cvs://anonymous@cvs.bluez.org/cvsroot/bluez;module=gnome \
           "
  
-PV = "0.9+cvs${SRCDATE}"
+PV = "0.10+cvs${SRCDATE}"
 S = "${WORKDIR}/gnome"
 
 inherit autotools pkgconfig gconf

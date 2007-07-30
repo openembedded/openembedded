@@ -1,12 +1,6 @@
-DESCRIPTION = "NetworkManager"
-SECTION = "net/misc"
-LICENSE = "GPL"
-HOMEPAGE = "http://www.gnome.org"
-PRIORITY = "optional"
-DEPENDS = "libnl dbus dbus-glib hal gconf-dbus wireless-tools"
-RDEPENDS = "wpa-supplicant iproute2 dhcdbd"
-PV = "0.6.5+svn${SRCDATE}"
+require networkmanager.inc
 
+PV = "0.6.5+svn${SRCDATE}"
 PR = "r0"
 
 SRC_URI="svn://svn.gnome.org/svn/NetworkManager/branches;module=NETWORKMANAGER_0_6_0_RELEASE;proto=http \
@@ -15,56 +9,6 @@ SRC_URI="svn://svn.gnome.org/svn/NetworkManager/branches;module=NETWORKMANAGER_0
 
 DEFAULT_PREFERENCE = "-1"
 
-EXTRA_OECONF = " \
-		--with-gnome \
-		--with-distro=debian \
-		--without-gcrypt \
- 		--with-wpa_supplicant=/usr/sbin/wpa_supplicant \
-		--with-dhcdbd=/sbin/dhcdbd \
-		--with-ip=/sbin/ip"
-
 S = "${WORKDIR}/NETWORKMANAGER_0_6_0_RELEASE"
 
-inherit autotools pkgconfig
-
-do_staging () {
-	autotools_stage_includes
-	oe_libinstall -C libnm-util libnm-util ${STAGING_LIBDIR}
-	oe_libinstall gnome/libnm_glib libnm_glib ${STAGING_LIBDIR}
-}
-
-do_install () {
-	oe_libinstall -C libnm-util libnm-util ${D}/usr/lib
-	oe_libinstall -C gnome/libnm_glib libnm_glib ${D}/usr/lib
-
-	oe_runmake -C src DESTDIR="${D}" install
-	install -d ${D}/etc/default/volatiles
-	install -m 0644 ${WORKDIR}/99_networkmanager ${D}/etc/default/volatiles
-	install -d ${D}/etc/init.d/
-	install -m 0755 ${WORKDIR}/NetworkManager ${D}/etc/init.d/
-	install -d ${D}/${datadir}/
-}
-
-pkg_postinst_${PN} () {
-if [ "x$D" != "x" ]; then
-        exit 1
-fi
-/etc/init.d/populate-volatile.sh update
-}
-
-PACKAGES =+ "libnmutil libnmglib" 
-
-FILES_libnmutil += "${libdir}/libnm-util.so.*"
-FILES_libnmglib += "${libdir}/libnm_glib.so.*"
-
-FILES_${PN} += "${datadir} \
-		${sbindir}/* \
-		${bindir}/* \
-		${sysconfdir} \
-		${libexecdir}"
-
-FILES_${PN}-dev += "${incdir} \
-		   ${libdir}/*.a \
-		   ${libdir}/*.la \
-		   ${libdir}/pkgconfig"
 

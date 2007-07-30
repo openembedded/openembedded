@@ -111,6 +111,16 @@ python check_sanity_eventhandler() {
     from bb import note, error, data, __version__
     from bb.event import getName
 
+    try:
+        from distutils.version import LooseVersion
+    except ImportError:
+        def LooseVersion(v): print "WARNING: sanity.bbclass can't compare versions without python-distutils"; return 1
+
+    if (LooseVersion(bb.__version__) > LooseVersion("1.8.6")):
+        if getName(e) == "ConfigParsed":
+            check_sanity(e)
+        return NotHandled
+
     if getName(e) == "BuildStarted":
         check_sanity(e)
 
