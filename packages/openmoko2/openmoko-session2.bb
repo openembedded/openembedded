@@ -5,7 +5,7 @@ RDEPENDS = "matchbox-common matchbox-applet-startup-monitor matchbox-panel-2"
 RCONFLICTS = "openmoko-session"
 PR = "r21"
 
-SRC_URI = "file://etc file://matchbox-session"
+SRC_URI = "file://etc"
 S = ${WORKDIR}
 
 do_install() {
