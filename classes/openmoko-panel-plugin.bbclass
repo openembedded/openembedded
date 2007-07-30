@@ -1,6 +1,6 @@
 SECTION = "openmoko/panel-plugin"
 DEPENDS += "matchbox-panel-2"
 
-inherit openmoko
+inherit openmoko2
 
 FILES_${PN} = "${libdir}/matchbox-panel/lib*.so* ${datadir}"
