@@ -25,10 +25,8 @@ EXTRA_OECONF = " \
 
 inherit autotools pkgconfig
 
-do_staging () {
-	autotools_stage_includes
-	oe_libinstall -C libnm-util libnm-util ${STAGING_LIBDIR}
-	oe_libinstall gnome/libnm_glib libnm_glib ${STAGING_LIBDIR}
+do_stage () {
+	autotools_stage_all
 }
 
 do_install () {
