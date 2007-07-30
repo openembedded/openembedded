@@ -19,6 +19,6 @@ fi
 # Default files to run if $HOME/.matchbox/session or /etc/matchbox/session
 # dont exist. 
 
-matchbox-desktop &
-matchbox-panel  --orientation south &
+matchbox-desktop-2 &
+matchbox-panel-2  --orientation south &
 exec matchbox-window-manager $@
