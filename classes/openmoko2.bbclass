@@ -19,17 +19,10 @@ def openmoko_two_get_subdir(d):
     elif section == "inputmethods": return "inputmethods"
     else: return section
 
-def openmoko_strip_two(d):
-    import bb
-    pname, openmokonumber = bb.data.getVar('PN', d, 1).split("2")
-    return pname
-
-
 LICENSE = "${@openmoko_two_get_license(d)}"
 SUBDIR = "${@openmoko_two_get_subdir(d)}"
-PNAME = "${@openmoko_strip_two(d)}"
 
-SRC_URI := "${OPENMOKO_MIRROR}/src/target/${OPENMOKO_RELEASE}/${SUBDIR};module=${PNAME};proto=http"
-S = "${WORKDIR}/${PNAME}"
+SRC_URI := "${OPENMOKO_MIRROR}/src/target/${OPENMOKO_RELEASE}/${SUBDIR};module=${PN};proto=http"
+S = "${WORKDIR}/${PN}"
 
 FILES_${PN} += "${datadir}/icons"
