@@ -2,9 +2,8 @@ DESCRIPTION = "Custom MB session files for poky"
 LICENSE = "GPL"
 SECTION = "x11"
 RDEPENDS = "matchbox-applet-startup-monitor matchbox-panel-2"
-# RDEPENDS = "matchbox-applet-startup-monitor gtk-sato-engine matchbox-theme-sato gtk-theme-sato matchbox-panel-2 matchbox-desktop-sato"
-# RCONFLICTS = "matchbox-common matchbox-sato"
-PR = "r19"
+RCONFLICTS = "matchbox-common openmoko-session"
+PR = "r20"
 
 SRC_URI = "file://etc file://matchbox-session"
 S = ${WORKDIR}
