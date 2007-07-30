@@ -2,7 +2,7 @@ DESCRIPTION = "OpenMoko: Tasks for the OpenMoko Linux Distribution"
 SECTION = "openmoko/base"
 LICENSE = "MIT"
 PROVIDES = "task-openmoko-everything"
-PR = "r49"
+PR = "r50"
 
 ALLOW_EMPTY = "1"
 PACKAGE_ARCH = "all"
@@ -65,9 +65,8 @@ RDEPENDS_task-openmoko-ui = "\
   xset \
   xrandr \
   settings-daemon \
-  openmoko-common \
-  openmoko-session \
-  openmoko-theme-standard \
+  openmoko-session2 \
+  openmoko-theme-standard2 \
   openmoko-icon-theme-standard \
   openmoko-sound-system \
   openmoko-sound-theme-standard \
@@ -83,10 +82,10 @@ RDEPENDS_task-openmoko-base = "\
   matchbox-panel-2 \
   matchbox-panel-2-applets \
   matchbox-applet-inputmanager \
-  openmoko-appmanager \
+#  openmoko-appmanager \
+  matchbox-keyboard \
+  matchbox-stroke \
   openmoko-keyboard \
-  openmoko-footer \
-  openmoko-taskmanager \
   openmoko-panel-mainmenu \
   openmoko-panel-battery \
   openmoko-panel-bt \
@@ -102,7 +101,7 @@ DESCRIPTION_task-openmoko-phone = "OpenMoko: GSM and GPRS Phone Services"
 RDEPENDS_task-openmoko-phone = "\
   gsmd \
   libgsmd-tools \
-  openmoko-dialer \
+  openmoko-dialer2 \
   openmoko-panel-gsm \
 #  ppp \
 "
@@ -112,7 +111,7 @@ RDEPENDS_task-openmoko-phone = "\
 #
 DESCRIPTION_task-openmoko-finger = "OpenMoko: Finger UI Applications"
 RDEPENDS_task-openmoko-finger = "\
-  openmoko-calculator \
+#  openmoko-calculator \
 "
 
 #
@@ -121,12 +120,10 @@ RDEPENDS_task-openmoko-finger = "\
 DESCRIPTION_task-openmoko-pim = "OpenMoko: PIM Applications"
 RDEPENDS_task-openmoko-pim = "\
   eds-dbus \
-  openmoko-contacts \
-  openmoko-dates \
-  openmoko-tasks \
-  openmoko-today \
-  openmoko-messages \
-  openmoko-rssreader \
+  openmoko-contacts2 \
+  openmoko-today2 \
+#  openmoko-messages \
+#  openmoko-rssreader \
 "
 
 #
@@ -137,32 +134,6 @@ RDEPENDS_task-openmoko-net = "\
   bluez-utils \
   bridge-utils \
 "
-
-#
-# task-openmoko-demo
-#
-DESCRIPTION_task-openmoko-demo = "OpenMoko: Demo Applications"
-RDEPENDS_task-openmoko-demo = "\
-  matchbox-desktop-2 \
-  matchbox-keyboard \
-  matchbox-stroke \
-  matchbox-config-gtk \
-  xcursor-transparent-theme \
-  web \
-  mtpaint \
-"
-
-#
-# task-openmoko-examples
-#
-DESCRIPTION_task-openmoko-examples = "OpenMoko: Example Applications"
-RDEPENDS_task-openmoko-examples = "\
-  openmoko-stylus-demo-simple \
-  openmoko-stylus-demo \
-  openmoko-finger-demo \
-  openmoko-panel-demo-simple \
-  openmoko-panel-demo \
-  openmoko-chordmaster"
 
 #
 # task-openmoko-debug
