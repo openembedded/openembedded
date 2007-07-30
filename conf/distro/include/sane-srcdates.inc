@@ -1,4 +1,5 @@
-# Lock down some SRCDATEs, see http://svn.o-hand.com/view/poky/trunk/openembedded/conf/distro/poky.conf for the original version 
+# Lock down some SRCDATEs
+# (see http://svn.o-hand.com/view/poky/trunk/meta/conf/distro/poky.conf for wher it comes from)
 
 # Kernel modules
 SRCDATE_at76c503a-modules ?= "20060814"
@@ -31,6 +32,7 @@ SRCDATE_matchbox-desktop ?= "20060612"
 SRCDATE_matchbox-keyboard ?= "20060725"
 SRCDATE_matchbox-panel ?= "20060612"
 SRCDATE_matchbox-panel-manager ?= "20060612"
+SRCDATE_matchbox-panel-2 ?= "20070720"
 SRCDATE_matchbox-stroke ?= "20060612"
 SRCDATE_matchbox-themes-extra ?= "20060612"
 SRCDATE_matchbox-wm ?= "20060612"
@@ -50,7 +52,7 @@ SRCDATE_gconf-dbus ?= "20070512"
 SRCDATE_gnome-vfs ?= "20060119"
 SRCDATE_gtkhtml2 ?= "20060323"
 
-# Enlightenment Foundation Libraries
+# Enlightenment Foundation Libraries (EFL)
 # Caution: This is not alphabetically, but (roughly) dependency-sorted.
 # Please leave it like that.
 SRCDATE_edb-native = "20070721"
@@ -137,4 +139,21 @@ SRCDATE_zroadmap ?= "20060814"
 
 # Freedesktop.org
 SRCDATE_poppler0.6 = "20070708"
+
+# OpenMoko
+SRCDATE_libgsmd ?= "now"
+SRCDATE_libmokogsmd2 ?= "now"
+SRCDATE_libmokoui2 ?= "now"
+SRCDATE_libmokojournal2 ?= "now"
+SRCDATE_libmokopanelui2 ?= "now"
+SRCDATE_openmoko-today2 ?= "now"
+SRCDATE_openmoko-dialer2 ?= "now"
+SRCDATE_openmoko-contacts2 ?= "now"
+
+SRCDATE_openmoko-panel-battery ?= "now"
+SRCDATE_openmoko-panel-clock ?= "now"
+SRCDATE_openmoko-panel-gsm ?= "now"
+SRCDATE_openmoko-panel-usb ?= "now"
+SRCDATE_openmoko-panel-bt ?= "now"
+SRCDATE_openmoko-panel-gps ?= "now"
 
