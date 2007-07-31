@@ -1,5 +1,5 @@
 SECTION = "openmoko/panel-plugin"
-DEPENDS += "matchbox-panel-2"
+DEPENDS += "matchbox-panel-2 libmokopanelui2"
 
 inherit openmoko2
 
