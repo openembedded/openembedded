@@ -5,7 +5,7 @@ DEPENDS = "libsdl-x11 ffmpeg-0.4.9-pre1+cvs${SRCDATE} libglademm libmsip0 libmik
 CONFLICTS = "minisip"
 PV = "0.6.2+svn${SRCDATE}"
 
-SRC_URI = "svn://svn.minisip.org/var/svn/minisip/trunk;module=minisip"
+SRC_URI = "svn://svn.minisip.org/minisip/trunk;module=minisip"
 S = "${WORKDIR}/minisip"
 
 inherit autotools
