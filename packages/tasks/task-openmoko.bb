@@ -86,7 +86,6 @@ RDEPENDS_task-openmoko-base = "\
   matchbox-keyboard \
   matchbox-stroke \
   openmoko-keyboard \
-  openmoko-panel-mainmenu \
   openmoko-panel-battery \
   openmoko-panel-bt \
   openmoko-panel-clock \
