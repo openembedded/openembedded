@@ -1,16 +1,14 @@
 DESCRIPTION = "Custom MB session files for poky"
 LICENSE = "GPL"
 SECTION = "x11"
-RDEPENDS = "matchbox-applet-startup-monitor matchbox-panel-2"
-RCONFLICTS = "matchbox-common openmoko-session"
-PR = "r20"
+RDEPENDS = "matchbox-common matchbox-applet-startup-monitor matchbox-panel-2"
+RCONFLICTS = "openmoko-session"
+PR = "r22"
 
-SRC_URI = "file://etc file://matchbox-session"
+SRC_URI = "file://etc"
 S = ${WORKDIR}
 
 do_install() {
-	install -d ${D}/${bindir}
-	install -m 0755 ${S}/matchbox-session ${D}/${bindir}
 	cp -R ${S}/etc ${D}/etc
 	rm -fR ${D}/etc/.svn
 	rm -fR ${D}/etc/matchbox/.svn

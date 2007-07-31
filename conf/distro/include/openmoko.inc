@@ -1,7 +1,7 @@
 #
 # Header
 #
-DISTRO_NAME = "OpenMoKo"
+DISTRO_NAME = "OpenMoko"
 
 #
 # Naming schemes
