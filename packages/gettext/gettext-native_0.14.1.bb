@@ -2,6 +2,7 @@ require gettext_${PV}.bb
 S = "${WORKDIR}/gettext-${PV}"
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/gettext-${PV}"
 inherit native
+DEPENDS = "zlib-native"
 PROVIDES = ""
 
 M4 = "\
