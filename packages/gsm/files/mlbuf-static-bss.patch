@@ -1,0 +1,21 @@
+Index: gsm/src/gsmd/atcmd.c
+===================================================================
+--- gsm.orig/src/gsmd/atcmd.c	2007-07-31 11:44:51.000000000 +0200
++++ gsm/src/gsmd/atcmd.c	2007-07-31 11:45:09.000000000 +0200
+@@ -171,13 +171,14 @@
+ 	return -1;
+ }
+ 
++static char mlbuf[MLPARSE_BUF_SIZE];
++static int mlbuf_len;
++
+ static int ml_parse(const char *buf, int len, void *ctx)
+ {
+ 	struct gsmd *g = ctx;
+ 	struct gsmd_atcmd *cmd = NULL;
+-	static char mlbuf[MLPARSE_BUF_SIZE];
+ 	int rc = 0, final = 0;
+-	int mlbuf_len;
+ 
+ 	DEBUGP("buf=`%s'(%d)\n", buf, len);
+ 
