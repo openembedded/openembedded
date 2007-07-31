@@ -17,8 +17,8 @@ Subject: [PATCH] SMS hacks 2
 
 Index: gsm/include/gsmd/gsmd.h
 ===================================================================
---- gsm.orig/include/gsmd/gsmd.h	2007-07-31 11:44:32.000000000 +0200
-+++ gsm/include/gsmd/gsmd.h	2007-07-31 11:46:44.000000000 +0200
+--- gsm.orig/include/gsmd/gsmd.h	2007-07-31 14:09:02.000000000 +0200
++++ gsm/include/gsmd/gsmd.h	2007-07-31 14:23:32.000000000 +0200
 @@ -27,6 +27,7 @@
  	u_int32_t buflen;
  	u_int16_t id;
@@ -52,7 +52,7 @@ Index: gsm/include/gsmd/gsmd.h
  
  struct gsmd {
  	unsigned int flags;
-@@ -92,7 +97,8 @@
+@@ -94,7 +99,8 @@
  
  extern int gsmdlog_init(const char *path);
  /* write a message to the daemons' logfile */
@@ -64,8 +64,8 @@ Index: gsm/include/gsmd/gsmd.h
  	__gsmd_log(level, __FILE__, __LINE__, __FUNCTION__, format, ## args)
 Index: gsm/include/gsmd/usock.h
 ===================================================================
---- gsm.orig/include/gsmd/usock.h	2007-07-31 11:44:32.000000000 +0200
-+++ gsm/include/gsmd/usock.h	2007-07-31 11:46:44.000000000 +0200
+--- gsm.orig/include/gsmd/usock.h	2007-07-31 13:58:37.000000000 +0200
++++ gsm/include/gsmd/usock.h	2007-07-31 14:23:32.000000000 +0200
 @@ -139,7 +139,7 @@
  /* for SMS-SUBMIT, SMS-DELIVER */
  enum gsmd_sms_tp_udhi {
@@ -124,8 +124,8 @@ Index: gsm/include/gsmd/usock.h
  	u_int8_t index1;
 Index: gsm/include/gsmd/vendorplugin.h
 ===================================================================
---- gsm.orig/include/gsmd/vendorplugin.h	2007-07-31 11:46:28.000000000 +0200
-+++ gsm/include/gsmd/vendorplugin.h	2007-07-31 11:46:44.000000000 +0200
+--- gsm.orig/include/gsmd/vendorplugin.h	2007-07-31 13:58:38.000000000 +0200
++++ gsm/include/gsmd/vendorplugin.h	2007-07-31 14:23:32.000000000 +0200
 @@ -12,7 +12,7 @@
  struct gsmd_vendor_plugin {
  	struct llist_head list;
@@ -137,8 +137,8 @@ Index: gsm/include/gsmd/vendorplugin.h
  	int (*detect)(struct gsmd *g);
 Index: gsm/include/libgsmd/sms.h
 ===================================================================
---- gsm.orig/include/libgsmd/sms.h	2007-07-31 11:44:32.000000000 +0200
-+++ gsm/include/libgsmd/sms.h	2007-07-31 11:46:44.000000000 +0200
+--- gsm.orig/include/libgsmd/sms.h	2007-07-31 13:58:38.000000000 +0200
++++ gsm/include/libgsmd/sms.h	2007-07-31 14:23:32.000000000 +0200
 @@ -83,7 +83,7 @@
  extern int lgsmd_sms_send(struct lgsm_handle *lh, const struct lgsm_sms *sms);
  
@@ -150,8 +150,8 @@ Index: gsm/include/libgsmd/sms.h
  /* Packing of 7-bit characters, refer to GSM 03.38 subclause 6.1.2.1.1 */
 Index: gsm/src/gsmd/atcmd.c
 ===================================================================
---- gsm.orig/src/gsmd/atcmd.c	2007-07-31 11:46:42.000000000 +0200
-+++ gsm/src/gsmd/atcmd.c	2007-07-31 11:47:03.000000000 +0200
+--- gsm.orig/src/gsmd/atcmd.c	2007-07-31 14:13:00.000000000 +0200
++++ gsm/src/gsmd/atcmd.c	2007-07-31 14:23:32.000000000 +0200
 @@ -82,9 +82,12 @@
  
  	switch (llp->state) {
@@ -202,7 +202,7 @@ Index: gsm/src/gsmd/atcmd.c
  	}
  
  	return 0;
-@@ -178,7 +197,7 @@
+@@ -175,7 +194,7 @@
  {
  	struct gsmd *g = ctx;
  	struct gsmd_atcmd *cmd = NULL;
@@ -211,7 +211,7 @@ Index: gsm/src/gsmd/atcmd.c
  
  	DEBUGP("buf=`%s'(%d)\n", buf, len);
  
-@@ -232,7 +251,6 @@
+@@ -229,7 +248,6 @@
  			DEBUGP("error number %lu\n", err_nr);
  			if (cmd)
  				cmd->ret = err_nr;
@@ -219,7 +219,7 @@ Index: gsm/src/gsmd/atcmd.c
  			goto final_cb;
  		}
  		if (!strncmp(buf+1, "CMS ERROR", 9)) {
-@@ -242,7 +260,6 @@
+@@ -239,7 +257,6 @@
  			DEBUGP("error number %lu\n", err_nr);
  			if (cmd)
  				cmd->ret = err_nr;
@@ -227,26 +227,26 @@ Index: gsm/src/gsmd/atcmd.c
  			goto final_cb;
  		}
  
-@@ -274,7 +291,7 @@
+@@ -271,7 +288,7 @@
  
  			/* it might be a multiline response, so if there's a previous
  			   response, send out mlbuf and start afresh with an empty buffer */
--			if (mlbuf[0] != 0) {
-+			if (mlbuf_len) {
+-			if (g->mlbuf[0] != 0) {
++			if (g->mlbuf_len) {
  				if (!cmd->cb) {
  					gsmd_log(GSMD_NOTICE, "command without cb!!!\n");
  				} else {
-@@ -282,8 +299,8 @@
- 					cmd->resp = mlbuf;
+@@ -279,8 +296,8 @@
+ 					cmd->resp = g->mlbuf;
  					rc = cmd->cb(cmd, cmd->ctx, cmd->resp);
  					DEBUGP("Clearing mlbuf\n");
--					mlbuf[0] = 0;
+-					g->mlbuf[0] = 0;
  				}
-+				mlbuf_len = 0;
++				g->mlbuf_len = 0;
  			}
  
  			/* the current buf will be appended to mlbuf below */
-@@ -302,7 +319,6 @@
+@@ -299,7 +316,6 @@
  			DEBUGP("unspecified error\n");
  			if (cmd)
  				cmd->ret = 4;
@@ -254,7 +254,7 @@ Index: gsm/src/gsmd/atcmd.c
  			goto final_cb;
  		}
  
-@@ -311,7 +327,6 @@
+@@ -308,7 +324,6 @@
  			/* Part of Case 'C' */
  			if (cmd)
  				cmd->ret = 0;
@@ -262,7 +262,7 @@ Index: gsm/src/gsmd/atcmd.c
  			goto final_cb;
  		}
  
-@@ -320,14 +335,12 @@
+@@ -317,14 +332,12 @@
  		if (!strncmp(buf, "NO CARRIER", 11) ||
  		    ((g->flags & GSMD_FLAG_V0) && buf[0] == '3')) {
  			/* Part of Case 'D' */
@@ -277,57 +277,57 @@ Index: gsm/src/gsmd/atcmd.c
  			goto final_cb;
  		}
  	}
-@@ -335,21 +348,13 @@
+@@ -332,21 +345,13 @@
  	/* we reach here, if we are at an information response that needs to be
  	 * passed on */
  
--	if (mlbuf[0] == 0) {
+-	if (g->mlbuf[0] == 0) {
 -		DEBUGP("Filling mlbuf\n");
--		strncat(mlbuf, buf, sizeof(mlbuf)-1);
+-		strncat(g->mlbuf, buf, MLPARSE_BUF_SIZE-1);
 -	} else {
 -		DEBUGP("Appending buf to mlbuf\n");
--		mlbuf_len = strlen(mlbuf);
--		if (mlbuf_len+1 < sizeof(mlbuf)) {
--			mlbuf[mlbuf_len] = '\n';
--			mlbuf[mlbuf_len+1] = '\0';
--			strncat(mlbuf, buf, sizeof(mlbuf)-mlbuf_len-2);
+-		g->mlbuf_len = strlen(g->mlbuf);
+-		if (g->mlbuf_len+1 < MLPARSE_BUF_SIZE) {
+-			g->mlbuf[g->mlbuf_len] = '\n';
+-			g->mlbuf[g->mlbuf_len+1] = '\0';
+-			strncat(g->mlbuf, buf, MLPARSE_BUF_SIZE-g->mlbuf_len-2);
 -		} else {
 -			DEBUGP("response too big for mlbuf!!!\n");
 -			return -EFBIG;
 -		}
 -	}
-+	if (mlbuf_len)
-+		mlbuf[mlbuf_len ++] = '\n';
++	if (g->mlbuf_len)
++		g->mlbuf[g->mlbuf_len ++] = '\n';
 +	DEBUGP("Appending buf to mlbuf\n");
-+	if (len > sizeof(mlbuf) - mlbuf_len)
-+		len = sizeof(mlbuf) - mlbuf_len;
-+	memcpy(mlbuf + mlbuf_len, buf, len);
-+	mlbuf_len += len;
++	if (len > MLPARSE_BUF_SIZE - g->mlbuf_len)
++		len = MLPARSE_BUF_SIZE - g->mlbuf_len;
++	memcpy(g->mlbuf + g->mlbuf_len, buf, len);
++	g->mlbuf_len += len;
  	return 0;
  
  final_cb:
-@@ -366,13 +371,16 @@
+@@ -363,13 +368,16 @@
  	} else {
  		DEBUGP("Calling final cmd->cb()\n");
  		/* send final result code if there is no information response in mlbuf */
--		if (mlbuf[0] == 0)
+-		if (g->mlbuf[0] == 0)
 -			cmd->resp = buf;
 -		else
-+		if (mlbuf_len) {
- 			cmd->resp = mlbuf;
-+			mlbuf[mlbuf_len] = 0;
++		if (g->mlbuf_len) {
+ 			cmd->resp = g->mlbuf;
++			g->mlbuf[g->mlbuf_len] = 0;
 +			gsmd_log(GSMD_NOTICE,
 +					"the text discarded is %s\n", buf);
 +		} else
 +			cmd->resp = buf;
  		rc = cmd->cb(cmd, cmd->ctx, cmd->resp);
  		DEBUGP("Clearing mlbuf\n");
--		mlbuf[0] = 0;
-+		mlbuf_len = 0;
+-		g->mlbuf[0] = 0;
++		g->mlbuf_len = 0;
  	}
  
  	/* remove from list of currently executing cmds */
-@@ -385,7 +393,15 @@
+@@ -382,7 +390,15 @@
  		g->gfd_uart.when |= GSMD_FD_WRITE;
  
  	return rc;
@@ -344,7 +344,7 @@ Index: gsm/src/gsmd/atcmd.c
  
  /* callback to be called if [virtual] UART has some data for us */
  static int atcmd_select_cb(int fd, unsigned int what, void *data)
-@@ -393,6 +409,7 @@
+@@ -390,6 +406,7 @@
  	int len, rc;
  	static char rxbuf[1024];
  	struct gsmd *g = data;
@@ -352,7 +352,7 @@ Index: gsm/src/gsmd/atcmd.c
  
  	if (what & GSMD_FD_READ) {
  		memset(rxbuf, 0, sizeof(rxbuf));
-@@ -416,8 +433,12 @@
+@@ -413,8 +430,12 @@
  	if ((what & GSMD_FD_WRITE) && g->interpreter_ready) {
  		struct gsmd_atcmd *pos, *pos2;
  		llist_for_each_entry_safe(pos, pos2, &g->pending_atcmds, list) {
@@ -367,7 +367,7 @@ Index: gsm/src/gsmd/atcmd.c
  			if (rc == 0) {
  				gsmd_log(GSMD_ERROR, "write returns 0, aborting\n");
  				break;
-@@ -426,27 +447,32 @@
+@@ -423,27 +444,32 @@
  					fd, rc);
  				return rc;
  			}
@@ -414,7 +414,7 @@ Index: gsm/src/gsmd/atcmd.c
  
  	return 0;
  }
-@@ -457,10 +483,10 @@
+@@ -454,10 +480,10 @@
  {
  	int buflen = strlen(cmd);
  	struct gsmd_atcmd *atcmd;
@@ -427,7 +427,7 @@ Index: gsm/src/gsmd/atcmd.c
  	atcmd = talloc_size(__atcmd_ctx, sizeof(*atcmd)+ buflen);
  	if (!atcmd)
  		return NULL;
-@@ -471,6 +497,7 @@
+@@ -468,6 +494,7 @@
  	atcmd->ret = -255;
  	atcmd->buflen = buflen;
  	atcmd->buf[buflen-1] = '\0';
@@ -435,7 +435,7 @@ Index: gsm/src/gsmd/atcmd.c
  	atcmd->cb = cb;
  	atcmd->resp = NULL;
  	strncpy(atcmd->buf, cmd, buflen-1);
-@@ -483,8 +510,9 @@
+@@ -480,8 +507,9 @@
  {
  	DEBUGP("submitting command `%s'\n", cmd->buf);
  
@@ -446,7 +446,7 @@ Index: gsm/src/gsmd/atcmd.c
  
  	return 0;
  }
-@@ -520,9 +548,9 @@
+@@ -517,9 +545,9 @@
  	g->llp.cur = g->llp.buf;
  	g->llp.len = sizeof(g->llp.buf);
  	g->llp.cb = &ml_parse;
@@ -460,8 +460,8 @@ Index: gsm/src/gsmd/atcmd.c
 +}
 Index: gsm/src/gsmd/sms_cb.c
 ===================================================================
---- gsm.orig/src/gsmd/sms_cb.c	2007-07-31 11:44:32.000000000 +0200
-+++ gsm/src/gsmd/sms_cb.c	2007-07-31 11:46:44.000000000 +0200
+--- gsm.orig/src/gsmd/sms_cb.c	2007-07-31 13:58:37.000000000 +0200
++++ gsm/src/gsmd/sms_cb.c	2007-07-31 14:23:32.000000000 +0200
 @@ -91,9 +91,6 @@
  	if (!ucmd)
  		return -ENOMEM;
@@ -503,8 +503,8 @@ Index: gsm/src/gsmd/sms_cb.c
  
 Index: gsm/src/gsmd/usock.c
 ===================================================================
---- gsm.orig/src/gsmd/usock.c	2007-07-31 11:44:32.000000000 +0200
-+++ gsm/src/gsmd/usock.c	2007-07-31 11:46:44.000000000 +0200
+--- gsm.orig/src/gsmd/usock.c	2007-07-31 13:58:37.000000000 +0200
++++ gsm/src/gsmd/usock.c	2007-07-31 14:23:32.000000000 +0200
 @@ -75,7 +75,7 @@
  	ucmd->hdr.version = GSMD_PROTO_VERSION;
  	ucmd->hdr.msg_type = GSMD_MSG_PASSTHROUGH;
@@ -556,33 +556,33 @@ Index: gsm/src/gsmd/usock.c
 +	unsigned char ch1, ch2;
 +	char tmp[2];
 +	int shift = 0;
-+	
++
 +	*dest = '\0';
 +
 +	for ( i=0; i<strlen(src); i++ ) {
-+		
++
 +		ch1 = src[i] & 0x7F;
 +		ch1 = ch1 >> shift;
 +		ch2 = src[(i+1)] & 0x7F;
-+		ch2 = ch2 << (7-shift); 
++		ch2 = ch2 << (7-shift);
 +
 +		ch1 = ch1 | ch2;
-+		
++
 +		j = strlen(dest);
-+ 		sprintf(tmp, "%X", (ch1 >> 4));	
++ 		sprintf(tmp, "%X", (ch1 >> 4));
 +		dest[j++] = tmp[0];
 +		sprintf(tmp, "%X", (ch1 & 0x0F));
-+		dest[j++] = tmp[0];		
-+		dest[j++] = '\0';		
-+			
++		dest[j++] = tmp[0];
++		dest[j++] = '\0';
++
 +		shift++;
-+		
++
 +		if ( 7 == shift ) {
 +			shift = 0;
 +			i++;
 +		}
-+	}			
-+	
++	}
++
 +	return 0;
 +}
 +
@@ -706,7 +706,7 @@ Index: gsm/src/gsmd/usock.c
 +	case GSMD_SMS_SEND:
 +		if (len < sizeof(*gph) + sizeof(*gss))
 +			return -EINVAL;
-+		gss = (struct gsmd_sms_send *) ((void *) gph + sizeof(*gph));	
++		gss = (struct gsmd_sms_send *) ((void *) gph + sizeof(*gph));
 +
 +		if (gu->gsmd->flags & GSMD_FLAG_SMS_FMT) {
 +			atcmd_len = sprintf(buf, "AT+CMGS=\"%s\"\n%.*s",
@@ -755,8 +755,8 @@ Index: gsm/src/gsmd/usock.c
  
 Index: gsm/src/gsmd/vendor_ti.c
 ===================================================================
---- gsm.orig/src/gsmd/vendor_ti.c	2007-07-31 11:46:28.000000000 +0200
-+++ gsm/src/gsmd/vendor_ti.c	2007-07-31 11:46:44.000000000 +0200
+--- gsm.orig/src/gsmd/vendor_ti.c	2007-07-31 13:58:37.000000000 +0200
++++ gsm/src/gsmd/vendor_ti.c	2007-07-31 14:23:32.000000000 +0200
 @@ -277,7 +277,7 @@
  
  static int ticalypso_initsettings(struct gsmd *g)
@@ -768,8 +768,8 @@ Index: gsm/src/gsmd/vendor_ti.c
  	/* use +CTZR: to report time zone changes */
 Index: gsm/src/libgsmd/libgsmd_sms.c
 ===================================================================
---- gsm.orig/src/libgsmd/libgsmd_sms.c	2007-07-31 11:44:32.000000000 +0200
-+++ gsm/src/libgsmd/libgsmd_sms.c	2007-07-31 11:46:44.000000000 +0200
+--- gsm.orig/src/libgsmd/libgsmd_sms.c	2007-07-31 13:58:37.000000000 +0200
++++ gsm/src/libgsmd/libgsmd_sms.c	2007-07-31 14:23:32.000000000 +0200
 @@ -83,19 +83,33 @@
  	return 0;
  }
@@ -818,4 +818,3 @@ Index: gsm/src/libgsmd/libgsmd_sms.c
  		const struct lgsm_sms_write *sms_write)
  {
  	/* FIXME: only support PDU mode */
-
