@@ -1,16 +1,16 @@
 DESCRIPTION = "Portable Puzzle Collection"
 LICENSE = "MIT"
 SECTION = "x11"
-DEPENDS = "gtk+ gconf intltool-native librsvg"
+DEPENDS = "gtk+ gconf intltool-native librsvg libowl"
 PV = "0.1+svn${SRCDATE}"
-PR = "r4"
+PR = "r5"
 
 inherit autotools pkgconfig
 
 SRC_URI = "svn://svn.o-hand.com/repos/;module=oh-puzzles;proto=http"
 S = "${WORKDIR}/${PN}"
 
-do_install_append () {
+do_install_append() {
     mv ${D}${bindir} ${D}/usr/games
 
     install -d ${D}/${datadir}/applications/
