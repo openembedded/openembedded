@@ -1,9 +1,8 @@
 #/bin/sh
 
-# This script takes the last 1000 revs and writes a ChangeLog
-
 mkdir logs
 
+export LOGNAME=Changelog.`date -u "+%Y%m%d"`
 export REV_NOW=`mtn automate heads |head -n1`
 
 for i in `mtn log --brief --no-graph --no-merges --from l:"1 week ago" --to ${REV_NOW}| awk '{print $2 ":" $1}'` ; do \
@@ -17,9 +16,9 @@ done
 
 cd logs
 for i in * ; do \
-        echo $i: >> ../ChangeLog
-        cat $i >> ../ChangeLog
-        echo >> ../ChangeLog
+        echo $i: >> ../${LOGNAME}
+        cat $i >> ../${LOGNAME}
+        echo >> ../${LOGNAME}
 done
 cd ..
 
@@ -30,13 +29,13 @@ wget "http://bugs.openembedded.org/buglist.cgi?bug_file_loc=&bug_file_loc_type=a
 NEW_BUGS="`cat logs/new-bugs.csv | wc -l | tr -d " "`"
 RESOLVED_BUGS="`cat logs/resolved-bugs.csv | wc -l | tr -d " "`"
 
-echo -e "\n\nBugs fixed:" >> ChangeLog
-cat logs/resolved-bugs.csv | awk -F, '{print $1 " " $7 "\t " $8}' | sed s:\"::g >> ChangeLog
+echo -e "\n\nBugs fixed:" >> ${LOGNAME}
+cat logs/resolved-bugs.csv | awk -F, '{print $1 " " $7 "\t " $8}' | sed s:\"::g >> ${LOGNAME}
 
-echo -e "\n\nBugs opened:" >> ChangeLog
-cat logs/new-bugs.csv | awk -F, '{print $1 " " $7 "\t " $8}' | sed s:\"::g >> ChangeLog
+echo -e "\n\nBugs opened:" >> ${LOGNAME}
+cat logs/new-bugs.csv | awk -F, '{print $1 " " $7 "\t " $8}' | sed s:\"::g >> ${LOGNAME}
 
-echo -e "\nIn total $NEW_BUGS bugs have been created and $RESOLVED_BUGS bugs were closed." >> ChangeLog
+echo -e "\nIn total $NEW_BUGS bugs have been created and $RESOLVED_BUGS bugs were closed." >> ${LOGNAME}
 
 rm -Rf logs 
 
