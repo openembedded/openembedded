@@ -14,8 +14,7 @@ RRECOMMENDS = "gst-plugin-mad \
         gst-plugin-ivorbis \
         gst-plugin-tcp"
 
-PV = "0.1+svn${SRCDATE}"
-
+PV = "0.2+svn${SRCDATE}"
 
 inherit gpe autotools
 
