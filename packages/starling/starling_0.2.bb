@@ -3,7 +3,8 @@ SECTION = "gpe/multimedia"
 PRIORITY = "optional"
 LICENSE = "GPL"
 DEPENDS = "gtk+ libgpewidget gstreamer gst-plugins-good gst-plugins-bad esound sqlite3 libsoup"
-RDEPENDS = "pulseaudio-bin \
+
+RDEPENDS = "esd \
         gst-plugin-audioconvert \
         gst-plugin-esd \
         gst-plugin-typefindfunctions \
