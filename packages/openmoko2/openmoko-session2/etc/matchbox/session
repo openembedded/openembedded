@@ -7,5 +7,5 @@ openmoko-dialer &
 
 matchbox-window-manager -use_titlebar yes -use_desktop_mode decorated -theme openmoko-standard-2 -use_cursor $SHOWCURSOR $@ &
 
-exec matchbox-panel-2 --start-applets showdesktop --end-applets clock,battery,systray,startup --titlebar
-
+exec matchbox-panel-2 --start-applets showdesktop,systray,startup \
+  --end-applets openmoko-panel-battery,openmoko-panel-gsm,openmoko-panel-gps,openmoko-panel-usb,openmoko-panel-bt,openmoko-panel-clock --titlebar
