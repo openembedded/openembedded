@@ -6,6 +6,9 @@ SECTION = "x11/wm"
 SRC_URI = "http://projects.o-hand.com/matchbox/sources/matchbox-themes-extra/${PV}/matchbox-themes-extra-${PV}.tar.bz2"
 S = "${WORKDIR}/matchbox-themes-extra-${PV}"
 
+PR = "r1"
+PACKAGE_ARCH = "all"
+
 inherit autotools  pkgconfig
 
 # split into several packages plus one meta package

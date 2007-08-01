@@ -1,7 +1,7 @@
 DESCRIPTION = "The OpenMoko Dialer"
 SECTION = "openmoko/pim"
 DEPENDS = "libmokogsmd2 libmokoui2 libmokojournal2"
-PV = "0.1.0+svn${SRCDATE}"
+PV = "0.1.0+svnr${SRCREV}"
 PR = "r1"
 
 inherit openmoko2

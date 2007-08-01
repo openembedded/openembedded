@@ -1,9 +1,7 @@
-DESCRIPTION = "The OpenMoko RSS Reader"
-SECTION = "openmoko/applications"
+DESCRIPTION = "The OpenMoko Feed Reader"
+SECTION = "openmoko/apps"
 DEPENDS += "libmrss check webkit"
-
-PV = "0.0.1+svn${SRCDATE}"
+PV = "0.0.1+svnr${SRCREV}"
 PR = "r0"
 
 inherit openmoko2
-

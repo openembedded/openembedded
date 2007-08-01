@@ -1,10 +1,6 @@
-DESCRIPTION = "Shows the GSM status in the OpenMoko panel"
-PV = "0.0.1+svn${SRCDATE}"
-PR = "r1"
-
-DEPENDS_append = " libgsmd"
+DESCRIPTION = "Shows the GSM / GPRS status in the OpenMoko panel"
+DEPENDS = "libgsmd"
+PV = "0.1.0+svnr${SRCREV}"
+PR = "r0"
 
 inherit openmoko-panel-plugin
-
-FILES_${PN} += "${bindir}/${PN}"
-
