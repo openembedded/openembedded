@@ -3,7 +3,9 @@ DESCRIPTION = "Sato Icon Theme"
 LICENSE = "CC-BY-SA3"
 DEPENDS = ""
 
-SRC_URI = "http://pokylinux.org/releases/sato/sato-icon-theme-i${PV}.tar.gz"
+PACKAGE_ARCH = "all"
+
+SRC_URI = "http://pokylinux.org/releases/sato/sato-icon-theme-${PV}.tar.gz"
 
 inherit autotools pkgconfig
 
