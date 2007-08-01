@@ -4,7 +4,7 @@ LICENSE = "GPL"
 SECTION = "bootloader"
 PRIORITY = "optional"
 PV = "1.2.0+svn${SRCDATE}"
-PR = "r10"
+PR = "r11"
 
 PROVIDES = "virtual/bootloader"
 S = "${WORKDIR}/git"
@@ -66,10 +66,10 @@ do_deploy () {
 	install -d ${DEPLOY_DIR_IMAGE}
 	for mach in ${UBOOT_MACHINES}
 	do
-		install ${S}/u-boot_${mach}.bin \
+		install -m 0644 ${S}/u-boot_${mach}.bin \
 		    ${DEPLOY_DIR_IMAGE}/u-boot-${mach}-${PR}.bin
 		if [ -f ${S}/lowlevel_foo_${mach}.bin ]; then
-			install ${S}/lowlevel_foo_${mach}.bin \
+			install -m 0644 ${S}/lowlevel_foo_${mach}.bin \
 			    ${DEPLOY_DIR_IMAGE}/lowlevel_foo-${mach}-${PR}.bin
 		fi
 	done

@@ -1,18 +1,19 @@
-LICENSE = "GPL"
 SECTION = "x11/base"
-DESCRIPTION = "GTK theme engine SATO from O-Hand"
+DESCRIPTION = "Sato theme engine for GTK"
+LICENSE = "LGPL"
 DEPENDS = "gtk+"
-
-DEFAULT_PREFERENCE = "-1"
-
-PV = "0.1+svn${SRCDATE}"
 PR = "r0"
 
-S = "${WORKDIR}/gtk-engine"
+SRC_URI = "http://pokylinux.org/releases/sato/sato-engine-0.1.tar.gz"
+S = "${WORKDIR}/sato-engine-0.1"
 
-SRC_URI = "svn://svn.o-hand.com/repos/sato/trunk;module=gtk-engine;proto=http"
+inherit autotools  pkgconfig
 
-inherit autotools pkgconfig
+do_configure_prepend() {
+	for i in `ls gtk-common`; do
+		ln -sf ../gtk-common/$i gtk2-engine/$i
+	done
+}
 
 PACKAGES += "gtk-theme-sato"
 FILES_${PN} = "${libdir}/gtk-2.0/*/engines/*.so "

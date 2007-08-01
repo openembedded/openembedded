@@ -1,7 +1,7 @@
 DESCRIPTION = "Edje-Editor is just that."
 LICENSE = "MIT"
 DEPENDS = "etk"
-PV = "0.0.0+svn${SRCDATE}"
+PV = "0.0.0+cvs${SRCDATE}"
 PR = "r0"
 
 inherit e
