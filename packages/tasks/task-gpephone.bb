@@ -1,5 +1,5 @@
 DESCRIPTION = "Task packages for GPE Palmtop Environment Phone Edition"
-PR = "r5"
+PR = "r6"
 LICENSE = "MIT"
 ALLOW_EMPTY = "1"
 
@@ -80,16 +80,13 @@ RDEPENDS_gpephone-task-pim = "\
 RDEPENDS_gpephone-task-settings = "\
     gpe-su \
     gpe-conf \
-    gpe-clock \
     gpe-mixer \
     gpe-taskmanager \
-    keylaunch \
-    minilite"
+    minilite \
+    machined"
 
 RDEPENDS_gpephone-task-apps = "\
-    gpe-watch \
     gpe-what \
-    matchbox-panel-hacks \
     gpe-scap \
     gpe-windowlist"
 
