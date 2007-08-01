@@ -1,6 +1,6 @@
 SECTION = "openmoko/libs"
 DEPENDS = "gtk+"
-PV = "0.1.0+svn${SRCDATE}"
+PV = "0.1.0+svnr${SRCREV}"
 PR = "r1" 
 
 inherit openmoko2

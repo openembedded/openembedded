@@ -892,6 +892,13 @@ python () {
     base_after_parse(d)
 }
 
+# Remove me when we switch to bitbake 1.8.8
+def base_get_srcrev(d):
+    import bb
+    
+    if bb.fetch.get_srcrev:
+        return bb.fetch.get_srcrev(d)
+    return "NOT IMPLEMENTED"
 
 # Patch handling
 inherit patch
