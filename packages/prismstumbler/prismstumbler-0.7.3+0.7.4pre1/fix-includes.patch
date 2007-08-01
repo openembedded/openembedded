@@ -1,0 +1,11 @@
+--- src/daemon/gpsctl.c~	2007-08-01 19:09:31.000000000 +0200
++++ src/daemon/gpsctl.c	2007-08-01 19:09:31.000000000 +0200
+@@ -3,6 +3,7 @@
+  *  Alberto García Hierro <skyhusker@rm-fr.net>
+  */
+ 
++#include <stdint.h>
+ #include <gps.h>
+ #include "gpsctl.h"
+ 
+ 
