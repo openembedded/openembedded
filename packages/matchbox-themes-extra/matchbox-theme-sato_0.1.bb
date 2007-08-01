@@ -3,6 +3,8 @@ LICENSE = "CC-BY-SA3"
 DEPENDS = "matchbox-wm"
 SECTION = "x11/wm"
 
+PACKAGE_ARCH = "all"
+
 SRC_URI = "http://pokylinux.org/releases/sato/matchbox-theme-sato-0.1.tar.gz"
 
 inherit autotools pkgconfig
