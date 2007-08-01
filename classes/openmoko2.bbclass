@@ -27,5 +27,5 @@ S = "${WORKDIR}/${PN}"
 
 FILES_${PN} += "${datadir}/icons"
 
-# until we have SRCREV computing
-SRCREV ?= "0${SRCDATE}"
+# SVNREV = "r${SRCREV}"
+SVNREV = "${SRCDATE}"

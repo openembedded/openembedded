@@ -1,7 +1,7 @@
 DESCRIPTION = "The OpenMoko address book"
 SECTION = "openmoko/pim"
 RDEPENDS = "libedata-book"
-PV = "0.1.0+svnr${SRCREV}"
+PV = "0.1.0+svn${SVNREV}"
 PR = "r2"
 
 inherit openmoko2
