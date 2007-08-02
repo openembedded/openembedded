@@ -1,6 +1,6 @@
 DEFAULT_PREFERENCE = "-1"
 
-include xcb-util.git
+include xcb-util.inc
 PV = "0.2+git"
 PR = "r0"
 
