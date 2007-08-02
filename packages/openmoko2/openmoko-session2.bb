@@ -3,7 +3,7 @@ LICENSE = "GPL"
 SECTION = "x11"
 RDEPENDS = "matchbox-common matchbox-applet-startup-monitor matchbox-panel-2"
 RCONFLICTS = "openmoko-session"
-PR = "r22"
+PR = "r23"
 
 SRC_URI = "file://etc"
 S = ${WORKDIR}
