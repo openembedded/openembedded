@@ -6,7 +6,7 @@ COMPATIBLE_MACHINE = "(c7x0|hx4700)"
 SECTION = "x11/base"
 LICENSE = "MIT"
 
-DEPENDS = "tslib xproto libxdmcp xextproto xtrans libxau virtual/libx11 libxext libxrandr fixesproto damageproto libxfont resourceproto compositeproto xcalibrateext recordproto videoproto scrnsaverproto"
+DEPENDS = "tslib xproto libxdmcp xextproto xtrans libxau virtual/libx11 libxext libxrandr fixesproto damageproto libxfont resourceproto compositeproto libxcalibrate recordproto videoproto scrnsaverproto"
 
 PROVIDES = "virtual/xserver"
 RPROVIDES = "virtual/xserver"
