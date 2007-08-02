@@ -1,4 +1,6 @@
 include libxcb.inc
-PR = "r2"
+PR = "r0"
+
+DEPENDS += "libpthread-stubs"
 
 PACKAGES =+ "libxcb-xinerama"
