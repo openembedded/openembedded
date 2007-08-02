@@ -1,9 +1,8 @@
 LICENSE = "MIT"
-DEPENDS = "compositeproto damageproto fixesproto recordproto resourceproto scrnsaverproto videoproto xextproto xproto \
-	libxau libxext libxdmcp libxfont libxrandr tslib virtual/libsdl virtual/libx11 xtrans"
+DEPENDS = "compositeproto damageproto fixesproto recordproto resourceproto scrnsaverproto xineramaproto videoproto xextproto xproto \
+	libxau libxext libxdmcp libxfont libxrandr tslib virtual/libx11 xtrans"
 
 PROVIDES = "virtual/xserver"
-RPROVIDES = "virtual/xserver"
 PACKAGES =+ "xserver-kdrive-fbdev \
              xserver-kdrive-sdl \
              xserver-kdrive-fake \
@@ -106,7 +105,9 @@ KDRIVE_COMMON_PATCHES = " \
 
 SRC_URI_append_mnci   = " file://onlyfb.patch;patch=1"
 SRC_URI_append_poodle = " file://xserver-kdrive-poodle.patch;patch=1"
-PACKAGE_ARCH_poodle = "poodle"
+SRC_URI_append_qemux86 = " file://xserver-kdrive-poodle.patch;patch=1"
+PACKAGE_ARCH_poodle = "${MACHINE_ARCH}"
+PACKAGE_ARCH_qemux86 = "${MACHINE_ARCH}"
 
 inherit autotools pkgconfig
 
@@ -118,7 +119,11 @@ EXTRA_OECONF = "--enable-composite --enable-kdrive \
                 --disable-xorg --disable-xorgcfg \
                 --disable-xkb --disable-xnest --disable-xvfb \
                 --disable-xevie --disable-xprint --disable-xtrap \
-                --disable-dmx ${W100_OECONF} ${IMAGEON_OECONF} \
+                --disable-dmx \
                 --with-default-font-path=built-ins \
                 --enable-tslib --enable-xcalibrate \
                 ac_cv_file__usr_share_X11_sgml_defs_ent=no"
+
+do_configure_prepend() {
+    sed -i -e 's/tslib-0.0/tslib-1.0/' ${S}/configure.ac
+}

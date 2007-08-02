@@ -2,12 +2,11 @@ DEFAULT_PREFERENCE = "-1"
 
 DESCRIPTION = "Xlib/XCB: Xlib with XCB transport"
 SECTION = "x11/libs"
-PRIORITY = "optional"
 LICENSE = "XFree86"
-
 DEPENDS = "libxcb xproto xextproto libxau xtrans libxdmcp xcmiscproto xf86bigfontproto kbproto inputproto bigreqsproto util-macros"
 PROVIDES = "virtual/libx11"
 RPROVIDES = "virtual/libx11"
+PR = "r1"
 
 FILES_${PN} += "${datadir}/X11/XKeysymDB ${datadir}/X11/XErrorDB"
 FILES_${PN}-locale += "${datadir}/X11/locale"
