@@ -1,4 +1,4 @@
-PR = "r0"
+PR = "r1"
 
 export IMAGE_BASENAME = "gpephone-image"
 
@@ -20,7 +20,7 @@ GPE_EXTRA_INSTALL += "${GPE_BIGFLASH_INSTALL}"
 
 XSERVER ?= "xserver-kdrive-fbdev"
 
-DEPENDS = "${MACHINE_TASK_PROVIDER} task-gpephone"
+DEPENDS = "${MACHINE_TASK_PROVIDER} task-gpephone virtual/xserver"
 RDEPENDS = "${PACKAGE_INSTALL}"
 
 export PACKAGE_INSTALL = "\
