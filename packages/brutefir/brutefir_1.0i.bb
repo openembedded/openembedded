@@ -1,7 +1,7 @@
 DESCRIPTION = "BruteFIR is a software convolution engine, a program for applying long FIR filters to multi-channel digital audio, either offline or in realtime."
 LICENSE = "GPLv2"
 
-DEPENDS = "fftw fftwf fftwl"
+DEPENDS = "alsa-lib fftw fftwf fftwl"
 
 PR = "r1"
 
