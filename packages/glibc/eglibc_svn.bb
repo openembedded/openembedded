@@ -2,7 +2,7 @@ require glibc.inc
 
 DEFAULT_PREFERENCE = "-1"
 
-PV = "2.6+svnr${SRCREV}"
+PV = "2.6+svn${SRCDATE}"
 SRC_URI = "svn://svn.eglibc.org;module=trunk \
           "
 S = "${WORKDIR}/trunk/libc"
