@@ -1,6 +1,5 @@
 SECTION = "x11/base"
 LICENSE = "Xorg"
-RPROVIDES = "virtual/xserver"
 PROVIDES = "virtual/xserver"
 PR = "r3"
 PV = "6.8.1+cvs${SRCDATE}"
