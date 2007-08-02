@@ -3,7 +3,7 @@ SECTION = "libs"
 PRIORITY = "optional"
 DEPENDS = "libxml2"
 LICENSE = "MIT"
-PR = "r2"
+PR = "r3"
 
 SRC_URI = "ftp://xmlsoft.org/libxml2/libxslt-${PV}.tar.gz \
            file://destdir.patch;patch=1"
@@ -11,7 +11,7 @@ S = "${WORKDIR}/libxslt-${PV}"
 
 inherit autotools pkgconfig
 
-EXTRA_OECONF = "--without-python --without-debug --without-mem-debug --without-crypto"
+EXTRA_OECONF = "--without-python --without-plugins --without-debug --without-mem-debug --without-crypto"
 
 xsltheaders = "attributes.h documents.h extensions.h extra.h functions.h imports.h \
                keys.h namespaces.h numbersInternals.h pattern.h preproc.h security.h \
