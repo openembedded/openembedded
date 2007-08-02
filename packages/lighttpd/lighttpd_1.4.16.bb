@@ -1,10 +1,9 @@
 DESCRIPTION = "Web server"
 SECTION = "net"
-DEPENDS = "sqlite3 libpcre libxml2"
 LICENSE = "BSD"
-PR = "r6"
+DEPENDS = "libpcre"
 
-SRC_URI = "http://www.lighttpd.net/download/lighttpd-1.4.13.tar.gz \
+SRC_URI = "http://www.lighttpd.net/download/lighttpd-${PV}.tar.gz \
 	   file://configure.in.patch;patch=1 \
 	   file://src-server.c.patch;patch=1 \
 	   file://index.html \
@@ -16,8 +15,8 @@ EXTRA_OECONF="--without-bzip2 \
 		--without-lua \
 		--without-memcache \
 		--with-pcre \
-		--with-webdav-props \
-		--with-webdav-locks \
+		--without-webdav-props \
+		--without-webdav-locks \
 		--without-openssl \
 		--disable-nls \
 		--disable-static"
