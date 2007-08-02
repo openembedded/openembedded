@@ -1,7 +1,8 @@
 DESCRIPTION = "Web server"
 SECTION = "net"
 LICENSE = "BSD"
-PR = "r1"
+DEPENDS = "libpcre"
+PR = "r2"
 
 SRC_URI = "http://www.lighttpd.net/download/lighttpd-1.4.15.tar.gz \
 	   file://configure.in.patch;patch=1 \
@@ -14,7 +15,7 @@ EXTRA_OECONF="--without-bzip2 \
 		--without-ldap \
 		--without-lua \
 		--without-memcache \
-		--without-pcre \
+		--with-pcre \
 		--without-webdav-props \
 		--without-webdav-locks \
 		--without-openssl \
