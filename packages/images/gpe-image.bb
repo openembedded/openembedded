@@ -1,5 +1,5 @@
 
-PR = "r21"
+PR = "r22"
 
 export IMAGE_BASENAME = "gpe-image"
 
@@ -23,7 +23,14 @@ GPE_EXTRA_INSTALL += "${GPE_BIGFLASH_INSTALL}"
 
 XSERVER ?= "xserver-kdrive-fbdev"
 
-DEPENDS = "${MACHINE_TASK_PROVIDER} task-gpe-base task-gpe-apps task-gpe-pim task-gpe-settings task-gpe-games"
+DEPENDS = "${MACHINE_TASK_PROVIDER} \
+           task-gpe-base \
+           task-gpe-apps \
+           task-gpe-pim \
+           task-gpe-settings \
+           task-gpe-games \
+           virtual/xserver"
+
 RDEPENDS = "${PACKAGE_INSTALL}"
 
 export PACKAGE_INSTALL = "\
