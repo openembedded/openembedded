@@ -15,6 +15,7 @@ inherit autotools pkgconfig
 
 do_configure() {
 	gnu-configize
+	libtoolize --force
 	oe_runconf
 }
 
