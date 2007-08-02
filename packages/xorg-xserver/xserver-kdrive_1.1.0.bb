@@ -2,7 +2,6 @@ LICENSE = "MIT"
 DEPENDS = "tslib xproto libxdmcp xextproto xtrans libxau virtual/libx11 libxext libxrandr fixesproto damageproto libxfont resourceproto compositeproto calibrateproto recordproto videoproto scrnsaverproto"
 
 PROVIDES = "virtual/xserver"
-# RPROVIDES = "virtual/xserver"
 PACKAGES =+ "xserver-kdrive-fbdev xserver-kdrive-fake xserver-kdrive-xephyr"
 SECTION = "x11/base"
 DESCRIPTION = "X server from freedesktop.org"

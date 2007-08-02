@@ -5,7 +5,6 @@ COMPATIBLE_MACHINE = "c7x0"
 DEPENDS += "libxkbfile libxcalibrate"
 
 PROVIDES = "virtual/xserver"
-RPROVIDES = "virtual/xserver"
 
 PE = "1"
 PR = "r0"

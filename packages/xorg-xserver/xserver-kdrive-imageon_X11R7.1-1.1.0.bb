@@ -9,7 +9,6 @@ LICENSE = "MIT"
 DEPENDS = "tslib xproto libxdmcp xextproto xtrans libxau virtual/libx11 libxext libxrandr fixesproto damageproto libxfont resourceproto compositeproto libxcalibrate recordproto videoproto scrnsaverproto"
 
 PROVIDES = "virtual/xserver"
-RPROVIDES = "virtual/xserver"
 
 PR = "r3"
 
