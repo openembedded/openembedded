@@ -1,5 +1,13 @@
-require xtscal.inc
+LICENSE = "GPL"
+DESCRIPTION = "Touchscreen calibration utility"
+SECTION = "x11/base"
 
-PR = "r6"
+DEPENDS = "virtual/libx11 libxft libxcalibrate"
 
-SRC_URI += "file://xtscal-cxk.patch;patch=1"
+PR = "r7"
+
+SRC_URI = "${GPE_MIRROR}/xtscal-${PV}.tar.bz2 \
+           file://change-cross.patch;patch=1 \
+	   file://cleanup.patch;patch=1"
+
+inherit autotools
