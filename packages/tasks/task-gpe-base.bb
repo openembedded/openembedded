@@ -1,11 +1,10 @@
 DESCRIPTION = "Base task package for GPE Palmtop Environment"
-PR = "r5"
+PR = "r6"
 LICENSE = "MIT"
 ALLOW_EMPTY = "1"
 
 RDEPENDS = "\
-    diet-x11 \
-    virtual/xserver \
+    virtual/libx11 \
     gpe-bootsplash \
     bluez-utils-dbus \
     matchbox \
