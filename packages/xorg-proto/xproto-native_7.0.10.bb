@@ -1,9 +1,7 @@
-DESCRIPTION = "X protocol headers"
-SECTION = "x11/libs"
-LICENSE= "MIT-X"
-PE = "1"
+require xproto_${PV}.bb
 
-SRC_URI = "${XORG_MIRROR}/individual/proto/xproto-${PV}.tar.bz2"
-S = "${WORKDIR}/xproto-${PV}"
+PR = "r1"
 
-inherit native autotools pkgconfig
+XORG_PN = "xproto"
+
+inherit native

@@ -2,7 +2,7 @@ DESCRIPTION = "OpenMoko: Tasks for the OpenMoko Linux Distribution"
 SECTION = "openmoko/base"
 LICENSE = "MIT"
 PROVIDES = "task-openmoko-everything"
-PR = "r50"
+PR = "r53"
 
 ALLOW_EMPTY = "1"
 PACKAGE_ARCH = "all"
@@ -12,11 +12,10 @@ PACKAGES = "\
   task-openmoko-ui \
   task-openmoko-base \
   task-openmoko-phone \
-  task-openmoko-finger \
   task-openmoko-pim \
   task-openmoko-net \
   \
-  task-openmoko-demo \
+  task-openmoko-games \
   task-openmoko-examples \
   task-openmoko-debug \
   task-openmoko-native-sdk \
@@ -67,7 +66,7 @@ RDEPENDS_task-openmoko-ui = "\
   settings-daemon \
   openmoko-session2 \
   openmoko-theme-standard2 \
-  openmoko-icon-theme-standard \
+  openmoko-icon-theme-standard2 \
   openmoko-sound-system \
   openmoko-sound-theme-standard \
 #  psplash \
@@ -86,6 +85,7 @@ RDEPENDS_task-openmoko-base = "\
   matchbox-keyboard \
   matchbox-stroke \
   openmoko-keyboard \
+#  openmoko-panel-mainmenu \
   openmoko-panel-battery \
   openmoko-panel-bt \
   openmoko-panel-clock \
@@ -106,19 +106,12 @@ RDEPENDS_task-openmoko-phone = "\
 "
 
 #
-# task-openmoko-finger
-#
-DESCRIPTION_task-openmoko-finger = "OpenMoko: Finger UI Applications"
-RDEPENDS_task-openmoko-finger = "\
-#  openmoko-calculator \
-"
-
-#
 # task-openmoko-pim
 #
 DESCRIPTION_task-openmoko-pim = "OpenMoko: PIM Applications"
 RDEPENDS_task-openmoko-pim = "\
   eds-dbus \
+  openmoko-calculator2 \
   openmoko-contacts2 \
   openmoko-today2 \
 #  openmoko-messages \
@@ -132,6 +125,14 @@ DESCRIPTION_task-openmoko-net = "OpenMoko: Linux Advanced Networking"
 RDEPENDS_task-openmoko-net = "\
   bluez-utils \
   bridge-utils \
+"
+
+#
+# task-openmoko-games
+#
+DESCRIPTION_task-openmoko-games = "OpenMoko: Games"
+RDEPENDS_task-openmoko-games = "\
+  oh-puzzles \
 "
 
 #

@@ -7,7 +7,7 @@ DISTRO_NAME = "Angstrom"
 
 TARGET_VENDOR = "-angstrom"
 
-# Can be "glibc" and "uclibc"
+# Can be "glibc", "eglibc" or "uclibc"
 ANGSTROM_MODE ?= "glibc"
 
 DEPLOY_DIR = "${TMPDIR}/deploy/${ANGSTROM_MODE}"

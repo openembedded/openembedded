@@ -1,11 +1,9 @@
 require xorg-lib-common.inc
 
-DESCRIPTION = "Xinerama library"
-PRIORITY = "optional"
+DESCRIPTION = "X11 Xinerama extension library"
+DEPENDS += "libxext xineramaproto"
+PROVIDES = "xinerama"
+PR = "r3"
 PE = "1"
 
-DEPENDS += " virtual/libx11 libxext xextproto xineramaproto"
-PROVIDES = "xinerama"
-
 XORG_PN = "libXinerama"
-

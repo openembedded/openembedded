@@ -26,3 +26,6 @@ SRC_URI := "${OPENMOKO_MIRROR}/src/target/${OPENMOKO_RELEASE}/${SUBDIR};module=$
 S = "${WORKDIR}/${PN}"
 
 FILES_${PN} += "${datadir}/icons"
+
+# SVNREV = "r${SRCREV}"
+SVNREV = "${SRCDATE}"

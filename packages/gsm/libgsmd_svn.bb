@@ -1,10 +1,10 @@
 DESCRIPTION = "GSM libraries and daemons implementing the 07.10 specification"
 HOMEPAGE = "http://www.openmoko.org"
-LICENSE = "GPL"
+LICENSE = "GPL LGPL"
 SECTION = "libs/gsm"
 PROVIDES += "gsmd"
-PV = "0.0+svn${SRCDATE}"
-PR = "r15"
+PV = "0.1+svn${SRCDATE}"
+PR = "r16"
 
 SRC_URI = "svn://svn.openmoko.org/trunk/src/target;module=gsm;proto=http \
            file://gsmd \
@@ -16,7 +16,6 @@ SRC_URI = "svn://svn.openmoko.org/trunk/src/target;module=gsm;proto=http \
            file://mlbuf-in-gsmd-struct.patch;patch=1 \
            file://libgsmd-tool-fix.patch;patch=1 \
            file://sms-hacks.patch;patch=1"
-
 S = "${WORKDIR}/gsm"
 
 inherit autotools pkgconfig update-rc.d
@@ -43,4 +42,3 @@ FILES_gsmd = "${sbindir}/gsmd ${sysconfdir}"
 FILES_gsmd-plugins = "${libdir}/gsmd/*.so*"
 
 PACKAGES_DYNAMIC = "libgsmd* gsmd"
-

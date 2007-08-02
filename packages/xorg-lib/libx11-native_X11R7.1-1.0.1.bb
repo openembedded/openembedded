@@ -12,7 +12,7 @@ SRC_URI = "${XORG_MIRROR}/X11R7.1/src/lib/libX11-${PV}.tar.bz2"
 SRC_URI += "file://makekeys.diff;patch=1"
 S = "${WORKDIR}/libX11-${PV}"
 
-inherit native autotools pkgconfig
+inherit autotools pkgconfig native
 
 EXTRA_OECONF="--enable-malloc0returnsnull"
 
@@ -23,3 +23,5 @@ do_compile() {
 	)
 	oe_runmake
 }
+
+

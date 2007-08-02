@@ -4,13 +4,13 @@ DESCRIPTION = "GPE calendar"
 SECTION = "gpe"
 LICENSE = "GPL"
 
-DEPENDS = "libhandoff libsoup libeventdb libschedule libxsettings libxsettings-client libgpepimc libdisplaymigration libgpevtype"
+DEPENDS = "libhandoff libsoup libeventdb libschedule libxsettings libxsettings-client libgpepimc libdisplaymigration libgpevtype libsoundgen"
 RDEPENDS = "gpe-icons"
 
 inherit autotools gpe
 
 
-PV = "0.90+svn${SRCDATE}"
+PV = "0.91+svn${SRCDATE}"
 PR = "r0"
 
 SRC_URI = "${GPE_SVN}"
