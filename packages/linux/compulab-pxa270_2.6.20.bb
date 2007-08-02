@@ -1,3 +1,5 @@
+require linux.inc
+
 SECTION = "kernel"
 DESCRIPTION = "Linux kernel for the Compulab PXA270 system"
 LICENSE = "GPL"
@@ -29,11 +31,7 @@ KERNEL_IMAGETYPE = "zImage"
 
 FILES_kernel-image = ""
 
-do_configure_prepend() {
-	install -m 0644 ${WORKDIR}/defconfig ${S}/.config
-}
-
-do_deploy() {
+do_deploy_append() {
 	KNAME=${DEPLOY_DIR_IMAGE}/${KERNEL_IMAGETYPE}-${MACHINE}.bin
         install -d ${DEPLOY_DIR_IMAGE}
         install -m 0644 arch/${ARCH}/boot/${KERNEL_IMAGETYPE} ${KNAME}
@@ -52,10 +50,6 @@ do_deploy() {
 	#echo -e $size_ > ${DEPLOY_DIR_IMAGE}/${KERNEL_IMAGETYPE}-${MACHINE}-${DATETIME}.img
 	#cat ${KNAME} >> ${DEPLOY_DIR_IMAGE}/${KERNEL_IMAGETYPE}-${MACHINE}-${DATETIME}.img
 }
-
-do_deploy[dirs] = "${S}"
-
-addtask deploy before do_build after do_compile
 
 COMPATIBLE_MACHINE = "compulab-pxa270"
 
