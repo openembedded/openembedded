@@ -1,6 +1,6 @@
 require xserver-kdrive-common.inc
 DESCRIPTION = "X server for ATI Imageon 100 Cards from freedesktop.org"
-#COMPATIBLE_MACHINE = "c7x0"
+COMPATIBLE_MACHINE = "c7x0"
 
 DEPENDS += "libxkbfile libxcalibrate"
 
