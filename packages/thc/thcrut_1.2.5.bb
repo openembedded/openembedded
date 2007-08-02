@@ -1,6 +1,6 @@
 DESCRIPTION = "RUT (aRe-yoU-There) RUT gathers informations from local and remote networks"
 SECTION = "console/network"
-DEPENDS = "openssl libnet"
+DEPENDS = "libpcre openssl libnet libpcap"
 HOMEPAGE = "http://thc.org/thc-rut/"
 LICENSE = "GPL"
 PR = "r1"
