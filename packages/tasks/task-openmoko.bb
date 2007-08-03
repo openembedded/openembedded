@@ -2,7 +2,7 @@ DESCRIPTION = "OpenMoko: Tasks for the OpenMoko Linux Distribution"
 SECTION = "openmoko/base"
 LICENSE = "MIT"
 PROVIDES = "task-openmoko-everything"
-PR = "r53"
+PR = "r54"
 
 ALLOW_EMPTY = "1"
 PACKAGE_ARCH = "all"
@@ -35,6 +35,7 @@ RDEPENDS_task-openmoko-linux = "\
   module-init-tools-depmod \
   rsync \
   screen \
+  psplash \
 #  update-alternatives \
 "
 
@@ -69,7 +70,6 @@ RDEPENDS_task-openmoko-ui = "\
   openmoko-icon-theme-standard2 \
   openmoko-sound-system \
   openmoko-sound-theme-standard \
-#  psplash \
 "
 
 #
