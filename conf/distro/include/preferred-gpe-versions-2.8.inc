@@ -22,7 +22,7 @@ PREFERRED_VERSION_libschedule ?= "0.17"
 PREFERRED_VERSION_libcontactsdb ?= "0.5"
 PREFERRED_VERSION_libtododb ?= "0.11"
 PREFERRED_VERSION_libhandoff ?= "0.1"
-PREFERRED_VERSION_libmimedir ?= "0.4.1"
+PREFERRED_VERSION_libmimedir ?= "0.4.2"
 PREFERRED_VERSION_libsoundgen ?= "0.6"
 
 PREFERRED_VERSION_gpe-icons ?= "0.25"
