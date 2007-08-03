@@ -1,7 +1,7 @@
 DESCRIPTION = "The git revision control system used by the Linux kernel developers"
 SECTION = "console/utils"
 LICENSE = "GPL"
-PR="r3"
+PR="r4"
 
 inherit autotools
 
@@ -14,7 +14,7 @@ S = "${WORKDIR}/git-${PV}"
 DEPENDS = "openssl curl zlib expat"
 RDEPENDS = "perl perl-module-file-path cpio findutils sed"
 
-EXTRA_OEMAKE = "NO_TCLTK=1 LDFLAGS=${LDFLAGS}"
+EXTRA_OEMAKE = "NO_TCLTK=1"
 
 do_install() {
 	oe_runmake install DESTDIR="${D}" bindir="${bindir}" \
