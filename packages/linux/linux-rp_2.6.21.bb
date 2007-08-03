@@ -1,6 +1,6 @@
 require linux-rp.inc
 
-PR = "r9"
+PR = "r10"
 
 # Handy URLs
 # git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux-2.6.git;protocol=git;tag=ef7d1b244fa6c94fb76d5f787b8629df64ea4046
@@ -33,7 +33,7 @@ SRC_URI = "http://www.kernel.org/pub/linux/kernel/v2.6/linux-2.6.21.tar.bz2 \
            ${RPSRC}/usb_add_epalloc-r3.patch;patch=1 \
            ${RPSRC}/usb_pxa27x_udc-r4.patch;patch=1 \
            ${RPSRC}/locomo_kbd_tweak-r1.patch;patch=1 \
-           ${RPSRC}/poodle_pm-r3.patch;patch=1 \
+           ${RPSRC}/poodle_pm-r4.patch;patch=1 \
            ${RPSRC}/pxa27x_overlay-r5.patch;patch=1 \
            ${RPSRC}/w100_extaccel-r0.patch;patch=1 \
            ${RPSRC}/asoc_fix_typo-r0.patch;patch=1 \
