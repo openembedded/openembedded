@@ -13,21 +13,21 @@ SHRT_VER = "${@bb.data.getVar('PV',d,1).split('.')[0]}.${@bb.data.getVar('PV',d,
 
 FILES_${PN} += " \
 		${datadir}/icons/* \
-		${datadir}/AbiSuite-${SHRT_VER}/AbiWord/glade \
-		${datadir}/AbiSuite-${SHRT_VER}/AbiWord/scripts \
-		${datadir}/AbiSuite-${SHRT_VER}/AbiWord/system.profile-en \
-		${datadir}/AbiSuite-${SHRT_VER}/AbiWord/system.profile-en_GB \
-#		${datadir}/AbiSuite-${SHRT_VER}/templates/A4.awt \
-#		${datadir}/AbiSuite-${SHRT_VER}/templates/US-Letter.awt \
-		${datadir}/AbiSuite-${SHRT_VER}/templates/normal.awt \
-		${datadir}/AbiSuite-${SHRT_VER}/templates/normal.awt-en_GB \
-		${datadir}/AbiSuite-${SHRT_VER}/templates/Employee-Directory.awt \
-		${datadir}/AbiSuite-${SHRT_VER}/templates/Business-Report.awt \
-		${datadir}/AbiSuite-${SHRT_VER}/templates/Fax-Coversheet.awt \
-		${datadir}/AbiSuite-${SHRT_VER}/templates/Resume.awt \
-		${datadir}/AbiSuite-${SHRT_VER}/templates/Two-Columns.awt \
-		${datadir}/AbiSuite-${SHRT_VER}/templates/Memo.awt \
-		${datadir}/AbiSuite-${SHRT_VER}/templates/Press-Release.awt "
+		${datadir}/abiword-${SHRT_VER}/AbiWord/glade \
+		${datadir}/abiword-${SHRT_VER}/AbiWord/scripts \
+		${datadir}/abiword-${SHRT_VER}/AbiWord/system.profile-en \
+		${datadir}/abiword-${SHRT_VER}/AbiWord/system.profile-en_GB \
+#		${datadir}/abiword-${SHRT_VER}/templates/A4.awt \
+#		${datadir}/abiword-${SHRT_VER}/templates/US-Letter.awt \
+		${datadir}/abiword-${SHRT_VER}/templates/normal.awt \
+		${datadir}/abiword-${SHRT_VER}/templates/normal.awt-en_GB \
+		${datadir}/abiword-${SHRT_VER}/templates/Employee-Directory.awt \
+		${datadir}/abiword-${SHRT_VER}/templates/Business-Report.awt \
+		${datadir}/abiword-${SHRT_VER}/templates/Fax-Coversheet.awt \
+		${datadir}/abiword-${SHRT_VER}/templates/Resume.awt \
+		${datadir}/abiword-${SHRT_VER}/templates/Two-Columns.awt \
+		${datadir}/abiword-${SHRT_VER}/templates/Memo.awt \
+		${datadir}/abiword-${SHRT_VER}/templates/Press-Release.awt "
 
 inherit autotools pkgconfig
 
@@ -54,8 +54,8 @@ do_install_append() {
 
 PACKAGES += " abiword-clipart abiword-icons abiword-strings abiword-systemprofiles abiword-templates "
 
-FILES_abiword-clipart 		+= "${datadir}/AbiSuite-${SHRT_VER}/clipart"
-FILES_abiword-icons 		+= "${datadir}/AbiSuite-${SHRT_VER}/icons"
-FILES_abiword-strings 		+= "${datadir}/AbiSuite-${SHRT_VER}/AbiWord/strings"
-FILES_abiword-systemprofiles 	+= "${datadir}/AbiSuite-${SHRT_VER}/AbiWord/system.profile*"
-FILES_abiword-templates 	+= "${datadir}/AbiSuite-${SHRT_VER}/templates"
+FILES_abiword-clipart 		+= "${datadir}/abiword-${SHRT_VER}/clipart"
+FILES_abiword-icons 		+= "${datadir}/abiword-${SHRT_VER}/icons"
+FILES_abiword-strings 		+= "${datadir}/abiword-${SHRT_VER}/AbiWord/strings"
+FILES_abiword-systemprofiles 	+= "${datadir}/abiword-${SHRT_VER}/AbiWord/system.profile*"
+FILES_abiword-templates 	+= "${datadir}/abiword-${SHRT_VER}/templates"
