@@ -1,0 +1,27 @@
+Packages to be removed from OpenEmbedded if no one will fix them.
+
+Dropping stuff from metadata is not best way so this file will be filled
+with informations about which parts of metadata will be removed.
+
+Please sort by removal date
+
+Package Name:   recipe, directory or subsystem name
+Removal Date:   YYYY-MM-DD
+Maintainer:     Surname Name + e-mail
+Reason:         description why it will get removed
+Proposed by:    person which want entry to be removed
+
+-----------------------------------------------------------------------------
+
+Package Name:   Maemo
+Removal Date:   2006-12-15
+Maintainer:     none
+Reason:         Unfetchable, obsoleted by IT2006 release.
+Proposed by:    Marcin 'Hrw' Juszkiewicz
+
+Package Name:   task-bootstrap*
+Removal Date:   2006-12-22
+Maintainer:     None
+Reason:         Obsoleted by task-base
+Proposed by:    Koen Kooi
+Note:		Moved to packages/obsolete/tasks on 2006-12-22
