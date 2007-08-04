@@ -14,6 +14,7 @@ SRC_URI = "svn://svn.o-hand.com/repos/misc/trunk;module=zaurusd;proto=http \
 	   file://zaurus-hinge.matchbox-portrait \	   
 	   file://zaurus-hinge.matchbox-landscape \
 	   file://zaurusd-mixer-callback.patch;patch=1 \
+	   file://tslib-1.diff;patch=1 \
 	   file://zaurus-hinge.bl-on \
 	   file://zaurus-hinge.bl-off"
 
