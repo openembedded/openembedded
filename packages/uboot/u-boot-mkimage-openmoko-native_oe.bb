@@ -1,4 +1,4 @@
-require uboot-gta01_svn.bb
+require uboot-openmoko_svn.bb
 
 PV = "1.2.0+git9912121f7ed804ea58fd62f3f230b5dcfc357d88svn2238"
 
