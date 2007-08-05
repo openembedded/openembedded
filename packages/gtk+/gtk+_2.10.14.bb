@@ -1,6 +1,6 @@
 require gtk-2.10.inc
 
-PR = "r2"
+PR = "r3"
 
 # disable per default - untested and not all patches included.
 DEFAULT_PREFERENCE = "-1"
@@ -35,4 +35,9 @@ EXTRA_OECONF += "${@get_gtk_fpu_setting(bb, d)}"
 # try to squeeze some more performance out of it
 SRC_URI_append_fic-gta01 = " file://lower-quality-scaling-in-pixbuf-engine.patch;patch=1"
 SRC_URI_append_fic-gta02 = " file://lower-quality-scaling-in-pixbuf-engine.patch;patch=1"
+# this doesn't seem to work
+SRC_URI_OVERRIDES_PACKAGE_ARCH = "1"
+# let's do it manually then
+PACKAGE_ARCH_fic-gta01 = "fic-gta01"
+PACKAGE_ARCH_fic-gta02 = "fic-gta02"
 

@@ -44,33 +44,36 @@ do_configure_prepend() {
 }
 
 do_compile () {
-	chmod +x board/neo1973/gta*/split_by_variant.sh
-	for mach in ${UBOOT_MACHINES}
-	do
-		oe_runmake ${mach}_config
-		oe_runmake clean
-		oe_runmake all
-		oe_runmake u-boot.udfu
-		if [ -f u-boot.udfu ]; then
-			mv u-boot.udfu u-boot_${mach}.bin
-		else
-			mv u-boot.bin u-boot_${mach}.bin
-		fi
-		if [ -f board/${mach}/lowlevel_foo.bin ]; then
-			mv board/${mach}/lowlevel_foo.bin lowlevel_foo_${mach}.bin
-		fi
-	done
+        chmod +x board/neo1973/gta*/split_by_variant.sh
+        for mach in ${UBOOT_MACHINES}
+        do
+                oe_runmake ${mach}_config
+                oe_runmake clean
+                find board -name lowlevel_foo.bin -exec rm '{}' \;
+                oe_runmake all
+                oe_runmake u-boot.udfu
+                if [ -f u-boot.udfu ]; then
+                        mv u-boot.udfu u-boot_${mach}.bin
+                else
+                        mv u-boot.bin u-boot_${mach}.bin
+                fi
+                if [ -f board/${mach}/lowlevel_foo.bin ]; then
+                        mv board/${mach}/lowlevel_foo.bin \
+                            lowlevel_foo_${mach}.bin
+                else
+                        find board -name lowlevel_foo.bin \
+                            -exec mv '{}' lowlevel_foo_${mach}.bin \;
+                fi
+        done
 }
 
 do_deploy () {
 	install -d ${DEPLOY_DIR_IMAGE}
 	for mach in ${UBOOT_MACHINES}
 	do
-		install -m 0644 ${S}/u-boot_${mach}.bin \
-		    ${DEPLOY_DIR_IMAGE}/u-boot-${mach}-${PR}.bin
+		install -m 0644 ${S}/u-boot_${mach}.bin ${DEPLOY_DIR_IMAGE}/u-boot-${mach}-${PV}-${PR}.bin
 		if [ -f ${S}/lowlevel_foo_${mach}.bin ]; then
-			install -m 0644 ${S}/lowlevel_foo_${mach}.bin \
-			    ${DEPLOY_DIR_IMAGE}/lowlevel_foo-${mach}-${PR}.bin
+			install -m 0644 ${S}/lowlevel_foo_${mach}.bin ${DEPLOY_DIR_IMAGE}/lowlevel_foo-${mach}-${PV}-${PR}.bin
 		fi
 	done
 	install -m 0755 tools/mkimage ${STAGING_BINDIR_NATIVE}/uboot-mkimage

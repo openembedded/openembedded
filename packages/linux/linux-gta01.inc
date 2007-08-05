@@ -3,7 +3,7 @@ SECTION = "kernel"
 AUTHOR = "Harald Welte <laforge@openmoko.org>"
 HOMEPAGE = "N/A"
 LICENSE = "GPL"
-DEPENDS += "quilt-native uboot-gta01"
+DEPENDS += "quilt-native uboot-openmoko"
 
 inherit kernel
 

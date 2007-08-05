@@ -1,7 +1,7 @@
 DESCRIPTION = "Linux Kernel for smdk2443 compatible machines"
 SECTION = "kernel"
 LICENSE = "GPL"
-DEPENDS += "u-boot-mkimage-gta01-native"
+DEPENDS += "u-boot-mkimage-openmoko-native"
 
 PR = "r1"
 
