@@ -17,6 +17,7 @@ def openmoko_two_get_subdir(d):
     elif section in 'apps tools pim'.split(): return "applications"
     elif section == "panel-plugin": return "panel-plugins"
     elif section == "inputmethods": return "inputmethods"
+    elif section == "daemons": return "daemons"
     else: return section
 
 LICENSE = "${@openmoko_two_get_license(d)}"
@@ -29,3 +30,5 @@ FILES_${PN} += "${datadir}/icons"
 
 # SVNREV = "r${SRCREV}"
 SVNREV = "${SRCDATE}"
+SRCDATE = "tomorrow"
+
