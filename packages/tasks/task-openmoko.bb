@@ -2,7 +2,7 @@ DESCRIPTION = "OpenMoko: Tasks for the OpenMoko Linux Distribution"
 SECTION = "openmoko/base"
 LICENSE = "MIT"
 PROVIDES = "task-openmoko-everything"
-PR = "r55"
+PR = "r56"
 
 ALLOW_EMPTY = "1"
 PACKAGE_ARCH = "all"
@@ -65,11 +65,13 @@ RDEPENDS_task-openmoko-ui = "\
   xset \
   xrandr \
   settings-daemon \
+  \
   openmoko-session2 \
   openmoko-theme-standard2 \
   openmoko-icon-theme-standard2 \
   openmoko-sound-system \
   openmoko-sound-theme-standard \
+  neod \
 "
 
 #
@@ -114,8 +116,8 @@ RDEPENDS_task-openmoko-pim = "\
   openmoko-calculator2 \
   openmoko-contacts2 \
   openmoko-today2 \
+  openmoko-feedreader2 \
 #  openmoko-messages \
-#  openmoko-feedreader2 \
 "
 
 #
