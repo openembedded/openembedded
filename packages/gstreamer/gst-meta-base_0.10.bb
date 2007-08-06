@@ -2,7 +2,7 @@
 
 DESCRIPTION = "Gstreamer package groups"
 DEPENDS = "gstreamer gst-plugins-base gst-plugins-good gst-plugins-bad gst-plugins-ugly"
-PR = "r3"
+PR = "r4"
 
 PACKAGES = "\
     gst-meta-base \
@@ -16,7 +16,7 @@ RDEPENDS_gst-meta-base = "\
     gstreamer \
     gst-plugin-playbin \
     gst-plugin-decodebin \
-    gst-plugin-gnomevfs \
+#    gst-plugin-gnomevfs \
     gst-plugin-alsa \
     gst-plugin-volume \
     gst-plugin-ximagesink \
