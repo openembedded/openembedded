@@ -5,17 +5,19 @@ DEPENDS += "bigreqsproto xproto xextproto xtrans libxau xcmiscproto \
             libxdmcp xf86bigfontproto kbproto inputproto"
 PROVIDES = "virtual/libx11"
 PE = "1"
+PR = "r1"
 
 XORG_PN = "libX11"
 
 EXTRA_OECONF += "--without-xcb"
 
 do_compile() {
-	(
-		unset CC LD CXX CCLD
-		oe_runmake -C src/util 'CC=${BUILD_CC}' 'LD=${BUILD_LD}' 'CXX=${BUILD_CXX}' 'CCLD=${BUILD_CCLD}' 'CFLAGS=-D_GNU_SOURCE ${BUILD_CFLAGS}' 'LDFLAGS=${BUILD_LDFLAGS}' 'CXXFLAGS=${BUILD_CXXFLAGS}' 'CPPFLAGS=${BUILD_CPPFLAGS}' makekeys
-	)
-	oe_runmake
+        (
+         unset CC LD CXX CCLD CFLAGS CPPFLAGS LDFLAGS CXXFLAGS
+         cd src/util; touch makekeys-makekeys.o ; ${BUILD_CC} ${BUILD_CFLAGS} makekeys.c -o makekeys
+         cd ../../
+        ) || exit 1
+        oe_runmake
 }
 
 FILES_${PN} += "${datadir}/X11/XKeysymDB ${datadir}/X11/XErrorDB ${libdir}/X11/Xcms.txt"
