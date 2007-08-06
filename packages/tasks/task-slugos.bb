@@ -6,7 +6,7 @@
 DESCRIPTION = "Task packages for the SlugOS distribution"
 HOMEPAGE = "http://www.nslu2-linux.org"
 LICENSE = "MIT"
-PR = "r12"
+PR = "r13"
 PACKAGE_ARCH = "${MACHINE_ARCH}"
 ALLOW_EMPTY = "1"
 
@@ -92,6 +92,9 @@ kernel-module-pata-artop \
 
 # Add modules required for Network support
 SLUGOS_STANDARD_RRECOMMENDS += "\
+kernel-module-mii \
+kernel-module-ixp4xx-mac \
+kernel-module-ixp4xx-qmgr \
 kernel-module-via-velocity \
 "
 
