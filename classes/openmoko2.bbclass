@@ -30,5 +30,4 @@ FILES_${PN} += "${datadir}/icons"
 
 # SVNREV = "r${SRCREV}"
 SVNREV = "${SRCDATE}"
-SRCDATE = "tomorrow"
 
