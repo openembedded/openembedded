@@ -95,7 +95,7 @@ SRCDATE_entice ?= "20070601"
 SRCDATE_e-utils ?= "20070601"
 SRCDATE_enna ?= "20070721"
 
-# Misc apps, sorted by alphabet
+# Misc packages, sorted by alphabet
 SRCDATE_avetanabt ?= "20060814"
 SRCDATE_bl ?= "20060814"
 SRCDATE_dvbstream ?= "20060814"
@@ -129,6 +129,7 @@ SRCDATE_roadster ?= "20060814"
 SRCDATE_sctzap ?= "20060814"
 SRCDATE_tslib ?= "20051101"
 SRCDATE_waimea ?= "20060814"
+SRCDATE_webkit ?= "20070801"
 SRCDATE_xcompmgr ?= "20060814"
 SRCDATE_xirssi ?= "20060814"
 SRCDATE_xsvg ?= "20060814"
