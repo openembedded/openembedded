@@ -1,19 +1,15 @@
 DESCRIPTION = "Task packages for GPE Palmtop Environment Phone Edition"
-PR = "r7"
+PR = "r8"
 LICENSE = "MIT"
 ALLOW_EMPTY = "1"
 
 PACKAGES = "\
-    gpephone-base-depends \
     gpephone-task-base \
     gpephone-task-settings \
     gpephone-task-pim \
     gpephone-task-connectivity \
     gpephone-task-apps \
     gpephone-task-development"
-
-RDEPENDS_gpephone-base-depends = "\
-    virtual/libx11"
 
 RDEPENDS_gpephone-task-development = "\
     rxvt-unicode \

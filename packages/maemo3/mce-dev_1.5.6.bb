@@ -1,15 +1,26 @@
 LICENSE = "LGPL"
+DESCRIPTION = "Nokia MCE headers"
 
-SRC_URI = "http://repository.maemo.org/pool/bora/free/source/${PN}_${PV}.tar.gz"
+PR = "r0"
 
-inherit autotools pkgconfig
+SRC_URI = "http://archive.ubuntu.com/ubuntu/pool/universe/m/mce-dev/mce-dev_${PV}.tar.gz"
+
+inherit  pkgconfig 
 
 do_compile() {
-        sed -i 's:@$(DOXYGEN):echo:g' Makefile
-       	sed -i 's:-o\ root\ -g\ root::' Makefile
+        :
+}
+
+
+do_install() {
+        install -d ${D}${prefix}/include
+	install -d ${D}${libdir}/pkgconfig
+	cp -pPr include/* ${D}${prefix}/include
+	cp *.pc ${D}${libdir}/pkgconfig/
 }
 
 do_stage() {
-	autotools_stage_includes
-}	
+        cp -pPr include/* ${STAGING_INCDIR}/
+}
+
 
