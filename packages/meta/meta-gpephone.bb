@@ -1,9 +1,8 @@
 DESCRIPTION = "Meta-package for GPE Palmtop Environment Phone packages"
 LICENSE = "MIT"
-PR = "r0"
+PR = "r1"
 
 RDEPENDS = "\
-    gpe-base-depends \
     gpephone-task-base \
     gpephone-task-settings \
     gpephone-task-pim \
