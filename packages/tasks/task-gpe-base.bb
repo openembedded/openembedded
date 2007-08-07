@@ -4,7 +4,6 @@ LICENSE = "MIT"
 ALLOW_EMPTY = "1"
 
 RDEPENDS = "\
-    virtual/libx11 \
     gpe-bootsplash \
     bluez-utils-dbus \
     matchbox \
