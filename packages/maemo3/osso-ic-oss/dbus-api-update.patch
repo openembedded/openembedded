@@ -1,0 +1,33 @@
+--- /tmp/osso-iap-connect.c	2007-08-07 12:06:51.000000000 +0200
++++ osso-ic-oss-1.0.4/examples/osso-iap-connect.c	2007-08-07 12:07:32.698400000 +0200
+@@ -276,7 +276,7 @@
+ 	g_main_loop_run(ctxt.loop);
+ 
+ 	/* Clean up */
+-	dbus_connection_disconnect(conn);
++	dbus_connection_close(conn);
+ 	dbus_connection_unref(conn);
+ 
+ 	g_main_loop_unref(ctxt.loop);
+--- /tmp/ic-compat-preload.c	2007-08-07 12:06:57.000000000 +0200
++++ osso-ic-oss-1.0.4/src/ic-compat-preload.c	2007-08-07 12:07:40.268400000 +0200
+@@ -140,7 +140,7 @@
+ 			return NULL;
+ 
+ 		if (!dbus_bus_register(connection, NULL)) {
+-			dbus_connection_disconnect(connection);
++			dbus_connection_close(connection);
+ 			dbus_connection_unref(connection);
+ 			connection = NULL;
+ 			return NULL;
+--- /tmp/ic-api.c	2007-08-07 12:06:57.000000000 +0200
++++ osso-ic-oss-1.0.4/src/ic-api.c	2007-08-07 12:07:55.628400000 +0200
+@@ -145,7 +145,7 @@
+ 		if (dbus_connection_register_object_path(
+ 				connection, ICD_DBUS_PATH,
+ 				&icd_vtable, arg) == FALSE) {
+-			dbus_connection_disconnect(connection);
++			dbus_connection_close(connection);
+ 			dbus_connection_unref(connection);
+ 			connection = NULL;
+ 			return NULL;
