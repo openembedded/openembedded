@@ -11,6 +11,7 @@ DEPENDS_sarge-at91 = "u-boot-mkimage-openmoko-native"
 
 inherit kernel
 
+KERNEL_IMAGETYPE_alix = "bzImage"
 KERNEL_IMAGETYPE_progear = "bzImage"
 KERNEL_IMAGETYPE_simpad = "zImage"
 KERNEL_IMAGETYPE_kb9202 = "uImage"
