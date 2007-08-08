@@ -1,0 +1,66 @@
+Index: cacao-0.98/configure.ac
+===================================================================
+--- cacao-0.98.orig/configure.ac	2007-06-06 11:24:23.000000000 +0200
++++ cacao-0.98/configure.ac	2007-07-18 23:26:43.000000000 +0200
+@@ -842,6 +842,7 @@
+ AC_CHECK_WITH_CLASSPATH
+ AC_CHECK_WITH_CLASSPATH_PREFIX
+ AC_CHECK_WITH_CLASSPATH_CLASSES
++AC_CHECK_WITH_TARGET_CLASSPATH_CLASSES
+ AC_CHECK_WITH_CLASSPATH_LIBDIR
+ AC_CHECK_WITH_CLASSPATH_INCLUDEDIR
+ 
+Index: cacao-0.98/src/vm/vm.c
+===================================================================
+--- cacao-0.98.orig/src/vm/vm.c	2007-06-05 09:44:38.000000000 +0200
++++ cacao-0.98/src/vm/vm.c	2007-07-18 23:26:43.000000000 +0200
+@@ -621,7 +621,7 @@
+ #if defined(WITH_CLASSPATH_GNU)
+ 	puts("  java.boot.class.path           : "CACAO_VM_ZIP":"CLASSPATH_CLASSES"");
+ #else
+-	puts("  java.boot.class.path           : "CLASSPATH_CLASSES"");
++	puts("  java.boot.class.path           : "TARGET_CLASSPATH_CLASSES"");
+ #endif
+ 	puts("  gnu.classpath.boot.library.path: "CLASSPATH_LIBDIR"/classpath\n");
+ 
+@@ -873,7 +873,7 @@
+ 			strlen(CACAO_VM_ZIP) +
+ 			strlen(":") +
+ # endif
+-			strlen(CLASSPATH_CLASSES) +
++			strlen(TARGET_CLASSPATH_CLASSES) +
+ 			strlen("0");
+ 
+ 		_Jv_bootclasspath = MNEW(char, len);
+@@ -881,7 +881,7 @@
+ 		strcat(_Jv_bootclasspath, CACAO_VM_ZIP);
+ 		strcat(_Jv_bootclasspath, ":");
+ # endif
+-		strcat(_Jv_bootclasspath, CLASSPATH_CLASSES);
++		strcat(_Jv_bootclasspath, TARGET_CLASSPATH_CLASSES);
+ #endif
+ 	}
+ 
+Index: cacao-0.98/m4/classpath.m4
+===================================================================
+--- cacao-0.98.orig/m4/classpath.m4	2007-04-23 22:06:07.000000000 +0200
++++ cacao-0.98/m4/classpath.m4	2007-07-18 23:38:06.000000000 +0200
+@@ -82,6 +82,18 @@
+ AC_SUBST(CLASSPATH_CLASSES)
+ ])
+ 
++dnl where are Java core library classes installed on the target
++
++AC_DEFUN([AC_CHECK_WITH_TARGET_CLASSPATH_CLASSES],[
++AC_MSG_CHECKING(where Java core library classes are installed on the target)
++AC_ARG_WITH([target-classpath-classes],
++            [AS_HELP_STRING(--with-target-classpath-classes=<path>,path to Java core library classes (includes the name of the file and may be flat) [[default=/usr/local/classpath/share/classpath/glibj.zip]])],
++            [TARGET_CLASSPATH_CLASSES=${withval}],
++            [TARGET_CLASSPATH_CLASSES=${CLASSPATH_PREFIX}/share/classpath/glibj.zip])
++AC_MSG_RESULT(${TARGET_CLASSPATH_CLASSES})
++AC_DEFINE_UNQUOTED([TARGET_CLASSPATH_CLASSES], "${TARGET_CLASSPATH_CLASSES}", [Java core library classes on the target])
++AC_SUBST(TARGET_CLASSPATH_CLASSES)
++])
+ 
+ dnl where are Java core library native libraries installed
+ 

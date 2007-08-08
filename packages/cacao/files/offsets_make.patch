@@ -1,0 +1,25 @@
+Index: cacao-0.98/src/vm/jit/arm/Makefile.am
+===================================================================
+--- cacao-0.98.orig/src/vm/jit/arm/Makefile.am	2007-04-02 13:23:22.000000000 +0200
++++ cacao-0.98/src/vm/jit/arm/Makefile.am	2007-07-17 23:26:33.000000000 +0200
+@@ -40,10 +40,6 @@
+ AM_CPPFLAGS = -I$(top_srcdir)/src -I$(top_builddir) -I$(top_builddir)/src
+ AM_CCASFLAGS = $(AM_CPPFLAGS)
+ 
+-BUILT_SOURCES = offsets.h
+-
+-CLEANFILES = offsets.h
+-
+ noinst_HEADERS = \
+ 	arch.h \
+ 	machine-instr.h \
+@@ -72,9 +68,6 @@
+ 
+ $(srcdir)/asmpart.S: $(top_builddir)/config.h offsets.h
+ 
+-offsets.h: $(top_builddir)/src/vm/jit/tools/genoffsets $(top_builddir)/config.h
+-	$(top_builddir)/src/vm/jit/tools/genoffsets > offsets.h
+-
+ 
+ ## Local variables:
+ ## mode: Makefile
