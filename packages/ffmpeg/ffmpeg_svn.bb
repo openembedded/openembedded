@@ -2,7 +2,7 @@ DESCRIPTION = "ffmpeg"
 SECTION = "libs"
 PRIORITY = "optional"
 LICENSE = "GPL"
-DEPENDS = "zlib libvorbis faac liba52 lame"
+DEPENDS = "libogg zlib libvorbis faac liba52 lame"
 PV = "0.4.9+svn${SRCDATE}"
 
 DEFAULT_PREFERENCE = "-1"
@@ -11,17 +11,18 @@ SRC_URI = "svn://svn.mplayerhq.hu/ffmpeg/;module=trunk"
 
 S = "${WORKDIR}/trunk"
 
-inherit autotools
+inherit autotools pkgconfig
 
 TARGET_LDFLAGS_append = " -lm -la52 "
 
 EXTRA_OECONF = " \
-	--enable-mp3lame \
-        --enable-vorbis \
-        --enable-faad \
-        --enable-a52 \
-        --enable-a52bin \
-        --enable-pp \
+	--enable-libmp3lame \
+        --enable-libvorbis \
+        --disable-libfaad \
+        --enable-liba52 \
+        --enable-liba52bin \
+        --enable-libogg \
+	--enable-pp \
         --enable-shared \
         --enable-pthreads \
         --enable-gpl \
@@ -32,10 +33,12 @@ EXTRA_OECONF = " \
         --disable-debug \
         --disable-ffserver \
         --disable-ffplay \
+	--disable-strip \
         \
         --cross-prefix=${TARGET_PREFIX} \
         \
         --cpu=${PACKAGE_ARCH} \
+	--arch=${PACKAGE_ARCH} \
 "
 
 
@@ -48,6 +51,8 @@ do_configure_prepend() {
 }
 
 oe_runconf () {
+        # make ffmpeg detect arm targets that don't end in 'l'
+        sed -i -e s:'armv\[4567\]\*l':'armv\[4567\]\*':g ${S}/configure
         if [ -x ${S}/configure ] ; then
                 cfgcmd="${S}/configure \
                         --prefix=${prefix} \
