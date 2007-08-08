@@ -9,7 +9,7 @@ PREFERRED_PROVIDER_virtual/libxine 	?= "libxine-x11"
 PREFERRED_PROVIDER_virtual/libx11       ?= "diet-x11"
 
 ANGSTROM_EXTRA_INSTALL += " \
-                           ${@base_contains("MACHINE_FEATURES", "phone", "openmoko-dialer", "",d)} \
+                           ${@base_contains("MACHINE_FEATURES", "phone", "openmoko-dialer2", "",d)} \
 			  " 
 XSERVER ?= "xserver-kdrive-fbdev"
 

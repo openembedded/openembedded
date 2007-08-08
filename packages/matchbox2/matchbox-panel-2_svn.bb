@@ -2,9 +2,8 @@ DESCRIPTION = "matchbox-panel-2 is a lightweight dock (system tray) application 
 LICENSE = "GPL"
 SECTION = "x11/panels"
 DEPENDS = "gtk+ apmd startup-notification"
-
 PV = "0.1+svn${SRCDATE}"
-PR = "r6"
+PR = "r8"
 
 SRC_URI = "svn://svn.o-hand.com/repos/matchbox/trunk;module=${PN};proto=http"
 S = "${WORKDIR}/${PN}"
@@ -24,4 +23,5 @@ do_stage() {
 
 PACKAGES += "${PN}-applets"
 FILES_${PN}-applets = "${libdir}/matchbox-panel/lib*.so* ${datadir}/*"
+FILES_${PN}-dev += "${libdir}/matchbox-panel/lib*.a ${libdir}/matchbox-panel/lib*.la"
 
