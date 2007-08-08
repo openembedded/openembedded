@@ -82,6 +82,9 @@ def base_dep_prepend(d):
 	if bb.data.getVar('PN', d, True) == "shasum-native":
 		deps = ""
 
+	# INHIBIT_DEFAULT_DEPS doesn't apply to the patch command.  Whether or  not
+	# we need that built is the responsibility of the patch function / class, not
+	# the application.
 	if not bb.data.getVar('INHIBIT_DEFAULT_DEPS', d):
 		if (bb.data.getVar('HOST_SYS', d, 1) !=
 	     	    bb.data.getVar('BUILD_SYS', d, 1)):
@@ -272,8 +275,12 @@ oe_libinstall() {
 
 	# If such file doesn't exist, try to cut version suffix
 	if [ ! -f "$lafile" ]; then
-		libname=`echo "$libname" | sed 's/-[0-9.]*$//'`
-		lafile=$libname.la
+		libname1=`echo "$libname" | sed 's/-[0-9.]*$//'`
+		lafile1=$libname.la
+		if [ -f "$lafile1" ]; then
+			libname=$libname1
+			lafile=$lafile1
+		fi
 	fi
 
 	if [ -f "$lafile" ]; then
@@ -807,6 +814,7 @@ def base_after_parse(d):
 
 
     pn = bb.data.getVar('PN', d, 1)
+
     # OBSOLETE in bitbake 1.7.4
     srcdate = bb.data.getVar('SRCDATE_%s' % pn, d, 1)
     if srcdate != None:
@@ -816,9 +824,15 @@ def base_after_parse(d):
     if use_nls != None:
         bb.data.setVar('USE_NLS', use_nls, d)
 
-    # Make sure MACHINE *isn't* exported
+    # Make sure MACHINE isn't exported
+    # (breaks binutils at least)
     bb.data.delVarFlag('MACHINE', 'export', d)
     bb.data.setVarFlag('MACHINE', 'unexport', 1, d)
+    
+    # Make sure DISTRO isn't exported
+    # (breaks sysvinit at least)
+    bb.data.delVarFlag('DISTRO', 'export', d)
+    bb.data.setVarFlag('DISTRO', 'unexport', 1, d)
 
     # Git packages should DEPEND on git-native
     srcuri = bb.data.getVar('SRC_URI', d, 1)
@@ -826,7 +840,6 @@ def base_after_parse(d):
         depends = bb.data.getVarFlag('do_fetch', 'depends', d) or ""
         depends = depends + " git-native:do_populate_staging"
         bb.data.setVarFlag('do_fetch', 'depends', depends, d)
-				    
 
     mach_arch = bb.data.getVar('MACHINE_ARCH', d, 1)
     old_arch = bb.data.getVar('PACKAGE_ARCH', d, 1)
