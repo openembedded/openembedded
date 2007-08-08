@@ -4,9 +4,8 @@ SECTION = "voip"
 LICENSE = "GPLv2"
 PRIORITY = "optional"
 DEPENDS = "ncurses readline zlib openssl curl popt gnutls sqlite libogg libvorbis"
-CONFLICTS = "asterisk"
-RRECOMMENDS = "logrotate"
-PR = "r0"
+RRECOMMENDS_${PN} = "logrotate"
+
 DEFAULT_PREFERENCE = "-1"
 
 SRC_URI="http://ftp.digium.com/pub/asterisk/releases/asterisk-${PV}.tar.gz\
@@ -16,14 +15,13 @@ SRC_URI="http://ftp.digium.com/pub/asterisk/releases/asterisk-${PV}.tar.gz\
 	file://volatiles \
 	file://init"
 
-S = "${WORKDIR}/asterisk-${PV}"
 
 INITSCRIPT_NAME = "asterisk"
 INITSCRIPT_PARAMS = "defaults 60"
 
 inherit autotools update-rc.d
 
-export EXTRA_OECONF =  "--with-ssl=${STAGING_DIR}/${HOST_SYS}\
+EXTRA_OECONF =  "--with-ssl=${STAGING_DIR}/${HOST_SYS}\
 			--with-z=${STAGING_DIR}/${HOST_SYS}\
 			--with-curl=${STAGING_DIR}/${HOST_SYS}\
 			--with-termcap=${STAGING_DIR}/${HOST_SYS}\
@@ -65,8 +63,6 @@ do_configure () {
 	oe_runconf
 }
 
-FILES_${PN} += "${libdir}/asterisk/modules/*"
-
 do_install_append() {
 	install -m 755 ${WORKDIR}/init ${D}${sysconfdir}/init.d/asterisk
 	install -c -D -m 644 ${WORKDIR}/logrotate ${D}${sysconfdir}/logrotate.d/asterisk
@@ -79,6 +75,7 @@ pkg_postinst_prepend() {
 	chown -R asterisk:asterisk ${libdir}/asterisk ${localstatedir}/lib/asterisk ${localstatedir}/spool/asterisk ${localstatedir}/log/asterisk ${localstatedir}/run/asterisk ${sysconfdir}/asterisk
 }
 
+FILES_${PN} += "${libdir}/asterisk/modules/*"
 
 CONFFILES_${PN} += "${sysconfdir}/asterisk/adsi.conf"
 CONFFILES_${PN} += "${sysconfdir}/asterisk/adtranvofr.conf"
