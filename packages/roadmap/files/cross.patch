@@ -1,0 +1,17 @@
+--- /tmp/options.mk	2007-08-08 12:14:11.000000000 +0200
++++ roadmap/src/options.mk	2007-08-08 12:14:35.688400000 +0200
+@@ -26,13 +26,7 @@
+ 
+ # if you want to cross-compile, define CROSS in config.mk.  you
+ # may also have to add paths to libraries (with -L) in LDFLAGS.
+-CC =    $(CROSS)gcc
+-CXX =   $(CROSS)g++
+-AS =    $(CROSS)as
+-AR =    $(CROSS)ar
+-LD =    $(CROSS)ld
+-STRIP = $(CROSS)strip
+-RANLIB = $(CROSS)ranlib
++STRIP = echo
+ 
+ 
+ # --- Build options ------------------------------------------------
