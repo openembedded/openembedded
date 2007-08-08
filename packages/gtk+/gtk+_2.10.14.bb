@@ -2,9 +2,6 @@ require gtk-2.10.inc
 
 PR = "r3"
 
-# disable per default - untested and not all patches included.
-DEFAULT_PREFERENCE = "-1"
-
 SRC_URI = "ftp://ftp.gtk.org/pub/gtk/v2.10/gtk+-${PV}.tar.bz2 \
            file://no-xwc.patch;patch=1 \
            file://automake-lossage.patch;patch=1 \
@@ -40,4 +37,3 @@ SRC_URI_OVERRIDES_PACKAGE_ARCH = "1"
 # let's do it manually then
 PACKAGE_ARCH_fic-gta01 = "fic-gta01"
 PACKAGE_ARCH_fic-gta02 = "fic-gta02"
-
