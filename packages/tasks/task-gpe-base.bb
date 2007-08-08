@@ -1,5 +1,5 @@
 DESCRIPTION = "Base task package for GPE Palmtop Environment"
-PR = "r6"
+PR = "r7"
 LICENSE = "MIT"
 ALLOW_EMPTY = "1"
 
@@ -31,7 +31,5 @@ RDEPENDS = "\
     gdk-pixbuf-loader-jpeg \
     pango-module-basic-x \
     pango-module-basic-fc \
-    ttf-dejavu-sans \
-    ttf-dejavu-sans-mono \
-    ttf-dejavu-serif"
+    ttf-bitstream-vera"
 
