@@ -73,8 +73,10 @@ do_deploy () {
 	for mach in ${UBOOT_MACHINES}
 	do
 		install -m 0644 ${S}/u-boot_${mach}.bin ${DEPLOY_DIR_IMAGE}/u-boot-${mach}-${PV}-${PR}.bin
+		ln -sf ${DEPLOY_DIR_IMAGE}/u-boot-${mach}-${PV}-${PR}.bin ${DEPLOY_DIR_IMAGE}/uboot-${mach}-latest.bin
 		if [ -f ${S}/lowlevel_foo_${mach}.bin ]; then
 			install -m 0644 ${S}/lowlevel_foo_${mach}.bin ${DEPLOY_DIR_IMAGE}/lowlevel_foo-${mach}-${PV}-${PR}.bin
+			ln -sf ${DEPLOY_DIR_IMAGE}/lowlevel_foo-${mach}-${PV}-${PR}.bin ${DEPLOY_DIR_IMAGE}/lowlevel-foo-${mach}-latest.bin
 		fi
 	done
 	install -m 0755 tools/mkimage ${STAGING_BINDIR_NATIVE}/uboot-mkimage

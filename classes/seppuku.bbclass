@@ -346,8 +346,8 @@ python seppuku_eventhandler() {
             bug_number = seppuku_file_bug(poster, newbug, product, component, bugname, text)
             if not bug_number:
                 print >> debug_file, "Filing a bugreport failed"
-        else:
-            print >> debug_file, "The new bug_number: '%s'" % bug_number
+            else:
+                print >> debug_file, "The new bug_number: '%s'" % bug_number
 
         if file:
             if not seppuku_create_attachment(debug_file, poster, attach, product, component, bug_number, text, file):
