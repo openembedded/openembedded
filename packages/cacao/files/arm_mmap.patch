@@ -1,0 +1,21 @@
+--- cacao-0.98/src/vm/exceptions.c	2007/06/27 09:04:17	8146
++++ cacao-0.98/src/vm/exceptions.c	2007/07/02 14:07:24	8175
+@@ -92,6 +92,10 @@
+ 
+ bool exceptions_init(void)
+ {
++#if !(defined(__ARM__) && defined(__LINUX__))
++	/* On arm-linux the first memory page can't be mmap'ed, as it
++	   contains the exception vectors. */
++
+ 	int pagesize;
+ 
+ 	/* mmap a memory page at address 0x0, so our hardware-exceptions
+@@ -100,6 +104,7 @@
+ 	pagesize = getpagesize();
+ 
+ 	(void) memory_mmap_anon(NULL, pagesize, PROT_NONE, MAP_PRIVATE | MAP_FIXED);
++#endif
+ 
+ 	/* check if we get into trouble with our hardware-exceptions */
+ 

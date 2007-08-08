@@ -1,0 +1,35 @@
+Index: cacao-0.98/src/vm/jit/arm/offsets.h
+===================================================================
+--- /dev/null   1970-01-01 00:00:00.000000000 +0000
++++ cacao-0.98/src/vm/jit/arm/offsets.h 2007-07-17 23:35:56.000000000 +0200
+@@ -0,0 +1,30 @@
++/* This file is machine generated, don't edit it! */
++
++/* define some sizeof()'s */
++
++#define sizevmarg                   16
++
++
++/* define some offsets */
++
++#define offobjvftbl                  0
++
++
++/* vftbl_t */
++
++#define offbaseval                  20
++#define offdiffval                  24
++
++
++/* classinfo */
++
++#define offclassvftbl              124
++
++
++#define offvmargtype                 0
++#define offvmargdata                 8
++
++
++#define offcast_super_baseval        0
++#define offcast_super_diffval        4
++#define offcast_sub_baseval	      8
