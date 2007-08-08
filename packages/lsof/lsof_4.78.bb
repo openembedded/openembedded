@@ -15,9 +15,10 @@ python do_unpack () {
 	bb.data.setVar('SRC_URI', src_uri, d)
 }
 
-LSOF_OS = "${TARGET_OS}"
+export LSOF_OS = "${TARGET_OS}"
 LSOF_OS_linux-uclibc = "linux"
 LSOF_OS_linux-gnueabi = "linux"
+export LSOF_INCLUDE = "${STAGING_INCDIR}"
 
 do_configure () {
 	yes | ./Configure ${LSOF_OS}
