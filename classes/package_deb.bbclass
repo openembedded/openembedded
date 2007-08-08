@@ -1,3 +1,7 @@
+#
+# Copyright 2006-2007 OpenedHand Ltd.
+#
+
 inherit package
 
 PACKAGE_EXTRA_DEPENDS += "dpkg-native fakeroot-native"
@@ -132,6 +136,7 @@ python do_package_deb () {
             continue
         controldir = os.path.join(root, 'DEBIAN')
         bb.mkdirhier(controldir)
+        os.chmod(controldir, 0755)
         try:
             ctrlfile = file(os.path.join(controldir, 'control'), 'wb')
             # import codecs
@@ -150,7 +155,7 @@ python do_package_deb () {
         fields.append(["Priority: %s\n", ['PRIORITY']])
         fields.append(["Maintainer: %s\n", ['MAINTAINER']])
         fields.append(["Architecture: %s\n", ['TARGET_ARCH']])
-        fields.append(["OE: %s\n", ['P']])
+        fields.append(["OE: %s\n", ['PN']])
         fields.append(["Homepage: %s\n", ['HOMEPAGE']])
 
 #        Package, Version, Maintainer, Description - mandatory
