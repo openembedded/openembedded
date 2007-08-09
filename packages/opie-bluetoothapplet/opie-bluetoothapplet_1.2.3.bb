@@ -4,5 +4,3 @@ PR = "r0"
 
 SRC_URI = "${HANDHELDS_CVS};tag=${TAG};module=opie/noncore/net/opietooth/applet \
            ${HANDHELDS_CVS};tag=${TAG};module=opie/pics/bluetoothapplet"
-
-#           file://sysconfig-bluetooth.patch;patch=1"
