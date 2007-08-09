@@ -1,25 +1,14 @@
-#
 # Copyright Matthias Hentges <devel@hentges.net> (c) 2006
-# License: MIT (see http://www.opensource.org/licenses/mit-license.php for a copy of the license)
-#
-# Filename: fluxbox-gpe_1.0rc.bb
-# Date: 01-Jul-06
 
 DESCRIPTION = "The Fluxbox WindowManager"
 HOMEPAGE = "http://fluxbox.sourceforge.net"
 LICENSE = "MIT"
 
-PV = "1.0+svn${SRCDATE}"
-PR = "r3"
-
-######################################################################################
-
-S = "${WORKDIR}/trunk"
-
-######################################################################################
+PV = "0.99+svn${SRCDATE}"
+PR = "r0"
+PE = "1" 
 
 SRC_URI = "svn://svn.berlios.de/fluxbox;module=trunk \
-	   file://gpe-init.patch;patch=1 \
 	   file://apps.gpe.* \
 	   file://style.gpe-default \
 	   file://fluxbox-gpe-session \
@@ -28,7 +17,27 @@ SRC_URI = "svn://svn.berlios.de/fluxbox;module=trunk \
 	   file://keylaunchrc.fluxbox \
 	   file://gpe-logout.fluxbox"
 
-######################################################################################
+S = "${WORKDIR}/trunk"
+
+inherit autotools
+
+EXTRA_OECONF = "--disable-xmb \
+		"
+
+do_install_append() {
+	install -d ${D}${bindir}
+	install -d ${D}${datadir}/fluxbox
+	install -d ${D}${datadir}/fluxbox/styles
+	install -d ${D}/etc
+
+	install -m 0644 ${WORKDIR}/apps.gpe.* ${D}${datadir}/fluxbox
+	install -m 0644 ${WORKDIR}/keys.* ${D}${datadir}/fluxbox
+	install -m 0755 ${WORKDIR}/fluxbox-gpe.session ${D}${datadir}/fluxbox/session
+	install -m 0644 ${WORKDIR}/style.gpe-default ${D}${datadir}/fluxbox/styles/gpe-default
+	install -m 0755 ${WORKDIR}/fluxbox-gpe-session ${D}${bindir}
+	install -m 0755 ${WORKDIR}/gpe-logout.fluxbox ${D}${bindir}
+	install -m 0644 ${WORKDIR}/keylaunchrc.fluxbox ${D}/etc
+}
 
 PACKAGES = "${PN}-dbg ${PN}-gpe ${PN}-styles ${PN}-doc ${PN}"
 
@@ -36,61 +45,32 @@ DESCRIPTION_${PN}-styles = "The default styles for fluxbox"
 DESCRIPTION_${PN}-gpe = "The Fluxbox WindowManager for use with GPE"
 RDEPENDS_${PN}-gpe = "${PN}"
 
-######################################################################################
+FILES_${PN} = "${bindir} \
+	       ${datadir}/fluxbox/init \
+	       ${datadir}/fluxbox/keys \
+	       ${datadir}/fluxbox/menu "
 
-FILES_${PN} = "/usr/bin \
-	       /usr/share/fluxbox/init \
-	       /usr/share/fluxbox/keys \
-	       /usr/share/fluxbox/menu "
+FILES_${PN}-gpe = "${datadir}/fluxbox/apps.gpe* \
+		   ${datadir}/fluxbox/keys.* \
+		   ${bindir}/gpe-logout.fluxbox \
+		   ${sysconfdir}keylaunchrc.fluxbox \
+		   ${datadir}/fluxbox/styles/gpe-default \
+		   ${datadir}/fluxbox/session \
+		   ${bindir}/fluxbox-gpe-session"
 
-FILES_${PN}-gpe = "/usr/share/fluxbox/apps.gpe* \
-		   /usr/share/fluxbox/keys.* \
-		   /usr/bin/gpe-logout.fluxbox \
-		   /etc/keylaunchrc.fluxbox \
-		   /usr/share/fluxbox/styles/gpe-default \
-		   /usr/share/fluxbox/session \
-		   /usr/bin/fluxbox-gpe-session"
+FILES_${PN}-styles = "${datadir}/fluxbox/styles"
 
-FILES_${PN}-styles = "/usr/share/fluxbox/styles"
+FILES_${PN}-doc = "${datadir}/man"
 
-FILES_${PN}-doc = "/usr/share/man"
-
-######################################################################################
-
-inherit autotools
-
-######################################################################################
-
-EXTRA_OECONF = "--disable-xmb \
-		"
-
-######################################################################################
-
-do_install_append() {
-	install -d ${D}/usr/bin
-	install -d ${D}/usr/share/fluxbox
-	install -d ${D}/usr/share/fluxbox/styles
-	install -d ${D}/etc
-
-	install -m 0644 ${WORKDIR}/apps.gpe.* ${D}/usr/share/fluxbox
-	install -m 0644 ${WORKDIR}/keys.* ${D}/usr/share/fluxbox
-	install -m 0755 ${WORKDIR}/fluxbox-gpe.session ${D}/usr/share/fluxbox/session
-	install -m 0644 ${WORKDIR}/style.gpe-default ${D}/usr/share/fluxbox/styles/gpe-default
-	install -m 0755 ${WORKDIR}/fluxbox-gpe-session ${D}/usr/bin
-	install -m 0755 ${WORKDIR}/gpe-logout.fluxbox ${D}/usr/bin
-	install -m 0644 ${WORKDIR}/keylaunchrc.fluxbox ${D}/etc
-}
-
-######################################################################################
 
 pkg_postinst_${PN}-gpe() {
-       update-alternatives --install /usr/bin/x-window-manager x-window-manager /usr/bin/fluxbox-gpe-session 15
-       update-alternatives --install /usr/bin/gpe-logout gpe-logout /usr/bin/gpe-logout.fluxbox  15
-       update-alternatives --install /etc/keylaunchrc keylaunchrc /etc/keylaunchrc.fluxbox 15
+       update-alternatives --install ${bindir}/x-window-manager x-window-manager ${bindir}/fluxbox-gpe-session 15
+       update-alternatives --install ${bindir}/gpe-logout gpe-logout ${bindir}/gpe-logout.fluxbox  15
+       update-alternatives --install ${sysconfdir}keylaunchrc keylaunchrc ${sysconfdir}keylaunchrc.fluxbox 15
 }
 
 pkg_postrm_${PN}-gpe() {
-       update-alternatives --remove x-window-manager /usr/bin/fluxbox-gpe-session
-       update-alternatives --remove gpe-logout /usr/bin/gpe-logout.fluxbox
-       update-alternatives --remove keylaunchrc /etc/keylaunchrc.fluxbox
+       update-alternatives --remove x-window-manager ${bindir}/fluxbox-gpe-session
+       update-alternatives --remove gpe-logout ${bindir}/gpe-logout.fluxbox
+       update-alternatives --remove keylaunchrc ${sysconfdir}keylaunchrc.fluxbox
 }
