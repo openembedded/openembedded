@@ -95,7 +95,7 @@ SRCDATE_entice ?= "20070601"
 SRCDATE_e-utils ?= "20070601"
 SRCDATE_enna ?= "20070721"
 
-# Misc apps, sorted by alphabet
+# Misc packages, sorted by alphabet
 SRCDATE_avetanabt ?= "20060814"
 SRCDATE_bl ?= "20060814"
 SRCDATE_dvbstream ?= "20060814"

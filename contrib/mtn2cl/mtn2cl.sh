@@ -5,7 +5,13 @@ mkdir logs
 export LOGNAME=Changelog.`date -u "+%Y%m%d"`
 export REV_NOW=`mtn automate heads |head -n1`
 
-for i in `mtn log --brief --no-graph --no-merges --from l:"1 week ago" --to ${REV_NOW}| awk '{print $2 ":" $1}'` ; do \
+if test -e oldrev ; then
+    export OLD_REV=`cat oldrev`
+else
+    export OLD_REV="l:\"1 week ago\""
+fi
+
+for i in `mtn log --brief --no-graph --no-merges --to ${OLD_REV} --from ${REV_NOW}| awk '{print $2 ":" $1}'` ; do \
         export REV=`echo $i | awk -F: '{print $2}'`
         export AUTHOR=`echo $i | awk -F: '{print $1}'`
         export CL=`mtn ls certs ${REV} | grep -A 1 changelog | grep -v changelog | gawk -F'Value : '  '{ print $2 }'`
@@ -36,6 +42,8 @@ echo -e "\n\nBugs opened:" >> ${LOGNAME}
 cat logs/new-bugs.csv | awk -F, '{print $1 " " $7 "\t " $8}' | sed s:\"::g >> ${LOGNAME}
 
 echo -e "\nIn total $NEW_BUGS bugs have been created and $RESOLVED_BUGS bugs were closed." >> ${LOGNAME}
+
+echo ${REV_NOW} > oldrev
 
 rm -Rf logs 
 

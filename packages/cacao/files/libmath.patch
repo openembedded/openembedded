@@ -1,0 +1,53 @@
+Index: cacao-0.98/configure.ac
+===================================================================
+--- cacao-0.98.orig/configure.ac	2007-07-21 12:11:47.000000000 +0200
++++ cacao-0.98/configure.ac	2007-07-21 13:36:40.000000000 +0200
+@@ -234,6 +234,48 @@
+ AC_EGREP_HEADER(u_int32_t, sys/types.h, AC_DEFINE(HAVE_BSD_INT32_DEFINED, 1, [Define to 1 if you have BSD u_int32_t]))
+ AC_EGREP_HEADER(u_int32_t, sys/config.h, AC_DEFINE(HAVE_BSD_INT32_DEFINED, 1, [Define to 1 if you have BSD u_int32_t]))
+ 
++dnl The idea of this solutions comes from bochs-project configure.in
++dnl 
++dnl Add the -lm library if math functions cannot be used without it.
++dnl This check is important on cygwin because of the bizarre way that they
++dnl have organized functions into libraries.  On cygwin, both libc.a and
++dnl libm.a are symbolic links to a single lib libcygwin.a.  This means that
++dnl   1) linking with -lm is not necessary, and
++dnl   2) linking with -lm is dangerous if the order of libraries is wrong
++dnl In particular, if you compile any program with -mno-cygwin and link with
++dnl -lm, it will crash instantly when it is run.  This happens because the
++dnl linker incorrectly links the Cygwin libm.a (==libcygwin.a), which replaces
++dnl the ___main function instead of allowing it to be defined by
++dnl /usr/lib/mingw/libmingw32.a as it should be.
++dnl
++dnl On MacOS X, this test will find that -lm is unnecessary and leave it out.
++dnl
++dnl With uClibc and without libjvm cacao needs to be linked with -lm because of
++dnl the function scalbn 
++dnl
++dnl Just check this math functions. If it is found without
++dnl -lm, then we must not need -lm.
++have_scalbn=0
++AC_CHECK_FUNCS(scalbn, have_scalbn=1)
++AC_MSG_CHECKING(if math functions link without -lm)
++if test "$have_scalbn" = 1; then
++    AC_MSG_RESULT(yes)
++else
++    AC_MSG_RESULT(no)
++    LIBS="$LIBS -lm"
++    # use different functions to bypass configure caching
++    have_scalbl=0
++    AC_CHECK_FUNCS(scalbl, have_scalbl=1)
++    AC_MSG_CHECKING(if math functions link with -lm)
++    if test "$have_scalbl" = 1; then
++        AC_MSG_RESULT(yes)
++    else
++        AC_MSG_RESULT(no)
++        # not sure we should warn the user, crash, etc.
++	# expect link failure
++    fi
++fi
++
+ dnl Checks for typedefs, structures, and compiler characteristics.
+ AC_C_CONST
+ AC_C_INLINE

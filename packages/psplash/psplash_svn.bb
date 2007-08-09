@@ -2,22 +2,21 @@ DESCRIPTION = "Userspace framebuffer boot logo based on usplash."
 SECTION = "base"
 LICENSE = "GPL"
 PV = "0.0+svn${SRCDATE}"
-PR = "r5"
+PR = "r8"
 
 # You can create your own pslash-hand-img.h by doing
 # ./make-image-header.sh <file>.png HAND
 # and rename the resulting .h to pslash-hand-img.h (for the logo)
-# respectively psplash-bar-img.h (for the bar).
+# respectively psplash-bar-img.h (BAR) for the bar.
 # You might also want to patch the colors (see patch)
 
 SRC_URI = "svn://svn.o-hand.com/repos/misc/trunk;module=psplash;proto=http \
           file://psplash-hand-img.h \
           file://psplash-bar-img.h \
-          file://psplash-init "
+          file://psplash-init"
 S = "${WORKDIR}/psplash"
 
-# for now only GTA01, later use openmoko distro override
-SRC_URI_append_fic-gta01 = "file://configurability.patch;patch=1 "
+SRC_URI_append_openmoko = " file://configurability.patch;patch=1 "
 
 inherit autotools pkgconfig update-rc.d
 

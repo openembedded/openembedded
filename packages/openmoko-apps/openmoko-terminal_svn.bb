@@ -1,7 +1,7 @@
 DESCRIPTION = "The OpenMoko Command Line Console"
 SECTION = "openmoko/applications"
 RDEPENDS += "gtkterm2"
-PV = "1.0.0+svn${SRCDATE}"
+PV = "1.0.0"
 PR = "r1"
 
 inherit openmoko

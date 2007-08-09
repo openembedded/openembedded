@@ -12,7 +12,7 @@ SRC_URI = "http://www.freedesktop.org/software/pkgconfig/releases/pkgconfig-${PV
            file://pkg.m4 \
            file://glibconfig-sysdefs.h"
 
-inherit autotools
+inherit autotools 
 
 acpaths = "-I ."
 do_configure_prepend () {

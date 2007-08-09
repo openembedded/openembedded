@@ -1,0 +1,14 @@
+Recent autotools/m4 updates don't like configure.in files without a newline
+at the end. Fix this up.
+
+Index: p3scan-2.9.05d/configure.in
+===================================================================
+--- p3scan-2.9.05d.orig/configure.in	2007-08-08 21:39:49.000000000 +1000
++++ p3scan-2.9.05d/configure.in	2007-08-08 21:39:49.000000000 +1000
+@@ -456,4 +456,4 @@
+ echo "Please consider donating to this project at http://p3scan.sourceforge.net"
+ echo "Mahalo Nui Loa and Enjoy!"
+ echo
+-#EOF
+\ No newline at end of file
++#EOF

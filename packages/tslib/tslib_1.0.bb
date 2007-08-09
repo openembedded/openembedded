@@ -4,12 +4,12 @@ AUTHOR = "Russell King w/ plugins by Chris Larson et. al."
 SECTION = "base"
 LICENSE = "LGPL"
 
-PR = "r14"
+PR = "r16"
 
 SRC_URI = "http://download.berlios.de/tslib/tslib-1.0.tar.bz2 \
            file://tslib-input_raw-grab_events.patch;patch=1 \
            file://fix_version.patch;patch=1 \
-	   file://ts.conf \
+           file://ts.conf \
            file://ts.conf-simpad-2.4 \
            file://ts.conf-collie-2.4 \
            file://tslib.sh"

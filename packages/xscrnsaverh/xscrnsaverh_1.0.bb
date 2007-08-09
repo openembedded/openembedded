@@ -1,7 +1,7 @@
 
 PR = "r0"
 
-DEPENDS = "xextensions"
+DEPENDS = "libxext"
 SECTION = "x11"
 LICENSE = "X-MIT"
 DESCRIPTION = "missing header"

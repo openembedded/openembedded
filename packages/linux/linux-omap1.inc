@@ -7,8 +7,7 @@ COMPATIBLE_MACHINE = "omap5912osk"
 
 inherit kernel
 
-KERNEL_IMAGETYPE = "vmlinux"
-KERNEL_OUTPUT = "${KERNEL_IMAGETYPE}"
+KERNEL_IMAGETYPE = "uImage"
 
 module_autoload_ohci-hcd_omap5912osk = "ohci-hcd"
 
@@ -22,15 +21,9 @@ do_configure_prepend() {
 
         oe_runmake oldconfig
 }
-
 do_deploy() {
-        if [ "${MACHINE}" == "omap5912osk" ]; then
-                install -d ${DEPLOY_DIR_IMAGE}
-                ${OBJCOPY} -O binary -R .note -R .comment -S ${KERNEL_OUTPUT} ${S}/linux.bin
-                gzip -f -9 ${S}/linux.bin
-                mkimage -A arm -O linux -T kernel -C gzip -a 0x10008000 -e 0x10008000 -n "OE" -d ${S}/linux.bin.gz ${DEPLOY_DIR_IMAGE}/${KERNEL_IMAGETYPE}-${KERNEL_VERSION}-${MACHINE}-${DATETIME}.bin
-                rm ${S}/linux.bin.gz
-        fi
+        install -d ${DEPLOY_DIR_IMAGE}
+        install -m 0644 arch/${ARCH}/boot/${KERNEL_IMAGETYPE} ${DEPLOY_DIR_IMAGE}/${KERNEL_IMAGETYPE}-${PV}-${MACHINE}-${DATETIME}
 }
 
 do_deploy[dirs] = "${S}"

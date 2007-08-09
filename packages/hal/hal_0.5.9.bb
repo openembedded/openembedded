@@ -5,9 +5,11 @@ RDEPENDS += "udev hal-info"
 #RDEPENDS_hal-device-manager = "python hal python-pygnome"
 RRECOMMENDS = "udev-utils"
 
-PR = "r1"
+PR = "r2"
 
-SRC_URI += "file://99_hal"
+SRC_URI += "file://99_hal \
+            file://20hal \
+	   "
 
 EXTRA_OECONF = "--with-hwdata=${datadir}/hwdata \
                 --with-expat=${STAGING_LIBDIR}/.. \
@@ -29,6 +31,8 @@ do_configure() {
 do_install_append() {
 	install -d ${D}/etc/default/volatiles
 	install -m 0644 ${WORKDIR}/99_hal ${D}/etc/default/volatiles
+        install -d ${D}/etc/dbus-1/event.d
+        install -m 0755 ${WORKDIR}/20hal ${D}/etc/dbus-1/event.d
 }
 
 do_stage() {

@@ -3,14 +3,15 @@ SECTION = "kernel"
 LICENSE = "GPL"
 
 # These devices need mkimage to generate a kernel image 
-DEPENDS_kb9202 = "u-boot-mkimage-gta01-native"
-DEPENDS_at32stk1000 = "u-boot-mkimage-gta01-native" 
-DEPENDS_atngw100 = "u-boot-mkimage-gta01-native"
-DEPENDS_at91sam9263ek = "u-boot-mkimage-gta01-native"
-DEPENDS_sarge-at91 = "u-boot-mkimage-gta01-native"
+DEPENDS_kb9202 = "u-boot-mkimage-openmoko-native"
+DEPENDS_at32stk1000 = "u-boot-mkimage-openmoko-native" 
+DEPENDS_atngw100 = "u-boot-mkimage-openmoko-native"
+DEPENDS_at91sam9263ek = "u-boot-mkimage-openmoko-native"
+DEPENDS_sarge-at91 = "u-boot-mkimage-openmoko-native"
 
 inherit kernel
 
+KERNEL_IMAGETYPE_alix = "bzImage"
 KERNEL_IMAGETYPE_progear = "bzImage"
 KERNEL_IMAGETYPE_simpad = "zImage"
 KERNEL_IMAGETYPE_kb9202 = "uImage"

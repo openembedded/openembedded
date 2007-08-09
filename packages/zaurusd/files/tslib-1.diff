@@ -1,0 +1,11 @@
+--- /tmp/configure.ac	2007-08-04 10:09:46.000000000 +0200
++++ zaurusd/configure.ac	2007-08-04 10:10:35.308400000 +0200
+@@ -45,7 +45,7 @@
+ 	#
+         # Checks for tslib
+ 	#
+-	PKG_CHECK_MODULES(TSLIB, "tslib-0.0", :, AC_MSG_ERROR([TSKeys requires tslib.]))
++	PKG_CHECK_MODULES(TSLIB, "tslib-1.0", :, AC_MSG_ERROR([TSKeys requires tslib.]))
+ 	AC_SUBST(TSLIB_CFLAGS)
+ 	AC_SUBST(TSLIB_LIBS)
+ fi

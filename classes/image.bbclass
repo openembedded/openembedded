@@ -58,6 +58,7 @@ IMAGE_LINGUAS ?= "de-de fr-fr en-gb"
 LINGUAS_INSTALL = "${@" ".join(map(lambda s: "locale-base-%s" % s, bb.data.getVar('IMAGE_LINGUAS', d, 1).split()))}"
 
 ROOTFS_POSTPROCESS_COMMAND ?= ""
+MACHINE_POSTPROCESS_COMMAND ?= ""
 
 do_rootfs[nostamp] = "1"
 do_rootfs[dirs] = "${TOPDIR}"
@@ -100,6 +101,8 @@ fakeroot do_rootfs () {
 	done
 
 	${IMAGE_POSTPROCESS_COMMAND}
+	
+	${MACHINE_POSTPROCESS_COMMAND}
 }
 
 insert_feed_uris () {

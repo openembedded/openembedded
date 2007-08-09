@@ -3,7 +3,7 @@ SECTION = "kernel"
 AUTHOR = "Harald Welte <laforge@openmoko.org>"
 HOMEPAGE = "N/A"
 LICENSE = "GPL"
-DEPENDS += "quilt-native uboot-gta01"
+DEPENDS += "quilt-native uboot-openmoko"
 
 inherit kernel
 
@@ -93,6 +93,7 @@ do_deploy() {
 	rm -f linux.bin.gz
 	gzip -9 linux.bin
 	${STAGING_BINDIR_NATIVE}/uboot-mkimage -A arm -O linux -T kernel -C gzip -a 30008000 -e 30008000 -n "OpenMoko Kernel Image Neo1973(GTA01)" -d linux.bin.gz ${DEPLOY_DIR_IMAGE}/uImage-${PV}-${PR}-${MACHINE}.bin
+	ln -sf ${DEPLOY_DIR_IMAGE}/uImage-${PV}-${PR}-${MACHINE}.bin ${DEPLOY_DIR_IMAGE}/uImage-${MACHINE}-latest.bin
 	rm -f linux.bin.gz
 }
 
