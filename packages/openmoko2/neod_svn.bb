@@ -4,4 +4,4 @@ DEPENDS = "gtk+ pulseaudio"
 PV = "0.1.0+svn${SVNREV}"
 PR = "r0"
 
-inherit openmoko2
+inherit openmoko2 gconf
