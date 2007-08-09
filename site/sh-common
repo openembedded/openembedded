@@ -30,8 +30,6 @@ ac_cv_uint=${ac_cv_uint=yes}
 ac_cv_ulong=${ac_cv_ulong=yes}
 ac_cv_ushort=${ac_cv_ushort=yes}
 
-mr_cv_target_elf=${mr_cv_target_elf=yes}
-
 ac_cv_time_r_type=${ac_cv_time_r_type=POSIX}
 
 # apache
@@ -230,8 +228,6 @@ bash_cv_have_mbstate_t=${bash_cv_have_mbstate_t=yes}
 bash_cv_func_sigsetjmp=${bash_cv_func_sigsetjmp=missing}
 bash_cv_must_reinstall_sighandlers=${bash_cv_must_reinstall_sighandlers=no}
 bash_cv_func_strcoll_broken=${bash_cv_func_strcoll_broken=no}
-bash_cv_under_sys_siglist=${bash_cv_under_sys_siglist=yes}
-bash_cv_sys_siglist=${bash_cv_sys_siglist=yes}
 bash_cv_dup2_broken=${bash_cv_dup2_broken=no}
 bash_cv_opendir_not_robust=${bash_cv_opendir_not_robust=no}
 bash_cv_type_rlimit=${bash_cv_type_rlimit=rlim_t}
@@ -243,7 +239,6 @@ bash_cv_pgrp_pipe=${bash_cv_pgrp_pipe=no}
 bash_cv_job_control_missing=${bash_cv_job_control_missing=present}
 bash_cv_sys_named_pipes=${bash_cv_sys_named_pipes=present}
 bash_cv_unusable_rtsigs=${bash_cv_unusable_rtsigs=no}
-ac_cv_have_decl_sys_siglist=${ac_cv_have_decl_sys_siglist=yes}
 
 # mono
 cv_mono_sizeof_sunpath=108

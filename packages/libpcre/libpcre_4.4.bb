@@ -5,9 +5,9 @@ provides a POSIX calling interface to PCRE; the regular expressions \
 themselves still follow Perl syntax and semantics. The header file for \
 the POSIX-style functions is called pcreposix.h."
 SECTION = "devel"
-PR = "r6"
+PR = "r8"
 LICENSE = "BSD"
-SRC_URI = "ftp://ftp.csx.cam.ac.uk/pub/software/programming/pcre/pcre-${PV}.tar.bz2"
+SRC_URI = "${SOURCEFORGE_MIRROR}/pcre/pcre-${PV}.tar.bz2"
 S = "${WORKDIR}/pcre-${PV}"
 
 PROVIDES = "pcre"
@@ -37,7 +37,9 @@ do_stage () {
 	oe_libinstall -a -so libpcreposix ${STAGING_LIBDIR}
 	install -m 0644 pcre.h ${STAGING_INCDIR}/
 	install -m 0644 pcreposix.h ${STAGING_INCDIR}/
+        install -d ${STAGING_BINDIR_NATIVE}
+	install -m 0755 ${S}/dftables ${STAGING_BINDIR_NATIVE}/
 }
 
-FILES_${PN} = "${libdir}/lib*.so*"
+FILES_${PN} = "${libdir}/lib*.so.*"
 FILES_${PN}-dev += "${bindir}/*"

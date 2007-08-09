@@ -1,8 +1,11 @@
-SECTION = "gpe"
-SRC_URI = "file://${PN}.desktop file://${PN}.png"
 DESCRIPTION = "GPE terminal wrapper"
-PV = "1.1"
+SECTION = "gpe"
 LICENSE = "GPL"
+RRECOMMENDS = "rxvt-unicode"
+PR = "r1"
+
+SRC_URI = "file://${PN}.desktop file://${PN}.png"
+
 do_install() {
 	install -d ${D}${datadir}/applications
 	install -d ${D}${datadir}/pixmaps

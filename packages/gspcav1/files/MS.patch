@@ -1,0 +1,29 @@
+--- gspcav1-20070110/gspca_core.c.orig	2007-03-16 23:24:37.000000000 +0000
++++ gspcav1-20070110/gspca_core.c	2007-03-16 23:24:43.000000000 +0000
+@@ -398,7 +398,7 @@
+ 	Sonyc002,
+ 	Vimicro0321,
+ 	Orbicam,
+-	M$VX1000,
++	MSVX1000,
+ 	Trust610LCDPowerCamZoom,
+ 	Sonyc001,	
+ 	LastCamera
+@@ -580,7 +580,7 @@
+ 	{Sonyc002,"Vc0321"},
+ 	{Vimicro0321,"Vc0321"},
+ 	{Orbicam,"Logitech Orbicam"},
+-	{M$VX1000,"MicroSoft VX1000"},
++	{MSVX1000,"MicroSoft VX1000"},
+ 	{Trust610LCDPowerCamZoom, "Trust 610 LCD PowerC@m Zoom"},
+ 	{Sonyc001,"Sony Visual Communication VGP-VCC1"},
+ 	{-1, NULL}
+@@ -3124,7 +3124,7 @@
+ 	case 0x045e:
+ 		switch(product){
+ 		case 0x00f7:
+-			spca50x->desc = M$VX1000;
++			spca50x->desc = MSVX1000;
+ 			spca50x->bridge = BRIDGE_SN9CXXX;
+ 			spca50x->sensor = SENSOR_OV7660;
+ 			spca50x->customid = SN9C105;

@@ -1,5 +1,11 @@
+#
+# Copyright 2006-2007 OpenedHand Ltd.
+#
+
 inherit package
-DEPENDS_prepend="${@["dpkg-native ", ""][(bb.data.getVar('PACKAGES', d, 1) == '')]}"
+
+PACKAGE_EXTRA_DEPENDS += "dpkg-native fakeroot-native"
+
 BOOTSTRAP_EXTRA_RDEPENDS += "dpkg"
 DISTRO_EXTRA_RDEPENDS += "dpkg"
 PACKAGE_WRITE_FUNCS += "do_package_deb"
@@ -130,6 +136,7 @@ python do_package_deb () {
             continue
         controldir = os.path.join(root, 'DEBIAN')
         bb.mkdirhier(controldir)
+        os.chmod(controldir, 0755)
         try:
             ctrlfile = file(os.path.join(controldir, 'control'), 'wb')
             # import codecs
@@ -138,13 +145,17 @@ python do_package_deb () {
             raise bb.build.FuncFailed("unable to open control file for writing.")
 
         fields = []
-        fields.append(["Version: %s-%s\n", ['PV', 'PR']])
+        pe = bb.data.getVar('PE', d, 1)
+        if pe and int(pe) > 0:
+            fields.append(["Version: %s:%s-%s\n", ['PE', 'PV', 'PR']])
+        else:
+            fields.append(["Version: %s-%s\n", ['PV', 'PR']])
         fields.append(["Description: %s\n", ['DESCRIPTION']])
         fields.append(["Section: %s\n", ['SECTION']])
         fields.append(["Priority: %s\n", ['PRIORITY']])
         fields.append(["Maintainer: %s\n", ['MAINTAINER']])
         fields.append(["Architecture: %s\n", ['TARGET_ARCH']])
-        fields.append(["OE: %s\n", ['P']])
+        fields.append(["OE: %s\n", ['PN']])
         fields.append(["Homepage: %s\n", ['HOMEPAGE']])
 
 #        Package, Version, Maintainer, Description - mandatory
@@ -205,6 +216,7 @@ python do_package_deb () {
                 scriptfile = file(os.path.join(controldir, script), 'w')
             except OSError:
                 raise bb.build.FuncFailed("unable to open %s script file for writing." % script)
+            scriptfile.write("#!/bin/sh\n")
             scriptfile.write(scriptvar)
             scriptfile.close()
             os.chmod(os.path.join(controldir, script), 0755)

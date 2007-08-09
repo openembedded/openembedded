@@ -3,9 +3,7 @@ LICENSE = "MIT"
 DEPENDS = "ipkg-native ipkg-utils-native fakeroot-native sed-native"
 PR = "r0"
 
-PACKAGES = ""
-
-inherit sdk
+inherit rootfs_ipk sdk meta
 
 SDK_DIR = "${WORKDIR}/sdk"
 SDK_OUTPUT = "${SDK_DIR}/image"
@@ -23,27 +21,32 @@ TARGET_INSTALL = "\
     "
 
 RDEPENDS = "${TARGET_INSTALL} ${HOST_INSTALL}"
-BUILD_ALL_DEPS = "1"
+
+sdk_ipk_do_indexes () {
+        set -ex
+        rootfs_ipk_do_indexes
+        set +ex
+}
 
 do_populate_sdk() {
-	touch ${DEPLOY_DIR_IPK}/Packages
-	ipkg-make-index -r ${DEPLOY_DIR_IPK}/Packages -p ${DEPLOY_DIR_IPK}/Packages -l ${DEPLOY_DIR_IPK}/Packages.filelist -m ${DEPLOY_DIR_IPK}
-
+        sdk_ipk_do_indexes
 	rm -rf ${SDK_OUTPUT}
 	mkdir -p ${SDK_OUTPUT}
 
+        echo "Creating host.conf..."
+
 	cat <<EOF >${SDK_DIR}/ipkg-host.conf
-src oe file:${DEPLOY_DIR_IPK}
+src oe file:${DEPLOY_DIR_IPK}/${BUILD_ARCH}
 arch ${BUILD_ARCH} 1
 EOF
-        cat <<EOF >${SDK_DIR}/ipkg-target.conf
-src oe file:${DEPLOY_DIR_IPK}
-EOF
-	ipkgarchs="${PACKAGE_ARCHS}"
+        echo "done."
         priority=1
         for arch in $ipkgarchs; do
                 echo "arch $arch $priority" >> ${SDK_DIR}/ipkg-target.conf
-	        priority=$(expr $priority + 5)
+                priority=$(expr $priority + 5)
+                if [ -e ${DEPLOY_DIR_IPK}/$arch/Packages ] ; then
+                        echo "src oe-$arch file:${DEPLOY_DIR_IPK}/$arch" >> ${SDK_DIR}/ipkg-target.conf
+                fi
         done
 
 	rm -r ${SDK_OUTPUT}
@@ -96,4 +99,5 @@ EOF
 }
 
 do_populate_sdk[nostamp] = "1"
+do_populate_sdk[recrdeptask] = "do_package_write"
 addtask populate_sdk before do_build after do_install

@@ -1,4 +1,9 @@
 require anthy_${PV}.bb
-PACKAGES = ""
+
 DEPENDS = ""
+PACKAGES = ""
+PR = "r1"
+
+S = "${WORKDIR}/anthy-${PV}"
+
 inherit native

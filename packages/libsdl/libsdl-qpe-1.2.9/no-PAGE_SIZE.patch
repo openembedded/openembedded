@@ -1,0 +1,11 @@
+--- SDL-1.2.9-orig/src/video/qtopia/SDL_sysvideo.cc.org	2007-05-25 07:07:32.000000000 +0000
++++ SDL-1.2.9-orig/src/video/qtopia/SDL_sysvideo.cc	2007-05-25 07:24:48.000000000 +0000
+@@ -809,7 +809,7 @@
+ 	current->pitch = finfo.line_length;
+         current->flags = (SDL_FULLSCREEN|SDL_HWSURFACE);
+         mapped_offset = (((long)finfo.smem_start) -
+-	                (((long)finfo.smem_start)&~(PAGE_SIZE-1)));
++	                (((long)finfo.smem_start)&~(getpagesize()-1)));
+ 	mapped_memlen = finfo.smem_len+mapped_offset;
+         if(console_fd >0 ) {
+ 		mapped_mem = mmap(NULL, mapped_memlen,PROT_READ|PROT_WRITE, MAP_SHARED, console_fd, 0);

@@ -1,8 +1,6 @@
-Index: src/kernel/kernelkeyboard.cpp
-===================================================================
---- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ qte/src/kernel/kernelkeyboard.cpp	2006-04-01 23:42:35.154645456 +0200
-@@ -0,0 +1,701 @@
+--- /dev/null	2004-07-13 00:58:01.000000000 +0000
++++ qte/src/kernel/kernelkeyboard.cpp	2007-04-07 01:00:36.000000000 +0000
+@@ -0,0 +1,769 @@
 +/*
 +
 + Copyright (C) 2003             Chris Larson
@@ -70,6 +68,22 @@ Index: src/kernel/kernelkeyboard.cpp
 +	-Fix handling of Function Keys
 +	-Fix handling of the unicode value (to fix QPopupMenu,QAction)
 +	
++ */
++
++/*
++    Paul Sokolovsky, 2007-04:
++    
++    1. Added support for nicely named and extensible key bindings.
++       E.g., in loadkeys do:
++         keycode 155 = F100
++         string F100 = "power"
++       where 155 is keycode a power button happens to have on your machine, F100 is
++       arbitrary function key (please use F100-F120), and "power" is OPIE binding.
++       Currently defined bindings are "power", "backlight", "record"
++    2. K_DO ("Do") keycode is mapped to OPIE power button by default. Kernel uses
++       K_DO for KEY_POWER input subsystem keycode. So, if your device does the right
++       thing, it will work out of the box.
++    3. Implemented NumLock handling for numeric keypad.
 + */
 +
 +/*
@@ -179,6 +193,24 @@ Index: src/kernel/kernelkeyboard.cpp
 +        return;
 +}
 +
++static Qt::Key getSpecialKey(int fKey)
++{
++    struct kbsentry kbs;
++    kbs.kb_func = fKey;
++
++    if (ioctl(kbdFD, KDGKBSENT, &kbs) != 0)
++	return Qt::Key_unknown;
++    const char *str = (const char *)kbs.kb_string;
++
++    if (!strcmp("record", str))
++        return Qt::Key_F24;
++    else if (!strcmp("power", str))
++        return Qt::Key_F34;
++    else if (!strcmp("backlight", str))
++        return Qt::Key_F35;
++
++    return Qt::Key_unknown;
++}
 +
 +void QWSTtyKeyboardHandler::readKeyboardMap()
 +{
@@ -221,7 +253,12 @@ Index: src/kernel/kernelkeyboard.cpp
 +                    kernel_map[map][key] = KeyMap( static_cast<Qt::Key>( Qt::Key_F1  + kval ), kval );
 +                else if ( kval >= 30 && kval <= 44)
 +                    kernel_map[map][key] = KeyMap( static_cast<Qt::Key>( Qt::Key_F21 + (kval - 30) ), kval );
-+                else
++                else {
++		    Qt::Key specialKey = getSpecialKey(kval);
++		    if (specialKey != Qt::Key_unknown) {
++                        kernel_map[map][key] = KeyMap( specialKey, kval );
++		    } 
++		    else
 +                    switch(kbe.kb_value ) {
 +                    case K_INSERT:
 +                        kernel_map[map][key] = KeyMap( Qt::Key_Insert, kval );
@@ -251,10 +288,13 @@ Index: src/kernel/kernelkeyboard.cpp
 +			kernel_map[map][key] = KeyMap( Qt::Key_Home, kval );
 +			break;
 +                    case K_DO:
++			kernel_map[map][key] = KeyMap( Qt::Key_F34, kval );
++			break;
 +                    default:
 +                        kernel_map[map][key] = KeyMap( Qt::Key_unknown, kval );
 +                        break;
 +                    }
++		}
 +                break;
 +
 +            case KT_SPEC:
@@ -302,56 +342,58 @@ Index: src/kernel/kernelkeyboard.cpp
 +                 */
 +                switch(kbe.kb_value ) {
 +                case K_P0:
-+                    kernel_map[map][key] = KeyMap( Qt::Key_0, 48 );
++                    kernel_map[map][key] = KeyMap( Qt::Key_0, kbe.kb_value );
 +                    break;
 +                case K_P1:
-+                    kernel_map[map][key] = KeyMap( Qt::Key_1, 49 );
++                    kernel_map[map][key] = KeyMap( Qt::Key_1, kbe.kb_value );
 +                    break;
 +                case K_P2:
-+                    kernel_map[map][key] = KeyMap( Qt::Key_2, 50 );
++                    kernel_map[map][key] = KeyMap( Qt::Key_2, kbe.kb_value );
 +                    break;
 +                case K_P3:
-+                    kernel_map[map][key] = KeyMap( Qt::Key_3, 51 );
++                    kernel_map[map][key] = KeyMap( Qt::Key_3, kbe.kb_value );
 +                    break;
 +                case K_P4:
-+                    kernel_map[map][key] = KeyMap( Qt::Key_4, 52 );
++                    kernel_map[map][key] = KeyMap( Qt::Key_4, kbe.kb_value );
 +                    break;
 +                case K_P5:
-+                    kernel_map[map][key] = KeyMap( Qt::Key_5, 53 );
++                    kernel_map[map][key] = KeyMap( Qt::Key_5, kbe.kb_value );
 +                    break;
 +                case K_P6:
-+                    kernel_map[map][key] = KeyMap( Qt::Key_6, 54 );
++                    kernel_map[map][key] = KeyMap( Qt::Key_6, kbe.kb_value );
 +                    break;
 +                case K_P7:
-+                    kernel_map[map][key] = KeyMap( Qt::Key_7, 55 );
++                    kernel_map[map][key] = KeyMap( Qt::Key_7, kbe.kb_value );
 +                    break;
 +                case K_P8:
-+                    kernel_map[map][key] = KeyMap( Qt::Key_8, 56 );
++                    kernel_map[map][key] = KeyMap( Qt::Key_8, kbe.kb_value );
 +                    break;
 +                case K_P9:
-+                    kernel_map[map][key] = KeyMap( Qt::Key_9, 57 );
++                    kernel_map[map][key] = KeyMap( Qt::Key_9, kbe.kb_value );
 +                    break;
 +                case K_PPLUS:
-+                    kernel_map[map][key] = KeyMap( Qt::Key_Plus, kval );
++                    kernel_map[map][key] = KeyMap( Qt::Key_Plus, '+' );
 +                    break;
 +                case K_PMINUS:
-+                    kernel_map[map][key] = KeyMap( Qt::Key_Minus, kval );
++                    kernel_map[map][key] = KeyMap( Qt::Key_Minus, '-' );
 +                    break;
 +                case K_PSTAR:
-+                    kernel_map[map][key] = KeyMap( Qt::Key_multiply, 42 );
++                    kernel_map[map][key] = KeyMap( Qt::Key_multiply, '*' );
 +                    break;
 +                case K_PSLASH:
-+                    kernel_map[map][key] = KeyMap( Qt::Key_division, kval );
++                    kernel_map[map][key] = KeyMap( Qt::Key_division, '/' );
 +                    break;
 +                case K_PENTER:
 +                    kernel_map[map][key] = KeyMap( Qt::Key_Enter, kval );
 +                    break;
 +                case K_PCOMMA:
-+                    kernel_map[map][key] = KeyMap( Qt::Key_Comma, kval ) ;
++                    kernel_map[map][key] = KeyMap( Qt::Key_Comma, '.' ) ;
 +                    break;
 +                case K_PPLUSMINUS:
 +                    kernel_map[map][key] = KeyMap( Qt::Key_plusminus, kval );
++                    break;
 +                case K_PDOT:
++                    kernel_map[map][key] = KeyMap( Qt::Key_Comma, '.' ) ;
 +                    break;
 +                case K_PPARENL:
 +                    kernel_map[map][key] = KeyMap( Qt::Key_ParenLeft, kval );
@@ -511,6 +553,19 @@ Index: src/kernel/kernelkeyboard.cpp
 +    }
 +}
 +
++static Qt::Key numpad2cursor[NR_PAD] = {
++    Qt::Key_Insert,
++    Qt::Key_End,
++    Qt::Key_Down,
++    Qt::Key_Next,
++    Qt::Key_Left,
++    Qt::Key_5,
++    Qt::Key_Right,
++    Qt::Key_Home,
++    Qt::Key_Up,
++    Qt::Key_Prior,
++};
++
 +void QWSTtyKeyboardHandler::handleKey(unsigned int code, bool release)
 +{
 +    int old_modifier = modifier;
@@ -522,7 +577,9 @@ Index: src/kernel/kernelkeyboard.cpp
 +	    key_map = kernel_map[0][code];
 +    }
 +    
-+    unsigned short unicode = acm[key_map.code] & 0xff;
++    unsigned short unicode = 0xffff;
++    if (key_map.code < 0x100)
++	unicode = acm[key_map.code & 0xff] & 0xff;
 +    unsigned int   qtKeyCode = key_map.key;
 +
 +//    if ( !release )
@@ -598,6 +655,15 @@ Index: src/kernel/kernelkeyboard.cpp
 +        modifyModifier( map, modif, release );
 +
 +    handleExtra( qtKeyCode, release );
++
++    // Do NumLock
++    if (KTYP(key_map.code) == KT_PAD) {
++	if (!numlock) {
++	    qtKeyCode = numpad2cursor[KVAL(key_map.code)];
++	} else {
++    	    unicode = KVAL(key_map.code) + '0';
++        }
++    }
 +
 +    /*
 +     * do not repeat modifier keys

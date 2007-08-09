@@ -1,0 +1,23 @@
+--- xserver-common-1.8/X11/Xinit.d/12keymap.orig	2006-04-14 22:57:16.200518376 +0200
++++ xserver-common-1.8/X11/Xinit.d/12keymap	2006-04-14 23:01:46.938359968 +0200
+@@ -4,18 +4,10 @@
+ 
+ case $MACHINE in
+ 	"SHARP Shepherd" | "SHARP Husky" | "SHARP Corgi")
+-		case `uname -r` in
+-			2.4*)
+-				xmodmap - < /etc/X11/shepherd.xmodmap
+-				;;
+-			esac
++		xmodmap - < /etc/X11/shepherd.xmodmap
+ 		;;
+ 	"SHARP Akita" | "SHARP Borzoi" | "SHARP Spitz")
+-		case `uname -r` in
+-			2.4*)
+-				xmodmap - < /etc/X11/slcXXXX.xmodmap
+-				;;
+-			esac
++		xmodmap - < /etc/X11/slcXXXX.xmodmap
+ 		;;				
+         "Sharp-Collie")
+                 xmodmap - < /etc/X11/collie.xmodmap

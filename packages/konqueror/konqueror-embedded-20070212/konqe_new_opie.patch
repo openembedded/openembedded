@@ -1,0 +1,756 @@
+diff -urNd --exclude-from=excludelist kdenox/acinclude.m4 kdenox_new/acinclude.m4
+--- kdenox/acinclude.m4	2007-02-12 22:26:21.000000000 +1300
++++ kdenox_new/acinclude.m4	2007-02-25 22:00:27.000000000 +1300
+@@ -880,7 +880,7 @@
+ )
+ 
+ AC_ARG_ENABLE(
+-  embedded,
++  rtti-embedded,
+   AC_HELP_STRING([--enable-rtti-embedded],[enable rtti support for Qt-embedded]),
+   kde_use_qt_emb_rtti=$enableval,
+   kde_use_qt_emb_rtti=no
+diff -urNd --exclude-from=excludelist kdenox/configure.in kdenox_new/configure.in
+--- kdenox/configure.in	2007-02-12 22:26:21.000000000 +1300
++++ kdenox_new/configure.in	2007-02-25 17:49:59.000000000 +1300
+@@ -60,10 +60,10 @@
+ 
+ 
+ if test "x$want_qpe" = "xyes"; then
+-    AC_PATH_QTOPIA(2.1.1)
++    AC_PATH_QTOPIA(1.0.0)
+     dnl hack
+     CXXFLAGS="$CXXFLAGS -D_QT_QPE_"
+-    LIB_QTOPIA="$LIB_QTOPIA -lqtopia -lqtopia2"
++    dnl LIB_QTOPIA="$LIB_QTOPIA -lqtopia -lqtopia2"
+ fi
+ 
+ dnl Checks for header files.
+diff -urNd --exclude-from=excludelist kdenox/configure.in.in kdenox_new/configure.in.in
+--- kdenox/configure.in.in	2007-02-12 22:26:20.000000000 +1300
++++ kdenox_new/configure.in.in	2007-02-25 17:49:27.000000000 +1300
+@@ -56,10 +56,10 @@
+ 
+ 
+ if test "x$want_qpe" = "xyes"; then
+-    AC_PATH_QTOPIA(2.1.1)
++    AC_PATH_QTOPIA(1.0.0)
+     dnl hack
+     CXXFLAGS="$CXXFLAGS -D_QT_QPE_"
+-    LIB_QTOPIA="$LIB_QTOPIA -lqtopia -lqtopia2"
++    dnl LIB_QTOPIA="$LIB_QTOPIA -lqtopia -lqtopia2"
+ fi
+ 
+ dnl Checks for header files.
+diff -urNd --exclude-from=excludelist kdenox/konq-embed/dropin/kfiledialog.cpp kdenox_new/konq-embed/dropin/kfiledialog.cpp
+--- kdenox/konq-embed/dropin/kfiledialog.cpp	2007-02-12 22:25:57.000000000 +1300
++++ kdenox_new/konq-embed/dropin/kfiledialog.cpp	2007-02-24 03:29:25.000000000 +1300
+@@ -23,6 +23,7 @@
+ 
+ 
+ #include "kfiledialog.h"
++#include "kdebug.h"
+ 
+ #include <qlayout.h>
+ #include <qconfig.h>
+diff -urNd --exclude-from=excludelist kdenox/konq-embed/dropin/kio/kprotocolmanager.cpp kdenox_new/konq-embed/dropin/kio/kprotocolmanager.cpp
+--- kdenox/konq-embed/dropin/kio/kprotocolmanager.cpp	2007-02-12 22:25:55.000000000 +1300
++++ kdenox_new/konq-embed/dropin/kio/kprotocolmanager.cpp	2007-02-24 03:32:31.000000000 +1300
+@@ -23,7 +23,9 @@
+ */
+ 
+ #include "kprotocolmanager.h"
++#include <kdebug.h>
+ #include <kglobal.h>
++#include <klocale.h>
+ #include <kconfig.h>
+ #include <ioslave_defaults.h>
+ #include <kdeversion.h>
+diff -urNd --exclude-from=excludelist kdenox/konq-embed/dropin/kio/progressbase.cpp kdenox_new/konq-embed/dropin/kio/progressbase.cpp
+--- kdenox/konq-embed/dropin/kio/progressbase.cpp	2007-02-12 22:25:56.000000000 +1300
++++ kdenox_new/konq-embed/dropin/kio/progressbase.cpp	2007-02-24 03:33:10.000000000 +1300
+@@ -18,6 +18,7 @@
+ 
+ #include "jobclasses.h"
+ #include "progressbase.h"
++#include <kdebug.h>
+ 
+ //namespace KIO {
+ 
+diff -urNd --exclude-from=excludelist kdenox/konq-embed/ipkg/preinst kdenox_new/konq-embed/ipkg/preinst
+--- kdenox/konq-embed/ipkg/preinst	1970-01-01 12:00:00.000000000 +1200
++++ kdenox_new/konq-embed/ipkg/preinst	2007-02-25 21:20:10.000000000 +1300
+@@ -0,0 +1,15 @@
++#!/bin/sh
++
++prefix=/usr/kde/3.5
++prunefiles="lib/libkhtml.la lib/libkhtml.so lib/libkhtml.so.4.0.0"
++prunefiles="$prunefiles lib/libkhtml.so.4"
++prunefiles="$prunefiles lib/kjs_html.la lib/kjs_html.so"
++
++for _file in $prunefiles; do
++    file=$PKG_ROOT/$prefix/$_file;
++    if [ -f $file ]; then
++        echo "found old file $_file from b0rked konqueror ipkg. removing."
++	rm -f $file
++    fi
++done
++
+diff -urNd --exclude-from=excludelist kdenox/konq-embed/kdesrc/kdecore/kmultipledrag.h kdenox_new/konq-embed/kdesrc/kdecore/kmultipledrag.h
+--- kdenox/konq-embed/kdesrc/kdecore/kmultipledrag.h	2007-02-12 21:31:39.000000000 +1300
++++ kdenox_new/konq-embed/kdesrc/kdecore/kmultipledrag.h	2007-02-25 16:15:28.000000000 +1300
+@@ -26,6 +26,8 @@
+ #include <qvaluelist.h>
+ #include "kdelibs_export.h"
+ 
++#define QPtrList QList
++
+ class KMultipleDragPrivate;
+ /**
+  * This class makes it easy for applications to provide a drag object
+diff -urNd --exclude-from=excludelist kdenox/konq-embed/kdesrc/khtml/css/Makefile.am kdenox_new/konq-embed/kdesrc/khtml/css/Makefile.am
+--- kdenox/konq-embed/kdesrc/khtml/css/Makefile.am	2007-02-12 22:26:20.000000000 +1300
++++ kdenox_new/konq-embed/kdesrc/khtml/css/Makefile.am	2007-02-25 16:36:23.000000000 +1300
+@@ -39,7 +39,7 @@
+ INCLUDES = -I$(top_srcdir)/kimgio -I$(top_srcdir)/kio -I$(top_srcdir)/dcop \
+  -I$(top_srcdir)/khtml -I$(top_srcdir)/libltdl -I$(top_srcdir) \
+  -I$(top_srcdir)/kwallet/client -I$(top_srcdir)/kutils \
+- -I$(top_builddir)/konq-embed/kdesrc -I$(top_builddir)/konq-embed/kdesrc/kssl -I$(top_srcdir)/konq-embed/dropin -I$(top_srcdir)/konq-embed/kdesrc/kio -I$(top_srcdir)/konq-embed/kdesrc/kdecore -I$(top_srcdir)/konq-embed/kdesrc/kutils -I$(srcdir)/../.. -I$(srcdir)/.. -I$(srcdir)/../misc -I$(srcdir)/../misc -I$(srcdir)/../css -I$(srcdir)/../dom -I$(srcdir)/../xml -I$(srcdir)/../html -I$(top_srcdir)/konq-embed/dropin/kio -I$(srcdir)/../.. -I$(srcdir)/../../kjs -I$(top_srcdir)/konq-embed/dropin/kssl -I$(srcdir)/../../../dropin/khtml -I$(top_srcdir)/konq-embed/dropin/khtml/java $(QT_INCLUDES) $(X_INCLUDES) $(all_includes)
++ -I$(top_builddir)/konq-embed/kdesrc -I$(top_builddir)/konq-embed/kdesrc/kssl -I$(top_srcdir)/konq-embed/dropin -I$(top_srcdir)/konq-embed/kdesrc/kio -I$(top_srcdir)/konq-embed/kdesrc/kdecore -I$(top_srcdir)/konq-embed/kdesrc/kutils -I$(srcdir)/../.. -I$(srcdir)/.. -I$(srcdir)/../misc -I$(srcdir)/../misc -I$(srcdir)/../css -I$(srcdir)/../dom -I$(srcdir)/../xml -I$(srcdir)/../html -I$(top_srcdir)/konq-embed/dropin/kio -I$(srcdir)/../.. -I$(srcdir)/../../kjs -I$(top_srcdir)/konq-embed/dropin/kssl -I$(srcdir)/../../../dropin/khtml -I$(top_srcdir)/konq-embed/dropin/khtml/java $(QT_INCLUDES) $(QTOPIA_INCLUDES) $(X_INCLUDES) $(all_includes)
+ 
+ cssdir = $(kde_datadir)/khtml/css
+ css_DATA = html4.css quirks.css
+diff -urNd --exclude-from=excludelist kdenox/konq-embed/kdesrc/khtml/dom/Makefile.am kdenox_new/konq-embed/kdesrc/khtml/dom/Makefile.am
+--- kdenox/konq-embed/kdesrc/khtml/dom/Makefile.am	2007-02-12 22:26:20.000000000 +1300
++++ kdenox_new/konq-embed/kdesrc/khtml/dom/Makefile.am	2007-02-25 16:35:07.000000000 +1300
+@@ -47,7 +47,7 @@
+ #	css_extensions.h
+ 
+ INCLUDES = -I$(top_srcdir)/kimgio -I$(top_srcdir)/kio -I$(top_srcdir)/dcop \
+- -I$(top_srcdir)/khtml -I$(top_srcdir) -I$(top_builddir)/konq-embed/kdesrc -I$(top_builddir)/konq-embed/kdesrc/kssl -I$(top_srcdir)/konq-embed/dropin -I$(top_srcdir)/konq-embed/kdesrc/kio -I$(top_srcdir)/konq-embed/kdesrc/kdecore -I$(top_srcdir)/konq-embed/kdesrc/kutils -I$(srcdir)/../.. -I$(srcdir)/.. -I$(srcdir)/../misc -I$(srcdir)/../misc -I$(srcdir)/../css -I$(srcdir)/../dom -I$(srcdir)/../xml -I$(srcdir)/../html -I$(top_srcdir)/konq-embed/dropin/kio -I$(srcdir)/../.. -I$(srcdir)/../../kjs -I$(top_srcdir)/konq-embed/dropin/kssl -I$(srcdir)/../../../dropin/khtml -I$(top_srcdir)/konq-embed/dropin/khtml/java $(QT_INCLUDES) $(X_INCLUDES) $(all_includes)
++ -I$(top_srcdir)/khtml -I$(top_srcdir) -I$(top_builddir)/konq-embed/kdesrc -I$(top_builddir)/konq-embed/kdesrc/kssl -I$(top_srcdir)/konq-embed/dropin -I$(top_srcdir)/konq-embed/kdesrc/kio -I$(top_srcdir)/konq-embed/kdesrc/kdecore -I$(top_srcdir)/konq-embed/kdesrc/kutils -I$(srcdir)/../.. -I$(srcdir)/.. -I$(srcdir)/../misc -I$(srcdir)/../misc -I$(srcdir)/../css -I$(srcdir)/../dom -I$(srcdir)/../xml -I$(srcdir)/../html -I$(top_srcdir)/konq-embed/dropin/kio -I$(srcdir)/../.. -I$(srcdir)/../../kjs -I$(top_srcdir)/konq-embed/dropin/kssl -I$(srcdir)/../../../dropin/khtml -I$(top_srcdir)/konq-embed/dropin/khtml/java $(QT_INCLUDES) $(QTOPIA_INCLUDES) $(X_INCLUDES) $(all_includes)
+ 
+ SRCDOC_DEST=$(kde_htmldir)/en/kdelibs/khtml
+ 
+diff -urNd --exclude-from=excludelist kdenox/konq-embed/kdesrc/khtml/ecma/Makefile.am kdenox_new/konq-embed/kdesrc/khtml/ecma/Makefile.am
+--- kdenox/konq-embed/kdesrc/khtml/ecma/Makefile.am	2007-02-12 22:26:20.000000000 +1300
++++ kdenox_new/konq-embed/kdesrc/khtml/ecma/Makefile.am	2007-02-25 17:24:35.000000000 +1300
+@@ -16,7 +16,7 @@
+ #    the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
+ #    Boston, MA 02110-1301, USA.
+ 
+-INCLUDES = -I$(top_srcdir) -I$(top_srcdir)/kio -I$(top_srcdir)/kio/bookmarks -I$(top_srcdir)/khtml -I$(top_srcdir)/khtml/java -I$(top_srcdir)/kwallet/client -I$(top_srcdir)/kutils -I$(top_builddir)/kjs -I$(top_builddir)/konq-embed/kdesrc -I$(top_builddir)/konq-embed/kdesrc/kssl -I$(top_srcdir)/konq-embed/dropin -I$(top_srcdir)/konq-embed/kdesrc/kio -I$(top_srcdir)/konq-embed/kdesrc/kdecore -I$(top_srcdir)/konq-embed/kdesrc/kutils -I$(srcdir)/../.. -I$(srcdir)/.. -I$(srcdir)/../misc -I$(srcdir)/../misc -I$(srcdir)/../css -I$(srcdir)/../dom -I$(srcdir)/../xml -I$(srcdir)/../html -I$(top_srcdir)/konq-embed/dropin/kio -I$(srcdir)/../.. -I$(srcdir)/../../kjs -I$(top_srcdir)/konq-embed/dropin/kssl -I$(srcdir)/../../../dropin/khtml -I$(top_srcdir)/konq-embed/dropin/khtml/java $(QT_INCLUDES) $(X_INCLUDES) $(all_includes)
++INCLUDES = -I$(top_srcdir) -I$(top_srcdir)/kio -I$(top_srcdir)/kio/bookmarks -I$(top_srcdir)/khtml -I$(top_srcdir)/khtml/java -I$(top_srcdir)/kwallet/client -I$(top_srcdir)/kutils -I$(top_builddir)/kjs -I$(top_builddir)/konq-embed/kdesrc -I$(top_builddir)/konq-embed/kdesrc/kssl -I$(top_srcdir)/konq-embed/dropin -I$(top_srcdir)/konq-embed/kdesrc/kio -I$(top_srcdir)/konq-embed/kdesrc/kdecore -I$(top_srcdir)/konq-embed/kdesrc/kutils -I$(srcdir)/../.. -I$(srcdir)/.. -I$(srcdir)/../misc -I$(srcdir)/../misc -I$(srcdir)/../css -I$(srcdir)/../dom -I$(srcdir)/../xml -I$(srcdir)/../html -I$(top_srcdir)/konq-embed/dropin/kio -I$(srcdir)/../.. -I$(srcdir)/../../kjs -I$(top_srcdir)/konq-embed/dropin/kssl -I$(srcdir)/../../../dropin/khtml -I$(top_srcdir)/konq-embed/dropin/khtml/java $(QT_INCLUDES) $(QTOPIA_INCLUDES) $(X_INCLUDES) $(all_includes)
+ 
+ KDE_CXXFLAGS = $(USE_EXCEPTIONS)
+ 
+diff -urNd --exclude-from=excludelist kdenox/konq-embed/kdesrc/khtml/ecma/xmlhttprequest.cpp kdenox_new/konq-embed/kdesrc/khtml/ecma/xmlhttprequest.cpp
+--- kdenox/konq-embed/kdesrc/khtml/ecma/xmlhttprequest.cpp	2007-02-12 22:26:20.000000000 +1300
++++ kdenox_new/konq-embed/kdesrc/khtml/ecma/xmlhttprequest.cpp	2007-02-25 17:27:39.000000000 +1300
+@@ -38,6 +38,10 @@
+ #include <qobject.h>
+ #include <kdebug.h>
+ 
++#if (QT_VERSION < 0x030000)
++#include "qt3regexp.h"
++#endif
++
+ #ifdef APPLE_CHANGES
+ #include "KWQLoader.h"
+ #else
+diff -urNd --exclude-from=excludelist kdenox/konq-embed/kdesrc/khtml/html/Makefile.am kdenox_new/konq-embed/kdesrc/khtml/html/Makefile.am
+--- kdenox/konq-embed/kdesrc/khtml/html/Makefile.am	2007-02-12 22:26:20.000000000 +1300
++++ kdenox_new/konq-embed/kdesrc/khtml/html/Makefile.am	2007-02-25 16:39:50.000000000 +1300
+@@ -43,7 +43,7 @@
+  -I$(top_srcdir)/kio/kssl \
+  -I$(top_srcdir)/kjs -I$(top_srcdir)/khtml -I$(top_srcdir) \
+  -I$(top_srcdir)/kwallet/client -I$(top_srcdir)/kutils \
+- -I$(top_builddir)/konq-embed/kdesrc -I$(top_builddir)/konq-embed/kdesrc/kssl -I$(top_srcdir)/konq-embed/dropin -I$(top_srcdir)/konq-embed/kdesrc/kio -I$(top_srcdir)/konq-embed/kdesrc/kdecore -I$(top_srcdir)/konq-embed/kdesrc/kutils -I$(srcdir)/../.. -I$(srcdir)/.. -I$(srcdir)/../misc -I$(srcdir)/../misc -I$(srcdir)/../css -I$(srcdir)/../dom -I$(srcdir)/../xml -I$(srcdir)/../html -I$(top_srcdir)/konq-embed/dropin/kio -I$(srcdir)/../.. -I$(srcdir)/../../kjs -I$(top_srcdir)/konq-embed/dropin/kssl -I$(srcdir)/../../../dropin/khtml -I$(top_srcdir)/konq-embed/dropin/khtml/java $(QT_INCLUDES) $(X_INCLUDES) $(all_includes)
++ -I$(top_builddir)/konq-embed/kdesrc -I$(top_builddir)/konq-embed/kdesrc/kssl -I$(top_srcdir)/konq-embed/dropin -I$(top_srcdir)/konq-embed/kdesrc/kio -I$(top_srcdir)/konq-embed/kdesrc/kdecore -I$(top_srcdir)/konq-embed/kdesrc/kutils -I$(srcdir)/../.. -I$(srcdir)/.. -I$(srcdir)/../misc -I$(srcdir)/../misc -I$(srcdir)/../css -I$(srcdir)/../dom -I$(srcdir)/../xml -I$(srcdir)/../html -I$(top_srcdir)/konq-embed/dropin/kio -I$(srcdir)/../.. -I$(srcdir)/../../kjs -I$(top_srcdir)/konq-embed/dropin/kssl -I$(srcdir)/../../../dropin/khtml -I$(top_srcdir)/konq-embed/dropin/khtml/java $(QT_INCLUDES) $(QTOPIA_INCLUDES) $(X_INCLUDES) $(all_includes)
+ 
+ # Use "make doctypes" to regenerate doctypes.cpp from doctypes.gperf
+ doctypes: $(srcdir)/doctypes.gperf $(srcdir)/Makefile.am
+diff -urNd --exclude-from=excludelist kdenox/konq-embed/kdesrc/khtml/khtml_part.cpp kdenox_new/konq-embed/kdesrc/khtml/khtml_part.cpp
+--- kdenox/konq-embed/kdesrc/khtml/khtml_part.cpp	2007-02-12 22:26:20.000000000 +1300
++++ kdenox_new/konq-embed/kdesrc/khtml/khtml_part.cpp	2007-02-25 17:22:46.000000000 +1300
+@@ -3221,14 +3221,14 @@
+         {
+           khtml::RenderTextArea *parent= static_cast<khtml::RenderTextArea *>(obj->parent());
+           s = parent->text();
+-          s = s.replace(0xa0, ' ');
++          s = s.replace(QRegExp(QString(QChar(0xa0))), ' ');
+           tmpTextArea = parent;
+         }
+         else if ( renderLineText )
+         {
+           khtml::RenderLineEdit *parentLine= static_cast<khtml::RenderLineEdit *>(obj);
+           s = parentLine->widget()->text();
+-          s = s.replace(0xa0, ' ');
++          s = s.replace(QRegExp(QString(QChar(0xa0))), ' ');
+         }
+         else if ( obj->isText() )
+         {
+@@ -3256,7 +3256,7 @@
+           if ( isLink && obj->parent()!=tmpTextArea )
+           {
+             s = static_cast<khtml::RenderText *>(obj)->data().string();
+-            s = s.replace(0xa0, ' ');
++            s = s.replace(QRegExp(QString(QChar(0xa0))), ' ');
+           }
+         }
+         else if ( obj->isBR() )
+@@ -6785,9 +6785,9 @@
+     // get selected text and paste to the clipboard
+ #ifndef QT_NO_CLIPBOARD
+     QString text = selectedText();
+-    text.replace(QChar(0xa0), ' ');
++    text.replace(QRegExp(QString(QChar(0xa0))), " ");
+     disconnect( kapp->clipboard(), SIGNAL( selectionChanged()), this, SLOT( slotClearSelection()));
+-    kapp->clipboard()->setText(text,QClipboard::Selection);
++    kapp->clipboard()->setText(text);
+     connect( kapp->clipboard(), SIGNAL( selectionChanged()), SLOT( slotClearSelection()));
+ #endif
+     //kdDebug( 6000 ) << "selectedText = " << text << endl;
+diff -urNd --exclude-from=excludelist kdenox/konq-embed/kdesrc/khtml/misc/Makefile.am kdenox_new/konq-embed/kdesrc/khtml/misc/Makefile.am
+--- kdenox/konq-embed/kdesrc/khtml/misc/Makefile.am	2007-02-12 22:26:20.000000000 +1300
++++ kdenox_new/konq-embed/kdesrc/khtml/misc/Makefile.am	2007-02-25 16:33:47.000000000 +1300
+@@ -32,7 +32,7 @@
+ 	stringit.h htmlhashes.h helper.h shared.h arena.h 
+ 
+ INCLUDES = -I$(top_srcdir) -I$(top_srcdir)/dcop -I$(top_srcdir)/kio -I$(top_srcdir)/libltdl \
+-           -I$(top_srcdir)/khtml -I$(top_srcdir)/kutils -I$(top_builddir)/konq-embed/kdesrc -I$(top_builddir)/konq-embed/kdesrc/kssl -I$(top_srcdir)/konq-embed/dropin -I$(top_srcdir)/konq-embed/kdesrc/kio -I$(top_srcdir)/konq-embed/kdesrc/kdecore -I$(top_srcdir)/konq-embed/kdesrc/kutils -I$(srcdir)/../.. -I$(srcdir)/.. -I$(srcdir)/../misc -I$(srcdir)/../misc -I$(srcdir)/../css -I$(srcdir)/../dom -I$(srcdir)/../xml -I$(srcdir)/../html -I$(top_srcdir)/konq-embed/dropin/kio -I$(srcdir)/../.. -I$(srcdir)/../../kjs -I$(top_srcdir)/konq-embed/dropin/kssl -I$(srcdir)/../../../dropin/khtml -I$(top_srcdir)/konq-embed/dropin/khtml/java $(QT_INCLUDES) $(X_INCLUDES) $(all_includes)
++           -I$(top_srcdir)/khtml -I$(top_srcdir)/kutils -I$(top_builddir)/konq-embed/kdesrc -I$(top_builddir)/konq-embed/kdesrc/kssl -I$(top_srcdir)/konq-embed/dropin -I$(top_srcdir)/konq-embed/kdesrc/kio -I$(top_srcdir)/konq-embed/kdesrc/kdecore -I$(top_srcdir)/konq-embed/kdesrc/kutils -I$(srcdir)/../.. -I$(srcdir)/.. -I$(srcdir)/../misc -I$(srcdir)/../misc -I$(srcdir)/../css -I$(srcdir)/../dom -I$(srcdir)/../xml -I$(srcdir)/../html -I$(top_srcdir)/konq-embed/dropin/kio -I$(srcdir)/../.. -I$(srcdir)/../../kjs -I$(top_srcdir)/konq-embed/dropin/kssl -I$(srcdir)/../../../dropin/khtml -I$(top_srcdir)/konq-embed/dropin/khtml/java $(QT_INCLUDES) $(QTOPIA_INCLUDES) $(X_INCLUDES) $(all_includes)
+ 
+ SRCDOC_DEST=$(kde_htmldir)/en/kdelibs/khtml
+ 
+diff -urNd --exclude-from=excludelist kdenox/konq-embed/kdesrc/khtml/rendering/Makefile.am kdenox_new/konq-embed/kdesrc/khtml/rendering/Makefile.am
+--- kdenox/konq-embed/kdesrc/khtml/rendering/Makefile.am	2007-02-12 22:26:20.000000000 +1300
++++ kdenox_new/konq-embed/kdesrc/khtml/rendering/Makefile.am	2007-02-25 16:40:50.000000000 +1300
+@@ -42,7 +42,7 @@
+ 	render_generated.h enumerate.h
+ 
+ INCLUDES = -I$(top_srcdir)/kimgio -I$(top_srcdir)/kio -I$(top_srcdir)/dcop \
+- -I$(top_srcdir)/kfile -I$(top_srcdir)/khtml -I$(top_srcdir)/kutils -I$(top_srcdir) -I$(top_builddir)/konq-embed/kdesrc -I$(top_builddir)/konq-embed/kdesrc/kssl -I$(top_srcdir)/konq-embed/dropin -I$(top_srcdir)/konq-embed/kdesrc/kio -I$(top_srcdir)/konq-embed/kdesrc/kdecore -I$(top_srcdir)/konq-embed/kdesrc/kutils -I$(srcdir)/../.. -I$(srcdir)/.. -I$(srcdir)/../misc -I$(srcdir)/../misc -I$(srcdir)/../css -I$(srcdir)/../dom -I$(srcdir)/../xml -I$(srcdir)/../html -I$(top_srcdir)/konq-embed/dropin/kio -I$(srcdir)/../.. -I$(srcdir)/../../kjs -I$(top_srcdir)/konq-embed/dropin/kssl -I$(srcdir)/../../../dropin/khtml -I$(top_srcdir)/konq-embed/dropin/khtml/java $(QT_INCLUDES) $(X_INCLUDES) $(all_includes)
++ -I$(top_srcdir)/kfile -I$(top_srcdir)/khtml -I$(top_srcdir)/kutils -I$(top_srcdir) -I$(top_builddir)/konq-embed/kdesrc -I$(top_builddir)/konq-embed/kdesrc/kssl -I$(top_srcdir)/konq-embed/dropin -I$(top_srcdir)/konq-embed/kdesrc/kio -I$(top_srcdir)/konq-embed/kdesrc/kdecore -I$(top_srcdir)/konq-embed/kdesrc/kutils -I$(srcdir)/../.. -I$(srcdir)/.. -I$(srcdir)/../misc -I$(srcdir)/../misc -I$(srcdir)/../css -I$(srcdir)/../dom -I$(srcdir)/../xml -I$(srcdir)/../html -I$(top_srcdir)/konq-embed/dropin/kio -I$(srcdir)/../.. -I$(srcdir)/../../kjs -I$(top_srcdir)/konq-embed/dropin/kssl -I$(srcdir)/../../../dropin/khtml -I$(top_srcdir)/konq-embed/dropin/khtml/java $(QT_INCLUDES) $(QTOPIA_INCLUDES) $(X_INCLUDES) $(all_includes)
+ 
+ SRCDOC_DEST=$(kde_htmldir)/en/kdelibs/khtml
+ 
+diff -urNd --exclude-from=excludelist kdenox/konq-embed/kdesrc/khtml/rendering/render_layer.h kdenox_new/konq-embed/kdesrc/khtml/rendering/render_layer.h
+--- kdenox/konq-embed/kdesrc/khtml/rendering/render_layer.h	2007-02-12 21:31:42.000000000 +1300
++++ kdenox_new/konq-embed/kdesrc/khtml/rendering/render_layer.h	2007-02-25 16:56:00.000000000 +1300
+@@ -46,12 +46,14 @@
+ 
+ #include <qcolor.h>
+ #include <qrect.h>
++#include <qtextstream.h>
+ #include <assert.h>
+ 
+ #include "render_object.h"
+ 
+ class QScrollBar;
+-template <class T> class QPtrVector;
++template <class T> class QVector;
++#define QPtrVector QVector
+ 
+ namespace khtml {
+     class RenderStyle;
+diff -urNd --exclude-from=excludelist kdenox/konq-embed/kdesrc/khtml/rendering/render_object.cpp kdenox_new/konq-embed/kdesrc/khtml/rendering/render_object.cpp
+--- kdenox/konq-embed/kdesrc/khtml/rendering/render_object.cpp	2007-02-12 22:26:20.000000000 +1300
++++ kdenox_new/konq-embed/kdesrc/khtml/rendering/render_object.cpp	2007-02-25 16:44:58.000000000 +1300
+@@ -46,6 +46,7 @@
+ #include <kdebug.h>
+ #include <kglobal.h>
+ #include <qpainter.h>
++#include <qtextstream.h>
+ #include "khtmlview.h"
+ #include <khtml_part.h>
+ 
+diff -urNd --exclude-from=excludelist kdenox/konq-embed/kdesrc/khtml/rendering/render_table.h kdenox_new/konq-embed/kdesrc/khtml/rendering/render_table.h
+--- kdenox/konq-embed/kdesrc/khtml/rendering/render_table.h	2007-02-12 22:26:20.000000000 +1300
++++ kdenox_new/konq-embed/kdesrc/khtml/rendering/render_table.h	2007-02-25 16:56:49.000000000 +1300
+@@ -30,6 +30,7 @@
+ #include <qcolor.h>
+ #include <qptrvector.h>
+ #include <qmemarray.h>
++#include <qtextstream.h>
+ 
+ #include "rendering/render_box.h"
+ #include "rendering/render_block.h"
+diff -urNd --exclude-from=excludelist kdenox/konq-embed/kdesrc/khtml/rendering/render_text.h kdenox_new/konq-embed/kdesrc/khtml/rendering/render_text.h
+--- kdenox/konq-embed/kdesrc/khtml/rendering/render_text.h	2007-02-12 22:26:20.000000000 +1300
++++ kdenox_new/konq-embed/kdesrc/khtml/rendering/render_text.h	2007-02-25 16:46:39.000000000 +1300
+@@ -31,6 +31,7 @@
+ #include "rendering/render_line.h"
+ 
+ #include <qptrvector.h>
++#include <qtextstream.h>
+ #include <assert.h>
+ 
+ class QPainter;
+diff -urNd --exclude-from=excludelist kdenox/konq-embed/kdesrc/khtml/xml/Makefile.am kdenox_new/konq-embed/kdesrc/khtml/xml/Makefile.am
+--- kdenox/konq-embed/kdesrc/khtml/xml/Makefile.am	2007-02-12 22:26:20.000000000 +1300
++++ kdenox_new/konq-embed/kdesrc/khtml/xml/Makefile.am	2007-02-25 16:38:27.000000000 +1300
+@@ -37,7 +37,7 @@
+ 
+ INCLUDES = -I$(top_srcdir)/kimgio -I$(top_srcdir)/kio -I$(top_srcdir)/dcop \
+  -I$(top_srcdir)/khtml -I$(top_srcdir) -I$(top_srcdir)/kwallet/client \
+- -I$(top_srcdir)/kutils -I$(top_builddir)/kjs -I$(top_builddir)/konq-embed/kdesrc -I$(top_builddir)/konq-embed/kdesrc/kssl -I$(top_srcdir)/konq-embed/dropin -I$(top_srcdir)/konq-embed/kdesrc/kio -I$(top_srcdir)/konq-embed/kdesrc/kdecore -I$(top_srcdir)/konq-embed/kdesrc/kutils -I$(srcdir)/../.. -I$(srcdir)/.. -I$(srcdir)/../misc -I$(srcdir)/../misc -I$(srcdir)/../css -I$(srcdir)/../dom -I$(srcdir)/../xml -I$(srcdir)/../html -I$(top_srcdir)/konq-embed/dropin/kio -I$(srcdir)/../.. -I$(srcdir)/../../kjs -I$(top_srcdir)/konq-embed/dropin/kssl -I$(srcdir)/../../../dropin/khtml -I$(top_srcdir)/konq-embed/dropin/khtml/java $(QT_INCLUDES) $(X_INCLUDES) $(all_includes)
++ -I$(top_srcdir)/kutils -I$(top_builddir)/kjs -I$(top_builddir)/konq-embed/kdesrc -I$(top_builddir)/konq-embed/kdesrc/kssl -I$(top_srcdir)/konq-embed/dropin -I$(top_srcdir)/konq-embed/kdesrc/kio -I$(top_srcdir)/konq-embed/kdesrc/kdecore -I$(top_srcdir)/konq-embed/kdesrc/kutils -I$(srcdir)/../.. -I$(srcdir)/.. -I$(srcdir)/../misc -I$(srcdir)/../misc -I$(srcdir)/../css -I$(srcdir)/../dom -I$(srcdir)/../xml -I$(srcdir)/../html -I$(top_srcdir)/konq-embed/dropin/kio -I$(srcdir)/../.. -I$(srcdir)/../../kjs -I$(top_srcdir)/konq-embed/dropin/kssl -I$(srcdir)/../../../dropin/khtml -I$(top_srcdir)/konq-embed/dropin/khtml/java $(QT_INCLUDES) $(QTOPIA_INCLUDES) $(X_INCLUDES) $(all_includes)
+ 
+ SRCDOC_DEST=$(kde_htmldir)/en/kdelibs/khtml
+ 
+diff -urNd --exclude-from=excludelist kdenox/konq-embed/kdesrc/kjs/dtoa.cpp kdenox_new/konq-embed/kdesrc/kjs/dtoa.cpp
+--- kdenox/konq-embed/kdesrc/kjs/dtoa.cpp	2007-02-12 22:26:20.000000000 +1300
++++ kdenox_new/konq-embed/kdesrc/kjs/dtoa.cpp	2007-02-25 18:22:33.000000000 +1300
+@@ -1,4 +1,9 @@
+-#ifndef KONQ_EMBEDDED
++#include <config.h>
++
++#ifdef KONQ_EMBEDDED
++#include "stdlib.h"
++extern "C" double kjs_strtod(const char *s00, char **se) { return strtod(s00,se); }
++#else
+ /****************************************************************
+  *
+  * The author of this software is David M. Gay.
+@@ -175,8 +180,6 @@
+ #undef CONST
+ #endif
+ 
+-#include <config.h>
+-
+ #include "stdlib.h"
+ 
+ #ifdef WORDS_BIGENDIAN
+diff -urNd --exclude-from=excludelist kdenox/konq-embed/kdesrc/kjs/dtoa.h kdenox_new/konq-embed/kdesrc/kjs/dtoa.h
+--- kdenox/konq-embed/kdesrc/kjs/dtoa.h	2007-02-12 22:26:20.000000000 +1300
++++ kdenox_new/konq-embed/kdesrc/kjs/dtoa.h	2007-02-25 18:20:51.000000000 +1300
+@@ -23,14 +23,11 @@
+ #ifndef _KJS_DTOA_H_
+ #define _KJS_DTOA_H_
+ 
+-#ifndef KONQ_EMBEDDED
+ extern "C" double kjs_strtod(const char *s00, char **se);
++#ifndef KONQ_EMBEDDED
+ extern "C" char *kjs_dtoa(double d, int mode, int ndigits,
+ 			  int *decpt, int *sign, char **rve);
+ extern "C" void kjs_freedtoa(char *s);
+-#else
+-#include "stdlib.h"
+-extern "C" double kjs_strtod(const char *s00, char **se) { return strtod(s00,se); }
+ #endif
+-
++         
+ #endif /* _KJS_DTOA_H */
+diff -urNd --exclude-from=excludelist kdenox/konq-embed/kdesrc/kjs/number_object.cpp kdenox_new/konq-embed/kdesrc/kjs/number_object.cpp
+--- kdenox/konq-embed/kdesrc/kjs/number_object.cpp	2007-02-12 22:26:20.000000000 +1300
++++ kdenox_new/konq-embed/kdesrc/kjs/number_object.cpp	2007-02-25 18:05:36.000000000 +1300
+@@ -20,6 +20,8 @@
+  *
+  */
+ 
++#include <config.h>
++
+ #include "value.h"
+ #include "object.h"
+ #include "types.h"
+diff -urNd --exclude-from=excludelist kdenox/konq-embed/kdesrc/kjs/ustring.cpp kdenox_new/konq-embed/kdesrc/kjs/ustring.cpp
+--- kdenox/konq-embed/kdesrc/kjs/ustring.cpp	2007-02-12 22:26:20.000000000 +1300
++++ kdenox_new/konq-embed/kdesrc/kjs/ustring.cpp	2007-02-25 18:10:22.000000000 +1300
+@@ -21,9 +21,7 @@
+  *
+  */
+ 
+-#ifdef HAVE_CONFIG_H
+ #include <config.h>
+-#endif
+ 
+ #include <stdlib.h>
+ #include <stdio.h>
+diff -urNd --exclude-from=excludelist kdenox/konq-embed/src/actions/konqe.rc kdenox_new/konq-embed/src/actions/konqe.rc
+--- kdenox/konq-embed/src/actions/konqe.rc	1970-01-01 12:00:00.000000000 +1200
++++ kdenox_new/konq-embed/src/actions/konqe.rc	2007-02-25 21:20:10.000000000 +1300
+@@ -0,0 +1,107 @@
++<!DOCTYPE kpartgui SYSTEM "kpartgui.dtd">
++<kpartgui name="konqe" version="1">
++<Create>
++ <Action name="file_new" stdAction="true" icon="filenew.png"/>
++ <Action name="file_open" stdAction="true" icon="fileopen.png"/>
++ <Action name="file_save" stdAction="true" icon="filesave.png"/>
++ <Action name="file_save_as" stdAction="true" icon="filesaveas.png"/>
++ <Action name="file_print" stdAction="true" icon="fileprint.png"/>
++ <Action name="go_home" stdAction="true" icon="gohome.png"/>
++ <Action name="go_back" stdAction="true" icon="back.png"/>
++ <Action name="go_forward" stdAction="true" icon="forward.png"/>
++ <Action name="edit_undo" stdAction="true" icon="undo.png"/>
++ <Action name="edit_redo" stdAction="true" icon="redo.png"/>
++ <Action name="edit_cut" stdAction="true" icon="editcut.png"/>
++ <Action name="edit_copy" stdAction="true" icon="editcopy.png"/>
++ <Action name="edit_paste" stdAction="true" icon="editpaste.png"/>
++ <Action name="edit_find" stdAction="true" icon="find.png"/>
++ <Action name="view_redisplay" stdAction="true" icon="reload.png"/>
++ <Action name="view_zoom" stdAction="true" popupMenu="true" icon="viewmag.png"/>
++ <Action name="bookmark_add" stdAction="true" icon="bookmark_add.png"/>
++ <Action name="bookmark_edit" stdAction="true" accel="" icon="bookmark.png"/>
++ <Action name="options_configure" stdAction="true" icon="configure.png"/>
++</Create>
++<Create>
++ <Action name="windows" popupMenu="true" icon="window_list.png">
++  <text>Windows List</text>
++ </Action>
++ <Action name="view_close" accel="Ctrl+W" icon="fileclose.png">
++  <text>Close View</text>
++ </Action>
++ <Action name="view_next" accel="Ctrl+Tab" icon="2rightarrow.png">
++  <text>Next View</text>
++ </Action>
++ <Action name="view_autoload_images" toggle="true">
++  <text>Autoload Images</text>
++ </Action>
++ <Action name="go_stop" icon="stop.png">
++  <text>Stop Loading</text>
++ </Action>
++ <Action name="info_security" icon="lock.png">
++  <text>Show Security Information</text>
++ </Action>
++ <Action name="options_show_location" accel="F11" toggle="true">
++  <text>Show Location Bar</text>
++ </Action>
++ <Action name="options_show_sidebar" accel="F12" toggle="true">
++  <text>Show Side Bar</text>
++ </Action>
++ <Action name="options_show_statusbar" stdAction="true" accel="F10"/>
++ <Action name="main_menu" popupMenu="true" icon="gear.png">
++  <text>Main Menu</text>
++ </Action>
++ <Action name="view_load_images" icon="images_display.png">
++  <text>Load Images</text>
++ </Action>
++</Create>
++<Menu name="main_menu">
++ <Action name="file_new"/>
++ <Separator/>
++ <Action name="view_autoload_images"/>
++ <Action name="options_show_statusbar"/>
++ <Action name="options_show_location"/>
++ <Action name="options_show_sidebar"/>
++ <Separator/>
++ <Action name="edit_find"/>
++ <Separator/>
++ <Action name="options_configure"/>
++ <Separator/>
++ <Action name="bookmark_add"/>
++ <Action name="bookmark_edit"/>
++ <Action name="bookmarks"/>
++ <Separator/>
++ <Action name="view_next"/>
++ <Action name="view_close"/>
++</Menu>
++<ToolBar name="main_bar">
++ <Action name="main_menu"/>
++ <ToolBar name="browser_bar"/>
++ <ToolBar name="edit_bar"/>
++ <Spacer/>
++ <Action name="windows"/>
++</ToolBar>
++<ToolBar name="browser_bar" newline="true">
++ <Action name="file_print"/>
++ <Action name="go_back"/>
++ <Action name="go_forward"/>
++ <Action name="go_home"/>
++ <Action name="view_redisplay"/>
++ <Action name="go_stop"/>
++ <Separator/>
++ <Action name="info_security"/>
++ <Action name="view_zoom"/>
++ <Action name="view_load_images"/>
++</ToolBar>
++<ToolBar name="edit_bar" newline="true">
++ <Action name="file_open"/>
++ <Action name="file_save"/>
++ <Action name="file_save_as"/>
++ <Action name="file_print"/>
++ <Separator/>
++ <Action name="edit_undo"/>
++ <Action name="edit_redo"/>
++ <Action name="edit_cut"/>
++ <Action name="edit_copy"/>
++ <Action name="edit_paste"/>
++</ToolBar>
++</kpartgui>
+diff -urNd --exclude-from=excludelist kdenox/konq-embed/src/bookmarkeditimpl.cc kdenox_new/konq-embed/src/bookmarkeditimpl.cc
+--- kdenox/konq-embed/src/bookmarkeditimpl.cc	2007-02-12 22:25:55.000000000 +1300
++++ kdenox_new/konq-embed/src/bookmarkeditimpl.cc	2007-02-25 19:17:29.000000000 +1300
+@@ -24,6 +24,8 @@
+ 
+ #include "bookmarkeditimpl.h"
+ 
++#include <config.h>
++
+ #if defined(ENABLE_BOOKMARKS)
+ 
+ #include "mainwindowbase.h"
+diff -urNd --exclude-from=excludelist kdenox/konq-embed/src/bookmarkeditor.cc kdenox_new/konq-embed/src/bookmarkeditor.cc
+--- kdenox/konq-embed/src/bookmarkeditor.cc	2007-02-12 22:25:55.000000000 +1300
++++ kdenox_new/konq-embed/src/bookmarkeditor.cc	2007-02-25 17:40:34.000000000 +1300
+@@ -16,6 +16,8 @@
+ #include <qimage.h>
+ #include <qpixmap.h>
+ 
++#include <kstandarddirs.h>
++
+ namespace
+ {
+ QPixmap getPngPixmap( const QString &name )
+diff -urNd --exclude-from=excludelist kdenox/konq-embed/src/bookmarkeditorhierarchical.cc kdenox_new/konq-embed/src/bookmarkeditorhierarchical.cc
+--- kdenox/konq-embed/src/bookmarkeditorhierarchical.cc	2007-02-12 22:25:55.000000000 +1300
++++ kdenox_new/konq-embed/src/bookmarkeditorhierarchical.cc	2007-02-25 20:46:27.000000000 +1300
+@@ -22,11 +22,20 @@
+ 
+ */
+ 
++#include <config.h>
++
+ #if defined(ENABLE_BOOKMARKS)
+ 
++#include <xmltree.h>
++#include <qtoolbutton.h>
++#include <qlineedit.h>
++#include <qlabel.h>
++
+ #include "bookmarkeditorhierarchical.h"
+ #include <assert.h>
+ #include "bookmarks.h"
++#include "bookmarkeditimpl.h"
++
+ 
+ //////// HELPER FUNCTIONS /////////////////////////////////
+ namespace {
+@@ -204,7 +213,7 @@
+ void BookmarkEditorHierarchical::newFolder()
+ {
+     BookmarkEdit *edit = new BookmarkEdit( this );
+-    edit->setCaption( i18n( "New Folder" ) );
++    edit->setCaption( tr( "New Folder" ) );
+     edit->location->setEnabled(false);
+     edit->location->hide();
+     edit->TextLabel2->hide();
+diff -urNd --exclude-from=excludelist kdenox/konq-embed/src/bookmarkeditorhierarchical.h kdenox_new/konq-embed/src/bookmarkeditorhierarchical.h
+--- kdenox/konq-embed/src/bookmarkeditorhierarchical.h	2007-02-12 22:25:55.000000000 +1300
++++ kdenox_new/konq-embed/src/bookmarkeditorhierarchical.h	2007-02-25 18:27:17.000000000 +1300
+@@ -22,9 +22,10 @@
+ #ifndef __bookmarkeditorhierarchical_h__
+ #define __bookmarkeditorhierarchical_h__
+ 
++#include <config.h>
++
+ #if defined(ENABLE_BOOKMARKS)
+ 
+-#include <config.h>
+ #include "bookmarkeditorimpl.h"
+ 
+ class XMLElement;
+diff -urNd --exclude-from=excludelist kdenox/konq-embed/src/bookmarkeditorimpl.cc kdenox_new/konq-embed/src/bookmarkeditorimpl.cc
+--- kdenox/konq-embed/src/bookmarkeditorimpl.cc	2007-02-12 22:25:55.000000000 +1300
++++ kdenox_new/konq-embed/src/bookmarkeditorimpl.cc	2007-02-25 19:16:40.000000000 +1300
+@@ -23,12 +23,12 @@
+ 
+ #include "bookmarkeditorimpl.h"
+ 
++#include <config.h>
++
+ #if defined(ENABLE_BOOKMARKS)
+ 
+ #include "bookmarkeditimpl.h"
+ 
+-#include <config.h>
+-
+ #include "bookmarks.h"
+ #include "xmltree.h"
+ 
+diff -urNd --exclude-from=excludelist kdenox/konq-embed/src/bookmarks.cc kdenox_new/konq-embed/src/bookmarks.cc
+--- kdenox/konq-embed/src/bookmarks.cc	2007-02-12 22:25:55.000000000 +1300
++++ kdenox_new/konq-embed/src/bookmarks.cc	2007-02-25 18:28:08.000000000 +1300
+@@ -24,6 +24,8 @@
+ 
+ #if defined(ENABLE_BOOKMARKS)
+ 
++#warning BOOKMARKS ARE ENABLED
++
+ #include "bookmarks.h"
+ #include "xmltree.h"
+ #include "mainwindowbase.h"
+@@ -39,6 +41,7 @@
+ #include <qstring.h>
+ #include <qwidget.h>
+ #include <qfile.h>
++#include <qtimer.h>
+ 
+ #include <klocale.h>
+ #include <kstandarddirs.h>
+diff -urNd --exclude-from=excludelist kdenox/konq-embed/src/bookmarks.h kdenox_new/konq-embed/src/bookmarks.h
+--- kdenox/konq-embed/src/bookmarks.h	2007-02-12 22:25:55.000000000 +1300
++++ kdenox_new/konq-embed/src/bookmarks.h	2007-02-25 18:26:32.000000000 +1300
+@@ -34,6 +34,8 @@
+ 
+ #include <kurl.h>
+ 
++#define QPtrList QList
++
+ class QPopupMenu;
+ class XMLElement;
+ class ActionMenu;
+diff -urNd --exclude-from=excludelist kdenox/konq-embed/src/mainwindow_qpe.cc kdenox_new/konq-embed/src/mainwindow_qpe.cc
+--- kdenox/konq-embed/src/mainwindow_qpe.cc	2007-02-12 22:25:55.000000000 +1300
++++ kdenox_new/konq-embed/src/mainwindow_qpe.cc	2007-02-25 17:46:32.000000000 +1300
+@@ -90,7 +90,7 @@
+     return iconSet;
+ }
+ 
+-void MainWindowBase::statusJustText( const QString &_msg, bool )
++void MainWindowQPE::statusJustText( const QString &_msg, bool )
+ {
+     QString msg = _msg;
+     msg.replace( QRegExp( "</?qt>" ), QString::null );
+@@ -99,7 +99,7 @@
+     Global::statusMessage( msg );
+ }
+ 
+-void MainWindowBase::statusMessage( const QString &_msg, bool visible )
++void MainWindowQPE::statusMessage( const QString &_msg, bool visible )
+ {
+     statusJustText( _msg, visible );
+ }
+diff -urNd --exclude-from=excludelist kdenox/konq-embed/src/mainwindow_qpe.h kdenox_new/konq-embed/src/mainwindow_qpe.h
+--- kdenox/konq-embed/src/mainwindow_qpe.h	2007-02-12 22:25:55.000000000 +1300
++++ kdenox_new/konq-embed/src/mainwindow_qpe.h	2007-02-25 17:47:23.000000000 +1300
+@@ -39,6 +39,10 @@
+ 
+ protected:
+     virtual QIconSet loadPixmap( const char * const xpm[] );
++
++protected slots:
++    virtual void statusJustText( const QString &msg, bool visible );
++    virtual void statusMessage( const QString &msg, bool visible );
+ };
+ 
+ #endif
+diff -urNd --exclude-from=excludelist kdenox/konq-embed/src/mainwindow_road.cc kdenox_new/konq-embed/src/mainwindow_road.cc
+--- kdenox/konq-embed/src/mainwindow_road.cc	2007-02-12 22:25:55.000000000 +1300
++++ kdenox_new/konq-embed/src/mainwindow_road.cc	2007-02-25 20:32:12.000000000 +1300
+@@ -20,10 +20,11 @@
+ 
+ #ifdef KONQ_GUI_ROAD
+ 
++#include <config.h>
++
+ #include "mainwindow_road.h"
+ #include "popupaction.h"
+ 
+-
+ #include <qpopupmenu.h>
+ #include <qtoolbar.h>
+ #include <qaction.h>
+diff -urNd --exclude-from=excludelist kdenox/konq-embed/src/mainwindow_x11.cc kdenox_new/konq-embed/src/mainwindow_x11.cc
+--- kdenox/konq-embed/src/mainwindow_x11.cc	2007-02-12 22:25:55.000000000 +1300
++++ kdenox_new/konq-embed/src/mainwindow_x11.cc	2007-02-25 20:33:10.000000000 +1300
+@@ -21,6 +21,8 @@
+ 
+ // Implementation of the X11 GUI
+ 
++#include <config.h>
++
+ #include "mainwindow_x11.h"
+ #include "popupaction.h"
+ 
+diff -urNd --exclude-from=excludelist kdenox/konq-embed/src/roadtabbar.cc kdenox_new/konq-embed/src/roadtabbar.cc
+--- kdenox/konq-embed/src/roadtabbar.cc	2007-02-12 22:25:55.000000000 +1300
++++ kdenox_new/konq-embed/src/roadtabbar.cc	2007-02-25 17:44:19.000000000 +1300
+@@ -18,6 +18,9 @@
+     Boston, MA 02110-1301, USA.
+ */
+ 
++#include <qaction.h>
++#include <kconfig.h>
++
+ #include "roadtabbar.h"
+ 
+ RoadTabParams::RoadTabParams( const QIconSet &defaultIS, const QIconSet &loadingIS,
+@@ -114,12 +117,12 @@
+ 
+ void RoadTabBar::initContextMenu()
+ {
+-    QAction *qa = new QAction( QString::null, i18n( "&Close Tab" ), 0, this, "contextTabClose" );
++    QAction *qa = new QAction( QString::null, tr( "&Close Tab" ), 0, this, "contextTabClose" );
+     connect( qa, SIGNAL( activated() ), this, SLOT( contextClose() ) );
+     qa->addTo( &m_contextMenu );
+     m_contextMenuCloseId = m_contextMenu.idAt( 0 );
+ 
+-    qa = new QAction( QString::null, i18n( "&New tab" ), 0, this, "contextTabNew" );
++    qa = new QAction( QString::null, tr( "&New tab" ), 0, this, "contextTabNew" );
+     connect( qa, SIGNAL( activated() ), this, SIGNAL( requestNewView() ) );
+     qa->addTo( &m_contextMenu );
+ }
+@@ -184,7 +187,7 @@
+ {
+     QString caption( text );
+     if ( caption.isEmpty() )
+-        caption = i18n( "Blank" );
++        caption = tr( "Blank" );
+     // the caption may not exceed a given width, so shorten it if necessary
+     // the following is inefficient, but clear, correct, and unlikely to be a bottleneck
+     if ( m_params.fontMetrics.width( caption ) > m_params.maxWidth )
+diff -urNd --exclude-from=excludelist kdenox/konq-embed/src/roadtabbar.h kdenox_new/konq-embed/src/roadtabbar.h
+--- kdenox/konq-embed/src/roadtabbar.h	2007-02-12 22:25:55.000000000 +1300
++++ kdenox_new/konq-embed/src/roadtabbar.h	2007-02-25 17:42:40.000000000 +1300
+@@ -22,6 +22,9 @@
+ #define __roadtabbar_h__
+ 
+ #include <qtabbar.h>
++#include <qpopupmenu.h>
++
++#include "view.h"
+ 
+ struct RoadTabParams
+ {
+diff -urNd --exclude-from=excludelist kdenox/konq-embed/src/run.cc kdenox_new/konq-embed/src/run.cc
+--- kdenox/konq-embed/src/run.cc	2007-02-12 22:25:55.000000000 +1300
++++ kdenox_new/konq-embed/src/run.cc	2007-02-25 17:34:35.000000000 +1300
+@@ -24,6 +24,7 @@
+ #include "view.h"
+ 
+ #include <khtml_part.h>
++#include <khtml_ext.h>
+ 
+ Run::Run( View *view, const KURL &url, const KParts::URLArgs &args )
+     : KHTMLRun( static_cast<KHTMLPart *>(view->part()), 0,
+@@ -48,7 +49,7 @@
+ //            if ( isTextExecutable(mimeType) )
+ //                mimeType = QString::fromLatin1("text/plain"); // view, don't execute
+             QString suggestedFilename = m_strURL.filename(); 
+-            KHTMLPopupGUIClient::saveURL( part()->widget(), i18n( "Save As" ), m_strURL, urlArgs().metaData(), QString::null, 0, suggestedFilename, type );
++            KHTMLPopupGUIClient::saveURL( part()->widget(), QObject::tr( "Save As" ), m_strURL, urlArgs().metaData(), QString::null, 0, suggestedFilename, type );
+ 
+             m_bFinished = true;
+             emit error();
+diff -urNd --exclude-from=excludelist kdenox/konq-embed/dropin/khtml/khtml_ext.cpp kdenox_new/konq-embed/dropin/khtml/khtml_ext.cpp
+--- kdenox/konq-embed/dropin/khtml/khtml_ext.cpp	2007-02-12 22:25:56.000000000 +1300
++++ kdenox_new/konq-embed/dropin/khtml/khtml_ext.cpp	2007-02-24 03:38:24.000000000 +1300
+@@ -115,7 +115,8 @@
+                                    const QString &filter, long cacheId,
+                                    const QString & suggestedFilename, const QString& mimeType )
+ {
+-  QString name = QString::fromLatin1( "index.html" );
++/*
++QString name = QString::fromLatin1( "index.html" );
+   if ( !suggestedFilename.isEmpty() )
+     name = suggestedFilename;
+   else if ( !url.fileName().isEmpty() )
+@@ -166,6 +167,7 @@
+ 
+   if ( destURL.isValid() )
+     saveURL(url, destURL, metadata, cacheId, f);
++*/
+ }
+ 
+ void KHTMLPopupGUIClient::saveURL( const KURL &url, const KURL &destURL,

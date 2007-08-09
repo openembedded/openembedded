@@ -21,6 +21,7 @@ S = "${WORKDIR}/linux-${LV}"
 inherit kernel
 
 COMPATIBLE_HOST = 'i.86.*-linux'
+COMPATIBLE_MACHINE = "x86-uml"
 
 export OS = "Linux"
 ARCH = "um"

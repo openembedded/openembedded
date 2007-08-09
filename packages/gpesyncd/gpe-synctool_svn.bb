@@ -2,7 +2,9 @@ DESCRIPTION = "Sync daemon for GPE and OpenSync"
 LICENSE = "GPL"
 DEPENDS = "gtk+ glib-2.0 libgpewidget"
 
-PV = "0.0+svn${SRCDATE}"
+DEFAULT_PREFERENCE = "-1"
+
+PV = "0.2+svn${SRCDATE}"
 PR = "r0"
 
 SRC_URI = "${GPE_SVN}"

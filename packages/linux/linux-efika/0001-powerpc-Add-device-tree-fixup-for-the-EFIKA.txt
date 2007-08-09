@@ -1,0 +1,99 @@
+From 6c8a0f1870285e82dc473d31ac297d570460dd66 Mon Sep 17 00:00:00 2001
+From: Sylvain Munaut <tnt@246tNt.com>
+Date: Thu, 21 Dec 2006 22:26:39 +0100
+Subject: [PATCH] powerpc: Add device tree fixup for the EFIKA
+
+We make the efika device tree compliant with the defined bindings
+(at least compliant enough). We also add some missing bits.
+
+Signed-off-by: Sylvain Munaut <tnt@246tNt.com>
+---
+ arch/powerpc/kernel/prom_init.c |   74 +++++++++++++++++++++++++++++++++++++++
+ 1 files changed, 74 insertions(+), 0 deletions(-)
+
+diff --git a/arch/powerpc/kernel/prom_init.c b/arch/powerpc/kernel/prom_init.c
+index 520ef42..294e875 100644
+--- a/arch/powerpc/kernel/prom_init.c
++++ b/arch/powerpc/kernel/prom_init.c
+@@ -2117,11 +2117,78 @@ #else
+ #define fixup_device_tree_pmac()
+ #endif
+ 
++#ifdef CONFIG_PPC_EFIKA
++/* The current fw of the Efika has a device tree needs quite a few
++ * fixups to be compliant with the mpc52xx bindings. It's currently
++ * unknown if it will ever be compliant (come on bPlan ...) so we do fixups.
++ * NOTE that we (barely) tolerate it because the EFIKA was out before
++ * the bindings were finished, for any new boards -> RTFM ! */
++
++struct subst_entry {
++	char *path;
++	char *property;
++	void *value;
++	int value_len;
++};
++
++static void __init fixup_device_tree_efika(void)
++{
++	/* Substitution table */
++	#define prop_cstr(x) x, sizeof(x)
++	int prop_sound_irq[3] = { 2, 2, 0 };
++	struct subst_entry efika_subst_table[] = {
++		{ "/builtin/sound",	"compatible",	prop_cstr("mpc5200b-psc-ac97\0mpc52xx-psc-ac97") },
++		{ "/builtin/sound",	"interrupts",	prop_sound_irq, sizeof(prop_sound_irq) },
++		{}
++	};
++	#undef prop_cstr
++
++	/* Vars */
++	u32 node;
++	char prop[64];
++	int rv, i;
++
++	/* Check if we're really running on a EFIKA */
++	node = call_prom("finddevice", 1, 1, ADDR("/"));
++	if (!PHANDLE_VALID(node))
++		return;
++
++	rv = prom_getprop(node, "model", prop, sizeof(prop));
++	if (rv == PROM_ERROR)
++		return;
++	if (strcmp(prop, "EFIKA5K2"))
++		return;
++
++	prom_printf("Applying EFIKA device tree fixups\n");
++
++	/* Process substitution table */
++	for (i=0; efika_subst_table[i].path; i++) {
++		struct subst_entry *se = &efika_subst_table[i];
++
++		node = call_prom("finddevice", 1, 1, ADDR(se->path));
++		if (!PHANDLE_VALID(node)) {
++			prom_printf("fixup_device_tree_efika: ",
++				"skipped entry %x - not found\n", i);
++			continue;
++		}
++
++		rv = prom_setprop(node, se->path, se->property,
++					se->value, se->value_len );
++		if (rv == PROM_ERROR)
++			prom_printf("fixup_device_tree_efika: ",
++				"skipped entry %x - setprop error\n", i);
++	}
++}
++#else
++#define fixup_device_tree_efika()
++#endif
++
+ static void __init fixup_device_tree(void)
+ {
+ 	fixup_device_tree_maple();
+ 	fixup_device_tree_chrp();
+ 	fixup_device_tree_pmac();
++	fixup_device_tree_efika();
+ }
+ 
+ static void __init prom_find_boot_cpu(void)
+-- 
+1.4.2
+

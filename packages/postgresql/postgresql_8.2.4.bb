@@ -1,0 +1,20 @@
+DESCRIPTION = "PostgreSQL is a powerful, open source relational database system."
+HOMEPAGE = "http://www.postgresql.com"
+LICENSE = "BSD"
+DEPENDS = "zlib readline"
+
+#WARNING: this recipe assumes you have the timezone compiler present in /usr/sbin/zic
+
+SRC_URI = "ftp://ftp.us.postgresql.org/pub/mirrors/postgresql/source/v${PV}/${P}.tar.bz2 \
+	file://no-ecpg-test.patch;patch=1"
+
+
+inherit autotools pkgconfig
+
+FILES_${PN}-doc += "${prefix}/doc/"
+
+do_compile_append() {
+cp /usr/sbin/zic ${S}/src/timezone/
+}
+
+DEFAULT_PREFERENCE = "-1"

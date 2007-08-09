@@ -39,7 +39,7 @@ SRC_URI += "cvs://cvs:cvs@ftp.linux-mips.org/home/cvs;module=linux;tag=linux_2_4
 	file://42-usb-ohci-fixes.patch;patch=1 \
 	file://43-usbserial-27-32-backport.diff;patch=1 \
 	file://44-dbdma-and-au1550_psc.diff;patch=1 \
-	file://45-acm-tty.patch;patch=1 \
+	file://45-acm-tty-and-sb2.patch;patch=1 \
 	file://46-otg.patch;patch=1 \
 	file://47-au1000_eth.patch;patch=1 \
 	file://48-pptp.patch;patch=1 \
@@ -51,6 +51,7 @@ S = "${WORKDIR}/linux"
 
 inherit kernel
 
+COMPATIBLE_MACHINE = "mtx-2"
 COMPATIBLE_HOST = "mipsel.*-linux"
 ARCH = "mips"
 KERNEL_OUTPUT = "arch/mips/zboot/images/mtx-2.flash.bin"

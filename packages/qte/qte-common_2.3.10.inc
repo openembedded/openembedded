@@ -4,7 +4,6 @@ PRIORITY = "optional"
 HOMEPAGE = "http://www.trolltech.com"
 LICENSE = "GPL"
 DEPENDS = "zlib libpng jpeg tslib uicmoc-native"
-DEPENDS_mnci = "zlib libpng jpeg uicmoc-native"
 DEPENDS_append_c7x0 = " sharp-aticore-oss"
 PROVIDES = "virtual/libqte2"
 
@@ -26,12 +25,10 @@ SRC_URI = "ftp://ftp.trolltech.com/pub/qt/source/qt-embedded-${PV}-free.tar.gz;m
 	   file://no-moc.patch;patch=1 \
 	   file://gcc3.patch;patch=1 \
 	   file://gcc4.patch;patch=1 \
-	   file://c700-hardware.patch;patch=1 \
 	   file://encoding.patch;patch=1 \
 	   file://fix-qgfxraster.patch;patch=1 \
 	   file://qt-visibility.patch;patch=1 \
 	   file://tslib.patch;patch=1 \
-	   file://simpad.patch;patch=1 \
 	   file://handhelds.patch;patch=1 \
 	   file://qiconview-speed.patch;patch=1 \
 	   file://qtabbar.patch;patch=1 \
@@ -44,44 +41,31 @@ SRC_URI = "ftp://ftp.trolltech.com/pub/qt/source/qt-embedded-${PV}-free.tar.gz;m
 	   file://key.patch;patch=1 \
 	   file://bidimetrics.patch;patch=5 \
 	   file://fix-native-build.patch;patch=1 \
-	   file://simpad-defaultkbd.patch;patch=1 \
 	   file://fix-errno-exception-spec.patch;patch=1 \
            file://keyboardless-buttonmap.patch;patch=1 \
+           file://kernel-keymap.patch;patch=1 \
+	   file://kernel-keymap-corgi.patch;patch=1 \
+	   file://kernel-asm-page.patch;patch=1 \
+	   file://remove-unused-kbdhandler.patch;patch=1 \
 	   file://sharp_char.h \
 	   file://switches.h "
 
 #
 # add device specific patches here
 #
-SRC_URI_append_simpad       = "file://devfs.patch;patch=1 "
-SRC_URI_append_c7x0         = "file://kernel-keymap.patch;patch=1 file://kernel-keymap-corgi.patch;patch=1 \
-                               file://c7x0-w100-accel.patch;patch=1 file://suspend-resume-hooks.patch;patch=1 "
-SRC_URI_append_spitz        = "file://kernel-keymap.patch;patch=1 file://kernel-keymap-corgi.patch;patch=1 \
-                               file://kernel-keymap-CXK.patch;patch=1 "
-SRC_URI_append_akita        = "file://kernel-keymap.patch;patch=1 file://kernel-keymap-corgi.patch;patch=1 \
-                               file://kernel-keymap-CXK.patch;patch=1 "
-SRC_URI_append_poodle       = "file://kernel-keymap.patch;patch=1 "
-SRC_URI_append_a780         = "file://kernel-keymap.patch;patch=1 "
-SRC_URI_append_e680         = "file://kernel-keymap.patch;patch=1 "
-SRC_URI_append_tosa         = "file://kernel-keymap.patch;patch=1 file://kernel-keymap-tosa.patch;patch=1 "
-SRC_URI_append_jornada6xx   = "file://kernel-keymap.patch;patch=1 "
-SRC_URI_append_jornada7xx   = "file://kernel-keymap.patch;patch=1 file://ipaq_sound_fix.patch;patch=1 "
-SRC_URI_append_jornada56x   = "file://kernel-keymap.patch;patch=1 file://ipaq_sound_fix.patch;patch=1 "
-SRC_URI_append_mnci         = "file://devfs.patch;patch=1 \
-                               file://mnci.patch;patch=1 \
-                               file://mnci-touchscreen.patch;patch=1 \
-                               file://qkeyboard_qws.h \
-                               file://qkeyboard_qws.cpp "
-#SRC_URI_append_h1910        = "file://ipaq-keyboard.patch;patch=1 file://ipaq_sound_fix.patch;patch=1 "
-#SRC_URI_append_h1940        = "file://ipaq-keyboard.patch;patch=1 file://ipaq_sound_fix.patch;patch=1 "
-#SRC_URI_append_h2200        = "file://ipaq-keyboard.patch;patch=1 file://ipaq_sound_fix.patch;patch=1 "
-#SRC_URI_append_h3600        = "file://ipaq-keyboard.patch;patch=1 file://ipaq_sound_fix.patch;patch=1 "
-#SRC_URI_append_h3900        = "file://ipaq-keyboard.patch;patch=1 file://ipaq_sound_fix.patch;patch=1 "
-#SRC_URI_append_h4000        = "file://ipaq-keyboard.patch;patch=1 file://ipaq_sound_fix.patch;patch=1 "
-#SRC_URI_append_h5000        = "file://ipaq-keyboard.patch;patch=1 file://ipaq_sound_fix.patch;patch=1 "
-#SRC_URI_append_h6300        = "file://ipaq-keyboard.patch;patch=1 file://ipaq_sound_fix.patch;patch=1 "
-#SRC_URI_append_hx2000       = "file://ipaq-keyboard.patch;patch=1 file://ipaq_sound_fix.patch;patch=1 "
-#SRC_URI_append_hx4700       = "file://ipaq-keyboard.patch;patch=1 file://ipaq_sound_fix.patch;patch=1 "
+
+W100_ACCEL_PATCHES = "file://c7x0-w100-accel.patch;patch=1 \
+                      file://c7x0-w100-gcc4.patch;patch=1 \
+		      file://suspend-resume-hooks.patch;patch=1"
+
+SRC_URI_append_c7x0         = "${W100_ACCEL_PATCHES} "
+SRC_URI_append_spitz        = "file://spitz-adhoc-keypad-rotate.patch;patch=1 "
+SRC_URI_append_akita        = "file://spitz-adhoc-keypad-rotate.patch;patch=1 "
+
+# "ipaqs" used to have this, but later were proven to at least work
+# without it. Review again and see if has interesting bits to be applied
+# universally.
+#SRC_URI_append   = "file://ipaq_sound_fix.patch;patch=1 "
 
 
 S = "${WORKDIR}/qt-${PV}"
@@ -103,40 +87,9 @@ EXTRA_OEMAKE = "-e"
 #
 # add device flags here
 #
-EXTRA_DEFINES 			= "-DQT_QWS_TSLIB -DQT_QWS_CUSTOM -DWARNING_UNKNOWN_DEVICE"
-EXTRA_DEFINES_a780		= "-DQT_QWS_TSLIB -DQT_QWS_CUSTOM -DQT_QWS_IPAQ"
-EXTRA_DEFINES_e680		= "-DQT_QWS_TSLIB -DQT_QWS_CUSTOM -DQT_QWS_IPAQ"
-EXTRA_DEFINES_h1910 		= "-DQT_QWS_TSLIB -DQT_QWS_CUSTOM -DQT_QWS_IPAQ"
-EXTRA_DEFINES_h1940 		= "-DQT_QWS_TSLIB -DQT_QWS_CUSTOM -DQT_QWS_IPAQ"
-EXTRA_DEFINES_h2200 		= "-DQT_QWS_TSLIB -DQT_QWS_CUSTOM -DQT_QWS_IPAQ"
-EXTRA_DEFINES_h3600     	= "-DQT_QWS_TSLIB -DQT_QWS_CUSTOM -DQT_QWS_IPAQ" 
-EXTRA_DEFINES_h3900 		= "-DQT_QWS_TSLIB -DQT_QWS_CUSTOM -DQT_QWS_IPAQ"
-EXTRA_DEFINES_h3900 		= "-DQT_QWS_TSLIB -DQT_QWS_CUSTOM -DQT_QWS_IPAQ"
-EXTRA_DEFINES_h4000 		= "-DQT_QWS_TSLIB -DQT_QWS_CUSTOM -DQT_QWS_IPAQ"
-EXTRA_DEFINES_h5000 		= "-DQT_QWS_TSLIB -DQT_QWS_CUSTOM -DQT_QWS_IPAQ"
-EXTRA_DEFINES_h6300 		= "-DQT_QWS_TSLIB -DQT_QWS_CUSTOM -DQT_QWS_IPAQ"
-EXTRA_DEFINES_hx2000 		= "-DQT_QWS_TSLIB -DQT_QWS_CUSTOM -DQT_QWS_IPAQ"
-EXTRA_DEFINES_hx4700 		= "-DQT_QWS_TSLIB -DQT_QWS_CUSTOM -DQT_QWS_IPAQ"
-EXTRA_DEFINES_rx3000 		= "-DQT_QWS_TSLIB -DQT_QWS_CUSTOM -DQT_QWS_IPAQ"
-EXTRA_DEFINES_asus716 		= "-DQT_QWS_TSLIB -DQT_QWS_CUSTOM -DQT_QWS_IPAQ"
-EXTRA_DEFINES_asus730 		= "-DQT_QWS_TSLIB -DQT_QWS_CUSTOM -DQT_QWS_IPAQ"
-EXTRA_DEFINES_htcuniversal 	= "-DQT_QWS_TSLIB -DQT_QWS_CUSTOM -DQT_QWS_IPAQ"
-EXTRA_DEFINES_htcblueangel 	= "-DQT_QWS_TSLIB -DQT_QWS_CUSTOM -DQT_QWS_IPAQ"
-EXTRA_DEFINES_htchimalaya 	= "-DQT_QWS_TSLIB -DQT_QWS_CUSTOM -DQT_QWS_IPAQ"
-EXTRA_DEFINES_magician	 	= "-DQT_QWS_TSLIB -DQT_QWS_CUSTOM -DQT_QWS_IPAQ"
-EXTRA_DEFINES_jornada56x	= "-DQT_QWS_TSLIB -DQT_QWS_CUSTOM -DQT_QWS_IPAQ"
-EXTRA_DEFINES_jornada6xx	= "-DQT_QWS_TSLIB -DQT_QWS_CUSTOM -DQT_QWS_IPAQ"
-EXTRA_DEFINES_jornada7xx	= "-DQT_QWS_TSLIB -DQT_QWS_CUSTOM -DQT_QWS_IPAQ"
-EXTRA_DEFINES_palmld		= "-DQT_QWS_TSLIB -DQT_QWS_CUSTOM -DQT_QWS_IPAQ"
-EXTRA_DEFINES_palmtx		= "-DQT_QWS_TSLIB -DQT_QWS_CUSTOM -DQT_QWS_IPAQ"
-EXTRA_DEFINES_simpad		= "-DQT_QWS_TSLIB -DQT_QWS_CUSTOM -DQT_QWS_IPAQ   -DQT_QWS_SIMPAD -DQT_QWS_DEVFS"
-EXTRA_DEFINES_c7x0		= "-DQT_QWS_TSLIB -DQT_QWS_CUSTOM -DQT_QWS_SL5XXX -DQT_QWS_SLC700"
-EXTRA_DEFINES_spitz		= "-DQT_QWS_TSLIB -DQT_QWS_CUSTOM -DQT_QWS_SL5XXX -DQT_QWS_SLC700 -DQT_QWS_SLCXK"
-EXTRA_DEFINES_akita             = "-DQT_QWS_TSLIB -DQT_QWS_CUSTOM -DQT_QWS_SL5XXX -DQT_QWS_SLC700 -DQT_QWS_SLCXK"
-EXTRA_DEFINES_collie 		= "-DQT_QWS_TSLIB -DQT_QWS_CUSTOM -DQT_QWS_SL5XXX"
-EXTRA_DEFINES_poodle		= "-DQT_QWS_TSLIB -DQT_QWS_CUSTOM -DQT_QWS_SL5XXX"
-EXTRA_DEFINES_tosa		= "-DQT_QWS_TSLIB -DQT_QWS_CUSTOM -DQT_QWS_SL5XXX -DQT_QWS_SL6000"
-EXTRA_DEFINES_mnci 		= "                               -DQT_QWS_RAMSES                 -DQT_QWS_DEVFS"
+EXTRA_DEFINES 			= "-DQT_QWS_TSLIB -DQT_QWS_CUSTOM -DQT_QWS_IPAQ"
+EXTRA_DEFINES_spitz		= "-DQT_QWS_TSLIB -DQT_QWS_CUSTOM -DQT_QWS_IPAQ -DQT_QWS_SLCXK"
+EXTRA_DEFINES_akita             = "-DQT_QWS_TSLIB -DQT_QWS_CUSTOM -DQT_QWS_IPAQ -DQT_QWS_SLCXK"
 
 #
 # don't touch anything below here
@@ -151,18 +104,8 @@ export SYSCONF_CXXFLAGS = "${CXXFLAGS} -pipe -DQWS -fno-exceptions -frtti -DNO_D
 # enable if gcc supports visibility
 #export SYSCONF_CXXFLAGS = "${CXXFLAGS} -pipe -DQWS -fno-exceptions -frtti -fvisibility=hidden -DGCC_SUPPORTS_VISIBILITY -DNO_DEBUG ${EXTRA_DEFINES} -DUSE_BIDI"
 export SYSCONF_LFLAGS = "${LDFLAGS} -lts"
-export SYSCONF_LFLAGS_mnci = "${LDFLAGS}"
 export SYSCONF_MOC = "${STAGING_BINDIR_NATIVE}/moc"
 export SYSCONF_UIC = "${STAGING_BINDIR_NATIVE}/uic"
-
-do_configure_prepend_mnci() {
-	chmod -R a+w ${S}/src/kernel
-	cp ${WORKDIR}/qkeyboard_qws.h ${S}/src/kernel
-	cp ${WORKDIR}/qkeyboard_qws.cpp ${S}/src/kernel
-	mkdir bin
-	ln -sf ${STAGING_BINDIR_NATIVE}/moc bin/moc
-	ln -sf ${STAGING_BINDIR_NATIVE}/uic bin/uic
-}
 
 # generate uclibc and eabi configurations
 do_configure() {
@@ -171,8 +114,10 @@ do_configure() {
 			> `dirname $f`/`basename $f | sed -e 's,linux-,linux-uclibc-,'`
 		sed -e 's,-linux-,-linux-gnueabi-,g' < $f \
 			> `dirname $f`/`basename $f | sed -e 's,linux-,linux-gnueabi-,'`
+		sed -e 's,-linux-,-linux-uclibcgnueabi-,g' < $f \
+			> `dirname $f`/`basename $f | sed -e 's,linux-,linux-uclibcgnueabi-,'`
 	done
-	echo yes | ./configure ${EXTRA_OECONF} || die "Configuring qt failed. EXTRA_OECONF was ${EXTRA_OECONF}"
+	echo yes | ./configure ${EXTRA_OECONF} || die "Configuring qte failed. EXTRA_OECONF was ${EXTRA_OECONF}"
 }
 
 do_compile() {
@@ -198,12 +143,12 @@ do_stage() {
 }
 
 do_install() {
-	oe_libinstall -so -C lib lib${PN} ${D}${palmqtdir}/lib/
+	oe_libinstall -so -C lib lib${PN} ${D}${libdir}
 
 	install -d ${D}/${includedir}/qte
 	install -m 0644 include/*.h ${D}/${includedir}/qte/
 }
 
-FILES_${PN} = "${palmqtdir}/lib/lib${PN}.so.*"
-FILES_${PN}-dev = "${includedir}/* ${palmqtdir}/lib/lib${PN}.so"
-FILES_${PN}-dbg = "${palmtopdir}/lib/.debug/"
+FILES_${PN} = "${libdir}/lib${PN}.so.*"
+FILES_${PN}-dev = "${includedir}/* ${libdir}/lib${PN}.so"
+FILES_${PN}-dbg = "${libdir}/.debug/"

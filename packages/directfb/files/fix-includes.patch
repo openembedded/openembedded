@@ -1,0 +1,24 @@
+#
+# pkgconfig points to STAGING_INCDIR, hence
+# we need to make this a local include
+# or else it doesn't find its own header files
+#
+# Signed-Off: mickey@openmoko.org
+#
+Index: DirectFB-1.0.0/include/directfb.h
+===================================================================
+--- DirectFB-1.0.0.orig/include/directfb.h
++++ DirectFB-1.0.0/include/directfb.h
+@@ -29,10 +29,10 @@
+ #ifndef __DIRECTFB_H__
+ #define __DIRECTFB_H__
+ 
+-#include <dfb_types.h>
++#include "dfb_types.h"
+ #include <sys/time.h> /* struct timeval */
+ 
+-#include <directfb_keyboard.h>
++#include "directfb_keyboard.h"
+ 
+ #ifdef __cplusplus
+ extern "C"

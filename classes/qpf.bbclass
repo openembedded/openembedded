@@ -9,15 +9,11 @@ do_compile() {
 }
 
 pkg_postinst_fonts() {
-#!/bin/sh
-set -e
 . /etc/profile
 ${sbindir}/update-qtfontdir
 }
 
 pkg_postrm_fonts() {
-#!/bin/sh
-set -e
 . /etc/profile
 ${sbindir}/update-qtfontdir -f
 }

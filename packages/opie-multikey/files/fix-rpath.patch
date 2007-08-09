@@ -1,0 +1,11 @@
+--- multikey/multikey.pro.org	2005-06-16 01:54:51.000000000 +0300
++++ multikey/multikey.pro	2007-07-04 21:02:52.000000000 +0300
+@@ -11,7 +11,7 @@
+ INCLUDEPATH += $(OPIEDIR)/include
+ DEPENDPATH      +=  ../../launcher
+ LIBS            += -lqpe -L$(OPIEDIR)/plugins/inputmethods -lqpickboard -lqtaux2 -lopiecore2 -lopieui2
+-QMAKE_LFLAGS	+= -Wl,-rpath,/opt/QtPalmtop/plugins/inputmethods
++QMAKE_LFLAGS	+= -Wl,-rpath,$(palmtopdir)/plugins/inputmethods
+ VERSION		= 1.0.0
+ 
+ include( $(OPIEDIR)/include.pro )

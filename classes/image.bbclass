@@ -13,19 +13,21 @@ USE_DEVFS ?= "0"
 
 PID = "${@os.getpid()}"
 
-DEPENDS += "makedevs-native"
 PACKAGE_ARCH = "${MACHINE_ARCH}"
 
-def get_image_deps(d):
-	import bb
-	str = ""
-	for type in (bb.data.getVar('IMAGE_FSTYPES', d, 1) or "").split():
-		deps = bb.data.getVar('IMAGE_DEPENDS_%s' % type, d) or ""
-		if deps:
-			str += " %s" % deps
-	return str
+do_rootfs[depends] += "makedevs-native:do_populate_staging fakeroot-native:do_populate_staging"
 
-DEPENDS += "${@get_image_deps(d)}"
+python () {
+    import bb
+
+    deps = bb.data.getVarFlag('do_rootfs', 'depends', d) or ""
+    for type in (bb.data.getVar('IMAGE_FSTYPES', d, True) or "").split():
+        for dep in ((bb.data.getVar('IMAGE_DEPENDS_%s' % type, d) or "").split() or []):
+            deps += " %s:do_populate_staging" % dep
+    for dep in (bb.data.getVar('EXTRA_IMAGEDEPENDS', d, True) or "").split():
+        deps += " %s:do_populate_staging" % dep
+    bb.data.setVarFlag('do_rootfs', 'depends', deps, d)
+}
 
 #
 # Get a list of files containing device tables to create.
@@ -56,6 +58,7 @@ IMAGE_LINGUAS ?= "de-de fr-fr en-gb"
 LINGUAS_INSTALL = "${@" ".join(map(lambda s: "locale-base-%s" % s, bb.data.getVar('IMAGE_LINGUAS', d, 1).split()))}"
 
 ROOTFS_POSTPROCESS_COMMAND ?= ""
+MACHINE_POSTPROCESS_COMMAND ?= ""
 
 do_rootfs[nostamp] = "1"
 do_rootfs[dirs] = "${TOPDIR}"
@@ -78,7 +81,7 @@ fakeroot do_rootfs () {
 
 	insert_feed_uris	
 
-	rm -f ${IMAGE_ROOTFS}${libdir}/ipkg/lists/oe
+	rm -f ${IMAGE_ROOTFS}${libdir}/ipkg/lists/*
 	
 	${IMAGE_PREPROCESS_COMMAND}
 		
@@ -87,17 +90,19 @@ fakeroot do_rootfs () {
 
 	for type in ${IMAGE_FSTYPES}; do
 		if test -z "$FAKEROOTKEY"; then
-			fakeroot -i ${TMPDIR}/fakedb.image bbimage -t $type -e ${FILE}
+			fakeroot -i ${TMPDIR}/fakedb.image ${PYTHON} `which bbimage` -t $type -e ${FILE}
 		else
-			bbimage -n "${IMAGE_NAME}" -t "$type" -e "${FILE}"
+			${PYTHON} `which bbimage` -n "${IMAGE_NAME}" -t "$type" -e "${FILE}"
 		fi
 
 		cd ${DEPLOY_DIR_IMAGE}/
-		rm -f ${DEPLOY_DIR_IMAGE}/${IMAGE_LINK_NAME}.*
+		rm -f ${DEPLOY_DIR_IMAGE}/${IMAGE_LINK_NAME}.$type
 		ln -s ${IMAGE_NAME}.rootfs.$type ${DEPLOY_DIR_IMAGE}/${IMAGE_LINK_NAME}.$type
 	done
 
 	${IMAGE_POSTPROCESS_COMMAND}
+	
+	${MACHINE_POSTPROCESS_COMMAND}
 }
 
 insert_feed_uris () {

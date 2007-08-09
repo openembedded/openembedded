@@ -20,6 +20,7 @@ SRC_URI = "http://www1.mplayerhq.hu/MPlayer/releases/MPlayer-1.0rc1.tar.bz2 \
            file://makefile-nostrip.patch;patch=1 \
            ${SOURCEFORGE_MIRROR}/libw100/mplayer-imageon.patch;patch=1 \
            file://imageon-video_out.patch;patch=1 \
+	   file://powerpc-is-ppc.diff;patch=1 \
            file://pxa_configure.patch;patch=1 \
            file://pxa-video_out.patch;patch=1 "
 
@@ -33,7 +34,7 @@ PACKAGE_ARCH_mencoder_collie = "collie"
 
 RCONFLICTS_${PN} = "mplayer-atty"
 RREPLACES_${PN} = "mplayer-atty"
-PR = "r8"
+PR = "r14"
 
 PARALLEL_MAKE = ""
 
@@ -173,10 +174,38 @@ EXTRA_OECONF = " \
         --disable-runtime-cpudetection \
         "
 
-EXTRA_OECONF_append_c7x0 = " --enable-w100 --enable-imageon "
-EXTRA_OECONF_append_hx4700 = " --enable-imageon "
+EXTRA_OECONF_append_arm = " --disable-decoder=vorbis_decoder \
+			    --disable-encoder=vorbis_encoder"
+
 EXTRA_OECONF_append_progear = " --disable-sse --disable-3dnow --disable-mmxext --disable-sse2"
+
+#enable support for the ati imageon series (w100 and w3220)
+EXTRA_OECONF_append_c7x0 = " --enable-w100 "
+EXTRA_OECONF_append_hx4700 = " --enable-imageon "
+
+#enable pxa270 overlay support
 EXTRA_OECONF_append_spitz = " --enable-pxa "
+EXTRA_OECONF_append_akita = " --enable-pxa "
+EXTRA_OECONF_append_a780 = " --enable-pxa "
+EXTRA_OECONF_append_magician = " --enable-pxa "
+EXTRA_OECONF_append_htcuniversal = " --enable-pxa "
+EXTRA_OECONF_append_palmld = " --enable-pxa "
+
+#build with support for the iwmmxt instruction support (pxa270 and up)
+TARGET_CC_ARCH_spitz = "-march=iwmmxt -mtune=iwmmxt"
+PACKAGE_ARCH_spitz = "iwmmxt"
+TARGET_CC_ARCH_akita = "-march=iwmmxt -mtune=iwmmxt"
+PACKAGE_ARCH_akita = "iwmmxt"
+TARGET_CC_ARCH_a780 = "-march=iwmmxt -mtune=iwmmxt"
+PACKAGE_ARCH_a780 = "iwmmxt"
+TARGET_CC_ARCH_hx4700 = "-march=iwmmxt -mtune=iwmmxt"
+PACKAGE_ARCH_hx4700 = "iwmmxt"
+TARGET_CC_ARCH_magician = "-march=iwmmxt -mtune=iwmmxt"
+PACKAGE_ARCH_magician = "iwmmxt"
+TARGET_CC_ARCH_htcuniversal = "-march=iwmmxt -mtune=iwmmxt"
+PACKAGE_ARCH_htcuniversal = "iwmmxt"
+TARGET_CC_ARCH_palmld = "-march=iwmmxt -mtune=iwmmxt"
+PACKAGE_ARCH_palmld = "iwmmxt"
 
 do_configure() {
 	cp ${WORKDIR}/vo_w100.c ${S}/libvo

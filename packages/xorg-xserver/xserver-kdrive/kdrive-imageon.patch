@@ -1,4 +1,3 @@
-
 # Author: Manuel Teira <manuel.teira@telefonica.net> (sirfred in #oe)
 # Description: New driver for the Imageon ATI Card. Implementing:
 # -Hardware solid fills
@@ -7,13 +6,14 @@
 # -XV Extension
 # -Internal and External Imageon offscreen memory support
 # -Hardware RandR rotation (without using a shadow framebuffer)
+# -Support for RandR mode changing
 
 #
 # Patch managed by http://www.holgerschurig.de/patcher.html
 #
 
---- xorg-server-X11R7.1-1.1.0.orig/configure.ac~kdrive-imageon
-+++ xorg-server-X11R7.1-1.1.0.orig/configure.ac
+--- xorg-server-X11R7.1-1.1.0.work/configure.ac~kdrive-imageon
++++ xorg-server-X11R7.1-1.1.0.work/configure.ac
 @@ -435,6 +435,7 @@
  AC_ARG_ENABLE(kdrive,         AS_HELP_STRING([--enable-kdrive], [Build kdrive servers (default: no)]), [KDRIVE=$enableval], [KDRIVE=no])
  AC_ARG_ENABLE(xephyr,         AS_HELP_STRING([--enable-xephyr], [Build the kdrive Xephyr server (default: auto)]), [XEPHYR=$enableval], [XEPHYR=auto])
@@ -42,8 +42,8 @@
  hw/kdrive/i810/Makefile
  hw/kdrive/linux/Makefile
  hw/kdrive/mach64/Makefile
---- xorg-server-X11R7.1-1.1.0.orig/hw/kdrive/Makefile.am~kdrive-imageon
-+++ xorg-server-X11R7.1-1.1.0.orig/hw/kdrive/Makefile.am
+--- xorg-server-X11R7.1-1.1.0.work/hw/kdrive/Makefile.am~kdrive-imageon
++++ xorg-server-X11R7.1-1.1.0.work/hw/kdrive/Makefile.am
 @@ -1,18 +1,9 @@
 -if KDRIVEVESA
 -VESA_SUBDIRS = vesa ati chips epson i810 mach64 mga neomagic nvidia pm2 r128 \
@@ -78,7 +78,7 @@
  DIST_SUBDIRS = vesa ati chips epson i810 mach64 mga neomagic nvidia pm2 r128 \
                 smi via fbdev sdl ephyr src linux fake sis300
 --- /dev/null
-+++ xorg-server-X11R7.1-1.1.0.orig/hw/kdrive/imageon/Makefile.am
++++ xorg-server-X11R7.1-1.1.0.work/hw/kdrive/imageon/Makefile.am
 @@ -0,0 +1,47 @@
 +if KDRIVEFBDEV
 +FBDEV_INCLUDES =-I$(top_srcdir)/hw/kdrive/fbdev
@@ -128,8 +128,8 @@
 +        libimageon.a                    \
 +        $(FBDEV_LIBS) 
 --- /dev/null
-+++ xorg-server-X11R7.1-1.1.0.orig/hw/kdrive/imageon/imageon.c
-@@ -0,0 +1,523 @@
++++ xorg-server-X11R7.1-1.1.0.work/hw/kdrive/imageon/imageon.c
+@@ -0,0 +1,606 @@
 +/*
 + * Copyright © 2007 Manuel Teira
 + *
@@ -157,19 +157,69 @@
 +#endif
 +#include "imageon.h"
 +#include "imageon_regs.h"
++#include "imageon_support.h"
 +
-+struct pci_id_entry w100_pci_ids[] = {
-+    {0x1002, 0x5644, 0, "ATI Imageon 3200"},
-+    {0x1002, 0x5741, 0, "ATI Imageon 100"},
-+    {0x1002, 0x5744, 0, "ATI Imageon 3220"},
-+    {0, 0, 0, NULL}
++W100CardEntry w100_cards[] = {
++    {0x1002, 0x5644, 0,             "ATI Imageon 3200"},
++    {0x1002, 0x5741, W100XVSupport, "ATI Imageon 100"},
++    {0x1002, 0x5744, 0,             "ATI Imageon 3220"},
++    {0,      0,      0,             NULL}
 +};
++
++W100ModeSpec w100_modes[] = {
++    {800, 600, 16, W100_EXTMEM, FALSE},
++    {640, 480, 16, W100_EXTMEM, FALSE},
++    {320, 240, 16, W100_INTMEM, FALSE},
++    {  0,   0,  0,           0, FALSE}    
++};
++
++W100StartupInfo w100StartupInfo;
++
++extern void (*tslib_transform_coords)(long *x, long *y, void *closure);
++extern void *tslib_transform_closure;
++
++static void
++W100Startup(W100CardInfo *w100c)
++{
++    int i;
++    DBG_IMAGEON(("--W100Startup\n"));
++    W100ModeSpec *modes;
++    /* Take the current graphics mode */
++    if (!W100GetFbMode(w100c, &w100StartupInfo.mode)) {
++        ErrorF("(E) Unable to get current mode\n");
++    }
++    w100StartupInfo.randr = W100GetRotation(w100c);
++    w100StartupInfo.portrait = w100StartupInfo.mode.width < w100StartupInfo.mode.height;
++
++    /* Test the valid modes  */
++    for (modes = w100_modes; modes->width; modes++) {
++        modes->supported = W100CheckFbMode(w100c, modes);
++    }
++
++    DBG_IMAGEON(("Startup Mode: %dx%d@%d, rot: %d, portrait: %s\n", 
++                 w100StartupInfo.mode.width,
++                 w100StartupInfo.mode.height,
++                 w100StartupInfo.mode.bpp,
++                 w100StartupInfo.randr,
++                 w100StartupInfo.portrait ? "Yes" : "No"));
++
++    /* Tell the kernel to never switch off external memory  */
++    W100SysFsSet(w100c, W100_SYSFS_BASE "extmem", "1");
++
++    /* Disable framebuffer accel */
++    W100SysFsSet(w100c, W100_SYSFS_BASE "accel", "0");
++
++    /* Enable fastsysclk */
++    W100SysFsSet(w100c, W100_SYSFS_BASE "fastpllclk", "1");
++
++}
++
 +
 +static Bool
 +W100Map(KdCardInfo * card, W100CardInfo *w100c)
 +{
-+    w100c->mem_base = (CARD8 *) KdMapDevice(W100_MEM_BASE,
-+                                            W100_MEM_SIZE);
++    DBG_IMAGEON(("--W100Map\n"));
++    w100c->mem_base = (CARD8 *) KdMapDevice(W100_MEM_BASE, W100_MEM_SIZE);
 +
 +    if (w100c->mem_base == NULL) {
 +        return FALSE;
@@ -182,8 +232,7 @@
 +     * There's only difference when HAVE_ASM_MTRR_H is defined.
 +     * So, this call is doing nothing.
 +     */
-+    KdSetMappedMode(W100_MEM_BASE, W100_MEM_SIZE,
-+                    KD_MAPPED_MODE_REGISTERS);
++    KdSetMappedMode(W100_MEM_BASE, W100_MEM_SIZE, KD_MAPPED_MODE_REGISTERS);
 +
 +    return TRUE;
 +}
@@ -191,77 +240,108 @@
 +static void
 +W100Unmap(KdCardInfo * card, W100CardInfo *w100c)
 +{
++    DBG_IMAGEON(("--W100Unmap\n"));
 +    if (w100c->mem_base) {
-+        KdResetMappedMode(W100_MEM_BASE, W100_MEM_SIZE,
++        KdResetMappedMode(W100_MEM_BASE, W100_MEM_SIZE, 
 +                          KD_MAPPED_MODE_REGISTERS);
 +        KdUnmapDevice((void *) w100c->mem_base, W100_MEM_SIZE);
 +        w100c->mem_base = w100c->reg_base = 0;
 +    }
 +}
 +
++static void W100MemSetup(W100CardInfo *w100c)
++{
++    int reg_value;
++    int int_start, int_size;
++    int ext_start, ext_size;
++    int i;
++    DBG_IMAGEON(("--W100MemSetup\n"));
++
++    for (i = 0; i < w100c->num_memareas; i++) {
++        xfree(w100c->memareas[i]);
++    }
++    xfree(w100c->memareas);
++
++    reg_value = MMIO_IN32(mmMC_FB_LOCATION);
++    int_start = (reg_value & 0xffff) << 8;
++    int_size =  (((reg_value >> 16) & 0xffff) - (reg_value & 0xffff)) << 8;
++    DBG_IMAGEON(("(I) MC_FB_LOCATION: 0x%08x. Start: 0x%08x, size: %d\n",
++                 reg_value, int_start, int_size));
++
++    reg_value = MMIO_IN32(mmMC_EXT_MEM_LOCATION);
++    ext_start = (reg_value & 0xffff) << 8;
++    ext_size =  (((reg_value >> 16) & 0xffff) - (reg_value & 0xffff)) << 8;
++    DBG_IMAGEON(("(I) MC_EXT_MEM_LOCATION: 0x%08x. Start: 0x%08x, size: %d\n",
++                 reg_value, ext_start, ext_size));
++
++    w100c->num_memareas = (ext_size > 0) ? 2 : 1;
++    w100c->memareas = xcalloc(sizeof(W100MemArea *), w100c->num_memareas);
++
++    w100c->memareas[W100_INTMEM] = xcalloc(sizeof(W100MemArea), 1);
++    w100c->memareas[W100_INTMEM]->priority = KD_VIDMEM_MAXPRIO;
++    w100c->memareas[W100_INTMEM]->start = (CARD8 *) int_start;
++    w100c->memareas[W100_INTMEM]->size = int_size;
++
++    if (w100c->num_memareas == 2) {
++        w100c->memareas[W100_EXTMEM] = xcalloc(sizeof(W100MemArea), 1);
++        w100c->memareas[W100_EXTMEM]->priority = KD_VIDMEM_MINPRIO;
++        w100c->memareas[W100_EXTMEM]->start = (CARD8 *) ext_start;
++        w100c->memareas[W100_EXTMEM]->size = ext_size;
++    }
++
++    for (i = 0; i < w100c->num_memareas; i++) {
++        DBG_IMAGEON(("(I) Memory mapped at 0x%08x(0x%08x), size %d bytes\n",
++                     W100_CARD2HOST(w100c->memareas[i]->start),
++                     w100c->memareas[i]->start,
++                     w100c->memareas[i]->size));
++    }
++
++}
++
 +static Bool
 +W100CardInit(KdCardInfo * card)
 +{
 +    W100CardInfo *w100c;
-+    int i;
-+    int ext_mem;
-+    int int_mem;
-+    Bool initialized = FALSE;
++
++    W100CardEntry *model = &w100_cards[0];
++    static Bool initialized = FALSE;
++
++    DBG_IMAGEON(("--W100CardInit\n"));
 +
 +    w100c = xcalloc(sizeof(W100CardInfo), 1);
 +    if (w100c == NULL)
 +        return FALSE;
 +
-+    if (!initialized && fbdevInitialize(card, &w100c->fbdev)) {
-+        initialized = TRUE;
++    if (!fbdevInitialize(card, &w100c->fbdev)) {
++        return FALSE;
 +    }
 +
-+    if (!initialized || !W100Map(card, w100c)) {
++    if (!W100Map(card, w100c)) {
 +        xfree(w100c);
 +        return FALSE;
 +    }
 +    card->driver = w100c;
 +
-+    for (i = 0; w100_pci_ids[i].name != NULL; i++) {
-+        if (w100_pci_ids[i].device == card->attr.deviceID) {
-+            w100c->pci_id = &w100_pci_ids[i];
++    while (model->name) {
++        if (model->device == card->attr.deviceID) {
++            w100c->card_id = model;
 +            break;
 +        }
++        model++;
 +    }
-+    ErrorF("Using ATI card: %s\n", w100c->pci_id->name);
 +
-+    ext_mem = MMIO_IN32(mmMC_EXT_MEM_LOCATION);
-+    int_mem = MMIO_IN32(mmMC_FB_LOCATION);
++    ErrorF("(I) Using ATI card: %s\n", w100c->card_id->name);
 +
-+    w100c->memareas[0].priority = KD_VIDMEM_MAXPRIO;
-+    w100c->memareas[0].start = (CARD8 *) ((int_mem & 0xffff) << 8);
-+    w100c->memareas[0].size = 
-+        (((int_mem >> 16) & 0xffff) - (int_mem & 0xffff)) << 8;
++    if (!initialized) {
++        initialized = TRUE;
++        W100Startup(w100c);
++    }
 +
++    w100c->hw_window.mode  = W100GetModeSpec(w100c, &w100StartupInfo.mode);
++    w100c->hw_window.randr = w100StartupInfo.randr;
 +
-+    w100c->memareas[1].priority = KD_VIDMEM_MINPRIO;
-+    w100c->memareas[1].start = (CARD8 *)((ext_mem & 0xffff) << 8);
-+    w100c->memareas[1].size = 
-+        (((ext_mem >> 16) & 0xffff) - (ext_mem & 0xffff)) << 8;
-+
-+    /* Get some register values */
-+    w100c->regs.ENG_CNTL =       MMIO_IN32(mmENG_CNTL);
-+    w100c->regs.VIDEO_CTRL =     MMIO_IN32(mmVIDEO_CTRL);
-+    w100c->regs.GRAPHIC_H_DISP = MMIO_IN32(mmGRAPHIC_H_DISP);
-+    w100c->regs.GRAPHIC_V_DISP = MMIO_IN32(mmGRAPHIC_V_DISP);
-+
-+    DBG_IMAGEON(("Internal memory at 0x%08x(0x%08x), size %d bytes\n"
-+                 "External memory at 0x%08x(0x%08x), size %d bytes\n",
-+                 w100c->memareas[0].start, 
-+                 W100_CARD2HOST(w100c->memareas[0].start),
-+                 w100c->memareas[0].size,
-+                 w100c->memareas[1].start, 
-+                 W100_CARD2HOST(w100c->memareas[1].start),
-+                 w100c->memareas[1].size));
-+
-+    /* TODO: Change this to honour the framebuffer initial orientation? */
-+    w100c->defaultRandR = RR_Rotate_90;
-+    w100c->hwScreen.randr = w100c->defaultRandR;
++    tslib_transform_closure = w100c;
++    tslib_transform_coords = W100TransformTsLibCoordinates;
 +    return TRUE;
 +}
 +
@@ -271,16 +351,35 @@
 +{
 +    W100CardInfo *w100c = (W100CardInfo *) card->driver;
 +
++    DBG_IMAGEON(("--W100CardFini\n"));
 +    W100Unmap(card, w100c);
 +    fbdevCardFini(card);
 +}
 +
 +static void
-+W100MemSetup(KdScreenInfo *screen)
++W100Setup(KdScreenInfo *screen)
 +{
 +    W100CardInfo(screen);
 +    W100MemArea *mem;
++    KdMouseMatrix m;
 +    int fb_size, i;
++
++    DBG_IMAGEON(("--W100Setup\n"));
++
++    /* Adjust mode */
++    w100c->hw_window.width = screen->width;
++    w100c->hw_window.height = screen->height;
++    w100c->hw_window.bpp =  screen->fb[0].bitsPerPixel;
++    W100SetupGraphicWindow(w100c);
++
++    /* Get some register values */
++    w100c->regs.ENG_CNTL =       MMIO_IN32(mmENG_CNTL);
++    w100c->regs.VIDEO_CTRL =     MMIO_IN32(mmVIDEO_CTRL);
++    w100c->regs.GRAPHIC_H_DISP = MMIO_IN32(mmGRAPHIC_H_DISP);
++    w100c->regs.GRAPHIC_V_DISP = MMIO_IN32(mmGRAPHIC_V_DISP);
++    w100c->regs.DISP_DEBUG2    = MMIO_IN32(mmDISP_DEBUG2);
++
++    W100MemSetup(w100c);
 +
 +    /* Clear the VideoMemAreas set up by the framebuffer initialization */
 +    for (i = 0; i < screen->num_videomem_areas; i++) {
@@ -288,28 +387,27 @@
 +    }
 +    xfree(screen->videomem_areas);
 +    
-+    screen->videomem_areas = xcalloc(sizeof(KdVideoMemArea *),
-+                                     W100_MEMAREAS);
-+    screen->num_videomem_areas = W100_MEMAREAS;
++    screen->videomem_areas = xcalloc(sizeof(KdVideoMemArea *), 
++                                     w100c->num_memareas);
++    screen->num_videomem_areas = w100c->num_memareas;
 +
++    screen->fb[0].byteStride = screen->width * screen->fb[0].bitsPerPixel / 8;
 +    fb_size = screen->fb[0].byteStride * screen->height;
-+    DBG_IMAGEON(("Framebuffer required size: %d bytes\n", fb_size));
-+    /* Try to place the framebuffer in the best VideoMemArea */
-+    for (i = 0; i < W100_MEMAREAS; i++) {
-+        mem = &w100c->memareas[i];
++
++    DBG_IMAGEON(("(I) Framebuffer required size: %d bytes\n", fb_size));
++    
++    for (i = 0; i < w100c->num_memareas; i++) {
++        mem = w100c->memareas[i];
 +        screen->videomem_areas[i] = xcalloc(sizeof(KdVideoMemArea), 1);
-+        if (fb_size <= mem->size) {
-+            DBG_IMAGEON(("Setting FrameBuffer to w100 address 0x%08x\n", 
-+                          mem->start));
-+            screen->fb[0].frameBuffer = W100_CARD2HOST(mem->start);
-+            screen->videomem_areas[i]->priority = mem->priority;
-+            screen->videomem_areas[i]->base = W100_CARD2HOST(mem->start);
-+            screen->videomem_areas[i]->size = mem->size;
++        screen->videomem_areas[i]->priority = mem->priority;
++        screen->videomem_areas[i]->base = W100_CARD2HOST(mem->start);
++        screen->videomem_areas[i]->size = mem->size;
++        if (w100c->hw_window.mode->fbpool == i) {
++            DBG_IMAGEON(("(I) FrameBuffer in w100 memzone 0x%08x(0x%08x)\n", 
++                         W100_CARD2HOST(mem->start), mem->start));
 +            screen->videomem_areas[i]->available_offset = fb_size;
++            screen->fb[0].frameBuffer = W100_CARD2HOST(mem->start);
 +        } else {
-+            screen->videomem_areas[i]->priority = mem->priority;
-+            screen->videomem_areas[i]->base = W100_CARD2HOST(mem->start);
-+            screen->videomem_areas[i]->size = mem->size;
 +            screen->videomem_areas[i]->available_offset = 0;
 +        }
 +        DBG_IMAGEON(("New videomem_area(priority:%d, start:0x%08x, size:%d, available_offset:%d\n",
@@ -319,24 +417,28 @@
 +                     screen->videomem_areas[i]->available_offset));
 +    }
 +
-+    w100c->hwScreen.x = 0;
-+    w100c->hwScreen.y = 0;
-+    w100c->hwScreen.width = screen->width;
-+    w100c->hwScreen.height = screen->height;
-+    w100c->hwScreen.bpp = screen->fb[0].bitsPerPixel;
-+    w100c->hwScreen.offset = W100_HOST2CARD(screen->fb[0].frameBuffer);
 +
++    w100c->hw_window.offset = W100_HOST2CARD(screen->fb[0].frameBuffer);
 +
-+    DBG_IMAGEON(("HWScreen(x:%d,y:%d,width:%d,height:%d,bpp:%d,offset:0x%08x"
++    KdComputeMouseMatrix(&m, screen->randr, 
++                         w100StartupInfo.portrait ? 
++                         W100_MIN(screen->width, screen->height) :
++                         W100_MAX(screen->width, screen->height),
++                         w100StartupInfo.portrait ? 
++                         W100_MAX(screen->width, screen->height) :
++                         W100_MIN(screen->width, screen->height));
++
++    KdSetMouseMatrix(&m);
++
++    DBG_IMAGEON(("Window(width:%d,height:%d,bpp:%d,offset:0x%08x"
 +                 "(0x%08x), randr:%d)\n",
-+                 w100c->hwScreen.x,
-+                 w100c->hwScreen.y,
-+                 w100c->hwScreen.width,
-+                 w100c->hwScreen.height,
-+                 w100c->hwScreen.bpp,
-+                 w100c->hwScreen.offset,
++                 w100c->hw_window.width,
++                 w100c->hw_window.height,
++                 w100c->hw_window.bpp,
++                 w100c->hw_window.offset,
 +                 screen->fb[0].frameBuffer,
-+                 w100c->hwScreen.randr));
++                 w100c->hw_window.randr));
++
 +}
 +
 +static Bool
@@ -346,6 +448,7 @@
 +    W100CardInfo(screen);
 +    Bool success = FALSE;
 +
++    DBG_IMAGEON(("--W100ScreenInit\n"));
 +    w100s = xcalloc(sizeof(W100ScreenInfo), 1);
 +    if (w100s == NULL)
 +        return FALSE;
@@ -353,10 +456,6 @@
 +    w100s->w100c = w100c;
 +    w100s->screen = screen;
 +    screen->driver = w100s;
-+
-+    if (screen->fb[0].depth == 0) {
-+        screen->fb[0].depth = 16;
-+    }
 +
 +    success = fbdevScreenInitialize(screen, &w100s->fbdev);
 +
@@ -366,7 +465,7 @@
 +        return FALSE;
 +    }
 +
-+    W100MemSetup(screen);
++    W100Setup(screen);
 +
 +    return TRUE;
 +}
@@ -375,8 +474,7 @@
 +W100ScreenFini(KdScreenInfo * screen)
 +{
 +    W100ScreenInfo *w100s = (W100ScreenInfo *) screen->driver;
-+    W100CardInfo *w100c = screen->card->driver;
-+
++    DBG_IMAGEON(("--W100ScreenFini\n"));
 +    fbdevScreenFini(screen);
 +    xfree(w100s);
 +    screen->driver = 0;
@@ -388,7 +486,10 @@
 +    KdScreenPriv(pScreen);
 +    W100CardInfo(pScreenPriv);
 +
-+    W100InitVideo(pScreen);
++    DBG_IMAGEON(("--W100InitScreen\n"));
++    if (w100c->card_id->caps & W100XVSupport) {
++        W100InitVideo(pScreen);
++    }
 +    return fbdevInitScreen(pScreen);
 +}
 +
@@ -403,35 +504,42 @@
 +    KdScreenInfo *screen = pScreenPriv->screen;
 +    W100CardInfo(pScreenPriv);
 +    Bool screenEnabled = pScreenPriv->enabled;
-+    KdMouseMatrix m;
 +
-+    DBG_IMAGEON(("W100RandRSetConfig(randr:%d,pSize:%dx%d)\n",
++    DBG_IMAGEON(("--W100RandRSetConfig(randr:%d,pSize:%dx%d)\n",
 +                 randr, pSize->width, pSize->height));
-+
 +
 +    if (screenEnabled) {
 +        KdDisableScreen(pScreen);
 +    }
-+    KdOffscreenSwapOut(screen->pScreen);
 +
 +    if (randr & (RR_Rotate_0|RR_Rotate_180)) {
-+        pScreen->width    = w100c->fbdev.var.xres;
-+        pScreen->height   = w100c->fbdev.var.yres;
 +        pScreen->mmWidth  = screen->width_mm;
 +        pScreen->mmHeight = screen->height_mm;
++        pScreen->width = pSize->width;
++        pScreen->height = pSize->height;
 +    } else {
-+        pScreen->width    = w100c->fbdev.var.yres;
-+	pScreen->height   = w100c->fbdev.var.xres;
 +	pScreen->mmWidth  = screen->height_mm;
 +	pScreen->mmHeight = screen->width_mm;
++        pScreen->width = pSize->height;
++        pScreen->height = pSize->width;
 +    }
 +
-+    KdComputeMouseMatrix(&m, randr, screen->width, screen->height);
-+    KdSetMouseMatrix(&m);
-+
++    screen->randr = randr;
 +    screen->width = pScreen->width;
 +    screen->height = pScreen->height;
-+    screen->fb[0].byteStride = screen->width * screen->fb[0].bitsPerPixel / 8;
++    w100c->hw_window.randr = KdSubRotation(w100StartupInfo.randr, randr);
++    w100c->hw_window.mode = W100GetBestMode(w100c, pScreen->width, pScreen->height);
++
++    KdOffscreenSwapOut(screen->pScreen);
++
++    W100Setup(screen);
++
++    DBG_IMAGEON(("ModifyPixMapHeader(width:%d,height:%d,depth:%d,bpp:%d,bs:%d,fb:0x%08x)\n", pScreen->width, pScreen->height, 
++                 screen->fb[0].depth,
++                 screen->fb[0].bitsPerPixel,
++                 screen->fb[0].byteStride,
++                 screen->fb[0].frameBuffer));
++
 +
 +    (*pScreen->ModifyPixmapHeader) (fbGetScreenPixmap(pScreen),
 +                                    pScreen->width,
@@ -442,76 +550,37 @@
 +                                    screen->fb[0].frameBuffer);
 +
 +
-+    w100c->hwScreen.randr &= ~RR_Rotate_All;
-+    switch (randr & RR_Rotate_All) {
-+    case RR_Rotate_0:
-+        switch (w100c->defaultRandR) {
-+        case RR_Rotate_0:
-+            w100c->hwScreen.randr |= RR_Rotate_0;
-+            break;
-+        case RR_Rotate_90:
-+            w100c->hwScreen.randr |= RR_Rotate_90;
-+            break;
-+        case RR_Rotate_180:
-+            w100c->hwScreen.randr |= RR_Rotate_180;
-+            break;
-+        case RR_Rotate_270:
-+            w100c->hwScreen.randr |= RR_Rotate_270;
-+            break;
-+        }
-+        break;
-+    case RR_Rotate_90:
-+        switch (w100c->defaultRandR) {
-+        case RR_Rotate_0:
-+            w100c->hwScreen.randr |= RR_Rotate_90;
-+            break;
-+        case RR_Rotate_90:
-+            w100c->hwScreen.randr |= RR_Rotate_0;
-+            break;
-+        case RR_Rotate_180:
-+            w100c->hwScreen.randr |= RR_Rotate_270;
-+            break;
-+        case RR_Rotate_270:
-+            w100c->hwScreen.randr |= RR_Rotate_180;
-+            break;
-+        }
-+        break;
-+    case RR_Rotate_180:
-+        switch (w100c->defaultRandR) {
-+        case RR_Rotate_0:
-+            w100c->hwScreen.randr |= RR_Rotate_180;
-+            break;
-+        case RR_Rotate_90:
-+            w100c->hwScreen.randr |= RR_Rotate_270;
-+            break;
-+        case RR_Rotate_180:
-+            w100c->hwScreen.randr |= RR_Rotate_0;
-+            break;
-+        case RR_Rotate_270:
-+            w100c->hwScreen.randr |= RR_Rotate_90;
-+            break;
-+        }
-+        break;
-+    case RR_Rotate_270:
-+        switch (w100c->defaultRandR) {
-+        case RR_Rotate_0:
-+            w100c->hwScreen.randr |= RR_Rotate_270;
-+            break;
-+        case RR_Rotate_90:
-+            w100c->hwScreen.randr |= RR_Rotate_180;
-+            break;
-+        case RR_Rotate_180:
-+            w100c->hwScreen.randr |= RR_Rotate_90;
-+            break;
-+        case RR_Rotate_270:
-+            w100c->hwScreen.randr |= RR_Rotate_0;
-+            break;
-+        }
-+        break;
-+    }
-+
 +    if (screenEnabled) {
 +        KdEnableScreen(pScreen);
++    }
++    return TRUE;
++}
++
++static Bool W100RandRGetInfo(ScreenPtr pScreen, Rotation *rotations)
++{
++    KdScreenPriv(pScreen);
++    KdScreenInfo *screen = pScreenPriv->screen;
++    W100CardInfo(pScreenPriv);
++    RRScreenSizePtr pSize;
++    Rotation randr;
++    W100ModeSpec *modes;
++    int i;
++
++    DBG_IMAGEON(("--W100RandRGetInfo\n"));
++
++    *rotations = RR_Rotate_All;
++
++    for (modes = w100_modes; modes->width; modes++) {
++        if (modes->supported) {
++            pSize = RRRegisterSize(pScreen, 
++                                   modes->width,
++                                   modes->height,
++                                   screen->width_mm,
++                                   screen->height_mm);
++            if (modes == w100c->hw_window.mode) {
++                RRSetCurrentConfig(pScreen, screen->randr, 0, pSize);
++            }
++        }
 +    }
 +
 +    return TRUE;
@@ -520,8 +589,9 @@
 +static Bool W100RandRInit(ScreenPtr pScreen)
 +{
 +    rrScrPrivPtr pScrPriv = rrGetScrPriv(pScreen);
-+
++    DBG_IMAGEON(("--W100RandRInit\n"));
 +    pScrPriv->rrSetConfig = W100RandRSetConfig;
++    pScrPriv->rrGetInfo   = W100RandRGetInfo;
 +    return TRUE;
 +}
 +
@@ -532,7 +602,7 @@
 +{
 +    KdScreenPriv(pScreen);
 +    W100CardInfo(pScreenPriv);
-+
++    DBG_IMAGEON(("--W100FinishInitScreen\n"));
 +    if (!fbdevFinishInitScreen(pScreen))
 +        return FALSE;
 +
@@ -556,6 +626,7 @@
 +W100Preserve(KdCardInfo * card)
 +{
 +    W100CardInfo *w100c = card->driver;
++    DBG_IMAGEON(("--W100Preserve\n"));
 +
 +    fbdevPreserve(card);
 +}
@@ -564,6 +635,7 @@
 +W100Restore(KdCardInfo * card)
 +{
 +    W100CardInfo *w100c = card->driver;
++    DBG_IMAGEON(("--W100Restore\n"));
 +    fbdevRestore(card);
 +}
 +
@@ -572,7 +644,7 @@
 +{
 +    KdScreenPriv(pScreen);
 +    W100CardInfo(pScreenPriv);
-+
++    DBG_IMAGEON(("--W100DPMS\n"));
 +    return fbdevDPMS(pScreen, mode);
 +}
 +
@@ -582,17 +654,28 @@
 +    KdScreenPriv(pScreen);
 +    W100CardInfo(pScreenPriv);
 +
-+    DBG_IMAGEON(("W100Enable\n"));
++    DBG_IMAGEON(("--W100Enable\n"));
 +
++    /*
 +    if (!fbdevEnable(pScreen))
 +        return FALSE;
++    */
 +
 +    if (w100c->mem_base == NULL) {
 +        if (!W100Map(pScreenPriv->screen->card, w100c)) {
 +            return FALSE;
 +        }
-+        W100MemSetup(pScreenPriv->screen);
++        W100Setup(pScreenPriv->screen);
 +    }
++    W100SetupGraphicEngine(w100c);
++
++    graphic_offset_u go;
++    go.val = MMIO_IN32(mmGRAPHIC_OFFSET);
++    DBG_IMAGEON(("Graphic offset is 0x%08x(0x%08x)\n",
++                 go.f.graphic_offset,
++                 W100_CARD2HOST(go.f.graphic_offset)));
++
++
 +    return TRUE;
 +}
 +
@@ -601,8 +684,8 @@
 +{
 +    KdScreenPriv(pScreen);
 +    W100CardInfo(pScreenPriv);
-+    DBG_IMAGEON(("W100Disable\n"));
-+    W100Unmap(pScreenPriv->card, w100c);
++    DBG_IMAGEON(("--W100Disable\n"));
++    //W100Unmap(pScreenPriv->card, w100c);
 +
 +    fbdevDisable(pScreen);
 +}
@@ -654,7 +737,7 @@
 +    W100PutColors,               /* putColors */
 +};
 --- /dev/null
-+++ xorg-server-X11R7.1-1.1.0.orig/hw/kdrive/imageon/imageon_const.h
++++ xorg-server-X11R7.1-1.1.0.work/hw/kdrive/imageon/imageon_const.h
 @@ -0,0 +1,161 @@
 +/*
 + * Copyright © 2007 Manuel Teira
@@ -818,8 +901,8 @@
 +
 +#endif
 --- /dev/null
-+++ xorg-server-X11R7.1-1.1.0.orig/hw/kdrive/imageon/imageon_cursor.c
-@@ -0,0 +1,571 @@
++++ xorg-server-X11R7.1-1.1.0.work/hw/kdrive/imageon/imageon_cursor.c
+@@ -0,0 +1,569 @@
 +/*
 + * Copyright © 2007 Manuel Teira
 + *
@@ -851,8 +934,9 @@
 +#include "imageon_regs.h"
 +
 +#define W100_CURSOR_HEIGHT (16)
-+#define W100_CURSOR_PITCH  (4)
 +#define W100_CURSOR_WIDTH  (16)
++#define W100_CURSOR_PITCH  (W100_CURSOR_WIDTH / 4)
++
 +#define W100_CURSOR_SIZE   W100_CURSOR_PITCH * W100_CURSOR_WIDTH
 +
 +static CARD16 expand2bpp[256];
@@ -885,7 +969,7 @@
 +    (((y) * W100_CURSOR_PITCH + ((x) / 4)) >> 2)
 +
 +#define PixelShift(x, y) \
-+    (2 * ((x) % W100_CURSOR_WIDTH))
++    (2 * ((x) % 16))
 +
 +#define PixelMask(x, y) \
 +    ((0xc0000000) >> PixelShift(x, y))
@@ -949,7 +1033,7 @@
 +        x1 = 0;
 +        y1 = 0;
 +        for (y2 = W100_CURSOR_HEIGHT - 1; y2 >= 0; --y2) {
-+            for (x2 = W100_CURSOR_WIDTH - 1; x2 >= 0; --x2) {
++            for (x2 = 0; x2 < W100_CURSOR_WIDTH; x2++) {
 +                SetPixelVal(dst, x2, y2, PixelVal(src, x1, y1));
 +                ++x1;
 +                if (x1 >= W100_CURSOR_WIDTH) {
@@ -963,7 +1047,7 @@
 +        x1 = 0; 
 +        y1 = 0;
 +        for (x2 = 0; x2 < W100_CURSOR_WIDTH; x2++) {
-+            for (y2 = W100_CURSOR_HEIGHT - 1; y2 >= 0; --y2) {
++            for (y2 = 0; y2 < W100_CURSOR_HEIGHT; y2++) {
 +                SetPixelVal(dst, x2, y2, PixelVal(src, x1, y1));
 +                ++x1;
 +                if (x1 >= W100_CURSOR_WIDTH) {
@@ -1030,9 +1114,6 @@
 +    int line, i;
 +    int h, w;
 +
-+    DBG_IMAGEON(("W100LoadCursor(xhot:%d,yhot:%d,width:%d,height:%d)\n",
-+                 bits->xhot, bits->yhot, 
-+                 bits->width, bits->height));
 +    
 +    pCurPriv->pCursor = pCursor;
 +    pCurPriv->xhot = bits->xhot;
@@ -1073,13 +1154,19 @@
 +    }
 +
 +    /* Rotate the pixmap to get the correct orientation */
-+    W100RotateCursor(w100c->hwScreen.randr, 
++    W100RotateCursor(w100c->hw_window.randr,
 +                     (CARD32*) tmpCursor0,
 +                     (CARD32*) tmpCursor1);
 +
++    DUMP_CURSOR((CARD32*)tmpCursor1);
 +    /* Correct endianness */
 +    src = (CARD32*) tmpCursor1;
 +    dst = (CARD32*) (pCurPriv->area->vidmem->base + pCurPriv->area->offset);
++    DBG_IMAGEON(("W100LoadCursor(xhot:%d,yhot:%d,width:%d,height:%d) dst(0x%08x)\n",
++                 bits->xhot, bits->yhot, 
++                 bits->width, bits->height,
++                 dst));
++
 +    for (line = 0; line < h; line++) {
 +        for (i = 0; i < lwsrc; i++) {
 +            dst[i] = BigEndian(src[i]);
@@ -1087,6 +1174,7 @@
 +        src += lwsrc;
 +        dst += lwsrc;
 +    }
++
 +    W100SetCursorColors(pScreen);
 +}
 +
@@ -1117,13 +1205,14 @@
 +    W100CardInfo(pScreenPriv);
 +    W100ScreenInfo(pScreenPriv);
 +    W100Cursor *pCurPriv = &w100s->cursor;
-+    CARD16 xoffs, yoffs;
++    int xoffs, yoffs;
 +    cursor_offset_u cursor_offset;
 +    cursor_h_pos_u hpos;
 +    cursor_v_pos_u vpos;
 +    graphic_h_disp_u graphic_hdisp;
 +    graphic_v_disp_u graphic_vdisp;
-+    int tx, ty;
++    BoxRec cursorBox, deviceBox;
++
 +
 +    if (!pCurPriv->has_cursor) {
 +        return;
@@ -1132,60 +1221,44 @@
 +        return;
 +    }
 +
-+    DBG_IMAGEON(("W100MoveCursor(x:%d,y:%d)\n", x, y));
-+
 +    graphic_hdisp.val = w100c->regs.GRAPHIC_H_DISP;
 +    graphic_vdisp.val = w100c->regs.GRAPHIC_V_DISP;
-+
 +    xoffs = 0;
 +    yoffs = 0;
++    cursorBox.x1 = x - pCurPriv->xhot;
++    cursorBox.y1 = y - pCurPriv->yhot;
++    cursorBox.x2 = cursorBox.x1 + pCurPriv->width  - 1;
++    cursorBox.y2 = cursorBox.y1 + pCurPriv->height - 1;
++    W100MapToDevice(w100c, &cursorBox, &deviceBox);
 +
-+    x -= pCurPriv->xhot;
-+    if (x < 0) {
-+        switch(w100c->hwScreen.randr & RR_Rotate_All) {
-+        case RR_Rotate_0:
-+        case RR_Rotate_180:
-+            xoffs = -x;
-+            break;
-+        case RR_Rotate_90:
-+        case RR_Rotate_270:
-+            yoffs = -y;
-+            break;
-+        }
-+        x = 0;
-+    }
-+    y -= pCurPriv->yhot;
-+    if (y < 0) {
-+        switch(w100c->hwScreen.randr & RR_Rotate_All) {
-+        case RR_Rotate_0:
-+        case RR_Rotate_180:
-+            yoffs = -y;
-+            break;
-+        case RR_Rotate_90:
-+        case RR_Rotate_270:
-+            xoffs = -y;
-+            break;
-+        }
-+        y = 0;
++    if (deviceBox.x1 < 0) {
++        xoffs = -deviceBox.x1;
++        deviceBox.x1 = 0;
 +    }
 +
-+    tx = W100MapToHWX(w100c, x, y, pCurPriv->width, pCurPriv->height);
-+    ty = W100MapToHWY(w100c, x, y, pCurPriv->width, pCurPriv->height);
-+
-+    DBG_IMAGEON(("W100MoveCursor dst(x:%d,y:%d),"
-+                 "mapped(x:%d,y:%d,xoffs:%d,yoffs:%d\n",
-+                 x, y, tx, ty, xoffs, yoffs));
++    if (deviceBox.y1 < 0) {
++        yoffs = -deviceBox.y1;
++        deviceBox.y1 = 0;
++    }
++    
++    hpos.f.cur_h_start = graphic_hdisp.f.graphic_h_start + deviceBox.x1;
++    hpos.f.cur_h_end   = graphic_hdisp.f.graphic_h_start + deviceBox.x2 + 1;
++    hpos.f.cur_en = 1;
++    vpos.f.cur_v_start = graphic_vdisp.f.graphic_v_start + deviceBox.y1;
++    vpos.f.cur_v_end   = graphic_vdisp.f.graphic_v_start + deviceBox.y2 + 1;
 +
 +    cursor_offset.f.cur_x_offset = xoffs;
 +    cursor_offset.f.cur_y_offset = yoffs;
 +    cursor_offset.f.cur_offset = (CARD32) 
 +        W100_HOST2CARD(pCurPriv->area->vidmem->base
 +                       + pCurPriv->area->offset);
-+    hpos.f.cur_en = 1;
-+    hpos.f.cur_h_start = graphic_hdisp.f.graphic_h_start + tx;
-+    hpos.f.cur_h_end   = hpos.f.cur_h_start + pCurPriv->width;
-+    vpos.f.cur_v_start = graphic_vdisp.f.graphic_v_start + ty;
-+    vpos.f.cur_v_end   = vpos.f.cur_v_start + pCurPriv->height;
++    DBG_IMAGEON(("W100MoveCursor dst(x:%d,y:%d),"
++                 "hwpos(hpos.start:%d,hpos.end:%d,vpos.start:%d,vpos.end:%d),"
++                 "mapped(x:%d,y:%d,xoffs:%d,yoffs:%d)\n",
++                 x, y, 
++                 hpos.f.cur_h_start, hpos.f.cur_h_end,
++                 vpos.f.cur_v_start, vpos.f.cur_v_end,
++                 deviceBox.x1, deviceBox.y1, xoffs, yoffs));
 +
 +    W100DisableDisplayUpdate(w100c);
 +    MMIO_OUT32(mmCURSOR1_OFFSET, cursor_offset.val);
@@ -1199,7 +1272,6 @@
 +
 +}
 +
-+
 +static Bool
 +W100RealizeCursor(ScreenPtr pScreen, CursorPtr pCursor)
 +{
@@ -1207,6 +1279,7 @@
 +    W100CardInfo(pScreenPriv);
 +    W100ScreenInfo(pScreenPriv);
 +    W100Cursor *pCurPriv = &w100s->cursor;
++    DBG_IMAGEON(("W100RealizeCursor\n"));
 +
 +    if (!pScreenPriv->enabled) {
 +        return TRUE;
@@ -1225,6 +1298,7 @@
 +static Bool
 +W100UnrealizeCursor(ScreenPtr pScreen, CursorPtr pCursor)
 +{
++    DBG_IMAGEON(("W100UnrealizeCursor\n"));
 +    return TRUE;
 +}
 +
@@ -1320,6 +1394,11 @@
 +    }
 +    if (pCurPriv->area == NULL) {
 +        FatalError("Couldn't allocate offscreen memory for cursor.\n");
++    } else {
++        DBG_IMAGEON(("Cursor memory at 0x%08x(0x%08x)\n", 
++                     pCurPriv->area->vidmem->base + pCurPriv->area->offset,
++                     W100_HOST2CARD(pCurPriv->area->vidmem->base
++                                    + pCurPriv->area->offset)));
 +    }
 +    if (pCurPriv->pCursor) {
 +        int x, y;
@@ -1348,6 +1427,8 @@
 +    if (pCurPriv->pCursor) {
 +        W100UnloadCursor(pScreen);
 +    }
++
++    pCurPriv->area = NULL;
 +}
 +
 +Bool
@@ -1392,8 +1473,8 @@
 +    pCurPriv->pCursor = NULL;
 +}
 --- /dev/null
-+++ xorg-server-X11R7.1-1.1.0.orig/hw/kdrive/imageon/imageon_draw.c
-@@ -0,0 +1,241 @@
++++ xorg-server-X11R7.1-1.1.0.work/hw/kdrive/imageon/imageon_draw.c
+@@ -0,0 +1,238 @@
 +/*
 + * Copyright © 2007 Manuel Teira
 + *
@@ -1442,6 +1523,7 @@
 +    KdScreenPriv(pPix->drawable.pScreen);
 +    W100ScreenInfo(pScreenPriv);
 +    W100CardInfo(pScreenPriv);
++    W100PortPrivPtr pPortPriv = w100s->pAdaptor->pPortPrivates[0].ptr;
 +    int fifoEntries = 4;
 +
 +    DBG_IMAGEON(("W100PrepareSolid(alu:%d, pm:0x%08x, fg:%d)\n",
@@ -1574,7 +1656,7 @@
 +    W100ScreenInfo(pScreenPriv);
 +
 +
-+    DBG_IMAGEON(("W100InitAccel: %d/%d depth/bpp\n", 
++    DBG_IMAGEON(("--W100InitAccel: %d/%d depth/bpp\n", 
 +                 pScreenPriv->screen->fb[0].depth,
 +                 pScreenPriv->screen->fb[0].bitsPerPixel));
 +
@@ -1588,7 +1670,7 @@
 +    w100s->kaa.DoneCopy = W100DoneCopy;
 +
 +    w100s->kaa.flags |= KAA_OFFSCREEN_PIXMAPS;
-+    /* Offset alignment, not sure if this is enough */
++    /* Offset alignment, not sure if this is enought */
 +    w100s->kaa.offsetAlign = 0;
 +    w100s->kaa.pitchAlign  = 16;
 +
@@ -1606,7 +1688,7 @@
 +    W100ScreenInfo(pScreenPriv);
 +    W100CardInfo(pScreenPriv);
 +
-+    DBG_IMAGEON(("W100EnableAccel\n"));
++    DBG_IMAGEON(("--W100EnableAccel\n"));
 +
 +    w100s->kaa.PrepareBlend = NULL;
 +    w100s->kaa.Blend = NULL;
@@ -1617,27 +1699,23 @@
 +    w100s->kaa.DoneComposite = NULL;
 +    w100s->kaa.UploadToScreen = NULL;
 +    w100s->kaa.UploadToScratch = NULL;
-+
-+    W100SetupGraphicEngine(w100c);
-+    W100SetupGraphicWindow(w100c);
-+
 +    kaaMarkSync(pScreen);
 +}
 +
 +void
 +W100DisableAccel(ScreenPtr pScreen)
 +{
-+    DBG_IMAGEON(("W100DisableAccel\n"));
++    DBG_IMAGEON(("--W100DisableAccel\n"));
 +}
 +
 +void
 +W100FiniAccel(ScreenPtr pScreen)
 +{
-+    DBG_IMAGEON(("W100FiniAccel\n"));
++    DBG_IMAGEON(("--W100FiniAccel\n"));
 +}
 --- /dev/null
-+++ xorg-server-X11R7.1-1.1.0.orig/hw/kdrive/imageon/imageon.h
-@@ -0,0 +1,229 @@
++++ xorg-server-X11R7.1-1.1.0.work/hw/kdrive/imageon/imageon.h
+@@ -0,0 +1,284 @@
 +/*
 + * Copyright © 2007 Manuel Teira
 + *
@@ -1689,12 +1767,18 @@
 +#define W100_CARD2HOST(x) (w100c->mem_base + (CARD32)(x))
 +#define W100_HOST2CARD(x) ((x) - (CARD32)(w100c->mem_base))
 +#define W100_MEMAREAS   (2)
++#define W100_INTMEM     (0)
++#define W100_EXTMEM     (1)
++
++#define W100_SYSFS_BASE "/sys/bus/platform/devices/w100fb/"
 +
 +#define MMIO_OUT32(a, v)   (*(VOL32 *)((w100c->reg_base) + (a)) = (v))
 +#define MMIO_IN32(a)       (*(VOL32 *)((w100c->reg_base) + (a)))
 +
 +#define W100_MAX(x, y) ((x) > (y) ? x : y)
 +#define W100_MIN(x, y) ((x) < (y) ? x : y)
++
++#define W100_ALIGN(q, a) ((q + a - 1) & ~(a - 1))
 +
 +#define TIMEOUT_LOCALS struct timeval _target, _curtime;
 +
@@ -1722,12 +1806,38 @@
 +typedef volatile CARD16	VOL16;
 +typedef volatile CARD32	VOL32;
 +
-+struct pci_id_entry {
++typedef struct _W100CardEntry {
 +    CARD16 vendor;
 +    CARD16 device;
 +    CARD8 caps;
 +    char *name;
-+};
++} W100CardEntry;
++
++
++typedef enum _W100Caps {
++    W100XVSupport = 1
++} W100Caps;
++
++typedef struct _W100ModeSpec {
++    CARD16 width;
++    CARD16 height;
++    CARD8  bpp;
++    CARD8  fbpool;
++    Bool   supported;
++} W100ModeSpec;
++
++typedef struct _W100BoxRec {
++    CARD16 x;
++    CARD16 y;
++    CARD16 w;
++    CARD16 h;
++} W100BoxRec, *W100BoxPtr;
++
++typedef struct _W100Mode {
++    CARD16 width;
++    CARD16 height;
++    CARD8  bpp;
++} W100Mode;
 +
 +typedef struct _W100MemArea {
 +    CARD8 *start;
@@ -1735,29 +1845,36 @@
 +    CARD8 priority;
 +} W100MemArea;
 +
++typedef struct _W100StartupInfo {
++    W100CardEntry *card_id;
++    W100Mode mode;
++    Bool portrait;
++    int randr;
++} W100StartupInfo;
++
 +typedef struct _W100CardInfo {
 +    FbdevPriv fbdev;
-+    struct pci_id_entry *pci_id;
++    W100CardEntry    *card_id;
 +    CARD8 *mem_base;
 +    CARD8 *reg_base;
-+    W100MemArea memareas[W100_MEMAREAS];
++    W100MemArea **memareas;
++    int num_memareas;
 +    int cmdfifo_entries;
 +    struct {
 +        CARD32  ENG_CNTL;
 +        CARD32  VIDEO_CTRL;
 +        CARD32  GRAPHIC_H_DISP;
 +        CARD32  GRAPHIC_V_DISP;
++        CARD32  DISP_DEBUG2;
 +    } regs;
 +    struct {
 +        CARD8 *offset;
-+        CARD16 x;
-+        CARD16 y;
 +        CARD16 width;
 +        CARD16 height;
 +        int randr;
++        W100ModeSpec *mode;
 +        CARD8 bpp;
-+    } hwScreen;
-+    int defaultRandR;
++    } hw_window;
 +    CARD8 last_dst_videomem;
 +    CARD8 last_src_videomem;
 +    struct {
@@ -1823,23 +1940,39 @@
 +    CARD32 videoStatus;
 +    CARD32 videoCtrl;
 +    RegionRec clip;
-+    KdOffscreenArea *offSurface;
-+    CARD32 offSize;
-+    KdOffscreenArea *ovlSurface;
-+    CARD32 ovlSize;
-+    CARD32 YPlaneOffset;
-+    CARD32 UPlaneOffset;
-+    CARD32 VPlaneOffset;
-+    CARD32 colorKey;
-+    CARD8 brightness;
-+    CARD32 maxOverlaySize;
-+    CARD16 ovlX;
-+    CARD16 ovlY;
-+    CARD16 ovlWidth;
-+    CARD16 ovlHeight;
-+    CARD8 videoHorExp;
-+    CARD8 videoVerExp;
-+    int id;
++    struct {
++        int width;                /* Source width  */
++        int height;               /* Source height */
++        unsigned char *buffer;    /* Source buffer */
++        int id;                   /* Source FOURCC */
++        int size;                 /* Size of source rect (bytes) */
++        KdOffscreenArea *surface; /* Source surface (on card memory) */
++        BoxRec box;               /* Source rect boundaries */
++    } src;
++    struct {
++        BoxRec box;               /* Screen rectangle */
++    } dst;
++    struct {
++        int size;                  /* Size of the overlay surface (bytes) */
++        KdOffscreenArea *surface;  /* Overlay surface (on card memory)    */
++        BoxRec box;                /* Overlay box (util size)             */
++        BoxRec frame;              /* Overlay box (plus corrections)      */
++        Bool changed;              /* To avoid recalculations             */
++        int horExp;                /* Horizontal expansion                */
++        int verExp;                /* Vertical expansion                  */
++        int maxSize;               /* Maximum allowed surface size (bytes) */
++        int colorKey;              /* Colour to replace with overlay */
++        int brightness;            /* Brigthness */
++    } ovl;
++    struct {
++        int size;                  /* Number of planes  */
++        int bpp;                   /* bpp of the planes */
++        int offset[3];             /* Planes offsets    */
++        CARD32 yplane;             /* Offset (card) of Y plane */
++        CARD32 uplane;             /* Offset (card) of U plane */
++        CARD32 vplane;             /* Offset (card) of V plane */
++    } planes;
++    Bool changed;              /* To track changes and avoid recalculations */
 +} W100PortPrivRec, *W100PortPrivPtr;
 +
 +extern KdCardFuncs W100Funcs;
@@ -1868,7 +2001,7 @@
 +
 +#endif /* _IMAGEON_H_ */
 --- /dev/null
-+++ xorg-server-X11R7.1-1.1.0.orig/hw/kdrive/imageon/imageon_regs.h
++++ xorg-server-X11R7.1-1.1.0.work/hw/kdrive/imageon/imageon_regs.h
 @@ -0,0 +1,4155 @@
 +/*
 + * Copyright © 2007 Manuel Teira
@@ -6026,7 +6159,7 @@
 +
 +#endif
 --- /dev/null
-+++ xorg-server-X11R7.1-1.1.0.orig/hw/kdrive/imageon/imageon_stub.c
++++ xorg-server-X11R7.1-1.1.0.work/hw/kdrive/imageon/imageon_stub.c
 @@ -0,0 +1,95 @@
 +/*
 + * Copyright © 2007 Manuel Teira
@@ -6057,10 +6190,10 @@
 +#include "imageon_regs.h"
 +#include "klinux.h"
 +
-+extern struct pci_id_entry w100_pci_ids[];
++extern W100CardEntry w100_cards[];
 +
 +static Bool
-+FindW100(CARD16 vendor, CARD16 device, CARD32 count, KdCardAttr * attr)
++FindW100(CARD16 vendor, CARD16 device, KdCardAttr * attr)
 +{
 +    CARD8 *mmio;
 +    CARD32 chip_id;
@@ -6072,7 +6205,7 @@
 +
 +    chip_id = (*(VOL32 *)(mmio + mmCHIP_ID));
 +    if ((vendor | (device << 16)) == chip_id) {
-+        ErrorF("Found W100 Chip ID: %08x\n\n", chip_id);
++        ErrorF("(I) Found W100 Chip ID: %08x\n\n", chip_id);
 +        attr->deviceID = device;
 +        attr->vendorID = vendor;
 +        found = TRUE;
@@ -6085,12 +6218,12 @@
 +void
 +InitCard(char *name)
 +{
-+    struct pci_id_entry *id;
++    int i;
++    W100CardEntry *entry;
 +    KdCardAttr attr;
 +
-+    for (id = w100_pci_ids; id->name != NULL; id++) {
-+        int j = 0;
-+        if (FindW100(id->vendor, id->device, j++, &attr)) {
++    for (entry = w100_cards; entry->name; entry++) {
++        if (FindW100(entry->vendor, entry->device, &attr)) {
 +            KdCardInfoAdd(&W100Funcs, &attr, 0);
 +            break;
 +        }
@@ -6124,8 +6257,8 @@
 +    return KdProcessArgument(argc, argv, i);
 +}
 --- /dev/null
-+++ xorg-server-X11R7.1-1.1.0.orig/hw/kdrive/imageon/imageon_support.c
-@@ -0,0 +1,1306 @@
++++ xorg-server-X11R7.1-1.1.0.work/hw/kdrive/imageon/imageon_support.c
+@@ -0,0 +1,1474 @@
 +/*
 + * Copyright © 2007 Manuel Teira
 + *
@@ -6196,6 +6329,9 @@
 +    /* GXset          */ 0xff,    /* 1 */
 +};
 +
++extern W100ModeSpec w100_modes[];
++extern W100StartupInfo w100StartupInfo;
++
 +void W100DisableDisplayUpdate(W100CardInfo *w100c)
 +{
 +    disp_db_buf_cntl_wr_u disp_db_buf_cntl;
@@ -6234,8 +6370,8 @@
 +    dp_datatype_u dp_datatype;
 +
 +    DBG_IMAGEON(("W100SetupGraphicEngine(offset:%p, pitch:%d)\n",
-+                 w100c->hwScreen.offset, 
-+                 w100c->hwScreen.width));
++                 w100c->hw_window.offset, 
++                 w100c->hw_window.width));
 +
 +    eng_cntl.val = MMIO_IN32(mmENG_CNTL);
 +    eng_cntl.f.erc_reg_wr_ws = 0;
@@ -6253,18 +6389,18 @@
 +    MMIO_OUT32(mmDEFAULT_SC_BOTTOM_RIGHT, bottomright.val);
 +
 +    dpitch.val = 0;
-+    dpitch.f.dst_pitch = w100c->hwScreen.width;
++    dpitch.f.dst_pitch = w100c->hw_window.width;
 +    MMIO_OUT32(mmDST_PITCH, dpitch.val);
 +
 +    doffset.val = 0;
-+    doffset.f.dst_offset = (CARD32) w100c->hwScreen.offset;
++    doffset.f.dst_offset = (CARD32) w100c->hw_window.offset;
 +    MMIO_OUT32(mmDST_OFFSET, doffset.val);
 +
 +    spitch.val = 0;
-+    spitch.f.src_pitch = w100c->hwScreen.width;
++    spitch.f.src_pitch = w100c->hw_window.width;
 +    MMIO_OUT32(mmSRC_PITCH, spitch.val);
 +    soffset.val = 0;
-+    soffset.f.src_offset = (CARD32) w100c->hwScreen.offset;
++    soffset.f.src_offset = (CARD32) w100c->hw_window.offset;
 +    MMIO_OUT32(mmSRC_OFFSET, soffset.val);
 +
 +    tl.f.sc_left = tl.f.sc_top = 0;
@@ -6340,90 +6476,126 @@
 +    ErrorF("<-W100ResetGraphicEngine\n");
 +}
 +
++W100ModeSpec *W100GetModeSpec(W100CardInfo *w100c, W100Mode *mode)
++{
++    W100ModeSpec *modes;
++    for (modes = w100_modes; modes->width; modes++) {
++        if ((modes->bpp == mode->bpp) &&
++            (((modes->width == mode->width) &&
++              (modes->height == mode->height)) ||
++             ((modes->width == mode->height) &&
++              (modes->height == mode->width)))) {
++            return modes;
++        }
++    }
++    ErrorF("No matching mode spec for %dx%d@%d\n", 
++           mode->width, mode->height, mode->bpp);
++    return NULL;
++}
++
++W100ModeSpec *W100GetBestMode(W100CardInfo *w100c, int width, int height)
++{
++    unsigned int best_x = 0xffffffff;
++    unsigned int best_y = 0xffffffff;
++    W100ModeSpec *modes, *best_mode = NULL;
++    for (modes = w100_modes; modes->width; modes++) {
++        if (modes->supported) {
++            if (((modes->width >= width) && (modes->width < best_x)) &&
++                ((modes->height >= height) && (modes->height < best_y))) {
++                best_mode = modes;
++                best_x = modes->width;
++                best_y = modes->height;
++            } else if (((modes->width >= height) && (modes->width < best_y)) &&
++                       ((modes->height >= width) && (modes->height < best_x))) {
++                best_mode = modes;
++                best_x = modes->height;
++                best_y = modes->width;
++            }
++        }
++    }
++    if (!best_mode) {
++        ErrorF("No matching mode spec for %dx%d\n", width, height);
++    }
++    return best_mode;
++}
++
++Bool W100GetFbMode(W100CardInfo *w100c, W100Mode *mode)
++{
++    struct fb_var_screeninfo vinfo;
++    int i;
++
++    if (ioctl(w100c->fbdev.fd, FBIOGET_VSCREENINFO, &vinfo) != 0) {
++        ErrorF("Unable to get framebuffer mode\n");
++        return FALSE;
++    }
++
++    mode->width = vinfo.xres;
++    mode->height = vinfo.yres;
++    mode->bpp = vinfo.bits_per_pixel;
++}
++
++Bool W100CheckFbMode(W100CardInfo *w100c, W100ModeSpec *modes)
++{
++    struct fb_var_screeninfo vinfo;
++
++    vinfo.xres = vinfo.xres_virtual = modes->width;
++    vinfo.yres = vinfo.yres_virtual = modes->height;
++    vinfo.bits_per_pixel            = modes->bpp;
++    vinfo.activate = FB_ACTIVATE_TEST;
++    
++    if (ioctl(w100c->fbdev.fd, FBIOPUT_VSCREENINFO, &vinfo) != 0) {
++        ErrorF("(W) Mode %dx%d@%d not supported\n", 
++               vinfo.xres,
++               vinfo.yres,
++               vinfo.bits_per_pixel);
++        return FALSE;
++    }
++    DBG_IMAGEON(("(I) Mode %dx%d@%d supported\n", 
++                 vinfo.xres,
++                 vinfo.yres,
++                 vinfo.bits_per_pixel));
++    return TRUE;
++}
++
++Bool W100SetFbMode(W100CardInfo *w100c)
++{
++    struct fb_var_screeninfo vinfo;
++    int randr = KdSubRotation(w100c->hw_window.randr, w100StartupInfo.randr);
++
++    if (randr & (RR_Rotate_0 | RR_Rotate_180)) {
++        vinfo.xres = vinfo.xres_virtual = w100c->hw_window.mode->width;
++        vinfo.yres = vinfo.yres_virtual = w100c->hw_window.mode->height;
++    } else {
++        vinfo.xres = vinfo.xres_virtual = w100c->hw_window.mode->height;
++        vinfo.yres = vinfo.yres_virtual = w100c->hw_window.mode->width;
++    }
++    vinfo.bits_per_pixel            = w100c->hw_window.mode->bpp;
++    vinfo.activate = FB_ACTIVATE_NOW;
++    int flip = (w100c->hw_window.randr > RR_Rotate_90) ? 1 : 0;
++
++    DBG_IMAGEON(("Asking framebuffer for mode %dx%d@%d. Flipped:%d\n",
++                 vinfo.xres, vinfo.yres, vinfo.bits_per_pixel, flip));
++    if (ioctl(w100c->fbdev.fd, FBIOPUT_VSCREENINFO, &vinfo) != 0) {
++        ErrorF("Error setting mode %dx%d@%d\n", 
++               vinfo.xres,
++               vinfo.yres,
++               vinfo.bits_per_pixel);
++        return FALSE;
++    }
++    W100SysFsSet(w100c, W100_SYSFS_BASE "flip", flip ? "1" : "0");
++    return TRUE;
++}
++
 +void W100SetupGraphicWindow(W100CardInfo *w100c)
 +{
-+    CARD32 offset = 0;
-+    graphic_ctrl_u gc;
-+    graphic_pitch_u gp;
-+    graphic_offset_u go;
-+    pclk_cntl_u pclk_cntl;
++    DBG_IMAGEON(("W100SetupGraphicWindow(width:%d,height:%d,randr:%d)\n",
++                 w100c->hw_window.width,
++                 w100c->hw_window.height,
++                 w100c->hw_window.randr));
 +
-+    DBG_IMAGEON(("W100SetupGraphicWindow(offset:%p, x:%d, y:%d, "
-+                 "width:%d, height:%d, randr:%d)\n",
-+                 w100c->hwScreen.offset, 
-+                 w100c->hwScreen.x,
-+                 w100c->hwScreen.y,
-+                 w100c->hwScreen.width,
-+                 w100c->hwScreen.height,
-+                 w100c->hwScreen.randr));
-+
-+    gc.val = 0;
-+    gc.f.color_depth = COLOR_DEPTH_A555;
-+    gc.f.en_crtc = 1;
-+    gc.f.en_graphic_crtc = 1;
-+    gc.f.en_graphic_req = 1;
-+    gc.f.lcd_pclk_on = 1;
-+    gc.f.lcd_sclk_on = 1;
-+    gc.f.low_power_on = 0;
-+
-+    pclk_cntl.val = 0;
-+
-+    switch (w100c->hwScreen.width) {
-+    case 240:
-+    case 320:
-+        gc.f.total_req_graphic = 0xa0;
-+        gc.f.req_freq = 0;
-+        pclk_cntl.f.pclk_post_div = 1;
-+        pclk_cntl.f.pclk_src_sel = W100_CLK_SRC_XTAL;
-+        break;
-+    case 480:
-+    case 640:
-+        pclk_cntl.f.pclk_src_sel = W100_CLK_SRC_PLL;
-+        gc.f.total_req_graphic = 0xf0;
-+        if (w100c->hwScreen.randr & (RR_Rotate_0 | RR_Rotate_180)) {
-+            gc.f.low_power_on = 1;
-+            gc.f.req_freq = 5;
-+            pclk_cntl.f.pclk_post_div = 2; 
-+        } else {
-+            gc.f.req_freq = 4;
-+            pclk_cntl.f.pclk_post_div = 6;
-+        }
-+        break;
++    if (!W100SetFbMode(w100c)) {
++        ErrorF("Error Setting Graphic Window\n");
 +    }
-+
-+    gp.val = 0;
-+    gp.f.graphic_pitch = w100c->hwScreen.width * w100c->hwScreen.bpp / 8;
-+    
-+    go.val = 0;
-+    go.f.graphic_offset = (CARD32) w100c->hwScreen.offset;
-+
-+    switch(w100c->hwScreen.randr & RR_Rotate_All) {
-+    case RR_Rotate_0:
-+        gc.f.portrait_mode = 0;
-+        offset = 0;
-+        break;
-+    case RR_Rotate_90:
-+        gc.f.portrait_mode = 1;
-+        offset = w100c->hwScreen.width * (w100c->hwScreen.height - 1);
-+        break;
-+    case RR_Rotate_180:
-+        gc.f.portrait_mode = 3;
-+        offset = w100c->hwScreen.width * w100c->hwScreen.height - 1;
-+        break;
-+    case RR_Rotate_270:
-+        gc.f.portrait_mode = 2;
-+        offset = w100c->hwScreen.width - 1;
-+        break;
-+    }
-+    offset = (offset * w100c->hwScreen.bpp / 8) & ~0x03;
-+    go.f.graphic_offset += offset;
-+
-+    W100DisableDisplayUpdate(w100c);
-+    MMIO_OUT32(mmPCLK_CNTL, pclk_cntl.val);
-+    MMIO_OUT32(mmGRAPHIC_CTRL,   gc.val);
-+    MMIO_OUT32(mmGRAPHIC_OFFSET, go.val);
-+    MMIO_OUT32(mmGRAPHIC_PITCH,  gp.val);
-+    W100EnableDisplayUpdate(w100c);
 +}
 +
 +void W100EnableGraphicWindow(W100CardInfo *w100c)
@@ -6711,7 +6883,6 @@
 +    } else {
 +        w100c->ctx.mask.enable = FALSE;
 +    }
-+
 +}
 +
 +Bool W100SetSource(KdScreenInfo *screen, 
@@ -6817,150 +6988,140 @@
 +                              pPix->drawable.bitsPerPixel);
 +}
 +
-+CARD16 W100MapToHWX(W100CardInfo *w100c,
-+                    CARD16 x, CARD16 y, CARD16 w, CARD16 h)
++void W100MapToDevice(W100CardInfo *w100c, BoxPtr src, BoxPtr dst)
 +{
-+    CARD16 tx;
-+    switch (w100c->hwScreen.randr & RR_Rotate_All) {
++    switch (w100c->hw_window.randr & RR_Rotate_All) {
 +    case RR_Rotate_0:
-+        tx = x;
++        dst->x1 = src->x1;
++        dst->y1 = src->y1;
++        dst->x2 = src->x2;
++        dst->y2 = src->y2;
 +        break;
 +    case RR_Rotate_90:
-+        tx = w100c->hwScreen.height - (y + w - 1);
++        dst->x1 = w100c->hw_window.height - src->y2 - 1;
++        dst->y1 = src->x1;
++        dst->x2 = w100c->hw_window.height - src->y1 - 1;
++        dst->y2 = src->x2;
 +        break;
 +    case RR_Rotate_180:
-+        tx = w100c->hwScreen.width - (x + w);
++        dst->x1 = w100c->hw_window.width - src->x2 - 1;
++        dst->y1 = w100c->hw_window.height - src->y2 - 1;
++        dst->x2 = w100c->hw_window.width - src->x1 - 1;
++        dst->y2 = w100c->hw_window.height - src->y1 - 1;
 +        break;
 +    case RR_Rotate_270:
-+        tx = y;
++        dst->x1 = src->y1;
++        dst->y1 = w100c->hw_window.width - src->x2 - 1;
++        dst->x2 = src->y2;
++        dst->y2 = w100c->hw_window.width - src->x1 - 1;
 +        break;
-+    default:
-+        tx = x;
 +    }
-+    return tx;
++    DBG_IMAGEON(("MapToDevice (x1:%d,y1:%d,x2:%d,y2:%d)->(x1:%d,y1:%d,x2:%d,y2:%d)\n",
++                 src->x1, src->y1, src->x2, src->y2,
++                 dst->x1, dst->y1, dst->x2, dst->y2));
 +}
 +
-+CARD16 W100MapToHWY(W100CardInfo *w100c,
-+                    CARD16 x, CARD16 y, CARD16 w, CARD16 h)
++void W100MapFromDevice(W100CardInfo *w100c, BoxPtr src, BoxPtr dst)
 +{
-+    CARD16 ty;
-+    switch (w100c->hwScreen.randr & RR_Rotate_All) {
++    switch (w100c->hw_window.randr & RR_Rotate_All) {
 +    case RR_Rotate_0:
-+        ty = y;
++        dst->x1 = src->x1;
++        dst->y1 = src->y1;
++        dst->x2 = src->x2;
++        dst->y2 = src->y2;
 +        break;
 +    case RR_Rotate_90:
-+        ty = x;
++        dst->x1 = src->y1;
++        dst->y1 = w100c->hw_window.height - src->x2 - 1;
++        dst->x2 = src->y2;
++        dst->y2 = w100c->hw_window.height - src->x1 - 1;
 +        break;
 +    case RR_Rotate_180:
-+        ty = w100c->hwScreen.height - (y + h - 1);
++        dst->x1 = w100c->hw_window.width - src->x2 - 1;
++        dst->y1 = w100c->hw_window.height - src->y2 - 1;
++        dst->x2 = w100c->hw_window.width - src->x1 - 1;
++        dst->y2 = w100c->hw_window.height - src->y1 - 1;
 +        break;
 +    case RR_Rotate_270:
-+        ty = w100c->hwScreen.width - (x + w);
++        dst->x1 = w100c->hw_window.height - src->y2 - 1;
++        dst->y1 = src->x1;
++        dst->x2 = w100c->hw_window.width - src->y1 - 1;
++        dst->y2 = src->x2;
 +        break;
-+    default:
-+        ty = y;
 +    }
-+    return ty;
++    DBG_IMAGEON(("MapFromDevice (x1:%d,y1:%d,x2:%d,y2:%d)->(x1:%d,y1:%d,x2:%d,y2:%d)\n",
++                 src->x1, src->y1, src->x2, src->y2,
++                 dst->x1, dst->y1, dst->x2, dst->y2));
 +}
 +
-+CARD16 W100XformX(W100CardInfo *w100c,
-+                  CARD16 x, CARD16 y, CARD16 w, CARD16 h)
++void W100MoveTo(BoxPtr src, int x, int y)
 +{
-+    CARD16 tx;
++    src->x1 += x;
++    src->y1 += y;
++    src->x2 += x;
++    src->y2 += y;
++}
++
++void W100ChangeOrigin(BoxPtr src, int x, int y)
++{
++    src->x1 -= x;
++    src->y1 -= y;
++    src->x2 -= x;
++    src->y2 -= y;
++}
++
++void W100ScaleBox(BoxPtr src, BoxPtr dst, int scale)
++{
++    if (scale >= 0) {
++        dst->x1 = src->x1 << scale;
++        dst->x2 = src->x2 << scale;
++        dst->y1 = src->y1 << scale;
++        dst->y2 = src->y2 << scale;
++    } else {
++        dst->x1 = src->x1 >> -scale;
++        dst->x2 = src->x2 >> -scale;
++        dst->y1 = src->y1 >> -scale;
++        dst->y2 = src->y2 >> -scale;
++    }
++}
++
++void W100TrajectoryOrigin(W100CardInfo *w100c, BoxPtr box, short *x, short *y)
++{
 +    switch (w100c->ctx.xform.randr & RR_Rotate_All) {
 +    case RR_Rotate_0:
 +        if (w100c->ctx.xform.mirror) {
-+            tx = x + w - 1;
++            *x = box->x2;
 +        } else {
-+            tx = x;
++            *x = box->x1;
 +        }
++        *y = box->y1;
 +        break;
 +    case RR_Rotate_90:
-+        tx = x + h - 1;
++        *x = box->x2;
++        if (w100c->ctx.xform.mirror) {
++            *y = box->y2;
++        } else {
++            *y = box->y1;
++        }
 +        break;
 +    case RR_Rotate_180:
 +        if (w100c->ctx.xform.mirror) {
-+            tx = x;
++            *x = box->x1;
 +        } else {
-+            tx = x + w - 1;
++            *x = box->x2;
 +        }
++        *y = box->y2;
 +        break;
 +    case RR_Rotate_270:
-+    default:
-+        tx = x;
-+        break;
-+    }
-+    return tx;
-+}
-+
-+CARD16 W100XformY(W100CardInfo *w100c,
-+                  CARD16 x, CARD16 y, CARD16 w, CARD16 h)
-+{
-+    CARD16 ty;
-+    switch (w100c->ctx.xform.randr & RR_Rotate_All) {
-+    case RR_Rotate_0:
-+        ty = y;
-+        break;
-+    case RR_Rotate_90:
++        *x = box->x1;
 +        if (w100c->ctx.xform.mirror) {
-+            ty = y + w - 1;
++            *y = box->y1;
 +        } else {
-+            ty = y;
++            *y = box->y2;
 +        }
-+        break;
-+    case RR_Rotate_180:
-+        ty = y + h - 1;
-+        break;
-+    case RR_Rotate_270:
-+    default:
-+        if (w100c->ctx.xform.mirror) {
-+            ty = y;
-+        } else {
-+            ty = y + w - 1;
-+        }
-+        break;
 +    }
-+    return ty;
 +}
-+
-+CARD16 W100XformW(W100CardInfo *w100c,
-+                  CARD16 x, CARD16 y, CARD16 w, CARD16 h)
-+{
-+    CARD16 tw;
-+
-+    switch (w100c->ctx.xform.randr & RR_Rotate_All) {
-+    case RR_Rotate_0:
-+    case RR_Rotate_180:
-+    default:
-+        tw = w;
-+        break;
-+    case RR_Rotate_90:
-+    case RR_Rotate_270:
-+        tw = h;
-+        break;
-+    }
-+    return tw;
-+}
-+
-+CARD16 W100XformH(W100CardInfo *w100c,
-+                  CARD16 x, CARD16 y, CARD16 w, CARD16 h)
-+{
-+    CARD16 th;
-+
-+    switch (w100c->ctx.xform.randr & RR_Rotate_All) {
-+    case RR_Rotate_0:
-+    case RR_Rotate_180:
-+    default:
-+        th = h;
-+        break;
-+    case RR_Rotate_90:
-+    case RR_Rotate_270:
-+        th = w;
-+        break;
-+    }
-+    return th;
-+}
-+
++    
 +CARD8 W100GetScaler(CARD16 dstsize, CARD16 srcsize)
 +{
 +    return W100_MAX(1, W100_MIN(31, ((16 * srcsize) + dstsize - 1) / dstsize));
@@ -6973,22 +7134,18 @@
 +}
 +
 +
-+static void W100Blt(KdScreenInfo *screen, 
-+                    int randr,
-+                    int bpp,
++static void W100Blt(KdScreenInfo *screen,
++                    int randr, int bpp,
 +                    CARD32 srcOffset,
-+                    CARD16 srcW,
-+                    CARD16 srcH,
 +                    CARD16 srcPitch,
++                    BoxPtr srcBox,
 +                    CARD32 dstOffset,
 +                    CARD16 dstPitch,
-+                    CARD16 dstX,
-+                    CARD16 dstY)
++                    BoxPtr dstBox)
 +{
 +    ScreenPtr pScreen = screen->pScreen;
 +    KdScreenPriv(pScreen);
 +    W100CardInfo(pScreenPriv);
-+    CARD16 x, y, w, h;
 +    int fifoEntries = 9;
 +    Bool hasXForm = FALSE;
 +    eng_cntl_u eng_cntl;
@@ -6997,12 +7154,8 @@
 +    src_width_u src_width;
 +    src_height_u src_height;
 +    dst_width_height_u dst_width_height;
-+
-+    DBG_IMAGEON(("W100Blt(randr:%d,bpp:%d,srcOffset:0x%08x,"
-+                 "srcW:%d,srcH:%d,srcPitch:%d,dstOffset:0x%08x,"
-+                 "dstPitch:%d,dstX:%d,dstY:%d)\n",
-+                 randr, bpp, srcOffset, srcW, srcH, 
-+                 srcPitch, dstOffset, dstPitch, dstX, dstY));
++    CARD16 dstX;
++    CARD16 dstY;
 +
 +    if (randr & (RR_Rotate_90|RR_Rotate_270)) {
 +        hasXForm = TRUE;
@@ -7016,21 +7169,28 @@
 +    W100SetRotation(w100c, randr, FALSE);
 +    W100SetSource(screen, srcPitch, srcOffset, bpp);
 +    W100SetDestination(screen, dstPitch, dstOffset, bpp);
++    W100TrajectoryOrigin(w100c, dstBox, &dstX, &dstY);
 +
-+    x = W100XformX(w100c, dstX, dstY, srcW, srcH);
-+    y = W100XformY(w100c, dstX, dstY, srcW, srcH);
-+    w = W100XformW(w100c, dstX, dstY, srcW, srcH);
-+    h = W100XformH(w100c, dstX, dstY, srcW, srcH);
++    src_x_y.f.src_x = srcBox->x1;
++    src_x_y.f.src_y = srcBox->y1;
++    dst_x_y.f.dst_x = dstX;
++    dst_x_y.f.dst_y = dstY;
++    src_width.f.src_width = srcBox->x2 - srcBox->x1 + 1;
++    src_height.f.src_height = srcBox->y2 - srcBox->y1 + 1;
++    dst_width_height.f.dst_height = dstBox->y2 - dstBox->y1 + 1;
++    dst_width_height.f.dst_width_b0 = (dstBox->x2 - dstBox->x1 + 1) & 0xff;
++    dst_width_height.f.dst_width_b1 = ((dstBox->x2 - dstBox->x1 + 1) >> 8) & 0x3f;
 +
-+    src_x_y.f.src_y = 0;
-+    src_x_y.f.src_x = 0;
-+    dst_x_y.f.dst_x = x;
-+    dst_x_y.f.dst_y = y;
-+    src_width.f.src_width = srcW;
-+    src_height.f.src_height = srcH;
-+    dst_width_height.f.dst_height = h;
-+    dst_width_height.f.dst_width_b0 = w & 0xff;
-+    dst_width_height.f.dst_width_b1 = (w >> 8) & 0x3f;
++    DBG_IMAGEON(("W100Blt src(x:%d,y:%d,w:%d,h:%d) dst(x:%d,y:%d,w:%d,h:%d)\n",
++                 src_x_y.f.src_x,
++                 src_x_y.f.src_y,
++                 src_width.f.src_width,
++                 src_height.f.src_height,
++                 dst_x_y.f.dst_x,
++                 dst_x_y.f.dst_y,
++                 dst_width_height.f.dst_width_b0 |
++                 dst_width_height.f.dst_width_b1 << 8,
++                 dst_width_height.f.dst_height));
 +    
 +    if (W100WaitCmdFifoEntries(w100c, fifoEntries)) {
 +        MMIO_OUT32(mmDST_PITCH,   w100c->ctx.dst.pitch);
@@ -7060,20 +7220,17 @@
 +                           int randr,
 +                           int bpp,
 +                           CARD32 srcOffset,
-+                           CARD16 srcW,
-+                           CARD16 srcH,
 +                           CARD16 srcPitch,
++                           BoxPtr srcBox,
 +                           CARD32 dstOffset,
 +                           CARD16 dstPitch,
-+                           CARD16 dstX,
-+                           CARD16 dstY,
++                           BoxPtr dstBox,
 +                           CARD8 xscaler,
 +                           CARD8 yscaler)
 +{
 +    ScreenPtr pScreen = screen->pScreen;
 +    KdScreenPriv(pScreen);
 +    W100CardInfo(pScreenPriv);
-+    CARD16 x, y, w, h, sw, sh;
 +    Bool hasXForm = FALSE;
 +    dp_datatype_u dp_datatype;
 +    dp_mix_u dp_mix;
@@ -7087,13 +7244,22 @@
 +    dst_width_height_u dst_width_height;
 +    int firstStage = 10;
 +    int secondStage = 10;
++    CARD16 dx, dy, sw, sh, dw, dh;
++    BoxRec dst;
 +
-+    DBG_IMAGEON(("W100StretchBlt(randr:%d,bpp:%d,srcOffset:0x%08x,"
-+                 "srcW:%d,srcH:%d,srcPitch:%d,dstOffset:0x%08x,"
-+                 "dstPitch:%d,dstX:%d,dstY:%d,xscaler:%d,yscaler:%d)\n",
-+                 randr, bpp, srcOffset, srcW, srcH, 
-+                 srcPitch, dstOffset, dstPitch, 
-+                 dstX, dstY, xscaler, yscaler));
++    DBG_IMAGEON(("W100StretchBlt(randr:%d,bpp:%d,"
++                 "src(x1:%d,y1:%d,x2:%d,y2:%d,pitch:%d,offset:%d),"
++                 "dst(x1:%d,y1:%d,x2:%d,y2:%d,pitch:%d,offset:%d),"
++                 "xscaler:%d,yscaler:%d)\n",
++                 randr, bpp,
++                 srcBox->x1, srcBox->y1, srcBox->x2, srcBox->y2, 
++                 srcPitch, srcOffset,
++                 dstBox->x1, dstBox->y1, dstBox->x2, dstBox->y2, 
++                 dstPitch, dstOffset,
++                 xscaler, yscaler));
++
++    sw = W100ApplyScaler(srcBox->x2 - srcBox->x1 + 1, xscaler);
++    sh = W100ApplyScaler(srcBox->y2 - srcBox->y1 + 1, yscaler);
 +
 +    if (randr & (RR_Rotate_90|RR_Rotate_270)) {
 +        hasXForm = TRUE;
@@ -7102,12 +7268,23 @@
 +        eng_cntl.f.dis_src_uses_dst_dirmaj = 1;
 +        ++firstStage;
 +        ++secondStage;
++        dh = sw;
++        dw = sh;
++    } else {
++        dh = sh;
++        dw = sw;
 +    }
++
++    dst.x1 = dstBox->x1;
++    dst.y1 = dstBox->y1;
++    dst.x2 = dst.x1 + dw - 1;
++    dst.y2 = dst.y1 + dh - 1;
 +
 +    W100ResetContext(w100c);
 +    W100SetRotation(w100c, randr, FALSE);
 +    W100SetSource(screen, srcPitch, srcOffset, bpp);
 +    W100SetDestination(screen, dstPitch, dstOffset, bpp);
++    W100TrajectoryOrigin(w100c, &dst, &dx, &dy);
 +
 +    src_inc.val = 0;
 +    src_inc.f.src_xinc = xscaler;
@@ -7129,23 +7306,15 @@
 +    e2.f.srcblend = E2_SRCBLEND_ZERO;
 +    e2.f.dstblend = E2_DSTBLEND_ZERO;
 +
-+    sw = W100ApplyScaler(srcW, xscaler);
-+    sh = W100ApplyScaler(srcH, yscaler);
-+
-+    x = W100XformX(w100c, dstX, dstY, sw, sh);
-+    y = W100XformY(w100c, dstX, dstY, sw, sh);
-+    w = W100XformW(w100c, dstX, dstY, sw, sh);
-+    h = W100XformH(w100c, dstX, dstY, sw, sh);
-+
-+    src_x_y.f.src_y = 0;
-+    src_x_y.f.src_x = 0;
-+    dst_x_y.f.dst_x = x;
-+    dst_x_y.f.dst_y = y;
++    src_x_y.f.src_x = srcBox->x1;
++    src_x_y.f.src_y = srcBox->y1;
++    dst_x_y.f.dst_x = dx;
++    dst_x_y.f.dst_y = dy;
 +    src_width.f.src_width = sw + 1;
 +    src_height.f.src_height = sh;
-+    dst_width_height.f.dst_height = h;
-+    dst_width_height.f.dst_width_b0 = w & 0xff;
-+    dst_width_height.f.dst_width_b1 = (w >> 8) & 0x3f;
++    dst_width_height.f.dst_height = dh;
++    dst_width_height.f.dst_width_b0 = dw & 0xff;
++    dst_width_height.f.dst_width_b1 = (dw >> 8) & 0x3f;
 +
 +
 +    if (W100WaitCmdFifoEntries(w100c, firstStage)) {
@@ -7194,20 +7363,17 @@
 +                          int randr,
 +                          int bpp,
 +                          CARD32 srcOffset,
-+                          CARD16 srcW,
-+                          CARD16 srcH,
 +                          CARD16 srcPitch,
++                          BoxPtr srcBox,
 +                          CARD32 dstOffset,
 +                          CARD16 dstPitch,
-+                          CARD16 dstX,
-+                          CARD16 dstY,
++                          BoxPtr dstBox,
 +                          CARD8 xscaler,
 +                          CARD8 yscaler)
 +{
 +    ScreenPtr pScreen = screen->pScreen;
 +    KdScreenPriv(pScreen);
 +    W100CardInfo(pScreenPriv);
-+    CARD16 x, y, w, h, sw, sh;
 +    Bool hasXForm = FALSE;
 +    dp_datatype_u dp_datatype;
 +    dp_mix_u dp_mix;
@@ -7222,14 +7388,23 @@
 +    dst_width_height_u dst_width_height;
 +    int firstStage = 11;
 +    int secondStage = 11;
++    CARD16 dx, dy, sw, sh, dw, dh;
++    BoxRec dst;
 +
-+    DBG_IMAGEON(("W100ScaledBlt(randr:%d,bpp:%d,srcOffset:0x%08x,"
-+                 "srcW:%d,srcH:%d,srcPitch:%d,dstOffset:0x%08x,"
-+                 "dstPitch:%d,dstX:%d,dstY:%d,xscaler:%d,yscaler:%d)\n",
-+                 randr, bpp, srcOffset, srcW, srcH, 
-+                 srcPitch, dstOffset, dstPitch, 
-+                 dstX, dstY, xscaler, yscaler));
++    DBG_IMAGEON(("W100ScaledBlt(randr:%d,bpp:%d,"
++                 "src(x1:%d,y1:%d,x2:%d,y2:%d,pitch:%d,offset:%d),"
++                 "dst(x1:%d,y1:%d,x2:%d,y2:%d,pitch:%d,offset:%d),"
++                 "xscaler:%d,yscaler:%d)\n",
++                 randr, bpp,
++                 srcBox->x1, srcBox->y1, srcBox->x2, srcBox->y2, 
++                 srcPitch, srcOffset,
++                 dstBox->x1, dstBox->y1, dstBox->x2, dstBox->y2, 
++                 dstPitch, dstOffset,
++                 xscaler, yscaler));
 +
++    sw = W100ApplyScaler(srcBox->x2 - srcBox->x1 + 1, xscaler);
++    sh = W100ApplyScaler(srcBox->y2 - srcBox->y1 + 1, yscaler);
++    
 +    if (randr & (RR_Rotate_90|RR_Rotate_270)) {
 +        hasXForm = TRUE;
 +        eng_cntl.val = w100c->regs.ENG_CNTL;
@@ -7237,12 +7412,27 @@
 +        eng_cntl.f.dis_src_uses_dst_dirmaj = 1;
 +        ++firstStage;
 +        ++secondStage;
++        dh = sw;
++        dw = sh;
++    } else {
++        dh = sh;
++        dw = sw;
 +    }
++
++    dst.x1 = dstBox->x1;
++    dst.y1 = dstBox->y1;
++    dst.x2 = dst.x1 + dw - 1;
++    dst.y2 = dst.y1 + dh - 1;
 +
 +    W100ResetContext(w100c);
 +    W100SetRotation(w100c, randr, FALSE);
 +    W100SetSource(screen, srcPitch, srcOffset, bpp);
 +    W100SetDestination(screen, dstPitch, dstOffset, bpp);
++    W100TrajectoryOrigin(w100c, &dst, &dx, &dy);
++
++    DBG_IMAGEON(("Corrected dst(x1:%d,y1:%d,x2:%d,y2:%d). Origin(%d,%d)\n",
++                 dst.x1, dst.y1, dst.x2, dst.y2,
++                 dx, dy));
 +
 +    src_inc.val = 0;
 +    src_inc.f.src_xinc = xscaler;
@@ -7267,25 +7457,18 @@
 +    e2.f.srcblend = E2_SRCBLEND_ZERO;
 +    e2.f.dstblend = E2_DSTBLEND_ZERO;
 +
-+    sw = W100ApplyScaler(srcW, xscaler);
-+    sh = W100ApplyScaler(srcH, yscaler);
 +
-+    x = W100XformX(w100c, dstX, dstY, sw, sh);
-+    y = W100XformY(w100c, dstX, dstY, sw, sh);
-+    w = W100XformW(w100c, dstX, dstY, sw, sh);
-+    h = W100XformH(w100c, dstX, dstY, sw, sh);
-+
-+    src_x_y.f.src_y = 0;
-+    src_x_y.f.src_x = 0;
-+    src2_x_y.f.src_y = 0 + 4;
-+    src2_x_y.f.src_x = 0;
-+    dst_x_y.f.dst_x = x;
-+    dst_x_y.f.dst_y = y;
++    src_x_y.f.src_x = srcBox->x1;
++    src_x_y.f.src_y = srcBox->y1;
++    src2_x_y.f.src_x = srcBox->x1;
++    src2_x_y.f.src_y = srcBox->y1 + 4;
++    dst_x_y.f.dst_x = dx;
++    dst_x_y.f.dst_y = dy;
 +    src_width.f.src_width = sw + 1;
 +    src_height.f.src_height = sh;
-+    dst_width_height.f.dst_height = h;
-+    dst_width_height.f.dst_width_b0 = w & 0xff;
-+    dst_width_height.f.dst_width_b1 = (w >> 8) & 0x3f;
++    dst_width_height.f.dst_height = dh;
++    dst_width_height.f.dst_width_b0 = dw & 0xff;
++    dst_width_height.f.dst_width_b1 = (dw >> 8) & 0x3f;
 +
 +    if (W100WaitCmdFifoEntries(w100c, firstStage)) {
 +        /* Set Source */
@@ -7338,82 +7521,93 @@
 +}
 +
 +void W100PlanarBlt(KdScreenInfo *screen,
-+                   int planes,
-+                   int bpp,
-+                   int randr,
++                   int planes, int planeOffsets[],
++                   int bpp, int randr,
 +                   KdOffscreenArea *src,
 +                   int srcW,
-+                   int srcPitch,
 +                   int srcH,
++                   BoxPtr srcBox,
 +                   KdOffscreenArea *dst,
-+                   int planeOffsets[],
 +                   int dstW,
-+                   int dstPitch,
 +                   int dstH,
-+                   int dstX,
-+                   int dstY)
++                   BoxPtr dstBox)
 +{
 +    ScreenPtr pScreen = screen->pScreen;
 +    KdScreenPriv(pScreen);
 +    W100CardInfo(pScreenPriv);
 +    W100ScreenInfo(pScreenPriv);
++
++    CARD16 dstBoxW, dstBoxH, srcBoxW, srcBoxH;
 +    CARD8 *srcOffset, *dstBase, *dstOffset;
-+    int xoffs, yoffs;
++    int xerror, yerror;
 +    unsigned int subsampling[] = {0, 1, 1};
 +    int plane;
-+    int stretch = ((srcW != dstW) || (srcH != dstH));
++    srcBoxW = srcBox->x2 - srcBox->x1 + 1;
++    srcBoxH = srcBox->y2 - srcBox->y1 + 1;
++    if (randr & (RR_Rotate_90 | RR_Rotate_270)) {
++        dstBoxW = dstBox->y2 - dstBox->y1 + 1;
++        dstBoxH = dstBox->x2 - dstBox->x1 + 1;
++    } else {
++        dstBoxW = dstBox->x2 - dstBox->x1 + 1;
++        dstBoxH = dstBox->y2 - dstBox->y1 + 1;
++    }
++
++    Bool stretch = ((srcBoxW != dstBoxW) || (srcBoxH != dstBoxH));
 +    CARD8 xscaler, yscaler;
++    BoxRec dstb = *dstBox;
 +
 +    DBG_IMAGEON(("W100PlanarBlt(planes:%d,bpp:%d,randr:%d,"
-+                 "src(w:%d,pitch:%d,h:%d),"
-+                 "dst(w:%d,pitch:%d,h:%d,x:%d,y:%d)\n",
++                 "src(x1:%d,y1:%d,x2:%d,y2:%d,w:%d,h:%d),"
++                 "dst(x1:%d,y1:%d,x2:%d,y2:%d,w:%d,h:%d)\n",
 +                 planes, bpp, randr,
-+                 srcW, srcPitch, srcH,
-+                 dstW, dstPitch, dstH, dstX, dstY));
++                 srcBox->x1, srcBox->y1, srcBox->x2, srcBox->y2, srcW, srcH,
++                 dstBox->x1, dstBox->y1, dstBox->x2, dstBox->y2, dstW, dstH));
 +
++    xerror = yerror = 0;
 +    if (stretch) {
-+        xscaler = W100GetScaler(dstW, srcW);
-+        yscaler = W100GetScaler(dstH, srcH);
-+        xoffs = yoffs = 0;
++        xscaler = W100GetScaler(dstBoxW, srcBoxW);
++        yscaler = W100GetScaler(dstBoxH, srcBoxH);
 +        if (xscaler != 16 || yscaler != 16) {
-+            xoffs = (dstW - W100ApplyScaler(srcW, xscaler)) / 2;
-+            yoffs = (dstH - W100ApplyScaler(srcH, yscaler)) / 2;
++            xerror = (dstBoxW - W100ApplyScaler(srcBoxW, xscaler)) / 2;
++            yerror = (dstBoxH - W100ApplyScaler(srcBoxH, yscaler)) / 2;
 +            DBG_IMAGEON(("Stretching with xscaler:%d,yscaler:%d,"
-+                         "xoffs:%d,yoffs:%d\n", 
-+                         xscaler, yscaler, xoffs, yoffs));
++                         "xerror:%d,yerror:%d\n", 
++                         xscaler, yscaler, xerror, yerror));
 +        } else {
-+            xoffs = yoffs = 0;
++            xerror = yerror = 0;
 +            stretch = FALSE;
 +        }
 +    }
 +
++    W100MoveTo(&dstb, xerror, yerror);
++
 +    srcOffset = src->vidmem->base + src->offset;
 +    dstBase = dst->vidmem->base + dst->offset;
 +    for (plane = 0; plane < planes; plane++) {
++        BoxRec srcCBox;
++        BoxRec dstCBox;
 +        dstOffset = dstBase + planeOffsets[plane];
++        W100ScaleBox(srcBox, &srcCBox, -subsampling[plane]);
++        W100ScaleBox(&dstb, &dstCBox, -subsampling[plane]);
 +        if (stretch) {
 +            W100ScaledBlt(screen, randr, bpp,
 +                          (CARD32) srcOffset,
 +                          srcW           >> subsampling[plane],
-+                          srcH           >> subsampling[plane],
-+                          srcPitch       >> subsampling[plane],
++                          &srcCBox,
 +                          (CARD32) dstOffset,
-+                          dstPitch       >> subsampling[plane],
-+                          (dstX + xoffs) >> subsampling[plane], 
-+                          (dstY + yoffs) >> subsampling[plane],
++                          dstW           >> subsampling[plane],
++                          &dstCBox,
 +                          xscaler, yscaler);
 +        } else {
 +            W100Blt(screen, randr, bpp,
 +                    (CARD32) srcOffset,
 +                    srcW     >> subsampling[plane],
-+                    srcH     >> subsampling[plane],
-+                    srcPitch >> subsampling[plane],
++                    &srcCBox,
 +                    (CARD32) dstOffset,
-+                    dstPitch >> subsampling[plane],
-+                    dstX     >> subsampling[plane], 
-+                    dstY     >> subsampling[plane]);
++                    dstW     >> subsampling[plane],
++                    &dstCBox);
 +        }
-+        srcOffset += (srcPitch * srcH) >> (subsampling[plane] * 2);
++        srcOffset += (srcW * srcH) >> (subsampling[plane] * 2);
 +    }
 +}
 +
@@ -7432,9 +7626,116 @@
 +    return brightness.f.brightness;
 +}
 +
++int W100GetRotation(W100CardInfo *w100c)
++{
++    graphic_ctrl_u gc;
++    int randr;
++
++    gc.val = MMIO_IN32(mmGRAPHIC_CTRL);
++
++    switch (gc.f.portrait_mode) {
++    case 0:
++        randr = RR_Rotate_0;
++        break;
++    case 1:
++        randr = RR_Rotate_90;
++        break;
++    case 2:
++        randr = RR_Rotate_270;
++        break;
++    case 3:
++        randr = RR_Rotate_180;
++        break;
++    }
++    return randr;
++}
++
++Bool W100SysFsSet(W100CardInfo *w100c, const char *path, const char *value)
++{
++    FILE *fd;
++    if ((fd = fopen(path, "w")) == NULL) {
++        ErrorF("(E) Error in W100SysFsSet: Unable to open '%s'\n", path);
++        return FALSE;
++    }
++    fprintf(fd, "%s", value);
++    fclose(fd);
++    return TRUE;
++}
++
++Bool W100SysFsGet(W100CardInfo *w100c, const char *path, char *value)
++{
++    FILE *fd;
++    if ((fd = fopen(path, "r")) == NULL) {
++        ErrorF("(E) Error in W100SysFsGet: Unable to open '%s'\n", path);
++        return FALSE;
++    }
++    fscanf(fd, "%s", value);
++    fclose(fd);
++    return TRUE;
++}
++
++void W100TransformTsLibCoordinates(long *x, long *y, void *closure)
++{
++    W100CardInfo *w100c = closure;
++
++    if (w100c->hw_window.mode->width == 320) {
++        *x >>= 1;
++        *y >>= 1;
++    }
++}
++  
++void W100VSync(W100CardInfo *w100c)
++{
++    int timeout = 30000;  /* VSync timeout = 30[ms] > 16.8[ms] */
++    active_v_disp_u active_v_disp;
++    disp_int_cntl_u disp_int_cntl;
++    gen_int_cntl_u gen_int_cntl;
++    gen_int_status_wr_u gen_int_status;
++
++    active_v_disp.val = MMIO_IN32(mmACTIVE_V_DISP);
++
++    /*set vline pos */
++    disp_int_cntl.val = 0;
++    disp_int_cntl.f.vline_int_pos = active_v_disp.f.active_v_end;
++    MMIO_OUT32(mmDISP_INT_CNTL, disp_int_cntl.val);
++
++    /* disable vline irq */
++    gen_int_cntl.val = MMIO_IN32(mmGEN_INT_CNTL);
++    gen_int_cntl.f.crtc_vline_mask = 0;
++    MMIO_OUT32(mmGEN_INT_CNTL, gen_int_cntl.val);
++
++    /* clear vline irq status */
++    gen_int_status.val = 0;
++    gen_int_status.f.crtc_vline_stat_ak = 1;
++    MMIO_OUT32(mmGEN_INT_STATUS, gen_int_status.val);
++
++    /* enable vline irq */
++    gen_int_cntl.f.crtc_vline_mask = 1;
++    MMIO_OUT32(gen_int_cntl.val, mmGEN_INT_CNTL);
++
++    /* clear vline irq status */
++    MMIO_OUT32(mmGEN_INT_STATUS, gen_int_status.val);
++
++    while (timeout > 0) {
++        if (MMIO_IN32(mmGEN_INT_STATUS) & 0x00000002) {
++            break;
++        }
++        usleep(1);
++        timeout--;
++    }
++
++    /* disable vline irq */
++    gen_int_cntl.f.crtc_vline_mask = 0;
++    MMIO_OUT32(mmGEN_INT_CNTL, gen_int_cntl.val);
++
++    /* clear vline irq status */
++    MMIO_OUT32(mmGEN_INT_STATUS, gen_int_status.val);
++}
++      
++        
 --- /dev/null
-+++ xorg-server-X11R7.1-1.1.0.orig/hw/kdrive/imageon/imageon_video.c
-@@ -0,0 +1,1056 @@
++++ xorg-server-X11R7.1-1.1.0.work/hw/kdrive/imageon/imageon_video.c
+@@ -0,0 +1,1172 @@
 +/*
 + * Copyright © 2007 Manuel Teira
 + *
@@ -7516,18 +7817,31 @@
 +static struct {
 +    CARD8 xfactor;
 +    CARD8 yfactor;
-+} ovlResizers[10] = {
-+    { 0, 0 },
-+    { 1, 0 },
-+    { 0, 1 },
-+    { 1, 1 },
-+    { 2, 1 },
-+    { 1, 2 },
-+    { 2, 2 },
-+    { 3, 2 },
-+    { 2, 3 },
-+    { 3, 3 }
++} ovlResizers[NUM_OVL_RESIZERS] = {
++    { 0, 0 }, 
++    { 0, 1 }, { 1, 0 }, { 1, 1 }, 
++    { 1, 2 }, { 2, 1 }, { 2, 2 }, 
++    { 2, 3 }, { 3, 2 }, { 3, 3 }
 +};
++
++static int W100SurfaceSize(W100PortPrivPtr port, short w, short h)
++{
++    int size = 0;
++    DBG_IMAGEON(("W100SurfaceSize for id=%08x, w=%d, h=%d\n", 
++                 port->src.id, w, h));
++
++    switch (port->src.id) {
++    case FOURCC_YV12:
++    case FOURCC_I420:
++        size = (3 * w * h) / 2;
++        break;
++    case FOURCC_UYVY:
++    case FOURCC_YUY2:
++        size = w * h * 2;
++        break;
++    }
++    return size;
++}
 +
 +static void W100ClearSurface(KdScreenInfo *screen, 
 +                             KdOffscreenArea *area,
@@ -7587,9 +7901,8 @@
 +{
 +    W100ScreenInfo *w100s = screen->driver;
 +    W100CardInfo(screen);
-+    W100PortPrivPtr pPortPriv = w100s->pAdaptor->pPortPrivates[0].ptr;
-+
-+    CARD32           disp_debug = 0;
++    W100PortPrivPtr port = w100s->pAdaptor->pPortPrivates[0].ptr;
++    CARD16 w, h, pitch;
 +    video_ctrl_u     video_ctrl;
 +    video_y_offset_u video_y_offset;
 +    video_y_pitch_u  video_y_pitch;
@@ -7603,56 +7916,56 @@
 +    graphic_h_disp_u graphic_h_disp;
 +    graphic_v_disp_u graphic_v_disp;
 +
-+    CARD16 w, h;
++    w = pitch = port->ovl.frame.x2 - port->ovl.frame.x1 + 1;
++    h = port->ovl.frame.y2 - port->ovl.frame.y1 + 1;
 +
-+    DBG_IMAGEON(("W100OverlaySetup(ovlX:%d,ovlY:%d,ovlWidth:%d,ovlHeight:%d,"
-+                 "videoHorExp:%d,videoVerExp:%d,YPlane:0x%08x,UPlane:0x%08x,"
-+                 "VPlane:0x%08x\n",
-+                 pPortPriv->ovlX, pPortPriv->ovlY,
-+                 pPortPriv->ovlWidth, pPortPriv->ovlHeight,
-+                 pPortPriv->videoHorExp, pPortPriv->videoVerExp,
-+                 pPortPriv->YPlaneOffset, pPortPriv->UPlaneOffset, 
-+                 pPortPriv->VPlaneOffset));
++    ErrorF("W100OverlaySetup(ovlX:%d,ovlY:%d,ovlWidth:%d,ovlHeight:%d,"
++           "videoHorExp:%d,videoVerExp:%d,YPlane:0x%08x,UPlane:0x%08x,"
++           "VPlane:0x%08x)\n",
++           port->ovl.frame.x1, port->ovl.frame.y1, w, h,
++           port->ovl.horExp, 
++           port->ovl.verExp,
++           port->planes.yplane, 
++           port->planes.uplane,
++           port->planes.vplane);
 +
-+    if (pPortPriv->videoStatus & W100_OVERLAY_CONFIGURED) {
++    if (port->videoStatus & W100_OVERLAY_CONFIGURED) {
 +        return;
 +    }
 +
-+    w = pPortPriv->ovlWidth  * (pPortPriv->videoHorExp + 1);
-+    h = pPortPriv->ovlHeight * (pPortPriv->videoVerExp + 1);
++    w <<= port->ovl.horExp;
++    h <<= port->ovl.verExp;
 +
 +    video_ctrl.val = w100c->regs.VIDEO_CTRL;
 +
 +    video_ctrl.f.video_inv_hor = 0;
 +    video_ctrl.f.video_inv_ver = 0;
 +    video_ctrl.f.yuv2rgb_option = 0;
-+    video_ctrl.f.video_hor_exp = pPortPriv->videoHorExp;
-+    video_ctrl.f.video_ver_exp = pPortPriv->videoVerExp;
++    video_ctrl.f.video_hor_exp = port->ovl.horExp;
++    video_ctrl.f.video_ver_exp = port->ovl.verExp;
 +    video_ctrl.f.video_ch_sel = 0;
 +
 +    video_ctrl.f.yuv2rgb_en = 1;
 +    //Only support this, by the moment
 +    video_ctrl.f.video_mode = OVLFORMAT_YUV420;
 +
-+    video_y_pitch.f.y_pitch = pPortPriv->ovlWidth;
-+    video_u_pitch.f.u_pitch = pPortPriv->ovlWidth >> 1;
-+    video_v_pitch.f.v_pitch = pPortPriv->ovlWidth >> 1;
 +
-+    /*
-+    video_y_offset.f.y_offset = pPortPriv->YPlaneOffset +
-+        video_y_pitch.f.y_pitch * pPortPriv->ovlY + pPortPriv->ovlX;
-+    video_u_offset.f.u_offset = pPortPriv->UPlaneOffset +
-+        video_u_pitch.f.u_pitch * pPortPriv->ovlY + (pPortPriv->ovlX / 2);
-+    video_v_offset.f.v_offset = pPortPriv->VPlaneOffset +
-+        video_v_pitch.f.v_pitch * pPortPriv->ovlY + (pPortPriv->ovlX / 2);
-+    */
++    video_y_pitch.val = 0;
++    video_u_pitch.val = 0;
++    video_v_pitch.val = 0;
++    video_y_pitch.f.y_pitch = pitch;
++    video_u_pitch.f.u_pitch = pitch >> 1;
++    video_v_pitch.f.v_pitch = pitch >> 1;
 +
-+    video_y_offset.f.y_offset = pPortPriv->YPlaneOffset;
-+    video_u_offset.f.u_offset = pPortPriv->UPlaneOffset;
-+    video_v_offset.f.v_offset = pPortPriv->VPlaneOffset;
++    video_y_offset.val = 0;
++    video_u_offset.val = 0;
++    video_v_offset.val = 0;
++    video_y_offset.f.y_offset = port->planes.yplane;
++    video_u_offset.f.u_offset = port->planes.uplane;
++    video_v_offset.f.v_offset = port->planes.vplane;
 +
 +    graphic_key.val = 0;
-+    graphic_key.f.keyer_color = pPortPriv->colorKey;
++    graphic_key.f.keyer_color = port->ovl.colorKey;
 +    graphic_key.f.keyer_mask  = 0xffffUL;
 +    video_ctrl.f.keyer_en = 1;
 +
@@ -7660,12 +7973,11 @@
 +    graphic_v_disp.val = w100c->regs.GRAPHIC_V_DISP;
 +
 +    video_hpos.f.video_h_start = graphic_h_disp.f.graphic_h_start 
-+        + W100MapToHWX(w100c,
-+                       pPortPriv->ovlX, pPortPriv->ovlY, w, h);
++        + port->ovl.frame.x1;
 +    video_hpos.f.video_h_end = video_hpos.f.video_h_start + w;
++
 +    video_vpos.f.video_v_start = graphic_v_disp.f.graphic_v_start 
-+        + W100MapToHWY(w100c,
-+                       pPortPriv->ovlX, pPortPriv->ovlY, w, h);
++        + port->ovl.frame.y1;
 +    video_vpos.f.video_v_end = video_vpos.f.video_v_start + h;
 +    if (video_hpos.f.video_h_end > graphic_h_disp.f.graphic_h_end) {
 +        w = graphic_h_disp.f.graphic_h_end - video_hpos.f.video_h_start;
@@ -7675,6 +7987,12 @@
 +    video_ctrl.f.total_req_video = (w + 3) / 4;
 +
 +    W100DisableDisplayUpdate(w100c);
++    //This need to be tuned deeply, to get an stable
++    //overlay image:
++    //Best results seems to be present with 0x40xxxxxx
++    //But overlay surface must be located in a 8 dot multiple
++    MMIO_OUT32(mmDISP_DEBUG2, 
++               (w100c->regs.DISP_DEBUG2 & ~0xff000000) | 0x40000000 );
 +    MMIO_OUT32(mmGRAPHIC_KEY, graphic_key.val);
 +    MMIO_OUT32(mmVIDEO_Y_OFFSET, video_y_offset.val);
 +    MMIO_OUT32(mmVIDEO_Y_PITCH, video_y_pitch.val);
@@ -7687,52 +8005,56 @@
 +    MMIO_OUT32(mmVIDEO_V_POS, video_vpos.val);
 +    W100EnableDisplayUpdate(w100c);
 +
-+    pPortPriv->videoCtrl = video_ctrl.val;
-+    pPortPriv->videoStatus |= W100_OVERLAY_CONFIGURED;
++    port->videoCtrl = video_ctrl.val;
++    port->videoStatus |= W100_OVERLAY_CONFIGURED;
 +}
 +
 +static void W100OverlayEnable(KdScreenInfo *screen)
 +{
 +    W100ScreenInfo *w100s = screen->driver;
 +    W100CardInfo(screen);
-+    W100PortPrivPtr pPortPriv = w100s->pAdaptor->pPortPrivates[0].ptr;
++    W100PortPrivPtr port = w100s->pAdaptor->pPortPrivates[0].ptr;
 +    video_ctrl_u video_ctrl;
 +
-+    DBG_IMAGEON(("W100OverlayEnable()\n"));
-+
-+    if (!(pPortPriv->videoStatus & W100_OVERLAY_CONFIGURED)) {
++    if (!(port->videoStatus & W100_OVERLAY_CONFIGURED)) {
 +        W100OverlaySetup(screen);
 +    }
 +
-+    video_ctrl.val = pPortPriv->videoCtrl;
-+    video_ctrl.f.en_video_req = 1;
-+    video_ctrl.f.en_video_crtc = 1;
-+    video_ctrl.f.en_graphic_req_video = 1;
-+    W100DisableDisplayUpdate(w100c);
-+    MMIO_OUT32(mmVIDEO_CTRL, video_ctrl.val);
-+    W100EnableDisplayUpdate(w100c);
-+    pPortPriv->videoCtrl = video_ctrl.val;
-+    pPortPriv->videoStatus |= W100_OVERLAY_ON;
++    if (!(port->videoStatus & W100_OVERLAY_ON)) {
++        ErrorF("W100OverlayEnable()\n");
++        video_ctrl.val = port->videoCtrl;
++        video_ctrl.f.en_video_req = 1;
++        video_ctrl.f.en_video_crtc = 1;
++        video_ctrl.f.en_graphic_req_video = 1;
++        W100DisableDisplayUpdate(w100c);
++        MMIO_OUT32(mmVIDEO_CTRL, video_ctrl.val);
++        W100EnableDisplayUpdate(w100c);
++        port->videoCtrl = video_ctrl.val;
++        port->videoStatus |= W100_OVERLAY_ON;
++    }
 +}
 +
 +static void W100OverlayDisable(KdScreenInfo *screen)
 +{
-+    DBG_IMAGEON(("W100OverlayDisable()\n"));
++
 +    W100ScreenInfo *w100s = screen->driver;
 +    W100CardInfo(screen);
-+    W100PortPrivPtr pPortPriv = w100s->pAdaptor->pPortPrivates[0].ptr;
++    W100PortPrivPtr port = w100s->pAdaptor->pPortPrivates[0].ptr;
 +
 +    video_ctrl_u video_ctrl;
 +
-+    video_ctrl.val = pPortPriv->videoCtrl;
-+    video_ctrl.f.en_video_req = 0;
-+    video_ctrl.f.en_video_crtc = 0;
-+    video_ctrl.f.en_graphic_req_video = 0;
-+    W100DisableDisplayUpdate(w100c);
-+    MMIO_OUT32(mmVIDEO_CTRL, video_ctrl.val);
-+    W100EnableDisplayUpdate(w100c);
-+    pPortPriv->videoCtrl = video_ctrl.val;
-+    pPortPriv->videoStatus &= ~W100_OVERLAY_ON;
++    if ((port->videoStatus & W100_OVERLAY_ON)) {
++        ErrorF("W100OverlayDisable()\n");
++        video_ctrl.val = port->videoCtrl;
++        video_ctrl.f.en_video_req = 0;
++        video_ctrl.f.en_video_crtc = 0;
++        video_ctrl.f.en_graphic_req_video = 0;
++        W100DisableDisplayUpdate(w100c);
++        MMIO_OUT32(mmVIDEO_CTRL, video_ctrl.val);
++        W100EnableDisplayUpdate(w100c);
++        port->videoCtrl = video_ctrl.val;
++        port->videoStatus &= ~W100_OVERLAY_ON;
++    }
 +}
 +
 +static void W100VideoSave(ScreenPtr pScreen, KdOffscreenArea *area)
@@ -7740,28 +8062,44 @@
 +    KdScreenPriv(pScreen);
 +    W100CardInfo(pScreenPriv);
 +    W100ScreenInfo(pScreenPriv);
-+    W100PortPrivPtr pPortPriv = w100s->pAdaptor->pPortPrivates[0].ptr;
++    W100PortPrivPtr port = w100s->pAdaptor->pPortPrivates[0].ptr;
 +
-+    if (pPortPriv->offSurface == area) {
-+        pPortPriv->offSurface = NULL;
-+        pPortPriv->offSize = 0;
++    if (port->src.surface == area) {
++        port->src.surface = NULL;
 +    }
-+    if (pPortPriv->ovlSurface == area) {
-+        pPortPriv->ovlSurface = NULL;
-+        pPortPriv->ovlSize = 0;
++
++    if (port->ovl.surface == area) {
++        port->ovl.surface = NULL;
 +    }
 +}
 +
-+static void W100HostPlanarData(KdScreenInfo *screen,
-+                               int id,
-+                               CARD8 *src,
-+                               KdOffscreenArea *dst,
-+                               CARD32 srcPitch, CARD32 srcHeight,
-+                               CARD32 dstPitch, CARD32 dstHeight,
-+                               CARD16 srcX,     CARD16 srcY,
-+                               CARD16 dstX,     CARD16 dstY,
-+                               CARD16 w,        CARD16 h)
++static void W100SaveSurface(CARD8 *src, int size, const char *file)
 +{
++    int fd;
++    if (fd = open(file, O_WRONLY | O_CREAT | O_TRUNC,
++                  S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH)) {
++        write(fd, (void*) src, size);
++        close(fd);
++    }
++}
++    
++static void W100HostPlanarData(KdScreenInfo *screen)
++{
++    W100ScreenInfo *w100s = screen->driver;
++    W100CardInfo(screen);
++    W100PortPrivPtr port = w100s->pAdaptor->pPortPrivates[0].ptr;
++    KdOffscreenArea *dst = port->src.surface;
++    CARD8 *src = port->src.buffer;
++    CARD16 srcPitch = port->src.width; //WARN: padding?
++    CARD16 srcHeight = port->src.height;
++    CARD16 dstPitch = port->src.box.x2 - port->src.box.x1 + 1; //WARN: padding?
++    CARD16 dstHeight = port->src.box.y2 - port->src.box.y1 + 1;
++    CARD16 srcX = port->src.box.x1;
++    CARD16 srcY = port->src.box.y1;
++    CARD16 dstX = 0;
++    CARD16 dstY = 0;
++    CARD16 w = dstPitch;
++    CARD16 h = dstHeight;
 +    CARD8 *dstBase = dst->vidmem->base + dst->offset;
 +    CARD8 *dstPtr;
 +    CARD8 *srcPtr;
@@ -7786,7 +8124,7 @@
 +    dstPtr = dstBase + (dstHeight * dstPitch) //Start of U Plane
 +        + (dstX >> 1)                         //X Offset
 +        + ((dstY * dstPitch) >> 2);           //Y Offset
-+    if (id == FOURCC_I420) {
++    if (port->src.id == FOURCC_I420) {
 +        srcPtr = src + (srcHeight * srcPitch) //Start of U Plane
 +            + (srcX >> 1)                     //X Offset
 +            + ((srcY * srcPitch) >> 2);       //Y Offset
@@ -7805,7 +8143,7 @@
 +    dstPtr = dstBase + ((5 * dstHeight * dstPitch) / 4) //Start of V Plane
 +        + (dstX >> 1)                         //X Offset
 +        + ((dstY * dstPitch) >> 2);           //Y Offset
-+    if (id == FOURCC_I420) {
++    if (port->src.id == FOURCC_I420) {
 +        srcPtr = src + ((5 * srcHeight * srcPitch) / 4) //Start of V Plane
 +            + (srcX >> 1)                               //X Offset
 +            + ((srcY * srcPitch) >> 2);                 //Y Offset
@@ -7821,16 +8159,22 @@
 +    }
 +}
 +
-+static void W100HostPackedData(KdScreenInfo *screen,
-+                               int id,
-+                               CARD8 *src,
-+                               KdOffscreenArea *dst,
-+                               CARD32 srcPitch,
-+                               CARD32 dstPitch,
-+                               CARD16 srcX, CARD16 srcY,
-+                               CARD16 dstX, CARD16 dstY,
-+                               CARD16 w,    CARD16 h)
++static void W100HostPackedData(KdScreenInfo *screen)
 +{
++    W100ScreenInfo *w100s = screen->driver;
++    W100CardInfo(screen);
++    W100PortPrivPtr port = w100s->pAdaptor->pPortPrivates[0].ptr;
++    KdOffscreenArea *dst = port->src.surface;
++    CARD8 *src = port->src.buffer;
++    CARD16 srcPitch = port->src.width << 1; //WARN: padding?
++    CARD16 dstPitch = (port->src.box.x2 - port->src.box.x1 + 1) << 1;
++    CARD16 srcX = port->src.box.x1;
++    CARD16 srcY = port->src.box.y1;
++    CARD16 dstX = 0;
++    CARD16 dstY = 0;
++    CARD16 w = port->src.box.x2 - port->src.box.x1 + 1;
++    CARD16 h = port->src.box.y2 - port->src.box.y1 + 1;
++ 
 +    CARD8 *dstBase = dst->vidmem->base + dst->offset;
 +    CARD8 *dstPtr = dstBase + (dstY * dstPitch) + (dstX << 1);
 +    CARD8 *srcPtr = src + (srcY + srcPitch) + (srcX << 1);
@@ -7840,7 +8184,7 @@
 +                 srcPitch, srcPtr, srcX, srcY,
 +                 dstPitch, dstPtr, dstX, dstY,
 +                 w, h));
-+    while(h--) {
++    while (h--) {
 +        memcpy(dstPtr, srcPtr, (w << 1)); /* 16bpp assumed */
 +        srcPtr += srcPitch;
 +        dstPtr += dstPitch;
@@ -7851,31 +8195,29 @@
 +static void W100StopVideo(KdScreenInfo *screen, pointer data, Bool exit)
 +{
 +    W100CardInfo(screen);
-+    W100PortPrivPtr pPriv = (W100PortPrivPtr)data;
++    W100PortPrivPtr port = (W100PortPrivPtr)data;
 +
 +    DBG_IMAGEON(("W100StopVideo(exit:%d)\n", exit));
 +
-+    REGION_EMPTY(screen->pScreen, &pPriv->clip);
++    REGION_EMPTY(screen->pScreen, &port->clip);
 +    
 +    if (exit) {
-+        if (pPriv->videoStatus & W100_OVERLAY_ON) {
++        if (port->videoStatus & W100_OVERLAY_ON) {
 +            W100OverlayDisable(screen);
 +        }
-+        if (pPriv->offSurface) {
-+            KdOffscreenFree(screen->pScreen, pPriv->offSurface);
-+            pPriv->offSurface = NULL;
-+            pPriv->offSize = 0;
++        if (port->src.surface) {
++            KdOffscreenFree(screen->pScreen, port->src.surface);
++            port->src.surface = NULL;
 +        }
-+        if (pPriv->ovlSurface) {
-+            KdOffscreenFree(screen->pScreen, pPriv->ovlSurface);
-+            pPriv->ovlSurface = NULL;
-+            pPriv->ovlSize = 0;
++
++        if (port->ovl.surface) {
++            KdOffscreenFree(screen->pScreen, port->ovl.surface);
++            port->ovl.surface = NULL;
 +        }
-+        pPriv->videoStatus &= ~W100_OVERLAY_ON;
++        port->src.id = -1; // Just to avoid cached values.
 +    } else {
-+        if (pPriv->videoStatus & W100_OVERLAY_ON) {
++        if (port->videoStatus & W100_OVERLAY_ON) {
 +            W100OverlayDisable(screen);
-+            pPriv->videoStatus &= ~W100_OVERLAY_ON;
 +        }
 +    }
 +}
@@ -7886,18 +8228,18 @@
 +                                pointer data)
 +{
 +    W100CardInfo(screen);
-+    W100PortPrivPtr pPriv = (W100PortPrivPtr)data;
++    W100PortPrivPtr port = (W100PortPrivPtr)data;
 +
 +    if (attribute == xvBrightness) {
 +        DBG_IMAGEON(("Setting Brightness attribute to %d\n", value));
 +        W100SetBrightness(w100c, value);
-+        pPriv->brightness = value;
++        port->ovl.brightness = value;
 +    } else if (attribute == xvMaxOverlaySize) {
 +        DBG_IMAGEON(("Setting MaxOverlaySize to %d\n", value));
-+        pPriv->maxOverlaySize = value;
++        port->ovl.maxSize = value;
 +    } else if (attribute == xvColorKey) {
 +        DBG_IMAGEON(("Setting ColorKey attribute to %d\n", value));
-+        pPriv->colorKey = value;
++        port->ovl.colorKey = value;
 +    }
 +    return Success;
 +}
@@ -7908,17 +8250,17 @@
 +                                pointer data)
 +{
 +    W100CardInfo(screen);
-+    W100PortPrivPtr pPriv = (W100PortPrivPtr)data;
++    W100PortPrivPtr port = (W100PortPrivPtr)data;
 +
 +    if (attribute == xvBrightness) {
 +        DBG_IMAGEON(("Getting Brightness attribute\n"));
-+        *value = pPriv->brightness;
++        *value = port->ovl.brightness;
 +    } else if (attribute == xvMaxOverlaySize) {
-+        *value = pPriv->maxOverlaySize;
++        *value = port->ovl.maxSize;
 +        DBG_IMAGEON(("Getting Contrast attribute\n"));
 +    } else if (attribute == xvColorKey) {
 +        DBG_IMAGEON(("Getting ColorKey attribute\n"));
-+        *value = pPriv->colorKey;
++        *value = port->ovl.colorKey;
 +    }
 +    return Success;
 +}
@@ -7927,7 +8269,8 @@
 +                              Bool motion,
 +                              short vid_w, short vid_h, /*Video dimensions */
 +                              short drw_w, short drw_h, /*Drawable dimensions */
-+                              unsigned int *p_w, unsigned int *p_h,
++                              unsigned int *p_w, 
++                              unsigned int *p_h,
 +                              pointer data)
 +{
 +    DBG_IMAGEON(("W100QueryBestSize(vid_w:%d,vid_h:%d,drw_w:%d,drw_h:%d)\n",
@@ -7944,6 +8287,8 @@
 +                                    int *pitches, int *offsets)
 +{
 +    int size, tmp;
++
++    DBG_IMAGEON(("W100QueryImageAttributes(id:%d,w:%d,h:%d)\n", id, *w, *h));
 +
 +    if (*w > IMAGE_MAX_WIDTH) {
 +        *w = IMAGE_MAX_WIDTH;
@@ -7976,7 +8321,7 @@
 +	if (pitches) pitches[1] = pitches[2] = tmp;
 +	tmp *= (*h >> 1); 
 +	size += tmp; 
-+	if(offsets) offsets[2] = size;
++	if (offsets) offsets[2] = size;
 +	size += tmp;
 +	break;
 +        /* Packed Formats */
@@ -7991,69 +8336,400 @@
 +    return size;
 +}
 +
-+
-+static void W100ClipVideo(BoxPtr dst, 
-+                          INT32 *x1, 
-+                          INT32 *x2, 
-+                          INT32 *y1, 
-+                          INT32 *y2,
-+                          BoxPtr extents,
-+                          INT32 width, 
-+                          INT32 height)
++static void W100ClipVideo(BoxPtr src, BoxPtr dst, BoxPtr extents,
++                          short width, short height)
 +{
 +    INT32 vscale, hscale, delta;
-+    int diff;
++    INT32 diff, x1, x2, y1, y2;
 +
-+    hscale = ((*x2 - *x1) << 16) / (dst->x2 - dst->x1);
-+    vscale = ((*y2 - *y1) << 16) / (dst->y2 - dst->y1);
++    hscale = ((src->x2 - src->x1) << 16) / (dst->x2 - dst->x1);
++    vscale = ((src->y2 - src->y1) << 16) / (dst->y2 - dst->y1);
 +
-+    *x1 <<= 16; *x2 <<= 16;
-+    *y1 <<= 16; *y2 <<= 16;
++    x1 = src->x1 << 16;
++    x2 = src->x2 << 16;
++    y1 = src->y1 << 16;
++    y2 = src->y2 << 16;
 +
 +    diff = extents->x1 - dst->x1;
-+    if(diff > 0) {
-+	dst->x1 = extents->x1;
-+	*x1 += diff * hscale;     
-+    }
-+    diff = dst->x2 - extents->x2;
-+    if(diff > 0) {
-+	dst->x2 = extents->x2;
-+	*x2 -= diff * hscale;     
-+    }
-+    diff = extents->y1 - dst->y1;
-+    if(diff > 0) {
-+	dst->y1 = extents->y1;
-+	*y1 += diff * vscale;     
-+    }
-+    diff = dst->y2 - extents->y2;
-+    if(diff > 0) {
-+	dst->y2 = extents->y2;
-+	*y2 -= diff * vscale;     
++    if (diff > 0) {
++        dst->x1 = extents->x1;
++        x1 += diff * hscale;
 +    }
 +
-+    if(*x1 < 0) {
-+	diff =  (- *x1 + hscale - 1)/ hscale;
-+	dst->x1 += diff;
-+	*x1 += diff * hscale;
++    diff = dst->x2 - extents->x2;
++    if (diff > 0) {
++        dst->x2 = extents->x2;
++        x2 -= diff * hscale;
 +    }
-+    delta = *x2 - (width << 16);
-+    if(delta > 0) {
-+	diff = (delta + hscale - 1)/ hscale;
-+	dst->x2 -= diff;
-+	*x2 -= diff * hscale;
++
++    diff = extents->y1 - dst->y1;
++    if (diff > 0) {
++        dst->y1 = extents->y1;
++        y1 += diff * vscale;
 +    }
-+    if(*y1 < 0) {
-+	diff =  (- *y1 + vscale - 1)/ vscale;
-+	dst->y1 += diff;
-+	*y1 += diff * vscale;
++
++    diff = dst->y2 - extents->y2;
++    if (diff > 0) {
++        dst->y2 = extents->y2;
++        y2 -= diff * vscale;
 +    }
-+    delta = *y2 - (height << 16);
-+    if(delta > 0) {
-+	diff = (delta + vscale - 1)/ vscale;
-+	dst->y2 -= diff;
-+	*y2 -= diff * vscale;
++
++    if (x1 < 0) {
++        diff = (- x1 + hscale - 1) / hscale;
++        dst->x1 += diff;
++        x1 += diff * hscale;
 +    }
-+} 
++
++    delta = x2 - (width << 16);
++    if (delta > 0) {
++        diff = (delta + hscale - 1) / hscale;
++        dst->x2 -= diff;
++        x2 -= diff * hscale;
++    }
++
++    if (y1 < 0) {
++        diff = (- y1 + vscale - 1) / vscale;
++        dst->y1 += diff;
++        y1 += diff * vscale;
++    }
++    delta = y2 - (height << 16);
++    if (delta > 0) {
++        diff = (delta + vscale - 1) / vscale;
++        dst->y2 -= diff;
++        y2 -= diff * vscale;
++    }
++  
++    src->x1 = x1 >> 16;
++    src->x2 = x2 >> 16;
++    src->y1 = y1 >> 16;
++    src->y2 = y2 >> 16;
++}
++
++static Bool W100SetOverlaySource(W100PortPrivPtr port,
++                                 unsigned char *buffer,
++                                 int id,
++                                 short src_x, short src_y,
++                                 short src_w, short src_h,
++                                 short width, short height,
++                                 short drw_x, short drw_y, 
++                                 short drw_w, short drw_h,
++                                 RegionPtr clipBoxes)
++{
++    
++    BoxRec srcBox, dstBox;
++    Bool changed = FALSE;
++
++    srcBox.x1 = src_x;
++    srcBox.x2 = src_x + src_w - 1;
++    srcBox.y1 = src_y;
++    srcBox.y2 = src_y + src_h - 1;
++
++    dstBox.x1 = drw_x;
++    dstBox.x2 = drw_x + drw_w - 1;
++    dstBox.y1 = drw_y;
++    dstBox.y2 = drw_y + drw_h - 1;
++
++    W100ClipVideo(&srcBox, &dstBox,
++                  REGION_EXTENTS(pScreen, clipBoxes),
++                  width, height);
++
++    port->src.buffer = buffer;
++    port->ovl.changed = FALSE;
++
++    if (port->src.id != id) {
++        port->src.id = id;
++        changed = TRUE;
++        port->ovl.changed = TRUE;
++    }
++    if (port->src.box.x1 != srcBox.x1) {
++        port->src.box.x1 = srcBox.x1;
++        changed = TRUE;
++    }
++    if (port->src.box.x2 != srcBox.x2) {
++        port->src.box.x2 = srcBox.x2;
++        changed = TRUE;
++    }
++    if (port->src.box.y1 != srcBox.y1) {
++        port->src.box.y1 = srcBox.y1;
++        changed = TRUE;
++    }
++    if (port->src.box.y2 != srcBox.y2) {
++        port->src.box.y2 = srcBox.y2;
++        changed = TRUE;
++    }
++    if (port->src.width != width) {
++        port->src.width = width;
++        changed = TRUE;
++    }
++    if (port->src.height != height) {
++        port->src.height = height;
++        changed = TRUE;
++    }
++
++    if (port->dst.box.x1 != dstBox.x1) {
++        port->dst.box.x1 = dstBox.x1;
++        changed = TRUE;
++    }
++    if (port->dst.box.x2 != dstBox.x2) {
++        port->dst.box.x2 = dstBox.x2;
++        changed = TRUE;
++    }
++    if (port->dst.box.y1 != dstBox.y1) {
++        port->dst.box.y1 = dstBox.y1;
++        changed = TRUE;
++    }
++    if (port->dst.box.y2 != dstBox.y2) {
++        port->dst.box.y2 = dstBox.y2;
++        changed = TRUE;
++    }
++
++    if (changed) {
++        port->src.size = W100SurfaceSize(port, 
++                                         srcBox.x2 - srcBox.x1 + 1,
++                                         srcBox.y2 - srcBox.y1 + 1);
++    }
++    port->changed = changed;
++    return changed;
++}
++
++
++
++static int W100SetOverlaySurfaces(KdScreenInfo *screen,
++                                  short x, short y, short w, short h)
++{
++    W100ScreenInfo *w100s = screen->driver;
++    W100CardInfo(screen);
++    W100PortPrivPtr port = w100s->pAdaptor->pPortPrivates[0].ptr;
++
++    if (port->ovl.changed ||
++        (port->ovl.frame.x1 != x) ||
++        (port->ovl.frame.y1 != y) ||
++        (port->ovl.frame.x2 != (x + w - 1)) ||
++        (port->ovl.frame.y2 != (y + h - 1))) {
++
++        port->ovl.changed = TRUE;
++        port->ovl.frame.x1 = x;
++        port->ovl.frame.x2 = x + w - 1;
++        port->ovl.frame.y1 = y;
++        port->ovl.frame.y2 = y + h - 1;
++
++        W100MapToDevice(w100c, &port->dst.box, &port->ovl.box);
++        W100ChangeOrigin(&port->ovl.box,
++                         port->ovl.frame.x1, port->ovl.frame.y1);
++        port->ovl.box.x2 >>= port->ovl.horExp;
++        port->ovl.box.y2 >>= port->ovl.verExp;
++        DBG_IMAGEON(("Translated ovl.box(x1:%d,y1:%d,x2:%d,y2:%d)\n",
++                     port->ovl.box.x1, port->ovl.box.y1,
++                     port->ovl.box.x2, port->ovl.box.y2));
++    }
++    
++    switch (port->src.id) {
++    case FOURCC_YV12:
++    case FOURCC_I420:
++        port->planes.size = 3;
++        port->planes.offset[0] = 0;
++        port->planes.offset[1] = w * h;
++        port->planes.offset[2] = (5 * (w * h)) / 4;
++        port->planes.bpp = 8;
++        break;
++    case FOURCC_UYVY:
++    case FOURCC_YUY2:
++        port->planes.size = 1;
++        port->planes.offset[0] = 0;
++        port->planes.bpp = 16;
++        break;
++    }
++
++    if (port->ovl.surface && port->ovl.size != port->ovl.surface->size) {
++        KdOffscreenFree(screen->pScreen, port->ovl.surface);
++        KdOffscreenFree(screen->pScreen, port->src.surface);
++        port->ovl.surface = NULL;
++        port->src.surface = NULL;
++    }
++    if (port->src.surface && port->src.size != port->src.surface->size) {
++        KdOffscreenFree(screen->pScreen, port->src.surface);
++        port->src.surface = NULL;
++    }
++
++    if (!port->ovl.surface) {
++        port->ovl.surface = KdOffscreenAllocPrio(screen->pScreen,
++                                                 port->ovl.size, 0, TRUE,
++                                                 W100VideoSave,
++                                                 port,
++                                                 KD_VIDMEM_MAXPRIO,
++                                                 KD_VIDMEM_MAXPRIO,
++                                                 TRUE);
++        if (!port->ovl.surface) {
++            ErrorF("Using external memory for overlay surface. "
++                   "Expect bad performance\n");
++            port->ovl.surface = KdOffscreenAlloc(screen->pScreen,
++                                                 port->ovl.size, 0, TRUE, 
++                                                 W100VideoSave,
++                                                 port);
++        }
++        if (!port->ovl.surface) {
++            ErrorF("Unable to allocate %d bytes for overlay surface\n",
++                   port->ovl.size);
++            return BadAlloc;
++        }
++
++        W100ClearSurface(screen, port->ovl.surface,
++                         0, 0, 
++                         (w * port->planes.bpp / 8),
++                         w, h, port->src.id);
++    }
++    if (!port->src.surface) {
++        port->src.surface = KdOffscreenAlloc(screen->pScreen,
++                                             port->src.size, 0, TRUE, 
++                                             W100VideoSave,
++                                             port);
++        if (!port->src.surface) {
++            ErrorF("Unable to allocate %d bytes for offscreen surface\n",
++                   port->src.size);
++            return BadAlloc;
++        }
++    }
++
++    CARD32 baseAddr = (CARD32) W100_HOST2CARD(port->ovl.surface->vidmem->base +
++                                              port->ovl.surface->offset);
++
++
++    switch (port->src.id) {
++    case FOURCC_YV12:
++    case FOURCC_I420:
++        port->planes.yplane = baseAddr + port->planes.offset[0];
++        port->planes.uplane = baseAddr + port->planes.offset[1];
++        port->planes.vplane = baseAddr + port->planes.offset[2];
++        break;
++    case FOURCC_UYVY:
++    case FOURCC_YUY2:
++        port->planes.yplane = baseAddr + port->planes.offset[0];
++        port->planes.uplane = 0;
++        port->planes.vplane = 0;
++        break;
++    }
++
++    return Success;
++}
++                                   
++static int W100OvlSetup(KdScreenInfo *screen)
++{
++    W100ScreenInfo *w100s = screen->driver;
++    W100CardInfo(screen);
++    W100PortPrivPtr port = w100s->pAdaptor->pPortPrivates[0].ptr;
++    BoxRec ovlBox;
++    short x, y, w, h;
++    int i;
++
++    W100MapToDevice(w100c, &port->dst.box, &ovlBox);
++
++    x = ovlBox.x1 & ~7;
++    y = ovlBox.y1;
++
++    for (i = 0; i < NUM_OVL_RESIZERS; i++) {
++        w = (ovlBox.x2 - x + 1) >> ovlResizers[i].xfactor;
++        h = (ovlBox.y2 - y + 1) >> ovlResizers[i].yfactor;
++        w = W100_ALIGN(w, OVL_W_ALIGN);
++        h = W100_ALIGN(h, OVL_H_ALIGN);
++        port->ovl.size = W100SurfaceSize(port, w, h);
++        DBG_IMAGEON(("Trying overlay surface (x:%d,y:%d,w:%d,h:%d). Size %d."
++                     " xfactor:%d, yfactor:%d\n",
++                     x, y, w, h, port->ovl.size,
++                     ovlResizers[i].xfactor,
++                     ovlResizers[i].yfactor));
++        if (port->ovl.size <= port->ovl.maxSize) {
++            ErrorF("Using (x=%d,y=%d,w=%d,h=%d) overlay surface (%d bytes). "
++                   "Resizer(xfactor:%d,yfactor:%d)\n",
++                   x, y, w, h, port->ovl.size,
++                   ovlResizers[i].xfactor, ovlResizers[i].yfactor);
++            port->ovl.horExp = ovlResizers[i].xfactor;
++            port->ovl.verExp = ovlResizers[i].yfactor;
++            return W100SetOverlaySurfaces(screen, x, y, w, h);
++        }
++    }
++    return BadAlloc;
++}
++    
++static void W100OvlHostData(KdScreenInfo *screen)
++{
++    W100ScreenInfo *w100s = screen->driver;
++    W100CardInfo(screen);
++    W100PortPrivPtr port = w100s->pAdaptor->pPortPrivates[0].ptr;
++
++    W100WaitIdle(w100c);
++    switch (port->src.id) {
++    case FOURCC_YV12:
++    case FOURCC_I420:
++        W100HostPlanarData(screen);
++        break;
++    case FOURCC_UYVY:
++    case FOURCC_YUY2:
++        W100HostPackedData(screen);
++        break;
++    }
++}
++
++static void W100OvlBlt(KdScreenInfo *screen)
++{
++    W100ScreenInfo *w100s = screen->driver;
++    W100CardInfo(screen);
++    W100PortPrivPtr port = w100s->pAdaptor->pPortPrivates[0].ptr;
++    static int frame = 0;
++    int srcW = port->src.box.x2 - port->src.box.x1 + 1;
++    int srcH = port->src.box.y2 - port->src.box.y1 + 1;
++    int dstW = port->ovl.frame.x2 - port->ovl.frame.x1 + 1;
++    int dstH = port->ovl.frame.y2 - port->ovl.frame.y1 + 1;
++
++    DBG_IMAGEON(("ovl.box(x1:%d,y1:%d,x2:%d,y2:%d),"
++                 "src.box(x1:%d,y1:%d,x2:%d,y2:%d),"
++                 "dstW:%d, dstH:%d\n",
++                 port->ovl.box.x1, port->ovl.box.y1,
++                 port->ovl.box.x2, port->ovl.box.y2,
++                 port->src.box.x1, port->src.box.y1,
++                 port->src.box.x2, port->src.box.y2,
++                 dstW, dstH));
++
++    W100PlanarBlt(screen,                        //KdScreenInfo* screen
++                  port->planes.size,             //int planes
++                  port->planes.offset,           //int planeOffsets[]
++                  port->planes.bpp,              //int bpp
++                  w100c->hw_window.randr,        //int randr
++                  port->src.surface,             //KdOffscrenArea *src
++                  srcW,                          //int srcW
++                  srcH,                          //int srcH
++                  &port->src.box,                //BoxPtr srcBox
++                  port->ovl.surface,             //KdOffscreenArea *dst
++                  dstW,                          //int dstW
++                  dstH,                          //int dstH
++                  &port->ovl.box);               //BoxPtr dstBox
++
++#if 0
++    if (++frame == 10) {
++    W100SaveSurface(port->src.surface->vidmem->base +
++                    port->src.surface->offset, 
++                    port->src.surface->size, 
++                    "/media/card/kdrive/source.yuv");
++    W100SaveSurface(port->ovl.surface->vidmem->base +
++                    port->ovl.surface->offset, 
++                    port->ovl.surface->size, 
++                    "/media/card/kdrive/ovl.yuv");
++    exit(1);
++    }
++#endif
++}
++
++static void W100OvlUpdate(KdScreenInfo *screen)
++{
++    W100ScreenInfo *w100s = screen->driver;
++    W100PortPrivPtr port = w100s->pAdaptor->pPortPrivates[0].ptr;
++
++    if (port->videoStatus & W100_OVERLAY_ON) {
++        W100OverlayDisable(screen);
++    }
++    port->videoStatus &= ~W100_OVERLAY_CONFIGURED;
++
++    W100OverlayEnable(screen);
++}
 +
 +static int W100PutImage(KdScreenInfo *screen, 
 +                        DrawablePtr pDraw,        /* Destination drawable */
@@ -8062,7 +8738,7 @@
 +                        short src_w, short src_h, /* Source rectangle to put */
 +                        short drw_w, short drw_h, /* Destination size */
 +                        int id,                   /* FOURCC id        */
-+                        unsigned char *buf,       /* Source data      */
++                        unsigned char *buffer,    /* Source data      */
 +                        short width,              /* Source width     */
 +                        short height,             /* Source height    */
 +                        Bool sync,                /* Sync before returning */
@@ -8073,300 +8749,41 @@
 +    KdScreenPriv(pScreen);
 +    W100CardInfo(pScreenPriv);
 +    W100ScreenInfo(pScreenPriv);
-+    W100PortPrivPtr pPortPriv = (W100PortPrivPtr)data;
-+    CARD32 baseAddr;
-+    int randr = w100c->hwScreen.randr;
-+    int offWidth, offHeight;
-+    int ovlWidth, ovlHeight;
-+    int ovlX, ovlY;
-+    int dstX, dstY;
-+    int offSize;
-+    int ovlSize;
-+    int planes;
-+    int bpp;
-+    int i;
-+    INT32 x1, x2, y1, y2;
-+    BoxRec dstBox;
-+    int planeOffsets[3];
-+    
++    W100PortPrivPtr port = (W100PortPrivPtr) data;
++    int errCode;
 +
 +    DBG_IMAGEON(("W100PutImage(src(x:%d,y:%d,w:%d,h:%d),"
 +                 "drw(x:%d,y:%d,w:%d,h:%d),"
-+                 "width:%d,height:%d)\n",
++                 "width:%d,height:%d), buffer:%p)\n",
 +                 src_x,src_y,src_w,src_h,
 +                 drw_x,drw_y,drw_w,drw_h,
-+                 width, height));
++                 width, height,
++                 buffer));
 +
-+    /* Clip */
-+    x1 = src_x;
-+    x2 = src_x + src_w;
-+    y1 = src_y;
-+    y2 = src_y + src_h;
-+
-+    dstBox.x1 = drw_x;
-+    dstBox.x2 = drw_x + drw_w;
-+    dstBox.y1 = drw_y;
-+    dstBox.y2 = drw_y + drw_h;
-+
-+    W100ClipVideo(&dstBox, &x1, &x2, &y1, &y2, 
-+		  REGION_EXTENTS(pScreen, clipBoxes), 
-+                  width, height);
-+
-+    if ((x1 >= x2) || (y1 >= y2)) {
-+	return Success;
-+    }
-+
-+    src_w = (x2 - x1) >> 16;
-+    src_h = (y2 - y1) >> 16;
-+    drw_w = dstBox.x2 - dstBox.x1;
-+    drw_h = dstBox.y2 - dstBox.y1;
-+    drw_x = dstBox.x1;
-+    drw_y = dstBox.y1;
-+    src_x = x1 >> 16;
-+    src_y = y1 >> 16;
-+    
-+    /* Calculate dimensions for offscren and overlay surfaces */
-+    offWidth  = src_w;
-+    offHeight = src_h;
-+
-+    ovlX = drw_x;
-+    ovlY = drw_y;
-+
-+    for (i = 0; i < NUM_OVL_RESIZERS; i++) {
-+        CARD16 candidate_w;
-+        CARD16 candidate_h;
-+        
-+        pPortPriv->videoHorExp = ovlResizers[i].xfactor;
-+        pPortPriv->videoVerExp = ovlResizers[i].yfactor;
-+
-+        candidate_w = drw_w >> ovlResizers[i].xfactor;
-+        candidate_h = drw_h >> ovlResizers[i].yfactor;
-+
-+        switch (randr & RR_Rotate_All) {
-+        case RR_Rotate_0:
-+            ovlWidth  = (candidate_w + OVL_W_ALIGN - 1) & ~(OVL_W_ALIGN - 1);
-+            ovlHeight = (candidate_h + OVL_H_ALIGN - 1) & ~(OVL_H_ALIGN - 1);
-+            dstX = 0;
-+            dstY = 0;
-+            pPortPriv->videoHorExp = ovlResizers[i].xfactor;
-+            pPortPriv->videoVerExp = ovlResizers[i].yfactor;
-+            break;
-+        case RR_Rotate_180:
-+            ovlWidth  = (candidate_w + OVL_W_ALIGN - 1) & ~(OVL_W_ALIGN - 1);
-+            ovlHeight = (candidate_h + OVL_H_ALIGN - 1) & ~(OVL_H_ALIGN - 1);
-+            dstX = ovlWidth  - candidate_w;
-+            dstY = ovlHeight - candidate_h;
-+            pPortPriv->videoHorExp = ovlResizers[i].xfactor;
-+            pPortPriv->videoVerExp = ovlResizers[i].yfactor;
-+            break;
-+        case RR_Rotate_90:
-+            ovlWidth  = (candidate_h + OVL_W_ALIGN - 1) & ~(OVL_W_ALIGN - 1);
-+            ovlHeight = (candidate_w + OVL_H_ALIGN - 1) & ~(OVL_H_ALIGN - 1);
-+            dstX = ovlWidth  - candidate_h;
-+            dstY = 0;
-+            pPortPriv->videoHorExp = ovlResizers[i].yfactor;
-+            pPortPriv->videoVerExp = ovlResizers[i].xfactor;
-+            break;
-+        case RR_Rotate_270:
-+            ovlWidth  = (candidate_h + OVL_W_ALIGN - 1) & ~(OVL_W_ALIGN - 1);
-+            ovlHeight = (candidate_w + OVL_H_ALIGN - 1) & ~(OVL_H_ALIGN - 1);
-+            dstX = 0;
-+            dstY = ovlHeight - candidate_w;
-+            pPortPriv->videoHorExp = ovlResizers[i].yfactor;
-+            pPortPriv->videoVerExp = ovlResizers[i].xfactor;
-+            break;
-+        }
-+
-+        /* Calculate sizes for the surfaces */
-+        switch (id) {
-+        case FOURCC_YV12:
-+        case FOURCC_I420:
-+            offSize = (3 * offWidth * offHeight) / 2;
-+            ovlSize = (3 * ovlWidth * ovlHeight) / 2;
-+            planes = 3;
-+            planeOffsets[0] = 0;
-+            planeOffsets[1] = ovlWidth * ovlHeight;
-+            planeOffsets[2] = (5 * (ovlWidth * ovlHeight)) / 4;
-+            bpp = 8;
-+            break;
-+        case FOURCC_UYVY:
-+        case FOURCC_YUY2:
-+            offSize = offWidth * offHeight * 2;
-+            ovlSize = ovlWidth * ovlHeight * 2;
-+            planes = 1;
-+            planeOffsets[0] = 0;
-+            bpp = 16;
-+            break;
-+        }
-+        if (ovlSize <= pPortPriv->maxOverlaySize) {
-+            DBG_IMAGEON(("Using %dx%d overlay surface (%d bytes). "
-+                         "Resizer(xfactor:%d,yfactor:%d)\n",
-+                         ovlWidth, ovlHeight, ovlSize,
-+                         ovlResizers[i].xfactor, ovlResizers[i].yfactor));
-+            drw_w = candidate_w;
-+            drw_h = candidate_h;
-+            break;
++    if (W100SetOverlaySource(port, buffer, id, 
++                             src_x, src_y, src_w, src_h, 
++                             width, height,
++                             drw_x, drw_y, drw_w, drw_h, 
++                             clipBoxes)) {
++        if ((errCode = W100OvlSetup(screen)) != Success) {
++            return errCode;
 +        }
 +    }
-+    
-+    /* Reallocate the surfaces, if existing ones are not valid.
-+     * If overlay surface is not valid, dump both ones, to give
-+     * ovlSurface more chances to get internal memory
-+     */
-+    if (pPortPriv->ovlSurface && ovlSize != pPortPriv->ovlSize) {
-+        DBG_IMAGEON(("Freeing overlay and offscreen surfaces\n"));
-+        KdOffscreenFree(screen->pScreen, pPortPriv->ovlSurface);
-+        KdOffscreenFree(screen->pScreen, pPortPriv->offSurface);
-+        pPortPriv->ovlSurface = NULL;
-+        pPortPriv->offSurface = NULL;
-+    }
-+
-+    if (pPortPriv->offSurface && offSize != pPortPriv->offSize) {
-+        DBG_IMAGEON(("Freeing offscreen surface\n"));
-+        KdOffscreenFree(screen->pScreen, pPortPriv->offSurface);
-+        pPortPriv->offSurface = NULL;
-+    }
-+
-+    if (!pPortPriv->ovlSurface) {
-+        pPortPriv->ovlSurface = KdOffscreenAllocPrio(screen->pScreen,
-+                                                     ovlSize, 0, TRUE, 
-+                                                     W100VideoSave,
-+                                                     pPortPriv,
-+                                                     KD_VIDMEM_MAXPRIO,
-+                                                     KD_VIDMEM_MAXPRIO,
-+                                                     TRUE);
-+        if (!pPortPriv->ovlSurface) {
-+            ErrorF("Using non internal memory to overlay. "
-+                   "Expected bad performance\n");
-+            pPortPriv->ovlSurface = KdOffscreenAlloc(screen->pScreen,
-+                                                     ovlSize, 0, TRUE, 
-+                                                     W100VideoSave,
-+                                                     pPortPriv);
-+        }
-+        if (!pPortPriv->ovlSurface) {
-+            ErrorF("Unable to allocate %d bytes for overlay surface\n",
-+                   ovlSize);
-+            return BadAlloc;
-+        }
-+        
-+        pPortPriv->ovlSize = ovlSize;
-+        W100ClearSurface(screen, pPortPriv->ovlSurface,
-+                         0, 0, (ovlWidth * bpp / 8),
-+                         ovlWidth, ovlHeight, id);
-+    }
-+    
-+    if (!pPortPriv->offSurface) {
-+        pPortPriv->offSurface = KdOffscreenAlloc(screen->pScreen,
-+                                                 offSize, 0, TRUE, 
-+                                                 W100VideoSave,
-+                                                 pPortPriv);
-+        if (!pPortPriv->offSurface) {
-+            ErrorF("Unable to allocate %d bytes for offscreen surface\n",
-+                   offSize);
-+            return BadAlloc;
-+        }
-+        pPortPriv->offSize = offSize;
-+    }
-+
-+    /* Copy the data into the offscreen surface */
-+    W100WaitIdle(w100c);
-+
-+    switch (id) {
-+    case FOURCC_YV12:
-+    case FOURCC_I420:
-+        W100HostPlanarData(screen,                //screen
-+                           id,                    //id
-+                           buf,                   //src
-+                           pPortPriv->offSurface, //dst
-+                           width,                 //srcPitch
-+                           height,                //srcHeight
-+                           offWidth,              //dstPitch
-+                           offHeight,             //dstHeight
-+                           src_x,                 //srcX
-+                           src_y,                 //srcY
-+                           0,                     //dstX 
-+                           0,                     //dstY
-+                           src_w,                 //w
-+                           src_h);                //h
-+        break;
-+    case FOURCC_UYVY:
-+    case FOURCC_YUY2:
-+        W100HostPackedData(screen,                //screen
-+                           id,                    //id
-+                           buf,                   //src
-+                           pPortPriv->offSurface, //dst
-+                           width << 1,            //srcPitch
-+                           offWidth << 1,         //dstPitch
-+                           src_x,                 //srcX
-+                           src_y,                 //srcY
-+                           0,                     //dstX
-+                           0,                     //dstY
-+                           src_w,                 //w
-+                           src_h);                //h
-+        break;
-+    }
-+
++    W100OvlHostData(screen);
 +    /* Update cliplist */
-+    if(!REGION_EQUAL(screen->pScreen, &pPortPriv->clip, clipBoxes)) {
-+	REGION_COPY(screen->pScreen, &pPortPriv->clip, clipBoxes);
-+	KXVPaintRegion(pDraw, &pPortPriv->clip, pPortPriv->colorKey);
++    if(!REGION_EQUAL(screen->pScreen, &port->clip, clipBoxes)) {
++	REGION_COPY(screen->pScreen, &port->clip, clipBoxes);
++	KXVPaintRegion(pDraw, &port->clip, port->ovl.colorKey);
 +    }
-+
-+    /* Calculate the incard offsets for the different planes */
-+    baseAddr = (CARD32) W100_HOST2CARD(pPortPriv->ovlSurface->vidmem->base +
-+                                       pPortPriv->ovlSurface->offset);
-+    switch (id) {
-+    case FOURCC_YV12:
-+    case FOURCC_I420:
-+        pPortPriv->YPlaneOffset = baseAddr + planeOffsets[0];
-+        pPortPriv->UPlaneOffset = baseAddr + planeOffsets[1];
-+        pPortPriv->VPlaneOffset = baseAddr + planeOffsets[2];
-+        break;
-+    case FOURCC_UYVY:
-+    case FOURCC_YUY2:
-+        pPortPriv->YPlaneOffset = baseAddr + planeOffsets[0];
-+        pPortPriv->UPlaneOffset = 0;
-+        pPortPriv->VPlaneOffset = 0;
-+    }
-+
-+    DBG_IMAGEON(("Offsets(Y:0x%08x,U:0x%08x,V:0x%08x)\n",
-+                 pPortPriv->YPlaneOffset,
-+                 pPortPriv->UPlaneOffset,
-+                 pPortPriv->VPlaneOffset));
-+                
-+
-+    /* Blit from offSurface to ovlSurface taking into account
-+     * the randr needed transformation
-+     */
-+    W100DisableDisplayUpdate(w100c);
-+    W100PlanarBlt(screen, planes, bpp, randr,
-+                  pPortPriv->offSurface,
-+                  src_w, offWidth * bpp / 8, src_h,
-+                  pPortPriv->ovlSurface, planeOffsets,
-+                  drw_w, ovlWidth * bpp / 8, drw_h,
-+                  dstX, dstY);
-+    W100EnableDisplayUpdate(w100c);
-+
-+
-+    if ((pPortPriv->ovlWidth  != ovlWidth) ||
-+        (pPortPriv->ovlHeight != ovlHeight) ||
-+        (pPortPriv->ovlX      != ovlX) ||
-+        (pPortPriv->ovlY      != ovlY) ||
-+        (pPortPriv->id        != id)) {
-+        pPortPriv->videoStatus &= ~W100_OVERLAY_CONFIGURED;
-+        W100OverlayDisable(screen);
-+    }
-+    /* Enable overlay */
-+    pPortPriv->ovlWidth = ovlWidth;
-+    pPortPriv->ovlHeight = ovlHeight;
-+    pPortPriv->ovlX = ovlX;
-+    pPortPriv->ovlY = ovlY;
-+    pPortPriv->id = id;
-+    W100OverlayEnable(screen);
 +    
++    W100OvlBlt(screen);
++
++    if (port->ovl.changed) {
++        W100OvlUpdate(screen);
++    }
 +    return Success;
 +}
-+
++    
 +static KdVideoAdaptorPtr 
 +W100SetupImageVideo(ScreenPtr pScreen)
 +{
@@ -8374,7 +8791,7 @@
 +    W100ScreenInfo(pScreenPriv);
 +    W100CardInfo(pScreenPriv);
 +    KdVideoAdaptorPtr adaptor;
-+    W100PortPrivPtr pPortPriv;
++    W100PortPrivPtr port;
 +
 +    adaptor = xcalloc(1, sizeof(KdVideoAdaptorRec) 
 +                      +  sizeof(W100PortPrivRec) 
@@ -8393,9 +8810,9 @@
 +    adaptor->nPorts = 1;
 +    adaptor->pPortPrivates = (DevUnion*)(&adaptor[1]);
 +
-+    pPortPriv = (W100PortPrivPtr)(&adaptor->pPortPrivates[1]);
++    port = (W100PortPrivPtr)(&adaptor->pPortPrivates[1]);
 +
-+    adaptor->pPortPrivates[0].ptr = (pointer)(pPortPriv);
++    adaptor->pPortPrivates[0].ptr = (pointer)(port);
 +
 +    adaptor->nAttributes = NUM_ATTRIBUTES;
 +    adaptor->pAttributes = Attributes;
@@ -8413,7 +8830,7 @@
 +    adaptor->ReputImage = NULL;
 +    adaptor->QueryImageAttributes = W100QueryImageAttributes;
 +
-+    REGION_INIT(pScreen, &pPortPriv->clip, NullBox, 0); 
++    REGION_INIT(pScreen, &port->clip, NullBox, 0);
 +
 +    w100s->pAdaptor = adaptor;
 +
@@ -8421,9 +8838,9 @@
 +    xvColorKey       = MAKE_ATOM("XV_COLORKEY");
 +    xvMaxOverlaySize = MAKE_ATOM("XV_MAXOVERLAYSIZE");
 +
-+    pPortPriv->maxOverlaySize = OVL_MAX_SIZE;
-+    pPortPriv->colorKey = 0xff00;
-+    pPortPriv->brightness = W100GetBrightness(w100c);
++    port->ovl.maxSize = OVL_MAX_SIZE;
++    port->ovl.colorKey = 0xff00;
++    port->ovl.brightness = W100GetBrightness(w100c);
 +    return adaptor;
 +}
 +
@@ -8478,22 +8895,22 @@
 +    KdScreenPriv(pScreen);
 +    W100ScreenInfo(pScreenPriv);
 +    KdVideoAdaptorPtr adaptor = w100s->pAdaptor;
-+    W100PortPrivPtr pPortPriv;
++    W100PortPrivPtr port;
 +    int i;
 +
 +    if (!adaptor)
 +        return;
 +
-+    pPortPriv = (W100PortPrivPtr)(&adaptor->pPortPrivates[0].ptr);
-+    REGION_UNINIT(pScreen, &pPortPriv->clip);
++    port = (W100PortPrivPtr)(&adaptor->pPortPrivates[0].ptr);
++    REGION_UNINIT(pScreen, &port->clip);
 +
 +    xfree(adaptor);
 +    w100s->pAdaptor = NULL;
 +}
 +
 --- /dev/null
-+++ xorg-server-X11R7.1-1.1.0.orig/hw/kdrive/imageon/imageon_support.h
-@@ -0,0 +1,87 @@
++++ xorg-server-X11R7.1-1.1.0.work/hw/kdrive/imageon/imageon_support.h
+@@ -0,0 +1,108 @@
 +/*
 + * Copyright © 2007 Manuel Teira
 + *
@@ -8524,6 +8941,7 @@
 +extern CARD8 W100SolidRop[16];
 +extern CARD8 W100BltRop[16];
 +
++/* Card control */
 +void W100DisableDisplayUpdate(W100CardInfo *w100c);
 +void W100EnableDisplayUpdate(W100CardInfo *w100c);
 +void W100SetupGraphicEngine(W100CardInfo *w100c);
@@ -8531,8 +8949,13 @@
 +void W100SetupGraphicWindow(W100CardInfo *w100c);
 +void W100EnableGraphicWindow(W100CardInfo *w100c);
 +void W100DisableGraphicWindow(W100CardInfo *w100c);
-+inline Bool W100WaitCmdFifoEntries(W100CardInfo *w100c, int entries);
++void W100VSync(W100CardInfo *w100c);
++
++/* Wait for card slots */
++__inline__ Bool W100WaitCmdFifoEntries(W100CardInfo *w100c, int entries);
 +Bool W100WaitIdle(W100CardInfo *w100c);
++
++/* Set context of the current operation */
 +void W100ResetContext(W100CardInfo *w100c);
 +CARD32 W100ComputeSolidGmc(W100CardInfo *w100c, CARD8 alu);
 +CARD32 W100ComputeCopyGmc(W100CardInfo *w100c, CARD8 alu);
@@ -8546,38 +8969,77 @@
 +                        CARD32 dstOffset, CARD8 bpp);
 +Bool W100SetSourcePixmap(PixmapPtr pPix);
 +Bool W100SetDestinationPixmap(PixmapPtr pPix);
-+CARD16 W100MapToHWX(W100CardInfo *w100c, 
-+                    CARD16 x, CARD16 y, CARD16 w, CARD16 h);
-+CARD16 W100MapToHWY(W100CardInfo *w100c,
-+                    CARD16 x, CARD16 y, CARD16 w, CARD16 h);
-+CARD16 W100XformX(W100CardInfo *w100c, CARD16 x, CARD16 y, CARD16 w, CARD16 h);
-+CARD16 W100XformY(W100CardInfo *w100c, CARD16 x, CARD16 y, CARD16 w, CARD16 h);
-+CARD16 W100XformW(W100CardInfo *w100c, CARD16 x, CARD16 y, CARD16 w, CARD16 h);
-+CARD16 W100XformH(W100CardInfo *w100c, CARD16 x, CARD16 y, CARD16 w, CARD16 h);
++
++/* Scaler related functions */
 +CARD8 W100GetScaler(CARD16 dstsize, CARD16 srcsize);
 +CARD16 W100ApplyScaler(CARD16 srcsize, CARD8 scaler);
-+static void W100Blt(KdScreenInfo *screen, int randr, int bpp,
-+                    CARD32 srcOffset, CARD16 srcW, CARD16 srcH, CARD16 srcPitch,
-+                    CARD32 dstOffset, CARD16 dstPitch, 
-+                    CARD16 dstX, CARD16 dstY);
-+static void W100StretchBlt(KdScreenInfo *screen, int randr, int bpp,
-+                           CARD32 srcOffset, CARD16 srcW, CARD16 srcH,
-+                           CARD16 srcPitch,
-+                           CARD32 dstOffset, CARD16 dstPitch,
-+                           CARD16 dstX, CARD16 dstY,
-+                           CARD8 xscaler, CARD8 yscaler);
++
++/* Blitting functions */
++void W100PlanarBlt(KdScreenInfo *screen, int planes, int planeOffsets[],
++                   int bpp, int randr,
++                   KdOffscreenArea *src, int srcW, int srcH, BoxPtr srcBox,
++                   KdOffscreenArea *dst, int dstW, int dstH, BoxPtr dstBox);
 +static void W100ScaledBlt(KdScreenInfo *screen, int randr, int bpp,
-+                          CARD32 srcOffset, CARD16 srcW, CARD16 srcH,
-+                          CARD16 srcPitch,
-+                          CARD32 dstOffset, CARD16 dstPitch,
-+                          CARD16 dstX, CARD16 dstY,
++                          CARD32 srcOffset, CARD16 srcPitch, BoxPtr srcBox,
++                          CARD32 dstOffset, CARD16 dstPitch, BoxPtr dstBox,
 +                          CARD8 xscaler, CARD8 yscaler);
-+void W100PlanarBlt(KdScreenInfo *screen, int planes, int bpp, int randr,
-+                   KdOffscreenArea *src, int srcW, int srcPitch, int srcH,
-+                   KdOffscreenArea *dst, int planeOffsets[],
-+                   int dstW, int dstPitch, int dstH,
-+                   int dstX, int dstY);
++static void W100StretchBlt(KdScreenInfo *screen, int randr, int bpp,
++                          CARD32 srcOffset, CARD16 srcPitch, BoxPtr srcBox,
++                          CARD32 dstOffset, CARD16 dstPitch, BoxPtr dstBox,
++                          CARD8 xscaler, CARD8 yscaler);
++static void W100Blt(KdScreenInfo *screen, int randr, int bpp,
++                    CARD32 srcOffset, CARD16 srcPitch, BoxPtr srcBox,
++                    CARD32 dstOffset, CARD16 dstPitch, BoxPtr dstBox);
++
++/* Brightness functions */
 +CARD8 W100GetBrightness(W100CardInfo *w100c);
 +void W100SetBrightness(W100CardInfo *w100c, CARD8 value);
 +
++
++/* Get and set mode and rotation info */
++int W100GetRotation(W100CardInfo *w100c);
++W100ModeSpec *W100GetModeSpec(W100CardInfo *w100c, W100Mode *mode);
++Bool W100GetFbMode(W100CardInfo *w100c, W100Mode *mode);
++Bool W100CheckFbMode(W100CardInfo *w100c, W100ModeSpec *modes);
++W100ModeSpec *W100GetBestMode(W100CardInfo *w100c, int width, int height);
++
++/* SysFS helpers */
++Bool W100SysFsGet(W100CardInfo *w100c, const char *path, char *value);
++Bool W100SysFsSet(W100CardInfo *w100c, const char *path, const char *value);
++
++/* Coordinate transformations */
++void W100TransformTsLibCoordinates(long *x, long *y, void *closure);
++void W100MapToDevice(W100CardInfo *w100c, BoxPtr src, BoxPtr dst);
++void W100MapFromDevice(W100CardInfo *w100c, BoxPtr src, BoxPtr dst);
++void W100ChangeOrigin(BoxPtr src, int x, int y);
++void W100TrajectoryOrigin(W100CardInfo *w100c, BoxPtr box, short *x, short *y);
++void W100ScaleBox(BoxPtr src, BoxPtr dst, int scale);
++void W100MoveTo(BoxPtr src, int x, int y);
++
++
++
 +#endif
+--- xorg-server-X11R7.1-1.1.0.work/hw/kdrive/linux/tslib.c~kdrive-imageon
++++ xorg-server-X11R7.1-1.1.0.work/hw/kdrive/linux/tslib.c
+@@ -92,6 +92,10 @@
+ void (*tslib_raw_event_hook)(int x, int y, int pressure, void *closure);
+ void *tslib_raw_event_closure;
+ 
++/* To support randr hot resolution change */
++void (*tslib_transform_coords)(long *x, long *y, void *closure);
++void *tslib_transform_closure;
++
+ int TsInputType = 0;
+ int KdTsPhyScreen = 0; 		/* XXX Togo .. */
+ 
+@@ -121,7 +125,9 @@
+ 	flags = (event.pressure) ? KD_BUTTON_1 : 0;
+ 	x = event.x;
+ 	y = event.y;
+-	
++	if (tslib_transform_coords) {
++		tslib_transform_coords(&x, &y, tslib_transform_closure);
++	}
+ 	KdEnqueueMouseEvent (mi, flags, x, y);
+       }
+ }

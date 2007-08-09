@@ -1,8 +1,12 @@
-DESCRIPTION = "Picocom is a lightweight and minimal (~20K) dumb-terminal emulation program. "
+DESCRIPTION = "Lightweight and minimal (~20K) dumb-terminal emulation program."
 SECTION = "console/utils"
 PRIORITY = "optional"
 LICENSE = "GPL"
-SRC_URI = "http://efault.net/npat/hacks/picocom/dist/picocom-${PV}.tar.gz"
+PR = "r2"
+
+SRC_URI = "http://efault.net/npat/hacks/picocom/dist/picocom-${PV}.tar.gz \
+           file://nolock.patch;patch=1 \
+           file://gcc4.patch;patch=1"
 
 CFLAGS_append = ' -DVERSION_STR=\\"${PV}\\"'
 

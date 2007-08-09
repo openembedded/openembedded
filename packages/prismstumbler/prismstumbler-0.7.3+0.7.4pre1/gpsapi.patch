@@ -1,0 +1,13 @@
+--- prismstumbler-0.7.4pre1/src/daemon/gpsctl.c~	2007-04-04 00:10:03.000000000 +0200
++++ prismstumbler-0.7.4pre1/src/daemon/gpsctl.c	2007-04-04 00:10:03.000000000 +0200
+@@ -30,8 +30,8 @@
+ 	if(!gps_conn)
+ 		return 0;
+ 	
+-	*lat = (float) gps_conn->newdata.latitude;
+-	*lon = (float) gps_conn->newdata.longitude;
++	*lat = (float) gps_conn->fix.latitude;
++	*lon = (float) gps_conn->fix.longitude;
+ 	return 1;
+ }
+ 

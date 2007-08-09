@@ -1,9 +1,10 @@
 SECTION = "console/network"
 DESCRIPTION = "iptables network filtering tools"
 LICENSE = "GPL"
-PR = "r1"
+PR = "r2"
 
-SRC_URI = "http://www.netfilter.org/files/iptables-${PV}.tar.bz2"
+SRC_URI = "http://www.netfilter.org/files/iptables-${PV}.tar.bz2 \
+	   file://compile.patch;patch=1"
 
 S = "${WORKDIR}/iptables-${PV}"
 

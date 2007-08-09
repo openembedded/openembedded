@@ -1,0 +1,9 @@
+--- cms92init-simple/Makefile~	2007-05-24 12:14:31.000000000 +0200
++++ cms92init-simple/Makefile	2007-05-24 12:14:31.000000000 +0200
+@@ -12,5 +12,5 @@
+ 	
+ install:
+ 	install -d $(DESTDIR)/$(PREFIX)/bin
+-	install -m755  cms92init $(DESTDIR)/$(PREFIX)/bin
++	install -m 755  cms92init $(DESTDIR)/$(PREFIX)/bin
+ 

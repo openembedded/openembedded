@@ -1,14 +1,14 @@
-# bitbake configuration file for NetPBM, a command line image (sampled
-# data) processing package derived from PBMPlus
-#
-# For documentation see: http://netpbm.sourceforge.net/doc/
+DESCRIPTION = "Netpbm is a toolkit for manipulation of graphic images, including\
+conversion of images between a variety of different formats.  There\
+are over 220 separate tools in the package including converters for\
+about 100 graphics formats."
+HOMEPAGE = "http://netpbm.sourceforge.net"
+SECTION = "console/utils"
 LICENSE = "GPL MIT Artistic"
 # NOTE: individual command line utilities are covered by different
 # licenses.  The compiled and linked command line utilties are
 # subject to the licenses of the libraries they use too - including
 # libpng libz, IJG, and libtiff licenses
-
-SECTION = "console/utils"
 DEPENDS = "jpeg zlib libpng tiff install-native flex-native"
 RDEPENDS = "perl\
 	perl-module-cwd\
@@ -25,12 +25,7 @@ RDEPENDS = "perl\
 RDEPENDS += "perl-module-exporter-heavy"
 RDEPENDS += "perl-module-file-spec-unix"
 
-HOMEPAGE = "http://netpbm.sourceforge.net"
-DESCRIPTION = "Netpbm is a toolkit for manipulation of graphic images, including\
-conversion of images between a variety of different formats.  There\
-are over 220 separate tools in the package including converters for\
-about 100 graphics formats."
-PR = "r3"
+PR = "r4"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/netpbm/netpbm-${PV}.tgz \
 	   file://ppmtojpeg.patch;patch=42 \

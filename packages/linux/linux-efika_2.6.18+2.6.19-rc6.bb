@@ -1,13 +1,13 @@
 DESCRIPTION = "Linux Kernel for the EFIKA dev platform"
 SECTION = "kernel"
 LICENSE = "GPL"
-PR = "r2"
+PR = "r3"
 
 COMPATIBLE_MACHINE = "efika"
 
 SRC_URI = "http://www.efika.de/download/linux-2.6.19-rc6_efika.tgz \
            file://0001-sound-Add-support-for-the-MPC52xx-PSC-AC97-Link.txt;patch=1 \
-           http://www.246tnt.com/files/0001-powerpc-Add-device-tree-fixup-for-the-EFIKA.txt;patch=1 \
+           file://0001-powerpc-Add-device-tree-fixup-for-the-EFIKA.txt;patch=1 \
            file://defconfig \
 		   "
 #	http://www.246tnt.com/files/0001-sound-Add-support-for-the-MPC52xx-PSC-AC97-Link.txt;patch=1 \
@@ -23,7 +23,7 @@ KERNEL_IMAGETYPE = "zImage"
 
 do_configure() {
 		install -m 644 ${WORKDIR}/defconfig ${S}/.config
-		make ARCH=${ARCH} oldconfig
+		yes | make ARCH=${ARCH} oldconfig
 }
 
 do_deploy() {

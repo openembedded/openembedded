@@ -274,6 +274,8 @@ ifup(){
 	if test "$(config boot)" != static
 	then
 		test -n "$hostname" && HOSTNAME="-H $hostname"
+		# Pause a moment in case link negotiation takes a while
+		sleep 3
 		# The script writes the required shell variable assignments
 		# to file descriptor 9
 		eval $(udhcpc -i "$iface" -n -q -r "$ip" $HOSTNAME -s /boot/udhcpc.script 9>&1 >/dev/null)

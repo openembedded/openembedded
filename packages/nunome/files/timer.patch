@@ -1,0 +1,21 @@
+diff --git a/ui/nnmCanvas.cpp b/ui/nnmCanvas.cpp
+index a548ddf..3b8e7d4 100755
+--- a/ui/nnmCanvas.cpp
++++ b/ui/nnmCanvas.cpp
+@@ -35,7 +35,7 @@
+ 
+ nnmCanvas::nnmCanvas( QWidget *parent, int timeoutParam, int initID,
+ 		      const char *name, WFlags f )
+-			: QWidget( parent, name, f )
++			: QWidget( parent, name, f ), timer(0)
+ {
+ 	setFixedSize( NnmCANVAS_DISPLAY_SIZE, NnmCANVAS_DISPLAY_SIZE );
+ 	init();
+@@ -149,7 +149,7 @@ void	nnmCanvas::resizeEvent( QResizeEvent *event )
+ 
+ void	nnmCanvas::init( void )
+ {
+-	if ( timeoutMsec > 0  &&  timer->isActive() )	{
++	if ( timeoutMsec > 0  &&  timer && timer->isActive() )	{
+ 		timer->stop();
+ 	}

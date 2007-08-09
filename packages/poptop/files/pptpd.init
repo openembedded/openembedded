@@ -1,0 +1,37 @@
+#! /bin/sh
+
+test -f /usr/sbin/pptpd || exit 0
+test -f /etc/default/pptpd && . /etc/default/pptpd
+
+case $1 in
+  start)
+    echo -n "Starting PPTP server: pptpd"
+    start-stop-daemon --start --quiet --pidfile /var/run/pptpd.pid \
+                      --exec /usr/sbin/pptpd
+    echo "."
+    ;;
+  stop)
+    echo -n "Stopping PPTP server: pptpd"
+    start-stop-daemon --stop --quiet --pidfile /var/run/pptpd.pid \
+                      --exec /usr/sbin/pptpd
+    echo "."
+    ;;
+  status)
+    pid=$(pidof pptpd)    	          
+    if [ -n "$pid" ] ; then
+	    echo "Running with pid $pid"
+    else
+	    echo "Not running"
+    fi
+    ;;
+  restart|force-reload)
+    $0 stop
+    $0 start
+    ;;
+  *)
+    echo "Usage: /etc/init.d/pptpd {start|stop|restart|force-reload}"
+    exit 1
+    ;;
+esac
+
+exit 0

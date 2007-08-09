@@ -4,6 +4,7 @@ PROVIDES = "qemu-native"
 
 SRC_URI = "svn://nowt.dyndns.org/svn/qemu;module=trunk;proto=https \
            file://configure.patch;patch=1 \
+           http://www.busybox.net/downloads/qemu/qemu-gcc-4-all.patch;patch=1 \
            "
 
 S = "${WORKDIR}/trunk"

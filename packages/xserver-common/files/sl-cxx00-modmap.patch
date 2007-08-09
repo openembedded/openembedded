@@ -1,0 +1,120 @@
+Index: xserver-common-1.16/X11/slcXXXX.xmodmap
+===================================================================
+--- xserver-common-1.16.orig/X11/slcXXXX.xmodmap	2006-10-12 11:19:42.000000000 +0100
++++ xserver-common-1.16/X11/slcXXXX.xmodmap	2007-06-27 12:31:33.000000000 +0100
+@@ -1,5 +1,111 @@
+-keycode 88 = XF86Calendar
+-keycode 89 = telephone
+-keycode 40 = XF86Start
+-keycode 90 = XF86Mail
++! Modmap for Sharp Zaurus clamshells:
++!   SL-C1000 (Akita)
++!   SL-C3000 (Spitz)
++!   SL-C3100 (Borzoi)
++!   SL-C3200 (Terrier)
++!
++! Changelog:
++!   version: 30 May 2007
++!     Initial version
++!
++! This modmap adds an Alt_L and a compose key (Multi_Key)
++!   at the Kana/Hira and Zen/Han keys. Users can set these to their
++!   original Japanese functions if desired, but as a default putting at
++!   least one Alt on the keyboard is a polite thing to do.
++!
++! Adds:
++!   Fn + q           = ` (grave)
++!   Fn + - (minus)   = @ (at)
++!   Fn + 5           = € (Euro)
++!   Fn + k           = ¥ (Yen)
++!   Fn + d           = ・ (nakaten)
++!   Fn + Backspace   = Delete
++!
++! Currently unset:
++!   Fn + Kana/Hira (カナ／ひら)
++!   Fn + Zen/Han (全／半)
++!   Fn + Space bar (音訓)
++! These should be bound to Japanese keysims for use with Japanese
++! IME's at a later date.
++! =======================================================================
++
++! The Euro character is not printed as a label, but as
++!   the 5 doesn't have a blue Fn label, this is a nice extra
++!   as a normal European keyboard has it on the 5 as third level
++!   character
++keycode  14 = 5 percent EuroSign
++
++keycode  20 = minus minus at
++keycode  22 = BackSpace BackSpace Delete
++
++! The grave is not printed as a label, but is missing
++!   so this is a nice place to add it, not too far from where it
++!   is on a normal keyboard.
++keycode  24 = q Q grave
++
++! The nakaten character
++keycode  40 = d D kana_conjunctive
++
++! The Yen character
++keycode  45 = k K yen
++
++! This is the Kana/Hira key, right from "Ctrl"
++keycode  64 = Alt_L
++
++! Turn the Zen/Han key (left of minus) into the compose key
++keycode 105 = Multi_key
++
++! Control_R is gone, so clear out and reload control:
++clear control
++add control = Control_L
++
++! These are the 11 fields that generate keycodes
++!   On the edge of the touchscreen. Every second one
++!   (87, 89, 84, 79, 81) has a label, the rest doesn't,
++!   but can be used as button nontheless, the size of the
++!   eleven fields is the same.
++! These are mapped to F20..F30.
++! These buttons with Fn or Shift generate the F1..F11 keys.
++
++! No icon
++keycode  90 = F20 F1 F1
++! "Home" icon:
++keycode  87 = F21 F2 F2
++! No icon
++keycode  88 = F22 F3 F3
++! "Mail" icon:
++keycode  89 = F23 F4 F4
++! No icon
++keycode  83 = F24 F5 F5
++! "Address" icon:
++keycode  84 = F25 F6 F6
++! No icon
++keycode  85 = F26 F7 F7
++! "Calendar" icon:
++keycode  79 = F27 F8 F8
++! No icon
++keycode  80 = F28 F9 F9
++! "Book" icon:
++keycode  81 = F29 F10 F10
++! No icon
++keycode  86 = F30 F11 F11
++
++! These are the five buttons below the inbuilt keyboard
++!   These are mapped to F13..F19
++!   The Menu key generates F12 when pressed with Fn or Shift.
++
++! "Calendar" label and icon, "Sync" label beneath it:
++keycode  67 = F9 F14 F14
++! "Address" label and icon:
++keycode  68 = F10 F15 F15
++! "Mail" label and icon, "Check" label beneath it:
++keycode  76 = F13 F17 F17
++! "Home" label and icon:
++keycode 107 = F12 F18 F18
++! "Menu" label and icon:
++keycode  96 = F11 F12 F12
++
++! Shift the Mode_switch definition to a different mod so mozilla stuff works
++add    mod5 = Mode_switch
++remove mod4 = Mode_switch
+ 

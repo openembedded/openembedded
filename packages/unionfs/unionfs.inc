@@ -4,7 +4,7 @@ physical content separate."
 HOMEPAGE = "http://www.fsl.cs.sunysb.edu/project-unionfs.html"
 LICENSE = "GPL"
 
-SRC_URI = "ftp://ftp.fsl.cs.sunysb.edu/pub/unionfs/unionfs-${PV}.tar.gz \
+SRC_URI = "ftp://ftp.fsl.cs.sunysb.edu/pub/unionfs/unionfs-1.x/unionfs-${PV}.tar.gz \
 	   file://make.patch;patch=1"
 S = "${WORKDIR}/unionfs-${PV}"
 FILESPATH = "${FILE_DIRNAME}/unionfs-${PV}:${FILE_DIRNAME}/unionfs:${FILE_DIRNAME}/files:${FILE_DIRNAME}"

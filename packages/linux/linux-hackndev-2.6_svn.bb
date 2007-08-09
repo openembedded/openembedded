@@ -2,11 +2,11 @@ DESCRIPTION = "Hack&Dev's Linux kernel for Palm devices."
 HOMEPAGE = "http://www.hackndev.com/"
 SECTION = "kernel"
 LICENSE = "GPL"
-PR = "r3"
+PR = "r9"
 
-COMPATIBLE_MACHINE = "(palmtx|palmld|palmz72)"
+COMPATIBLE_MACHINE = "(palmld|palmtc|palmtt3|palmtt5|palmtx|palmz31|palmz72|palmt650)"
 
-SRC_URI = "svn://svn.sourceforge.net/svnroot/hackndev/linux4palm/linux;module=trunk;proto=https \
+SRC_URI = "svn://hackndev.svn.sourceforge.net/svnroot/hackndev/linux4palm/linux;module=trunk;proto=https \
 	   file://defconfig"
 
 SRC_URI_append_palmtx += "http://www.busybox.net/downloads/busybox-1.1.0.tar.bz2 \
@@ -18,15 +18,11 @@ S = "${WORKDIR}/trunk"
 
 K_MAJOR = "2"
 K_MINOR = "6"
-K_MICRO = "20"
-HHV="hnd0"
+K_MICRO = "21"
+HHV="hnd2"
 PV = "${K_MAJOR}.${K_MINOR}.${K_MICRO}-${HHV}"
 
 inherit kernel
-
-PACKAGE_ARCH_palmtx     = "palmtx"
-PACKAGE_ARCH_palmld	= "palmld"
-PACKAGE_ARCH_palmz72	= "palmz72"
 
 do_configure() {
 

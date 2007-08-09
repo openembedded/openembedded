@@ -3,6 +3,8 @@ DESCRIPTION = "User Mode Linux Kernel"
 LICENSE = "GPL"
 COLV = "0.6.1"
 
+COMPATIBLE_MACHINE = "colinux"
+
 #http://internap.dl.sourceforge.net/sourceforge/colinux/coLinux-0.6.1.tar.gz
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.4/linux-${PV}.tar.bz2 \
 	   file://colinux-${COLV}.patch;patch=1 \

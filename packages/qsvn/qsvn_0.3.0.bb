@@ -7,7 +7,8 @@ SECTION = "network"
 DEPENDS = "apr-util subversion"
 PR = "r0"
 
-SRC_URI = "http://download2.berlios.de/qsvn/qsvn-${PV}-src.tar.gz"
+SRC_URI = "http://download2.berlios.de/qsvn/qsvn-${PV}-src.tar.gz \
+        file://build.patch;patch=1"
 
 inherit qmake qt4x11
 

@@ -1,0 +1,1100 @@
+--- u-boot-1.2.0.vanilla/board/qnap/config.mk	1970-01-01 01:00:00.000000000 +0100
++++ u-boot-1.2.0/board/qnap/config.mk	2007-02-26 01:55:37.000000000 +0100
+@@ -0,0 +1,35 @@
++#
++# (C) Copyright 2000, 2001
++# Wolfgang Denk, DENX Software Engineering, wd@denx.de.
++#
++# See file CREDITS for list of people who contributed to this
++# project.
++#
++# This program is free software; you can redistribute it and/or
++# modify it under the terms of the GNU General Public License as
++# published by the Free Software Foundation; either version 2 of
++# the License, or (at your option) any later version.
++#
++# This program is distributed in the hope that it will be useful,
++# but WITHOUT ANY WARRANTY; without even the implied warranty of
++# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++# GNU General Public License for more details.
++#
++# You should have received a copy of the GNU General Public License
++# along with this program; if not, write to the Free Software
++# Foundation, Inc., 59 Temple Place, Suite 330, Boston,
++# MA 02111-1307 USA
++#
++#       Valid values for TEXT_BASE are:
++#
++#       Standard configuration
++#       0xFFF00000   boot from flash
++#
++#       Standard configuration
++#       0xFFE60000   chain boot from flash
++#
++
++
++TEXT_BASE = 0xFFE60000
++
++PLATFORM_CPPFLAGS += -DTEXT_BASE=$(TEXT_BASE)
+--- u-boot-1.2.0.vanilla/board/qnap/ide.c	1970-01-01 01:00:00.000000000 +0100
++++ u-boot-1.2.0/board/qnap/ide.c	2007-02-26 01:55:37.000000000 +0100
+@@ -0,0 +1,67 @@
++/*
++ * (C) Copyright 2000
++ * Wolfgang Denk, DENX Software Engineering, wd@denx.de.
++ *
++ * See file CREDITS for list of people who contributed to this
++ * project.
++ *
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU General Public License as
++ * published by the Free Software Foundation; either version 2 of
++ * the License, or (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write to the Free Software
++ * Foundation, Inc., 59 Temple Place, Suite 330, Boston,
++ * MA 02111-1307 USA
++ */
++ 
++ #include <common.h>
++
++#ifdef CFG_CMD_IDE
++#include <ata.h>
++#include <ide.h>
++#include <pci.h>
++
++extern ulong ide_bus_offset[CFG_IDE_MAXBUS];
++extern struct pci_controller hose;
++
++int ide_preinit (void)
++{
++	int status;
++	pci_dev_t devbusfn;
++	int l;
++
++	status = 1;
++	for (l = 0; l < CFG_IDE_MAXBUS; l++) {
++		ide_bus_offset[l] = -ATA_STATUS;
++	}
++	devbusfn = pci_find_device (0x1095, 0x3512, 0);
++
++	if (devbusfn != -1) {
++		
++		status = 0;
++
++		pci_read_config_dword (devbusfn, PCI_BASE_ADDRESS_0,
++							   (u32 *) &ide_bus_offset[0]);
++		ide_bus_offset[0] &= 0xfffffffe;
++		ide_bus_offset[0] = pci_hose_bus_to_phys(&hose,
++												 ide_bus_offset[0] & 0xfffffffe,
++												 PCI_REGION_IO);
++
++		pci_read_config_dword (devbusfn, PCI_BASE_ADDRESS_2,
++							   (u32 *) &ide_bus_offset[1]);
++		ide_bus_offset[1] &= 0xfffffffe;
++		ide_bus_offset[1] = pci_hose_bus_to_phys(&hose,
++												 ide_bus_offset[1] & 0xfffffffe,
++												 PCI_REGION_IO);
++	}
++	return (status);
++}
++
++#endif /* of CONFIG_CMDS_IDE */
+--- u-boot-1.2.0.vanilla/board/qnap/Makefile	1970-01-01 01:00:00.000000000 +0100
++++ u-boot-1.2.0/board/qnap/Makefile	2007-02-26 01:55:37.000000000 +0100
+@@ -0,0 +1,40 @@
++#
++# (C) Copyright 2000
++# Wolfgang Denk, DENX Software Engineering, wd@denx.de.
++#
++# See file CREDITS for list of people who contributed to this
++# project.
++#
++# This program is free software; you can redistribute it and/or
++# modify it under the terms of the GNU General Public License as
++# published by the Free Software Foundation; either version 2 of
++# the License, or (at your option) any later version.
++#
++# This program is distributed in the hope that it will be useful,
++# but WITHOUT ANY WARRANTY; without even the implied warranty of
++# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++# GNU General Public License for more details.
++#
++# You should have received a copy of the GNU General Public License
++# along with this program; if not, write to the Free Software
++# Foundation, Inc., 59 Temple Place, Suite 330, Boston,
++# MA 02111-1307 USA
++#
++
++include $(TOPDIR)/config.mk
++
++LIB	= lib$(BOARD).a
++
++OBJS	=  $(BOARD).o ide.o
++
++$(LIB):	.depend $(OBJS)
++	$(AR) crv $@ $(OBJS)
++
++#########################################################################
++
++.depend:	Makefile  $(OBJS:.o=.c)
++		$(CC) -M $(CFLAGS) $(OBJS:.o=.c) > $@
++
++sinclude .depend
++
++#########################################################################
+--- u-boot-1.2.0.vanilla/board/qnap/qnap.c	1970-01-01 01:00:00.000000000 +0100
++++ u-boot-1.2.0/board/qnap/qnap.c	2007-02-26 01:55:37.000000000 +0100
+@@ -0,0 +1,126 @@
++/*
++ * Copyright (C) 2006 Andrew Luyten <u-boot@luyten.org.uk>
++ * 
++ * Copyright (C) 2000
++ * Rob Taylor, Flying Pig Systems. robt@flyingpig.com.
++ * 
++ * See file CREDITS for list of people who contributed to this
++ * project.
++ *
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU General Public License as
++ * published by the Free Software Foundation; either version 2 of
++ * the License, or (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write to the Free Software
++ * Foundation, Inc., 59 Temple Place, Suite 330, Boston,
++ * MA 02111-1307 USA
++ * 
++ */
++
++#include <common.h>
++#include <mpc824x.h>
++#include <pci.h>
++
++int checkboard (void)
++{
++	ulong busfreq  = get_bus_freq(0);
++	char  buf[32];
++	
++	printf("Board: QNAP TS-101/TS-201 local bus at %s MHz\n", strmhz(buf, busfreq));
++	return 0;
++}
++
++
++long int initdram (int board_type)
++{
++	long size;
++	long new_bank0_end;
++	long mear1;
++	long emear1;
++
++	size = get_ram_size(CFG_SDRAM_BASE, CFG_MAX_RAM_SIZE);
++
++	new_bank0_end = size - 1;
++	mear1 = mpc824x_mpc107_getreg(MEAR1);
++	emear1 = mpc824x_mpc107_getreg(EMEAR1);
++	mear1 = (mear1  & 0xFFFFFF00) |
++		((new_bank0_end & MICR_ADDR_MASK) >> MICR_ADDR_SHIFT);
++	emear1 = (emear1 & 0xFFFFFF00) |
++		((new_bank0_end & MICR_ADDR_MASK) >> MICR_EADDR_SHIFT);
++	mpc824x_mpc107_setreg(MEAR1, mear1);
++	mpc824x_mpc107_setreg(EMEAR1, emear1);
++
++	return (size);
++}
++
++/*
++ * Initialize PCI Devices, report devices found.
++ */
++#ifndef CONFIG_PCI_PNP
++
++static struct pci_config_table pci_qnap_config_table[] = {
++	/* vendor, device, class */
++	/* bus, dev, func */
++
++	{ PCI_ANY_ID, PCI_ANY_ID, PCI_ANY_ID,
++	  PCI_ANY_ID, 0x0f, 0,		/* RTL8110SC or Intel 82540EM */
++								/* Gigabit ethernet controller */
++	  pci_cfgfunc_config_device, { PCI_ETH_IOADDR,
++				       PCI_ETH_MEMADDR,
++				       PCI_COMMAND_IO |
++				       PCI_COMMAND_MEMORY |
++				       PCI_COMMAND_MASTER }},
++
++	{ PCI_ANY_ID, PCI_ANY_ID, PCI_ANY_ID,
++	  PCI_ANY_ID, 0x0d, 0,		/* SII3512  */
++								/* SATA controller     */
++	  pci_cfgfunc_config_device, { PCI_IDE_IOADDR,
++				       PCI_IDE_MEMADDR,
++				       PCI_COMMAND_IO |
++				       PCI_COMMAND_MEMORY |
++				       PCI_COMMAND_MASTER }},
++
++	{ PCI_ANY_ID, PCI_ANY_ID, PCI_ANY_ID,
++	  PCI_ANY_ID, 0x0e, 0,		/* D720101 USB controller, 1st USB 1.1 */
++	  pci_cfgfunc_config_device, { PCI_USB0_IOADDR,
++				       PCI_USB0_MEMADDR,
++				       PCI_COMMAND_MEMORY |
++				       PCI_COMMAND_MASTER }},
++	{ PCI_ANY_ID, PCI_ANY_ID, PCI_ANY_ID,
++	  PCI_ANY_ID, 0x0e, 1,		/* D720101 USB controller, 2nd USB 1.1 */
++	  pci_cfgfunc_config_device, { PCI_USB1_IOADDR,
++				       PCI_USB1_MEMADDR,
++				       PCI_COMMAND_MEMORY |
++				       PCI_COMMAND_MASTER }},
++	{ PCI_ANY_ID, PCI_ANY_ID, PCI_ANY_ID,
++	  PCI_ANY_ID, 0x0e, 2,		/* D720101 USB controller, USB 2.0 */
++	  pci_cfgfunc_config_device, { PCI_USB2_IOADDR,
++				       PCI_USB2_MEMADDR,
++				       PCI_COMMAND_MEMORY |
++				       PCI_COMMAND_MASTER }},
++	{ }
++};
++#endif
++
++struct pci_controller hose = {
++#ifndef CONFIG_PCI_PNP
++	config_table: pci_qnap_config_table,
++#endif
++};
++
++void pci_init_board(void)
++{
++	pci_mpc824x_init(&hose);
++
++	/* Reset USB 1.1 !/
++	out_le32(PCI_USB0_MEMADDR+8, 1);
++	out_le32(PCI_USB1_MEMADDR+8, 1);
++	*/
++}
+--- u-boot-1.2.0.vanilla/board/qnap/README	1970-01-01 01:00:00.000000000 +0100
++++ u-boot-1.2.0/board/qnap/README	2007-02-26 01:55:37.000000000 +0100
+@@ -0,0 +1,10 @@
++*This port of U-Boot will run on a QNAP TS-101/TS-201 NAS*
++Andrew Luyten (u-boot@luyten.org.uk)
++
++Adapted from a Linkstation port by Mihai Georgian 
++http://http://www.linuxnotincluded.org.uk/
++
++Adapted from Motorola Sandpoint 3 development system equipped with
++a Unity X4 PPMC card (MPC8240 CPU) only. It is a snapshot of work
++in progress and far from being completed.
++Thomas Koeller
+--- u-boot-1.2.0.vanilla/board/qnap/u-boot.lds	1970-01-01 01:00:00.000000000 +0100
++++ u-boot-1.2.0/board/qnap/u-boot.lds	2007-02-26 01:55:37.000000000 +0100
+@@ -0,0 +1,136 @@
++/*
++ * (C) Copyright 2001
++ * Wolfgang Denk, DENX Software Engineering, wd@denx.de.
++ *
++ * See file CREDITS for list of people who contributed to this
++ * project.
++ *
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU General Public License as
++ * published by the Free Software Foundation; either version 2 of
++ * the License, or (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write to the Free Software
++ * Foundation, Inc., 59 Temple Place, Suite 330, Boston,
++ * MA 02111-1307 USA
++ */
++
++OUTPUT_ARCH(powerpc)
++SEARCH_DIR(/lib); SEARCH_DIR(/usr/lib); SEARCH_DIR(/usr/local/lib); SEARCH_DIR(/usr/local/powerpc-any-elf/lib);
++/* Do we need any of these for elf?
++   __DYNAMIC = 0;    */
++SECTIONS
++{
++  /* Read-only sections, merged into text segment: */
++  . = + SIZEOF_HEADERS;
++  .interp : { *(.interp) }
++  .hash          : { *(.hash)		}
++  .dynsym        : { *(.dynsym)		}
++  .dynstr        : { *(.dynstr)		}
++  .rel.text      : { *(.rel.text)	}
++  .rela.text     : { *(.rela.text) 	}
++  .rel.data      : { *(.rel.data)	}
++  .rela.data     : { *(.rela.data) 	}
++  .rel.rodata    : { *(.rel.rodata) 	}
++  .rela.rodata   : { *(.rela.rodata) 	}
++  .rel.got       : { *(.rel.got)	}
++  .rela.got      : { *(.rela.got)	}
++  .rel.ctors     : { *(.rel.ctors)	}
++  .rela.ctors    : { *(.rela.ctors)	}
++  .rel.dtors     : { *(.rel.dtors)	}
++  .rela.dtors    : { *(.rela.dtors)	}
++  .rel.bss       : { *(.rel.bss)	}
++  .rela.bss      : { *(.rela.bss)	}
++  .rel.plt       : { *(.rel.plt)	}
++  .rela.plt      : { *(.rela.plt)	}
++  .init          : { *(.init)		}
++  .plt : { *(.plt) }
++  .text      :
++  {
++    cpu/mpc824x/start.o	(.text)
++    lib_ppc/board.o	(.text)
++    lib_ppc/ppcstring.o	(.text)
++    lib_generic/vsprintf.o (.text)
++    lib_generic/crc32.o (.text)
++    lib_generic/zlib.o  (.text)
++
++	. = DEFINED(env_offset) ? env_offset : .;
++    common/environment.o (.text)
++
++	*(.text)
++
++    *(.fixup)
++    *(.got1)
++    . = ALIGN(16);
++    *(.rodata)
++    *(.rodata1)
++    *(.rodata.str1.4)
++    *(.eh_frame)
++  }
++  .fini      : { *(.fini)    } =0
++  .ctors     : { *(.ctors)   }
++  .dtors     : { *(.dtors)   }
++
++  /* Read-write section, merged into data segment: */
++  . = (. + 0x0FFF) & 0xFFFFF000;
++  _erotext = .;
++  PROVIDE (erotext = .);
++  .reloc   :
++  {
++    *(.got)
++    _GOT2_TABLE_ = .;
++    *(.got2)
++    _FIXUP_TABLE_ = .;
++    *(.fixup)
++  }
++  __got2_entries = (_FIXUP_TABLE_ - _GOT2_TABLE_) >> 2;
++  __fixup_entries = (. - _FIXUP_TABLE_) >> 2;
++
++  .data    :
++  {
++    *(.data)
++    *(.data1)
++    *(.sdata)
++    *(.sdata2)
++    *(.dynamic)
++    CONSTRUCTORS
++  }
++  _edata  =  .;
++  PROVIDE (edata = .);
++
++  . = .;
++  __u_boot_cmd_start = .;
++  .u_boot_cmd : { *(.u_boot_cmd) }
++  __u_boot_cmd_end = .;
++
++
++  . = .;
++  __start___ex_table = .;
++  __ex_table : { *(__ex_table) }
++  __stop___ex_table = .;
++
++  . = ALIGN(4096);
++  __init_begin = .;
++  .text.init : { *(.text.init) }
++  .data.init : { *(.data.init) }
++  . = ALIGN(4096);
++  __init_end = .;
++
++  __bss_start = .;
++  .bss       :
++  {
++   *(.sbss) *(.scommon)
++   *(.dynbss)
++   *(.bss)
++   *(COMMON)
++  }
++
++  _end = . ;
++  PROVIDE (end = .);
++}
+--- u-boot-1.2.0.vanilla/cpu/mpc824x/cpu.c	2007-01-07 00:13:11.000000000 +0100
++++ u-boot-1.2.0/cpu/mpc824x/cpu.c	2007-02-26 01:55:37.000000000 +0100
+@@ -44,7 +44,11 @@
+ 		break;
+ 
+ 	case CPU_TYPE_8245:
++#ifdef CONFIG_MPC8241
++		puts ("MPC8241"); /* impossible to distinguish using chip registers */
++#else
+ 		puts ("MPC8245");
++#endif
+ 		break;
+ 
+ 	default:
+--- u-boot-1.2.0.vanilla/drivers/rtl8169.c	2007-01-07 00:13:11.000000000 +0100
++++ u-boot-1.2.0/drivers/rtl8169.c	2007-02-26 01:55:37.000000000 +0100
+@@ -48,7 +48,10 @@
+ *
+ *    Indent Options: indent -kr -i8
+ ***************************************************************************/
+-
++/*
++ * 26 August 2006 Mihai Georgian <u-boot@linuxnotincluded.org.uk>
++ * Modified to use le32_to_cpu and cpu_to_le32 properly
++ */
+ #include <common.h>
+ #include <malloc.h>
+ #include <net.h>
+@@ -68,6 +71,7 @@
+ static u32 ioaddr;
+ 
+ /* Condensed operations for readability. */
++#define virt_to_bus(addr)	cpu_to_le32(addr)
+ #define virt_to_le32desc(addr)	cpu_to_le32(virt_to_bus(addr))
+ #define le32desc_to_virt(addr)	bus_to_virt(le32_to_cpu(addr))
+ 
+@@ -247,8 +251,15 @@
+ 	u8 version;		/* depend on RTL8169 docs */
+ 	u32 RxConfigMask;	/* should clear the bits supported by this chip */
+ } rtl_chip_info[] = {
+-	{"RTL-8169", 0x00, 0xff7e1880,},
+-	{"RTL-8169", 0x04, 0xff7e1880,},
++	{"RTL8169",          0x00, 0xff7e1880,},
++	{"RTL8169s/8110s",   0x02, 0xff7e1880,},
++	{"RTL8169s/8110s",   0x04, 0xff7e1880,},
++	{"RTL8169sb/8110sb", 0x10, 0xff7e1880,},
++	{"RTL8169sc/8110sc", 0x18, 0xff7e1880,},
++	{"RTL8168b/8111sb",  0x30, 0xff7e1880,},
++	{"RTL8168b/8111sb",  0x38, 0xff7e1880,},
++	{"RTL8101e",         0x34, 0xff7e1880,},
++	{"RTL8100e",         0x32, 0xff7e1880,},
+ };
+ 
+ enum _DescStatusBit {
+@@ -315,6 +326,7 @@
+ 
+ static struct pci_device_id supported[] = {
+ 	{PCI_VENDOR_ID_REALTEK, 0x8169},
++	{PCI_VENDOR_ID_REALTEK, 0x8167},
+ 	{}
+ };
+ 
+@@ -383,13 +395,15 @@
+ 	for (i = ARRAY_SIZE(rtl_chip_info) - 1; i >= 0; i--){
+ 		if (tmp == rtl_chip_info[i].version) {
+ 			tpc->chipset = i;
++			printf ("%s... ", rtl_chip_info[i].name);
+ 			goto match;
+ 		}
+ 	}
+ 
+ 	/* if unknown chip, assume array element #0, original RTL-8169 in this case */
+ 	printf("PCI device %s: unknown chip version, assuming RTL-8169\n", dev->name);
+-	printf("PCI device: TxConfig = 0x%hX\n", (unsigned long) RTL_R32(TxConfig));
++	printf("PCI device: TxConfig = 0x%lX\n", (unsigned long) RTL_R32(TxConfig));
++	
+ 	tpc->chipset = 0;
+ 
+ match:
+@@ -413,23 +427,23 @@
+ 	ioaddr = dev->iobase;
+ 
+ 	cur_rx = tpc->cur_rx;
+-	if ((tpc->RxDescArray[cur_rx].status & OWNbit) == 0) {
+-		if (!(tpc->RxDescArray[cur_rx].status & RxRES)) {
++	if ((le32_to_cpu(tpc->RxDescArray[cur_rx].status) & OWNbit) == 0) {
++		if (!(le32_to_cpu(tpc->RxDescArray[cur_rx].status) & RxRES)) {
+ 			unsigned char rxdata[RX_BUF_LEN];
+-			length = (int) (tpc->RxDescArray[cur_rx].
+-						status & 0x00001FFF) - 4;
++			length = (int) (le32_to_cpu(tpc->RxDescArray[cur_rx].
++						status) & 0x00001FFF) - 4;
+ 
+ 			memcpy(rxdata, tpc->RxBufferRing[cur_rx], length);
+ 			NetReceive(rxdata, length);
+ 
+ 			if (cur_rx == NUM_RX_DESC - 1)
+ 				tpc->RxDescArray[cur_rx].status =
+-				    (OWNbit | EORbit) + RX_BUF_SIZE;
++				cpu_to_le32((OWNbit | EORbit) + RX_BUF_SIZE);
+ 			else
+ 				tpc->RxDescArray[cur_rx].status =
+-				    OWNbit + RX_BUF_SIZE;
++				cpu_to_le32(OWNbit + RX_BUF_SIZE);
+ 			tpc->RxDescArray[cur_rx].buf_addr =
+-			    virt_to_bus(tpc->RxBufferRing[cur_rx]);
++			    cpu_to_le32((u32)tpc->RxBufferRing[cur_rx]);
+ 		} else {
+ 			puts("Error Rx");
+ 		}
+@@ -454,6 +468,7 @@
+ 	u8 *ptxb;
+ 	int entry = tpc->cur_tx % NUM_TX_DESC;
+ 	u32 len = length;
++	int ret;
+ 
+ #ifdef DEBUG_RTL8169_TX
+ 	int stime = currticks();
+@@ -465,39 +480,46 @@
+ 
+ 	/* point to the current txb incase multiple tx_rings are used */
+ 	ptxb = tpc->Tx_skbuff[entry * MAX_ETH_FRAME_SIZE];
++#ifdef DEBUG_RTL8169_TX
++	printf("ptxb: %08X, length: %d\n", ptxb, (int)length);
++#endif
+ 	memcpy(ptxb, (char *)packet, (int)length);
+ 
+ 	while (len < ETH_ZLEN)
+ 		ptxb[len++] = '\0';
+ 
+-	tpc->TxDescArray[entry].buf_addr = virt_to_bus(ptxb);
++	tpc->TxDescArray[entry].buf_addr = cpu_to_le32((u32)ptxb);
+ 	if (entry != (NUM_TX_DESC - 1)) {
+ 		tpc->TxDescArray[entry].status =
+-		    (OWNbit | FSbit | LSbit) | ((len > ETH_ZLEN) ?
+-						len : ETH_ZLEN);
++		    cpu_to_le32((OWNbit | FSbit | LSbit) |
++				((len > ETH_ZLEN) ? len : ETH_ZLEN));
+ 	} else {
+ 		tpc->TxDescArray[entry].status =
+-		    (OWNbit | EORbit | FSbit | LSbit) |
+-		    ((len > ETH_ZLEN) ? length : ETH_ZLEN);
++		    cpu_to_le32((OWNbit | EORbit | FSbit | LSbit) |
++		    		((len > ETH_ZLEN) ? len : ETH_ZLEN));
+ 	}
+ 	RTL_W8(TxPoll, 0x40);	/* set polling bit */
+ 
+ 	tpc->cur_tx++;
+ 	to = currticks() + TX_TIMEOUT;
+-	while ((tpc->TxDescArray[entry].status & OWNbit) && (currticks() < to));	/* wait */
++	while ((le32_to_cpu(tpc->TxDescArray[entry].status) & OWNbit)
++				&& (currticks() < to));	/* wait */
+ 
+ 	if (currticks() >= to) {
+ #ifdef DEBUG_RTL8169_TX
+ 		puts ("tx timeout/error\n");
+ 		printf ("%s elapsed time : %d\n", __FUNCTION__, currticks()-stime);
+ #endif
+-		return 0;
++		ret = 0;
+ 	} else {
+ #ifdef DEBUG_RTL8169_TX
+ 		puts("tx done\n");
+ #endif
+-		return length;
++		ret = length;
+ 	}
++	/* Delay to make net console (nc) work properly */
++	udelay(20);
++	return ret;
+ }
+ 
+ static void rtl8169_set_rx_mode(struct eth_device *dev)
+@@ -564,8 +586,8 @@
+ 
+ 	tpc->cur_rx = 0;
+ 
+-	RTL_W32(TxDescStartAddr, virt_to_le32desc(tpc->TxDescArray));
+-	RTL_W32(RxDescStartAddr, virt_to_le32desc(tpc->RxDescArray));
++	RTL_W32(TxDescStartAddr, virt_to_le32desc((u32)tpc->TxDescArray));
++	RTL_W32(RxDescStartAddr, virt_to_le32desc((u32)tpc->RxDescArray));
+ 	RTL_W8(Cfg9346, Cfg9346_Lock);
+ 	udelay(10);
+ 
+@@ -603,13 +625,14 @@
+ 	for (i = 0; i < NUM_RX_DESC; i++) {
+ 		if (i == (NUM_RX_DESC - 1))
+ 			tpc->RxDescArray[i].status =
+-			    (OWNbit | EORbit) + RX_BUF_SIZE;
++			cpu_to_le32((OWNbit | EORbit) + RX_BUF_SIZE);
+ 		else
+-			tpc->RxDescArray[i].status = OWNbit + RX_BUF_SIZE;
++			tpc->RxDescArray[i].status =
++			cpu_to_le32(OWNbit + RX_BUF_SIZE);
+ 
+ 		tpc->RxBufferRing[i] = &rxb[i * RX_BUF_SIZE];
+ 		tpc->RxDescArray[i].buf_addr =
+-		    virt_to_bus(tpc->RxBufferRing[i]);
++		    cpu_to_le32((u32)tpc->RxBufferRing[i]);
+ 	}
+ 
+ #ifdef DEBUG_RTL8169
+@@ -620,7 +643,7 @@
+ /**************************************************************************
+ RESET - Finish setting up the ethernet interface
+ ***************************************************************************/
+-static void rtl_reset(struct eth_device *dev, bd_t *bis)
++static int rtl_reset(struct eth_device *dev, bd_t *bis)
+ {
+ 	int i;
+ 	u8 diff;
+@@ -635,21 +658,27 @@
+ 	if (tpc->TxDescArrays == 0)
+ 		puts("Allot Error");
+ 	/* Tx Desscriptor needs 256 bytes alignment; */
+-	TxPhyAddr = virt_to_bus(tpc->TxDescArrays);
++	TxPhyAddr = (u32)tpc->TxDescArrays;
+ 	diff = 256 - (TxPhyAddr - ((TxPhyAddr >> 8) << 8));
+ 	TxPhyAddr += diff;
+ 	tpc->TxDescArray = (struct TxDesc *) (tpc->TxDescArrays + diff);
++#ifdef DEBUG_RTL8169
++	printf("tpc->TxDescArray: %08X\n", tpc->TxDescArray);
++#endif
+ 
+ 	tpc->RxDescArrays = rx_ring;
+ 	/* Rx Desscriptor needs 256 bytes alignment; */
+-	RxPhyAddr = virt_to_bus(tpc->RxDescArrays);
++	RxPhyAddr = (u32)tpc->RxDescArrays;
+ 	diff = 256 - (RxPhyAddr - ((RxPhyAddr >> 8) << 8));
+ 	RxPhyAddr += diff;
+ 	tpc->RxDescArray = (struct RxDesc *) (tpc->RxDescArrays + diff);
++#ifdef DEBUG_RTL8169
++	printf("tpc->RxDescArray: %08X\n", tpc->RxDescArray);
++#endif
+ 
+ 	if (tpc->TxDescArrays == NULL || tpc->RxDescArrays == NULL) {
+ 		puts("Allocate RxDescArray or TxDescArray failed\n");
+-		return;
++		return 0;
+ 	}
+ 
+ 	rtl8169_init_ring(dev);
+@@ -669,6 +698,7 @@
+ #ifdef DEBUG_RTL8169
+ 	printf ("%s elapsed time : %d\n", __FUNCTION__, currticks()-stime);
+ #endif
++	return 1;
+ }
+ 
+ /**************************************************************************
+@@ -733,7 +763,7 @@
+ 
+ 	/* Get MAC address.  FIXME: read EEPROM */
+ 	for (i = 0; i < MAC_ADDR_LEN; i++)
+-		dev->enetaddr[i] = RTL_R8(MAC0 + i);
++		bis->bi_enetaddr[i] = dev->enetaddr[i] = RTL_R8(MAC0 + i);
+ 
+ #ifdef DEBUG_RTL8169
+ 	printf("MAC Address");
+@@ -814,17 +844,14 @@
+ 				if (option & _1000bpsF) {
+ #ifdef DEBUG_RTL8169
+ 					printf("%s: 1000Mbps Full-duplex operation.\n",
+-					     dev->name);
++						dev->name);
+ #endif
+ 				} else {
+ #ifdef DEBUG_RTL8169
+-					printf
+-					    ("%s: %sMbps %s-duplex operation.\n",
+-					     dev->name,
+-					     (option & _100bps) ? "100" :
+-					     "10",
+-					     (option & FullDup) ? "Full" :
+-					     "Half");
++					printf("%s: %sMbps %s-duplex operation.\n",
++						dev->name,
++						(option & _100bps) ? "100" : "10",
++						(option & FullDup) ? "Full" : "Half");
+ #endif
+ 				}
+ 				break;
+@@ -886,3 +913,5 @@
+ }
+ 
+ #endif
++
++/* vim: set ts=4: */
+Index: u-boot-1.2.0/include/configs/qnap.h
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ u-boot-1.2.0/include/configs/qnap.h	2007-04-07 21:56:55.376393000 +0200
+@@ -0,0 +1,363 @@
++/*
++ * Copyright (C) 2006 Andrew Luyten <u-boot@luyten.org.uk>
++ *
++ * See file CREDITS for list of people who contributed to this
++ * project.
++ *
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU General Public License as
++ * published by the Free Software Foundation; either version 2 of
++ * the License, or (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write to the Free Software
++ * Foundation, Inc., 59 Temple Place, Suite 330, Boston,
++ * MA 02111-1307 USA
++ */
++
++/* ------------------------------------------------------------------------- */
++
++/*
++ * board/config.h - configuration options, board specific
++ */
++
++#ifndef __CONFIG_H
++#define __CONFIG_H
++
++/*
++ * High Level Configuration Options
++ * (easy to change)
++ */
++
++#define CONFIG_MPC824X		1
++#define CONFIG_MPC8245		1
++#define CONFIG_MPC8241		1
++
++#define CONFIG_IDENT_STRING	" OpenTS(c)"
++#define CONFIG_TIMESTAMP
++#define CFG_HUSH_PARSER		1
++#define CFG_PROMPT_HUSH_PS2     "turbostation> "
++#define CONFIG_BOOTDELAY	3
++
++
++/*----------------------------------------------------------------------
++ * Define supported commands
++ */
++
++#define CONFIG_COMMANDS	( \
++							CONFIG_CMD_DFL 	| \
++				  			CFG_CMD_ELF		| \
++				  			CFG_CMD_I2C 	| \
++							CFG_CMD_PING 	| \
++							CFG_CMD_DHCP 	| \
++							CFG_CMD_IDE		| \
++							CFG_CMD_EXT2	| \
++							CFG_CMD_DATE 	| \
++				  			CFG_CMD_PCI )
++
++/* this must be included AFTER the definition of CONFIG_COMMANDS (if any)	*/
++#include <cmd_confdefs.h>
++
++
++/*-----------------------------------------------------------------------
++ * Miscellaneous configurable options
++ */
++
++#define CFG_LONGHELP		1			/* undef to save memory	*/
++#define CFG_PROMPT			"=> "		/* Monitor Command Prompt*/
++#define CFG_CBSIZE			256			/* Console I/O Buffer Size*/
++#define CFG_PBSIZE 	(CFG_CBSIZE+sizeof(CFG_PROMPT)+16)	/* Print Buffer Size*/
++#define CFG_MAXARGS			16			/* max number of command args*/
++#define CFG_BARGSIZE		CFG_CBSIZE	/* Boot Argument Buffer Size*/
++#define CFG_LOAD_ADDR		0x00100000	/* default load address	*/
++#define CFG_HZ				1000		/* decrementer freq:1 ms ticks*/
++
++
++/*-----------------------------------------------------------------------
++ * PCI
++ *
++ */
++
++#define CONFIG_PCI
++#undef CONFIG_PCI_PNP
++
++#define PCI_ETH_IOADDR      0xbffe00
++#define PCI_ETH_MEMADDR     0xbfffce00
++
++#define PCI_IDE_IOADDR      0xbfffd0
++#define PCI_IDE_MEMADDR     0xbffffe00
++
++#define PCI_USB0_IOADDR     0
++#define PCI_USB0_MEMADDR    0xbfffe000
++#define PCI_USB1_IOADDR     0
++#define PCI_USB1_MEMADDR    0xbfffd000
++#define PCI_USB2_IOADDR     0
++#define PCI_USB2_MEMADDR    0xbfffcf00
++
++
++/*-----------------------------------------------------------------------
++ * Start addresses for the final memory configuration
++ * (Set up by the startup code)
++ */
++
++#define CFG_SDRAM_BASE		0x00000000
++#define CFG_MONITOR_BASE    TEXT_BASE
++#undef	CFG_RAMBOOT
++
++#define CFG_PCI_MEM_ADDR    0xB0000000
++#define CFG_EUMB_ADDR       0xFC000000
++#define CFG_FLASH_BASE		0xFF000000
++
++#define CFG_RESET_ADDRESS   0xFFF00100
++
++#define CFG_MONITOR_LEN     (256 << 10)
++#define CFG_MALLOC_LEN      (512 << 10)
++
++#define CFG_MEMTEST_START	0x00000000	/* memtest works on		*/
++#define CFG_MEMTEST_END		0x04000000	/* 0 ... 32 MB in DRAM		*/
++#define CFG_MAX_RAM_SIZE    0x10000000  /* up to 256M of SDRAM  */
++
++
++/*-----------------------------------------------------------------------
++ * Definitions for initial stack pointer and data area
++ */
++
++#define CFG_INIT_RAM_ADDR		0x40000000
++#define CFG_INIT_RAM_END        0x1000
++#define CFG_GBL_DATA_SIZE       128
++#define CFG_GBL_DATA_OFFSET     (CFG_INIT_RAM_END - CFG_GBL_DATA_SIZE)
++
++
++/*-----------------------------------------------------------------------
++ * FLASH organization
++ */
++
++#define CFG_FLASH_CFI			1
++#define CFG_FLASH_CFI_DRIVER	1	/* Use the common driver */
++#define CFG_MAX_FLASH_BANKS		1	/* max number of memory banks	*/
++#define CFG_MAX_FLASH_SECT		128	/* max number of sectors on one chip*/
++#define CFG_FLASH_EMPTY_INFO		/* print 'E' for empty sector on flinfo */
++#define CFG_FLASH_USE_BUFFER_WRITE	/* faster writes */
++
++#define CFG_ENV_IS_IN_FLASH		1
++#define CFG_ENV_ADDR			(CFG_FLASH_BASE + 0x00EA0000)
++#define CFG_ENV_SECT_SIZE		0x00020000 /* Total Size of Environment Sector*/
++
++
++/*-----------------------------------------------------------------------
++ * Gigabit Ethernet
++ */
++
++#define CONFIG_NET_MULTI
++#define CONFIG_RTL8169
++
++
++/*-----------------------------------------------------------------------
++ * Filesystems
++ */
++
++#define CONFIG_MAC_PARTITION
++#define CONFIG_DOS_PARTITION
++//#define CONFIG_ISO_PARTITION
++
++
++/*-----------------------------------------------------------------------
++ * IDE/ATA
++ */
++
++#undef	CONFIG_IDE_8xx_DIRECT	/* no pcmcia interface required */
++#undef	CONFIG_IDE_LED			/* no led for ide supported		*/
++#undef  CONFIG_IDE_RESET		/* no reset for ide supported	*/
++#undef 	CONFIG_ATAPI			/* no ATAPI support				*/
++
++#define CONFIG_IDE_PREINIT		/* To set up MMIO adresses 		*/
++#define CONFIG_LBA48			/* Large disk support			*/
++
++#define CFG_IDE_MAXBUS		2	/* Two channels x 1 device each	*/
++#define CFG_IDE_MAXDEVICE	(CFG_IDE_MAXBUS*1)
++
++#define CFG_ATA_BASE_ADDR	0x0000	/* Set up in board specific code		*/
++#define CFG_ATA_DATA_OFFSET	0x0000	/* Offset for data I/O					*/
++#define CFG_ATA_REG_OFFSET	0x0000	/* Offset for normal register accesses	*/
++#define CFG_ATA_ALT_OFFSET	0x0000	/* Offset for alternate registers		*/
++
++
++/*----------------------------------------------------------------------
++ * On Chip Serial configuration
++ */
++
++#define CONFIG_CONS_INDEX		1
++#define CONFIG_BAUDRATE			115200
++#define CFG_BAUDRATE_TABLE  	{ 9600, 19200, 38400, 57600, 115200 }
++
++#define CFG_NS16550
++#define CFG_NS16550_SERIAL
++
++#define CFG_NS16550_REG_SIZE    1
++#define CFG_NS16550_CLK     	get_bus_freq(0)
++
++#define CFG_NS16550_COM1    	(CFG_EUMB_ADDR + 0x4500)    /* Console port */
++#define CFG_NS16550_COM2    	(CFG_EUMB_ADDR + 0x4600)	/* PIC ? */
++
++
++/*----------------------------------------------------------------------
++ * i2c support configuration
++ */
++
++#define CONFIG_HARD_I2C		1		/* To enable I2C support	*/
++#undef  CONFIG_SOFT_I2C				/* I2C bit-banged		*/
++#define CFG_I2C_SPEED		400000	/* I2C speed and slave address	*/
++#define CFG_I2C_SLAVE		0x7F
++
++#define CONFIG_RTC_RS5C372A			/* Real-time clock chip */
++
++
++/*----------------------------------------------------------------------
++ * Low Level Configuration Settings
++ * (address mappings, register initial values, etc.)
++ * You should know what you are doing if you make changes here.
++ */
++
++#define CONFIG_SYS_CLK_FREQ 33333333	/* external frequency to pll */
++
++#define CFG_ROMNAL			7	/*rom/flash next access time		*/
++#define CFG_ROMFAL			11	/*rom/flash access time			*/
++
++#define CFG_REFINT			430	/* no of clock cycles between CBR refresh cycles */
++
++/* the following are for SDRAM only*/
++#define CFG_BSTOPRE			121	/* Burst To Precharge, sets open page interval */
++#define CFG_REFREC			8	/* Refresh to activate interval		*/
++#define CFG_RDLAT			4	/* data latency from read command	*/
++#define CFG_PRETOACT		3	/* Precharge to activate interval	*/
++#define CFG_ACTTOPRE		5	/* Activate to Precharge interval	*/
++#define CFG_ACTORW			3	/* Activate to R/W			*/
++#define CFG_SDMODE_CAS_LAT	3	/* SDMODE CAS latency			*/
++#define CFG_SDMODE_WRAP		0	/* SDMODE wrap type			*/
++
++#define CFG_REGISTERD_TYPE_BUFFER   1
++#define CFG_EXTROM	 1
++#define CFG_REGDIMM	 0
++
++
++/*----------------------------------------------------------------------
++ * memory bank settings
++ *
++ * only bits 20-29 are actually used from these vales to set the
++ * start/end address the upper two bits will be 0, and the lower 20
++ * bits will be set to 0x00000 for a start address, or 0xfffff for an
++ * end address
++ */
++
++#define CFG_BANK0_START		0x00000000
++#define CFG_BANK0_END		(CFG_MAX_RAM_SIZE - 1)
++#define CFG_BANK0_ENABLE	1
++#define CFG_BANK1_START		0x3ff00000
++#define CFG_BANK1_END		0x3fffffff
++#define CFG_BANK1_ENABLE	0
++#define CFG_BANK2_START		0x3ff00000
++#define CFG_BANK2_END		0x3fffffff
++#define CFG_BANK2_ENABLE	0
++#define CFG_BANK3_START		0x3ff00000
++#define CFG_BANK3_END		0x3fffffff
++#define CFG_BANK3_ENABLE	0
++#define CFG_BANK4_START		0x00000000
++#define CFG_BANK4_END		0x00000000
++#define CFG_BANK4_ENABLE	0
++#define CFG_BANK5_START		0x00000000
++#define CFG_BANK5_END		0x00000000
++#define CFG_BANK5_ENABLE	0
++#define CFG_BANK6_START		0x00000000
++#define CFG_BANK6_END		0x00000000
++#define CFG_BANK6_ENABLE	0
++#define CFG_BANK7_START		0x00000000
++#define CFG_BANK7_END		0x00000000
++#define CFG_BANK7_ENABLE	0
++
++
++/*
++ * Memory bank enable bitmask, specifying which of the banks defined above
++ are actually present. MSB is for bank #7, LSB is for bank #0.
++ */
++#define CFG_BANK_ENABLE		0x01
++
++#define CFG_ODCR			0xff	/* configures line driver impedances,	*/
++									/* see 8240 book for bit definitions	*/
++#define CFG_PGMAX			0x32	/* how long the 8240 retains the	*/
++									/* currently accessed page in memory	*/
++									/* see 8240 book for details		*/
++#define CFG_DBUS_SIZE2		1
++#define CFG_BANK0_ROW 		2
++
++
++/*----------------------------------------------------------------------
++ * Initial BAT mappings
++ */
++
++/* SDRAM 0 - 256MB */
++#define CFG_IBAT0L	(CFG_SDRAM_BASE | BATL_PP_10 | BATL_MEMCOHERENCE)
++#define CFG_IBAT0U	(CFG_SDRAM_BASE | BATU_BL_256M | BATU_VS | BATU_VP)
++
++/* stack in DCACHE @ 1GB (no backing mem) */
++#define CFG_IBAT1L	(CFG_INIT_RAM_ADDR | BATL_PP_10 | BATL_MEMCOHERENCE)
++#define CFG_IBAT1U	(CFG_INIT_RAM_ADDR | BATU_BL_128K | BATU_VS | BATU_VP)
++
++/* PCI memory */
++#define CFG_IBAT2L	(CFG_PCI_MEM_ADDR | BATL_PP_10 | BATL_CACHEINHIBIT)
++#define CFG_IBAT2U	(CFG_PCI_MEM_ADDR | BATU_BL_256M | BATU_VS | BATU_VP)
++
++/* Flash, config addrs, etc */
++#define CFG_IBAT3L	(0xF0000000 | BATL_PP_10 | BATL_CACHEINHIBIT)
++#define CFG_IBAT3U	(0xF0000000 | BATU_BL_256M | BATU_VS | BATU_VP)
++
++#define CFG_DBAT0L	CFG_IBAT0L
++#define CFG_DBAT0U	CFG_IBAT0U
++#define CFG_DBAT1L	CFG_IBAT1L
++#define CFG_DBAT1U	CFG_IBAT1U
++#define CFG_DBAT2L	CFG_IBAT2L
++#define CFG_DBAT2U	CFG_IBAT2U
++#define CFG_DBAT3L	CFG_IBAT3L
++#define CFG_DBAT3U	CFG_IBAT3U
++
++/*
++ * For booting Linux, the board info and command line data
++ * have to be in the first 8 MB of memory, since this is
++ * the maximum mapped by the Linux kernel during initialization.
++ */
++#define CFG_BOOTMAPSZ		(8 << 20)	/* Initial Memory map for Linux */
++
++
++/*-----------------------------------------------------------------------
++ * Cache Configuration
++ */
++
++#define CFG_CACHELINE_SIZE		32	/* For MPC8240 CPU			*/
++#if (CONFIG_COMMANDS & CFG_CMD_KGDB)
++#  define CFG_CACHELINE_SHIFT	5	/* log base 2 of the above value */
++#endif
++
++
++/*-----------------------------------------------------------------------
++ * Internal Definitions
++ *
++ * Boot Flags
++ */
++#define BOOTFLAG_COLD		0x01	/* Normal Power-On: Boot from FLASH	*/
++#define BOOTFLAG_WARM		0x02	/* Software reboot			*/
++
++/* pass open firmware flat tree */
++#define CONFIG_OF_FLAT_TREE     1
++
++/* maximum size of the flat tree (8K) */
++#define OF_FLAT_TREE_MAX_SIZE   8192
++
++#define OF_CPU                  "PowerPC,603e"
++#define OF_STDOUT_PATH          "/soc10x/serial@fc004500"
++
++#endif	/* __CONFIG_H */
++
+--- u-boot-1.2.0.vanilla/Makefile	2007-01-07 00:13:11.000000000 +0100
++++ u-boot-1.2.0/Makefile	2007-02-26 01:55:37.000000000 +0100
+@@ -1296,6 +1296,9 @@
+ PN62_config: unconfig
+ 	@$(MKCONFIG) $(@:_config=) ppc mpc824x pn62
+ 
++qnap_config: unconfig
++	@$(MKCONFIG) $(@:_config=) ppc mpc824x qnap
++
+ Sandpoint8240_config: unconfig
+ 	@$(MKCONFIG) $(@:_config=) ppc mpc824x sandpoint
+ 

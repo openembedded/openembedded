@@ -13,6 +13,7 @@ inherit opie
 
 do_install() {
 	install -d ${D}${palmtopdir}/pics/console/keys/
+	install -m 0644 ${WORKDIR}/pics/inline/pass.* ${D}${palmtopdir}/pics/
 	install -m 0644 ${WORKDIR}/pics/console/*.png ${D}${palmtopdir}/pics/console/
 	install -m 0644 ${WORKDIR}/pics/console/keys/*.png ${D}${palmtopdir}/pics/console/keys/
 }

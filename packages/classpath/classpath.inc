@@ -1,16 +1,14 @@
 DESCRIPTION = "GNU Classpath standard Java libraries"
 HOMEPAGE = "http://www.gnu.org/software/classpath/"
-LICENSE = "Classpath"
-PRIORITY = "optional"
 SECTION = "libs"
+PRIORITY = "optional"
+LICENSE = "Classpath"
+PROVIDES = "classpath"
+RPROVIDES = "classpath"
 
-PBN = "classpath"
-
-SRC_URI = "${GNU_MIRROR}/classpath/${PBN}-${PV}.tar.gz \
-           file://disable-automake-checks.patch;patch=1 \
+SRC_URI = "${GNU_MIRROR}/classpath/classpath-${PV}.tar.gz \
+           file://gconf_version.patch;patch=1 \
            file://fix-endian-arm-floats.patch;patch=1"
-
-S = "${WORKDIR}/${PBN}-${PV}"
 
 inherit autotools
 
@@ -21,8 +19,12 @@ do_stage() {
 
 do_install() {
 	autotools_do_install
-	mv ${D}${libdir}/security ${D}${libdir}/${PBN}
+	mv ${D}${libdir}/security ${D}${libdir}/${PN}
 }
 
-PROVIDES = "classpath"
-RPROVIDES = "classpath"
+PACKAGES =+ "classpath-common classpath-examples classpath-tools"
+FILES_classpath-common += "${datadir}/classpath/glibj.zip"
+FILES_classpath-examples += "${datadir}/classpath/examples"
+FILES_classpath-tools += "${datadir}/classpath/tools.zip ${datadir}/classpath/tools"
+FILES_classpath-dev += "${libdir}/*.so"
+FILES_classpath-dbg += "${libdir}/classpath/.debug"

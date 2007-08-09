@@ -1,0 +1,25 @@
+diff --git a/components/html-editor/Makefile.am b/components/html-editor/Makefile.am
+index 7fda5ae..925e409 100644
+--- a/components/html-editor/Makefile.am
++++ b/components/html-editor/Makefile.am
+@@ -5,7 +5,7 @@ gtkhtml_data = $(datadir)/gtkhtml-@GTKHTML_API_VERSION@
+ gladedir = $(gtkhtml_data)
+ glade_DATA = gtkhtml-editor-properties.glade
+ 
+-INCLUDES = -I$(top_srcdir)/src -I$(srcdir) -I$(includedir) $(GTKHTML_CFLAGS) $(SOUP_CFLAGS) \
++INCLUDES = -I$(top_srcdir)/src -I$(srcdir) $(GTKHTML_CFLAGS) $(SOUP_CFLAGS) \
+ 	-DG_LOG_DOMAIN=\"gtkhtml\" \
+ 	-DSRCDIR=\"$(srcdir)\" \
+ 	-DPREFIX=\"$(prefix)\"
+diff --git a/src/Makefile.am b/src/Makefile.am
+index f76178f..2d70183 100644
+--- a/src/Makefile.am
++++ b/src/Makefile.am
+@@ -3,7 +3,6 @@ NULL=
+ INCLUDES = 				\
+ 	-I$(top_srcdir)			\
+ 	-I$(srcdir)			\
+-	-I$(includedir)			\
+ 	$(GTKHTML_CFLAGS)		\
+ 	$(SOUP_CFLAGS)			\
+ 	-DG_LOG_DOMAIN=\"gtkhtml\"	\

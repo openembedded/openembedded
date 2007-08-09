@@ -5,6 +5,7 @@ LICENSE = "GPL"
 
 RDEPENDS = "opie-sh"
 
+inherit opie
 
 FILES_${PN} = "/opt/QtPalmtop"
 

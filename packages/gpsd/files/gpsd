@@ -16,6 +16,8 @@ GPS_DEV="/dev/ttyS3"
 RETVAL=0
 prog="gpsd"
 
+test -f /etc/default/$prog && . /etc/default/$prog
+
 start() {
 	# Start daemons.
 	echo -n "Starting $prog: "

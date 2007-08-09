@@ -1,0 +1,87 @@
+diff -Nurp ../linux-2.6.21.4/drivers/mmc/at91_mci.c ./drivers/mmc/at91_mci.c
+--- ../linux-2.6.21.4/drivers/mmc/at91_mci.c	2007-06-12 22:29:12.000000000 +0200
++++ ./drivers/mmc/at91_mci.c	2007-06-12 03:52:55.000000000 +0200
+@@ -421,8 +421,11 @@ static unsigned int at91_mci_send_comman
+ 	if (cmd->opcode == MMC_STOP_TRANSMISSION)
+ 		cmdr |= AT91_MCI_TRCMD_STOP;
+ 
+-	if (host->bus_mode == MMC_BUSMODE_OPENDRAIN)
+-		cmdr |= AT91_MCI_OPDCMD;
++	//if (host->bus_mode == MMC_BUSMODE_OPENDRAIN)
++	//	cmdr |= AT91_MCI_OPDCMD;
++		
++	if (!(1/**machine_is_sarge*/) && host->bus_mode == MMC_BUSMODE_OPENDRAIN)
++	     cmdr |= AT91_MCI_OPDCMD;		
+ 
+ 	/*
+ 	 * Set the arguments and send the command
+@@ -739,7 +742,13 @@ static irqreturn_t at91_mci_irq(int irq,
+ 		at91_mci_write(host, AT91_MCI_IDR, 0xffffffff);
+ 		at91mci_completed_command(host);
+ 	} else
++//		at91_mci_write(host, AT91_MCI_IDR, int_status);
++	 {
++	    if (1 /*machine_is_sarge()*/)
++		at91_mci_write(host, AT91_MCI_IDR, (int_status & ~AT91_MCI_TXRDY) );
++	    else
+ 		at91_mci_write(host, AT91_MCI_IDR, int_status);
++	}		
+ 
+ 	return IRQ_HANDLED;
+ }
+diff -Nurp ../linux-2.6.21.4/drivers/mmc/mmc_block.c ./drivers/mmc/mmc_block.c
+--- ../linux-2.6.21.4/drivers/mmc/mmc_block.c	2007-06-07 23:27:31.000000000 +0200
++++ ./drivers/mmc/mmc_block.c	2007-06-12 04:19:36.000000000 +0200
+@@ -256,10 +256,24 @@ static int mmc_blk_issue_rq(struct mmc_q
+ 		 * this rule as they support querying the number of
+ 		 * successfully written sectors.
+ 		 */
+-		if (rq_data_dir(req) != READ &&
++//		if (rq_data_dir(req) != READ &&
++		    if ((1/**machine_is_sarge*/))
++		    {
++			if (rq_data_dir(req) != READ)
++			    brq.data.blocks = 1;
++		    }
++		    else if (rq_data_dir(req) != READ &&			
++
+ 		    !(card->host->caps & MMC_CAP_MULTIWRITE) &&
+ 		    !mmc_card_sd(card))
+ 			brq.data.blocks = 1;
++			
++			
++			
++			
++			
++			
++			
+ 
+ 		if (brq.data.blocks > 1) {
+ 			brq.data.flags |= MMC_DATA_MULTI;
+diff -Nurp ../linux-2.6.21.4/drivers/mmc/mmc.c ./drivers/mmc/mmc.c
+--- ../linux-2.6.21.4/drivers/mmc/mmc.c	2007-06-07 23:27:31.000000000 +0200
++++ ./drivers/mmc/mmc.c	2007-06-12 04:10:05.000000000 +0200
+@@ -1500,12 +1500,22 @@ static void mmc_setup(struct mmc_host *h
+ 	mmc_set_ios(host);
+ 
+ 	mmc_read_csds(host);
+-
++	/*
+ 	if (host->mode == MMC_MODE_SD) {
+ 		mmc_read_scrs(host);
+ 		mmc_read_switch_caps(host);
+ 	} else
+ 		mmc_process_ext_csds(host);
++	*/
++	
++	if (!(1/*machine_is_sarge*/))
++	{
++	    if (host->mode == MMC_MODE_SD) {
++		mmc_read_scrs(host);
++	    mmc_read_switch_caps(host);
++	    } else
++		mmc_process_ext_csds(host);
++	}	
+ }
+ 
+ 

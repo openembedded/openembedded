@@ -15,17 +15,14 @@
 
 inherit palmtop
 
-OPIE_CVS_PV = "1.2.2+cvs${SRCDATE}"
+OPIE_CVS_PV ?= "1.2.2+cvs${SRCDATE}"
 
 DEPENDS_prepend = "${@["libopie2 ", ""][(bb.data.getVar('PN', d, 1) == 'libopie2')]}"
 
-FILES_${PN}-dbg += " ${palmtopdir}/lib/.debug \
-                     ${palmtopdir}/bin/.debug \
-                     ${palmtopdir}/plugins/*/.debug "
-
 # to be consistent, put all targets into workdir
 # NOTE: leave one space at the end, other files are expecting that
-EXTRA_QMAKEVARS_POST += "DESTDIR=${S} "
+EXTRA_QMAKEVARS_POST += " DESTDIR=${S} "
+EXTRA_QMAKEVARS_POST += " DEFINES+=OPIE_BINDIR='\"${bindir}\"' DEFINES+=OPIE_LIBDIR='\"${libdir}/opie/lib\"' DEFINES+=OPIE_QTDIR='\"${libdir}/opie\"' "
 
 # Opie standard TAG value
 TAG = "${@'v' + bb.data.getVar('PV',d,1).replace('.', '_')}"
@@ -83,7 +80,8 @@ python opie_do_opie_install() {
 	S = bb.data.getVar( "S", d, 1 )
 	D = "%s/image" % bb.data.getVar( "WORKDIR", d, True )
 	WORKDIR = bb.data.getVar( "WORKDIR", d, True )
-	palmtopdir = bb.data.getVar( "palmtopdir", d )
+	palmtopdir = bb.data.getVar( "palmtopdir", d, True )
+	gnubindir = bb.data.getVar( "bindir", d, True )
 	APPDESKTOP = bb.data.getVar( "APPDESKTOP", d, True ) or "%s/%s" % ( WORKDIR, desktopdir )
 
 	if desktopdir is not None:
@@ -93,11 +91,12 @@ python opie_do_opie_install() {
 	os.system( "install -d %s%s%s/" % ( D, palmtopdir, bindir ) )
 
 	if APPTYPE == "binary":
-		os.system( "install -m 0755 %s/%s %s%s%s/" % ( S, APPNAME, D, palmtopdir, bindir ) )
+		os.system( "install -d %s%s/" % ( D, gnubindir ) )
+		os.system( "install -m 0755 %s/%s %s%s/" % ( S, APPNAME, D, gnubindir ) )
 	elif APPTYPE == "quicklaunch":
 		os.system( "install -m 0755 %s/lib%s.so %s%s%s/" % ( S, APPNAME, D, palmtopdir, bindir ) )
-		os.system( "install -d %s%s/bin/" % ( D, palmtopdir ) )
-		os.system( "ln -sf %s/bin/quicklauncher %s%s/bin/%s" % ( palmtopdir, D, palmtopdir, APPNAME ) )
+		os.system( "install -d %s%s/" % ( D, gnubindir ) )
+		os.system( "ln -sf %s/quicklauncher %s%s/%s" % ( gnubindir, D, gnubindir, APPNAME ) )
 	elif APPTYPE == "plugin":
 		os.system( "install -m 0755 %s/lib%s.so %s%s%s/" % ( S, APPNAME, D, palmtopdir, bindir ) )
 }

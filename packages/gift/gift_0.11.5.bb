@@ -1,9 +1,10 @@
 SECTION = "console/network"
 LICENSE = "GPL"
-DEPENDS = "libvorbis libogg"
+DEPENDS = "libvorbis libogg libtool"
 DESCRIPTION = "giFT is a framework for bridging multiple \
 backend peer-to-peer protocols and the user interface \
 associated with them."
+PR="r1"
 FILES_gift_append = " ${datadir}/giFT"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/gift/gift-${PV}.tar.bz2"

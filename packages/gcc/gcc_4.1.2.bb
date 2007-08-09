@@ -1,4 +1,4 @@
-PR = "r0"
+PR = "r3"
 DESCRIPTION = "The GNU cc and gcc C compilers."
 HOMEPAGE = "http://www.gnu.org/software/gcc/"
 SECTION = "devel"
@@ -20,7 +20,6 @@ SRC_URI = "ftp://ftp.gnu.org/pub/gnu/gcc/gcc-4.1.2/gcc-4.1.2.tar.bz2 \
 	file://602-sdk-libstdc++-includes.patch;patch=1 \
 	file://740-sh-pr24836.patch;patch=1 \
 	file://800-arm-bigendian.patch;patch=1 \
-	file://801-arm-bigendian-eabi.patch;patch=1 \
 	file://arm-nolibfloat.patch;patch=1 \
 	file://arm-softfloat.patch;patch=1 \
 	file://gcc41-configure.in.patch;patch=1 \
@@ -30,9 +29,9 @@ SRC_URI = "ftp://ftp.gnu.org/pub/gnu/gcc/gcc-4.1.2/gcc-4.1.2.tar.bz2 \
 	file://zecke-xgcc-cpp.patch;patch=1 \
 	file://unbreak-armv4t.patch;patch=1 \
         file://fix-ICE-in-arm_unwind_emit_set.diff;patch=1 \
+	file://cache-amnesia.patch;patch=1 \
 	"
 
-SRC_URI_append_fail-fast = " file://zecke-no-host-includes.patch;patch=1 "
 SRC_URI_append_sh3  = " file://sh3-installfix-fixheaders.patch;patch=1 "
 
 #Set the fortran bits
@@ -47,6 +46,7 @@ JAVA = ""
 
 LANGUAGES = "c,c++${FORTRAN}${JAVA}"
 require gcc3-build.inc
+ARCH_FLAGS_FOR_TARGET=-isystem${STAGING_INCDIR}
 
 
 EXTRA_OECONF += " --disable-libssp "

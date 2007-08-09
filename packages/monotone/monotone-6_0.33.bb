@@ -25,7 +25,7 @@ inherit autotools
 #FIXME: remove the following
 ARM_INSTRUCTION_SET = "arm"
 
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "http://monotone.ca/downloads/${PV}/monotone-${PV}.tar.gz \
            file://txt2c-cross-post-0.22.patch;patch=1 \
@@ -42,7 +42,7 @@ do_install_append() {
         install -d ${D}${tsd}
         install -c -m 755 testsuite ${D}${tsd}/testsuite
         cp -pPR tests ${D}${tsd}/tests
-	rm ${D}/home/monotone/monotone-6/tests/tests/diff_a_binary_file/binary
+	rm ${D}/home/monotone/monotone-6/tests/diff_a_binary_file/binary
 }
 
 PACKAGES = "${PN} ${PN}-doc ${PN}-testsuite"

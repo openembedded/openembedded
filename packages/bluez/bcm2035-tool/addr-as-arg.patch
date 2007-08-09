@@ -1,0 +1,104 @@
+--- bcm2035-tool/bcm2035-tool.c	2007/05/07 12:48:06	2000
++++ bcm2035-tool/bcm2035-tool.c	2007/05/07 12:55:47	2001
+@@ -1,6 +1,8 @@
+-/* bcm2035-tool - bcm2035 tool for Motorola EZX phones
++/* bcm2035-tool
+  *
+  * (C) 2007 by Daniel Ribeiro <drwyrm@gmail.com>
++ * 
++ *  MAC address as argument extension by: Jan Herman <2hp@seznam.cz>
+  *
+  *  This program is free software; you can redistribute it and/or modify
+  *  it under the terms of the GNU General Public License version 2 
+@@ -17,10 +19,10 @@
+  *
+  */
+ 
++/* Default MAC address */
++#define BDADDR "\x06\x05\x04\x03\x02\x01"
+ 
+ //#define PATCH_FIRMWARE
+-#define BDADDR "\xab\x89\x67\x45\x23\x01"
+-
+ 
+ #include <stdio.h>
+ #include <string.h>
+@@ -33,6 +35,7 @@
+ #include <sys/ioctl.h>
+ #include <termios.h>
+ #include "bcm2035-tool.h"
++//#include "bluetooth.h"
+ 
+ #ifdef PATCH_FIRMWARE
+ #include "motorola_patches.h"
+@@ -180,18 +183,51 @@
+ 
+ }
+ 
++void mac2hex(const char *mac, u_char *dst)
++{
++	
++     int i;
++     long l;
++     char *pp;
++ 
++     while (isspace(*mac))
++         mac++;
++ 
++     /* expect 6 hex octets separated by ':' or space/NUL if last octet */
++     for (i = 0; i < 6; i++) {
++         l = strtol(mac, &pp, 16);
++         if (pp == mac || l > 0xFF || l < 0)
++             return;
++         if (!(*pp == ':' || (i == 5 && (isspace(*pp) || *pp == '\0'))))
++             return;
++		 /* 5-i swaps hex chars */
++		 dst[5-i] = (u_char) l;
++         mac = pp + 1;
++     }
++ }
++
++char bdaddr[6];
++ 
+ int main(int argc, char **argv)
+ {
+ 	int fd, i;
+ 	struct termios term;
+ 	char buf[1024];
+-	char bdaddr[6];
+-
+-	if (argc < 2) {
+-		printf("use: %s <device>\n", argv[0]);
++	
++	if (argc < 3) {
++		printf("BCM2035 Tool:\n");
++		printf("Usage: %s <device> <bdaddr>\n", argv[0]);
+ 		exit(1);
+ 	}
+ 
++	if (strlen(argv[2]) < 17) {
++		printf("invalid argument %s!\n", argv[2]);
++		exit(1);
++	}
++	
++	/* Converts MAC address to swapped HEX */
++	mac2hex(argv[2], bdaddr);
++	
+ 	fd = open (argv[1], O_RDWR | O_NOCTTY );
+ 
+ 	if(fd < 0) exit(-1);
+@@ -212,7 +248,7 @@
+ #endif
+ 	set_baud(fd, 460800);
+ 	
+-	send_cmd(fd, CMD_SET_BDADDR, BDADDR, 6);
++	send_cmd(fd, CMD_SET_BDADDR, bdaddr, 6);
+ 
+         i = N_HCI;
+         if (ioctl(fd, TIOCSETD, &i) < 0) {
+@@ -228,5 +264,3 @@
+         while (1) sleep(999999999);
+         return 0;
+ }
+-
+-

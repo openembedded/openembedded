@@ -2,7 +2,7 @@ DESCRIPTION = "The GNU internationalization library."
 HOMEPAGE = "http://www.gnu.org/software/gettext/gettext.html"
 SECTION = "libs"
 LICENSE = "GPL"
-PR = "r4"
+PR = "r5"
 PROVIDES = "virtual/libintl"
 
 SRC_URI = "${GNU_MIRROR}/gettext/gettext-${PV}.tar.gz \
@@ -10,11 +10,14 @@ SRC_URI = "${GNU_MIRROR}/gettext/gettext-${PV}.tar.gz \
 	   file://fixchicken.patch;patch=1;pnum=1 \
            file://getline.m4.patch;patch=1"
 
+SRC_URI_append_linux-uclibc = " file://gettext-error_print_progname.patch;patch=1"
+SRC_URI_append_linux-uclibcgnueabi = " file://gettext-error_print_progname.patch;patch=1"
+
 PARALLEL_MAKE = ""
 
 inherit autotools
 
-EXTRA_OECONF += "--without-lisp"
+EXTRA_OECONF += "--without-lisp --disable-csharp"
 acpaths = '-I ${S}/autoconf-lib-link/m4/ \
 	   -I ${S}/gettext-runtime/m4 \
 	   -I ${S}/gettext-tools/m4'

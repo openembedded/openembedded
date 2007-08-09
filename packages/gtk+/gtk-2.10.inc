@@ -27,17 +27,21 @@ FILES_${PN}-dbg += " \
         ${libdir}/gtk-2.0/${LIBV}/engines/.debug/*"
 
 
-RRECOMMENDS_${PN} = "glibc-gconv-iso8859-1 ttf-dejavu-sans"
-RRECOMMENDS_${PN}_angstrom = "glibc-gconv-iso8859-1 ttf-dejavu-sans gdk-pixbuf-loader-png gdk-pixbuf-loader-jpeg gdk-pixbuf-loader-gif gdk-pixbuf-loader-xpm"
-RRECOMMENDS_${PN}_openzaurus = "glibc-gconv-iso8859-1 ttf-dejavu-sans gdk-pixbuf-loader-png gdk-pixbuf-loader-jpeg gdk-pixbuf-loader-gif gdk-pixbuf-loader-xpm"
+RRECOMMENDS_${PN} = " ttf-dejavu-sans"
+RRECOMMENDS_${PN}_append_angstrom = " gdk-pixbuf-loader-png gdk-pixbuf-loader-jpeg gdk-pixbuf-loader-gif gdk-pixbuf-loader-xpm"
+RRECOMMENDS_${PN}_append_openzaurus = " gdk-pixbuf-loader-png gdk-pixbuf-loader-jpeg gdk-pixbuf-loader-gif gdk-pixbuf-loader-xpm"
+RRECOMMENDS_${PN}_append_linux = " glibc-gconv-iso8859-1"
+RRECOMMENDS_${PN}_append_linux-gnueabi = " glibc-gconv-iso8859-1"
 
 EXTRA_OECONF = "--without-libtiff --disable-xkb --disable-glibtest --enable-display-migration"
+
+export GDKTARGET="x11"
 
 LIBV = "2.10.0"
 
 do_stage () {
-	oe_libinstall -so -C gtk libgtk-x11-2.0 ${STAGING_LIBDIR}
-	oe_libinstall -so -C gdk libgdk-x11-2.0 ${STAGING_LIBDIR}
+	oe_libinstall -so -C gtk libgtk-$GDKTARGET-2.0 ${STAGING_LIBDIR}
+	oe_libinstall -so -C gdk libgdk-$GDKTARGET-2.0 ${STAGING_LIBDIR}
 	oe_libinstall -so -C contrib/gdk-pixbuf-xlib libgdk_pixbuf_xlib-2.0 ${STAGING_LIBDIR}
 	oe_libinstall -so -C gdk-pixbuf libgdk_pixbuf-2.0 ${STAGING_LIBDIR}
 

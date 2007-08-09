@@ -1,20 +1,28 @@
 SECTION = "x11/network"
-PR = "r4"
+PR = "r5"
 
 PACKAGES = "prismstumbler prismstumbler-frontend prismstumbler-doc"
 DESCRIPTION = "Prismstumbler wireless LAN scanner"
 LICENSE = "GPL"
-DEPENDS = "libpcap gtk+ wireless-tools sqlite zlib"
+DEPENDS = "libpcap gtk+ wireless-tools sqlite zlib libxpm"
 RDEPENDS = "wireless-tools"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/prismstumbler/${PN}-${PV}.tar.bz2 \
 	file://bogoconf.patch;patch=1 \
-        file://fix-includes.patch;patch=1 \
-        file://libz.patch;patch=1;pnum=0"
+	file://crosscompile.patch;patch=1 \
+        file://libz.patch;patch=1;pnum=0 \
+	file://wireless.patch;patch=1"
 
 inherit autotools pkgconfig
 
-EXTRA_OECONF = "--with-libpcap=${STAGING_DIR}/${HOST_SYS} --with-sqlite-libs=${STAGING_LIBDIR} --with-sqlite-includes=${STAGING_INCDIR}"
+EXTRA_OECONF = "--x-includes=${STAGING_INCDIR}/X11 \
+		--x-libraries=${STAGING_LIBDIR} \
+		--with-libpcap=${STAGING_DIR}/${HOST_SYS} \
+		--with-sqlite-includes=${STAGING_INCDIR} \
+		--with-sqlite-libs=${STAGING_LIBDIR} \
+		--without-athena \
+		--without-motif"
+
 CFLAGS =+ "-I${S}/include -D_GNU_SOURCE"
 
 FILES_${PN} = "${bindir}/prismstumbler"

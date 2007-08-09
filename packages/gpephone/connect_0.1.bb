@@ -17,6 +17,6 @@ do_compile() {
 
 do_install() {
 	install -d  ${D}/${prefix}/bin
-        install -m755 connect ${D}/${prefix}/bin
-        install -m755 disconnect ${D}/${prefix}/bin
+        install -m 755 connect ${D}/${prefix}/bin
+        install -m 755 disconnect ${D}/${prefix}/bin
 }

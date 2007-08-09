@@ -12,9 +12,10 @@ export PACKAGE_INSTALL = "\
   task-openmoko-ui \
   task-openmoko-base \
   task-openmoko-phone \
-  task-openmoko-finger \
+  task-openmoko-games \
   task-openmoko-pim \
-"
+  "
+
 DEPENDS = "\
   ${MACHINE_TASK_PROVIDER} \
   task-openmoko \

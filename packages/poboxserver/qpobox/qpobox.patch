@@ -1,0 +1,57 @@
+diff -Naur qpobox.orig/pbclient.cpp qpobox/pbclient.cpp
+--- qpobox.orig/pbclient.cpp	2003-06-21 04:56:31.000000000 +0200
++++ qpobox/pbclient.cpp	2006-05-11 22:49:00.000000000 +0200
+@@ -28,7 +28,8 @@
+   m_address(address), m_port(port)
+ {
+   m_sock = new QSocket(this);
+-  m_conv = QTextCodec::codecForName("EUC-JP");
++  //m_conv = QTextCodec::codecForName("EUC-JP");
++  m_conv = QTextCodec::codecForName("utf8");
+ 
+   connect(m_sock, SIGNAL(readyRead()), this, SLOT(socketReadyRead()));
+   connect(m_sock, SIGNAL(error(int)), this, SLOT(socketError(int)));
+diff -Naur qpobox.orig/qpobox.key qpobox/qpobox.key
+--- qpobox.orig/qpobox.key	2003-08-12 22:23:15.000000000 +0200
++++ qpobox/qpobox.key	2006-05-12 23:27:19.000000000 +0200
+@@ -1,15 +1,15 @@
+ [INIT]
+ 	Shift+Space 	= THRU
+ 	Space		= NEXT
+-	Shift+Return    = THRU_MODE
++	Shift+Enter    = THRU_MODE
+ 	F21             = CLOSE
+ 	F25		= IM_MODE
+ 
+ [INPUT]
+ 	Shift+Space	= PREV
+ 	Space		= NEXT
+-	Shift+Return	= FIX
+-	Return		= EXACT
++	Shift+Enter	= FIX
++	Enter		= EXACT
+ 	BackSpace	= BS
+ 	Delete		= DELETE
+ 	Left		= SHRINK
+@@ -22,7 +22,7 @@
+ [SELECT]
+ 	Shift+Space	= PREV
+ 	Space		= NEXT
+-	Return		= FIX
++	Enter		= FIX
+ 	BackSpace	= BS
+ 	Delete		= NOP
+ 	Left		= PREV
+diff -Naur qpobox.orig/qpoboxconfig.cpp qpobox/qpoboxconfig.cpp
+--- qpobox.orig/qpoboxconfig.cpp	2005-01-09 06:53:44.000000000 +0100
++++ qpobox/qpoboxconfig.cpp	2006-05-11 22:38:22.000000000 +0200
+@@ -224,7 +224,8 @@
+   if (t != m_key_loaded) {
+     if (f.open(IO_ReadOnly)) {
+       QTextStream ts(&f);
+-      QTextCodec *codec=QTextCodec::codecForName("UTF-8");
++      //QTextCodec *codec=QTextCodec::codecForName("UTF-8");
++      QTextCodec *codec=QTextCodec::codecForName("eucJP");
+       ts.setCodec(codec);
+       poboxmode_t mode = MODE_INIT;
+       

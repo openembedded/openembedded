@@ -3,10 +3,10 @@ HOMEPAGE = "http://openocd.berlios.de/"
 LICENSE = "GPL"
 PV = "0.0+svn${SRCDATE}"
 
-SRC_URI = "svn://svn.berlios.de/;module=openocd"
-
-S = "${WORKDIR}/openocd/trunk"
-
 inherit autotools
 
-EXTRA_OECONF = "  --disable-ftdi2232 --disable-ftd2xx"
+SRC_URI = "svn://svn.berlios.de/openocd;module=trunk \
+           file://openocd-link-static.patch;patch=1"
+S = "${WORKDIR}/trunk"
+
+EXTRA_OECONF = "  --disable-ftdi2232 --disable-ftd2xx"  

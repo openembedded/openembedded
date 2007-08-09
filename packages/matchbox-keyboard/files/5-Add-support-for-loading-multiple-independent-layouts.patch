@@ -1,0 +1,197 @@
+# HG changeset patch
+# User pfalcon@localhost
+# Date 1181567228 0
+# Node ID 869314ae90f46a8c2d34080005d4079cb0d0fcf4
+# Parent  38c3459f2e1a1c8dc7aacb486f201bdda638c7f2
+Add support for loading multiple independent layouts.
+All layouts found in ~/.matchbox/keyboard.d/ are loaded, realistically
+these will be symlinks to system-wide store. This directory has the highest
+priority of all other layout selection mechanism (except for
+$MB_KBD_CONFIG).
+
+diff -r 38c3459f2e1a -r 869314ae90f4 src/config-parser.c
+--- a/src/config-parser.c	Mon Apr 09 00:08:07 2007 +0000
++++ b/src/config-parser.c	Mon Jun 11 13:07:08 2007 +0000
+@@ -17,6 +17,7 @@
+  *
+  */
+ 
++#include <dirent.h>
+ #include "matchbox-keyboard.h"
+ 
+ /* 
+@@ -57,6 +58,9 @@
+ 
+     </keyboard>
+ */
++
++int mb_kbd_config_parse_file(MBKeyboard *kbd, char *path);
++static int mb_kbd_config_parse_data(MBKeyboard *kbd, char *data);
+ 
+ struct _keysymlookup
+ {
+@@ -170,12 +174,9 @@ config_str_to_modtype(const char* str)
+ }
+ 
+ 
+-static char* 
+-config_load_file(MBKeyboard *kbd, char *variant_in)
+-{
+-  struct stat    stat_info;
+-  FILE*          fp;
+-  char          *result;
++int
++mb_kbd_config_load(MBKeyboard *kbd, char *variant_in)
++{
+   char          *country  = NULL;  
+   char          *variant  = NULL;
+   char          *lang     = NULL;
+@@ -195,7 +196,44 @@ config_load_file(MBKeyboard *kbd, char *
+       if (util_file_readable(path))
+ 	goto load;
+ 
+-      return NULL;
++      return 0;
++    }
++
++  if (getenv("HOME"))
++    {
++      snprintf(path, 1024, "%s/.matchbox/keyboard.d", getenv("HOME"));
++
++      DBG("checking %s\n", path);
++
++      if (util_file_readable(path))
++        {
++          DIR *dir = opendir(path);
++          struct dirent *dirent;
++          if (!dir)
++            {
++              perror("matchbox-keyboard");
++              util_fatal_error("Cannot read keyboard.d.\n");
++            }
++          errno = 0;
++          while ((dirent = readdir(dir)))
++            {
++              if (dirent->d_name[0] == '.')
++                continue;
++              snprintf(path, 1024, "%s/.matchbox/keyboard.d/%s", getenv("HOME"), dirent->d_name);
++              if (!mb_kbd_config_parse_file(kbd, path))
++                {
++                  util_fatal_error("Cannot read file in keyboard.d.\n");
++                }
++
++            }
++          if (errno)
++            {
++              perror("matchbox-keyboard");
++              util_fatal_error("Error reading keyboard.d.\n");
++            }
++          closedir(dir);
++          return 1;
++        }
+     }
+ 
+   lang = getenv("MB_KBD_LANG");
+@@ -268,29 +306,11 @@ config_load_file(MBKeyboard *kbd, char *
+   DBG("checking %s\n", path);
+ 
+   if (!util_file_readable(path))
+-    return NULL;
++    return 0;
+ 
+  load:
+ 
+-  if (stat(path, &stat_info)) 
+-    return NULL;
+-
+-  if ((fp = fopen(path, "rb")) == NULL) 
+-    return NULL;
+-
+-  DBG("loading %s\n", path);
+-
+-  kbd->config_file = strdup(path);
+-
+-  result = malloc(stat_info.st_size + 1);
+-
+-  n = fread(result, 1, stat_info.st_size, fp);
+-
+-  if (n >= 0) result[n] = '\0';
+-  
+-  fclose(fp);
+-
+-  return result;
++  return mb_kbd_config_parse_file(kbd, path);
+ }
+ 
+ static const char *
+@@ -567,25 +587,48 @@ config_xml_start_cb(void *data, const ch
+ 
+ 
+ int
+-mb_kbd_config_load(MBKeyboard *kbd, char *variant)
+-{
+-  char                  *data;
++mb_kbd_config_parse_file(MBKeyboard *kbd, char *path)
++{
++  char *buffer;
++  struct stat    stat_info;
++  FILE*          fp;
++  int n;
++
++  if (stat(path, &stat_info)) 
++    return 0;
++
++  if ((fp = fopen(path, "rb")) == NULL) 
++    return 0;
++
++  DBG("loading %s\n", path);
++
++  kbd->config_file = strdup(path);
++
++  buffer = malloc(stat_info.st_size + 1);
++
++  n = fread(buffer, 1, stat_info.st_size, fp);
++
++  if (n >= 0) buffer[n] = '\0';
++  
++  fclose(fp);
++
++  mb_kbd_config_parse_data(kbd, buffer);
++
++  free(buffer);
++
++  return 1;
++}
++
++static int
++mb_kbd_config_parse_data(MBKeyboard *kbd, char *data)
++{
+   XML_Parser             p;
+   MBKeyboardConfigState *state;
+ 
+-  if ((data = config_load_file(kbd, variant)) == NULL)
+-    util_fatal_error("Couldn't find a keyboard config file\n");
+-
+   p = XML_ParserCreate(NULL);
+ 
+   if (!p) 
+     util_fatal_error("Couldn't allocate memory for XML parser\n");
+-
+-  if (variant && !strstr(kbd->config_file, variant))
+-    fprintf(stderr, 
+-	    "matchbox-keyboard: *Warning* Unable to locate variant: %s\n"
+-	    "                   falling back to %s\n",
+-	    variant, kbd->config_file);
+ 
+   state = util_malloc0(sizeof(MBKeyboardConfigState));
+ 
+@@ -607,6 +650,9 @@ mb_kbd_config_load(MBKeyboard *kbd, char
+     util_fatal_error("XML Parse failed.\n");
+   }
+ 
++  free(state);
++  XML_ParserFree(p);
++
+   return 1;
+ }
+ 

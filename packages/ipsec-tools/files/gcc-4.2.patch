@@ -1,0 +1,47 @@
+Index: ipsec-tools-0.6.7/src/racoon/var.h
+===================================================================
+--- ipsec-tools-0.6.7.orig/src/racoon/var.h	2004-11-21 03:16:59.000000000 +1100
++++ ipsec-tools-0.6.7/src/racoon/var.h	2007-06-06 12:21:41.000000000 +1000
+@@ -76,9 +76,9 @@
+ do { \
+ 	if (getnameinfo((x), sysdep_sa_len(x), (y), sizeof(y), (z), sizeof(z), \
+ 			NIFLAGS) != 0) { \
+-		if (y) \
++		if (y != NULL) \
+ 			strncpy((y), "(invalid)", sizeof(y)); \
+-		if (z) \
++		if (z != NULL) \
+ 			strncpy((z), "(invalid)", sizeof(z)); \
+ 	} \
+ } while (0);
+@@ -87,7 +87,7 @@
+ do { \
+ 	if (getnameinfo((x), sysdep_sa_len(x), (y), sizeof(y), NULL, 0, \
+ 			NIFLAGS) != 0) { \
+-		if (y) \
++		if (y != NULL) \
+ 			strncpy((y), "(invalid)", sizeof(y)); \
+ 	} \
+ } while (0);
+Index: ipsec-tools-0.6.7/src/racoon/eaytest.c
+===================================================================
+--- ipsec-tools-0.6.7.orig/src/racoon/eaytest.c	2005-06-29 08:38:02.000000000 +1000
++++ ipsec-tools-0.6.7/src/racoon/eaytest.c	2007-06-06 12:22:59.000000000 +1000
+@@ -311,7 +311,7 @@
+ 
+ 	printf("exact match: succeed.\n");
+ 
+-	if (dnstr_w1) {
++	if (dnstr_w1 != NULL) {
+ 		asn1dn = eay_str2asn1dn(dnstr_w1, strlen(dnstr_w1));
+ 		if (asn1dn == NULL || asn1dn->l == asn1dn0.l)
+ 			errx(1, "asn1dn length wrong for wildcard 1\n");
+@@ -321,7 +321,7 @@
+ 		printf("wildcard 1 match: succeed.\n");
+ 	}
+ 
+-	if (dnstr_w1) {
++	if (dnstr_w1 != NULL) {
+ 		asn1dn = eay_str2asn1dn(dnstr_w2, strlen(dnstr_w2));
+ 		if (asn1dn == NULL || asn1dn->l == asn1dn0.l)
+ 			errx(1, "asn1dn length wrong for wildcard 2\n");

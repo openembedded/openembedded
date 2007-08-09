@@ -1,0 +1,21 @@
+--- library/qpeapplication.cpp.org	2007-01-24 19:54:07.000000000 +0000
++++ library/qpeapplication.cpp	2007-05-03 03:34:10.000000000 +0000
+@@ -792,14 +792,14 @@
+ {
+ 		switch ( type ) {
+ 			case QtDebugMsg:
+-#ifdef QT_DEBUG
++//#ifdef QT_DEBUG
+ 					fprintf( stderr, "Debug: %s\n", msg );
+-#endif
++//#endif
+ 					break;
+ 			case QtWarningMsg:
+-#ifdef QT_DEBUG
++//#ifdef QT_DEBUG
+ 					fprintf( stderr, "Warning: %s\n", msg );
+-#endif
++//#endif
+ 					break;
+ 			case QtFatalMsg:
+ 					fprintf( stderr, "Fatal: %s\n", msg );

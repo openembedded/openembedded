@@ -10,7 +10,7 @@ HOMEPAGE = "http://fluxbox.sourceforge.net"
 LICENSE = "MIT"
 
 PV = "1.0+svn${SRCDATE}"
-PR = "r2"
+PR = "r3"
 
 ######################################################################################
 
@@ -30,7 +30,7 @@ SRC_URI = "svn://svn.berlios.de/fluxbox;module=trunk \
 
 ######################################################################################
 
-PACKAGES = "${PN}-gpe ${PN}-styles ${PN}-doc ${PN}"
+PACKAGES = "${PN}-dbg ${PN}-gpe ${PN}-styles ${PN}-doc ${PN}"
 
 DESCRIPTION_${PN}-styles = "The default styles for fluxbox"
 DESCRIPTION_${PN}-gpe = "The Fluxbox WindowManager for use with GPE"

@@ -1,10 +1,9 @@
 DESCRIPTION = "Task packages for GPE Palmtop Environment Phone Edition"
-PR = "r2"
+PR = "r8"
 LICENSE = "MIT"
 ALLOW_EMPTY = "1"
 
 PACKAGES = "\
-    gpephone-base-depends \
     gpephone-task-base \
     gpephone-task-settings \
     gpephone-task-pim \
@@ -12,20 +11,17 @@ PACKAGES = "\
     gpephone-task-apps \
     gpephone-task-development"
 
-RDEPENDS_gpephone-base-depends := "\
-    diet-x11 \
-    virtual/xserver"
-
-RDEPENDS_gpephone-task-development := "\
+RDEPENDS_gpephone-task-development = "\
     rxvt-unicode \
-    xmonobut \
     gpe-terminal \
     gpe-edit \
     gdb \
     strace \
-    e2fsprogs"
+    e2fsprogs \
+    bluez-utils-compat \
+    minicom"
 
-RDEPENDS_gpephone-task-base := "\
+RDEPENDS_gpephone-task-base = "\
     cms92init \
     gsmmux \
     connect \
@@ -67,28 +63,27 @@ RDEPENDS_gpephone-task-base := "\
     pango-module-basic-x \
     pango-module-basic-fc \
     detect-stylus \
+    ptim-manager \
+    ptim-helper \
+    ptim-engine \
     ${@base_contains("MACHINE_FEATURES", "touchscreen", "libgtkstylus xtscal", "",d)} \
-    ${@base_contains("MACHINE_FEATURES", "keyboard", "", "libgtkinput",d)} \
 "
 
-RDEPENDS_gpephone-task-pim := "\
+RDEPENDS_gpephone-task-pim = "\
      gpesyncd"
 
-RDEPENDS_gpephone-task-settings := "\
+RDEPENDS_gpephone-task-settings = "\
     gpe-su \
     gpe-conf \
-    gpe-clock \
     gpe-mixer \
     gpe-taskmanager \
-    keylaunch \
-    minilite"
+    minilite \
+    machined"
 
-RDEPENDS_gpephone-task-apps := "\
-    gpe-watch \
+RDEPENDS_gpephone-task-apps = "\
     gpe-what \
-    matchbox-panel-hacks \
     gpe-scap \
     gpe-windowlist"
 
-RDEPENDS_gpephone-task-connectivity := "\
+RDEPENDS_gpephone-task-connectivity = "\
 "

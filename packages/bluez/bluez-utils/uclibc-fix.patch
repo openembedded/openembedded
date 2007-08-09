@@ -1,0 +1,46 @@
+Uclibc doesn't define or support speeds above 115200. So check the existence
+of the defines before allowing them to actually be used.
+
+Index: bluez-utils-3.9/tools/hciattach.c
+===================================================================
+--- bluez-utils-3.9.orig/tools/hciattach.c	2007-05-17 12:34:28.000000000 +1000
++++ bluez-utils-3.9/tools/hciattach.c	2007-05-17 12:40:20.000000000 +1000
+@@ -105,22 +105,38 @@
+ 		return B57600;
+ 	case 115200:
+ 		return B115200;
++#ifdef B230400
+ 	case 230400:
+ 		return B230400;
++#endif
++#ifdef B460800
+ 	case 460800:
+ 		return B460800;
++#endif
++#ifdef B500000
+ 	case 500000:
+ 		return B500000;
++#endif
++#ifdef B576000
+ 	case 576000:
+ 		return B576000;
++#endif
++#ifdef B921600
+ 	case 921600:
+ 		return B921600;
++#endif
++#ifdef B1000000
+ 	case 1000000:
+ 		return B1000000;
++#endif
++#ifdef B1152000
+ 	case 1152000:
+ 		return B1152000;
++#endif
++#ifdef B1500000
+ 	case 1500000:
+ 		return B1500000;
++#endif
+ 	default:
+ 		return B57600;
+ 	}

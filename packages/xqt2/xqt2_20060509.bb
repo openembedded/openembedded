@@ -5,7 +5,7 @@ LICENSE = "GPL"
 SECTION = "opie/applications"
 APPTYPE = "binary"
 APPNAME = "Xqt"
-PR = "r0"
+PR = "r2"
 
 inherit palmtop
 
@@ -100,10 +100,8 @@ do_install() {
 	oe_runmake -C lib/font DESTDIR="${D}" CC="${CC}" LD="${LD}" \
                    CC_STAGING="-I${STAGING_INCDIR}" LD_STAGING="-L${STAGING_LIBDIR}" INSTALLED_LIBS="" install
 
-	install -d ${D}${palmtopdir}/Apps/applications/
-	install -m 0644 ${WORKDIR}/xqt2/xfree86/files/Xqt.desktop ${D}${palmtopdir}/Apps/applications
-	install -d ${D}${palmtopdir}/bin/
-	install -m 0755 ${D}${bindir}/Xqt ${D}${palmtopdir}/bin/Xqt
+	install -d ${D}${palmtopdir}/apps/Applications/
+	install -m 0644 ${WORKDIR}/xqt2/xfree86/files/Xqt.desktop ${D}${palmtopdir}/apps/Applications
 	install -d ${D}${palmtopdir}/pics
 	install -m 0644 programs/Xserver/hw/xqt/Xqt.png ${D}${palmtopdir}/pics
 }

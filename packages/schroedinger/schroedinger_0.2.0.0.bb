@@ -1,5 +1,5 @@
 HOMEPAGE = "http://schrodinger.sourceforge.net/"
-LICENSE = "MPL/GPL/LGPL and MIT"
+LICENSE = "MPL GPL LGPL MIT"
 DEPENDS = "liboil gstreamer gst-plugins-base"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/schrodinger/${P}.tar.gz"

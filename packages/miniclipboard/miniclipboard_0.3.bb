@@ -1,12 +1,13 @@
 SECTION = "x11/utils"
 inherit gpe
-LICENSE = "LGPL"
+LICENSE = "GPL"
 DESCRIPTION = "Clipboard management application"
 DEPENDS = "virtual/libx11"
 RDEPENDS = "gdk-pixbuf-loader-xpm"
-PR = "r1"
+PR = "r2"
 
-SRC_URI += "file://miniclipboard.desktop"
+SRC_URI += "file://miniclipboard.desktop \
+            file://makefile.patch;patch=1;pnum=0"
 
 do_install() {
 	install -d ${D}${bindir}

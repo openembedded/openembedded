@@ -1,23 +1,20 @@
-FILES_${PN} = "/usr/lib/aspell/* /usr/share/aspell/*"
+FILES_${PN} = "/usr/lib/aspell* /usr/share/aspell*"
 
 DEPENDS = "aspell-native"
 
 do_configure() {
 	cd ${S}
-	export dictdir=/usr/lib/aspell/
-	export datadir=/usr/share/aspell/
-	DESTDIR=${D} ./configure
+	DESTDIR=${D} ./configure --vars ASPELL=${STAGING_BINDIR_NATIVE}/aspell
 }
 
 do_compile() {
-        export dictdir=/usr/lib/aspell/
-	export datadir=/usr/share/aspell/
-	dictdir=/usr/lib/aspell oe_runmake
+	sed -i -e "s|dictdir.*lib|dictdir = ${libdir}|" Makefile
+	sed -i -e "s|datadir.*lib|datadir = ${libdir}|" Makefile
+	oe_runmake
 }
 
 do_install() {
-        export dictdir=/usr/lib/aspell/
-        export datadir=/usr/share/aspell/
+	unset datadir
 	oe_runmake install
 }
 

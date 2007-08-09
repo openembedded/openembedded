@@ -6,7 +6,7 @@
 # http://trac.nslu2-linux.org/kernel/
 #
 # The revision that is pulled from SVN is specified below
-IXP4XX_KERNEL_SVN_REV = "534"
+IXP4XX_KERNEL_SVN_REV = "886"
 #
 # The directory containing the patches to be applied is
 # specified below
@@ -20,3 +20,5 @@ PR = "r1.${IXP4XX_KERNEL_SVN_REV}"
 
 require ixp4xx-kernel.inc
 require ixp4xx-kernel-svnpatch.inc
+
+SRC_URI += "file://defconfig"

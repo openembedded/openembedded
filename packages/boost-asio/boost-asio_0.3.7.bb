@@ -1,6 +1,5 @@
 DESCRIPTION = "Asio 0.3.7 for work with boost, should be moved into boost package once integrated into the boost distribution."
 HOMEPAGE = "http://asio.sf.net/"
-MAINTAINER = "Martin Dietze <dietze@4g-systems.com>"
 SECTION = "libs"
 PRIORITY = "optional"
 LICENSE = "Boost Software License"

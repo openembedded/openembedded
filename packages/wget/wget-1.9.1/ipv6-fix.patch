@@ -1,0 +1,31 @@
+If the kernel has IPv6 support then wget tries to create sockets using
+AF_INET6 and then gets an EAFNOSUPPORT error, which it treats as a
+connection failure, resulting in wget not being able to work. This patch
+makes it switch it's default protocol to IPv4 when it sees that IPv6 isn't
+supported in the kernel.
+
+Index: wget-1.9.1/src/connect.c
+===================================================================
+--- wget-1.9.1.orig/src/connect.c	2003-11-02 01:08:22.000000000 +1100
++++ wget-1.9.1/src/connect.c	2007-06-02 01:39:55.000000000 +1000
+@@ -244,12 +244,20 @@
+     {
+       ip_address addr;
+       int sock;
++retry:
+       address_list_copy_one (al, i, &addr);
+ 
+       sock = connect_to_one (&addr, port, silent);
+       if (sock >= 0)
+ 	/* Success. */
+ 	return sock;
++      
++      if (errno == EAFNOSUPPORT && ip_default_family == AF_INET6)
++      {
++        DEBUGP (("No IPv6 support, changing default to IPv4.\n"));
++        ip_default_family = AF_INET;
++        goto retry;
++      }
+ 
+       address_list_set_faulty (al, i);
+ 

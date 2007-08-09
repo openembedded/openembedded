@@ -1,0 +1,16 @@
+
+#
+# Patch managed by http://www.holgerschurig.de/patcher.html
+#
+
+--- gpe-conf-0.2.5/modules/sysinfo.c~wireless
++++ gpe-conf-0.2.5/modules/sysinfo.c
+@@ -28,6 +28,8 @@
+ #include <sys/utsname.h>
+ 
+ #include <sys/socket.h>
++#include <linux/types.h>
++#include <linux/if.h>
+ #include <linux/wireless.h>
+ #include <sys/ioctl.h> 
+ 	

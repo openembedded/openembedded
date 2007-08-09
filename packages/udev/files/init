@@ -1,9 +1,9 @@
-#!/bin/sh -e
+#!/bin/sh
 
 UDEVSTART=/sbin/udevstart
 
 # defaults
-tmpfs_size="10M"
+tmpfs_size="2M"
 udev_root="/dev"
 
 [ -x $UDEVSTART ] || exit 0

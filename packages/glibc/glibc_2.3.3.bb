@@ -8,7 +8,6 @@ DEFAULT_PREFERENCE = "-1"
 DEFAULT_PREFERENCE_mipsel = "0"
 
 GLIBC_ADDONS ?= "linuxthreads"
-GLIBC_EXTRA_OECONF ?= ""
 
 #
 # For now, we will skip building of a gcc package if it is a uclibc one
@@ -25,12 +24,6 @@ python __anonymous () {
         raise bb.parse.SkipPackage("incompatible with target %s" %
                                    bb.data.getVar('TARGET_OS', d, 1))
 }
-
-# nptl needs unwind support in gcc, which can't be built without glibc.
-PROVIDES = "virtual/libc ${@['virtual/${TARGET_PREFIX}libc-for-gcc', '']['nptl' in '${GLIBC_ADDONS}']}"
-PROVIDES += "virtual/libintl virtual/libiconv"
-DEPENDS = "${@['virtual/${TARGET_PREFIX}gcc-initial', 'virtual/${TARGET_PREFIX}gcc']['nptl' in '${GLIBC_ADDONS}']} linux-libc-headers"
-INHIBIT_DEFAULT_DEPS = "1"
 
 libc_baselibs = "/lib/libc* /lib/libm* /lib/ld* /lib/libpthread* /lib/libresolv* /lib/librt* /lib/libutil* /lib/libnsl* /lib/libnss_files* /lib/libnss_compat* /lib/libnss_dns* /lib/libdl* /lib/libanl* /lib/libBrokenLocale*"
 
@@ -57,8 +50,6 @@ SRC_URI = "ftp://ftp.gnu.org/gnu/glibc/glibc-${PV}.tar.gz \
 
 S = "${WORKDIR}/glibc-${PV}"
 B = "${WORKDIR}/build-${TARGET_SYS}"
-
-inherit autotools
 
 EXTRA_OECONF = "--enable-kernel=${OLDEST_KERNEL} \
 	        --without-cvs --disable-profile --disable-debug --without-gd \

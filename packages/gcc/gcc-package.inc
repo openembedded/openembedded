@@ -67,6 +67,12 @@ FILES_${PN}-doc = "${infodir} \
 		   ${mandir} \
 		   ${gcclibdir}/${TARGET_SYS}/${BINV}/include/README"
 
+python do_package() {
+        if bb.data.getVar('DEBIAN_NAMES', d, 1):
+                bb.data.setVar('PKG_libgcc', 'libgcc1', d)
+        bb.build.exec_func('package_do_package', d)
+}
+
 
 do_install () {
 	autotools_do_install

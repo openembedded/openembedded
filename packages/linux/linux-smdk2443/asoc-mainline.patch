@@ -1,0 +1,142 @@
+Index: git/arch/arm/mach-s3c2443/mach-smdk2443.c
+===================================================================
+--- git.orig/arch/arm/mach-s3c2443/mach-smdk2443.c	2007-03-27 13:25:05.000000000 +0100
++++ git/arch/arm/mach-s3c2443/mach-smdk2443.c	2007-03-27 13:44:19.000000000 +0100
+@@ -69,6 +69,11 @@
+ 		.pfn		= __phys_to_pfn(S3C2410_CS2 + (1<<24)),
+ 		.length		= SZ_4M,
+ 		.type		= MT_DEVICE,
++	}, {
++		.virtual    = (u32)S3C2410_ADDR(0x02000000) ,
++		.pfn        = __phys_to_pfn(0x09000000),
++		.length     = SZ_1M,
++		.type       = MT_DEVICE,
+ 	}
+ };
+ 
+Index: git/drivers/net/cs89x0.c
+===================================================================
+--- git.orig/drivers/net/cs89x0.c	2007-03-27 13:25:08.000000000 +0100
++++ git/drivers/net/cs89x0.c	2007-03-27 13:44:19.000000000 +0100
+@@ -187,6 +187,10 @@
+ #include <asm/irq.h>
+ static unsigned int netcard_portlist[] __initdata = {IXDP2X01_CS8900_VIRT_BASE, 0};
+ static unsigned int cs8900_irq_map[] = {IRQ_IXDP2X01_CS8900, 0, 0, 0};
++#elif defined(CONFIG_ARCH_S3C2440)
++static unsigned int netcard_portlist[] __initdata = {S3C2410_ADDR(0x02000000) + 0x300 , 0};
++static unsigned int cs8900_irq_map[] = {IRQ_EINT13, 0, 0, 0};
++static unsigned char cs8900_mac[] = {0xDE,0xAD,0xBE,0xEF,0x01,0x02};
+ #elif defined(CONFIG_ARCH_PNX010X)
+ #include <asm/irq.h>
+ #include <asm/arch/gpio.h>
+@@ -719,6 +723,14 @@
+ 
+ 		printk( "[Cirrus EEPROM] ");
+ 	}
++#if defined(CONFIG_ARCH_S3C2440)
++	else
++	{
++		for (i=0; i < ETH_ALEN; i++) {
++                        dev->dev_addr[i] = cs8900_mac[i];
++		}
++	}
++#endif
+ 
+         printk("\n");
+ 
+@@ -802,7 +814,7 @@
+ 	} else {
+ 		i = lp->isa_config & INT_NO_MASK;
+ 		if (lp->chip_type == CS8900) {
+-#if defined(CONFIG_MACH_IXDP2351) || defined(CONFIG_ARCH_IXDP2X01) || defined(CONFIG_ARCH_PNX010X)
++#if defined(CONFIG_MACH_IXDP2351) || defined(CONFIG_ARCH_IXDP2X01) || defined(CONFIG_ARCH_PNX010X) || defined(CONFIG_ARCH_S3C2410)
+ 		        i = cs8900_irq_map[0];
+ #else
+ 			/* Translate the IRQ using the IRQ mapping table. */
+@@ -1309,7 +1321,7 @@
+ 	else
+ #endif
+ 	{
+-#if !defined(CONFIG_MACH_IXDP2351) && !defined(CONFIG_ARCH_IXDP2X01) && !defined(CONFIG_ARCH_PNX010X)
++#if !defined(CONFIG_MACH_IXDP2351) && !defined(CONFIG_ARCH_IXDP2X01) && !defined(CONFIG_ARCH_PNX010X) && !defined(CONFIG_ARCH_S3C2410)
+ 		if (((1 << dev->irq) & lp->irq_map) == 0) {
+ 			printk(KERN_ERR "%s: IRQ %d is not in our map of allowable IRQs, which is %x\n",
+                                dev->name, dev->irq, lp->irq_map);
+@@ -1324,7 +1336,11 @@
+ 		writereg(dev, PP_BusCTL, ENABLE_IRQ | MEMORY_ON);
+ #endif
+ 		write_irq(dev, lp->chip_type, dev->irq);
++#if !defined(CONFIG_ARCH_S3C2440)
+ 		ret = request_irq(dev->irq, &net_interrupt, 0, dev->name, dev);
++#else
++		ret = request_irq(dev->irq, &net_interrupt, IRQF_DISABLED | IRQF_TRIGGER_HIGH, dev->name, dev);
++#endif
+ 		if (ret) {
+ 			if (net_debug)
+ 				printk(KERN_DEBUG "cs89x0: request_irq(%d) failed\n", dev->irq);
+Index: git/include/asm-arm/arch-s3c2410/regs-ac97.h
+===================================================================
+--- git.orig/include/asm-arm/arch-s3c2410/regs-ac97.h	2007-03-27 13:25:14.000000000 +0100
++++ git/include/asm-arm/arch-s3c2410/regs-ac97.h	2007-03-27 13:44:19.000000000 +0100
+@@ -13,11 +13,55 @@
+ #ifndef __ASM_ARCH_REGS_AC97_H
+ #define __ASM_ARCH_REGS_AC97_H __FILE__
+ 
+-#define S3C_AC97_GLBCTRL	(0x00)
+-#define S3C_AC97_GLBSTAT	(0x04)
+-#define S3C_AC97_CODEC_CMD	(0x08)
+-#define S3C_AC97_PCM_ADDR	(0x10)
+-#define S3C_AC97_PCM_DATA	(0x18)
+-#define S3C_AC97_MIC_DATA	(0x1C)
++#define S3C_AC97_GLBCTRL						(0x00)
++
++#define S3C_AC97_GLBCTRL_CODECREADYIE			(1<<22)
++#define S3C_AC97_GLBCTRL_PCMOUTURIE				(1<<21)
++#define S3C_AC97_GLBCTRL_PCMINORIE				(1<<20)
++#define S3C_AC97_GLBCTRL_MICINORIE				(1<<19)
++#define S3C_AC97_GLBCTRL_PCMOUTTIE				(1<<18)
++#define S3C_AC97_GLBCTRL_PCMINTIE				(1<<17)
++#define S3C_AC97_GLBCTRL_MICINTIE				(1<<16)
++#define S3C_AC97_GLBCTRL_PCMOUTTM_OFF			(0<<12)
++#define S3C_AC97_GLBCTRL_PCMOUTTM_PIO			(1<<12)
++#define S3C_AC97_GLBCTRL_PCMOUTTM_DMA			(2<<12)
++#define S3C_AC97_GLBCTRL_PCMOUTTM_MASK			(3<<12)
++#define S3C_AC97_GLBCTRL_PCMINTM_OFF			(0<<10)
++#define S3C_AC97_GLBCTRL_PCMINTM_PIO			(1<<10)
++#define S3C_AC97_GLBCTRL_PCMINTM_DMA			(2<<10)
++#define S3C_AC97_GLBCTRL_PCMINTM_MASK			(3<<10)
++#define S3C_AC97_GLBCTRL_MICINTM_OFF			(0<<8)
++#define S3C_AC97_GLBCTRL_MICINTM_PIO			(1<<8)
++#define S3C_AC97_GLBCTRL_MICINTM_DMA			(2<<8)
++#define S3C_AC97_GLBCTRL_MICINTM_MASK			(3<<8)
++#define S3C_AC97_GLBCTRL_TRANSFERDATAENABLE		(1<<3)
++#define S3C_AC97_GLBCTRL_ACLINKON				(1<<2)
++#define S3C_AC97_GLBCTRL_WARMRESET				(1<<1)
++#define S3C_AC97_GLBCTRL_COLDRESET				(1<<0)
++
++#define S3C_AC97_GLBSTAT						(0x04)
++
++#define S3C_AC97_GLBSTAT_CODECREADY				(1<<22)
++#define S3C_AC97_GLBSTAT_PCMOUTUR				(1<<21)
++#define S3C_AC97_GLBSTAT_PCMINORI				(1<<20)
++#define S3C_AC97_GLBSTAT_MICINORI				(1<<19)
++#define S3C_AC97_GLBSTAT_PCMOUTTI				(1<<18)
++#define S3C_AC97_GLBSTAT_PCMINTI				(1<<17)
++#define S3C_AC97_GLBSTAT_MICINTI				(1<<16)
++#define S3C_AC97_GLBSTAT_MAINSTATE_IDLE			(0<<0)
++#define S3C_AC97_GLBSTAT_MAINSTATE_INIT			(1<<0)
++#define S3C_AC97_GLBSTAT_MAINSTATE_READY		(2<<0)
++#define S3C_AC97_GLBSTAT_MAINSTATE_ACTIVE		(3<<0)
++#define S3C_AC97_GLBSTAT_MAINSTATE_LP			(4<<0)
++#define S3C_AC97_GLBSTAT_MAINSTATE_WARM			(5<<0)
++
++#define S3C_AC97_CODEC_CMD						(0x08)
++
++#define S3C_AC97_CODEC_CMD_READ					(1<<23)
++
++#define S3C_AC97_STAT							(0x0c)
++#define S3C_AC97_PCM_ADDR						(0x10)
++#define S3C_AC97_PCM_DATA						(0x18)
++#define S3C_AC97_MIC_DATA						(0x1C)
+ 
+ #endif /* __ASM_ARCH_REGS_AC97_H */

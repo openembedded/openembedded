@@ -23,7 +23,7 @@ FILES_util-linux-cfdisk = "/sbin/cfdisk"
 FILES_util-linux-sfdisk = "/sbin/sfdisk"
 FILES_util-linux-swaponoff = "/sbin/swapon.${PN} /sbin/swapoff.${PN}"
 FILES_util-linux-losetup = "/sbin/losetup.${PN}"
-FILES_util-linux-mount = "/bin/mount.${PN}"
+FILES_util-linux-mount = "/bin/mount.${PN} ${sysconfdir}/default/mountall"
 FILES_util-linux-umount = "/bin/umount.${PN}"
 FILES_util-linux-readprofile = "/usr/sbin/readprofile"
 
@@ -95,6 +95,8 @@ do_install () {
 	mv ${D}${base_bindir}/umount ${D}${base_bindir}/umount.${PN}
 	mv ${D}${base_bindir}/mount ${D}${base_bindir}/mount.${PN}
 	mv ${D}${base_sbindir}/fdisk ${D}${base_sbindir}/fdisk.${PN}
+	install -d ${D}${sysconfdir}/default/
+	echo 'MOUNTALL="-t nonfs,nosmbfs,noncpfs"' > ${D}${sysconfdir}/default/mountall
 
 	checklink swapon ${D}${base_sbindir}/swapoff ".${PN}"
 	checklink shutdown ${D}${base_sbindir}/reboot ".${PN}"

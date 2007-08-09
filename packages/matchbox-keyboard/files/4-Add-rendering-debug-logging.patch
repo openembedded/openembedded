@@ -1,0 +1,65 @@
+# HG changeset patch
+# User pfalcon@localhost
+# Date 1176077287 0
+# Node ID 38c3459f2e1a1c8dc7aacb486f201bdda638c7f2
+# Parent  b010d54a6c5020a68855e60e5a423ee3c18ed700
+Add rendering debug logging.
+
+diff -r b010d54a6c50 -r 38c3459f2e1a src/matchbox-keyboard-ui.c
+--- a/src/matchbox-keyboard-ui.c	Mon Apr 09 00:06:34 2007 +0000
++++ b/src/matchbox-keyboard-ui.c	Mon Apr 09 00:08:07 2007 +0000
+@@ -357,6 +357,8 @@ mb_kbd_ui_allocate_ui_layout(MBKeyboardU
+   /* Do an initial run to figure out a 'base' size for single glyph keys */
+   mb_kdb_ui_unit_key_size(ui, &ui->key_uwidth, &ui->key_uheight);
+ 
++  DBG("unit_key_size: %dx%d", ui->key_uwidth, ui->key_uheight);
++
+   row_item = mb_kbd_layout_rows(layout);
+ 
+   row_y = mb_kbd_row_spacing(ui->kbd); 
+@@ -415,6 +417,8 @@ mb_kbd_ui_allocate_ui_layout(MBKeyboardU
+ 
+       if (key_x > max_row_width) /* key_x now represents row width */
+ 	max_row_width = key_x;
++
++      DBG("Row width: %d", key_x);
+ 
+       mb_kbd_row_set_y(row, row_y);
+ 
+@@ -617,6 +621,8 @@ mb_kbd_ui_resources_create(MBKeyboardUI 
+   boolean              have_matchbox_wm = False;             
+   boolean              have_ewmh_wm     = False;             
+ 
++  DBG("mb_kbd_ui_resources_create: %dx%d", ui->xwin_width, ui->xwin_height);
++  
+   /*
+   atom_wm_protocols = { 
+     XInternAtom(ui->xdpy, "WM_DELETE_WINDOW",False),
+@@ -821,6 +827,8 @@ mb_kbd_ui_resize(MBKeyboardUI *ui, int w
+ 
+   MARK();
+ 
++  DBG("mb_kbd_ui_resize: resize to %dx%d, base %dx%d", width, height, ui->base_alloc_width, ui->base_alloc_height);
++
+   width_diff  = width  - ui->base_alloc_width; 
+   height_diff = height - ui->base_alloc_height; 
+ 
+@@ -1125,6 +1133,7 @@ mb_kbd_ui_event_loop(MBKeyboardUI *ui)
+ 		  }
+ 		break;
+ 	      case ConfigureNotify:
++		DBG("ConfigureNotify %i,%i", xev.xconfigure.width, xev.xconfigure.height);
+ 		if (xev.xconfigure.width != ui->xwin_width
+ 		    || xev.xconfigure.height != ui->xwin_height)
+ 		  mb_kbd_ui_handle_configure(ui,
+diff -r b010d54a6c50 -r 38c3459f2e1a src/matchbox-keyboard.h
+--- a/src/matchbox-keyboard.h	Mon Apr 09 00:06:34 2007 +0000
++++ b/src/matchbox-keyboard.h	Mon Apr 09 00:08:07 2007 +0000
+@@ -48,6 +48,7 @@
+ #include "config.h"
+ #endif
+ 
++#define WANT_DEBUG 1
+ #if (WANT_DEBUG)
+ #define DBG(x, a...) \
+  fprintf (stderr,  __FILE__ ":%d,%s() " x "\n", __LINE__, __func__, ##a)

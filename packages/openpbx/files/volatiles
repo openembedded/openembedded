@@ -1,0 +1,6 @@
+d openpbx openpbx 0775 /var/run/openpbx.org none
+d openpbx openpbx 0775 /var/lib/openpbx.org none
+d openpbx openpbx 0775 /var/log/openpbx.org/cdr-csv none
+d openpbx openpbx 0775 /var/log/openpbx.org/cdr-custom none
+d openpbx openpbx 0775 /var/spool/openpbx.org/outgoing none
+d openpbx openpbx 0775 /var/spool/openpbx.org/voicemail none

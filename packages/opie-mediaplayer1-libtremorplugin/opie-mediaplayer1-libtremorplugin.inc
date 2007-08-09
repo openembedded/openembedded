@@ -2,8 +2,8 @@ DESCRIPTION = "Ogg file plugin using tremor"
 SECTION = "opie/codecs"
 PRIORITY = "optional"
 LICENSE = "GPL"
-DEPENDS = "opie-mediaplayer1 tremor"
-RDEPENDS = "opie-mediaplayer1"
+DEPENDS = "opie-mediaplayer1-core tremor"
+RDEPENDS = "opie-mediaplayer1-core"
 APPNAME = "tremorplugin"
 
 

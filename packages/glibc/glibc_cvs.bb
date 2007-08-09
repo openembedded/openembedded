@@ -5,7 +5,6 @@ PR = "r5"
 PV = "2.3.5+cvs${SRCDATE}"
 
 GLIBC_ADDONS ?= "ports,linuxthreads"
-GLIBC_EXTRA_OECONF ?= ""
 
 DEFAULT_PREFERENCE = "-1"
 
@@ -25,11 +24,6 @@ python __anonymous () {
                                    bb.data.getVar('TARGET_OS', d, 1))
 }
 
-# nptl needs unwind support in gcc, which can't be built without glibc.
-PROVIDES = "virtual/libc ${@['virtual/${TARGET_PREFIX}libc-for-gcc', '']['nptl' in '${GLIBC_ADDONS}']}"
-PROVIDES += "virtual/libintl virtual/libiconv"
-DEPENDS = "${@['virtual/${TARGET_PREFIX}gcc-initial', 'virtual/${TARGET_PREFIX}gcc']['nptl' in '${GLIBC_ADDONS}']} linux-libc-headers"
-INHIBIT_DEFAULT_DEPS = "1"
 RDEPENDS_${PN}-dev = "linux-libc-headers-dev"
 
 #	   file://noinfo.patch;patch=1
@@ -57,8 +51,6 @@ SRC_URI_append_arm = " file://dyn-ldconfig-20041128.patch;patch=1"
 
 S = "${WORKDIR}/libc"
 B = "${WORKDIR}/build-${TARGET_SYS}"
-
-inherit autotools
 
 EXTRA_OECONF = "--enable-kernel=${OLDEST_KERNEL} \
 	        --without-cvs --disable-profile --disable-debug --without-gd \

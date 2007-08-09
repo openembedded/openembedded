@@ -5,8 +5,8 @@ PRIORITY = "optional"
 
 DEFAULT_PREFERENCE = "-1"
 
-PV = "0.5.0+svn${SRCDATE}"
-PR = "r0"
+PV = "0.5.2+svn${SRCDATE}"
+PR = "r1"
 
 SRC_URI = "svn://gtk-webcore.svn.sourceforge.net/svnroot/gtk-webcore/trunk;module=JavaScriptCore;proto=https \
            file://gcc4-fno-threadsafe-statics-JavaScriptCore.patch;patch=1"
@@ -28,12 +28,14 @@ do_configure () {
 }
 
 do_stage () {
-	oe_libinstall -so -C kjs libjscore ${STAGING_LIBDIR}
+	oe_libinstall -so -C kjs libgtk_webcore_jscore ${STAGING_LIBDIR}
 
 	autotools_stage_includes
 
 	install -d ${STAGING_INCDIR}/osb/JavaScriptCore
 	for i in ${S}/kjs/*.h ${S}/kjs/new; do
 		install -m 0644 $i ${STAGING_INCDIR}/osb/JavaScriptCore
+	install -d ${STAGING_INCDIR}/../share/gtk-webcore-jscore
+	install -m 0755 ${S}/kjs/create_hash_table  ${STAGING_INCDIR}/../share/gtk-webcore-jscore
 	done
 }

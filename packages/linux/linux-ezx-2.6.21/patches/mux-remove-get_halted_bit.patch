@@ -1,0 +1,22 @@
+Index: linux-2.6.16/drivers/char/ts0710_mux_usb.c
+===================================================================
+--- linux-2.6.16.orig/drivers/char/ts0710_mux_usb.c	2007-01-17 01:06:21.000000000 +0100
++++ linux-2.6.16/drivers/char/ts0710_mux_usb.c	2007-01-17 01:06:31.000000000 +0100
+@@ -461,7 +461,7 @@
+ 	ipcusb_xmit_data();
+ }
+
+-extern void get_halted_bit(void);
++//extern void get_halted_bit(void);
+
+ static void usbipc_bh_bp_func(unsigned long param)
+ {
+@@ -472,7 +472,7 @@
+ 			"UHCRHPS3=0x%x", UHCRHPS3);
+ 	}
+ 	if (bvd_ipc->ipc_flag == IPC_USB_PROBE_READY) {
+-		get_halted_bit();
++		//get_halted_bit();
+
+ 		/*send a IN token*/
+ 		bvd_ipc->readurb_mux.dev = bvd_ipc->ipc_dev;

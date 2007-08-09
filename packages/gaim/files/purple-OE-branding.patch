@@ -1,0 +1,14 @@
+--- /tmp/irc.h	2007-08-04 20:27:10.000000000 +0200
++++ pidgin-2.1.0/libpurple/protocols/irc/irc.h	2007-08-04 20:28:15.318400000 +0200
+@@ -35,9 +35,9 @@
+ #define IRC_DEFAULT_SSL_PORT 994
+ 
+ #define IRC_DEFAULT_CHARSET "UTF-8"
+-#define IRC_DEFAULT_ALIAS "purple"
++#define IRC_DEFAULT_ALIAS "OE-user"
+ 
+-#define IRC_DEFAULT_QUIT "Leaving."
++#define IRC_DEFAULT_QUIT "Powered by OE: www.openembedded.org"
+ 
+ #define IRC_INITIAL_BUFSIZE 1024
+ 

@@ -1,0 +1,8 @@
+--- ttyrec-1.0.8/Makefile.orig	2007-04-03 02:08:25.000000000 +0000
++++ ttyrec-1.0.8/Makefile	2007-04-03 02:08:42.000000000 +0000
+@@ -1,5 +1,3 @@
+-CC = gcc
+-CFLAGS = -O2
+ VERSION = 1.0.8
+ 
+ TARGET = ttyrec ttyplay ttytime

@@ -1,0 +1,58 @@
+#
+# Automatically generated make config: don't edit
+# Mon Jun 11 14:03:30 2007
+#
+# TARGET_alpha is not set
+# TARGET_arm is not set
+TARGET_bfin=y
+# TARGET_cris is not set
+# TARGET_e1 is not set
+# TARGET_frv is not set
+# TARGET_h8300 is not set
+# TARGET_hppa is not set
+# TARGET_i386 is not set
+# TARGET_i960 is not set
+# TARGET_ia64 is not set
+# TARGET_m68k is not set
+# TARGET_microblaze is not set
+# TARGET_mips is not set
+# TARGET_nios is not set
+# TARGET_nios2 is not set
+# TARGET_powerpc is not set
+# TARGET_sh is not set
+# TARGET_sh64 is not set
+# TARGET_sparc is not set
+# TARGET_v850 is not set
+# TARGET_vax is not set
+# TARGET_x86_64 is not set
+
+#
+# Target Architecture Features and Options
+#
+TARGET_ARCH="bfin"
+FORCE_OPTIONS_FOR_ARCH=y
+TARGET_SUBARCH=""
+# UCLIBC_FORMAT_ELF is not set
+# UCLIBC_FORMAT_FDPIC_ELF is not set
+# UCLIBC_FORMAT_FLAT is not set
+# UCLIBC_FORMAT_FLAT_SEP_DATA is not set
+UCLIBC_FORMAT_SHARED_FLAT=y
+UCLIBC_SHARED_FLAT_ID=1
+ARCH_LITTLE_ENDIAN=y
+
+#
+# Using Little Endian
+#
+ARCH_HAS_NO_MMU=y
+
+#
+# Target CPU lacks a memory management unit (MMU)
+#
+UCLIBC_HAS_FLOATS=y
+UCLIBC_HAS_FPU=y
+DO_C99_MATH=y
+KERNEL_HEADERS="/usr/include"
+UCLIBC_UCLINUX_BROKEN_MUNMAP=y
+EXCLUDE_BRK=y
+HAVE_DOT_CONFIG=y
+

@@ -1,21 +1,10 @@
-LICENSE = "GPL"
-DESCRIPTION = "Procps is the package that has a bunch \
-of small useful utilities that give information \
-about processes using the /proc filesystem. The package \
-includes the programs ps, top, vmstat, w, kill, and skill."
-SECTION = "base"
-PRIORITY = "optional"
-DEPENDS = "ncurses"
+require procps.inc
+
 PR = "r5"
 
-SRC_URI = "http://procps.sourceforge.net/procps-${PV}.tar.gz \
-           file://install.patch;patch=1 \
-           file://procmodule.patch;patch=1 \
-           file://psmodule.patch;patch=1"
+SRC_URI += "file://procmodule.patch;patch=1 \
+            file://psmodule.patch;patch=1"
 
-
-
-inherit autotools
 FILES = "${bindir}/top.${PN} ${base_bindir}/ps.${PN} ${bindir}/uptime.${PN} ${base_bindir}/kill.${PN} \
 	 ${bindir}/free.${PN} ${bindir}/w ${bindir}/watch ${bindir}/pgrep ${bindir}/pmap ${bindir}/pwdx \
 	 ${bindir}/snice ${bindir}/vmstat ${bindir}/slabtop ${bindir}/pkill ${bindir}/skill ${bindir}/tload \

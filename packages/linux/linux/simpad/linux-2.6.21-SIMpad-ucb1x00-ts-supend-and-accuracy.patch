@@ -1,0 +1,121 @@
+diff -uNr linux-2.6.21.vanilla/drivers/mfd/ucb1x00-ts.c linux-2.6.21/drivers/mfd/ucb1x00-ts.c
+--- linux-2.6.21.vanilla/drivers/mfd/ucb1x00-ts.c	2007-05-30 18:00:30.000000000 +0200
++++ linux-2.6.21/drivers/mfd/ucb1x00-ts.c	2007-05-30 18:14:42.000000000 +0200
+@@ -16,6 +16,10 @@
+  * It is important to note that the signal connected to the ADCSYNC
+  * pin should provide pulses even when the LCD is blanked, otherwise
+  * a pen touch needed to unblank the LCD will never be read.
++ *
++ * mrdata: -added some accuracy improvement based on thesings collie patch
++ *         -added suspend fix 
++ *
+  */
+ #include <linux/module.h>
+ #include <linux/moduleparam.h>
+@@ -105,6 +109,8 @@
+ 				  UCB_TS_CR_TSMY_GND | UCB_TS_CR_TSPY_GND |
+ 				  UCB_TS_CR_MODE_PRES | UCB_TS_CR_BIAS_ENA);
+ 
++		udelay(55);
++
+ 		return ucb1x00_adc_read(ts->ucb, UCB_ADC_INP_TSPY, ts->adcsync);
+ 	}
+ }
+@@ -131,7 +137,7 @@
+ 			UCB_TS_CR_TSMX_GND | UCB_TS_CR_TSPX_POW |
+ 			UCB_TS_CR_MODE_POS | UCB_TS_CR_BIAS_ENA);
+ 
+-	udelay(55);
++	udelay(165);
+ 
+ 	return ucb1x00_adc_read(ts->ucb, UCB_ADC_INP_TSPY, ts->adcsync);
+ }
+@@ -159,7 +165,7 @@
+ 			UCB_TS_CR_TSMY_GND | UCB_TS_CR_TSPY_POW |
+ 			UCB_TS_CR_MODE_POS | UCB_TS_CR_BIAS_ENA);
+ 
+-	udelay(55);
++	udelay(165);
+ 
+ 	return ucb1x00_adc_read(ts->ucb, UCB_ADC_INP_TSPX, ts->adcsync);
+ }
+@@ -225,13 +231,17 @@
+ 		signed long timeout;
+ 
+ 		ts->restart = 0;
+-
++		
+ 		ucb1x00_adc_enable(ts->ucb);
+ 
+ 		x = ucb1x00_ts_read_xpos(ts);
++		ucb1x00_adc_disable(ts->ucb);		
++		ucb1x00_adc_enable(ts->ucb);
+ 		y = ucb1x00_ts_read_ypos(ts);
++		ucb1x00_adc_disable(ts->ucb);		
++		ucb1x00_adc_enable(ts->ucb);		
+ 		p = ucb1x00_ts_read_pressure(ts);
+-
++		
+ 		/*
+ 		 * Switch back to interrupt mode.
+ 		 */
+@@ -240,15 +250,19 @@
+ 
+ 		msleep(10);
+ 
++		if ((x < 60) || (y < 60)) {
++			p = 0;
++		} 
++		
+ 		ucb1x00_enable(ts->ucb);
+ 
+-
+ 		if (ucb1x00_ts_pen_down(ts)) {
++		
+ 			set_task_state(tsk, TASK_INTERRUPTIBLE);
+ 
+ 			ucb1x00_enable_irq(ts->ucb, UCB_IRQ_TSPX, machine_is_collie() ? UCB_RISING : UCB_FALLING);
+ 			ucb1x00_disable(ts->ucb);
+-
++			
+ 			/*
+ 			 * If we spat out a valid sample set last time,
+ 			 * spit out a "pen off" sample here.
+@@ -259,7 +273,9 @@
+ 			}
+ 
+ 			timeout = MAX_SCHEDULE_TIMEOUT;
++			
+ 		} else {
++		
+ 			ucb1x00_disable(ts->ucb);
+ 
+ 			/*
+@@ -278,6 +294,14 @@
+ 
+ 		try_to_freeze();
+ 
++		/*
++		 * While suspend the ktsd-thread goes sleep -> try_to_freeze()
++		 * While resume the ktsd-thread do wakup and must rune one time
++		 * again to do a clean re-setup -> enable_irq: UCB_IRQ_TSPX
++		 */		
++		if(ts->restart)
++			timeout = HZ / 100;
++		
+ 		schedule_timeout(timeout);
+ 	}
+ 
+@@ -360,8 +384,12 @@
+ 		 * TS interrupt mode is set up again
+ 		 * after sleep.
+ 		 */
++
+ 		ts->restart = 1;
+ 		wake_up(&ts->irq_wait);
++				
++		printk(KERN_INFO "ucb1x00-ts.c -> ucb1x00_ts_resume() ktsd - restart *DONE*\n");
++				
+ 	}
+ 	return 0;
+ }

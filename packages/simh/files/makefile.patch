@@ -1,0 +1,36 @@
+diff --git a/makefile b/makefile
+index 4973273..10cc672 100644
+--- a/makefile
++++ b/makefile
+@@ -10,19 +10,15 @@ OS_CCDEFS = -lsocket -lnsl -lpthread -D_GNU_SOURCE
+ else
+ OS_CCDEFS = -D_GNU_SOURCE
+ endif
+-ifeq ($(OSTYPE),macos)
+-CC = gcc -std=c99 -O2 -U__STRICT_ANSI__ -g -lm -lrt $(OS_CCDEFS) -I .
+-else
+-CC = gcc -std=c99 -O2 -U__STRICT_ANSI__ -g -lm $(OS_CCDEFS) -I .
+-endif
++CC := ${CC} -std=c99 -U__STRICT_ANSI__ -lm -lrt $(OS_CCDEFS) -I .
+ ifeq ($(USE_NETWORK),)
+ else
+-NETWORK_OPT = -DUSE_NETWORK -isystem /usr/local/include /usr/local/lib/libpcap.a
++NETWORK_OPT = -DUSE_NETWORK -DNEED_PCAP_SENDPACKET -lpcap
+ endif
+ else
+ #Win32 Environments
+ LDFLAGS = -lm -lwsock32 -lwinmm
+-CC = gcc -std=c99 -U__STRICT_ANSI__ -O0 -I.
++CC := ${CC} -std=c99 -U__STRICT_ANSI__ -O0 -I.
+ EXE = .exe
+ ifeq ($(USE_NETWORK),)
+ else
+@@ -30,6 +26,8 @@ NETWORK_OPT = -DUSE_NETWORK -lwpcap -lpacket
+ endif
+ endif
+ 
++CC := ${CC} ${CPPFLAGS} ${CFLAGS}
++
+ #
+ # Common Libraries
+ #

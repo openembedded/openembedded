@@ -14,12 +14,12 @@ export CFLAG_mtx-1 := "${@'${CFLAG}'.replace('-O2', '')}"
 export CFLAG_mtx-2 := "${@'${CFLAG}'.replace('-O2', '')}"
 
 export DIRS = "crypto ssl apps"
-export EX_LIBS = "-lgcc -ldl -L${STAGING_LIBDIR}"
+export EX_LIBS = "-lgcc -ldl ${TARGET_LDFLAGS}"
 export AS = "${CC} -c"
 
 PACKAGES =+ "libcrypto libssl"
-FILES_libcrypto = "${libdir}/libcrypto.so*"
-FILES_libssl = "${libdir}/libssl.so*"
+FILES_libcrypto = "${libdir}/libcrypto.so.*"
+FILES_libssl = "${libdir}/libssl.so.*"
 
 do_compile () {
 	cd util

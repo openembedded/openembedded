@@ -1,0 +1,16 @@
+--- madwifi-0.9.3-orig/ath/if_ath.c	2007-04-12 12:53:01.000000000 +0200
++++ madwifi-0.9.3/ath/if_ath.c	2007-04-12 12:40:37.078056016 +0200
+@@ -5634,6 +5634,13 @@
+ 		sc->sc_devstats.rx_packets++;
+ 		sc->sc_devstats.rx_bytes += len;
+ 
++		if((skb->tail + len) > skb->end) {
++			printk(" ---------  found dodgy wifi rx skb_put\n");
++			dev_kfree_skb(skb);
++			skb = NULL;
++			goto rx_next;
++		}
++		
+ 		skb_put(skb, len);
+ 		skb->protocol = __constant_htons(ETH_P_CONTROL);
+ 

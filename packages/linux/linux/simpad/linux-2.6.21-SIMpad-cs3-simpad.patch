@@ -1,0 +1,184 @@
+diff -uNr linux-2.6.21.vanilla/arch/arm/mach-sa1100/Makefile linux-2.6.21/arch/arm/mach-sa1100/Makefile
+--- linux-2.6.21.vanilla/arch/arm/mach-sa1100/Makefile	2007-05-29 21:34:59.000000000 +0200
++++ linux-2.6.21/arch/arm/mach-sa1100/Makefile	2007-05-30 17:44:04.000000000 +0200
+@@ -40,6 +40,7 @@
+ obj-$(CONFIG_SA1100_SHANNON)		+= shannon.o
+ 
+ obj-$(CONFIG_SA1100_SIMPAD)		+= simpad.o
++obj-$(CONFIG_SA1100_SIMPAD)             += cs3-simpad.o
+ led-$(CONFIG_SA1100_SIMPAD)		+= leds-simpad.o
+ 
+ # LEDs support
+diff -uNr linux-2.6.21.vanilla/arch/arm/mach-sa1100/cs3-simpad.c linux-2.6.21/arch/arm/mach-sa1100/cs3-simpad.c
+--- linux-2.6.21.vanilla/arch/arm/mach-sa1100/cs3-simpad.c	1970-01-01 01:00:00.000000000 +0100
++++ linux-2.6.21/arch/arm/mach-sa1100/cs3-simpad.c	2007-05-30 17:45:51.000000000 +0200
+@@ -0,0 +1,169 @@
++/*
++ *  simpad-cs3.c
++ *
++ *  This driver shows the GPIO states of the cs3 latch. You can also
++ *  switch some GPIOS.
++ *
++ *  (c) 2007 Bernhard Guillon <Bernhard.Guillon@OpenSIMpad.org>
++ *
++ *  You may use this code as per GPL version 2
++ *
++ *  Some parts are based on battery.c
++ *
++ *  mrdata: -added cs3_ro support 
++ *          -added preprocessor stuff
++ *
++ */
++
++#include <linux/module.h>
++#include <linux/types.h>
++#include <linux/init.h>
++#include <linux/device.h>
++
++#include <asm/arch/simpad.h>
++
++extern long get_cs3_ro(void);
++extern long get_cs3_shadow(void);
++extern void set_cs3_bit(int value);
++extern void clear_cs3_bit(int value);
++
++struct cs3 {
++ struct class_device class_dev;
++ const char *name;
++ char *id;
++ int type;
++};
++
++struct cs3 cs3 ={
++        .name = "latch_cs3",
++};
++
++
++#define CS3_STORE_ATTR(namek,nameg) 								\
++static ssize_t namek##_store (struct class_device *cdev, const char * buf, size_t count) 	\
++{ 												\
++    char val; 											\
++        if (sscanf(buf, "%c",&val) != 1) 							\
++            return -EINVAL; 									\
++        if (val == '1') 									\
++            set_cs3_bit(nameg); 								\
++        else if (val == '0') 									\
++            clear_cs3_bit(nameg); 								\
++        return strlen(buf); 									\
++}
++
++CS3_STORE_ATTR(display_on, DISPLAY_ON);
++CS3_STORE_ATTR(dect_power_on, DECT_POWER_ON);
++CS3_STORE_ATTR(irda_sd, IRDA_SD);
++CS3_STORE_ATTR(sd_mediaq, SD_MEDIAQ);
++CS3_STORE_ATTR(led2_on, LED2_ON);
++CS3_STORE_ATTR(irda_mode, IRDA_MODE);
++CS3_STORE_ATTR(reset_simcard, RESET_SIMCARD);
++
++
++#define CS3_ATTR(shadro,namek,nameg,mode,store) 			\
++static ssize_t namek##_show(struct class_device *class_dev, char *buf) 	\
++{ 									\
++    if (get_cs3_##shadro() & nameg ) 					\
++        return sprintf(buf, "1\n"); 					\
++    else 								\
++        return sprintf(buf, "0\n"); 					\
++} 									\
++static CLASS_DEVICE_ATTR(namek, mode, namek##_show, store)
++
++CS3_ATTR(shadow, vcc_5v_en, VCC_5V_EN, 0444, NULL);
++CS3_ATTR(shadow, vcc_3v_en, VCC_3V_EN, 0444, NULL);
++CS3_ATTR(shadow, en1, EN1, 0444, NULL);
++CS3_ATTR(shadow, en0, EN0, 0444, NULL);
++CS3_ATTR(shadow, display_on, DISPLAY_ON, 0664, display_on_store);
++CS3_ATTR(shadow, pcmcia_buff_dis, PCMCIA_BUFF_DIS, 0444, NULL);
++CS3_ATTR(shadow, mq_reset, MQ_RESET, 0444, NULL);
++CS3_ATTR(shadow, pcmcia_reset, PCMCIA_RESET, 0444, NULL);
++CS3_ATTR(shadow, dect_power_on, DECT_POWER_ON, 0664, dect_power_on_store);
++CS3_ATTR(shadow, irda_sd, IRDA_SD, 0664, irda_sd_store);
++CS3_ATTR(shadow, rs232_on, RS232_ON, 0444, NULL);
++CS3_ATTR(shadow, sd_mediaq, SD_MEDIAQ, 0664, sd_mediaq_store);
++CS3_ATTR(shadow, led2_on, LED2_ON, 0664, led2_on_store);
++CS3_ATTR(shadow, irda_mode, IRDA_MODE, 0664, irda_mode_store);
++CS3_ATTR(shadow, enable_5v, ENABLE_5V, 0444, NULL);
++CS3_ATTR(shadow, reset_simcard, RESET_SIMCARD, 0664, reset_simcard_store);
++CS3_ATTR(ro, pcmcia_bvd1, PCMCIA_BVD1, 0444, NULL);
++CS3_ATTR(ro, pcmcia_bvd2, PCMCIA_BVD2, 0444, NULL);
++CS3_ATTR(ro, pcmcia_vs1, PCMCIA_VS1, 0444, NULL);
++CS3_ATTR(ro, pcmcia_vs2, PCMCIA_VS2, 0444, NULL);
++CS3_ATTR(ro, lock_ind, LOCK_IND, 0444, NULL);
++CS3_ATTR(ro, charging_state, CHARGING_STATE, 0444, NULL);
++CS3_ATTR(ro, pcmcia_short, PCMCIA_SHORT, 0444, NULL);
++
++static struct class simpad_gpios_class = {
++        .name = "simpad",
++};
++
++#define create_entry_conditional(namek) 					\
++    rc = class_device_create_file(&cs3->class_dev, &class_device_attr_##namek); \
++    if (rc) goto out; 								\
++
++static int register_cs3_latch(struct cs3 *cs3)
++{
++    int rc = 0;
++    cs3->class_dev.class = &simpad_gpios_class;
++    strcpy(cs3->class_dev.class_id, cs3->name);
++    rc = class_device_register(&cs3->class_dev);
++    if(rc)
++         goto out;
++
++    create_entry_conditional(vcc_5v_en);
++    create_entry_conditional(vcc_3v_en);
++    create_entry_conditional(en1);
++    create_entry_conditional(en0);
++    create_entry_conditional(display_on);
++    create_entry_conditional(pcmcia_buff_dis);
++    create_entry_conditional(mq_reset);
++    create_entry_conditional(pcmcia_reset);
++    create_entry_conditional(dect_power_on);
++    create_entry_conditional(irda_sd);
++    create_entry_conditional(rs232_on);
++    create_entry_conditional(sd_mediaq);
++    create_entry_conditional(led2_on);
++    create_entry_conditional(irda_mode);
++    create_entry_conditional(enable_5v);
++    create_entry_conditional(reset_simcard);
++    create_entry_conditional(pcmcia_bvd1);
++    create_entry_conditional(pcmcia_bvd2);
++    create_entry_conditional(pcmcia_vs1);
++    create_entry_conditional(pcmcia_vs2);
++    create_entry_conditional(lock_ind);
++    create_entry_conditional(charging_state);
++    create_entry_conditional(pcmcia_short);
++
++out:
++    return rc;
++}
++
++static int __init simpad_gpios_class_init(void)
++{
++    int rc = 0;
++    
++    rc = class_register(&simpad_gpios_class);
++    
++    if(rc != 0)
++    {
++        printk(KERN_ERR "cs3 latch class failed to register properly\n");
++        return rc;
++    }
++    
++    rc = register_cs3_latch(&cs3);
++    return rc;
++}
++
++static void __exit simpad_gpios_class_exit(void)
++{
++    class_unregister(&simpad_gpios_class);
++}
++
++module_init(simpad_gpios_class_init);
++module_exit(simpad_gpios_class_exit);
++
++MODULE_AUTHOR("Bernhard Guillon");
++MODULE_DESCRIPTION("CS3_latch driver");
++MODULE_LICENSE("GPL");

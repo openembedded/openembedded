@@ -1,8 +1,6 @@
 LICENSE = "MIT"
 PR = "r6"
 
-FEED_URIS_append_familiar   = " x11##http://familiar.handhelds.org/releases/${DISTRO_VERSION}/feed/x11"
-
 export IMAGE_BASENAME = "sectest-gpe-image"
 
 GPE_EXTRA_THEMES = "\

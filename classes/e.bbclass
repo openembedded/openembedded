@@ -1,5 +1,6 @@
 HOMEPAGE = "http://www.enlightenment.org"
 SECTION = "e/apps"
+SRC_URI = "http://download.enlightenment.org/snapshots/2007-06-17/${PN}-${PV}.tar.gz"
 
 inherit autotools pkgconfig binconfig
 
@@ -22,11 +23,13 @@ export ESMART_CONFIG		= "${STAGING_BINDIR_CROSS}/esmart-config"
 export FREETYPE_CONFIG		= "${STAGING_BINDIR_CROSS}/freetype-config"
 export IMLIB2_CONFIG		= "${STAGING_BINDIR_CROSS}/imlib2-config"
 
-do_compile_prepend() {
-	find ${S} -name Makefile | xargs sed -i 's:/usr/include:${STAGING_INCDIR}:'
-	find ${S} -name Makefile | xargs sed -i 's:/usr/X11R6/include:${STAGING_INCDIR}:'
-}
+#do_compile_prepend() {
+#	find ${S} -name Makefile | xargs sed -i 's:/usr/include:${STAGING_INCDIR}:'
+#	find ${S} -name Makefile | xargs sed -i 's:/usr/X11R6/include:${STAGING_INCDIR}:'
+#}
 
-PACKAGES = "${PN}-dbg ${PN} ${PN}-themes"
-FILES_${PN} = "${libdir}/lib*.so*"
+PACKAGES = "${PN}-dbg ${PN}-themes ${PN} ${PN}-dev"
+FILES_${PN} += "${libdir}/lib*.so.*"
 FILES_${PN}-themes = "${datadir}/${PN}/themes ${datadir}/${PN}/data ${datadir}/${PN}/fonts ${datadir}/${PN}/pointers ${datadir}/${PN}/images ${datadir}/${PN}/users ${datadir}/${PN}/images ${datadir}/${PN}/styles"
+FILES_${PN}-dev += "${includedir} ${libdir}/lib*.so"
+

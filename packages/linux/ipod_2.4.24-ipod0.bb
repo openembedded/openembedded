@@ -10,6 +10,8 @@ SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.4/linux-${KV}.tar.bz2 \
 
 S = "${WORKDIR}/linux-${KV}"
 
+COMPATIBLE_MACHINE = "ipod"
+
 inherit kernel
 
 EXTRA_OEMAKE = ""

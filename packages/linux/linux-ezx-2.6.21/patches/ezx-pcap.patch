@@ -1,0 +1,1242 @@
+Index: linux-2.6.21/arch/arm/mach-pxa/ezx-pcap.c
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ linux-2.6.21/arch/arm/mach-pxa/ezx-pcap.c	2007-06-07 21:39:37.000000000 -0300
+@@ -0,0 +1,472 @@
++/* Driver for Motorola PCAP2 as present in EZX phones
++ *
++ * This is both a SPI device driver for PCAP itself, as well as
++ * an IRQ demultiplexer for handling PCAP generated events such as
++ * headphone jack sense by downstream drivers.
++ *
++ * Copyright (C) 2006 Harald Welte <laforge@openezx.org>
++ * Copyright (C) 2007 Daniel Ribeiro <drwyrm@gmail.com>
++ *
++ */
++
++#include <linux/module.h>
++#include <linux/kernel.h>
++#include <linux/platform_device.h>
++#include <linux/interrupt.h>
++#include <linux/kernel_stat.h>
++#include <linux/proc_fs.h>
++
++#include <asm/hardware.h>
++#include <asm/mach-types.h>
++
++#include <asm/arch/ssp.h>
++#include <asm/arch/pxa-regs.h>
++#include <asm/arch/ezx-pcap.h>
++#include <asm/arch/irqs.h>
++#include <asm/mach/irq.h>
++
++#include "ezx.h"
++
++#if 0
++#define DEBUGP(x, args...) printk(x, ## args)
++#else
++#define DEBUGP(x, args...)
++#endif
++
++extern unsigned long ezx_ssp_pcap_putget(ulong);
++
++int ezx_pcap_write(u_int8_t reg_num, u_int32_t value)
++{
++	value &= SSP_PCAP_REGISTER_VALUE_MASK;
++	value |= SSP_PCAP_REGISTER_WRITE_OP_BIT
++		| (reg_num<<SSP_PCAP_REGISTER_ADDRESS_SHIFT);
++
++	local_irq_disable();
++	ezx_ssp_pcap_putget(value);
++	local_irq_enable();
++
++	DEBUGP("pcap write r%x: 0x%08x\n", reg_num, value);
++	return 0;
++}
++EXPORT_SYMBOL_GPL(ezx_pcap_write);
++
++int ezx_pcap_read(u_int8_t reg_num, u_int32_t *value)
++{
++	u_int32_t frame = SSP_PCAP_REGISTER_READ_OP_BIT
++		| (reg_num<<SSP_PCAP_REGISTER_ADDRESS_SHIFT);
++
++	local_irq_disable();
++	*value = ezx_ssp_pcap_putget(frame);
++	local_irq_enable();
++
++	DEBUGP("pcap read r%x:  0x%08x\n", reg_num, *value);
++	return 0;
++}
++EXPORT_SYMBOL_GPL(ezx_pcap_read);
++
++int ezx_pcap_bit_set(u_int32_t sspPcapBit, u_int8_t to)
++{
++        int ret;
++        u_int32_t tmp;
++        u_int32_t bit = (sspPcapBit & SSP_PCAP_REGISTER_VALUE_MASK);
++        u_int8_t reg_num = (sspPcapBit & SSP_PCAP_REGISTER_ADDRESS_MASK)
++                                        >> SSP_PCAP_REGISTER_ADDRESS_SHIFT;
++
++        ret = ezx_pcap_read(reg_num, &tmp);
++        if (ret < 0)
++                return ret;
++
++        if (to == 0)
++                tmp &= ~bit;
++        else
++                tmp |= bit;
++
++        return ezx_pcap_write(reg_num, tmp);
++}
++EXPORT_SYMBOL_GPL(ezx_pcap_bit_set);
++
++int ezx_pcap_read_bit(u_int32_t bit)
++{
++        int ret;
++        u_int32_t tmp;
++        u_int8_t reg_num = (bit & SSP_PCAP_REGISTER_ADDRESS_MASK)
++                                        >> SSP_PCAP_REGISTER_ADDRESS_SHIFT;
++
++        ret = ezx_pcap_read(reg_num, &tmp);
++        if (ret < 0)
++                return ret;
++
++        return tmp & (bit & SSP_PCAP_REGISTER_VALUE_MASK);
++}
++EXPORT_SYMBOL_GPL(ezx_pcap_read_bit);
++
++/* /proc/pcap support */
++#ifdef CONFIG_PROC_FS
++
++static struct proc_dir_entry *proc_pcap;
++
++char *pcap_registers[] = {
++	"ISR\t", "MSR\t", "PSTAT\t", NULL, NULL, NULL, "VREG2\t", "VREG\t",
++	"BATT_DAC", "ADC1\t", "ADC2\t", "AUD_CODEC", "AUD_RX_AMPS",
++	"AUD_ST_DAC", NULL, NULL, NULL, NULL, NULL, NULL, "BUSCTRL\t",
++	"PERIPH\t", NULL, NULL, "LOWPWR\t", NULL, "AUD_TX_AMPS", "GP\t",
++	NULL, NULL, NULL, NULL, NULL
++};
++
++static int pcap_read_proc(char *page, char **start, off_t off, int count,
++				int *eof, void *data_unused)
++{
++	int len = 0;
++	u_int8_t r;
++	u_int32_t v;
++	off_t begin = 0;
++
++	for(r=0;r<32;r++) {
++		if (pcap_registers[r] == NULL)
++			continue;
++		ezx_pcap_read(r, &v);
++		len += sprintf(page+len, "%s\t%08X\n", pcap_registers[r], v);
++		if(len + begin > off + count)
++			goto done;
++		if(len + begin < off) {
++			begin += len;
++			len = 0;
++		}
++	}
++	*eof = 1;
++done:
++	if (off >= len+begin)
++		return 0;
++	*start = page + (off-begin);
++	return ((count < begin+len-off) ? count : begin+len-off);
++}
++#endif
++
++void ezx_pcap_vibrator_level(u_int32_t value)
++{
++       u_int32_t tmp;
++
++       ezx_pcap_read(SSP_PCAP_ADJ_AUX_VREG_REGISTER, &tmp);
++
++       tmp &= (~SSP_PCAP_VIBRATOR_VOLTAGE_LEVEL_MASK);
++       tmp |= value;
++
++       ezx_pcap_write(SSP_PCAP_ADJ_AUX_VREG_REGISTER, tmp);
++}
++EXPORT_SYMBOL_GPL(ezx_pcap_vibrator_level);
++
++static int __init pcap_init(void)
++{
++        /* initialize registers */
++#warning FIXME: pcap_init still chip level
++	/* implement a per board pcap init reg array? */
++
++	ezx_pcap_write(SSP_PCAP_ADJ_MSR_REGISTER, PCAP_MASK_ALL_INTERRUPT);
++	ezx_pcap_write(SSP_PCAP_ADJ_ISR_REGISTER, PCAP_CLEAR_INTERRUPT_REGISTER);
++
++        ezx_pcap_bit_set(SSP_PCAP_ADJ_BIT_AUD_RX_AMPS_A1CTRL, 1);
++//        ezx_pcap_vibrator_level(PCAP_VIBRATOR_VOLTAGE_LEVEL3);
++
++        /* set SW1 sleep to keep SW1 1.3v in sync mode */
++        ezx_pcap_bit_set(SSP_PCAP_ADJ_BIT_LOWPWR_CTRL_SW1_MODE10, 0);
++        ezx_pcap_bit_set(SSP_PCAP_ADJ_BIT_LOWPWR_CTRL_SW1_MODE11, 0);
++        /*  SW1 active in sync mode */
++        ezx_pcap_bit_set(SSP_PCAP_ADJ_BIT_LOWPWR_CTRL_SW1_MODE00, 1);
++        ezx_pcap_bit_set(SSP_PCAP_ADJ_BIT_LOWPWR_CTRL_SW1_MODE01, 0);
++        /*  at SW1 -core voltage to 1.30V   */
++        ezx_pcap_bit_set(SSP_PCAP_ADJ_BIT_LOWPWR_CTRL_SW10_DVS, 1);
++        ezx_pcap_bit_set(SSP_PCAP_ADJ_BIT_LOWPWR_CTRL_SW11_DVS, 1);
++        ezx_pcap_bit_set(SSP_PCAP_ADJ_BIT_LOWPWR_CTRL_SW12_DVS, 1);
++        ezx_pcap_bit_set(SSP_PCAP_ADJ_BIT_LOWPWR_CTRL_SW13_DVS, 0);
++
++        /* when STANDY2 PIN ACTIVE (high) set V3-- sram V8 -- pll off  */
++        ezx_pcap_bit_set(SSP_PCAP_ADJ_BIT_VREG2_V3_STBY, 1);
++        ezx_pcap_bit_set(SSP_PCAP_ADJ_BIT_VREG2_V3_LOWPWR, 0);
++
++        ezx_pcap_bit_set(SSP_PCAP_ADJ_BIT_VREG2_V8_STBY, 1);
++        ezx_pcap_bit_set(SSP_PCAP_ADJ_BIT_VREG2_V8_LOWPWR, 0);
++
++        /* when STANDY2 PIN ACTIVE (high) set V4-- lcd only for e680 V6 ---
++	 * camera for e680 */
++        ezx_pcap_bit_set(SSP_PCAP_ADJ_BIT_VREG2_V4_STBY, 1);
++        ezx_pcap_bit_set(SSP_PCAP_ADJ_BIT_VREG2_V4_LOWPWR, 1);
++
++        ezx_pcap_bit_set(SSP_PCAP_ADJ_BIT_VREG2_V6_STBY, 1);
++        ezx_pcap_bit_set(SSP_PCAP_ADJ_BIT_VREG2_V6_LOWPWR, 0);
++
++        /* set Vc to low power mode when AP sleep */
++        //SSP_PCAP_bit_set( SSP_PCAP_ADJ_BIT_LOWPWR_CTRL_VC_STBY);
++
++        /* set VAUX2 to voltage 2.775V and low power mode when AP sleep */
++        ezx_pcap_bit_set(SSP_PCAP_ADJ_BIT_AUX_VREG_VAUX2_1, 1);
++        ezx_pcap_bit_set(SSP_PCAP_ADJ_BIT_AUX_VREG_VAUX2_0, 0);
++        ezx_pcap_bit_set(SSP_PCAP_ADJ_BIT_LOWPWR_CTRL_VAUX2_STBY, 1);
++        ezx_pcap_bit_set(SSP_PCAP_ADJ_BIT_LOWPWR_CTRL_VAUX2_LOWPWR, 1);
++        ezx_pcap_bit_set(SSP_PCAP_ADJ_BIT_AUX_VREG_VAUX2_EN, 1);
++
++//	PGSR(GPIO34_TXENB) |= GPIO_bit(GPIO34_TXENB);
++
++	return 0;
++}
++/* MMC/SD specific functions */
++
++void ezx_pcap_mmcsd_voltage(u_int32_t bits)
++{
++        unsigned int tmp;
++        ezx_pcap_read(SSP_PCAP_ADJ_AUX_VREG_REGISTER, &tmp);
++#if defined(CONFIG_EZX_MCI_SD)
++        tmp &= 0xffffff9f;      /* zero all vaux2 bits */
++        tmp |= (bits & 0x3) << 5;
++#elif defined(CONFIG_EZX_MCI_TF)
++        tmp &= 0xfffff0ff;      /* zero all vaux3 bits */
++        tmp |= (bits & 0xf) << 8;
++#endif
++        ezx_pcap_write(SSP_PCAP_ADJ_AUX_VREG_REGISTER, tmp);
++}
++EXPORT_SYMBOL(ezx_pcap_mmcsd_voltage);
++
++int ezx_pcap_mmcsd_power(int on)
++{
++	if (on > 0) on = 1;
++	else on = 0;
++#if defined(CONFIG_EZX_MCI_SD)
++	return ezx_pcap_bit_set(SSP_PCAP_ADJ_BIT_AUX_VREG_VAUX2_EN, on);
++#elif defined(CONFIG_EZX_MCI_TF)
++	return ezx_pcap_bit_set(SSP_PCAP_ADJ_BIT_AUX_VREG_VAUX3_EN, on);
++#endif
++}
++EXPORT_SYMBOL_GPL(ezx_pcap_mmcsd_power);
++
++/* IRQ Handling */
++
++/* Array indexed by BIT POSITION of PCAP register, returns IRQ number */
++static unsigned int pcap2irq[] = {
++        [0]     = EZX_IRQ_ADCDONE,
++        [1]     = EZX_IRQ_TS,
++        [2]     = 0, /* 1HZ */
++        [3]     = 0, /* WH */
++        [4]     = 0, /* WL */
++        [5]     = 0, /* TODA */
++        [6]     = EZX_IRQ_USB4V,
++        [7]     = 0, /* ONOFF */
++        [8]     = 0, /* ONOFF2 */
++        [9]     = EZX_IRQ_USB1V,
++        [10]    = 0, /* MOBPORT */
++        [11]    = EZX_IRQ_MIC,
++        [12]    = EZX_IRQ_HEADJACK,
++        [13]    = 0, /* ST */
++        [14]    = 0, /* PC */
++        [15]    = 0, /* WARM */
++        [16]    = 0, /* EOL */
++        [17]    = 0, /* CLK */
++        [18]    = 0, /* SYSRST */
++        [19]    = 0,
++        [20]    = EZX_IRQ_ADCDONE2,
++        [21]    = 0, /* SOFTRESET */
++        [22]    = 0, /* MNEXB */
++};
++
++/* Array indexed by IRQ NUMBER, returns PCAP absolute value */
++static unsigned int irq2pcap[] = {
++        [EZX_IRQ_USB4V]         = SSP_PCAP_ADJ_BIT_ISR_USB4VI,
++        [EZX_IRQ_USB1V]         = SSP_PCAP_ADJ_BIT_ISR_USB1VI,
++        [EZX_IRQ_HEADJACK]      = SSP_PCAP_ADJ_BIT_ISR_A1I,
++        [EZX_IRQ_MIC]           = SSP_PCAP_ADJ_BIT_ISR_MB2I,
++        [EZX_IRQ_ADCDONE]       = SSP_PCAP_ADJ_BIT_ISR_ADCDONEI,
++        [EZX_IRQ_TS]            = SSP_PCAP_ADJ_BIT_ISR_TSI,
++        [EZX_IRQ_ADCDONE2]      = SSP_PCAP_ADJ_BIT_ISR_ADCDONE2I,
++};
++
++static void pcap_ack_irq(unsigned int irq)
++{
++        DEBUGP("pcap_ack_irq: %u\n", irq);
++        ezx_pcap_write(SSP_PCAP_ADJ_ISR_REGISTER, irq2pcap[irq]);
++}
++
++static void pcap_mask_irq(unsigned int irq)
++{
++        u_int32_t reg;
++
++        DEBUGP("pcap_mask_irq: %u\n", irq);
++
++        /* this needs to be atomic... but we're not on SMP so it is */
++        ezx_pcap_read(SSP_PCAP_ADJ_MSR_REGISTER, &reg);
++        reg |= irq2pcap[irq];
++        ezx_pcap_write(SSP_PCAP_ADJ_MSR_REGISTER, reg);
++}
++
++static void pcap_unmask_irq(unsigned int irq)
++{
++        u_int32_t tmp;
++        DEBUGP("pcap_unmask_irq: %u\n", irq);
++
++        /* this needs to be atomic... but we're not on SMP so it is */
++        ezx_pcap_read(SSP_PCAP_ADJ_MSR_REGISTER, &tmp);
++        tmp &= ~irq2pcap[irq];
++        ezx_pcap_write(SSP_PCAP_ADJ_MSR_REGISTER, tmp);
++}
++
++static struct irq_chip pcap_chip = {
++        .ack    = pcap_ack_irq,
++        .mask   = pcap_mask_irq,
++        .unmask = pcap_unmask_irq,
++};
++
++/* handler for interrupt received from PCAP via GPIO */
++static void pcap_irq_demux_handler(unsigned int irq, struct irq_desc *desc)
++{
++        int i;
++        const unsigned int cpu = smp_processor_id();
++        u_int32_t reg, mask;
++
++	spin_lock(&desc->lock);
++
++        DEBUGP("pcap_irq_demux_handler(%u,,) entered\n", irq);
++
++        desc->status &= ~(IRQ_REPLAY | IRQ_WAITING);
++
++        if (unlikely(desc->status & IRQ_INPROGRESS)) {
++		DEBUGP("irq busy, masking it off\n");
++	        desc->status |= (IRQ_PENDING | IRQ_MASKED);
++		desc->chip->mask(irq);
++		desc->chip->ack(irq);
++		goto out_unlock;
++	}
++
++        kstat_cpu(cpu).irqs[irq]++;
++	desc->chip->ack(irq);
++	desc->status |= IRQ_INPROGRESS;
++
++        do {
++                if (unlikely((desc->status &
++				(IRQ_PENDING | IRQ_MASKED | IRQ_DISABLED)) ==
++				(IRQ_PENDING | IRQ_MASKED))) {
++                        DEBUGP("dealing with pending IRQ, unmasking\n");
++                        desc->chip->unmask(irq);
++			desc->status &= ~IRQ_MASKED;
++                }
++
++		desc->status &= ~IRQ_PENDING;
++
++		ezx_pcap_read(SSP_PCAP_ADJ_ISR_REGISTER, &reg);
++		ezx_pcap_read(SSP_PCAP_ADJ_MSR_REGISTER, &mask);
++                DEBUGP("pcap_irq_demux_handler: ISR=0x%08x MSR=0x%08x\n", reg, mask);
++
++                for (i = ARRAY_SIZE(pcap2irq)-1; i >= 0; i--) {
++                        unsigned int pirq = pcap2irq[i];
++                        if (pirq == 0)
++                                continue;
++
++                        if ((reg & (1 << i)) && !(mask & (1 << i))) {
++                                struct irq_desc *subdesc;
++                                DEBUGP("found irq %u\n", pirq);
++                                subdesc = irq_desc + pirq;
++
++				kstat_cpu(cpu).irqs[pirq]++;
++        			subdesc->chip->ack(pirq);
++
++				spin_unlock(&desc->lock);
++				handle_IRQ_event(pirq, subdesc->action);
++				spin_lock(&desc->lock);
++                        }
++                }
++
++        } while ((desc->status & (IRQ_PENDING | IRQ_DISABLED)) == IRQ_PENDING);
++
++        desc->status &= ~IRQ_INPROGRESS;
++
++out_unlock:
++	spin_unlock(&desc->lock);
++}
++
++static int ezx_pcap_remove(struct platform_device *pdev)
++{
++	int irq;
++	DEBUGP("exz_pcap_remove entered\n");
++
++	set_irq_chained_handler(IRQ_GPIO1, NULL);
++
++	for (irq = EZX_IRQ(0); irq <= EZX_IRQ(6); irq++) {
++		set_irq_chip(irq, NULL);
++		set_irq_handler(irq, NULL);
++		set_irq_flags(irq, 0);
++	}
++
++	return 0;
++}
++
++static int __init ezx_pcap_probe(struct platform_device *pdev)
++{
++	unsigned int irq;
++	DEBUGP("ezx_pcap_probe entered\n");
++
++	pcap_init();
++
++	set_irq_type(IRQ_GPIO1, IRQT_RISING);
++        /* set up interrupt demultiplexing code for PCAP2 irqs */
++        for (irq = EZX_IRQ(0); irq <= EZX_IRQ(6); irq++) {
++                set_irq_chip(irq, &pcap_chip);
++                set_irq_handler(irq, handle_edge_irq);
++                set_irq_flags(irq, IRQF_VALID);
++        }
++        set_irq_chained_handler(IRQ_GPIO1, pcap_irq_demux_handler);
++
++	printk("ezx-pcap: ssp driver registered\n");
++
++        return 0;
++}
++
++static int ezx_pcap_suspend(struct platform_device *dev, pm_message_t state)
++{
++	DEBUGP("pcap suspend!\n");
++        return 0;
++}
++
++static int ezx_pcap_resume(struct platform_device *dev)
++{
++	DEBUGP("pcap resume!\n");
++	/* ack all irqs */
++	ezx_pcap_write(SSP_PCAP_ADJ_ISR_REGISTER, PCAP_CLEAR_INTERRUPT_REGISTER);
++        return 0;
++}
++
++static struct platform_driver ezxpcap_driver = {
++	.probe          = ezx_pcap_probe,
++	.remove         = ezx_pcap_remove,
++	.suspend	= ezx_pcap_suspend,
++	.resume		= ezx_pcap_resume,
++	.driver         = {
++		.name   = "ezx-pcap",
++		.owner	= THIS_MODULE,
++	},
++};
++
++static int __init ezx_pcap_init(void)
++{
++	DEBUGP("ezx_pcap_init entered\n");
++
++#ifdef CONFIG_PROC_FS
++	if((proc_pcap = create_proc_entry("pcap", 0, NULL)))
++		proc_pcap->read_proc = pcap_read_proc;
++#endif
++
++	return platform_driver_register(&ezxpcap_driver);
++}
++
++static void __exit ezx_pcap_exit(void)
++{
++#ifdef CONFIG_PROC_FS
++	if (proc_pcap)
++		remove_proc_entry("pcap", NULL);
++#endif
++
++	return platform_driver_unregister(&ezxpcap_driver);
++}
++
++module_init(ezx_pcap_init);
++module_exit(ezx_pcap_exit);
++
++MODULE_LICENSE("GPL");
++MODULE_AUTHOR("Harald Welte");
++MODULE_DESCRIPTION("SPI Driver for Motorola PCAP2");
++
+Index: linux-2.6.21/include/asm-arm/arch-pxa/ezx-pcap.h
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ linux-2.6.21/include/asm-arm/arch-pxa/ezx-pcap.h	2007-06-03 11:14:40.000000000 -0300
+@@ -0,0 +1,665 @@
++/* (c) Copyright Motorola Beijing 2002 all rights reserved.
++
++	Project Name  : EZX
++	Project No.   :
++	Title         :
++	File Name     :
++	Description   :
++
++	************** REVISION HISTORY **********************************************
++	Date          Author			Reference
++	========     ==========		==========================
++	2002-07-01   weiqiang lin		create
++*/
++#ifndef SSP_PCAP_H
++#define SSP_PCAP_H
++
++#define SSP_vibrate_start_command()                SSP_PCAP_bit_set(SSP_PCAP_ADJ_BIT_AUX_VREG_V_VIB_EN); \
++                                                   SSP_PCAP_bit_set(SSP_PCAP_ADJ_BIT_AUX_VREG_V_VIB_EN)
++
++#define SSP_vibrate_stop_command()                 SSP_PCAP_bit_clean(SSP_PCAP_ADJ_BIT_AUX_VREG_V_VIB_EN); \
++                                                   SSP_PCAP_bit_clean(SSP_PCAP_ADJ_BIT_AUX_VREG_V_VIB_EN)
++
++#define SSP_PCAP_REGISTER_VALUE_LENGTH            16
++
++#define SSP_PCAP_REGISTER_WRITE_OP_BIT            0x80000000
++#define SSP_PCAP_REGISTER_READ_OP_BIT             0x00000000
++
++#define SSP_PCAP_REGISTER_VALUE_UP_WORD_MASK      0xffff0000
++#define SSP_PCAP_REGISTER_VALUE_DOWN_WORD_MASK    0x0000ffff
++
++#define SSP_PCAP_REGISTER_VALUE_MASK              0x01ffffff
++#define SSP_PCAP_REGISTER_VALUE_MASK              0x01ffffff
++#define SSP_PCAP_REGISTER_ADDRESS_MASK            0x7c000000
++#define SSP_PCAP_REGISTER_ADDRESS_SHIFT           26
++#define SSP_PCAP_REGISTER_NUMBER                  32
++
++#define SSP_PCAP_ADC_START_VALUE_SET_MASK                  0xfffffc00
++#define SSP_PCAP_ADC_START_VALUE                           0x000001dd
++
++
++#define SSP_PCAP_PHONE_CDC_CLOCK_MASK                      0x000001c0
++#define SSP_PCAP_STEREO_SAMPLE_RATE_MASK                   0x00000f00
++#define SSP_PCAP_STEREO_BCLK_TIME_SLOT_MASK                0x00018000
++#define SSP_PCAP_STEREO_CLOCK_MASK                         0x0000001c
++#define SSP_PCAP_DIGITAL_AUDIO_MODE_MASK                   0x00006000
++#define SSP_PCAP_TOUCH_PANEL_POSITION_DETECT_MODE_MASK     0x000e0000
++#define SSP_PCAP_MONO_PGA_MASK                             0x00180000
++
++#define SSP_PCAP_VIBRATOR_VOLTAGE_LEVEL_MASK               0x00300000
++
++#define SSP_PCAP_AUDIO_IN_GAIN_MASK                        0x0000001f
++#define SSP_PCAP_AUDIO_IN_GAIN_SHIFT                       0
++#define SSP_PCAP_AUDIO_OUT_GAIN_MASK                       0x0001e000
++#define SSP_PCAP_AUDIO_OUT_GAIN_SHIFT                      13
++
++
++#define SSP_PCAP_ADD1_VALUE_MASK                           0x000003ff
++#define SSP_PCAP_ADD1_VALUE_SHIFT                          0
++#define SSP_PCAP_ADD2_VALUE_MASK                           0x000ffc00
++#define SSP_PCAP_ADD2_VALUE_SHIFT                          10
++
++
++#define PCAP_AUDIO_IN_GAIN_MAX_VALUE                       31
++#define PCAP_AUDIO_OUT_GAIN_MAX_VALUE                      15
++
++#define PCAP_CLEAR_INTERRUPT_REGISTER                      0x00141fdf
++#define PCAP_MASK_ALL_INTERRUPT                            0x0013ffff
++
++#define SSP_PCAP_TS_KEEPER_TIMER                           100      /* 1 second */
++#define START_ADC_DELAY_TIMER                              1991     /* 540 us */
++
++#define   SSP_SEND_PM_ALART_INTERVAL                    1000 *HZ/1000                 /* 1 second */
++#define   SSP_SEND_MSG_USB_ACCESSORY_INFO_DEBOUNCE      200 *HZ/1000                 /*  200ms   */
++
++struct ssp_interrupt_info
++{
++    u32 type;
++    u32 status;
++    void* privdata;
++};
++
++#ifndef U8
++#define U8    unsigned char
++#endif
++
++#ifndef U32
++#define U32    unsigned long
++#endif
++
++#ifndef U16
++#define U16    unsigned short
++#endif
++
++#ifndef P_U16
++#define P_U16    U16*
++#endif
++
++#ifndef P_U32
++#define P_U32    U32*
++#endif
++
++#define SSP_SELECT_BUFFER     (volatile unsigned long *)(0xf4000000)
++
++#define SSP_SR_RNE        0x00000008
++#define SSP_PCAP_BASE     0x00001000
++/************************ STRUCTURES, ENUMS, AND TYPEDEFS **************************/
++typedef enum accessoryStatus
++{
++        ACCESSORY_DEVICE_STATUS_DETACHED             = 0,
++        ACCESSORY_DEVICE_STATUS_ATTACHED                ,
++        ACCESSORY_DEVICE_STATUS_UNKNOW             =0x000000ff
++}ACCESSORY_DEVICE_STATUS;
++
++typedef enum accessoryType
++{
++        ACCESSORY_DEVICE_NONE               = 0,
++        ACCESSORY_DEVICE_SERIAL_PORT        ,
++        ACCESSORY_DEVICE_USB_PORT           ,
++        ACCESSORY_DEVICE_UNKNOW             =0x000000ff
++}ACCESSORY_TYPE;
++
++typedef enum pcapReturnStatus
++{
++	SSP_PCAP_SUCCESS                    = 0,
++	SSP_PCAP_ERROR_REGISTER             = SSP_PCAP_BASE+1,
++	SSP_PCAP_ERROR_VALUE                = SSP_PCAP_BASE+2,
++
++	SSP_PCAP_NOT_RUN                    = SSP_PCAP_BASE+0xff
++}SSP_PCAP_STATUS;
++
++typedef enum pcapPortType
++{
++        SSP_PCAP_SERIAL_PORT                = 0x00000000,
++        SSP_PCAP_LOW_USB_PORT               = 0x00000001,
++        SSP_PCAP_HIGH_USB_PORT              = 0x00000002,
++        SSP_PCAP_UNKNOW_PORT                = 0x000000ff
++}SSP_PCAP_PORT_TYPE;
++
++typedef enum pcapInitDriverType
++{
++        SSP_PCAP_TS_OPEN                    = 0x00000000,
++        SSP_PCAP_AUDIO_OPEN                 = 0x00000001,
++        SSP_PCAP_UNKNOW_DRIVER_OPEN         = 0x000000ff
++}SSP_PCAP_INIT_DRIVER_TYPE;
++
++
++typedef enum pcapReturnBitStatus
++{
++	SSP_PCAP_BIT_ZERO                   = 0x00000000,
++	SSP_PCAP_BIT_ONE                    = 0x00000001,
++	SSP_PCAP_BIT_ERROR                  = 0xff000000
++}SSP_PCAP_BIT_STATUS;
++
++typedef enum pcapCDCClkType
++{
++	PCAP_CDC_CLK_IN_13M0                  = 0x00000000,
++	PCAP_CDC_CLK_IN_15M36                 = 0x00000040,
++	PCAP_CDC_CLK_IN_16M8                  = 0x00000080,
++	PCAP_CDC_CLK_IN_19M44                 = 0x000000c0,
++	PCAP_CDC_CLK_IN_26M0                  = 0x00000100
++}PHONE_CDC_CLOCK_TYPE;
++
++typedef enum pcapST_SR
++{
++	PCAP_ST_SAMPLE_RATE_8K                = 0x00000000,
++	PCAP_ST_SAMPLE_RATE_11K               = 0x00000100,
++	PCAP_ST_SAMPLE_RATE_12K               = 0x00000200,
++	PCAP_ST_SAMPLE_RATE_16K               = 0x00000300,
++	PCAP_ST_SAMPLE_RATE_22K               = 0x00000400,
++	PCAP_ST_SAMPLE_RATE_24K               = 0x00000500,
++	PCAP_ST_SAMPLE_RATE_32K               = 0x00000600,
++	PCAP_ST_SAMPLE_RATE_44K               = 0x00000700,
++	PCAP_ST_SAMPLE_RATE_48K               = 0x00000800
++}ST_SAMPLE_RATE_TYPE;
++
++typedef enum pcapST_BCLK
++{
++	PCAP_ST_BCLK_SLOT_16                  = 0x00000000,
++	PCAP_ST_BCLK_SLOT_8                   = 0x00008000,
++	PCAP_ST_BCLK_SLOT_4                   = 0x00010000,
++	PCAP_ST_BCLK_SLOT_2                   = 0x00018000,
++}ST_BCLK_TIME_SLOT_TYPE;
++
++typedef enum pcapST_CLK
++{
++	PCAP_ST_CLK_PLL_CLK_IN_13M0           = 0x00000000,
++	PCAP_ST_CLK_PLL_CLK_IN_15M36          = 0x00000004,
++	PCAP_ST_CLK_PLL_CLK_IN_16M8           = 0x00000008,
++	PCAP_ST_CLK_PLL_CLK_IN_19M44          = 0x0000000c,
++	PCAP_ST_CLK_PLL_CLK_IN_26M0           = 0x00000010,
++	PCAP_ST_CLK_PLL_CLK_IN_EXT_MCLK       = 0x00000014,
++	PCAP_ST_CLK_PLL_CLK_IN_FSYNC          = 0x00000018,
++	PCAP_ST_CLK_PLL_CLK_IN_BITCLK         = 0x0000001c
++}ST_CLK_TYPE;
++
++typedef enum pcapDigitalAudioInterfaceMode
++{
++	PCAP_DIGITAL_AUDIO_INTERFACE_NORMAL   = 0x00000000,
++	PCAP_DIGITAL_AUDIO_INTERFACE_NETWORK  = 0x00002000,
++	PCAP_DIGITAL_AUDIO_INTERFACE_I2S      = 0x00004000
++}DIG_AUD_MODE_TYPE;
++
++typedef enum pcapMono
++{
++	PCAP_MONO_PGA_R_L_STEREO             = 0x00000000,
++	PCAP_MONO_PGA_RL                     = 0x00080000,
++	PCAP_MONO_PGA_RL_3DB                 = 0x00100000,
++	PCAP_MONO_PGA_RL_6DB                 = 0x00180000
++}MONO_TYPE;
++
++typedef enum pcapVibratorVoltageLevel
++{
++	PCAP_VIBRATOR_VOLTAGE_LEVEL0         = 0x00000000,
++	PCAP_VIBRATOR_VOLTAGE_LEVEL1         = 0x00100000,
++	PCAP_VIBRATOR_VOLTAGE_LEVEL2         = 0x00200000,
++	PCAP_VIBRATOR_VOLTAGE_LEVEL3         = 0x00300000
++}VibratorVoltageLevel_TYPE;
++
++typedef enum pcapTouchScreenMode
++{
++	PCAP_TS_POSITION_X_MEASUREMENT       = 0x00000000,
++	PCAP_TS_POSITION_XY_MEASUREMENT      = 0x00020000,
++	PCAP_TS_PRESSURE_MEASUREMENT         = 0x00040000,
++	PCAP_TS_PLATE_X_MEASUREMENT          = 0x00060000,
++	PCAP_TS_PLATE_Y_MEASUREMENT          = 0x00080000,
++	PCAP_TS_STANDBY_MODE                 = 0x000a0000,
++	PCAP_TS_NONTS_MODE                   = 0x000c0000
++}TOUCH_SCREEN_DETECT_TYPE;
++
++typedef enum pcapADJRegister
++{
++	SSP_PCAP_ADJ_ISR_REGISTER           = 0x00,
++	SSP_PCAP_ADJ_MSR_REGISTER           = 0x01,
++	SSP_PCAP_ADJ_PSTAT_REGISTER         = 0x02,
++	SSP_PCAP_ADJ_VREG2_REGISTER         = 0x06,
++	SSP_PCAP_ADJ_AUX_VREG_REGISTER      = 0x07,
++	SSP_PCAP_ADJ_BATT_DAC_REGISTER      = 0x08,
++	SSP_PCAP_ADJ_ADC1_REGISTER          = 0x09,
++	SSP_PCAP_ADJ_ADC2_REGISTER          = 0x0a,
++	SSP_PCAP_ADJ_AUD_CODEC_REGISTER     = 0x0b,
++	SSP_PCAP_ADJ_AUD_RX_AMPS_REGISTER   = 0x0c,
++	SSP_PCAP_ADJ_ST_DAC_REGISTER        = 0x0d,
++	SSP_PCAP_ADJ_BUSCTRL_REGISTER       = 0x14,
++	SSP_PCAP_ADJ_PERIPH_REGISTER        = 0x15,
++	SSP_PCAP_ADJ_LOWPWR_CTRL_REGISTER   = 0x18,
++	SSP_PCAP_ADJ_TX_AUD_AMPS_REGISTER   = 0x1a,
++	SSP_PCAP_ADJ_GP_REG_REGISTER        = 0x1b
++}SSP_PCAP_SECONDARY_PROCESSOR_REGISTER;
++
++typedef enum pcapADJBit_SetType
++{
++	SSP_PCAP_ADJ_BIT_ISR_ADCDONEI               = 0x00000001,
++	SSP_PCAP_ADJ_BIT_ISR_TSI                    = 0x00000002,
++	SSP_PCAP_ADJ_BIT_ISR_1HZI                   = 0x00000004,
++	SSP_PCAP_ADJ_BIT_ISR_WHI                    = 0x00000008,
++	SSP_PCAP_ADJ_BIT_ISR_WLI                    = 0x00000010,
++	SSP_PCAP_ADJ_BIT_ISR_TODAI                  = 0x00000020,
++	SSP_PCAP_ADJ_BIT_ISR_USB4VI                 = 0x00000040,
++	SSP_PCAP_ADJ_BIT_ISR_ONOFFI                 = 0x00000080,
++	SSP_PCAP_ADJ_BIT_ISR_ONOFF2I                = 0x00000100,
++	SSP_PCAP_ADJ_BIT_ISR_USB1VI                 = 0x00000200,
++	SSP_PCAP_ADJ_BIT_ISR_MOBPORTI               = 0x00000400,
++	SSP_PCAP_ADJ_BIT_ISR_MB2I                   = 0x00000800,
++	SSP_PCAP_ADJ_BIT_ISR_A1I                    = 0x00001000,
++	SSP_PCAP_ADJ_BIT_ISR_STI                    = 0x00002000,
++	SSP_PCAP_ADJ_BIT_ISR_PCI                    = 0x00004000,
++	SSP_PCAP_ADJ_BIT_ISR_WARMI                  = 0x00008000,
++	SSP_PCAP_ADJ_BIT_ISR_EOLI                   = 0x00010000,
++	SSP_PCAP_ADJ_BIT_ISR_CLKI                   = 0x00020000,
++	SSP_PCAP_ADJ_BIT_ISR_SYS_RSTI               = 0x00040000,
++	SSP_PCAP_ADJ_BIT_ISR_ADCDONE2I              = 0x00100000,
++	SSP_PCAP_ADJ_BIT_ISR_SOFT_RESETI            = 0x00200000,
++	SSP_PCAP_ADJ_BIT_ISR_MNEXBI                 = 0x00400000,
++
++	SSP_PCAP_ADJ_BIT_MSR_ADCDONEM               = 0x04000001,
++	SSP_PCAP_ADJ_BIT_MSR_TSM                    = 0x04000002,
++	SSP_PCAP_ADJ_BIT_MSR_1HZM                   = 0x04000004,
++	SSP_PCAP_ADJ_BIT_MSR_WHM                    = 0x04000008,
++	SSP_PCAP_ADJ_BIT_MSR_WLM                    = 0x04000010,
++	SSP_PCAP_ADJ_BIT_MSR_TODAM                  = 0x04000020,
++	SSP_PCAP_ADJ_BIT_MSR_USB4VM                 = 0x04000040,
++	SSP_PCAP_ADJ_BIT_MSR_ONOFFM                 = 0x04000080,
++	SSP_PCAP_ADJ_BIT_MSR_ONOFF2M                = 0x04000100,
++	SSP_PCAP_ADJ_BIT_MSR_USB1VM                 = 0x04000200,
++	SSP_PCAP_ADJ_BIT_MSR_MOBPORTM               = 0x04000400,
++	SSP_PCAP_ADJ_BIT_MSR_MB2M                   = 0x04000800,
++	SSP_PCAP_ADJ_BIT_MSR_A1M                    = 0x04001000,
++	SSP_PCAP_ADJ_BIT_MSR_STM                    = 0x04002000,
++	SSP_PCAP_ADJ_BIT_MSR_PCM                    = 0x04004000,
++	SSP_PCAP_ADJ_BIT_MSR_WARMM                  = 0x04008000,
++	SSP_PCAP_ADJ_BIT_MSR_EOLM                   = 0x04010000,
++	SSP_PCAP_ADJ_BIT_MSR_CLKM                   = 0x04020000,
++	SSP_PCAP_ADJ_BIT_MSR_SYS_RSTM               = 0x04040000,
++	SSP_PCAP_ADJ_BIT_MSR_ADCDONE2M              = 0x04100000,
++	SSP_PCAP_ADJ_BIT_MSR_SOFT_RESETM            = 0x04200000,
++	SSP_PCAP_ADJ_BIT_MSR_MNEXBM                 = 0x04400000,
++
++	SSP_PCAP_ADJ_BIT_PSTAT_USBDET_4V            = 0x08000040,
++	SSP_PCAP_ADJ_BIT_PSTAT_ONOFFSNS             = 0x08000080,
++	SSP_PCAP_ADJ_BIT_PSTAT_ONOFFSNS2            = 0x08000100,
++	SSP_PCAP_ADJ_BIT_PSTAT_USBDET_1V            = 0x08000200,
++	SSP_PCAP_ADJ_BIT_PSTAT_MOBSENSB             = 0x08000400,
++	SSP_PCAP_ADJ_BIT_PSTAT_MB2SNS               = 0x08000800,
++	SSP_PCAP_ADJ_BIT_PSTAT_A1SNS                = 0x08001000,
++	SSP_PCAP_ADJ_BIT_PSTAT_MSTB                 = 0x08002000,
++	SSP_PCAP_ADJ_BIT_PSTAT_EOL_STAT             = 0x08010000,
++	SSP_PCAP_ADJ_BIT_PSTAT_CLK_STAT             = 0x08020000,
++	SSP_PCAP_ADJ_BIT_PSTAT_SYS_RST              = 0x08040000,
++	SSP_PCAP_ADJ_BIT_PSTAT_BATTFBSNS            = 0x08080000,
++	SSP_PCAP_ADJ_BIT_PSTAT_BATT_DET_IN_SNS      = 0x08200000,
++	SSP_PCAP_ADJ_BIT_PSTAT_MNEXBSNS             = 0x08400000,
++	SSP_PCAP_ADJ_BIT_PSTAT_WARM_SYS_RST         = 0x08800000,
++
++	SSP_PCAP_ADJ_BIT_VREG2_V1_STBY              = 0x18000001,
++	SSP_PCAP_ADJ_BIT_VREG2_V2_STBY              = 0x18000002,
++	SSP_PCAP_ADJ_BIT_VREG2_V3_STBY              = 0x18000004,
++	SSP_PCAP_ADJ_BIT_VREG2_V4_STBY              = 0x18000008,
++	SSP_PCAP_ADJ_BIT_VREG2_V5_STBY              = 0x18000010,
++	SSP_PCAP_ADJ_BIT_VREG2_V6_STBY              = 0x18000020,
++	SSP_PCAP_ADJ_BIT_VREG2_V7_STBY              = 0x18000040,
++	SSP_PCAP_ADJ_BIT_VREG2_V8_STBY              = 0x18000080,
++	SSP_PCAP_ADJ_BIT_VREG2_V9_STBY              = 0x18000100,
++	SSP_PCAP_ADJ_BIT_VREG2_V10_STBY             = 0x18000200,
++	SSP_PCAP_ADJ_BIT_VREG2_V1_LOWPWR            = 0x18000400,
++	SSP_PCAP_ADJ_BIT_VREG2_V2_LOWPWR            = 0x18000800,
++	SSP_PCAP_ADJ_BIT_VREG2_V3_LOWPWR            = 0x18001000,
++	SSP_PCAP_ADJ_BIT_VREG2_V4_LOWPWR            = 0x18002000,
++	SSP_PCAP_ADJ_BIT_VREG2_V5_LOWPWR            = 0x18004000,
++	SSP_PCAP_ADJ_BIT_VREG2_V6_LOWPWR            = 0x18008000,
++	SSP_PCAP_ADJ_BIT_VREG2_V7_LOWPWR            = 0x18010000,
++	SSP_PCAP_ADJ_BIT_VREG2_V8_LOWPWR            = 0x18020000,
++	SSP_PCAP_ADJ_BIT_VREG2_V9_LOWPWR            = 0x18040000,
++	SSP_PCAP_ADJ_BIT_VREG2_V10_LOWPWR           = 0x18080000,
++
++	SSP_PCAP_ADJ_BIT_AUX_VREG_VAUX1_EN          = 0x1c000002,
++	SSP_PCAP_ADJ_BIT_AUX_VREG_VAUX1_0           = 0x1c000004,
++	SSP_PCAP_ADJ_BIT_AUX_VREG_VAUX1_1           = 0x1c000008,
++	SSP_PCAP_ADJ_BIT_AUX_VREG_VAUX2_EN          = 0x1c000010,
++	SSP_PCAP_ADJ_BIT_AUX_VREG_VAUX2_0           = 0x1c000020,
++	SSP_PCAP_ADJ_BIT_AUX_VREG_VAUX2_1           = 0x1c000040,
++	SSP_PCAP_ADJ_BIT_AUX_VREG_VAUX3_EN          = 0x1c000080,
++	SSP_PCAP_ADJ_BIT_AUX_VREG_VAUX3_0           = 0x1c000100,
++	SSP_PCAP_ADJ_BIT_AUX_VREG_VAUX3_1           = 0x1c000200,
++	SSP_PCAP_ADJ_BIT_AUX_VREG_VAUX3_2           = 0x1c000400,
++	SSP_PCAP_ADJ_BIT_AUX_VREG_VAUX3_3           = 0x1c000800,
++	SSP_PCAP_ADJ_BIT_AUX_VREG_VAUX4_EN          = 0x1c001000,
++	SSP_PCAP_ADJ_BIT_AUX_VREG_VAUX4_0           = 0x1c002000,
++	SSP_PCAP_ADJ_BIT_AUX_VREG_VAUX4_1           = 0x1c004000,
++	SSP_PCAP_ADJ_BIT_AUX_VREG_VSIM2_EN          = 0x1c010000,
++	SSP_PCAP_ADJ_BIT_AUX_VREG_VSIM_EN           = 0x1c020000,
++	SSP_PCAP_ADJ_BIT_AUX_VREG_VSIM_0            = 0x1c040000,
++	SSP_PCAP_ADJ_BIT_AUX_VREG_V_VIB_EN          = 0x1c080000,
++	SSP_PCAP_ADJ_BIT_AUX_VREG_V_VIB_0           = 0x1c100000,
++	SSP_PCAP_ADJ_BIT_AUX_VREG_V_VIB_1           = 0x1c200000,
++	SSP_PCAP_ADJ_BIT_AUX_VREG_VAUX1_STBY        = 0x1c400000,
++	SSP_PCAP_ADJ_BIT_AUX_VREG_VAUX1_LOWPWR      = 0x1c800000,
++	SSP_PCAP_ADJ_BIT_AUX_VREG_SW3_STBY          = 0x1d000000,
++
++	SSP_PCAP_ADJ_BIT_BATT_DAC_DAC0              = 0x20000001,
++	SSP_PCAP_ADJ_BIT_BATT_DAC_DAC1              = 0x20000002,
++	SSP_PCAP_ADJ_BIT_BATT_DAC_DAC2              = 0x20000004,
++	SSP_PCAP_ADJ_BIT_BATT_DAC_DAC3              = 0x20000008,
++	SSP_PCAP_ADJ_BIT_BATT_DAC_DAC4              = 0x20000010,
++	SSP_PCAP_ADJ_BIT_BATT_DAC_DAC5              = 0x20000020,
++	SSP_PCAP_ADJ_BIT_BATT_DAC_DAC6              = 0x20000040,
++	SSP_PCAP_ADJ_BIT_BATT_DAC_DAC7              = 0x20000080,
++	SSP_PCAP_ADJ_BIT_BATT_DAC_B_FDBK            = 0x20000100,
++	SSP_PCAP_ADJ_BIT_BATT_DAC_EXT_ISENSE        = 0x20000200,
++	SSP_PCAP_ADJ_BIT_BATT_DAC_V_COIN0           = 0x20000400,
++	SSP_PCAP_ADJ_BIT_BATT_DAC_V_COIN1           = 0x20000800,
++	SSP_PCAP_ADJ_BIT_BATT_DAC_V_COIN2           = 0x20001000,
++	SSP_PCAP_ADJ_BIT_BATT_DAC_V_COIN3           = 0x20002000,
++	SSP_PCAP_ADJ_BIT_BATT_DAC_I_COIN            = 0x20004000,
++	SSP_PCAP_ADJ_BIT_BATT_DAC_COIN_CH_EN        = 0x20008000,
++	SSP_PCAP_ADJ_BIT_BATT_DAC_EOL_SEL0          = 0x20020000,
++	SSP_PCAP_ADJ_BIT_BATT_DAC_EOL_SEL1          = 0x20040000,
++	SSP_PCAP_ADJ_BIT_BATT_DAC_EOL_SEL2          = 0x20080000,
++	SSP_PCAP_ADJ_BIT_BATT_DAC_EOL_CMP_EN        = 0x20100000,
++	SSP_PCAP_ADJ_BIT_BATT_DAC_BATT_DET_EN       = 0x20200000,
++	SSP_PCAP_ADJ_BIT_BATT_DAC_THERMBIAS_CTRL    = 0x20400000,
++
++	SSP_PCAP_ADJ_BIT_ADC1_ADEN                  = 0x24000001,
++	SSP_PCAP_ADJ_BIT_ADC1_RAND                  = 0x24000002,
++	SSP_PCAP_ADJ_BIT_ADC1_AD_SEL1               = 0x24000004,
++	SSP_PCAP_ADJ_BIT_ADC1_AD_SEL2               = 0x24000008,
++	SSP_PCAP_ADJ_BIT_ADC1_ADA10                 = 0x24000010,
++	SSP_PCAP_ADJ_BIT_ADC1_ADA11                 = 0x24000020,
++	SSP_PCAP_ADJ_BIT_ADC1_ADA12                 = 0x24000040,
++	SSP_PCAP_ADJ_BIT_ADC1_ADA20                 = 0x24000080,
++	SSP_PCAP_ADJ_BIT_ADC1_ADA21                 = 0x24000100,
++	SSP_PCAP_ADJ_BIT_ADC1_ADA22                 = 0x24000200,
++	SSP_PCAP_ADJ_BIT_ADC1_ATO0                  = 0x24000400,
++	SSP_PCAP_ADJ_BIT_ADC1_ATO1                  = 0x24000800,
++	SSP_PCAP_ADJ_BIT_ADC1_ATO2                  = 0x24001000,
++	SSP_PCAP_ADJ_BIT_ADC1_ATO3                  = 0x24002000,
++	SSP_PCAP_ADJ_BIT_ADC1_ATOX                  = 0x24004000,
++	SSP_PCAP_ADJ_BIT_ADC1_MTR1                  = 0x24008000,
++	SSP_PCAP_ADJ_BIT_ADC1_MTR2                  = 0x24010000,
++	SSP_PCAP_ADJ_BIT_ADC1_TS_M0                 = 0x24020000,
++	SSP_PCAP_ADJ_BIT_ADC1_TS_M1                 = 0x24040000,
++	SSP_PCAP_ADJ_BIT_ADC1_TS_M2                 = 0x24080000,
++	SSP_PCAP_ADJ_BIT_ADC1_TS_REF_LOWPWR         = 0x24100000,
++	SSP_PCAP_ADJ_BIT_ADC1_TS_REFENB             = 0x24200000,
++	SSP_PCAP_ADJ_BIT_ADC1_BATT_I_POLARITY       = 0x24400000,
++	SSP_PCAP_ADJ_BIT_ADC1_BATT_I_ADC            = 0x24800000,
++
++	SSP_PCAP_ADJ_BIT_ADC2_ADD10                 = 0x28000001,
++	SSP_PCAP_ADJ_BIT_ADC2_ADD11                 = 0x28000002,
++	SSP_PCAP_ADJ_BIT_ADC2_ADD12                 = 0x28000004,
++	SSP_PCAP_ADJ_BIT_ADC2_ADD13                 = 0x28000008,
++	SSP_PCAP_ADJ_BIT_ADC2_ADD14                 = 0x28000010,
++	SSP_PCAP_ADJ_BIT_ADC2_ADD15                 = 0x28000020,
++	SSP_PCAP_ADJ_BIT_ADC2_ADD16                 = 0x28000040,
++	SSP_PCAP_ADJ_BIT_ADC2_ADD17                 = 0x28000080,
++	SSP_PCAP_ADJ_BIT_ADC2_ADD18                 = 0x28000100,
++	SSP_PCAP_ADJ_BIT_ADC2_ADD19                 = 0x28000200,
++	SSP_PCAP_ADJ_BIT_ADC2_ADD20                 = 0x28000400,
++	SSP_PCAP_ADJ_BIT_ADC2_ADD21                 = 0x28000800,
++	SSP_PCAP_ADJ_BIT_ADC2_ADD22                 = 0x28001000,
++	SSP_PCAP_ADJ_BIT_ADC2_ADD23                 = 0x28002000,
++	SSP_PCAP_ADJ_BIT_ADC2_ADD24                 = 0x28004000,
++	SSP_PCAP_ADJ_BIT_ADC2_ADD25                 = 0x28008000,
++	SSP_PCAP_ADJ_BIT_ADC2_ADD26                 = 0x28010000,
++	SSP_PCAP_ADJ_BIT_ADC2_ADD27                 = 0x28020000,
++	SSP_PCAP_ADJ_BIT_ADC2_ADD28                 = 0x28040000,
++	SSP_PCAP_ADJ_BIT_ADC2_ADD29                 = 0x28080000,
++	SSP_PCAP_ADJ_BIT_ADC2_ADINC1                = 0x28100000,
++	SSP_PCAP_ADJ_BIT_ADC2_ADINC2                = 0x28200000,
++	SSP_PCAP_ADJ_BIT_ADC2_ASC                   = 0x28400000,
++
++	SSP_PCAP_ADJ_BIT_AUD_CODEC_AUDIHPF          = 0x2c000001,
++	SSP_PCAP_ADJ_BIT_AUD_CODEC_SMB              = 0x2c000002,
++	SSP_PCAP_ADJ_BIT_AUD_CODEC_AUDOHPF          = 0x2c000004,
++	SSP_PCAP_ADJ_BIT_AUD_CODEC_CD_TS            = 0x2c000008,
++	SSP_PCAP_ADJ_BIT_AUD_CODEC_DLM              = 0x2c000010,
++	SSP_PCAP_ADJ_BIT_AUD_CODEC_ADITH            = 0x2c000020,
++	SSP_PCAP_ADJ_BIT_AUD_CODEC_CDC_CLK0         = 0x2c000040,
++	SSP_PCAP_ADJ_BIT_AUD_CODEC_CDC_CLK1         = 0x2c000080,
++	SSP_PCAP_ADJ_BIT_AUD_CODEC_CDC_CLK2         = 0x2c000100,
++	SSP_PCAP_ADJ_BIT_AUD_CODEC_CLK_INV          = 0x2c000200,
++	SSP_PCAP_ADJ_BIT_AUD_CODEC_FS_INV           = 0x2c000400,
++	SSP_PCAP_ADJ_BIT_AUD_CODEC_DF_RESET         = 0x2c000800,
++	SSP_PCAP_ADJ_BIT_AUD_CODEC_CDC_EN           = 0x2c001000,
++	SSP_PCAP_ADJ_BIT_AUD_CODEC_CDC_CLK_EN       = 0x2c002000,
++	SSP_PCAP_ADJ_BIT_AUD_CODEC_FS_8K_16K        = 0x2c004000,
++	SSP_PCAP_ADJ_BIT_AUD_CODEC_DIG_AUD_IN       = 0x2c008000,
++	SSP_PCAP_ADJ_BIT_AUD_CODEC_CLK_IN_SEL       = 0x2c010000,
++	SSP_PCAP_ADJ_BIT_AUD_CODEC_MIC2_MUX         = 0x2c020000,
++	SSP_PCAP_ADJ_BIT_AUD_CODEC_MIC2IG0          = 0x2c040000,
++	SSP_PCAP_ADJ_BIT_AUD_CODEC_MIC2IG1          = 0x2c080000,
++	SSP_PCAP_ADJ_BIT_AUD_CODEC_MIC2IG2          = 0x2c100000,
++	SSP_PCAP_ADJ_BIT_AUD_CODEC_MIC2IG3          = 0x2c200000,
++	SSP_PCAP_ADJ_BIT_AUD_CODEC_MIC2IG4          = 0x2c400000,
++	SSP_PCAP_ADJ_BIT_AUD_CODEC_MIC2IG_PRI_ADJ   = 0x2c800000,
++	SSP_PCAP_ADJ_BIT_AUD_CODEC_CDC_PRI_ADJ      = 0x2c200000,
++
++	SSP_PCAP_ADJ_BIT_AUD_RX_AMPS_A1_EN          = 0x30000001,
++	SSP_PCAP_ADJ_BIT_AUD_RX_AMPS_A2_EN          = 0x30000002,
++	SSP_PCAP_ADJ_BIT_AUD_RX_AMPS_A4_EN          = 0x30000010,
++	SSP_PCAP_ADJ_BIT_AUD_RX_AMPS_ARIGHT_EN      = 0x30000020,
++	SSP_PCAP_ADJ_BIT_AUD_RX_AMPS_ALEFT_EN       = 0x30000040,
++	SSP_PCAP_ADJ_BIT_AUD_RX_AMPS_CD_BYP         = 0x30000080,
++	SSP_PCAP_ADJ_BIT_AUD_RX_AMPS_CDC_SW         = 0x30000100,
++	SSP_PCAP_ADJ_BIT_AUD_RX_AMPS_ST_DAC_SW      = 0x30000200,
++	SSP_PCAP_ADJ_BIT_AUD_RX_AMPS_PGA_IN_SW      = 0x30000400,
++	SSP_PCAP_ADJ_BIT_AUD_RX_AMPS_PGA_R_EN       = 0x30000800,
++	SSP_PCAP_ADJ_BIT_AUD_RX_AMPS_PGA_L_EN       = 0x30001000,
++	SSP_PCAP_ADJ_BIT_AUD_RX_AMPS_AUDOG0         = 0x30002000,
++	SSP_PCAP_ADJ_BIT_AUD_RX_AMPS_AUDOG1         = 0x30004000,
++	SSP_PCAP_ADJ_BIT_AUD_RX_AMPS_AUDOG2         = 0x30008000,
++	SSP_PCAP_ADJ_BIT_AUD_RX_AMPS_AUDOG3         = 0x30010000,
++	SSP_PCAP_ADJ_BIT_AUD_RX_AMPS_A1CTRL         = 0x30020000,
++	SSP_PCAP_ADJ_BIT_AUD_RX_AMPS_MONO0          = 0x30080000,
++	SSP_PCAP_ADJ_BIT_AUD_RX_AMPS_MONO1          = 0x30100000,
++	SSP_PCAP_ADJ_BIT_AUD_RX_AMPS_AUDOG_PRI_ADJ  = 0x30200000,
++	SSP_PCAP_ADJ_BIT_AUD_RX_AMPS_MONO_PRI_ADJ   = 0x30400000,
++	SSP_PCAP_ADJ_BIT_AUD_RX_AMPS_RX_PRI_ADJ0    = 0x30800000,
++	SSP_PCAP_ADJ_BIT_AUD_RX_AMPS_RX_PRI_ADJ1    = 0x31000000,
++
++	SSP_PCAP_ADJ_BIT_ST_DAC_SMB_ST_DAC          = 0x34000001,
++	SSP_PCAP_ADJ_BIT_ST_DAC_STDET_EN            = 0x34000002,
++	SSP_PCAP_ADJ_BIT_ST_DAC_ST_CLK0             = 0x34000004,
++	SSP_PCAP_ADJ_BIT_ST_DAC_ST_CLK1             = 0x34000008,
++	SSP_PCAP_ADJ_BIT_ST_DAC_ST_CLK2             = 0x34000010,
++	SSP_PCAP_ADJ_BIT_ST_DAC_ST_CLK_EN           = 0x34000020,
++	SSP_PCAP_ADJ_BIT_ST_DAC_DF_RESET_ST_DAC     = 0x34000040,
++	SSP_PCAP_ADJ_BIT_ST_DAC_ST_DAC_EN           = 0x34000080,
++	SSP_PCAP_ADJ_BIT_ST_DAC_SR0                 = 0x34000100,
++	SSP_PCAP_ADJ_BIT_ST_DAC_SR1                 = 0x34000200,
++	SSP_PCAP_ADJ_BIT_ST_DAC_SR2                 = 0x34000400,
++	SSP_PCAP_ADJ_BIT_ST_DAC_SR3                 = 0x34000800,
++	SSP_PCAP_ADJ_BIT_ST_DAC_DIG_AUD_IN_ST_DAC   = 0x34001000,
++	SSP_PCAP_ADJ_BIT_ST_DAC_DIG_AUD_FS0         = 0x34002000,
++	SSP_PCAP_ADJ_BIT_ST_DAC_DIG_AUD_FS1         = 0x34004000,
++	SSP_PCAP_ADJ_BIT_ST_DAC_BCLK0               = 0x34008000,
++	SSP_PCAP_ADJ_BIT_ST_DAC_BCLK1               = 0x34010000,
++	SSP_PCAP_ADJ_BIT_ST_DAC_ST_CLK_INV          = 0x34020000,
++	SSP_PCAP_ADJ_BIT_ST_DAC_ST_FS_INV           = 0x34040000,
++	SSP_PCAP_ADJ_BIT_ST_DAC_ST_DAC_CLK_IN_SEL   = 0x34080000,
++	SSP_PCAP_ADJ_BIT_ST_DAC_ST_DAC_PRI_ADJ      = 0x35000000,
++
++	SSP_PCAP_ADJ_BIT_BUSCTRL_FSENB              = 0x50000001,
++	SSP_PCAP_ADJ_BIT_BUSCTRL_USB_SUSPEND        = 0x50000002,
++	SSP_PCAP_ADJ_BIT_BUSCTRL_USB_PU             = 0x50000004,
++	SSP_PCAP_ADJ_BIT_BUSCTRL_USB_PD             = 0x50000008,
++	SSP_PCAP_ADJ_BIT_BUSCTRL_VUSB_EN            = 0x50000010,
++	SSP_PCAP_ADJ_BIT_BUSCTRL_USB_PS             = 0x50000020,
++	SSP_PCAP_ADJ_BIT_BUSCTRL_VUSB_MSTR_EN       = 0x50000040,
++	SSP_PCAP_ADJ_BIT_BUSCTRL_VBUS_PD_ENB        = 0x50000080,
++	SSP_PCAP_ADJ_BIT_BUSCTRL_CURRLIM            = 0x50000100,
++	SSP_PCAP_ADJ_BIT_BUSCTRL_RS232ENB           = 0x50000200,
++	SSP_PCAP_ADJ_BIT_BUSCTRL_RS232_DIR          = 0x50000400,
++	SSP_PCAP_ADJ_BIT_BUSCTRL_SE0_CONN           = 0x50000800,
++	SSP_PCAP_ADJ_BIT_BUSCTRL_USB_PDM            = 0x50001000,
++	SSP_PCAP_ADJ_BIT_BUSCTRL_BUS_PRI_ADJ        = 0x51000000,
++
++	SSP_PCAP_ADJ_BIT_PERIPH_BL_CTRL0            = 0x54000001,
++	SSP_PCAP_ADJ_BIT_PERIPH_BL_CTRL1            = 0x54000002,
++	SSP_PCAP_ADJ_BIT_PERIPH_BL_CTRL2            = 0x54000004,
++	SSP_PCAP_ADJ_BIT_PERIPH_BL_CTRL3            = 0x54000008,
++	SSP_PCAP_ADJ_BIT_PERIPH_BL_CTRL4            = 0x54000010,
++	SSP_PCAP_ADJ_BIT_PERIPH_LEDR_EN             = 0x54000020,
++	SSP_PCAP_ADJ_BIT_PERIPH_LEDG_EN             = 0x54000040,
++	SSP_PCAP_ADJ_BIT_PERIPH_LEDR_CTRL0          = 0x54000080,
++	SSP_PCAP_ADJ_BIT_PERIPH_LEDR_CTRL1          = 0x54000100,
++	SSP_PCAP_ADJ_BIT_PERIPH_LEDR_CTRL2          = 0x54000200,
++	SSP_PCAP_ADJ_BIT_PERIPH_LEDR_CTRL3          = 0x54000400,
++	SSP_PCAP_ADJ_BIT_PERIPH_LEDG_CTRL0          = 0x54000800,
++	SSP_PCAP_ADJ_BIT_PERIPH_LEDG_CTRL1          = 0x54001000,
++	SSP_PCAP_ADJ_BIT_PERIPH_LEDG_CTRL2          = 0x54002000,
++	SSP_PCAP_ADJ_BIT_PERIPH_LEDG_CTRL3          = 0x54004000,
++	SSP_PCAP_ADJ_BIT_PERIPH_LEDR_I0             = 0x54008000,
++	SSP_PCAP_ADJ_BIT_PERIPH_LEDR_I1             = 0x54010000,
++	SSP_PCAP_ADJ_BIT_PERIPH_LEDG_I0             = 0x54020000,
++	SSP_PCAP_ADJ_BIT_PERIPH_LEDG_I1             = 0x54040000,
++	SSP_PCAP_ADJ_BIT_PERIPH_SKIP                = 0x54080000,
++	SSP_PCAP_ADJ_BIT_PERIPH_BL2_CTRL0           = 0x54100000,
++	SSP_PCAP_ADJ_BIT_PERIPH_BL2_CTRL1           = 0x54200000,
++	SSP_PCAP_ADJ_BIT_PERIPH_BL2_CTRL2           = 0x54400000,
++	SSP_PCAP_ADJ_BIT_PERIPH_BL2_CTRL3           = 0x54800000,
++	SSP_PCAP_ADJ_BIT_PERIPH_BL2_CTRL4           = 0x55000000,
++
++	SSP_PCAP_ADJ_BIT_LOWPWR_CTRL_VAUX2_STBY     = 0x60000001,
++	SSP_PCAP_ADJ_BIT_LOWPWR_CTRL_VAUX2_LOWPWR   = 0x60000002,
++	SSP_PCAP_ADJ_BIT_LOWPWR_CTRL_VAUX3_STBY     = 0x60000004,
++	SSP_PCAP_ADJ_BIT_LOWPWR_CTRL_VAUX3_LOWPWR   = 0x60000008,
++	SSP_PCAP_ADJ_BIT_LOWPWR_CTRL_VAUX4_STBY     = 0x60000010,
++	SSP_PCAP_ADJ_BIT_LOWPWR_CTRL_VAUX4_LOWPWR   = 0x60000020,
++	SSP_PCAP_ADJ_BIT_LOWPWR_CTRL_VSIM_LOWPWR    = 0x60000040,
++	SSP_PCAP_ADJ_BIT_LOWPWR_CTRL_VSIM2_LOWPWR   = 0x60000080,
++	SSP_PCAP_ADJ_BIT_LOWPWR_CTRL_SW1_MODE00     = 0x60000100,
++	SSP_PCAP_ADJ_BIT_LOWPWR_CTRL_SW1_MODE01     = 0x60000200,
++	SSP_PCAP_ADJ_BIT_LOWPWR_CTRL_SW1_MODE10     = 0x60000400,
++	SSP_PCAP_ADJ_BIT_LOWPWR_CTRL_SW1_MODE11     = 0x60000800,
++	SSP_PCAP_ADJ_BIT_LOWPWR_CTRL_SW10_DVS       = 0x60001000,
++	SSP_PCAP_ADJ_BIT_LOWPWR_CTRL_SW11_DVS       = 0x60002000,
++	SSP_PCAP_ADJ_BIT_LOWPWR_CTRL_SW12_DVS       = 0x60004000,
++	SSP_PCAP_ADJ_BIT_LOWPWR_CTRL_SW13_DVS       = 0x60008000,
++	SSP_PCAP_ADJ_BIT_LOWPWR_CTRL_SW2_MODE00     = 0x60010000,
++	SSP_PCAP_ADJ_BIT_LOWPWR_CTRL_SW2_MODE01     = 0x60020000,
++	SSP_PCAP_ADJ_BIT_LOWPWR_CTRL_SW2_MODE10     = 0x60040000,
++	SSP_PCAP_ADJ_BIT_LOWPWR_CTRL_SW2_MODE11     = 0x60080000,
++	SSP_PCAP_ADJ_BIT_LOWPWR_CTRL_SW20_DVS       = 0x60100000,
++	SSP_PCAP_ADJ_BIT_LOWPWR_CTRL_SW21_DVS       = 0x60200000,
++	SSP_PCAP_ADJ_BIT_LOWPWR_CTRL_SW22_DVS       = 0x60400000,
++	SSP_PCAP_ADJ_BIT_LOWPWR_CTRL_SW23_DVS       = 0x60800000,
++	SSP_PCAP_ADJ_BIT_LOWPWR_CTRL_VC_STBY        = 0x61000000,
++
++	SSP_PCAP_ADJ_BIT_TX_AUD_AMPS_AUDIG0         = 0x68000001,
++	SSP_PCAP_ADJ_BIT_TX_AUD_AMPS_AUDIG1         = 0x68000002,
++	SSP_PCAP_ADJ_BIT_TX_AUD_AMPS_AUDIG2         = 0x68000004,
++	SSP_PCAP_ADJ_BIT_TX_AUD_AMPS_AUDIG3         = 0x68000008,
++	SSP_PCAP_ADJ_BIT_TX_AUD_AMPS_AUDIG4         = 0x68000010,
++	SSP_PCAP_ADJ_BIT_TX_AUD_AMPS_A3_EN          = 0x68000020,
++	SSP_PCAP_ADJ_BIT_TX_AUD_AMPS_A3_MUX         = 0x68000040,
++	SSP_PCAP_ADJ_BIT_TX_AUD_AMPS_A5_EN          = 0x68000080,
++	SSP_PCAP_ADJ_BIT_TX_AUD_AMPS_A5_MUX         = 0x68000100,
++	SSP_PCAP_ADJ_BIT_TX_AUD_AMPS_EXT_MIC_MUX    = 0x68000200,
++	SSP_PCAP_ADJ_BIT_TX_AUD_AMPS_MB_ON2         = 0x68000400,
++	SSP_PCAP_ADJ_BIT_TX_AUD_AMPS_MB_ON1         = 0x68000800,
++	SSP_PCAP_ADJ_BIT_TX_AUD_AMPS_A1ID_TX        = 0x68001000,
++	SSP_PCAP_ADJ_BIT_TX_AUD_AMPS_A1_CONFIG      = 0x68002000,
++	SSP_PCAP_ADJ_BIT_TX_AUD_AMPS_AHS_CONFIG     = 0x68004000,
++	SSP_PCAP_ADJ_BIT_TX_AUD_AMPS_A2_CONFIG      = 0x68008000,
++	SSP_PCAP_ADJ_BIT_TX_AUD_AMPS_AUDIO_LOWPWR   = 0x68080000,
++	SSP_PCAP_ADJ_BIT_TX_AUD_AMPS_AUDIO_STBY     = 0x68100000,
++	SSP_PCAP_ADJ_BIT_TX_AUD_AMPS_V2_EN_2        = 0x68200000,
++	SSP_PCAP_ADJ_BIT_TX_AUD_AMPS_AUDIG_PRI_ADJ  = 0x68400000,
++	SSP_PCAP_ADJ_BIT_TX_AUD_AMPS_TX_PRI_ADJ0    = 0x68800000,
++	SSP_PCAP_ADJ_BIT_TX_AUD_AMPS_TX_PRI_ADJ1    = 0x69000000,
++
++	SSP_PCAP_ADJ_BIT_SYS_RST_CLR                = 0x6c000001,
++	SSP_PCAP_ADJ_BIT_SYS_RST_MODE0              = 0x6c000002,
++	SSP_PCAP_ADJ_BIT_SYS_RST_MODE1              = 0x6c000004,
++	SSP_PCAP_ADJ_BIT_SYS_VFLASH_0               = 0x6c000008,
++	SSP_PCAP_ADJ_BIT_SYS_VFLASH_1               = 0x6c000010,
++	SSP_PCAP_ADJ_BIT_SYS_MID_SELECT             = 0x6c000020,
++	SSP_PCAP_ADJ_BIT_SYS_MID_FET                = 0x6c000040,
++	SSP_PCAP_ADJ_BIT_SYS_MAIN_LOW               = 0x6c000080,
++	SSP_PCAP_ADJ_BIT_SYS_BATTFB_DIS             = 0x6c000100,
++	SSP_PCAP_ADJ_BIT_SYS_GP_REG9                = 0x6c000200,
++	SSP_PCAP_ADJ_BIT_SYS_GP_REG10               = 0x6c000400,
++	SSP_PCAP_ADJ_BIT_SYS_GP_REG11               = 0x6c000800,
++	SSP_PCAP_ADJ_BIT_SYS_GP_REG12               = 0x6c001000,
++	SSP_PCAP_ADJ_BIT_SYS_GP_REG13               = 0x6c002000,
++	SSP_PCAP_ADJ_BIT_SYS_GP_REG14               = 0x6c004000,
++	SSP_PCAP_ADJ_BIT_SYS_GP_REG15               = 0x6c008000,
++	SSP_PCAP_ADJ_BIT_SYS_GP_REG16               = 0x6c010000,
++	SSP_PCAP_ADJ_BIT_SYS_GP_REG17               = 0x6c020000,
++	SSP_PCAP_ADJ_BIT_SYS_GP_REG18               = 0x6c040000,
++	SSP_PCAP_ADJ_BIT_SYS_GP_REG19               = 0x6c080000,
++	SSP_PCAP_ADJ_BIT_SYS_GP_REG20               = 0x6c100000,
++	SSP_PCAP_ADJ_BIT_SYS_GP_REG21               = 0x6c200000,
++	SSP_PCAP_ADJ_BIT_SYS_GP_REG22               = 0x6c400000,
++	SSP_PCAP_ADJ_BIT_SYS_GP_REG23               = 0x6c800000,
++	SSP_PCAP_ADJ_BIT_SYS_GP_REG24               = 0x6d000000
++
++}SSP_PCAP_SECONDARY_PROCESSOR_REGISTER_BIT_TYPE;
++
++/************************ FUNCTION PROTOTYPES **************************************/
++extern void ssp_pcap_init(void);
++extern void ssp_pcap_release(void);
++
++extern void ssp_pcap_open(SSP_PCAP_INIT_DRIVER_TYPE portType);
++extern void ssp_pcap_close(void);
++
++extern void ssp_pcap_intoSleep_callBack(void);
++extern void ssp_pcap_wakeUp_callBack(void);
++
++
++extern SSP_PCAP_STATUS SSP_PCAP_write_data_to_PCAP(SSP_PCAP_SECONDARY_PROCESSOR_REGISTER ssp_pcap_register,U32 ssp_pcap_register_value);
++extern SSP_PCAP_STATUS SSP_PCAP_read_data_from_PCAP(SSP_PCAP_SECONDARY_PROCESSOR_REGISTER ssp_pcap_register,P_U32 p_ssp_pcap_register_value);
++
++extern SSP_PCAP_STATUS SSP_PCAP_bit_set(SSP_PCAP_SECONDARY_PROCESSOR_REGISTER_BIT_TYPE ssp_pcap_bit ) ;
++extern SSP_PCAP_STATUS SSP_PCAP_bit_clean(SSP_PCAP_SECONDARY_PROCESSOR_REGISTER_BIT_TYPE ssp_pcap_bit ) ;
++extern SSP_PCAP_BIT_STATUS SSP_PCAP_get_bit_from_buffer(SSP_PCAP_SECONDARY_PROCESSOR_REGISTER_BIT_TYPE ssp_pcap_bit ) ;
++extern SSP_PCAP_BIT_STATUS SSP_PCAP_get_bit_from_PCAP(SSP_PCAP_SECONDARY_PROCESSOR_REGISTER_BIT_TYPE ssp_pcap_bit ) ;
++extern U32 SSP_PCAP_get_register_value_from_buffer(SSP_PCAP_SECONDARY_PROCESSOR_REGISTER ssp_pcap_register ) ;
++
++extern SSP_PCAP_STATUS SSP_PCAP_TSI_mode_set(TOUCH_SCREEN_DETECT_TYPE mode_Type );
++extern SSP_PCAP_STATUS SSP_PCAP_TSI_start_XY_read(void);
++extern SSP_PCAP_STATUS SSP_PCAP_TSI_get_XY_value(P_U16 p_x,P_U16 p_y);
++extern SSP_PCAP_STATUS SSP_PCAP_CDC_CLK_set(PHONE_CDC_CLOCK_TYPE clkType);
++
++extern SSP_PCAP_STATUS SSP_PCAP_CDC_SR_set(ST_SAMPLE_RATE_TYPE srType);
++extern SSP_PCAP_STATUS SSP_PCAP_BCLK_set(ST_BCLK_TIME_SLOT_TYPE bclkType);
++extern SSP_PCAP_STATUS SSP_PCAP_STCLK_set(ST_CLK_TYPE stClkType);
++extern SSP_PCAP_STATUS SSP_PCAP_DIG_AUD_FS_set(DIG_AUD_MODE_TYPE fsType);
++extern SSP_PCAP_STATUS SSP_PCAP_AUDIG_set(U32 audioInGain);
++extern SSP_PCAP_STATUS SSP_PCAP_MONO_set(MONO_TYPE monoType);
++extern SSP_PCAP_STATUS SSP_PCAP_AUDOG_set(U32 audioOutGain);
++
++extern SSP_PCAP_STATUS SSP_PCAP_V_VIB_level_set(VibratorVoltageLevel_TYPE VIBLevelType);
++extern SSP_PCAP_STATUS SSP_PCAP_configure_USB_UART_transeiver(SSP_PCAP_PORT_TYPE portType);
++extern SSP_PCAP_BIT_STATUS SSP_PCAP_get_audio_in_status(void);
++
++/* for log */
++extern void pcap_log_add_pure_data(u8* pData,u32 len);
++extern void pcap_log_add_data(u8* pData,u32 len);
++
++/* screen lock on/off handler */
++extern void ssp_pcap_screenlock_lock(u32 data);
++extern void ssp_pcap_screenlock_unlock(u32 data);
++
++#endif
+Index: linux-2.6.21/include/asm-arm/arch-pxa/irqs.h
+===================================================================
+--- linux-2.6.21.orig/include/asm-arm/arch-pxa/irqs.h	2007-06-03 02:17:12.000000000 -0300
++++ linux-2.6.21/include/asm-arm/arch-pxa/irqs.h	2007-06-03 11:14:40.000000000 -0300
+@@ -176,7 +176,8 @@
+ #define NR_IRQS			(IRQ_LOCOMO_SPI_TEND + 1)
+ #elif defined(CONFIG_ARCH_LUBBOCK) || \
+       defined(CONFIG_MACH_LOGICPD_PXA270) || \
+-      defined(CONFIG_MACH_MAINSTONE)
++      defined(CONFIG_MACH_MAINSTONE) || \
++      defined(CONFIG_PXA_EZX)
+ #define NR_IRQS			(IRQ_BOARD_END)
+ #else
+ #define NR_IRQS			(IRQ_BOARD_START)
+@@ -222,3 +223,13 @@
+ #define IRQ_LOCOMO_GPIO_BASE	(IRQ_BOARD_START + 1)
+ #define IRQ_LOCOMO_LT_BASE	(IRQ_BOARD_START + 2)
+ #define IRQ_LOCOMO_SPI_BASE	(IRQ_BOARD_START + 3)
++
++/* EZX Interrupts (CONFIG_EZX) */
++#define EZX_IRQ(x)             (IRQ_BOARD_START + (x))
++#define EZX_IRQ_USB4V          EZX_IRQ(0) /* EMU */
++#define EZX_IRQ_USB1V          EZX_IRQ(1) /* EMU */
++#define EZX_IRQ_HEADJACK       EZX_IRQ(2) /* Audio connector */
++#define EZX_IRQ_MIC            EZX_IRQ(3) /* Audio connector */
++#define EZX_IRQ_ADCDONE        EZX_IRQ(4)
++#define EZX_IRQ_TS             EZX_IRQ(5) /* TS touch */
++#define EZX_IRQ_ADCDONE2       EZX_IRQ(6) /* TS x/y ADC ready */
+Index: linux-2.6.21/arch/arm/mach-pxa/ezx.c
+===================================================================
+--- linux-2.6.21.orig/arch/arm/mach-pxa/ezx.c	2007-06-03 11:14:40.000000000 -0300
++++ linux-2.6.21/arch/arm/mach-pxa/ezx.c	2007-06-09 14:57:44.000000000 -0300
+@@ -131,11 +131,30 @@
+ 	.resource	= ezxbp_resources,
+ };
+ 
++/* PCAP */
++static struct resource ezxpcap_resources[] = {
++	[0] = {
++		.start		= IRQ_GPIO1,
++		.end		= IRQ_GPIO1,
++		.flags		= IORESOURCE_IRQ,
++	},
++};
++
++struct platform_device ezxpcap_device = {
++	.name		= "ezx-pcap",
++	.id		= -1,
++	.dev		= {
++		.parent		= &ezxssp_device.dev,
++	},
++	.num_resources	= ARRAY_SIZE(ezxpcap_resources),
++	.resource	= ezxpcap_resources,
++};
+ 
+ 
+ static struct platform_device *devices[] __initdata = {
+ 	&ezxssp_device,
+ 	&ezxbp_device,
++	&ezxpcap_device,
+ };
+ 
+ /* PM */
+Index: linux-2.6.21/arch/arm/mach-pxa/Kconfig
+===================================================================
+--- linux-2.6.21.orig/arch/arm/mach-pxa/Kconfig	2007-06-03 11:14:40.000000000 -0300
++++ linux-2.6.21/arch/arm/mach-pxa/Kconfig	2007-06-09 14:57:46.000000000 -0300
+@@ -105,6 +105,15 @@
+ config EZX_BP
+ 	bool "BP Control code for EZX Platform"
+ 
++config EZX_PCAP
++	bool "PCAP Support"
++
++config EZX_MCI_SD
++	bool
++
++config EZX_MCI_TF
++	bool
++
+ endif
+ 
+ endmenu
+Index: linux-2.6.21/arch/arm/mach-pxa/Makefile
+===================================================================
+--- linux-2.6.21.orig/arch/arm/mach-pxa/Makefile	2007-06-03 11:14:40.000000000 -0300
++++ linux-2.6.21/arch/arm/mach-pxa/Makefile	2007-06-09 14:57:44.000000000 -0300
+@@ -25,6 +25,7 @@
+ obj-$(CONFIG_PXA_EZX_A1200)	+= ezx-a1200.o
+ obj-$(CONFIG_PXA_EZX_E6)	+= ezx-e6.o
+ obj-$(CONFIG_EZX_BP)		+= ezx-bp.o
++obj-$(CONFIG_EZX_PCAP)		+= ezx-pcap.o
+ 
+ # Support for blinky lights
+ led-y := leds.o

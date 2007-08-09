@@ -21,3 +21,5 @@ do_stage () {
 do_install() {
 	oe_libinstall -so libmailwrapper ${D}${palmtopdir}/lib
 }
+
+FILES_${PN} = "${palmtopdir}/lib/lib*.so.*"

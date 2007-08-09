@@ -4,10 +4,40 @@
 auto lo
 iface lo inet loopback
 
+
 # Wireless interfaces
+#
+# Example of an unencrypted (no WEP or WPA) wireless connection
+# that connects to any available access point:
+#
 iface wlan0 inet dhcp
-wireless_mode managed
-wireless_essid any
+	wireless_mode managed
+	wireless_essid any
+#
+#
+# Same as above but locked to a specific access point:
+#
+#iface wlan0 inet dhcp  
+#	wireless_mode managed
+#	wireless-essid some-essid
+#
+# A WEP encrypted connection locked to a specific access point:
+#
+#iface wlan0 inet dhcp  
+#	wireless-essid some-essid
+#	wireless-key s:My-PlainText-Password
+#	wireless-mode managed                  
+#
+# A WPA1 or WPA2 encrypted connection locked to a specific access point.
+# The WLAN cards firmware is updated temporarily to allow WPA
+# connections. Your card may or may not need the update.
+#
+#iface wlan0 inet dhcp                                                   
+#	wpa-essid some-essid                                          
+#	wpa-psk My-PlainText-Password                                              
+#	pre-up iwpriv wlan0 reset 1                                      
+#	pre-up prism2_srec -r wlan0 /etc/pcmcia/rf010804.hex             
+
 iface atml0 inet dhcp
 
 # Wired or wireless interfaces

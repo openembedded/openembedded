@@ -1,0 +1,16 @@
+Index: opie/core/apps/qcop/qcopimpl.cpp
+===================================================================
+RCS file: /cvs/opie/core/apps/qcop/qcopimpl.cpp,v
+retrieving revision 1.2
+diff -u -r1.2 qcopimpl.cpp
+--- qcop/qcopimpl.cpp	2 Mar 2005 19:23:54 -0000	1.2
++++ qcop/qcopimpl.cpp	3 May 2007 03:09:36 -0000
+@@ -46,7 +46,7 @@
+ 
+ int doqcopimpl (int argc, char *argv[])
+ {
+-    qInstallMsgHandler( disableqdebug );
++    //qInstallMsgHandler( disableqdebug );
+ 
+     if ( argc > 1 ) {
+ 	QString opt = argv[1];

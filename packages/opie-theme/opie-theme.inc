@@ -33,7 +33,8 @@ do_install() {
 	done
 }
 
-PACKAGES = " opie-theme-cleannsimple opie-theme-grade8 opie-theme-ixpe opie-theme-lumonmarble opie-theme-lumonwave opie-theme-luna opie-theme "
+PACKAGES += " opie-theme-cleannsimple opie-theme-grade8 opie-theme-ixpe opie-theme-lumonmarble \
+              opie-theme-lumonwave opie-theme-luna "
 
 FILES_opie-theme = " ${palmtopdir}/plugins/styles/libtheme.so*"
 FILES_opie-theme-cleannsimple = " ${palmtopdir}/plugins/styles/themes/cleannsimple.themerc ${palmtopdir}/plugins/styles/pixmaps/cleannsimple/*.png"

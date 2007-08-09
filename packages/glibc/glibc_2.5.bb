@@ -5,7 +5,7 @@ ARM_INSTRUCTION_SET = "arm"
 PACKAGES_DYNAMIC = "libc6*"
 RPROVIDES_${PN}-dev = "libc6-dev"
 
-PR = "r4"
+PR = "r6"
 
 # the -isystem in bitbake.conf screws up glibc do_stage
 BUILD_CPPFLAGS = "-I${STAGING_DIR}/${BUILD_SYS}/include"
@@ -15,7 +15,6 @@ TARGET_CPPFLAGS = "-I${STAGING_DIR}/${TARGET_SYS}/include"
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/glibc-2.4"
 
 GLIBC_ADDONS ?= "ports,nptl,libidn"
-GLIBC_EXTRA_OECONF ?= ""
 
 GLIBC_BROKEN_LOCALES = "sid_ET tr_TR mn_MN gez_ET gez_ER bn_BD te_IN"
 
@@ -35,12 +34,7 @@ python __anonymous () {
                                    bb.data.getVar('TARGET_OS', d, 1))
 }
 
-# nptl needs unwind support in gcc, which can't be built without glibc.
-PROVIDES = "virtual/libc ${@['virtual/${TARGET_PREFIX}libc-for-gcc', '']['nptl' in '${GLIBC_ADDONS}']}"
-PROVIDES += "virtual/libintl virtual/libiconv"
-DEPENDS = "${@['virtual/${TARGET_PREFIX}gcc-initial', 'virtual/${TARGET_PREFIX}gcc']['nptl' in '${GLIBC_ADDONS}']} linux-libc-headers"
 RDEPENDS_${PN}-dev = "linux-libc-headers-dev"
-INHIBIT_DEFAULT_DEPS = "1"
 
 #	   file://noinfo.patch;patch=1
 #	   file://ldconfig.patch;patch=1;pnum=0
@@ -62,6 +56,7 @@ SRC_URI = "ftp://ftp.gnu.org/pub/gnu/glibc/glibc-${PV}.tar.bz2 \
 #	   file://glibc-2.4-openat-3.patch;patch=1 \
 #	   file://fixup-aeabi-syscalls.patch;patch=1 \
 	   file://zecke-sane-readelf.patch;patch=1 \
+           file://ldd-unbash.patch;patch=1 \
 	   file://generic-bits_select.h \
 	   file://generic-bits_types.h \
 	   file://generic-bits_typesizes.h \
@@ -74,12 +69,15 @@ SRC_URI = "ftp://ftp.gnu.org/pub/gnu/glibc/glibc-${PV}.tar.bz2 \
 SRC_URI_append_sh3 = " file://no-z-defs.patch;patch=1"
 SRC_URI_append_sh4 = " file://no-z-defs.patch;patch=1"
 
-SRC_URI_append_powerpc = " file://powerpc-sqrt-hack.diff;patch=1"
+#powerpc patches to add support for soft-float
+SRC_URI_append_powerpc= " file://ppc-sfp-machine.patch;patch=1 \
+                          file://ppc-soft-fp-20070115.patch;patch=1 \
+                          file://ppc-ld-nofpu-20070104.patch;patch=1 \
+                          file://ppc-ports-ld-nofpu-20070114.patch;patch=1 \
+                          file://powerpc-sqrt-hack.diff;patch=1""
 
 S = "${WORKDIR}/glibc-${PV}"
 B = "${WORKDIR}/build-${TARGET_SYS}"
-
-inherit autotools
 
 EXTRA_OECONF = "--enable-kernel=${OLDEST_KERNEL} \
 	        --without-cvs --disable-profile --disable-debug --without-gd \

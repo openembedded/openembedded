@@ -5,7 +5,7 @@ LICENSE = "BSD"
 PV = "0.0+svn${SRCDATE}"
 PR = "r0"
 
-SRC_URI = "svn://svn.sourceforge.net/svnroot/ogl-es/branches;module=linux_nokia_770;proto=https"
+SRC_URI = "svn://ogl-es.svn.sourceforge.net/svnroot/ogl-es/branches;module=linux_nokia_770;proto=https"
 
 S = "${WORKDIR}/linux_nokia_770/ogles/projects/linux-x11"
 

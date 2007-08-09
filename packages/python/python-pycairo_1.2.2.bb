@@ -3,7 +3,7 @@ SECTION = "python-devel"
 HOMEPAGE = "http://cairographics.org/pycairo"
 LICENSE = "LGPL MPL"
 DEPENDS = "cairo"
-PR = "ml1"
+PR = "ml2"
 
 SRC_URI = "http://cairographics.org/releases/pycairo-${PV}.tar.gz \
            file://fix-pkgconfig-dir.patch;patch=1"
@@ -16,3 +16,5 @@ do_stage() {
 	install -m 0644 cairo/pycairo.h ${STAGING_INCDIR}
 }
 
+
+FILES_${PN}-dbg += "${libdir}/python2.4/site-packages/cairo/.debug"

@@ -1,0 +1,11 @@
+--- /pear/orig-Makefile.frag	2007-03-16 12:18:33.000000000 +0200
++++ /pear/Makefile.frag	2007-03-16 12:35:48.000000000 +0200
+@@ -6,7 +6,7 @@
+ PEAR_INSTALL_FLAGS = -n -dshort_open_tag=0 -dsafe_mode=0 -dopen_basedir= -derror_reporting=E_ALL -dmemory_limit=-1 -ddetect_unicode=0
+ 
+ install-pear-installer: $(SAPI_CLI_PATH)
+-	@$(top_builddir)/sapi/cli/php $(PEAR_INSTALL_FLAGS) $(builddir)/install-pear-nozlib.phar -d "$(peardir)" -b "$(bindir)"
++	@$(PHP_NATIVE_DIR)/php $(PEAR_INSTALL_FLAGS) $(builddir)/install-pear-nozlib.phar -d "$(peardir)" -b "$(bindir)"
+ 
+ install-pear:
+ 	@echo "Installing PEAR environment:      $(INSTALL_ROOT)$(peardir)/"

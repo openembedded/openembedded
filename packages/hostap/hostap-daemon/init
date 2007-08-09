@@ -1,6 +1,6 @@
 #!/bin/sh
 DAEMON=/usr/sbin/hostapd
-NAME=httpd
+NAME=hostapd
 DESC="HOSTAP Daemon"
 ARGS="/etc/hostapd.conf"
 

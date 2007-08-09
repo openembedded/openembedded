@@ -1,0 +1,13 @@
+Index: runltp
+===================================================================
+--- ltp-full-20060412.orig/runltp       2005-03-12 03:26:14.000000000 +0800
++++ ltp-full-20060412/runltp    2006-04-26 16:42:13.000000000 +0800
+@@ -43,7 +43,7 @@
+         echo "FATAL: unable to change directory to $(dirname $0)"
+         exit 1
+     }
+-    export LTPROOT=${PWD}
++    export LTPROOT=/usr/libexec/ltp
+     export TMPBASE="/tmp"
+     export TMP="${TMPBASE}/ltp-$$"
+     export PATH="${PATH}:${LTPROOT}/testcases/bin"

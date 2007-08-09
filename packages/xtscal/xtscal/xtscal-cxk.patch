@@ -1,11 +1,25 @@
---- xtscal-0.6.3/xtscal.in~	2004-09-10 12:10:36.000000000 -0700
-+++ xtscal-0.6.3/xtscal.in	2005-08-04 09:26:46.000000000 -0700
-@@ -8,7 +8,7 @@
+--- xtscal-0.6.3/xtscal.in~	
++++ xtscal-0.6.3/xtscal.in
+@@ -1,16 +1,15 @@
+ #!/bin/sh
+ 
+ module_id() {
+-    # Get model name
+-    echo `grep "^Hardware" /proc/cpuinfo | sed -e "s/.*: *//" | tr a-z A-Z`
++        awk 'BEGIN { FS=": " } /Hardware/ { print $2 }' </proc/cpuinfo | tr a-z A-Z
+ }
+ 
  case `module_id` in
- 	"HP IPAQ H3100" | "HP IPAQ H3800" )
- 		ARGS="-rotate 90" ;;
+-	"HP IPAQ H3100" | "HP IPAQ H3800" )
+-		ARGS="-rotate 90" ;;
 -	"HP IPAQ H3600" | "HP IPAQ H3700" | "HP IPAQ H3900" | *COLLIE | *POODLE)
-+	"HP IPAQ H3600" | "HP IPAQ H3700" | "HP IPAQ H3900" | *COLLIE | *POODLE | *SPITZ | *AKITA | *BORZOI)
- 		ARGS="-rotate 270" ;;
- 	# H2200: works without rotation
+-		ARGS="-rotate 270" ;;
+-	# H2200: works without rotation
++       "HP IPAQ H3100" | "HP IPAQ H3800" )
++               ARGS="-rotate 90" ;;
++       "HP IPAQ H3600" | "HP IPAQ H3700" | "HP IPAQ H3900" | "HTC UNIVERSAL" | *COLLIE | *POODLE | *SPITZ | *AKITA | *BORZOI)
++               ARGS="-rotate 270" ;;
++       # H2200: works without rotation
  esac
+ 
+ # the things we do for autoconf

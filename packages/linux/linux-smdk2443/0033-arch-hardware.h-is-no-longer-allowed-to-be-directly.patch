@@ -1,0 +1,41 @@
+From 3108e2dc553b3014294a6915471198c94c643657 Mon Sep 17 00:00:00 2001
+From: Graeme Gregory <gg@a10082.wolfsonmicro.main>
+Date: Mon, 26 Mar 2007 14:19:43 +0100
+Subject: [PATCH] arch/hardware.h is no longer allowed to be directly included. So changed
+to include hardware.h
+
+Signed-off-by: Graeme Gregory <gg@opensource.wolfsonmicro.com>
+---
+ sound/soc/s3c24xx/neo1973_wm8753.c |    2 +-
+ sound/soc/s3c24xx/smdk2440.c       |    2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/sound/soc/s3c24xx/neo1973_wm8753.c b/sound/soc/s3c24xx/neo1973_wm8753.c
+index 46a70e3..34e03cd 100644
+--- a/sound/soc/s3c24xx/neo1973_wm8753.c
++++ b/sound/soc/s3c24xx/neo1973_wm8753.c
+@@ -33,7 +33,7 @@
+ #include <asm/arch/regs-iis.h>
+ #include <asm/arch/regs-clock.h>
+ #include <asm/arch/regs-gpio.h>
+-#include <asm/arch/hardware.h>
++#include <asm/hardware.h>
+ #include <asm/arch/audio.h>
+ #include <asm/io.h>
+ #include <asm/arch/spi-gpio.h>
+diff --git a/sound/soc/s3c24xx/smdk2440.c b/sound/soc/s3c24xx/smdk2440.c
+index 9885a5e..5363fe1 100644
+--- a/sound/soc/s3c24xx/smdk2440.c
++++ b/sound/soc/s3c24xx/smdk2440.c
+@@ -37,7 +37,7 @@
+ #include <asm/arch/regs-iis.h>
+ #include <asm/arch/regs-clock.h>
+ #include <asm/arch/regs-gpio.h>
+-#include <asm/arch/hardware.h>
++#include <asm/hardware.h>
+ #include <asm/arch/audio.h>
+ #include <asm/io.h>
+ #include <asm/arch/spi-gpio.h>
+-- 
+1.5.0.3
+

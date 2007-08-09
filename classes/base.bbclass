@@ -10,6 +10,67 @@ def base_path_join(a, *p):
             path += '/' + b
     return path
 
+# for MD5/SHA handling
+def base_chk_load_parser(config_path):
+    import ConfigParser, os, bb
+    parser = ConfigParser.ConfigParser()
+    if not len(parser.read(config_path)) == 1:
+        bb.note("Can not open the '%s' ini file" % config_path)
+        raise Exception("Can not open the '%s'" % config_path)
+
+    return parser
+
+def base_chk_file(parser, pn, pv, src_uri, localpath, data):
+    import os, bb
+    # Try PN-PV-SRC_URI first and then try PN-SRC_URI
+    # we rely on the get method to create errors
+    pn_pv_src = "%s-%s-%s" % (pn,pv,src_uri)
+    pn_src    = "%s-%s" % (pn,src_uri)
+    if parser.has_section(pn_pv_src):
+        md5    = parser.get(pn_pv_src, "md5")
+        sha256 = parser.get(pn_pv_src, "sha256")
+    elif parser.has_section(pn_src):
+        md5    = parser.get(pn_src, "md5")
+        sha256 = parser.get(pn_src, "sha256")
+    elif parser.has_section(src_uri):
+        md5    = parser.get(src_uri, "md5")
+        sha256 = parser.get(src_uri, "sha256")
+    else:
+        return False
+        #raise Exception("Can not find a section for '%s' '%s' and '%s'" % (pn,pv,src_uri))
+
+    # md5 and sha256 should be valid now
+    if not os.path.exists(localpath):
+        bb.note("The localpath does not exist '%s'" % localpath)
+        raise Exception("The path does not exist '%s'" % localpath)
+
+
+    # call md5(sum) and shasum
+    try:
+        md5pipe = os.popen('md5sum ' + localpath)
+        md5data = (md5pipe.readline().split() or [ "" ])[0]
+        md5pipe.close()
+    except OSError:
+        raise Exception("Executing md5sum failed")
+
+    try:
+        shapipe = os.popen('PATH=%s oe_sha256sum %s' % (bb.data.getVar('PATH', data, True), localpath))
+        shadata = (shapipe.readline().split() or [ "" ])[0]
+        shapipe.close()
+    except OSError:
+        raise Exception("Executing shasum failed")
+
+    if not md5 == md5data:
+        bb.note("The MD5Sums did not match. Wanted: '%s' and Got: '%s'" % (md5,md5data))
+        raise Exception("MD5 Sums do not match. Wanted: '%s' Got: '%s'" % (md5, md5data))
+
+    if not sha256 == shadata:
+        bb.note("The SHA256 Sums do not match. Wanted: '%s' Got: '%s'" % (sha256,shadata))
+        raise Exception("SHA256 Sums do not match. Wanted: '%s' Got: '%s'" % (sha256, shadata))
+
+    return True
+
+
 def base_dep_prepend(d):
 	import bb;
 	#
@@ -17,17 +78,13 @@ def base_dep_prepend(d):
 	# the case where host == build == target, for now we don't work in
 	# that case though.
 	#
-	deps = ""
+	deps = "shasum-native "
+	if bb.data.getVar('PN', d, True) == "shasum-native":
+		deps = ""
 
 	# INHIBIT_DEFAULT_DEPS doesn't apply to the patch command.  Whether or  not
 	# we need that built is the responsibility of the patch function / class, not
 	# the application.
-	patchdeps = bb.data.getVar("PATCHTOOL", d, 1)
-        if patchdeps:
-		patchdeps = "%s-native" % patchdeps
-		if not patchdeps in bb.data.getVar("PROVIDES", d, 1):
-			deps = patchdeps
-
 	if not bb.data.getVar('INHIBIT_DEFAULT_DEPS', d):
 		if (bb.data.getVar('HOST_SYS', d, 1) !=
 	     	    bb.data.getVar('BUILD_SYS', d, 1)):
@@ -218,8 +275,12 @@ oe_libinstall() {
 
 	# If such file doesn't exist, try to cut version suffix
 	if [ ! -f "$lafile" ]; then
-		libname=`echo "$libname" | sed 's/-[0-9.]*$//'`
-		lafile=$libname.la
+		libname1=`echo "$libname" | sed 's/-[0-9.]*$//'`
+		lafile1=$libname.la
+		if [ -f "$lafile1" ]; then
+			libname=$libname1
+			lafile=$lafile1
+		fi
 	fi
 
 	if [ -f "$lafile" ]; then
@@ -378,6 +439,7 @@ python base_do_mrproper() {
 
 addtask fetch
 do_fetch[dirs] = "${DL_DIR}"
+do_fetch[depends] = "shasum-native:do_populate_staging"
 python base_do_fetch() {
 	import sys
 
@@ -402,6 +464,40 @@ python base_do_fetch() {
 	except bb.fetch.FetchError:
 		(type, value, traceback) = sys.exc_info()
 		raise bb.build.FuncFailed("Fetch failed: %s" % value)
+	except bb.fetch.MD5SumError:
+		(type, value, traceback) = sys.exc_info()
+		raise bb.build.FuncFailed("MD5  failed: %s" % value)
+	except:
+		(type, value, traceback) = sys.exc_info()
+		raise bb.build.FuncFailed("Unknown fetch Error: %s" % value)
+
+
+	# Verify the SHA and MD5 sums we have in OE and check what do
+	# in
+	check_sum = bb.which(bb.data.getVar('BBPATH', d, True), "conf/checksums.ini")
+	if not check_sum:
+		bb.note("No conf/checksums.ini found, not checking checksums")
+		return
+
+	try:
+		parser = base_chk_load_parser(check_sum)
+	except:
+		bb.note("Creating the CheckSum parser failed")
+		return
+
+	pv = bb.data.getVar('PV', d, True)
+	pn = bb.data.getVar('PN', d, True)
+
+	# Check each URI
+	for url in src_uri.split():
+		localpath = bb.data.expand(bb.fetch.localpath(url, localdata), localdata)
+		(type,host,path,_,_,_) = bb.decodeurl(url)
+		uri = "%s://%s%s" % (type,host,path)
+		try:
+		    if not base_chk_file(parser, pn, pv,uri, localpath, d):
+			    bb.note("%s-%s-%s has no section, not checking URI" % (pn,pv,uri))
+		except Exception:
+			raise bb.build.FuncFailed("Checksum of '%s' failed" % uri)
 }
 
 addtask fetchall after do_fetch
@@ -696,9 +792,9 @@ python read_subpackage_metadata () {
 			bb.data.setVar(key, sdata[key], d)
 }
 
-def base_after_parse_two(d):
-    import bb
-    import exceptions
+def base_after_parse(d):
+    import bb, os, exceptions
+
     source_mirror_fetch = bb.data.getVar('SOURCE_MIRROR_FETCH', d, 0)
     if not source_mirror_fetch:
         need_host = bb.data.getVar('COMPATIBLE_HOST', d, 1)
@@ -715,6 +811,8 @@ def base_after_parse_two(d):
             if this_machine and not re.match(need_machine, this_machine):
                 raise bb.parse.SkipPackage("incompatible with machine %s" % this_machine)
 
+
+
     pn = bb.data.getVar('PN', d, 1)
 
     # OBSOLETE in bitbake 1.7.4
@@ -726,20 +824,33 @@ def base_after_parse_two(d):
     if use_nls != None:
         bb.data.setVar('USE_NLS', use_nls, d)
 
-def base_after_parse(d):
-    import bb, os
-
-    # Make sure MACHINE *isn't* exported
+    # Make sure MACHINE isn't exported
+    # (breaks binutils at least)
     bb.data.delVarFlag('MACHINE', 'export', d)
     bb.data.setVarFlag('MACHINE', 'unexport', 1, d)
+    
+    # Make sure DISTRO isn't exported
+    # (breaks sysvinit at least)
+    bb.data.delVarFlag('DISTRO', 'export', d)
+    bb.data.setVarFlag('DISTRO', 'unexport', 1, d)
+
+    # Git packages should DEPEND on git-native
+    srcuri = bb.data.getVar('SRC_URI', d, 1)
+    if "git://" in srcuri:
+        depends = bb.data.getVarFlag('do_fetch', 'depends', d) or ""
+        depends = depends + " git-native:do_populate_staging"
+        bb.data.setVarFlag('do_fetch', 'depends', depends, d)
 
     mach_arch = bb.data.getVar('MACHINE_ARCH', d, 1)
     old_arch = bb.data.getVar('PACKAGE_ARCH', d, 1)
     if (old_arch == mach_arch):
         # Nothing to do
         return
-    if (bb.data.getVar('SRC_URI_OVERRIDES_PACKAGE_ARCH', d, 1) == '0'):
+    override = bb.data.getVar('SRC_URI_OVERRIDES_PACKAGE_ARCH', d, 1)
+	
+    if not override or override == '0':
         return
+
     paths = []
     for p in [ "${FILE_DIRNAME}/${PF}", "${FILE_DIRNAME}/${P}", "${FILE_DIRNAME}/${PN}", "${FILE_DIRNAME}/files", "${FILE_DIRNAME}" ]:
         paths.append(bb.data.expand(os.path.join(p, mach_arch), d))
@@ -751,12 +862,64 @@ def base_after_parse(d):
                 bb.data.setVar('PACKAGE_ARCH', mach_arch, d)
                 return
 
+#
+# Various backwards compatibility stuff to be removed
+# when we switch to bitbake 1.8.2+ as a minimum version
+#
+def base_oldbitbake_workarounds(d):
+    import bb
+    from bb import __version__
+    from distutils.version import LooseVersion
+
+    if (LooseVersion(__version__) > "1.8.0"):
+        return
+
+    pn = bb.data.getVar('PN', d, True)
+    srcdate = bb.data.getVar('SRCDATE_%s' % pn, d, True)
+    if srcdate != None:
+        bb.data.setVar('SRCDATE', srcdate, d)
+    depends = bb.data.getVar('DEPENDS', d, False)
+    patchdeps = bb.data.getVar("PATCHTOOL", d, True)
+    if patchdeps:
+        patchdeps = "%s-native " % patchdeps
+        if not patchdeps in bb.data.getVar("PROVIDES", d, True):
+            depends = patchdeps + depends 
+    if bb.data.inherits_class('rootfs_ipk', d):
+        depends = "ipkg-native ipkg-utils-native fakeroot-native " + depends
+    if bb.data.inherits_class('rootfs_deb', d):
+        depends = "dpkg-native apt-native fakeroot-native " + depends
+    if bb.data.inherits_class('image', d):
+        depends = "makedevs-native " + depends
+        for type in (bb.data.getVar('IMAGE_FSTYPES', d, True) or "").split():
+            deps = bb.data.getVar('IMAGE_DEPENDS_%s' % type, d) or ""
+            if deps:
+                depends = depends + " %s" % deps
+        for dep in (bb.data.getVar('EXTRA_IMAGEDEPENDS', d, True) or "").split():
+            depends =  depends + " %s" % dep
+
+    packages = bb.data.getVar('PACKAGES', d, True)
+    if packages != '':
+        if bb.data.inherits_class('package_ipk', d):
+            depends = "ipkg-utils-native " + depends
+        if bb.data.inherits_class('package_deb', d):
+            depends = "dpkg-native " + depends
+        if bb.data.inherits_class('package', d):
+            depends = "${PACKAGE_DEPENDS} fakeroot-native " + depends
+
+    bb.data.setVar('DEPENDS', depends, d)
 
 python () {
-    base_after_parse_two(d)
+    base_oldbitbake_workarounds(d)
     base_after_parse(d)
 }
 
+# Remove me when we switch to bitbake 1.8.8
+def base_get_srcrev(d):
+    import bb
+    
+    if hasattr(bb.fetch, "get_srcrev"):
+        return bb.fetch.get_srcrev(d)
+    return "NOT IMPLEMENTED"
 
 # Patch handling
 inherit patch
@@ -821,6 +984,7 @@ ftp://lsof.itap.purdue.edu/pub/tools/unix/lsof/  ftp://ftp.tux.org/pub/sites/vic
 ftp://lsof.itap.purdue.edu/pub/tools/unix/lsof/  ftp://gd.tuwien.ac.at/utils/admin-tools/lsof/
 ftp://lsof.itap.purdue.edu/pub/tools/unix/lsof/  ftp://sunsite.ualberta.ca/pub/Mirror/lsof/
 ftp://lsof.itap.purdue.edu/pub/tools/unix/lsof/  ftp://the.wiretapped.net/pub/security/host-security/lsof/
+http://www.apache.org/dist  http://archive.apache.org/dist
 
 }
 

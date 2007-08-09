@@ -12,6 +12,7 @@ SRC_URI = "http://handhelds.org/~zecke/oe_packages/labyrinth-0.7-zecke1.tar.gz"
 S = "${WORKDIR}/${APPNAME}"
 
 do_install () {
+	install -d ${D}${palmtopdir}/apps/Games/
 	install -d ${D}${palmtopdir}/pics/${APPNAME}/
 	install -d ${D}${palmtopdir}/share/games/${APPNAME}/
 

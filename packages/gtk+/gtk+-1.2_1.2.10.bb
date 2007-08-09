@@ -4,7 +4,7 @@ HOMEPAGE = "http://www.gtk.org"
 SECTION = "libs"
 PRIORITY = "optional"
 DEPENDS = "glib-1.2 jpeg libpng libxext"
-PR = "r2"
+PR = "r3"
 
 SRC_URI = "ftp://ftp.gtk.org/pub/gtk/v1.2/gtk+-${PV}.tar.gz \
            file://timezone-fix.patch;patch=1 \
@@ -48,7 +48,7 @@ do_stage () {
 	mkdir -p ${STAGING_LIBDIR}/gtk-1.2/include
 
 	install -m 0644 gtk.m4 ${STAGING_DATADIR}/aclocal/
-	install -m 0755 gtk-config ${STAGING_BINDIR_CROSS}
+	install -m 0755 gtk-config ${STAGING_BINDIR_CROSS}/
 }
 
 do_install_append () {

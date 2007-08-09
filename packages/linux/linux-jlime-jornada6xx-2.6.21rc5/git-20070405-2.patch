@@ -1,0 +1,1058 @@
+diff --git a/arch/sh/boards/hp6xx/setup.c b/arch/sh/boards/hp6xx/setup.c
+index b5a9664..5c6726d 100644
+--- a/arch/sh/boards/hp6xx/setup.c
++++ b/arch/sh/boards/hp6xx/setup.c
+@@ -2,6 +2,8 @@
+  * linux/arch/sh/boards/hp6xx/setup.c
+  *
+  * Copyright (C) 2002 Andriy Skulysh
++ * Copyright (C) 2007 Kristoffer Ericson <Kristoffer_e1@hotmail.com>
++ *
+  *
+  * May be copied or modified under the terms of the GNU General Public
+  * License.  See linux/COPYING for more information.
+@@ -10,6 +12,7 @@
+  */
+ #include <linux/types.h>
+ #include <linux/init.h>
++#include <linux/platform_device.h>
+ #include <asm/hd64461.h>
+ #include <asm/io.h>
+ #include <asm/irq.h>
+@@ -19,6 +22,41 @@
+ #define	SCPCR	0xa4000116
+ #define SCPDR	0xa4000136
+ 
++/* CF Slot */
++static struct resource cf_ide_resources[] = {
++              [0] = {
++	              .start = 0x15000000 + 0x1f0,
++		      .end   = 0x15000000 + 0x1f0 + 0x08 - 0x01,
++		      .flags = IORESOURCE_MEM,
++		    },
++	      [1] = {
++	              .start = 0x15000000 + 0x1fe,
++		      .end   = 0x15000000 + 0x1fe + 0x01,
++		      .flags = IORESOURCE_MEM,
++		    },
++	      [2] = {
++	              .start = 93,
++		      .flags = IORESOURCE_IRQ,
++		    },
++};
++
++static struct platform_device cf_ide_device = {
++              .name         =  "pata_platform",
++	      .id           =  -1,
++	      .num_resources = ARRAY_SIZE(cf_ide_resources),
++	      .resource      = cf_ide_resources,
++};
++
++static struct platform_device *hp6xx_devices[] __initdata = {
++
++       &cf_ide_device,
++};
++
++static int __init hp6xx_devices_setup(void)
++{
++ return platform_add_devices(hp6xx_devices,ARRAY_SIZE(hp6xx_devices));
++}
++
+ static void __init hp6xx_setup(char **cmdline_p)
+ {
+ 	u8 v8;
+@@ -61,40 +99,12 @@ static void __init hp6xx_setup(char **cmdline_p)
+ 	ctrl_outw(v, SCPCR);
+ }
+ 
+-/*
+- * XXX: This is stupid, we should have a generic machine vector for the cchips
+- * and just wrap the platform setup code in to this, as it's the only thing
+- * that ends up being different.
+- */
++device_initcall(hp6xx_devices_setup);
++
+ struct sh_machine_vector mv_hp6xx __initmv = {
+ 	.mv_name = "hp6xx",
+ 	.mv_setup = hp6xx_setup,
+ 	.mv_nr_irqs = HD64461_IRQBASE + HD64461_IRQ_NUM,
+-
+-	.mv_inb = hd64461_inb,
+-	.mv_inw = hd64461_inw,
+-	.mv_inl = hd64461_inl,
+-	.mv_outb = hd64461_outb,
+-	.mv_outw = hd64461_outw,
+-	.mv_outl = hd64461_outl,
+-
+-	.mv_inb_p = hd64461_inb_p,
+-	.mv_inw_p = hd64461_inw,
+-	.mv_inl_p = hd64461_inl,
+-	.mv_outb_p = hd64461_outb_p,
+-	.mv_outw_p = hd64461_outw,
+-	.mv_outl_p = hd64461_outl,
+-
+-	.mv_insb = hd64461_insb,
+-	.mv_insw = hd64461_insw,
+-	.mv_insl = hd64461_insl,
+-	.mv_outsb = hd64461_outsb,
+-	.mv_outsw = hd64461_outsw,
+-	.mv_outsl = hd64461_outsl,
+-
+-	.mv_readw = hd64461_readw,
+-	.mv_writew = hd64461_writew,
+-
+ 	.mv_irq_demux = hd64461_irq_demux,
+ };
+ ALIAS_MV(hp6xx)
+diff --git a/arch/sh/cchips/hd6446x/hd64461/setup.c b/arch/sh/cchips/hd6446x/hd64461/setup.c
+index 4d49b5c..f59e73f 100644
+--- a/arch/sh/cchips/hd6446x/hd64461/setup.c
++++ b/arch/sh/cchips/hd6446x/hd64461/setup.c
+@@ -122,7 +122,7 @@ int hd64461_irq_demux(int irq)
+ 			}
+ 		}
+ 	}
+-	return __irq_demux(irq);
++	return (irq);
+ }
+ 
+ static struct irqaction irq0 = { hd64461_interrupt, IRQF_DISABLED, CPU_MASK_NONE, "HD64461", NULL, NULL };
+diff --git a/arch/sh/drivers/dma/dma-sh.c b/arch/sh/drivers/dma/dma-sh.c
+index 06ed060..b56fab8 100644
+--- a/arch/sh/drivers/dma/dma-sh.c
++++ b/arch/sh/drivers/dma/dma-sh.c
+@@ -19,6 +19,13 @@
+ #include <asm/io.h>
+ #include "dma-sh.h"
+ 
++#ifdef CONFIG_CPU_SUBTYPE_SH7709
++       #define DMTE0_IRQ 48
++       #define DMTE1_IRQ 49
++       #define DMTE2_IRQ 50
++       #define DMTE3_IRQ 51
++#endif       
++
+ static int dmte_irq_map[] = {
+ 	DMTE0_IRQ,
+ 	DMTE1_IRQ,
+diff --git a/arch/sh/kernel/cpu/sh3/setup-sh7709.c b/arch/sh/kernel/cpu/sh3/setup-sh7709.c
+index dc9b211..3e9bb0c 100644
+--- a/arch/sh/kernel/cpu/sh3/setup-sh7709.c
++++ b/arch/sh/kernel/cpu/sh3/setup-sh7709.c
+@@ -52,20 +52,29 @@ static int __init sh7709_devices_setup(void)
+ }
+ __initcall(sh7709_devices_setup);
+ 
+-#define IPRx(A,N) .addr=A, .shift=0*N*-1
++#define IPRx(A,N) .addr=A, .shift=N
+ #define IPRA(N)	IPRx(0xfffffee2UL,N)
+ #define IPRB(N)	IPRx(0xfffffee4UL,N)
++#define IPRC(N) IPRx(0xa4000016UL,N)
++#define IPRD(N) IPRx(0xa4000018UL,N)
+ #define IPRE(N)	IPRx(0xa400001aUL,N)
+ 
+ static struct ipr_data sh7709_ipr_map[] = {
+-	[16]		= { IPRA(15-12), 2 }, /* TMU TUNI0 */
+-	[17]		= { IPRA(11-8),  4 }, /* TMU TUNI1 */
+-	[22]		= { IPRA(3-0),   2 }, /* RTC CUI */
+-	[23 ... 26]	= { IPRB(7-4),   3 }, /* SCI */
+-	[27]		= { IPRB(15-12), 2 }, /* WDT ITI */
+-	[48 ... 51]	= { IPRE(15-12), 7 }, /* DMA */
+-	[52 ... 55]	= { IPRE(11-8),  3 }, /* IRDA */
+-	[56 ... 59]	= { IPRE(7-4),   3 }, /* SCIF */
++	[16]		= { IPRA(12), 2 }, /* TMU TUNI0 */
++	[17]            = { IPRA(8),  4 }, /* TMU TUNI1 */
++	[18 ... 19]	= { IPRA(4),  1 }, /* TMU TUNI1 */
++	[20 ... 22]	= { IPRA(0),  2 }, /* RTC CUI */
++	[23 ... 26]	= { IPRB(4),  3 }, /* SCI */
++	[27]		= { IPRB(12), 2 }, /* WDT ITI */
++	[32]            = { IPRC(0),  1 }, /* IRQ 0 */
++	[33]            = { IPRC(4),  1 }, /* IRQ 1 */
++	[34]            = { IPRC(8),  1 }, /* IRQ 2 APM */
++	[35]            = { IPRC(12), 1 }, /* IRQ 3 TOUCHSCREEN */
++	[36]            = { IPRD(0),  1 }, /* IRQ 4 */
++	[37]            = { IPRD(4),  1 }, /* IRQ 5 */
++	[48 ... 51]	= { IPRE(12), 7 }, /* DMA */
++	[52 ... 55]	= { IPRE(8),  3 }, /* IRDA */
++	[56 ... 59]	= { IPRE(4),  3 }, /* SCIF */
+ };
+ 
+ void __init init_IRQ_ipr()
+diff --git a/drivers/input/keyboard/Kconfig b/drivers/input/keyboard/Kconfig
+index f17e9c7..52a6323 100644
+--- a/drivers/input/keyboard/Kconfig
++++ b/drivers/input/keyboard/Kconfig
+@@ -68,6 +68,9 @@ config KEYBOARD_ATKBD_RDI_KEYCODES
+ 	  right-hand column will be interpreted as the key shown in the
+ 	  left-hand column.
+ 
++config KEYBOARD_HP680
++       tristate "HP 680 Keyboard Driver"
++
+ config KEYBOARD_SUNKBD
+ 	tristate "Sun Type 4 and Type 5 keyboard"
+ 	select SERIO
+diff --git a/drivers/input/keyboard/Makefile b/drivers/input/keyboard/Makefile
+index 586a0fe..09ee105 100644
+--- a/drivers/input/keyboard/Makefile
++++ b/drivers/input/keyboard/Makefile
+@@ -19,4 +19,4 @@ obj-$(CONFIG_KEYBOARD_HIL_OLD)		+= hilkbd.o
+ obj-$(CONFIG_KEYBOARD_OMAP)		+= omap-keypad.o
+ obj-$(CONFIG_KEYBOARD_AAED2000)		+= aaed2000_kbd.o
+ obj-$(CONFIG_KEYBOARD_GPIO)		+= gpio_keys.o
+-
++obj-$(CONFIG_KEYBOARD_HP680)            += scan_keyb.o hp680_keyb.o
+diff --git a/drivers/input/keyboard/hp680_keyb.c b/drivers/input/keyboard/hp680_keyb.c
+new file mode 100644
+index 0000000..d534a2c
+--- /dev/null
++++ b/drivers/input/keyboard/hp680_keyb.c
+@@ -0,0 +1,235 @@
++/*
++ * drivers/input/keyboard/hp680_keyb.c
++ *
++ * HP Jornada 680/690 scan keyboard
++ *
++ *  Copyright (C) 2005  Andriy Skulysh
++ *  Copyright (C) 2006  Paul Mundt
++ *  Copyright (C) 2007  Kristoffer Ericson
++ *
++ * Splited from drivers/input/keyboard/hp600_keyb.c
++ *
++ *	Copyright (C) 2000 YAEGASHI Takeshi
++ *	HP600 keyboard scan routine and translation table
++ *	Copyright (C) 2000 Niibe Yutaka
++ *	HP620 keyboard translation table
++ */
++#include <linux/kernel.h>
++#include <linux/module.h>
++#include <linux/init.h>
++#include <asm/delay.h>
++#include <asm/io.h>
++#include "scan_keyb.h"
++
++#define PCCR 0xa4000104
++#define PDCR 0xa4000106
++#define PECR 0xa4000108
++#define PFCR 0xa400010a
++#define PCDR 0xa4000124
++#define PDDR 0xa4000126
++#define PEDR 0xa4000128
++#define PFDR 0xa400012a
++#define PGDR 0xa400012c
++#define PHDR 0xa400012e
++#define PJDR 0xa4000130
++#define PKDR 0xa4000132
++#define PLDR 0xa4000134
++
++/***************************************************************
++HP Jornada 680(SWEDISH version) keyboard 
++[!] indicates Special Characters 
++
++_______________________________________________________________________
++| ESC     F1  F2   F3   F4   F5   F6   F7   F8   F9   F10        POWER|
++|  1    2    3    4    5    6    7    8    9    0    +   `    BKPSPACE|
++|*    Q    W    E    R    T    Y    U    I    O    P    !    ^   ENTER|
++| TAB   A    S    D    F    G    H    J    K    L    !    !   '  ENTER|
++| SHIFT   Z    X    C    V    B    N    M    ,    .    -     UP  SHIFT|
++| CTRL  WIN  ALT  ?  =======SPACE========  ALTG  DEL    LEF  DO  RI   ]
++-----------------------------------------------------------------------
++
++
++****************************************************************/
++
++
++
++/****************************************************************
++HP Jornada 690(Japanese version) keyboard scan matrix
++
++	PTC7	PTC6	PTC5	PTC4	PTC3	PTC2	PTC1	PTC0
++PTD1	REC			Escape	on/off	Han/Zen	Hira	Eisu
++PTD5	REC			Z	on/off	Enter	:	/
++PTD7	REC						Right	Down
++PTE0	REC			Windows	on/off
++PTE1	REC			A	on/off	]	[	;
++PTE3	REC			Tab	on/off	ShirtR	\	Up
++PTE6	REC			Q	on/off	BS	@	P
++PTE7	REC			1	on/off	^	-	0
++
++	PTF7	PTF6	PTF5	PTF4	PTF3	PTF2	PTF1	PTF0
++PTD1	F5	F4	F6	F7	F8	F3	F2	F1
++PTD5	N	B	M	,	.	V	C	X
++PTD7	Muhen	Alt			Left
++PTE0			Henkan	_	Del	Space		Ctrl
++PTE1	H	G	J	K	L	F	D	S
++PTE3							ShiftL
++PTE6	Y	T	U	I	O	R	E	W
++PTE7	6	5	7	8	9	4	3	2
++
++	PTG5	PTG4	PTG3	PTG0	PTH0
++*	REC	REW	FWW	Cover	on/off
++
++
++		7	6	5	4	3	2	1	0
++C: 0xffff 0xdf	IP	IP	IP	IP	IP	IP	IP	IP
++D: 0x6786 0x59	O	I	O	IP	I	F	O	I
++E: 0x5045 0x00	O	O	F	F	O	F	O	O
++F: 0xffff 0xff	IP	IP	IP	IP	IP	IP	IP	IP
++G: 0xaffe 0xfd	I	I	IP	IP	IP	IP	IP	I
++H: 0x70f2 0x49	O	IP	F	F	IP	IP	F	I
++J: 0x0704 0x22	F	F	O	IP	F	F	O	F
++K: 0x0100 0x10	F	F	F	O	F	F	F	F
++L: 0x0c3c 0x26	F	F	IP	F	F	IP	IP	F
++
++****************************************************************/
++
++static const unsigned char hp680_japanese_table[] = {
++/*
++      /* PTD1 */
++      /*  ?    ?     ?     ?    Esc    ?     ?     ?  */
++	0x3a, 0x70, 0x29, 0x00, 0x01, 0x00, 0x00, 0x00,
++      /* F1   F2    F3     F8    F7    F6    F4    F5  */
++	0x3b, 0x3c, 0x3d, 0x42, 0x41, 0x40, 0x3e, 0x3f,
++
++      /* PTD5 */
++      /* /    :    Enter  ?      Z     ?     ?     ?  */	
++	0x35, 0x28, 0x1c, 0x00, 0x2c, 0x00, 0x00, 0x00,
++      /* X    C     V     .     ,     M     B     N  */
++	0x2d, 0x2e, 0x2f, 0x34, 0x33, 0x32, 0x30, 0x31,
++
++      /* PTD7 */
++      /* Down  Right   ?    ?     ?     ?     ?     ?   */ 	
++ 	0x50, 0x4d, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
++      /*  ?    ?     ?    Left   ?     ?    Alt    ?	*/
++    	0x00, 0x00, 0x00, 0x4b, 0x00, 0x00, 0x38, 0x7b,
++
++      /* PTE0 */
++      /*   ?    ?      ?    ?    Win    ?     ?     ?  */	
++	0x00, 0x00, 0x00, 0x00, 0xdb, 0x00, 0x00, 0x00,
++      /* Ctrl	 ?   Space  Del   _     ?     ?     ?    */ 
++	0x1d, 0x00, 0x39, 0x53, 0x73, 0xf9, 0x00, 0x00,
++
++      /* PTE1 */
++      /*  ;    [      ]    ?     A     ?      ?    ?     */
++	0x27, 0x1b, 0x2b, 0x00, 0x1e, 0x00, 0x00, 0x00,
++      /*  S    D     F     L     K      J     G    H     */
++	0x1f, 0x20, 0x21, 0x26, 0x25, 0x24, 0x22, 0x23,
++
++      /* PTE3 */
++      /*  Up     \    ShiftR    ?    Q     ?     ?     ? */	
++	0x48,   0x7d,  0x36,  0x00, 0x0f, 0x00, 0x00, 0x00,
++      /*  ?    ShiftL   ?     ?     ?     ?     ?     ?  */	
++	0x00,   0x2a,  0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
++      
++      /* PTE6 */
++      /*  P     @     BS    ?     Q     ?     ?     ?  */
++	0x19, 0x1a, 0x0e, 0x00, 0x10, 0x00, 0x00, 0x00,
++      /*  W     E     R     O     I     U     T     Y  */	
++	0x11, 0x12, 0x13, 0x18, 0x17, 0x16, 0x14, 0x15,
++
++      /* PTE7 */
++      /*  0     +    =      ?     1     ?     ?     ?  */
++      	0x0b, 0x0c, 0x0d, 0x00, 0x02, 0x00, 0x00, 0x00,
++      /*  2     3     4     9     8     7     5     6  */
++	0x03, 0x04, 0x05, 0x0a, 0x09, 0x08, 0x06, 0x07, 
++
++      /* **** */
++	0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
++	0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
++};
++
++static int hp680_japanese_scan_kbd(unsigned char *s)
++{
++	int i;
++	unsigned short ec_static,dc_static; /* = UINT16_t */
++        unsigned char matrix_switch[] = {
++		0xfd, 0xff,   /* PTD1 PD(1) */
++		0xdf, 0xff,   /* PTD5 PD(5) */
++		0x7f, 0xff,   /* PTD7 PD(7) */
++		0xff, 0xfe,   /* PTE0 PE(0) */
++		0xff, 0xfd,   /* PTE1 PE(1) */
++                0xff, 0xf7,   /* PTE3 PE(3) */
++		0xff, 0xbf,   /* PTE6 PE(6) */		
++                0xff, 0x7f,   /* PTE7 PE(7) */		
++	}, *t=matrix_switch;
++        /* PD(x) :
++	1.   0xcc0c & (1~(1 << (2*(x)+1)))))
++	2.   (0xf0cf & 0xfffff) */
++        /* PE(x) :
++	1.   0xcc0c & 0xffff
++	2.   0xf0cf & (1~(1 << (2*(x)+1))))) */
++        unsigned short matrix_PDE[] = {
++     	        0xcc04, 0xf0cf,  /* PD(1) */
++	        0xc40c, 0xf0cf,	 /* PD(5) */ 
++	        0x4c0c, 0xf0cf,  /* PD(7) */
++		0xcc0c, 0xf0cd,  /* PE(0) */
++		0xcc0c, 0xf0c7,	 /* PE(1) */
++	        0xcc0c, 0xf04f,  /* PE(3) */
++		0xcc0c, 0xd0cf,	 /* PE(6) */
++	        0xcc0c, 0x70cf,	 /* PE(7) */
++	        }
++        , *y=matrix_PDE;
++	/* Save these control reg bits */
++	dc_static = (ctrl_inw(PDCR) & (~0xcc0c));
++        ec_static = (ctrl_inw(PECR) & (~0xf0cf));
++
++	for(i=0; i<8; i++) {
++                /* disable output for all but the one we want to scan */
++		ctrl_outw((dc_static | *y++), PDCR);
++		ctrl_outw((ec_static | *y++), PECR);
++                udelay(5);
++	       
++		/* Get scanline row */
++	        ctrl_outb(*t++, PDDR);
++		ctrl_outb(*t++, PEDR);
++                udelay(50);
++
++		/* Read data */
++		*s++=ctrl_inb(PCDR);
++		*s++=ctrl_inb(PFDR);
++	}
++        /* Scan no lines */
++	ctrl_outb(0xff, PDDR);
++	ctrl_outb(0xff, PEDR);
++        
++        /* Enable all scanlines */
++	ctrl_outw((dc_static | (0x5555 & 0xcc0c)),PDCR);
++	ctrl_outw((ec_static | (0x5555 & 0xf0cf)),PECR);
++        /* Ignore extra keys and events */
++
++	*s++=ctrl_inb(PGDR);
++	*s++=ctrl_inb(PHDR);
++ 
++	return 0;
++}
++
++static struct scan_keyboard hp680_kbd = {
++	.scan		= hp680_japanese_scan_kbd,
++	.table		= hp680_japanese_table,
++	.length		= 16,
++};
++
++static int __init hp680_kbd_init_hw(void)
++{
++	printk(KERN_INFO "HP680 matrix scan keyboard registered\n");
++	return register_scan_keyboard(&hp680_kbd);
++}
++
++static void __exit hp680_kbd_exit_hw(void)
++{
++	unregister_scan_keyboard(&hp680_kbd);
++}
++
++module_init(hp680_kbd_init_hw);
++module_exit(hp680_kbd_exit_hw);
++MODULE_LICENSE("GPL");
+diff --git a/drivers/input/keyboard/scan_keyb.c b/drivers/input/keyboard/scan_keyb.c
+new file mode 100644
+index 0000000..e65668b
+--- /dev/null
++++ b/drivers/input/keyboard/scan_keyb.c
+@@ -0,0 +1,148 @@
++/*
++ * Generic scan keyboard driver
++ *
++ * Copyright (C) 2000 YAEGASHI Takeshi
++ * Copyright (C) 2003 Andriy Skulysh
++ * Copyright (C) 2006 Paul Mundt
++ *
++ * This file is subject to the terms and conditions of the GNU General Public
++ * License.  See the file "COPYING" in the main directory of this archive
++ * for more details.
++ */
++
++#include <linux/kernel.h>
++#include <linux/module.h>
++#include <linux/sched.h>
++#include <linux/init.h>
++#include <linux/slab.h>
++#include <linux/interrupt.h>
++#include <linux/kbd_kern.h>
++#include <linux/input.h>
++#include <linux/timer.h>
++#include "scan_keyb.h"
++
++#define SCANHZ	(HZ/20)
++
++static int scan_jiffies;
++static struct scan_keyboard *keyboards;
++struct timer_list scan_timer;
++static char *hpkbd_name = "Hitachi scankeyboard";
++static char *hpkbd_phys = "input0";
++
++static void check_kbd(struct scan_keyboard *kbd,
++		      unsigned char *new, unsigned char *old)
++{
++	const unsigned char *table = kbd->table;
++	int length = kbd->length;
++	int need_tasklet_schedule = 0;
++	unsigned int xor, bit;
++
++	while (length-- > 0) {
++		if ((xor = *new ^ *old) == 0)
++			table += 8;
++		else {
++			for (bit = 0x01; bit < 0x100; bit <<= 1) {
++				if (xor & bit) {
++					input_report_key(kbd->dev, *table,
++							 !(*new & bit));
++					need_tasklet_schedule = 1;
++				}
++
++				table++;
++			}
++		}
++
++		new++;
++		old++;
++	}
++
++	if (need_tasklet_schedule) {
++		input_sync(kbd->dev);
++		tasklet_schedule(&keyboard_tasklet);
++	}
++}
++
++static void scan_kbd(unsigned long dummy)
++{
++	struct scan_keyboard *kbd;
++
++	scan_jiffies++;
++
++	for (kbd = keyboards; kbd != NULL; kbd = kbd->next) {
++		if (scan_jiffies & 1) {
++			if (!kbd->scan(kbd->s0))
++				check_kbd(kbd, kbd->s0, kbd->s1);
++			else
++				memcpy(kbd->s0, kbd->s1, kbd->length);
++		} else {
++			if (!kbd->scan(kbd->s1))
++				check_kbd(kbd, kbd->s1, kbd->s0);
++			else
++				memcpy(kbd->s1, kbd->s0, kbd->length);
++		}
++	}
++
++	mod_timer(&scan_timer, jiffies + SCANHZ);
++}
++
++int register_scan_keyboard(struct scan_keyboard *kbd)
++{
++	int i;
++
++	kbd->s0 = kmalloc(kbd->length, GFP_KERNEL);
++	if (kbd->s0 == NULL)
++		goto error;
++
++	kbd->s1 = kmalloc(kbd->length, GFP_KERNEL);
++	if (kbd->s1 == NULL)
++		goto error;
++
++	memset(kbd->s0, -1, kbd->length);
++	memset(kbd->s1, -1, kbd->length);
++
++	kbd->dev = input_allocate_device();
++	if (!kbd->dev)
++		goto error;
++
++	kbd->dev->name = hpkbd_name;
++	kbd->dev->phys = hpkbd_phys;
++	kbd->dev->evbit[0] = BIT(EV_KEY) | BIT(EV_REP);
++	//init_input_dev(kbd->dev);
++	kbd->dev->keycode = (unsigned char *)kbd->table;
++	kbd->dev->keycodesize = sizeof(unsigned char);
++	kbd->dev->keycodemax = ARRAY_SIZE(kbd->table);
++
++	for (i = 0; i < 128; i++)
++		if (kbd->table[i])
++			set_bit(kbd->table[i], kbd->dev->keybit);
++
++	clear_bit(0, kbd->dev->keybit);
++	input_register_device(kbd->dev);
++
++	kbd->next = keyboards;
++	keyboards = kbd;
++
++	init_timer(&scan_timer);
++	scan_timer.expires = jiffies + SCANHZ;
++	scan_timer.data = 0;
++	scan_timer.function = scan_kbd;
++	add_timer(&scan_timer);
++
++	return 0;
++
++error:
++	kfree(kbd->s1);
++	kfree(kbd->s0);
++
++	return -ENOMEM;
++}
++EXPORT_SYMBOL_GPL(register_scan_keyboard);
++
++void unregister_scan_keyboard(struct scan_keyboard *kbd)
++{
++	del_timer_sync(&scan_timer);
++	keyboards = kbd->next;
++	input_unregister_device(kbd->dev);
++	input_free_device(kbd->dev);
++}
++EXPORT_SYMBOL_GPL(unregister_scan_keyboard);
+diff --git a/drivers/input/keyboard/scan_keyb.h b/drivers/input/keyboard/scan_keyb.h
+new file mode 100644
+index 0000000..e50510f
+--- /dev/null
++++ b/drivers/input/keyboard/scan_keyb.h
+@@ -0,0 +1,16 @@
++#ifndef	__DRIVER_CHAR_SCAN_KEYB_H
++#define	__DRIVER_CHAR_SCAN_KEYB_H
++
++struct scan_keyboard {
++	struct scan_keyboard *next;
++	int (*scan)(unsigned char *buffer);
++	const unsigned char *table;
++	unsigned char *s0, *s1;
++	int length;
++	struct input_dev *dev;
++};
++
++int register_scan_keyboard(struct scan_keyboard *);
++void unregister_scan_keyboard(struct scan_keyboard *);
++
++#endif
+diff --git a/drivers/input/touchscreen/hp680_ts_input.c b/drivers/input/touchscreen/hp680_ts_input.c
+index 2490874..0450d28 100644
+--- a/drivers/input/touchscreen/hp680_ts_input.c
++++ b/drivers/input/touchscreen/hp680_ts_input.c
+@@ -18,12 +18,12 @@
+ #define	PHDR	0xa400012e
+ #define SCPDR	0xa4000136
+ 
+-static void do_softint(void *data);
++static void do_softint(struct work_struct *work);
+ 
+ static struct input_dev *hp680_ts_dev;
+-static DECLARE_WORK(work, do_softint, 0);
++static DECLARE_DELAYED_WORK(work, do_softint);
+ 
+-static void do_softint(void *data)
++static void do_softint(struct work_struct *work)
+ {
+ 	int absx = 0, absy = 0;
+ 	u8 scpdr;
+@@ -68,9 +68,8 @@ static void do_softint(void *data)
+ 
+ static irqreturn_t hp680_ts_interrupt(int irq, void *dev)
+ {
+-	disable_irq_nosync(irq);
++        disable_irq_nosync(irq);
+ 	schedule_delayed_work(&work, HZ / 20);
+-
+ 	return IRQ_HANDLED;
+ }
+ 
+@@ -108,7 +107,7 @@ static int __init hp680_ts_init(void)
+ 	return 0;
+ 
+  fail2:	free_irq(HP680_TS_IRQ, NULL);
+-	cancel_delayed_work(&work);
++	cancel_delayed_work(&work); /* delay_ts->work */
+ 	flush_scheduled_work();
+  fail1:	input_free_device(hp680_ts_dev);
+ 	return err;
+diff --git a/drivers/video/backlight/hp680_bl.c b/drivers/video/backlight/hp680_bl.c
+index 0899fcc..109329a 100644
+--- a/drivers/video/backlight/hp680_bl.c
++++ b/drivers/video/backlight/hp680_bl.c
+@@ -125,8 +125,8 @@ static int hp680bl_remove(struct platform_device *pdev)
+ {
+ 	struct backlight_device *bd = platform_get_drvdata(pdev);
+ 
+-	hp680bl_data.brightness = 0;
+-	hp680bl_data.power = 0;
++//	hp680bl_data.brightness = 0;
++//	hp680bl_data.power = 0;
+ 	hp680bl_send_intensity(bd);
+ 
+ 	backlight_device_unregister(bd);
+diff --git a/include/asm-sh/hd64461.h b/include/asm-sh/hd64461.h
+index 27e5c34..cd2e5f9 100644
+--- a/include/asm-sh/hd64461.h
++++ b/include/asm-sh/hd64461.h
+@@ -9,111 +9,122 @@
+ /* Constants for PCMCIA mappings */
+ #define HD64461_PCC_WINDOW	0x01000000
+ 
+-#define HD64461_PCC0_BASE	0xb8000000	/* area 6 */
+-#define HD64461_PCC0_ATTR	(HD64461_PCC0_BASE)
+-#define HD64461_PCC0_COMM	(HD64461_PCC0_BASE+HD64461_PCC_WINDOW)
+-#define HD64461_PCC0_IO		(HD64461_PCC0_BASE+2*HD64461_PCC_WINDOW)
+-
+-#define HD64461_PCC1_BASE	0xb4000000	/* area 5 */
+-#define HD64461_PCC1_ATTR	(HD64461_PCC1_BASE)
+-#define HD64461_PCC1_COMM	(HD64461_PCC1_BASE+HD64461_PCC_WINDOW)
+-
+-#define HD64461_STBCR	0x10000
+-#define HD64461_STBCR_CKIO_STBY			0x2000
+-#define HD64461_STBCR_SAFECKE_IST		0x1000
+-#define HD64461_STBCR_SLCKE_IST			0x0800
+-#define HD64461_STBCR_SAFECKE_OST		0x0400
+-#define HD64461_STBCR_SLCKE_OST			0x0200
+-#define HD64461_STBCR_SMIAST			0x0100
+-#define HD64461_STBCR_SLCDST			0x0080
+-#define HD64461_STBCR_SPC0ST			0x0040
+-#define HD64461_STBCR_SPC1ST			0x0020
+-#define HD64461_STBCR_SAFEST			0x0010
+-#define HD64461_STBCR_STM0ST			0x0008
+-#define HD64461_STBCR_STM1ST			0x0004
+-#define HD64461_STBCR_SIRST				0x0002
+-#define HD64461_STBCR_SURTST			0x0001
+-
+-#define HD64461_SYSCR	0x10002
+-#define HD64461_SCPUCR	0x10004
+-
+-#define HD64461_LCDCBAR		0x11000
+-#define HD64461_LCDCLOR		0x11002
+-#define HD64461_LCDCCR		0x11004
+-#define HD64461_LCDCCR_STBACK	0x0400
+-#define HD64461_LCDCCR_STREQ	0x0100
+-#define HD64461_LCDCCR_MOFF	0x0080
+-#define HD64461_LCDCCR_REFSEL	0x0040
+-#define HD64461_LCDCCR_EPON	0x0020
+-#define HD64461_LCDCCR_SPON	0x0010
+-
+-#define	HD64461_LDR1		0x11010
++#define HD64461_PCC0_BASE	0xb8000000	                         /* area 6 */
++#define HD64461_PCC0_ATTR	(HD64461_PCC0_BASE)                      /* 0xb8000000 */
++#define HD64461_PCC0_COMM	(HD64461_PCC0_BASE+HD64461_PCC_WINDOW)   /* 0xb9000000 */
++#define HD64461_PCC0_IO		(HD64461_PCC0_BASE+2*HD64461_PCC_WINDOW) /* 0xba000000 */
++
++#define HD64461_PCC1_BASE	0xb4000000	                         /* area 5     */
++#define HD64461_PCC1_ATTR	(HD64461_PCC1_BASE)                      /* 0xb4000000 */
++#define HD64461_PCC1_COMM	(HD64461_PCC1_BASE+HD64461_PCC_WINDOW)   /* 0xb5000000 */
++
++/* if PORT < 0xf000 then ADDR = 0xa0000000 + PORT  */
++#define HD64461_STBCR	                        (CONFIG_HD64461_IOBASE)
++#define HD64461_STBCR_CKIO_STBY	                0xa0002000
++#define HD64461_STBCR_SAFECKE_IST		0xa0001000
++#define HD64461_STBCR_SLCKE_IST			0xa0000800
++#define HD64461_STBCR_SAFECKE_OST		0xa0000400
++#define HD64461_STBCR_SLCKE_OST			0xa0000200
++#define HD64461_STBCR_SMIAST			0xa0000100
++#define HD64461_STBCR_SLCDST			0xa0000080
++#define HD64461_STBCR_SPC0ST			0xa0000040
++#define HD64461_STBCR_SPC1ST			0xa0000020
++#define HD64461_STBCR_SAFEST			0xa0000010
++#define HD64461_STBCR_STM0ST			0xa0000008
++#define HD64461_STBCR_STM1ST			0xa0000004
++#define HD64461_STBCR_SIRST			0xa0000002
++#define HD64461_STBCR_SURTST			0xa0000001
++
++/* if PORT < 0x20000 then ADDR = CONFIG_HD64461_IOBASE + PORT - 0x10000 */
++#define HD64461_SYSCR	        (CONFIG_HD64461_IOBASE + 0x10002 - 0x10000)
++#define HD64461_SCPUCR	        (CONFIG_HD64461_IOBASE + 0x10004 - 0x10000)
++#define HD64461_LCDCBAR		(CONFIG_HD64461_IOBASE + 0x11000 - 0x10000)
++#define HD64461_LCDCLOR		(CONFIG_HD64461_IOBASE + 0x11002 - 0x10000)
++#define HD64461_LCDCCR		(CONFIG_HD64461_IOBASE + 0x11004 - 0x10000)
++
++
++/* if PORT < 0xf000 then ADDR = 0xa0000000 + PORT */
++#define HD64461_LCDCCR_STBACK	(0xa0000000 + 0x0400)
++#define HD64461_LCDCCR_STREQ	(0xa0000000 + 0x0100)
++#define HD64461_LCDCCR_MOFF	(0xa0000000 + 0x0080)
++#define HD64461_LCDCCR_REFSEL	(0xa0000000 + 0x0040)
++#define HD64461_LCDCCR_EPON	(0xa0000000 + 0x0020)
++#define HD64461_LCDCCR_SPON	(0xa0000000 + 0x0010)
++
++/* if PORT < 0x20000 then ADDR = CONFIG_HD64461_IOBASE + PORT - 0x10000 */
++#define	HD64461_LDR1		(CONFIG_HD64461_IOBASE + 0x11010 - 0x10000)
++
++/* if PORT < 0xf000 then ADDR = 0xa0000000 + PORT */
+ #define	HD64461_LDR1_DON	0x01
+ #define	HD64461_LDR1_DINV	0x80
+ 
+-#define	HD64461_LDR2		0x11012
+-#define	HD64461_LDHNCR		0x11014
+-#define	HD64461_LDHNSR		0x11016
+-#define HD64461_LDVNTR		0x11018
+-#define HD64461_LDVNDR		0x1101a
+-#define HD64461_LDVSPR		0x1101c
+-#define HD64461_LDR3		0x1101e
+-
+-#define HD64461_CPTWAR		0x11030
+-#define HD64461_CPTWDR		0x11032
+-#define HD64461_CPTRAR		0x11034
+-#define HD64461_CPTRDR		0x11036
+-
+-#define HD64461_GRDOR		0x11040
+-#define HD64461_GRSCR		0x11042
+-#define HD64461_GRCFGR		0x11044
++/* if PORT < 0x20000 then ADDR = CONFIG_HD64461_IOBASE + PORT - 0x10000 */
++#define	HD64461_LDR2		(CONFIG_HD64461_IOBASE +  0x11012 - 0x10000)
++#define	HD64461_LDHNCR		(CONFIG_HD64461_IOBASE +  0x11014 - 0x10000)
++#define	HD64461_LDHNSR		(CONFIG_HD64461_IOBASE +  0x11016 - 0x10000)
++#define HD64461_LDVNTR		(CONFIG_HD64461_IOBASE +  0x11018 - 0x10000)
++#define HD64461_LDVNDR		(CONFIG_HD64461_IOBASE +  0x1101a - 0x10000)
++#define HD64461_LDVSPR		(CONFIG_HD64461_IOBASE +  0x1101c - 0x10000)
++#define HD64461_LDR3		(CONFIG_HD64461_IOBASE +  0x1101e - 0x10000)
++
++#define HD64461_CPTWAR		(CONFIG_HD64461_IOBASE +  0x11030 - 0x10000)
++#define HD64461_CPTWDR		(CONFIG_HD64461_IOBASE +  0x11032 - 0x10000)
++#define HD64461_CPTRAR		(CONFIG_HD64461_IOBASE +  0x11034 - 0x10000)
++#define HD64461_CPTRDR		(CONFIG_HD64461_IOBASE +  0x11036 - 0x10000)
++
++#define HD64461_GRDOR		(CONFIG_HD64461_IOBASE +  0x11040 - 0x10000)
++#define HD64461_GRSCR		(CONFIG_HD64461_IOBASE +  0x11042 - 0x10000)
++#define HD64461_GRCFGR		(CONFIG_HD64461_IOBASE +  0x11044 - 0x10000)
++
+ #define HD64461_GRCFGR_ACCSTATUS		0x10
+ #define HD64461_GRCFGR_ACCRESET			0x08
+-#define HD64461_GRCFGR_ACCSTART_BITBLT	0x06
+-#define HD64461_GRCFGR_ACCSTART_LINE	0x04
++#define HD64461_GRCFGR_ACCSTART_BITBLT	        0x06
++#define HD64461_GRCFGR_ACCSTART_LINE	        0x04
+ #define HD64461_GRCFGR_COLORDEPTH16		0x01
+ 
+-#define HD64461_LNSARH		0x11046
+-#define HD64461_LNSARL		0x11048
+-#define HD64461_LNAXLR		0x1104a
+-#define HD64461_LNDGR		0x1104c
+-#define HD64461_LNAXR		0x1104e
+-#define HD64461_LNERTR		0x11050
+-#define HD64461_LNMDR		0x11052
+-#define HD64461_BBTSSARH	0x11054
+-#define HD64461_BBTSSARL	0x11056
+-#define HD64461_BBTDSARH	0x11058
+-#define HD64461_BBTDSARL	0x1105a
+-#define HD64461_BBTDWR		0x1105c
+-#define HD64461_BBTDHR		0x1105e
+-#define HD64461_BBTPARH		0x11060
+-#define HD64461_BBTPARL		0x11062
+-#define HD64461_BBTMARH		0x11064
+-#define HD64461_BBTMARL		0x11066
+-#define HD64461_BBTROPR		0x11068
+-#define HD64461_BBTMDR		0x1106a
+-
++/* if PORT < 0x20000 then CONFIG_HD64461_IOBASE + PORT - 0x10000 */
++#define HD64461_LNSARH		(CONFIG_HD64461_IOBASE + 0x11046 - 0x10000)
++#define HD64461_LNSARL		(CONFIG_HD64461_IOBASE + 0x11048 - 0x10000)
++#define HD64461_LNAXLR		(CONFIG_HD64461_IOBASE + 0x1104a - 0x10000)
++#define HD64461_LNDGR		(CONFIG_HD64461_IOBASE + 0x1104c - 0x10000)
++#define HD64461_LNAXR		(CONFIG_HD64461_IOBASE + 0x1104e - 0x10000)
++#define HD64461_LNERTR		(CONFIG_HD64461_IOBASE + 0x11050 - 0x10000)
++#define HD64461_LNMDR		(CONFIG_HD64461_IOBASE + 0x11052 - 0x10000)
++#define HD64461_BBTSSARH	(CONFIG_HD64461_IOBASE + 0x11054 - 0x10000)
++#define HD64461_BBTSSARL	(CONFIG_HD64461_IOBASE + 0x11056 - 0x10000)
++#define HD64461_BBTDSARH	(CONFIG_HD64461_IOBASE + 0x11058 - 0x10000)
++#define HD64461_BBTDSARL	(CONFIG_HD64461_IOBASE + 0x1105a - 0x10000)
++#define HD64461_BBTDWR		(CONFIG_HD64461_IOBASE + 0x1105c - 0x10000)
++#define HD64461_BBTDHR		(CONFIG_HD64461_IOBASE + 0x1105e - 0x10000)
++#define HD64461_BBTPARH		(CONFIG_HD64461_IOBASE + 0x11060 - 0x10000)
++#define HD64461_BBTPARL		(CONFIG_HD64461_IOBASE + 0x11062 - 0x10000)
++#define HD64461_BBTMARH		(CONFIG_HD64461_IOBASE + 0x11064 - 0x10000)
++#define HD64461_BBTMARL		(CONFIG_HD64461_IOBASE + 0x11066 - 0x10000)
++#define HD64461_BBTROPR		(CONFIG_HD64461_IOBASE + 0x11068 - 0x10000)
++#define HD64461_BBTMDR		(CONFIG_HD64461_IOBASE + 0x1106a - 0x10000)
++
++/* These must be like this, otherwise the Jornada will not boot! */
+ /* PC Card Controller Registers */
+-#define HD64461_PCC0ISR         0x12000 /* socket 0 interface status */
+-#define HD64461_PCC0GCR         0x12002 /* socket 0 general control */
+-#define HD64461_PCC0CSCR        0x12004 /* socket 0 card status change */
+-#define HD64461_PCC0CSCIER      0x12006 /* socket 0 card status change interrupt enable */
+-#define HD64461_PCC0SCR         0x12008 /* socket 0 software control */
+-#define HD64461_PCC1ISR         0x12010 /* socket 1 interface status */
+-#define HD64461_PCC1GCR         0x12012 /* socket 1 general control */
+-#define HD64461_PCC1CSCR        0x12014 /* socket 1 card status change */
+-#define HD64461_PCC1CSCIER      0x12016 /* socket 1 card status change interrupt enable */
+-#define HD64461_PCC1SCR         0x12018 /* socket 1 software control */
++#define HD64461_PCC0ISR         (CONFIG_HD64461_IOBASE + 0x12000 - 0x10000)  /* socket 0 interface status */
++#define HD64461_PCC0GCR         (CONFIG_HD64461_IOBASE + 0x12002 - 0x10000)  /* socket 0 general control */
++#define HD64461_PCC0CSCR        (CONFIG_HD64461_IOBASE + 0x12004 - 0x10000)  /* socket 0 card status change */
++#define HD64461_PCC0CSCIER      (CONFIG_HD64461_IOBASE + 0x12006 - 0x10000)  /* socket 0 card status change interrupt enable */
++#define HD64461_PCC0SCR         (CONFIG_HD64461_IOBASE + 0x12008 - 0x10000)  /* socket 0 software control */
++#define HD64461_PCC1ISR         (CONFIG_HD64461_IOBASE + 0x12010 - 0x10000)  /* socket 1 interface status */
++#define HD64461_PCC1GCR         (CONFIG_HD64461_IOBASE + 0x12012 - 0x10000)  /* socket 1 general control */
++#define HD64461_PCC1CSCR        (CONFIG_HD64461_IOBASE + 0x12014 - 0x10000)  /* socket 1 card status change */
++#define HD64461_PCC1CSCIER      (CONFIG_HD64461_IOBASE + 0x12016 - 0x10000) /* socket 1 card status change interrupt enable */
++#define HD64461_PCC1SCR         (CONFIG_HD64461_IOBASE + 0x12018 - 0x10000) /* socket 1 software control */
+ 
+ /* PCC Interface Status Register */
+-#define HD64461_PCCISR_READY		0x80	/* card ready */
+-#define HD64461_PCCISR_MWP		0x40	/* card write-protected */
+-#define HD64461_PCCISR_VS2		0x20	/* voltage select pin 2 */
+-#define HD64461_PCCISR_VS1		0x10	/* voltage select pin 1 */
+-#define HD64461_PCCISR_CD2		0x08	/* card detect 2 */
+-#define HD64461_PCCISR_CD1		0x04	/* card detect 1 */
+-#define HD64461_PCCISR_BVD2		0x02	/* battery 1 */
+-#define HD64461_PCCISR_BVD1		0x01	/* battery 1 */
++#define HD64461_PCCISR_READY	0x80	/* card ready */
++#define HD64461_PCCISR_MWP	0x40	/* card write-protected */
++#define HD64461_PCCISR_VS2	0x20	/* voltage select pin 2 */
++#define HD64461_PCCISR_VS1	0x10	/* voltage select pin 1 */
++#define HD64461_PCCISR_CD2	0x08	/* card detect 2 */
++#define HD64461_PCCISR_CD1	0x04	/* card detect 1 */
++#define HD64461_PCCISR_BVD2	0x02	/* battery 1 */
++#define HD64461_PCCISR_BVD1	0x01	/* battery 1 */
+ 
+ #define HD64461_PCCISR_PCD_MASK		0x0c    /* card detect */
+ #define HD64461_PCCISR_BVD_MASK		0x03    /* battery voltage */
+@@ -160,29 +171,29 @@
+ #define HD64461_PCCSCR_VCC1		0x02	/* voltage control pin 1 */
+ #define HD64461_PCCSCR_SWP		0x01    /* write protect */
+ 
+-#define HD64461_P0OCR           0x1202a
+-#define HD64461_P1OCR           0x1202c
+-#define HD64461_PGCR            0x1202e
+-
+-#define HD64461_GPACR		0x14000
+-#define HD64461_GPBCR		0x14002
+-#define HD64461_GPCCR		0x14004
+-#define HD64461_GPDCR		0x14006
+-#define HD64461_GPADR		0x14010
+-#define HD64461_GPBDR		0x14012
+-#define HD64461_GPCDR		0x14014
+-#define HD64461_GPDDR		0x14016
+-#define HD64461_GPAICR		0x14020
+-#define HD64461_GPBICR		0x14022
+-#define HD64461_GPCICR		0x14024
+-#define HD64461_GPDICR		0x14026
+-#define HD64461_GPAISR		0x14040
+-#define HD64461_GPBISR		0x14042
+-#define HD64461_GPCISR		0x14044
+-#define HD64461_GPDISR		0x14046
+-
+-#define HD64461_NIRR		0x15000
+-#define HD64461_NIMR		0x15002
++#define HD64461_P0OCR           (CONFIG_HD64461_IOBASE + 0x1202a - 0x10000)
++#define HD64461_P1OCR           (CONFIG_HD64461_IOBASE + 0x1202c - 0x10000)
++#define HD64461_PGCR            (CONFIG_HD64461_IOBASE + 0x1202e - 0x10000)
++
++#define HD64461_GPACR		(CONFIG_HD64461_IOBASE + 0x14000 - 0x10000)
++#define HD64461_GPBCR		(CONFIG_HD64461_IOBASE + 0x14002 - 0x10000)
++#define HD64461_GPCCR		(CONFIG_HD64461_IOBASE + 0x14004 - 0x10000)
++#define HD64461_GPDCR		(CONFIG_HD64461_IOBASE + 0x14006 - 0x10000)
++#define HD64461_GPADR		(CONFIG_HD64461_IOBASE + 0x14010 - 0x10000)
++#define HD64461_GPBDR		(CONFIG_HD64461_IOBASE + 0x14012 - 0x10000)
++#define HD64461_GPCDR		(CONFIG_HD64461_IOBASE + 0x14014 - 0x10000)
++#define HD64461_GPDDR		(CONFIG_HD64461_IOBASE + 0x14016 - 0x10000)
++#define HD64461_GPAICR		(CONFIG_HD64461_IOBASE + 0x14020 - 0x10000)
++#define HD64461_GPBICR		(CONFIG_HD64461_IOBASE + 0x14022 - 0x10000)
++#define HD64461_GPCICR		(CONFIG_HD64461_IOBASE + 0x14024 - 0x10000)
++#define HD64461_GPDICR		(CONFIG_HD64461_IOBASE + 0x14026 - 0x10000)
++#define HD64461_GPAISR		(CONFIG_HD64461_IOBASE + 0x14040 - 0x10000)
++#define HD64461_GPBISR		(CONFIG_HD64461_IOBASE + 0x14042 - 0x10000)
++#define HD64461_GPCISR		(CONFIG_HD64461_IOBASE + 0x14044 - 0x10000)
++#define HD64461_GPDISR		(CONFIG_HD64461_IOBASE + 0x14046 - 0x10000)
++
++#define HD64461_NIRR		0xb0005000        /* 0x10005000 */
++#define HD64461_NIMR		0xb0005002        /* 0x10005002 */
+ 
+ #define HD64461_IRQBASE		OFFCHIP_IRQ_BASE
+ #define HD64461_IRQ_NUM		16
+diff --git a/include/asm-sh/io.h b/include/asm-sh/io.h
+index a0e55b0..08848ee 100644
+--- a/include/asm-sh/io.h
++++ b/include/asm-sh/io.h
+@@ -143,6 +143,7 @@ void __raw_readsl(unsigned long addr, void *data, int longlen);
+ #define readl_relaxed(a) readl(a)
+ 
+ /* Simple MMIO */
++#ifndef CONFIG_CPU_SUBTYPE_SH7709
+ #define ioread8(a)		readb(a)
+ #define ioread16(a)		readw(a)
+ #define ioread16be(a)		be16_to_cpu(__raw_readw((a)))
+@@ -154,6 +155,7 @@ void __raw_readsl(unsigned long addr, void *data, int longlen);
+ #define iowrite16be(v,a)	__raw_writew(cpu_to_be16((v)),(a))
+ #define iowrite32(v,a)		writel((v),(a))
+ #define iowrite32be(v,a)	__raw_writel(cpu_to_be32((v)),(a))
++#endif
+ 
+ #define ioread8_rep(a,d,c)	insb((a),(d),(c))
+ #define ioread16_rep(a,d,c)	insw((a),(d),(c))
+@@ -163,6 +165,20 @@ void __raw_readsl(unsigned long addr, void *data, int longlen);
+ #define iowrite16_rep(a,s,c)	outsw((a),(s),(c))
+ #define iowrite32_rep(a,s,c)	outsl((a),(s),(c))
+ 
++#ifdef CONFIG_CPU_SUBTYPE_SH7709
++ #define ioread8(a)             inb(a)
++ #define ioread16(a)            inw(a)
++ #define ioread16be(a)          be16_to_cpu(inw((a)))
++ #define ioread32(a)            inl(a)
++ #define ioread32be(v,a)        be32_to_cpu(inl((a)))
++ 
++ #define iowrite8(v,a)            outb((v),(a))
++ #define iowrite16(v,a)           outw((v),(a))
++ #define iowrite16be(v,a)         outw(cpu_to_be16((v),(a)))
++ #define iowrite32(v,a)           outl((v),(a))
++ #define iowrite32be(v,a)         outl(cpu_to_be32((v),(a)))
++#endif
++
+ #define mmiowb()	wmb()	/* synco on SH-4A, otherwise a nop */
+ 
+ /*
+diff --git a/include/asm-sh/irq.h b/include/asm-sh/irq.h
+index afe188f..95f9a1a 100644
+--- a/include/asm-sh/irq.h
++++ b/include/asm-sh/irq.h
+@@ -23,6 +23,40 @@
+       defined(CONFIG_CPU_SUBTYPE_SH7705)
+ # define ONCHIP_NR_IRQS 64	// Actually 61
+ # define PINT_NR_IRQS   16
++   
++   #define INTC_IRR0    0xa4000004UL
++   #define INTC_IRR1    0xa4000006UL
++   #define INTC_IRR2    0xa4000008UL
++   
++   #define INTC_IPRA    0xfffffee2UL
++   #define INTC_IPRB    0xfffffee4UL
++   #define INTC_IPRD    0xa4000018UL
++   
++   #define INTC_INTER   0xa4000014UL
++      
++   #define INTC_ICR0    0xfffffee0UL
++   #define INTC_ICR1    0xa4000010UL
++   #define INTC_ICR2    0xa4000012UL
++
++   #define PORT_PACR    0xa4000100UL
++   #define PORT_PBCR    0xa4000102UL
++   #define PORT_PCCR    0xa4000104UL
++   #define PORT_PFCR    0xa400010aUL
++   
++   #define PORT_PADR    0xa4000120UL
++   #define PORT_PBDR    0xa4000122UL
++   #define PORT_PCDR    0xa4000124UL
++   #define PORT_PFDR    0xa400012aUL
++    
++   #define PINT0_IRQ      40
++   #define PINT8_IRQ      41
++   #define PINT0_IPR_ADDR INTC_IPRD
++   #define PINT8_IPR_ADDR INTC_IPRD
++   #define PINT0_IPR_POS  3
++   #define PINT8_IPR_POS  2
++   #define PINT0_PRIORITY 2
++   #define PINT8_PRIORITY 2
++   
+ #elif defined(CONFIG_CPU_SUBTYPE_SH7710)
+ # define ONCHIP_NR_IRQS 104
+ #elif defined(CONFIG_CPU_SUBTYPE_SH7750)
+diff --git a/sound/oss/sh_dac_audio.c b/sound/oss/sh_dac_audio.c
+index 7ea9acc..dcfcad0 100644
+--- a/sound/oss/sh_dac_audio.c
++++ b/sound/oss/sh_dac_audio.c
+@@ -32,6 +32,7 @@
+ #define MODNAME "sh_dac_audio"
+ 
+ #define TMU_TOCR_INIT	0x00
++#define TIMER1_IRQ      14
+ 
+ #define TMU1_TCR_INIT	0x0020	/* Clock/4, rising edge; interrupt on */
+ #define TMU1_TSTR_INIT  0x02	/* Bit to turn on TMU1 */
+@@ -104,7 +105,7 @@ static void dac_audio_set_rate(void)
+ 	unsigned long interval;
+  	struct clk *clk;
+ 
+- 	clk = clk_get("module_clk");
++ 	clk = clk_get("module_clk", NULL);
+  	interval = (clk_get_rate(clk) / 4) / rate;
+  	clk_put(clk);
+ 	ctrl_outl(interval, TMU1_TCOR);

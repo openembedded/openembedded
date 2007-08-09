@@ -13,7 +13,7 @@ FILES_libosmesa-dev = "${libdir}/libOSMesa.* ${includedir}/osmesa.h"
 do_configure() {
 	cd configs
 
-	ln -sf linux current
+	cp linux current
 	sed -e "s%CC *= *.*%CC = ${CC}%" -i current
 	sed -e "s%CXX *= *.*%CXX = ${CXX}%" -i current
 	sed -e "s%LD *= *.*%LD = ${LD}%" -i current

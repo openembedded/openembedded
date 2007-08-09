@@ -1,13 +1,5 @@
-inherit gpe
+require gpe-ownerinfo.inc
 
-DESCRIPTION = "GPE owner information dialog"
-SECTION = "gpe"
-PRIORITY = "optional"
-DEPENDS = "gtk+ libgpewidget"
-LICENSE = "GPL"
-PR = "r0"
+PR = "r1"
 
-do_stage () {
-	oe_libinstall -a libgpe-ownerinfo ${STAGING_LIBDIR}
-	install -m 0644 gpe-ownerinfo.h ${STAGING_INCDIR}/
-}
+SRC_URI += "file://compile.patch;patch=1"

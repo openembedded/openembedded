@@ -1,0 +1,41 @@
+diff --git a/microkde/kresources/resource.cpp b/microkde/kresources/resource.cpp
+index cccd485..65d82e2 100644
+--- a/microkde/kresources/resource.cpp
++++ b/microkde/kresources/resource.cpp
+@@ -29,6 +29,23 @@
+ 
+ using namespace KRES;
+ 
++namespace fixme {
++    class QMutexLocker {
++	public:
++	    QMutexLocker(QMutex *m)  : mtx(m) {
++		if(mtx) mtx->lock();
++	    }
++	    ~QMutexLocker() {
++		if(mtx) mtx->unlock();
++	    }
++
++	    QMutex *mutex() const { return mtx; }
++	private:
++	    QMutex *mtx;
++    };
++}
++using namespace fixme;
++
+ class Resource::ResourcePrivate
+ {
+   public:
+diff --git a/microkde/kresources/resource.h b/microkde/kresources/resource.h
+index ed5af96..997fff6 100644
+--- a/microkde/kresources/resource.h
++++ b/microkde/kresources/resource.h
+@@ -25,7 +25,7 @@
+ 
+ //US
+ #ifdef QT_THREAD_SUPPORT
+-#include <qmutex.h>
++#include <qthread.h>
+ #endif //QT_THREAD_SUPPORT
+ 
+ #include <qvaluelist.h>

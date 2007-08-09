@@ -54,3 +54,11 @@ do_stage () {
 	cp -pfLR ${S}${includedir}/asm-${ARCH} ${CROSS_DIR}/${TARGET_SYS}/include/asm
 	cp -pfLR ${S}${includedir}/asm-generic ${CROSS_DIR}/${TARGET_SYS}/include/
 }
+
+do_stage_append_nylon () {
+	cp -pPR include/asm-${ARCH}/* ${STAGING_INCDIR}/asm/
+	cp -pPR include/asm-${ARCH}/* ${CROSS_DIR}/${TARGET_SYS}/include/asm/
+	cp -pPR include/linux/* ${STAGING_INCDIR}/linux/
+	cp -pPR include/linux/* ${CROSS_DIR}/${TARGET_SYS}/include/linux/
+}
+

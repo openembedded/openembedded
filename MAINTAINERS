@@ -16,6 +16,11 @@ Recipes:    Maintained recipes (should match package names, can include wildcard
 
 -----------------------------------------------------------------------------
 
+Person:     Andreas Holzer
+Mail:       a.holzer@cheese.at
+Website:    http://members.cheese.at/woody/zaurus/
+Recipes:    gnuchess, fltk-chess
+
 Person:     Andy Wilcox
 Mail:       andy@protium.com
 Website:    http://www.openprotium.com
@@ -45,12 +50,14 @@ Recipes:    at76c503a, dropbear, handhelds-sa, handhelds-pxa
 Person:     Florian Boor
 Mail:       fb@kernelconcepts.de
 Website:    http://fl0rian.wordpress.com, http://www.kernelconcepts.de/~fuchs/
-Machines:   nokia770, netvista, htcuniversal, netbook-pro
+Machines:   nokia770, netvista, htcuniversal, netbook-pro, htctornado
 Distros:  
-Interests:  GPEPhone, OpenSync, GPE, Matchbox, *dbus*, X, sqlite
+Interests:  GPEPhone, OpenSync, GPE, Matchbox, *dbus*, X, sqlite, Palm TX,
+interests:  phone devices
 Recipes:    gpe-*, libgpe*, libeventdb, libtododb, libcontactsdb, xserver-common
 Recipes:    gomunicator, mbmerlin, prismstumbler gkdial, fbreader, networkmanager
 Recipes:    minimix, minilite, miniclipboard, gpephone*
+Recipes:    task-sdk-sbox, meta-sdk-sbox
 
 Person:     Graeme Gregory
 Mail:       dp@xora.org.uk
@@ -118,12 +125,17 @@ Recipes:    mx31ads-kernel*
 Person:     Marcin Juszkiewicz
 Mail:       hrw@openembedded.org
 Website:    http://www.hrw.one.pl/
-Machines:   collie, spitz, tosa, progear
+Machines:   collie, tosa, progear
 Distros:    OpenZaurus, celinux-test
 Interests:  WiFi, Opie, Qtopia fonts, Native SDK
 Recipes:    linux, hostap*, orinoco*, wpa-supplicant*, wireless-tools, keymaps
-Recipes:    linux-rp, kdepimpi, subapplet, corsair, gammu, iqnotes, zbedic
-Recipes:    ttf-fonts/* qpf-fonts/*
+Recipes:    linux-rp, gammu
+Recipes:    ttf-fonts/* 
+
+Person:     Matthias 'CoreDump' Hentges
+Website:    http://www.hentges.net
+Machines:   collie, spitz
+Recipes:    altboot, webcam-server
 
 Person:     Michael 'Mickey' Lauer
 Mail:       mlauer@vanille-media.de
@@ -135,8 +147,9 @@ Recipes:    python*, qt*, qte*, sip*
 Person:     Paul Sokolovsky
 Mail:       pmiscml@gmail.com
 Machines:   h3900, h4000, hx4700
-Interests:  handelds-pxa-2.6, PocketPC and Palm devices support
-Recipes:    opie-*
+Interests:  PocketPC and Palm devices support, Win32 support
+Interests:  Cross-machine unification
+Recipes:    linux-handhelds-2.6, opie-*
 
 Person:     Philip Balister
 Mail:       Crofton@balister.org
@@ -164,29 +177,39 @@ Website:    http://zerochaos.aircrack-ng.org
 Interests:  wifi, packet injection, security
 Distros:    Angstrom
 Machines:   akita
-Recipes:    aircrack-ng, kismet, mdk2, rfakeap, void11
+Recipes:    aircrack-ng, kismet, lorcon, mdk, rfakeap, rglueap, 
+Recipes:    rt2570-k2wrlz, void11
 
 Person:	    Rolf 'Laibsch' Leggewie
 Mail:       OE-recipes@rolf.leggewie.biz
 Website:    http://oz.leggewie.org
 Interests:  Japanese on the Zaurus
-Distros:    openzaurus
-Machines:   collie
+Distros:    Ångström
+Machines:   collie, spitz
 Recipes:    anthy, nunome, uim*, granule, qpobox*, qte-font-unifont*
-Recipes:    qpf-unismall, poboxserver, imkit*
+Recipes:    qpf-unismall, qpobox, poboxserver, imkit*, scim, zten
+Recipes:    eb, eblook, tomoe
 
 Person:     Shane Volpe
 Mail:       shanevolpe@gmail.com
 Machines:   logicpd-pxa270
 Recipes:    directfb, php
 
+Person:     Stelios Koroneos
+Mail:       skoroneos@digital-opsis.com
+Website:    http://www.digital-opsis.com
+Distros:    OPLinux, Angstrom
+Machines:   Dht-walnut, Efika, Magicbox,Sequoia,Xilinx-ML403,RB5XX
+Interest:   Cross-machine development
+Recipes:    icecc.bbclass, ppc toolchain, asterisk,perl,php
+
 Person:     Øyvind Repvik
 Mail:       nail@nslu2-linux.org
-Machines:   nslu2, fsg3, ixp4xx, n2100
-Distros:    debianslug, openslug, slugos
+Machines:   nslu2, fsg3, ixp4xx, n2100, turbostation
+Distros:    foonas, slugos
 Recipes:    bwmon, watchdog, wakelan, libdvb, sane-backends, samba
-Recipes:    ccxstream, eciadsl, ssmtp, gstreamer, ixp4xx-npe, joe
+Recipes:    ccxstream, eciadsl, ssmtp, ixp4xx-npe, joe
 Recipes:    lcdproc, libol, mailx, mysql, musicpd, openntpd, qc-usb
 Recipes:    radlib, scsi-idle, rng-tools, slugos-init, syslog-ng
-Recipes:    vsftpd, zd1211, wpa-supplicant
+Recipes:    vsftpd, zd1211
 

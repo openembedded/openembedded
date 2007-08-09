@@ -1,0 +1,63 @@
+From fc2b709436ef9069dac1e2b46a8acb94a7169e8d Mon Sep 17 00:00:00 2001
+From: Graeme Gregory <gg@a10082.wolfsonmicro.main>
+Date: Mon, 26 Mar 2007 15:25:43 +0100
+Subject: [PATCH] Fix power and PLL
+
+bit 0 of POWER1 has oposite meaning to the rest of the bits so write this
+to zero to enable chip.
+
+enable the fractional PLL by enabling the correct bit in register.
+
+Signed-off-by: Graeme Gregory <gg@opensource.wolfsonmicro.com>
+---
+ sound/soc/codecs/wm8956.c |    4 ++--
+ sound/soc/codecs/wm8960.c |    4 ++--
+ 2 files changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/sound/soc/codecs/wm8956.c b/sound/soc/codecs/wm8956.c
+index 6e1bbc9..d88f572 100644
+--- a/sound/soc/codecs/wm8956.c
++++ b/sound/soc/codecs/wm8956.c
+@@ -314,7 +314,7 @@ static int wm8956_dapm_event(struct snd_soc_codec *codec, int event)
+ 	}
+ #endif
+ 	// tmp
+-	wm8956_write(codec, WM8956_POWER1, 0xffff);
++	wm8956_write(codec, WM8956_POWER1, 0xfffe);
+ 	wm8956_write(codec, WM8956_POWER2, 0xffff);
+ 	wm8956_write(codec, WM8956_POWER3, 0xffff);
+ 	codec->dapm_state = event;
+@@ -388,7 +388,7 @@ static int wm8956_set_dai_pll(struct snd_soc_codec_dai *codec_dai,
+ 		return -EINVAL;
+ 
+ 	reg = wm8956_read_reg_cache(codec, WM8956_PLLN) & 0x1e0;
+-	wm8956_write(codec, WM8956_PLLN, reg | (pll_div.pre_div << 4)
++	wm8956_write(codec, WM8956_PLLN, reg | (1<<5) | (pll_div.pre_div << 4)
+ 		| pll_div.n);
+ 	wm8956_write(codec, WM8956_PLLK1, pll_div.k >> 16 );
+ 	wm8956_write(codec, WM8956_PLLK2, (pll_div.k >> 8) & 0xff);
+diff --git a/sound/soc/codecs/wm8960.c b/sound/soc/codecs/wm8960.c
+index a754742..24cbb36 100644
+--- a/sound/soc/codecs/wm8960.c
++++ b/sound/soc/codecs/wm8960.c
+@@ -356,7 +356,7 @@ static int wm8960_dapm_event(struct snd_soc_codec *codec, int event)
+ 	}
+ #endif
+ 	// tmp
+-	wm8960_write(codec, WM8960_POWER1, 0xffff);
++	wm8960_write(codec, WM8960_POWER1, 0xfffe);
+ 	wm8960_write(codec, WM8960_POWER2, 0xffff);
+ 	wm8960_write(codec, WM8960_POWER3, 0xffff);
+ 	codec->dapm_state = event;
+@@ -430,7 +430,7 @@ static int wm8960_set_dai_pll(struct snd_soc_codec_dai *codec_dai,
+ 		return -EINVAL;
+ 
+ 	reg = wm8960_read_reg_cache(codec, WM8960_PLLN) & 0x1e0;
+-	wm8960_write(codec, WM8960_PLLN, reg | (pll_div.pre_div << 4)
++	wm8960_write(codec, WM8960_PLLN, reg | (1<<5) | (pll_div.pre_div << 4)
+ 		| pll_div.n);
+ 	wm8960_write(codec, WM8960_PLLK1, pll_div.k >> 16 );
+ 	wm8960_write(codec, WM8960_PLLK2, (pll_div.k >> 8) & 0xff);
+-- 
+1.5.0.3
+

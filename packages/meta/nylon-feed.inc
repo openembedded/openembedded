@@ -20,7 +20,6 @@ initscripts \
 iperf \
 ipkg \
 iptables \
-kismet \
 ksymoops \
 less \
 linux-hotplug \
@@ -68,3 +67,5 @@ yamonenv \
 # gdb-cross: install paths, sdk?
 # screen: sgttyb?
 
+#kismet \
+#

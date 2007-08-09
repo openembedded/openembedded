@@ -9,7 +9,7 @@ used to detect the type of a file system and read its metadata."
 DESCRIPTION_libvolume-id-dev = "libvolume_id development headers, \
 needed to link programs with libvolume_id."
 
-PR = "r6"
+PR = "r9"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/utils/kernel/hotplug/udev-${PV}.tar.gz \
 	   file://noasmlinkage.patch;patch=1 \
@@ -18,9 +18,6 @@ SRC_URI = "${KERNELORG_MIRROR}/pub/linux/utils/kernel/hotplug/udev-${PV}.tar.gz 
 	   "
 
 require udev.inc
-
-SRC_URI_append_h2200 = " file://50-hostap_cs.rules "
-PACKAGE_ARCH_h2200 = "h2200"
 
 INITSCRIPT_PARAMS = "start 03 S ."
 
@@ -54,10 +51,6 @@ do_install () {
 	install -m 0755 ${WORKDIR}/network.sh ${D}${sysconfdir}/udev/scripts
 
 	install -d ${D}${base_libdir}/udev/
-}
-
-do_install_append_h2200() {
-	install -m 0644 ${WORKDIR}/50-hostap_cs.rules         ${D}${sysconfdir}/udev/rules.d/50-hostap_cs.rules
 }
 
 pkg_postinst_append() {

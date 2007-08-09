@@ -1,5 +1,5 @@
 require scummvm.inc
-DEPENDS = "virtual/libsdl libmad libvorbis libogg zlib libmpeg2"
+DEPENDS = "virtual/libsdl libmad libvorbis libogg zlib mpeg2dec"
 SRC_URI += "file://sh3-arch-0.9.0+.patch;patch=1"
 
 EXTRA_OECONF += "--enable-lure \

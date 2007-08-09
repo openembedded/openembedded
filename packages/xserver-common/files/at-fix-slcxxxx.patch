@@ -1,0 +1,8 @@
+--- xserver-common-1.8/X11/slcXXXX.xmodmap.orig	2006-05-07 14:22:14.500971520 +0200
++++ xserver-common-1.8/X11/slcXXXX.xmodmap	2006-05-07 14:22:28.955774056 +0200
+@@ -10,3 +10,5 @@
+ keycode 80 = F28
+ keycode 81 = F29
+ keycode 86 = F30
++
++keycode 20 = minus at at 

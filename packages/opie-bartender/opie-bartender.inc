@@ -1,4 +1,4 @@
-DESCRIPTION = "Bartender drink receipe database"
+DESCRIPTION = "Bartender drink recipe database"
 SECTION = "opie/applications"
 PRIORITY = "optional"
 LICENSE = "GPL"

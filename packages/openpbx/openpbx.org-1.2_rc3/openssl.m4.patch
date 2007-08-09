@@ -1,0 +1,46 @@
+*** openpbx.org-1.2_rc3.old/acmacros/openssl.m4	Tue Mar  6 15:21:39 2007
+--- openpbx.org-1.2_rc3/acmacros/openssl.m4	Tue Mar  6 15:23:18 2007
+***************
+*** 3,13 ****
+  #
+  AC_DEFUN([CHECK_SSL],
+  [AC_MSG_CHECKING(if ssl is wanted)
+! # AC_ARG_WITH(ssl,
+! # [  --with-ssl enable ssl [will check /usr/local/ssl
+! #                            /usr/lib/ssl /usr/ssl /usr/pkg /usr/local /usr /usr/sfw ]
+! # ],
+! #[   AC_MSG_RESULT(yes)
+      for dir in $withval /usr/local/ssl /usr/lib/ssl /usr/ssl /usr/pkg /usr/local /usr /usr/sfw; do
+          ssldir="$dir"
+          if test -f "$dir/include/openssl/ssl.h"; then
+--- 3,13 ----
+  #
+  AC_DEFUN([CHECK_SSL],
+  [AC_MSG_CHECKING(if ssl is wanted)
+!  AC_ARG_WITH(ssl,
+!  [  --with-ssl enable ssl [will check /usr/local/ssl
+!                             /usr/lib/ssl /usr/ssl /usr/pkg /usr/local /usr /usr/sfw ]
+!  ],
+! [   AC_MSG_RESULT(yes)
+      for dir in $withval /usr/local/ssl /usr/lib/ssl /usr/ssl /usr/pkg /usr/local /usr /usr/sfw; do
+          ssldir="$dir"
+          if test -f "$dir/include/openssl/ssl.h"; then
+***************
+*** 33,40 ****
+      AC_SUBST([HAVE_SSL])
+      AC_SUBST([SSL_LIBS])
+      AC_SUBST([SSL_CFLAGS])
+! #],
+! #[
+! #    AC_MSG_RESULT(no)
+! #])
+  ])dnl
+--- 33,40 ----
+      AC_SUBST([HAVE_SSL])
+      AC_SUBST([SSL_LIBS])
+      AC_SUBST([SSL_CFLAGS])
+! ],
+! [
+!     AC_MSG_RESULT(no)
+! ])
+  ])dnl

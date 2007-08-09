@@ -2,7 +2,7 @@ DESCRIPTION = "This package provides the necessary \
 infrastructure for basic TCP/IP based networking."
 SECTION = "base"
 LICENSE = "GPL"
-PR = "r13"
+PR = "r18"
 
 inherit update-rc.d
 
@@ -18,7 +18,11 @@ SRC_URI = "${DEBIAN_MIRROR}/main/n/netbase/netbase_${PV}.tar.gz \
            file://options \
            file://init \
            file://hosts \
-           file://interfaces"
+           file://interfaces \
+	   file://if-pre-up.d \
+	   file://if-up.d \
+	   file://if-down.d \
+	   file://if-post-down.d"
 
 do_install () {
 	install -d ${D}${sysconfdir}/init.d \
@@ -28,6 +32,15 @@ do_install () {
 		   ${D}${sysconfdir}/network/if-up.d \
 		   ${D}${sysconfdir}/network/if-down.d \
 		   ${D}${sysconfdir}/network/if-post-down.d
+		   
+	for dir in if-pre-up.d if-up.d if-down.d if-post-down.d
+	do
+		for script in `ls -1 "${WORKDIR}/${dir}"`
+		do		
+			install -m 0755 "${WORKDIR}/${dir}/${script}" "${D}${sysconfdir}/network/${dir}"
+		done
+	done
+		   
 	install -m 0644 ${WORKDIR}/options ${D}${sysconfdir}/network/options
 	install -m 0755 ${WORKDIR}/init ${D}${sysconfdir}/init.d/networking
 	install -m 0644 ${WORKDIR}/hosts ${D}${sysconfdir}/hosts

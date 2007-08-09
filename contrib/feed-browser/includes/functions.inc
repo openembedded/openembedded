@@ -1,7 +1,7 @@
 <?php
 /*
- * (c) Koen Kooi 2006
- * (c) Marcin Juszkiewicz 2006
+ * (c) Koen Kooi 2006, 2007
+ * (c) Marcin Juszkiewicz 2006, 2007
  *
  * This program is free software; you can redistribute it and/or  modify it under
  * the terms of the GNU General Public License as published by the Free
@@ -112,18 +112,27 @@ function searchletter($searchletter = '')
 		}
 		else
 		{
-			$ipkgoutput .= sprintf(" <a href='?action=letter&amp;g=%s' title='packages which names begins with \"%s\"'>%s</a> |", $letter, $letter, $letter );
+			$ipkgoutput .= sprintf(" <a href='?letter=%s' title='packages which names begins with \"%s\"'>%s</a> |", $letter, $letter, $letter );
 		}
 	}
 
-	$ipkgoutput .= " <a href='?action=letter&amp;g=z' title='packages which names begins with \"z\"'>z</a></div>";
+	$ipkgoutput .= " <a href='?letter=z' title='packages which names begins with \"z\"'>z</a></div>";
 
 	return $ipkgoutput;
 }
 
-function searchpkg ($searchword)
+function searchpkg ($searchword, $searcharch = '')
 {
-	if($result = db_query("SELECT DISTINCT p_name,p_desc,p_section  FROM packages WHERE p_name LIKE '$searchword' ORDER BY p_name ASC"))
+	$query = "SELECT DISTINCT p_name,p_desc,p_section FROM packages WHERE p_name LIKE '$searchword' ";
+	
+	if(!empty($searcharch))
+	{
+		$query .= " AND p_arch='{$searcharch}' ";
+	}
+
+	$query .= 'ORDER BY p_name ASC';
+	
+	if($result = db_query($query))
 	{
 	    return generate_list_of_packages($result);
 	}
@@ -149,7 +158,7 @@ function generate_list_of_packages($query_result)
 			}
 
 			$ipkgoutput .= sprintf
-				("<tr><td><a href='?action=details&amp;pnm=%s'>%s</a></td><td><a href=\"?action=section&amp;section=%s\">%s</a></td><td> %s</td></tr>\n",
+				("<tr><td><a href='?pkgname=%s'>%s</a></td><td><a href=\"?section=%s\">%s</a></td><td> %s</td></tr>\n",
 				urlencode($package['p_name']), $package['p_name'], $package['p_section'], $package['p_section'], htmlentities($package['p_desc']));
 		}
 
@@ -173,7 +182,7 @@ function pkgdetails ($package)
 	$result = db_query("SELECT * FROM packages,feeds
 				WHERE (packages.p_name='$package' OR packages.p_provides='$package')
 				    AND feeds.f_id = packages.p_feed 
-				ORDER BY packages.p_version DESC, feeds.f_name ASC, packages.p_arch DESC ");
+				ORDER BY packages.p_version DESC, packages.p_arch ASC ");
 	
 	// display first result
 
@@ -194,7 +203,7 @@ function pkgdetails ($package)
 
 		if($package['packages.p_section'])
 		{
-			$details .= sprintf ("\n<dt>Section:</dt><dd><a href='?action=section&amp;section=%s'>%s</a></dd>", $package['packages.p_section'],$package['packages.p_section']);
+			$details .= sprintf ("\n<dt>Section:</dt><dd><a href='?section=%s'>%s</a></dd>", $package['packages.p_section'],$package['packages.p_section']);
 		}
 		
 		if($package['packages.p_depends'])
@@ -310,7 +319,7 @@ function addlinks ($input)
 		{
 			// find position of string in line
 			$pos = strpos ($input, $element, $offset);
-			$link = sprintf("<a href=\"?action=details&amp;pnm=%s\">$element</a>", urlencode ($element));
+			$link = sprintf("<a href=\"?pkgname=%s\">$element</a>", urlencode ($element));
 
 			// replace element with a link
 			$input = substr_replace ($input, $link, $pos, strlen ($element));
@@ -361,7 +370,7 @@ function sectionslist()
 
 		foreach($sections as $section_name1=>$item)
 		{
-			$output .= sprintf ("<li><a href='?action=section&amp;section=%s' title='%s'>%s</a>",
+			$output .= sprintf ("<li><a href='?section=%s' title='%s'>%s</a>",
 				urlencode($section_name1),
 				urlencode($section_name1),
 				$section_name1);
@@ -373,7 +382,7 @@ function sectionslist()
 				foreach($item as $section_name2=>$subitem)
 				{
 					$section_name = "{$section_name1}/{$section_name2}";
-					$output .= sprintf ("<li><a href='?action=section&amp;section=%s' title='%s'>%s</a>",
+					$output .= sprintf ("<li><a href='?section=%s' title='%s'>%s</a>",
 						urlencode($section_name),
 						urlencode($section_name),
 						$section_name2);
@@ -385,7 +394,7 @@ function sectionslist()
 						foreach($subitem as $section_name3=>$subitem2)
 						{
 							$section_name = "{$section_name1}/{$section_name2}/{$section_name3}";
-							$output .= sprintf ("<li><a href='?action=section&amp;section=%s' title='%s'>%s</a></li>",
+							$output .= sprintf ("<li><a href='?section=%s' title='%s'>%s</a></li>",
 								urlencode($section_name),
 								urlencode($section_name),
 								$section_name3);
@@ -411,8 +420,12 @@ function sectionslist()
 
 function check_database()
 {
-	if($db = sqlite_open(DB_FILENAME))
+	$db_exists = FALSE;
+
+	if(file_exists(DB_FILENAME) AND $db = sqlite_open(DB_FILENAME))
 	{
+		$db_exists = TRUE;
+
 		//initialize db
 		if (db_table_exists ($db, 'packages') === FALSE)
 		{  
@@ -443,15 +456,32 @@ function check_database()
 				f_name       varchar(32),
 				f_uri        varchar(100),
 				f_type		 varchar(16)
-		)");
+				f_comments   varchar(500))");
 
 			insert_feeds ($db) ;
 		}
 
 		sqlite_close($db);
 	}
+
+	return $db_exists;
 }
 
+function read_vars_from_get($array_of_vars)
+{
+    foreach($array_of_vars as $name_of_var)
+    {
+	$GLOBALS[$name_of_var] = '';
 
+	if(isset($_GET[$name_of_var]))
+	{
+	    $GLOBALS[$name_of_var] = $_GET[$name_of_var];
+	}
+    }
+}
 
+function get_arch_list()
+{
+    return db_query('SELECT DISTINCT p_arch FROM packages WHERE p_arch NOT IN (NULL, "", "all") ORDER BY p_arch ASC');
+}
 ?>

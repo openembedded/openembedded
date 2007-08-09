@@ -1,0 +1,24 @@
+Index: epdf/configure.in
+===================================================================
+--- epdf.orig/configure.in
++++ epdf/configure.in
+@@ -27,8 +27,8 @@ PKG_CHECK_MODULES(EWL,
+   [
+    have_ewl="yes"
+    requirements="$requirements ewl"
+-   EWL_TEST_LIBS_DIR="`$PKG_CONFIG --variable=testsdir ewl`"
+-   EWL_TEST_SOURCE_DIR="`$PKG_CONFIG --variable=testssrcdir ewl`"
++   EWL_TEST_LIBS_DIR="/usr/lib/ewl/tests/"
++   EWL_TEST_SOURCE_DIR="/usr/share/ewl/examples/"
+    AC_SUBST(EWL_TEST_LIBS_DIR)
+    AC_SUBST(EWL_TEST_SOURCE_DIR)
+   ],
+@@ -55,7 +55,7 @@ PKG_CHECK_MODULES(EPSILON,
+   [
+    have_epsilon="yes"
+    requirements="$requirements epsilon imlib2"
+-   EPSILON_PLUGINS_DIR="`$PKG_CONFIG --variable=pluginsdir epsilon`"
++   EPSILON_PLUGINS_DIR="/usr/lib/epsilon/plugins/"
+    AC_SUBST(EPSILON_PLUGINS_DIR)
+   ],
+   [

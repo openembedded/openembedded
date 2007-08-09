@@ -1,0 +1,16 @@
+#! /bin/sh
+#
+# Copyright Matthias Hentges <devel@hentges.net> (c) 2007
+# License: GPL (see http://www.gnu.org/licenses/gpl.txt for a copy of the license)
+#
+# Filename: usb-gadget.init
+# Date: 20070606 (YMD)
+#
+#################################################################################
+#
+# 20070606 - v0.0.1	- Initial release
+
+case "$1" in 
+start)		usb-gadget ;;
+esac
+

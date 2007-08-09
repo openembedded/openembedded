@@ -4,13 +4,19 @@ LICENSE = "GPL"
 DEPENDS = "tslib"
 RDEPENDS = "procps"
 PV = "0.0+svn${SRCDATE}"
-PR = "r7"
+PR = "r10"
 
 SRC_URI = "svn://svn.o-hand.com/repos/misc/trunk;module=zaurusd;proto=http \
            file://zaurus-hinge.in \
 	   file://add-poodle.patch;patch=1 \
-	   file://zaurus-hinge.matchbox-portrait \
-	   file://zaurus-hinge.matchbox-landscape"
+	   file://alsa-cxx00-default.state.patch;patch=1 \
+	   file://disable-alsa-handling.patch;patch=1 \
+	   file://zaurus-hinge.matchbox-portrait \	   
+	   file://zaurus-hinge.matchbox-landscape \
+	   file://zaurusd-mixer-callback.patch;patch=1 \
+	   file://tslib-1.diff;patch=1 \
+	   file://zaurus-hinge.bl-on \
+	   file://zaurus-hinge.bl-off"
 
 
 S = "${WORKDIR}/${PN}"
@@ -25,6 +31,12 @@ do_install_append() {
 	install -d "${D}/etc/zaurusd/hinge-landscape.d"
 	install -d "${D}/etc/zaurusd/hinge-portrait.d"
 	install -d "${D}/etc/zaurusd/hinge-close.d"
+	install -d ${D}/etc/apm/resume.d
+
+	install -m 0755 "${WORKDIR}/zaurus-hinge.bl-on" "${D}/etc/apm/resume.d/00-backlight-on"
+	install -m 0755 "${WORKDIR}/zaurus-hinge.bl-on" "${D}/etc/zaurusd/hinge-landscape.d/00-backlight-on"
+	install -m 0755 "${WORKDIR}/zaurus-hinge.bl-on" "${D}/etc/zaurusd/hinge-portrait.d/00-backlight-on"
+	install -m 0755 "${WORKDIR}/zaurus-hinge.bl-off" "${D}/etc/zaurusd/hinge-close.d/00-backlight-off"
 
 	install -m 0755 "${WORKDIR}/zaurus-hinge.matchbox-landscape" "${D}/etc/zaurusd/hinge-landscape.d/20-matchbox-landscape"
 	install -m 0755 "${WORKDIR}/zaurus-hinge.matchbox-portrait" "${D}/etc/zaurusd/hinge-portrait.d/20-matchbox-portrait"

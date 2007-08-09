@@ -1,6 +1,6 @@
 FILESPATH =. "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/qemu-${PV}:"
 # prefix = "${STAGING_DIR}/${BUILD_SYS}"
-DEPENDS = "libsdl-native"
+DEPENDS = "libsdl-native zlib-native"
 
 python __anonymous() {
     from bb import which, data
@@ -18,6 +18,8 @@ python __anonymous() {
         data.setVar('EXTRA_OECONF', oldOeConf + " --cc=gcc-3.3", d)
     elif len(which(path, 'gcc-3.3.6')) != 0:
         data.setVar('EXTRA_OECONF', oldOeConf + " --cc=gcc-3.3.6", d)
+    elif len(which(path, 'gcc-3.4.6')) != 0:
+        data.setVar('EXTRA_OECONF', oldOeConf + " --cc=gcc-3.4.6", d)
 }
 
 do_stage() {

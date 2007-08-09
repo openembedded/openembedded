@@ -2,8 +2,6 @@
 # Meta package for maemo based system image
 #
 
-FEED_URIS_append_familiar   = " maemo##http://familiar.handhelds.org/releases/${DISTRO_VERSION}/feed/maemo"
-
 PR = "r2"
 
 export IMAGE_BASENAME = "maemo-image"

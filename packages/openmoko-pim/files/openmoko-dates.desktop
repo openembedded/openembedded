@@ -1,0 +1,12 @@
+[Desktop Entry]
+Encoding=UTF-8
+Name=Dates
+Comment=Dates
+Exec=dates
+Icon=openmoko-dates
+Terminal=false
+Type=Application
+Categories=GTK;Application;PIM;Office
+MimeType=text/x-vcard;
+SingleInstance=false
+StartupNotify=true

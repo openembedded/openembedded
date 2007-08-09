@@ -15,6 +15,10 @@ def autotools_dep_prepend(d):
 
 	if not pn in ['libtool', 'libtool-native', 'libtool-cross']:
 		deps += 'libtool-native '
+		if not bb.data.inherits_class('native', d) \
+                        and not bb.data.inherits_class('cross', d) \
+                        and not bb.data.getVar('INHIBIT_DEFAULT_DEPS', d, 1):
+                    deps += 'libtool-cross '
 
 	return deps + 'gnu-config-native '
 
@@ -135,6 +139,13 @@ autotools_do_configure() {
 
 autotools_do_install() {
 	oe_runmake 'DESTDIR=${D}' install
+
+        for i in `find ${D} -name "*.la"` ; do \
+            sed -i -e s:${STAGING_LIBDIR}:${libdir}:g $i
+            sed -i -e s:${D}::g $i
+            sed -i -e 's:-I${WORKDIR}\S*: :g' $i
+            sed -i -e 's:-L${WORKDIR}\S*: :g' $i
+	done
 }
 
 STAGE_TEMP="${WORKDIR}/temp-staging"

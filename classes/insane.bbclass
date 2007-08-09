@@ -22,6 +22,7 @@
 # We play a special package function
 inherit package
 PACKAGE_DEPENDS += "pax-utils-native"
+#PACKAGE_DEPENDS += chrpath-native"
 PACKAGEFUNCS += " do_package_qa "
 
 
@@ -47,19 +48,31 @@ def package_qa_get_machine_dict():
                         "hppa":       (15,     3,    0,          False,         True),
                         "m68k":       ( 4,     0,    0,          False,         True),
                         "mips":       ( 8,     0,    0,          False,         True),
+                        "mipsel":     ( 8,     0,    0,          True,          True),
                         "s390":       (22,     0,    0,          False,         True),
+                        "sh4":        (42,     0,    0,          True,          True),
                         "sparc":      ( 2,     0,    0,          False,         True),
                       },
             "linux-uclibc" : { 
-                        "arm" :       (40,    97,    0,          True,          True),
-                        "armeb":      (40,    97,    0,          False,         True),
-                        "powerpc":    (20,     0,    0,          False,         True),
-                        "mipsel":     ( 8,     0,    0,          True,          True),
+                        "arm" :       (  40,    97,    0,          True,          True),
+                        "armeb":      (  40,    97,    0,          False,         True),
+                        "powerpc":    (  20,     0,    0,          False,         True),
+                        "mipsel":     (   8,     0,    0,          True,          True),
+			"avr32":      (6317,     0,    0,          False,         True),
                       },
+            "uclinux-uclibc" : {
+                        "bfin":       (   0,     0,    0,          True,         True),
+                      }, 
             "linux-gnueabi" : {
                         "arm" :       (40,     0,    0,          True,          True),
+                        "armeb" :     (40,     0,    0,          False,         True),
                       },
-        }
+            "linux-uclibcgnueabi" : {
+                        "arm" :       (40,     0,    0,          True,          True),
+                        "armeb" :     (40,     0,    0,          False,         True),
+                      },
+ 
+       }
 
 # factory for a class, embedded in a method
 def package_qa_get_elf(path, bits32):
@@ -199,19 +212,28 @@ def package_qa_check_rpath(file,name,d):
     """
     import bb, os
     scanelf = os.path.join(bb.data.getVar('STAGING_BINDIR_NATIVE',d,True),'scanelf')
+    #chrpath = os.path.join(bb.data.getVar('STAGING_BINDIR_NATIVE',d,True),'chrpath')
     bad_dir = bb.data.getVar('TMPDIR', d, True) + "/work"
+    bad_dir_test = bb.data.getVar('TMPDIR', d, True)
     if not os.path.exists(scanelf):
-        bb.fatal("Can not check RPATH scanelf not found")
+        bb.fatal("Can not check RPATH, scanelf (part of pax-utils-native) not found")
+    #if not os.path.exists(chrpath):
+    #    bb.fatal("Can not fix RPATH, chrpath (part of chrpath-native) not found")
     if not bad_dir in bb.data.getVar('WORKDIR', d, True):
         bb.fatal("This class assumed that WORKDIR is ${TMPDIR}/work... Not doing any check")
 
-    output = os.popen("%s -Byr %s" % (scanelf,file))
-    txt    = output.readline().rsplit()
-    if bad_dir in txt:
-        package_qa_write_error( 1, name, file, d)
-        bb.error("QA Issue package %s contains bad RPATH %s in file %s" % (name, txt, file))
-        return False
-
+    #bb.note("%s -B -F%%r#F %s" % (scanelf,file))
+    output = os.popen("%s -B -F%%r#F '%s'" % (scanelf,file))
+    txt    = output.readline().split()
+    #bb.note("???%s???" % bad_dir_test)
+    for line in txt:
+        #bb.note("===%s===" % line)
+        if bad_dir in line:
+            package_qa_write_error( 1, name, file, d)
+            bb.error("QA Issue package %s contains bad RPATH %s in file %s" % (name, line, file))
+            #bb.note("Fixing RPATH for you in %s" % file)
+            #os.popen("%s -r /lib %s" % (chrpath,file))
+            return False
     return True
 
 def package_qa_check_devdbg(path, name,d):
@@ -253,6 +275,10 @@ def package_qa_check_arch(path,name,d):
     import bb, os
     target_os   = bb.data.getVar('TARGET_OS',   d, True)
     target_arch = bb.data.getVar('TARGET_ARCH', d, True)
+  
+    # FIXME: Cross package confuse this check, so just skip them
+    if bb.data.inherits_class('cross', d) or bb.data.inherits_class('sdk', d):
+        return True
 
     # avoid following links to /usr/bin (e.g. on udev builds)
     # we will check the files pointed to anyway...
@@ -370,9 +396,9 @@ def package_qa_check_rdepends(pkg, workdir, d):
         # Now do the sanity check!!!
         for rdepend in rdepends:
             if "-dbg" in rdepend:
-                package_qa_write_error( 2, name, rdepend, d )
-                bb.error("QA issue, koen give us a better msg!!!")
-                if package_qa_make_fatal_error( 2, name, rdepend, d ):
+                package_qa_write_error( 2, pkgname, rdepend, d )
+                bb.error("QA issue: %s rdepends on %s" % (pkgname,rdepend))
+                if package_qa_make_fatal_error( 2, pkgname, rdepend, d ):
                     sane = False
 
     return sane
@@ -398,7 +424,7 @@ python do_package_qa () {
             rdepends_sane = False
 
     if not walk_sane or not rdepends_sane:
-        bb.fatal("QA ran found fatal errors. Please consider fixing them")
+        bb.fatal("QA run found fatal errors. Please consider fixing them.")
     bb.note("DONE with PACKAGE QA")
 }
 

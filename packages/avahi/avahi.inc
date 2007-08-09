@@ -4,12 +4,17 @@ HOMEPAGE = "http://avahi.org"
 SECTION = "network"
 PRIORITY = "optional"
 LICENSE = "GPL"
+PR="r4"
 
-DEPENDS = "expat libdaemon dbus"
-RRECOMMENDS = "libnss-mdns"
-RRECOMMENDS_avahi-daemon = "libnss-mdns"
+DEPENDS = "expat libdaemon dbus glib-2.0"
 
-SRC_URI = "http://avahi.org/download/avahi-${PV}.tar.gz"
+# uclibc has no nss
+RRECOMMENDS_append_linux = "libnss-mdns"
+RRECOMMENDS_avahi-daemon_append_linux = "libnss-mdns"
+RDEPENDS_avahi-daemon = "sysvinit-pidof"
+
+SRC_URI = "http://avahi.org/download/avahi-${PV}.tar.gz \
+	   file://00avahi-autoipd file://99avahi-autoipd"
 
 inherit autotools pkgconfig update-rc.d
 
@@ -35,7 +40,8 @@ FILES_avahi-dnsconfd = "${sbindir}/avahi-dnsconfd \
 FILES_libavahi-glib = "${libdir}/libavahi-glib.so.*"
 FILES_avahi-utils = "${bindir}/avahi-*"
 FILES_avahi-autoipd = "${sbindir}/avahi-autoipd \
-                       ${sysconfdir}/avahi/avahi-autoipd.action"
+                       ${sysconfdir}/avahi/avahi-autoipd.action \
+		       ${sysconfdir}/udhcpc.d/*avahi-autoipd"
 
 CONFFILES_avahi-daemon = "${sysconfdir}/avahi/avahi-daemon.conf"
 
@@ -52,8 +58,8 @@ pkg_postinst_avahi-daemon () {
 	if [ "x$D" != "x" ]; then
 		exit 1
 	fi
-	grep avahi /etc/group || addgroup avahi
-	grep avahi /etc/passwd || adduser --disabled-password --system --home /var/run/avahi-daemon --no-create-home avahi --ingroup avahi -g Avahi
+	grep "^avahi:" /etc/group > /dev/null || addgroup avahi
+	grep "^avahi:" /etc/passwd > /dev/null || adduser --disabled-password --system --home /var/run/avahi-daemon --no-create-home avahi --ingroup avahi -g Avahi
 
 	DBUSPID=`pidof dbus-daemon`
 
@@ -62,9 +68,30 @@ pkg_postinst_avahi-daemon () {
 	fi
 }
 
+pkg_postinst_avahi-autoipd () {
+	# can't do this offline
+	if [ "x$D" != "x" ]; then
+		exit 1
+	fi
+	grep "^avahi-autoipd:" /etc/group > /dev/null || addgroup avahi-autoipd
+	grep "^avahi-autoipd:" /etc/passwd > /dev/null || adduser --disabled-password --system --home /var/lib/avahi-autoipd --no-create-home avahi-autoipd --ingroup avahi-autoipd -g "Avahi autoip daemon"
+}
+
 pkg_postrm_avahi-daemon () {
 	deluser avahi || true
 	delgroup avahi || true
+}
+
+pkg_postrm_avahi-autoipd () {
+	deluser avahi-autoipd || true
+	delgroup avahi-autoipd || true
+}
+
+do_install() {
+	autotools_do_install
+	install -d ${D}${sysconfdir}/udhcpc.d
+	install ${WORKDIR}/00avahi-autoipd ${D}${sysconfdir}/udhcpc.d
+	install ${WORKDIR}/99avahi-autoipd ${D}${sysconfdir}/udhcpc.d
 }
 
 do_stage() {

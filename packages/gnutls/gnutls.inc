@@ -9,7 +9,7 @@ SRC_URI = "ftp://ftp.gnutls.org/pub/gnutls/gnutls-${PV}.tar.bz2 \
            file://onceonly.m4 \
            file://gnutls-texinfo-euro.patch;patch=1"
 
-inherit autotools binconfig
+inherit autotools binconfig pkgconfig
 
 EXTRA_OECONF="--with-included-opencdk --with-included-libtasn1"
 
@@ -25,6 +25,7 @@ do_stage() {
 
     install -d ${STAGING_DATADIR}/aclocal
     cp ${S}/lib/libgnutls.m4 ${STAGING_DATADIR}/aclocal/
+    cp ${S}/libextra/libgnutls-extra.m4 ${STAGING_DATADIR}/aclocal/
 }
 
 PACKAGES =+ "${PN}-openssl ${PN}-extra ${PN}-bin ${PN}-xx"

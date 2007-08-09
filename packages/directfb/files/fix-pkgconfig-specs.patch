@@ -1,13 +1,50 @@
-
-#
-# Patch managed by http://www.mn-logistik.de/unsupported/pxa250/patcher
-#
-
---- DirectFB-0.9.25.1/directfb.pc.in~fix-pkgconfig-specs	2005-10-19 01:14:04.000000000 +0200
-+++ DirectFB-0.9.25.1/directfb.pc.in	2006-05-20 01:02:37.000000000 +0200
-@@ -8,4 +8,4 @@
+Index: DirectFB-1.0.0/directfb-internal.pc.in
+===================================================================
+--- DirectFB-1.0.0.orig/directfb-internal.pc.in
++++ DirectFB-1.0.0/directfb-internal.pc.in
+@@ -8,4 +8,4 @@ Name: DirectFB-Internal
+ Description: Third party module support package for DirectFB.
+ Version: @VERSION@
+ Requires: directfb = @VERSION@
+-Cflags: @DFB_INTERNAL_CFLAGS@ -I@INTERNALINCLUDEDIR@
++Cflags: @DFB_INTERNAL_CFLAGS@ -I${includedir} -I${includedir}/../directfb
+Index: DirectFB-1.0.0/directfb.pc.in
+===================================================================
+--- DirectFB-1.0.0.orig/directfb.pc.in
++++ DirectFB-1.0.0/directfb.pc.in
+@@ -8,4 +8,4 @@ Description: Graphics and windowing libr
  Version: @VERSION@
  Requires: fusion direct
  Libs: -L${libdir} -ldirectfb @THREADLIB@ @DYNLIB@ @ZLIB_LIBS@ @OSX_LIBS@
 -Cflags: @THREADFLAGS@ -I@INCLUDEDIR@
-+Cflags: @THREADFLAGS@ -I${includedir}/directfb
++Cflags: @THREADFLAGS@ -I${includedir}
+Index: DirectFB-1.0.0/lib/direct/direct.pc.in
+===================================================================
+--- DirectFB-1.0.0.orig/lib/direct/direct.pc.in
++++ DirectFB-1.0.0/lib/direct/direct.pc.in
+@@ -7,4 +7,4 @@ Name: Direct
+ Description: DirectFB base development library
+ Version: @VERSION@
+ Libs: -L${libdir} -ldirect @THREADLIB@ @DYNLIB@
+-Cflags: @THREADFLAGS@ -I@INCLUDEDIR@
++Cflags: @THREADFLAGS@ -I${includedir}
+Index: DirectFB-1.0.0/lib/fusion/fusion.pc.in
+===================================================================
+--- DirectFB-1.0.0.orig/lib/fusion/fusion.pc.in
++++ DirectFB-1.0.0/lib/fusion/fusion.pc.in
+@@ -8,4 +8,4 @@ Description: High Level IPC Mechanisms
+ Version: @VERSION@
+ Requires: direct
+ Libs: -L${libdir} -lfusion
+-Cflags: -I@INCLUDEDIR@
++Cflags: -I${includedir}
+Index: DirectFB-1.0.0/lib/voodoo/voodoo.pc.in
+===================================================================
+--- DirectFB-1.0.0.orig/lib/voodoo/voodoo.pc.in
++++ DirectFB-1.0.0/lib/voodoo/voodoo.pc.in
+@@ -8,4 +8,4 @@ Description: Interface based network tra
+ Version: @VERSION@
+ Requires: direct
+ Libs: -L${libdir} -lvoodoo
+-Cflags: -I@INCLUDEDIR@
++Cflags: -I${includedir}

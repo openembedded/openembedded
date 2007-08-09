@@ -1,0 +1,571 @@
+diff -uNr linux-2.6.21.vanilla/drivers/mfd/Makefile linux-2.6.21/drivers/mfd/Makefile
+--- linux-2.6.21.vanilla/drivers/mfd/Makefile	2007-05-30 18:00:30.000000000 +0200
++++ linux-2.6.21/drivers/mfd/Makefile	2007-05-30 18:43:10.000000000 +0200
+@@ -12,3 +12,7 @@
+ ifeq ($(CONFIG_SA1100_ASSABET),y)
+ obj-$(CONFIG_MCP_UCB1200)	+= ucb1x00-assabet.o
+ endif
++
++ifeq ($(CONFIG_SA1100_SIMPAD),y)
++obj-$(CONFIG_MCP_UCB1200)     += ucb1x00-simpad.o
++endif
+diff -uNr linux-2.6.21.vanilla/drivers/mfd/ucb1x00-simpad.c linux-2.6.21/drivers/mfd/ucb1x00-simpad.c
+--- linux-2.6.21.vanilla/drivers/mfd/ucb1x00-simpad.c	1970-01-01 01:00:00.000000000 +0100
++++ linux-2.6.21/drivers/mfd/ucb1x00-simpad.c	2007-05-30 18:35:48.000000000 +0200
+@@ -0,0 +1,226 @@
++/*
++ *  linux/drivers/mfd/ucb1x00-simpad.c
++ *
++ *  Copyright (C) 2001-2003 Russell King, All Rights Reserved.
++ *  2007/03/18 mrdata:
++ *             - adapted ucb1x00-assabet.c
++ *             - transfer ucb1x00-simpad.c from kernel24
++ *               to new structur of kernel26
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 2 of the License.
++ *
++ *  We handle the machine-specific bits of the UCB1x00 driver here.
++ */
++#include <linux/module.h>
++#include <linux/init.h>
++#include <linux/fs.h>
++#include <linux/proc_fs.h>
++#include <linux/device.h>
++
++#include <linux/apm-emulation.h>
++
++#include <asm/dma.h>
++
++#include <asm/arch/simpad.h>
++#include <asm/arch-sa1100/simpad_pm.h>
++
++#include "ucb1x00.h"
++#include "ucb1x00-simpad.h"
++
++#define UCB1X00_ATTR(name,input,designation) \
++static ssize_t name##_show(struct class_device *dev, char *buf)		\
++{									\
++	struct ucb1x00 *ucb = classdev_to_ucb1x00(dev);			\
++	int val;							\
++	ucb1x00_adc_enable(ucb);					\
++	val = ucb1x00_adc_read(ucb, input, UCB_NOSYNC); 		\
++	ucb1x00_adc_disable(ucb); 					\
++	return sprintf(buf, "%d\n", CALIBRATE_##designation(val)); 	\
++}									\
++static CLASS_DEVICE_ATTR(name,0444,name##_show,NULL)
++
++UCB1X00_ATTR(vbatt, UCB_ADC_INP_AD1, BATTERY);
++UCB1X00_ATTR(vcharger, UCB_ADC_INP_AD2, SUPPLY);
++UCB1X00_ATTR(icharger, UCB_ADC_INP_AD3, CHARGING);
++
++static struct ucb1x00 *ucb_alt;
++
++#define UCB1X00_WERT(name,input,designation) \
++static int ucb1x00_simpad_read_##name(struct ucb1x00 *ucb_alt) 		\
++{									\
++	int val;							\
++	ucb1x00_adc_enable(ucb_alt);					\
++	val = ucb1x00_adc_read(ucb_alt, input, UCB_NOSYNC); 		\
++	ucb1x00_adc_disable(ucb_alt); 					\
++	return CALIBRATE_##designation(val);				\
++}
++
++UCB1X00_WERT(vbatt, UCB_ADC_INP_AD1, BATTERY);
++UCB1X00_WERT(vcharger, UCB_ADC_INP_AD2, SUPPLY);
++UCB1X00_WERT(icharger, UCB_ADC_INP_AD3, CHARGING);
++
++static int ucb1x00_simpad_add(struct ucb1x00_dev *dev)
++{
++	class_device_create_file(&dev->ucb->cdev, &class_device_attr_vbatt);
++	class_device_create_file(&dev->ucb->cdev, &class_device_attr_vcharger);
++	class_device_create_file(&dev->ucb->cdev, &class_device_attr_icharger);
++	ucb_alt = dev->ucb;
++	return 0;
++}
++
++static void ucb1x00_simpad_remove(struct ucb1x00_dev *dev)
++{
++	class_device_remove_file(&dev->ucb->cdev, &class_device_attr_icharger);
++	class_device_remove_file(&dev->ucb->cdev, &class_device_attr_vcharger);
++	class_device_remove_file(&dev->ucb->cdev, &class_device_attr_vbatt);
++}
++
++static struct ucb1x00_driver ucb1x00_simpad_driver = {
++	.add	= ucb1x00_simpad_add,
++	.remove	= ucb1x00_simpad_remove,
++};
++
++static int __init ucb1x00_simpad_init(void)
++{
++	apm_get_power_status = simpad_apm_get_power_status;
++	return ucb1x00_register_driver(&ucb1x00_simpad_driver);
++}
++
++static void __exit ucb1x00_simpad_exit(void)
++{
++	apm_get_power_status = NULL;
++	ucb1x00_unregister_driver(&ucb1x00_simpad_driver);
++}
++
++/****************************************************************************/
++/*  Functions exported for use by the kernel and kernel modules             */
++/****************************************************************************/
++
++int simpad_get_battery(struct simpad_battery_apm *bstat)
++{
++ 	int icharger, vcharger, vbatt;
++
++ 	if ( ucb_alt ) {
++ 		icharger = ucb1x00_simpad_read_icharger( ucb_alt );
++ 		vcharger = ucb1x00_simpad_read_vcharger( ucb_alt );
++ 		vbatt    = ucb1x00_simpad_read_vbatt( ucb_alt );
++ 	} else {
++ 		bstat->ac_status = SIMPAD_AC_STATUS_AC_UNKNOWN;
++		bstat->status = SIMPAD_BATT_STATUS_UNKNOWN;
++		bstat->percentage = 0x64;    // lets say 100%
++		bstat->life = 330;	     // lets say a long time 
++		return 0;
++	}
++
++	/* AC status */
++	bstat->ac_status = SIMPAD_AC_STATUS_AC_OFFLINE;
++	if ( vcharger>MIN_SUPPLY ) {
++		bstat->ac_status = SIMPAD_AC_STATUS_AC_ONLINE;
++	}
++
++	/* charging */
++	bstat->status = 0x0;
++	if ( icharger >= CHARGING_LED_LEVEL ) 
++		bstat->status = SIMPAD_BATT_STATUS_CHARGING;
++
++	if ( vbatt > BATT_LOW )
++		bstat->status |= SIMPAD_BATT_STATUS_HIGH;
++	else if ( vbatt < BATT_CRITICAL )
++		bstat->status |= SIMPAD_BATT_STATUS_CRITICAL;
++	else
++		bstat->status |= SIMPAD_BATT_STATUS_LOW;
++
++	if (bstat->status & SIMPAD_BATT_STATUS_CHARGING) {
++		if (icharger > CHARGING_MAX_LEVEL)
++			icharger = CHARGING_MAX_LEVEL;
++		if (icharger < CHARGING_LED_LEVEL)
++			icharger = CHARGING_LED_LEVEL;
++
++		bstat->percentage = 100 - 100 * (icharger - CHARGING_LED_LEVEL) /
++		(CHARGING_MAX_LEVEL - CHARGING_LED_LEVEL);
++	} else {
++		if (vbatt > BATT_FULL)
++			vbatt = BATT_FULL;
++		if (vbatt < BATT_EMPTY)
++			vbatt = BATT_EMPTY;
++
++		bstat->percentage = 100 * (vbatt - BATT_EMPTY) / (BATT_FULL - BATT_EMPTY);
++	}
++
++	/* let's assume: full load is 7h */
++	/* bstat->life = 420*bstat->percentage/100; */
++	/* mrdata: think, 4h is more realistic */
++	bstat->life = 240*(bstat->percentage)/100;
++
++#if 0
++	printk("get_battery: ac: %02x / ch: %02x /  perc: %02x / life: %d \n",
++	bstat->ac_status, bstat->status,
++	bstat->percentage, bstat->life );
++#endif
++
++	return 0;
++}
++
++void simpad_apm_get_power_status(struct apm_power_info *info)
++{
++	struct simpad_battery_apm bstat;
++	unsigned char ac    = APM_AC_UNKNOWN;
++	unsigned char level = APM_BATTERY_STATUS_UNKNOWN;
++	int status, result;
++
++	result = simpad_get_battery(&bstat);
++	if (result) {
++		printk("%s: unable to access battery information: result=%d\n", __FUNCTION__, result);
++		return;
++	}
++
++	switch (bstat.ac_status) {
++	case SIMPAD_AC_STATUS_AC_OFFLINE:
++		ac = APM_AC_OFFLINE;
++		break;
++	case SIMPAD_AC_STATUS_AC_ONLINE:
++		ac = APM_AC_ONLINE;
++		break;
++	case SIMPAD_AC_STATUS_AC_BACKUP:
++		ac = APM_AC_BACKUP;
++		break;
++	}
++
++	info->ac_line_status = ac;
++
++	status = bstat.status;
++	if (status & (SIMPAD_BATT_STATUS_CHARGING | SIMPAD_BATT_STATUS_CHARGE_MAIN))
++		level = APM_BATTERY_STATUS_CHARGING;
++	else if (status & (SIMPAD_BATT_STATUS_HIGH | SIMPAD_BATT_STATUS_FULL))
++		level = APM_BATTERY_STATUS_HIGH;
++	else if (status & SIMPAD_BATT_STATUS_LOW)
++		level = APM_BATTERY_STATUS_LOW;
++	else if (status & SIMPAD_BATT_STATUS_CRITICAL)
++		level = APM_BATTERY_STATUS_CRITICAL;
++
++	info->battery_status = level;
++	info->battery_flag = info->battery_status;
++
++	info->battery_life = bstat.percentage;
++
++	/* we have a dumb battery - so we know nothing */
++	info->time = bstat.life;
++	info->units = APM_UNITS_MINS;
++
++#if 0
++	printk("apm_get_power: ac: %02x / bs: %02x / bf: %02x / perc: %02x / life: %d\n",
++	       info->ac_line_status, info->battery_status, info->battery_flag,
++	       info->battery_life, info->time );
++#endif
++	return;
++}
++
++module_init(ucb1x00_simpad_init);
++module_exit(ucb1x00_simpad_exit);
++
++
++MODULE_AUTHOR("Juergen Messerer <juergen.messerer@freesurf.ch>");
++MODULE_DESCRIPTION("SIMpad noddy testing only example ADC driver");
++MODULE_LICENSE("GPL");
+diff -uNr linux-2.6.21.vanilla/drivers/mfd/ucb1x00-simpad.h linux-2.6.21/drivers/mfd/ucb1x00-simpad.h
+--- linux-2.6.21.vanilla/drivers/mfd/ucb1x00-simpad.h	1970-01-01 01:00:00.000000000 +0100
++++ linux-2.6.21/drivers/mfd/ucb1x00-simpad.h	2007-05-30 18:35:48.000000000 +0200
+@@ -0,0 +1,86 @@
++/*
++ *  linux/drivers/mfd/ucb1x00-simpad.h
++ *
++ *  Copyright (C) 2001 Russell King, All Rights Reserved.
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 2 of the License.
++ */
++#ifndef UCB1300_SIMPAD_H
++#define UCB1300_SIMPAD_H
++
++/*
++ * Conversion from AD -> mV
++ * 7.5V = 1023   7.33137mV/Digit
++ *
++ * 400 Units == 9.7V
++ * a     = ADC value
++ * 2007/03/24 mrdata:
++ *            according UCB1300 datasheet ADC error max. 3 LSB
++ *            5-95% of full scale -> 3*7.33137mV = 21.99mV
++ * // old 
++ * 21    = ADC error 
++ * 12600 = Divident to get 2*7.3242 
++ * 860   = Divider to get 2*7.3242
++ * 170   = Voltagedrop over
++ *
++ * // new
++ * 3     = ADC error 
++ * 12610 = Divident to get 2*7.33139
++ * 860   = Divider  to get 2*7.33139
++ * 170   = Voltagedrop over
++ */
++// #define CALIBRATE_BATTERY(a)   ((((a + 21)*12600)/860) + 170)
++#define CALIBRATE_BATTERY(a)   ((((a + 3)*12610)/860) + 170)
++
++/*
++ * We have two types of batteries a small and a large one
++ * To get the right value we to distinguish between those two
++ * 450 Units == 15 V
++ */
++#ifdef SMALL_BATTERY 
++#define CALIBRATE_SUPPLY(a)   (((a) * 1500) / 51)
++#define MIN_SUPPLY            8500 /* Less then 8.5V means no powersupply */
++#else
++#define CALIBRATE_SUPPLY(a)   (((a) * 1500) / 45)
++//#define MIN_SUPPLY            14000 /* Less then 14V means no powersupply */
++#define MIN_SUPPLY            12000 /* Less then 12V means no powersupply */
++#endif
++
++/*
++ * Charging Current 
++ * if value is >= 50 then charging is on
++ */
++// #define CALIBRATE_CHARGING(a)    (((a) * 1000) / (152/4))
++#define CALIBRATE_CHARGING(a)    (a)
++//#define CHARGING_LED_LEVEL     50
++
++#ifdef CONFIG_SA1100_SIMPAD_SINUSPAD
++
++// type small battery
++#define CHARGING_LED_LEVEL     12
++#define CHARGING_MAX_LEVEL     120
++#define BATT_FULL	8100
++#define BATT_LOW	7300
++#define BATT_CRITICAL	6700
++#define BATT_EMPTY	6400
++
++#else // CONFIG_SA1100_SIMPAD_SINUSPAD
++
++// type large battery
++// because of ADC error CHARGING_LED_LEVEL can changed
++// from 27 to 28
++#define CHARGING_LED_LEVEL     27
++#define CHARGING_MAX_LEVEL     265
++// BATT_FULL with SIMPAD_AC_STATUS_AC_OFFLINE
++#define BATT_FULL	8100
++#define BATT_LOW	7400
++#define BATT_CRITICAL	6800
++#define BATT_EMPTY	6500
++
++#endif // CONFIG_SA1100_SIMPAD_SINUSPAD
++
++// int simpad_get_battery(struct simpad_battery_apm *bstat);
++
++#endif
+diff -uNr linux-2.6.21.vanilla/include/asm-arm/arch-sa1100/simpad_pm.h linux-2.6.21/include/asm-arm/arch-sa1100/simpad_pm.h
+--- linux-2.6.21.vanilla/include/asm-arm/arch-sa1100/simpad_pm.h	1970-01-01 01:00:00.000000000 +0100
++++ linux-2.6.21/include/asm-arm/arch-sa1100/simpad_pm.h	2007-05-30 18:36:07.000000000 +0200
+@@ -0,0 +1,236 @@
++/*
++* Abstraction interface for microcontroller connection to rest of system
++*
++* Copyright 2003 Peter Pregler
++* Copyright 2000,1 Compaq Computer Corporation.
++*
++* Use consistent with the GNU GPL is permitted,
++* provided that this copyright notice is
++* preserved in its entirety in all copies and derived works.
++*
++* COMPAQ COMPUTER CORPORATION MAKES NO WARRANTIES, EXPRESSED OR IMPLIED,
++* AS TO THE USEFULNESS OR CORRECTNESS OF THIS CODE OR ITS
++* FITNESS FOR ANY PARTICULAR PURPOSE.
++*
++* Author: Peter Pregler (based on work for ipaq by Andrew Christian)
++*
++*/
++
++#ifndef __SIMPAD_HAL_H
++#define __SIMPAD_HAL_H
++
++#include <linux/apm-emulation.h>
++
++struct simpad_battery_apm {
++	unsigned char ac_status;	/* line connected yes/no */
++	unsigned char status;		/* battery loading yes/no */
++	unsigned char percentage;	/* percentage loaded */
++	unsigned short life;		/* life till empty */
++};
++
++extern void simpad_apm_get_power_status(struct apm_power_info *);
++
++// extern int simpad_get_battery(struct simpad_battery_apm *bstat);
++
++/* These should match the apm_bios.h definitions */
++#define SIMPAD_AC_STATUS_AC_OFFLINE      0x00
++#define SIMPAD_AC_STATUS_AC_ONLINE       0x01
++#define SIMPAD_AC_STATUS_AC_BACKUP       0x02   /* What does this mean? */
++#define SIMPAD_AC_STATUS_AC_UNKNOWN      0xff
++
++
++/* These bitfields are rarely "or'd" together */
++#define SIMPAD_BATT_STATUS_HIGH          0x01
++#define SIMPAD_BATT_STATUS_LOW           0x02
++#define SIMPAD_BATT_STATUS_CRITICAL      0x04
++#define SIMPAD_BATT_STATUS_CHARGING      0x08
++#define SIMPAD_BATT_STATUS_CHARGE_MAIN   0x10
++#define SIMPAD_BATT_STATUS_DEAD          0x20   /* Battery will not charge */
++#define SIMPAD_BATT_NOT_INSTALLED        0x20   /* For expansion pack batteries */
++#define SIMPAD_BATT_STATUS_FULL          0x40   /* Battery fully charged (and connected to AC) */
++#define SIMPAD_BATT_STATUS_NOBATT        0x80
++#define SIMPAD_BATT_STATUS_UNKNOWN       0xff
++                                                                                                                                           
++#if 0 // FIXME
++#include <linux/simpad_ts.h>
++
++enum simpad_asset_type {
++	ASSET_TCHAR = 0,
++	ASSET_SHORT,
++	ASSET_LONG
++};
++
++#define TTYPE(_type)           (((unsigned int)_type) << 8)
++#define TCHAR(_len)            (TTYPE(ASSET_TCHAR) | (_len))
++#define TSHORT                 TTYPE(ASSET_SHORT)
++#define TLONG                  TTYPE(ASSET_LONG)
++#define ASSET(_type,_num)      ((((unsigned int)_type)<<16) | (_num))
++
++#define ASSET_HM_VERSION        ASSET( TCHAR(10), 0 )   /* 1.1, 1.2 */
++#define ASSET_SERIAL_NUMBER     ASSET( TCHAR(40), 1 )   /* Unique iPAQ serial number */
++#define ASSET_MODULE_ID         ASSET( TCHAR(20), 2 )   /* E.g., "iPAQ 3700" */    
++#define ASSET_PRODUCT_REVISION  ASSET( TCHAR(10), 3 )   /* 1.0, 2.0 */
++#define ASSET_PRODUCT_ID        ASSET( TSHORT,    4 )   /* 2 = Palm-sized computer */
++#define ASSET_FRAME_RATE        ASSET( TSHORT,    5 )
++#define ASSET_PAGE_MODE         ASSET( TSHORT,    6 )   /* 0 = Flash memory */
++#define ASSET_COUNTRY_ID        ASSET( TSHORT,    7 )   /* 0 = USA */
++#define ASSET_IS_COLOR_DISPLAY  ASSET( TSHORT,    8 )   /* Boolean, 1 = yes */
++#define ASSET_ROM_SIZE          ASSET( TSHORT,    9 )   /* 16, 32 */
++#define ASSET_RAM_SIZE          ASSET( TSHORT,   10 )   /* 32768 */
++#define ASSET_HORIZONTAL_PIXELS ASSET( TSHORT,   11 )   /* 240 */
++#define ASSET_VERTICAL_PIXELS   ASSET( TSHORT,   12 )   /* 320 */
++
++#define ASSET_TYPE(_asset)       (((_asset)&0xff000000)>>24)
++#define ASSET_TCHAR_LEN(_asset)  (((_asset)&0x00ff0000)>>16)
++#define ASSET_NUMBER(_asset)     ((_asset)&0x0000ffff)
++
++#define MAX_TCHAR_LEN 40
++
++struct simpad_asset {
++	unsigned int type;
++	union {
++		unsigned char  tchar[ MAX_TCHAR_LEN ];
++		unsigned short vshort;
++		unsigned long  vlong;
++	} a;
++};
++
++/********************************************************************
++ * Interface to the hardware-type specific functions
++ *
++ * get_version           Read the version number of the microcontroller on the option pack SPI bus
++ * spi_read              Reads from the serial EEPROM memory on the option pack SPI bus
++ * spi_write             Write to the serial EEPROM memory on the option pack SPI bus
++ * get_option_detect     Returns whether or not an option pack is present
++ *
++ * get_thermal_sensor    Return measured temperature of the unit, in units of 0.125 deg C
++ * set_notify_led        Turns on, off, or blinks the Green LED
++ * read_light_sensor     Returns the value of the front light sensor
++ * get_battery           Returns the current voltage and charging state of all batteries
++ * audio_clock           Sets the audio CODEC to run at a particular rate
++ * audio_power           Turns on/off audio CODEC (internally calls audio_clock)
++ * audio_mute            Mutes the audio CODEC
++ * asset_read            Extracts PocketPC-style asset information from persistent memory
++ * backlight_control     Adjusts the backlight level  (only on/off for 3100)
++ *
++ *
++ * iPAQ 3100 only
++ * ==============
++ * codec_control         Reset/mute/control level of 3100 audio codec
++ * contrast_control      Adjusts the contrast level   (only for 3100)
++ *
++ * iPAQ 3600, 3700 only
++ * ====================
++ * eeprom_read           Reads from the asset information on the eeprom of a 3600 (deprecated)
++ * eeprom_write          Writes to the asset information on the eeprom (deprecated)
++ *
++ * The interfaces to the EEPROM functions are maintained only because the simpad_ts driver has
++ * a deprecated ioctl call for them.  They are used internally by the "asset_read" function.
++ *
++ * iPAQ 3800, 3900 only
++ * ====================
++ * set_ebat              Tells enhanced PCMCIA sleeves that this iPAQ can handle 
++ *                       a wider voltage range (applies to 3800, 3900)
++ *
++ *********************************************************************/
++
++struct simpad_hal_ops {
++	/* Functions provided by the underlying hardware */
++	int (*get_version)( struct simpad_ts_version * );
++	int (*eeprom_read)( unsigned short address, unsigned char *data, unsigned short len );
++	int (*eeprom_write)( unsigned short address, unsigned char *data, unsigned short len );
++	int (*get_thermal_sensor)( unsigned short * );
++	int (*set_notify_led)( unsigned char mode, unsigned char duration, 
++			       unsigned char ontime, unsigned char offtime );
++	int (*read_light_sensor)( unsigned char *result );
++	int (*get_battery)( struct simpad_battery * );
++	int (*spi_read)( unsigned short address, unsigned char *data, unsigned short len );
++	int (*spi_write)( unsigned short address, unsigned char *data, unsigned short len );
++	int (*codec_control)( unsigned char, unsigned char );
++	int (*get_option_detect)( int *result );
++	int (*audio_clock)( long samplerate );
++	int (*audio_power)( long samplerate );
++	int (*audio_mute)( int mute );
++	int (*asset_read)( struct simpad_asset *asset );
++	int (*set_ebat)( void );
++
++	/* Functions indirectly provided by the underlying hardware */
++	int (*backlight_control)( enum flite_pwr power, unsigned char level );
++	int (*contrast_control)( unsigned char level );
++
++        /* for module use counting */ 
++        struct module *owner;
++};
++
++/* Used by the device-specific hardware module to register itself */
++extern int  simpad_hal_register_interface( struct simpad_hal_ops *ops );
++extern void simpad_hal_unregister_interface( struct simpad_hal_ops *ops );
++
++/* 
++ * Calls into HAL from the device-specific hardware module
++ * These run at interrupt time 
++ */
++extern void simpad_hal_keypress( unsigned char key );
++extern void simpad_hal_touchpanel( unsigned short x, unsigned short y, int down );
++extern void simpad_hal_option_detect( int present );
++
++/* Callbacks registered by device drivers */
++struct simpad_driver_ops {
++	void (*keypress)( unsigned char key );
++	void (*touchpanel)( unsigned short x, unsigned short y, int down );
++	void (*option_detect)( int present );
++};
++
++extern int  simpad_hal_register_driver( struct simpad_driver_ops * );
++extern void simpad_hal_unregister_driver( struct simpad_driver_ops * );
++
++
++/* Calls into HAL from device drivers and other kernel modules */
++extern void simpad_get_flite( struct simpad_ts_backlight *bl );
++extern void simpad_get_contrast( unsigned char *contrast );
++extern int  simpad_set_flite( enum flite_pwr pwr, unsigned char brightness );
++extern int  simpad_set_contrast( unsigned char contrast );
++extern int  simpad_toggle_frontlight( void );
++
++extern int simpad_apm_get_power_status(unsigned char *ac_line_status, unsigned char *battery_status, 
++				      unsigned char *battery_flag, unsigned char *battery_percentage, 
++				      unsigned short *battery_life);
++
++extern struct simpad_hal_ops *simpad_hal_ops;
++
++/* Do not use this macro in driver files - instead, use the inline functions defined below */
++#define CALL_HAL( f, args... ) \
++        { int __result = -EIO;                             \
++          if ( simpad_hal_ops && simpad_hal_ops->f ) {       \
++                __MOD_INC_USE_COUNT(simpad_hal_ops->owner); \
++                __result = simpad_hal_ops->f(args);         \
++                __MOD_DEC_USE_COUNT(simpad_hal_ops->owner); \
++          }                                                \
++          return __result; }
++
++#define HFUNC  static __inline__ int
++
++/* The eeprom_read/write address + len has a maximum value of 512.  Both must be even numbers */
++HFUNC simpad_eeprom_read( u16 addr, u8 *data, u16 len )  CALL_HAL(eeprom_read,addr,data,len)
++HFUNC simpad_eeprom_write( u16 addr, u8 *data, u16 len)  CALL_HAL(eeprom_write,addr,data,len)
++HFUNC simpad_spi_read( u8 addr, u8 *data, u16 len) 	CALL_HAL(spi_read,addr,data,len)
++HFUNC simpad_spi_write( u8 addr, u8 *data, u16 len) 	CALL_HAL(spi_write,addr,data,len)
++HFUNC simpad_get_version( struct simpad_ts_version *v )   CALL_HAL(get_version,v)
++HFUNC simpad_get_thermal_sensor( u16 *thermal ) 	        CALL_HAL(get_thermal_sensor,thermal)
++HFUNC simpad_set_led( u8 mode, u8 dur, u8 ont, u8 offt ) CALL_HAL(set_notify_led, mode, dur, ont, offt)
++HFUNC simpad_get_light_sensor( u8 *result ) 	        CALL_HAL(read_light_sensor,result)
++HFUNC simpad_get_battery( struct simpad_battery *bat )	CALL_HAL(get_battery,bat)
++HFUNC simpad_get_option_detect( int *result)             CALL_HAL(get_option_detect,result)
++HFUNC simpad_audio_clock( long samplerate )              CALL_HAL(audio_clock,samplerate)
++HFUNC simpad_audio_power( long samplerate )              CALL_HAL(audio_power,samplerate)
++HFUNC simpad_audio_mute( int mute )                      CALL_HAL(audio_mute,mute)
++HFUNC simpad_asset_read( struct simpad_asset *asset )     CALL_HAL(asset_read,asset)
++HFUNC simpad_set_ebat( void )                            CALL_HAL(set_ebat)
++
++/* Don't use these functions directly - rather, call {get,set}_{flite,contrast} */
++	/* Functions indirectly provided by the underlying hardware */
++HFUNC simpad_backlight_control( enum flite_pwr p, u8 v ) CALL_HAL(backlight_control,p,v)
++HFUNC simpad_contrast_control( u8 level )                CALL_HAL(contrast_control,level)
++
++#endif
++#endif

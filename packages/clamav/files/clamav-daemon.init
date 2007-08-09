@@ -3,18 +3,20 @@ PATH=/sbin:/bin:/usr/sbin:/usr/bin
 DAEMON=/usr/sbin/clamd
 NAME="clamd"
 DESC="ClamAV daemon"
-CLAMAVCONF=/etc/clamd.conf
+CLAMAV_CONF=/etc/clamd.conf
+PID=/var/run/clamav/clamd.pid
 
 set -e
 
-test -r /etc/default/clamav-daemon && . /etc/default/clamav-daemon
 test -x "$DAEMON" || exit 0
-test ! -r "$CLAMAVCONF" && exit 0
-if [ `grep -q "^Example" $CLAMAVCONF` ]; then
+if [ ! -r "$CLAMAV_CONF" ]; then
+  echo "ClamAV configuration file $CLAMAV_CONF not found. Exiting"
+  exit 0
+fi
+if [ `grep -q "^Example" $CLAMAV_CONF` ]; then
     echo "$DESC is not configured."
     exit 0
 fi
-pidfile="`grep ^PidFile $CLAMAVCONF | awk '{print $2}'`"
 
 case "$1" in
   start)
@@ -25,7 +27,7 @@ case "$1" in
 
   stop)
     echo -n "Stopping $DESC: "
-    start-stop-daemon -K -p $pidfile
+    start-stop-daemon -K -p $PID
     ;;
 
     restart|force-reload)

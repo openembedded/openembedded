@@ -1,0 +1,151 @@
+Index: linux-2.6.21/drivers/leds/leds-a780.c
+===================================================================
+--- linux-2.6.21.orig/drivers/leds/leds-a780.c	2007-05-08 15:09:26.000000000 -0300
++++ linux-2.6.21/drivers/leds/leds-a780.c	2007-05-08 15:19:26.000000000 -0300
+@@ -18,10 +18,13 @@
+ #include <linux/leds.h>
+ #include <asm/arch/ezx-pcap.h>
+ 
++extern void ezx_pcap_vibrator_level(u_int32_t);
++
+ static void a780led_main_set(struct led_classdev *led_cdev, enum led_brightness value)
+ {
+ 	if ( value > 31 ) value = 31;
+ 	printk( KERN_DEBUG "a780led_main_set: %d\n", value );
++#warning FIXME: use read/write operations
+ 	ezx_pcap_bit_set(SSP_PCAP_ADJ_BIT_PERIPH_BL_CTRL0, value & 0x01);
+ 	ezx_pcap_bit_set(SSP_PCAP_ADJ_BIT_PERIPH_BL_CTRL1, value & 0x02);
+ 	ezx_pcap_bit_set(SSP_PCAP_ADJ_BIT_PERIPH_BL_CTRL2, value & 0x04);
+@@ -33,6 +36,7 @@
+ {
+ 	if ( value > 31 ) value = 31;
+ 	printk( KERN_DEBUG "a780led_aux_set: %d\n", value );
++#warning FIXME: use read/write operations
+ 	ezx_pcap_bit_set(SSP_PCAP_ADJ_BIT_PERIPH_BL2_CTRL0, value & 0x01);
+ 	ezx_pcap_bit_set(SSP_PCAP_ADJ_BIT_PERIPH_BL2_CTRL1, value & 0x02);
+ 	ezx_pcap_bit_set(SSP_PCAP_ADJ_BIT_PERIPH_BL2_CTRL2, value & 0x04);
+@@ -40,6 +44,43 @@
+ 	ezx_pcap_bit_set(SSP_PCAP_ADJ_BIT_PERIPH_BL2_CTRL4, value & 0x10);
+ }
+ 
++static void a780vibrator_set(struct led_classdev *led_cdev, enum led_brightness value)
++{
++	if ( value > 4 ) value = 4;
++	printk( KERN_DEBUG "a780vibrator_set: %d\n", value );
++
++	switch(value)
++	{
++		case 0:
++			/* turn off vibrator */
++			ezx_pcap_bit_set(SSP_PCAP_ADJ_BIT_AUX_VREG_V_VIB_EN, 0);
++			break;
++
++		case 1:
++			ezx_pcap_vibrator_level(PCAP_VIBRATOR_VOLTAGE_LEVEL0);
++			ezx_pcap_bit_set(SSP_PCAP_ADJ_BIT_AUX_VREG_V_VIB_EN, 1);
++			break;
++
++		case 2:
++			ezx_pcap_vibrator_level(PCAP_VIBRATOR_VOLTAGE_LEVEL1);
++			ezx_pcap_bit_set(SSP_PCAP_ADJ_BIT_AUX_VREG_V_VIB_EN, 1);
++			break;
++
++		case 3:
++			ezx_pcap_vibrator_level(PCAP_VIBRATOR_VOLTAGE_LEVEL2);
++			ezx_pcap_bit_set(SSP_PCAP_ADJ_BIT_AUX_VREG_V_VIB_EN, 1);
++			break;
++
++		case 4:
++			ezx_pcap_vibrator_level(PCAP_VIBRATOR_VOLTAGE_LEVEL3);
++			ezx_pcap_bit_set(SSP_PCAP_ADJ_BIT_AUX_VREG_V_VIB_EN, 1);
++			break;
++
++		default:
++			break;
++	}
++}
++
+ static struct led_classdev a780_main_led = {
+ 	.name			= "a780:main",
+ 	.default_trigger	= "none",
+@@ -52,11 +93,18 @@
+ 	.brightness_set		= a780led_aux_set,
+ };
+ 
++static struct led_classdev a780_vibrator = {
++	.name			= "a780:vibrator",
++	.default_trigger	= "none",
++	.brightness_set		= a780vibrator_set,
++};
++
+ #ifdef CONFIG_PM
+ static int a780led_suspend(struct platform_device *dev, pm_message_t state)
+ {
+ 	led_classdev_suspend(&a780_main_led);
+ 	led_classdev_suspend(&a780_aux_led);
++	led_classdev_suspend(&a780_vibrator);
+ 	return 0;
+ }
+ 
+@@ -64,6 +112,7 @@
+ {
+ 	led_classdev_resume(&a780_main_led);
+ 	led_classdev_resume(&a780_aux_led);
++	led_classdev_resume(&a780_vibrator);
+ 	return 0;
+ }
+ #endif
+@@ -77,8 +126,16 @@
+ 		return ret;
+ 
+ 	ret = led_classdev_register(&pdev->dev, &a780_aux_led);
+-	if (ret < 0)
++	if (ret < 0) {
++		led_classdev_unregister(&a780_main_led);
++		return ret;
++	}
++
++	ret = led_classdev_register(&pdev->dev, &a780_vibrator);
++	if (ret < 0) {
+ 		led_classdev_unregister(&a780_main_led);
++		led_classdev_unregister(&a780_aux_led);
++	}
+ 
+ 	return ret;
+ }
+@@ -87,6 +144,7 @@
+ {
+ 	led_classdev_unregister(&a780_main_led);
+ 	led_classdev_unregister(&a780_aux_led);
++	led_classdev_unregister(&a780_vibrator);
+ 	return 0;
+ }
+ 
+@@ -111,6 +169,8 @@
+ {
+ 	a780led_main_set( &a780_main_led, 0 );
+ 	a780led_aux_set( &a780_aux_led, 0 );
++	a780vibrator_set( &a780_vibrator, 0 );
++
+ 	platform_driver_unregister(&a780led_driver);
+ }
+ 
+Index: linux-2.6.21/drivers/leds/Kconfig
+===================================================================
+--- linux-2.6.21.orig/drivers/leds/Kconfig	2007-05-08 15:09:26.000000000 -0300
++++ linux-2.6.21/drivers/leds/Kconfig	2007-05-08 15:09:26.000000000 -0300
+@@ -105,11 +105,11 @@
+ 	  be configured via sysfs. If unsure, say Y.
+ 
+ config LEDS_A780
+-	tristate "LED Support for the Motorola A780 GSM Phone"
++	tristate "LED/Vibrator Support for the Motorola A780 GSM Phone"
+ 	depends LEDS_CLASS && PXA_EZX_A780
+ 	help
+-	  This option enables support for the LEDs on the
+-	  Motorola A780 GSM Phone.
++	  This option enables support for the LEDs and the
++	  vibrator on the Motorola A780 GSM Phone.
+ 
+ config LEDS_E680
+ 	tristate "LED Support for the Motorola E680(i) GSM Phone"

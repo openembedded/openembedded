@@ -3,6 +3,7 @@ DESCRIPTION = "Liux As Bootloader kernelm"
 LICENSE = "GPL"
 
 COMPATIBLE_HOST = "arm.*-linux"
+COMPATIBLE_MACHINE = "h2200"
 
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/handhelds-pxa-${PV}"
 

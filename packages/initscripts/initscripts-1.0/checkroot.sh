@@ -193,7 +193,7 @@ ROOTFSDEV="/dev/root"
 if ! grep -q "^$ROOTFSDEV\w" /proc/mounts; then
   ROOTFSDEV="rootfs"
 fi
-if [ $(grep "^$ROOTFSDEV\w" /proc/mounts | awk '{print $4}') = rw ]; then
+if [ x$(grep "^$ROOTFSDEV\w" /proc/mounts | awk '{print $4}') = "xrw" ]; then
 	echo "Root filesystem already read-write, not remounting"
 	exit 0
 fi

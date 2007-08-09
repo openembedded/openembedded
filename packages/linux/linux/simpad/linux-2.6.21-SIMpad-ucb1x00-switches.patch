@@ -1,0 +1,359 @@
+diff -uNr linux-2.6.21.vanilla/drivers/mfd/Kconfig linux-2.6.21/drivers/mfd/Kconfig
+--- linux-2.6.21.vanilla/drivers/mfd/Kconfig	2007-04-26 05:08:32.000000000 +0200
++++ linux-2.6.21/drivers/mfd/Kconfig	2007-05-29 12:56:32.000000000 +0200
+@@ -37,4 +37,7 @@
+ 	tristate "Touchscreen interface support"
+ 	depends on MCP_UCB1200 && INPUT
+ 
++config MCP_UCB1200_SWITCHES
++        tristate "SIMpad Switches support"
++        depends on MCP_UCB1200 && INPUT
+ endmenu
+diff -uNr linux-2.6.21.vanilla/drivers/mfd/Makefile linux-2.6.21/drivers/mfd/Makefile
+--- linux-2.6.21.vanilla/drivers/mfd/Makefile	2007-04-26 05:08:32.000000000 +0200
++++ linux-2.6.21/drivers/mfd/Makefile	2007-05-29 12:56:32.000000000 +0200
+@@ -8,7 +8,7 @@
+ obj-$(CONFIG_MCP_SA11X0)	+= mcp-sa11x0.o
+ obj-$(CONFIG_MCP_UCB1200)	+= ucb1x00-core.o
+ obj-$(CONFIG_MCP_UCB1200_TS)	+= ucb1x00-ts.o
+-
++obj-$(CONFIG_MCP_UCB1200_SWITCHES) += ucb1x00-switches.o
+ ifeq ($(CONFIG_SA1100_ASSABET),y)
+ obj-$(CONFIG_MCP_UCB1200)	+= ucb1x00-assabet.o
+ endif
+diff -Naur linux-2.6.21/drivers/mfd.old/ucb1x00-switches.c linux-2.6.21/drivers/mfd/ucb1x00-switches.c
+--- linux-2.6.21/drivers/mfd/ucb1x00-switches.c	1970-01-01 01:00:00.000000000 +0100
++++ linux-2.6.21/drivers/mfd/ucb1x00-switches.c	2007-07-04 23:59:39.000000000 +0200
+@@ -0,0 +1,332 @@
++/*
++ *  linux/drivers/mfd/ucb1x00-switches.c
++ *
++ *  Copyright (C) 2007 Bernhard Guillon.
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 2 of the License.
++ *
++ *  This driver is for the Switches of Siemens SIMpad (CL4,SL4,SLC), T-Sinus-Pad and
++ *  Swisscom WP50 devices.
++ *
++ *  Six switches are routed to GPIO pins on the UCB1300: S3 -- S8.
++ *
++ *  This driver is based on the 2.4 ucb1x00-switches, the 2.6 ucb1x00-assabet
++ *  and the ucb1x00-ts driver.
++ *
++ *  2007/06/21 mrdata:
++ *             - create new thread kswd() to handle irq_events for ucb1300-gpio's
++ *             - found out, that not every key-press or key-release
++ *               generate a irq_event
++ *               -> establish key_state handling 
++ *                  key_state, key_state_last <-> KEY_PRESS, KEY_RELEASE
++ *               -> after irq_event polling the ucb1300-gpio's till all keys
++ *                  in key_state = KEY_RELEASE 
++ *
++ */
++#include <linux/module.h>
++#include <linux/init.h>
++#include <linux/input.h>
++#include <linux/device.h>
++#include <linux/sched.h>
++#include <linux/freezer.h>
++#include <linux/kthread.h>
++
++#include <asm/dma.h>
++
++#include "ucb1x00.h"
++
++#define KEY_PRESS 1
++#define KEY_RELEASE 0
++
++static int key [6] = { KEY_PROG1,KEY_PROG2,KEY_UP,KEY_DOWN,KEY_LEFT,KEY_RIGHT };
++
++static unsigned short int key_state [6] = { 0, 0, 0, 0, 0, 0};
++static unsigned short int key_state_last [6] = { 1, 1, 1, 1, 1, 1};
++
++struct ucb1x00_switches {
++	struct input_dev	*idev;
++	struct ucb1x00		*ucb;
++	
++	wait_queue_head_t	irq_wait;
++	struct task_struct	*rtask;
++	
++	int 			idx;
++		
++	unsigned int		valid:1;
++};
++
++static int ucb1x00_thread(void *_switches_id)
++{
++	unsigned short int this;
++	int idx_tmp;
++	int i;
++	struct ucb1x00_switches *switches = _switches_id;
++	struct input_dev *idev = switches->idev;
++	struct task_struct *tsk = current;
++	DECLARE_WAITQUEUE(wait, tsk);
++	
++	add_wait_queue(&switches->irq_wait, &wait);
++	
++	while (!kthread_should_stop())
++	{
++		signed long timeout;
++
++		if ((switches->idx >= 0) && (switches->idx <= 5) && (switches->valid == 1))
++		{
++			switches->valid = 0;
++						
++			idx_tmp = switches->idx;
++			
++			ucb1x00_enable(switches->ucb);
++	
++			this = ~ucb1x00_io_read(switches->ucb);
++
++			ucb1x00_disable(switches->ucb);
++					
++			if (key_state[idx_tmp] == KEY_RELEASE)
++			{
++				key_state_last[idx_tmp] = KEY_RELEASE;
++				key_state[idx_tmp] = KEY_PRESS;
++	
++				input_report_key(idev, key[idx_tmp], KEY_PRESS);
++				input_sync(idev);							
++			}
++			
++			for (i = 0; i < 6; i++)
++			{
++				if ((key_state[i] == KEY_RELEASE) && (((this & (1 << i)) ? 1 : 0) == KEY_PRESS))
++				{
++					key_state_last[i] = KEY_RELEASE;
++					key_state[i] = KEY_PRESS;
++							
++					input_report_key(idev, key[i], KEY_PRESS);
++					input_sync(idev);
++				}
++			}
++										
++			for(;;)
++			{			    
++				ucb1x00_enable(switches->ucb);
++				this = ~ucb1x00_io_read(switches->ucb);
++				ucb1x00_disable(switches->ucb);
++															
++				for (i = 0; i < 6; i++)
++				{						
++					if ((key_state[i] == KEY_PRESS) && (((this & (1 << i)) ? 1 : 0) == KEY_RELEASE))
++					{
++						key_state_last[i] = KEY_PRESS;
++						key_state[i] = KEY_RELEASE;
++							
++						input_report_key(idev, key[i], KEY_RELEASE);
++						input_sync(idev);
++					}
++						
++					if ((key_state[i] == KEY_RELEASE) && (((this & (1 << i)) ? 1 : 0) == KEY_PRESS))
++					{
++						key_state_last[i] = KEY_RELEASE;
++						key_state[i] = KEY_PRESS;
++							
++						input_report_key(idev, key[i], KEY_PRESS);
++						input_sync(idev);
++					}
++						
++				}
++				
++				// left loop, if no key press detect	
++				if ((this | 0xff80) == 0xff80)
++				{
++					break;
++				}
++											
++				set_task_state(tsk, TASK_INTERRUPTIBLE);
++					
++				try_to_freeze();
++					
++				timeout = HZ / 100;
++					
++				schedule_timeout(timeout);
++			}					
++		}
++				
++		set_task_state(tsk, TASK_INTERRUPTIBLE);
++		
++		try_to_freeze();
++		
++		timeout = MAX_SCHEDULE_TIMEOUT;
++		
++		schedule_timeout(timeout);
++	}
++	
++	remove_wait_queue(&switches->irq_wait, &wait);
++	
++	switches->rtask = NULL;
++	
++	return 0;
++}
++
++
++static void ucb1x00_dev_irq(int idx, void *id)
++{
++	struct ucb1x00_switches *switches = id;
++
++	switches->idx = idx;
++	switches->valid = 1;	
++	
++	wake_up(&switches->irq_wait);
++}
++
++static int ucb1x00_switches_add(struct ucb1x00_dev *dev)
++{
++	struct ucb1x00_switches *switches;
++	struct input_dev *idev;
++	int err,i;
++	
++	switches = kzalloc(sizeof(struct ucb1x00_switches), GFP_KERNEL);
++	idev = input_allocate_device();
++
++	if (!switches || !idev) {
++		err = -ENOMEM;
++		goto fail;
++	}
++
++	switches->ucb = dev->ucb;
++	
++	idev->private    = switches;
++	idev->name       = "SIMpad Switches";
++	idev->id.product = switches->ucb->id;
++	
++	__set_bit(EV_KEY,    idev->evbit);
++	__set_bit(EV_REP,    idev->evbit);
++	__set_bit(KEY_PROG1,    idev->keybit);
++	__set_bit(KEY_PROG2,    idev->keybit);
++	__set_bit(KEY_UP,    idev->keybit);
++	__set_bit(KEY_DOWN,    idev->keybit);
++	__set_bit(KEY_LEFT,    idev->keybit);
++	__set_bit(KEY_RIGHT,    idev->keybit);
++	
++	err = input_register_device(idev);
++	if (err)
++		goto fail;
++	switches->idev = idev;
++	dev->priv = switches;
++	
++	BUG_ON(switches->rtask);
++	
++	init_waitqueue_head(&switches->irq_wait);
++	
++	ucb1x00_enable(switches->ucb);
++
++	ucb1x00_io_set_dir(switches->ucb,
++			   UCB_IO_0 | UCB_IO_1 | UCB_IO_2 |
++			   UCB_IO_3 | UCB_IO_4 | UCB_IO_5, 
++			   UCB_IO_8 | UCB_IO_9);
++
++	ucb1x00_disable(switches->ucb);
++	
++	for (i = 0; i < 6; ++i) {
++		ucb1x00_enable_irq(switches->ucb, i, UCB_RISING | UCB_FALLING);
++
++		if (ucb1x00_hook_irq(switches->ucb, i, ucb1x00_dev_irq, switches) < 0) {
++			printk(KERN_ERR "unable to hook IRQ for "
++			       "UCB1300 SWITCH_%d\n", i);
++			return -EBUSY;
++		}
++	}
++	
++	switches->rtask = kthread_run(ucb1x00_thread, switches, "kswd");
++	if (!IS_ERR(switches->rtask))
++	{
++	    return 0;
++	}
++	else
++	{
++		input_unregister_device(switches->idev);
++		
++		for (i = 5; i >= 0; --i) {
++			ucb1x00_disable_irq(switches->ucb, i, UCB_RISING | UCB_FALLING);
++
++			/* Only error conditions are ENOENT and EINVAL; silently
++			 * ignore:
++			 */
++			ucb1x00_free_irq(switches->ucb, i, NULL);
++		}
++		switches->rtask = NULL;
++		ucb1x00_disable(switches->ucb);
++		kfree(switches);
++		
++		return -EFAULT;
++	}
++
++fail:
++	input_free_device(idev);
++	kfree(switches);
++	return err;
++
++}
++
++static void ucb1x00_switches_remove(struct ucb1x00_dev *dev)
++{
++	int i;
++	struct ucb1x00_switches *switches = dev->priv;
++	
++	if (switches->rtask)
++		kthread_stop(switches->rtask);
++		
++	switches->rtask = NULL;
++		
++	input_unregister_device(switches->idev);
++		
++	for (i = 5; i >= 0; --i) {
++		ucb1x00_disable_irq(switches->ucb, i, UCB_RISING | UCB_FALLING);
++
++		/* Only error conditions are ENOENT and EINVAL; silently
++		 * ignore:
++		 */
++		ucb1x00_free_irq(switches->ucb, i, NULL);
++	}
++	ucb1x00_disable(switches->ucb);
++	kfree(switches);
++}
++
++#ifdef CONFIG_PM
++static int ucb1x00_switches_resume(struct ucb1x00_dev *dev)
++{
++	struct ucb1x00_switches *switches = dev->priv;
++	
++	if (switches->rtask != NULL)
++	{
++		switches->valid = 0;
++		wake_up(&switches->irq_wait);
++		
++		printk(KERN_DEBUG "ucb1x00-switches.c -> _switches_resume() kswd - restart *DONE*\n");
++	}
++	return 0;
++}
++#else
++#define ucb1x00_switches_resume NULL
++#endif
++
++static struct ucb1x00_driver ucb1x00_switches_driver = {
++	.add	= ucb1x00_switches_add,
++	.remove	= ucb1x00_switches_remove,
++	.resume = ucb1x00_switches_resume,
++};
++
++static int __init ucb1x00_switches_init(void)
++{
++	return ucb1x00_register_driver(&ucb1x00_switches_driver);
++}
++
++static void __exit ucb1x00_switches_exit(void)
++{
++	ucb1x00_unregister_driver(&ucb1x00_switches_driver);
++}
++
++module_init(ucb1x00_switches_init);
++module_exit(ucb1x00_switches_exit);
++
++MODULE_AUTHOR("Bernhard Guillon <Bernhard.Guillon@opensimpad.org>");
++MODULE_DESCRIPTION("UCB1x00 Switches driver for Siemens SIMpad");
++MODULE_LICENSE("GPL");

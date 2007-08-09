@@ -2,7 +2,7 @@ DESCRIPTION = "GNOME XML Parser library"
 SECTION = "libs"
 PRIORITY = "optional"
 LICENSE = "MIT"
-PR = "r2"
+PR = "r4"
 
 SRC_URI = "ftp://xmlsoft.org/libxml2/libxml2-${PV}.tar.gz"
 

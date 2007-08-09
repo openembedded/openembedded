@@ -1,0 +1,190 @@
+2007-01-12  Steven Munroe  <sjmunroe@us.ibm.com>
+	    Joe Kerian  <jkerian@us.us.ibm.com>
+
+	[BZ #2749]
+	* sysdeps/ieee754/ldbl-128ibm/s_copysignl.c:
+	Include <math_ldbl_opt.h>.
+	Remove weak_alias.  Use long_double_symbol macro.
+	(__copysignl): Use signbit() for comparison.
+	* sysdeps/ieee754/ldbl-128ibm/s_fabsl.c: Correct parms for
+	SET_LDOUBLE_WORDS64.
+
+	[BZ #2423, #2749]
+	* sysdeps/ieee754/ldbl-128ibm/s_ceill.c: Don't include <fenv_libc.h>.
+	(__ceill): Remove calls to fegetround(), fesetround().
+	* sysdeps/ieee754/ldbl-128ibm/s_floorl.c: Likewise.
+	* sysdeps/ieee754/ldbl-128ibm/s_roundl.c: Likewise.
+	* sysdeps/ieee754/ldbl-128ibm/s_truncl.c: Likewise.
+
+diff -urN libc25-cvstip-20070104/sysdeps/ieee754/ldbl-128ibm/s_ceill.c libc24/sysdeps/ieee754/ldbl-128ibm/s_ceill.c
+--- libc25-cvstip-20070104/sysdeps/ieee754/ldbl-128ibm/s_ceill.c	2006-03-16 05:46:37.000000000 -0600
++++ libc24/sysdeps/ieee754/ldbl-128ibm/s_ceill.c	2007-01-11 10:30:12.856890432 -0600
+@@ -19,7 +19,6 @@
+    02111-1307 USA.  */
+ 
+ #include <math.h>
+-#include <fenv_libc.h>
+ #include <math_ldbl_opt.h>
+ #include <float.h>
+ #include <ieee754.h>
+@@ -44,11 +43,9 @@
+ 					     __builtin_inf ()), 1))
+     {
+       double orig_xh;
+-      int save_round = fegetround ();
+ 
+       /* Long double arithmetic, including the canonicalisation below,
+ 	 only works in round-to-nearest mode.  */
+-      fesetround (FE_TONEAREST);
+ 
+       /* Convert the high double to integer.  */
+       orig_xh = xh;
+@@ -81,8 +78,6 @@
+       /* Ensure we return -0 rather than +0 when appropriate.  */
+       if (orig_xh < 0.0)
+ 	xh = -__builtin_fabs (xh);
+-
+-      fesetround (save_round);
+     }
+ 
+   return ldbl_pack (xh, xl);
+diff -urN libc25-cvstip-20070104/sysdeps/ieee754/ldbl-128ibm/s_copysignl.c libc24/sysdeps/ieee754/ldbl-128ibm/s_copysignl.c
+--- libc25-cvstip-20070104/sysdeps/ieee754/ldbl-128ibm/s_copysignl.c	2006-01-27 18:07:25.000000000 -0600
++++ libc24/sysdeps/ieee754/ldbl-128ibm/s_copysignl.c	2007-01-11 10:30:12.857890280 -0600
+@@ -25,6 +25,7 @@
+ 
+ #include "math.h"
+ #include "math_private.h"
++#include <math_ldbl_opt.h>
+ 
+ #ifdef __STDC__
+ 	long double __copysignl(long double x, long double y)
+@@ -33,13 +34,13 @@
+ 	long double x,y;
+ #endif
+ {
+-  if (y < 0.0)
+-    {
+-      if (x >= 0.0)
+-	x = -x;
+-    }
+-  else if (x < 0.0)
++  if( signbit(x) != signbit(y) )
+     x = -x;
+   return x;
+ }
+-weak_alias (__copysignl, copysignl)
++
++#ifdef IS_IN_libm
++long_double_symbol (libm, __copysignl, copysignl);
++#else
++long_double_symbol (libc, __copysignl, copysignl);
++#endif
+diff -urN libc25-cvstip-20070104/sysdeps/ieee754/ldbl-128ibm/s_fabsl.c libc24/sysdeps/ieee754/ldbl-128ibm/s_fabsl.c
+--- libc25-cvstip-20070104/sysdeps/ieee754/ldbl-128ibm/s_fabsl.c	2006-01-27 18:07:25.000000000 -0600
++++ libc24/sysdeps/ieee754/ldbl-128ibm/s_fabsl.c	2007-01-11 10:30:12.857890280 -0600
+@@ -37,7 +37,7 @@
+ 	GET_LDOUBLE_WORDS64(hx,lx,x);
+ 	lx = lx ^ ( hx & 0x8000000000000000LL );
+ 	hx = hx & 0x7fffffffffffffffLL;
+-	SET_LDOUBLE_WORDS64(hx,lx,x);
++	SET_LDOUBLE_WORDS64(x,hx,lx);
+         return x;
+ }
+ long_double_symbol (libm, __fabsl, fabsl);
+diff -urN libc25-cvstip-20070104/sysdeps/ieee754/ldbl-128ibm/s_floorl.c libc24/sysdeps/ieee754/ldbl-128ibm/s_floorl.c
+--- libc25-cvstip-20070104/sysdeps/ieee754/ldbl-128ibm/s_floorl.c	2006-03-16 05:46:37.000000000 -0600
++++ libc24/sysdeps/ieee754/ldbl-128ibm/s_floorl.c	2007-01-11 10:30:12.858890128 -0600
+@@ -19,7 +19,6 @@
+    02111-1307 USA.  */
+ 
+ #include <math.h>
+-#include <fenv_libc.h>
+ #include <math_ldbl_opt.h>
+ #include <float.h>
+ #include <ieee754.h>
+@@ -43,11 +42,8 @@
+ 			&& __builtin_isless (__builtin_fabs (xh),
+ 					     __builtin_inf ()), 1))
+     {
+-      int save_round = fegetround ();
+-
+       /* Long double arithmetic, including the canonicalisation below,
+ 	 only works in round-to-nearest mode.  */
+-      fesetround (FE_TONEAREST);
+ 
+       /* Convert the high double to integer.  */
+       hi = ldbl_nearbyint (xh);
+@@ -75,8 +71,6 @@
+       xh = hi;
+       xl = lo;
+       ldbl_canonicalize (&xh, &xl);
+-
+-      fesetround (save_round);
+     }
+ 
+   return ldbl_pack (xh, xl);
+diff -urN libc25-cvstip-20070104/sysdeps/ieee754/ldbl-128ibm/s_roundl.c libc24/sysdeps/ieee754/ldbl-128ibm/s_roundl.c
+--- libc25-cvstip-20070104/sysdeps/ieee754/ldbl-128ibm/s_roundl.c	2006-03-16 05:46:37.000000000 -0600
++++ libc24/sysdeps/ieee754/ldbl-128ibm/s_roundl.c	2007-01-11 10:30:12.859889976 -0600
+@@ -22,7 +22,6 @@
+    when it's coded in C.  */
+ 
+ #include <math.h>
+-#include <fenv_libc.h>
+ #include <math_ldbl_opt.h>
+ #include <float.h>
+ #include <ieee754.h>
+@@ -47,11 +46,9 @@
+ 					     __builtin_inf ()), 1))
+     {
+       double orig_xh;
+-      int save_round = fegetround ();
+ 
+       /* Long double arithmetic, including the canonicalisation below,
+ 	 only works in round-to-nearest mode.  */
+-      fesetround (FE_TONEAREST);
+ 
+       /* Convert the high double to integer.  */
+       orig_xh = xh;
+@@ -88,8 +85,6 @@
+       xh = hi;
+       xl = lo;
+       ldbl_canonicalize (&xh, &xl);
+-
+-      fesetround (save_round);
+     }
+ 
+   return ldbl_pack (xh, xl);
+diff -urN libc25-cvstip-20070104/sysdeps/ieee754/ldbl-128ibm/s_truncl.c libc24/sysdeps/ieee754/ldbl-128ibm/s_truncl.c
+--- libc25-cvstip-20070104/sysdeps/ieee754/ldbl-128ibm/s_truncl.c	2006-03-16 05:46:37.000000000 -0600
++++ libc24/sysdeps/ieee754/ldbl-128ibm/s_truncl.c	2007-01-11 10:30:12.860889824 -0600
+@@ -22,7 +22,6 @@
+    when it's coded in C.  */
+ 
+ #include <math.h>
+-#include <fenv_libc.h>
+ #include <math_ldbl_opt.h>
+ #include <float.h>
+ #include <ieee754.h>
+@@ -47,11 +46,9 @@
+ 					     __builtin_inf ()), 1))
+     {
+       double orig_xh;
+-      int save_round = fegetround ();
+ 
+       /* Long double arithmetic, including the canonicalisation below,
+ 	 only works in round-to-nearest mode.  */
+-      fesetround (FE_TONEAREST);
+ 
+       /* Convert the high double to integer.  */
+       orig_xh = xh;
+@@ -92,8 +89,6 @@
+       /* Ensure we return -0 rather than +0 when appropriate.  */
+       if (orig_xh < 0.0)
+ 	xh = -__builtin_fabs (xh);
+-
+-      fesetround (save_round);
+     }
+ 
+   return ldbl_pack (xh, xl);

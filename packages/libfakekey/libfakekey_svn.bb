@@ -1,9 +1,9 @@
-DESCRIPTION = "Matchbox keyboard"
+DESCRIPTION = "Library to generate fake keys for Matchbox keyboard"
 LICENSE = "GPL"
 DEPENDS = "libxtst"
 SECTION = "x11/wm"
 PR="r2"
-PV = "0.0+svn${SRCDATE}"
+PV = "0.2+svn${SRCDATE}"
 
 SRC_URI = "svn://svn.o-hand.com/repos/matchbox/trunk;module=${PN};proto=http"
 

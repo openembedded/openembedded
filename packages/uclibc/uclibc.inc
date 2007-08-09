@@ -26,7 +26,7 @@ DEPENDS = "virtual/${TARGET_PREFIX}binutils \
 INHIBIT_DEFAULT_DEPS = "1"
 PARALLEL_MAKE = ""
 
-PACKAGES =+ "ldd uclibc-utils uclibc-gconv uclibc-thread-db"
+PACKAGES =+ "ldd uclibc-utils-dbg uclibc-utils uclibc-gconv uclibc-thread-db"
 
 uclibc_baselibs = "/lib/libcrypt*.so* /lib/libdl*.so \
 		   /lib/libintl*.so* /lib/libm*.so \
@@ -41,6 +41,7 @@ FILES_${PN} = "${sysconfdir} ${uclibc_baselibs} /sbin/ldconfig \
 FILES_ldd = "${bindir}/ldd"
 FILES_uclibc-dev += "${libdir}/*.o"
 FILES_uclibc-utils = "${bindir} ${sbindir}"
+FILES_uclibc-utils-dbg += "${bindir}/.debug ${sbindir}/.debug"
 FILES_uclibc-gconv = "${libdir}/gconv"
 FILES_uclibc-thread-db = "/lib/libthread_db*"
 RPROVIDES_uclibc-dev += "libc-dev"
@@ -56,9 +57,7 @@ UCLIBC_LOCALE_URI = "http://www.uclibc.org/downloads/${UCLIBC_LOCALE_FILE}"
 UCLIBC_LOCALE_URI_arm = "http://openembedded.org/dl/uclibc-locale/${UCLIBC_LOCALE_FILE}"
 
 SRC_URI = "${@['${UCLIBC_LOCALE_URI}', ''][bb.data.getVar('USE_NLS', d, 1) != 'yes']} \
-	   file://uClibc.config \
-	   file://uClibc.machine \
-	   file://uClibc.distro"
+	   file://uClibc.config"
 
 UCLIBC_PREFIX = "${CROSS_DIR}/${TARGET_SYS}"
 UCLIBC_STAGE_PREFIX = "${STAGING_DIR}/${HOST_SYS}"
@@ -72,8 +71,15 @@ EXTRA_OEMAKE_task_do_populate_staging = "${OEMAKE_NO_CC}"
 EXTRA_OEMAKE_task_do_package = "${OEMAKE_NO_CC}"
 
 KERNEL_SOURCE = "${CROSS_DIR}/${TARGET_SYS}/include"
+KERNEL_HEADERS = "${CROSS_DIR}/${TARGET_SYS}/include"
+
+# Lets munge this via siteinfo.bbclass as well:
+# ARCH_BIG_ENDIAN=y
+# ARCH_WANTS_BIG_ENDIAN=y
+# ARCH_WANTS_LITTLE_ENDIAN is not set
 
 configmangle = 's,^KERNEL_SOURCE=.*,KERNEL_SOURCE="${KERNEL_SOURCE}",g; \
+		s,^KERNEL_HEADERS=.*,KERNEL_HEADERS="${KERNEL_HEADERS}",g; \
 		s,^RUNTIME_PREFIX=.*,RUNTIME_PREFIX="/",g; \
 		s,^DEVEL_PREFIX=.*,DEVEL_PREFIX="/${prefix}",g; \
 		s,^SHARED_LIB_LOADER_PATH=.*,SHARED_LIB_LOADER_PATH="/lib",; \
@@ -101,18 +107,28 @@ python do_patch () {
 
 do_configure() {
 	rm -f ${S}/.config
-	# This stuff works like the standard OE OVERRIDES - keep the files
-	# in the same order as the default OVERRIDES (well, reverse order,
-	# because unlike overrides the last takes precedence)
-	cat ${WORKDIR}/uClibc.config ${WORKDIR}/uClibc.distro ${WORKDIR}/uClibc.machine >${S}/.config
 
+	# For uClibc 0.9.29, OpenEmbedded splits the uClibc.config in two parts:
+	# uClibc.machine and uClibc.distro. So, if they exist use them, otherwise
+	# use a uClibc.config
+	if [ -f ${WORKDIR}/uClibc.machine -a -f ${WORKDIR}/uClibc.distro ]; then
+		echo "### uClibc.machine ###" >${S}/merged.config
+		cat ${WORKDIR}/uClibc.machine >>${S}/merged.config
+		echo "### uClibc.distro ###" >>${S}/merged.config
+		cat ${WORKDIR}/uClibc.distro >>${S}/merged.config
+	else
+		echo "### uClibc.config ###" >${S}/merged.config
+		cat ${WORKDIR}/uClibc.config >>${S}/merged.config
+	fi
+	cp ${S}/merged.config ${S}/.config	
+
+	# Mangle the resulting .config depending on OE variables
 	perl -i -p -e 's,^CROSS=.*,TARGET_ARCH=${TARGET_ARCH}\nCROSS=${TARGET_PREFIX},g' ${S}/Rules.mak
 	perl -i -p -e '${configmangle}' ${S}/.config
 
-
    	sed -i -e '/CONFIG_ARM_EABI/d' ${S}/.config
 
-        if [ "${TARGET_OS}" == "linux-gnueabi" -o  "${TARGET_OS}" == "linux-uclibcgnueabi" ]; then
+        if [ "${TARGET_OS}" = "linux-gnueabi" -o  "${TARGET_OS}" = "linux-uclibcgnueabi" ]; then
        		echo "CONFIG_ARM_EABI=y"                >> ${S}/.config
 	else
 		echo "# CONFIG_ARM_EABI is not set"     >> ${S}/.config

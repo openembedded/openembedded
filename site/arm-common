@@ -18,8 +18,6 @@ bash_cv_have_mbstate_t=${bash_cv_have_mbstate_t=yes}
 bash_cv_func_sigsetjmp=${bash_cv_func_sigsetjmp=missing}
 bash_cv_must_reinstall_sighandlers=${bash_cv_must_reinstall_sighandlers=no}
 bash_cv_func_strcoll_broken=${bash_cv_func_strcoll_broken=no}
-bash_cv_under_sys_siglist=${bash_cv_under_sys_siglist=yes}
-bash_cv_sys_siglist=${bash_cv_sys_siglist=yes}
 bash_cv_dup2_broken=${bash_cv_dup2_broken=no}
 bash_cv_opendir_not_robust=${bash_cv_opendir_not_robust=no}
 bash_cv_type_rlimit=${bash_cv_type_rlimit=rlim_t}
@@ -31,7 +29,6 @@ bash_cv_pgrp_pipe=${bash_cv_pgrp_pipe=no}
 bash_cv_job_control_missing=${bash_cv_job_control_missing=present}
 bash_cv_sys_named_pipes=${bash_cv_sys_named_pipes=present}
 bash_cv_unusable_rtsigs=${bash_cv_unusable_rtsigs=no}
-ac_cv_have_decl_sys_siglist=${ac_cv_have_decl_sys_siglist=yes}
 
 # coreutils
 utils_cv_sys_open_max=${utils_cv_sys_open_max=1019}
@@ -89,7 +86,7 @@ glib_cv_hasinline=${glib_cv_hasinline=yes}
 glib_cv_sane_realloc=${glib_cv_sane_realloc=yes}
 glib_cv_sizeof_gmutex=${glib_cv_sizeof_gmutex=24}
 glib_cv_uscore=${glib_cv_uscore=no}
-glib_cv_va_copy=${glib_cv_va_copy=no}
+glib_cv_va_copy=${glib_cv_va_copy=yes}
 glib_cv_va_val_copy=${glib_cv_va_val_copy=yes}
 glib_cv___va_copy=${glib_cv___va_copy=yes}
 glib_cv_rtldglobal_broken=${glib_cv_rtldglobal_broken=no}
@@ -107,12 +104,16 @@ glib_cv_sizeof_size_t=${glib_cv_sizeof_size_t=4}
 glib_cv_sizeof_system_thread=${glib_cv_sizeof_system_thread=4}
 glib_cv_sys_use_pid_niceness_surrogate=${glib_cv_sys_use_pid_niceness_surrogate=yes}
 glib_cv_strlcpy=${glib_cv_strlcpy=no}
+ac_cv_func_printf_unix98=${ac_cv_func_printf_unix98=yes}
+ac_cv_func_snprintf_c99=${ac_cv_func_snprintf_c99=yes}
+ac_cv_func_vsnprintf_c99=${ac_cv_func_vsnprintf_c99=yes}
+glib_cv_compliant_posix_memalign=${glib_cv_compliant_posix_memalign=1}
 
 # httppc
 ac_cv_strerror_r_SUSv3=${ac_cv_strerror_r_SUSv3=no}
 
 # ipsec-tools
-ac_cv_va_copy=${ac_cv_va_copy=no}
+ac_cv_va_copy=${ac_cv_va_copy=yes}
 ac_cv___va_copy=${ac_cv___va_copy=yes}
 ac_cv_va_val_copy=${ac_cv_va_val_copy=yes}
 racoon_cv_bug_getaddrinfo=${racoon_cv_bug_getaddrinfo=no}
@@ -122,7 +123,7 @@ ac_cv_sizeof_wchar_t=4
 
 # lftp
 ac_cv_need_trio=${ac_cv_need_trio=no}
-lftp_cv_va_copy=${lftp_cv_va_copy=no}
+lftp_cv_va_copy=${lftp_cv_va_copy=yes}
 lftp_cv_va_val_copy=${lftp_cv_va_val_copy=yes}
 lftp_cv___va_copy=${lftp_cv___va_copy=yes}
 
@@ -203,7 +204,7 @@ screen_cv_sys_terminfo_used=${screen_cv_sys_terminfo_used=yes}
 
 # slrn
 slrn_cv___va_copy=${slrn_cv___va_copy=yes}
-slrn_cv_va_copy=${slrn_cv_va_copy=no}
+slrn_cv_va_copy=${slrn_cv_va_copy=yes}
 slrn_cv_va_val_copy=${slrn_cv_va_val_copy=yes}
 ac_cv_func_realloc_works=${ac_cv_func_realloc_works=yes}
 ac_cv_func_realloc_0_nonnull=${ac_cv_func_realloc_0_nonnull=yes}

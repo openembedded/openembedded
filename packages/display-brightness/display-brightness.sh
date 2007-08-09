@@ -28,6 +28,8 @@ if [ "$1" = "up" ]; then
     if [ $ACTUAL_BRIGHTNESS -eq $MAX_BRIGHTNESS ]; then
         exit 0
     else
+	
+	test -x /usr/bin/bl && bl on
     	test "$STEP" -gt "$MAX_BRIGHTNESS" -o "$STEP" -eq "$MAX_BRIGHTNESS" && STEP=1
         let CURRENT_BRIGHTNESS=$ACTUAL_BRIGHTNESS+$STEP	
         echo $CURRENT_BRIGHTNESS >> $BRIGHTNESS_FILE

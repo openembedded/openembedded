@@ -4,7 +4,7 @@ PRIORITY = "optional"
 LICENSE = "GPL"
 DEPENDS = "libqtaux2"
 APPNAME = "tinykate"
-
+PR = "r2"
 
 S = "${WORKDIR}/tinykate"
 
@@ -23,14 +23,13 @@ do_install() {
 	install -m 0644 ${WORKDIR}/share/${APPNAME}/syntax/*.* ${D}${palmtopdir}/share/${APPNAME}/syntax/
 }
 
-PACKAGES = " \
+PACKAGES += " \
 	opie-tinykate-syntax-commondev \
 	opie-tinykate-syntax-documentation \
 	opie-tinykate-syntax-misc \
 	opie-tinykate-syntax-miscdev \
 	opie-tinykate-syntax-unix \
-	opie-tinykate-syntax-web \
-	opie-tinykate "
+	opie-tinykate-syntax-web "
 
 
 FILES_opie-tinykate-syntax-commondev = " ${palmtopdir}/share/tinykate/syntax/c.xml ${palmtopdir}/share/tinykate/syntax/cpp.xml ${palmtopdir}/share/tinykate/syntax/gnuassembler.xml ${palmtopdir}/share/tinykate/syntax/kbasic.xml ${palmtopdir}/share/tinykate/syntax/pascal.xml ${palmtopdir}/share/tinykate/syntax/perl.xml ${palmtopdir}/share/tinykate/syntax/php.xml ${palmtopdir}/share/tinykate/syntax/python.xml ${palmtopdir}/share/tinykate/syntax/ruby.xml ${palmtopdir}/share/tinykate/syntax/sql.xml ${palmtopdir}/share/tinykate/syntax/tcl.xml ${palmtopdir}/share/tinykate/syntax/xml.xml ${palmtopdir}/share/tinykate/syntax/xmldebug.xml ${palmtopdir}/share/tinykate/syntax/java.xml"

@@ -16,4 +16,5 @@ dsmg600_pack_image () {
 	rm -rf ${DEPLOY_DIR_IMAGE}/firmupgrade
 }
 
-IMAGE_POSTPROCESS_COMMAND += "dsmg600_pack_image; "
+# dsmg600 is not a separate machine - use the nslu2 machine override.
+IMAGE_POSTPROCESS_COMMAND_nslu2 += "dsmg600_pack_image; "

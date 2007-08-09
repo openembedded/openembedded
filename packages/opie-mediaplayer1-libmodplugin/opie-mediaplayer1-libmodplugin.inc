@@ -2,8 +2,8 @@ DESCRIPTION = "MOD/XM/S3M/IT plugin using libmodplug"
 SECTION = "opie/codecs"
 PRIORITY = "optional"
 LICENSE = "GPL"
-DEPENDS = "opie-mediaplayer1"
-RDEPENDS = "opie-mediaplayer1"
+DEPENDS = "opie-mediaplayer1-core"
+RDEPENDS = "opie-mediaplayer1-core"
 APPNAME = "modplugin"
 
 

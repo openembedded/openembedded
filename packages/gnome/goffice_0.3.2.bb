@@ -1,10 +1,12 @@
 DESCRIPTION="Gnome Office Library"
 LICENSE="GPLv2"
-PR="r0"
+PR="r1"
 
 DEFAULT_PREFERENCE = "-1"
 
 DEPENDS="glib-2.0 gtk+ pango cairo libgnomeprint libgsf libglade libxml2 libart-lgpl"
+
+FILES_${PN}-dbg += "${libdir}/goffice/${PV}/plugins/*/.debug"
 
 inherit gnome pkgconfig
 

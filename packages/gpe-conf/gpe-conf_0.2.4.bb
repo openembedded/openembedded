@@ -3,15 +3,17 @@ SECTION = "gpe"
 PRIORITY = "optional"
 LICENSE = "GPL"
 
-DEPENDS = "gtk+ esound audiofile libgpewidget libxsettings libxsettings-client"
-RDEPENDS_${PN} = "xst xset ntpdate gpe-login gpe-icons timezones"
+DEPENDS = "gtk+ esound audiofile libgpewidget libxsettings libxsettings-client libxrandr"
+RDEPENDS_${PN} = "xst xset ntpdate gpe-login gpe-icons tzdata xrandr"
 RDEPENDS_gpe-conf-panel = "gpe-conf"
 
-PR = "r1"
+PR = "r2"
 
 GPE_TARBALL_SUFFIX = "bz2"
 
 inherit gpe autotools pkgconfig
+
+SRC_URI += "file://scriptname.patch;patch=1;pnum=0"
 
 PACKAGES += "gpe-conf-panel"
 

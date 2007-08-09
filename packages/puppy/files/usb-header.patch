@@ -1,0 +1,20 @@
+--- puppy/usb_io.h.~1.14.~	2007-02-01 16:39:20.000000000 +1030
++++ puppy/usb_io.h	2007-03-23 11:47:21.000000000 +1030
+@@ -30,12 +30,13 @@
+ #include <linux/types.h>
+ #include <linux/version.h>
+ 
+-#include <linux/usb.h>
+-#include <linux/usbdevice_fs.h>
+-
+-#if LINUX_VERSION_CODE < KERNEL_VERSION(2,6,0)
++/* linux/usb_ch9.h wasn't separated out until 2.4.23 */
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(2,4,23)
+ #include "usb_ch9.h"
++#else
++#include "usb.h"
+ #endif
++#include <linux/usbdevice_fs.h>
+ 
+ #include "mjd.h"
+ #include "tf_bytes.h"

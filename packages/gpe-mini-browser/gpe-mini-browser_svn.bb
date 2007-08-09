@@ -50,4 +50,4 @@ pkg_postrm_${PN}-doc () {
 
 require gpe-mini-browser.inc
 
-DEFAULT_PREFERENCE = "-1"
+#DEFAULT_PREFERENCE = "-1"

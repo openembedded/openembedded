@@ -4,7 +4,7 @@
 rootfs             /            auto    defaults                1  1
 proc               /proc        proc    defaults                0  0
 # we can use a normal var filesystem with a microdrive
-# tmpfs              /var         tmpfs   defaults                0  0
+# tmpfs              /var/volatiles         tmpfs   defaults                0  0
 tmpfs              /media/ram   tmpfs   defaults                0  0
 
 # Compact Flash memory cards

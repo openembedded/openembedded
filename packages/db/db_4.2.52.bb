@@ -91,7 +91,7 @@ do_install_append() {
 	if test -d "${D}/${prefix}/docs"
 	then
 		mkdir -p "${D}/${datadir}"
-		test ! -d "${D}/${docdir}" || rmdir "${D}/${docdir}"
+		test ! -d "${D}/${docdir}" || rm -rf "${D}/${docdir}"
 		mv "${D}/${prefix}/docs" "${D}/${docdir}"
 	fi
 }

@@ -1,0 +1,47 @@
+Index: busybox-1.1.0/miscutils/hdparm.c
+===================================================================
+--- busybox-1.1.0.orig/miscutils/hdparm.c	2006-01-11 06:44:13.000000000 +0100
++++ busybox-1.1.0/miscutils/hdparm.c	2006-03-14 17:22:22.000000000 +0100
+@@ -1255,6 +1255,7 @@
+ static unsigned long set_sleepnow, get_sleepnow;
+ static unsigned long get_powermode;
+ static unsigned long set_apmmode, get_apmmode, apmmode;
++static unsigned long set_acoustic = 0, get_acoustic = 0, acoustic = 0;
+ #endif
+ #ifdef CONFIG_FEATURE_HDPARM_GET_IDENTITY
+ static int get_IDentity;
+@@ -2124,6 +2125,20 @@
+ 		}
+ 		bb_ioctl(fd, HDIO_DRIVE_CMD, &args,"HDIO_DRIVE_CMD");
+ 	}
++	if (set_acoustic)
++	{
++		no_scsi();
++		acoustic=check_if_min_and_set_val(acoustic,0);
++		acoustic=check_if_maj_and_set_val(acoustic,254);
++		if_printf(get_acoustic," setting AAM level to 0x%02lX (%ld)\n", acoustic, acoustic);
++		bb_ioctl(fd, HDIO_SET_ACOUSTIC, (int*)acoustic,"HDIO_SET_ACOUSTIC");
++	}
++	if (get_acoustic)
++	{
++		no_scsi();
++		bb_ioctl(fd, HDIO_GET_ACOUSTIC, (unsigned long*)&parm,"HDIO_GET_ACOUSTIC");
++		printf(" acoustic     = %2ld (128=quiet ... 254=fast)\n", parm);
++	}
+ 	if (set_wcache)
+ 	{
+ #ifdef DO_FLUSHCACHE
+@@ -2832,6 +2847,13 @@
+ 							p = *argv++, --argc;
+ 						p=GET_NUMBER(p,&set_readahead,&Xreadahead);
+ 						break;
++					case 'M':
++						get_acoustic = noisy; 
++						noisy = 1;
++						if (!*p && argc && isalnum(**argv))
++							p = *argv++, --argc;
++						p=GET_NUMBER(p,&set_acoustic,&acoustic);
++						break;
+ 					case 'B':
+ 						get_apmmode = noisy;
+ 						noisy = 1;

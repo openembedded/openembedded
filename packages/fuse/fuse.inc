@@ -4,7 +4,7 @@ LICENSE = "GPL"
 DEPENDS = "fakeroot-native"
 RRECOMMENDS_fuse = "fuse-module kernel-module-fuse"
 
-SRC_URI = "${SOURCEFORGE_MIRROR}/fuse/${P}.tar.gz"
+SRC_URI = "${SOURCEFORGE_MIRROR}/fuse/fuse-${PV}.tar.gz"
 
 inherit autotools pkgconfig
 

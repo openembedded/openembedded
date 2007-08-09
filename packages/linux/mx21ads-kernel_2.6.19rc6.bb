@@ -16,7 +16,6 @@ COMPATIBLE_HOST = 'arm.*-linux'
 COMPATIBLE_MACHINE = "mx21ads"
 
 inherit kernel
-inherit package
 
 ARCH = "arm"
 KERNEL_IMAGETYPE = "zImage"

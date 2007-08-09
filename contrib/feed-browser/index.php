@@ -1,8 +1,8 @@
 <?php
 
 /*
- * (c) Koen Kooi 2006
- * (c) Marcin Juszkiewicz 2006
+ * (c) Koen Kooi 2006, 2007
+ * (c) Marcin Juszkiewicz 2006, 2007
  *
  * This php script is intended to do the following:
  *
@@ -33,45 +33,33 @@
 require_once 'includes/config.inc';
 require_once 'includes/functions.inc';
 
-check_database();
-
-$name = '';
-
-if(isset($_GET['name']))
+if(!check_database())
 {
-	$name = $_GET['name'];
+	die("Database not found and cannot be created.");
 }
 
-$action = '';
+read_vars_from_get(array('name', 'arch', 'pkgsearch', 'letter', 'pkgname', 'section'));
 
-if(isset($_GET['action']))
+$ipkgoutput = '';
+
+if(!empty($section))
 {
-	$action = $_GET['action'];
+	$ipkgoutput = searchsection($section);
+}
+elseif(!empty($letter))
+{
+	$ipkgoutput = searchpkg("{$letter}%", $arch);
+}
+elseif(!empty($pkgname))
+{
+	$ipkgoutput = pkgdetails($pkgname);
+}
+elseif(!empty($pkgsearch) OR !empty($arch))
+{
+	$ipkgoutput = searchpkg("%{$pkgsearch}%", $arch);
 }
 
-switch($action)
-{
-	case "details":
-		$ipkgoutput = pkgdetails ($_GET['pnm']);
-		break;
-
-	case "search":
-		$ipkgoutput = searchpkg ("%{$name}%");
-		break;
-
-	case "section":
-		$ipkgoutput = searchsection($_GET['section']);
-		break;
-
-	case "letter":
-		$letter = $_GET['g'];
-		$ipkgoutput = searchpkg ("{$letter}%");
-		break;
-
-	default:
-		$ipkgoutput = searchpkg("a");
-		break;
-}
+$archs_list = get_arch_list();
 
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
@@ -88,8 +76,25 @@ switch($action)
 			<form action="" method="get">
 				<fieldset>
 					<label for="name">Package name</label>
-					<input type="text" name="name" value="<?php echo $name; ?>" />
-					<input type="hidden" name="action" value="search" />
+					<input type="text" name="pkgsearch" value="<?php echo $pkgsearch; ?>" />
+					<select name="arch">
+					   <option value="" selected="selected">all architectures</option>
+					   <option value="all">no arch</option>
+<?php
+
+foreach($archs_list as $architecture)
+{
+    echo "<option value='{$architecture['p_arch']}'";
+
+    if($architecture['p_arch'] == $arch)
+    {
+	echo ' selected="selected"';
+    }
+    echo ">{$architecture['p_arch']}</option>";
+}
+
+?>
+					</select>
 					<input type="submit" value="Search" />
 				</fieldset>
 			</form>

@@ -9,12 +9,18 @@ SRC_URI = "svn://svn.mplayerhq.hu/mplayer;module=trunk \
            file://vo_w100.c \
            file://vo_w100_api.h \
            file://vo_w100_fb.h \
+           file://vo_pxa.c \
+           file://vo_pxa.h \
            file://Makefile-codec-cfg.patch;patch=1 \
            file://w100-configure-svn.patch;patch=1 \
            file://w100-video_out.patch;patch=1 \
            file://w100-mplayer.patch;patch= \
            file://pld-onlyarm5.patch;patch=1 \
-           file://makefile-nostrip-svn.patch;patch=1"
+           file://makefile-nostrip-svn.patch;patch=1 \
+           file://mplayer-imageon-svn.patch;patch=1 \
+           file://imageon-video_out.patch;patch=1 \
+           file://pxa_configure.patch;patch=1 \
+           file://pxa-video_out.patch;patch=1 "
 
 RCONFLICTS_${PN} = "mplayer-atty"
 RREPLACES_${PN} = "mplayer-atty"
@@ -79,7 +85,7 @@ EXTRA_OECONF = " \
         --enable-png \
         --enable-jpeg \
         --disable-libcdio \
-        --enable-liblzo \
+        --disable-liblzo \
         --disable-win32 \
         --disable-qtx \
         --disable-xanim \
@@ -161,13 +167,41 @@ EXTRA_OECONF = " \
         --disable-runtime-cpudetection \
         "
 
+EXTRA_OECONF_append_arm = " --disable-decoder=vorbis_decoder \
+			    --disable-encoder=vorbis_encoder"
+
+EXTRA_OECONF_append_progear = " --disable-sse --disable-3dnow --disable-mmxext --disable-sse2"
+
+#enable support for the ati imageon series (w100 and w3220)
 EXTRA_OECONF_append_c7x0 = " --enable-w100 "
+EXTRA_OECONF_append_hx4700 = " --enable-imageon "
+
+#enable pxa270 overlay support
+EXTRA_OECONF_append_spitz = " --enable-pxa "
+EXTRA_OECONF_append_a780 = " --enable-pxa "
+EXTRA_OECONF_append_magician = " --enable-pxa "
+EXTRA_OECONF_append_htcuniversal = " --enable-pxa "
+
+#build with support for the iwmmxt instruction support (pxa270 and up)
+TARGET_CC_ARCH_spitz = "-march=iwmmxt -mtune=iwmmxt"
+PACKAGE_ARCH_spitz = "iwmmxt"
+TARGET_CC_ARCH_a780 = "-march=iwmmxt -mtune=iwmmxt"
+PACKAGE_ARCH_a780 = "iwmmxt"
+TARGET_CC_ARCH_hx4700 = "-march=iwmmxt -mtune=iwmmxt"
+PACKAGE_ARCH_hx4700 = "iwmmxt"
+TARGET_CC_ARCH_magician = "-march=iwmmxt -mtune=iwmmxt"
+PACKAGE_ARCH_magician = "iwmmxt"
+TARGET_CC_ARCH_htcuniversal = "-march=iwmmxt -mtune=iwmmxt"
+PACKAGE_ARCH_htcuniversal = "iwmmxt"
 
 do_configure() {
 	cp ${WORKDIR}/vo_w100.c ${S}/libvo
 	cp ${WORKDIR}/vo_w100_api.h ${S}/libvo
 	cp ${WORKDIR}/vo_w100_fb.h ${S}/libvo
-        ./configure ${EXTRA_OECONF}
+    cp ${WORKDIR}/vo_pxa.c ${S}/libvo
+    cp ${WORKDIR}/vo_pxa.h ${S}/libvo
+
+    ./configure ${EXTRA_OECONF}
 }
 
 do_compile () {

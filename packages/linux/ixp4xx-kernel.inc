@@ -151,7 +151,7 @@ SRC_URI  = "${IXP4XX_SRCURI}"
 SRC_URI += "${IXP4XX_PATCHES}"
 
 COMPATIBLE_HOST = 'arm.*-linux.*'
-COMPATIBLE_MACHINE = '(ixp4xx|nslu2)'
+COMPATIBLE_MACHINE = '(ixp4xx|nslu2|fsg3)'
 
 inherit kernel
 
@@ -210,6 +210,12 @@ do_configure_prepend() {
 	       ${S}/include/asm-arm/.proc ${S}/include/asm-arm/.arch
 
 }
+
+
+# Kernel module dependencies
+
+RDEPENDS_kernel-module-zd1211rw += "zd1211-firmware"
+
 
 # MACHID and LE handling
 #

@@ -8,7 +8,7 @@ used to detect the type of a file system and read its metadata."
 DESCRIPTION_libvolume-id-dev = "libvolume_id development headers, \
 needed to link programs with libvolume_id."
 
-PR = "r7"
+PR = "r10"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/utils/kernel/hotplug/udev-${PV}.tar.gz \
 	   file://noasmlinkage.patch;patch=1 \
@@ -17,9 +17,6 @@ SRC_URI = "${KERNELORG_MIRROR}/pub/linux/utils/kernel/hotplug/udev-${PV}.tar.gz 
 	   "
 
 require udev.inc
-
-SRC_URI_append_h2200 = " file://50-hostap_cs.rules "
-PACKAGE_ARCH_h2200 = "h2200"
 
 INITSCRIPT_PARAMS = "start 03 S ."
 

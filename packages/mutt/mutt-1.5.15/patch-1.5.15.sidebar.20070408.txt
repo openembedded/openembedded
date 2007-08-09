@@ -1,0 +1,1347 @@
+Index: mutt-1.5.15/buffy.c
+===================================================================
+--- mutt-1.5.15.orig/buffy.c	2007-04-18 09:28:14.000000000 +0100
++++ mutt-1.5.15/buffy.c	2007-04-18 09:28:14.000000000 +0100
+@@ -259,7 +259,7 @@
+   char path[_POSIX_PATH_MAX];
+   struct stat contex_sb;
+   time_t t;
+-
++  CONTEXT *ctx;
+ #ifdef USE_IMAP
+   /* update postponed count as well, on force */
+   if (force)
+@@ -297,6 +297,8 @@
+   
+   for (tmp = Incoming; tmp; tmp = tmp->next)
+   {
++    if ( tmp->new == 1 )
++      tmp->has_new = 1;
+ #ifdef USE_IMAP
+     if (tmp->magic != M_IMAP)
+ #endif
+@@ -354,48 +356,108 @@
+       case M_MBOX:
+       case M_MMDF:
+ 
+-	if (STAT_CHECK)
++        {
++        if (STAT_CHECK || tmp->msgcount == 0)
+ 	{
+-	  BuffyCount++;
+-	  tmp->new = 1;
++	  BUFFY b = *tmp;
++ 	  int msgcount = 0;
++ 	  int msg_unread = 0;
++ 	  /* parse the mailbox, to see how much mail there is */
++ 	  ctx = mx_open_mailbox( tmp->path, M_READONLY | M_QUIET | M_NOSORT | M_PEEK, NULL);
++ 	  if(ctx)
++ 	  {
++            msgcount = ctx->msgcount;
++ 	    msg_unread = ctx->unread;
++ 	    mx_close_mailbox(ctx, 0);
++ 	  }
++ 	  *tmp = b;
++ 	  tmp->msgcount = msgcount;
++ 	  tmp->msg_unread = msg_unread;
++ 	  if(STAT_CHECK) {
++ 	    tmp->has_new = tmp->new = 1;
++	    BuffyCount++;
++          }
+ 	}
+ 	else if (option(OPTCHECKMBOXSIZE))
+ 	{
+ 	  /* some other program has deleted mail from the folder */
+ 	  tmp->size = (long) sb.st_size;
+ 	}
+-	if (tmp->newly_created &&
+-	    (sb.st_ctime != sb.st_mtime || sb.st_ctime != sb.st_atime))
+-	  tmp->newly_created = 0;
+-
+-	break;
++        if (tmp->newly_created &&
++            (sb.st_ctime != sb.st_mtime || sb.st_ctime != sb.st_atime))
++          tmp->newly_created = 0;
++        }
++        break;
+ 
+       case M_MAILDIR:
+ 
++        /* count new message */
+ 	snprintf (path, sizeof (path), "%s/new", tmp->path);
+ 	if ((dirp = opendir (path)) == NULL)
+ 	{
+ 	  tmp->magic = 0;
+ 	  break;
+ 	}
++ 	tmp->msgcount = 0;
++ 	tmp->msg_unread = 0;
+ 	while ((de = readdir (dirp)) != NULL)
+ 	{
+ 	  char *p;
+ 	  if (*de->d_name != '.' && 
+ 	      (!(p = strstr (de->d_name, ":2,")) || !strchr (p + 3, 'T')))
+ 	  {
+-	    /* one new and undeleted message is enough */
+-	    BuffyCount++;
+-	    tmp->new = 1;
+-	    break;
++ 	    tmp->has_new = tmp->new = 1;
++            tmp->msgcount++;
++            tmp->msg_unread++;
++ 	  }
++ 	}
++        if(tmp->msg_unread)
++          BuffyCount++;
++
++ 	closedir (dirp);
++
++        /*
++         * count read messages (for folderlist (sidebar) we also need to count
++         * messages in cur so that we the total number of messages
++         */
++ 	snprintf (path, sizeof (path), "%s/cur", tmp->path);
++ 	if ((dirp = opendir (path)) == NULL)
++  	{
++  	  tmp->magic = 0;
++  	  break;
++  	}
++  	while ((de = readdir (dirp)) != NULL)
++  	{
++  	  char *p;
++  	  if (*de->d_name != '.' &&
++ 	      (!(p = strstr (de->d_name, ":2,")) || !strchr (p + 3, 'T')))
++  	  {
++             tmp->msgcount++;
+ 	  }
+ 	}
+ 	closedir (dirp);
+ 	break;
+ 
+       case M_MH:
+-	if ((tmp->new = mh_buffy (tmp->path)) > 0)
+-	  BuffyCount++;
++      {
++      DIR *dp;
++      struct dirent *de;
++      if ((tmp->new = mh_buffy (tmp->path)) > 0)
++        BuffyCount++;
++
++      if ((dp = opendir (path)) == NULL)
++        break;
++      tmp->msgcount = 0;
++      while ((de = readdir (dp)))
++      {
++        if (mh_valid_message (de->d_name))
++        {
++	  tmp->msgcount++;
++ 	  tmp->has_new = tmp->new = 1;
++        }
++      }
++      closedir (dp);
++      }
+ 	break;
+       }
+     }
+Index: mutt-1.5.15/buffy.h
+===================================================================
+--- mutt-1.5.15.orig/buffy.h	2007-04-01 22:58:55.000000000 +0100
++++ mutt-1.5.15/buffy.h	2007-04-18 09:28:14.000000000 +0100
+@@ -25,7 +25,11 @@
+   char *path;
+   long size;
+   struct buffy_t *next;
++  struct buffy_t *prev;
+   short new;			/* mailbox has new mail */
++  short has_new;		/* set it new if new and not read */
++  int msgcount;			/* total number of messages */
++  int msg_unread;		/* number of unread messages */
+   short notified;		/* user has been notified */
+   short magic;			/* mailbox type */
+   short newly_created;		/* mbox or mmdf just popped into existence */
+Index: mutt-1.5.15/color.c
+===================================================================
+--- mutt-1.5.15.orig/color.c	2007-04-01 22:58:55.000000000 +0100
++++ mutt-1.5.15/color.c	2007-04-18 09:28:14.000000000 +0100
+@@ -93,6 +93,7 @@
+   { "bold",		MT_COLOR_BOLD },
+   { "underline",	MT_COLOR_UNDERLINE },
+   { "index",		MT_COLOR_INDEX },
++  { "sidebar_new",	MT_COLOR_NEW },
+   { NULL,		0 }
+ };
+ 
+Index: mutt-1.5.15/compose.c
+===================================================================
+--- mutt-1.5.15.orig/compose.c	2007-04-18 09:28:14.000000000 +0100
++++ mutt-1.5.15/compose.c	2007-04-18 09:32:54.000000000 +0100
+@@ -80,7 +80,7 @@
+ 
+ #define HDR_XOFFSET 14
+ #define TITLE_FMT "%14s" /* Used for Prompts, which are ASCII */
+-#define W (COLS - HDR_XOFFSET)
++#define W (COLS - HDR_XOFFSET - SidebarWidth)
+ 
+ static char *Prompts[] =
+ {
+@@ -146,16 +146,16 @@
+   if ((WithCrypto & APPLICATION_PGP) && (WithCrypto & APPLICATION_SMIME))
+   {     
+     if (!msg->security)
+-      mvaddstr (HDR_CRYPT, 0,     "    Security: ");
++      mvaddstr (HDR_CRYPT, SidebarWidth,     "    Security: ");
+     else if (msg->security & APPLICATION_SMIME)
+-      mvaddstr (HDR_CRYPT, 0,     "      S/MIME: ");
++      mvaddstr (HDR_CRYPT, SidebarWidth,     "      S/MIME: ");
+     else if (msg->security & APPLICATION_PGP)
+-      mvaddstr (HDR_CRYPT, 0,     "         PGP: ");
++      mvaddstr (HDR_CRYPT, SidebarWidth,     "         PGP: ");
+   }
+   else if ((WithCrypto & APPLICATION_SMIME))
+-    mvaddstr (HDR_CRYPT, 0,     "      S/MIME: ");
++    mvaddstr (HDR_CRYPT, SidebarWidth,     "      S/MIME: ");
+   else if ((WithCrypto & APPLICATION_PGP))
+-    mvaddstr (HDR_CRYPT, 0,     "         PGP: ");
++    mvaddstr (HDR_CRYPT, SidebarWidth,     "         PGP: ");
+   else
+     return;
+ 
+@@ -179,7 +179,7 @@
+     }
+   clrtoeol ();
+ 
+-  move (HDR_CRYPTINFO, 0);
++  move (HDR_CRYPTINFO, SidebarWidth);
+   clrtoeol ();
+   if ((WithCrypto & APPLICATION_PGP)
+       && msg->security & APPLICATION_PGP  && msg->security & SIGN)
+@@ -195,7 +195,7 @@
+       && (msg->security & ENCRYPT)
+       && SmimeCryptAlg
+       && *SmimeCryptAlg) {
+-      mvprintw (HDR_CRYPTINFO, 40, "%s%s", _("Encrypt with: "),
++      mvprintw (HDR_CRYPTINFO, SidebarWidth + 40, "%s%s", _("Encrypt with: "),
+ 		NONULL(SmimeCryptAlg));
+       off = 20;
+   }
+@@ -209,7 +209,7 @@
+   int c;
+   char *t;
+ 
+-  mvaddstr (HDR_MIX, 0,     "     Mix: ");
++  mvaddstr (HDR_MIX, SidebarWidth,     "     Mix: ");
+ 
+   if (!chain)
+   {
+@@ -224,7 +224,7 @@
+     if (t && t[0] == '0' && t[1] == '\0')
+       t = "<random>";
+     
+-    if (c + mutt_strlen (t) + 2 >= COLS)
++    if (c + mutt_strlen (t) + 2 >= COLS - SidebarWidth)
+       break;
+ 
+     addstr (NONULL(t));
+@@ -276,7 +276,7 @@
+ 
+   buf[0] = 0;
+   rfc822_write_address (buf, sizeof (buf), addr, 1);
+-  mvprintw (line, 0, TITLE_FMT, Prompts[line - 1]);
++  mvprintw (line, SidebarWidth, TITLE_FMT, Prompts[line - 1]);
+   mutt_paddstr (W, buf);
+ }
+ 
+@@ -294,21 +294,21 @@
+   }
+   else
+   {
+-    mvprintw (HDR_TO, 0, TITLE_FMT , Prompts[HDR_NEWSGROUPS - 1]);
++    mvprintw (HDR_TO, SidebarWidth, TITLE_FMT , Prompts[HDR_NEWSGROUPS - 1]);
+     mutt_paddstr (W, NONULL (msg->env->newsgroups));
+-    mvprintw (HDR_CC, 0, TITLE_FMT , Prompts[HDR_FOLLOWUPTO - 1]);
++    mvprintw (HDR_CC, SidebarWidth, TITLE_FMT , Prompts[HDR_FOLLOWUPTO - 1]);
+     mutt_paddstr (W, NONULL (msg->env->followup_to));
+     if (option (OPTXCOMMENTTO))
+     {
+-      mvprintw (HDR_BCC, 0, TITLE_FMT , Prompts[HDR_XCOMMENTTO - 1]);
++      mvprintw (HDR_BCC, SidebarWidth, TITLE_FMT , Prompts[HDR_XCOMMENTTO - 1]);
+       mutt_paddstr (W, NONULL (msg->env->x_comment_to));
+     }
+   }
+ #endif
+-  mvprintw (HDR_SUBJECT, 0, TITLE_FMT, Prompts[HDR_SUBJECT - 1]);
++  mvprintw (HDR_SUBJECT, SidebarWidth, TITLE_FMT, Prompts[HDR_SUBJECT - 1]);
+   mutt_paddstr (W, NONULL (msg->env->subject));
+   draw_envelope_addr (HDR_REPLYTO, msg->env->reply_to);
+-  mvprintw (HDR_FCC, 0, TITLE_FMT, Prompts[HDR_FCC - 1]);
++  mvprintw (HDR_FCC, SidebarWidth, TITLE_FMT, Prompts[HDR_FCC - 1]);
+   mutt_paddstr (W, fcc);
+ 
+   if (WithCrypto)
+@@ -319,7 +319,7 @@
+ #endif
+ 
+   SETCOLOR (MT_COLOR_STATUS);
+-  mvaddstr (HDR_ATTACH - 1, 0, _("-- Attachments"));
++  mvaddstr (HDR_ATTACH - 1, SidebarWidth, _("-- Attachments"));
+   BKGDSET (MT_COLOR_STATUS);
+   clrtoeol ();
+ 
+@@ -357,7 +357,7 @@
+   /* redraw the expanded list so the user can see the result */
+   buf[0] = 0;
+   rfc822_write_address (buf, sizeof (buf), *addr, 1);
+-  move (line, HDR_XOFFSET);
++  move (line, HDR_XOFFSET+SidebarWidth);
+   mutt_paddstr (W, buf);
+   
+   return 0;
+@@ -687,7 +687,7 @@
+ 	if (mutt_get_field ("Subject: ", buf, sizeof (buf), 0) == 0)
+ 	{
+ 	  mutt_str_replace (&msg->env->subject, buf);
+-	  move (HDR_SUBJECT, HDR_XOFFSET);
++	  move (HDR_SUBJECT, HDR_XOFFSET + SidebarWidth);
+ 	  clrtoeol ();
+ 	  if (msg->env->subject)
+ 	    mutt_paddstr (W, msg->env->subject);
+@@ -704,7 +704,7 @@
+ 	{
+ 	  strfcpy (fcc, buf, _POSIX_PATH_MAX);
+ 	  mutt_pretty_mailbox (fcc);
+-	  move (HDR_FCC, HDR_XOFFSET);
++	  move (HDR_FCC, HDR_XOFFSET + SidebarWidth);
+ 	  mutt_paddstr (W, fcc);
+ 	  fccSet = 1;
+ 	}
+Index: mutt-1.5.15/curs_main.c
+===================================================================
+--- mutt-1.5.15.orig/curs_main.c	2007-04-18 09:28:14.000000000 +0100
++++ mutt-1.5.15/curs_main.c	2007-04-18 09:28:14.000000000 +0100
+@@ -30,6 +30,7 @@
+ #include "sort.h"
+ #include "buffy.h"
+ #include "mx.h"
++#include "sidebar.h"
+ 
+ #ifdef USE_POP
+ #include "pop.h"
+@@ -555,8 +556,13 @@
+        menu->redraw |= REDRAW_STATUS;
+      if (do_buffy_notify)
+      {
+-       if (mutt_buffy_notify () && option (OPTBEEPNEW))
+- 	beep ();
++       if (mutt_buffy_notify ())
++       {
++         menu->redraw |= REDRAW_FULL;
++         if (option (OPTBEEPNEW))
++           beep ();
++       }
++
+      }
+      else
+        do_buffy_notify = 1;
+@@ -568,6 +574,7 @@
+     if (menu->redraw & REDRAW_FULL)
+     {
+       menu_redraw_full (menu);
++      draw_sidebar(menu->menu);
+       mutt_show_error ();
+     }
+ 
+@@ -590,10 +597,13 @@
+ 
+       if (menu->redraw & REDRAW_STATUS) 
+       {
++   	DrawFullLine = 1;
+ 	menu_status_line (buf, sizeof (buf), menu, NONULL (Status));
++   	DrawFullLine = 0;
+ 	CLEARLINE (option (OPTSTATUSONTOP) ? 0 : LINES-2);
+ 	SETCOLOR (MT_COLOR_STATUS);
+         BKGDSET (MT_COLOR_STATUS);
++        set_buffystats(Context);
+ 	mutt_paddstr (COLS, buf);
+ 	SETCOLOR (MT_COLOR_NORMAL);
+         BKGDSET (MT_COLOR_NORMAL);
+@@ -607,7 +617,7 @@
+ 	menu->oldcurrent = -1;
+ 
+       if (option (OPTARROWCURSOR))
+-	move (menu->current - menu->top + menu->offset, 2);
++ 	move (menu->current - menu->top + menu->offset, SidebarWidth + 2);
+       else if (option (OPTBRAILLEFRIENDLY))
+ 	move (menu->current - menu->top + menu->offset, 0);
+       else
+@@ -1214,6 +1224,7 @@
+ 	  menu->redraw = REDRAW_FULL;
+ 	break;
+ 
++      case OP_SIDEBAR_OPEN:
+       case OP_MAIN_CHANGE_FOLDER:
+       case OP_MAIN_CHANGE_FOLDER_READONLY:
+ #ifdef USE_NNTP
+@@ -1254,7 +1265,11 @@
+ #endif
+ 	mutt_buffy (buf, sizeof (buf));
+ 
+-	if (mutt_enter_fname (cp, buf, sizeof (buf), &menu->redraw, 1) == -1)
++ 	if ( op == OP_SIDEBAR_OPEN ) {
++          if(!CurBuffy)
++            break;
++ 	  strncpy( buf, CurBuffy->path, sizeof(buf) );
++        } else if (mutt_enter_fname (cp, buf, sizeof (buf), &menu->redraw, 1) == -1)
+         {
+           if (menu->menu == MENU_PAGER)
+           {
+@@ -1279,6 +1294,7 @@
+         else
+ #endif
+ 	mutt_expand_path (buf, sizeof (buf));
++        set_curbuffy(buf);
+ 	if (mx_get_magic (buf) <= 0)
+ 	{
+ 	  mutt_error (_("%s is not a mailbox."), buf);
+@@ -2424,6 +2440,12 @@
+ 	mutt_what_key();
+ 	break;
+ 
++      case OP_SIDEBAR_SCROLL_UP:
++      case OP_SIDEBAR_SCROLL_DOWN:
++      case OP_SIDEBAR_NEXT:
++      case OP_SIDEBAR_PREV:
++        scroll_sidebar(op, menu->menu);
++	break;
+       default:
+ 	if (menu->menu == MENU_MAIN)
+ 	  km_error_key (MENU_MAIN);
+Index: mutt-1.5.15/flags.c
+===================================================================
+--- mutt-1.5.15.orig/flags.c	2007-04-01 22:58:55.000000000 +0100
++++ mutt-1.5.15/flags.c	2007-04-18 09:28:14.000000000 +0100
+@@ -22,8 +22,10 @@
+ 
+ #include "mutt.h"
+ #include "mutt_curses.h"
++#include "mutt_menu.h"
+ #include "sort.h"
+ #include "mx.h"
++#include "sidebar.h"
+ 
+ #ifdef USE_IMAP
+ #include "imap_private.h"
+@@ -251,6 +253,7 @@
+    */
+   if (h->searched && (changed != h->changed || deleted != ctx->deleted || tagged != ctx->tagged || flagged != ctx->flagged))
+     h->searched = 0;
++	draw_sidebar(0);
+ }
+ 
+ void mutt_tag_set_flag (int flag, int bf)
+Index: mutt-1.5.15/functions.h
+===================================================================
+--- mutt-1.5.15.orig/functions.h	2007-04-18 09:28:14.000000000 +0100
++++ mutt-1.5.15/functions.h	2007-04-18 09:28:14.000000000 +0100
+@@ -186,6 +186,11 @@
+   { "decrypt-save",		OP_DECRYPT_SAVE,		NULL },
+ 
+ 
++  { "sidebar-scroll-up",	OP_SIDEBAR_SCROLL_UP, NULL },
++  { "sidebar-scroll-down",	OP_SIDEBAR_SCROLL_DOWN, NULL },
++  { "sidebar-next",	OP_SIDEBAR_NEXT, NULL },
++  { "sidebar-prev",	OP_SIDEBAR_PREV, NULL },
++  { "sidebar-open", OP_SIDEBAR_OPEN, NULL },
+   { NULL,			0,				NULL }
+ };
+ 
+@@ -293,6 +298,11 @@
+   { "decrypt-save",    	OP_DECRYPT_SAVE,		NULL },
+ 
+ 
++  { "sidebar-scroll-up",	OP_SIDEBAR_SCROLL_UP, NULL },
++  { "sidebar-scroll-down",	OP_SIDEBAR_SCROLL_DOWN, NULL },
++  { "sidebar-next",	OP_SIDEBAR_NEXT, NULL },
++  { "sidebar-prev",	OP_SIDEBAR_PREV, NULL },
++  { "sidebar-open", OP_SIDEBAR_OPEN, NULL },
+   { NULL,		0,				NULL }
+ };
+ 
+Index: mutt-1.5.15/globals.h
+===================================================================
+--- mutt-1.5.15.orig/globals.h	2007-04-18 09:28:14.000000000 +0100
++++ mutt-1.5.15/globals.h	2007-04-18 09:28:14.000000000 +0100
+@@ -126,6 +126,7 @@
+ WHERE char *SendCharset;
+ WHERE char *Sendmail;
+ WHERE char *Shell;
++WHERE char *SidebarDelim;
+ WHERE char *Signature;
+ WHERE char *SimpleSearch;
+ #if USE_SMTP
+@@ -222,6 +223,9 @@
+ WHERE short ScoreThresholdRead;
+ WHERE short ScoreThresholdFlag;
+ 
++WHERE struct buffy_t *CurBuffy INITVAL(0);
++WHERE short DrawFullLine INITVAL(0);
++WHERE short SidebarWidth;
+ #ifdef USE_IMAP
+ WHERE short ImapKeepalive;
+ #endif
+Index: mutt-1.5.15/init.h
+===================================================================
+--- mutt-1.5.15.orig/init.h	2007-04-18 09:28:14.000000000 +0100
++++ mutt-1.5.15/init.h	2007-04-18 09:28:14.000000000 +0100
+@@ -1614,6 +1614,22 @@
+   ** If ``no'', never attempt to verify cryptographic signatures.
+   ** (Crypto only)
+   */
++  {"sidebar_delim", DT_STR, R_BOTH, UL &SidebarDelim, "|"},
++  /*
++  ** .pp
++  ** This specifies the delimiter between the sidebar (if visible) and
++  ** other screens.
++  */
++  { "sidebar_visible", DT_BOOL, R_BOTH, OPTSIDEBAR, 0 },
++  /*
++  ** .pp
++  ** This specifies whether or not to show sidebar (left-side list of folders).
++  */
++  { "sidebar_width", DT_NUM, R_BOTH, UL &SidebarWidth, 0 },
++  /*
++  ** .pp
++  ** The width of the sidebar.
++  */
+   { "smime_is_default", DT_BOOL,  R_NONE, OPTSMIMEISDEFAULT, 0},
+   /*
+   ** .pp
+Index: mutt-1.5.15/mailbox.h
+===================================================================
+--- mutt-1.5.15.orig/mailbox.h	2007-04-18 09:28:14.000000000 +0100
++++ mutt-1.5.15/mailbox.h	2007-04-18 09:28:14.000000000 +0100
+@@ -27,6 +27,7 @@
+ #define M_NEWFOLDER	(1<<4) /* create a new folder - same as M_APPEND, but uses
+ 				* safe_fopen() for mbox-style folders.
+ 				*/
++#define M_PEEK		(1<<5) /* revert atime back after taking a look (if applicable) */
+ 
+ /* mx_open_new_message() */
+ #define M_ADD_FROM	1	/* add a From_ line */
+Index: mutt-1.5.15/Makefile.am
+===================================================================
+--- mutt-1.5.15.orig/Makefile.am	2007-04-18 09:28:14.000000000 +0100
++++ mutt-1.5.15/Makefile.am	2007-04-18 09:28:14.000000000 +0100
+@@ -29,7 +29,8 @@
+ 	score.c send.c sendlib.c signal.c sort.c \
+ 	status.c system.c thread.c charset.c history.c lib.c \
+ 	muttlib.c editmsg.c mbyte.c \
+-	url.c ascii.c mutt_idna.c crypt-mod.c crypt-mod.h
++	url.c ascii.c mutt_idna.c crypt-mod.c crypt-mod.h \
++        sidebar.c
+ 
+ mutt_LDADD = @MUTT_LIB_OBJECTS@ @LIBOBJS@ $(LIBIMAP) $(MUTTLIBS) \
+ 	$(INTLLIBS) $(LIBICONV)  $(GPGME_LIBS)
+Index: mutt-1.5.15/Makefile.in
+===================================================================
+--- mutt-1.5.15.orig/Makefile.in	2007-04-18 09:28:14.000000000 +0100
++++ mutt-1.5.15/Makefile.in	2007-04-18 09:28:14.000000000 +0100
+@@ -91,7 +91,8 @@
+ 	thread.$(OBJEXT) charset.$(OBJEXT) history.$(OBJEXT) \
+ 	lib.$(OBJEXT) muttlib.$(OBJEXT) editmsg.$(OBJEXT) \
+ 	mbyte.$(OBJEXT) url.$(OBJEXT) ascii.$(OBJEXT) \
+-	mutt_idna.$(OBJEXT) crypt-mod.$(OBJEXT)
++	mutt_idna.$(OBJEXT) crypt-mod.$(OBJEXT) \
++        sidebar.$(OBJEXT)
+ mutt_OBJECTS = $(am_mutt_OBJECTS)
+ am__DEPENDENCIES_1 =
+ am_mutt_dotlock_OBJECTS = mutt_dotlock.$(OBJEXT)
+@@ -312,7 +313,8 @@
+ 	score.c send.c sendlib.c signal.c sort.c \
+ 	status.c system.c thread.c charset.c history.c lib.c \
+ 	muttlib.c editmsg.c mbyte.c \
+-	url.c ascii.c mutt_idna.c crypt-mod.c crypt-mod.h
++	url.c ascii.c mutt_idna.c crypt-mod.c crypt-mod.h \
++        sidebar.c
+ 
+ mutt_LDADD = @MUTT_LIB_OBJECTS@ @LIBOBJS@ $(LIBIMAP) $(MUTTLIBS) \
+ 	$(INTLLIBS) $(LIBICONV)  $(GPGME_LIBS)
+@@ -348,7 +350,7 @@
+ 	makedoc.c makedoc-defs.h stamp-doc-rc README.SSL smime.h \
+ 	muttbug pgppacket.h depcomp ascii.h BEWARE PATCHES patchlist.sh \
+ 	ChangeLog ChangeLog.old mkchangelog.sh cvslog2changelog.pl mutt_idna.h \
+-	snprintf.c regex.c crypt-gpgme.h hcachever.sh
++	snprintf.c regex.c crypt-gpgme.h sidebar.h hcachever.sh
+ 
+ EXTRA_SCRIPTS = smime_keys
+ mutt_dotlock_SOURCES = mutt_dotlock.c
+Index: mutt-1.5.15/mbox.c
+===================================================================
+--- mutt-1.5.15.orig/mbox.c	2007-04-01 22:58:56.000000000 +0100
++++ mutt-1.5.15/mbox.c	2007-04-18 09:28:14.000000000 +0100
+@@ -100,6 +100,7 @@
+     mutt_perror (ctx->path);
+     return (-1);
+   }
++  ctx->atime = sb.st_atime;
+   ctx->mtime = sb.st_mtime;
+   ctx->size = sb.st_size;
+ 
+@@ -251,6 +252,7 @@
+ 
+   ctx->size = sb.st_size;
+   ctx->mtime = sb.st_mtime;
++  ctx->atime = sb.st_atime;
+ 
+ #ifdef NFS_ATTRIBUTE_HACK
+   if (sb.st_mtime > sb.st_atime)
+Index: mutt-1.5.15/menu.c
+===================================================================
+--- mutt-1.5.15.orig/menu.c	2007-04-01 22:58:56.000000000 +0100
++++ mutt-1.5.15/menu.c	2007-04-18 09:28:14.000000000 +0100
+@@ -24,6 +24,7 @@
+ #include "mutt_curses.h"
+ #include "mutt_menu.h"
+ #include "mbyte.h"
++#include "sidebar.h"
+ 
+ #ifdef USE_IMAP
+ #include "imap.h"
+@@ -158,7 +159,7 @@
+ {
+   char *scratch = safe_strdup (s);
+   int shift = option (OPTARROWCURSOR) ? 3 : 0;
+-  int cols = COLS - shift;
++  int cols = COLS - shift - SidebarWidth;
+ 
+   mutt_format_string (s, n, cols, cols, 0, ' ', scratch, mutt_strlen (scratch), 1);
+   s[n - 1] = 0;
+@@ -209,6 +210,7 @@
+   char buf[STRING];
+   int i;
+ 
++  draw_sidebar(1);
+   for (i = menu->top; i < menu->top + menu->pagelen; i++)
+   {
+     if (i < menu->max)
+@@ -219,7 +221,7 @@
+       if (option (OPTARROWCURSOR))
+       {
+         attrset (menu->color (i));
+-	CLEARLINE (i - menu->top + menu->offset);
++ 	CLEARLINE_WIN (i - menu->top + menu->offset);
+ 
+ 	if (i == menu->current)
+ 	{
+@@ -248,14 +250,14 @@
+ 	  BKGDSET (MT_COLOR_INDICATOR);
+ 	}
+ 
+-	CLEARLINE (i - menu->top + menu->offset);
++ 	CLEARLINE_WIN (i - menu->top + menu->offset);
+ 	print_enriched_string (menu->color(i), (unsigned char *) buf, i != menu->current);
+         SETCOLOR (MT_COLOR_NORMAL);
+         BKGDSET (MT_COLOR_NORMAL);
+       }
+     }
+     else
+-      CLEARLINE (i - menu->top + menu->offset);
++      CLEARLINE_WIN (i - menu->top + menu->offset);
+   }
+   menu->redraw = 0;
+ }
+@@ -270,7 +272,7 @@
+     return;
+   }
+   
+-  move (menu->oldcurrent + menu->offset - menu->top, 0);
++  move (menu->oldcurrent + menu->offset - menu->top, SidebarWidth);
+   SETCOLOR (MT_COLOR_NORMAL);
+   BKGDSET (MT_COLOR_NORMAL);
+ 
+@@ -285,13 +287,13 @@
+       clrtoeol ();
+       menu_make_entry (buf, sizeof (buf), menu, menu->oldcurrent);
+       menu_pad_string (buf, sizeof (buf));
+-      move (menu->oldcurrent + menu->offset - menu->top, 3);
++      move (menu->oldcurrent + menu->offset - menu->top, SidebarWidth + 3);
+       print_enriched_string (menu->color(menu->oldcurrent), (unsigned char *) buf, 1);
+       SETCOLOR (MT_COLOR_NORMAL);
+     }
+ 
+     /* now draw it in the new location */
+-    move (menu->current + menu->offset - menu->top, 0);
++    move (menu->current + menu->offset - menu->top, SidebarWidth);
+     attrset (menu->color (menu->current));
+     ADDCOLOR (MT_COLOR_INDICATOR);
+     addstr ("->");
+@@ -312,7 +314,7 @@
+     attrset (menu->color (menu->current));
+     ADDCOLOR (MT_COLOR_INDICATOR);
+     BKGDSET (MT_COLOR_INDICATOR);
+-    CLEARLINE (menu->current - menu->top + menu->offset);
++    CLEARLINE_WIN (menu->current - menu->top + menu->offset);
+     print_enriched_string (menu->color(menu->current), (unsigned char *) buf, 0);
+     SETCOLOR (MT_COLOR_NORMAL);
+     BKGDSET (MT_COLOR_NORMAL);
+@@ -324,7 +326,7 @@
+ {
+   char buf[STRING];
+   
+-  move (menu->current + menu->offset - menu->top, 0);
++  move (menu->current + menu->offset - menu->top, SidebarWidth);
+   menu_make_entry (buf, sizeof (buf), menu, menu->current);
+   menu_pad_string (buf, sizeof (buf));
+ 
+@@ -867,7 +869,7 @@
+     
+     
+     if (option (OPTARROWCURSOR))
+-      move (menu->current - menu->top + menu->offset, 2);
++      move (menu->current - menu->top + menu->offset, SidebarWidth + 2);
+     else if (option (OPTBRAILLEFRIENDLY))
+       move (menu->current - menu->top + menu->offset, 0);
+     else
+Index: mutt-1.5.15/mutt_curses.h
+===================================================================
+--- mutt-1.5.15.orig/mutt_curses.h	2007-04-01 22:58:56.000000000 +0100
++++ mutt-1.5.15/mutt_curses.h	2007-04-18 09:28:14.000000000 +0100
+@@ -64,6 +64,7 @@
+ #undef lines
+ #endif /* lines */
+ 
++#define CLEARLINE_WIN(x) move(x,SidebarWidth), clrtoeol()
+ #define CLEARLINE(x) move(x,0), clrtoeol()
+ #define CENTERLINE(x,y) move(y, (COLS-strlen(x))/2), addstr(x)
+ #define BEEP() do { if (option (OPTBEEP)) beep(); } while (0)
+@@ -126,6 +127,7 @@
+   MT_COLOR_BOLD,
+   MT_COLOR_UNDERLINE,
+   MT_COLOR_INDEX,
++  MT_COLOR_NEW,
+   MT_COLOR_MAX
+ };
+ 
+Index: mutt-1.5.15/mutt.h
+===================================================================
+--- mutt-1.5.15.orig/mutt.h	2007-04-18 09:28:14.000000000 +0100
++++ mutt-1.5.15/mutt.h	2007-04-18 09:28:14.000000000 +0100
+@@ -443,6 +443,7 @@
+   OPTSAVEEMPTY,
+   OPTSAVENAME,
+   OPTSCORE,
++  OPTSIDEBAR,
+   OPTSIGDASHES,
+   OPTSIGONTOP,
+   OPTSORTRE,
+@@ -904,6 +905,7 @@
+ {
+   char *path;
+   FILE *fp;
++  time_t atime;
+   time_t mtime;
+   off_t size;
+   off_t vsize;
+@@ -938,6 +940,7 @@
+   unsigned int quiet : 1;	/* inhibit status messages? */
+   unsigned int collapsed : 1;   /* are all threads collapsed? */
+   unsigned int closing : 1;	/* mailbox is being closed */
++  unsigned int peekonly : 1;	/* just taking a glance, revert atime */
+ 
+   /* driver hooks */
+   void *data;			/* driver specific data */
+Index: mutt-1.5.15/muttlib.c
+===================================================================
+--- mutt-1.5.15.orig/muttlib.c	2007-04-18 09:28:14.000000000 +0100
++++ mutt-1.5.15/muttlib.c	2007-04-18 09:28:14.000000000 +0100
+@@ -1206,7 +1206,10 @@
+ 	ch = *src++; /* pad char */
+ 	/* calculate space left on line.  if we've already written more data
+ 	   than will fit on the line, ignore the rest of the line */
+-	count = (COLS < destlen ? COLS : destlen);
++  	if ( DrawFullLine )
++  	  count = (COLS < destlen ? COLS : destlen);
++  	else
++  	  count = ((COLS-SidebarWidth) < destlen ? COLS - SidebarWidth : destlen);
+ 	if (count > col)
+ 	{
+ 	  count -= col; /* how many columns left on this line */
+Index: mutt-1.5.15/Muttrc
+===================================================================
+--- mutt-1.5.15.orig/Muttrc	2007-04-18 09:28:14.000000000 +0100
++++ mutt-1.5.15/Muttrc	2007-04-18 09:28:14.000000000 +0100
+@@ -2235,6 +2235,26 @@
+ # function.
+ # 
+ # 
++# set sidebar_visible=no
++#
++# Name: sidebar_visible
++# Type: boolean
++# Default: no
++#
++#
++# This specifies whether or not to show sidebar (left-side list of folders).
++#
++#
++# set sidebar_width=0
++#
++# Name: sidebar_width
++# Type: number
++# Default: 0
++#
++#
++# The width of the sidebar.
++#
++#
+ # set crypt_autosign=no
+ #
+ # Name: crypt_autosign
+Index: mutt-1.5.15/mx.c
+===================================================================
+--- mutt-1.5.15.orig/mx.c	2007-04-18 09:28:14.000000000 +0100
++++ mutt-1.5.15/mx.c	2007-04-18 09:28:14.000000000 +0100
+@@ -637,6 +637,7 @@
+  *		M_APPEND	open mailbox for appending
+  *		M_READONLY	open mailbox in read-only mode
+  *		M_QUIET		only print error messages
++ *		M_PEEK		revert atime where applicable
+  *	ctx	if non-null, context struct to use
+  */
+ CONTEXT *mx_open_mailbox (const char *path, int flags, CONTEXT *pctx)
+@@ -659,6 +660,8 @@
+     ctx->quiet = 1;
+   if (flags & M_READONLY)
+     ctx->readonly = 1;
++  if (flags & M_PEEK)
++    ctx->peekonly = 1;
+ 
+   if (flags & (M_APPEND|M_NEWFOLDER))
+   {
+@@ -764,9 +767,21 @@
+ void mx_fastclose_mailbox (CONTEXT *ctx)
+ {
+   int i;
++#ifndef BUFFY_SIZE
++  struct utimbuf ut;
++#endif
+ 
+   if(!ctx) 
+     return;
++#ifndef BUFFY_SIZE
++  /* fix up the times so buffy won't get confused */
++  if (ctx->peekonly && ctx->path && ctx->mtime > ctx->atime)
++  {
++    ut.actime = ctx->atime;
++    ut.modtime = ctx->mtime;
++    utime (ctx->path, &ut);
++  }
++#endif
+ 
+   if (ctx->mx_close)
+     ctx->mx_close (ctx);
+Index: mutt-1.5.15/OPS
+===================================================================
+--- mutt-1.5.15.orig/OPS	2007-04-18 09:28:14.000000000 +0100
++++ mutt-1.5.15/OPS	2007-04-18 09:28:14.000000000 +0100
+@@ -196,3 +196,8 @@
+ OP_MAIN_SHOW_LIMIT "show currently active limit pattern"
+ OP_MAIN_COLLAPSE_THREAD "collapse/uncollapse current thread"
+ OP_MAIN_COLLAPSE_ALL "collapse/uncollapse all threads"
++OP_SIDEBAR_SCROLL_UP "scroll the mailbox pane up 1 page"
++OP_SIDEBAR_SCROLL_DOWN "scroll the mailbox pane down 1 page"
++OP_SIDEBAR_NEXT "go down to next mailbox"
++OP_SIDEBAR_PREV "go to previous mailbox"
++OP_SIDEBAR_OPEN "open hilighted mailbox"
+Index: mutt-1.5.15/pager.c
+===================================================================
+--- mutt-1.5.15.orig/pager.c	2007-04-18 09:28:14.000000000 +0100
++++ mutt-1.5.15/pager.c	2007-04-18 09:28:14.000000000 +0100
+@@ -30,6 +30,7 @@
+ #include "pager.h"
+ #include "attach.h"
+ #include "mbyte.h"
++#include "sidebar.h"
+ 
+ #include "mx.h"
+ 
+@@ -1073,6 +1074,8 @@
+ 
+   int wrap_cols = mutt_term_width (Wrap);
+   
++  wrap_cols -= SidebarWidth;
++
+   /* FIXME: this should come from lineInfo */
+   memset(&mbstate, 0, sizeof(mbstate));
+ 
+@@ -1723,7 +1726,7 @@
+     if ((redraw & REDRAW_BODY) || topline != oldtopline)
+     {
+       do {
+-	move (bodyoffset, 0);
++	move (bodyoffset, SidebarWidth);
+ 	curline = oldtopline = topline;
+ 	lines = 0;
+ 	force_redraw = 0;
+@@ -1736,6 +1739,7 @@
+ 			    &QuoteList, &q_level, &force_redraw, &SearchRE) > 0)
+ 	    lines++;
+ 	  curline++;
++ 	  move(lines + bodyoffset, SidebarWidth);
+ 	}
+ 	last_offset = lineInfo[curline].offset;
+       } while (force_redraw);
+@@ -1749,6 +1753,7 @@
+ 	  addch ('~');
+ 	addch ('\n');
+ 	lines++;
++	move(lines + bodyoffset, SidebarWidth);
+       }
+       /* We are going to update the pager status bar, so it isn't
+        * necessary to reset to normal color now. */
+@@ -1761,22 +1766,22 @@
+       /* print out the pager status bar */
+       SETCOLOR (MT_COLOR_STATUS);
+       BKGDSET (MT_COLOR_STATUS);
+-      CLEARLINE (statusoffset);
++      CLEARLINE_WIN(statusoffset);
+       if (IsHeader (extra))
+       {
+-	size_t l1 = (COLS - 9) * MB_LEN_MAX;
++	size_t l1 = ((COLS - 9) * MB_LEN_MAX) - (SidebarWidth * MB_LEN_MAX);
+ 	size_t l2 = sizeof (buffer);
+ 	_mutt_make_string (buffer, l1 < l2 ? l1 : l2, NONULL (PagerFmt),
+ 			   Context, extra->hdr, M_FORMAT_MAKEPRINT);
+       }
+       else if (IsMsgAttach (extra))
+       {
+-	size_t l1 = (COLS - 9) * MB_LEN_MAX;
++	size_t l1 = (COLS - 9) * MB_LEN_MAX - (SidebarWidth * MB_LEN_MAX);
+ 	size_t l2 = sizeof (buffer);
+ 	_mutt_make_string (buffer, l1 < l2 ? l1 : l2, NONULL (PagerFmt),
+ 			   Context, extra->bdy->hdr, M_FORMAT_MAKEPRINT);
+       }
+-      mutt_paddstr (COLS-10, IsHeader (extra) || IsMsgAttach (extra) ?
++      mutt_paddstr (COLS-10-SidebarWidth, IsHeader (extra) || IsMsgAttach (extra) ?
+ 		    buffer : banner);
+       addstr (" -- (");
+       if (last_pos < sb.st_size - 1)
+@@ -1792,18 +1797,24 @@
+       /* redraw the pager_index indicator, because the
+        * flags for this message might have changed. */
+       menu_redraw_current (index);
++      draw_sidebar(MENU_PAGER);
+ 
+       /* print out the index status bar */
+       menu_status_line (buffer, sizeof (buffer), index, NONULL(Status));
+  
+-      move (indexoffset + (option (OPTSTATUSONTOP) ? 0 : (indexlen - 1)), 0);
++      move (indexoffset + (option (OPTSTATUSONTOP) ? 0 : (indexlen - 1)),
++          SidebarWidth);
+       SETCOLOR (MT_COLOR_STATUS);
+       BKGDSET (MT_COLOR_STATUS);
+-      mutt_paddstr (COLS, buffer);
++      mutt_paddstr (COLS-SidebarWidth, buffer);
+       SETCOLOR (MT_COLOR_NORMAL);
+       BKGDSET (MT_COLOR_NORMAL);
+     }
+ 
++    /* if we're not using the index, update every time */
++    if ( index == 0 )
++      draw_sidebar(MENU_PAGER);
++
+     redraw = 0;
+ 
+     if (option(OPTBRAILLEFRIENDLY)) {
+@@ -2739,6 +2750,12 @@
+         redraw = REDRAW_FULL;
+         break;
+ 
++      case OP_SIDEBAR_SCROLL_UP:
++      case OP_SIDEBAR_SCROLL_DOWN:
++      case OP_SIDEBAR_NEXT:
++      case OP_SIDEBAR_PREV:
++	scroll_sidebar(ch, MENU_PAGER);
++ 	break;
+       default:
+ 	ch = -1;
+ 	break;
+Index: mutt-1.5.15/PATCHES
+===================================================================
+--- mutt-1.5.15.orig/PATCHES	2007-04-18 09:28:14.000000000 +0100
++++ mutt-1.5.15/PATCHES	2007-04-18 09:28:14.000000000 +0100
+@@ -1,3 +1,4 @@
++patch-1.5.15.sidebar.20070408.txt
+ vvv.quote
+ vvv.initials
+ vvv.nntp
+Index: mutt-1.5.15/sidebar.c
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ mutt-1.5.15/sidebar.c	2007-04-18 09:28:14.000000000 +0100
+@@ -0,0 +1,294 @@
++/*
++ * Copyright (C) ????-2004 Justin Hibbits <jrh29@po.cwru.edu>
++ * Copyright (C) 2004 Thomer M. Gil <mutt@thomer.com>
++ *
++ *     This program is free software; you can redistribute it and/or modify
++ *     it under the terms of the GNU General Public License as published by
++ *     the Free Software Foundation; either version 2 of the License, or
++ *     (at your option) any later version.
++ *
++ *     This program is distributed in the hope that it will be useful,
++ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
++ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ *     GNU General Public License for more details.
++ *
++ *     You should have received a copy of the GNU General Public License
++ *     along with this program; if not, write to the Free Software
++ *     Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111, USA.
++ */
++
++
++#if HAVE_CONFIG_H
++# include "config.h"
++#endif
++
++#include "mutt.h"
++#include "mutt_menu.h"
++#include "mutt_curses.h"
++#include "sidebar.h"
++#include "buffy.h"
++#include <libgen.h>
++#include "keymap.h"
++#include <stdbool.h>
++
++/*BUFFY *CurBuffy = 0;*/
++static BUFFY *TopBuffy = 0;
++static BUFFY *BottomBuffy = 0;
++static int known_lines = 0;
++
++static int quick_log10(int n)
++{
++        char string[32];
++        sprintf(string, "%d", n);
++        return strlen(string);
++}
++
++void calc_boundaries (int menu)
++{
++	BUFFY *tmp = Incoming;
++
++	if ( known_lines != LINES ) {
++		TopBuffy = BottomBuffy = 0;
++		known_lines = LINES;
++	}
++	for ( ; tmp->next != 0; tmp = tmp->next )
++		tmp->next->prev = tmp;
++
++	if ( TopBuffy == 0 && BottomBuffy == 0 )
++		TopBuffy = Incoming;
++	if ( BottomBuffy == 0 ) {
++		int count = LINES - 2 - (menu != MENU_PAGER || option(OPTSTATUSONTOP));
++		BottomBuffy = TopBuffy;
++		while ( --count && BottomBuffy->next )
++			BottomBuffy = BottomBuffy->next;
++	}
++	else if ( TopBuffy == CurBuffy->next ) {
++		int count = LINES - 2 - (menu != MENU_PAGER);
++		BottomBuffy = CurBuffy;
++		tmp = BottomBuffy;
++		while ( --count && tmp->prev)
++			tmp = tmp->prev;
++		TopBuffy = tmp;
++	}
++	else if ( BottomBuffy == CurBuffy->prev ) {
++		int count = LINES - 2 - (menu != MENU_PAGER);
++		TopBuffy = CurBuffy;
++		tmp = TopBuffy;
++		while ( --count && tmp->next )
++			tmp = tmp->next;
++		BottomBuffy = tmp;
++	}
++}
++
++char *make_sidebar_entry(char *box, int size, int new)
++{
++	static char *entry = 0;
++	char *c;
++	int i = 0;
++	int delim_len = strlen(SidebarDelim);
++
++	c = realloc(entry, SidebarWidth - delim_len + 2);
++	if ( c ) entry = c;
++	entry[SidebarWidth - delim_len + 1] = 0;
++	for (; i < SidebarWidth - delim_len + 1; entry[i++] = ' ' );
++	i = strlen(box);
++	strncpy( entry, box, i < (SidebarWidth - delim_len + 1) ? i : (SidebarWidth - delim_len + 1) );
++
++        if (size == -1)
++                sprintf(entry + SidebarWidth - delim_len - 3, "?");
++        else if ( new )
++		sprintf(
++			entry + SidebarWidth - delim_len - 3 - quick_log10(size) - quick_log10(new),
++			"% d(%d)", size, new);
++	else
++		sprintf( entry + SidebarWidth - delim_len - 1 - quick_log10(size), "% d", size);
++	return entry;
++}
++
++void set_curbuffy(char buf[LONG_STRING])
++{
++  BUFFY* tmp = CurBuffy = Incoming;
++
++  if (!Incoming)
++    return;
++
++  while(1) {
++    if(!strcmp(tmp->path, buf)) {
++      CurBuffy = tmp;
++      break;
++    }
++
++    if(tmp->next)
++      tmp = tmp->next;
++    else
++      break;
++  }
++}
++
++int draw_sidebar(int menu) {
++
++	int lines = option(OPTHELP) ? 1 : 0;
++	BUFFY *tmp;
++#ifndef USE_SLANG_CURSES
++        attr_t attrs;
++#endif
++        short delim_len = strlen(SidebarDelim);
++        short color_pair;
++
++        static bool initialized = false;
++        static int prev_show_value;
++        static short saveSidebarWidth;
++
++        /* initialize first time */
++        if(!initialized) {
++                prev_show_value = option(OPTSIDEBAR);
++                saveSidebarWidth = SidebarWidth;
++                if(!option(OPTSIDEBAR)) SidebarWidth = 0;
++                initialized = true;
++        }
++
++        /* save or restore the value SidebarWidth */
++        if(prev_show_value != option(OPTSIDEBAR)) {
++                if(prev_show_value && !option(OPTSIDEBAR)) {
++                        saveSidebarWidth = SidebarWidth;
++                        SidebarWidth = 0;
++                } else if(!prev_show_value && option(OPTSIDEBAR)) {
++                        SidebarWidth = saveSidebarWidth;
++                }
++                prev_show_value = option(OPTSIDEBAR);
++        }
++
++
++//	if ( SidebarWidth == 0 ) return 0;
++       if (SidebarWidth > 0 && option (OPTSIDEBAR)
++           && delim_len >= SidebarWidth) {
++         unset_option (OPTSIDEBAR);
++         /* saveSidebarWidth = SidebarWidth; */
++         if (saveSidebarWidth > delim_len) {
++           SidebarWidth = saveSidebarWidth;
++           mutt_error (_("Value for sidebar_delim is too long. Disabling sidebar."));
++           sleep (2);
++         } else {
++           SidebarWidth = 0;
++           mutt_error (_("Value for sidebar_delim is too long. Disabling sidebar. Please set your sidebar_width to a sane value."));
++           sleep (4); /* the advise to set a sane value should be seen long enough */
++         }
++         saveSidebarWidth = 0;
++         return (0);
++       }
++
++    if ( SidebarWidth == 0 || !option(OPTSIDEBAR)) {
++      if (SidebarWidth > 0) {
++        saveSidebarWidth = SidebarWidth;
++        SidebarWidth = 0;
++      }
++      unset_option(OPTSIDEBAR);
++      return 0;
++    }
++
++        /* get attributes for divider */
++	SETCOLOR(MT_COLOR_STATUS);
++#ifndef USE_SLANG_CURSES
++        attr_get(&attrs, &color_pair, 0);
++#else
++        color_pair = attr_get();
++#endif
++	SETCOLOR(MT_COLOR_NORMAL);
++
++	/* draw the divider */
++
++	for ( ; lines < LINES-1-(menu != MENU_PAGER || option(OPTSTATUSONTOP)); lines++ ) {
++		move(lines, SidebarWidth - delim_len);
++		addstr(NONULL(SidebarDelim));
++#ifndef USE_SLANG_CURSES
++                mvchgat(lines, SidebarWidth - delim_len, delim_len, 0, color_pair, NULL);
++#endif
++	}
++
++	if ( Incoming == 0 ) return 0;
++	lines = option(OPTHELP) ? 1 : 0; /* go back to the top */
++
++	if ( known_lines != LINES || TopBuffy == 0 || BottomBuffy == 0 )
++		calc_boundaries(menu);
++	if ( CurBuffy == 0 ) CurBuffy = Incoming;
++
++	tmp = TopBuffy;
++
++	SETCOLOR(MT_COLOR_NORMAL);
++
++	for ( ; tmp && lines < LINES-1 - (menu != MENU_PAGER || option(OPTSTATUSONTOP)); tmp = tmp->next ) {
++		if ( tmp == CurBuffy )
++			SETCOLOR(MT_COLOR_INDICATOR);
++		else if ( tmp->msg_unread > 0 )
++			SETCOLOR(MT_COLOR_NEW);
++		else
++			SETCOLOR(MT_COLOR_NORMAL);
++
++		move( lines, 0 );
++		if ( Context && !strcmp( tmp->path, Context->path ) ) {
++			tmp->msg_unread = Context->unread;
++			tmp->msgcount = Context->msgcount;
++		}
++                printw( "%.*s", SidebarWidth - delim_len + 1,
++                        make_sidebar_entry(basename(tmp->path), tmp->msgcount,
++                        tmp->msg_unread));
++		lines++;
++	}
++	SETCOLOR(MT_COLOR_NORMAL);
++	for ( ; lines < LINES-1 - (menu != MENU_PAGER || option(OPTSTATUSONTOP)); lines++ ) {
++		int i = 0;
++		move( lines, 0 );
++		for ( ; i < SidebarWidth - delim_len - 1; i++ )
++			addch(' ');
++	}
++	return 0;
++}
++
++
++void set_buffystats(CONTEXT* Context)
++{
++        BUFFY *tmp = Incoming;
++        while(tmp) {
++                if(Context && !strcmp(tmp->path, Context->path)) {
++			tmp->msg_unread = Context->unread;
++			tmp->msgcount = Context->msgcount;
++                        break;
++                }
++                tmp = tmp->next;
++        }
++}
++
++void scroll_sidebar(int op, int menu)
++{
++        if(!SidebarWidth) return;
++        if(!CurBuffy) return;
++
++	switch (op) {
++		case OP_SIDEBAR_NEXT:
++			if ( CurBuffy->next == NULL ) return;
++			CurBuffy = CurBuffy->next;
++			break;
++		case OP_SIDEBAR_PREV:
++			if ( CurBuffy->prev == NULL ) return;
++			CurBuffy = CurBuffy->prev;
++			break;
++		case OP_SIDEBAR_SCROLL_UP:
++			CurBuffy = TopBuffy;
++			if ( CurBuffy != Incoming ) {
++				calc_boundaries(menu);
++				CurBuffy = CurBuffy->prev;
++			}
++			break;
++		case OP_SIDEBAR_SCROLL_DOWN:
++			CurBuffy = BottomBuffy;
++			if ( CurBuffy->next ) {
++				calc_boundaries(menu);
++				CurBuffy = CurBuffy->next;
++			}
++			break;
++		default:
++			return;
++	}
++	calc_boundaries(menu);
++	draw_sidebar(menu);
++}
+Index: mutt-1.5.15/sidebar.h
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ mutt-1.5.15/sidebar.h	2007-04-18 09:28:14.000000000 +0100
+@@ -0,0 +1,36 @@
++/*
++ * Copyright (C) ????-2004 Justin Hibbits <jrh29@po.cwru.edu>
++ * Copyright (C) 2004 Thomer M. Gil <mutt@thomer.com>
++ *
++ *     This program is free software; you can redistribute it and/or modify
++ *     it under the terms of the GNU General Public License as published by
++ *     the Free Software Foundation; either version 2 of the License, or
++ *     (at your option) any later version.
++ *
++ *     This program is distributed in the hope that it will be useful,
++ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
++ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ *     GNU General Public License for more details.
++ *
++ *     You should have received a copy of the GNU General Public License
++ *     along with this program; if not, write to the Free Software
++ *     Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111, USA.
++ */
++
++#ifndef SIDEBAR_H
++#define SIDEBAR_H
++
++struct MBOX_LIST {
++	char *path;
++	int msgcount;
++	int new;
++} MBLIST;
++
++/* parameter is whether or not to go to the status line */
++/* used for omitting the last | that covers up the status bar in the index */
++int draw_sidebar(int);
++void scroll_sidebar(int, int);
++void set_curbuffy(char*);
++void set_buffystats(CONTEXT*);
++
++#endif /* SIDEBAR_H */
+Index: mutt-1.5.15/imap/imap.c
+===================================================================
+--- mutt-1.5.15.orig/imap/imap.c	2007-04-06 20:52:53.000000000 +0100
++++ mutt-1.5.15/imap/imap.c	2007-04-18 09:28:14.000000000 +0100
+@@ -1483,7 +1483,7 @@
+     
+     imap_munge_mbox_name (munged, sizeof (munged), name);
+     snprintf (command, sizeof (command),
+-	      "STATUS %s (UIDNEXT UIDVALIDITY UNSEEN RECENT)", munged);
++	      "STATUS %s (UIDNEXT UIDVALIDITY UNSEEN RECENT MESSAGES)", munged);
+ 
+     if (imap_cmd_queue (idata, command) < 0)
+     {
+Index: mutt-1.5.15/imap/command.c
+===================================================================
+--- mutt-1.5.15.orig/imap/command.c	2007-04-05 16:58:57.000000000 +0100
++++ mutt-1.5.15/imap/command.c	2007-04-18 09:28:14.000000000 +0100
+@@ -914,6 +914,13 @@
+ 	     opened */
+ 	  status->uidnext = oldun;
+ 
++        /* Added to make the sidebar show the correct numbers */
++        if (status->messages)
++        {
++          inc->msgcount = status->messages;
++          inc->msg_unread = status->unseen;
++        }
++
+         FREE (&value);
+         return;
+       }

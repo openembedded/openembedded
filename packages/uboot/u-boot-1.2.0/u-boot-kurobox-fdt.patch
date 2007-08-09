@@ -1,0 +1,29 @@
+diff -ur u-boot-86xx-kuro_clean/include/configs/linkstation.h u-boot-86xx-kuro_flash/include/configs/linkstation.h
+--- u-boot-86xx-kuro_clean/include/configs/linkstation.h	2006-11-06 22:05:38.000000000 +0100
++++ u-boot-86xx-kuro_flash/include/configs/linkstation.h	2006-10-28 11:27:42.000000000 +0200
+@@ -101,6 +101,14 @@
+ 							CFG_CMD_EXT2	)
+ #define CONFIG_BOOTP_MASK   CONFIG_BOOTP_ALL
+ 
++#define CONFIG_OF_FLAT_TREE	1
++
++#ifdef CONFIG_OF_FLAT_TREE
++#define OF_CPU			"PowerPC,603e"
++#define OF_SOC			"soc10x@80000000"
++#define OF_STDOUT_PATH		"/soc10x/serial@80004600"
++#endif
++
+ /* this must be included AFTER the definition of CONFIG_COMMANDS (if any) */
+ #include <cmd_confdefs.h>
+ 
+@@ -151,8 +159,8 @@
+     "ldaddr=800000\0"							\
+     "hdpart=0:1\0"								\
+     "hdfile=boot/vmlinux.UBoot\0"				\
+-    "hdload=echo Loading ${hdpart}:${hdfile};ext2load ide ${hdpart} ${ldaddr} ${hdfile}\0"	\
+-    "boothd=setenv bootargs root=/dev/hda1;bootm ${ldaddr}\0"	\
++    "hdload=echo Loading ${hdpart}:${hdfile};ext2load ide ${hdpart} ${ldaddr} ${hdfile};ext2load ide ${hdpart} 7f0000 boot/kuroboxHG.dtb\0"	\
++    "boothd=setenv bootargs " CONFIG_BOOTARGS ";bootm ${ldaddr} - 7f0000\0"	\
+     "hdboot=run hdload boothd\0"				\
+     "flboot=setenv bootargs root=/dev/hda1;bootm ffc00000\0"	\
+     "emboot=setenv bootargs root=/dev/ram0;bootm ffc00000\0"	\

@@ -5,7 +5,7 @@ PRIORITY = "optional"
 
 DEPENDS  = "libgpewidget libgpepimc sqlite"
 
-PV = "0.30+svn${SRCDATE}"
+PV = "0.90+svn${SRCDATE}"
 PR = "r0"
 
 DEFAULT_PREFERENCE = "-1"

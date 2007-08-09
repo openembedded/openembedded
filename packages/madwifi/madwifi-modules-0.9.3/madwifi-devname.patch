@@ -1,0 +1,115 @@
+diff -uNr madwifi-0.9.3-orig/ath/if_ath.c madwifi-0.9.3/ath/if_ath.c
+--- madwifi-0.9.3-orig/ath/if_ath.c	2007-03-03 07:20:46.000000000 +0100
++++ madwifi-0.9.3/ath/if_ath.c	2007-03-27 20:02:15.004192220 +0200
+@@ -903,7 +903,8 @@
+ 	
+ 	if (autocreatemode != -1) {
+ 		rtnl_lock();
+-		error = ieee80211_create_vap(ic, "ath%d", dev,
++		/*error = ieee80211_create_vap(ic, "ath%d", dev,*/
++		error = ieee80211_create_vap(ic, "wlan%d", dev,
+ 				autocreatemode, IEEE80211_CLONE_BSSID);
+ 		rtnl_unlock();
+ 		if (error)
+@@ -9730,7 +9731,7 @@
+ };
+ static ctl_table ath_ath_table[] = {
+ 	{ .ctl_name	= DEV_ATH,
+-	  .procname	= "ath",
++	  .procname	= "wlan",
+ 	  .mode		= 0555,
+ 	  .child	= ath_static_sysctls
+ 	}, { 0 }
+diff -uNr madwifi-0.9.3-orig/ath_hal/ah_os.c madwifi-0.9.3/ath_hal/ah_os.c
+--- madwifi-0.9.3-orig/ath_hal/ah_os.c	2007-02-21 07:46:24.000000000 +0100
++++ madwifi-0.9.3/ath_hal/ah_os.c	2007-03-27 20:02:05.571774828 +0200
+@@ -503,7 +503,7 @@
+ };
+ static ctl_table ath_ath_table[] = {
+ 	{ .ctl_name	= DEV_ATH,
+-	  .procname	= "ath",
++	  .procname	= "wlan",
+ 	  .mode		= 0555,
+ 	  .child	= ath_hal_table
+ 	}, { 0 }
+diff -uNr madwifi-0.9.3-orig/ath_rate/amrr/amrr.c madwifi-0.9.3/ath_rate/amrr/amrr.c
+--- madwifi-0.9.3-orig/ath_rate/amrr/amrr.c	2007-02-21 07:46:24.000000000 +0100
++++ madwifi-0.9.3/ath_rate/amrr/amrr.c	2007-03-27 20:01:47.450972963 +0200
+@@ -530,7 +530,7 @@
+ };
+ static ctl_table ath_ath_table[] = {
+ 	{ .ctl_name	= DEV_ATH,
+-	  .procname	= "ath",
++	  .procname	= "wlan",
+ 	  .mode		= 0555,
+ 	  .child	= ath_rate_table
+ 	}, { 0 }
+diff -uNr madwifi-0.9.3-orig/ath_rate/onoe/onoe.c madwifi-0.9.3/ath_rate/onoe/onoe.c
+--- madwifi-0.9.3-orig/ath_rate/onoe/onoe.c	2007-02-21 07:46:24.000000000 +0100
++++ madwifi-0.9.3/ath_rate/onoe/onoe.c	2007-03-27 20:01:35.362438027 +0200
+@@ -477,7 +477,7 @@
+ };
+ static ctl_table ath_ath_table[] = {
+ 	{ .ctl_name	= DEV_ATH,
+-	  .procname	= "ath",
++	  .procname	= "wlan",
+ 	  .mode		= 0555,
+ 	  .child	= ath_rate_table
+ 	}, { 0 }
+diff -uNr madwifi-0.9.3-orig/tools/80211debug.c madwifi-0.9.3/tools/80211debug.c
+--- madwifi-0.9.3-orig/tools/80211debug.c	2006-12-08 18:20:08.000000000 +0100
++++ madwifi-0.9.3/tools/80211debug.c	2007-03-27 20:07:02.808926708 +0200
+@@ -183,7 +183,7 @@
+ int
+ main(int argc, char *argv[])
+ {
+-	const char *ifname = "ath0";
++	const char *ifname = "wlan0";
+ 	const char *cp, *tp;
+ 	const char *sep;
+ 	int op, i;
+diff -uNr madwifi-0.9.3-orig/tools/80211stats.c madwifi-0.9.3/tools/80211stats.c
+--- madwifi-0.9.3-orig/tools/80211stats.c	2007-02-07 04:18:49.000000000 +0100
++++ madwifi-0.9.3/tools/80211stats.c	2007-03-27 20:04:16.297559340 +0200
+@@ -252,7 +252,7 @@
+ 	struct iwreq iwr;
+ 	int allnodes = 0;
+ 
+-	const char *ifname = "ath0";
++	const char *ifname = "wlan0";
+ 
+ 	s = socket(AF_INET, SOCK_DGRAM, 0);
+ 	if (s < 0)
+diff -uNr madwifi-0.9.3-orig/tools/athdebug.c madwifi-0.9.3/tools/athdebug.c
+--- madwifi-0.9.3-orig/tools/athdebug.c	2006-12-08 18:20:08.000000000 +0100
++++ madwifi-0.9.3/tools/athdebug.c	2007-03-27 20:03:32.583625082 +0200
+@@ -185,7 +185,7 @@
+ #ifdef __linux__
+ 	const char *ifname = "wifi0";
+ #else
+-	const char *ifname = "ath0";
++	const char *ifname = "wlan0";
+ #endif
+ 	const char *cp, *tp;
+ 	const char *sep;
+@@ -209,7 +209,7 @@
+ #ifdef __linux__
+ 	snprintf(oid, sizeof(oid), "dev.%s.debug", ifname);
+ #else
+-	snprintf(oid, sizeof(oid), "dev.ath.%s.debug", ifname+3);
++	snprintf(oid, sizeof(oid), "dev.wlan.%s.debug", ifname+3);
+ #endif
+ 	debuglen = sizeof(debug);
+ 	if (sysctlbyname(oid, &debug, &debuglen, NULL, 0) < 0)
+diff -uNr madwifi-0.9.3-orig/tools/athstats.c madwifi-0.9.3/tools/athstats.c
+--- madwifi-0.9.3-orig/tools/athstats.c	2007-01-12 03:45:36.000000000 +0100
++++ madwifi-0.9.3/tools/athstats.c	2007-03-27 20:03:54.176580535 +0200
+@@ -229,7 +229,7 @@
+ #ifdef __linux__
+ 	const char *ifname = "wifi0";
+ #else
+-	const char *ifname = "ath0";
++	const char *ifname = "wlan0";
+ #endif
+ 	int s;
+ 	struct ifreq ifr;

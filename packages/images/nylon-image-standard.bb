@@ -3,26 +3,18 @@ require nylon-image-base.bb
 export IMAGE_BASENAME = "nylon-standard"
 
 NYLON_STANDARD = "\
-	bridge-utils \
-	dnsmasq \
 	hostap-utils \
-	hostap-daemon \
 	linux-hotplug \
-	ifplugd iproute2 iptables \
-	madwifi-modules \
-	nylon-scripts \
+	ifplugd \
 	olsrd \
-	ppp pciutils \
+	ppp \
 	rp-pppoe \
 	shorewall \
 	tcpdump \
-	usbutils \
-	wireless-tools \
-	wpa-supplicant \
-	yamonenv"
+	wpa-supplicant"
 
 DEPENDS += "hostap-modules ntp \
 	${NYLON_STANDARD}"
 
-RDEPENDS += "hostap-modules-pci ntpdate nano elvis-tiny \
+RDEPENDS += "hostap-modules-pci ntpdate less nano elvis-tiny \
 	${NYLON_STANDARD}"

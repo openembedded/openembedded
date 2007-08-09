@@ -1,0 +1,11 @@
+--- Libnet-1.0.2a/config.sub~	2007-04-07 22:00:37.000000000 +0200
++++ Libnet-1.0.2a/config.sub	2007-04-07 22:00:37.000000000 +0200
+@@ -161,7 +161,7 @@
+ 	# We use `pc' rather than `unknown'
+ 	# because (1) that's what they normally are, and
+ 	# (2) the word "unknown" tends to confuse beginning users.
+-	i[3456]86)
++	i[3456]86 | x86_64)
+ 	  basic_machine=$basic_machine-pc
+ 	  ;;
+ 	# Object if more than one company name word.

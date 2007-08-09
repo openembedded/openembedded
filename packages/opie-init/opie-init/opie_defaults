@@ -1,0 +1,15 @@
+#!/bin/sh
+
+MACHINE="`cat /proc/cpuinfo | sed -n "/^Hardware/s/.*\:\(.*\)/\1/;s/^\ //p"`"
+KVER="`uname -r | sed -n "s/\([0-9]\)\.\([0-9]\)\..*/\1.\2/p"`"
+
+case "$MACHINE" in
+*Poodle)	test "$KVER" = "2.6" && export QWS_CURSOR_ROTATION=90;;
+esac
+
+export QTDIR="@palmtopdir@"
+export OPIEDIR="$QTDIR"
+export QPEDIR="$QTDIR"
+export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:$OPIEDIR/lib"
+export PATH="$PATH:$OPIEDIR/bin"
+

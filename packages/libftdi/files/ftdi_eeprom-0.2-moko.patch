@@ -1,0 +1,16 @@
+--- ftdi_eeprom-0.2/ftdi_eeprom/main.c	2004-03-25 19:58:08.000000000 +0100
++++ ftdi_eeprom-0.2-moko/ftdi_eeprom/main.c	2007-02-16 01:23:40.000000000 +0100
+@@ -135,8 +135,11 @@
+ 
+     	    i = ftdi_usb_open(&ftdi, 0x0403, 0x6001);
+ 	    if (i != 0) {
+-		printf("Sorry, unable to find FTDI USB chip\n");
+-		exit (-1);
++    	    	i = ftdi_usb_open(&ftdi, 0x0403, 0x6010);
++	    	if (i != 0) {
++		    printf("Sorry, unable to find FTDI USB chip\n");
++		    exit (-1);
++		}
+ 	    }
+ 	}
+     }

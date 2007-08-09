@@ -1,0 +1,35 @@
+From: Marc Pignat <marc.pignat@hevs.ch>
+Date: Wed, 6 Jun 2007 18:27:59 +0000 (+0200)
+Subject: mmc-atmel: remove linux/mmc/protocol.h dependencies
+X-Git-Url: http://git.kernel.org/?p=linux%2Fkernel%2Fgit%2Ftorvalds%2Flinux-2.6.git;a=commitdiff_plain;h=b6cedb38613d41367839df9d2181df3c81fb25c4
+
+mmc-atmel: remove linux/mmc/protocol.h dependencies
+
+Fix compilation error by removing command decoding from at91_mci.c driver.
+Decoding commands in the host driver is the wrong way.
+
+Signed-off-by: Marc Pignat <marc.pignat@hevs.ch>
+Signed-off-by: Pierre Ossman <drzeus@drzeus.cx>
+---
+
+--- /tmp/at91_mci.c	2007-06-13 11:17:32.809501930 +0200
++++ linux-2.6.21/drivers/mmc/host/at91_mci.c	2007-06-13 11:19:36.953487036 +0200
+@@ -417,7 +417,7 @@
+ 		blocks = 0;
+ 	}
+ 
+-	if (cmd->opcode == MMC_STOP_TRANSMISSION)
++	if (host->flags & FL_SENT_STOP)
+ 		cmdr |= AT91_MCI_TRCMD_STOP;
+ 
+ 	if (host->bus_mode == MMC_BUSMODE_OPENDRAIN)
+@@ -561,8 +561,7 @@
+ 		 status, cmd->resp[0], cmd->resp[1], cmd->resp[2], cmd->resp[3]);
+ 
+ 	if (status & AT91_MCI_ERRORS) {
+-		if ((status & AT91_MCI_RCRCE) &&
+-			((cmd->opcode == MMC_SEND_OP_COND) || (cmd->opcode == SD_APP_OP_COND))) {
++		if ((status & AT91_MCI_RCRCE) && !(mmc_resp_type(cmd) & MMC_RSP_CRC)) {
+ 			cmd->error = MMC_ERR_NONE;
+ 		}
+ 		else {

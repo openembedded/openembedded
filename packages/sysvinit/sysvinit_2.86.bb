@@ -2,7 +2,7 @@ DESCRIPTION = "System-V like init."
 SECTION = "base"
 LICENSE = "GPL"
 HOMEPAGE = "http://freshmeat.net/projects/sysvinit/"
-PR = "r32"
+PR = "r35"
 
 # USE_VT and SERIAL_CONSOLE are generally defined by the MACHINE .conf.
 # Set PACKAGE_ARCH appropriately.
@@ -19,14 +19,14 @@ USE_VT ?= "1"
 SYSVINIT_ENABLED_GETTYS ?= "1"
 
 SRC_URI = "ftp://ftp.cistron.nl/pub/people/miquels/sysvinit/sysvinit-${PV}.tar.gz \
-	   file://install.patch;patch=1 \
+           file://install.patch;patch=1 \
            file://need \
            file://provide \
            file://inittab \
            file://rcS-default \
            file://rc \
            file://rcS \
-	   file://bootlogd.init"
+           file://bootlogd.init"
 
 S = "${WORKDIR}/sysvinit-${PV}"
 B = "${S}/src"
@@ -51,13 +51,14 @@ EXTRA_OEMAKE += "'INSTALL=install' \
 		 'usrbindir=${bindir}' \
 		 'usrsbindir=${sbindir}' \
 		 'includedir=${includedir}' \
-		 'mandir=${mandir}'"
+		 'mandir=${mandir}' \
+		 DISTRO=''"
 
 do_install () {
 	oe_runmake 'ROOT=${D}' install
-	install -d ${D}${sysconfdir} \
-		   ${D}${sysconfdir}/default \
-		   ${D}${sysconfdir}/init.d
+	install -d ${D}${sysconfdir}
+	install -d ${D}${sysconfdir}/default
+	install	-d ${D}${sysconfdir}/init.d
 	install -m 0644 ${WORKDIR}/inittab ${D}${sysconfdir}/inittab
 	if [ ! -z "${SERIAL_CONSOLE}" ]; then
 		echo "S:2345:respawn:${base_sbindir}/getty ${SERIAL_CONSOLE}" >> ${D}${sysconfdir}/inittab

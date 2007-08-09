@@ -1,0 +1,3326 @@
+diff -Nurp ../u-boot-1.1.6/arm_config.mk ./arm_config.mk
+--- ../u-boot-1.1.6/arm_config.mk	2006-11-02 15:15:01.000000000 +0100
++++ ./arm_config.mk	2007-04-23 18:07:47.000000000 +0200
+@@ -21,4 +21,6 @@
+ # MA 02111-1307 USA
+ #
+ 
++#PLATFORM_RELFLAGS += -fno-strict-aliasing  -fno-common -ffixed-r8 -msoft-float
++PLATFORM_CPPFLAGS += -march=armv4t -mtune=arm920t 
+ PLATFORM_CPPFLAGS += -DCONFIG_ARM -D__ARM__
+diff -Nurp ../u-boot-1.1.6/board/sarge/config.mk ./board/sarge/config.mk
+--- ../u-boot-1.1.6/board/sarge/config.mk	1970-01-01 01:00:00.000000000 +0100
++++ ./board/sarge/config.mk	2007-03-21 00:31:33.000000000 +0100
+@@ -0,0 +1 @@
++TEXT_BASE = 0x21F00000
+diff -Nurp ../u-boot-1.1.6/board/sarge/flash.c ./board/sarge/flash.c
+--- ../u-boot-1.1.6/board/sarge/flash.c	1970-01-01 01:00:00.000000000 +0100
++++ ./board/sarge/flash.c	2007-03-09 01:25:41.000000000 +0100
+@@ -0,0 +1,504 @@
++/*
++ * (C) Copyright 2002
++ * Lineo, Inc. <www.lineo.com>
++ * Bernhard Kuhn <bkuhn@lineo.com>
++ *
++ * (C) Copyright 2002
++ * Sysgo Real-Time Solutions, GmbH <www.elinos.com>
++ * Alex Zuepke <azu@sysgo.de>
++ *
++ * See file CREDITS for list of people who contributed to this
++ * project.
++ *
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU General Public License as
++ * published by the Free Software Foundation; either version 2 of
++ * the License, or (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write to the Free Software
++ * Foundation, Inc., 59 Temple Place, Suite 330, Boston,
++ * MA 02111-1307 USA
++ */
++
++#include <common.h>
++
++ulong myflush(void);
++
++
++/* Flash Organization Structure */
++typedef struct OrgDef
++{
++	unsigned int sector_number;
++	unsigned int sector_size;
++} OrgDef;
++
++
++/* Flash Organizations */
++OrgDef OrgAT49BV16x4[] =
++{
++	{  8,  8*1024 },	/*   8 *  8 kBytes sectors */
++	{  2, 32*1024 },	/*   2 * 32 kBytes sectors */
++	{ 30, 64*1024 },	/*  30 * 64 kBytes sectors */
++};
++
++OrgDef OrgAT49BV16x4A[] =
++{
++	{  8,  8*1024 },	/*   8 *  8 kBytes sectors */
++	{ 31, 64*1024 },	/*  31 * 64 kBytes sectors */
++};
++
++OrgDef OrgAT49BV6416[] =
++{
++	{   8,  8*1024 },	/*   8 *  8 kBytes sectors */
++	{ 127, 64*1024 },	/* 127 * 64 kBytes sectors */
++};
++
++flash_info_t    flash_info[CFG_MAX_FLASH_BANKS];
++
++/* AT49BV1614A Codes */
++#define FLASH_CODE1		0xAA
++#define FLASH_CODE2		0x55
++#define ID_IN_CODE		0x90
++#define ID_OUT_CODE		0xF0
++
++
++#define CMD_READ_ARRAY		0x00F0
++#define CMD_UNLOCK1		0x00AA
++#define CMD_UNLOCK2		0x0055
++#define CMD_ERASE_SETUP		0x0080
++#define CMD_ERASE_CONFIRM	0x0030
++#define CMD_PROGRAM		0x00A0
++#define CMD_UNLOCK_BYPASS	0x0020
++#define CMD_SECTOR_UNLOCK	0x0070
++
++#define MEM_FLASH_ADDR1		(*(volatile u16 *)(CFG_FLASH_BASE + (0x00005555<<1)))
++#define MEM_FLASH_ADDR2		(*(volatile u16 *)(CFG_FLASH_BASE + (0x00002AAA<<1)))
++
++#define BIT_ERASE_DONE		0x0080
++#define BIT_RDY_MASK		0x0080
++#define BIT_PROGRAM_ERROR	0x0020
++#define BIT_TIMEOUT		0x80000000 /* our flag */
++
++#define READY 1
++#define ERR   2
++#define TMO   4
++
++/*-----------------------------------------------------------------------
++ */
++void flash_identification (flash_info_t * info)
++{
++	volatile u16 manuf_code, device_code, add_device_code;
++
++	MEM_FLASH_ADDR1 = FLASH_CODE1;
++	MEM_FLASH_ADDR2 = FLASH_CODE2;
++	MEM_FLASH_ADDR1 = ID_IN_CODE;
++
++	manuf_code = *(volatile u16 *) CFG_FLASH_BASE;
++	device_code = *(volatile u16 *) (CFG_FLASH_BASE + 2);
++	add_device_code = *(volatile u16 *) (CFG_FLASH_BASE + (3 << 1));
++
++	MEM_FLASH_ADDR1 = FLASH_CODE1;
++	MEM_FLASH_ADDR2 = FLASH_CODE2;
++	MEM_FLASH_ADDR1 = ID_OUT_CODE;
++
++	/* Vendor type */
++	info->flash_id = ATM_MANUFACT & FLASH_VENDMASK;
++	printf ("Atmel: ");
++
++	if ((device_code & FLASH_TYPEMASK) == (ATM_ID_BV1614 & FLASH_TYPEMASK)) {
++
++		if ((add_device_code & FLASH_TYPEMASK) ==
++			(ATM_ID_BV1614A & FLASH_TYPEMASK)) {
++			info->flash_id |= ATM_ID_BV1614A & FLASH_TYPEMASK;
++			printf ("AT49BV1614A (16Mbit)\n");
++		} else {				/* AT49BV1614 Flash */
++			info->flash_id |= ATM_ID_BV1614 & FLASH_TYPEMASK;
++			printf ("AT49BV1614 (16Mbit)\n");
++		}
++
++	} else if ((device_code & FLASH_TYPEMASK) == (ATM_ID_BV6416 & FLASH_TYPEMASK)) {
++		info->flash_id |= ATM_ID_BV6416 & FLASH_TYPEMASK;
++		printf ("AT49BV6416 (64Mbit)\n");
++	}
++}
++
++ushort flash_number_sector(OrgDef *pOrgDef, unsigned int nb_blocks)
++{
++	int i, nb_sectors = 0;
++
++	for (i=0; i<nb_blocks; i++){
++		nb_sectors += pOrgDef[i].sector_number;
++	}
++
++	return nb_sectors;
++}
++
++void flash_unlock_sector(flash_info_t * info, unsigned int sector)
++{
++	volatile u16 *addr = (volatile u16 *) (info->start[sector]);
++
++	MEM_FLASH_ADDR1 = CMD_UNLOCK1;
++	*addr = CMD_SECTOR_UNLOCK;
++}
++
++
++ulong flash_init (void)
++{
++	int i, j, k;
++	unsigned int flash_nb_blocks, sector;
++	unsigned int start_address;
++	OrgDef *pOrgDef;
++
++	ulong size = 0;
++
++	for (i = 0; i < CFG_MAX_FLASH_BANKS; i++) {
++		ulong flashbase = 0;
++
++		flash_identification (&flash_info[i]);
++
++		if ((flash_info[i].flash_id & FLASH_TYPEMASK) ==
++			(ATM_ID_BV1614 & FLASH_TYPEMASK)) {
++
++			pOrgDef = OrgAT49BV16x4;
++			flash_nb_blocks = sizeof (OrgAT49BV16x4) / sizeof (OrgDef);
++		} else if ((flash_info[i].flash_id & FLASH_TYPEMASK) ==
++			(ATM_ID_BV1614A & FLASH_TYPEMASK)){	/* AT49BV1614A Flash */
++
++			pOrgDef = OrgAT49BV16x4A;
++			flash_nb_blocks = sizeof (OrgAT49BV16x4A) / sizeof (OrgDef);
++		} else if ((flash_info[i].flash_id & FLASH_TYPEMASK) ==
++			(ATM_ID_BV6416 & FLASH_TYPEMASK)){	/* AT49BV6416 Flash */
++
++			pOrgDef = OrgAT49BV6416;
++			flash_nb_blocks = sizeof (OrgAT49BV6416) / sizeof (OrgDef);
++		} else {
++			flash_nb_blocks = 0;
++			pOrgDef = OrgAT49BV16x4;
++		}
++
++		flash_info[i].sector_count = flash_number_sector(pOrgDef, flash_nb_blocks);
++		memset (flash_info[i].protect, 0, flash_info[i].sector_count);
++
++		if (i == 0)
++			flashbase = PHYS_FLASH_1;
++		else
++			panic ("configured too many flash banks!\n");
++
++		sector = 0;
++		start_address = flashbase;
++		flash_info[i].size = 0;
++
++		for (j = 0; j < flash_nb_blocks; j++) {
++			for (k = 0; k < pOrgDef[j].sector_number; k++) {
++				flash_info[i].start[sector++] = start_address;
++				start_address += pOrgDef[j].sector_size;
++				flash_info[i].size += pOrgDef[j].sector_size;
++			}
++		}
++
++		size += flash_info[i].size;
++
++		if ((flash_info[i].flash_id & FLASH_TYPEMASK) ==
++			(ATM_ID_BV6416 & FLASH_TYPEMASK)){	/* AT49BV6416 Flash */
++
++			/* Unlock all sectors at reset */
++			for (j=0; j<flash_info[i].sector_count; j++){
++				flash_unlock_sector(&flash_info[i], j);
++			}
++		}
++	}
++
++	/* Protect binary boot image */
++	flash_protect (FLAG_PROTECT_SET,
++		       CFG_FLASH_BASE,
++		       CFG_FLASH_BASE + CFG_BOOT_SIZE - 1, &flash_info[0]);
++
++	/* Protect environment variables */
++	flash_protect (FLAG_PROTECT_SET,
++		       CFG_ENV_ADDR,
++		       CFG_ENV_ADDR + CFG_ENV_SIZE - 1, &flash_info[0]);
++
++	/* Protect U-Boot gzipped image */
++	flash_protect (FLAG_PROTECT_SET,
++		       CFG_U_BOOT_BASE,
++		       CFG_U_BOOT_BASE + CFG_U_BOOT_SIZE - 1, &flash_info[0]);
++
++	return size;
++}
++
++/*-----------------------------------------------------------------------
++ */
++void flash_print_info (flash_info_t * info)
++{
++	int i;
++
++	switch (info->flash_id & FLASH_VENDMASK) {
++	case (ATM_MANUFACT & FLASH_VENDMASK):
++		printf ("Atmel: ");
++		break;
++	default:
++		printf ("Unknown Vendor ");
++		break;
++	}
++
++	switch (info->flash_id & FLASH_TYPEMASK) {
++	case (ATM_ID_BV1614 & FLASH_TYPEMASK):
++		printf ("AT49BV1614 (16Mbit)\n");
++		break;
++	case (ATM_ID_BV1614A & FLASH_TYPEMASK):
++		printf ("AT49BV1614A (16Mbit)\n");
++		break;
++	case (ATM_ID_BV6416 & FLASH_TYPEMASK):
++		printf ("AT49BV6416 (64Mbit)\n");
++		break;
++	default:
++		printf ("Unknown Chip Type\n");
++		return;
++	}
++
++	printf ("  Size: %ld MB in %d Sectors\n",
++		info->size >> 20, info->sector_count);
++
++	printf ("  Sector Start Addresses:");
++	for (i = 0; i < info->sector_count; i++) {
++		if ((i % 5) == 0) {
++			printf ("\n   ");
++		}
++		printf (" %08lX%s", info->start[i],
++			info->protect[i] ? " (RO)" : "     ");
++	}
++	printf ("\n");
++}
++
++/*-----------------------------------------------------------------------
++ */
++
++int flash_erase (flash_info_t * info, int s_first, int s_last)
++{
++	ulong result;
++	int iflag, cflag, prot, sect;
++	int rc = ERR_OK;
++	int chip1;
++
++	/* first look for protection bits */
++
++	if (info->flash_id == FLASH_UNKNOWN)
++		return ERR_UNKNOWN_FLASH_TYPE;
++
++	if ((s_first < 0) || (s_first > s_last)) {
++		return ERR_INVAL;
++	}
++
++	if ((info->flash_id & FLASH_VENDMASK) !=
++		(ATM_MANUFACT & FLASH_VENDMASK)) {
++		return ERR_UNKNOWN_FLASH_VENDOR;
++	}
++
++	prot = 0;
++	for (sect = s_first; sect <= s_last; ++sect) {
++		if (info->protect[sect]) {
++			prot++;
++		}
++	}
++	if (prot)
++		return ERR_PROTECTED;
++
++	/*
++	 * Disable interrupts which might cause a timeout
++	 * here. Remember that our exception vectors are
++	 * at address 0 in the flash, and we don't want a
++	 * (ticker) exception to happen while the flash
++	 * chip is in programming mode.
++	 */
++	cflag = icache_status ();
++	icache_disable ();
++	iflag = disable_interrupts ();
++
++	/* Start erase on unprotected sectors */
++	for (sect = s_first; sect <= s_last && !ctrlc (); sect++) {
++		printf ("Erasing sector %2d ... ", sect);
++
++		/* arm simple, non interrupt dependent timer */
++		reset_timer_masked ();
++
++		if (info->protect[sect] == 0) {	/* not protected */
++			volatile u16 *addr = (volatile u16 *) (info->start[sect]);
++
++			MEM_FLASH_ADDR1 = CMD_UNLOCK1;
++			MEM_FLASH_ADDR2 = CMD_UNLOCK2;
++			MEM_FLASH_ADDR1 = CMD_ERASE_SETUP;
++
++			MEM_FLASH_ADDR1 = CMD_UNLOCK1;
++			MEM_FLASH_ADDR2 = CMD_UNLOCK2;
++			*addr = CMD_ERASE_CONFIRM;
++
++			/* wait until flash is ready */
++			chip1 = 0;
++
++			do {
++				result = *addr;
++
++				/* check timeout */
++				if (get_timer_masked () > CFG_FLASH_ERASE_TOUT) {
++					MEM_FLASH_ADDR1 = CMD_READ_ARRAY;
++					chip1 = TMO;
++					break;
++				}
++
++				if (!chip1 && (result & 0xFFFF) & BIT_ERASE_DONE)
++					chip1 = READY;
++
++			} while (!chip1);
++
++			MEM_FLASH_ADDR1 = CMD_READ_ARRAY;
++
++			if (chip1 == ERR) {
++				rc = ERR_PROG_ERROR;
++				goto outahere;
++			}
++			if (chip1 == TMO) {
++				rc = ERR_TIMOUT;
++				goto outahere;
++			}
++
++			printf ("ok.\n");
++		} else {			/* it was protected */
++			printf ("protected!\n");
++		}
++	}
++
++	if (ctrlc ())
++		printf ("User Interrupt!\n");
++
++outahere:
++	/* allow flash to settle - wait 10 ms */
++	udelay_masked (10000);
++
++	if (iflag)
++		enable_interrupts ();
++
++	if (cflag)
++		icache_enable ();
++
++	return rc;
++}
++
++/*-----------------------------------------------------------------------
++ * Copy memory to flash
++ */
++
++volatile static int write_word (flash_info_t * info, ulong dest,
++								ulong data)
++{
++	volatile u16 *addr = (volatile u16 *) dest;
++	ulong result;
++	int rc = ERR_OK;
++	int cflag, iflag;
++	int chip1;
++
++	/*
++	 * Check if Flash is (sufficiently) erased
++	 */
++	result = *addr;
++	if ((result & data) != data)
++		return ERR_NOT_ERASED;
++
++
++	/*
++	 * Disable interrupts which might cause a timeout
++	 * here. Remember that our exception vectors are
++	 * at address 0 in the flash, and we don't want a
++	 * (ticker) exception to happen while the flash
++	 * chip is in programming mode.
++	 */
++	cflag = icache_status ();
++	icache_disable ();
++	iflag = disable_interrupts ();
++
++	MEM_FLASH_ADDR1 = CMD_UNLOCK1;
++	MEM_FLASH_ADDR2 = CMD_UNLOCK2;
++	MEM_FLASH_ADDR1 = CMD_PROGRAM;
++	*addr = data;
++
++	/* arm simple, non interrupt dependent timer */
++	reset_timer_masked ();
++
++	/* wait until flash is ready */
++	chip1 = 0;
++	do {
++		result = *addr;
++
++		/* check timeout */
++		if (get_timer_masked () > CFG_FLASH_ERASE_TOUT) {
++			chip1 = ERR | TMO;
++			break;
++		}
++		if (!chip1 && ((result & 0x80) == (data & 0x80)))
++			chip1 = READY;
++
++	} while (!chip1);
++
++	*addr = CMD_READ_ARRAY;
++
++	if (chip1 == ERR || *addr != data)
++		rc = ERR_PROG_ERROR;
++
++	if (iflag)
++		enable_interrupts ();
++
++	if (cflag)
++		icache_enable ();
++
++	return rc;
++}
++
++/*-----------------------------------------------------------------------
++ * Copy memory to flash.
++ */
++
++int write_buff (flash_info_t * info, uchar * src, ulong addr, ulong cnt)
++{
++	ulong wp, data;
++	int rc;
++
++	if (addr & 1) {
++		printf ("unaligned destination not supported\n");
++		return ERR_ALIGN;
++	};
++
++	if ((int) src & 1) {
++		printf ("unaligned source not supported\n");
++		return ERR_ALIGN;
++	};
++
++	wp = addr;
++
++	while (cnt >= 2) {
++		data = *((volatile u16 *) src);
++		if ((rc = write_word (info, wp, data)) != 0) {
++			return (rc);
++		}
++		src += 2;
++		wp += 2;
++		cnt -= 2;
++	}
++
++	if (cnt == 1) {
++		data = (*((volatile u8 *) src)) | (*((volatile u8 *) (wp + 1)) <<
++										   8);
++		if ((rc = write_word (info, wp, data)) != 0) {
++			return (rc);
++		}
++		src += 1;
++		wp += 1;
++		cnt -= 1;
++	};
++
++	return ERR_OK;
++}
+diff -Nurp ../u-boot-1.1.6/board/sarge/Makefile ./board/sarge/Makefile
+--- ../u-boot-1.1.6/board/sarge/Makefile	1970-01-01 01:00:00.000000000 +0100
++++ ./board/sarge/Makefile	2007-03-14 01:05:48.000000000 +0100
+@@ -0,0 +1,46 @@
++#
++# (C) Copyright 2007
++# Grzegorz Rajtar, mcgregor@blackmesaeast.com.pl.
++#
++# See file CREDITS for list of people who contributed to this
++# project.
++#
++# This program is free software; you can redistribute it and/or
++# modify it under the terms of the GNU General Public License as
++# published by the Free Software Foundation; either version 2 of
++# the License, or (at your option) any later version.
++#
++# This program is distributed in the hope that it will be useful,
++# but WITHOUT ANY WARRANTY; without even the implied warranty of
++# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++# GNU General Public License for more details.
++#
++# You should have received a copy of the GNU General Public License
++# along with this program; if not, write to the Free Software
++# Foundation, Inc., 59 Temple Place, Suite 330, Boston,
++# MA 02111-1307 USA
++#
++
++include $(TOPDIR)/config.mk
++
++LIB	= lib$(BOARD).a
++
++OBJS	:= sarge_board.o at45.o flash.o
++
++$(LIB):	$(OBJS) $(SOBJS)
++	$(AR) crv $@ $(OBJS) $(SOBJS)
++
++clean:
++	rm -f $(SOBJS) $(OBJS)
++
++distclean:	clean
++	rm -f $(LIB) core *.bak .depend
++
++#########################################################################
++
++.depend:	Makefile $(SOBJS:.o=.S) $(OBJS:.o=.c)
++		$(CC) -M $(CPPFLAGS) $(SOBJS:.o=.S) $(OBJS:.o=.c) > $@
++
++-include .depend
++
++#########################################################################
+diff -Nurp ../u-boot-1.1.6/board/sarge/sarge_board.c ./board/sarge/sarge_board.c
+--- ../u-boot-1.1.6/board/sarge/sarge_board.c	1970-01-01 01:00:00.000000000 +0100
++++ ./board/sarge/sarge_board.c	2007-05-11 23:45:25.000000000 +0200
+@@ -0,0 +1,363 @@
++/*
++ * (C) Copyright 2007
++ * Grzegorz Rajtar <mcgregor@blackmesaeast.com.pl>
++ *
++ * See file CREDITS for list of people who contributed to this
++ * project.
++ *
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU General Public License as
++ * published by the Free Software Foundation; either version 2 of
++ * the License, or (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write to the Free Software
++ * Foundation, Inc., 59 Temple Place, Suite 330, Boston,
++ * MA 02111-1307 USA
++ */
++
++#include <common.h>
++#include <asm/arch/AT91RM9200.h>
++#include <at91rm9200_net.h>
++#include <dm9161.h>
++#include <rtl8201bl.h>
++#include <ste100p.h>
++#include <miiphy.h>
++/* ------------------------------------------------------------------------- */
++/*
++ * Miscelaneous platform dependent initialisations
++ */
++
++void lowlevel_init(void)
++{
++}
++/* ------------------------------------------------------------------------- */
++
++void cs_init(int enable)
++{
++	unsigned long flag = 
++		AT91C_PIO_PA0 | AT91C_PIO_PA1 | AT91C_PIO_PA2 |
++		AT91C_PIO_PA4 | AT91C_PIO_PA5 | AT91C_PIO_PA6;
++		//MISO, MOSI, SPCK, NPCS1, NPCS2, NPCS3;
++	if (enable)
++	{
++		((AT91PS_PIO) AT91C_BASE_PIOA)->PIO_PDR = flag;
++		((AT91PS_PIO) AT91C_BASE_PIOA)->PIO_ASR = flag;
++	}
++	else
++		((AT91PS_PIO) AT91C_BASE_PIOA)->PIO_PER = flag;
++}
++
++void mac_init(int enable)
++{
++	unsigned long flag = 
++	// ETXCK, ETXEN, ETX0, ETX1, EXRS,
++	// ERX0, ERX1, ERXER, EMDC, EMDIO
++		AT91C_PIO_PA7  | AT91C_PIO_PA8  | AT91C_PIO_PA9  | AT91C_PIO_PA10 |
++		AT91C_PIO_PA11 | AT91C_PIO_PA12 | AT91C_PIO_PA13 | AT91C_PIO_PA14 |
++		AT91C_PIO_PA13 | AT91C_PIO_PA16;
++	if (enable)
++	{
++		((AT91PS_PIO) AT91C_BASE_PIOA)->PIO_PDR = flag;
++		((AT91PS_PIO) AT91C_BASE_PIOA)->PIO_ASR = flag;
++	}
++	else
++		((AT91PS_PIO) AT91C_BASE_PIOA)->PIO_PER = flag;
++
++	//ERXCK, ECOL, ERXDV, ERX3, ERX2, ETXER, ETX3, ETX2
++	flag =  AT91C_PIO_PB19 | AT91C_PIO_PB18 | AT91C_PIO_PB17 | AT91C_PIO_PB16 |
++		AT91C_PIO_PB15 | AT91C_PIO_PB14 | AT91C_PIO_PB13 | AT91C_PIO_PB12;
++
++	if (enable)
++	{
++		((AT91PS_PIO) AT91C_BASE_PIOB)->PIO_PDR = flag;
++		((AT91PS_PIO) AT91C_BASE_PIOB)->PIO_BSR = flag;
++	}
++	else
++		((AT91PS_PIO) AT91C_BASE_PIOB)->PIO_PER = flag;
++	// EMDINT - 
++	flag = AT91C_PIO_PB1;
++	if (enable)
++	{
++		((AT91PS_PIO) AT91C_BASE_PIOB)->PIO_PER = flag;
++		((AT91PS_PIO) AT91C_BASE_PIOB)->PIO_IER = flag;
++	}
++	else
++	{
++		((AT91PS_PIO) AT91C_BASE_PIOB)->PIO_PDR = flag;
++		((AT91PS_PIO) AT91C_BASE_PIOB)->PIO_IDR = flag;
++	}	
++}
++
++void peripheral_init(int enable)
++{
++	unsigned long flag = 
++	// A - TXD0, RXD0, SCK0, RXD2, TXD2, I2C_SCL. I2C_SDA
++		AT91C_PIO_PA17 | AT91C_PIO_PA18 | AT91C_PIO_PA19 |
++		AT91C_PIO_PA20 | AT91C_PIO_PA21 | AT91C_PIO_PA22 |
++		AT91C_PIO_PA23 | AT91C_PA25_TWD | AT91C_PA26_TWCK;
++
++	if (enable)
++	{
++		((AT91PS_PIO) AT91C_BASE_PIOA)->PIO_PDR = flag;
++		((AT91PS_PIO) AT91C_BASE_PIOA)->PIO_ASR = flag;
++	}
++	else
++		((AT91PS_PIO) AT91C_BASE_PIOA)->PIO_PER = flag;
++
++	//B - PCK1
++	flag = AT91C_PIO_PA24;
++
++	if (enable)
++	{
++		((AT91PS_PIO) AT91C_BASE_PIOA)->PIO_PDR = flag;
++		((AT91PS_PIO) AT91C_BASE_PIOA)->PIO_BSR = flag;
++	}
++	else
++		((AT91PS_PIO) AT91C_BASE_PIOA)->PIO_PER = flag;
++
++
++	// PA20, PA21 - I/O
++	flag = AT91C_PIO_PA20 | AT91C_PIO_PA21;
++	if (enable)
++		((AT91PS_PIO) AT91C_BASE_PIOA)->PIO_PER = flag;
++	else
++		((AT91PS_PIO) AT91C_BASE_PIOA)->PIO_PDR = flag;
++
++	// A - PCK0, RXD1, TXD1,RF1,RK1, RD1, TD1, TK1, TF1
++	flag = 	AT91C_PIO_PB27 | AT91C_PIO_PB21 | AT91C_PIO_PB20 |
++		AT91C_PIO_PB11 | AT91C_PIO_PB10 | AT91C_PIO_PB9  |
++		AT91C_PIO_PB8  | AT91C_PIO_PB7  | AT91C_PIO_PB6;
++	if (enable)
++	{
++		((AT91PS_PIO) AT91C_BASE_PIOB)->PIO_PDR = flag;
++		((AT91PS_PIO) AT91C_BASE_PIOB)->PIO_ASR = flag;
++	}
++	else
++		((AT91PS_PIO) AT91C_BASE_PIOB)->PIO_PER = flag;
++	// I/O PB26 - PB22
++	flag = 	AT91C_PIO_PB22 | AT91C_PIO_PB23 | AT91C_PIO_PB24 |
++		AT91C_PIO_PB25 | AT91C_PIO_PB26;
++	if (enable)
++		((AT91PS_PIO) AT91C_BASE_PIOB)->PIO_PER = flag;
++	else
++		((AT91PS_PIO) AT91C_BASE_PIOB)->PIO_PDR = flag;
++}
++
++void mmc_init(int enable)
++{
++	// MCCK, MCCDA, MCDA0
++	unsigned long flag = 
++		AT91C_PIO_PA27 | AT91C_PIO_PA28 | AT91C_PIO_PA29;
++	if (enable)
++	{
++		((AT91PS_PIO) AT91C_BASE_PIOA)->PIO_PDR = flag;
++		((AT91PS_PIO) AT91C_BASE_PIOA)->PIO_ASR = flag;
++	}
++	else
++		((AT91PS_PIO) AT91C_BASE_PIOA)->PIO_PER = flag;
++	// MCDA3, MCDA2, MCDA1
++	flag = AT91C_PIO_PB5 | AT91C_PIO_PB4 | AT91C_PIO_PB3;
++	if (enable)
++	{
++		((AT91PS_PIO) AT91C_BASE_PIOB)->PIO_PDR = flag;
++		((AT91PS_PIO) AT91C_BASE_PIOB)->PIO_BSR = flag;
++	}
++	else
++		((AT91PS_PIO) AT91C_BASE_PIOB)->PIO_PER = flag;	
++	//MCWP, MCCD
++	flag = AT91C_PIO_PB2 | AT91C_PIO_PB0;
++
++	if (enable)
++	{
++		((AT91PS_PIO) AT91C_BASE_PIOB)->PIO_PER = flag;
++		((AT91PS_PIO) AT91C_BASE_PIOB)->PIO_IER = AT91C_PIO_PB0;
++	}
++	else
++	{
++		((AT91PS_PIO) AT91C_BASE_PIOB)->PIO_PDR = flag;
++		((AT91PS_PIO) AT91C_BASE_PIOB)->PIO_IDR = AT91C_PIO_PB0;
++	}
++}
++
++void irq_init(int enable)
++{
++	// IRQ, FIQ
++	unsigned long flag = 
++		AT91C_PIO_PB29 | AT91C_PIO_PB28;
++	if (enable)
++	{
++		((AT91PS_PIO) AT91C_BASE_PIOB)->PIO_PDR = flag;
++		((AT91PS_PIO) AT91C_BASE_PIOB)->PIO_ASR = flag;
++	}
++	else
++		((AT91PS_PIO) AT91C_BASE_PIOB)->PIO_PER = flag;
++}
++
++int board_init (void)
++{
++	DECLARE_GLOBAL_DATA_PTR;
++	long flag;
++
++	/* Enable Ctrlc */
++	console_init_f ();
++
++	/* sarge board specific */
++	/*	
++	cs_init(1);
++	mac_init(1);
++	peripheral_init(1);
++	mmc_init(1);
++	irq_init(1);
++	*/
++
++	/* PIOB and PIOA clock enabling */
++	
++	*AT91C_PMC_PCER = 1 << AT91C_ID_PIOA;
++	*AT91C_PMC_PCER = 1 << AT91C_ID_PIOB;
++
++
++	//miiphy_init();
++	/* memory and cpu-speed are setup before relocation */
++	/* so we do _nothing_ here */
++
++        /* Correct IRDA resistor problem */
++        /* Set PA23_TXD in Output */
++        ((AT91PS_PIO) AT91C_BASE_PIOA)->PIO_OER = AT91C_PA23_TXD2;
++
++	/* arch number of AT91RM9200-Board */
++	gd->bd->bi_arch_number = MACH_TYPE_AT91RM9200;
++
++	/* adress of boot parameters */
++	gd->bd->bi_boot_params = PHYS_SDRAM + 0x100;
++
++	return 0;
++}
++
++int dram_init (void)
++{
++	DECLARE_GLOBAL_DATA_PTR;
++
++	gd->bd->bi_dram[0].start = PHYS_SDRAM;
++	gd->bd->bi_dram[0].size = PHYS_SDRAM_SIZE;
++	return 0;
++}
++
++
++int sarge_before_linux(void)
++{    
++    DECLARE_GLOBAL_DATA_PTR;	    
++    AT91PS_EMAC mac = AT91C_BASE_EMAC;   
++    char* isolate_str =  getenv("phy_isolate");
++    if (strlen(isolate_str) && strcmp(isolate_str, "yes") == 0)
++    {
++	printf("\nisolating PHY\n");
++        eth_init(gd->bd);
++	ste100p_DisableInterrupts(mac);
++        ste100p_Isolate(mac);
++    }
++}
++
++#ifdef CONFIG_DRIVER_ETHER
++#if (CONFIG_COMMANDS & CFG_CMD_NET)
++
++/*
++ * Name:
++ *	at91rm9200_GetPhyInterface
++ * Description:
++ *	Initialise the interface functions to the PHY
++ * Arguments:
++ *	None
++ * Return value:
++ *	None
++ */
++void at91rm9200_GetPhyInterface(AT91PS_PhyOps p_phyops)
++{
++#ifdef DM9161_ETH
++	p_phyops->Init = dm9161_InitPhy;
++	p_phyops->IsPhyConnected = dm9161_IsPhyConnected;
++	p_phyops->GetLinkSpeed = dm9161_GetLinkSpeed;
++	p_phyops->AutoNegotiate = dm9161_AutoNegotiate;
++#endif
++
++#ifdef RTL8201BL_ETH
++	p_phyops->Init 			= rtl8201bl_InitPhy;
++	p_phyops->IsPhyConnected 	= rtl8201bl_IsPhyConnected;
++	p_phyops->GetLinkSpeed 		= rtl8201bl_GetLinkSpeed;
++	p_phyops->AutoNegotiate 	= rtl8201bl_AutoNegotiate;
++				
++#endif	
++#ifdef STE100P_ETH
++	p_phyops->Init 			= ste100p_InitPhy;
++	p_phyops->IsPhyConnected 	= ste100p_IsPhyConnected;
++	p_phyops->GetLinkSpeed 		= ste100p_GetLinkSpeed;
++	p_phyops->AutoNegotiate 	= ste100p_AutoNegotiate;
++	p_phyops->Isolate		= ste100p_Isolate;
++				
++#endif	
++
++}
++
++#endif	/* CONFIG_COMMANDS & CFG_CMD_NET */
++#endif	/* CONFIG_DRIVER_ETHER */
++
++/*
++ * Disk On Chip (NAND) Millenium initialization.
++ * The NAND lives in the CS2* space
++ */
++#if (CONFIG_COMMANDS & CFG_CMD_NAND)
++extern ulong nand_probe (ulong physadr);
++
++#define AT91_SMARTMEDIA_BASE 0x40000000	/* physical address to access memory on NCS3 */
++void nand_init (void)
++{
++	/* Setup Smart Media, fitst enable the address range of CS3 */
++	*AT91C_EBI_CSA |= AT91C_EBI_CS3A_SMC_SmartMedia;
++	/* set the bus interface characteristics based on
++	   tDS Data Set up Time 30 - ns
++	   tDH Data Hold Time 20 - ns
++	   tALS ALE Set up Time 20 - ns
++	   16ns at 60 MHz ~= 3  */
++/*memory mapping structures */
++#define SM_ID_RWH	(5 << 28)
++#define SM_RWH		(1 << 28)
++#define SM_RWS		(0 << 24)
++#define SM_TDF		(1 << 8)
++#define SM_NWS		(3)
++	AT91C_BASE_SMC2->SMC2_CSR[3] = (SM_RWH | SM_RWS |
++		AT91C_SMC2_ACSS_STANDARD | AT91C_SMC2_DBW_8 |
++		SM_TDF | AT91C_SMC2_WSEN | SM_NWS);
++
++	/* enable the SMOE line PC0=SMCE, A21=CLE, A22=ALE */
++	*AT91C_PIOC_ASR = AT91C_PC0_BFCK | AT91C_PC1_BFRDY_SMOE |
++		AT91C_PC3_BFBAA_SMWE;
++	*AT91C_PIOC_PDR = AT91C_PC0_BFCK | AT91C_PC1_BFRDY_SMOE |
++		AT91C_PC3_BFBAA_SMWE;
++
++	/* Configure PC2 as input (signal READY of the SmartMedia) */
++	*AT91C_PIOC_PER = AT91C_PC2_BFAVD;	/* enable direct output enable */
++	*AT91C_PIOC_ODR = AT91C_PC2_BFAVD;	/* disable output */
++
++	/* Configure PB1 as input (signal Card Detect of the SmartMedia) */
++	*AT91C_PIOB_PER = AT91C_PIO_PB1;	/* enable direct output enable */
++	*AT91C_PIOB_ODR = AT91C_PIO_PB1;	/* disable output */
++
++	/* PIOB and PIOC clock enabling */
++	*AT91C_PMC_PCER = 1 << AT91C_ID_PIOB;
++	*AT91C_PMC_PCER = 1 << AT91C_ID_PIOC;
++
++	if (*AT91C_PIOB_PDSR & AT91C_PIO_PB1)
++		printf ("  No SmartMedia card inserted\n");
++#ifdef DEBUG
++	printf ("  SmartMedia card inserted\n");
++
++	printf ("Probing at 0x%.8x\n", AT91_SMARTMEDIA_BASE);
++#endif
++	printf ("%4lu MB\n", nand_probe(AT91_SMARTMEDIA_BASE) >> 20);
++}
++#endif
+diff -Nurp ../u-boot-1.1.6/board/sarge/u-boot.lds ./board/sarge/u-boot.lds
+--- ../u-boot-1.1.6/board/sarge/u-boot.lds	1970-01-01 01:00:00.000000000 +0100
++++ ./board/sarge/u-boot.lds	2007-03-09 01:25:41.000000000 +0100
+@@ -0,0 +1,57 @@
++/*
++ * (C) Copyright 2002
++ * Gary Jennejohn, DENX Software Engineering, <gj@denx.de>
++ *
++ * See file CREDITS for list of people who contributed to this
++ * project.
++ *
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU General Public License as
++ * published by the Free Software Foundation; either version 2 of
++ * the License, or (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write to the Free Software
++ * Foundation, Inc., 59 Temple Place, Suite 330, Boston,
++ * MA 02111-1307 USA
++ */
++
++OUTPUT_FORMAT("elf32-littlearm", "elf32-littlearm", "elf32-littlearm")
++/*OUTPUT_FORMAT("elf32-arm", "elf32-arm", "elf32-arm")*/
++OUTPUT_ARCH(arm)
++ENTRY(_start)
++SECTIONS
++{
++	. = 0x00000000;
++
++	. = ALIGN(4);
++	.text      :
++	{
++	  cpu/arm920t/start.o	(.text)
++	  *(.text)
++	}
++
++	. = ALIGN(4);
++	.rodata : { *(.rodata) }
++
++	. = ALIGN(4);
++	.data : { *(.data) }
++
++	. = ALIGN(4);
++	.got : { *(.got) }
++
++	. = .;
++	__u_boot_cmd_start = .;
++	.u_boot_cmd : { *(.u_boot_cmd) }
++	__u_boot_cmd_end = .;
++
++	. = ALIGN(4);
++	__bss_start = .;
++	.bss : { *(.bss) }
++	_end = .;
++}
+diff -Nurp ../u-boot-1.1.6/common/cmd_bootm.c ./common/cmd_bootm.c
+--- ../u-boot-1.1.6/common/cmd_bootm.c	2006-11-02 15:15:01.000000000 +0100
++++ ./common/cmd_bootm.c	2007-03-27 02:55:11.000000000 +0200
+@@ -79,7 +79,10 @@ DECLARE_GLOBAL_DATA_PTR;
+ # define CHUNKSZ (64 * 1024)
+ #endif
+ 
+-int  gunzip (void *, int, unsigned char *, unsigned long *);
++
++//int gunzip(void *dst, int dstlen, unsigned char *src, unsigned long *lenp);
++int gunzip(unsigned char *inbuf, unsigned long *insize, unsigned char *outbuf, unsigned long *outsize);
++
+ 
+ static void *zalloc(void *, unsigned, unsigned);
+ static void zfree(void *, void *, unsigned);
+@@ -94,6 +97,12 @@ extern flash_info_t flash_info[]; /* inf
+ static int do_imls (cmd_tbl_t *cmdtp, int flag, int argc, char *argv[]);
+ #endif
+ 
++
++#ifdef CONFIG_HAS_DATAFLASH
++extern int  AT91F_DataflashInit(void);
++#endif
++
++
+ static void print_type (image_header_t *hdr);
+ 
+ #ifdef __I386__
+@@ -176,8 +185,9 @@ int do_bootm (cmd_tbl_t *cmdtp, int flag
+ 
+ 	/* Copy header so we can blank CRC field for re-calculation */
+ #ifdef CONFIG_HAS_DATAFLASH
++	 AT91F_DataflashInit();
+ 	if (addr_dataflash(addr)){
+-		read_dataflash(addr, sizeof(image_header_t), (char *)&header);
++		read_dataflash(addr, sizeof(image_header_t), (char *)&header);		
+ 	} else
+ #endif
+ 	memmove (&header, (char *)addr, sizeof(image_header_t));
+@@ -194,7 +204,7 @@ int do_bootm (cmd_tbl_t *cmdtp, int flag
+ 		} else
+ #endif	/* __I386__ */
+ 	    {
+-		puts ("Bad Magic Number\n");
++		printf ("Bad Magic Number, got 0x%x, should be: 0x%x\n", hdr->ih_magic, IH_MAGIC);
+ 		SHOW_BOOT_PROGRESS (-1);
+ 		return 1;
+ 	    }
+@@ -216,9 +226,14 @@ int do_bootm (cmd_tbl_t *cmdtp, int flag
+ 
+ #ifdef CONFIG_HAS_DATAFLASH
+ 	if (addr_dataflash(addr)){
+-		len  = ntohl(hdr->ih_size) + sizeof(image_header_t);
+-		read_dataflash(addr, len, (char *)CFG_LOAD_ADDR);
+-		addr = CFG_LOAD_ADDR;
++		len  = ntohl(hdr->ih_size) + sizeof(image_header_t);		
++                char* env_loadaddr = getenv("loadaddr");
++                unsigned long load_addr = CFG_LOAD_ADDR;
++                if (env_loadaddr) 
++		    load_addr = simple_strtoul(env_loadaddr, NULL, 16);
++                read_dataflash(addr, len, (char *)load_addr);
++                addr = load_addr;
++		
+ 	}
+ #endif
+ 
+@@ -227,6 +242,7 @@ int do_bootm (cmd_tbl_t *cmdtp, int flag
+ 	print_image_hdr ((image_header_t *)addr);
+ 
+ 	data = addr + sizeof(image_header_t);
++	
+ 	len  = ntohl(hdr->ih_size);
+ 
+ 	if (verify) {
+@@ -343,12 +359,24 @@ int do_bootm (cmd_tbl_t *cmdtp, int flag
+ 		break;
+ 	case IH_COMP_GZIP:
+ 		printf ("   Uncompressing %s ... ", name);
+-		if (gunzip ((void *)ntohl(hdr->ih_load), unc_len,
+-			    (uchar *)data, &len) != 0) {
+-			puts ("GUNZIP ERROR - must RESET board to recover\n");
++		int res;
++		if ((res = gunzip ((uchar *)data, &len, (void *)ntohl(hdr->ih_load), &unc_len
++			    )) != 0) {			    
++			printf ("GUNZIP ERROR (code %d)- must RESET board to recover\n", res);
+ 			SHOW_BOOT_PROGRESS (-6);
++
+ 			do_reset (cmdtp, flag, argc, argv);
+ 		}
++		//addr = ntohl(hdr->ih_load);		
++		//old gunzip switched parameters list
++		
++/*		if ((res = gunzip ((void *)ntohl(hdr->ih_load), unc_len,
++			    (uchar *)data, &len)) != 0) {
++			printf ("GUNZIP ERROR (code %d)- must RESET board to recover\n", res);
++			SHOW_BOOT_PROGRESS (-6);
++			do_reset (cmdtp, flag, argc, argv);
++		} */
++		
+ 		break;
+ #ifdef CONFIG_BZIP2
+ 	case IH_COMP_BZIP2:
+@@ -413,7 +441,7 @@ int do_bootm (cmd_tbl_t *cmdtp, int flag
+ 	default:			/* handled by (original) Linux case */
+ 	case IH_OS_LINUX:
+ #ifdef CONFIG_SILENT_CONSOLE
+-	    fixup_silent_linux();
++//	    fixup_silent_linux();
+ #endif
+ 	    do_bootm_linux  (cmdtp, flag, argc, argv,
+ 			     addr, len_ptr, verify);
+@@ -1429,12 +1457,13 @@ static void zfree(void *x, void *addr, u
+ 
+ #define DEFLATED	8
+ 
++/*
+ int gunzip(void *dst, int dstlen, unsigned char *src, unsigned long *lenp)
+ {
+ 	z_stream s;
+ 	int r, i, flags;
+ 
+-	/* skip header */
++	// skip header 
+ 	i = 10;
+ 	flags = src[3];
+ 	if (src[2] != DEFLATED || (flags & RESERVED) != 0) {
+@@ -1462,9 +1491,10 @@ int gunzip(void *dst, int dstlen, unsign
+ 	s.outcb = (cb_func)WATCHDOG_RESET;
+ #else
+ 	s.outcb = Z_NULL;
+-#endif	/* CONFIG_HW_WATCHDOG */
+-
++#endif	// CONFIG_HW_WATCHDOG //
++	
+ 	r = inflateInit2(&s, -MAX_WBITS);
++	// gunzip(void *dst, int dstlen, unsigned char *src, unsigned long *lenp)
+ 	if (r != Z_OK) {
+ 		printf ("Error: inflateInit2() returned %d\n", r);
+ 		return (-1);
+@@ -1480,9 +1510,8 @@ int gunzip(void *dst, int dstlen, unsign
+ 	}
+ 	*lenp = s.next_out - (unsigned char *) dst;
+ 	inflateEnd(&s);
+-
+ 	return (0);
+-}
++}*/
+ 
+ #ifdef CONFIG_BZIP2
+ void bz_internal_error(int errcode)
+diff -Nurp ../u-boot-1.1.6/cpu/arm920t/at91rm9200/Makefile ./cpu/arm920t/at91rm9200/Makefile
+--- ../u-boot-1.1.6/cpu/arm920t/at91rm9200/Makefile	2006-11-02 15:15:01.000000000 +0100
++++ ./cpu/arm920t/at91rm9200/Makefile	2007-05-13 20:19:07.000000000 +0200
+@@ -26,7 +26,7 @@ include $(TOPDIR)/config.mk
+ LIB	= $(obj)lib$(SOC).a
+ 
+ COBJS	= bcm5221.o dm9161.o ether.o i2c.o interrupts.o \
+-	  lxt972.o serial.o usb_ohci.o
++	  lxt972.o serial.o usb_ohci.o ste100p.o
+ SOBJS	= lowlevel_init.o
+ 
+ SRCS	:= $(SOBJS:.o=.S) $(COBJS:.o=.c)
+diff -Nurp ../u-boot-1.1.6/cpu/arm920t/at91rm9200/ste100p.c ./cpu/arm920t/at91rm9200/ste100p.c
+--- ../u-boot-1.1.6/cpu/arm920t/at91rm9200/ste100p.c	1970-01-01 01:00:00.000000000 +0100
++++ ./cpu/arm920t/at91rm9200/ste100p.c	2007-05-10 02:02:34.000000000 +0200
+@@ -0,0 +1,517 @@
++/*
++ * (C) Copyright 2007
++ * Author : Grzegorz Rajtar (McGregor) (mcgregor@blackmesaeast.com.pl)
++ *
++ * See file CREDITS for list of people who contributed to this
++ * project.
++ *
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU General Public License as
++ * published by the Free Software Foundation; either version 2 of
++ * the License, or (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write to the Free Software
++ * Foundation, Inc., 59 Temple Place, Suite 330, Boston,
++ * MA 02111-1307 USA
++ */
++
++#include <at91rm9200_net.h>
++#include <net.h>
++#include <ste100p.h>
++
++#ifdef CONFIG_DRIVER_ETHER
++
++#if (CONFIG_COMMANDS & CFG_CMD_NET)
++
++void PhyReset(AT91PS_EMAC p_mac)
++{
++    static long init_wait = 0;
++    unsigned short IntValue;
++    unsigned Status;
++	
++#ifdef DEBUG_ETHER
++	printf("ste100p PhyReset \n");
++#endif
++	at91rm9200_EmacEnableMDIO (p_mac);
++
++
++	// first software reset the STE100P      
++	at91rm9200_EmacReadPhy (p_mac, STE100P_XCR_REG, &IntValue);
++	udelay(1000);
++	IntValue |= STE100P_XCR_RESET;
++	
++	at91rm9200_EmacWritePhy (p_mac, STE100P_XCR_REG, &IntValue);
++	udelay(10000);	
++
++	while (1)
++	{
++        	at91rm9200_EmacReadPhy (p_mac, STE100P_XCR_REG, &IntValue);
++		if ((IntValue & STE100P_XCR_RESET) != STE100P_XCR_RESET)
++		    break;
++		udelay(1000);
++	}
++
++	
++	IntValue =  STE100P_ANA_FC | STE100P_ANA_TXF | STE100P_ANA_TXH |
++			STE100P_ANA_10F | STE100P_ANA_10H;
++
++	
++	at91rm9200_EmacWritePhy (p_mac, STE100P_ANA_REG, &IntValue);	
++
++	//default configuration
++#ifdef  CONFIG_STE100P_OVERRIDE_HARDWARE
++	IntValue = STE100P_100CTR_ENDCR | STE100P_100CTR_ENRZI | STE100P_100CTR_EN4B5B;
++	IntValue &= ~(STE100P_100CTR_DISRER);
++	IntValue &= ~(STE100P_100CTR_ISOTX);
++	IntValue &= ~(STE100P_100CTR_DISMLT);
++	IntValue &= ~(STE100P_100CTR_DISCRM);
++
++	at91rm9200_EmacWritePhy (p_mac, STE100P_100CTR_REG, &IntValue);	
++
++#endif //CONFIG_STE100P_OVERRIDE_HARDWARE
++
++	/* Disable PHY Interrupts */
++	
++	at91rm9200_EmacReadPhy (p_mac, STE100P_XIE_REG, &IntValue);
++	udelay(10000);
++	/* disable all interrypts from SE100P */
++
++	IntValue &= ~(STE100P_XIE_ANCE | STE100P_XIE_RFE | STE100P_XIE_LDE |
++		STE100P_XIE_ANAE | STE100P_XIE_PDFE | STE100P_XIE_ANPE | STE100P_XIE_REFE);
++
++	at91rm9200_EmacWritePhy (p_mac, STE100P_XIE_REG, &IntValue);
++	udelay(10000);	
++
++	at91rm9200_EmacReadPhy (p_mac, STE100P_XCR_REG, &IntValue);
++	
++	IntValue |= STE100P_XCR_AN | STE100P_XCR_RSTRT_AN;
++	at91rm9200_EmacWritePhy (p_mac, STE100P_XCR_REG, &IntValue);
++
++	at91rm9200_EmacDisableMDIO (p_mac);
++}
++
++/*
++ * Name:
++ *	ste100p_Isolate
++ * Description:
++ *	Isolates PHY 
++ * Arguments:
++ *	p_mac - pointer to AT91S_EMAC struct
++ * Return value:
++ *	TRUE - if id isolated successfuly
++ *	FALSE- if error
++ */
++
++unsigned int ste100p_Isolate (AT91PS_EMAC p_mac)
++{
++    unsigned int result = FALSE;
++    unsigned short IntValue;
++
++    at91rm9200_EmacEnableMDIO (p_mac);
++    udelay(10000);
++    at91rm9200_EmacReadPhy (p_mac, STE100P_XCR_REG, &IntValue);
++
++    IntValue |= STE100P_XCR_ISOLATE ;//| STE100P_XCR_PWRDN;
++    //IntValue &= ~STE100P_XCR_RESET;
++    //IntValue &= ~STE100P_XCR_AN;
++
++    result = at91rm9200_EmacWritePhy (p_mac, STE100P_XCR_REG, &IntValue);
++    udelay(10000);
++    //Isolate is latch so we need to read once more the register
++    at91rm9200_EmacReadPhy (p_mac, STE100P_XCR_REG, &IntValue);
++    at91rm9200_EmacDisableMDIO (p_mac);
++
++#ifdef DEBUG_ETHER
++    printf("ste100p_Isolate [%d]\n", result);
++#endif
++    return result;
++}
++
++
++/*
++ * Name:
++ *	ste100p_IsPhyConnected
++ * Description:
++ *	Reads the 2 PHY ID registers
++ * Arguments:
++ *	p_mac - pointer to AT91S_EMAC struct
++ * Return value:
++ *	TRUE - if id read successfully
++ *	FALSE- if error
++ */
++unsigned int ste100p_IsPhyConnected (AT91PS_EMAC p_mac)
++{
++	unsigned short Id1, Id2;
++	unsigned int result = FALSE;
++
++	at91rm9200_EmacEnableMDIO (p_mac);
++	udelay(10000);
++	do
++	{	
++	    Id1 = Id2 = 0;
++	    udelay(10000);
++	    at91rm9200_EmacReadPhy (p_mac, STE100P_PID1_REG, &Id1);
++
++	    udelay(10000);
++	    at91rm9200_EmacReadPhy (p_mac, STE100P_PID2_REG, &Id2);
++	
++	    Id2 = (Id2 & STE100P_PID2_PHYID_MASK) >> 6;
++
++	    if ((Id1 == STE100P_PID1_PHYID_VAL) && (Id2 == STE100P_PID2_PHYID_VAL)) 
++		result = TRUE;
++	} while (!result);
++	
++	at91rm9200_EmacDisableMDIO (p_mac);		
++#ifdef DEBUG_ETHER	
++	printf ("ste100p id1[0x%02x] id2[0x%02x]\r\n", Id1, Id2);
++#endif	
++	return result;
++}
++
++/*
++ * Name:
++ *	ste100p_GetLinkSpeed
++ * Description:
++ *	Link parallel detection status of MAC is checked and set in the
++ *	MAC configuration registers
++ * Arguments:
++ *	p_mac - pointer to MAC
++ * Return value:
++ *	TRUE - if link status set succesfully
++ *	FALSE - if link status not set
++ */
++UCHAR ste100p_GetLinkSpeed (AT91PS_EMAC p_mac)
++{
++	unsigned short stat;
++	int result = 0;
++
++	result = at91rm9200_EmacReadPhy (p_mac, STE100P_XSR_REG, &stat);
++
++	if (!result)
++		return FALSE;
++
++	if (!(stat & STE100P_XSR_LINK))	/* link status up? */
++	{ //last link failure is latched so reread STE100P_XSR_REG for new value
++		result = at91rm9200_EmacReadPhy (p_mac, STE100P_XSR_REG, &stat);
++		if (!result || !(stat & STE100P_XSR_LINK))
++			return FALSE;
++	}
++
++        if (stat & STE100P_XSR_100TX_FULL) {
++                /*set Emac for 100BaseTX and Full Duplex  */
++                p_mac->EMAC_CFG |= AT91C_EMAC_SPD | AT91C_EMAC_FD;
++                return TRUE;
++        }
++
++        if (stat & STE100P_XSR_100TX) {
++                /*set Emac for 100BaseTX and Half Duplex  */
++                p_mac->EMAC_CFG = (p_mac->EMAC_CFG &
++                                ~(AT91C_EMAC_SPD | AT91C_EMAC_FD))
++                                | AT91C_EMAC_SPD;
++                return TRUE;
++        }
++
++        if (stat & STE100P_XSR_10T_FULL) {
++                /*set MII for 10BaseT and Full Duplex  */
++                p_mac->EMAC_CFG = (p_mac->EMAC_CFG &
++                                ~(AT91C_EMAC_SPD | AT91C_EMAC_FD))
++                                | AT91C_EMAC_FD;
++                return TRUE;
++        }
++
++        if (stat & STE100P_XSR_10T) {
++                /*set MII for 10BaseT and Half Duplex  */
++                p_mac->EMAC_CFG &= ~(AT91C_EMAC_SPD | AT91C_EMAC_FD);
++                return TRUE;
++        }
++
++	return FALSE;
++}
++
++
++/*
++ * Name:
++ *	ste100p_Deisolate
++ * Description:
++ *	deisolates PHY
++ * Arguments:
++ *	p_mac - pointer to struct AT91S_EMAC
++ */
++
++void ste100p_Deisolate (AT91PS_EMAC p_mac)
++{
++	unsigned short IntValue;
++
++	IntValue = STE100P_XCR_SPEED | STE100P_XCR_AN |
++		 STE100P_XCR_COLLEN;
++
++	at91rm9200_EmacWritePhy (p_mac, STE100P_XCR_REG, &IntValue);
++
++	udelay(10000);
++	IntValue = STE100P_100CTR_EN4B5B | STE100P_100CTR_ENRZI | 
++			STE100P_100CTR_ENDCR;
++	
++	at91rm9200_EmacWritePhy (p_mac, STE100P_100CTR_REG, &IntValue);
++	udelay(10000);
++
++
++	if ((IntValue & STE100P_XCR_ISOLATE) == STE100P_XCR_ISOLATE)
++	{	
++	    IntValue &= ~STE100P_XCR_ISOLATE;
++	    at91rm9200_EmacWritePhy (p_mac, STE100P_XCR_REG, &IntValue);
++	    udelay(10000);	
++	    //isolate is latch so read once more the register
++	    at91rm9200_EmacReadPhy (p_mac, STE100P_XCR_REG, &IntValue);	
++	    udelay(10000);
++	}
++}
++
++/*
++ * Name:
++ *	ste100p_WaitForLink
++ * Description:
++ *	waits for link with timeout
++ * Arguments:
++ *	p_mac - pointer to struct AT91S_EMAC
++ *	timeout - timeout in miliseconds
++ */
++
++UCHAR ste100p_WaitForLink (AT91PS_EMAC p_mac, unsigned long timeout)
++{
++	unsigned long loop ;
++	unsigned short IntValue;
++
++	loop = 0;
++	do
++	{
++	    at91rm9200_EmacReadPhy (p_mac, STE100P_XSR_REG, &IntValue);
++	    if (IntValue & STE100P_XSR_LINK)
++		return TRUE;
++	
++	    udelay(1000);
++	    loop++;
++	    if (loop > timeout)
++		break;
++		
++	} while (1);
++
++	return FALSE;
++}
++
++/*
++ * Name:
++ *	ste100p_InitPhy
++ * Description:
++ *	MAC starts checking its link by using parallel detection and
++ *	Autonegotiation and the same is set in the MAC configuration registers
++ * Arguments:
++ *	p_mac - pointer to struct AT91S_EMAC
++ * Return value:
++ *	TRUE - if link status set succesfully
++ *	FALSE - if link status not set
++ */
++UCHAR ste100p_InitPhy (AT91PS_EMAC p_mac)
++{
++	UCHAR ret = FALSE;
++	unsigned short IntValue;
++	int aneg_status;
++	unsigned long loop;
++
++	PhyReset(p_mac);	
++	
++	at91rm9200_EmacEnableMDIO (p_mac);	
++
++	ste100p_Deisolate(p_mac);
++
++	at91rm9200_EmacDisableMDIO (p_mac);	
++		
++
++	
++#if 1
++	at91rm9200_EmacEnableMDIO (p_mac);
++	
++	ste100p_WaitForLink(p_mac, 10000 /* timeout in ms */);	
++		
++	ret = ste100p_GetLinkSpeed (p_mac);
++
++	if (!ret)
++	{
++	    ste100p_AutoNegotiate(p_mac, aneg_status);
++#ifdef DEBUG_ETHER
++	    if (aneg_status)
++	    {
++		    printf("link speed autonegotiated\n");
++		    ret = ste100p_GetLinkSpeed (p_mac);
++	    }
++	    else
++		    printf("auto-neogtiation failed\n");
++#endif //DEBUG_ETHER		    
++	}
++
++	/* Disable PHY Interrupts */
++	
++	at91rm9200_EmacReadPhy (p_mac, STE100P_XIE_REG, &IntValue);
++	udelay(1000);
++	/* disable all interrypts from SE100P */
++
++	IntValue &= ~(STE100P_XIE_ANCE | STE100P_XIE_RFE | STE100P_XIE_LDE |
++		STE100P_XIE_ANAE | STE100P_XIE_PDFE | STE100P_XIE_ANPE | STE100P_XIE_REFE);
++
++	at91rm9200_EmacWritePhy (p_mac, STE100P_XIE_REG, &IntValue);
++	udelay(10000);	
++	
++
++	
++	at91rm9200_EmacDisableMDIO (p_mac);
++	udelay(1000);	
++#endif
++
++#ifdef DEBUG_ETHER
++	printf("ste100p InitPhy [");
++	if (ret)
++	    printf("OK]\n");
++	else
++	    printf("FAILED]\n");
++#endif //DEBUG_ETHER
++	return (ret);
++}
++
++
++/*
++ * Name:
++ *	ste100p_AutoNegotiate
++ * Description:
++ *	MAC Autonegotiates with the partner status of same is set in the
++ *	MAC configuration registers
++ * Arguments:
++ *	dev - pointer to struct net_device
++ * Return value:
++ *	TRUE - if link status set successfully
++ *	FALSE - if link status not set
++ */
++UCHAR ste100p_AutoNegotiate (AT91PS_EMAC p_mac, int *status)
++{
++	unsigned short value;
++	unsigned short PhyAnar;
++	unsigned short PhyAnalpar;
++#ifdef DEBUG_ETHER	
++	printf("ste100p AutoNegotiate\n");	
++#endif //DEBUG_ETHER
++#if 1
++	/* Set ste100p control register */
++	if (!at91rm9200_EmacReadPhy (p_mac, STE100P_XCR_REG, &value))
++		return FALSE;
++	
++	value &= ~STE100P_XCR_AN;	/* remove autonegotiation enable */
++	value |= STE100P_XCR_ISOLATE;	/* Electrically isolate PHY */
++	if (!at91rm9200_EmacWritePhy (p_mac, STE100P_XCR_REG, &value))
++		return FALSE;
++
++	if (!at91rm9200_EmacReadPhy (p_mac, STE100P_XCR_REG, &value))
++		return FALSE;
++
++
++	/* Set the Auto_negotiation Advertisement Register */
++	/* MII advertising for Next page, 100BaseTxFD and HD, 10BaseTFD and HD, IEEE 802.3 */
++	PhyAnar = STE100P_ANA_NXTPG | STE100P_ANA_TXF | STE100P_ANA_TXH |
++		  STE100P_ANA_10F | STE100P_ANA_10H | STE100P_ANA_SF;
++	if (!at91rm9200_EmacWritePhy (p_mac, STE100P_ANA_REG, &PhyAnar))
++		return FALSE;
++
++	/* Read the Control Register     */
++	if (!at91rm9200_EmacReadPhy (p_mac, STE100P_XCR_REG, &value))
++		return FALSE;
++
++	value |= STE100P_XCR_SPEED | STE100P_XCR_AN | STE100P_XCR_FULL_DUP;
++	if (!at91rm9200_EmacWritePhy (p_mac, STE100P_XCR_REG, &value))
++		return FALSE;
++	
++	/* Restart Auto_negotiation  */
++	value |= STE100P_XCR_AN;
++	value &= ~STE100P_XCR_ISOLATE;
++	value |= STE100P_XCR_RSTRT_AN;
++	
++	if (!at91rm9200_EmacWritePhy (p_mac, STE100P_XCR_REG, &value))
++		return FALSE;
++	udelay(10000);
++	if (!at91rm9200_EmacReadPhy (p_mac, STE100P_XCR_REG, &value))
++		return FALSE;
++
++	/*check AutoNegotiate complete */
++	udelay (10000);
++	at91rm9200_EmacReadPhy (p_mac, STE100P_XSR_REG, &value);
++	if (!(value & STE100P_XSR_AN_COMPLETE))
++		return FALSE;
++
++	/* Get the AutoNeg Link partner base page */
++	if (!at91rm9200_EmacReadPhy (p_mac, STE100P_ANLP_REG, &PhyAnalpar))
++		return FALSE;
++
++	if ((PhyAnar & STE100P_ANA_TXF) && (PhyAnalpar & STE100P_ANLP_LPTXF)) {
++		/*set MII for 100BaseTX and Full Duplex  */
++		p_mac->EMAC_CFG |= AT91C_EMAC_SPD | AT91C_EMAC_FD;
++		return TRUE;
++	}
++
++	if ((PhyAnar & STE100P_ANA_10F) && (PhyAnalpar & STE100P_ANLP_LPTXH)) {
++		/*set MII for 10BaseT and Full Duplex  */
++		p_mac->EMAC_CFG = (p_mac->EMAC_CFG &
++				~(AT91C_EMAC_SPD | AT91C_EMAC_FD))
++				| AT91C_EMAC_FD;
++		return TRUE;
++	}
++#endif	
++	return FALSE;
++}
++
++/*
++ * Name:
++ *	ste100p_DisableInterrupts
++ * Description:
++ *	disables interrupts
++ * Arguments:
++ *	p_mac - pointer to AT91S_EMAC struct
++ */
++void ste100p_DisableInterrupts (AT91PS_EMAC p_mac)
++{
++
++    unsigned short IntValue;
++    unsigned int rep;
++
++    rep = 0;
++
++    at91rm9200_EmacEnableMDIO (p_mac);
++
++    /* Disable PHY Interrupts */
++	
++    at91rm9200_EmacReadPhy (p_mac, STE100P_XIE_REG, &IntValue);
++    udelay(10000);
++    /* disable all interrypts from SE100P */
++
++    IntValue &= ~(STE100P_XIE_ANCE | STE100P_XIE_RFE | STE100P_XIE_LDE |
++    	STE100P_XIE_ANAE | STE100P_XIE_PDFE | STE100P_XIE_ANPE | STE100P_XIE_REFE);
++
++    at91rm9200_EmacWritePhy (p_mac, STE100P_XIE_REG, &IntValue);
++    udelay(10000);	
++
++    IntValue = 1;
++	
++    do
++    {
++        at91rm9200_EmacReadPhy (p_mac, STE100P_XCSIIS_REG, &IntValue);
++	rep++;
++    }  while (IntValue != 0 && rep < 100);
++	
++    at91rm9200_EmacDisableMDIO (p_mac);
++}
++
++
++#endif	/* CONFIG_COMMANDS & CFG_CMD_NET */
++
++#endif	/* CONFIG_DRIVER_ETHER */
+diff -Nurp ../u-boot-1.1.6/drivers/dataflash.c ./drivers/dataflash.c
+--- ../u-boot-1.1.6/drivers/dataflash.c	2006-11-02 15:15:01.000000000 +0100
++++ ./drivers/dataflash.c	2007-03-19 23:43:20.000000000 +0100
+@@ -46,8 +46,8 @@ extern int AT91F_DataFlashRead (AT91PS_D
+ 				unsigned long size, char *buffer);
+ extern int AT91F_DataFlashWrite( AT91PS_DataFlash pDataFlash,
+ 				    unsigned char *src,
+-			            int dest,
+-				    int size );
++			            unsigned long dest,
++				    unsigned long size );
+ 
+ int AT91F_DataflashInit (void)
+ {
+@@ -68,6 +68,8 @@ int AT91F_DataflashInit (void)
+ 			dataflash_info[i].Device.pages_size = 528;
+ 			dataflash_info[i].Device.page_offset = 10;
+ 			dataflash_info[i].Device.byte_mask = 0x300;
++			dataflash_info[i].Device.total_size = 
++			    dataflash_info[i].Device.pages_size * dataflash_info[i].Device.pages_number;
+ 			dataflash_info[i].Device.cs = cs[i][1];
+ 			dataflash_info[i].Desc.DataFlash_state = IDLE;
+ 			dataflash_info[i].logical_address = cs[i][0];
+@@ -79,6 +81,8 @@ int AT91F_DataflashInit (void)
+ 			dataflash_info[i].Device.pages_size = 528;
+ 			dataflash_info[i].Device.page_offset = 10;
+ 			dataflash_info[i].Device.byte_mask = 0x300;
++			dataflash_info[i].Device.total_size = 
++			    dataflash_info[i].Device.pages_size * dataflash_info[i].Device.pages_number;			
+ 			dataflash_info[i].Device.cs = cs[i][1];
+ 			dataflash_info[i].Desc.DataFlash_state = IDLE;
+ 			dataflash_info[i].logical_address = cs[i][0];
+@@ -90,6 +94,8 @@ int AT91F_DataflashInit (void)
+ 			dataflash_info[i].Device.pages_size = 1056;
+ 			dataflash_info[i].Device.page_offset = 11;
+ 			dataflash_info[i].Device.byte_mask = 0x700;
++			dataflash_info[i].Device.total_size = 
++			    dataflash_info[i].Device.pages_size * dataflash_info[i].Device.pages_number;			
+ 			dataflash_info[i].Device.cs = cs[i][1];
+ 			dataflash_info[i].Desc.DataFlash_state = IDLE;
+ 			dataflash_info[i].logical_address = cs[i][0];
+@@ -100,6 +106,8 @@ int AT91F_DataflashInit (void)
+ 			dataflash_info[i].Device.pages_size = 1056;
+ 			dataflash_info[i].Device.page_offset = 11;
+ 			dataflash_info[i].Device.byte_mask = 0x700;
++			dataflash_info[i].Device.total_size = 
++			    dataflash_info[i].Device.pages_size * dataflash_info[i].Device.pages_number;			
+ 			dataflash_info[i].Device.cs = cs[i][1];
+ 			dataflash_info[i].Desc.DataFlash_state = IDLE;
+ 			dataflash_info[i].logical_address = cs[i][0];
+@@ -220,11 +228,13 @@ int addr_dataflash (unsigned long addr)
+ int size_dataflash (AT91PS_DataFlash pdataFlash, unsigned long addr, unsigned long size)
+ {
+ 	/* is outside the dataflash */
+-	if (((int)addr & 0x0FFFFFFF) > (pdataFlash->pDevice->pages_size *
+-		pdataFlash->pDevice->pages_number)) return 0;
++
++	if (((unsigned long)addr & 0x0FFFFFFF) > pdataFlash->pDevice->total_size) 
++	    return 0;
+ 	/* is too large for the dataflash */
+-	if (size > ((pdataFlash->pDevice->pages_size *
+-		pdataFlash->pDevice->pages_number) - ((int)addr & 0x0FFFFFFF))) return 0;
++
++	if (size > ( pdataFlash->pDevice->total_size - ((unsigned long)addr & 0x0FFFFFFF))) 
++	    return 0;
+ 
+ 	return 1;
+ }
+diff -Nurp ../u-boot-1.1.6/include/asm-arm/arch-at91rm9200/AT91RM9200.h ./include/asm-arm/arch-at91rm9200/AT91RM9200.h
+--- ../u-boot-1.1.6/include/asm-arm/arch-at91rm9200/AT91RM9200.h	2006-11-02 15:15:01.000000000 +0100
++++ ./include/asm-arm/arch-at91rm9200/AT91RM9200.h	2007-03-11 16:21:22.000000000 +0100
+@@ -625,14 +625,40 @@ typedef struct _AT91S_PDC
+ #define AT91C_PA26_TWCK		((unsigned int) 1 << 26)
+ #define AT91C_PA31_DTXD		((unsigned int) AT91C_PIO_PA31)	/* DBGU Debug Transmit Data */
+ #define AT91C_PIO_PA17		((unsigned int) 1 << 17)	/* Pin Controlled by PA17 */
++#define AT91C_PIO_PA19		((unsigned int) 1 << 19)	/* Pin Controlled by PA19 */
++#define AT91C_PIO_PA22		((unsigned int) 1 << 22)	/* Pin Controlled by PA22 */
++#define AT91C_PIO_PA23		((unsigned int) 1 << 23)	/* Pin Controlled by PA23 */
++#define AT91C_PIO_PA24		((unsigned int) 1 << 24)	/* Pin Controlled by PA24 */
++#define AT91C_PIO_PA25		((unsigned int) 1 << 25)	/* Pin Controlled by PA26 */
++#define AT91C_PIO_PA27		((unsigned int) 1 << 27)	/* Pin Controlled by PA27 */
++#define AT91C_PIO_PA28		((unsigned int) 1 << 28)	/* Pin Controlled by PA28 */
++#define AT91C_PIO_PA29		((unsigned int) 1 << 29)	/* Pin Controlled by PA29 */
++
+ #define AT91C_PA17_TXD0		AT91C_PIO_PA17			/* USART0 Transmit Data */
+ #define AT91C_PIO_PA18		((unsigned int) 1 << 18)	/* Pin Controlled by PA18 */
+ #define AT91C_PA18_RXD0		AT91C_PIO_PA18			/* USART0 Receive Data */
+ #define AT91C_PIO_PB20		((unsigned int) 1 << 20)	/* Pin Controlled by PB20 */
+ #define AT91C_PB20_RXD1		AT91C_PIO_PB20			/* USART1 Receive Data */
++
++#define AT91C_PIO_PB29		((unsigned int) 1 << 29)	/* Pin Controlled by PB29 */
++#define AT91C_PIO_PB28		((unsigned int) 1 << 28)	/* Pin Controlled by PB28 */
++
+ #define AT91C_PIO_PB21		((unsigned int) 1 << 21)	/* Pin Controlled by PB21 */
+ #define AT91C_PB21_TXD1		AT91C_PIO_PB21			/* USART1 Transmit Data */
+ 
++
++#define AT91C_PIO_PB0		((unsigned int) 1 << 0)	/* Pin Controlled by PB0 */
++#define AT91C_PIO_PB2		((unsigned int) 1 << 2)	/* Pin Controlled by PB2 */
++#define AT91C_PIO_PB8		((unsigned int) 1 << 8)	/* Pin Controlled by PB8 */
++#define AT91C_PIO_PB9		((unsigned int) 1 << 9)	/* Pin Controlled by PB9 */
++#define AT91C_PIO_PB10		((unsigned int) 1 << 10) /* Pin Controlled by PB10 */
++#define AT91C_PIO_PB11		((unsigned int) 1 << 11) /* Pin Controlled by PB11 */
++
++#define AT91C_PIO_PB22		((unsigned int) 1 << 22) /* Pin Controlled by PB22 */
++#define AT91C_PIO_PB23		((unsigned int) 1 << 23) /* Pin Controlled by PB23 */
++#define AT91C_PIO_PB24		((unsigned int) 1 << 24) /* Pin Controlled by PB24 */
++#define AT91C_PIO_PB26		((unsigned int) 1 << 26) /* Pin Controlled by PB26 */
++
+ #define AT91C_ID_SYS		((unsigned int)  1) /* System Peripheral */
+ #define AT91C_ID_PIOA		((unsigned int)  2) /* PIO port A */
+ #define AT91C_ID_PIOB		((unsigned int)  3) /* PIO port B */
+@@ -671,6 +697,8 @@ typedef struct _AT91S_PDC
+ #define AT91C_PIO_PA6		((unsigned int) 1 <<  6)	/* Pin Controlled by PA6 */
+ #define AT91C_PA6_NPCS3		((unsigned int) AT91C_PIO_PA6)	/* SPI Peripheral Chip Select 3 */
+ 
++#define AT91C_PIO_PA20		((unsigned int) 1 << 20)	/* Pin Controlled by PA20 */
++#define AT91C_PIO_PA21		((unsigned int) 1 << 21)	/* Pin Controlled by PA21 */
+ #define AT91C_PIO_PA16		((unsigned int) 1 << 16)	/* Pin Controlled by PA16 */
+ #define AT91C_PA16_EMDIO	((unsigned int) AT91C_PIO_PA16)	/* Ethernet MAC Management Data Input/Output */
+ #define AT91C_PIO_PA15		((unsigned int) 1 << 15)	/* Pin Controlled by PA15 */
+@@ -697,6 +725,7 @@ typedef struct _AT91S_PDC
+ #define AT91C_PIO_PB5		((unsigned int) 1 <<  5)	/* Pin Controlled by PB5 */
+ #define AT91C_PIO_PB6		((unsigned int) 1 <<  6)	/* Pin Controlled by PB6 */
+ #define AT91C_PIO_PB7		((unsigned int) 1 <<  7)	/* Pin Controlled by PB7 */
++#define AT91C_PIO_PB27		((unsigned int) 1 <<  27)	/* Pin Controlled by PB27 */
+ #define AT91C_PIO_PB25		((unsigned int) 1 << 25)	/* Pin Controlled by PB25 */
+ #define AT91C_PB25_DSR1		((unsigned int) AT91C_PIO_PB25)	/* USART 1 Data Set ready */
+ #define AT91C_PB25_EF100	((unsigned int) AT91C_PIO_PB25)	/* Ethernet MAC Force 100 Mbits */
+diff -Nurp ../u-boot-1.1.6/include/asm-arm/arch-at91rm9200/mmc.h ./include/asm-arm/arch-at91rm9200/mmc.h
+--- ../u-boot-1.1.6/include/asm-arm/arch-at91rm9200/mmc.h	1970-01-01 01:00:00.000000000 +0100
++++ ./include/asm-arm/arch-at91rm9200/mmc.h	2006-10-13 20:55:04.000000000 +0200
+@@ -0,0 +1,117 @@
++/*
++ *  linux/include/linux/mmc/mmc.h
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ */
++#ifndef MMC_H
++#define MMC_H
++
++#include <linux/list.h>
++#include <linux/interrupt.h>
++#include <linux/device.h>
++
++struct request;
++struct mmc_data;
++struct mmc_request;
++
++struct mmc_command {
++	u32			opcode;
++	u32			arg;
++	u32			resp[4];
++	unsigned int		flags;		/* expected response type */
++#define MMC_RSP_PRESENT	(1 << 0)
++#define MMC_RSP_136	(1 << 1)		/* 136 bit response */
++#define MMC_RSP_CRC	(1 << 2)		/* expect valid crc */
++#define MMC_RSP_BUSY	(1 << 3)		/* card may send busy */
++#define MMC_RSP_OPCODE	(1 << 4)		/* response contains opcode */
++#define MMC_CMD_MASK	(3 << 5)		/* command type */
++#define MMC_CMD_AC	(0 << 5)
++#define MMC_CMD_ADTC	(1 << 5)
++#define MMC_CMD_BC	(2 << 5)
++#define MMC_CMD_BCR	(3 << 5)
++
++/*
++ * These are the response types, and correspond to valid bit
++ * patterns of the above flags.  One additional valid pattern
++ * is all zeros, which means we don't expect a response.
++ */
++#define MMC_RSP_NONE	(0)
++#define MMC_RSP_R1	(MMC_RSP_PRESENT|MMC_RSP_CRC|MMC_RSP_OPCODE)
++#define MMC_RSP_R1B	(MMC_RSP_PRESENT|MMC_RSP_CRC|MMC_RSP_OPCODE|MMC_RSP_BUSY)
++#define MMC_RSP_R2	(MMC_RSP_PRESENT|MMC_RSP_136|MMC_RSP_CRC)
++#define MMC_RSP_R3	(MMC_RSP_PRESENT)
++#define MMC_RSP_R6	(MMC_RSP_PRESENT|MMC_RSP_CRC)
++
++#define mmc_resp_type(cmd)	((cmd)->flags & (MMC_RSP_PRESENT|MMC_RSP_136|MMC_RSP_CRC|MMC_RSP_BUSY|MMC_RSP_OPCODE))
++
++/*
++ * These are the command types.
++ */
++#define mmc_cmd_type(cmd)	((cmd)->flags & MMC_CMD_MASK)
++
++	unsigned int		retries;	/* max number of retries */
++	unsigned int		error;		/* command error */
++
++#define MMC_ERR_NONE	0
++#define MMC_ERR_TIMEOUT	1
++#define MMC_ERR_BADCRC	2
++#define MMC_ERR_FIFO	3
++#define MMC_ERR_FAILED	4
++#define MMC_ERR_INVALID	5
++
++	struct mmc_data		*data;		/* data segment associated with cmd */
++	struct mmc_request	*mrq;		/* associated request */
++};
++
++struct mmc_data {
++	unsigned int		timeout_ns;	/* data timeout (in ns, max 80ms) */
++	unsigned int		timeout_clks;	/* data timeout (in clocks) */
++	unsigned int		blksz_bits;	/* data block size */
++	unsigned int		blksz;		/* data block size */
++	unsigned int		blocks;		/* number of blocks */
++	unsigned int		error;		/* data error */
++	unsigned int		flags;
++
++#define MMC_DATA_WRITE	(1 << 8)
++#define MMC_DATA_READ	(1 << 9)
++#define MMC_DATA_STREAM	(1 << 10)
++#define MMC_DATA_MULTI	(1 << 11)
++
++	unsigned int		bytes_xfered;
++
++	struct mmc_command	*stop;		/* stop command */
++	struct mmc_request	*mrq;		/* associated request */
++
++	unsigned int		sg_len;		/* size of scatter list */
++	struct scatterlist	*sg;		/* I/O scatter list */
++};
++
++struct mmc_request {
++	struct mmc_command	*cmd;
++	struct mmc_data		*data;
++	struct mmc_command	*stop;
++
++	void			*done_data;	/* completion data */
++	void			(*done)(struct mmc_request *);/* completion function */
++};
++
++struct mmc_host;
++struct mmc_card;
++
++extern int mmc_wait_for_req(struct mmc_host *, struct mmc_request *);
++extern int mmc_wait_for_cmd(struct mmc_host *, struct mmc_command *, int);
++extern int mmc_wait_for_app_cmd(struct mmc_host *, unsigned int,
++	struct mmc_command *, int);
++
++extern int __mmc_claim_host(struct mmc_host *host, struct mmc_card *card);
++
++static inline void mmc_claim_host(struct mmc_host *host)
++{
++	__mmc_claim_host(host, (struct mmc_card *)-1);
++}
++
++extern void mmc_release_host(struct mmc_host *host);
++
++#endif
+diff -Nurp ../u-boot-1.1.6/include/at91rm9200_net.h ./include/at91rm9200_net.h
+--- ../u-boot-1.1.6/include/at91rm9200_net.h	2006-11-02 15:15:01.000000000 +0100
++++ ./include/at91rm9200_net.h	2007-05-04 22:14:56.000000000 +0200
+@@ -38,6 +38,7 @@ typedef struct _AT91S_PhyOps
+ 	unsigned int (*IsPhyConnected)(AT91S_EMAC  *pmac);
+ 	unsigned char (*GetLinkSpeed)(AT91S_EMAC *pmac);
+ 	unsigned char (*AutoNegotiate)(AT91S_EMAC *pmac, int *);
++	unsigned int (*Isolate)(AT91S_EMAC *pmac);	
+ 
+ } AT91S_PhyOps,*AT91PS_PhyOps;
+ 
+diff -Nurp ../u-boot-1.1.6/include/configs/sarge.h ./include/configs/sarge.h
+--- ../u-boot-1.1.6/include/configs/sarge.h	1970-01-01 01:00:00.000000000 +0100
++++ ./include/configs/sarge.h	2007-05-10 00:02:56.000000000 +0200
+@@ -0,0 +1,281 @@
++/*
++ * Grzegorz Rajtar <mcgregor@blackmesaeast.com.pl>
++ *
++ * Configuation settings for the Sarge (AT91RM9200DK like) board.
++ *
++ * See file CREDITS for list of people who contributed to this
++ * project.
++ *
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU General Public License as
++ * published by the Free Software Foundation; either version 2 of
++ * the License, or (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write to the Free Software
++ * Foundation, Inc., 59 Temple Place, Suite 330, Boston,
++ * MA 02111-1307 USA
++ */
++
++#ifndef __CONFIG_H
++#define __CONFIG_H
++
++
++//#define DEBUG
++
++#define CFG_SARGE_STACK_SIZE    (32 * 1024)
++
++/* ARM asynchronous clock */
++#define AT91C_MAIN_CLOCK	179712000	/* from 18.432 MHz crystal (18432000 / 4 * 39) */
++#define AT91C_MASTER_CLOCK	59904000	/* peripheral clock (AT91C_MASTER_CLOCK / 3) */
++/* #define AT91C_MASTER_CLOCK	44928000 */	/* peripheral clock (AT91C_MASTER_CLOCK / 4) */
++#define CFG_AT91C_BRGR_DIVISOR  33
++
++#define AT91_SLOW_CLOCK		32768	/* slow clock */
++
++#define CONFIG_ARM920T		1	/* This is an ARM920T Core	*/
++#define CONFIG_AT91RM9200	1	/* It's an Atmel AT91RM9200 SoC	*/
++#define CONFIG_AT91RM9200_SARGE	1
++
++#define CONFIG_USE_IRQ		1	/* we don't need IRQ/FIQ stuff	*/
++//#undef CONFIG_USE_IRQ
++#define USE_920T_MMU		1
++//#undef  USE_920T_MMU
++#define MMU_DEBUG 1
++
++#define CONFIG_CMDLINE_TAG		1	/* enable passing of ATAGs	*/
++#define CONFIG_SETUP_MEMORY_TAGS 	1
++#define CONFIG_INITRD_TAG		1
++
++#define CONFIG_SKIP_LOWLEVEL_INIT	1
++#define CONFIG_SKIP_RELOCATE_UBOOT	1
++#define CFG_USE_MAIN_OSCILLATOR		1
++
++
++#ifndef CONFIG_SKIP_LOWLEVEL_INIT
++#define CFG_USE_MAIN_OSCILLATOR		1
++/* flash */
++#define MC_PUIA_VAL	0x00000000
++#define MC_PUP_VAL	0x00000000
++#define MC_PUER_VAL	0x00000000
++#define MC_ASR_VAL	0x00000000
++#define MC_AASR_VAL	0x00000000
++#define EBI_CFGR_VAL	0x00000000
++#define SMC2_CSR_VAL	0x00003284 /* 16bit, 2 TDF, 4 WS */
++
++/* clocks */
++#define PLLAR_VAL	0x20263E04 /* 179.712000 MHz for PCK */
++#define PLLBR_VAL	0x10483E0E /* 48.054857 MHz (divider by 2 for USB) */
++#define MCKR_VAL	0x00000202 /* PCK/3 = MCK Master Clock = 59.904000MHz from PLLA */
++
++/* sdram */
++#define PIOC_ASR_VAL	0xFFFF0000 /* Configure PIOC as peripheral (D16/D31) */
++#define PIOC_BSR_VAL	0x00000000
++#define PIOC_PDR_VAL	0xFFFF0000
++#define EBI_CSA_VAL	0x00000002 /* CS1=SDRAM */
++//#define SDRC_CR_VAL	0x2188c155 /* set up the SDRAM */
++#define SDRC_CR_VAL	0x2188A155 /* set up the SDRAM */
++#define SDRAM		0x20000000 /* address of the SDRAM */
++#define SDRAM1		0x20000080 /* address of the SDRAM */
++#define SDRAM_VAL	0x00000000 /* value written to SDRAM */
++#define SDRC_MR_VAL	0x00000002 /* Precharge All */
++#define SDRC_MR_VAL1	0x00000004 /* refresh */
++#define SDRC_MR_VAL2	0x00000003 /* Load Mode Register */
++#define SDRC_MR_VAL3	0x00000000 /* Normal Mode */
++#define SDRC_TR_VAL	0x000002E0 /* Write refresh rate */
++#endif	/* CONFIG_SKIP_LOWLEVEL_INIT */
++/*
++ * Size of malloc() pool
++ */
++#define CFG_MALLOC_LEN	(CFG_ENV_SIZE + (128 << 10))
++//#define CFG_MALLOC_LEN	((4  << 20))
++#define CFG_GBL_DATA_SIZE	128	/* size in bytes reserved for initial data */
++
++#define CONFIG_BAUDRATE 115200
++//#define  CFG_CONSOLE_INFO_QUIET 0
++#undef CFG_CONSOLE_INFO_QUIET
++
++/*
++ * Hardware drivers
++ */
++
++/* define one of these to choose the DBGU, USART0  or USART1 as console */
++#define CONFIG_DBGU
++#undef CONFIG_USART0
++#undef CONFIG_USART1
++
++#undef	CONFIG_HWFLOW			/* don't include RTS/CTS flow control support	*/
++
++#undef	CONFIG_MODEM_SUPPORT		/* disable modem initialization stuff */
++
++#define CONFIG_BOOTDELAY      3
++/* #define CONFIG_ENV_OVERWRITE	1 */
++
++#define CONFIG_MII 1
++#define CONFIG_HARD_I2C
++#define CFG_I2C_SPEED   100000
++#define CFG_I2C_SLAVE   0xFE
++//#define CONFIG_TERSE_MII 1
++#define CONFIG_DOS_PARTITION 1
++#define CONFIG_USB_OHCI 1
++#define CONFIG_COMMANDS		\
++		       ((CONFIG_CMD_DFL | CFG_CMD_MII | CFG_CMD_NET | \
++			CFG_CMD_MISC | \
++			CFG_CMD_SDRAM | \
++			CFG_CMD_PING | \
++			CFG_CMD_DHCP | \
++			CFG_CMD_BOOTP | \
++			CFG_CMD_BOOTD | \
++			CFG_CMD_I2C | \
++			CFG_CMD_EEPROM | \
++			CFG_CMD_USB | \
++			CFG_CMD_BDI) & \
++		      ~(CFG_CMD_IMI | \
++			CFG_CMD_AUTOSCRIPT | \
++			CFG_CMD_LOADS ))
++
++#define CFG_I2C_EEPROM_ADDR_LEN 1
++
++/* this must be included AFTER the definition of CONFIG_COMMANDS (if any) */
++#include <cmd_confdefs.h>
++
++//#define CFG_MAX_NAND_DEVICE	1	/* Max number of NAND devices		*/
++//#define SECTORSIZE 512
++
++//#define ADDR_COLUMN 1
++//#define ADDR_PAGE 2
++//#define ADDR_COLUMN_PAGE 3
++
++//#define NAND_ChipID_UNKNOWN	0x00
++//#define NAND_MAX_FLOORS 1
++//#define NAND_MAX_CHIPS 1
++
++//#define AT91_SMART_MEDIA_ALE (1 << 22)	/* our ALE is AD22 */
++//#define AT91_SMART_MEDIA_CLE (1 << 21)	/* our CLE is AD21 */
++
++//#define NAND_DISABLE_CE(nand) do { *AT91C_PIOC_SODR = AT91C_PIO_PC0;} while(0)
++//#define NAND_ENABLE_CE(nand) do { *AT91C_PIOC_CODR = AT91C_PIO_PC0;} while(0)
++
++//#define NAND_WAIT_READY(nand) while (!(*AT91C_PIOC_PDSR & AT91C_PIO_PC2))
++
++//#define WRITE_NAND_COMMAND(d, adr) do{ *(volatile __u8 *)((unsigned long)adr | AT91_SMART_MEDIA_CLE) = (__u8)(d); } while(0)
++//#define WRITE_NAND_ADDRESS(d, adr) do{ *(volatile __u8 *)((unsigned long)adr | AT91_SMART_MEDIA_ALE) = (__u8)(d); } while(0)
++//#define WRITE_NAND(d, adr) do{ *(volatile __u8 *)((unsigned long)adr) = (__u8)d; } while(0)
++//#define READ_NAND(adr) ((volatile unsigned char)(*(volatile __u8 *)(unsigned long)adr))
++/* the following are NOP's in our implementation */
++//#define NAND_CTL_CLRALE(nandptr)
++//#define NAND_CTL_SETALE(nandptr)
++//#define NAND_CTL_CLRCLE(nandptr)
++//#define NAND_CTL_SETCLE(nandptr)
++
++
++#define CONFIG_NR_DRAM_BANKS 1
++#define PHYS_SDRAM 0x20000000
++#define PHYS_SDRAM_SIZE 0x2000000  /* 32 megs */
++
++#define CFG_MEMTEST_START		PHYS_SDRAM
++#define CFG_MEMTEST_END			CFG_MEMTEST_START + PHYS_SDRAM_SIZE - 262144
++
++#define CONFIG_DRIVER_ETHER		1
++#define CONFIG_NET_RETRY_COUNT		20
++#define STE100P_ETH			1
++//#define CONFIG_STE100P_OVERRIDE_HARDWARE 1
++
++#define CONFIG_HAS_DATAFLASH		1
++#define CFG_SPI_WRITE_TOUT		(10 * CFG_HZ)
++#define CFG_MAX_DATAFLASH_BANKS 	2
++#define CFG_MAX_DATAFLASH_PAGES 	16384
++#define CFG_DATAFLASH_LOGIC_ADDR_CS0	0xC0000000	/* Logical adress for CS0 */
++#define CFG_DATAFLASH_LOGIC_ADDR_CS3	0xD0000000	/* Logical adress for CS3 */
++
++#define PHYS_FLASH_1			0x10000000
++#define PHYS_FLASH_SIZE			0x200000  /* 2 megs main flash */
++#define CFG_FLASH_BASE			PHYS_FLASH_1
++#define CFG_MAX_FLASH_BANKS		1
++#define CFG_MAX_FLASH_SECT		256
++#define CFG_FLASH_ERASE_TOUT		(10 * CFG_HZ) /* Timeout for Flash Erase */
++#define CFG_FLASH_WRITE_TOUT		(10 * CFG_HZ) /* Timeout for Flash Write */
++
++
++#define CFG_ENV_IS_IN_DATAFLASH
++
++#ifdef CFG_ENV_IS_IN_DATAFLASH
++#define CFG_ENV_OFFSET			0x200000
++#define CFG_ENV_ADDR			(CFG_DATAFLASH_LOGIC_ADDR_CS0 + CFG_ENV_OFFSET)
++#define CFG_ENV_SIZE			0x2000  /* 0x2000 */
++#else
++#define CFG_ENV_IS_IN_FLASH		1
++#ifdef CONFIG_SKIP_LOWLEVEL_INIT
++#define CFG_ENV_ADDR			(PHYS_FLASH_1 + 0x60000)  /* after u-boot.bin */
++#define CFG_ENV_SIZE			0x10000 /* sectors are 64K here */
++#else
++#define CFG_ENV_ADDR			(PHYS_FLASH_1 + 0xe000)  /* between boot.bin and u-boot.bin.gz */
++#define CFG_ENV_SIZE			0x2000  /* 0x8000 */
++#endif	/* CONFIG_SKIP_LOWLEVEL_INIT */
++#endif	/* CFG_ENV_IS_IN_DATAFLASH */
++
++#define CFG_LOAD_ADDR 0x21000000
++
++#ifdef CONFIG_SKIP_LOWLEVEL_INIT
++#define CFG_BOOT_SIZE		0x00 /* 0 KBytes */
++#define CFG_U_BOOT_BASE		PHYS_FLASH_1
++#define CFG_U_BOOT_SIZE		0x60000 /* 384 KBytes */
++#else
++#define CFG_BOOT_SIZE		0x6000 /* 24 KBytes */
++#define CFG_U_BOOT_BASE		(PHYS_FLASH_1 + 0x10000)
++#define CFG_U_BOOT_SIZE		0x10000 /* 128 KBytes */
++#endif	/* CONFIG_SKIP_LOWLEVEL_INIT */
++
++#define CFG_BAUDRATE_TABLE	{115200 , 19200, 38400, 57600, 9600 }
++
++#define CFG_PROMPT		"U-Boot> "	/* Monitor Command Prompt */
++#define CFG_CBSIZE		256		/* Console I/O Buffer Size */
++#define CFG_MAXARGS		16		/* max number of command args */
++#define CFG_PBSIZE		(CFG_CBSIZE+sizeof(CFG_PROMPT)+16) /* Print Buffer Size */
++
++#ifndef __ASSEMBLY__
++/*-----------------------------------------------------------------------
++ * Board specific extension for bd_info
++ *
++ * This structure is embedded in the global bd_info (bd_t) structure
++ * and can be used by the board specific code (eg board/...)
++ */
++
++struct bd_info_ext {
++	/* helper variable for board environment handling
++	 *
++	 * env_crc_valid == 0    =>   uninitialised
++	 * env_crc_valid  > 0    =>   environment crc in flash is valid
++	 * env_crc_valid  < 0    =>   environment crc in flash is invalid
++	 */
++	int env_crc_valid;
++};
++#endif
++
++#define CFG_HZ 1000
++#define CFG_HZ_CLOCK AT91C_MASTER_CLOCK/2	/* AT91C_TC0_CMR is implicitly set to */
++#define CONFIG_STACKSIZE	(32 * 1024)	/* regular stack */
++
++					/* AT91C_TC_TIMER_DIV1_CLOCK */
++#ifdef CONFIG_USE_IRQ
++//#error CONFIG_USE_IRQ not supported
++    #define CONFIG_STACKSIZE_IRQ    (4*1024) 	
++    #define CONFIG_STACKSIZE_FIQ    (4*1024)
++#endif
++
++#define CONFIG_BOOTARGS      "mem=32M rootfstype=ext2 root=/dev/mmcblk0p1 console=ttyS0,115200n8 rootdelay=5 init=/sbin/init"
++#define CONFIG_ETHADDR       00:01:20:38:00:5b
++#define CONFIG_NETMASK       255.255.255.0
++#define CONFIG_IPADDR        192.168.0.212
++#define CONFIG_SERVERIP      192.168.0.200
++#define CONFIG_BOOTCOMMAND   " bootm 0xC0040000"
++#define CONFIG_BOOTFILE      "sarge_at91.img"
++#define CONFIG_ROOTPATH      "/tftp/at91/rootfs"
++#define CONFIG_LOADADDR      0x21000000
++#define CONFIG_NFSARGS       "mem=32M console=ttyS0,115200n8 root=/dev/nfs nfsroot=192.168.0.200:/tftp/at91/rootfs,timeo=200,retrans=500  ip=:::::eth0:on"
++#endif
+diff -Nurp ../u-boot-1.1.6/include/dataflash.h ./include/dataflash.h
+--- ../u-boot-1.1.6/include/dataflash.h	2006-11-02 15:15:01.000000000 +0100
++++ ./include/dataflash.h	2007-03-19 23:29:49.000000000 +0100
+@@ -79,6 +79,7 @@ typedef struct _AT91S_Dataflash {
+ 	int page_offset;			/* page offset in command */
+ 	int byte_mask;				/* byte mask in command */
+ 	int cs;
++	unsigned long total_size;
+ 	dataflash_protect_t area_list[NB_DATAFLASH_AREA]; /* area protection status */
+ } AT91S_DataflashFeatures, *AT91PS_DataflashFeatures;
+ 
+@@ -107,7 +108,7 @@ typedef struct _AT91S_DATAFLASH_INFO {
+ #define AT45DB642	0x3c
+ #define AT45DB128	0x10
+ 
+-#define AT91C_DATAFLASH_TIMEOUT		10000	/* For AT91F_DataFlashWaitReady */
++#define AT91C_DATAFLASH_TIMEOUT		800000	/* For AT91F_DataFlashWaitReady */
+ 
+ /* DataFlash return value */
+ #define DATAFLASH_BUSY			0x00
+diff -Nurp ../u-boot-1.1.6/include/_exports.h ./include/_exports.h
+--- ../u-boot-1.1.6/include/_exports.h	2006-11-02 15:15:01.000000000 +0100
++++ ./include/_exports.h	2007-03-15 23:41:08.000000000 +0100
+@@ -18,4 +18,4 @@ EXPORT_FUNC(simple_strtoul)
+ #if (CONFIG_COMMANDS & CFG_CMD_I2C)
+ EXPORT_FUNC(i2c_write)
+ EXPORT_FUNC(i2c_read)
+-#endif	/* CFG_CMD_I2C */
++#endif	/* CFG_CMD_I2C */
+\ Brak znaku nowej linii na końcu pliku
+diff -Nurp ../u-boot-1.1.6/include/gunzip.h ./include/gunzip.h
+--- ../u-boot-1.1.6/include/gunzip.h	1970-01-01 01:00:00.000000000 +0100
++++ ./include/gunzip.h	2007-03-21 23:23:36.000000000 +0100
+@@ -0,0 +1,73 @@
++#ifndef _GUNZIP_H
++#define _GUNZIP_H
++
++/* unzip code taken from bios-lt project */
++/* http://sourceforge.net/projects/bios-lt */
++/* maintainer Liu Tao */
++
++#define ERR_BADMAGIC         1
++#define ERR_BADMETHOD        2
++#define ERR_ENCRYPTED        3
++#define ERR_MULTIPART        4
++#define ERR_INVALIDFLAGS     5
++#define ERR_BADFORMAT1       6
++#define ERR_BADFORMAT2       7
++#define ERR_MEM              8
++#define ERR_BADFORMAT        9
++#define ERR_CRC              10
++#define ERR_LENGTH           11
++
++#define	PACK_MAGIC     "\037\036" /* Magic header for packed files */
++#define	GZIP_MAGIC     "\037\213" /* Magic header for gzip files, 1F 8B */
++#define	OLD_GZIP_MAGIC "\037\236" /* Magic header for gzip 0.5 = freeze 1.x */
++#define	LZH_MAGIC      "\037\240" /* Magic header for SCO LZH Compress files*/
++#define PKZIP_MAGIC    "\120\113\003\004" /* Magic header for pkzip files */
++
++/* gzip flag byte */
++#define ASCII_FLAG   0x01 /* bit 0 set: file probably ascii text */
++#define CONTINUATION 0x02 /* bit 1 set: continuation of multi-part gzip file */
++#define EXTRA_FIELD  0x04 /* bit 2 set: extra field present */
++#define ORIG_NAME    0x08 /* bit 3 set: original file name present */
++#define COMMENT      0x10 /* bit 4 set: file comment present */
++#define ENCRYPTED    0x20 /* bit 5 set: file is encrypted */
++#define RESERVED     0xC0 /* bit 6,7:   reserved */
++
++/* If B_MAX needs to be larger than 16, then h and x[] should be ulong. */
++#define B_MAX 16         /* maximum bit length of any code (16 for explode) */
++#define N_MAX 288       /* maximum number of codes in any set */
++
++
++#define NULL            0
++
++#define __TYPES_DEFINED
++#ifndef TYPES_DEFINED
++typedef unsigned char   uchar;
++typedef unsigned short  ushort;
++typedef unsigned long   ulong;
++typedef ushort          huft_code;
++typedef uchar           huft_bits;
++#endif
++
++#define get_uchar(guz) (uchar)(guz->inptr < guz->insize ? guz->inbuf[guz->inptr++] : 0)
++#define get_ushort(guz) ((ushort)get_uchar(guz) | (ushort)get_uchar(guz) << 8)
++#define get_ulong(guz) ((ulong)get_uchar(guz)|(ulong)get_uchar(guz)<<8|(ulong)get_uchar(guz)<<16|(ulong)get_uchar(guz) << 24)
++#define output_char(guz, ch) (guz)->outbuf[(guz)->outptr++] = ch
++
++typedef struct {
++	uchar *inbuf;
++	ulong insize;
++	ulong inptr;
++
++	uchar *outbuf;
++	ulong outsize;
++	ulong outptr;
++
++	ulong bitbuf;
++	ulong bufbits;
++
++} gunzip_t;
++
++int gunzip(unsigned char *inbuf, unsigned long *insize,
++	unsigned char *outbuf, unsigned long *outsize);
++
++#endif	/* _GUNZIP_H */
+diff -Nurp ../u-boot-1.1.6/include/ste100p.h ./include/ste100p.h
+--- ../u-boot-1.1.6/include/ste100p.h	1970-01-01 01:00:00.000000000 +0100
++++ ./include/ste100p.h	2007-05-05 01:38:11.000000000 +0200
+@@ -0,0 +1,163 @@
++#ifndef _ste100p_h_
++#define _ste100p_h_
++
++
++// UTILS
++#define Bit(n) (1<<(n))
++
++
++// STE100P register offsets.
++
++#define	STE100P_XCR_REG 	0x00
++#define	STE100P_XSR_REG 	0x01
++#define	STE100P_PID1_REG    	0x02
++#define	STE100P_PID2_REG    	0x03
++#define	STE100P_ANA_REG    	0x04
++#define	STE100P_ANLP_REG 	0x05
++#define	STE100P_ANE_REG    	0x06
++#define	STE100P_XCSIIS_REG    	0x11
++#define	STE100P_XIE_REG    	0x12
++#define	STE100P_100CTR_REG    	0x13
++#define	STE100P_XMC_REG    	0x14
++
++
++// STE100P XCR - Control register bit defines.
++#define STE100P_XCR_RESET        0x8000                                                //(RW)
++#define STE100P_XCR_LOOPBACK     0x4000                                                //(RW)
++#define STE100P_XCR_SPEED        0x2000  // 1=100Meg, 0=10Meg                          (RW)
++#define STE100P_XCR_AN           0x1000  // 1=Enable auto negotiation, 0=disable it    (RW)
++#define STE100P_XCR_PWRDN        0x0800  // 1=Enable power down                        (RW)
++#define STE100P_XCR_ISOLATE      0x0400  // 1=Isolate PHY from MII                     (RW)
++#define STE100P_XCR_RSTRT_AN     0x0200  // 1=Restart Auto Negotioation process        (RW)
++#define STE100P_XCR_FULL_DUP     0x0100  // 1=Enable full duplex mode, 0=half dup      (RW)
++#define STE100P_XCR_COLLEN       0x0080  // 1=Collision test control                   (RW)
++
++// STE100P XSR - Control status bit defines.
++
++#define STE100P_XSR_100T4        Bit(15)                                           //           (RO)
++#define STE100P_XSR_100TX_FULL   Bit(14)                                           //           (RO)
++#define STE100P_XSR_100TX        Bit(13)                                           //           (RO)
++#define STE100P_XSR_10T_FULL     Bit(12)                                           //           (RO)
++#define STE100P_XSR_10T          Bit(11)                                           //           (RO)
++#define STE100P_XSR_MFPS         Bit(6)    //MF preamble suppression                            (RO)
++#define STE100P_XSR_AN_COMPLETE  Bit(5)
++#define STE100P_XSR_RF           Bit(4)    //RF result of remote fault detection                (RO/LH)
++#define STE100P_XSR_AN           Bit(3)    //AN - auto-negotation ability, always 1 for STE100P (RO)
++#define STE100P_XSR_LINK         Bit(2)    // Link status                                       (RO/LL)
++#define STE100P_XSR_JABBER       Bit(1)    // Jabber condition is detected (10Base-T only)      (RO/LH)
++#define STE100P_XSR_EXT          Bit(0)    // Extended register support, always 1 for STE100P   (RO)
++
++
++// STE100P PHY identification  bit defines.
++
++#define	STE100P_PID1_PHYID_VAL   0x1C04  // (RO)
++
++#define	STE100P_PID2_PHYID_MASK  0xFC00  // (RO)
++#define	STE100P_PID2_PHYID_VAL   0x0
++#define	STE100P_PID2_MODEL_MASK   0x01F0  // (RO)
++#define	STE100P_PID2_MODEL_VAL    0x1
++#define	STE100P_PID2_REV_MASK     0x000F  // (RO)
++#define	STE100P_PID2_REV_VAL      0x1
++
++// STE100P auto-negatiation  bit defines.
++
++#define	STE100P_ANA_NXTPG          Bit(15)  //Next Page avability, always 0 for STE100P.  (RO)
++#define	STE100P_ANA_RF             Bit(13) // Remote fault function. (RW)
++#define	STE100P_ANA_FC             Bit(10) // Flow Control function Ability, 1 - supports PAUSE operation of flow control for full-duplex link. (RW)
++#define	STE100P_ANA_T4             Bit(9)  // 100Base-T4 ability, always 0 for STE100P. (RO)
++#define	STE100P_ANA_TXF            Bit(8)  // 100Base-TX full duplex ability, 1 with 100Base-TX full duplex ability. (RW)
++#define	STE100P_ANA_TXH            Bit(7)  // 100Base-TX half duplex ability, 1 with 100Base-TX half duplex ability. (RW)
++
++#define	STE100P_ANA_10F            Bit(6)  // 10Base-T full duplex ability, 1 with 10Base-T full duplex ability. (RW)
++#define	STE100P_ANA_10H            Bit(5)  // 10Base-T half duplex ability, 1 with 10Base-T half duplex ability. (RW)
++#define	STE100P_ANA_SF             0x0000  // select field, default val 0, (RO)
++#define	STE100P_ANA_SF_MASK        0x000F  // STE100P_ANA_SF mask
++
++// STE100P auto-negatiation link partner ability  bit defines.
++
++#define	STE100P_ANLP_LPNP          Bit(15) // Link partner next page, 1 ON.  (RO)
++#define	STE100P_ANLP_LPACK         Bit(14) // Received link parnter ACK, 1 received.  (RO)
++#define	STE100P_ANLP_LPRF          Bit(13) // Link partner's remote fault status, 1 - remote fault detected. (RO)
++#define	STE100P_ANLP_LPFC          Bit(10) // Link partner's flow control ability, 1 - link partner with PAUSE function full duplex link ability. (RO)
++#define	STE100P_ANLP_LPT4          Bit(9)  // Link partner's 100Base-T4 ability, 1 - link parnter with 100Base-T4 ability. (RO)
++#define	STE100P_ANLP_LPTXF         Bit(8)  // Link partner's 100Base-TX full duplex ability, 1 - link parnter with 100Base-TX full duplex ability. (RO)
++#define	STE100P_ANLP_LPTXH         Bit(7)  // Link partner's 100Base-TX half duplex ability, 1 - link parnter with 100Base-TX half duplex ability. (RO)
++#define	STE100P_ANLP_LP10F         Bit(6)  // Link partner's 10Base-T full duplex ability, 1 - link parnter with 10Base-T full duplex ability. (RO)
++#define	STE100P_ANLP_LP10H         Bit(5)  // Link partner's 10Base-T half duplex ability, 1 - link parnter with 10Base-T half duplex ability. (RO)
++#define	STE100P_ANLP_LPFS          0x001F  // Link partner selct field, default 0x0001 = IEEE 802.3 (RO)
++
++// STE100P auto-negatiation expansion bit defines.
++
++#define	STE100P_ANE_PDF            Bit(4) // Parallel detection fault, 1 - fault detecrted (RO/LH).
++#define	STE100P_ANE_LPNP           Bit(3) // Link partner's next page ability, 1 - link partner with next page ability (RO).
++#define	STE100P_ANE_NP             Bit(2) // STE100P next page ability, always 0 (RO).
++#define	STE100P_ANE_PR             Bit(1) // Page received, 1 - a new page has been received (RO/LH).
++#define	STE100P_ANE_LPAN           Bit(0) // Link partner auto-negotiation ability, 1 - LP has auto-negotiation ability (RO)
++
++// STE100P configuration information and interrupt status bit defines
++
++#define	STE100P_XCIIS_SPEED        Bit(9) // Configured information of SPEED, 0 - 10Mbit/s, 1 - 100Mbit/s. (RO)
++#define	STE100P_XCIIS_DUPLEX       Bit(8) // Configured information of DUPLEX, 0 - half-duplex, 1 - full-duplex. (RO)
++#define	STE100P_XCIIS_PAUSE        Bit(7) // Configured information of PAUSE, 0 - pause function disabled, 1 - pause function enabled. (RO)
++#define	STE100P_XCIIS_ANC          Bit(6) // Interrupt source of auto-negotiation completed, 0 - auto-negotiation is not completed yet. (RO/LH)
++#define	STE100P_XCIIS_RFD          Bit(5) // Interrupt source of remote fault detected, 0 -fault not detected, 1 - fault detected. (RO/LH)
++#define	STE100P_XCIIS_LS           Bit(4) // Interrupt source link fail, 0 - link test status is up, 1 - link is down. (RO/LH).
++#define	STE100P_XCIIS_ANAR         Bit(3) // Interrupt source of auto-negotiation ACK received, 0 - auto-negotiation not received. (RO/LH)
++#define	STE100P_XCIIS_PDF          Bit(2) // Interrupt source of parallel detection fault, 0 - fault not detected. (RO/LH)
++#define	STE100P_XCIIS_ANPR         Bit(1) // Interrupt source of auto-negotiation page received, 1 - auto-negotiation page os received (RO/LH)
++#define	STE100P_XCIIS_REF          Bit(0) // Interrupt source of receive full error, 0 - the receive error number is less than 64, 1 - 64 error packets
++                                          // are received (RO/LH)
++
++// STE100P interrupt enable register bit defines
++
++#define	STE100P_XIE_ANCE           Bit(6) // Auto-negtiation completed interrupt enable: 0/1 - disable/enable auto-negotiation completed interrupt. (RW)
++#define	STE100P_XIE_RFE            Bit(5) // Remote fault detected interrupt enable: 0/1 - disable/enable remote fault detection interrupt. (RW)
++#define	STE100P_XIE_LDE            Bit(4) // Link down interrupt enable: 0/1 - disable/enable link down detection interrupt. (RW)
++#define	STE100P_XIE_ANAE           Bit(3) // Auto-negotiation acknowledge interrupt enable: 0/1 - disable/enable link partner acknowledge interrupt. (RW)
++#define	STE100P_XIE_PDFE           Bit(2) // Parallel detection fault interrupt enable: 0/1 - disable/enable fault parallel detection interrupt. (RW)
++#define	STE100P_XIE_ANPE           Bit(1) // Auto-negotiation page received interrupt enable: 0/1 - disable/enable auto-negotiation page received interrupt. (RW)
++#define	STE100P_XIE_REFE           Bit(0) // RX_ERR page full interrupt enable: 0 - disable rx_err full interrupt, 1 - enable more than 64 time rx_err interrupt (RW)
++
++// STE100P 100Base-TX control register bit defines
++
++#define	STE100P_100CTR_DISRER      Bit(13) // Disable the RX_ERR counter, 0 - receive error counter RX_ERR is enabled, 1 - ... disabled. (RW)
++#define	STE100P_100CTR_ANC         Bit(12) // Auto-negotiation completed, 0 - auto-negotiation process has not completed yet, 1 - auto-negotiation process has completed. (RO)
++#define	STE100P_100CTR_ENRLB       Bit(9)  // Enable remote loop-back function: 1 - enable, 0 - disable (RW)
++#define	STE100P_100CTR_ENDCR       Bit(8)  // Enable DC restoration: 0 - disable, 1 - enable (RW)
++#define	STE100P_100CTR_ENRZI       Bit(7)  // Enable the conversions between NRZ and NRZI (RW)
++#define	STE100P_100CTR_EN4B5B      Bit(6)  // Enable 4B/5B encoder and decoder, 0 - the 4B/5B encoder and decoder are bypassed, 1 - .. enabled. (RW)
++#define	STE100P_100CTR_ISOTX       Bit(5)  // Transmit isolation: 1 - isolate from MII, 0 - for normal operation. (RW)
++#define	STE100P_100CTR_CMODE_MASK  0x001C  // Reporting of current operation mode of transceiver:                 (RO)
++                                           // 000 - in auto-negotiation
++                                           // 001 - 10Base-T half duplex
++                                           // 010 - 100Base-TX half duplex
++                                           // 011 - reserved
++                                           // 100 - reserved
++                                           // 101 - 10Base-T full duplex
++                                           // 110 - 100Base-TX full duplex
++                                           // 111 - isolation, auto-negotiation disable
++#define	STE100P_100CTR_DISMLT      Bit(1)  // Disable MLT3, 0 - encoder/decoder enabled, 1 - ... disabled, (RW)
++#define	STE100P_100CTR_DISCRM      Bit(0)  // Disable Scramble, 0 - scrambler/descambler enabled, 1 - scrambler/descambler disabled, (RW)
++
++
++// STE100P mode control register bit defines
++
++#define	STE100P_XMC_LD            Bit(11) // Long distance mode of 10Base-T: 0 - notmal squelch level, 1 - reduces squelch for extended cable lenght. (RW)
++#define	STE100P_XMC_PAD_MASK      0x00F8  // PHY addres 4:0 - 0x0000 after reset causes to isolate the PHY from MII (PR0 - 10 bit is set) (RW).
++#define	STE100P_XMC_MFPSE         Bit(1)  // MF preamble supression enable, 1 - accept management frames with pre-amble supressed. (RW)
++
++
++/*   (R0) - register is rea-only.
++ *   (RW) - register is rea-write.
++ *   (LH) - latching high and cleared by reading.
++ *   (LL) - latching low and cleared by reading.
++ */
++
++unsigned int ste100p_IsPhyConnected (AT91PS_EMAC p_mac);
++unsigned int ste100p_Isolate (AT91PS_EMAC p_mac);
++void ste100p_DisableInterrupts (AT91PS_EMAC p_mac);
++UCHAR ste100p_GetLinkSpeed (AT91PS_EMAC p_mac);
++UCHAR ste100p_InitPhy (AT91PS_EMAC p_mac);
++UCHAR ste100p_AutoNegotiate (AT91PS_EMAC p_mac, int *status);
++
++#endif // _ste100p_h_
+diff -Nurp ../u-boot-1.1.6/lib_arm/armlinux.c ./lib_arm/armlinux.c
+--- ../u-boot-1.1.6/lib_arm/armlinux.c	2006-11-02 15:15:01.000000000 +0100
++++ ./lib_arm/armlinux.c	2007-05-05 01:28:02.000000000 +0200
+@@ -62,6 +62,10 @@ static void setup_end_tag (bd_t *bd);
+ static void setup_videolfb_tag (gd_t *gd);
+ # endif
+ 
++#ifdef CONFIG_AT91RM9200_SARGE
++int sarge_before_linux(void);
++#endif
++
+ 
+ static struct tag *params;
+ #endif /* CONFIG_SETUP_MEMORY_TAGS || CONFIG_CMDLINE_TAG || CONFIG_INITRD_TAG */
+@@ -89,9 +93,7 @@ void do_bootm_linux (cmd_tbl_t *cmdtp, i
+ #ifdef CONFIG_CMDLINE_TAG
+ 	char *commandline = getenv ("bootargs");
+ #endif
+-
+ 	theKernel = (void (*)(int, int, uint))ntohl(hdr->ih_ep);
+-
+ 	/*
+ 	 * Check if there is an initrd image
+ 	 */
+@@ -224,7 +226,7 @@ void do_bootm_linux (cmd_tbl_t *cmdtp, i
+ 
+ 	debug ("## Transferring control to Linux (at address %08lx) ...\n",
+ 	       (ulong) theKernel);
+-
++	       
+ #if defined (CONFIG_SETUP_MEMORY_TAGS) || \
+     defined (CONFIG_CMDLINE_TAG) || \
+     defined (CONFIG_INITRD_TAG) || \
+@@ -255,6 +257,10 @@ void do_bootm_linux (cmd_tbl_t *cmdtp, i
+ 	setup_end_tag (bd);
+ #endif
+ 
++#ifdef CONFIG_AT91RM9200_SARGE
++	sarge_before_linux();
++#endif
++
+ 	/* we assume that the kernel is in place */
+ 	printf ("\nStarting kernel ...\n\n");
+ 
+@@ -267,6 +273,8 @@ void do_bootm_linux (cmd_tbl_t *cmdtp, i
+ 
+ 	cleanup_before_linux ();
+ 
++	
++	printf("kernel address is 0x%x\n", theKernel);		
+ 	theKernel (0, bd->bi_arch_number, bd->bi_boot_params);
+ }
+ 
+@@ -348,7 +356,7 @@ static void setup_initrd_tag (bd_t *bd, 
+ 
+ 	params->u.initrd.start = initrd_start;
+ 	params->u.initrd.size = initrd_end - initrd_start;
+-
++	
+ 	params = tag_next (params);
+ }
+ #endif /* CONFIG_INITRD_TAG */
+diff -Nurp ../u-boot-1.1.6/lib_arm/board.c ./lib_arm/board.c
+--- ../u-boot-1.1.6/lib_arm/board.c	2006-11-02 15:15:01.000000000 +0100
++++ ./lib_arm/board.c	2007-05-04 23:21:40.000000000 +0200
+@@ -94,6 +94,8 @@ void mem_malloc_init (ulong dest_addr)
+ 	mem_malloc_end = dest_addr + CFG_MALLOC_LEN;
+ 	mem_malloc_brk = mem_malloc_start;
+ 
++	//printf("mem_malloc_start = %x, mem_malloc_end = %x\n",
++	//	mem_malloc_start, mem_malloc_end);
+ 	memset ((void *) mem_malloc_start, 0,
+ 			mem_malloc_end - mem_malloc_start);
+ }
+@@ -254,11 +256,14 @@ void start_armboot (void)
+ 	memset (gd->bd, 0, sizeof (bd_t));
+ 
+ 	monitor_flash_len = _bss_start - _armboot_start;
+-
++	int num = 0;
+ 	for (init_fnc_ptr = init_sequence; *init_fnc_ptr; ++init_fnc_ptr) {
+ 		if ((*init_fnc_ptr)() != 0) {
++			printf("hanf at %d\n", num); 
+ 			hang ();
+ 		}
++		else
++		    num++;
+ 	}
+ 
+ #ifndef CFG_NO_FLASH
+@@ -391,8 +396,10 @@ void start_armboot (void)
+ #if defined(CONFIG_NET_MULTI)
+ 	puts ("Net:   ");
+ #endif
+-	eth_initialize(gd->bd);
++	puts("eth_initialize\n");
++	eth_initialize(gd->bd);	
+ #endif
++
+ 	/* main_loop() can return to retry autoboot, if so just run it again. */
+ 	for (;;) {
+ 		main_loop ();
+diff -Nurp ../u-boot-1.1.6/lib_generic/gunzip.c ./lib_generic/gunzip.c
+--- ../u-boot-1.1.6/lib_generic/gunzip.c	1970-01-01 01:00:00.000000000 +0100
++++ ./lib_generic/gunzip.c	2007-03-22 00:44:21.000000000 +0100
+@@ -0,0 +1,613 @@
++#include "gunzip.h"
++
++/* unzip code taken from bios-lt project */
++/* http://sourceforge.net/projects/bios-lt */
++/* maintainer Liu Tao */
++
++static const ulong crc_32_tab[256] = {
++	0x00000000, 0x77073096, 0xee0e612c, 0x990951ba, 0x076dc419, 0x706af48f, 0xe963a535, 0x9e6495a3,
++	0x0edb8832, 0x79dcb8a4, 0xe0d5e91e, 0x97d2d988, 0x09b64c2b, 0x7eb17cbd, 0xe7b82d07, 0x90bf1d91,
++	0x1db71064, 0x6ab020f2, 0xf3b97148, 0x84be41de, 0x1adad47d, 0x6ddde4eb, 0xf4d4b551, 0x83d385c7,
++	0x136c9856, 0x646ba8c0, 0xfd62f97a, 0x8a65c9ec, 0x14015c4f, 0x63066cd9, 0xfa0f3d63, 0x8d080df5,
++	0x3b6e20c8, 0x4c69105e, 0xd56041e4, 0xa2677172, 0x3c03e4d1, 0x4b04d447, 0xd20d85fd, 0xa50ab56b,
++	0x35b5a8fa, 0x42b2986c, 0xdbbbc9d6, 0xacbcf940, 0x32d86ce3, 0x45df5c75, 0xdcd60dcf, 0xabd13d59,
++	0x26d930ac, 0x51de003a, 0xc8d75180, 0xbfd06116, 0x21b4f4b5, 0x56b3c423, 0xcfba9599, 0xb8bda50f,
++	0x2802b89e, 0x5f058808, 0xc60cd9b2, 0xb10be924, 0x2f6f7c87, 0x58684c11, 0xc1611dab, 0xb6662d3d,
++	0x76dc4190, 0x01db7106, 0x98d220bc, 0xefd5102a, 0x71b18589, 0x06b6b51f, 0x9fbfe4a5, 0xe8b8d433,
++	0x7807c9a2, 0x0f00f934, 0x9609a88e, 0xe10e9818, 0x7f6a0dbb, 0x086d3d2d, 0x91646c97, 0xe6635c01,
++	0x6b6b51f4, 0x1c6c6162, 0x856530d8, 0xf262004e, 0x6c0695ed, 0x1b01a57b, 0x8208f4c1, 0xf50fc457,
++	0x65b0d9c6, 0x12b7e950, 0x8bbeb8ea, 0xfcb9887c, 0x62dd1ddf, 0x15da2d49, 0x8cd37cf3, 0xfbd44c65,
++	0x4db26158, 0x3ab551ce, 0xa3bc0074, 0xd4bb30e2, 0x4adfa541, 0x3dd895d7, 0xa4d1c46d, 0xd3d6f4fb,
++	0x4369e96a, 0x346ed9fc, 0xad678846, 0xda60b8d0, 0x44042d73, 0x33031de5, 0xaa0a4c5f, 0xdd0d7cc9,
++	0x5005713c, 0x270241aa, 0xbe0b1010, 0xc90c2086, 0x5768b525, 0x206f85b3, 0xb966d409, 0xce61e49f,
++	0x5edef90e, 0x29d9c998, 0xb0d09822, 0xc7d7a8b4, 0x59b33d17, 0x2eb40d81, 0xb7bd5c3b, 0xc0ba6cad,
++	0xedb88320, 0x9abfb3b6, 0x03b6e20c, 0x74b1d29a, 0xead54739, 0x9dd277af, 0x04db2615, 0x73dc1683,
++	0xe3630b12, 0x94643b84, 0x0d6d6a3e, 0x7a6a5aa8, 0xe40ecf0b, 0x9309ff9d, 0x0a00ae27, 0x7d079eb1,
++	0xf00f9344, 0x8708a3d2, 0x1e01f268, 0x6906c2fe, 0xf762575d, 0x806567cb, 0x196c3671, 0x6e6b06e7,
++	0xfed41b76, 0x89d32be0, 0x10da7a5a, 0x67dd4acc, 0xf9b9df6f, 0x8ebeeff9, 0x17b7be43, 0x60b08ed5,
++	0xd6d6a3e8, 0xa1d1937e, 0x38d8c2c4, 0x4fdff252, 0xd1bb67f1, 0xa6bc5767, 0x3fb506dd, 0x48b2364b,
++	0xd80d2bda, 0xaf0a1b4c, 0x36034af6, 0x41047a60, 0xdf60efc3, 0xa867df55, 0x316e8eef, 0x4669be79,
++	0xcb61b38c, 0xbc66831a, 0x256fd2a0, 0x5268e236, 0xcc0c7795, 0xbb0b4703, 0x220216b9, 0x5505262f,
++	0xc5ba3bbe, 0xb2bd0b28, 0x2bb45a92, 0x5cb36a04, 0xc2d7ffa7, 0xb5d0cf31, 0x2cd99e8b, 0x5bdeae1d,
++	0x9b64c2b0, 0xec63f226, 0x756aa39c, 0x026d930a, 0x9c0906a9, 0xeb0e363f, 0x72076785, 0x05005713,
++	0x95bf4a82, 0xe2b87a14, 0x7bb12bae, 0x0cb61b38, 0x92d28e9b, 0xe5d5be0d, 0x7cdcefb7, 0x0bdbdf21,
++	0x86d3d2d4, 0xf1d4e242, 0x68ddb3f8, 0x1fda836e, 0x81be16cd, 0xf6b9265b, 0x6fb077e1, 0x18b74777,
++	0x88085ae6, 0xff0f6a70, 0x66063bca, 0x11010b5c, 0x8f659eff, 0xf862ae69, 0x616bffd3, 0x166ccf45,
++	0xa00ae278, 0xd70dd2ee, 0x4e048354, 0x3903b3c2, 0xa7672661, 0xd06016f7, 0x4969474d, 0x3e6e77db,
++	0xaed16a4a, 0xd9d65adc, 0x40df0b66, 0x37d83bf0, 0xa9bcae53, 0xdebb9ec5, 0x47b2cf7f, 0x30b5ffe9,
++	0xbdbdf21c, 0xcabac28a, 0x53b39330, 0x24b4a3a6, 0xbad03605, 0xcdd70693, 0x54de5729, 0x23d967bf,
++	0xb3667a2e, 0xc4614ab8, 0x5d681b02, 0x2a6f2b94, 0xb40bbe37, 0xc30c8ea1, 0x5a05df1b, 0x2d02ef8d
++};
++
++static const huft_code mask_bits[] = {
++	0x0000,
++	0x0001, 0x0003, 0x0007, 0x000f, 0x001f, 0x003f, 0x007f, 0x00ff,
++	0x01ff, 0x03ff, 0x07ff, 0x0fff, 0x1fff, 0x3fff, 0x7fff, 0xffff
++};
++
++/* Tables for deflate from PKZIP's appnote.txt. */
++static const unsigned border[] = {    /* Order of the bit length code lengths */
++	16, 17, 18, 0, 8, 7, 9, 6, 10, 5, 11, 4, 12, 3, 13, 2, 14, 1, 15};
++
++static const ushort cplext[] = {         /* Extra bits for literal codes 257..285 */
++	0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 2, 2, 2, 2,
++	3, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 5, 0, 99, 99
++}; /* 99==invalid */
++
++static const ushort cplens[] = {         /* Copy lengths for literal codes 257..285 */
++	3, 4, 5, 6, 7, 8, 9, 10, 11, 13, 15, 17, 19, 23, 27, 31,
++	35, 43, 51, 59, 67, 83, 99, 115, 131, 163, 195, 227, 258, 0, 0
++}; /* note: see note #13 above about the 258 in this list. */
++
++static const ushort cpdext[] = {         /* Extra bits for distance codes */
++	0, 0, 0, 0, 1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6,
++	7, 7, 8, 8, 9, 9, 10, 10, 11, 11, 12, 12, 13, 13
++};
++
++static const ushort cpdist[] = {         /* Copy offsets for distance codes 0..29 */
++	1, 2, 3, 4, 5, 7, 9, 13, 17, 25, 33, 49, 65, 97, 129, 193,
++	257, 385, 513, 769, 1025, 1537, 2049, 3073, 4097, 6145,
++	8193, 12289, 16385, 24577
++};
++
++static huft_code bit_reverse(huft_code code, huft_bits bits)
++{
++	huft_code ret = 0;
++	int i;
++
++	for (i = 0; i < bits; i++) {
++		if (code & (1 << i))
++			ret |= (1 << (bits - i - 1));
++	}
++	
++	return ret;
++}
++
++static huft_code huft_get_code(
++	huft_bits *b,           /* code lengths in bits (all assumed <= B_MAX) */
++	int n,                  /* number of codes (assumed <= N_MAX) */
++	int k                   /* index */
++	)
++{
++	huft_code code = 0;
++	huft_bits bits = b[k];
++	int i;
++
++	if (bits == 0)
++		return 0;
++
++	for (i = 0; i < n; i++) {
++		if (b[i] < bits && b[i] > 0)
++			code += 1 << (b[k] - b[i]);
++		else if ((i < k) && (b[i] == bits))
++			code += 1;
++	}
++
++	return bit_reverse(code, bits);
++}
++
++static int huft_build_table(
++	huft_bits *b,           /* code lengths in bits (all assumed <= B_MAX) */
++	int n,                  /* number of codes (assumed <= N_MAX) */
++	huft_code *t         /* result: starting table */
++	)
++{
++	int i;
++
++	for (i = 0; i < n; i++) {
++		t[i] = huft_get_code(b, n, i);
++	}
++
++	return 0;
++}
++
++static int huft_get_value(
++	huft_bits *b,           /* code lengths in bits (all assumed <= B_MAX) */
++	huft_code *t,           /* huft table */
++	int n,                  /* number of codes (assumed <= N_MAX) */
++	huft_code code,
++	huft_bits *bits
++	)
++{
++	int i;
++
++	for (i = 0; i < n; i++) {
++		if (b[i] == 0)
++			continue;
++
++		if ((code & ~(0xffff << b[i])) == t[i])
++			break;
++	}
++
++	if (i == n)
++		return -1;
++
++	*bits = b[i];
++	return i;
++}
++
++static huft_code peek_bits(gunzip_t *guz, huft_bits n)
++{
++	huft_code r;
++
++	while (guz->bufbits < (n))
++	{
++		guz->bitbuf |= ((ulong)get_uchar(guz)) << guz->bufbits;
++		guz->bufbits += 8;
++	}
++	r = guz->bitbuf & mask_bits[n];
++
++	return r;
++}
++
++static void skip_bits(gunzip_t *guz, huft_bits n)
++{
++	guz->bitbuf >>= (n);
++	guz->bufbits -= (n);
++}
++
++static huft_code get_bits(gunzip_t *guz, huft_bits n)
++{
++	huft_code r;
++
++	while (guz->bufbits < (n))
++	{
++		guz->bitbuf |= ((ulong)get_uchar(guz)) << guz->bufbits;
++		guz->bufbits += 8;
++	}
++	r = guz->bitbuf & mask_bits[n];
++
++	guz->bitbuf >>= (n);
++	guz->bufbits -= (n);
++
++	return r;
++}
++
++static int inflate_codes(gunzip_t *guz,
++	huft_bits *ll,
++	huft_code *tl,     /* literal/length decoder tables */
++	huft_bits *ld,
++	huft_code *td,     /* distance decoder tables */
++	int nl,            /* number of bits decoded by tl[] */
++	int nd             /* number of bits decoded by td[] */
++	)
++{
++	register int i, j;
++	register huft_code code;
++	register huft_bits bits;
++	register int value, n;
++	register uchar *outbuf;
++	register ulong outptr;
++	register huft_code codex;
++	huft_bits bits_tmp;
++	huft_code ftl[256], ftlex[512], ftd[256];
++	int ftnex = 0;
++	int len, dist;
++
++	outbuf = guz->outbuf;
++	outptr = guz->outptr;
++
++	for (i = 0; i < 256; i++) {
++		ftl[i] = 0xffff;
++		ftd[i] = 0xffff;
++	}
++
++	for (i = 0; i < 512; i++)
++		ftlex[i] = 0xffff;
++
++	for (i = 0; i < nl; i++) {
++
++		bits = ll[i];
++		if (bits > 0 && bits <= 8) {
++			code = (ushort)i | (bits << 9);
++			for (j = 0; j < (1 << (8 - bits)); j++) {
++				ftl[tl[i] | (j << bits)] = code;
++			}
++
++		} else if (bits > 8 && bits < 12 && ftnex < 64) {
++			code = tl[i] & 0xff;
++			if (ftl[code] == 0xffff) {
++				n = (ftnex++) << 3;
++				ftl[code] = 0x8000 | n;
++			} else
++				n = ftl[code] & 0x7fff;
++
++			code = (ushort)i | (bits << 9);
++			n += tl[i] >> 8;
++			for (j = 0; j < (1 << (11 - bits)); j++) {
++				ftlex[n | (j << (bits - 8))] = code;
++			}
++		}
++	}
++
++	for (i = 0; i < nd; i++) {
++		bits = ld[i];
++		code = (ushort)i + (bits << 9);
++		if (bits > 0 && bits <= 8) {
++			for (j = 0; j < (1 << (8 - bits)); j++) {
++				ftd[td[i] | (j << bits)] = code;
++			}
++		}
++	}
++
++	while (1) {
++
++		code = peek_bits(guz, 8);
++
++		if (!(ftl[code] & 0x8000)) {
++			value = ftl[code] & 0x01ff;
++			bits = ftl[code] >> 9;
++
++		} else if (ftl[code] != 0xffff) {
++			n = ftl[code] & 0x7fff;
++			code = peek_bits(guz, 11);
++			codex = code >> 8;
++			if (ftlex[n + codex] != 0xffff) {
++				value = ftlex[n + codex] & 0x01ff;
++				bits = ftlex[n + codex] >> 9;
++			} else {
++				code = peek_bits(guz, 16);
++				value = huft_get_value(ll, tl, nl, code, &bits_tmp);
++				bits = bits_tmp;
++				if (value == -1)
++					return 1;         /* error in compressed data */
++			}
++
++		} else {
++			code = peek_bits(guz, 16);
++			value = huft_get_value(ll, tl, nl, code, &bits_tmp);
++			bits = bits_tmp;
++			if (value == -1)
++				return 1;         /* error in compressed data */
++		}
++		skip_bits(guz, bits);
++
++		if (value < 256) {
++			outbuf[outptr++] = (uchar)value;
++		} else if (value > 256) {
++			code = get_bits(guz, cplext[value - 257]);
++			len = cplens[value - 257] + code;
++
++			code = peek_bits(guz, 8);
++			if (ftd[code] != 0xffff) {
++				value = ftd[code] & 0x01ff;
++				bits = ftd[code] >> 9;
++			} else {
++				code = peek_bits(guz, 16);
++				value = huft_get_value(ld, td, nd, code, &bits_tmp);
++				bits = bits_tmp;
++				if (value == -1)
++					return 1;         /* error in compressed data */
++			}
++			skip_bits(guz, bits);
++			dist = cpdist[value] + get_bits(guz, cpdext[value]);
++
++			for (i = 0; i < len; i++)
++				outbuf[outptr++] = outbuf[outptr - dist];
++		} else {
++			break;
++		}
++	}
++
++	guz->outbuf = outbuf;
++	guz->outptr = outptr;
++
++	return 0;
++}
++
++static int inflate_stored(gunzip_t *guz)
++{
++	ulong n;           /* number of bytes in block */
++
++	/* go to byte boundary */
++	n = guz->bufbits & 7;
++	get_bits(guz, n);
++
++	/* get the length and its complement */
++	n = get_bits(guz, 16);
++	if (n != (~get_bits(guz, 16) & 0xffff))
++		return 1;                   /* error in compressed data */
++
++	/* read and output the compressed data */
++	while (n--)
++		output_char(guz, (uchar)get_bits(guz, 8));
++
++	return 0;
++}
++
++static int inflate_fixed(gunzip_t *guz)
++{
++	huft_bits ll[288], ld[32];
++	huft_code tl[288], td[32];
++	int i;
++
++	/* set up literal table */
++	for (i = 0; i < 144; i++)
++		ll[i] = 8;
++	for (; i < 256; i++)
++		ll[i] = 9;
++	for (; i < 280; i++)
++		ll[i] = 7;
++	for (; i < 288; i++)          /* make a complete, but wrong code set */
++		ll[i] = 8;
++	huft_build_table(ll, 288, tl);
++
++	for (i = 0; i < 30; i++)
++		ld[i] = 5;
++	huft_build_table(ld, 30, td);
++
++	return inflate_codes(guz, ll, tl, ld, td, 288, 30);
++
++}
++
++static int build_bits_table(gunzip_t *guz,
++	huft_bits *lb,
++	huft_code *tb,
++	int nb,
++	huft_bits *ll,
++	int nl
++	)
++{
++	huft_bits bits;
++	huft_code code;
++	int value, i, n;
++
++	i = 0;
++	while (i < nl) {
++		code = peek_bits(guz, 16);
++		value = huft_get_value(lb, tb, 19, code, &bits);
++		if (value == -1)
++			return 1;         /* error in compressed data */
++		skip_bits(guz, bits);
++		if (value < 16) {
++			ll[i++] = value;
++		} else if (value == 16) {
++			code = get_bits(guz, 2);
++			for (n = 0; n < code + 3; n++) {
++				ll[i++] = ll[i - 1];
++			}
++		} else if (value == 17) {
++			code = get_bits(guz, 3);
++			for (n = 0; n < code + 3; n++)
++				ll[i++] = 0;
++		} else if (value == 18)	{
++			code = get_bits(guz, 7);
++			for (n = 0; n < code + 11; n++)
++				ll[i++] = 0;
++		}
++	}
++
++	return 0;
++}
++
++static int inflate_dynamic(gunzip_t *guz)
++{
++	huft_bits lb[19], ll[288], ld[32];
++	huft_code tb[19], tl[288], td[32];
++	int nb;          /* number of bit length codes */
++	int nl;          /* number of literal/length codes */
++	int nd;          /* number of distance codes */
++	int i;
++
++	/* read in table lengths */
++	nl = 257 + get_bits(guz, 5);      /* number of literal/length codes */
++	nd = 1 + get_bits(guz, 5);        /* number of distance codes */
++	nb = 4 + get_bits(guz, 4);        /* number of bit length codes */
++	if (nl > 286 || nd > 30)
++		return 1;                 /* bad lengths */
++
++	/* read in bit-length-code lengths */
++	for (i = 0; i < nb; i++)
++		lb[border[i]] = get_bits(guz, 3);
++	for (; i < 19; i++)
++		lb[border[i]] = 0;
++	huft_build_table(lb, 19, tb);
++
++	build_bits_table(guz, lb, tb, 19, ll, nl);
++	huft_build_table(ll, nl, tl);
++
++	build_bits_table(guz, lb, tb, 19, ld, nd);
++	huft_build_table(ld, nd, td);
++
++	return inflate_codes(guz, ll, tl, ld, td, nl, nd);
++}
++
++static int inflate_block(gunzip_t *guz, ulong *e)
++{
++	ulong t;           /* block type */
++
++	/* read in last block bit */
++	*e = get_bits(guz, 1);
++
++	/* read in block type */
++	t = get_bits(guz, 2);
++
++	/* inflate that block type */
++	if (t == 0)
++		return inflate_stored(guz);
++	if (t == 1)
++		return inflate_fixed(guz);
++	if (t == 2)
++		return inflate_dynamic(guz);
++
++	/* bad block type */
++	return 2;
++}
++
++static int inflate(gunzip_t *guz)
++{
++	ulong e;                /* last block flag */
++	int r;                /* result code */
++	/* unsigned h;           maximum struct huft's malloc'ed */
++
++	/* decompress until the last block */
++	do {
++		if ((r = inflate_block(guz, &e)) != 0) {
++			return r;
++		}
++	} while (!e);
++
++	/* Undo too much lookahead. The next read will be byte aligned so we
++	 * can discard unused bits in the last meaningful byte.
++	 */
++	while (guz->bufbits >= 8) {
++		guz->bufbits -= 8;
++		guz->inptr--;
++	}
++
++	/* return success */
++	return 0;
++}
++
++static void init_gunzip_struct(gunzip_t *guz,
++	uchar *inbuf, ulong insize, uchar *outbuf, ulong outsize)
++{
++	guz->inbuf = inbuf;
++	guz->insize = insize;
++	guz->inptr = 0;
++
++	guz->outbuf = outbuf;
++	guz->outsize = outsize;
++	guz->outptr = 0;
++
++	guz->bitbuf = 0;
++	guz->bufbits = 0;
++}
++
++ulong get_crc(uchar *buf, int len)
++{
++	ulong crc;
++	uchar ch;
++	int i;
++
++	crc = 0xffffffffL;
++	for (i = 0; i < len; i++) {
++		ch = buf[i];
++		crc = crc_32_tab[((int)crc ^ ch) & 0xff] ^ (crc >> 8);
++	}
++	crc = (crc ^ 0xffffffffL);
++
++	return crc;
++}
++
++int gunzip(uchar *inbuf, ulong *insize, uchar *outbuf, ulong *outsize)
++{
++	gunzip_t guz_struct;
++	gunzip_t *guz;
++	uchar magic[2];           /* magic header */
++	uchar method;
++	uchar flags;
++	ulong orig_crc = 0;       /* original crc */
++	ulong orig_len = 0;       /* original uncompressed length */
++	int res;
++
++	guz = &guz_struct;
++	init_gunzip_struct(guz, inbuf, *insize, outbuf, *outsize);
++
++
++	magic[0] = get_uchar(guz);
++	magic[1] = get_uchar(guz);
++	method = get_uchar(guz);
++
++	if (magic[0] != 0x1f || magic[1] != 0x8b)
++		return ERR_BADMAGIC;
++
++	/* We only support method #8, DEFLATED */
++	if (method != 8)
++		return ERR_BADMETHOD;
++
++	flags  = get_uchar(guz);
++	if (flags & ENCRYPTED)
++		return ERR_ENCRYPTED;
++
++	if (flags & CONTINUATION)
++		return ERR_MULTIPART;
++
++	if (flags & RESERVED)
++		return ERR_INVALIDFLAGS;
++
++	get_ulong(guz);        /* Get timestamp */
++
++	get_uchar(guz);        /* Ignore extra flags for the moment */
++	get_uchar(guz);        /* Ignore OS type for the moment */
++
++	if (flags & EXTRA_FIELD) {
++		ushort len;
++
++		len = get_ushort(guz);
++		while (len--)
++			get_uchar(guz);
++	}
++
++	/* Get original file name if it was truncated */
++	if (flags & ORIG_NAME) {
++		/* Discard the old name */
++		while (get_uchar(guz) != 0);
++	}
++
++	/* Discard file comment if any */
++	if (flags & COMMENT) {
++		while (get_uchar(guz) != 0);
++	}
++
++	/* Decompress */
++	if ((res = inflate(guz)) != 0) {
++		switch (res) {
++		case 1:
++			/* invalid compressed format (err=1) */
++			res = ERR_BADFORMAT1;
++			break;
++		case 2:
++			/* invalid compressed format (err=2) */
++			res = ERR_BADFORMAT2;
++			break;
++		case 3:
++			/* out of memory */
++			res = ERR_MEM;
++			break;
++		default:
++			/* invalid compressed format (other) */
++			res = ERR_BADFORMAT;
++		}
++		
++		return res;
++	}
++	/* Get the crc and original length */
++	/* crc32  (see algorithm.doc)
++	 * uncompressed input size modulo 2^32
++	 */
++	orig_crc = get_ulong(guz);
++	orig_len = get_ulong(guz);
++
++	/* Validate decompression */
++//	if (orig_crc != get_crc(guz->outbuf, guz->outptr))
++//		return ERR_CRC;
++
++	if (orig_len != guz->outptr)
++		return ERR_LENGTH;
++
++	*insize = guz->inptr;
++	*outsize = guz->outptr;
++
++	return 0;
++}
+diff -Nurp ../u-boot-1.1.6/lib_generic/Makefile ./lib_generic/Makefile
+--- ../u-boot-1.1.6/lib_generic/Makefile	2006-11-02 15:15:01.000000000 +0100
++++ ./lib_generic/Makefile	2007-03-25 17:49:13.000000000 +0200
+@@ -28,7 +28,8 @@ LIB	= $(obj)libgeneric.a
+ COBJS	= bzlib.o bzlib_crctable.o bzlib_decompress.o \
+ 	  bzlib_randtable.o bzlib_huffman.o \
+ 	  crc32.o ctype.o display_options.o ldiv.o \
+-	  string.o vsprintf.o zlib.o
++	  string.o vsprintf.o gunzip.o
++#	  zlib.o gunzip.o
+ 
+ SRCS 	:= $(COBJS:.o=.c)
+ OBJS	:= $(addprefix $(obj),$(COBJS))
+Pliki ../u-boot-1.1.6/loader-sarge i ./loader-sarge różnią się
+diff -Nurp ../u-boot-1.1.6/Makefile ./Makefile
+--- ../u-boot-1.1.6/Makefile	2006-11-02 15:15:01.000000000 +0100
++++ ./Makefile	2007-03-29 20:07:54.000000000 +0200
+@@ -1882,6 +1882,9 @@ smdk2410_config	:	unconfig
+ SX1_config :		unconfig
+ 	@$(MKCONFIG) $(@:_config=) arm arm925t sx1
+ 
++sarge_config    :       unconfig
++	@$(MKCONFIG) $(@:_config=) arm arm920t sarge NULL at91rm9200
++
+ # TRAB default configuration:	8 MB Flash, 32 MB RAM
+ trab_config \
+ trab_bigram_config \
+diff -Nurp ../u-boot-1.1.6/net/bootp.c ./net/bootp.c
+--- ../u-boot-1.1.6/net/bootp.c	2006-11-02 15:15:01.000000000 +0100
++++ ./net/bootp.c	2007-05-09 23:46:31.000000000 +0200
+@@ -35,7 +35,7 @@
+ 
+ #define TIMEOUT		5		/* Seconds before trying BOOTP again	*/
+ #ifndef CONFIG_NET_RETRY_COUNT
+-# define TIMEOUT_COUNT	5		/* # of timeouts before giving up  */
++# define TIMEOUT_COUNT	10		/* # of timeouts before giving up  */
+ #else
+ # define TIMEOUT_COUNT	(CONFIG_NET_RETRY_COUNT)
+ #endif
+diff -Nurp ../u-boot-1.1.6/net/eth.c ./net/eth.c
+--- ../u-boot-1.1.6/net/eth.c	2006-11-02 15:15:01.000000000 +0100
++++ ./net/eth.c	2007-05-09 23:47:19.000000000 +0200
+@@ -397,10 +397,10 @@ int eth_send(volatile void *packet, int 
+ }
+ 
+ int eth_rx(void)
+-{
++{	
+ 	if (!eth_current)
+ 		return -1;
+-
++		
+ 	return eth_current->recv(eth_current);
+ }
+ 
+diff -Nurp ../u-boot-1.1.6/net/Makefile ./net/Makefile
+--- ../u-boot-1.1.6/net/Makefile	2006-11-02 15:15:01.000000000 +0100
++++ ./net/Makefile	2007-05-09 23:52:55.000000000 +0200
+@@ -23,7 +23,7 @@
+ 
+ include $(TOPDIR)/config.mk
+ 
+-# CFLAGS += -DET_DEBUG -DDEBUG
++#CFLAGS += -DET_DEBUG -DDEBUG -DDEBUG_BOOTP_EXT
+ 
+ LIB	= $(obj)libnet.a
+ 
+diff -Nurp ../u-boot-1.1.6/net/net.c ./net/net.c
+--- ../u-boot-1.1.6/net/net.c	2006-11-02 15:15:01.000000000 +0100
++++ ./net/net.c	2007-05-09 23:47:40.000000000 +0200
+@@ -78,6 +78,7 @@
+ #include <watchdog.h>
+ #include <command.h>
+ #include <net.h>
++#include <linux/ctype.h>
+ #include "bootp.h"
+ #include "tftp.h"
+ #include "rarp.h"
+@@ -1745,7 +1746,23 @@ void print_IPaddr (IPaddr_t x)
+ 
+ IPaddr_t getenv_IPaddr (char *var)
+ {
+-	return (string_to_ip(getenv(var)));
++    /* new code changed by Yu Lu ,
++    to solve the problem of
++    mess up the ip addr from environment variables */
++    char tmp_str[64];
++    // printf("DebugLY1: \n\r");
++    //puts(getenv(var));
++
++    strcpy(tmp_str, getenv(var) );
++    if(isxdigit(*tmp_str))
++    return (string_to_ip( tmp_str ));
++    else
++    return (string_to_ip( tmp_str+1 ));
++    //return (string_to_ip(getenv(var)+1));
++    /* old code is the below */
++    // return (string_to_ip(getenv(var)));
++
++    //return (string_to_ip(getenv(var)));
+ }
+ 
+ ushort getenv_VLAN(char *var)

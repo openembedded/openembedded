@@ -3,7 +3,7 @@ HOMEPAGE = "http://www.gnu.org/software/gcc/"
 SECTION = "devel"
 LICENSE = "GPL"
 DEPENDS = "mpfr gmp"
-PR = "r3"
+PR = "r5"
 
 inherit autotools gettext
 
@@ -23,7 +23,9 @@ SRC_URI_append = " file://100-uclibc-conf.patch;patch=1   \
                    file://302-c99-snprintf.patch;patch=1  \
                    file://303-c99-complex-ugly-hack.patch;patch=1 \
                    file://800-arm-bigendian.patch;patch=1 \
-                   file://zecke-host-cpp-ac-hack.patch;patch=1 "
+                   file://zecke-host-cpp-ac-hack.patch;patch=1 \
+		   file://gcc-4.0.2-atmel.0.99.2.patch;patch=1 \
+		   "
 
 SRC_URI_append_fail-fast = " file://zecke-no-host-includes.patch;patch=1 "
 

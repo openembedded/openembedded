@@ -38,7 +38,6 @@ ac_cv_uchar=${ac_cv_uchar=no}
 ac_cv_uint=${ac_cv_uint=yes}
 ac_cv_ulong=${ac_cv_ulong=yes}
 ac_cv_ushort=${ac_cv_ushort=yes}
-mr_cv_target_elf=${mr_cv_target_elf=yes}
 ac_cv_time_r_type=${ac_cv_time_r_type=POSIX}
 
 # samba
@@ -152,7 +151,7 @@ samba_cv_USE_SETUIDX=${samba_cv_USE_SETUIDX=yes}
 samba_cv_LINUX_LFS_SUPPORT=${samba_cv_LINUX_LFS_SUPPORT=yes}
 
 # dpkg
-dpkg_cv_va_copy=${ac_cv_va_copy=no}
+dpkg_cv_va_copy=${ac_cv_va_copy=yes}
 dpkg_cv___va_copy=${ac_cv___va_copy=yes}
 
 # enca
@@ -170,3 +169,10 @@ ac_cv_have_abstract_sockets=${ac_cv_have_abstract_sockets=no}
 # lftp
 ac_cv_file___dev_ptc_=yes
 
+#mono
+mono_cv_uscore=${mono_cv_uscore=no}
+
+# gnet
+ac_cv_member_struct_sockaddr_sa_len=${ac_cv_member_struct_sockaddr_sa_len=no}
+ac_cv_gnet_have_abstract_sockets=${ac_cv_gnet_have_abstract_sockets=no}
+gnet_sockaddr_family_field_name=${gnet_sockaddr_family_field_name=ss_family}

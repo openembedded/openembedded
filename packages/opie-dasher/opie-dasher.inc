@@ -38,7 +38,7 @@ do_install() {
 	done
 }
 
-PACKAGES = " opie-dasher-english opie-dasher "
+PACKAGES += " opie-dasher-english "
 
 FILES_opie-dasher = "${palmtopdir}/plugins/inputmethods/libqdasher.so*"
 FILES_opie-dasher-english = "${palmtopdir}/share/dasher/training_english_GB.txt"

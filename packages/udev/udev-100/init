@@ -1,4 +1,4 @@
-#!/bin/sh -e
+#!/bin/sh
 ### BEGIN INIT INFO
 # Provides:          udev
 # Required-Start:    mountvirtfs 
@@ -131,7 +131,7 @@ warn_if_interactive() {
 PATH="/sbin:/bin:/usr/bin"
 
 # defaults
-tmpfs_size="10M"
+tmpfs_size="2M"
 udev_root="/dev"
 
 if [ -e /etc/udev/udev.conf ]; then

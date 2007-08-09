@@ -116,8 +116,23 @@ def do_split_packages(d, root, file_regex, output_pattern, description, postinst
 
 	bb.data.setVar('PACKAGES', ' '.join(packages), d)
 
-PACKAGE_DEPENDS ?= "file-native fakeroot-native"
-DEPENDS_prepend =+ "${PACKAGE_DEPENDS} "
+PACKAGE_DEPENDS += "file-native"
+
+python () {
+    import bb
+
+    if bb.data.getVar('PACKAGES', d, True) != '':
+        deps = bb.data.getVarFlag('do_package', 'depends', d) or ""
+        for dep in (bb.data.getVar('PACKAGE_DEPENDS', d, True) or "").split():
+            deps += " %s:do_populate_staging" % dep
+        bb.data.setVarFlag('do_package', 'depends', deps, d)
+
+        deps = bb.data.getVarFlag('do_package_write', 'depends', d) or ""
+        for dep in (bb.data.getVar('PACKAGE_EXTRA_DEPENDS', d, True) or "").split():
+            deps += " %s:do_populate_staging" % dep
+        bb.data.setVarFlag('do_package_write', 'depends', deps, d)
+}
+
 # file(1) output to match to consider a file an unstripped executable
 FILE_UNSTRIPPED_MATCH ?= "not stripped"
 #FIXME: this should be "" when any errors are gone!
@@ -126,7 +141,7 @@ IGNORE_STRIP_ERRORS ?= "1"
 runstrip() {
 	# Function to strip a single file, called from RUNSTRIP in populate_packages below
 	# A working 'file' (one which works on the target architecture)
-	# is necessary for this stuff to work, hence the addition to PACKAGES_DEPENDS
+	# is necessary for this stuff to work, hence the addition to do_package[depends]
 
 	local ro st
 
@@ -573,6 +588,7 @@ python package_do_shlibs() {
 	bb.mkdirhier(shlibs_dir)
 
 	needed = {}
+	private_libs = bb.data.getVar('PRIVATE_LIBS', d, 1)
 	for pkg in packages.split():
 		needs_ldconfig = False
 		bb.debug(2, "calculating shlib provides for %s" % pkg)
@@ -596,7 +612,9 @@ python package_do_shlibs() {
 							needed[pkg].append(m.group(1))
 						m = re.match("\s+SONAME\s+([^\s]*)", l)
 						if m and not m.group(1) in sonames:
-							sonames.append(m.group(1))
+							# if library is private (only used by package) then do not build shlib for it
+							if not private_libs or -1 == private_libs.find(m.group(1)):
+								sonames.append(m.group(1))
 						if m and libdir_re.match(root):
 							needs_ldconfig = True
 		shlibs_file = os.path.join(shlibs_dir, pkg + ".list")

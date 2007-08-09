@@ -1,0 +1,11 @@
+--- gpe-conf-0.2.5/modules/screen/brightness.c~brightness
++++ gpe-conf-0.2.5/modules/screen/brightness.c
+@@ -216,7 +216,7 @@
+   FILE *f_power;
+   gint value = SYS_STATE_ON;
+   
+-  f_power = fopen(SYS_BRIGHTNESS, "r");
++  f_power = fopen(SYS_POWER, "r");
+   if (f_power != NULL)
+   {
+   	fscanf(f_power,"%i", &value);

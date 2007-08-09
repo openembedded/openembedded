@@ -1,0 +1,163 @@
+--- zaurusd/config/alsa/cxx00-default.state.orig	2006-06-28 08:45:07.000000000 +0000
++++ zaurusd/config/alsa/cxx00-default.state	2007-05-21 21:40:50.000000000 +0000
+@@ -32,7 +32,7 @@
+ 		comment.type BOOLEAN
+ 		comment.count 2
+ 		iface MIXER
+-		name 'Out1 Playback ZC Switch'
++		name 'Headphone Playback ZC Switch'
+ 		value.0 false
+ 		value.1 false
+ 	}
+@@ -41,7 +41,7 @@
+ 		comment.type BOOLEAN
+ 		comment.count 2
+ 		iface MIXER
+-		name 'Out2 Playback ZC Switch'
++		name 'Speaker Playback ZC Switch'
+ 		value.0 false
+ 		value.1 false
+ 	}
+@@ -218,7 +218,7 @@
+ 		comment.item.3 Stereo
+ 		iface MIXER
+ 		name 'ALC Capture Function'
+-		value Left
++		value Off
+ 	}
+ 	control.24 {
+ 		comment.access 'read write'
+@@ -321,8 +321,8 @@
+ 		comment.type BOOLEAN
+ 		comment.count 1
+ 		iface MIXER
+-		name 'Right Out2 Playback Invert Switch'
+-		value true
++		name 'Right Speaker Playback Invert Switch'
++		value false
+ 	}
+ 	control.36 {
+ 		comment.access 'read write'
+@@ -331,8 +331,8 @@
+ 		comment.range '0 - 3'
+ 		iface MIXER
+ 		name 'Mic Boost'
+-		value.0 2
+-		value.1 2
++		value.0 0
++		value.1 0
+ 	}
+ 	control.37 {
+ 		comment.access 'read write'
+@@ -351,8 +351,8 @@
+ 		comment.range '0 - 7'
+ 		iface MIXER
+ 		name 'Bypass Right Playback Volume'
+-		value.0 0
+-		value.1 0
++		value.0 2
++		value.1 2
+ 	}
+ 	control.39 {
+ 		comment.access 'read write'
+@@ -378,9 +378,9 @@
+ 		comment.count 2
+ 		comment.range '0 - 127'
+ 		iface MIXER
+-		name 'Out1 Playback Volume'
+-		value.0 120
+-		value.1 120
++		name 'Headphone Playback Volume'
++		value.0 121
++		value.1 121
+ 	}
+ 	control.42 {
+ 		comment.access 'read write'
+@@ -388,9 +388,9 @@
+ 		comment.count 2
+ 		comment.range '0 - 127'
+ 		iface MIXER
+-		name 'Out2 Playback Volume'
+-		value.0 119
+-		value.1 119
++		name 'Speaker Playback Volume'
++		value.0 121
++		value.1 121
+ 	}
+ 	control.43 {
+ 		comment.access 'read write'
+@@ -411,7 +411,7 @@
+ 		comment.item.3 'Digital Mono'
+ 		iface MIXER
+ 		name 'Right ADC Mux'
+-		value 'Mono (Left)'
++		value Stereo
+ 	}
+ 	control.45 {
+ 		comment.access 'read write'
+@@ -423,7 +423,7 @@
+ 		comment.item.3 'Digital Mono'
+ 		iface MIXER
+ 		name 'Left ADC Mux'
+-		value 'Mono (Left)'
++		value Stereo
+ 	}
+ 	control.46 {
+ 		comment.access 'read write'
+@@ -458,7 +458,7 @@
+ 		comment.item.4 Differential
+ 		iface MIXER
+ 		name 'Right Line Mux'
+-		value Differential
++		value 'Line 1'
+ 	}
+ 	control.49 {
+ 		comment.access 'read write'
+@@ -471,7 +471,7 @@
+ 		comment.item.4 Differential
+ 		iface MIXER
+ 		name 'Left Line Mux'
+-		value PGA
++		value 'Line 1'
+ 	}
+ 	control.50 {
+ 		comment.access 'read write'
+@@ -483,7 +483,7 @@
+ 		comment.item.3 Differential
+ 		iface MIXER
+ 		name 'Right PGA Mux'
+-		value Differential
++		value 'Line 1'
+ 	}
+ 	control.51 {
+ 		comment.access 'read write'
+@@ -495,7 +495,7 @@
+ 		comment.item.3 Differential
+ 		iface MIXER
+ 		name 'Left PGA Mux'
+-		value Differential
++		value 'Line 1'
+ 	}
+ 	control.52 {
+ 		comment.access 'read write'
+@@ -535,7 +535,7 @@
+ 		comment.count 1
+ 		iface MIXER
+ 		name 'Right Mixer Left Playback Switc'
+-		value false
++		value true
+ 	}
+ 	control.57 {
+ 		comment.access 'read write'
+@@ -610,9 +610,8 @@
+ 		comment.access 'read write'
+ 		comment.type ENUMERATED
+ 		comment.count 1
+-		comment.item.0 Auto
+-		comment.item.1 On
+-		comment.item.2 Off
++		comment.item.0 On
++		comment.item.1 Off
+ 		iface MIXER
+ 		name 'Speaker Function'
+ 		value On

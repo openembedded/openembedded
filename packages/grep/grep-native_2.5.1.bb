@@ -9,3 +9,5 @@ do_stage () {
 	install -m 755 src/egrep ${STAGING_BINDIR}
 	install -m 755 src/fgrep ${STAGING_BINDIR}
 }
+
+FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/grep-${PV}"

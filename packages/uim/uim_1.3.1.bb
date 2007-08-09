@@ -1,13 +1,13 @@
 require uim.inc
 DEPENDS = "gtk+ uim-native anthy fontconfig libxft xt glib-2.0 ncurses"
 SECTION_uim-gtk2.0 = "x11/inputmethods"
-PR = "r1"
+PR = "r2"
 
 SRC_URI += "file://uim-module-manager.patch;patch=1"
 
 inherit autotools pkgconfig
 
-PACKAGES = "uim-xim uim-utils uim-skk uim-gtk2.0 uim-fep uim-common uim-anthy libuim0 libuim-dev"
+PACKAGES += "uim-xim uim-utils uim-skk uim-gtk2.0 uim-fep uim-common uim-anthy libuim0 libuim-dev"
 
 LEAD_SONAME = "libuim.so.1"
 RDEPENDS_uim = "libuim0"

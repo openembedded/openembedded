@@ -1,15 +1,11 @@
-LICENSE = "GPL"
-SECTION = "x11/libs"
-DESCRIPTION = "HTML rendering/editing library"
+require gtkhtml.inc
+
 DEPENDS = "gtk+ gail libbonoboui libgnomeprintui libgnomeui"
 
-inherit gnome
-
-SRC_URI = "${GNOME_MIRROR}/gtkhtml/3.6/gtkhtml-${PV}.tar.bz2"
+SRC_URI = "${GNOME_MIRROR}/gtkhtml/3.6/gtkhtml-${PV}.tar.bz2 \
+	file://cross-includedir.patch;patch=1"
+PR = "r1"
 FILES_${PN} += "${datadir}/gtkhtml-3.6"
-S = "${WORKDIR}/gtkhtml-${PV}"
-
-EXTRA_OECONF = "--disable-gtk-doc"
 
 do_stage() {
 	mv src/libgtkhtml.pc src/libgtkhtml-3.6.pc || true

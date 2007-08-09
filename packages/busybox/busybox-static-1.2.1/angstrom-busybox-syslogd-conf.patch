@@ -1,0 +1,19 @@
+# 
+# old_revision [fdb3a990f25607c7b10b3ace56859b837e3e6a99]
+# 
+# add_file "packages/busybox/busybox-1.2.1/angstrom/syslog.conf"
+#  content [96581f5fbde2e5e5109328e8b42d14d53a5c2119]
+# 
+============================================================
+--- packages/busybox/busybox-1.2.1/angstrom/syslog.conf	96581f5fbde2e5e5109328e8b42d14d53a5c2119
++++ packages/busybox/busybox-1.2.1/angstrom/syslog.conf	96581f5fbde2e5e5109328e8b42d14d53a5c2119
+@@ -0,0 +1,9 @@
++DESTINATION="file"		# log destinations (buffer file remote)
++MARKINT=20			# interval between --mark-- entries [min]
++REDUCE=no			# reduced-size logging
++BUFFERSIZE=64			# buffer: size of circular buffer [kByte]
++LOGFILE=/var/log/messages	# file: where to log
++ROTATESIZE=32			# file: rotate log if grown beyond X [kByte] (busybox 1.2+)
++ROTATEGENS=1			# file: keep X generations of rotated logs (busybox 1.2+)
++REMOTE=loghost:514		# remote: where to log
++FOREGROUND=no			# run in foreground (don't use!)

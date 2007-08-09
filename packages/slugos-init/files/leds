@@ -18,8 +18,9 @@ esac
 #  handle the 'user' setting.
 led_user_default(){
 	case "$(machine)" in
-	nslu2)	echo -n "cpu-idle";;
-	*)	echo -n "cpu";;
+	    nslu2)	echo -n "cpu-idle";;
+	    nas100d)	echo -n "on";;
+	    *)		echo -n "cpu";;
 	esac
 }
 #

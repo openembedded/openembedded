@@ -22,5 +22,4 @@ do_install_append() {
 	done
 }
 
-PACKAGES = "gsoap-dev"
 FILES_gsoap-dev = "${bindir}/wsdl2h ${bindir}/soapcpp2 ${libdir}"

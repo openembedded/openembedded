@@ -3,7 +3,7 @@ HOMEPAGE = "http://www.konqueror.org/embedded"
 SECTION = "opie/applications"
 PRIORITY = "optional"
 DEPENDS = "libqpe-opie openssl libpcre"
-LICENSE = "LGPL/GPL"
+LICENSE = "LGPL GPL"
 PR = "r5"
 
 # Note if this .bb files fails with the error:

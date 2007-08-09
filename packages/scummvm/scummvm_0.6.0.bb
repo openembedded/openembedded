@@ -1,7 +1,7 @@
 DESCRIPTION = "Virtual Machine for LucasArts Adventures for Qt/Embedded based palmtop environments w/ SDL."
 SECTION = "opie/games"
 PRIORITY = "optional"
-DEPENDS = "libsdl-qpe libmad tremor libogg zlib libmpeg2"
+DEPENDS = "libsdl-qpe libmad tremor libogg zlib mpeg2dec"
 LICENSE = "GPL"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/scummvm/scummvm-${PV}.tar.bz2 \

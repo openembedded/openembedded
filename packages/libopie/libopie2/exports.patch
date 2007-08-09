@@ -1,0 +1,11 @@
+--- libopie2/opiecore/ostorageinfo.h.org	2007-03-09 11:20:17.000000000 +0000
++++ libopie2/opiecore/ostorageinfo.h	2007-03-08 23:43:56.000000000 +0000
+@@ -35,7 +35,7 @@
+ namespace Opie {
+ namespace Core {
+ 
+-class OStorageInfo : public StorageInfo
++class Q_EXPORT OStorageInfo : public StorageInfo
+ {
+   Q_OBJECT
+ 

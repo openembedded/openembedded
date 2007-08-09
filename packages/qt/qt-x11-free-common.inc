@@ -76,7 +76,7 @@ do_install() {
 }
 
 PACKAGES =+ "qt-x11-plugins-imageformats qt-x11-plugins-sqldrivers qt-x11-plugins-designer \
-             qt-x11-designer qt-x11-assistant qt-x11-qvfb qt-x11-qtconfig qt-x11-plugins-debug"
+             qt-x11-designer qt-x11-assistant qt-x11-qvfb qt-x11-qtconfig"
 FILES_qt-x11-plugins-imageformats = "${prefix}/plugins/imageformats/*.so"
 FILES_qt-x11-plugins-sqldrivers = "${prefix}/plugins/sqldrivers/*.so"
 FILES_qt-x11-plugins-designer = "${prefix}/plugins/designer/*.so"
@@ -84,5 +84,4 @@ FILES_qt-x11-designer = "${bindir}/designer"
 FILES_qt-x11-assistant = "${bindir}/assistant"
 FILES_qt-x11-qvfb = "${bindir}/qvfb"
 FILES_qt-x11-qtconfig = "${bindir}/qtconfig"
-FILES_qt-x11-plugins-debug += "${prefix}/plugins/*/.debug"
-
+FILES_qt-x11-dbg += "${prefix}/plugins/*/.debug ${D}/qt-x11-plugins-debug"

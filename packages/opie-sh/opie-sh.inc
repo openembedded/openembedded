@@ -4,7 +4,7 @@ PRIORITY = "optional"
 LICENSE = "GPL"
 APPNAME = "opie-sh"
 APPTYPE = "binary"
-PR = "r1"
+PR = "r2"
 
 S = "${WORKDIR}/${APPNAME}"
 
@@ -27,10 +27,10 @@ do_install() {
 	install -m 0644 ${WORKDIR}/share/config/*.cfg  ${D}${palmtopdir}/share/config/
 }
 
-PACKAGES = " opie-sh-microkbd opie-sh-diskfree opie-sh-fsmounter opie-sh-hostlist \
+PACKAGES += " opie-sh-microkbd opie-sh-diskfree opie-sh-fsmounter opie-sh-hostlist \
 opie-sh-killproc opie-sh-launcher-refresh opie-sh-logviewer opie-sh-rsynchelper \
 opie-sh-servicemanager opie-sh-ssh-askpass opie-sh-stowawayctrl opie-sh-usbnetctrl \
-opie-sh-wavelanchooser ${PN}"
+opie-sh-wavelanchooser "
 
 RDEPENDS_opie-sh-microkbd = "opie-sh"
 RDEPENDS_opie-sh-diskfree = "opie-sh"

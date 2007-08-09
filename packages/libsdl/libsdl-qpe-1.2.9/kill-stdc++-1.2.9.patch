@@ -1,0 +1,422 @@
+diff -Naur SDL-1.2.9-orig/acinclude.m4 SDL-1.2.9/acinclude.m4
+--- SDL-1.2.9-orig/acinclude.m4	2004-08-24 08:32:50.000000000 +0200
++++ SDL-1.2.9/acinclude.m4	2007-03-12 20:57:08.000000000 +0100
+@@ -1473,11 +1473,11 @@
+ case $host_os in
+ aix3*)
+   version_type=linux
+-  library_names_spec='${libname}${release}${shared_ext}$versuffix $libname.a'
++  library_names_spec='${libname}${release}${shrext}$versuffix $libname.a'
+   shlibpath_var=LIBPATH
+ 
+   # AIX 3 has no versioning support, so we append a major version to the name.
+-  soname_spec='${libname}${release}${shared_ext}$major'
++  soname_spec='${libname}${release}${shrext}$major'
+   ;;
+ 
+ aix4* | aix5*)
+@@ -1487,7 +1487,7 @@
+   hardcode_into_libs=yes
+   if test "$host_cpu" = ia64; then
+     # AIX 5 supports IA64
+-    library_names_spec='${libname}${release}${shared_ext}$major ${libname}${release}${shared_ext}$versuffix $libname${shared_ext}'
++    library_names_spec='${libname}${release}${shrext}$major ${libname}${release}${shrext}$versuffix $libname${shrext}'
+     shlibpath_var=LD_LIBRARY_PATH
+   else
+     # With GCC up to 2.95.x, collect2 would create an import file
+@@ -1513,12 +1513,12 @@
+       # If using run time linking (on AIX 4.2 or later) use lib<name>.so
+       # instead of lib<name>.a to let people know that these are not
+       # typical AIX shared libraries.
+-      library_names_spec='${libname}${release}${shared_ext}$versuffix ${libname}${release}${shared_ext}$major $libname${shared_ext}'
++      library_names_spec='${libname}${release}${shrext}$versuffix ${libname}${release}${shrext}$major $libname${shrext}'
+     else
+       # We preserve .a as extension for shared libraries through AIX4.2
+       # and later when we are not doing run time linking.
+       library_names_spec='${libname}${release}.a $libname.a'
+-      soname_spec='${libname}${release}${shared_ext}$major'
++      soname_spec='${libname}${release}${shrext}$major'
+     fi
+     shlibpath_var=LIBPATH
+   fi
+@@ -1531,7 +1531,7 @@
+   ;;
+ 
+ beos*)
+-  library_names_spec='${libname}${shared_ext}'
++  library_names_spec='${libname}${shrext}'
+   dynamic_linker="$host_os ld.so"
+   shlibpath_var=LIBRARY_PATH
+   ;;
+@@ -1539,8 +1539,8 @@
+ bsdi[[45]]*)
+   version_type=linux
+   need_version=no
+-  library_names_spec='${libname}${release}${shared_ext}$versuffix ${libname}${release}${shared_ext}$major $libname${shared_ext}'
+-  soname_spec='${libname}${release}${shared_ext}$major'
++  library_names_spec='${libname}${release}${shrext}$versuffix ${libname}${release}${shrext}$major $libname${shrext}'
++  soname_spec='${libname}${release}${shrext}$major'
+   finish_cmds='PATH="\$PATH:/sbin" ldconfig $libdir'
+   shlibpath_var=LD_LIBRARY_PATH
+   sys_lib_search_path_spec="/shlib /usr/lib /usr/X11/lib /usr/contrib/lib /lib /usr/local/lib"
+@@ -1573,14 +1573,14 @@
+     case $host_os in
+     cygwin*)
+       # Cygwin DLLs use 'cyg' prefix rather than 'lib'
+-      #soname_spec='`echo ${libname} | sed -e 's/^lib/cyg/'``echo ${release} | $SED -e 's/[[.]]/-/g'`${versuffix}${shared_ext}'
+-      soname_spec='`echo ${libname} | sed -e 's/^lib//'`${shared_ext}'
++      #soname_spec='`echo ${libname} | sed -e 's/^lib/cyg/'``echo ${release} | $SED -e 's/[[.]]/-/g'`${versuffix}${shrext}'
++      soname_spec='`echo ${libname} | sed -e 's/^lib//'`${shrext}'
+       sys_lib_search_path_spec="/usr/lib /lib/w32api /lib /usr/local/lib"
+       ;;
+     mingw*)
+       # MinGW DLLs use traditional 'lib' prefix
+-      #soname_spec='${libname}`echo ${release} | $SED -e 's/[[.]]/-/g'`${versuffix}${shared_ext}'
+-      soname_spec='`echo ${libname} | sed -e 's/^lib//'`${shared_ext}'
++      #soname_spec='${libname}`echo ${release} | $SED -e 's/[[.]]/-/g'`${versuffix}${shrext}'
++      soname_spec='`echo ${libname} | sed -e 's/^lib//'`${shrext}'
+       sys_lib_search_path_spec=`$CC -print-search-dirs | grep "^libraries:" | $SED -e "s/^libraries://" -e "s,=/,/,g"`
+       if echo "$sys_lib_search_path_spec" | [grep ';[c-zC-Z]:/' >/dev/null]; then
+         # It is most probably a Windows format PATH printed by
+@@ -1596,13 +1596,13 @@
+       ;;
+     pw32*)
+       # pw32 DLLs use 'pw' prefix rather than 'lib'
+-      library_names_spec='`echo ${libname} | sed -e 's/^lib/pw/'``echo ${release} | $SED -e 's/[.]/-/g'`${versuffix}${shared_ext}'
++      library_names_spec='`echo ${libname} | sed -e 's/^lib/pw/'``echo ${release} | $SED -e 's/[.]/-/g'`${versuffix}${shrext}'
+       ;;
+     esac
+     ;;
+ 
+   *)
+-    library_names_spec='${libname}`echo ${release} | $SED -e 's/[[.]]/-/g'`${versuffix}${shared_ext} $libname.lib'
++    library_names_spec='${libname}`echo ${release} | $SED -e 's/[[.]]/-/g'`${versuffix}${shrext} $libname.lib'
+     ;;
+   esac
+   dynamic_linker='Win32 ld.exe'
+@@ -1615,8 +1615,8 @@
+   version_type=darwin
+   need_lib_prefix=no
+   need_version=no
+-  library_names_spec='${libname}${release}${versuffix}$shared_ext ${libname}${release}${major}$shared_ext ${libname}$shared_ext'
+-  soname_spec='${libname}${release}${major}$shared_ext'
++  library_names_spec='${libname}${release}${versuffix}$shrext ${libname}${release}${major}$shrext ${libname}$shrext'
++  soname_spec='${libname}${release}${major}$shrext'
+   shlibpath_overrides_runpath=yes
+   shlibpath_var=DYLD_LIBRARY_PATH
+   shrext_cmds='$(test .$module = .yes && echo .so || echo .dylib)'
+@@ -1633,8 +1633,8 @@
+   version_type=linux
+   need_lib_prefix=no
+   need_version=no
+-  library_names_spec='${libname}${release}${shared_ext}$versuffix ${libname}${release}${shared_ext}$major $libname$shared_ext'
+-  soname_spec='${libname}${release}${shared_ext}$major'
++  library_names_spec='${libname}${release}${shrext}$versuffix ${libname}${release}${shrext}$major $libname$shrext'
++  soname_spec='${libname}${release}${shrext}$major'
+   shlibpath_var=LD_LIBRARY_PATH
+   ;;
+ 
+@@ -1646,8 +1646,8 @@
+   version_type=linux
+   need_lib_prefix=no
+   need_version=no
+-  library_names_spec='${libname}${release}${shared_ext}$versuffix ${libname}${release}${shared_ext}$major ${libname}${shared_ext}'
+-  soname_spec='${libname}${release}${shared_ext}$major'
++  library_names_spec='${libname}${release}${shrext}$versuffix ${libname}${release}${shrext}$major ${libname}${shrext}'
++  soname_spec='${libname}${release}${shrext}$major'
+   shlibpath_var=LD_LIBRARY_PATH
+   shlibpath_overrides_runpath=no
+   hardcode_into_libs=yes
+@@ -1659,12 +1659,12 @@
+   version_type=freebsd-$objformat
+   case $version_type in
+     freebsd-elf*)
+-      library_names_spec='${libname}${release}${shared_ext}$versuffix ${libname}${release}${shared_ext} $libname${shared_ext}'
++      library_names_spec='${libname}${release}${shrext}$versuffix ${libname}${release}${shrext} $libname${shrext}'
+       need_version=no
+       need_lib_prefix=no
+       ;;
+     freebsd-*)
+-      library_names_spec='${libname}${release}${shared_ext}$versuffix $libname${shared_ext}$versuffix'
++      library_names_spec='${libname}${release}${shrext}$versuffix $libname${shrext}$versuffix'
+       need_version=yes
+       ;;
+   esac
+@@ -1688,8 +1688,8 @@
+   version_type=linux
+   need_lib_prefix=no
+   need_version=no
+-  library_names_spec='${libname}${release}${shared_ext}$versuffix ${libname}${release}${shared_ext}${major} ${libname}${shared_ext}'
+-  soname_spec='${libname}${release}${shared_ext}$major'
++  library_names_spec='${libname}${release}${shrext}$versuffix ${libname}${release}${shrext}${major} ${libname}${shrext}'
++  soname_spec='${libname}${release}${shrext}$major'
+   shlibpath_var=LD_LIBRARY_PATH
+   hardcode_into_libs=yes
+   ;;
+@@ -1707,8 +1707,8 @@
+     dynamic_linker="$host_os dld.so"
+     shlibpath_var=LD_LIBRARY_PATH
+     shlibpath_overrides_runpath=yes # Unless +noenvvar is specified.
+-    library_names_spec='${libname}${release}${shared_ext}$versuffix ${libname}${release}${shared_ext}$major $libname${shared_ext}'
+-    soname_spec='${libname}${release}${shared_ext}$major'
++    library_names_spec='${libname}${release}${shrext}$versuffix ${libname}${release}${shrext}$major $libname${shrext}'
++    soname_spec='${libname}${release}${shrext}$major'
+     if test "X$HPUX_IA64_MODE" = X32; then
+       sys_lib_search_path_spec="/usr/lib/hpux32 /usr/local/lib/hpux32 /usr/local/lib"
+     else
+@@ -1722,8 +1722,8 @@
+      dynamic_linker="$host_os dld.sl"
+      shlibpath_var=LD_LIBRARY_PATH # How should we handle SHLIB_PATH
+      shlibpath_overrides_runpath=yes # Unless +noenvvar is specified.
+-     library_names_spec='${libname}${release}${shared_ext}$versuffix ${libname}${release}${shared_ext}$major $libname${shared_ext}'
+-     soname_spec='${libname}${release}${shared_ext}$major'
++     library_names_spec='${libname}${release}${shrext}$versuffix ${libname}${release}${shrext}$major $libname${shrext}'
++     soname_spec='${libname}${release}${shrext}$major'
+      sys_lib_search_path_spec="/usr/lib/pa20_64 /usr/ccs/lib/pa20_64"
+      sys_lib_dlsearch_path_spec=$sys_lib_search_path_spec
+      ;;
+@@ -1732,8 +1732,8 @@
+     dynamic_linker="$host_os dld.sl"
+     shlibpath_var=SHLIB_PATH
+     shlibpath_overrides_runpath=no # +s is required to enable SHLIB_PATH
+-    library_names_spec='${libname}${release}${shared_ext}$versuffix ${libname}${release}${shared_ext}$major $libname${shared_ext}'
+-    soname_spec='${libname}${release}${shared_ext}$major'
++    library_names_spec='${libname}${release}${shrext}$versuffix ${libname}${release}${shrext}$major $libname${shrext}'
++    soname_spec='${libname}${release}${shrext}$major'
+     ;;
+   esac
+   # HP-UX runs *really* slowly unless shared libraries are mode 555.
+@@ -1752,8 +1752,8 @@
+   esac
+   need_lib_prefix=no
+   need_version=no
+-  soname_spec='${libname}${release}${shared_ext}$major'
+-  library_names_spec='${libname}${release}${shared_ext}$versuffix ${libname}${release}${shared_ext}$major ${libname}${release}${shared_ext} $libname${shared_ext}'
++  soname_spec='${libname}${release}${shrext}$major'
++  library_names_spec='${libname}${release}${shrext}$versuffix ${libname}${release}${shrext}$major ${libname}${release}${shrext} $libname${shrext}'
+   case $host_os in
+   irix5* | nonstopux*)
+     libsuff= shlibsuff=
+@@ -1787,8 +1787,8 @@
+   version_type=linux
+   need_lib_prefix=no
+   need_version=no
+-  library_names_spec='${libname}${release}${shared_ext}$versuffix ${libname}${release}${shared_ext}$major $libname${shared_ext}'
+-  soname_spec='${libname}${release}${shared_ext}$major'
++  library_names_spec='${libname}${release}${shrext}$versuffix ${libname}${release}${shrext}$major $libname${shrext}'
++  soname_spec='${libname}${release}${shrext}$major'
+   finish_cmds='PATH="\$PATH:/sbin" ldconfig -n $libdir'
+   shlibpath_var=LD_LIBRARY_PATH
+   shlibpath_overrides_runpath=no
+@@ -1816,8 +1816,8 @@
+   version_type=linux
+   need_lib_prefix=no
+   need_version=no
+-  library_names_spec='${libname}${release}${shared_ext}$versuffix ${libname}${release}${shared_ext}$major ${libname}${shared_ext}'
+-  soname_spec='${libname}${release}${shared_ext}$major'
++  library_names_spec='${libname}${release}${shrext}$versuffix ${libname}${release}${shrext}$major ${libname}${shrext}'
++  soname_spec='${libname}${release}${shrext}$major'
+   shlibpath_var=LD_LIBRARY_PATH
+   shlibpath_overrides_runpath=no
+   hardcode_into_libs=yes
+@@ -1829,12 +1829,12 @@
+   need_lib_prefix=no
+   need_version=no
+   if echo __ELF__ | $CC -E - | grep __ELF__ >/dev/null; then
+-    library_names_spec='${libname}${release}${shared_ext}$versuffix ${libname}${shared_ext}$versuffix'
++    library_names_spec='${libname}${release}${shrext}$versuffix ${libname}${shrext}$versuffix'
+     finish_cmds='PATH="\$PATH:/sbin" ldconfig -m $libdir'
+     dynamic_linker='NetBSD (a.out) ld.so'
+   else
+-    library_names_spec='${libname}${release}${shared_ext}$versuffix ${libname}${release}${shared_ext}$major ${libname}${shared_ext}'
+-    soname_spec='${libname}${release}${shared_ext}$major'
++    library_names_spec='${libname}${release}${shrext}$versuffix ${libname}${release}${shrext}$major ${libname}${shrext}'
++    soname_spec='${libname}${release}${shrext}$major'
+     dynamic_linker='NetBSD ld.elf_so'
+   fi
+   shlibpath_var=LD_LIBRARY_PATH
+@@ -1844,7 +1844,7 @@
+ 
+ newsos6)
+   version_type=linux
+-  library_names_spec='${libname}${release}${shared_ext}$versuffix ${libname}${release}${shared_ext}$major $libname${shared_ext}'
++  library_names_spec='${libname}${release}${shrext}$versuffix ${libname}${release}${shrext}$major $libname${shrext}'
+   shlibpath_var=LD_LIBRARY_PATH
+   shlibpath_overrides_runpath=yes
+   ;;
+@@ -1853,8 +1853,8 @@
+   version_type=linux
+   need_lib_prefix=no
+   need_version=no
+-  library_names_spec='${libname}${release}${shared_ext}$versuffix ${libname}${release}${shared_ext}$major $libname${shared_ext}'
+-  soname_spec='${libname}${release}${shared_ext}$major'
++  library_names_spec='${libname}${release}${shrext}$versuffix ${libname}${release}${shrext}$major $libname${shrext}'
++  soname_spec='${libname}${release}${shrext}$major'
+   shlibpath_var=LD_LIBRARY_PATH
+   shlibpath_overrides_runpath=yes
+   ;;
+@@ -1863,7 +1863,7 @@
+   version_type=sunos
+   need_lib_prefix=no
+   need_version=no
+-  library_names_spec='${libname}${release}${shared_ext}$versuffix ${libname}${shared_ext}$versuffix'
++  library_names_spec='${libname}${release}${shrext}$versuffix ${libname}${shrext}$versuffix'
+   finish_cmds='PATH="\$PATH:/sbin" ldconfig -m $libdir'
+   shlibpath_var=LD_LIBRARY_PATH
+   if test -z "`echo __ELF__ | $CC -E - | grep __ELF__`" || test "$host_os-$host_cpu" = "openbsd2.8-powerpc"; then
+@@ -1884,7 +1884,7 @@
+   libname_spec='$name'
+   shrext_cmds=".dll"
+   need_lib_prefix=no
+-  library_names_spec='$libname${shared_ext} $libname.a'
++  library_names_spec='$libname${shrext} $libname.a'
+   dynamic_linker='OS/2 ld.exe'
+   shlibpath_var=LIBPATH
+   ;;
+@@ -1893,8 +1893,8 @@
+   version_type=osf
+   need_lib_prefix=no
+   need_version=no
+-  soname_spec='${libname}${release}${shared_ext}$major'
+-  library_names_spec='${libname}${release}${shared_ext}$versuffix ${libname}${release}${shared_ext}$major $libname${shared_ext}'
++  soname_spec='${libname}${release}${shrext}$major'
++  library_names_spec='${libname}${release}${shrext}$versuffix ${libname}${release}${shrext}$major $libname${shrext}'
+   shlibpath_var=LD_LIBRARY_PATH
+   sys_lib_search_path_spec="/usr/shlib /usr/ccs/lib /usr/lib/cmplrs/cc /usr/lib /usr/local/lib /var/shlib"
+   sys_lib_dlsearch_path_spec="$sys_lib_search_path_spec"
+@@ -1902,8 +1902,8 @@
+ 
+ sco3.2v5*)
+   version_type=osf
+-  soname_spec='${libname}${release}${shared_ext}$major'
+-  library_names_spec='${libname}${release}${shared_ext}$versuffix ${libname}${release}${shared_ext}$major $libname${shared_ext}'
++  soname_spec='${libname}${release}${shrext}$major'
++  library_names_spec='${libname}${release}${shrext}$versuffix ${libname}${release}${shrext}$major $libname${shrext}'
+   shlibpath_var=LD_LIBRARY_PATH
+   ;;
+ 
+@@ -1911,8 +1911,8 @@
+   version_type=linux
+   need_lib_prefix=no
+   need_version=no
+-  library_names_spec='${libname}${release}${shared_ext}$versuffix ${libname}${release}${shared_ext}$major $libname${shared_ext}'
+-  soname_spec='${libname}${release}${shared_ext}$major'
++  library_names_spec='${libname}${release}${shrext}$versuffix ${libname}${release}${shrext}$major $libname${shrext}'
++  soname_spec='${libname}${release}${shrext}$major'
+   shlibpath_var=LD_LIBRARY_PATH
+   shlibpath_overrides_runpath=yes
+   hardcode_into_libs=yes
+@@ -1922,7 +1922,7 @@
+ 
+ sunos4*)
+   version_type=sunos
+-  library_names_spec='${libname}${release}${shared_ext}$versuffix ${libname}${shared_ext}$versuffix'
++  library_names_spec='${libname}${release}${shrext}$versuffix ${libname}${shrext}$versuffix'
+   finish_cmds='PATH="\$PATH:/usr/etc" ldconfig $libdir'
+   shlibpath_var=LD_LIBRARY_PATH
+   shlibpath_overrides_runpath=yes
+@@ -1934,8 +1934,8 @@
+ 
+ sysv4 | sysv4.2uw2* | sysv4.3* | sysv5*)
+   version_type=linux
+-  library_names_spec='${libname}${release}${shared_ext}$versuffix ${libname}${release}${shared_ext}$major $libname${shared_ext}'
+-  soname_spec='${libname}${release}${shared_ext}$major'
++  library_names_spec='${libname}${release}${shrext}$versuffix ${libname}${release}${shrext}$major $libname${shrext}'
++  soname_spec='${libname}${release}${shrext}$major'
+   shlibpath_var=LD_LIBRARY_PATH
+   case $host_vendor in
+     sni)
+@@ -1959,16 +1959,16 @@
+ sysv4*MP*)
+   if test -d /usr/nec ;then
+     version_type=linux
+-    library_names_spec='$libname${shared_ext}.$versuffix $libname${shared_ext}.$major $libname${shared_ext}'
+-    soname_spec='$libname${shared_ext}.$major'
++    library_names_spec='$libname${shrext}.$versuffix $libname${shrext}.$major $libname${shrext}'
++    soname_spec='$libname${shrext}.$major'
+     shlibpath_var=LD_LIBRARY_PATH
+   fi
+   ;;
+ 
+ uts4*)
+   version_type=linux
+-  library_names_spec='${libname}${release}${shared_ext}$versuffix ${libname}${release}${shared_ext}$major $libname${shared_ext}'
+-  soname_spec='${libname}${release}${shared_ext}$major'
++  library_names_spec='${libname}${release}${shrext}$versuffix ${libname}${release}${shrext}$major $libname${shrext}'
++  soname_spec='${libname}${release}${shrext}$major'
+   shlibpath_var=LD_LIBRARY_PATH
+   ;;
+ 
+@@ -3471,8 +3471,8 @@
+ 	# KCC will only create a shared library if the output file
+ 	# ends with ".so" (or ".sl" for HP-UX), so rename the library
+ 	# to its proper name (with version) after linking.
+-	_LT_AC_TAGVAR(archive_cmds, $1)='tempext=`echo $shared_ext | $SED -e '\''s/\([[^()0-9A-Za-z{}]]\)/\\\\\1/g'\''`; templib=`echo $lib | $SED -e "s/\${tempext}\..*/.so/"`; $CC $predep_objects $libobjs $deplibs $postdep_objects $compiler_flags --soname $soname -o \$templib; mv \$templib $lib'
+-	_LT_AC_TAGVAR(archive_expsym_cmds, $1)='tempext=`echo $shared_ext | $SED -e '\''s/\([[^()0-9A-Za-z{}]]\)/\\\\\1/g'\''`; templib=`echo $lib | $SED -e "s/\${tempext}\..*/.so/"`; $CC $predep_objects $libobjs $deplibs $postdep_objects $compiler_flags --soname $soname -o \$templib ${wl}-retain-symbols-file,$export_symbols; mv \$templib $lib'
++	_LT_AC_TAGVAR(archive_cmds, $1)='tempext=`echo $shrext | $SED -e '\''s/\([[^()0-9A-Za-z{}]]\)/\\\\\1/g'\''`; templib=`echo $lib | $SED -e "s/\${tempext}\..*/.so/"`; $CC $predep_objects $libobjs $deplibs $postdep_objects $compiler_flags --soname $soname -o \$templib; mv \$templib $lib'
++	_LT_AC_TAGVAR(archive_expsym_cmds, $1)='tempext=`echo $shrext | $SED -e '\''s/\([[^()0-9A-Za-z{}]]\)/\\\\\1/g'\''`; templib=`echo $lib | $SED -e "s/\${tempext}\..*/.so/"`; $CC $predep_objects $libobjs $deplibs $postdep_objects $compiler_flags --soname $soname -o \$templib ${wl}-retain-symbols-file,$export_symbols; mv \$templib $lib'
+ 	# Commands to make compiler produce verbose output that lists
+ 	# what "hidden" libraries, object files and flags are used when
+ 	# linking a shared library.
+@@ -3481,7 +3481,7 @@
+ 	# explicitly linking system object files so we need to strip them
+ 	# from the output so that they don't get included in the library
+ 	# dependencies.
+-	output_verbose_link_cmd='templist=`$CC $CFLAGS -v conftest.$objext -o libconftest$shared_ext 2>&1 | grep "ld"`; rm -f libconftest$shared_ext; list=""; for z in $templist; do case $z in conftest.$objext) list="$list $z";; *.$objext);; *) list="$list $z";;esac; done; echo $list'
++	output_verbose_link_cmd='templist=`$CC $CFLAGS -v conftest.$objext -o libconftest$shrext 2>&1 | grep "ld"`; rm -f libconftest$shrext; list=""; for z in $templist; do case $z in conftest.$objext) list="$list $z";; *.$objext);; *) list="$list $z";;esac; done; echo $list'
+ 
+ 	_LT_AC_TAGVAR(hardcode_libdir_flag_spec, $1)='${wl}--rpath,$libdir'
+ 	_LT_AC_TAGVAR(export_dynamic_flag_spec, $1)='${wl}--export-dynamic'
+@@ -3585,7 +3585,7 @@
+ 	# KCC will only create a shared library if the output file
+ 	# ends with ".so" (or ".sl" for HP-UX), so rename the library
+ 	# to its proper name (with version) after linking.
+-	_LT_AC_TAGVAR(archive_cmds, $1)='tempext=`echo $shared_ext | $SED -e '\''s/\([[^()0-9A-Za-z{}]]\)/\\\\\1/g'\''`; templib=`echo $lib | $SED -e "s/\${tempext}\..*/.so/"`; $CC $predep_objects $libobjs $deplibs $postdep_objects $compiler_flags --soname $soname -o \$templib; mv \$templib $lib'
++	_LT_AC_TAGVAR(archive_cmds, $1)='tempext=`echo $shrext | $SED -e '\''s/\([[^()0-9A-Za-z{}]]\)/\\\\\1/g'\''`; templib=`echo $lib | $SED -e "s/\${tempext}\..*/.so/"`; $CC $predep_objects $libobjs $deplibs $postdep_objects $compiler_flags --soname $soname -o \$templib; mv \$templib $lib'
+ 
+ 	_LT_AC_TAGVAR(hardcode_libdir_flag_spec, $1)='${wl}-rpath,$libdir'
+ 	_LT_AC_TAGVAR(hardcode_libdir_separator, $1)=:
+@@ -3645,7 +3645,7 @@
+ 	# KCC will only create a shared library if the output file
+ 	# ends with ".so" (or ".sl" for HP-UX), so rename the library
+ 	# to its proper name (with version) after linking.
+-	_LT_AC_TAGVAR(archive_cmds, $1)='tempext=`echo $shared_ext | $SED -e '\''s/\([[^()0-9A-Za-z{}]]\)/\\\\\1/g'\''`; templib=`echo $lib | $SED -e "s/\${tempext}\..*/.so/"`; $CC $predep_objects $libobjs $deplibs $postdep_objects $compiler_flags --soname $soname -o \$templib; mv \$templib $lib'
++	_LT_AC_TAGVAR(archive_cmds, $1)='tempext=`echo $shrext | $SED -e '\''s/\([[^()0-9A-Za-z{}]]\)/\\\\\1/g'\''`; templib=`echo $lib | $SED -e "s/\${tempext}\..*/.so/"`; $CC $predep_objects $libobjs $deplibs $postdep_objects $compiler_flags --soname $soname -o \$templib; mv \$templib $lib'
+ 
+ 	_LT_AC_TAGVAR(hardcode_libdir_flag_spec, $1)='${wl}-rpath,$libdir'
+ 	_LT_AC_TAGVAR(hardcode_libdir_separator, $1)=:
+@@ -4596,7 +4596,7 @@
+ # Whether we need a single -rpath flag with a separated argument.
+ hardcode_libdir_separator=$lt_[]_LT_AC_TAGVAR(hardcode_libdir_separator, $1)
+ 
+-# Set to yes if using DIR/libNAME${shared_ext} during linking hardcodes DIR into the
++# Set to yes if using DIR/libNAME${shrext} during linking hardcodes DIR into the
+ # resulting binary.
+ hardcode_direct=$_LT_AC_TAGVAR(hardcode_direct, $1)
+ 
+diff -Naur SDL-1.2.9-orig/src/main/Makefile.am SDL-1.2.9/src/main/Makefile.am
+--- SDL-1.2.9-orig/src/main/Makefile.am	2007-03-12 20:56:23.000000000 +0100
++++ SDL-1.2.9/src/main/Makefile.am	2007-03-12 20:57:08.000000000 +0100
+@@ -46,3 +46,9 @@
+ 	(cd $(distdir) && rm -f $(BUILT_SOURCES))
+ 	cp -rp $(ARCH_SUBDIRS) $(distdir)
+ 	(cd $(distdir) && rm -rf `find . -name CVS`)
++
++# overwrite USER variables
++CXXLD = $(CC)
++CXXLINK = $(LIBTOOL) --mode=link $(CXXLD) $(AM_CXXFLAGS) $(CXXFLAGS) \
++	$(AM_LDFLAGS) $(LDFLAGS) -o $@
++
+diff -Naur SDL-1.2.9-orig/src/video/qtopia/Makefile.am SDL-1.2.9/src/video/qtopia/Makefile.am
+--- SDL-1.2.9-orig/src/video/qtopia/Makefile.am	2007-03-12 20:56:23.000000000 +0100
++++ SDL-1.2.9/src/video/qtopia/Makefile.am	2007-03-12 20:57:08.000000000 +0100
+@@ -17,3 +17,9 @@
+ 	SDL_sysevents.cc	\
+ 	SDL_sysevents_c.h       \
+ 	SDL_qmain.cc
++
++
++# overwrite USER variables
++CXXLD = $(CC)
++CXXLINK = $(LIBTOOL) --mode=link $(CXXLD) $(AM_CXXFLAGS) $(CXXFLAGS) \
++	$(AM_LDFLAGS) $(LDFLAGS) -o $@

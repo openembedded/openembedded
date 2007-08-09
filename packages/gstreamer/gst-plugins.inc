@@ -1,21 +1,12 @@
+require gst-common.inc
 DESCRIPTION = "Plugins for GStreamer"
-SECTION = "multimedia"
-PRIORITY = "optional"
 DEPENDS = "gstreamer libmikmod libmad liboil libogg tremor libvorbis libid3tag esound"
-PR = "r1"
 
 PACKAGES_DYNAMIC = "gst-plugin-*"
 
-# until we have decided for a final naming scheme,
-# keep using version 0.8
-DEFAULT_PREFERENCE = "-1"
-
-inherit autotools pkgconfig gconf
-
 SRC_URI = "http://gstreamer.freedesktop.org/src/${PN}/${PN}-${PV}.tar.bz2"
 
-EXTRA_OECONF = "--disable-x --disable-aalib --disable-shout2 \
-		--disable-sdl"
+EXTRA_OECONF = "--disable-aalib --disable-shout2 --disable-sdl"
 
 acpaths = "-I ${S}/common/m4 -I ${S}/m4"
 
@@ -28,9 +19,5 @@ python populate_packages_prepend () {
 	do_split_packages(d, gst_libdir, '^libgst(.*)\.so$', 'gst-plugin-%s', 'GStreamer plugin for %s', postinst=postinst)
 	do_split_packages(d, gst_libdir, '^libgst(.*)\.l?a$', 'gst-plugin-%s-dev', 'GStreamer plugin for %s (development files)')
 }
-
-#do_stage() {
-#	autotools_stage_all
-#}
 
 ALLOW_EMPTY = "1"

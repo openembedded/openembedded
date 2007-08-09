@@ -1,7 +1,7 @@
 DESCRIPTION = "Perl is a popular scripting language."
 HOMEPAGE = "http://www.perl.org/"
 LICENSE = "Artistic|GPL"
-PR = "r3"
+PR = "r5"
 
 SECTION = "libs"
 inherit native
@@ -9,6 +9,7 @@ inherit native
 DEPENDS = "virtual/db-native gdbm-native"
 
 SRC_URI = "http://ftp.funet.fi/pub/CPAN/src/perl-${PV}.tar.gz \
+           file://perl-5.8.8-gcc-4.2.patch;patch=1 \
            file://Configure-multilib.patch;patch=1"
 S = "${WORKDIR}/perl-${PV}"
 

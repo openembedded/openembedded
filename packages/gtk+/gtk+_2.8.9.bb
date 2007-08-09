@@ -46,7 +46,6 @@ FILES_${PN}-dbg += " \
 
 RRECOMMENDS_${PN} = "glibc-gconv-iso8859-1 ttf-dejavu-sans"
 RRECOMMENDS_${PN}_angstrom = "glibc-gconv-iso8859-1 ttf-dejavu-sans gdk-pixbuf-loader-png gdk-pixbuf-loader-jpeg gdk-pixbuf-loader-gif gdk-pixbuf-loader-xpm"
-RRECOMMENDS_${PN}_openzaurus = "glibc-gconv-iso8859-1 ttf-dejavu-sans gdk-pixbuf-loader-png gdk-pixbuf-loader-jpeg gdk-pixbuf-loader-gif gdk-pixbuf-loader-xpm"
 
 EXTRA_OECONF = "--without-libtiff --disable-xkb --disable-glibtest --enable-display-migration"
 # --disable-cruft

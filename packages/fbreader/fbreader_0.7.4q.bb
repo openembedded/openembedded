@@ -3,10 +3,10 @@ LICENSE = "GPL2"
 HOMEPAGE = "http://only.mawhrin.net/fbreader/"
 SECTION = "x11/utils"
 PRIORITY = "optional"
-DEPENDS = "gtk+ enca expat bzip2"
-PR = "r0"
+DEPENDS = "gtk+ enca expat bzip2 libgpewidget"
+PR = "r1"
 
-SRC_URI = "http://only.mawhrin.net/fbreader/fbreader-sources-${PV}.tgz \
+SRC_URI = "http://only.mawhrin.net/fbreader/obsolete/fbreader-sources-${PV}.tgz \
 	file://fbreader-0.7.4q_buildsys_oe.patch;patch=1"
 
 FILES_${PN} += "${datadir}/FBReader ${datadir}/zlibrary"

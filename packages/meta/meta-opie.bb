@@ -1,12 +1,8 @@
 DESCRIPTION = "Meta-package for Opie"
 SECTION = "opie/base"
-ALLOW_EMPTY = "1"
 PR = "r34"
-PACKAGE_ARCH = "all"
 LICENSE = "MIT"
-BUILD_ALL_DEPS = "1"
 
-DEPENDS = "task-opie"
 RDEPENDS = "task-opie-applets task-opie-apps task-opie-base \
             task-opie-base-applets task-opie-base-apps \
             task-opie-base-decorations task-opie-base-inputmethods \
@@ -19,3 +15,4 @@ RDEPENDS = "task-opie-applets task-opie-apps task-opie-base \
             task-opie-multimedia task-opie-pim task-opie-settings \
             task-opie-styles task-opie-todayplugins task-opie-wlan"
 
+inherit meta

@@ -9,9 +9,8 @@ FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/autoconf-${PV}"
 inherit native
 
 #
-# without it build break:
+# without it the build breaks:
 # | make[1]: *** No rule to make target `../bin/autom4te', needed by `autoconf.in'.  Stop.
 #
 PARALLEL_MAKE = ""
 
-DEFAULT_PREFERENCE = "-1"

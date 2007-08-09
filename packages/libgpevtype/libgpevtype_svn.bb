@@ -2,8 +2,8 @@ DESCRIPTION = "Data interchange library for GPE"
 SECTION = "gpe/libs"
 PRIORITY = "optional"
 LICENSE = "LGPL"
-DEPENDS = "libmimedir libeventdb"
-PV = "0.17+svn${SRCDATE}"
+DEPENDS = "libmimedir libeventdb libtododb"
+PV = "0.50+svn${SRCDATE}"
 PR = "r1"
 
 inherit pkgconfig gpe autotools

@@ -5,15 +5,26 @@ DEPENDS = "alsa-lib directfb"
 PROVIDES = "virtual/libsdl"
 LICENSE = "LGPL"
 
-PR = "r1"
+PR = "r3"
+DEFAULT_PREFERENCE = "-1"
 
 SRC_URI = "http://www.libsdl.org/release/SDL-${PV}.tar.gz \
-	   file://extra-keys.patch;patch=1 \
-	   file://directfb_obsolete_calls.patch;patch=1 \
-	   file://acinclude.m4"
+           file://agawa-piro-mickey-1.2.9.patch;patch=1 \
+           file://pygame-1.2.9.patch;patch=1 \
+           file://mouse-1.2.9.patch;patch=1 \
+	   file://kill-stdc++-1.2.9.patch;patch=1 \
+	   file://ipaq-1.2.9.patch;patch=1 \
+	   file://SDL-Akita-1.2.9.patch;patch=1 \
+	   file://fixlibs-1.2.9.patch;patch=1 \
+	   file://no-PAGE_SIZE.patch;patch=1 \
+	   file://explicit-extern-C.patch;patch=1 \
+	   file://acinclude.m4 \
+	   file://directfb_obsolete_calls.patch;patch=1"
 S = "${WORKDIR}/SDL-${PV}"
 
 inherit autotools binconfig
+
+CFLAGS_append  += " -I${STAGING_INCDIR}/directfb -I${STAGING_INCDIR}/directfb-internal"
 
 EXTRA_OECONF = "--disable-static --disable-debug --enable-cdrom --enable-threads --enable-timers --enable-endian \
                 --enable-file --enable-oss --enable-alsa --disable-esd --disable-arts \
@@ -29,9 +40,12 @@ FILES_${PN}-dev += "${bindir}/*config"
 
 do_configure_prepend() {
 	rm -f ${S}/acinclude.m4
-	cp ${WORKDIR}/acinclude.m4 ${S}/
+        cp ${WORKDIR}/acinclude.m4 ${S}/
+	if [ "${PALMTOP_USE_MULTITHREADED_QT}" == "yes" ]
+	then
+		sed -i s,-lqte,-lqte-mt, src/Makefile
+	fi	
 }
-
 do_configure_append () {
 	cd ${S}
 

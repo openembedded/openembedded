@@ -1,7 +1,7 @@
 DESCRIPTION = "The Subversion (svn) client"
 SECTION = "console/network"
 DEPENDS = "apr-util-0.9.12 neon"
-LICENSE = "Apache/BSD"
+LICENSE = "Apache BSD"
 HOMEPAGE = "http://subversion.tigris.org"
 PR = "r1"
 

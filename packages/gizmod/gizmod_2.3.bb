@@ -1,9 +1,8 @@
 DESCRIPTION = "Gizmo Daemon"
 HOMEPAGE = "http://gizmod.sourceforge.net"
 LICENSE = "GPLv2"
-MAINTAINER = "Justin Patrin <papercrane@reversefold.com>"
 SECTION = "console/multimedia"
-DEPENDS = "python virtual/libx11 xf86vidmodeproto"
+DEPENDS = "python virtual/libx11 xf86vidmodeproto alsa-lib"
 SRC_URI = "${SOURCEFORGE_MIRROR}/gizmod/gizmod-${PV}.tar.bz2 \
            file://disable-xmms.patch;patch=1 \
            file://fix-python-configure.patch;patch=1 \

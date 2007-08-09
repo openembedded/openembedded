@@ -1,0 +1,51 @@
+diff -Naur SDL-1.2.9-orig/src/video/qtopia/SDL_sysvideo.cc SDL-1.2.9/src/video/qtopia/SDL_sysvideo.cc
+--- SDL-1.2.9-orig/src/video/qtopia/SDL_sysvideo.cc	2007-03-12 20:58:19.000000000 +0100
++++ SDL-1.2.9/src/video/qtopia/SDL_sysvideo.cc	2007-03-12 20:58:27.000000000 +0100
+@@ -109,6 +109,7 @@
+     MACHINE_SHARP_SLC760,
+     MACHINE_SHARP_SLC860,
+     MACHINE_SHARP_SL6000,
++    MACHINE_SHARP_SLC1000,
+     MACHINE_IPAQ,
+     MACHINE_MAX
+   } machine_t;
+@@ -123,6 +124,7 @@
+     { "Sharp", "SL-C760", 0 },
+     { "Sharp", "SL-C860", 0 },
+     { "Sharp", "SL-6000", 0 },
++    { "Sharp", "SL-C1000", 0 },    
+     { "HP", "HP IPAQ", 0 },
+   };
+ 
+@@ -428,6 +430,8 @@
+           machine = MACHINE_SHARP_SLC760;
+         else if (strstr(buf, "SHARP Boxer") != NULL)
+           machine = MACHINE_SHARP_SLC860;
++        else if (strstr(buf, "SHARP Akita") != NULL)
++          machine = MACHINE_SHARP_SLC1000;	  
+         else if ( ODevice::inst ( )-> series ( ) == Model_iPAQ )
+           machine = MACHINE_IPAQ;
+ 	else
+@@ -522,17 +526,18 @@
+     if (machine == MACHINE_SHARP_SLC700 ||
+         machine == MACHINE_SHARP_SLC750 ||
+         machine == MACHINE_SHARP_SLC760 ||
+-        machine == MACHINE_SHARP_SLC860 ||      // 詳しいことわからんけどとりあえず
+-        machine == MACHINE_SHARP_SL6000 ) {     // 詳しいことわからんけどとりあえず
++        machine == MACHINE_SHARP_SLC860 ||
++        machine == MACHINE_SHARP_SL6000 ||
++        machine == MACHINE_SHARP_SLC1000 ) {
+ 	is_VGA_machine = true;
+     }else {
+ 	is_VGA_machine = false;
+     }
+ 
+-    // qte での回転角度を取得
++    // qte
+     QT_GetQteServerSpec(_this, &qteRotation, &isQteQvga);
+ 
+-    // SL-C700 のスタイル
++    // SL-C700
+     bool isInputStyle = false;
+     if (is_VGA_machine) {
+       int status = system("/home/QtPalmtop/bin/chkhinge");

@@ -1,5 +1,5 @@
 require freetype_${PV}.bb
-inherit native
+inherit pkgconfig native
 DEPENDS = ""
 FILESPATH = "${FILE_DIRNAME}/freetype-${PV}:${FILE_DIRNAME}/freetype:${FILE_DIRNAME}/files"
 
@@ -11,8 +11,7 @@ do_configure() {
 }
 
 do_stage() {
-	autotools_stage_includes
-	oe_libinstall -so -a -C objs libfreetype ${STAGING_LIBDIR}
+	autotools_stage_all
 }
 
 do_install() {

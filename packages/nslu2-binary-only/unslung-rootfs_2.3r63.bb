@@ -1,7 +1,7 @@
 SECTION = "base"
 COMPATIBLE_MACHINE = "nslu2"
 
-PR = "r18"
+PR = "r19"
 
 DEPENDS = "nslu2-linksys-libs nslu2-linksys-sambacodepages"
 
@@ -55,6 +55,7 @@ SRC_URI = "http://nslu.sf.net/downloads/nslu2-linksys-ramdisk-2.3r63-2.tar.bz2 \
 	   file://upgrade.htm \
 	   file://telnet.htm \
 	   file://rc.bootbin \
+	   file://mkfs.ext3 \
 	   "
 
 S = "${WORKDIR}/nslu2-linksys-ramdisk-2.3r63"
@@ -162,6 +163,10 @@ do_compile () {
 	# Replace the Linksys-provided /bin/busybox with a link to slingbox.
 	rm -f ${S}/bin/busybox
 	ln -s slingbox ${S}/bin/busybox
+
+	# Add in the kludge to fix the strange Linksys GUI format problem.
+	rm -f ${S}/usr/bin/mkfs.ext3
+	install -m 755 ${WORKDIR}/mkfs.ext3 ${S}/usr/bin/mkfs.ext3
 
 	# No reason not to have a home directory for root...
 	mkdir -p ${S}/root

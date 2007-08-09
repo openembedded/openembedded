@@ -1,8 +1,8 @@
 DESCRIPTION = "Command line tool and library for client-side URL transfers."
 LICENSE = "MIT"
-DEPENDS = "zlib"
+DEPENDS = "zlib gnutls"
 SECTION = "console/network"
-PR = "r3"
+PR = "r4"
 
 SRC_URI = "http://curl.haxx.se/download/curl-${PV}.tar.bz2"
 S = "${WORKDIR}/curl-${PV}"
@@ -12,7 +12,9 @@ inherit autotools pkgconfig binconfig
 EXTRA_OECONF = "--with-zlib=${STAGING_LIBDIR}/../ \
 		--without-ssl \
 		--with-random=/dev/urandom \
-		--without-idn"
+		--without-idn \
+		--enable-crypto-auth \
+		"
 
 do_stage () {
 	install -d ${STAGING_INCDIR}/curl

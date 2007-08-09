@@ -1,0 +1,102 @@
+Index: gsm/include/gsmd/gsmd.h
+===================================================================
+--- gsm.orig/include/gsmd/gsmd.h	2007-07-31 14:07:47.000000000 +0200
++++ gsm/include/gsmd/gsmd.h	2007-07-31 14:09:02.000000000 +0200
+@@ -74,6 +74,8 @@
+ 	struct gsmd_device_state dev_state;
+ 
+ 	struct llist_head operators;		/* cached list of operator names */
++	unsigned int mlbuf_len;
++	unsigned char *mlbuf;		/* ml_parse buffer */
+ };
+ 
+ struct gsmd_user {
+Index: gsm/src/gsmd/atcmd.c
+===================================================================
+--- gsm.orig/src/gsmd/atcmd.c	2007-07-31 14:06:49.000000000 +0200
++++ gsm/src/gsmd/atcmd.c	2007-07-31 14:12:33.000000000 +0200
+@@ -175,9 +175,7 @@
+ {
+ 	struct gsmd *g = ctx;
+ 	struct gsmd_atcmd *cmd = NULL;
+-	static char mlbuf[MLPARSE_BUF_SIZE];
+ 	int rc = 0, final = 0;
+-	int mlbuf_len;
+ 
+ 	DEBUGP("buf=`%s'(%d)\n", buf, len);
+ 
+@@ -273,15 +271,15 @@
+ 
+ 			/* it might be a multiline response, so if there's a previous
+ 			   response, send out mlbuf and start afresh with an empty buffer */
+-			if (mlbuf[0] != 0) {
++			if (g->mlbuf[0] != 0) {
+ 				if (!cmd->cb) {
+ 					gsmd_log(GSMD_NOTICE, "command without cb!!!\n");
+ 				} else {
+ 					DEBUGP("Calling cmd->cb()\n");
+-					cmd->resp = mlbuf;
++					cmd->resp = g->mlbuf;
+ 					rc = cmd->cb(cmd, cmd->ctx, cmd->resp);
+ 					DEBUGP("Clearing mlbuf\n");
+-					mlbuf[0] = 0;
++					g->mlbuf[0] = 0;
+ 				}
+ 			}
+ 
+@@ -334,16 +332,16 @@
+ 	/* we reach here, if we are at an information response that needs to be
+ 	 * passed on */
+ 
+-	if (mlbuf[0] == 0) {
++	if (g->mlbuf[0] == 0) {
+ 		DEBUGP("Filling mlbuf\n");
+-		strncat(mlbuf, buf, sizeof(mlbuf)-1);
++		strncat(g->mlbuf, buf, MLPARSE_BUF_SIZE-1);
+ 	} else {
+ 		DEBUGP("Appending buf to mlbuf\n");
+-		mlbuf_len = strlen(mlbuf);
+-		if (mlbuf_len+1 < sizeof(mlbuf)) {
+-			mlbuf[mlbuf_len] = '\n';
+-			mlbuf[mlbuf_len+1] = '\0';
+-			strncat(mlbuf, buf, sizeof(mlbuf)-mlbuf_len-2);
++		g->mlbuf_len = strlen(g->mlbuf);
++		if (g->mlbuf_len+1 < MLPARSE_BUF_SIZE) {
++			g->mlbuf[g->mlbuf_len] = '\n';
++			g->mlbuf[g->mlbuf_len+1] = '\0';
++			strncat(g->mlbuf, buf, MLPARSE_BUF_SIZE-g->mlbuf_len-2);
+ 		} else {
+ 			DEBUGP("response too big for mlbuf!!!\n");
+ 			return -EFBIG;
+@@ -365,13 +363,13 @@
+ 	} else {
+ 		DEBUGP("Calling final cmd->cb()\n");
+ 		/* send final result code if there is no information response in mlbuf */
+-		if (mlbuf[0] == 0)
++		if (g->mlbuf[0] == 0)
+ 			cmd->resp = buf;
+ 		else
+-			cmd->resp = mlbuf;
++			cmd->resp = g->mlbuf;
+ 		rc = cmd->cb(cmd, cmd->ctx, cmd->resp);
+ 		DEBUGP("Clearing mlbuf\n");
+-		mlbuf[0] = 0;
++		g->mlbuf[0] = 0;
+ 	}
+ 
+ 	/* remove from list of currently executing cmds */
+Index: gsm/src/gsmd/gsmd.c
+===================================================================
+--- gsm.orig/src/gsmd/gsmd.c	2007-07-31 14:06:47.000000000 +0200
++++ gsm/src/gsmd/gsmd.c	2007-07-31 14:06:50.000000000 +0200
+@@ -300,6 +300,10 @@
+ {
+ 	INIT_LLIST_HEAD(&g->users);
+ 
++	g->mlbuf = talloc_array(gsmd_tallocs, unsigned char, MLPARSE_BUF_SIZE);
++	if (!g->mlbuf)
++		return -ENOMEM;
++
+ 	return 0;
+ }
+ 

@@ -1,4 +1,5 @@
-SRC_URI = "cvs://anonymous@openwrt.org/openwrt;module=openwrt/target/utils/src;tag=TESTED"
+#SRC_URI = "svn://svn.openwrt.org/openwrt;module=trunk/tools/firmware-utils/src;proto=https"
+SRC_URI = ${SOURCEFORGE_MIRROR}/gakusei/openwrt-imagetools-svn-rev7641.tar.bz2
 S = "${WORKDIR}/src/"
 
 inherit native

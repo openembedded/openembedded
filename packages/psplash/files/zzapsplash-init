@@ -1,0 +1,4 @@
+#!/bin/sh
+TMPDIR=/mnt/.psplash psplash-write "QUIT" || true
+sleep 1
+umount /mnt/.psplash >/dev/null 2>/dev/null

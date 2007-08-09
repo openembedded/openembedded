@@ -40,7 +40,7 @@ FILES_glibc-dev_append = " ${libdir}/*.o ${bindir}/rpcgen"
 FILES_nscd = "${sbindir}/nscd*"
 FILES_glibc-utils = "${bindir}/* ${sbindir}/*"
 FILES_glibc-gconv = "${libdir}/gconv/*"
-FILES_${PN}-dbg += " ${libdir}/gconv/.debug"
+FILES_${PN}-dbg += "${libexecdir}/getconf/.debug ${libdir}/gconv/.debug"
 FILES_catchsegv = "${bindir}/catchsegv"
 RDEPENDS_catchsegv = "libsegfault"
 FILES_glibc-pcprofile = "/lib/libpcprofile.so"
@@ -175,10 +175,10 @@ python package_do_split_gconvs () {
 		bb.error("datadir not defined")
 		return
 
-	gconv_libdir = os.path.join(libdir, "gconv")
-	charmap_dir = os.path.join(datadir, "i18n", "charmaps")
-	locales_dir = os.path.join(datadir, "i18n", "locales")
-	binary_locales_dir = os.path.join(libdir, "locale")
+	gconv_libdir = base_path_join(libdir, "gconv")
+	charmap_dir = base_path_join(datadir, "i18n", "charmaps")
+	locales_dir = base_path_join(datadir, "i18n", "locales")
+	binary_locales_dir = base_path_join(libdir, "locale")
 
 	do_split_packages(d, gconv_libdir, file_regex='^(.*)\.so$', output_pattern='glibc-gconv-%s', description='gconv module for character set %s', extra_depends='glibc-gconv')
 
@@ -202,9 +202,14 @@ python package_do_split_gconvs () {
 	do_split_packages(d, locales_dir, file_regex='(.*)', output_pattern='glibc-localedata-%s', description='locale definition for %s', hook=calc_locale_deps, extra_depends='')
 	bb.data.setVar('PACKAGES', bb.data.getVar('PACKAGES', d) + ' glibc-gconv', d)
 
-	f = open(os.path.join(bb.data.getVar('WORKDIR', d, 1), "SUPPORTED"), "r")
-	supported = f.readlines()
-	f.close()
+	supported = bb.data.getVar('GLIBC_GENERATE_LOCALES', d, 1)
+	if not supported or supported == "all":
+	    f = open(base_path_join(bb.data.getVar('WORKDIR', d, 1), "SUPPORTED"), "r")
+	    supported = f.readlines()
+	    f.close()
+	else:
+	    supported = supported.split()
+	    supported = map(lambda s:s.replace(".", " ") + "\n", supported)
 
 	dot_re = re.compile("(.*)\.(.*)")
 
@@ -252,9 +257,9 @@ python package_do_split_gconvs () {
 		bb.data.setVar('ALLOW_EMPTY_%s' % pkgname, '1', d)
 		bb.data.setVar('PACKAGES', '%s %s' % (pkgname, bb.data.getVar('PACKAGES', d, 1)), d)
 
-		treedir = os.path.join(bb.data.getVar("WORKDIR", d, 1), "locale-tree")
+		treedir = base_path_join(bb.data.getVar("WORKDIR", d, 1), "locale-tree")
 		path = bb.data.getVar("PATH", d, 1)
-		i18npath = os.path.join(treedir, datadir, "i18n")
+		i18npath = base_path_join(treedir, datadir, "i18n")
 
 		localedef_opts = "--force --old-style --no-archive --prefix=%s --inputfile=%s/i18n/locales/%s --charmap=%s %s" % (treedir, datadir, locale, encoding, name)
 		cmd = "PATH=\"%s\" I18NPATH=\"%s\" %s -L %s %s/bin/localedef %s" % (path, i18npath, qemu, treedir, treedir, localedef_opts)

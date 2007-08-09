@@ -1,0 +1,16 @@
+--- busybox-1.5.0/networking/ifupdown.c~	2007-03-22 15:21:23.000000000 -0500
++++ busybox-1.5.0/networking/ifupdown.c	2007-04-01 08:52:25.000000000 -0500
+@@ -83,6 +83,13 @@
+ 	struct mapping_defn_t *mappings;
+ };
+ 
++/* XXX - ifupdown-spurious-environ.patch -- appears to be long obsolete,
++ * but is carried forward because it doesn't seem to hurt anything and
++ * it's non-obvious how to remove the patch from OE without breaking
++ * old builds. MJW
++ */
++#define environ local_environ
++
+ #define OPTION_STR "anvf" USE_FEATURE_IFUPDOWN_MAPPING("m") "i:"
+ enum {
+ 	OPT_do_all = 0x1,

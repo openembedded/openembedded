@@ -1,0 +1,12 @@
+Index: evince-0.9.0/Makefile.am
+===================================================================
+--- evince-0.9.0.orig/Makefile.am	2007-05-30 21:17:51.000000000 +0100
++++ evince-0.9.0/Makefile.am	2007-05-30 21:17:58.000000000 +0100
+@@ -6,7 +6,6 @@
+ 	properties \
+ 	shell \
+ 	po \
+-	help \
+ 	test
+ 
+ if ENABLE_THUMBNAILER

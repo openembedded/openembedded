@@ -1,16 +1,14 @@
 #
 # This is for perl modules that use the new Build.PL build system
 #
-INHIBIT_NATIVE_STAGE_INSTALL = "1"
-FILES_${PN} += '${libdir}/perl5'
+inherit cpan-base
 
-DEPENDS  += "perl-native"
-RDEPENDS += "perl"
+INHIBIT_NATIVE_STAGE_INSTALL = "1"
 
 #
 # We also need to have built libmodule-build-perl-native for
 # everything except libmodule-build-perl-native itself (which uses
-# this class, but uses itself as the probider of
+# this class, but uses itself as the provider of
 # libmodule-build-perl)
 #
 def cpan_build_dep_prepend(d):
@@ -24,24 +22,29 @@ def cpan_build_dep_prepend(d):
 
 DEPENDS_prepend = "${@cpan_build_dep_prepend(d)}"
 
-def is_crosscompiling(d):
-    import bb
-    if not bb.data.inherits_class('native', d):
-        return "yes"
-    return "no"
-
 cpan_build_do_configure () {
-	if [ ${@is_crosscompiling(d)} == "yes" ]; then
+	if [ ${@is_target(d)} == "yes" ]; then
 		# build for target
 		. ${STAGING_DIR}/${TARGET_SYS}/perl/config.sh
-		perl Build.PL --installdirs vendor \
-			--destdir ${D} \
-			--install_path lib="${libdir}/perl5/site_perl/${version}" \
-			--install_path arch="${libdir}/perl5/site_perl/${version}/${TARGET_SYS}" \
-			--install_path script=${bindir} \
-			--install_path bin=${bindir} \
-			--install_path bindoc=${mandir}/man1 \
-			--install_path libdoc=${mandir}/man3
+		if [ "${IS_NEW_PERL}" = "yes" ]; then
+			perl Build.PL --installdirs vendor \
+				--destdir ${D} \
+				--install_path lib="${datadir}/perl5" \
+				--install_path arch="${libdir}/perl5" \
+				--install_path script=${bindir} \
+				--install_path bin=${bindir} \
+				--install_path bindoc=${mandir}/man1 \
+				--install_path libdoc=${mandir}/man3
+		else
+			perl Build.PL --installdirs vendor \
+				--destdir ${D} \
+				--install_path lib="${libdir}/perl5/site_perl/${version}" \
+				--install_path arch="${libdir}/perl5/site_perl/${version}/${TARGET_SYS}" \
+				--install_path script=${bindir} \
+				--install_path bin=${bindir} \
+				--install_path bindoc=${mandir}/man1 \
+				--install_path libdoc=${mandir}/man3
+		fi
 	else
 		# build for host
 		perl Build.PL --installdirs site
@@ -53,13 +56,13 @@ cpan_build_do_compile () {
 }
 
 cpan_build_do_install () {
-	if [ ${@is_crosscompiling(d)} == "yes" ]; then
+	if [ ${@is_target(d)} == "yes" ]; then
 		perl Build install
 	fi
 }
 
 do_stage_append () {
-	if [ ${@is_crosscompiling(d)} == "no" ]; then
+	if [ ${@is_target(d)} == "no" ]; then
 		perl Build install
 	fi
 }

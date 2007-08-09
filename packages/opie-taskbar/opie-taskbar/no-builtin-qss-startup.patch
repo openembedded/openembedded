@@ -1,0 +1,11 @@
+--- launcher/server.cpp.org	2007-05-01 20:55:01.000000000 +0000
++++ launcher/server.cpp	2007-05-03 04:48:45.000000000 +0000
+@@ -1009,6 +1009,8 @@
+ }
+ 
+ void Server::startSoundServer() {
++    owarn << "Sound server (qss) now needs to be started standalone" << oendl;
++    return;
+     if ( !process ) {
+         process = new Opie::Core::OProcess( this );
+         connect(process, SIGNAL(processExited(Opie::Core::OProcess*)),

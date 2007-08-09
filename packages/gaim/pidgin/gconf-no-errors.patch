@@ -1,0 +1,12 @@
+--- /tmp/Makefile.am	2007-05-08 18:39:49.000000000 +0200
++++ pidgin-2.0.0/libpurple/gconf/Makefile.am	2007-05-08 18:40:13.755251000 +0200
+@@ -8,8 +8,7 @@
+ 
+ if GCONF_SCHEMAS_INSTALL
+ install-data-local:
+-	GCONF_CONFIG_SOURCE=$(GCONF_SCHEMA_CONFIG_SOURCE) $(GCONFTOOL) --makefile-install-rule $(schema_DATA) 2>&1 | \
+-		grep -v "^WARNING: failed to install schema" | grep -v "^Attached schema" 1>&2
++	GCONF_CONFIG_SOURCE=$(GCONF_SCHEMA_CONFIG_SOURCE) $(GCONFTOOL) --makefile-install-rule $(schema_DATA) 2>&1 
+ else
+ install-data-local:
+ endif

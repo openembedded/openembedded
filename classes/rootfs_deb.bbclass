@@ -1,5 +1,8 @@
-DEPENDS_prepend = "dpkg-native apt-native fakeroot-native "
-DEPENDS_append = " ${EXTRA_IMAGEDEPENDS}"
+#
+# Copyright 2006-2007 Openedhand Ltd.
+#
+
+do_rootfs[depends] += "dpkg-native:do_populate_staging apt-native:do_populate_staging"
 
 fakeroot rootfs_deb_do_rootfs () {
 	set +e
@@ -52,21 +55,21 @@ fakeroot rootfs_deb_do_rootfs () {
 	}
 
 	if [ ! -z "${LINGUAS_INSTALL}" ]; then
-		apt-get install glibc-localedata-i18n
-		if [ $? -eq 1 ]; then
-			exit 1
+		apt-get install glibc-localedata-i18n --force-yes --allow-unauthenticated
+		if [ $? -ne 0 ]; then
+			exit $?
 		fi
 		for i in ${LINGUAS_INSTALL}; do
-			apt-get install $i
-			if [ $? -eq 1 ]; then
-				exit 1
+			apt-get install $i --force-yes --allow-unauthenticated
+			if [ $? -ne 0 ]; then
+				exit $?
 			fi
 		done
 	fi
 
 	if [ ! -z "${PACKAGE_INSTALL}" ]; then
 		for i in ${PACKAGE_INSTALL}; do
-			apt-get install $i
+			apt-get install $i --force-yes --allow-unauthenticated
 			if [ $? -eq 1 ]; then
 				exit 1
 			fi
@@ -134,3 +137,7 @@ rootfs_deb_log_check() {
 	true
 }
 
+remove_packaging_data_files() {
+	rm -rf ${IMAGE_ROOTFS}/usr/lib/ipkg/
+	rm -rf ${IMAGE_ROOTFS}/usr/dpkg/
+}

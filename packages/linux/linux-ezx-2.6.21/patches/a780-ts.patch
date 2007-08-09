@@ -1,0 +1,40 @@
+Index: linux-2.6.21/arch/arm/mach-pxa/ezx-a780.c
+===================================================================
+--- linux-2.6.21.orig/arch/arm/mach-pxa/ezx-a780.c	2007-06-02 20:32:48.000000000 -0300
++++ linux-2.6.21/arch/arm/mach-pxa/ezx-a780.c	2007-06-02 20:33:10.000000000 -0300
+@@ -121,6 +121,27 @@
+ 	.exit           = a780_mci_exit,
+ };
+ 
++/* PCAP_TS */
++struct resource pcap_ts_resources[] = {
++	[0] = {
++		.start          = EZX_IRQ_ADCDONE2,
++		.end            = EZX_IRQ_ADCDONE2,
++		.flags          = IORESOURCE_IRQ,
++	},
++	[1] = {
++		.start          = EZX_IRQ_TS,
++		.end            = EZX_IRQ_TS,
++		.flags          = IORESOURCE_IRQ,
++	}
++};
++
++struct platform_device pcap_ts_device = {
++	.name           = "pcap-ts",
++	.id             = -1,
++	.num_resources  = ARRAY_SIZE(pcap_ts_resources),
++	.resource       = pcap_ts_resources,
++};
++
+ static struct pxafb_mode_info mode_a780 = {
+ 	.pixclock	= 150000,
+ 	.xres		= 240,
+@@ -194,6 +215,7 @@
+ };
+ 
+ static struct platform_device *devices[] __initdata = {
++	&pcap_ts_device,
+ };
+ 
+ static void __init a780_init(void)

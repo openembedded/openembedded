@@ -16,11 +16,11 @@ PACKAGES = "\
     gpe-task-desktopapps \
     gpe-task-sectest"
 
-RDEPENDS_gpe-base-depends := "\
+RDEPENDS_gpe-base-depends = "\
     diet-x11 \
     virtual/xserver"
 
-RDEPENDS_gpe-task-base := "\
+RDEPENDS_gpe-task-base = "\
     gpe-bootsplash \
     bluez-utils-dbus \
     matchbox \
@@ -49,7 +49,7 @@ RDEPENDS_gpe-task-base := "\
     pango-module-basic-x \
     pango-module-basic-fc"
 
-RDEPENDS_gpe-task-pim := "\
+RDEPENDS_gpe-task-pim = "\
     gpe-timesheet \
     gpe-todo \
     gpe-calendar \
@@ -58,7 +58,7 @@ RDEPENDS_gpe-task-pim := "\
     gpe-today \
     gpesyncd"
 
-RDEPENDS_gpe-task-settings := "\
+RDEPENDS_gpe-task-settings = "\
     matchbox-panel-manager \
     gpe-bluetooth \
     gpe-beam \
@@ -75,7 +75,7 @@ RDEPENDS_gpe-task-settings := "\
     minimix \
     xmonobut"
 
-RDEPENDS_gpe-task-apps := "\
+RDEPENDS_gpe-task-apps = "\
     gpe-edit \
     gpe-gallery \
     gpe-calculator \
@@ -91,7 +91,7 @@ RDEPENDS_gpe-task-apps := "\
     gpe-scap \
     gpe-windowlist"
 
-RDEPENDS_gpe-task-games := "\
+RDEPENDS_gpe-task-games = "\
     gpe-go \
     gpe-lights \
     gpe-othello \
@@ -99,40 +99,39 @@ RDEPENDS_gpe-task-games := "\
     gsoko \
     xdemineur"
 
-RDEPENDS_gpe-task-connectivity := "\
+RDEPENDS_gpe-task-connectivity = "\
     gpe-mini-browser"
 #    gaim
 #    linphone-hh
 
-RDEPENDS_gpe-task-apps-extra := "\
+RDEPENDS_gpe-task-apps-extra = "\
     gpe-filemanager \
     gpe-soundbite \
     mbmerlin"
 
-RDEPENDS_gpe-task-web := "\
+RDEPENDS_gpe-task-web = "\
     gpe-irc \
     minimo \
-    gaim"
+    pidgin"
 
-RDEPENDS_gpe-task-desktopapps := "\
+RDEPENDS_gpe-task-desktopapps = "\
     firefox \
     thunderbird \
     galculator \
     gnumeric \
-    gpdf \
-    totem"
+    gpdf"
+#    totem"
 
-RDEPENDS_gpe-task-sectest := "\
+RDEPENDS_gpe-task-sectest = "\
     mbmerlin \
     nmap \
     ettercap \
     stunnel \
     curl \
-    dsniff \
+#    dsniff \
     prismstumbler \
     tcpdump \
     kismet \
     hydra \
     thcrut \
     miniclipboard"
-#	driftnet \

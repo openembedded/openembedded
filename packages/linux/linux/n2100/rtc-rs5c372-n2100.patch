@@ -1,0 +1,13 @@
+Autodetect the RTC chip.
+
+--- a/drivers/rtc/rtc-rs5c372.c
++++ b/drivers/rtc/rtc-rs5c372.c
+@@ -16,7 +16,7 @@ #include <linux/bcd.h>
+ #define DRV_VERSION "0.3"
+ 
+ /* Addresses to scan */
+-static unsigned short normal_i2c[] = { /* 0x32,*/ I2C_CLIENT_END };
++static unsigned short normal_i2c[] = { 0x32, I2C_CLIENT_END };
+ 
+ /* Insmod parameters */
+ I2C_CLIENT_INSMOD;

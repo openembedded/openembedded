@@ -1,1 +1,0 @@
-require gstreamer.inc

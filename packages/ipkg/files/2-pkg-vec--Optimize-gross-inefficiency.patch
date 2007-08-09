@@ -1,0 +1,65 @@
+# HG changeset patch
+# User pfalcon@localhost
+# Date 1178812057 0
+# Node ID eff4450fdea2f8210a4fc927bd35ae2562d2eced
+# Parent  e4c99830ba0d55813e1774bd6d41039ca640d6a6
+pkg_vec: Optimize gross inefficiency.
+
+This module tries to implement *unique* vector (without duplicating
+objects), and does this by iterating thru all already existing elements.
+Thus, complexity of adding N elements was O(N^2). However, there're no grave
+reasons to do uniqueness at all:
+1. First of all, if feeds are correct, there won't be duplicates.
+2. Then, even if there will be, there won't be serious problems like
+segfaults.
+3. Finally, for quite a few operations vectors is constructed from a
+hashtable, thus uniqueness is guaranteed (which reduces possible cases of
+non-uniqueness to values of Depends: and friends).
+
+All an all, remove dup check, and make ipkg work order of magnitude faster
+on a feed with few thousands of packages.
+
+diff -r e4c99830ba0d -r eff4450fdea2 pkg_vec.c
+--- a/pkg_vec.c	Sat May 05 03:12:51 2007 +0000
++++ b/pkg_vec.c	Thu May 10 15:47:37 2007 +0000
+@@ -104,6 +104,7 @@ void pkg_vec_insert(pkg_vec_t *vec, cons
+      int i;
+      int found = 0;
+ 
++#if 0
+      /* look for a duplicate pkg by name, version, and architecture */
+      for (i = 0; i < vec->len; i++)
+ 	  if ((strcmp(pkg->name, vec->pkgs[i]->name) == 0)
+@@ -112,6 +113,7 @@ void pkg_vec_insert(pkg_vec_t *vec, cons
+ 	       found = 1;
+ 	       break;
+ 	  }
++#endif
+ 
+      /* we didn't find one, add it */
+      if(!found){   
+@@ -191,6 +193,7 @@ void abstract_pkg_vec_insert(abstract_pk
+ {
+     int i;
+ 
++#if 0
+     /* look for a duplicate pkg by name */
+     for(i = 0; i < vec->len; i++)
+ 	if (strcmp(pkg->name, vec->pkgs[i]->name) == 0)
+@@ -198,12 +201,15 @@ void abstract_pkg_vec_insert(abstract_pk
+ 
+     /* we didn't find one, add it */
+     if(i == vec->len){   
++#endif
+ 	vec->pkgs = 
+ 	  (abstract_pkg_t **)
+ 	    realloc(vec->pkgs, (vec->len + 1) * sizeof(abstract_pkg_t *));
+ 	vec->pkgs[vec->len] = pkg;
+ 	vec->len++;
+-    }
++#if 0
++    }
++#endif
+ }
+ 
+ abstract_pkg_t * abstract_pkg_vec_get(abstract_pkg_vec_t *vec, int i)

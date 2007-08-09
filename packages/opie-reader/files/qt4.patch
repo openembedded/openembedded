@@ -1,0 +1,2572 @@
+diff --git a/Aportis.cpp b/Aportis.cpp
+index 37dcc99..03c26ea 100644
+--- a/Aportis.cpp
++++ b/Aportis.cpp
+@@ -443,8 +443,7 @@ unsuspend();
+   gotorecordnumber(tgtrec);
+   UInt8* imgbuffer = new UInt8[reclen];
+   fread(imgbuffer, 1, reclen, fin);
+-  QByteArray arr;
+-  arr.assign((const char*)imgbuffer, reclen);
++  QByteArray arr((const char*)imgbuffer, reclen);
+ 
+   QImage* qimage = new QImage(arr);
+   fseek(fin, cur, SEEK_SET);
+diff --git a/Bkmks.cpp b/Bkmks.cpp
+index 45aa045..c67db9e 100644
+--- a/Bkmks.cpp
++++ b/Bkmks.cpp
+@@ -32,8 +32,7 @@ Bkmk::Bkmk(const Bkmk& rhs) :
+   m_annolen(0),
+   m_position(0)
+ {
+-    init(rhs.name(), sizeof(tchar)*(ustrlen(rhs.name())+1), rhs.anno(),
+-         sizeof(tchar)*(ustrlen(rhs.anno())+1), rhs.value());
++    *this = rhs;
+ }
+ 
+ Bkmk::Bkmk(const tchar* _nm, const tchar* _anno, unsigned int _p) : m_position(_p)
+diff --git a/BuffDoc.cpp b/BuffDoc.cpp
+index 355d14d..170ed43 100644
+--- a/BuffDoc.cpp
++++ b/BuffDoc.cpp
+@@ -23,6 +23,8 @@
+ #include "Reb.h"
+ #endif
+ 
++#include "uqtcommon.h"
++
+ 
+ linkType BuffDoc::hyperlink(unsigned int n, unsigned int noff, QString& wrd, QString& nm)
+ {
+@@ -674,35 +676,19 @@ int BuffDoc::openfile(QWidget* _parent, const char *src)
+     }
+     //        //qDebug("Doing final open:%x:%x",exp,filt);
+ #else
+-#ifdef USEQPE
+-#ifdef OPIE
+-  QString codecpath(getenv("OPIEDIR"));
+-#else
+-  QString codecpath(getenv("QTDIR"));
+-#endif
+-  codecpath += "/plugins/reader/codecs";
+-#else
+-  QString codecpath(getenv("READERDIR"));
+-  codecpath += "/codecs";
+-#endif
+-  QDir d(codecpath, "*.so");
++  QDir d(uqt_codecspath(), "*.so");
+ 
+   if (d.exists())
+     {
+ 
+-      const QFileInfoList *list = d.entryInfoList();
+-      QFileInfoListIterator it( *list );      // create list iterator
+-      QFileInfo *fi;                          // pointer for traversing
+-  
++      QFileInfoList list = d.entryInfoList();
+       int ret = -1;
+-      while ( ret != 0 && (fi=it.current()) )
+-	{           // for each file...
++      for(QFileInfoListIterator it=list.begin();ret && it!=list.end();++it) {
+ 	  if (exp != NULL) delete exp;
+-	  qDebug("Trying %s", (const char*)fi->fileName());
+-	  exp = new ebookcodec(fi->fileName());
++	  qDebug("Trying %s", (const char*)it->fileName());
++	  exp = new ebookcodec(it->fileName());
+ 	  ret = exp->openfile(src);
+-	  ++it;
+-	}
++      }
+       qDebug("Buffdoc:Finished opening");
+       if (ret != 0)
+ 	{
+diff --git a/ButtonPrefs.cpp b/ButtonPrefs.cpp
+index 762de55..2c4cad7 100644
+--- a/ButtonPrefs.cpp
++++ b/ButtonPrefs.cpp
+@@ -17,7 +17,7 @@
+ #include <qtooltip.h>
+ #include <qwhatsthis.h>
+ #include <qbuttongroup.h>
+-#include <qmultilineedit.h>
++#include <Qt3Support/Q3MultiLineEdit>
+ #ifdef USECOMBO
+ #include <qcombobox.h>
+ #else
+@@ -26,12 +26,14 @@
+ #include <qfontdatabase.h>
+ 
+ #include <qlistview.h>
++#include <Qt3Support/Q3ListViewItem>
++#include <QtGui/QKeyEvent>
+ 
+-class MyQListViewItem : public QListViewItem
++class MyQListViewItem : public Q3ListViewItem
+ {
+   orKey o;
+ public:
+-  MyQListViewItem(const orKey& _o, QListView* p, const QString& c1, const QString& c2, const QString& c3) : QListViewItem(p, c1, c2, c3), o(_o) { }
++  MyQListViewItem(const orKey& _o, Q3ListView* p, const QString& c1, const QString& c2, const QString& c3) : Q3ListViewItem(p, c1, c2, c3), o(_o) { }
+   orKey getKey() { return o; }
+ };
+ 
+@@ -43,7 +45,7 @@ void CButtonPrefs::mapkey(Qt::ButtonState st, int _key)
+ void CButtonPrefs::mapkey(Qt::ButtonState st, int _key, int act)
+ {
+   orKey key(st, _key, ((act == cesScrollMore) || (act == cesScrollLess)));
+-  QMap<orKey,QListViewItem*>::Iterator iter = listmap.find(key);
++  QMap<orKey,Q3ListViewItem*>::Iterator iter = listmap.find(key);
+   if (iter != listmap.end())
+     {
+       lb->takeItem(iter.data());
+@@ -112,7 +114,7 @@ CButtonPrefs::CButtonPrefs( QMap<orKey, int>* _kmap, QWidget* parent,  const cha
+ {
+   QVBoxLayout* vo = new QVBoxLayout(this);
+   QHBoxLayout* lo = new QHBoxLayout();
+-  setFocusPolicy(QWidget::StrongFocus);
++  setFocusPolicy(Qt::StrongFocus);
+ #ifdef USECOMBO
+     action = new QComboBox( this );
+ #else
+@@ -123,17 +125,17 @@ CButtonPrefs::CButtonPrefs( QMap<orKey, int>* _kmap, QWidget* parent,  const cha
+ 
+ 
+ 
+-    QMultiLineEdit* TextLabel1 = new QMultiLineEdit( this );
++    Q3MultiLineEdit* TextLabel1 = new Q3MultiLineEdit( this );
+     TextLabel1->setText( tr( "Press the key(s) you want assigned to the highlighted function.\n\nPress the delete button to unmap the key.\n\nUse the \"Close\" button (not the [x]) to finish." ) );
+     TextLabel1->setReadOnly(true);
+-    TextLabel1->setWordWrap(QMultiLineEdit::WidgetWidth);
++    TextLabel1->setWordWrap(Q3MultiLineEdit::WidgetWidth);
+ 
+     //    lo->addWidget(TextLabel, 0, Qt::AlignTop);
+     //    lo->addWidget(action, 0, Qt::AlignTop);
+     lo->addWidget(TextLabel1);
+     lo->addWidget(action);
+     vo->addLayout(lo);
+-    lb = new QListView(this);
++    lb = new Q3ListView(this);
+     lb->addColumn( tr( "Key" ) );
+     lb->addColumn( tr( "Function" ) );
+     lb->addColumn( tr( "Scroll" ) );
+diff --git a/ButtonPrefs.h b/ButtonPrefs.h
+index 9af04e1..f09ad02 100644
+--- a/ButtonPrefs.h
++++ b/ButtonPrefs.h
+@@ -11,11 +11,13 @@
+ 
+ #include <qvariant.h>
+ #include <qwidget.h>
+-#include <qtabdialog.h>
++#include <Qt3Support/Q3TabDialog>
+ #include <qtabwidget.h>
+ #include <qspinbox.h>
+ #include <qcheckbox.h>
+ #include <qlineedit.h>
++#include <qnamespace.h>
++using namespace Qt;
+ 
+ #define USECOMBO
+ 
+@@ -33,18 +35,18 @@ class QGridLayout;
+ //class QCheckBox;
+ class QLabel;
+ //class QSpinBox;
+-class QListViewItem;
++class Q3ListViewItem;
+ 
+-class QListView;
+-class QListViewItem;
++class Q3ListView;
++class Q3ListViewItem;
+ 
+ class CButtonPrefs : public QWidget
+ {
+   Q_OBJECT
+ 
+   QMap<orKey, int> *kmap;
+-  QMap<orKey, QListViewItem*> listmap;
+-  QListView* lb;
++  QMap<orKey, Q3ListViewItem*> listmap;
++  Q3ListView* lb;
+   void keyPressEvent(QKeyEvent* e);
+ #ifdef USECOMBO
+     void populate(QComboBox*);
+diff --git a/CAnnoEdit.cpp b/CAnnoEdit.cpp
+index 35821ed..6ee1321 100644
+--- a/CAnnoEdit.cpp
++++ b/CAnnoEdit.cpp
+@@ -83,8 +83,8 @@ CAnnoEdit::CAnnoEdit(QWidget *parent, const char *name, WFlags f) :
+ {
+   QVBoxLayout* grid = new QVBoxLayout(this);
+   m_name = new QLineEdit(this, "Name");
+-  m_anno = new QMultiLineEdit(this, "Annotation");
+-  m_anno->setWordWrap(QMultiLineEdit::WidgetWidth);
++  m_anno = new Q3MultiLineEdit(this, "Annotation");
++  m_anno->setWordWrap(Q3MultiLineEdit::WidgetWidth);
+   QPushButton* exitButton = new QPushButton("Okay", this);
+   connect(exitButton, SIGNAL( clicked() ), this, SLOT( slotOkay() ) );
+   QPushButton* cancelButton = new QPushButton("Cancel", this);
+diff --git a/CAnnoEdit.h b/CAnnoEdit.h
+index 78d3eeb..c74c560 100644
+--- a/CAnnoEdit.h
++++ b/CAnnoEdit.h
+@@ -4,15 +4,17 @@
+ #include <qlayout.h>
+ #include <qpushbutton.h>
+ #include <qlineedit.h>
+-#include <qmultilineedit.h>
++#include <Qt3Support/Q3MultiLineEdit>
+ #include <qcombobox.h>
++#include <qnamespace.h>
++using namespace Qt;
+ 
+ class CAnnoEdit : public QWidget
+ {
+     Q_OBJECT
+ 
+     QLineEdit* m_name;
+-    QMultiLineEdit* m_anno;
++    Q3MultiLineEdit* m_anno;
+     size_t m_posn, m_posn2;
+     QComboBox* colorbox;
+  public:
+diff --git a/CFilter.cpp b/CFilter.cpp
+index a4ea60a..84fa451 100644
+--- a/CFilter.cpp
++++ b/CFilter.cpp
+@@ -9,6 +9,7 @@
+ #include "CDrawBuffer.h"
+ #include "CFilter.h"
+ #include "hrule.h"
++#include "uqtcommon.h"
+ 
+ #include <qregexp.h>
+ #include <qimage.h>
+@@ -665,17 +666,8 @@ class ErrorFilter : public CFilter
+ #ifndef __STATIC
+ ExternFilter::ExternFilter(const QString& nm, const QString& optional) : filt(NULL), handle(NULL)
+ {
+-#ifdef USEQPE
+-#ifdef OPIE
+-  QString filterpath(getenv("OPIEDIR"));
+-#else
+-  QString filterpath(getenv("QTDIR"));
+-#endif
+-  filterpath += "/plugins/reader/filters/lib";
+-#else
+-  QString filterpath(getenv("READERDIR"));
+-  filterpath += "/filters/lib";
+-#endif
++  QString filterpath = uqt_filterspath();
++  filterpath += "lib";
+   filterpath += nm;
+   filterpath += ".so";
+   if (QFile::exists(filterpath))
+diff --git a/CHM.cpp b/CHM.cpp
+index ace5abc..3c325bb 100644
+--- a/CHM.cpp
++++ b/CHM.cpp
+@@ -335,7 +335,7 @@ int CHM::getch() {
+ #else
+     QChar letter = chmBuffer[bufpos++];
+ #endif
+-    return (int)(char)letter;
++    return letter.unicode();
+ }
+ 
+ void CHM::getch(tchar& ch, CStyle& sty)
+diff --git a/CloseDialog.cpp b/CloseDialog.cpp
+index 741fa67..62ae906 100644
+--- a/CloseDialog.cpp
++++ b/CloseDialog.cpp
+@@ -5,7 +5,7 @@ CCloseDialog::CCloseDialog(const QString& fname, bool fs, QWidget* parent, const
+ {
+     setCaption(tr("Tidy-up"));
+     QVBoxLayout *tmp = new QVBoxLayout(this);
+-    QVButtonGroup* vb = new QVButtonGroup(tr("Delete"), this);
++    Q3VButtonGroup* vb = new Q3VButtonGroup(tr("Delete"), this);
+     tmp->addWidget(vb);
+     QString filestring = tr("Delete") + " " + fname;
+     file = new QCheckBox(filestring, vb);
+diff --git a/CloseDialog.h b/CloseDialog.h
+index 54aaf1c..84609f5 100644
+--- a/CloseDialog.h
++++ b/CloseDialog.h
+@@ -11,14 +11,17 @@
+ 
+ #include <qvariant.h>
+ #include <qwidget.h>
+-#include <qtabdialog.h>
++#include <Qt3Support/Q3TabDialog>
+ #include <qtabwidget.h>
+ #include <qspinbox.h>
+ #include <qcheckbox.h>
+ #include <qcombobox.h>
+ #include <qlineedit.h>
+ //#include <qpe/menubutton.h>
+-#include <qvbuttongroup.h>
++#include <Qt3Support/Q3VButtonGroup>
++#include <QtGui/QKeyEvent>
++#include <qnamespace.h>
++using namespace Qt;
+ 
+ class QVBoxLayout; 
+ class QHBoxLayout; 
+diff --git a/FontControl.cpp b/FontControl.cpp
+index 08b8c52..0be54ba 100644
+--- a/FontControl.cpp
++++ b/FontControl.cpp
+@@ -1,4 +1,5 @@
+ #include <qfontdatabase.h>
++#include <Qt3Support/Q3ValueList>
+ 
+ #include "FontControl.h"
+ 
+@@ -33,9 +34,9 @@ int FontControl::gzoom()
+ 
+ bool FontControl::ChangeFont(QString& n, int tgt)
+ {
+-    QValueList<int>::Iterator it;
++    Q3ValueList<int>::Iterator it;
+     QFontDatabase fdb;
+-    QValueList<int> sizes = fdb.pointSizes(n);
++    Q3ValueList<int> sizes = fdb.pointSizes(n);
+     if (sizes.count() == 0)
+     {
+ 	return false;
+@@ -65,3 +66,25 @@ bool FontControl::ChangeFont(QString& n, int tgt)
+     }
+     return true;
+ }
++
++void FontControl::setCourier() {
++    setCourier(m_fontname);
++}
++void FontControl::setCourier(const QString fn) {
++    QFontDatabase fdb;
++    QStringList fl = fdb.families();
++    setCourier(fn,fl);
++}
++void FontControl::setCourier(const QString fn,const QStringList fl) {
++    QString fp;
++    int sp = fn.indexOf(' ');
++    if(sp>=0) fp = fn.left(sp);
++    for(QStringList::const_iterator i=fl.begin();i!=fl.end();++i) {
++	if(
++		( i->startsWith(fn,Qt::CaseInsensitive)
++		 || ( (!fp.isEmpty()) && i->startsWith(fp,Qt::CaseInsensitive) ) )
++		&& ( i->endsWith("mono",Qt::CaseInsensitive)
++		    || i->endsWith("Fixed") ) )
++	    hasCourier(true,*i);
++    }
++}
+diff --git a/FontControl.h b/FontControl.h
+index 563e1a8..c7a54ab 100644
+--- a/FontControl.h
++++ b/FontControl.h
+@@ -2,6 +2,7 @@
+ #define __FONTCONTROL_H
+ 
+ #include <qfontmetrics.h>
++#include <QFontDatabase>
+ #include "StyleConsts.h"
+ 
+ class FontControl
+@@ -32,6 +33,7 @@ class FontControl
+       m_fontsizes(NULL), m_hasCourier(false), m_leading(0), m_extraspace(0), m_fixgraphics(true)
+     {
+ 	ChangeFont(n, size);
++	setCourier();
+     }
+     ~FontControl()
+ 	{
+@@ -167,6 +169,10 @@ class FontControl
+ 	{
+ 	    return m_extraspace;
+ 	}
++
++    void setCourier();
++    void setCourier(const QString fn);
++    void setCourier(const QString fn,const QStringList fl);
+ };
+ 
+ #endif
+diff --git a/GraphicWin.h b/GraphicWin.h
+index 70d5f7e..a6c556a 100644
+--- a/GraphicWin.h
++++ b/GraphicWin.h
+@@ -1,14 +1,16 @@
+ #ifndef __GRAPHICWIN_H
+ #define __GRAPHICWIN_H
+ 
+-#include <qscrollview.h>
++#include <Qt3Support/Q3ScrollView>
+ #include <qpixmap.h>
+ #include <qimage.h>
+ #include <qpushbutton.h>
+ #include <qlayout.h>
+ #include <qwmatrix.h>
++#include <qnamespace.h>
++using namespace Qt;
+ 
+-class GraphicScroll : public QScrollView
++class GraphicScroll : public Q3ScrollView
+ {
+   Q_OBJECT
+   QWidget* m_picture;
+@@ -19,7 +21,7 @@ class GraphicScroll : public QScrollView
+     }
+  public:
+   GraphicScroll( QWidget *parent=0, const char *name=0, WFlags f = 0)
+-    : QScrollView(parent, name, f)
++    : Q3ScrollView(parent, name, f)
+     {
+       m_picture = new QWidget(viewport());
+       addChild(m_picture);
+diff --git a/Prefs.cpp b/Prefs.cpp
+index 6c4d45b..d20dc00 100644
+--- a/Prefs.cpp
++++ b/Prefs.cpp
+@@ -7,6 +7,7 @@
+ ** WARNING! All changes made in this file will be lost!
+ ****************************************************************************/
+ #include "Prefs.h"
++#include "uqtcommon.h"
+ 
+ #include <stdlib.h>
+ 
+@@ -27,6 +28,7 @@
+ #include <qpe/menubutton.h>
+ #endif
+ #include <qfontdatabase.h>
++#include <Qt3Support/Q3ButtonGroup>
+ 
+ #ifdef USECOMBO
+ void populate_colours(QComboBox *mb)
+@@ -58,7 +60,7 @@ CLayoutPrefs::CLayoutPrefs( QWidget* parent,  const char* name, WFlags fl )
+     : QWidget( parent, name, fl )
+ {
+     QHBoxLayout* hb = new QHBoxLayout(this);
+-    QButtonGroup* bg = new QButtonGroup(2, Qt::Horizontal, "Text", this);
++    Q3ButtonGroup* bg = new Q3ButtonGroup(2, Qt::Horizontal, "Text", this);
+     hb->addWidget(bg);
+ 
+     StripCR = new QCheckBox( bg );
+@@ -592,7 +594,7 @@ CMiscPrefs::CMiscPrefs( QWidget* parent,  const char* name, WFlags fl )
+     vl->setMargin( 0 );
+     hl->setMargin( 0 );
+ 
+-    QGroupBox* gb = new QGroupBox(1, Qt::Horizontal, "Select Action", this);
++    Q3GroupBox* gb = new Q3GroupBox(1, Qt::Horizontal, "Select Action", this);
+     hl->addWidget( gb );
+ 
+     annotation = new QCheckBox( gb );
+@@ -607,7 +609,7 @@ CMiscPrefs::CMiscPrefs( QWidget* parent,  const char* name, WFlags fl )
+     boutput = new QCheckBox( gb );
+     boutput->setText( tr( "Output" ) );
+ 
+-    QButtonGroup* bg = new QButtonGroup(1, Qt::Horizontal, "Plucker", this);
++    Q3ButtonGroup* bg = new Q3ButtonGroup(1, Qt::Horizontal, "Plucker", this);
+     hl->addWidget( bg );
+ 
+     Depluck = new QCheckBox( bg );
+@@ -618,7 +620,7 @@ CMiscPrefs::CMiscPrefs( QWidget* parent,  const char* name, WFlags fl )
+ 
+     Continuous = new QCheckBox( bg );
+     Continuous->setText( tr( "Continuous" ) );
+-    bg = new QButtonGroup(2, Qt::Horizontal, "Background", this);
++    bg = new Q3ButtonGroup(2, Qt::Horizontal, "Background", this);
+     vl->addWidget( bg );
+ 
+ //    QLabel* TextLabel = new QLabel( bg );
+@@ -662,7 +664,7 @@ CScrollPrefs::CScrollPrefs( QWidget* parent,  const char* name, WFlags fl )
+ 
+     hl->setMargin( 0 );
+ 
+-    QButtonGroup* bg = new QButtonGroup(2, Qt::Horizontal, "Scroll", this);
++    Q3ButtonGroup* bg = new Q3ButtonGroup(2, Qt::Horizontal, "Scroll", this);
+     hl->addWidget( bg );
+ 
+     //    scrollinplace = new QCheckBox( bg );
+@@ -707,18 +709,8 @@ CScrollPrefs::CScrollPrefs( QWidget* parent,  const char* name, WFlags fl )
+ #else
+     outcodec = new MenuButton( this);
+ #endif
+-#ifdef USEQPE
+-#ifdef OPIE
+-      QString codecpath(getenv("OPIEDIR"));
+-#else
+-      QString codecpath(getenv("QTDIR"));
+-#endif
+-      codecpath += "/plugins/reader/outcodecs";
+-#else
+-      QString codecpath(getenv("READERDIR"));
+-      codecpath += "/outcodecs";
+-#endif
+-      QDir ocd(codecpath, "lib*.so");
++    QString codecpath = uqt_outcodecspath();
++      QDir ocd(uqt_outcodecspath(), "lib*.so");
+       for (int i = 0; i < ocd.count(); ++i)
+ 	{
+ 	  QString tmp(ocd[i]);
+@@ -772,7 +764,7 @@ CInterPrefs::CInterPrefs( QWidget* parent,  const char* name, WFlags fl )
+ {
+     QHBoxLayout* hb = new QHBoxLayout(this);
+ 
+-    QGroupBox* gb = new QGroupBox(1, Qt::Horizontal, tr("International"), this);
++    Q3GroupBox* gb = new Q3GroupBox(1, Qt::Horizontal, tr("International"), this);
+ 
+     hb->addWidget(gb);
+ 
+@@ -784,7 +776,7 @@ CInterPrefs::CInterPrefs( QWidget* parent,  const char* name, WFlags fl )
+     TextLabel = new QLabel( gb );
+     TextLabel->setText( tr( "Ideogram Width" ) );
+     ideogramwidth = new QSpinBox( gb );
+-    ideogramwidth->setSizePolicy(QSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed));
++    // ideogramwidth->setSizePolicy(QSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed));
+     ideogramwidth->setRange(1,200);
+ 
+     propfontchange = new QCheckBox( gb );
+@@ -809,7 +801,7 @@ CInterPrefs::CInterPrefs( QWidget* parent,  const char* name, WFlags fl )
+ 
+     QVBoxLayout* vb = new QVBoxLayout;
+ 
+-    gb = new QGroupBox(1, Qt::Horizontal, "Dictionary", this);
++    gb = new Q3GroupBox(1, Qt::Horizontal, "Dictionary", this);
+ 
+     TextLabel = new QLabel( gb );
+     TextLabel->setText( tr( "Application" ) );
+diff --git a/Prefs.h b/Prefs.h
+index 103484e..a499506 100644
+--- a/Prefs.h
++++ b/Prefs.h
+@@ -11,11 +11,14 @@
+ 
+ #include <qvariant.h>
+ #include <qwidget.h>
+-#include <qtabdialog.h>
++#include <Qt3Support/Q3TabDialog>
+ #include <qtabwidget.h>
+ #include <qspinbox.h>
+ #include <qcheckbox.h>
+ #include <qlineedit.h>
++#include <qnamespace.h>
++using namespace Qt;
++#include <QtGui/QKeyEvent>
+ 
+ #define USECOMBO
+ 
+diff --git a/QFloatBar.h b/QFloatBar.h
+index cc98233..0144fce 100644
+--- a/QFloatBar.h
++++ b/QFloatBar.h
+@@ -1,10 +1,11 @@
+ #ifndef __QFLOATBAR_H
+ #define __QFLOATBAR_H
+ 
+-#include <qtoolbar.h>
+-#include <qmainwindow.h>
++#include <Qt3Support/Q3ToolBar>
++#include <Qt3Support/Q3MainWindow>
++#include <qnamespace.h>
+ 
+-class QFloatBar : public QToolBar
++class QFloatBar : public Q3ToolBar
+ {
+     Q_OBJECT
+ 	virtual void hideEvent(QHideEvent* e)
+@@ -12,7 +13,7 @@ class QFloatBar : public QToolBar
+ 	    /*if (e->spontaneous())*/ emit OnHide();
+ 	}
+ 	public:
+-    QFloatBar(char* t, QMainWindow* mw, QMainWindow::ToolBarDock td, bool f) : QToolBar(t, mw, td, f) {}
++    QFloatBar(char* t, Q3MainWindow* mw, Qt::ToolBarDock td, bool f) : Q3ToolBar(t, mw, td, f) {}
+  signals:
+     void OnHide();
+ };
+diff --git a/QTReader.cpp b/QTReader.cpp
+index 75da8ac..2c698ba 100644
+--- a/QTReader.cpp
++++ b/QTReader.cpp
+@@ -1999,6 +1999,7 @@ void QTReader::drawFonts()
+ 	      }
+ 	  }
+ 	emitRedraw();
++	update();
+     }
+ /*
+     else
+@@ -2221,7 +2222,7 @@ void QTReader::init()
+   setBackgroundColor( m_bg );
+   buffdoc.setfilter(getfilter());
+   ChangeFont(m_textsize);
+-  setFocusPolicy(QWidget::StrongFocus);
++  setFocusPolicy(Qt::StrongFocus);
+   timer = new QTimer(this);
+   connect(timer, SIGNAL(timeout()), this, SLOT(doscroll()));
+ #ifdef USETIMER
+@@ -3096,7 +3097,7 @@ void QTReader::blitRot(int dx, int dy, int sw, int sh, CDrawBuffer* txt)
+ 
+   QPixmap pm(sw, sh);
+  
+-  QPainter pd(&pm, this);
++  QPainter pd(&pm); // , this);
+   if (m_bgpm.isNull())
+     {
+       pd.eraseRect(pm.rect());
+@@ -3136,7 +3137,7 @@ void QTReader::blitRot(int dx, int dy, int sw, int sh, CDrawBuffer* txt)
+   /*
+   p.drawPixmap(QPoint(dx, dy), rp);
+   */
+-  bitBlt(this, dx, dy, &rp, 0, 0, -1, -1, CopyROP);
++  bitBlt(this, dx, dy, &rp, 0, 0, -1, -1, QPainter::CompositionMode_Source);
+ }
+ 
+ QString QTReader::about()
+diff --git a/QTReader.h b/QTReader.h
+index 9daa07a..6afa3e7 100644
+--- a/QTReader.h
++++ b/QTReader.h
+@@ -8,6 +8,9 @@
+ #include "BuffDoc.h"
+ #include "FontControl.h"
+ 
++#include <qnamespace.h>
++using namespace Qt;
++
+ //#include <qtimer.h>
+ 
+ class CDrawBuffer;
+diff --git a/QTReaderApp.cpp b/QTReaderApp.cpp
+index b985094..529ec9e 100644
+--- a/QTReaderApp.cpp
++++ b/QTReaderApp.cpp
+@@ -20,7 +20,9 @@
+ 
+ #include <qregexp.h>
+ #include <qclipboard.h>
+-#include <qwidgetstack.h>
++#include <QStackedWidget>
++#include <Qt3Support/Q3Action>
++#include <qdesktopwidget.h>
+ #ifdef USEQPE
+ #include <qpe/qpemenubar.h>
+ #include <qpe/qpetoolbar.h>
+@@ -31,13 +33,12 @@
+ #include <qpe/menubutton.h>
+ #endif
+ #include <qcombobox.h>
+-#include <qpopupmenu.h>
++#include <Qt3Support/Q3PopupMenu>
+ #include <qaction.h>
+ #include <qapplication.h>
+ #include <qlineedit.h>
+ #include <qtoolbutton.h>
+ #include <qspinbox.h>
+-#include <qobjectlist.h>
+ #include <qstatusbar.h>
+ #ifdef USEQPE
+ #include <qpe/global.h>
+@@ -66,6 +67,7 @@
+ #include "FixedFont.h"
+ #include "URLDialog.h"
+ #include "util.h"
++#include "uqtcommon.h"
+ #include <qfontdatabase.h>
+ 
+ #ifdef USEQPE
+@@ -103,18 +105,10 @@ bool CheckVersion(int&, int&, char&, QWidget*);
+ #define USEMSGS
+ #define PICDIR "opie-reader/"
+ #else
+-//#define PICDIR "/home/tim/uqtreader/pics/"
+-QString picdir()
+-{
+-  QString hd(getenv("READERDIR"));
+-  return hd + "/pics";
+-}
+-#define PICDIR picdir()
++#define PICDIR uqt_picspath()
+ #endif
+ #endif
+ 
+-unsigned long QTReaderApp::m_uid = 0;
+-
+ void QTReaderApp::setScrollState(bool _b) { m_scrollButton->setOn(_b); }
+ 
+ #ifdef USEQPE
+@@ -156,16 +150,9 @@ void QTReaderApp::listBkmkFiles()
+         d.setFilter( QDir::Files | QDir::NoSymLinks );
+ //        d.setSorting( QDir::Size | QDir::Reversed );
+ 
+-        const QFileInfoList *list = d.entryInfoList();
+-        QFileInfoListIterator it( *list );      // create list iterator
+-        QFileInfo *fi;                          // pointer for traversing
+-        while ( (fi=it.current()) ) {           // for each file...
+-  
+-		    bkmkselector->insertItem(fi->fileName(), cnt++);
+-			
+-			//qDebug( "%10li %s", fi->size(), fi->fileName().data() );
+-            ++it;                               // goto next list element
+-        }
++        QFileInfoList list = d.entryInfoList();
++	for(QFileInfoListIterator it=list.begin();it!=list.end();++it)
++	    bkmkselector->insertItem(it->fileName(), cnt++);
+  
+ #else /* USEQPE */
+     int cnt = 0;
+@@ -192,7 +179,7 @@ void QTReaderApp::listBkmkFiles()
+ //tjw        menu->hide();
+ 
+ 
+-        editorStack->raiseWidget( bkmkselector );
++        editorStack->setCurrentWidget( bkmkselector );
+         hidetoolbars();
+ 	m_nBkmkAction = cRmBkmkFile;
+       }
+@@ -207,6 +194,8 @@ void QTReaderApp::hidetoolbars()
+ 
+ #if defined(USEQPE)
+     menubar->hide();
++#else
++    mb->hide();
+ #endif
+ 
+     if (m_scrollbar != NULL) m_scrollbar->hide();
+@@ -233,7 +222,7 @@ void QTReaderApp::hidetoolbars()
+ }
+ 
+ QTReaderApp::QTReaderApp( QWidget *parent, const char *name, WFlags f )
+-    : QMainWindow( parent, name, f ), m_dontSave(false),
++    : Q3MainWindow( parent, name, f ), m_dontSave(false),
+       fileBar(NULL), navBar(NULL), viewBar(NULL), markBar(NULL), m_scrollbar(NULL), m_localscroll(2), m_hidebars(false), m_kmapchanged(false)
+ {
+   {
+@@ -337,41 +326,41 @@ QTReaderApp::QTReaderApp( QWidget *parent, const char *name, WFlags f )
+ //    QToolBar* markBar = new QToolBar("File", this);
+ 
+ #if defined(USEQPE)
+-    menubar = new QToolBar("Menus", this, m_tbposition);
++    menubar = new Q3ToolBar("Menus", this, m_tbposition);
+     mb = new QPEMenuBar( menubar );
+ #else
+     mb = new QMenuBar( this );
+ #endif
+ 
+ #if defined(USEQPE)
+-    QPopupMenu* tmp = new QPopupMenu(mb);
++    Q3PopupMenu* tmp = new Q3PopupMenu(mb);
+     mb->insertItem( geticon( "AppsIcon" ), tmp );
+ #else
+     QMenuBar* tmp = mb;
+ #endif
+ 
+-    QPopupMenu *file = new QPopupMenu( mb );
++    Q3PopupMenu *file = new Q3PopupMenu( mb );
+     tmp->insertItem( tr( "File" ), file );
+ 
+-    QPopupMenu *navigation = new QPopupMenu(mb);
++    Q3PopupMenu *navigation = new Q3PopupMenu(mb);
+     tmp->insertItem( tr( "Navigation" ), navigation );
+ 
+-    QPopupMenu *view = new QPopupMenu( mb );
++    Q3PopupMenu *view = new Q3PopupMenu( mb );
+     tmp->insertItem( tr( "View" ), view );
+ 
+-    QPopupMenu *marks = new QPopupMenu( this );
++    Q3PopupMenu *marks = new Q3PopupMenu( this );
+     tmp->insertItem( tr( "Marks" ), marks );
+ 
+-    QPopupMenu *settings = new QPopupMenu( this );
++    Q3PopupMenu *settings = new Q3PopupMenu( this );
+     tmp->insertItem( tr( "Settings" ), settings );
+ 
+ //    addToolBar(menubar, "Menus",QMainWindow::Top);
+ //    addToolBar(fileBar, "Toolbar",QMainWindow::Top);
+ 
+-    //    QPopupMenu *edit = new QPopupMenu( this );
++    //    Q3PopupMenu *edit = new Q3PopupMenu( this );
+ 
+     /*
+-    QAction *a = new QAction( tr( "New" ), Resource::loadPixmap( "new" ), QString::null, 0, this, 0 );
++    Q3Action *a = new Q3Action( tr( "New" ), Resource::loadPixmap( "new" ), QString::null, 0, this, 0 );
+     connect( a, SIGNAL( activated() ), this, SLOT( fileNew() ) );
+     a->addTo( bar );
+     a->addTo( file );
+@@ -379,34 +368,35 @@ QTReaderApp::QTReaderApp( QWidget *parent, const char *name, WFlags f )
+     QWidget* widge = new QWidget(this);
+     setCentralWidget( widge );
+     QVBoxLayout* vlayout = new QVBoxLayout(widge);
++    vlayout->setMargin(0);
+     m_layout = new QBoxLayout(QBoxLayout::LeftToRight);
+     m_prog = new QLabel(widge);
+     vlayout->addLayout(m_layout, 1);
+     vlayout->addWidget(m_prog);
+ 
+-    editorStack = new QWidgetStack( widge );
++    editorStack = new QStackedWidget( widge );
+     //    setCentralWidget( editorStack );
+ 
+     searchVisible = FALSE;
+     regVisible = FALSE;
+     m_fontVisible = false;
+ 
+-    m_buttonprefs = new CButtonPrefs(&kmap, this);
+-    editorStack->addWidget(m_buttonprefs, get_unique_id());
++    m_buttonprefs = new CButtonPrefs(&kmap, editorStack);
++    editorStack->addWidget(m_buttonprefs);
+     connect( m_buttonprefs, SIGNAL( Closed() ), this, SLOT( infoClose() ) );
+ 
+ 
+     m_annoWin = new CAnnoEdit(editorStack);
+-    editorStack->addWidget(m_annoWin, get_unique_id());
++    editorStack->addWidget(m_annoWin);
+     connect( m_annoWin, SIGNAL( finished(const QString&, const QString&) ), this, SLOT( addAnno(const QString&, const QString&) ) );
+     connect( m_annoWin, SIGNAL( cancelled() ), this, SLOT( infoClose() ) );
+ 
+     m_infoWin = new infowin(editorStack);
+-    editorStack->addWidget(m_infoWin, get_unique_id());
++    editorStack->addWidget(m_infoWin);
+     connect( m_infoWin, SIGNAL( Close() ), this, SLOT( infoClose() ) );
+ 
+     m_graphicwin = new GraphicWin(editorStack);
+-    editorStack->addWidget(m_graphicwin, get_unique_id());
++    editorStack->addWidget(m_graphicwin);
+     connect( m_graphicwin, SIGNAL( Closed() ), this, SLOT( infoClose() ) );
+ 
+ //    bkmkselector = new QListBox(editorStack, "Bookmarks");
+@@ -414,7 +404,7 @@ QTReaderApp::QTReaderApp( QWidget *parent, const char *name, WFlags f )
+     //    connect(bkmkselector, SIGNAL( selected(const QString&) ), this, SLOT( gotobkmk(const QString&) ) );
+     connect(bkmkselector, SIGNAL( selected(int) ), this, SLOT( gotobkmk(int) ) );
+     connect(bkmkselector, SIGNAL( cancelled() ), this, SLOT( cancelbkmk() ) );
+-    editorStack->addWidget( bkmkselector, get_unique_id() );
++    editorStack->addWidget( bkmkselector);
+ 
+ /*
+     importSelector = new FileSelector( "*", editorStack, "importselector", false );
+@@ -572,139 +562,139 @@ QTReaderApp::QTReaderApp( QWidget *parent, const char *name, WFlags f )
+     connect( reader, SIGNAL( HandleKeyRequest(QKeyEvent*) ), this, SLOT( handlekey(QKeyEvent*) ) );
+     connect( reader, SIGNAL( SetScrollState(bool) ), this, SLOT( setScrollState(bool) ) );
+     connect( reader, SIGNAL(RefreshBitmap()), this, SLOT(setBackgroundBitmap()));
+-    editorStack->addWidget( reader, get_unique_id() );
++    editorStack->addWidget( reader );
+ 
+-    m_preferences_action = new QAction( tr( "Configuration" ), geticon( "SettingsIcon" ), QString::null, 0, this, NULL);
++    m_preferences_action = new Q3Action( tr( "Configuration" ), geticon( "SettingsIcon" ), QString::null, 0, this, NULL);
+     connect( m_preferences_action, SIGNAL( activated() ), this, SLOT( showprefs() ) );
+     m_preferences_action->addTo( settings );
+ 
+-    m_saveconfig_action = new QAction( tr( "Save Config" ), QString::null, 0, this, NULL);
++    m_saveconfig_action = new Q3Action( tr( "Save Config" ), QString::null, 0, this, NULL);
+     connect( m_saveconfig_action, SIGNAL( activated() ), this, SLOT( SaveConfig() ) );
+     m_saveconfig_action->addTo( settings );
+ 
+-    m_loadconfig_action = new QAction( tr( "Load Config" ), QString::null, 0, this, NULL);
++    m_loadconfig_action = new Q3Action( tr( "Load Config" ), QString::null, 0, this, NULL);
+     connect( m_loadconfig_action, SIGNAL( activated() ), this, SLOT( LoadConfig() ) );
+     m_loadconfig_action->addTo( settings );
+ 
+-    m_tidyconfig_action = new QAction( tr( "Delete Config" ), QString::null, 0, this, NULL);
++    m_tidyconfig_action = new Q3Action( tr( "Delete Config" ), QString::null, 0, this, NULL);
+     connect( m_tidyconfig_action, SIGNAL( activated() ), this, SLOT( TidyConfig() ) );
+     m_tidyconfig_action->addTo( settings );
+ 
+     settings->insertSeparator();
+-    m_toolbarprefs_action = new QAction( tr( "Toolbars" ), QString::null, 0, this, NULL);
++    m_toolbarprefs_action = new Q3Action( tr( "Toolbars" ), QString::null, 0, this, NULL);
+     connect( m_toolbarprefs_action, SIGNAL( activated() ), this, SLOT( showtoolbarprefs() ) );
+     m_toolbarprefs_action->addTo( settings );
+ 
+-    m_buttonprefs_action = new QAction( tr( "Buttons" ), QString::null, 0, this, NULL);
++    m_buttonprefs_action = new Q3Action( tr( "Buttons" ), QString::null, 0, this, NULL);
+     connect( m_buttonprefs_action, SIGNAL( activated() ), this, SLOT( showbuttonprefs() ) );
+     m_buttonprefs_action->addTo( settings );
+ 
+-    m_loadtheme_action = new QAction( tr( "Load Theme" ), QString::null, 0, this, NULL);
++    m_loadtheme_action = new Q3Action( tr( "Load Theme" ), QString::null, 0, this, NULL);
+     connect( m_loadtheme_action, SIGNAL( activated() ), this, SLOT( LoadTheme() ) );
+     m_loadtheme_action->addTo( settings );
+ 
+-    m_repara_action = new QAction( tr( "EOP Marker" ),  QString::null, 0, this, NULL);
++    m_repara_action = new Q3Action( tr( "EOP Marker" ),  QString::null, 0, this, NULL);
+     connect( m_repara_action, SIGNAL( activated() ), this, SLOT( reparastring() ) );
+     m_repara_action->addTo(settings);
+ 
+ #ifdef USEQPE
+-    m_grab_action = new QAction( tr( "Grab Buttons" ), QString::null, 0, this, NULL, true );
++    m_grab_action = new Q3Action( tr( "Grab Buttons" ), QString::null, 0, this, NULL, true );
+     connect( m_grab_action, SIGNAL( toggled(bool) ), this, SLOT( setgrab(bool) ) );
+     m_grab_action->setOn(m_grabkeyboard);
+     m_grab_action->addTo( settings );
+ #endif
+ 
+-    m_open_action = new QAction( tr( "Open" ), geticon( "fileopen" ), QString::null, 0, this, 0 );
++    m_open_action = new Q3Action( tr( "Open" ), geticon( "fileopen" ), QString::null, 0, this, 0 );
+     connect( m_open_action, SIGNAL( activated() ), this, SLOT( fileOpen() ) );
+     m_open_action->addTo( file );
+ 
+-    m_close_action = new QAction( tr( "Close" ), geticon( "close" ), QString::null, 0, this, 0 );
++    m_close_action = new Q3Action( tr( "Close" ), geticon( "close" ), QString::null, 0, this, 0 );
+     connect( m_close_action, SIGNAL( activated() ), this, SLOT( fileClose() ) );
+     m_close_action->addTo( file );
+ 
+ #ifdef _SCRIPT
+-    a = new QAction( tr( "Run Script" ), QString::null, 0, this, NULL);
++    a = new Q3Action( tr( "Run Script" ), QString::null, 0, this, NULL);
+     connect( a, SIGNAL( activated() ), this, SLOT( RunScript() ) );
+     a->addTo( file );
+ #endif
+     /*
+-    a = new QAction( tr( "Revert" ), geticon( "close" ), QString::null, 0, this, 0 );
++    a = new Q3Action( tr( "Revert" ), geticon( "close" ), QString::null, 0, this, 0 );
+     connect( a, SIGNAL( activated() ), this, SLOT( fileRevert() ) );
+     a->addTo( file );
+ 
+-    a = new QAction( tr( "Cut" ), geticon( "cut" ), QString::null, 0, this, 0 );
++    a = new Q3Action( tr( "Cut" ), geticon( "cut" ), QString::null, 0, this, 0 );
+     connect( a, SIGNAL( activated() ), this, SLOT( editCut() ) );
+     a->addTo( filebar() );
+     a->addTo( edit );
+     */
+ 
+-    m_info_action = new QAction( tr( "Info" ), geticon( "UtilsIcon" ), QString::null, 0, this, NULL);
++    m_info_action = new Q3Action( tr( "Info" ), geticon( "UtilsIcon" ), QString::null, 0, this, NULL);
+     connect( m_info_action, SIGNAL( activated() ), this, SLOT( showinfo() ) );
+     m_info_action->addTo( file );
+ 
+-    m_touch_action = new QAction( tr( "Two/One Touch" ), geticon( "1to1" ), QString::null, 0, this, NULL, true );
++    m_touch_action = new Q3Action( tr( "Two/One Touch" ), geticon( "1to1" ), QString::null, 0, this, NULL, true );
+     connect( m_touch_action, SIGNAL( toggled(bool) ), this, SLOT( setTwoTouch(bool) ) );
+     m_touch_action->setOn(m_twoTouch);
+     m_touch_action->addTo( file );
+ 
+-    m_find_action = new QAction( tr( "Find..." ), geticon( "find" ), QString::null, 0, this, NULL);
++    m_find_action = new Q3Action( tr( "Find..." ), geticon( "find" ), QString::null, 0, this, NULL);
+      connect( m_find_action, SIGNAL( activated() ), this, SLOT( editFind() ) );
+      file->insertSeparator();
+ //     a->addTo( bar );
+      m_find_action->addTo( file );
+ 
+-    m_exportlinks_action = new QAction( tr( "Export Links" ), QString::null, 0, this, NULL);
++    m_exportlinks_action = new Q3Action( tr( "Export Links" ), QString::null, 0, this, NULL);
+     connect( m_exportlinks_action, SIGNAL( activated() ), this, SLOT( ExportLinks() ) );
+     m_exportlinks_action->addTo( file );
+ 
+-    m_scrollButton = new QAction( tr( "Scroll" ), getmyicon( "panel-arrow-down" ), QString::null, 0, this, 0, true );
++    m_scrollButton = new Q3Action( tr( "Scroll" ), getmyicon( "panel-arrow-down" ), QString::null, 0, this, 0, true );
+     connect( m_scrollButton, SIGNAL( toggled(bool) ), this, SLOT( autoScroll(bool) ) );
+     m_scrollButton->addTo(navigation);
+     m_scrollButton->setOn(false);
+ 
+-    m_start_action = new QAction( tr( "Goto Start" ), geticon( "start" ), QString::null, 0, this, NULL);
++    m_start_action = new Q3Action( tr( "Goto Start" ), geticon( "start" ), QString::null, 0, this, NULL);
+     connect( m_start_action, SIGNAL( activated() ), this, SLOT( gotoStart() ) );
+     m_start_action->addTo(navigation);
+ 
+-    m_end_action = new QAction( tr( "Goto End" ), geticon( "finish" ), QString::null, 0, this, NULL);
++    m_end_action = new Q3Action( tr( "Goto End" ), geticon( "finish" ), QString::null, 0, this, NULL);
+     connect( m_end_action, SIGNAL( activated() ), this, SLOT( gotoEnd() ) );
+     m_end_action->addTo(navigation);
+ 
+-    m_jump_action = new QAction( tr( "Jump" ), geticon( "rotate" ), QString::null, 0, this, NULL);
++    m_jump_action = new Q3Action( tr( "Jump" ), geticon( "rotate" ), QString::null, 0, this, NULL);
+     connect( m_jump_action, SIGNAL( activated() ), this, SLOT( jump() ) );
+     m_jump_action->addTo(navigation);
+ 
+-    m_pageline_action = new QAction( tr( "Page/Line Scroll" ), geticon( "pass" ), QString::null, 0, this, NULL, true );
++    m_pageline_action = new Q3Action( tr( "Page/Line Scroll" ), geticon( "pass" ), QString::null, 0, this, NULL, true );
+     connect( m_pageline_action, SIGNAL( toggled(bool) ), this, SLOT( pagemode(bool) ) );
+     m_pageline_action->addTo(navigation);
+     m_pageline_action->setOn(reader->m_bpagemode);
+ 
+-    m_pageup_action = new QAction( tr( "Up" ), geticon( "up" ), QString::null, 0, this, 0 );
++    m_pageup_action = new Q3Action( tr( "Up" ), geticon( "up" ), QString::null, 0, this, 0 );
+     connect( m_pageup_action, SIGNAL( activated() ), this, SLOT( pageup() ) );
+     m_pageup_action->addTo( navigation );
+     
+-    m_pagedn_action = new QAction( tr( "Down" ), geticon( "down" ), QString::null, 0, this, 0 );
++    m_pagedn_action = new Q3Action( tr( "Down" ), geticon( "down" ), QString::null, 0, this, 0 );
+     connect( m_pagedn_action, SIGNAL( activated() ), this, SLOT( pagedn() ) );
+     m_pagedn_action->addTo( navigation );
+ 
+-    m_back_action = new QAction( tr( "Back" ), geticon( "back" ), QString::null, 0, this, 0 );
++    m_back_action = new Q3Action( tr( "Back" ), geticon( "back" ), QString::null, 0, this, 0 );
+     connect( m_back_action, SIGNAL( activated() ), reader, SLOT( goBack() ) );
+     m_back_action->addTo( navigation );
+ 
+-    m_home_action = new QAction( tr( "Home" ), geticon( "home" ), QString::null, 0, this, 0 );
++    m_home_action = new Q3Action( tr( "Home" ), geticon( "home" ), QString::null, 0, this, 0 );
+     connect( m_home_action, SIGNAL( activated() ), reader, SLOT( goHome() ) );
+     m_home_action->addTo( navigation );
+ 
+-    m_forward_action = new QAction( tr( "Forward" ), geticon( "forward" ), QString::null, 0, this, 0 );
++    m_forward_action = new Q3Action( tr( "Forward" ), geticon( "forward" ), QString::null, 0, this, 0 );
+     connect( m_forward_action, SIGNAL( activated() ), reader, SLOT( goForward() ) );
+     m_forward_action->addTo( navigation );
+ 
+     /*
+-    a = new QAction( tr( "Find" ), QString::null, 0, this, NULL, true );
++    a = new Q3Action( tr( "Find" ), QString::null, 0, this, NULL, true );
+     //    connect( a, SIGNAL( activated() ), this, SLOT( pagedn() ) );
+     a->addTo( file );
+ 
+-    a = new QAction( tr( "Find Again" ), QString::null, 0, this, NULL, true );
++    a = new Q3Action( tr( "Find Again" ), QString::null, 0, this, NULL, true );
+     //    connect( a, SIGNAL( activated() ), this, SLOT( pagedn() ) );
+     a->addTo( file );
+     */
+@@ -715,13 +705,13 @@ QTReaderApp::QTReaderApp( QWidget *parent, const char *name, WFlags f )
+ 
+     QActionGroup* ag = new QActionGroup(this);
+     ag->setExclusive(false);
+-    spacemenu = new QPopupMenu(this);
++    spacemenu = new Q3PopupMenu(this);
+     file->insertItem( tr( "Scrolling" ), spacemenu );
+ 
+-    a = new QAction( tr( "Set Target" ), QString::null, 0, ag, NULL);
++    a = new Q3Action( tr( "Set Target" ), QString::null, 0, ag, NULL);
+     connect( a, SIGNAL( activated() ), this, SLOT( setpipetarget() ) );
+ 
+-    a = new QAction( tr( "Pause Paras" ), QString::null, 0, ag, NULL, true );
++    a = new Q3Action( tr( "Pause Paras" ), QString::null, 0, ag, NULL, true );
+     connect( a, SIGNAL( toggled(bool) ), this, SLOT( setpause(bool) ) );
+     a->setOn(reader->m_pauseAfterEachPara);
+ 
+@@ -731,64 +721,64 @@ QTReaderApp::QTReaderApp( QWidget *parent, const char *name, WFlags f )
+ #endif
+ 
+ /*
+-    a = new QAction( tr( "Import" ), QString::null, 0, this, NULL );
++    a = new Q3Action( tr( "Import" ), QString::null, 0, this, NULL );
+     connect( a, SIGNAL( activated() ), this, SLOT( importFiles() ) );
+     a->addTo( file );
+ */
+ 
+     /*
+-    a = new QAction( tr( "Paste" ), geticon( "paste" ), QString::null, 0, this, 0 );
++    a = new Q3Action( tr( "Paste" ), geticon( "paste" ), QString::null, 0, this, 0 );
+     connect( a, SIGNAL( activated() ), this, SLOT( editPaste() ) );
+     a->addTo( fileBar );
+     a->addTo( edit );
+     */
+ 
+-//     a = new QAction( tr( "Find..." ), geticon( "find" ), QString::null, 0, this, 0 );
++//     a = new Q3Action( tr( "Find..." ), geticon( "find" ), QString::null, 0, this, 0 );
+ 
+      m_fullscreen = false;
+-    m_actFullscreen = new QAction( tr( "Fullscreen" ), geticon( "fullscreen" ), QString::null, 0, this, NULL, true );
++    m_actFullscreen = new Q3Action( tr( "Fullscreen" ), geticon( "fullscreen" ), QString::null, 0, this, NULL, true );
+     connect( m_actFullscreen, SIGNAL( toggled(bool) ), this, SLOT( setfullscreen(bool) ) );
+     m_actFullscreen->setOn(m_fullscreen);
+     m_actFullscreen->addTo( view );
+ 
+-    m_rotate_action = new QAction( tr( "Rotate" ), geticon( "repeat" ), QString::null, 0, this, NULL, true );
++    m_rotate_action = new Q3Action( tr( "Rotate" ), geticon( "repeat" ), QString::null, 0, this, NULL, true );
+     connect( m_rotate_action, SIGNAL( toggled(bool) ), this, SLOT( setrotated(bool) ) );
+     m_rotate_action->setOn(reader->m_rotated);
+     m_rotate_action->addTo( view );
+ 
+-    m_inverse_action = new QAction( tr( "Invert" ), getmyicon( "invert" ), QString::null, 0, this, NULL, true );
++    m_inverse_action = new Q3Action( tr( "Invert" ), getmyicon( "invert" ), QString::null, 0, this, NULL, true );
+     connect( m_inverse_action, SIGNAL( toggled(bool) ), this, SLOT( setinverted(bool) ) );
+     m_inverse_action->setOn(reader->bInverse);
+     m_inverse_action->addTo( view );
+ 
+     view->insertSeparator();
+ 
+-    m_zoomin_action = new QAction( tr( "Zoom In" ), geticon( "zoom" ), QString::null, 0, this);
++    m_zoomin_action = new Q3Action( tr( "Zoom In" ), geticon( "zoom" ), QString::null, 0, this);
+     connect( m_zoomin_action, SIGNAL( activated() ), this, SLOT( zoomin() ) );
+     m_zoomin_action->addTo( view );
+ 
+-    m_zoomout_action = new QAction( tr( "Zoom Out" ), geticon( "mag" ), QString::null, 0, this);
++    m_zoomout_action = new Q3Action( tr( "Zoom Out" ), geticon( "mag" ), QString::null, 0, this);
+     connect( m_zoomout_action, SIGNAL( activated() ), this, SLOT( zoomout() ) );
+     m_zoomout_action->addTo( view );
+ 
+     view->insertSeparator();
+-    m_setfont_action = new QAction( tr( "Set Font" ), getmyicon( "font" ), QString::null, 0, this);
++    m_setfont_action = new Q3Action( tr( "Set Font" ), getmyicon( "font" ), QString::null, 0, this);
+     connect( m_setfont_action, SIGNAL( activated() ), this, SLOT( setfont() ) );
+     m_setfont_action->addTo( view );
+ 
+     view->insertSeparator();
+-    m_setenc_action = new QAction( tr( "Set Encoding" ), getmyicon( "charset" ), QString::null, 0, this);
++    m_setenc_action = new Q3Action( tr( "Set Encoding" ), getmyicon( "charset" ), QString::null, 0, this);
+     connect( m_setenc_action, SIGNAL( activated() ), this, SLOT( chooseencoding() ) );
+     m_setenc_action->addTo( view );
+ 
+-    m_setmono_action = new QAction( tr( "Ideogram" ), getmyicon( "ideogram" ), QString::null, 0, this, NULL, true);
++    m_setmono_action = new Q3Action( tr( "Ideogram" ), getmyicon( "ideogram" ), QString::null, 0, this, NULL, true);
+     connect( m_setmono_action, SIGNAL( toggled(bool) ), this, SLOT( monospace(bool) ) );
+     m_setmono_action->addTo( view );
+     m_setmono_action->setOn(reader->m_bMonoSpaced);
+ 
+ 
+-    //    a = new QAction( tr( "Zoom" ), QString::null, 0, this, NULL, true );
+-    //    a = new QAction( tr( "Zoom" ), geticon( "mag" ), QString::null, 0, this, 0 );
++    //    a = new Q3Action( tr( "Zoom" ), QString::null, 0, this, NULL, true );
++    //    a = new Q3Action( tr( "Zoom" ), geticon( "mag" ), QString::null, 0, this, 0 );
+ 
+ 
+ 
+@@ -796,57 +786,57 @@ QTReaderApp::QTReaderApp( QWidget *parent, const char *name, WFlags f )
+ //     view->insertSeparator();
+ 
+ /*
+-    a = new QAction( tr( "Ideogram/Word" ), QString::null, 0, this, NULL, true );
++    a = new Q3Action( tr( "Ideogram/Word" ), QString::null, 0, this, NULL, true );
+     connect( a, SIGNAL( toggled(bool) ), this, SLOT( monospace(bool) ) );
+     a->setOn(reader->m_bMonoSpaced);
+     a->addTo( view );
+ */
+ /*
+-    a = new QAction( tr( "Set Width" ), QString::null, 0, this, NULL);
++    a = new Q3Action( tr( "Set Width" ), QString::null, 0, this, NULL);
+     connect( a, SIGNAL( activated() ), this, SLOT( setspacing() ) );
+     a->addTo( view );
+ */
+ 
+-    m_mark_action = new QAction( tr( "Bookmark" ), getmyicon( "bookmark" ), QString::null, 0, this, NULL);
++    m_mark_action = new Q3Action( tr( "Bookmark" ), getmyicon( "bookmark" ), QString::null, 0, this, NULL);
+     connect( m_mark_action, SIGNAL( activated() ), this, SLOT( addbkmk() ) );
+     m_mark_action->addTo( marks );
+ 
+-    m_annotate_action = new QAction( tr( "Annotate" ), getmyicon( "annotate" ), QString::null, 0, this, NULL);
++    m_annotate_action = new Q3Action( tr( "Annotate" ), getmyicon( "annotate" ), QString::null, 0, this, NULL);
+     connect( m_annotate_action, SIGNAL( activated() ), this, SLOT( addanno() ) );
+     m_annotate_action->addTo( marks );
+ 
+-    m_goto_action = new QAction( tr( "Goto" ), getmyicon( "bookmark_goto" ), QString::null, 0, this, NULL, false );
++    m_goto_action = new Q3Action( tr( "Goto" ), getmyicon( "bookmark_goto" ), QString::null, 0, this, NULL, false );
+     connect( m_goto_action, SIGNAL( activated() ), this, SLOT( do_gotomark() ) );
+     m_goto_action->addTo( marks );
+ 
+-    m_delete_action = new QAction( tr( "Delete" ), getmyicon( "bookmark_delete" ), QString::null, 0, this, NULL);
++    m_delete_action = new Q3Action( tr( "Delete" ), getmyicon( "bookmark_delete" ), QString::null, 0, this, NULL);
+     connect( m_delete_action, SIGNAL( activated() ), this, SLOT( do_delmark() ) );
+     m_delete_action->addTo( marks );
+ 
+-    m_autogen_action = new QAction( tr( "Autogen" ), geticon( "exec" ), QString::null, 0, this, NULL, false );
++    m_autogen_action = new Q3Action( tr( "Autogen" ), geticon( "exec" ), QString::null, 0, this, NULL, false );
+     connect( m_autogen_action, SIGNAL( activated() ), this, SLOT( do_autogen() ) );
+      marks->insertSeparator();
+     m_autogen_action->addTo( marks );
+ 
+-    m_clear_action = new QAction( tr( "Clear" ), getmyicon( "bookmark_clear" ), QString::null, 0, this, NULL);
++    m_clear_action = new Q3Action( tr( "Clear" ), getmyicon( "bookmark_clear" ), QString::null, 0, this, NULL);
+     connect( m_clear_action, SIGNAL( activated() ), this, SLOT( clearBkmkList() ) );
+     m_clear_action->addTo( marks );
+ 
+-    m_save_action = new QAction( tr( "Save" ), getmyicon( "bookmark_save" ), QString::null, 0, this, NULL );
++    m_save_action = new Q3Action( tr( "Save" ), getmyicon( "bookmark_save" ), QString::null, 0, this, NULL );
+     connect( m_save_action, SIGNAL( activated() ), this, SLOT( savebkmks() ) );
+     m_save_action->addTo( marks );
+ 
+-    m_tidy_action = new QAction( tr( "Tidy" ), getmyicon( "bookmark_tidy" ), QString::null, 0, this, NULL);
++    m_tidy_action = new Q3Action( tr( "Tidy" ), getmyicon( "bookmark_tidy" ), QString::null, 0, this, NULL);
+     connect( m_tidy_action, SIGNAL( activated() ), this, SLOT( listBkmkFiles() ) );
+      marks->insertSeparator();
+     m_tidy_action->addTo( marks );
+ 
+-    m_startBlock_action = new QAction( tr( "Start Block" ), geticon( "new" ), QString::null, 0, this, NULL);
++    m_startBlock_action = new Q3Action( tr( "Start Block" ), geticon( "new" ), QString::null, 0, this, NULL);
+     connect( m_startBlock_action, SIGNAL( activated() ), this, SLOT( editMark() ) );
+     marks->insertSeparator();
+     m_startBlock_action->addTo( marks );
+ 
+-    m_endBlock_action = new QAction( tr( "Copy Block" ), geticon( "copy" ), QString::null, 0, this, NULL);
++    m_endBlock_action = new Q3Action( tr( "Copy Block" ), geticon( "copy" ), QString::null, 0, this, NULL);
+     connect( m_endBlock_action, SIGNAL( activated() ), this, SLOT( editCopy() ) );
+     m_endBlock_action->addTo( marks );
+ 
+@@ -868,10 +858,10 @@ QTReaderApp::QTReaderApp( QWidget *parent, const char *name, WFlags f )
+       }
+ 
+ 
+-    pbar = new QProgressBar(this);
++    pbar = new Q3ProgressBar(this);
+     pbar->hide();
+ 
+-    searchBar = new QFloatBar( "Search", this, QMainWindow::Top, TRUE );
++    searchBar = new QFloatBar( "Search", this, Qt::Top, TRUE );
+ 
+     searchBar->setHorizontalStretchable( TRUE );
+ 
+@@ -890,17 +880,17 @@ QTReaderApp::QTReaderApp( QWidget *parent, const char *name, WFlags f )
+     connect( searchEdit, SIGNAL( returnPressed( ) ),
+ 	     this, SLOT( search( ) ) );
+ #endif
+-     QAction*a = new QAction( tr( "Find Next" ), geticon( "next" ), QString::null, 0, this, 0 );
++     Q3Action*a = new Q3Action( tr( "Find Next" ), geticon( "next" ), QString::null, 0, this, 0 );
+      connect( a, SIGNAL( activated() ), this, SLOT( findNext() ) );
+      a->addTo( searchBar );
+ 
+-    a = new QAction( tr( "Close Find" ), geticon( "close" ), QString::null, 0, this, 0 );
++    a = new Q3Action( tr( "Close Find" ), geticon( "close" ), QString::null, 0, this, 0 );
+     connect( a, SIGNAL( activated() ), this, SLOT( findClose() ) );
+     a->addTo( searchBar );
+ 
+     searchBar->hide();
+ 
+-    regBar = new QFloatBar( "Autogen", this, QMainWindow::Top, TRUE );
++    regBar = new QFloatBar( "Autogen", this, Qt::Top, TRUE );
+     connect(regBar, SIGNAL( OnHide() ), this, SLOT( restoreFocus() ));
+ 
+     regBar->setHorizontalStretchable( TRUE );
+@@ -913,17 +903,17 @@ QTReaderApp::QTReaderApp( QWidget *parent, const char *name, WFlags f )
+     connect( regEdit, SIGNAL( returnPressed( ) ),
+ 	     this, SLOT( do_regaction() ) );
+ 
+-    a = new QAction( tr( "Do Reg" ), geticon( "enter" ), QString::null, 0, this, 0 );
++    a = new Q3Action( tr( "Do Reg" ), geticon( "enter" ), QString::null, 0, this, 0 );
+     connect( a, SIGNAL( activated() ), this, SLOT( do_regaction() ) );
+     a->addTo( regBar );
+ 
+-    a = new QAction( tr( "Close Edit" ), geticon( "close" ), QString::null, 0, this, 0 );
++    a = new Q3Action( tr( "Close Edit" ), geticon( "close" ), QString::null, 0, this, 0 );
+     connect( a, SIGNAL( activated() ), this, SLOT( regClose() ) );
+     a->addTo( regBar );
+ 
+     regBar->hide();
+ 
+-    m_fontBar = new QToolBar( "Autogen", this, QMainWindow::Top, TRUE );
++    m_fontBar = new Q3ToolBar( "Autogen", this, Qt::Top, TRUE );
+ 
+     m_fontBar->setHorizontalStretchable( TRUE );
+ 
+@@ -940,9 +930,9 @@ QTReaderApp::QTReaderApp( QWidget *parent, const char *name, WFlags f )
+ 	    {
+ 		realfont = true;
+ 	    }
+-	    if ((*nm).contains(FIXEDFONT,false)) reader->m_fontControl.hasCourier(true, *nm);
+ 	}
+ 	if (!realfont) reader->m_fontname = flist[0];
++	reader->m_fontControl.setCourier(reader->m_fontname,flist);
+     } // delete the FontDatabase!!!
+     connect( m_fontSelector, SIGNAL( activated(const QString& ) ),
+ 	     this, SLOT( do_setfont(const QString&) ) );
+@@ -965,7 +955,7 @@ QTReaderApp::QTReaderApp( QWidget *parent, const char *name, WFlags f )
+ 
+ 	m_scrollbar->setVerticalStretchable( TRUE );
+ 	*/
+-	scrollbar = m_scrollbar = new QScrollBar(QScrollBar::Vertical, widge);
++	scrollbar = m_scrollbar = new QScrollBar(Qt::Vertical, widge);
+ 	m_layout->addWidget(scrollbar);
+ 	scrollbar->setTracking(false);
+ 	//	connect(scrollbar, SIGNAL(sliderMoved(int)), this, SLOT(actionscroll(int)) );
+@@ -1226,7 +1216,7 @@ void QTReaderApp::addtoolbars(Config* config)
+     {
+ 	if (m_bkmkAvail == NULL)
+ 	{
+-	    m_bkmkAvail = new QAction( tr( "Annotation" ), geticon( "find" ), QString::null, 0, this, 0 );
++	    m_bkmkAvail = new Q3Action( tr( "Annotation" ), geticon( "find" ), QString::null, 0, this, 0 );
+ 	    connect( m_bkmkAvail, SIGNAL( activated() ), this, SLOT( showAnnotation() ) );
+ 	
+ 	    m_bkmkAvail->setEnabled(false);
+@@ -1253,7 +1243,7 @@ bool QTReaderApp::checkbar(Config* _config, const QString& key)
+ }
+ 
+ 
+-QToolBar* QTReaderApp::filebar()
++Q3ToolBar* QTReaderApp::filebar()
+ {
+     if (fileBar == NULL)
+     {
+@@ -1270,21 +1260,21 @@ QToolBar* QTReaderApp::filebar()
+ 	    case cesMenuTool:
+ 	    case cesMultiple:
+ //		qDebug("Creating new file bar");
+-		fileBar = new QToolBar("File", this, m_tbposition);
++		fileBar = new Q3ToolBar("File", this, m_tbposition);
+ 		break;
+ 	}
+ //	fileBar->setHorizontalStretchable( true );
+     }
+     return fileBar;
+ }
+-QToolBar* QTReaderApp::viewbar()
++Q3ToolBar* QTReaderApp::viewbar()
+ {
+     if (viewBar == NULL)
+     {
+ 	switch (m_tbpol)
+ 	{
+ 	    case cesMultiple:
+-		viewBar = new QToolBar("View", this, m_tbposition);
++		viewBar = new Q3ToolBar("View", this, m_tbposition);
+ 		break;
+ 	    default:
+ 		qDebug("Incorrect toolbar policy set");
+@@ -1298,7 +1288,7 @@ QToolBar* QTReaderApp::viewbar()
+     }
+     return viewBar;
+ }
+-QToolBar* QTReaderApp::navbar()
++Q3ToolBar* QTReaderApp::navbar()
+ {
+     if (navBar == NULL)
+     {
+@@ -1306,7 +1296,7 @@ QToolBar* QTReaderApp::navbar()
+ 	{
+ 	    case cesMultiple:
+ //		qDebug("Creating new nav bar");
+-		navBar = new QToolBar("Navigation", this, m_tbposition);
++		navBar = new Q3ToolBar("Navigation", this, m_tbposition);
+ 		break;
+ 	    default:
+ 		qDebug("Incorrect toolbar policy set");
+@@ -1321,14 +1311,14 @@ QToolBar* QTReaderApp::navbar()
+     }
+     return navBar;
+ }
+-QToolBar* QTReaderApp::markbar()
++Q3ToolBar* QTReaderApp::markbar()
+ {
+     if (markBar == NULL)
+     {
+ 	switch (m_tbpol)
+ 	{
+ 	    case cesMultiple:
+-		markBar = new QToolBar("Marks", this, m_tbposition);
++		markBar = new Q3ToolBar("Marks", this, m_tbposition);
+ 		break;
+ 	    default:
+ 		qDebug("Incorrect toolbar policy set");
+@@ -1343,26 +1333,26 @@ QToolBar* QTReaderApp::markbar()
+     return markBar;
+ }
+ 
+-void QTReaderApp::addfilebar(Config* _config, const QString& key, QAction* a)
++void QTReaderApp::addfilebar(Config* _config, const QString& key, Q3Action* a)
+ {
+     if (_config->readBoolEntry(key, false)) a->addTo( filebar() );
+ }
+-void QTReaderApp::addnavbar(Config* _config, const QString& key, QAction* a)
++void QTReaderApp::addnavbar(Config* _config, const QString& key, Q3Action* a)
+ {
+     if (_config->readBoolEntry(key, false)) a->addTo( navbar() );
+ }
+-void QTReaderApp::addmarkbar(Config* _config, const QString& key, QAction* a)
++void QTReaderApp::addmarkbar(Config* _config, const QString& key, Q3Action* a)
+ {
+     if (_config->readBoolEntry(key, false)) a->addTo( markbar() );
+ }
+-void QTReaderApp::addviewbar(Config* _config, const QString& key, QAction* a)
++void QTReaderApp::addviewbar(Config* _config, const QString& key, Q3Action* a)
+ {
+     if (_config->readBoolEntry(key, false)) a->addTo( viewbar() );
+ }
+ 
+ void QTReaderApp::suspend() { reader->suspend(); }
+ 
+-void QTReaderApp::msgHandler(const QCString& _msg, const QByteArray& _data)
++void QTReaderApp::msgHandler(const Q3CString& _msg, const QByteArray& _data)
+ {
+ #ifndef USEMSGS
+   return;
+@@ -1787,7 +1777,7 @@ void QTReaderApp::setfullscreen(bool sfs)
+     reader->update();
+ }
+ /*
+-void QTReaderApp::buttonActionSelected(QAction* _a)
++void QTReaderApp::buttonActionSelected(Q3Action* _a)
+ {
+ ////    qDebug("es:%x : %s (%u)", _a, (const char *)(_a->text()), ActNameToInt(_a->text()));
+     m_spaceTarget = ActNameToInt(_a->text());
+@@ -2007,14 +1997,14 @@ QString QTReaderApp::usefilebrowser()
+ void QTReaderApp::showgraphic(QImage& pm)
+ {
+     m_graphicwin->setImage(pm);
+-    editorStack->raiseWidget( m_graphicwin );
++    editorStack->setCurrentWidget(  m_graphicwin );
+     hidetoolbars();
+     m_graphicwin->setFocus();
+ }
+ 
+ void QTReaderApp::showbuttonprefs()
+ {
+-    editorStack->raiseWidget( m_buttonprefs );
++    editorStack->setCurrentWidget( m_buttonprefs );
+     hidetoolbars();
+     m_buttonprefs->setFocus();
+     m_kmapchanged = true;
+@@ -2366,7 +2356,7 @@ void QTReaderApp::showinfo()
+ 	  }
+ 	m_infoWin->setZoom(reader->m_fontControl.currentsize()*10);
+ 	m_infoWin->setAbout(QString("\nApplication (c) Tim Wentford\n")+reader->about());
+-	editorStack->raiseWidget( m_infoWin );
++	editorStack->setCurrentWidget( m_infoWin );
+ 	hidetoolbars();
+ 	m_infoWin->setFocus();
+     }
+@@ -2482,7 +2472,7 @@ void QTReaderApp::addanno()
+ 	m_annoWin->setAnno("");
+ 	m_annoWin->setPosn(reader->pagelocate());
+ 	m_annoIsEditing = true;
+-	editorStack->raiseWidget( m_annoWin );
++	editorStack->setCurrentWidget( m_annoWin );
+ 	hidetoolbars();
+ #ifdef USEQPE
+ 	Global::showInputMethod();
+@@ -2658,7 +2648,7 @@ void QTReaderApp::findNext()
+ #ifdef __ISEARCH
+   QString arg = searchEdit->text();
+ #else
+-  QRegExp arg = searchEdit->text();
++  QRegExp arg(searchEdit->text());
+ #endif
+   CDrawBuffer test(&(reader->m_fontControl));
+   size_t start = reader->pagelocate();
+@@ -2722,7 +2712,7 @@ bool QTReaderApp::dosearch(size_t start, CDrawBuffer& test, const QRegExp& arg)
+       while (strstr(test.data(),(const tchar*)arg) == NULL)
+ #else
+ #ifdef _UNICODE
+-      while ((offset = arg.match(toQString(test.data()))) == -1)
++      while ((offset = arg.exactMatch(toQString(test.data()))) == -1)
+ #else
+       while (arg.match(test.data()) == -1)
+ #endif
+@@ -2962,7 +2952,7 @@ void QTReaderApp::handlekey(QKeyEvent* e)
+ #if defined(USEQPE) && defined(USENEWFULLSCREEN)
+ void QTReaderApp::focusInEvent(QFocusEvent *)
+ {
+-  if (m_usenewfullscreen && m_fullscreen && (editorStack->visibleWidget() == reader))
++  if (m_usenewfullscreen && m_fullscreen && (editorStack->currentWidget() == reader))
+     {
+       m_usenewfullscreen = false;
+       reader->bDoUpdates = false;
+@@ -2975,7 +2965,7 @@ void QTReaderApp::focusInEvent(QFocusEvent *)
+ 
+ void QTReaderApp::resizeEvent(QResizeEvent *)
+ {
+-  if (m_usenewfullscreen && m_fullscreen && (editorStack->visibleWidget() == reader))
++  if (m_usenewfullscreen && m_fullscreen && (editorStack->currentWidget() == reader))
+     {
+       m_usenewfullscreen = false;
+       reader->bDoUpdates = false;
+@@ -3078,7 +3068,7 @@ void QTReaderApp::showEditTools()
+     //    qDebug("uc");
+     updateCaption();
+     //    qDebug("rw");
+-    editorStack->raiseWidget( reader );
++    editorStack->setCurrentWidget( reader );
+     //    qDebug("sf");
+     reader->setFocus();
+     //    qDebug("ref");
+@@ -3156,7 +3146,7 @@ void QTReaderApp::closeEvent( QCloseEvent *e )
+ 	showEditTools();
+ 	e->ignore();
+     }
+-    else if (editorStack->visibleWidget() == m_buttonprefs)
++    else if (editorStack->currentWidget() == m_buttonprefs)
+       {
+ 	int ret = QMessageBox::warning(this, PROGNAME,
+ tr("Do you wish to map this key?\n\nIf you proceed you will map\nthe escape key and you will\nneed to press the close box\ntwice to exit this program\n\nContinue?"), tr("Yes"), tr("No"), QString::null, 0, 1);
+@@ -3172,7 +3162,7 @@ tr("Do you wish to map this key?\n\nIf you proceed you will map\nthe escape key
+     }
+     else
+     {
+-	if (editorStack->visibleWidget() == reader)
++	if (editorStack->currentWidget() == reader)
+ 	{
+ 	    if ((kmap.find(orKey(Qt::NoButton,Key_Escape,false)) != kmap.end()) && m_bcloseDisabled)
+ 	    {
+@@ -3277,7 +3267,7 @@ bool QTReaderApp::listbkmk(CList<Bkmk>* plist, const QString& _lab, bool presel)
+     if (cnt > 0)
+       {
+ 	  hidetoolbars();
+-        editorStack->raiseWidget( bkmkselector );
++        editorStack->setCurrentWidget( bkmkselector );
+ 	if (slt != -1) bkmkselector->setCurrentItem(slt);
+ 	return true;
+       }
+@@ -3799,7 +3789,7 @@ void QTReaderApp::do_autogen(const QString& regText)
+       }
+       i = reader->buffdoc.getpara(buff);
+ #ifdef _UNICODE
+-      if (re.match(toQString(buff.data())) != -1)
++      if (re.exactMatch(toQString(buff.data())) != -1)
+ #else
+       if (re.match(buff.data()) != -1)
+ #endif
+@@ -4113,7 +4103,7 @@ void QTReaderApp::showAnnotation()
+ #ifdef USEQPE
+     Global::showInputMethod();
+ #endif
+-    editorStack->raiseWidget( m_annoWin );
++    editorStack->setCurrentWidget( m_annoWin );
+     hidetoolbars();
+     m_annoWin->setFocus();
+ }
+@@ -4152,7 +4142,7 @@ void QTReaderApp::OnWordSelected(const QString& wrd, size_t posn, size_t posn2,
+ #ifdef USEQPE
+ 	Global::showInputMethod();
+ #endif
+-	editorStack->raiseWidget( m_annoWin );
++	editorStack->setCurrentWidget( m_annoWin );
+ 	hidetoolbars();
+     }
+ #ifdef USEQPE
+@@ -4738,17 +4728,9 @@ bool QTReaderApp::PopulateConfig(const char* tgtdir, bool usedirs)
+     d.setFilter( ((usedirs) ? QDir::Dirs : QDir::Files) | QDir::NoSymLinks );
+ //        d.setSorting( QDir::Size | QDir::Reversed );
+ 
+-    const QFileInfoList *list = d.entryInfoList();
+-    QFileInfoListIterator it( *list );      // create list iterator
+-    QFileInfo *fi;                          // pointer for traversing
+-
+-    while ( (fi=it.current()) ) {           // for each file...
+-  
+-	bkmkselector->insertItem(fi->fileName(), cnt++);
+-			
+-	//qDebug( "%10li %s", fi->size(), fi->fileName().data() );
+-	++it;                               // goto next list element
+-    }
++    QFileInfoList list = d.entryInfoList();
++    for(QFileInfoListIterator it=list.begin();it!=list.end();++it)
++	bkmkselector->insertItem(it->fileName(), cnt++);
+  
+ #else /* USEQPE */
+     int cnt = 0;
+@@ -4782,7 +4764,7 @@ void QTReaderApp::LoadTheme()
+ {
+     if (PopulateConfig("Themes", true))
+       {
+-        editorStack->raiseWidget( bkmkselector );
++        editorStack->setCurrentWidget( bkmkselector );
+         hidetoolbars();
+ 	m_nBkmkAction = cLdTheme;
+       }
+@@ -4794,7 +4776,7 @@ void QTReaderApp::LoadConfig()
+ {
+     if (PopulateConfig("configs"))
+       {
+-        editorStack->raiseWidget( bkmkselector );
++        editorStack->setCurrentWidget( bkmkselector );
+         hidetoolbars();
+ 	m_nBkmkAction = cLdConfig;
+       }
+@@ -4806,7 +4788,7 @@ void QTReaderApp::TidyConfig()
+ {
+     if (PopulateConfig("configs"))
+       {
+-        editorStack->raiseWidget( bkmkselector );
++        editorStack->setCurrentWidget( bkmkselector );
+         hidetoolbars();
+ 	m_nBkmkAction = cRmConfig;
+       }
+@@ -4818,7 +4800,7 @@ void QTReaderApp::ExportLinks()
+ {
+     if (PopulateConfig("urls"))
+       {
+-        editorStack->raiseWidget( bkmkselector );
++        editorStack->setCurrentWidget( bkmkselector );
+         hidetoolbars();
+ 	m_nBkmkAction = cExportLinks;
+       }
+diff --git a/QTReaderApp.h b/QTReaderApp.h
+index ab1b7ad..502079f 100644
+--- a/QTReaderApp.h
++++ b/QTReaderApp.h
+@@ -35,7 +35,15 @@
+ #include <qmap.h>
+ #include <qlineedit.h>
+ #include <qstack.h>
+-#include <qlistbox.h>
++#include <Qt3Support/Q3ListBox>
++#include <Qt3Support/Q3CString>
++#include <Qt3Support/Q3ProgressBar>
++#include <Qt3Support/Q3MainWindow>
++#include <Qt3Support/Q3Action>
++#include <QStackedWidget>
++#include <qcombobox.h>
++#include <qnamespace.h>
++using namespace Qt;
+ #ifdef USEQPE
+ #include <qpe/qpeapplication.h>
+ #endif
+@@ -126,7 +134,7 @@ struct searchrecord
+ class infowin;
+ class GraphicWin;
+ 
+-class QTReaderApp : public QMainWindow
++class QTReaderApp : public Q3MainWindow
+ {
+     Q_OBJECT
+ 
+@@ -180,7 +188,7 @@ class QTReaderApp : public QMainWindow
+ 
+  protected:
+     void setfontHelper(const QString& lcn, int size = 0);
+-    QAction* m_bkmkAvail, *m_actFullscreen;
++    Q3Action* m_bkmkAvail, *m_actFullscreen;
+     CAnnoEdit* m_annoWin;
+     Bkmk* m_anno;
+     int m_scrollcolor, m_scrollbarcolor, m_background, m_foreground;
+@@ -262,8 +270,8 @@ private slots:
+     void showAnnotation();
+     void do_setencoding(int i);
+ 	void do_setfont(const QString&);
+-	//	void buttonActionSelected(QAction*);
+-	void msgHandler(const QCString&, const QByteArray&);
++	//	void buttonActionSelected(Q3Action*);
++	void msgHandler(const Q3CString&, const QByteArray&);
+ 	void monospace(bool);
+ 	void jump();
+ 	void reparastring();
+@@ -346,35 +354,35 @@ private slots:
+     void setscrollcolour();
+     void setscrollbarcolour();
+     void writeUrl(const QString& file, const QString& href);
+-    QAction *m_preferences_action, *m_open_action, *m_close_action;
+-    QAction *m_info_action, *m_touch_action, *m_find_action, *m_start_action;
+-    QAction *m_end_action, *m_jump_action, *m_pageline_action;
+-    QAction *m_pageup_action, *m_pagedn_action, *m_back_action;
+-    QAction *m_home_action, *m_forward_action, *m_zoomin_action;
+-    QAction *m_zoomout_action, *m_setfont_action, *m_mark_action;
+-    QAction *m_annotate_action, *m_goto_action, *m_delete_action;
+-    QAction *m_autogen_action, *m_clear_action, *m_save_action;
+-    QAction *m_tidy_action, *m_startBlock_action, *m_endBlock_action;
+-    QAction *m_setenc_action, *m_setmono_action, *m_saveconfig_action;
+-    QAction *m_loadconfig_action, *m_loadtheme_action, *m_toolbarprefs_action, *m_tidyconfig_action;
+-    QAction *m_exportlinks_action, *m_rotate_action, *m_buttonprefs_action, *m_inverse_action;
+-    QAction *m_repara_action;
++    Q3Action *m_preferences_action, *m_open_action, *m_close_action;
++    Q3Action *m_info_action, *m_touch_action, *m_find_action, *m_start_action;
++    Q3Action *m_end_action, *m_jump_action, *m_pageline_action;
++    Q3Action *m_pageup_action, *m_pagedn_action, *m_back_action;
++    Q3Action *m_home_action, *m_forward_action, *m_zoomin_action;
++    Q3Action *m_zoomout_action, *m_setfont_action, *m_mark_action;
++    Q3Action *m_annotate_action, *m_goto_action, *m_delete_action;
++    Q3Action *m_autogen_action, *m_clear_action, *m_save_action;
++    Q3Action *m_tidy_action, *m_startBlock_action, *m_endBlock_action;
++    Q3Action *m_setenc_action, *m_setmono_action, *m_saveconfig_action;
++    Q3Action *m_loadconfig_action, *m_loadtheme_action, *m_toolbarprefs_action, *m_tidyconfig_action;
++    Q3Action *m_exportlinks_action, *m_rotate_action, *m_buttonprefs_action, *m_inverse_action;
++    Q3Action *m_repara_action;
+ #ifdef USEQPE
+-    QAction *m_grab_action;
++    Q3Action *m_grab_action;
+ #endif
+     void addtoolbars(Config* config);
+     ToolbarPolicy m_tbpol, m_tbpolsave;
+     ToolBarDock m_tbposition;
+     bool m_tbmove, m_tbmovesave;
+-    QToolBar* filebar();
+-    QToolBar* viewbar();
+-    QToolBar* navbar();
+-    QToolBar* markbar();
++    Q3ToolBar* filebar();
++    Q3ToolBar* viewbar();
++    Q3ToolBar* navbar();
++    Q3ToolBar* markbar();
+     void hidetoolbars();
+-    void addfilebar(Config* _config, const QString& key, QAction* a);
+-    void addviewbar(Config* _config, const QString& key, QAction* a);
+-    void addnavbar(Config* _config, const QString& key, QAction* a);
+-    void addmarkbar(Config* _config, const QString& key, QAction* a);
++    void addfilebar(Config* _config, const QString& key, Q3Action* a);
++    void addviewbar(Config* _config, const QString& key, Q3Action* a);
++    void addnavbar(Config* _config, const QString& key, Q3Action* a);
++    void addmarkbar(Config* _config, const QString& key, Q3Action* a);
+     bool checkbar(Config* _config, const QString& key);
+ #ifdef _SCRIPT
+     void SaveScript(const char* sname);
+@@ -401,9 +409,9 @@ private slots:
+ 
+  private:
+ 
+-    QAction* m_scrollButton;
++    Q3Action* m_scrollButton;
+ 
+-    QAction* m_buttonAction[MAX_ACTIONS];
++    Q3Action* m_buttonAction[MAX_ACTIONS];
+ 
+     CBkmkSelector* bkmkselector;
+ 
+@@ -418,27 +426,25 @@ private slots:
+ #else
+     bool dosearch(size_t start, CDrawBuffer& test, const QRegExp& arg);
+ #endif
+-    QWidgetStack *editorStack;
++    QStackedWidget *editorStack;
+     QTReader* reader;
+     QComboBox* m_fontSelector;
+ //    QPEToolBar /* *menu,*/ *fileBar;
+ #if defined(USEQPE)
+-    QToolBar *menubar;
++    Q3ToolBar *menubar;
+ #endif
+-    QToolBar *fileBar, *navBar, *viewBar, *markBar;
++    Q3ToolBar *fileBar, *navBar, *viewBar, *markBar;
+ #if defined(USEQPE)
+     QPEMenuBar *mb;
+ #else
+     QMenuBar *mb;
+ #endif
+     QFloatBar *searchBar, *regBar/*, *m_fontBar*/;
+-    QToolBar /* *searchBar, *regBar,*/ *m_fontBar;
++    Q3ToolBar /* *searchBar, *regBar,*/ *m_fontBar;
+     QLineEdit *searchEdit, *regEdit;
+     bool searchVisible;
+     bool regVisible;
+     bool m_fontVisible, m_twoTouch;
+-    static unsigned long m_uid;
+-    long unsigned get_unique_id() { return m_uid++; }
+     /*
+       void resizeEvent( QResizeEvent * r)
+       {
+@@ -451,7 +457,7 @@ private slots:
+     CList<Bkmk>* pOpenlist;
+     infowin*  m_infoWin;
+     GraphicWin* m_graphicwin;
+-    QProgressBar* pbar;
++    Q3ProgressBar* pbar;
+     bool m_fBkmksChanged;
+ //    int m_nRegAction;
+     regedit_type m_nRegAction;
+diff --git a/QtrListView.cpp b/QtrListView.cpp
+index 67040f8..e73a395 100644
+--- a/QtrListView.cpp
++++ b/QtrListView.cpp
+@@ -1,4 +1,7 @@
+ #include "QtrListView.h"
++#include <QtGui/QKeyEvent>
++#include <qnamespace.h>
++using namespace Qt;
+ 
+ void QtrListView::keyPressEvent(QKeyEvent* e)
+ {
+@@ -19,6 +22,6 @@ void QtrListView::keyPressEvent(QKeyEvent* e)
+ 	    emit OnCancelButton();
+ 	    break;
+ 	default:
+-	    QListView::keyPressEvent(e);
++	    Q3ListView::keyPressEvent(e);
+     }
+ }
+diff --git a/QtrListView.h b/QtrListView.h
+index c1b7f4d..02a74cc 100644
+--- a/QtrListView.h
++++ b/QtrListView.h
+@@ -2,18 +2,19 @@
+ #define __QTRLISTVIEW_H
+ 
+ #include <qlistview.h>
++#include <Qt3Support/Q3ListViewItem>
+ 
+-class QtrListView : public QListView
++class QtrListView : public Q3ListView
+ {
+     Q_OBJECT
+ 
+     virtual void keyPressEvent(QKeyEvent* e);
+  public:
+-    QtrListView(QWidget* parent, char* name) : QListView(parent, name) {};
++    QtrListView(QWidget* parent, char* name) : Q3ListView(parent, name) {};
+ 
+  signals:
+-    void OnOKButton(QListViewItem*);
+-    void OnCentreButton(QListViewItem*);
++    void OnOKButton(Q3ListViewItem*);
++    void OnCentreButton(Q3ListViewItem*);
+     void OnCancelButton();
+ };
+ 
+diff --git a/Reb.cpp b/Reb.cpp
+index 65de9f6..9e6e552 100644
+--- a/Reb.cpp
++++ b/Reb.cpp
+@@ -105,8 +105,7 @@ QImage* CReb::getPicture(const QString& ref)
+       char* imgbuffer = new char[rs.len];
+       fseek(fin, page2pos(iter.data()), SEEK_SET);
+       fread(imgbuffer, rs.len, 1, fin);
+-      QByteArray arr;
+-      arr.assign((const char*)imgbuffer, rs.len);
++      QByteArray arr((const char*)imgbuffer, rs.len);
+       QImage* qimage = new QImage(arr);
+       return qimage;
+     }
+@@ -581,7 +580,7 @@ void RBPage::startpage(UInt32 pos, UInt32 _cp, bool _isCompressed, UInt32 _len)
+ int CReb::getch()
+ {
+   if (tagoffset < tagstring.length())
+-    return tagstring[tagoffset++].unicode();
++    return tagstring.at(tagoffset++).unicode();
+   else
+     return currentpage.getch(this);
+ }
+diff --git a/TableDialog.cpp b/TableDialog.cpp
+index b67d534..d0748d6 100644
+--- a/TableDialog.cpp
++++ b/TableDialog.cpp
+@@ -4,7 +4,7 @@ CTableDialog::CTableDialog(const QFont& f, const QString& tabtext, bool fs, QWid
+ {
+   setCaption("Table View");
+   QVBoxLayout *tmp = new QVBoxLayout(this);
+-  QTextView* qtv = new QTextView(this);
++  Q3TextView* qtv = new Q3TextView(this);
+   qtv->setFont(f);
+   tmp->addWidget(qtv);
+   qtv->setText(tabtext);
+diff --git a/TableDialog.h b/TableDialog.h
+index 2257a81..14b1cf2 100644
+--- a/TableDialog.h
++++ b/TableDialog.h
+@@ -2,8 +2,11 @@
+ #define __TABLEDIALOG_H
+ 
+ #include <qdialog.h>
+-#include <qtextview.h>
++#include <Qt3Support/Q3TextView>
++#include <QtGui/QKeyEvent>
+ #include <qlayout.h>
++#include <qnamespace.h>
++using namespace Qt;
+ 
+ class CTableDialog : public QDialog
+ {
+diff --git a/ToolbarPrefs.cpp b/ToolbarPrefs.cpp
+index 56c4e9b..10fc6ec 100644
+--- a/ToolbarPrefs.cpp
++++ b/ToolbarPrefs.cpp
+@@ -22,6 +22,7 @@
+ #ifdef USEQPE
+ #include <qpe/menubutton.h>
+ #endif
++#include <Qt3Support/Q3GroupBox>
+ 
+ CBarPrefs::CBarPrefs(const QString& appdir, bool fs, QWidget* parent, const char* name) : QDialog(parent, name, true), config( appdir )
+ {
+@@ -222,7 +223,7 @@ CFileBarPrefs::CFileBarPrefs( Config& _config, QWidget* parent,  const char* nam
+     config.setGroup( "Toolbar" );
+     QVBoxLayout* vb = new QVBoxLayout(this);
+ 
+-    QGroupBox* bg = new QGroupBox(2, Qt::Horizontal, "File", this);
++    Q3GroupBox* bg = new Q3GroupBox(2, Qt::Horizontal, "File", this);
+     vb->addWidget(bg);
+ 
+     open = new QCheckBox( tr("Open"), bg );
+@@ -263,7 +264,7 @@ CNavBarPrefs::CNavBarPrefs( Config& _config, QWidget* parent,  const char* name,
+     config.setGroup( "Toolbar" );
+     QVBoxLayout* vb = new QVBoxLayout(this);
+ 
+-    QGroupBox* bg = new QGroupBox(2, Qt::Horizontal, "Navigation", this);
++    Q3GroupBox* bg = new Q3GroupBox(2, Qt::Horizontal, "Navigation", this);
+     vb->addWidget(bg);
+     scroll = new QCheckBox( tr("Scroll"), bg );
+     scroll->setChecked(config.readBoolEntry( "Scroll", false ));
+@@ -324,7 +325,7 @@ CViewBarPrefs::CViewBarPrefs( Config& _config, QWidget* parent,  const char* nam
+ {
+     QVBoxLayout* vb = new QVBoxLayout(this);
+ 
+-    QGroupBox* bg = new QGroupBox(2, Qt::Horizontal, "View", this);
++    Q3GroupBox* bg = new Q3GroupBox(2, Qt::Horizontal, "View", this);
+     vb->addWidget(bg);
+ 
+     config.setGroup( "Toolbar" );
+@@ -381,7 +382,7 @@ CMarkBarPrefs::CMarkBarPrefs( Config& _config, QWidget* parent,  const char* nam
+ {
+     QVBoxLayout* vb = new QVBoxLayout(this);
+ 
+-    QGroupBox* bg = new QGroupBox(2, Qt::Horizontal, "Marks", this);
++    Q3GroupBox* bg = new Q3GroupBox(2, Qt::Horizontal, "Marks", this);
+     vb->addWidget(bg);
+     mark = new QCheckBox( tr("Bookmark"), bg );
+     mark->setChecked(config.readBoolEntry( "Mark", false ));
+@@ -443,13 +444,13 @@ CMiscBarPrefs::CMiscBarPrefs( QWidget* parent,  const char* name, WFlags fl )
+ 
+     hl->setMargin( 0 );
+ 
+-    QGroupBox* gb = new QGroupBox(1, Qt::Horizontal, "Dialogs", this);
++    Q3GroupBox* gb = new Q3GroupBox(1, Qt::Horizontal, "Dialogs", this);
+     floating = new QCheckBox(gb);
+     floating->setText(tr("Floating"));
+     hl->addWidget( gb, 0, 0 );
+ 
+ 
+-    gb = new QGroupBox(1, Qt::Horizontal, "Bars (Restart)", this);
++    gb = new Q3GroupBox(1, Qt::Horizontal, "Bars (Restart)", this);
+ 
+ //    QLabel* ql = new QLabel("Restart to apply changes", gb);
+ //    TextLabel = new QLabel( gb );
+@@ -485,7 +486,7 @@ CMiscBarPrefs::CMiscBarPrefs( QWidget* parent,  const char* name, WFlags fl )
+ 
+     hl->addWidget(gb, 0, 1);
+ 
+-    gb = new QGroupBox(1, Qt::Horizontal, "QT Scroll Bar", this);
++    gb = new Q3GroupBox(1, Qt::Horizontal, "QT Scroll Bar", this);
+ 
+ #ifdef USECOMBO
+     qtscroll = new QComboBox(gb);
+@@ -497,7 +498,7 @@ CMiscBarPrefs::CMiscBarPrefs( QWidget* parent,  const char* name, WFlags fl )
+     qtscroll->insertItem(tr("Left"));
+ 
+     hl->addWidget(gb, 1, 0);
+-    gb = new QGroupBox(1, Qt::Horizontal, "Miniscroll", this);
++    gb = new Q3GroupBox(1, Qt::Horizontal, "Miniscroll", this);
+ 
+ #ifdef USECOMBO
+     localscroll = new QComboBox(gb);
+@@ -527,7 +528,7 @@ CIndBarPrefs::CIndBarPrefs( Config& _config, QWidget* parent,  const char* name,
+ {
+     QVBoxLayout* vb = new QVBoxLayout(this);
+ 
+-    QGroupBox* bg = new QGroupBox(1, Qt::Horizontal, "Indicators", this);
++    Q3GroupBox* bg = new Q3GroupBox(1, Qt::Horizontal, "Indicators", this);
+     vb->addWidget(bg);
+     indannotate = new QCheckBox( tr("Annotation"), bg );
+     indannotate->setChecked(config.readBoolEntry( "Annotation indicator", false ));
+diff --git a/ToolbarPrefs.h b/ToolbarPrefs.h
+index 9df8940..2a9d5cd 100644
+--- a/ToolbarPrefs.h
++++ b/ToolbarPrefs.h
+@@ -11,12 +11,14 @@
+ 
+ #include <qvariant.h>
+ #include <qwidget.h>
+-#include <qtabdialog.h>
++#include <Qt3Support/Q3TabDialog>
+ #include <qtabwidget.h>
+ #include <qspinbox.h>
+ #include <qcheckbox.h>
+ #include <qcombobox.h>
+ #include <qlineedit.h>
++#include <qnamespace.h>
++using namespace Qt;
+ #ifdef USEQPE
+ #include <qpe/menubutton.h>
+ #include <qpe/config.h>
+@@ -25,6 +27,8 @@
+ #endif
+ #define USECOMBO
+ 
++#include <QtGui/QKeyEvent>
++
+ class QVBoxLayout; 
+ class QHBoxLayout; 
+ class QGridLayout; 
+diff --git a/URLDialog.cpp b/URLDialog.cpp
+index dd4568b..9497979 100644
+--- a/URLDialog.cpp
++++ b/URLDialog.cpp
+@@ -5,7 +5,7 @@ CURLDialog::CURLDialog(const QString& fname, bool fs, QWidget* parent, const cha
+ {
+     setCaption(tr("Save URL"));
+     QVBoxLayout *tmp = new QVBoxLayout(this);
+-    QVButtonGroup* vb = new QVButtonGroup(fname, this);
++    Q3VButtonGroup* vb = new Q3VButtonGroup(fname, this);
+     tmp->addWidget(vb);
+     m_clipboard = new QCheckBox(tr("Clipboard"), vb);
+     m_localfile = new QCheckBox(tr("Local file"), vb);
+diff --git a/URLDialog.h b/URLDialog.h
+index 792d13a..fffaf2b 100644
+--- a/URLDialog.h
++++ b/URLDialog.h
+@@ -11,14 +11,17 @@
+ 
+ #include <qvariant.h>
+ #include <qwidget.h>
+-#include <qtabdialog.h>
++#include <Qt3Support/Q3TabDialog>
+ #include <qtabwidget.h>
+ #include <qspinbox.h>
+ #include <qcheckbox.h>
+ #include <qcombobox.h>
+ #include <qlineedit.h>
+ //#include <qpe/menubutton.h>
+-#include <qvbuttongroup.h>
++#include <Qt3Support/Q3VButtonGroup>
++#include <QtGui/QKeyEvent>
++#include <qnamespace.h>
++using namespace Qt;
+ 
+ class QVBoxLayout; 
+ class QHBoxLayout; 
+diff --git a/arrierego.cpp b/arrierego.cpp
+index be2a3fa..b4f857f 100644
+--- a/arrierego.cpp
++++ b/arrierego.cpp
+@@ -114,8 +114,7 @@ void CArriere::setlink(QString& fn, const QString& wrd)
+ 
+ QImage* CArriere::imagefromdata(UInt8* imgbuffer, UInt32 imgsize)
+ {
+-    QByteArray arr;
+-    arr.assign((const char*)imgbuffer, imgsize);
++    QByteArray arr((const char*)imgbuffer, imgsize);
+ 
+     QImage* qimage = new QImage(arr);
+ 
+diff --git a/cbkmkselector.h b/cbkmkselector.h
+index ec0c6e8..e36d31a 100644
+--- a/cbkmkselector.h
++++ b/cbkmkselector.h
+@@ -1,13 +1,15 @@
+ #include <qwidget.h>
+-#include <qlistbox.h>
++#include <Qt3Support/Q3ListBox>
+ #include <qpushbutton.h>
+ #include <qlayout.h>
++#include <qnamespace.h>
++using namespace Qt;
+ 
+-class CBkmkSelectorItem : public QListBoxText
++class CBkmkSelectorItem : public Q3ListBoxText
+ {
+   int m_ref;
+  public:
+-  CBkmkSelectorItem(const QString& _t, int ref) : QListBoxText(_t), m_ref(ref)
++  CBkmkSelectorItem(const QString& _t, int ref) : Q3ListBoxText(_t), m_ref(ref)
+     {
+     }
+   int reference() { return m_ref; }
+@@ -18,7 +20,7 @@ class CBkmkSelector : public QWidget
+ 
+   Q_OBJECT
+ 
+-  QListBox* bkmkselector;
++  Q3ListBox* bkmkselector;
+   QPushButton* exitButton;
+   /*
+   void keyPressEvent ( QKeyEvent * e )
+@@ -38,7 +40,7 @@ signals:
+   void selected(int i);
+   void cancelled();
+ private slots:
+-  void slotSelected(QListBoxItem* t)
++  void slotSelected(Q3ListBoxItem* t)
+   {
+     if (t != NULL)
+       {
+@@ -64,13 +66,13 @@ public:
+ 
+     QVBoxLayout* grid = new QVBoxLayout(this);
+     QHBoxLayout* hgrid = new QHBoxLayout();
+-    bkmkselector = new QListBox(this, tr("Bookmarks"));
++    bkmkselector = new Q3ListBox(this, tr("Bookmarks"));
+     QPushButton* _sort = new QPushButton(tr("Sort"), this);
+     connect(_sort, SIGNAL(clicked()), this, SLOT( slotSort() ) );
+     exitButton = new QPushButton(tr("Cancel"), this);
+     //    connect(bkmkselector, SIGNAL( selected(int) ), this, SLOT( slotSelected(int) ) );
+-    connect(bkmkselector, SIGNAL( clicked(QListBoxItem*) ), this, SLOT( slotSelected(QListBoxItem*) ) );
+-    connect(bkmkselector, SIGNAL( returnPressed(QListBoxItem*) ), this, SLOT( slotSelected(QListBoxItem*) ) );
++    connect(bkmkselector, SIGNAL( clicked(Q3ListBoxItem*) ), this, SLOT( slotSelected(Q3ListBoxItem*) ) );
++    connect(bkmkselector, SIGNAL( returnPressed(Q3ListBoxItem*) ), this, SLOT( slotSelected(Q3ListBoxItem*) ) );
+     connect(exitButton, SIGNAL( clicked() ), this, SLOT( slotCancel() ) );
+     grid->addWidget(bkmkselector,1);
+     grid->addLayout(hgrid);
+diff --git a/decompress.cpp b/decompress.cpp
+index 6034e01..979b642 100644
+--- a/decompress.cpp
++++ b/decompress.cpp
+@@ -2,6 +2,7 @@
+ #include "decompress.h"
+ #include <zlib.h>
+ #include <stdlib.h>
++#include "uqtcommon.h"
+ 
+ size_t UnZip(UInt8* compressedbuffer, size_t reclen, UInt8* tgtbuffer, size_t bsize)
+ {
+@@ -60,17 +61,7 @@ size_t (*getdecompressor(char* _s))(UInt8*, size_t, UInt8*, size_t)
+ 
+ size_t (*getdecompressor(char* _s))(UInt8*, size_t, UInt8*, size_t)
+ {
+-#ifdef USEQPE
+-#ifdef OPIE
+-  QString codecpath(getenv("OPIEDIR"));
+-#else
+-  QString codecpath(getenv("QTDIR"));
+-#endif
+-  codecpath += "/plugins/reader/support/libpluckerdecompress.so";
+-#else
+-  QString codecpath(getenv("READERDIR"));
+-  codecpath += "/support/libpluckerdecompress.so";
+-#endif
++    QString codecpath = uqt_supportpath()+"/libpluckerdecompress.so";
+   qDebug("Codec:%s", (const char*)codecpath);
+   if (QFile::exists(codecpath))
+     {
+diff --git a/ebookcodec.h b/ebookcodec.h
+index 4229fb9..091894a 100644
+--- a/ebookcodec.h
++++ b/ebookcodec.h
+@@ -1,4 +1,5 @@
+ #include "CExpander.h"
++#include "uqtcommon.h"
+ 
+ #include <qfileinfo.h>
+ #include <qdir.h>
+@@ -22,17 +23,7 @@ class ebookcodec : public CExpander_Interface
+     }
+   ebookcodec(const QString& _s) : codec(NULL), handle(NULL), status(0)
+     {
+-#ifdef USEQPE
+-#ifdef OPIE
+-      QString codecpath(getenv("OPIEDIR"));
+-#else
+-		QString codecpath(getenv("QTDIR"));
+-#endif
+-      codecpath += "/plugins/reader/codecs/";
+-#else
+-      QString codecpath(getenv("READERDIR"));
+-      codecpath += "/codecs/";
+-#endif
++	QString codecpath = uqt_codecspath();
+       codecpath += _s;
+       if (QFile::exists(codecpath))
+ 	{
+diff --git a/fileBrowser.cpp b/fileBrowser.cpp
+index c8c371a..688f035 100644
+--- a/fileBrowser.cpp
++++ b/fileBrowser.cpp
+@@ -53,18 +53,18 @@ fileBrowser::fileBrowser( bool allownew, QWidget* parent,  const char* name, boo
+     ListView->addColumn( tr( "Name" ) );
+     ListView->setSorting( 2, FALSE);
+     ListView->addColumn( tr( "Size" ) );
+-    ListView->setSelectionMode(QListView::Single);
++    ListView->setSelectionMode(Q3ListView::Single);
+     ListView->setAllColumnsShowFocus( TRUE );
+-    ListView->setColumnWidthMode(0, ((modal) ? QListView::Manual : QListView::Maximum));
+-    ListView->setColumnWidthMode(1, QListView::Manual);
++    ListView->setColumnWidthMode(0, ((modal) ? Q3ListView::Manual : Q3ListView::Maximum));
++    ListView->setColumnWidthMode(1, Q3ListView::Manual);
+ 
+     // signals and slots connections
+     connect( buttonShowHidden, SIGNAL( toggled(bool) ), this, SLOT( setHidden(bool) ) );
+     connect( buttonOk, SIGNAL( clicked() ), this, SLOT( OnRoot() ) );
+-    connect( ListView, SIGNAL(doubleClicked( QListViewItem*)), SLOT(listDoubleClicked(QListViewItem *)) );
+-    connect( ListView, SIGNAL(clicked( QListViewItem*)), SLOT(listClicked(QListViewItem *)) );
+-    connect( ListView, SIGNAL(OnOKButton( QListViewItem*)), SLOT(listClicked(QListViewItem *)) );
+-    connect( ListView, SIGNAL(OnCentreButton( QListViewItem*)), SLOT(listClicked(QListViewItem *)) );
++    connect( ListView, SIGNAL(doubleClicked( Q3ListViewItem*)), SLOT(listDoubleClicked(Q3ListViewItem *)) );
++    connect( ListView, SIGNAL(clicked( Q3ListViewItem*)), SLOT(listClicked(Q3ListViewItem *)) );
++    connect( ListView, SIGNAL(OnOKButton( Q3ListViewItem*)), SLOT(listClicked(Q3ListViewItem *)) );
++    connect( ListView, SIGNAL(OnCentreButton( Q3ListViewItem*)), SLOT(listClicked(Q3ListViewItem *)) );
+     connect( ListView, SIGNAL(OnCancelButton()), SLOT(OnCancel()) );
+ 
+     QVBoxLayout* grid = new QVBoxLayout(this);
+@@ -143,16 +143,13 @@ void fileBrowser::populateList()
+     currentDir.setNameFilter(filterStr);
+ //    currentDir.setNameFilter("*.txt;*.etx");
+     QString fileL, fileS;
+-    const QFileInfoList *list = currentDir.entryInfoList();
+-    QFileInfoListIterator it(*list);
+-    QFileInfo *fi;
+-    while ( (fi=it.current()) )
+-    {
+-	if (fi->fileName() != ".")
++    QFileInfoList list = currentDir.entryInfoList();
++    for(QFileInfoListIterator it=list.begin();it!=list.end();++it) {
++	if (it->fileName() != ".")
+ 	{
+-	    fileS.sprintf( "%10li", fi->size() );
+-	    fileL.sprintf( "%s",fi->fileName().data() );
+-	    if( fi->isDir() )
++	    fileS.sprintf( "%10li", it->size() );
++	    fileL.sprintf( "%s",it->fileName().data() );
++	    if( it->isDir() )
+ 	    {
+ 		fileL+="/";
+ 	    } 
+@@ -160,9 +157,8 @@ void fileBrowser::populateList()
+ 	    {
+ ////        qDebug("Not a dir: "+currentDir.canonicalPath()+fileL);
+ 	    }
+-	    new QListViewItem( ListView,fileL,fileS );
++	    new Q3ListViewItem( ListView,fileL,fileS );
+ 	}
+-	++it;
+     }
+     ListView->setSorting( 2, FALSE);
+     dirLabel->setText("Current Directory:\n"+currentDir.canonicalPath());
+@@ -174,7 +170,7 @@ void fileBrowser::upDir()
+ ////    qDebug(currentDir.canonicalPath());
+ }
+ 
+-void fileBrowser::listClicked(QListViewItem *selectedItem)
++void fileBrowser::listClicked(Q3ListViewItem *selectedItem)
+ {
+     if (selectedItem == NULL) return;
+     QString strItem=selectedItem->text(0);
+@@ -196,12 +192,12 @@ void fileBrowser::listClicked(QListViewItem *selectedItem)
+ 
+ 	if(QDir(strItem).exists())
+ 	{
+-	    currentDir.cd(strItem, TRUE);
++	    currentDir.cd(strItem);
+ 	    populateList();
+ 	}
+     } else
+     {
+-	QListViewItem *selectedItem = ListView->selectedItem();
++	Q3ListViewItem *selectedItem = ListView->selectedItem();
+ 	if (selectedItem == NULL)
+ 	{
+ 	    filename = "";
+@@ -218,7 +214,7 @@ void fileBrowser::listClicked(QListViewItem *selectedItem)
+ }
+ 
+ // you may want to switch these 2 functions. I like single clicks
+-void fileBrowser::listDoubleClicked(QListViewItem *selectedItem)
++void fileBrowser::listDoubleClicked(Q3ListViewItem *selectedItem)
+ {
+ }
+ 
+@@ -253,7 +249,7 @@ void fileBrowser::setHidden(bool _hidden)
+ 
+ void fileBrowser::onReturn()
+ {
+-    QListViewItem *selectedItem = ListView->selectedItem();
++    Q3ListViewItem *selectedItem = ListView->selectedItem();
+     if (selectedItem == NULL)
+     {
+ 	filename = m_filename->text();
+@@ -282,7 +278,7 @@ void fileBrowser::onHome()
+ 
+ void fileBrowser::setdir(const QString& s)
+ {
+-    currentDir.cd(s, TRUE);
++    currentDir.cd(s);
+     populateList();
+     chdir(s);
+ }
+diff --git a/fileBrowser.h b/fileBrowser.h
+index c536e96..959e866 100644
+--- a/fileBrowser.h
++++ b/fileBrowser.h
+@@ -22,6 +22,9 @@ blah,blah,blah
+ #include <qstringlist.h> 
+ #include <qlabel.h>
+ #include <qstring.h>
++#include <qnamespace.h>
++using namespace Qt;
++#include <Qt3Support/Q3ListViewItem>
+ 
+ class QVBoxLayout; 
+ class QHBoxLayout; 
+@@ -50,7 +53,7 @@ class fileBrowser : public QDialog
+   QFile file;
+   QString getCurrentFile();
+   QLineEdit* m_filename;
+-  int filterspec;
++  QDir::Filters filterspec;
+   //    QDir::FilterSpec filterspec;
+  
+   //QListViewItem * item;
+@@ -60,8 +63,8 @@ class fileBrowser : public QDialog
+   QString filename; 
+   private slots: 
+     void upDir();
+-  void listDoubleClicked(QListViewItem *);
+-  void listClicked(QListViewItem *);
++  void listDoubleClicked(Q3ListViewItem *);
++  void listClicked(Q3ListViewItem *);
+   void OnRoot();
+   void OnCancel();
+   void setHidden(bool);
+diff --git a/hrule.cpp b/hrule.cpp
+index d697acb..4705057 100644
+--- a/hrule.cpp
++++ b/hrule.cpp
+@@ -1,4 +1,5 @@
+ #include <qimage.h>
++#include <qpixmap.h>
+ 
+ QImage* hRule(int w, int h, unsigned char r, unsigned char g, unsigned char b)
+ {
+diff --git a/infowin.cpp b/infowin.cpp
+index 816a09f..0a25571 100644
+--- a/infowin.cpp
++++ b/infowin.cpp
+@@ -1,7 +1,7 @@
+ #include "infowin.h"
+ #include "version.h"
+ #include <stdio.h>
+-#include <qmultilineedit.h>
++#include <Qt3Support/Q3MultiLineEdit>
+ #include <qlayout.h>
+ #include <qpushbutton.h>
+ #include "names.h"
+@@ -20,9 +20,9 @@ infowin::infowin( QWidget *parent, const char *name, WFlags f) :
+     QWidget(parent, name, f)
+ {
+   QVBoxLayout* vl = new QVBoxLayout(this);
+-  aboutbox = new QMultiLineEdit(this);
++  aboutbox = new Q3MultiLineEdit(this);
+   aboutbox->setReadOnly(true);
+-    aboutbox->setWordWrap(QMultiLineEdit::WidgetWidth);
++    aboutbox->setWordWrap(Q3MultiLineEdit::WidgetWidth);
+   //grid->addWidget(l, 5, 0);
+   vl->addWidget(aboutbox);
+     QGridLayout* grid = new QGridLayout(vl, 10, 2);
+diff --git a/infowin.h b/infowin.h
+index c003998..92cff3a 100644
+--- a/infowin.h
++++ b/infowin.h
+@@ -2,6 +2,9 @@
+ #define __INFOWIN_H
+ 
+ #include <qlabel.h>
++#include <Qt3Support/Q3MultiLineEdit>
++#include <qnamespace.h>
++using namespace Qt;
+ class QString;
+ class QMultiLineEdit;
+ 
+@@ -17,7 +20,7 @@ Q_OBJECT
+     QLabel* docSize;
+     QLabel* docLocation;
+     QLabel* zoom;
+-    QMultiLineEdit* aboutbox;
++    Q3MultiLineEdit* aboutbox;
+ public:
+     infowin( QWidget *parent=0, const char *name=0, WFlags f = 0);
+     void setFileSize(int sz) { fileSize->setNum(sz); }
+diff --git a/opiedir/include.pro b/opiedir/include.pro
+new file mode 100644
+index 0000000..44c572b
+--- /dev/null
++++ b/opiedir/include.pro
+@@ -0,0 +1,15 @@
++DEFINES -= OPIE USEQPE
++DEFINES += QT3_SUPPORT
++
++LIBS -= -lopiecore2 -lopieui2 -lqpe
++LIBS += -L${OPIEDIR}/lib
++
++QT += core gui qt3support
++
++isEmpty(UQT_LIBDIR) {
++ UQT_LIBDIR = /usr/lib/uqtreader
++}
++isEmpty(UQT_DATADIR) {
++ UQT_DATADIR = /usr/share/uqtreader
++}
++DEFINES += UQT_LIBDIR='\\"$$UQT_LIBDIR\\"' UQT_DATADIR='\\"$$UQT_DATADIR\\"'
+diff --git a/outputcodec.h b/outputcodec.h
+index 727575c..dfba5a2 100644
+--- a/outputcodec.h
++++ b/outputcodec.h
+@@ -2,6 +2,8 @@
+ #include <qfileinfo.h>
+ #include <qdir.h>
+ 
++#include "uqtcommon.h"
++
+ #ifdef USEQPE
+ #include <qpe/global.h>
+ #endif
+@@ -29,17 +31,8 @@ class outputcodec : public COutput
+     }
+   outputcodec(const QString& _s) : codec(NULL), handle(NULL), status(-1)
+     {
+-#ifdef USEQPE
+-#ifdef OPIE
+-      QString codecpath(getenv("OPIEDIR"));
+-#else
+-      QString codecpath(getenv("QTDIR"));
+-#endif
+-      codecpath += "/plugins/reader/outcodecs/lib";
+-#else
+-      QString codecpath(getenv("READERDIR"));
+-      codecpath += "/outcodecs/lib";
+-#endif
++	QString codecpath = uqt_outcodecspath();
++	codecpath += "lib";
+       codecpath += _s;
+       codecpath += ".so";
+       if (QFile::exists(codecpath))
+diff --git a/preferences.cpp b/preferences.cpp
+index 67960ed..044a003 100755
+--- a/preferences.cpp
++++ b/preferences.cpp
+@@ -14,7 +14,7 @@ Config::Config(const QString& _fn) : fname(_fn)
+     {
+ 	QTextStream t(&fl);
+ 	QString key, value;
+-	while (!t.eof())
++	while (!t.atEnd())
+ 	{
+ 	    QString data = t.readLine();
+ 	    int colon = data.find(':');
+diff --git a/reader/reader.pro b/reader/reader.pro
+index dc6a5dd..7552bd1 100644
+--- a/reader/reader.pro
++++ b/reader/reader.pro
+@@ -51,7 +51,8 @@ HEADERS		= Aportis.h \
+ 		  util.h \
+                   utypes.h \
+                   version.h \
+-                  ztxt.h
++                  ztxt.h \
++		  preferences.h
+ 
+ SOURCES		= BuffDoc.cpp \
+                   ButtonPrefs.cpp \
+@@ -76,7 +77,8 @@ SOURCES		= BuffDoc.cpp \
+                   main.cpp \
+ 		  orkey.cpp \
+ 		  util.cpp \
+-                  version.cpp
++                  version.cpp \
++		  preferences.cpp
+ 
+ INTERFACES	= 
+ DESTDIR		= $(OPIEDIR)/bin
+diff --git a/striphtml.cpp b/striphtml.cpp
+index a2ad56b..1346dc3 100644
+--- a/striphtml.cpp
++++ b/striphtml.cpp
+@@ -8,6 +8,7 @@
+ #include "CDrawBuffer.h"
+ #include "striphtml.h"
+ #include "hrule.h"
++#include "uqtcommon.h"
+ 
+ #include <qregexp.h>
+ #include <qimage.h>
+@@ -209,14 +210,14 @@ QString striphtml::dehtml(const QString& _info)
+   QString info;
+   for (int i = 0; i < _info.length(); i++)
+   {
+-    tchar ch = _info[i];
++    tchar ch = _info[i].unicode();
+     if (ch == '%')
+       {
+ 	ch = 0;
+ 	for (int j = 0; j < 2; j++)
+ 	  {
+ 	    ch <<= 4;
+-	    tchar ch1 = _info[++i];
++	    tchar ch1 = _info[++i].unicode();
+ 	    if ('0' <= ch1 && ch1 <= '9')
+ 	      {
+ 		ch += ch1 - '0';
+@@ -285,7 +286,7 @@ bool striphtml::findanchor(const QString& _info)
+       while (1)
+ 	{
+ 	  //	  qApp->processEvents();
+-	  if ((offset = name.match(toQString(test.data()))) != -1) break;
++	  if ((offset = name.exactMatch(toQString(test.data()))) != -1) break;
+ #ifdef USEQPE
+ 	  if ((offset = id.match(toQString(test.data()))) != -1) break;
+ #endif
+@@ -325,17 +326,7 @@ striphtml::~striphtml()
+ void striphtml::initentmap()
+ {
+   entmap = new QMap<QString, tchar>;
+-#ifdef USEQPE
+-#ifdef OPIE
+-  QString fname(getenv("OPIEDIR"));
+-#else
+-  QString fname(getenv("QTDIR"));
+-#endif
+-  fname += "/plugins/reader/data";
+-#else
+-  QString fname(getenv("READERDIR"));
+-  fname += "/data";
+-#endif  
++  QString fname = uqt_datapath();
+   QFileInfo fi;
+   fi.setFile(fname, "HTMLentities");
+   if (fi.exists())
+@@ -347,7 +338,7 @@ void striphtml::initentmap()
+ 	{
+ 	  QTextStream t(&fl);
+ 	  QString key, value;
+-	  while (!t.eof())
++	  while (!t.atEnd())
+ 	    {
+ 	      QString data = t.readLine();
+ 	      int colon = data.find(':');
+diff --git a/uqtcommon.h b/uqtcommon.h
+new file mode 100644
+index 0000000..e551740
+--- /dev/null
++++ b/uqtcommon.h
+@@ -0,0 +1,57 @@
++#ifndef __UQTCOMMON_H
++#define __UQTCOMMON_H
++
++#include <qstring.h>
++
++#ifdef USEQPE
++# ifdef OPIE
++#  define Q_DIR_ENV "OPIEDIR"
++# else
++#  define Q_DIR_ENV "QTDIR"
++# endif
++#endif
++
++inline QString uqt_libdir() {
++#   ifdef USEQPE
++    return QString(getenv(Q_DIR_ENV))+"/plugins/reader";
++#   else
++    const char *rd = getenv("READERDIR");
++    if(rd) return rd;
++    return UQT_LIBDIR;
++#   endif
++}
++inline QString uqt_datadir() {
++#   ifdef USEQPE
++    return QString(geenv(Q_DIR_ENV));
++#   else
++    const char *rd = getenv("READERDIR");
++    if(rd) return rd;
++    return UQT_DATADIR;
++#   endif
++}
++
++inline QString uqt_codecspath() {
++    return uqt_libdir()+"/codecs/";
++}
++inline QString uqt_outcodecspath() {
++    return uqt_libdir()+"/outcodecs/";
++}
++inline QString uqt_filterspath() {
++    return uqt_libdir()+"/filters/";
++}
++inline QString uqt_supportpath() {
++    return uqt_libdir()+"/support/";
++}
++
++inline QString uqt_picspath() {
++    return uqt_datadir()+"/pics/";
++}
++inline QString uqt_datapath() {
++#   ifdef QPE
++    return uqt_datadir()+"/plugins/reader/data";
++#   else
++    return uqt_datadir()+"/data";
++#   endif
++}
++
++#endif /* __UQTCOMMON_H */
+diff --git a/version.cpp b/version.cpp
+index aafb3d8..743ef38 100644
+--- a/version.cpp
++++ b/version.cpp
+@@ -2,9 +2,9 @@
+ #include "names.h"
+ #include <qmessagebox.h>
+ 
+-#include <qmultilineedit.h>
++#include <Qt3Support/Q3MultiLineEdit>
+ #include <qlayout.h>
+-#include <qtextview.h>
++#include <Qt3Support/Q3TextView>
+ class versionbox : public QDialog
+ {
+ public:
+@@ -19,7 +19,7 @@ public:
+     box->setWordWrap(QMultiLineEdit::WidgetWidth);
+     box->setText(txt);
+     */
+-    QTextView* box = new QTextView(this);
++    Q3TextView* box = new Q3TextView(this);
+     v->addWidget(box);
+     box->setText(txt);
+ #ifdef USEQPE

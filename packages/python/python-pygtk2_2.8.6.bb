@@ -1,17 +1,20 @@
 DESCRIPTION = "Python GTK+ Bindings"
 SECTION = "devel/python"
-# needs gtk+-2.8.x
-DEPENDS = "gtk+ libglade"
+PRIORITY = "optional"
+# needs gtk+ 2.8.x
+DEPENDS = "gtk+-2.8.16 libglade"
 RDEPENDS = "python-shell"
 SRCNAME = "pygtk"
 LICENSE = "LGPL"
-PR = "ml0"
+PR = "r1"
 
 SRC_URI = "ftp://ftp.gnome.org/pub/gnome/sources/pygtk/2.8/${SRCNAME}-${PV}.tar.bz2 \
            file://acinclude.m4"
 S = "${WORKDIR}/${SRCNAME}-${PV}"
 
 inherit autotools pkgconfig distutils-base
+
+EXTRA_OECONF += "--with-python-includes=${STAGING_INCDIR}/../"
 
 do_configure_prepend() {
 	install -m 0644 ${WORKDIR}/acinclude.m4 ${S}/

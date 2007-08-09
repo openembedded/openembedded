@@ -1,0 +1,11 @@
+--- sox-13.0.0.old/src/Makefile.am	2007-03-18 22:19:52.296535098 -0400
++++ sox-13.0.0/src/Makefile.am	2007-03-18 22:21:48.968947731 -0400
+@@ -42,7 +42,7 @@
+ 	$(MAKE) -C libgsm
+ 
+ play rec: sox$(EXEEXT)
+-	./sox --help > /dev/null
++#	./sox --help > /dev/null
+ 	test -f .libs/lt-sox && ( $(RM) $@ && $(LN_S) .libs/lt-sox $@ ) || $(LN_S) sox$(EXEEXT) $@
+ 
+ install-exec-hook:

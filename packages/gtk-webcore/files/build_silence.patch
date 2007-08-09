@@ -1,0 +1,16 @@
+Index: configure.in
+===================================================================
+--- configure.in	(revision 46)
++++ configure.in	(working copy)
+@@ -134,9 +134,9 @@
+ AC_SUBST(LIBCURL_LIBS) #needed by the osb-nrcore.pc.in
+ 
+ 
+-CXXFLAGS="$CXXFLAGS -fno-exceptions -fno-rtti -nostdinc++"
++CXXFLAGS="$CXXFLAGS -fno-exceptions -fno-rtti -nostdinc++ -DLOG_DISABLED"
+ 
+-CPPFLAGS="$CPPFLAGS -include \"\$(top_srcdir)/WebCorePrefix.h\" $PACKAGE_CFLAGS $X_CFLAGS $JSCORE_CFLAGS $DEFINES"
++CPPFLAGS="$CPPFLAGS -include \"\$(top_srcdir)/WebCorePrefix.h\" $PACKAGE_CFLAGS $X_CFLAGS $JSCORE_CFLAGS $DEFINES -DLOG_DISABLED"
+ LDFLAGS="$LDFLAGS $PACKAGE_LIBS $X_LIBS $JSCORE_LIBS \
+ -nodefaultlibs -lgcc -lc"
+ 

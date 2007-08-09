@@ -1,12 +1,13 @@
 DESCRIPTION = "A console URL download utility featuring HTTP, FTP, and more."
 SECTION = "console/network"
 DEPENDS = ""
-PR = "r6"
+PR = "r7"
 LICENSE = "GPL"
 
 SRC_URI = "${GNU_MIRROR}/wget/wget-${PV}.tar.gz \
 	   file://m4macros.patch;patch=1 \
-	   file://autotools.patch;patch=1"
+	   file://autotools.patch;patch=1 \
+           file://ipv6-fix.patch;patch=1"
 S = "${WORKDIR}/wget-${PV}"
 
 inherit autotools gettext

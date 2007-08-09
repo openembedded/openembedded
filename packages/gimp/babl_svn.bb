@@ -1,0 +1,21 @@
+DESCRIPTION = "Babl is a dynamic, any to any, pixel format conversion library."
+LICENSE = "LGPL"
+
+PV = "0.0.14+svn${SRCDATE}"
+PR = "r1"
+
+inherit gnome
+
+SRC_URI = "svn://svn.gnome.org/svn/${PN};module=trunk"
+
+S = "${WORKDIR}/trunk"
+
+do_stage() {
+        autotools_stage_all
+}	
+
+
+FILES_${PN} += "${libdir}/babl-0.0/"
+FILES_${PN}-dbg = "${libdir}/babl-0.0/.debug/"
+
+

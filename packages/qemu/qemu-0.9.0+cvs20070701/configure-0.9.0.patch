@@ -1,0 +1,12 @@
+diff -Naru qemu-snapshot-2007-06-24_05.orig/configure qemu-snapshot-2007-06-24_05/configure
+--- qemu-snapshot-2007-06-24_05.orig/configure	2007-06-23 18:03:35.000000000 +0200
++++ qemu-snapshot-2007-06-24_05/configure	2007-06-24 16:30:32.000000000 +0200
+@@ -711,7 +711,7 @@
+ echo "CC=$cc" >> $config_mak
+ echo "HOST_CC=$host_cc" >> $config_mak
+ echo "AR=$ar" >> $config_mak
+-echo "STRIP=$strip -s -R .comment -R .note" >> $config_mak
++echo "STRIP=$strip" >> $config_mak
+ echo "OS_CFLAGS=$OS_CFLAGS" >> $config_mak
+ echo "OS_LDFLAGS=$OS_LDFLAGS" >> $config_mak
+ echo "ARCH_CFLAGS=$ARCH_CFLAGS" >> $config_mak

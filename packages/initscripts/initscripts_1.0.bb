@@ -2,10 +2,9 @@ DESCRIPTION = "SysV init scripts"
 SECTION = "base"
 PRIORITY = "required"
 DEPENDS = "makedevs"
-DEPENDS_openzaurus = "makedevs virtual/kernel"
 RDEPENDS = "makedevs"
 LICENSE = "GPL"
-PR = "r86"
+PR = "r96"
 
 SRC_URI = "file://halt \
            file://ramdisk \
@@ -34,19 +33,8 @@ SRC_URI = "file://halt \
 	   file://save-rtc.sh"
 
 SRC_URI_append_arm          = " file://alignment.sh"
-SRC_URI_append_openzaurus   = " file://checkversion"
 
-def read_kernel_version(d):
-	import bb
-	distro = bb.data.getVar('DISTRO', d, 1)
-	filename = bb.data.getVar('STAGING_KERNEL_DIR', d, 1)
-	if distro == "openzaurus":
-		return file( filename + "/kernel-abiversion", "r" ).read().strip()
-	else:
-		return "not important"
 KERNEL_VERSION = ""
-KERNEL_VERSION_openzaurus = "${@read_kernel_version(d)}"
-PACKAGE_ARCH_openzaurus = "${MACHINE_ARCH}"
 
 do_install () {
 #
@@ -90,13 +78,6 @@ do_install () {
 #
 # Install device dependent scripts
 #
-
-	if [ "${DISTRO}" = "openzaurus" ]; then
-		cat ${WORKDIR}/checkversion | sed -e "s,VERSION,${KERNEL_VERSION}-${DISTRO_VERSION}," > ${D}${sysconfdir}/init.d/checkversion
-		chmod 0755	${D}${sysconfdir}/init.d/checkversion
-		ln -sf		../init.d/checkversion  ${D}${sysconfdir}/rcS.d/S01version
-	fi
-
 	install -m 0755 ${WORKDIR}/banner	${D}${sysconfdir}/init.d/banner
 	install -m 0755 ${WORKDIR}/devices	${D}${sysconfdir}/init.d/devices
 	install -m 0755 ${WORKDIR}/umountfs	${D}${sysconfdir}/init.d/umountfs

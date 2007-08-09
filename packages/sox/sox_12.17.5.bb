@@ -4,7 +4,7 @@
 
 DESCRIPTION="SoX is the Swiss Army knife of sound processing tools. \
 It converts audio files among various standard audio file formats \
-and can apply different effects and filters to the audio data."
+and can apply different effects and filters to the audio data." 
 LICENSE="GPL"
 HOMEPAGE="http://sox.sourceforge.net"
 

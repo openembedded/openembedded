@@ -1,0 +1,17 @@
+Index: gnome-desktop-2.16.1/configure.in
+===================================================================
+--- gnome-desktop-2.16.1.orig/configure.in	2006-10-02 19:00:52.000000000 +0000
++++ gnome-desktop-2.16.1/configure.in	2007-04-12 21:12:36.000000000 +0000
+@@ -113,9 +113,9 @@
+ dnl scrollkeeper checks
+ 
+ AC_PATH_PROG(SCROLLKEEPER_CONFIG, scrollkeeper-config,no)
+-if test x$SCROLLKEEPER_CONFIG = xno; then
+-  AC_MSG_ERROR(Couldn't find scrollkeeper-config. Please install the scrollkeeper package)
+-fi
++dnl if test x$SCROLLKEEPER_CONFIG = xno; then
++dnl   AC_MSG_ERROR(Couldn't find scrollkeeper-config. Please install the scrollkeeper package)
++dnl fi
+ 
+ dnl Language Support
+ 

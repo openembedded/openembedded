@@ -1,0 +1,366 @@
+
+#
+# Patch managed by http://www.holgerschurig.de/patcher.html
+#
+
+Index: trunk/configure
+===================================================================
+--- trunk.orig/configure
++++ trunk/configure
+@@ -519,6 +519,7 @@ _svga=auto
+ _vesa=auto
+ _fbdev=auto
+ _w100=no
++_imageon=no
+ _dvb=auto
+ _dvbhead=auto
+ _dxr2=auto
+@@ -820,6 +821,8 @@ for ac_option do
+   --disable-fbdev)	_fbdev=no	;;
+   --enable-w100)        _w100=yes       ;;
+   --disable-w100)       _w100=no        ;;
++  --enable-imageon)     _imageon=yes    ;;
++  --disable-imageon)    _imageon=no     ;;
+   --enable-dvb)		_dvb=yes	;;
+   --disable-dvb)        _dvb=no		;;
+   --enable-dvbhead)	_dvbhead=yes	;;
+@@ -4329,6 +4332,18 @@ else
+ fi
+ echores "$_w100"
+ 
++echocheck "ATI Imageon 100 (imageon)"
++if test "$_imageon" = yes ; then
++  _def_imageon='#define HAVE_IMAGEON 1'
++  _ld_imageon='-lw100'
++  _vosrc="$_vosrc vo_imageon.c"
++  _vomodules="imageon $_vomodules"
++else
++  _def_imageon='#undef HAVE_IMAGEON'
++  _novomodules="imageon $_novomodules"
++fi
++echores "$_imageon"
++
+ 
+ echocheck "DVB"
+ if test "$_dvb" = auto ; then
+@@ -8355,6 +8370,7 @@ $_def_xmga
+ $_def_syncfb
+ $_def_fbdev
+ $_def_w100
++$_def_imageon
+ $_def_dxr2
+ $_def_dxr3
+ $_def_ivtv
+Index: trunk/libvo/vo_imageon.c
+===================================================================
+--- /dev/null
++++ trunk/libvo/vo_imageon.c
+@@ -0,0 +1,308 @@
++#include <stdio.h>
++#include <stdlib.h>
++#include <inttypes.h>
++#include <string.h>
++
++#include <mp_msg.h>
++#include <video_out.h>
++#include <video_out_internal.h>
++
++static vo_info_t info = 
++{
++	"ATI IMAGEON 100 driver",
++	"imageon",
++	"Manuel Teira",
++	"C760-Openzaurus Testing version"
++};
++
++LIBVO_EXTERN(imageon)
++
++#include <acapi.h>
++
++static struct w100privdata_t {
++	uint8_t config;
++	ac_device_t *dev;
++	uint16_t xres;
++	uint16_t yres;
++	uint16_t ovwidth;
++	uint16_t ovheight;
++	ac_surface_t insurface;
++	ac_surface_t ovsurface;
++	uint16_t srcwidth;
++	uint16_t srcheight;
++	uint8_t rotate;
++	uint8_t scale;
++	ac_point_t ovdst;
++	ac_point_t dstpos;
++	ac_overlayprops_t ovprops;
++	uint32_t format;
++} w100_privdata;
++
++static int preinit(const char *arg)
++{
++	//Perhaps libw100 should include some code to query the framebuffer
++	struct w100privdata_t *pdata = &w100_privdata;
++	
++	pdata->config = 0;
++	pdata->xres = 640;
++	pdata->yres = 480;
++	pdata->dev = ac_init(pdata->xres, pdata->yres, AC_ROT90);
++	if (pdata->dev) {
++		return 0;
++	} else {
++		//Put a log message here
++		return 1;
++	}
++}
++
++
++static void draw_osd(void)
++{
++}
++
++void check_events(void)
++{
++	mp_msg(MSGT_VO, MSGL_V, "check_events got called\n");
++}
++
++static int config(uint32_t srcwidth, uint32_t srcheight, 
++		  uint32_t dstwidth, uint32_t dstheight, 
++		  uint32_t flags, char *title, uint32_t format)
++{
++	struct w100privdata_t *pdata = &w100_privdata;
++	uint8_t xscale, yscale;
++	uint16_t scaledwidth, scaledheight;
++	
++	mp_msg(MSGT_VO, MSGL_V,
++	       "vo_imageon: srcwidth:%d, srcheight:%d, "
++	       "dstwidth:%d, dstheight:%d\n",
++	       srcwidth, srcheight, dstwidth, dstheight);
++	
++	if (pdata->config) {
++		ac_overlay_disable(pdata->dev);
++		ac_free_surface(pdata->dev, &pdata->insurface);
++		ac_free_surface(pdata->dev, &pdata->ovsurface);
++	}
++	
++	pdata->srcwidth = srcwidth;
++	pdata->srcheight = srcheight;
++
++	//By the moment, only YUV420 supported
++	pdata->ovprops.format = OVLFORMAT_YUV420;
++	pdata->ovprops.portrait_mode = 0;
++	pdata->ovprops.inv_hor = 0;
++	pdata->ovprops.inv_ver = 0;
++	pdata->ovprops.yuv2rgb = 0;
++
++	pdata->rotate = AC_ROT90;
++	
++	if (flags & VOFLAG_FULLSCREEN) {
++		pdata->ovwidth = 240;
++		pdata->ovheight = 320;
++		xscale = ac_get_scaler(pdata->ovheight, srcwidth);
++		yscale = ac_get_scaler(pdata->ovwidth, srcheight);
++		pdata->scale = (xscale > yscale) ? xscale : yscale;
++		pdata->ovdst.x = 0;
++		pdata->ovdst.y = 0;
++		pdata->ovprops.video_hor_exp = 1;
++		pdata->ovprops.video_ver_exp = 1;
++        } else {
++		pdata->ovwidth = (dstheight + 0xf) & ~0xf;
++		pdata->ovheight = (dstwidth + 0xf) & ~0xf;
++		xscale = ac_get_scaler(dstwidth, srcwidth);
++		yscale = ac_get_scaler(dstheight, srcheight);
++		pdata->ovdst.x = (pdata->xres - pdata->ovheight) / 2;
++		pdata->ovdst.y = (pdata->yres - pdata->ovwidth) / 2;
++		pdata->ovprops.video_hor_exp = 0;
++		pdata->ovprops.video_ver_exp = 0;
++        }
++
++	pdata->scale = (xscale > yscale) ? xscale : yscale;
++	scaledwidth = ac_apply_scaler(srcwidth, pdata->scale);
++	scaledheight = ac_apply_scaler(srcheight, pdata->scale);
++	pdata->dstpos.x = (pdata->ovwidth - scaledheight) / 2; 
++	pdata->dstpos.y = (pdata->ovheight - scaledwidth) / 2;
++
++	if (ac_alloc_surface(pdata->dev, &pdata->ovsurface,
++			     FMT_YUV420, 
++			     pdata->ovwidth, 
++			     pdata->ovheight,
++			     AC_MEM_INTERNAL) == NULL) {
++		mp_msg(MSGT_VO, MSGL_FATAL, "Unable to allocate ov surface\n");
++		return -1;
++	}
++
++	if (ac_alloc_surface(pdata->dev, &pdata->insurface,
++			     FMT_YUV420, srcwidth, srcheight, 
++			     AC_MEM_INTERNAL) == NULL) {
++		mp_msg(MSGT_VO, MSGL_WARN,
++		       "No room in internal memory for insurface\n");
++		if (ac_alloc_surface(pdata->dev, &pdata->insurface,
++				     FMT_YUV420, srcwidth, srcheight,
++				     AC_MEM_EXTERNAL) == NULL) {
++			mp_msg(MSGT_VO, MSGL_FATAL, 
++			       "Unable to allocate surface\n");
++			ac_free_surface(pdata->dev, &pdata->ovsurface);
++			return -1;
++		}
++	}
++	
++	ac_clear_surface(pdata->dev, &pdata->ovsurface);
++	ac_clear_surface(pdata->dev, &pdata->insurface);
++
++
++	mp_msg(MSGT_VO, MSGL_V, 
++	       "vo_imageon: rotate:%d scale:%d ovwidth:%d, ovheight:%d, "
++	       "ovdst(x:%d, y:%d) dstpos(x:%d,y:%d)\n",
++	       pdata->rotate,
++	       pdata->scale,
++	       pdata->ovwidth,
++	       pdata->ovheight,
++	       pdata->ovdst.x,
++	       pdata->ovdst.y,
++	       pdata->dstpos.x,
++	       pdata->dstpos.y);
++
++	ac_overlay_setup(pdata->dev, &pdata->ovsurface, &pdata->ovsurface.rect,
++			 &pdata->ovprops, 0);
++	ac_overlay_setpos(pdata->dev, &pdata->ovdst);
++	ac_overlay_enable(pdata->dev);
++
++	pdata->config = 1;
++	return 0;
++}
++
++static int draw_slice(uint8_t *image[], int stride[], 
++		      int w, int h, int x, int y)
++{
++	struct w100privdata_t *pdata = &w100_privdata;
++	ac_rect_t dstrect;
++	ac_surface_t *dstsurface = &pdata->insurface;
++	int plane;
++	mp_msg(MSGT_VO, MSGL_V, 
++	       "vo_imageon: draw_slice(w:%d,h:%d,x:%d,y:%d)\n",
++	       w, h, x, y);
++        
++	ac_reset_ctx(pdata->dev);
++	for (plane = 0; plane <= V_PLANE; plane++) {
++		mp_msg(MSGT_VO, MSGL_V, "Plane: %d, Stride: %d\n",
++		       plane, stride[plane]);
++		dstrect.x = x;
++		dstrect.y = y;
++		dstrect.w = w;
++		dstrect.h = h;
++		ac_host2planerect(pdata->dev,
++				  image[plane],
++				  &dstrect, 
++				  &pdata->insurface,
++				  plane);
++	}
++	return 0;
++}
++
++static int draw_frame(uint8_t *frame[])
++{
++	struct w100privdata_t *pdata = &w100_privdata;
++	mp_msg(MSGT_VO, MSGL_V, "vo_imageon: draw_frame() not implemented!\n");
++
++}
++
++static void flip_page(void)
++{
++	struct w100privdata_t *pdata = &w100_privdata;
++	int plane;
++	ac_rect_t srcrect;
++	ac_point_t dstpoint;
++	ac_surface_t *insurface = &pdata->insurface;
++	ac_surface_t *ovsurface = &pdata->ovsurface;
++	ac_surfspec_t *surfspec = &ac_surfspecs[ovsurface->format];
++
++	mp_msg(MSGT_VO, MSGL_V, "vo_imageon: flip_page\n");
++
++	srcrect.x = 0;
++	srcrect.y = 0;
++
++	ac_reset_ctx(pdata->dev);
++	if (pdata->rotate != AC_ROT0) {
++		ac_set_xform(pdata->dev, pdata->rotate, AC_NOMIRROR);
++	}
++	ac_disable_dbuf_update(pdata->dev);
++	ac_waitidle(pdata->dev);
++	for (plane = Y_PLANE; plane < surfspec->nplanes; plane++) {
++		ac_setsrcplane(pdata->dev, insurface, plane);
++		ac_setdstplane(pdata->dev, ovsurface, plane);
++		ac_prepare_scaleblt(pdata->dev, DP_DST_8BPP);
++		srcrect.w = pdata->srcwidth / surfspec->planes[plane].xsubsampling;
++		srcrect.h = pdata->srcheight / surfspec->planes[plane].ysubsampling;
++		dstpoint.x = pdata->dstpos.x / surfspec->planes[plane].xsubsampling;
++		dstpoint.y = pdata->dstpos.y / surfspec->planes[plane].ysubsampling;
++		mp_msg(MSGT_VO, MSGL_V, 
++		       "vo_imageon: scaleblt src(x:%d,y:%d,w:%d,h:%d)"
++		       "dst(%d,%d)"
++		       "scale(%d)\n",
++		       srcrect.x, srcrect.y,
++		       srcrect.w, srcrect.h,
++		       dstpoint.x, dstpoint.y,
++		       pdata->scale);
++		ac_scaleblt(pdata->dev, &srcrect, &dstpoint,
++			    pdata->scale, pdata->scale);
++	}
++	ac_enable_dbuf_update(pdata->dev);
++}
++
++static void uninit(void)
++{
++	struct w100privdata_t *pdata = &w100_privdata;
++	ac_overlay_disable(pdata->dev);
++	ac_finish(pdata->dev);
++}
++
++static int control(uint32_t request, void *data, ...)
++{
++	struct w100privdata_t *pdata = &w100_privdata;
++	switch (request) {
++	case VOCTRL_QUERY_FORMAT:
++		return query_format(*((uint32_t *)data));
++	case VOCTRL_FULLSCREEN:
++		mp_msg(MSGT_VO, MSGL_V, "vo_imageon: Asked for fullscreen\n");
++	}
++	return VO_NOTIMPL;
++}
++
++static int query_format(uint32_t format)
++{
++	mp_msg(MSGT_VO, MSGL_V, 
++	       "vo_imageon: query_format was called: %x (%s)\n",
++	       format, vo_format_name(format));
++
++	if (IMGFMT_IS_RGB(format)) {
++		return 0;
++		
++		switch (IMGFMT_RGB_DEPTH(format)) {
++		case 16:
++			return VFCAP_CSP_SUPPORTED | VFCAP_CSP_SUPPORTED_BY_HW |
++				VFCAP_HWSCALE_UP | VFCAP_HWSCALE_DOWN | 
++				VFCAP_OSD | VFCAP_ACCEPT_STRIDE;
++			break;
++		}
++	} else {
++		/* Planar YUV Formats */
++		switch (format) {
++		case IMGFMT_YV12:
++		case IMGFMT_IYUV:
++		case IMGFMT_I420:
++		case IMGFMT_YVU9:
++		case IMGFMT_IF09:
++		case IMGFMT_Y8:
++		case IMGFMT_Y800:
++			return VFCAP_CSP_SUPPORTED | VFCAP_CSP_SUPPORTED_BY_HW |
++				VFCAP_HWSCALE_UP | VFCAP_HWSCALE_DOWN | 
++				VFCAP_OSD | VFCAP_ACCEPT_STRIDE;
++			break;
++		}
++	}
++
++	return 0;
++}
++
++

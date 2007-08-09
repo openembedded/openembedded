@@ -1,9 +1,11 @@
-LICENSE = "GPL/LGPL"
+LICENSE = "GPL LGPL"
 DEPENDS = "libxml2 libxslt"
 
 PR = "r1"
 
 inherit gnome
+
+EXTRA_OECONF = "--disable-scrollkeeper"
 
 FILES_${PN} += "${datadir}/xml*"
 

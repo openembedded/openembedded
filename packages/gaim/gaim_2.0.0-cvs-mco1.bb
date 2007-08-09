@@ -3,6 +3,8 @@ SRCDATE_${PN} = "20050904"
 #Change to x.y.z+cvs${SRCDATE}-mco1 when 2.0.0 changes
 PV = "2.0.0-cvs-mco1-${SRCDATE}"
 
+DEFAULT_PREFERENCE = "-1"
+
 WEBCVSURL = "http://handhelds.org/cgi-bin/cvsweb.cgi/~checkout~/gaim"
 
 SRC_URI = "cvs://anonymous@gaim.cvs.sourceforge.net/cvsroot/gaim;module=gaim \

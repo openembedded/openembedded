@@ -1,0 +1,62 @@
+#! /bin/sh
+#
+# Copyright Matthias Hentges <devel@hentges.net> (c) 2007
+# License: GPL (see http://www.gnu.org/licenses/gpl.txt for a copy of the license)
+#
+# Filename: usb-gadget
+# Date: 20070606 (YMD)
+#
+#################################################################################
+#
+# 20070606 - v0.0.1	- Initial release
+# 20070630 - v0.0.2	- Add forgotten host mode
+
+CONF_FILE="/etc/default/usb-gadget"
+
+die() {
+	echo "ERROR: $1"
+	exit 1
+}
+
+go() {
+	test -e "$CONF_FILE" && . "$CONF_FILE" 
+	
+	case "$USB_MODE" in
+	networking)	setup_usb g_ether "$MODULE_OPTIONS" ;;
+	storage)	setup_usb g_file_storage "$MODULE_OPTIONS" ;;
+	hostmode)	unload_usb_gadgets
+			setup_usb ohci_hcd "$MODULE_OPTIONS" ;;
+	none)		unload_usb_gadgets ;;
+	esac		
+		
+}
+
+setup_usb() {
+	
+	if ! ( lsmod | grep -q "$1" )
+	then
+		unload_usb_gadgets
+		echo "Loading [$1]"
+		modprobe "$1" "$MODULE_OPTIONS"
+	else
+		echo "Already loaded: [$1]"
+	fi
+}
+
+unload_usb_gadgets() {
+	KERNEL_VERSION="`uname -r`"
+	GADGET_MODULES="`find /lib/modules/$KERNEL_VERSION/kernel/drivers/usb/gadget -name "*g_*"`"
+	
+	for module in $GADGET_MODULES
+	do
+		MODULE_NAME="`basename $module | sed "s/\.ko//"`"
+		
+		if ( lsmod | grep -q "$MODULE_NAME" )
+		then
+			echo "Unloading [$MODULE_NAME]"
+			rmmod "$module"
+		fi
+	done
+}
+
+go

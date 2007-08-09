@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 # generate Python Manifest for the OpenEmbedded build system
-# (C) 2002-2006 Michael Lauer <mickey@Vanille.de>
+# (C) 2002-2007 Michael 'Mickey' Lauer <mickey@Vanille.de>
 # MIT license
 
 import os
@@ -10,10 +10,10 @@ import time
 
 VERSION = "2.4.4"
 # increase when touching python-core
-BASEREV = 0
+BASEREV = 2
 
 __author__ = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
-__version__ = "$Revision: 1.21 $"
+__version__ = "20070721"
 
 class MakefileMaker:
 
@@ -122,15 +122,6 @@ class MakefileMaker:
 
             line += '"'
             self.out( line )
-
-#            for source, target in files:
-#                if ( source.find( "lib-dynload" ) != -1 ) or \
-#                  ( source.endswith( "python" ) ) or \
-#                   ( source.endswith( "pydoc" ) ): # MACHDEP
-#                    self.out( "\t cp -dfR $(STAGING_LIBDIR)/..%s $(IPKTMP_DIR)%s/;" % ( source, os.path.dirname( target ) ) )
-#                else:
-#                    self.out( "\t cp -dfR $(STAGING_DIR)%s $(IPKTMP_DIR)%s/;" % ( source, os.path.dirname( target ) ) )
-#
             self.out( "" )
 
     def doEpilog( self ):
@@ -158,14 +149,17 @@ if __name__ == "__main__":
 
     m.setPrefix( "/", "/usr/" )
 
-    m.addPackage( 0, "python-core", "Python Interpreter and core modules (needed!)", "",
-    "lib/python2.4/__future__.* lib/python2.4/copy.* lib/python2.4/copy_reg.* lib/python2.4/ConfigParser.py " +
+    m.addPackage( 2, "python-core", "Python Interpreter and core modules (needed!)", "",
+    "lib/python2.4/__future__.* lib/python2.4/copy.* lib/python2.4/copy_reg.* lib/python2.4/ConfigParser.* " +
     "lib/python2.4/getopt.* lib/python2.4/linecache.* lib/python2.4/new.* " +
     "lib/python2.4/os.* lib/python2.4/posixpath.* " +
     "lib/python2.4/warnings.* lib/python2.4/site.* lib/python2.4/stat.* " +
     "lib/python2.4/UserDict.* lib/python2.4/UserList.* lib/python2.4/UserString.* " +
     "lib/python2.4/lib-dynload/binascii.so lib/python2.4/lib-dynload/struct.so lib/python2.4/lib-dynload/time.so " +
-    "lib/python2.4/lib-dynload/xreadlines.so lib/python2.4/types.* bin/python" )
+    "lib/python2.4/lib-dynload/xreadlines.so lib/python2.4/types.* bin/python*" )
+
+    m.addPackage( 0, "python-core-dbg", "Python core module debug information", "python-core",
+    "lib/python2.4/lib-dynload/.debug bin/.debug lib/.debug" )
 
     m.addPackage( 0, "python-devel", "Python Development Package", "python-core",
     "include lib/python2.4/config" ) # package
@@ -176,10 +170,13 @@ if __name__ == "__main__":
     m.addPackage( 0, "python-pydoc", "Python Interactive Help Support", "python-core, python-lang, python-stringold, python-re",
     "bin/pydoc lib/python2.4/pydoc.*" )
 
+    m.addPackage( 0, "python-smtpd", "Python Simple Mail Transport Daemon", "python-core python-netserver python-email python-mime",
+    "bin/smtpd.*" )
+
     m.setPrefix( "/lib/python2.4/", "${libdir}/python2.4/" )
 
     m.addPackage( 0, "python-audio", "Python Audio Handling", "python-core",
-    "wave.* chunk.* lib-dynload/ossaudiodev.so lib-dynload/audioop.so" )
+    "wave.* chunk.* sndhdr.* lib-dynload/ossaudiodev.so lib-dynload/audioop.so" )
 
     m.addPackage( 0, "python-bsddb", "Python Berkeley Database Bindings", "python-core",
     "bsddb" ) # package
@@ -211,10 +208,13 @@ if __name__ == "__main__":
     m.addPackage( 0, "python-db", "Python File-Based Database Support", "python-core",
     "anydbm.* dumbdbm.* whichdb.* " )
 
+    m.addPackage( 0, "python-debugger", "Python Debugger", "python-core, python-io, python-lang, python-re, python-stringold, python-shell",
+    "bdb.* pdb.*" )
+
     m.addPackage( 0, "python-distutils", "Python Distribution Utilities", "python-core",
     "config distutils" ) # package
 
-    m.addPackage( 0, "python-email", "Python Email Support", "python-core, python-io, python-re",
+    m.addPackage( 0, "python-email", "Python Email Support", "python-core, python-io, python-re, python-mime, python-audio python-image",
     "email" ) # package
 
     m.addPackage( 0, "python-fcntl", "Python's fcntl Interface", "python-core",
@@ -255,7 +255,7 @@ if __name__ == "__main__":
     "lib-dynload/cmath.so lib-dynload/math.so lib-dynload/_random.so random.* sets.*" )
 
     m.addPackage( 0, "python-mime", "Python MIME Handling APIs", "python-core, python-io",
-    "mimetools.* quopri.* rfc822.*" )
+    "mimetools.* uu.* quopri.* rfc822.*" )
 
     m.addPackage( 0, "python-mmap", "Python Memory-Mapped-File Support", "python-core, python-io",
     "lib-dynload/mmap.so " )
@@ -289,9 +289,12 @@ if __name__ == "__main__":
     "lib-dynload/resource.so" )
 
     m.addPackage( 0, "python-shell", "Python Shell-Like Functionality", "python-core, python-re",
-    "commands.* dircache.* fnmatch.* glob.* popen2.* shutil.*" )
+    "cmd.* commands.* dircache.* fnmatch.* glob.* popen2.* shutil.*" )
 
-    m.addPackage( 0, "python-subprocess", "Python Subprocess Support", "python-core, python-io, python-re",
+    m.addPackage( 0, "python-robotparser", "Python robots.txt parser", "python-core, python-netclient",
+    "robotparser.*")
+
+    m.addPackage( 0, "python-subprocess", "Python Subprocess Support", "python-core, python-io, python-re, python-fcntl, python-pickle",
     "subprocess.*" )
 
     m.addPackage( 0, "python-stringold", "Python String APIs [deprecated]", "python-core, python-re",

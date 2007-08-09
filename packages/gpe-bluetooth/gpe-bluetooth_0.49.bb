@@ -1,12 +1,3 @@
-LICENSE = "GPL"
-DESCRIPTION = "GPE bluetooth support"
-SECTION = "gpe"
-PRIORITY = "optional"
+require gpe-bluetooth.inc
 
 DEPENDS = "gtk+ libdisplaymigration libgpewidget openobex libgpevtype bluez-libs sqlite dbus-glib libglade blueprobe bluez-utils-dbus libcontactsdb"
-RDEPENDS = "bluez-utils-dbus blueprobe"
-
-GPE_TARBALL_SUFFIX= "bz2"
-inherit gpe autotools
-
-FILES_${PN} += '${datadir}/bluez-pin'

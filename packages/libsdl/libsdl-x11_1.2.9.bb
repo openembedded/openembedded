@@ -1,11 +1,11 @@
 DESCRIPTION = "Simple DirectMedia Layer - X11 Edition"
 SECTION = "libs"
 PRIORITY = "optional"
-DEPENDS = "alsa-lib virtual/libx11 libxext"
+DEPENDS = "alsa-lib mesa virtual/libx11 libxext"
 PROVIDES = "virtual/libsdl"
 LICENSE = "LGPL"
 
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "http://www.libsdl.org/release/SDL-${PV}.tar.gz \
 	   file://extra-keys.patch;patch=1 \
@@ -20,7 +20,7 @@ EXTRA_OECONF = "--disable-static --disable-debug --enable-cdrom --enable-threads
                 --disable-mintaudio --disable-nasm --enable-video-x11 --disable-video-dga \
                 --disable-video-fbcon --disable-video-directfb --disable-video-ps2gs \
                 --disable-video-xbios --disable-video-gem --disable-video-dummy \
-                --disable-video-opengl --enable-input-events --enable-pthreads \
+                --enable-video-opengl --enable-input-events --enable-pthreads \
                 --disable-video-picogui --disable-video-qtopia --enable-dlopen"
 
 FILES_${PN} = "${libdir}/lib*.so.*"

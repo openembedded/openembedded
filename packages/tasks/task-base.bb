@@ -1,202 +1,237 @@
 DESCRIPTION = "Merge machine and distro options to create a basic machine task/package"
-PR = "r19"
+PR = "r41"
 
-PACKAGES = "task-base \
-            task-base-minimal \
-            task-base-oh-minimal \
-            task-base-core-default"
+DEPENDS = "task-boot"
+PROVIDES = "${PACKAGES}"
+PACKAGES = ' \
+            task-base \
+            task-base-extended \
+            task-distro-base \
+            task-machine-base \
+            \
+            task-base-acpi \
+            task-base-alsa \
+            task-base-apm \
+            task-base-bluetooth \
+            task-base-ext2 \
+            task-base-irda \
+            task-base-keyboard \
+            task-base-pci \
+            task-base-pcmcia \
+            task-base-phone \
+            task-base-screen \
+            task-base-serial \
+            task-base-touchscreen \
+            task-base-usbgadget \
+            task-base-usbhost \
+            task-base-wifi \
+            \
+            task-base-cramfs \
+            task-base-ipsec \
+            task-base-ipv6 \
+            task-base-nfs \
+            task-base-ppp \
+            task-base-smbfs \
+	    \
+            ${@base_contains("MACHINE_FEATURES","kernel26","task-base-kernel26","task-base-kernel24",d)} \
+	    '
 
 ALLOW_EMPTY = "1"
 
-PACKAGE_ARCH = "${MACHINE_ARCH}"
-
-# Valid only in MACHINE_FEATURES:
-#
-# kernel24
-# kernel26
-# apm
-# keyboard
-# touchscreen
-# screen
-# pci
-# acpi
-# phone
-
-# Valid only in DISTRO_FEATURES:
-#
-# nfs
-# smbfs
-# ipsec
-# wifi
-# ppp
-
-# Valid COMBINED_FEATURES:
-# (These features need to be supported by both the machine and the distro)
-#
-# alsa
-# bluetooth
-# ext2
-# irda
-# pci
-# pcmcia
-# usbgadget
-# usbhost
-
-DISTRO_CORE_PACKAGE ?= "task-base-core-default"
+PACKAGE_ARCH = "all"
 
 #
-# task-base
+# packages which content depend on MACHINE_FEATURES need to be MACHINE_ARCH
+#
+PACKAGE_ARCH_task-base = "${MACHINE_ARCH}"
+PACKAGE_ARCH_task-machine-base = "${MACHINE_ARCH}"
+PACKAGE_ARCH_task-base-apm = "${MACHINE_ARCH}"
+PACKAGE_ARCH_task-base-bluetooth = "${MACHINE_ARCH}"
+PACKAGE_ARCH_task-base-irda = "${MACHINE_ARCH}"
+PACKAGE_ARCH_task-base-pcmcia = "${MACHINE_ARCH}"
+PACKAGE_ARCH_task-base-wifi = "${MACHINE_ARCH}"
+
+#
+# linux-hotplug or none
+#
+HOTPLUG ?= "${@base_contains("MACHINE_FEATURES", "kernel24",  "linux-hotplug","",d)} "
+
+#
+# dropbear, openssh or none
+#
+DISTRO_SSH_DAEMON ?= "dropbear"
+
+#
+# pcmciautils for >= 2.6.13-rc1, pcmcia-cs for others
+#
+PCMCIA_MANAGER ?= "${@base_contains('MACHINE_FEATURES', 'kernel26','pcmciautils','pcmcia-cs',d)} "
+
+#
+# those ones can be set in machine config to supply packages needed to get machine booting
+#
+MACHINE_ESSENTIAL_EXTRA_RDEPENDS ?= ""
+MACHINE_ESSENTIAL_EXTRA_RRECOMMENDS ?= ""
+
+#
+# task-base contain stuff needed for base system (machine related)
 #
 RDEPENDS_task-base = "\
-    ${DISTRO_CORE_PACKAGE} \
-    kernel \
-    ${@base_contains("MACHINE_FEATURES", "kernel24", "${task-base-kernel24-rdepends}", "",d)} \
-    ${@base_contains("MACHINE_FEATURES", "kernel26", "${task-base-kernel26-rdepends}", "",d)} \
-    ${@base_contains("MACHINE_FEATURES", "apm", "${task-base-apm-rdepends}", "",d)} \
-    ${@base_contains("MACHINE_FEATURES", "acpi", "${task-base-acpi-rdepends}", "",d)} \
-    ${@base_contains("MACHINE_FEATURES", "keyboard", "${task-base-keyboard-rdepends}", "",d)} \
-    ${@base_contains("COMBINED_FEATURES", "alsa", "${task-base-alsa-rdepends}", "",d)} \
-    ${@base_contains("COMBINED_FEATURES", "ext2", "${task-base-ext2-rdepends}", "",d)} \
-    ${@base_contains("COMBINED_FEATURES", "irda", "${task-base-irda-rdepends}", "",d)} \
-    ${@base_contains("COMBINED_FEATURES", "pci", "${task-base-pci-rdepends}", "",d)} \
-    ${@base_contains("COMBINED_FEATURES", "pcmcia", "${task-base-pcmcia-rdepends}", "",d)} \
-    ${@base_contains("COMBINED_FEATURES", "usbhost", "${task-base-usbhost-rdepends}", "",d)} \
-    ${@base_contains("COMBINED_FEATURES", "bluetooth", "${task-base-bluetooth-rdepends}", "",d)} \
-    ${@base_contains("COMBINED_FEATURES", "wifi", "${task-distro-wifi-rdepends}", "",d)} \
-    ${@base_contains("DISTRO_FEATURES", "nfs", "${task-distro-nfs-rdepends}", "",d)} \
-    ${@base_contains("DISTRO_FEATURES", "ipsec", "${task-distro-ipsec-rdepends}", "",d)} \
-    ${@base_contains("DISTRO_FEATURES", "ppp", "${task-distro-ppp-rdepends}", "",d)} \
-    ${MACHINE_ESSENTIAL_EXTRA_RDEPENDS} \
-    ${MACHINE_EXTRA_RDEPENDS} \
-    ${DISTRO_EXTRA_RDEPENDS}"
+    task-boot \
+    task-distro-base \
+    task-machine-base \
+    ${DISTRO_SSH_DAEMON} \
+    ${HOTPLUG} \
+    \
+    ${@base_contains('MACHINE_FEATURES', 'kernel26','task-base-kernel26','task-base-kernel24',d)} \
+    ${@base_contains('MACHINE_FEATURES', 'apm', 'task-base-apm', '',d)} \
+    ${@base_contains('MACHINE_FEATURES', 'acpi', 'task-base-acpi', '',d)} \
+    ${@base_contains('MACHINE_FEATURES', 'keyboard', 'task-base-keyboard', '',d)} \
+    \
+    ${@base_contains('COMBINED_FEATURES', 'alsa', 'task-base-alsa', '',d)} \
+    ${@base_contains('COMBINED_FEATURES', 'ext2', 'task-base-ext2', '',d)} \
+    ${@base_contains('COMBINED_FEATURES', 'irda', 'task-base-irda', '',d)} \
+    ${@base_contains('COMBINED_FEATURES', 'pci', 'task-base-pci', '',d)} \
+    ${@base_contains('COMBINED_FEATURES', 'pcmcia', 'task-base-pcmcia', '',d)} \
+    ${@base_contains('COMBINED_FEATURES', 'usbgadget', 'task-base-usbgadget', '',d)} \
+    ${@base_contains('COMBINED_FEATURES', 'usbhost', 'task-base-usbhost', '',d)} \
+    ${@base_contains('COMBINED_FEATURES', 'bluetooth', 'task-base-bluetooth', '',d)} \
+    ${@base_contains('COMBINED_FEATURES', 'wifi', 'task-base-wifi', '',d)} \
+    ${@base_contains('COMBINED_FEATURES', 'uboot', 'task-base-uboot', '',d)} \
+    ${@base_contains('COMBINED_FEATURES', 'redboot', 'task-base-redboot', '',d)} \
+    \
+    ${@base_contains('DISTRO_FEATURES', 'nfs', 'task-base-nfs', '',d)} \
+    ${@base_contains('DISTRO_FEATURES', 'ipv6', 'task-base-ipv6', '',d)} \
+    ${@base_contains('DISTRO_FEATURES', 'ipsec', 'task-base-ipsec', '',d)} \
+    ${@base_contains('DISTRO_FEATURES', 'ppp', 'task-base-ppp', '',d)} \
+    ${@base_contains('DISTRO_FEATURES', 'raid', 'task-base-raid', '',d)} \
+    "
 
-RRECOMMENDS_task-base = "\
-    ${@base_contains("MACHINE_FEATURES", "kernel26", "${task-base-kernel26-extras-rrecommends}", "",d)} \
-    ${@base_contains("COMBINED_FEATURES", "alsa", "${task-base-alsa-rrecommends}", "",d)} \
-    ${@base_contains("COMBINED_FEATURES", "pcmcia", "${task-base-pcmcia-rrecommends}", "",d)} \
-    ${@base_contains("COMBINED_FEATURES", "bluetooth", "${task-base-bluetooth-rrecommends}", "",d)} \
-    ${@base_contains("COMBINED_FEATURES", "irda", "${task-base-irda-rrecommends}", "",d)} \
-    ${@base_contains("COMBINED_FEATURES", "usbgadget", "${task-base-usbgadget-rrecommends}", "",d)} \
-    ${@base_contains("COMBINED_FEATURES", "usbhost", "${task-base-usbhost-rrecommends}", "",d)} \
-    ${@base_contains("DISTRO_FEATURES", "ppp", "${task-distro-ppp-rrecommends}", "",d)} \
-    ${@base_contains("DISTRO_FEATURES", "nfs", "${task-distro-nfs-rrecommends}", "",d)} \
-    ${@base_contains("DISTRO_FEATURES", "ipsec", "${task-distro-ipsec-rrecommends}", "",d)} \
-    ${@base_contains("DISTRO_FEATURES", "wifi", "${task-distro-wifi-rrecommends}", "",d)} \
-    ${@base_contains("DISTRO_FEATURES", "cramfs", "${task-distro-cramfs-rrecommends}", "",d)} \
-    ${MACHINE_ESSENTIAL_EXTRA_RRECOMMENDS} \
-    ${MACHINE_EXTRA_RRECOMMENDS} \
-    ${DISTRO_EXTRA_RRECOMMENDS}"
+RDEPENDS_task-base-extended = "\
+    task-base \
+    ${ADD_WIFI} \
+    ${ADD_BT} \
+    "
 
+ADD_WIFI = ""
+ADD_BT = ""
+
+python __anonymous () {
+    # If Distro want wifi and machine feature wifi/pci/pcmcia/usbhost (one of them)
+    # then include task-base-wifi in task-base
+
+    import bb
+
+    if not hasattr(__builtins__, 'set'):
+	from sets import Set as set
+
+    distro_features = set(bb.data.getVar("DISTRO_FEATURES", d, 1).split())
+    machine_features= set(bb.data.getVar("MACHINE_FEATURES", d, 1).split())
+
+    if "bluetooth" in distro_features and not "bluetooth" in machine_features and ("pcmcia" in machine_features or "pci" in machine_features or "usbhost" in machine_features):
+	bb.data.setVar("ADD_BT", "task-base-bluetooth", d)
+
+    if "wifi" in distro_features and not "wifi" in machine_features and ("pcmcia" in machine_features or "pci" in machine_features or "usbhost" in machine_features):
+	bb.data.setVar("ADD_WIFI", "task-base-wifi", d)
+}
 
 #
-# task-base-oh-minimal
-# An example of a small cut down machine configuration
+# packages added by distribution
 #
-RDEPENDS_task-base-oh-minimal = "\
-    kernel \
-    ${@base_contains("MACHINE_FEATURES", "kernel26", "${task-base-kernel26-rdepends}", "",d)} \
-    ${@base_contains("MACHINE_FEATURES", "apm", "${task-base-apm-rdepends}", "",d)} \
-    ${@base_contains("COMBINED_FEATURES", "pcmcia", "${PCMCIA_MANAGER}", "",d)} \
-    ${MACHINE_ESSENTIAL_EXTRA_RDEPENDS}"
+RDEPENDS_task-distro-base = "${DISTRO_EXTRA_RDEPENDS}"
+RRECOMMENDS_task-distro-base = "${DISTRO_EXTRA_RRECOMMENDS}"
 
-RRECOMMENDS_task-base-minimal = "\
-    ${MACHINE_ESSENTIAL_EXTRA_RRECOMMENDS}"
+#
+# packages added by machine config
+#
+RDEPENDS_task-machine-base = "${MACHINE_EXTRA_RDEPENDS}"
+RRECOMMENDS_task-machine-base = "${MACHINE_EXTRA_RRECOMMENDS}"
 
+RDEPENDS_task-base-kernel24 = "\
+    modutils-depmod"
 
-
-HOTPLUG ?= "linux-hotplug"
-
-RDEPENDS_task-base-core-default = '\
-    base-files \
-    base-passwd \
-    busybox \
-    initscripts \
-    netbase \
-    sysvinit \
-    sysvinit-pidof \
-    tinylogin \
-    modutils-initscripts \
-    fuser \
-    setserial'
-# Lets see if we can kill off hotplug...
-#    ${HOTPLUG}
-#    ${@bootstrap_modutils_rdepends(d)}
-
-
-RRECOMMENDS_task-base-core-default = '\
-    dropbear '
-
-task-base-kernel24-rdepends = "\
-    modutils-depmod \
-    linux-hotplug "
-
-task-base-kernel26-rdepends = "\
-    udev \
+RDEPENDS_task-base-kernel26 = "\
     sysfsutils \
     module-init-tools"
 
-task-base-keyboard-rdepends = "\
-    keymaps"
-
-task-base-pci-rdepends = "\
-    pciutils"
-
-task-base-kernel26-extras-rrecommends = "\
+RRECOMMENDS_task-base-kernel24 = "\
     kernel-module-input \
     kernel-module-uinput"
 
-task-base-acpi-rdepends = "\
+RRECOMMENDS_task-base-kernel26 = "\
+    kernel-module-input \
+    kernel-module-uinput \
+    kernel-module-rtc-dev \
+    kernel-module-rtc-proc \
+    kernel-module-rtc-sysfs \
+    kernel-module-rtc-sa1100"
+
+RDEPENDS_task-base-keyboard = "\
+    keymaps"
+
+RDEPENDS_task-base-pci = "\
+    pciutils"
+
+RDEPENDS_task-base-acpi = "\
     acpid"
 
-task-base-apm-rdepends = "\
+RDEPENDS_task-base-apm = "\
     apm \
     apmd \
-    ${@base_contains("MACHINE_FEATURES", "kernel24", "network-suspend-scripts", "",d)}"
+    ${@base_contains('MACHINE_FEATURES', 'kernel24', 'network-suspend-scripts', '',d)}"
 
-task-base-ext2-rdepends = "\
+RDEPENDS_task-base-ext2 = "\
     hdparm \
     e2fsprogs \
     e2fsprogs-e2fsck \
     e2fsprogs-mke2fs"
 
-task-base-alsa-rdepends = "\
+RDEPENDS_task-base-alsa = "\
     alsa-utils-alsactl \
     alsa-utils-alsamixer"
 
-task-base-alsa-rrecommends = "\
+#
+# alsa-states are machine related so can be missing in feed, OSS support is optional
+#
+RRECOMMENDS_task-base-alsa = "\
+    alsa-state \
+    alsa-states \
     kernel-module-snd-mixer-oss \
     kernel-module-snd-pcm-oss"
 
-task-base-pcmcia-rdepends = "\
+RDEPENDS_task-base-pcmcia = "\
     ${PCMCIA_MANAGER} \
-    ${@base_contains("DISTRO_FEATURES", "wifi", "prism3-firmware", "",d)} \
-    ${@base_contains("DISTRO_FEATURES", "wifi", "prism3-support", "",d)} \
-    ${@base_contains("DISTRO_FEATURES", "wifi", "spectrum-fw", "",d)} \
-    ${@base_contains("DISTRO_FEATURES", "wifi", "hostap-conf", "",d)} \
-    ${@base_contains("DISTRO_FEATURES", "wifi", "orinoco-conf", "",d)}"
+    ${@base_contains('DISTRO_FEATURES', 'wifi', 'prism-firmware', '',d)} \
+    ${@base_contains('DISTRO_FEATURES', 'wifi', 'spectrum-fw', '',d)} \
+    "
 
-task-base-pcmcia-rrecommends = "\
+RRECOMMENDS_task-base-pcmcia = "\
+    ${@base_contains('MACHINE_FEATURES', 'kernel26', '${task-base-pcmcia26}', '${task-base-pcmcia24}',d)} \
     kernel-module-pcmcia \
     kernel-module-airo-cs \
     kernel-module-pcnet-cs \
     kernel-module-serial-cs \
     kernel-module-ide-cs \
-    ${@base_contains("MACHINE_FEATURES", "kernel26", "${task-base-pcmcia26-rrecommends}", "${task-base-pcmcia24-rrecommends}",d)} "
+    kernel-module-ide-disk \
+    "
 
-task-base-pcmcia24-rrecommends = "\
-    ${@base_contains("DISTRO_FEATURES", "wifi", "hostap-modules-cs", "",d)} \
-    ${@base_contains("DISTRO_FEATURES", "wifi", "orinoco-modules-cs", "",d)}"
+task-base-pcmcia24 = "\
+    ${@base_contains('DISTRO_FEATURES', 'wifi', 'hostap-modules-cs', '',d)} \
+    ${@base_contains('DISTRO_FEATURES', 'wifi', 'orinoco-modules-cs', '',d)} \
+    "
 
-task-base-pcmcia26-rrecommends = "\
-    ${@base_contains("DISTRO_FEATURES", "wifi", "kernel-module-hostap-cs", "",d)} \
-    ${@base_contains("DISTRO_FEATURES", "wifi", "kernel-module-orinoco-cs", "",d)} \
-    ${@base_contains("DISTRO_FEATURES", "wifi", "kernel-module-spectrum-cs", "",d)}"
+task-base-pcmcia26 = "\
+    ${@base_contains('DISTRO_FEATURES', 'wifi', 'kernel-module-hostap-cs', '',d)} \
+    ${@base_contains('DISTRO_FEATURES', 'wifi', 'kernel-module-spectrum-cs', '',d)}"
 
-task-base-bluetooth-rdepends = "\ 
-	blueprobe \
-	bluez-utils"
+# Provide bluez-utils-compat utils for the time being, the binaries in that package will vanish soon from upstream releases, so beware! 
 
-task-base-bluetooth-rrecommends = "\
+RDEPENDS_task-base-bluetooth = "\ 
+    blueprobe \
+    bluez-utils \
+    bluez-utils-compat \  
+    "
+
+RRECOMMENDS_task-base-bluetooth = "\
     kernel-module-bluetooth \
     kernel-module-l2cap \
     kernel-module-rfcomm \
@@ -205,37 +240,44 @@ task-base-bluetooth-rrecommends = "\
     kernel-module-hidp \
     kernel-module-hci-uart \
     kernel-module-sco \
-    ${@base_contains("COMBINED_FEATURES", "usbhost", "kernel-module-hci-usb", "",d)} \
-    ${@base_contains("COMBINED_FEATURES", "pcmcia", "kernel-module-bluetooth3c-cs", "",d)} \
-    ${@base_contains("COMBINED_FEATURES", "pcmcia", "kernel-module-bluecard-cs", "",d)} \
-    ${@base_contains("COMBINED_FEATURES", "pcmcia", "kernel-module-bluetoothuart-cs", "",d)} \
-    ${@base_contains("COMBINED_FEATURES", "pcmcia", "kernel-module-dtl1-cs", "",d)}"
+    ${@base_contains('COMBINED_FEATURES', 'usbhost', 'kernel-module-hci-usb', '',d)} \
+    ${@base_contains('COMBINED_FEATURES', 'pcmcia', 'kernel-module-bluetooth3c-cs', '',d)} \
+    ${@base_contains('COMBINED_FEATURES', 'pcmcia', 'kernel-module-bluecard-cs', '',d)} \
+    ${@base_contains('COMBINED_FEATURES', 'pcmcia', 'kernel-module-bluetoothuart-cs', '',d)} \
+    ${@base_contains('COMBINED_FEATURES', 'pcmcia', 'kernel-module-dtl1-cs', '',d)} \
+    ${@base_contains('COMBINED_FEATURES', 'pcmcia', 'bluez-dtl1-workaround', '',d)} \
+    "
+# bluez-dtl1-workaround above is workaround for bitbake not handling DEPENDS on it in
+# kernel.bbclass. It should be there as long as kernel-module-dtl1-cs is, but not longer.
 
-task-base-irda-rdepends = "\
+RDEPENDS_task-base-irda = "\
     irda-utils"
 
-task-base-irda-rrecommends = "\
+RRECOMMENDS_task-base-irda = "\
     kernel-module-pxaficp-ir \
     kernel-module-irda \
     kernel-module-ircomm \
     kernel-module-ircomm-tty \
     kernel-module-irlan \
-    ${@base_contains("DISTRO_FEATURES", "ppp", "kernel-module-irnet", "",d)} \
+    ${@base_contains('DISTRO_FEATURES', 'ppp', 'kernel-module-irnet', '',d)} \
     kernel-module-irport \
     kernel-module-irtty \
-    ${@base_contains("COMBINED_FEATURES", "usbhost", "kernel-module-ir-usb", "",d)} "
+    kernel-module-irtty-sir \
+    kernel-module-sir-dev \
+    ${@base_contains('COMBINED_FEATURES', 'usbhost', 'kernel-module-ir-usb', '',d)} "
 
-task-base-usbgadget-rrecommends = "\
+RRECOMMENDS_task-base-usbgadget = "\
     kernel-module-pxa27x_udc \
     kernel-module-gadgetfs \
     kernel-module-g-file-storage \
     kernel-module-g-serial \
-    kernel-module-g-ether"
+    kernel-module-g-ether \
+    usb-gadget-mode"
 
-task-base-usbhost-rdepends = "\
+RDEPENDS_task-base-usbhost = "\
     usbutils "
 
-task-base-usbhost-rrecommends = "\
+RRECOMMENDS_task-base-usbhost = "\
     kernel-module-uhci-hcd \
     kernel-module-ohci-hcd \
     kernel-module-ehci-hcd \
@@ -249,58 +291,93 @@ task-base-usbhost-rrecommends = "\
     kernel-module-usbserial \
     kernel-module-usb-storage "
 
-task-distro-ppp-rdepends = "\
+RDEPENDS_task-base-uboot = "\
+    uboot-utils"
+
+RDEPENDS_task-base-redboot = "\
+    fis"
+
+RDEPENDS_task-base-ppp = "\
     ppp \
     ppp-dialin"
 
-task-distro-ppp-rrecommends = "\
+RRECOMMENDS_task-base-ppp = "\
     kernel-module-ppp-async \
     kernel-module-ppp-deflate \
     kernel-module-ppp-mppe"
 
-task-distro-ipsec-rdepends = "\
+RDEPENDS_task-base-ipsec = "\
     openswan"
 
-task-distro-ipsec-rrecommends = "\
+RRECOMMENDS_task-base-ipsec = "\
     kernel-module-ipsec"
 
-task-distro-wifi-rdepends = "\
+#
+# task-base-wifi contain everything needed to get WiFi working
+# WEP/WPA connection needs to be supported out-of-box
+#
+RDEPENDS_task-base-wifi = "\
     wireless-tools \
-    ${@base_contains("COMBINED_FEATURES", "pcmcia", "hostap-utils", "",d)} \
-    ${@base_contains("COMBINED_FEATURES", "pci", "hostap-utils", "",d)} \
+    ${@base_contains('COMBINED_FEATURES', 'pcmcia', 'hostap-utils', '',d)} \
+    ${@base_contains('COMBINED_FEATURES', 'pci', 'hostap-utils', '',d)} \
+    ${@base_contains('COMBINED_FEATURES', 'pci', 'madwifi-ng-tools', '',d)} \
     wpa-supplicant"
 
-task-distro-wifi-rrecommends = "\
+RRECOMMENDS_task-base-wifi = "\
+    ${@base_contains('COMBINED_FEATURES', 'pci', 'madwifi-ng-modules', '',d)} \
+    ${@base_contains('COMBINED_FEATURES', 'usbhost', 'kernel-module-zd1211rw', '',d)} \
     kernel-module-ieee80211-crypt \
     kernel-module-ieee80211-crypt-ccmp \
     kernel-module-ieee80211-crypt-tkip \
     kernel-module-ieee80211-crypt-wep \
+    kernel-module-ecb \
     kernel-module-arc4 \
     kernel-module-michael-mic \
     kernel-module-aes"
 
-task-distro-smbfs-rrecommends = "\
+RRECOMMENDS_task-base-smbfs = "\
     kernel-module-cifs \
     kernel-module-smbfs"
 
-task-distro-cramfs-rrecommends = "\
+RRECOMMENDS_task-base-cramfs = "\
     kernel-module-cramfs"
 
-task-distro-nfs-rdepends = "\
+#
+# task-base-nfs provides ONLY client support - server is in nfs-utils package
+#
+RDEPENDS_task-base-nfs = "\
     portmap"
 
-task-distro-nfs-rrecommends = "\
-    kernel-module-nfs \
-    kernel-module-lockd \
-    kernel-module-sunrpc"
+RRECOMMENDS_task-base-nfs = "\
+    kernel-module-nfs "
 
+RDEPENDS_task-base-raid = "\
+	"
+
+RDEPENDS_task-base-screen = "\
+	"
+
+#
+# GPE/OPIE/OpenMoko provide own touchscreen calibration utils
+#
+RDEPENDS_task-base-touchscreen = "\
+    tslib-tests \
+    tslib-calibrate "
+
+RDEPENDS_task-base-ipv6 = "\
+    "
+
+RRECOMMENDS_task-base-ipv6 = "\
+    kernel-module-ipv6 "
+
+RDEPENDS_task-base-serial = "\
+    setserial \
+    lrzsz "
 
 # Tosort
-# kernel-module-ipv6
 # kernel-module-nvrd
 # kernel-module-mip6-mn
 # kernel-module-tun
-# kernel-module-ide-disk
 # kernel-module-ide-probe-mo
 # kernel-module-loop
 # kernel-module-vfat
@@ -314,4 +391,3 @@ task-distro-nfs-rrecommends = "\
 # kernel-module-md5
 # kernel-module-8250
 # Should be DISTRO_EXTRA_RRECOMMENDS: lrzsz
-

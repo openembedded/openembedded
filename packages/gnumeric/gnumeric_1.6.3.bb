@@ -4,6 +4,8 @@ S = "${WORKDIR}/gnumeric-${PV}"
 DEPENDS = "libgsf gtk+ libxml2 goffice libglade libart-lgpl intltool-native libgnomecanvas libgnomeprint libgnomeprintui libbonoboui"
 DESCRIPTION = "Gnumeric spreadsheet for GNOME"
 
+PR = "r1"
+
 inherit gnome flow-lossage
 
 SRC_URI += "file://remove-docs.patch;patch=1"
@@ -12,6 +14,7 @@ EXTRA_OECONF=" --without-perl "
 
 PACKAGES_DYNAMIC = "gnumeric-plugin-*"
 
+FILES_${PN}-dbg += "${libdir}/gnumeric/1.6.3/plugins/*/.debug"
 FILES_gnumeric_append = " /usr/lib/libspreadsheet-${PV}.so "
 
 python populate_packages_prepend () {

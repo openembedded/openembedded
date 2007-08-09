@@ -1,0 +1,16 @@
+--- zaurusd/config/config.in.orig	2007-05-21 21:58:14.000000000 +0000
++++ zaurusd/config/config.in	2007-05-21 22:10:26.000000000 +0000
+@@ -11,11 +11,5 @@
+ . @appconfdir@/mach-config-vars
+ . @appconfdir@/mach-config-funcs
+ 
+-if [ "x$HAVE_ALSA_MIXER" != "x" -a "x$ALSA_MIXER_INIT" != "x" ]; then
+-  if [ ! -e /etc/asound.state ]; then
+-    cp $ALSA_MIXER_INIT /etc/asound.state
+-    @sbindir@/alsactl restore
+-  fi
+-fi
+ 
+-export SWITCHEVD_EVENT_SCRIPT=@appconfdir@/scripts/switch-event
+\ No newline at end of file
++export SWITCHEVD_EVENT_SCRIPT=@appconfdir@/scripts/switch-event

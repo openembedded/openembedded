@@ -1,0 +1,221 @@
+diff -Nru linux-2.6.18/drivers/ide/Kconfig linux-2.6.18-magicbox2-cf-ide/drivers/ide/Kconfig
+--- linux-2.6.18/drivers/ide/Kconfig	2006-09-20 05:42:06.000000000 +0200
++++ linux-2.6.18-magicbox2-cf-ide/drivers/ide/Kconfig	2006-12-28 19:33:33.000000000 +0100
+@@ -926,6 +926,24 @@
+ 
+ 	  If unsure, say N.
+ 
++config BLK_DEV_MAGICBOX_IDE
++	bool "MagicBox 2.0 CF IDE support"
++	depends on 4xx && IDE=y && BLK_DEV_IDE=y
++	help
++	  This option provides support for IDE on MagicBox 2.0 boards.
++
++	  If unsure, say N.
++
++config BLK_DEV_MAGICBOX_PROTOTYPE
++	bool "Compile driver for prototype boards"
++	depends on BLK_DEV_MAGICBOX_IDE
++	help
++	  Compile driver for first revision of MagicBox 2.0 boards
++	  (wiring changes).
++
++	  If unsure, say N.
++
++
+ choice
+ 	prompt "Type of MPC8xx IDE interface"
+ 	depends on BLK_DEV_MPC8xx_IDE
+diff -Nru linux-2.6.18/drivers/ide/Makefile linux-2.6.18-magicbox2-cf-ide/drivers/ide/Makefile
+--- linux-2.6.18/drivers/ide/Makefile	2006-09-20 05:42:06.000000000 +0200
++++ linux-2.6.18-magicbox2-cf-ide/drivers/ide/Makefile	2006-12-28 19:27:00.000000000 +0100
+@@ -36,6 +36,7 @@
+ # built-in only drivers from ppc/
+ ide-core-$(CONFIG_BLK_DEV_MPC8xx_IDE)	+= ppc/mpc8xx.o
+ ide-core-$(CONFIG_BLK_DEV_IDE_PMAC)	+= ppc/pmac.o
++ide-core-$(CONFIG_BLK_DEV_MAGICBOX_IDE)	+= ppc/magicbox_ide.o
+ 
+ # built-in only drivers from h8300/
+ ide-core-$(CONFIG_H8300)		+= h8300/ide-h8300.o
+diff -Nru linux-2.6.18/drivers/ide/ide.c linux-2.6.18-magicbox2-cf-ide/drivers/ide/ide.c
+--- linux-2.6.18/drivers/ide/ide.c	2006-09-20 05:42:06.000000000 +0200
++++ linux-2.6.18-magicbox2-cf-ide/drivers/ide/ide.c	2006-12-28 19:27:00.000000000 +0100
+@@ -1836,6 +1836,13 @@
+ #ifdef CONFIG_H8300
+ 	h8300_ide_init();
+ #endif
++#ifdef CONFIG_BLK_DEV_MAGICBOX_IDE
++	{
++		extern void ide_magicbox_init();
++		ide_magicbox_init();
++	}
++#endif
++
+ }
+ 
+ void ide_register_subdriver(ide_drive_t *drive, ide_driver_t *driver)
+diff -Nru linux-2.6.18/drivers/ide/ppc/magicbox_ide.c linux-2.6.18-magicbox2-cf-ide/drivers/ide/ppc/magicbox_ide.c
+--- linux-2.6.18/drivers/ide/ppc/magicbox_ide.c	1970-01-01 01:00:00.000000000 +0100
++++ linux-2.6.18-magicbox2-cf-ide/drivers/ide/ppc/magicbox_ide.c	2006-12-30 21:00:18.000000000 +0100
+@@ -0,0 +1,161 @@
++/* Driver for MagicBox 2.0 onboard CompactFlash adapter.
++ * Written by Wojtek Kaniewski <wojtekka@toxygen.net>
++ *
++ * GNU General Public License.
++ */
++
++#include <linux/types.h>
++#include <linux/mm.h>
++#include <linux/interrupt.h>
++#include <linux/blkdev.h>
++#include <linux/hdreg.h>
++#include <linux/ide.h>
++#include <linux/delay.h>
++
++
++#define UIC0_PR 0xc4
++#define UIC0_TR 0xc5
++#define IRQ 25
++
++static int ide_offsets[IDE_NR_PORTS] = {0, 2, 4, 6, 8, 10, 12, 14, -1, -1};
++
++static u8 magicbox_ide_inb (unsigned long port)
++{
++	return (u8) (readw((void __iomem *) port) >> 8) & 255;
++}
++
++static u16 magicbox_ide_inw (unsigned long port)
++{
++	return (u16) readw((void __iomem *) port);
++}
++
++static void magicbox_ide_insw (unsigned long port, void *addr, u32 count)
++{
++	u16 *ptr;
++
++	for (ptr = addr; count--; ptr++)
++		*ptr = readw((void __iomem *) port);
++}
++
++static u32 magicbox_ide_inl (unsigned long port)
++{
++	return (u32) readl((void __iomem *) port);
++}
++
++static void magicbox_ide_insl (unsigned long port, void *addr, u32 count)
++{
++	u32 *ptr;
++
++	for (ptr = addr; count--; ptr++)
++		*ptr = readl((void __iomem *) port);
++}
++
++static void magicbox_ide_outb (u8 value, unsigned long port)
++{
++	writew(value << 8, (void __iomem *) port);
++}
++
++static void magicbox_ide_outbsync (ide_drive_t *drive, u8 value, unsigned long port)
++{
++	writew(value << 8, (void __iomem *) port);
++}
++
++static void magicbox_ide_outw (u16 value, unsigned long port)
++{
++	writew(value, (void __iomem *) port);
++}
++
++static void magicbox_ide_outsw (unsigned long port, void *addr, u32 count)
++{
++	u16 *ptr;
++
++	for (ptr = addr; count--; ptr++)
++		writew(*ptr, (void __iomem *) port);
++}
++
++static void magicbox_ide_outl (u32 value, unsigned long port)
++{
++	writel(value, (void __iomem *) port);
++}
++
++static void magicbox_ide_outsl (unsigned long port, void *addr, u32 count)
++{
++	u32 *ptr;
++
++	for (ptr = addr; count--; ptr++)
++		writel(*ptr, (void __iomem *) port);
++}
++
++
++static void __init ide_magicbox_register(unsigned long addr,
++					 unsigned long caddr, int irq)
++{
++	hw_regs_t hw;
++	ide_hwif_t *hwif;
++
++  	memset(&hw, 0, sizeof(hw));
++	ide_setup_ports(&hw, addr, ide_offsets, caddr + 12, 0, NULL,irq);
++
++	if (ide_register_hw(&hw, &hwif) != -1)
++	{
++		printk(KERN_NOTICE "magicbox-ide: Registered IDE-CF driver\n");
++		hwif->mmio = 2;
++		hwif->drives[0].unmask = 1;
++		hwif->OUTB = magicbox_ide_outb;
++		hwif->OUTBSYNC = magicbox_ide_outbsync;
++		hwif->OUTW = magicbox_ide_outw;
++		hwif->OUTL = magicbox_ide_outl;
++		hwif->OUTSW = magicbox_ide_outsw;
++		hwif->OUTSL = magicbox_ide_outsl;
++		hwif->INB = magicbox_ide_inb;
++		hwif->INW = magicbox_ide_inw;
++		hwif->INL = magicbox_ide_inl;
++		hwif->INSW = magicbox_ide_insw;
++		hwif->INSL = magicbox_ide_insl;
++	}
++}
++
++void __init ide_magicbox_init(void)
++{
++	volatile u16 *addr;
++	volatile u16 *caddr;
++
++	/* Turn on PerWE instead of PCIsomething */
++	mtdcr(DCRN_CPC0_PCI_BASE, mfdcr(DCRN_CPC0_PCI_BASE) | (0x80000000L >> 27));
++
++#ifdef CONFIG_BLK_DEV_MAGICBOX_PROTOTYPE
++	/* PerCS2 (CF's CS0): base 0xff100000, 16-bit, rw */
++	mtdcr(DCRN_EBC_BASE, 2);
++	mtdcr(DCRN_EBC_BASE + 1, 0xff11a000);
++	mtdcr(DCRN_EBC_BASE, 0x12);
++	mtdcr(DCRN_EBC_BASE + 1, 0x080bd800);
++
++	/* PerCS1 (CF's CS1): base 0xff200000, 16-bit, rw */
++	mtdcr(DCRN_EBC_BASE, 1);
++	mtdcr(DCRN_EBC_BASE + 1, 0xff21a000);
++	mtdcr(DCRN_EBC_BASE, 0x11);
++	mtdcr(DCRN_EBC_BASE + 1, 0x080bd800);
++#else
++	/* PerCS1 (CF's CS0): base 0xff100000, 16-bit, rw */
++	mtdcr(DCRN_EBC_BASE, 1);
++	mtdcr(DCRN_EBC_BASE + 1, 0xff11a000);
++	mtdcr(DCRN_EBC_BASE, 0x11);
++	mtdcr(DCRN_EBC_BASE + 1, 0x080bd800);
++
++	/* PerCS2 (CF's CS1): base 0xff200000, 16-bit, rw */
++	mtdcr(DCRN_EBC_BASE, 2);
++	mtdcr(DCRN_EBC_BASE + 1, 0xff21a000);
++	mtdcr(DCRN_EBC_BASE, 0x12);
++	mtdcr(DCRN_EBC_BASE + 1, 0x080bd800);
++#endif
++
++	/* Remap physical address space */
++	addr = ioremap_nocache(0xff100000, 4096);
++	caddr = ioremap_nocache(0xff200000, 4096);
++
++	/* Set interrupt to low-to-high-edge-triggered */
++	mtdcr(UIC0_TR, mfdcr(UIC0_TR) & ~(0x80000000L >> IRQ));
++	mtdcr(UIC0_PR, mfdcr(UIC0_PR) | (0x80000000L >> IRQ));
++
++	ide_magicbox_register((unsigned long)addr, (unsigned long)caddr, IRQ);
++}

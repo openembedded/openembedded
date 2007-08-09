@@ -20,6 +20,8 @@ do
 		umount /mnt;;
 	/initrd)# need the device for a remount
 		ffsdev="$(mtblockdev $ffspart)"
+		[ -n "$ffsdev" ] || \
+		ffsdev="$(mtblockdev rootfs)"
 		echo "Remounting $ffsdev read-only on /initrd" >&2
 		if test -n "$ffsdev" -a -b "$ffsdev"
 		then

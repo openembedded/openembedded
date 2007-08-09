@@ -1,0 +1,16 @@
+--- linux-2.6.15-magicbox3/init/do_mounts_initrd.c~	2005-08-31 00:26:43.000000000 +0200
++++ linux-2.6.15-magicbox3/init/do_mounts_initrd.c	2006-05-14 14:00:35.000000000 +0200
+@@ -112,8 +112,12 @@
+ 		 * unless /dev/ram0 is supposed to be our actual root device,
+ 		 * in that case the ram disk is just set up here, and gets
+ 		 * mounted in the normal path.
++		 *
++		 * Not true for magicbox: someone put root=/dev/ram into
++		 * bootloader defaults and prepared hundreds of boards...
++		 * Fix issue there.
+ 		 */
+-		if (rd_load_image("/initrd.image") && ROOT_DEV != Root_RAM0) {
++		if (rd_load_image("/initrd.image")) {
+ 			sys_unlink("/initrd.image");
+ 			handle_initrd();
+ 			return 1;

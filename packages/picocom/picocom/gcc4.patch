@@ -1,0 +1,12 @@
+Index: picocom-1.4/picocom.c
+===================================================================
+--- picocom-1.4.orig/picocom.c	2004-08-12 13:45:11.000000000 +0200
++++ picocom-1.4/picocom.c	2007-03-08 14:40:30.000000000 +0100
+@@ -37,6 +37,7 @@
+ #include <sys/stat.h>
+ #include <sys/wait.h>
+ #include <limits.h>
++#include <bits/posix1_lim.h>
+ 
+ #define _GNU_SOURCE
+ #include <getopt.h>

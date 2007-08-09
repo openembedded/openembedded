@@ -1,5 +1,7 @@
 <?php
-/* (c) Koen Kooi 2006
+/* 
+ * (c) Koen Kooi 2006, 2007
+ * (c) Marcin Juszkiewicz 2006, 2007
  *
  * This program is free software; you can redistribute it and/or  modify it under
  * the terms of the GNU General Public License as published by the Free
@@ -37,7 +39,10 @@ require_once 'includes/functions.inc';
    Description: IPv4 link-local address allocator
  */
 
-check_database();
+if(!check_database())
+{
+	die("Database not found and cannot be created.");
+}
 
 $feeds = db_query("SELECT f_id, f_name, f_uri FROM feeds");
 

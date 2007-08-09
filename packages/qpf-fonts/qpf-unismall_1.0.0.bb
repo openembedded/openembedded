@@ -4,9 +4,9 @@ PRIORITY = "optional"
 LICENSE = "GPL"
 HOMEPAGE = "http://sourceforge.jp/projects/zaurus-ja/"
 RPROVIDES = "virtual/japanese-font"
-PR = "r1"
+PR = "r2"
 
-SRC_URI = "http://prdownloads.sourceforge.jp/zaurus-ja/773/unismall-1.0.0.tar.gz"
+SRC_URI = "http://osdn.dl.sourceforge.jp/zaurus-ja/773/unismall-${PV}.tar.gz"
 
 S = "${WORKDIR}"
 

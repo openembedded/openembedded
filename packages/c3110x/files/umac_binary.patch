@@ -1,0 +1,69 @@
+ src/Makefile.k26 |    4 ++--
+ src/dummy_umac.c |   38 ++------------------------------------
+ 2 files changed, 4 insertions(+), 38 deletions(-)
+
+Index: cx3110x-1.1/src/Makefile.k26
+===================================================================
+--- cx3110x-1.1.orig/src/Makefile.k26	2007-05-25 17:51:15.000000000 +0100
++++ cx3110x-1.1/src/Makefile.k26	2007-05-25 22:44:36.000000000 +0100
+@@ -8,8 +8,8 @@ cx3110x-objs = $(SM_OBJECTS) $(SM_UMAC_O
+ #MTUM module
+ cx3110x_mt-objs = $(SM_OBJECTS) $(SM_MTUM_OBJECTS)
+ 
+-umac-objs = dummy_umac.o
+-mtum-objs = dummy_umac.o
++umac-objs = dummy_umac.o binary_umac.o
++mtum-objs = dummy_umac.o binary_umac.o
+ 
+ obj-$(CONFIG_CX3110X_STA)  += cx3110x.o umac.o
+ obj-$(CONFIG_CX3110X_PROD) += cx3110x_mt.o mtum.o
+Index: cx3110x-1.1/src/dummy_umac.c
+===================================================================
+--- cx3110x-1.1.orig/src/dummy_umac.c	2007-05-25 17:51:15.000000000 +0100
++++ cx3110x-1.1/src/dummy_umac.c	2007-05-25 22:50:59.000000000 +0100
+@@ -15,43 +15,9 @@
+  */
+ #include <linux/module.h>
+ #include "softmac2.h"
++#include "sm_drv.h"
+ 
+-SM_API int32_t SM_FDECL prism_softmac_parse_bra(const uint8_t* bra, 
+-						struct s_sm_initdata *data) { return 0; }
+-
+-SM_API int32_t SM_FDECL prism_softmac_describe(struct s_sm_descr *descr, 
+-					       struct s_sm_initdata *data) { return 0; }
+-
+-SM_API int32_t SM_FDECL prism_softmac_create(uint32_t *context, 
+-					     struct s_sm_setup *setup, 
+-					     struct s_pda *pda, 
+-					     struct s_sm_initdata *data) { return 0; }
+-
+-SM_API int32_t SM_FDECL prism_softmac_destroy(uint32_t *context) { return 0; }
+-
+-SM_API int32_t SM_FDECL prism_softmac_conf( uint32_t *context, struct s_sm_conf *conf ){ return 0; }
+-SM_API int32_t SM_FDECL prism_softmac_trap( uint32_t *context, struct s_sm_conf *conf ){ return 0; }
+-
+-SM_API int32_t SM_FDECL prism_softmac_frame_tx(uint32_t *context, struct s_sm_frame *frame){ return 0; }
+-SM_API int32_t SM_FDECL prism_softmac_frame_tx_done(uint32_t *context, struct s_sm_frame **frame){ return 0; }
+-SM_API int32_t SM_FDECL prism_softmac_frame_rx(uint32_t *context, struct s_sm_frame **frame){ return 0; }
+-SM_API int32_t SM_FDECL prism_softmac_service(uint32_t *context) { return 0; }
+-
+-SM_API int32_t SM_FDECL prism_interconnect_message_query(uint32_t *context, 
+-							 uint32_t mask, 
+-							 struct s_ic_msg **msg){ return 0; }
+-SM_API int32_t SM_FDECL prism_interconnect_message_handle(uint32_t *context, struct s_ic_msg *msg){ return 0; }
+-SM_API int32_t SM_FDECL prism_interconnect_trigger(uint32_t *context){ return 0;}
+-
+-void prism_driver_free(uint32_t *context, void *buffer){}
+-void prism_driver_frame_free(uint32_t *context, struct s_sm_frame *frame){}
+-
+-int	sm_net_device;
+-void	sm_drv_get_device(void) {}
+-void	frame_skb_alloc(void) {}
+-void	frame_skb_free(void) {}
+-void	frame_to_skb(void) {}
+-void	skb_to_frame(void) {}
++extern int sm_net_device;
+ 
+ EXPORT_SYMBOL(prism_driver_free);
+ EXPORT_SYMBOL(prism_driver_frame_free);

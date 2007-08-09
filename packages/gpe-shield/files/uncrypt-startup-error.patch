@@ -1,0 +1,13 @@
+diff -ur gpe-shield-0.9.org/interface.c gpe-shield-0.9/interface.c
+--- gpe-shield-0.9.org/interface.c	2006-02-04 23:53:45.000000000 +0000
++++ gpe-shield-0.9/interface.c	2007-06-18 01:50:02.000000000 +0000
+@@ -569,7 +569,8 @@
+ {
+ 	if (cmd == CMD_NO_IPTABLES)
+ 		show_message(GTK_MESSAGE_WARNING, _("This system does not " \
+-	                                        "support firewalling or you"\
++	                                        "support firewalling (iptables " \
++						"command is not available) or you"\
+ 	                                        " don't have the right to "\
+ 	                                        "change firewall rules, this" \
+ 	                                        " application will exit now."));

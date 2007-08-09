@@ -1,0 +1,10 @@
+--- gpe-login-0.88/gpe-login.keylaunchrc.orig	2007-06-05 00:50:27.000000000 +0000
++++ gpe-login-0.88/gpe-login.keylaunchrc	2007-06-05 00:52:03.000000000 +0000
+@@ -7,3 +7,7 @@
+ key=...*Right:-:~chvt 3
+ key=...*Escape:-:~/etc/init.d/gpe-dm stop
+ 
++# Brightness control
++key=...*3:-:~display-brightness.sh down 
++key=...*4:-:~display-brightness.sh up 
++

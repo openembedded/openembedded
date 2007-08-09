@@ -10,7 +10,7 @@
  #define TRUE 1
  #define VERSION "0.1.1"
 -#define DATADIR "/opt/QtPalmtop/share/pipepanic/"
-+#define DATADIR "/usr/share"
++#define DATADIR "/usr/share/pipepanic/"
  #define DIGITS24BMP "digits24.bmp"
  #define DIGITS48BMP "digits48.bmp"
  #define TILES24BMP "tiles24.bmp"

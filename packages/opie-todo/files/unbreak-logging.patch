@@ -1,0 +1,21 @@
+Index: todo/main.cpp
+===================================================================
+RCS file: /cvs/opie/core/pim/todo/main.cpp,v
+retrieving revision 1.11
+diff -u -r1.11 main.cpp
+--- main.cpp	6 Apr 2005 21:39:47 -0000	1.11
++++ main.cpp	3 May 2007 02:57:14 -0000
+@@ -34,13 +34,8 @@
+ 
+ #include <qpe/qpeapplication.h>
+ 
+-void myMessages( QtMsgType, const char*  ) {
+-
+-}
+-
+ int main( int argc, char **argv )
+ {
+-    qInstallMsgHandler( myMessages );
+     QPEApplication a( argc, argv );
+ 
+     QTime time;

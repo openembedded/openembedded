@@ -61,7 +61,6 @@ glib_cv___va_copy=${glib_cv___va_copy=yes}
 glib_cv_va_copy=${glib_cv_va_copy=yes}
 glib_cv_va_val_copy=${glib_cv_va_val_copy=no}
 lftp_cv_va_copy=${lftp_cv_va_copy=yes}
-mr_cv_target_elf=${mr_cv_target_elf=yes}
 nano_cv_func_regexec_segv_emptystr=${nano_cv_func_regexec_segv_emptystr=no}
 samba_cv_HAVE_VA_COPY=${samba_cv_HAVE_VA_COPY=yes}
 screen_cv_sys_bcopy_overlap=${screen_cv_sys_bcopy_overlap=no}

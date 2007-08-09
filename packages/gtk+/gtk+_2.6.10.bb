@@ -5,7 +5,7 @@ SECTION = "libs"
 LICENSE = "LGPL"
 PRIORITY = "optional"
 DEPENDS = "glib-2.0 pango atk jpeg libpng libxext libxcursor gtk-doc libgcrypt"
-PR = "r8"
+PR = "r11"
 
 SRC_URI = "ftp://ftp.gtk.org/pub/gtk/v2.6/gtk+-${PV}.tar.bz2 \
            file://help.patch;patch=1 \
@@ -32,7 +32,10 @@ SRC_URI = "ftp://ftp.gtk.org/pub/gtk/v2.6/gtk+-${PV}.tar.bz2 \
            file://gtk.keynav.gtksettings.patch;patch=1;pnum=0 \
            file://gtk.keynav.gtktextview.patch;patch=1;pnum=0 \
            file://gtk.keynav.gtktreeview.patch;patch=1;pnum=0 \
-           file://gtk.keynav.gtkwidget.patch;patch=1;pnum=0"
+           file://gtk.keynav.gtkwidget.patch;patch=1;pnum=0 \
+           file://gtk+-2.6.10-bg.patch;patch=1 \
+           file://filesel-fix-segfault.patch;patch=1 \
+           "
 
 inherit autotools pkgconfig
 

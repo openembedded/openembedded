@@ -1,9 +1,3 @@
-LICENSE = "GPL"
-inherit autotools gpe
+require gpe-timesheet.inc
 
-DESCRIPTION = "GPE time tracker"
-GPE_TARBALL_SUFFIX = "bz2"
-DEPENDS = "libgpewidget gtk+ sqlite libtododb"
-SECTION = "gpe"
-RDEPENDS = "gpe-icons"
 PR = "r1"

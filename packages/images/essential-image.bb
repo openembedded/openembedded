@@ -1,6 +1,6 @@
 #
 # Copyright Matthias Hentges <devel@hentges.net> (c) 2006
-# License: GPL (see http://www.gnu.org/licenses/gpl.txt for a copy of the license)
+# License: MIT (see COPYING.MIT)
 #
 # Filename: essential-image.bb
 # Date: 23-Apr-06

@@ -11,6 +11,7 @@ RPSRC = "http://www.rpsys.net/openzaurus/patches/archive"
 JLSRC = "http://www.cs.wisc.edu/~lenz/zaurus/files"
 BASRC = "http://www.orca.cx/zaurus/patches"
 CHSRC = "http://oz.drigon.com/patches"
+TKSRC = "http://www.informatik.hu-berlin.de/~tkunze/zaurus/patches"
 
 ##############################################################
 # Compensate for sucky bootloader on all Sharp Zaurus models
@@ -20,13 +21,19 @@ ALLOW_EMPTY = "1"
 
 EXTRA_OEMAKE = "OPENZAURUS_RELEASE=-${DISTRO_VERSION}"
 COMPATIBLE_HOST = "(arm|i.86).*-linux"
-COMPATIBLE_MACHINE = '(collie|poodle|c7x0|akita|spitz|tosa|hx2000|qemuarm|qemux86)'
+COMPATIBLE_MACHINE = '(collie|poodle|c7x0|akita|spitz|tosa|hx2000|qemuarm|qemux86|bootcdx86)'
 KERNEL_IMAGETYPE_qemux86 = "bzImage"
+KERNEL_IMAGETYPE_bootcdx86 = "bzImage"
+
+KERNEL_CUSTOM_NAME ?= ""
+KERNEL_DEPLOY_NAME ?= "${KERNEL_IMAGETYPE}-${PV}-${KERNEL_CUSTOM_NAME}${MACHINE}-${DATETIME}.bin"
+KERNEL_SYMLINK_NAME ?=  "${KERNEL_IMAGETYPE}-${KERNEL_CUSTOM_NAME}${MACHINE}.bin"
+KERNEL_DEFCONFIG ?= "defconfig-${MACHINE}"
 
 CMDLINE_CON = "console=ttyS0,115200n8 console=tty1 noinitrd"
 CMDLINE_CON_collie = "console=ttySA0,115200n8 console=tty1 noinitrd"
-CMDLINE_ROOT = "root=/dev/mtdblock2 rootfstype=jffs2"
-CMDLINE_ROOT_spitz = "root=/dev/hda1 rootfstype=ext3 rootdelay=1 rw"
+CMDLINE_ROOT ?= "root=/dev/mtdblock2 rootfstype=jffs2"
+CMDLINE_ROOT_spitz ?= "root=/dev/hda1 rootfstype=ext3 rootdelay=1 rw"
 CMDLINE_OTHER = "dyntick=enable"
 CMDLINE_DEBUG = '${@base_conditional("DISTRO_TYPE", "release", "quiet", "debug",d)}'
 
@@ -58,27 +65,29 @@ module_autoload_snd-soc-corgi_c7x0 = "snd-soc-corgi"
 module_autoload_snd-soc-spitz_akita = "snd-soc-spitz"
 module_autoload_snd-soc-spitz_spitz = "snd-soc-spitz"
 module_autoload_snd-soc-poodle_poodle = "snd-soc-poodle"
+module_autoload_locomo-spi_collie = "locomo-spi"
+module_autoload_mmc_block_collie = "mmc_block"
 
 do_configure() {
 	rm -f ${S}/.config
 
-	if [ "${MACHINE}" == "tosa" ]; then
+	if [ "${MACHINE}" = "tosa" ]; then
 		gcc_version=`${KERNEL_CC} -dumpversion`		
-		if [ "${gcc_version}" == "4.0.1" ] || [ "${gcc_version}" == "4.0.2" ]; then
+		if [ "${gcc_version}" = "4.0.1" ] || [ "${gcc_version}" = "4.0.2" ]; then
 			die "tosa kernel wont work with gcc 4.0.x"
 		fi
 	fi
 
-	if [ ! -e ${WORKDIR}/defconfig-${MACHINE} ]; then
+	if [ ! -e ${WORKDIR}/${KERNEL_DEFCONFIG} ]; then
 		die "No default configuration for ${MACHINE} available."
 	fi
 
-	if [ "${MACHINE}" == "collie" ]; then
+	if [ "${MACHINE}" = "collie" ]; then
 		mempos=`echo "obase=16; $mem * 1024 * 1024" | bc`
 		rdsize=`echo "$rd * 1024" | bc`
 		total=`expr $mem + $rd`
 		addr=`echo "obase=16; ibase=16; C0000000 + $mempos" | bc`
-	 	if [ "$rd" == "0" ]
+	 	if [ "$rd" = "0" ]
 	 	then
 		    echo "No RAMDISK"
 			echo "# CONFIG_MTD_MTDRAM_SA1100 is not set" >> ${S}/.config
@@ -93,7 +102,7 @@ do_configure() {
 
 	echo "CONFIG_CMDLINE=\"${CMDLINE}\"" >> ${S}/.config
 
-	#if [ "${ENABLE_ELPP}" == "yes" ]; then
+	#if [ "${ENABLE_ELPP}" = "yes" ]; then
         #        echo "# Enhanced Linux Progress Patch"  >> ${S}/.config
         #        echo "CONFIG_FB_ELPP=y"                 >> ${S}/.config
         #        echo "CONFIG_LOGO=y"                    >> ${S}/.config
@@ -102,7 +111,7 @@ do_configure() {
 	#	echo "# CONFIG_FB_ELPP is not set"	>> ${S}/.config
 	#fi
 
-	if [ "${TARGET_OS}" == "linux-gnueabi" -o  "${TARGET_OS}" == "linux-uclibcgnueabi" ]; then
+	if [ "${TARGET_OS}" = "linux-gnueabi" -o "${TARGET_OS}" = "linux-uclibcgnueabi" ]; then
 		echo "CONFIG_AEABI=y"                   >> ${S}/.config
 		echo "CONFIG_OABI_COMPAT=y"             >> ${S}/.config
 	else 
@@ -110,7 +119,7 @@ do_configure() {
 		echo "# CONFIG_OABI_COMPAT is not set"  >> ${S}/.config
 	fi
 
-	if [ "${DISTRO}" == "openzaurus" -a "${MACHINE}" != "collie" ]; then
+	if [ "${DISTRO}" = "openzaurus" -a "${MACHINE}" != "collie" ]; then
 		case ${MACHINE} in
 			c7x0 | akita | spitz )
 				echo "CONFIG_LOGO_OZ640_CLUT224=y"            >> ${S}/.config
@@ -131,7 +140,7 @@ do_configure() {
 		echo "CONFIG_LOGO=y"                          >> ${S}/.config
 		echo "# CONFIG_LOGO_LINUX_CLUT224 is not set" >> ${S}/.config
 		echo "# CONFIG_LOGO_OHAND_CLUT224 is not set" >> ${S}/.config
-	elif [ "${DISTRO}" == "poky" -a "${MACHINE}" != "collie" ]; then
+	elif [ "${DISTRO}" = "poky" -a "${MACHINE}" != "collie" ]; then
 		echo "CONFIG_LOGO=y"                          >> ${S}/.config
 		echo "CONFIG_LOGO_OHAND_CLUT224=y"            >> ${S}/.config
 		echo "# CONFIG_LOGO_OZ240_CLUT224 is not set" >> ${S}/.config
@@ -160,7 +169,7 @@ do_configure() {
 	    -e '/CONFIG_LOGO_OZ240_CLUT224=/d' \
 	    -e '/CONFIG_LOGO_OZ480_CLUT224=/d' \
 	    -e '/CONFIG_LOGO_OZ640_CLUT224=/d' \
-	    '${WORKDIR}/defconfig-${MACHINE}' >>'${S}/.config'
+	    '${WORKDIR}/${KERNEL_DEFCONFIG}' >>'${S}/.config'
 
 	yes '' | oe_runmake oldconfig
 }
@@ -190,11 +199,12 @@ do_compile_append() {
 }
 
 do_deploy() {
-        install -d ${DEPLOY_DIR_IMAGE}
-        install -m 0644 arch/${ARCH}/boot/${KERNEL_IMAGETYPE} ${DEPLOY_DIR_IMAGE}/${KERNEL_IMAGETYPE}-${PV}-${MACHINE}-${DATETIME}.bin
-	rm -f ${DEPLOY_DIR_IMAGE}/${KERNEL_IMAGETYPE}-${MACHINE}.bin
-	ln -s ${DEPLOY_DIR_IMAGE}/${KERNEL_IMAGETYPE}-${PV}-${MACHINE}-${DATETIME}.bin ${DEPLOY_DIR_IMAGE}/${KERNEL_IMAGETYPE}-${MACHINE}.bin
-        tar -cvzf ${DEPLOY_DIR_IMAGE}/modules-${KERNEL_VERSION}-${MACHINE}.tgz -C ${D} lib	
+	install -d ${DEPLOY_DIR_IMAGE}
+	install -m 0644 arch/${ARCH}/boot/${KERNEL_IMAGETYPE} ${DEPLOY_DIR_IMAGE}/${KERNEL_DEPLOY_NAME}
+	cd ${DEPLOY_DIR_IMAGE}
+	rm -f ${KERNEL_SYMLINK_NAME}
+	ln -s ${KERNEL_DEPLOY_NAME} ${KERNEL_SYMLINK_NAME}
+	tar -cvzf ${DEPLOY_DIR_IMAGE}/modules-${KERNEL_VERSION}-${MACHINE}.tgz -C ${D} lib	
 }
 
 do_deploy[dirs] = "${S}"

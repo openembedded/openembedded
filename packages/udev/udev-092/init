@@ -1,4 +1,4 @@
-#!/bin/sh -e
+#!/bin/sh
 ### BEGIN INIT INFO
 # Provides:          udev
 # Required-Start:    mountvirtfs 
@@ -119,7 +119,7 @@ PATH="/sbin:/bin:/usr/bin"
 [ -x /sbin/udevd ] || exit 0
 
 # defaults
-tmpfs_size="10M"
+tmpfs_size="2M"
 udev_root="/dev"
 udevd_timeout=30
 

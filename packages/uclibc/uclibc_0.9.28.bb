@@ -22,20 +22,31 @@ S = "${WORKDIR}/uClibc-${PV}"
 #SRC_URI += "file://nokernelheadercheck.patch;patch=1"
 #
 # Thumb support
-SRC_URI += " file://thumb-defined-arm-or-thumb.patch;patch=1"
 #
 # Thumb interworking support
-SRC_URI += " file://thumb-mov-pc-bx.patch;patch=1"
-SRC_URI += " file://thumb-swi-r7.patch;patch=1"
-SRC_URI += " file://thumb-sysnum-h.patch;patch=1"
-SRC_URI += " file://thumb-asm-swi.patch;patch=1"
-SRC_URI += " file://thumb-call-via-rx.patch;patch=1"
-SRC_URI += " file://dl-startup.h.patch;patch=1"
-SRC_URI += " file://dl-string.h.patch;patch=1"
-SRC_URI += " file://dl-sysdep.h.patch;patch=1"
+THUMBSTUFF = " \
+              file://thumb-defined-arm-or-thumb.patch;patch=1 \
+              file://thumb-mov-pc-bx.patch;patch=1 \
+              file://thumb-swi-r7.patch;patch=1 \
+              file://thumb-sysnum-h.patch;patch=1 \
+              file://thumb-asm-swi.patch;patch=1 \
+              file://thumb-call-via-rx.patch;patch=1 \
+              file://dl-startup.h.patch;patch=1 \
+              file://dl-string.h.patch;patch=1 \
+              file://dl-sysdep.h.patch;patch=1 \
+             "
+
+SRC_URI_append_arm = " ${THUMBSTUFF} "
+
 #
 # This is a core change and is controversial, maybe even wrong
 # on some architectures
 THUMB_INTERWORK_RESOLVE_PATCH = ""
 THUMB_INTERWORK_RESOLVE_PATCH_thumb-interwork = " file://thumb-resolve.patch;patch=1"
 SRC_URI += " ${THUMB_INTERWORK_RESOLVE_PATCH}"
+
+
+DEFAULT_PREFERENCE_avr32 = "6000"
+SRC_URI_append_avr32 = " http://avr32linux.org/twiki/pub/Main/MicroClibcPatches/uClibc-0.9.28-avr1.patch.bz2;patch=1 "
+
+

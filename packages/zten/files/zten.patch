@@ -1,0 +1,35 @@
+--- zten/zten.pro.orig	2003-02-16 16:45:44.000000000 +0100
++++ zten/zten.pro	2006-04-23 18:50:19.000000000 +0200
+@@ -1,11 +1,9 @@
+ TEMPLATE	= app
+ CONFIG		= qt warn_on release
+-HEADERS		= pixmap.h \
+-		  qbookbrowser.h \
++HEADERS		= qbookbrowser.h \
+ 		  qbookentry.h \
+ 		  qbookitem.h \
+ 		  qhistorylineedit.h \
+-		  qlabeledit.h \
+ 		  qlistboxrichtext.h \
+ 		  zpixmap.h \
+ 		  zten.h \
+@@ -29,5 +27,5 @@
+ 		  ztenbookbase.ui \
+ 		  ztencandidatebase.ui \
+ 		  ztenextbase.ui
+-LIBS += -lqpe /opt/Embedix/lib/libeb.a /opt/Embedix/lib/libz.a -L/opt/QtPalmtop/lib -lkakasi
++LIBS += -lqpe -leb -lz -lkakasi
+ TRANSLATIONS = zten.ts
+
+--- zten/qbookentry.cpp.orig 2006-04-23 23:38:00.000000000 +0200
++++ zten/qbookentry.cpp      2006-04-23 23:38:10.000000000 +0200
+@@ -14,7 +14,8 @@
+ }
+
+ static const char* INSERT_MARK = "\a";
+-QTextCodec* g_codec;
++//QTextCodec* g_codec = NULL;
++QTextCodec* g_codec = QTextCodec::codecForName("eucJP");
+ unsigned int last_wide_font = 0;
+ unsigned int last_narrow_font = 0;
+

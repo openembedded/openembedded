@@ -1,0 +1,20 @@
+diff -ur gtk+-2.8.20/gtk/gtkiconview.c gtk+-2.8.20-new/gtk/gtkiconview.c
+--- gtk+-2.8.20/gtk/gtkiconview.c	2006-04-11 20:44:15.000000000 +0200
++++ gtk+-2.8.20-new/gtk/gtkiconview.c	2007-01-03 20:20:26.000000000 +0100
+@@ -899,9 +899,14 @@
+   gdk_window_set_user_data (icon_view->priv->bin_window, widget);
+ 
+   widget->style = gtk_style_attach (widget->style, widget->window);
+-  gdk_window_set_background (icon_view->priv->bin_window, &widget->style->base[widget->state]);
++/*  gdk_window_set_background (icon_view->priv->bin_window, &widget->style->base[widget->state]);
+   gdk_window_set_background (widget->window, &widget->style->base[widget->state]);
+-
++*/
++printf("realize iconview\n");
++//  gdk_window_set_back_pixmap(widget->window, NULL, FALSE);
++//  gdk_window_set_back_pixmap(icon_view->priv->bin_window, NULL, FALSE);
++  gtk_style_set_background (widget->style, widget->window, GTK_STATE_NORMAL);
++  gtk_style_set_background (widget->style, icon_view->priv->bin_window, GTK_STATE_NORMAL);
+   gdk_window_show (icon_view->priv->bin_window);
+ }
+ 

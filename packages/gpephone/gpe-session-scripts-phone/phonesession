@@ -30,11 +30,26 @@ export	TINYMAIL_CACHE_DIR=$APP_PATH/share/tinymail.cache
 # For Calendar
 export	CAL_RES_PATH=$APP_PATH/share/res
 
+# For GTK input engine
+if [ -d /usr/lib/gtk-2.0/2.10.0 ]; then
+	export PTIM_PATH=/usr/lib/gtk-2.0/2.10.0/immodules/ptim
+else
+	export PTIM_PATH=/usr/lib/gtk-2.0/2.4.0/immodules/ptim
+fi
+
+export PTIM_PIXMAPS_PATH=$PTIM_PATH/pixmaps
+export PTIM_CONFIG_FILE=$PTIM_PATH/imconfig 
+export PTIM_HELPER_PATH=$PTIM_PATH/helper
+export PTIM_ENGINE_PATH=$PTIM_PATH/engine
+export GTK_IM_MODULE=ptim
+
 # Start GPE Phone Edition apps through matchbox session
-gpe-applauncher&
-sleep 2
 gpe-phonepanel&
+gpe-applauncher&
 matchbox-window-manager -use_titlebar no&
+
+# start device support daemon
+machined
 
 # Start E-Sound Server
 esd -nobeeps -as 2&
@@ -48,5 +63,8 @@ soundserver &
 #cms92init &
 gsmMux -d -p /dev/ttyS0 -m cms92 -f 128 -b 115200 -c /dev/ptmx /dev/ptmx &
 
-# Start PhoneServer
-phoneserver
+#save session bus address to a file
+echo $DBUS_SESSION_BUS_ADDRESS > /tmp/dbusaddress
+
+# Start PhoneServer - do not stop, it keeps the session running
+exec phoneserver

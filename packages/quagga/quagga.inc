@@ -100,8 +100,8 @@ CONFFILES_${PN} = "${sysconfdir}/default/quagga"
 CONFFILES_${PN}-watchquagga = "${sysconfdir}/default/watchquagga"
 
 # Stop the names being rewritten due to the internal shared libraries
-PKG_${PN}-ospfd         = "${PN}-ospfd"
-PKG_${PN}-ospfclient    = "${PN}-ospfclient"
+DEBIAN_NOAUTONAME_${PN}-ospfd = "1"
+DEBIAN_NOAUTONAME_${PN}-ospfclient = "1"
 
 # Main init script starts all deamons
 # Seperate init script for watchquagga

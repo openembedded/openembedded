@@ -3,7 +3,7 @@ HOMEPAGE = "http://doolittle.icarus.com/ntpclient"
 AUTHOR = "Larry Doolittle <larry@doolittle.boa.org>"
 RDEPENDS = "busybox"
 SECTION = "admin"
-LICENSE = "GPL/v2"
+LICENSE = "GPLv2"
 PR = "r1"
 # The ntpclient package uses version numbers that include an underscore :(
 PV = "2003_194"

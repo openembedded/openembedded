@@ -67,4 +67,18 @@ do_stage () {
 	cp -pfLR ${STAGE_TEMP}${includedir}/linux ${CROSS_DIR}/${TARGET_SYS}/include/
 	cp -pfLR ${STAGE_TEMP}${includedir}/asm ${CROSS_DIR}/${TARGET_SYS}/include/
 	cp -pfLR ${STAGE_TEMP}${includedir}/asm-generic ${CROSS_DIR}/${TARGET_SYS}/include/
+	# Add UTS_RELEASE to version.h. UTS_RELEASE was moved from version.h to 
+	# utsrelease.h in order to avoid recompiling a kernel every time a localversion
+	# changed. Since the our headers are static and we're not compiling an 
+	# actual kernel, re-adding UTS_RELEASE does't hurt, and it allows uclibc to 
+	# compile with kernel headers that work with EABI on ARM
+	echo '#define UTS_RELEASE "2.6.18"' >> ${CROSS_DIR}/${TARGET_SYS}/include/linux/version.h
 }
+
+do_stage_append_nylon () {
+	cp -pPR include/asm-${ARCH}/* ${STAGING_INCDIR}/asm/
+	cp -pPR include/asm-${ARCH}/* ${CROSS_DIR}/${TARGET_SYS}/include/asm/
+	cp -pPR include/linux/* ${STAGING_INCDIR}/linux/
+	cp -pPR include/linux/* ${CROSS_DIR}/${TARGET_SYS}/include/linux/
+}
+

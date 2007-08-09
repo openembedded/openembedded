@@ -10,21 +10,21 @@ DESCRIPTION_${PN}-daemon = "An on-demand file scanning service for Clam AntiViru
 HOMEPAGE = "http://www.clamav.net/"
 SECTION = "network"
 LICENSE = "GPL"
-DEPENDS = "zlib bzip2 gmp"
+DEPENDS = "zlib bzip2 gmp curl virtual/libintl"
 RDEPENDS_${PN} = "${PN}-data"
-RDEPENDS_${PN}-daemon = "${PN}-data"
+RDEPENDS_${PN}-daemon = "${PN}-data ${PN}-conf"
+RDEPENDS_${PN}-freshclam = "${PN}-conf"
 RRECOMMENDS_${PN} = "${PN}-freshclam"
 RRECOMMENDS_${PN}-daemon = "${PN}-freshclam"
+RPROVIDES_${PN}-freshclam = "${PN}-data"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/clamav/clamav-${PV}.tar.gz \
           file://cross-compile-fix.patch;patch=1 \
-          file://libtool-fix.patch;patch=1 \
           file://clamav-daemon.init \
           file://clamav-freshclam.init \
-          file://clamav-daemon.default \
           file://clamd.conf \
           file://freshclam.conf \
-          file://volatiles.02_clamav-data \
+          file://volatiles.03_clamav-data \
           file://volatiles.03_clamav-daemon \
           file://volatiles.03_clamav-freshclam"
 
@@ -33,6 +33,8 @@ inherit autotools update-rc.d binconfig
 # Don't check for clamav uid/gid - they don't exist on the host
 # Put virus definitions in /var/lib not /usr/lib
 EXTRA_OECONF = "--disable-clamav \
+                --with-zlib=${STAGING_DIR}/${HOST_SYS} \
+                --with-libcurl \
                 --with-dbdir=${localstatedir}/lib/clamav"
 
 do_install_append() {
@@ -48,20 +50,13 @@ do_install_append() {
 
         # Install our config files and init scripts
         install -m 0755 ${WORKDIR}/freshclam.conf ${D}${sysconfdir}/freshclam.conf
-        install -m 0755 ${WORKDIR}/clamav-daemon.default ${D}${sysconfdir}/default/clamav-daemon
         install -m 0755 ${WORKDIR}/clamav-daemon.init ${D}${sysconfdir}/init.d/clamav-daemon
         install -m 0755 ${WORKDIR}/clamav-freshclam.init ${D}${sysconfdir}/init.d/clamav-freshclam
 
         # We need some /var directories
-        for i in 02_clamav-data 03_clamav-daemon 03_clamav-freshclam; do
+        for i in 03_clamav-daemon 03_clamav-freshclam 03_clamav-data; do
           install -m 0644 ${WORKDIR}/volatiles.$i ${D}${sysconfdir}/default/volatiles/$i
         done
-
-        # Move the clamav data to a non-volatile location, we'll symlink back
-        # If freshclam is running it'll break the link to this static data
-        # once it has succesfully downloaded an update
-        install -m 0755 -d ${D}${libdir}
-        mv ${D}${localstatedir}/lib/clamav ${D}${libdir}
 }
 do_stage () {
         oe_libinstall -a -so libclamav ${STAGING_LIBDIR}
@@ -69,22 +64,25 @@ do_stage () {
         install -m 0644 libclamav/clamav.h ${STAGING_INCDIR}
 }
 
-PACKAGES += "${PN}-freshclam ${PN}-daemon ${PN}-data ${PN}-lib"
+PACKAGES += "${PN}-freshclam ${PN}-daemon ${PN}-conf ${PN}-data ${PN}-lib \
+             ${PN}-clamconf"
 
-FILES_${PN} = "${bindir}/clamscan ${bindir}/sigtool ${bindir}/clamdscan"
+FILES_${PN} = "${bindir}/clamscan \
+               ${bindir}/sigtool \
+               ${bindir}/clamdscan"
 FILES_${PN}-lib = "${libdir}/libclamav.so.*"
+FILES_${PN}-conf = "${sysconfdir}/clamd.conf"
+FILES_${PN}-clamconf = "${bindir}/clamconf"
 FILES_${PN}-freshclam = "${bindir}/freshclam \
                          ${sysconfdir}/freshclam.conf \
                          ${sysconfdir}/init.d/clamav-freshclam \
                          ${sysconfdir}/default/volatiles/03_clamav-freshclam"
-FILES_${PN}-daemon = "${sysconfdir}/clamd.conf \
-                      ${sbindir}/clamd \
+FILES_${PN}-daemon = "${sbindir}/clamd \
                       ${sysconfdir}/init.d/clamav-daemon \
-                      ${sysconfdir}/default/clamav-daemon \
                       ${sysconfdir}/default/volatiles/03_clamav-daemon"
-FILES_${PN}-data = "${libdir}/clamav/main.cvd \
-                    ${libdir}/clamav/daily.cvd \
-                    ${sysconfdir}/default/volatiles/02_clamav-data"
+FILES_${PN}-data = "${localstatedir}/lib/clamav/main.cvd \
+                    ${localstatedir}/lib/clamav/daily.cvd \
+                    ${sysconfdir}/default/volatiles/03_clamav-data"
 FILES_${PN}-dev += "${bindir}/clamav-config"
 
 # Add clamav's user and groups
@@ -111,9 +109,10 @@ pkg_postinst_${PN}-data () {
 }
 
 # Indicate that the default files are configuration files
-CONFFILES_${PN}-daemon = "${sysconfdir}/clamd.conf \
-                          ${sysconfdir}/default/clamav-daemon"
+CONFFILES_${PN}-conf = "${sysconfdir}/clamd.conf"
 CONFFILES_${PN}-freshclam = "${sysconfdir}/freshclam.conf"
+CONFFILES_${PN}-data = "${localstatedir}/lib/clamav/main.cvd \
+                        ${localstatedir}/lib/clamav/daily.cvd"
 
 INITSCRIPT_PACKAGES = "${PN}-daemon ${PN}-freshclam"
 INITSCRIPT_NAME_${PN}-daemon = "clamav-daemon"

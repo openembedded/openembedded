@@ -1,0 +1,102 @@
+#!/bin/sh
+#
+[ -z $LOGNAME ] && export LOGNAME=root && export HOME=/home/root
+[ -z $HOME ] && export HOME=/home/$LOGNAME
+
+export QTDIR="@palmtopdir@"
+export OPIEDIR="$QTDIR"
+export QPEDIR="$QTDIR"
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$OPIEDIR/lib
+export PATH=$PATH:$OPIEDIR/bin
+# Following is from c7x0 override, check for validity, etc.
+## we need to tinker directly with qws_display until the ODevice 
+## default (which is now W100:Rot0:0) works flawlessly with rotation 
+## and survives a suspend/resume cycle 
+#export QWS_DISPLAY=Transformed:Rot0:0
+## export QWS_DISPLAY=W100:Rot0:0 
+
+if [ -z `which qpe` ] ; then 
+    echo Opie not installed
+    exit 0
+fi
+
+. /etc/profile
+
+if [ ! -e $TSLIB_TSDEVICE ]; then
+    export QWS_MOUSE_PROTO=MouseMan:/dev/input/mice
+fi
+
+for conf in $OPIEDIR/etc/skel/*.conf; do
+	conf_basename=`basename $conf`
+	if [ ! -e "$HOME/Settings/$conf_basename" ] ; then
+		echo "Copying default $conf_basename into $HOME/Settings/"
+		mkdir -p $HOME/Settings/
+		cat $conf >$HOME/Settings/$conf_basename
+	fi
+done
+
+if [ ! -e "$HOME/systeminfo/linkver" ] ; then
+    mkdir -p $HOME/systeminfo/
+    echo "1.13" >$HOME/systeminfo/linkver
+fi
+
+case $1 in
+'start')
+    # Turn off psplash if any - sleep is required for anti-race
+    if [ -e /mnt/.psplash ]; then
+        TMPDIR=/mnt/.psplash psplash-write "QUIT" || true
+        sleep 1
+    fi
+    
+    if [ -x "$OPIEDIR/bin/opie-login" ]; then
+            echo Starting Opie-login....
+            $OPIEDIR/bin/opie-login -terminal 3
+    else
+        opie-reorgfiles
+        
+        if [ -x "$OPIEDIR/bin/opie-sh-ssh-askpass.sh" ]; then
+            export SSH_ASKPASS=$OPIEDIR/bin/opie-sh-ssh-askpass.sh
+        fi           
+        echo Starting Opie....
+	(
+	 test -x /usr/bin/ssh-agent && eval $(/usr/bin/ssh-agent -s) && echo $SSH_AGENT_PID>/var/run/opie-ssh-agent.pid ;
+         qpe -terminal 3
+	)
+	echo -n >/var/log/opie-qss.log
+	{ for attempt in 0 1 2 3 4 5 6 7 8 9 a b c d e f ; do
+	    sleep 1
+	    echo "Waiting for qcop to startup: $attempt ..." >>/var/log/opie-qss.log
+	    qcop QPE/System 'ping()' || continue
+	    echo "Starting qss" >>/var/log/opie-qss.log
+	    qss </dev/null >>/var/log/opie-qss.log 2>&1
+	    echo "qss exited, will try to restart" >>/var/log/opie-qss.log
+	done; rm /var/run/opie-qss-loop.pid; } </dev/null >/dev/null 2>&1 &
+	echo $! >/var/run/opie-qss-loop.pid
+    fi
+
+    ;;
+
+'stop')
+    echo "Stopping Opie..."
+    test -r /var/run/opie-qss-loop.pid && kill $(cat /var/run/opie-qss-loop.pid) 2>/dev/null ; rm -f /var/run/opie-qss-loop.pid
+    killall qss 2>/dev/null
+    killall qpe 2>/dev/null
+    killall opie-login 2>/dev/null
+    killall quicklauncher 2>/dev/null
+    test -r /var/run/opie-ssh-agent.pid && kill $(cat /var/run/opie-ssh-agent.pid) 2>/dev/null ; rm -f /var/run/opie-ssh-agent.pid
+    true
+
+    ;;
+
+'restart')
+	$0 stop && $0 start
+
+	;;
+
+*)
+    echo "usage: $0 { start | stop | restart }"
+
+    ;;
+
+esac
+

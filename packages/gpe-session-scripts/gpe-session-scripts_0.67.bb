@@ -4,14 +4,14 @@ DESCRIPTION = "GPE session startup scripts"
 LICENSE = "GPL"
 SECTION = "gpe"
 PRIORITY = "optional"
-RDEPENDS_${PN} = "matchbox-panel (>= 0.9.2-r12) matchbox-desktop (>= 0.9.1-r1) matchbox-common (>= 0.9.1-r2) gpe-session-starter xtscal gpe-question matchbox-applet-inputmanager xmodmap xdpyinfo xserver-common ipaq-sleep"
+RDEPENDS_${PN} = "matchbox-panel matchbox-desktop  matchbox-common gpe-session-starter xtscal gpe-question matchbox-applet-inputmanager xmodmap xdpyinfo xserver-common ipaq-sleep"
 # more rdepends: keylaunch apmd blueprobe
 DEPENDS = "matchbox-wm matchbox-panel xtscal gpe-question matchbox-applet-inputmanager xmodmap xdpyinfo xserver-common ipaq-sleep"
 
 SRC_URI += "file://matchbox-session \
 	file://disable-composite.xsettings"
 
-PR = "r7"
+PR = "r10"
 
 #apply a patch to set the fontsize for bigdpi (200+) devices to 5
 SRC_URI_append_hx4700 = " file://highdpifontfix.patch;patch=1"
@@ -26,6 +26,8 @@ do_configure_append_angstrom() {
 	sed -i s:Industrial:Clearlooks:g X11/xsettings.default
 }
 
+export CURSOR_HIDE = '${@base_contains("MACHINE_FEATURES","touchscreen","-use_cursor no","-use_cursor yes",d)}'
+
 do_install_append() {
 	install -d ${D}${sysconfdir}/gpe/xsettings-default.d
 	if [ "${GUI_MACHINE_CLASS}" != "bigscreen" ]; then
@@ -33,6 +35,8 @@ do_install_append() {
 	fi
 	install -d ${D}${sysconfdir}/matchbox
 	install ${WORKDIR}/matchbox-session ${D}${sysconfdir}/matchbox/session
+        echo -e "exec matchbox-window-manager ${CURSOR_HIDE} \$@ \n" >> ${D}${sysconfdir}/matchbox/session	
+
 
 	install -d ${D}${sysconfdir}/gpe/xsettings-default.d
 	install -m 0644 ${WORKDIR}/disable-composite.xsettings ${D}${sysconfdir}/gpe/xsettings-default.d/disable-composite

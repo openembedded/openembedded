@@ -1,7 +1,7 @@
 Index: hdparm-6.9/hdparm.c
 ===================================================================
---- hdparm-6.9.orig/hdparm.c	2007-03-05 14:02:03.000000000 +0100
-+++ hdparm-6.9/hdparm.c	2007-03-05 14:02:23.000000000 +0100
+--- hdparm-6.9.orig/hdparm.c	2007-05-20 20:12:58.000000000 +0200
++++ hdparm-6.9/hdparm.c	2007-05-20 20:13:31.000000000 +0200
 @@ -16,7 +16,9 @@
  #include <sys/times.h>
  #include <sys/types.h>
@@ -12,10 +12,37 @@ Index: hdparm-6.9/hdparm.c
  #include <linux/hdreg.h>
  #include <linux/major.h>
  #include <byteswap.h>
+@@ -1311,7 +1313,7 @@
+ 			perror(" HDIO_GET_IDENTITY failed");
+ 	}
+ 	if (get_IDentity) {
+-		__u16 *id;
++		uint16_t *id;
+ 		unsigned char args[4+512] = {WIN_IDENTIFY,0,0,1,}; // FIXME?
+ 		unsigned i;
+ 		if (ioctl(fd, HDIO_DRIVE_CMD, &args)) {
+@@ -1321,7 +1323,7 @@
+ 				goto identify_abort;
+ 			}
+ 		}
+-		id = (__u16 *)&args[4];
++		id = (uint16_t *)&args[4];
+ 		if (get_IDentity == 2) {
+ 			for (i = 0; i < (256/8); ++i) {
+ 				printf("%04x %04x %04x %04x %04x %04x %04x %04x\n", id[0], id[1], id[2], id[3], id[4], id[5], id[6], id[7]);
+@@ -1609,7 +1611,7 @@
+ 		 && ishex(d[++digit] = getchar())
+ 		 && ishex(d[++digit] = getchar())) {
+ 		 	sbuf[wc] = (fromhex(d[0]) << 12) | (fromhex(d[1]) << 8) | (fromhex(d[2]) << 4) | fromhex(d[3]);
+-		 	le16_to_cpus((__u16 *)(&sbuf[wc]));
++		 	le16_to_cpus((uint16_t *)(&sbuf[wc]));
+ 			++wc;
+ 		} else if (d[digit] == EOF) {
+ 			goto eof;
 Index: hdparm-6.9/hdparm.h
 ===================================================================
 --- hdparm-6.9.orig/hdparm.h	2006-04-28 16:33:01.000000000 +0200
-+++ hdparm-6.9/hdparm.h	2007-03-05 14:03:10.000000000 +0100
++++ hdparm-6.9/hdparm.h	2007-05-20 20:12:58.000000000 +0200
 @@ -1,6 +1,6 @@
  /* Some prototypes for extern functions. */
  
