@@ -1,6 +1,7 @@
 require ${PN}.inc
 
-PV = "${OPIE_CVS_PV}"
+# Remove the dash below when 1.2.1 changes in PV
+PV = "1.2.2+cvs-${SRCDATE}"
 
 SRC_URI = "${HANDHELDS_CVS};module=opie/noncore/multimedia/opieplayer2 \
            ${HANDHELDS_CVS};module=opie/pics \
