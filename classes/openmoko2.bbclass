@@ -18,6 +18,7 @@ def openmoko_two_get_subdir(d):
     elif section == "panel-plugin": return "panel-plugins"
     elif section == "inputmethods": return "inputmethods"
     elif section == "daemons": return "daemons"
+    elif section == "misc": return "misc"
     else: return section
 
 LICENSE = "${@openmoko_two_get_license(d)}"
@@ -30,4 +31,3 @@ FILES_${PN} += "${datadir}/icons"
 
 # SVNREV = "r${SRCREV}"
 SVNREV = "${SRCDATE}"
-
