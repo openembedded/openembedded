@@ -57,7 +57,7 @@ FILES_${PN} = "${bindir} \
 FILES_${PN}-gpe = "${datadir}/fluxbox/apps.gpe* \
 		   ${datadir}/fluxbox/keys.* \
 		   ${bindir}/gpe-logout.fluxbox \
-		   ${sysconfdir}keylaunchrc.fluxbox \
+		   ${sysconfdir}/keylaunchrc.fluxbox \
 		   ${datadir}/fluxbox/styles/gpe-default \
 		   ${datadir}/fluxbox/session \
 		   ${bindir}/fluxbox-gpe-session"
