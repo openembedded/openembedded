@@ -1,5 +1,5 @@
 DESCRIPTION = "Basic task to get a device booting"
-PR = "r37"
+PR = "r38"
 
 PROVIDES = "${PACKAGES}"
 PACKAGES = 'task-boot'
@@ -30,6 +30,9 @@ DISTRO_LOGIN_MANAGER ?= "tinylogin"
 #
 MACHINE_ESSENTIAL_EXTRA_RDEPENDS ?= ""
 MACHINE_ESSENTIAL_EXTRA_RRECOMMENDS ?= ""
+
+# Make sure we build the kernel
+DEPENDS = "virtual/kernel"
 
 #
 # minimal set of packages - needed to boot
