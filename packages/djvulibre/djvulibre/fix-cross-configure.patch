@@ -1,0 +1,50 @@
+--- /tmp/acinclude.m4	2007-08-09 22:33:05.000000000 +0200
++++ djvulibre-3.5.19/config/acinclude.m4	2007-08-09 22:33:39.288400000 +0200
+@@ -784,30 +784,6 @@
+         QTDIR=no
+     fi
+   fi
+-  # Execute
+-  if test "x$ac_has_qt" != xno ; then
+-    AC_MSG_CHECKING([if a small Qt program runs])
+-    AC_LANG_PUSH(C++)
+-    save_CXXFLAGS="$CXXFLAGS"
+-    save_LIBS="$LIBS"
+-    CXXFLAGS="$CXXFLAGS $CFLAGS $THREAD_CFLAGS $QT_CFLAGS $X_CFLAGS"
+-    LIBS="$THREAD_LIBS $QT_LIBS $X_LIBS $LIBS"
+-    AC_TRY_RUN([
+-#include <qfile.h>
+-#include <qtextstream.h>
+-#include <qglobal.h>
+-int main() { 
+-QFile qf("confout"); if (!qf.open(IO_WriteOnly)) return 1;
+-QTextStream ts(&qf); ts << QT_VERSION; return 0;
+-}],[okay=yes],[okay=no; QTDIR=no]) 
+-    CXXFLAGS="$save_CXXFLAGS"
+-    LIBS="$save_LIBS"
+-    AC_LANG_POP(C++)
+-    AC_MSG_RESULT($okay)
+-    if test "x$okay" = xno ; then
+-      ac_has_qt=no
+-    fi
+-  fi
+   # Version
+   if test "x$ac_has_qt" != xno ; then
+      AC_MSG_CHECKING([Qt version])
+--- /tmp/configure.ac	2007-08-09 22:46:50.000000000 +0200
++++ djvulibre-3.5.19/configure.ac	2007-08-09 22:47:06.988400000 +0200
+@@ -563,14 +563,8 @@
+ 
+ /* - QT */
+ #ifdef HAVE_QT
+-#if HAVE_QT < 200
+-#define QT1
+-#elif HAVE_QT < 300
+-#define QT2
+-#else
+ #define QT3
+ #endif
+-#endif
+ 
+ /* - X STUFF */
+ #ifdef HAVE_SYS_IPC_H
