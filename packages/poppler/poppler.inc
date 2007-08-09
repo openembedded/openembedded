@@ -21,3 +21,8 @@ EXTRA_OECONF += "${@get_poppler_fpu_setting(bb, d)}"
 do_stage() {
 	autotools_stage_all
 }
+
+PACKAGES =+ "libpoppler libpoppler-glib"
+FILES_libpoppler = "${libdir}/libpoppler.so.*"
+FILES_libpoppler-glib = "${libdir}/libpoppler-glib.so.*"
+

@@ -1,2 +1,2 @@
 require poppler.inc
-PR = "r2"
+PR = "r3"

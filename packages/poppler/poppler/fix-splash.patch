@@ -1,0 +1,28 @@
+--- poppler/splash/SplashMath.h	2007/04/25 19:59:10	1.3
++++ poppler/splash/SplashMath.h	2007/06/01 18:34:48	1.4
+@@ -8,7 +8,7 @@
+ #define SPLASHMATH_H
+ 
+ #if USE_FIXEDPOINT
+-#include "FixedPoint.h"
++#include "goo/FixedPoint.h"
+ #else
+ #include <math.h>
+ #endif
+--- poppler/splash/SplashFTFont.cc	2007/04/25 19:59:10	1.8
++++ poppler/splash/SplashFTFont.cc	2007/06/01 18:34:48	1.9
+@@ -127,10 +127,10 @@
+   matrix.yx = (FT_Fixed)((mat[1] / size).getRaw());
+   matrix.xy = (FT_Fixed)((mat[2] / size).getRaw());
+   matrix.yy = (FT_Fixed)((mat[3] / size).getRaw());
+-  textMatrix.xx = (FT_Fixed)((textMat[0] / (size * textScale)).getRaw());
+-  textMatrix.yx = (FT_Fixed)((textMat[1] / (size * textScale)).getRaw());
+-  textMatrix.xy = (FT_Fixed)((textMat[2] / (size * textScale)).getRaw());
+-  textMatrix.yy = (FT_Fixed)((textMat[3] / (size * textScale)).getRaw());
++  textMatrix.xx = (FT_Fixed)((textMat[0] / (textScale * size)).getRaw());
++  textMatrix.yx = (FT_Fixed)((textMat[1] / (textScale * size)).getRaw());
++  textMatrix.xy = (FT_Fixed)((textMat[2] / (textScale * size)).getRaw());
++  textMatrix.yy = (FT_Fixed)((textMat[3] / (textScale * size)).getRaw());
+ #else
+   matrix.xx = (FT_Fixed)((mat[0] / size) * 65536);
+   matrix.yx = (FT_Fixed)((mat[1] / size) * 65536);

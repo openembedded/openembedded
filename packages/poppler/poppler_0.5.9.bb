@@ -1,5 +1,7 @@
 require poppler.inc
 
-# does not build, use cvs for now and eventually try to bump to 0.6.0 (or 1.0)
-DEFAULT_PREFERENCE = "-1"
+PR = "r1"
+
+SRC_URI += "file://fix-splash.patch;patch=1"
+EXTRA_OECONF_append = " --disable-abiword-output "
 
