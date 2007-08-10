@@ -3,8 +3,10 @@ HOMEPAGE = "http://www.openmoko.org"
 LICENSE = "GPL LGPL"
 SECTION = "libs/gsm"
 PROVIDES += "gsmd"
-PV = "0.1+svn${SRCDATE}"
-PR = "r16"
+PV = "0.1+svnr${SRCREV}"
+PR = "r17"
+
+SRC_URI_OVERRIDES_PACKAGE_ARCH = "1"
 
 SRC_URI = "svn://svn.openmoko.org/trunk/src/target;module=gsm;proto=http \
            file://gsmd \

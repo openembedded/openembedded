@@ -2,9 +2,11 @@ DESCRIPTION = "This package provides the necessary \
 infrastructure for basic TCP/IP based networking."
 SECTION = "base"
 LICENSE = "GPL"
-PR = "r18"
+PR = "r19"
 
 inherit update-rc.d
+
+SRC_URI_OVERRIDES_PACKAGE_ARCH = "1"
 
 INITSCRIPT_NAME = "networking"
 INITSCRIPT_PARAMS = "start 40 S . stop 40 0 6 1 ."
