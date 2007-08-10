@@ -3,7 +3,7 @@ SECTION = "base"
 PRIORITY = "optional"
 LICENSE = "GPL"
 RDEPENDS = "devio cpio findutils diffutils"
-PR = "r9"
+PR = "r10"
 
 # Currently, the scripts only support ixp4xx machines.
 # Feel free to add to the scripts ...
@@ -48,5 +48,3 @@ pkg_postrm() {
 	test -n "$D" && opt="-r $D"
 	update-rc.d $opt sysconfsetup remove
 }
-
-CONFFILES = "${sysconfdir}/default/conffiles"
