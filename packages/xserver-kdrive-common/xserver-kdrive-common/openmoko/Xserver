@@ -86,6 +86,8 @@ case `module_id` in
                 ARGS="$ARGS -br -dpi 220 -mouse /dev/input/event0" ;;
         "Cellon C8000 Board")
                 ARGS="$ARGS -br -dpi 100 -screen 240x320,10,1" ;;
+        "HTC Magician")
+                ARGS="$ARGS -br -dpi 142" ;;
         "HTC Universal")
                 ARGS="$ARGS -br -dpi 225 -screen 480x640@270" ;;
 	"ARM-IntegratorCP" | "ARM-Versatile PB")
