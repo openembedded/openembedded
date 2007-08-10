@@ -1,0 +1,112 @@
+#!/bin/sh
+#
+
+# note xinit needs full server path
+XSERVER=/usr/bin/Xipaq
+if [ -f /usr/bin/Xfbdev ]; then
+  XSERVER=/usr/bin/Xfbdev
+fi
+if [ -f /usr/bin/Xepson ]; then
+  XSERVER=/usr/bin/Xepson
+fi
+if [ -f /usr/bin/Xorg ]; then
+  XSERVER=/usr/bin/Xorg
+fi
+if [ -f /usr/bin/Xomap ]; then
+  XSERVER=/usr/bin/Xomap
+fi
+if [ -f /usr/bin/Xw100 ]; then                                                                                                                                              
+  XSERVER=Xw100                                                                                                                                                             
+fi                                                                                                                                                                          
+if [ -f /usr/bin/Ximageon ]; then                                                                                                                                           
+   XSERVER=Ximageon                                                                                                                                                          
+fi   
+
+. /etc/profile
+
+
+
+fallback_screen_arg() {
+    geom=`fbset | grep geometry`
+    w=`echo $geom | awk '{ print $2 }'`
+    h=`echo $geom | awk '{ print $3 }'`
+    b=`echo $geom | awk '{ print $6 }'`
+    echo -n "${w}x${h}x${b}"
+} 
+
+module_id() {
+    ## used to read from assets, but sometimes assets is corrupted
+    # grep "Module ID" /proc/hal/assets | sed "s/.*://"
+    ## used to read from /proc/hal/model, but that is removed in 2.6
+    # echo ' iPAQ' `cat /proc/hal/model`
+    awk 'BEGIN { FS=": " } /Hardware/ { print $2 } ' </proc/cpuinfo
+}
+
+export USER=root
+
+ARGS=" -pn"
+
+# use ucb 1x00 touchscreen if present
+if [ -z "$TSLIB_TSDEVICE" ] && [ -e /dev/touchscreen/ucb1x00 ]; then
+  ARGS="$ARGS -mouse /dev/touchscreen/ucb1x00"
+fi
+
+# use usb mouse if present
+# Xorg doesn't support "-mouse" option, and uses /dev/input/mice automatically
+if [ -z "$TSLIB_TSDEVICE" ] && [ -e /dev/input/mice ] && [ "$XSERVER" != "Xorg" ]; then
+  ARGS="$ARGS -mouse /dev/input/mice"
+fi
+
+# start off server in conventional location.
+case `module_id` in
+        "HP iPAQ H3100" | "HP iPAQ H3800")                                                                                                                                   
+                ARGS="$ARGS -br -dpi 100 -rgba vrgb -screen 320x240@90" ;;                                                                                                       
+        "HP iPAQ H3600" | "HP iPAQ H3700" | "HP iPAQ H3900")                                                                                                                 
+                ARGS="$ARGS -br -dpi 100 -rgba vbgr -screen 320x240@270" ;;                                                                                                      
+        "HP iPAQ H5400" | "HP iPAQ H2200")                                                                                                                                   
+                ARGS="$ARGS -br -dpi 100 -rgba rgb" ;;                                                                                                                           
+        "HP iPAQ HX4700")                                                                                                                                                    
+                ARGS="$ARGS -br -dpi 200" ;;                                                                                                                                     
+        "Ramses")                                                                                                                                                            
+                # What is this "vt2" in aid of?                                                                                                                              
+                ARGS="$ARGS -br -dpi 100 -rgba vrgb -screen 320x240@90 vt2" ;;                                                                                                   
+        # both 'Sharp-Collie' and just 'Collie' have been reported                                                                                                           
+        *Poodle)                                                                                                                                                             
+                ARGS="$ARGS -br -dpi 100 -rgba vrgb -screen 320x240@270" ;;                                                                                                      
+        *Collie)                                                                                                                                                             
+                ARGS="$ARGS -br -dpi 100 -rgba vrgb -screen 320x240@270"                                                                                                         
+                ;;                                                                                                                                                           
+        "SHARP Shepherd" | "SHARP Husky" | "SHARP Corgi")                                                                                                                    
+                ARGS="$ARGS -br -dpi 200 -rgba rgb" ;;                                                                                                                           
+        "SHARP Spitz" | "SHARP Akita" | "SHARP Borzoi")                                                                                                                      
+                ARGS="$ARGS -br -dpi 200 -rgba rgb -screen 480x640@270" ;;                                                                                                       
+        "Simpad")                                                                                                                                                            
+                ARGS="$ARGS -br -dpi 100 -rgba rgb" ;;                                                                                                                           
+        "Generic OMAP1510/1610/1710")                                                                                                                                        
+                ARGS="$ARGS -br -dpi 220 -mouse /dev/input/event0" ;;                                                                                                            
+        "Cellon C8000 Board")                                                                                                                                                
+                ARGS="$ARGS -br -dpi 100 -screen 240x320,10,1" ;;                                                                                                                
+        "HTC Universal")                                                                                                                                                     
+                ARGS="$ARGS -br -dpi 225 -screen 480x640@270" ;;                                                                                
+	"ARM-IntegratorCP" | "ARM-Versatile PB")
+		ARGS="$ARGS -br -rgba vrgb" ;;
+	"Compulab CM-x270")
+                modprobe mbxfb
+	        ARGS="$ARGS -br -fb /dev/fb1"
+                ;;
+        "GTA01" | "GTA02")
+                ARGS="$ARGS -dpi 285 -screen 480x640 -hide-cursor -root-ppm /usr/share/pixmaps/xsplash.ppm" ;;
+        "Nokia N800")
+		ARGS="$ARGS -br -dpi 225 -screen 800x480x16 -mouse tslib" ;;
+	*)
+		# Its a device we dont know about - in which case force
+                # kdrive to use the current framebuffer geometry otherwise
+		# it will defualt to trying to achieve 1024x768 
+		S=`fallback_screen_arg`
+		ARGS="$ARGS -screen $S"
+		;;
+esac
+
+DISPLAY=':0'
+
+exec xinit /etc/X11/Xsession -- $XSERVER $DISPLAY $ARGS $*
