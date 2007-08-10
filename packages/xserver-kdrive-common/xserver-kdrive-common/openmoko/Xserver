@@ -15,12 +15,12 @@ fi
 if [ -f /usr/bin/Xomap ]; then
   XSERVER=/usr/bin/Xomap
 fi
-if [ -f /usr/bin/Xw100 ]; then                                                                                                                                              
-  XSERVER=Xw100                                                                                                                                                             
-fi                                                                                                                                                                          
-if [ -f /usr/bin/Ximageon ]; then                                                                                                                                           
-   XSERVER=Ximageon                                                                                                                                                          
-fi   
+if [ -f /usr/bin/Xw100 ]; then
+  XSERVER=Xw100
+fi
+if [ -f /usr/bin/Ximageon ]; then
+   XSERVER=Ximageon
+fi
 
 . /etc/profile
 
@@ -32,7 +32,7 @@ fallback_screen_arg() {
     h=`echo $geom | awk '{ print $3 }'`
     b=`echo $geom | awk '{ print $6 }'`
     echo -n "${w}x${h}x${b}"
-} 
+}
 
 module_id() {
     ## used to read from assets, but sometimes assets is corrupted
@@ -59,35 +59,35 @@ fi
 
 # start off server in conventional location.
 case `module_id` in
-        "HP iPAQ H3100" | "HP iPAQ H3800")                                                                                                                                   
-                ARGS="$ARGS -br -dpi 100 -rgba vrgb -screen 320x240@90" ;;                                                                                                       
-        "HP iPAQ H3600" | "HP iPAQ H3700" | "HP iPAQ H3900")                                                                                                                 
-                ARGS="$ARGS -br -dpi 100 -rgba vbgr -screen 320x240@270" ;;                                                                                                      
-        "HP iPAQ H5400" | "HP iPAQ H2200")                                                                                                                                   
-                ARGS="$ARGS -br -dpi 100 -rgba rgb" ;;                                                                                                                           
-        "HP iPAQ HX4700")                                                                                                                                                    
-                ARGS="$ARGS -br -dpi 200" ;;                                                                                                                                     
-        "Ramses")                                                                                                                                                            
-                # What is this "vt2" in aid of?                                                                                                                              
-                ARGS="$ARGS -br -dpi 100 -rgba vrgb -screen 320x240@90 vt2" ;;                                                                                                   
-        # both 'Sharp-Collie' and just 'Collie' have been reported                                                                                                           
-        *Poodle)                                                                                                                                                             
-                ARGS="$ARGS -br -dpi 100 -rgba vrgb -screen 320x240@270" ;;                                                                                                      
-        *Collie)                                                                                                                                                             
-                ARGS="$ARGS -br -dpi 100 -rgba vrgb -screen 320x240@270"                                                                                                         
-                ;;                                                                                                                                                           
-        "SHARP Shepherd" | "SHARP Husky" | "SHARP Corgi")                                                                                                                    
-                ARGS="$ARGS -br -dpi 200 -rgba rgb" ;;                                                                                                                           
-        "SHARP Spitz" | "SHARP Akita" | "SHARP Borzoi")                                                                                                                      
-                ARGS="$ARGS -br -dpi 200 -rgba rgb -screen 480x640@270" ;;                                                                                                       
-        "Simpad")                                                                                                                                                            
-                ARGS="$ARGS -br -dpi 100 -rgba rgb" ;;                                                                                                                           
-        "Generic OMAP1510/1610/1710")                                                                                                                                        
-                ARGS="$ARGS -br -dpi 220 -mouse /dev/input/event0" ;;                                                                                                            
-        "Cellon C8000 Board")                                                                                                                                                
-                ARGS="$ARGS -br -dpi 100 -screen 240x320,10,1" ;;                                                                                                                
-        "HTC Universal")                                                                                                                                                     
-                ARGS="$ARGS -br -dpi 225 -screen 480x640@270" ;;                                                                                
+        "HP iPAQ H3100" | "HP iPAQ H3800")
+                ARGS="$ARGS -br -dpi 100 -rgba vrgb -screen 320x240@90" ;;
+        "HP iPAQ H3600" | "HP iPAQ H3700" | "HP iPAQ H3900")
+                ARGS="$ARGS -br -dpi 100 -rgba vbgr -screen 320x240@270" ;;
+        "HP iPAQ H5400" | "HP iPAQ H2200")
+                ARGS="$ARGS -br -dpi 100 -rgba rgb" ;;
+        "HP iPAQ HX4700")
+                ARGS="$ARGS -br -dpi 200" ;;
+        "Ramses")
+                # What is this "vt2" in aid of?
+                ARGS="$ARGS -br -dpi 100 -rgba vrgb -screen 320x240@90 vt2" ;;
+        # both 'Sharp-Collie' and just 'Collie' have been reported
+        *Poodle)
+                ARGS="$ARGS -br -dpi 100 -rgba vrgb -screen 320x240@270" ;;
+        *Collie)
+                ARGS="$ARGS -br -dpi 100 -rgba vrgb -screen 320x240@270"
+                ;;
+        "SHARP Shepherd" | "SHARP Husky" | "SHARP Corgi")
+                ARGS="$ARGS -br -dpi 200 -rgba rgb" ;;
+        "SHARP Spitz" | "SHARP Akita" | "SHARP Borzoi")
+                ARGS="$ARGS -br -dpi 200 -rgba rgb -screen 480x640@270" ;;
+        "Simpad")
+                ARGS="$ARGS -br -dpi 100 -rgba rgb" ;;
+        "Generic OMAP1510/1610/1710")
+                ARGS="$ARGS -br -dpi 220 -mouse /dev/input/event0" ;;
+        "Cellon C8000 Board")
+                ARGS="$ARGS -br -dpi 100 -screen 240x320,10,1" ;;
+        "HTC Universal")
+                ARGS="$ARGS -br -dpi 225 -screen 480x640@270" ;;
 	"ARM-IntegratorCP" | "ARM-Versatile PB")
 		ARGS="$ARGS -br -rgba vrgb" ;;
 	"Compulab CM-x270")
@@ -101,7 +101,7 @@ case `module_id` in
 	*)
 		# Its a device we dont know about - in which case force
                 # kdrive to use the current framebuffer geometry otherwise
-		# it will defualt to trying to achieve 1024x768 
+		# it will defualt to trying to achieve 1024x768
 		S=`fallback_screen_arg`
 		ARGS="$ARGS -screen $S"
 		;;
