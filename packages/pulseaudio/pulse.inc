@@ -27,6 +27,11 @@ PARALLEL_MAKE = ""
 
 export TARGET_PFPU = "${TARGET_FPU}"
 
+# TODO: Use more fine granular version
+#OE_LT_RPATH_ALLOW=":${libdir}/pulse-0.9:"
+OE_LT_RPATH_ALLOW = "any"
+OE_LT_RPATH_ALLOW[export]="1"
+
 do_stage() {
 	autotools_stage_all
 }
@@ -77,7 +82,7 @@ pkg_postinst_${PN}-server() {
         fi
         grep -q pulse: /etc/group || addgroup pulse
         grep -q pulse: /etc/passwd || \
-            adduser --disabled-password --home=/var/run/pulse/ --system \
+            adduser --disabled-password --home=/var/run/pulse --system \
                     --ingroup pulse --no-create-home -g "Pulse audio daemon" pulse                                            
         /etc/init.d/populate-volatile.sh update
 }
