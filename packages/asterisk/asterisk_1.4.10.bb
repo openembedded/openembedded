@@ -3,8 +3,10 @@ HOMEPAGE = "http://www.asterisk.org"
 SECTION = "voip"
 LICENSE = "GPLv2"
 PRIORITY = "optional"
-DEPENDS = "speex ncurses readline zlib openssl curl popt gnutls sqlite libogg libvorbis"
+SECTION = "console/telephony"
+DEPENDS = "speex readline zlib openssl curl popt gnutls sqlite libogg libvorbis"
 RRECOMMENDS_${PN} = "logrotate"
+PR = "r1"
 
 DEFAULT_PREFERENCE = "-1"
 
@@ -15,23 +17,30 @@ SRC_URI="http://ftp.digium.com/pub/asterisk/releases/asterisk-${PV}.tar.gz\
 	file://volatiles \
 	file://init"
 
+ARCH_efika="ppc"
+ARCH_dht-walnut="ppc"
+ARCH_magicbox="ppc"
+ARCH_sequoia="ppc"
+
+
+
 
 INITSCRIPT_NAME = "asterisk"
 INITSCRIPT_PARAMS = "defaults 60"
 
 inherit autotools update-rc.d
 
-EXTRA_OECONF =  "--with-ssl=${STAGING_DIR}/${HOST_SYS}\
-			--with-z=${STAGING_DIR}/${HOST_SYS}\
-			--with-curl=${STAGING_DIR}/${HOST_SYS}\
-			--with-termcap=${STAGING_DIR}/${HOST_SYS}\
-			--with-ogg=${STAGING_DIR}/${HOST_SYS}\
-			--with-vorbis=${STAGING_DIR}/${HOST_SYS}\
-			--with-sqlite=${STAGING_DIR}/${HOST_SYS}\
-			--with-popt=${STAGING_DIR}/${HOST_SYS}\
-			--with-gnutls=${STAGING_DIR}/${HOST_SYS}\
+EXTRA_OECONF =  "--with-ssl=${STAGING_DIR}/${TARGET_SYS}\
+			--with-z=${STAGING_DIR}/${TARGET_SYS}\
+			--with-curl=${STAGING_DIR}/${TARGET_SYS}\
+			--with-termcap=${STAGING_DIR}/${TARGET_SYS}\
+			--with-ogg=${STAGING_DIR}/${TARGET_SYS}\
+			--with-vorbis=${STAGING_DIR}/${TARGET_SYS}\
+			--with-sqlite=${STAGING_DIR}/${TARGET_SYS}\
+			--with-popt=${STAGING_DIR}/${TARGET_SYS}\
+			--with-gnutls=${STAGING_DIR}/${TARGET_SYS}\
 			--without-curses\
-			--with-ncurses=${STAGING_DIR}/${HOST_SYS}\
+			--with-ncurses=${STAGING_DIR}/${TARGET_SYS}\
 			--without-imap\
 			--without-netsnmp\
 			--without-odbc\
@@ -48,6 +57,7 @@ EXTRA_OECONF =  "--with-ssl=${STAGING_DIR}/${HOST_SYS}\
 
 export ASTCFLAGS = "-fsigned-char -I${STAGING_INCDIR} -DPATH_MAX=4096"
 export ASTLDFLAGS="${LDFLAGS} -lpthread -ldl -lresolv "
+export PROC="${ARCH}"
 
 do_configure_prepend () {
 	sed -i 's:/var:${localstatedir}:' ${WORKDIR}/logrotate
@@ -62,6 +72,22 @@ do_configure () {
 	libtoolize --force
 	oe_runconf
 }
+
+
+do_compile() {
+        (
+         #make sure that menuselect gets build using host toolchain
+         unset CC LD CXX CCLD CFLAGS CPPFLAGS LDFLAGS CXXFLAGS
+         cd menuselect 
+         ./configure
+         oe_runmake
+         cd ../
+        ) || exit 1
+        oe_runmake
+}
+
+
+
 
 do_install_append() {
         install -d ${D}${sysconfdir}/init.d/
@@ -142,4 +168,4 @@ CONFFILES_${PN} += "${sysconfdir}/asterisk/users.conf"
 CONFFILES_${PN} += "${sysconfdir}/asterisk/voicemail.conf"
 CONFFILES_${PN} += "${sysconfdir}/asterisk/vpb.conf"
 CONFFILES_${PN} += "${sysconfdir}/asterisk/zapata.conf"
-
+CONFFILES_${PN} += "${sysconfdir}/logrotate.d/asterisk"
