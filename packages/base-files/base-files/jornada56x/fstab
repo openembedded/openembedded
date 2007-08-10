@@ -3,4 +3,5 @@ proc		/proc	proc	defaults	0  0
 /dev/hda1	/mnt/cf	auto	defaults,sync,noauto	0  0
 tmpfs		/var/volatile	tmpfs	mode=0755	0  0
 tmpfs		/mnt/ram	tmpfs	defaults	0  0
+tmpfs                /dev/shm             tmpfs      mode=0777             0  0
 devpts		/dev/pts	devpts	defaults	0  0
