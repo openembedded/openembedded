@@ -3,7 +3,7 @@ HOMEPAGE = "http://www.asterisk.org"
 SECTION = "voip"
 LICENSE = "GPLv2"
 PRIORITY = "optional"
-DEPENDS = "ncurses readline zlib openssl curl popt gnutls sqlite libogg libvorbis"
+DEPENDS = "speex ncurses readline zlib openssl curl popt gnutls sqlite libogg libvorbis"
 RRECOMMENDS_${PN} = "logrotate"
 
 DEFAULT_PREFERENCE = "-1"
@@ -47,7 +47,7 @@ EXTRA_OECONF =  "--with-ssl=${STAGING_DIR}/${HOST_SYS}\
 #export NOISY_BUILD=yes
 
 export ASTCFLAGS = "-fsigned-char -I${STAGING_INCDIR} -DPATH_MAX=4096"
-export ASTLDFLAGS="${LDFLAGS}"
+export ASTLDFLAGS="${LDFLAGS} -lpthread -ldl -lresolv "
 
 do_configure_prepend () {
 	sed -i 's:/var:${localstatedir}:' ${WORKDIR}/logrotate
@@ -64,6 +64,7 @@ do_configure () {
 }
 
 do_install_append() {
+        install -d ${D}${sysconfdir}/init.d/
 	install -m 755 ${WORKDIR}/init ${D}${sysconfdir}/init.d/asterisk
 	install -c -D -m 644 ${WORKDIR}/logrotate ${D}${sysconfdir}/logrotate.d/asterisk
 	install -c -D -m 644 ${WORKDIR}/volatiles ${D}${sysconfdir}/default/volatiles/asterisk
@@ -76,6 +77,8 @@ pkg_postinst_prepend() {
 }
 
 FILES_${PN} += "${libdir}/asterisk/modules/*"
+FILES_${PN}-dbg += "${libdir}/asterisk/modules/.debug \
+                    ${localstatedir}/lib/asterisk/*/.debug"
 
 CONFFILES_${PN} += "${sysconfdir}/asterisk/adsi.conf"
 CONFFILES_${PN} += "${sysconfdir}/asterisk/adtranvofr.conf"
