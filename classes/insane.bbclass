@@ -61,7 +61,7 @@ def package_qa_get_machine_dict():
 			"avr32":      (6317,     0,    0,          False,         True),
                       },
             "uclinux-uclibc" : {
-                        "bfin":       (   0,     0,    0,          True,         True),
+                        "bfin":       ( 106,     0,    0,          True,         True),
                       }, 
             "linux-gnueabi" : {
                         "arm" :       (40,     0,    0,          True,          True),
@@ -233,7 +233,7 @@ def package_qa_check_rpath(file,name,d):
             bb.error("QA Issue package %s contains bad RPATH %s in file %s" % (name, line, file))
             #bb.note("Fixing RPATH for you in %s" % file)
             #os.popen("%s -r /lib %s" % (chrpath,file))
-            return False
+            #return False
     return True
 
 def package_qa_check_devdbg(path, name,d):
