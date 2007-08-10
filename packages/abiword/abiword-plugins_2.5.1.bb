@@ -1,8 +1,8 @@
 DESCRIPTION = "AbiWord is a free word processing program similar to Microsoft(r) Word""
-HOMEPAGE = "http://www.abiword.org""
+HOMEPAGE = "http://www.abiword.org"
 SECTION = "x11/office"
 LICENSE = "GPLv2"
-DEPENDS = "libwpd librsvg goffice poppler"
+DEPENDS = "libwpd librsvg goffice poppler libglade"
 RDEPENDS = "abiword"
 
 DEFAULT_PREFERENCE = "-1"
@@ -23,8 +23,16 @@ EXTRA_OECONF = " --without-libwmf \
 PACKAGES_DYNAMIC = "abiword-plugin-*"
 
 python populate_packages_prepend () {
-	abiword_libdir = bb.data.expand('${libdir}/AbiWord-2.5/plugins', d)
-
+	abiword_libdir    = bb.data.expand('${libdir}/abiword-2.5/plugins', d)
 	do_split_packages(d, abiword_libdir, '^libAbi(.*)\.so$', 'abiword-plugin-%s', 'Abiword plugin for %s', extra_depends='')
+        do_split_packages(d, abiword_libdir, '^libAbi(.*)\.la$', 'abiword-plugin-%s-dev', 'Abiword plugin for %s', extra_depends='')
 }
+
+
+PACKAGES =+ "abiword-plugin-collab-glade"
+
+FILES_abiword-plugin-collab-glade += "${datadir}"
+RDEPENDS_abiword-plugin-collab-glade = "abiword-plugin-collab"
+
+FILES_${PN}-dbg += "${libdir}/abiword-2.5/plugins/.debug"
 
