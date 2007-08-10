@@ -13,6 +13,9 @@ nslu2_pack_image () {
 	slugimage -p -b RedBoot -s SysConf -k vmlinuz \
 		-r Ramdisk:1,Flashdisk:flashdisk.jffs2 -m NPE-B -t Trailer \
 		-o ${DEPLOY_DIR_IMAGE}/${IMAGE_NAME}-nslu2.bin
+	slugimage -F -p -b RedBoot -s SysConf -k vmlinuz \
+		-r Ramdisk:1,Flashdisk:flashdisk.jffs2 -m NPE-B -t Trailer \
+		-o ${DEPLOY_DIR_IMAGE}/${IMAGE_NAME}-nslu2-16mb.bin
 	rm -rf ${DEPLOY_DIR_IMAGE}/slug
 }
 
