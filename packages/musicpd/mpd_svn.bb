@@ -3,23 +3,24 @@ HOMEPAGE = "http://www.musicpd.org"
 SECTION = "console/multimedia"
 LICENSE = "GPLv2"
 DEPENDS = "libvorbis libogg libid3tag libao zlib libmikmod libmad flac audiofile virtual/libiconv faad2 pulseaudio"
-SRCDATE = "20070120"
 PV = "0.12.1+svn${SRCDATE}"
-PR = "r2"
+PR = "r0"
 
 SRC_URI = "svn://svn.musicpd.org/mpd;module=trunk;proto=https \
-           file://fix-mod-support.patch;patch=1;maxdate=20070302"
+           file://mpd/mpd.init"
 #           file://save-volume-state.patch;patch=1"
 S = "${WORKDIR}/trunk"
 
-inherit autotools
+inherit autotools update-rc.d
+INITSCRIPT_NAME = "mpd"
 
 # Setting --enable-mpd-{mad,id3tag} causes local caches of the libraries to
 # be built, instead we use the OE built versions which should be installed
 # in staging - remove the --with and replace with --enable to use the local
 # versions.
 
-EXTRA_OECONF = "--enable-ogg \
+EXTRA_OECONF = "\
+		--enable-ogg \
 		--with-id3tag-libraries=${STAGING_LIBDIR} \
 		--with-id3tag-includes=${STAGING_INCDIR} \
 		--with-mad-libraries=${STAGING_LIBDIR} \
