@@ -1,7 +1,7 @@
 DESCRIPTION = "Miscellaneous files for the base system."
 SECTION = "base"
 PRIORITY = "required"
-PR = "r69"
+PR = "r71"
 LICENSE = "GPL"
 
 SRC_URI = " \
@@ -23,6 +23,8 @@ SRC_URI = " \
            file://licenses/LGPL-2.1 \
            file://licenses/Artistic "
 S = "${WORKDIR}"
+
+SRC_URI_OVERRIDES_PACKAGE_ARCH = "1"
 
 docdir_append = "/${P}"
 dirs1777 = "/tmp ${localstatedir}/volatile/lock ${localstatedir}/volatile/tmp"

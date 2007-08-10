@@ -2,9 +2,9 @@ DESCRIPTION = "Custom MB session files for OpenMoko"
 LICENSE = "GPL"
 SECTION = "x11"
 RDEPENDS = "matchbox-common matchbox-applet-startup-monitor matchbox-panel-2"
-RDEPENDS+= "openmoko-common2 openmoko-today2 openmoko-dialer2"
+RDEPENDS += "openmoko-common2 openmoko-today2 openmoko-dialer2"
 RCONFLICTS = "openmoko-session"
-PR = "r28"
+PR = "r29"
 
 SRC_URI = "file://etc"
 S = ${WORKDIR}
@@ -29,3 +29,5 @@ gconftool-2 --config-source=xml::$D${sysconfdir}/gconf/gconf.xml.defaults --dire
 gconftool-2 --config-source=xml::$D${sysconfdir}/gconf/gconf.xml.defaults --direct --type int --set /desktop/openmoko/neod/power_management 2
 
 }
+
+PACKAGE_ARCH = "all"

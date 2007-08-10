@@ -6,4 +6,5 @@ sys             /sys        sysfs	defaults        0  0
 
 /dev/hda1		/media/cf	auto	defaults,noauto,noatime,exec,suid	0  0
 tmpfs			/var/volatile	tmpfs	mode=0755	0  0
+tmpfs                /dev/shm             tmpfs      mode=0777             0  0
 tmpfs			/media/ram	tmpfs	defaults	0  0
