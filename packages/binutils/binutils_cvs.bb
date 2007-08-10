@@ -16,3 +16,12 @@ SRC_URI = "cvs://anoncvs:anoncvs@sources.redhat.com/cvs/src;module=binutils;meth
 
 #EXTRA_OECONF = "--with-sysroot=/"
 
+do_configure_prepend () {
+    # RP: 
+    # Remove rda and libgloss since they won't cross compile 
+    # we don't need them anyway...
+    # Also remove gdb, we build that separately.
+    rm ${S}/gdb -Rf
+    rm ${S}/rda -Rf
+    rm ${S}/libgloss -Rf
+}
