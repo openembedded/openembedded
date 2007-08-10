@@ -24,6 +24,8 @@ SRC_URI = " \
            file://licenses/Artistic "
 S = "${WORKDIR}"
 
+SRC_URI_OVERRIDES_PACKAGE_ARCH = "1"
+
 docdir_append = "/${P}"
 dirs1777 = "/tmp ${localstatedir}/volatile/lock ${localstatedir}/volatile/tmp"
 dirs2775 = "/home ${prefix}/src ${localstatedir}/local"
