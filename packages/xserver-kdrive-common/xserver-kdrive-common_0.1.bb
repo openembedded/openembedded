@@ -2,7 +2,7 @@ DESCRIPTION = "Common X11 scripts"
 LICENSE = "GPL"
 SECTION = "x11"
 RDEPENDS_${PN} = "xmodmap libxrandr xdpyinfo xtscal xinit"
-PR = "r16"
+PR = "r17"
 
 SRC_URI = "\
   file://Xdefaults \
@@ -33,7 +33,7 @@ PACKAGE_ARCH = "all"
 
 do_install() {
     install -d ${D}/${sysconfdir}/X11/Xsession.d
-    for i in ${etcfiles}; do
+    for i in ${etcFiles}; do
         install -m 0755 ${WORKDIR}/$i ${D}/${sysconfdir}/X11/
     done
     for i in ${sessionFiles}; do
