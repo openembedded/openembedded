@@ -1,5 +1,5 @@
 DESCRIPTION = "Task packages for the Angstrom distribution"
-PR = "r34"
+PR = "r35"
 ALLOW_EMPTY = "1"
 
 XSERVER ?= "xserver-kdrive-fbdev"
