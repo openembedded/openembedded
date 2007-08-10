@@ -1,8 +1,6 @@
 #!/bin/sh
 SHOWCURSOR="no"
 
-hsetroot -center /usr/share/pixmaps/booting.png
-
 openmoko-today &
 openmoko-dialer &
 
