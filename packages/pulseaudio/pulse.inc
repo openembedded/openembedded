@@ -65,28 +65,25 @@ FILES_${PN}-gconf-helper = "${libexecdir}/pulse/gconf-helper"
 FILES_${PN}-misc = "${bindir}/*"
 
 CONFFILES_pulseaudio-server = "\ 
-                       ${sysconfdir}/pulse/default.pa \
-		       ${sysconfdir}/pulse/daemon.conf \
-		       ${sysconfdir}/pulse/client.conf \
-		       "
-pkg_postinst_libppulse() {
-if test "x$D" != "x"; then
-        exit 1
-else
+  ${sysconfdir}/pulse/default.pa \
+  ${sysconfdir}/pulse/daemon.conf \
+  ${sysconfdir}/pulse/client.conf \
+  "
+
+pkg_postinst_${PN}-server() {
+        # can't do this offline
+        if [ "x$D" != "x" ]; then
+                exit 1
+        fi
         grep -q pulse: /etc/group || addgroup pulse
         grep -q pulse: /etc/passwd || \
             adduser --disabled-password --home=/var/run/pulse/ --system \
                     --ingroup pulse --no-create-home -g "Pulse audio daemon" pulse                                            
         /etc/init.d/populate-volatile.sh update
-fi
 }
 
-pkg_postrm_libpulse() {
-if test "x$D" != "x"; then
-        exit 1
-else
-        deluser pulse
-fi
+pkg_postrm_${PN}-server() {
+        deluser pulse || true
 }
 
 python populate_packages_prepend() {
