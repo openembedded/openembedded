@@ -1,0 +1,16 @@
+---
+ libiberty/fopen_unlocked.c |    1 +
+ 1 file changed, 1 insertion(+)
+
+Index: src/libiberty/fopen_unlocked.c
+===================================================================
+--- src.orig/libiberty/fopen_unlocked.c	2007-08-09 20:12:13.000000000 +0100
++++ src/libiberty/fopen_unlocked.c	2007-08-09 20:12:21.000000000 +0100
+@@ -70,6 +70,7 @@ unchanged.
+ #endif
+ #include <stdio.h>
+ #ifdef HAVE_STDIO_EXT_H
++#include <sys/cdefs.h>
+ #include <stdio_ext.h>
+ #endif
+ 
