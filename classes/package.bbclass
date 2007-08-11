@@ -369,7 +369,7 @@ python populate_packages () {
 	for pkg in packages.split():
 		if pkg in package_list:
 			bb.error("-------------------")
-			bb.error("%s is listed in PACKAGES mutliple times, this leads to packaging errors." % pkg)
+			bb.error("%s is listed in PACKAGES multiple times, this leads to packaging errors." % pkg)
 			bb.error("Please fix the metadata/report this as bug to OE bugtracker.")
 			bb.error("-------------------")
 		else:
@@ -411,7 +411,6 @@ python populate_packages () {
 		bb.mkdirhier(root)
 		filesvar = bb.data.getVar('FILES', localdata, 1) or ""
 		files = filesvar.split()
-		cleandirs = []
 		for file in files:
 			if os.path.isabs(file):
 				file = '.' + file
@@ -420,8 +419,6 @@ python populate_packages () {
 					newfiles =  [ os.path.join(file,x) for x in os.listdir(file) ]
 					if newfiles:
 						files += newfiles
-						if file != "./":
-							cleandirs = [file] + cleandirs
 						continue
 			globbed = glob.glob(file)
 			if globbed:
@@ -433,16 +430,9 @@ python populate_packages () {
 			fpath = os.path.join(root,file)
 			dpath = os.path.dirname(fpath)
 			bb.mkdirhier(dpath)
-#			if file in cleandirs:
-#				cleandirs.remove(file)
 			ret = bb.movefile(file,fpath)
 			if ret is None or ret == 0:
 				raise bb.build.FuncFailed("File population failed")
-#		for dir in cleandirs:
-#			if os.path.isdir(dir):
-#				os.rmdir(dir)
-#			else:
-#				bb.note("ERROR: directory %s went away unexpectedly during package population" % dir)
 		del localdata
 	os.chdir(workdir)
 
