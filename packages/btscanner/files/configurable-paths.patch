@@ -1,0 +1,183 @@
+Index: btscanner-2.0/btscanner.xml
+===================================================================
+--- btscanner-2.0.orig/btscanner.xml	2007-08-11 18:51:51.000000000 +0200
++++ /dev/null	1970-01-01 00:00:00.000000000 +0000
+@@ -1,81 +0,0 @@
+-<?xml version="1.0" encoding="UTF-8"?>
+-<!DOCTYPE btscanner SYSTEM "file:///usr/local/etc/btscanner.dtd">
+-<btscanner>
+-<files>
+-	<log>btscanner.log</log>
+-	<oui>/usr/local/share/oui.txt</oui>
+-	<store>~/bts</store>
+-</files>
+-
+-<!-- Global range -->
+-<rangedef start="00:00:00:00:00:00" end="FF:FF:FF:FF:FF:FF">
+-	<vulnerabilities/>
+-	<name/>
+-	<hci/>
+-</rangedef>
+-
+-<!-- Nokia 6310i range 1 -->
+-<rangedef start="00:60:57:00:00:00" end="00:60:57:FF:FF:FF">
+-	<vulnerabilities>Snarf</vulnerabilities>
+-	<name/>
+-	<hci/>
+-	<rssi/>
+-	<lq/>
+-	<txpwr/>
+-	<sdp/>
+-</rangedef>
+-<!-- Nokia 6310i range 2 -->
+-<rangedef start="00:0E:6D:00:00:00" end="00:0E:6D:FF:FF:FF">
+-	<vulnerabilities>Snarf</vulnerabilities>
+-	<name/>
+-	<hci/>
+-	<rssi/>
+-	<lq/>
+-	<txpwr/>
+-	<sdp/>
+-</rangedef>
+-<!-- Nokia 6310i range 3 -->
+-<rangedef start="00:02:EE:00:00:00" end="00:02:EE:FF:FF:FF">
+-	<vulnerabilities>Snarf</vulnerabilities>
+-	<name/>
+-	<hci/>
+-	<rssi/>
+-	<lq/>
+-	<txpwr/>
+-	<sdp/>
+-</rangedef>
+-
+-<!-- Nokia 6230 range 1 -->
+-<rangedef start="00:E0:03:00:00:00" end="00:E0:03:FF:FF:FF">
+-	<vulnerabilities>Snarf</vulnerabilities>
+-	<name/>
+-	<hci/>
+-	<rssi/>
+-	<lq/>
+-	<txpwr/>
+-	<sdp/>
+-</rangedef>
+-
+-<!-- Sony Ericsson T610 range 1 -->
+-<rangedef start="00:0E:07:00:00:00" end="00:0E:07:FF:FF:FF">
+-	<vulnerabilities>Snarf</vulnerabilities>
+-	<name/>
+-	<hci/>
+-	<rssi/>
+-	<lq/>
+-	<txpwr/>
+-	<sdp/>
+-</rangedef>
+-<!-- Sony Ericsson T610 (also others) range 2 -->
+-<rangedef start="00:0A:D9:00:00:00" end="00:0A:D9:FF:FF:FF">
+-	<vulnerabilities>Snarf</vulnerabilities>
+-	<name/>
+-	<hci/>
+-	<rssi/>
+-	<lq/>
+-	<txpwr/>
+-	<sdp/>
+-</rangedef>
+-
+-</btscanner>
+-
+Index: btscanner-2.0/btscanner.xml.in
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ btscanner-2.0/btscanner.xml.in	2007-08-11 18:52:27.000000000 +0200
+@@ -0,0 +1,81 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<!DOCTYPE btscanner SYSTEM "file://@sysconfdir@/btscanner.dtd">
++<btscanner>
++<files>
++	<log>btscanner.log</log>
++	<oui>@datadir@/oui.txt</oui>
++	<store>~/bts</store>
++</files>
++
++<!-- Global range -->
++<rangedef start="00:00:00:00:00:00" end="FF:FF:FF:FF:FF:FF">
++	<vulnerabilities/>
++	<name/>
++	<hci/>
++</rangedef>
++
++<!-- Nokia 6310i range 1 -->
++<rangedef start="00:60:57:00:00:00" end="00:60:57:FF:FF:FF">
++	<vulnerabilities>Snarf</vulnerabilities>
++	<name/>
++	<hci/>
++	<rssi/>
++	<lq/>
++	<txpwr/>
++	<sdp/>
++</rangedef>
++<!-- Nokia 6310i range 2 -->
++<rangedef start="00:0E:6D:00:00:00" end="00:0E:6D:FF:FF:FF">
++	<vulnerabilities>Snarf</vulnerabilities>
++	<name/>
++	<hci/>
++	<rssi/>
++	<lq/>
++	<txpwr/>
++	<sdp/>
++</rangedef>
++<!-- Nokia 6310i range 3 -->
++<rangedef start="00:02:EE:00:00:00" end="00:02:EE:FF:FF:FF">
++	<vulnerabilities>Snarf</vulnerabilities>
++	<name/>
++	<hci/>
++	<rssi/>
++	<lq/>
++	<txpwr/>
++	<sdp/>
++</rangedef>
++
++<!-- Nokia 6230 range 1 -->
++<rangedef start="00:E0:03:00:00:00" end="00:E0:03:FF:FF:FF">
++	<vulnerabilities>Snarf</vulnerabilities>
++	<name/>
++	<hci/>
++	<rssi/>
++	<lq/>
++	<txpwr/>
++	<sdp/>
++</rangedef>
++
++<!-- Sony Ericsson T610 range 1 -->
++<rangedef start="00:0E:07:00:00:00" end="00:0E:07:FF:FF:FF">
++	<vulnerabilities>Snarf</vulnerabilities>
++	<name/>
++	<hci/>
++	<rssi/>
++	<lq/>
++	<txpwr/>
++	<sdp/>
++</rangedef>
++<!-- Sony Ericsson T610 (also others) range 2 -->
++<rangedef start="00:0A:D9:00:00:00" end="00:0A:D9:FF:FF:FF">
++	<vulnerabilities>Snarf</vulnerabilities>
++	<name/>
++	<hci/>
++	<rssi/>
++	<lq/>
++	<txpwr/>
++	<sdp/>
++</rangedef>
++
++</btscanner>
++
+Index: btscanner-2.0/configure.in
+===================================================================
+--- btscanner-2.0.orig/configure.in	2007-08-11 18:51:35.000000000 +0200
++++ btscanner-2.0/configure.in	2007-08-11 18:55:44.000000000 +0200
+@@ -89,5 +89,5 @@
+ CFLAGS="$CFLAGS -DCFG_FILE=\\\"$cfgfile\\\" -DCFG_DTD=\\\"$cfgdtd\\\""
+ 
+ # output
+-AC_CONFIG_FILES([Makefile])
++AC_CONFIG_FILES([Makefile btscanner.xml])
+ AC_OUTPUT
