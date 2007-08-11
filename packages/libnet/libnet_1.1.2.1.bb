@@ -6,11 +6,12 @@ LICENSE = "BSD"
 DEPENDS = "libpcap"
 # There are major API changes beween libnet v1.0 and libnet v1.1
 PROVIDES = "libnet-1.1"
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "${DEBIAN_MIRROR}/main/libn/libnet/libnet_${PV}.orig.tar.gz \
            file://support-uclibc.patch;patch=1 \
-           file://fix-endianess-test.patch;patch=1"
+           file://fix-endianess-test.patch;patch=1 \
+           file://new-autotools.patch;patch=1"
 
 S = "${WORKDIR}/libnet"
 

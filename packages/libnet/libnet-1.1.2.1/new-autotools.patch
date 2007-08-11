@@ -1,0 +1,20 @@
+Index: libnet/src/Makefile.am
+===================================================================
+--- libnet.orig/src/Makefile.am	2004-03-12 05:50:20.000000000 +1100
++++ libnet/src/Makefile.am	2007-08-11 16:41:09.000000000 +1000
+@@ -57,15 +57,5 @@
+ 			libnet_version.c \
+ 			libnet_write.c
+ 
+-EXTRA_libnet_a_SOURCES = libnet_link_bpf.c \
+-			libnet_link_dlpi.c \
+-			libnet_link_linux.c \
+-			libnet_link_nit.c \
+- 			libnet_link_none.c \
+-			libnet_link_pf.c \
+-			libnet_link_snit.c \
+-			libnet_link_snoop.c \
+-			libnet_link_win32.c
+-
+ libnet_a_LIBADD = @LIBOBJS@
+ 
