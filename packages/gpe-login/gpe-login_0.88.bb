@@ -4,10 +4,10 @@ PRIORITY = "optional"
 LICENSE = "GPL"
 DEPENDS = "gtk+ libgpewidget gpe-ownerinfo xkbd"
 RDEPENDS = "xkbd"
-RPROVIDES = "gpe-session-starter"
-PR = "r2"
+RPROVIDES_${PN} = "gpe-session-starter"
+PR = "r3"
 
-PACKAGE_ARCH_${PN} = "${MACHINE}"
+SRC_URI_OVERRIDES_PACKAGE_ARCH = "1"
 
 inherit gpe
 
