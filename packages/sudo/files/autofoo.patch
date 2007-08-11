@@ -2,6 +2,15 @@ Index: sudo-1.6.8p12/configure.in
 ===================================================================
 --- sudo-1.6.8p12.orig/configure.in	2004-11-26 04:31:20.000000000 +1100
 +++ sudo-1.6.8p12/configure.in	2007-05-16 16:45:20.000000000 +1000
+@@ -1609,7 +1609,7 @@
+     AC_CHECK_FUNCS(getspnam, [CHECKSHADOW="false"], [AC_CHECK_LIB(gen, getspnam, AC_DEFINE(HAVE_GETSPNAM) [SUDO_LIBS="${SUDO_LIBS} -lgen"; LIBS="${LIBS} -lgen"])])
+ fi
+ if test "$CHECKSHADOW" = "true"; then
+-    AC_CHECK_FUNC(getprpwnam, [AC_DEFINE(HAVE_GETPRPWNAM) [CHECKSHADOW="false"; SECUREWARE=1], AC_CHECK_LIB(sec, getprpwnam, AC_DEFINE(HAVE_GETPRPWNAM) [CHECKSHADOW="false"; SECUREWARE=1; SUDO_LIBS="${SUDO_LIBS} -lsec"; LIBS="${LIBS} -lsec"], AC_CHECK_LIB(security, getprpwnam, AC_DEFINE(HAVE_GETPRPWNAM) [CHECKSHADOW="false"; SECUREWARE=1; SUDO_LIBS="${SUDO_LIBS} -lsecurity"; LIBS="${LIBS} -lsecurity"], AC_CHECK_LIB(prot, getprpwnam, AC_DEFINE(HAVE_GETPRPWNAM) [CHECKSHADOW="false"; SECUREWARE=1; SUDO_LIBS="${SUDO_LIBS} -lprot"; LIBS="${LIBS} -lprot"])))])
++    AC_CHECK_FUNC(getprpwnam, [AC_DEFINE(HAVE_GETPRPWNAM) CHECKSHADOW="false"; SECUREWARE=1], [AC_CHECK_LIB(sec, getprpwnam, [AC_DEFINE(HAVE_GETPRPWNAM) CHECKSHADOW="false"; SECUREWARE=1; SUDO_LIBS="${SUDO_LIBS} -lsec"; LIBS="${LIBS} -lsec"], [AC_CHECK_LIB(security, getprpwnam, [AC_DEFINE(HAVE_GETPRPWNAM) CHECKSHADOW="false"; SECUREWARE=1; SUDO_LIBS="${SUDO_LIBS} -lsecurity"; LIBS="${LIBS} -lsecurity"], [AC_CHECK_LIB(prot, getprpwnam, [AC_DEFINE(HAVE_GETPRPWNAM) CHECKSHADOW="false"; SECUREWARE=1; SUDO_LIBS="${SUDO_LIBS} -lprot"; LIBS="${LIBS} -lprot"])])])])
+ fi
+ 
+ dnl
 @@ -1670,7 +1670,7 @@
  SUDO_TYPE_INO_T
  SUDO_FULL_VOID
