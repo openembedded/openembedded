@@ -6,7 +6,7 @@
 DESCRIPTION = "Task packages for the SlugOS distribution"
 HOMEPAGE = "http://www.nslu2-linux.org"
 LICENSE = "MIT"
-PR = "r13"
+PR = "r14"
 PACKAGE_ARCH = "${MACHINE_ARCH}"
 ALLOW_EMPTY = "1"
 
@@ -28,7 +28,7 @@ SLUGOS_STANDARD_RRECOMMENDS = ""
 # udev is the default way of handling devices, there is no guarantee
 # that the static device table is completely correct (it is just
 # known to be sufficient for boot.)
-SLUGOS_STANDARD_RRECOMMENDS += "diffutils cpio findutils udev"
+SLUGOS_STANDARD_RRECOMMENDS += "diffutils cpio findutils"
 
 # These lines add support for formatting ext2 and ext3 file systems
 # on a hard disk attached to the NSLU2.  ext3 is the standard Linux
@@ -62,10 +62,6 @@ kernel-module-ext2 \
 kernel-module-jbd \
 kernel-module-ext3 \
 kernel-module-vfat \
-kernel-module-isofs \
-kernel-module-udf \
-kernel-module-nfs \
-kernel-module-loop \
 kernel-module-nls-cp437 \
 kernel-module-nls-utf8 \
 "
@@ -85,10 +81,8 @@ kernel-module-uhci-hcd \
 "
 
 # Add modules required for IDE support
-SLUGOS_STANDARD_RRECOMMENDS += "\
-kernel-module-libata \
-kernel-module-pata-artop \
-"
+# SLUGOS_STANDARD_RRECOMMENDS += "\
+# "
 
 # Add modules required for Network support
 SLUGOS_STANDARD_RRECOMMENDS += "\
@@ -98,28 +92,18 @@ kernel-module-ixp4xx-qmgr \
 kernel-module-via-velocity \
 "
 
-# Add modules required for Wifi support
-SLUGOS_STANDARD_RRECOMMENDS += "\
-madwifi-ng-modules madwifi-ng-tools wireless-tools \
-"
-
-## Other wireless tools that should be considered
-## should space be available in the rootfs
+# portmap \
+# kexec-tools \
+# kernel-module-nfs \
+# kernel-module-isofs \
+# kernel-module-udf \
+# kernel-module-loop \
+# kernel-module-libata \
+# kernel-module-pata-artop \
+# kernel-module-netconsole \
 # wpa-supplicant \
 # zd1211-firmware kernel-module-zd1211rw \
-
-# Add kexec tools for rebooting alternate kernels
-SLUGOS_STANDARD_RRECOMMENDS += "\
-kexec-tools \
-"
-
-# Add modules required for Network Console support
-# NOTE: This module is desirable for systems lacking a physical
-# console, but is usually only enabled if specific needs or issues
-# arise.  If space in the flash is at a premium, it can be omitted.
-SLUGOS_STANDARD_RRECOMMENDS += "\
-kernel-module-netconsole \
-"
+# madwifi-ng-modules madwifi-ng-tools wireless-tools \
 
 DISTRO_EXTRA_DEPENDS ?= ""
 DEPENDS += "${DISTRO_EXTRA_DEPENDS}"
@@ -129,10 +113,9 @@ RDEPENDS += "\
 	kernel ixp4xx-npe \
 	base-files base-passwd netbase \
         busybox initscripts-slugos slugos-init \
-        update-modules sysvinit tinylogin \
+        update-modules sysvinit tinylogin udev \
 	module-init-tools modutils-initscripts \
         ipkg-collateral ipkg ipkg-link \
-	portmap \
 	beep \
 	e2fsprogs-blkid \
 	util-linux-mount \
@@ -143,6 +126,6 @@ RDEPENDS += "\
 	${DISTRO_EXTRA_RDEPENDS}"
 
 RRECOMMENDS += "\
-	dropbear \
+	openssh \
 	${SLUGOS_STANDARD_RRECOMMENDS} \
 	${DISTRO_EXTRA_RRECOMMENDS}"

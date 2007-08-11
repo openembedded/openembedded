@@ -16,7 +16,7 @@
 #TARGET_OS "linux" or "linux-uclibc"
 
 # The following may be overridden to make sub-versions
-SLUGOS_VERSION = "4.5"
+SLUGOS_VERSION = "4.6"
 DISTRO_REVISION ?= ""
 DISTRO_VERSION ?= "${SLUGOS_VERSION}${DISTRO_REVISION}-${DISTRO_TYPE}"
 # For release (only):
@@ -145,3 +145,5 @@ IGNORE_STRIP_ERRORS = ""
 #PREFERRED_VERSION_madwifi-ng ?= "r2156-20070225"
 
 PREFERRED_VERSION_linux-libc-headers = "2.6.18"
+
+PREFERRED_VERSION_openssh ?= "4.6p1"
