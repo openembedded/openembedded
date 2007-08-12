@@ -267,6 +267,13 @@ python seppuku_eventhandler() {
     from bb import data, mkdirhier, build
     import bb, os, glob
 
+    event = e
+    data = e.data
+    name = getName(event)
+    if name == "MsgNote":
+       # avoid recursion
+       return NotHandled
+
     # Try to load our exotic libraries
     try:
         import MultipartPostHandler
@@ -280,9 +287,6 @@ python seppuku_eventhandler() {
         bb.note("Failed to import the cookielib and urllib2, make sure to use python2.4")
         return NotHandled
 
-    event = e
-    data = e.data
-    name = getName(event)
     if name == "PkgFailed":
         if not bb.data.getVar('SEPPUKU_AUTOBUILD', data, True) == "0":
             build.exec_task('do_clean', data)
