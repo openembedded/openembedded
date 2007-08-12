@@ -1,0 +1,71 @@
+From 8224ca195874525533665bbcd23b6da1e575aa4d Mon Sep 17 00:00:00 2001
+From: Haavard Skinnemoen <hskinnemoen@atmel.com>
+Date: Fri, 27 Apr 2007 14:21:47 +0200
+Subject: [AVR32] Fix compile error with gcc 4.1
+
+gcc 4.1 doesn't seem to like const variables as inline assembly
+outputs. Drop support for reading 64-bit values using get_user() so
+that we can use an unsigned long to hold the result regardless of the
+actual size. This should be safe since many architectures, including
+i386, doesn't support reading 64-bit values with get_user().
+
+Signed-off-by: Haavard Skinnemoen <hskinnemoen@atmel.com>
+---
+ include/asm-avr32/uaccess.h |   13 ++++---------
+ 1 files changed, 4 insertions(+), 9 deletions(-)
+
+diff --git a/include/asm-avr32/uaccess.h b/include/asm-avr32/uaccess.h
+index 74a679e..ed09239 100644
+--- a/include/asm-avr32/uaccess.h
++++ b/include/asm-avr32/uaccess.h
+@@ -181,24 +181,23 @@ extern int __put_user_bad(void);
+ 
+ #define __get_user_nocheck(x, ptr, size)				\
+ ({									\
+-	typeof(*(ptr)) __gu_val = (typeof(*(ptr)) __force)0;		\
++	unsigned long __gu_val = 0;					\
+ 	int __gu_err = 0;						\
+ 									\
+ 	switch (size) {							\
+ 	case 1: __get_user_asm("ub", __gu_val, ptr, __gu_err); break;	\
+ 	case 2: __get_user_asm("uh", __gu_val, ptr, __gu_err); break;	\
+ 	case 4: __get_user_asm("w", __gu_val, ptr, __gu_err); break;	\
+-	case 8: __get_user_asm("d", __gu_val, ptr, __gu_err); break;	\
+ 	default: __gu_err = __get_user_bad(); break;			\
+ 	}								\
+ 									\
+-	x = __gu_val;							\
++	x = (typeof(*(ptr)))__gu_val;					\
+ 	__gu_err;							\
+ })
+ 
+ #define __get_user_check(x, ptr, size)					\
+ ({									\
+-	typeof(*(ptr)) __gu_val = (typeof(*(ptr)) __force)0;		\
++	unsigned long __gu_val = 0;					\
+ 	const typeof(*(ptr)) __user * __gu_addr = (ptr);		\
+ 	int __gu_err = 0;						\
+ 									\
+@@ -216,10 +215,6 @@ extern int __put_user_bad(void);
+ 			__get_user_asm("w", __gu_val, __gu_addr,	\
+ 				       __gu_err);			\
+ 			break;						\
+-		case 8:							\
+-			__get_user_asm("d", __gu_val, __gu_addr,	\
+-				       __gu_err);			\
+-			break;						\
+ 		default:						\
+ 			__gu_err = __get_user_bad();			\
+ 			break;						\
+@@ -227,7 +222,7 @@ extern int __put_user_bad(void);
+ 	} else {							\
+ 		__gu_err = -EFAULT;					\
+ 	}								\
+-	x = __gu_val;							\
++	x = (typeof(*(ptr)))__gu_val;					\
+ 	__gu_err;							\
+ })
+ 
+-- 
+1.4.4.4
+

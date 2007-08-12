@@ -1,0 +1,355 @@
+From nobody Mon Sep 17 00:00:00 2001
+From: Håvard Skinnemoen <hskinnemoen@atmel.com>
+Date: Wed Dec 21 14:52:09 2005 +0100
+Subject: [PATCH] LTV350QV LCD driver
+
+This patch adds support for powering on and off the Samsung LTV350QV
+LCD panel via SPI. The driver responds to framebuffer power management,
+it powers off the panel on reboot/halt/poweroff, and it can also be
+controlled through sysfs. The panel is powered up when the module is
+loaded and off when the module is unloaded.
+
+---
+ drivers/video/backlight/Kconfig    |   12 +
+ drivers/video/backlight/Makefile   |    1 
+ drivers/video/backlight/ltv350qv.c |  301 +++++++++++++++++++++++++++++++++++++
+ 3 files changed, 314 insertions(+)
+
+Index: linux-2.6.18-avr32/drivers/video/backlight/Kconfig
+===================================================================
+--- linux-2.6.18-avr32.orig/drivers/video/backlight/Kconfig	2006-09-11 20:30:16.000000000 +0200
++++ linux-2.6.18-avr32/drivers/video/backlight/Kconfig	2006-09-11 20:31:24.000000000 +0200
+@@ -42,6 +42,18 @@ config LCD_DEVICE
+ 	depends on LCD_CLASS_DEVICE
+ 	default y
+ 
++config LCD_LTV350QV
++	tristate "Samsung LTV350QV LCD Panel"
++	depends on LCD_DEVICE && SPI
++	default n
++	help
++	  If you have a Samsung LTV350QV LCD panel, say y to include a
++	  power control driver for it.  The panel starts up in power
++	  off state, so you need this driver in order to see any
++	  output.
++
++	  The LTV350QV panel is present on most ATSTK1000 boards.
++
+ config BACKLIGHT_CORGI
+ 	tristate "Sharp Corgi Backlight Driver (SL Series)"
+ 	depends on BACKLIGHT_DEVICE && PXA_SHARPSL
+Index: linux-2.6.18-avr32/drivers/video/backlight/Makefile
+===================================================================
+--- linux-2.6.18-avr32.orig/drivers/video/backlight/Makefile	2006-09-11 20:30:23.000000000 +0200
++++ linux-2.6.18-avr32/drivers/video/backlight/Makefile	2006-09-11 20:31:24.000000000 +0200
+@@ -5,3 +5,4 @@ obj-$(CONFIG_BACKLIGHT_CLASS_DEVICE) += 
+ obj-$(CONFIG_BACKLIGHT_CORGI)	+= corgi_bl.o
+ obj-$(CONFIG_BACKLIGHT_HP680)	+= hp680_bl.o
+ obj-$(CONFIG_BACKLIGHT_LOCOMO)	+= locomolcd.o
++obj-$(CONFIG_LCD_LTV350QV)	+= ltv350qv.o
+Index: linux-2.6.18-avr32/drivers/video/backlight/ltv350qv.c
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ linux-2.6.18-avr32/drivers/video/backlight/ltv350qv.c	2006-09-11 20:31:24.000000000 +0200
+@@ -0,0 +1,301 @@
++/*
++ * Power control for Samsung LTV350QV Quarter VGA LCD Panel
++ *
++ * Copyright (C) 2006 Atmel Corporation
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ */
++#include <linux/config.h>
++#include <linux/delay.h>
++#include <linux/err.h>
++#include <linux/fb.h>
++#include <linux/init.h>
++#include <linux/lcd.h>
++#include <linux/module.h>
++#include <linux/reboot.h>
++#include <linux/spi/spi.h>
++
++#define POWER_IS_ON(pwr)	((pwr) <= FB_BLANK_NORMAL)
++
++struct ltv350qv {
++	struct spi_device *spi;
++	u8 *buffer;
++	int power;
++	struct semaphore lock;
++	struct lcd_device *ld;
++	struct list_head list;
++	int halt_done;
++};
++
++static LIST_HEAD(lcd_list);
++
++static int ltv350qv_write_reg(struct ltv350qv *lcd, u8 reg, u16 val)
++{
++	struct spi_message msg;
++	struct spi_transfer index_xfer = {
++		.len		= 3,
++		.cs_change	= 1,
++	};
++	struct spi_transfer value_xfer = {
++		.len		= 3,
++		.cs_change	= 1,
++	};
++
++	spi_message_init(&msg);
++
++	/* register index */
++	lcd->buffer[0] = 0x74;
++	lcd->buffer[1] = 0x00;
++	lcd->buffer[2] = reg & 0x7f;
++	index_xfer.tx_buf = lcd->buffer;
++	spi_message_add_tail(&index_xfer, &msg);
++
++	/* register value */
++	lcd->buffer[4] = 0x76;
++	lcd->buffer[5] = val >> 8;
++	lcd->buffer[6] = val;
++	value_xfer.tx_buf = lcd->buffer + 4;
++	spi_message_add_tail(&value_xfer, &msg);
++
++	return spi_sync(lcd->spi, &msg);
++}
++
++#define write_reg(_spi, reg, val)				\
++	do {							\
++		ret = ltv350qv_write_reg(_spi, reg, val);	\
++		if (ret)					\
++			goto out;				\
++	} while (0)
++
++static int ltv350qv_power_on(struct ltv350qv *lcd)
++{
++	int ret;
++
++	write_reg(lcd,  9, 0x0000);
++	msleep(15);
++	write_reg(lcd,  9, 0x4000);
++	write_reg(lcd, 10, 0x2000);
++	write_reg(lcd,  9, 0x4055);
++	msleep(55);
++	write_reg(lcd,  1, 0x409d);
++	write_reg(lcd,  2, 0x0204);
++	write_reg(lcd,  3, 0x0100);
++	write_reg(lcd,  4, 0x3000);
++	write_reg(lcd,  5, 0x4003);
++	write_reg(lcd,  6, 0x000a);
++	write_reg(lcd,  7, 0x0021);
++	write_reg(lcd,  8, 0x0c00);
++	write_reg(lcd, 10, 0x0103);
++	write_reg(lcd, 11, 0x0301);
++	write_reg(lcd, 12, 0x1f0f);
++	write_reg(lcd, 13, 0x1f0f);
++	write_reg(lcd, 14, 0x0707);
++	write_reg(lcd, 15, 0x0307);
++	write_reg(lcd, 16, 0x0707);
++	write_reg(lcd, 17, 0x0000);
++	write_reg(lcd, 18, 0x0004);
++	write_reg(lcd, 19, 0x0000);
++
++	msleep(20);
++	write_reg(lcd,  9, 0x4a55);
++	write_reg(lcd,  5, 0x5003);
++
++out:
++	return ret;
++}
++
++static int ltv350qv_power_off(struct ltv350qv *lcd)
++{
++	int ret;
++
++	/* GON -> 0, POC -> 0 */
++	write_reg(lcd,  9, 0x4055);
++	/* DSC -> 0 */
++	write_reg(lcd,  5, 0x4003);
++	/* VCOMG -> 0 */
++	write_reg(lcd, 10, 0x2103);
++
++	msleep(1);
++
++	/* AP[2:0] -> 000 */
++	write_reg(lcd,  9, 0x4050);
++
++out:
++	return ret;
++}
++
++static int ltv350qv_power(struct ltv350qv *lcd, int power)
++{
++	int ret = 0;
++
++	down(&lcd->lock);
++
++	if (POWER_IS_ON(power) && !POWER_IS_ON(lcd->power))
++		ret = ltv350qv_power_on(lcd);
++	else if (!POWER_IS_ON(power) && POWER_IS_ON(lcd->power))
++		ret = ltv350qv_power_off(lcd);
++
++	if (!ret)
++		lcd->power = power;
++
++	up(&lcd->lock);
++
++	return ret;
++}
++
++static int ltv350qv_set_power(struct lcd_device *ld, int power)
++{
++	struct ltv350qv *lcd;
++
++	lcd = class_get_devdata(&ld->class_dev);
++	return ltv350qv_power(lcd, power);
++}
++
++static int ltv350qv_get_power(struct lcd_device *ld)
++{
++	struct ltv350qv *lcd;
++
++	lcd = class_get_devdata(&ld->class_dev);
++	return lcd->power;
++}
++
++static struct lcd_properties lcd_properties = {
++	.owner		= THIS_MODULE,
++	.get_power	= ltv350qv_get_power,
++	.set_power	= ltv350qv_set_power,
++};
++
++static int __devinit ltv350qv_probe(struct spi_device *spi)
++{
++	struct ltv350qv *lcd;
++	struct lcd_device *ld;
++	int ret;
++
++	lcd = kzalloc(sizeof(struct ltv350qv), GFP_KERNEL);
++	if (!lcd)
++		return -ENOMEM;
++
++	lcd->spi = spi;
++	lcd->power = FB_BLANK_POWERDOWN;
++	init_MUTEX(&lcd->lock);
++	lcd->buffer = kzalloc(8, GFP_KERNEL);
++
++	spi->mode = SPI_MODE_3;
++	spi->bits_per_word = 8;
++	ret = spi_setup(spi);
++	if (ret)
++		goto out_free_lcd;
++
++	ld = lcd_device_register("ltv350qv", lcd, &lcd_properties);
++	if (IS_ERR(ld)) {
++		ret = PTR_ERR(ld);
++		goto out_free_lcd;
++	}
++	lcd->ld = ld;
++
++	list_add(&lcd->list, &lcd_list);
++
++	ret = ltv350qv_power(lcd, FB_BLANK_UNBLANK);
++	if (ret)
++		goto out_unregister;
++
++	dev_set_drvdata(&spi->dev, lcd);
++
++	return 0;
++
++out_unregister:
++	lcd_device_unregister(ld);
++out_free_lcd:
++	kfree(lcd);
++	return ret;
++}
++
++static int __devexit ltv350qv_remove(struct spi_device *spi)
++{
++	struct ltv350qv *lcd = dev_get_drvdata(&spi->dev);
++
++	ltv350qv_power(lcd, FB_BLANK_POWERDOWN);
++	list_del(&lcd->list);
++	lcd_device_unregister(lcd->ld);
++	kfree(lcd);
++
++	return 0;
++}
++
++#ifdef CONFIG_PM
++static int ltv350qv_suspend(struct spi_device *spi,
++			    pm_message_t state, u32 level)
++{
++	struct ltv350qv *lcd = dev_get_drvdata(&spi->dev);
++
++	if (level == SUSPEND_POWER_DOWN)
++		return ltv350qv_power(lcd, FB_BLANK_POWERDOWN);
++
++	return 0;
++}
++
++static int ltv350qv_resume(struct spi_device *spi, u32 level)
++{
++	struct ltv350qv *lcd = dev_get_drvdata(&spi->dev);
++
++	if (level == RESUME_POWER_ON)
++		return ltv350qv_power(lcd, FB_BLANK_UNBLANK);
++
++	return 0;
++}
++#else
++#define ltv350qv_suspend	NULL
++#define ltv350qv_resume		NULL
++#endif
++
++/* Power down all displays on reboot, poweroff or halt */
++static int ltv350qv_halt(struct notifier_block *nb, unsigned long event,
++			 void *p)
++{
++	struct ltv350qv *lcd;
++
++	list_for_each_entry(lcd, &lcd_list, list) {
++		if (!lcd->halt_done)
++			ltv350qv_power(lcd, FB_BLANK_POWERDOWN);
++		lcd->halt_done = 1;
++	}
++
++	return NOTIFY_OK;
++}
++
++static struct spi_driver ltv350qv_driver = {
++	.driver = {
++		.name		= "ltv350qv",
++		.bus		= &spi_bus_type,
++		.owner		= THIS_MODULE,
++	},
++
++	.probe		= ltv350qv_probe,
++	.remove		= __devexit_p(ltv350qv_remove),
++	.suspend	= ltv350qv_suspend,
++	.resume		= ltv350qv_resume,
++};
++
++static struct notifier_block ltv350qv_notifier = {
++	.notifier_call	= ltv350qv_halt,
++};
++
++static int __init ltv350qv_init(void)
++{
++	register_reboot_notifier(&ltv350qv_notifier);
++	return spi_register_driver(&ltv350qv_driver);
++}
++
++static void __exit ltv350qv_exit(void)
++{
++	unregister_reboot_notifier(&ltv350qv_notifier);
++	spi_unregister_driver(&ltv350qv_driver);
++}
++module_init(ltv350qv_init);
++module_exit(ltv350qv_exit);
++
++MODULE_AUTHOR("Atmel Norway");
++MODULE_DESCRIPTION("Samsung LTV350QV LCD Driver");
++MODULE_LICENSE("GPL");

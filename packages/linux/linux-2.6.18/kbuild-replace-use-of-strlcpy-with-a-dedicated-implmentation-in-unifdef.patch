@@ -1,0 +1,30 @@
+From 14a036d2dc304797f3624c06bd6d2a1e9b59e45a Mon Sep 17 00:00:00 2001
+From: Sam Ravnborg <sam@mars.ravnborg.org>
+Date: Sun, 23 Jul 2006 20:41:30 +0200
+Subject: [PATCH] kbuild: replace use of strlcpy with a dedicated implmentation in unifdef
+
+Signed-off-by: Sam Ravnborg <sam@ravnborg.org>
+---
+ scripts/unifdef.c |    9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
+
+Index: linux-2.6.18-avr32/scripts/unifdef.c
+===================================================================
+--- linux-2.6.18-avr32.orig/scripts/unifdef.c	2006-10-30 15:58:53.000000000 +0100
++++ linux-2.6.18-avr32/scripts/unifdef.c	2006-10-30 15:58:59.000000000 +0100
+@@ -450,7 +450,14 @@ ignoreon(void)
+ static void
+ keywordedit(const char *replacement)
+ {
+-	strlcpy(keyword, replacement, tline + sizeof(tline) - keyword);
++	size_t size = tline + sizeof(tline) - keyword;
++	char *dst = keyword;
++	const char *src = replacement;
++	if (size != 0) {
++		while ((--size != 0) && (*src != '\0'))
++			*dst++ = *src++;
++		*dst = '\0';
++	}
+ 	print();
+ }
+ static void

@@ -1,0 +1,27 @@
+Hack for incompatible __GFP_COMP flag making its way into the AVR32
+DMA consistent memory allocator.
+ 
+This is essentially the same patch as the one submitted by
+Marc Singer <elf@buici.com> for ARM.
+---
+ arch/avr32/mm/dma-coherent.c |    7 +++++++
+ 1 file changed, 7 insertions(+)
+ 
+Index: linux-2.6.18-avr32/arch/avr32/mm/dma-coherent.c
+===================================================================
+--- linux-2.6.18-avr32.orig/arch/avr32/mm/dma-coherent.c	2006-09-11 18:06:00.000000000 +0200
++++ linux-2.6.18-avr32/arch/avr32/mm/dma-coherent.c	2006-09-12 13:38:39.000000000 +0200
+@@ -41,6 +41,13 @@ static struct page *__dma_alloc(struct d
+ 	struct page *page, *free, *end;
+ 	int order;
+ 
++	/* Following is a work-around (a.k.a. hack) to prevent pages
++	 * with __GFP_COMP being passed to split_page() which cannot
++	 * handle them.  The real problem is that this flag probably
++	 * should be 0 on AVR32 as it is not supported on this
++	 * platform--see CONFIG_HUGETLB_PAGE. */
++	gfp &= ~(__GFP_COMP);
++
+ 	size = PAGE_ALIGN(size);
+ 	order = get_order(size);
+ 
