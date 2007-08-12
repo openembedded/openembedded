@@ -586,6 +586,8 @@ python base_do_unpack() {
 		except bb.MalformedUrl, e:
 			raise FuncFailed('Unable to generate local path for malformed uri: %s' % e)
 		# dont need any parameters for extraction, strip them off
+		# RP: Insane. localpath shouldn't have parameters
+		# RP: Scehdule for removal with bitbake 1.8.8
 		local = re.sub(';.*$', '', local)
 		local = os.path.realpath(local)
 		ret = oe_unpack_file(local, localdata, url)
@@ -858,6 +860,12 @@ def base_after_parse(d):
     paths = []
     for p in [ "${PF}", "${P}", "${PN}", "files", "" ]:
         paths.append(bb.data.expand(os.path.join("${FILE_DIRNAME}", p, "${MACHINE}"), d))
+        path = bb.data.expand(os.path.join("${FILE_DIRNAME}", p, "${MACHINE}"), d)
+        if os.path.isdir(path):
+            paths.append(path)
+    if len(paths) == 0:
+        return
+
     for s in bb.data.getVar('SRC_URI', d, 1).split():
         if not s.startswith("file://"):
             continue
