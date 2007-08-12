@@ -1,0 +1,445 @@
+---
+ arch/avr32/mach-at32ap/at32ap7000.c   |  325 ++++++++++++++++++++++++++++++++--
+ include/asm-avr32/arch-at32ap/board.h |    6 
+ 2 files changed, 313 insertions(+), 18 deletions(-)
+
+Index: linux-2.6.18-avr32/arch/avr32/mach-at32ap/at32ap7000.c
+===================================================================
+--- linux-2.6.18-avr32.orig/arch/avr32/mach-at32ap/at32ap7000.c	2006-11-29 16:31:03.000000000 +0100
++++ linux-2.6.18-avr32/arch/avr32/mach-at32ap/at32ap7000.c	2006-11-29 16:44:49.000000000 +0100
+@@ -9,6 +9,8 @@
+ #include <linux/init.h>
+ #include <linux/platform_device.h>
+ 
++#include <linux/spi/spi.h>
++
+ #include <asm/io.h>
+ 
+ #include <asm/arch/at32ap7000.h>
+@@ -464,6 +466,17 @@ static struct clk pico_clk = {
+ 	.users		= 1,
+ };
+ 
++static struct resource dmac0_resource[] = {
++	{
++		.start	= 0xff200000,
++		.end	= 0xff20ffff,
++		.flags	= IORESOURCE_MEM,
++	},
++	IRQ(2),
++};
++DEFINE_DEV(dmac, 0);
++DEV_CLK(hclk, dmac0, hsb, 10);
++
+ /* --------------------------------------------------------------------
+  *  PIO
+  * -------------------------------------------------------------------- */
+@@ -504,6 +517,7 @@ void __init at32_add_system_devices(void
+ 	platform_device_register(&at32_intc0_device);
+ 	platform_device_register(&smc0_device);
+ 	platform_device_register(&pdc_device);
++	platform_device_register(&dmac0_device);
+ 
+ 	platform_device_register(&pio0_device);
+ 	platform_device_register(&pio1_device);
+@@ -644,6 +658,15 @@ DEFINE_DEV_DATA(macb, 0);
+ DEV_CLK(hclk, macb0, hsb, 8);
+ DEV_CLK(pclk, macb0, pbb, 6);
+ 
++static struct eth_platform_data macb1_data;
++static struct resource macb1_resource[] = {
++	PBMEM(0xfff01c00),
++	IRQ(26),
++};
++DEFINE_DEV_DATA(macb, 1);
++DEV_CLK(hclk, macb1, hsb, 9);
++DEV_CLK(pclk, macb1, pbb, 7);
++
+ struct platform_device *__init
+ at32_add_device_eth(unsigned int id, struct eth_platform_data *data)
+ {
+@@ -677,6 +700,33 @@ at32_add_device_eth(unsigned int id, str
+ 		}
+ 		break;
+ 
++	case 1:
++		pdev = &macb1_device;
++
++		select_peripheral(PD(13), PERIPH_B, 0);	/* TXD0	*/
++		select_peripheral(PD(14), PERIPH_B, 0);	/* TXD1	*/
++		select_peripheral(PD(11), PERIPH_B, 0);	/* TXEN	*/
++		select_peripheral(PD(12), PERIPH_B, 0);	/* TXCK */
++		select_peripheral(PD(10), PERIPH_B, 0);	/* RXD0	*/
++		select_peripheral(PD(6),  PERIPH_B, 0);	/* RXD1	*/
++		select_peripheral(PD(5),  PERIPH_B, 0);	/* RXER	*/
++		select_peripheral(PD(4),  PERIPH_B, 0);	/* RXDV	*/
++		select_peripheral(PD(3),  PERIPH_B, 0);	/* MDC	*/
++		select_peripheral(PD(2),  PERIPH_B, 0);	/* MDIO	*/
++
++		if (!data->is_rmii) {
++			select_peripheral(PC(19), PERIPH_B, 0);	/* COL	*/
++			select_peripheral(PC(23), PERIPH_B, 0);	/* CRS	*/
++			select_peripheral(PC(26), PERIPH_B, 0);	/* TXER	*/
++			select_peripheral(PC(27), PERIPH_B, 0);	/* TXD2	*/
++			select_peripheral(PC(28), PERIPH_B, 0);	/* TXD3 */
++			select_peripheral(PC(29), PERIPH_B, 0);	/* RXD2	*/
++			select_peripheral(PC(30), PERIPH_B, 0);	/* RXD3	*/
++			select_peripheral(PC(24), PERIPH_B, 0);	/* RXCK	*/
++			select_peripheral(PD(15), PERIPH_B, 0);	/* SPD	*/
++		}
++		break;
++
+ 	default:
+ 		return NULL;
+ 	}
+@@ -688,14 +738,53 @@ at32_add_device_eth(unsigned int id, str
+ }
+ 
+ /* --------------------------------------------------------------------
++ * MMC
++ * -------------------------------------------------------------------- */
++static struct resource mmci0_resource[] = {
++	PBMEM(0xfff02400),
++	IRQ(28),
++};
++DEFINE_DEV(mmci, 0);
++DEV_CLK(mck, mmci0, pbb, 9);
++
++struct platform_device *__init at32_add_device_mmci(unsigned int id)
++{
++	struct platform_device *pdev;
++
++	switch (id) {
++	case 0:
++		pdev = &mmci0_device;
++		select_peripheral(PA(10), PERIPH_A, 0);	/* CLK	 */
++		select_peripheral(PA(11), PERIPH_A, 0);	/* CMD	 */
++		select_peripheral(PA(12), PERIPH_A, 0);	/* DATA0 */
++		select_peripheral(PA(13), PERIPH_A, 0);	/* DATA1 */
++		select_peripheral(PA(14), PERIPH_A, 0);	/* DATA2 */
++		select_peripheral(PA(15), PERIPH_A, 0);	/* DATA3 */
++		break;
++	default:
++		return NULL;
++	}
++
++	platform_device_register(pdev);
++	return pdev;
++}
++
++/* --------------------------------------------------------------------
+  *  SPI
+  * -------------------------------------------------------------------- */
+-static struct resource spi0_resource[] = {
++static struct resource atmel_spi0_resource[] = {
+ 	PBMEM(0xffe00000),
+ 	IRQ(3),
+ };
+-DEFINE_DEV(spi, 0);
+-DEV_CLK(mck, spi0, pba, 0);
++DEFINE_DEV(atmel_spi, 0);
++DEV_CLK(pclk, atmel_spi0, pba, 0);
++
++static struct resource atmel_spi1_resource[] = {
++	PBMEM(0xffe00400),
++	IRQ(4),
++};
++DEFINE_DEV(atmel_spi, 1);
++DEV_CLK(pclk, atmel_spi1, pba, 1);
+ 
+ struct platform_device *__init at32_add_device_spi(unsigned int id)
+ {
+@@ -703,13 +792,96 @@ struct platform_device *__init at32_add_
+ 
+ 	switch (id) {
+ 	case 0:
+-		pdev = &spi0_device;
++		pdev = &atmel_spi0_device;
+ 		select_peripheral(PA(0), PERIPH_A, 0);	/* MISO	 */
+ 		select_peripheral(PA(1), PERIPH_A, 0);	/* MOSI	 */
+ 		select_peripheral(PA(2), PERIPH_A, 0);	/* SCK	 */
+-		select_peripheral(PA(3), PERIPH_A, 0);	/* NPCS0 */
+-		select_peripheral(PA(4), PERIPH_A, 0);	/* NPCS1 */
+-		select_peripheral(PA(5), PERIPH_A, 0);	/* NPCS2 */
++
++		/* NPCS[2:0] */
++		at32_select_gpio(GPIO_PIN_PA(3),
++				 AT32_GPIOF_OUTPUT | AT32_GPIOF_HIGH);
++		at32_select_gpio(GPIO_PIN_PA(4),
++				 AT32_GPIOF_OUTPUT | AT32_GPIOF_HIGH);
++		at32_select_gpio(GPIO_PIN_PA(5),
++				 AT32_GPIOF_OUTPUT | AT32_GPIOF_HIGH);
++		break;
++
++	case 1:
++		pdev = &atmel_spi1_device;
++		select_peripheral(PB(0), PERIPH_B, 0);	/* MISO	 */
++		select_peripheral(PB(1), PERIPH_B, 0);	/* MOSI	 */
++		select_peripheral(PB(5), PERIPH_B, 0);	/* SCK	 */
++
++		/* NPCS[2:0] */
++		at32_select_gpio(GPIO_PIN_PA(2),
++				 AT32_GPIOF_OUTPUT | AT32_GPIOF_HIGH);
++		at32_select_gpio(GPIO_PIN_PA(3),
++				 AT32_GPIOF_OUTPUT | AT32_GPIOF_HIGH);
++		at32_select_gpio(GPIO_PIN_PA(4),
++				 AT32_GPIOF_OUTPUT | AT32_GPIOF_HIGH);
++
++	default:
++		return NULL;
++	}
++
++	platform_device_register(pdev);
++	return pdev;
++}
++
++/* --------------------------------------------------------------------
++ *  USB Device Controller
++ * -------------------------------------------------------------------- */
++static struct resource usb0_resource[] = {
++	{
++		.start		= 0xff300000,
++		.end		= 0xff3fffff,
++		.flags		= IORESOURCE_MEM,
++	},
++	PBMEM(0xfff03000),
++	IRQ(31),
++};
++DEFINE_DEV(usb, 0);
++DEV_CLK(pclk, usb0, pbb, 12);
++DEV_CLK(hclk, usb0, hsb, 6);
++
++struct platform_device *__init at32_add_device_usb(unsigned int id)
++{
++	struct platform_device *pdev;
++
++	switch (id) {
++	case 0:
++		pdev = &usb0_device;
++		/* USB pads are not multiplexed */
++		break;
++	default:
++		return NULL;
++	}
++
++	platform_device_register(pdev);
++	return pdev;
++}
++
++/* --------------------------------------------------------------------
++ *  TWI
++ * -------------------------------------------------------------------- */
++
++static struct resource atmel_twi0_resource[] = {
++	PBMEM(0xffe00800),
++	IRQ(5),
++};
++DEFINE_DEV(atmel_twi, 0);
++DEV_CLK(pclk,atmel_twi0,pba,2);
++
++struct platform_device *__init
++at32_add_device_twi(unsigned int id)
++{
++	struct platform_device *pdev;
++
++	switch (id) {
++	case 0:
++		pdev = &atmel_twi0_device;
++		select_peripheral(PA(6),  PERIPH_A, 0);	/* SDA	*/
++		select_peripheral(PA(7),  PERIPH_A, 0);	/* SCL	*/
+ 		break;
+ 
+ 	default:
+@@ -765,16 +937,16 @@ at32_add_device_lcdc(unsigned int id, st
+ 		select_peripheral(PC(29), PERIPH_A, 0);	/* DATA3  */
+ 		select_peripheral(PC(30), PERIPH_A, 0);	/* DATA4  */
+ 		select_peripheral(PC(31), PERIPH_A, 0);	/* DATA5  */
+-		select_peripheral(PD(0), PERIPH_A, 0);	/* DATA6  */
+-		select_peripheral(PD(1), PERIPH_A, 0);	/* DATA7  */
+-		select_peripheral(PD(2), PERIPH_A, 0);	/* DATA8  */
+-		select_peripheral(PD(3), PERIPH_A, 0);	/* DATA9  */
+-		select_peripheral(PD(4), PERIPH_A, 0);	/* DATA10 */
+-		select_peripheral(PD(5), PERIPH_A, 0);	/* DATA11 */
+-		select_peripheral(PD(6), PERIPH_A, 0);	/* DATA12 */
+-		select_peripheral(PD(7), PERIPH_A, 0);	/* DATA13 */
+-		select_peripheral(PD(8), PERIPH_A, 0);	/* DATA14 */
+-		select_peripheral(PD(9), PERIPH_A, 0);	/* DATA15 */
++		select_peripheral(PD(0),  PERIPH_A, 0);	/* DATA6  */
++		select_peripheral(PD(1),  PERIPH_A, 0);	/* DATA7  */
++		select_peripheral(PD(2),  PERIPH_A, 0);	/* DATA8  */
++		select_peripheral(PD(3),  PERIPH_A, 0);	/* DATA9  */
++		select_peripheral(PD(4),  PERIPH_A, 0);	/* DATA10 */
++		select_peripheral(PD(5),  PERIPH_A, 0);	/* DATA11 */
++		select_peripheral(PD(6),  PERIPH_A, 0);	/* DATA12 */
++		select_peripheral(PD(7),  PERIPH_A, 0);	/* DATA13 */
++		select_peripheral(PD(8),  PERIPH_A, 0);	/* DATA14 */
++		select_peripheral(PD(9),  PERIPH_A, 0);	/* DATA15 */
+ 		select_peripheral(PD(10), PERIPH_A, 0);	/* DATA16 */
+ 		select_peripheral(PD(11), PERIPH_A, 0);	/* DATA17 */
+ 		select_peripheral(PD(12), PERIPH_A, 0);	/* DATA18 */
+@@ -799,6 +971,111 @@ at32_add_device_lcdc(unsigned int id, st
+ 	return pdev;
+ }
+ 
++/* --------------------------------------------------------------------
++ *  Sound
++ * -------------------------------------------------------------------- */
++static struct resource ac97c0_resource[] = {
++	PBMEM(0xfff02800),
++	IRQ(29),
++};
++DEFINE_DEV(ac97c, 0);
++DEV_CLK(mck, ac97c0, pbb, 10);
++
++struct platform_device *__init
++at32_add_device_ac97c(unsigned int id)
++{
++	struct platform_device *pdev;
++
++	switch (id) {
++	case 0:
++		pdev = &ac97c0_device;
++		select_peripheral(PB(20), PERIPH_B, 0);	/* SYNC	*/
++		select_peripheral(PB(21), PERIPH_B, 0);	/* SDO	*/
++		select_peripheral(PB(22), PERIPH_B, 0);	/* SDI	*/
++		select_peripheral(PB(23), PERIPH_B, 0);	/* SCLK	*/
++		break;
++	default:
++		return NULL;
++	}
++
++	platform_device_register(pdev);
++	return pdev;
++}
++
++static struct spi_board_info at73c2130_data = {
++	.max_speed_hz	= 200000,
++	.controller_data = (void *)GPIO_PIN_PA(3),
++	.modalias	= "at73c213",
++	.bus_num	= 0,
++	.chip_select	= 0,
++};
++static struct resource at73c2130_resource[] = {
++	PBMEM(0xffe01c00),
++	IRQ(10),
++};
++DEFINE_DEV_DATA(at73c213, 0);
++DEV_CLK(mck, at73c2130, pba, 7);
++
++struct platform_device *__init
++at32_add_device_at73c213(unsigned int id)
++{
++	struct platform_device *pdev;
++
++	switch (id) {
++	case 0:
++		pdev = &at73c2130_device;
++		select_peripheral(PA(21), PERIPH_A, 0);	/* RX_FSYNC	*/
++		select_peripheral(PA(22), PERIPH_A, 0);	/* RX_CLOCK	*/
++		select_peripheral(PA(23), PERIPH_A, 0);	/* TX_CLOCK	*/
++		select_peripheral(PA(24), PERIPH_A, 0);	/* TX_FSYNC	*/
++		select_peripheral(PA(25), PERIPH_A, 0);	/* TX_DATA	*/
++		select_peripheral(PA(26), PERIPH_A, 0);	/* RX_DATA	*/
++		break;
++	default:
++		return NULL;
++	}
++
++	platform_device_register(pdev);
++	return pdev;
++}
++
++static struct resource dac0_resource[] = {
++	PBMEM(0xfff02000),
++	IRQ(27),
++};
++DEFINE_DEV(dac, 0);
++DEV_CLK(mck, dac0, pbb, 8);
++static struct clk dac0_sample_clk = {
++	.name           = "sample_clk",
++	.dev            = &dac0_device.dev,
++	.mode           = genclk_mode,
++	.get_rate       = genclk_get_rate,
++	.set_rate       = genclk_set_rate,
++	.set_parent     = genclk_set_parent,
++	.index          = 6,
++};
++
++struct platform_device *__init
++at32_add_device_dac(unsigned int id)
++{
++	struct platform_device *pdev;
++
++	switch (id) {
++	case 0:
++		pdev = &dac0_device;
++		select_peripheral(PB(20), PERIPH_A, 0);	/* DATA1	*/
++		select_peripheral(PB(21), PERIPH_A, 0);	/* DATA0	*/
++		select_peripheral(PB(22), PERIPH_A, 0);	/* DATAN1	*/
++		select_peripheral(PB(23), PERIPH_A, 0);	/* DATAN0	*/
++		break;
++	default:
++		return NULL;
++	}
++
++	platform_device_register(pdev);
++	return pdev;
++}
++
+ struct clk *at32_clock_list[] = {
+ 	&osc32k,
+ 	&osc0,
+@@ -817,6 +1094,7 @@ struct clk *at32_clock_list[] = {
+ 	&smc0_mck,
+ 	&pdc_hclk,
+ 	&pdc_pclk,
++	&dmac0_hclk,
+ 	&pico_clk,
+ 	&pio0_mck,
+ 	&pio1_mck,
+@@ -828,9 +1106,20 @@ struct clk *at32_clock_list[] = {
+ 	&usart3_usart,
+ 	&macb0_hclk,
+ 	&macb0_pclk,
+-	&spi0_mck,
++	&macb1_hclk,
++	&macb1_pclk,
++	&atmel_spi0_pclk,
++	&atmel_spi1_pclk,
++	&atmel_twi0_pclk,
++	&mmci0_mck,
++	&usb0_pclk,
++	&usb0_hclk,
+ 	&lcdc0_hclk,
+ 	&lcdc0_pixclk,
++	&ac97c0_mck,
++	&at73c2130_mck,
++	&dac0_mck,
++	&dac0_sample_clk,
+ };
+ unsigned int at32_nr_clocks = ARRAY_SIZE(at32_clock_list);
+ 
+Index: linux-2.6.18-avr32/include/asm-avr32/arch-at32ap/board.h
+===================================================================
+--- linux-2.6.18-avr32.orig/include/asm-avr32/arch-at32ap/board.h	2006-11-29 16:31:03.000000000 +0100
++++ linux-2.6.18-avr32/include/asm-avr32/arch-at32ap/board.h	2006-11-29 16:31:42.000000000 +0100
+@@ -24,13 +24,19 @@ struct eth_platform_data {
+ struct platform_device *
+ at32_add_device_eth(unsigned int id, struct eth_platform_data *data);
+ 
++struct platform_device *at32_add_device_mmci(unsigned int id);
+ struct platform_device *at32_add_device_spi(unsigned int id);
++struct platform_device *at32_add_device_twi(unsigned int id);
+ 
+ struct lcdc_platform_data {
+ 	unsigned long fbmem_start;
+ 	unsigned long fbmem_size;
+ };
++struct platform_device *__init at32_add_device_usb(unsigned int id);
+ struct platform_device *
+ at32_add_device_lcdc(unsigned int id, struct lcdc_platform_data *data);
++struct platform_device *__init at32_add_device_dac(unsigned int id);
++struct platform_device *__init at32_add_device_at73c213(unsigned int id);
++struct platform_device *__init at32_add_device_ac97c(unsigned int id);
+ 
+ #endif /* __ASM_ARCH_BOARD_H */

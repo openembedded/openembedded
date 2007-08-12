@@ -1,0 +1,93 @@
+---
+ arch/avr32/drivers/dw-dmac.c |   50 ++++++++++++++++++++++++-------------------
+ 1 file changed, 29 insertions(+), 21 deletions(-)
+
+Index: linux-2.6.18-avr32/arch/avr32/drivers/dw-dmac.c
+===================================================================
+--- linux-2.6.18-avr32.orig/arch/avr32/drivers/dw-dmac.c	2007-01-04 09:56:32.000000000 +0100
++++ linux-2.6.18-avr32/arch/avr32/drivers/dw-dmac.c	2007-01-04 15:38:13.000000000 +0100
+@@ -7,7 +7,6 @@
+  * it under the terms of the GNU General Public License version 2 as
+  * published by the Free Software Foundation.
+  */
+-
+ #include <linux/clk.h>
+ #include <linux/device.h>
+ #include <linux/dma-mapping.h>
+@@ -155,6 +154,21 @@ fail:
+ 	return NULL;
+ }
+ 
++static void cleanup_channel(struct dw_dma_controller *dmac,
++			    struct dw_dma_channel *chan)
++{
++	unsigned int i;
++
++	if (chan->nr_blocks > 1) {
++		for (i = 0; i < chan->nr_blocks; i++)
++			dma_pool_free(dmac->lli_pool, chan->block[i].lli_vaddr,
++				      chan->block[i].lli_dma_addr);
++		kfree(chan->block);
++	}
++
++	chan->state = CH_STATE_ALLOCATED;
++}
++
+ static int dmac_prepare_request_sg(struct dma_controller *_dmac,
+ 				   struct dma_request_sg *req)
+ {
+@@ -313,6 +327,7 @@ static int dmac_prepare_request_sg(struc
+ 		 * SAR, DAR and CTL are initialized from the LLI. We
+ 		 * only have to enable the LLI bits in CTL.
+ 		 */
++		dmac_chan_writel_hi(dmac, req->req.channel, CTL, 0);
+ 		dmac_chan_writel_lo(dmac, req->req.channel, LLP,
+ 				    chan->block[0].lli_dma_addr);
+ 		dmac_chan_writel_lo(dmac, req->req.channel, CTL, 1 << 28 | 1 << 27);
+@@ -520,33 +535,26 @@ static dma_addr_t dmac_get_current_pos(s
+ }
+ 
+ 
+-static void cleanup_channel(struct dw_dma_controller *dmac,
+-			    struct dw_dma_channel *chan)
+-{
+-	unsigned int i;
+-
+-	if (chan->nr_blocks > 1) {
+-		for (i = 0; i < chan->nr_blocks; i++)
+-			dma_pool_free(dmac->lli_pool, chan->block[i].lli_vaddr,
+-				      chan->block[i].lli_dma_addr);
+-		kfree(chan->block);
+-	}
+-
+-	chan->state = CH_STATE_ALLOCATED;
+-}
+-
+ static int dmac_stop_request(struct dma_controller *_dmac,
+                              unsigned int channel)
+ {
+ 	struct dw_dma_controller *dmac = to_dw_dmac(_dmac);
++	struct dw_dma_channel *chan;
+ 
+ 	BUG_ON(channel >= DMAC_NR_CHANNELS);
+ 
+-	BUG_ON(dmac->channel[channel].state != CH_STATE_BUSY);
+-
+-	clear_channel_bit(dmac, CH_EN, channel);
+-
+-        cleanup_channel(dmac, &dmac->channel[channel]);
++	chan = &dmac->channel[channel];
++	pr_debug("stop: st%u s%08x d%08x l%08x ctl0x%08x:0x%08x\n",
++		 chan->state, dmac_chan_readl_lo(dmac, channel, SAR),
++		 dmac_chan_readl_lo(dmac, channel, DAR),
++		 dmac_chan_readl_lo(dmac, channel, LLP),
++		 dmac_chan_readl_hi(dmac, channel, CTL),
++		 dmac_chan_readl_lo(dmac, channel, CTL));
++
++	if (chan->state == CH_STATE_BUSY) {
++		clear_channel_bit(dmac, CH_EN, channel);
++		cleanup_channel(dmac, &dmac->channel[channel]);
++	}
+ 
+ 	return 0;
+ }

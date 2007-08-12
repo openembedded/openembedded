@@ -1,0 +1,47 @@
+From nobody Mon Sep 17 00:00:00 2001
+From: Haavard Skinnemoen <hskinnemoen@atmel.com>
+Date: Sun, 14 Jan 2007 19:07:06 +0100
+Subject: [ATMEL MCI] Initialize the nr_blocks member of the dma request
+
+It seems like the mmc driver might get asked to write less data
+than what is available in the associated scatterlist. Previously,
+the dmac driver assumed that an sg request should transfer all
+the data in the scatterlist, which would break in this case.
+
+Resolve this by passing the number of blocks to transfer explicitly.
+This will probably fix a number of cases where the mmc controller
+seemed to be out of sync with the dma controller.
+
+Signed-off-by: Haavard Skinnemoen <hskinnemoen@atmel.com>
+---
+ drivers/mmc/atmel-mci.c |    3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+Index: linux-2.6.18-avr32/drivers/mmc/atmel-mci.c
+===================================================================
+--- linux-2.6.18-avr32.orig/drivers/mmc/atmel-mci.c	2007-01-15 15:39:13.000000000 +0100
++++ linux-2.6.18-avr32/drivers/mmc/atmel-mci.c	2007-01-15 15:39:25.000000000 +0100
+@@ -51,7 +51,6 @@ struct atmel_mci_dma {
+ 	struct dma_request_sg	req;
+ 	unsigned short		rx_periph_id;
+ 	unsigned short		tx_periph_id;
+-	int			blocks_left;
+ };
+ 
+ struct atmel_mci {
+@@ -428,6 +427,7 @@ static u32 atmci_prepare_data(struct mmc
+ 	mci_writel(host, BLKR, (MCI_BF(BCNT, data->blocks)
+ 				| MCI_BF(BLKLEN, data->blksz)));
+ 	host->dma.req.block_size = data->blksz;
++	host->dma.req.nr_blocks = data->blocks;
+ 
+ 	cmd_flags = MCI_BF(TRCMD, MCI_TRCMD_START_TRANS);
+ 	if (data->flags & MMC_DATA_STREAM)
+@@ -454,7 +454,6 @@ static u32 atmci_prepare_data(struct mmc
+ 		host->dma.req.data_reg = host->mapbase + MCI_TDR;
+ 	}
+ 	host->dma.req.sg = data->sg;
+-	host->dma.blocks_left = data->blocks;
+ 
+ 	dma_prepare_request_sg(host->dma.req.req.dmac, &host->dma.req);
+ 

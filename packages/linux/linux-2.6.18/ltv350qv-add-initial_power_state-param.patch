@@ -1,0 +1,25 @@
+Index: linux-2.6.18/drivers/video/backlight/ltv350qv.c
+===================================================================
+--- linux-2.6.18.orig/drivers/video/backlight/ltv350qv.c	2007-01-11 14:55:39.000000000 +0100
++++ linux-2.6.18/drivers/video/backlight/ltv350qv.c	2007-01-11 14:59:23.000000000 +0100
+@@ -19,6 +19,11 @@
+ 
+ #define POWER_IS_ON(pwr)	((pwr) <= FB_BLANK_NORMAL)
+ 
++static int initial_power_state = FB_BLANK_POWERDOWN;
++
++module_param(initial_power_state, int, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
++MODULE_PARM_DESC(initial_power_state, "Set initial power state of LCD");
++
+ struct ltv350qv {
+ 	struct spi_device *spi;
+ 	u8 *buffer;
+@@ -178,7 +183,7 @@
+ 		return -ENOMEM;
+ 
+ 	lcd->spi = spi;
+-	lcd->power = FB_BLANK_POWERDOWN;
++	lcd->power = initial_power_state;
+ 	init_MUTEX(&lcd->lock);
+ 	lcd->buffer = kzalloc(8, GFP_KERNEL);
+ 
