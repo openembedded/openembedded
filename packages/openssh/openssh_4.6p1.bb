@@ -16,7 +16,7 @@ It is intended as a replacement for rlogin, rsh and rcp, and can be \
 used to provide applications with a secure communication channel."
 HOMEPAGE = "http://www.openssh.org/"
 LICENSE = "BSD"
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "ftp://ftp.openbsd.org/pub/OpenBSD/OpenSSH/portable/openssh-${PV}.tar.gz \
            file://sshd_config \
@@ -55,6 +55,7 @@ do_install_append() {
 	install -m 0755 ${WORKDIR}/init ${D}${sysconfdir}/init.d/sshd
 	mv ${D}${bindir}/scp ${D}${bindir}/scp.openssh
 	mv ${D}${bindir}/ssh ${D}${bindir}/ssh.openssh
+	rmdir ${D}/var/run/sshd ${D}/var/run ${D}/var
 }
 
 PACKAGES =+ " openssh-scp openssh-ssh openssh-sshd openssh-sftp openssh-misc"
@@ -62,7 +63,7 @@ FILES_openssh-dbg +=${bindir}/.debug ${libdir}exec/.debug"
 FILES_openssh-scp = "${bindir}/scp.${PN}"
 FILES_openssh-ssh = "${bindir}/ssh.${PN} ${bindir}/slogin /${sysconfdir}/ssh/ssh_config"
 FILES_openssh-sshd = "${sbindir}/sshd /${sysconfdir}/init.d/sshd ${bindir}/ssh-keygen"
-FILES_openssh-sshd += " /${sysconfdir}/ssh/moduli /${sysconfdir}/ssh/sshd_config /var/run/sshd"
+FILES_openssh-sshd += " /${sysconfdir}/ssh/moduli /${sysconfdir}/ssh/sshd_config"
 FILES_openssh-sftp = "${bindir}/sftp ${libdir}exec/sftp-server"
 FILES_openssh-misc = "${bindir}/ssh* ${libdir}exec/ssh*"
 
