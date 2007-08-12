@@ -327,7 +327,7 @@ python seppuku_eventhandler() {
             else:
                 print >> debug_file, "No log file found for the glob"
         elif name == "NoProvider":
-            bugname = "noprovider for %s runtime: %s" % (event.getItem, event.getisRuntime)
+            bugname = "noprovider for %s " % (event.getItem)
             text    = "Please fix it"
         else:
             print >> debug_file, "Unknown name '%s'" % name
