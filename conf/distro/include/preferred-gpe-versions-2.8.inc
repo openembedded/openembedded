@@ -42,7 +42,6 @@ PREFERRED_VERSION_ipaq-sleep ?= "0.9"
 PREFERRED_VERSION_teleport ?= "0.34"
 PREFERRED_VERSION_xst ?= "0.15"
 
-
 PREFERRED_VERSION_gpe-aerial ?= "0.3.0"
 PREFERRED_VERSION_gpe-appmgr ?= "2.8"
 PREFERRED_VERSION_gpe-autostarter ?= "0.12"
