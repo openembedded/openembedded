@@ -65,8 +65,9 @@ def check_sanity(e):
 	if data.getVar('TARGET_OS', e.data, True) == 'INVALID':
 		messages = messages + 'Please set TARGET_OS directly, or choose a MACHINE or DISTRO that does so.\n'
 
+	assume_provided = data.getVar('ASSUME_PROVIDED', e.data , True).split()
 	# Check user doesn't have ASSUME_PROVIDED = instead of += in local.conf
-	if "diffstat-native" not in data.getVar('ASSUME_PROVIDED', e.data, True).split():
+	if "diffstat-native" not in assume_provided:
 		messages = messages + 'Please use ASSUME_PROVIDED +=, not ASSUME_PROVIDED = in your local.conf\n'
 	
 	# Check that the MACHINE is valid
@@ -98,6 +99,11 @@ def check_sanity(e):
 	if missing != "":
 		missing = missing.rstrip(',')
 		messages = messages + "Please install following missing utilities: %s\n" % missing
+
+	omask = os.umask(022)
+	if omask & 0755:
+		messages = messages + "Please use a umask which allows a+rx and u+rwx\n"
+	os.umask(omask)
 
 	oes_bb_conf = data.getVar( 'OES_BITBAKE_CONF', e.data, True )
 	if not oes_bb_conf:
