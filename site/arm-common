@@ -109,6 +109,9 @@ ac_cv_func_snprintf_c99=${ac_cv_func_snprintf_c99=yes}
 ac_cv_func_vsnprintf_c99=${ac_cv_func_vsnprintf_c99=yes}
 glib_cv_compliant_posix_memalign=${glib_cv_compliant_posix_memalign=1}
 
+#gstreamer
+as_cv_unaligned_access=${as_cv_unaligned_access=no}
+
 # httppc
 ac_cv_strerror_r_SUSv3=${ac_cv_strerror_r_SUSv3=no}
 
