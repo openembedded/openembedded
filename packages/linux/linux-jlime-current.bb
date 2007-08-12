@@ -9,6 +9,8 @@ DESCRIPTION = "2.6 Linux Development Kernel for JLime supported Machines."
 SECTION = "kernel"
 LICENSE = "GPL"
 
+COMPATIBLE_MACHINE = "fillmein"
+
 inherit kernel
 
 PR = "r1"
