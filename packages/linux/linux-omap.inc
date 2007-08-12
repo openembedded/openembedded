@@ -3,8 +3,6 @@ DESCRIPTION = "Linux kernel for OMAP processors"
 LICENSE = "GPL"
 DEPENDS = "u-boot"
 
-COMPATIBLE_MACHINE = "omap5912osk"
-
 inherit kernel
 
 KERNEL_IMAGETYPE = "uImage"
