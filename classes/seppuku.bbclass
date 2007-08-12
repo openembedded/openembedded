@@ -218,9 +218,9 @@ def seppuku_file_bug(poster, file, product, component, bugname, text):
 
     # scan the result for a bug number
     # it will look like 
-    # '<a href="show_bug.cgi?id=308">Back To BUG# 308</a>'
+    # '<title>Bug 2742 Submitted</title>'
     import re
-    res = re.findall(("\>Back To BUG\# (?P<int>\d+)\</a\>"), result.read() )
+    res = re.findall(("\>Bug (?P<int>\d+) Submitted"), result.read() )
     if result.code != 200 or len(res) != 1:
         return None 
     else:
@@ -234,7 +234,7 @@ def seppuku_create_attachment(debug, poster, attach_query, product, component, b
 
     if not bug_number:
         import bb
-        bb.note("Can't create an attachment, the bug is not present")
+        bb.note("Can't create an attachment, no bugnumber passed to method")
         return False
 
     import urllib2
@@ -320,15 +320,15 @@ python seppuku_eventhandler() {
                                                                "pr"      : bb.data.getVar("PR", data, True),
                                                                "task"    : e.task }
             log_file = glob.glob("%s/log.%s.*" % (bb.data.getVar('T', event.data, True), event.task))
-            text     = "The package failed to build at %s" % bb.data.getVar('DATETIME', data, True) 
+            text     = "The package failed to build at %s for machine %s" % (bb.data.getVar('DATETIME', data, True), bb.data.getVar( 'MACHINE', data, True ) )
             if len(log_file) != 0:
                 print >> debug_file, "Adding log file %s" % log_file[0]
                 file = open(log_file[0], 'r')
             else:
                 print >> debug_file, "No log file found for the glob"
-        elif name == "NoProvider":
-            bugname = "noprovider for %s " % (event.getItem)
-            text    = "Please fix it"
+        #elif name == "NoProvider":
+        #    bugname = "noprovider for %s " % (event.getItem)
+        #    text    = "Please fix it"
         else:
             print >> debug_file, "Unknown name '%s'" % name
             assert False
@@ -349,11 +349,11 @@ python seppuku_eventhandler() {
         else:	
             bug_number = seppuku_file_bug(poster, newbug, product, component, bugname, text)
             if not bug_number:
-                print >> debug_file, "Filing a bugreport failed"
+                print >> debug_file, "Couldn't acquire a new bug_numer, filing a bugreport failed"
             else:
                 print >> debug_file, "The new bug_number: '%s'" % bug_number
 
-        if file:
+        if bug_number and file:
             if not seppuku_create_attachment(debug_file, poster, attach, product, component, bug_number, text, file):
                 print >> debug_file, "Failed to attach the build log"
             else:
