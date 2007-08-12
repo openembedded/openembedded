@@ -2,6 +2,8 @@ require linux-omap.inc
 
 DEFAULT_PREFERENCE = "-1"
 
+COMPATIBLE_MACHINE = "omap5912osk"
+
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.22.tar.bz2 \
            http://www.muru.com/linux/omap/patches/patch-2.6.22-omap1.bz2;patch=1 \
 	   file://defconfig.eabi \
