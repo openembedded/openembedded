@@ -6,7 +6,7 @@
 # UCLIBC_BASE can be set in a distro file, but whether this works depends
 # on whether the base patches apply to the selected (SRCDATE) svn release.
 #
-UCLIBC_BASE ?= "0.9.28"
+UCLIBC_BASE ?= "0.9.29"
 PV = "${UCLIBC_BASE}+svn${SRCDATE}"
 PR = "r5"
 
@@ -25,8 +25,13 @@ FILESPATH = "${@base_set_filespath([ '${FILE_DIRNAME}/uclibc-cvs', '${FILE_DIRNA
 #however: we can't depend on virtual/kernel when nptl hits due to depends deadlocking ....
 KERNEL_SOURCE = "${CROSS_DIR}/${TARGET_SYS}"
 
-SRC_URI += "svn://uclibc.org/trunk;module=uClibc"
+SRC_URI += "svn://uclibc.org/trunk;module=uClibc \
+            file://uClibc.machine \
+            file://uClibc.distro \
+            file://error_print_progname.patch;patch=1 \
+            file://select.diff;patch=1 \
+            "
 
-SRC_URI += " file://error_print_progname.patch;patch=1"
 S = "${WORKDIR}/uClibc"
+
 
