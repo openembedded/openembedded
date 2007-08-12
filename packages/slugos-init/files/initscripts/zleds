@@ -21,8 +21,25 @@ state(){
 	esac
 }
 
+# trumpet "beeps" an announcement on systems with such support.
+l=120   # Long beep time
+s=40    # Try to keep a 3:1 ratio
+trumpet(){
+	case "$1" in
+	k)    leds beep -l $l; leds beep -l $s; leds beep -l $l;;
+	n)    leds beep -l $l; leds beep -l $s;;
+	*)    leds beep;;
+	esac
+}
+
 case "$1" in
-start)	leds "$(state "$runlevel")";;
-stop)	leds boot "$(state "$runlevel")";;
-*)	echo "led change: $1: command ignored" >&2;;
+start)	leds "$(state "$runlevel")"
+	if [ "$(state "$runlevel")" == "user" ]; then
+		trumpet "k"
+	fi
+	;;
+stop)	leds boot "$(state "$runlevel")"
+	;;
+*)	echo "led change: $1: command ignored" >&2
+	;;
 esac
