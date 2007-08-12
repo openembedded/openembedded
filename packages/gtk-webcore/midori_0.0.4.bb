@@ -1,7 +1,7 @@
 DESCRIPTION = "Midori is a lightweight web browser."
 LICENSE = "GPLv2"
 
-DEPENDS = "webkit libsexy" 
+DEPENDS = "webkit-gtk libsexy" 
 
 inherit autotools pkgconfig
 
