@@ -4,7 +4,9 @@ DEPENDS += "flex-native bison-native"
 PROVIDES = "virtual/${TARGET_PREFIX}binutils"
 PACKAGES = ""
 EXTRA_OECONF = "--with-sysroot=${CROSS_DIR}/${TARGET_SYS} \
-		--program-prefix=${TARGET_PREFIX}"
+		--program-prefix=${TARGET_PREFIX} \
+		--enable-install-libbfd \
+		""
 
 do_stage () {
 	oe_runmake install
