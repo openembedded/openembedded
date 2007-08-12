@@ -1,4 +1,4 @@
-require linux-omap1.inc
+require linux-omap.inc
 
 PR = "r1"
 
