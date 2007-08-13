@@ -106,7 +106,9 @@ PREFERRED_PROVIDERS += " virtual/${TARGET_PREFIX}g++:gcc-cross"
 # INHERIT = "package_ipk"
 # INHERIT = "package_tar"
 
-# Add the required image file system types below. Valid are jffs2, tar, cramfs and ext2
+# Add the required image file system types below. Valid are 
+# jffs2, tar(.gz|bz2), cpio(.gz), cramfs, ext2(.gz), ext3(.gz)
+# squashfs, squashfs-lzma
 IMAGE_FSTYPES = "jffs2 tar"
 
 # Uncomment this to disable the parse cache (not recommended).
