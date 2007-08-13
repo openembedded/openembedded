@@ -13,6 +13,8 @@ RPROVIDES_midpath-cldc = "virtual/cldc-api-1.1"
 
 JAVAC_CMD=${STAGING_BINDIR_NATIVE}/ecj
 
+FASTJAR_CMD=${STAGING_BINDIR_NATIVE}/fastjar
+
 GNU_CLASSPATH_PATH=${STAGING_LIBDIR}/java/classpath-minimal/glibj.zip
 
 do_compile() {
@@ -29,7 +31,7 @@ cd ${S}/src/cldc-glue
 make JAVAC=${JAVAC_CMD} JAVAC_FLAGS="-bootclasspath ${S}/external/cldc1.1/classes -sourcepath ${S}/src/cldc-glue -source 1.3 -target 1.1"
 make install JAVAC=${JAVAC_CMD} JAVAC_FLAGS="-bootclasspath ${S}/external/cldc1.1/classes -source 1.3 -target 1.1" CLASS_DIR=${S}/external/cldc1.1/classes
 # Make a jar
-fastjar cvf  ${S}/dist/cldc1.1.jar -C ${S}/external/cldc1.1/classes .
+${FASTJAR_CMD} cvf  ${S}/dist/cldc1.1.jar -C ${S}/external/cldc1.1/classes .
 
 CLDC_PATH=${S}/dist/cldc1.1.jar
 
@@ -68,8 +70,8 @@ cd ${S}/src/core
 make JAVAC=${JAVAC_CMD} JAVAC_FLAGS="-bootclasspath $CLDC_PATH:${GNU_CLASSPATH_PATH}:${S}/dist/sdljava-cldc.jar:${S}/dist/escher-x11-cldc.jar:${S}/dist/jlayerme-cldc.jar:${S}/dist/jorbis-cldc.jar:${S}/dist/jsr82-bluetooth.jar:${S}/lib/kxml2-2.3.0.jar:${S}/lib/swt.jar -sourcepath ${S}/src/core -source 1.3 -target 1.1" || exit 1
 make install JAVAC=${JAVAC_CMD} JAVAC_FLAGS="-bootclasspath $CLDC_PATH:${GNU_CLASSPATH_PATH}:${S}/dist/sdljava-cldc.jar:${S}/dist/escher-x11-cldc.jar:${S}/dist/jlayerme-cldc.jar:${S}/dist/jorbis-cldc.jar:${S}/dist/jsr82-bluetooth.jar:${S}/lib/kxml2-2.3.0.jar:${S}/lib/swt.jar -source 1.3 -target 1.1" CLASS_DIR=${S}/src/core/classes || exit 1
 # Compile JVM.java separately as it can't be compiled against cldc.jar
-ecj -bootclasspath ${GNU_CLASSPATH_PATH} -source 1.3 -target 1.1 -d ${S}/src/core/classes com/sun/cldchi/jvm/JVM.java
-jar cvf ${S}/dist/midpath.jar -C ${S}/src/core/classes .
+${JAVA_CMD} -bootclasspath ${GNU_CLASSPATH_PATH} -source 1.3 -target 1.1 -d ${S}/src/core/classes com/sun/cldchi/jvm/JVM.java
+${FASTJAR_CMD} cvf ${S}/dist/midpath.jar -C ${S}/src/core/classes .
 
 cd ${S}/tests
 make JAVAC=${JAVAC_CMD} JAVAC_FLAGS="-bootclasspath ${S}/dist/midpath.jar:$CLDC_PATH -sourcepath ${S}/tests -source 1.3 -target 1.1" || exit 1
