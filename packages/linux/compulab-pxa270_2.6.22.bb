@@ -1,9 +1,11 @@
+require linux.inc
+
 SECTION = "kernel"
 DESCRIPTION = "Linux kernel for the Compulab PXA270 system"
 LICENSE = "GPL"
 PR = "r0"
 
-SRC_URI = "ftp://ftp.kernel.org/pub/linux/kernel/v2.6/linux-2.6.22.tar.bz2 \
+SRC_URI = "ftp://ftp.kernel.org/pub/linux/kernel/v2.6/linux-${PV}.tar.bz2 \
 	file://0001-cm-x270-base2.patch;patch=1 \
 	file://0002-cm-x270-match-type.patch;patch=1 \
 	file://0003-cm-x270-ide.patch;patch=1 \
@@ -17,13 +19,16 @@ SRC_URI = "ftp://ftp.kernel.org/pub/linux/kernel/v2.6/linux-2.6.22.tar.bz2 \
 
 #	file://0009-cursor-fix.patch
 
+
+
 # Note, for 2.6.22, we are no longer using the compulab binary
 # flash driver -- use JFFS2 instead
 # see notes in conf/machine/compulab-pxa270.conf
 
-S = "${WORKDIR}/linux-2.6.22"
+S = "${WORKDIR}/linux-${PV}"
 
 COMPATIBLE_HOST = 'arm.*-linux'
+COMPATIBLE_MACHINE = "compulab-pxa270"
 
 inherit kernel
 inherit package
@@ -32,16 +37,6 @@ ARCH = "arm"
 KERNEL_IMAGETYPE = "zImage"
 
 FILES_kernel-image = ""
-
-do_configure_prepend() {
-	install -m 0644 ${WORKDIR}/defconfig ${S}/.config
-}
-
-do_deploy() {
-	KNAME=${DEPLOY_DIR_IMAGE}/${KERNEL_IMAGETYPE}-${MACHINE}.bin
-        install -d ${DEPLOY_DIR_IMAGE}
-        install -m 0644 arch/${ARCH}/boot/${KERNEL_IMAGETYPE} ${KNAME}
-}
 
 python do_compulab_image() {
 	import os
@@ -68,10 +63,5 @@ python do_compulab_image() {
 	fo.close()
 }
 
-do_deploy[dirs] = "${S}"
-
-addtask deploy before do_install after do_compile
 addtask compulab_image before do_install after do_deploy
-
-COMPATIBLE_MACHINE = "compulab-pxa270"
 
