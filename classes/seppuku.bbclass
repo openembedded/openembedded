@@ -129,7 +129,7 @@ def seppuku_find_bug_report(debug_file, opener, query, product, component, bugna
     component = urllib.quote(component)
     bugname   = urllib.quote(bugname)
 
-    result = opener.open("%(query)s?product=%(product)s&component=%(component)s&short_desc_type=substring&short_desc=%(bugname)s" % vars())
+    result = opener.open("%(query)sproduct=%(product)s&component=%(component)s&short_desc_type=substring&short_desc=%(bugname)s" % vars())
     if result.code != 200:
         raise "Can not query the bugzilla at all"
     txt = result.read()
@@ -137,7 +137,7 @@ def seppuku_find_bug_report(debug_file, opener, query, product, component, bugna
     scanner.feed(txt)
     if len(scanner.result()) == 0:
         print >> debug_file, "Scanner failed to scan the html site"
-        print >> debug_file, "%(query)s?product=%(product)s&component=%(component)s&short_desc_type=substring&short_desc=%(bugname)s" % vars()
+        print >> debug_file, "%(query)sproduct=%(product)s&component=%(component)s&short_desc_type=substring&short_desc=%(bugname)s" % vars()
         print >> debug_file, txt
         return (False,None)
     else: # silently pick the first result
