@@ -3,7 +3,7 @@ HOMEPAGE = "http://www.openmoko.org"
 LICENSE = "GPL LGPL"
 SECTION = "libs/gsm"
 PROVIDES += "gsmd"
-PV = "0.1+svnr${SRCREV}"
+PV = "0.1+svn${SRCDATE}"
 PR = "r18"
 
 SRC_URI_OVERRIDES_PACKAGE_ARCH = "1"
