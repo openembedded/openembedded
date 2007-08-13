@@ -1,5 +1,6 @@
 require linux-omap.inc
 
+PV = "2.6.x+git${SRCDATE}"
 PR = "r1"
 
 COMPATIBLE_MACHINE = "davinci-dvevm"
