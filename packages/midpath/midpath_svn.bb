@@ -9,6 +9,7 @@ SRC_URI = "svn://midpath.svn.sourceforge.net/svnroot/midpath;module=trunk;proto=
 S = "${WORKDIR}/trunk"
 
 DEPENDS = "ecj-native fastjar-native classpath-minimal"
+PROVIDES = "virtual/cldc-api-1.1"
 RPROVIDES_midpath-cldc = "virtual/cldc-api-1.1"
 
 JAVAC_CMD=${STAGING_BINDIR_NATIVE}/ecj
