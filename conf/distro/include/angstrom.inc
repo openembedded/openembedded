@@ -29,6 +29,7 @@ ENABLE_BINARY_LOCALE_GENERATION ?= "1"
 
 #qemu doesn't like armv6/eabi/vfp
 ENABLE_BINARY_LOCALE_GENERATION_mx31ads = "0"
+ENABLE_BINARY_LOCALE_GENERATION_nokia800 = "0"
 
 #ARM EABI is softfloat by default, but let's make sure :)
 #make it overridable for platforms with FPU, like ep93xx or i.mx31
