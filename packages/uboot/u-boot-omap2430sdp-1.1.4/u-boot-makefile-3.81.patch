@@ -1,0 +1,11 @@
+--- u-boot/examples/Makefile.orig	2007-08-13 13:09:59.000000000 -0700
++++ u-boot/examples/Makefile	2007-08-13 13:11:34.000000000 -0700
+@@ -128,6 +128,8 @@ all:	.depend $(OBJS) $(LIB) $(SREC) $(BI
+ $(LIB): .depend $(LIBOBJS)
+ 	$(AR) crv $@ $(LIBOBJS)
+ 
++hello_world.srec: hello_world
++
+ %:	%.o $(LIB)
+ 	$(LD) -g $(EX_LDFLAGS) -Ttext $(LOAD_ADDR) \
+ 		-o $@ -e $(<:.o=) $< $(LIB) \
