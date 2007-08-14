@@ -69,8 +69,8 @@ if test -e /etc/timestamp
 then
 	date -s `cat /etc/timestamp`
 	mv -f /etc/timestamp /etc/timestamp.done
-	/etc/init.d/hwclock.sh start
-else
 	/etc/init.d/hwclock.sh stop
+else
+	/etc/init.d/hwclock.sh start
 fi
 : exit 0
