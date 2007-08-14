@@ -62,10 +62,15 @@ fi
 /sbin/ldconfig
 
 # 
-# Recover the time, if there is a time file                 
+# Recover the time, if there is a time file (first boot only)
+# If not, set system clock from hardware clock
 #
 if test -e /etc/timestamp
 then
 	date -s `cat /etc/timestamp`
+	mv -f /etc/timestamp /etc/timestamp.done
+	/etc/init.d/hwclock.sh start
+else
+	/etc/init.d/hwclock.sh stop
 fi
 : exit 0
