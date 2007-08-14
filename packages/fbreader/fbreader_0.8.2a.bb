@@ -4,7 +4,7 @@ HOMEPAGE = "http://only.mawhrin.net/fbreader/"
 SECTION = "x11/utils"
 PRIORITY = "optional"
 DEPENDS = "gtk+ enca expat bzip2 libgpewidget"
-PR = "r4"
+PR = "r5"
 
 # The RESOLUTION is defined at compile time which makes
 # this package MACHINE specific.
@@ -20,6 +20,9 @@ SRC_URI_append_spitz = "\
 SRC_URI_append_akita = "\
 		  file://zaurus-VGA.patch;patch=1"
 
+SRC_URI_append_htcuniversal = "\
+		  file://zaurus-VGA.patch;patch=1"
+
 # Set the defaults
 READER_RESOLUTION = "240x320"
 READER_ARCH	  = "openzaurus"
@@ -30,11 +33,14 @@ READER_STATUS	  = "release"
 READER_RESOLUTION_fic-gta01 = "480x640"
 READER_RESOLUTION_spitz = "640x480"
 READER_RESOLUTION_akita = "640x480"
+READER_RESOLUTION_htcuniversal = "640x480"
 
 FILES_${PN} += "${datadir}/FBReader ${datadir}/zlibrary"
 
 CFLAGS_append = " RESOLUTION=${READER_RESOLUTION} INSTALLDIR=/usr"
 EXTRA_OEMAKE = "CC='${CXX}' LD='${CXX}' OE_CFLAGS='${CXXFLAGS}' INCPATH='${STAGING_INCDIR}' LIBPATH='${STAGING_LIBDIR}'"
+
+LDFLAGS_append = " -liconv"
 
 inherit pkgconfig
 
