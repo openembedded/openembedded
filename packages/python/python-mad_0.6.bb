@@ -1,10 +1,11 @@
 DESCRIPTION = "Python libmad Bindings"
 SECTION = "devel/python"
+HOMEPAGE = "http://spacepants.org/src/pymad/"
 PRIORITY = "optional"
 LICENSE = "LGPL"
-RDEPENDS = "python-core libmad"
 DEPENDS = "libmad"
 SRCNAME = "pymad"
+PR = "ml0"
 
 SRC_URI = "http://spacepants.org/src/pymad/download/${SRCNAME}-${PV}.tar.gz"
 S = "${WORKDIR}/${SRCNAME}-${PV}"
