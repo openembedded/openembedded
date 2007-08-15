@@ -14,7 +14,8 @@ SRC_URI = "http://www.python.org/ftp/python/${PV}/Python-${PV}.tar.bz2 \
            file://crosscompile.patch;patch=1 \
            file://fix-tkinter-detection.patch;patch=1 \
            file://autohell.patch;patch=1 \
-           file://sitebranding.patch;patch=1"
+           file://sitebranding.patch;patch=1 \
+           file://default-is-optimized.patch;patch=1"
 S = "${WORKDIR}/Python-${PV}"
 
 inherit autotools

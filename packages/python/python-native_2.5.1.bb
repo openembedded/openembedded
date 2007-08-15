@@ -11,7 +11,8 @@ EXCLUDE_FROM_WORLD = "1"
 SRC_URI = "http://www.python.org/ftp/python/${PV}/Python-${PV}.tar.bz2 \
            file://bindir-libdir.patch;patch=1 \
            file://cross-distutils.patch;patch=1 \
-           file://dont-modify-shebang-line.patch;patch=1"
+           file://dont-modify-shebang-line.patch;patch=1 \
+           file://default-is-optimized.patch;patch=1"
 S = "${WORKDIR}/Python-${PV}"
 
 inherit autotools native
