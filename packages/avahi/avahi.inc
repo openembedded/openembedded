@@ -4,7 +4,7 @@ HOMEPAGE = "http://avahi.org"
 SECTION = "network"
 PRIORITY = "optional"
 LICENSE = "GPL"
-PR="r4"
+PR = "r4"
 
 DEPENDS = "expat libdaemon dbus glib-2.0"
 
@@ -18,6 +18,7 @@ SRC_URI = "http://avahi.org/download/avahi-${PV}.tar.gz \
 
 inherit autotools pkgconfig update-rc.d
 
+# TODO: build and enable all the extra stuff avahi offers
 EXTRA_OECONF = "--with-distro=debian --disable-gdbm --disable-gtk --disable-mono --disable-monodoc --disable-qt3 --disable-qt4 --disable-python"
 
 PACKAGES =+ "avahi-daemon libavahi-common libavahi-core libavahi-client avahi-dnsconfd libavahi-glib avahi-autoipd avahi-utils"
