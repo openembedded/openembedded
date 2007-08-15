@@ -1,11 +1,13 @@
 DESCRIPTION = "Python Bindings for Google's Gmail Service"
 SECTION = "devel/python"
+HOMEPAGE = "http://libgmail.sourceforge.net/"
 PRIORITY = "optional"
 LICENSE = "GPL"
-RDEPENDS = "python-core python-netclient python-email"
+RDEPENDS = "python-core python-netclient python-email python-mime python-pprint python-re python-pickle"
 SRCNAME = "libgmail"
+PR = "ml0"
 
-SRC_URI = "${SOURCEFORGE_MIRROR}/${SRCNAME}/${SRCNAME}-${PV}.tgz"
+SRC_URI = "${SOURCEFORGE_MIRROR}/${SRCNAME}/${SRCNAME}-${PV}.tar.gz"
 S = "${WORKDIR}/${SRCNAME}-${PV}"
 
 inherit distutils-base
