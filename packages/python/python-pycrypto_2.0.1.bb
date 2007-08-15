@@ -3,7 +3,7 @@ SECTION = "devel/python"
 PRIORITY = "optional"
 DEPENDS = "gmp"
 SRCNAME = "pycrypto"
-LICENSE = "python-crypto"
+LICENSE = "pycrypto"
 SRC_URI = "http://www.amk.ca/files/python/crypto/${SRCNAME}-${PV}.tar.gz"
 S = "${WORKDIR}/${SRCNAME}-${PV}"
 
