@@ -5,10 +5,9 @@ provided to work with finite domains only."
 SECTION = "devel/python"
 PRIORITY = "optional"
 LICENSE = "GPL"
-SRCNAME = "constraint"
+PR = "ml0"
 
-SRC_URI = "ftp://ftp.logilab.org/pub/${SRCNAME}/${SRCNAME}-${PV}.tar.gz"
-S = "${WORKDIR}/${SRCNAME}-${PV}"
+SRC_URI = "http://labix.org/download/python-constraint/python-constraint-${PV}.tar.bz2"
 
 inherit distutils
 
