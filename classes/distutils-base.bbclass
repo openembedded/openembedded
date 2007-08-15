@@ -13,6 +13,6 @@ def python_dir(d):
 PYTHON_DIR = "${@python_dir(d)}"
 FILES_${PN} = "${bindir}/* ${libdir}/* ${libdir}/${PYTHON_DIR}/*"
 FILES_${PN}-dbg = "${libdir}/${PYTHON_DIR}/site-packages/.debug \
-                   ${libdir}/${PYTHON_DIR}/site-packages/./*/debug \
+                   ${libdir}/${PYTHON_DIR}/site-packages/*/.debug \
                    ${libdir}/${PYTHON_DIR}/site-packages/*/*/.debug"
 
