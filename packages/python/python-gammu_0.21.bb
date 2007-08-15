@@ -1,3 +1,6 @@
+#TODO needs recent gammu, which in turn needs cmake which we don't have yet
+BROKEN = "1"
+
 DESCRIPTION = "Python bindings for the gammu GSM phone communication library."
 HOMEPAGE = "http://cihar.com/gammu/python"
 SECTION = "devel/python"
