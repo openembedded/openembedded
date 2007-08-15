@@ -4,7 +4,7 @@ inherit native
 require midpath_${PV}.bb
 
 DEPENDS = "ecj-native fastjar-native classpath-minimal-native"
-PROVIDES = "virtual/cldc-api-1.1"
+PROVIDES = "virtual/cldc-api-1.1-native"
 
 PACKAGES = " "
 

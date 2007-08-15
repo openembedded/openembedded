@@ -4,6 +4,7 @@ PRIORITY = "optional"
 LICENSE = "GPL"
 DEPENDS = "libogg zlib libvorbis faac liba52 lame"
 PV = "0.4.9+svn${SRCDATE}"
+PR = "r1"
 
 DEFAULT_PREFERENCE = "-1"
 
@@ -104,6 +105,14 @@ do_stage() {
                 ${STAGING_INCDIR}/ffmpeg/mathematics.h
         install -m 0644 ${S}/libavutil/rational.h \
                 ${STAGING_INCDIR}/ffmpeg/rational.h
+        install -m 0644 ${S}/libavutil/mem.h \
+                ${STAGING_INCDIR}/ffmpeg/mem.h
+        install -m 0644 ${S}/libavutil/log.h \
+                ${STAGING_INCDIR}/ffmpeg/log.h
+
+        install -d ${STAGING_INCDIR}/libpostproc
+        install -m 0644 ${S}/libpostproc/postprocess.h \
+                ${STAGING_INCDIR}/libpostproc/postprocess.h
 }
 
 PACKAGES += "libavcodec libavcodec-dev \
