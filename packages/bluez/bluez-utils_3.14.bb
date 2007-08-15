@@ -4,8 +4,9 @@ DEPENDS += "glib-2.0"
 
 SRC_URI = "http://bluez.sourceforge.net/download/bluez-utils-${PV}.tar.gz \
            file://hcid.conf \
+           file://hciattach-ti-bts.patch;patch=1 \
           "
-PR = "r0"
+PR = "r1"
 
 EXTRA_OECONF = " \
                  --enable-bccmd \
