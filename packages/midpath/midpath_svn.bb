@@ -9,6 +9,7 @@ SRC_URI = "svn://midpath.svn.sourceforge.net/svnroot/midpath;module=trunk;proto=
 S = "${WORKDIR}/trunk"
 
 DEPENDS = "ecj-native fastjar-native classpath-minimal"
+PROVIDES = "virtual/cldc-api-1.1"
 RPROVIDES_midpath-cldc = "virtual/cldc-api-1.1"
 
 JAVAC_CMD=${STAGING_BINDIR_NATIVE}/ecj
@@ -70,7 +71,7 @@ cd ${S}/src/core
 make JAVAC=${JAVAC_CMD} JAVAC_FLAGS="-bootclasspath $CLDC_PATH:${GNU_CLASSPATH_PATH}:${S}/dist/sdljava-cldc.jar:${S}/dist/escher-x11-cldc.jar:${S}/dist/jlayerme-cldc.jar:${S}/dist/jorbis-cldc.jar:${S}/dist/jsr82-bluetooth.jar:${S}/lib/kxml2-2.3.0.jar:${S}/lib/swt.jar -sourcepath ${S}/src/core -source 1.3 -target 1.1" || exit 1
 make install JAVAC=${JAVAC_CMD} JAVAC_FLAGS="-bootclasspath $CLDC_PATH:${GNU_CLASSPATH_PATH}:${S}/dist/sdljava-cldc.jar:${S}/dist/escher-x11-cldc.jar:${S}/dist/jlayerme-cldc.jar:${S}/dist/jorbis-cldc.jar:${S}/dist/jsr82-bluetooth.jar:${S}/lib/kxml2-2.3.0.jar:${S}/lib/swt.jar -source 1.3 -target 1.1" CLASS_DIR=${S}/src/core/classes || exit 1
 # Compile JVM.java separately as it can't be compiled against cldc.jar
-${JAVA_CMD} -bootclasspath ${GNU_CLASSPATH_PATH} -source 1.3 -target 1.1 -d ${S}/src/core/classes com/sun/cldchi/jvm/JVM.java
+${JAVAC_CMD} -bootclasspath ${GNU_CLASSPATH_PATH} -source 1.3 -target 1.1 -d ${S}/src/core/classes com/sun/cldchi/jvm/JVM.java
 ${FASTJAR_CMD} cvf ${S}/dist/midpath.jar -C ${S}/src/core/classes .
 
 cd ${S}/tests
