@@ -374,18 +374,6 @@ oe_machinstall() {
 	fi
 }
 
-addtask showdata
-do_showdata[nostamp] = "1"
-python do_showdata() {
-	import sys
-	# emit variables and shell functions
-	bb.data.emit_env(sys.__stdout__, d, True)
-	# emit the metadata which isnt valid shell
-	for e in d.keys():
-	    if bb.data.getVarFlag(e, 'python', d):
-	        sys.__stdout__.write("\npython %s () {\n%s}\n" % (e, bb.data.getVar(e, d, 1)))
-}
-
 addtask listtasks
 do_listtasks[nostamp] = "1"
 python do_listtasks() {
