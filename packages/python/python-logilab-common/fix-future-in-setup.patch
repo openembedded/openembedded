@@ -1,0 +1,16 @@
+Index: common-0.9.3/setup.py
+===================================================================
+--- common-0.9.3.orig/setup.py
++++ common-0.9.3/setup.py
+@@ -17,9 +17,10 @@
+ # 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+ """ Generic Setup script, takes package info from __pkginfo__.py file """
+ 
++from __future__ import nested_scopes
++
+ __revision__ = '$Id: setup.py,v 1.23 2004/05/27 12:07:23 syt Exp $'
+ 
+-from __future__ import nested_scopes
+ import os
+ import sys
+ import shutil
