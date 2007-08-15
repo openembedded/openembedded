@@ -4,7 +4,7 @@ PRIORITY = "required"
 DEPENDS = "makedevs"
 RDEPENDS = "makedevs"
 LICENSE = "GPL"
-PR = "r96"
+PR = "r97"
 
 SRC_URI = "file://halt \
            file://ramdisk \
@@ -30,7 +30,7 @@ SRC_URI = "file://halt \
            file://device_table.txt \
            file://populate-volatile.sh \
            file://volatiles \
-	   file://save-rtc.sh"
+           file://save-rtc.sh"
 
 SRC_URI_append_arm          = " file://alignment.sh"
 

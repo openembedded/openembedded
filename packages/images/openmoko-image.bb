@@ -26,3 +26,5 @@ RDEPENDS = "${PACKAGE_INSTALL}"
 inherit image
 
 LICENSE = MIT
+
+ROOTFS_POSTPROCESS_COMMAND += 'date "+%m%d%H%M%Y" >${IMAGE_ROOTFS}/etc/timestamp'

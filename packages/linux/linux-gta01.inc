@@ -13,7 +13,8 @@ FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/linux-gta01"
 # source and patches
 #
 SRC_URI = "http://ftp.de.kernel.org/pub/linux/kernel/v2.6/linux-${VANILLA_VERSION}.tar.bz2 \
-           file://defconfig-${VANILLA_VERSION}-${MACHINE}"
+           file://defconfig-${VANILLA_VERSION}-${MACHINE} \
+           file://logo_linux_clut224.ppm"
 S = "${WORKDIR}/linux-${VANILLA_VERSION}"
 
 ##############################################################
@@ -49,12 +50,13 @@ module_autoload_snd-soc-neo1973-wm8753 = "snd-soc-neo1973-wm8753"
 module_autoload_s3cmci = "s3cmci"
 
 do_prepatch() {
-        mv ${WORKDIR}/patches ${S}/patches && cd ${S} && quilt push -av
-        rm -Rf patches .pc
+	mv ${WORKDIR}/patches ${S}/patches && cd ${S} && quilt push -av
+	mv patches patches.old
+	mv .pc .pc.old
 }
 
 do_configure() {
-	#install -m 0644 ${WORKDIR}/logo_linux_clut224.ppm drivers/video/logo/logo_linux_clut224.ppm
+	install -m 0644 ${WORKDIR}/logo_linux_clut224.ppm drivers/video/logo/logo_linux_clut224.ppm
 
 	if [ ! -e ${WORKDIR}/defconfig-${VANILLA_VERSION}-${MACHINE} ]; then
 		die "No default configuration for ${MACHINE} available."
