@@ -3,7 +3,7 @@ SECTION = "console/network"
 DEPENDS = "bluez-libs"
 LICENSE = "GPL"
 HOMEPAGE = "http://www.gammu.org/"
-PR = "r1"
+PR = "r0"
 
 SRC_URI = "http://dl.cihar.com/gammu/releases/gammu-${PV}.tar.bz2 \
            file://ldflags-again.patch;patch=1"
@@ -12,7 +12,10 @@ EXTRA_OECONF = "--disable-mysql --with-bluedir=${STAGING_DIR}"
 
 EXTRA_LDFLAGS = "-lbluetooth2"
 
-inherit autotools pkgconfig
+DEFAULT_PREFERENCE = "-1"
+BROKEN = "1"
+# TODO we don't have cmake yet
+# inherit cmake pkgconfig
 
 do_compile () {
         oe_runmake shared LDFLAGS='-L${STAGING_LIBDIR} -lbluetooth'
