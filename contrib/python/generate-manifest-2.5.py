@@ -150,30 +150,30 @@ if __name__ == "__main__":
     m.setPrefix( "/", "/usr/" )
 
     m.addPackage( 2, "python-core", "Python Interpreter and core modules (needed!)", "",
-    "lib/python2.4/__future__.* lib/python2.4/copy.* lib/python2.4/copy_reg.* lib/python2.4/ConfigParser.* " +
-    "lib/python2.4/getopt.* lib/python2.4/linecache.* lib/python2.4/new.* " +
-    "lib/python2.4/os.* lib/python2.4/posixpath.* " +
-    "lib/python2.4/warnings.* lib/python2.4/site.* lib/python2.4/stat.* " +
-    "lib/python2.4/UserDict.* lib/python2.4/UserList.* lib/python2.4/UserString.* " +
-    "lib/python2.4/lib-dynload/binascii.so lib/python2.4/lib-dynload/struct.so lib/python2.4/lib-dynload/time.so " +
-    "lib/python2.4/lib-dynload/xreadlines.so lib/python2.4/types.* bin/python*" )
+    "lib/python2.5/__future__.* lib/python2.5/copy.* lib/python2.5/copy_reg.* lib/python2.5/ConfigParser.* " +
+    "lib/python2.5/getopt.* lib/python2.5/linecache.* lib/python2.5/new.* " +
+    "lib/python2.5/os.* lib/python2.5/posixpath.* " +
+    "lib/python2.5/warnings.* lib/python2.5/site.* lib/python2.5/stat.* " +
+    "lib/python2.5/UserDict.* lib/python2.5/UserList.* lib/python2.5/UserString.* " +
+    "lib/python2.5/lib-dynload/binascii.so lib/python2.5/lib-dynload/struct.so lib/python2.5/lib-dynload/time.so " +
+    "lib/python2.5/lib-dynload/xreadlines.so lib/python2.5/types.* bin/python*" )
 
     m.addPackage( 0, "python-core-dbg", "Python core module debug information", "python-core",
-    "lib/python2.4/lib-dynload/.debug bin/.debug lib/.debug" )
+    "lib/python2.5/lib-dynload/.debug bin/.debug lib/.debug" )
 
     m.addPackage( 0, "python-devel", "Python Development Package", "python-core",
-    "include lib/python2.4/config" ) # package
+    "include lib/python2.5/config" ) # package
 
     m.addPackage( 0, "python-idle", "Python Integrated Development Environment", "python-core, python-tkinter",
-    "bin/idle lib/python2.4/idlelib" ) # package
+    "bin/idle lib/python2.5/idlelib" ) # package
 
     m.addPackage( 0, "python-pydoc", "Python Interactive Help Support", "python-core, python-lang, python-stringold, python-re",
-    "bin/pydoc lib/python2.4/pydoc.*" )
+    "bin/pydoc lib/python2.5/pydoc.*" )
 
     m.addPackage( 0, "python-smtpd", "Python Simple Mail Transport Daemon", "python-core python-netserver python-email python-mime",
     "bin/smtpd.*" )
 
-    m.setPrefix( "/lib/python2.4/", "${libdir}/python2.4/" )
+    m.setPrefix( "/lib/python2.5/", "${libdir}/python2.5/" )
 
     m.addPackage( 0, "python-audio", "Python Audio Handling", "python-core",
     "wave.* chunk.* sndhdr.* lib-dynload/ossaudiodev.so lib-dynload/audioop.so" )
@@ -296,6 +296,9 @@ if __name__ == "__main__":
 
     m.addPackage( 0, "python-subprocess", "Python Subprocess Support", "python-core, python-io, python-re, python-fcntl, python-pickle",
     "subprocess.*" )
+
+    m.addPackage( 0, "python-sqlite3", "Python Sqlite3 Database Support", "python-core",
+    "sqlite3" ) # package
 
     m.addPackage( 0, "python-stringold", "Python String APIs [deprecated]", "python-core, python-re",
     "lib-dynload/strop.so string.*" )
