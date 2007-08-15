@@ -2,7 +2,6 @@ DESCRIPTION = "Python Vorbis Bindings"
 SECTION = "devel/python"
 PRIORITY = "optional"
 LICENSE = "LGPL"
-RDEPENDS = "python-core libvorbis python-ogg"
 DEPENDS = "libvorbis python-ogg"
 SRCNAME = "pyvorbis"
 
