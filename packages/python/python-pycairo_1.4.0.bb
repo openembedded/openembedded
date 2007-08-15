@@ -3,10 +3,9 @@ SECTION = "python-devel"
 HOMEPAGE = "http://cairographics.org/pycairo"
 LICENSE = "LGPL MPL"
 DEPENDS = "cairo"
-PR = "ml2"
+PR = "ml0"
 
-SRC_URI = "http://cairographics.org/releases/pycairo-${PV}.tar.gz \
-           file://fix-pkgconfig-dir.patch;patch=1"
+SRC_URI = "http://cairographics.org/releases/pycairo-${PV}.tar.gz"
 S = "${WORKDIR}/pycairo-${PV}"
 
 inherit distutils pkgconfig
