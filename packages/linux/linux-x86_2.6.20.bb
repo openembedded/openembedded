@@ -1,13 +1,13 @@
 DESCRIPTION = "Linux Kernel for x86 compatible machines"
 SECTION = "kernel"
 LICENSE = "GPL"
-PR = "r3"
+PR = "r4"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-${PV}.tar.bz2 " 
 
 SRC_URI_append_x86 = "file://i486-defconfig"
-SRC_URI_append_i586-generic = "file://i586-defconfig"
-SRC_URI_append_i686-generic = "file://i686-defconfig"
+SRC_URI_append_i586 = "file://i586-defconfig"
+SRC_URI_append_i686 = "file://i686-defconfig"
 
 
 S = "${WORKDIR}/linux-${PV}"
