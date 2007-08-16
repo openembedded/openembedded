@@ -14,10 +14,7 @@ SRC_URI = "svn://svn.openmoko.org/trunk/src/target;module=gsm;proto=http \
            file://extreplychars.patch;patch=1 \
            file://getopt-wait-interpreter-ready.patch;patch=1 \
            file://tihtc-csq-fix.patch;patch=1 \
-           file://universal-wcdma.patch;patch=1 \
-           file://mlbuf-in-gsmd-struct.patch;patch=1 \
-           file://libgsmd-tool-fix.patch;patch=1 \
-           file://sms-hacks.patch;patch=1"
+           file://universal-wcdma.patch;patch=1"
 S = "${WORKDIR}/gsm"
 
 inherit autotools pkgconfig update-rc.d
