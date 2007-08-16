@@ -1,6 +1,6 @@
 require gtk-2.10.inc
 
-PR = "r4"
+PR = "r5"
 
 SRC_URI = "ftp://ftp.gtk.org/pub/gtk/v2.10/gtk+-${PV}.tar.bz2 \
            file://no-xwc.patch;patch=1 \
