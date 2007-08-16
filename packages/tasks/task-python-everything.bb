@@ -1,16 +1,16 @@
 DESCRIPTION= "Everything Python"
 HOMEPAGE = "http://www.vanille.de/projects/python.spy"
 LICENSE = "MIT"
-PR = "ml14"
-
-BROKEN_BECAUSE_GCC4 = "\
-		python-egenix-mx-base"
+PR = "ml15"
 
 RDEPENDS = "\
 		python-ao 		\
 		python-pybluez		\
+		python-cairo		\
+		python-cheetah		\
 		python-constraint	\
 		python-crypto		\
+		python-dbus			\
 		python-dialog		\
 		python-evas			\
 		python-ecore		\
@@ -19,35 +19,41 @@ RDEPENDS = "\
 		python-pycurl		\
 		python-fam			\
 		python-fnorb		\
+		python-formencode	\
 		python-fpconst		\
-		python-gammu		\
+		python-fuse			\
 		python-gmpy		\
 		python-gnosis		\
+		python-gst		\
 		python-hmm		\
+		python-imaging		\
+		python-imdbpy		\
 		python-inotify		\
 		python-irclib		\
 		python-itools		\
-		python-logilab		\
+		python-logilab-common		\
 		python-libgmail		\
 		python-lxml		\
 		python-mad		\
-		python-native		\
+		python-numarray		\
 		python-numeric		\
 		python-ogg		\
 		python-pexpect		\
+		python-pybluez		\
 		python-pychecker	\
 		python-pycodes		\
 		python-pyephem		\
 		python-pyfits		\
 		python-pyflakes		\
 		python-pygame		\
+		python-pygobject	\
 		python-pygoogle		\
+		python-pygtk-1.2	\
 		python-pygtk		\
-		python-pygtk2		\
+		python-pyid3lib		\
+		python-pyiw		\
 		python-pylinda		\
 		python-pylint		\
-		python-pyqt		\
-		python-pyqwt		\
 		python-pyraf		\
 		python-pyreverse	\
 		python-pyrex		\
@@ -58,7 +64,6 @@ RDEPENDS = "\
 		python-pyweather	\
 		python-pyxml		\
 		python-pyxmlrpc		\
-		python-quicklauncher    \
 		python-scapy		\
 		python-scons		\
 		python-setuptools	\
@@ -69,9 +74,7 @@ RDEPENDS = "\
 		python-soappy		\
 		python-spydi		\
 		python-spyro		\
-		python-sword		\
-		python-pysqlite		\
-		python-pysqlite2	\
+		python-sqlobject	\
 		python-tlslite		\
 		python-urwid		\
 		python-vmaps		\
@@ -82,9 +85,17 @@ RDEPENDS = "\
 		twisted			\
 		zope"
 
+BROKEN_PACKAGES = "\
+		python-egenix-mx-base \
+		python-gammu \
+		python-m2crypto \
+		python-sword \
+		python-mysqldb \
+        python-pyqt     \
+        python-pyqwt        \
+"
 
 #fixme add python-pycap once libdnet is in again
 #fixme add python-pyx once kpathwhich-native is there
 #fixme add packages dynamically
-#fixme python-numarray doesn't work with soft-float
 LICENSE = "MIT"
