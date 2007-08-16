@@ -3,10 +3,10 @@ that are capable of performing conversion calculations for many common meteorolo
 SECTION = "devel/python"
 PRIORITY = "optional"
 LICENSE = "GPL"
-SRCNAME = "pyweather"
+SRCNAME = "weather"
 PR = "ml0"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/meta-tools/${SRCNAME}-${PV}.tar.gz"
-S = "${WORKDIR}/weather-${PV}"
+S = "${WORKDIR}/${SRCNAME}-${PV}"
 
 inherit distutils
