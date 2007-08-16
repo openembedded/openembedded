@@ -1,11 +1,11 @@
-DESCRIPTION = "Python GTK+ 1.2 Bindings"
+DESCRIPTION = "Python Bindings for GTK+ 1.2"
 HOMEPAGE = "http://www.gtk.org"
 SECTION = "devel/python"
 LICENSE = "LGPL"
 DEPENDS = "gtk+-1.2"
 RDEPENDS = "python-shell python-re"
 SRCNAME = "pygtk"
-PR = "r0"
+PR = "ml0"
 
 SRC_URI = "ftp://ftp.gtk.org/pub/gtk/python/v1.2/${SRCNAME}-${PV}.tar.gz \
            file://remove-imlib-et-al;patch=1"
