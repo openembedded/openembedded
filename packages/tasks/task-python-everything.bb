@@ -1,12 +1,10 @@
 DESCRIPTION= "Everything Python"
 HOMEPAGE = "http://www.vanille.de/projects/python.spy"
 LICENSE = "MIT"
-PR = "ml15"
+PR = "ml16"
 
 RDEPENDS = "\
 		python-ao 		\
-		python-pybluez		\
-		python-cairo		\
 		python-cheetah		\
 		python-constraint	\
 		python-crypto		\
@@ -40,6 +38,7 @@ RDEPENDS = "\
 		python-ogg		\
 		python-pexpect		\
 		python-pybluez		\
+		python-pycairo		\
 		python-pychecker	\
 		python-pycodes		\
 		python-pyephem		\
