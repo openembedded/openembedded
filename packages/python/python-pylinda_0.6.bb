@@ -1,5 +1,6 @@
 DESCRIPTION = "Python Implementation of Linda Tuple Space"
 SECTION = "devel/python"
+HOMEPAGE = "http://www-users.cs.york.ac.uk/~aw/pylinda/"
 PRIORITY = "optional"
 LICENSE = "LGPL"
 SRCNAME = "linda"
