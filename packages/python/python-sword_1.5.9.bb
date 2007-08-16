@@ -17,9 +17,10 @@ inherit distutils autotools
 
 PARALLEL_MAKE = ""
 
-#do_configure_prepend() {
-#	./autogen.sh
-#}
+do_configure_prepend() {
+	touch ltmain.sh
+	./autogen.sh
+}
 
 do_compile() {
         oe_runmake BUILD_SYS=${BUILD_SYS} HOST_SYS=${HOST_SYS} pythonswig python_make
