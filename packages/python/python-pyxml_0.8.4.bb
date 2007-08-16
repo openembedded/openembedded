@@ -2,7 +2,7 @@ DESCRIPTION = "A sophisticated XML Processing Package for Python"
 SECTION = "devel/python"
 PRIORITY = "optional"
 LICENSE = "PSF"
-RDEPENDS = "python-core python-xml python-netclient"
+RDEPENDS = "python-xml python-netclient"
 SRCNAME = "pyxml"
 PR = "ml0"
 
