@@ -3,6 +3,7 @@ DESCRIPTION = "ntop is network top"
 SECTION = "console/network"
 PRIORITY = "optional"
 DEPENDS = "gdbm zlib libpcap libpng gd"
+PR = "r1"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/ntop/ntop-${PV}.tgz \
            file://${FILESDIR}/autotools.patch;patch=1 \
@@ -25,11 +26,13 @@ EXTRA_OECONF += " --without-ssl \
 FILES_ntop_append = " ${libdir}/ntop/plugins/*.so ${libdir}/libntop-*.so \
                        ${libdir}/libntopreport-*.so"
 FILES_${PN}-dev = "${includedir} ${libdir}/libntop.so ${libdir}/libntopreport.so \
-                   ${libdir}/libntop.a ${libdir}/libntopreport.a ${libdir}/*.la"
+                   ${libdir}/*.a ${libdir}/libntopreport.a ${libdir}/*.la"
+FILES_${PN}-dbg += "${libdir}/ntop/plugins/.debug"
 
-do_configure () {
+do_configure_prepend () {
 	if [ ! -e acinclude.m4 ]; then
 		mv acinclude.m4.ntop acinclude.m4
 	fi
-	autotools_do_configure
+	rm -f libtool
+	cp ${STAGING_BINDIR_NATIVE}/${TARGET_SYS}-libtool libtool
 }
