@@ -1,5 +1,6 @@
 DESCRIPTION = "IMDbPY is a Python package useful to retrieve and manage the data of the IMDb movie database."
 SECTION = "devel/python"
+HOMEPAGE = "http://imdbpy.sourceforge.net/"
 PRIORITY = "optional"
 LICENSE = "GPL"
 SRCNAME = "IMDbPY"
