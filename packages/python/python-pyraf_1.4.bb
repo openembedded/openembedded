@@ -6,8 +6,8 @@ SECTION = "devel/python"
 LICENSE = "AURA"
 PR = "ml0"
 
-SRC_URI = "ftp://ra.stsci.edu/pub/pyraf/v2.3/pyraf-${PV}.tar.gz"
-S = "${WORKDIR}/pyraf-${PV}"
+SRC_URI = "ftp://ra.stsci.edu/pub/pyraf/v2.5/pyraf-${PV}.tar.gz"
+S = "${WORKDIR}/pyraf"
 
 inherit distutils
 
