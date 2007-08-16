@@ -1,3 +1,5 @@
+BROKEN = "1"
+
 DESCRIPTION = "Runtime helper for sip-generated python wrapper libraries"
 SECTION = "devel/python"
 HOMEPAGE = "http://www.riverbankcomputing.co.uk/sip"
@@ -10,7 +12,7 @@ PR = "ml0"
 SRC_URI = "http://www.vanille.de/mirror/sip-${PV}.tar.gz"
 S = "${WORKDIR}/sip-${PV}/siplib"
 
-inherit qmake distutils-base
+inherit qmake2 distutils-base
 
 EXTRA_QMAKEVARS_POST += " TEMPLATE=lib \
                          CONFIG=console \

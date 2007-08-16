@@ -5,7 +5,7 @@ SECTION = "devel/python"
 PRIORITY = "optional"
 LICENSE = "GPL"
 DEPENDS = "virtual/libqte2 virtual/libqpe1"
-RDEPENDS = "python-core python-sip"
+RDEPENDS = "python-core python24-sip"
 SRCNAME = "pyqt"
 PR = "ml5"
 
