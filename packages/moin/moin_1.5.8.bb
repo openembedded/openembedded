@@ -1,8 +1,9 @@
 DESCRIPTION = "A full fledged WikiWiki system written in Python"
 LICENSE = "GPL"
-SECTION = "base"
+SECTION = "network"
+HOMEPAGE = "http://moinmoin.wikiwikiweb.de/"
 PRIORITY = "optional"
-PR = "r1"
+PR = "ml0"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/moin/moin-${PV}.tar.gz"
 
