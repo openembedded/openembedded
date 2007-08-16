@@ -13,18 +13,20 @@ FILES_${PN} = "${bindir}/gdk-pixbuf-query-loaders \
 	${bindir}/gtk-query-immodules-2.0 \
 	${libdir}/lib*.so.* \
 	${datadir}/themes ${sysconfdir} \
-	${libdir}/gtk-2.0/${LIBV}/engines/libpixmap.so"
+	${libdir}/gtk-2.0/${LIBV}/engines/libpixmap.so \
 FILES_${PN}-dev += " \
         ${datadir}/gtk-2.0/include \
         ${libdir}/gtk-2.0/include \
         ${libdir}/gtk-2.0/${LIBV}/loaders/*.la \
         ${libdir}/gtk-2.0/${LIBV}/immodules/*.la \
         ${libdir}/gtk-2.0/${LIBV}/engines/*.la \
+	${libdir}/gtk-2.0/${LIBV}/printbackends/*.la \
         ${bindir}/gdk-pixbuf-csource"
 FILES_${PN}-dbg += " \
         ${libdir}/gtk-2.0/${LIBV}/loaders/.debug/* \
         ${libdir}/gtk-2.0/${LIBV}/immodules/.debug/* \
-        ${libdir}/gtk-2.0/${LIBV}/engines/.debug/*"
+        ${libdir}/gtk-2.0/${LIBV}/engines/.debug/* \
+	${libdir}/gtk-2.0/${LIBV}/printbackends/.debug/*"
 
 
 NEATSTUFF = " ttf-dejavu-sans gdk-pixbuf-loader-png gdk-pixbuf-loader-jpeg gdk-pixbuf-loader-gif gdk-pixbuf-loader-xpm "

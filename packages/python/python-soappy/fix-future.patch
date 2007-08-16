@@ -1,0 +1,54 @@
+Index: SOAPpy-0.11.6/SOAPpy/Client.py
+===================================================================
+--- SOAPpy-0.11.6.orig/SOAPpy/Client.py
++++ SOAPpy-0.11.6/SOAPpy/Client.py
+@@ -39,12 +39,11 @@
+ #
+ ################################################################################
+ """
++from __future__ import nested_scopes
+ 
+ ident = '$Id: Client.py,v 1.20 2004/04/10 04:22:52 irjudson Exp $'
+ from version import __version__
+ 
+-from __future__ import nested_scopes
+-
+ #import xml.sax
+ import urllib
+ from types import *
+Index: SOAPpy-0.11.6/SOAPpy/Types.py
+===================================================================
+--- SOAPpy-0.11.6.orig/SOAPpy/Types.py
++++ SOAPpy-0.11.6/SOAPpy/Types.py
+@@ -32,12 +32,11 @@
+ #
+ ################################################################################
+ """
++from __future__ import nested_scopes
+ 
+ ident = '$Id: Types.py,v 1.17 2004/09/11 03:03:33 warnes Exp $'
+ from version import __version__
+ 
+-from __future__ import nested_scopes
+-
+ import UserList
+ import base64
+ import cgi
+Index: SOAPpy-0.11.6/SOAPpy/Server.py
+===================================================================
+--- SOAPpy-0.11.6.orig/SOAPpy/Server.py
++++ SOAPpy-0.11.6/SOAPpy/Server.py
+@@ -39,12 +39,11 @@
+ #
+ ################################################################################
+ """
++from __future__ import nested_scopes
+ 
+ ident = '$Id: Server.py,v 1.20 2004/04/28 21:47:10 warnes Exp $'
+ from version import __version__
+ 
+-from __future__ import nested_scopes
+-
+ #import xml.sax
+ import re
+ import socket
