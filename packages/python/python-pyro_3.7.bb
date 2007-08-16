@@ -6,12 +6,11 @@ HOMEPAGE = "http://pyro.sourceforge.net"
 SECTION = "devel/python"
 PRIORITY = "optional"
 LICENSE = "MIT"
-RDEPENDS = "python-core python-crypt python-io python-lang python-math \
-python-netserver python-pickle python-re python-shell python-stringold \
-python-threading"
-PR = "r1"
+RDEPENDS = "python-crypt python-io python-lang python-math python-netserver python-pickle \
+python-re python-shell python-stringold python-threading"
+PR = "ml0"
 
-SRC_URI = "cvs://anonymous:@pyro.cvs.sourceforge.net/cvsroot/pyro;module=Pyro;method=pserver;tag=pyro3_5 \
+SRC_URI = "cvs://anonymous:@pyro.cvs.sourceforge.net/cvsroot/pyro;module=Pyro;method=pserver;tag=pyro3_7 \
            file://pyro-unattended-install.patch;patch=1;pnum=0"
 S="${WORKDIR}/Pyro"
 
