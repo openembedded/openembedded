@@ -9,10 +9,10 @@ DEPENDS = "python"
 RDEPENDS = "python-core"
 PR = "ml0"
 
-SRC_URI = "http://www.vanille.de/mirror/sip-${PV}.tar.gz"
+SRC_URI = "http://www.riverbankcomputing.com/Downloads/sip4/sip-${PV}.tar.gz"
 S = "${WORKDIR}/sip-${PV}/siplib"
 
-inherit qmake2 distutils-base
+inherit qmake qt4x11 distutils-base
 
 EXTRA_QMAKEVARS_POST += " TEMPLATE=lib \
                          CONFIG=console \

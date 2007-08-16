@@ -2,7 +2,7 @@ DESCRIPTION = "Runtime helper for sip-generated python wrapper libraries"
 SECTION = "devel/python"
 PRIORITY = "optional"
 LICENSE = "GPL"
-DEPENDS = "virtual/libqte2 python"
+DEPENDS = "virtual/libqte2 python24"
 RDEPENDS = "python-core"
 PR = "ml4"
 
