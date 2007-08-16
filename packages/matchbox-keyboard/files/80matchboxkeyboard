@@ -1,0 +1,20 @@
+#!/bin/sh
+
+CMD=""
+
+if [ "$DISPLAY_CAN_ROTATE" = "1" ]; then
+    if [ "$HAVE_KEYBOARD_PORTRAIT" = "1" -a "$HAVE_KEYBOARD_LANDSCAPE" = "0" ]; then
+        CMD="matchbox-keyboard -d -o landscape"
+    elif [ "$HAVE_KEYBOARD_LANDSCAPE" = "1" -a "$HAVE_KEYBOARD_PORTRAIT" = "0" ]; then
+        CMD="matchbox-keyboard -d -o portrait"
+    fi
+else
+    CMD="matchbox-keyboard -d"
+fi
+
+
+# Delay to make sure the window manager is active
+
+if [ "$CMD" ]; then
+    (sleep 2 && $CMD) &
+fi

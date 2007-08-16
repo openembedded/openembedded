@@ -1,6 +1,8 @@
 DESCRIPTION = "Matchbox virtual keyboard for X11"
 LICENSE = "GPL"
 DEPENDS = "libfakekey expat libxft"
+RCONFLICTS = matchbox-keyboard-inputmethod
+RPROVIDES = matchbox-keyboard-inputmethod
 SECTION = "x11"
 PV = "0.0+svn${SRCDATE}"
 PR="r5"
