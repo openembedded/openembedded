@@ -2,7 +2,7 @@ DESCRIPTION = "OpenMoko: Tasks for the OpenMoko Linux Distribution"
 SECTION = "openmoko/base"
 LICENSE = "MIT"
 PROVIDES = "task-openmoko-everything"
-PR = "r56"
+PR = "r57"
 
 ALLOW_EMPTY = "1"
 PACKAGE_ARCH = "all"
@@ -83,7 +83,8 @@ RDEPENDS_task-openmoko-base = "\
   matchbox-panel-2-applets \
   matchbox-applet-inputmanager \
 #  openmoko-appmanager \
-  matchbox-keyboard \
+  matchbox-keyboard-inputmethod \
+  matchbox-keyboard-im \
   matchbox-stroke \
   openmoko-terminal2 \
   openmoko-keyboard \
