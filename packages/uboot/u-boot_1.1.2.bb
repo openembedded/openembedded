@@ -1,7 +1,7 @@
 PR = "r1"
 require u-boot.inc
 
-SRC_URI = "${SOURCEFORGE_MIRROR}/${PN}/${PN}-${PV}.tar.bz2 \
+SRC_URI = "ftp://ftp.denx.de/pub/u-boot/u-boot-${PV}.tar.bz2 \
 	   file://arm_flags.patch;patch=1 "
 SRC_URI_append_vibren = "ftp://bec-systems.com/pub/pxa255_idp/u-boot/uboot_pxa255-idp_2005-03-23.patch;patch=1"
 SRC_URI_append_mnci   = "file://mnci.patch;patch=1 \
