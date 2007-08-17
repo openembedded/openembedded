@@ -2,7 +2,7 @@ require u-boot.inc
 
 DEFAULT_PREFERENCE = "-1"
 
-SRC_URI = "${SOURCEFORGE_MIRROR}/${PN}/${PN}-${PV}.tar.bz2 \
+SRC_URI = "ftp://ftp.denx.de/pub/u-boot/u-boot-${PV}.tar.bz2 \
           file://u-boot-make381-fix.patch;patch=1"
 
 SRC_URI_append_gumstix = "\
