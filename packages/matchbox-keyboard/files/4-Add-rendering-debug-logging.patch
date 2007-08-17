@@ -44,14 +44,14 @@ diff -r b010d54a6c50 -r 38c3459f2e1a src/matchbox-keyboard-ui.c
    width_diff  = width  - ui->base_alloc_width; 
    height_diff = height - ui->base_alloc_height; 
  
-@@ -1125,6 +1133,7 @@ mb_kbd_ui_event_loop(MBKeyboardUI *ui)
+@@ -1178,6 +1178,7 @@
  		  }
  		break;
  	      case ConfigureNotify:
 +		DBG("ConfigureNotify %i,%i", xev.xconfigure.width, xev.xconfigure.height);
- 		if (xev.xconfigure.width != ui->xwin_width
- 		    || xev.xconfigure.height != ui->xwin_height)
- 		  mb_kbd_ui_handle_configure(ui,
+ 		if (xev.xconfigure.window == ui->xwin 
+ 		    &&  (xev.xconfigure.width != ui->xwin_width
+ 			 || xev.xconfigure.height != ui->xwin_height))
 diff -r b010d54a6c50 -r 38c3459f2e1a src/matchbox-keyboard.h
 --- a/src/matchbox-keyboard.h	Mon Apr 09 00:06:34 2007 +0000
 +++ b/src/matchbox-keyboard.h	Mon Apr 09 00:08:07 2007 +0000
