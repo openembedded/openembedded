@@ -6,6 +6,9 @@
 # INHERIT += "rm_work"
 #
 
+RMWORK_ORIG_TASK := "${BB_DEFAULT_TASK}"
+BB_DEFAULT_TASK = "rm_work"
+
 do_rm_work () {
     cd ${WORKDIR}
     for dir in *
@@ -17,13 +20,7 @@ do_rm_work () {
         fi
     done
 }
-
-addtask rmall after do_rm_work
-do_rmall[recrdeptask] = "do_rm_work"
-do_rmall() {
-        :
-}
-
-
-addtask rm_work before do_build
-addtask rm_work after do_populate_staging
+# Uncomment me when we can use bitbake 1.8.8
+#addtask rm_work after do_${RMWORK_ORIG_TASK}
+addtask rm_work after do_build
+do_rm_work[recrdeptask] = "do_rm_work"
