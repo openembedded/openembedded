@@ -4,7 +4,7 @@ PRIORITY = "optional"
 LICENSE = "GPL"
 PR = "r6"
 
-SRC_URI = "${SOURCEFORGE_MIRROR}/u-boot/u-boot-${PV}.tar.bz2" 
+SRC_URI = "ftp://ftp.denx.de/pub/u-boot/u-boot-${PV}.tar.bz2"
 
 S = "${WORKDIR}/u-boot-${PV}"
 
