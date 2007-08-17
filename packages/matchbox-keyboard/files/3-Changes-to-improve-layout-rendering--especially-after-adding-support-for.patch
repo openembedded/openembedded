@@ -43,52 +43,51 @@ diff -r ff9cf1fd8177 -r b010d54a6c50 src/matchbox-keyboard-ui.c
  
    layout   = mb_kbd_get_selected_layout(ui->kbd);
    row_item = mb_kbd_layout_rows(layout);
-diff -r ff9cf1fd8177 -r b010d54a6c50 src/matchbox-keyboard.c
---- a/src/matchbox-keyboard.c	Sun Apr 08 23:56:09 2007 +0000
-+++ b/src/matchbox-keyboard.c	Mon Apr 09 00:06:34 2007 +0000
-@@ -23,8 +23,9 @@ mb_kbd_usage (char *progname)
- mb_kbd_usage (char *progname)
- {
-   fprintf(stderr, "Usage:\n   %s [Options ] [ Layout Variant ]\n", progname);
--  fprintf(stderr, "\nOptions are;\n"
--	  "   -xid,--xid            Print window ID to stdout ( for embedding )\n");
-+  fprintf(stderr, "\nOptions are:\n"
-+	  "   -xid,--xid            Print window ID to stdout ( for embedding )\n"
-+	  "   --hfactor <percent>   Fix keyboard window size in percentage of desktop height\n");
-   fprintf(stderr, "\nmatchbox-keyboard %s \nCopyright (C) 2005 Matthew Allum, OpenedHand Ltd.\n", VERSION);
+--- a/src/matchbox-keyboard.c     2007-08-17 17:09:05.240878162 +0300
++++ b/src/matchbox-keyboard.c     2007-08-17 17:11:36.749512174 +0300
+@@ -27,7 +27,9 @@
+ 	  "   -xid,--xid            Print window ID to stdout ( for embedding )\n"
+ 	  "   -d,--daemon           Run in 'daemon' mode (for remote control)\n"
+ 	  "   -o,--orientation <portrait|landscape>\n"
+-          "                         Use to limit visibility with screen orientation \n");
++	  "                         Use to limit visibility with screen orientation \n"
++	  "   -h,--hfactor <percent>\n"
++	  "                         Fix keyboard window size in percentage of desktop height\n");
+   fprintf(stderr, "\nmatchbox-keyboard %s \nCopyright (C) 2007 OpenedHand Ltd.\n", VERSION);
  
    exit(-1);
-@@ -58,6 +59,13 @@ mb_kbd_new (int argc, char **argv)
- 	  want_embedding = True;
- 	  continue;
- 	}
-+      if (streq ("-hfactor", argv[i]) || streq ("--hfactor", argv[i])) 
-+	{
-+	  if (i + 1 < argc) {
-+	    kb->hfactor = atoi(argv[i + 1]);
-+	  }
-+	  continue;
-+	}
+@@ -52,7 +53,7 @@
+   kb->row_spacing = 5;
  
-       if (i == (argc-1) && argv[i][0] != '-')
- 	variant = argv[i];
-@@ -77,7 +85,7 @@ mb_kbd_new (int argc, char **argv)
-       kb->key_pad      = 0;
-       kb->col_spacing  = 0;
-       kb->row_spacing  = 0;
--      kb->font_pt_size = 5;
-+      kb->font_pt_size = 6;
-     }
+   kb->font_family  = strdup("sans");
+-  kb->font_pt_size = 5;
++  kb->font_pt_size = 6;
+   kb->font_variant = strdup("bold");
  
-   if (!mb_kbd_config_load(kb, variant))
+   for (i = 1; i < argc; i++) 
+@@ -63,6 +64,14 @@
+          continue;
+        }
+ 
++      if (streq ("-h", argv[i]) || streq ("--hfactor", argv[i])) 
++       {
++         if (i + 1 < argc) {
++           kb->hfactor = atoi(argv[i + 1]);
++         }
++         continue;
++       }
++
+       if (streq ("-d", argv[i]) || streq ("--daemon", argv[i])) 
+        {
+          want_daemon = True;
 diff -r ff9cf1fd8177 -r b010d54a6c50 src/matchbox-keyboard.h
 --- a/src/matchbox-keyboard.h	Sun Apr 08 23:56:09 2007 +0000
 +++ b/src/matchbox-keyboard.h	Mon Apr 09 00:06:34 2007 +0000
-@@ -143,6 +143,7 @@ struct MBKeyboard
+@@ -150,6 +150,7 @@
    char                  *font_family;
    int                    font_pt_size;
    char                  *font_variant;
 +  int                    hfactor;
- 
    char                  *config_file;
- 
+   List                  *layouts;
+   MBKeyboardLayout      *selected_layout;

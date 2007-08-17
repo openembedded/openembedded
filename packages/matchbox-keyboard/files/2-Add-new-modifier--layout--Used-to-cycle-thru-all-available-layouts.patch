@@ -71,15 +71,15 @@ diff -r 96305d94eb31 -r ff9cf1fd8177 src/matchbox-keyboard.c
 diff -r 96305d94eb31 -r ff9cf1fd8177 src/matchbox-keyboard.h
 --- a/src/matchbox-keyboard.h	Sun Apr 08 23:28:43 2007 +0000
 +++ b/src/matchbox-keyboard.h	Sun Apr 08 23:56:09 2007 +0000
-@@ -148,6 +148,7 @@ struct MBKeyboard
- 
+@@ -153,6 +153,7 @@
+   char                  *config_file;
    List                  *layouts;
    MBKeyboardLayout      *selected_layout;
-+  int                    selected_layout_no;
- 
++  int                  selected_layout_no;
    int                    key_border, key_pad, key_margin;
    int                    row_spacing, col_spacing;
-@@ -177,6 +178,9 @@ int
+   boolean                extended; /* are we showing extended keys ? */
+@@ -179,6 +180,9 @@
  int
  mb_kbd_ui_init(MBKeyboard *kbd);
  
