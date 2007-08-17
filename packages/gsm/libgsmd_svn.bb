@@ -4,17 +4,13 @@ LICENSE = "GPL LGPL"
 SECTION = "libs/gsm"
 PROVIDES += "gsmd"
 PV = "0.1+svn${SRCDATE}"
-PR = "r18"
+PR = "r19"
 
 SRC_URI_OVERRIDES_PACKAGE_ARCH = "1"
 
 SRC_URI = "svn://svn.openmoko.org/trunk/src/target;module=gsm;proto=http \
            file://gsmd \
-           file://default \
-           file://extreplychars.patch;patch=1 \
-           file://getopt-wait-interpreter-ready.patch;patch=1 \
-           file://tihtc-csq-fix.patch;patch=1 \
-           file://universal-wcdma.patch;patch=1"
+           file://default"
 S = "${WORKDIR}/gsm"
 
 inherit autotools pkgconfig update-rc.d
