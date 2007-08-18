@@ -2,7 +2,7 @@ DESCRIPTION = "This package provides the necessary \
 infrastructure for basic TCP/IP based networking."
 SECTION = "base"
 LICENSE = "GPL"
-PR = "r20"
+PR = "r21"
 
 inherit update-rc.d
 
@@ -54,4 +54,6 @@ do_install () {
 	install -m 0644 ${WORKDIR}/interfaces ${D}${sysconfdir}/network/interfaces
 }
 
-CONFFILES_${PN} = "${sysconfdir}/network/options ${sysconfdir}/hosts ${sysconfdir}/network/interfaces"
+CONFFILES_${PN} = "${sysconfdir}/network/options ${sysconfdir}/hosts \
+                   ${sysconfdir}/network/interfaces ${sysconfdir}/rpc \
+                   ${sysconfdir}/protocols ${sysconfdir}/services"
