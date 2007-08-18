@@ -6,7 +6,7 @@ nslu2_pack_image () {
 			${STAGING_LOADER_DIR}/apex-nslu2.bin \
 			${STAGING_LOADER_DIR}/apex-nslu2-16mb.bin \
 			${DEPLOY_DIR_IMAGE}/slug/
-	install -m 0644 ${DEPLOY_DIR_IMAGE}/zImage-nslu2${SITEINFO_ENDIANESS} \
+	install -m 0644 ${DEPLOY_DIR_IMAGE}/zImage-ixp4xx${SITEINFO_ENDIANESS} \
 		${DEPLOY_DIR_IMAGE}/slug/vmlinuz
 	install -m 0644 ${DEPLOY_DIR_IMAGE}/${IMAGE_NAME}.rootfs.jffs2 \
 		${DEPLOY_DIR_IMAGE}/slug/flashdisk.jffs2
