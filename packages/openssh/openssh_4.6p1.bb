@@ -1,5 +1,3 @@
-DEFAULT_PREFERENCE = "-1"
-
 DEPENDS = "zlib openssl"
 
 RCONFLICTS_openssh = "dropbear"
