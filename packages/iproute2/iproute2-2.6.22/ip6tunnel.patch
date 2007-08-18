@@ -1,0 +1,12 @@
+This fix is needed when building with uclibc
+
+--- iproute-2.6.20-070313/ip/ip6tunnel.c	2007/03/17 03:44:27	1.1
++++ iproute-2.6.20-070313/ip/ip6tunnel.c	2007/03/17 03:43:14
+@@ -33,6 +33,7 @@
+ #include <sys/socket.h>
+ #include <arpa/inet.h>
+ #include <sys/ioctl.h>
++#include <linux/types.h>
+ #include <linux/ip.h>
+ #include <linux/if.h>
+ #include <linux/if_arp.h>
