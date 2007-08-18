@@ -10,6 +10,7 @@ LICENSE = "GPL"
 
 SRC_URI = "ftp://ftp.buici.com/pub/apex/apex-${PV}.tar.gz \
 	   file://defconfig"
+S = ${WORKDIR}/apex-${PV}
 
 CMDLINE_CONSOLE = "console=${@bb.data.getVar("KERNEL_CONSOLE",d,1) or "ttyS0"}"
 
@@ -35,14 +36,14 @@ do_configure() {
 	if [ "x$ac_cv_c_bigendian" = "xyes" -o "x$ac_cv_c_littleendian" = "xno" ]; then
 	  sed -e 's/.*CONFIG_USER_BIGENDIAN.*/CONFIG_USER_BIGENDIAN=y/' \
 	      -e 's/.*CONFIG_BIGENDIAN.*/CONFIG_BIGENDIAN=y/' \
-	      -e 's/.*CONFIG_TARGET_DESCRIPTION.*/CONFIG_TARGET_DESCRIPTION=\"OpenEmbedded NSLU2 (big endian)\"/' \
+	      -e 's/.*CONFIG_TARGET_DESCRIPTION.*/CONFIG_TARGET_DESCRIPTION=\"OpenEmbedded NSLU2\/BE (8MiB Flash)\"/' \
 	      -e 's|CONFIG_ENV_DEFAULT_CMDLINE=|CONFIG_ENV_DEFAULT_CMDLINE=\"${CMDLINE_CONSOLE} ${CMDLINE_ROOT} ${CMDLINE_DEBUG}\"|' \
 		${WORKDIR}/defconfig > ${S}/.config
 	elif [ "x$ac_cv_c_littleendian" = "xyes" -o "x$ac_cv_c_bigendian" = "xno" ]; then
 	  sed -e 's/.*CONFIG_USER_LITTLEENDIAN.*/CONFIG_USER_LITTLEENDIAN=y/' \
 	      -e 's/.*CONFIG_LITTLEENDIAN.*/CONFIG_LITTLEENDIAN=y/' \
 	      -e 's/.*CONFIG_ENV_REGION_KERNEL_SWAP.*/CONFIG_ENV_REGION_KERNEL_SWAP=y/' \
-	      -e 's/.*CONFIG_TARGET_DESCRIPTION.*/CONFIG_TARGET_DESCRIPTION=\"OpenEmbedded NSLU2 (little endian)\"/' \
+	      -e 's/.*CONFIG_TARGET_DESCRIPTION.*/CONFIG_TARGET_DESCRIPTION=\"OpenEmbedded NSLU2\/LE (8MiB Flash)\"/' \
 	      -e 's|CONFIG_ENV_DEFAULT_CMDLINE=|CONFIG_ENV_DEFAULT_CMDLINE=\"${CMDLINE_CONSOLE} ${CMDLINE_ROOT} ${CMDLINE_DEBUG}\"|' \
 		${WORKDIR}/defconfig > ${S}/.config
 	else
@@ -58,10 +59,10 @@ do_populate_staging() {
 	. ${CONFIG_SITE}
 	if [ "x$ac_cv_c_bigendian" = "xyes" -o "x$ac_cv_c_littleendian" = "xno" ]; then
 		# FIXME - arch-arm should not be hard-coded
-		cp src/arch-arm/rom/apex.bin ${STAGING_LOADER_DIR}/apex.bin
+		cp src/arch-arm/rom/apex.bin ${STAGING_LOADER_DIR}/apex-nslu2.bin
 	elif [ "x$ac_cv_c_littleendian" = "xyes" -o "x$ac_cv_c_bigendian" = "xno" ]; then
 		# FIXME - arch-arm should not be hard-coded
-		devio '<<'src/arch-arm/rom/apex.bin >${STAGING_LOADER_DIR}/apex.bin 'xp $,4'
+		devio '<<'src/arch-arm/rom/apex.bin >${STAGING_LOADER_DIR}/apex-nslu2.bin 'xp $,4'
 	else
 		oefatal do_populate_staging cannot determine endianess
 	fi
