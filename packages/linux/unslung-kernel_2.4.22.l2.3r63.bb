@@ -1,7 +1,7 @@
 SECTION = "kernel"
 DESCRIPTION = "Vendor-compatible Linux kernel for the Linksys NSLU2 device"
 LICENSE = "GPL"
-PR = "r19"
+PR = "r20"
 
 COMPATIBLE_HOST = 'arm.*-linux'
 COMPATIBLE_MACHINE = "nslu2"
@@ -39,7 +39,7 @@ inherit kernel
 
 ARCH = "arm"
 KERNEL_IMAGETYPE = "zImage"
-KERNEL_SUFFIX = "${MACHINE}"
+KERNEL_SUFFIX = "ixp4xxbe"
 CMDLINE_CONSOLE ?= "ttyS0,115200"
 CMDLINE_ROOT = "root=/dev/mtdblock4 rootfstype=jffs2 rw init=/linuxrc mem=32M@0x00000000"
 CMDLINE = "${CMDLINE_CONSOLE} ${CMDLINE_ROOT}"
