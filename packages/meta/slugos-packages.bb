@@ -5,7 +5,7 @@
 DESCRIPTION = "Packages that are compatible with the SlugOS firmware"
 HOMEPAGE = "http://www.nslu2-linux.org"
 LICENSE = "MIT"
-PR = "r33"
+PR = "r34"
 CONFLICTS = "db3"
 
 COMPATIBLE_MACHINE = "nslu2"
@@ -21,6 +21,7 @@ ALLOW_EMPTY = "1"
 SLUGOS_PACKAGES = "\
 	alsa-lib \
 	alsa-utils \
+	apex-env \
 	asterisk \
 	asterisk-sounds \
 	atftp \
@@ -59,9 +60,11 @@ SLUGOS_PACKAGES = "\
 	eciadsl \
 	expat \
 	ez-ipupdate \
+	fconfig \
 	fetchmail \
 	file \
 	findutils \
+	fis \
 	flac \
 	flex \
 	flite \
