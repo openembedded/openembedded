@@ -90,7 +90,7 @@ def check_sanity(e):
 	if not check_app_exists('${BUILD_PREFIX}g++', e.data):
 		missing = missing + "C++ Compiler (${BUILD_PREFIX}g++),"
 
-	required_utilities = "patch help2man diffstat texi2html makeinfo cvs svn bzip2 tar gzip gawk md5sum stty"
+	required_utilities = "patch help2man diffstat texi2html makeinfo cvs svn bzip2 tar gzip gawk md5sum"
 
 	for util in required_utilities.split():
 		if not check_app_exists( util, e.data ):
@@ -108,11 +108,6 @@ def check_sanity(e):
 	oes_bb_conf = data.getVar( 'OES_BITBAKE_CONF', e.data, True )
 	if not oes_bb_conf:
 		messages = messages + 'You do not include OpenEmbeddeds version of conf/bitbake.conf\n'
-
-     # Check if the terminal has stty +tostop
-	if "tostop" in os.popen("stty").read():
-		messages = messages + "You have tostop in your stty terminal setting. This will make BitBake hang when executing. Execute stty -tostop fix this.\n"
- 
 
 	if messages != "":
 		raise_sanity_error(messages)
