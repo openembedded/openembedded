@@ -1,16 +1,13 @@
 DESCRIPTION = "kernel routing and traffic control utilities"
+HOMEPAGE = "http://linux-net.osdl.org/index.php/Iproute2"
 SECTION = "base"
 LICENSE = "GPL"
 DEPENDS = "flex-native bison-native"
 
-# This changed from iproute2 to iproute with version 2.6.20, so set to
-# iproute in the recipe for 2.6.20 and newer versions.
-DIRNAME ?= "${PN}"
-
 # Set the DATE in the .bb file
 SRC_URI = "http://developer.osdl.org/dev/iproute2/download/${P}-${DATE}.tar.gz"
 
-S = "${WORKDIR}/${DIRNAME}-${PV}-${DATE}"
+# Set S in the .bb files
 
 inherit update-alternatives
 

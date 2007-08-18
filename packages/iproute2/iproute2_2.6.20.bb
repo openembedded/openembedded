@@ -1,11 +1,12 @@
 PR = "r2"
 
+DATE = "070313"
+
 SRC_URI_append = " file://new-flex-fix.patch;patch=1 \
                    file://ip6tunnel.patch;patch=1 \
                    file://man-pages-fix.patch;patch=1 \
                    file://no-strip.patch;patch=1"
 
-require iproute2.inc
+S = "${WORKDIR}/iproute-${PV}-${DATE}"
 
-DIRNAME = "iproute"
-DATE = "070313"
+require iproute2.inc
