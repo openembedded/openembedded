@@ -1,7 +1,7 @@
 DESCRIPTION= "Everything Python"
 HOMEPAGE = "http://www.vanille.de/projects/python.spy"
 LICENSE = "MIT"
-PR = "ml16"
+PR = "ml17"
 
 RDEPENDS = "\
 		python-ao 		\
@@ -53,6 +53,7 @@ RDEPENDS = "\
 		python-pyiw		\
 		python-pylinda		\
 		python-pylint		\
+		python-pyode		\
 		python-pyraf		\
 		python-pyreverse	\
 		python-pyrex		\
