@@ -8,7 +8,7 @@ SECTION = "network"
 LICENSE = "BSD"
 DEPENDS = "clamav"
 RDEPENDS_${PN} = "clamav-daemon"
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "http://memberwebs.com/nielsen/software/clamsmtp/clamsmtp-${PV}.tar.gz \
            file://update-config.patch;patch=1 \
