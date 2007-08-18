@@ -145,5 +145,3 @@ IGNORE_STRIP_ERRORS = ""
 #PREFERRED_VERSION_madwifi-ng ?= "r2156-20070225"
 
 PREFERRED_VERSION_linux-libc-headers = "2.6.18"
-
-PREFERRED_VERSION_openssh ?= "4.6p1"
