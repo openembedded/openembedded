@@ -58,14 +58,12 @@ SLUGOS_PACKAGES = "\
 	diffutils \
 	dircproxy \
 	dnsmasq \
-	dsniff \
 	e2fsprogs \
 	e2fsprogs-libs \
 	eciadsl \
 	expat \
 	ez-ipupdate \
 	fconfig \
-	fetchmail \
 	file \
 	findutils \
 	fis \
@@ -133,14 +131,17 @@ SLUGOS_PACKAGES = "\
 	microcom \
 	minicom \
 	motion \
+	mpd \
 	mt-daapd \
 	mtd-utils \
 	mutt \
+	mysql \
 	nail \
 	nano \
 	ncftp \
 	ncurses \
 	netcat \
+	netpbm \
 	nfs-utils \
 	nmap \
 	ntfs-3g \
@@ -217,26 +218,23 @@ SLUGOS_PACKAGES = "\
 SLUGOS_BROKEN_PACKAGES = "\
 	bwmon \
 	ctrlproxy \
-	libgphoto2 gphoto2 \
+	dsniff \
+	fetchmail \
+	libgphoto2 gphoto2 sane-backends \\
+	lirc-modules lirc \
 	logrotate \
 	madfu \
 	openldap \
-	\
-	mpd \
-	netpbm \
 	pvrusb2-mci \
+	pwc \
 	qc-usb-messenger \
 	syslog-ng \
-	sane-backends \
+	task-native-sdk \
 	unionfs-modules \
 	unionfs-utils \
-	lirc \
-	pwc \
-	task-native-sdk \
-	zd1211 \
-	mysql \
         wview-sim-mysql wview-vpro-mysql \
         wview-wxt510-mysql \
+	zd1211 \
 	"
 
 SLUGOS_EXTRA_PACKAGES ?= ""
