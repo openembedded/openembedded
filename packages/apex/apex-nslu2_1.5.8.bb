@@ -3,7 +3,7 @@ SECTION = ""
 PRIORITY = "optional"
 HOMEPAGE = "http://wiki.buici.com/twiki/bin/view/Main/ApexBootloader"
 LICENSE = "GPL"
-# PR = "r1"
+PR = "r1"
 
 # Note that this recipe only works for the NSLU2 at the moment.
 # Patches to make it more generic are welcome.
@@ -19,6 +19,8 @@ CMDLINE_ROOT         = "root=/dev/mtdblock2 rootfstype=jffs2 rw"
 CMDLINE_ROOT_nslu2   = "root=/dev/mtdblock4 rootfstype=jffs2 rw init=/linuxrc"
 CMDLINE_ROOT_dsmg600 = "root=/dev/mtdblock2 rootfstype=jffs2 rw init=/linuxrc"
 CMDLINE_ROOT_nas100d = "root=/dev/mtdblock2 rootfstype=jffs2 rw init=/linuxrc"
+
+CMDLINE_DEBUG ?= ""
 
 EXTRA_OEMAKE_append = " CROSS_COMPILE=${CROSS_DIR}/bin/${HOST_PREFIX}"
 
