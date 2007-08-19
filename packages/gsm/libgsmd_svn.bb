@@ -46,6 +46,7 @@ FILES_gsmd-plugins = ""
 FILES_gsmd-plugin-machine-generic = "${libdir}/gsmd/libgsmd-machine_generic.so*"
 FILES_gsmd-plugin-machine-tihtc = "${libdir}/gsmd/libgsmd-machine_tihtc.so*"
 FILES_gsmd-plugin-vendor-qc = "${libdir}/gsmd/libgsmd-vendor_qc.so*"
+FILES_gsmd-plugin-vendor-bcm = "${libdir}/gsmd/libgsmd-vendor_bcm.so*"
 FILES_gsmd-plugin-vendor-ti = "${libdir}/gsmd/libgsmd-vendor_ti.so*"
 FILES_gsmd-plugin-vendor-tihtc = "${libdir}/gsmd/libgsmd-vendor_tihtc.so*"
 
