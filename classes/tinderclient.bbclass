@@ -373,7 +373,7 @@ python tinderclient_eventhandler() {
     from bb import note, error, data
     from bb.event import NotHandled, getName
 
-    if e.data is None or etName(e) == "MsgNote":
+    if e.data is None or getName(e) == "MsgNote":
         return NotHandled
 
     do_tinder_report = data.getVar('TINDER_REPORT', e.data, True)
