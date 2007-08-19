@@ -129,7 +129,9 @@ def seppuku_find_bug_report(debug_file, opener, query, product, component, bugna
     component = urllib.quote(component)
     bugname   = urllib.quote(bugname)
 
-    result = opener.open("%(query)sproduct=%(product)s&component=%(component)s&short_desc_type=substring&short_desc=%(bugname)s" % vars())
+    file = "%(query)sproduct=%(product)s&component=%(component)s&short_desc_type=substring&short_desc=%(bugname)s" % vars()
+    print >> debug_file, "Trying %s" % file
+    result = opener.open(file)
     if result.code != 200:
         raise "Can not query the bugzilla at all"
     txt = result.read()
@@ -290,7 +292,7 @@ python seppuku_eventhandler() {
     if name == "PkgFailed":
         if not bb.data.getVar('SEPPUKU_AUTOBUILD', data, True) == "0":
             build.exec_task('do_clean', data)
-    elif name == "TaskFailed" or name == "NoProvider":
+    elif name == "TaskFailed":
         cj = cookielib.CookieJar()
         opener  = urllib2.build_opener(urllib2.HTTPCookieProcessor(cj))
         poster  = urllib2.build_opener(urllib2.HTTPCookieProcessor(cj),MultipartPostHandler.MultipartPostHandler)
@@ -326,9 +328,6 @@ python seppuku_eventhandler() {
                 file = open(log_file[0], 'r')
             else:
                 print >> debug_file, "No log file found for the glob"
-        #elif name == "NoProvider":
-        #    bugname = "noprovider for %s " % (event.getItem)
-        #    text    = "Please fix it"
         else:
             print >> debug_file, "Unknown name '%s'" % name
             assert False
