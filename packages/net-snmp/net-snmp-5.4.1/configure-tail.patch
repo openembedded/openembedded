@@ -1,0 +1,99 @@
+diff -urN net-snmp-5.4.1-orig/acinclude.m4 net-snmp-5.4.1-patched/acinclude.m4
+--- net-snmp-5.4.1-orig/acinclude.m4	2006-08-15 05:25:49.000000000 +0200
++++ net-snmp-5.4.1-patched/acinclude.m4	2007-08-14 13:22:13.000000000 +0200
+@@ -39,7 +39,7 @@
+ dnl
+ AC_DEFUN([AC_PROMPT_USER],
+ [
+-MSG_CHECK=`echo "$2" | tail -1`
++MSG_CHECK=`echo "$2" | tail -n 1`
+ AC_CACHE_CHECK($MSG_CHECK, ac_cv_user_prompt_$1,
+ [echo "" >&AC_FD_MSG
+ AC_PROMPT_USER_NO_DEFINE($1,[$2],$3)
+diff -urN net-snmp-5.4.1-orig/configure net-snmp-5.4.1-patched/configure
+--- net-snmp-5.4.1-orig/configure	2007-07-27 19:04:19.000000000 +0200
++++ net-snmp-5.4.1-patched/configure	2007-08-14 13:22:13.000000000 +0200
+@@ -26417,7 +26417,7 @@
+ 	# hpux make (at least) doesn't like a trailing \ on the last
+ 	# line even when the next line contains nothing but
+ 	# whitespace.
+-	lasttoken=`tail -1 mk/$i.mk | awk '{print $1}'`
++	lasttoken=`tail -n 1 mk/$i.mk | awk '{print $1}'`
+ 	sed "s#$lasttoken \\\\#$lasttoken#" < mk/$i.mk > mk/$i.mk.tmp
+ 	mv mk/$i.mk.tmp mk/$i.mk
+ 
+@@ -48793,7 +48793,7 @@
+ 
+ ME=`$WHOAMI`
+ if test -f /etc/resolv.conf; then
+-  LOC=`cat /etc/resolv.conf | grep '^domain' | tail -1 | awk '{print $NF}'`
++  LOC=`cat /etc/resolv.conf | grep '^domain' | tail -n 1 | awk '{print $NF}'`
+ else
+   LOC="@no.where"
+ fi
+@@ -48819,7 +48819,7 @@
+    Providing the --with-default-snmp-version=\"x\" parameter to ./configure
+ will avoid this prompt.
+ 
+-Default version of SNMP to use" | tail -1`
++Default version of SNMP to use" | tail -n 1`
+ echo "$as_me:$LINENO: checking $MSG_CHECK" >&5
+ echo $ECHO_N "checking $MSG_CHECK... $ECHO_C" >&6
+ if test "${ac_cv_user_prompt_NETSNMP_DEFAULT_SNMP_VERSION+set}" = set; then
+@@ -48903,7 +48903,7 @@
+   Providing the --with-sys-contact=\"contact\" parameter to ./configure
+ will avoid this prompt.
+ 
+-System Contact Information" | tail -1`
++System Contact Information" | tail -n 1`
+ echo "$as_me:$LINENO: checking $MSG_CHECK" >&5
+ echo $ECHO_N "checking $MSG_CHECK... $ECHO_C" >&6
+ if test "${ac_cv_user_prompt_NETSNMP_SYS_CONTACT+set}" = set; then
+@@ -48967,7 +48967,7 @@
+   Providing the --with-sys-location=\"location\" parameter to ./configure
+ will avoid this prompt.
+ 
+-System Location" | tail -1`
++System Location" | tail -n 1`
+ echo "$as_me:$LINENO: checking $MSG_CHECK" >&5
+ echo $ECHO_N "checking $MSG_CHECK... $ECHO_C" >&6
+ if test "${ac_cv_user_prompt_NETSNMP_SYS_LOC+set}" = set; then
+@@ -49037,7 +49037,7 @@
+   Providing the --with-logfile=\"path\" parameter to ./configure
+ will avoid this prompt.
+ 
+-Location to write logfile" | tail -1`
++Location to write logfile" | tail -n 1`
+ echo "$as_me:$LINENO: checking $MSG_CHECK" >&5
+ echo $ECHO_N "checking $MSG_CHECK... $ECHO_C" >&6
+ if test "${ac_cv_user_prompt_NETSNMP_LOGFILE+set}" = set; then
+@@ -49114,7 +49114,7 @@
+   Providing the --with-persistent-directory=\"path\" parameter to
+ ./configure will avoid this prompt.
+ 
+-Location to write persistent information" | tail -1`
++Location to write persistent information" | tail -n 1`
+ echo "$as_me:$LINENO: checking $MSG_CHECK" >&5
+ echo $ECHO_N "checking $MSG_CHECK... $ECHO_C" >&6
+ if test "${ac_cv_user_prompt_NETSNMP_PERSISTENT_DIRECTORY+set}" = set; then
+diff -urN net-snmp-5.4.1-orig/configure.in net-snmp-5.4.1-patched/configure.in
+--- net-snmp-5.4.1-orig/configure.in	2007-07-27 19:02:00.000000000 +0200
++++ net-snmp-5.4.1-patched/configure.in	2007-08-14 13:22:13.000000000 +0200
+@@ -2465,7 +2465,7 @@
+ 	# hpux make (at least) doesn't like a trailing \ on the last
+ 	# line even when the next line contains nothing but
+ 	# whitespace.
+-	lasttoken=`tail -1 mk/$i.mk | awk '{print $1}'`
++	lasttoken=`tail -n 1 mk/$i.mk | awk '{print $1}'`
+ 	sed "s#$lasttoken \\\\#$lasttoken#" < mk/$i.mk > mk/$i.mk.tmp
+ 	mv mk/$i.mk.tmp mk/$i.mk
+ 
+@@ -4575,7 +4575,7 @@
+ 
+ ME=`$WHOAMI`
+ if test -f /etc/resolv.conf; then
+-  LOC=`cat /etc/resolv.conf | grep '^domain' | tail -1 | awk '{print $NF}'`
++  LOC=`cat /etc/resolv.conf | grep '^domain' | tail -n 1 | awk '{print $NF}'`
+ else
+   LOC="@no.where"
+ fi
