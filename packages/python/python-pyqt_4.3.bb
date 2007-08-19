@@ -10,6 +10,22 @@ PR = "ml0"
 
 SRC_URI = "http://www.riverbankcomputing.com/Downloads/PyQt4/GPL/PyQt-x11-gpl-${PV}.tar.gz \
            file://cross-compile.patch;patch=1"
+
+BROKEN = "1"
+# Something really fishy wrt. to arm/mips/etc. double vs. qreal. May even be a problem in Qt headers itself.
+# Symptons:
+#| sipQtCoreQTimeLine.cpp:136: error: conflicting return type specified for 'virtual double sipQTimeLine::valueForTime(int) const'
+#| /home/pkg/oe/fic-gta01/tmp/staging/arm-angstrom-linux-gnueabi/qt4/include/QtCore/qtimeline.h:92: error:   overriding 'virtual qreal QTimeLine::valueForTime(int) const'
+# And:
+# | sipQtCoreQRectF.cpp: In function 'PyObject* meth_QRectF_getRect(PyObject*, PyObject*)':
+| sipQtCoreQRectF.cpp:1182: error: no matching function for call to 'QRectF::getRect(double*, double*, double*, double*)'
+| /home/pkg/oe/fic-gta01/tmp/staging/arm-angstrom-linux-gnueabi/qt4/include/QtCore/qrect.h:725: note: candidates are: void QRectF::getRect(qreal*, qreal*, qreal*, qreal*) const
+| sipQtCoreQRectF.cpp: In function 'PyObject* meth_QRectF_getCoords(PyObject*, PyObject*)':
+| sipQtCoreQRectF.cpp:1237: error: no matching function for call to 'QRectF::getCoords(double*, double*, double*, double*)'
+| /home/pkg/oe/fic-gta01/tmp/staging/arm-angstrom-linux-gnueabi/qt4/include/QtCore/qrect.h:741: note: candidates are: void QRectF::getCoords(qreal*, qreal*, qreal*, qreal*) const
+| make[1]: *** [sipQtCoreQRectF.o] Error 1
+
+
 S = "${WORKDIR}/PyQt-x11-gpl-${PV}"
 
 inherit qmake qt4x11 sip distutils-base
