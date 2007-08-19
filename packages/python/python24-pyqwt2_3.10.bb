@@ -13,7 +13,7 @@ SRC_URI = "http://www.vanille.de/mirror/PyQwt-20040118.tar.gz \
            file://features"
 S = "${WORKDIR}/PyQwt-20040118"
 
-inherit palmtop sip distutils-base
+inherit palmtop sip3 distutils-base
 
 QMAKE_PROFILES = "pyqwt.pro"
 EXTRA_SIPTAGS = "-tWS_QWS -tQtPE_1_6_0 -tQt_2_3_1"

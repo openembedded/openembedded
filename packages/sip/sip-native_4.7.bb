@@ -1,5 +1,5 @@
 DESCRIPTION = "SIP is a C++/Python Wrapper Generator"
-SECTION = "base"
+SECTION = "devel"
 HOMEPAGE = "http://www.riverbankcomputing.co.uk/sip"
 AUTHOR = "Phil Thompson"
 PRIORITY = "optional"
@@ -8,7 +8,7 @@ LICENSE = "GPL"
 SRC_URI = "http://www.riverbankcomputing.com/Downloads/sip4/sip-${PV}.tar.gz"
 S = "${WORKDIR}/sip-${PV}/sipgen"
 
-inherit qmake native
+inherit qmake qt4x11 native
 
 EXTRA_QMAKEVARS_POST += "DESTDIR=${S} CONFIG=console"
 

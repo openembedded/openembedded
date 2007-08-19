@@ -12,12 +12,12 @@ SRC_URI = "http://www.riverbankcomputing.com/Downloads/PyQt4/GPL/PyQt-x11-gpl-${
            file://cross-compile.patch;patch=1"
 S = "${WORKDIR}/PyQt-x11-gpl-${PV}"
 
-inherit qmake qt4x11 sip4 distutils-base
+inherit qmake qt4x11 sip distutils-base
 
 PARALLEL_MAKE = ""
 
 QMAKE_PROFILES = "pyqt.pro"
-EXTRA_SIPTAGS = "-tWS_X11 -tQt_4_1_2 -xVendorID -xPyQt_SessionManager -xPyQt_Accessibility"
+EXTRA_SIPTAGS = "-tWS_X11 -tQt_4_3_0 -xVendorID -xPyQt_SessionManager -xPyQt_Accessibility"
 EXTRA_OEMAKE = " MAKEFLAGS= "
 
 SIP_MODULES = "QtCore QtGui QtNetwork QtSql QtSvg QtXml"
