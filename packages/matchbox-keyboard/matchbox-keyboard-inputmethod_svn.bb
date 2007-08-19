@@ -6,10 +6,12 @@ RPROVIDES = matchbox-keyboard
 #DEFAULT_PREFERENCE = "-1"
 SECTION = "x11"
 PV = "0.0+svn${SRCDATE}"
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "svn://svn.o-hand.com/repos/matchbox/trunk;module=matchbox-keyboard;proto=http \
 	   file://80matchboxkeyboard"
+
+SRC_URI_append_fic-gta01 = " file://fic-gta01-font-size.patch;patch=1"
 
 S = "${WORKDIR}/matchbox-keyboard"
 

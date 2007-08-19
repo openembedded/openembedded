@@ -14,7 +14,7 @@ SRC_URI = "http://www.vanille.de/mirror/PyQt-x11-gpl-${PV}.tar.gz \
            file://features"
 S = "${WORKDIR}/PyQt-x11-gpl-${PV}"
 
-inherit palmtop sip distutils-base
+inherit palmtop sip3 distutils-base
 
 QMAKE_PROFILES = "pyqt.pro"
 EXTRA_SIPTAGS = "-tWS_QWS -tQtPE_1_6_0 -tQt_2_3_1"

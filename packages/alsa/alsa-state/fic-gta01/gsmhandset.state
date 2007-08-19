@@ -16,8 +16,8 @@ state.neo1973 {
 		comment.range '0 - 255'
 		iface MIXER
 		name 'ADC Capture Volume'
-		value.0 195
-		value.1 195
+		value.0 0
+		value.1 0
 	}
 	control.3 {
 		comment.access 'read write'
@@ -46,7 +46,7 @@ state.neo1973 {
 		comment.range '0 - 127'
 		iface MIXER
 		name 'Mono Playback Volume'
-		value 121
+		value 111
 	}
 	control.6 {
 		comment.access 'read write'
@@ -55,8 +55,8 @@ state.neo1973 {
 		comment.range '0 - 7'
 		iface MIXER
 		name 'Bypass Playback Volume'
-		value.0 2
-		value.1 2
+		value.0 5
+		value.1 5
 	}
 	control.7 {
 		comment.access 'read write'
@@ -65,8 +65,8 @@ state.neo1973 {
 		comment.range '0 - 7'
 		iface MIXER
 		name 'Sidetone Playback Volume'
-		value.0 2
-		value.1 2
+		value.0 1
+		value.1 1
 	}
 	control.8 {
 		comment.access 'read write'
@@ -103,7 +103,7 @@ state.neo1973 {
 		comment.range '0 - 7'
 		iface MIXER
 		name 'Mono Bypass Playback Volume'
-		value 2
+		value 5
 	}
 	control.12 {
 		comment.access 'read write'
@@ -112,7 +112,7 @@ state.neo1973 {
 		comment.range '0 - 7'
 		iface MIXER
 		name 'Mono Sidetone Playback Volume'
-		value 2
+		value 6
 	}
 	control.13 {
 		comment.access 'read write'
@@ -121,7 +121,7 @@ state.neo1973 {
 		comment.range '0 - 7'
 		iface MIXER
 		name 'Mono Voice Playback Volume'
-		value 2
+		value 6
 	}
 	control.14 {
 		comment.access 'read write'
@@ -159,7 +159,7 @@ state.neo1973 {
 		comment.access 'read write'
 		comment.type INTEGER
 		comment.count 1
-		comment.range '0 - 7'
+		comment.range '0 - 15'
 		iface MIXER
 		name 'Bass Volume'
 		value 0
@@ -168,7 +168,7 @@ state.neo1973 {
 		comment.access 'read write'
 		comment.type INTEGER
 		comment.count 1
-		comment.range '0 - 7'
+		comment.range '0 - 15'
 		iface MIXER
 		name 'Treble Volume'
 		value 7
@@ -190,8 +190,8 @@ state.neo1973 {
 		comment.range '0 - 7'
 		iface MIXER
 		name 'Sidetone Capture Volume'
-		value.0 2
-		value.1 2
+		value.0 0
+		value.1 0
 	}
 	control.21 {
 		comment.access 'read write'
@@ -200,7 +200,7 @@ state.neo1973 {
 		comment.range '0 - 7'
 		iface MIXER
 		name 'Voice Sidetone Capture Volume'
-		value 2
+		value 0
 	}
 	control.22 {
 		comment.access 'read write'
@@ -209,8 +209,8 @@ state.neo1973 {
 		comment.range '0 - 63'
 		iface MIXER
 		name 'Capture Volume'
-		value.0 24
-		value.1 24
+		value.0 0
+		value.1 0
 	}
 	control.23 {
 		comment.access 'read write'
@@ -227,8 +227,8 @@ state.neo1973 {
 		comment.count 2
 		iface MIXER
 		name 'Capture Switch'
-		value.0 true
-		value.1 true
+		value.0 false
+		value.1 false
 	}
 	control.25 {
 		comment.access 'read write'
@@ -250,7 +250,7 @@ state.neo1973 {
 		comment.item.1 Voice
 		iface MIXER
 		name 'Capture Filter Cut-off'
-		value HiFi
+		value Voice
 	}
 	control.27 {
 		comment.access 'read write'
@@ -267,7 +267,7 @@ state.neo1973 {
 		comment.range '0 - 7'
 		iface MIXER
 		name 'ALC Capture Target Volume'
-		value 3
+		value 5
 	}
 	control.29 {
 		comment.access 'read write'
@@ -276,7 +276,7 @@ state.neo1973 {
 		comment.range '0 - 7'
 		iface MIXER
 		name 'ALC Capture Max Volume'
-		value 1
+		value 7
 	}
 	control.30 {
 		comment.access 'read write'
@@ -288,7 +288,7 @@ state.neo1973 {
 		comment.item.3 Stereo
 		iface MIXER
 		name 'ALC Capture Function'
-		value Stereo
+		value Off
 	}
 	control.31 {
 		comment.access 'read write'
@@ -305,7 +305,7 @@ state.neo1973 {
 		comment.range '0 - 15'
 		iface MIXER
 		name 'ALC Capture Hold Time'
-		value 7
+		value 15
 	}
 	control.33 {
 		comment.access 'read write'
@@ -323,7 +323,7 @@ state.neo1973 {
 		comment.range '0 - 15'
 		iface MIXER
 		name 'ALC Capture Attack Time'
-		value 2
+		value 5
 	}
 	control.35 {
 		comment.access 'read write'
@@ -447,7 +447,7 @@ state.neo1973 {
 		comment.item.1 Inverted
 		iface MIXER
 		name 'Playback Phase'
-		value 'Non Inverted'
+		value Inverted
 	}
 	control.48 {
 		comment.access 'read write'
@@ -570,7 +570,7 @@ state.neo1973 {
 		comment.count 1
 		iface MIXER
 		name 'ALC Mixer Mic2 Capture Switch'
-		value true
+		value false
 	}
 	control.60 {
 		comment.access 'read write'
@@ -598,7 +598,7 @@ state.neo1973 {
 		comment.item.3 'Right PGA'
 		iface MIXER
 		name 'Mic Sidetone Mux'
-		value 'Left PGA'
+		value 'Mic 2'
 	}
 	control.63 {
 		comment.access 'read write'
@@ -815,7 +815,7 @@ state.neo1973 {
 		comment.range '0 - 31'
 		iface MIXER
 		name 'Amp Left Playback Volume'
-		value 31
+		value 26
 	}
 	control.87 {
 		comment.access 'read write'
@@ -824,7 +824,7 @@ state.neo1973 {
 		comment.range '0 - 31'
 		iface MIXER
 		name 'Amp Right Playback Volume'
-		value 31
+		value 0
 	}
 	control.88 {
 		comment.access 'read write'
@@ -833,7 +833,7 @@ state.neo1973 {
 		comment.range '0 - 31'
 		iface MIXER
 		name 'Amp Mono Playback Volume'
-		value 0
+		value 9
 	}
 	control.89 {
 		comment.access 'read write'
@@ -895,6 +895,6 @@ state.neo1973 {
 		comment.count 1
 		iface MIXER
 		name 'Amp Earpiece 6dB Playback Switch'
-		value true
+		value false
 	}
 }
