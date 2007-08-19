@@ -22,6 +22,7 @@ SLUGOS_PACKAGES = "\
 	alsa-lib \
 	alsa-utils \
 	apex-env \
+	apr \
 	asterisk \
 	asterisk-sounds \
 	atftp \
@@ -36,6 +37,8 @@ SLUGOS_PACKAGES = "\
 	binutils \
 	bison \
 	bluez-utils \
+	bogofilter \
+	boost \
 	bridge-utils \
 	bzip2 \
 	ccxstream \
@@ -55,6 +58,7 @@ SLUGOS_PACKAGES = "\
 	diffutils \
 	dircproxy \
 	dnsmasq \
+	dsniff \
 	e2fsprogs \
 	e2fsprogs-libs \
 	eciadsl \
@@ -77,32 +81,39 @@ SLUGOS_PACKAGES = "\
 	glib-2.0 \
 	gnu-config \
 	grep \
+	groff \
 	gspcav1 \
 	gtk-doc \
 	gzip \
 	hdparm \
 	ifupdown \
+	iperf \
 	ipkg-utils \
 	iptables \
 	ircp \
+	irssi \
 	joe \
 	jpeg \
 	lcdproc \
 	less \
 	libao \
 	libdvb \
+	libexif \
 	libid3tag \
 	liblockfile \
 	libmad \
 	libmikmod \
 	libogg \
 	libol \
+	libpam \
+	libpcre \
 	libpng \
 	libtool \
 	libupnp \
 	libusb \
 	libvorbis \
 	libxml2 \
+	linphone \
 	litestream \
 	lrzsz \
 	lsof \
@@ -112,8 +123,10 @@ SLUGOS_PACKAGES = "\
 	madwifi-ng \
 	mailx \
 	make \
+	man man-pages \
 	masqmail \
 	mdadm \
+	mediatomb \
 	memtester \
 	mgetty \
 	miau \
@@ -136,19 +149,20 @@ SLUGOS_PACKAGES = "\
 	obexftp \
 	obexpush \
 	openobex-apps \
-	openldap \
 	openntpd \
 	openobex \
 	openssh \
 	openvpn \
 	patch \
 	pciutils \
-	libpcre \
 	perl \
 	picocom \
 	pkgconfig \
+	popt \
+	postfix \
 	ppp \
 	procps \
+	psmisc \
 	puppy \
 	python \
 	quilt \
@@ -156,6 +170,7 @@ SLUGOS_PACKAGES = "\
 	rng-tools \
 	rsync \
 	samba \
+	screen \
 	sed \
 	setpwc \
 	setserial \
@@ -165,15 +180,18 @@ SLUGOS_PACKAGES = "\
 	ssmtp \
 	strace \
 	streamripper \
+	sudo \
 	sysfsutils \
 	tar \
 	task-mokogateway-everything \
 	thttpd \
 	tiff \
+	timezones \
 	tzdata \
 	unzip \
 	upslug2 \
 	usbutils \
+	ushare \
 	util-linux \
 	vim \
 	vlan \
@@ -186,6 +204,10 @@ SLUGOS_PACKAGES = "\
 	wireless-tools \
 	wireshark \
 	wpa-supplicant \
+        wview-sim wview-vpro wview-wxt510 \
+	xinetd \
+	yeaphone \
+	yp-tools ypbind ypserv \
 	zd1211-firmware \
 	zip \
 	zlib \
@@ -194,12 +216,12 @@ SLUGOS_PACKAGES = "\
 # Packages currently broken on all platforms
 SLUGOS_BROKEN_PACKAGES = "\
 	bwmon \
-	gphoto2 \
-	irssi \
-	libgphoto2 \
+	ctrlproxy \
+	libgphoto2 gphoto2 \
 	logrotate \
 	madfu \
-	mediatomb \
+	openldap \
+	\
 	mpd \
 	netpbm \
 	pvrusb2-mci \
@@ -215,55 +237,6 @@ SLUGOS_BROKEN_PACKAGES = "\
 	mysql \
         wview-sim-mysql wview-vpro-mysql \
         wview-wxt510-mysql \
-	"
-
-# These packages will never build because uclibc lacks (and always will lack)
-# appropriate support.  This define is for documentation of this fact!  The
-# normal cause is that the package uses the "NIS" interfaces (once known as
-# YP - a trademark of BT which SUN used without license - the missing function
-# calls often still have 'yp' in the name).
-
-# NOTE: rng-tools is only here until argp-standalone can be built!
-#	nfs-utils \
-
-UCLIBC_UNSUPPORTABLE_PACKAGES = "\
-	libpam \
-	rng-tools \
-	postfix \
-	yp-tools ypbind ypserv \
-	"
-
-# These packages work with glibc, but break on uclibc.
-#	erlang \
-
-UCLIBC_BROKEN_PACKAGES = "\
-	apr \
-	bogofilter \
-	boost \
-	linphone \
-	yeaphone \
-	sudo \
-	ushare \
-	"
-
-# Packages which build only with glibc (some of these use internal
-# glibc functions and so will probably never run on uclibc).
-SLUGOS_PACKAGES_append_linux = "\
-	${UCLIBC_UNSUPPORTABLE_PACKAGES} \
-	${UCLIBC_BROKEN_PACKAGES} \
-	ctrlproxy \
-	dsniff \
-	iperf \
-	groff \
-	man man-pages \
-	psmisc \
-	screen \
-	timezones \
-        wview-sim wview-vpro wview-wxt510 \
-	xinetd \
-	"
-
-SLUGOS_PACKAGES_append_linux-uclibc = "\
 	"
 
 SLUGOS_EXTRA_PACKAGES ?= ""
