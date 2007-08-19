@@ -28,4 +28,4 @@ do_rm_work_all () {
 	:
 }
 do_rm_work_all[recrdeptask] = "do_rm_work"
-addtask rm_work_all
+addtask rm_work_all after do_rm_work
