@@ -3,7 +3,7 @@ ALLOW_EMPTY = "1"
 PACKAGE_ARCH = "all"
 LICENSE = "MIT"
 PROVIDES = "task-mokogateway-everything"
-PR = "r3"
+PR = "r4"
 
 PACKAGES = "\
 	task-mokogateway-everything \
@@ -74,7 +74,6 @@ RRECOMMENDS_task-mokogateway-wifi = "\
 DESCRIPTION_task-mokogateway-debug = "MokoGateway: Debug"
 RDEPENDS_task-mokogateway-debug = "\
 	dfu-util \
-	ftdi-eeprom \
 	openocd \
 "
 RRECOMMENDS_task-mokogateway-debug = "\
