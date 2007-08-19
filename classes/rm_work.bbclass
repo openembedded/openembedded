@@ -7,7 +7,7 @@
 #
 
 RMWORK_ORIG_TASK := "${BB_DEFAULT_TASK}"
-BB_DEFAULT_TASK = "rm_work"
+BB_DEFAULT_TASK = "rm_work_all"
 
 do_rm_work () {
     cd ${WORKDIR}
@@ -23,4 +23,9 @@ do_rm_work () {
 # Uncomment me when we can use bitbake 1.8.8
 #addtask rm_work after do_${RMWORK_ORIG_TASK}
 addtask rm_work after do_build
-do_rm_work[recrdeptask] = "do_rm_work"
+
+do_rm_work_all () {
+	:
+}
+do_rm_work_all[recrdeptask] = "do_rm_work"
+addtask rm_work_all
