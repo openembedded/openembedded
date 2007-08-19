@@ -1,8 +1,8 @@
-# Copyright (C) 2006,2007  OpenedHand LTD
+# Based on its sibling on Poky which is copyright (C) 2006,2007  OpenedHand LTD
 
 DESCRIPTION = "Gstreamer package groups"
 DEPENDS = "gstreamer gst-plugins-base gst-plugins-good gst-plugins-bad gst-plugins-ugly"
-PR = "r4"
+PR = "r5"
 
 PACKAGES = "\
     gst-meta-base \
@@ -32,7 +32,8 @@ RDEPENDS_gst-meta-audio = "\
     gst-meta-base \
     gst-plugin-ivorbis \
     gst-plugin-ogg \
-    gst-plugin-mad"
+    gst-plugin-mad \
+    gst-plugin-id3demux"
 
 
 RDEPENDS_gst-meta-debug = "\
