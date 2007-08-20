@@ -2,7 +2,7 @@ DESCRIPTION = "OpenMoko: Tasks for the OpenMoko Linux Distribution"
 SECTION = "openmoko/base"
 LICENSE = "MIT"
 PROVIDES = "task-openmoko-everything"
-PR = "r58"
+PR = "r57"
 
 ALLOW_EMPTY = "1"
 PACKAGE_ARCH = "all"
@@ -72,7 +72,6 @@ RDEPENDS_task-openmoko-ui = "\
   openmoko-sound-system \
   openmoko-sound-theme-standard \
   neod \
-  gpe-scap \
 "
 
 #
