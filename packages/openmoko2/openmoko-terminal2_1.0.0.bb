@@ -1,7 +1,7 @@
 DESCRIPTION = "The OpenMoko Command Line Console"
 SECTION = "openmoko/applications"
 RDEPENDS += "mrxvt"
-PR = "r2"
+PR = "r3"
 
 RCONFLICTS = "openmoko-terminal"
 RREPLACES = "openmoko-terminal"
@@ -29,8 +29,8 @@ pkg_postinst_${PN}() {
 #
 Mrxvt.xft:                      1
 Mrxvt.xftFont:                  Bitstream Vera Sans Mono
-Mrxvt.xftSize:                  8
-Mrxvt.xftAntialias:             1
+Mrxvt.xftSize:                  5
+Mrxvt.xftAntialias:             0
 
 # Don't load a multi-char font. This will reduce the line space if your multi
 # char font has different dimensions than the regular font. You might need to
