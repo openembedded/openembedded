@@ -7,7 +7,7 @@ DEPENDS = "eb kakasi"
 RDEPENDS = "virtual/japanese-font"
 RCONFLICTS = "ztenv"
 
-SRC_URI = "http://www.gohome.org/cgi-bin/viewcvs.cgi/zten.tar.gz;md5sum=d24f03c8df5c98d510590bd9a63dc9321 \
+SRC_URI = "http://www.gohome.org/cgi-bin/viewcvs.cgi/zten.tar.gz;md5sum=d24f03c8df5c98d510590bd9a63dc932 \
            file://zten.patch;patch=1"
 
 S = "${WORKDIR}/zten"
