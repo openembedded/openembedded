@@ -5,7 +5,7 @@ SECTION = "devel/python"
 HOMEPAGE = "http://oss.wxnet.org/pytester/index.html"
 PRIORITY = "optional"
 LICENSE = "GPL"
-SRCNAME = "pytest"
+SRCNAME = "pytester"
 PR = "ml0"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/meta-tools/${SRCNAME}-${PV}.tar.gz"

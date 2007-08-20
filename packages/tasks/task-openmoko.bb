@@ -2,10 +2,9 @@ DESCRIPTION = "OpenMoko: Tasks for the OpenMoko Linux Distribution"
 SECTION = "openmoko/base"
 LICENSE = "MIT"
 PROVIDES = "task-openmoko-everything"
-PR = "r57"
+PR = "r59"
 
-ALLOW_EMPTY = "1"
-PACKAGE_ARCH = "all"
+inherit task
 
 PACKAGES = "\
   task-openmoko-linux \
@@ -17,11 +16,13 @@ PACKAGES = "\
   \
   task-openmoko-games \
   task-openmoko-examples \
+"
+
+RDEPENDS_task-openmoko-everything := "\
+  ${PACKAGES} \
   task-openmoko-debug \
   task-openmoko-native-sdk \
 "
-
-RDEPENDS_task-openmoko-everything := "${PACKAGES}"
 
 #
 # task-openmoko-core
@@ -72,6 +73,7 @@ RDEPENDS_task-openmoko-ui = "\
   openmoko-sound-system \
   openmoko-sound-theme-standard \
   neod \
+  gpe-scap \
 "
 
 #
@@ -136,77 +138,4 @@ RDEPENDS_task-openmoko-net = "\
 DESCRIPTION_task-openmoko-games = "OpenMoko: Games"
 RDEPENDS_task-openmoko-games = "\
   oh-puzzles \
-"
-
-#
-# task-openmoko-debug
-#
-DESCRIPTION_task-openmoko-debug = "OpenMoko: Debugging Tools"
-RDEPENDS_task-openmoko-debug = "\
-  alsa-utils-amixer \
-  alsa-utils-aplay \
-  alsa-utils-aconnect \
-  alsa-utils-alsamixer \
-  alsa-utils-speakertest \
-  madplay \
-  vorbis-tools \
-  strace \
-  ltrace \
-  gdb \
-  gdbserver \
-  tcpdump \
-  tslib-calibrate \
-  tslib-tests \
-  fbgrab \
-  fstests \
-  lsof \
-  lrzsz \
-  udev-utils \
-  usbutils \
-  uucp \
-  cu \
-#  sensors-i2cdetect sensors-i2cdump sensors-i2cset \
-  xev \
-  bonnie++ \
-  memtester \
-  dbench \
-"
-
-#
-# task-openmoko-native-sdk
-#
-DESCRIPTION_task-openmoko-native-sdk = "OpenMoko: Native SDK"
-RDEPENDS_task-openmoko-native-sdk = "\
-  binutils \
-  binutils-symlinks \
-  gcc \
-  gcc-symlinks \
-  cpp \
-  cpp-symlinks \
-  cvs \
-  libc6-dev \
-  libgcc-dev \
-  glibc-utils \
-  ldd \
-  g++ \
-  g++-symlinks \
-  libstdc++-dev \
-  \
-  make \
-  flex \
-  flex-dev \
-  bison \
-  gawk \
-  grep \
-  sed \
-  automake \
-  autoconf \
-  patch \
-  patchutils \
-  diffstat \
-  diffutils \
-  libtool \
-  pkgconfig \
-  \
-  xoo \
 "

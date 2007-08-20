@@ -1,7 +1,7 @@
 DESCRIPTION= "Everything Python"
 HOMEPAGE = "http://www.vanille.de/projects/python.spy"
 LICENSE = "MIT"
-PR = "ml18"
+PR = "ml19"
 
 RDEPENDS = "\
 		python-ao 		\
@@ -58,7 +58,7 @@ RDEPENDS = "\
 		python-pyrex		\
 		python-pyro		\
 		python-pyserial		\
-		python-pytest		\
+		python-pytester		\
 		python-pyvisa		\
 		python-pyweather	\
 		python-pyxml		\
