@@ -82,6 +82,13 @@ SRCDATE_evolve-native ?= "20070721"
 SRCDATE_evolve ?= "20070721"
 SRCDATE_eflpp ?= "20070721"
 
+# Enlightenment Bindings
+SRCDATE_python-evas ?= "20070721"
+SRCDATE_python-ecore ?= "20070721"
+SRCDATE_python-edje ?= "20070721"
+SRCDATE_python-ewl ?= "20070721"
+SRCDATE_python-etk ?= "20070721"
+
 # Enlightenment Applications
 SRCDATE_edje-viewer ?= "20070601"
 SRCDATE_edje-editor ?= "20070721"
