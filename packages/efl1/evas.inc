@@ -11,7 +11,6 @@ inherit efl_library
 
 export FREETYPE_CONFIG = "${STAGING_BINDIR_CROSS}/freetype-config"
 
-SRC_URI += "file://fix-configure.patch;patch=1"
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/evas"
 
 EXTRA_OECONF = "<override me>"
