@@ -9,10 +9,9 @@ PV = "0.9.9+cvs${SRCDATE}"
 
 inherit efl_library
 
-SRC_URI += "\
+SRC_URI += "file://configure.patch;patch=1 \
            file://fix-tslib-configure.patch;patch=1 \
-           file://fix-directfb-include.patch;patch=1 \
-"
+           file://fix-directfb-include.patch;patch=1"
 
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/ecore"
 
