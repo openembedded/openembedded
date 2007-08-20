@@ -114,6 +114,7 @@ ettercap_cv_type_socklen_t=${ettercap_cv_type_socklen_t=yes}
 am_cv_func_working_getline=${am_cv_func_working_getline=yes}
 
 # glib
+glib_cv_sizeof_system_thread=${glib_cv_sizeof_system_thread=4}
 glib_cv_has__inline=${glib_cv_has__inline=yes}
 glib_cv_has__inline__=${glib_cv_has__inline__=yes}
 glib_cv_hasinline=${glib_cv_hasinline=yes}
