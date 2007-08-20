@@ -9,6 +9,7 @@ PR = "r19"
 SRC_URI_OVERRIDES_PACKAGE_ARCH = "1"
 
 SRC_URI = "svn://svn.openmoko.org/trunk/src/target;module=gsm;proto=http \
+           file://fix-mlbuf.patch;patch=1 \
            file://gsmd \
            file://default"
 S = "${WORKDIR}/gsm"
@@ -27,6 +28,15 @@ do_install_append() {
 	install -m 0755 ${WORKDIR}/gsmd ${D}/${sysconfdir}/init.d/
 	install -d ${D}/${sysconfdir}/default
 	install ${WORKDIR}/default ${D}/${sysconfdir}/default/gsmd
+	# band-aid:
+	install -d ${D}${includedir}/common
+	install -m 0644 ${S}/include/common/linux_list.h ${D}${includedir}/common
+}
+
+# band-aid:
+do_stage_append () {
+	install -d ${STAGING_INCDIR}/common
+	install ${S}/include/common/linux_list.h ${STAGING_INCDIR}/common
 }
 
 PACKAGES =+ "${PN}-tools gsmd gsmd-plugins \

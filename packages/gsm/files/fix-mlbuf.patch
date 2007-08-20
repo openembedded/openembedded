@@ -1,0 +1,50 @@
+Index: gsm/src/gsmd/atcmd.c
+===================================================================
+--- gsm/src/gsmd/atcmd.c	(revision 2745)
++++ gsm/src/gsmd/atcmd.c	(working copy)
+@@ -370,8 +370,8 @@
+ 	if (g->mlbuf_len)
+ 		g->mlbuf[g->mlbuf_len ++] = '\n';
+ 	DEBUGP("Appending buf to mlbuf\n");
+-	if (len > sizeof(g->mlbuf) - g->mlbuf_len)
+-		len = sizeof(g->mlbuf) - g->mlbuf_len;
++	if (len > MLPARSE_BUF_SIZE - g->mlbuf_len)
++		len = MLPARSE_BUF_SIZE - g->mlbuf_len;
+ 	memcpy(g->mlbuf + g->mlbuf_len, buf, len);
+ 	g->mlbuf_len += len;
+ 
+@@ -470,7 +470,7 @@
+ 			if (cr)
+ 				len = cr - pos->cur;
+ 			else
+-				len = pos->buflen;
++				len = pos->buflen - 1;  /* assuming zero-terminated strings */
+ 			rc = write(fd, pos->cur, len);
+ 			if (rc == 0) {
+ 				gsmd_log(GSMD_ERROR, "write returns 0, aborting\n");
+@@ -480,8 +480,8 @@
+ 					fd, rc);
+ 				return rc;
+ 			}
+-			if (cr && rc == len)
+-				rc ++;	/* Skip the \n */
++			if (!cr || rc == len)
++				rc ++;	/* Skip the \n or \0 */
+ 			pos->buflen -= rc;
+ 			pos->cur += rc;
+ 			write(fd, "\r", 1);
+Index: gsm/src/gsmd/gsmd.c
+===================================================================
+--- gsm/src/gsmd/gsmd.c	(revision 2745)
++++ gsm/src/gsmd/gsmd.c	(working copy)
+@@ -301,6 +301,10 @@
+ {
+ 	INIT_LLIST_HEAD(&g->users);
+ 
++	g->mlbuf = talloc_array(gsmd_tallocs, unsigned char, MLPARSE_BUF_SIZE);
++	if (!g->mlbuf)
++		return -ENOMEM;
++
+ 	return 0;
+ }
+ 
