@@ -4,9 +4,10 @@ PRIORITY = "required"
 DEPENDS = "makedevs"
 RDEPENDS = "makedevs"
 LICENSE = "GPL"
-PR = "r97"
+PR = "r98"
 
-SRC_URI = "file://halt \
+SRC_URI = "file://functions \
+           file://halt \
            file://ramdisk \
            file://umountfs \
            file://devices \
@@ -32,7 +33,7 @@ SRC_URI = "file://halt \
            file://volatiles \
            file://save-rtc.sh"
 
-SRC_URI_append_arm          = " file://alignment.sh"
+SRC_URI_append_arm = " file://alignment.sh"
 
 KERNEL_VERSION = ""
 
@@ -40,18 +41,19 @@ do_install () {
 #
 # Create directories and install device independent scripts
 #
-	install -d ${D}${sysconfdir}/init.d \
-		   ${D}${sysconfdir}/rcS.d \
-		   ${D}${sysconfdir}/rc0.d \
-		   ${D}${sysconfdir}/rc1.d \
-		   ${D}${sysconfdir}/rc2.d \
-		   ${D}${sysconfdir}/rc3.d \
-		   ${D}${sysconfdir}/rc4.d \
-		   ${D}${sysconfdir}/rc5.d \
-		   ${D}${sysconfdir}/rc6.d \
-		   ${D}${sysconfdir}/default \
-		   ${D}${sysconfdir}/default/volatiles
+	install -d ${D}${sysconfdir}/init.d
+	install -d ${D}${sysconfdir}/rcS.d
+	install -d ${D}${sysconfdir}/rc0.d
+	install -d ${D}${sysconfdir}/rc1.d
+	install -d ${D}${sysconfdir}/rc2.d
+	install -d ${D}${sysconfdir}/rc3.d
+	install -d ${D}${sysconfdir}/rc4.d
+	install -d ${D}${sysconfdir}/rc5.d
+	install -d ${D}${sysconfdir}/rc6.d
+	install -d ${D}${sysconfdir}/default
+	install -d ${D}${sysconfdir}/default/volatiles
 
+	install -m 0755    ${WORKDIR}/functions		${D}${sysconfdir}/init.d
 	install -m 0755    ${WORKDIR}/bootmisc.sh	${D}${sysconfdir}/init.d
 	install -m 0755    ${WORKDIR}/checkroot.sh	${D}${sysconfdir}/init.d
 	install -m 0755    ${WORKDIR}/finish		${D}${sysconfdir}/init.d
