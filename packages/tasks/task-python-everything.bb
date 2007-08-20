@@ -52,7 +52,6 @@ RDEPENDS = "\
 		python-pyiw		\
 		python-pylinda		\
 		python-pylint		\
-		python-pyode		\
 		python-pyraf		\
 		python-pyreverse	\
 		python-pyrex		\
