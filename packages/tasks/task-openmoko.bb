@@ -2,7 +2,7 @@ DESCRIPTION = "OpenMoko: Tasks for the OpenMoko Linux Distribution"
 SECTION = "openmoko/base"
 LICENSE = "MIT"
 PROVIDES = "task-openmoko-everything"
-PR = "r58"
+PR = "r59"
 
 inherit task
 
@@ -73,6 +73,7 @@ RDEPENDS_task-openmoko-ui = "\
   openmoko-sound-system \
   openmoko-sound-theme-standard \
   neod \
+  gpe-scap \
 "
 
 #
