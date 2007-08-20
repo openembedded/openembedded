@@ -1,7 +1,7 @@
 DESCRIPTION = "The OpenMoko Command Line Console"
 SECTION = "openmoko/applications"
 RDEPENDS += "mrxvt"
-PR = "r3"
+PR = "r4"
 
 RCONFLICTS = "openmoko-terminal"
 RREPLACES = "openmoko-terminal"
@@ -30,7 +30,7 @@ pkg_postinst_${PN}() {
 Mrxvt.xft:                      1
 Mrxvt.xftFont:                  Bitstream Vera Sans Mono
 Mrxvt.xftSize:                  5
-Mrxvt.xftAntialias:             0
+Mrxvt.xftAntialias:             1
 
 # Don't load a multi-char font. This will reduce the line space if your multi
 # char font has different dimensions than the regular font. You might need to
@@ -39,7 +39,7 @@ Mrxvt.xftNomFont:               1
 
 # Font to use for tab bar / menus. This need not be mono-spaced ;).
 Mrxvt.xftPFont:                 Bitstream Vera Sans
-Mrxvt.xftPSize:                 8
+Mrxvt.xftPSize:                 6
 EOF
 
 }
