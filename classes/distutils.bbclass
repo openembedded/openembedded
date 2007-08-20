@@ -9,7 +9,14 @@ distutils_do_compile() {
 distutils_stage_headers() {
         BUILD_SYS=${BUILD_SYS} HOST_SYS=${HOST_SYS} \
         ${STAGING_BINDIR_NATIVE}/python setup.py install_headers --install-dir=${STAGING_INCDIR}/${PYTHON_DIR} || \
-        oefatal "python setup.py install execution failed."
+        oefatal "python setup.py install_headers execution failed."
+}
+
+distutils_stage_all() {
+	PYTHONPATH=${STAGING_INCDIR}/../${PYTHON_DIR}/site-packages \
+        BUILD_SYS=${BUILD_SYS} HOST_SYS=${HOST_SYS} \
+        ${STAGING_BINDIR_NATIVE}/python setup.py install --prefix=${STAGING_INCDIR}/.. --install-data=${STAGING_INCDIR}/../share || \
+        oefatal "python setup.py install (stage) execution failed."
 }
 
 distutils_do_install() {
