@@ -4,8 +4,7 @@ LICENSE = "MIT"
 PROVIDES = "task-openmoko-everything"
 PR = "r58"
 
-ALLOW_EMPTY = "1"
-PACKAGE_ARCH = "all"
+inherit task
 
 PACKAGES = "\
   task-openmoko-linux \

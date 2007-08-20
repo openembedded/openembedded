@@ -3,8 +3,7 @@ SECTION = "openmoko/base"
 LICENSE = "MIT"
 PR = "r58"
 
-ALLOW_EMPTY = "1"
-PACKAGE_ARCH = "all"
+inherit task
 
 RDEPENDS_task-openmoko-native-sdk = "\
   binutils \

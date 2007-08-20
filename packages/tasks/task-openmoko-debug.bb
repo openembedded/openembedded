@@ -3,8 +3,7 @@ SECTION = "openmoko/base"
 LICENSE = "MIT"
 PR = "r57"
 
-ALLOW_EMPTY = "1"
-PACKAGE_ARCH = "all"
+inherit task
 
 RDEPENDS_task-openmoko-debug = "\
   alsa-utils-amixer \
