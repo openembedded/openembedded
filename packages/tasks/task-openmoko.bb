@@ -2,7 +2,7 @@ DESCRIPTION = "OpenMoko: Tasks for the OpenMoko Linux Distribution"
 SECTION = "openmoko/base"
 LICENSE = "MIT"
 PROVIDES = "task-openmoko-everything"
-PR = "r57"
+PR = "r58"
 
 ALLOW_EMPTY = "1"
 PACKAGE_ARCH = "all"
@@ -17,11 +17,13 @@ PACKAGES = "\
   \
   task-openmoko-games \
   task-openmoko-examples \
+"
+
+RDEPENDS_task-openmoko-everything := "\
+  ${PACKAGES} \
   task-openmoko-debug \
   task-openmoko-native-sdk \
 "
-
-RDEPENDS_task-openmoko-everything := "${PACKAGES}"
 
 #
 # task-openmoko-core
