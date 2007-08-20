@@ -1,0 +1,25 @@
+Index: mrxvt-0.5.2/src/feature.h
+===================================================================
+--- mrxvt-0.5.2.orig/src/feature.h
++++ mrxvt-0.5.2/src/feature.h
+@@ -474,15 +474,15 @@
+ #define DEFAULT_MIN_VISIBLE_TABS    (6)
+ 
+ /* Minimum Xft font size (pixel) */
+-#define MIN_XFT_FONT_SIZE	    (8)
++#define MIN_XFT_FONT_SIZE	    (2)
+ 
+ /* Default Xft font name and size */
+-#define DEFAULT_XFT_FONT_SIZE	    (12)
+-#define DEFAULT_XFT_FONT_NAME	    "Monospace"
++#define DEFAULT_XFT_FONT_SIZE	    (6)
++#define DEFAULT_XFT_FONT_NAME	    "Vera Sans Mono"
+ 
+ /* Default Xft propotional font name and size (used for menubar / tabs) */
+-#define DEFAULT_XFT_PFONT_SIZE	    (10)
+-#define DEFAULT_XFT_PFONT_NAME	    "Sans"
++#define DEFAULT_XFT_PFONT_SIZE	    (8)
++#define DEFAULT_XFT_PFONT_NAME	    "Vera Sans"
+ 
+ /* Default cursor blinking time (ms) */
+ #define MIN_BLINK_TIME		    (100)
