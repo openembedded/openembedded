@@ -44,13 +44,12 @@ python do_compulab_image() {
 	import struct
 
 	deploy_dir = bb.data.getVar('DEPLOY_DIR_IMAGE', d, 1)
-	kernel_name = os.path.join(deploy_dir, bb.data.expand('${KERNEL_IMAGETYPE}-${MACHINE}.bin', d))
-
-	img_file = os.path.join(deploy_dir, 'zImage-compulab-pxa270.cmx270')
+	kernel_file = os.path.join(deploy_dir, bb.data.expand('${KERNEL_IMAGE_BASE_NAME}', d) + '.bin')
+	img_file = os.path.join(deploy_dir, bb.data.expand('${KERNEL_IMAGE_BASE_NAME}', d) + '.cmx270')
 
 	fo = open(img_file, 'wb')
 
-	image_data = open(kernel_name, 'rb').read()
+	image_data = open(kernel_file, 'rb').read()
 
 	# first write size into first 4 bytes
 	size_s = struct.pack('i', len(image_data))
@@ -63,5 +62,5 @@ python do_compulab_image() {
 	fo.close()
 }
 
-addtask compulab_image before do_install after do_deploy
+addtask compulab_image after do_deploy before do_package
 
