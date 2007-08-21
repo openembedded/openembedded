@@ -42,6 +42,7 @@ distutils_do_install() {
             done
         fi
 
+	rm -f ${D}${libdir}/${PYTHON_DIR}/site-packages/easy-install.pth
 }
 
 EXPORT_FUNCTIONS do_compile do_install
