@@ -2,11 +2,11 @@ DESCRIPTION = "Matchbox virtual keyboard for X11"
 LICENSE = "GPL"
 DEPENDS = "libfakekey expat libxft gtk+ matchbox-panel-2"
 RCONFLICTS = matchbox-keyboard
-RPROVIDES = matchbox-keyboard
+RPROVIDES_${PN} = matchbox-keyboard
 #DEFAULT_PREFERENCE = "-1"
 SECTION = "x11"
 PV = "0.0+svn${SRCDATE}"
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "svn://svn.o-hand.com/repos/matchbox/trunk;module=matchbox-keyboard;proto=http \
 	   file://80matchboxkeyboard"
