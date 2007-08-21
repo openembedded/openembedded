@@ -59,6 +59,8 @@ do_install_prepend() {
         fi
 }
 
+UBOOT_ENTRYPOINT ?= "20008000"
+
 do_deploy() {
         install -d ${DEPLOY_DIR_IMAGE}
         install -m 0644 arch/${ARCH}/boot/${KERNEL_IMAGETYPE} ${DEPLOY_DIR_IMAGE}/${KERNEL_IMAGETYPE}-${PV}-${PR}-${MACHINE}-${DATETIME}.bin
@@ -68,7 +70,7 @@ do_deploy() {
             ${OBJCOPY} -O binary -R .note -R .comment -S vmlinux linux.bin
             rm -f linux.bin.gz
             gzip -9 linux.bin
-            uboot-mkimage -A ${ARCH} -O linux -T kernel -C gzip -a 20008000 -e 20008000 -n "${DISTRO_NAME} Kernel for ${MACHINE}" -d linux.bin.gz ${DEPLOY_DIR_IMAGE}/uImage-${PV}-${PR}-${MACHINE}-${DATETIME}.bin
+            uboot-mkimage -A ${ARCH} -O linux -T kernel -C gzip -a ${UBOOT_ENTRYPOINT} -e ${UBOOT_ENTRYPOINT} -n "${DISTRO_NAME} Kernel for ${MACHINE}" -d linux.bin.gz ${DEPLOY_DIR_IMAGE}/uImage-${PV}-${PR}-${MACHINE}-${DATETIME}.bin
             rm -f linux.bin.gz
         fi
 }
