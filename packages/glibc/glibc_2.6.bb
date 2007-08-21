@@ -70,10 +70,7 @@ SRC_URI_append_sh3 = " file://no-z-defs.patch;patch=1"
 SRC_URI_append_sh4 = " file://no-z-defs.patch;patch=1"
 
 #powerpc patches to add support for soft-float
-SRC_URI_append_powerpc= " file://ppc-sfp-machine.patch;patch=1 \
-                          file://ppc-soft-fp-20070115.patch;patch=1 \
-                          file://ppc-ld-nofpu-20070104.patch;patch=1 \
-                          file://ppc-ports-ld-nofpu-20070114.patch;patch=1 \
+SRC_URI_append_powerpc= " \
                           file://powerpc-sqrt-hack.diff;patch=1""
 
 S = "${WORKDIR}/glibc-${PV}"
