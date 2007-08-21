@@ -8,6 +8,7 @@ DEPENDS_at32stk1000 = "u-boot-mkimage-openmoko-native"
 DEPENDS_atngw100 = "u-boot-mkimage-openmoko-native"
 DEPENDS_at91sam9263ek = "u-boot-mkimage-openmoko-native"
 DEPENDS_sarge-at91 = "u-boot-mkimage-openmoko-native"
+DEPENDS_gumstix = "u-boot-mkimage-openmoko-native"
 
 inherit kernel
 
