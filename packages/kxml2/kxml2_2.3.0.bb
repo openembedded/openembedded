@@ -4,9 +4,11 @@ LICENSE  = "BSD"
 PRIORITY = "optional"
 PR = "r0"
 
-SRC_URI = "http://downloads.sourceforge.net/kxml/kxml2-2.3.0.jar"
 
 JAR = ${PN}-${PV}.jar
+
+SRC_URI = "http://downloads.sourceforge.net/kxml/${JAR}"
+
 
 do_unpack() {
 	:
