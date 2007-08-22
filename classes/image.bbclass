@@ -69,6 +69,7 @@ do_build[nostamp] = "1"
 fakeroot do_rootfs () {
 	set -x
 	rm -rf ${IMAGE_ROOTFS}
+	mkdir -p ${IMAGE_ROOTFS}
 
 	if [ "${USE_DEVFS}" != "1" ]; then
 		for devtable in ${@get_devtable_list(d)}; do
