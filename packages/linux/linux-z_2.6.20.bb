@@ -15,7 +15,6 @@ COMPATIBLE_HOST = "(arm).*-linux"
 COMPATIBLE_MACHINE = '(shark)'
 
 
-KERNEL_IMAGETYPE = "zImage"
 
 
 do_configure_prepend() {

@@ -1,4 +1,5 @@
-/dev/initctl	p	600	0	0	-	-	-	-
+/dev		d	755	0	0	-	-	-	-	-
+/dev/initctl	p	600	0	0	-	-	-	-       -
 /dev/dsp        c       644     0       0       14      3       -       -       - 
 /dev/apm_bios	c	660	0	46	10	134	-	-	-
 /dev/fb0	c	600	0	0	29	0	-	-	-
@@ -18,6 +19,3 @@
 /dev/console	c	662	0	5	5	1	-	-
 /dev/urandom    c       644     0       0       1       9       -       -       -
 /dev/random     c       644     0       0       1       8       -       -       -
-/bin/tinylogin	f	4755	0	0	-	-	-	-
-/bin/mount	f	4755	0	0	-	-	-	-
-/bin/umount	f	4755	0	0	-	-	-	-

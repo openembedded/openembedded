@@ -26,7 +26,6 @@ COMPATIBLE_HOST = 'mipsel.*-linux'
 
 inherit kernel
 
-KERNEL_IMAGETYPE ?= "zImage"
 CMDLINE_CONSOLE ?= "ttyS0,115200n8"
 CMDLINE_ROOT ?= "root=/dev/mtdblock2 noinitrd"
 # CMDLINE_INIT = "init=/bin/busybox ash"

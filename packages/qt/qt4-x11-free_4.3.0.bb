@@ -77,8 +77,8 @@ do_stage() {
 	install -m 0755 ${STAGING_BINDIR_NATIVE}/moc4 ${STAGING_QT_DIR}/bin/moc
 	install -m 0755 ${STAGING_BINDIR_NATIVE}/uic4 ${STAGING_QT_DIR}/bin/uic
 	sed -i -e 's,^QMAKE_RPATHDIR.*,QMAKE_RPATHDIR=${STAGING_QT_DIR}/lib,g'  ${STAGING_QT_DIR}/mkspecs/qconfig.pri
-	for pc in ${STAGING_QT_DIR}/lib/pkgconfig/Qt{AssistantClient,DBus,Test,UiTools}.pc ; do
-		sed -i -e 's,${S}/lib,${STAGING_QT_DIR}/lib,g' $pc
+	for pcc in AssistantClient DBus Test UiTools ; do
+		sed -i -e 's,${S}/lib,${STAGING_QT_DIR}/lib,g' ${STAGING_QT_DIR}/lib/pkgconfig/Qt${pcc}.pc
 	done
         for pc in ${STAGING_QT_DIR}/lib/pkgconfig/*.pc ; do
                 install -m 0644 $pc ${PKG_CONFIG_PATH}/

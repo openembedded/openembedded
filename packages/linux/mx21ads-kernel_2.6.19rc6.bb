@@ -18,7 +18,6 @@ COMPATIBLE_MACHINE = "mx21ads"
 inherit kernel
 
 ARCH = "arm"
-KERNEL_IMAGETYPE = "zImage"
 RPROVIDES_kernel-image += "hostap-modules"
 
 #CMDLINE_ROOT = "root=/dev/mtdblock4 rootfstype=jffs2 mem=32M@0x00000000"

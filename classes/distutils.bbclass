@@ -13,7 +13,8 @@ distutils_stage_headers() {
 }
 
 distutils_stage_all() {
-	PYTHONPATH=${STAGING_INCDIR}/../${PYTHON_DIR}/site-packages \
+        install -d ${STAGING_INCDIR}/../${PYTHON_DIR}/site-packages
+        PYTHONPATH=${STAGING_INCDIR}/../${PYTHON_DIR}/site-packages \
         BUILD_SYS=${BUILD_SYS} HOST_SYS=${HOST_SYS} \
         ${STAGING_BINDIR_NATIVE}/python setup.py install --prefix=${STAGING_INCDIR}/.. --install-data=${STAGING_INCDIR}/../share || \
         oefatal "python setup.py install (stage) execution failed."

@@ -15,7 +15,6 @@ COMPATIBLE_HOST = 'i.86.*-linux'
 inherit kernel
 
 ARCH = "i386"
-KERNEL_IMAGETYPE = "bzImage"
 
 # Don't want kernel in rootfs
 FILES_kernel = ""

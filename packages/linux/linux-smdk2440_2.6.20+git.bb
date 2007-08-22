@@ -15,7 +15,6 @@ inherit kernel
 
 COMPATIBLE_HOST = "arm.*-linux"
 COMPATIBLE_MACHINE = "smdk2440"
-KERNEL_IMAGETYPE = "zImage"
 
 do_configure() {
 	install ${WORKDIR}/defconfig-smdk2440 ${S}/.config
