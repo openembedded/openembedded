@@ -12,6 +12,29 @@ S = "${WORKDIR}/ltp-full-${PV}"
 
 EXTRA_OEMAKE_append = " CROSS_COMPILE=${HOST_PREFIX}"
 
+FILES_${PN}-dbg =  "${libexecdir}/ltp/*/*/*/*/*/.debug"
+FILES_${PN}-dbg += "${libexecdir}/ltp/*/*/*/*/.debug"
+FILES_${PN}-dbg += "${libexecdir}/ltp/*/*/*/.debug"
+FILES_${PN}-dbg += "${libexecdir}/ltp/*/*/.debug"
+FILES_${PN}-dbg += "${libexecdir}/ltp/*/.debug"
+#FILES_${PN}-dbg += "${libexecdir}/ltp/testcases/misc/math/float/trigo/.debug"
+#FILES_${PN}-dbg += "${libexecdir}/ltp/testcases/misc/math/float/iperb/.debug"
+#FILES_${PN}-dbg += "${libexecdir}/ltp/testcases/misc/math/float/exp_log/.debug"
+#FILES_${PN}-dbg += "${libexecdir}/ltp/testcases/misc/math/float/power/.debug"
+#FILES_${PN}-dbg += "${libexecdir}/ltp/testcases/misc/math/float/bessel/.debug"
+#FILES_${PN}-dbg += "${libexecdir}/ltp/testcases/misc/math/abs/.debug"
+#FILES_${PN}-dbg += "${libexecdir}/ltp/testcases/misc/math/atof/.debug"
+#FILES_${PN}-dbg += "${libexecdir}/ltp/testcases/misc/math/nextafter/.debug"
+#FILES_${PN}-dbg += "${libexecdir}/ltp/testcases/misc/math/fptests/.debug"
+#FILES_${PN}-dbg += "${libexecdir}/ltp/testcases/misc/f00f/.debug"
+#FILES_${PN}-dbg += "${libexecdir}/ltp/testcases/misc/crash/.debug"
+#FILES_${PN}-dbg += "${libexecdir}/ltp/pan/.debug"
+#FILES_${PN}-dbg += "${libexecdir}/ltp/testcases/network/ipv6/*/.debug"
+#FILES_${PN}-dbg += "${libexecdir}/ltp/testcases/network/rpc/rpc01/.debug"
+#FILES_${PN}-dbg += "${libexecdir}/ltp/testcases/bin/.debug"
+#FILES_${PN}-dbg += "${libexecdir}/ltp/testcases/kernel/syscalls/*/.debug"
+#FILES_${PN}-dbg += "${libexecdir}/ltp/testcases/kernel/mem/*/.debug"
+
 do_compile(){
         oe_runmake CROSS_COMPILE=${HOST_PREFIX}
 }
