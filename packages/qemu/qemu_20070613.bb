@@ -2,7 +2,7 @@ LICENSE = "GPL"
 DEPENDS = "zlib"
 SRCDATE = "20070613"
 PV = "0.9.0+cvs${SRCDATE}"
-PR = "r4"
+PR = "r5"
 
 FILESDIR = "${WORKDIR}"
 
@@ -34,7 +34,8 @@ SRC_URI = "\
     file://qemu-0.9.0-nptl-update.patch;patch=1 \
     file://qemu-amd64-32b-mapping-0.9.0.patch;patch=1 \
     file://workaround_bad_futex_headers.patch;patch=1 \
-    file://fix_segfault.patch;patch=1"
+    file://fix_segfault.patch;patch=1 \
+    file://no-strip.patch;patch=1"
 
 #    svn://svn.o-hand.com/repos/misc/trunk/qemu-packaging/qemu;module=debian;proto=http;srcdate=20070119 \
 #    file://debian/patches/21_net_soopts.patch;patch=1;pnum=0 \
