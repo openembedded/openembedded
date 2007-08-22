@@ -15,7 +15,6 @@ S = "${WORKDIR}/linux-${PV}"
 inherit kernel
 
 COMPATIBLE_HOST = "i.86.*-linux"
-KERNEL_IMAGETYPE = "bzImage"
 
 do_configure_prepend_x86() {
 	install -m 0644 ${WORKDIR}/i486-defconfig ${S}/.config
