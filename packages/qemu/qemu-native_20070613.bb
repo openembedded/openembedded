@@ -8,7 +8,9 @@ python __anonymous() {
 	
     path = data.getVar('PATH', d)
     oeconf = data.getVar('EXTRA_OECONF', d) or ''
-    if len(which(path, 'gcc-3.4')) != 0:
+    if len(which(path, 'gcc-3.4.6')) != 0:
+        data.setVar('EXTRA_OECONF', oeconf + " --cc=gcc-3.4.6", d)
+    elif len(which(path, 'gcc-3.4')) != 0:
         data.setVar('EXTRA_OECONF', oeconf + " --cc=gcc-3.4", d)
     elif len(which(path, 'gcc34')) != 0:
         data.setVar('EXTRA_OECONF', oeconf + " --cc=gcc34", d)
