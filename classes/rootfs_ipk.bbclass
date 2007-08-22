@@ -37,7 +37,6 @@ fakeroot rootfs_ipk_do_rootfs () {
 
 	rootfs_ipk_do_indexes
 
-	mkdir -p ${IMAGE_ROOTFS}/dev
 	mkdir -p ${T}
 
 	#Add deploy/ipk as well for backward compat
