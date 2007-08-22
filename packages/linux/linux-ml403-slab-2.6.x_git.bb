@@ -4,8 +4,8 @@
 SECTION = "kernel"
 DESCRIPTION = "Linux kernel for Xilinx ML403 Virtex 4 fpga board"
 LICENSE = "GPL"
-#DEPENDS = "u-boot"
-PR = "r0"
+DEPENDS = "git-native"
+PR = "r1"
 PV = "2.6+git${SRCDATE}"
 
 COMPATIBLE_MACHINE = "xilinx-ml403"
