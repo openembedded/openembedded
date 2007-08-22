@@ -17,7 +17,6 @@ S = "${WORKDIR}/linux-2.6.18"
 
 inherit kernel
 
-KERNEL_IMAGETYPE = "zImage"
 
 do_configure() {
         rm -f ${S}/.config

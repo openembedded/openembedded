@@ -12,15 +12,6 @@ DEPENDS_gumstix = "u-boot-mkimage-openmoko-native"
 
 inherit kernel
 
-KERNEL_IMAGETYPE_alix = "bzImage"
-KERNEL_IMAGETYPE_progear = "bzImage"
-KERNEL_IMAGETYPE_simpad = "zImage"
-KERNEL_IMAGETYPE_kb9202 = "uImage"
-KERNEL_IMAGETYPE_atngw100 = "uImage"
-KERNEL_IMAGETYPE_at32stk1000 = "uImage"
-KERNEL_IMAGETYPE_at91sam9263ek = "uImage"
-KERNEL_IMAGETYPE_sarge-at91 = "uImage"
-
 # Specify the commandline for you device here:
 
 #boot from mmc

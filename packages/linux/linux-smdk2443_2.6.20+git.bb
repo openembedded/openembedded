@@ -25,7 +25,6 @@ inherit kernel
 
 COMPATIBLE_HOST = "arm.*-linux"
 COMPATIBLE_MACHINE = "smdk2443"
-KERNEL_IMAGETYPE = "zImage"
 
 do_configure() {
 	install ${WORKDIR}/defconfig-smdk2443 ${S}/.config

@@ -19,7 +19,6 @@ S = "${WORKDIR}/linux-${KV}"
 inherit kernel
 
 ARCH = "i386"
-KERNEL_IMAGETYPE = "bzImage"
 
 do_configure_prepend() {
 	install -m 0644 ${WORKDIR}/defconfig ${S}/.config

@@ -16,7 +16,6 @@ S = "${WORKDIR}/linux-${KV}"
 
 inherit kernel
 
-KERNEL_IMAGETYPE = "zImage"
 
 do_configure_prepend() {
 	cp ${WORKDIR}/defconfig ${S}/.config

@@ -14,7 +14,6 @@ inherit kernel
 inherit package
 
 ARCH = "arm"
-KERNEL_IMAGETYPE = "zImage"
 #CMDLINE_CONSOLE ?= "ttyS0,115200n8"
 #CMDLINE_ROOT = "root=/dev/slug rootfstype=ext2,jffs2 initrd=0x01000000,10M mem=32M@0x00000000"
 #CMDLINE_ROOT = "root=/dev/mtdblock4 rootfstype=jffs2 mem=32M@0x00000000"
