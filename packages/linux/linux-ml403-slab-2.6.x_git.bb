@@ -4,8 +4,7 @@
 SECTION = "kernel"
 DESCRIPTION = "Linux kernel for Xilinx ML403 Virtex 4 fpga board"
 LICENSE = "GPL"
-DEPENDS = "git-native"
-PR = "r1"
+PR = "r2"
 PV = "2.6+git${SRCDATE}"
 
 COMPATIBLE_MACHINE = "xilinx-ml403"
@@ -23,6 +22,18 @@ export OS = "Linux"
 ARCH = "ppc"
 KERNEL_IMAGETYPE = "zImage"
 KERNEL_OUTPUT = "arch/ppc/boot/images/zImage.elf"
+
+#make sure git-native gets build before as
+python __anonymous () {
+
+    import bb
+
+
+    depends = bb.data.getVarFlag('do_fetch', 'depends', d) or ""
+    depends = depends + " git-native:do_populate_staging"
+    bb.data.setVarFlag('do_fetch', 'depends', depends, d)
+
+}
 
 
 do_fetch () { 
