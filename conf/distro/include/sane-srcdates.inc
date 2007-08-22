@@ -40,6 +40,9 @@ SRCDATE_psplash ?= "20070330"
 SRCDATE_web ?= "20060613"
 SRCDATE_zaurusd ?= "20060628"
 
+# OpenMoko
+SRCDATE_uboot-openmoko = "20070820"
+
 # GPE
 SRCDATE_dasher-gpe  ?= "20060814"
 SRCDATE_rosetta ?= "20060804"
