@@ -16,7 +16,6 @@ COMPATIBLE_MACHINE = "titan"
 inherit kernel
 
 ARCH = "sh"
-KERNEL_IMAGETYPE = "zImage"
 KERNEL_OUTPUT = "arch/${ARCH}/boot/${KERNEL_IMAGETYPE}"
 
 #

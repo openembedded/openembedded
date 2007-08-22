@@ -19,7 +19,6 @@ inherit kernel
 
 export ARCH="powerpc"
 
-KERNEL_IMAGETYPE = "zImage"
 
 do_configure() {
 		install -m 644 ${WORKDIR}/defconfig ${S}/.config

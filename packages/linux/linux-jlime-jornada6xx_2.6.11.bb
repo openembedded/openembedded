@@ -15,7 +15,6 @@ S = "${WORKDIR}/linux-${PV}"
 inherit kernel
 
 ARCH = "sh"
-KERNEL_IMAGETYPE = "zImage"
 FILES_kernel-image = "/boot/${KERNEL_IMAGETYPE}*"
 
 do_configure_prepend() {

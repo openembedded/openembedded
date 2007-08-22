@@ -38,7 +38,6 @@ inherit kernel
 inherit package
 
 ARCH = "arm"
-KERNEL_IMAGETYPE = "zImage"
 
 FILES_kernel-image = ""
 
