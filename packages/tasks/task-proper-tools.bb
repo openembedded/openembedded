@@ -1,10 +1,9 @@
 DESCRIPTION = "Full versions of tools provided by busybox"
-PR = "r4"
+PR = "r5"
 
-PACKAGE_ARCH = "all"
-ALLOW_EMPTY_${PN} = "1"
+inherit task
 
-RDEPENDS = "\
+RDEPENDS_${PN} = "\
             coreutils \
 	    findutils \
 	    util-linux \
