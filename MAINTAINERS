@@ -124,10 +124,10 @@ Recipes:    mx31ads-kernel*
 
 Person:     Marcin Juszkiewicz
 Mail:       hrw@openembedded.org
-Website:    http://www.hrw.one.pl/
-Machines:   collie, tosa, progear
-Distros:    OpenZaurus, celinux-test
-Interests:  WiFi, Opie, Qtopia fonts, Native SDK
+Website:    http://blog.haerwu.biz/
+Machines:   collie, tosa, progear, alix
+Distros:    Poky, OpenZaurus, Ångström
+Interests:  WiFi, Native SDK
 Recipes:    linux, hostap*, orinoco*, wpa-supplicant*, wireless-tools, keymaps
 Recipes:    linux-rp, gammu
 Recipes:    ttf-fonts/* 
