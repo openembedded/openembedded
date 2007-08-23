@@ -1,9 +1,8 @@
 DESCRIPTION = "The OpenMoko Dialer"
 SECTION = "openmoko/pim"
-DEPENDS = "libmokogsmd2 libmokoui2 libmokojournal2 gstreamer"
-RDEPENDS = "gst-meta-audio"
+DEPENDS = "libmokogsmd2 libmokoui2 libmokojournal2 pulseaudio"
 PV = "0.1.0+svn${SVNREV}"
-PR = "r2"
+PR = "r3"
 
 inherit openmoko2
 
