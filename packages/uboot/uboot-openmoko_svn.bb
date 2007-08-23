@@ -6,12 +6,13 @@ PRIORITY = "optional"
 
 UBOOT_UPSTREAM_REV = "8993e54b6f397973794f3d6f47d3b3c0c98dd4f6"
 PV = "1.2.0+git${UBOOT_UPSTREAM_REV}+svn${SRCDATE}"
+PR = "r1"
 
 PROVIDES = "virtual/bootloader"
 S = "${WORKDIR}/git"
 
 SRC_URI = "git://www.denx.de/git/u-boot.git/;protocol=git;tag=${UBOOT_UPSTREAM_REV} \
-           svn://svn.openmoko.org/trunk/src/target/u-boot;module=patches;proto=http \
+           svn://svn.openmoko.org/branches/u-boot/pre-20070822;module=patches;proto=http \
            file://uboot-eabi-fix-HACK.patch \
            file://uboot-20070311-tools_makefile_ln_sf.patch;patch=1 \
 "

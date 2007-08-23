@@ -7,6 +7,9 @@ DEFAULT_PREFERENCE = "-1"
 
 inherit autotools pkgconfig
 
+OE_LT_RPATH_ALLOW = "any"
+OE_LT_RPATH_ALLOW[export]="1"
+
 do_stage() {
     rm -rf ${STAGE_TEMP}
     mkdir -p ${STAGE_TEMP}
