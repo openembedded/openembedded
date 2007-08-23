@@ -11,3 +11,14 @@ Index: runltp
      export TMPBASE="/tmp"
      export TMP="${TMPBASE}/ltp-$$"
      export PATH="${PATH}:${LTPROOT}/testcases/bin"
+--- ltp-full-20060412.orig/runltp      2007-02-28 20:40:17.000000000 -0800
++++ ltp-full-20060412/runltp   2007-04-01 11:38:38.000000000 -0700
+@@ -285,7 +285,7 @@
+                      ${LTPROOT}/runtest/sched ${LTPROOT}/runtest/math \
+                      ${LTPROOT}/runtest/nptl ${LTPROOT}/runtest/pty
+         do
+-            [ -a "$SCENFILES" ] || \
++            [ -e "$SCENFILES" ] || \
+             {
+                 echo "FATAL: missing scenario file $SCENFILES"
+                 exit 1
