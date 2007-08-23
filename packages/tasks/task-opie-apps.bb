@@ -1,7 +1,8 @@
 DESCRIPTION = "Tasks for OPIE stuff"
 SECTION = "opie/base"
-ALLOW_EMPTY = "1"
 LICENSE = "MIT"
+
+inherit task
 
 PACKAGES = "task-opie-apps task-opie-extra-apps"
 
