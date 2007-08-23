@@ -5,7 +5,9 @@ SECTION = "devel/python"
 PRIORITY = "optional"
 DEPENDS = "python-native readline zlib gdbm openssl sqlite3 tcl tk"
 DEPENDS_sharprom = "python-native readline zlib gdbm openssl"
-PR = "ml0"
+
+# NOTE: Keep the digit in sync with BASEREV in contrib/generate-manifest-2.5.py
+PR = "ml1"
 
 PYTHON_MAJMIN = "2.5"
 
@@ -41,6 +43,15 @@ do_compile_prepend() {
 }
 
 do_compile() {
+        oe_runmake HOSTPGEN=${STAGING_BINDIR_NATIVE}/pgen \
+                   HOSTPYTHON=${STAGING_BINDIR_NATIVE}/python \
+                   STAGING_LIBDIR=${STAGING_LIBDIR} \
+                   STAGING_INCDIR=${STAGING_INCDIR} \
+                   BUILD_SYS=${BUILD_SYS} HOST_SYS=${HOST_SYS} \
+                   OPT="${CFLAGS}" libpython2.5.so
+
+	oe_libinstall -so libpython2.5 ${STAGING_LIBDIR}
+
 	oe_runmake HOSTPGEN=${STAGING_BINDIR_NATIVE}/pgen \
 		   HOSTPYTHON=${STAGING_BINDIR_NATIVE}/python \
 		   STAGING_LIBDIR=${STAGING_LIBDIR} \
@@ -61,7 +72,7 @@ do_install() {
                    STAGING_LIBDIR=${STAGING_LIBDIR} \
                    STAGING_INCDIR=${STAGING_INCDIR} \
 		   BUILD_SYS=${BUILD_SYS} HOST_SYS=${HOST_SYS} \
-		   DESTDIR=${D} install
+		   DESTDIR=${D} LIBDIR=${libdir} install
 }
 
 require python-${PYTHON_MAJMIN}-manifest.inc
