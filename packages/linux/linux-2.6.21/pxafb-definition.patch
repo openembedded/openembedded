@@ -120,7 +120,7 @@ Index: linux-2.6.21gum/drivers/video/Kconfig
 ===================================================================
 --- linux-2.6.21gum.orig/drivers/video/Kconfig
 +++ linux-2.6.21gum/drivers/video/Kconfig
-@@ -1495,6 +1495,34 @@ config FB_PXA
+@@ -1495,6 +1495,37 @@ config FB_PXA
  
  	  If unsure, say N.
  
@@ -149,6 +149,9 @@ Index: linux-2.6.21gum/drivers/video/Kconfig
 +	---help---
 +	  Enable definitions for a Samsung LTE430WQ-F0C LCD panel, such as the ones resold
 +	  by gumstix for use with their "LCD-Ready" boards.
++
++config FB_PXA_NONEOFTHEABOVE
++	boolean "None of the above"
 +
 +endchoice
 +
