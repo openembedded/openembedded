@@ -213,3 +213,9 @@ Recipes:    lcdproc, libol, mailx, mysql, musicpd, openntpd, qc-usb
 Recipes:    radlib, scsi-idle, rng-tools, slugos-init, syslog-ng
 Recipes:    vsftpd, zd1211
 
+Person:     Philipp Zabel
+Mail:       philipp.zabel@gmail.com
+Interests:  Kernels, PXA, GTK+, gsmd
+Distros:    Ångström
+Machines:   hx4700, magician
+Recipes:    avahi, libgsmd
