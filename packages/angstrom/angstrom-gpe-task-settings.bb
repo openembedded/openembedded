@@ -1,8 +1,9 @@
 DESCRIPTION = "Task packages for the Angstrom distribution"
-PR = "r31"
-ALLOW_EMPTY = "1"
+PR = "r32"
 
-RDEPENDS = "\
+inherit task
+
+RDEPENDS_${PN} = "\
     matchbox-panel-manager \
     gpe-su \
     gpe-conf \
