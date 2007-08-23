@@ -42,10 +42,6 @@ SRC_URI_append_acern30 = "\
 
 inherit kernel
 
-KERNEL_IMAGETYPE = "bzImage"
-KERNEL_IMAGETYPE_simpad = "zImage"
-KERNEL_IMAGETYPE_acern30 = "zImage"
-
 do_configure_prepend() {
 	install -m 0644 ${WORKDIR}/defconfig ${S}/.config
 }

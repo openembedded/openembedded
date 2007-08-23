@@ -16,7 +16,6 @@ S = "${WORKDIR}/linux-2.6.17"
 
 inherit kernel
 
-KERNEL_IMAGETYPE = "zImage"
 
 
 

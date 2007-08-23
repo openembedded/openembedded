@@ -75,7 +75,6 @@ COMPATIBLE_HOST = 'mipsel.*-linux'
 
 inherit kernel
 
-KERNEL_IMAGETYPE ?= "zImage"
 KERNEL_OUTPUT = "arch/mips/brcm-boards/bcm947xx/compressed/piggy"
 CMDLINE = "root=/dev/mtdblock2 rootfstype=squashfs,jffs2 console=ttyS0,115200"
 

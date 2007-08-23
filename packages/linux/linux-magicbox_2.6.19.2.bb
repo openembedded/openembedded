@@ -63,7 +63,6 @@ FILES_kernel-image = "/boot/zImage.elf"
 
 export OS = "Linux"
 ARCH = "ppc"
-KERNEL_IMAGETYPE = "zImage"
 KERNEL_OUTPUT = "arch/ppc/boot/images/zImage.elf"
 
 

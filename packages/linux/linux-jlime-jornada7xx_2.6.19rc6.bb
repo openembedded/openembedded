@@ -19,7 +19,6 @@ inherit kernel
 KERNEL_CCSUFFIX = "-3.4.4"
 
 ARCH = "arm"
-KERNEL_IMAGETYPE = "zImage"
 
 FILES_kernel-image = "/boot/${KERNEL_IMAGETYPE}*"
 

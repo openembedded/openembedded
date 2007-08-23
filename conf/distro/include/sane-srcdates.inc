@@ -40,6 +40,9 @@ SRCDATE_psplash ?= "20070330"
 SRCDATE_web ?= "20060613"
 SRCDATE_zaurusd ?= "20060628"
 
+# OpenMoko
+SRCDATE_uboot-openmoko = "20070820"
+
 # GPE
 SRCDATE_dasher-gpe  ?= "20060814"
 SRCDATE_rosetta ?= "20060804"
@@ -133,7 +136,7 @@ SRCDATE_oprofile ?= "20061011"
 SRCDATE_portaudio ?= "20060814"
 SRCDATE_putty ?= "20060814"
 SRCDATE_python-cairo ?= "20060814"
-SRCDATE_qemu-native ?= "20060723"
+SRCDATE_qemu-native ?= "20070613"
 SRCDATE_roadster ?= "20060814"
 SRCDATE_sctzap ?= "20060814"
 SRCDATE_tslib ?= "20051101"

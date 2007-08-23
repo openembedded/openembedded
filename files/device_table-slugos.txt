@@ -8,6 +8,7 @@
 #	c	Character special device file
 #	b	Block special device file
 #	p	Fifo (named pipe)
+/dev		d	755	0	0	-	-	-	-	-
 /dev/buzzer	c	660	0	0	13	64	-	-	-
 /dev/console	c	622	0	0	5	1	-	-	-
 /dev/kmem	c	640	0	0	1	2	-	-	-

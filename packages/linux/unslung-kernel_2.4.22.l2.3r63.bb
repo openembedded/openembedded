@@ -38,7 +38,6 @@ S = "${WORKDIR}/linux-2.4.22"
 inherit kernel
 
 ARCH = "arm"
-KERNEL_IMAGETYPE = "zImage"
 KERNEL_SUFFIX = "ixp4xxbe"
 CMDLINE_CONSOLE ?= "ttyS0,115200"
 CMDLINE_ROOT = "root=/dev/mtdblock4 rootfstype=jffs2 rw init=/linuxrc mem=32M@0x00000000"

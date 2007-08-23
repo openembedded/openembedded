@@ -17,7 +17,6 @@ inherit kernel
 inherit package
 
 ARCH = "arm"
-KERNEL_IMAGETYPE = "zImage"
 CMDLINE = "ttyS0,115200n8 root=/dev/mtdblock2 init=/linuxrc"
 
 do_configure_prepend() {

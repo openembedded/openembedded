@@ -4,7 +4,7 @@ HOMEPAGE = "http://live.gnome.org/GeoClue"
 DEPENDS = "libgpsmgr libgpsbt  gtk+ gpsd libxml2 gconf-dbus libsoup dbus-glib"
 
 PV = "0.0+git${SRCDATE}"
-PR = "r0"
+PR = "r1"
 PE = "1"
 
 inherit autotools pkgconfig
@@ -16,7 +16,9 @@ S = "${WORKDIR}/git"
 
 LDFLAGS_append = " -lgthread-2.0 "
 
-EXTRA_OECONF = " --enable-applet=no "
+EXTRA_OECONF = " --enable-applet=no \
+                 --enable-gpsd \
+		 --enable-system-bus"
 
 do_install_append() {
 	mkdir -p ${D}/usr/share/

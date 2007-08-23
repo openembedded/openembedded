@@ -17,7 +17,6 @@ COMPATIBLE_HOST = 'arm.*-linux'
 inherit kernel
 
 ARCH = "arm"
-KERNEL_IMAGETYPE = "zImage"
 CMDLINE ?= "root=/dev/mtdblock2 rw rootfstype=jffs2 reboot=5"
 
 do_configure_prepend() {

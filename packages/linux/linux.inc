@@ -8,17 +8,9 @@ DEPENDS_at32stk1000 = "u-boot-mkimage-openmoko-native"
 DEPENDS_atngw100 = "u-boot-mkimage-openmoko-native"
 DEPENDS_at91sam9263ek = "u-boot-mkimage-openmoko-native"
 DEPENDS_sarge-at91 = "u-boot-mkimage-openmoko-native"
+DEPENDS_gumstix = "u-boot-mkimage-openmoko-native"
 
 inherit kernel
-
-KERNEL_IMAGETYPE_alix = "bzImage"
-KERNEL_IMAGETYPE_progear = "bzImage"
-KERNEL_IMAGETYPE_simpad = "zImage"
-KERNEL_IMAGETYPE_kb9202 = "uImage"
-KERNEL_IMAGETYPE_atngw100 = "uImage"
-KERNEL_IMAGETYPE_at32stk1000 = "uImage"
-KERNEL_IMAGETYPE_at91sam9263ek = "uImage"
-KERNEL_IMAGETYPE_sarge-at91 = "uImage"
 
 # Specify the commandline for you device here:
 
@@ -58,16 +50,20 @@ do_install_prepend() {
         fi
 }
 
+UBOOT_ENTRYPOINT ?= "20008000"
+
+KERNEL_IMAGE_BASE_NAME = ${KERNEL_IMAGETYPE}-${PV}-${PR}-${MACHINE}-${DATETIME}
+
 do_deploy() {
         install -d ${DEPLOY_DIR_IMAGE}
-        install -m 0644 arch/${ARCH}/boot/${KERNEL_IMAGETYPE} ${DEPLOY_DIR_IMAGE}/${KERNEL_IMAGETYPE}-${PV}-${PR}-${MACHINE}-${DATETIME}.bin
+        install -m 0644 arch/${ARCH}/boot/${KERNEL_IMAGETYPE} ${DEPLOY_DIR_IMAGE}/${KERNEL_IMAGE_BASE_NAME}.bin
         tar -cvzf ${DEPLOY_DIR_IMAGE}/modules-${KERNEL_RELEASE}-${PR}-${MACHINE}.tgz -C ${D} lib
         
         if test "x${KERNEL_IMAGETYPE}" = "xuImage" ; then 
             ${OBJCOPY} -O binary -R .note -R .comment -S vmlinux linux.bin
             rm -f linux.bin.gz
             gzip -9 linux.bin
-            uboot-mkimage -A ${ARCH} -O linux -T kernel -C gzip -a 20008000 -e 20008000 -n "${DISTRO_NAME} Kernel for ${MACHINE}" -d linux.bin.gz ${DEPLOY_DIR_IMAGE}/uImage-${PV}-${PR}-${MACHINE}-${DATETIME}.bin
+            uboot-mkimage -A ${ARCH} -O linux -T kernel -C gzip -a ${UBOOT_ENTRYPOINT} -e ${UBOOT_ENTRYPOINT} -n "${DISTRO_NAME} Kernel for ${MACHINE}" -d linux.bin.gz ${DEPLOY_DIR_IMAGE}/uImage-${PV}-${PR}-${MACHINE}-${DATETIME}.bin
             rm -f linux.bin.gz
         fi
 }

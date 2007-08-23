@@ -3,7 +3,7 @@ LICENSE = "GPL2"
 HOMEPAGE = "http://only.mawhrin.net/fbreader/"
 SECTION = "x11/utils"
 PRIORITY = "optional"
-DEPENDS = "gtk+ enca expat bzip2 libgpewidget"
+DEPENDS = "gtk+ enca expat bzip2 libgpewidget libiconv"
 PR = "r5"
 
 # The RESOLUTION is defined at compile time which makes

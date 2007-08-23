@@ -156,7 +156,6 @@ COMPATIBLE_MACHINE = '(ixp4xx|nslu2|fsg3)'
 inherit kernel
 
 ARCH = "arm"
-KERNEL_IMAGETYPE = "zImage"
 
 # To specify the console set KERNEL_CONSOLE in the .bb file.
 # CMDLINE_ROOT contains the boot options, these will be
