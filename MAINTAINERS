@@ -213,7 +213,7 @@ Recipes:    lcdproc, libol, mailx, mysql, musicpd, openntpd, qc-usb
 Recipes:    radlib, scsi-idle, rng-tools, slugos-init, syslog-ng
 Recipes:    vsftpd, zd1211
 
-Person:     Henning Heinold
+Person:     Henning Heinold 'woglinde'
 Mail:       heinold@inf.fu-berlin.de
 Machines:   simpad
 Recipes:    classpath-minimal, midpath, cacao-clcd
