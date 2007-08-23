@@ -1,9 +1,10 @@
 require linux.inc
 
 DEFAULT_PREFERENCE_at91sam9263ek = "-1"
-DEFAULT_PREFERENCE_gumstix = "1"
+DEFAULT_PREFERENCE_gumstix-connex = "1"
+DEFAULT_PREFERENCE_gumstix-verdex = "1"
 
-PR = "r6"
+PR = "r7"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-${PV}.tar.bz2 \
            file://defconfig \
