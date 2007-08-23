@@ -1,9 +1,44 @@
 # gsmd	This shell script configures for the gsmd init script.
 
-# If you must specify special options, uncomment and modify the next line
-#GSMD_OPTS="-s 115200 -F"
+. /etc/init.d/functions
 
-# If your GSM device needs to be powered up, uncomment and modify the next line
-#GSM_POW="/sys/bus/platform/devices/gta01-pm-gsm.0/power_on"
+case `cpuinfo_id` in
+	"GTA01", "GTA02")
+		GSMD_OPTS="-s 115200 -F"
+		GSM_POW="/sys/bus/platform/devices/gta01-pm-gsm.0/power_on"
+		GSM_DEV="/dev/ttySAC0"
+		;;
+	"HTC Apache", "HTC Blueangel")
+		GSMD_OPTS="-s 115200 -F"
+		GSM_DEV="/dev/ttyS0"
+		;;
+	"HTC Himalaya")
+		GSMD_OPTS="-s 115200 -F"
+		GSM_DEV="/dev/ttyS2"
+		;;
+	"HTC Magician")
+		GSMD_OPTS="-s 115200 -F"
+		GSM_DEV="/dev/ttyS1"
+		;;
+        "HTC Universal")
+		GSMD_OPTS="-s 115200 -F -w 1"
+		GSM_DEV="/dev/ttyS0"
+		;;
+	"Palm Treo 650")
+		GSMD_OPTS="-s 460800 -F -w 1"
+		GSM_DEV="/dev/ttyS0"
+		;;
+	*)
+		# Unknown board
 
-#GSM_DEV="/dev/ttyS1"
+		# If you must specify special options, uncomment and modify the next line
+		#GSMD_OPTS="-s 115200 -F"
+
+		# If your GSM device needs to be powered up, uncomment and modify the next line
+		#GSM_POW="/sys/bus/platform/devices/gta01-pm-gsm.0/power_on"
+
+		# This should be in a common /etc/default/serial, together with
+		# BT_DEV and IR_DEV for devices that have those on a serial port
+		#GSM_DEV="/dev/ttyS1"
+		;;
+esac
