@@ -1,9 +1,10 @@
 DESCRIPTION = "Base task package for GPE Palmtop Environment"
 PR = "r8"
 LICENSE = "MIT"
-ALLOW_EMPTY = "1"
 
-RDEPENDS = "\
+inherit task
+
+RDEPENDS_${PN} = "\
     gpe-bootsplash \
     bluez-utils-dbus \
     matchbox \

@@ -217,3 +217,10 @@ Person:     Henning Heinold 'woglinde'
 Mail:       heinold@inf.fu-berlin.de
 Machines:   simpad
 Recipes:    classpath-minimal, midpath, cacao-clcd
+
+Person:     Philipp Zabel
+Mail:       philipp.zabel@gmail.com
+Interests:  Kernels, PXA, GTK+, gsmd
+Distros:    Ångström
+Machines:   hx4700, magician
+Recipes:    avahi, libgsmd

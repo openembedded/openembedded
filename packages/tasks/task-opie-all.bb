@@ -1,8 +1,9 @@
 DESCRIPTION = "Tasks for OPIE stuff"
 SECTION = "opie/base"
-ALLOW_EMPTY = "1"
 LICENSE = "MIT"
-PR = "r1"
+PR = "r2"
+
+inherit task
 
 PACKAGES = "task-opie-applets task-opie-inputmethods task-opie-styles \
             task-opie-decorations task-opie-multimedia task-opie-wlan \

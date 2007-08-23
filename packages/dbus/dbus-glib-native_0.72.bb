@@ -1,5 +1,5 @@
 SECTION = "base"
-PR = "r0"
+PR = "r1"
 HOMEPAGE = "http://www.freedesktop.org/Software/dbus"
 DESCRIPTION = "message bus system for applications to talk to one another"
 LICENSE = "GPL"
@@ -19,4 +19,5 @@ do_stage() {
         install -d ${STAGING_DATADIR}/dbus
         install -m 0644 tools/dbus-bus-introspect.xml ${STAGING_DATADIR}/dbus
         install -m 0644 tools/dbus-glib-bindings.h ${STAGING_DATADIR}/dbus
+	install -m 0755 dbus/.libs/dbus-binding-tool ${STAGING_BINDIR}/
 }

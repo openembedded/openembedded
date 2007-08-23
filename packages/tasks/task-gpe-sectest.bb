@@ -1,9 +1,10 @@
 DESCRIPTION = "Security testing task packages for GPE Palmtop Environment"
-PR = "r5"
+PR = "r6"
 LICENSE = "MIT"
-ALLOW_EMPTY = "1"
 
-RDEPENDS = "\
+inherit task
+
+RDEPENDS_${PN} = "\
     nmap \
     ettercap \
     stunnel \

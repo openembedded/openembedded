@@ -1,9 +1,10 @@
 DESCRIPTION = "Settings task package for GPE Palmtop Environment"
-PR = "r5"
+PR = "r6"
 LICENSE = "MIT"
-ALLOW_EMPTY = "1"
 
-RDEPENDS = "\
+inherit task
+
+RDEPENDS_${PN} = "\
     gpe-mininet \
     gpe-bluetooth \
     gpe-beam \

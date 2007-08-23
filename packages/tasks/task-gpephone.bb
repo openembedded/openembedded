@@ -1,7 +1,8 @@
 DESCRIPTION = "Task packages for GPE Palmtop Environment Phone Edition"
-PR = "r8"
+PR = "r9"
 LICENSE = "MIT"
-ALLOW_EMPTY = "1"
+
+inherit task
 
 PACKAGES = "\
     gpephone-task-base \

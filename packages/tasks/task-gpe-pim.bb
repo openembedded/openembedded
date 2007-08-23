@@ -1,9 +1,10 @@
 DESCRIPTION = "PIM task packages for GPE Palmtop Environment"
 PR = "r6"
 LICENSE = "MIT"
-ALLOW_EMPTY = "1"
 
-RDEPENDS = "\
+inherit task
+
+RDEPENDS_${PN} = "\
     gpe-timesheet \
     gpe-todo \
     gpe-calendar \

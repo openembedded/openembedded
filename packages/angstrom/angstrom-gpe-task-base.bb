@@ -1,10 +1,11 @@
 DESCRIPTION = "Task packages for the Angstrom distribution"
-PR = "r31"
-ALLOW_EMPTY = "1"
+PR = "r32"
+
+inherit task
 
 PACKAGE_ARCH = "${MACHINE_ARCH}"
 
-RDEPENDS = "\
+RDEPENDS_${PN} = "\
     matchbox \
     matchbox-panel-hacks \
     xcursor-transparent-theme \

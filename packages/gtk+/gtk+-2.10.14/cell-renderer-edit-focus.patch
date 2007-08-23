@@ -1,0 +1,30 @@
+Index: gtk/gtkcellrenderertext.c
+===================================================================
+--- gtk/gtkcellrenderertext.c	(revision 18557)
++++ gtk/gtkcellrenderertext.c	(working copy)
+@@ -1794,13 +1794,24 @@ gtk_cell_renderer_text_focus_out_event (
+ 					gpointer   data)
+ {
+   GtkCellRendererTextPrivate *priv;
++  GtkSettings *settings;
++  gboolean in_touchscreen_mode = FALSE;
+ 
+   priv = GTK_CELL_RENDERER_TEXT_GET_PRIVATE (data);
+ 
+   if (priv->in_entry_menu)
+     return FALSE;
+ 
+-  GTK_ENTRY (entry)->editing_canceled = TRUE;
++  if (gtk_widget_has_screen (entry))
++    settings = gtk_settings_get_for_screen (gtk_widget_get_screen (entry));
++  else
++    settings = gtk_settings_get_default ();
++
++  g_object_get (G_OBJECT (settings),
++                "gtk-touchscreen-mode", &in_touchscreen_mode,
++                NULL);
++
++  GTK_ENTRY (entry)->editing_canceled = !in_touchscreen_mode;
+   gtk_cell_editable_editing_done (GTK_CELL_EDITABLE (entry));
+   gtk_cell_editable_remove_widget (GTK_CELL_EDITABLE (entry));
+ 

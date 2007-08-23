@@ -1,11 +1,13 @@
-PACKAGES = "${PN}"
 DESCRIPTION = "Meta-package for MythTV diskless frontend"
-ALLOW_EMPTY = "1"
-PR = "r13"
+PR = "r14"
 
-RDEPENDS = "xserver-xorg mythtv-frontend mythtv-filters mythtv-theme-g.a.n.t. mythtv-theme-default lirc lirc-modules ttf-bitstream-vera fontconfig-utils setserial snes9x ntp mythfront-config gpe-dm mythfront-session bootlogd font-cursor-misc font-misc-misc xf86-input-keyboard xf86-input-mouse"
+inherit task
 
-RDEPENDS_append_epia = " xorg-driver-via mesa-dri-driver-unichrome"
+RDEPENDS_${PN} = "xserver-xorg mythtv-frontend mythtv-filters mythtv-theme-g.a.n.t. mythtv-theme-default lirc lirc-modules ttf-bitstream-vera fontconfig-utils setserial snes9x ntp mythfront-config gpe-dm mythfront-session bootlogd font-cursor-misc font-misc-misc xf86-input-keyboard xf86-input-mouse"
+
+RDEPENDS_${PN}_append_epia = " xorg-driver-via mesa-dri-driver-unichrome"
+
+PACKAGE_ARCH_epia = "${MACHINE_ARCH}"
 
 LICENSE = "MIT"
 
