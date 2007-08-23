@@ -23,3 +23,4 @@ EXTRA_OECONF="--disable-gcc-check"
 
 inherit autotools
 
+DEFAULT_PREFERENCE = "-1"
