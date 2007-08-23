@@ -7,4 +7,4 @@ SRC_URI = "${SOURCEFORGE_MIRROR}/pidgin/pidgin-${PV}.tar.bz2 \
 	   file://purple-OE-branding.patch;patch=1 \
 	  " 
 
-PR = "r1"
+PR = "r0"
