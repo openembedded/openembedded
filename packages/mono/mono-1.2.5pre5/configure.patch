@@ -1,0 +1,67 @@
+Index: mono-1.2.5/configure.in
+===================================================================
+--- mono-1.2.5.orig/configure.in
++++ mono-1.2.5/configure.in
+@@ -1134,6 +1134,8 @@ if test x$platform_win32 = xno; then
+ 		], [
+ 				AC_MSG_RESULT(no)
+ 				with_tls=pthread
++		], [
++				AC_MSG_RESULT(yes)
+ 		])
+ 	fi
+ 
+@@ -1236,6 +1238,9 @@ if test x$platform_win32 = xno; then
+ 		], [
+ 				with_sigaltstack=no
+ 				AC_MSG_RESULT(no)
++		], [
++				AC_MSG_RESULT(yes)
++				AC_DEFINE(HAVE_WORKING_SIGALTSTACK)
+ 		])
+ 	fi
+ 
+@@ -1893,24 +1898,26 @@ if test "x$with_tls" = "x__thread"; then
+ 	])
+ fi
+ 
+-if test ${TARGET} = ARM; then
+-	dnl ******************************************
+-	dnl *** Check to see what FPU is available ***
+-	dnl ******************************************
+-	AC_MSG_CHECKING(which FPU to use)
+-
+-	AC_TRY_COMPILE([], [
+-		__asm__ ("ldfd f0, [r0]");
+-		], fpu=FPA, [
+-			AC_TRY_COMPILE([], [
+-				__asm__ ("fldd d0, [r0]");
+-			], fpu=VFP, fpu=NONE)
+-		])
++#if test ${TARGET} = ARM; then
++#	dnl ******************************************
++#	dnl *** Check to see what FPU is available ***
++#	dnl ******************************************
++#	AC_MSG_CHECKING(which FPU to use)
++#
++#	AC_TRY_COMPILE([], [
++#		__asm__ ("ldfd f0, [r0]");
++#		], fpu=FPA, [
++#			AC_TRY_COMPILE([], [
++#				__asm__ ("fldd d0, [r0]");
++#			], fpu=VFP, fpu=NONE)
++#		])
++#
++#	AC_MSG_RESULT($fpu)
++#	CPPFLAGS="$CPPFLAGS -DARM_FPU_$fpu=1"
++#	unset fpu
++#fi
+ 
+-	AC_MSG_RESULT($fpu)
+-	CPPFLAGS="$CPPFLAGS -DARM_FPU_$fpu=1"
+-	unset fpu
+-fi
++	CPPFLAGS="$CPPFLAGS -DARM_FPU_NONE=1"
+ 
+ if test ${TARGET} = unknown; then
+ 	CPPFLAGS="$CPPFLAGS -DNO_PORT"

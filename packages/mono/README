@@ -1,0 +1,10 @@
+Mono in OE is still very much a work in progress.
+1.2.4 
+  - is reported to work on MIPS.  
+  - has floating point problems on ARM
+
+1.2.5pre5
+  - tested on ARM EABI.  Floating point issues have been worked around.
+
+There is still a lot of packaging work that needs done to package the mono dll's for installation.
+
