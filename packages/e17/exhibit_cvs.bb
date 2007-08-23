@@ -6,5 +6,5 @@ PR = "r0"
 
 inherit e
 
-SRC_URI = "cvs://anonymous@anoncvs.enlightenment.org/var/cvs/e;module=e17/apps/exhibit"
+SRC_URI = "${E_CVS};module=e17/apps/exhibit"
 S = "${WORKDIR}/${PN}"
