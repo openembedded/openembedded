@@ -1,9 +1,9 @@
-PACKAGES = "task-dvb"
 DESCRIPTION = "Meta-package for DVB application"
-ALLOW_EMPTY = "1"
-PR = "r5"
+PR = "r6"
 
-RDEPENDS = "dvbstream dvbtune xserver-xorg tda1004x-firmware mythtv lirc lirc-modules drm-module-via"
+inherit task
+
+RDEPENDS_${PN} = "dvbstream dvbtune xserver-xorg tda1004x-firmware mythtv lirc lirc-modules drm-module-via"
 
 LICENSE = "MIT"
 

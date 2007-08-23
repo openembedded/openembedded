@@ -1,10 +1,10 @@
 DESCRIPTION = "Additional web task packages for GPE Palmtop Environment"
-PR = "r5"
+PR = "r6"
 LICENSE = "MIT"
-ALLOW_EMPTY = "1"
 
+inherit task
 
-RDEPENDS = "\
+RDEPENDS_${PN} = "\
     pidgin \
     minimo"
 

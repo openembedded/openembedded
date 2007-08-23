@@ -1,10 +1,9 @@
 DESCRIPTION = "Tasks for small OPIE image"
 SECTION = "opie/base"
-PACKAGE_ARCH = "${MACHINE_ARCH}"
-ALLOW_EMPTY = "1"
 LICENSE = "MIT"
+PR = "r1"
 
-PR = "r0"
+inherit task
 
 PACKAGES = "task-opie-16mb-base \
             task-opie-16mb-applets \
@@ -32,6 +31,8 @@ RDEPENDS_task-opie-16mb-applets = "opie-aboutapplet opie-clockapplet opie-suspen
     ${@base_contains("COMBINED_FEATURES", "apm", "opie-batteryapplet", "",d)} \
     ${@base_contains("COMBINED_FEATURES", "pcmcia", "opie-pcmciaapplet", "",d)} \
     ${@base_contains("MACHINE_FEATURES", "keyboard", "opie-vtapplet opie-logoutapplet", "",d)}"
+
+PACKAGE_ARCH_task-opie-16mb-applets = "${MACHINE_ARCH}"
 
 #
 # clamshell models can benefit from the autorotate applet

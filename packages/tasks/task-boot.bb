@@ -1,10 +1,7 @@
 DESCRIPTION = "Basic task to get a device booting"
-PR = "r38"
+PR = "r39"
 
-PROVIDES = "${PACKAGES}"
-PACKAGES = 'task-boot'
-
-ALLOW_EMPTY = "1"
+inherit task
 
 # packages which content depend on MACHINE_FEATURES need to be MACHINE_ARCH
 #

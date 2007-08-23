@@ -1,9 +1,9 @@
 DESCRIPTION = "MokoGateway: Tasks for a companion server for the OpenMoko Linux Distribution"
-ALLOW_EMPTY = "1"
-PACKAGE_ARCH = "all"
 LICENSE = "MIT"
 PROVIDES = "task-mokogateway-everything"
 PR = "r4"
+
+inherit task
 
 PACKAGES = "\
 	task-mokogateway-everything \
