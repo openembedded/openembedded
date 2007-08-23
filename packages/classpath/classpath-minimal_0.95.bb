@@ -5,6 +5,7 @@ PRIORITY = "optional"
 LICENSE = "Classpath"
 PROVIDES = "classpath"
 RPROVIDES = "classpath"
+PR = "r1"
 
 S = "${WORKDIR}/classpath-${PV}"
 
