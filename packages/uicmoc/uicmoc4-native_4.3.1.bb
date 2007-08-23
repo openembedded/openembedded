@@ -1,20 +1,19 @@
 DESCRIPTION = "User-Interface-, Meta-Object-, and Resource Compiler for Qt/[X11|Mac|Embedded] version 4.x"
-DEPENDS = "libx11-native libxext-native"
 SECTION = "libs"
+HOMEPAGE = "http://www.trolltech.com"
 PRIORITY = "optional"
 LICENSE = "GPL QPL"
-PR = "r3"
+PR = "r0"
 
-SRC_URI = "ftp://ftp.trolltech.com/qt/source/qt-x11-opensource-src-${PV}.tar.gz"
-
-S = "${WORKDIR}/qt-x11-opensource-src-${PV}"
+SRC_URI = "ftp://ftp.trolltech.com/qt/source/qtopia-core-opensource-src-${PV}.tar.gz"
+S = "${WORKDIR}/qtopia-core-opensource-src-${PV}"
 
 inherit native
 
 EXTRA_OECONF = "-prefix ${STAGING_DIR}/${BUILD_SYS}/qt4 \
-		-qt-libjpeg -qt-gif -system-zlib \
-		-no-nis -no-cups -no-exceptions  \
-		-no-accessibility -no-libjpeg    \
+                -qt-libjpeg -qt-gif -system-zlib \
+                -no-nis -no-cups -no-exceptions  \
+                -no-accessibility -no-libjpeg    \
                 -no-nas-sound -no-sm             \
                 -no-xshape    -no-xinerama       \
                 -no-xcursor   -no-xrandr         \
@@ -23,24 +22,31 @@ EXTRA_OECONF = "-prefix ${STAGING_DIR}/${BUILD_SYS}/qt4 \
                 -no-libpng                       \
                 -verbose -release  -fast -static \
                 -qt3support "
+# yank default -e
 EXTRA_OEMAKE = " "
 
 do_configure() {
 	echo yes | ./configure ${EXTRA_OECONF} || die "Configuring qt failed. EXTRA_OECONF was ${EXTRA_OECONF}"
 }
 
+TOBUILD = "\
+  src/tools/moc \
+  src/corelib \
+  src/sql \
+  src/qt3support \
+  src/xml \
+  src/tools/uic \
+  src/tools/rcc \
+  src/network \
+  src/gui \
+  src/tools/uic3 \
+"
+
 do_compile() {
 	unset CC CXX CFLAGS LFLAGS CXXFLAGS CPPFLAGS
-	cd ${S}/src/tools/moc  && oe_runmake CC="${CC}" CXX="${CXX}"
-	cd ${S}/src/corelib    && oe_runmake CC="${CC}" CXX="${CXX}"
-	cd ${S}/src/sql        && oe_runmake CC="${CC}" CXX="${CXX}"
-	cd ${S}/src/qt3support && oe_runmake CC="${CC}" CXX="${CXX}"
-	cd ${S}/src/xml        && oe_runmake CC="${CC}" CXX="${CXX}"
-	cd ${S}/src/tools/uic  && oe_runmake CC="${CC}" CXX="${CXX}"
-	cd ${S}/src/tools/rcc  && oe_runmake CC="${CC}" CXX="${CXX}"
-	cd ${S}/src/network    && oe_runmake CC="${CC}" CXX="${CXX}"
-	cd ${S}/src/gui        && oe_runmake CC="${CC}" CXX="${CXX}"
-	cd ${S}/src/tools/uic3 && oe_runmake CC="${CC}" CXX="${CXX}"
+	for i in ${TOBUILD}; do
+		cd ${S}/$i && oe_runmake CC="${CC}" CXX="${CXX}"
+	done
 }
 
 do_stage() {
