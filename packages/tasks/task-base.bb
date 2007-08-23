@@ -1,5 +1,7 @@
 DESCRIPTION = "Merge machine and distro options to create a basic machine task/package"
-PR = "r41"
+PR = "r42"
+
+inherit task
 
 DEPENDS = "task-boot"
 PROVIDES = "${PACKAGES}"
@@ -35,10 +37,6 @@ PACKAGES = ' \
 	    \
             ${@base_contains("MACHINE_FEATURES","kernel26","task-base-kernel26","task-base-kernel24",d)} \
 	    '
-
-ALLOW_EMPTY = "1"
-
-PACKAGE_ARCH = "all"
 
 #
 # packages which content depend on MACHINE_FEATURES need to be MACHINE_ARCH
