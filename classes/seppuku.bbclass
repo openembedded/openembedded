@@ -335,16 +335,23 @@ python seppuku_eventhandler() {
         (bug_open, bug_number) = seppuku_find_bug_report(debug_file, opener, query, product, component, bugname)
         print >> debug_file, "Bug is open: %s and bug number: %s" % (bug_open, bug_number)
 
-        # The bug is present and still open, no need to attach an error log
+        # The bug is present and still open, attach an error log
         if bug_number and bug_open:
             print >> debug_file, "The bug is known as '%s'" % bug_number
+            if file:
+                if not seppuku_create_attachment(debug_file, poster, attach, product, component, bug_number, text, file):
+                     print >> debug_file, "Failed to attach the build log for bug #%s" % bug_number
+                else:
+                     print >> debug_file, "Created an attachment for '%s' '%s' '%s'" % (product, component, bug_number)
+            else:
+                     print >> debug_file, "Not trying to create an attachment for bug #%s" % bug_number
             return NotHandled
 
         if bug_number and not bug_open:
             if not seppuku_reopen_bug(poster, reopen, product, component, bug_number, bugname, text):
-                print >> debug_file, "Failed to reopen the bug report"
+                print >> debug_file, "Failed to reopen the bug #%s" % bug_number
             else:
-                print >> debug_file, "Reopened the bug report"
+                print >> debug_file, "Reopened the bug #%s" % bug_number
         else:	
             bug_number = seppuku_file_bug(poster, newbug, product, component, bugname, text)
             if not bug_number:
@@ -354,11 +361,11 @@ python seppuku_eventhandler() {
 
         if bug_number and file:
             if not seppuku_create_attachment(debug_file, poster, attach, product, component, bug_number, text, file):
-                print >> debug_file, "Failed to attach the build log"
+                print >> debug_file, "Failed to attach the build log for bug #%" % bug_number
             else:
                 print >> debug_file, "Created an attachment for '%s' '%s' '%s'" % (product, component, bug_number)
         else:
-            print >> debug_file, "Not trying to create an attachment"
+            print >> debug_file, "Not trying to create an attachment for bug #%" % bug_number
 
     return NotHandled
 }
