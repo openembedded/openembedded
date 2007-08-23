@@ -6,8 +6,6 @@ PROVIDES += "gsmd"
 PV = "0.1+svn${SRCDATE}"
 PR = "r20"
 
-SRC_URI_OVERRIDES_PACKAGE_ARCH = "1"
-
 SRC_URI = "svn://svn.openmoko.org/trunk/src/target;module=gsm;proto=http \
            file://gsmd \
            file://default"
@@ -31,22 +29,24 @@ do_install_append() {
 
 PACKAGES =+ "${PN}-tools gsmd gsmd-plugins \
              gsmd-plugin-machine-generic gsmd-plugin-machine-tihtc \
+             gsmd-plugin-vendor-bcm \
              gsmd-plugin-vendor-qc \
-	     gsmd-plugin-vendor-ti \
+             gsmd-plugin-vendor-ti \
              gsmd-plugin-vendor-tihtc \
-	     gsmd-plugin-vendor-bcm \
-	     "
+             "
 
 RDEPENDS_${PN} = "gsmd"
 RDEPENDS_gsmd-plugins = "gsmd-plugin-machine-generic \
                          gsmd-plugin-machine-tihtc \
+                         gsmd-plugin-vendor-bcm \
                          gsmd-plugin-vendor-qc \
                          gsmd-plugin-vendor-ti \
                          gsmd-plugin-vendor-tihtc \
-			 gsmd-plugin-vendor-bcm \
-			 "
+                         "
 
+RDEPENDS_gsmd = "initscripts"
 RRECOMMENDS_gsmd = "gsmd-plugins"
+FILES_${PN}-dbg += "${libdir}/gsmd/.debug/*"
 FILES_${PN}-tools = "${bindir}/*"
 FILES_gsmd = "${sbindir}/gsmd ${sysconfdir}"
 FILES_gsmd-plugins = ""
