@@ -28,7 +28,7 @@ SRC_URI_append_sarge-at91 = " http://maxim.org.za/AT91RM9200/2.6/2.6.21-at91.pat
                               file://2.6.21-sarge-phy.patch;patch=1 \
                               file://2.6.21-sarge-mmc.patch;patch=1"
 
-SRC_URI_append_gumstix = "\
+GUMSTIX_PATCHES = "\
        file://pxa-regs-additions.patch;patch=1 \
        file://header.patch;patch=1 \
        file://arch-config.patch;patch=1 \
@@ -72,3 +72,6 @@ SRC_URI_append_gumstix = "\
        file://gumstix-fb-logo.patch;patch=1 \
        file://pxafb-18bpp-mode.patch;patch=1 \
        "
+
+SRC_URI_append_gumstix-verdex = "${GUMSTIX_PATCHES}"
+SRC_URI_append_gumstix-connex = "${GUMSTIX_PATCHES}"
