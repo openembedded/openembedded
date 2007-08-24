@@ -2,7 +2,7 @@ DESCRIPTION = "Plugins for GStreamer"
 SECTION = "multimedia"
 PRIORITY = "optional"
 MAINTAINER = "Felix Domke <tmbinc@openembedded.org>"
-DEPENDS = "gstreamer libmikmod libmad libogg tremor libvorbis libid3tag liboil alsa-lib"
+DEPENDS = "gstreamer libmikmod libmad libogg tremor libvorbis libid3tag liboil alsa-lib neon"
 PR = "r0"
 
 inherit autotools pkgconfig
@@ -10,7 +10,7 @@ inherit autotools pkgconfig
 SRC_URI = "http://gstreamer.freedesktop.org/src/${PN}/${PN}-${PV}.tar.bz2"
 
 EXTRA_OECONF = "--disable-x --disable-aalib --disable-esd --disable-shout2 \
-		--disable-sdl"
+		--disable-sdl --with-check=no --enable-neon"
 
 acpaths = "-I ${S}/common/m4 -I ${S}/m4"
 
