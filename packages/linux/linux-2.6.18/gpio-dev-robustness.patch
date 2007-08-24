@@ -1,0 +1,204 @@
+Make the GPIO /dev interface a bit more robust
+
+Instead of allocating gpio resources on-the-fly as the files are
+written, defer it until enable is set to 1 and disallow updates to
+any of the other files while enable=1.
+
+Otherwise, the number of checks in each _store function will rapidly
+approach insanity.
+---
+ arch/avr32/mach-at32ap/pio.c |   99 ++++++++++++++++++-------------------------
+ 1 file changed, 43 insertions(+), 56 deletions(-)
+
+Index: linux-2.6.18-avr32/arch/avr32/mach-at32ap/pio.c
+===================================================================
+--- linux-2.6.18-avr32.orig/arch/avr32/mach-at32ap/pio.c	2006-11-29 17:10:54.000000000 +0100
++++ linux-2.6.18-avr32/arch/avr32/mach-at32ap/pio.c	2006-11-29 18:11:38.000000000 +0100
+@@ -124,13 +124,6 @@ static unsigned int pio_id(struct pio_de
+ 	return pio - pio_dev;
+ }
+ 
+-static void __enable_gpio(struct pio_device *pio, u32 mask)
+-{
+-	pio_writel(pio, PUER, mask);
+-	pio_writel(pio, ODR, mask);
+-	pio_writel(pio, PER, mask);
+-}
+-
+ static void __disable_gpio(struct pio_device *pio, u32 mask)
+ {
+ 	pio_writel(pio, PUER, mask);
+@@ -251,11 +244,12 @@ static dev_t gpio_devt;
+ struct gpio_item {
+ 	spinlock_t lock;
+ 
+-	/* Too bad we don't have committable items... */
+-	int enabled;
+-
+ 	struct pio_device *pio;
++
++	int enabled;
++	int pio_id;
+ 	u32 pin_mask;
++	u32 oe_mask;
+ 
+ 	int id;
+ 	struct class_device *gpio_dev;
+@@ -339,10 +333,7 @@ static struct gpio_item *to_gpio_item(st
+ 
+ static ssize_t gpio_show_gpio_id(struct gpio_item *gpio, char *page)
+ {
+-	if (gpio->pio)
+-		return sprintf(page, "%u\n", pio_id(gpio->pio));
+-	else
+-		return sprintf(page, "-1\n");
++	return sprintf(page, "%d\n", gpio->pio_id);
+ }
+ 
+ static ssize_t gpio_store_gpio_id(struct gpio_item *gpio,
+@@ -361,7 +352,7 @@ static ssize_t gpio_store_gpio_id(struct
+ 	if (!gpio->enabled) {
+ 		ret = -ENXIO;
+ 		if ((id < MAX_NR_PIO_DEVICES) && pio_dev[id].regs) {
+-			gpio->pio = &pio_dev[id];
++			gpio->pio_id = id;
+ 			ret = count;
+ 		}
+ 	}
+@@ -378,9 +369,7 @@ static ssize_t gpio_show_pin_mask(struct
+ static ssize_t gpio_store_pin_mask(struct gpio_item *gpio,
+ 				   const char *page, size_t count)
+ {
+-	struct pio_device *pio;
+-	u32 old_mask, new_mask;
+-	u32 old, new;
++	u32 new_mask;
+ 	char *p = (char *)page;
+ 	ssize_t ret = -EINVAL;
+ 
+@@ -388,47 +377,21 @@ static ssize_t gpio_store_pin_mask(struc
+ 	if (!p || (*p && (*p != '\n')))
+ 		return -EINVAL;
+ 
+-	/*
+-	 * Must have a PIO before we can start allocating pins, but we
+-	 * must not be live.
+-	 */
++	/* Can't update the pin mask while live. */
+ 	spin_lock(&gpio->lock);
+-	pio = gpio->pio;
+-	if (!pio || gpio->enabled)
+-		goto out;
+-
+-	ret = -EBUSY;
+-	old_mask = gpio->pin_mask;
+-	do {
+-		old = pio->pinmux_mask;
+-		if ((old & ~old_mask) & new_mask)
+-			goto out;
+-
+-		new = (old & ~old_mask) | new_mask;
+-	} while (cmpxchg(&pio->pinmux_mask, old, new) != old);
+-
+-	gpio->pin_mask = new_mask;
+-	__disable_gpio(pio, old_mask);
+-	__enable_gpio(pio, new_mask);
+-	ret = count;
+-
+-out:
++	if (!gpio->enabled) {
++		gpio->oe_mask &= new_mask;
++		gpio->pin_mask = new_mask;
++		ret = count;
++	}
+ 	spin_unlock(&gpio->lock);
++
+ 	return ret;
+ }
+ 
+ static ssize_t gpio_show_oe_mask(struct gpio_item *gpio, char *page)
+ {
+-	u32 mask = 0;
+-
+-	spin_lock(&gpio->lock);
+-	if (gpio->pio) {
+-		mask = pio_readl(gpio->pio, OSR);
+-		mask &= gpio->pin_mask;
+-	}
+-	spin_unlock(&gpio->lock);
+-
+-	return sprintf(page, "0x%08x\n", mask);
++	return sprintf(page, "0x%08x\n", gpio->oe_mask);
+ }
+ 
+ static ssize_t gpio_store_oe_mask(struct gpio_item *gpio,
+@@ -443,10 +406,8 @@ static ssize_t gpio_store_oe_mask(struct
+ 		return -EINVAL;
+ 
+ 	spin_lock(&gpio->lock);
+-	if (gpio->pio) {
+-		mask &= gpio->pin_mask;
+-		pio_writel(gpio->pio, ODR, mask ^ gpio->pin_mask);
+-		pio_writel(gpio->pio, OER, mask);
++	if (!gpio->enabled) {
++		gpio->oe_mask = mask & gpio->pin_mask;
+ 		ret = count;
+ 	}
+ 	spin_unlock(&gpio->lock);
+@@ -462,6 +423,8 @@ static ssize_t gpio_show_enabled(struct 
+ static ssize_t gpio_store_enabled(struct gpio_item *gpio,
+ 				  const char *page, size_t count)
+ {
++	struct pio_device *pio;
++	u32 old, new;
+ 	char *p = (char *)page;
+ 	int enabled;
+ 	int ret;
+@@ -482,6 +445,12 @@ static ssize_t gpio_store_enabled(struct
+ 	if (!enabled) {
+ 		class_device_unregister(gpio->gpio_dev);
+ 		cdev_del(&gpio->char_dev);
++		__disable_gpio(gpio->pio, gpio->pin_mask);
++		pio_dealloc_mask(gpio->pio, gpio->pin_mask);
++		gpio->pio = NULL;
++	} else {
++		if (gpio->pio_id < 0 || !gpio->pin_mask)
++			return -ENODEV;
+ 	}
+ 
+ 	/* Disallow any updates to gpio_id or pin_mask */
+@@ -492,6 +461,20 @@ static ssize_t gpio_store_enabled(struct
+ 	if (!enabled)
+ 		return count;
+ 
++	/* Now, try to allocate the pins */
++	ret = -EBUSY;
++	pio = gpio->pio = &pio_dev[gpio->pio_id];
++	do {
++		old = pio->pinmux_mask;
++		if (old & gpio->pin_mask)
++			goto err_alloc_pins;
++
++		new = old | gpio->pin_mask;
++	} while (cmpxchg(&pio->pinmux_mask, old, new) != old);
++
++	pio_writel(pio, OER, gpio->oe_mask);
++	pio_writel(pio, PER, gpio->pin_mask);
++
+ 	cdev_init(&gpio->char_dev, &gpio_dev_fops);
+ 	gpio->char_dev.owner = THIS_MODULE;
+ 	ret = cdev_add(&gpio->char_dev, MKDEV(MAJOR(gpio_devt), gpio->id), 1);
+@@ -516,9 +499,13 @@ static ssize_t gpio_store_enabled(struct
+ err_class_dev:
+ 	cdev_del(&gpio->char_dev);
+ err_cdev_add:
++	__disable_gpio(pio, gpio->pin_mask);
++	pio_dealloc_mask(pio, gpio->pin_mask);
++err_alloc_pins:
+ 	spin_lock(&gpio->lock);
+ 	gpio->enabled = 0;
+ 	spin_unlock(&gpio->lock);
++	gpio->pio = NULL;
+ 
+ 	return ret;
+ }

@@ -1,0 +1,34 @@
+From 3bd0f6943520e459659d10f3282285e43d3990f1 Mon Sep 17 00:00:00 2001
+From: Hans-Christian Egtvedt <hcegtvedt@atmel.com>
+Date: Wed, 6 Dec 2006 20:36:19 -0800
+Subject: [PATCH] [PATCH] spi: set kset of master class dev explicitly
+
+<quote Imre Deak from Thu, 12 Jan 2006 21:18:54 +0200>
+  In order for spi_busnum_to_master to work spi master devices must be linked
+  into the spi_master_class.subsys.kset list.  At the moment the default
+  class_obj_subsys.kset is used and we can't enumerate the master devices.
+</quote>
+
+Signed-off-by: Hans-Christian Egtvedt <hcegtvedt@atmel.com>
+Cc: David Brownell <david-b@pacbell.net>
+Signed-off-by: Andrew Morton <akpm@osdl.org>
+Signed-off-by: Linus Torvalds <torvalds@osdl.org>
+---
+ drivers/spi/spi.c |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+diff --git a/drivers/spi/spi.c b/drivers/spi/spi.c
+index 7d215ea..270e621 100644
+--- a/drivers/spi/spi.c
++++ b/drivers/spi/spi.c
+@@ -366,6 +366,7 @@ spi_alloc_master(struct device *dev, unsigned size)
+ 
+ 	class_device_initialize(&master->cdev);
+ 	master->cdev.class = &spi_master_class;
++	kobj_set_kset_s(&master->cdev, spi_master_class.subsys);
+ 	master->cdev.dev = get_device(dev);
+ 	spi_master_set_devdata(master, &master[1]);
+ 
+-- 
+1.4.4.1
+

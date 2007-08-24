@@ -1,5 +1,5 @@
 DEFAULT_PREFERENCE = "1"
-PR = "r9"
+PR = "r10"
 
 require uclibc.inc
 
@@ -47,6 +47,30 @@ SRC_URI += " ${THUMB_INTERWORK_RESOLVE_PATCH}"
 
 
 DEFAULT_PREFERENCE_avr32 = "6000"
-SRC_URI_append_avr32 = " http://avr32linux.org/twiki/pub/Main/MicroClibcPatches/uClibc-0.9.28-avr1.patch.bz2;patch=1 "
-
+SRC_URI_append_avr32 = " \
+                        file://uclibc-makefile.patch;patch=1 \
+                        file://remove-bogus-version-hack-and-just-use-asm-generic-if-it-exists.patch;patch=1 \
+                        file://let-optimized-stringops-override-default-ones.patch;patch=1 \
+                        file://fix-getrusage-argument-type.patch;patch=1 \
+                        file://fix-__libc_fcntl64-varargs-prototype.patch;patch=1 \
+                        file://fix-broken-__libc_open-declaration.patch;patch=1 \
+                        file://avr32-arch-2.patch;patch=1 \
+                        file://avr32-linkrelax-option.patch;patch=1 \
+                        file://avr32-string-ops.patch;patch=1 \
+                        file://no-create_module-on-avr32.patch;patch=1 \
+                        file://ldso-always-inline-_dl_memcpy.patch;patch=1 \
+                        file://ldso-define-MAP_FAILED.patch;patch=1 \
+                        file://ldso-always-inline-syscalls.patch;patch=1 \
+                        file://ldso-avr32-2.patch;patch=1 \
+                        file://ldso-avr32-needs-CONSTANT_STRING_GOT_FIXUP.patch;patch=1 \
+                        file://ldso-avr32-startup-hack.patch;patch=1 \
+                        file://ldd-avr32-support.patch;patch=1 \
+                        file://libpthread-avr32.patch;patch=1 \
+                        file://sync-fcntl-h-with-linux-kernel.patch;patch=1 \
+                       "
+ 
+ 
+#file://uClibc-0.9.28-avr32-20060621.patch;patch=1 \
+#file://uClibc-0.9.28-avr32-20061019.patch;patch=1 \
+#file://uclibc-avr32-no-msoft-float.patch;patch=1 \
 

@@ -1,0 +1,33 @@
+Index: linux-2.6.18-avr32/drivers/mmc/mmc.c
+===================================================================
+--- linux-2.6.18-avr32.orig/drivers/mmc/mmc.c	2007-01-04 09:54:56.000000000 +0100
++++ linux-2.6.18-avr32/drivers/mmc/mmc.c	2007-01-04 09:58:08.000000000 +0100
+@@ -961,6 +961,7 @@ static void mmc_read_scrs(struct mmc_hos
+ 	struct mmc_command cmd;
+ 	struct mmc_data data;
+ 	struct scatterlist sg;
++	u32 *buf;
+ 
+ 	list_for_each_entry(card, &host->cards, node) {
+ 		if (card->state & (MMC_STATE_DEAD|MMC_STATE_PRESENT))
+@@ -1008,7 +1009,8 @@ static void mmc_read_scrs(struct mmc_hos
+ 		mrq.cmd = &cmd;
+ 		mrq.data = &data;
+ 
+-		sg_init_one(&sg, (u8*)card->raw_scr, 8);
++		buf = kmalloc(8, GFP_KERNEL);
++		sg_init_one(&sg, (u8*)buf, 8);
+ 
+ 		mmc_wait_for_req(host, &mrq);
+ 
+@@ -1017,8 +1019,8 @@ static void mmc_read_scrs(struct mmc_hos
+ 			continue;
+ 		}
+ 
+-		card->raw_scr[0] = ntohl(card->raw_scr[0]);
+-		card->raw_scr[1] = ntohl(card->raw_scr[1]);
++		card->raw_scr[0] = ntohl(buf[0]);
++		card->raw_scr[1] = ntohl(buf[1]);
+ 
+ 		mmc_decode_scr(card);
+ 	}

@@ -1,0 +1,14 @@
+Index: linux-2.6.18/arch/avr32/boards/atstk1000/setup.c
+===================================================================
+--- linux-2.6.18.orig/arch/avr32/boards/atstk1000/setup.c	2007-01-11 11:30:42.000000000 +0100
++++ linux-2.6.18/arch/avr32/boards/atstk1000/setup.c	2007-01-11 13:27:00.000000000 +0100
+@@ -37,7 +37,8 @@
+ 
+ 		for_each_online_pgdat(pgdat) {
+ 			if (fbmem_start >= pgdat->bdata->node_boot_start
+-			    && fbmem_start <= pgdat->bdata->node_low_pfn)
++			    && fbmem_start <= (pgdat->bdata->node_low_pfn
++				    * PAGE_SIZE))
+ 				reserve_bootmem_node(pgdat, fbmem_start,
+ 						     fbmem_size);
+ 		}
