@@ -8,7 +8,6 @@ PR = "r0"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/gnuplot/${PN}-${PV}.tar.gz \
 	   file://subdirs.patch;patch=1 \
-           file://matrix.patch;patch=1 \
 	   file://gnuplot.desktop \
 	   file://gnuplot.png"
 
