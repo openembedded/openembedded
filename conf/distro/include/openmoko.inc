@@ -119,7 +119,7 @@ PREFERRED_VERSION_dates = "0.1"
 # Development
 #
 PREFERRED_PROVIDER_qemu-native = "qemu-native"
-PREFERRED_VERSION_qemu-native = "0.8.2+cvs${SRCDATE}"
+PREFERRED_VERSION_qemu-native = "0.9.0+cvs${SRCDATE}"
 
 #
 # Opie
