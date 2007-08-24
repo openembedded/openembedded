@@ -31,6 +31,11 @@ FILES_${PN}-utils = "${bindir}/scanpci ${bindir}/pcitweak ${bindir}/ioport ${bin
 FILES_${PN} = "${bindir} ${libdir}/X11/Options ${libdir}/X11/Cards ${libdir}/X11/getconfig ${libdir}/X11/etc ${libdir}/xserver/SecurityPolicy ${libdir}/modules ${libdir}/xorg/modules /etc/X11 "
 FILES_${PN}-doc += "${libdir}/X11/doc /usr/share/X11/xkb/compiled/README.compiled"
 
+FILES_${PN}-dbg += "${libdir}//xorg/modules/.debug \
+                    ${libdir}/xorg/modules/*/.debug \
+		    ${libdir}//xorg/modules/*/*/.debug \
+		    "
+
 do_stage() {
 	autotools_stage_all
 }

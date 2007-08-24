@@ -1,8 +1,7 @@
 
-require midpath_${PV}.bb
+require midpath.inc
 
-DEPENDS += "qt-mt"
-RDEPENDS = "qt-mt"
+DEPENDS += " qt-mt"
 RCONFILCTS = "midpath-qte"
 
 inherit qt3x11
@@ -26,15 +25,14 @@ mkdir -p ${S}/dist
 # Build the QT native part
 cd ${S}/native/qt
 make || exit 1
-cp *.so ${S}/dist
 
 }
 
 do_install() {
 	install -d ${D}${libdir}
-	install -m 0644 dist/libmidpathqt.so ${D}${libdir}
-	install -d ${D}${libdir}/java/resources-embedded/com/sun/midp/configuration
-	install -m 0644 resources-embedded/com/sun/midp/configuration/configuration.cfg ${D}${libdir}/java/resources-embedded/com/sun/midp/configuration/
+	install -m 0644 ${S}/native/qt/libmidpathqt.so ${D}${libdir}
+	install -d ${D}${datadir}/java/resources-embedded/com/sun/midp/configuration
+	install -m 0644 resources-embedded/com/sun/midp/configuration/configuration.cfg ${D}${datadir}/java/resources-embedded/com/sun/midp/configuration/
 }
 
 do_stage() {
@@ -44,5 +42,7 @@ do_stage() {
 PACKAGES = "${PN}"
 
 FILES_${PN}  = "${libdir}/libmidpathqt.so \
-		${libdir}/java/resources-embedded/com/sun/midp/configuration/configuration.cfg \
+		${datadir}/java/resources-embedded/com/sun/midp/configuration/configuration.cfg \
 	       "
+
+CONFFILES_${PN} = "${datadir}/java/resources-embedded/com/sun/midp/configuration/configuration.cfg"

@@ -2,6 +2,7 @@
 PREFERRED_PROVIDER_virtual/libiconv ?= "eglibc"
 PREFERRED_PROVIDER_virtual/libintl ?= "eglibc"
 PREFERRED_PROVIDER_virtual/libc ?= "eglibc"
+PREFERRED_PROVIDER_virtual/${TARGET_PREFIX}libc-initial ?= "eglibc-initial"
 
 PREFERRED_PROVIDER_virtual/${TARGET_PREFIX}libc-for-gcc               = "eglibc-intermediate"
 PREFERRED_PROVIDER_virtual/arm-angstrom-linux-gnueabi-libc-for-gcc    = "eglibc-intermediate"
