@@ -1,7 +1,7 @@
 #
 # Automatically generated make config: don't edit
 # Linux kernel version: 2.6.22
-# Tue Aug  7 15:04:11 2007
+# Fri Aug 24 14:54:56 2007
 #
 CONFIG_X86_32=y
 CONFIG_GENERIC_TIME=y
@@ -197,11 +197,6 @@ CONFIG_VM86=y
 CONFIG_NOHIGHMEM=y
 # CONFIG_HIGHMEM4G is not set
 # CONFIG_HIGHMEM64G is not set
-# CONFIG_VMSPLIT_3G is not set
-# CONFIG_VMSPLIT_3G_OPT is not set
-# CONFIG_VMSPLIT_2G is not set
-# CONFIG_VMSPLIT_2G_OPT is not set
-# CONFIG_VMSPLIT_1G is not set
 CONFIG_PAGE_OFFSET=0xC0000000
 CONFIG_ARCH_FLATMEM_ENABLE=y
 CONFIG_ARCH_SPARSEMEM_ENABLE=y
@@ -615,14 +610,14 @@ CONFIG_ATA_ACPI=y
 # CONFIG_SATA_VITESSE is not set
 # CONFIG_SATA_INIC162X is not set
 # CONFIG_PATA_ALI is not set
-# CONFIG_PATA_AMD is not set
+CONFIG_PATA_AMD=y
 # CONFIG_PATA_ARTOP is not set
 # CONFIG_PATA_ATIIXP is not set
 # CONFIG_PATA_CMD640_PCI is not set
 # CONFIG_PATA_CMD64X is not set
 # CONFIG_PATA_CS5520 is not set
 # CONFIG_PATA_CS5530 is not set
-CONFIG_PATA_CS5535=y
+# CONFIG_PATA_CS5535 is not set
 # CONFIG_PATA_CYPRESS is not set
 # CONFIG_PATA_EFAR is not set
 # CONFIG_ATA_GENERIC is not set
