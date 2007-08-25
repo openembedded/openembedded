@@ -17,3 +17,7 @@ EXTRA_OECONF = "\
 
 CPPFLAGS += "-I${S}/include"
 
+do_stage() {
+	autotools_stage_all
+}
+
