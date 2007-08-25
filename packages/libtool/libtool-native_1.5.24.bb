@@ -1,5 +1,6 @@
 SECTION = "devel"
 require libtool_${PV}.bb
+DEFAULT_PREFERENCE = "-1"
 
 PR = "r0"
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/libtool-${PV}"

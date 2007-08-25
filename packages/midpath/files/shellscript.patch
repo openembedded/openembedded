@@ -1,0 +1,27 @@
+Index: midpath-0.1/bin/midpath-test-cacao-cldc.sh
+===================================================================
+--- midpath-0.1.orig/bin/midpath-test-cacao-cldc.sh	2007-07-03 22:09:33.000000000 +0200
++++ midpath-0.1/bin/midpath-test-cacao-cldc.sh	2007-08-24 22:31:32.000000000 +0200
+@@ -3,19 +3,13 @@
+ # Adapt the next line to your environment
+ JAVA_CMD=cacao
+ 
+-if [ "$MIDPATH_HOME" = "" ]; then
+-  MIDPATH_HOME=$(pwd)/..
+-fi
++MIDPATH_HOME=
+ 
+ # Set the classpath
+-BCP=$MIDPATH_HOME/dist/cldc1.1.jar:$MIDPATH_HOME/dist/midpath.jar:$MIDPATH_HOME/resources-embedded:$MIDPATH_HOME/dist/sdljava-cldc.jar:$MIDPATH_HOME/dist/escher-x11-cldc.jar:$MIDPATH_HOME/dist/kxml2-2.3.0.jar
++BCP=$MIDPATH_HOME/cldc1.1.jar:$MIDPATH_HOME/midpath.jar:$MIDPATH_HOME/resources-embedded:$MIDPATH_HOME/sdljava-cldc.jar:$MIDPATH_HOME/escher-x11-cldc.jar:$MIDPATH_HOME/kxml2-2.3.0.jar
+ # Add the  MIDlet jar to the classpath  (must be loaded by the main 
+ # classloader yet)
+-BCP=$BCP:$MIDPATH_HOME/dist/midpath-tests.jar
+-
+-# Path of the native libraries
+-JLP=$MIDPATH_HOME/dist
+-export LD_LIBRARY_PATH=$JLP 
++BCP=$BCP:$MIDPATH_HOME/midpath-tests.jar
+ 
+ CLASS=org.thenesis.midpath.main.StandardMIDletLauncher
+ # The classname of the MIDlet (we have to set it manually yet)

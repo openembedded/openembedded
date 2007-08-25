@@ -3,12 +3,12 @@
 . /etc/init.d/functions
 
 case `cpuinfo_id` in
-	"GTA01", "GTA02")
+	"GTA01"|"GTA02")
 		GSMD_OPTS="-s 115200 -F"
 		GSM_POW="/sys/bus/platform/devices/gta01-pm-gsm.0/power_on"
 		GSM_DEV="/dev/ttySAC0"
 		;;
-	"HTC Apache", "HTC Blueangel")
+	"HTC Apache"|"HTC Blueangel")
 		GSMD_OPTS="-s 115200 -F"
 		GSM_DEV="/dev/ttyS0"
 		;;

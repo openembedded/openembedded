@@ -4,7 +4,7 @@ LICENSE = "GPL LGPL"
 SECTION = "libs/gsm"
 PROVIDES += "gsmd"
 PV = "0.1+svn${SRCDATE}"
-PR = "r20"
+PR = "r21"
 
 SRC_URI = "svn://svn.openmoko.org/trunk/src/target;module=gsm;proto=http \
            file://gsmd \

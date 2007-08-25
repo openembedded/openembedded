@@ -2,6 +2,8 @@ DESCRIPTION = "Mono Programming Language"
 SECTION = "devel/mono"
 LICENSE = "GPL LGPL X11"
 
+PV = "1.2.4+1.2.5pre5"
+
 # the md5 sum check is required because Novell does not version their pre release versions of mono
 # if the md5sum check fails, contact cbrake on #oe
 # checksums are stored in conf/checksums.ini

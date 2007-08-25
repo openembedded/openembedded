@@ -2,7 +2,8 @@ DESCRIPTION = "GRUB is the GRand Unified Bootloader"
 HOMEPAGE = "http://www.gnu.org/software/grub"
 SECTION = "bootloaders"
 PRIORITY = "optional"
-PR = "r1"
+RDEPENDS = "diffutils"
+PR = "r2"
 
 SRC_URI = "ftp://alpha.gnu.org/gnu/grub/grub-${PV}.tar.gz"
 

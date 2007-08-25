@@ -1,7 +1,7 @@
 LICENSE = "LGPL"
 DESCRIPTION = "Nokia hildon mime library"
 
-DEPENDS = "libosso"
+DEPENDS = "libosso gnome-vfs"
 
 PR = "r0"
 
