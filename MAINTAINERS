@@ -155,9 +155,10 @@ Recipes:    linux-handhelds-2.6, opie-*
 Person:     Philip Balister
 Mail:       Crofton@balister.org
 Website:    http://www.balister.org
-Machines:   omap5912osk
-Distros:    openomap
-Recipes:    xerces-c, omniorb
+Machines:   omap5912osk, gumstix-connex, gumstix-verdex, Efika, davinci-dvevm
+Interests:  Software Defined Radio, 
+Interests:  wireless networking (not necessarily wireless NIC's)
+Recipes:    omniorb
 
 Person:     Philippe De Swert
 Mail:       philippedeswert@scarlet.be
