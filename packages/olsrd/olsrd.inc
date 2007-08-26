@@ -4,14 +4,10 @@ DESCRIPTION_olsrd-libs = "OLSR mesh routing daemon -  optional libraries"
 SECTION = "console/network"
 PRIORITY = "optional"
 LICENSE = "BSD"
-RDEPENDS_olsrd = "olsrd-libs"
 
 SRC_URI="http://www.olsr.org/releases/0.4/olsrd-${PV}.tar.bz2 \
 	file://init \
 	file://olsrd.conf"
-
-PACKAGES =+ "olsrd-libs"
-FILES_olsrd-libs = "${libdir}"
 
 S = "${WORKDIR}/olsrd-${PV}"
 
@@ -27,14 +23,20 @@ do_configure() {
 }
 
 do_compile() {
-        oe_runmake
+        oe_runmake 
 }
 
 do_install () {
-	oe_runmake OS=linux INSTALL_PREFIX=${D} install install_libs
+	oe_runmake OS=linux INSTALL_PREFIX=${D} STRIP=echo install install_libs
 	install -d ${D}/${sysconfdir}/init.d
 	install -m 0755 ${WORKDIR}/init ${D}/${sysconfdir}/init.d/olsrd
 	install -m 644 ${WORKDIR}/olsrd.conf ${D}/${sysconfdir}
 }
+
+
+PACKAGES =+ "olsrd-libs"
+FILES_olsrd-libs = "${libdir}/*.so.*"
+
+RDEPENDS_${PN} = "olsrd-libs"
 
 CONFFILES_${PN} = "${sysconfdir}/olsrd.conf"
