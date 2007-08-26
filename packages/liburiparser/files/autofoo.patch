@@ -1,0 +1,21 @@
+Index: uriparser-0.5.1/configure.in
+===================================================================
+--- uriparser-0.5.1.orig/configure.in	2007-08-25 15:32:52.000000000 +0000
++++ uriparser-0.5.1/configure.in	2007-08-25 15:34:56.000000000 +0000
+@@ -2,7 +2,7 @@
+ AC_INIT([uriparser], [0.5.1])
+ AM_INIT_AUTOMAKE([1.9 foreign])
+ AM_CONFIG_HEADER(test/CppTest/config.h)
+-
++AM_PROG_CC_C_O
+ 
+ AC_PROG_CC
+ AC_PROG_CXX
+@@ -10,7 +10,6 @@
+ AC_HEADER_STDC
+ 
+ 
+-
+ # URI_SIZEDOWN
+ AC_ARG_ENABLE(sizedown, [
+ Extra options:
