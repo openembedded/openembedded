@@ -158,7 +158,7 @@ Website:    http://www.balister.org
 Machines:   omap5912osk, gumstix-connex, gumstix-verdex, Efika, davinci-dvevm
 Interests:  Software Defined Radio, 
 Interests:  wireless networking (not necessarily wireless NIC's)
-Recipes:    omniorb
+Recipes:    omniorb, gnuradio
 
 Person:     Philippe De Swert
 Mail:       philippedeswert@scarlet.be
