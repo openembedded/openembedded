@@ -218,7 +218,7 @@ Recipes:    vsftpd, zd1211
 Person:     Henning Heinold 'woglinde'
 Mail:       heinold@inf.fu-berlin.de
 Machines:   simpad
-Recipes:    classpath-minimal, midpath, cacao-clcd
+Recipes:    classpath-minimal, midpath, cacao-cldc
 
 Person:     Philipp Zabel
 Mail:       philipp.zabel@gmail.com
