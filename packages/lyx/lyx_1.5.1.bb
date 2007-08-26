@@ -5,17 +5,16 @@ HOMEPAGE = "http://www.lyx.org"
 DEPENDS = "boost qt4-x11-free"
 RRECOMMENDS = "tetex"
 RDEPENDS = "python-shell python-textutils"
-PR = "r2"
+PR = "r0"
 
 DEFAULT_PREFERENCE = "-1"
 
-# we're checking out from svn because the tarball doesn't contain the necessary stuff to run autoreconf
-SRC_URI = "svn://svn.lyx.org/lyx/lyx-devel/tags;module=lyx_1_5_0rc1;rev=18613"
-S = "${WORKDIR}/lyx_1_5_0rc1"
+SRC_URI = "http://lyx.cybermirror.org/stable/lyx-${PV}.tar.bz2"
 
 inherit autotools qt4x11
 
 EXTRA_OECONF = " --with-qt4-dir=${QTDIR} -enable-pch"
+EXTRA_QMAKEVARS_POST = "DEFINES+=_LIBC"
 PARALLEL_MAKE = ""
 
 do_configure_prepend() {
@@ -25,3 +24,4 @@ do_configure_prepend() {
 
 export UIC="${OE_QMAKE_UIC}"
 export MOC="${OE_QMAKE_MOC}"
+export OE_QMAKE_LIBS_X11="-lX11 -lXext"
