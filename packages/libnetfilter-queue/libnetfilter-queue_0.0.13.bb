@@ -10,7 +10,7 @@ PR = "r0"
 
 # This package requires libtool-cross-1.5.24 which is not the default libtool
 # used by OE (25AUG2007)
-DEPENDS = "libnfnetlink"
+DEPENDS = "libnfnetlink libtool-cross (>=1.5.24)"
 
 SRC_URI = "http://www.netfilter.org/projects/libnetfilter_queue/files/libnetfilter_queue-${PV}.tar.bz2"
 
