@@ -40,8 +40,6 @@ FILES_${PN} += "${datadir}/FBReader ${datadir}/zlibrary"
 CFLAGS_append = " RESOLUTION=${READER_RESOLUTION} INSTALLDIR=/usr"
 EXTRA_OEMAKE = "CC='${CXX}' LD='${CXX}' OE_CFLAGS='${CXXFLAGS}' INCPATH='${STAGING_INCDIR}' LIBPATH='${STAGING_LIBDIR}'"
 
-LDFLAGS_append = " -liconv"
-
 inherit pkgconfig
 
 do_configure() {
