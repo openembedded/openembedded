@@ -1,6 +1,6 @@
-diff -Naur enigma/include/lib/dvb/frontend.h enigma_patched/include/lib/dvb/frontend.h
---- enigma/include/lib/dvb/frontend.h	2006-08-29 00:17:58.000000000 +0200
-+++ enigma_patched/include/lib/dvb/frontend.h	2006-08-29 00:27:09.000000000 +0200
+diff -Naur enigma_org/include/lib/dvb/frontend.h enigma/include/lib/dvb/frontend.h
+--- enigma_org/include/lib/dvb/frontend.h	2007-08-06 22:54:26.000000000 +0200
++++ enigma/include/lib/dvb/frontend.h	2007-08-06 22:47:44.000000000 +0200
 @@ -74,41 +74,43 @@
  class eFrontend: public Object
  {
@@ -63,10 +63,10 @@ diff -Naur enigma/include/lib/dvb/frontend.h enigma_patched/include/lib/dvb/fron
  ///////////////////
  #if HAVE_DVB_API_VERSION < 3
  	FrontendParameters front;
-diff -Naur enigma/lib/dvb/frontend.cpp enigma_patched/lib/dvb/frontend.cpp
---- enigma/lib/dvb/frontend.cpp	2006-08-28 09:38:41.000000000 +0200
-+++ enigma_patched/lib/dvb/frontend.cpp	2006-08-29 00:27:09.000000000 +0200
-@@ -28,6 +28,10 @@
+diff -Naur enigma_org/lib/dvb/frontend.cpp enigma/lib/dvb/frontend.cpp
+--- enigma_org/lib/dvb/frontend.cpp	2007-08-06 22:54:26.000000000 +0200
++++ enigma/lib/dvb/frontend.cpp	2007-08-06 22:55:48.000000000 +0200
+@@ -29,6 +29,10 @@
  
  eFrontend* eFrontend::frontend;
  
@@ -77,7 +77,7 @@ diff -Naur enigma/lib/dvb/frontend.cpp enigma_patched/lib/dvb/frontend.cpp
  eFrontend::eFrontend(int type, const char *demod, const char *sec)
  :type(type), 
  	curRotorPos(10000), transponder(0), rotorTimer1(eApp), 
-@@ -36,7 +40,8 @@
+@@ -37,7 +41,8 @@
  	timeout(eApp), 
  #endif
  	checkRotorLockTimer(eApp), checkLockTimer(eApp), 
@@ -87,31 +87,8 @@ diff -Naur enigma/lib/dvb/frontend.cpp enigma_patched/lib/dvb/frontend.cpp
  {
  	CONNECT(rotorTimer1.timeout, eFrontend::RotorStartLoop );
  	CONNECT(rotorTimer2.timeout, eFrontend::RotorRunningLoop );
-@@ -831,7 +836,10 @@
- 			seq.voltage=SEC_VOLTAGE_OFF;
- 			break;
+@@ -112,6 +117,40 @@
  	}
--	return ::ioctl(secfd, SEC_SEND_SEQUENCE, &seq);
-+	int ret = ::ioctl(secfd, SEC_SEND_SEQUENCE, &seq);
-+	if ( ret < 0 )
-+		eDebug("SEC_SEND_SEQUENCE failed(%m)");
-+	return ret;
- }
- #else
- int eFrontend::SendSequence( const eSecCmdSequence &seq )
-@@ -1032,10 +1040,7 @@
- 	// send DiSEqC Sequence ( normal diseqc switches )
- 	seq.continuousTone = eSecCmdSequence::TONE_OFF;
- 	if ( SendSequence(seq) < 0 )
--	{
--		eDebug("SendSequence failed (%m)");
- 		return -1;
--	}
- 	else if ( lnb->getDiSEqC().SeqRepeat )   // Sequence Repeat selected ?
- 	{
- 		usleep( 100000 ); // between seq repeats we wait 75ms
-@@ -1064,6 +1069,37 @@
- 	return 0;
  }
  
 +#define STATIC 0
@@ -119,7 +96,10 @@ diff -Naur enigma/lib/dvb/frontend.cpp enigma_patched/lib/dvb/frontend.cpp
 +void setCurrentLimitingMode(int mode)
 +{
 +#if HAVE_DVB_API_VERSION < 3
-+	if ( eSystemInfo::getInstance()->getHwType() == eSystemInfo::DM7020 )
++#warning FIXME setCurrentLimitingMode just for frontends with LNBP21
++	if ( eSystemInfo::getInstance()->getHwType() == eSystemInfo::DM7020 
++		|| eSystemInfo::getInstance()->getHwType() == eSystemInfo::DM500PLUS
++		|| eSystemInfo::getInstance()->getHwType() == eSystemInfo::DM600PVR )
 +	{
 +		int fd=::open("/dev/i2c/0", O_RDWR);
 +		if ( fd >= 0 )
@@ -145,10 +125,49 @@ diff -Naur enigma/lib/dvb/frontend.cpp enigma_patched/lib/dvb/frontend.cpp
 +#endif
 +}
 +
- int eFrontend::RotorUseInputPower(eSecCmdSequence& seq, eLNB *lnb )
+ void eFrontend::checkRotorLock()
  {
- #if HAVE_DVB_API_VERSION < 3
-@@ -1071,7 +1107,6 @@
+ 	if (!transponder)
+@@ -130,6 +166,7 @@
+ 				{
+ 					eDebug("[FE] rotor has stopped..");
+ 					curRotorPos=newPos;
++					setCurrentLimitingMode(DYNAMIC);
+ 					/*emit*/ tunedIn(transponder, 0);
+ //					eDebug("!!!!!!!!!!!!!!!! TUNED IN OK 1 !!!!!!!!!!!!!!!!");
+ 					if ( !eDVB::getInstance()->getScanAPI() )
+@@ -832,7 +869,10 @@
+ 			seq.voltage=SEC_VOLTAGE_OFF;
+ 			break;
+ 	}
+-	return ::ioctl(secfd, SEC_SEND_SEQUENCE, &seq);
++	int ret = ::ioctl(secfd, SEC_SEND_SEQUENCE, &seq);
++	if ( ret < 0 )
++		eDebug("SEC_SEND_SEQUENCE failed(%m)");
++	return ret;
+ }
+ #else
+ int eFrontend::SendSequence( const eSecCmdSequence &seq )
+@@ -1033,10 +1073,7 @@
+ 	// send DiSEqC Sequence ( normal diseqc switches )
+ 	seq.continuousTone = eSecCmdSequence::TONE_OFF;
+ 	if ( SendSequence(seq) < 0 )
+-	{
+-		eDebug("SendSequence failed (%m)");
+ 		return -1;
+-	}
+ 	else if ( lnb->getDiSEqC().SeqRepeat )   // Sequence Repeat selected ?
+ 	{
+ 		usleep( 100000 ); // between seq repeats we wait 75ms
+@@ -1048,6 +1085,7 @@
+ 		usleep( 100000 ); // wait 100ms
+ 
+ 	// send DiSEqC Sequence (Rotor)
++	setCurrentLimitingMode(STATIC);
+ 	seq.commands=&commands[seq.numCommands];  // last command is rotor cmd... see above...
+ 	seq.numCommands=1;  // only rotor cmd
+ 	seq.toneBurst = eSecCmdSequence::NONE;
+@@ -1072,7 +1110,6 @@
  #else
  	dvb_diseqc_master_cmd *commands = seq.commands;
  #endif
@@ -156,7 +175,7 @@ diff -Naur enigma/lib/dvb/frontend.cpp enigma_patched/lib/dvb/frontend.cpp
  	runningPowerInput=0;
  	int secTone = seq.continuousTone;
  
-@@ -1085,14 +1120,12 @@
+@@ -1086,14 +1123,12 @@
  
  	seq.continuousTone=SEC_TONE_OFF;
  	if ( SendSequence(seq) < 0 )
@@ -173,7 +192,7 @@ diff -Naur enigma/lib/dvb/frontend.cpp enigma_patched/lib/dvb/frontend.cpp
  	}
  
  	if ( lastLNB != lnb )
-@@ -1102,15 +1135,48 @@
+@@ -1103,15 +1138,48 @@
  	}
  	else
  	{
@@ -229,7 +248,7 @@ diff -Naur enigma/lib/dvb/frontend.cpp enigma_patched/lib/dvb/frontend.cpp
  
  	// send DiSEqC Sequence (Rotor)
  	seq.commands=&commands[seq.numCommands];  // last command is rotor cmd... see above...
-@@ -1121,7 +1187,7 @@
+@@ -1122,7 +1190,7 @@
  	seq.continuousTone=secTone;
  	if ( SendSequence(seq) < 0 )
  	{
@@ -238,7 +257,7 @@ diff -Naur enigma/lib/dvb/frontend.cpp enigma_patched/lib/dvb/frontend.cpp
  		return -2;
  	}
  	// set rotor start timeout  // 2 sek..
-@@ -1146,11 +1212,14 @@
+@@ -1147,11 +1215,14 @@
  	{
  		runningPowerInput = readInputPower();
  		if ( runningPowerInput < 0 )
@@ -254,7 +273,7 @@ diff -Naur enigma/lib/dvb/frontend.cpp enigma_patched/lib/dvb/frontend.cpp
  		{
  			if ( (DeltaA & 0x200) == 0x200 )
  			{
-@@ -1181,17 +1250,44 @@
+@@ -1182,17 +1253,43 @@
  {
  	timeval now;
  	gettimeofday(&now,0);
@@ -275,7 +294,6 @@ diff -Naur enigma/lib/dvb/frontend.cpp enigma_patched/lib/dvb/frontend.cpp
 +			curVoltage = voltage;
 +#endif
 +			voltageState = eSecCmdSequence::VOLTAGE_18;
-+			setCurrentLimitingMode(DYNAMIC);
 +		}
 +	}
 +
@@ -300,7 +318,7 @@ diff -Naur enigma/lib/dvb/frontend.cpp enigma_patched/lib/dvb/frontend.cpp
  
  		if ( abs( idlePowerInput-runningPowerInput ) <= (DeltaA&0xFF) ) // rotor stoped ?
  		{
-@@ -1215,7 +1311,8 @@
+@@ -1216,7 +1313,8 @@
  {
  	if (type != eSystemInfo::feSatellite)
  		return;
@@ -310,7 +328,7 @@ diff -Naur enigma/lib/dvb/frontend.cpp enigma_patched/lib/dvb/frontend.cpp
  	{
  		if ( voltage != eSecCmdSequence::VOLTAGE_18 )
  #if HAVE_DVB_API_VERSION < 3
-@@ -1227,7 +1324,7 @@
+@@ -1228,7 +1326,7 @@
  		curVoltage = voltage;
  #endif
  	}
@@ -319,7 +337,18 @@ diff -Naur enigma/lib/dvb/frontend.cpp enigma_patched/lib/dvb/frontend.cpp
  	{
  		if ( voltage != eSecCmdSequence::VOLTAGE_13 )
  #if HAVE_DVB_API_VERSION < 3
-@@ -2023,16 +2120,10 @@
+@@ -1466,7 +1564,10 @@
+ 	checkLockTimer.stop();
+ 
+ 	if ( curRotorPos > 11000 )
++	{
+ 		curRotorPos = 11000;
++		setCurrentLimitingMode(DYNAMIC);
++	}
+ 
+ //	eDebug("ROTOR STOPPED 1");
+ 	/* emit */ s_RotorStopped();
+@@ -1886,16 +1987,10 @@
  			commands[cmdCount-1].u.diseqc.params[1]);
  #endif
  
@@ -339,7 +368,7 @@ diff -Naur enigma/lib/dvb/frontend.cpp enigma_patched/lib/dvb/frontend.cpp
  			seq.voltage = voltage;
  
  		lastRotorCmd=RotorCmd;
-@@ -2063,14 +2154,12 @@
+@@ -1926,14 +2021,12 @@
  send:
  		seq.voltage=voltage;
  		if ( SendSequence(seq) < 0 )
@@ -356,7 +385,7 @@ diff -Naur enigma/lib/dvb/frontend.cpp enigma_patched/lib/dvb/frontend.cpp
  		}
  	}
  	else if ( lastcsw != csw )
-@@ -2220,10 +2309,7 @@
+@@ -2083,10 +2176,7 @@
  		seq.continuousTone = eSecCmdSequence::TONE_OFF;
  		seq.toneBurst = eSecCmdSequence::NONE;
  		if (SendSequence(seq) < 0 )
@@ -367,10 +396,10 @@ diff -Naur enigma/lib/dvb/frontend.cpp enigma_patched/lib/dvb/frontend.cpp
  	}
  	if ( ioctl(fd, FE_SET_POWER_STATE, FE_POWER_OFF) < 0 )
  		eDebug("FE_SET_POWER_STATE failed (%m)");
-diff -Naur enigma/lib/system/info.cpp enigma_patched/lib/system/info.cpp
---- enigma/lib/system/info.cpp	2006-08-29 00:17:59.000000000 +0200
-+++ enigma_patched/lib/system/info.cpp	2006-08-29 00:27:09.000000000 +0200
-@@ -175,19 +175,8 @@
+diff -Naur enigma_org/lib/system/info.cpp enigma/lib/system/info.cpp
+--- enigma_org/lib/system/info.cpp	2007-08-06 22:54:26.000000000 +0200
++++ enigma/lib/system/info.cpp	2007-08-06 22:47:44.000000000 +0200
+@@ -177,19 +177,8 @@
  					midstr="9";
  					modelstr="DM7020";
  					cpustr="STB04500, 252MHz";
