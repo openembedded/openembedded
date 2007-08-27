@@ -14,7 +14,7 @@ do_rm_work () {
     for dir in *
     do
         if [ `basename ${S}` = $dir ]; then
-            rm -rf $dir/*
+            rm -rf $dir
         elif [ $dir != 'temp' ]; then
             rm -rf $dir
         fi

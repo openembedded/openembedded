@@ -9,8 +9,9 @@ SRC_URI_append_x86 = "file://i486-defconfig"
 SRC_URI_append_i586 = "file://i586-defconfig"
 SRC_URI_append_i686 = "file://i686-defconfig"
 
-
 S = "${WORKDIR}/linux-${PV}"
+
+KERNEL_IMAGETYPE ?= "bzImage"
 
 inherit kernel
 

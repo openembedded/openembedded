@@ -1,7 +1,7 @@
 #
 # Automatically generated make config: don't edit
 # Linux kernel version: 2.6.18-omap1
-# Fri Oct 20 16:31:35 2006
+# Wed Oct 25 20:54:14 2006
 #
 CONFIG_ARM=y
 CONFIG_MMU=y
@@ -219,7 +219,8 @@ CONFIG_OMAP_CF=y
 # CONFIG_PREEMPT is not set
 CONFIG_NO_IDLE_HZ=y
 CONFIG_HZ=128
-# CONFIG_AEABI is not set
+CONFIG_AEABI=y
+CONFIG_OABI_COMPAT=y
 # CONFIG_ARCH_DISCONTIGMEM_ENABLE is not set
 CONFIG_SELECT_MEMORY_MODEL=y
 CONFIG_FLATMEM_MANUAL=y
@@ -264,7 +265,6 @@ CONFIG_FPE_NWFPE=y
 CONFIG_BINFMT_ELF=y
 # CONFIG_BINFMT_AOUT is not set
 # CONFIG_BINFMT_MISC is not set
-# CONFIG_ARTHUR is not set
 
 #
 # Power management options
