@@ -1,0 +1,195 @@
+Index: src/enigma_scan.cpp
+===================================================================
+RCS file: /cvs/tuxbox/apps/tuxbox/b/src/enigma_scan.cpp,v
+retrieving revision 1.25
+diff -u -r1.25 enigma_scan.cpp
+--- a/src/enigma_scan.cpp	5 Feb 2006 23:41:01 -0000	1.25
++++ b/src/enigma_scan.cpp	21 Aug 2007 17:08:27 -0000
+@@ -27,6 +27,7 @@
+ #include <scan.h>
+ #include <satfind.h>
+ #include <tpeditwindow.h>
++#include <enigma_plugins.h>
+ #include <lib/base/i18n.h>
+ #include <lib/dvb/edvb.h>
+ #include <lib/dvb/frontend.h>
+@@ -63,6 +64,8 @@
+ 		CONNECT((new eListBoxEntryMenu(&list, _("Automatic Multisat Scan"), eString().sprintf("(%d) %s", ++entry, _("open automatic multisat transponder scan"))))->selected, eZapScan::sel_multiScan);
+ 
+ 	CONNECT((new eListBoxEntryMenu(&list, _("Manual Transponder Scan"), eString().sprintf("(%d) %s", ++entry, _("open manual transponder scan"))))->selected, eZapScan::sel_manualScan);
++	if ( eFrontend::getInstance()->canBlindScan() && eZapPlugins(2).execPluginByName("enigma_blindscan.cfg", true) == "OK" )
++		CONNECT((new eListBoxEntryMenu(&list, _("Satellite Blindscan"), eString().sprintf("(%d) %s", ++entry, _("open transponder blindscan"))))->selected, eZapScan::sel_blindScan);
+ }
+ 
+ void eZapScan::sel_satfind()
+@@ -111,6 +114,13 @@
+ 	show();
+ }
+ 
++void eZapScan::sel_blindScan()
++{
++	hide();
++	eZapPlugins(2).execPluginByName("enigma_blindscan.cfg");
++	show();
++}
++
+ void eZapScan::sel_satconfig()
+ {
+ 	hide();
+Index: src/enigma_scan.h
+===================================================================
+RCS file: /cvs/tuxbox/apps/tuxbox/b/src/enigma_scan.h,v
+retrieving revision 1.7
+diff -u -r1.7 enigma_scan.h
+--- a/src/enigma_scan.h	26 Oct 2003 00:41:17 -0000	1.7
++++ b/src/enigma_scan.h	21 Aug 2007 17:08:27 -0000
+@@ -25,6 +25,7 @@
+ 	void sel_multiScan();
+ 	void sel_manualScan();
+ 	void sel_satfind();
++	void sel_blindScan();
+ public:
+ 	static eLNB* getRotorLNB(int silent);
+ 	eZapScan();
+Index: src/scan.cpp
+===================================================================
+RCS file: /cvs/tuxbox/apps/tuxbox/b/src/scan.cpp,v
+retrieving revision 1.92
+diff -u -r1.92 scan.cpp
+--- a/src/scan.cpp	5 Feb 2006 23:41:01 -0000	1.92
++++ b/src/scan.cpp	21 Aug 2007 17:08:27 -0000
+@@ -3,6 +3,7 @@
+ #include <enigma.h>
+ 
+ #include <enigma_main.h>
++#include <enigma_plugins.h>
+ #include <lib/base/i18n.h>
+ #include <lib/dvb/frontend.h>
+ #include <lib/dvb/si.h>
+@@ -45,6 +46,8 @@
+ 		new eListBoxEntryMenuItem(list, _("Automatic Multisat Scan"), (void*)3, 0, _("open automatic multisat transponder scan") );
+ 	new eListBoxEntryMenuItem(list, _("manual scan.."), (void*)1, 0, _("open manual transponder scan") );
+ 	CONNECT(list->selected, tsSelectType::selected);
++	if ( eFrontend::getInstance()->canBlindScan() && eZapPlugins(2).execPluginByName("enigma_blindscan.cfg", true) == "OK" )
++		new eListBoxEntryMenuItem(list, _("Satellite Blindscan"), (void*)4, 0, _("open transponder blindscan") );
+ }
+ 
+ void tsSelectType::selected(eListBoxEntryMenu *entry)
+@@ -989,6 +992,22 @@
+ 	}
+ }
+ 
++
++struct countTransponders
++{
++	int &m_cnt;
++	countTransponders(int &cnt)
++		:m_cnt(cnt)
++	{
++		m_cnt=0;
++	}
++	void operator()(eTransponder &t)
++	{
++		++m_cnt;
++	}
++};
++
++
+ int TransponderScan::Exec()
+ {
+ 	tState state = stateInitial;
+@@ -1335,6 +1354,20 @@
+ 			state=stateDone;
+ 			break;
+ 		}
++		case stateBlind:
++		{
++			int tp_count_old, tp_count_new;
++			eTransponderList::getInstance()->forEachTransponder(countTransponders(tp_count_old));
++			eWindow::globalCancel(eWindow::ON);
++			hide();
++			eZapPlugins(2).execPluginByName("enigma_blindscan.cfg");
++			show();
++			state=stateEnd;
++			eWindow::globalCancel(eWindow::OFF);
++			eTransponderList::getInstance()->forEachTransponder(countTransponders(tp_count_new));
++			ret=tp_count_new > tp_count_old ? 0 : 1;
++			break;
++		}
+ 		case stateScan:
+ 		{
+ 			if ( eSystemInfo::getInstance()->getFEType() == eSystemInfo::feSatellite )
+Index: src/scan.h
+===================================================================
+RCS file: /cvs/tuxbox/apps/tuxbox/b/src/scan.h,v
+retrieving revision 1.38
+diff -u -r1.38 scan.h
+--- a/src/scan.h	20 Feb 2007 21:57:05 -0000	1.38
++++ b/src/scan.h	21 Aug 2007 17:08:27 -0000
+@@ -172,6 +172,7 @@
+ 		stateManual,
+ 		stateAutomatic,
+ 		stateMulti,
++		stateBlind,
+ 		stateScan,
+ 		stateMultiScan,
+ 		stateDone,
+diff -Naur a/include/lib/dvb/frontend.h b/include/lib/dvb/frontend.h
+--- a/include/lib/dvb/frontend.h	2007-08-21 22:04:22.000000000 +0200
++++ b/include/lib/dvb/frontend.h	2007-08-24 00:59:42.000000000 +0200
+@@ -112,6 +112,7 @@
+ 		voltage,
+ 		increased;
+ ///////////////////
++	bool m_canBlindScan;
+ #if HAVE_DVB_API_VERSION < 3
+ 	FrontendParameters front;
+ #else
+@@ -157,6 +158,7 @@
+ 	static eFrontend *getInstance() { return frontend; }
+ 
+ 	int Type() { return type; }
++	int canBlindScan() { return m_canBlindScan; }
+ 
+ 	int Status();
+ 	int Locked() { return Status()&FE_HAS_LOCK; }
+diff -Naur a/lib/dvb/frontend.cpp b/lib/dvb/frontend.cpp
+--- a/lib/dvb/frontend.cpp	2007-08-21 22:04:22.000000000 +0200
++++ b/lib/dvb/frontend.cpp	2007-08-24 01:00:13.000000000 +0200
+@@ -42,7 +42,7 @@
+ #endif
+ 	checkRotorLockTimer(eApp), checkLockTimer(eApp), 
+ 	updateTransponderTimer(eApp), sn(0), noRotorCmd(0),
+-	idlePowerInput_l(0), idlePowerInput_h(0)
++	idlePowerInput_l(0), idlePowerInput_h(0), m_canBlindScan(false)
+ {
+ 	CONNECT(rotorTimer1.timeout, eFrontend::RotorStartLoop );
+ 	CONNECT(rotorTimer2.timeout, eFrontend::RotorRunningLoop );
+@@ -99,6 +99,27 @@
+ 	curContTone = curVoltage = -1;
+ #endif
+ 	needreset = 2;
++	
++// check if tuner can blindscan
++	if (type == eSystemInfo::feSatellite)
++	{
++		FILE *f=fopen("/proc/bus/nim_sockets", "rt");
++		while (f)
++		{
++			char buffer[128];
++			if (!fgets(buffer, 128, f))
++			{
++				fclose(f);
++				break;
++			}
++			if (strstr(buffer, "Name:") && strstr(buffer, "Alps -S(STV0288)"))
++			{
++				m_canBlindScan=true;
++				fclose(f);
++				break;
++			}
++		}
++	}
+ }
+ 
+ void eFrontend::checkLock()
