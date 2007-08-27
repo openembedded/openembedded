@@ -48,7 +48,7 @@ OPENDREAMBOX_TUXBOX_R_dm600pvr = " \
 	tuxbox-plugin-sol       tuxbox-plugin-vierg  	tuxbox-plugin-master \
 	tuxbox-plugin-solitair  tuxbox-plugin-yahtzee 	tuxbox-plugin-mines  \
 	tuxbox-plugin-tank  	tuxbox-plugin-pacman    tuxbox-plugin-tetris \
-	tuxbox-plugin-tuxcom 	links-dream-plugin"
+	tuxbox-plugin-tuxcom 	links-dream-plugin 	enigma-blindscan"
 
 OPENDREAMBOX_TUXBOX_R_dm500plus = " \
 	tuxbox-plugin-snake     tuxbox-plugin-tuxmail \
@@ -56,7 +56,7 @@ OPENDREAMBOX_TUXBOX_R_dm500plus = " \
 	tuxbox-plugin-sol       tuxbox-plugin-vierg  	tuxbox-plugin-master \
 	tuxbox-plugin-solitair  tuxbox-plugin-yahtzee 	tuxbox-plugin-mines  \
 	tuxbox-plugin-tank  	tuxbox-plugin-pacman    tuxbox-plugin-tetris \
-	tuxbox-plugin-tuxcom 	links-dream-plugin"
+	tuxbox-plugin-tuxcom 	links-dream-plugin	enigma-blindscan"
 
 # dvb api specific stuff
 OPENDREAMBOX_V2_ONLY = "dreambox-dvb-tools tuxbox-stream"
@@ -83,11 +83,11 @@ MODEM_SUPPORT_R = "kernel-module-crc-ccitt kernel-module-ppp-async \
 
 # now machine specific:
 OPENDREAMBOX_COMMON_MACHINE_dm600pvr += "${OPENDREAMBOX_V2_ONLY} ${OPENDREAMBOX_TUXBOX} ${MODEM_SUPPORT}"
-OPENDREAMBOX_COMMON_MACHINE_R_dm600pvr += "${OPENDREAMBOX_TUXBOX_R} ${MODEM_SUPPORT_R}"
+OPENDREAMBOX_COMMON_MACHINE_R_dm600pvr += "${OPENDREAMBOX_TUXBOX_R} ${MODEM_SUPPORT_R} dreambox-blindscan-utils"
 OPENDREAMBOX_COMMON_MACHINE_D_dm600pvr += "${OPENDREAMBOX_TUXBOX_D}"
 
 OPENDREAMBOX_COMMON_MACHINE_dm500plus += "${OPENDREAMBOX_V2_ONLY} ${OPENDREAMBOX_TUXBOX} ${MODEM_SUPPORT}"
-OPENDREAMBOX_COMMON_MACHINE_R_dm500plus += "${OPENDREAMBOX_TUXBOX_R} ${MODEM_SUPPORT_R}"
+OPENDREAMBOX_COMMON_MACHINE_R_dm500plus += "${OPENDREAMBOX_TUXBOX_R} ${MODEM_SUPPORT_R} dreambox-blindscan-utils"
 OPENDREAMBOX_COMMON_MACHINE_D_dm500plus += "${OPENDREAMBOX_TUXBOX_D}"
 
 OPENDREAMBOX_COMMON_MACHINE_dm7020 += "${OPENDREAMBOX_V2_ONLY} ${OPENDREAMBOX_TUXBOX} ${MODEM_SUPPORT}"
