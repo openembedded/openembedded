@@ -20,8 +20,9 @@ do_compile() {
 	oe_runmake
 }
 
-do_install() {
+fakeroot do_install() {
 	install -d ${D}${sysconfdir}/init.d
+	install -d ${D}${base_sbindir}
 	install -m 0755 ${WORKDIR}/portmap.init ${D}${sysconfdir}/init.d/portmap
 	oe_runmake 'docdir=${docdir}/portmap' 'DESTDIR=${D}' install
 }
