@@ -210,6 +210,53 @@ DEPLOY_DIR_IMAGE = "${DEPLOY_DIR}/images/${MACHINE}"
 # Angstrom *always* has some form of release config, so error out if someone thinks he knows better 
 DISTRO_CHECK := "${@bb.data.getVar("DISTRO_VERSION",d,1) or bb.fatal('Remove this line or set a dummy DISTRO_VERSION if you really want to build an unversioned distro')}"
 
+
+# Configuration for tinderbox, so people only need:
+# INHERIT          += "tinderclient"
+# in their local.conf 
+
+#Name of the client
+TINDER_MACHINE  = "${MACHINE}-${ANGSTROM_MODE}-build-image"
+
+# Which lof file to write to, which tree to report to
+TINDER_LOG        = "${TMPDIR}/tinder.log"
+TINDER_TREE       = "Angstrom"
+
+# HTTP posting    
+TINDER_HOST       ?= "ewi546.ewi.utwente.nl"
+TINDER_URL        ?= "/tinderbox"
+
+# Which branch do we build
+TINDER_BRANCH     = "org.openembedded.dev"
+   
+## Clobbing
+## 0 for rebuilding everything from scratch
+## 1 for incremental builds
+TINDER_CLOBBER    = "1"
+
+## Do a report at all
+TINDER_REPORT     = "1"
+
+# Configuration for seppuku autobuilder, people only need to put:
+# INHERIT += "seppuku"
+# SEPPUKU_USER         = "your_bugzilla@user.id"
+# SEPPUKU_PASS         = "your_bugzilla_password"
+# in their local.conf
+
+# seppuku bbclass
+SEPPUKU_LOGIN        = "http://bugs.openembedded.org/query.cgi?"
+SEPPUKU_QUERY       = "http://bugs.openembedded.org/buglist.cgi?"
+SEPPUKU_NEWREPORT    = "http://bugs.openembedded.org/post_bug.cgi?bug_file_loc=http%3A%2F%2F&version=Angstrom&priority=P2&bug_severity=normal&op_sys=Linux&rep_platform=Other&"
+SEPPUKU_ADDCOMMENT   = "http://bugs.openembedded.org/process_bug.cgi?bug_file_loc=http%3A%2F%2F&version=Angstrom&priority=P2&bug_severity=normal&op_sys=Linux&rep_platform=Other&"SEPPUKU_ATTACHMENT = "http://bugs.openembedded.org/attachment.cgi?"
+SEPPUKU_AUTOBUILD = "1"
+
+SEPPUKU_PRODUCT      = "Openembedded"
+SEPPUKU_COMPONENT    = "build"
+
+
+
+
+
 # We want images supporting the following features (for task-base)
 DISTRO_FEATURES = "nfs smbfs wifi ppp alsa bluetooth ext2 irda pcmcia usbgadget usbhost pci"
 DISTRO_FEATURES_nslu2 = "nfs smbfs alsa bluetooth ext2 usbhost pci"
