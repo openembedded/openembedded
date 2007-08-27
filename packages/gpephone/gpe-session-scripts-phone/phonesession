@@ -24,7 +24,6 @@ export	SMS_GRAPHIC_PATH=$APP_PATH/share/graphic
 export	SMS_RING_TONE_PATH=$APP_PATH/share/chocolate.mp3
 
 # For E-mail
-export	EMAIL_GRAPHIC_PATH=$APP_PATH/share/email-graphic
 export	TINYMAIL_CACHE_DIR=$APP_PATH/share/tinymail.cache
 
 # For Calendar
