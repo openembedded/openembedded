@@ -233,7 +233,6 @@ TINDER_BRANCH     = "org.openembedded.dev"
 ## 0 for rebuilding everything from scratch
 ## 1 for incremental builds
 TINDER_CLOBBER    = "1"
-TINDER_AUTOBUILD  = "1"
 
 ## Do a report at all
 TINDER_REPORT     = "1"
