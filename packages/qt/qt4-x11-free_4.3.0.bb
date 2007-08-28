@@ -1,12 +1,13 @@
+DESCRIPTION = "Qt is a versatile cross-platform application framework -- this is the X11 version."
 SECTION = "x11/libs"
 PRIORITY = "optional"
 HOMEPAGE = "http://www.trolltech.com"
 LICENSE = "GPL QPL"
-DEPENDS = "pkgconfig-native uicmoc4-native qmake2-native freetype jpeg virtual/libx11 xft libxext libxrender libxrandr libxcursor dbus openssl"
+DEPENDS = "pkgconfig-native uicmoc4-native qmake2-native freetype jpeg virtual/libx11 \
+           xft libxext libxrender libxrandr libxcursor dbus openssl"
 RDEPENDS_${PN} = "${NONDEV_PACKAGES}"
 PROVIDES = "qt4x11"
-
-PR = "r5"
+PR = "r6"
 
 SRC_URI = "ftp://ftp.trolltech.com/qt/source/qt-x11-opensource-src-${PV}.tar.gz \
            file://0001-cross-compile.patch;patch=1 \
@@ -76,11 +77,12 @@ do_stage() {
 	install -m 0755 ${STAGING_BINDIR_NATIVE}/rcc4 ${STAGING_QT_DIR}/bin/rcc
 	install -m 0755 ${STAGING_BINDIR_NATIVE}/moc4 ${STAGING_QT_DIR}/bin/moc
 	install -m 0755 ${STAGING_BINDIR_NATIVE}/uic4 ${STAGING_QT_DIR}/bin/uic
-	sed -i -e 's,^QMAKE_RPATHDIR.*,QMAKE_RPATHDIR=${STAGING_QT_DIR}/lib,g'  ${STAGING_QT_DIR}/mkspecs/qconfig.pri
+	sed -i -e 's,^QMAKE_RPATHDIR.*,QMAKE_RPATHDIR=${STAGING_QT_DIR}/lib,g' ${STAGING_QT_DIR}/mkspecs/qconfig.pri
 	for pcc in AssistantClient DBus Test UiTools ; do
 		sed -i -e 's,${S}/lib,${STAGING_QT_DIR}/lib,g' ${STAGING_QT_DIR}/lib/pkgconfig/Qt${pcc}.pc
 	done
         for pc in ${STAGING_QT_DIR}/lib/pkgconfig/*.pc ; do
+		sed -i -e 's,$(OE_QMAKE_LIBS_X11),-lX11 -lXext,g' $pc
                 install -m 0644 $pc ${PKG_CONFIG_PATH}/
         done
 }
