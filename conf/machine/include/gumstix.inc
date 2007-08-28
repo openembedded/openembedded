@@ -20,12 +20,15 @@ MACHINE_FEATURES = "kernel26 alsa ext2 bluetooth"
 
 EXTRA_IMAGECMD_jffs2 = "--little-endian --eraseblock=0x20000 --squash"
 
-MACHINE_EXTRA_RRECOMMENDS = "kernel-module-unix \
+MACHINE_ESSENTIAL_EXTRA_RRECOMMENDS = "kernel-module-unix \
                              kernel-module-rtc-core \
                              kernel-module-rtc-dev \
                              kernel-module-rtc-proc \
                              kernel-module-rtc-sa1100 \
-                             kernel-module-rtc-sysfs"          
+                             kernel-module-rtc-sysfs \
+                             kernel-module-smc91x \
+                             kernel-module-gumstix-smc91x \
+                             "          
 
 
 # used by sysvinit_2
