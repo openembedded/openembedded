@@ -53,19 +53,21 @@ fakeroot rootfs_deb_do_rootfs () {
 	_getflag () {
 		cat ${IMAGE_ROOTFS}/var/dpkg/status | sed -n -e "/^Package: $2\$/{n; s/Status: install ok .*/$1/; p}"
 	}
-
-	if [ ! -z "${LINGUAS_INSTALL}" ]; then
-		apt-get install glibc-localedata-i18n --force-yes --allow-unauthenticated
-		if [ $? -ne 0 ]; then
-			exit $?
-		fi
-		for i in ${LINGUAS_INSTALL}; do
-			apt-get install $i --force-yes --allow-unauthenticated
-			if [ $? -ne 0 ]; then
-				exit $?
-			fi
-		done
-	fi
+        
+        if [ x${TARGET_OS} = "xlinux" ] || [ x${TARGET_OS} = "xlinux-gnueabi" ] ; then
+	  if [ ! -z "${LINGUAS_INSTALL}" ]; then
+		  apt-get install glibc-localedata-i18n --force-yes --allow-unauthenticated
+		  if [ $? -ne 0 ]; then
+			  exit $?
+		  fi
+		  for i in ${LINGUAS_INSTALL}; do
+			  apt-get install $i --force-yes --allow-unauthenticated
+			  if [ $? -ne 0 ]; then
+				  exit $?
+			  fi
+		  done
+	  fi
+        fi
 
 	if [ ! -z "${PACKAGE_INSTALL}" ]; then
 		for i in ${PACKAGE_INSTALL}; do
