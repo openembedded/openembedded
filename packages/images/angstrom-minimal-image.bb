@@ -8,6 +8,7 @@ DISTRO_SSH_DAEMON ?= "dropbear"
 IMAGE_LINGUAS = " "
 
 RDEPENDS = "task-boot \
+            util-linux-mount util-linux-umount \
             ${DISTRO_SSH_DAEMON} \
             angstrom-version \
 	   "

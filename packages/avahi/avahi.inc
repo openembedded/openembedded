@@ -12,8 +12,6 @@ DEPENDS = "expat libdaemon dbus glib-2.0"
 RRECOMMENDS_avahi-daemon_append_linux = "libnss-mdns"
 RDEPENDS_avahi-daemon = "sysvinit-pidof update-rc.d"
 RDEPENDS_avahi-autoipd = "update-rc.d"
-RDEPENDS_avahi-discover = "python-avahi python-pygtk"
-RDEPENDS_python-avahi = "python-dbus"
 
 SRC_URI = "http://avahi.org/download/avahi-${PV}.tar.gz \
 	   file://00avahi-autoipd file://99avahi-autoipd"
@@ -28,7 +26,7 @@ EXTRA_OECONF = "--with-distro=debian --disable-gdbm ${AVAHI_GTK} --disable-mono 
 AVAHI_PYTHON = "--disable-python"
 AVAHI_GTK = "--disable-gtk"
 
-PACKAGES =+ "avahi-daemon avahi-discover libavahi-common libavahi-core libavahi-client avahi-dnsconfd libavahi-glib libavahi-ui avahi-discover-standalone avahi-autoipd avahi-utils python-avahi"
+PACKAGES =+ "avahi-daemon avahi-discover libavahi-common libavahi-core libavahi-client avahi-dnsconfd libavahi-glib libavahi-ui avahi-discover-standalone avahi-autoipd avahi-utils"
 
 FILES_libavahi-common = "${libdir}/libavahi-common.so.*"
 FILES_libavahi-core = "${libdir}/libavahi-core.so.*"

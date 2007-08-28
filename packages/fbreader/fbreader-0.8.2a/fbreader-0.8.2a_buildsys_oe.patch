@@ -18,7 +18,7 @@ diff -Nur fbreader-0.8.2a.orig/makefiles/arch/openzaurus.mk fbreader-0.8.2a/make
 +	UILIBS = -lqt-mt
  else
 -	UILIBS = -lgpewidget -lgtk-x11-2.0 -lgdk-x11-2.0 -lgdk_pixbuf-2.0
-+	UILIBS = $(shell pkg-config --libs gtk+-2.0) -lgpewidget -liconv
++	UILIBS = $(shell pkg-config --libs gtk+-2.0) -lgpewidget
  endif
  
 -CFLAGS = -pipe -DOPIE_NO_DEBUG -DQT_NO_DEBUG -DQWS -fno-exceptions -fno-rtti -march=armv4 -mtune=xscale --param large-function-growth=2000 --param inline-unit-growth=200 -Wall -Wno-ctor-dtor-privacy -W -Winline
