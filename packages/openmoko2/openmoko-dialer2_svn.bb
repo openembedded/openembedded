@@ -2,9 +2,11 @@ DESCRIPTION = "The OpenMoko Dialer"
 SECTION = "openmoko/pim"
 DEPENDS = "libmokogsmd2 libmokoui2 libmokojournal2 pulseaudio"
 PV = "0.1.0+svn${SVNREV}"
-PR = "r3"
+PR = "r4"
 
 inherit openmoko2
+
+SRC_URI += "file://openmoko-dialer.patch;patch=1"
 
 EXTRA_OECONF = "--with-dbusbindir=${STAGING_BINDIR_NATIVE}"
 
