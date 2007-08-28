@@ -155,9 +155,10 @@ Recipes:    linux-handhelds-2.6, opie-*
 Person:     Philip Balister
 Mail:       Crofton@balister.org
 Website:    http://www.balister.org
-Machines:   omap5912osk
-Distros:    openomap
-Recipes:    xerces-c, omniorb
+Machines:   omap5912osk, gumstix-connex, gumstix-verdex, Efika, davinci-dvevm
+Interests:  Software Defined Radio, 
+Interests:  wireless networking (not necessarily wireless NIC's)
+Recipes:    omniorb, gnuradio
 
 Person:     Philippe De Swert
 Mail:       philippedeswert@scarlet.be
@@ -217,7 +218,7 @@ Recipes:    vsftpd, zd1211
 Person:     Henning Heinold 'woglinde'
 Mail:       heinold@inf.fu-berlin.de
 Machines:   simpad
-Recipes:    classpath-minimal, midpath, cacao-clcd
+Recipes:    classpath-minimal, midpath, cacao-cldc
 
 Person:     Philipp Zabel
 Mail:       philipp.zabel@gmail.com

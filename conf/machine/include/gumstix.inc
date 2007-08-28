@@ -13,23 +13,22 @@ module_autoload_mmc_block = "mmc_block"
 module_autoload_gumstix_gadget = "gumstix_gadget"
 module_autoload_g_ether = "g_ether"
 
-OLDEST_KERNEL = "2.6.15"
-
 UBOOT_ENTRYPOINT = "a0008000"
 
 #Assume people have some gumstix extension boards 
-MACHINE_FEATURES = "kernel26 alsa ext2 usbhost usbgadget bluetooth"
+MACHINE_FEATURES = "kernel26 alsa ext2 bluetooth"
 
 EXTRA_IMAGECMD_jffs2 = "--little-endian --eraseblock=0x20000 --squash"
 
-GUMSTIX_400MHZ = "y"
-
-MACHINE_EXTRA_RRECOMMENDS = "kernel-module-unix \
+MACHINE_ESSENTIAL_EXTRA_RRECOMMENDS = "kernel-module-unix \
                              kernel-module-rtc-core \
                              kernel-module-rtc-dev \
                              kernel-module-rtc-proc \
                              kernel-module-rtc-sa1100 \
-                             kernel-module-rtc-sysfs"          
+                             kernel-module-rtc-sysfs \
+                             kernel-module-smc91x \
+                             kernel-module-gumstix-smc91x \
+                             "          
 
 
 # used by sysvinit_2

@@ -1,4 +1,4 @@
-PR = "r0"
+PR = "r1"
 DESCRIPTION = "The GNU cc and gcc C compilers."
 HOMEPAGE = "http://www.gnu.org/software/gcc/"
 SECTION = "devel"
@@ -10,13 +10,19 @@ require gcc-package.inc
 
 SRC_URI = "ftp://ftp.gnu.org/pub/gnu/gcc/gcc-${PV}/gcc-${PV}.tar.bz2 \
 	file://100-uclibc-conf.patch;patch=1 \
-	file://200-uclibc-locale.patch;patch=1 \
+	file://103-uclibc-conf-noupstream.patch;patch=1 \
+        file://200-uclibc-locale.patch;patch=1 \
+        file://203-uclibc-locale-no__x.patch;patch=1 \
 	file://300-libstdc++-pic.patch;patch=1 \
 	file://301-missing-execinfo_h.patch;patch=1 \
 	file://302-c99-snprintf.patch;patch=1 \
 	file://303-c99-complex-ugly-hack.patch;patch=1 \
 	file://304-index_macro.patch;patch=1 \
-	file://602-sdk-libstdc++-includes.patch;patch=1 \
+        file://305-libmudflap-susv3-legacy.patch;patch=1 \
+        file://306-libstdc++-namespace.patch;patch=1 \
+	file://307-locale_facets.patch;patch=1 \
+        file://402-libbackend_dep_gcov-iov.h.patch;patch=1 \
+        file://602-sdk-libstdc++-includes.patch;patch=1 \
 	file://740-sh-pr24836.patch;patch=1 \
 	file://800-arm-bigendian.patch;patch=1 \
 	file://904-flatten-switch-stmt-00.patch;patch=1 \

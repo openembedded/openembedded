@@ -1,4 +1,6 @@
 #!/bin/sh
+# we need /sbin in our PATH
+PATH="/sbin:/usr/sbin/:$PATH"
 
 # Do not run when pcmcia-cs is installed
 test -x /sbin/cardctl && exit 0
