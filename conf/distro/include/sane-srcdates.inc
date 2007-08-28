@@ -41,7 +41,7 @@ SRCDATE_web ?= "20060613"
 SRCDATE_zaurusd ?= "20060628"
 
 # OpenMoko
-SRCDATE_uboot-openmoko = "20070820"
+SRCDATE_uboot-openmoko = "20070829"
 
 # GPE
 SRCDATE_dasher-gpe  ?= "20060814"
