@@ -6,5 +6,5 @@ FILESPATH = "${FILE_DIRNAME}/libsdl-ttf-${PV}:${FILE_DIRNAME}/libsdl-ttf:${FILE_
 
 EXTRA_OECONF = "--disable-sdltest --with-sdl-prefix=${STAGING_LIBDIR}/.."
 
-export SDL_CONFIG = "${STAGING_BINDIR}/sdl-config-native"
+export SDL_CONFIG = "${STAGING_BINDIR}/sdl-config"
 
