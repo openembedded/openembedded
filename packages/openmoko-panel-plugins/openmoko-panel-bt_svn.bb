@@ -5,5 +5,3 @@ PR = "r1"
 
 inherit openmoko-panel-plugin
 
-SRC_URI += "file://panel-bluetooth.patch;patch=1" 
-
