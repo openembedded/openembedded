@@ -12,7 +12,7 @@ FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/linux-gta01"
 ##############################################################
 # source and patches
 #
-SRC_URI = "http://ftp.de.kernel.org/pub/linux/kernel/v2.6/linux-${VANILLA_VERSION}.tar.bz2 \
+SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-${VANILLA_VERSION}.tar.bz2 \
            file://defconfig-${VANILLA_VERSION}-${MACHINE} \
            file://logo_linux_clut224.ppm"
 S = "${WORKDIR}/linux-${VANILLA_VERSION}"
@@ -51,7 +51,7 @@ module_autoload_s3cmci = "s3cmci"
 
 do_prepatch() {
 	mv ${WORKDIR}/patches ${S}/patches && cd ${S} && quilt push -av
-	mv patches patches.old
+	mv patches patches.openmoko
 	mv .pc .pc.old
 }
 

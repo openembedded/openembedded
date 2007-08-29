@@ -179,7 +179,9 @@ FILES = ""
 FILES_kernel-image = "/boot/${KERNEL_IMAGETYPE}*"
 FILES_kernel-dev = "/boot/System.map* /boot/config*"
 RDEPENDS_kernel = "kernel-base"
-RDEPENDS_kernel-base = "kernel-image"
+# Allow machines to override this dependency if kernel image files are 
+# not wanted in images as standard
+RDEPENDS_kernel-base ?= "kernel-image"
 PKG_kernel-image = "kernel-image-${KERNEL_VERSION}"
 PKG_kernel-base = "kernel-${KERNEL_VERSION}"
 ALLOW_EMPTY_kernel = "1"

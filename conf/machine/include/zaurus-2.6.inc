@@ -67,3 +67,6 @@ zaurus_make_installkit () {
     md5sum ${DEPLOY_DIR_IMAGE}/${IMAGE_NAME}-installkit.tgz > ${DEPLOY_DIR_IMAGE}/${IMAGE_NAME}-installkit.tgz.md5
     rm -rf ${DEPLOY_DIR_IMAGE}/${IMAGE_NAME}-installkit/     
 }
+
+# Don't include kernels in standard images for Zaurus machines
+RDEPENDS_kernel-base = ""
