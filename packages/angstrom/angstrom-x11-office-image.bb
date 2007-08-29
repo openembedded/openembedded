@@ -1,6 +1,6 @@
 #Angstrom X11 image, with apps and kernel modules included
 LICENSE = "MIT"
-PR = "r0"
+PR = "r1"
 
 PREFERRED_PROVIDER_libgpewidget 	?= "libgpewidget"
 PREFERRED_PROVIDER_tslib 		?= "tslib"
@@ -29,6 +29,7 @@ RDEPENDS = "\
     cups \
     claws-mail claws-mail claws-plugin-maildir claws-plugin-mailmbox claws-plugin-rssyl \
     midori minimo \
+    gphoto2 \
     ${ANGSTROM_EXTRA_INSTALL}"
 
 
