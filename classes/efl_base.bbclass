@@ -1,10 +1,5 @@
 inherit autotools pkgconfig
 
-#do_prepsources () {
-#  make clean distclean || true
-#}
-#addtask prepsources after do_fetch before do_unpack
-
 SECTION = "e/libs"
 HOMEPAGE = "http://www.enlightenment.org"
 SRCNAME = "${@bb.data.getVar('PN', d, 1).replace('-native', '')}"
@@ -17,4 +12,3 @@ do_stage() {
 
 PACKAGES = "${PN}-dbg ${PN} ${PN}-themes ${PN}-dev"
 FILES_${PN}-dev += "${bindir}/${PN}-config ${libdir}/pkgconfig/* ${libdir}/lib*.?a ${libdir}/lib*.a"
-
