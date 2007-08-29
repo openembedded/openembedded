@@ -1,10 +1,9 @@
 DESCRIPTION = "The OpenMoko Command Line Console"
 SECTION = "openmoko/applications"
 RDEPENDS += "mrxvt"
-PR = "r4"
-
 RCONFLICTS = "openmoko-terminal"
 RREPLACES = "openmoko-terminal"
+PR = "r5"
 
 inherit openmoko2
 
