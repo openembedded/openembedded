@@ -1,6 +1,6 @@
 require dpkg.inc
 PR = "r0"
-DEPENDS += "zlib-native virtual/update-alternatives-native"
+DEPENDS += "zlib-native"
 SRC_URI += "file://noman.patch;patch=1"
 
 inherit native
