@@ -1,8 +1,8 @@
 DESCRIPTION = "Standard Gtk+ theme for the OpenMoko distribution"
 SECTION = "openmoko/base"
 RCONFLICTS = "openmoko-theme-standard"
-PV = "0.1.0+svnr${SRCDATE}"
-PR = "r2"
+PV = "0.1.0+${SVNREV}"
+PR = "r3"
 
 inherit openmoko2
 
