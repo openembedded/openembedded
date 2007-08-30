@@ -2,7 +2,7 @@ require glibc.inc
 
 DEFAULT_PREFERENCE = "-1"
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/eglibc-svn"
-PV = "2.6+svn${SRCDATE}"
+PV = "2.6+svnr${SRCREV}"
 SRC_URI = "svn://svn.eglibc.org;module=trunk \
            file://export-fcntl2.patch;patch=1 \
            file://etc/ld.so.conf \
@@ -10,8 +10,8 @@ SRC_URI = "svn://svn.eglibc.org;module=trunk \
 S = "${WORKDIR}/trunk/libc"
 B = "${WORKDIR}/build-${TARGET_SYS}"
 
-#PACKAGES_DYNAMIC = "libc6*"
-#RPROVIDES_${PN}-dev = "libc6-dev"
+PACKAGES_DYNAMIC = "libc6*"
+RPROVIDES_${PN}-dev = "libc6-dev"
 
 # the -isystem in bitbake.conf screws up glibc do_stage
 BUILD_CPPFLAGS = "-I${STAGING_DIR}/${BUILD_SYS}/include"
@@ -86,6 +86,9 @@ do_compile () {
 }       
 
 do_stage() {
+        # FIXME: this removes files from staging
+        # make sure there isn't a conflicting libc in staging
+        # this should be solved differently
         rm -f ${STAGING_LIBDIR}/libc.so.6
         oe_runmake 'install_root=${STAGING_DIR}/${HOST_SYS}' \
                    'includedir=/include' 'libdir=/lib' 'slibdir=/lib' \
