@@ -13,7 +13,7 @@ ANGSTROM_EXTRA_INSTALL += " \
 			  " 
 XSERVER ?= "xserver-kdrive-fbdev"
 
-export IMAGE_BASENAME = "x11-image"
+export IMAGE_BASENAME = "x11-office-image"
 
 DEPENDS = "task-base"
 RDEPENDS = "\
