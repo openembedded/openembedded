@@ -2,9 +2,14 @@ DESCRIPTION = "A graphic library for file loading, saving, rendering, and manipu
 LICENSE = "BSD"
 # can also depend on tiff34, ungif or gif, z, bz2, id3tag
 DEPENDS = "freetype libpng jpeg"
-PR = "r0"
+PR = "r1"
 
 inherit efl_library
+
+# TODO: Use more fine granular version
+#OE_LT_RPATH_ALLOW=":${libdir}/imlib2/loaders:${libdir}/imlib2/filters:"
+OE_LT_RPATH_ALLOW = "any"
+OE_LT_RPATH_ALLOW[export]="1"
 
 PACKAGES =+ "imlib2-loaders-dbg imlib2-filters-dbg imlib2-loaders imlib2-filters"
 FILES_${PN} = "${libdir}/lib*.so.* ${libdir}/imlib2/*/*.so"
