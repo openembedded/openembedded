@@ -4,7 +4,7 @@ LICENSE = "GPL LGPL"
 SECTION = "libs/gsm"
 PROVIDES += "gsmd"
 PV = "0.1+svn${SRCDATE}"
-PR = "r21"
+PR = "r22"
 
 SRC_URI = "svn://svn.openmoko.org/trunk/src/target;module=gsm;proto=http \
            file://gsmd \
@@ -46,6 +46,7 @@ RDEPENDS_gsmd-plugins = "gsmd-plugin-machine-generic \
 
 RDEPENDS_gsmd = "initscripts"
 RRECOMMENDS_gsmd = "gsmd-plugins"
+
 FILES_${PN}-dbg += "${libdir}/gsmd/.debug/*"
 FILES_${PN}-tools = "${bindir}/*"
 FILES_gsmd = "${sbindir}/gsmd ${sysconfdir}"

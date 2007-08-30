@@ -6,7 +6,5 @@ PR = "r0"
 
 inherit openmoko2
 
-SRC_URI += "\
-  file://autofoo.patch;patch=1 \
-  file://missing-images.patch;patch=1 \
-"
+FILES_${PN} += "${datadir}/openmoko-mediaplayer"
+

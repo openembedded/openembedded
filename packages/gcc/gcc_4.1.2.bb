@@ -1,4 +1,4 @@
-PR = "r3"
+PR = "r4"
 DESCRIPTION = "The GNU cc and gcc C compilers."
 HOMEPAGE = "http://www.gnu.org/software/gcc/"
 SECTION = "devel"
@@ -28,9 +28,32 @@ SRC_URI = "ftp://ftp.gnu.org/pub/gnu/gcc/gcc-4.1.2/gcc-4.1.2.tar.bz2 \
 	file://ldflags.patch;patch=1 \
 	file://zecke-xgcc-cpp.patch;patch=1 \
 	file://unbreak-armv4t.patch;patch=1 \
-        file://fix-ICE-in-arm_unwind_emit_set.diff;patch=1 \
+    file://fix-ICE-in-arm_unwind_emit_set.diff;patch=1 \
 	file://cache-amnesia.patch;patch=1 \
+    file://arm-crunch-saveregs.patch;patch=1 \
+    file://arm-crunch-20000320.patch;patch=1 \
+    file://arm-crunch-compare.patch;patch=1 \
+    file://arm-crunch-compare-unordered.patch;patch=1 \
+    file://arm-crunch-eabi-ieee754.patch;patch=1 \
+    file://arm-crunch-eabi-ieee754-div.patch;patch=1 \
+    file://arm-crunch-64bit-disable0.patch;patch=1 \
+    file://arm-crunch-offset.patch;patch=1 \
+    file://arm-crunch-fp_consts.patch;patch=1 \
+    file://arm-crunch-neg2.patch;patch=1 \
+    file://arm-crunch-predicates4-no_cond_exec.patch;patch=1 \
+    file://arm-crunch-cfcvtds-disable.patch;patch=1 \
+    file://arm-crunch-floatsi-disable.patch;patch=1 \
+    file://arm-crunch-truncsi-disable.patch;patch=1 \
+    file://arm-crunch-64bit-disable.patch;patch=1 \
+    file://arm-crunch-condexec-disable.patch;patch=1 \
+    file://arm-crunch-Uy.patch;patch=1 \
+    file://arm-crunch-cirrus-bugfixes.patch;patch=1 \
 	"
+
+
+
+#    file://arm-crunch-compare-geu.patch;patch=1 \
+#    file://arm-crunch-cfldrstr-disable.patch;patch=1 \
 
 SRC_URI_append_sh3  = " file://sh3-installfix-fixheaders.patch;patch=1 "
 

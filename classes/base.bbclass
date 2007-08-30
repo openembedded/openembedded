@@ -864,54 +864,7 @@ def base_after_parse(d):
                 bb.data.setVar('PACKAGE_ARCH', "${MACHINE_ARCH}", d)
                 return
 
-#
-# Various backwards compatibility stuff to be removed
-# when we switch to bitbake 1.8.2+ as a minimum version
-#
-def base_oldbitbake_workarounds(d):
-    import bb
-    from bb import __version__
-    from distutils.version import LooseVersion
-
-    if (LooseVersion(__version__) > "1.8.0"):
-        return
-
-    pn = bb.data.getVar('PN', d, True)
-    srcdate = bb.data.getVar('SRCDATE_%s' % pn, d, True)
-    if srcdate != None:
-        bb.data.setVar('SRCDATE', srcdate, d)
-    depends = bb.data.getVar('DEPENDS', d, False)
-    patchdeps = bb.data.getVar("PATCHTOOL", d, True)
-    if patchdeps:
-        patchdeps = "%s-native " % patchdeps
-        if not patchdeps in bb.data.getVar("PROVIDES", d, True):
-            depends = patchdeps + depends 
-    if bb.data.inherits_class('rootfs_ipk', d):
-        depends = "ipkg-native ipkg-utils-native fakeroot-native " + depends
-    if bb.data.inherits_class('rootfs_deb', d):
-        depends = "dpkg-native apt-native fakeroot-native " + depends
-    if bb.data.inherits_class('image', d):
-        depends = "makedevs-native " + depends
-        for type in (bb.data.getVar('IMAGE_FSTYPES', d, True) or "").split():
-            deps = bb.data.getVar('IMAGE_DEPENDS_%s' % type, d) or ""
-            if deps:
-                depends = depends + " %s" % deps
-        for dep in (bb.data.getVar('EXTRA_IMAGEDEPENDS', d, True) or "").split():
-            depends =  depends + " %s" % dep
-
-    packages = bb.data.getVar('PACKAGES', d, True)
-    if packages != '':
-        if bb.data.inherits_class('package_ipk', d):
-            depends = "ipkg-utils-native " + depends
-        if bb.data.inherits_class('package_deb', d):
-            depends = "dpkg-native " + depends
-        if bb.data.inherits_class('package', d):
-            depends = "${PACKAGE_DEPENDS} fakeroot-native " + depends
-
-    bb.data.setVar('DEPENDS', depends, d)
-
 python () {
-    base_oldbitbake_workarounds(d)
     base_after_parse(d)
 }
 
