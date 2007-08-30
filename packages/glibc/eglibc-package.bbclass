@@ -29,6 +29,15 @@ BINARY_LOCALE_ARCHES ?= "arm.*"
 PACKAGES = "eglibc-dbg eglibc catchsegv sln nscd ldd localedef eglibc-utils eglibc-dev eglibc-doc eglibc-locale libsegfault eglibc-extra-nss eglibc-thread-db eglibc-pcprofile"
 PACKAGES_DYNAMIC = "eglibc-gconv-* eglibc-charmap-* eglibc-localedata-*"
 
+RPROVIDES_eglibc = "glibc"
+RPROVIDES_eglibc-utils = "glibc-utils"
+RPROVIDES_eglibc-dev = "glibc-dev"
+RPROVIDES_eglibc-doc = "glibc-doc"
+RPROVIDES_eglibc-locale = "glibc-locale"
+RPROVIDES_eglibc-extra-nss = "glibc-extra-nss"
+RPROVIDES_eglibc-thread-db = "glibc-thread-db"
+RPROVIDES_eglibc-pcprofiles = "glibc-pcprofiles"
+
 libc_baselibs = "/lib/libc* /lib/libm* /lib/ld* /lib/libpthread* /lib/libresolv* /lib/librt* /lib/libutil* /lib/libnsl* /lib/libnss_files* /lib/libnss_compat* /lib/libnss_dns* /lib/libdl* /lib/libanl* /lib/libBrokenLocale*"
 
 FILES_${PN} = "${sysconfdir} ${libc_baselibs} /sbin/ldconfig ${libexecdir}/* ${datadir}/zoneinfo"
