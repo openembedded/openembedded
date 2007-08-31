@@ -1,9 +1,9 @@
 DESCRIPTION = "2.6 Linux Development Kernel for FIC Neo1973 (GTA01)"
 SECTION = "kernel"
 AUTHOR = "Harald Welte <laforge@openmoko.org>"
-HOMEPAGE = "N/A"
+HOMEPAGE = "http://www.openmoko.org"
 LICENSE = "GPL"
-DEPENDS += "quilt-native uboot-openmoko"
+DEPENDS += "uboot-mkimage-openmoko-native"
 
 inherit kernel
 
@@ -24,7 +24,7 @@ FILES_kernel-image = ""
 ALLOW_EMPTY = "1"
 
 COMPATIBLE_HOST = "arm.*-linux"
-COMPATIBLE_MACHINE = 'fic-gta01'
+COMPATIBLE_MACHINE = 'fic-gta01|fic-gta02'
 
 CMDLINE_CON = "console=ttySAC0,115200n8"
 #CMDLINE_ROOT = "root=/dev/mmcblk0p1 rootfstype=ext3 rootdelay=5"
