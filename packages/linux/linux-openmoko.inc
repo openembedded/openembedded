@@ -1,4 +1,4 @@
-DESCRIPTION = "2.6 Linux Development Kernel for FIC Neo1973 (GTA01)"
+DESCRIPTION = "2.6 Linux Development Kernel for FIC SmartPhones shipping w/ OpenMoko"
 SECTION = "kernel"
 AUTHOR = "Harald Welte <laforge@openmoko.org>"
 HOMEPAGE = "http://www.openmoko.org"
@@ -7,9 +7,8 @@ DEPENDS += "u-boot-mkimage-openmoko-native"
 
 inherit kernel
 
-FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/linux-gta01"
-# for now
-DEFCONFIG = "defconfig-${VANILLA_VERSION}-gta01"
+FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/linux-openmoko"
+DEFCONFIG = "defconfig-${VANILLA_VERSION}-${MACHINE}"
 
 ##############################################################
 # source and patches
@@ -28,15 +27,7 @@ ALLOW_EMPTY = "1"
 COMPATIBLE_HOST = "arm.*-linux"
 COMPATIBLE_MACHINE = 'fic-gta01|fic-gta02'
 
-CMDLINE_CON = "console=ttySAC0,115200n8"
-#CMDLINE_ROOT = "root=/dev/mmcblk0p1 rootfstype=ext3 rootdelay=5"
-# uncomment if you want to boot over NFS
-#CMDLINE_ROOT = "root=/dev/nfs nfsroot=192.168.1.10:/export/opie-image rootdelay=5 3"
-# uncomment to enable dyntick
-#CMDLINE_OTHER = "dyntick=enable"
-CMDLINE_DEBUG = '${@base_conditional("DISTRO_TYPE", "release", "quiet", "debug",d)}'
-CMDLINE_IP = "ip=192.168.1.2:192.168.1.10:192.168.1.10:255.255.255.0:ezx:usb0:off"
-CMDLINE = "${CMDLINE_CON} ${CMDLINE_ROOT} ${CMDLINE_IP} ${CMDLINE_ROTATE} ${CMDLINE_OTHER} ${CMDLINE_DEBUG}"
+CMDLINE = "unused -- bootloader passes ATAG list"
 
 ###############################################################
 # module configs specific to this kernel
@@ -60,7 +51,7 @@ do_prepatch() {
 do_configure() {
 	install -m 0644 ${WORKDIR}/logo_linux_clut224.ppm drivers/video/logo/logo_linux_clut224.ppm
 
-	if [ ! -e ${WORKDIR}/defconfig-${VANILLA_VERSION}-${MACHINE} ]; then
+	if [ ! -e ${WORKDIR}/${DEFCONFIG} ]; then
 		die "No default configuration for ${MACHINE} available."
 	fi
 
@@ -81,7 +72,7 @@ do_configure() {
 	    -e '/CONFIG_MTDRAM_TOTAL_SIZE=/d' \
 	    -e '/CONFIG_MTDRAM_ERASE_SIZE=/d' \
 	    -e '/CONFIG_MTDRAM_ABS_POS=/d' \
-	    '${WORKDIR}/defconfig-${VANILLA_VERSION}-${MACHINE}' >>'${S}/.config'
+	    '${WORKDIR}/${DEFCONFIG}' >>'${S}/.config'
 
 	yes '' | oe_runmake oldconfig
 }
