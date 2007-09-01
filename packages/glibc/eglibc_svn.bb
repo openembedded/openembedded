@@ -46,7 +46,7 @@ EXTRA_OECONF = "--enable-kernel=${OLDEST_KERNEL} \
                 --without-selinux \
                 ${GLIBC_EXTRA_OECONF}"
 
-EXTRA_OECONF += "${@get_glibc_fpu_setting(bb, d)}"
+EXTRA_OECONF += "${@get_eglibc_fpu_setting(bb, d)}"
 
 do_configure_prepend() {
         if test -d ${WORKDIR}/trunk/ports ; then
