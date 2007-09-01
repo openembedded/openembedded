@@ -482,8 +482,11 @@ python base_do_fetch() {
 		(type,host,path,_,_,_) = bb.decodeurl(url)
 		uri = "%s://%s%s" % (type,host,path)
 		try:
-		    if not base_chk_file(parser, pn, pv,uri, localpath, d):
-			    bb.note("%s-%s-%s has no section, not checking URI" % (pn,pv,uri))
+			if not base_chk_file(parser, pn, pv,uri, localpath, d):
+				if type != "file":
+					bb.note("%s-%s-%s has no section, not checking URI" % (pn,pv,uri))
+				else:
+					bb.debug("%s-%s-%s has no section, not checking URI" % (pn,pv,uri))
 		except Exception:
 			raise bb.build.FuncFailed("Checksum of '%s' failed" % uri)
 }
@@ -681,7 +684,8 @@ do_populate_staging[dirs] = "${STAGING_DIR}/${TARGET_SYS}/bin ${STAGING_DIR}/${T
 			     ${STAGING_DATADIR} \
 			     ${S} ${B}"
 
-addtask populate_staging after do_package_write
+# Could be compile but populate_staging and do_install shouldn't run at the same time
+addtask populate_staging after do_install
 
 python do_populate_staging () {
 	bb.build.exec_func('do_stage', d)
@@ -847,7 +851,6 @@ def base_after_parse(d):
 
     paths = []
     for p in [ "${PF}", "${P}", "${PN}", "files", "" ]:
-        paths.append(bb.data.expand(os.path.join("${FILE_DIRNAME}", p, "${MACHINE}"), d))
         path = bb.data.expand(os.path.join("${FILE_DIRNAME}", p, "${MACHINE}"), d)
         if os.path.isdir(path):
             paths.append(path)
