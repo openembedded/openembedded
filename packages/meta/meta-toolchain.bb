@@ -2,18 +2,14 @@ DESCRIPTION = "Meta package for building a installable toolchain"
 LICENSE = "MIT"
 DEPENDS = "ipkg-native ipkg-utils-native fakeroot-native sed-native"
 
-inherit rootfs_ipk sdk meta
-
-PACKAGES = ""
-
-do_build[recrdeptask] = "do_build"
+inherit sdk meta
 
 SDK_DIR = "${WORKDIR}/sdk"
 SDK_OUTPUT = "${SDK_DIR}/image"
 SDK_DEPLOY = "${TMPDIR}/deploy/sdk"
 
-IPKG_HOST = "ipkg-cl -f ${SDK_DIR}/ipkg-host.conf -o ${SDK_OUTPUT}"
-IPKG_TARGET = "ipkg-cl -f ${SDK_DIR}/ipkg-target.conf -o ${SDK_OUTPUT}/${prefix}"
+IPKG_HOST = "ipkg-cl -f ${IPKGCONF_SDK} -o ${SDK_OUTPUT}"
+IPKG_TARGET = "ipkg-cl -f ${IPKGCONF_TARGET} -o ${SDK_OUTPUT}/${prefix}"
 
 HOST_INSTALL = "\
     binutils-cross-sdk \
@@ -25,38 +21,16 @@ TARGET_INSTALL = "\
 
 RDEPENDS = "${TARGET_INSTALL} ${HOST_INSTALL}"
 
-sdk_ipk_do_indexes () {
-        set -ex
-        rootfs_ipk_do_indexes
-        set +ex
-}
-
 do_populate_sdk() {
-	sdk_ipk_do_indexes
 	rm -rf ${SDK_OUTPUT}
 	mkdir -p ${SDK_OUTPUT}
 
-	cat <<EOF >${SDK_DIR}/ipkg-host.conf
-src oe file:${DEPLOY_DIR_IPK}/${BUILD_ARCH}
-arch ${BUILD_ARCH} 1
-EOF
-	cat <<EOF >${SDK_DIR}/ipkg-target.conf
-src oe file:${DEPLOY_DIR_IPK}
-EOF
-	ipkgarchs="${PACKAGE_ARCHS}"
-	priority=1
-	for arch in $ipkgarchs; do
-		echo "arch $arch $priority" >> ${SDK_DIR}/ipkg-target.conf
-		echo "arch ${BUILD_ARCH}-$arch-sdk $priority" >> ${SDK_DIR}/ipkg-host.conf
-		priority=$(expr $priority + 5)
-		revipkgarchs="$arch $revipkgarchs"
-		if [ -e ${DEPLOY_DIR_IPK}/$arch/Packages ] ; then
-			echo "src oe-$arch file:${DEPLOY_DIR_IPK}/$arch" >> ${SDK_DIR}/ipkg-target.conf
-		fi
-	done
+	package_update_index_ipk
+	package_generate_ipkg_conf
 
-	rm -r ${SDK_OUTPUT}
-	mkdir -p ${SDK_OUTPUT}
+	for arch in ${PACKAGE_ARCHS}; do
+		revipkgarchs="$arch $revipkgarchs"
+	done
 
 	${IPKG_HOST} update
 	${IPKG_HOST} -force-depends install ${HOST_INSTALL}
