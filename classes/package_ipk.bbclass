@@ -6,6 +6,9 @@ BOOTSTRAP_EXTRA_RDEPENDS += "ipkg-collateral ipkg"
 PACKAGE_WRITE_FUNCS += "do_package_ipk"
 IMAGE_PKGTYPE ?= "ipk"
 
+IPKGCONF_TARGET = "${STAGING_ETCDIR_NATIVE}/ipkg.conf"
+IPKGCONF_SDK =  "${STAGING_ETCDIR_NATIVE}/ipkg-sdk.conf"
+
 python package_ipk_fn () {
 	from bb import data
 	bb.data.setVar('PKGFN', bb.data.getVar('PKG',d), d)
@@ -53,7 +56,7 @@ python package_ipk_install () {
 		ret = os.system('ipkg-make-index -p %s %s ' % (os.path.join(ipkdir, "Packages"), ipkdir))
 		if (ret != 0 ):
 			raise bb.build.FuncFailed
-		f=open(os.path.join(tmpdir, "stamps" ,"do_packages"),"w")
+		f=open(os.path.join(tmpdir, "stamps", "do_packages"),"w")
 		f.close()
 
 	ret = os.system('ipkg-cl  -o %s -f %s update' % (rootfs, conffile))
@@ -62,10 +65,53 @@ python package_ipk_install () {
 		raise bb.build.FuncFailed
 }
 
+#
+# Update the Packages index files in ${DEPLOY_DIR_IPK}
+#
+package_update_index_ipk () {
+	set -x
+
+	ipkgarchs="${PACKAGE_ARCHS}"
+
+	if [ ! -z "${DEPLOY_KEEP_PACKAGES}" ]; then
+		return
+	fi
+
+	touch ${DEPLOY_DIR_IPK}/Packages
+	ipkg-make-index -r ${DEPLOY_DIR_IPK}/Packages -p ${DEPLOY_DIR_IPK}/Packages -l ${DEPLOY_DIR_IPK}/Packages.filelist -m ${DEPLOY_DIR_IPK}
+
+	for arch in $ipkgarchs; do
+		if [ -e ${DEPLOY_DIR_IPK}/$arch/ ] ; then 
+			touch ${DEPLOY_DIR_IPK}/$arch/Packages
+			ipkg-make-index -r ${DEPLOY_DIR_IPK}/$arch/Packages -p ${DEPLOY_DIR_IPK}/$arch/Packages -l ${DEPLOY_DIR_IPK}/$arch/Packages.filelist -m ${DEPLOY_DIR_IPK}/$arch/
+		fi
+	done
+}
+
+#
+# Generate an ipkg conf file ${IPKGCONF_TARGET} suitable for use against 
+# the target system and an ipkg conf file ${IPKGCONF_SDK} suitable for 
+# use against the host system in sdk builds
+#
+package_generate_ipkg_conf () {
+	mkdir -p ${STAGING_ETCDIR_NATIVE}/
+	echo "src oe file:${DEPLOY_DIR_IPK}" > ${IPKGCONF_TARGET}
+	echo "src oe file:${DEPLOY_DIR_IPK}" > ${IPKGCONF_SDK}
+	ipkgarchs="${PACKAGE_ARCHS}"
+	priority=1
+	for arch in $ipkgarchs; do
+		echo "arch $arch $priority" >> ${IPKGCONF_TARGET}
+		echo "arch ${BUILD_ARCH}-$arch-sdk $priority" >> ${IPKGCONF_SDK}
+		priority=$(expr $priority + 5)
+		if [ -e ${DEPLOY_DIR_IPK}/$arch/Packages ] ; then
+		        echo "src oe-$arch file:${DEPLOY_DIR_IPK}/$arch" >> ${IPKGCONF_TARGET}
+		        echo "src oe-$arch file:${DEPLOY_DIR_IPK}/$arch" >> ${IPKGCONF_SDK}
+		fi
+	done
+}
+
 python do_package_ipk () {
-	import copy # to back up env data
-	import sys
-	import re
+	import sys, re, fcntl, copy
 
 	workdir = bb.data.getVar('WORKDIR', d, 1)
 	if not workdir:
@@ -96,15 +142,26 @@ python do_package_ipk () {
 	tmpdir = bb.data.getVar('TMPDIR', d, 1)
 	# Invalidate the packages file
 	if os.access(os.path.join(tmpdir, "stamps", "do_packages"),os.R_OK):
-		os.unlink(os.path.join(tmpdir, "stamps" ,"do_packages"))
+		os.unlink(os.path.join(tmpdir, "stamps", "do_packages"))
 
 	if packages == []:
 		bb.debug(1, "No packages; nothing to do")
 		return
 
+	def lockfile(name):
+		lf = open(name, "a+")
+		fcntl.flock(lf.fileno(), fcntl.LOCK_EX)
+		return lf
+
+	def unlockfile(lf):
+		fcntl.flock(lf.fileno(), fcntl.LOCK_UN)
+		lf.close
+
 	for pkg in packages.split():
 		localdata = bb.data.createCopy(d)
 		root = "%s/install/%s" % (workdir, pkg)
+
+        lf = lockfile(root + ".lock")
 
 		bb.data.setVar('ROOT', '', localdata)
 		bb.data.setVar('ROOT_%s' % pkg, root, localdata)
@@ -134,6 +191,7 @@ python do_package_ipk () {
 		if not g and bb.data.getVar('ALLOW_EMPTY', localdata) != "1":
 			from bb import note
 			note("Not creating empty archive for %s-%s-%s" % (pkg, bb.data.getVar('PV', localdata, 1), bb.data.getVar('PR', localdata, 1)))
+			unlockfile(lf)
 			continue
 
 		controldir = os.path.join(root, 'CONTROL')
@@ -154,7 +212,7 @@ python do_package_ipk () {
 		fields.append(["Priority: %s\n", ['PRIORITY']])
 		fields.append(["Maintainer: %s\n", ['MAINTAINER']])
 		fields.append(["Architecture: %s\n", ['PACKAGE_ARCH']])
-		fields.append(["OE: %s\n", ['P']])
+		fields.append(["OE: %s\n", ['PN']])
 		fields.append(["Homepage: %s\n", ['HOMEPAGE']])
 
 		def pullData(l, d):
@@ -241,4 +299,18 @@ python do_package_ipk () {
 			os.rmdir(controldir)
 		except OSError:
 			pass
+		unlockfile(lf)
 }
+
+python () {
+    import bb
+    if bb.data.getVar('PACKAGES', d, True) != '':
+        bb.data.setVarFlag('do_package_write_ipk', 'depends', 'ipkg-utils-native:do_populate_staging fakeroot-native:do_populate_staging', d)
+}
+
+python do_package_write_ipk () {
+	bb.build.exec_func("read_subpackage_metadata", d)
+	bb.build.exec_func("do_package_ipk", d)
+}
+do_package_write_ipk[dirs] = "${D}"
+
