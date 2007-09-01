@@ -11,15 +11,10 @@ SDK_DEPLOY = "${TMPDIR}/deploy/sdk"
 IPKG_HOST = "ipkg-cl -f ${IPKGCONF_SDK} -o ${SDK_OUTPUT}"
 IPKG_TARGET = "ipkg-cl -f ${IPKGCONF_TARGET} -o ${SDK_OUTPUT}/${prefix}"
 
-HOST_INSTALL = "\
-    binutils-cross-sdk \
-    gcc-cross-sdk \
-    gdb-cross"
-TARGET_INSTALL = "\
-    task-sdk-bare \
-    "
+TOOLCHAIN_HOST_TASK ?= "task-sdk-host"
+TOOLCHAIN_TARGET_TASK ?= "task-sdk-bare"
 
-RDEPENDS = "${TARGET_INSTALL} ${HOST_INSTALL}"
+RDEPENDS = "${TOOLCHAIN_TARGET_TASK} ${TOOLCHAIN_HOST_TASK}"
 
 do_populate_sdk() {
 	rm -rf ${SDK_OUTPUT}
@@ -33,10 +28,10 @@ do_populate_sdk() {
 	done
 
 	${IPKG_HOST} update
-	${IPKG_HOST} -force-depends install ${HOST_INSTALL}
+	${IPKG_HOST} -force-depends install ${TOOLCHAIN_HOST_TASK}
 
 	${IPKG_TARGET} update
-	${IPKG_TARGET} install ${TARGET_INSTALL}
+	${IPKG_TARGET} install ${TOOLCHAIN_TARGET_TASK}
 
 	mkdir -p ${SDK_OUTPUT}/${prefix}/${TARGET_SYS}
 	cp -pPR ${SDK_OUTPUT}/${prefix}/usr/* ${SDK_OUTPUT}/${prefix}/${TARGET_SYS}
