@@ -1,7 +1,7 @@
 DESCRIPTION = "OpenMoko: Misc. Feed Items"
 SECTION = "openmoko/base"
 LICENSE = "MIT"
-PR = "r3"
+PR = "r4"
 
 inherit task
 
@@ -11,4 +11,5 @@ RDEPENDS_task-openmoko-feed = "\
   python \
   python-pygtk \
   python-pyserial \
+  timezones \
 "
