@@ -8,50 +8,19 @@
 do_rootfs[depends] += "ipkg-native:do_populate_staging ipkg-utils-native:do_populate_staging"
 do_rootfs[recrdeptask] += "do_package_write"
 
-IPKG_ARGS = "-f ${T}/ipkg.conf -o ${IMAGE_ROOTFS} ${@base_conditional("PACKAGE_INSTALL_NO_DEPS", "1", "-nodeps", "", d)}"
+IPKG_ARGS = "-f ${IPKGCONF_TARGET} -o ${IMAGE_ROOTFS} ${@base_conditional("PACKAGE_INSTALL_NO_DEPS", "1", "-nodeps", "", d)}"
 
 DISTRO_EXTRA_RDEPENDS += " ipkg ipkg-collateral "
 PACKAGE_INSTALL_NO_DEPS ?= "0"
 
-rootfs_ipk_do_indexes () {
-	set -x
-
-	ipkgarchs="${PACKAGE_ARCHS}"
-
-	if [ -z "${DEPLOY_KEEP_PACKAGES}" ]; then
-		touch ${DEPLOY_DIR_IPK}/Packages
-		ipkg-make-index -r ${DEPLOY_DIR_IPK}/Packages -p ${DEPLOY_DIR_IPK}/Packages -l ${DEPLOY_DIR_IPK}/Packages.filelist -m ${DEPLOY_DIR_IPK}
-	fi
-
-	for arch in $ipkgarchs; do
-		if [ -z "${DEPLOY_KEEP_PACKAGES}" ]; then
-			if [ -e ${DEPLOY_DIR_IPK}/$arch/ ] ; then 
-				touch ${DEPLOY_DIR_IPK}/$arch/Packages
-				ipkg-make-index -r ${DEPLOY_DIR_IPK}/$arch/Packages -p ${DEPLOY_DIR_IPK}/$arch/Packages -l ${DEPLOY_DIR_IPK}/$arch/Packages.filelist -m ${DEPLOY_DIR_IPK}/$arch/
-			fi
-		fi
-	done
-}
-
 fakeroot rootfs_ipk_do_rootfs () {
 	set -x
 
-	rootfs_ipk_do_indexes
+	package_update_index_ipk
+	package_generate_ipkg_conf
 
 	mkdir -p ${T}
 
-	#Add deploy/ipk as well for backward compat
-	echo "src oe file:${DEPLOY_DIR_IPK}" > ${T}/ipkg.conf
-	ipkgarchs="${PACKAGE_ARCHS}"
-
-	priority=1
-	for arch in $ipkgarchs; do
-		echo "arch $arch $priority" >> ${T}/ipkg.conf
-		priority=$(expr $priority + 5)
-		if [ -e ${DEPLOY_DIR_IPK}/$arch/Packages ] ; then
-		        echo "src oe-$arch file:${DEPLOY_DIR_IPK}/$arch" >> ${T}/ipkg.conf
-	    fi
-	done
 	ipkg-cl ${IPKG_ARGS} update
 
 	# Uclibc builds don't provide this stuff...
@@ -71,7 +40,7 @@ fakeroot rootfs_ipk_do_rootfs () {
 	export OFFLINE_ROOT=${IMAGE_ROOTFS}
 	export IPKG_OFFLINE_ROOT=${IMAGE_ROOTFS}
 	mkdir -p ${IMAGE_ROOTFS}/etc/ipkg/
-	grep "^arch" ${T}/ipkg.conf >${IMAGE_ROOTFS}/etc/ipkg/arch.conf
+	grep "^arch" ${IPKGCONF_TARGET} >${IMAGE_ROOTFS}/etc/ipkg/arch.conf
 
 	for i in ${IMAGE_ROOTFS}${libdir}/ipkg/info/*.preinst; do
 		if [ -f $i ] && ! sh $i; then

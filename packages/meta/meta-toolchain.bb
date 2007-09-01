@@ -2,67 +2,36 @@ DESCRIPTION = "Meta package for building a installable toolchain"
 LICENSE = "MIT"
 DEPENDS = "ipkg-native ipkg-utils-native fakeroot-native sed-native"
 
-inherit rootfs_ipk sdk meta
-
-PACKAGES = ""
-
-do_build[recrdeptask] = "do_build"
+inherit sdk meta
 
 SDK_DIR = "${WORKDIR}/sdk"
 SDK_OUTPUT = "${SDK_DIR}/image"
 SDK_DEPLOY = "${TMPDIR}/deploy/sdk"
 
-IPKG_HOST = "ipkg-cl -f ${SDK_DIR}/ipkg-host.conf -o ${SDK_OUTPUT}"
-IPKG_TARGET = "ipkg-cl -f ${SDK_DIR}/ipkg-target.conf -o ${SDK_OUTPUT}/${prefix}"
+IPKG_HOST = "ipkg-cl -f ${IPKGCONF_SDK} -o ${SDK_OUTPUT}"
+IPKG_TARGET = "ipkg-cl -f ${IPKGCONF_TARGET} -o ${SDK_OUTPUT}/${prefix}"
 
-HOST_INSTALL = "\
-    binutils-cross-sdk \
-    gcc-cross-sdk \
-    gdb-cross"
-TARGET_INSTALL = "\
-    task-sdk-bare \
-    "
+TOOLCHAIN_HOST_TASK ?= "task-sdk-host"
+TOOLCHAIN_TARGET_TASK ?= "task-sdk-bare"
 
-RDEPENDS = "${TARGET_INSTALL} ${HOST_INSTALL}"
-
-sdk_ipk_do_indexes () {
-        set -ex
-        rootfs_ipk_do_indexes
-        set +ex
-}
+RDEPENDS = "${TOOLCHAIN_TARGET_TASK} ${TOOLCHAIN_HOST_TASK}"
 
 do_populate_sdk() {
-	sdk_ipk_do_indexes
 	rm -rf ${SDK_OUTPUT}
 	mkdir -p ${SDK_OUTPUT}
 
-	cat <<EOF >${SDK_DIR}/ipkg-host.conf
-src oe file:${DEPLOY_DIR_IPK}/${BUILD_ARCH}
-arch ${BUILD_ARCH} 1
-EOF
-	cat <<EOF >${SDK_DIR}/ipkg-target.conf
-src oe file:${DEPLOY_DIR_IPK}
-EOF
-	ipkgarchs="${PACKAGE_ARCHS}"
-	priority=1
-	for arch in $ipkgarchs; do
-		echo "arch $arch $priority" >> ${SDK_DIR}/ipkg-target.conf
-		echo "arch ${BUILD_ARCH}-$arch-sdk $priority" >> ${SDK_DIR}/ipkg-host.conf
-		priority=$(expr $priority + 5)
+	package_update_index_ipk
+	package_generate_ipkg_conf
+
+	for arch in ${PACKAGE_ARCHS}; do
 		revipkgarchs="$arch $revipkgarchs"
-		if [ -e ${DEPLOY_DIR_IPK}/$arch/Packages ] ; then
-			echo "src oe-$arch file:${DEPLOY_DIR_IPK}/$arch" >> ${SDK_DIR}/ipkg-target.conf
-		fi
 	done
 
-	rm -r ${SDK_OUTPUT}
-	mkdir -p ${SDK_OUTPUT}
-
 	${IPKG_HOST} update
-	${IPKG_HOST} -force-depends install ${HOST_INSTALL}
+	${IPKG_HOST} -force-depends install ${TOOLCHAIN_HOST_TASK}
 
 	${IPKG_TARGET} update
-	${IPKG_TARGET} install ${TARGET_INSTALL}
+	${IPKG_TARGET} install ${TOOLCHAIN_TARGET_TASK}
 
 	mkdir -p ${SDK_OUTPUT}/${prefix}/${TARGET_SYS}
 	cp -pPR ${SDK_OUTPUT}/${prefix}/usr/* ${SDK_OUTPUT}/${prefix}/${TARGET_SYS}

@@ -98,3 +98,17 @@ python do_package_tar () {
 		if ret != 0:
 			bb.error("Creation of tar %s failed." % tarfn)
 }
+
+python () {
+    import bb
+    if bb.data.getVar('PACKAGES', d, True) != '':
+        bb.data.setVarFlag('do_package_write_tar', 'depends', 'tar-native:do_populate_staging', d)
+}
+
+
+python do_package_write_tar () {
+	bb.build.exec_func("read_subpackage_metadata", d)
+	bb.build.exec_func("do_package_tar", d)
+}
+do_package_write_tar[dirs] = "${D}"
+#addtask package_write_tar before do_build after do_package
