@@ -11,10 +11,6 @@ PACKAGE_ARCH = "${BUILD_ARCH}"
 # RPROVIDES becomes unnecessary.
 RPROVIDES = "${PN}"
 
-# Break the circular dependency as a result of DEPENDS
-# in package.bbclass
-PACKAGE_DEPENDS = ""
-
 TARGET_ARCH = "${BUILD_ARCH}"
 TARGET_OS = "${BUILD_OS}"
 TARGET_VENDOR = "${BUILD_VENDOR}"
@@ -95,3 +91,5 @@ do_stage () {
 do_install () {
 	true
 }
+
+PKG_CONFIG_PATH .= "${EXTRA_NATIVE_PKGCONFIG_PATH}"
