@@ -78,7 +78,7 @@ python do_package_tar () {
 		bb.data.setVar('OVERRIDES', '%s:%s' % (overrides, pkg), localdata)
 
 		bb.data.update_data(localdata)
-# stuff
+
 		root = bb.data.getVar('ROOT', localdata)
 		bb.mkdirhier(root)
 		basedir = os.path.dirname(root)
@@ -97,9 +97,4 @@ python do_package_tar () {
 		ret = os.system("tar -czvf %s %s" % (tarfn, '.'))
 		if ret != 0:
 			bb.error("Creation of tar %s failed." % tarfn)
-
-		file(bb.data.expand('${STAGING_DIR}/pkgdata/runtime/%s.packaged' % pkg, d), 'w').close()
-
-# end stuff
-		del localdata
 }
