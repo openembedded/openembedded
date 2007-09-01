@@ -112,9 +112,17 @@ fakeroot rootfs_deb_do_rootfs () {
 	if [ -e ${IMAGE_ROOTFS}/usr/dpkg/alternatives ]; then
 		rmdir ${IMAGE_ROOTFS}/usr/dpkg/alternatives
 	fi
-	ln -s /usr/lib/ipkg/alternatives ${IMAGE_ROOTFS}/usr/dpkg/alternatives
-	ln -s /usr/dpkg/info ${IMAGE_ROOTFS}/usr/lib/ipkg/info
-	ln -s /usr/dpkg/status ${IMAGE_ROOTFS}/usr/lib/ipkg/status
+        if [ ! -e ${IMAGE_ROOTFS}/usr/lib/ipkg ] ; then
+                mkdir -p ${IMAGE_ROOTFS}/usr/lib/ipkg
+        fi
+
+        if [ ! -e ${IMAGE_ROOTFS}/etc/ipkg ] ; then
+                mkdir -p ${IMAGE_ROOTFS}/etc/ipkg
+        fi
+ 
+	ln -sf /usr/lib/ipkg/alternatives ${IMAGE_ROOTFS}/usr/dpkg/alternatives
+	ln -sf /usr/dpkg/info ${IMAGE_ROOTFS}/usr/lib/ipkg/info
+	ln -sf /usr/dpkg/status ${IMAGE_ROOTFS}/usr/lib/ipkg/status
 
 	${ROOTFS_POSTPROCESS_COMMAND}
 
