@@ -3,10 +3,12 @@
 #
 
 do_rootfs[depends] += "dpkg-native:do_populate_staging apt-native:do_populate_staging"
+do_rootfs[recrdeptask] += "do_package_write"
 
 fakeroot rootfs_deb_do_rootfs () {
 	set +e
-	mkdir -p ${IMAGE_ROOTFS}/var/dpkg/{info,updates}
+	mkdir -p ${IMAGE_ROOTFS}/var/dpkg/info
+	mkdir -p ${IMAGE_ROOTFS}/var/dpkg/updates
 
 	rm -f ${STAGING_DIR}/etc/apt/sources.list.rev
 	rm -f ${STAGING_DIR}/etc/apt/preferences
@@ -53,26 +55,26 @@ fakeroot rootfs_deb_do_rootfs () {
 	_getflag () {
 		cat ${IMAGE_ROOTFS}/var/dpkg/status | sed -n -e "/^Package: $2\$/{n; s/Status: install ok .*/$1/; p}"
 	}
-        
-        if [ x${TARGET_OS} = "xlinux" ] || [ x${TARGET_OS} = "xlinux-gnueabi" ] ; then
-	  if [ ! -z "${LINGUAS_INSTALL}" ]; then
-		  apt-get install glibc-localedata-i18n --force-yes --allow-unauthenticated
-		  if [ $? -ne 0 ]; then
-			  exit $?
-		  fi
-		  for i in ${LINGUAS_INSTALL}; do
-			  apt-get install $i --force-yes --allow-unauthenticated
-			  if [ $? -ne 0 ]; then
-				  exit $?
-			  fi
-		  done
-	  fi
-        fi
+
+	if [ x${TARGET_OS} = "xlinux" ] || [ x${TARGET_OS} = "xlinux-gnueabi" ] ; then
+		if [ ! -z "${LINGUAS_INSTALL}" ]; then
+			apt-get install glibc-localedata-i18n --force-yes --allow-unauthenticated
+			if [ $? -ne 0 ]; then
+				exit 1
+			fi
+			for i in ${LINGUAS_INSTALL}; do
+				apt-get install $i --force-yes --allow-unauthenticated
+				if [ $? -ne 0 ]; then
+					exit 1
+				fi
+			done
+		fi
+	fi
 
 	if [ ! -z "${PACKAGE_INSTALL}" ]; then
 		for i in ${PACKAGE_INSTALL}; do
 			apt-get install $i --force-yes --allow-unauthenticated
-			if [ $? -eq 1 ]; then
+			if [ $? -ne 0 ]; then
 				exit 1
 			fi
 			find ${IMAGE_ROOTFS} -name \*.dpkg-new | for i in `cat`; do
@@ -132,7 +134,7 @@ rootfs_deb_log_check() {
 			echo -e "log_check: Matched keyword: [$keyword_die]\n"
 			echo "$lf_txt" | grep -v log_check | grep -C 5 -i "$keyword_die"
 			echo ""
-			do_exit=1				
+			do_exit=1
 		fi
 	done
 	test "$do_exit" = 1 && exit 1						

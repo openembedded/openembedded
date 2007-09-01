@@ -6,6 +6,7 @@
 #
 
 do_rootfs[depends] += "ipkg-native:do_populate_staging ipkg-utils-native:do_populate_staging"
+do_rootfs[recrdeptask] += "do_package_write"
 
 IPKG_ARGS = "-f ${T}/ipkg.conf -o ${IMAGE_ROOTFS} ${@base_conditional("PACKAGE_INSTALL_NO_DEPS", "1", "-nodeps", "", d)}"
 
@@ -17,10 +18,10 @@ rootfs_ipk_do_indexes () {
 
 	ipkgarchs="${PACKAGE_ARCHS}"
 
-        if [ -z "${DEPLOY_KEEP_PACKAGES}" ]; then
-                touch ${DEPLOY_DIR_IPK}/Packages
-                ipkg-make-index -r ${DEPLOY_DIR_IPK}/Packages -p ${DEPLOY_DIR_IPK}/Packages -l ${DEPLOY_DIR_IPK}/Packages.filelist -m ${DEPLOY_DIR_IPK}
-        fi
+	if [ -z "${DEPLOY_KEEP_PACKAGES}" ]; then
+		touch ${DEPLOY_DIR_IPK}/Packages
+		ipkg-make-index -r ${DEPLOY_DIR_IPK}/Packages -p ${DEPLOY_DIR_IPK}/Packages -l ${DEPLOY_DIR_IPK}/Packages.filelist -m ${DEPLOY_DIR_IPK}
+	fi
 
 	for arch in $ipkgarchs; do
 		if [ -z "${DEPLOY_KEEP_PACKAGES}" ]; then
@@ -52,21 +53,19 @@ fakeroot rootfs_ipk_do_rootfs () {
 	    fi
 	done
 	ipkg-cl ${IPKG_ARGS} update
-        
-        # Uclibc builds don't provide this stuff...
-        #
-        if [ x${TARGET_OS} = "xlinux" ] || [ x${TARGET_OS} = "xlinux-gnueabi" ] ; then 
-	  if [ ! -z "${LINGUAS_INSTALL}" ]; then
-	  	  ipkg-cl ${IPKG_ARGS} install glibc-localedata-i18n
-		  for i in ${LINGUAS_INSTALL}; do
-			  ipkg-cl ${IPKG_ARGS} install $i 
-		  done
-	  fi
-        fi
-	  if [ ! -z "${PACKAGE_INSTALL}" ]; then
-		  ipkg-cl ${IPKG_ARGS} install ${PACKAGE_INSTALL}
-	  fi
-       
+
+	# Uclibc builds don't provide this stuff...
+	if [ x${TARGET_OS} = "xlinux" ] || [ x${TARGET_OS} = "xlinux-gnueabi" ] ; then 
+		if [ ! -z "${LINGUAS_INSTALL}" ]; then
+			ipkg-cl ${IPKG_ARGS} install glibc-localedata-i18n
+			for i in ${LINGUAS_INSTALL}; do
+				ipkg-cl ${IPKG_ARGS} install $i 
+			done
+		fi
+	fi
+	if [ ! -z "${PACKAGE_INSTALL}" ]; then
+		ipkg-cl ${IPKG_ARGS} install ${PACKAGE_INSTALL}
+	fi
 
 	export D=${IMAGE_ROOTFS}
 	export OFFLINE_ROOT=${IMAGE_ROOTFS}
@@ -111,4 +110,8 @@ rootfs_ipk_log_check() {
 	done
 	test "$do_exit" = 1 && exit 1
 	true
+}
+
+remove_packaging_data_files() {
+	rm -rf ${IMAGE_ROOTFS}/usr/lib/ipkg/
 }
