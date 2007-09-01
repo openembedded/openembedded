@@ -1,7 +1,3 @@
-PR = "r0"
-
-export IMAGE_BASENAME = "gpephone-image-vm"
-
 GPE_EXTRA_THEMES = ""
 
 GPE_EXTRA_INSTALL_none = ""
@@ -21,9 +17,8 @@ GPE_EXTRA_INSTALL += "${GPE_BIGFLASH_INSTALL}"
 XSERVER ?= "xserver-kdrive-fbdev"
 
 DEPENDS = "${MACHINE_TASK_PROVIDER} task-gpephone"
-RDEPENDS = "${PACKAGE_INSTALL}"
 
-export PACKAGE_INSTALL = "\
+IMAGE_INSTALL = "\
     ${MACHINE_TASK_PROVIDER} \
     gpephone-task-base \
     gpephone-task-pim \
@@ -37,6 +32,3 @@ export PACKAGE_INSTALL = "\
 inherit image
 
 ROOTFS_POSTPROCESS_COMMAND += "set_image_autologin; "
-
-
-LICENSE = "MIT"

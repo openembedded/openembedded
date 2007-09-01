@@ -2,7 +2,7 @@ require nylon-image-standard.bb
 
 export IMAGE_BASENAME = "nylon-extra"
 
-RDEPENDS = "\
+IMAGE_INSTALL = "\
     kismet \
     netperf \
     nylon-statistics \

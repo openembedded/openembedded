@@ -1,8 +1,3 @@
-
-PR = "r22"
-
-export IMAGE_BASENAME = "gpe-image"
-
 GPE_EXTRA_THEMES = "gpe-theme-industrial"
 
 GPE_EXTRA_INSTALL_none = ""
@@ -31,9 +26,7 @@ DEPENDS = "${MACHINE_TASK_PROVIDER} \
            task-gpe-games \
            virtual/xserver"
 
-RDEPENDS = "${PACKAGE_INSTALL}"
-
-export PACKAGE_INSTALL = "\
+IMAGE_INSTALL = "\
     ${MACHINE_TASK_PROVIDER} \
     task-gpe-base \
     task-gpe-pim \
@@ -45,4 +38,3 @@ export PACKAGE_INSTALL = "\
 #ROOTFS_POSTPROCESS_COMMAND += "zap_root_password; "
 
 inherit image
-LICENSE = "MIT"

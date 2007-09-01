@@ -1,6 +1,11 @@
 inherit rootfs_${IMAGE_PKGTYPE}
 
+LICENSE = "MIT"
 PACKAGES = ""
+RDEPENDS += "${IMAGE_INSTALL}"
+
+export IMAGE_BASENAME ?= "${PN}"
+export PACKAGE_INSTALL ?= "${IMAGE_INSTALL}"
 
 # We need to recursively follow RDEPENDS and RRECOMMENDS for images
 do_rootfs[recrdeptask] = "do_package_write do_deploy do_populate_staging"
@@ -50,14 +55,13 @@ def get_devtable_list(d):
 	return str
 
 IMAGE_POSTPROCESS_COMMAND ?= ""
+MACHINE_POSTPROCESS_COMMAND ?= ""
+ROOTFS_POSTPROCESS_COMMAND ?= ""
 
 # some default locales
 IMAGE_LINGUAS ?= "de-de fr-fr en-gb"
 
 LINGUAS_INSTALL = "${@" ".join(map(lambda s: "locale-base-%s" % s, bb.data.getVar('IMAGE_LINGUAS', d, 1).split()))}"
-
-ROOTFS_POSTPROCESS_COMMAND ?= ""
-MACHINE_POSTPROCESS_COMMAND ?= ""
 
 do_rootfs[nostamp] = "1"
 do_rootfs[dirs] = "${TOPDIR}"

@@ -1,23 +1,16 @@
-export IMAGE_BASENAME = "jlime-opie"
-export IMAGE_LINGUAS = ""
-
-LICENSE = "MIT"
-PR = "r21"
+IMAGE_LINGUAS = ""
 
 DEPENDS = "task-bootstrap task-opie"
-RDEPENDS = "${INSTALL_PACKAGES}"
 
-extra_stuff := '${@base_conditional("ROOT_FLASH_SIZE", "24", "", "task-opie-extra-games task-opie-extra-apps task-opie-extra-styles konqueror-embedded",d)}'
+extra_stuff = '${@base_conditional("ROOT_FLASH_SIZE", "24", "", "task-opie-extra-games task-opie-extra-apps task-opie-extra-styles konqueror-embedded",d)}'
 
-INSTALL_PACKAGES = "task-bootstrap task-opie-base task-opie-base-applets \
+IMAGE_INSTALL = "task-bootstrap task-opie-base task-opie-base-applets \
 		    task-opie-base-inputmethods task-opie-base-apps \
 		    task-opie-base-settings task-opie-base-decorations \
 		    task-opie-base-styles task-opie-base-pim \
 		    task-opie-extra-settings \
 		    task-opie-bluetooth task-opie-irda \
 		    ${extra_stuff}"
-
-export PACKAGE_INSTALL = "${INSTALL_PACKAGES}"
 
 # merge feed-sources into ipkg.conf for opie-aqpkg as it can't handle feed-sources outside of ipkg.conf.
 merge_feeds() {

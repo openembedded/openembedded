@@ -1,20 +1,13 @@
-export IMAGE_BASENAME = "opie-image"
-export IMAGE_LINGUAS = ""
-
-LICENSE = "MIT"
-PR = "r22"
+IMAGE_LINGUAS = ""
 
 DEPENDS = "${MACHINE_TASK_PROVIDER} task-opie"
-RDEPENDS = "${INSTALL_PACKAGES}"
 
-INSTALL_PACKAGES = "${MACHINE_TASK_PROVIDER} task-opie-base task-opie-base-applets \
+IMAGE_INSTALL = "${MACHINE_TASK_PROVIDER} task-opie-base task-opie-base-applets \
 		    task-opie-base-inputmethods task-opie-base-apps \
 		    task-opie-base-settings task-opie-base-decorations \
 		    task-opie-base-styles task-opie-base-pim \
 		    task-opie-extra-settings \
 		    task-opie-bluetooth task-opie-irda "
-
-export PACKAGE_INSTALL = "${INSTALL_PACKAGES}"
 
 # merge feed-sources into ipkg.conf for opie-aqpkg as it can't handle feed-sources outside of ipkg.conf.
 merge_feeds() {

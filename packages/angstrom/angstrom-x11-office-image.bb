@@ -1,6 +1,4 @@
 #Angstrom X11 image, with apps and kernel modules included
-LICENSE = "MIT"
-PR = "r1"
 
 PREFERRED_PROVIDER_libgpewidget 	?= "libgpewidget"
 PREFERRED_PROVIDER_tslib 		?= "tslib"
@@ -16,7 +14,7 @@ XSERVER ?= "xserver-kdrive-fbdev"
 export IMAGE_BASENAME = "x11-office-image"
 
 DEPENDS = "task-base"
-RDEPENDS = "\
+IMAGE_INSTALL = "\
     ${XSERVER} \
     task-base-extended \
     angstrom-x11-base-depends \
@@ -31,9 +29,6 @@ RDEPENDS = "\
     midori minimo \
     gphoto2 \
     ${ANGSTROM_EXTRA_INSTALL}"
-
-
-export PACKAGE_INSTALL = "${RDEPENDS}"
 
 #zap root password for release images
 ROOTFS_POSTPROCESS_COMMAND += '${@base_conditional("DISTRO_TYPE", "release", "zap_root_password; ", "",d)}'

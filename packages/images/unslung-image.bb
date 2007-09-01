@@ -1,5 +1,3 @@
-LICENSE = "MIT"
-PR = "r26"
 COMPATIBLE_MACHINE = "nslu2"
 
 IMAGE_BASENAME = "unslung"
@@ -11,11 +9,7 @@ USE_DEVFS = "1"
 DEPENDS  = "virtual/kernel \
 	${UNSLUNG_EXTRA_DEPENDS}"
 
-RDEPENDS  = "kernel update-modules unslung-rootfs \
-	libc6-unslung slingbox ipkg libipkg \
-	${UNSLUNG_EXTRA_RDEPENDS}"
-
-PACKAGE_INSTALL = "kernel update-modules unslung-rootfs \
+IMAGE_INSTALL = "kernel update-modules unslung-rootfs \
 	libc6-unslung slingbox ipkg libipkg \
 	kernel-module-netconsole \
 	${UNSLUNG_EXTRA_INSTALL}"

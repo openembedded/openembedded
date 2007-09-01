@@ -1,13 +1,8 @@
-export IMAGE_BASENAME = "opie-image-16mb"
-export IMAGE_LINGUAS = ""
-
-LICENSE = "MIT"
-PR = "r1"
+IMAGE_LINGUAS = ""
 
 DEPENDS = "${MACHINE_TASK_PROVIDER} task-opie-16mb"
-RDEPENDS = "${INSTALL_PACKAGES}"
 
-INSTALL_PACKAGES = "task-boot \
+IMAGE_INSTALL = "task-boot \
                     ipkg ipkg-collateral \
                     dropbear \
                     task-opie-16mb-base \
@@ -17,8 +12,6 @@ INSTALL_PACKAGES = "task-boot \
                     task-opie-16mb-apps \
                     task-opie-16mb-pim \
 		    task-opie-irda"
-
-export PACKAGE_INSTALL = "${INSTALL_PACKAGES}"
 
 # merge feed-sources into ipkg.conf for opie-aqpkg as it can't handle feed-sources outside of ipkg.conf.
 merge_feeds() {

@@ -16,5 +16,5 @@ NYLON_STANDARD = "\
 DEPENDS += "hostap-modules ntp \
 	${NYLON_STANDARD}"
 
-RDEPENDS += "hostap-modules-pci ntpdate less nano elvis-tiny \
+IMAGE_INSTALL += "hostap-modules-pci ntpdate less nano elvis-tiny \
 	${NYLON_STANDARD}"

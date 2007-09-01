@@ -75,10 +75,10 @@ KERNEL_MODULES = " \
 
 DEPENDS += "${NYLON_EXTENDED_DEPENDS}"
 
-RDEPENDS += "${NYLON_EXTENDED_DEPENDS} ${KERNEL_MODULES} \
+IMAGE_INSTALL += "${NYLON_EXTENDED_DEPENDS} ${KERNEL_MODULES} \
 	${NYLON_EXTENDED_RDEPENDS} elvis-tools"
 
-RDEPENDS_append_mtx-1 = "\
+IMAGE_INSTALL_append_mtx-1 = "\
     kernel-module-au1x00-bi \
     kernel-module-network-fd \
     kernel-module-usbdcore"

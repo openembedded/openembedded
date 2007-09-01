@@ -1,6 +1,4 @@
 #Angstrom X11 image
-LICENSE = "MIT"
-PR = "r11"
 
 PREFERRED_PROVIDER_libgpewidget 	?= "libgpewidget"
 PREFERRED_PROVIDER_tslib 		?= "tslib"
@@ -16,16 +14,13 @@ XSERVER ?= "xserver-kdrive-fbdev"
 export IMAGE_BASENAME = "x11-image"
 
 DEPENDS = "task-base"
-RDEPENDS = "\
+IMAGE_INSTALL = "\
     ${XSERVER} \
     task-base-extended \
     angstrom-x11-base-depends \
     angstrom-gpe-task-base \
     angstrom-gpe-task-settings \
     ${ANGSTROM_EXTRA_INSTALL}"
-
-
-export PACKAGE_INSTALL = "${RDEPENDS}"
 
 #zap root password for release images
 ROOTFS_POSTPROCESS_COMMAND += '${@base_conditional("DISTRO_TYPE", "release", "zap_root_password; ", "",d)}'

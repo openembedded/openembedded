@@ -5,11 +5,9 @@
 #
 DESCRIPTION = "Generic SlugOS image"
 HOMEPAGE = "http://www.nslu2-linux.org"
-LICENSE = "MIT"
-PR = "r46"
 
 DEPENDS = "task-slugos"
-PACKAGE_INSTALL = "task-slugos"
+IMAGE_INSTALL = "task-slugos"
 
 COMPATIBLE_MACHINE = "nslu2"
 
