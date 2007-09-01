@@ -1,6 +1,9 @@
 STAMP = "${TMPDIR}/stamps/${MULTIMACH_ARCH}${TARGET_VENDOR}-${TARGET_OS}/${PF}"
 WORKDIR = "${TMPDIR}/work/${MULTIMACH_ARCH}${TARGET_VENDOR}-${TARGET_OS}/${PF}"
 STAGING_KERNEL_DIR = "${STAGING_DIR}/${MULTIMACH_ARCH}${TARGET_VENDOR}-${TARGET_OS}/kernel"
+# Enable me to fix pkgdata problems with multimachine
+# Requires all install tasks to rerun (wipe all install stamps from tmp/stamps/
+#PKGDATA_DIR = "${STAGING_DIR}/pkgdata/${MULTIMACH_ARCH}${TARGET_VENDOR}-${TARGET_OS}"
 
 # Find any machine specific sub packages and if present, mark the 
 # whole package as machine specific for multimachine purposes.
