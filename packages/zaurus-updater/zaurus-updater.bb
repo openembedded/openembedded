@@ -1,7 +1,7 @@
 DESCRIPTION = "Encrypted shellscript for the Zaurus ROM update"
 DEPENDS = "encdec-updater-native"
 LICENSE = "zaurus-updater"
-PR = "r5"
+PR = "r6"
 
 PACKAGES = ""
 PACKAGE_ARCH = "${MACHINE_ARCH}"
@@ -28,4 +28,4 @@ do_deploy() {
 	esac
 }
 
-addtask deploy before do_package after do_compile
+addtask deploy before do_build after do_compile
