@@ -4,7 +4,7 @@ LICENSE = "GPL"
 
 inherit kernel
 
-RPROVIDES_kernel-image += "hostap-modules"
+RPROVIDES_kernel-base += "hostap-modules"
 
 DOSRC = "http://www.do13.de/openzaurus/patches"
 RPSRC = "http://www.rpsys.net/openzaurus/patches/archive"
@@ -13,17 +13,9 @@ BASRC = "http://www.orca.cx/zaurus/patches"
 CHSRC = "http://oz.drigon.com/patches"
 TKSRC = "http://www.informatik.hu-berlin.de/~tkunze/zaurus/patches"
 
-##############################################################
-# Compensate for sucky bootloader on all Sharp Zaurus models
-#
-FILES_kernel-image = ""
-ALLOW_EMPTY = "1"
-
 EXTRA_OEMAKE = "OPENZAURUS_RELEASE=-${DISTRO_VERSION}"
 COMPATIBLE_HOST = "(arm|i.86).*-linux"
-COMPATIBLE_MACHINE = '(collie|poodle|c7x0|akita|spitz|tosa|hx2000|qemuarm|qemux86|bootcdx86)'
-KERNEL_IMAGETYPE_qemux86 = "bzImage"
-KERNEL_IMAGETYPE_bootcdx86 = "bzImage"
+COMPATIBLE_MACHINE = '(collie|poodle|c7x0|akita|spitz|tosa|hx2000|qemuarm|qemux86|bootcdx86|htcuniversal)'
 
 KERNEL_CUSTOM_NAME ?= ""
 KERNEL_DEPLOY_NAME ?= "${KERNEL_IMAGETYPE}-${PV}-${KERNEL_CUSTOM_NAME}${MACHINE}-${DATETIME}.bin"
@@ -32,8 +24,10 @@ KERNEL_DEFCONFIG ?= "defconfig-${MACHINE}"
 
 CMDLINE_CON = "console=ttyS0,115200n8 console=tty1 noinitrd"
 CMDLINE_CON_collie = "console=ttySA0,115200n8 console=tty1 noinitrd"
+CMDLINE_CON_qemuarm = "console=ttyAMA0,115200n8 console=tty1 noinitrd"
 CMDLINE_ROOT ?= "root=/dev/mtdblock2 rootfstype=jffs2"
 CMDLINE_ROOT_spitz ?= "root=/dev/hda1 rootfstype=ext3 rootdelay=1 rw"
+#CMDLINE_ROOT_spitz = "root=/dev/mmcblk0p2 rootfstype=ext2 rootdelay=3 rw"
 CMDLINE_OTHER = "dyntick=enable"
 CMDLINE_DEBUG = '${@base_conditional("DISTRO_TYPE", "release", "quiet", "debug",d)}'
 

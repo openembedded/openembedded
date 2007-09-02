@@ -32,6 +32,6 @@ IMAGE_DEVICE_TABLES = "files/device_table-minimal.txt \
                        files/device_table-ezx.txt"
 
 # Use tune-xscale per default. Machine independent feeds should be built with tune-strongarm.
-require conf/machine/include/tune-xscale.conf
+require conf/machine/include/tune-xscale.inc
 
 SERIAL_CONSOLE = "115200 ttyS0"

@@ -23,4 +23,4 @@ IMAGE_DEVICE_TABLES = "files/device_table-slugos.txt"
 IMAGE_FSTYPES = "tar.gz"
 
 #tune for the MPC5200B cpu
-require conf/machine/include/tune-ppc603e.conf
+require conf/machine/include/tune-ppc603e.inc

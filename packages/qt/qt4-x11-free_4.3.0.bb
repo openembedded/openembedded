@@ -81,9 +81,10 @@ do_stage() {
 	for pcc in AssistantClient DBus Test UiTools ; do
 		sed -i -e 's,${S}/lib,${STAGING_QT_DIR}/lib,g' ${STAGING_QT_DIR}/lib/pkgconfig/Qt${pcc}.pc
 	done
+	install -d ${PKG_CONFIG_DIR}/
         for pc in ${STAGING_QT_DIR}/lib/pkgconfig/*.pc ; do
 		sed -i -e 's,$(OE_QMAKE_LIBS_X11),-lX11 -lXext,g' $pc
-                install -m 0644 $pc ${PKG_CONFIG_PATH}/
+                install -m 0644 $pc ${PKG_CONFIG_DIR}/
         done
 }
 

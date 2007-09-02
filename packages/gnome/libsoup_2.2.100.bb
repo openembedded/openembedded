@@ -8,9 +8,9 @@ SRC_URI = "http://ftp.gnome.org/pub/GNOME/sources/${PN}/2.2/${PN}-${PV}.tar.bz2"
 inherit autotools pkgconfig
 
 do_stage() {
-	rm -f ${PKG_CONFIG_PATH}/libsoup*
+	rm -f ${PKG_CONFIG_DIR}/libsoup*
 	autotools_stage_all
-	ln -sf ${PKG_CONFIG_PATH}/libsoup.pc ${PKG_CONFIG_PATH}/libsoup-2.2.pc
+	ln -sf ${PKG_CONFIG_DIR}/libsoup.pc ${PKG_CONFIG_DIR}/libsoup-2.2.pc
 }
 
 FILES_${PN} = "${libdir}/lib*.so.*"

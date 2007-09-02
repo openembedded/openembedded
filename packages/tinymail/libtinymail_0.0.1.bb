@@ -2,20 +2,16 @@ DESCRIPTION = "TinyMail is an attempt to create an E-mail framework for mobile d
 SECTION = "x11/utils"
 LICENSE = "LGPL"
 DEPENDS = "gtk+ glib-2.0 gnome-vfs gconf-dbus libgnomeui"
-PV = "0.0+svn${SRCDATE}"
-PR = "r3"
 
 EXTRA_OECONF=" --disable-gnome --with-platform=gpe --with-html-component=none"
 
-SRC_URI = "svn://svn.tinymail.org/svn/tinymail/;module=trunk;proto=http \
-	   file://camel-lite-configure-hack.patch;patch=1;maxdate=20061113 \
-	   file://no-iconv-detect.patch;patch=1;mindate=20061114 \
+SRC_URI = "http://tinymail.org/files/releases/pre-releases/v0.0.1/libtinymail-0.0.1.tar.bz2 \
+	   file://no-iconv-detect.patch;patch=1 \
 	   file://iconv-detect.h \
 	   file://gtk-doc.m4 \
            file://gtk-doc.make"
 
 inherit pkgconfig autotools
-S = "${WORKDIR}/trunk"
 
 do_configure_prepend() {
         mkdir -p m4
