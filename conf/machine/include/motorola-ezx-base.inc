@@ -17,8 +17,11 @@ MACHINE_FEATURES = "kernel26 touchscreen apm alsa bluetooth usbgadget usbhost ke
 
 # the EZX phones need a userspace daemon to stop the BP from shutting down the phone 
 MACHINE_EXTRA_RDEPENDS += "opentapi"
+
 MACHINE_DISPLAY_WIDTH_PIXELS = "240"
 MACHINE_DISPLAY_HEIGHT_PIXELS = "320"
+MACHINE_DISPLAY_ORIENTATION = "0"
+MACHINE_DISPLAY_PPI = "180"
 
 ROOT_FLASH_SIZE = "24"
 
