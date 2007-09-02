@@ -18,7 +18,7 @@ EXTRA_IMAGEDEPENDS += "zaurus-updater"
 IMAGE_FSTYPES ?= "jffs2 tar.gz"
 
 # Use tune-xscale per default. Machine independent feeds should be built with tune-strongarm.
-include conf/machine/include/tune-xscale.conf
+include conf/machine/include/tune-xscale.inc
 
 SERIAL_CONSOLE = "115200 ttyS0"
 

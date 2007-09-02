@@ -10,8 +10,8 @@ EXTRA_IMAGECMD_jffs2 = "--pad --eraseblock=0x20000 -n"
 
 PREFERRED_PROVIDER_virtual/kernel ?= "ixp4xx-kernel"
 
-require conf/machine/include/tune-xscale.conf
-require conf/machine/include/tune-thumb.conf
+require conf/machine/include/tune-xscale.inc
+require conf/machine/include/tune-thumb.inc
 
 #-------------------------------------------------------------------------------
 # Board defaults
