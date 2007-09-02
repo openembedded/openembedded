@@ -1,5 +1,5 @@
 # Zaurus Clamshell specific configuration for kernel 2.6
-# Don't forget to include zaurus-clamshell.conf as well
+# Don't forget to include zaurus-clamshell.inc as well
 
 TARGET_ARCH = "arm"
 PACKAGE_EXTRA_ARCHS = "armv4 armv4t armv5e armv5te"
@@ -14,8 +14,6 @@ EXTRA_IMAGECMD_jffs2 = "--little-endian --eraseblock=${ERASEBLOCKSIZE} --pad --f
 IMAGE_CMD_jffs2 = "mkfs.jffs2 -x lzo --root=${IMAGE_ROOTFS} --output=${DEPLOY_DIR_IMAGE}/${IMAGE_NAME}.rootfs.jffs2 ${EXTRA_IMAGECMD}"
 
 EXTRA_IMAGEDEPENDS += "zaurus-updater"
-
-IMAGE_FSTYPES ?= "jffs2 tar.gz"
 
 # Use tune-xscale per default. Machine independent feeds should be built with tune-strongarm.
 include conf/machine/include/tune-xscale.inc
@@ -39,6 +37,7 @@ MACHINE_EXTRA_RRECOMMENDS_spitz  = "kernel-module-snd-soc-spitz"
 MACHINE_EXTRA_RRECOMMENDS_poodle = "kernel-module-snd-soc-poodle"
 
 GUI_MACHINE_CLASS = "bigscreen"
+GUI_MACHINE_CLASS_collie = "smallscreen"
 GUI_MACHINE_CLASS_poodle = "smallscreen"
 
 MACHINE_POSTPROCESS_COMMAND = "zaurus_make_installkit"
@@ -70,3 +69,4 @@ zaurus_make_installkit () {
 
 # Don't include kernels in standard images for Zaurus machines
 RDEPENDS_kernel-base = ""
+KERNEL_IMAGETYPE = "zImage"
