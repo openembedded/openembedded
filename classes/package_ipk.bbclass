@@ -161,7 +161,7 @@ python do_package_ipk () {
 		localdata = bb.data.createCopy(d)
 		root = "%s/install/%s" % (workdir, pkg)
 
-        lf = lockfile(root + ".lock")
+		lf = lockfile(root + ".lock")
 
 		bb.data.setVar('ROOT', '', localdata)
 		bb.data.setVar('ROOT_%s' % pkg, root, localdata)
