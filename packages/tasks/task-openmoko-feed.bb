@@ -1,7 +1,7 @@
 DESCRIPTION = "OpenMoko: Misc. Feed Items"
 SECTION = "openmoko/base"
 LICENSE = "MIT"
-PR = "r6"
+PR = "r7"
 
 inherit task
 
@@ -9,6 +9,7 @@ RDEPENDS_task-openmoko-feed = "\
   aspell enchant \
   bluez-hcidump \
   gpe-filemanager gpe-gallery gpe-timesheet gpe-todo \
+  ipkg-link \
   kbdd \
   midori \
   mtpaint \
