@@ -23,3 +23,10 @@ glib_cv_long_long_format=${glib_cv_long_long_format=ll}
 
 # gnucash
 am_cv_scanf_lld=${am_cv_scanf_lld=yes}
+
+# mono
+mono_cv_uscore=${mono_cv_uscore=no}
+
+# guile
+ac_cv_func_pthread_attr_getstack=${ac_cv_func_pthread_attr_getstack=yes}
+
