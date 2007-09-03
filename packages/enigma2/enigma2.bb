@@ -20,10 +20,10 @@ PACKAGES_DYNAMIC = "enigma2-plugin-*"
 
 PN = "enigma2"
 PR = "r0"
-SRCDATE = "20070420"
+SRCDATE = "20070904"
 
 REL_MAJOR="2"
-REL_MINOR="2"
+REL_MINOR="3"
 
 PV = "${REL_MAJOR}.${REL_MINOR}cvs${SRCDATE}"
 TAG = "enigma2_rel${REL_MAJOR}${REL_MINOR}"
