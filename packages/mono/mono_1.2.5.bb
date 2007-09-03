@@ -1,4 +1,4 @@
-require mono_1.2.5pre5.inc
+require mono_1.2.5.inc
 
 #DEPENDS = "mono-native glib-2.0"
 # for now, we skip the mono-native build -- just install
@@ -8,7 +8,7 @@ require mono_1.2.5pre5.inc
 # installed
 DEPENDS = "glib-2.0"
 
-PR = "r3"
+PR = "r0"
 
 SRC_URI += "file://configure.patch;patch=1"
 
