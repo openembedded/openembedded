@@ -1,6 +1,8 @@
 require samba.inc
 inherit update-rc.d
 
+PR = "r1"
+
 SRC_URI += "file://config-lfs.patch;patch=1 \
 	   file://init \
            file://quota.patch;patch=1;pnum=0 \
