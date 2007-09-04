@@ -1,0 +1,107 @@
+From nobody Mon Sep 17 00:00:00 2001
+From: Håvard Skinnemoen <hskinnemoen@atmel.com>
+Date: Tue Feb 28 08:51:18 2006 +0100
+Subject: [PATCH] USB File Storage: Align all descriptors on a word boundary
+
+Seems like gcc has problems with packed structs, so we'll just align
+them explicitly.
+
+---
+
+ drivers/usb/gadget/file_storage.c |   20 ++++++++++----------
+ 1 file changed, 10 insertions(+), 10 deletions(-)
+
+Index: linux-2.6.18-avr32/drivers/usb/gadget/file_storage.c
+===================================================================
+--- linux-2.6.18-avr32.orig/drivers/usb/gadget/file_storage.c	2006-09-11 14:36:02.000000000 +0200
++++ linux-2.6.18-avr32/drivers/usb/gadget/file_storage.c	2006-09-12 10:16:30.000000000 +0200
+@@ -853,7 +853,7 @@ static void inline put_be32(u8 *buf, u32
+ #define	CONFIG_VALUE		1
+ 
+ static struct usb_device_descriptor
+-device_desc = {
++device_desc __attribute__((aligned(2))) = {
+ 	.bLength =		sizeof device_desc,
+ 	.bDescriptorType =	USB_DT_DEVICE,
+ 
+@@ -872,7 +872,7 @@ device_desc = {
+ };
+ 
+ static struct usb_config_descriptor
+-config_desc = {
++config_desc __attribute__((aligned(2))) = {
+ 	.bLength =		sizeof config_desc,
+ 	.bDescriptorType =	USB_DT_CONFIG,
+ 
+@@ -895,7 +895,7 @@ otg_desc = {
+ /* There is only one interface. */
+ 
+ static struct usb_interface_descriptor
+-intf_desc = {
++intf_desc __attribute__((aligned(2))) = {
+ 	.bLength =		sizeof intf_desc,
+ 	.bDescriptorType =	USB_DT_INTERFACE,
+ 
+@@ -910,7 +910,7 @@ intf_desc = {
+  * and interrupt-in. */
+ 
+ static struct usb_endpoint_descriptor
+-fs_bulk_in_desc = {
++fs_bulk_in_desc __attribute__((aligned(2))) = {
+ 	.bLength =		USB_DT_ENDPOINT_SIZE,
+ 	.bDescriptorType =	USB_DT_ENDPOINT,
+ 
+@@ -920,7 +920,7 @@ fs_bulk_in_desc = {
+ };
+ 
+ static struct usb_endpoint_descriptor
+-fs_bulk_out_desc = {
++fs_bulk_out_desc __attribute__((aligned(2))) = {
+ 	.bLength =		USB_DT_ENDPOINT_SIZE,
+ 	.bDescriptorType =	USB_DT_ENDPOINT,
+ 
+@@ -930,7 +930,7 @@ fs_bulk_out_desc = {
+ };
+ 
+ static struct usb_endpoint_descriptor
+-fs_intr_in_desc = {
++fs_intr_in_desc __attribute__((aligned(2))) = {
+ 	.bLength =		USB_DT_ENDPOINT_SIZE,
+ 	.bDescriptorType =	USB_DT_ENDPOINT,
+ 
+@@ -962,7 +962,7 @@ static const struct usb_descriptor_heade
+  * for the config descriptor.
+  */
+ static struct usb_qualifier_descriptor
+-dev_qualifier = {
++dev_qualifier __attribute__((aligned(2))) = {
+ 	.bLength =		sizeof dev_qualifier,
+ 	.bDescriptorType =	USB_DT_DEVICE_QUALIFIER,
+ 
+@@ -973,7 +973,7 @@ dev_qualifier = {
+ };
+ 
+ static struct usb_endpoint_descriptor
+-hs_bulk_in_desc = {
++hs_bulk_in_desc __attribute__((aligned(2))) = {
+ 	.bLength =		USB_DT_ENDPOINT_SIZE,
+ 	.bDescriptorType =	USB_DT_ENDPOINT,
+ 
+@@ -983,7 +983,7 @@ hs_bulk_in_desc = {
+ };
+ 
+ static struct usb_endpoint_descriptor
+-hs_bulk_out_desc = {
++hs_bulk_out_desc __attribute__((aligned(2))) = {
+ 	.bLength =		USB_DT_ENDPOINT_SIZE,
+ 	.bDescriptorType =	USB_DT_ENDPOINT,
+ 
+@@ -994,7 +994,7 @@ hs_bulk_out_desc = {
+ };
+ 
+ static struct usb_endpoint_descriptor
+-hs_intr_in_desc = {
++hs_intr_in_desc __attribute__((aligned(2))) = {
+ 	.bLength =		USB_DT_ENDPOINT_SIZE,
+ 	.bDescriptorType =	USB_DT_ENDPOINT,
+ 

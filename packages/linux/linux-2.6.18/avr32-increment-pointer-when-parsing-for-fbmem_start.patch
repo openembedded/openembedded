@@ -1,0 +1,16 @@
+Index: linux-2.6.18/arch/avr32/kernel/setup.c
+===================================================================
+--- linux-2.6.18.orig/arch/avr32/kernel/setup.c	2006-12-20 12:45:12.000000000 +0100
++++ linux-2.6.18/arch/avr32/kernel/setup.c	2006-12-20 12:45:24.000000000 +0100
+@@ -103,8 +103,10 @@
+ static int __init early_parse_fbmem(char *p)
+ {
+ 	fbmem_size = memparse(p, &p);
+-	if (*p == '@')
++	if (*p == '@') {
++		p++;
+ 		fbmem_start = memparse(p, &p);
++	}
+ 	return 0;
+ }
+ early_param("fbmem", early_parse_fbmem);

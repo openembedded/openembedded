@@ -1,0 +1,241 @@
+From 740c72fe92a5536060ac6debbfe0a26c0b9b8770 Mon Sep 17 00:00:00 2001
+From: Haavard Skinnemoen <hskinnemoen@atmel.com>
+Date: Mon, 11 Sep 2006 17:59:59 +0200
+Subject: [PATCH] AVR32: DMA controller framework
+
+This patch puts the DMA controller framework used in earlier BSPs back.
+It was removed before the AVR32 patches went into -mm, and it should
+be removed here as well as soon as we have an alternative.
+
+---
+ arch/avr32/kernel/Makefile         |    1 
+ arch/avr32/kernel/dma-controller.c |   34 +++++++
+ include/asm-avr32/dma-controller.h |  165 ++++++++++++++++++++++++++++++++++++
+ 3 files changed, 200 insertions(+), 0 deletions(-)
+
+diff --git a/arch/avr32/kernel/Makefile b/arch/avr32/kernel/Makefile
+index 90e5aff..b6afc0c 100644
+--- a/arch/avr32/kernel/Makefile
++++ b/arch/avr32/kernel/Makefile
+@@ -9,6 +9,7 @@ obj-y				+= syscall_table.o syscall-stub
+ obj-y				+= setup.o traps.o semaphore.o ptrace.o
+ obj-y				+= signal.o sys_avr32.o process.o time.o
+ obj-y				+= init_task.o switch_to.o cpu.o
++obj-y				+= dma-controller.o
+ obj-$(CONFIG_MODULES)		+= module.o avr32_ksyms.o
+ obj-$(CONFIG_KPROBES)		+= kprobes.o
+ 
+diff --git a/arch/avr32/kernel/dma-controller.c b/arch/avr32/kernel/dma-controller.c
+new file mode 100644
+index 0000000..fb654b3
+--- /dev/null
++++ b/arch/avr32/kernel/dma-controller.c
+@@ -0,0 +1,34 @@
++/*
++ * Preliminary DMA controller framework for AVR32
++ *
++ * Copyright (C) 2005-2006 Atmel Corporation
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ */
++#include <asm/dma-controller.h>
++
++static LIST_HEAD(controllers);
++
++int register_dma_controller(struct dma_controller *dmac)
++{
++	static int next_id;
++
++	dmac->id = next_id++;
++	list_add_tail(&dmac->list, &controllers);
++
++	return 0;
++}
++EXPORT_SYMBOL(register_dma_controller);
++
++struct dma_controller *find_dma_controller(int id)
++{
++	struct dma_controller *dmac;
++
++	list_for_each_entry(dmac, &controllers, list)
++		if (dmac->id == id)
++			return dmac;
++	return NULL;
++}
++EXPORT_SYMBOL(find_dma_controller);
+diff --git a/include/asm-avr32/dma-controller.h b/include/asm-avr32/dma-controller.h
+new file mode 100644
+index 0000000..8c67601
+--- /dev/null
++++ b/include/asm-avr32/dma-controller.h
+@@ -0,0 +1,165 @@
++/*
++ * Copyright (C) 2005-2006 Atmel Corporation
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ */
++#ifndef __ASM_AVR32_DMA_CONTROLLER_H
++#define __ASM_AVR32_DMA_CONTROLLER_H
++
++#include <linux/device.h>
++
++#define DMA_DIR_MEM_TO_MEM		0x0000
++#define DMA_DIR_MEM_TO_PERIPH		0x0001
++#define DMA_DIR_PERIPH_TO_MEM		0x0002
++#define DMA_DIR_PERIPH_TO_PERIPH	0x0003
++
++#define DMA_WIDTH_8BIT			0
++#define DMA_WIDTH_16BIT			1
++#define DMA_WIDTH_32BIT			2
++
++struct dma_request {
++	struct dma_controller *dmac;
++	struct list_head list;
++
++	unsigned short channel;
++
++	void (*xfer_complete)(struct dma_request *req);
++	void (*block_complete)(struct dma_request *req);
++	void (*error)(struct dma_request *req);
++};
++
++struct dma_request_sg {
++	struct dma_request req;
++
++	int nr_sg;
++	struct scatterlist *sg;
++	unsigned long block_size;
++
++	dma_addr_t data_reg;
++	unsigned short periph_id;
++
++	unsigned char direction;
++	unsigned char width;
++};
++#define to_dma_request_sg(_req)				\
++	container_of(_req, struct dma_request_sg, req)
++
++struct dma_request_cyclic {
++	struct dma_request req;
++
++        int periods;
++	unsigned long buffer_size;
++
++        dma_addr_t buffer_start;
++	dma_addr_t data_reg;
++
++	unsigned short periph_id;
++	unsigned char direction;
++	unsigned char width;
++
++        void *dev_id;
++};
++#define to_dma_request_cyclic(_req)				\
++	container_of(_req, struct dma_request_cyclic, req)
++
++struct dma_request_memcpy {
++	struct dma_request req;
++
++	dma_addr_t src_addr;
++	unsigned int src_width;
++	unsigned int src_stride;
++
++	dma_addr_t dst_addr;
++	unsigned int dst_width;
++	unsigned int dst_stride;
++
++	size_t length;
++
++	unsigned short src_reverse:1;
++	unsigned short dst_reverse:1;
++};
++#define to_dma_request_memcpy(_req)				\
++	container_of(_req, struct dma_request_memcpy, req)
++
++struct dma_controller {
++	struct list_head list;
++	int id;
++	struct device *dev;
++
++	int (*alloc_channel)(struct dma_controller *dmac);
++	void (*release_channel)(struct dma_controller *dmac,
++				int channel);
++	int (*prepare_request_sg)(struct dma_controller *dmac,
++				  struct dma_request_sg *req);
++        int (*prepare_request_cyclic)(struct dma_controller *dmac,
++				      struct dma_request_cyclic *req);
++	int (*prepare_request_memcpy)(struct dma_controller *dmac,
++				      struct dma_request_memcpy *req);
++	int (*start_request)(struct dma_controller *dmac,
++			     unsigned int channel);
++	int (*stop_request)(struct dma_controller *dmac,
++                            unsigned int channel);
++        dma_addr_t (*get_current_pos)(struct dma_controller *dmac,
++                                      unsigned int channel);
++};
++
++static inline int
++dma_alloc_channel(struct dma_controller *dmac)
++{
++	return dmac->alloc_channel(dmac);
++}
++
++static inline void
++dma_release_channel(struct dma_controller *dmac, int chan)
++{
++	dmac->release_channel(dmac, chan);
++}
++
++static inline int
++dma_prepare_request_sg(struct dma_controller *dmac,
++		       struct dma_request_sg *req)
++{
++	return dmac->prepare_request_sg(dmac, req);
++}
++
++static inline int
++dma_prepare_request_cyclic(struct dma_controller *dmac,
++			   struct dma_request_cyclic *req)
++{
++	return dmac->prepare_request_cyclic(dmac, req);
++}
++
++static inline int
++dma_prepare_request_memcpy(struct dma_controller *dmac,
++			   struct dma_request_memcpy *req)
++{
++	return dmac->prepare_request_memcpy(dmac, req);
++}
++
++static inline int
++dma_start_request(struct dma_controller *dmac,
++		  unsigned int channel)
++{
++	return dmac->start_request(dmac, channel);
++}
++
++static inline int
++dma_stop_request(struct dma_controller *dmac,
++                 unsigned int channel)
++{
++	return dmac->stop_request(dmac, channel);
++}
++
++static inline dma_addr_t
++dma_get_current_pos(struct dma_controller *dmac,
++                    unsigned int channel)
++{
++	return dmac->get_current_pos(dmac, channel);
++}
++
++extern int register_dma_controller(struct dma_controller *dmac);
++extern struct dma_controller *find_dma_controller(int id);
++
++#endif /* __ASM_AVR32_DMA_CONTROLLER_H */
+-- 
+1.4.1.1
+

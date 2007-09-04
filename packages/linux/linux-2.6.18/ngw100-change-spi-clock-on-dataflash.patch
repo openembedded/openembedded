@@ -1,0 +1,13 @@
+Index: linux-2.6.18/arch/avr32/boards/atngw/setup.c
+===================================================================
+--- linux-2.6.18.orig/arch/avr32/boards/atngw/setup.c	2006-12-19 14:15:02.000000000 +0100
++++ linux-2.6.18/arch/avr32/boards/atngw/setup.c	2006-12-19 14:15:11.000000000 +0100
+@@ -29,7 +29,7 @@
+ 	{
+ 		.modalias	= "mtd_dataflash",
+ 		.controller_data = (void *)GPIO_PIN_PA(3),
+-		.max_speed_hz	= 66000000,
++		.max_speed_hz	= 10000000,
+ 		.bus_num	= 0,
+ 		.chip_select	= 0,
+ 	},

@@ -1,0 +1,73 @@
+--- linux-2.6.18-orig/arch/avr32/mach-at32ap/hsmc.c	2006-09-26 15:01:28.000000000 +0200
++++ linux-2.6.18/arch/avr32/mach-at32ap/hsmc.c	2006-10-18 14:03:35.000000000 +0200
+@@ -75,12 +75,35 @@ int smc_set_configuration(int cs, const 
+ 		return -EINVAL;
+ 	}
+ 
++	switch (config->nwait_mode) {
++	case 0:
++		mode |= HSMC_BF(EXNW_MODE, HSMC_EXNW_MODE_DISABLED);
++		break;
++	case 1:
++		mode |= HSMC_BF(EXNW_MODE, HSMC_EXNW_MODE_RESERVED);
++		break;
++	case 2:
++		mode |= HSMC_BF(EXNW_MODE, HSMC_EXNW_MODE_FROZEN);
++		break;
++	case 3:
++		mode |= HSMC_BF(EXNW_MODE, HSMC_EXNW_MODE_READY);
++		break;
++	default:
++		return -EINVAL;
++	}
++
++	if (config->tdf_cycles) {
++		mode |= HSMC_BF(TDF_CYCLES, config->tdf_cycles);
++	}
++
+ 	if (config->nrd_controlled)
+ 		mode |= HSMC_BIT(READ_MODE);
+ 	if (config->nwe_controlled)
+ 		mode |= HSMC_BIT(WRITE_MODE);
+ 	if (config->byte_write)
+ 		mode |= HSMC_BIT(BAT);
++	if (config->tdf_mode)
++		mode |= HSMC_BIT(TDF_MODE);
+ 
+ 	pr_debug("smc cs%d: setup/%08x pulse/%08x cycle/%08x mode/%08x\n",
+ 		 cs, setup, pulse, cycle, mode);
+--- linux-2.6.18-orig/include/asm-avr32/arch-at32ap/smc.h	2006-09-26 15:01:30.000000000 +0200
++++ linux-2.6.18/include/asm-avr32/arch-at32ap/smc.h	2006-10-18 13:36:06.000000000 +0200
+@@ -48,10 +48,32 @@ struct smc_config {
+ 	unsigned int	nwe_controlled:1;
+ 
+ 	/*
++	 * 0: NWAIT is disabled
++	 * 1: Reserved
++	 * 2: NWAIT is frozen mode
++	 * 3: NWAIT in ready mode
++	 */
++	unsigned int	nwait_mode:2;
++
++	/*
+ 	 * 0: Byte select access type
+ 	 * 1: Byte write access type
+ 	 */
+ 	unsigned int	byte_write:1;
++
++	/*
++	 * Number of clock cycles before data is released after
++	 * the rising edge of the read controlling signal
++	 *
++	 * Total cycles from SMC is tdf_cycles + 1
++	 */
++	unsigned int	tdf_cycles:4;
++
++	/*
++	 * 0: TDF optimization disabled
++	 * 1: TDF optimization enabled
++	 */
++	unsigned int	tdf_mode:1;
+ };
+ 
+ extern int smc_set_configuration(int cs, const struct smc_config *config);

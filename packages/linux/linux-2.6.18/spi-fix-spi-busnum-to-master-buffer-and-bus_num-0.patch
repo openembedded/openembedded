@@ -1,0 +1,50 @@
+From 4740d387f3cb9e63f48f2488815b38a2c92755c8 Mon Sep 17 00:00:00 2001
+From: Hans-Christian Egtvedt <hcegtvedt@atmel.com>
+Date: Wed, 6 Dec 2006 20:36:17 -0800
+Subject: [PATCH] [PATCH] spi: correct bus_num and buffer bug in spi core
+
+Correct the following in driver/spi/spi.c in function spi_busnum_to_master:
+
+ * must allow bus_num 0, the if is really not needed.
+ * correct the name buffer which is too small for bus_num >= 10000. It
+
+should be 9 bytes big, not 8.
+
+Signed-off-by: Hans-Christian Egtvedt <hcegtvedt@atmel.com>
+Cc: David Brownell <david-b@pacbell.net>
+Signed-off-by: Andrew Morton <akpm@osdl.org>
+Signed-off-by: Linus Torvalds <torvalds@osdl.org>
+---
+ drivers/spi/spi.c |   16 +++++++---------
+ 1 files changed, 7 insertions(+), 9 deletions(-)
+
+diff --git a/drivers/spi/spi.c b/drivers/spi/spi.c
+index 1a3c963..7d215ea 100644
+--- a/drivers/spi/spi.c
++++ b/drivers/spi/spi.c
+@@ -465,15 +465,13 @@ EXPORT_SYMBOL_GPL(spi_unregister_master);
+  */
+ struct spi_master *spi_busnum_to_master(u16 bus_num)
+ {
+-	if (bus_num) {
+-		char			name[8];
+-		struct kobject		*bus;
+-
+-		snprintf(name, sizeof name, "spi%u", bus_num);
+-		bus = kset_find_obj(&spi_master_class.subsys.kset, name);
+-		if (bus)
+-			return container_of(bus, struct spi_master, cdev.kobj);
+-	}
++	char			name[9];
++	struct kobject		*bus;
++
++	snprintf(name, sizeof name, "spi%u", bus_num);
++	bus = kset_find_obj(&spi_master_class.subsys.kset, name);
++	if (bus)
++		return container_of(bus, struct spi_master, cdev.kobj);
+ 	return NULL;
+ }
+ EXPORT_SYMBOL_GPL(spi_busnum_to_master);
+-- 
+1.4.4.1
+
