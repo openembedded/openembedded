@@ -1,6 +1,6 @@
 DESCRIPTION = "Configuration files for online package repositories aka feeds"
 
-PR = "0"
+PR = "1"
 PACKAGE_ARCH = "${MACHINE_ARCH}"
 
 FEED_BASEPATH ?= "unstable/feed/"
@@ -20,4 +20,13 @@ do_install () {
         install -d ${D}${sysconfdir}/ipkg
 	install -m 0644  ${S}/${sysconfdir}/ipkg/* ${D}${sysconfdir}/ipkg/
 }
+
+CONFFILES_${PN} += "${sysconfdir}/ipkg/base-feed.conf \
+                    ${sysconfdir}/ipkg/debug-feed.conf \
+                    ${sysconfdir}/ipkg/perl-feed.conf \
+                    ${sysconfdir}/ipkg/python-feed.conf \
+                    ${sysconfdir}/ipkg/gstreamer-feed.conf \
+                    ${sysconfdir}/ipkg/${MACHINE_ARCH}-feed.conf \
+                    ${sysconfdir}/ipkg/noarch-feed.conf \
+                   "
 
