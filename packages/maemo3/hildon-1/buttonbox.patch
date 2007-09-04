@@ -1,0 +1,11 @@
+--- /tmp/hildon-code-dialog.c	2007-08-07 11:46:03.000000000 +0200
++++ hildon-1/src/hildon-code-dialog.c	2007-08-07 11:46:16.468400000 +0200
+@@ -277,7 +277,7 @@
+     gtk_container_add (GTK_CONTAINER (priv->buttons[3][2]), image1);
+     dialog_action_area1 = GTK_DIALOG (dialog)->action_area;
+     gtk_button_box_set_layout (GTK_BUTTON_BOX (dialog_action_area1),
+-            GTK_BUTTONBOX_CENTER);
++            GTK_BUTTONBOX_DEFAULT);
+ 
+     okButton = gtk_dialog_add_button (GTK_DIALOG (dialog) ,DEVICELOCK_OK,
+             GTK_RESPONSE_OK);

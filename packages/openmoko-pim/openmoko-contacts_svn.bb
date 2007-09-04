@@ -4,7 +4,7 @@ SECTION = "openmoko/pim"
 DEPENDS += "glib-2.0 gtk+ libglade eds-dbus gnome-vfs openmoko-libs"
 RDEPENDS = "gnome-vfs-plugin-file libedata-book"
 RRECOMMENDS = "gnome-vfs-plugin-http"
-PV = "0.1+svn${SRCDATE}"
+PV = "0.1+svnr${SRCREV}"
 PR = "r3"
 
 inherit openmoko

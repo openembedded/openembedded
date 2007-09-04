@@ -8,7 +8,7 @@ PACKAGE_EXTRA_ARCHS = "arm armv4t armv5te"
 SERIAL_CONSOLE = "115200 ttyS0"
 
 # Use tune-xscale per default. Machine independent feeds should be built with tune-strongarm.
-require conf/machine/include/tune-xscale.conf
+require conf/machine/include/tune-xscale.inc
 
 MACHINE_FEATURES = "kernel26 touchscreen apm alsa bluetooth irda usbgadget screen ext2"
 

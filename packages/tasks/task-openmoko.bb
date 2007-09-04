@@ -68,13 +68,24 @@ RDEPENDS_task-openmoko-ui = "\
   settings-daemon \
   \
   openmoko-session2 \
-  openmoko-theme-standard2 \
-  openmoko-icon-theme-standard2 \
   openmoko-sound-system \
   openmoko-sound-theme-standard \
   neod \
   gpe-scap \
 "
+
+# handle theming. FIXME: properly use machine database in a smart way,
+# taking into account not only size but also PPI! Ultimately this might
+# need recomputing some theme files and images on-the-fly :/ SVG and logical
+# theme description anyone? Or simply Edje to the rescue! :D
+THEMES        = "openmoko-icon-theme-standard2 openmoko-theme-standard2"
+THEMES_a780   = "openmoko-icon-theme-standard2 openmoko-theme-standard2-qvga"
+THEMES_e680   = "openmoko-icon-theme-standard2 openmoko-theme-standard2-qvga"
+THEMES_a1200  = "openmoko-icon-theme-standard2 openmoko-theme-standard2-qvga"
+THEMES_rokre2 = "openmoko-icon-theme-standard2 openmoko-theme-standard2-qvga"
+THEMES_rokre6 = "openmoko-icon-theme-standard2 openmoko-theme-standard2-qvga"
+
+RDEPENDS_task-openmoko-ui += "${THEMES}"
 
 #
 # task-openmoko-base

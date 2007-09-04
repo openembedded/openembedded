@@ -14,7 +14,7 @@ DEPLOY_DIR = "${TMPDIR}/deploy/${ANGSTROM_MODE}"
 require conf/distro/include/angstrom-${ANGSTROM_MODE}.inc
 
 #Use this variable in feeds and other parts that need a URI
-ANGSTROM_URI = "http://www.angstrom-distribution.org"
+ANGSTROM_URI ?= "http://www.angstrom-distribution.org"
 
 #Set the default maintainer to angstrom-dev
 MAINTAINER = "Angstrom Developers <angstrom-distro-devel@linuxtogo.org>"

@@ -2,7 +2,7 @@ DESCRIPTION = "Python GObject bindings"
 SECTION = "devel/python"
 LICENSE = "LGPL"
 DEPENDS = "python-pygobject-native"
-PR = "r2"
+PR = "r3"
 
 SRC_URI = "ftp://ftp.gnome.org/pub/GNOME/sources/pygobject/2.12/pygobject-${PV}.tar.bz2 \
            file://python-path.patch;patch=1"
@@ -21,5 +21,6 @@ do_stage() {
 	cp docs/style.css ${STAGING_LIBDIR}/../share/gtk-doc/html/pygobject/
 }
 
+FILES_${PN} = "${libdir}/python*"
 FILES_${PN}-dbg += "${libdir}/python2.4/site-packages/gtk-2.0/gobject/.debug"
-
+FILES_${PN}-dev += "${datadir}/pygobject/xsl"

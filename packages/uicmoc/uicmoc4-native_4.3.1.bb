@@ -2,7 +2,7 @@ DESCRIPTION = "User-Interface-, Meta-Object-, and Resource Compiler for Qt/[X11|
 SECTION = "libs"
 HOMEPAGE = "http://www.trolltech.com"
 PRIORITY = "optional"
-LICENSE = "GPL QPL"
+LICENSE = "GPL"
 PR = "r0"
 
 SRC_URI = "ftp://ftp.trolltech.com/qt/source/qtopia-core-opensource-src-${PV}.tar.gz"

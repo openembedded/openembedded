@@ -20,6 +20,6 @@ do_stage() {
 # for this particular .pc, so the following will suffice:
 
 do_stage_append () {
-	install -d ${PKG_CONFIG_PATH}
-	sed -e 's:${includedir}:${STAGING_INCDIR}:;' ${S}/xfce-mcs-manager/xfce-mcs-manager.pc >${PKG_CONFIG_PATH}/xfce-mcs-manager.pc
+	install -d ${PKG_CONFIG_DIR}
+	sed -e 's:${includedir}:${STAGING_INCDIR}:;' ${S}/xfce-mcs-manager/xfce-mcs-manager.pc >${PKG_CONFIG_DIR}/xfce-mcs-manager.pc
 }
