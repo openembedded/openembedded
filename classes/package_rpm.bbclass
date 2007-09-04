@@ -2,7 +2,6 @@ inherit package
 inherit rpm_core
 
 RPMBUILD="rpmbuild --short-circuit ${RPMOPTS}"
-PACKAGE_WRITE_FUNCS += "do_package_rpm"
 IMAGE_PKGTYPE ?= "rpm"
 
 python write_specfile() {
@@ -144,4 +143,4 @@ python do_package_write_rpm () {
 	bb.build.exec_func("do_package_rpm", d)
 }
 do_package_write_rpm[dirs] = "${D}"
-#addtask package_write_rpm before do_build after do_package
+addtask package_write_rpm before do_build after do_package
