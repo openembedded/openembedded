@@ -1,7 +1,8 @@
 DEPENDS = "flex-native gperf-native gperf perl-native curl icu libxml2 sqlite3 cairo libxslt libidn gnutls gtk+"
+SRCREV_FORMAT = "webcore-rwebkit"
 
 # Yes, this is wrong...
-PV = "0.0+svn${SRCDATE}"
+PV = "0.0+svnr${SRCREV}"
 PR = "r1"
 
 inherit qmake2 pkgconfig
