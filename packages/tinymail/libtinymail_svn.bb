@@ -2,7 +2,7 @@ DESCRIPTION = "TinyMail is an attempt to create an E-mail framework for mobile d
 SECTION = "x11/utils"
 LICENSE = "LGPL"
 DEPENDS = "gtk+ glib-2.0 gnome-vfs gconf-dbus libgnomeui"
-PV = "0.0.1+svn${SRCDATE}"
+PV = "0.0.1+svnr${SRCREV}"
 PR = "r3"
 
 DEFAULT_PREFERENCE = "-1"
