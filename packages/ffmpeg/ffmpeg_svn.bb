@@ -3,7 +3,7 @@ SECTION = "libs"
 PRIORITY = "optional"
 LICENSE = "GPL"
 DEPENDS = "libogg zlib libvorbis faac liba52 lame"
-PV = "0.4.9+svn${SRCDATE}"
+PV = "0.4.9+svnr${SRCREV}" 
 PR = "r1"
 
 DEFAULT_PREFERENCE = "-1"
