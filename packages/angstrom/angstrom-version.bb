@@ -1,4 +1,5 @@
 PV = "${DISTRO_VERSION}"
+PR = "r1"
 
 PACKAGES = "${PN}"
 PACKAGE_ARCH = "${MACHINE_ARCH}"
