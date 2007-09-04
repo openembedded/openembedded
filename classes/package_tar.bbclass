@@ -1,8 +1,5 @@
 inherit package
 
-PACKAGE_EXTRA_DEPENDS += "tar-native"
-
-PACKAGE_WRITE_FUNCS += "do_package_tar"
 IMAGE_PKGTYPE ?= "tar"
 
 python package_tar_fn () {
@@ -111,4 +108,4 @@ python do_package_write_tar () {
 	bb.build.exec_func("do_package_tar", d)
 }
 do_package_write_tar[dirs] = "${D}"
-#addtask package_write_tar before do_build after do_package
+addtask package_write_tar before do_build after do_package

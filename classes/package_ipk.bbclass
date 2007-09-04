@@ -1,9 +1,6 @@
 inherit package
 
-PACKAGE_EXTRA_DEPENDS += "ipkg-utils-native fakeroot-native"
-
 BOOTSTRAP_EXTRA_RDEPENDS += "ipkg-collateral ipkg"
-PACKAGE_WRITE_FUNCS += "do_package_ipk"
 IMAGE_PKGTYPE ?= "ipk"
 
 IPKGCONF_TARGET = "${STAGING_ETCDIR_NATIVE}/ipkg.conf"
@@ -313,4 +310,4 @@ python do_package_write_ipk () {
 	bb.build.exec_func("do_package_ipk", d)
 }
 do_package_write_ipk[dirs] = "${D}"
-
+addtask package_write_ipk before do_package_write after do_package

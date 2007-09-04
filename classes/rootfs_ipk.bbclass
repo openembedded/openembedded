@@ -6,7 +6,7 @@
 #
 
 do_rootfs[depends] += "ipkg-native:do_populate_staging ipkg-utils-native:do_populate_staging"
-do_rootfs[recrdeptask] += "do_package_write"
+do_rootfs[recrdeptask] += "do_package_write_ipk"
 
 IPKG_ARGS = "-f ${IPKGCONF_TARGET} -o ${IMAGE_ROOTFS} ${@base_conditional("PACKAGE_INSTALL_NO_DEPS", "1", "-nodeps", "", d)}"
 
