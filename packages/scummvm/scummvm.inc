@@ -3,7 +3,7 @@ HOMEPAGE = "http://www.scummvm.org"
 SECTION = "games"
 PRIORITY = "optional"
 LICENSE = "GPL"
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/scummvm/scummvm-${PV}.tar.bz2"
 
@@ -11,7 +11,7 @@ inherit autotools
 
 EXTRA_OECONF = "--host=${HOST_SYS} \
 		--backend=sdl \
-		--with-sdl-prefix=${STAGING_BINDIR_CROSS}/.. \
+		--with-sdl-prefix=${STAGING_BINDIR_CROSS} \
 		--disable-alsa \
 		--prefix=${prefix} \
 		--with-ogg-prefix=${STAGING_LIBDIR}/.. \
