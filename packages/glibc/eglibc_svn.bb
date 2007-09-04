@@ -3,6 +3,7 @@ require glibc.inc
 DEFAULT_PREFERENCE = "-1"
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/eglibc-svn"
 PV = "2.6+svnr${SRCREV}"
+PR = "r1"
 SRC_URI = "svn://svn.eglibc.org;module=trunk \
            file://export-fcntl2.patch;patch=1 \
            file://etc/ld.so.conf \
