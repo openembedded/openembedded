@@ -375,10 +375,7 @@ oe_machinstall() {
 }
 
 # Remove and re-create ${D} so that is it guaranteed to be empty
-do_install_prepend() {
-        rm -rf ${D}
-        mkdir -p ${D}
-}
+do_install[cleandirs] = "${D}"
 
 addtask listtasks
 do_listtasks[nostamp] = "1"
