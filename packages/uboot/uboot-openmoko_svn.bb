@@ -4,16 +4,18 @@ LICENSE = "GPL"
 SECTION = "bootloader"
 PRIORITY = "optional"
 PROVIDES = "virtual/bootloader"
-PV = "1.2.0+git${SRCDATE}+svn${SRCDATE}"
+PV = "1.2.0+git${SRCDATE}+svnr${SRCREV}"
 PR = "r0"
+
+SRCREV_FORMAT = "patches"
 
 UBOOT_MACHINES = "gta01bv2 gta01bv3 gta01bv4 smdk2440 hxd8 qt2410 gta02v1 gta02v2"
 
 DEFAULT_PREFERENCE = "-1"
 
 SRC_URI = "\
-  git://www.denx.de/git/u-boot.git/;protocol=git \
-  svn://svn.openmoko.org/trunk/src/target/u-boot;module=patches;proto=http \
+  git://www.denx.de/git/u-boot.git/;protocol=git;name=upstream \
+  svn://svn.openmoko.org/trunk/src/target/u-boot;module=patches;proto=http;name=patches \
   file://uboot-eabi-fix-HACK.patch \
   file://uboot-20070311-tools_makefile_ln_sf.patch;patch=1 \
 "
