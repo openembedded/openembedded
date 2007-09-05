@@ -98,6 +98,7 @@ RDEPENDS_task-openmoko-base = "\
 #  openmoko-appmanager \
   matchbox-keyboard-inputmethod \
   matchbox-keyboard-im \
+  matchbox-keyboard-applet \
   matchbox-stroke \
   openmoko-terminal2 \
   openmoko-keyboard \
