@@ -3,7 +3,7 @@ LICENSE = "GPLv2"
 SECTION = "devel"
 AUTHOR = "Daniel Willmann"
 
-PV = "0.0+svn${SRCDATE}"
+PV = "0.0+svnr${SRCREV}"
 PR = "r3"
 
 SRC_URI = "svn://svn.openezx.org/trunk/src/userspace/;module=opentapi;proto=http \

@@ -1,4 +1,4 @@
-require mono_1.2.5pre5.inc
+require mono_1.2.5.inc
 PR = "r2"
 DEPENDS = "glib-2.0-native"
 

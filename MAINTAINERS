@@ -73,7 +73,7 @@ Person:     Holger Hans Peter Freyther
 Mail:       zecke@selfish.org
 Website:    http://www.openembedded.org/~zecke
 Interests:  icecream, insanity, QA
-Recipes:    sqlite3, xine
+Recipes:    qtopia*, sqlite3, xine
 
 Person:     Jamie Lenehan
 Mail:       lenehan@twibble.org

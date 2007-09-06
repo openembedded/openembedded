@@ -1,0 +1,181 @@
+
+EP93xx leds driver
+
+Signed-off-by: Petr Stetiar <ynezz@true.cz>
+
+Index: linux-2.6.23-rc5/arch/arm/mach-ep93xx/core.c
+===================================================================
+--- linux-2.6.23-rc5.orig/arch/arm/mach-ep93xx/core.c	2007-09-04 02:40:19.000000000 +0200
++++ linux-2.6.23-rc5/arch/arm/mach-ep93xx/core.c	2007-09-04 02:40:25.000000000 +0200
+@@ -568,6 +568,12 @@
+ }
+ 
+ 
++static struct platform_device ep93xx_led_device = {
++	.name			= "ep93xx-led",
++	.id			= -1,
++};
++
++
+ void __init ep93xx_init_devices(void)
+ {
+ 	unsigned int v;
+@@ -596,4 +602,5 @@
+ 	platform_device_register(&ep93xx_rtc_device);
+ 	platform_device_register(&ep93xx_ohci_device);
+ 	platform_device_register(&ep93xx_i2c_device);
++	platform_device_register(&ep93xx_led_device);
+ }
+Index: linux-2.6.23-rc5/drivers/leds/Kconfig
+===================================================================
+--- linux-2.6.23-rc5.orig/drivers/leds/Kconfig	2007-09-04 02:40:19.000000000 +0200
++++ linux-2.6.23-rc5/drivers/leds/Kconfig	2007-09-04 02:40:25.000000000 +0200
+@@ -101,6 +101,12 @@
+ 	  outputs. To be useful the particular board must have LEDs
+ 	  and they must be connected to the GPIO lines.
+ 
++config LEDS_EP93XX
++	tristate "LED Support for Cirrus Logic EP93xx"
++	depends on LEDS_CLASS && ARCH_EP93XX
++	help
++	  This option enables support for the Cirrus Logic EP93xx based boards.
++
+ comment "LED Triggers"
+ 
+ config LEDS_TRIGGERS
+Index: linux-2.6.23-rc5/drivers/leds/Makefile
+===================================================================
+--- linux-2.6.23-rc5.orig/drivers/leds/Makefile	2007-09-04 02:40:19.000000000 +0200
++++ linux-2.6.23-rc5/drivers/leds/Makefile	2007-09-04 02:40:25.000000000 +0200
+@@ -16,6 +16,7 @@
+ obj-$(CONFIG_LEDS_WRAP)			+= leds-wrap.o
+ obj-$(CONFIG_LEDS_H1940)		+= leds-h1940.o
+ obj-$(CONFIG_LEDS_COBALT)		+= leds-cobalt.o
++obj-$(CONFIG_LEDS_EP93XX)		+= leds-ep93xx.o
+ obj-$(CONFIG_LEDS_GPIO)			+= leds-gpio.o
+ 
+ # LED Triggers
+Index: linux-2.6.23-rc5/drivers/leds/leds-ep93xx.c
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ linux-2.6.23-rc5/drivers/leds/leds-ep93xx.c	2007-09-04 02:40:25.000000000 +0200
+@@ -0,0 +1,119 @@
++/*
++ * LEDs driver for Cirrus Logic EP93xx
++ *
++ * Author: Petr Stetiar <ynezz@true.cz>
++ *
++ * Based on leds-corgi.c by Richard Purdie
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ *
++ */
++
++#include <linux/kernel.h>
++#include <linux/init.h>
++#include <linux/platform_device.h>
++#include <linux/leds.h>
++#include <asm/mach-types.h>
++#include <asm/arch/hardware.h>
++#include <asm/arch/gpio.h>
++
++static void ep93xx_green_led_set(struct led_classdev *led_cdev, enum led_brightness value)
++{
++	if (value)
++		gpio_line_set(EP93XX_GPIO_LINE_GRLED, EP93XX_GPIO_HIGH);
++	else
++		gpio_line_set(EP93XX_GPIO_LINE_GRLED, EP93XX_GPIO_LOW);
++}
++
++static void ep93xx_red_led_set(struct led_classdev *led_cdev, enum led_brightness value)
++{
++	if (value)
++		gpio_line_set(EP93XX_GPIO_LINE_RDLED, EP93XX_GPIO_HIGH);
++	else
++		gpio_line_set(EP93XX_GPIO_LINE_RDLED, EP93XX_GPIO_LOW);
++}
++
++
++static struct led_classdev ep93xx_green_led = {
++	.name			= "ep93xx:green",
++	.default_trigger	= "none",
++	.brightness_set		= ep93xx_green_led_set,
++};
++
++static struct led_classdev ep93xx_red_led = {
++	.name			= "ep93xx:red",
++	.default_trigger	= "heartbeat",
++	.brightness_set		= ep93xx_red_led_set,
++};
++
++#ifdef CONFIG_PM
++static int ep93xx_led_suspend(struct platform_device *dev, pm_message_t state)
++{
++	led_classdev_suspend(&ep93xx_green_led);
++	led_classdev_suspend(&ep93xx_red_led);
++	return 0;
++}
++
++static int ep93xx_led_resume(struct platform_device *dev)
++{
++	led_classdev_resume(&ep93xx_red_led);
++	led_classdev_resume(&ep93xx_green_led);
++	return 0;
++}
++#endif
++
++static int ep93xx_led_probe(struct platform_device *pdev)
++{
++	int ret;
++
++	gpio_line_config(EP93XX_GPIO_LINE_GRLED, GPIO_OUT);
++	gpio_line_config(EP93XX_GPIO_LINE_RDLED, GPIO_OUT);
++
++	ret = led_classdev_register(&pdev->dev, &ep93xx_green_led);
++	if (ret < 0)
++		return ret;
++
++	ret = led_classdev_register(&pdev->dev, &ep93xx_red_led);
++	if (ret < 0)
++		led_classdev_unregister(&ep93xx_green_led);
++
++	return ret;
++}
++
++static int ep93xx_led_remove(struct platform_device *pdev)
++{
++	led_classdev_unregister(&ep93xx_green_led);
++	led_classdev_unregister(&ep93xx_red_led);
++	return 0;
++}
++
++static struct platform_driver ep93xx_led_driver = {
++	.probe		= ep93xx_led_probe,
++	.remove		= ep93xx_led_remove,
++#ifdef CONFIG_PM
++	.suspend	= ep93xx_led_suspend,
++	.resume		= ep93xx_led_resume,
++#endif
++	.driver		= {
++		.name		= "ep93xx-led",
++	},
++};
++
++static int __init ep93xx_led_init(void)
++{
++	return platform_driver_register(&ep93xx_led_driver);
++}
++
++static void __exit ep93xx_led_exit(void)
++{
++ 	platform_driver_unregister(&ep93xx_led_driver);
++}
++
++module_init(ep93xx_led_init);
++module_exit(ep93xx_led_exit);
++
++MODULE_AUTHOR("Petr Stetiar <ynezz@true.cz>");
++MODULE_DESCRIPTION("Cirrus Logic EP93xx LED driver");
++MODULE_LICENSE("GPL");

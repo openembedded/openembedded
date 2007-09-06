@@ -374,6 +374,9 @@ oe_machinstall() {
 	fi
 }
 
+# Remove and re-create ${D} so that is it guaranteed to be empty
+do_install[cleandirs] = "${D}"
+
 addtask listtasks
 do_listtasks[nostamp] = "1"
 python do_listtasks() {
@@ -576,10 +579,6 @@ python base_do_unpack() {
 			local = bb.data.expand(bb.fetch.localpath(url, localdata), localdata)
 		except bb.MalformedUrl, e:
 			raise FuncFailed('Unable to generate local path for malformed uri: %s' % e)
-		# dont need any parameters for extraction, strip them off
-		# RP: Insane. localpath shouldn't have parameters
-		# RP: Scehdule for removal with bitbake 1.8.8
-		local = re.sub(';.*$', '', local)
 		local = os.path.realpath(local)
 		ret = oe_unpack_file(local, localdata, url)
 		if not ret:
@@ -870,14 +869,6 @@ def base_after_parse(d):
 python () {
     base_after_parse(d)
 }
-
-# Remove me when we switch to bitbake 1.8.8
-def base_get_srcrev(d):
-    import bb
-    
-    if hasattr(bb.fetch, "get_srcrev"):
-        return bb.fetch.get_srcrev(d)
-    return "NOT IMPLEMENTED"
 
 # Patch handling
 inherit patch

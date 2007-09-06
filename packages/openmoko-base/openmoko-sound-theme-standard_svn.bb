@@ -1,6 +1,6 @@
 DESCRIPTION = "Standard sound theme for the OpenMoko distribution"
 SECTION = "openmoko/base"
-PV = "0.1+svn${SRCDATE}"
+PV = "0.1+svnr${SRCREV}"
 PR = "r0"
 
 inherit openmoko-base autotools

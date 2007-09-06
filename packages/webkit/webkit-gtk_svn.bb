@@ -1,10 +1,11 @@
-DEPENDS = "flex-native gperf-native gperf perl-native curl icu uicmoc4-native qmake2-native libxml2 sqlite3 cairo libxslt libidn gnutls gtk+"
+DEPENDS = "flex-native gperf-native gperf perl-native curl icu libxml2 sqlite3 cairo libxslt libidn gnutls gtk+"
+SRCREV_FORMAT = "webcore-rwebkit"
 
 # Yes, this is wrong...
-PV = "0.0+svn${SRCDATE}"
+PV = "0.0+svnr${SRCREV}"
 PR = "r1"
 
-inherit qmake qt4x11 pkgconfig
+inherit qmake2 pkgconfig
 
 SRC_URI = "\
   svn://svn.webkit.org/repository/webkit/trunk/;module=JavaScriptCore;proto=http \
@@ -21,7 +22,7 @@ SRC_URI = "\
 "
 S = "${WORKDIR}/"
 
-do_configure_append() {
+do_configure() {
 	qmake2 -spec ${QMAKESPEC} CONFIG+=gdk-port CONFIG-=qt CONFIG-=release CONFIG+=debug
 	mkdir -p WebKitBuilds/Debug
 	cd WebKitBuilds/Debug

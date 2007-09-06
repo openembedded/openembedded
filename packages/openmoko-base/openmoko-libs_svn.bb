@@ -2,7 +2,7 @@ DESCRIPTION = "openmoko-libs is a set of libraries implementing a Gtk+ based app
 SECTION = "openmoko/libs"
 LICENSE = "LGPL"
 DEPENDS += "gtk+ eds-dbus libgsmd libxosd"
-PV = "0.4+svn${SRCDATE}"
+PV = "0.4+svnr${SRCREV}"
 PR = "r0"
 
 inherit openmoko

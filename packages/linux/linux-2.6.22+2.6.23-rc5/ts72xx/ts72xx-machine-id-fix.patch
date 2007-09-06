@@ -1,0 +1,17 @@
+
+Fix wrong machine ID passed from RedBoot
+
+Signed-off-by: Petr Stetiar <ynezz@true.cz>
+
+Index: linux-2.6.23-rc5/arch/arm/kernel/head.S
+===================================================================
+--- linux-2.6.23-rc5.orig/arch/arm/kernel/head.S	2007-09-04 02:25:36.000000000 +0200
++++ linux-2.6.23-rc5/arch/arm/kernel/head.S	2007-09-04 02:26:57.000000000 +0200
+@@ -86,6 +86,7 @@
+ 	bl	__lookup_processor_type		@ r5=procinfo r9=cpuid
+ 	movs	r10, r5				@ invalid processor (r5=0)?
+ 	beq	__error_p			@ yes, error 'p'
++	ldr	r1, =0x000002a1			@ mach-type = TS-7250
+ 	bl	__lookup_machine_type		@ r5=machinfo
+ 	movs	r8, r5				@ invalid machine (r5=0)?
+ 	beq	__error_a			@ yes, error 'a'
