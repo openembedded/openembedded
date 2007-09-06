@@ -65,7 +65,7 @@ do_configure () {
                 exit 1
         fi
         (cd ${S} && gnu-configize) || die "failure in running gnu-configize"
-        find ${WORKDIR} -name "configure" | xargs touch
+        find ${S} -name "configure" | xargs touch
         CPPFLAGS="" oe_runconf
 }
 

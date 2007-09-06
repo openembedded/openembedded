@@ -1,0 +1,220 @@
+
+I2C bus driver using ep93xx GPIOs.
+
+Signed-off-by: Lennert Buytenhek <buytenh@wantstofly.org>
+
+Index: linux-2.6.22/drivers/i2c/busses/Kconfig
+===================================================================
+--- linux-2.6.22.orig/drivers/i2c/busses/Kconfig	2007-08-30 00:42:45.000000000 +0200
++++ linux-2.6.22/drivers/i2c/busses/Kconfig	2007-08-30 00:42:52.000000000 +0200
+@@ -635,4 +635,16 @@
+ 	  This driver can also be built as a module.  If so, the module
+ 	  will be called i2c-pnx.
+ 
++config I2C_EP93XX
++	tristate "Cirrus Logic EP93XX GPIO-based I2C interface"
++	depends on I2C && ARCH_EP93XX
++	select I2C_ALGOBIT
++	help
++	  Say Y here if you have an Cirrus Logic EP93XX based
++	  system and are using GPIO lines for an I2C bus.
++
++	  This support is also available as a module. If so, the module
++	  will be called i2c-ep93xx.
++
++
+ endmenu
+Index: linux-2.6.22/drivers/i2c/busses/Makefile
+===================================================================
+--- linux-2.6.22.orig/drivers/i2c/busses/Makefile	2007-08-30 00:42:45.000000000 +0200
++++ linux-2.6.22/drivers/i2c/busses/Makefile	2007-08-30 00:42:52.000000000 +0200
+@@ -52,6 +52,7 @@
+ obj-$(CONFIG_I2C_VOODOO3)	+= i2c-voodoo3.o
+ obj-$(CONFIG_SCx200_ACB)	+= scx200_acb.o
+ obj-$(CONFIG_SCx200_I2C)	+= scx200_i2c.o
++obj-$(CONFIG_I2C_EP93XX)	+= i2c-ep93xx.o
+ 
+ ifeq ($(CONFIG_I2C_DEBUG_BUS),y)
+ EXTRA_CFLAGS += -DDEBUG
+Index: linux-2.6.22/drivers/i2c/busses/i2c-ep93xx.c
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ linux-2.6.22/drivers/i2c/busses/i2c-ep93xx.c	2007-08-30 00:42:52.000000000 +0200
+@@ -0,0 +1,159 @@
++/*
++ * EP93XX I2C bus driver.
++ * Copyright (C) 2007 Lennert Buytenhek <buytenh@wantstofly.org>
++ *
++ * An I2C bus driver for the Cirrus Logic EP93xx SoC.
++ *
++ * Based on an earlier version by Alessandro Zummo.
++ */
++
++#include <linux/kernel.h>
++#include <linux/platform_device.h>
++#include <linux/module.h>
++#include <linux/i2c.h>
++#include <linux/i2c-algo-bit.h>
++#include <asm/hardware.h>
++#include <asm/arch/gpio.h>
++
++struct ep93xx_i2c_priv {
++	struct ep93xx_i2c_data		*data;
++	struct i2c_adapter		adapter;
++	struct i2c_algo_bit_data	algo_data;
++	int				sda;
++	int				scl;
++};
++
++
++static void ep93xx_bit_setsda(void *cookie, int val)
++{
++	struct ep93xx_i2c_priv *priv = cookie;
++
++	if (val) {
++		gpio_line_config(priv->data->sda_pin, GPIO_IN);
++		if (priv->scl && !priv->sda && priv->data->stop != NULL)
++			priv->data->stop(priv->data->cookie);
++		priv->sda = 1;
++	} else {
++		if (priv->scl && priv->sda && priv->data->start != NULL)
++			priv->data->start(priv->data->cookie);
++		gpio_line_config(priv->data->sda_pin, GPIO_OUT);
++		gpio_line_set(priv->data->sda_pin, 0);
++		priv->sda = 0;
++	}
++}
++
++static void ep93xx_bit_setscl(void *cookie, int val)
++{
++	struct ep93xx_i2c_priv *priv = cookie;
++
++	if (val) {
++		gpio_line_config(priv->data->scl_pin, GPIO_IN);
++		priv->scl = 1;
++	} else {
++		gpio_line_config(priv->data->scl_pin, GPIO_OUT);
++		gpio_line_set(priv->data->scl_pin, 0);
++		priv->scl = 0;
++	}
++}
++
++static int ep93xx_bit_getsda(void *cookie)
++{
++	struct ep93xx_i2c_priv *priv = cookie;
++
++	if (priv->sda == 0)
++		BUG();
++
++	return gpio_line_get(priv->data->sda_pin);
++}
++
++static int ep93xx_bit_getscl(void *cookie)
++{
++	struct ep93xx_i2c_priv *priv = cookie;
++
++	if (priv->scl == 0)
++		BUG();
++
++	return gpio_line_get(priv->data->scl_pin);
++}
++
++
++static int ep93xx_i2c_probe(struct platform_device *pdev)
++{
++	struct ep93xx_i2c_priv *priv;
++	int err;
++
++	priv = kzalloc(sizeof(struct ep93xx_i2c_priv), GFP_KERNEL);
++	if (priv == NULL)
++		return -ENOMEM;
++
++	priv->data = pdev->dev.platform_data;
++
++	strlcpy(priv->adapter.name, pdev->dev.driver->name, I2C_NAME_SIZE);
++	priv->adapter.algo_data = &priv->algo_data;
++	priv->adapter.class = I2C_CLASS_ALL;
++	priv->adapter.dev.parent = &pdev->dev;
++
++	priv->algo_data.data = priv;
++	priv->algo_data.setsda = ep93xx_bit_setsda;
++	priv->algo_data.setscl = ep93xx_bit_setscl;
++	priv->algo_data.getsda = ep93xx_bit_getsda;
++	priv->algo_data.getscl = ep93xx_bit_getscl;
++	priv->algo_data.udelay = 10;
++	priv->algo_data.timeout = 100;
++
++	priv->sda = 1;
++	gpio_line_config(priv->data->sda_pin, GPIO_IN);
++
++	priv->scl = 1;
++	gpio_line_config(priv->data->scl_pin, GPIO_IN);
++
++	err = i2c_bit_add_bus(&priv->adapter);
++	if (err) {
++		printk(KERN_ERR "ERROR: Could not install %s\n",
++			pdev->dev.bus_id);
++		kfree(priv);
++		return err;
++	}
++
++	platform_set_drvdata(pdev, priv);
++
++	return 0;
++}
++
++static int ep93xx_i2c_remove(struct platform_device *pdev)
++{
++	struct ep93xx_i2c_priv *priv;
++
++	priv = platform_get_drvdata(pdev);
++	i2c_del_adapter(&priv->adapter);
++	platform_set_drvdata(pdev, NULL);
++	kfree(priv);
++
++	return 0;
++}
++
++static struct platform_driver ep93xx_i2c_driver = {
++	.probe		= ep93xx_i2c_probe,
++	.remove		= ep93xx_i2c_remove,
++	.driver		= {
++		.name	= "ep93xx-i2c",
++		.owner	= THIS_MODULE,
++	},
++};
++
++static int __init ep93xx_i2c_init(void)
++{
++	return platform_driver_register(&ep93xx_i2c_driver);
++}
++
++static void __exit ep93xx_i2c_exit(void)
++{
++	platform_driver_unregister(&ep93xx_i2c_driver);
++}
++
++module_init(ep93xx_i2c_init);
++module_exit(ep93xx_i2c_exit);
++
++MODULE_AUTHOR("Lennert Buytenhek <buytenh@wantstofly.org>");
++MODULE_DESCRIPTION("GPIO-based I2C adapter for EP93XX systems");
++MODULE_LICENSE("GPL");
+Index: linux-2.6.22/include/asm-arm/arch-ep93xx/platform.h
+===================================================================
+--- linux-2.6.22.orig/include/asm-arm/arch-ep93xx/platform.h	2007-08-30 00:42:45.000000000 +0200
++++ linux-2.6.22/include/asm-arm/arch-ep93xx/platform.h	2007-08-30 00:42:52.000000000 +0200
+@@ -16,5 +16,13 @@
+ 	unsigned char	phy_id;
+ };
+ 
++struct ep93xx_i2c_data {
++	int		sda_pin;
++	int		scl_pin;
++	void		*cookie;
++	void		(*start)(void *);
++	void		(*stop)(void *);
++};
++
+ 
+ #endif
