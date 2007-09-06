@@ -3,5 +3,5 @@ PE = "1"
 
 DESCRIPTION = "converts BDF fonts to PCF fonts"
 
-DEPENDS += " virtual/libx11 libxt"
+DEPENDS += " libxfont"
 
