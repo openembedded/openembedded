@@ -264,6 +264,7 @@ PREFERRED_VERSION_kbproto ?= "X11R7.1-1.0.3"
 PREFERRED_VERSION_randrproto ?= "1.2.1"
 PREFERRED_VERSION_renderproto ?= "0.9.3"
 PREFERRED_VERSION_scrnsaverproto ?= "X11R7.1-1.1.0"
+PREFERRED_VERSION_xf86dgaproto ?= "2.0.3"
 PREFERRED_VERSION_xproto-native ?= "7.0.10"
 PREFERRED_VERSION_xproto ?= "7.0.10"
 
