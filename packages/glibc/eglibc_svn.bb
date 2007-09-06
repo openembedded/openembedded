@@ -46,7 +46,7 @@ EXTRA_OECONF = "--enable-kernel=${OLDEST_KERNEL} \
                 --without-selinux \
                 ${GLIBC_EXTRA_OECONF}"
 
-EXTRA_OECONF += "${@get_glibc_fpu_setting(bb, d)}"
+EXTRA_OECONF += "${@get_eglibc_fpu_setting(bb, d)}"
 
 do_configure_prepend() {
         if test -d ${WORKDIR}/trunk/ports ; then
@@ -64,7 +64,7 @@ do_configure () {
                 exit 1
         fi
         (cd ${S} && gnu-configize) || die "failure in running gnu-configize"
-        find ${WORKDIR} -name "configure" | xargs touch
+        find ${S} -name "configure" | xargs touch
         CPPFLAGS="" oe_runconf
 }
 
