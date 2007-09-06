@@ -1,7 +1,5 @@
 DESCRIPTION = "OpenProtium image"
 HOMEPAGE = "http://www.openprotium.com"
-LICENSE = "MIT"
-PR = "r0"
 
 DEPENDS = "${MACHINE_TASK_PROVIDER}"
 EXTRA_IMAGECMD_jffs2 = "--pad --big-endian --eraseblock=0x10000 -D ${SLUGOS_DEVICE_TABLE}"
@@ -79,7 +77,7 @@ SLUGOS_KERNEL ?= "kernel-module-af-packet kernel-module-netconsole \
 OPENPROTIUM_KERNEL = "kernel-module-dummy \
 			kernel-module-af-packet "
 
-RDEPENDS = " \
+IMAGE_INSTALL = " \
 	kernel base-files base-passwd netbase \
         busybox initscripts-openprotium openprotium-init \
         update-modules sysvinit tinylogin \
@@ -95,8 +93,6 @@ RDEPENDS = " \
 	${OPENPROTIUM_SUPPORT} \
 	${OPENPROTIUM_KERNEL} "
 #	${SLUGOS_EXTRA_RDEPENDS}"
-
-PACKAGE_INSTALL = "${RDEPENDS}"
 
 inherit image
 

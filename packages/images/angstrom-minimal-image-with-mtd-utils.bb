@@ -5,3 +5,5 @@
 require angstrom-minimal-image.bb
 RDEPENDS += "mtd-utils"
 
+export IMAGE_BASENAME = "minimalist-image-mtdutils"
+

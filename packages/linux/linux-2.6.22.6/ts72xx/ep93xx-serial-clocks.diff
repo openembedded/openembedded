@@ -1,0 +1,42 @@
+
+Hackishly enable all UART clocks before uncompressing the kernel,
+so that using ttyAM1 or ttyAM2 as console can work.
+
+Signed-off-by: Lennert Buytenhek <buytenh@wantstofly.org>
+
+Index: linux-2.6.22/include/asm-arm/arch-ep93xx/uncompress.h
+===================================================================
+--- linux-2.6.22.orig/include/asm-arm/arch-ep93xx/uncompress.h
++++ linux-2.6.22/include/asm-arm/arch-ep93xx/uncompress.h
+@@ -78,6 +78,23 @@ static void ethernet_reset(void)
+ 
+ 
+ /*
++ * We don't have clock management for the UARTs (amba-pl010)
++ * yet, so hackily enable all UART clocks here for now.
++ */
++#define PHYS_SYSCON_DEVICE_CONFIG	0x80930080
++#define PHYS_SYSCON_SWLOCK		0x809300c0
++
++static void enable_all_uart_clocks(void)
++{
++	unsigned int v;
++
++	v = __raw_readl(PHYS_SYSCON_DEVICE_CONFIG);
++	__raw_writel(0xaa, PHYS_SYSCON_SWLOCK);
++	__raw_writel(v | 0x01140000, PHYS_SYSCON_DEVICE_CONFIG);
++}
++
++
++/*
+  * Some bootloaders don't turn on the UARTBAUD bit, which means that
+  * the UARTs will be running off a divided 7.3728 MHz clock instead of
+  * the 14.7456 MHz peripheral clock when linux boots.
+@@ -126,6 +143,7 @@ static void fix_uart_base(void)
+ static void arch_decomp_setup(void)
+ {
+ 	ethernet_reset();
++	enable_all_uart_clocks();
+ 	fix_uart_base();
+ }
+ 

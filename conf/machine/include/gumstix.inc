@@ -37,5 +37,5 @@ SERIAL_CONSOLE = "115200 ttyS0 vt100"
 #don't try to access tty1
 USE_VT = "0"
 
-require conf/machine/include/tune-xscale.conf
+require conf/machine/include/tune-xscale.inc
 

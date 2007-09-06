@@ -4,7 +4,7 @@ LICENSE = "LGPL"
 DEPENDS = "intltool-native libglade glib-2.0 gtk+ gconf dbus db gnome-common virtual/libiconv zlib intltool"
 
 PV = "1.4.0+svn${SRCDATE}"
-PR = "r5"
+PR = "r6"
 
 SRC_URI = "svn://svn.o-hand.com/repos/${PN};module=trunk;proto=http \
            file://no_libdb.patch;patch=1 \
@@ -20,8 +20,6 @@ inherit autotools pkgconfig
 LDFLAGS += "-lpthread"
 
 EXTRA_OECONF = "--without-openldap --with-dbus --without-bug-buddy --without-soup --with-libdb=${STAGING_DIR}/${HOST_SYS} --disable-smime --disable-nss --disable-nntp --disable-gtk-doc"
-
-acpaths = " -I ${STAGING_DATADIR}/aclocal/gnome-macros "
 
 PACKAGES =+ "libcamel-collateral libcamel libcamel-dev libebook libebook-dev libecal libecal-dev libedata-book libedata-book-dev libedata-cal libedata-cal-dev libedataserver libedataserver-dev"
 

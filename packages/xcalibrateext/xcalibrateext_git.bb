@@ -13,5 +13,5 @@ inherit autotools pkgconfig
 do_stage() {
 	autotools_stage_all
 	#make it compatible with the old package from cvs
-	ln -sf ${PKG_CONFIG_PATH}/xcalibrateproto.pc ${PKG_CONFIG_PATH}/xcalibrateext.pc
+	ln -sf ${PKG_CONFIG_DIR}/xcalibrateproto.pc ${PKG_CONFIG_DIR}/xcalibrateext.pc
 }

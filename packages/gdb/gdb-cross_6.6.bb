@@ -1,16 +1,7 @@
 require gdb-cross.inc
 
+SRC_URI += "file://sim-install-6.6.patch;patch=1"
+
+inherit cross
+
 PR = "r1"
-
-SRC_URI += "file://sim-install-makefile.patch;patch=1"
-
-do_configure () {
-# override this function to avoid the autoconf/automake/aclocal/autoheader
-# calls for now
-	gnu-configize
-	oe_runconf
-}
-
-do_stage() {
-	:	
-}

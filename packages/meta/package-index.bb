@@ -1,12 +1,9 @@
 DESCRIPTION = "Rebuild the package index"
 LICENSE = "MIT"
-PR = "r3"
 
 INHIBIT_DEFAULT_DEPS = "1"
 ALLOW_EMPTY = "1"
 PACKAGES = ""
-
-inherit rootfs_ipk
 
 do_fetch() {
 }
@@ -27,6 +24,6 @@ do_build[nostamp] = "1"
 do_build[dirs] = "${DEPLOY_DIR_IPK}"
 do_build() {
 	set -ex
-	rootfs_ipk_do_indexes
+	package_update_index_ipk
 	set +ex
 }

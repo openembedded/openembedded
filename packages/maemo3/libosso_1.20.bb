@@ -1,10 +1,13 @@
 LICENSE = "LGPL"
+DESCRIPTION = "Nokia osso library"
 
-DEPENDS = "dbus-glib glib-2.0 outo"
+DEPENDS = "hildon-1 dbus-glib glib-2.0 outo"
+
+PR = "r1"
 
 SRC_URI = "http://repository.maemo.org/pool/bora/free/source/${PN}_${PV}-1.tar.gz"
 
-inherit autotools pkgconfig
+inherit autotools pkgconfig lib_package
 
 
 do_configure_prepend() {

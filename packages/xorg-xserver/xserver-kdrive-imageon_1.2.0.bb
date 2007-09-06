@@ -7,7 +7,7 @@ DEPENDS += "libxkbfile libxcalibrate"
 PROVIDES = "virtual/xserver"
 
 PE = "1"
-PR = "r1"
+PR = "r2"
 
 FILESPATH = "${FILE_DIRNAME}/xserver-kdrive-1.2.0:${FILE_DIRNAME}/xserver-kdrive"
 SRC_URI = "${XORG_MIRROR}/individual/xserver/xorg-server-${PV}.tar.bz2 \
@@ -21,6 +21,5 @@ SRC_URI = "${XORG_MIRROR}/individual/xserver/xorg-server-${PV}.tar.bz2 \
        
 S = "${WORKDIR}/xorg-server-${PV}"
 
-IMAGEON_OECONF = "--disable-imageon"
-IMAGEON_OECONF_arm = "--enable-imageon"
+EXTRA_OECONF += "--enable-imageon"
 

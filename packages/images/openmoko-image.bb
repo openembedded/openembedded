@@ -2,10 +2,9 @@
 # OpenMoko Image Recipe
 #------------------------------------------------------
 
-export IMAGE_BASENAME = "${PN}"
-export IMAGE_LINGUAS = ""
+IMAGE_LINGUAS = ""
 
-export PACKAGE_INSTALL = "\
+IMAGE_INSTALL = "\
   ${MACHINE_TASK_PROVIDER} \
   task-openmoko-linux \
   task-openmoko-net \
@@ -21,10 +20,7 @@ DEPENDS = "\
   task-openmoko \
 "
 
-RDEPENDS = "${PACKAGE_INSTALL}"
 
 inherit image
-
-LICENSE = MIT
 
 ROOTFS_POSTPROCESS_COMMAND += 'date "+%m%d%H%M%Y" >${IMAGE_ROOTFS}/etc/timestamp'

@@ -3,23 +3,26 @@ AUTHOR = "Harald Welte <laforge@openmoko.org>"
 LICENSE = "GPL"
 SECTION = "bootloader"
 PRIORITY = "optional"
-
-UBOOT_UPSTREAM_REV = "3e66c078003607a7d1d214c15a5f262bc1b4032f"
-PV = "1.2.0+git${UBOOT_UPSTREAM_REV}+svn${SRCDATE}"
-PR = "r2"
-
 PROVIDES = "virtual/bootloader"
-S = "${WORKDIR}/git"
+PV = "1.2.0+git${SRCDATE}+svnr${SRCREV}"
+PR = "r0"
 
-SRC_URI = "git://www.denx.de/git/u-boot.git/;protocol=git;tag=${UBOOT_UPSTREAM_REV} \
-           svn://svn.openmoko.org/trunk/src/target/u-boot;module=patches;proto=http \
-           file://uboot-eabi-fix-HACK.patch \
-           file://uboot-20070311-tools_makefile_ln_sf.patch;patch=1 \
+SRCREV_FORMAT = "patches"
+
+UBOOT_MACHINES = "gta01bv2 gta01bv3 gta01bv4 smdk2440 hxd8 qt2410 gta02v1 gta02v2"
+
+DEFAULT_PREFERENCE = "-1"
+
+SRC_URI = "\
+  git://www.denx.de/git/u-boot.git/;protocol=git;name=upstream \
+  svn://svn.openmoko.org/trunk/src/target/u-boot;module=patches;proto=http;name=patches \
+  file://uboot-eabi-fix-HACK.patch \
+  file://uboot-20070311-tools_makefile_ln_sf.patch;patch=1 \
 "
+S = "${WORKDIR}/git"
 
 EXTRA_OEMAKE = "CROSS_COMPILE=${TARGET_PREFIX}"
 TARGET_LDFLAGS = ""
-UBOOT_MACHINES = "gta01bv2 gta01bv3 gta01bv4 smdk2440 hxd8 qt2410 gta02v1 gta02v2"
 
 do_quilt() {
         mv ${WORKDIR}/patches ${S}/patches && cd ${S} && quilt push -av

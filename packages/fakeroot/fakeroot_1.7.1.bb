@@ -3,9 +3,10 @@ SECTION = "base"
 LICENSE = "GPL"
 # fakeroot needs getopt which is provided by the util-linux package
 RDEPENDS = "util-linux"
-PR = "r1"
+PR = "r2"
 
-SRC_URI = "ftp://ftp.debian.org/debian/pool/main/f/fakeroot/fakeroot_${PV}.tar.gz"
+SRC_URI = "ftp://ftp.debian.org/debian/pool/main/f/fakeroot/fakeroot_${PV}.tar.gz \
+           file://work-with-older-libtool.patch;patch=1"
 
 inherit autotools
 

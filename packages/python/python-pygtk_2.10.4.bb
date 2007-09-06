@@ -2,10 +2,10 @@ DESCRIPTION = "Python GTK+ 2.10.x Bindings"
 SECTION = "devel/python"
 # needs gtk+ 2.10.x
 DEPENDS = "gtk+ libglade python-pycairo python-pygobject"
-RDEPENDS = "python-shell"
+RDEPENDS = "python-shell python-pycairo python-pygobject"
 SRCNAME = "pygtk"
 LICENSE = "LGPL"
-PR = "ml1"
+PR = "ml2"
 
 SRC_URI = "ftp://ftp.gnome.org/pub/gnome/sources/pygtk/2.10/${SRCNAME}-${PV}.tar.bz2 \
            file://fix-gtkunixprint.patch;patch=1 \

@@ -4,7 +4,7 @@ SECTION = "x11"
 RDEPENDS = "matchbox-common matchbox-applet-startup-monitor matchbox-panel-2"
 RDEPENDS += "openmoko-common2 openmoko-today2 openmoko-dialer2"
 RCONFLICTS = "openmoko-session"
-PR = "r30"
+PR = "r31"
 
 SRC_URI = "file://etc"
 S = ${WORKDIR}

@@ -1,8 +1,8 @@
 require gnuradio.inc
 
-DEFAULT_PREFERENCE = "-1"
+DEFAULT_PREFERENCE = "1"
 
-PV = "3.0.4+svn${SRCDATE}"
+PV = "3.0.4+svnr${SRCREV}"
 PR = "r2"
 
 SRC_URI = "svn://gnuradio.org/svn/gnuradio;module=trunk;proto=http \

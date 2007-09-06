@@ -374,6 +374,9 @@ oe_machinstall() {
 	fi
 }
 
+# Remove and re-create ${D} so that is it guaranteed to be empty
+do_install[cleandirs] = "${D}"
+
 addtask listtasks
 do_listtasks[nostamp] = "1"
 python do_listtasks() {
@@ -482,8 +485,11 @@ python base_do_fetch() {
 		(type,host,path,_,_,_) = bb.decodeurl(url)
 		uri = "%s://%s%s" % (type,host,path)
 		try:
-		    if not base_chk_file(parser, pn, pv,uri, localpath, d):
-			    bb.note("%s-%s-%s has no section, not checking URI" % (pn,pv,uri))
+			if not base_chk_file(parser, pn, pv,uri, localpath, d):
+				if type != "file":
+					bb.note("%s-%s-%s has no section, not checking URI" % (pn,pv,uri))
+				else:
+					bb.debug("%s-%s-%s has no section, not checking URI" % (pn,pv,uri))
 		except Exception:
 			raise bb.build.FuncFailed("Checksum of '%s' failed" % uri)
 }
@@ -573,10 +579,6 @@ python base_do_unpack() {
 			local = bb.data.expand(bb.fetch.localpath(url, localdata), localdata)
 		except bb.MalformedUrl, e:
 			raise FuncFailed('Unable to generate local path for malformed uri: %s' % e)
-		# dont need any parameters for extraction, strip them off
-		# RP: Insane. localpath shouldn't have parameters
-		# RP: Scehdule for removal with bitbake 1.8.8
-		local = re.sub(';.*$', '', local)
 		local = os.path.realpath(local)
 		ret = oe_unpack_file(local, localdata, url)
 		if not ret:
@@ -681,7 +683,8 @@ do_populate_staging[dirs] = "${STAGING_DIR}/${TARGET_SYS}/bin ${STAGING_DIR}/${T
 			     ${STAGING_DATADIR} \
 			     ${S} ${B}"
 
-addtask populate_staging after do_package_write
+# Could be compile but populate_staging and do_install shouldn't run at the same time
+addtask populate_staging after do_install
 
 python do_populate_staging () {
 	bb.build.exec_func('do_stage', d)
@@ -724,7 +727,7 @@ def explode_deps(s):
 
 def packaged(pkg, d):
 	import os, bb
-	return os.access(bb.data.expand('${STAGING_DIR}/pkgdata/runtime/%s.packaged' % pkg, d), os.R_OK)
+	return os.access(bb.data.expand('${PKGDATA_DIR}/runtime/%s.packaged' % pkg, d), os.R_OK)
 
 def read_pkgdatafile(fn):
 	pkgdata = {}
@@ -750,23 +753,23 @@ def read_pkgdatafile(fn):
 
 def has_subpkgdata(pkg, d):
 	import bb, os
-	fn = bb.data.expand('${STAGING_DIR}/pkgdata/runtime/%s' % pkg, d)
+	fn = bb.data.expand('${PKGDATA_DIR}/runtime/%s' % pkg, d)
 	return os.access(fn, os.R_OK)
 
 def read_subpkgdata(pkg, d):
 	import bb, os
-	fn = bb.data.expand('${STAGING_DIR}/pkgdata/runtime/%s' % pkg, d)
+	fn = bb.data.expand('${PKGDATA_DIR}/runtime/%s' % pkg, d)
 	return read_pkgdatafile(fn)
 
 
 def has_pkgdata(pn, d):
 	import bb, os
-	fn = bb.data.expand('${STAGING_DIR}/pkgdata/%s' % pn, d)
+	fn = bb.data.expand('${PKGDATA_DIR}/%s' % pn, d)
 	return os.access(fn, os.R_OK)
 
 def read_pkgdata(pn, d):
 	import bb, os
-	fn = bb.data.expand('${STAGING_DIR}/pkgdata/%s' % pn, d)
+	fn = bb.data.expand('${PKGDATA_DIR}/%s' % pn, d)
 	return read_pkgdatafile(fn)
 
 python read_subpackage_metadata () {
@@ -847,7 +850,6 @@ def base_after_parse(d):
 
     paths = []
     for p in [ "${PF}", "${P}", "${PN}", "files", "" ]:
-        paths.append(bb.data.expand(os.path.join("${FILE_DIRNAME}", p, "${MACHINE}"), d))
         path = bb.data.expand(os.path.join("${FILE_DIRNAME}", p, "${MACHINE}"), d)
         if os.path.isdir(path):
             paths.append(path)
@@ -867,14 +869,6 @@ def base_after_parse(d):
 python () {
     base_after_parse(d)
 }
-
-# Remove me when we switch to bitbake 1.8.8
-def base_get_srcrev(d):
-    import bb
-    
-    if hasattr(bb.fetch, "get_srcrev"):
-        return bb.fetch.get_srcrev(d)
-    return "NOT IMPLEMENTED"
 
 # Patch handling
 inherit patch

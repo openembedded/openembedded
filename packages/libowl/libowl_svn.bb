@@ -12,7 +12,7 @@ HOMEPAGE = "http://www.o-hand.com"
 LICENSE = "LGPL"
 SECTION = "libs"
 PR = "r3"
-PV = "0.0+svn${SRCDATE}"
+PV = "0.0+svnr${SRCREV}"
 
 DEPENDS = "gtk+ glib-2.0"
 PACKAGES = ""

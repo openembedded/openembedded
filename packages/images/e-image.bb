@@ -1,9 +1,10 @@
 require e-image-core.bb
 DESCRIPTION = "An X11-based distribution with the Enlightenment Window Manager and Tools"
-PR = "r6"
 
-export IMAGE_BASENAME = "e-image"
-export PACKAGE_INSTALL += "task-e-x11-core \
+DEPENDS += "task-e-x11-core task-gpe-base task-gpe-pim task-gpe-settings task-gpe-apps task-gpe-connectivity task-gpe-games \
+            figment xhost gpe-soundserver gpe-confd xauth"
+
+IMAGE_INSTALL += "task-e-x11-core \
                         ask-gpe-pim \
                         task-gpe-settings \
                         task-gpe-apps \
@@ -23,8 +24,3 @@ export PACKAGE_INSTALL += "task-e-x11-core \
                         gdk-pixbuf-loader-pnm \
                         gdk-pixbuf-loader-xbm \
                         gdk-pixbuf-loader-xpm"
-
-DEPENDS += "task-e-x11-core task-gpe-base task-gpe-pim task-gpe-settings task-gpe-apps task-gpe-connectivity task-gpe-games \
-            figment xhost gpe-soundserver gpe-confd xauth"
-
-RDEPENDS = "${PACKAGE_INSTALL}"

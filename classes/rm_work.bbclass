@@ -20,9 +20,7 @@ do_rm_work () {
         fi
     done
 }
-# Uncomment me when we can use bitbake 1.8.8
-#addtask rm_work after do_${RMWORK_ORIG_TASK}
-addtask rm_work after do_build
+addtask rm_work after do_${RMWORK_ORIG_TASK}
 
 do_rm_work_all () {
 	:

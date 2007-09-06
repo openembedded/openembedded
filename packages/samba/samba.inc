@@ -1,6 +1,6 @@
 SECTION = "console/network"
 LICENSE = "GPL"
-DEPENDS = "readline"
+DEPENDS = "readline virtual/libiconv"
 
 SRC_URI = "http://samba.org/samba/ftp/stable/samba-${PV}.tar.gz \
            file://configure.patch;patch=1 \
@@ -10,6 +10,7 @@ S = "${WORKDIR}/samba-${PV}/source"
 inherit autotools
 
 EXTRA_OECONF='--disable-cups --with-readline=${STAGING_LIBDIR}/.. \
+              --with-libiconv=${STAGING_LIBDIR}/.. \
 	      --without-ads --without-automount --with-smbmount'
 
 PACKAGES =+ "libsmbclient libsmbclient-dev cifs cifs-doc"

@@ -8,20 +8,7 @@
 DESCRIPTION = "<description>"
 HOMEPAGE = "http://www.hentges.net/misc/openzaurus/index.shtml"
 
-######################################################################################
-
-PV = "0.0.1"
-PR = "r0"
-
-######################################################################################
-
-inherit image
-
-######################################################################################
-
 DEPENDS = "task-essential-to-boot task-essential-parts"
-
-######################################################################################
 
 MACHINE_TASKS_akita = "task-essential-to-boot \
 		       task-essential-pcmcia task-essential-userspace \
@@ -29,8 +16,8 @@ MACHINE_TASKS_akita = "task-essential-to-boot \
 		       task-essential-sound task-essential-irda \
 		       task-essential-sd"
 
-######################################################################################
-
+IMAGE_LINGUAS = ""
+IMAGE_INSTALL = "${MACHINE_TASKS}"
 export IMAGE_BASENAME = "essential-image"
-export IMAGE_LINGUAS = ""
-export PACKAGE_INSTALL = "${MACHINE_TASKS}"
+
+inherit image
