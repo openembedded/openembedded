@@ -1,7 +1,7 @@
 #
 # Automatically generated make config: don't edit
-# Linux kernel version: 2.6.21
-# Sat Jun  2 19:52:36 2007
+# Linux kernel version: 2.6.21.4
+# Fri Sep  7 09:32:15 2007
 #
 CONFIG_ARM=y
 CONFIG_SYS_SUPPORTS_APM_EMULATION=y
@@ -198,7 +198,7 @@ CONFIG_PREEMPT=y
 CONFIG_NO_IDLE_HZ=y
 CONFIG_HZ=100
 CONFIG_AEABI=y
-# CONFIG_OABI_COMPAT is not set
+CONFIG_OABI_COMPAT=y
 # CONFIG_ARCH_DISCONTIGMEM_ENABLE is not set
 CONFIG_SELECT_MEMORY_MODEL=y
 CONFIG_FLATMEM_MANUAL=y
@@ -215,9 +215,9 @@ CONFIG_ALIGNMENT_TRAP=y
 #
 # Boot options
 #
-CONFIG_ZBOOT_ROM_TEXT=0
-CONFIG_ZBOOT_ROM_BSS=0
-CONFIG_CMDLINE="console=tty1 noinitrd root=/dev/mmcblk0p2 rootfstype=ext3 ip=169.254.1.11:169.254.1.10:169.254.1.10:255.255.255.254:ezx:usb0:off debug mem=32M@0xA0000000 mem=16M@0xAC000000"
+CONFIG_ZBOOT_ROM_TEXT=0x0
+CONFIG_ZBOOT_ROM_BSS=0x0
+CONFIG_CMDLINE="console=tty1 noinitrd root=/dev/mmcblk0p1 rootfstype=ext3 rootdelay=5 ip=192.168.1.2:192.168.1.10:192.168.1.10:255.255.255.0:ezx:usb0:off   debug mem=32M@0xA0000000 mem=16M@0xAC000000"
 # CONFIG_XIP_KERNEL is not set
 # CONFIG_KEXEC is not set
 
@@ -228,6 +228,8 @@ CONFIG_CMDLINE="console=tty1 noinitrd root=/dev/mmcblk0p2 rootfstype=ext3 ip=169
 #
 # At least one emulation must be selected
 #
+# CONFIG_FPE_NWFPE is not set
+# CONFIG_FPE_FASTFPE is not set
 
 #
 # Userspace binary formats
@@ -428,7 +430,7 @@ CONFIG_MTD_XIP=y
 # CONFIG_MTD_COMPLEX_MAPPINGS is not set
 CONFIG_MTD_PHYSMAP=y
 CONFIG_MTD_PHYSMAP_START=0x0
-CONFIG_MTD_PHYSMAP_LEN=0
+CONFIG_MTD_PHYSMAP_LEN=0x0
 CONFIG_MTD_PHYSMAP_BANKWIDTH=2
 # CONFIG_MTD_ARM_INTEGRATOR is not set
 # CONFIG_MTD_SHARP_SL is not set
@@ -833,12 +835,78 @@ CONFIG_FONT_MINI_4x6=y
 #
 # Logo configuration
 #
-# CONFIG_LOGO is not set
+CONFIG_LOGO=y
+CONFIG_LOGO_LINUX_MONO=y
+CONFIG_LOGO_LINUX_VGA16=y
+CONFIG_LOGO_LINUX_CLUT224=y
 
 #
 # Sound
 #
-# CONFIG_SOUND is not set
+CONFIG_SOUND=y
+
+#
+# Advanced Linux Sound Architecture
+#
+CONFIG_SND=y
+CONFIG_SND_TIMER=y
+CONFIG_SND_PCM=y
+# CONFIG_SND_SEQUENCER is not set
+CONFIG_SND_OSSEMUL=y
+CONFIG_SND_MIXER_OSS=m
+CONFIG_SND_PCM_OSS=m
+CONFIG_SND_PCM_OSS_PLUGINS=y
+# CONFIG_SND_DYNAMIC_MINORS is not set
+CONFIG_SND_SUPPORT_OLD_API=y
+CONFIG_SND_VERBOSE_PROCFS=y
+# CONFIG_SND_VERBOSE_PRINTK is not set
+# CONFIG_SND_DEBUG is not set
+
+#
+# Generic devices
+#
+CONFIG_SND_AC97_CODEC=m
+CONFIG_SND_DUMMY=m
+# CONFIG_SND_MTPAV is not set
+# CONFIG_SND_SERIAL_U16550 is not set
+# CONFIG_SND_MPU401 is not set
+
+#
+# ALSA ARM devices
+#
+CONFIG_SND_PXA2XX_PCM=m
+CONFIG_SND_PXA2XX_AC97=m
+
+#
+# USB devices
+#
+# CONFIG_SND_USB_AUDIO is not set
+
+#
+# SoC audio support
+#
+CONFIG_SND_SOC=y
+
+#
+# SoC Platforms
+#
+
+#
+# SoC Audio for the Atmel AT91
+#
+
+#
+# SoC Audio for the Intel PXA2xx
+#
+CONFIG_SND_PXA2XX_SOC=y
+CONFIG_SND_PXA2XX_SOC_EZX=y
+CONFIG_SND_SOC_PCAP2=y
+
+#
+# Open Sound System
+#
+# CONFIG_SOUND_PRIME is not set
+CONFIG_AC97_BUS=m
 
 #
 # HID Devices
