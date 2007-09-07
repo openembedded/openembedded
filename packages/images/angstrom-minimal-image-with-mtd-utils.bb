@@ -3,7 +3,7 @@
 # to program the NAND flash.
 
 require angstrom-minimal-image.bb
-RDEPENDS += "mtd-utils"
+IMAGE_INSTALL += "mtd-utils"
 
 export IMAGE_BASENAME = "minimalist-image-mtdutils"
 
