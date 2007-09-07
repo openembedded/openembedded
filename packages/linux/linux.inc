@@ -25,6 +25,12 @@ CMDLINE_at91sam9263ek = "mem=64M console=ttyS0,115200 root=/dev/mmcblk0p1 rootfs
 do_configure_prepend() {
         echo "" > ${S}/.config
 
+        if [ -e ${WORKDIR}/logo_linux_clut224.ppm ]; then
+                install -m 0644 ${WORKDIR}/logo_linux_clut224.ppm drivers/video/logo/logo_linux_clut224.ppm
+                echo "CONFIG_LOGO=y"                    >> ${S}/.config
+                echo "CONFIG_LOGO_LINUX_CLUT224=y"      >> ${S}/.config
+        fi
+
         if [ "${TARGET_OS}" == "linux-gnueabi" -o  "${TARGET_OS}" == "linux-uclibcgnueabi" ]; then
                 echo "CONFIG_AEABI=y"                   >> ${S}/.config
                 echo "CONFIG_OABI_COMPAT=y"             >> ${S}/.config
@@ -38,6 +44,8 @@ do_configure_prepend() {
         sed -e '/CONFIG_AEABI/d' \
             -e '/CONFIG_OABI_COMPAT=/d' \
             -e '/CONFIG_CMDLINE=/d' \
+            -e '/CONFIG_LOGO=/d' \
+            -e '/CONFIG_LOGO_LINUX_CLUT224=/d' \
             < '${WORKDIR}/defconfig' >>'${S}/.config'
 
         yes '' | oe_runmake oldconfig
@@ -63,16 +71,21 @@ do_deploy() {
         tar -cvzf ${DEPLOY_DIR_IMAGE}/modules-${KERNEL_RELEASE}-${PR}-${MACHINE}.tgz -C ${D} lib
         
         if test "x${KERNEL_IMAGETYPE}" = "xuImage" ; then 
-            ${OBJCOPY} -O binary -R .note -R .comment -S vmlinux linux.bin
-            rm -f linux.bin.gz
-            gzip -9 linux.bin
-            uboot-mkimage -A ${ARCH} -O linux -T kernel -C gzip -a ${UBOOT_ENTRYPOINT} -e ${UBOOT_ENTRYPOINT} -n "${DISTRO_NAME}/${PV}/${MACHINE}" -d linux.bin.gz ${DEPLOY_DIR_IMAGE}/uImage-${PV}-${PR}-${MACHINE}-${DATETIME}.bin
-            rm -f linux.bin.gz
-        fi
+            if test -e arch/${ARCH}/boot/compressed/vmlinux ; then
+                ${OBJCOPY} -O binary -R .note -R .comment -S arch/${ARCH}/boot/compressed/vmlinux linux.bin
+                uboot-mkimage -A ${ARCH} -O linux -T kernel -C none -a ${UBOOT_ENTRYPOINT} -e ${UBOOT_ENTRYPOINT} -n "${DISTRO_NAME}/${PV}/${MACHINE}" -d linux.bin ${DEPLOY_DIR_IMAGE}/uImage-${PV}-${PR}-${MACHINE}-${DATETIME}.bin
+                rm -f linux.bin
+	    else
+	        ${OBJCOPY} -O binary -R .note -R .comment -S vmlinux linux.bin
+                rm -f linux.bin.gz
+                gzip -9 linux.bin
+                uboot-mkimage -A ${ARCH} -O linux -T kernel -C gzip -a ${UBOOT_ENTRYPOINT} -e ${UBOOT_ENTRYPOINT} -n "${DISTRO_NAME}/${PV}/${MACHINE}" -d linux.bin.gz ${DEPLOY_DIR_IMAGE}/uImage-${PV}-${PR}-${MACHINE}-${DATETIME}.bin
+                rm -f linux.bin.gz
+            fi
+	fi
 }
 
 do_deploy[dirs] = "${S}"
 
-addtask prepatch before do_patch after do_unpack
 addtask deploy before do_package after do_install
 

@@ -1,7 +1,7 @@
 Index: linux-2.6.21/arch/arm/boot/compressed/head-xscale.S
 ===================================================================
---- linux-2.6.21.orig/arch/arm/boot/compressed/head-xscale.S	2007-06-02 14:46:22.000000000 -0300
-+++ linux-2.6.21/arch/arm/boot/compressed/head-xscale.S	2007-06-02 14:46:25.000000000 -0300
+--- linux-2.6.21.orig/arch/arm/boot/compressed/head-xscale.S	2007-06-28 16:51:44.000000000 -0300
++++ linux-2.6.21/arch/arm/boot/compressed/head-xscale.S	2007-06-28 16:51:50.000000000 -0300
 @@ -53,3 +53,6 @@
  		str	r1, [r0, #0x18]
  #endif
@@ -11,8 +11,8 @@ Index: linux-2.6.21/arch/arm/boot/compressed/head-xscale.S
 +#endif
 Index: linux-2.6.21/arch/arm/mach-pxa/Kconfig
 ===================================================================
---- linux-2.6.21.orig/arch/arm/mach-pxa/Kconfig	2007-06-02 14:46:22.000000000 -0300
-+++ linux-2.6.21/arch/arm/mach-pxa/Kconfig	2007-06-02 14:48:52.000000000 -0300
+--- linux-2.6.21.orig/arch/arm/mach-pxa/Kconfig	2007-06-28 16:51:44.000000000 -0300
++++ linux-2.6.21/arch/arm/mach-pxa/Kconfig	2007-06-28 20:54:54.000000000 -0300
 @@ -37,6 +37,10 @@
  	bool "Keith und Koep Trizeps4 DIMM-Module"
  	select PXA27x
@@ -68,13 +68,13 @@ Index: linux-2.6.21/arch/arm/mach-pxa/Kconfig
  endif
 Index: linux-2.6.21/arch/arm/mach-pxa/Makefile
 ===================================================================
---- linux-2.6.21.orig/arch/arm/mach-pxa/Makefile	2007-06-02 14:46:22.000000000 -0300
-+++ linux-2.6.21/arch/arm/mach-pxa/Makefile	2007-06-02 14:49:50.000000000 -0300
+--- linux-2.6.21.orig/arch/arm/mach-pxa/Makefile	2007-06-28 16:51:44.000000000 -0300
++++ linux-2.6.21/arch/arm/mach-pxa/Makefile	2007-06-28 20:54:54.000000000 -0300
 @@ -18,6 +18,12 @@
  obj-$(CONFIG_MACH_AKITA)	+= akita-ioexp.o
  obj-$(CONFIG_MACH_POODLE)	+= poodle.o corgi_ssp.o
  obj-$(CONFIG_MACH_TOSA)         += tosa.o
-+obj-$(CONFIG_PXA_EZX)		+= ezx.o ezx_ssp.o
++obj-$(CONFIG_PXA_EZX)		+= ezx.o
 +obj-$(CONFIG_PXA_EZX_A780)	+= ezx-a780.o
 +obj-$(CONFIG_PXA_EZX_E680)	+= ezx-e680.o
 +obj-$(CONFIG_PXA_EZX_E2)	+= ezx-e2.o
@@ -86,8 +86,8 @@ Index: linux-2.6.21/arch/arm/mach-pxa/Makefile
 Index: linux-2.6.21/arch/arm/mach-pxa/ezx.c
 ===================================================================
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ linux-2.6.21/arch/arm/mach-pxa/ezx.c	2007-06-02 14:46:25.000000000 -0300
-@@ -0,0 +1,135 @@
++++ linux-2.6.21/arch/arm/mach-pxa/ezx.c	2007-06-28 20:54:54.000000000 -0300
+@@ -0,0 +1,118 @@
 +/*
 + *  ezx.c - Common code for EZX platform.
 + *
@@ -108,11 +108,9 @@ Index: linux-2.6.21/arch/arm/mach-pxa/ezx.c
 +#include <asm/arch/pxafb.h>
 +#include <asm/arch/pxa-regs.h>
 +#include <asm/arch/ohci.h>
++#include <asm/arch/ezx.h>
 +
 +#include "generic.h"
-+#include "ezx.h"
-+
-+extern int ezx_ssp_set_machinfo(struct ezxssp_machinfo *);
 +
 +/* EZX PXA Framebuffer */
 +void ezx_lcd_power(int on, struct fb_var_screeninfo *var)
@@ -156,18 +154,6 @@ Index: linux-2.6.21/arch/arm/mach-pxa/ezx.c
 +#endif
 +EXPORT_SYMBOL(ezx_backlight_power);
 +
-+/* SSP */
-+struct platform_device ezxssp_device = {
-+	.name		= "ezx-ssp",
-+	.id		= -1,
-+};
-+
-+struct ezxssp_machinfo ezx_ssp_machinfo = {
-+	.port 		= 1,
-+	.cs_pcap	= GPIO_SPI_CE,
-+	.clk_pcap	= 1,
-+};
-+
 +/* OHCI Controller */
 +static int ezx_ohci_init(struct device *dev)
 +{
@@ -192,14 +178,11 @@ Index: linux-2.6.21/arch/arm/mach-pxa/ezx.c
 +
 +
 +static struct platform_device *devices[] __initdata = {
-+	&ezxssp_device,
 +};
 +
 +static int __init ezx_init(void)
 +{
 +	CKEN = CKEN9_OSTIMER | CKEN22_MEMC;
-+
-+	ezx_ssp_set_machinfo(&ezx_ssp_machinfo);
 +
 +	pxa_gpio_mode(GPIO_ICL_FFRXD_MD);
 +	pxa_gpio_mode(GPIO_ICL_FFTXD_MD);
@@ -226,7 +209,7 @@ Index: linux-2.6.21/arch/arm/mach-pxa/ezx.c
 Index: linux-2.6.21/include/asm-arm/arch-pxa/ezx.h
 ===================================================================
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ linux-2.6.21/include/asm-arm/arch-pxa/ezx.h	2007-06-02 14:46:25.000000000 -0300
++++ linux-2.6.21/include/asm-arm/arch-pxa/ezx.h	2007-06-28 16:51:50.000000000 -0300
 @@ -0,0 +1,225 @@
 +/*
 + *  linux/include/asm-arm/arch-pxa/ezx.h
@@ -455,8 +438,8 @@ Index: linux-2.6.21/include/asm-arm/arch-pxa/ezx.h
 +
 Index: linux-2.6.21/include/asm-arm/arch-pxa/pxa-regs.h
 ===================================================================
---- linux-2.6.21.orig/include/asm-arm/arch-pxa/pxa-regs.h	2007-06-02 14:46:22.000000000 -0300
-+++ linux-2.6.21/include/asm-arm/arch-pxa/pxa-regs.h	2007-06-02 14:46:25.000000000 -0300
+--- linux-2.6.21.orig/include/asm-arm/arch-pxa/pxa-regs.h	2007-06-28 16:51:44.000000000 -0300
++++ linux-2.6.21/include/asm-arm/arch-pxa/pxa-regs.h	2007-06-28 18:18:49.000000000 -0300
 @@ -849,6 +849,8 @@
  #define UP2OCR_HXOE		(1 << 17)	/* Host Port 2 Transceiver Output Enable */
  #define UP2OCR_SEOS		(1 << 24)	/* Single-Ended Output Select */
@@ -572,8 +555,8 @@ Index: linux-2.6.21/include/asm-arm/arch-pxa/pxa-regs.h
  #define PGSR2		__REG(0x40F00028)  /* Power Manager GPIO Sleep State Register for GP[84-64] */
 Index: linux-2.6.21/arch/arm/boot/compressed/head.S
 ===================================================================
---- linux-2.6.21.orig/arch/arm/boot/compressed/head.S	2007-06-02 14:46:22.000000000 -0300
-+++ linux-2.6.21/arch/arm/boot/compressed/head.S	2007-06-02 14:46:25.000000000 -0300
+--- linux-2.6.21.orig/arch/arm/boot/compressed/head.S	2007-06-28 16:51:44.000000000 -0300
++++ linux-2.6.21/arch/arm/boot/compressed/head.S	2007-06-28 16:51:50.000000000 -0300
 @@ -117,6 +117,9 @@
  		mov	r0, r0
  		.endr
@@ -586,8 +569,8 @@ Index: linux-2.6.21/arch/arm/boot/compressed/head.S
  		.word	start			@ absolute load/run zImage address
 Index: linux-2.6.21/include/asm-arm/arch-pxa/uncompress.h
 ===================================================================
---- linux-2.6.21.orig/include/asm-arm/arch-pxa/uncompress.h	2007-06-02 14:46:22.000000000 -0300
-+++ linux-2.6.21/include/asm-arm/arch-pxa/uncompress.h	2007-06-02 14:46:25.000000000 -0300
+--- linux-2.6.21.orig/include/asm-arm/arch-pxa/uncompress.h	2007-06-28 16:51:44.000000000 -0300
++++ linux-2.6.21/include/asm-arm/arch-pxa/uncompress.h	2007-06-28 16:51:50.000000000 -0300
 @@ -14,14 +14,14 @@
  #define STUART		((volatile unsigned long *)0x40700000)
  #define HWUART		((volatile unsigned long *)0x41600000)
@@ -606,155 +589,10 @@ Index: linux-2.6.21/include/asm-arm/arch-pxa/uncompress.h
  }
  
  /*
-Index: linux-2.6.21/arch/arm/mach-pxa/ezx_ssp.c
-===================================================================
---- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ linux-2.6.21/arch/arm/mach-pxa/ezx_ssp.c	2007-06-02 14:46:25.000000000 -0300
-@@ -0,0 +1,126 @@
-+/*
-+ *  SSP control code for Motorola EZX phones
-+ *
-+ *  Copyright (c) 2007 Daniel Ribeiro <drwyrm@gmail.com>
-+ *
-+ *  This program is free software; you can redistribute it and/or modify
-+ *  it under the terms of the GNU General Public License version 2 as
-+ *  published by the Free Software Foundation.
-+ *
-+ */
-+
-+#include <linux/module.h>
-+#include <linux/init.h>
-+#include <linux/kernel.h>
-+#include <linux/sched.h>
-+#include <linux/slab.h>
-+#include <linux/delay.h>
-+#include <linux/platform_device.h>
-+#include <asm/hardware.h>
-+#include <asm/mach-types.h>
-+
-+#include <asm/arch/ssp.h>
-+#include <asm/arch/pxa-regs.h>
-+
-+#include "ezx.h"
-+
-+static DEFINE_SPINLOCK(ezx_ssp_lock);
-+static struct ssp_dev ezx_ssp_dev;
-+static struct ssp_state ezx_ssp_state;
-+static struct ezxssp_machinfo *ssp_machinfo;
-+
-+/* PCAP */
-+unsigned long ezx_ssp_pcap_putget(ulong data)
-+{
-+	unsigned long flag;
-+	u32 ret = 0;
-+
-+	spin_lock_irqsave(&ezx_ssp_lock, flag);
-+	if (ssp_machinfo->cs_pcap >= 0)
-+		GPCR(ssp_machinfo->cs_pcap) = GPIO_bit(ssp_machinfo->cs_pcap);
-+
-+	ssp_write_word(&ezx_ssp_dev,data);
-+ 	ssp_read_word(&ezx_ssp_dev, &ret);
-+
-+	if (ssp_machinfo->cs_pcap >= 0)
-+		GPSR(ssp_machinfo->cs_pcap) = GPIO_bit(ssp_machinfo->cs_pcap);
-+	spin_unlock_irqrestore(&ezx_ssp_lock, flag);
-+
-+	return ret;
-+}
-+EXPORT_SYMBOL(ezx_ssp_pcap_putget);
-+
-+void __init ezx_ssp_set_machinfo(struct ezxssp_machinfo *machinfo)
-+{
-+	ssp_machinfo = machinfo;
-+}
-+
-+static int __init ezx_ssp_probe(struct platform_device *dev)
-+{
-+	int ret;
-+	/* PCAP init */
-+	pxa_gpio_mode(29|GPIO_ALT_FN_3_OUT);
-+	pxa_gpio_mode(GPIO24_SFRM_MD);
-+	pxa_gpio_mode(GPIO25_STXD_MD);
-+	pxa_gpio_mode(GPIO26_SRXD_MD);
-+
-+	/* Chip Select - Disable All */
-+	if (ssp_machinfo->cs_pcap >= 0)
-+		pxa_gpio_mode(ssp_machinfo->cs_pcap | GPIO_OUT | GPIO_DFLT_HIGH);
-+
-+	ret = ssp_init(&ezx_ssp_dev, ssp_machinfo->port, 0);
-+
-+	if (ret)
-+		printk(KERN_ERR "Unable to register SSP handler!\n");
-+	else {
-+		ssp_disable(&ezx_ssp_dev);
-+		ssp_config(&ezx_ssp_dev,
-+			(SSCR0_Motorola | SSCR0_DataSize(16) | SSCR0_EDSS),
-+			(SSCR1_TxTresh(1) | SSCR1_RxTresh(1)),
-+			0, SSCR0_SerClkDiv(ssp_machinfo->clk_pcap));
-+		ssp_enable(&ezx_ssp_dev);
-+	}
-+
-+	return ret;
-+}
-+
-+static int ezx_ssp_remove(struct platform_device *dev)
-+{
-+	ssp_exit(&ezx_ssp_dev);
-+	return 0;
-+}
-+
-+static int ezx_ssp_suspend(struct platform_device *dev, pm_message_t state)
-+{
-+	ssp_flush(&ezx_ssp_dev);
-+	ssp_save_state(&ezx_ssp_dev,&ezx_ssp_state);
-+
-+	return 0;
-+}
-+
-+static int ezx_ssp_resume(struct platform_device *dev)
-+{
-+	if (ssp_machinfo->cs_pcap >= 0)
-+		GPSR(ssp_machinfo->cs_pcap) = GPIO_bit(ssp_machinfo->cs_pcap);
-+	ssp_restore_state(&ezx_ssp_dev,&ezx_ssp_state);
-+	ssp_enable(&ezx_ssp_dev);
-+
-+	return 0;
-+}
-+
-+static struct platform_driver ezxssp_driver = {
-+	.probe		= ezx_ssp_probe,
-+	.remove		= ezx_ssp_remove,
-+	.suspend	= ezx_ssp_suspend,
-+	.resume		= ezx_ssp_resume,
-+	.driver		= {
-+		.name	= "ezx-ssp",
-+	},
-+};
-+
-+int __init ezx_ssp_init(void)
-+{
-+	return platform_driver_register(&ezxssp_driver);
-+}
-+
-+arch_initcall(ezx_ssp_init);
-Index: linux-2.6.21/arch/arm/mach-pxa/ezx.h
-===================================================================
---- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ linux-2.6.21/arch/arm/mach-pxa/ezx.h	2007-06-02 14:46:25.000000000 -0300
-@@ -0,0 +1,9 @@
-+#include <asm/arch/ezx.h>
-+
-+/* SSP */
-+struct ezxssp_machinfo {
-+	int port;
-+	int cs_pcap;
-+	int clk_pcap;
-+};
-+
 Index: linux-2.6.21/arch/arm/mm/init.c
 ===================================================================
---- linux-2.6.21.orig/arch/arm/mm/init.c	2007-06-02 14:46:22.000000000 -0300
-+++ linux-2.6.21/arch/arm/mm/init.c	2007-06-02 14:46:25.000000000 -0300
+--- linux-2.6.21.orig/arch/arm/mm/init.c	2007-06-28 16:51:44.000000000 -0300
++++ linux-2.6.21/arch/arm/mm/init.c	2007-06-28 16:51:50.000000000 -0300
 @@ -241,6 +241,10 @@
  	 */
  	reserve_bootmem_node(pgdat, boot_pfn << PAGE_SHIFT,
@@ -769,7 +607,7 @@ Index: linux-2.6.21/arch/arm/mm/init.c
 Index: linux-2.6.21/arch/arm/mach-pxa/ezx-a780.c
 ===================================================================
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ linux-2.6.21/arch/arm/mach-pxa/ezx-a780.c	2007-06-02 14:46:25.000000000 -0300
++++ linux-2.6.21/arch/arm/mach-pxa/ezx-a780.c	2007-06-28 20:53:01.000000000 -0300
 @@ -0,0 +1,88 @@
 +/*
 + *  ezx-a780.c - Code specific to A780 GSM Phone.
@@ -792,9 +630,9 @@ Index: linux-2.6.21/arch/arm/mach-pxa/ezx-a780.c
 +#include <asm/mach/arch.h>
 +#include <asm/arch/pxa-regs.h>
 +#include <asm/arch/pxafb.h>
++#include <asm/arch/ezx.h>
 +
 +#include "generic.h"
-+#include "ezx.h"
 +
 +extern void ezx_lcd_power(int, struct fb_var_screeninfo *);
 +extern void ezx_backlight_power(int);
@@ -862,7 +700,7 @@ Index: linux-2.6.21/arch/arm/mach-pxa/ezx-a780.c
 Index: linux-2.6.21/arch/arm/mach-pxa/ezx-e2.c
 ===================================================================
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ linux-2.6.21/arch/arm/mach-pxa/ezx-e2.c	2007-06-02 14:46:25.000000000 -0300
++++ linux-2.6.21/arch/arm/mach-pxa/ezx-e2.c	2007-06-28 20:54:24.000000000 -0300
 @@ -0,0 +1,70 @@
 +/*
 + *  ezx-e2.c - Code specific to E2 GSM Phone.
@@ -884,9 +722,9 @@ Index: linux-2.6.21/arch/arm/mach-pxa/ezx-e2.c
 +#include <asm/mach/arch.h>
 +#include <asm/arch/pxa-regs.h>
 +#include <asm/arch/pxafb.h>
++#include <asm/arch/ezx.h>
 +
 +#include "generic.h"
-+#include "ezx.h"
 +
 +extern void ezx_lcd_power(int, struct fb_var_screeninfo *);
 +extern void ezx_backlight_power(int);
@@ -937,7 +775,7 @@ Index: linux-2.6.21/arch/arm/mach-pxa/ezx-e2.c
 Index: linux-2.6.21/arch/arm/mach-pxa/ezx-e680.c
 ===================================================================
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ linux-2.6.21/arch/arm/mach-pxa/ezx-e680.c	2007-06-02 14:46:25.000000000 -0300
++++ linux-2.6.21/arch/arm/mach-pxa/ezx-e680.c	2007-06-28 20:53:29.000000000 -0300
 @@ -0,0 +1,87 @@
 +/*
 + *  ezx-e680.c - Code specific to E680 GSM Phone.
@@ -959,9 +797,9 @@ Index: linux-2.6.21/arch/arm/mach-pxa/ezx-e680.c
 +#include <asm/mach/arch.h>
 +#include <asm/arch/pxa-regs.h>
 +#include <asm/arch/pxafb.h>
++#include <asm/arch/ezx.h>
 +
 +#include "generic.h"
-+#include "ezx.h"
 +
 +extern void ezx_lcd_power(int, struct fb_var_screeninfo *);
 +extern void ezx_backlight_power(int);
@@ -1029,7 +867,7 @@ Index: linux-2.6.21/arch/arm/mach-pxa/ezx-e680.c
 Index: linux-2.6.21/arch/arm/mach-pxa/ezx-a1200.c
 ===================================================================
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ linux-2.6.21/arch/arm/mach-pxa/ezx-a1200.c	2007-06-02 14:46:25.000000000 -0300
++++ linux-2.6.21/arch/arm/mach-pxa/ezx-a1200.c	2007-06-28 20:53:48.000000000 -0300
 @@ -0,0 +1,70 @@
 +/*
 + *  ezx-a1200.c - Code specific to A1200 GSM Phone.
@@ -1051,9 +889,9 @@ Index: linux-2.6.21/arch/arm/mach-pxa/ezx-a1200.c
 +#include <asm/mach/arch.h>
 +#include <asm/arch/pxa-regs.h>
 +#include <asm/arch/pxafb.h>
++#include <asm/arch/ezx.h>
 +
 +#include "generic.h"
-+#include "ezx.h"
 +
 +extern void ezx_lcd_power(int, struct fb_var_screeninfo *);
 +extern void ezx_backlight_power(int);
@@ -1104,7 +942,7 @@ Index: linux-2.6.21/arch/arm/mach-pxa/ezx-a1200.c
 Index: linux-2.6.21/arch/arm/mach-pxa/ezx-e6.c
 ===================================================================
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ linux-2.6.21/arch/arm/mach-pxa/ezx-e6.c	2007-06-02 14:48:08.000000000 -0300
++++ linux-2.6.21/arch/arm/mach-pxa/ezx-e6.c	2007-06-28 20:54:07.000000000 -0300
 @@ -0,0 +1,70 @@
 +/*
 + *  ezx-e6.c - Code specific to E6 GSM Phone.
@@ -1126,9 +964,9 @@ Index: linux-2.6.21/arch/arm/mach-pxa/ezx-e6.c
 +#include <asm/mach/arch.h>
 +#include <asm/arch/pxa-regs.h>
 +#include <asm/arch/pxafb.h>
++#include <asm/arch/ezx.h>
 +
 +#include "generic.h"
-+#include "ezx.h"
 +
 +extern void ezx_lcd_power(int, struct fb_var_screeninfo *);
 +extern void ezx_backlight_power(int);

@@ -1,8 +1,8 @@
 Index: linux-2.6.21/arch/arm/mach-pxa/ezx-pcap.c
 ===================================================================
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ linux-2.6.21/arch/arm/mach-pxa/ezx-pcap.c	2007-06-07 21:39:37.000000000 -0300
-@@ -0,0 +1,472 @@
++++ linux-2.6.21/arch/arm/mach-pxa/ezx-pcap.c	2007-08-01 20:14:17.000000000 -0300
+@@ -0,0 +1,498 @@
 +/* Driver for Motorola PCAP2 as present in EZX phones
 + *
 + * This is both a SPI device driver for PCAP itself, as well as
@@ -24,13 +24,12 @@ Index: linux-2.6.21/arch/arm/mach-pxa/ezx-pcap.c
 +#include <asm/hardware.h>
 +#include <asm/mach-types.h>
 +
++#include <asm/arch/ezx.h>
 +#include <asm/arch/ssp.h>
 +#include <asm/arch/pxa-regs.h>
 +#include <asm/arch/ezx-pcap.h>
 +#include <asm/arch/irqs.h>
 +#include <asm/mach/irq.h>
-+
-+#include "ezx.h"
 +
 +#if 0
 +#define DEBUGP(x, args...) printk(x, ## args)
@@ -38,7 +37,38 @@ Index: linux-2.6.21/arch/arm/mach-pxa/ezx-pcap.c
 +#define DEBUGP(x, args...)
 +#endif
 +
-+extern unsigned long ezx_ssp_pcap_putget(ulong);
++static DEFINE_SPINLOCK(ezx_ssp_lock);
++static struct ssp_dev ezx_ssp_dev;
++static struct ssp_state ezx_ssp_state;
++static struct pcap_platform_data *pcap_data;
++
++static unsigned long ezx_ssp_pcap_putget(ulong data)
++{
++	unsigned long flag;
++	u32 ret = 0;
++
++	spin_lock_irqsave(&ezx_ssp_lock, flag);
++	if (pcap_data->cs >= 0) {
++		if (pcap_data->flags & PCAP_CS_AH)
++			GPSR(pcap_data->cs) = GPIO_bit(pcap_data->cs);
++		else
++			GPCR(pcap_data->cs) = GPIO_bit(pcap_data->cs);
++	}
++
++	ssp_write_word(&ezx_ssp_dev,data);
++ 	ssp_read_word(&ezx_ssp_dev, &ret);
++
++	if (pcap_data->cs >= 0) {
++		if(pcap_data->flags & PCAP_CS_AH)
++			GPCR(pcap_data->cs) = GPIO_bit(pcap_data->cs);
++		else
++			GPSR(pcap_data->cs) = GPIO_bit(pcap_data->cs);
++	}
++
++	spin_unlock_irqrestore(&ezx_ssp_lock, flag);
++
++	return ret;
++}
 +
 +int ezx_pcap_write(u_int8_t reg_num, u_int32_t value)
 +{
@@ -160,72 +190,20 @@ Index: linux-2.6.21/arch/arm/mach-pxa/ezx-pcap.c
 +}
 +EXPORT_SYMBOL_GPL(ezx_pcap_vibrator_level);
 +
-+static int __init pcap_init(void)
-+{
-+        /* initialize registers */
-+#warning FIXME: pcap_init still chip level
-+	/* implement a per board pcap init reg array? */
-+
-+	ezx_pcap_write(SSP_PCAP_ADJ_MSR_REGISTER, PCAP_MASK_ALL_INTERRUPT);
-+	ezx_pcap_write(SSP_PCAP_ADJ_ISR_REGISTER, PCAP_CLEAR_INTERRUPT_REGISTER);
-+
-+        ezx_pcap_bit_set(SSP_PCAP_ADJ_BIT_AUD_RX_AMPS_A1CTRL, 1);
-+//        ezx_pcap_vibrator_level(PCAP_VIBRATOR_VOLTAGE_LEVEL3);
-+
-+        /* set SW1 sleep to keep SW1 1.3v in sync mode */
-+        ezx_pcap_bit_set(SSP_PCAP_ADJ_BIT_LOWPWR_CTRL_SW1_MODE10, 0);
-+        ezx_pcap_bit_set(SSP_PCAP_ADJ_BIT_LOWPWR_CTRL_SW1_MODE11, 0);
-+        /*  SW1 active in sync mode */
-+        ezx_pcap_bit_set(SSP_PCAP_ADJ_BIT_LOWPWR_CTRL_SW1_MODE00, 1);
-+        ezx_pcap_bit_set(SSP_PCAP_ADJ_BIT_LOWPWR_CTRL_SW1_MODE01, 0);
-+        /*  at SW1 -core voltage to 1.30V   */
-+        ezx_pcap_bit_set(SSP_PCAP_ADJ_BIT_LOWPWR_CTRL_SW10_DVS, 1);
-+        ezx_pcap_bit_set(SSP_PCAP_ADJ_BIT_LOWPWR_CTRL_SW11_DVS, 1);
-+        ezx_pcap_bit_set(SSP_PCAP_ADJ_BIT_LOWPWR_CTRL_SW12_DVS, 1);
-+        ezx_pcap_bit_set(SSP_PCAP_ADJ_BIT_LOWPWR_CTRL_SW13_DVS, 0);
-+
-+        /* when STANDY2 PIN ACTIVE (high) set V3-- sram V8 -- pll off  */
-+        ezx_pcap_bit_set(SSP_PCAP_ADJ_BIT_VREG2_V3_STBY, 1);
-+        ezx_pcap_bit_set(SSP_PCAP_ADJ_BIT_VREG2_V3_LOWPWR, 0);
-+
-+        ezx_pcap_bit_set(SSP_PCAP_ADJ_BIT_VREG2_V8_STBY, 1);
-+        ezx_pcap_bit_set(SSP_PCAP_ADJ_BIT_VREG2_V8_LOWPWR, 0);
-+
-+        /* when STANDY2 PIN ACTIVE (high) set V4-- lcd only for e680 V6 ---
-+	 * camera for e680 */
-+        ezx_pcap_bit_set(SSP_PCAP_ADJ_BIT_VREG2_V4_STBY, 1);
-+        ezx_pcap_bit_set(SSP_PCAP_ADJ_BIT_VREG2_V4_LOWPWR, 1);
-+
-+        ezx_pcap_bit_set(SSP_PCAP_ADJ_BIT_VREG2_V6_STBY, 1);
-+        ezx_pcap_bit_set(SSP_PCAP_ADJ_BIT_VREG2_V6_LOWPWR, 0);
-+
-+        /* set Vc to low power mode when AP sleep */
-+        //SSP_PCAP_bit_set( SSP_PCAP_ADJ_BIT_LOWPWR_CTRL_VC_STBY);
-+
-+        /* set VAUX2 to voltage 2.775V and low power mode when AP sleep */
-+        ezx_pcap_bit_set(SSP_PCAP_ADJ_BIT_AUX_VREG_VAUX2_1, 1);
-+        ezx_pcap_bit_set(SSP_PCAP_ADJ_BIT_AUX_VREG_VAUX2_0, 0);
-+        ezx_pcap_bit_set(SSP_PCAP_ADJ_BIT_LOWPWR_CTRL_VAUX2_STBY, 1);
-+        ezx_pcap_bit_set(SSP_PCAP_ADJ_BIT_LOWPWR_CTRL_VAUX2_LOWPWR, 1);
-+        ezx_pcap_bit_set(SSP_PCAP_ADJ_BIT_AUX_VREG_VAUX2_EN, 1);
-+
-+//	PGSR(GPIO34_TXENB) |= GPIO_bit(GPIO34_TXENB);
-+
-+	return 0;
-+}
 +/* MMC/SD specific functions */
 +
 +void ezx_pcap_mmcsd_voltage(u_int32_t bits)
 +{
 +        unsigned int tmp;
 +        ezx_pcap_read(SSP_PCAP_ADJ_AUX_VREG_REGISTER, &tmp);
-+#if defined(CONFIG_EZX_MCI_SD)
-+        tmp &= 0xffffff9f;      /* zero all vaux2 bits */
-+        tmp |= (bits & 0x3) << 5;
-+#elif defined(CONFIG_EZX_MCI_TF)
-+        tmp &= 0xfffff0ff;      /* zero all vaux3 bits */
-+        tmp |= (bits & 0xf) << 8;
-+#endif
++	if (pcap_data->flags & PCAP_MCI_SD) {
++		tmp &= 0xffffff9f;      /* zero all vaux2 bits */
++		tmp |= (bits & 0x3) << 5;
++	}
++	else if (pcap_data->flags & PCAP_MCI_TF) {
++		tmp &= 0xfffff0ff;      /* zero all vaux3 bits */
++		tmp |= (bits & 0xf) << 8;
++	}
 +        ezx_pcap_write(SSP_PCAP_ADJ_AUX_VREG_REGISTER, tmp);
 +}
 +EXPORT_SYMBOL(ezx_pcap_mmcsd_voltage);
@@ -234,11 +212,12 @@ Index: linux-2.6.21/arch/arm/mach-pxa/ezx-pcap.c
 +{
 +	if (on > 0) on = 1;
 +	else on = 0;
-+#if defined(CONFIG_EZX_MCI_SD)
-+	return ezx_pcap_bit_set(SSP_PCAP_ADJ_BIT_AUX_VREG_VAUX2_EN, on);
-+#elif defined(CONFIG_EZX_MCI_TF)
-+	return ezx_pcap_bit_set(SSP_PCAP_ADJ_BIT_AUX_VREG_VAUX3_EN, on);
-+#endif
++	if (pcap_data->flags & PCAP_MCI_SD)
++		return ezx_pcap_bit_set(SSP_PCAP_ADJ_BIT_AUX_VREG_VAUX2_EN, on);
++	else if (pcap_data->flags & PCAP_MCI_TF)
++		return ezx_pcap_bit_set(SSP_PCAP_ADJ_BIT_AUX_VREG_VAUX3_EN, on);
++	else
++		return -ENODEV;
 +}
 +EXPORT_SYMBOL_GPL(ezx_pcap_mmcsd_power);
 +
@@ -397,18 +376,54 @@ Index: linux-2.6.21/arch/arm/mach-pxa/ezx-pcap.c
 +		set_irq_flags(irq, 0);
 +	}
 +
++	ssp_exit(&ezx_ssp_dev);
++
 +	return 0;
 +}
 +
 +static int __init ezx_pcap_probe(struct platform_device *pdev)
 +{
-+	unsigned int irq;
++	unsigned int ret, irq;
 +	DEBUGP("ezx_pcap_probe entered\n");
 +
-+	pcap_init();
++	pcap_data = pdev->dev.platform_data;
 +
-+	set_irq_type(IRQ_GPIO1, IRQT_RISING);
++	/* configure ssp port */
++	pxa_gpio_mode(29|GPIO_ALT_FN_3_OUT);
++	pxa_gpio_mode(GPIO24_SFRM_MD);
++	pxa_gpio_mode(GPIO25_STXD_MD);
++	pxa_gpio_mode(GPIO26_SRXD_MD);
++
++	if (pcap_data->cs >= 0) {
++		if (pcap_data->flags & PCAP_CS_AH)
++			pxa_gpio_mode(pcap_data->cs | GPIO_OUT);
++		else
++			pxa_gpio_mode(pcap_data->cs | GPIO_OUT
++						| GPIO_DFLT_HIGH);
++	}
++
++	ret = ssp_init(&ezx_ssp_dev, pcap_data->port, 0);
++	if (ret) {
++		printk(KERN_ERR "Unable to register SSP handler!\n");
++		return ret;
++	}
++
++	ssp_disable(&ezx_ssp_dev);
++	ssp_config(&ezx_ssp_dev,
++		(SSCR0_Motorola | SSCR0_DataSize(16) | SSCR0_EDSS),
++		(SSCR1_TxTresh(1) | SSCR1_RxTresh(1)),
++		0, SSCR0_SerClkDiv(pcap_data->clk));
++	ssp_enable(&ezx_ssp_dev);
++
++	/* mask/ack all PCAP interrupts */
++	ezx_pcap_write(SSP_PCAP_ADJ_MSR_REGISTER, PCAP_MASK_ALL_INTERRUPT);
++	ezx_pcap_write(SSP_PCAP_ADJ_ISR_REGISTER, PCAP_CLEAR_INTERRUPT_REGISTER);
++
++	if (pcap_data->init)
++		pcap_data->init();
++
 +        /* set up interrupt demultiplexing code for PCAP2 irqs */
++	set_irq_type(IRQ_GPIO1, IRQT_RISING);
 +        for (irq = EZX_IRQ(0); irq <= EZX_IRQ(6); irq++) {
 +                set_irq_chip(irq, &pcap_chip);
 +                set_irq_handler(irq, handle_edge_irq);
@@ -417,19 +432,30 @@ Index: linux-2.6.21/arch/arm/mach-pxa/ezx-pcap.c
 +        set_irq_chained_handler(IRQ_GPIO1, pcap_irq_demux_handler);
 +
 +	printk("ezx-pcap: ssp driver registered\n");
-+
-+        return 0;
++        return ret;
 +}
 +
 +static int ezx_pcap_suspend(struct platform_device *dev, pm_message_t state)
 +{
 +	DEBUGP("pcap suspend!\n");
++	ssp_flush(&ezx_ssp_dev);
++	ssp_save_state(&ezx_ssp_dev, &ezx_ssp_state);
 +        return 0;
 +}
 +
 +static int ezx_pcap_resume(struct platform_device *dev)
 +{
 +	DEBUGP("pcap resume!\n");
++
++	if (pcap_data->cs >= 0) {
++		if (pcap_data->flags & PCAP_CS_AH)
++			GPCR(pcap_data->cs) = GPIO_bit(pcap_data->cs);
++		else
++			GPSR(pcap_data->cs) = GPIO_bit(pcap_data->cs);
++	}
++	ssp_restore_state(&ezx_ssp_dev,&ezx_ssp_state);
++	ssp_enable(&ezx_ssp_dev);
++
 +	/* ack all irqs */
 +	ezx_pcap_write(SSP_PCAP_ADJ_ISR_REGISTER, PCAP_CLEAR_INTERRUPT_REGISTER);
 +        return 0;
@@ -478,8 +504,21 @@ Index: linux-2.6.21/arch/arm/mach-pxa/ezx-pcap.c
 Index: linux-2.6.21/include/asm-arm/arch-pxa/ezx-pcap.h
 ===================================================================
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ linux-2.6.21/include/asm-arm/arch-pxa/ezx-pcap.h	2007-06-03 11:14:40.000000000 -0300
-@@ -0,0 +1,665 @@
++++ linux-2.6.21/include/asm-arm/arch-pxa/ezx-pcap.h	2007-06-29 01:07:18.000000000 -0300
+@@ -0,0 +1,678 @@
++struct pcap_platform_data {
++	int port;
++	int cs;
++	int clk;
++	int flags;
++	int (*init)(void);
++};
++
++#define PCAP_CS_AH	0x1
++#define PCAP_MCI_SD	0x2
++#define PCAP_MCI_TF	0x4
++
++
 +/* (c) Copyright Motorola Beijing 2002 all rights reserved.
 +
 +	Project Name  : EZX
@@ -1147,8 +1186,8 @@ Index: linux-2.6.21/include/asm-arm/arch-pxa/ezx-pcap.h
 +#endif
 Index: linux-2.6.21/include/asm-arm/arch-pxa/irqs.h
 ===================================================================
---- linux-2.6.21.orig/include/asm-arm/arch-pxa/irqs.h	2007-06-03 02:17:12.000000000 -0300
-+++ linux-2.6.21/include/asm-arm/arch-pxa/irqs.h	2007-06-03 11:14:40.000000000 -0300
+--- linux-2.6.21.orig/include/asm-arm/arch-pxa/irqs.h	2007-06-29 01:06:37.000000000 -0300
++++ linux-2.6.21/include/asm-arm/arch-pxa/irqs.h	2007-06-29 01:07:18.000000000 -0300
 @@ -176,7 +176,8 @@
  #define NR_IRQS			(IRQ_LOCOMO_SPI_TEND + 1)
  #elif defined(CONFIG_ARCH_LUBBOCK) || \
@@ -1173,65 +1212,24 @@ Index: linux-2.6.21/include/asm-arm/arch-pxa/irqs.h
 +#define EZX_IRQ_ADCDONE        EZX_IRQ(4)
 +#define EZX_IRQ_TS             EZX_IRQ(5) /* TS touch */
 +#define EZX_IRQ_ADCDONE2       EZX_IRQ(6) /* TS x/y ADC ready */
-Index: linux-2.6.21/arch/arm/mach-pxa/ezx.c
-===================================================================
---- linux-2.6.21.orig/arch/arm/mach-pxa/ezx.c	2007-06-03 11:14:40.000000000 -0300
-+++ linux-2.6.21/arch/arm/mach-pxa/ezx.c	2007-06-09 14:57:44.000000000 -0300
-@@ -131,11 +131,30 @@
- 	.resource	= ezxbp_resources,
- };
- 
-+/* PCAP */
-+static struct resource ezxpcap_resources[] = {
-+	[0] = {
-+		.start		= IRQ_GPIO1,
-+		.end		= IRQ_GPIO1,
-+		.flags		= IORESOURCE_IRQ,
-+	},
-+};
-+
-+struct platform_device ezxpcap_device = {
-+	.name		= "ezx-pcap",
-+	.id		= -1,
-+	.dev		= {
-+		.parent		= &ezxssp_device.dev,
-+	},
-+	.num_resources	= ARRAY_SIZE(ezxpcap_resources),
-+	.resource	= ezxpcap_resources,
-+};
- 
- 
- static struct platform_device *devices[] __initdata = {
- 	&ezxssp_device,
- 	&ezxbp_device,
-+	&ezxpcap_device,
- };
- 
- /* PM */
 Index: linux-2.6.21/arch/arm/mach-pxa/Kconfig
 ===================================================================
---- linux-2.6.21.orig/arch/arm/mach-pxa/Kconfig	2007-06-03 11:14:40.000000000 -0300
-+++ linux-2.6.21/arch/arm/mach-pxa/Kconfig	2007-06-09 14:57:46.000000000 -0300
-@@ -105,6 +105,15 @@
+--- linux-2.6.21.orig/arch/arm/mach-pxa/Kconfig	2007-06-29 01:07:18.000000000 -0300
++++ linux-2.6.21/arch/arm/mach-pxa/Kconfig	2007-08-01 20:14:28.000000000 -0300
+@@ -105,6 +105,9 @@
  config EZX_BP
  	bool "BP Control code for EZX Platform"
  
 +config EZX_PCAP
 +	bool "PCAP Support"
 +
-+config EZX_MCI_SD
-+	bool
-+
-+config EZX_MCI_TF
-+	bool
-+
  endif
  
  endmenu
 Index: linux-2.6.21/arch/arm/mach-pxa/Makefile
 ===================================================================
---- linux-2.6.21.orig/arch/arm/mach-pxa/Makefile	2007-06-03 11:14:40.000000000 -0300
-+++ linux-2.6.21/arch/arm/mach-pxa/Makefile	2007-06-09 14:57:44.000000000 -0300
+--- linux-2.6.21.orig/arch/arm/mach-pxa/Makefile	2007-06-29 01:07:18.000000000 -0300
++++ linux-2.6.21/arch/arm/mach-pxa/Makefile	2007-08-01 20:14:28.000000000 -0300
 @@ -25,6 +25,7 @@
  obj-$(CONFIG_PXA_EZX_A1200)	+= ezx-a1200.o
  obj-$(CONFIG_PXA_EZX_E6)	+= ezx-e6.o
