@@ -1,0 +1,1179 @@
+Index: linux-2.6.21/sound/soc/codecs/pcap2.c
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ linux-2.6.21/sound/soc/codecs/pcap2.c	2007-08-04 22:20:36.000000000 -0300
+@@ -0,0 +1,709 @@
++/*
++ * pcap2.c  --  Template Codec  Audio driver
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ */
++
++#include <linux/module.h>
++#include <linux/delay.h>
++#include <linux/moduleparam.h>
++#include <linux/init.h>
++#include <linux/delay.h>
++#include <linux/pm.h>
++#include <linux/platform_device.h>
++#include <sound/driver.h>
++#include <sound/core.h>
++#include <sound/pcm.h>
++#include <sound/pcm_params.h>
++#include <sound/soc.h>
++#include <sound/soc-dapm.h>
++#include <sound/initval.h>
++#include <asm/arch/pxa-regs.h>
++#include <asm/arch/ezx-pcap.h>
++#include <asm/arch/ezx.h>
++#include <asm/arch/hardware.h>
++
++#include "pcap2.h"
++
++#define AUDIO_NAME "pcap2-codec"
++#define PCAP2_VERSION "0.1"
++
++extern int ezx_pcap_write(u_int8_t, u_int32_t);
++extern int ezx_pcap_read(u_int8_t, u_int32_t *);
++
++/*
++ * Debug
++ */
++
++#define PCAP2_DEBUG 1
++
++#ifdef PCAP2_DEBUG
++#define dbg(format, arg...) \
++	printk(KERN_DEBUG AUDIO_NAME ": " format "\n" , ## arg)
++#else
++#define dbg(format, arg...) do {} while (0)
++#endif
++
++#define err(format, arg...) \
++	printk(KERN_ERR AUDIO_NAME ": " format "\n" , ## arg)
++#define info(format, arg...) \
++	printk(KERN_INFO AUDIO_NAME ": " format "\n" , ## arg)
++#define warn(format, arg...) \
++	printk(KERN_WARNING AUDIO_NAME ": " format "\n" , ## arg)
++
++#define dump_registers()	pcap2_codec_read(NULL, 13); \
++				pcap2_codec_read(NULL, 12); \
++				pcap2_codec_read(NULL, 11); \
++				pcap2_codec_read(NULL, 26);
++
++
++
++
++/*
++ * write to the pcap2 codec register space
++ */
++static int pcap2_codec_write(struct snd_soc_codec *codec, unsigned int reg,
++	unsigned int value)
++{
++	dbg("codec_write reg=%08x, val=%08x", reg, value);
++	ezx_pcap_write(reg, value);
++	return 0;
++
++}
++
++static unsigned int pcap2_codec_read(struct snd_soc_codec *codec, unsigned int reg)
++{
++	unsigned int ret;
++	
++	ezx_pcap_read(reg, &ret);
++	dbg("codec_read  reg=%08x, val=%08x", reg, ret);
++	return(ret);
++
++}
++
++static const char *pcap2_amp_output[] = {"R L Stereo", "RL", "RL3db", "RL6db"};
++
++static const struct soc_enum pcap2_enum[] = {
++SOC_ENUM_SINGLE(PCAP2_OUTPUT_AMP, 19, 4, pcap2_amp_output),
++
++};
++
++/* pcap2 codec non DAPM controls */
++static const struct snd_kcontrol_new pcap2_codec_snd_controls[] = {
++SOC_SINGLE("Output gain",	PCAP2_OUTPUT_AMP, 13, 15, 0),
++SOC_SINGLE("Input gain", 	PCAP2_INPUT_AMP,   0, 31, 0),
++SOC_SINGLE("louderspeaker sw",	PCAP2_OUTPUT_AMP,  1,  1, 0),
++SOC_SINGLE("Earpiece switch",	PCAP2_OUTPUT_AMP,  0,  1, 0),
++SOC_SINGLE("Earpctrl switch", 	PCAP2_OUTPUT_AMP, 17,  1, 0),
++SOC_SINGLE("Aright switch",	PCAP2_OUTPUT_AMP,  5,  1, 0),
++SOC_SINGLE("Aleft switch",	PCAP2_OUTPUT_AMP,  6,  1, 0),
++//SOC_SINGLE("AHS switch",	PCAP2_INPUT_AMP,  14,  1, 0),
++//SOC_SINGLE("pga in switch",	PCAP2_OUTPUT_AMP, 10,  1, 0),
++SOC_ENUM("Output mode",		pcap2_enum[0]),
++};
++
++/* add non dapm controls */
++static int pcap2_codec_add_controls(struct snd_soc_codec *codec)
++{
++	int err, i;
++	dbg("pcap2_codec_add_controls");
++
++	for (i = 0; i < ARRAY_SIZE(pcap2_codec_snd_controls); i++) {
++		if ((err = snd_ctl_add(codec->card,
++				snd_soc_cnew(&pcap2_codec_snd_controls[i],codec, NULL))) < 0)
++			return err;
++	}
++
++	return 0;
++}
++
++/* pcap2 codec DAPM controls */
++static const struct snd_soc_dapm_widget pcap2_codec_dapm_widgets[] = {
++};
++
++/*
++ * template codec audio interconnectiosn between sink and source.
++ */
++static const char *audio_map[][3] = {
++
++
++	/* terminator */
++	{NULL, NULL, NULL},
++};
++
++static int pcap2_codec_add_widgets(struct snd_soc_codec *codec)
++{
++	int i;
++	dbg("pcap2_codec_add_widgets");
++
++	for(i = 0; i < ARRAY_SIZE(pcap2_codec_dapm_widgets); i++) {
++		snd_soc_dapm_new_control(codec, &pcap2_codec_dapm_widgets[i]);
++	}
++
++	/* set up audio path interconnects */
++	for(i = 0; audio_map[i][0] != NULL; i++) {
++		snd_soc_dapm_connect_input(codec, audio_map[i][0],
++			audio_map[i][1], audio_map[i][2]);
++	}
++
++	snd_soc_dapm_new_widgets(codec);
++	return 0;
++}
++
++/*
++ * Alsa operations
++ * Only implement the required operations for your platform.
++ * These operations are specific to the codec only.
++ */
++
++ /*
++ * Called by ALSA when a PCM substream is opened, private data can be allocated.
++ */
++static int pcap2mono_codec_startup(struct snd_pcm_substream *substream)
++{
++	dbg("pcap2 codec startup");
++
++	return 0;
++}
++
++/*
++ * Called by ALSA when a PCM substream is closed. Private data can be
++ * freed here.
++ */
++static int pcap2mono_codec_shutdown(struct snd_pcm_substream *substream)
++{
++	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	struct snd_soc_device *socdev = rtd->socdev;
++	struct snd_soc_codec *codec = socdev->codec;
++
++	dbg("pcap2mono codec shutdown");
++
++	pcap2_codec_write(codec, PCAP2_CODEC, 0);
++	return 0;
++}
++
++/*
++ * Called by ALSA when the hardware params are set by application. This
++ * function can also be called multiple times and can allocate buffers
++ * (using snd_pcm_lib_* ). It's non-atomic.
++ */
++static int pcap2mono_codec_hw_params(struct snd_pcm_substream *substream,
++				struct snd_pcm_hw_params *params)
++{
++//	u_int32_t tmp;
++	dbg("pcap2mono_codec_hw_params");
++
++	return 0;
++}
++
++/*
++ * Free's resources allocated by hw_params, can be called multiple times
++ */
++static int pcap2mono_codec_hw_free(struct snd_pcm_substream *substream)
++{
++	dbg("pcap2mono_codec_hw_free");
++	return 0;
++}
++
++static int pcap2_set_dai_sysclk(struct snd_soc_codec_dai *codec_dai,
++		int clk_id, unsigned int freq, int dir)
++{
++
++	dbg("pcap2 set dai sysclk");
++	return 0;
++}
++
++static int pcap2_set_dai_pll(struct snd_soc_codec_dai *codec_dai,
++		int pll_id, unsigned int freq_in, unsigned int freq_out)
++{
++	struct snd_soc_codec *codec = codec_dai->codec;
++	u_int32_t tmp;
++
++	dbg("pcap2 set dai pll");
++
++	if (codec_dai->id == PCAP2_STEREO_DAI) {
++		/* ST_DAC */
++		dbg("stereo codec not supported yet.");
++		return -ENODEV;
++	}
++	else {
++		/* MONO_DAC */
++		tmp = pcap2_codec_read(codec, PCAP2_CODEC);
++
++		tmp &= ~0x10000;
++		switch (pll_id) {
++		case PCAP2_PLL_AP:
++			tmp |= 0x10000;
++			break;
++		case PCAP2_PLL_BP:
++			break;
++		default:
++			return -ENODEV;
++		}
++
++		tmp &= ~0x1c0;
++		switch (freq_in) {
++		case 13000000:
++			break;
++/*		case 15M36:
++			tmp |= 0x40;
++			break;
++		case 16M8:
++			tmp |= 0x80;
++			break;
++		case 19M44:
++			tmp |= 0xc0;
++			break;
++*/		case 26000000:
++			tmp |= 0x100;
++			break;
++		default:
++			return -EINVAL;
++		}
++	
++
++		pcap2_codec_write(codec, PCAP2_CODEC, tmp);
++	}
++	return 0;
++}
++
++static int pcap2_set_dai_fmt(struct snd_soc_codec_dai *codec_dai,
++		unsigned int fmt)
++{
++	struct snd_soc_codec *codec = codec_dai->codec;
++	u_int32_t tmp = 0;
++	
++	dbg("pcap2_set_dai_fmt");
++
++	if (codec_dai->id == PCAP2_STEREO_DAI) {
++		/* ST_DAC */
++		dbg("stereo codec not supported yet.");
++		return -ENODEV;
++	}
++	else {
++		/* MONO_DAC */
++
++		/* disable ST_DAC */
++		pcap2_codec_write(codec, PCAP2_ST_DAC, 0);
++
++		switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
++		case SND_SOC_DAIFMT_CBM_CFM:
++			break;
++		case SND_SOC_DAIFMT_CBS_CFS:
++			tmp |= 0x2;
++			break;
++		default:
++			return -EINVAL;
++		}
++
++		switch (fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
++		case SND_SOC_DAIFMT_I2S:
++			tmp |= 0x4000;
++			break;
++/*		case SND_SOC_NET:
++			tmp |= 0x2000;
++			break;
++*/		case SND_SOC_DAIFMT_DSP_B:
++			break;
++		default:
++			return -EINVAL;
++		}
++
++		switch (fmt & SND_SOC_DAIFMT_INV_MASK) {
++		case SND_SOC_DAIFMT_IB_IF:
++			break;
++		case SND_SOC_DAIFMT_NB_NF:
++			tmp |= 0x600;
++			break;
++		case SND_SOC_DAIFMT_IB_NF:
++			tmp |= 0x400;
++			break;
++		case SND_SOC_DAIFMT_NB_IF:
++			tmp |= 0x200;
++			break;
++		}
++		if (codec_dai->id == PCAP2_MONO_DAI)
++			/* set dai to AP */
++			tmp |= 0x8000;
++
++		pcap2_codec_write(codec, PCAP2_CODEC, tmp);
++	}
++	return 0;
++}
++
++
++#if 0
++//	ezx_pcap_bit_set(SSP_PCAP_ADJ_BIT_TX_AUD_AMPS_A1_CONFIG, 1);
++//	ezx_pcap_bit_set(SSP_PCAP_ADJ_BIT_TX_AUD_AMPS_AHS_CONFIG, 1);
++
++//	ezx_pcap_bit_set(SSP_PCAP_ADJ_BIT_ST_DAC_ST_CLK_EN, 0);
++//	ezx_pcap_bit_set(SSP_PCAP_ADJ_BIT_ST_DAC_ST_DAC_EN, 0);
++//	ezx_pcap_bit_set(SSP_PCAP_ADJ_BIT_ST_DAC_SMB_ST_DAC,1);
++	
++//	dbg ("configure pcap to use ap clock");
++//	OSCC |= 0x00000008;
++//	pxa_gpio_mode(AP_13MHZ_OUTPUT_PIN | GPIO_ALT_FN_3_OUT);
++
++//	ezx_pcap_bit_set(SSP_PCAP_ADJ_BIT_AUD_CODEC_CLK_IN_SEL, 1);
++//	ezx_pcap_bit_set(SSP_PCAP_ADJ_BIT_ST_DAC_ST_DAC_CLK_IN_SEL, 1);
++
++
++
++//	ezx_pcap_bit_set(SSP_PCAP_ADJ_BIT_TX_AUD_AMPS_V2_EN_2, 1);
++
++
++
++
++	/* configure bitclk, pllclock, mode */
++	ezx_pcap_write(PCAP2_ST_DAC, 0);
++
++	tmp = PCAP_CDC_CLK_IN_13M0;
++	ezx_pcap_write(PCAP2_CODEC, tmp);
++
++	/* codec 0=master 1=slave */
++	ezx_pcap_bit_set(SSP_PCAP_ADJ_BIT_AUD_CODEC_SMB, 0);
++
++	/* bitrate 0=8k 1=16k */
++	ezx_pcap_bit_set(SSP_PCAP_ADJ_BIT_AUD_CODEC_FS_8K_16K, 0);
++
++	/* clock source */
++	ezx_pcap_bit_set(SSP_PCAP_ADJ_BIT_AUD_CODEC_CLK_IN_SEL,1);
++
++	/* dai select 0=neptune 1=pxa */
++	ezx_pcap_bit_set(SSP_PCAP_ADJ_BIT_AUD_CODEC_DIG_AUD_IN,1);
++
++	ezx_pcap_bit_set(SSP_PCAP_ADJ_BIT_AUD_CODEC_AUDIHPF,1);
++	ezx_pcap_bit_set(SSP_PCAP_ADJ_BIT_AUD_CODEC_AUDOHPF,1);
++
++	/* clock/frame inv */
++	ezx_pcap_bit_set(SSP_PCAP_ADJ_BIT_AUD_CODEC_CLK_INV,0);
++	ezx_pcap_bit_set(SSP_PCAP_ADJ_BIT_AUD_CODEC_FS_INV,0);
++
++	/*(3) reset digital filter(DF_RESET=1) */
++	ezx_pcap_bit_set(SSP_PCAP_ADJ_BIT_AUD_CODEC_DF_RESET,1);
++
++//	ezx_pcap_bit_set(SSP_PCAP_ADJ_BIT_AUD_CODEC_ADITH,0);
++
++	/* (4) enable pcap clk(CDC_CLK_EN=1),enable CODEC(CDC_EN=1)   */
++
++//	ezx_pcap_bit_set(SSP_PCAP_ADJ_BIT_AUD_RX_AMPS_CD_BYP,0);
++
++	ezx_pcap_bit_set(SSP_PCAP_ADJ_BIT_AUD_CODEC_CDC_CLK_EN,1);
++	ezx_pcap_bit_set(SSP_PCAP_ADJ_BIT_AUD_CODEC_CDC_EN,1);
++	mdelay(1);
++
++	ezx_pcap_bit_set(SSP_PCAP_ADJ_BIT_AUD_RX_AMPS_ST_DAC_SW, 0);
++	ezx_pcap_bit_set(SSP_PCAP_ADJ_BIT_AUD_RX_AMPS_CDC_SW, 1);
++	ezx_pcap_bit_set(SSP_PCAP_ADJ_BIT_AUD_RX_AMPS_PGA_IN_SW, 0);
++
++	ezx_pcap_bit_set(SSP_PCAP_ADJ_BIT_AUD_RX_AMPS_PGA_R_EN, 1);
++	ezx_pcap_bit_set(SSP_PCAP_ADJ_BIT_AUD_RX_AMPS_PGA_L_EN, 0);
++
++	/* set default output to louderspeaker while developing */
++	ezx_pcap_read(SSP_PCAP_ADJ_AUD_RX_AMPS_REGISTER, &tmp);
++	tmp &= ~SSP_PCAP_MONO_PGA_MASK;
++	tmp |= PCAP_MONO_PGA_RL;
++	ezx_pcap_write(SSP_PCAP_ADJ_AUD_RX_AMPS_REGISTER, tmp);
++//	ezx_pcap_bit_set(SSP_PCAP_ADJ_BIT_AUD_RX_AMPS_A1CTRL, 1);
++	ezx_pcap_bit_set(SSP_PCAP_ADJ_BIT_AUD_RX_AMPS_A2_EN, 1);
++	ezx_pcap_bit_set(SSP_PCAP_ADJ_BIT_TX_AUD_AMPS_A2_CONFIG, 1);
++
++	/* set default input to handset while developing */
++	ezx_pcap_bit_set(SSP_PCAP_ADJ_BIT_TX_AUD_AMPS_MB_ON1, 1);
++	ezx_pcap_bit_set(SSP_PCAP_ADJ_BIT_TX_AUD_AMPS_A5_EN, 0);
++	ezx_pcap_bit_set(SSP_PCAP_ADJ_BIT_TX_AUD_AMPS_A5_MUX, 1); 
++
++
++		
++	dump_registers();
++
++
++	return 0;
++}
++
++#endif
++
++/*
++ * Starts (Triggers) audio playback or capture.
++ * Usually only needed for DMA
++ */
++static int pcap2mono_codec_trigger(struct snd_pcm_substream *substream, int cmd)
++{
++	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	struct snd_soc_device *socdev = rtd->socdev;
++	struct snd_soc_codec *codec = socdev->codec;
++	u_int32_t tmp;
++	
++	dbg("pcap2mono_codec_trigger");
++	tmp = pcap2_codec_read(codec, PCAP2_CODEC);
++
++
++	/* reset digital filter */
++	tmp |= 0x800;
++
++	/* enable codec */
++	tmp |= 0x1000;
++	
++	/* enable codec clock */
++	tmp |= 0x2000;
++
++	pcap2_codec_write(codec, PCAP2_CODEC, tmp);
++
++	dump_registers();
++	return 0;
++}
++
++/*
++ * Called by ALSA when the PCM substream is prepared, can set format, sample
++ * rate, etc.  This function is non atomic and can be called multiple times,
++ * it can refer to the runtime info.
++ */
++static int pcap2mono_codec_prepare(struct snd_pcm_substream *substream)
++{
++	dbg("pcap2mono_codec_prepare");
++	return 0;
++}
++
++/*
++ * Codec DAPM event handler
++ * This handles codec level DAPM events
++ */
++static int pcap2_codec_dapm_event(struct snd_soc_codec *codec, int event)
++{
++	switch (event) {
++	case SNDRV_CTL_POWER_D0: /* full On */
++		/* e.g. vref/mid, osc on, */
++//		ezx_pcap_bit_set(SSP_PCAP_ADJ_BIT_TX_AUD_AMPS_AUDIO_LOWPWR, 0);
++		ezx_pcap_bit_set(SSP_PCAP_ADJ_BIT_TX_AUD_AMPS_V2_EN_2, 1);
++		ezx_pcap_bit_set(SSP_PCAP_ADJ_BIT_TX_AUD_AMPS_V2_EN_2, 1);
++		break;
++	case SNDRV_CTL_POWER_D1: /* partial On */
++	case SNDRV_CTL_POWER_D2: /* partial On */
++		break;
++	case SNDRV_CTL_POWER_D3hot: /* Off, with power */
++		/* everything off except vref/vmid, */
++		dbg("power on pcap codec");
++		ezx_pcap_bit_set(SSP_PCAP_ADJ_BIT_TX_AUD_AMPS_AUDIO_LOWPWR, 0);
++//		ezx_pcap_bit_set(SSP_PCAP_ADJ_BIT_TX_AUD_AMPS_V2_EN_2, 1);
++//		ezx_pcap_bit_set(SSP_PCAP_ADJ_BIT_TX_AUD_AMPS_V2_EN_2, 1);
++		break;
++	case SNDRV_CTL_POWER_D3cold: /* Off, without power */
++		/* everything off, dac mute, inactive */
++		ezx_pcap_bit_set(SSP_PCAP_ADJ_BIT_TX_AUD_AMPS_AUDIO_LOWPWR, 1);
++		break;
++	}
++	codec->dapm_state = event;
++	return 0;
++}
++
++/*
++ * Define codec DAI.
++ */
++struct snd_soc_codec_dai pcap2_dai[] = {
++{
++	.name = "PCAP2 MONO",
++	.id = 0,
++	/* playback and capture stream info */
++	.playback = {
++		.stream_name = "mono playback",
++		.channels_min = 1,
++		.channels_max = 1,
++		.rates = (SNDRV_PCM_RATE_8000 | SNDRV_PCM_RATE_16000),
++		.formats = SNDRV_PCM_FMTBIT_S16_LE,
++	},
++	.capture = {
++		.stream_name = "mono capture",
++		.channels_min = 1,
++		.channels_max = 1,
++		.rates = (SNDRV_PCM_RATE_8000 | SNDRV_PCM_RATE_16000),
++		.formats = SNDRV_PCM_FMTBIT_S16_LE,
++	},
++	/* codec operations */
++	/* alsa PCM operations */
++	.ops = {
++		.startup = pcap2mono_codec_startup,
++		.shutdown = pcap2mono_codec_shutdown,
++		.prepare = pcap2mono_codec_prepare,
++		.trigger = pcap2mono_codec_trigger,
++		.hw_params = pcap2mono_codec_hw_params,
++		.hw_free = pcap2mono_codec_hw_free,},
++	.dai_ops = {
++//		.digital_mute = pcap2_mute,
++		.set_fmt = pcap2_set_dai_fmt,
++//		.set_clkdiv = pcap2_set_dai_clkdiv,
++		.set_pll = pcap2_set_dai_pll,
++		.set_sysclk = pcap2_set_dai_sysclk,
++	},
++},
++{
++	.name = "PCAP2 STEREO",
++	.id = 1,
++	.playback = {
++		.stream_name = "stereo playback",
++		.channels_min = 2,
++		.channels_max = 2,
++		.rates = (SNDRV_PCM_RATE_8000 | SNDRV_PCM_RATE_16000 | SNDRV_PCM_RATE_44100),
++		.formats = SNDRV_PCM_FMTBIT_S16_LE,
++	},
++	.ops = {
++//		.startup = pcap2stereo_codec_startup,
++//		.shutdown = pcap2stereo_codec_shutdown,
++//		.prepare = pcap2stereo_codec_prepare,
++//		.trigger = pcap2stereo_codec_trigger,
++//		.hw_params = pcap2stereo_codec_hw_params,
++//		.hw_free = pcap2stereo_codec_hw_free,
++	},
++	.dai_ops = {
++//		.digital_mute = pcap2_mute,
++		.set_fmt = pcap2_set_dai_fmt,
++//		.set_clkdiv = pcap2_set_dai_clkdiv,
++		.set_pll = pcap2_set_dai_pll,
++		.set_sysclk = pcap2_set_dai_sysclk,
++	},
++},
++{
++	.name = "PCAP2 BP",
++	.id = 2,
++	.playback = {
++		.stream_name = "baseband playback",
++		.channels_min = 1,
++		.channels_max = 1,
++		.rates = SNDRV_PCM_RATE_8000,
++		.formats = SNDRV_PCM_FMTBIT_S16_LE,
++	},
++	.ops = {
++		.startup = pcap2mono_codec_startup,
++//		.shutdown = pcap2mono_codec_shutdown,
++		.prepare = pcap2mono_codec_prepare,
++		.trigger = pcap2mono_codec_trigger,
++		.hw_params = pcap2mono_codec_hw_params,
++		.hw_free = pcap2mono_codec_hw_free,
++	},
++	.dai_ops = {
++//		.digital_mute = pcap2_mute,
++		.set_fmt = pcap2_set_dai_fmt,
++//		.set_clkdiv = pcap2_set_dai_clkdiv,
++		.set_pll = pcap2_set_dai_pll,
++		.set_sysclk = pcap2_set_dai_sysclk,
++	},
++},
++};
++EXPORT_SYMBOL_GPL(pcap2_dai);
++
++static int pcap2_codec_suspend(struct platform_device *pdev, pm_message_t state)
++{
++	struct snd_soc_device *socdev = platform_get_drvdata(pdev);
++	struct snd_soc_codec *codec = socdev->codec;
++
++	dbg("pcap2_codec_suspend");
++	pcap2_codec_dapm_event(codec, SNDRV_CTL_POWER_D3cold);
++	return 0;
++}
++
++static int pcap2_codec_resume(struct platform_device *pdev)
++{
++	struct snd_soc_device *socdev = platform_get_drvdata(pdev);
++	struct snd_soc_codec *codec = socdev->codec;
++
++	dbg("pcap2_codec_resume");
++	pcap2_codec_dapm_event(codec, SNDRV_CTL_POWER_D3hot);
++	pcap2_codec_dapm_event(codec, codec->suspend_dapm_state);
++	return 0;
++}
++
++/*
++ * initialise the PCAP2 driver
++ * register the mixer and dsp interfaces with the kernel
++ */
++static int pcap2_codec_init(struct snd_soc_device *socdev)
++{
++	struct snd_soc_codec *codec = socdev->codec;
++	int reg, ret = 0;
++	
++	dbg("pcap2_codec_init");
++	codec->name = "PCAP2 Audio";
++	codec->owner = THIS_MODULE;
++	codec->read = pcap2_codec_read;
++	codec->write = pcap2_codec_write;
++	codec->dapm_event = pcap2_codec_dapm_event;
++	codec->dai = pcap2_dai;
++	codec->num_dai = ARRAY_SIZE(pcap2_dai);
++
++	/* register pcms */
++	ret = snd_soc_new_pcms(socdev, SNDRV_DEFAULT_IDX1, SNDRV_DEFAULT_STR1);
++	if (ret < 0) {
++		return ret;
++	}
++	/* power on device */
++	pcap2_codec_dapm_event(codec, SNDRV_CTL_POWER_D3hot);
++	/* set the update bits */
++
++	pcap2_codec_add_controls(codec);
++	pcap2_codec_add_widgets(codec);
++	ret = snd_soc_register_card(socdev);
++	if (ret < 0) {
++		snd_soc_free_pcms(socdev);
++		snd_soc_dapm_free(socdev);
++		dbg("erro registrando\n");
++	}
++
++	return ret;
++}
++
++static struct snd_soc_device *pcap2_codec_socdev;
++
++
++static int pcap2_codec_probe(struct platform_device *pdev)
++{
++	struct snd_soc_device *socdev = platform_get_drvdata(pdev);
++	struct pcap2_codec_setup_data *setup;
++	struct snd_soc_codec *codec;
++	int ret = 0;
++	info("PCAP2 Audio Codec %s", PCAP2_VERSION);
++
++	setup = socdev->codec_data;
++	codec = kzalloc(sizeof(struct snd_soc_codec), GFP_KERNEL);
++	if (codec == NULL)
++		return -ENOMEM;
++
++	socdev->codec = codec;
++	mutex_init(&codec->mutex);
++	INIT_LIST_HEAD(&codec->dapm_widgets);
++	INIT_LIST_HEAD(&codec->dapm_paths);
++
++	pcap2_codec_socdev = socdev;
++
++	ret = pcap2_codec_init(socdev);
++	return ret;
++}
++
++/* power down chip and remove */
++static int pcap2_codec_remove(struct platform_device *pdev)
++{
++	struct snd_soc_device *socdev = platform_get_drvdata(pdev);
++	struct snd_soc_codec *codec = socdev->codec;
++	if (codec->control_data)
++		pcap2_codec_dapm_event(codec, SNDRV_CTL_POWER_D3cold);
++	snd_soc_free_pcms(socdev);
++	snd_soc_dapm_free(socdev);
++
++	kfree(codec);
++
++	return 0;
++}
++
++/* codec device ops */
++struct snd_soc_codec_device soc_codec_dev_pcap2 = {
++	.probe = 	pcap2_codec_probe,
++	.remove = 	pcap2_codec_remove,
++//	.suspend = 	pcap2_codec_suspend,
++//	.resume =	pcap2_codec_resume,
++};
++
++EXPORT_SYMBOL_GPL(soc_codec_dev_pcap2);
++
++MODULE_DESCRIPTION("ASoC PCAP2 codec");
++MODULE_AUTHOR("Daniel Ribeiro");
++MODULE_LICENSE("GPL");
+Index: linux-2.6.21/sound/soc/codecs/pcap2.h
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ linux-2.6.21/sound/soc/codecs/pcap2.h	2007-08-04 02:06:01.000000000 -0300
+@@ -0,0 +1,31 @@
++/*
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ */
++
++#ifndef _PCAP2_H
++#define _PCAP2_H
++
++/* PCAP2 register space */
++
++#define PCAP2_OUTPUT_AMP	0x0c
++#define PCAP2_ST_DAC		0x0d
++#define PCAP2_INPUT_AMP		0x1a
++#define PCAP2_CODEC		0x0b
++
++#define PCAP2_MONO_DAI		0
++#define PCAP2_STEREO_DAI	1
++#define PCAP2_BP_DAI		2
++
++#define PCAP2_PLL_BP		0
++#define PCAP2_PLL_AP		1
++
++//struct template_codec_setup_data {
++//	unsigned short i2c_address;
++//};
++
++extern struct snd_soc_codec_dai pcap2_dai[];
++extern struct snd_soc_codec_device soc_codec_dev_pcap2;
++
++#endif
+Index: linux-2.6.21/sound/soc/pxa/Kconfig
+===================================================================
+--- linux-2.6.21.orig/sound/soc/pxa/Kconfig	2007-08-02 22:58:17.000000000 -0300
++++ linux-2.6.21/sound/soc/pxa/Kconfig	2007-08-02 22:58:34.000000000 -0300
+@@ -60,4 +60,13 @@
+ 	  Say Y if you want to add support for SoC audio on Sharp
+ 	  Zaurus SL-C6000x models (Tosa).
+ 
++config SND_PXA2XX_SOC_EZX
++	tristate "SoC Audio support for EZX"
++	depends on SND_PXA2XX_SOC && PXA_EZX
++	select SND_PXA2XX_SOC_SSP
++	select SND_SOC_PCAP2
++	help
++	  Say Y if you want to add support for SoC audio on
++	  Motorola EZX Phones (a780/e680).
++
+ endmenu
+Index: linux-2.6.21/sound/soc/pxa/ezx.c
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ linux-2.6.21/sound/soc/pxa/ezx.c	2007-08-04 22:35:25.000000000 -0300
+@@ -0,0 +1,296 @@
++/*
++ *  This program is free software; you can redistribute  it and/or modify it
++ *  under  the terms of  the GNU General  Public License as published by the
++ *  Free Software Foundation;  either version 2 of the  License, or (at your
++ *  option) any later version.
++ *
++ */
++
++#include <linux/module.h>
++#include <linux/moduleparam.h>
++#include <linux/timer.h>
++#include <linux/interrupt.h>
++#include <linux/platform_device.h>
++#include <sound/driver.h>
++#include <sound/core.h>
++#include <sound/pcm.h>
++#include <sound/soc.h>
++#include <sound/soc-dapm.h>
++
++#include <asm/mach-types.h>
++#include <asm/arch/pxa-regs.h>
++#include <asm/arch/hardware.h>
++
++#include "../codecs/pcap2.h"
++#include "pxa2xx-pcm.h"
++#include "pxa2xx-ssp.h"
++
++#define GPIO_HW_ATTENUATE_A780  96
++/*
++ * Alsa operations
++ * Only implement the required operations for your platform.
++ * These operations are specific to the machine only.
++ */
++
++ /*
++ * Called by ALSA when a PCM substream is opened, private data can be allocated.
++ */
++static int ezx_machine_startup(struct snd_pcm_substream *substream)
++{
++	printk("ezx_machine_startup\n");
++	return 0;
++}
++
++/*
++ * Called by ALSA when the hardware params are set by application. This
++ * function can also be called multiple times and can allocate buffers
++ * (using snd_pcm_lib_* ). It's non-atomic.
++ */
++static int ezx_machine_hw_params(struct snd_pcm_substream *substream,
++				struct snd_pcm_hw_params *params)
++{
++	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	struct snd_soc_codec_dai *codec_dai = rtd->dai->codec_dai;
++	struct snd_soc_cpu_dai *cpu_dai = rtd->dai->cpu_dai;
++	int ret;
++
++
++	/* set codec DAI configuration */
++	ret = codec_dai->dai_ops.set_fmt(codec_dai, SND_SOC_DAIFMT_DSP_B |
++		SND_SOC_DAIFMT_IB_IF | SND_SOC_DAIFMT_CBM_CFM);
++	if(ret < 0)
++		return ret;
++
++	/* set PLL source */
++	ret = codec_dai->dai_ops.set_pll(codec_dai, PCAP2_PLL_AP, 13000000, -1);
++	if(ret < 0)
++		return ret;
++
++	/* set cpu DAI configuration */
++	ret = cpu_dai->dai_ops.set_fmt(cpu_dai, SND_SOC_DAIFMT_DSP_B |
++		SND_SOC_DAIFMT_IB_IF | SND_SOC_DAIFMT_CBM_CFM);
++	if (ret < 0)
++		return ret;
++
++	ret = cpu_dai->dai_ops.set_tristate(cpu_dai, 0);
++	if (ret < 0)
++		return ret;
++
++	ret = cpu_dai->dai_ops.set_sysclk(cpu_dai,PXA2XX_SSP_CLK_PLL, 0, SND_SOC_CLOCK_IN);
++	if (ret < 0)
++		return ret;
++	
++	return 0;
++}
++
++/*
++ * Free's resources allocated by hw_params, can be called multiple times
++ */
++static int ezx_machine_hw_free(struct snd_pcm_substream *substream)
++{
++
++	printk("ezx_machine_hw_free\n");
++
++	return 0;
++}
++
++static int ezx_machine_prepare(struct snd_pcm_substream *substream)
++{
++	int timeout = 0;
++	while(((SSSR_P(3) & SSSR_CSS) != 0) && (timeout++ < 10000000));
++
++	if (timeout >= 10000000) 
++		printk("clock sync timeout!\n");
++	else
++		printk("clock sync passed %d\n", timeout);
++
++//	printk("SSCR0 %x SSCR1 %x SSTO %x SSPSP %x SSSR %x SSACD %x\n",
++//		SSCR0_P(3), SSCR1_P(3),
++//		SSTO_P(3), SSPSP_P(3),
++//		SSSR_P(3), SSACD_P(3));
++	return 0;
++}
++
++/* machine Alsa PCM operations */
++static struct snd_soc_ops ezx_ops = {
++	.startup = ezx_machine_startup,
++	.prepare = ezx_machine_prepare,
++	.hw_free = ezx_machine_hw_free,
++	.hw_params = ezx_machine_hw_params,
++};
++
++static int bp_hw_params(struct snd_pcm_substream *substream,
++				struct snd_pcm_hw_params *params)
++{
++	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	struct snd_soc_codec_dai *codec_dai = rtd->dai->codec_dai;
++	struct snd_soc_cpu_dai *cpu_dai = rtd->dai->cpu_dai;
++	int ret;
++	printk("bp_hw_params\n");
++	/* set codec DAI configuration */
++	ret = codec_dai->dai_ops.set_fmt(codec_dai, SND_SOC_DAIFMT_DSP_B |
++		SND_SOC_DAIFMT_IB_IF | SND_SOC_DAIFMT_CBM_CFM);
++	if(ret < 0)
++		return ret;
++
++	/* set PLL source */
++	ret = codec_dai->dai_ops.set_pll(codec_dai, PCAP2_PLL_BP, 13000000, -1);
++	if(ret < 0)
++		return ret;
++
++	/* set cpu DAI configuration */
++//	ret = cpu_dai->dai_ops.set_fmt(cpu_dai, SND_SOC_DAIFMT_DSP_B |
++//		SND_SOC_DAIFMT_IB_IF | SND_SOC_DAIFMT_CBM_CFM);
++//	if (ret < 0)
++//		return ret;
++
++//	ret = cpu_dai->dai_ops.set_tristate(cpu_dai, 0);
++//	if (ret < 0)
++//		return ret;
++
++//	ret = cpu_dai->dai_ops.set_sysclk(cpu_dai,PXA2XX_SSP_CLK_PLL, 0, SND_SOC_CLOCK_IN);
++//	if (ret < 0)
++//		return ret;
++	
++	return 0;
++}
++
++/* machine audio map (connections to the codec pins) */
++static const char *audio_map[][3] = {
++
++	{NULL, NULL, NULL},
++};
++
++/*
++ * Initialise the machine audio subsystem.
++ */
++static int ezx_machine_init(struct snd_soc_codec *codec)
++{
++	printk("ezx machine init\n");
++	/* mark unused codec pins as NC */
++
++	/* Add template specific controls */
++
++	/* Add template specific widgets */
++
++	/* Set up template specific audio path audio_map */
++	/* synchronise subsystem */
++	snd_soc_dapm_sync_endpoints(codec);
++	return 0;
++}
++
++static struct snd_soc_cpu_dai bp_dai =
++{
++	.name = "Baseband",
++	.id = 0,
++	.type = SND_SOC_DAI_PCM,
++	.playback = {
++		.channels_min = 1,
++		.channels_max = 1,
++		.rates = SNDRV_PCM_RATE_8000,
++		.formats = SNDRV_PCM_FMTBIT_S16_LE,
++	},
++	.capture = {
++		.channels_min = 1,
++		.channels_max = 1,
++		.rates = SNDRV_PCM_RATE_8000,
++		.formats = SNDRV_PCM_FMTBIT_S16_LE,
++	},
++	.ops = {
++//		.startup = bp_startup,
++//		.shutdown = bp_shutdown,
++		.hw_params = bp_hw_params,
++//		.hw_free = bp_hw_free,
++	},
++};
++
++/* template digital audio interface glue - connects codec <--> CPU */
++static struct snd_soc_dai_link ezx_dai[] = {
++{
++	.name = "PCAP2 MONO",
++	.stream_name = "mono playback",
++	.cpu_dai = &pxa_ssp_dai[PXA2XX_DAI_SSP3],
++	.codec_dai = &pcap2_dai[PCAP2_MONO_DAI],
++	.init = ezx_machine_init,
++	.ops = &ezx_ops,
++},
++{
++	.name = "PCAP2 STEREO",
++	.stream_name = "stereo playback",
++	.cpu_dai = &pxa_ssp_dai[PXA2XX_DAI_SSP3],
++	.codec_dai = &pcap2_dai[PCAP2_STEREO_DAI],
++	.init = ezx_machine_init,
++	.ops = &ezx_ops,
++},
++{
++	.name = "PCAP2 BP",
++	.stream_name = "BP Audio",
++	.cpu_dai = &bp_dai,
++	.codec_dai = &pcap2_dai[PCAP2_BP_DAI],
++},
++};
++
++/* template audio machine driver */
++static struct snd_soc_machine snd_soc_machine_ezx = {
++	.name = "Motorola EZX",
++//	.probe
++//	.remove
++//	.suspend_pre
++//	.resume_post
++	.dai_link = ezx_dai,
++	.num_links = ARRAY_SIZE(ezx_dai),
++};
++
++/* template audio private data */
++//static struct codec_priv_setup_data template_codec_setup = {
++//	.i2c_address = 0x1b,
++//};
++
++/* template audio subsystem */
++static struct snd_soc_device ezx_snd_devdata = {
++	.machine = &snd_soc_machine_ezx,
++	.platform = &pxa2xx_soc_platform,
++	.codec_dev = &soc_codec_dev_pcap2,
++//	.codec_data = &ezx_pcap2_setup,
++};
++
++static struct platform_device *ezx_snd_device;
++
++static int __init ezx_init(void)
++{
++	int ret;
++	printk("soc: ezx_init entered\n");
++	ezx_snd_device = platform_device_alloc("soc-audio", -1);
++	if (!ezx_snd_device)
++		return -ENOMEM;
++
++	platform_set_drvdata(ezx_snd_device, &ezx_snd_devdata);
++	ezx_snd_devdata.dev = &ezx_snd_device->dev;
++	ret = platform_device_add(ezx_snd_device);
++
++	if (ret)
++		platform_device_put(ezx_snd_device);
++
++	pxa_gpio_mode(GPIO83_SFRM3_MD);	/* SFRM */
++	pxa_gpio_mode(GPIO81_STXD3_MD);	/* TXD  */
++	pxa_gpio_mode(52 | GPIO_ALT_FN_2_IN);	/* SCLK */
++	pxa_gpio_mode(GPIO89_SRXD3_MD);	/* RXD  */
++
++
++	pxa_gpio_mode(GPIO_HW_ATTENUATE_A780 | GPIO_OUT);
++	pxa_gpio_set_value(GPIO_HW_ATTENUATE_A780, 1);
++
++
++
++
++	return ret;
++}
++
++static void __exit ezx_exit(void)
++{
++	platform_device_unregister(ezx_snd_device);
++}
++
++module_init(ezx_init);
++module_exit(ezx_exit);
++
+Index: linux-2.6.21/sound/soc/codecs/Makefile
+===================================================================
+--- linux-2.6.21.orig/sound/soc/codecs/Makefile	2007-08-02 22:57:48.000000000 -0300
++++ linux-2.6.21/sound/soc/codecs/Makefile	2007-08-02 22:58:34.000000000 -0300
+@@ -2,8 +2,10 @@
+ snd-soc-wm8731-objs := wm8731.o
+ snd-soc-wm8750-objs := wm8750.o
+ snd-soc-wm9712-objs := wm9712.o
++snd-soc-pcap2-objs := pcap2.o
+ 
+ obj-$(CONFIG_SND_SOC_AC97_CODEC)	+= snd-soc-ac97.o
+ obj-$(CONFIG_SND_SOC_WM8731)	+= snd-soc-wm8731.o
+ obj-$(CONFIG_SND_SOC_WM8750)	+= snd-soc-wm8750.o
+ obj-$(CONFIG_SND_SOC_WM9712)	+= snd-soc-wm9712.o
++obj-$(CONFIG_SND_SOC_PCAP2)	+= snd-soc-pcap2.o
+Index: linux-2.6.21/sound/soc/codecs/Kconfig
+===================================================================
+--- linux-2.6.21.orig/sound/soc/codecs/Kconfig	2007-08-02 22:57:48.000000000 -0300
++++ linux-2.6.21/sound/soc/codecs/Kconfig	2007-08-02 22:58:34.000000000 -0300
+@@ -13,3 +13,7 @@
+ config SND_SOC_WM9712
+ 	tristate
+ 	depends on SND_SOC
++
++config SND_SOC_PCAP2
++	tristate
++	depends on SND_SOC && EZX_PCAP
+Index: linux-2.6.21/sound/soc/pxa/Makefile
+===================================================================
+--- linux-2.6.21.orig/sound/soc/pxa/Makefile	2007-08-02 22:58:17.000000000 -0300
++++ linux-2.6.21/sound/soc/pxa/Makefile	2007-08-02 22:58:34.000000000 -0300
+@@ -14,9 +14,10 @@
+ snd-soc-poodle-objs := poodle.o
+ snd-soc-tosa-objs := tosa.o
+ snd-soc-spitz-objs := spitz.o
++snd-soc-ezx-objs := ezx.o
+ 
+ obj-$(CONFIG_SND_PXA2XX_SOC_CORGI) += snd-soc-corgi.o
+ obj-$(CONFIG_SND_PXA2XX_SOC_POODLE) += snd-soc-poodle.o
+ obj-$(CONFIG_SND_PXA2XX_SOC_TOSA) += snd-soc-tosa.o
+ obj-$(CONFIG_SND_PXA2XX_SOC_SPITZ) += snd-soc-spitz.o
+-
++obj-$(CONFIG_SND_PXA2XX_SOC_EZX) += snd-soc-ezx.o
+Index: linux-2.6.21/sound/soc/pxa/pxa2xx-ssp.c
+===================================================================
+--- linux-2.6.21.orig/sound/soc/pxa/pxa2xx-ssp.c	2007-08-02 22:58:17.000000000 -0300
++++ linux-2.6.21/sound/soc/pxa/pxa2xx-ssp.c	2007-08-02 22:58:34.000000000 -0300
+@@ -440,6 +440,12 @@
+ 	case SND_SOC_DAIFMT_NB_NF:
+ 		SSPSP_P(port) |= SSPSP_SFRMP | SSPSP_FSRT;
+ 		break;
++	case SND_SOC_DAIFMT_NB_IF:
++		SSPSP_P(port) |= SSPSP_FSRT;
++		break;
++	case SND_SOC_DAIFMT_IB_NF:
++		SSPSP_P(port) |= SSPSP_SFRMP;
++		break;
+ 	case SND_SOC_DAIFMT_IB_IF:
+ 		break;
+ 	default:
+Index: linux-2.6.21/sound/soc/pxa/pxa2xx-pcm.c
+===================================================================
+--- linux-2.6.21.orig/sound/soc/pxa/pxa2xx-pcm.c	2007-08-02 22:57:48.000000000 -0300
++++ linux-2.6.21/sound/soc/pxa/pxa2xx-pcm.c	2007-08-04 22:46:02.000000000 -0300
+@@ -61,8 +61,9 @@
+ 
+ 	dcsr = DCSR(dma_ch);
+ 	DCSR(dma_ch) = dcsr & ~DCSR_STOPIRQEN;
+-
++	printk("dma irq dcsr=%08x ", dcsr);
+ 	if (dcsr & DCSR_ENDINTR) {
++		printk("endintr\n");
+ 		snd_pcm_period_elapsed(substream);
+ 	} else {
+ 		printk( KERN_ERR "%s: DMA error on channel %d (DCSR=%#x)\n",
+@@ -106,7 +107,8 @@
+ 			return ret;
+ 		prtd->dma_ch = ret;
+ 	}
+-
++	printk("requested dma channel %d\n", ret);
++	
+ 	snd_pcm_set_runtime_buffer(substream, &substream->dma_buffer);
+ 	runtime->dma_bytes = totsize;
+ 
+@@ -153,11 +155,13 @@
+ static int pxa2xx_pcm_prepare(struct snd_pcm_substream *substream)
+ {
+ 	struct pxa2xx_runtime_data *prtd = substream->runtime->private_data;
+-
++	printk("pcm_prepare channel %d\n", prtd->dma_ch);
+ 	DCSR(prtd->dma_ch) &= ~DCSR_RUN;
+ 	DCSR(prtd->dma_ch) = 0;
+ 	DCMD(prtd->dma_ch) = 0;
+-	*prtd->params->drcmr = prtd->dma_ch | DRCMR_MAPVLD;
++
++	if (prtd->params)
++		*prtd->params->drcmr = prtd->dma_ch | DRCMR_MAPVLD;
+ 
+ 	return 0;
+ }
+@@ -190,7 +194,7 @@
+ 	default:
+ 		ret = -EINVAL;
+ 	}
+-
++	printk("pcm_trigger ret%d, cmd%d\n", ret, cmd);
+ 	return ret;
+ }
+ 

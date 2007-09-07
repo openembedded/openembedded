@@ -1,0 +1,53 @@
+Index: linux-2.6.21/arch/arm/mach-pxa/ezx-a1200.c
+===================================================================
+--- linux-2.6.21.orig/arch/arm/mach-pxa/ezx-a1200.c	2007-06-28 22:44:12.000000000 -0300
++++ linux-2.6.21/arch/arm/mach-pxa/ezx-a1200.c	2007-06-28 22:45:56.000000000 -0300
+@@ -19,6 +19,7 @@
+ #include <asm/arch/pxa-regs.h>
+ #include <asm/arch/pxafb.h>
+ #include <asm/arch/ezx.h>
++#include <asm/arch/ezx-pcap.h>
+ 
+ #include "generic.h"
+ 
+@@ -48,7 +49,40 @@
+        .pxafb_lcd_power = &ezx_lcd_power,
+ };
+ 
++/* PCAP */
++static int __init a1200_pcap_init(void)
++{
++	return 0;
++}
++
++static struct pcap_platform_data a1200_pcap_platform_data = {
++	.port		= 1,
++	.cs		= GPIO_SPI_CE,
++	.flags		= PCAP_CS_AH | PCAP_MCI_TF,
++	.clk		= 1,
++	.init		= a1200_pcap_init,
++};
++
++static struct resource a1200_pcap_resources[] = {
++	[0] = {
++		.start		= IRQ_GPIO1,
++		.end		= IRQ_GPIO1,
++		.flags		= IORESOURCE_IRQ,
++	},
++};
++
++struct platform_device a1200_pcap_device = {
++	.name		= "ezx-pcap",
++	.id		= -1,
++	.num_resources	= ARRAY_SIZE(a1200_pcap_resources),
++	.resource	= a1200_pcap_resources,
++	.dev		= {
++		.platform_data = &a1200_pcap_platform_data,
++	},
++};
++
+ static struct platform_device *devices[] __initdata = {
++	&a1200_pcap_device,
+ };
+ 
+ static void __init a1200_init(void)

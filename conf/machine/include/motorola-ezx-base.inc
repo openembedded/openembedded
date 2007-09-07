@@ -16,7 +16,7 @@ EXTRA_IMAGECMD_jffs2 = "--pad=14680064 --little-endian --eraseblock=0x20000 -n"
 MACHINE_FEATURES = "kernel26 touchscreen apm alsa bluetooth usbgadget usbhost keyboard screen"
 
 # the EZX phones need a userspace daemon to stop the BP from shutting down the phone 
-MACHINE_EXTRA_RDEPENDS += "opentapi"
+MACHINE_ESSENTIAL_EXTRA_RDEPENDS += "ezxd"
 
 MACHINE_DISPLAY_WIDTH_PIXELS = "240"
 MACHINE_DISPLAY_HEIGHT_PIXELS = "320"
