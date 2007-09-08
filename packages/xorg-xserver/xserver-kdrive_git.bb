@@ -23,6 +23,7 @@ SRC_URI = "git://anongit.freedesktop.org/xorg/xserver;protocol=git \
 	file://xcalibrate-new-input-world-order.patch;patch=1 \
 	file://tslib-default-device.patch;patch=1 \
 	file://fbdev-evdev.patch;patch=1 \
+	file://xephyr-post-1.4-buildfix.patch;patch=1 \
 	"
 
 S = "${WORKDIR}/git"
