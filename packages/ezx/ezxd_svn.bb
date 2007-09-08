@@ -15,9 +15,6 @@ inherit update-rc.d
 INITSCRIPT_NAME = "ezxd"
 INITSCRIPT_PARAMS = "start 00 S ."
 
-RREPLACES = "opentapi"
-
-
 S = "${WORKDIR}/${PN}"
 
 do_install() {
@@ -26,7 +23,7 @@ do_install() {
 
 	install -d ${D}${libdir}/ezxd
 	install -m 755 *.so ${D}${libdir}/ezxd
-        
+
 	install -d ${D}${sysconfdir}/init.d
         install -m 0600 ezxd.conf ${D}${sysconfdir}/
         install -m 0755 ${WORKDIR}/ezxd.init ${D}${sysconfdir}/init.d/ezxd
