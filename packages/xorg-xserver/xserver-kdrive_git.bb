@@ -28,4 +28,4 @@ S = "${WORKDIR}/git"
 W100_OECONF = "--disable-w100"
 W100_OECONF_arm = "--enable-w100"
 
-EXTRA_OECONF += "--enable-builtin-fonts --enable-kdrive-vesa"
+EXTRA_OECONF += "--enable-builtin-fonts"
