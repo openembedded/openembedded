@@ -1,4 +1,4 @@
-inherit qmake-base
+inherit qmake_base
 
 DEPENDS_prepend = "qmake-native "
 
