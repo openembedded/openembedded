@@ -19,6 +19,7 @@ SRC_URI = "git://anongit.freedesktop.org/xorg/xserver;protocol=git \
 	file://w100-autofoo.patch;patch=1 \
 	file://w100-fix-offscreen-bmp.patch;patch=1 \
 	file://w100-new-input-world-order.patch;patch=1 \
+	file://w100-post-1.4-buildfix.patch;patch=1 \
 	file://xcalibrate-new-input-world-order.patch;patch=1 \
 	file://tslib-default-device.patch;patch=1 \
 	file://fbdev-evdev.patch;patch=1 \
