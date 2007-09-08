@@ -9,7 +9,7 @@ APPTYPE = "binary"
 APPDESKTOP = "${WORKDIR}"
 PR = "r0"
 
-inherit autotools qmake-base
+inherit autotools qmake_base
 
 EXTRA_OECONF = "--disable-ethereal \
                 --enable-tethereal \
