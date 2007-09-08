@@ -10,7 +10,8 @@ PE = "1"
 FILESPATH = "${FILE_DIRNAME}/xserver-kdrive-git:${FILE_DIRNAME}/xserver-kdrive"
 SRC_URI = "git://anongit.freedesktop.org/xorg/xserver;protocol=git \
 	${KDRIVE_COMMON_PATCHES} \
-        file://fix_default_mode.patch;patch=1 \
+	file://enable-epson.patch;patch=1 \
+	file://fix_default_mode.patch;patch=1 \
 	file://enable-xcalibrate.patch;patch=1 \
 	file://hide-cursor-and-ppm-root.patch;patch=1 \
 	file://xcalibrate_coords.patch;patch=1 \
