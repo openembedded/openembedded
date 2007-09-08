@@ -7,6 +7,7 @@ PR = "r9"
 
 SRC_URI = "${XORG_MIRROR}/individual/xserver/xorg-server-${PV}.tar.bz2 \
 	${KDRIVE_COMMON_PATCHES} \
+	file://enable-builtin-fonts.patch;patch=1 \
 	file://kdrive-evdev.patch;patch=1  \
 	file://kdrive-use-evdev.patch;patch=1  \
 	file://disable-xf86-dga-xorgcfg.patch;patch=1 \

@@ -93,7 +93,6 @@ KDRIVE_COMMON_PATCHES = " \
 	file://disable-apm.patch;patch=1 \
 	file://no-serial-probing.patch;patch=1 \
 	file://fbdev-not-fix.patch;patch=1  \
-	file://enable-builtin-fonts.patch;patch=1 \
 	file://optional-xkb.patch;patch=1 \
 	file://enable-epson.patch;patch=1 \
 	file://enable-tslib.patch;patch=1 \
