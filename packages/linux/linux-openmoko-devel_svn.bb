@@ -1,4 +1,4 @@
-DESCRIPTION = "Linux 2.6.x (stable) kernel for FIC SmartPhones shipping w/ OpenMoko"
+DESCRIPTION = "Linux 2.6.x (development) kernel for FIC SmartPhones shipping w/ OpenMoko"
 
 require linux-openmoko.inc
 
@@ -8,4 +8,4 @@ SRC_URI += "file://fix-EVIOCGRAB-semantics-2.6.22.5.patch;patch=1"
 VANILLA_VERSION = "2.6.22.5"
 MOKOR = "moko11+svnr${SRCREV}"
 PV = "${VANILLA_VERSION}-${MOKOR}"
-PR = "r2"
+PR = "r0"
