@@ -1,7 +1,7 @@
 #
 # QMake variables for Qt4
 #
-inherit qmake-base
+inherit qmake_base
 
 DEPENDS_prepend = "qmake2-native uicmoc4-native "
 

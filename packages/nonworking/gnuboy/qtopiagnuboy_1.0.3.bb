@@ -11,7 +11,7 @@ S = "${WORKDIR}/gnuboy"
 FILES = ""
 FILES_${PN} = "${palmtopdir}/"
 
-inherit qmake-base
+inherit qmake_base
 
 qtopiadir = "${S}/gnuboy-${PV}-qtopia2"
 
