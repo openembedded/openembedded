@@ -2,18 +2,19 @@ DESCRIPTION = "Linux Kernel"
 SECTION = "kernel"
 LICENSE = "GPL"
 
-# These devices need mkimage to generate a kernel image 
-DEPENDS_kb9202 = "u-boot-mkimage-openmoko-native"
-DEPENDS_at32stk1000 = "u-boot-mkimage-openmoko-native" 
-DEPENDS_atngw100 = "u-boot-mkimage-openmoko-native"
-DEPENDS_at91sam9263ek = "u-boot-mkimage-openmoko-native"
-DEPENDS_at91sam9261ek = "u-boot-mkimage-openmoko-native"
-DEPENDS_at91sam9260ek = "u-boot-mkimage-openmoko-native"
-DEPENDS_sarge-at91 = "u-boot-mkimage-openmoko-native"
-DEPENDS_gumstix-connex = "u-boot-mkimage-openmoko-native"
-DEPENDS_gumstix-verdex = "u-boot-mkimage-openmoko-native"
-
 inherit kernel
+
+# These devices need mkimage to generate a kernel image 
+DEPENDS_append_kb9202         = " u-boot-mkimage-openmoko-native "
+DEPENDS_append_at32stk1000    = " u-boot-mkimage-openmoko-native "
+DEPENDS_append_atngw100       = " u-boot-mkimage-openmoko-native "
+DEPENDS_append_at91sam9263ek  = " u-boot-mkimage-openmoko-native "
+DEPENDS_append_at91sam9261ek  = " u-boot-mkimage-openmoko-native "
+DEPENDS_append_at91sam9260ek  = " u-boot-mkimage-openmoko-native "
+DEPENDS_append_sarge-at91     = " u-boot-mkimage-openmoko-native "
+DEPENDS_append_gumstix-connex = " u-boot-mkimage-openmoko-native "
+DEPENDS_append_gumstix-verdex = " u-boot-mkimage-openmoko-native "
+
 
 # Specify the commandline for you device here:
 
@@ -63,7 +64,7 @@ do_install_prepend() {
 
 UBOOT_ENTRYPOINT ?= "20008000"
 
-KERNEL_IMAGE_BASE_NAME = ${KERNEL_IMAGETYPE}-${PV}-${PR}-${MACHINE}-${DATETIME}
+KERNEL_IMAGE_BASE_NAME = ${KERNEL_IMAGETYPE}-${KERNEL_RELEASE}-${PR}-${MACHINE}-${DATETIME}
 
 do_deploy() {
         install -d ${DEPLOY_DIR_IMAGE}
