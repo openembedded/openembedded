@@ -1,0 +1,11 @@
+Index: git/hw/kdrive/ephyr/ephyr_draw.c
+===================================================================
+--- git.orig/hw/kdrive/ephyr/ephyr_draw.c	2007-09-08 23:57:03.000000000 +0200
++++ git/hw/kdrive/ephyr/ephyr_draw.c	2007-09-08 23:57:13.000000000 +0200
+@@ -520,6 +520,5 @@
+     ExaScreenPriv(pScreen);
+ 
+     pExaScr->migration = ExaMigrationSmart;
+-    pExaScr->hideOffscreenPixmapData = TRUE;
+     pExaScr->checkDirtyCorrectness = TRUE;
+ }

@@ -4,7 +4,7 @@ AUTHOR = "Harald Welte and the OpenEZX Team <openezx-devel@lists.openezx.org>"
 HOMEPAGE = "http://www.openezx.org"
 LICENSE = "GPL"
 EZX = "ezxdev"
-PR = "${EZX}-r7"
+PR = "${EZX}-r8"
 
 inherit kernel
 
@@ -13,7 +13,7 @@ require linux.inc
 SRC_URI = " \
 	${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-${PV}.tar.bz2 \
 	file://logo_linux_clut224.ppm \
-	\
+        \
 	file://patches/patch-2.6.21.4;patch=1 \
 	file://patches/ezx-core.patch;patch=1 \
 	file://patches/ezx-bp.patch;patch=1 \
@@ -72,16 +72,16 @@ COMPATIBLE_HOST = "arm.*-linux"
 COMPATIBLE_MACHINE = '(a780|e680|a1200)'
 
 # For now the code for serial console is disabled in compress.c
-#CMDLINE_CON = "console=ttyS2,115200n8 console=tty1 noinitrd"
-CMDLINE_CON = "console=tty1 noinitrd"
+#CMDLINE_CON = "console=ttyS2,115200n8 console=tty1 "
+CMDLINE_CON = "console=tty1 "
 
 CMDLINE_ROOT = "root=/dev/mmcblk0p1 rootfstype=ext3 rootdelay=5"
 # uncomment if you want to boot over NFS
-#CMDLINE_ROOT = "root=/dev/nfs nfsroot=192.168.1.10:/export/opie-image rootdelay=5 3"
+#CMDLINE_ROOT = "root=301 root=/dev/nfs nfsroot=192.168.0.200:/export/ezx-image rootdelay=5 "
 # uncomment to enable dyntick
 #CMDLINE_OTHER = "dyntick=enable"
 CMDLINE_DEBUG = '${@base_conditional("DISTRO_TYPE", "release", "quiet", "debug",d)}'
-CMDLINE_IP = "ip=192.168.1.2:192.168.1.10:192.168.1.10:255.255.255.0:ezx:usb0:off"
+CMDLINE_IP = "ip=192.168.0.202:192.168.0.200:192.168.0.200:255.255.255.0"
 CMDLINE = "${CMDLINE_CON} ${CMDLINE_ROOT} ${CMDLINE_IP} ${CMDLINE_ROTATE} ${CMDLINE_OTHER} ${CMDLINE_DEBUG} mem=32M@0xA0000000 mem=16M@0xAC000000"
 
 ###############################################################
