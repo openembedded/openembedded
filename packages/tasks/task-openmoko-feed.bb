@@ -1,7 +1,7 @@
 DESCRIPTION = "OpenMoko: Misc. Feed Items"
 SECTION = "openmoko/base"
 LICENSE = "MIT"
-PR = "r9"
+PR = "r10"
 
 inherit task
 
@@ -11,9 +11,10 @@ RDEPENDS_task-openmoko-feed = "\
   eet evas ecore embryo epsilon edje efreet emotion epdf \
   exhibit edje-viewer \
   gpe-filemanager gpe-gallery gpe-timesheet gpe-todo \
-  ipkg-link \
+  ipkg-link ipkg-utils \
   kbdd \
   midori \
+  mplayer \
   mtpaint \
   mysql \
   nano \
@@ -21,6 +22,7 @@ RDEPENDS_task-openmoko-feed = "\
   openssh openssh-scp openssh-ssh openssh-sshd openssh-sftp openssh-misc \
   python python-pygtk python-pyserial \
   ruby \
+  synergy \
   timezones \
   tor \
   vnc \
