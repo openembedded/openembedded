@@ -31,7 +31,7 @@ oe_qmake_mkspecs () {
     done
 }
 
-qmake-base_do_configure() {
+qmake_base_do_configure() {
 	case ${QMAKESPEC} in
 	*linux-oe-g++|*linux-uclibc-oe-g++|*linux-gnueabi-oe-g++)
 		;;

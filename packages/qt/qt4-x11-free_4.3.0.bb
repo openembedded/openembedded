@@ -21,7 +21,7 @@ S = "${WORKDIR}/qt-x11-opensource-src-${PV}"
 
 PARALLEL_MAKE = ""
 
-inherit qmake-base qt4x11
+inherit qmake_base qt4x11
 
 export QTDIR = "${S}"
 STAGING_QT_DIR = "${STAGING_DIR}/${TARGET_SYS}/qt4"

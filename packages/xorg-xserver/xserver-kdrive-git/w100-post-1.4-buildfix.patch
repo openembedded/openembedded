@@ -1,0 +1,12 @@
+Index: git/hw/kdrive/w100/Makefile.am
+===================================================================
+--- git.orig/hw/kdrive/w100/Makefile.am	2007-09-08 23:37:42.000000000 +0200
++++ git/hw/kdrive/w100/Makefile.am	2007-09-08 23:37:43.000000000 +0200
+@@ -46,7 +46,6 @@
+ 
+ Xw100_LDADD = \
+ 	$(W100_LIBS)			\
+-	@XSERVER_LIBS@			\
+ 	$(TSLIB_FLAG)
+ 
+ 
