@@ -12,10 +12,12 @@ DEPENDS_at91sam9260ek = "u-boot-mkimage-openmoko-native"
 DEPENDS_sarge-at91 = "u-boot-mkimage-openmoko-native"
 DEPENDS_gumstix-connex = "u-boot-mkimage-openmoko-native"
 DEPENDS_gumstix-verdex = "u-boot-mkimage-openmoko-native"
+DEPENDS_fic-gta01 = "u-boot-mkimage-openmoko-native"
+DEPENDS_fic-gta02 = "u-boot-mkimage-openmoko-native"
 
 inherit kernel
 
-# Specify the commandline for you device here:
+# Specify the commandline for you device
 
 #boot from mmc
 CMDLINE_at91sam9263ek = "mem=64M console=ttyS0,115200 root=/dev/mmcblk0p1 rootfstype=ext2 rootdelay=5"
