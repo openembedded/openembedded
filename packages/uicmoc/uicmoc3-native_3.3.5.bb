@@ -10,7 +10,7 @@ SRC_URI = "ftp://ftp.trolltech.com/qt/source/qt-embedded-free-${PV}.tar.bz2 \
            file://64bit-cleanup.patch;patch=1"
 S = "${WORKDIR}/qt-embedded-free-${PV}"
 
-inherit native qmake-base qt3e
+inherit native qmake_base qt3e
 
 export QTDIR = "${S}"
 export OE_QMAKE_LINK="${CXX}"

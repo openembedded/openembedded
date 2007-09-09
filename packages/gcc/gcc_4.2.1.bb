@@ -1,4 +1,4 @@
-PR = "r2"
+PR = "r3"
 DESCRIPTION = "The GNU cc and gcc C compilers."
 HOMEPAGE = "http://www.gnu.org/software/gcc/"
 SECTION = "devel"
@@ -13,6 +13,8 @@ SRC_URI = "ftp://ftp.gnu.org/pub/gnu/gcc/gcc-${PV}/gcc-${PV}.tar.bz2 \
 	file://103-uclibc-conf-noupstream.patch;patch=1 \
         file://200-uclibc-locale.patch;patch=1 \
         file://203-uclibc-locale-no__x.patch;patch=1 \
+	file://204-uclibc-locale-wchar_fix.patch;patch=1 \
+	file://205-uclibc-locale-update.patch;patch=1 \
 	file://300-libstdc++-pic.patch;patch=1 \
 	file://301-missing-execinfo_h.patch;patch=1 \
 	file://302-c99-snprintf.patch;patch=1 \

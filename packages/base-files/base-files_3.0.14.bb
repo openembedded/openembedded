@@ -1,7 +1,7 @@
 DESCRIPTION = "Miscellaneous files for the base system."
 SECTION = "base"
 PRIORITY = "required"
-PR = "r71"
+PR = "r72"
 LICENSE = "GPL"
 
 SRC_URI = " \
@@ -23,8 +23,6 @@ SRC_URI = " \
            file://licenses/LGPL-2.1 \
            file://licenses/Artistic "
 S = "${WORKDIR}"
-
-SRC_URI_OVERRIDES_PACKAGE_ARCH = "1"
 
 docdir_append = "/${P}"
 dirs1777 = "/tmp ${localstatedir}/volatile/lock ${localstatedir}/volatile/tmp"
@@ -151,6 +149,8 @@ FILES_${PN}-doc = "${docdir} ${datadir}/common-licenses"
 # M&N specific packaging
 PACKAGE_ARCH_mnci = "mnci"
 PACKAGE_ARCH_rt3000 = "rt3000"
+
+PACKAGE_ARCH = "${MACHINE_ARCH}"
 
 # Unslung distribution specific packaging
 

@@ -1,4 +1,3 @@
-DESCRIPTION = "2.6 Linux Development Kernel for FIC SmartPhones shipping w/ OpenMoko"
 SECTION = "kernel"
 AUTHOR = "Harald Welte <laforge@openmoko.org>"
 HOMEPAGE = "http://www.openmoko.org"
@@ -13,6 +12,8 @@ DEFCONFIG = "defconfig-${VANILLA_VERSION}-${MACHINE}"
 ##############################################################
 # source and patches
 #
+SRCREV_FORMAT = "patches"
+
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-${VANILLA_VERSION}.tar.bz2 \
            file://${DEFCONFIG} \
            file://logo_linux_clut224.ppm"

@@ -15,7 +15,7 @@ EXTRA_IMAGECMD_jffs2 = "--pad=14680064 --little-endian --eraseblock=0x20000 -n"
 
 MACHINE_FEATURES = "kernel26 touchscreen apm alsa bluetooth usbgadget usbhost keyboard screen"
 
-# the EZX phones need a userspace daemon to stop the BP from shutting down the phone 
+# the EZX phones need a userspace daemon to stop the BP from shutting down the phone
 MACHINE_ESSENTIAL_EXTRA_RDEPENDS += "ezxd"
 
 MACHINE_DISPLAY_WIDTH_PIXELS = "240"
@@ -27,7 +27,7 @@ ROOT_FLASH_SIZE = "24"
 
 EXTRA_IMAGEDEPENDS += "ezx-boot-usb-native"
 
-# Opentapi needs to be started very early so we need the mux devices in static /dev
+# Ezxd needs to be started very early so we need the mux devices in static /dev
 IMAGE_DEVICE_TABLES = "files/device_table-minimal.txt \
                        files/device_table-ezx.txt"
 
