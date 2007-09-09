@@ -7,7 +7,7 @@ PR = "r1"
 SRC_URI = "http://developer.kde.org/~wheeler/files/src/taglib-${PV}.tar.gz"
 S = "${WORKDIR}/taglib-${PV}"
 
-inherit autotools qmake-base pkgconfig binconfig
+inherit autotools qmake_base pkgconfig binconfig
 
 export OE_QMAKE_LINK="${CXX}"
 
