@@ -69,7 +69,7 @@ FILES_kernel-image = ""
 ALLOW_EMPTY  = "1"
 
 COMPATIBLE_HOST = "arm.*-linux"
-COMPATIBLE_MACHINE = '(a780|e680|a1200)'
+COMPATIBLE_MACHINE = '(a780|e680|a1200|rorkre2|rokre6)'
 
 # For now the code for serial console is disabled in compress.c
 #CMDLINE_CON = "console=ttyS2,115200n8 console=tty1 "
