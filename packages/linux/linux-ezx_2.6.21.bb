@@ -4,7 +4,7 @@ AUTHOR = "Harald Welte and the OpenEZX Team <openezx-devel@lists.openezx.org>"
 HOMEPAGE = "http://www.openezx.org"
 LICENSE = "GPL"
 EZX = "ezxdev"
-PR = "${EZX}-r8"
+PR = "${EZX}-r9"
 
 inherit kernel
 
