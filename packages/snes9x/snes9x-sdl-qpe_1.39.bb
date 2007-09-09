@@ -11,7 +11,7 @@ S = "${WORKDIR}/snes9x-sdl-${PV}"
 
 FILESPATH = "${FILE_DIRNAME}/${PN}-${PV}:${FILE_DIRNAME}/snes9x-sdl-${PV}:${FILE_DIRNAME}/snes9x-sdl:${FILE_DIRNAME}/files:${FILE_DIRNAME}"
 
-inherit qmake-base
+inherit qmake_base
 
 QT_LIBRARY = '${@base_conditional("PALMTOP_USE_MULTITHREADED_QT", "yes", "qte-mt", "qte",d)}'
 
