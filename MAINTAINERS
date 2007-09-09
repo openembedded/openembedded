@@ -205,6 +205,10 @@ Machines:   Dht-walnut, Efika, Magicbox,Sequoia,Xilinx-ML403,RB5XX
 Interest:   Cross-machine development
 Recipes:    icecc.bbclass, ppc toolchain, asterisk,perl,php
 
+Person:     Tim Sander
+Mail:       oe@iss.tu-darmstadt.de
+Receipes:   fxload
+
 Person:     Øyvind Repvik
 Mail:       nail@nslu2-linux.org
 Machines:   nslu2, fsg3, ixp4xx, n2100, turbostation
