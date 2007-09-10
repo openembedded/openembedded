@@ -1,7 +1,7 @@
 Index: linux-2.6.21/arch/arm/mach-pxa/ezx.c
 ===================================================================
---- linux-2.6.21.orig/arch/arm/mach-pxa/ezx.c	2007-06-28 19:44:46.000000000 -0300
-+++ linux-2.6.21/arch/arm/mach-pxa/ezx.c	2007-06-28 19:44:52.000000000 -0300
+--- linux-2.6.21.orig/arch/arm/mach-pxa/ezx.c	2007-06-29 01:07:18.000000000 -0300
++++ linux-2.6.21/arch/arm/mach-pxa/ezx.c	2007-08-16 15:52:21.000000000 -0300
 @@ -86,8 +86,40 @@
  	.init		= ezx_ohci_init,
  };
@@ -45,8 +45,8 @@ Index: linux-2.6.21/arch/arm/mach-pxa/ezx.c
  static int __init ezx_init(void)
 Index: linux-2.6.21/arch/arm/mach-pxa/Kconfig
 ===================================================================
---- linux-2.6.21.orig/arch/arm/mach-pxa/Kconfig	2007-06-28 19:44:29.000000000 -0300
-+++ linux-2.6.21/arch/arm/mach-pxa/Kconfig	2007-06-28 19:44:52.000000000 -0300
+--- linux-2.6.21.orig/arch/arm/mach-pxa/Kconfig	2007-06-29 01:07:18.000000000 -0300
++++ linux-2.6.21/arch/arm/mach-pxa/Kconfig	2007-08-16 15:52:20.000000000 -0300
 @@ -102,6 +102,9 @@
  
  endchoice
@@ -60,8 +60,8 @@ Index: linux-2.6.21/arch/arm/mach-pxa/Kconfig
 Index: linux-2.6.21/arch/arm/mach-pxa/ezx-bp.c
 ===================================================================
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ linux-2.6.21/arch/arm/mach-pxa/ezx-bp.c	2007-06-28 19:44:52.000000000 -0300
-@@ -0,0 +1,249 @@
++++ linux-2.6.21/arch/arm/mach-pxa/ezx-bp.c	2007-08-16 15:52:43.000000000 -0300
+@@ -0,0 +1,262 @@
 +/*
 + *  BP handshake code for Motorola EZX phones
 + *
@@ -109,7 +109,16 @@ Index: linux-2.6.21/arch/arm/mach-pxa/ezx-bp.c
 +{
 +	if (pxa_gpio_get_value(GPIO_BB_WDI2) == 0) {
 +		DEBUGP("BP request poweroff!\n");
-+//		pm_power_off();
++		/*
++		 * It is correct to power off here, the following line is
++		 * commented out because e680 lowers WDI2 when BP is in
++		 * flash mode, otherwise WDI2 is used to detect low
++		 * battery. You can safely uncomment this line if you are
++		 * using this kernel with BP in normal mode.
++		 */
++#ifndef CONFIG_PXA_EZX_E680
++		pm_power_off();
++#endif
 +	}
 +}
 +
@@ -185,6 +194,7 @@ Index: linux-2.6.21/arch/arm/mach-pxa/ezx-bp.c
 +	if (!bp_handshake_passed()) {
 +		handshake();
 +		if (bp_handshake_passed()) {
++		/* FIXME: (test) try to not disable irq_wdi2 and drain battery */
 +			disable_irq(bp->irq_wdi2);
 +
 +			/* set bp_rdy handle for usb ipc */
@@ -201,7 +211,10 @@ Index: linux-2.6.21/arch/arm/mach-pxa/ezx-bp.c
 +static irqreturn_t bp_wdi2_handler(int irq, void *dev_id)
 +{
 +	DEBUGP("BP request poweroff!\n");
-+//	pm_power_off();
++	/* same case as check_power_off() */
++#ifndef CONFIG_PXA_EZX_E680
++	pm_power_off();
++#endif
 +	return IRQ_HANDLED;
 +}
 +
@@ -313,8 +326,8 @@ Index: linux-2.6.21/arch/arm/mach-pxa/ezx-bp.c
 +
 Index: linux-2.6.21/arch/arm/mach-pxa/Makefile
 ===================================================================
---- linux-2.6.21.orig/arch/arm/mach-pxa/Makefile	2007-06-28 19:44:29.000000000 -0300
-+++ linux-2.6.21/arch/arm/mach-pxa/Makefile	2007-06-28 19:44:52.000000000 -0300
+--- linux-2.6.21.orig/arch/arm/mach-pxa/Makefile	2007-06-29 01:07:18.000000000 -0300
++++ linux-2.6.21/arch/arm/mach-pxa/Makefile	2007-08-16 15:52:20.000000000 -0300
 @@ -24,6 +24,7 @@
  obj-$(CONFIG_PXA_EZX_E2)	+= ezx-e2.o
  obj-$(CONFIG_PXA_EZX_A1200)	+= ezx-a1200.o

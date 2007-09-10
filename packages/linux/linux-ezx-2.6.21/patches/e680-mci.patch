@@ -1,7 +1,7 @@
 Index: linux-2.6.21/arch/arm/mach-pxa/ezx-e680.c
 ===================================================================
---- linux-2.6.21.orig/arch/arm/mach-pxa/ezx-e680.c	2007-06-28 22:45:27.000000000 -0300
-+++ linux-2.6.21/arch/arm/mach-pxa/ezx-e680.c	2007-06-28 22:53:10.000000000 -0300
+--- linux-2.6.21.orig/arch/arm/mach-pxa/ezx-e680.c	2007-09-07 11:32:30.000000000 -0300
++++ linux-2.6.21/arch/arm/mach-pxa/ezx-e680.c	2007-09-07 11:54:44.000000000 -0300
 @@ -13,6 +13,8 @@
  #include <linux/init.h>
  #include <linux/platform_device.h>
@@ -118,7 +118,7 @@ Index: linux-2.6.21/arch/arm/mach-pxa/ezx-e680.c
  static struct pxafb_mode_info mode_e680 = {
  	.pixclock	= 150000,
  	.xres		= 240,
-@@ -144,6 +240,7 @@
+@@ -136,6 +232,7 @@
  	PSLR  = 0x05800f00;
  
  	set_pxa_fb_info(&e680_fb_info);

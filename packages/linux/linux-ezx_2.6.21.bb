@@ -4,7 +4,7 @@ AUTHOR = "Harald Welte and the OpenEZX Team <openezx-devel@lists.openezx.org>"
 HOMEPAGE = "http://www.openezx.org"
 LICENSE = "GPL"
 EZX = "ezxdev"
-PR = "${EZX}-r9"
+PR = "${EZX}-r11"
 
 inherit kernel
 
@@ -38,6 +38,8 @@ SRC_URI = " \
 	file://patches/a780-ts.patch;patch=1 \
 	file://patches/e680-ts.patch;patch=1 \
 	file://patches/a1200-ts.patch;patch=1 \
+        file://patches/ezx-eoc.patch;patch=1 \
+        file://patches/a1200-eoc.patch;patch=1 \
 	file://patches/ezx-backlight.patch;patch=1 \
 	file://patches/a780-flip.patch;patch=1 \
 	file://patches/e680-locksw.patch;patch=1 \
@@ -54,7 +56,9 @@ SRC_URI = " \
 	file://patches/mux-fix-tty-driver.patch;patch=1 \
 	file://patches/mux-linux-2.6.21-fix.patch;patch=1 \
         file://patches/asoc-pxa-ssp.patch;patch=1 \
-	http://shell.studenti.unina.it/~ospite/tmp/ezx-asoc-preview.patch;patch=1 \
+        file://patches/asoc-fix-loopback.patch;patch=1 \
+        file://patches/ezx-asoc.patch;patch=1 \     
+        file://patches/mtdfix.patch;patch=1 \
         file://defconfig \
         \
 	"

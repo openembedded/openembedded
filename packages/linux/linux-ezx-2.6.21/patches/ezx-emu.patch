@@ -1,8 +1,8 @@
 Index: linux-2.6.21/arch/arm/mach-pxa/ezx-emu.c
 ===================================================================
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ linux-2.6.21/arch/arm/mach-pxa/ezx-emu.c	2007-08-01 19:45:27.000000000 -0300
-@@ -0,0 +1,215 @@
++++ linux-2.6.21/arch/arm/mach-pxa/ezx-emu.c	2007-09-07 15:27:23.000000000 -0300
+@@ -0,0 +1,219 @@
 +/*
 + *  EMU Driver for Motorola EZX phones
 + *
@@ -27,6 +27,9 @@ Index: linux-2.6.21/arch/arm/mach-pxa/ezx-emu.c
 +static struct pxa2xx_udc_mach_info ezx_udc_info;
 +extern int ezx_pcap_bit_set(u_int32_t, u_int8_t);
 +extern int ezx_pcap_read_bit(u_int32_t);
++static int emu_irq_usb4v;
++static int emu_irq_usb1v;
++
 +
 +#if defined CONFIG_EZX_EMU_USB
 +#define emu_switch_to_default() emu_switch_to_usb()
@@ -38,6 +41,7 @@ Index: linux-2.6.21/arch/arm/mach-pxa/ezx-emu.c
 +
 +void emu_switch_to_usb(void)
 +{
++	printk(KERN_NOTICE "EMU: Switching to USB\n");
 +	pxa_gpio_mode(GPIO34_USB_P2_2_MD);
 +	pxa_gpio_mode(GPIO35_USB_P2_1_MD);
 +	pxa_gpio_mode(GPIO36_USB_P2_4_MD);
@@ -45,18 +49,19 @@ Index: linux-2.6.21/arch/arm/mach-pxa/ezx-emu.c
 +	pxa_gpio_mode(GPIO40_USB_P2_5_MD);
 +	pxa_gpio_mode(GPIO53_USB_P2_3_MD);
 +	UP2OCR = 0x02000000;
-+	ezx_pcap_bit_set(SSP_PCAP_ADJ_BIT_BUSCTRL_RS232ENB, 1);
-+	ezx_pcap_bit_set(SSP_PCAP_ADJ_BIT_BUSCTRL_FSENB, 0);
-+	ezx_pcap_bit_set(SSP_PCAP_ADJ_BIT_BUSCTRL_VUSB_EN, 1);
++	ezx_pcap_bit_set(PCAP_BIT_BUSCTRL_RS232ENB, 1);
++	ezx_pcap_bit_set(PCAP_BIT_BUSCTRL_FSENB, 0);
++	ezx_pcap_bit_set(PCAP_BIT_BUSCTRL_VUSB_EN, 1);
 +	clr_GPIO(GPIO_EMU_MUX1);
 +	clr_GPIO(GPIO_EMU_MUX2);
 +}
 +
 +void emu_switch_to_uart(void)
 +{
-+	ezx_pcap_bit_set(SSP_PCAP_ADJ_BIT_BUSCTRL_VUSB_EN,0);
-+	ezx_pcap_bit_set(SSP_PCAP_ADJ_BIT_BUSCTRL_RS232ENB, 0);
-+	ezx_pcap_bit_set(SSP_PCAP_ADJ_BIT_BUSCTRL_RS232_DIR, 1);
++	printk(KERN_NOTICE "EMU: Switching to UART\n");
++	ezx_pcap_bit_set(PCAP_BIT_BUSCTRL_VUSB_EN,0);
++	ezx_pcap_bit_set(PCAP_BIT_BUSCTRL_RS232ENB, 0);
++	ezx_pcap_bit_set(PCAP_BIT_BUSCTRL_RS232_DIR, 1);
 +	set_GPIO(GPIO39_FFTXD);
 +	pxa_gpio_mode(GPIO34_TXENB | GPIO_OUT);
 +	set_GPIO(GPIO34_TXENB);
@@ -73,6 +78,7 @@ Index: linux-2.6.21/arch/arm/mach-pxa/ezx-emu.c
 +
 +void emu_switch_to_audio(int stereo)
 +{
++	printk(KERN_NOTICE "EMU: Switching to audio(%s)\n", (stereo ? "stereo" : "mono"));
 +	clr_GPIO(GPIO39_VPOUT);
 +	if (stereo) {
 +		pxa_gpio_mode(GPIO34_TXENB | GPIO_IN);
@@ -96,8 +102,9 @@ Index: linux-2.6.21/arch/arm/mach-pxa/ezx-emu.c
 +
 +void emu_switch_to_nothing(void)
 +{
-+	ezx_pcap_bit_set(SSP_PCAP_ADJ_BIT_BUSCTRL_VUSB_EN, 0);
-+	ezx_pcap_bit_set(SSP_PCAP_ADJ_BIT_BUSCTRL_RS232ENB, 1);
++	printk(KERN_NOTICE "EMU: Switching to disconnected\n");
++	ezx_pcap_bit_set(PCAP_BIT_BUSCTRL_VUSB_EN, 0);
++	ezx_pcap_bit_set(PCAP_BIT_BUSCTRL_RS232ENB, 1);
 +	pxa_gpio_mode(GPIO34_TXENB | GPIO_OUT);
 +	set_GPIO(GPIO34_TXENB);
 +	pxa_gpio_mode(GPIO35_XRXD  | GPIO_IN);
@@ -112,11 +119,11 @@ Index: linux-2.6.21/arch/arm/mach-pxa/ezx-emu.c
 +{
 +	switch (irq) {
 +	case EZX_IRQ_USB4V:
-+		if(ezx_pcap_read_bit(SSP_PCAP_ADJ_BIT_PSTAT_USBDET_4V))
++		if(ezx_pcap_read_bit(pbit(PCAP_REG_PSTAT, PCAP_IRQ_USB4V)))
 +			emu_switch_to_default();
 +		break;
 +	case EZX_IRQ_USB1V:
-+		if(!ezx_pcap_read_bit(SSP_PCAP_ADJ_BIT_PSTAT_USBDET_1V))
++		if(!ezx_pcap_read_bit(pbit(PCAP_REG_PSTAT, PCAP_IRQ_USB1V)))
 +			emu_switch_to_nothing();
 +		break;
 +	}
@@ -130,12 +137,23 @@ Index: linux-2.6.21/arch/arm/mach-pxa/ezx-emu.c
 +	pxa_gpio_mode(GPIO_EMU_MUX1 | GPIO_OUT);
 +	pxa_gpio_mode(GPIO_EMU_MUX2 | GPIO_OUT);
 +
-+	request_irq(EZX_IRQ_USB4V, &emu_irq, SA_INTERRUPT, "usb 4v", NULL);
-+	request_irq(EZX_IRQ_USB1V, &emu_irq, SA_INTERRUPT, "usb 1v", NULL);
++	emu_irq_usb4v = platform_get_irq(dev, 0);
++	if(emu_irq_usb4v < 0) {
++		printk(KERN_ERR "Unable to get IRQ for USB4V!\n");
++		return emu_irq_usb4v;
++	}
++	emu_irq_usb1v = platform_get_irq(dev, 1);
++	if(emu_irq_usb1v < 0) {
++		printk(KERN_ERR "Unable to get IRQ for USB1V!\n");
++		return emu_irq_usb1v;
++	}
++
++	request_irq(emu_irq_usb4v, &emu_irq, SA_INTERRUPT, "usb 4v", NULL);
++	request_irq(emu_irq_usb1v, &emu_irq, SA_INTERRUPT, "usb 1v", NULL);
 +
 +	pxa_set_udc_info(&ezx_udc_info);
 +
-+	if(ezx_pcap_read_bit(SSP_PCAP_ADJ_BIT_PSTAT_USBDET_4V))
++	if(ezx_pcap_read_bit(pbit(PCAP_REG_PSTAT, PCAP_IRQ_USB4V)))
 +		emu_switch_to_default();
 +	else
 +		emu_switch_to_nothing();
@@ -145,21 +163,9 @@ Index: linux-2.6.21/arch/arm/mach-pxa/ezx-emu.c
 +
 +static int ezx_emu_remove(struct platform_device *dev)
 +{
-+	free_irq(EZX_IRQ_USB4V, NULL);
-+	free_irq(EZX_IRQ_USB1V, NULL);
++	free_irq(emu_irq_usb4v, NULL);
++	free_irq(emu_irq_usb1v, NULL);
 +
-+	return 0;
-+}
-+
-+static int ezx_emu_suspend(struct platform_device *dev, pm_message_t state)
-+{
-+	emu_switch_to_nothing();
-+	return 0;
-+}
-+
-+static int ezx_emu_resume(struct platform_device *dev)
-+{
-+	emu_switch_to_default();
 +	return 0;
 +}
 +
@@ -170,12 +176,12 @@ Index: linux-2.6.21/arch/arm/mach-pxa/ezx-emu.c
 +	switch (cmd) {
 +	case PXA2XX_UDC_CMD_DISCONNECT:
 +		printk(KERN_NOTICE "USB cmd disconnect\n");
-+		ezx_pcap_bit_set(SSP_PCAP_ADJ_BIT_BUSCTRL_USB_PU,0);
++		ezx_pcap_bit_set(PCAP_BIT_BUSCTRL_USB_PU,0);
 +		udc_connected_status = 0;
 +		break;
 +	case PXA2XX_UDC_CMD_CONNECT:
 +		printk(KERN_NOTICE "USB cmd connect\n");
-+		ezx_pcap_bit_set(SSP_PCAP_ADJ_BIT_BUSCTRL_USB_PU,1);
++		ezx_pcap_bit_set(PCAP_BIT_BUSCTRL_USB_PU,1);
 +		udc_connected_status = 1;
 +		break;
 +	}
@@ -194,8 +200,6 @@ Index: linux-2.6.21/arch/arm/mach-pxa/ezx-emu.c
 +static struct platform_driver ezxemu_driver = {
 +	.probe		= ezx_emu_probe,
 +	.remove		= ezx_emu_remove,
-+	.suspend	= ezx_emu_suspend,
-+	.resume		= ezx_emu_resume,
 +	.driver		= {
 +		.name	= "ezx-emu",
 +		.owner	= THIS_MODULE,
@@ -220,8 +224,8 @@ Index: linux-2.6.21/arch/arm/mach-pxa/ezx-emu.c
 +MODULE_LICENSE("GPL");
 Index: linux-2.6.21/arch/arm/mach-pxa/Kconfig
 ===================================================================
---- linux-2.6.21.orig/arch/arm/mach-pxa/Kconfig	2007-08-01 19:39:02.000000000 -0300
-+++ linux-2.6.21/arch/arm/mach-pxa/Kconfig	2007-08-01 19:45:27.000000000 -0300
+--- linux-2.6.21.orig/arch/arm/mach-pxa/Kconfig	2007-09-07 11:32:26.000000000 -0300
++++ linux-2.6.21/arch/arm/mach-pxa/Kconfig	2007-09-07 15:34:08.000000000 -0300
 @@ -108,6 +108,28 @@
  config EZX_PCAP
  	bool "PCAP Support"
@@ -253,8 +257,8 @@ Index: linux-2.6.21/arch/arm/mach-pxa/Kconfig
  endmenu
 Index: linux-2.6.21/arch/arm/mach-pxa/Makefile
 ===================================================================
---- linux-2.6.21.orig/arch/arm/mach-pxa/Makefile	2007-08-01 19:39:02.000000000 -0300
-+++ linux-2.6.21/arch/arm/mach-pxa/Makefile	2007-08-01 19:45:27.000000000 -0300
+--- linux-2.6.21.orig/arch/arm/mach-pxa/Makefile	2007-09-07 11:32:26.000000000 -0300
++++ linux-2.6.21/arch/arm/mach-pxa/Makefile	2007-09-07 15:34:08.000000000 -0300
 @@ -26,6 +26,7 @@
  obj-$(CONFIG_PXA_EZX_E6)	+= ezx-e6.o
  obj-$(CONFIG_EZX_BP)		+= ezx-bp.o

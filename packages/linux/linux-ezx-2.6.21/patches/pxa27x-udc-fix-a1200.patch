@@ -1,0 +1,35 @@
+Index: linux-2.6.21/drivers/usb/gadget/ether.c
+===================================================================
+--- linux-2.6.21.orig/drivers/usb/gadget/ether.c	2007-08-20 22:05:12.000000000 +0800
++++ linux-2.6.21/drivers/usb/gadget/ether.c	2007-08-20 22:06:25.000000000 +0800
+@@ -2697,10 +2697,16 @@
+ MODULE_LICENSE ("GPL");
+ 
+ 
+-static int __init init (void)
++// Alex add FIXME
++int usb_ether_init (void)
+ {
+ 	return usb_gadget_register_driver (&eth_driver);
+ }
++
++static int __init init (void)
++{
++//	return usb_gadget_register_driver (&eth_driver);
++}
+ module_init (init);
+ 
+ static void __exit cleanup (void)
+Index: linux-2.6.21/drivers/usb/gadget/pxa27x_udc.c
+===================================================================
+--- linux-2.6.21.orig/drivers/usb/gadget/pxa27x_udc.c	2007-08-20 22:07:31.000000000 +0800
++++ linux-2.6.21/drivers/usb/gadget/pxa27x_udc.c	2007-08-20 22:07:47.000000000 +0800
+@@ -2227,6 +2227,8 @@
+ 	udc_init_ep(udc);
+ 	udc_reinit(udc);
+ 
++	usb_ether_init();  // Alex add FIXME
++
+ 	/* irq setup after old hardware state is cleaned up */
+ 	retval = request_irq(IRQ_USB, pxa27x_udc_irq,
+ 			SA_INTERRUPT, driver_name, udc);
