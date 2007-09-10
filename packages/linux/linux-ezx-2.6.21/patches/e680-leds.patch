@@ -5,8 +5,8 @@
 
 Index: linux-2.6.21/drivers/leds/Kconfig
 ===================================================================
---- linux-2.6.21.orig/drivers/leds/Kconfig	2007-08-01 20:03:29.000000000 -0300
-+++ linux-2.6.21/drivers/leds/Kconfig	2007-08-01 20:04:02.000000000 -0300
+--- linux-2.6.21.orig/drivers/leds/Kconfig	2007-09-06 00:49:29.000000000 -0300
++++ linux-2.6.21/drivers/leds/Kconfig	2007-09-06 00:51:36.000000000 -0300
 @@ -111,6 +111,13 @@
  	  This option enables support for the LEDs on the
  	  Motorola A780 GSM Phone.
@@ -23,8 +23,8 @@ Index: linux-2.6.21/drivers/leds/Kconfig
  	depends on LEDS_TRIGGERS
 Index: linux-2.6.21/drivers/leds/Makefile
 ===================================================================
---- linux-2.6.21.orig/drivers/leds/Makefile	2007-08-01 20:03:29.000000000 -0300
-+++ linux-2.6.21/drivers/leds/Makefile	2007-08-01 20:04:02.000000000 -0300
+--- linux-2.6.21.orig/drivers/leds/Makefile	2007-09-06 00:49:29.000000000 -0300
++++ linux-2.6.21/drivers/leds/Makefile	2007-09-06 00:49:30.000000000 -0300
 @@ -17,6 +17,7 @@
  obj-$(CONFIG_LEDS_H1940)		+= leds-h1940.o
  obj-$(CONFIG_LEDS_COBALT)		+= leds-cobalt.o
@@ -36,7 +36,7 @@ Index: linux-2.6.21/drivers/leds/Makefile
 Index: linux-2.6.21/drivers/leds/leds-e680.c
 ===================================================================
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ linux-2.6.21/drivers/leds/leds-e680.c	2007-08-01 20:04:02.000000000 -0300
++++ linux-2.6.21/drivers/leds/leds-e680.c	2007-09-06 00:51:22.000000000 -0300
 @@ -0,0 +1,235 @@
 +/*
 + * EZX Platform LED Driver for the Motorola E680(i) GSM Phone
@@ -154,7 +154,7 @@ Index: linux-2.6.21/drivers/leds/leds-e680.c
 +	ledr_i     = led_register_value[color].pcap_LEDR_I;
 +	ledg_i     = led_register_value[color].pcap_LEDG_I;
 +
-+	ezx_pcap_read(SSP_PCAP_ADJ_PERIPH_REGISTER,&tempValue);
++	ezx_pcap_read(PCAP_REG_PERIPH,&tempValue);
 +
 +	tempValue &= (~SSP_PCAP_LED_MASK);
 +
@@ -166,7 +166,7 @@ Index: linux-2.6.21/drivers/leds/leds-e680.c
 +		(ledg_ctrl << 6) | (ledr_i << 10) | (ledg_i << 12) |
 +		(skip << 14)) & 0x7fff) << SSP_PCAP_LED_SHIFT;
 +
-+	ezx_pcap_write(SSP_PCAP_ADJ_PERIPH_REGISTER,tempValue);
++	ezx_pcap_write(PCAP_REG_PERIPH,tempValue);
 +}
 +
 +static void e680led_keypad_set(struct led_classdev *led_cdev, enum led_brightness value)
@@ -275,9 +275,9 @@ Index: linux-2.6.21/drivers/leds/leds-e680.c
 +MODULE_LICENSE("GPL");
 Index: linux-2.6.21/arch/arm/mach-pxa/ezx-e680.c
 ===================================================================
---- linux-2.6.21.orig/arch/arm/mach-pxa/ezx-e680.c	2007-08-01 20:02:32.000000000 -0300
-+++ linux-2.6.21/arch/arm/mach-pxa/ezx-e680.c	2007-08-01 20:04:02.000000000 -0300
-@@ -347,11 +347,20 @@
+--- linux-2.6.21.orig/arch/arm/mach-pxa/ezx-e680.c	2007-09-06 00:49:23.000000000 -0300
++++ linux-2.6.21/arch/arm/mach-pxa/ezx-e680.c	2007-09-06 00:49:30.000000000 -0300
+@@ -339,11 +339,20 @@
         },
  };
  

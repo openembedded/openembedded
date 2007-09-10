@@ -5,8 +5,8 @@
 
 Index: linux-2.6.21/drivers/leds/Kconfig
 ===================================================================
---- linux-2.6.21.orig/drivers/leds/Kconfig	2007-08-01 19:38:44.000000000 -0300
-+++ linux-2.6.21/drivers/leds/Kconfig	2007-08-01 20:03:29.000000000 -0300
+--- linux-2.6.21.orig/drivers/leds/Kconfig	2007-08-31 22:27:41.000000000 -0300
++++ linux-2.6.21/drivers/leds/Kconfig	2007-08-31 23:59:27.000000000 -0300
 @@ -104,6 +104,13 @@
  	  These triggers allow kernel events to drive the LEDs and can
  	  be configured via sysfs. If unsure, say Y.
@@ -23,8 +23,8 @@ Index: linux-2.6.21/drivers/leds/Kconfig
  	depends on LEDS_TRIGGERS
 Index: linux-2.6.21/drivers/leds/Makefile
 ===================================================================
---- linux-2.6.21.orig/drivers/leds/Makefile	2007-08-01 19:38:44.000000000 -0300
-+++ linux-2.6.21/drivers/leds/Makefile	2007-08-01 20:03:29.000000000 -0300
+--- linux-2.6.21.orig/drivers/leds/Makefile	2007-08-31 22:27:41.000000000 -0300
++++ linux-2.6.21/drivers/leds/Makefile	2007-08-31 23:59:27.000000000 -0300
 @@ -16,6 +16,7 @@
  obj-$(CONFIG_LEDS_WRAP)			+= leds-wrap.o
  obj-$(CONFIG_LEDS_H1940)		+= leds-h1940.o
@@ -36,7 +36,7 @@ Index: linux-2.6.21/drivers/leds/Makefile
 Index: linux-2.6.21/drivers/leds/leds-a780.c
 ===================================================================
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ linux-2.6.21/drivers/leds/leds-a780.c	2007-08-01 20:03:29.000000000 -0300
++++ linux-2.6.21/drivers/leds/leds-a780.c	2007-08-31 23:59:27.000000000 -0300
 @@ -0,0 +1,122 @@
 +/*
 + * EZX Platform LED Driver for the Motorola A780 GSM Phone
@@ -62,22 +62,22 @@ Index: linux-2.6.21/drivers/leds/leds-a780.c
 +{
 +	if ( value > 31 ) value = 31;
 +	printk( KERN_DEBUG "a780led_main_set: %d\n", value );
-+	ezx_pcap_bit_set(SSP_PCAP_ADJ_BIT_PERIPH_BL_CTRL0, value & 0x01);
-+	ezx_pcap_bit_set(SSP_PCAP_ADJ_BIT_PERIPH_BL_CTRL1, value & 0x02);
-+	ezx_pcap_bit_set(SSP_PCAP_ADJ_BIT_PERIPH_BL_CTRL2, value & 0x04);
-+	ezx_pcap_bit_set(SSP_PCAP_ADJ_BIT_PERIPH_BL_CTRL3, value & 0x08);
-+	ezx_pcap_bit_set(SSP_PCAP_ADJ_BIT_PERIPH_BL_CTRL4, value & 0x10);
++	ezx_pcap_bit_set(PCAP_BIT_PERIPH_BL_CTRL0, value & 0x01);
++	ezx_pcap_bit_set(PCAP_BIT_PERIPH_BL_CTRL1, value & 0x02);
++	ezx_pcap_bit_set(PCAP_BIT_PERIPH_BL_CTRL2, value & 0x04);
++	ezx_pcap_bit_set(PCAP_BIT_PERIPH_BL_CTRL3, value & 0x08);
++	ezx_pcap_bit_set(PCAP_BIT_PERIPH_BL_CTRL4, value & 0x10);
 +}
 +
 +static void a780led_aux_set(struct led_classdev *led_cdev, enum led_brightness value)
 +{
 +	if ( value > 31 ) value = 31;
 +	printk( KERN_DEBUG "a780led_aux_set: %d\n", value );
-+	ezx_pcap_bit_set(SSP_PCAP_ADJ_BIT_PERIPH_BL2_CTRL0, value & 0x01);
-+	ezx_pcap_bit_set(SSP_PCAP_ADJ_BIT_PERIPH_BL2_CTRL1, value & 0x02);
-+	ezx_pcap_bit_set(SSP_PCAP_ADJ_BIT_PERIPH_BL2_CTRL2, value & 0x04);
-+	ezx_pcap_bit_set(SSP_PCAP_ADJ_BIT_PERIPH_BL2_CTRL3, value & 0x08);
-+	ezx_pcap_bit_set(SSP_PCAP_ADJ_BIT_PERIPH_BL2_CTRL4, value & 0x10);
++	ezx_pcap_bit_set(PCAP_BIT_PERIPH_BL2_CTRL0, value & 0x01);
++	ezx_pcap_bit_set(PCAP_BIT_PERIPH_BL2_CTRL1, value & 0x02);
++	ezx_pcap_bit_set(PCAP_BIT_PERIPH_BL2_CTRL2, value & 0x04);
++	ezx_pcap_bit_set(PCAP_BIT_PERIPH_BL2_CTRL3, value & 0x08);
++	ezx_pcap_bit_set(PCAP_BIT_PERIPH_BL2_CTRL4, value & 0x10);
 +}
 +
 +static struct led_classdev a780_main_led = {
@@ -162,9 +162,9 @@ Index: linux-2.6.21/drivers/leds/leds-a780.c
 +MODULE_LICENSE("GPL");
 Index: linux-2.6.21/arch/arm/mach-pxa/ezx-a780.c
 ===================================================================
---- linux-2.6.21.orig/arch/arm/mach-pxa/ezx-a780.c	2007-08-01 20:02:00.000000000 -0300
-+++ linux-2.6.21/arch/arm/mach-pxa/ezx-a780.c	2007-08-01 20:03:29.000000000 -0300
-@@ -341,12 +341,20 @@
+--- linux-2.6.21.orig/arch/arm/mach-pxa/ezx-a780.c	2007-08-31 23:59:03.000000000 -0300
++++ linux-2.6.21/arch/arm/mach-pxa/ezx-a780.c	2007-08-31 23:59:27.000000000 -0300
+@@ -333,12 +333,20 @@
         },
  };
  
