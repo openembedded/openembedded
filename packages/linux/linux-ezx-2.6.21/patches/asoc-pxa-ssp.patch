@@ -1,7 +1,7 @@
 Index: linux-2.6.21/sound/soc/pxa/pxa2xx-ssp.c
 ===================================================================
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ linux-2.6.21/sound/soc/pxa/pxa2xx-ssp.c	2007-05-14 21:14:38.000000000 -0300
++++ linux-2.6.21/sound/soc/pxa/pxa2xx-ssp.c	2007-09-02 22:50:31.000000000 -0300
 @@ -0,0 +1,671 @@
 +/*
 + * pxa2xx-ssp.c  --  ALSA Soc Audio Layer
@@ -43,7 +43,7 @@ Index: linux-2.6.21/sound/soc/pxa/pxa2xx-ssp.c
 +#include "pxa2xx-pcm.h"
 +#include "pxa2xx-ssp.h"
 +
-+#define PXA_SSP_DEBUG 1
++#define PXA_SSP_DEBUG 0
 +
 +/*
 + * The following should be defined in pxa-regs.h
@@ -677,7 +677,7 @@ Index: linux-2.6.21/sound/soc/pxa/pxa2xx-ssp.c
 Index: linux-2.6.21/sound/soc/pxa/pxa2xx-ssp.h
 ===================================================================
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ linux-2.6.21/sound/soc/pxa/pxa2xx-ssp.h	2007-05-14 21:14:38.000000000 -0300
++++ linux-2.6.21/sound/soc/pxa/pxa2xx-ssp.h	2007-09-02 22:48:59.000000000 -0300
 @@ -0,0 +1,42 @@
 +/*
 + * linux/sound/arm/pxa2xx-ssp.h
@@ -723,8 +723,8 @@ Index: linux-2.6.21/sound/soc/pxa/pxa2xx-ssp.h
 +#endif
 Index: linux-2.6.21/sound/soc/pxa/Kconfig
 ===================================================================
---- linux-2.6.21.orig/sound/soc/pxa/Kconfig	2007-05-14 21:16:22.000000000 -0300
-+++ linux-2.6.21/sound/soc/pxa/Kconfig	2007-05-14 21:17:01.000000000 -0300
+--- linux-2.6.21.orig/sound/soc/pxa/Kconfig	2007-09-02 22:48:51.000000000 -0300
++++ linux-2.6.21/sound/soc/pxa/Kconfig	2007-09-02 22:50:18.000000000 -0300
 @@ -20,6 +20,10 @@
  config SND_PXA2XX_SOC_I2S
  	tristate
@@ -738,8 +738,8 @@ Index: linux-2.6.21/sound/soc/pxa/Kconfig
  	depends on SND_PXA2XX_SOC && PXA_SHARP_C7xx
 Index: linux-2.6.21/sound/soc/pxa/Makefile
 ===================================================================
---- linux-2.6.21.orig/sound/soc/pxa/Makefile	2007-05-14 21:14:52.000000000 -0300
-+++ linux-2.6.21/sound/soc/pxa/Makefile	2007-05-14 21:16:10.000000000 -0300
+--- linux-2.6.21.orig/sound/soc/pxa/Makefile	2007-09-02 22:48:51.000000000 -0300
++++ linux-2.6.21/sound/soc/pxa/Makefile	2007-09-02 22:50:18.000000000 -0300
 @@ -2,10 +2,12 @@
  snd-soc-pxa2xx-objs := pxa2xx-pcm.o
  snd-soc-pxa2xx-ac97-objs := pxa2xx-ac97.o

@@ -1,7 +1,7 @@
 Index: linux-2.6.21/arch/arm/mach-pxa/ezx-a1200.c
 ===================================================================
---- linux-2.6.21.orig/arch/arm/mach-pxa/ezx-a1200.c	2007-06-28 22:48:05.000000000 -0300
-+++ linux-2.6.21/arch/arm/mach-pxa/ezx-a1200.c	2007-06-28 22:53:19.000000000 -0300
+--- linux-2.6.21.orig/arch/arm/mach-pxa/ezx-a1200.c	2007-09-07 11:51:55.000000000 -0300
++++ linux-2.6.21/arch/arm/mach-pxa/ezx-a1200.c	2007-09-07 11:54:52.000000000 -0300
 @@ -13,6 +13,8 @@
  #include <linux/init.h>
  #include <linux/platform_device.h>
@@ -114,7 +114,7 @@ Index: linux-2.6.21/arch/arm/mach-pxa/ezx-a1200.c
  static struct pxafb_mode_info mode_a1200 = {
         .pixclock = 192308,
         .xres = 240,
-@@ -88,6 +180,7 @@
+@@ -118,6 +210,7 @@
  static void __init a1200_init(void)
  {
  	set_pxa_fb_info(&a1200_fb_info);

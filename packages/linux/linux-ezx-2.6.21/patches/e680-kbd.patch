@@ -1,7 +1,7 @@
 Index: linux-2.6.21/arch/arm/mach-pxa/ezx-e680.c
 ===================================================================
---- linux-2.6.21.orig/arch/arm/mach-pxa/ezx-e680.c	2007-08-01 19:55:54.000000000 -0300
-+++ linux-2.6.21/arch/arm/mach-pxa/ezx-e680.c	2007-08-01 19:56:21.000000000 -0300
+--- linux-2.6.21.orig/arch/arm/mach-pxa/ezx-e680.c	2007-09-07 11:07:33.000000000 -0300
++++ linux-2.6.21/arch/arm/mach-pxa/ezx-e680.c	2007-09-07 11:10:47.000000000 -0300
 @@ -15,6 +15,7 @@
  #include <linux/fb.h>
  #include <linux/mmc/host.h>
@@ -24,7 +24,7 @@ Index: linux-2.6.21/arch/arm/mach-pxa/ezx-e680.c
  
  #ifdef CONFIG_EZX_PCAP
  extern int ezx_pcap_mmcsd_power(int);
-@@ -246,6 +249,58 @@
+@@ -238,6 +241,58 @@
  	.resource	= e680_emu_resources,
  };
  
@@ -83,7 +83,7 @@ Index: linux-2.6.21/arch/arm/mach-pxa/ezx-e680.c
  static struct platform_device *devices[] __initdata = {
  	&e680_pcap_device,
  	&e680_emu_device,
-@@ -266,6 +321,7 @@
+@@ -258,6 +313,7 @@
  
  	set_pxa_fb_info(&e680_fb_info);
  	pxa_set_mci_info(&e680_mci_platform_data);
