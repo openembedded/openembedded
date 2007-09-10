@@ -1,7 +1,7 @@
 DESCRIPTION = "OpenMoko: Misc. Feed Items"
 SECTION = "openmoko/base"
 LICENSE = "MIT"
-PR = "r10"
+PR = "r11"
 
 inherit task
 
@@ -12,6 +12,7 @@ RDEPENDS_task-openmoko-feed = "\
   exhibit edje-viewer \
   gpe-filemanager gpe-gallery gpe-timesheet gpe-todo \
   ipkg-link ipkg-utils \
+  joe \
   kbdd \
   midori \
   mplayer \
