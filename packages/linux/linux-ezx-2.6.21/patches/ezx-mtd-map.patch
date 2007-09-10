@@ -1,8 +1,8 @@
 Index: linux-2.6.21/drivers/mtd/maps/Kconfig
 ===================================================================
---- linux-2.6.21.orig/drivers/mtd/maps/Kconfig	2007-04-26 00:08:32.000000000 -0300
-+++ linux-2.6.21/drivers/mtd/maps/Kconfig	2007-04-26 20:49:33.000000000 -0300
-@@ -595,6 +595,28 @@
+--- linux-2.6.21.orig/drivers/mtd/maps/Kconfig	2007-08-31 22:27:53.000000000 -0300
++++ linux-2.6.21/drivers/mtd/maps/Kconfig	2007-08-31 23:04:18.000000000 -0300
+@@ -595,6 +595,34 @@
  	help
  	  This enables access to the flash chip on the Sharp SL Series of PDAs.
  
@@ -21,8 +21,14 @@ Index: linux-2.6.21/drivers/mtd/maps/Kconfig
 +config MTD_EZX_A780_ALTERNATE
 +	bool "A780/E680 Alternate Mapping for BLOB2"
 +
++config MTD_EZX_A1200
++	bool "A1200 Original Mapping"
++
 +config MTD_EZX_E2
 +	bool "E2 Original Mapping"
++
++config MTD_EZX_E6
++	bool "E6 Original Mapping"
 +
 +endchoice
 +
@@ -33,8 +39,8 @@ Index: linux-2.6.21/drivers/mtd/maps/Kconfig
  	depends on MTD
 Index: linux-2.6.21/drivers/mtd/maps/Makefile
 ===================================================================
---- linux-2.6.21.orig/drivers/mtd/maps/Makefile	2007-04-26 00:08:32.000000000 -0300
-+++ linux-2.6.21/drivers/mtd/maps/Makefile	2007-04-26 20:30:30.000000000 -0300
+--- linux-2.6.21.orig/drivers/mtd/maps/Makefile	2007-08-31 22:27:53.000000000 -0300
++++ linux-2.6.21/drivers/mtd/maps/Makefile	2007-08-31 23:04:18.000000000 -0300
 @@ -72,3 +72,4 @@
  obj-$(CONFIG_MTD_OMAP_NOR)	+= omap_nor.o
  obj-$(CONFIG_MTD_MTX1)		+= mtx-1_flash.o
@@ -43,7 +49,7 @@ Index: linux-2.6.21/drivers/mtd/maps/Makefile
 Index: linux-2.6.21/drivers/mtd/maps/ezx-flash.c
 ===================================================================
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ linux-2.6.21/drivers/mtd/maps/ezx-flash.c	2007-04-26 20:30:30.000000000 -0300
++++ linux-2.6.21/drivers/mtd/maps/ezx-flash.c	2007-08-21 17:03:43.000000000 -0300
 @@ -0,0 +1,227 @@
 +/*
 + * $Id:  $
@@ -122,7 +128,7 @@ Index: linux-2.6.21/drivers/mtd/maps/ezx-flash.c
 +		.size		= 0x00020000,
 +		.offset		= 0x00020000,
 +	} , {
-+		.name		= "Kernel 1",
++		.name		= "Moto Kernel",
 +		.size		= 0x000e0000, // 896KB
 +		.offset		= 0x00040000,
 +	} , {
@@ -130,11 +136,11 @@ Index: linux-2.6.21/drivers/mtd/maps/ezx-flash.c
 +		.size		= 0x01760000,
 +		.offset		= 0x00120000,
 +	} , {
-+		.name		= "Kernel 2",
++		.name		= "OpenEZX Kernel",
 +		.size		= 0x00180000, // 1.5MB
 +		.offset		= 0x01880000,
 +	} , {
-+		.name		= "VFM_Filesystem",
++		.name		= "ezxlocal",
 +		.size		= 0x005a0000,
 +		.offset		= 0x01a00000,
 +	} , {

@@ -17,6 +17,10 @@ INITSCRIPT_PARAMS = "start 00 S ."
 
 S = "${WORKDIR}/${PN}"
 
+do_configure() {
+        sed -i -e s:CROSS:CC:g Makefile
+}
+
 do_install() {
 	install -d ${D}${bindir}
 	install -m 755 ezxd ${D}${bindir}

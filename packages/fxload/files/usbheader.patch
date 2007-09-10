@@ -1,0 +1,15 @@
+--- fxload-0.0.20020411.orig/ezusb.c
++++ fxload-0.0.20020411/ezusb.c
+@@ -29,7 +29,11 @@
+ # include  <sys/ioctl.h>
+
+ # include  <linux/version.h>
+-# include  <linux/usb.h>
++#if (LINUX_VERSION_CODE >= 132630)
++# include  <linux/usb/ch9.h>
++#else
++# include  <linux/usb_ch9.h>
++#endif
+ # include  <linux/usbdevice_fs.h>
+
+ # include "ezusb.h"

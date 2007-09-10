@@ -1,7 +1,7 @@
 Index: linux-2.6.21/arch/arm/mach-pxa/ezx-e680.c
 ===================================================================
---- linux-2.6.21.orig/arch/arm/mach-pxa/ezx-e680.c	2007-08-01 19:58:54.000000000 -0300
-+++ linux-2.6.21/arch/arm/mach-pxa/ezx-e680.c	2007-08-01 20:02:32.000000000 -0300
+--- linux-2.6.21.orig/arch/arm/mach-pxa/ezx-e680.c	2007-09-06 00:48:32.000000000 -0300
++++ linux-2.6.21/arch/arm/mach-pxa/ezx-e680.c	2007-09-06 00:49:23.000000000 -0300
 @@ -16,6 +16,7 @@
  #include <linux/mmc/host.h>
  #include <linux/irq.h>
@@ -10,7 +10,7 @@ Index: linux-2.6.21/arch/arm/mach-pxa/ezx-e680.c
  
  #include <asm/mach-types.h>
  #include <asm/mach/arch.h>
-@@ -325,10 +326,32 @@
+@@ -317,10 +318,32 @@
  	.resource       = pcap_ts_resources,
  };
  

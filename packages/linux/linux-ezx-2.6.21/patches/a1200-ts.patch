@@ -1,16 +1,16 @@
 Index: linux-2.6.21/arch/arm/mach-pxa/ezx-a1200.c
 ===================================================================
---- linux-2.6.21.orig/arch/arm/mach-pxa/ezx-a1200.c	2007-06-28 22:54:35.000000000 -0300
-+++ linux-2.6.21/arch/arm/mach-pxa/ezx-a1200.c	2007-06-28 22:55:00.000000000 -0300
-@@ -173,8 +173,33 @@
+--- linux-2.6.21.orig/arch/arm/mach-pxa/ezx-a1200.c	2007-09-07 11:54:52.000000000 -0300
++++ linux-2.6.21/arch/arm/mach-pxa/ezx-a1200.c	2007-09-07 11:55:10.000000000 -0300
+@@ -203,8 +203,33 @@
  	},
  };
  
 +/* PCAP_TS */
 +struct resource pcap_ts_resources[] = {
 +	[0] = {
-+		.start          = EZX_IRQ_ADCDONE2,
-+		.end            = EZX_IRQ_ADCDONE2,
++		.start          = EZX_IRQ_ADCDONE,
++		.end            = EZX_IRQ_ADCDONE,
 +		.flags          = IORESOURCE_IRQ,
 +	},
 +	[1] = {
