@@ -1,0 +1,149 @@
+#
+# strip unnecessary stuff out of configure, we just want
+# to build gdk-pixbuf-csource.
+# -- Michael 'Mickey' Lauer <mlauer@vanille-media.de>
+#
+Index: gtk+-2.10.14/configure.in
+===================================================================
+--- gtk+-2.10.14.orig/configure.in
++++ gtk+-2.10.14/configure.in
+@@ -32,9 +32,6 @@ m4_define([gtk_binary_version], [2.10.0]
+ 
+ # required versions of other packages
+ m4_define([glib_required_version], [2.12.0])
+-m4_define([pango_required_version], [1.12.0])
+-m4_define([atk_required_version], [1.9.0])
+-m4_define([cairo_required_version], [1.2.0])
+ 
+ 
+ AC_INIT([gtk+], [gtk_version],
+@@ -343,10 +340,7 @@ ACLOCAL="$ACLOCAL $ACLOCAL_FLAGS"
+ ## the version requirements since those make the module lists 
+ ## annoying to construct
+ PKG_CHECK_MODULES(BASE_DEPENDENCIES,
+-  [glib-2.0 >= glib_required_version dnl
+-   atk >= atk_required_version dnl
+-   pango >= pango_required_version dnl
+-   cairo >= cairo_required_version])
++  [glib-2.0 >= glib_required_version])
+ 
+ if test "$os_win32" != yes; then
+     # libtool option to control which symbols are exported
+@@ -1437,48 +1431,6 @@ else
+   AM_CONDITIONAL(USE_DIRECTFB, false)
+ fi
+ 
+-
+-# Check for Pango flags
+-
+-if test "x$gdktarget" = "xwin32"; then
+-	PANGO_PACKAGES="pangowin32 pangocairo"
+-else
+-	PANGO_PACKAGES="pango pangocairo"
+-fi
+-
+-AC_MSG_CHECKING(Pango flags)
+-if $PKG_CONFIG --exists $PANGO_PACKAGES ; then
+-        PANGO_CFLAGS=`$PKG_CONFIG --cflags $PANGO_PACKAGES`
+-        PANGO_LIBS=`$PKG_CONFIG --libs $PANGO_PACKAGES`
+-
+-        AC_MSG_RESULT($PANGO_CFLAGS $PANGO_LIBS)
+-else
+-        AC_MSG_ERROR([
+-*** Pango not found. Pango built with Cairo support is required
+-*** to build GTK+. See http://www.pango.org for Pango information.
+-])
+-fi
+-
+-CFLAGS="$CFLAGS $PANGO_CFLAGS"
+-
+-if $PKG_CONFIG --uninstalled $PANGO_PACKAGES; then
+-        :
+-else
+-	gtk_save_LIBS="$LIBS"
+-        LIBS="$PANGO_LIBS $LIBS"
+-        AC_TRY_LINK_FUNC(pango_context_new, :, AC_MSG_ERROR([
+-*** Can't link to Pango. Pango is required to build
+-*** GTK+. For more information see http://www.pango.org]))
+-        LIBS="$gtk_save_LIBS"
+-fi
+-
+-CFLAGS="$saved_cflags"
+-LDFLAGS="$saved_ldflags"
+-
+-GDK_PACKAGES="$PANGO_PACKAGES"
+-if test "x$gdktarget" = "xx11"; then
+-  GDK_PACKAGES="$GDK_PACKAGES $X_PACKAGES"
+-fi
+ GDK_DEP_LIBS="$GDK_EXTRA_LIBS `$PKG_CONFIG --libs $GDK_PIXBUF_PACKAGES $GDK_PACKAGES` $GDK_PIXBUF_EXTRA_LIBS"
+ GDK_DEP_CFLAGS="`$PKG_CONFIG --cflags  gthread-2.0 $GDK_PIXBUF_PACKAGES $GDK_PACKAGES` $GDK_PIXBUF_EXTRA_CFLAGS $GDK_EXTRA_CFLAGS"
+ 
+@@ -1487,7 +1439,7 @@ GDK_DEP_CFLAGS="`$PKG_CONFIG --cflags  g
+ # into the pkg-config files
+ #
+ if test $enable_explicit_deps != yes ; then
+-  GDK_PACKAGES="$PANGO_PACKAGES"
++  GDK_PACKAGES=
+   GDK_EXTRA_LIBS=
+ fi
+ 
+@@ -1498,39 +1450,10 @@ AC_SUBST(GDK_DEP_LIBS)
+ AC_SUBST(GDK_DEP_CFLAGS)
+ 
+ 
+-########################################
+-# Check for Accessibility Toolkit flags
+-########################################
+-
+-ATK_PACKAGES=atk
+-AC_MSG_CHECKING(ATK flags)
+-if $PKG_CONFIG --exists $ATK_PACKAGES ; then
+-        ATK_CFLAGS=`$PKG_CONFIG --cflags $ATK_PACKAGES`
+-        ATK_LIBS=`$PKG_CONFIG --libs $ATK_PACKAGES`
+-
+-        AC_MSG_RESULT($ATK_CFLAGS $ATK_LIBS)
+-else
+-        AC_MSG_ERROR([
+-*** Accessibility Toolkit not found. Accessibility Toolkit is required
+-*** to build GTK+.
+-])
+-fi
+-
+-if $PKG_CONFIG --uninstalled $ATK_PACKAGES; then
+-        :
+-else
+-	gtk_save_LIBS="$LIBS"
+-        LIBS="$ATK_LIBS $LIBS"
+-        AC_TRY_LINK_FUNC(atk_object_get_type, : , AC_MSG_ERROR([
+-                *** Cannot link to Accessibility Toolkit. Accessibility Toolkit is required
+-                *** to build GTK+]))
+-        LIBS="$gtk_save_LIBS"
+-fi
+-
+-GTK_PACKAGES="atk cairo"
++GTK_PACKAGES=
+ GTK_EXTRA_LIBS=
+ GTK_EXTRA_CFLAGS= 
+-GTK_DEP_LIBS="$GDK_EXTRA_LIBS $GTK_DEP_LIBS_FOR_X `$PKG_CONFIG --libs $GDK_PIXBUF_PACKAGES $PANGO_PACKAGES $GTK_PACKAGES_FOR_X $GTK_PACKAGES` $GTK_EXTRA_LIBS $GDK_PIXBUF_EXTRA_LIBS"
++GTK_DEP_LIBS="$GDK_EXTRA_LIBS $GTK_DEP_LIBS_FOR_X `$PKG_CONFIG --libs $GDK_PIXBUF_PACKAGES $GTK_PACKAGES_FOR_X $GTK_PACKAGES` $GTK_EXTRA_LIBS $GDK_PIXBUF_EXTRA_LIBS"
+ GTK_DEP_CFLAGS="`$PKG_CONFIG --cflags  gthread-2.0 $GDK_PIXBUF_PACKAGES $GDK_PACKAGES $GTK_PACKAGES` $GDK_PIXBUF_EXTRA_CFLAGS $GDK_EXTRA_CFLAGS $GTK_EXTRA_CFLAGS"
+ 
+ if test x"$os_win32" = xyes; then
+@@ -1584,17 +1507,6 @@ AM_CONDITIONAL(HAVE_CUPS, test "x$CUPS_C
+ 
+ gtk_save_cppflags="$CPPFLAGS"
+ CPPFLAGS="$CPPFLAGS $GTK_DEP_CFLAGS"
+-			  
+-AC_CHECK_HEADER(cairo-pdf.h,,AC_MSG_ERROR([
+-*** Can't find cairo-pdf.h. You must build Cairo with the pdf
+-*** backend enabled.]))
+-
+-if test "$os_win32" != "yes"; then
+-  AC_CHECK_HEADER(cairo-ps.h,,AC_MSG_ERROR([
+-*** Can't find cairo-ps.h. You must build Cairo with the 
+-*** postscript backend enabled.]))
+-fi   
+-
+ CPPFLAGS="$gtk_save_cppflags"
+      
+ 			  	
