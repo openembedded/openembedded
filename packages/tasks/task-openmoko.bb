@@ -84,6 +84,7 @@ THEMES_e680   = "openmoko-icon-theme-standard2 openmoko-theme-standard2-qvga"
 THEMES_a1200  = "openmoko-icon-theme-standard2 openmoko-theme-standard2-qvga"
 THEMES_rokre2 = "openmoko-icon-theme-standard2 openmoko-theme-standard2-qvga"
 THEMES_rokre6 = "openmoko-icon-theme-standard2 openmoko-theme-standard2-qvga"
+THEMES_magician = "openmoko-icon-theme-standard2 openmoko-theme-standard2-qvga"
 
 RDEPENDS_task-openmoko-ui += "${THEMES}"
 
