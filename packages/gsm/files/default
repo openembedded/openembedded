@@ -31,7 +31,7 @@ case `cpuinfo_id` in
 		;;
         "Motorola Ezx Platform")
                 GSMD_OPTS="-s 115200 -F"
-                GSM_DEV="/dev/mux1"
+                GSM_DEV="/dev/mux0"
                 ;;
 	*)
 		# Unknown board
