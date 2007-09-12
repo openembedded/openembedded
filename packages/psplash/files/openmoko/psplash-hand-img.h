@@ -1,10 +1,10 @@
 /* GdkPixbuf RGB C-Source image dump 1-byte-run-length-encoded */
 
-#define _IMG_ROWSTRIDE (1440)
-#define _IMG_WIDTH (480)
-#define _IMG_HEIGHT (640)
-#define _IMG_BYTES_PER_PIXEL (3) /* 3:RGB, 4:RGBA */
-#define _IMG_RLE_PIXEL_DATA ((uint8*) \
+#define HAND_IMG_ROWSTRIDE (1440)
+#define HAND_IMG_WIDTH (480)
+#define HAND_IMG_HEIGHT (640)
+#define HAND_IMG_BYTES_PER_PIXEL (3) /* 3:RGB, 4:RGBA */
+#define HAND_IMG_RLE_PIXEL_DATA ((uint8*) \
   "\377\0\0\0\377\0\0\0\377\0\0\0\377\0\0\0\377\0\0\0\377\0\0\0\377\0\0\0" \
   "\377\0\0\0\377\0\0\0\377\0\0\0\377\0\0\0\377\0\0\0\377\0\0\0\377\0\0" \
   "\0\377\0\0\0\377\0\0\0\377\0\0\0\377\0\0\0\377\0\0\0\377\0\0\0\377\0" \
