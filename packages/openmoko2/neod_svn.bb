@@ -14,5 +14,5 @@ EXTRA_OECONF_e680      = "--with-platform=ezx"
 EXTRA_OECONF_rokre2    = "--with-platform=ezx"
 EXTRA_OECONF_rokre6    = "--with-platform=ezx"
 
-PACKAGE_ARCH = "${MACHINE}"
+PACKAGE_ARCH = "${MACHINE_ARCH}"
 
