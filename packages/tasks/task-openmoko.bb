@@ -2,7 +2,7 @@ DESCRIPTION = "OpenMoko: Tasks for the OpenMoko Linux Distribution"
 SECTION = "openmoko/base"
 LICENSE = "MIT"
 PROVIDES = "task-openmoko-everything"
-PR = "r61"
+PR = "r62"
 
 inherit task
 
@@ -131,6 +131,7 @@ RDEPENDS_task-openmoko-pim = "\
   eds-dbus \
   openmoko-calculator2 \
   openmoko-contacts2 \
+  openmoko-dates2 \
   openmoko-feedreader2 \
   openmoko-tasks2 \
   openmoko-today2 \
