@@ -29,10 +29,9 @@ RDEPENDS = "${TARGET_INSTALL}"
 IPKG_TARGET = "ipkg-cl -f ${SDK_DIR}/ipkg-target.conf -o ${SDK_OUTPUT}/${prefix}"
 
 do_populate_sdk() {
-
-        set -ex
-        rootfs_ipk_do_indexes
-        set +ex
+	set -ex
+	package_update_index_ipk
+	set +ex
 
 	rm -rf ${SDK_OUTPUT}
 	mkdir -p ${SDK_OUTPUT}
