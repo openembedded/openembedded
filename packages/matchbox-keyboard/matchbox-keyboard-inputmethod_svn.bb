@@ -5,7 +5,7 @@ RCONFLICTS = matchbox-keyboard
 RPROVIDES_${PN} = matchbox-keyboard
 #DEFAULT_PREFERENCE = "-1"
 SECTION = "x11"
-PV = "0.0+svn${SRCDATE}"
+PV = "0.0+svnr${SRCREV}"
 PR = "r4"
 
 SRC_URI = "svn://svn.o-hand.com/repos/matchbox/trunk;module=matchbox-keyboard;proto=http \
