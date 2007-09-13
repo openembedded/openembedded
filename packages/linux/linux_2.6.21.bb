@@ -35,7 +35,6 @@ GUMSTIX_PATCHES = "\
        file://arch-config.patch;patch=1 \
        file://board-init.patch;patch=1 \
        file://compact-flash.patch;patch=1 \
-       file://defconfig.patch;patch=1 \
        file://flash.patch;patch=1 \
        file://pxa2xx_udc.patch;patch=1 \
        file://bkpxa-pxa-cpu.patch;patch=1 \
