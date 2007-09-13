@@ -5,12 +5,14 @@
 
 # This will miss recipes that have skippackage set (e.g. uclibc)
 
+SRCREV_pn-bfin-uclibc ?= "1806"
 SRCREV_pn-dfu-util ?= "2866"
 SRCREV_pn-dfu-util-native ?= "2866"
 SRCREV_pn-eglibc ?= "3468"
 SRCREV_pn-eglibc-initial ?= "3468"
 SRCREV_pn-eglibc-intermediate ?= "3468"
 SRCREV_pn-ezxd ?= "2052"
+SRCREV_pn-elf2flt="1786"
 SRCREV_pn-fbgrab-viewer-native ?= "1943"
 SRCREV_pn-fstests ?= "204"
 SRCREV_pn-gnuradio ?= "6377"
