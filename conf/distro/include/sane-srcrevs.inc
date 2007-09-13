@@ -5,6 +5,7 @@
 
 # This will miss recipes that have skippackage set (e.g. uclibc)
 
+SRCREV_pn-bfin-uclibc ?= "1806"
 SRCREV_pn-dfu-util ?= "2866"
 SRCREV_pn-dfu-util-native ?= "2866"
 SRCREV_pn-eglibc ?= "3468"
