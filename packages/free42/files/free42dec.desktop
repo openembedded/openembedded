@@ -1,0 +1,12 @@
+[Desktop Entry]
+Version=1.0
+Encoding=UTF-8
+Name=Free42
+Comment=RPN Calculator
+Exec=free42dec
+Icon=free42.xpm
+StartupNotify=true
+SingleInstance=true
+Terminal=false
+Type=Application
+Categories=Application
