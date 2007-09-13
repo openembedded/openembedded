@@ -1,7 +1,9 @@
 SECTION = "kernel"
 DESCRIPTION = "Linux kernel for OMAP processors"
 LICENSE = "GPL"
-DEPENDS = ${@['u-boot','u-boot-omap2430sdp'][bb.data.getVar('MACHINE',d,1) == 'omap2430sdp']}
+#DEPENDS = ${@['u-boot','u-boot-omap2430sdp'][bb.data.getVar('MACHINE',d,1) == 'omap2430sdp']}
+
+DEPENDS = uboot-utils
 
 inherit kernel
 
