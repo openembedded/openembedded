@@ -12,7 +12,7 @@ SRC_URI = "ftp://ftp.trolltech.com/qt/source/qt-x11-free-${PV}.tar.bz2 \
 S = "${WORKDIR}/qt-x11-free-${PV}"
 
 #
-# FIXME - This should be updated to use OE's qmake-base.oeclass
+# FIXME - This should be updated to use OE's qmake_base.oeclass
 #         or the full qmake.oeclass.
 #
 

@@ -1,0 +1,41 @@
+--- /tmp/cacheflush.h	2007-09-10 15:22:58.188856413 +0200
++++ linux-2.6.21/include/asm-arm/cacheflush.h	2007-09-10 15:23:14.009757994 +0200
+@@ -418,6 +418,14 @@
+  */
+ #define flush_icache_page(vma,page)	do { } while (0)
+ 
++inline static void flush_ioremap_region(unsigned long phys, void __iomem *virt,
++                                        unsigned offset, size_t size)
++{
++       const void *start = virt + offset;
++       dmac_inv_range(start, start + size);
++}
++
++
+ #define __cacheid_present(val)		(val != read_cpuid(CPUID_ID))
+ #define __cacheid_vivt(val)		((val & (15 << 25)) != (14 << 25))
+ #define __cacheid_vipt(val)		((val & (15 << 25)) == (14 << 25))
+--- /tmp/ezx-flash.c	2007-09-10 15:22:58.192856640 +0200
++++ linux-2.6.21/drivers/mtd/maps/ezx-flash.c	2007-09-10 15:23:24.878377362 +0200
+@@ -21,6 +21,8 @@
+ #include <linux/dma-mapping.h>
+ #include <linux/slab.h>
+ 
++#include <asm/cacheflush.h>
++
+ #include <linux/mtd/mtd.h>
+ #include <linux/mtd/map.h>
+ #include <linux/mtd/partitions.h>
+@@ -51,11 +53,10 @@
+ 		"sub pc, pc #4"
+ 		:"=r"(j));
+ #else
+-	consistent_sync((char *)map->cached + from, len, DMA_FROM_DEVICE);
++        flush_ioremap_region(map->phys, map->cached, from, len);
+ #endif
+ }
+ 
+-
+ struct map_info pxa27x_map = {
+ 	.name		= "PXA27x flash",
+ 	.size		= WINDOW_SIZE,

@@ -14,7 +14,7 @@ TARGETS = "lib plink pscp psftp"
 
 S = "${WORKDIR}/putty"
 
-inherit qmake-base
+inherit qmake_base
 
 do_configure() {
 	for t in ${TARGETS}

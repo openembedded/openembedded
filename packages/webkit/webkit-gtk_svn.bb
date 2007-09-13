@@ -10,8 +10,8 @@ inherit qmake2 pkgconfig
 SRC_URI = "\
   svn://svn.webkit.org/repository/webkit/trunk/;module=JavaScriptCore;proto=http \
   svn://svn.webkit.org/repository/webkit/trunk/;module=JavaScriptGlue;proto=http \
-  svn://svn.webkit.org/repository/webkit/trunk/;module=WebCore;proto=http \
-  svn://svn.webkit.org/repository/webkit/trunk/;module=WebKit;proto=http \
+  svn://svn.webkit.org/repository/webkit/trunk/;module=WebCore;proto=http;name=webcore \
+  svn://svn.webkit.org/repository/webkit/trunk/;module=WebKit;proto=http;name=webkit \
   svn://svn.webkit.org/repository/webkit/trunk/;module=WebKitLibraries;proto=http \
 #  svn://svn.webkit.org/repository/webkit/trunk/;module=WebKitQt;proto=http \
   svn://svn.webkit.org/repository/webkit/trunk/;module=WebKitTools;proto=http \

@@ -92,13 +92,8 @@ KDRIVE_COMMON_PATCHES = " \
 	file://kmode.patch;patch=1 \
 	file://disable-apm.patch;patch=1 \
 	file://no-serial-probing.patch;patch=1 \
-	file://kdrive-evdev.patch;patch=1  \
-	file://kdrive-use-evdev.patch;patch=1  \
 	file://fbdev-not-fix.patch;patch=1  \
-	file://enable-builtin-fonts.patch;patch=1 \
-	file://disable-xf86-dga-xorgcfg.patch;patch=1 \
 	file://optional-xkb.patch;patch=1 \
-	file://enable-epson.patch;patch=1 \
 	file://enable-tslib.patch;patch=1 \
 	file://kmode-palm.patch;patch=1 \
 	"
@@ -119,7 +114,7 @@ EXTRA_OECONF = "--enable-composite --enable-kdrive \
                 --disable-xorg --disable-xorgcfg \
                 --disable-xkb --disable-xnest --disable-xvfb \
                 --disable-xevie --disable-xprint --disable-xtrap \
-                --disable-dmx \
+                --disable-dmx ${W100_OECONF} \
                 --with-default-font-path=built-ins \
                 --enable-tslib --enable-xcalibrate \
                 ac_cv_file__usr_share_X11_sgml_defs_ent=no"

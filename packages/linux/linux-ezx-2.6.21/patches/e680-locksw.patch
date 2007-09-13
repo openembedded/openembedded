@@ -1,7 +1,7 @@
 Index: linux-2.6.21/arch/arm/mach-pxa/ezx-e680.c
 ===================================================================
---- linux-2.6.21.orig/arch/arm/mach-pxa/ezx-e680.c	2007-06-08 18:38:48.000000000 +0200
-+++ linux-2.6.21/arch/arm/mach-pxa/ezx-e680.c	2007-06-08 18:38:59.000000000 +0200
+--- linux-2.6.21.orig/arch/arm/mach-pxa/ezx-e680.c	2007-09-06 00:48:32.000000000 -0300
++++ linux-2.6.21/arch/arm/mach-pxa/ezx-e680.c	2007-09-06 00:49:23.000000000 -0300
 @@ -16,6 +16,7 @@
  #include <linux/mmc/host.h>
  #include <linux/irq.h>
@@ -10,8 +10,8 @@ Index: linux-2.6.21/arch/arm/mach-pxa/ezx-e680.c
  
  #include <asm/mach-types.h>
  #include <asm/mach/arch.h>
-@@ -220,8 +221,30 @@
-        },
+@@ -317,10 +318,32 @@
+ 	.resource       = pcap_ts_resources,
  };
  
 +static struct gpio_keys_button e680locksw_buttons[] = {
@@ -36,6 +36,8 @@ Index: linux-2.6.21/arch/arm/mach-pxa/ezx-e680.c
 +};
 +
  static struct platform_device *devices[] __initdata = {
+ 	&e680_pcap_device,
+ 	&e680_emu_device,
  	&pcap_ts_device,
 +	&e680locksw_device,
  };

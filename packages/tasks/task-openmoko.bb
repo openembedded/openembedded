@@ -2,7 +2,7 @@ DESCRIPTION = "OpenMoko: Tasks for the OpenMoko Linux Distribution"
 SECTION = "openmoko/base"
 LICENSE = "MIT"
 PROVIDES = "task-openmoko-everything"
-PR = "r60"
+PR = "r62"
 
 inherit task
 
@@ -84,6 +84,7 @@ THEMES_e680   = "openmoko-icon-theme-standard2 openmoko-theme-standard2-qvga"
 THEMES_a1200  = "openmoko-icon-theme-standard2 openmoko-theme-standard2-qvga"
 THEMES_rokre2 = "openmoko-icon-theme-standard2 openmoko-theme-standard2-qvga"
 THEMES_rokre6 = "openmoko-icon-theme-standard2 openmoko-theme-standard2-qvga"
+THEMES_magician = "openmoko-icon-theme-standard2 openmoko-theme-standard2-qvga"
 
 RDEPENDS_task-openmoko-ui += "${THEMES}"
 
@@ -98,6 +99,7 @@ RDEPENDS_task-openmoko-base = "\
 #  openmoko-appmanager \
   matchbox-keyboard-inputmethod \
   matchbox-keyboard-im \
+  matchbox-keyboard-applet \
   matchbox-stroke \
   openmoko-terminal2 \
   openmoko-keyboard \
@@ -129,6 +131,7 @@ RDEPENDS_task-openmoko-pim = "\
   eds-dbus \
   openmoko-calculator2 \
   openmoko-contacts2 \
+  openmoko-dates2 \
   openmoko-feedreader2 \
   openmoko-tasks2 \
   openmoko-today2 \

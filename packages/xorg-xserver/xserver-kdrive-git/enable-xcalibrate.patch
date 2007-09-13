@@ -1,0 +1,68 @@
+---
+ Xext/Makefile.am           |    6 ++++++
+ configure.ac               |    9 ++++++++-
+ include/kdrive-config.h.in |    3 +++
+ mi/miinitext.c             |    6 ++++++
+ 4 files changed, 23 insertions(+), 1 deletion(-)
+
+Index: git/mi/miinitext.c
+===================================================================
+--- git.orig/mi/miinitext.c	2007-09-08 22:17:19.000000000 +0200
++++ git/mi/miinitext.c	2007-09-08 22:37:51.000000000 +0200
+@@ -374,6 +374,9 @@
+ #ifdef DMXEXT
+ extern void DMXExtensionInit(INITARGS);
+ #endif
++#ifdef XCALIBRATE
++extern void XCalibrateExtensionInit(INITARGS);
++#endif
+ #ifdef XEVIE
+ extern void XevieExtensionInit(INITARGS);
+ #endif
+@@ -666,6 +669,9 @@
+ #ifdef DAMAGE
+     if (!noDamageExtension) DamageExtensionInit();
+ #endif
++#ifdef  XCALIBRATE
++    XCalibrateExtensionInit ();
++#endif
+ }
+ 
+ void
+Index: git/configure.ac
+===================================================================
+--- git.orig/configure.ac	2007-09-08 22:37:43.000000000 +0200
++++ git/configure.ac	2007-09-08 22:38:36.000000000 +0200
+@@ -505,6 +505,7 @@
+ AC_ARG_ENABLE(xf86misc,       AS_HELP_STRING([--disable-xf86misc], [Build XF86Misc extension (default: auto)]), [XF86MISC=$enableval], [XF86MISC=auto])
+ AC_ARG_ENABLE(xace,           AS_HELP_STRING([--disable-xace], [Build X-ACE extension (default: enabled)]), [XACE=$enableval], [XACE=yes])
+ AC_ARG_ENABLE(xcsecurity,     AS_HELP_STRING([--disable-xcsecurity], [Build Security extension (default: enabled)]), [XCSECURITY=$enableval], [XCSECURITY=$XACE])
++AC_ARG_ENABLE(xcalibrate,     AS_HELP_STRING([--enable-xcalibrate], [Build XCalibrate extension (default: disabled)]), [XCALIBRATE=$enableval], [XCALIBRATE=no])
+ AC_ARG_ENABLE(appgroup,       AS_HELP_STRING([--disable-appgroup], [Build XC-APPGROUP extension (default: enabled)]), [APPGROUP=$enableval], [APPGROUP=$XCSECURITY])
+ AC_ARG_ENABLE(xcalibrate,     AS_HELP_STRING([--enable-xcalibrate], [Build XCalibrate extension (default: disabled)]), [XCALIBRATE=$enableval], [XCALIBRATE=no])
+ AC_ARG_ENABLE(tslib,          AS_HELP_STRING([--enable-tslib], [Build kdrive tslib touchscreen support (default: disabled)]), [TSLIB=$enableval], [TSLIB=no])
+@@ -833,6 +834,12 @@
+ 	AC_DEFINE(XCSECURITY, 1, [Build Security extension])
+ fi
+ 
++AM_CONDITIONAL(XCALIBRATE, [test "x$XCALIBRATE" = xyes])
++if test "x$XCALIBRATE" = xyes; then
++	AC_DEFINE(XCALIBRATE, 1, [Build XCalibrate extension])
++	REQUIRED_MODULES="$REQUIRED_MODULES xcalibrateproto"
++fi
++
+ AM_CONDITIONAL(XEVIE, [test "x$XEVIE" = xyes])
+ if test "x$XEVIE" = xyes; then
+ 	AC_DEFINE(XEVIE, 1, [Build XEvIE extension])
+Index: git/include/kdrive-config.h.in
+===================================================================
+--- git.orig/include/kdrive-config.h.in	2007-09-08 22:17:19.000000000 +0200
++++ git/include/kdrive-config.h.in	2007-09-08 22:37:51.000000000 +0200
+@@ -31,4 +31,7 @@
+ /* Have execinfo.h for backtrace(). */
+ #undef HAVE_EXECINFO_H
+ 
++/* Enable XCalibrate extension */
++#undef XCALIBRATE
++
+ #endif /* _KDRIVE_CONFIG_H_ */

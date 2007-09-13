@@ -1,0 +1,110 @@
+
+Instantiate the ep93xx gpio i2c bus driver in the generic ep93xx
+code.
+
+Signed-off-by: Lennert Buytenhek <buytenh@wantstofly.org>
+
+Index: linux-2.6.22/arch/arm/mach-ep93xx/core.c
+===================================================================
+--- linux-2.6.22.orig/arch/arm/mach-ep93xx/core.c	2007-08-30 00:42:49.000000000 +0200
++++ linux-2.6.22/arch/arm/mach-ep93xx/core.c	2007-08-30 00:43:00.000000000 +0200
+@@ -509,6 +509,52 @@
+ };
+ 
+ 
++static DEFINE_MUTEX(eeclk_eedat_mutex);
++static int i2c_transaction_in_progress;
++
++static void ep93xx_i2c_start_condition(void *cookie)
++{
++	if (!i2c_transaction_in_progress) {
++		mutex_lock(&eeclk_eedat_mutex);
++		i2c_transaction_in_progress = 1;
++	}
++}
++
++static void ep93xx_i2c_stop_condition(void *cookie)
++{
++	if (i2c_transaction_in_progress) {
++		mutex_unlock(&eeclk_eedat_mutex);
++		i2c_transaction_in_progress = 0;
++	} else {
++		printk(KERN_WARNING "ep93xx: i2c stop without start??\n");
++	}
++}
++
++static struct ep93xx_i2c_data ep93xx_i2c_gpio_data = {
++	.sda_pin		= EP93XX_GPIO_LINE_EEDAT,
++	.scl_pin		= EP93XX_GPIO_LINE_EECLK,
++	.start			= ep93xx_i2c_start_condition,
++	.stop			= ep93xx_i2c_stop_condition,
++};
++
++static struct platform_device ep93xx_i2c_device = {
++	.name			= "ep93xx-i2c",
++	.id			= 0,
++	.dev.platform_data	= &ep93xx_i2c_gpio_data,
++	.num_resources		= 0,
++};
++
++void eeclk_eedat_claim(void)
++{
++	mutex_lock(&eeclk_eedat_mutex);
++}
++
++void eeclk_eedat_release(void)
++{
++	mutex_unlock(&eeclk_eedat_mutex);
++}
++
++
+ void __init ep93xx_init_devices(void)
+ {
+ 	unsigned int v;
+@@ -521,10 +567,20 @@
+ 	__raw_writel(0xaa, EP93XX_SYSCON_SWLOCK);
+ 	__raw_writel(v, EP93XX_SYSCON_DEVICE_CONFIG);
+ 
++	/*
++	 * When EECLK/EEDAT are in open drain mode (EEDRIVE=0b11),
++	 * writing a 1 to their Data Register bits causes subsequent
++	 * reads from the Data Direction Register to return 'input',
++	 * which confuses gpio_line_config().  So, we use CMOS drive
++	 * mode instead.
++	 */
++	__raw_writel(0, EP93XX_GPIO_EEDRIVE);
++
+ 	amba_device_register(&uart1_device, &iomem_resource);
+ 	amba_device_register(&uart2_device, &iomem_resource);
+ 	amba_device_register(&uart3_device, &iomem_resource);
+ 
+ 	platform_device_register(&ep93xx_rtc_device);
+ 	platform_device_register(&ep93xx_ohci_device);
++	platform_device_register(&ep93xx_i2c_device);
+ }
+Index: linux-2.6.22/include/asm-arm/arch-ep93xx/ep93xx-regs.h
+===================================================================
+--- linux-2.6.22.orig/include/asm-arm/arch-ep93xx/ep93xx-regs.h	2007-08-30 00:42:49.000000000 +0200
++++ linux-2.6.22/include/asm-arm/arch-ep93xx/ep93xx-regs.h	2007-08-30 00:43:00.000000000 +0200
+@@ -91,6 +91,7 @@
+ #define EP93XX_GPIO_B_INT_ENABLE	EP93XX_GPIO_REG(0xb8)
+ #define EP93XX_GPIO_B_INT_STATUS	EP93XX_GPIO_REG(0xbc)
+ #define EP93XX_GPIO_B_INT_DEBOUNCE	EP93XX_GPIO_REG(0xc4)
++#define EP93XX_GPIO_EEDRIVE		EP93XX_GPIO_REG(0xc8)
+ 
+ #define EP93XX_AAC_BASE			(EP93XX_APB_VIRT_BASE + 0x00080000)
+ 
+Index: linux-2.6.22/include/asm-arm/arch-ep93xx/platform.h
+===================================================================
+--- linux-2.6.22.orig/include/asm-arm/arch-ep93xx/platform.h	2007-08-30 00:42:52.000000000 +0200
++++ linux-2.6.22/include/asm-arm/arch-ep93xx/platform.h	2007-08-30 00:43:00.000000000 +0200
+@@ -10,6 +10,9 @@
+ void ep93xx_init_devices(void);
+ extern struct sys_timer ep93xx_timer;
+ 
++void eeclk_eedat_claim(void);
++void eeclk_eedat_release(void);
++
+ struct ep93xx_eth_data
+ {
+ 	unsigned char	dev_addr[6];

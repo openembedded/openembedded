@@ -5,8 +5,8 @@
 
 Index: linux-2.6.21/drivers/video/backlight/Kconfig
 ===================================================================
---- linux-2.6.21.orig/drivers/video/backlight/Kconfig	2007-06-02 20:03:06.000000000 -0300
-+++ linux-2.6.21/drivers/video/backlight/Kconfig	2007-06-02 20:26:49.000000000 -0300
+--- linux-2.6.21.orig/drivers/video/backlight/Kconfig	2007-08-01 19:38:48.000000000 -0300
++++ linux-2.6.21/drivers/video/backlight/Kconfig	2007-08-01 20:00:56.000000000 -0300
 @@ -63,3 +63,12 @@
  	help
  	  If you have a Frontpath ProGear say Y to enable the
@@ -22,8 +22,8 @@ Index: linux-2.6.21/drivers/video/backlight/Kconfig
 +
 Index: linux-2.6.21/drivers/video/backlight/Makefile
 ===================================================================
---- linux-2.6.21.orig/drivers/video/backlight/Makefile	2007-06-02 20:03:06.000000000 -0300
-+++ linux-2.6.21/drivers/video/backlight/Makefile	2007-06-02 20:26:49.000000000 -0300
+--- linux-2.6.21.orig/drivers/video/backlight/Makefile	2007-08-01 19:38:48.000000000 -0300
++++ linux-2.6.21/drivers/video/backlight/Makefile	2007-08-01 20:00:56.000000000 -0300
 @@ -6,3 +6,4 @@
  obj-$(CONFIG_BACKLIGHT_HP680)	+= hp680_bl.o
  obj-$(CONFIG_BACKLIGHT_LOCOMO)	+= locomolcd.o
@@ -32,7 +32,7 @@ Index: linux-2.6.21/drivers/video/backlight/Makefile
 Index: linux-2.6.21/drivers/video/backlight/ezx_bl.c
 ===================================================================
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ linux-2.6.21/drivers/video/backlight/ezx_bl.c	2007-06-02 20:26:49.000000000 -0300
++++ linux-2.6.21/drivers/video/backlight/ezx_bl.c	2007-08-01 20:00:56.000000000 -0300
 @@ -0,0 +1,142 @@
 +/*
 + * Backlight Driver for Motorola A780 and E680(i) GSM Phones.
@@ -178,9 +178,9 @@ Index: linux-2.6.21/drivers/video/backlight/ezx_bl.c
 +MODULE_LICENSE("GPL");
 Index: linux-2.6.21/arch/arm/mach-pxa/ezx.c
 ===================================================================
---- linux-2.6.21.orig/arch/arm/mach-pxa/ezx.c	2007-06-02 20:19:44.000000000 -0300
-+++ linux-2.6.21/arch/arm/mach-pxa/ezx.c	2007-06-02 20:26:49.000000000 -0300
-@@ -67,6 +67,12 @@
+--- linux-2.6.21.orig/arch/arm/mach-pxa/ezx.c	2007-08-01 19:39:02.000000000 -0300
++++ linux-2.6.21/arch/arm/mach-pxa/ezx.c	2007-08-01 20:00:56.000000000 -0300
+@@ -65,6 +65,12 @@
  #endif
  EXPORT_SYMBOL(ezx_backlight_power);
  
@@ -190,13 +190,13 @@ Index: linux-2.6.21/arch/arm/mach-pxa/ezx.c
 +	.id		= -1,
 +};
 +
- /* SSP */
- struct platform_device ezxssp_device = {
- 	.name		= "ezx-ssp",
-@@ -179,6 +185,7 @@
+ /* OHCI Controller */
+ static int ezx_ohci_init(struct device *dev)
+ {
+@@ -121,6 +127,7 @@
+ 
+ static struct platform_device *devices[] __initdata = {
  	&ezxbp_device,
- 	&ezxpcap_device,
- 	&ezxemu_device,
 +	&ezxbacklight_device,
  };
  

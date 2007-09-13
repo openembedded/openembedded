@@ -20,10 +20,11 @@ ezx-pm.patch
 
 ezx-pcap.patch
 # ezx-pcap TODO:
-# implement a per board init reg array
-# move mmc functions to the ezx-phone.c mmc init
 # move vibrator level function to the vibrator driver
 
+a780-pcap.patch
+e680-pcap.patch
+a1200-pcap.patch
 
 a780-mci.patch
 e680-mci.patch
@@ -35,6 +36,9 @@ ezx-emu.patch
 # ezx-emu TODO:
 # userspace interface for controling emu
 # read adc to find which accessory is plugged
+
+a780-emu.patch
+e680-emu.patch
 
 ezx-mtd-map.patch
 # ezx-mtd-map TODO:
@@ -89,5 +93,5 @@ mux-linux-2.6.21-fix.patch
 #		pxa-ohci, ts0710_mux, ts0710_mux_usb, ezx-bp
 
 # incomplete
-#asoc-pxa-ssp.patch
-#ezx-asoc.patch
+asoc-pxa-ssp.patch
+ezx-asoc.patch

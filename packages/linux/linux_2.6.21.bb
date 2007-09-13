@@ -4,7 +4,7 @@ DEFAULT_PREFERENCE_at91sam9263ek = "-1"
 DEFAULT_PREFERENCE_gumstix-connex = "1"
 DEFAULT_PREFERENCE_gumstix-verdex = "1"
 
-PR = "r7"
+PR = "r9"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-${PV}.tar.bz2 \
            file://defconfig \
@@ -63,7 +63,6 @@ GUMSTIX_PATCHES = "\
        file://mmc-card-detect.patch;patch=1 \
        file://misalignment-handling.patch;patch=1 \
        file://compile-fix-pxa_cpufreq.patch;patch=1 \
-       file://ramfs-mode-support.patch;patch=1 \
        file://pxafb-definition.patch;patch=1 \
        file://270-usb-gadget-udc.patch;patch=1 \
        file://gumstix-pxa270-usb-host.patch;patch=1 \

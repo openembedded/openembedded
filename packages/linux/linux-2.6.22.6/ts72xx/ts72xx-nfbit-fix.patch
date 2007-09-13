@@ -1,0 +1,15 @@
+
+Force the nF bit on.  Usually this is set by the bootrom.  If it is not set,
+then the CPU core will run from HCLK instead of FCLK, and performance will
+suffer. If you see BogoMIPS of about 1/4 of your CPU clock, try turning this
+on; your performance should double.
+
+--- linux-2.6.21.4/arch/arm/mm/proc-arm920.S	2007-06-07 23:27:31.000000000 +0200
++++ linux-2.6.21.4-arm/arch/arm/mm/proc-arm920.S	2007-06-08 22:59:48.000000000 +0200
+@@ -395,6 +395,7 @@
+ 	mrc	p15, 0, r0, c1, c0		@ get control register v4
+ 	bic	r0, r0, r5
+ 	orr	r0, r0, r6
++	orr     r0, r0, #0x40000000
+ 	mov	pc, lr
+ 	.size	__arm920_setup, . - __arm920_setup

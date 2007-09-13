@@ -9,7 +9,7 @@ LICENSE = "LGPL"
 SRC_URI = "http://developer.kde.org/~wheeler/files/src/taglib-${PV}.tar.gz"
 S = "${WORKDIR}/taglib-${PV}"
 
-inherit autotools qmake-base pkgconfig binconfig
+inherit autotools qmake_base pkgconfig binconfig
 
 do_configure() {
 	echo running oe_runconf to get pkgconfig and binconfig files created

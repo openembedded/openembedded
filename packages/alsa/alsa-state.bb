@@ -1,20 +1,19 @@
-#! /bin/sh
-#
 # Copyright Matthias Hentges <devel@hentges.net> (c) 2007
 # License: MIT (see http://www.opensource.org/licenses/mit-license.php
 #               for a copy of the license)
 #
 # Filename: alsa-state.bb
-# Date: 20070308 (YMD)
 
 DESCRIPTION = "Default ALSA configuration"
 LICENSE = "GPL"
 RRECOMMENDS_alsa-state = "alsa-states"
-PV = "0.0.4"
-PR = "r3"
+PV = "0.1.0"
+PR = "r0"
 
-SRC_URI = "file://asound.state \
-           file://alsa-state "
+SRC_URI = " \
+  file://asoundrc \
+  file://asound.state \
+  file://alsa-state "
 
 SRC_URI_append_fic-gta01 = " \
   file://capturehandset.state \
@@ -33,11 +32,12 @@ do_install() {
     install -d ${D}${sysconfdir}/init.d
     install -m 0755 ${WORKDIR}/alsa-state ${D}${sysconfdir}/init.d
 
+	install -m 0644 ${WORKDIR}/asoundrc ${D}${sysconfdir}
 	install -m 0644 ${WORKDIR}/*.state ${D}${sysconfdir}
 }
 
 PACKAGES += "alsa-states"
-FILES_${PN} = "${sysconfdir}/init.d"
+FILES_${PN} = "${sysconfdir}/init.d ${sysconfdir}/asoundrc"
 FILES_alsa-states = "${sysconfdir}/*.state"
 PACKAGE_ARCH_${PN} = "all"
 PACKAGE_ARCH_alsa-states = "${MACHINE}"

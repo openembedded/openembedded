@@ -1,7 +1,7 @@
-DESCRIPTION = "OpenMoko: Debugging Tools"
+DESCRIPTION = "OpenMoko: Debugging and Benchmarking Tools"
 SECTION = "openmoko/base"
 LICENSE = "MIT"
-PR = "r57"
+PR = "r58"
 
 inherit task
 
@@ -11,26 +11,27 @@ RDEPENDS_task-openmoko-debug = "\
   alsa-utils-aconnect \
   alsa-utils-alsamixer \
   alsa-utils-speakertest \
-  madplay \
-  vorbis-tools \
-  strace \
-  ltrace \
+  bonnie++ \
+  cu \
+  dbench \
+  fbgrab \
+  fstests \
   gdb \
   gdbserver \
+  madplay \
+  lrzsz \
+  lsof \
+  ltrace \
+  memtester \
+#  sensors-i2cdetect sensors-i2cdump sensors-i2cset \
+  strace \
   tcpdump \
   tslib-calibrate \
   tslib-tests \
-  fbgrab \
-  fstests \
-  lsof \
-  lrzsz \
   udev-utils \
   usbutils \
   uucp \
-  cu \
-#  sensors-i2cdetect sensors-i2cdump sensors-i2cset \
+  vorbis-tools \
+  x11perf \
   xev \
-  bonnie++ \
-  memtester \
-  dbench \
 "
