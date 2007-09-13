@@ -1,0 +1,12 @@
+#
+# simple dmix configuration
+#
+pcm.dsp0 {
+    type plug
+    slave.pcm "dmix"
+}
+
+ctl.mixer0 {
+    type hw
+    card 0
+}
