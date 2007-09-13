@@ -47,12 +47,12 @@ do_install () {
 	elif [ -f ${D}${prefix}/lib/libgcc_s.so.? ]; then
 		mv -f ${D}${prefix}/lib/libgcc_s.so* ${D}${target_base_libdir}
 	else
-		mv -f ${D}${prefix}/*/lib/libgcc_s.so* ${D}${target_base_libdir}
+		mv -f ${D}${prefix}/*/lib/libgcc_s.so* ${D}${target_base_libdir} || true
 	fi
 
 	# Move libstdc++ and libg2c into libdir (resetting our prefix to /usr
 	mkdir -p ${D}${target_libdir}
-	mv -f ${D}${prefix}/*/lib/libstdc++.so* ${D}${target_libdir}
+	mv -f ${D}${prefix}/*/lib/libstdc++.so* ${D}${target_libdir} || true
 	if [ "${HAS_G2C}" = "yes" ]; then
 	  mv -f ${D}${prefix}/*/lib/libg2c.so* ${D}${target_libdir} || true
 	fi
