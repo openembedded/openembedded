@@ -15,11 +15,15 @@ RDEPENDS_${PN} += "gpe-applauncher-config"
 GPE_TARBALL_SUFFIX= "bz2"
 inherit gpephone autotools
 
-SRC_URI += "file://hotkeys.conf"
+SRC_URI += "file://hotkeys.conf \
+            file://softkeys.conf"
+
+EXTRA_OECONF = "--disable-gridlayout"
 
 FILES_${PN} = '${datadir} ${bindir}'
 FILES_gpe-applauncher-config = '${sysconfdir}/gpe/'
 
 do_configure_append () {
-	install ${WORKDIR}/hotkeys.conf ${S}
+    install ${WORKDIR}/hotkeys.conf ${S}
+    install ${WORKDIR}/softkeys.conf ${S}
 }
