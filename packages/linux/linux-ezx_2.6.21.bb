@@ -4,7 +4,7 @@ AUTHOR = "Harald Welte and the OpenEZX Team <openezx-devel@lists.openezx.org>"
 HOMEPAGE = "http://www.openezx.org"
 LICENSE = "GPL"
 EZX = "ezxdev"
-PR = "${EZX}-r11"
+PR = "${EZX}-r12"
 
 inherit kernel
 
@@ -22,9 +22,11 @@ SRC_URI = " \
         file://patches/a780-pcap.patch;patch=1 \
         file://patches/e680-pcap.patch;patch=1 \
         file://patches/a1200-pcap.patch;patch=1 \
+	file://patches/e6-pcap.patch;patch=1 \
 	file://patches/a780-mci.patch;patch=1 \
 	file://patches/e680-mci.patch;patch=1 \
 	file://patches/a1200-mci.patch;patch=1 \
+	file://patches/e6-mci.patch;patch=1 \
 	file://patches/pxa27x-udc-support.2.patch;patch=1 \
 	file://patches/ezx-emu.patch;patch=1 \
         file://patches/a780-emu.patch;patch=1 \
@@ -38,8 +40,10 @@ SRC_URI = " \
 	file://patches/a780-ts.patch;patch=1 \
 	file://patches/e680-ts.patch;patch=1 \
 	file://patches/a1200-ts.patch;patch=1 \
+	file://patches/e6-ts.patch;patch=1 \
         file://patches/ezx-eoc.patch;patch=1 \
         file://patches/a1200-eoc.patch;patch=1 \
+	file://patches/e6-eoc.patch;patch=1 \
 	file://patches/ezx-backlight.patch;patch=1 \
 	file://patches/a780-flip.patch;patch=1 \
 	file://patches/e680-locksw.patch;patch=1 \
