@@ -1,3 +1,8 @@
+SRCREV_pn-libgsmd ?= "${AUTOREV}"
+SRCREV_pn-libmokogsmd2 ?= "${AUTOREV}"
+SRCREV_pn-libmokojournal2 ?= "${AUTOREV}"
+SRCREV_pn-libmokopanelui2 ?= "${AUTOREV}"
+SRCREV_pn-libmokoui2 ?= "${AUTOREV}"
 SRCREV_pn-openmoko-appmanager ?= "${AUTOREV}"
 SRCREV_pn-openmoko-calculator ?= "${AUTOREV}"
 SRCREV_pn-openmoko-calculator2 ?= "${AUTOREV}"
