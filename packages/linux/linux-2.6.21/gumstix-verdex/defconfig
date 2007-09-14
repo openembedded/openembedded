@@ -1,7 +1,7 @@
 #
 # Automatically generated make config: don't edit
 # Linux kernel version: 2.6.21
-# Thu Aug 23 09:30:49 2007
+# Thu Sep 13 14:49:02 2007
 #
 CONFIG_ARM=y
 CONFIG_SYS_SUPPORTS_APM_EMULATION=y
@@ -63,11 +63,11 @@ CONFIG_BUG=y
 CONFIG_BASE_FULL=y
 CONFIG_FUTEX=y
 # CONFIG_EPOLL is not set
-# CONFIG_SHMEM is not set
+CONFIG_SHMEM=y
 CONFIG_SLAB=y
 # CONFIG_VM_EVENT_COUNTERS is not set
 CONFIG_RT_MUTEXES=y
-CONFIG_TINY_SHMEM=y
+# CONFIG_TINY_SHMEM is not set
 CONFIG_BASE_SMALL=0
 # CONFIG_SLOB is not set
 
@@ -199,7 +199,7 @@ CONFIG_PCMCIA_PXA2XX=m
 CONFIG_NO_IDLE_HZ=y
 CONFIG_HZ=100
 CONFIG_AEABI=y
-# CONFIG_OABI_COMPAT is not set
+CONFIG_OABI_COMPAT=y
 # CONFIG_ARCH_DISCONTIGMEM_ENABLE is not set
 CONFIG_SELECT_MEMORY_MODEL=y
 CONFIG_FLATMEM_MANUAL=y
@@ -235,6 +235,8 @@ CONFIG_KEXEC=y
 #
 # At least one emulation must be selected
 #
+# CONFIG_FPE_NWFPE is not set
+# CONFIG_FPE_FASTFPE is not set
 
 #
 # Userspace binary formats
@@ -1161,10 +1163,7 @@ CONFIG_FONT_6x11=y
 #
 # Logo configuration
 #
-CONFIG_LOGO=y
-# CONFIG_LOGO_LINUX_MONO is not set
-# CONFIG_LOGO_LINUX_VGA16 is not set
-CONFIG_LOGO_LINUX_CLUT224=y
+# CONFIG_LOGO is not set
 
 #
 # Sound

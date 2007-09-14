@@ -1,0 +1,11 @@
+--- free42-orig/common/free42.h	2007-01-06 09:37:50.000000000 -0800
++++ free42gtk/common/free42.h	2007-09-03 22:39:14.000000000 -0700
+@@ -150,7 +150,7 @@
+  * provided by MathLib.
+  */
+ #ifndef PALMOS
+-extern "C" void sincos(double x, double *sinx, double *cosx) HELPERS_SECT;
++
+ #endif
+ //#define NO_SINCOS 1
+ 
