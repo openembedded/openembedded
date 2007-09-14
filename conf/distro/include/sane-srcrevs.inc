@@ -1,4 +1,4 @@
-#Ggenerated with 
+# Generated with 
 # bitbake -s | grep svnr  | awk '{print "SRCREV_pn-" $1 "=" $2}' | \
 # sed -e s:\+:\=:g -e s:svnr::g| awk -F "=" '{print $1 " ?=\" " $3}' | \
 # awk -F "-r" '{print $1"\""}'
@@ -72,7 +72,7 @@ SRCREV_pn-openmoko-stylus-demo-simple ?= "1818"
 SRCREV_pn-openmoko-taskmanager ?= "1663"
 SRCREV_pn-openmoko-tasks ?= "320"
 SRCREV_pn-openmoko-tasks2 ?= "320"
-SRCREV_pn-openmoko-terminal2 ?= "2964"
+SRCREV_pn-openmoko-terminal2 ?= "2972"
 SRCREV_pn-openmoko-theme-standard ?= "2370"
 SRCREV_pn-openmoko-theme-standard-qvga ?= "2370"
 SRCREV_pn-openmoko-theme-standard2 ?= "2964"
