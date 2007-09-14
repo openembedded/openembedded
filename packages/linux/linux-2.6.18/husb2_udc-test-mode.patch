@@ -1,0 +1,267 @@
+From hskinnemoen@atmel.com Wed Jan 17 10:05:04 2007
+Date: Wed, 17 Jan 2007 10:05:04 +0100
+From: Haavard Skinnemoen <hskinnemoen@atmel.com>
+Subject: [PATCH] Implement USB test modes for husb2_udc
+
+This patch implements the four test modes defined by the USB 2.0
+standard: Test_J, Test_K, Test_SE0_NAK and Test_Packet.
+
+This patch also contains a couple of more or less unrelated bug fixes
+and debug features:
+
+  * Add "state" file to debugfs for control endpoint. This allows us to
+    see which state the control logic got stuck in when things go bad.
+  * REMOTE_WAKEUP requests are ignored instead of stalling the device.
+  * Bad packet length causes warning message + stall instead of BUG().
+
+Signed-off-by: Haavard Skinnemoen <hskinnemoen@atmel.com>
+---
+ drivers/usb/gadget/husb2_udc.c |  135 +++++++++++++++++++++++++++++++++++++++--
+ drivers/usb/gadget/husb2_udc.h |    8 +-
+ 2 files changed, 135 insertions(+), 8 deletions(-)
+
+Index: linux-2.6.18-avr32/drivers/usb/gadget/husb2_udc.c
+===================================================================
+--- linux-2.6.18-avr32.orig/drivers/usb/gadget/husb2_udc.c	2007-01-16 15:01:42.000000000 +0100
++++ linux-2.6.18-avr32/drivers/usb/gadget/husb2_udc.c	2007-01-17 09:56:24.000000000 +0100
+@@ -254,9 +254,20 @@ static void husb2_ep_init_debugfs(struct
+ 		if (!ep->debugfs_dma_status)
+ 			goto err_dma_status;
+ 	}
++	if (ep_is_control(ep)) {
++		ep->debugfs_state
++			= debugfs_create_u32("state", 0400, ep_root,
++					     &ep->state);
++		if (!ep->debugfs_state)
++			goto err_state;
++	}
++
+ 
+ 	return;
+ 
++err_state:
++	if (ep_can_dma(ep))
++		debugfs_remove(ep->debugfs_dma_status);
+ err_dma_status:
+ 	debugfs_remove(ep->debugfs_queue);
+ err_queue:
+@@ -270,6 +281,7 @@ static void husb2_ep_cleanup_debugfs(str
+ {
+ 	debugfs_remove(ep->debugfs_queue);
+ 	debugfs_remove(ep->debugfs_dma_status);
++	debugfs_remove(ep->debugfs_state);
+ 	debugfs_remove(ep->debugfs_dir);
+ 	ep->debugfs_dma_status = NULL;
+ 	ep->debugfs_dir = NULL;
+@@ -336,7 +348,7 @@ static inline void husb2_cleanup_debugfs
+ }
+ #endif
+ 
+-static void copy_to_fifo(void __iomem *fifo, void *buf, int len)
++static void copy_to_fifo(void __iomem *fifo, const void *buf, int len)
+ {
+ 	unsigned long tmp;
+ 
+@@ -1302,6 +1314,90 @@ static inline void set_address(struct hu
+ 	husb2_writel(udc, CTRL, regval);
+ }
+ 
++static int do_test_mode(struct husb2_udc *udc)
++{
++	static const char test_packet_buffer[] = {
++		/* JKJKJKJK * 9 */
++		0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,
++		/* JJKKJJKK * 8 */
++		0xAA,0xAA,0xAA,0xAA,0xAA,0xAA,0xAA,0xAA,
++		/* JJKKJJKK * 8 */
++		0xEE,0xEE,0xEE,0xEE,0xEE,0xEE,0xEE,0xEE,
++		/* JJJJJJJKKKKKKK * 8 */
++		0xFE,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,
++		/* JJJJJJJK * 8 */
++		0x7F,0xBF,0xDF,0xEF,0xF7,0xFB,0xFD,
++		/* {JKKKKKKK * 10}, JK */
++		0xFC,0x7E,0xBF,0xDF,0xEF,0xF7,0xFB,0xFD,0x7E
++	};
++	struct husb2_ep *ep;
++	int test_mode;
++
++	test_mode = udc->test_mode;
++
++	/* Start from a clean slate */
++	reset_all_endpoints(udc);
++
++	switch (test_mode) {
++	case 0x0100:
++		/* Test_J */
++		husb2_writel(udc, TST, HUSB2_BIT(TST_J_MODE));
++		printk("udc: Entering Test_J mode...\n");
++		break;
++	case 0x0200:
++		/* Test_K */
++		husb2_writel(udc, TST, HUSB2_BIT(TST_K_MODE));
++		printk("udc: Entering Test_K mode...\n");
++		break;
++	case 0x0300:
++		/*
++		 * Test_SE0_NAK: Force high-speed mode and set up ep0
++		 * for Bulk IN transfers
++		 */
++		ep = &husb2_ep[0];
++		husb2_writel(udc, TST,
++			     HUSB2_BF(SPEED_CFG, HUSB2_SPEED_CFG_FORCE_HIGH));
++		husb2_ep_writel(ep, CFG,
++				HUSB2_BF(EPT_SIZE, HUSB2_EPT_SIZE_64)
++				| HUSB2_BIT(EPT_DIR)
++				| HUSB2_BF(EPT_TYPE, HUSB2_EPT_TYPE_BULK)
++				| HUSB2_BF(BK_NUMBER, 1));
++		if (!(husb2_ep_readl(ep, CFG) & HUSB2_BIT(EPT_MAPPED))) {
++			set_protocol_stall(udc, ep);
++			printk("udc: Test_SE0_NAK: ep0 not mapped\n");
++		} else {
++			husb2_ep_writel(ep, CTL_ENB, HUSB2_BIT(EPT_ENABLE));
++			printk("udc: Entering Test_SE0_NAK mode...\n");
++		}
++		break;
++	case 0x0400:
++		/* Test_Packet */
++		ep = &husb2_ep[0];
++		husb2_ep_writel(ep, CFG,
++				HUSB2_BF(EPT_SIZE, HUSB2_EPT_SIZE_64)
++				| HUSB2_BIT(EPT_DIR)
++				| HUSB2_BF(EPT_TYPE, HUSB2_EPT_TYPE_BULK)
++				| HUSB2_BF(BK_NUMBER, 1));
++		if (!(husb2_ep_readl(ep, CFG) & HUSB2_BIT(EPT_MAPPED))) {
++			set_protocol_stall(udc, ep);
++			printk("udc: Test_Packet: ep0 not mapped\n");
++		} else {
++			husb2_ep_writel(ep, CTL_ENB, HUSB2_BIT(EPT_ENABLE));
++			husb2_writel(udc, TST, HUSB2_BIT(TST_PKT_MODE));
++			copy_to_fifo(ep->fifo, test_packet_buffer,
++				     sizeof(test_packet_buffer));
++			husb2_ep_writel(ep, SET_STA, HUSB2_BIT(TX_PK_RDY));
++			printk("udc: Entering Test_Packet mode...\n");
++		}
++		break;
++	default:
++		printk("udc: Invalid test mode: 0x%04x\n", test_mode);
++		return -EINVAL;
++	}
++
++	return 0;
++}
++
+ static int handle_ep0_setup(struct husb2_udc *udc, struct husb2_ep *ep,
+ 			    struct usb_ctrlrequest *crq)
+ {
+@@ -1341,8 +1437,13 @@ static int handle_ep0_setup(struct husb2
+ 
+ 	case USB_REQ_CLEAR_FEATURE: {
+ 		if (crq->bRequestType == USB_RECIP_DEVICE) {
+-			/* We don't support TEST_MODE */
+-			goto stall;
++			if (crq->wValue
++			    == __constant_cpu_to_le16(USB_DEVICE_REMOTE_WAKEUP)) {
++				/* TODO: Handle REMOTE_WAKEUP */
++			} else {
++				/* CLEAR_FEATURE doesn't make sense for TEST_MODE */
++				goto stall;
++			}
+ 		} else if (crq->bRequestType == USB_RECIP_ENDPOINT) {
+ 			struct husb2_ep *target;
+ 
+@@ -1365,8 +1466,18 @@ static int handle_ep0_setup(struct husb2
+ 
+ 	case USB_REQ_SET_FEATURE: {
+ 		if (crq->bRequestType == USB_RECIP_DEVICE) {
+-			/* We don't support TEST_MODE */
+-			goto stall;
++			if (crq->wValue
++			    == __constant_cpu_to_le16(USB_DEVICE_TEST_MODE)) {
++				send_status(udc, ep);
++				ep->state = STATUS_STAGE_TEST;
++				udc->test_mode = le16_to_cpu(crq->wIndex);
++				return 0;
++			} else if (crq->wValue
++				   == __constant_cpu_to_le16(USB_DEVICE_REMOTE_WAKEUP)) {
++				/* TODO: Handle REMOTE_WAKEUP */
++			} else {
++				goto stall;
++			}
+ 		} else if (crq->bRequestType == USB_RECIP_ENDPOINT) {
+ 			struct husb2_ep *target;
+ 
+@@ -1476,6 +1587,12 @@ restart:
+ 					HUSB2_BIT(TX_COMPLETE));
+ 			ep->state = WAIT_FOR_SETUP;
+ 			break;
++		case STATUS_STAGE_TEST:
++			husb2_ep_writel(ep, CTL_DIS, HUSB2_BIT(TX_COMPLETE));
++			ep->state = WAIT_FOR_SETUP;
++			if (do_test_mode(udc))
++				set_protocol_stall(udc, ep);
++			break;
+ 		default:
+ 			printk(KERN_ERR
+ 			       "udc: %s: TXCOMP: Invalid endpoint state %d, "
+@@ -1550,7 +1667,13 @@ restart:
+ 
+ 		pkt_len = HUSB2_BFEXT(BYTE_COUNT, husb2_ep_readl(ep, STA));
+ 		DBG(DBG_HW, "Packet length: %u\n", pkt_len);
+-		BUG_ON(pkt_len != sizeof(crq));
++		if (pkt_len != sizeof(crq)) {
++			printk(KERN_WARNING
++			       "udc: Invalid packet length %u (expected %lu)\n",
++			       pkt_len, sizeof(crq));
++			set_protocol_stall(udc, ep);
++			return;
++		}
+ 
+ 		DBG(DBG_FIFO, "Copying ctrl request from 0x%p:\n", ep->fifo);
+ 		copy_from_fifo(crq.data, ep->fifo, sizeof(crq));
+Index: linux-2.6.18-avr32/drivers/usb/gadget/husb2_udc.h
+===================================================================
+--- linux-2.6.18-avr32.orig/drivers/usb/gadget/husb2_udc.h	2007-01-16 15:01:42.000000000 +0100
++++ linux-2.6.18-avr32/drivers/usb/gadget/husb2_udc.h	2007-01-17 09:54:03.000000000 +0100
+@@ -21,7 +21,7 @@
+ #define HUSB2_TST_CNT_A				0x00d4
+ #define HUSB2_TST_CNT_B				0x00d8
+ #define HUSB2_TST_MODE_REG			0x00dc
+-#define HUSB2_TST				0x00f0
++#define HUSB2_TST				0x00e0
+ 
+ /* USB endpoint register offsets */
+ #define HUSB2_EPT_CFG				0x0000
+@@ -113,7 +113,7 @@
+ #define HUSB2_TST_J_MODE_SIZE			1
+ #define HUSB2_TST_K_MODE_OFFSET			3
+ #define HUSB2_TST_K_MODE_SIZE			1
+-#define HUSB2_TST_PKT_MODE_OFFSE		4
++#define HUSB2_TST_PKT_MODE_OFFSET		4
+ #define HUSB2_TST_PKT_MODE_SIZE			1
+ #define HUSB2_OPMODE2_OFFSET			5
+ #define HUSB2_OPMODE2_SIZE			1
+@@ -304,6 +304,7 @@ enum husb2_ctrl_state {
+ 	STATUS_STAGE_IN,
+ 	STATUS_STAGE_OUT,
+ 	STATUS_STAGE_ADDR,
++	STATUS_STAGE_TEST,
+ };
+ /*
+   EP_STATE_IDLE,
+@@ -343,6 +344,7 @@ struct husb2_ep {
+ 	struct dentry				*debugfs_dir;
+ 	struct dentry				*debugfs_queue;
+ 	struct dentry				*debugfs_dma_status;
++	struct dentry				*debugfs_state;
+ #endif
+ };
+ #define HUSB2_EP_CAP_ISOC	0x0001
+@@ -381,6 +383,8 @@ struct husb2_udc {
+ 	struct clk *pclk;
+ 	struct clk *hclk;
+ 
++	int test_mode;
++
+ #ifdef CONFIG_DEBUG_FS
+ 	struct dentry *debugfs_root;
+ 	struct dentry *debugfs_regs;

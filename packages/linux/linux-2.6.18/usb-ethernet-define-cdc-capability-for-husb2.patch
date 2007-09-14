@@ -1,0 +1,27 @@
+From nobody Mon Sep 17 00:00:00 2001
+From: Håvard Skinnemoen <hskinnemoen@atmel.com>
+Date: Mon Feb 27 18:15:04 2006 +0100
+Subject: [PATCH] USB: Define CDC capability for HUSB2
+
+Define DEV_CONFIG_CDC when compiling for HUSB2DEV.
+
+---
+
+ drivers/usb/gadget/ether.c |    4 ++++
+ 1 file changed, 4 insertions(+)
+
+Index: linux-2.6.18-avr32/drivers/usb/gadget/ether.c
+===================================================================
+--- linux-2.6.18-avr32.orig/drivers/usb/gadget/ether.c	2006-09-12 10:14:19.000000000 +0200
++++ linux-2.6.18-avr32/drivers/usb/gadget/ether.c	2006-09-12 10:14:40.000000000 +0200
+@@ -266,6 +266,10 @@ MODULE_PARM_DESC(host_addr, "Host Ethern
+ #define DEV_CONFIG_CDC
+ #endif
+ 
++#ifdef CONFIG_USB_GADGET_HUSB2DEV
++#define DEV_CONFIG_CDC
++#endif
++
+ 
+ /* For CDC-incapable hardware, choose the simple cdc subset.
+  * Anything that talks bulk (without notable bugs) can do this.

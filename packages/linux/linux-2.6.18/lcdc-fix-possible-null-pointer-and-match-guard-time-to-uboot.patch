@@ -1,0 +1,38 @@
+Index: linux-2.6.18/drivers/video/sidsafb.c
+===================================================================
+--- linux-2.6.18.orig/drivers/video/sidsafb.c	2007-01-11 13:35:02.000000000 +0100
++++ linux-2.6.18/drivers/video/sidsafb.c	2007-01-11 14:22:56.000000000 +0100
+@@ -661,6 +661,7 @@
+ 	struct fb_info *info;
+ 	struct sidsafb_info *sinfo;
+ 	const struct resource *mmio_resource;
++	int preinitialized = 0;
+ 	int ret;
+ 
+ 	pr_debug("sidsafb_probe BEGIN\n");
+@@ -681,7 +682,7 @@
+ 	sinfo = info->par;
+ 	sinfo->info = info;
+ 	sinfo->pdev = pdev;
+-	sinfo->guard_time = 1;
++	sinfo->guard_time = 2;
+ 
+ 	spin_lock_init(&sinfo->lock);
+ 	sidsafb_set_fbinfo(sinfo);
+@@ -711,6 +712,7 @@
+ 		info->fix.smem_len = fb_data->fbmem_size;
+ 		info->screen_base = ioremap(info->fix.smem_start,
+ 					    info->fix.smem_len);
++		preinitialized = 1;
+ 	} else {
+ 		dma_addr_t paddr;
+ 
+@@ -767,7 +769,7 @@
+ 
+ 	/* Only clear framebuffer if fbmem_start was not declared, assume the
+ 	 * user have filled the framebuffer before the kernel was started. */
+-	if (!fb_data->fbmem_start)
++	if (!preinitialized)
+ 		memset_io(info->screen_base, 0, info->fix.smem_len);
+ 	info->var.activate |= FB_ACTIVATE_FORCE | FB_ACTIVATE_NOW;
+ 	ret = fb_set_var(info, &info->var);
