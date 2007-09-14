@@ -5,6 +5,11 @@ S = "${WORKDIR}/gtk+-${PV}"
 FILESPATH = "${FILE_DIRNAME}/gdk-pixbuf-csource:${FILE_DIRNAME}/gtk+-${PV}:${FILE_DIRNAME}/files"
 SRC_URI += "file://reduce-dependencies.patch;patch=1"
 
+#clear recommends for uclibc builds
+RRECOMMENDS = " "
+RRECOMMENDS_${PN}_linux = "  "
+RRECOMMENDS_${PN}_linux-gnueabi = " "
+
 EXTRA_OECONF = "\
   --without-x \
   --with-gdktarget=linux-fb \
