@@ -1,8 +1,10 @@
 require gcc_${PV}.bb
 
+PR = "r1"
+
 FILESPATH = "${@base_set_filespath([ '${FILE_DIRNAME}/gcc-4.1.2', '${FILE_DIRNAME}/gcc', '${FILE_DIRNAME}/files', '${FILE_DIRNAME}' ], d)}"
 
-SRC_URI = "http://www.angstrom-distribution.org/unstable/sources/gcc-4.1.2-atmel.1.0.0.tar.gz \
+SRC_URI = "http://www.angstrom-distribution.org/unstable/sources/gcc-4.1.2-atmel.1.1.0.tar.gz \
 #           file://100-uclibc-conf.patch;patch=1 \
 #           file://200-uclibc-locale.patch;patch=1 \
 #           file://300-libstdc++-pic.patch;patch=1 \
