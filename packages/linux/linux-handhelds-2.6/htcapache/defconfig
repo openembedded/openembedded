@@ -1,7 +1,7 @@
 #
 # Automatically generated make config: don't edit
 # Linux kernel version: 2.6.21-hh16
-# Sun Sep 16 01:44:03 2007
+# Sun Sep 16 02:15:13 2007
 #
 CONFIG_ARM=y
 CONFIG_SYS_SUPPORTS_APM_EMULATION=y
@@ -633,7 +633,7 @@ CONFIG_TUN=m
 # Wireless LAN (non-hamradio)
 #
 CONFIG_NET_RADIO=y
-# CONFIG_NET_WIRELESS_RTNETLINK is not set
+CONFIG_NET_WIRELESS_RTNETLINK=y
 
 #
 # Obsolete Wireless cards support (pre-802.11)
