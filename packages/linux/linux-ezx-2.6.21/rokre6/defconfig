@@ -1,7 +1,7 @@
 #
 # Automatically generated make config: don't edit
 # Linux kernel version: 2.6.21.4
-# Sun Sep  9 16:52:39 2007
+# Sat Sep 15 18:27:06 2007
 #
 CONFIG_ARM=y
 CONFIG_SYS_SUPPORTS_APM_EMULATION=y
@@ -590,9 +590,11 @@ CONFIG_MTD_PHYSMAP_BANKWIDTH=2
 # CONFIG_MTD_ARM_INTEGRATOR is not set
 # CONFIG_MTD_SHARP_SL is not set
 CONFIG_MTD_EZX=y
-CONFIG_MTD_EZX_A780=y
+# CONFIG_MTD_EZX_A780 is not set
 # CONFIG_MTD_EZX_A780_ALTERNATE is not set
+# CONFIG_MTD_EZX_A1200 is not set
 # CONFIG_MTD_EZX_E2 is not set
+CONFIG_MTD_EZX_E6=y
 # CONFIG_MTD_PLATRAM is not set
 
 #
@@ -851,8 +853,8 @@ CONFIG_TS0710_MUX_USB=y
 #
 # I2C support
 #
-CONFIG_I2C=m
-CONFIG_I2C_CHARDEV=m
+CONFIG_I2C=y
+CONFIG_I2C_CHARDEV=y
 
 #
 # I2C Algorithms
@@ -864,8 +866,8 @@ CONFIG_I2C_CHARDEV=m
 #
 # I2C Hardware Bus support
 #
-CONFIG_I2C_PXA=m
-# CONFIG_I2C_PXA_SLAVE is not set
+CONFIG_I2C_PXA=y
+CONFIG_I2C_PXA_SLAVE=y
 # CONFIG_I2C_OCORES is not set
 # CONFIG_I2C_PARPORT_LIGHT is not set
 # CONFIG_I2C_STUB is not set
