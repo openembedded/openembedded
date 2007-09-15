@@ -147,8 +147,11 @@ do_prep_locale_tree() {
 		gunzip $i
 	done
 	ls ${D}/lib/* | xargs -iBLAH cp -a BLAH $treedir/lib
-	if [ -f ${CROSS_DIR}/${TARGET_SYS}/lib/libgcc_s.* ]; then
-		cp -a ${CROSS_DIR}/${TARGET_SYS}/lib/libgcc_s.* $treedir/lib
+	if [ -f ${CROSS_DIR}/${TARGET_SYS}/lib/libgcc_s.so ]; then
+		cp -a ${CROSS_DIR}/${TARGET_SYS}/lib/libgcc_s.so $treedir/lib
+	fi
+	if [ -f ${CROSS_DIR}/${TARGET_SYS}/lib/libgcc_s.so.* ]; then
+		cp -a ${CROSS_DIR}/${TARGET_SYS}/lib/libgcc_s.so.* $treedir/lib
 	fi
 	install -m 0755 ${D}${bindir}/localedef $treedir/bin
 }
