@@ -69,7 +69,7 @@ RDEPENDS_task-openmoko-ui = "\
   \
   openmoko-session2 \
   openmoko-sound-system \
-  openmoko-sound-theme-standard \
+  openmoko-sound-theme-standard2 \
   neod \
   gpe-scap \
 "
