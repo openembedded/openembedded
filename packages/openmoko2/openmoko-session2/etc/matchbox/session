@@ -1,8 +1,6 @@
 #!/bin/sh
 SHOWCURSOR="no"
 
-export GTK_MODULES="libgtkstylus.so" 
-
 openmoko-today &
 openmoko-dialer &
 
