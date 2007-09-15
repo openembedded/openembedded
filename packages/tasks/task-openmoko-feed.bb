@@ -24,9 +24,13 @@ RDEPENDS_task-openmoko-feed = "\
   openssh openssh-scp openssh-ssh openssh-sshd openssh-sftp openssh-misc \
   python python-pygtk python-pyserial \
   ruby \
+  libsdl-x11 libsdl-mixer libsdl-net libsdl-ttf \
   synergy \
   tzdata \
+  timezones \
   tor \
   vnc \
+  wxwidgets \
+  x11vnc \
 "
 

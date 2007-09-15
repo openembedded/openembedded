@@ -2,7 +2,7 @@ DESCRIPTION = "OpenMoko: Tasks for the OpenMoko Linux Distribution"
 SECTION = "openmoko/base"
 LICENSE = "MIT"
 PROVIDES = "task-openmoko-everything"
-PR = "r62"
+PR = "r65"
 
 inherit task
 
@@ -52,25 +52,26 @@ RDEPENDS_task-openmoko-ui = "\
   pango-module-basic-x \
   pango-module-basic-fc \
   gtk+ \
-  libgtkstylus \
-  libgtkinput \
   matchbox-common \
   matchbox-wm \
   xserver-kdrive-fbdev \
   xserver-kdrive-common \
   xserver-nodm-init \
-#  x11-c-locale \
   ttf-bitstream-vera \
   xauth \
   xhost \
   xset \
   xrandr \
+  \
   settings-daemon \
+  notification-daemon \
+  neod \
+  libnotify \
   \
   openmoko-session2 \
   openmoko-sound-system \
   openmoko-sound-theme-standard \
-  neod \
+  \
   gpe-scap \
 "
 
@@ -91,24 +92,24 @@ RDEPENDS_task-openmoko-ui += "${THEMES}"
 #
 # task-openmoko-base
 #
-DESCRIPTION_task-openmoko-base = "OpenMoko: Main-Menu Launcher, Top Panel, and Footer"
+DESCRIPTION_task-openmoko-base = "OpenMoko: Top Panel, Application Launcher, Application Manager"
 RDEPENDS_task-openmoko-base = "\
   matchbox-panel-2 \
   matchbox-panel-2-applets \
-  matchbox-applet-inputmanager \
-#  openmoko-appmanager \
   matchbox-keyboard-inputmethod \
   matchbox-keyboard-im \
   matchbox-keyboard-applet \
   matchbox-stroke \
   openmoko-terminal2 \
-  openmoko-keyboard \
-#  openmoko-panel-mainmenu \
+#  openmoko-keyboard \
   openmoko-panel-battery \
   openmoko-panel-bt \
   openmoko-panel-clock \
   openmoko-panel-usb \
   openmoko-panel-gps \
+  \
+  openmoko-today2 \
+#  openmoko-appmanager \
 "
 
 #
@@ -126,7 +127,7 @@ RDEPENDS_task-openmoko-phone = "\
 #
 # task-openmoko-pim
 #
-DESCRIPTION_task-openmoko-pim = "OpenMoko: PIM Applications"
+DESCRIPTION_task-openmoko-pim = "OpenMoko: Personal Information Management Suite"
 RDEPENDS_task-openmoko-pim = "\
   eds-dbus \
   openmoko-calculator2 \
@@ -134,7 +135,7 @@ RDEPENDS_task-openmoko-pim = "\
   openmoko-dates2 \
   openmoko-feedreader2 \
   openmoko-tasks2 \
-  openmoko-today2 \
+  openmoko-mediaplayer2 \
 #  openmoko-messages \
 "
 
