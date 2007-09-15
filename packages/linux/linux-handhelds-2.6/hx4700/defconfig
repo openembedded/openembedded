@@ -1,7 +1,7 @@
 #
 # Automatically generated make config: don't edit
 # Linux kernel version: 2.6.21-hh16
-# Sat Sep 15 20:52:22 2007
+# Sun Sep 16 01:28:26 2007
 #
 CONFIG_ARM=y
 CONFIG_SYS_SUPPORTS_APM_EMULATION=y
@@ -1244,8 +1244,8 @@ CONFIG_USB_SL811_CS=m
 #
 # USB Device Class drivers
 #
-# CONFIG_USB_ACM is not set
-# CONFIG_USB_PRINTER is not set
+CONFIG_USB_ACM=m
+CONFIG_USB_PRINTER=m
 
 #
 # NOTE: USB_STORAGE enables SCSI, and 'SCSI disk support'
