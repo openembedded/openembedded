@@ -4,7 +4,7 @@ AUTHOR = "Harald Welte and the OpenEZX Team <openezx-devel@lists.openezx.org>"
 HOMEPAGE = "http://www.openezx.org"
 LICENSE = "GPL"
 EZX = "ezxdev"
-PR = "${EZX}-r12"
+PR = "${EZX}-r13"
 
 inherit kernel
 
@@ -63,6 +63,7 @@ SRC_URI = " \
         file://patches/asoc-fix-loopback.patch;patch=1 \
         file://patches/ezx-asoc.patch;patch=1 \     
         file://patches/mtdfix.patch;patch=1 \
+        file://patches/lcd_18BPP_support.diff;patch=1 \
         file://defconfig \
         \
 	"
