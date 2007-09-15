@@ -1,7 +1,7 @@
 #
 # Automatically generated make config: don't edit
 # Linux kernel version: 2.6.21-hh16
-# Sun Sep 16 01:28:26 2007
+# Sun Sep 16 01:44:02 2007
 #
 CONFIG_ARM=y
 CONFIG_SYS_SUPPORTS_APM_EMULATION=y
@@ -721,7 +721,7 @@ CONFIG_NETDEVICES=y
 # CONFIG_DUMMY is not set
 # CONFIG_BONDING is not set
 # CONFIG_EQUALIZER is not set
-# CONFIG_TUN is not set
+CONFIG_TUN=m
 
 #
 # PHY device support
@@ -811,7 +811,7 @@ CONFIG_PPP_ASYNC=m
 CONFIG_PPP_DEFLATE=m
 CONFIG_PPP_BSDCOMP=m
 CONFIG_PPP_MPPE=m
-# CONFIG_PPPOE is not set
+CONFIG_PPPOE=m
 # CONFIG_SLIP is not set
 CONFIG_SLHC=m
 # CONFIG_SHAPER is not set
