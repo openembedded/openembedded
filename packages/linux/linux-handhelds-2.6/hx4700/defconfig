@@ -1,7 +1,7 @@
 #
 # Automatically generated make config: don't edit
 # Linux kernel version: 2.6.21-hh16
-# Sun Sep 16 01:57:51 2007
+# Sun Sep 16 02:15:12 2007
 #
 CONFIG_ARM=y
 CONFIG_SYS_SUPPORTS_APM_EMULATION=y
@@ -727,12 +727,16 @@ CONFIG_TUN=m
 #
 # PHY device support
 #
+# CONFIG_PHYLIB is not set
 
 #
 # Ethernet (10 or 100Mbit)
 #
-# CONFIG_NET_ETHERNET is not set
+CONFIG_NET_ETHERNET=y
 CONFIG_MII=m
+# CONFIG_SMC91X is not set
+# CONFIG_DM9000 is not set
+# CONFIG_SMC911X is not set
 
 #
 # Ethernet (1000 Mbit)
@@ -750,7 +754,7 @@ CONFIG_MII=m
 # Wireless LAN (non-hamradio)
 #
 CONFIG_NET_RADIO=y
-# CONFIG_NET_WIRELESS_RTNETLINK is not set
+CONFIG_NET_WIRELESS_RTNETLINK=y
 
 #
 # Obsolete Wireless cards support (pre-802.11)
@@ -1300,6 +1304,7 @@ CONFIG_USB_PEGASUS=m
 CONFIG_USB_RTL8150=m
 CONFIG_USB_USBNET_MII=m
 CONFIG_USB_USBNET=m
+CONFIG_USB_NET_AX8817X=m
 CONFIG_USB_NET_CDCETHER=m
 CONFIG_USB_NET_DM9601=m
 CONFIG_USB_NET_GL620A=m
