@@ -4,7 +4,7 @@ AUTHOR = "Harald Welte and the OpenEZX Team <openezx-devel@lists.openezx.org>"
 HOMEPAGE = "http://www.openezx.org"
 LICENSE = "GPL"
 EZX = "ezxdev"
-PR = "${EZX}-r14"
+PR = "${EZX}-r15"
 
 inherit kernel
 
@@ -105,7 +105,7 @@ CMDLINE = "${CMDLINE_CON} ${CMDLINE_ROOT} ${CMDLINE_IP} ${CMDLINE_ROTATE} ${CMDL
 do_compile_append() {
 	size=`ls -l arch/${ARCH}/boot/${KERNEL_IMAGETYPE} | awk '{ print $5}'`
 	if [ $size -ge 1294336 ]; then
-		rm arch/${ARCH}/boot/${KERNEL_IMAGETYPE}
+		#rm arch/${ARCH}/boot/${KERNEL_IMAGETYPE}
 		echo "Size is $size"
 		echo  "This kernel is too big for your EZX Phone. Please reduce the size of the kernel by making more of it modular."
 	fi
