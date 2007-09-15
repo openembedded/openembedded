@@ -4,67 +4,65 @@ HOMEPAGE = "http://www.openezx.org"
 EZX = "ezxdev"
 PR = "${EZX}-r15"
 
-
 require linux.inc
 
 SRC_URI = " \
-	${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-${PV}.tar.bz2 \
-	file://logo_linux_clut224.ppm \
-        \
-	file://patches/patch-2.6.21.4;patch=1 \
-	file://patches/ezx-core.patch;patch=1 \
-	file://patches/ezx-bp.patch;patch=1 \
-	file://patches/ezx-pm.patch;patch=1 \
-	file://patches/ezx-pcap.patch;patch=1 \
-        file://patches/a780-pcap.patch;patch=1 \
-        file://patches/e680-pcap.patch;patch=1 \
-        file://patches/a1200-pcap.patch;patch=1 \
-	file://patches/e6-pcap.patch;patch=1 \
-	file://patches/a780-mci.patch;patch=1 \
-	file://patches/e680-mci.patch;patch=1 \
-	file://patches/a1200-mci.patch;patch=1 \
-	file://patches/e6-mci.patch;patch=1 \
-	file://patches/pxa27x-udc-support.2.patch;patch=1 \
-	file://patches/ezx-emu.patch;patch=1 \
-        file://patches/a780-emu.patch;patch=1 \
-        file://patches/e680-emu.patch;patch=1 \
-	file://patches/ezx-mtd-map.patch;patch=1 \
-	file://patches/ezx-serial-bug-workaround.patch;patch=1 \
-	file://patches/pxa-kbd.patch;patch=1 \
-	file://patches/a780-kbd.patch;patch=1 \
-	file://patches/e680-kbd.patch;patch=1 \
-	file://patches/pcap-ts.patch;patch=1 \
-	file://patches/a780-ts.patch;patch=1 \
-	file://patches/e680-ts.patch;patch=1 \
-	file://patches/a1200-ts.patch;patch=1 \
-	file://patches/e6-ts.patch;patch=1 \
-        file://patches/ezx-eoc.patch;patch=1 \
-        file://patches/a1200-eoc.patch;patch=1 \
-	file://patches/e6-eoc.patch;patch=1 \
-	file://patches/ezx-backlight.patch;patch=1 \
-	file://patches/a780-flip.patch;patch=1 \
-	file://patches/e680-locksw.patch;patch=1 \
-	file://patches/a780-leds.patch;patch=1 \
-	file://patches/e680-leds.patch;patch=1 \
-	file://patches/a780-vibrator.patch;patch=1 \
-	file://patches/mux_cli.patch;patch=1 \
-	file://patches/mux-fix.patch;patch=1 \
-	file://patches/mux-fix-init-errorpath.patch;patch=1 \
-	file://patches/mux-remove-flipbuffers.patch;patch=1 \
-	file://patches/mux-remove-get_halted_bit.patch;patch=1 \
-	file://patches/mux-remove-usbh_finished_resume.patch;patch=1 \
-	file://patches/mux-fix-makefile.patch;patch=1 \
-	file://patches/mux-fix-tty-driver.patch;patch=1 \
-	file://patches/mux-linux-2.6.21-fix.patch;patch=1 \
-        file://patches/asoc-pxa-ssp.patch;patch=1 \
-        file://patches/asoc-fix-loopback.patch;patch=1 \
-        file://patches/ezx-asoc.patch;patch=1 \     
-        file://patches/mtdfix.patch;patch=1 \
-        file://patches/lcd_18BPP_support.diff;patch=1 \
-        file://defconfig \
-        \
-	"
-
+    ${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-${PV}.tar.bz2 \
+    file://logo_linux_clut224.ppm \
+    \
+    file://patches/patch-2.6.21.4;patch=1 \
+    file://patches/ezx-core.patch;patch=1 \
+    file://patches/ezx-bp.patch;patch=1 \
+    file://patches/ezx-pm.patch;patch=1 \
+    file://patches/ezx-pcap.patch;patch=1 \
+    file://patches/a780-pcap.patch;patch=1 \
+    file://patches/e680-pcap.patch;patch=1 \
+    file://patches/a1200-pcap.patch;patch=1 \
+    file://patches/e6-pcap.patch;patch=1 \
+    file://patches/a780-mci.patch;patch=1 \
+    file://patches/e680-mci.patch;patch=1 \
+    file://patches/a1200-mci.patch;patch=1 \
+    file://patches/e6-mci.patch;patch=1 \
+    file://patches/pxa27x-udc-support.2.patch;patch=1 \
+    file://patches/ezx-emu.patch;patch=1 \
+    file://patches/a780-emu.patch;patch=1 \
+    file://patches/e680-emu.patch;patch=1 \
+    file://patches/ezx-mtd-map.patch;patch=1 \
+    file://patches/ezx-serial-bug-workaround.patch;patch=1 \
+    file://patches/pxa-kbd.patch;patch=1 \
+    file://patches/a780-kbd.patch;patch=1 \
+    file://patches/e680-kbd.patch;patch=1 \
+    file://patches/pcap-ts.patch;patch=1 \
+    file://patches/a780-ts.patch;patch=1 \
+    file://patches/e680-ts.patch;patch=1 \
+    file://patches/a1200-ts.patch;patch=1 \
+    file://patches/e6-ts.patch;patch=1 \
+    file://patches/ezx-eoc.patch;patch=1 \
+    file://patches/a1200-eoc.patch;patch=1 \
+    file://patches/e6-eoc.patch;patch=1 \
+    file://patches/ezx-backlight.patch;patch=1 \
+    file://patches/a780-flip.patch;patch=1 \
+    file://patches/e680-locksw.patch;patch=1 \
+    file://patches/a780-leds.patch;patch=1 \
+    file://patches/e680-leds.patch;patch=1 \
+    file://patches/a780-vibrator.patch;patch=1 \
+    file://patches/mux_cli.patch;patch=1 \
+    file://patches/mux-fix.patch;patch=1 \
+    file://patches/mux-fix-init-errorpath.patch;patch=1 \
+    file://patches/mux-remove-flipbuffers.patch;patch=1 \
+    file://patches/mux-remove-get_halted_bit.patch;patch=1 \
+    file://patches/mux-remove-usbh_finished_resume.patch;patch=1 \
+    file://patches/mux-fix-makefile.patch;patch=1 \
+    file://patches/mux-fix-tty-driver.patch;patch=1 \
+    file://patches/mux-linux-2.6.21-fix.patch;patch=1 \
+    file://patches/asoc-pxa-ssp.patch;patch=1 \
+    file://patches/asoc-fix-loopback.patch;patch=1 \
+    file://patches/ezx-asoc.patch;patch=1 \     
+    file://patches/mtdfix.patch;patch=1 \
+    file://patches/lcd_18BPP_support.diff;patch=1 \
+    file://defconfig \
+    \
+    "
 S = "${WORKDIR}/linux-${PV}"
 
 
