@@ -24,3 +24,5 @@ load-module module-x11-bell sample=x11-bell
 # Load samples
 load-sample startup /usr/share/openmoko/sounds/startup_openmoko.wav
 load-sample touchscreen /usr/share/openmoko/sounds/touchscreen_click.wav
+load-sample ringtone /usr/share/openmoko/sounds/ringtone_classy.wav
+
