@@ -1,7 +1,7 @@
 #
 # Automatically generated make config: don't edit
 # Linux kernel version: 2.6.21-hh16
-# Sun Sep 16 02:15:12 2007
+# Sun Sep 16 02:28:23 2007
 #
 CONFIG_ARM=y
 CONFIG_SYS_SUPPORTS_APM_EMULATION=y
@@ -771,13 +771,16 @@ CONFIG_NET_WIRELESS_RTNETLINK=y
 #
 # Wireless 802.11b ISA/PCI cards support
 #
-# CONFIG_HERMES is not set
-# CONFIG_ATMEL is not set
+CONFIG_HERMES=m
+CONFIG_ATMEL=m
 
 #
 # Wireless 802.11b Pcmcia/Cardbus cards support
 #
+CONFIG_PCMCIA_HERMES=m
+CONFIG_PCMCIA_SPECTRUM=m
 CONFIG_AIRO_CS=m
+CONFIG_PCMCIA_ATMEL=m
 CONFIG_PCMCIA_WL3501=m
 CONFIG_USB_ZD1201=m
 CONFIG_HOSTAP=m
