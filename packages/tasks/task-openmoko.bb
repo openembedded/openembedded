@@ -2,7 +2,7 @@ DESCRIPTION = "OpenMoko: Tasks for the OpenMoko Linux Distribution"
 SECTION = "openmoko/base"
 LICENSE = "MIT"
 PROVIDES = "task-openmoko-everything"
-PR = "r63"
+PR = "r64"
 
 inherit task
 
@@ -68,22 +68,22 @@ RDEPENDS_task-openmoko-ui = "\
   settings-daemon \
   \
   openmoko-session2 \
-  openmoko-sound-system \
+  openmoko-sound-system2 \
   openmoko-sound-theme-standard2 \
   neod \
   gpe-scap \
 "
 
-# handle theming. FIXME: properly use machine database in a smart way,
+# Handle theming. FIXME: properly use machine database in a smart way,
 # taking into account not only size but also PPI! Ultimately this might
 # need recomputing some theme files and images on-the-fly :/ SVG and logical
 # theme description anyone? Or simply Edje to the rescue! :D
-THEMES        = "openmoko-icon-theme-standard2 openmoko-theme-standard2"
-THEMES_a780   = "openmoko-icon-theme-standard2-qvga openmoko-theme-standard2-qvga"
-THEMES_e680   = "openmoko-icon-theme-standard2-qvga openmoko-theme-standard2-qvga"
-THEMES_a1200  = "openmoko-icon-theme-standard2-qvga openmoko-theme-standard2-qvga"
-THEMES_rokre2 = "openmoko-icon-theme-standard2-qvga openmoko-theme-standard2-qvga"
-THEMES_rokre6 = "openmoko-icon-theme-standard2-qvga openmoko-theme-standard2-qvga"
+THEMES          = "openmoko-icon-theme-standard2      openmoko-theme-standard2"
+THEMES_a780     = "openmoko-icon-theme-standard2-qvga openmoko-theme-standard2-qvga"
+THEMES_e680     = "openmoko-icon-theme-standard2-qvga openmoko-theme-standard2-qvga"
+THEMES_a1200    = "openmoko-icon-theme-standard2-qvga openmoko-theme-standard2-qvga"
+THEMES_rokre2   = "openmoko-icon-theme-standard2-qvga openmoko-theme-standard2-qvga"
+THEMES_rokre6   = "openmoko-icon-theme-standard2-qvga openmoko-theme-standard2-qvga"
 THEMES_magician = "openmoko-icon-theme-standard2-qvga openmoko-theme-standard2-qvga"
 
 RDEPENDS_task-openmoko-ui += "${THEMES}"
