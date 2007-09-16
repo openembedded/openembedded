@@ -1,7 +1,7 @@
 DESCRIPTION = "Standard sound theme for the OpenMoko distribution"
 SECTION = "openmoko/base"
 PV = "0.1+svnr${SRCREV}"
-PR = "r0"
+PR = "r1"
 
 inherit openmoko-base autotools
 
@@ -14,7 +14,7 @@ do_install() {
         for i in *.mp3; do
                 cp -fpPR ${S}/$i ${D}${datadir}/openmoko/sounds/
         done
-        for i in touchscreen_click.wav notify_doorbell.wav startup_openmoko.wav; do
+        for i in touchscreen_click.wav ringtone_classy.wav notify_doorbell.wav startup_openmoko.wav; do
                 cp -f ${S}/$i ${D}${datadir}/openmoko/sounds/
         done
 }

@@ -5,7 +5,7 @@ LICENSE = "MIT"
 DEPENDS = "curl directfb eet evas tslib"
 # optional
 # DEPENDS += "openssl virtual/libiconv"
-PV = "0.9.9+cvs${SRCDATE}"
+PV = "0.9.9.041+cvs${SRCDATE}"
 
 inherit efl_library
 

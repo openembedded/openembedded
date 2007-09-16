@@ -1,6 +1,7 @@
 DESCRIPTION = "vte is a virtual terminal emulator"
 LICENSE = "LGPL"
-PR = "r2"
+RDEPENDS = "termcap"
+PR = "r3"
 
 inherit gnome
 

@@ -1,8 +1,8 @@
 Index: linux-2.6.21/arch/arm/mach-pxa/ezx-eoc.c
 ===================================================================
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ linux-2.6.21/arch/arm/mach-pxa/ezx-eoc.c	2007-09-09 13:33:19.000000000 -0300
-@@ -0,0 +1,270 @@
++++ linux-2.6.21/arch/arm/mach-pxa/ezx-eoc.c	2007-09-11 20:14:33.000000000 -0300
+@@ -0,0 +1,267 @@
 +/*
 + *  EZX EOC Driver for Motorola EZX phones
 + *
@@ -182,11 +182,8 @@ Index: linux-2.6.21/arch/arm/mach-pxa/ezx-eoc.c
 +
 +	eoc_i2c_client = new_client;
 +
-+	if (pdata && pdata->init) {
++	if (pdata && pdata->init)
 +		pdata->init();
-+		}
-+	else
-+		return -EINVAL;
 +
 +	eoc_switch_to_default();
 +
@@ -276,7 +273,7 @@ Index: linux-2.6.21/arch/arm/mach-pxa/ezx-eoc.c
 Index: linux-2.6.21/arch/arm/mach-pxa/ezx-eoc.h
 ===================================================================
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ linux-2.6.21/arch/arm/mach-pxa/ezx-eoc.h	2007-09-07 22:15:52.000000000 -0300
++++ linux-2.6.21/arch/arm/mach-pxa/ezx-eoc.h	2007-09-09 21:46:27.000000000 -0300
 @@ -0,0 +1,33 @@
 +/*
 + *  linux/arch/arm/mach-pxa/ezx-eoc.h
@@ -313,15 +310,15 @@ Index: linux-2.6.21/arch/arm/mach-pxa/ezx-eoc.h
 +#endif /* __EZX_EOC_H__ */
 Index: linux-2.6.21/arch/arm/mach-pxa/Kconfig
 ===================================================================
---- linux-2.6.21.orig/arch/arm/mach-pxa/Kconfig	2007-09-07 22:15:52.000000000 -0300
-+++ linux-2.6.21/arch/arm/mach-pxa/Kconfig	2007-09-07 22:15:52.000000000 -0300
+--- linux-2.6.21.orig/arch/arm/mach-pxa/Kconfig	2007-09-09 21:46:27.000000000 -0300
++++ linux-2.6.21/arch/arm/mach-pxa/Kconfig	2007-09-09 21:46:27.000000000 -0300
 @@ -108,6 +108,12 @@
  config EZX_PCAP
  	bool "PCAP Support"
  
 +config EZX_EOC
 +	tristate "EOC i2c driver of Motorola EZX phones"
-+	depends on I2C && EXPERIMENTAL && PXA_EZX_A1200
++	depends on I2C && EXPERIMENTAL
 +	help
 +	  EOC i2c driver of Motorola EZX phones
 +
@@ -330,8 +327,8 @@ Index: linux-2.6.21/arch/arm/mach-pxa/Kconfig
  	depends on EZX_PCAP
 Index: linux-2.6.21/arch/arm/mach-pxa/Makefile
 ===================================================================
---- linux-2.6.21.orig/arch/arm/mach-pxa/Makefile	2007-09-07 22:15:52.000000000 -0300
-+++ linux-2.6.21/arch/arm/mach-pxa/Makefile	2007-09-07 22:15:52.000000000 -0300
+--- linux-2.6.21.orig/arch/arm/mach-pxa/Makefile	2007-09-09 21:46:27.000000000 -0300
++++ linux-2.6.21/arch/arm/mach-pxa/Makefile	2007-09-09 21:46:27.000000000 -0300
 @@ -27,6 +27,7 @@
  obj-$(CONFIG_EZX_BP)		+= ezx-bp.o
  obj-$(CONFIG_EZX_PCAP)		+= ezx-pcap.o

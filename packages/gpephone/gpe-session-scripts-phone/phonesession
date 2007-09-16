@@ -47,8 +47,6 @@ gpe-phonepanel&
 gpe-applauncher&
 matchbox-window-manager -use_titlebar no&
 
-# start device support daemon
-machined
 
 # Start E-Sound Server
 esd -nobeeps -as 2&
@@ -65,5 +63,8 @@ gsmMux -d -p /dev/ttyS0 -m cms92 -f 128 -b 115200 -c /dev/ptmx /dev/ptmx &
 #save session bus address to a file
 echo $DBUS_SESSION_BUS_ADDRESS > /tmp/dbusaddress
 
-# Start PhoneServer - do not stop, it keeps the session running
-exec phoneserver
+# Start PhoneServer
+phoneserver&
+
+# start device support daemon
+exec machined -n

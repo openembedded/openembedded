@@ -5,7 +5,7 @@ your CPU or graphics hardware are too slow."
 LICENSE = "MIT"
 # can also depend on valgrind (?)
 DEPENDS = "libsdl-x11 directfb eet freetype jpeg virtual/libx11 libxext"
-PV = "0.9.9+cvs${SRCDATE}"
+PV = "0.9.9.041+cvs${SRCDATE}"
 
 inherit efl_library
 
