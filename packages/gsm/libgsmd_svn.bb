@@ -4,7 +4,7 @@ LICENSE = "GPL LGPL"
 SECTION = "libs/gsm"
 PROVIDES += "gsmd"
 PV = "0.1+svnr${SRCREV}"
-PR = "r26"
+PR = "r27"
 
 SRC_URI = "svn://svn.openmoko.org/trunk/src/target;module=gsm;proto=http \
            file://gsmd \
@@ -12,6 +12,9 @@ SRC_URI = "svn://svn.openmoko.org/trunk/src/target;module=gsm;proto=http \
 S = "${WORKDIR}/gsm"
 
 inherit autotools pkgconfig update-rc.d
+# handle update-rc.d RDEPENDS manually, we don't need it on
+# anything but gsmd
+RDEPENDS_append = ""
 
 INITSCRIPT_NAME = "gsmd"
 INITSCRIPT_PARAMS = "defaults 35"
@@ -44,7 +47,7 @@ RDEPENDS_gsmd-plugins = "gsmd-plugin-machine-generic \
                          gsmd-plugin-vendor-tihtc \
                          "
 
-RDEPENDS_gsmd = "initscripts"
+RDEPENDS_gsmd = "update-rc.d initscripts"
 RRECOMMENDS_gsmd = "gsmd-plugins"
 
 FILES_${PN}-dbg += "${libdir}/gsmd/.debug/*"
