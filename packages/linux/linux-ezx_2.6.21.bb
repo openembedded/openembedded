@@ -68,7 +68,6 @@ BACKLIGHTPATCH_rokre6 = ""
 
 SRC_URI += "${BACKLIGHTPATCH}"
 
-
 S = "${WORKDIR}/linux-${PV}"
 
 
@@ -96,7 +95,7 @@ CMDLINE = "${CMDLINE_CON} ${CMDLINE_ROOT} ${CMDLINE_IP} ${CMDLINE_ROTATE} ${CMDL
 # Uncomment to use root-over-nfs-over-usb
 #CMDLINE_NFSROOT_USB = "${CMDLINE_CON} ${CMDLINE_NFSROOT} ${CMDLINE_IP} ${CMDLINE_ROTATE} ${CMDLINE_OTHER} ${CMDLINE_DEBUG} ${CMDLINE_MEM}"
 
-# 1024x1024 is the maximum kernel size for boot-over-usb
+# 1024x1024 once was the maximum kernel size for boot-over-usb -- is it still?
 #KERNEL_IMAGE_MAXSIZE = "1294336"
 
 ###############################################################
