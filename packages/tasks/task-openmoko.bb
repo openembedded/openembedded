@@ -108,7 +108,7 @@ RDEPENDS_task-openmoko-base = "\
   openmoko-panel-bt \
   openmoko-panel-clock \
   openmoko-panel-usb \
-  openmoko-panel-gps \
+  ${@base_contains('MACHINE_FEATURES', 'gps', 'openmoko-panel-gps', '',d)} \
 "
 
 #
