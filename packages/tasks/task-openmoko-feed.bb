@@ -1,13 +1,14 @@
 DESCRIPTION = "OpenMoko: Misc. Feed Items"
 SECTION = "openmoko/base"
 LICENSE = "MIT"
-PR = "r13"
+PR = "r14"
 
 inherit task
 
 RDEPENDS_task-openmoko-feed = "\
   aspell enchant \
   bluez-hcidump \
+  bootchart \
   eet evas ecore embryo epsilon edje efreet emotion epdf \
   exhibit edje-viewer \
   free42-vga \
