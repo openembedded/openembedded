@@ -1,0 +1,99 @@
+Index: matchbox-keyboard/src/matchbox-keyboard.h
+===================================================================
+--- matchbox-keyboard/src/matchbox-keyboard.h	(revision 1669)
++++ matchbox-keyboard/src/matchbox-keyboard.h	(working copy)
+@@ -285,7 +285,7 @@
+ void
+ mb_kbd_remote_init (MBKeyboardUI *ui);
+ 
+-void
++int
+ mb_kbd_remote_process_xevents (MBKeyboardUI *ui, XEvent *xevent);
+ 
+ /**** Keyboard ****/
+Index: matchbox-keyboard/src/matchbox-keyboard-ui.c
+===================================================================
+--- matchbox-keyboard/src/matchbox-keyboard-ui.c	(revision 1669)
++++ matchbox-keyboard/src/matchbox-keyboard-ui.c	(working copy)
+@@ -1096,6 +1096,8 @@
+   /* Key repeat - values for standard xorg install ( xset q) */
+   int repeat_delay = 100 * 10000;
+   int repeat_rate  = 30  * 1000;
++  int hide_delay = 100 * 1000;
++  int to_hide = 0;
+ 
+   int press_x = 0, press_y = 0; 
+ 
+@@ -1182,11 +1184,42 @@
+ 	      mb_kbd_xembed_process_xevents (ui, &xev);
+ 
+ 	    if (ui->is_daemon)
+-	      mb_kbd_remote_process_xevents (ui, &xev);
+-
++      {
++	      switch (mb_kbd_remote_process_xevents (ui, &xev))
++        {
++          case 0:
++            if (to_hide == 1) {
++              mb_kbd_ui_hide(ui);
++            }
++            tvt.tv_usec = hide_delay;
++            to_hide = 1;
++            break;
++          case 1:
++            mb_kbd_ui_show(ui);
++            tvt.tv_usec = repeat_delay;
++            to_hide = 0;
++            break;
++          default:
++            if (to_hide == 1) {
++              mb_kbd_ui_hide(ui);
++              tvt.tv_usec = repeat_delay;
++              to_hide = 0;
++            }
++            break;
++        }
++      }
+ 	  }
+ 	else
+ 	  {
++      /* Hide timed out */
++      if (to_hide == 1)
++      {
++        DBG("Hide timed out, calling mb_kbd_ui_hide");
++        mb_kbd_ui_hide(ui);
++        tvt.tv_usec = repeat_delay;
++        to_hide = 0;
++      }
++
+ 	    /* Keyrepeat */
+ 	    if (mb_kbd_get_held_key(ui->kbd) != NULL)
+ 	      {
+Index: matchbox-keyboard/src/matchbox-keyboard-remote.c
+===================================================================
+--- matchbox-keyboard/src/matchbox-keyboard-remote.c	(revision 1669)
++++ matchbox-keyboard/src/matchbox-keyboard-remote.c	(working copy)
+@@ -28,7 +28,7 @@
+ 					   "_MB_IM_INVOKER_COMMAND", False);
+ }
+ 
+-void
++int
+ mb_kbd_remote_process_xevents (MBKeyboardUI *ui, XEvent *xevent)
+ {
+   DBG("got a message\n");
+@@ -42,9 +42,12 @@
+ 	  DBG("got a message of type _MB_IM_INVOKER_COMMAND, val %i\n",
+ 	      xevent->xclient.data.l[0]);
+ 	  if (xevent->xclient.data.l[0] == 1)
+-	      mb_kbd_ui_show (ui);
++    {
++        return 1;
++    }
+ 	  else
+-	      mb_kbd_ui_hide (ui);
++        return 0;
+ 	}
+     }
++  return -1;
+ }
