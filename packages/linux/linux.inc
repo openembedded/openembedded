@@ -58,20 +58,29 @@ do_configure_prepend() {
             < '${WORKDIR}/defconfig' >>'${S}/.config'
 
         #
-        # root-over-nfs-over-usbgadget support. Limited, but should cover some cases.
-        # Note that you need to have a proper CMDLINE_NFSROOT_USB set for this to work.
+        # root-over-nfs-over-usb-eth support. Limited, but should cover some cases.
+        # Enable this by setting a proper CMDLINE_NFSROOT_USB.
         #
         if [ ! -z "${CMDLINE_NFSROOT_USB}" ]; then
-                oenote "Configuring the kernel for root-over-nfs-over-usbgadget with CMDLINE ${CMDLINE_NFSROOT_USB}"
+                oenote "Configuring the kernel for root-over-nfs-over-usb-eth with CMDLINE ${CMDLINE_NFSROOT_USB}"
+                sed -e '/CONFIG_INET/d' \
+                    -e '/CONFIG_IP_PNP=/d' \
+                    -e '/CONFIG_USB_GADGET=/d' \
+                    -e '/CONFIG_USB_GADGET_SELECTED=/d' \
+                    -e '/CONFIG_USB_ETH=/d' \
+                    -e '/CONFIG_NFS_FS=/d' \
+                    -e '/CONFIG_ROOT_NFS=/d' \
+                    -e '/CONFIG_CMDLINE=/d' \
+                    -i ${S}/.config
                 echo "CONFIG_INET=y"                     >> ${S}/.config
 				echo "CONFIG_IP_PNP=y"                   >> ${S}/.config
                 echo "CONFIG_USB_GADGET=y"               >> ${S}/.config
+                echo "CONFIG_USB_GADGET_SELECTED=y"      >> ${S}/.config
                 echo "CONFIG_USB_ETH=y"                  >> ${S}/.config
                 echo "CONFIG_NFS_FS=y"                   >> ${S}/.config
                 echo "CONFIG_ROOT_NFS=y"                 >> ${S}/.config
                 echo "CONFIG_CMDLINE=\"${CMDLINE_NFSROOT_USB}\"" >> ${S}/.config
         fi
-
         yes '' | oe_runmake oldconfig
 }
 
@@ -111,14 +120,14 @@ do_deploy() {
                 ${OBJCOPY} -O binary -R .note -R .comment -S arch/${ARCH}/boot/compressed/vmlinux linux.bin
                 uboot-mkimage -A ${ARCH} -O linux -T kernel -C none -a ${UBOOT_ENTRYPOINT} -e ${UBOOT_ENTRYPOINT} -n "${DISTRO_NAME}/${PV}/${MACHINE}" -d linux.bin ${DEPLOY_DIR_IMAGE}/uImage-${PV}-${PR}-${MACHINE}-${DATETIME}.bin
                 rm -f linux.bin
-	    else
-	        ${OBJCOPY} -O binary -R .note -R .comment -S vmlinux linux.bin
+            else
+                ${OBJCOPY} -O binary -R .note -R .comment -S vmlinux linux.bin
                 rm -f linux.bin.gz
                 gzip -9 linux.bin
                 uboot-mkimage -A ${ARCH} -O linux -T kernel -C gzip -a ${UBOOT_ENTRYPOINT} -e ${UBOOT_ENTRYPOINT} -n "${DISTRO_NAME}/${PV}/${MACHINE}" -d linux.bin.gz ${DEPLOY_DIR_IMAGE}/uImage-${PV}-${PR}-${MACHINE}-${DATETIME}.bin
                 rm -f linux.bin.gz
             fi
-	fi
+        fi
 }
 
 do_deploy[dirs] = "${S}"

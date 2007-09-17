@@ -1,5 +1,7 @@
 require gtk+.inc
 
+PR = "r1"
+
 DEPENDS += "cairo"
 
 # disable per default - untested and not all patches included.
@@ -22,7 +24,7 @@ SRC_URI = "http://download.gnome.org/sources/gtk+/2.12/gtk+-${PV}.tar.bz2 \
 # die die die
 #           file://pangoxft2.10.6.diff;patch=1"
 
-EXTRA_OECONF = "--without-libtiff --disable-xkb --disable-glibtest --enable-display-migration"
+EXTRA_OECONF = "--with-libtiff --disable-xkb --disable-glibtest --enable-display-migration"
 
 LIBV = "2.10.0"
 
