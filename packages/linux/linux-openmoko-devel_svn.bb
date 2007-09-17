@@ -16,6 +16,7 @@ SRCREV_FORMAT = "patches"
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-${VANILLA_VERSION}.tar.bz2 \
            svn://svn.openmoko.org/trunk/src/target/kernel;module=patches;proto=http;name=patches \
            file://fix-EVIOCGRAB-semantics-2.6.22.5.patch;patch=1 \
+           file://printascii.patch;patch=1 \
            file://defconfig \
            file://logo_linux_clut224.ppm"
 S = "${WORKDIR}/linux-${VANILLA_VERSION}"
@@ -51,4 +52,20 @@ do_prepatch() {
 }
 
 addtask prepatch after do_unpack before do_patch
+
+###############################################################
+# put into deploy directory and append u-boot header
+#
+do_deploy() {
+        install -d ${DEPLOY_DIR_IMAGE}
+        install -m 0644 arch/${ARCH}/boot/${KERNEL_IMAGETYPE} ${DEPLOY_DIR_IMAGE}/${KERNEL_IMAGETYPE}-${PV}-${PR}-${MACHINE}.bin
+        tar -cvzf ${DEPLOY_DIR_IMAGE}/modules-${KERNEL_RELEASE}-${PR}-${MACHINE}.tgz -C ${D} lib
+        ${OBJCOPY} -O binary -R .note -R .comment -S vmlinux linux.bin
+        rm -f linux.bin.gz
+        gzip -9 linux.bin
+        ${STAGING_BINDIR_NATIVE}/uboot-mkimage -A arm -O linux -T kernel -C gzip -a 30008000 -e 30008000 -n "OpenMoko Kernel Image Neo1973" \
+                                               -d linux.bin.gz ${DEPLOY_DIR_IMAGE}/uImage-${PV}-${PR}-${MACHINE}.bin
+        ln -sf ${DEPLOY_DIR_IMAGE}/uImage-${PV}-${PR}-${MACHINE}.bin ${DEPLOY_DIR_IMAGE}/uImage-${MACHINE}-latest.bin
+        rm -f linux.bin.gz
+}
 
