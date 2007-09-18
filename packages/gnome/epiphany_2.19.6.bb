@@ -1,5 +1,5 @@
 DESCRIPTION = "GNOME default webbrowser"
-DEPENDS = "gnome-desktop gnome-vfs libgnomeui webkit-gtk"
+DEPENDS = "gnome-desktop gnome-vfs libgnomeui webkit-gtk iso-codes"
 RDEPENDS = "gnome-vfs-plugin-http"
 
 PR = "r1"
