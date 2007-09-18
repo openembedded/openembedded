@@ -5,7 +5,7 @@ SECTION = "bootloader"
 PRIORITY = "optional"
 PROVIDES = "virtual/bootloader"
 PV = "1.2.0+git${SRCDATE}+svnr${SRCREV}"
-PR = "r0"
+PR = "r1"
 
 SRCREV_FORMAT = "patches"
 
@@ -30,16 +30,9 @@ do_quilt() {
 }
 
 do_svnrev() {
-	FILE=${S}/tools/setlocalversion
-	OLDFILE=$FILE.old
-	NEWFILE=$FILE.new
-	cp $FILE $OLDFILE
-	LINES=`cat $OLDFILE | wc -l`
-	LINES_WE_WANT=$(($LINES-1))
-	LASTLINE=`cat $OLDFILE | tail -n 1`
-	cat $OLDFILE | head -n $LINES_WE_WANT > $NEWFILE
-	echo ${LASTLINE}_${PR} >> $NEWFILE
-	rm $FILE && mv $NEWFILE $FILE
+	mv -f tools/setlocalversion tools/setlocalversion.old
+        echo -n "echo " >>tools/setlocalversion
+	echo ${PV}      >>tools/setlocalversion
 }
 
 do_configure_prepend() {
