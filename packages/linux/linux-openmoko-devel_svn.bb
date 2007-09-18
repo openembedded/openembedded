@@ -15,6 +15,7 @@ SRCREV_FORMAT = "patches"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-${VANILLA_VERSION}.tar.bz2 \
            svn://svn.openmoko.org/trunk/src/target/kernel;module=patches;proto=http;name=patches \
+           file://squashfs.patch;patch=1 \
            file://fix-EVIOCGRAB-semantics-2.6.22.5.patch;patch=1 \
 #           file://printascii.patch;patch=1 \
            file://defconfig \
