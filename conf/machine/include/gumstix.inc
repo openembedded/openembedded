@@ -12,6 +12,7 @@ module_autoload_pxamci = "pxamci"
 module_autoload_mmc_block = "mmc_block"
 module_autoload_gumstix_gadget = "gumstix_gadget"
 module_autoload_g_ether = "g_ether"
+module_autoload_smc91x = "smc91x"
 
 UBOOT_ENTRYPOINT = "a0008000"
 
@@ -20,6 +21,10 @@ MACHINE_FEATURES = "kernel26 alsa ext2 bluetooth"
 
 EXTRA_IMAGECMD_jffs2 = "--little-endian --eraseblock=0x20000 --squash"
 
+# Install all kernel modules
+#MACHINE_ESSENTIAL_EXTRA_RRECOMMENDS = "kernel-modules"
+
+# Install only selected kernel modules, comment out line above also
 MACHINE_ESSENTIAL_EXTRA_RRECOMMENDS = "kernel-module-unix \
                              kernel-module-rtc-core \
                              kernel-module-rtc-dev \
