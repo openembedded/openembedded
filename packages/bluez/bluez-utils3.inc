@@ -10,7 +10,7 @@ LICENSE = "GPL"
 
 # ti patch doesn't apply, people using it should rediff it and send it upstream
 SRC_URI = "http://bluez.sourceforge.net/download/bluez-utils-${PV}.tar.gz \
-           file://hcid.conf \
+           file://hcid.conf "
 #           file://hciattach-ti-bts.patch;patch=1 \
 
 S = "${WORKDIR}/bluez-utils-${PV}"
