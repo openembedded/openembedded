@@ -39,9 +39,6 @@ SRC_URI_append_sh3  = " file://sh3-installfix-fixheaders.patch;patch=1 "
 # ',fortran' or '', not 'f77' like gcc3 had
 FORTRAN = ""
 FORTRAN_linux-gnueabi = ",fortran"
-HAS_GFORTRAN = "no"
-HAS_GFORTRAN_linux-gnueabi = "yes"
-HAS_G2C = "yes"
 
 #Set the java bits
 JAVA = ""

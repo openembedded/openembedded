@@ -1,8 +1,6 @@
 # Packages emitted by our gcc-cross builds.
 #
 INHIBIT_PACKAGE_STRIP ?= ""
-HAS_G2C ?= "yes"
-HAS_GFORTRAN ?= "no"
 OLD_INHIBIT_PACKAGE_STRIP := "${INHIBIT_PACKAGE_STRIP}"
 INHIBIT_PACKAGE_STRIP = "1"
 
