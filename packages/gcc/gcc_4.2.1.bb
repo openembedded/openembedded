@@ -1,4 +1,4 @@
-PR = "r3"
+PR = "r4"
 DESCRIPTION = "The GNU cc and gcc C compilers."
 HOMEPAGE = "http://www.gnu.org/software/gcc/"
 SECTION = "devel"
@@ -55,19 +55,22 @@ SRC_URI = "ftp://ftp.gnu.org/pub/gnu/gcc/gcc-${PV}/gcc-${PV}.tar.bz2 \
         file://arm-crunch-truncsi-disable.patch;patch=1 \
         file://arm-crunch-cfcvt64-disable.patch;patch=1 \
         file://arm-crunch-cirrus-bugfixes.patch;patch=1 \
-	"
+        file://gfortran.patch;patch=1 \	
+       "
 
 SRC_URI_append_sh3  = " file://sh3-installfix-fixheaders.patch;patch=1 "
 
 #Set the fortran bits
-# 'fortran' or '', not 'f77' like gcc3 had
+# 'i,fortran' or '', not 'f77' like gcc3 had
 FORTRAN = ""
+FORTRAN_linux-gnueabi = ",fortran"
 HAS_GFORTRAN = "no"
-HAS_G2C = "no"
+HAS_GFORTRAN_linux-gnueabi = "yes"
+HAS_G2C = "yes"
 
 #Set the java bits
-JAVA_arm = ""
 JAVA = ""
+JAVA_arm = ""
 
 LANGUAGES = "c,c++${FORTRAN}${JAVA}"
 require gcc3-build.inc
