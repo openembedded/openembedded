@@ -1,0 +1,1443 @@
+From nobody Mon Sep 17 00:00:00 2001
+From: Håvard Skinnemoen <hskinnemoen@atmel.com>
+Date: Fri Nov 18 16:31:34 2005 +0100
+Subject: [PATCH] AVR32: USART3 Serial Driver
+
+---
+
+ drivers/serial/Kconfig       |   21 
+ drivers/serial/Makefile      |    1 
+ drivers/serial/atmel_usart.c | 1086 +++++++++++++++++++++++++++++++++++++++++++
+ drivers/serial/atmel_usart.h |  290 +++++++++++
+ 4 files changed, 1398 insertions(+)
+
+Index: linux-2.6.18-avr32/drivers/serial/Kconfig
+===================================================================
+--- linux-2.6.18-avr32.orig/drivers/serial/Kconfig	2006-11-02 14:16:07.000000000 +0100
++++ linux-2.6.18-avr32/drivers/serial/Kconfig	2006-11-02 15:54:18.000000000 +0100
+@@ -246,6 +246,27 @@ config SERIAL_8250_AU1X00
+ 
+ comment "Non-8250 serial port support"
+ 
++config SERIAL_ATMEL
++	tristate "Atmel USART3 serial port support"
++	depends on AVR32
++	select SERIAL_CORE
++	default y
++	help
++	  Support for the Atmel USART3 on-chip USART found in most
++	  AT32 and AT91 parts from Atmel.
++
++	  If unsure, say Y.
++
++config SERIAL_ATMEL_CONSOLE
++	bool "Support for console on Atmel USART3 serial port"
++	depends on SERIAL_ATMEL=y
++	select SERIAL_CORE_CONSOLE
++	help
++	  Say Y here if you wish to use an Atmel USART3 serial port as
++	  the system console (the system console is the device which
++	  receives all kernel messages and warnings and which allows
++	  logins in single user mode).
++
+ config SERIAL_AMBA_PL010
+ 	tristate "ARM AMBA PL010 serial port support"
+ 	depends on ARM_AMBA && (BROKEN || !ARCH_VERSATILE)
+Index: linux-2.6.18-avr32/drivers/serial/Makefile
+===================================================================
+--- linux-2.6.18-avr32.orig/drivers/serial/Makefile	2006-11-02 14:16:07.000000000 +0100
++++ linux-2.6.18-avr32/drivers/serial/Makefile	2006-11-02 14:17:29.000000000 +0100
+@@ -20,6 +20,7 @@ obj-$(CONFIG_SERIAL_8250_BOCA) += 8250_b
+ obj-$(CONFIG_SERIAL_8250_HUB6) += 8250_hub6.o
+ obj-$(CONFIG_SERIAL_8250_MCA) += 8250_mca.o
+ obj-$(CONFIG_SERIAL_8250_AU1X00) += 8250_au1x00.o
++obj-$(CONFIG_SERIAL_ATMEL) += atmel_usart.o
+ obj-$(CONFIG_SERIAL_AMBA_PL010) += amba-pl010.o
+ obj-$(CONFIG_SERIAL_AMBA_PL011) += amba-pl011.o
+ obj-$(CONFIG_SERIAL_CLPS711X) += clps711x.o
+Index: linux-2.6.18-avr32/drivers/serial/atmel_usart.c
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ linux-2.6.18-avr32/drivers/serial/atmel_usart.c	2006-11-02 15:54:18.000000000 +0100
+@@ -0,0 +1,1086 @@
++/*
++ * Driver for Atmel USART3 Serial ports
++ *
++ * Based on AT91RM9200 serial driver by Rick Bronson
++ * Based on drivers/char/serial.c, by Linus Torvalds, Theodore Ts'o.
++ * Based on drivers/serial/sa1100.c by Deep Blue Solutions Ltd.
++ *
++ * Copyright (C) 2004-2006 Atmel Corporation
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ */
++#include <linux/clk.h>
++#include <linux/console.h>
++#include <linux/dma-mapping.h>
++#include <linux/init.h>
++#include <linux/interrupt.h>
++#include <linux/ioport.h>
++#include <linux/module.h>
++#include <linux/platform_device.h>
++#include <linux/sched.h>
++#include <linux/serial.h>
++#include <linux/tty.h>
++
++#include <asm/io.h>
++#include <asm/irq.h>
++
++#include <asm/arch/board.h>
++
++#if defined(CONFIG_SERIAL_ATMEL_CONSOLE) && defined(CONFIG_MAGIC_SYSRQ)
++#define SUPPORT_SYSRQ
++#include <linux/sysrq.h>
++#endif
++
++#include <linux/serial_core.h>
++
++#include "atmel_usart.h"
++
++/*
++ * TODO: Move this definition into linux/serial_core.h
++ */
++#define PORT_USART3		60
++
++/*
++ * Use the same major/minor numbers as the AT91 USART, which is
++ * actually the same chip
++ */
++#define SERIAL_USART3_MAJOR	TTY_MAJOR
++#define MINOR_START		64
++#define NR_PORTS		4
++
++#define ERROR_FLAGS		(USART3_BIT(CSR_PARE)		\
++				 | USART3_BIT(CSR_FRAME)	\
++				 | USART3_BIT(CSR_OVRE))
++
++/* Must be a power of two, or everything will break */
++#define RX_BUFFER_SIZE		32
++struct usart3_port {
++	void __iomem *regs;
++	int break_active;
++	unsigned int tx_dma_head;
++	int rx_tail;
++	char *rx_buffer;
++	dma_addr_t rx_dma;
++	dma_addr_t tx_dma;
++	struct clk *mck;
++	unsigned long mapsize;
++	struct uart_port uart;
++};
++#define to_usart3_port(port) container_of(port, struct usart3_port, uart)
++
++static void tx_dma_sync(struct uart_port *port)
++{
++	struct usart3_port *up = to_usart3_port(port);
++	struct circ_buf *xmit = &port->info->xmit;
++
++	if (xmit->head < up->tx_dma_head) {
++		dma_sync_single_for_device(port->dev,
++					   up->tx_dma + up->tx_dma_head,
++					   UART_XMIT_SIZE - up->tx_dma_head,
++					   DMA_TO_DEVICE);
++		dma_sync_single_for_device(port->dev, up->tx_dma,
++					   xmit->head, DMA_TO_DEVICE);
++	} else {
++		dma_sync_single_for_device(port->dev,
++					   up->tx_dma + up->tx_dma_head,
++					   xmit->head - up->tx_dma_head,
++					   DMA_TO_DEVICE);
++	}
++}
++
++static void tx_dma_update_tail(struct uart_port *port)
++{
++	struct usart3_port *up = to_usart3_port(port);
++	struct circ_buf *xmit = &port->info->xmit;
++	unsigned long status, remaining;
++	unsigned int new_tail;
++
++	/* Account for the characters DMA'ed since last update */
++	remaining = usart3_readl(up, TCR);
++
++	if (up->tx_dma_head < xmit->tail) {
++		/*
++		 * We have wrapped around, and there's a chunk at the
++		 * beginning of the buffer that has been submitted for
++		 * DMA.  If the ENDTX bit is set, it means that the
++		 * DMA controller also has wrapped around and copied
++		 * TNPR/TNCR into TPR/TCR.
++		 */
++		status = usart3_readl(up, CSR);
++		BUG_ON((up->tx_dma_head != 0)
++		       && (usart3_readl(up, TNCR) == 0)
++		       && !(status & USART3_BIT(ENDTX)));
++		if (status & USART3_BIT(ENDTX)) {
++			BUG_ON(usart3_readl(up, TNCR) != 0);
++
++			/* The ENDTX bit might be set after we read TCR */
++			remaining = usart3_readl(up, TCR);
++
++			usart3_writel(up, TNCR, 0);
++			port->icount.tx += UART_XMIT_SIZE - xmit->tail;
++			xmit->tail = 0;
++
++			BUG_ON(remaining > up->tx_dma_head);
++			new_tail = up->tx_dma_head - remaining;
++		} else {
++			/*
++			 * The DMA controller hasn't switched yet, so
++			 * TCR indicates the number of bytes left
++			 * until this happens.
++			 */
++			new_tail = UART_XMIT_SIZE - remaining;
++		}
++	} else {
++		/* No wraparound, move the tail closer to dma_head. */
++		BUG_ON(remaining > up->tx_dma_head);
++		new_tail = up->tx_dma_head - remaining;
++	}
++
++	BUG_ON(new_tail < xmit->tail);
++	port->icount.tx += new_tail - xmit->tail;
++	xmit->tail = new_tail;
++}
++
++static inline void tx_dma_start(struct usart3_port *up)
++{
++	/* Start the PDC and enable interrupts */
++	usart3_writel(up, PTCR, USART3_BIT(TXTEN));
++	usart3_writel(up, IER, USART3_BIT(ENDTX));
++}
++
++static inline void tx_dma_stop(struct usart3_port *up)
++{
++	usart3_writel(up, PTCR, USART3_BIT(TXTDIS));
++	usart3_writel(up, IDR, USART3_BIT(ENDTX));
++}
++
++static inline unsigned int rx_dma_get_head(struct usart3_port *up)
++{
++	unsigned int head;
++	u32 status;
++
++	head = RX_BUFFER_SIZE - usart3_readl(up, RCR);
++	status = usart3_readl(up, CSR);
++	if (status & USART3_BIT(ENDRX))
++		head = RX_BUFFER_SIZE;
++
++	return head;
++}
++
++static inline int rx_dma_update_tail(struct usart3_port *up,
++				     unsigned int tail)
++{
++	int again = 0;
++
++	if (!(tail & (RX_BUFFER_SIZE - 1))) {
++		u32 rnpr = up->rx_dma;
++
++		tail &= RX_BUFFER_SIZE;
++		if (!tail)
++			rnpr += RX_BUFFER_SIZE;
++
++		usart3_writel(up, RNPR, rnpr);
++		usart3_writel(up, RNCR, RX_BUFFER_SIZE);
++
++		again = 1;
++	} else
++		BUG_ON(usart3_readl(up, CSR) & USART3_BIT(ENDRX));
++
++	up->rx_tail = tail;
++
++	return again;
++}
++
++static void usart3_stop_tx(struct uart_port *port)
++{
++	struct usart3_port *up = to_usart3_port(port);
++
++	tx_dma_stop(up);
++	tx_dma_update_tail(port);
++}
++
++static void usart3_start_tx(struct uart_port *port)
++{
++	struct usart3_port *up = to_usart3_port(port);
++	struct circ_buf *xmit = &port->info->xmit;
++
++	BUG_ON(!irqs_disabled());
++
++	/*
++	 * Stop the DMA engine so that we don't have to worry about race
++	 * conditions when updating the various pointers and counters.
++	 */
++	tx_dma_stop(up);
++
++	tx_dma_sync(port);
++	tx_dma_update_tail(port);
++
++	if (uart_circ_empty(xmit))
++		return;
++
++	usart3_writel(up, TPR, up->tx_dma + xmit->tail);
++
++	if (xmit->head > xmit->tail) {
++		usart3_writel(up, TCR, xmit->head - xmit->tail);
++	} else {
++		usart3_writel(up, TCR, UART_XMIT_SIZE - xmit->tail);
++		usart3_writel(up, TNPR, up->tx_dma);
++		usart3_writel(up, TNCR, xmit->head);
++	}
++
++	/* Keep track of what we've submitted for DMA */
++	up->tx_dma_head = xmit->head;
++
++	/* Resume operation of DMA engine. */
++	tx_dma_start(up);
++}
++
++static void usart3_stop_rx(struct uart_port *port)
++{
++	struct usart3_port *up = to_usart3_port(port);
++
++	pr_debug("usart3: stop_rx\n");
++
++	usart3_writel(up, PTCR, USART3_BIT(RXTDIS));
++	usart3_writel(up, IDR, (USART3_BIT(TIMEOUT)
++				| USART3_BIT(ENDRX)
++				| USART3_BIT(RXBRK)
++				| USART3_BIT(OVRE)
++				| USART3_BIT(FRAME)
++				| USART3_BIT(PARE)));
++}
++
++static void usart3_flush_buffer(struct uart_port *port)
++{
++	struct usart3_port *up = to_usart3_port(port);
++
++	/*
++	 * Reset TX DMA state. Note that we must _always_ update TNCR
++	 * before TCR, since the value in TNCR will automatically move
++	 * to TCR when TCR is 0.
++	 */
++	usart3_writel(up, TNCR, 0);
++	usart3_writel(up, TCR, 0);
++	up->tx_dma_head = port->info->xmit.tail;
++}
++
++/*
++ * Enable modem status interrupts
++ */
++static void usart3_enable_ms(struct uart_port *port)
++{
++	struct usart3_port *up = to_usart3_port(port);
++
++	pr_debug("usart3: enable_ms\n");
++	usart3_writel(up, IER, (USART3_BIT(RIIC)
++				| USART3_BIT(DSRIC)
++				| USART3_BIT(DCDIC)
++				| USART3_BIT(CTSIC)));
++}
++
++static inline void handle_rx_error(struct uart_port *port, u32 status)
++{
++	/*
++	 * FIXME: Errors should affect the flag buffer, but due to the
++	 * PDC, we don't really know which char they belong to...
++	 */
++	if (status & USART3_BIT(PARE)) {
++		printk(KERN_NOTICE "usart%u: Parity error\n", port->line);
++		port->icount.parity++;
++	} else if (status & USART3_BIT(FRAME)) {
++		printk(KERN_NOTICE "usart%u: Frame error\n", port->line);
++		port->icount.frame++;
++	}
++	if (status & USART3_BIT(OVRE)) {
++		printk(KERN_NOTICE "usart%u: Overrun\n", port->line);
++		port->icount.overrun++;
++	}
++
++#ifdef SUPPORT_SYSRQ
++	port->sysrq = 0;
++#endif
++}
++
++static inline void handle_pdc_endtx(struct uart_port *port, unsigned long status)
++{
++	struct usart3_port *up = to_usart3_port(port);
++	struct circ_buf *xmit = &port->info->xmit;
++
++	tx_dma_update_tail(port);
++
++	if (uart_tx_stopped(port)) {
++		usart3_stop_tx(port);
++		printk("usart3: stopped\n");
++		return;
++	}
++
++	if (uart_circ_chars_pending(xmit) < WAKEUP_CHARS)
++		uart_write_wakeup(port);
++
++	if (uart_circ_empty(xmit))
++		usart3_stop_tx(port);
++
++	/*
++	 * It could be that xmit is being updated right now. If so,
++	 * start_tx() will be called shortly.
++	 */
++	if (status & USART3_BIT(TXBUFE))
++		usart3_writel(up, IDR, USART3_BIT(ENDTX));
++}
++
++static void consume_rx_buffer(struct uart_port *port, struct pt_regs *regs)
++{
++	struct usart3_port *up = to_usart3_port(port);
++	struct tty_struct *tty = port->info->tty;
++	unsigned long head, tail;
++	int len;
++	int again;
++
++	do {
++		/*
++		 * Re-arm the timeout before we decide how many
++		 * characters to read.
++		 */
++		usart3_writel(up, CR, USART3_BIT(STTTO));
++
++		head = rx_dma_get_head(up);
++
++		tail = up->rx_tail;
++		if (tail & RX_BUFFER_SIZE)
++			head += RX_BUFFER_SIZE;
++
++		if (head == tail)
++			break;
++
++		dma_sync_single_for_cpu(port->dev, up->rx_dma + tail,
++					head - tail, DMA_FROM_DEVICE);
++
++		if (uart_handle_sysrq_char(port, up->rx_buffer[tail],
++					   regs)) {
++			tail++;
++			if (head == tail)
++				goto update_tail;
++		}
++
++		len = tty_insert_flip_string(tty, up->rx_buffer + tail,
++					     head - tail);
++		port->icount.rx += len;
++		tail += len;
++		if (!(head & (RX_BUFFER_SIZE - 1)) && tail != head) {
++			/*
++			 * head has wrapped, but there isn't enough
++			 * room in the buffer to handle all the
++			 * characters.  We must recycle this buffer in
++			 * order to clear the interrupt.
++			 */
++			tty_insert_flip_char(tty, 0, TTY_OVERRUN);
++			tail = head;
++		}
++
++	update_tail:
++		again = rx_dma_update_tail(up, tail);
++	} while (again);
++
++	tty_flip_buffer_push(tty);
++}
++
++/*
++ * This is the serial driver's interrupt routine
++ */
++static irqreturn_t usart3_interrupt(int irq, void *dev_id,
++				    struct pt_regs *regs)
++{
++	struct uart_port *port = dev_id;
++	struct usart3_port *up = to_usart3_port(port);
++	u32 status, mask, pending;
++	irqreturn_t ret = IRQ_NONE;
++
++	spin_lock(&port->lock);
++
++	status = usart3_readl(up, CSR);
++	mask = usart3_readl(up, IMR);
++	pending = status & mask;
++	if (unlikely(!pending))
++		goto out;
++
++	ret = IRQ_HANDLED;
++
++	do {
++		/*
++		 * Consume the buffer and flip buffers if necessary.
++		 */
++		consume_rx_buffer(port, regs);
++
++		/* Clear any break and error flags */
++		usart3_writel(up, CR, USART3_BIT(RSTSTA));
++
++		if (pending & (USART3_BIT(OVRE)
++			       | USART3_BIT(FRAME)
++			       | USART3_BIT(PARE)))
++			handle_rx_error(port, status);
++
++		if (pending & USART3_BIT(RXBRK)) {
++			if (up->break_active) {
++				up->break_active = 0;
++			} else {
++				up->break_active = 1;
++				port->icount.brk++;
++				uart_handle_break(port);
++			}
++		}
++
++		if (pending & USART3_BIT(RIIC))
++			port->icount.rng++;
++		if (pending & USART3_BIT(DSRIC))
++			port->icount.dsr++;
++		if (pending & USART3_BIT(DCDIC)) {
++			port->icount.dcd++;
++			uart_handle_dcd_change
++				(port, status & USART3_BIT(DCD));
++		}
++		if (pending & USART3_BIT(CTSIC)) {
++			port->icount.cts++;
++			uart_handle_cts_change
++				(port, status & USART3_BIT(CTS));
++		}
++		if (pending & (USART3_BIT(RIIC)
++			       | USART3_BIT(DSRIC)
++			       | USART3_BIT(DCDIC)
++			       | USART3_BIT(CTSIC)))
++			wake_up_interruptible(&port->info->delta_msr_wait);
++
++		if (pending & USART3_BIT(ENDTX))
++			handle_pdc_endtx(port, status);
++
++		status = usart3_readl(up, CSR);
++		pending = status & usart3_readl(up, IMR);
++	} while (pending);
++
++out:
++	spin_unlock(&port->lock);
++	return ret;
++}
++
++/*
++ * Return TIOCSER_TEMT when transmitter is not busy
++ */
++static unsigned int usart3_tx_empty(struct uart_port *port)
++{
++	struct usart3_port *up = to_usart3_port(port);
++	unsigned int ret = 0;
++
++	if (usart3_readl(up, CSR) & USART3_BIT(TXEMPTY))
++		ret = TIOCSER_TEMT;
++
++	pr_debug("usart3: tx_empty returned %x\n", ret);
++
++	return ret;
++}
++
++static unsigned int usart3_get_mctrl(struct uart_port *port)
++{
++	struct usart3_port *up = to_usart3_port(port);
++	unsigned int ret = 0;
++	unsigned int status;
++
++	status = usart3_readl(up, CSR);
++	if (status & USART3_BIT(DCD))
++		ret |= TIOCM_CD;
++	if (status & USART3_BIT(CTS))
++		ret |= TIOCM_CTS;
++	if (status & USART3_BIT(DSR))
++		ret |= TIOCM_DSR;
++	if (status & USART3_BIT(RI))
++		ret |= TIOCM_RI;
++
++	pr_debug("usart3: get_mctrl returned %x\n", ret);
++
++	return ret;
++}
++
++static void usart3_set_mctrl(struct uart_port *port, unsigned int mctrl)
++{
++	struct usart3_port *up = to_usart3_port(port);
++	unsigned int control = 0;
++
++	pr_debug("usart3: set_mctrl %x\n", mctrl);
++
++	if (mctrl & TIOCM_RTS)
++		control |= USART3_BIT(RTSEN);
++	else
++		control |= USART3_BIT(RTSDIS);
++
++	if (mctrl & TIOCM_DTR)
++		control |= USART3_BIT(DTREN);
++	else
++		control |= USART3_BIT(DTRDIS);
++
++	usart3_writel(up, CR, control);
++}
++
++static void usart3_break_ctl(struct uart_port *port, int break_state)
++{
++	struct usart3_port *up = to_usart3_port(port);
++
++	pr_debug("usart3: break_ctl %u\n", break_state);
++	if (break_state != 0)
++		usart3_writel(up, CR, USART3_BIT(STTBRK));
++	else
++		usart3_writel(up, CR, USART3_BIT(STPBRK));
++}
++
++static int usart3_startup(struct uart_port *port)
++{
++	struct usart3_port *up = to_usart3_port(port);
++	int ret;
++
++	pr_debug("usart3: startup\n");
++
++	up->break_active = 0;
++
++	/* Set up interrupt handler */
++	ret = request_irq(port->irq, usart3_interrupt, 0,
++			  port->info->tty->name, port);
++	if (ret) {
++		printk(KERN_ERR "usart3: Unable to request irq %d\n",
++		       port->irq);
++		return ret;
++	}
++
++	up->rx_dma = dma_map_single(port->dev, up->rx_buffer,
++				    2 * RX_BUFFER_SIZE, DMA_FROM_DEVICE);
++	up->tx_dma = dma_map_single(port->dev, port->info->xmit.buf,
++				    UART_XMIT_SIZE, DMA_TO_DEVICE);
++
++	/* Initialize the PDC for RX (TX is done in start_tx) */
++	up->rx_tail = 0;
++	usart3_writel(up, RPR, up->rx_dma);
++	usart3_writel(up, RCR, RX_BUFFER_SIZE);
++	usart3_writel(up, RNPR, up->rx_dma + RX_BUFFER_SIZE);
++	usart3_writel(up, RNCR, RX_BUFFER_SIZE);
++	usart3_writel(up, PTCR, USART3_BIT(RXTEN));
++
++	/* Reset DMA state */
++	usart3_writel(up, TNCR, 0);
++	usart3_writel(up, TCR, 0);
++	up->tx_dma_head = port->info->xmit.tail;
++
++	/*
++	 * Set a suitable timeout. 2000 bit periods corresponds to
++	 * about 17 ms at 115200 bps
++	 */
++	usart3_writel(up, RTOR, 2000);
++
++	/* Reset and enable receiver and transmitter */
++	usart3_writel(up, CR, (USART3_BIT(RSTRX)
++				  | USART3_BIT(RSTTX)
++				  | USART3_BIT(RSTSTA)));
++	usart3_writel(up, CR, (USART3_BIT(RXEN)
++				  | USART3_BIT(TXEN)));
++
++	/* Enable timeout, end of rx, break and error interrupts */
++	usart3_writel(up, IER, (USART3_BIT(TIMEOUT)
++				   | USART3_BIT(ENDRX)
++				   | USART3_BIT(RXBRK)
++				   | USART3_BIT(OVRE)
++				   | USART3_BIT(FRAME)
++				   | USART3_BIT(PARE)));
++
++	/* Arm the timeout counter */
++	usart3_writel(up, CR, USART3_BIT(STTTO));
++
++	return 0;
++}
++
++static void usart3_shutdown(struct uart_port *port)
++{
++	struct usart3_port *up = to_usart3_port(port);
++
++	pr_debug("usart3: shutdown\n");
++
++	/* Disable all interrupts and reset any error flags */
++	usart3_writel(up, IDR, -1L);
++	usart3_writel(up, CR, USART3_BIT(RSTSTA));
++
++	dma_unmap_single(port->dev, up->rx_dma, 2 * RX_BUFFER_SIZE,
++			 DMA_FROM_DEVICE);
++	dma_unmap_single(port->dev, up->tx_dma, UART_XMIT_SIZE,
++			 DMA_TO_DEVICE);
++
++	free_irq(port->irq, port);
++}
++
++static void usart3_set_termios(struct uart_port *port, struct termios *termios,
++			       struct termios *old)
++{
++	struct usart3_port *up = to_usart3_port(port);
++	unsigned int baud, quot, mode = 0;
++	unsigned int imr, flags;
++
++	pr_debug("usart3: set_termios\n");
++
++	switch (termios->c_cflag & CSIZE) {
++	case CS5:
++		mode |= USART3_BF(CHRL, USART3_CHRL_5);
++		break;
++	case CS6:
++		mode |= USART3_BF(CHRL, USART3_CHRL_6);
++		break;
++	case CS7:
++		mode |= USART3_BF(CHRL, USART3_CHRL_7);
++		break;
++	default:
++		mode |= USART3_BF(CHRL, USART3_CHRL_8);
++		break;
++	}
++
++	if (termios->c_cflag & CSTOPB)
++		mode |= USART3_BF(NBSTOP, USART3_NBSTOP_2);
++
++	if (termios->c_cflag & PARENB) {
++		 if (termios->c_cflag & PARODD)
++			 mode |= USART3_BF(PAR, USART3_PAR_ODD);
++		 else
++			 mode |= USART3_BF(PAR, USART3_PAR_EVEN);
++	} else {
++		mode |= USART3_BF(PAR, USART3_PAR_NONE);
++	}
++
++	/*
++	 * Ask the core to calculate the divisor for us.
++	 */
++	baud = uart_get_baud_rate(port, termios, old, 0, port->uartclk / 16);
++	quot = uart_get_divisor(port, baud);
++
++	/* Bits to ignore, timeout, etc. TBD */
++
++	/*
++	 * Save and disable interrupts
++	 */
++	spin_lock_irqsave(&port->lock, flags);
++	imr = usart3_readl(up, IMR);
++	usart3_writel(up, IDR, -1L);
++	spin_unlock_irqrestore(&port->lock, flags);
++
++	/*
++	 * Make sure transmitter is empty. If BRGR == 0, it is safest
++	 * to do a reset, since waiting for the transmitter to be
++	 * empty will take forever.
++	 */
++	if (usart3_readl(up, BRGR) != 0) {
++		while (!(usart3_readl(up, CSR) & USART3_BIT(TXRDY)))
++			barrier();
++	} else {
++		usart3_writel(up, CR, (USART3_BIT(RSTTX)
++					  | USART3_BIT(RSTRX)));
++	}
++
++	pr_debug("usart3: Setting BRGR to %u (baud rate %u)...\n", quot, baud);
++
++	/* Disable receiver and transmitter */
++	usart3_writel(up, CR, (USART3_BIT(TXDIS)
++				  | USART3_BIT(RXDIS)));
++
++	/* Set the parity, stop bits and data size */
++	usart3_writel(up, MR, mode);
++
++	/* Set the baud rate and enable receiver and transmitter */
++	usart3_writel(up, BRGR, quot);
++	usart3_writel(up, CR, (USART3_BIT(TXEN)
++				  | USART3_BIT(RXEN)));
++
++	/* Restore interrupts */
++	usart3_writel(up, IER, imr);
++}
++
++static const char *usart3_type(struct uart_port *port)
++{
++	return "USART3";
++}
++
++static void usart3_release_port(struct uart_port *port)
++{
++	pr_debug("usart3: release_port\n");
++	iounmap(port->membase);
++	port->flags |= UPF_IOREMAP;
++}
++
++static int usart3_request_port(struct uart_port *port)
++{
++	struct usart3_port *up = to_usart3_port(port);
++
++	/* TODO: remove this */
++	pr_debug("usart3: request_port\n");
++	if (port->flags & UPF_IOREMAP) {
++		port->membase = ioremap(port->mapbase, up->mapsize);
++		up->regs = port->membase;
++		port->flags &= ~UPF_IOREMAP;
++	}
++	return 0;
++}
++
++static void usart3_config_port(struct uart_port *port, int flags)
++{
++	pr_debug("usart3: config_port\n");
++	if (flags & UART_CONFIG_TYPE) {
++		if (usart3_request_port(port) == 0)
++			port->type = PORT_USART3;
++	}
++}
++
++static int usart3_verify_port(struct uart_port *port, struct serial_struct *ser)
++{
++	int ret = 0;
++
++	if (ser->type != PORT_UNKNOWN && ser->type != PORT_USART3)
++		ret = -EINVAL;
++	if (port->irq != ser->irq)
++		ret = -EINVAL;
++	if (ser->io_type != SERIAL_IO_MEM)
++		ret = -EINVAL;
++	if (port->uartclk / 16 != ser->baud_base)
++		ret = -EINVAL;
++	if ((void *)port->mapbase != ser->iomem_base)
++		ret = -EINVAL;
++	if (ser->hub6 != 0)
++		ret = -EINVAL;
++
++	pr_debug("usart3_verify_port returned %d\n", ret);
++
++	return ret;
++}
++
++static struct uart_ops usart3_pops = {
++	.tx_empty	= usart3_tx_empty,
++	.set_mctrl	= usart3_set_mctrl,
++	.get_mctrl	= usart3_get_mctrl,
++	.stop_tx	= usart3_stop_tx,
++	.start_tx	= usart3_start_tx,
++	.stop_rx	= usart3_stop_rx,
++	.enable_ms	= usart3_enable_ms,
++	.break_ctl	= usart3_break_ctl,
++	.startup	= usart3_startup,
++	.shutdown	= usart3_shutdown,
++	.flush_buffer	= usart3_flush_buffer,
++	.set_termios	= usart3_set_termios,
++	.type		= usart3_type,
++	.release_port	= usart3_release_port,
++	.request_port	= usart3_request_port,
++	.config_port	= usart3_config_port,
++	.verify_port	= usart3_verify_port,
++};
++
++static int __devinit initialize_port(struct usart3_port *up,
++				      struct platform_device *pdev)
++{
++	struct uart_port *port = &up->uart;
++	struct resource *regs;
++
++	regs = platform_get_resource(pdev, IORESOURCE_MEM, 0);
++	if (!regs)
++		return -ENXIO;
++
++	spin_lock_init(&port->lock);
++
++	up->mck = clk_get(&pdev->dev, "usart");
++	if (IS_ERR(up->mck))
++		return PTR_ERR(up->mck);
++	clk_enable(up->mck);
++
++	port->mapbase = regs->start;
++	up->mapsize = regs->end - regs->start + 1;
++	port->irq = platform_get_irq(pdev, 0);
++
++	port->uartclk = clk_get_rate(up->mck);
++	port->iotype = SERIAL_IO_MEM;
++	port->flags = UPF_BOOT_AUTOCONF | UPF_IOREMAP;
++	port->ops = &usart3_pops;
++	port->line = pdev->id;
++	port->dev = &pdev->dev;
++
++	return 0;
++}
++
++static struct usart3_port usart3_ports[NR_PORTS];
++
++#ifdef CONFIG_SERIAL_ATMEL_CONSOLE
++
++static void usart3_console_write(struct console *console, const char *string,
++				 unsigned int len)
++{
++	struct usart3_port *up = &usart3_ports[console->index];
++	unsigned int imr, i;
++	unsigned long flags, ptsr;
++
++	/*
++	 * Save IMR, then disable interrupts
++	 */
++	local_irq_save(flags);
++	imr = usart3_readl(up, IMR);
++	usart3_writel(up, IDR, ~0UL);
++	local_irq_restore(flags);
++
++	/*
++	 * Save PDC state and disable PDC transmission
++	 */
++	ptsr = usart3_readl(up, PTSR);
++	usart3_writel(up, PTCR, USART3_BIT(TXTDIS));
++
++	/*
++	 * Now, do each character
++	 */
++	for (i = 0; i < len; i++, string++) {
++		char c = *string;
++
++		/*
++		 * If we're sending LF, send CR first...
++		 */
++		if (c == '\n') {
++			while (!(usart3_readl(up, CSR)
++				 & USART3_BIT(TXRDY)))
++				;
++			usart3_writel(up, THR, '\r');
++		}
++		while (!(usart3_readl(up, CSR) & USART3_BIT(TXRDY)))
++			;
++		usart3_writel(up, THR, c);
++	}
++
++	/*
++	 * Wait for transmitter to become empty and restore the IMR
++	 * and PDC state.
++	 */
++	while (!(usart3_readl(up, CSR) & USART3_BIT(TXRDY)))
++		;
++
++	usart3_writel(up, PTCR, ptsr & USART3_BIT(TXTEN));
++	usart3_writel(up, IER, imr);
++}
++
++static int __init usart3_console_setup(struct console *console,
++				       char *options)
++{
++	struct platform_device *pdev;
++	struct usart3_port *up;
++	struct uart_port *port;
++	int baud = 115200;
++	int bits = 8;
++	int parity = 'n';
++	int flow = 'n';
++	int ret;
++
++	if (console->index >= NR_PORTS) {
++		printk(KERN_ERR
++		       "Can't use USART%u for console: index >= NR_PORTS\n",
++		       console->index);
++		return -ENODEV;
++	}
++
++	pdev = at91_default_console_device;
++	if (!pdev)
++		return -ENXIO;
++
++	up = &usart3_ports[console->index];
++	port = &up->uart;
++
++	ret = initialize_port(up, pdev);
++	if (ret)
++		return ret;
++
++	port->membase = ioremap(port->mapbase, up->mapsize);
++	ret = -ENOMEM;
++	if (!port->membase)
++		goto out_disable_clk;
++
++	up->regs = port->membase;
++
++	/* Set a fixed baud rate for now */
++	usart3_writel(up, BRGR, 2);
++
++	/* Make sure all interrupts are disabled and reset/enable the USART */
++	usart3_writel(up, IDR, -1L);
++	usart3_writel(up, CR, (USART3_BIT(RSTRX)
++				  | USART3_BIT(RSTTX)
++				  | USART3_BIT(RSTSTA)));
++	usart3_writel(up, CR, (USART3_BIT(RXEN)
++				  | USART3_BIT(TXEN)));
++
++	if (options)
++		uart_parse_options(options, &baud, &parity, &bits, &flow);
++
++	return uart_set_options(port, console, baud, parity, bits, flow);
++
++out_disable_clk:
++	clk_disable(up->mck);
++	clk_put(up->mck);
++	return ret;
++}
++
++static struct uart_driver usart3_reg;
++static struct console usart3_console = {
++	.name		= "ttyUS",
++	.write		= usart3_console_write,
++	.device		= uart_console_device,
++	.setup		= usart3_console_setup,
++	.flags		= CON_PRINTBUFFER,
++	.index		= -1,
++	.data		= &usart3_reg,
++};
++
++static int __init usart3_console_init(void)
++{
++	register_console(&usart3_console);
++	return 0;
++}
++console_initcall(usart3_console_init);
++
++#define USART3_CONSOLE &usart3_console
++
++#else
++#define USART3_CONSOLE NULL
++#endif
++
++static struct uart_driver usart3_reg = {
++	.owner		= THIS_MODULE,
++	.driver_name	= "serial",
++	.dev_name	= "ttyUS",
++	.major		= SERIAL_USART3_MAJOR,
++	.minor		= MINOR_START,
++	.nr		= NR_PORTS,
++	.cons		= USART3_CONSOLE,
++};
++
++static int usart3_serial_suspend(struct platform_device *pdev,
++				 pm_message_t state)
++{
++	struct usart3_port *port = platform_get_drvdata(pdev);
++	int retval = 0;
++
++	if (port)
++		retval = uart_suspend_port(&usart3_reg, &port->uart);
++
++	return retval;
++}
++
++static int usart3_serial_resume(struct platform_device *pdev)
++{
++	struct usart3_port *port = platform_get_drvdata(pdev);
++	int retval = 0;
++
++	if (port)
++		retval = uart_resume_port(&usart3_reg, &port->uart);
++
++	return retval;
++}
++
++static int __devinit usart3_serial_probe(struct platform_device *pdev)
++{
++	struct usart3_port *up;
++	int ret;
++
++	if (pdev->id >= NR_PORTS) {
++		printk(KERN_WARNING
++		       "Ignoring USART%u, as NR_PORTS is only %u\n",
++		       pdev->id, NR_PORTS);
++		return -ENOMEM;
++	}
++
++	up = &usart3_ports[pdev->id];
++
++	/*
++	 * If the port has already been set up as a console, we
++	 * shouldn't enable it again.
++	 */
++	if (!up->uart.uartclk) {
++		ret = initialize_port(up, pdev);
++		if (ret)
++			goto out;
++	}
++
++	/*
++	 * The RX buffer must be cacheline aligned. If it's not,
++	 * invalidating the cache could be disastrous...
++	 *
++	 * Fortunately, kmalloc() always returns cache-aligned memory.
++	 */
++	ret = -ENOMEM;
++	up->rx_buffer = kmalloc(2 * RX_BUFFER_SIZE, GFP_KERNEL);
++	if (!up->rx_buffer)
++		goto out_disable_clk;
++
++	ret = uart_add_one_port(&usart3_reg, &up->uart);
++	if (ret)
++		goto out_free_rx_buffer;
++
++	platform_set_drvdata(pdev, up);
++
++	return 0;
++
++out_free_rx_buffer:
++	kfree(up->rx_buffer);
++out_disable_clk:
++	clk_disable(up->mck);
++	clk_put(up->mck);
++out:
++	return ret;
++}
++
++static int __devexit usart3_serial_remove(struct platform_device *pdev)
++{
++	struct usart3_port *port = platform_get_drvdata(pdev);
++	int retval = 0;
++
++	platform_set_drvdata(pdev, NULL);
++
++	if (port) {
++		retval = uart_remove_one_port(&usart3_reg, &port->uart);
++		clk_disable(port->mck);
++		clk_put(port->mck);
++		kfree(port->rx_buffer);
++		kfree(port);
++	}
++
++	return retval;
++}
++
++static struct platform_driver usart3_serial_driver = {
++	.probe		= usart3_serial_probe,
++	.remove		= __devexit_p(usart3_serial_remove),
++	.suspend	= usart3_serial_suspend,
++	.resume		= usart3_serial_resume,
++	.driver		= {
++		.name	= "usart",
++	},
++};
++
++static int __init usart3_init(void)
++{
++	int ret;
++
++	printk(KERN_INFO "Serial: Atmel USART3 driver\n");
++
++	ret = uart_register_driver(&usart3_reg);
++	if (ret)
++		return ret;
++
++	ret = platform_driver_register(&usart3_serial_driver);
++	if (ret)
++		uart_unregister_driver(&usart3_reg);
++
++	return ret;
++}
++
++static void __exit usart3_exit(void)
++{
++	platform_driver_unregister(&usart3_serial_driver);
++	uart_unregister_driver(&usart3_reg);
++}
++
++module_init(usart3_init);
++module_exit(usart3_exit);
++
++MODULE_LICENSE("GPL");
++MODULE_DESCRIPTION("Atmel USART3 serial driver");
++MODULE_AUTHOR("Haavard Skinnemoen <hskinnemoen@atmel.com>");
+Index: linux-2.6.18-avr32/drivers/serial/atmel_usart.h
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ linux-2.6.18-avr32/drivers/serial/atmel_usart.h	2006-11-02 16:37:02.000000000 +0100
+@@ -0,0 +1,290 @@
++/*
++ * Register definitions for USART3
++ *
++ * Copyright (C) 2005-2006 Atmel Corporation
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ */
++#ifndef __ASM_AVR32_USART3_H__
++#define __ASM_AVR32_USART3_H__
++
++/* USART3 register offsets */
++#define USART3_CR				0x0000
++#define USART3_MR				0x0004
++#define USART3_IER				0x0008
++#define USART3_IDR				0x000c
++#define USART3_IMR				0x0010
++#define USART3_CSR				0x0014
++#define USART3_RHR				0x0018
++#define USART3_THR				0x001c
++#define USART3_BRGR				0x0020
++#define USART3_RTOR				0x0024
++#define USART3_TTGR				0x0028
++#define USART3_FIDI				0x0040
++#define USART3_NER				0x0044
++#define USART3_XXR				0x0048
++#define USART3_IFR				0x004c
++
++/* PDC register offsets */
++#define USART3_RPR				0x100
++#define USART3_RCR				0x104
++#define USART3_TPR				0x108
++#define USART3_TCR				0x10c
++#define USART3_RNPR				0x110
++#define USART3_RNCR				0x114
++#define USART3_TNPR				0x118
++#define USART3_TNCR				0x11c
++#define USART3_PTCR				0x120
++#define USART3_PTSR				0x124
++
++/* Bitfields in CR */
++#define USART3_RSTRX_OFFSET			2
++#define USART3_RSTRX_SIZE			1
++#define USART3_RSTTX_OFFSET			3
++#define USART3_RSTTX_SIZE			1
++#define USART3_RXEN_OFFSET			4
++#define USART3_RXEN_SIZE			1
++#define USART3_RXDIS_OFFSET			5
++#define USART3_RXDIS_SIZE			1
++#define USART3_TXEN_OFFSET			6
++#define USART3_TXEN_SIZE			1
++#define USART3_TXDIS_OFFSET			7
++#define USART3_TXDIS_SIZE			1
++#define USART3_RSTSTA_OFFSET			8
++#define USART3_RSTSTA_SIZE			1
++#define USART3_STTBRK_OFFSET			9
++#define USART3_STTBRK_SIZE			1
++#define USART3_STPBRK_OFFSET			10
++#define USART3_STPBRK_SIZE			1
++#define USART3_STTTO_OFFSET			11
++#define USART3_STTTO_SIZE			1
++#define USART3_SENDA_OFFSET			12
++#define USART3_SENDA_SIZE			1
++#define USART3_RSTIT_OFFSET			13
++#define USART3_RSTIT_SIZE			1
++#define USART3_RSTNACK_OFFSET			14
++#define USART3_RSTNACK_SIZE			1
++#define USART3_RETTO_OFFSET			15
++#define USART3_RETTO_SIZE			1
++#define USART3_DTREN_OFFSET			16
++#define USART3_DTREN_SIZE			1
++#define USART3_DTRDIS_OFFSET			17
++#define USART3_DTRDIS_SIZE			1
++#define USART3_RTSEN_OFFSET			18
++#define USART3_RTSEN_SIZE			1
++#define USART3_RTSDIS_OFFSET			19
++#define USART3_RTSDIS_SIZE			1
++#define USART3_COMM_TX_OFFSET			30
++#define USART3_COMM_TX_SIZE			1
++#define USART3_COMM_RX_OFFSET			31
++#define USART3_COMM_RX_SIZE			1
++
++/* Bitfields in MR */
++#define USART3_USART_MODE_OFFSET		0
++#define USART3_USART_MODE_SIZE			4
++#define USART3_USCLKS_OFFSET			4
++#define USART3_USCLKS_SIZE			2
++#define USART3_CHRL_OFFSET			6
++#define USART3_CHRL_SIZE			2
++#define USART3_SYNC_OFFSET			8
++#define USART3_SYNC_SIZE			1
++#define USART3_PAR_OFFSET			9
++#define USART3_PAR_SIZE				3
++#define USART3_NBSTOP_OFFSET			12
++#define USART3_NBSTOP_SIZE			2
++#define USART3_CHMODE_OFFSET			14
++#define USART3_CHMODE_SIZE			2
++#define USART3_MSBF_OFFSET			16
++#define USART3_MSBF_SIZE			1
++#define USART3_MODE9_OFFSET			17
++#define USART3_MODE9_SIZE			1
++#define USART3_CLKO_OFFSET			18
++#define USART3_CLKO_SIZE			1
++#define USART3_OVER_OFFSET			19
++#define USART3_OVER_SIZE			1
++#define USART3_INACK_OFFSET			20
++#define USART3_INACK_SIZE			1
++#define USART3_DSNACK_OFFSET			21
++#define USART3_DSNACK_SIZE			1
++#define USART3_MAX_ITERATION_OFFSET		24
++#define USART3_MAX_ITERATION_SIZE		3
++#define USART3_FILTER_OFFSET			28
++#define USART3_FILTER_SIZE			1
++
++/* Bitfields in CSR */
++#define USART3_RXRDY_OFFSET			0
++#define USART3_RXRDY_SIZE			1
++#define USART3_TXRDY_OFFSET			1
++#define USART3_TXRDY_SIZE			1
++#define USART3_RXBRK_OFFSET			2
++#define USART3_RXBRK_SIZE			1
++#define USART3_ENDRX_OFFSET			3
++#define USART3_ENDRX_SIZE			1
++#define USART3_ENDTX_OFFSET			4
++#define USART3_ENDTX_SIZE			1
++#define USART3_OVRE_OFFSET			5
++#define USART3_OVRE_SIZE			1
++#define USART3_FRAME_OFFSET			6
++#define USART3_FRAME_SIZE			1
++#define USART3_PARE_OFFSET			7
++#define USART3_PARE_SIZE			1
++#define USART3_TIMEOUT_OFFSET			8
++#define USART3_TIMEOUT_SIZE			1
++#define USART3_TXEMPTY_OFFSET			9
++#define USART3_TXEMPTY_SIZE			1
++#define USART3_ITERATION_OFFSET			10
++#define USART3_ITERATION_SIZE			1
++#define USART3_TXBUFE_OFFSET			11
++#define USART3_TXBUFE_SIZE			1
++#define USART3_RXBUFF_OFFSET			12
++#define USART3_RXBUFF_SIZE			1
++#define USART3_NACK_OFFSET			13
++#define USART3_NACK_SIZE			1
++#define USART3_RIIC_OFFSET			16
++#define USART3_RIIC_SIZE			1
++#define USART3_DSRIC_OFFSET			17
++#define USART3_DSRIC_SIZE			1
++#define USART3_DCDIC_OFFSET			18
++#define USART3_DCDIC_SIZE			1
++#define USART3_CTSIC_OFFSET			19
++#define USART3_CTSIC_SIZE			1
++#define USART3_RI_OFFSET			20
++#define USART3_RI_SIZE				1
++#define USART3_DSR_OFFSET			21
++#define USART3_DSR_SIZE				1
++#define USART3_DCD_OFFSET			22
++#define USART3_DCD_SIZE				1
++#define USART3_CTS_OFFSET			23
++#define USART3_CTS_SIZE				1
++
++/* Bitfields in RHR */
++#define USART3_RXCHR_OFFSET			0
++#define USART3_RXCHR_SIZE			9
++
++/* Bitfields in THR */
++#define USART3_TXCHR_OFFSET			0
++#define USART3_TXCHR_SIZE			9
++
++/* Bitfields in BRGR */
++#define USART3_CD_OFFSET			0
++#define USART3_CD_SIZE				16
++
++/* Bitfields in RTOR */
++#define USART3_TO_OFFSET			0
++#define USART3_TO_SIZE				16
++
++/* Bitfields in TTGR */
++#define USART3_TG_OFFSET			0
++#define USART3_TG_SIZE				8
++
++/* Bitfields in FIDI */
++#define USART3_FI_DI_RATIO_OFFSET		0
++#define USART3_FI_DI_RATIO_SIZE			11
++
++/* Bitfields in NER */
++#define USART3_NB_ERRORS_OFFSET			0
++#define USART3_NB_ERRORS_SIZE			8
++
++/* Bitfields in XXR */
++#define USART3_XOFF_OFFSET			0
++#define USART3_XOFF_SIZE			8
++#define USART3_XON_OFFSET			8
++#define USART3_XON_SIZE				8
++
++/* Bitfields in IFR */
++#define USART3_IRDA_FILTER_OFFSET		0
++#define USART3_IRDA_FILTER_SIZE			8
++
++/* Bitfields in PTCR/PTSR (PDC) */
++#define USART3_RXTEN_OFFSET			0
++#define USART3_RXTEN_SIZE			1
++#define USART3_RXTDIS_OFFSET			1
++#define USART3_RXTDIS_SIZE			1
++#define USART3_TXTEN_OFFSET			8
++#define USART3_TXTEN_SIZE			1
++#define USART3_TXTDIS_OFFSET			9
++#define USART3_TXTDIS_SIZE			1
++
++/* Constants for USART_MODE */
++#define USART3_USART_MODE_NORMAL		0
++#define USART3_USART_MODE_RS485			1
++#define USART3_USART_MODE_HARDWARE		2
++#define USART3_USART_MODE_MODEM			3
++#define USART3_USART_MODE_ISO7816_T0		4
++#define USART3_USART_MODE_ISO7816_T1		6
++#define USART3_USART_MODE_IRDA			8
++
++/* Constants for USCLKS */
++#define USART3_USCLKS_MCK			0
++#define USART3_USCLKS_MCK_DIV			1
++#define USART3_USCLKS_SCK			3
++
++/* Constants for CHRL */
++#define USART3_CHRL_5				0
++#define USART3_CHRL_6				1
++#define USART3_CHRL_7				2
++#define USART3_CHRL_8				3
++
++/* Constants for PAR */
++#define USART3_PAR_EVEN				0
++#define USART3_PAR_ODD				1
++#define USART3_PAR_SPACE			2
++#define USART3_PAR_MARK				3
++#define USART3_PAR_NONE				4
++#define USART3_PAR_MULTI			6
++
++/* Constants for NBSTOP */
++#define USART3_NBSTOP_1				0
++#define USART3_NBSTOP_1_5			1
++#define USART3_NBSTOP_2				2
++
++/* Constants for CHMODE */
++#define USART3_CHMODE_NORMAL			0
++#define USART3_CHMODE_ECHO			1
++#define USART3_CHMODE_LOCAL_LOOP		2
++#define USART3_CHMODE_REMOTE_LOOP		3
++
++/* Constants for MSBF */
++#define USART3_MSBF_LSBF			0
++#define USART3_MSBF_MSBF			1
++
++/* Constants for OVER */
++#define USART3_OVER_X16				0
++#define USART3_OVER_X8				1
++
++/* Constants for CD */
++#define USART3_CD_DISABLE			0
++#define USART3_CD_BYPASS			1
++
++/* Constants for TO */
++#define USART3_TO_DISABLE			0
++
++/* Constants for TG */
++#define USART3_TG_DISABLE			0
++
++/* Constants for FI_DI_RATIO */
++#define USART3_FI_DI_RATIO_DISABLE		0
++
++/* Bit manipulation macros */
++#define USART3_BIT(name)				\
++	(1 << USART3_##name##_OFFSET)
++#define USART3_BF(name,value)				\
++	(((value) & ((1 << USART3_##name##_SIZE) - 1))	\
++	 << USART3_##name##_OFFSET)
++#define USART3_BFEXT(name,value)			\
++	(((value) >> USART3_##name##_OFFSET)		\
++	 & ((1 << USART3_##name##_SIZE) - 1))
++#define USART3_BFINS(name,value,old)			\
++	(((old) & ~(((1 << USART3_##name##_SIZE) - 1)	\
++		    << USART3_##name##_OFFSET))		\
++	 | USART3_BF(name,value))
++
++/* Register access macros */
++#define usart3_readl(port,reg)				\
++	__raw_readl((port)->regs + USART3_##reg)
++#define usart3_writel(port,reg,value)			\
++	__raw_writel((value), (port)->regs + USART3_##reg)
++
++#endif /* __ASM_AVR32_USART3_H__ */

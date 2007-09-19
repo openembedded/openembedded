@@ -1,0 +1,48 @@
+--- a/extra/scripts/fix_includes.sh	2005-08-18 00:49:41.000000000 +0200
++++ b/extra/scripts/fix_includes.sh	2006-09-27 13:23:12.000000000 +0200
+@@ -78,36 +78,6 @@ if [ ! -d "$KERNEL_SOURCE" ]; then
+     exit 1;
+ fi;
+ 
+-if [ -f "$KERNEL_SOURCE/Makefile" ] ; then
+-# set current VERSION, PATCHLEVEL, SUBLEVEL, EXTRAVERSION
+-eval `sed -n -e 's/^\([A-Z]*\) = \([0-9]*\)$/\1=\2/p' -e 's/^\([A-Z]*\) = \(-[-a-z0-9]*\)$/\1=\2/p' $KERNEL_SOURCE/Makefile`
+-else
+-ver=`grep UTS_RELEASE $KERNEL_SOURCE/include/linux/version.h | cut -d '"' -f 2`
+-VERSION=`echo "$ver" | cut -d '.' -f 1`
+-PATCHLEVEL=`echo "$ver" | cut -d '.' -f 2`
+-if echo "$ver" | grep -q '-' ; then
+-SUBLEVEL=`echo "$ver" | sed "s/${VERSION}.${PATCHLEVEL}.//" | cut -d '-' -f 1`
+-EXTRAVERSION=`echo "$ver" | sed "s/${VERSION}.${PATCHLEVEL}.${SUBLEVEL}-//"`
+-else
+-SUBLEVEL=`echo "$ver" | cut -d '.' -f 3`
+-#EXTRAVERSION=
+-fi
+-fi
+-if [ -z "$VERSION" -o -z "$PATCHLEVEL" -o -z "$SUBLEVEL" ]
+-then
+-    echo "Unable to determine version for kernel headers"
+-    echo -e "\tprovided in directory $KERNEL_SOURCE"
+-    exit 1
+-fi
+-
+-if [ "$MAKE_IS_SILENT" != "y" ]; then
+-echo "Current kernel version is $VERSION.$PATCHLEVEL.$SUBLEVEL${EXTRAVERSION}"
+-echo -e "\n"
+-echo "Using kernel headers from $VERSION.$PATCHLEVEL.$SUBLEVEL${EXTRAVERSION} for architecture '$TARGET_ARCH'"
+-echo -e "\tprovided in directory $KERNEL_SOURCE"
+-echo -e "\n"
+-fi
+-
+ # Create a symlink to include/asm
+ 
+ rm -f include/asm*
+@@ -172,7 +142,7 @@ fi;
+ 
+ 
+ # Annoyingly, 2.6.x kernel headers also need an include/asm-generic/ directory
+-if [ $VERSION -eq 2 ] && [ $PATCHLEVEL -ge 6 ] ; then
++if [ -d $KERNEL_SOURCE/include/asm-generic ] ; then
+     ln -fs $KERNEL_SOURCE/include/asm-generic include/asm-generic
+ fi;
+ 

@@ -1,0 +1,17 @@
+---
+ drivers/video/sidsafb.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+Index: linux-2.6.18-avr32/drivers/video/sidsafb.c
+===================================================================
+--- linux-2.6.18-avr32.orig/drivers/video/sidsafb.c	2006-11-27 15:47:16.000000000 +0100
++++ linux-2.6.18-avr32/drivers/video/sidsafb.c	2006-11-27 15:47:25.000000000 +0100
+@@ -107,7 +107,7 @@ static struct fb_videomode samsung_modes
+ 		.pixclock	= 145111,
+ 
+ 		.left_margin	= 17,		.right_margin	= 33,
+-		.upper_margin	= 8,		.lower_margin	= 10,
++		.upper_margin	= 10,		.lower_margin	= 10,
+ 		.hsync_len	= 16,		.vsync_len	= 1,
+ 
+ 		.sync		= FB_SYNC_PCLK_RISING,

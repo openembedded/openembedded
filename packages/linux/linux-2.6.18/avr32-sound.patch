@@ -1,0 +1,51 @@
+---
+ sound/Kconfig        |    2 ++
+ sound/Makefile       |    1 +
+ sound/avr32/Kconfig  |    6 ++++++
+ sound/avr32/Makefile |    3 +++
+ 4 files changed, 12 insertions(+)
+
+Index: linux-2.6.18-avr32/sound/Kconfig
+===================================================================
+--- linux-2.6.18-avr32.orig/sound/Kconfig	2006-09-12 10:44:15.000000000 +0200
++++ linux-2.6.18-avr32/sound/Kconfig	2006-09-12 10:45:14.000000000 +0200
+@@ -62,6 +62,8 @@ source "sound/aoa/Kconfig"
+ 
+ source "sound/arm/Kconfig"
+ 
++source "sound/avr32/Kconfig"
++
+ source "sound/mips/Kconfig"
+ 
+ # the following will depenend on the order of config.
+Index: linux-2.6.18-avr32/sound/Makefile
+===================================================================
+--- linux-2.6.18-avr32.orig/sound/Makefile	2006-09-12 10:44:15.000000000 +0200
++++ linux-2.6.18-avr32/sound/Makefile	2006-09-12 10:44:37.000000000 +0200
+@@ -5,6 +5,7 @@ obj-$(CONFIG_SOUND) += soundcore.o
+ obj-$(CONFIG_SOUND_PRIME) += oss/
+ obj-$(CONFIG_DMASOUND) += oss/
+ obj-$(CONFIG_SND) += core/ i2c/ drivers/ isa/ pci/ ppc/ arm/ synth/ usb/ sparc/ parisc/ pcmcia/ mips/
++obj-$(CONFIG_SND) += avr32/
+ obj-$(CONFIG_SND_AOA) += aoa/
+ 
+ ifeq ($(CONFIG_SND),y)
+Index: linux-2.6.18-avr32/sound/avr32/Kconfig
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ linux-2.6.18-avr32/sound/avr32/Kconfig	2006-09-12 10:45:52.000000000 +0200
+@@ -0,0 +1,6 @@
++# ALSA AVR32 drivers
++
++menu "ALSA AVR32 devices"
++	depends on SND != n && AVR32
++
++endmenu
+Index: linux-2.6.18-avr32/sound/avr32/Makefile
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ linux-2.6.18-avr32/sound/avr32/Makefile	2006-09-12 10:46:03.000000000 +0200
+@@ -0,0 +1,3 @@
++#
++# Makefile for ALSA
++#
