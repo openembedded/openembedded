@@ -5,7 +5,9 @@ LICENSE = "GPLv2"
 DEPENDS = "boost loudmouth libwpd librsvg goffice poppler libglade"
 RDEPENDS = "abiword"
 
-DEFAULT_PREFERENCE = "-1"
+PR = "r1"
+
+DEFAULT_PREFERENCE = "1"
 
 SRC_URI = "http://www.abiword.org/downloads/abiword/${PV}/source/abiword-plugins-${PV}.tar.gz \
            http://www.abiword.org/downloads/abiword/${PV}/source/abiword-${PV}.tar.gz \
