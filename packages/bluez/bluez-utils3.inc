@@ -76,6 +76,7 @@ do_install_append() {
 	rmdir ${D}${bindir} ${D}${sbindir}
 	chmod u+s ${D}${base_sbindir}/hciattach ${D}${base_sbindir}/hciconfig
 	install -m 0644 ${WORKDIR}/hcid.conf ${D}${sysconfdir}/bluetooth/
+        install -m 0644 ${S}/rfcomm/rfcomm.conf ${D}${sysconfdir}/bluetooth/
         install -m 0755 ${S}/daemon/.libs/passkey-agent ${D}${base_bindir}/
 }
 
@@ -86,14 +87,6 @@ INITSCRIPT_PARAMS = "defaults 23 19"
 
 PACKAGES =+ "${PN}-compat"
 
-CONFFILES_${PN} = " \
-                   ${sysconfdir}/bluetooth/hcid.conf \
-                   ${sysconfdir}/default/bluetooth \
-                  "
-
-CONFFILES_${PN}-compat = " \
-                          ${sysconfdir}/bluetooth/rfcomm.conf \
-			 " 
 
 FILES_${PN} = " \
                ${base_sbindir}/hcid \

@@ -18,6 +18,12 @@ EXTRA_OECONF = " \
 		 --enable-test \
 		" 
 
+CONFFILES_${PN} = " \
+                   ${sysconfdir}/bluetooth/hcid.conf \
+                   ${sysconfdir}/default/bluetooth \
+                  "
 
-CONFFILES_${PN} = "${sysconfdir}/bluetooth/hcid.conf ${sysconfdir}/bluetooth/rfcomm.conf \
-	${sysconfdir}/default/bluetooth"
+CONFFILES_${PN}-compat = " \
+                          ${sysconfdir}/bluetooth/rfcomm.conf \
+                         "
+
