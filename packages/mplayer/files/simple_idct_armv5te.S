@@ -25,7 +25,7 @@
 .arch armv5te
 
 /* IMPORTANT: this value should be the same as defined in dsputil.h */
-#define MAX_NEG_CROP 2048
+#define MAX_NEG_CROP 1024
 
 /*
  * ARM EABI guarantees 8 byte stack alignment, so we can use LDRD instructions
