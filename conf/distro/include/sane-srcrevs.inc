@@ -91,3 +91,5 @@ SRCREV_pn-sjf2410-linux-native ?= "933"
 SRCREV_pn-sphyrna ?= "44"
 SRCREV_pn-webkit-gtk ?= "25615"
 SRCREV_pn-xoo ?= "1623"
+SRCREV_pn-mplayer ?= "24587"
+
