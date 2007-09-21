@@ -35,7 +35,7 @@ RCONFLICTS_${PN} = "mplayer-atty"
 RREPLACES_${PN} = "mplayer-atty"
 
 PV = "0.0+1.0rc1+svnr${SRCREV}"
-PR = "r2"
+PR = "r3"
 DEFAULT_PREFERENCE = "-1"
 
 PARALLEL_MAKE = ""
@@ -183,10 +183,10 @@ EXTRA_OECONF_append_hx4700 = " --enable-imageon "
 #enable pxa270 overlay support
 EXTRA_OECONF_append_spitz = " --enable-pxa --enable-iwmmxt "
 EXTRA_OECONF_append_akita = " --enable-pxa --enable-iwmmxt "
-EXTRA_OECONF_append_a780 = " --enable-pxa "
-EXTRA_OECONF_append_magician = " --enable-pxa "
-EXTRA_OECONF_append_htcuniversal = " --enable-pxa "
-EXTRA_OECONF_append_palmld = " --enable-pxa "
+EXTRA_OECONF_append_a780 = " --enable-pxa --enable-iwmmxt"
+EXTRA_OECONF_append_magician = " --enable-pxa --enable-iwmmxt"
+EXTRA_OECONF_append_htcuniversal = " --enable-pxa --enable-iwmmxt"
+EXTRA_OECONF_append_palmld = " --enable-pxa --enable-iwmmxt"
 
 #build with support for the iwmmxt instruction support (pxa270 and up)
 TARGET_CC_ARCH_spitz = "-march=iwmmxt -mtune=iwmmxt"
