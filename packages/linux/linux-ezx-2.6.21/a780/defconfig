@@ -1,7 +1,7 @@
 #
 # Automatically generated make config: don't edit
 # Linux kernel version: 2.6.21.4
-# Fri Sep 21 17:05:13 2007
+# Fri Sep 21 18:10:00 2007
 #
 CONFIG_ARM=y
 CONFIG_SYS_SUPPORTS_APM_EMULATION=y
@@ -590,8 +590,8 @@ CONFIG_MTD_PHYSMAP_BANKWIDTH=2
 # CONFIG_MTD_ARM_INTEGRATOR is not set
 # CONFIG_MTD_SHARP_SL is not set
 CONFIG_MTD_EZX=y
-CONFIG_MTD_EZX_A780=y
-# CONFIG_MTD_EZX_A780_ALTERNATE is not set
+# CONFIG_MTD_EZX_A780 is not set
+CONFIG_MTD_EZX_A780_ALTERNATE=y
 # CONFIG_MTD_EZX_A1200 is not set
 # CONFIG_MTD_EZX_E2 is not set
 # CONFIG_MTD_EZX_E6 is not set
