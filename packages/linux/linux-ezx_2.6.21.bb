@@ -2,15 +2,18 @@ DESCRIPTION = "2.6 Linux Development Kernel for the Motorola GSM phones A780 and
 AUTHOR = "The OpenEZX Team <openezx-devel@lists.openezx.org>"
 HOMEPAGE = "http://www.openezx.org"
 EZX = "ezxdev"
-PR = "${EZX}-r17"
+PR = "${EZX}-r18"
 
 require linux.inc
+
+RPSRC = "http://www.rpsys.net/openzaurus/patches/archive"
 
 SRC_URI = " \
     ${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-${PV}.tar.bz2 \
     file://logo_linux_clut224.ppm \
     \
     file://patches/patch-2.6.21.4;patch=1 \
+    ${RPSRC}/pxa27x_overlay-r5.patch;patch=1 \
     file://patches/ezx-core.patch;patch=1 \
     file://patches/ezx-bp.patch;patch=1 \
     file://patches/ezx-pm.patch;patch=1 \
@@ -58,7 +61,6 @@ SRC_URI = " \
     file://patches/asoc-fix-loopback.patch;patch=1 \
     file://patches/ezx-asoc.patch;patch=1 \     
     file://patches/mtdfix.patch;patch=1 \
-    file://patches/lcd_18BPP_support.diff;patch=1 \
     file://defconfig \
     \
     "
