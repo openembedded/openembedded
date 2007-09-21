@@ -26,7 +26,7 @@ case `cpuinfo_id` in
 		GSM_DEV="/dev/ttyS0"
 		;;
         "Motorola Ezx Platform")
-                GSMD_OPTS="-s 115200 -F"
+                GSMD_OPTS="-s 115200 -F -v ti"
                 GSM_DEV="/dev/mux0"
                 ;;
 	*)
