@@ -13,3 +13,8 @@ PACKAGES =+ "libguichan libguichan-sdl"
 
 FILES_libguichan = "${libdir}/libguichan.so.*"
 FILES_libguichan-sdl = "${libdir}/libguichan_sdl.so.*"
+
+do_stage () {
+	autotools_stage_all
+}
+
