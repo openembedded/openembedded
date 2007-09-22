@@ -2,7 +2,7 @@ DESCRIPTION = "2.6 Linux Development Kernel for the Motorola GSM phones A780 and
 AUTHOR = "The OpenEZX Team <openezx-devel@lists.openezx.org>"
 HOMEPAGE = "http://www.openezx.org"
 EZX = "ezxdev"
-PR = "${EZX}-r19"
+PR = "${EZX}-20"
 
 require linux.inc
 
@@ -84,9 +84,8 @@ S = "${WORKDIR}/linux-${PV}"
 
 ##############################################################
 # kernel image resides on a seperate flash partition (for now)
-#
-FILES_kernel-image = ""
-ALLOW_EMPTY  = "1"
+# But we can flash it from userspace (flash_unlock /dev/mtdX && flash_eraseall /dev/mtdX && flashcp /boot/zImage /dev/mtdX)
+# so lets make a package of it. What about a postinst that flashes the new kernel?
 
 COMPATIBLE_HOST = "arm.*-linux"
 COMPATIBLE_MACHINE = '(a780|e680|a1200|rorkre2|rokre6)'
