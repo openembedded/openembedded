@@ -1,0 +1,11 @@
+--- cairo-1.4.8/src/cairo-directfb-surface.c~org	2007-09-22 19:34:35.000000000 -0400
++++ cairo-1.4.8/src/cairo-directfb-surface.c	2007-09-22 19:36:01.000000000 -0400
+@@ -1572,7 +1572,7 @@
+         NULL, /* show_glyphs */
+ #endif
+         NULL, /* snapshot */
+-	_cairo_directfb_is_similar,
++	_cairo_directfb_surface_is_similar,
+ 	NULL /* reset */
+ };
+ 
