@@ -2,7 +2,7 @@ DESCRIPTION = "2.6 Linux Development Kernel for the Motorola GSM phones A780 and
 AUTHOR = "The OpenEZX Team <openezx-devel@lists.openezx.org>"
 HOMEPAGE = "http://www.openezx.org"
 EZX = "ezxdev"
-PR = "${EZX}-r18"
+PR = "${EZX}-r19"
 
 require linux.inc
 
@@ -13,7 +13,16 @@ SRC_URI = " \
     file://logo_linux_clut224.ppm \
     \
     file://patches/patch-2.6.21.4;patch=1 \
+    ${RPSRC}/lzo_kernel-r0.patch;patch=1 \
+    ${RPSRC}/lzo_jffs2-r0.patch;patch=1 \
+    ${RPSRC}/lzo_crypto-r1.patch;patch=1 \
+    ${RPSRC}/lzo_jffs2_lzomode-r0.patch;patch=1 \
+    ${RPSRC}/lzo_jffs2_sysfs-r0.patch;patch=1 \
+    ${RPSRC}/pxa_timerfix-r0.patch;patch=1 \
     ${RPSRC}/pxa27x_overlay-r5.patch;patch=1 \
+    ${RPSRC}/pxa-linking-bug.patch;patch=1;status=unmergable \
+    ${RPSRC}/mmcsd_large_cards-r0.patch;patch=1;status=hack \
+    ${RPSRC}/mmcsd_no_scr_check-r0.patch;patch=1;status=hack \
     file://patches/ezx-core.patch;patch=1 \
     file://patches/ezx-bp.patch;patch=1 \
     file://patches/ezx-pm.patch;patch=1 \
@@ -28,6 +37,9 @@ SRC_URI = " \
     file://patches/e6-mci.patch;patch=1 \
     file://patches/pxa27x-udc-support.2.patch;patch=1 \
     file://patches/ezx-emu.patch;patch=1 \
+    file://patches/ezx-eoc.patch;patch=1 \ 
+    file://patches/a1200-eoc.patch;patch=1 \
+    file://patches/e6-eoc.patch;patch=1 \
     file://patches/a780-emu.patch;patch=1 \
     file://patches/e680-emu.patch;patch=1 \
     file://patches/ezx-mtd-map.patch;patch=1 \
@@ -40,9 +52,6 @@ SRC_URI = " \
     file://patches/e680-ts.patch;patch=1 \
     file://patches/a1200-ts.patch;patch=1 \
     file://patches/e6-ts.patch;patch=1 \
-    file://patches/ezx-eoc.patch;patch=1 \
-    file://patches/a1200-eoc.patch;patch=1 \
-    file://patches/e6-eoc.patch;patch=1 \
     file://patches/a780-flip.patch;patch=1 \
     file://patches/e680-locksw.patch;patch=1 \
     file://patches/a780-leds.patch;patch=1 \

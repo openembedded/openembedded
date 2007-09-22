@@ -1,4 +1,5 @@
 patch-2.6.21.4
+mtdfix.patch
 
 ezx-core.patch
 # ezx-core TODO: should be ezx-common
@@ -25,10 +26,12 @@ ezx-pcap.patch
 a780-pcap.patch
 e680-pcap.patch
 a1200-pcap.patch
+e6-pcap.patch
 
 a780-mci.patch
 e680-mci.patch
 a1200-mci.patch
+e6-mci.patch
 
 pxa27x-udc-support.2.patch
 
@@ -36,23 +39,18 @@ ezx-emu.patch
 # ezx-emu TODO:
 # userspace interface for controling emu
 # read adc to find which accessory is plugged
-
 a780-emu.patch
 e680-emu.patch
 
+ezx-eoc.patch
+a1200-eoc.patch
+e6-eoc.patch
+
 ezx-mtd-map.patch
-# ezx-mtd-map TODO:
-# at least the original partition should go on the ezx-phone.c file
 
 ezx-serial-bug-workaround.patch
-# ezx-serial-bug TODO:
-# does anyone have a phone with this bug?
 
 pxa-kbd.patch
-# pxa-kbd TODO:
-# test multi-key presses
-# ask Harald about driver status/sending mainline
-
 a780-kbd.patch
 e680-kbd.patch
 
@@ -60,6 +58,7 @@ pcap-ts.patch
 a780-ts.patch
 e680-ts.patch
 a1200-ts.patch
+e6-ts.patch
 
 ezx-backlight.patch
 
@@ -83,6 +82,11 @@ mux-fix-tty-driver.patch
 mux-linux-2.6.21-fix.patch
 #mux-ifdef-ezx-features.patch
 #mux_debug.patch
+
+asoc-pxa-ssp.patch
+asoc-fix-loopback.patch
+ezx-asoc.patch
+
 # mux_cli TODO:
 # merge patches
 # try to understand the code and cleanup (painful)
@@ -92,6 +96,8 @@ mux-linux-2.6.21-fix.patch
 #	can NOT run as module (yet)
 #		pxa-ohci, ts0710_mux, ts0710_mux_usb, ezx-bp
 
+# the folowing break too much stuff on other phones.
+# i2c-core-fix-a1200.patch (see ezx-eoc.c)
+# pxa27x-udc-fix-a1200.patch (see ezx-a1200.c)
+
 # incomplete
-asoc-pxa-ssp.patch
-ezx-asoc.patch
