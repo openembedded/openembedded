@@ -1,4 +1,4 @@
-PR = "r5"
+PR = "r6"
 DESCRIPTION = "The GNU cc and gcc C compilers."
 HOMEPAGE = "http://www.gnu.org/software/gcc/"
 SECTION = "devel"
@@ -30,19 +30,19 @@ SRC_URI = "ftp://ftp.gnu.org/pub/gnu/gcc/gcc-4.1.2/gcc-4.1.2.tar.bz2 \
 	file://unbreak-armv4t.patch;patch=1 \
         file://fix-ICE-in-arm_unwind_emit_set.diff;patch=1 \
 	file://cache-amnesia.patch;patch=1 \
-	"
+	file://gfortran.patch;patch=1 \
+       "
 
 SRC_URI_append_sh3  = " file://sh3-installfix-fixheaders.patch;patch=1 "
 
 #Set the fortran bits
-# 'fortran' or '', not 'f77' like gcc3 had
+# ',fortran' or '', not 'f77' like gcc3 had
 FORTRAN = ""
-HAS_GFORTRAN = "no"
-HAS_G2C = "no"
 
 #Set the java bits
-JAVA_arm = ""
 JAVA = ""
+JAVA_arm = ""
+
 
 LANGUAGES = "c,c++${FORTRAN}${JAVA}"
 require gcc3-build.inc

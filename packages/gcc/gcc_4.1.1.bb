@@ -46,8 +46,6 @@ SRC_URI_append_linux = " file://ppc-gcc-41-20060515.patch;patch=1 \
 #Set the fortran bits
 # 'fortran' or '', not 'f77' like gcc3 had
 FORTRAN = ""
-HAS_GFORTRAN = "no"
-HAS_G2C = "no"
 
 #Set the java bits
 JAVA_arm = ""

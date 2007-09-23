@@ -9,7 +9,7 @@ UBOOT_OPENMOKO_REV = "2943"
 UBOOT_MACHINES = "gta01bv2 gta01bv3 gta01bv4"
 
 PV = "1.2.0+git${UBOOT_UPSTREAM_REV}+svn${UBOOT_OPENMOKO_REV}"
-PR = "r0"
+PR = "r1"
 
 PROVIDES = "virtual/bootloader"
 S = "${WORKDIR}/git"
@@ -30,16 +30,9 @@ do_quilt() {
 }
 
 do_svnrev() {
-	FILE=${S}/tools/setlocalversion
-	OLDFILE=$FILE.old
-	NEWFILE=$FILE.new
-	cp $FILE $OLDFILE
-	LINES=`cat $OLDFILE | wc -l`
-	LINES_WE_WANT=$(($LINES-1))
-	LASTLINE=`cat $OLDFILE | tail -n 1`
-	cat $OLDFILE | head -n $LINES_WE_WANT > $NEWFILE
-	echo ${LASTLINE}_${PR} >> $NEWFILE
-	rm $FILE && mv $NEWFILE $FILE
+        mv -f tools/setlocalversion tools/setlocalversion.old
+        echo -n "echo " >>tools/setlocalversion
+        echo ${PV}      >>tools/setlocalversion
 }
 
 do_configure_prepend() {

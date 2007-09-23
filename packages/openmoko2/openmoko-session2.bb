@@ -1,19 +1,20 @@
-DESCRIPTION = "Custom MB session files for OpenMoko"
+DESCRIPTION = "Custom Matchbox session files for OpenMoko"
 LICENSE = "GPL"
 SECTION = "x11"
 RDEPENDS = "matchbox-common matchbox-applet-startup-monitor matchbox-panel-2"
 RDEPENDS += "openmoko-common2 openmoko-today2 openmoko-dialer2"
 RCONFLICTS = "openmoko-session"
-PR = "r31"
+PR = "r33"
 
 SRC_URI = "file://etc"
 S = ${WORKDIR}
 
 do_install() {
-	cp -R ${S}/etc ${D}/etc
-	rm -fR ${D}/etc/.svn
-	rm -fR ${D}/etc/matchbox/.svn
-	chmod -R 755 ${D}/etc
+        install -d ${D}${sysconfdir}
+	cp -R ${S}/etc/* ${D}${sysconfdir}
+	rm -fR ${D}${sysconfdir}/.svn
+	rm -fR ${D}${sysconfdir}/matchbox/.svn
+	chmod -R 755 ${D}${sysconfdir}/
 }
 
 pkg_postinst_openmoko-session2 () {
@@ -31,3 +32,6 @@ gconftool-2 --config-source=xml::$D${sysconfdir}/gconf/gconf.xml.defaults --dire
 }
 
 PACKAGE_ARCH = "all"
+
+CONFFILES_${PN} = "${sysconfdir}/matchbox/session"
+

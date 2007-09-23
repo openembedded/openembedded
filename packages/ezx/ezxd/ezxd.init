@@ -49,8 +49,8 @@ start_it_up()
 
 shut_it_down()
 {
-  if [ -d $EVENTDIR ]; then
-      run-parts --reverse --arg=stop $EVENTDIR
+  if [ -d "$EVENTDIR" ]; then
+      run-parts --arg=stop $EVENTDIR
   fi
   echo -n "Stopping $DESC: "
   start-stop-daemon --stop  --quiet --pidfile $PIDFILE 

@@ -9,7 +9,7 @@ case `cpuinfo_id` in
 		GSM_RES="/sys/bus/platform/devices/gta01-pm-gsm.0/reset"
 		GSM_DEV="/dev/ttySAC0"
 		;;
-	"HTC Apache"|"HTC Blueangel")
+	"HTC Apache"|"HTC Blueangel"|"HTC Universal")
 		GSMD_OPTS="-s 115200 -F"
 		GSM_DEV="/dev/ttyS0"
 		;;
@@ -21,16 +21,12 @@ case `cpuinfo_id` in
 		GSMD_OPTS="-s 115200 -F"
 		GSM_DEV="/dev/ttyS1"
 		;;
-        "HTC Universal")
-		GSMD_OPTS="-s 115200 -F -w 1"
-		GSM_DEV="/dev/ttyS0"
-		;;
 	"Palm Treo 650")
 		GSMD_OPTS="-s 460800 -F -w 1"
 		GSM_DEV="/dev/ttyS0"
 		;;
         "Motorola Ezx Platform")
-                GSMD_OPTS="-s 115200 -F"
+                GSMD_OPTS="-s 115200 -F -v ti"
                 GSM_DEV="/dev/mux0"
                 ;;
 	*)

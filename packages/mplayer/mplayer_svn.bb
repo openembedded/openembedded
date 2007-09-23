@@ -2,7 +2,7 @@ DESCRIPTION = "Open Source multimedia player."
 SECTION = "multimedia"
 PRIORITY = "optional"
 HOMEPAGE = "http://www.mplayerhq.hu/"
-DEPENDS = "virtual/libsdl libmad zlib libpng jpeg liba52 freetype fontconfig alsa-lib lzo ncurses lame"
+DEPENDS = "virtual/libsdl libmad zlib libpng jpeg liba52 freetype fontconfig alsa-lib lzo ncurses lame libxv virtual/libx11"
 RDEPENDS = "mplayer-common"
 LICENSE = "GPL"
 SRC_URI = "svn://svn.mplayerhq.hu/mplayer;module=trunk \
@@ -11,6 +11,7 @@ SRC_URI = "svn://svn.mplayerhq.hu/mplayer;module=trunk \
            file://vo_w100_fb.h \
            file://vo_pxa.c \
            file://vo_pxa.h \
+	   file://simple_idct_armv5te.S \
            file://Makefile-codec-cfg.patch;patch=1 \
            file://w100-configure-svn.patch;patch=1 \
            file://w100-video_out.patch;patch=1 \
@@ -22,52 +23,61 @@ SRC_URI = "svn://svn.mplayerhq.hu/mplayer;module=trunk \
            file://pxa_configure.patch;patch=1 \
            file://pxa-video_out.patch;patch=1 "
 
+# This is required for the collie machine only as all stacks in that
+# machine seem to be set to executable by the toolchain. If someone
+# discovers this is more general than please make this more general
+# ie. for all armv4 machines.
+SRC_URI_append_collie = "file://disable-executable-stack-test.patch;patch=1"
+PACKAGE_ARCH_mplayer_collie = "collie"
+PACKAGE_ARCH_mencoder_collie = "collie"
+
 RCONFLICTS_${PN} = "mplayer-atty"
 RREPLACES_${PN} = "mplayer-atty"
 
-PV = "0.0+1.0rc1+svn${SRCDATE}"
-PR = "r1"
+PV = "0.0+1.0rc1+svnr${SRCREV}"
+PR = "r3"
 DEFAULT_PREFERENCE = "-1"
 
 PARALLEL_MAKE = ""
 
-DEPENDS_append_c7x0 = " sharp-aticore-oss"
+DEPENDS_append_c7x0 = " sharp-aticore-oss libw100 "
+DEPENDS_append_hx4700 = " libw100 "
 
-S = "${WORKDIR}/trunk/"
+S = "${WORKDIR}/trunk"
 
 PACKAGES =+ "mencoder"
 
-FILES_${PN} = "${bindir}/mplayer"
+FILES_${PN} = "${bindir}/mplayer ${libdir}"
 FILES_mencoder = "${bindir}/mencoder"
 
 inherit autotools pkgconfig
 
 EXTRA_OECONF = " \
         --prefix=/usr \
-        --mandir=${mandir} \
+	--mandir=${mandir} \
         --target=${TARGET_SYS} \
-        \
-        --enable-mencoder \
-        --disable-gui \
-        --enable-largefiles \
-        --disable-linux-devfs \
-        --disable-lirc \
-        --disable-lircc \
+	\
+	--enable-mencoder \
+	--disable-gui \
+	--enable-largefiles \
+	--disable-linux-devfs \
+	--disable-lirc \
+	--disable-lircc \
         --disable-joystick \
         --disable-vm \
         --disable-xf86keysym \
-        --disable-tv \
+	--disable-tv \
         --disable-tv-v4l2 \
         --disable-tv-bsdbt848 \
-        --enable-rtc \
+	--enable-rtc \
         --enable-network \
         --disable-winsock2 \
-        --disable-smb \
+	--disable-smb \
         --disable-live \
-		--disable-dvdnav \
+	--disable-dvdnav \
         --disable-dvdread \
-        --disable-dvdread-internal \
-        --disable-libdvdcss-internal \
+	--disable-libdvdcss-internal \
+	--disable-dvdread-internal \
         --disable-cdparanoia \
         --enable-freetype \
         --disable-unrarlib \
@@ -86,7 +96,6 @@ EXTRA_OECONF = " \
         --enable-jpeg \
         --disable-libcdio \
         --disable-liblzo \
-        --disable-win32 \
         --disable-qtx \
         --disable-xanim \
         --disable-real \
@@ -98,7 +107,7 @@ EXTRA_OECONF = " \
         --disable-libavformat_so \
         --disable-libpostproc_so \
         \
-        --enable-tremor-low \
+	--enable-tremor-low \
         \
         --disable-speex \
         --disable-theora \
@@ -109,19 +118,14 @@ EXTRA_OECONF = " \
         --disable-toolame \
         --disable-twolame \
         --disable-xmms \
-        --disable-mp3lib \
-        --disable-libdts \
+	--disable-mp3lib \
         --enable-libmpeg2 \
         --disable-musepack \
-        --disable-amr_nb \
-        --disable-amr_nb-fixed \
-        --disable-amr_wb \
-        \
+	\
         --disable-gl \
-        --disable-dga \
         --disable-vesa \
         --disable-svga \
-        --enable-sdl \
+	--enable-sdl \
         --disable-aa \
         --disable-caca \
         --disable-ggi \
@@ -133,12 +137,12 @@ EXTRA_OECONF = " \
         --disable-dvbhead \
         --disable-mga \
         --disable-xmga \
-        --disable-xv \
+        --enable-xv \
         --disable-xvmc \
         --disable-vm \
         --disable-xinerama \
-        --disable-x11 \
-        --enable-fbdev \
+        --enable-x11 \
+	--enable-fbdev \
         --disable-mlib \
         --disable-3dfx \
         --disable-tdfxfb \
@@ -173,18 +177,22 @@ EXTRA_OECONF_append_arm = " --disable-decoder=vorbis_decoder \
 EXTRA_OECONF_append_progear = " --disable-sse --disable-3dnow --disable-mmxext --disable-sse2"
 
 #enable support for the ati imageon series (w100 and w3220)
-EXTRA_OECONF_append_c7x0 = " --enable-w100 "
+EXTRA_OECONF_append_c7x0 = " --enable-w100 --enable-imageon "
 EXTRA_OECONF_append_hx4700 = " --enable-imageon "
 
 #enable pxa270 overlay support
-EXTRA_OECONF_append_spitz = " --enable-pxa "
-EXTRA_OECONF_append_a780 = " --enable-pxa "
-EXTRA_OECONF_append_magician = " --enable-pxa "
-EXTRA_OECONF_append_htcuniversal = " --enable-pxa "
+EXTRA_OECONF_append_spitz = " --enable-pxa --enable-iwmmxt "
+EXTRA_OECONF_append_akita = " --enable-pxa --enable-iwmmxt "
+EXTRA_OECONF_append_a780 = " --enable-pxa --enable-iwmmxt"
+EXTRA_OECONF_append_magician = " --enable-pxa --enable-iwmmxt"
+EXTRA_OECONF_append_htcuniversal = " --enable-pxa --enable-iwmmxt"
+EXTRA_OECONF_append_palmld = " --enable-pxa --enable-iwmmxt"
 
 #build with support for the iwmmxt instruction support (pxa270 and up)
 TARGET_CC_ARCH_spitz = "-march=iwmmxt -mtune=iwmmxt"
 PACKAGE_ARCH_spitz = "iwmmxt"
+TARGET_CC_ARCH_akita = "-march=iwmmxt -mtune=iwmmxt"
+PACKAGE_ARCH_akita = "iwmmxt"
 TARGET_CC_ARCH_a780 = "-march=iwmmxt -mtune=iwmmxt"
 PACKAGE_ARCH_a780 = "iwmmxt"
 TARGET_CC_ARCH_hx4700 = "-march=iwmmxt -mtune=iwmmxt"
@@ -193,15 +201,23 @@ TARGET_CC_ARCH_magician = "-march=iwmmxt -mtune=iwmmxt"
 PACKAGE_ARCH_magician = "iwmmxt"
 TARGET_CC_ARCH_htcuniversal = "-march=iwmmxt -mtune=iwmmxt"
 PACKAGE_ARCH_htcuniversal = "iwmmxt"
+TARGET_CC_ARCH_palmld = "-march=iwmmxt -mtune=iwmmxt"
+PACKAGE_ARCH_palmld = "iwmmxt"
 
 do_configure() {
 	cp ${WORKDIR}/vo_w100.c ${S}/libvo
 	cp ${WORKDIR}/vo_w100_api.h ${S}/libvo
 	cp ${WORKDIR}/vo_w100_fb.h ${S}/libvo
-    cp ${WORKDIR}/vo_pxa.c ${S}/libvo
-    cp ${WORKDIR}/vo_pxa.h ${S}/libvo
+	cp ${WORKDIR}/vo_pxa.c ${S}/libvo
+	cp ${WORKDIR}/vo_pxa.h ${S}/libvo
+	cp ${WORKDIR}/simple_idct_armv5te.S ${S}/libavcodec/armv4l/
 
-    ./configure ${EXTRA_OECONF}
+	sed -i 's|/usr/include|${STAGING_INCDIR}|g' ${S}/configure
+	sed -i 's|/usr/lib|${STAGING_LIBDIR}|g' ${S}/configure
+	sed -i 's|/usr/\S*include[\w/]*||g' ${S}/configure
+	sed -i 's|/usr/\S*lib[\w/]*||g' ${S}/configure
+
+        ./configure ${EXTRA_OECONF}
 }
 
 do_compile () {

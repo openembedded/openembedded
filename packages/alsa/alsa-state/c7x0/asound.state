@@ -5,16 +5,16 @@ state.Corgi {
 		comment.count 2
 		comment.range '0 - 127'
 		iface MIXER
-		name 'Playback Volume'
-		value.0 103
-		value.1 103
+		name 'Master Playback Volume'
+		value.0 98
+		value.1 98
 	}
 	control.2 {
 		comment.access 'read write'
 		comment.type BOOLEAN
 		comment.count 2
 		iface MIXER
-		name 'Playback Switch'
+		name 'Master Playback ZC Switch'
 		value.0 false
 		value.1 false
 	}
@@ -25,15 +25,15 @@ state.Corgi {
 		comment.range '0 - 31'
 		iface MIXER
 		name 'Capture Volume'
-		value.0 23
-		value.1 23
+		value.0 31
+		value.1 31
 	}
 	control.4 {
 		comment.access 'read write'
 		comment.type BOOLEAN
 		comment.count 2
 		iface MIXER
-		name 'Capture Switch'
+		name 'Line Capture Switch'
 		value.0 false
 		value.1 false
 	}
@@ -51,7 +51,7 @@ state.Corgi {
 		comment.count 1
 		iface MIXER
 		name 'Capture Mic Switch'
-		value true
+		value false
 	}
 	control.7 {
 		comment.access 'read write'
@@ -106,7 +106,7 @@ state.Corgi {
 		comment.count 1
 		iface MIXER
 		name 'Output Mixer Line Bypass Switch'
-		value true
+		value false
 	}
 	control.13 {
 		comment.access 'read write'
@@ -122,7 +122,7 @@ state.Corgi {
 		comment.count 1
 		iface MIXER
 		name 'Output Mixer HiFi Playback Swit'
-		value false
+		value true
 	}
 	control.15 {
 		comment.access 'read write'
@@ -141,11 +141,10 @@ state.Corgi {
 		comment.access 'read write'
 		comment.type ENUMERATED
 		comment.count 1
-		comment.item.0 Auto
-		comment.item.1 On
-		comment.item.2 Off
+		comment.item.0 On
+		comment.item.1 Off
 		iface MIXER
 		name 'Speaker Function'
-		value On
+		value Off
 	}
 }

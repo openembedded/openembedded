@@ -1,0 +1,270 @@
+Index: linux-2.6.21/arch/arm/mach-pxa/ezx-a1200.c
+===================================================================
+--- linux-2.6.21.orig/arch/arm/mach-pxa/ezx-a1200.c	2007-08-18 18:35:12.000000000 +0800
++++ linux-2.6.21/arch/arm/mach-pxa/ezx-a1200.c	2007-08-18 18:36:38.000000000 +0800
+@@ -122,7 +122,7 @@
+        .pixclock = 192308,
+        .xres = 240,
+        .yres = 320,
+-       .bpp = 8,
++       .bpp = 18,
+        .hsync_len = 10,
+        .left_margin = 20,
+        .right_margin = 10,
+@@ -135,8 +135,8 @@
+ static struct pxafb_mach_info a1200_fb_info = {
+        .modes = &mode_a1200,
+        .num_modes = 1,
+-       .lccr0 = 0x022008B8,
+-       .lccr3 = 0xC130FF13,
++       .lccr0 = 0x002008b8,
++       .lccr3 = 0xC630FF13,
+        .pxafb_backlight_power = ezx_backlight_power,
+        .pxafb_lcd_power = &ezx_lcd_power,
+ };
+Index: linux-2.6.21/drivers/video/cfbfillrect.c
+===================================================================
+--- linux-2.6.21.orig/drivers/video/cfbfillrect.c	2007-08-18 18:38:36.000000000 +0800
++++ linux-2.6.21/drivers/video/cfbfillrect.c	2007-08-18 18:39:03.000000000 +0800
+@@ -87,7 +87,10 @@
+ 		return 0x00001001ul*pixel;
+ 	case 16:
+ 		return 0x00010001ul*pixel;
++	case 18:
++	case 19:
+ 	case 24:
++	case 25:
+ 		return 0x00000001ul*pixel;
+ 	case 32:
+ 		return 0x00000001ul*pixel;
+Index: linux-2.6.21/drivers/video/pxafb.c
+===================================================================
+--- linux-2.6.21.orig/drivers/video/pxafb.c	2007-08-18 17:58:11.000000000 +0800
++++ linux-2.6.21/drivers/video/pxafb.c	2007-08-18 18:46:50.000000000 +0800
+@@ -9,6 +9,8 @@
+  *  which in turn is
+  *   Based on acornfb.c Copyright (C) Russell King.
+  *
++ *   Added 18,19,24,25 BPP support by Alex Zhang <celeber2@gmail.com>
++ *
+  * This file is subject to the terms and conditions of the GNU General Public
+  * License.  See the file COPYING in the main directory of this archive for
+  * more details.
+@@ -190,6 +192,10 @@
+         case 4:  ret = LCCR3_4BPP; break;
+         case 8:  ret = LCCR3_8BPP; break;
+         case 16: ret = LCCR3_16BPP; break;
++		case 18: ret = LCCR3_18BPP; break;
++        case 19: ret = LCCR3_19BPP; break;
++        case 24: ret = LCCR3_24BPP; break;
++        case 25: ret = LCCR3_25BPP; break; 
+         }
+         return ret;
+ }
+@@ -274,6 +280,8 @@
+ 	if (var->yres < MIN_YRES)
+ 		var->yres = MIN_YRES;
+ 
++	if (var->bits_per_pixel == 32) var->bits_per_pixel = 18; // ALEX cheats Xserver
++
+ 	if (inf->fixed_modes) {
+ 		struct pxafb_mode_info *mode;
+ 
+@@ -306,6 +314,26 @@
+ 		var->green.offset = 5;  var->green.length = 6;
+ 		var->blue.offset  = 0;  var->blue.length  = 5;
+ 		var->transp.offset = var->transp.length = 0;
++	} else if (var->bits_per_pixel == 18) {
++		var->red.offset   = 12; var->red.length   = 6;
++		var->green.offset = 6;  var->green.length = 6;
++		var->blue.offset  = 0;  var->blue.length  = 6;
++		var->transp.offset = var->transp.length = 0;
++	} else if (var->bits_per_pixel == 19) {
++		var->red.offset   = 12; var->red.length   = 6;
++		var->green.offset = 6;  var->green.length = 6;
++		var->blue.offset  = 0;  var->blue.length  = 6;
++		var->transp.offset= 18; var->transp.length = 1;
++	} else if (var->bits_per_pixel == 24) {
++		var->red.offset   = 16; var->red.length   = 8;
++		var->green.offset = 8;  var->green.length = 8;
++		var->blue.offset  = 0;  var->blue.length  = 8;
++		var->transp.offset = var->transp.length = 0;
++	} else if (var->bits_per_pixel == 25) {
++		var->red.offset   = 16; var->red.length   = 8;
++		var->green.offset = 8;  var->green.length = 8;
++		var->blue.offset  = 0;  var->blue.length  = 8;
++		var->transp.offset= 24; var->transp.length = 1;
+ 	} else {
+ 		var->red.offset = var->green.offset = var->blue.offset = var->transp.offset = 0;
+ 		var->red.length   = 8;
+@@ -341,7 +369,12 @@
+ 
+ 	pr_debug("pxafb: set_par\n");
+ 
+-	if (var->bits_per_pixel == 16)
++	if (var->bits_per_pixel == 16
++     || var->bits_per_pixel == 18 
++     || var->bits_per_pixel == 19
++     || var->bits_per_pixel == 24 
++     || var->bits_per_pixel == 25 
++       )	
+ 		fbi->fb.fix.visual = FB_VISUAL_TRUECOLOR;
+ 	else if (!fbi->cmap_static)
+ 		fbi->fb.fix.visual = FB_VISUAL_PSEUDOCOLOR;
+@@ -354,12 +387,25 @@
+ 		fbi->fb.fix.visual = FB_VISUAL_STATIC_PSEUDOCOLOR;
+ 	}
+ 
+-	fbi->fb.fix.line_length = var->xres_virtual *
+-				  var->bits_per_pixel / 8;
+-	if (var->bits_per_pixel == 16)
+-		fbi->palette_size = 0;
+-	else
+-		fbi->palette_size = var->bits_per_pixel == 1 ? 4 : 1 << var->bits_per_pixel;
++   	switch (var->bits_per_pixel) {
++    	case 16:
++	       	fbi->fb.fix.line_length = var->xres_virtual * 2;
++	       	fbi->palette_size = 0;
++        	break;
++    	case 18:
++	   	case 19:
++	       	fbi->fb.fix.line_length = var->xres_virtual * 3;
++	       	fbi->palette_size = 0;
++        	break;
++    	case 24:
++    	case 25:
++	       	fbi->fb.fix.line_length = var->xres_virtual * 4;
++        	fbi->palette_size = 0;
++        	break;
++    	default:
++        	fbi->fb.fix.line_length = var->xres_virtual * var->bits_per_pixel / 8;
++        	fbi->palette_size = var->bits_per_pixel == 1 ? 4 : 1 << var->bits_per_pixel;
++   	}
+ 
+ 	palette_mem_size = fbi->palette_size * sizeof(u16);
+ 
+@@ -373,8 +419,13 @@
+ 	 */
+ 	pxafb_set_truecolor(fbi->fb.fix.visual == FB_VISUAL_TRUECOLOR);
+ 
+-	if (fbi->fb.var.bits_per_pixel == 16)
+-		fb_dealloc_cmap(&fbi->fb.cmap);
++	if (fbi->fb.var.bits_per_pixel == 16
++     || fbi->fb.var.bits_per_pixel == 18 
++     || fbi->fb.var.bits_per_pixel == 19
++     || fbi->fb.var.bits_per_pixel == 24 
++     || fbi->fb.var.bits_per_pixel == 25 
++       )	
++   		fb_dealloc_cmap(&fbi->fb.cmap);
+ 	else
+ 		fb_alloc_cmap(&fbi->fb.cmap, 1<<fbi->fb.var.bits_per_pixel, 0);
+ 
+@@ -582,6 +633,9 @@
+ 	case 4:
+ 	case 8:
+ 	case 16:
++	case 18:
++	case 24:
++	case 25:
+ 		break;
+ 	default:
+ 		printk(KERN_ERR "%s: invalid bit depth %d\n",
+@@ -678,7 +732,12 @@
+ 	fbi->dmadesc_palette_cpu->fidr  = 0;
+ 	fbi->dmadesc_palette_cpu->ldcmd = (fbi->palette_size * 2) | LDCMD_PAL;
+ 
+-	if (var->bits_per_pixel == 16) {
++	if (var->bits_per_pixel == 16
++     || var->bits_per_pixel == 18 
++     || var->bits_per_pixel == 19
++     || var->bits_per_pixel == 24 
++     || var->bits_per_pixel == 25 
++       ) {
+ 		/* palette shouldn't be loaded in true-color mode */
+ 		fbi->dmadesc_fbhigh_cpu->fdadr = fbi->dmadesc_fbhigh_dma;
+ 		fbi->fdadr0 = fbi->dmadesc_fbhigh_dma; /* no pal just fbhigh */
+@@ -786,6 +845,11 @@
+ 
+ 	for (gpio = 58; ldd_bits; gpio++, ldd_bits--)
+ 		pxa_gpio_mode(gpio | GPIO_ALT_FN_2_OUT);
++	if (fbi->fb.var.bits_per_pixel == 18) {
++		pxa_gpio_mode(GPIO86_LDD_16_MD);
++		pxa_gpio_mode(GPIO87_LDD_17_MD);
++	}
++		
+ 	pxa_gpio_mode(GPIO74_LCD_FCLK_MD);
+ 	pxa_gpio_mode(GPIO75_LCD_LCLK_MD);
+ 	pxa_gpio_mode(GPIO76_LCD_PCLK_MD);
+@@ -1154,9 +1218,17 @@
+ 	fbi->task_state			= (u_char)-1;
+ 
+ 	for (i = 0; i < inf->num_modes; i++) {
+-		smemlen = mode[i].xres * mode[i].yres * mode[i].bpp / 8;
++		if (mode[i].bpp <= 16)      /* 8, 16 bpp */
++			smemlen = mode[i].xres * mode[i].yres * mode[i].bpp / 8;
++		else if (mode[i].bpp > 19)  /* 24, 25 bpp */
++			smemlen = mode[i].xres * mode[i].yres * 4;
++		else                        /* 18, 19 bpp */
++							    	/* packed format */
++			smemlen = mode[i].xres * mode[i].yres * 3;
++
+ 		if (smemlen > fbi->fb.fix.smem_len)
+ 			fbi->fb.fix.smem_len = smemlen;
++		dev_dbg("ALEX::bpp=%d, smemlen=%d, fbi->fb.fix.smem_len=%d\n", mode[i].bpp, smemlen, fbi->fb.fix.smem_len);
+ 	}
+ 
+ 	init_waitqueue_head(&fbi->ctrlr_wait);
+@@ -1225,6 +1297,10 @@
+ 				case 4:
+ 				case 8:
+ 				case 16:
++           		case 18:
++          		case 19:
++          		case 24:
++           		case 25:
+ 					inf->modes[0].bpp = bpp;
+ 					dev_info(dev, "overriding bit depth: %d\n", bpp);
+ 					break;
+@@ -1423,6 +1499,9 @@
+ 	 */
+ 	set_ctrlr_state(fbi, C_ENABLE);
+ 
++	LCCR4 |= (1 << 31);
++	LCCR4 |= (5 << 17);
++
+ 	return 0;
+ 
+ failed:
+Index: linux-2.6.21/include/asm-arm/arch-pxa/pxa-regs.h
+===================================================================
+--- linux-2.6.21.orig/include/asm-arm/arch-pxa/pxa-regs.h	2007-08-18 18:26:01.000000000 +0800
++++ linux-2.6.21/include/asm-arm/arch-pxa/pxa-regs.h	2007-08-18 18:32:29.000000000 +0800
+@@ -1485,6 +1485,8 @@
+ #define GPIO84_NSSP_TX      	(84 | GPIO_ALT_FN_1_OUT)
+ #define GPIO84_NSSP_RX      	(84 | GPIO_ALT_FN_2_IN)
+ #define GPIO85_nPCE_1_MD	(85 | GPIO_ALT_FN_1_OUT)
++#define GPIO86_LDD_16_MD    (86 | GPIO_ALT_FN_2_OUT)
++#define GPIO87_LDD_17_MD    (87 | GPIO_ALT_FN_2_OUT)
+ #define GPIO88_SRXD2_MD		(88 | GPIO_ALT_FN_2_IN)
+ #define GPIO89_SRXD3_MD		(89 | GPIO_ALT_FN_1_IN)
+ #define GPIO90_USB_P3_5		(90 | GPIO_ALT_FN_2_IN)
+@@ -1869,6 +1871,7 @@
+ #define LCCR1		__REG(0x44000004)  /* LCD Controller Control Register 1 */
+ #define LCCR2		__REG(0x44000008)  /* LCD Controller Control Register 2 */
+ #define LCCR3		__REG(0x4400000C)  /* LCD Controller Control Register 3 */
++#define LCCR4		__REG(0x44000010)  /* LCD Controller Control Register 4 */
+ #define DFBR0		__REG(0x44000020)  /* DMA Channel 0 Frame Branch Register */
+ #define DFBR1		__REG(0x44000024)  /* DMA Channel 1 Frame Branch Register */
+ #define LCSR		__REG(0x44000038)  /* LCD Controller Status Register */
+@@ -1881,6 +1884,11 @@
+ #define LCCR3_4BPP (2 << 24)
+ #define LCCR3_8BPP (3 << 24)
+ #define LCCR3_16BPP (4 << 24)
++#define LCCR3_18BPP_UNPACKED (5 << 24)
++#define LCCR3_18BPP (6 << 24) 
++#define LCCR3_19BPP (8 << 24)  
++#define LCCR3_24BPP (9 << 24) 
++#define LCCR3_25BPP (10<< 24)
+ 
+ #define FDADR0		__REG(0x44000200)  /* DMA Channel 0 Frame Descriptor Address Register */
+ #define FSADR0		__REG(0x44000204)  /* DMA Channel 0 Frame Source Address Register */

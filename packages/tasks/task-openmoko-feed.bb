@@ -1,13 +1,14 @@
 DESCRIPTION = "OpenMoko: Misc. Feed Items"
 SECTION = "openmoko/base"
 LICENSE = "MIT"
-PR = "r13"
+PR = "r14"
 
 inherit task
 
 RDEPENDS_task-openmoko-feed = "\
   aspell enchant \
   bluez-hcidump \
+  bootchart \
   eet evas ecore embryo epsilon edje efreet emotion epdf \
   exhibit edje-viewer \
   free42-vga \
@@ -24,9 +25,13 @@ RDEPENDS_task-openmoko-feed = "\
   openssh openssh-scp openssh-ssh openssh-sshd openssh-sftp openssh-misc \
   python python-pygtk python-pyserial \
   ruby \
+  libsdl-x11 libsdl-mixer libsdl-net libsdl-ttf \
   synergy \
   tzdata \
+  timezones \
   tor \
   vnc \
+  wxwidgets \
+  x11vnc \
 "
 

@@ -3,6 +3,8 @@ LICENSE = "BSD"
 DEPENDS = "poppler0.6 evas ecore etk ewl"
 PV = "0.1.0+cvs${SRCDATE}"
 
+PR = "r1"
+
 inherit efl_library
 
 SRC_URI = "${E_CVS};module=e17/proto/${SRCNAME} \
