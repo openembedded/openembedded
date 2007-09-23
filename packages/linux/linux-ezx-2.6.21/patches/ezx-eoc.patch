@@ -1,8 +1,8 @@
 Index: linux-2.6.21/arch/arm/mach-pxa/ezx-eoc.c
 ===================================================================
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ linux-2.6.21/arch/arm/mach-pxa/ezx-eoc.c	2007-09-11 20:14:33.000000000 -0300
-@@ -0,0 +1,267 @@
++++ linux-2.6.21/arch/arm/mach-pxa/ezx-eoc.c	2007-09-23 09:31:23.000000000 -0300
+@@ -0,0 +1,272 @@
 +/*
 + *  EZX EOC Driver for Motorola EZX phones
 + *
@@ -32,6 +32,7 @@ Index: linux-2.6.21/arch/arm/mach-pxa/ezx-eoc.c
 +
 +#define EOC_REG_ADDR_SIZE  1
 +#define EOC_REG_DATA_SIZE  3
++#define I2C_DRIVERID_EOC 2100
 +
 +struct ezx_eoc_platform_data *pdata;
 +static int eoc_func = EOC_FUNC_USB_NET;
@@ -57,7 +58,7 @@ Index: linux-2.6.21/arch/arm/mach-pxa/ezx-eoc.c
 +	.driver = {
 +		.name	= (char *)eoc_i2c_driver_name,
 +	},
-+	.id		= I2C_DRIVERID_EEPROM,
++	.id		= I2C_DRIVERID_EOC,
 +	.attach_adapter	= ezx_eoc_attach_adapter,
 +	.detach_client	= ezx_eoc_detach_client,
 +};
@@ -154,10 +155,14 @@ Index: linux-2.6.21/arch/arm/mach-pxa/ezx-eoc.c
 +	}
 +}
 +
-+
++int x = 0;
 +static int ezx_eoc_attach_adapter(struct i2c_adapter *adapter)
 +{
-+	return i2c_probe(adapter, &addr_data, ezx_eoc_detect);
++	if (!x) {
++		x++;
++		return i2c_probe(adapter, &addr_data, ezx_eoc_detect);
++	}
++	return -1;
 +}
 +
 +/* This function is called by i2c_probe */
@@ -210,11 +215,11 @@ Index: linux-2.6.21/arch/arm/mach-pxa/ezx-eoc.c
 +	ret = i2c_add_driver(&eoc_i2c_driver);
 +	if (ret != 0)
 +		return -EINVAL;
-+	
-+	/* 
++
++	/*
 +	 * I think we should save platform_data and call init and eoc_switch
 +	 * from ezx_eoc_detect, after client is setup.
-+	 * And there is no need for all the "check if initialised" checks if 
++	 * And there is no need for all the "check if initialised" checks if
 +	 * you assure that you only call read/write after the client is set.
 +	 * Probably, this was causing the crash on i2c-core too.
 +	 * --WM
@@ -267,13 +272,13 @@ Index: linux-2.6.21/arch/arm/mach-pxa/ezx-eoc.c
 +MODULE_LICENSE("GPL");
 +
 +/* doesnt module_init work?? -WM */
-+/*late_initcall(ezx_eoc_init);*/
-+module_init(ezx_eoc_init);
++late_initcall(ezx_eoc_init);
++//module_init(ezx_eoc_init);
 +module_exit(ezx_eoc_exit);
 Index: linux-2.6.21/arch/arm/mach-pxa/ezx-eoc.h
 ===================================================================
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ linux-2.6.21/arch/arm/mach-pxa/ezx-eoc.h	2007-09-09 21:46:27.000000000 -0300
++++ linux-2.6.21/arch/arm/mach-pxa/ezx-eoc.h	2007-09-22 14:12:05.000000000 -0300
 @@ -0,0 +1,33 @@
 +/*
 + *  linux/arch/arm/mach-pxa/ezx-eoc.h
@@ -310,8 +315,8 @@ Index: linux-2.6.21/arch/arm/mach-pxa/ezx-eoc.h
 +#endif /* __EZX_EOC_H__ */
 Index: linux-2.6.21/arch/arm/mach-pxa/Kconfig
 ===================================================================
---- linux-2.6.21.orig/arch/arm/mach-pxa/Kconfig	2007-09-09 21:46:27.000000000 -0300
-+++ linux-2.6.21/arch/arm/mach-pxa/Kconfig	2007-09-09 21:46:27.000000000 -0300
+--- linux-2.6.21.orig/arch/arm/mach-pxa/Kconfig	2007-09-22 14:12:05.000000000 -0300
++++ linux-2.6.21/arch/arm/mach-pxa/Kconfig	2007-09-22 14:12:05.000000000 -0300
 @@ -108,6 +108,12 @@
  config EZX_PCAP
  	bool "PCAP Support"
@@ -327,8 +332,8 @@ Index: linux-2.6.21/arch/arm/mach-pxa/Kconfig
  	depends on EZX_PCAP
 Index: linux-2.6.21/arch/arm/mach-pxa/Makefile
 ===================================================================
---- linux-2.6.21.orig/arch/arm/mach-pxa/Makefile	2007-09-09 21:46:27.000000000 -0300
-+++ linux-2.6.21/arch/arm/mach-pxa/Makefile	2007-09-09 21:46:27.000000000 -0300
+--- linux-2.6.21.orig/arch/arm/mach-pxa/Makefile	2007-09-22 14:12:05.000000000 -0300
++++ linux-2.6.21/arch/arm/mach-pxa/Makefile	2007-09-22 14:12:05.000000000 -0300
 @@ -27,6 +27,7 @@
  obj-$(CONFIG_EZX_BP)		+= ezx-bp.o
  obj-$(CONFIG_EZX_PCAP)		+= ezx-pcap.o
