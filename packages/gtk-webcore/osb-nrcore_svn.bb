@@ -2,7 +2,7 @@ require osb-nrcore.inc
 
 DEFAULT_PREFERENCE = "-1"
 
-PV = "0.5.2+svnr${SRCREV}"
+PV = "0.5.2+svnr${SRCDATE}"
 PR = "r1"
 
 SRC_URI = "svn://gtk-webcore.svn.sourceforge.net/svnroot/gtk-webcore/trunk;module=NRCore;proto=https \
