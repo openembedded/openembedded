@@ -1,0 +1,13 @@
+Index: openal-0.0.8/common/include/AL/alc.h
+===================================================================
+--- openal-0.0.8.orig/common/include/AL/alc.h	2007-09-22 19:40:47.000000000 +0200
++++ openal-0.0.8/common/include/AL/alc.h	2007-09-22 19:41:04.000000000 +0200
+@@ -82,7 +82,7 @@
+ typedef double ALCdouble;
+ 
+ /** void type (for opaque pointers only) */
+-typedef void ALCvoid;
++#define ALCvoid void
+ 
+ 
+ /* Enumerant values begin at column 50. No tabs. */
