@@ -1,24 +1,22 @@
 DESCRIPTION = "Boots an EZX device with a user supplied kernel zImage"
-DEPENDS = "libusb-native virtual/kernel"
+DEPENDS = "libusb-native"
 SECTION = "devel"
 AUTHOR = "Harald Welte"
 LICENSE = "GPL"
 PR = "r1"
 
-DEFAULT_PREFERENCE = "1"
+DEFAULT_PREFERENCE = "-1"
 
-REV = "2060"
+REV = "1922"
 PV = "0.1.0+r${REV}"
 
 SRC_URI = "svn://svn.openezx.org/trunk/src/host;module=boot_usb;proto=http;rev=${REV}"
 S = "${WORKDIR}/boot_usb"
 
-
-inherit module-base
-#inherit native
+inherit native
 
 do_compile() {
-	${BUILD_CC} ${BUILD_CFLAGS} ${BUILD_LDFLAGS} -lusb -o ezx-boot-usb boot_usb.c -I${STAGING_KERNEL_DIR}/include
+	${CC} ${CFLAGS} ${LDFLAGS} -lusb -o ezx-boot-usb boot_usb.c
 }
 
 do_deploy() {
