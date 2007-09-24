@@ -2,7 +2,7 @@ DESCRIPTION = "2.6 Linux Development Kernel for the Motorola GSM phones A780 and
 AUTHOR = "The OpenEZX Team <openezx-devel@lists.openezx.org>"
 HOMEPAGE = "http://www.openezx.org"
 EZX = "ezxdev"
-PR = "${EZX}-r21"
+PR = "${EZX}-r22"
 
 require linux.inc
 
@@ -47,6 +47,7 @@ SRC_URI = " \
     file://patches/pxa-kbd.patch;patch=1 \
     file://patches/a780-kbd.patch;patch=1 \
     file://patches/e680-kbd.patch;patch=1 \
+    file://patches/a1200-kbd.patch;patch=1 \
     file://patches/pcap-ts.patch;patch=1 \
     file://patches/a780-ts.patch;patch=1 \
     file://patches/e680-ts.patch;patch=1 \
@@ -54,6 +55,7 @@ SRC_URI = " \
     file://patches/e6-ts.patch;patch=1 \
     file://patches/a780-flip.patch;patch=1 \
     file://patches/e680-locksw.patch;patch=1 \
+    file://patches/a1200-flip.patch;patch=1 \
     file://patches/a780-leds.patch;patch=1 \
     file://patches/e680-leds.patch;patch=1 \
     file://patches/a780-vibrator.patch;patch=1 \
