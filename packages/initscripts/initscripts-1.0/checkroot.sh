@@ -60,9 +60,9 @@ do
 			
 		test "$pass" = 0 -o "$pass" = "" && rootcheck=no
 		
-		# Enable fsck for ext2 and ext3 rootfs, disable for everything else				
+		# Allow fsck for ext2 and ext3 rootfs, disable for everything else				
 		case "$type" in
-		ext2|ext3)	rootcheck=yes;;
+		ext2|ext3)	;;
 		*)		rootcheck=no;;
 		esac
 		
