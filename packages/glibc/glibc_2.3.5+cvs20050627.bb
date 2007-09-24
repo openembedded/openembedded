@@ -2,7 +2,7 @@ require glibc.inc
 
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/glibc-cvs-2.3.5"
 SRCDATE = "20050627"
-PR = "r14"
+PR = "r15"
 
 #Doesnt build for sh3
 DEFAULT_PREFERENCE_sh3="-1"
@@ -55,6 +55,7 @@ SRC_URI = "http://familiar.handhelds.org/source/v0.8.3/stash_libc_sources.redhat
 
 # seems to fail on tls platforms
 SRC_URI_append_arm = " file://dyn-ldconfig-20041128.patch;patch=1"
+SRC_URI_append_armeb = " file://dyn-ldconfig-20041128.patch;patch=1"
 
 # Build fails on sh3 and sh4 without additional patches
 SRC_URI_append_sh3 = " file://no-z-defs.patch;patch=1 \
