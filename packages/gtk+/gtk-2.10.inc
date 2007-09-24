@@ -14,6 +14,7 @@ FILES_${PN} = "${bindir}/gdk-pixbuf-query-loaders \
 	${libdir}/lib*.so.* \
 	${datadir}/themes ${sysconfdir} \
 	${libdir}/gtk-2.0/${LIBV}/engines/libpixmap.so \
+"
 FILES_${PN}-dev += " \
         ${datadir}/gtk-2.0/include \
         ${libdir}/gtk-2.0/include \
