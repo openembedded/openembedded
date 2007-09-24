@@ -1,5 +1,6 @@
 modprobe lcd
 echo 4 > /proc/progress
+[ -e /dev/dbox/oled0 ] && ln -s /dev/dbox/oled0 /dev/dbox/lcd0
 
 mount -t proc proc /proc
 echo 8 > /proc/progress
