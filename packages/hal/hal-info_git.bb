@@ -6,6 +6,7 @@ LICENSE = "GPL AFL"
 PV = "${SRCDATE}+git"
 PR = "r1"
 
+DEFAULT_PREFERENCE = "-1"
 
 SRC_URI = "git://anongit.freedesktop.org/hal-info/;protocol=git"
 
@@ -17,4 +18,4 @@ EXTRA_OECONF = "--disable-recall --disable-video"
 
 
 PACKAGE_ARCH = "all"
-FILES_${PN} += "/usr/share/hal/"
+FILES_${PN} += "${datadir}/hal/"

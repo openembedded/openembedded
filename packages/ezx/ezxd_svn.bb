@@ -4,7 +4,7 @@ SECTION = "devel"
 AUTHOR = "Daniel Ribeiro"
 
 PV = "0.0+svnr${SRCREV}"
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "svn://svn.openezx.org/trunk/src/userspace/;module=ezxd;proto=http \
            file://ezxd.init \
@@ -21,8 +21,11 @@ do_configure() {
         sed -i -e s:CROSS:CC:g Makefile
 }
 
-do_install() {
-	install -d ${D}${bindir}
+fakeroot do_install() {
+        install -d ${D}/dev/input
+        mknod ${D}/dev/input/uinput c 10 223
+
+        install -d ${D}${bindir}
 	install -m 755 ezxd ${D}${bindir}
 
 	install -d ${D}${libdir}/ezxd
@@ -32,4 +35,6 @@ do_install() {
         install -m 0600 ezxd.conf ${D}${sysconfdir}/
         install -m 0755 ${WORKDIR}/ezxd.init ${D}${sysconfdir}/init.d/ezxd
 }
+
+FILES_${PN} += "/dev"
 

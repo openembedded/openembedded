@@ -2,15 +2,27 @@ DESCRIPTION = "2.6 Linux Development Kernel for the Motorola GSM phones A780 and
 AUTHOR = "The OpenEZX Team <openezx-devel@lists.openezx.org>"
 HOMEPAGE = "http://www.openezx.org"
 EZX = "ezxdev"
-PR = "${EZX}-r17"
+PR = "${EZX}-r22"
 
 require linux.inc
+
+RPSRC = "http://www.rpsys.net/openzaurus/patches/archive"
 
 SRC_URI = " \
     ${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-${PV}.tar.bz2 \
     file://logo_linux_clut224.ppm \
     \
     file://patches/patch-2.6.21.4;patch=1 \
+    ${RPSRC}/lzo_kernel-r0.patch;patch=1 \
+    ${RPSRC}/lzo_jffs2-r0.patch;patch=1 \
+    ${RPSRC}/lzo_crypto-r1.patch;patch=1 \
+    ${RPSRC}/lzo_jffs2_lzomode-r0.patch;patch=1 \
+    ${RPSRC}/lzo_jffs2_sysfs-r0.patch;patch=1 \
+    ${RPSRC}/pxa_timerfix-r0.patch;patch=1 \
+    ${RPSRC}/pxa27x_overlay-r5.patch;patch=1 \
+    ${RPSRC}/pxa-linking-bug.patch;patch=1;status=unmergable \
+    ${RPSRC}/mmcsd_large_cards-r0.patch;patch=1;status=hack \
+    ${RPSRC}/mmcsd_no_scr_check-r0.patch;patch=1;status=hack \
     file://patches/ezx-core.patch;patch=1 \
     file://patches/ezx-bp.patch;patch=1 \
     file://patches/ezx-pm.patch;patch=1 \
@@ -25,6 +37,9 @@ SRC_URI = " \
     file://patches/e6-mci.patch;patch=1 \
     file://patches/pxa27x-udc-support.2.patch;patch=1 \
     file://patches/ezx-emu.patch;patch=1 \
+    file://patches/ezx-eoc.patch;patch=1 \ 
+    file://patches/a1200-eoc.patch;patch=1 \
+    file://patches/e6-eoc.patch;patch=1 \
     file://patches/a780-emu.patch;patch=1 \
     file://patches/e680-emu.patch;patch=1 \
     file://patches/ezx-mtd-map.patch;patch=1 \
@@ -32,16 +47,15 @@ SRC_URI = " \
     file://patches/pxa-kbd.patch;patch=1 \
     file://patches/a780-kbd.patch;patch=1 \
     file://patches/e680-kbd.patch;patch=1 \
+    file://patches/a1200-kbd.patch;patch=1 \
     file://patches/pcap-ts.patch;patch=1 \
     file://patches/a780-ts.patch;patch=1 \
     file://patches/e680-ts.patch;patch=1 \
     file://patches/a1200-ts.patch;patch=1 \
     file://patches/e6-ts.patch;patch=1 \
-    file://patches/ezx-eoc.patch;patch=1 \
-    file://patches/a1200-eoc.patch;patch=1 \
-    file://patches/e6-eoc.patch;patch=1 \
     file://patches/a780-flip.patch;patch=1 \
     file://patches/e680-locksw.patch;patch=1 \
+    file://patches/a1200-flip.patch;patch=1 \
     file://patches/a780-leds.patch;patch=1 \
     file://patches/e680-leds.patch;patch=1 \
     file://patches/a780-vibrator.patch;patch=1 \
@@ -58,24 +72,19 @@ SRC_URI = " \
     file://patches/asoc-fix-loopback.patch;patch=1 \
     file://patches/ezx-asoc.patch;patch=1 \     
     file://patches/mtdfix.patch;patch=1 \
-    file://patches/lcd_18BPP_support.diff;patch=1 \
+    file://patches/ezx-backlight.patch;patch=1 \
+    file://patches/pxa27x-udc-fix-a1200.patch;patch=1 \
     file://defconfig \
     \
     "
-
-BACKLIGHTPATCH = " file://patches/ezx-backlight.patch;patch=1 "
-BACKLIGHTPATCH_rokre6 = ""
-
-SRC_URI += "${BACKLIGHTPATCH}"
 
 S = "${WORKDIR}/linux-${PV}"
 
 
 ##############################################################
 # kernel image resides on a seperate flash partition (for now)
-#
-FILES_kernel-image = ""
-ALLOW_EMPTY  = "1"
+# But we can flash it from userspace (flash_unlock /dev/mtdX && flash_eraseall /dev/mtdX && flashcp /boot/zImage /dev/mtdX)
+# so lets make a package of it. What about a postinst that flashes the new kernel?
 
 COMPATIBLE_HOST = "arm.*-linux"
 COMPATIBLE_MACHINE = '(a780|e680|a1200|rorkre2|rokre6)'
@@ -84,7 +93,7 @@ COMPATIBLE_MACHINE = '(a780|e680|a1200|rorkre2|rokre6)'
 #CMDLINE_CON = "console=ttyS2,115200n8 console=tty1 "
 CMDLINE_CON = "console=tty1 "
 
-CMDLINE_ROOT = "root=/dev/mmcblk0p1 rootfstype=ext3 rootdelay=5"
+CMDLINE_ROOT = "root=/dev/mmcblk0p2 rootfstype=ext2 rootdelay=5"
 CMDLINE_NFSROOT = "root=/dev/nfs rootfstype=nfs nfsroot=192.168.0.200:/export/ezx-image rootdelay=5 "
 # Uncomment to enable dyntick
 #CMDLINE_OTHER = "dyntick=enable"

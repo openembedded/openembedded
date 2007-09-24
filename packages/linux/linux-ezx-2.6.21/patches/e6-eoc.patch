@@ -1,7 +1,7 @@
 Index: linux-2.6.21/arch/arm/mach-pxa/ezx-e6.c
 ===================================================================
---- linux-2.6.21.orig/arch/arm/mach-pxa/ezx-e6.c	2007-09-07 22:15:52.000000000 -0300
-+++ linux-2.6.21/arch/arm/mach-pxa/ezx-e6.c	2007-09-09 13:29:56.000000000 -0300
+--- linux-2.6.21.orig/arch/arm/mach-pxa/ezx-e6.c	2007-09-21 21:38:52.000000000 -0300
++++ linux-2.6.21/arch/arm/mach-pxa/ezx-e6.c	2007-09-21 21:49:42.000000000 -0300
 @@ -25,6 +25,7 @@
  #include <asm/arch/mmc.h>
  
@@ -10,8 +10,8 @@ Index: linux-2.6.21/arch/arm/mach-pxa/ezx-e6.c
  
  extern void ezx_lcd_power(int, struct fb_var_screeninfo *);
  extern void ezx_backlight_power(int);
-@@ -227,11 +228,69 @@
- 	.resource       = pcap_ts_resources,
+@@ -203,8 +204,65 @@
+ 	},
  };
  
 +
@@ -72,11 +72,7 @@ Index: linux-2.6.21/arch/arm/mach-pxa/ezx-e6.c
 +
  static struct platform_device *devices[] __initdata = {
  	&e6_pcap_device,
- 	&pcap_ts_device,
 +	&e6_eoc_device,
  };
  
-+
  static void __init e6_init(void)
- {
- 	set_pxa_fb_info(&e6_fb_info);
