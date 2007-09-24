@@ -213,6 +213,7 @@ do_configure_prepend() {
 
 # Kernel module dependencies
 
+DEPENDS += "zd1211-firmware"
 RDEPENDS_kernel-module-zd1211rw += "zd1211-firmware"
 
 
