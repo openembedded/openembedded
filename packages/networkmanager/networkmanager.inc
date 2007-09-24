@@ -54,13 +54,7 @@ FILES_libnmutil += "${libdir}/libnm-util.so.*"
 FILES_libnmglib += "${libdir}/libnm_glib.so.*"
 
 FILES_${PN} += "${datadir} \
-		${sbindir}/* \
-		${bindir}/* \
-		${sysconfdir} \
 		${libexecdir}"
 
-FILES_${PN}-dev += "${incdir} \
-		   ${libdir}/*.a \
-		   ${libdir}/*.la \
-		   ${libdir}/pkgconfig"
+FILES_${PN}-dev += " ${datadir}/NetworkManager/gdb-cmd "
 
