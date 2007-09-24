@@ -1,12 +1,13 @@
 require gtk-2.10.inc
 
-PR = "r0"
+PR = "r1"
 
 # disable per default - untested and not all patches included.
 DEFAULT_PREFERENCE = "-1"
 S = "${WORKDIR}/gtk+-${PV}"
 
 
+RCONFLICTS = "gtk+"
 DEPENDS = "glib-2.0 pango-directfb atk jpeg libpng gtk-doc libgcrypt cairo-directfb cups"
 LDFLAGS_append += " -ldirectfb"
 CFLAGS_append  += " -I${STAGING_INCDIR}/directfb"
