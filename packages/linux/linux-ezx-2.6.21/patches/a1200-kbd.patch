@@ -1,7 +1,7 @@
 Index: linux-2.6.21/arch/arm/mach-pxa/ezx-a1200.c
 ===================================================================
---- linux-2.6.21.orig/arch/arm/mach-pxa/ezx-a1200.c	2007-09-23 11:48:10.000000000 -0300
-+++ linux-2.6.21/arch/arm/mach-pxa/ezx-a1200.c	2007-09-23 13:24:58.000000000 -0300
+--- linux-2.6.21.orig/arch/arm/mach-pxa/ezx-a1200.c	2007-09-25 00:03:01.000000000 -0300
++++ linux-2.6.21/arch/arm/mach-pxa/ezx-a1200.c	2007-09-25 02:00:40.000000000 -0300
 @@ -15,6 +15,7 @@
  #include <linux/fb.h>
  #include <linux/mmc/host.h>
@@ -10,14 +10,13 @@ Index: linux-2.6.21/arch/arm/mach-pxa/ezx-a1200.c
  
  #include <asm/mach-types.h>
  #include <asm/mach/arch.h>
-@@ -23,12 +24,14 @@
+@@ -23,11 +24,13 @@
  #include <asm/arch/ezx.h>
  #include <asm/arch/ezx-pcap.h>
  #include <asm/arch/mmc.h>
 +#include <asm/arch/kbd.h>
  
  #include "generic.h"
- #include "ezx-eoc.h"
  
  extern void ezx_lcd_power(int, struct fb_var_screeninfo *);
  extern void ezx_backlight_power(int);
@@ -25,8 +24,8 @@ Index: linux-2.6.21/arch/arm/mach-pxa/ezx-a1200.c
  
  #ifdef CONFIG_EZX_PCAP
  extern int ezx_pcap_mmcsd_power(int);
-@@ -284,6 +287,63 @@
- 	.resource       = pcap_ts_resources,
+@@ -209,6 +212,63 @@
+ 	.id		= -1,
  };
  
 +/* Keypad */
@@ -89,7 +88,7 @@ Index: linux-2.6.21/arch/arm/mach-pxa/ezx-a1200.c
  static struct platform_device *devices[] __initdata = {
  	&a1200_pcap_device,
  	&a1200_eoc_device,
-@@ -294,6 +354,7 @@
+@@ -218,6 +278,7 @@
  {
  	set_pxa_fb_info(&a1200_fb_info);
  	pxa_set_mci_info(&a1200_mci_platform_data);

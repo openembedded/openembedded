@@ -1,7 +1,7 @@
 Index: linux-2.6.21/arch/arm/mach-pxa/ezx-a1200.c
 ===================================================================
---- linux-2.6.21.orig/arch/arm/mach-pxa/ezx-a1200.c	2007-09-23 13:28:02.000000000 -0300
-+++ linux-2.6.21/arch/arm/mach-pxa/ezx-a1200.c	2007-09-23 13:31:40.000000000 -0300
+--- linux-2.6.21.orig/arch/arm/mach-pxa/ezx-a1200.c	2007-09-25 02:00:53.000000000 -0300
++++ linux-2.6.21/arch/arm/mach-pxa/ezx-a1200.c	2007-09-25 02:01:06.000000000 -0300
 @@ -16,6 +16,7 @@
  #include <linux/mmc/host.h>
  #include <linux/irq.h>
@@ -10,7 +10,7 @@ Index: linux-2.6.21/arch/arm/mach-pxa/ezx-a1200.c
  
  #include <asm/mach-types.h>
  #include <asm/mach/arch.h>
-@@ -343,11 +344,34 @@
+@@ -292,11 +293,34 @@
  	.num_resources  = ARRAY_SIZE(pcap_ts_resources),
  	.resource       = pcap_ts_resources,
  };

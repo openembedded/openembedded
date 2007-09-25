@@ -1,5 +1,6 @@
 patch-2.6.21.4
 mtdfix.patch
+pxa27x_overlay-r5.patch
 
 ezx-core.patch
 # ezx-core TODO: should be ezx-common
@@ -42,6 +43,7 @@ ezx-emu.patch
 a780-emu.patch
 e680-emu.patch
 
+pxa27x-udc-fix-a1200.patch #(see ezx-a1200.c)
 ezx-eoc.patch
 a1200-eoc.patch
 e6-eoc.patch
@@ -53,6 +55,7 @@ ezx-serial-bug-workaround.patch
 pxa-kbd.patch
 a780-kbd.patch
 e680-kbd.patch
+a1200-kbd.patch
 
 pcap-ts.patch
 a780-ts.patch
@@ -64,6 +67,7 @@ ezx-backlight.patch
 
 a780-flip.patch
 e680-locksw.patch
+a1200-flip.patch
 
 a780-leds.patch
 e680-leds.patch
@@ -97,7 +101,6 @@ ezx-asoc.patch
 #		pxa-ohci, ts0710_mux, ts0710_mux_usb, ezx-bp
 
 # the folowing break too much stuff on other phones.
-# i2c-core-fix-a1200.patch (see ezx-eoc.c)
-# pxa27x-udc-fix-a1200.patch (see ezx-a1200.c)
 
 # incomplete
+

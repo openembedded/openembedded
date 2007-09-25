@@ -2,7 +2,7 @@ DESCRIPTION = "2.6 Linux Development Kernel for the Motorola GSM phones A780 and
 AUTHOR = "The OpenEZX Team <openezx-devel@lists.openezx.org>"
 HOMEPAGE = "http://www.openezx.org"
 EZX = "ezxdev"
-PR = "${EZX}-r22"
+PR = "${EZX}-r23"
 
 require linux.inc
 
@@ -73,7 +73,6 @@ SRC_URI = " \
     file://patches/ezx-asoc.patch;patch=1 \     
     file://patches/mtdfix.patch;patch=1 \
     file://patches/ezx-backlight.patch;patch=1 \
-    file://patches/pxa27x-udc-fix-a1200.patch;patch=1 \
     file://defconfig \
     \
     "
