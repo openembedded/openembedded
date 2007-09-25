@@ -12,7 +12,7 @@ tmpfs		/dev/shm		tmpfs	mode=0777			0  0
 tmpfs		/media/ram	tmpfs	defaults		0  0
 
 # microSD slot
-/dev/mmcblk0p1	/media/card	auto	defaults,sync,noauto	0  0
+/dev/mmcblk0p1	/media/card	auto	defaults,async,noauto	0  0
 
 # USB Storage
 /dev/sda1 /media/hdd         vfat    noauto,umask=000,noatime,iocharset=utf8,codepage=932    0       0
