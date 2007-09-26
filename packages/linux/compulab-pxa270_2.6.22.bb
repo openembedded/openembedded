@@ -30,7 +30,7 @@ S = "${WORKDIR}/linux-${PV}"
 COMPATIBLE_HOST = 'arm.*-linux'
 COMPATIBLE_MACHINE = "compulab-pxa270"
 
-CMDLINE = "console=${CMX270_CONSOLE_SERIAL_PORT},38400 monitor=8 bpp=16 mem=64M mtdparts=physmap-flash.0:256k(boot)ro,0x180000(kernel),-(root);cm-x270-nand:64m(app),-(data) rdinit=/sbin/init"
+CMDLINE = "console=${CMX270_CONSOLE_SERIAL_PORT},38400 monitor=8 bpp=16 mem=64M mtdparts=physmap-flash.0:256k(boot)ro,0x180000(kernel),-(root);cm-x270-nand:64m(app),-(data) rdinit=/sbin/init root=mtd3 rootfstype=jffs2"
 
 inherit kernel
 inherit package
