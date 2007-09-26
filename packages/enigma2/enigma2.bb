@@ -18,6 +18,16 @@ DEPENDS += "enigma2-plugins"
 
 PACKAGES_DYNAMIC = "enigma2-plugin-*"
 
+DESCRIPTION_append_enigma2-plugin-extensions-cutlisteditor = "enables you to cut your movies."
+DESCRIPTION_append_enigma2-plugin-extensions-graphmultiepg = "shows a graphical timeline EPG."
+DESCRIPTION_append_enigma2-plugin-extensions-pictureplayer = "displays photos on the TV."
+DESCRIPTION_append_enigma2-plugin-systemplugins-configurationbackup = "backs up your configuration and restores them optionally."
+DESCRIPTION_append_enigma2-plugin-systemplugins-frontprocessorupdate = "keeps your frontprocessor up to date."
+DESCRIPTION_append_enigma2-plugin-systemplugins-positionersetup = "helps you installing a motorized dish."
+DESCRIPTION_append_enigma2-plugin-systemplugins-satelliteequipmentcontrol = "allows you to fine-tune DiSEqC-settings."
+DESCRIPTION_append_enigma2-plugin-systemplugins-satfinder = "helps you to align your dish."
+DESCRIPTION_append_enigma2-plugin-systemplugins-skinselector = "shows a menu with selectable skins."
+
 PN = "enigma2"
 PR = "r0"
 SRCDATE = "20070904"
@@ -49,5 +59,5 @@ do_install_append() {
 python populate_packages_prepend () {
 	enigma2_plugindir = bb.data.expand('${libdir}/enigma2/python/Plugins', d)
 
-	do_split_packages(d, enigma2_plugindir, '(.*?/.*?)/.*', 'enigma2-plugin-%s', 'Enigma2 Plugin: %s', recursive=True, match_path=True, prepend=True)
+	do_split_packages(d, enigma2_plugindir, '(.*?/.*?)/.*', 'enigma2-plugin-%s', '%s ', recursive=True, match_path=True, prepend=True)
 }
