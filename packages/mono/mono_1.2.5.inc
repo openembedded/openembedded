@@ -7,7 +7,6 @@ SRC_URI = "http://go-mono.com/sources/mono/mono-${PV}.tar.bz2"
 S = "${WORKDIR}/mono-${PV}"
 
 inherit autotools
-EXTRA_OECONF = "--disable-mcs-build"
 EXTRA_OECONF_arm = "--without-tls"
 EXTRA_OECONF_mipsel = "--without-tls"
 
