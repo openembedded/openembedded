@@ -1,5 +1,5 @@
 require mono_1.2.5.inc
-PR = "r2"
+PR = "r0"
 DEPENDS = "glib-2.0-native"
 
 inherit native
