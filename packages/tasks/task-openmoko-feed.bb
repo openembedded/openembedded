@@ -1,7 +1,7 @@
 DESCRIPTION = "OpenMoko: Misc. Feed Items"
 SECTION = "openmoko/base"
 LICENSE = "MIT"
-PR = "r14"
+PR = "r15"
 
 inherit task
 
@@ -16,6 +16,7 @@ RDEPENDS_task-openmoko-feed = "\
   ipkg-link ipkg-utils \
   joe \
   kbdd \
+  kexec-tools \
   midori \
   mplayer \
   mtpaint \
