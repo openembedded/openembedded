@@ -15,12 +15,6 @@ fi
 if [ -f /usr/bin/Xomap ]; then
   XSERVER=/usr/bin/Xomap
 fi
-if [ -f /usr/bin/Xw100 ]; then
-  XSERVER=/usr/bin/Xw100
-fi
-if [ -f /usr/bin/Ximageon ]; then
-   XSERVER=/usr/bin/Ximageon
-fi
 
 . /etc/profile
 
@@ -64,7 +58,9 @@ case `module_id` in
         "HP iPAQ H5400" | "HP iPAQ H2200")
                 ARGS="$ARGS -br -dpi 100 -rgba rgb" ;;
         "HP iPAQ HX4700")
-                ARGS="$ARGS -br -dpi 200" ;;
+                ARGS="$ARGS -br -dpi 200"
+                IMAGEON="w3220"
+                ;;
         "Ramses")
                 # What is this "vt2" in aid of?
                 ARGS="$ARGS -br -dpi 100 -rgba vrgb -screen 320x240@90 vt2" ;;
@@ -72,10 +68,11 @@ case `module_id` in
         *Poodle)
                 ARGS="$ARGS -br -dpi 100 -rgba vrgb -screen 320x240@270" ;;
         *Collie)
-                ARGS="$ARGS -br -dpi 100 -rgba vrgb -screen 320x240@270"
-                ;;
+                ARGS="$ARGS -br -dpi 100 -rgba vrgb -screen 320x240@270" ;;
         "SHARP Shepherd" | "SHARP Husky" | "SHARP Corgi")
-                ARGS="$ARGS -br -dpi 200 -rgba rgb" ;;
+                ARGS="$ARGS -br -dpi 200 -rgba rgb"
+                IMAGEON="w100"
+                ;;
         "SHARP Spitz" | "SHARP Akita" | "SHARP Borzoi")
                 ARGS="$ARGS -br -dpi 200 -rgba rgb -screen 480x640@270" ;;
         "Simpad")
@@ -89,7 +86,7 @@ case `module_id` in
         "HTC Universal")
                 ARGS="$ARGS -br -dpi 225 -screen 480x640@270" ;;
         "ARM-IntegratorCP" | "ARM-Versatile PB")
-		        ARGS="$ARGS -br -rgba vrgb" ;;
+                ARGS="$ARGS -br -rgba vrgb" ;;
         "Compulab CM-x270")
                 modprobe mbxfb
                 ARGS="$ARGS -br -fb /dev/fb1" ;;
@@ -100,12 +97,21 @@ case `module_id` in
         "Nokia N800")
                 ARGS="$ARGS -br -dpi 225 -screen 800x480x16 -mouse tslib" ;;
         *)
-		        # It is a device we do not know about, in which case we force
+                # It is a device we do not know about, in which case we force
                 # kdrive to use the current framebuffer geometry -- otherwise
-		        # it will default to trying to achieve 1024x768
-		        S=`fallback_screen_arg`
-		        ARGS="$ARGS -screen $S" ;;
+                # it will default to trying to achieve 1024x768
+                S=`fallback_screen_arg`
+                ARGS="$ARGS -screen $S" ;;
 esac
+
+if [ ! -z "$IMAGEON" ]; then
+  if [ -f /usr/bin/Xw100 ]; then
+    XSERVER=/usr/bin/Xw100
+  fi
+  if [ -f /usr/bin/Ximageon ]; then
+    XSERVER=/usr/bin/Ximageon
+  fi
+fi
 
 DISPLAY=':0'
 
