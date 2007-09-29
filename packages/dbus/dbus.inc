@@ -46,7 +46,6 @@ EXTRA_OECONF = "--disable-qt --disable-qt3  --disable-gtk --disable-tests \
 
 do_stage () {
 	oe_libinstall -so -C dbus libdbus-1 ${STAGING_LIBDIR}
-	oe_libinstall -so -C glib libdbus-glib-1 ${STAGING_LIBDIR}
 
 	autotools_stage_includes
 
