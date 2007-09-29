@@ -1,5 +1,6 @@
-PR = "r2"
+require iproute2.inc
 
+PR = "r2"
 DATE = "070313"
 
 SRC_URI_append = " file://new-flex-fix.patch;patch=1 \
@@ -9,4 +10,3 @@ SRC_URI_append = " file://new-flex-fix.patch;patch=1 \
 
 S = "${WORKDIR}/iproute-${PV}-${DATE}"
 
-require iproute2.inc
