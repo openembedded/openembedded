@@ -16,15 +16,13 @@ if [ -f /usr/bin/Xomap ]; then
   XSERVER=/usr/bin/Xomap
 fi
 if [ -f /usr/bin/Xw100 ]; then
-  XSERVER=Xw100
+  XSERVER=/usr/bin/Xw100
 fi
 if [ -f /usr/bin/Ximageon ]; then
-   XSERVER=Ximageon
+   XSERVER=/usr/bin/Ximageon
 fi
 
 . /etc/profile
-
-
 
 fallback_screen_arg() {
     geom=`fbset | grep geometry`
