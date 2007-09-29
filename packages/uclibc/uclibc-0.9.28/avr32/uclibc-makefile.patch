@@ -1,0 +1,16 @@
+Index: uclibc/Makefile
+===================================================================
+RCS file: /disk1/ic_group/design/I9980/REPOSITORY/I7413/source/uclibc/Makefile,v
+retrieving revision 1.1.1.3
+diff -u -r1.1.1.3 Makefile
+--- uclibc/Makefile	31 Aug 2005 13:08:25 -0000	1.1.1.3
++++ uclibc/Makefile	7 Dec 2005 06:38:39 -0000
+@@ -163,7 +163,7 @@
+ 	else \
+ 		extra_exclude="" ; \
+ 	fi ; \
+-	tar -chf - include --exclude .svn --exclude CVS $$extra_exclude \
++	tar -chf - --exclude .svn --exclude CVS $$extra_exclude include \
+ 		| tar -xf - -C $(PREFIX)$(DEVEL_PREFIX)
+ ifneq ($(strip $(UCLIBC_HAS_FLOATS)),y)
+ 	# Remove floating point related headers since float support is disabled.

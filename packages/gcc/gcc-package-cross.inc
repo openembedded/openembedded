@@ -1,6 +1,7 @@
 # Packages emitted by our gcc-cross builds.
 #
 INHIBIT_PACKAGE_STRIP ?= ""
+
 OLD_INHIBIT_PACKAGE_STRIP := "${INHIBIT_PACKAGE_STRIP}"
 INHIBIT_PACKAGE_STRIP = "1"
 
@@ -45,7 +46,7 @@ do_install () {
 	elif [ -f ${D}${prefix}/lib/libgcc_s.so.? ]; then
 		mv -f ${D}${prefix}/lib/libgcc_s.so* ${D}${target_base_libdir}
 	else
-		mv -f ${D}${prefix}/*/lib/libgcc_s.so* ${D}${target_base_libdir}
+		mv -f ${D}${prefix}/*/lib/libgcc_s.so* ${D}${target_base_libdir} || true
 	fi
 
 	# Move libstdc++ and libg2c into libdir (resetting our prefix to /usr

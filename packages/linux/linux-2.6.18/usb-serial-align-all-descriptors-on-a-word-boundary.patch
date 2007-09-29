@@ -1,0 +1,140 @@
+From nobody Mon Sep 17 00:00:00 2001
+From: Håvard Skinnemoen <hskinnemoen@atmel.com>
+Date: Tue Feb 28 08:51:18 2006 +0100
+Subject: [PATCH] USB Serial: Align all descriptors on a word boundary
+
+Seems like gcc has problems with packed structs, so we'll just align
+them explicitly.
+
+---
+
+ drivers/usb/gadget/serial.c |   28 ++++++++++++++--------------
+ 1 file changed, 14 insertions(+), 14 deletions(-)
+
+Index: linux-2.6.18-avr32/drivers/usb/gadget/serial.c
+===================================================================
+--- linux-2.6.18-avr32.orig/drivers/usb/gadget/serial.c	2006-09-11 14:36:02.000000000 +0200
++++ linux-2.6.18-avr32/drivers/usb/gadget/serial.c	2006-09-12 10:17:52.000000000 +0200
+@@ -333,7 +333,7 @@ static struct usb_gadget_strings gs_stri
+ 	.strings =		gs_strings,
+ };
+ 
+-static struct usb_device_descriptor gs_device_desc = {
++static struct usb_device_descriptor __attribute__((aligned(2))) gs_device_desc = {
+ 	.bLength =		USB_DT_DEVICE_SIZE,
+ 	.bDescriptorType =	USB_DT_DEVICE,
+ 	.bcdUSB =		__constant_cpu_to_le16(0x0200),
+@@ -353,7 +353,7 @@ static struct usb_otg_descriptor gs_otg_
+ 	.bmAttributes =		USB_OTG_SRP,
+ };
+ 
+-static struct usb_config_descriptor gs_bulk_config_desc = {
++static struct usb_config_descriptor __attribute__((aligned(2))) gs_bulk_config_desc = {
+ 	.bLength =		USB_DT_CONFIG_SIZE,
+ 	.bDescriptorType =	USB_DT_CONFIG,
+ 	/* .wTotalLength computed dynamically */
+@@ -364,7 +364,7 @@ static struct usb_config_descriptor gs_b
+ 	.bMaxPower =		1,
+ };
+ 
+-static struct usb_config_descriptor gs_acm_config_desc = {
++static struct usb_config_descriptor __attribute__((aligned(2))) gs_acm_config_desc = {
+ 	.bLength =		USB_DT_CONFIG_SIZE,
+ 	.bDescriptorType =	USB_DT_CONFIG,
+ 	/* .wTotalLength computed dynamically */
+@@ -375,7 +375,7 @@ static struct usb_config_descriptor gs_a
+ 	.bMaxPower =		1,
+ };
+ 
+-static const struct usb_interface_descriptor gs_bulk_interface_desc = {
++static const struct usb_interface_descriptor __attribute__((aligned(2))) gs_bulk_interface_desc = {
+ 	.bLength =		USB_DT_INTERFACE_SIZE,
+ 	.bDescriptorType =	USB_DT_INTERFACE,
+ 	.bInterfaceNumber =	GS_BULK_INTERFACE_ID,
+@@ -386,7 +386,7 @@ static const struct usb_interface_descri
+ 	.iInterface =		GS_DATA_STR_ID,
+ };
+ 
+-static const struct usb_interface_descriptor gs_control_interface_desc = {
++static const struct usb_interface_descriptor __attribute__((aligned(2))) gs_control_interface_desc = {
+ 	.bLength =		USB_DT_INTERFACE_SIZE,
+ 	.bDescriptorType =	USB_DT_INTERFACE,
+ 	.bInterfaceNumber =	GS_CONTROL_INTERFACE_ID,
+@@ -397,7 +397,7 @@ static const struct usb_interface_descri
+ 	.iInterface =		GS_CONTROL_STR_ID,
+ };
+ 
+-static const struct usb_interface_descriptor gs_data_interface_desc = {
++static const struct usb_interface_descriptor __attribute__((aligned(2))) gs_data_interface_desc = {
+ 	.bLength =		USB_DT_INTERFACE_SIZE,
+ 	.bDescriptorType =	USB_DT_INTERFACE,
+ 	.bInterfaceNumber =	GS_DATA_INTERFACE_ID,
+@@ -408,7 +408,7 @@ static const struct usb_interface_descri
+ 	.iInterface =		GS_DATA_STR_ID,
+ };
+ 
+-static const struct usb_cdc_header_desc gs_header_desc = {
++static const struct usb_cdc_header_desc __attribute__((aligned(2))) gs_header_desc = {
+ 	.bLength =		sizeof(gs_header_desc),
+ 	.bDescriptorType =	USB_DT_CS_INTERFACE,
+ 	.bDescriptorSubType =	USB_CDC_HEADER_TYPE,
+@@ -438,7 +438,7 @@ static const struct usb_cdc_union_desc g
+ 	.bSlaveInterface0 =	1,	/* index of data interface */
+ };
+  
+-static struct usb_endpoint_descriptor gs_fullspeed_notify_desc = {
++static struct usb_endpoint_descriptor __attribute__((aligned(2))) gs_fullspeed_notify_desc = {
+ 	.bLength =		USB_DT_ENDPOINT_SIZE,
+ 	.bDescriptorType =	USB_DT_ENDPOINT,
+ 	.bEndpointAddress =	USB_DIR_IN,
+@@ -447,14 +447,14 @@ static struct usb_endpoint_descriptor gs
+ 	.bInterval =		1 << GS_LOG2_NOTIFY_INTERVAL,
+ };
+ 
+-static struct usb_endpoint_descriptor gs_fullspeed_in_desc = {
++static struct usb_endpoint_descriptor __attribute__((aligned(2))) gs_fullspeed_in_desc = {
+ 	.bLength =		USB_DT_ENDPOINT_SIZE,
+ 	.bDescriptorType =	USB_DT_ENDPOINT,
+ 	.bEndpointAddress =	USB_DIR_IN,
+ 	.bmAttributes =		USB_ENDPOINT_XFER_BULK,
+ };
+ 
+-static struct usb_endpoint_descriptor gs_fullspeed_out_desc = {
++static struct usb_endpoint_descriptor __attribute__((aligned(2))) gs_fullspeed_out_desc = {
+ 	.bLength =		USB_DT_ENDPOINT_SIZE,
+ 	.bDescriptorType =	USB_DT_ENDPOINT,
+ 	.bEndpointAddress =	USB_DIR_OUT,
+@@ -484,7 +484,7 @@ static const struct usb_descriptor_heade
+ };
+ 
+ #ifdef CONFIG_USB_GADGET_DUALSPEED
+-static struct usb_endpoint_descriptor gs_highspeed_notify_desc = {
++static struct usb_endpoint_descriptor __attribute__((aligned(2))) gs_highspeed_notify_desc = {
+ 	.bLength =		USB_DT_ENDPOINT_SIZE,
+ 	.bDescriptorType =	USB_DT_ENDPOINT,
+ 	.bEndpointAddress =	USB_DIR_IN,
+@@ -493,21 +493,21 @@ static struct usb_endpoint_descriptor gs
+ 	.bInterval =		GS_LOG2_NOTIFY_INTERVAL+4,
+ };
+ 
+-static struct usb_endpoint_descriptor gs_highspeed_in_desc = {
++static struct usb_endpoint_descriptor __attribute__((aligned(2))) gs_highspeed_in_desc = {
+ 	.bLength =		USB_DT_ENDPOINT_SIZE,
+ 	.bDescriptorType =	USB_DT_ENDPOINT,
+ 	.bmAttributes =		USB_ENDPOINT_XFER_BULK,
+ 	.wMaxPacketSize =	__constant_cpu_to_le16(512),
+ };
+ 
+-static struct usb_endpoint_descriptor gs_highspeed_out_desc = {
++static struct usb_endpoint_descriptor __attribute__((aligned(2))) gs_highspeed_out_desc = {
+ 	.bLength =		USB_DT_ENDPOINT_SIZE,
+ 	.bDescriptorType =	USB_DT_ENDPOINT,
+ 	.bmAttributes =		USB_ENDPOINT_XFER_BULK,
+ 	.wMaxPacketSize =	__constant_cpu_to_le16(512),
+ };
+ 
+-static struct usb_qualifier_descriptor gs_qualifier_desc = {
++static struct usb_qualifier_descriptor __attribute__((aligned(2))) gs_qualifier_desc = {
+ 	.bLength =		sizeof(struct usb_qualifier_descriptor),
+ 	.bDescriptorType =	USB_DT_DEVICE_QUALIFIER,
+ 	.bcdUSB =		__constant_cpu_to_le16 (0x0200),

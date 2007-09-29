@@ -1,0 +1,40 @@
+---
+ arch/avr32/mach-at32ap/pio.c         |   12 ++++++++++++
+ include/asm-avr32/arch-at32ap/gpio.h |    1 +
+ 2 files changed, 13 insertions(+)
+
+Index: linux-2.6.18-avr32/arch/avr32/mach-at32ap/pio.c
+===================================================================
+--- linux-2.6.18-avr32.orig/arch/avr32/mach-at32ap/pio.c	2006-11-30 11:55:02.000000000 +0100
++++ linux-2.6.18-avr32/arch/avr32/mach-at32ap/pio.c	2006-11-30 11:57:52.000000000 +0100
+@@ -122,6 +122,18 @@ fail:
+ 	dump_stack();
+ }
+ 
++void at32_set_deglitch(unsigned int pin, int enable)
++{
++	struct pio_device *pio;
++	u32 mask = 1 << (pin & 0x1f);
++
++	pio = gpio_to_pio(pin);
++	if (enable)
++		pio_writel(pio, IFER, mask);
++	else
++		pio_writel(pio, IFDR, mask);
++}
++
+ static unsigned int pio_id(struct pio_device *pio)
+ {
+ 	return pio - pio_dev;
+Index: linux-2.6.18-avr32/include/asm-avr32/arch-at32ap/gpio.h
+===================================================================
+--- linux-2.6.18-avr32.orig/include/asm-avr32/arch-at32ap/gpio.h	2006-11-30 11:54:56.000000000 +0100
++++ linux-2.6.18-avr32/include/asm-avr32/arch-at32ap/gpio.h	2006-11-30 11:55:56.000000000 +0100
+@@ -16,6 +16,7 @@
+ void at32_select_periph(unsigned int pin, unsigned int periph,
+ 			unsigned long flags);
+ void at32_select_gpio(unsigned int pin, unsigned long flags);
++void at32_set_deglitch(unsigned int pin, int enable);
+ 
+ /* Arch-neutral GPIO API */
+ int __must_check gpio_request(unsigned int gpio, const char *label);
