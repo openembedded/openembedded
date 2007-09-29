@@ -1,0 +1,13 @@
+Index: src_cf8385/wlan/wlan_main.c
+===================================================================
+--- src_cf8385.orig/wlan/wlan_main.c
++++ src_cf8385/wlan/wlan_main.c
+@@ -912,7 +912,7 @@ static wlan_private *wlan_add_card(void 
+ 	dev->watchdog_timeo = WLAN_WATCHDOG_TIMEOUT;
+ 
+ #ifdef	WIRELESS_EXT
+-	dev->get_wireless_stats = wlan_get_wireless_stats;
++	wlan_handler_def.get_wireless_stats = wlan_get_wireless_stats;
+ 	dev->wireless_handlers = (struct iw_handler_def *) &wlan_handler_def;
+ #endif
+ #endif  /* linux */	

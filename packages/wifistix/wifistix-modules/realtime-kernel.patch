@@ -1,0 +1,25 @@
+Index: src_cf8385/if/if_mcf/if_cf.c
+===================================================================
+--- src_cf8385.orig/if/if_mcf/if_cf.c
++++ src_cf8385/if/if_mcf/if_cf.c
+@@ -238,10 +238,9 @@ static void init_cf_addr(wlan_private *p
+  *  @brief This function is interrupt handler.
+  *  @param iqr		interrupt number
+  *  @param dev_id	pointer to net_device structure
+- *  @param regs		pointer to pt_regs structure
+  *  @return 	   	n/a
+  */
+-static IRQ_RET_TYPE cf_interrupt(int irq, void *dev_id, struct pt_regs *regs)
++static IRQ_RET_TYPE cf_interrupt(int irq, void *dev_id)
+ {
+   	struct net_device *dev = dev_id;
+   	wlan_private *priv    = (wlan_private *) dev->priv;
+@@ -710,7 +709,7 @@ int sbi_register_dev(wlan_private * priv
+ 
+   	PRINTM(INFO, "IRQ %d\n", cardp.irq);
+ 
+-  	ret = request_irq(cardp.irq, cf_interrupt, SA_SHIRQ, 
++  	ret = request_irq(cardp.irq, cf_interrupt, IRQF_SHARED, 
+       				"cf_irq", priv->wlan_dev.netdev );
+            
+   	if (ret != 0)

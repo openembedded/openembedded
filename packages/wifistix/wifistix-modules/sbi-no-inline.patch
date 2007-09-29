@@ -1,0 +1,13 @@
+--- src_cf8385/wlan/sbi.h
++++ src_cf8385/wlan/sbi.h
+@@ -92,8 +92,8 @@
+ 							u16 npayload);
+ int sbi_enable_host_int(wlan_private *);
+ 
+-inline int sbi_exit_deep_sleep(wlan_private *);
+-inline int sbi_reset_deepsleep_wakeup(wlan_private *);
++int sbi_exit_deep_sleep(wlan_private *);
++int sbi_reset_deepsleep_wakeup(wlan_private *);
+ 
+ #ifdef ENABLE_PM
+ inline int sbi_suspend(wlan_private *);
