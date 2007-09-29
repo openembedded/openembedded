@@ -1,26 +1,28 @@
 LICENSE = "GPL"
 DEPENDS = "libxml2 gconf gnutls avahi dbus bzip2 gnome-mime-data zlib"
-RRECOMMENDS = "gnome-vfs-plugin-file gnome-mime-data shared-mime-info"
-
-PR = "r1"
+RRECOMMENDS = "gnome-vfs-plugin-file shared-mime-info"
+# Some legacy packages will require gnome-mime-data to be installed, but use of
+# it is deprecated.
+PR = "r0"
 
 inherit gnome
+
+SRC_URI += "file://gconftool-lossage.patch;patch=1;pnum=1 \
+	    file://gnome-vfs-no-kerberos.patch;patch=1;pnum=0"
 
 # This is to provide compatibility with the gnome-vfs DBus fork
 PROVIDES = "gnome-vfs-plugin-dbus"
 RREPLACES = "gnome-vfs-dbus"
 
-SRC_URI += "file://gconftool-lossage.patch;patch=1;pnum=1 \
-	    file://gnome-vfs-no-kerberos.patch;patch=1;pnum=0"
-
 EXTRA_OECONF = " \
-		 --disable-openssl \
-		 --enable-gnutls \
-		 --enable-avahi \
+                 --disable-openssl \
+                 --enable-gnutls \
+                 --enable-avahi \
                  --with-samba-includes=${STAGING_INCDIR} \
                "
 
 FILES_${PN} += " ${libdir}/vfs ${datadir}/dbus-1/services"
+FILES_${PN}-dbg += " ${libdir}/gnome-vfs-2.0/modules/.debug"
 FILES_${PN}-dev += " ${libdir}/gnome-vfs-2.0/include"
 FILES_${PN}-doc += " ${datadir}/gtk-doc"
 
@@ -36,3 +38,5 @@ python populate_packages_prepend () {
 	plugindir = bb.data.expand('${libdir}/gnome-vfs-2.0/modules/', d)
 	do_split_packages(d, plugindir, '^lib(.*)\.so$', 'gnome-vfs-plugin-%s', 'GNOME VFS plugin for %s')
 }
+
+
