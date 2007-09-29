@@ -60,6 +60,8 @@ do_install () {
 
 do_stage () {
 	autotools_stage_all
+        install -m 0644 ${S}/extras/volume_id/lib/libvolume_id.h ${STAGING_INCDIR}
+        oe_libinstall -C extras/volume_id/lib -so libvolume_id ${STAGING_LIBDIR}
 }
 
 PACKAGES =+ "udev-utils libvolume-id libvolume-id-dev"
