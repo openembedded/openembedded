@@ -1,0 +1,22 @@
+Index: guichan-0.6.1/configure.in
+===================================================================
+--- guichan-0.6.1.orig/configure.in	2007-09-28 18:35:17.000000000 +0200
++++ guichan-0.6.1/configure.in	2007-09-28 18:36:10.000000000 +0200
+@@ -116,6 +116,7 @@
+   SDLIMAGE="yes"
+   SDL_LIBS="$SDL_LIBS -lSDL_image"
+   CPPFLAGS="$CPPFLAGS `sdl-config --cflags`"
++  AC_SUBST([SDL_LIBS])
+ }
+ 
+ ForceSDLImage()
+Index: guichan-0.6.1/src/sdl/Makefile.am
+===================================================================
+--- guichan-0.6.1.orig/src/sdl/Makefile.am	2007-09-28 18:35:23.000000000 +0200
++++ guichan-0.6.1/src/sdl/Makefile.am	2007-09-28 18:35:51.000000000 +0200
+@@ -10,3 +10,5 @@
+ 	sdlimage.cpp		\
+ 	sdlimageloader.cpp	\
+ 	sdlinput.cpp
++
++libguichan_sdl_la_LDFLAGS = @SDL_LIBS@
