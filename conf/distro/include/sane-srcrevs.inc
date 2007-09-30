@@ -97,4 +97,6 @@ SRCREV_pn-sphyrna ?= "44"
 SRCREV_pn-webkit-gtk ?= "25808"
 SRCREV_pn-xoo ?= "1623"
 SRCREV_pn-mplayer ?= "24587"
+SRCREV_pn-networkmanager ?= "2887"
+SRCREV_pn-networkmanager-applet ?= "200"
 
