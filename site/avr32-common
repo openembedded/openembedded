@@ -17,3 +17,9 @@ bash_cv_have_mbstate_t=${bash_cv_have_mbstate_t=yes}
 
 #libpcap
 ac_cv_linux_vers=${ac_cv_linux_vers=2}
+
+#startup notification
+ac_cv_func_realloc_works=${ac_cv_func_realloc_works=yes}
+ac_cv_func_realloc_0_nonnull=${ac_cv_func_realloc_0_nonnull=yes}
+lf_cv_sane_realloc=yes
+
