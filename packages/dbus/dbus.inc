@@ -10,8 +10,7 @@ SRC_URI = "http://freedesktop.org/software/dbus/releases/dbus-${PV}.tar.gz \
 	   file://cross.patch;patch=1 \
 	   file://tmpdir.patch;patch=1 \
 	   file://dbus-1.init \
-	   ${SRC_URI_EXTRA}"
-
+          "
 
 inherit autotools pkgconfig update-rc.d gettext
 
@@ -20,7 +19,7 @@ INITSCRIPT_PARAMS = "defaults"
 
 CONFFILES_${PN} = "${sysconfdir}/dbus-1/system.conf ${sysconfdir}/dbus-1/session.conf"
 
-FILES_${PN} = "${bindir}/dbus-daemon-1 ${bindir}/dbus-launch ${bindir}/dbus-cleanup-sockets ${bindir}/dbus-send ${bindir}/dbus-monitor ${sysconfdir} ${datadir}/dbus-1/services ${libdir}/lib*.so.*"
+FILES_${PN} = "${bindir}/dbus-daemon* ${bindir}/dbus-uuidgen ${bindir}/dbus-launch ${bindir}/dbus-cleanup-sockets ${bindir}/dbus-send ${bindir}/dbus-monitor ${sysconfdir} ${datadir}/dbus-1/services ${libdir}/lib*.so.*"
 FILES_${PN}-dev += "${libdir}/dbus-1.0/include ${bindir}/dbus-glib-tool"
 
 pkg_postinst_dbus() {

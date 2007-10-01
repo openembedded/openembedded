@@ -43,12 +43,5 @@ do_stage () {
 	rm -rf ${STAGING_INCDIR}/linux ${STAGING_INCDIR}/asm
 	cp -pfLR include/linux ${STAGING_INCDIR}/
 	cp -pfLR include/asm ${STAGING_INCDIR}/
-	rm -rf ${CROSS_DIR}/${TARGET_SYS}/include/linux
-	rm -rf ${CROSS_DIR}/${TARGET_SYS}/include/asm
-	install -d ${CROSS_DIR}/${TARGET_SYS}/include
-	cp -pfLR include/linux ${CROSS_DIR}/${TARGET_SYS}/include/
-	cp -pfLR include/asm ${CROSS_DIR}/${TARGET_SYS}/include/
-
 	ln -sf ${STAGING_KERNEL_DIR}/include/linux/wireless.h ${STAGING_INCDIR}/linux/wireless.h
-	ln -sf ${STAGING_KERNEL_DIR}/include/linux/wireless.h ${CROSS_DIR}/${TARGET_SYS}/include/linux/wireless.h
 }

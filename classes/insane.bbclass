@@ -101,7 +101,7 @@ def package_qa_get_elf(path, bits32):
         def my_assert(expectation, result):
             if not expectation == result:
                 #print "'%x','%x'" % (ord(expectation), ord(result))
-                raise "This does not work as expected"
+                raise Exception("This does not work as expected")
         my_assert = staticmethod(my_assert)
 
         def __init__(self, name):
@@ -124,13 +124,13 @@ def package_qa_get_elf(path, bits32):
 
             self.sex = self.data[ELFFile.EI_DATA]
             if self.sex == chr(ELFFile.ELFDATANONE):
-                raise "Can't be"
+                raise Exception("self.sex == ELFDATANONE")
             elif self.sex == chr(ELFFile.ELFDATA2LSB):
                 self.sex = "<"
             elif self.sex == chr(ELFFile.ELFDATA2MSB):
                 self.sex = ">"
             else:
-                raise "Even more worse"
+                raise Exception("Unknown self.sex")
 
         def osAbi(self):
             return ord(self.data[ELFFile.EI_OSABI])
@@ -376,7 +376,7 @@ def package_qa_check_rdepends(pkg, workdir, d):
 
         bb.data.setVar('ROOT', '', localdata) 
         bb.data.setVar('ROOT_%s' % pkg, root, localdata)
-        pkgname = bb.data.getVar('PKG_%s' % pkg, localdata, 1)
+        pkgname = bb.data.getVar('PKG_%s' % pkg, localdata, True)
         if not pkgname:
             pkgname = pkg
         bb.data.setVar('PKG', pkgname, localdata)

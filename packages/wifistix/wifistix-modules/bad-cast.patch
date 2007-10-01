@@ -1,0 +1,13 @@
+Index: src_cf8385/wlan/wlan_wext.c
+===================================================================
+--- src_cf8385.orig/wlan/wlan_wext.c
++++ src_cf8385/wlan/wlan_wext.c
+@@ -1023,7 +1023,7 @@ static int wlan_txcontrol(wlan_private *
+ 	   	return -EFAULT;
+ 	     }
+ 	     copy_from_user(&data,wrq->u.data.pointer,sizeof(int));
+-	     (u32)Adapter->PktTxCtrl = data;
++	     Adapter->PktTxCtrl = (u32)data;
+ 	}
+ 
+ 	wrq->u.data.length = 1;

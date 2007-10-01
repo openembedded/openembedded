@@ -5,6 +5,7 @@ PROVIDES = "virtual/${TARGET_PREFIX}libc-initial"
 FILESPATH = "${@base_set_filespath([ '${FILE_DIRNAME}/glibc-2.4', '${FILE_DIRNAME}/glibc', '${FILE_DIRNAME}/files', '${FILE_DIRNAME}' ], d)}"
 
 PACKAGES = ""
+PACKAGES_DYNAMIC = ""
 
 do_configure () {
 	sed -ie 's,{ (exit 1); exit 1; }; },{ (exit 0); }; },g' ${S}/configure
@@ -31,14 +32,14 @@ do_compile () {
 }
 
 do_stage () {
-	oe_runmake cross-compiling=yes install_root=${CROSS_DIR}/${TARGET_SYS} prefix="" install-headers
+	oe_runmake cross-compiling=yes install_root=${STAGING_DIR}/${HOST_SYS} includedir=/include prefix="" install-headers
 
 	# Two headers -- stubs.h and features.h -- aren't installed by install-headers,
 	# so do them by hand.  We can tolerate an empty stubs.h for the moment.
 	# See e.g. http://gcc.gnu.org/ml/gcc/2002-01/msg00900.html
-	mkdir -p ${CROSS_DIR}/${TARGET_SYS}/include/gnu
-	touch ${CROSS_DIR}/${TARGET_SYS}/include/gnu/stubs.h
-	cp ${S}/include/features.h ${CROSS_DIR}/${TARGET_SYS}/include/features.h
+	mkdir -p ${STAGING_DIR}/${HOST_SYS}/include/gnu
+	touch ${STAGING_DIR}/${HOST_SYS}/include/gnu/stubs.h
+	cp ${S}/include/features.h ${STAGING_DIR}/${HOST_SYS}/include/features.h
 }
 
 do_install () {

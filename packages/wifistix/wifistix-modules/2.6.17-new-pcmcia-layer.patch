@@ -1,0 +1,484 @@
+Index: src_cf8385/io/mcf/cf_io.c
+===================================================================
+--- src_cf8385.orig/io/mcf/cf_io.c
++++ src_cf8385/io/mcf/cf_io.c
+@@ -49,17 +49,15 @@ Change log:
+ 
+ dev_info_t cfio_dev_info = "mcf25";
+ 
+-dev_link_t *dev_list 	 = NULL;
+-
+-MODULE_PARM(interrupt_steer, "1-4i");
+-
+-INT_MODULE_PARM(irq_mask, CF_IRQMASK);
+-
+ /* Module Variables */
+ static int interrupt_steer[IRQINFO2_LEN] = { -1 };
++static u_int irq_mask = CF_IRQMASK;
++
++module_param_array(interrupt_steer, int, NULL, 0);
++module_param(irq_mask, int, 0);
+ 
+ typedef struct _if_pcmcia_info_t {
+-  dev_link_t link;
++  struct pcmcia_device *p_dev;
+   dev_node_t node;
+   int stop;
+   struct bus_operations *bus;
+@@ -81,22 +79,9 @@ struct cf_card_rec cardp;
+  *  @param arg       pointer to dev_link_t
+  *  @return 	     N/A
+  */
+-static void cf_release(ulong arg)
++static void mv8385_cf_release(struct pcmcia_device *arg)
+ {
+-  dev_link_t *link = (dev_link_t *) arg;
+-
+-  link->dev = NULL;
+-
+-  link->conf.Vcc = 0;
+-  pcmcia_release_configuration(link->handle);
+-  if (link->io.NumPorts1)
+-    pcmcia_release_io(link->handle, &link->io);
+-
+-  if (link->irq.AssignedIRQ)
+-    pcmcia_release_irq(link->handle, &link->irq);
+-
+-  link->state &= ~DEV_CONFIG;
+-
++  pcmcia_disable_device(arg);
+ } /* cf_release */
+ 
+ 
+@@ -107,41 +92,9 @@ static void cf_release(ulong arg)
+  *  @return 	     N/A
+  */
+ 
+-static void cf_detach(dev_link_t * link)
++static void mv8385_cf_detach(struct pcmcia_device * link)
+ {
+-  dev_link_t **p;
+-
+-  for (p = &dev_list; *p; p = &(*p)->next)
+-    if (*p == link)
+-      break;
+-
+-  if (*p == NULL)
+-    return;
+-
+-#ifdef LINUX_2_4
+-  del_timer_sync(&link->release);
+-#endif
+-
+-  if (((if_pcmcia_info_t *) link->priv)->eth_dev) {
+-    printk("Before calling wlan_remove function\n");
+-    cardp.remove(&cardp);
+-    printk("After calling wlan_remove function\n");
+-  }
+-
+-  if (link->state & DEV_CONFIG) {
+-    cf_release((u32) link);
+-  }
+-
+-  ((if_pcmcia_info_t *) link->priv)->eth_dev = NULL;
+-
+-  if (link->handle) {
+-#ifdef LINUX_2_4
+-    pcmcia_reset_card(link->handle, NULL);
+-#endif
+-    pcmcia_deregister_client(link->handle);
+-  }
+-
+-  *p = link->next;
++  mv8385_cf_release(link);
+   /* This points to the parent if_pcmcia_info_t struct */
+   if (link->priv)
+     kfree(link->priv);
+@@ -152,9 +105,8 @@ static void cf_detach(dev_link_t * link)
+  *  @param link      pointer to dev_link_t
+  *  @return 	     N/A
+  */
+-static void cf_config(dev_link_t * link)
++static int mv8385_cf_config(struct pcmcia_device * link)
+ {
+-  client_handle_t handle = link->handle;
+   if_pcmcia_info_t *dev = link->priv;
+   tuple_t tuple;
+   cisparse_t parse;
+@@ -169,22 +121,14 @@ static void cf_config(dev_link_t * link)
+   tuple.TupleDataMax = sizeof(buf);
+   tuple.TupleOffset = 0;
+ 
+-  if (pcmcia_get_first_tuple(handle, &tuple))
+-    goto onerror;
+-  if (pcmcia_get_tuple_data(handle, &tuple))
+-    goto onerror;
+-  if (pcmcia_parse_tuple(handle, &tuple, &parse))
+-    goto onerror;
++  if(pcmcia_get_first_tuple(link, &tuple)) goto onerror;
++  if(pcmcia_get_tuple_data(link, &tuple)) goto onerror;
++  if(pcmcia_parse_tuple(link, &tuple, &parse)) goto onerror;
+ 
+   link->conf.ConfigBase = parse.config.base;
+   link->conf.Present = parse.config.rmask[0];
+ 
+-  link->state |= DEV_CONFIG;
+-
+-  if (pcmcia_get_configuration_info(handle, &conf))
+-    goto onerror;
+-
+-  link->conf.Vcc = conf.Vcc;
++  if(pcmcia_get_configuration_info(link, &conf)) goto onerror;
+ 
+   /*
+      The Configuration table consists of a series of configuration table
+@@ -194,15 +138,9 @@ static void cf_config(dev_link_t * link)
+ 
+   tuple.DesiredTuple = CISTPL_CFTABLE_ENTRY;
+ 
+-  if (pcmcia_get_first_tuple(handle, &tuple))
+-    goto onerror;
+-
+-  if (pcmcia_get_tuple_data(handle, &tuple) != CS_SUCCESS)
+-    goto onerror;
+-
+-  if (pcmcia_parse_tuple(handle, &tuple, &parse) != CS_SUCCESS)
+-    goto onerror;
+-
++  if(pcmcia_get_first_tuple(link, &tuple)) goto onerror;
++  if (pcmcia_get_tuple_data(link, &tuple) != CS_SUCCESS ||
++	pcmcia_parse_tuple(link, &tuple, &parse) != CS_SUCCESS) goto onerror;
+ 
+   link->conf.ConfigIndex = cfg->index;
+ 
+@@ -237,19 +175,18 @@ static void cf_config(dev_link_t * link)
+       link->io.NumPorts2 = io->win[1].len;
+     }
+ 
+-    if (pcmcia_request_io(link->handle, &link->io)
++    if (pcmcia_request_io(link, &link->io)
+         != CS_SUCCESS) {
+-      pcmcia_release_io(link->handle, &link->io);
+       printk("Request IO Error !!\n");
+       goto onerror;
+     }
+   }
+ 
+   if (link->conf.Attributes & CONF_ENABLE_IRQ)
+-    if (pcmcia_request_irq(link->handle, &link->irq))
++    if (pcmcia_request_irq(link, &link->irq))
+       goto onerror;
+ 
+-  if (pcmcia_request_configuration(link->handle, &link->conf))
++  if (pcmcia_request_configuration(link, &link->conf))
+     goto onerror;
+ 
+   cardp.irq = link->irq.AssignedIRQ;
+@@ -271,97 +208,40 @@ static void cf_config(dev_link_t * link)
+ 
+   strcpy(dev->node.dev_name, cardp.eth_dev->name);
+   dev->node.major = dev->node.minor = 0;
+-  link->dev = &dev->node;
++  link->dev_node = &dev->node;
+ 
+-  link->state &= ~DEV_CONFIG_PENDING;
+-  return;
++  return 0;
+ 
+ onerror:
+   printk("card configuration failed...calling cf_release function\n");
+-  cf_release((u32) link);
+-  link->state &= ~DEV_CONFIG_PENDING;
++  mv8385_cf_release(link);
+   cardp.flag = 1;
++  return -ENODEV;
+ 
+ } /* cf_config */
+ 
+ 
+ /** 
+- *  @brief CF BUS driver Event handler
+- *  @param event     event id
+- *  @param priority  event priority
+- *  @param args      pointer to event_callback_args_t
+- *  @return 	     0 
+- */
+-static int cf_event(event_t event, int priority, event_callback_args_t *args)
+-{
+-  dev_link_t *link = args->client_data;
+-  if_pcmcia_info_t *dev = link->priv;
+-
+-  switch (event) {
+-  case CS_EVENT_CARD_INSERTION:
+-    link->state |= DEV_PRESENT | DEV_CONFIG_PENDING;
+-#ifdef LINUX_2_4
+-    dev->bus = args->bus;
+-#endif
+-    cf_config(link);
+-    break;
+-
+-  case CS_EVENT_CARD_REMOVAL:
+-    link->state &= ~DEV_PRESENT;
+-    printk("card removal event detected\n");
+-    if (link->state & DEV_CONFIG) {
+-      ((if_pcmcia_info_t *) link->priv)->stop = 1;
+-      printk("Before calling release function\n");
+-#ifdef LINUX_2_4
+-#define REMOVE_TIMEOUT		(HZ/20)
+-      mod_timer(&link->release, jiffies + REMOVE_TIMEOUT);
+-#else
+-      cf_detach(link);
+-#endif
+-      printk("After calling release function\n");
+-    }
+-    break;
+-  case CS_EVENT_CARD_RESET:
+-    if (link->state & DEV_CONFIG) {
+-      pcmcia_request_configuration(link->handle, &link->conf);
+-    }
+-    dev->stop = 0;
+-    break;
+-  }
+-
+-  return 0;
+-}       /* cf_event */
+-
+-/** 
+  *  @brief attach CF BUS driver 
+  *  @return 	     pointer to dev_link_t
+  */
+ 
+-static dev_link_t *cf_attach(void)
++static int mv8385_cf_probe(struct pcmcia_device *link)
+ {
+   u8 i; 
+-  int status;
+   if_pcmcia_info_t *ifinfo;
+-  dev_link_t *link;
+-  client_reg_t client_reg;
+ 
+   printk("Entering cf_attach()\n");
+ 
+   /* Allocate space for PCMCIA information */
+   if (!(ifinfo = kmalloc(sizeof(if_pcmcia_info_t), GFP_KERNEL))) {
+-    return NULL;
++    return -ENOMEM;
+   }
+ 
+   memset(ifinfo, 0, sizeof(if_pcmcia_info_t));
+-  link = &ifinfo->link;
++  ifinfo->p_dev = link;
+   link->priv = ifinfo;
+ 
+-#ifdef LINUX_2_4
+-  init_timer(&link->release);
+-  link->release.function = &cf_release;
+-  link->release.data = (ulong) link;
+-#endif
+-
+   link->irq.Attributes = IRQ_TYPE_EXCLUSIVE;
+   link->irq.IRQInfo1 = IRQ_INFO2_VALID | IRQ_LEVEL_ID;
+   
+@@ -380,38 +260,13 @@ static dev_link_t *cf_attach(void)
+   link->irq.Handler = NULL;
+ 
+   link->conf.Attributes = 0;
+-#define VCC_VALUE	50
+-  link->conf.Vcc = VCC_VALUE;
+-  link->conf.Vpp1 = 0;
+-  link->conf.Vpp2 = 0;
++  link->conf.Vpp = 0;
+   link->conf.IntType = INT_MEMORY_AND_IO;
+   link->conf.ConfigIndex = 1;
+   link->conf.Present = PRESENT_OPTION;
+ 
+-  link->next = dev_list;
+-  dev_list = link;
+-  client_reg.dev_info = &cfio_dev_info;
+-  client_reg.Attributes = INFO_IO_CLIENT | INFO_CARD_SHARE;
+-  client_reg.EventMask = CS_EVENT_CARD_INSERTION |
+-      CS_EVENT_CARD_REMOVAL | CS_EVENT_CARD_RESET;
+-  client_reg.event_handler = &cf_event;
+-  client_reg.event_callback_args.client_data = link;
+-  client_reg.Version = CF_VERSION;
+-
+-  printk("Before registering the client\n");
+-
+-  if ((status = pcmcia_register_client(&link->handle,
+-           &client_reg)) != CS_SUCCESS) {
+-    printk("Registering the client failed\n");
+-    CS_ERROR(link->handle, RegisterClient, status);
+-    cf_detach(link);
+-    return NULL;
+-  }
+-
+-  printk("Leaving cf_attach()\n");
+-
+-  return link;
+-}       /* cf_attach */
++  return mv8385_cf_config(link);
++}       /* cf_probe */
+ 
+ 
+ #ifndef LINUX_2_4
+@@ -428,9 +283,8 @@ static struct pcmcia_driver cfio_cs_driv
+ 	.drv		= {
+ 		.name	= "mcf25"
+ 	},
+-	.attach		= cf_attach,
+-	.detach		= cf_detach,
+-	.event		= cf_event,
++	.probe		= mv8385_cf_probe,
++	.remove		= mv8385_cf_detach,
+ 	.id_table	= cfio_ids,
+ };
+ #endif
+@@ -449,28 +303,11 @@ static struct pcmcia_driver cfio_cs_driv
+ u32 *register_cf_driver(cf_notifier_fn_add add, 
+ 			cf_notifier_fn_remove remove, void *arg)
+ {
+-#ifdef LINUX_2_4
+-  servinfo_t serv;
+-#endif
+-
+   cardp.add = add;
+   cardp.remove = remove;
+   cardp.host_int_mask = 0;
+-
+-#ifdef LINUX_2_4
+-  pcmcia_get_card_services_info(&serv);
+-
+-  if (serv.Revision != CS_RELEASE_CODE) {
+-    return NULL;
+-  }
+-#endif
+-
+   printk("Before register driver\n");
+-#ifdef LINUX_2_4
+-  register_pccard_driver(&cfio_dev_info, &cf_attach, &cf_detach);
+-#else
+   pcmcia_register_driver(&cfio_cs_driver);
+-#endif
+   printk("After register driver\n");
+ 
+   return (u32 *) &cardp;
+@@ -482,22 +319,7 @@ u32 *register_cf_driver(cf_notifier_fn_a
+  */
+ void unregister_cf_driver( void )
+ {
+-
+-#ifdef LINUX_2_4
+-  unregister_pccard_driver(&cfio_dev_info);
+-#else
+   pcmcia_unregister_driver(&cfio_cs_driver);
+-#endif
+-
+-  cf_detach(dev_list);
+-
+-  while (dev_list != NULL) {
+-#ifdef LINUX_2_4
+-    del_timer(&dev_list->release);
+-#endif
+-    if (dev_list->state & DEV_CONFIG)
+-      cf_release((u32) dev_list);
+-  }
+ }
+ 
+ 
+@@ -508,6 +330,8 @@ void unregister_cf_driver( void )
+  */
+ s16 cfio_read_cfg_reg(void* priv)
+ {
++ if_pcmcia_info_t *ifinfo = (if_pcmcia_info_t *)priv;
++  
+   conf_reg_t reg;
+ 
+   reg.Function  = 0;
+@@ -515,7 +339,7 @@ s16 cfio_read_cfg_reg(void* priv)
+   reg.Offset    = 0;
+   reg.Value     = 0;
+ 
+-  pcmcia_access_configuration_register(dev_list->handle, &reg);
++  pcmcia_access_configuration_register(ifinfo->p_dev, &reg);
+   return 0;
+ }
+ 
+Index: src_cf8385/io/mcf/cfio_io.h
+===================================================================
+--- src_cf8385.orig/io/mcf/cfio_io.h
++++ src_cf8385/io/mcf/cfio_io.h
+@@ -82,7 +82,6 @@ typedef void *  (*cf_notifier_fn_add) (s
+ typedef int (*cf_notifier_fn_remove) (struct cf_card_rec *);
+ 
+ extern dev_info_t cfio_dev_info;
+-extern dev_link_t *dev_list;
+ 
+ extern struct cf_card_rec cardp;
+ s16 cfio_read_cfg_reg(void *priv);
+Index: src_cf8385/if/if_mcf/if_cf.c
+===================================================================
+--- src_cf8385.orig/if/if_mcf/if_cf.c
++++ src_cf8385/if/if_mcf/if_cf.c
+@@ -32,11 +32,9 @@ Change log:
+   do { \
+     tuple.DesiredTuple = X; \
+     \
+-    if (!handle) \
++    if (pcmcia_get_first_tuple((&cisinfo), &tuple)) \
+       goto error; \
+-    if (pcmcia_get_first_tuple(handle, &tuple)) \
+-      goto error; \
+-    if (pcmcia_get_tuple_data(handle, &tuple)) \
++    if (pcmcia_get_tuple_data((&cisinfo), &tuple)) \
+       goto error; \
+     \
+     cisbuf[ofs++] = tuple.TupleCode; \
+@@ -48,7 +46,7 @@ Change log:
+ int   *register_cf_driver(cf_notifier_fn_add ,cf_notifier_fn_remove , void *);
+ void  unregister_cf_driver(void);
+ 
+-static dev_link_t cisinfo;
++static struct pcmcia_device cisinfo;
+ 
+ static u16 int_cause = 0;
+ 
+@@ -771,7 +769,6 @@ int sbi_host_to_card(wlan_private *priv,
+ int sbi_get_cis_info(wlan_private *priv)
+ {
+   	wlan_adapter *Adapter = priv->adapter;
+-  	client_handle_t handle = cisinfo.handle;
+   	tuple_t tuple;
+   	char buf[64], cisbuf[512];
+   	int ofs=0, count=6;
+@@ -793,9 +790,9 @@ int sbi_get_cis_info(wlan_private *priv)
+ 
+   	do 
+   	{
+-		if (pcmcia_get_next_tuple(handle, &tuple))
++		if (pcmcia_get_next_tuple((&cisinfo), &tuple))
+       			goto error;
+-		if (pcmcia_get_tuple_data(handle, &tuple))
++		if (pcmcia_get_tuple_data((&cisinfo), &tuple))
+       			goto error;
+   
+     		cisbuf[ofs++] = tuple.TupleCode;
+Index: src_cf8385/wlan/wlan_fw.c
+===================================================================
+--- src_cf8385.orig/wlan/wlan_fw.c
++++ src_cf8385/wlan/wlan_fw.c
+@@ -21,11 +21,11 @@ Change log:
+ ********************************************************/
+ 
+ 
+-u8 *helper_name=NULL;
+-u8 *fw_name=NULL;
++static char *helper_name=NULL;
++static char *fw_name=NULL;
+ 
+-MODULE_PARM( helper_name, "s");
+-MODULE_PARM( fw_name, "s" );
++module_param( helper_name, charp, 0);
++module_param( fw_name, charp, 0);
+ 
+ 
+ /********************************************************
