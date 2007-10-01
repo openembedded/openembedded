@@ -180,29 +180,16 @@ EXTRA_OECONF_append_progear = " --disable-sse --disable-3dnow --disable-mmxext -
 EXTRA_OECONF_append_c7x0 = " --enable-w100 --enable-imageon "
 EXTRA_OECONF_append_hx4700 = " --enable-imageon "
 
-#enable pxa270 overlay support
-EXTRA_OECONF_append_spitz = " --enable-pxa --enable-iwmmxt "
-EXTRA_OECONF_append_akita = " --enable-pxa --enable-iwmmxt "
-EXTRA_OECONF_append_a780 = " --enable-pxa --enable-iwmmxt"
-EXTRA_OECONF_append_magician = " --enable-pxa --enable-iwmmxt"
-EXTRA_OECONF_append_htcuniversal = " --enable-pxa --enable-iwmmxt"
-EXTRA_OECONF_append_palmld = " --enable-pxa --enable-iwmmxt"
 
-#build with support for the iwmmxt instruction support (pxa270 and up)
-TARGET_CC_ARCH_spitz = "-march=iwmmxt -mtune=iwmmxt"
-PACKAGE_ARCH_spitz = "iwmmxt"
-TARGET_CC_ARCH_akita = "-march=iwmmxt -mtune=iwmmxt"
-PACKAGE_ARCH_akita = "iwmmxt"
-TARGET_CC_ARCH_a780 = "-march=iwmmxt -mtune=iwmmxt"
-PACKAGE_ARCH_a780 = "iwmmxt"
-TARGET_CC_ARCH_hx4700 = "-march=iwmmxt -mtune=iwmmxt"
-PACKAGE_ARCH_hx4700 = "iwmmxt"
-TARGET_CC_ARCH_magician = "-march=iwmmxt -mtune=iwmmxt"
-PACKAGE_ARCH_magician = "iwmmxt"
-TARGET_CC_ARCH_htcuniversal = "-march=iwmmxt -mtune=iwmmxt"
-PACKAGE_ARCH_htcuniversal = "iwmmxt"
-TARGET_CC_ARCH_palmld = "-march=iwmmxt -mtune=iwmmxt"
-PACKAGE_ARCH_palmld = "iwmmxt"
+#build with support for the iwmmxt instruction and pxa270fb overlay support (pxa270 and up)
+#not every iwmmxt machine has the lcd connected to pxafb, but building the module doesn't hurt 
+MY_ARCH := "${PACKAGE_ARCH}"
+PACKAGE_ARCH = "${@base_contains('MACHINE_FEATURES', 'iwmmxt', 'iwmmxt', '${MY_ARCH}',d)}"
+
+MY_TARGET_CC_ARCH := "${TARGET_CC_ARCH}"
+TARGET_CC_ARCH = "${@base_contains('MACHINE_FEATURES', 'iwmmxt', '-march=iwmmxt -mtune=iwmmxt', '${MY_TARGET_CC_ARCH}',d)}"
+
+EXTRA_OECONF_append = " ${@base_contains('MACHINE_FEATURES', 'iwmmxt', '--enable-pxa --enable-iwmmxt', '',d)} "
 
 do_configure() {
 	cp ${WORKDIR}/vo_w100.c ${S}/libvo
