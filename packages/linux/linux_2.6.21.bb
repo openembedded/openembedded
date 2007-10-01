@@ -69,7 +69,9 @@ GUMSTIX_PATCHES = "\
        file://uImage-in-own-partition.patch;patch=1 \
        file://pxa-regs-fixup.patch;patch=1 \
        file://gumstix-fb-logo.patch;patch=1 \
+       file://gumstix-pxa270-mmc.patch;patch=1 \
        file://pxafb-18bpp-mode.patch;patch=1 \
+       file://smc911x-fixup.patch;patch=1 \
        "
 
 SRC_URI_append_gumstix-verdex = "${GUMSTIX_PATCHES}"
