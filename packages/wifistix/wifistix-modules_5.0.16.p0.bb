@@ -25,10 +25,10 @@ S = "${WORKDIR}/src_cf8385"
 
 inherit module-base
 
-EXTRA_OEMAKE = "CONFIG_GUMSTIX=y CONFIG_DEBUG=n KVER=2.6 \
-                KERNELDIR=${KERNEL_SOURCE} ARCH=${TARGET_ARCH} \
-                CC=${KERNEL_CC} EXTRA_CFLAGS=${CFLAGS} \
-                INSTALL_MOD_PATH="${D}"
+EXTRA_OEMAKE = 'CONFIG_GUMSTIX=y CONFIG_DEBUG=n KVER=2.6 \
+                KERNELDIR="${KERNEL_SOURCE}" ARCH="${TARGET_ARCH}" \
+                CC="${KERNEL_CC}" EXTRA_CFLAGS="${CFLAGS}" \
+                INSTALL_MOD_PATH="${D}"'
 
 do_compile() {	
 	unset CFLAGS CPPFLAGS CXXFLAGS LDFLAGS
