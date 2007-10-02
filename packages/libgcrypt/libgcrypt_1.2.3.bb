@@ -3,6 +3,7 @@ SECTION = "libs"
 PRIORITY = "optional"
 LICENSE = "GPL LGPL FDL"
 DEPENDS = "libgpg-error"
+PR = "r1"
 
 # move libgcrypt-config into -dev package
 FILES_${PN} = "${libdir}/lib*.so.*"
