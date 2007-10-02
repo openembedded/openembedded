@@ -52,7 +52,8 @@ do_stage () {
 
 	mkdir -p ${STAGING_LIBDIR}/gtk-2.0/include
 	install -m 0644 gdk/gdkconfig.h ${STAGING_LIBDIR}/gtk-2.0/include/gdkconfig.h
-
+        # Copy over all headers, since the maemo stuff needs access to the private api. *sigh*
+	cp gtk/*.h ${STAGING_INCDIR}/gtk-2.0/gtk/
 	install -m 0644 m4macros/gtk-2.0.m4 ${STAGING_DATADIR}/aclocal/
 }
 
