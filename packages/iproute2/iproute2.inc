@@ -7,7 +7,7 @@ DEPENDS = "flex-native bison-native"
 # Set the DATE in the .bb file
 SRC_URI = "http://developer.osdl.org/dev/iproute2/download/${P}-${DATE}.tar.gz"
 
-# Set S in the .bb files
+S = "${WORKDIR}/iproute2-${PV}-${DATE}"
 
 inherit update-alternatives
 

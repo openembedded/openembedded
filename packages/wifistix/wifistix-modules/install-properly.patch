@@ -1,0 +1,14 @@
+Index: src_cf8385/Makefile
+===================================================================
+--- src_cf8385.orig/Makefile
++++ src_cf8385/Makefile
+@@ -2014,8 +2014,7 @@ endif
+ 
+ ifeq ($(CONFIG_CF),y)
+ ifeq ($(KVER),2.6)
+-				cp -f cfio.$(MODEXT) $(INSTALLDIR)/
+-				cp -f mcf25.$(MODEXT) $(INSTALLDIR)/
++				$(MAKE) -C $(KERNELDIR) M=$(PWD) INSTALL_MOD_PATH="$(INSTALL_MOD_PATH)" modules_install
+ else
+ 				cp -f io/mcf/cfio.$(MODEXT) $(INSTALLDIR)/
+ 				$(LD) -r -o $(INSTALLDIR)/mcf25.$(MODEXT) cf8xxx.$(MODEXT)

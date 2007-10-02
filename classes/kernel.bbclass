@@ -142,6 +142,7 @@ kernel_do_install() {
 	install -m 0644 ${KERNEL_OUTPUT} ${D}/${KERNEL_IMAGEDEST}/${KERNEL_IMAGETYPE}-${KERNEL_VERSION}
 	install -m 0644 System.map ${D}/boot/System.map-${KERNEL_VERSION}
 	install -m 0644 .config ${D}/boot/config-${KERNEL_VERSION}
+	install -m 0644 vmlinux ${D}/boot/vmlinux-${KERNEL_VERSION}
 	install -d ${D}/etc/modutils
 	if [ "${KERNEL_MAJOR_VERSION}" = "2.6" ]; then
 		install -d ${D}/etc/modprobe.d
@@ -160,6 +161,18 @@ kernel_do_configure() {
         yes '' | oe_runmake oldconfig
 }
 
+do_menuconfig() {
+	export TERMWINDOWTITLE="${PN} Kernel Configuration"
+	export SHELLCMDS="make menuconfig"
+	${TERMCMDRUN}
+	if [ $? -ne 0 ]; then
+		echo "Fatal: '${TERMCMD}' not found. Check TERMCMD variable."
+		exit 1
+	fi
+}
+do_menuconfig[nostamp] = "1"
+addtask menuconfig after do_patch
+
 pkg_postinst_kernel () {
 	cd /${KERNEL_IMAGEDEST}; update-alternatives --install /${KERNEL_IMAGEDEST}/${KERNEL_IMAGETYPE} ${KERNEL_IMAGETYPE} ${KERNEL_IMAGETYPE}-${KERNEL_VERSION} ${KERNEL_PRIORITY} || true
 }
@@ -174,10 +187,11 @@ EXPORT_FUNCTIONS do_compile do_install do_stage do_configure
 
 # kernel-base becomes kernel-${KERNEL_VERSION}
 # kernel-image becomes kernel-image-${KERNEL_VERISON}
-PACKAGES = "kernel kernel-base kernel-image kernel-dev"
+PACKAGES = "kernel kernel-base kernel-image kernel-dev kernel-vmlinux"
 FILES = ""
 FILES_kernel-image = "/boot/${KERNEL_IMAGETYPE}*"
 FILES_kernel-dev = "/boot/System.map* /boot/config*"
+FILES_kernel-vmlinux = "/boot/vmlinux*"
 RDEPENDS_kernel = "kernel-base"
 # Allow machines to override this dependency if kernel image files are 
 # not wanted in images as standard

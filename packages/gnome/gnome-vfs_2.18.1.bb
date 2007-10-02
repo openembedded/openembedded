@@ -2,7 +2,7 @@ LICENSE = "GPL"
 DEPENDS = "libxml2 gconf gnutls avahi dbus bzip2 gnome-mime-data zlib"
 RRECOMMENDS = "gnome-vfs-plugin-file gnome-mime-data shared-mime-info"
 
-PR = "r0"
+PR = "r1"
 
 inherit gnome
 
@@ -20,7 +20,7 @@ EXTRA_OECONF = " \
                  --with-samba-includes=${STAGING_INCDIR} \
                "
 
-FILES_${PN} += " ${libdir}/vfs"
+FILES_${PN} += " ${libdir}/vfs ${datadir}/dbus-1/services"
 FILES_${PN}-dev += " ${libdir}/gnome-vfs-2.0/include"
 FILES_${PN}-doc += " ${datadir}/gtk-doc"
 

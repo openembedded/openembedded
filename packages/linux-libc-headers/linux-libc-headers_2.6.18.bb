@@ -1,7 +1,7 @@
 require linux-libc-headers.inc
 
 INHIBIT_DEFAULT_DEPS = "1"
-DEPENDS = "unifdef-native"
+DEPENDS += "unifdef-native"
 PR = "r1"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.18.tar.bz2 \
@@ -60,19 +60,12 @@ do_stage () {
 	cp -pfLR ${STAGE_TEMP}${includedir}/linux ${STAGING_INCDIR}/
 	cp -pfLR ${STAGE_TEMP}${includedir}/asm ${STAGING_INCDIR}/
 	cp -pfLR ${STAGE_TEMP}${includedir}/asm-generic ${STAGING_INCDIR}/
-	rm -rf ${CROSS_DIR}/${TARGET_SYS}/include/linux
-	rm -rf ${CROSS_DIR}/${TARGET_SYS}/include/asm
-	rm -rf ${CROSS_DIR}/${TARGET_SYS}/include/asm-generic
-	install -d ${CROSS_DIR}/${TARGET_SYS}/include
-	cp -pfLR ${STAGE_TEMP}${includedir}/linux ${CROSS_DIR}/${TARGET_SYS}/include/
-	cp -pfLR ${STAGE_TEMP}${includedir}/asm ${CROSS_DIR}/${TARGET_SYS}/include/
-	cp -pfLR ${STAGE_TEMP}${includedir}/asm-generic ${CROSS_DIR}/${TARGET_SYS}/include/
 	# Add UTS_RELEASE to version.h. UTS_RELEASE was moved from version.h to 
 	# utsrelease.h in order to avoid recompiling a kernel every time a localversion
 	# changed. Since the our headers are static and we're not compiling an 
 	# actual kernel, re-adding UTS_RELEASE does't hurt, and it allows uclibc to 
 	# compile with kernel headers that work with EABI on ARM
-	echo '#define UTS_RELEASE "2.6.18"' >> ${CROSS_DIR}/${TARGET_SYS}/include/linux/version.h
+	echo '#define UTS_RELEASE "2.6.18"' >> ${STAGING_INCDIR}/linux/version.h
 }
 
 do_stage_append_nylon () {
