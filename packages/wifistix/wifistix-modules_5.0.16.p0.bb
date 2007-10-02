@@ -8,6 +8,7 @@ DEPENDS = "virtual/kernel"
 PR = "r0"
 
 SRC_URI = "http://files.gumstix.com/cf8385-5.0.16.p0-26306.tbz \
+			file://wifistix.conf \
 			file://marvell-devicename.patch;patch=1 \
 			file://marvell-devicetable.patch;patch=1 \
 			file://marvell-gumstix.patch;patch=1 \
@@ -24,21 +25,26 @@ S = "${WORKDIR}/src_cf8385"
 
 inherit module-base
 
+EXTRA_OEMAKE = "CONFIG_GUMSTIX=y CONFIG_DEBUG=n KVER=2.6 \
+                KERNELDIR=${KERNEL_SOURCE} ARCH=${TARGET_ARCH} \
+                CC=${KERNEL_CC} EXTRA_CFLAGS=${CFLAGS} \
+                INSTALL_MOD_PATH="${D}"
+
 do_compile() {	
 	unset CFLAGS CPPFLAGS CXXFLAGS LDFLAGS
-	make CONFIG_GUMSTIX=y CONFIG_DEBUG=n KVER=2.6 KERNELDIR="${KERNEL_SOURCE}" \
-		ARCH="${TARGET_ARCH}" CC="${KERNEL_CC}" EXTRA_CFLAGS="${CFLAGS}"
+	oe_runmake
 }
 
 do_install() {	
 	unset CFLAGS CPPFLAGS CXXFLAGS LDFLAGS
-	make CONFIG_GUMSTIX=y CONFIG_DEBUG=n KVER=2.6 KERNELDIR="${KERNEL_SOURCE}" \
-		ARCH="${TARGET_ARCH}" CC="${KERNEL_CC}" EXTRA_CFLAGS="${CFLAGS}" INSTALL_MOD_PATH="${D}" install
-#	(grep -q mcf25 ${D}/etc/modprobe.conf || \
-#	 echo -e 'alias mwlan0 mcf25\n' >> ${D}/etc/modprobe.conf)
-#	(grep -q mwlan0 ${D}/etc/network/interfaces || \
-#	 echo -e '\nauto mwlan0\niface mwlan0 inet dhcp\n	pre-up /sbin/iwconfig $$IFACE essid any txpower 100mW\n' >> $(TARGET_DIR)/etc/network/interfaces)
+	oe_runmake install
+
+	install -m 0755 -d ${D}${sysconfdir}/modprobe.d
+	install -m 0644 ${WORKDIR}/wifistix.conf ${D}${sysconfdir}/modprobe.d/wifistix.conf
 }
 
 PACKAGES = "${PN}"
-FILES_${PN} = "/lib/modules/"
+FILES_${PN} = "${base_libdir}/modules/"
+FILES_${PN} += "${sysconfdir}/modprobe.d/"
+CONFFILES_${PN} = "${sysconfdir}/modprobe.d/wifistix.conf"
+
