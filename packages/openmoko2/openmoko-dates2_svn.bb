@@ -10,3 +10,8 @@ SRC_URI = "svn://svn.o-hand.com/repos/dates/branches;module=jana;proto=http"
 S = "${WORKDIR}/jana/"
 
 EXTRA_OECONF = "--with-frontend=openmoko"
+
+do_configure_prepend() {
+	touch gtk-doc.make
+}
+
