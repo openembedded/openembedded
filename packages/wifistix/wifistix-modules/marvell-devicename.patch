@@ -5,7 +5,7 @@
  	if (!(dev = init_etherdev(dev, sizeof(wlan_private)))) {
  #else
 -	if (!(dev = alloc_etherdev(sizeof(wlan_private)))) {
-+	if (!(dev = alloc_netdev(sizeof(wlan_private), "mwlan%d", ether_setup))) {
++	if (!(dev = alloc_netdev(sizeof(wlan_private), "wlan%d", ether_setup))) {
  #endif
  		PRINTM(MSG, "Init ethernet device failed!\n");
  		return NULL;
